@@ -1,0 +1,16 @@
+Phase 9 Lint チェック結果
+
+コマンド: pnpm --filter @repo/desktop lint
+
+結果: エラー 0 件
+警告 10 件（全て対象外ファイルの既存 warning、本タスク変更ファイルには 0 件）
+
+本タスク変更ファイルの lint 結果:
+- apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts: エラー 0件 / 警告 0件
+- apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts: エラー 0件 / 警告 0件
+- apps/desktop/src/renderer/views/SkillCenterView/index.tsx: エラー 0件 / 警告 0件
+- apps/desktop/src/renderer/views/SkillCenterView/__tests__/SkillCenterView.cta.test.tsx: エラー 0件 / 警告 0件（未使用 SkillName import を修正済み）
+- apps/desktop/src/renderer/views/SkillCenterView/hooks/__tests__/useSkillCenter.navigation.test.ts: エラー 0件 / 警告 0件
+- apps/desktop/src/renderer/navigation/skillLifecycleJourney.test.ts: エラー 0件 / 警告 0件
+
+判定: PASS

@@ -2,13 +2,16 @@
 
 ## メタ情報
 
-| 項目     | 値                                                 |
-| -------- | -------------------------------------------------- |
-| タスクID | TASK-IMP-SKILLCENTER-CREATE-ROUTE-001              |
-| 機能名   | skillcenter-create-route                           |
-| Phase    | 11                                                 |
-| 作成日   | 2026-03-17                                         |
-| 依存     | Phase 10（最終レビュー PASS または MINOR）の成果物 |
+| 項目       | 内容                                  |
+| ---------- | ------------------------------------- |
+| Phase      | 11                                    |
+| Phase名    | 手動テスト                            |
+| タスクID   | TASK-IMP-SKILLCENTER-CREATE-ROUTE-001 |
+| 前提Phase  | Phase 10（最終レビュー）              |
+| 後続Phase  | Phase 12（ドキュメント）              |
+| ステータス | not_started                           |
+| 作成日     | 2026-03-17                            |
+| 機能名     | skillcenter-create-route              |
 
 ## 目的
 
@@ -16,8 +19,14 @@ Electron アプリを実際に起動し、UI 上で CTA の表示・スタイル
 
 ## 参照資料
 
-- `phase-1-requirements.md` — AC-1〜AC-7
-- `.claude/rules/01-architecture.md` — Apple HIG（ライト/ダークモード）
+| 参照資料                 | パス                                                                            | 内容                                  |
+| ------------------------ | ------------------------------------------------------------------------------- | ------------------------------------- |
+| Phase 1（要件定義）      | `phase-1-requirements.md`                                                       | 受入基準 AC-1〜AC-8                   |
+| Apple HIG ルール         | `.claude/rules/01-architecture.md`                                              | Apple HIG（ライト/ダークモード）      |
+| ui-ux-design-principles  | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`  | Apple HIG / WCAG 2.1 AA の一次正本    |
+| ui-ux-feature-components | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components.md` | SkillCenter / JourneyPanel UI仕様正本 |
+
+## 実行手順
 
 ## 事前準備
 
@@ -41,7 +50,7 @@ cd apps/desktop && pnpm playwright test --headed e2e/skill-center-create-cta.spe
 3. ボタンの背景色が Apple HIG systemBlue（`#007AFF`）であることを確認する
 4. スクリーンショットを取得する
 
-成果物: `outputs/phase-11/screenshot-01-header-cta-light.png`
+成果物: `outputs/phase-11/TC-11-01-header-cta-light.png`
 
 ### Task 2: ヘッダー CTA の表示確認（ダークモード）
 
@@ -50,7 +59,7 @@ cd apps/desktop && pnpm playwright test --headed e2e/skill-center-create-cta.spe
 3. テキストが読みやすい白色であることを確認する
 4. スクリーンショットを取得する
 
-成果物: `outputs/phase-11/screenshot-02-header-cta-dark.png`
+成果物: `outputs/phase-11/TC-11-02-header-cta-dark.png`
 
 ### Task 3: JourneyPanel CTA ボタンの表示確認
 
@@ -59,7 +68,7 @@ cd apps/desktop && pnpm playwright test --headed e2e/skill-center-create-cta.spe
 3. ボタンのスペーシングが 8px グリッドに準拠していることを目視確認する
 4. スクリーンショットを取得する
 
-成果物: `outputs/phase-11/screenshot-03-journey-panel-cta.png`
+成果物: `outputs/phase-11/TC-11-03-journey-panel-cta.png`
 
 ### Task 4: モバイル相当の幅での表示確認
 
@@ -68,7 +77,7 @@ cd apps/desktop && pnpm playwright test --headed e2e/skill-center-create-cta.spe
 3. JourneyPanel CTA が適切に表示されることを確認する
 4. スクリーンショットを取得する
 
-成果物: `outputs/phase-11/screenshot-04-mobile-375px.png`
+成果物: `outputs/phase-11/TC-11-04-mobile-375px.png`
 
 ### Task 5: ヘッダー CTA クリック遷移の確認
 
@@ -77,7 +86,7 @@ cd apps/desktop && pnpm playwright test --headed e2e/skill-center-create-cta.spe
 3. ブラウザ履歴（戻るボタン）が正常に機能することを確認する
 4. スクリーンショットを取得する（遷移後の画面）
 
-成果物: `outputs/phase-11/screenshot-05-after-cta-click.png`
+成果物: `outputs/phase-11/TC-11-05-after-cta-click.png`
 
 ### Task 6: JourneyPanel CTA クリック遷移の確認
 
@@ -85,7 +94,7 @@ cd apps/desktop && pnpm playwright test --headed e2e/skill-center-create-cta.spe
 2. 対応するルートへ遷移することを確認する
 3. スクリーンショットを取得する
 
-成果物: `outputs/phase-11/screenshot-06-journey-cta-click.png`
+成果物: `outputs/phase-11/TC-11-06-journey-cta-click.png`
 
 ### Task 7: キーボード操作確認
 
@@ -94,11 +103,16 @@ cd apps/desktop && pnpm playwright test --headed e2e/skill-center-create-cta.spe
 3. Enter キーでクリックと同等の遷移が発生することを確認する
 4. スクリーンショットを取得する（フォーカス状態）
 
-成果物: `outputs/phase-11/screenshot-07-keyboard-focus.png`
+成果物: `outputs/phase-11/TC-11-07-keyboard-focus.png`
 
-### Task 8: 手動テスト結果サマリー作成
+### Task 8: タッチターゲット検証（AC-7）
 
-`outputs/phase-11/manual-test-report.md` に以下を記録する:
+- モバイル表示（375px幅）でヘッダーCTAとJourneyPanel CTAのタッチターゲットが44×44px以上であることを検証する
+- DevTools の要素サイズ検査またはボックスモデル表示で確認する
+
+### Task 9: 手動テスト結果サマリー作成
+
+`outputs/phase-11/manual-test-report.md` に以下を記録する。手動テスト中に発見したスコープ外の問題や改善提案は `outputs/phase-11/discovered-issues.md` にも記録する:
 
 - 各 Task の結果（PASS / FAIL / スキップ）
 - FAIL の場合: 画面の状態と再現手順
@@ -112,14 +126,19 @@ cd apps/desktop && pnpm playwright test --headed e2e/skill-center-create-cta.spe
 
 ## 成果物
 
-- `outputs/phase-11/screenshot-01-header-cta-light.png`
-- `outputs/phase-11/screenshot-02-header-cta-dark.png`
-- `outputs/phase-11/screenshot-03-journey-panel-cta.png`
-- `outputs/phase-11/screenshot-04-mobile-375px.png`
-- `outputs/phase-11/screenshot-05-after-cta-click.png`
-- `outputs/phase-11/screenshot-06-journey-cta-click.png`
-- `outputs/phase-11/screenshot-07-keyboard-focus.png`
-- `outputs/phase-11/manual-test-report.md`
+| 成果物名                     | パス                                              | 説明                                             |
+| ---------------------------- | ------------------------------------------------- | ------------------------------------------------ |
+| スクリーンショット           | `outputs/phase-11/TC-11-01-header-cta-light.png`  | ヘッダーCTA ライトモード                         |
+| スクリーンショット           | `outputs/phase-11/TC-11-02-header-cta-dark.png`   | ヘッダーCTA ダークモード                         |
+| スクリーンショット           | `outputs/phase-11/TC-11-03-journey-panel-cta.png` | JourneyPanel CTA 表示                            |
+| スクリーンショット           | `outputs/phase-11/TC-11-04-mobile-375px.png`      | モバイル幅375px 表示                             |
+| スクリーンショット           | `outputs/phase-11/TC-11-05-after-cta-click.png`   | ヘッダーCTA クリック後の遷移先                   |
+| スクリーンショット           | `outputs/phase-11/TC-11-06-journey-cta-click.png` | JourneyPanel CTA クリック後の遷移先              |
+| スクリーンショット           | `outputs/phase-11/TC-11-07-keyboard-focus.png`    | キーボードフォーカス状態                         |
+| 手動テストレポート           | `outputs/phase-11/manual-test-report.md`          | 全Taskの結果サマリー                             |
+| 発見事項                     | `outputs/phase-11/discovered-issues.md`           | 手動テスト中に発見したスコープ外の問題・改善提案 |
+| スクリーンショットカバレッジ | `outputs/phase-11/screenshot-coverage.md`         | UI変更のため必須: スクリーンショット100%達成確認 |
+| 撮影計画                     | `outputs/phase-11/screenshot-plan.md`             | UI変更のため必須: 画面カバレッジ用               |
 
 ## 完了条件
 
@@ -130,9 +149,13 @@ cd apps/desktop && pnpm playwright test --headed e2e/skill-center-create-cta.spe
 - [ ] ヘッダー CTA クリックで正しいルートに遷移する（スクリーンショット証跡あり）
 - [ ] JourneyPanel CTA クリックで正しいルートに遷移する（スクリーンショット証跡あり）
 - [ ] キーボード操作で CTA に到達しクリック可能（スクリーンショット証跡あり）
+- [ ] タッチターゲットが44×44px以上であることが確認されている（スクリーンショット証跡あり）
 - [ ] `outputs/phase-11/manual-test-report.md` に全 Task PASS が記録されている
+- [ ] `outputs/phase-11/discovered-issues.md` が作成されている
+- [ ] スクリーンショット撮影計画（`screenshot-plan.md`）が作成されている
+- [ ] スクリーンショットカバレッジレポート（`screenshot-coverage.md`）が作成されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
-## 次Phase
+## 次のPhase
 
-Phase 12: ドキュメント
+- [Phase 12（ドキュメント）](./phase-12-documentation.md) に進む

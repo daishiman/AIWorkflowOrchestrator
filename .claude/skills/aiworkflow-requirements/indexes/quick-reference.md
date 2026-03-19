@@ -38,6 +38,10 @@
 | スキル配布         | `SkillDistributionService`    | interfaces-agent-sdk-skill.md |
 | LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
 | LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
+| SkillExecutionStatus拡張 | `"review"` / `"improve_ready"` / `"reuse_ready"` | arch-state-management-core.md |
+| ConstraintChip | `ConstraintChipProps` | ui-ux-feature-components.md |
+| QualityGateLabel | `QualityGateLabelProps` | ui-ux-feature-components.md |
+| RuntimeBanner | `RuntimeBannerProps` | ui-ux-feature-components.md |
 
 ---
 
@@ -210,6 +214,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-18 | Task09-12: SkillExecutionStatus拡張値/ConstraintChip/QualityGateLabel/RuntimeBanner 型を追加 |
 | 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |
 | 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:*/skill:distribution:* 11チャンネルを追加 |
 | 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加 |

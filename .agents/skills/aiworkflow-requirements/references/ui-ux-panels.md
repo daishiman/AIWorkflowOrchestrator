@@ -77,6 +77,50 @@
 
 ---
 
+## ChatPanel 実AIチャット配線設計（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001）
+
+TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で確立された ChatPanel の実チャット配線設計。placeholder 3箇所（model-selector-slot, message-list-slot, chat-input-slot）を実コンポーネントに置換する際の設計指針。
+
+### 設計完了記録（2026-03-18）
+
+| 項目 | 内容 |
+|------|------|
+| 完了日 | 2026-03-18 |
+| Phase | Phase 1-12 完了（設計タスク） |
+| 状態機械 | 8状態 × 4 AccessCapability |
+| コンポーネント | 12コンポーネント（LLMSelectorPanel, ChatMessageList, ComposerArea（ComposerInput + SendButton）, StreamingMessage 等） |
+| IPCチャンネル | 10チャンネル（chat:send, chat:stream, chat:abort 等） |
+| テスト | 185テスト ALL PASS |
+| MINOR未タスク | MINOR-1（handleSendMessage ストリーミング中ガード）、MINOR-2（chatSlice streaming テスト不足） |
+
+### chatSlice 拡張設計
+
+| 状態 | 型 | 説明 |
+|------|-----|------|
+| chatPanelStatus | 8状態ユニオン | idle / loading / streaming / error / complete 等 |
+| chatMessages | ChatMessage[] | メッセージ一覧 |
+| streamingContent | string | ストリーミング中テキスト |
+| streamingError | Error \| null | ストリーミングエラー |
+| chatInput | string | 入力中テキスト |
+| setChatInput | action | 入力値更新アクション |
+
+### 個別セレクタ（P31対策）
+
+| セレクタ | 用途 |
+|----------|------|
+| useChatPanelStatus | チャットパネル状態取得 |
+| useChatMessages | メッセージ一覧取得 |
+| useStreamingContent | ストリーミングコンテンツ取得 |
+| useChatInput | 入力値取得 |
+| useSetChatInput | 入力値更新アクション取得 |
+
+### 関連仕様
+
+- TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 Phase 1-12 仕様書: `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-seq-task-05-chatpanel-real-chat-wiring/`
+- 後続未タスク: `docs/30-workflows/unassigned-task/` (MINOR-1, MINOR-2)
+
+---
+
 ## ChatPanel統合パターン（TASK-7D）
 
 TASK-7D ChatPanel Agent統合で確立されたパネル統合パターン。既存パネルに子コンポーネントを条件レンダーで統合する際の設計指針。

@@ -437,33 +437,42 @@ Renderer からのスキル実行要求を Main へ渡す中核チャネル。�
 | SkillFileManager内部検証 | `SkillFileManager.validatePath()` によるパストラバーサル検出 | `PathTraversalError` → サニタイズ済みメッセージ |
 | エラーサニタイズ | `isKnownSkillFileError(error)` でSkillFileManagerエラーを識別し安全なメッセージを返却 | 不明エラー: `"Internal error"` |
 
-## スキルファイルツリー取得 IPC チャネル（TASK-UI-05A）
+## スキル安全性評価・ファイルツリー IPC チャネル
 
-スキルディレクトリのファイルツリー構造を取得する IPC チャネル。SkillEditorView のファイルツリーパネルで使用する。
+詳細は [api-ipc-agent-safety.md](api-ipc-agent-safety.md) を参照。
 
-### チャネル仕様
-
-| 項目 | 内容 |
-| --- | --- |
-| チャネル名 | `skill:getFileTree` |
-| 方向 | Renderer → Main |
-| 引数 | `skillName: string` |
-| 戻り値 | `{ tree: FileNode[] }` |
-| バリデーション | P42準拠3段（型チェック → 空文字列 → trim空文字列） |
-| セキュリティ | パストラバーサル検証、送信元ウィンドウ検証 |
-| 実装状況 | 未実装（UT-UI-05A-GETFILETREE-001 で対応予定） |
-| 関連タスク | TASK-UI-05A-SKILL-EDITOR-VIEW |
-| 未タスク正本 | `docs/30-workflows/completed-tasks/skill-editor-view-closure/unassigned-task/task-ui-05a-getfiletree-ipc-implementation.md` |
-
-### FileNode 型定義
-
-```typescript
-interface FileNode {
-  name: string;
-  path: string; // スキルルートからの相対パス
-  type: "file" | "directory";
-  children?: FileNode[];
-}
-```
+| チャネル | タスク | 概要 |
+| --- | --- | --- |
+| `skill:evaluate-safety` | UT-06-003 | スキル安全性評価（SafetyGateResult 返却） |
+| `skill:getFileTree` | TASK-UI-05A | スキルファイルツリー取得（未実装） |
 
 ---
+
+## スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created）
+
+TASK-SKILL-LIFECYCLE-08 では公開・配布領域の IPC 契約を設計済み（実装は未タスク化）。
+
+| チャネル | 方向 | 用途 | ステータス |
+| --- | --- | --- | --- |
+| `skill:publishing:register` | Renderer → Main | 公開メタデータ登録 | 設計完了 |
+| `skill:publishing:confirm` | Renderer → Main | 公開確定 | 設計完了 |
+| `skill:publishing:update` | Renderer → Main | バージョン更新 | 設計完了 |
+| `skill:publishing:deprecate` | Renderer → Main | 公開停止 | 設計完了 |
+| `skill:publishing:remove` | Renderer → Main | 公開削除 | 設計完了 |
+| `skill:publishing:get-dependents` | Renderer → Main | 依存関係取得 | 設計完了 |
+| `skill:publishing:check-compatibility` | Renderer → Main | 互換性評価 | 設計完了 |
+| `skill:distribution:import` | Renderer → Main | 取り込み | 設計完了 |
+| `skill:distribution:export` | Renderer → Main | 書き出し | 設計完了 |
+| `skill:distribution:fork` | Renderer → Main | 複製 | 設計完了 |
+| `skill:distribution:share` | Renderer → Main | 共有 | 設計完了 |
+
+### 契約不変条件
+
+- すべて `IpcResponse<T>`（P60）で返却する。
+- invoke 系は P42 の 3段バリデーション（sender / payload / domain）を維持する。
+- handler 登録は concrete class ではなく interface 依存（P61）を前提とする。
+
+### 実装移行の未タスク
+
+- `UT-SKILL-LIFECYCLE-08-IPC-TEST`
+- `UT-SKILL-LIFECYCLE-08-UI-IMPL`

@@ -3,6 +3,52 @@
 ## 役割
 
 ---
+
+## TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 設計完了（2026-03-18）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success（MINOR 2件→未タスク化）
+- **Notes**:
+  - ChatPanel placeholder 3箇所（model-selector-slot, message-list-slot, chat-input-slot）の置換設計
+  - 8状態 × 4 AccessCapability の状態機械設計
+  - 12コンポーネント + 10 IPC チャンネルの契約定義
+  - 185テスト ALL PASS（自動テスト32 + エッジケース25 + 設定同期8 + アクセシビリティ11 + 既存15 + スキル管理17 + StreamingMessage 31 + chatSlice 46）
+  - MINOR-1: handleSendMessage ストリーミング中ガード（→未タスク化）
+  - MINOR-2: chatSlice streaming テスト不足（→未タスク化）
+
+### 変更内容
+- ChatPanel.tsx: 283行（3 placeholder → 12コンポーネント配線）
+- chatSlice.ts: 404行（8状態遷移 + chatPanelStatus）
+- useStreamingChat.ts: 179行（streaming hook 契約）
+- テストファイル5本: chat-wiring, edge-cases, settings-sync, accessibility, ChatPanel.test
+
+### AC達成状況
+AC-1〜AC-10 判定完了。Phase 10 判定: PASS（MINOR 2件）
+
+---
+
+## TASK-SKILL-LIFECYCLE-02 完了（2026-03-18）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12
+- **Result**: success
+- **Notes**:
+  - SkillCenterView にヘッダー CTA（`+ 新規作成`）と JourneyPanel CTA（3ジョブ別）を追加
+  - `useSkillCenter` に `navigateToSkillCreate` / `navigateToWorkspace` / `navigateToSkillAnalysis` を追加
+  - `skillLifecycleJourney.ts` に `ctaLabel?: string` フィールドを追加
+  - テスト: 34テスト全PASS（navigation: 4, cta: 26, journey: 4追加）
+  - 未タスク: TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001（ヘッダーCTAレスポンシブ対応、LOW）
+
+### 変更内容
+- skillLifecycleJourney.ts: `ctaLabel` フィールド追加（型 + 定数値）
+- useSkillCenter.ts: ナビゲーション関数3つ + `UseSkillCenterReturn` 型拡張
+- SkillCenterView/index.tsx: ヘッダー CTA + JourneyPanel CTA + viewStyles 拡張
+
+### AC達成状況
+AC-1〜AC-8 全達成。Phase 10 判定: PASS（MINOR 1件 → 未タスク化済み）
+
+---
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了（2026-03-17）
 
 - **Agent**: task-specification-creator
@@ -48,7 +94,6 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 欠落していた未タスクリンク 12件を復旧し、TASK-08 follow-up 未タスク4件を formalize
 
 ---
-
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 
 - **Agent**: task-specification-creator
@@ -63,18 +108,16 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 未タスク1件検出: UT-COVERAGE-INDEX-TS-EXCLUSION-001
 
 ---
-## 2026-03-17 - TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了
+## 2026-03-17 - UT-06-005-A PreToolUse Hook fallback 統合完了
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 1-12
 - **Result**: success
 - **Notes**:
-  - Main Chat / Settings / Selector / System Prompt の runtime 同期を実装
-  - GAP-01: AI_CHAT に P42 準拠3段バリデーション追加（providerId/modelId の空文字・トリム後空文字チェック）
-  - GAP-02: handleCheckHealth() の catch ブロックで status: "error" → "disconnected" に統一
-  - GAP-03: llmConfigProvider の DEFAULT_CONFIG フォールバック廃止（null を返すように変更）
-  - 5ファイル/45テスト新規作成、既存223ファイル/4959テスト全PASS（回帰なし）
-  - 未タスク: UT-TASK06-001〜004（RAG IPC仕様書整備、デバウンス完全実装、header統合、AI_CHECK_CONNECTION削除）
+  - PreToolUse Hook に `handlePermissionCheck` を接続し、`processPermissionFallback` との統合を完了
+  - `sendPermissionRequestWithTimeout`（30秒タイムアウト）+ `PermissionTimeoutError` によるタイムアウト→abort 経路を実装
+  - 新規テストファイル `SkillExecutor.hook-fallback.test.ts`（15件）を追加、hooks.test.ts / performance.test.ts にモック追加
+  - 全30テスト PASS
 
 ---
 ## 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了
@@ -406,6 +449,17 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ## 最新ログ
 
+### 2026-03-18 - Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only 設計タスク（Phase 1-3 仕様書作成 + Task09 Phase 4-13 完全版） |
+| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/` Task09-12 各ワークフロー仕様書 |
+| 結果 | TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE の仕様書作成。SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加。P50既実装チェック・P32型変更先確認・GAP ID正本管理・Badge atom再利用検討を各仕様書に反映 |
+| 検証 | 各タスク Phase 1-3 設計仕様完了、artifacts.json 同期済み |
+
+---
+
 ### 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了
 
 | 項目 | 内容 |
@@ -433,6 +487,27 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果 | SkillExecutor に processPermissionFallback / executeAbortFlow / executeSkipFlow 3メソッド追加（+187行）。PermissionStore に revokeSessionEntries 追加（+20行）。SkillPermissionResponse に skip?: boolean 追加（+3行）。新規23テスト追加で全1293テストPASS |
 | 検証 | 全1293テスト PASS（既存1270 + 新規23） |
 
+### 2026-03-18 - TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | WorkspaceChatPanel（streaming/file context/conversation/P62三層防御） |
+| 結果 | WorkspaceChatPanel の AI Runtime 整合を実装。streaming/file context/conversation/P62三層防御を整合させた。テスト77件（自動）+ 8件（手動）PASS。未タスク3件（MINOR-01/02/03）検出 |
+| 検証 | 77件自動テスト PASS + 8件手動テスト PASS |
+
+---
+
+### 2026-03-18 - TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 Phase 12 後工程
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / skill-improvement |
+| 変更対象 | `phase-templates.md` Phase 7/11 テンプレート、未タスク3件フォーマット強化 |
+| 結果 | phase-templates.md Phase 7/11 テンプレート改善（P53対策フォールバック追加）。未タスク3件フォーマット強化（task-specification-creator準拠に強化） |
+| 検証 | 未タスク3件 audit-unassigned-tasks PASS |
+
+---
 ### 2026-03-16 - UT-06-003 DefaultSafetyGate 具象クラス実装
 
 | 項目 | 内容 |

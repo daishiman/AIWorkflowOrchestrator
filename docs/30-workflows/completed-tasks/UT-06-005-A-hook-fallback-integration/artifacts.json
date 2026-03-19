@@ -1,0 +1,332 @@
+{
+  "feature": "UT-06-005-A-hook-fallback-integration",
+  "created": "2026-03-17T07:24:14Z",
+  "lastUpdated": "2026-03-17T10:30:00.000Z",
+  "metadata": {
+    "taskId": "UT-06-005-A",
+    "taskType": "feat",
+    "issueNumber": 1291,
+    "priority": "high",
+    "scale": "medium"
+  },
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受け入れ基準"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/scope-definition.md",
+          "description": "スコープ定義"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-2/api-specification.md",
+          "description": "API仕様"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-design.md",
+          "description": "テスト設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/execution-report.md",
+          "description": "Phase 4 実行レポート"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/execution-report.md",
+          "description": "実装実行レポート"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "カバレッジレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/execution-report.md",
+          "description": "Phase 6 実行レポート"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-result.md",
+          "description": "カバレッジ検証結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-summary.md",
+          "description": "カバレッジサマリー"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "リファクタリングログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/code-quality-check.md",
+          "description": "コード品質チェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/test-pass-confirmation.md",
+          "description": "テストパス確認"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-gate-result.md",
+          "description": "品質ゲート結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/security-check.md",
+          "description": "セキュリティチェック結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/test-execution-log.md",
+          "description": "テスト実行ログ"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題一覧"
+        },
+        {
+          "type": "text",
+          "path": "outputs/phase-11/test-execution-log.txt",
+          "description": "テスト実行ログ"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/tc-001.png",
+          "description": "TC-001 スクリーンショット"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/tc-002.png",
+          "description": "TC-002 スクリーンショット"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/tc-003.png",
+          "description": "TC-003 スクリーンショット"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/tc-004.png",
+          "description": "TC-004 スクリーンショット"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/tc-005.png",
+          "description": "TC-005 スクリーンショット"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/tc-006.png",
+          "description": "TC-006 スクリーンショット"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/tc-007.png",
+          "description": "TC-007 スクリーンショット"
+        },
+        {
+          "type": "json",
+          "path": "outputs/phase-11/screenshots/phase11-capture-metadata.json",
+          "description": "スクリーンショットメタデータ"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-17T10:30:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド統合版"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide-part1.md",
+          "description": "実装ガイド Part 1（中学生向け）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide-part2.md",
+          "description": "実装ガイド Part 2（技術詳細）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/spec-update-summary.md",
+          "description": "システム仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー（互換名）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠チェック"
+        }
+      ]
+    },
+    "13": {
+      "status": "pending",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報（ドラフト）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-link.md",
+          "description": "PRリンク（未作成）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更サマリー（ドラフト）"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "2", "5", "6", "7"],
+    "9": ["5"],
+    "10": ["1", "2", "5"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "status": "in_progress"
+}

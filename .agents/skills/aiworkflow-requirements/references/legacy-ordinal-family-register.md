@@ -226,6 +226,17 @@ Family status: `reclassify-first`
 | --- | --- | --- |
 | `ui-ux-feature-components-reference-b.md` | organisms foundation / history-notification surfaces | `ui-ux-feature-components-reference-organisms-history-surfaces.md` |
 
+## Section Extract Register (2026-03-17)
+
+> 以下は 500行制限に関係なく、単一ファイルから責務別に仕様セクションを抽出・独立ファイル化した記録。
+
+| source file | extracted to | extracted sections | extract axis | date |
+| --- | --- | --- | --- | --- |
+| `api-ipc-agent-core.md` | `api-ipc-agent-safety.md` | スキル安全性評価（skill:evaluate-safety / SafetyGateResult / DefaultSafetyGate DI）、スキルファイルツリー取得（skill:getFileTree / FileNode）| SafetyGate 責務の独立化（セキュリティ評価 IPC を core から分離） | 2026-03-17 |
+| `lessons-learned-current.md` | `lessons-learned-safety-gate-permission-fallback.md` | TASK-SKILL-LIFECYCLE-08 / UT-06-005 苦戦箇所（P62: PermissionStore DI スコープ問題 / P63: SafetyGate metadataProvider 抽象化境界 / フォールバック制御境界条件テスト設計） | SafetyGate・Permission・Fallback 実装教訓の責務別独立化（current から抽出） | 2026-03-17 |
+
+---
+
 ## 500-Line Split Register (2026-03-16)
 
 > 以下は ordinal rename ではなく、500行制限超過に伴うファイル分割の記録。旧ファイルはリダイレクトに変換済み。
@@ -243,3 +254,16 @@ Family status: `reclassify-first`
 | ↑ | `lessons-learned-ipc-preload-runtime.md` | ~200 | IPC/Preload/AI Runtime / AuthMode 統一 / LLM adapter / P57-P61 | 2026-03-17 |
 | ↑ | `lessons-learned-test-typesafety.md` | ~170 | テスト/型安全 / Object.freeze+satisfies / Permission Fallback | 2026-03-17 |
 | ↑ | `lessons-learned-phase12-workflow-lifecycle.md` | ~290 | Phase 12 / ワークフロー / SKILL-LIFECYCLE-04/05/06/07 | 2026-03-17 |
+| `lessons-learned-current.md` (1598行) | `lessons-learned-current.md` | 119 | インデックス（分割ファイル対応表 + カテゴリ別検索ガイド） | 2026-03-18 |
+| ↑ | ~~`lessons-learned-current-skill-lifecycle-ipc.md`~~ | ~~411~~ | **削除（重複）**: safetygrate-ipc-gap.md + electron-menu-docs-task0912.md と完全重複。P59再発により並列エージェントが重複生成 | 2026-03-18 |
+| ↑ | `lessons-learned-current-safetygrate-ipc-gap.md` | 324 | SafetyGate / IPC GAP / バリデーション教訓（TASK-SKILL-LIFECYCLE-08, UT-06-003/005, TASK-IMP-MAIN-CHAT） | 2026-03-18 |
+| ↑ | `lessons-learned-current-electron-menu-docs-task0912.md` | 127 | Electron Menu / Skill Docs / Task09-12 教訓（P64/P65） | 2026-03-18 |
+| `task-workflow-completed-skill-lifecycle.md` (575行) | `task-workflow-completed-skill-lifecycle.md` | 28 | インデックス（分割先参照） | 2026-03-18 |
+| ↑ | `task-workflow-completed-skill-lifecycle-ui.md` | 450 | UI実装・統合系完了記録（VIEWTYPE, TASK-10A-C/D, LIFECYCLE-04/05/08, Task09-12） | 2026-03-18 |
+| ↑ | `task-workflow-completed-skill-lifecycle-security.md` | 127 | セキュリティ・権限ガバナンス完了記録（UT-06-003/005, LIFECYCLE-06, UT-06-001） | 2026-03-18 |
+| ↑ | `task-workflow-completed-skill-lifecycle-design.md` | 293 | 設計タスク完了記録（LIFECYCLE-04/05/06/08, Task09-12） | 2026-03-18 |
+| `quick-reference-search-patterns.md` (567行) | `quick-reference-search-patterns.md` | 20 | インデックス（分割先参照） | 2026-03-18 |
+| ↑ | `quick-reference-search-patterns-skill-lifecycle.md` | 158 | スキルライフサイクル系検索パターン | 2026-03-18 |
+| ↑ | `quick-reference-search-patterns-ipc-infra.md` | 212 | IPC / インフラ系検索パターン | 2026-03-18 |
+| ↑ | `quick-reference-search-patterns-code.md` | 213 | コードパターン早見（Electron IPC, Zustand, CTA等） | 2026-03-18 |
+| `lessons-learned-archive-2026-03.md` (519行) | `lessons-learned-archive-2026-03.md` | 459 | 冗長記述を圧縮して500行以下に整理 | 2026-03-18 |

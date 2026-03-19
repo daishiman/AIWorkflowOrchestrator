@@ -1,0 +1,36 @@
+{
+  "captureDate": "2026-03-18T07:16:00+09:00",
+  "status": "success",
+  "method": "Playwright + Vite dev server (vite.e2e.config.ts)",
+  "port": 5195,
+  "viewport": { "width": 1440, "height": 960 },
+  "colorScheme": "dark",
+  "scenarios": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-skillcenter-header-cta.png",
+      "selector": "[data-testid=\"header-create-cta\"]",
+      "note": "SkillCenterView header CTA button display"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-skillcenter-journey-panel-cta.png",
+      "selector": "[data-testid=\"skill-lifecycle-journey\"]",
+      "note": "JourneyPanel 3-job CTA buttons (create/use/improve)"
+    }
+  ],
+  "previousAttempts": {
+    "status": "failed",
+    "reason": "P53: CLI environment screencapture captured desktop wallpaper only",
+    "discardedFiles": [
+      "electron-full-screen.png",
+      "electron-app-window.png",
+      "electron-app-activated.png"
+    ]
+  },
+  "unitTestVerification": {
+    "testFiles": 13,
+    "testCount": 186,
+    "result": "ALL PASS"
+  }
+}

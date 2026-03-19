@@ -26,6 +26,14 @@
 | Phase 11 証跡 | 設定画面3領域レビュー（TC-11-00）を含む 4ケースの screenshot を保存 |
 | 後続タスク反映 | Task02,03,10,04,06,07,05,08,09 の `index.md` に Step-01 参照を追加 |
 
+## Step-03 Task06 再監査追補（2026-03-17）
+
+- `step-03-par-task-06-main-chat-settings-runtime-sync` を再監査し、Phase 11 スクリーンショットを実画像へ更新（`phase11-capture-metadata.json`）。
+- `AI_CHECK_CONNECTION` は「廃止完了」ではなく **legacy 互換残置** と判定し、primary health 経路を `llm:check-health` に固定。
+- `llm:check-health` 契約を実装準拠（`status: connected/disconnected/error`, `latency`, `checkedAt: Date`）へ同期。
+- Task06 未タスク `UT-TASK06-001..004` を `docs/30-workflows/unassigned-task/` へ formalize し、backlog へ登録。
+- Phase 11 で `selector/prompt` と `terminal launcher` が PARTIAL 判定となったため、Task06 の follow-up 管理へ移管。
+
 ---
 
 ## 再監査追補（2026-03-14）
@@ -177,6 +185,7 @@
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-17 | 1.0.8 | Step-03 Task06 の再監査結果を追補。Phase 11 実画像証跡（ハーネス）への更新、`AI_CHECK_CONNECTION` legacy 方針明確化、`llm:check-health` 実装契約同期、UT-TASK06-001..004 formalize を反映 |
 | 2026-03-15 | 1.0.7 | Step-02 Task03 (skill-agent-runtime-routing) を UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 で完了同期。`RuntimeResolver` 共通化、`TerminalHandoffCard`、`handoffGuidance` store 統合を反映。`arch-electron-services-details.md` に RuntimeResolver サービス詳細セクションを追加 |
 | 2026-03-14 | 1.0.6 | Phase 12 再確認を追補。`verify-unassigned-links=223/223` へ更新し、再参照未タスク `task-fix-worktree-native-binary-guard-001.md` の 9見出し是正と `target-file` 監査 PASS（current=0）を記録 |
 | 2026-03-14 | 1.0.5 | Step-02 Task02/Task10 の Phase 11/12 再監査結果を追補。Task10 `TC-11-01..06`、Task02 `TC-11-01..03` を current workflow 配下へ証跡化し、`validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` PASS を明記。あわせて Task02 実装差分（RuntimeResolver/AnthropicLLMAdapter/TerminalHandoffBuilder/chatEditAPI contextBridge/workspacePath 検証）の正本同期を追加 |

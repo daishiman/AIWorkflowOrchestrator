@@ -1,9 +1,15 @@
 /**
  * @file ChatPanel Component
- * @description チャットパネル統合コンポーネント
- * @feature skill-import-agent-system
- * @task TASK-7D ChatPanel 統合
- * @see specification.md §4.1 既存チャット画面へのスキルセレクター統合
+ * @description チャットパネル統合コンポーネント - 実 AI チャット配線
+ * @feature chatpanel-real-chat-wiring
+ * @task TASK-IMP-CHATPANEL-REAL-AI-CHAT-001
+ *
+ * 3 つの placeholder（model-selector-slot, message-list-slot, chat-input-slot）を
+ * 実コンポーネントに置換し、useStreamingChat 経由で LLM ストリーミングチャットを提供する。
+ *
+ * 状態機械: idle → ready → streaming → completed/cancelled/error
+ *   blocked: provider/model 未選択 or API key 未設定
+ *   handoff: terminal surface のみ利用可能
  */
 
 import React, {
@@ -11,27 +17,33 @@ import React, {
   useEffect,
   useImperativeHandle,
   forwardRef,
+  useCallback,
+  useRef,
 } from "react";
 import type { SkillMetadata } from "@repo/shared";
 import { useAppStore, useIsSkillExecuting } from "../../store";
+import { useStreamingChat } from "../../hooks/useStreamingChat";
 import { SkillSelector } from "../skill/SkillSelector";
 import { SkillImportDialog } from "../skill/SkillImportDialog";
 import { PermissionDialog } from "../skill/PermissionDialog";
 import { SkillStreamingView } from "../skill/SkillStreamingView";
 import { SkillManagementPanel } from "../skill/SkillManagementPanel";
+import { RuntimeBanner } from "./RuntimeBanner";
+import { ChatMessageList } from "./ChatMessageList";
+import { ErrorGuidance } from "./ErrorGuidance";
+import { HandoffBlock } from "./HandoffBlock";
+import { ComposerArea } from "./ComposerArea";
+import { LLMSelectorPanel } from "./LLMSelectorPanel";
 
 // ============================================
 // Types
 // ============================================
 
 export interface ChatPanelProps {
-  /** スキルインポート要求時のコールバック（テスト用にも使用可能） */
   onImportRequest?: (skill: SkillMetadata) => void;
 }
 
-/** ChatPanel の公開ハンドル（ref経由） */
 export interface ChatPanelHandle {
-  /** スキルインポートダイアログを開く */
   handleImportRequest: (skill: SkillMetadata) => void;
 }
 
@@ -39,65 +51,140 @@ export interface ChatPanelHandle {
 // Main Component
 // ============================================
 
-/**
- * ChatPanel - スキル統合チャットパネル
- *
- * 既存のチャット機能に SkillSelector、SkillStreamingView、
- * SkillImportDialog、PermissionDialog を統合する。
- *
- * @example
- * ```tsx
- * const ref = useRef<ChatPanelHandle>(null);
- * <ChatPanel ref={ref} />
- * // ref.current?.handleImportRequest(skill);
- * ```
- */
 export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
   ({ onImportRequest }, ref) => {
-    // Store state
+    // === Existing Store state (skill integration) ===
     const selectedSkillName = useAppStore((s) => s.selectedSkillName);
     const streamingMessages = useAppStore((s) => s.streamingMessages);
     const isExecuting = useIsSkillExecuting();
     const skillExecutionStatus = useAppStore((s) => s.skillExecutionStatus);
     const fetchSkills = useAppStore((s) => s.fetchSkills);
 
-    // Local state
+    // === ChatPanel Status & Config (P31: individual selectors) ===
+    const chatPanelStatus = useAppStore((s) => s.chatPanelStatus);
+    const resolvedCapability = useAppStore((s) => s.resolvedCapability);
+    const chatMessages = useAppStore((s) => s.chatMessages);
+    const chatInput = useAppStore((s) => s.chatInput);
+    const setChatInput = useAppStore((s) => s.setChatInput);
+    const selectedProviderId = useAppStore((s) => s.selectedProviderId);
+    const selectedModelId = useAppStore((s) => s.selectedModelId);
+    const providers = useAppStore((s) => s.providers);
+    const handoffGuidance = useAppStore((s) => s.handoffGuidance);
+
+    // === Streaming (useStreamingChat hook) ===
+    const { state: streamingState, actions: streamingActions } =
+      useStreamingChat();
+
+    // === Local state ===
     const [importDialogSkill, setImportDialogSkill] =
       useState<SkillMetadata | null>(null);
     const [showSkillManagement, setShowSkillManagement] = useState(false);
 
-    // Import request handler
+    // === Refs for stable cleanup ===
+    const isStreamingRef = useRef(streamingState.isStreaming);
+    isStreamingRef.current = streamingState.isStreaming;
+    const cancelStreamRef = useRef(streamingActions.cancelStream);
+    cancelStreamRef.current = streamingActions.cancelStream;
+
+    // === Computed ===
+    const isBlocked = chatPanelStatus === "blocked";
+    const isHandoff = chatPanelStatus === "handoff";
+    const isStreaming = streamingState.isStreaming;
+    const canSubmit =
+      !isBlocked &&
+      !isHandoff &&
+      !isStreaming &&
+      Boolean(selectedProviderId) &&
+      Boolean(selectedModelId);
+    const showComposer = !isBlocked && !isHandoff;
+
+    // === Blocked error derivation (P62: no DEFAULT_CONFIG fallback) ===
+    const blockedErrorCode = !selectedProviderId
+      ? "API_KEY_MISSING"
+      : "CONFIG_MISSING";
+    const blockedErrorMessage = !selectedProviderId
+      ? "APIキーが設定されていません。設定画面でAPIキーを入力してください"
+      : "プロバイダーとモデルを選択してください";
+
+    // === Handlers ===
     const handleImportRequest = (skill: SkillMetadata) => {
       setImportDialogSkill(skill);
       onImportRequest?.(skill);
     };
 
-    // Expose handle to parent via ref
-    useImperativeHandle(ref, () => ({
-      handleImportRequest,
-    }));
+    const handleSendMessage = useCallback(
+      (message: string) => {
+        if (!message.trim()) return;
+        streamingActions.startStream({
+          providerId: selectedProviderId ?? undefined,
+          modelId: selectedModelId ?? "",
+          messages: [{ role: "user" as const, content: message.trim() }],
+          stream: true,
+        });
+      },
+      [selectedProviderId, selectedModelId, streamingActions],
+    );
 
-    // Initialize: fetch skills on mount
+    const handleNavigateToSettings = useCallback(() => {
+      const state = useAppStore.getState();
+      if (state.setCurrentView) {
+        state.setCurrentView("settings");
+      }
+    }, []);
+
+    // === Ref handle ===
+    useImperativeHandle(ref, () => ({ handleImportRequest }));
+
+    // === Effects ===
     useEffect(() => {
       fetchSkills();
     }, [fetchSkills]);
 
+    // Escape key: cancel stream (document level for B-06)
+    useEffect(() => {
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape" && isStreamingRef.current) {
+          cancelStreamRef.current();
+        }
+      };
+      document.addEventListener("keydown", handleKeyDown);
+      return () => document.removeEventListener("keydown", handleKeyDown);
+    }, []);
+
+    // Cleanup on unmount (B-07)
+    useEffect(() => {
+      return () => {
+        if (isStreamingRef.current) {
+          cancelStreamRef.current();
+        }
+      };
+    }, []);
+
+    // === Render ===
     return (
       <div className="flex flex-col h-full" data-testid="chat-panel">
-        {/* Header */}
+        {/* Header: RuntimeBanner replaces model-selector-slot */}
         <div
           className="flex items-center gap-4 px-4 py-2 border-b"
           role="toolbar"
           aria-label="チャット設定"
           data-testid="chat-header"
         >
-          {/* ModelSelector placeholder - existing component */}
-          <div data-testid="model-selector-slot" />
+          <RuntimeBanner
+            capability={resolvedCapability}
+            onTerminalSwitch={() => {}}
+          />
 
-          {/* SkillSelector */}
+          <LLMSelectorPanel
+            providers={providers ?? []}
+            selectedProviderId={selectedProviderId}
+            selectedModelId={selectedModelId}
+            onSelectProvider={() => {}}
+            onSelectModel={() => {}}
+          />
+
           <SkillSelector />
 
-          {/* スキル管理パネル切替 */}
           <button
             onClick={() => setShowSkillManagement((prev) => !prev)}
             aria-label={
@@ -114,16 +201,42 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
           </button>
         </div>
 
-        {/* Message Area */}
+        {/* Message Area: replaces message-list-slot */}
         <div className="flex-1 overflow-y-auto" data-testid="message-area">
           {showSkillManagement ? (
             <SkillManagementPanel />
           ) : (
             <>
-              {/* MessageList placeholder - existing component */}
-              <div data-testid="message-list-slot" />
+              {/* Blocked: ErrorGuidance with settings CTA */}
+              {isBlocked && (
+                <ErrorGuidance
+                  code={blockedErrorCode}
+                  message={blockedErrorMessage}
+                  retryable={false}
+                  onNavigateToSettings={handleNavigateToSettings}
+                />
+              )}
 
-              {/* Skill Streaming View */}
+              {/* Handoff: HandoffBlock + PersistentTerminalLauncher */}
+              {isHandoff && handoffGuidance && (
+                <HandoffBlock
+                  guidance={handoffGuidance}
+                  onOpenTerminal={() => {}}
+                />
+              )}
+
+              {/* Normal/Streaming/Error/Completed/Cancelled: ChatMessageList */}
+              {!isBlocked && !isHandoff && (
+                <ChatMessageList
+                  messages={chatMessages ?? []}
+                  isStreaming={isStreaming}
+                  streamingContent={streamingState.content}
+                  onCancelStream={streamingActions.cancelStream}
+                  error={streamingState.error}
+                />
+              )}
+
+              {/* Skill Streaming View (existing, maintained) */}
               {isExecuting && selectedSkillName && (
                 <SkillStreamingView
                   skillName={selectedSkillName}
@@ -135,11 +248,21 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
           )}
         </div>
 
-        {/* Input Area */}
-        <div data-testid="input-area">
-          {/* ChatInput placeholder - existing component */}
-          <div data-testid="chat-input-slot" />
-        </div>
+        {/* Input Area: replaces chat-input-slot */}
+        {showComposer && (
+          <div data-testid="input-area">
+            <ComposerArea
+              value={chatInput}
+              onChange={setChatInput}
+              onSubmit={handleSendMessage}
+              canSubmit={canSubmit}
+              isStreaming={isStreaming}
+              onCancel={streamingActions.cancelStream}
+              disabled={!canSubmit && !isStreaming}
+              placeholder="メッセージを入力"
+            />
+          </div>
+        )}
 
         {/* Dialogs */}
         {importDialogSkill && (

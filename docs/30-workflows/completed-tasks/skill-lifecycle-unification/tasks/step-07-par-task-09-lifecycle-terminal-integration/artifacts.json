@@ -1,0 +1,165 @@
+{
+  "taskId": "TASK-IMP-LIFECYCLE-TERMINAL-INTEGRATION-001",
+  "title": "SkillLifecyclePanel Terminal 統合",
+  "description": "SkillLifecyclePanel に Persistent Terminal ボタンを追加し、TerminalHandoffCard を接続し、improve→terminal handoff で前回改善結果の要約を転送する機能の実装",
+  "status": "spec-ready",
+  "currentPhase": 1,
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "spec-created",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "outputs": ["outputs/phase-1/requirements-analysis.md"]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "spec-created",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "outputs": ["outputs/phase-2/design-document.md"]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "spec-created",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "outputs": ["outputs/phase-3/design-review-report.md"],
+      "gate": {
+        "judgements": ["PASS", "MINOR", "MAJOR"],
+        "onPass": "phase-4",
+        "onMinor": "phase-4-after-fix",
+        "onMajorRequirements": "phase-1",
+        "onMajorDesign": "phase-2"
+      }
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "spec-created",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "outputs": []
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "spec-created",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "outputs": []
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "spec-created",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "outputs": []
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "spec-created",
+      "specFile": "phase-7-coverage.md",
+      "outputDir": "outputs/phase-7",
+      "outputs": [],
+      "gate": {
+        "onFail": "phase-6"
+      }
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "spec-created",
+      "specFile": "phase-8-refactor.md",
+      "outputDir": "outputs/phase-8",
+      "outputs": []
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "spec-created",
+      "specFile": "phase-9-quality.md",
+      "outputDir": "outputs/phase-9",
+      "outputs": []
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "spec-created",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "outputs": [],
+      "gate": {
+        "judgements": ["PASS", "MINOR", "MAJOR", "CRITICAL"],
+        "onPass": "phase-11",
+        "onMinor": "phase-11-after-unassigned-task",
+        "onMajor": "phase-1-to-5",
+        "onCritical": "phase-1"
+      }
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "spec-created",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "outputs": []
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "spec-created",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "outputs": []
+    },
+    "phase-13": {
+      "name": "完了",
+      "status": "spec-created",
+      "specFile": "phase-13-completion.md",
+      "outputDir": "outputs/phase-13",
+      "outputs": []
+    }
+  },
+  "implementationTargets": [
+    {
+      "file": "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+      "changes": [
+        "Terminal ボタン追加（L419-435 ボタン群の右端）",
+        "TerminalHandoffCard 埋め込み（Phase 情報グリッド直下）"
+      ]
+    },
+    {
+      "file": "apps/desktop/src/main/services/runtime/TerminalHandoffBuilder.ts",
+      "changes": [
+        "buildForSkillImprovement() 新メソッド追加",
+        "SkillImprovementHandoffRequest インターフェース追加"
+      ]
+    },
+    {
+      "file": "apps/desktop/src/preload/channels.ts",
+      "changes": ["skill:buildImprovementHandoff チャンネル定数追加"]
+    }
+  ],
+  "gaps": [
+    {
+      "id": "C-02",
+      "file": "SkillLifecyclePanel.tsx:420-435",
+      "description": "ヘッダーに固定 Terminal ボタンがない",
+      "contract": "TH-04"
+    },
+    {
+      "id": "C-03",
+      "file": "SkillLifecyclePanel.tsx",
+      "description": "TerminalHandoffCard が import されておらず未接続",
+      "contract": "TH-01"
+    },
+    {
+      "id": "C-07",
+      "file": "TerminalHandoffBuilder.ts:80-105",
+      "description": "improve→terminal で前回改善結果の要約転送なし",
+      "contract": "TH-03"
+    },
+    {
+      "id": "D-02",
+      "file": "SkillLifecyclePanel",
+      "description": "TerminalDock が未接続",
+      "contract": "TH-04"
+    }
+  ],
+  "createdAt": "2026-03-17",
+  "updatedAt": "2026-03-18"
+}

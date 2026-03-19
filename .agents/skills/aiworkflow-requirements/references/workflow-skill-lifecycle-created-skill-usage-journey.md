@@ -74,6 +74,62 @@ node scripts/search-spec.js "workspacePath" -C 3
 
 ---
 
+## Task08 接続契約（TASK-SKILL-LIFECYCLE-08 / spec_created）
+
+Task05 の「作成済みスキル利用導線」は、Task08 の公開・互換性設計を取り込む前段となる。
+
+| 接続点 | Task05 側 | Task08 側 | 契約内容 |
+| --- | --- | --- | --- |
+| 公開レベル表示 | SkillCard / DetailPanel | `SkillVisibility` | `local` / `team` / `public` の表示契約を共通化 |
+| 公開可否表示 | ScoreGateBadge | `PublishReadiness` | 利用導線で `blocked` を明示し公開操作を無効化 |
+| 互換性表示 | 改善/再利用導線 | `CompatibilityCheckResult` | `breaking` は major バンプ要求を表示 |
+| 安全性連携 | execute 前注意喚起 | `SafetyGateInput` | high/critical は管理者承認 or 公開不可へ遷移 |
+
+### follow-up 未タスク
+
+- `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
+- `UT-SKILL-LIFECYCLE-08-UI-IMPL`
+
+### 公開レベル遷移フロー
+
+スキルの公開レベルは `SkillVisibility` 型（`"local" | "team" | "public"`）で管理し、常に `local` から開始する。
+
+| 遷移 | トリガー | 前提条件 | IPC チャンネル |
+| --- | --- | --- | --- |
+| `local` → `team` | ユーザーが Team 公開を選択 | `PublishReadiness` が `auto-approved` または `review-required` | `skill:publishing:register` |
+| `team` → `public` | ユーザーが Public 公開を選択 | `PublishReadiness` が `auto-approved`、`license` / `readme` / `changelog` / `minAppVersion` が必須 | `skill:publishing:update` |
+| `team` / `public` → 非推奨 | ユーザーが deprecate を選択 | `getDependents()` で依存スキル数を表示、確認ダイアログ | `skill:publishing:deprecate` |
+| 任意 → 削除 | ユーザーが remove を選択 | 依存スキル0件、またはユーザー確認済み | `skill:publishing:remove` |
+
+遷移の不変条件:
+- `riskLevel === "critical"` のスキルは `blocked` 判定となり、`team` / `public` への遷移は不可
+- `gateStatus === "rejected"` の場合も同様に `blocked`
+- 降格（`public` → `team` → `local`）は `deprecate` → `remove` → 再登録の手順で行う
+
+### Skill Center 登録/更新/停止フロー
+
+| ステップ | 操作 | サービス | IPC チャンネル | 入力型 | 出力型 |
+| --- | --- | --- | --- | --- | --- |
+| 1 | 新規登録 | `SkillRegistryService.register()` | `skill:publishing:register` | `SkillPublishingMetadata` | `RegisterResult` |
+| 2 | メタデータ更新 | `SkillRegistryService.update()` | `skill:publishing:update` | `skillId` + `SkillPublishingMetadata` | `UpdateResult` |
+| 3 | 互換性チェック | `CompatibilityChecker.check()` | `skill:publishing:check-compatibility` | `oldSchema` + `newSchema` | `CompatibilityCheckResult` |
+| 4 | 公開準備度チェック | `PublishReadinessChecker.check()` | `skill:publishing:check-readiness` | `SafetyGateInput` + `ObservabilityMetrics` | `PublishReadiness` |
+| 5 | 非推奨化 | `SkillRegistryService.deprecate()` | `skill:publishing:deprecate` | `skillId` + `DeprecationNotice` | `void` |
+| 6 | 削除 | `SkillRegistryService.remove()` | `skill:publishing:remove` | `skillId` | `void` |
+
+配布操作:
+
+| 操作 | サービス | IPC チャンネル |
+| --- | --- | --- |
+| インポート | `SkillDistributionService.importSkill()` | `skill:distribution:import` |
+| エクスポート | `SkillDistributionService.exportSkill()` | `skill:distribution:export` |
+| フォーク | `SkillDistributionService.forkSkill()` | `skill:distribution:fork` |
+| 共有 | `SkillDistributionService.shareSkill()` | `skill:distribution:share` |
+
+全レスポンスは `IpcResponse<T>` wrapper 形式（P60 準拠）。
+
+---
+
 ## 現行 workflow 仕様書
 
 | 区分 | パス |

@@ -25,7 +25,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 - 新規 Slice: **不要**
 - 理由: UI基盤層の再利用性を優先し、ドメイン状態への依存を避けるため
 - 連携方式: props / callback / controlled component パターンを採用
-
 ---
 
 ## Store Slice Baseline（TASK-UI-01-A-STORE-SLICE-BASELINE）
@@ -85,7 +84,17 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN | Notification/HistorySearch実装 | **完了**（2026-03-05） |
 | TASK-UI-08-NOTIFICATION-CENTER | NotificationCenter 058e UX 再整備 | **完了**（2026-03-11） |
 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV | ViewType/導線実装 | **完了**（2026-03-05） |
+---
 
+## ChatPanel 実AIチャット配線 初期設計（廃止 → 最終設計は後述セクション参照）
+
+> **注意**: 本セクションは初期設計メモであり、最終設計に置き換えられた。
+> 最終版: 「ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created）」セクションを参照。
+>
+> 変更点:
+> - 8 状態: idle/sending/streaming/complete/error/aborted/disabled/loading → idle/ready/streaming/cancelled/completed/error/blocked/handoff
+> - AccessCapability: canSend/canAbort/canSelectModel/canViewHistory → integratedRuntime/terminalSurface/both/none
+> - セレクタ: 6 個 → 12 個
 ---
 
 ## Workspace Layout 基盤（TASK-UI-04A-WORKSPACE-LAYOUT）
@@ -223,7 +232,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `vitest`（対象5ファイル） | PASS（37 tests） |
 | `typecheck` | PASS |
 | coverage（task scope） | Line 87.45 / Branch 65.11 / Function 80.39 |
-
 ---
 
 ## HistorySearch timeline 再設計（TASK-UI-06-HISTORY-SEARCH-VIEW）
@@ -272,7 +280,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `vitest`（対象5ファイル） | PASS（26 tests） |
 | `pnpm --filter @repo/desktop typecheck` | PASS |
 | coverage（task scope） | Lines 88.42 / Branches 80.00 / Functions 90.00 |
-
 ---
 
 ## ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV）
@@ -327,6 +334,167 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 2. `keydown` 導線へ編集要素除外を適用し、誤発火を単体テストで固定する。  
 3. AppDock表示順と `NAV_SHORTCUT_TO_VIEW` の整合を同一PR単位で更新する。  
 4. Phase 11 証跡（`TC-xx` + `.png`）を workflow 配下へ保存し、coverage validator を実行する。  
-5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。  
+5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。
+---
+
+## LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）
+
+> 完了日: 2026-03-17
+
+### GAP-03: DEFAULT_CONFIG fallback 廃止
+
+**変更前の挙動**（廃止）:
+
+```typescript
+// ❌ 廃止前: 未選択時に暗黙的なデフォルトへ fallback していた
+export async function getSelectedLLMConfig(): Promise<SelectedLLMConfig> {
+  return currentConfig ?? DEFAULT_CONFIG; // DEFAULT_CONFIG = { providerId: "openai", modelId: "gpt-4o" }
+}
+```
+
+**変更後の挙動**:
+
+```typescript
+// ✅ 現在: null を返す。呼び出し元が明示的にハンドリングする責務を持つ
+export async function getSelectedLLMConfig(): Promise<SelectedLLMConfig | null> {
+  return currentConfig; // 未設定時は null
+}
+```
+
+### 状態管理への影響
+
+| 項目 | 内容 |
+| ---- | ---- |
+| `currentConfig` | `SelectedLLMConfig \| null`（変更なし） |
+| `getSelectedLLMConfig()` 戻り値 | `Promise<SelectedLLMConfig \| null>`（`null` が返る） |
+| `aiHandlers.ts` の null チェック | `if (!llmConfig)` で LLM未選択エラーを返す（既存実装） |
+| 暗黙 fallback | **廃止**。`setSelectedLLMConfig` 経由で明示的に設定が必要 |
+
+### 設計判断の根拠
+
+- 呼び出し元（`aiHandlers.ts`）に既に null チェックが存在していたため、`getSelectedLLMConfig()` 側の DEFAULT_CONFIG fallback は二重管理になっていた
+- LLM 未選択時はエラーを返してユーザーに選択を促す UX が正しい（`api-ipc-system-core.md` の「未選択時の挙動」に準拠）
+- DEFAULT_CONFIG の暗黙 fallback は設定画面での選択がスキップされる原因になっていた
+---
+
+## ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created）
+
+> 完了日: 2026-03-18（設計タスク、spec_created）
+
+### 概要
+
+ChatPanel を placeholder から real AI chat 経路へ接続するため、既存 `chatSlice` を拡張し ChatPanelStatus（8状態）、AccessCapability（4値）、ストリーミング関連ステート/アクションを追加する設計を確定した。新規 Slice は追加しない（P31/P48 対策として個別セレクタパターンを適用）。
+
+### chatSlice 拡張フィールド
+
+| State フィールド | 型 | 配置先 | 備考 |
+| --- | --- | --- | --- |
+| `chatPanelStatus` | `ChatPanelStatus` | chatSlice | 8状態の状態機械 |
+| `chatMessages` | `ChatMessage[]` | chatSlice | メッセージ一覧 |
+| `currentConversationId` | `string \| null` | chatSlice | 現在の会話ID |
+| `streamingContent` | `string` | chatSlice | 既存維持 |
+| `isStreaming` | `boolean` | chatSlice | 既存維持 |
+| `streamingError` | `{ code: string; message: string; retryable: boolean } \| null` | chatSlice | 既存維持 |
+
+### 型定義
+
+```typescript
+type ChatPanelStatus =
+  | "idle"
+  | "ready"
+  | "streaming"
+  | "cancelled"
+  | "completed"
+  | "error"
+  | "blocked"
+  | "handoff";
+
+type AccessCapability =
+  | "integratedRuntime"
+  | "terminalSurface"
+  | "both"
+  | "none";
+
+interface ChatMessage {
+  id: string;
+  role: "user" | "assistant" | "system";
+  content: string;
+  timestamp: Date;
+  conversationId: string;
+}
+```
+
+### 個別セレクタ定義（P31/P48 対策）
+
+| セレクタ名 | 戻り値型 | 用途 |
+| --- | --- | --- |
+| `useChatPanelStatus` | `ChatPanelStatus` | ChatPanel の現在の状態 |
+| `useResolvedCapability` | `AccessCapability` | runtime capability の解決結果 |
+| `useChatMessages` | `ChatMessage[]`（useShallow 適用 — P48） | メッセージ一覧 |
+| `useChatInput` | `string` | 入力テキスト |
+| `useSetChatInput` | `(input: string) => void` | 入力テキスト更新 |
+| `useSelectedProviderId` | `string \| null` | 選択中プロバイダID |
+| `useSelectedModelId` | `string \| null` | 選択中モデルID |
+| `useProviders` | `Provider[]`（useShallow 適用 — P48） | プロバイダ一覧 |
+| `useHandoffGuidance` | `HandoffGuidance \| null` | terminal handoff ガイダンス |
+| `useIsStreaming` | `boolean` | ストリーミング中フラグ |
+| `useSetChatPanelStatus` | `(status: ChatPanelStatus) => void` | 状態更新アクション |
+| `useResetChat` | `() => void` | チャットリセットアクション |
+
+### 状態遷移
+
+```
+[*] --> idle
+idle --> ready: capability ok (API key configured)
+idle --> blocked: no capability (API key missing)
+ready --> streaming: user sends message
+streaming --> completed: done signal
+streaming --> error: error signal
+streaming --> cancelled: user cancels
+completed --> ready: reset for next message
+cancelled --> ready: reset for next message
+error --> ready: user dismisses / retry
+blocked --> ready: API key configured
+ready --> handoff: terminal-handoff button clicked
+handoff --> ready: return from terminal
+```
+
+### 設計判断
+
+- 新規 Slice: **不要**。既存 `chatSlice` を拡張する方針とする
+- Store 統一: `useStreamingChat` 内の `useStore()` を `useAppStore()` に統一する
+- P62 対策: Provider/Model 未選択時は `blocked` 状態に遷移し、暗黙 fallback を行わない
+- silent fallback 禁止: capability 不足時は `HandoffBlock` + `ErrorGuidance` で明示的にユーザーに通知する
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 | ChatPanel の実 AI チャット配線（設計） | **spec_created**（2026-03-18） |
+| TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 | Main Chat/Settings AI runtime 同期 | **完了**（2026-03-17） |
 
 ---
+
+## 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created）
+
+TASK-SKILL-LIFECYCLE-08 では publish/distribution 領域の store 責務を設計済み（実装未着手）。
+
+### publishingSlice 境界
+
+| 状態 | 所有者 | 補足 |
+| --- | --- | --- |
+| `visibilityFilter` | `publishingSlice` | `"all" | SkillVisibility` で一覧フィルタを制御 |
+| `publishReadiness` | `publishingSlice` | `auto-approved` 等の公開判定結果を保持 |
+| `compatibilityResult` | `publishingSlice` | version 更新時の互換性評価結果を保持 |
+| `publishDialogState` | `publishingSlice` | register/check/confirm の3ステップ進行状態 |
+
+### state 不変条件
+
+- `visibilityFilter` の初期値は `"all"`。
+- `publishReadiness.status === "blocked"` のとき confirm アクションを禁止する。
+- `compatibilityResult.level === "breaking"` かつ major バンプなしは confirm 不可。
+
+### 実装移行の未タスク
+
+- `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
+- `UT-SKILL-LIFECYCLE-08-UI-IMPL`

@@ -2,13 +2,16 @@
 
 ## メタ情報
 
-| 項目     | 値                                     |
-| -------- | -------------------------------------- |
-| タスクID | TASK-IMP-SKILLCENTER-CREATE-ROUTE-001  |
-| 機能名   | skillcenter-create-route               |
-| Phase    | 8                                      |
-| 作成日   | 2026-03-17                             |
-| 依存     | Phase 7（カバレッジ確認 PASS）の成果物 |
+| 項目       | 値                                    |
+| ---------- | ------------------------------------- |
+| Phase      | 8                                     |
+| Phase名    | リファクタリング                      |
+| タスクID   | TASK-IMP-SKILLCENTER-CREATE-ROUTE-001 |
+| 前提Phase  | Phase 7（カバレッジ確認）             |
+| 後続Phase  | Phase 9（品質検証）                   |
+| ステータス | not_started                           |
+| 作成日     | 2026-03-17                            |
+| 機能名     | skillcenter-create-route              |
 
 ## 目的
 
@@ -16,11 +19,13 @@ Phase 5 で実装した CTA 関連コードの品質を改善する。機能変�
 
 ## 参照資料
 
-- `phase-2-design.md` — コンポーネント設計
-- `phase-5-implementation.md` — 実装成果物
-- `.claude/rules/02-code-quality.md` — コーディング規約
+| 参照資料         | パス                               | 用途               |
+| ---------------- | ---------------------------------- | ------------------ |
+| Phase 2 設計     | `phase-2-design.md`                | コンポーネント設計 |
+| Phase 5 実装     | `phase-5-implementation.md`        | 実装成果物         |
+| コード品質ルール | `.claude/rules/02-code-quality.md` | コーディング規約   |
 
-## 実行タスク
+## 実行手順
 
 ### Task 1: CTA スタイルの共通化検討
 
@@ -88,7 +93,9 @@ cd apps/desktop && pnpm vitest run \
 
 ## 成果物
 
-- `outputs/phase-8/refactoring-summary.md` — 実施した変更の一覧と判断理由
+| 成果物                 | パス                                     | 内容                         |
+| ---------------------- | ---------------------------------------- | ---------------------------- |
+| refactoring-summary.md | `outputs/phase-8/refactoring-summary.md` | 実施した変更の一覧と判断理由 |
 
 ## 完了条件
 
@@ -101,6 +108,6 @@ cd apps/desktop && pnpm vitest run \
 - [ ] `outputs/phase-8/refactoring-summary.md` が作成されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
-## 次Phase
+## 次のPhase
 
-Phase 9: 品質検証
+- [Phase 9（品質検証）](./phase-9-quality-assurance.md) に進む

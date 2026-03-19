@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-18 | 1.1.0 | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 教訓3件を追加（esbuild worktree不一致 P53派生、テスト数伝播 P37派生、P62 DEFAULT_CONFIG三層防御） |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
 
 ---
@@ -180,3 +181,45 @@
 3. screenshot plan / manual-test-result / metadata を同時更新して TC-ID と証跡を 1:1 にする。
 4. IPC 契約差分がある場合は handler・preload・renderer 呼び出しの 3 点を同時に修正する。
 5. `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `verify-all-specs` / `validate-phase-output` を連続実行して PASS を固定する。
+
+---
+
+## 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001
+
+### 苦戦箇所1: esbuild アーキテクチャ不一致による Phase 7/9/11 DEFERRED（P53 派生）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 |
+| 課題 | worktree 環境で `pnpm install --force` を実行せずに作業を開始したため、esbuild のネイティブバイナリが arm64/x64 で不一致となり、vitest および Electron が実行不可能になった。結果として Phase 7（カバレッジ確認）、Phase 9（品質検証）、Phase 11（手動テスト）が全て DEFERRED 判定となった |
+| 再発条件 | worktree を新規作成した後に `pnpm install` のみ実行し `--force` を省略した状態で、esbuild に依存するツール（vitest, electron-vite）を使用する |
+| 解決策 | worktree 作成時の標準手順に `pnpm install --force` を含める。具体的には: (1) `git worktree add` 実行後、(2) `cd` で worktree に移動、(3) `pnpm install --force` を実行してネイティブバイナリを現在のアーキテクチャに合わせてリビルド |
+| 関連Pitfall | P53（CLI 環境でのスクリーンショット取得制約）の派生。P53 は CLI 環境自体の制約だが、本件は worktree 固有のバイナリ不一致が原因 |
+| 標準ルール | worktree 新規作成後は `pnpm install --force` を必ず実行する。`--force` なしの install ではキャッシュされた古いバイナリが残る（P7 と同根） |
+
+### 苦戦箇所2: テスト数伝播エラー（P37 派生）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 |
+| 課題 | implementation-guide で Renderer 層テスト（31+7=38件）のみカウントし、Main ハンドラ（24件）+ IPC 統合（15件）テストを漏らした結果、7 ファイルに渡って「38件」を「77件」に修正する連鎖修正が発生した |
+| 再発条件 | Renderer 層のテストのみ集計し、Main Process 層・IPC 統合層のテストを集計対象から除外する |
+| 解決策 | Phase 4 完了時に全テストファイルの正確なカウントを取る。具体的には `grep -c "it\\\(" apps/desktop/src/**/*.test.ts` で全テストファイルを走査し、Renderer / Main / IPC 統合の各層を合算する。Phase 12 implementation-guide 記載時にも再集計を行い、Phase 4 の数値をそのまま流用しない |
+| 関連Pitfall | P37（ドキュメント数値の早期固定）の派生。P37 は Phase 4 想定値と Phase 5 実績値の乖離だが、本件は層別集計の欠落が原因 |
+
+### 苦戦箇所3: P62 DEFAULT_CONFIG fallback の発見と三層防御パターン確立
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 |
+| 課題 | `selectedModelId ?? "gpt-4o"` という暗黙 fallback が1箇所存在し、ユーザーが意図しない AI モデルでリクエスト送信されるリスクがあった。Settings で provider/model を未選択のまま WorkspaceChatPanel からメッセージを送信すると、DEFAULT_CONFIG の値で LLM API が呼ばれる |
+| 再発条件 | 新規チャット画面を追加する際に、provider/model の選択状態を検証せずに LLM API を呼び出す |
+| 解決策 | P62 三層防御パターンを確立: (1) UI `canSend` で provider/model 未選択時は送信ボタンを disabled にする、(2) Controller `sendMessage` で runtime 未設定を検出して早期リターンし GuidanceBlock の blocked variant を表示、(3) Main `handleStreamChat` で provider/model の空文字列バリデーション。3層全てを通過しないと LLM API 呼び出しに到達しない |
+| 関連Pitfall | P62（DEFAULT_CONFIG への暗黙 fallback）。本タスクで防御パターンを WorkspaceChatPanel に適用し、先行タスク TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 で確立したパターンを横展開した |
+| 再利用ルール | 新規チャット UI を追加する際は、必ず P62 三層防御（UI disabled / Controller guard / Main validation）を実装する。fallback は一切行わず、未選択時はエラー表示または設定画面への誘導を行う |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. worktree 作成直後に `pnpm install --force` を実行し、ネイティブバイナリの整合を確保する。
+2. Phase 4 完了時にプロジェクト全体の `grep -c "it(" *.test.ts` でテスト総数を確定し、以降のドキュメントではこの数値を使用する。
+3. チャット UI 実装時は P62 三層防御（UI canSend / Controller guard / Main validation）を設計段階で組み込み、DEFAULT_CONFIG fallback を排除する。

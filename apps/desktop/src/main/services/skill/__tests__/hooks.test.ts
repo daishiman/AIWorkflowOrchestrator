@@ -2,6 +2,19 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { BrowserWindow } from "electron";
 import { SkillExecutor } from "../SkillExecutor";
 
+// PermissionResolver モック（handlePermissionCheck が内部で使用）
+const mockPermissionResolver = {
+  waitForResponse: vi.fn(),
+  resolveRequest: vi.fn(),
+  cancelRequest: vi.fn(),
+  cancelAll: vi.fn(),
+  pendingCount: 0,
+};
+
+vi.mock("../PermissionResolver", () => ({
+  PermissionResolver: vi.fn(() => mockPermissionResolver),
+}));
+
 const mockPermissionStore = {
   isToolAllowed: vi.fn().mockReturnValue(false),
   allowTool: vi.fn(),
@@ -9,6 +22,7 @@ const mockPermissionStore = {
   getAllowedTools: vi.fn().mockReturnValue([]),
   getAllowedToolEntries: vi.fn().mockReturnValue([]),
   clearAll: vi.fn(),
+  revokeSessionEntries: vi.fn().mockReturnValue(0),
 };
 
 function createMockBrowserWindow(): BrowserWindow {
@@ -29,7 +43,8 @@ describe("SkillExecutor - Hooks", () => {
     vi.clearAllMocks();
     mockWindow = createMockBrowserWindow();
     mockSend = mockWindow.webContents.send as ReturnType<typeof vi.fn>;
-    mockPermissionStore.isToolAllowed.mockReturnValue(false);
+    // Permission チェックは自動承認（本テストは FR-001/FR-002/FR-003 のみを対象）
+    mockPermissionStore.isToolAllowed.mockReturnValue(true);
     executor = new SkillExecutor(mockWindow, mockPermissionStore);
   });
 
