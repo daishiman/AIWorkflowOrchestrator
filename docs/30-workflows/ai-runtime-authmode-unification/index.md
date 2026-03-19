@@ -109,7 +109,7 @@
 | 7    | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001              | `tasks/step-03-seq-task-05-chatpanel-real-chat-wiring`                                                                | ChatPanel の API runtime 統合と terminal fallback UX              | Task02 と Task06 Phase 2 後・直列 |
 | 8    | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001     | `tasks/step-03-par-task-07-workspace-chat-panel-runtime-alignment`                                                    | Workspace Chat Panel の streaming と terminal handoff             | Task02 と Task06 Phase 2 後・並列 |
 | 9    | TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 | `tasks/step-04-par-task-08-rag-embedding-extraction-runtime`                                                          | backend AI capability matrix と API runtime ルール                | Task01 Phase 3 後・並列           |
-| 10   | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001          | `tasks/step-04-par-task-09-slide-ai-runtime-alignment`                                                                | slide reverse-sync の API runtime 整流と manual fallback          | Task01/Task02 Phase 3 後・並列    |
+| 10   | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001          | `completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment`                                                      | slide reverse-sync の API runtime 整流と manual fallback          | Task01/Task02 Phase 3 後・並列    |
 
 ## タスク通称
 

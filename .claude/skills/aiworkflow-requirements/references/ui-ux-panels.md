@@ -117,7 +117,7 @@ TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で確立された ChatPanel の実チャッ
 ### 関連仕様
 
 - TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 Phase 1-12 仕様書: `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-seq-task-05-chatpanel-real-chat-wiring/`
-- 後続未タスク: `docs/30-workflows/unassigned-task/` (MINOR-1, MINOR-2)
+- 後続未タスク: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` (MINOR-1, MINOR-2)
 
 ---
 

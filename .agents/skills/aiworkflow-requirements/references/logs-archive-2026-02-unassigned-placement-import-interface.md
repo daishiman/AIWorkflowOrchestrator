@@ -11,7 +11,7 @@
 | 操作         | update-spec: 未実施タスク2件の配置是正、task-workflow参照同期、lessons-learned追記 |
 | 対象ファイル | references/task-workflow.md, references/lessons-learned.md, SKILL.md, LOGS.md |
 | 結果         | success |
-| 備考         | `completed-tasks/unassigned-task/` に誤配置されていた未実施2件（`task-vitest-tsconfig-paths-sync-automation.md`, `task-imp-module-resolution-ci-guard.md`）を `docs/30-workflows/unassigned-task/` へ移動。UT-FIX-SKILL-REMOVE-INTERFACE-001 の苦戦箇所に「worktree環境でStep 1-Aを先送りすると仕様同期漏れが再発する」教訓を追加 |
+| 備考         | `completed-tasks/unassigned-task/` に誤配置されていた未実施2件（`task-vitest-tsconfig-paths-sync-automation.md`, `task-imp-module-resolution-ci-guard.md`）を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ移動。UT-FIX-SKILL-REMOVE-INTERFACE-001 の苦戦箇所に「worktree環境でStep 1-Aを先送りすると仕様同期漏れが再発する」教訓を追加 |
 
 ### 更新した仕様書
 
@@ -82,8 +82,8 @@
 
 | タスクID | 内容 | 優先度 | 指示書パス |
 | -------- | ---- | ------ | ---------- |
-| UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 | skill:ハンドラIPCレスポンス形式統一 | 中 | `docs/30-workflows/unassigned-task/task-skill-ipc-response-consistency.md` |
-| UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 | skill:get-detail引数名ドリフト修正 | 低 | `docs/30-workflows/unassigned-task/task-skill-getdetail-naming-drift.md` |
+| UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 | skill:ハンドラIPCレスポンス形式統一 | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-skill-ipc-response-consistency.md` |
+| UT-FIX-SKILL-GETDETAIL-NAMING-DRIFT-001 | skill:get-detail引数名ドリフト修正 | 低 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-skill-getdetail-naming-drift.md` |
 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001 | skill:ハンドラP42準拠バリデーション統一 | 中 | `docs/30-workflows/completed-tasks/task-skill-validation-consistency.md` |
 
 ---
@@ -141,7 +141,7 @@
 | 操作         | update-spec: 未タスク参照パス是正、苦戦箇所追記 |
 | 対象ファイル | references/task-workflow.md, references/api-ipc-agent.md, references/lessons-learned.md |
 | 結果         | success |
-| 備考         | 未実施タスク参照を `docs/30-workflows/unassigned-task/` に統一。`lessons-learned.md` v1.17.0 に `skillId/skillName` 契約ドリフト、未タスク配置ドリフト、Vitest実行コンテキスト差異を追加 |
+| 備考         | 未実施タスク参照を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に統一。`lessons-learned.md` v1.17.0 に `skillId/skillName` 契約ドリフト、未タスク配置ドリフト、Vitest実行コンテキスト差異を追加 |
 
 ### 更新した仕様書
 

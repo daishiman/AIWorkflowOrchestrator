@@ -102,7 +102,7 @@ async removeSkill(skillName: string): Promise<RemoveResult> {
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **課題**   | 未実施タスク指示書が `docs/30-workflows/completed-tasks/unassigned-task/` に残り、`unassigned-task/` 参照と不整合になった                                   |
 | **原因**   | 既存の移管運用（完了済み未タスクのアーカイブ）と、未実施タスク配置ルールが混在していた                                                                      |
-| **解決策** | 未実施指示書を `docs/30-workflows/unassigned-task/` に補完し、`task-workflow.md` / `api-ipc-agent.md` の参照を統一。`verify-unassigned-links.js` で全件検証 |
+| **解決策** | 未実施指示書を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に補完し、`task-workflow.md` / `api-ipc-agent.md` の参照を統一。`verify-unassigned-links.js` で全件検証 |
 | **教訓**   | 「未実施」と「完了済み」をディレクトリ境界で分離し、参照修正と物理配置を同じターンで完了させる                                                              |
 
 **ディレクトリ構造の正しい配置**:
@@ -234,12 +234,12 @@ rg -n "skillId|skillName" .claude/skills/aiworkflow-requirements/references/ --t
 
 ```bash
 # 配置先の確認
-ls docs/30-workflows/unassigned-task/
+ls docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/
 # 検証スクリプト実行
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 ```
 
-- [ ] 未実施タスク指示書が `docs/30-workflows/unassigned-task/` にある
+- [ ] 未実施タスク指示書が `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` にある
 - [ ] `task-workflow.md` の参照パスが正しい
 - [ ] `verify-unassigned-links.js` が `ALL_LINKS_EXIST` を返す
 
@@ -304,10 +304,10 @@ pnpm --filter @repo/shared build && pnpm typecheck
 | タスクID                                   | タスク名                                              | 優先度 | 仕様書                                                                                                                                                                                |
 | ------------------------------------------ | ----------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ~~UT-FIX-SKILL-VALIDATION-P42-001~~        | ~~skillHandlers P42準拠バリデーション横展開~~         | ~~中~~ | **完了: 2026-02-24（UT-FIX-SKILL-VALIDATION-CONSISTENCY-001で実施）**                                                                                                                 |
-| UT-FIX-SKILL-IPC-ERROR-RESPONSE-001        | skillHandlers IPCバリデーションエラー応答パターン統一 | 中     | [`docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md`](../../../docs/30-workflows/unassigned-task/task-ipc-skill-error-response-unification.md)           |
+| UT-FIX-SKILL-IPC-ERROR-RESPONSE-001        | skillHandlers IPCバリデーションエラー応答パターン統一 | 中     | [`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ipc-skill-error-response-unification.md`](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ipc-skill-error-response-unification.md)           |
 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001       | Phase 11 Worktree環境手動テスト実行プロトコル策定     | 中     | [`docs/30-workflows/completed-tasks/task-imp-phase11-worktree-testing-protocol-001.md`](../../../docs/30-workflows/completed-tasks/task-imp-phase11-worktree-testing-protocol-001.md) |
 | UT-IMP-IPC-HANDLER-COVERAGE-GRANULAR-001   | IPCハンドラ粒度カバレッジ計測インフラ構築             | 中     | [`docs/30-workflows/completed-tasks/task-imp-ipc-handler-coverage-granular-001.md`](../../../docs/30-workflows/completed-tasks/task-imp-ipc-handler-coverage-granular-001.md)         |
-| UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 | マルチエージェントPhase依存順序ガード                 | 中     | [`docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md)     |
+| UT-IMP-MULTIAGENT-PHASE-ORDERING-GUARD-001 | マルチエージェントPhase依存順序ガード                 | 中     | [`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md`](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-multiagent-phase-ordering-guard-001.md)     |
 
 ---
 

@@ -262,7 +262,7 @@ TASK-UI-05B の4ビュー（3A SkillChainBuilder / 3B ScheduleManager / 3C Debug
 2. `.filter()` / `.map()` 派生 selector は `useShallow` 適用を先に固定する。
 3. Phase 11 を `TC-ID + 証跡` 形式へ整え、coverage validator を先に通す。
 4. Phase 12 は Step 1-A〜1-D を実行し、`LOGS/SKILL/task-workflow/topic-map` を同時同期する。
-5. 未タスクは `docs/30-workflows/unassigned-task/` にテンプレート準拠で作成し、台帳リンクまで同ターンで閉じる。
+5. 未タスクは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` にテンプレート準拠で作成し、台帳リンクまで同ターンで閉じる。
 
 ## TASK-10A-F: Store駆動ライフサイクルUI統合（selector migration / renderer direct IPC removal, 2026-03-07）
 

@@ -142,12 +142,12 @@
 #### 未タスク配置ディレクトリの誤り（TASK-FIX-12-1 2026-02-09）
 
 - **状況**: TASK-FIX-12-2 未タスク仕様書を作成した
-- **問題**: `docs/30-workflows/skill-import-agent-system/tasks/unassigned-task/` に配置したが、正しくは `docs/30-workflows/unassigned-task/` だった
+- **問題**: `docs/30-workflows/skill-import-agent-system/tasks/unassigned-task/` に配置したが、正しくは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` だった
 - **原因**:
   - task-workflow.md の「未タスク配置先」セクションを確認しなかった
   - 直感的に「関連タスクのディレクトリ配下」と誤認した
 - **教訓**:
-  - 未タスク仕様書は常に `docs/30-workflows/unassigned-task/` に配置する
+  - 未タスク仕様書は常に `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置する
   - 個別タスクディレクトリ配下には配置しない
   - task-workflow.md の残課題テーブルへの登録も必須
 - **発見日**: 2026-02-09（TASK-FIX-12-1-IPC-HARDCODE-FIX）

@@ -5,6 +5,61 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 slide-ai-runtime-alignment（2026-03-19）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 |
+| ステータス | **仕様書作成完了（`spec_created` / Phase 1-12 完了）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-19 |
+| 対象 | Slide / Modifier / Legacy Agent 経路の runtime/auth-mode alignment |
+| 成果物 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/` |
+
+#### 実施内容
+
+- slide runtime/auth-mode alignment の正本仕様を IPC / RuntimeResolver / UI / state / security へ同期した
+- Phase 11 は screenshot 5件を取得し、current UI と正本仕様の drift を visual audit として記録した
+- live preview は esbuild native binary mismatch で停止したため、current code 由来の static fallback capture を metadata 付きで保存した
+- `UT-SLIDE-IMPL-001` / `UT-SLIDE-UI-001` / `UT-SLIDE-P31-001` / `UT-SLIDE-HANDOFF-DUP-001` を formalize し、backlog へ登録した
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .../verify-all-specs.js --workflow ...step-04-par-task-09-slide-ai-runtime-alignment --json` | PASS（13/13, warnings 0） |
+| `node .../validate-phase-output.js ...step-04-par-task-09-slide-ai-runtime-alignment` | PASS |
+| `node apps/desktop/scripts/capture-slide-ai-runtime-alignment-phase11.mjs` | PASS（fallback screenshot 5件） |
+| `node .../validate-phase11-screenshot-coverage.js --workflow ...step-04-par-task-09-slide-ai-runtime-alignment` | PASS |
+| `node .../validate-phase12-implementation-guide.js --workflow ...step-04-par-task-09-slide-ai-runtime-alignment` | PASS |
+| `node .../verify-unassigned-links.js --source .../outputs/phase-12/unassigned-task-detection.md` | PASS |
+| `node .../audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（currentViolations=0） |
+| `diff -qr .claude/skills/{aiworkflow-requirements,task-specification-creator,skill-creator} .agents/skills/{aiworkflow-requirements,task-specification-creator,skill-creator}` | PASS |
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | 高 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
+| `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | 高 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-ui-001.md` |
+| `UT-SLIDE-P31-001` | `useSlideProject()` selector migration | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |
+| `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | 低 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| live preview が `esbuild` mismatch で停止し、current build の直接撮影ができない | worktree の native binary と preview 実行環境が不整合 | harness + static fallback に切り替え、`phase11-capture-metadata.json` と `manual-test-result.md` に理由を固定した |
+| repo-wide `verify-unassigned-links` と task-scope link 監査が混ざる | global コマンドだけで完了判定する | `--source outputs/phase-12/unassigned-task-detection.md` を current 判定に使い、repo baseline 6 件は別管理にした |
+| `spec_created` が計画記述のまま残りやすい | docs-heavy task で `.claude` 正本更新を後回しにする | system spec / lessons / backlog / skill / mirror parity を同ターンで実更新した |
+
+#### 同種課題の簡潔解決手順
+
+1. Phase 11 は live preview が不安定なら無理に続行せず、fallback capture と metadata を current workflow へ先に固定する。
+2. link 監査は `verify-unassigned-links --source .../unassigned-task-detection.md` を task 判定にし、repo-wide FAIL は baseline として分離する。
+3. `spec_created` でも `.claude` 正本、lessons、backlog、skill、mirror parity を同ターンで閉じる。
+
 ### タスク: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 skill-docs-runtime-integration（2026-03-16）
 
 | 項目 | 値 |
@@ -192,7 +247,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow で current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | 中 | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow で current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 
 ### タスク: TASK-SKILL-LIFECYCLE-01 スキルライフサイクル一次導線・画面責務基盤（2026-03-11）
 
@@ -223,7 +278,7 @@
 | legacy `skill-center` 値が残ると view 分岐・テスト・仕様書が二重化する | store / legacy button / shortcut のどこかが旧値を返したままになる | `App.tsx` で正規化 helper を必ず通し、仕様書・テスト・UI 表示は `skillCenter` を正本に統一した |
 | representative screenshot が shell 全景だけだと責務証跡として弱い | Global nav と main content が見えても、どの surface が何を担当するかが明文化されない | `SkillCenterView` に surface ownership board を追加し、Phase 11 は `data-testid="skill-lifecycle-surface-ownership"` を待って要素 capture した |
 | Phase 12 で workflow 台帳・本文・正本仕様の同期漏れが起きやすい | outputs だけ作って `artifacts.json` / `phase-*.md` / `task-workflow.md` を後回しにする | artifacts を標準スキーマへ寄せ、Phase 本文 1-12 を completed 化し、`.claude` 正本とあわせて同ターンで閉じた |
-| `unassigned-task-detection.md` を「0件」だけで終えると指定ディレクトリ全体が健全に見える | current task 由来の未タスクは 0 件だが、`docs/30-workflows/unassigned-task/` 全体には legacy baseline が残っている | `currentViolations=0` と `baselineViolations=133` を分離記録し、既存 backlog `task-imp-unassigned-task-format-normalization-001.md` / `task-imp-unassigned-task-legacy-normalization-001.md` / `task-imp-phase12-unassigned-baseline-remediation-002.md` を参照先へ固定した |
+| `unassigned-task-detection.md` を「0件」だけで終えると指定ディレクトリ全体が健全に見える | current task 由来の未タスクは 0 件だが、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 全体には legacy baseline が残っている | `currentViolations=0` と `baselineViolations=133` を分離記録し、既存 backlog `task-imp-unassigned-task-format-normalization-001.md` / `task-imp-unassigned-task-legacy-normalization-001.md` / `task-imp-phase12-unassigned-baseline-remediation-002.md` を参照先へ固定した |
 
 #### 同種課題の5分解決カード
 
@@ -439,4 +494,4 @@
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
-| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
+| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |

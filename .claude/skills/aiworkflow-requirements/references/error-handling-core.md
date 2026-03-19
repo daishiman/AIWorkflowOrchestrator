@@ -341,7 +341,7 @@ electron-storeなどの外部ストレージから取得したデータは型保
 
 | タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | preview/search 系の transport / parse / crash / no-match 分類を共通 error taxonomy として再利用可能にする | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | preview/search 系の transport / parse / crash / no-match 分類を共通 error taxonomy として再利用可能にする | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
 
 ---
 

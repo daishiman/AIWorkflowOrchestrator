@@ -1,0 +1,26 @@
+{
+  "taskId": "TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001",
+  "taskName": "Conversation DB 初期化堅牢化",
+  "createdAt": "2026-03-18",
+  "currentPhase": 13,
+  "phases": [
+    { "phase": 1, "name": "要件定義", "status": "completed" },
+    { "phase": 2, "name": "設計", "status": "completed" },
+    { "phase": 3, "name": "設計レビュー", "status": "completed" },
+    { "phase": 4, "name": "テスト作成", "status": "completed" },
+    { "phase": 5, "name": "実装", "status": "completed" },
+    { "phase": 6, "name": "テスト拡充", "status": "completed" },
+    { "phase": 7, "name": "カバレッジ確認", "status": "completed" },
+    { "phase": 8, "name": "リファクタリング", "status": "completed" },
+    { "phase": 9, "name": "品質検証", "status": "completed" },
+    { "phase": 10, "name": "最終レビュー", "status": "completed" },
+    { "phase": 11, "name": "手動テスト", "status": "completed" },
+    { "phase": 12, "name": "ドキュメント", "status": "completed" },
+    { "phase": 13, "name": "PR作成", "status": "pending" }
+  ],
+  "metadata": {
+    "taskType": "fix",
+    "priority": "HIGH",
+    "relatedTasks": ["TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION"]
+  }
+}

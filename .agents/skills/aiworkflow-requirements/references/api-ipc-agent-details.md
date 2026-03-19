@@ -100,7 +100,7 @@
 | --- | --- | --- |
 | IPCハンドラ実装と起動配線の分離 | `skillHandlers.share.ts` 実装だけではランタイム到達しない | `registerAllIpcHandlers` への登録と依存DIを同時適用し、登録系テストを追加 |
 | 型パス正本の混在 | `types/skill/<domain>.ts` 旧記述が仕様に残り契約確認を阻害 | `types/index.ts` + `skill-<domain>.ts` に統一し、仕様・監査期待値を同時更新 |
-| 未タスク台帳と参照の非同期 | UT-9F指示書の配置先差分で追跡困難になった | `docs/30-workflows/unassigned-task/` 正本へ統一し、`task-workflow` とレポートを同時更新 |
+| 未タスク台帳と参照の非同期 | UT-9F指示書の配置先差分で追跡困難になった | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 正本へ統一し、`task-workflow` とレポートを同時更新 |
 
 ### 同種課題の簡潔解決手順（4ステップ）
 

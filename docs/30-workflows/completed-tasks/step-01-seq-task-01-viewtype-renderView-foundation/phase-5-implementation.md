@@ -2,15 +2,15 @@
 
 ## メタ情報
 
-| 項目       | 内容                                                                                                                           |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                    |
-| Phase      | 5 - 実装                                                                                                                       |
-| 前 Phase   | Phase 4 - テスト作成（Red 状態確認済み）                                                                                       |
-| 次 Phase   | Phase 6 - テスト拡充                                                                                                           |
-| 依存成果物 | `phase-4-test-creation.md`（テストコード・モック構成）、`phase-2-design.md`（設計スニペット）                                  |
-| 成果物パス | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-5-implementation.md` |
-| ステータス | not_started                                                                                                                    |
+| 項目       | 内容                                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                                    |
+| Phase      | 5 - 実装                                                                                                                                       |
+| 前 Phase   | Phase 4 - テスト作成（Red 状態確認済み）                                                                                                       |
+| 次 Phase   | Phase 6 - テスト拡充                                                                                                                           |
+| 依存成果物 | `phase-4-test-creation.md`（テストコード・モック構成）、`phase-2-design.md`（設計スニペット）                                                  |
+| 成果物パス | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-5-implementation.md` |
+| ステータス | not_started                                                                                                                                    |
 
 ## 目的
 

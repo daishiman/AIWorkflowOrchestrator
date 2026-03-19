@@ -2,15 +2,15 @@
 
 ## メタ情報
 
-| 項目       | 内容                                                                                                                   |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                            |
-| Phase      | 2 - 設計                                                                                                               |
-| 前 Phase   | Phase 1 - 要件定義                                                                                                     |
-| 次 Phase   | Phase 3 - 設計レビュー                                                                                                 |
-| 依存成果物 | `phase-1-requirements.md`（調査結果）                                                                                  |
-| 成果物パス | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-2-design.md` |
-| ステータス | not_started                                                                                                            |
+| 項目       | 内容                                                                                                                                   |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                            |
+| Phase      | 2 - 設計                                                                                                                               |
+| 前 Phase   | Phase 1 - 要件定義                                                                                                                     |
+| 次 Phase   | Phase 3 - 設計レビュー                                                                                                                 |
+| 依存成果物 | `phase-1-requirements.md`（調査結果）                                                                                                  |
+| 成果物パス | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-2-design.md` |
+| ステータス | not_started                                                                                                                            |
 
 ## 目的
 
@@ -200,13 +200,13 @@ export interface SkillLifecycleJobGuide {
 
 ## 成果物
 
-| 成果物                                    | パス                                                                                                                   | 種別       |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------- |
-| 設計書（本ファイル）                      | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-2-design.md` | 設計書     |
-| ViewType 変更後の完全な型定義             | 本ファイル内に記録                                                                                                     | 設計成果物 |
-| renderView() 追加 case のコードスニペット | 本ファイル内に記録                                                                                                     | 設計成果物 |
-| SkillLifecycleJobGuide 型の変更後の定義   | 本ファイル内に記録                                                                                                     | 設計成果物 |
-| 変更影響範囲テーブル                      | 本ファイル内に記録                                                                                                     | 影響分析   |
+| 成果物                                    | パス                                                                                                                                   | 種別       |
+| ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| 設計書（本ファイル）                      | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-2-design.md` | 設計書     |
+| ViewType 変更後の完全な型定義             | 本ファイル内に記録                                                                                                                     | 設計成果物 |
+| renderView() 追加 case のコードスニペット | 本ファイル内に記録                                                                                                                     | 設計成果物 |
+| SkillLifecycleJobGuide 型の変更後の定義   | 本ファイル内に記録                                                                                                                     | 設計成果物 |
+| 変更影響範囲テーブル                      | 本ファイル内に記録                                                                                                                     | 影響分析   |
 
 ## 完了条件
 

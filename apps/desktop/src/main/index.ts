@@ -3,6 +3,13 @@ import { join } from "path";
 import { electronApp, optimizer, is } from "@electron-toolkit/utils";
 import { registerAllIpcHandlers, unregisterAllIpcHandlers } from "./ipc";
 import { setupCustomProtocol } from "./protocol";
+import {
+  initializeConversationDatabase,
+  getConversationDatabase,
+  closeConversationDatabase,
+  isConversationDatabaseInitialized,
+} from "./database/conversationDatabase";
+import type Database from "better-sqlite3";
 import { IPC_CHANNELS } from "../preload/channels";
 import { getSupabaseClient, createSecureStorage } from "./infrastructure";
 import { toAuthUser } from "@repo/shared/infrastructure/auth";
@@ -272,14 +279,26 @@ if (!gotSingleInstanceLock) {
 
     mainWindowRef = createWindow();
 
+    // DB 初期化（失敗時は null → フォールバックハンドラが登録される）
+    let conversationDb: Database.Database | null = null;
+    try {
+      conversationDb = initializeConversationDatabase();
+    } catch (error) {
+      console.error("[DB] Failed to initialize conversation database:", error);
+    }
+
     // Register IPC handlers
-    registerAllIpcHandlers(mainWindowRef);
+    registerAllIpcHandlers(mainWindowRef, conversationDb);
 
     app.on("activate", () => {
       if (BrowserWindow.getAllWindows().length === 0) {
         unregisterAllIpcHandlers();
         mainWindowRef = createWindow();
-        registerAllIpcHandlers(mainWindowRef);
+        // 既存 DB インスタンスを再利用（再初期化しない）
+        const existingDb = isConversationDatabaseInitialized()
+          ? getConversationDatabase()
+          : null;
+        registerAllIpcHandlers(mainWindowRef, existingDb);
       }
     });
   });
@@ -288,5 +307,9 @@ if (!gotSingleInstanceLock) {
     if (process.platform !== "darwin") {
       app.quit();
     }
+  });
+
+  app.on("will-quit", () => {
+    closeConversationDatabase();
   });
 }

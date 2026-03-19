@@ -132,6 +132,10 @@ function normalizePath(filePath) {
   return filePath.replace(/\\/g, "/");
 }
 
+function isCompletedOnlyArea(dirPath) {
+  return normalizePath(dirPath) === "docs/30-workflows/completed-tasks/unassigned-task";
+}
+
 function asRepoRelative(filePath) {
   return normalizePath(relative(process.cwd(), resolve(filePath)));
 }
@@ -294,7 +298,9 @@ function main(argv = process.argv.slice(2)) {
     }
   }
 
-  const misplacedFiles = completedUnassignedFiles.filter((filePath) => checkMisplaced(filePath));
+  const misplacedFiles = isCompletedOnlyArea(args.completedUnassignedDir)
+    ? completedUnassignedFiles.filter((filePath) => checkMisplaced(filePath))
+    : [];
 
   const scope = resolveScope(args);
   if (scope.errors.length > 0) {

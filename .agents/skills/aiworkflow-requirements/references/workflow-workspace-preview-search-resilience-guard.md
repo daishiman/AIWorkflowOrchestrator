@@ -110,7 +110,7 @@
 | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/workspace-preview-search-resilience-guard` | workflow 出力構造確認 | PASS（28項目） |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/workspace-preview-search-resilience-guard --json` | workflow 仕様整合 | PASS（13 / 13 phase） |
 | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | 未タスク参照整合 | PASS（220 / 220 / 0） |
-| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md` | follow-up 未タスクの current 監査 | PASS（current violations 0 / baseline 134） |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md` | follow-up 未タスクの current 監査 | PASS（current violations 0 / baseline 134） |
 | `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --target-file docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` | standalone completed spec の current 監査 | PASS（current violations 0 / baseline 134） |
 | `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements` | mirror sync 確認 | 差分なし |
 
@@ -120,7 +120,7 @@
 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 | `spec-update-summary` / `system-spec-sync-checklist` / `unassigned-task-detection` / `verification-report` の exact count と current/baseline bucket を横断比較し、Phase 12 follow-up の stale 値を機械検出する | [../../../docs/30-workflows/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md](../../../docs/30-workflows/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md) |
+| UT-IMP-PHASE12-EXACT-COUNT-CROSS-DOCUMENT-VALIDATOR-001 | `spec-update-summary` / `system-spec-sync-checklist` / `unassigned-task-detection` / `verification-report` の exact count と current/baseline bucket を横断比較し、Phase 12 follow-up の stale 値を機械検出する | [../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-exact-count-cross-document-validator-001.md) |
 
 ---
 

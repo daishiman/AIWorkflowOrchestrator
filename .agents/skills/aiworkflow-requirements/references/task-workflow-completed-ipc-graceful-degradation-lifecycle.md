@@ -138,10 +138,10 @@
 
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
-| UT-SETTINGS-APIKEY-001 | `Array.isArray` 防御の共通ユーティリティ化 | `docs/30-workflows/unassigned-task/task-imp-settings-ensure-array-utility-001.md` |
-| UT-SETTINGS-APIKEY-002 | Settings画面 ErrorBoundary 導入 | `docs/30-workflows/unassigned-task/task-imp-settings-error-boundary-guard-001.md` |
-| UT-SETTINGS-APIKEY-003 | ApiKeysSection E2E統合テスト追加 | `docs/30-workflows/unassigned-task/task-imp-settings-apikey-e2e-integration-001.md` |
-| UT-FIX-PHASE11-SCREENSHOT-AUTOMATION-001 | Phase 11 スクリーンショット自動取得基盤 | `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-automation-001.md` |
+| UT-SETTINGS-APIKEY-001 | `Array.isArray` 防御の共通ユーティリティ化 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-settings-ensure-array-utility-001.md` |
+| UT-SETTINGS-APIKEY-002 | Settings画面 ErrorBoundary 導入 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-settings-error-boundary-guard-001.md` |
+| UT-SETTINGS-APIKEY-003 | ApiKeysSection E2E統合テスト追加 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-settings-apikey-e2e-integration-001.md` |
+| UT-FIX-PHASE11-SCREENSHOT-AUTOMATION-001 | Phase 11 スクリーンショット自動取得基盤 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase11-screenshot-automation-001.md` |
 
 #### 2026-03-08 再確認（Phase 12仕様準拠監査）
 
@@ -358,11 +358,11 @@
 | タスクID                                           | 概要                                                 | 参照                                                                                        |
 | -------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------- |
 | ~~UT-IMP-PHASE12-WORKFLOW10-COMPLIANCE-FIX-001~~       | ~~Workflow10 の Phase 7/12 準拠不足是正~~                | `docs/30-workflows/completed-tasks/10-TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001/unassigned-task/task-imp-phase12-workflow10-compliance-fix-001.md` **再評価クローズ: 2026-03-08（workflow10 再監査完了）**       |
-| UT-IMP-PHASE12-WORKFLOW11-COMPLIANCE-FIX-001       | Workflow11 の Phase 1-11 構造不足と Phase 12不足是正 | `docs/30-workflows/unassigned-task/task-imp-phase12-workflow11-compliance-fix-001.md`       |
+| UT-IMP-PHASE12-WORKFLOW11-COMPLIANCE-FIX-001       | Workflow11 の Phase 1-11 構造不足と Phase 12不足是正 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-workflow11-compliance-fix-001.md`       |
 | UT-FIX-CANCEL-SKILL-CONCURRENCY-GUARD-001          | Workflow12 の `abortExecution` 連打時ガード追加      | `docs/30-workflows/completed-tasks/unassigned-task/task-fix-cancel-skill-concurrency-guard-001.md`          |
-| UT-IMP-AGENTSLICE-TEST-CREATESTORE-PATTERN-STANDARDIZATION-001 | agentSlice テスト createStore パターン標準化 | `docs/30-workflows/unassigned-task/task-imp-agentslice-test-createstore-pattern-standardization-001.md` |
-| UT-IMP-PHASE4-MONOREPO-TEST-DIRECTORY-GUARD-001    | Phase 4 テンプレートへのモノレポテスト実行ディレクトリガード追加 | `docs/30-workflows/unassigned-task/task-imp-phase4-monorepo-test-directory-guard-001.md`    |
-| UT-FIX-AGENTSLICE-EXISTING-TEST-ENV-DEPENDENCY-001 | agentSlice 既存テスト13ファイルの環境依存エラー修復   | `docs/30-workflows/unassigned-task/task-fix-agentslice-existing-test-env-dependency-001.md` |
+| UT-IMP-AGENTSLICE-TEST-CREATESTORE-PATTERN-STANDARDIZATION-001 | agentSlice テスト createStore パターン標準化 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-agentslice-test-createstore-pattern-standardization-001.md` |
+| UT-IMP-PHASE4-MONOREPO-TEST-DIRECTORY-GUARD-001    | Phase 4 テンプレートへのモノレポテスト実行ディレクトリガード追加 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase4-monorepo-test-directory-guard-001.md`    |
+| UT-FIX-AGENTSLICE-EXISTING-TEST-ENV-DEPENDENCY-001 | agentSlice 既存テスト13ファイルの環境依存エラー修復   | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-fix-agentslice-existing-test-env-dependency-001.md` |
 
 #### branch横断再確認（2026-03-08）
 
@@ -391,3 +391,27 @@
 | 検証ゲート | `validate-phase-output` PASS、`validate-phase11-screenshot-coverage` PASS、`validate-phase12-implementation-guide` PASS、対象テスト PASS（42 tests）                                                                                                                     |
 | 同期先3点  | `references/task-workflow.md` / `references/lessons-learned.md` / `references/arch-state-management.md`                                                                                                                                                                  |
 
+
+## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001
+
+- 完了日: 2026-03-19
+- 種別: persistence / electron-main / ipc robustness
+- 結果: completed
+
+### 実装要約
+
+- Conversation DB を module-level singleton として初期化する構成へ整理した。
+- Main Process で app.whenReady() 初期化、will-quit close、activate 再利用の lifecycle を確定した。
+- IPC handler registration に conversationDb を注入し、失敗時は DB_NOT_AVAILABLE を返す graceful degradation を維持した。
+
+### 今回の苦戦と再発防止
+
+- 初期化成功と handler registration 成功を同一視しない。
+- conversation:search を含め、全 conversation channels を横断で確認する。
+- graceful degradation は握りつぶしではなく、診断可能な返却値として設計する。
+
+### 派生未タスク
+
+- UT-CONV-DB-001: better-sqlite3 ABI rebuild 再発防止
+- UT-CONV-DB-002: Conversation DB schema versioning 導入
+- UT-CONV-DB-003: legacy conversation DB path migration

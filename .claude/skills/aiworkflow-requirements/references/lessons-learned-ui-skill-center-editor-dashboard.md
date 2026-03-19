@@ -39,7 +39,7 @@
 
 1. `verify-all-specs --workflow` と `validate-phase-output` を先に実行し、構造要件を確定する。
 2. 実装要点・未タスク・検証証跡を `task-workflow.md` に先行記録する。
-3. 未タスクは `docs/30-workflows/unassigned-task/` へ作成し、`--target-file` 監査で形式を確定する。
+3. 未タスクは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ作成し、`--target-file` 監査で形式を確定する。
 4. `verify-unassigned-links` と `audit --diff-from HEAD` でリンクと差分違反を確定する。
 5. 同一ターンで `lessons-learned.md` に苦戦箇所と再発条件を転記し、標準ルールを固定する。
 
@@ -133,7 +133,7 @@
 | ---------- | -------------------------------------------------------------------------------------------- |
 | **課題**   | `task-workflow.md` の未タスクリンクに実体ファイル欠落が1件あった                             |
 | **原因**   | 参照登録時の物理ファイル作成が漏れた                                                         |
-| **解決策** | `docs/30-workflows/unassigned-task/` に指示書を配置し、`verify-unassigned-links.js` で再検証 |
+| **解決策** | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に指示書を配置し、`verify-unassigned-links.js` で再検証 |
 | **教訓**   | 未タスク登録は「作成→配置→検証（ALL_LINKS_EXIST）」を同一ターンで完了する                    |
 
 ---
@@ -277,7 +277,7 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
-| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流 | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
+| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
 
 ## TASK-UI-04A-WORKSPACE-LAYOUT 実装教訓（2026-03-10）
 
@@ -372,5 +372,5 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js
 
 | 未タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、parse/transport 分離を共通ガードへ昇格し、次回類似タスクの初動を短縮する | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
 

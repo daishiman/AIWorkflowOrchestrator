@@ -33,7 +33,7 @@
 | ------------ | ---------------------------------------------------------- |
 | タスクID     | TASK-CI-FIX-001                                            |
 | 操作         | detect-unassigned-task（コードコメントスキャン）           |
-| 対象ファイル | 4件の未タスク指示書（docs/30-workflows/unassigned-task/）  |
+| 対象ファイル | 4件の未タスク指示書（docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/）  |
 | 結果         | success                                                    |
 | 備考         | 52件のTODOコメントから既存189件と重複しない4件を検出・作成 |
 
@@ -64,7 +64,7 @@
 | ------------ | ----------------------------------------------------------------------- |
 | タスクID     | TASK-CI-FIX-001                                                         |
 | 操作         | optimize-unassigned-task                                                |
-| 対象ファイル | 3件の未タスク指示書（docs/30-workflows/unassigned-task/）               |
+| 対象ファイル | 3件の未タスク指示書（docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/）               |
 | 結果         | success                                                                 |
 | 備考         | unassigned-task-template.md 9セクション完全準拠化（Section 4/6/7 追加） |
 
@@ -89,7 +89,7 @@
 | ------------ | ----------------------------------------------------------------- |
 | タスクID     | TASK-CI-FIX-001                                                   |
 | 操作         | create-unassigned-task                                            |
-| 対象ファイル | 4件の未タスク指示書（docs/30-workflows/unassigned-task/）         |
+| 対象ファイル | 4件の未タスク指示書（docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/）         |
 | 結果         | success                                                           |
 | 備考         | Phase 12 Task 4で検出された5件のうち4件を指示書化（U2は解決済み） |
 
@@ -290,7 +290,7 @@
 | ------------ | ------------------------------------------ |
 | タスクID     | TASK-6-1                                   |
 | 操作         | create-unassigned-task                     |
-| 対象ファイル | docs/30-workflows/unassigned-task/         |
+| 対象ファイル | docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/         |
 | 結果         | success                                    |
 | 備考         | SkillSlice統合手動テスト未タスク仕様書作成 |
 

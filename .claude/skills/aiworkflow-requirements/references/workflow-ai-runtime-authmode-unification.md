@@ -31,8 +31,46 @@
 - `step-03-par-task-06-main-chat-settings-runtime-sync` を再監査し、Phase 11 スクリーンショットを実画像へ更新（`phase11-capture-metadata.json`）。
 - `AI_CHECK_CONNECTION` は「廃止完了」ではなく **legacy 互換残置** と判定し、primary health 経路を `llm:check-health` に固定。
 - `llm:check-health` 契約を実装準拠（`status: connected/disconnected/error`, `latency`, `checkedAt: Date`）へ同期。
-- Task06 未タスク `UT-TASK06-001..004` を `docs/30-workflows/unassigned-task/` へ formalize し、backlog へ登録。
+- Task06 未タスク `UT-TASK06-001..004` を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ formalize し、backlog へ登録。
 - Phase 11 で `selector/prompt` と `terminal launcher` が PARTIAL 判定となったため、Task06 の follow-up 管理へ移管。
+
+## Step-04 Task09 再監査追補（2026-03-19）
+
+- `step-04-par-task-09-slide-ai-runtime-alignment` を再監査し、Phase 11 screenshot 5件を current workflow 配下へ取得した。
+- live preview は esbuild native binary mismatch により停止したため、`phase11-capture-metadata.json` に fallback 理由を固定した。
+- task 09 の primary target は **workflow self を含む10ファイル** (`workflow-ai-runtime-authmode-unification.md` / `api-ipc-system-core.md` / `interfaces-agent-sdk-skill-advanced.md` / `arch-electron-services-details-part2.md` / `ui-ux-feature-components-details.md` / `arch-state-management-advanced.md` / `security-electron-ipc-core.md` / `task-workflow-completed.md` / `task-workflow-backlog.md` / `lessons-learned-ipc-preload-runtime.md`) とした。
+- current code drift として `registerSlideIpcHandlers()` 未接続、legacy channel 名残存、`agent-client.ts` の direct SDK path、`modifier-skill.ts` 残存、SlideWorkspace UI 4領域未反映を記録した。
+- follow-up 未タスク `UT-SLIDE-IMPL-001` / `UT-SLIDE-UI-001` / `UT-SLIDE-P31-001` / `UT-SLIDE-HANDOFF-DUP-001` を formalize した。
+
+### task 09 再監査結果サマリー（2026-03-19）
+
+| 項目 | 結果 |
+| --- | --- |
+| `verify-all-specs` | PASS（13/13, warnings 0） |
+| `validate-phase-output` | PASS |
+| `validate-phase11-screenshot-coverage` | PASS |
+| `validate-phase12-implementation-guide` | PASS |
+| `verify-unassigned-links --source outputs/phase-12/unassigned-task-detection.md` | PASS |
+| `audit-unassigned-tasks --diff-from HEAD` | PASS（currentViolations=0） |
+| 画面判定 | `1 PASS / 4 PARTIAL` |
+| repo-wide `verify-unassigned-links` | task 09 外の既存 missing link 6 件で FAIL（baseline 管理） |
+
+### task 09 で今回反映した内容
+
+| 観点 | 反映内容 |
+| --- | --- |
+| system spec | IPC / runtime / UI / state / security / backlog / lessons の 10 正本へ task 09 実態を同期 |
+| 画面検証 | current workflow 配下へ screenshot 5件、`manual-test-result.md`、`phase11-capture-metadata.json` を固定 |
+| 未タスク | 実装・UI・P31・handoff 重複の 4 件を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ formalize |
+| skill 更新 | `task-specification-creator` / `skill-creator` に Phase 12 再監査の実更新ルールを反映 |
+
+### task 09 の苦戦箇所と簡潔解決
+
+| 苦戦箇所 | 再発条件 | 簡潔解決 |
+| --- | --- | --- |
+| live preview が `esbuild` mismatch で起動しない | worktree の native binary が current arch と不整合 | harness + static review board に切り替え、metadata と `manual-test-result.md` に failure reason を固定する |
+| repo-wide link 監査と task-scope 監査が混ざる | global `verify-unassigned-links.js` をそのまま完了判定へ使う | `--source outputs/phase-12/unassigned-task-detection.md` を task 正本にし、global 失敗は baseline として分離する |
+| `spec_created` が計画記述で止まりやすい | docs-heavy task で `.claude` 正本更新を後回しにする | system spec / lessons / backlog / skill / mirror parity を同ターンで閉じる |
 
 ---
 
@@ -60,7 +98,8 @@
 | index 導線 | `indexes/resource-map.md`, `indexes/quick-reference.md`, `indexes/topic-map.md`, `indexes/keywords.json` |
 | 旧名互換台帳 | `references/legacy-ordinal-family-register.md` |
 | 運用ログ | `LOGS.md` |
-| follow-up 未タスク | `docs/30-workflows/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` |
+| follow-up 未タスク | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` |
+| Task09 設計成果物 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/` |
 | mirror root | canonical=`.claude/skills/aiworkflow-requirements/` / mirror=`.agents/skills/aiworkflow-requirements/` |
 
 ---
@@ -75,9 +114,24 @@
 | Phase 12 同期計画 | `docs/30-workflows/TASK-FIX-SKILL-DOCS-SPEC-FOUNDATION/task-05-phase-1-3-source-investigation-report.md` | 仕様書別 SubAgent 分担（調査レポート参照） |
 | Phase 12 フィードバック | `docs/30-workflows/TASK-FIX-SKILL-DOCS-SPEC-FOUNDATION/task-05-phase-1-3-source-investigation-report.md` | 再利用パターンの抽出（調査レポート参照） |
 | 画面再取得スクリプト | `apps/desktop/scripts/capture-ai-runtime-authmode-review-board.mjs` | `TC-11-00` 再取得の実行実体 |
-| follow-up 未タスク | `docs/30-workflows/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` | 契約テスト/回帰テスト責務分離の継続改善 |
+| follow-up 未タスク | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` | 契約テスト/回帰テスト責務分離の継続改善 |
 | runtime routing closure 成果物 | `docs/30-workflows/completed-tasks/runtime-routing-integration-closure/outputs/` | Phase 1-12 の全成果物（Task03 runtime routing 統合） |
 | RuntimeResolver 共通サービス | `apps/desktop/src/main/services/runtime/RuntimeResolver.ts` | Skill/Agent/ChatEdit 共通の runtime 判定 |
+
+### task 09 artifact inventory（2026-03-19）
+
+| 種別 | ファイル | 用途 |
+| --- | --- | --- |
+| Phase 11 plan | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshot-plan.json` | TC-11-01..05 と fallback route 定義 |
+| Phase 11 metadata | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/phase11-capture-metadata.json` | fallback 理由と capture 時刻の正本 |
+| Phase 11 screenshot | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/` | SlideWorkspace current UI の実画像証跡 |
+| Phase 11 result | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/manual-test-result.md` | capture method / Apple review / PASS-PARTIAL 判定の正本 |
+| workflow 成果物 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/` | Phase 1-12 の spec_created 成果物一式 |
+| Phase 12 summary | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-12/system-spec-update-summary.md` | Step 1-A〜1-G / Step 2 の実績 |
+| Phase 12 changelog | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-12/documentation-changelog.md` | 再監査の時系列記録 |
+| Phase 12 compliance | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-12/phase12-task-spec-compliance-check.md` | validator / parity / artifacts sync の root evidence |
+| Phase 12 unassigned | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-12/unassigned-task-detection.md` | 4件 formalize の正本 |
+| follow-up 未タスク | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` ほか 4 件 | 実装収束と UI / P31 / handoff 重複の formalized backlog |
 
 ---
 
@@ -131,7 +185,20 @@
 | step-03-par-task-07-workspace-chat-panel-runtime-alignment | foundation 契約 + settings review 参照 |
 | step-03-seq-task-05-chatpanel-real-chat-wiring | foundation 契約 + settings review 参照 |
 | step-04-par-task-08-rag-embedding-extraction-runtime | foundation 契約 + settings review 参照 |
-| step-04-par-task-09-slide-ai-runtime-alignment | foundation 契約 + settings review 参照 |
+| step-04-par-task-09-slide-ai-runtime-alignment | foundation 契約 + settings review 参照 **(TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 で完了: 2026-03-19)** |
+
+### task 09 の primary target（2026-03-19）
+
+| concern | primary target |
+| --- | --- |
+| workflow 正本 | `references/workflow-ai-runtime-authmode-unification.md` |
+| IPC canonical | `references/api-ipc-system-core.md` |
+| runtime / modifier 境界 | `references/interfaces-agent-sdk-skill-advanced.md`, `references/arch-electron-services-details-part2.md` |
+| UI canonical | `references/ui-ux-feature-components-details.md` |
+| state canonical | `references/arch-state-management-advanced.md` |
+| security canonical | `references/security-electron-ipc-core.md` |
+| ledger / backlog | `references/task-workflow-completed.md`, `references/task-workflow-backlog.md` |
+| lessons | `references/lessons-learned-ipc-preload-runtime.md` |
 
 ---
 
@@ -185,6 +252,8 @@
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-19 | 1.0.10 | Step-04 Task09 の再監査追補を拡張。validator 実値、Phase 12 root evidence、task09 固有の苦戦箇所と簡潔解決、artifact inventory 補完を反映 |
+| 2026-03-19 | 1.0.9 | Step-04 Task09 の再監査追補。slide primary target 再定義、Phase 11 screenshot 5件と fallback metadata、current code drift、UT-SLIDE 4件 formalize を反映 |
 | 2026-03-17 | 1.0.8 | Step-03 Task06 の再監査結果を追補。Phase 11 実画像証跡（ハーネス）への更新、`AI_CHECK_CONNECTION` legacy 方針明確化、`llm:check-health` 実装契約同期、UT-TASK06-001..004 formalize を反映 |
 | 2026-03-15 | 1.0.7 | Step-02 Task03 (skill-agent-runtime-routing) を UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 で完了同期。`RuntimeResolver` 共通化、`TerminalHandoffCard`、`handoffGuidance` store 統合を反映。`arch-electron-services-details.md` に RuntimeResolver サービス詳細セクションを追加 |
 | 2026-03-14 | 1.0.6 | Phase 12 再確認を追補。`verify-unassigned-links=223/223` へ更新し、再参照未タスク `task-fix-worktree-native-binary-guard-001.md` の 9見出し是正と `target-file` 監査 PASS（current=0）を記録 |
