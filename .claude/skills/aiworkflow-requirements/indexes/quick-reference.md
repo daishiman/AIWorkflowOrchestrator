@@ -25,24 +25,22 @@
 | RAG検索結果        | `SearchResult`                | interfaces-rag-search.md   |
 | エラー             | `AppError`, `ValidationError` | error-handling.md          |
 | CTA制御            | `CTAVisibility`, `CTAState`   | workflow-skill-lifecycle-created-skill-usage-journey.md |
+| ViewType拡張       | `ViewType` (`skillAnalysis` / `skillCreate`) | ui-ux-navigation.md |
 | 権限フォールバック | `AbortReason`, `PermissionFlowContext`, `PermissionFlowResult` | interfaces-agent-sdk-executor-core.md |
 | 権限リトライ上限   | `PERMISSION_MAX_RETRIES`      | interfaces-agent-sdk-executor-core.md |
 | SafetyGate評価     | `SafetyGatePort`, `DefaultSafetyGate`, `evaluateSafety` | api-ipc-agent-safety.md, security-skill-execution.md |
 | Permission Fallback Hook | `processPermissionFallback`, `revokeSessionEntries` | interfaces-agent-sdk-executor-details.md |
-| PreToolUse Hook統合 | `handlePermissionCheck`, `sendPermissionRequestWithTimeout`, `PermissionTimeoutError` | interfaces-agent-sdk-executor-core.md |
-| タイムアウトパターン | S32: `Promise.race` + settled フラグ + `clearTimeout` | architecture-implementation-patterns-reference-ipc-fallback-validation.md |
-
----
-
-## Skill Center CTA ルーティング（TASK-SKILL-LIFECYCLE-02）
-
-| パターン | 実装 | ファイル |
-|----------|------|---------|
-| データ駆動CTA | `SKILL_LIFECYCLE_JOB_GUIDES` の `ctaLabel` + `onAction` で自動生成 | skillLifecycleJourney.ts |
-| ヘッダーCTA | 「+ 新規作成」→ `navigateToSkillCreate()` | SkillCenterView/index.tsx |
-| JourneyPanel CTA | 3ジョブ別CTA（create/use/improve） | SkillCenterView/index.tsx |
-| ナビゲーション関数 | `navigateToSkillCreate` / `navigateToWorkspace` / `navigateToSkillAnalysis` | useSkillCenter.ts |
-| P31対策 | `useAppStore((s) => s.setCurrentView)` 個別セレクタ | useSkillCenter.ts |
+| スキル公開レベル   | `SkillVisibility`             | interfaces-agent-sdk-skill.md |
+| 公開メタデータ     | `SkillPublishingMetadata`     | interfaces-agent-sdk-skill.md |
+| 互換性チェック結果 | `CompatibilityCheckResult`    | interfaces-agent-sdk-skill.md |
+| 公開準備状態       | `PublishReadiness`            | interfaces-agent-sdk-skill.md |
+| スキルレジストリ   | `SkillRegistryService`        | interfaces-agent-sdk-skill.md |
+| スキル配布         | `SkillDistributionService`    | interfaces-agent-sdk-skill.md |
+| LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
+| LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
+| ChatPanel状態 | `ChatPanelStatus` (idle/ready/streaming/cancelled/completed/error/blocked/handoff) | arch-state-management-core.md |
+| ChatPanel能力 | `AccessCapability` (integratedRuntime/terminalSurface/both/none) | ui-ux-feature-components-core.md |
+| ストリーミングChat | `useStreamingChat` (state+actions hook) | interfaces-llm.md |
 
 ---
 
@@ -69,6 +67,22 @@
 | `skill:execute`        | スキル実行     |
 | `skill:permission`     | 権限確認       |
 
+### スキル公開・配布
+
+| チャンネル                   | 用途           |
+| ---------------------------- | -------------- |
+| `skill:publishing:register`  | スキル登録     |
+| `skill:publishing:update`    | メタデータ更新 |
+| `skill:publishing:check-compatibility` | 互換性チェック |
+| `skill:publishing:check-readiness` | 公開準備確認 |
+| `skill:publishing:publish`   | スキル公開     |
+| `skill:publishing:unpublish` | スキル非公開化 |
+| `skill:publishing:get-status` | 公開状態取得  |
+| `skill:distribution:import`  | スキルインポート |
+| `skill:distribution:export`  | スキルエクスポート |
+| `skill:distribution:fork`    | スキルフォーク |
+| `skill:distribution:share`   | 共有リンク生成 |
+
 ### チャット
 
 | チャンネル       | 用途           |
@@ -76,6 +90,17 @@
 | `chat:send`      | メッセージ送信 |
 | `chat:stream`    | ストリーミング |
 | `conversation:*` | 会話履歴管理   |
+| `llm:stream-chat` | ChatPanel ストリーミング開始 |
+| `llm:stream-chunk` | ストリーミングチャンク受信（Main→Renderer） |
+| `llm:stream-done` | ストリーミング完了通知 |
+| `llm:stream-error` | ストリーミングエラー通知 |
+| `llm:cancel-stream` | ストリーミングキャンセル |
+| `llm:check-health` | LLMヘルスチェック（primary） |
+| `llm:set-selected-config` | Renderer→Main 選択同期 |
+| `conversation:create` | 会話セッション作成 |
+| `conversation:addMessage` | メッセージ追加 |
+| `auth-key:exists` | APIキー存在確認（blocked→ready遷移） |
+| `AI_CHECK_CONNECTION` | legacy接続確認（新規利用禁止） |
 
 **詳細**: api-endpoints.md L126-736
 
@@ -196,8 +221,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
-| 2026-03-18 | TASK-SKILL-LIFECYCLE-02: Skill Center CTA ルーティングセクションを追加（データ駆動CTA/ヘッダーCTA/JourneyPanel CTA/ナビゲーション関数/P31対策） |
-| 2026-03-17 | UT-06-005-A: `handlePermissionCheck` / `sendPermissionRequestWithTimeout` / `PermissionTimeoutError` を型定義クイックアクセスに追加。S32 タイムアウトパターン参照を登録 |
+| 2026-03-18 | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001: ChatPanelStatus/AccessCapability/useStreamingChat 型定義と llm:stream-chat/stream-chunk/stream-done/stream-error/cancel-stream + conversation:create/addMessage + auth-key:exists 10IPCチャンネルを追加 |
 | 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |
 | 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:*/skill:distribution:* 11チャンネルを追加 |
 | 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加 |

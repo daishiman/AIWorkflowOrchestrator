@@ -49,129 +49,39 @@ grep -rn "MINOR\|軽微\|指摘" outputs/phase-3/ outputs/phase-10/
 
 ### 未タスク監査（current/baseline 分離）
 
-`audit-unassigned-tasks.js` は **対象監査（current）** と **全体監査（baseline）** を分離して扱う。
+`audit-unassigned-tasks.js` は current（今回差分）と baseline（全体）を分離して扱う。
 
-```bash
-# 1) 対象未タスクの今回差分監査（推奨）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
-  --json \
-  --diff-from HEAD \
-  --target-file docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md
+| モード | コマンド例 | fail条件 | 用途 |
+| --- | --- | --- | --- |
+| 対象差分（推奨） | `audit --json --diff-from HEAD --target-file <path>` | `currentViolations.total > 0` | 対象未タスクの今回差分判定 |
+| workflow差分 | `audit --json --diff-from HEAD` | `currentViolations.total > 0` | 今回タスク全体の合否判定 |
+| 対象のみ | `audit --json --target-file <path>` | 参考値 | repo全体の既存違反がcurrent側へ寄る場合あり |
+| 全体監査 | `audit --json` | 全体違反1件以上 | baseline監視 |
 
-# 1-b) standalone 完了指示書の current 監査
-node .agents/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
-  --json \
-  --target-file docs/30-workflows/completed-tasks/task-imp-unassigned-audit-scope-control-001.md
+`--target-file` は `unassigned-task/` / `completed-tasks/<workflow>/unassigned-task/` / `completed-tasks/*.md` のいずれかを指定可能。`verify-unassigned-links.js` は `--source task-workflow.md` で split 後 sibling も走査する。`outputs/phase-12/*.md` の監査は `--diff-from HEAD` で実施する。
 
-# 2) 差分監査（workflow全体の current 判定）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
-  --json \
-  --diff-from HEAD
+### legacy baseline の扱い
 
-# 3) 全体監査（資産健全性監視）
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json
-```
+- `currentViolations=0` は今回差分が適切であることのみ示す（全体正規化済みではない）
+- `baselineViolations>0` の場合: 「今回差分は合格」「legacy負債は継続」の両方を明記
+- 報告は3項目に分離: (1) 今回タスク由来の配置 (2) テンプレート準拠 (3) 全体legacy負債
 
-> 重要: `--target-file` は root `docs/30-workflows/unassigned-task/`、actual parent `docs/30-workflows/completed-tasks/<workflow>/unassigned-task/`、standalone `docs/30-workflows/completed-tasks/*.md` のいずれかを指定可能。  
-`verify-unassigned-links.js` は親 `task-workflow.md` を `--source` に渡した場合、
-split 後の sibling `task-workflow*.md` もまとめて走査する前提で使う。
-
-```bash
-node .agents/skills/task-specification-creator/scripts/verify-unassigned-links.js \
-  --source .agents/skills/aiworkflow-requirements/references/task-workflow.md
-```
-
-> 重要: `--target-file` は **`docs/30-workflows/unassigned-task/` 配下の未タスク指示書のみ** 指定可能。  
-> `outputs/phase-12/*.md` など成果物ファイルの監査は `--diff-from HEAD` で実施する。
-> root `unassigned-task/` の合否判定は `--diff-from HEAD --target-file` を優先する。移動直後の untracked completed file は `--diff-from HEAD` に乗らないため、standalone completed spec の current 監査は `--target-file` を正本にする。
-
-判定ルール:
-
-| モード | fail条件 | 用途 |
-| --- | --- | --- |
-| `--diff-from HEAD --target-file` | `currentViolations.total > 0` | 対象未タスク指示書の今回差分判定 |
-| `--diff-from HEAD` | `currentViolations.total > 0` | 今回タスク全体の合否判定 |
-| `--target-file` のみ | 参考値 | repo 全体の既存違反が current 側へ寄る場合があるため合否には使わない |
-| scope指定なし `--json` | 全体違反（format/naming/misplaced）が1件以上 | baseline監視 |
-
-### legacy baseline の扱い（重要）
-
-`currentViolations=0` は **今回差分が適切** であることを示すだけで、`docs/30-workflows/unassigned-task/` 全体が完全に正規化済みという意味ではない。
-
-- `currentViolations=0` かつ `baselineViolations>0` の場合:
-  - 検出レポートには「今回差分は合格」「legacy 負債は継続」の両方を明記する
-  - TASK 由来の open backlog がテンプレート準拠で配置済みかどうかは個別に書く
-  - baseline 負債に既存の改善未タスクがある場合は、その参照をレポートへ記載する
-  - baseline 負債を feature の不具合として扱わない
-- 「指定ディレクトリに配置できているか」の確認では、少なくとも以下を分離して報告する:
-  1. 今回タスク由来の未タスク指示書が指定ディレクトリに存在するか
-  2. その指示書がテンプレート準拠か
-  3. ディレクトリ全体に legacy 負債が残っているか
-
-推奨の記述例:
-
-```md
-- 今回タスク由来の新規未タスク: 0件
-- `docs/30-workflows/unassigned-task/` への配置要否: 追加作成なし
-- `verify-unassigned-links`: 213/213（missing=0）
-- `audit-unassigned-tasks --json --diff-from HEAD`: currentViolations=0 / baselineViolations=133
-- baseline backlog（継続監視）:
-  - `docs/30-workflows/unassigned-task/task-imp-unassigned-task-format-normalization-001.md`
-  - `docs/30-workflows/unassigned-task/task-imp-unassigned-task-legacy-normalization-001.md`
-```
-
-> 重要: 0件報告でも、baseline backlog を隠す表現にしてはいけない。`今回差分` と `ディレクトリ全体` は別の関心ごととして記録する。
-
-### 指定ディレクトリ配置チェック（報告テンプレート）
-
-ユーザーから「未タスクが指定ディレクトリへ配置できているか」を再確認依頼された場合は、以下3行をそのまま埋めて記録する。
+### 指定ディレクトリ配置チェック
 
 | 項目 | 記録例 |
 | --- | --- |
-| 今回差分の配置可否 | `docs/30-workflows/unassigned-task/` 配下に新規/更新未タスク `N` 件（または `0` 件） |
-| 今回差分の品質可否 | `audit --json --diff-from HEAD` の `currentViolations.total = X` |
-| 全体legacy状況 | `audit --json` の `baselineViolations.total = Y`（既存改善タスクID: ...） |
+| 今回差分の配置可否 | `unassigned-task/` 配下に新規/更新未タスク `N` 件 |
+| 今回差分の品質可否 | `audit --diff-from HEAD` の `currentViolations.total = X` |
+| 全体legacy状況 | `audit --json` の `baselineViolations.total = Y` |
 
-> 重要: `X=0` でも `Y>0` はあり得る。`Y` は今回タスクの不合格理由にしない。
-
-workflow ローカル配置ドリフト（`*/tasks/unassigned-task/`）を避けるため、以下の preflight を推奨する。
-
+workflow ローカル配置ドリフト防止:
 ```bash
-# root canonical 以外に未タスクを置いていないか確認
 find docs/30-workflows -path "*/tasks/unassigned-task/*.md" -print
-
-# 参照が workflow ローカル path を向いていないか確認
-rg -n "tasks/unassigned-task/" \
-  docs/30-workflows \
-  .claude/skills/aiworkflow-requirements/references
 ```
-
-> 重要: 上記で検出された場合は、`docs/30-workflows/unassigned-task/` へ再配置し、同ターンで参照リンクを更新する。
 
 ### 既存 follow-up 未タスクの current contract 再同期
 
-Phase 12 の再監査で「新規未タスク 0 件」と判定しても、既存 follow-up 未タスクを参照・流用する場合は、本文が **最新の system spec / current implementation** を向いていることを確認する。
-
-| チェック箇所 | 確認内容 |
-| --- | --- |
-| `2.2 最終ゴール` | 最新 contract の state key / callback / handoff を誤記していないか |
-| `3.1 前提条件` | 現行の責務分離（例: force-open local state と completion 時のみ persist save）が反映されているか |
-| `3.5 実装課題と解決策` | 親タスクの苦戦箇所が current implementation 前提で継承されているか |
-| `6. 検証方法` | 検証手順が最新 contract に沿っているか |
-
-確認コマンド例:
-
-```bash
-rg -n "completed=false|persist reset|old key name" docs/30-workflows/unassigned-task/task-*.md
-
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
-  --json \
-  --diff-from HEAD \
-  --target-file docs/30-workflows/unassigned-task/<task-file>.md
-```
-
-> 重要: 既存 follow-up に旧契約が残っていた場合、配置確認だけで済ませず **同ターンで本文を修正** する。  
-> `current task 由来の新規未タスク 0 件` と `既存 follow-up 本文の是正` は両立する。
+既存 follow-up を参照・流用する場合は、本文が最新の system spec / current implementation を向いていることを確認する。チェック対象: `2.2 最終ゴール`（contract key/callback）、`3.1 前提条件`（責務分離）、`3.5 実装課題と解決策`（苦戦箇所の継承）、`6. 検証方法`（最新contract準拠）。旧契約が残っていた場合は配置確認だけで済ませず**同ターンで本文を修正**する。
 
 ### raw検出の誤検知対策（推奨）
 
@@ -372,6 +282,27 @@ requirements.md
 task-improvement.md
 ```
 
+### Phase 10 MINOR 判定 ID と未タスク ID の対応規則
+
+Phase 10 レビューで MINOR-1、MINOR-2 等の暫定 ID が付与された場合、Phase 12 Task 4 で未タスク化する際は以下の規則で正式 ID に変換する:
+
+**正式 ID の命名パターン**: `UT-{タスク短縮名}-{カテゴリ}-{連番3桁}`
+
+| カテゴリ | 用途 | 例 |
+| --- | --- | --- |
+| COV | カバレッジ不足のテスト追加 | UT-CHATPANEL-COV-001 |
+| GUARD | 防御ガード追加 | UT-CHATPANEL-GUARD-001 |
+| STUB | スタブの本格実装 | UT-CHATPANEL-STUB-001 |
+| REFACTOR | リファクタリング | UT-CHATPANEL-REFACTOR-001 |
+| FIX | バグ修正 | UT-CHATPANEL-FIX-001 |
+
+**変換時の必須手順**:
+1. Phase 10 MINOR 判定の暫定 ID（MINOR-1 等）を正式 ID に変換する
+2. task-workflow-backlog.md に暫定 ID のエントリが残存していないか確認する
+3. 残存している場合は削除してから正式 ID で再登録する
+
+**禁止パターン**: Phase 10 の暫定 ID（MINOR-1）と Phase 12 の正式 ID（COV-001）を混在させたまま backlog に登録する
+
 ---
 
 ## 優先度の判定基準
@@ -504,45 +435,16 @@ mv docs/30-workflows/unassigned-task/task-{{task-name}}.md \
 
 ## 横断的機能の未タスク検出パターン
 
-リトライ機構やエラーハンドリング等の横断的機能を実装した場合、以下のパターンで関連する未タスクが発生しやすい。Phase 12での検出漏れを防ぐため、該当する場合はチェックする。
+横断的機能実装時は以下のパターンで未タスクが発生しやすい。Phase 12での検出漏れ防止用。
 
-### リトライ機構実装時の検出パターン
+| 実装種別 | チェック項目 | 未タスク候補 | 優先度 |
+| --- | --- | --- | --- |
+| リトライ機構 | UI設定変更 / 履歴永続化 / サーキットブレーカー / Renderer状態表示 | 設定画面UI / 履歴永続化 / CB実装 / Hookイベント対応 | 低-中 |
+| エラーハンドリング | i18n / 統計レポート / 構造化ログ | i18n対応 / エラーレポート / ログ構造化 | 低-中 |
+| UIコンポーネント | ダークモード / WCAG準拠 / レスポンシブ | テーマ対応 / a11y改善 / レスポンシブ | 低-中 |
+| テスト | 命名規則統一 / 未使用import / E2E統合 / VRT導入 | 各改善タスク | 低-中 |
 
-| チェック項目 | 未タスク候補 | 優先度目安 |
-| --- | --- | --- |
-| リトライ設定をUIから変更可能にする必要があるか？ | 設定画面UI | 低 |
-| リトライ履歴をDB/ログに永続化する必要があるか？ | 履歴永続化 | 低 |
-| サーキットブレーカーパターンが必要か？ | CB実装 | 中 |
-| Renderer側にリトライ状態を表示する必要があるか？ | Hookイベント対応 | 中 |
-
-### エラーハンドリング実装時の検出パターン
-
-| チェック項目 | 未タスク候補 | 優先度目安 |
-| --- | --- | --- |
-| エラーメッセージの国際化が必要か？ | i18n対応 | 低 |
-| エラー統計・レポーティングが必要か？ | エラーレポート機能 | 低 |
-| 構造化ログへの出力が必要か？ | ログ構造化 | 中 |
-
-### UI コンポーネント実装時の検出パターン
-
-| チェック項目 | 未タスク候補 | 優先度目安 |
-| --- | --- | --- |
-| ダークモード対応が必要か？ | テーマ対応 | 低 |
-| アクセシビリティ（WCAG）準拠が必要か？ | a11y改善 | 中 |
-| レスポンシブ対応が必要か？ | レスポンシブ | 低 |
-
-> **参考**: TASK-SKILL-RETRY-001（SkillExecutorリトライ機構）では、リトライ機構実装パターンの4項目全てが未タスクとして検出された。
-
-### コンポーネントテスト実装時の検出パターン
-
-| チェック項目                                     | 未タスク候補             | 優先度目安 |
-| ------------------------------------------------ | ------------------------ | ---------- |
-| テストケース名の命名規則が統一されているか？     | 命名規則統一             | 低         |
-| 未使用importが残存していないか？                 | import整理               | 低         |
-| E2Eテストとの統合が必要か？                      | E2E統合                  | 中         |
-| Visual Regressionテストの導入が必要か？          | VRT導入                  | 低         |
-
-> **参考**: TASK-8B（コンポーネントテスト280テスト）では、Phase 10 MINOR指摘2件（M-01: テスト名命名規則、M-02: 未使用import）が未タスクとして検出された。候補6件中、「機能に影響なし」のもの含め**MINOR判定は全てタスク化**がルール。カバレッジ達成度・実行時間・費用対効果の3軸で不要候補をフィルタリング。
+> **ルール**: MINOR判定は「機能影響なし」でも**全てタスク化**必須。フィルタリングはカバレッジ・実行時間・費用対効果の3軸で行う。
 
 ---
 

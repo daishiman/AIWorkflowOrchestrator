@@ -89,6 +89,31 @@
 | UT-INTEGRATE-COMPACT-LAYOUT-WORKSPACE-CHAT-001 | CompactLayout との WorkspaceChatPanel 統合 | 低 |
 
 ---
+> 対象タスク: TASK-IMP-CHATPANEL-REAL-AI-CHAT-001, TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-06, TASK-SKILL-LIFECYCLE-08
+> 分割先: [task-workflow-completed-ut-06-safety-gate.md](task-workflow-completed-ut-06-safety-gate.md)（UT-06-001, UT-06-003, UT-06-005）
+## TASK-IMP-CHATPANEL-REAL-AI-CHAT-001: ChatPanel Real AI Chat 配線 設計完了記録（2026-03-18）
+| タスクID | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 |
+| 対象workflow | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-seq-task-05-chatpanel-real-chat-wiring/` |
+| ステータス | spec_created（設計タスク、Phase 1-13 設計完了） |
+| タスク種別 | 設計（プロダクションコードの実装は行わない） |
+| 作成日 | 2026-03-13 |
+| 設計完了日 | 2026-03-18 |
+### 実装内容（設計成果物）
+| chatSlice 拡張 | `ChatPanelStatus`（8状態: idle/ready/streaming/cancelled/completed/error/blocked/handoff）、`AccessCapability`（4値: integratedRuntime/terminalSurface/both/none）、ストリーミング関連ステート/アクション |
+| 個別セレクタ12個 | `useChatPanelStatus`, `useResolvedCapability`, `useChatMessages`, `useChatInput`, `useSetChatInput`, `useSelectedProviderId`, `useSelectedModelId`, `useProviders`, `useHandoffGuidance`, `useIsStreaming`, `useSetChatPanelStatus`, `useResetChat` |
+| ChatPanel 全面書換 | 3 placeholder 置換（message-list-slot, chat-input-slot, model-selector-slot）、useStreamingChat 接続、8 状態条件レンダリング |
+| 新規コンポーネント10個 | RuntimeBanner(atom), ChatMessage(atom), ChatMessageList(molecule), ErrorGuidance(molecule), HandoffBlock(molecule), PersistentTerminalLauncher(atom), ComposerInput(atom), SendButton(atom), ComposerArea(molecule), LLMSelectorPanel(molecule) |
+| Store 統一 | useStreamingChat 内の `useStore()` を `useAppStore()` に統一する方針を確定 |
+| P62 対策 | Provider/Model 未選択時は `blocked` 状態に遷移し、暗黙 fallback を行わない |
+### システム仕様書更新
+| 更新ファイル | 更新内容 |
+| `arch-state-management-core.md` | chatSlice 拡張セクション追加（ChatPanelStatus/AccessCapability 型定義、個別セレクタ12個、状態遷移図） |
+| `ui-ux-feature-components-core.md` | 収録機能一覧にエントリ追加、ChatPanel コンポーネント階層・Atomic Design 分類・Props 設計・8状態レンダリングマトリクス・アクセシビリティ・キーボード操作のセクション追加 |
+| `task-workflow-completed-skill-lifecycle.md` | 本記録の追加 |
+### 関連タスク
+| タスクID | 内容 | ステータス |
+| TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 | Main Chat/Settings AI runtime 同期（前提タスク） | 完了（2026-03-17） |
+| TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 | AI Runtime/AuthMode Unification（親ワークフロー step-01） | 完了 |
 
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
 
@@ -215,6 +240,7 @@
 ---
 
 ## UT-06-005-A: PreToolUse Hook fallback 統合完了記録（2026-03-17）
+## TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02）
 
 ### タスク概要
 
@@ -468,29 +494,4 @@ Phase 11 ウォークスルー: 実施済み
 
 未タスク検出: UT-06-001〜UT-06-008（8件）登録済み
 
----
-
-### UT-06-001 (tool-risk-config-implementation)
-
-| タスクID | UT-06-001 |
-| タスク種別 | implementation |
-| ステータス | completed |
-| 完了日 | 2026-03-16 |
-| Phase完了 | 1-12 完了、13（PR作成）未実施 |
-| GitHub Issue | #1251 |
-| 成果物ディレクトリ | `docs/30-workflows/tool-risk-config-implementation/` |
-
-主要実装成果物:
-- `packages/shared/src/constants/security.ts` : RiskLevel 型・ToolRiskConfigEntry interface・TOOL_RISK_CONFIG 定数（Object.freeze 深層凍結）
-- `packages/shared/src/constants/security.test.ts` : 18テスト ALL PASS
-- `packages/shared/src/constants/index.ts` : 型・定数の re-export 追加
-
-セキュリティ不変条件:
-- `TOOL_RISK_CONFIG.high.allowPermanent === false`（恒久許可禁止）
-- `TOOL_RISK_CONFIG.high.allowTime24h === false`（24時間許可禁止）
-- `TOOL_RISK_CONFIG.high.allowTime7d === false`（7日間許可禁止）
-
-Phase 10 ゲート判定: PASS
-Phase 11 手動テスト: NON_VISUAL（CLI環境、UI変更なし）
-
-後続ブロッカー解消: UT-06-004（PermissionDialog）、TASK-SKILL-LIFECYCLE-08
+> UT-06-001 完了記録は [task-workflow-completed-ut-06-safety-gate.md](task-workflow-completed-ut-06-safety-gate.md) に移動済み

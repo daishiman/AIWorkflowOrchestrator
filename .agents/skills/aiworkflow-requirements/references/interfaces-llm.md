@@ -202,10 +202,81 @@ interface HandoffGuidance {
 
 ---
 
+## ChatPanel コンポーネント設計（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001）
+
+TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel の実チャット配線仕様。placeholder 3箇所（model-selector-slot, message-list-slot, chat-input-slot）を実コンポーネントに置換する設計定義。
+
+### コンポーネント階層（12コンポーネント）
+
+| コンポーネント | 種類 | 親 | 役割 |
+| --- | --- | --- | --- |
+| `RuntimeBanner` | molecule | `ChatPanel` | AccessCapability（integratedRuntime/terminalSurface/both/none）を視覚表示 |
+| `ChatMessage` | molecule | `ChatMessageList` | user/assistant メッセージ表示 |
+| `ChatMessageList` | organism | `ChatPanel` | 会話履歴の一覧表示、role="log" aria-live="polite" |
+| `ErrorGuidance` | molecule | `ChatPanel` | retryable エラー時の再試行導線表示 |
+| `HandoffBlock` | molecule | `ChatPanel` | handoff 状態時のターミナル起動促進表示 |
+| `PersistentTerminalLauncher` | molecule | `HandoffBlock` | ターミナルコマンド表示とコピー/起動ボタン |
+| `ComposerInput` | atom | `ComposerArea` | テキスト入力フィールド（P42 3段バリデーション対応） |
+| `SendButton` | atom | `ComposerArea` | 送信ボタン（streaming中は disabled） |
+| `ComposerArea` | molecule | `ChatPanel` | ComposerInput + SendButton の統合エリア |
+| `LLMSelectorPanel` | organism | `ChatPanel` | プロバイダー/モデル選択（既存コンポーネント活用） |
+| `StreamingMessage` | molecule | `ChatMessageList` | ストリーミング中のリアルタイム表示（既存コンポーネント活用） |
+| `ChatPanel` | organism | view | 全体制御、8状態管理、IPC結線 |
+
+### AccessCapability 4値定義
+
+| 値 | 意味 | RuntimeBanner 表示 |
+| --- | --- | --- |
+| `integratedRuntime` | integrated mode で動作可能 | 「統合ランタイムで接続中」 |
+| `terminalSurface` | ターミナル経由での実行が必要 | 「ターミナル経由で利用可能」 |
+| `both` | 両方利用可能 | 「統合・ターミナル両対応」 |
+| `none` | APIキー未設定等で利用不可 | 「設定が必要です」→ ErrorGuidance へ委譲 |
+
+### useStreamingChat hook 契約
+
+```typescript
+interface StreamingChatState {
+  isStreaming: boolean;
+  content: string;
+  error: StreamingError | null;
+}
+
+interface StreamingChatActions {
+  startStream: (message: string) => Promise<void>;
+  cancelStream: () => void;
+}
+
+// hook シグネチャ
+function useStreamingChat(): {
+  state: StreamingChatState;
+  actions: StreamingChatActions;
+};
+```
+
+- P31/P48 準拠: 個別セレクタ + useShallow で派生セレクタの無限ループを防止
+- P42 準拠: ComposerInput の送信前バリデーションは `typeof` → `=== ""` → `.trim() === ""` の 3段バリデーション
+- P62 準拠: DEFAULT_CONFIG への暗黙 fallback 禁止。Provider/Model 未設定時は `blocked` 状態へ遷移し `ErrorGuidance` を表示
+
+### ChatPanel 8状態定義
+
+| 状態 | 説明 | RuntimeBanner | ChatMessageList | ComposerArea | ErrorGuidance | HandoffBlock |
+| --- | --- | --- | --- | --- | --- | --- |
+| `idle` | 初期状態（LLM未選択） | - | - | disabled | - | - |
+| `ready` | LLM選択済み・送信可能 | capability表示 | 履歴表示 | enabled | - | - |
+| `streaming` | AI応答ストリーミング中 | capability表示 | +StreamingMessage | cancel可 | - | - |
+| `cancelled` | ユーザーがストリームをキャンセル | capability表示 | 履歴+中断メッセージ | enabled | - | - |
+| `completed` | AI応答完了 | capability表示 | 履歴+完了メッセージ | enabled | - | - |
+| `error` | retryable エラー発生 | capability表示 | 履歴+エラー表示 | enabled | retryableのみ表示 | - |
+| `blocked` | APIキー未設定/Provider未選択 | capability表示 | - | 非表示 | 表示 | - |
+| `handoff` | ターミナル経由での実行が必要 | capability表示 | - | 非表示 | - | 表示 |
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                                                                |
 | ------- | ---------- | -------------------------------------------------------------------------------------- |
+| 2.5.0   | 2026-03-18 | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 を追加。ChatPanel 12コンポーネント階層、AccessCapability 4値、useStreamingChat hook 契約、8状態定義を同期 |
 | 2.4.0   | 2026-03-14 | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 を追加。RuntimeResolution/HandoffGuidance 型定義、AnthropicLLMAdapter サービス、SendWithContextRequest/Response 変更点、chatEditSlice 型変更（selection/setSelection）を同期 |
 | 2.3.0   | 2026-03-11 | TASK-UI-04B-WORKSPACE-CHAT を追加。WorkspaceChatPanel の stream / conversation 連携、task-scope メトリクス、完了タスク記録を同期 |
 | 2.2.0   | 2026-02-02 | TASK-WCE-WORKSPACE-001完了: Workspace管理統合エントリ追加、品質メトリクス更新          |

@@ -4,6 +4,30 @@
 
 ---
 
+## TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 設計完了（2026-03-18）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success（MINOR 2件→未タスク化）
+- **Notes**:
+  - ChatPanel placeholder 3箇所（model-selector-slot, message-list-slot, chat-input-slot）の置換設計
+  - 8状態 × 4 AccessCapability の状態機械設計
+  - 12コンポーネント + 10 IPC チャンネルの契約定義
+  - 185テスト ALL PASS（自動テスト32 + エッジケース25 + 設定同期8 + アクセシビリティ11 + 既存15 + スキル管理17 + StreamingMessage 31 + chatSlice 46）
+  - MINOR-1: handleSendMessage ストリーミング中ガード（→未タスク化）
+  - MINOR-2: chatSlice streaming テスト不足（→未タスク化）
+
+### 変更内容
+- ChatPanel.tsx: 283行（3 placeholder → 12コンポーネント配線）
+- chatSlice.ts: 404行（8状態遷移 + chatPanelStatus）
+- useStreamingChat.ts: 179行（streaming hook 契約）
+- テストファイル5本: chat-wiring, edge-cases, settings-sync, accessibility, ChatPanel.test
+
+### AC達成状況
+AC-1〜AC-10 判定完了。Phase 10 判定: PASS（MINOR 2件）
+
+---
+
 ## TASK-SKILL-LIFECYCLE-02 完了（2026-03-18）
 
 - **Agent**: task-specification-creator
@@ -452,6 +476,27 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果 | SkillExecutor に processPermissionFallback / executeAbortFlow / executeSkipFlow 3メソッド追加（+187行）。PermissionStore に revokeSessionEntries 追加（+20行）。SkillPermissionResponse に skip?: boolean 追加（+3行）。新規23テスト追加で全1293テストPASS |
 | 検証 | 全1293テスト PASS（既存1270 + 新規23） |
 
+### 2026-03-18 - TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | WorkspaceChatPanel（streaming/file context/conversation/P62三層防御） |
+| 結果 | WorkspaceChatPanel の AI Runtime 整合を実装。streaming/file context/conversation/P62三層防御を整合させた。テスト77件（自動）+ 8件（手動）PASS。未タスク3件（MINOR-01/02/03）検出 |
+| 検証 | 77件自動テスト PASS + 8件手動テスト PASS |
+
+---
+
+### 2026-03-18 - TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 Phase 12 後工程
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / skill-improvement |
+| 変更対象 | `phase-templates.md` Phase 7/11 テンプレート、未タスク3件フォーマット強化 |
+| 結果 | phase-templates.md Phase 7/11 テンプレート改善（P53対策フォールバック追加）。未タスク3件フォーマット強化（task-specification-creator準拠に強化） |
+| 検証 | 未タスク3件 audit-unassigned-tasks PASS |
+
+---
 ### 2026-03-16 - UT-06-003 DefaultSafetyGate 具象クラス実装
 
 | 項目 | 内容 |
