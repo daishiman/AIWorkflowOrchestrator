@@ -6,7 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
-| 2026-03-19 - TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（SkillDetailPanel action buttons / screenshot証跡7件 / backlog path drift 是正 / workflow index undefined 解消） |
+| 2026-03-19 - TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 canonical route audit（`skill:get-detail` / `skill:update` の current canonical set、object payload + `safeInvokeUnwrap`、parent/auxiliary docs の境界を是正） |
 | 2026-03-18 | Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成（TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE）、SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加 |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
@@ -48,31 +48,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
-## TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（2026-03-19）
+## TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 canonical route audit（2026-03-19）
 
-- タスク名: skilldetail-action-buttons
-- 種別: UI 実装再監査 / system spec same-wave sync
-- 主要確認:
-  - `SkillDetailPanel` に `action-buttons-zone` / `edit-skill-button` / `analyze-skill-button` が imported skill 条件で表示される
-  - `useSkillCenter` が `setCurrentSkillName -> setCurrentView -> handleCloseDetail` の順で `skill-editor` / `skillAnalysis` へ handoff する
-  - Phase 11 screenshot は main shell 上の source-to-destination 証跡として TC-11-01〜07 を再取得済み
-  - `verify-unassigned-links` の missing 17件は実体欠落ではなく `path drift 14件 + stale link 2件 + duplicate 1件` だった
-- system spec update status:
-  - `workflow-skill-lifecycle-routing-render-view-foundation.md`
-  - `ui-ux-navigation.md`
-  - `ui-ux-feature-components-core.md`
-  - `ui-ux-feature-components-reference.md`
-  - `ui-ux-feature-components-advanced.md`
-  - `arch-state-management-core.md`
-  - `arch-state-management-reference-permissions-import-lifecycle.md`
-  - `task-workflow-backlog.md`
-  - `task-workflow-completed-skill-lifecycle-ui.md`
-  - `task-workflow-completed-skill-lifecycle.md`
-  - `task-workflow.md`
-  - `lessons-learned-viewtype-electron-ui.md`
-  - `lessons-learned-current.md`
-- 補足:
-  - `task-specification-creator/scripts/generate-index.js` の artifacts fallback 不足により workflow `index.md` が `undefined` になっていたため、script 側も同一 wave で補正した
+- タスク名: IPC layer integrity fix 向け aiworkflow-requirements 導線監査
+- 種別: system spec 監査・最小是正
+- 実施内容:
+  - `indexes/resource-map.md` の IPC contract / preload alignment 行を `skill:get-detail` / `skill:update` 専用の current canonical set へ強化
+  - `indexes/quick-reference.md` に object payload + `safeInvokeUnwrap` + shared/preload/main sync の早見表を追加
+  - `security-skill-ipc-core.md` の `skill:update` 契約を `safeInvokeUnwrap` に統一
+  - parent docs（`security-skill-ipc.md` / `interfaces-agent-sdk-skill.md` / `api-ipc-agent.md`）へ「parent は入口、契約は child 正本」の境界を追記
+- 目的:
+  - legacy / auxiliary docs の誤読を防ぎ、2-3手で current canonical set に到達できる状態へ補強
 
 ## Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成（2026-03-18）
 
@@ -254,3 +240,11 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 実行時間: 1.57秒（NFR-01: 10秒以内）
 - 実コードベース検証結果: 216ハンドラ抽出, 147 Preloadエントリ抽出, R-02不一致19件検出
 - 未タスク3件検出: タプル配列抽出拡張, CHAT_EDIT_CHANNELS対応, ipcMain.on強化
+
+## 2026-03-19: TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 完了
+- SKILL_UPDATE デッドチャンネル修正（ipcMain.handle 追加 + unregister 追加）
+- SKILL_GET_DETAIL Preload API 公開（getDetail メソッド追加）
+- SKILL_UPDATE Preload API 公開（update メソッド追加）
+- P42準拠3段バリデーション全引数実装
+- 対象8ファイル / 421件全PASS（2026-03-19 再検証）
+- Phase 11 代表画面 screenshot 5件を再取得し、旧 `TC-VIS-*` を archive 退避の上で visual sanity を workflow 証跡へ追記

@@ -4,35 +4,15 @@
 
 ---
 
-## 2026-03-19 - Phase 12 changelog と Step 1-A 台帳の同値同期ガードを追加
+## task-specification-creator 監査導線改善（2026-03-19）
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | feedback |
-| 変更対象 | `references/phase-12-documentation-guide.md`, `references/phase-12-completion-checklist.md`, `SKILL.md` |
-| 結果 | `documentation-changelog.md` に Step 1-A で更新した `SKILL.md` / `LOGS.md` を canonical path で必ず列挙するルールを追加した |
-| 検証 | `quick_validate.js .claude/skills/task-specification-creator` |
-
----
-
-## TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（2026-03-19）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（re-audit）
+- **Agent**: Codex
+- **Phase**: skill audit / docs refinement
 - **Result**: success
 - **Notes**:
-  - Phase 11 screenshot を main shell handoff 証跡として再取得し、TC-11-01〜07 を固定
-  - `implementation-guide.md` を validator literal 要件に合わせて補強し、10/10 PASS に回復
-  - `verify-unassigned-links` の 17件報告を再調査し、`path drift 14件 + stale link 2件 + duplicate 1件` と切り分けて 246/246 PASS へ修正
-  - `generate-index.js` に `featureName` / `createdDate` fallback と Phase 12 完了表示を追加し、workflow `index.md` の `undefined` を解消
-
-### 変更内容
-- Phase 12 出力を実測値ベースへ更新
-- system spec backlog / completed ledger の path drift 是正
-- screenshot 残骸削除と coverage warning 解消
-
-### AC達成状況
-Phase 11 証跡、Phase 12 root evidence、system spec same-wave sync、skill 改善記録の4点を再監査完了
+  - `resource-map.md` 起点の最短導線を `SKILL.md` に追加し、Phase 12 文書更新と Phase 13 PR 判定への初動を 2-3 手に圧縮
+  - `phase-template-phase13.md` に local check / change-summary / pr-info の最低記録を追加し、承認前の誤進行を抑止
+  - 変更対象は `task-specification-creator` 配下に限定し、他の skill / workflow は変更していない
 
 ---
 
@@ -666,3 +646,18 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | Phase 1-13 仕様書一式（UT-TASK06-007-ipc-contract-drift-auto-detect） |
 | 結果 | IPC契約ドリフト自動検出スクリプトのPhase 1-12完了。Phase 13はBLOCKED（PR待ち） |
 | 検証 | 全40テストケースPASS、手動テストTC-11-01~TC-11-05全PASS |
+
+---
+
+## TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 完了（2026-03-19）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - スキル関連IPC層の2件Critical不整合を修正
+  - SKILL_UPDATE デッドチャンネル修正（ipcMain.handle 追加 + unregister 追加）
+  - SKILL_GET_DETAIL / SKILL_UPDATE Preload API 公開（getDetail / update メソッド追加）
+  - P42準拠3段バリデーション全引数実装
+  - Phase 1-12 完了、横断回帰8ファイル 421テスト PASS
+  - ユーザー明示要求に基づき、Phase 11 の visual sanity screenshot 5件を追加し、旧 `TC-VIS-*` は archive へ退避

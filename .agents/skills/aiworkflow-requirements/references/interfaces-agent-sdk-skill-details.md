@@ -1,6 +1,6 @@
 # Agent SDK Skill 仕様 / detail specification
 
-> 親仕様書: [interfaces-agent-sdk-skill.md](interfaces-agent-sdk-skill.md)
+> 親仕様書: [interfaces-agent-sdk-skill-core.md](interfaces-agent-sdk-skill-core.md)
 > 役割: detail specification
 
 ## Skill Dashboard 型定義（AGENT-002）
@@ -17,6 +17,7 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | `skill:import`            | Renderer → Main | スキルインポート            | `ImportedSkill`（UT-FIX-SKILL-IMPORT-RETURN-TYPE-001で修正済み） |
 | `skill:remove`            | Renderer → Main | スキル削除                  | `RemoveResult`                        |
 | `skill:get-detail`        | Renderer → Main | スキル詳細取得              | `{ success: true, data: Skill } \| { success: false, error: string }` |
+| `skill:update`            | Renderer → Main | スキル更新                  | `{ success: true, data: void } \| { success: false, error: string }` |
 | `skill:fork`              | Renderer → Main | スキルフォーク（TASK-9E）   | `{ success: true, data: SkillForkResult } \| { success: false, error: string }` |
 | `skill:execute`           | Renderer → Main | スキル実行                  | `{ success: true, data: SkillExecutionResponse } \| { success: false, error: string, errorCode?: string }` |
 | `skill:abort`             | Renderer → Main | スキル実行中断              | `boolean`                             |
@@ -26,6 +27,25 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | `skill:optimize`          | Renderer → Main | プロンプト最適化（TASK-9C） | `OperationResult<OptimizationResult>` |
 | `skill:optimize:variants` | Renderer → Main | バリアント生成（TASK-9C）   | `OperationResult<string[]>`           |
 | `skill:optimize:evaluate` | Renderer → Main | プロンプト評価（TASK-9C）   | `OperationResult<PromptEvaluation>`   |
+
+#### TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: current contract
+
+| API | Preload payload | Preload behavior | Main / IPC contract |
+| --- | --- | --- | --- |
+| `getDetail` | `{ skillId: string }` | `safeInvokeUnwrap(IPC_CHANNELS.SKILL_GET_DETAIL, { skillId })` を呼び、失敗時は throw する | `skill:get-detail` は `{ success: true, data: Skill } \| { success: false, error: string }` を返す |
+| `update` | `{ skillName: string, updates: Record<string, unknown> }` | `safeInvokeUnwrap(IPC_CHANNELS.SKILL_UPDATE, { skillName, updates })` を呼び、失敗時は throw する | `skill:update` は `{ success: true, data: void } \| { success: false, error: string }` を返す |
+
+> `getDetail` / `update` は object payload + `safeInvokeUnwrap` に統一し、Preload 側で fail-fast する。`null` 返却や positional payload へ戻さない。
+
+
+#### TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: 実装完了記録（2026-03-19）
+
+| API | 実装ステータス | 実装内容 |
+| --- | --- | --- |
+| `getDetail` | **実装済み** | Preload API 公開済み: `window.electronAPI.skill.getDetail()` メソッドを `skill-api.ts` に追加。`safeInvokeUnwrap(IPC_CHANNELS.SKILL_GET_DETAIL, { skillId })` で呼び出し、失敗時 throw。P42準拠3段バリデーション（型チェック→空文字列→トリム空文字列）適用済み |
+| `update` | **契約復旧済み** | Main Process ハンドラ登録済み: `skill:update` の `ipcMain.handle` を `skillHandlers.ts` に追加 + `unregisterSkillHandlers()` に登録。Preload API 公開済み: `window.electronAPI.skill.update()` メソッドを `skill-api.ts` に追加。P42準拠3段バリデーション適用済み。`SkillService.updateSkill()` のビジネスロジックは `UT-IMP-SKILL-UPDATE-BUSINESS-LOGIC-001` で継続管理 |
+
+> テスト実績: 5ファイル / 227件全PASS（2026-03-19 再検証）
 
 ### TASK-SKILL-LIFECYCLE-04: 評価・採点ゲート契約（2026-03-14）
 

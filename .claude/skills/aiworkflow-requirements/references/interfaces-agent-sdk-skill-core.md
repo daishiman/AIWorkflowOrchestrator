@@ -216,6 +216,9 @@ TASK-FIX-5-1により、SkillAPI は `window.electronAPI.skill` に一本化さ�
 
 #### 統一API 13メソッド一覧
 
+> **現行 canonical**: `skill:getDetail` / `skill:update` を含む 15 メソッド。見出し名は既存リンク互換のため維持。
+> TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001（2026-03-19）で `getDetail` / `update` を追加。
+
 | カテゴリ | メソッド | IPC方向 | 説明 |
 |----------|----------|---------|------|
 | **Skill実行** | `execute` | R→M | スキル実行開始（SkillExecutionRequest → SkillExecutionResponse） |
@@ -228,8 +231,10 @@ TASK-FIX-5-1により、SkillAPI は `window.electronAPI.skill` に一本化さ�
 | | `sendPermissionResponse` | R→M | 権限レスポンス送信 |
 | **Skill管理** | `list` | R→M | 利用可能スキル一覧取得 |
 | | `getImported` | R→M | インポート済みスキル取得 |
+| | `getDetail` | R→M | スキル詳細取得 |
 | | `rescan` | R→M | スキルディレクトリ再スキャン |
 | | `import` | R→M | スキルインポート |
+| | `update` | R→M | スキル更新 |
 | | `remove` | R→M | スキル削除 |
 
 #### 廃止されたもの
@@ -418,4 +423,3 @@ Zustand Sliceパターンで実装された状態管理。
 | `resetAgentState`       | -                                 | 状態リセット           |
 
 ---
-

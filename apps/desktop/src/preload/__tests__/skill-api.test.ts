@@ -1,20 +1,8 @@
 /**
- * 統一SkillAPI テスト（Phase 4: TDD Red）
+ * 統一SkillAPI テスト
  *
  * TASK-FIX-5-1-SKILL-API-UNIFICATION
- * 統一API全13メソッドの期待動作をテストとして定義する。
- *
- * Red状態（Phase 5実装前に失敗するテスト）:
- * - list, getImported, rescan, import, remove → スタブがsafeInvokeを呼ばない
- * - abort → boolean返却（void期待）
- * - remove → boolean返却（void期待）
- * - respondToPermission → 存在する（削除期待）
- *
- * Green状態（既に実装済みで成功するテスト）:
- * - execute, onStream, getExecutionStatus
- * - onPermissionRequest, sendPermissionResponse
- * - onComplete, onError
- * - IPCチャンネルホワイトリスト
+ * 統一 API のホワイトリストと主要メソッドの期待動作を検証する。
  *
  * @module @repo/desktop/preload/__tests__/skill-api
  */
@@ -138,6 +126,8 @@ describe("統一SkillAPI - IPCチャンネルホワイトリスト", () => {
       IPC_CHANNELS.SKILL_GET_IMPORTED,
       IPC_CHANNELS.SKILL_IMPORT,
       IPC_CHANNELS.SKILL_REMOVE,
+      IPC_CHANNELS.SKILL_GET_DETAIL,
+      IPC_CHANNELS.SKILL_UPDATE,
       IPC_CHANNELS.SKILL_CREATE,
       IPC_CHANNELS.SKILL_SCAN,
       IPC_CHANNELS.SKILL_EXECUTE,
@@ -782,7 +772,7 @@ describe("統一SkillAPI - API構造検証", () => {
     const methodCount = Object.keys(skillAPI).filter(
       (key) => typeof (skillAPI as Record<string, unknown>)[key] === "function",
     ).length;
-    expect(methodCount).toBe(48);
+    expect(methodCount).toBe(50); // TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: getDetail + update 追加
   });
 
   it("全イベントリスナーメソッドがunsubscribe関数を返す", () => {
