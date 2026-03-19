@@ -9,7 +9,7 @@
 | タスクID   | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001                                                                                                                                                                                               |
 | 前提Phase  | Phase 1（要件定義）、Phase 2（設計）、Phase 5（実装）、Phase 6（テスト拡充）、Phase 7（カバレッジ確認）、Phase 8（リファクタリング）、Phase 9（品質検証）、Phase 10（最終レビュー）、Phase 11（手動テスト）、Phase 12（ドキュメント） |
 | 後続Phase  | なし                                                                                                                                                                                                                                  |
-| ステータス | not_started                                                                                                                                                                                                                           |
+| ステータス | completed                                                                                                                                                                                                                             |
 | 作成日     | 2026-03-13                                                                                                                                                                                                                            |
 | 機能名     | slide-ai-runtime-alignment                                                                                                                                                                                                            |
 
