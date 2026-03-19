@@ -2,15 +2,15 @@
 
 ## メタ情報
 
-| 項目       | 内容                                                                                                                          |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                   |
-| Phase      | 3 - 設計レビュー                                                                                                              |
-| 前 Phase   | Phase 2 - 設計                                                                                                                |
-| 次 Phase   | Phase 4 - テスト作成（PASS / MINOR の場合）                                                                                   |
-| 依存成果物 | `phase-2-design.md`（設計方針・スニペット）                                                                                   |
-| 成果物パス | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-3-design-review.md` |
-| ステータス | not_started                                                                                                                   |
+| 項目       | 内容                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                                   |
+| Phase      | 3 - 設計レビュー                                                                                                                              |
+| 前 Phase   | Phase 2 - 設計                                                                                                                                |
+| 次 Phase   | Phase 4 - テスト作成（PASS / MINOR の場合）                                                                                                   |
+| 依存成果物 | `phase-2-design.md`（設計方針・スニペット）                                                                                                   |
+| 成果物パス | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-3-design-review.md` |
+| ステータス | not_started                                                                                                                                   |
 
 ## 目的
 
@@ -48,11 +48,12 @@ Phase 2 の設計が AC-1〜AC-6 を満たすか、既存コードへの破壊�
 
 ### タスク関連
 
-| 資料名         | パス                                                 | 説明                               |
-| -------------- | ---------------------------------------------------- | ---------------------------------- |
-| Phase 2 成果物 | `phase-2-design.md`                                  | レビュー対象の設計方針・スニペット |
-| パックindex    | `docs/30-workflows/skill-lifecycle-routing/index.md` | Codepath 所有表・依存関係図        |
-| 既知の落とし穴 | `.claude/rules/06-known-pitfalls.md`                 | P31, P44, P45 などの再発防止策     |
+| 資料名           | パス                                                 | 説明                               |
+| ---------------- | ---------------------------------------------------- | ---------------------------------- |
+| Phase 1 要件定義 | `phase-1-requirements.md`                            | AC-1〜AC-6 と受入基準の確認        |
+| Phase 2 成果物   | `phase-2-design.md`                                  | レビュー対象の設計方針・スニペット |
+| パックindex      | `docs/30-workflows/skill-lifecycle-routing/index.md` | Codepath 所有表・依存関係図        |
+| 既知の落とし穴   | `.claude/rules/06-known-pitfalls.md`                 | P31, P44, P45 の再発防止策         |
 
 ### システム仕様（aiworkflow-requirements）
 
@@ -126,11 +127,11 @@ Phase 2 の設計が AC-1〜AC-6 を満たすか、既存コードへの破壊�
 
 ## 成果物
 
-| 成果物                         | パス                                                                                                                          | 種別         |
-| ------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ------------ |
-| 設計レビュー結果（本ファイル） | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-3-design-review.md` | レビュー記録 |
-| レビュー観点別判定結果         | 本ファイル内に記録                                                                                                            | 判定記録     |
-| MINOR / MAJOR 指摘一覧         | 本ファイル内に記録（該当がある場合）                                                                                          | 指摘記録     |
+| 成果物                         | パス                                                                                                                                          | 種別         |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------ |
+| 設計レビュー結果（本ファイル） | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-3-design-review.md` | レビュー記録 |
+| レビュー観点別判定結果         | 本ファイル内に記録                                                                                                                            | 判定記録     |
+| MINOR / MAJOR 指摘一覧         | 本ファイル内に記録（該当がある場合）                                                                                                          | 指摘記録     |
 
 ## 完了条件
 

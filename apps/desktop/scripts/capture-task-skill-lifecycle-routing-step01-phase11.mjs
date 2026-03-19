@@ -12,7 +12,7 @@ const desktopRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(desktopRoot, "..", "..");
 const workflowRoot = path.join(
   repoRoot,
-  "docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation",
+  "docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation",
 );
 const outputDir = path.join(workflowRoot, "outputs/phase-11/screenshots");
 const metadataPath = path.join(outputDir, "phase11-capture-metadata.json");

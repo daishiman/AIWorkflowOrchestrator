@@ -391,3 +391,27 @@
 | 検証ゲート | `validate-phase-output` PASS、`validate-phase11-screenshot-coverage` PASS、`validate-phase12-implementation-guide` PASS、対象テスト PASS（42 tests）                                                                                                                     |
 | 同期先3点  | `references/task-workflow.md` / `references/lessons-learned.md` / `references/arch-state-management.md`                                                                                                                                                                  |
 
+
+## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001
+
+- 完了日: 2026-03-19
+- 種別: persistence / electron-main / ipc robustness
+- 結果: completed
+
+### 実装要約
+
+- Conversation DB を module-level singleton として初期化する構成へ整理した。
+- Main Process で app.whenReady() 初期化、will-quit close、activate 再利用の lifecycle を確定した。
+- IPC handler registration に conversationDb を注入し、失敗時は DB_NOT_AVAILABLE を返す graceful degradation を維持した。
+
+### 今回の苦戦と再発防止
+
+- 初期化成功と handler registration 成功を同一視しない。
+- conversation:search を含め、全 conversation channels を横断で確認する。
+- graceful degradation は握りつぶしではなく、診断可能な返却値として設計する。
+
+### 派生未タスク
+
+- UT-CONV-DB-001: better-sqlite3 ABI rebuild 再発防止
+- UT-CONV-DB-002: Conversation DB schema versioning 導入
+- UT-CONV-DB-003: legacy conversation DB path migration

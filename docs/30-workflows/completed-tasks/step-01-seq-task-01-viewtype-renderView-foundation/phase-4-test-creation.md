@@ -2,15 +2,15 @@
 
 ## メタ情報
 
-| 項目       | 内容                                                                                                                          |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                   |
-| Phase      | 4 - テスト作成                                                                                                                |
-| 前 Phase   | Phase 3 - 設計レビュー（PASS）                                                                                                |
-| 次 Phase   | Phase 5 - 実装                                                                                                                |
-| 依存成果物 | `phase-2-design.md`（設計スニペット）、`phase-3-design-review.md`（レビュー結果）                                             |
-| 成果物パス | `docs/30-workflows/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-4-test-creation.md` |
-| ステータス | not_started                                                                                                                   |
+| 項目       | 内容                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001                                                                                                   |
+| Phase      | 4 - テスト作成                                                                                                                                |
+| 前 Phase   | Phase 3 - 設計レビュー（PASS）                                                                                                                |
+| 次 Phase   | Phase 5 - 実装                                                                                                                                |
+| 依存成果物 | `phase-2-design.md`（設計スニペット）、`phase-3-design-review.md`（レビュー結果）                                                             |
+| 成果物パス | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/tasks/step-01-seq-task-01-viewtype-renderView-foundation/phase-4-test-creation.md` |
+| ステータス | not_started                                                                                                                                   |
 
 ## 目的
 
@@ -567,7 +567,9 @@ import type { SkillLifecycleJobGuide } from "./skillLifecycleJourney";
 
 | 資料名                            | パス                                                                 | 説明                             |
 | --------------------------------- | -------------------------------------------------------------------- | -------------------------------- |
+| Phase 1 要件定義                  | `phase-1-requirements.md`                                            | AC-1〜AC-6 とテスト受入観点確認  |
 | Phase 2 設計                      | `phase-2-design.md`                                                  | 設計スニペット・影響範囲テーブル |
+| Phase 3 設計レビュー              | `phase-3-design-review.md`                                           | レビュー指摘とテスト観点の反映   |
 | 既存 ViewType テスト              | `apps/desktop/src/renderer/store/types.test.ts`                      | 追加対象の既存テストファイル     |
 | 既存 App テスト（モック構成参考） | `apps/desktop/src/renderer/__tests__/App.debug-removal.test.tsx`     | モック構成のリファレンス         |
 | 既存 skillLifecycleJourney テスト | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.test.ts` | 追加対象の既存テストファイル     |

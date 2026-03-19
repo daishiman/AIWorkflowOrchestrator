@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom/client";
+import type { SkillPhase, SyncStatus } from "@repo/shared";
 import { SlideWorkspace } from "./slide/SlideWorkspace";
 import { useSlideProjectStore } from "./slide/store";
 import "./styles/globals.css";
@@ -11,11 +12,19 @@ type HarnessScenario =
   | "running"
   | "sync-error";
 
-type SyncStatus = "synced" | "out-of-sync" | "syncing" | "error";
-
 type SyncStatusListener = (status: SyncStatus) => void;
 type ProgressListener = (progress: number) => void;
-type VoidListener = () => void;
+type StructureListener = (path: string) => void;
+type OpenDialogOptions = {
+  title?: string;
+  filters?: Array<{ name: string; extensions: string[] }>;
+  properties?: string[];
+};
+type SaveDialogOptions = {
+  title?: string;
+  defaultPath?: string;
+  filters?: Array<{ name: string; extensions: string[] }>;
+};
 
 const PROJECT_PATH = "/Users/dm/demo/slide-runtime-alignment";
 
@@ -72,7 +81,7 @@ document.documentElement.style.colorScheme = "light";
 
 function installMocks(selectedScenario: HarnessScenario): void {
   const listeners = {
-    structure: new Set<VoidListener>(),
+    structure: new Set<StructureListener>(),
     syncStatus: new Set<SyncStatusListener>(),
     progress: new Set<ProgressListener>(),
   };
@@ -88,72 +97,31 @@ function installMocks(selectedScenario: HarnessScenario): void {
     listeners.progress.forEach((listener) => listener(progress));
   };
 
-  const globalWindow = window as typeof window & {
-    electronAPI: {
-      dialog: {
-        showOpenDialog: (options: unknown) => Promise<{
-          canceled: boolean;
-          filePaths: string[];
-          options: unknown;
-        }>;
-      };
-    };
-    slideApi: {
-      startWatching: (projectPath: string) => Promise<{
-        success: boolean;
-        data?: { projectPath: string };
-        error?: { message: string };
-      }>;
-      getSyncStatus: (projectPath: string) => Promise<{
-        success: boolean;
-        data?: SyncStatus;
-      }>;
-      stopWatching: () => Promise<{ success: boolean }>;
-      executePhase: (
-        phase: string,
-        projectPath: string,
-      ) => Promise<{
-        success: boolean;
-        data?: {
-          success: boolean;
-          phase: string;
-          projectPath: string;
-          output: string;
-        };
-      }>;
-      manualSync: (projectPath: string) => Promise<{
-        success: boolean;
-        data?: { status: SyncStatus; projectPath: string };
-        error?: { message: string };
-      }>;
-      cancelExecution: () => Promise<{ success: boolean }>;
-      onStructureChange: (listener: VoidListener) => VoidListener;
-      onSyncStatusChange: (listener: SyncStatusListener) => VoidListener;
-      onExecutionProgress: (listener: ProgressListener) => VoidListener;
-    };
-  };
+  const globalWindow = window as typeof window;
 
   globalWindow.electronAPI = {
     dialog: {
-      showOpenDialog: async (options) => ({
+      showOpenDialog: async (options: OpenDialogOptions) => ({
         canceled: false,
         filePaths: [PROJECT_PATH],
         options,
       }),
+      showSaveDialog: async (options: SaveDialogOptions) => ({
+        canceled: true,
+        filePath: undefined,
+        options,
+      }),
     },
-  };
+  } as unknown as typeof window.electronAPI;
 
   globalWindow.slideApi = {
-    startWatching: async (projectPath) => ({
-      success: true,
-      data: { projectPath },
-    }),
+    startWatching: async (_projectPath: string) => ({ success: true }),
     getSyncStatus: async () => ({
       success: true,
       data: currentStatus,
     }),
     stopWatching: async () => ({ success: true }),
-    executePhase: async (phase, projectPath) => {
+    executePhase: async (phase: SkillPhase, projectPath: string) => {
       if (selectedScenario !== "running") {
         return {
           success: true,
@@ -162,6 +130,7 @@ function installMocks(selectedScenario: HarnessScenario): void {
             phase,
             projectPath,
             output: `${phase} complete`,
+            duration: 2_400,
           },
         };
       }
@@ -184,14 +153,16 @@ function installMocks(selectedScenario: HarnessScenario): void {
           phase,
           projectPath,
           output: `${phase} complete`,
+          duration: 2_400,
         },
       };
     },
-    manualSync: async (projectPath) => {
+    manualSync: async (_projectPath: string) => {
       if (selectedScenario === "sync-error") {
         return {
           success: false,
           error: {
+            code: "SLIDE_E007",
             message:
               "Reverse sync failed: current implementation does not expose guidance or terminal fallback.",
           },
@@ -199,32 +170,26 @@ function installMocks(selectedScenario: HarnessScenario): void {
       }
 
       emitSyncStatus("synced");
-      return {
-        success: true,
-        data: {
-          status: "synced",
-          projectPath,
-        },
-      };
+      return { success: true };
     },
     cancelExecution: async () => {
       emitProgress(0);
       emitSyncStatus("error");
       return { success: true };
     },
-    onStructureChange: (listener) => {
+    onStructureChange: (listener: StructureListener) => {
       listeners.structure.add(listener);
       return () => listeners.structure.delete(listener);
     },
-    onSyncStatusChange: (listener) => {
+    onSyncStatusChange: (listener: SyncStatusListener) => {
       listeners.syncStatus.add(listener);
       return () => listeners.syncStatus.delete(listener);
     },
-    onExecutionProgress: (listener) => {
+    onExecutionProgress: (listener: ProgressListener) => {
       listeners.progress.add(listener);
       return () => listeners.progress.delete(listener);
     },
-  };
+  } as unknown as typeof window.slideApi;
 }
 
 installMocks(scenario);

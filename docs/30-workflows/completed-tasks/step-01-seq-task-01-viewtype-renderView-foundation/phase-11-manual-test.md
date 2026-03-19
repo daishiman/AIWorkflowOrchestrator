@@ -39,6 +39,12 @@
 
 | 資料名                     | パス                                       | 説明                           |
 | -------------------------- | ------------------------------------------ | ------------------------------ |
+| Phase 2 設計仕様書         | `phase-2-design.md`                        | 画面到達経路と対象caseの確認   |
+| Phase 5 実装仕様書         | `phase-5-implementation.md`                | 実装済みUI導線とprops確認      |
+| Phase 6 テスト拡充         | `phase-6-test-expansion.md`                | 追加テスト観点との整合確認     |
+| Phase 7 カバレッジ結果     | `outputs/phase-7/coverage-report.md`       | 手動検証で補う観点の確認       |
+| Phase 8 リファクタリング   | `outputs/phase-8/refactoring-log.md`       | 実装変更後の確認ポイント整理   |
+| Phase 9 品質検証結果       | `outputs/phase-9/qa-results.md`            | 手動テスト前の品質ゲート確認   |
 | Phase 10 最終レビュー結果  | `outputs/phase-10/final-review-report.md`  | PASS/MINOR判定                 |
 | 受入基準 AC-3, AC-4        | `phase-1-requirements.md`                  | renderViewのコンポーネント描画 |
 | CLI スクリーンショット制約 | `.claude/rules/06-known-pitfalls.md` (P53) | CLI環境での取得制約            |

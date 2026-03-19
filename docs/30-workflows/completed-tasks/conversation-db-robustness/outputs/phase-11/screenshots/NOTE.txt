@@ -1,0 +1,10 @@
+CLI 環境のため、Electron アプリの実画面スクリーンショットの取得は不可能です。
+
+P53（CLI 環境でのスクリーンショット取得制約）に準じ、
+Phase 11 では自動テスト（Vitest）の実行結果とコード静的検査を
+視覚的検証の代替手段として採用しました。
+
+実際のスクリーンショットが必要な場合は以下の方法を検討してください:
+- Playwright の page.screenshot() をスクリプト化して取得
+- Electron の webContents.capturePage() をスクリプト化して取得
+- xvfb-run（Linux）や headless モードでの取得

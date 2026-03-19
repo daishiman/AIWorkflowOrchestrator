@@ -17,6 +17,29 @@
 
 ---
 
+## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（2026-03-19）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 実行完了
+- **Result**: success
+- **Notes**:
+  - `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の5成果物を実績化
+  - 苦戦箇所を system spec に反映し、未タスク `UT-CONV-DB-001〜003` を formalize
+  - completed workflow / completed unassigned-task / backlog 導線を同期
+
+---
+
+## Phase 12 canonical summary 名称統一（2026-03-19）
+
+- **Agent**: task-specification-creator
+- **Phase**: ガイド/テンプレート是正
+- **Result**: success
+- **Notes**:
+  - `spec-update-summary.md` から `system-spec-update-summary.md` への canonical 名称統一を反映
+  - `phase-11-12-guide.md` / `spec-update-workflow.md` / `SKILL.md` の残存参照を更新
+
+---
+
 ## TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 設計完了（2026-03-18）
 
 - **Agent**: task-specification-creator
@@ -462,6 +485,17 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ## 最新ログ
 
+### 2026-03-18 - Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only 設計タスク（Phase 1-3 仕様書作成 + Task09 Phase 4-13 完全版） |
+| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/` Task09-12 各ワークフロー仕様書 |
+| 結果 | TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE の仕様書作成。SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加。P50既実装チェック・P32型変更先確認・GAP ID正本管理・Badge atom再利用検討を各仕様書に反映 |
+| 検証 | 各タスク Phase 1-3 設計仕様完了、artifacts.json 同期済み |
+
+---
+
 ### 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了
 
 | 項目 | 内容 |
@@ -527,15 +561,6 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/` 全56ファイル |
 | 結果 | SkillLifecycleEvent（5カテゴリ18イベント種別）、SkillAggregateView集約ロジック、SkillFeedback 4種別還流設計、PublishReadinessMetrics Task08公開判断メトリクス契約、Task05/08連携データ供給経路を定義。Phase 10 PASS（MINOR 2件）、仕様レベルテストケース315件、未タスク5件検出（FR-M-01, FR-M-02, Note-01, Note-03, Note-05） |
 | 検証 | Phase 1-12 全Phase完了、artifacts.json同期済み |
-
-### 2026-03-19 - TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 再監査で Phase 11/12 guard を補強
-
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | guidance / feedback sync |
-| 変更対象 | `SKILL.md`, `references/phase-11-12-guide.md`, `references/spec-update-workflow.md`, `task-specification-creator/LOGS.md` |
-| 結果 | `spec_created` / docs-heavy task でも Phase 12 を計画記録で閉じず、system spec / lessons / backlog / LOGS / artifacts を同ターンで実更新することを明文化した。併せて screenshot fallback 時の harness / static review board / metadata 記録、primary target file list の先行確定、`.claude` / `.agents` mirror parity 確認をガードへ追加した |
-| 検証 | `validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment`、`verify-all-specs.js --workflow ... --json`、`validate-phase-output.js ...`、`validate-phase12-implementation-guide.js --workflow ...`、`diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator` |
 
 ### 2026-03-13 - Phase 12 root evidence / split-aware unassigned audit
 
@@ -636,3 +661,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | --- | --- | --- |
 | **v10.09.0** | **2026-03-12** | rolling log + archive index 構成へ再編し、line budget と履歴保全を両立させた |
 | **v10.08.60** | **2026-03-12** | light theme contrast regression guard の formalize と Phase 12 再確認を追記 |
+
+### 2026-03-18 - UT-TASK06-007
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | Phase 1-13 仕様書一式（UT-TASK06-007-ipc-contract-drift-auto-detect） |
+| 結果 | IPC契約ドリフト自動検出スクリプトのPhase 1-12完了。Phase 13はBLOCKED（PR待ち） |
+| 検証 | 全40テストケースPASS、手動テストTC-11-01~TC-11-05全PASS |

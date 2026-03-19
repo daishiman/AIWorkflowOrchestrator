@@ -396,6 +396,7 @@ vi.mock("../../services/skill/SkillDocGenerator", () => ({
 // --- テスト対象のインポート ---
 import { registerAllIpcHandlers, unregisterAllIpcHandlers } from "../index";
 import type { IpcHandlerRegistrationResult } from "../index";
+import { _resetForTesting } from "../../database/conversationDatabase";
 
 describe("Conversation IPC Handler Registration", () => {
   let mockWindow: Electron.BrowserWindow;
@@ -407,7 +408,12 @@ describe("Conversation IPC Handler Registration", () => {
     mockSetupThemeWatcher.mockReturnValue(mockThemeUnsubscribe);
     // DB モックのデフォルト戻り値を再設定
     mockDatabaseConstructor.mockReturnValue(mockDatabaseInstance);
+    mockDatabaseInstance.pragma.mockReset();
+    mockDatabaseInstance.exec.mockReset();
+    mockDatabaseInstance.close.mockReset();
     mockWindow = mockBrowserWindowInstance as unknown as Electron.BrowserWindow;
+    // P9: テスト間のシングルトン状態をリセット
+    _resetForTesting();
   });
 
   describe("T-01: DB初期化成功時、registerConversationHandlersが呼ばれること", () => {

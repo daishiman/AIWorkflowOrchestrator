@@ -428,3 +428,15 @@ UI機能実装の場合は次を推奨:
 - [ ] テスト再確認時に `pnpm test` を使わず、`pnpm --filter @repo/desktop exec vitest run ...` で非watch実行している
 - [ ] `apps/desktop` 全量 `test:run` が `SIGTERM` の場合、失敗ログと分割実行結果の両方を記録している
 - [ ] テンプレート本文の重複行（同一手順番号重複、同一検証コマンド重複）がないことを確認している
+
+## 苦戦した箇所
+
+- 何が難しかったか
+- どの判断を誤ると再発するか
+- 次回 5 分で確認すべき順序は何か
+
+## 未タスク formalize 確認
+
+- unassigned-task-detection に ID が残っているか
+- 対応する unassigned-task 実ファイルがあるか
+- 関連仕様と backlog に導線があるか
