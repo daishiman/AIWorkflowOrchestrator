@@ -124,9 +124,9 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | 「設計タスクだから」という例外判断で `docs/30-workflows/unassigned-task/` への独立指示書ファイルの作成を省略した。「本レポート内で完了」という代替措置では、後続の監査ツールが指示書パスを参照できず不整合が発生する |
+| 課題 | 「設計タスクだから」という例外判断で `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` への独立指示書ファイルの作成を省略した。「本レポート内で完了」という代替措置では、後続の監査ツールが指示書パスを参照できず不整合が発生する |
 | 再発条件 | タスク種別を理由に P3 の3ステップを例外扱いにする |
-| 解決策 | 設計タスクの未タスクであっても独立した指示書ファイルを `docs/30-workflows/unassigned-task/` に作成する |
+| 解決策 | 設計タスクの未タスクであっても独立した指示書ファイルを `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に作成する |
 | 標準ルール | P3（1.指示書作成 → 2.task-workflow 登録 → 3.関連仕様書リンク追加）に例外はない |
 | 関連パターン | P58（新規）、P3（未タスク管理の3ステップ不完全）、P38（未タスク配置ディレクトリ間違い） |
 | 関連タスク | TASK-SKILL-LIFECYCLE-06 |
@@ -278,7 +278,7 @@
 | --- | --- |
 | 課題 | 未タスクを `docs/30-workflows/skill-lifecycle-unification/tasks/unassigned-task/` に置いたため、`--target-file` 監査境界と衝突した |
 | 再発条件 | workflow ローカル path を temporary 運用のまま台帳反映する |
-| 解決策 | root canonical path（`docs/30-workflows/unassigned-task/`）へ再配置し、`phase-12-documentation` / `unassigned-task-detection` / `task-workflow-backlog` / `interfaces` 参照を同ターン更新した |
+| 解決策 | root canonical path（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`）へ再配置し、`phase-12-documentation` / `unassigned-task-detection` / `task-workflow-backlog` / `interfaces` 参照を同ターン更新した |
 | 標準ルール | active 未タスクは root canonical path を正本とし、workflow ローカル path は使わない |
 
 ### 苦戦箇所2: `current`/`baseline` と配置可否を同一判定にすると報告が崩れる
@@ -301,7 +301,7 @@
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. MINOR 検出時に未タスク指示書を root `docs/30-workflows/unassigned-task/` へ作成する。
+1. MINOR 検出時に未タスク指示書を root `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ作成する。
 2. 指示書は 9セクション形式（`## 1..9` + `3.5`）で作り、親タスク苦戦箇所を継承する。
 3. `task-workflow-backlog` / 関連仕様書 / workflow outputs の参照を同ターンで更新する。
 4. `verify-unassigned-links` と `audit --diff-from HEAD --target-file` で link と品質を分離検証する。

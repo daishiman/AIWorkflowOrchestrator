@@ -89,7 +89,7 @@
 | 台帳 | `references/task-workflow.md`, `references/task-workflow-completed-skill-lifecycle.md`, `references/task-workflow-backlog.md` |
 | 教訓 | `references/lessons-learned-current.md` |
 | index | `indexes/resource-map.md`, `indexes/quick-reference.md`, `indexes/quick-reference-search-patterns.md` |
-| follow-up 未タスク | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+| follow-up 未タスク | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
 | mirror root | canonical=`.claude/skills/aiworkflow-requirements/` / mirror=`.agents/skills/aiworkflow-requirements/` |
 
 Phase 12 の `unassigned-task-detection.md` では上記 follow-up を 1 件として記録し、

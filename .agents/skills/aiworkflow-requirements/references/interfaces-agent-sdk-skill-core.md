@@ -88,7 +88,7 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | 変更対象   | `packages/shared/src/types/skill.ts`, `docs/30-workflows/completed-tasks/skill-management-ui/outputs/phase-11/detail-panel-check.md` |
 | 実装ガイド | `docs/30-workflows/skill-import-agent-system/tasks/completed-task/06b-task-fix-13-1-deprecated-property-migration.md` |
 | 備考       | `SkillImportConfig.lastUpdated` は永続化互換のため維持 |
-| 検出未タスク | [UT-TYPE-DATETIME-DOC-001](../../../docs/30-workflows/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md) 型日時表現ガイドライン策定 |
+| 検出未タスク | [UT-TYPE-DATETIME-DOC-001](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-type-datetime-doc-001-datetime-representation-guide.md) 型日時表現ガイドライン策定 |
 
 #### UT-FIX-IPC-RESPONSE-UNWRAP-001（2026-02-14完了）
 
@@ -101,7 +101,7 @@ AGENT-002タスクで実装されたスキル管理UI機能の完全な仕様を
 | 変更対象   | `apps/desktop/src/preload/skill-api.ts`, `apps/desktop/src/preload/__tests__/skill-api.unwrap.test.ts` |
 | 実装ガイド | `docs/30-workflows/completed-tasks/ipc-response-unwrap/outputs/phase-12/implementation-guide.md` |
 | 備考       | `import()` は SKILL_IMPORT が直接返却のため `safeInvoke` 維持 |
-| 検出未タスク | [UT-FIX-IPC-RESPONSE-UNWRAP-002](../../../docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-002-phase10-spec-alignment.md), [UT-FIX-IPC-RESPONSE-UNWRAP-003](../../../docs/30-workflows/unassigned-task/task-ut-fix-ipc-response-unwrap-003-safeinvokeunwrap-type-guard.md) |
+| 検出未タスク | [UT-FIX-IPC-RESPONSE-UNWRAP-002](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-fix-ipc-response-unwrap-002-phase10-spec-alignment.md), [UT-FIX-IPC-RESPONSE-UNWRAP-003](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-fix-ipc-response-unwrap-003-safeinvokeunwrap-type-guard.md) |
 
 #### TASK-9A-B-IPC-FILE-HANDLERS（2026-02-19完了）
 

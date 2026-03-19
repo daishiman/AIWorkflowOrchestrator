@@ -91,7 +91,7 @@ function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
 
 | タスクID | 目的 | タスク仕様書 |
 | --- | --- | --- |
-| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Renderer local preview resilience を utility / test / error taxonomy まで共通化し、次回 preview/search UI の初動を短縮する | `docs/30-workflows/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
+| UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Renderer local preview resilience を utility / test / error taxonomy まで共通化し、次回 preview/search UI の初動を短縮する | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-workspace-preview-search-resilience-guard-001.md` |
 
 ---
 

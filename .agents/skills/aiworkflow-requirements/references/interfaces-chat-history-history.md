@@ -63,7 +63,7 @@
 
 | タスク名                          | 依存タスク          | 優先度 | 未タスク指示書                                                                |
 | --------------------------------- | ------------------- | ------ | ----------------------------------------------------------------------------- |
-| conversation-security-improvement | UI-CONV-HISTORY-001 | 低     | `docs/30-workflows/unassigned-task/task-conversation-security-improvement.md` |
+| conversation-security-improvement | UI-CONV-HISTORY-001 | 低     | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-conversation-security-improvement.md` |
 
 ---
 

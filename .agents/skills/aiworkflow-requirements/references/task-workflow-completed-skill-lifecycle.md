@@ -46,7 +46,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001 | ヘッダー CTA テキストのレスポンシブ対応（`hidden md:inline`） | LOW | `docs/30-workflows/unassigned-task/task-imp-skillcenter-header-cta-responsive-001.md` |
+| TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001 | ヘッダー CTA テキストのレスポンシブ対応（`hidden md:inline`） | LOW | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skillcenter-header-cta-responsive-001.md` |
 
 ---
 
@@ -160,7 +160,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
 
 ---
 
@@ -285,7 +285,7 @@
 | 実装不整合是正 | `SkillAnalysisView` → `ScoreDisplay` の `previousAnalysis` 受け渡し漏れを修正し、Δバッジ表示を復旧 |
 | 画面検証 | Playwright harness `capture-task-skill-lifecycle-04-phase11.mjs` を追加し、TC-11-01〜04 の実画面証跡を再取得 |
 | 仕様同期 | `interfaces-agent-sdk-skill-details.md`（採点ゲート/評価API契約）、`arch-state-management-details.md`（`previousAnalysis` state）を更新 |
-| backlog 同期 | Phase 10 MINOR 2件を `task-workflow-backlog.md` と `docs/30-workflows/unassigned-task/` に登録済み |
+| backlog 同期 | Phase 10 MINOR 2件を `task-workflow-backlog.md` と `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に登録済み |
 | 統合正本 | `workflow-skill-lifecycle-evaluation-scoring-gate.md` を追加し、current canonical set / artifact inventory / legacy path 互換 / same-wave 手順を一元化 |
 
 ### 仕様書別SubAgent分担（関心分離）
@@ -338,7 +338,7 @@
 
 | 観点 | 実施内容 | 結果 |
 | --- | --- | --- |
-| 未タスク配置 | workflow ローカル `tasks/unassigned-task/` から root `docs/30-workflows/unassigned-task/` へ正規化 | 完了 |
+| 未タスク配置 | workflow ローカル `tasks/unassigned-task/` から root `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ正規化 | 完了 |
 | 仕様同期 | `interfaces-agent-sdk-skill-details.md` / `task-workflow-backlog.md` / 本完了記録 / workflow Phase 12成果物の参照を一括更新 | 完了 |
 | 未タスク品質 | 2件を task-spec 9セクション形式へ再作成し、`3.5 実装課題と解決策` を追記 | 完了 |
 | 監査 | `verify-unassigned-links` と `audit-unassigned-tasks --diff-from HEAD --target-file` を再実行 | PASS |
@@ -402,7 +402,7 @@ Phase 11 ウォークスルー: 63項目中61 PASS、2 MINOR
 | A | workflow phase docs（Phase 1-13） | stale narrative の補正、完了条件の再同期 |
 | B | `outputs/phase-11/*` | screenshot plan / checklist / result / evidence board の整備 |
 | C | `outputs/phase-12/implementation-guide.md` | Part 1/2 validator 要件の不足補完 |
-| D | `task-workflow-backlog.md`, `docs/30-workflows/unassigned-task/` | 未タスク formalize とリンク同期 |
+| D | `task-workflow-backlog.md`, `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | 未タスク formalize とリンク同期 |
 | Lead | `task-workflow.md`, `lessons-learned-current.md`, `indexes/*`, `LOGS.md`, `.agents` mirror | system spec same-wave 同期と最終検証 |
 
 ### 検証証跡
@@ -468,7 +468,7 @@ Phase 11 ウォークスルー: 実施済み
 | Phase 11 screenshot coverage | PASS（expected 3 / covered 3） |
 | Phase 12 implementation guide | PASS（10/10） |
 | 画面証跡 | `TC-11-01-skill-publishing-visual-review-board.png`, `TC-11-02-publishing-and-compatibility-focus.png`, `TC-11-03-safety-gate-and-permission-focus.png` |
-| 未タスク formalize | `UT-SKILL-LIFECYCLE-08-TYPE-IMPL` / `UT-SKILL-LIFECYCLE-08-IPC-TEST` / `UT-SKILL-LIFECYCLE-08-UI-IMPL` / `UT-SKILL-LIFECYCLE-08-NAMING-FIX` を `docs/30-workflows/unassigned-task/` に作成 |
+| 未タスク formalize | `UT-SKILL-LIFECYCLE-08-TYPE-IMPL` / `UT-SKILL-LIFECYCLE-08-IPC-TEST` / `UT-SKILL-LIFECYCLE-08-UI-IMPL` / `UT-SKILL-LIFECYCLE-08-NAMING-FIX` を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に作成 |
 
 再監査では「設計タスクでも明示要求がある場合は representative capture を撮影する」運用を適用し、NON_VISUAL 単独判定を採用しない。
 

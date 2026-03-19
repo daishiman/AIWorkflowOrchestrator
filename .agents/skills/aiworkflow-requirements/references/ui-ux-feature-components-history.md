@@ -311,7 +311,7 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 | 2026-03-02 | v1.13.1    | TASK-10A-B 未タスク追補: 苦戦箇所3件（Phase 11必須節検証/画面証跡鮮度/未タスク件数再計算）を独立未タスク `UT-TASK-10A-B-006〜008` として追加し、関連未タスク表を8件へ拡張 |
 | 2026-03-02 | v1.13.0    | TASK-10A-B 追補: 実装時の苦戦箇所（Phase 11 実証跡化/必須節不足/未タスク件数ドリフト）と5ステップ簡潔解決手順を追加 |
 | 2026-03-02 | v1.12.9    | TASK-10A-B 完了反映: 収録機能一覧・完了タスクへ SkillAnalysisView を追加。専用セクション（構成/IPC/a11y補正/画面証跡/未タスク5件）を新設 |
-| 2026-03-02 | v1.12.5    | TASK-UI-05A 再監査反映: SkillEditorView を「実装未着手」から「実装済み（統合未完了）」へ更新。再取得した画面証跡（UI05A-03/04）を追加し、未タスク正本を `docs/30-workflows/unassigned-task/` へ統一 |
+| 2026-03-02 | v1.12.5    | TASK-UI-05A 再監査反映: SkillEditorView を「実装未着手」から「実装済み（統合未完了）」へ更新。再取得した画面証跡（UI05A-03/04）を追加し、未タスク正本を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ統一 |
 | 2026-03-01 | v1.12.4    | TASK-UI-05A spec_created 反映: 収録機能一覧へ `Skill Editor View`（実装未着手）を追加。`仕様書作成済みタスク` セクションを新設し、未実装ギャップ（View未生成・導線未配線）と画面検証証跡を明記 |
 | 2026-03-02 | v1.12.8    | UT-UI-05B-001 登録: TASK-UI-05B の苦戦箇所（画面証跡の再撮影漏れリスク）を未タスク化し、関連未タスク表へ `task-ui-05b-phase12-screenshot-evidence-recapture-guard.md` を追加 |
 | 2026-03-02 | v1.12.7    | TASK-UI-05B テンプレート最適化: 仕様書別SubAgent分担（6責務）を追加し、簡潔解決手順を5ステップへ再編 |

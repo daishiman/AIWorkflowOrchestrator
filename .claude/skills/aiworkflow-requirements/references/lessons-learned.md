@@ -32,6 +32,7 @@
 | [lessons-learned-skill-lifecycle-test-hardening.md](lessons-learned-skill-lifecycle-test-hardening.md) | skill domain lessons (lifecycle test hardening) | TASK-10A-G 実装知見追補（2026-03-10） |
 | [lessons-learned-archive-2026-03-mid.md](lessons-learned-archive-2026-03-mid.md) | archive (2026-03-14〜2026-03-16) | 2026-03-14〜16 の教訓（TASK-FIX-ELECTRON-APP-MENU-ZOOM-001, TASK-SKILL-LIFECYCLE-04/05/06/07, TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 P57〜P61, UT-06-005, TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 等） |
 | [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | archive (2026-03-01〜2026-03-13) | 2026-03-01〜13 の教訓の保管（TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001, TASK-UI-04B-WORKSPACE-CHAT, TASK-FIX-LIGHT-THEME 等） |
+| [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) | ipc / preload / runtime lessons (slide ai-runtime alignment) | 正本 IPC 契約と legacy channel 名の同時記録 / RuntimeResolver 再利用の Phase 1 先行探索 / Phase 11 fallback screenshot metadata 固定 |
 | [lessons-learned-templates.md](lessons-learned-templates.md) | templates and checklist | 目次 / 関連ドキュメント / テンプレート（新規教訓追加用） / TASK-XXX: タスク名（YYYY-MM-DD） |
 
 ## 利用順序

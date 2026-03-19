@@ -11,7 +11,7 @@
 
 ### 実施内容
 - `docs/30-workflows/ut-skill-ipc-preload-extension-001/` を `docs/30-workflows/completed-tasks/ut-skill-ipc-preload-extension-001/` へ移動
-- `docs/30-workflows/unassigned-task/task-imp-ipc-preload-extension-spec-alignment-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-ipc-preload-extension-spec-alignment-001.md` を `docs/30-workflows/completed-tasks/unassigned-task/` へ移動
 - `references/task-workflow.md` の成果物・未タスク指示書リンクを移動後パスに更新
 
 ### 結果
@@ -29,7 +29,7 @@
 - 目的: task-9D〜9J 仕様契約ドリフト（旧参照パス/artifacts/Date方針）の再発防止タスクを台帳化
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-ipc-preload-spec-sync-ci-guard-001.md` を新規作成
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-ipc-preload-spec-sync-ci-guard-001.md` を新規作成
 - `references/task-workflow.md` の残課題テーブルへ未タスクを登録
 - 変更履歴に登録理由（親タスク苦戦箇所3件反映）を追記
 
@@ -71,7 +71,7 @@
 ### 実施内容
 - `references/task-workflow.md` に完了タスク記録（spec_created）を追加
 - 残課題テーブルへ `UT-IMP-IPC-PRELOAD-EXTENSION-SPEC-ALIGNMENT-001` を登録
-- 未タスク指示書 `docs/30-workflows/unassigned-task/task-imp-ipc-preload-extension-spec-alignment-001.md` を新規作成
+- 未タスク指示書 `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-ipc-preload-extension-spec-alignment-001.md` を新規作成
 - ワークフロー成果物（phase-10/12）を再同期し、Step 1-E 実施証跡を追記
 
 ### 結果
@@ -89,7 +89,7 @@
 - Phase: Phase 12（未タスク管理・仕様同期）
 
 ### SubAgent分担
-- SubAgent-A（未タスク仕様書）: `docs/30-workflows/unassigned-task/task-imp-aiworkflow-spec-reference-sync-001.md` を作成
+- SubAgent-A（未タスク仕様書）: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-spec-reference-sync-001.md` を作成
 - SubAgent-B（台帳反映）: `references/task-workflow.md` 残課題テーブルへ登録し、変更履歴を追記
 - SubAgent-C（スキル反映）: `SKILL.md` 変更履歴を更新し、検証コマンドを実行
 
@@ -216,7 +216,7 @@
 - Phase: Phase 12（未タスク化と台帳反映）
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/` に未タスク指示書を2件作成
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に未タスク指示書を2件作成
   - `task-imp-skill-ipc-response-contract-guard-001.md`
   - `task-imp-phase12-implementation-guide-quality-gate-001.md`
 - `references/task-workflow.md` の残課題テーブルに2件を追加
@@ -278,7 +278,7 @@
 - 目的: 未タスク監査の「対象差分」と「既存ベースライン」を分離する運用改善
 
 ### 実施内容
-- `docs/30-workflows/unassigned-task/task-imp-unassigned-audit-scope-control-001.md` を新規作成
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-unassigned-audit-scope-control-001.md` を新規作成
 - `references/task-workflow.md` の残課題テーブルへ未タスクを登録
 - 変更履歴テーブルへ登録履歴を追記
 

@@ -4,6 +4,19 @@
 
 ---
 
+## 2026-03-19 - TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 Phase 12 再監査ガード更新
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 retrospective / spec_created re-audit
+- **Result**: success
+- **Notes**:
+  - `SKILL.md` を 500行以内へ整理しつつ、`spec_created` でも system spec / LOGS / lessons / backlog / artifacts を同ターンで実更新するルールを固定
+  - `references/phase-11-12-guide.md` に screenshot fallback 時の metadata / harness path / manual-test-result 同値記録を追加
+  - `references/spec-update-workflow.md` に primary target file list 先行確定と mirror parity 必須ルールを追加
+  - 検証: `quick_validate.js .claude/skills/task-specification-creator` PASS（errors 0, warnings 10）、`validate_all.js .claude/skills/task-specification-creator` PASS（errors 0, warnings 1）
+
+---
+
 ## TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 設計完了（2026-03-18）
 
 - **Agent**: task-specification-creator
@@ -514,6 +527,15 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/` 全56ファイル |
 | 結果 | SkillLifecycleEvent（5カテゴリ18イベント種別）、SkillAggregateView集約ロジック、SkillFeedback 4種別還流設計、PublishReadinessMetrics Task08公開判断メトリクス契約、Task05/08連携データ供給経路を定義。Phase 10 PASS（MINOR 2件）、仕様レベルテストケース315件、未タスク5件検出（FR-M-01, FR-M-02, Note-01, Note-03, Note-05） |
 | 検証 | Phase 1-12 全Phase完了、artifacts.json同期済み |
+
+### 2026-03-19 - TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 再監査で Phase 11/12 guard を補強
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | guidance / feedback sync |
+| 変更対象 | `SKILL.md`, `references/phase-11-12-guide.md`, `references/spec-update-workflow.md`, `task-specification-creator/LOGS.md` |
+| 結果 | `spec_created` / docs-heavy task でも Phase 12 を計画記録で閉じず、system spec / lessons / backlog / LOGS / artifacts を同ターンで実更新することを明文化した。併せて screenshot fallback 時の harness / static review board / metadata 記録、primary target file list の先行確定、`.claude` / `.agents` mirror parity 確認をガードへ追加した |
+| 検証 | `validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment`、`verify-all-specs.js --workflow ... --json`、`validate-phase-output.js ...`、`validate-phase12-implementation-guide.js --workflow ...`、`diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator` |
 
 ### 2026-03-13 - Phase 12 root evidence / split-aware unassigned audit
 

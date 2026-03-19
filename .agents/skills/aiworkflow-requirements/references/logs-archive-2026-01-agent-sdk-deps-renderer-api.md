@@ -287,7 +287,7 @@ packages/shared/src/agent/agent-client.ts が @anthropic-ai/claude-agent-sdk を
 
 - **TASK-4-2-A**: Permission Dialog テーマカスタマイズ対応（低優先度）
 - **TASK-4-2-B**: Permission Dialog アニメーション追加（低優先度）
-- **配置先**: `docs/30-workflows/unassigned-task/`
+- **配置先**: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`
 
 ---
 

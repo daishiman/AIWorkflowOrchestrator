@@ -86,11 +86,11 @@
 
 - スキル: aiworkflow-requirements
 - 対象タスク: TASK-043B-UI-UX-IMPORT-LIST-DESIGN
-- 目的: `docs/30-workflows/unassigned-task/` の baseline 負債を feature 差分と切り分け、改善 backlog として正式管理する
+- 目的: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` の baseline 負債を feature 差分と切り分け、改善 backlog として正式管理する
 
 ### 実施内容
 
-- `docs/30-workflows/unassigned-task/task-imp-unassigned-task-legacy-normalization-001.md` を追加
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-unassigned-task-legacy-normalization-001.md` を追加
 - `references/task-workflow.md`
   - TASK-043B 節の未タスク判定を「current=0 を維持しつつ baseline は別UT化」に更新
   - 残課題テーブルへ `UT-IMP-UNASSIGNED-TASK-LEGACY-NORMALIZATION-001` を追加
@@ -132,7 +132,7 @@
 
 ### 実施内容
 
-- `docs/30-workflows/unassigned-task/task-imp-skill-import-result-contract-guard-001.md` を追加
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-import-result-contract-guard-001.md` を追加
 - `references/task-workflow.md`
   - TASK-043B 節の未タスク欄を「blocking 0 件 + 契約横展開 1 件 + legacy backlog 1 件」に更新
   - 残課題テーブルへ `UT-IMP-SKILL-IMPORT-RESULT-CONTRACT-GUARD-001` を追加
@@ -158,7 +158,7 @@
 - `references/arch-state-management.md` に import lifecycle 契約（selector/action/useShallow/P31派生）を追記。
 - `references/task-workflow.md` に TASK-10A-E-C 完了台帳と関連未タスク2件を追加。
 - Phase 11 実画面証跡を `TC-01..08` で再取得し、`manual-test-result.md` を証跡列付きテーブルに更新。
-- 未タスク指示書 `UT-10A-E-C-001/002` を `docs/30-workflows/unassigned-task/` へ作成。
+- 未タスク指示書 `UT-10A-E-C-001/002` を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ作成。
 
 ### 検証
 - `verify-all-specs --workflow docs/30-workflows/completed-tasks/task-043c-store-lifecycle-integration-design`
@@ -276,7 +276,7 @@
 - `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening`
 - `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening`
 - `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`
-- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md`
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-10a-g-skilleditor-fileops-store-migration.md`
 
 ### 結果
 - ステータス: success

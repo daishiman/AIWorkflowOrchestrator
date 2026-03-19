@@ -253,6 +253,15 @@ node scripts/apply_self_improvement.js \
         └─ analyze-feedback → design-self-improvement → apply_self_improvement
 ```
 
+### 6.3 Phase 12 docs-heavy で優先抽出する改善候補
+
+| 症状 | 追加すべき改善候補 | 優先対象 |
+|------|--------------------|----------|
+| `spec_created` なのに Phase 12 が計画記述で止まる | `.claude` 正本 / lessons / backlog / artifacts を同一ターンで実更新する guide 追加 | `references/update-process.md`, `SKILL.md` |
+| screenshot fallback に metadata や failure reason が無い | harness / capture script / metadata / review board path を必須化 | `assets/phase12-system-spec-retrospective-template.md` |
+| 未タスクを formalize したが配置先が揺れる | `docs/30-workflows/unassigned-task/` と completed backlog の配置判断を追記 | `references/update-process.md` |
+| system spec 更新と skill 更新が別ターンに分離される | `A: system spec / B: screenshot / C: unassigned / D: skill mirror` の lane をテンプレート化 | `SKILL.md`, templates |
+
 ---
 
 ## 7. 実装例

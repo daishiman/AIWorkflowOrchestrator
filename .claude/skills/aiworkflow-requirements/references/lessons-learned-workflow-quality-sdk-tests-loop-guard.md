@@ -145,8 +145,8 @@ beforeEach(() => {
 
 | タスクID                               | タスク名                                                    | 優先度 | 仕様書                                                                                                                                                                |
 | -------------------------------------- | ----------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| task-imp-vitest-mock-reset-utility-001 | Vitest モック2段階リセットユーティリティ共通化              | 中     | [`docs/30-workflows/unassigned-task/task-imp-vitest-mock-reset-utility-001.md`](../../../docs/30-workflows/unassigned-task/task-imp-vitest-mock-reset-utility-001.md) |
-| task-ref-vitest-module-mock-audit-001  | Vitest モジュールレベルモック監査・使い分けガイドライン策定 | 低     | [`docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md`](../../../docs/30-workflows/unassigned-task/task-ref-vitest-module-mock-audit-001.md)   |
+| task-imp-vitest-mock-reset-utility-001 | Vitest モック2段階リセットユーティリティ共通化              | 中     | [`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-vitest-mock-reset-utility-001.md`](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-vitest-mock-reset-utility-001.md) |
+| task-ref-vitest-module-mock-audit-001  | Vitest モジュールレベルモック監査・使い分けガイドライン策定 | 低     | [`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ref-vitest-module-mock-audit-001.md`](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ref-vitest-module-mock-audit-001.md)   |
 
 ---
 

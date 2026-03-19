@@ -152,7 +152,7 @@ expect(template).toContainEqual(expect.objectContaining({ role: "zoomIn" }));
 
 | 未タスクID | 概要 | 指示書パス |
 | --- | --- | --- |
-| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct renderView 到達ガード | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
-| UT-IMP-P40-DYNAMIC-IMPORT-TEST-PATTERN-STANDARDIZATION-001 | P40 dynamic import テストパターン標準化 | `docs/30-workflows/unassigned-task/task-imp-p40-dynamic-import-test-pattern-standardization-001.md` |
-| UT-IMP-QUICK-REFERENCE-SEARCH-PATTERNS-SPLIT-001 | quick-reference-search-patterns.md 500行超過分割 | `docs/30-workflows/unassigned-task/task-imp-quick-reference-search-patterns-split-001.md` |
-| UT-IMP-SPEC-500LINE-PREEMPTIVE-SPLIT-GUIDELINE-001 | 500行制限 先制分割ガイドライン | `docs/30-workflows/unassigned-task/task-imp-spec-500line-preemptive-split-guideline-001.md` |
+| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct renderView 到達ガード | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+| UT-IMP-P40-DYNAMIC-IMPORT-TEST-PATTERN-STANDARDIZATION-001 | P40 dynamic import テストパターン標準化 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-p40-dynamic-import-test-pattern-standardization-001.md` |
+| UT-IMP-QUICK-REFERENCE-SEARCH-PATTERNS-SPLIT-001 | quick-reference-search-patterns.md 500行超過分割 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-quick-reference-search-patterns-split-001.md` |
+| UT-IMP-SPEC-500LINE-PREEMPTIVE-SPLIT-GUIDELINE-001 | 500行制限 先制分割ガイドライン | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-spec-500line-preemptive-split-guideline-001.md` |

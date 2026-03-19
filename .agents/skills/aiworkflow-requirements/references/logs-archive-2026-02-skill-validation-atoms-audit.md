@@ -249,7 +249,7 @@
 - Phase: Phase 12 追加監査
 
 ### 実施内容
-- `task-workflow.md` / `interfaces-agent-sdk-skill.md` / `lessons-learned.md` の未タスク参照を `docs/30-workflows/unassigned-task/` へ統一
+- `task-workflow.md` / `interfaces-agent-sdk-skill.md` / `lessons-learned.md` の未タスク参照を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` へ統一
 - `completed-tasks/unassigned-task/` に残っていた未実施6件を `unassigned-task/` へ移動、重複1件を整理
 - `interfaces-agent-sdk-skill.md` に本タスクの苦戦箇所と再発防止手順を追記
 - `lessons-learned.md` v1.18.2 を追加（id/name混同の4ステップ解決手順）
@@ -299,7 +299,7 @@
 
 ### 実施内容
 - `verify-unassigned-links` で検出された未実在参照を是正（`task-workflow.md` 由来）
-- `docs/30-workflows/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md` を追加し、残課題リンクを実在化
+- `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-fix-skill-import-id-mismatch-001.md` を追加し、残課題リンクを実在化
 - `ui-overhaul/00-1-design-tokens.md` 参照互換ファイルを追加し、分割仕様群の導線を維持
 - `references/testing-component-patterns.md` にテーマ横断テストヘルパー（`renderWithTheme` / `renderWithAllThemes`）パターンを追加
 - `generate-index.js` 実行により `indexes/topic-map.md` / `indexes/keywords.json` を再生成

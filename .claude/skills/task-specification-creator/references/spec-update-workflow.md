@@ -33,6 +33,8 @@
 | 「worktree環境なのでStep 1-Aはマージ後でよい」 | **Step 1-A必須** -- 先送りすると契約ドリフト再発 |
 | 「`artifacts.json` か `outputs/artifacts.json` の片方だけでよい」 | **両方同期必須** |
 | 「topic-map.mdは変更なし」 | **再生成が必要** -- セクション追加/削除/更新/行数変更で必須 |
+| 「設計タスクなので Step 2 は計画だけ書けばよい」 | **誤り** -- `spec_created` でも system spec / lessons / backlog / LOGS の実更新が必要 |
+| 「generic なファイル名へ書いておけば十分」 | **誤り** -- 実際の責務分割に沿った primary target file list を先に確定する |
 
 ---
 
@@ -48,6 +50,7 @@
 | 「未タスク指示書のunassigned-task/配置は見送り」 | **作成が必要** | 検出件数が1件以上の場合は原則作成する |
 | 「Phase 9成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** | 命名規約と検証の期待値に合わせる |
 | 「`documentation-changelog.md` だけあれば Phase 12 は完了扱い」 | **必須4成果物を揃える** | spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report |
+| 「`.claude` だけ直せば mirror は後でよい」 | **完了前に parity を確認** | skill root が複数ある repo では `.agents` mirror drift を閉じる必要がある |
 
 ### 新規型定義の仕様書配置判断フロー
 
@@ -128,10 +131,12 @@
 - [ ] IPC拡張を含む場合、チャンネル数が実装と仕様書で一致している
 - [ ] 残課題テーブルに該当タスクがある場合、取り消し線+完了マークで更新した
 - [ ] `artifacts.json` と `outputs/artifacts.json` の completed成果物一覧が一致している
-- [ ] `generate-index.js --workflow <path> --regenerate` を実行した
+- [ ] primary target file list を path 単位で確定してから Step 2 を実施した
+- [ ] `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行した
 - [ ] Phase 9成果物名を `phase-9-quality-assurance.md` で統一した
 - [ ] `outputs/phase-12/` に必須4成果物が存在する
 - [ ] topic-map.mdに新規セクションのエントリを追加した
+- [ ] skill root が複数ある場合、`.claude` / `.agents` parity を確認した
 
 ---
 

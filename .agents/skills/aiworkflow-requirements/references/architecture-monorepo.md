@@ -206,7 +206,7 @@ paths マッピングでは解決先がどちらのパターンかを正確に�
 | タスクID | 概要 | 仕様書パス | ステータス |
 | --- | --- | --- | --- |
 | UT-FIX-TS-VITEST-TSCONFIG-PATHS-001 | vitest-tsconfig-paths プラグイン導入による alias 手動同期の自動化 | `docs/30-workflows/vitest-tsconfig-paths-sync/` | **完了**（2026-02-24） |
-| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 | @repo/shared ソース構造二重性の統一（types/ と src/types/ の整理） | `docs/30-workflows/unassigned-task/task-refactor-shared-source-structure-consolidation.md` | 未着手 |
+| TASK-REFACTOR-SHARED-SOURCE-STRUCTURE-001 | @repo/shared ソース構造二重性の統一（types/ と src/types/ の整理） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-refactor-shared-source-structure-consolidation.md` | 未着手 |
 | TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001 | @repo/shared モジュール解決3層整合CIガード | `docs/30-workflows/TASK-IMP-MODULE-RESOLUTION-CI-GUARD-001/` | **完了**（2026-02-22） |
 
 ---
@@ -297,7 +297,7 @@ paths マッピングでは解決先がどちらのパターンかを正確に�
 
 | 苦戦箇所 | 原因 | 対処 |
 | --- | --- | --- |
-| Phase 10 MINOR（M1/M2/M3）の残置 | コア検証機能の実装を優先し、レポート表現（修正ガイダンス/件数サマリー/シグネチャ整合）が後回しになった | 派生未タスク `TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001` を起票し、`docs/30-workflows/unassigned-task/` に登録してP3 3ステップ（指示書/残課題表/参照リンク）を完了 |
+| Phase 10 MINOR（M1/M2/M3）の残置 | コア検証機能の実装を優先し、レポート表現（修正ガイダンス/件数サマリー/シグネチャ整合）が後回しになった | 派生未タスク `TASK-IMP-MODULE-SYNC-REPORT-ENHANCEMENT-001` を起票し、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に登録してP3 3ステップ（指示書/残課題表/参照リンク）を完了 |
 | Phase 12証跡と仕様書本体状態の不一致リスク | 成果物生成が先行すると、仕様書本体のステータス同期が漏れやすい | Phase 12で `verify-all-specs` / `validate-phase-output` を実行し、成果物・仕様書・台帳の3点を同時確認 |
 | 未タスク監査結果の誤読リスク | リポジトリ全体には既存の未準拠ファイルが多く、対象タスク由来の課題と混同しやすい | 監査結果を「全体ベースライン」と「今回対象ファイル」に分離し、対象（`task-imp-module-sync-report-enhancement.md`）のみテンプレート準拠を個別確認 |
 

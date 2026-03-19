@@ -18,6 +18,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-19 | 3.0.1 | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 再監査で `lessons-learned-ipc-preload-runtime.md` に task09 教訓4件を同期したことを index へ反映 |
 | 2026-03-18 | 3.0.0 | 1489行 → 400行以下に圧縮。3重重複セクション除去。UT-06-003 を `lessons-learned-safety-gate-ipc-quality.md` に分割。TASK-SKILL-LIFECYCLE-08 仕様書作成/再監査を `lessons-learned-phase12-workflow-lifecycle.md` に移動。SafetyGate P62/P63 は `lessons-learned-safety-gate-permission-fallback.md` で管理 |
 | 2026-03-18 | 2.1.1 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）を `lessons-learned-phase12-workflow-lifecycle.md` に追記。合計5件 |
 | 2026-03-18 | 2.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を `lessons-learned-phase12-workflow-lifecycle.md` に追加 |
@@ -42,6 +43,7 @@
 | 2026-03-12 | 1.29.82 | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補。workflow baseline/global legacy 分離報告、skill-creator 同期時の3ファイル同値転記ルール追加 |
 | 2026-03-06 | 1.29.43 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 追加。大規模 reference スキルの入口設計と validator 不整合を分離、三層入口と validator 整合を未タスク化 |
 
+> 2026-03-19 task09 再監査の current 教訓は [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) を参照。
 > 2026-03-14〜16 の教訓は [lessons-learned-archive-2026-03-mid.md](lessons-learned-archive-2026-03-mid.md) を参照。
 > 2026-03-13 以前の教訓は [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) を参照。
 
@@ -360,10 +362,10 @@ if (error != null && typeof error === "object" && "code" in error && typeof erro
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | 未タスク指示書を `safety-gate-implementation/unassigned-task/` に配置したが、正しくは `docs/30-workflows/unassigned-task/` |
+| 課題 | 未タスク指示書を `safety-gate-implementation/unassigned-task/` に配置したが、正しくは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` |
 | 再発条件 | workflow ローカルパスに未タスクを配置する（P38/P58 と同一パターン） |
-| 解決策 | root canonical path（`docs/30-workflows/unassigned-task/`）へ再配置 |
-| 標準ルール | Phase 12 テンプレートに「配置先: `docs/30-workflows/unassigned-task/`」を明示する |
+| 解決策 | root canonical path（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`）へ再配置 |
+| 標準ルール | Phase 12 テンプレートに「配置先: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`」を明示する |
 | 関連パターン | P38（未タスク配置ディレクトリ間違い）、P58（設計タスクにおける未タスク指示書の配置省略） |
 | 関連タスク | UT-06-003 |
 
@@ -373,7 +375,7 @@ if (error != null && typeof error === "object" && "code" in error && typeof erro
 2. Phase 4 テスト設計時に Phase 2 のレスポンス形式定義を参照し、アサーションを wrapper 形式で記述する。
 3. catch ブロック内の `error: unknown` には `in` 演算子パターンのみ使用し、`as` キャストを禁止する。
 4. ternary 演算子の分岐カバレッジは `vitest run --coverage --reporter=json` で JSON 出力して分析する。
-5. 未タスク指示書は必ず `docs/30-workflows/unassigned-task/` に配置する。
+5. 未タスク指示書は必ず `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置する。
 
 ---
 
@@ -711,9 +713,9 @@ track("registerSafetyGateHandlers", () => {
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | 未タスク指示書を `safety-gate-implementation/unassigned-task/` に配置したが、正しくは `docs/30-workflows/unassigned-task/` |
-| 解決策 | root canonical path（`docs/30-workflows/unassigned-task/`）へ再配置 |
-| 標準ルール | Phase 12 テンプレートに「配置先: `docs/30-workflows/unassigned-task/`」を明示する |
+| 課題 | 未タスク指示書を `safety-gate-implementation/unassigned-task/` に配置したが、正しくは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` |
+| 解決策 | root canonical path（`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`）へ再配置 |
+| 標準ルール | Phase 12 テンプレートに「配置先: `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/`」を明示する |
 | 関連パターン | P38（未タスク配置ディレクトリ間違い）、P58 |
 | 関連タスク | UT-06-003 |
 
@@ -723,7 +725,7 @@ track("registerSafetyGateHandlers", () => {
 2. Phase 4 テスト設計時に Phase 2 のレスポンス形式定義を参照し、アサーションを wrapper 形式で記述する。
 3. catch ブロック内の `error: unknown` には `in` 演算子パターンのみ使用し、`as` キャストを禁止する。
 4. ternary 演算子の分岐カバレッジは `vitest run --coverage --reporter=json` で JSON 出力して分析する。
-5. 未タスク指示書は必ず `docs/30-workflows/unassigned-task/` に配置する。
+5. 未タスク指示書は必ず `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置する。
 
 ---
 
@@ -761,4 +763,3 @@ track("registerSafetyGateHandlers", () => {
 - **関連 Pitfall**: P59（並列エージェントによる changelog 件数不整合）
 
 ### 苦戦5: インラインセレクタ vs 個別セレクタの設計判断遅延
-

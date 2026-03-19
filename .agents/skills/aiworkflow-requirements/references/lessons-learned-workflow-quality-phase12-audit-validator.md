@@ -190,7 +190,7 @@
 
 | 項目             | 内容                                                                                          |
 | ---------------- | --------------------------------------------------------------------------------------------- |
-| 課題             | `docs/30-workflows/unassigned-task/` に配置されていても、テンプレート見出し不足で品質が落ちる |
+| 課題             | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置されていても、テンプレート見出し不足で品質が落ちる |
 | 再発条件         | リンク存在チェックだけで完了判定した場合                                                      |
 | 原因             | 配置検証とフォーマット検証を別タスクとして扱っていた                                          |
 | 対処             | UT-9G-001〜005 を対象に `## メタ情報` + `## 1..9` の10見出しを機械確認                        |
@@ -201,7 +201,7 @@
 1. 監査コマンド前に `rg --files` で実体パスを確定する。
 2. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を順に実行する。
 3. 監査合否は `currentViolations` を正本にし、baselineは改善バックログとして分離する。
-4. 未タスクは `docs/30-workflows/unassigned-task/` 配置確認と `## メタ情報 + ## 1..9` 見出し確認を同時に実行する。
+4. 未タスクは `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 配置確認と `## メタ情報 + ## 1..9` 見出し確認を同時に実行する。
 
 ---
 
@@ -231,7 +231,7 @@
 
 | 項目             | 内容                                                                                           |
 | ---------------- | ---------------------------------------------------------------------------------------------- |
-| 課題             | `docs/30-workflows/unassigned-task/` にファイルがあっても、9セクション形式崩れを見落としやすい |
+| 課題             | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` にファイルがあっても、9セクション形式崩れを見落としやすい |
 | 再発条件         | `ls` による存在確認だけで完了判定した場合                                                      |
 | 原因             | 配置検証・見出し検証・監査判定を別工程として扱った                                             |
 | 対処             | UT-9I-001/002 で `10見出し（メタ情報 + 1..9）` と `メタ情報見出し件数=1` を機械確認した        |
@@ -298,7 +298,7 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ### 同種課題の簡潔解決手順（5ステップ）
 
-1. `rg -n "docs/30-workflows/unassigned-task/\\*\\.md"` でワイルドカード参照を検出し、実体パスへ置換する。
+1. `rg -n "docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/\\*\\.md"` でワイルドカード参照を検出し、実体パスへ置換する。
 2. `verify-all-specs` と `validate-phase-output` を実行して Phase 構造を先に固定する。
 3. `verify-unassigned-links` で missing を 0 にする。
 4. `audit --target-file` / `audit --diff-from HEAD` を実行し、合否は `currentViolations.total` で判定する。

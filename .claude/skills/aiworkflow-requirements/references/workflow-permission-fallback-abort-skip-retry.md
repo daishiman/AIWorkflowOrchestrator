@@ -129,8 +129,8 @@ cancelAll() → revokeSessionEntries(sessionId) → log → IPC通知(SKILL_STRE
 | タスクID | 内容 | 優先度 | 指示書パス |
 | --- | --- | --- | --- |
 | ~~UT-06-005-A~~ | ~~PreToolUse Hook フォールバック統合（GAP-02/03）~~ **完了: 2026-03-17** | ~~高~~ | `docs/30-workflows/UT-06-005-A-hook-fallback-integration/` |
-| UT-06-005-B | revokeSessionEntries セッション別本格実装（GAP-04） | 中 | `docs/30-workflows/unassigned-task/task-ut-06-005-b-session-revoke-impl.md` |
-| UT-06-005-C | SkillStreamMessageType abort/skip 型追加（GAP-06） | 中 | `docs/30-workflows/unassigned-task/task-ut-06-005-c-stream-type-abort-skip.md` |
+| UT-06-005-B | revokeSessionEntries セッション別本格実装（GAP-04） | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-06-005-b-session-revoke-impl.md` |
+| UT-06-005-C | SkillStreamMessageType abort/skip 型追加（GAP-06） | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-06-005-c-stream-type-abort-skip.md` |
 
 ---
 

@@ -138,7 +138,11 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 > | Part 1/2 実装ガイド作成          | ✅ メイン責務        | ❌ 対象外          |
 > | aiworkflow-requirements 仕様更新 | ❌ 対象外            | ✅ Step 2          |
 > | タスク完了記録（仕様書内）       | ❌ 対象外            | ✅ Step 1-A 必須   |
-> | LOGS.md更新（2ファイル）         | ❌ 対象外            | ✅ Step 1-A 必須   |
+
+> **spec_created task の補足**
+>
+> `spec_created` / docs-heavy task でも、Phase 12 は計画文で閉じない。`.claude/skills/` の system spec / LOGS / lessons learned / backlog / `artifacts.json` / `outputs/artifacts.json` を同ターンで実更新し、必要なら `.agents` mirror parity まで確認する。
+> `LOGS.md` 2ファイルの更新は Step 1-A の必須項目とし、差分がある `SKILL.md` だけを追加更新する。
 
 **Step 2 更新が必要な場合**:
 
@@ -203,6 +207,9 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | Phase 10 MINOR指摘を未タスク化せず進行                | **Phase 10レビュー前に** unassigned-task-guidelines.md を読み、MINOR判定→未タスク化ルールを確認 |
 | 未タスク検出レポートで0件判定のまま未修正             | Phase 10 MINOR指摘は必ず未タスク化の対象。「機能に影響なし」は不要判定の理由にならない          |
 | `task-workflow.md` の未タスクリンクが参照切れ         | Step 1-E後に `verify-unassigned-links.js` を実行して `ALL_LINKS_EXIST` を確認する               |
+| `spec_created` を理由に Step 2 を計画記録で止める     | 設計タスクでも system spec / lessons / backlog / LOGS は実更新する                              |
+| generic なファイル名へ spec sync してしまう           | primary target file list を path 単位で確定してから更新する                                     |
+| screenshot fallback の理由と metadata を残さない      | capture method / failure reason / generated-at を metadata と manual-test に両方記録する         |
 
 ### Phase 12 苦戦防止Tips
 
@@ -215,42 +222,21 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする                                                                                                                                                                                                   |
 | **LOGS.md/SKILL.md は4ファイル更新**       | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md                                                                                                                           |
 | **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
+| **primary target を先に固定する**          | Step 2 に入る前に「どの spec file が正本か」を path で列挙し、generic 名称への誤記を防ぐ                                                                                                                                                                              |
+| **mirror parity を閉じる**                 | skill root が複数ある repo では `.claude` 更新後に `.agents` との差分を `diff -qr` で確認する                                                                                                                                                                         |
 
 ---
 
 ## 重要ルール
 
-### Phase完了時の必須アクション
+- Phase 完了前に必須成果物、`artifacts.json`、`outputs/artifacts.json` を実体確認する。
+- `spec_created` / docs-heavy task でも、Step 1 / Step 2 を計画文で止めず、`.claude` 正本・LOGS・lessons・backlog を同ターンで更新する。
+- `quick_validate.js` / `validate_all.js` は `node .claude/skills/skill-creator/scripts/...` 経由で実行し、結果を Phase 12 成果物へ残す。
+- commit / PR は user の明示承認後だけ実施する。
 
-1. **タスク完全実行**: Phase内で指定された全タスクを完全に実行
-2. **成果物確認**: 全ての必須成果物が生成されていることを検証
-3. **artifacts.json更新**: `complete-phase.js` でPhase完了ステータスを更新
-4. **完了条件チェック**: 各タスクを完遂した旨を必ず明記
+## 導線
 
-### PR作成に関する注意
-
-**PR作成は自動実行しない。必ずユーザーの明示的な許可を得てから実行すること。**
-
-📖 [references/commands.md](references/commands.md) - コマンド一覧
-
----
-
-## よく使うコマンド
-| Task | 責務 | パターン | 入力 | 出力 |
-| --- | --- | --- | --- | --- |
-| `decompose-task` | タスクを単一責務に分割 | `seq` | ユーザー要求 | タスク分解リスト |
-| `identify-scope` | スコープ、前提、制約を定義 | `seq` | 分解結果 | スコープ定義 |
-| `design-phases` | phase 構成と gate を設計 | `seq` | scope | phase 設計書 |
-| `generate-task-specs` | `index.md` と `phase-*.md` を生成 | `seq` | phase 設計書 | workflow 仕様一式 |
-| `output-phase-files` | phase ファイルを出力 | `par` | 仕様データ | `phase-*.md` |
-| `update-dependencies` | `artifacts.json` と依存関係を更新 | `par` | phase 一式 | 依存マップ |
-| `verify-specs` | workflow 全体をレビュー | `seq` | 仕様一式 | PASS/FAIL |
-| `update-system-specs` | Phase 12 Task 2 を遂行 | `seq` | 実装結果 | 仕様同期結果 |
-| `generate-unassigned-task` | 残課題を task spec 化 | `cond` | review 指摘 | `unassigned-task/*.md` |
-
-凡例: `seq` = 順次、`par` = 並列、`cond` = 条件分岐。
-
-## agent 導線
+### 実行エントリ
 
 - [agents/decompose-task.md](agents/decompose-task.md)
 - [agents/identify-scope.md](agents/identify-scope.md)
@@ -262,120 +248,67 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 - [agents/update-system-specs.md](agents/update-system-specs.md)
 - [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md)
 
-## Phase 12 と Phase 13 の境界
-
-| Task | 完了条件 | 詳細 |
-| --- | --- | --- |
-| Task 12-1 | `implementation-guide.md` が Part 1/2 を満たす | [references/phase-12-documentation-guide.md](references/phase-12-documentation-guide.md) |
-| Task 12-2 | Step 1 と Step 2 の判定が記録される | [references/spec-update-workflow.md](references/spec-update-workflow.md) |
-| Task 12-3 | `documentation-changelog.md` と artifacts が同期される | [references/spec-update-validation-matrix.md](references/spec-update-validation-matrix.md) |
-| Task 12-4 | 0件でも `unassigned-task-detection.md` を出し、`current/baseline` を分離して記録する | [references/unassigned-task-guidelines.md](references/unassigned-task-guidelines.md) |
-| Task 12-5 | 改善点なしでも `skill-feedback-report.md` を出し、`phase12-task-spec-compliance-check.md` を root evidence として残す | [references/patterns-phase12-sync.md](references/patterns-phase12-sync.md) |
-| Phase 13 | commit と PR は user の明示承認後だけ | [references/review-gate-criteria.md](references/review-gate-criteria.md) |
-
-UI/UX 実装を含む task では Phase 11 で screenshot と Apple UI/UX 視覚検証を行う。手順は [references/phase-11-screenshot-guide.md](references/phase-11-screenshot-guide.md) と [references/screenshot-verification-procedure.md](references/screenshot-verification-procedure.md) を使う。
-
-## リソース導線
-
-### core workflow
-
-- [references/resource-map.md](references/resource-map.md)
-- [references/create-workflow.md](references/create-workflow.md)
-- [references/execute-workflow.md](references/execute-workflow.md)
-- [references/commands.md](references/commands.md)
-- [references/quality-standards.md](references/quality-standards.md)
-- [references/coverage-standards.md](references/coverage-standards.md)
-- [references/review-gate-criteria.md](references/review-gate-criteria.md)
-- [references/artifact-naming-conventions.md](references/artifact-naming-conventions.md)
-- [references/evidence-sync-rules.md](references/evidence-sync-rules.md)
-- [references/self-improvement-cycle.md](references/self-improvement-cycle.md)
-
-### phase templates
-
-- [references/phase-templates.md](references/phase-templates.md)
-- [references/phase-template-core.md](references/phase-template-core.md)
-- [references/phase-template-execution.md](references/phase-template-execution.md)
-- [references/phase-template-phase11.md](references/phase-template-phase11.md)
-- [references/phase-template-phase12.md](references/phase-template-phase12.md)
-- [references/phase-template-phase13.md](references/phase-template-phase13.md)
-
-### Phase 11/12 guides
+### Phase 11 / 12 / 13
 
 - [references/phase-11-12-guide.md](references/phase-11-12-guide.md)
 - [references/phase-11-screenshot-guide.md](references/phase-11-screenshot-guide.md)
 - [references/phase-12-documentation-guide.md](references/phase-12-documentation-guide.md)
-- [references/phase12-checklist-definition.md](references/phase12-checklist-definition.md)
-- [references/technical-documentation-guide.md](references/technical-documentation-guide.md)
-- [references/screenshot-verification-procedure.md](references/screenshot-verification-procedure.md)
+- [references/phase-template-phase11.md](references/phase-template-phase11.md)
+- [references/phase-template-phase12.md](references/phase-template-phase12.md)
+- [references/phase-template-phase13.md](references/phase-template-phase13.md)
 - [assets/phase12-task-spec-compliance-template.md](assets/phase12-task-spec-compliance-template.md)
 
-### spec update
+### Spec Sync / Validation
 
 - [references/spec-update-workflow.md](references/spec-update-workflow.md)
+- [references/spec-update-workflow-advanced.md](references/spec-update-workflow-advanced.md)
 - [references/spec-update-step1-completion.md](references/spec-update-step1-completion.md)
 - [references/spec-update-step2-domain-sync.md](references/spec-update-step2-domain-sync.md)
 - [references/spec-update-validation-matrix.md](references/spec-update-validation-matrix.md)
+- [references/unassigned-task-guidelines.md](references/unassigned-task-guidelines.md)
 
-### pattern family
+### Patterns / Troubleshooting
 
 - [references/patterns.md](references/patterns.md)
-- [references/patterns-workflow-generation.md](references/patterns-workflow-generation.md)
-- [references/patterns-validation-and-audit.md](references/patterns-validation-and-audit.md)
+- [references/patterns-guidelines.md](references/patterns-guidelines.md)
+- [references/patterns-parallel-ipc.md](references/patterns-parallel-ipc.md)
 - [references/patterns-phase12-sync.md](references/patterns-phase12-sync.md)
+- [references/patterns-success-implementation.md](references/patterns-success-implementation.md)
+- [references/patterns-success-phase12.md](references/patterns-success-phase12.md)
+- [references/patterns-testing.md](references/patterns-testing.md)
+- [references/patterns-troubleshooting.md](references/patterns-troubleshooting.md)
+- [references/patterns-ui-type-auth.md](references/patterns-ui-type-auth.md)
+- [references/patterns-validation-and-audit.md](references/patterns-validation-and-audit.md)
+- [references/patterns-workflow-generation.md](references/patterns-workflow-generation.md)
 
-### logs and archives
+### 補助リソース
 
+- [references/resource-map.md](references/resource-map.md)
+- [references/commands.md](references/commands.md)
+- [references/quality-standards.md](references/quality-standards.md)
+- [references/review-gate-criteria.md](references/review-gate-criteria.md)
 - [LOGS.md](LOGS.md)
 - [references/logs-archive-index.md](references/logs-archive-index.md)
-- [references/logs-archive-2026-march.md](references/logs-archive-2026-march.md)
-- [references/logs-archive-2026-feb.md](references/logs-archive-2026-feb.md)
-- [references/logs-archive-legacy.md](references/logs-archive-legacy.md)
-- [references/changelog-archive.md](references/changelog-archive.md)
-
-## システム観点チェック
-
-| 観点 | aiworkflow-requirements 側の参照先 |
-| --- | --- |
-| セキュリティ | `security-*.md` |
-| UI/UX | `ui-ux-*.md` |
-| アーキテクチャ | `architecture-*.md` |
-| API/IPC | `api-*.md` |
-| データ整合性 | `database-*.md` |
-| エラーハンドリング | `error-handling.md` |
-| インターフェース | `interfaces-*.md` |
-
-Electron desktop task では Renderer、Main、IPC、Preload、ローカルストレージの境界を都度明記する。詳細は [references/quality-standards.md](references/quality-standards.md) を参照。
 
 ## 検証コマンド
 
 ```bash
 node scripts/validate-phase-output.js docs/30-workflows/{{FEATURE_NAME}}
 node scripts/verify-all-specs.js --workflow docs/30-workflows/{{FEATURE_NAME}}
+node scripts/verify-unassigned-links.js --source docs/30-workflows/{{FEATURE_NAME}}/outputs/phase-12/unassigned-task-detection.md
+node scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+node scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/{{FEATURE_NAME}}
 node ../skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
 node ../skill-creator/scripts/validate_all.js .claude/skills/task-specification-creator
 diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator
-node scripts/log-usage.js --result success --phase "Phase {{N}}"
 ```
-
-Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.js`、`verify-unassigned-links.js`、`validate-phase12-implementation-guide.js` を実行する。
 
 ## ベストプラクティス
 
-### すべきこと
-
-- 仕様、テスト、実装、検証、同期の順序を崩さない。
-- `outputs/phase-N/` を phase ごとに実体化し、`artifacts.json` と同時更新する。
-- SubAgent 相当の lane は 3 並列以下に抑え、validation lane は直列で締める。
 - detail を増やしたくなったら `references/` へ逃がし、`SKILL.md` は入口に保つ。
-- Phase 12 は `implementation-guide`、`system-spec-update-summary`、`documentation-changelog`、`unassigned-task-detection`、`skill-feedback-report` を必ず揃える。
-
-### 避けるべきこと
-
-- `.agents` 側だけ先に更新して canonical root を残すこと。
-- `outputs/` を後回しにして phase 完了だけ先に付けること。
-- `current` と `baseline` の監査結果を混ぜること。
-- UI task で screenshot を自動テスト代替として扱うこと。
-- user の明示承認なしに commit や PR を作ること。
+- Phase 12 は `implementation-guide`、`system-spec-update-summary`、`documentation-changelog`、`unassigned-task-detection`、`skill-feedback-report`、`phase12-task-spec-compliance-check` を必ず揃える。
+- `current` と `baseline` の監査値は混ぜず、task-scope と repo baseline を分離記録する。
+- UI task の screenshot は自動テスト代替ではなく、Phase 11 の visual evidence として扱う。
 
 ## 変更履歴
 

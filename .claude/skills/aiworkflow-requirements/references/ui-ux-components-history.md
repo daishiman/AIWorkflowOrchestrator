@@ -83,7 +83,7 @@
 | 2.14.0  | 2026-03-03 | TASK-10A-D 完了反映: 完了タスクへ SkillManagementPanel ビュー統合を追加し、実装完了記録（SkillAnalysisView/SkillCreateWizard統合、ChatPanel導線、agentSlice拡張、苦戦箇所3件）を同期 |
 | 2.13.9  | 2026-03-02 | TASK-10A-C 完了反映: 主要UI一覧/organisms一覧/完了タスクへ SkillCreateWizard を追加し、実装完了記録（4ステップUI、`skill:create` 契約、Phase 11 画面証跡 TC-01〜08、未タスク0件）を同期 |
 | 2.13.8  | 2026-03-02 | TASK-10A-B 完了反映: 主要UI一覧/organisms一覧/完了タスクへ SkillAnalysisView を追加し、実装完了記録（画面証跡・a11y修正・未タスク5件）を同期 |
-| 2.13.6  | 2026-03-02 | TASK-UI-05A 再監査反映: 状態を「実装ファイル実在・統合未完了」へ更新し、再取得した画面証跡（UI05A-03/04）を追加。未タスク正本を `docs/30-workflows/unassigned-task/` 配下へ統一 |
+| 2.13.6  | 2026-03-02 | TASK-UI-05A 再監査反映: 状態を「実装ファイル実在・統合未完了」へ更新し、再取得した画面証跡（UI05A-03/04）を追加。未タスク正本を `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 配下へ統一 |
 | 2.13.5  | 2026-03-01 | TASK-UI-05A spec_created 反映: `SkillEditorView` を主要UI一覧/viewsへ追加（実装未着手明記）。仕様書作成済みタスク表と画面検証証跡（Dashboard/Editorスクリーンショット、manual-test-result、discovered-issues）を追加 |
 | 2.13.7  | 2026-03-02 | TASK-UI-05B 追補: 実装内容と苦戦箇所サマリーを追加し、再利用参照を feature/workflow/lessons へ統一 |
 | 2.13.6  | 2026-03-02 | TASK-UI-05B 実装完了同期: 主要UI一覧・views階層・完了タスクを `completed` 状態へ更新し、`spec_created` 台帳を実装完了記録へ置換 |

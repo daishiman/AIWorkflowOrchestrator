@@ -38,7 +38,7 @@
 | unassigned cleanup | 元の未タスク仕様書を `未実施` のまま残さず、workflow 実行済み表記へ是正した | `docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/unassigned-task/task-imp-workspace-parent-reference-sweep-guard-001.md` |
 | visual re-audit | 04A / 04B / 04C / mobile overlay の same-day screenshot を completed workflow へ集約し、review board を新規 capture した | `apps/desktop/scripts/capture-workspace-parent-reference-sweep-guard-review-board.mjs`, `outputs/phase-11/screenshots/` |
 | phase12 recheck | Task 12-1〜12-5、未タスク配置、exact counts、skill 改善を branch 最新状態で再確認し、stale 記録を是正した | `outputs/phase-12/*.md`, `task-specification-creator`, `skill-creator` |
-| follow-up formalization | related UT row 移動後の exact count 再同期を別未タスクとして formalize し、current count を再確認した | `docs/30-workflows/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md`, `outputs/phase-12/unassigned-task-detection.md` |
+| follow-up formalization | related UT row 移動後の exact count 再同期を別未タスクとして formalize し、current count を再確認した | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md`, `outputs/phase-12/unassigned-task-detection.md` |
 
 ### 実測サマリー
 
@@ -110,7 +110,7 @@
 | [interfaces-llm.md](./interfaces-llm.md) | Workspace evidence path |
 | [interfaces-chat-history.md](./interfaces-chat-history.md) | Workspace evidence path |
 | [../../../docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/unassigned-task/task-imp-workspace-parent-reference-sweep-guard-001.md](../../../docs/30-workflows/completed-tasks/workspace-parent-reference-sweep-guard/unassigned-task/task-imp-workspace-parent-reference-sweep-guard-001.md) | 元 unassigned spec の配置 / フォーマット確認 |
-| [../../../docs/30-workflows/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md](../../../docs/30-workflows/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md) | related UT moved/closed 後の exact count 再同期ガード |
+| [../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-related-ut-exact-count-resync-guard-001.md) | related UT moved/closed 後の exact count 再同期ガード |
 
 ---
 
