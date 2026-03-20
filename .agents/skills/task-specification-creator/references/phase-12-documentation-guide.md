@@ -62,6 +62,7 @@
 - artifacts 同期結果
 - Step 1-A で更新した `aiworkflow-requirements` / `task-specification-creator` の `SKILL.md` / `LOGS.md` を canonical path で列挙する
 - `skill-creator` を改善した場合は、`skill-creator/SKILL.md` / `LOGS.md` / 変更した template or reference も同じ changelog に列挙する
+- `更新予定` / `計画済み` / `PR マージ後に実施` のような future wording を残さない
 
 ## Task 12-4: unassigned detection
 
@@ -78,6 +79,8 @@
 - Task 1〜5 の全完了を確認してから作成する（早期完了記載禁止）
 - 全タスクが「完了」と記録されてから Phase 12 を閉じる
 - `documentation-changelog.md` だけでなく `outputs/phase-12/*.md` 全体に planned wording（「計画」「予定」「TODO」）が残っていないことを確認する
+- `計画済み` / `更新予定` / `作成待` / `完了または計画済み` は未完了扱いとし、compliance-check を PASS にしない
+- Phase 13 は user approval 未取得なら `blocked` を維持し、completed へ進めない
 
 **確認コマンド（docs-only / UI task 共通で必須）**:
 

@@ -20,6 +20,8 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-03-20 | 2.2.0 | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 の教訓3件と Task04 system spec same-wave 追補を追加 |
+| 2026-03-20 | 2.1.2 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 の実装教訓3件（テストシグネチャ不一致・CTA ラベルドリフト・型移動 re-export）を追加 |
+| 2026-03-20 | 2.1.1 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 の Phase 12 教訓2件を追加 |
 | 2026-03-18 | 2.1.0 | 1598行超過のため分割。2026-03-15以前エントリを archive-2026-03.md へ移動。UT-TASK06-007 苦戦箇所5件を追加 |
 | 2026-03-17 | 2.0.0 | 651行超過のため4ファイルに分割しインデックス化 |
 | 2026-03-17 | 1.30.00 | TASK-SKILL-LIFECYCLE-08 仕様書作成の教訓4件を追加 |
@@ -67,6 +69,37 @@
 → [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md)
 - 設計タスクでの仕様書更新先送り（P57）、未タスク指示書配置省略（P58）
 - 並列エージェント changelog 件数不整合（P59）
+
+---
+
+### 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 実装（型定義基盤）
+
+#### 苦戦箇所1: テストシグネチャと実装のシグネチャ不一致（function overload で解決）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 4 テストが期待する型（`ExecutionCapabilityInput`, `CapabilityContext`, `UiStateResult`, `CtaInput`）と Phase 5 実装が提供する関数シグネチャが一致しなかった。テストは `resolveCapability(input: ExecutionCapabilityInput)` を呼び出す形で記述されていたが、実装は単純な値型を引数に取る形で記述されていた |
+| 解決策 | テストを contract-matrix の正本として扱い、実装側を function overload で修正した。既存の内部シグネチャを保持しつつ、テストが期待する型シグネチャを overload として追加することで両方に対応した |
+| 標準ルール | テストシグネチャは Phase 4 で確定した contract-matrix を正本とする。Phase 5 実装がシグネチャを変えたい場合は Phase 4 テストを更新するか、overload で両立させる |
+| 関連タスク | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 |
+
+#### 苦戦箇所2: CTA ラベルの contract-matrix とのドリフト
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実装が「チャットを開始」「ターミナルで開く」等の日本語ラベルを使っていたが、contract-matrix は「AI で実行」「ターミナルで実行」を定義していた。テストはテスト仕様書に記載された contract-matrix のラベルを期待するため、全テストが失敗した |
+| 解決策 | テストが正本のため実装側の CTA ラベルを contract-matrix 準拠の値に修正した |
+| 標準ルール | CTA ラベルは contract-matrix を正本とし、実装内のラベルはそこから派生する。ラベル変更は必ず contract-matrix の変更を先行させる |
+| 関連タスク | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 |
+
+#### 苦戦箇所3: 型の位置移動時の re-export パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `AccessCapability` 型が `chatSlice.ts`（Renderer ローカル）で定義されていたが、shared パッケージへの移動が必要だった。単純に削除すると `chatSlice.ts` を import している既存コードが壊れる |
+| 解決策 | `execution-capability.ts` に型を移動し、`chatSlice.ts` から `export type { AccessCapability } from "@repo/shared"` で re-export することで後方互換性を維持した |
+| 標準ルール | shared 移動時は元の場所から re-export パターンを適用し、呼び出し元の変更を最小化する。型の import 元が `chatSlice` か `@repo/shared` かは実装側の都合であり、呼び出し元への変更なしで移行完了とする |
+| 関連タスク | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 |
 
 ---
 

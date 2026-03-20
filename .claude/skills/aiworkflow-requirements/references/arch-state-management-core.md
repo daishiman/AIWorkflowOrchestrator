@@ -84,16 +84,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | TASK-UI-08-NOTIFICATION-CENTER | NotificationCenter 058e UX 再整備 | **完了**（2026-03-11） |
 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV | ViewType/導線実装 | **完了**（2026-03-05） |
 ---
-## ChatPanel 実AIチャット配線 初期設計（廃止 → 最終設計は後述セクション参照）
-
-> **注意**: 本セクションは初期設計メモであり、最終設計に置き換えられた。
-> 最終版: 「ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created）」セクションを参照。
->
-> 変更点:
-> - 8 状態: idle/sending/streaming/complete/error/aborted/disabled/loading → idle/ready/streaming/cancelled/completed/error/blocked/handoff
-> - AccessCapability: canSend/canAbort/canSelectModel/canViewHistory → integratedRuntime/terminalSurface/both/none
-> - セレクタ: 6 個 → 12 個
----
 ## Workspace Layout 基盤（TASK-UI-04A-WORKSPACE-LAYOUT）
 
 ### 状態配置
@@ -222,3 +212,63 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 - 影響: 既存テスト（`AgentView.test.tsx`, `AgentView.layout.test.tsx`）の `vi.mock` にモック追加が必要（P21/P35 パターン）
 
 > 詳細な実装ログ・セレクタ一覧・各タスクの検証証跡は [arch-state-management-reference-selectors.md](arch-state-management-reference-selectors.md) を参照。
+
+```
+[*] --> idle
+idle --> ready: capability ok (API key configured)
+idle --> blocked: no capability (API key missing)
+ready --> streaming: user sends message
+streaming --> completed: done signal
+streaming --> error: error signal
+streaming --> cancelled: user cancels
+completed --> ready: reset for next message
+cancelled --> ready: reset for next message
+error --> ready: user dismisses / retry
+blocked --> ready: API key configured
+ready --> handoff: terminal-handoff button clicked
+handoff --> ready: return from terminal
+```
+
+### 設計判断
+
+- 新規 Slice: **不要**。既存 `chatSlice` を拡張する方針とする
+- Store 統一: `useStreamingChat` 内の `useStore()` を `useAppStore()` に統一する
+- P62 対策: Provider/Model 未選択時は `blocked` 状態に遷移し、暗黙 fallback を行わない
+- silent fallback 禁止: capability 不足時は `HandoffBlock` + `ErrorGuidance` で明示的にユーザーに通知する
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 | ChatPanel の実 AI チャット配線（設計） | **spec_created**（2026-03-18） |
+| TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 | Main Chat/Settings AI runtime 同期 | **完了**（2026-03-17） |
+---
+## AccessCapability の shared パッケージ移動（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 / Task01）
+
+> 詳細仕様は [arch-execution-capability-contract.md](arch-execution-capability-contract.md) を参照。
+
+完了日: 2026-03-20。`AccessCapability` 型を `chatSlice.ts`（Renderer ローカル）から `packages/shared/src/types/execution-capability.ts` へ移動。`chatSlice.ts` は re-export パターンで後方互換性を維持する。
+
+---
+## 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created）
+
+TASK-SKILL-LIFECYCLE-08 では publish/distribution 領域の store 責務を設計済み（実装未着手）。
+
+### publishingSlice 境界
+
+| 状態 | 所有者 | 補足 |
+| --- | --- | --- |
+| `visibilityFilter` | `publishingSlice` | `"all" | SkillVisibility` で一覧フィルタを制御 |
+| `publishReadiness` | `publishingSlice` | `auto-approved` 等の公開判定結果を保持 |
+| `compatibilityResult` | `publishingSlice` | version 更新時の互換性評価結果を保持 |
+| `publishDialogState` | `publishingSlice` | register/check/confirm の3ステップ進行状態 |
+
+### state 不変条件
+
+- `visibilityFilter` の初期値は `"all"`。
+- `publishReadiness.status === "blocked"` のとき confirm アクションを禁止する。
+- `compatibilityResult.level === "breaking"` かつ major バンプなしは confirm 不可。
+
+### 実装移行の未タスク
+- `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
+- `UT-SKILL-LIFECYCLE-08-UI-IMPL`

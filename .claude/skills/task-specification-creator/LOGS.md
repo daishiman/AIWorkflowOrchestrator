@@ -17,26 +17,79 @@
 
 ---
 
-## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（2026-03-19）
+## 2026-03-20 - スキル改善エージェント同期（Phase 4/5 contract-matrix 正本ルール / P58 未タスク独立ファイル必須 / Trigger 拡張）
 
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 実行完了
-- **Result**: success
-- **Notes**:
-  - `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の5成果物を実績化
-  - 苦戦箇所を system spec に反映し、未タスク `UT-CONV-DB-001〜003` を formalize
-  - completed workflow / completed unassigned-task / backlog 導線を同期
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | skill-improvement |
+| 変更対象 | `SKILL.md`（Phase 4/5 execute テーブル拡張・Phase 12 苦戦防止 Tips 追加・変更履歴 v10.09.17）、`LOGS.md` |
+| 結果 | Phase 4 テストが contract-matrix の正本となるルール・function overload による Phase 4/5 シグネチャ統一パターン・P58 設計タスクでも未タスク指示書は独立ファイル必須ルールを追加 |
+| 検証 | SKILL.md 行数確認済み（500行以下）|
 
 ---
 
-## Phase 12 canonical summary 名称統一（2026-03-19）
+## 2026-03-20 - TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 実装完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | `packages/shared/src/types/execution-capability.ts`（新規）、`packages/shared/src/types/auth-mode.ts`（変更）、`apps/desktop/src/renderer/store/slices/chatSlice.ts`（変更）、`packages/shared/src/types/index.ts`（変更） |
+| 結果 | AccessCapability 4状態型・UiState 3値型・ExecutionCapabilityStatus 等を shared に追加。AuthModeStatus に capability/uiState/blockedReason/blockedAction を optional 追加。chatSlice.ts は re-export パターンで後方互換性を維持。系仕様書5件（interfaces-auth-core / arch-state-management-core / lessons-learned-current / task-workflow-backlog / LOGS.md x2）を同時更新 |
+| 検証 | 型定義テスト PASS、苦戦箇所3件（テストシグネチャ不一致・CTA ラベルドリフト・型移動 re-export）を lessons-learned に記録 |
+
+---
+
+## 2026-03-20 - execution responsibility foundation の screen-evidence 欠落を Phase 11 ガイドへ反映
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | feedback |
+| 変更対象 | `references/phase-11-12-guide.md` |
+| 結果 | design task でも screenshot 契約がある場合は `manual-test-result.md` / `screenshot-coverage.md` / `screenshots/*.png` / metadata JSON を current workflow 配下へ揃えるルールを追加した |
+| 検証 | `quick_validate.js .claude/skills/task-specification-creator` |
+
+---
+
+## 2026-03-20 - execution responsibility foundation 再監査知見を Phase 12/13 ガイドへ反映
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | feedback |
+| 変更対象 | `references/spec-update-workflow.md`, `references/phase-12-documentation-guide.md`, `SKILL.md` |
+| 結果 | planned wording を incomplete 扱いにするルールと、user 承認がない限り Phase 13 を `blocked` に維持するルールを追加した |
+| 検証 | `quick_validate.js .claude/skills/task-specification-creator` |
+
+---
+
+## 2026-03-19 - Phase 12 changelog と Step 1-A 台帳の同値同期ガードを追加
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | feedback |
+| 変更対象 | `references/phase-12-documentation-guide.md`, `references/phase-12-completion-checklist.md`, `SKILL.md` |
+| 結果 | `documentation-changelog.md` に Step 1-A で更新した `SKILL.md` / `LOGS.md` を canonical path で必ず列挙するルールを追加した |
+| 検証 | `quick_validate.js .claude/skills/task-specification-creator` |
+
+---
+
+## TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（2026-03-19）
 
 - **Agent**: task-specification-creator
-- **Phase**: ガイド/テンプレート是正
+- **Phase**: Phase 11-12（re-audit）
 - **Result**: success
 - **Notes**:
-  - `spec-update-summary.md` から `system-spec-update-summary.md` への canonical 名称統一を反映
-  - `phase-11-12-guide.md` / `spec-update-workflow.md` / `SKILL.md` の残存参照を更新
+  - Phase 11 screenshot を main shell handoff 証跡として再取得し、TC-11-01〜07 を固定
+  - `implementation-guide.md` を validator literal 要件に合わせて補強し、10/10 PASS に回復
+  - `verify-unassigned-links` の 17件報告を再調査し、`path drift 14件 + stale link 2件 + duplicate 1件` と切り分けて 246/246 PASS へ修正
+  - `generate-index.js` に `featureName` / `createdDate` fallback と Phase 12 完了表示を追加し、workflow `index.md` の `undefined` を解消
+
+### 変更内容
+- Phase 12 出力を実測値ベースへ更新
+- system spec backlog / completed ledger の path drift 是正
+- screenshot 残骸削除と coverage warning 解消
+
+### AC達成状況
+Phase 11 証跡、Phase 12 root evidence、system spec same-wave sync、skill 改善記録の4点を再監査完了
 
 ---
 
@@ -670,6 +723,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | Phase 1-13 仕様書一式（UT-TASK06-007-ipc-contract-drift-auto-detect） |
 | 結果 | IPC契約ドリフト自動検出スクリプトのPhase 1-12完了。Phase 13はBLOCKED（PR待ち） |
 | 検証 | 全40テストケースPASS、手動テストTC-11-01~TC-11-05全PASS |
+
 
 ### 2026-03-19 - UT-TASK06-007 再監査
 
