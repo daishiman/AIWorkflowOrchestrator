@@ -182,10 +182,10 @@ describe("SkillAPI Unification", () => {
           typeof (skillAPI as Record<string, unknown>)[key] === "function",
       );
 
-      // メソッド数が正確に48であること
+      // メソッド数が正確に50であること
       // （13基本 + 7ファイル操作 + 3共有 + 5スケジュール + 1 fork + 1 create
-      //  + 4ドキュメント + 5分析 + 4分析改善 + 5チェーン）
-      expect(actualMethods.length).toBe(48);
+      //  + 4ドキュメント + 5分析 + 4分析改善 + 5チェーン + 1 getDetail + 1 update）
+      expect(actualMethods.length).toBe(50);
 
       // 全ての期待メソッドが含まれていること
       for (const method of expectedMethods) {

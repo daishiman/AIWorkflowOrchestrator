@@ -14,6 +14,12 @@
 - 実装や契約の詳細は `core` / `details` / `advanced` 系を読む。
 - 完了タスク、変更履歴、補助情報は `history` / `archive` 系を読む。
 
+## TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 の読み分け
+
+- `skill:get-detail` / `skill:update` の現行契約は [security-skill-ipc-core.md](security-skill-ipc-core.md) の `Skill API current canonical contract` を正本とする。
+- Preload payload / `safeInvokeUnwrap` / shared-preload-main sync は [interfaces-agent-sdk-skill-details.md](interfaces-agent-sdk-skill-details.md) と [ipc-contract-checklist.md](ipc-contract-checklist.md) を併読する。
+- `TASK-4-1` 時点のチャネル一覧や履歴セクションは補助情報であり、現行契約の一次根拠には使わない。
+
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`

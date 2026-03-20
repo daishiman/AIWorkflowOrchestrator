@@ -74,13 +74,30 @@
 
 > **Note**: TASK-FIX-4-1-IPC-CONSOLIDATIONにより、旧チャンネル名（`skill:list-available`, `skill:list-imported`）は削除されました。
 
+### Skill API current canonical contract（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001）
+
+> **正本**: [interfaces-agent-sdk-skill-details.md](./interfaces-agent-sdk-skill-details.md)
+>
+> このタスクでは `skill:get-detail` / `skill:update` を object payload 標準で扱う。`skill:get-detail` / `skill:update` はどちらも `safeInvokeUnwrap` で reject/throw する前提で、Preload から `{ skillId }` / `{ skillName, updates }` を渡す。
+
+| チャンネル        | 検証項目                                                       | エラー / 戻り値                                   |
+| ----------------- | -------------------------------------------------------------- | ------------------------------------------------- |
+| `skill:get-detail` | sender検証 + `{ skillId }` object payload + skillId非空文字列検証（`trim()`含む） | `VALIDATION_ERROR` / `skillId must be a non-empty string` |
+| `skill:update`     | sender検証 + `{ skillName, updates }` object payload + skillName非空文字列検証（`trim()`含む） + updates object検証 | `VALIDATION_ERROR` / `skillName must be a non-empty string` |
+
+補足:
+
+- `skill:get-detail` の失敗応答は Preload 側で `safeInvokeUnwrap` により例外化し、`null` 返却で隠蔽しない。
+- `skill:update` も `safeInvokeUnwrap` で wrapper 展開し、object payload を維持して P44（構造ドリフト）と P45（命名ドリフト）を同時に監視する。
+- sync 対象は `packages/shared/src/types/skill.ts` または shared transport DTO、`apps/desktop/src/preload/skill-api.ts`、`apps/desktop/src/preload/types.ts`、`apps/desktop/src/main/ipc/skillHandlers.ts`、必要に応じて `packages/shared/src/ipc/channels.ts`。
+
 ---
 
 ## スキルインポートIPCチャネル（TASK-4-1）
 
 **実装場所**: `apps/desktop/src/preload/channels.ts`
 
-> **Note**: 本セクションはTASK-4-1時点のチャネル定義（8チャネル）を記録。TASK-FIX-5-1でSkillAPI統一後は13チャネルに拡張。最新のチャネル一覧は [interfaces-agent-sdk-skill.md - 統一API 13メソッド一覧](./interfaces-agent-sdk-skill.md#統一api-13メソッド一覧) を参照。
+> **Note**: 本セクションはTASK-4-1時点のチャネル定義（8チャネル）を記録。現行 canonical は [interfaces-agent-sdk-skill-details.md](./interfaces-agent-sdk-skill-details.md) と下記の current canonical contract を参照する。
 
 スキルインポート機能用のIPCチャネル定義（TASK-4-1時点: 8チャネル）:
 
@@ -341,3 +358,35 @@ Permission IPC Handlerでは、ipcMain.handleの第1引数eventオブジェク�
 
 ---
 
+## TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 完了記録（2026-03-19）
+
+**タスク**: SKILL_UPDATE / SKILL_GET_DETAIL IPC層不整合修正
+
+### skill:update バリデーション契約（P42準拠3段バリデーション）
+
+| 検証項目   | 実装                                                                          | エラーコード     |
+| ---------- | ----------------------------------------------------------------------------- | ---------------- |
+| skillName型 | `typeof skillName !== "string"`                                            | VALIDATION_ERROR |
+| 空文字列   | `skillName === ""`                                                          | VALIDATION_ERROR |
+| トリム空文字| `skillName.trim() === ""`                                                  | VALIDATION_ERROR |
+| updates型  | `typeof updates !== "object" || updates === null || Array.isArray(updates)` | VALIDATION_ERROR |
+
+**引数命名（P45準拠）**: ハンドラ引数は `skillName`（スキル名）と `updates`（更新内容）で統一。`skillId` 命名との乖離なし。
+
+**Preload呼び出し形式**: `safeInvokeUnwrap(IPC_CHANNELS.SKILL_UPDATE, { skillName, updates })` — object payload 標準（P44対策）。
+
+### skill:get-detail / skill:update Preload API 契約同期完了
+
+- `skill:get-detail` / `skill:update` を Preload API から公開し、`safeInvokeUnwrap` 前提へ統一
+- `safeInvokeUnwrap` で reject/throw する前提。`null` 返却で隠蔽しない
+- 引数: `{ skillId: string }` / `{ skillName: string, updates: Record<string, unknown> }` の object payload（P44対策）
+- P42準拠3段バリデーション（型チェック → 空文字列 → トリム空文字列）を Main / Preload の両層に実装済み
+
+### 修正ファイル一覧
+
+| ファイル | 変更内容 |
+| -------- | -------- |
+| `apps/desktop/src/main/ipc/skillHandlers.ts` | `skill:update` ハンドラ追加、`skill:get-detail` / `skill:update` の P42 バリデーション整合、P45 引数命名統一 |
+| `apps/desktop/src/preload/skill-api.ts` | `getDetail()` / `update()` の Preload API 公開（`safeInvokeUnwrap` + 早期バリデーション） |
+| `apps/desktop/src/preload/channels.ts` | skill:get-detail を ALLOWED_INVOKE_CHANNELS に追加 |
+| `packages/shared/src/ipc/channels.ts` | `SKILL_GET_DETAIL` / `SKILL_UPDATE` の shared channel 定数を追加 |

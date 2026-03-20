@@ -3,15 +3,16 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
-## 2026-03-19 - Phase 12 changelog / Step 1-A 台帳同期ガードを追加
+## 2026-03-19 - UT-TASK06-007 再監査知見を Phase 12 テンプレートへ反映
 
 - **Agent**: skill-creator (update)
 - **Phase**: cross-skill-improvement
 - **Result**: ✓ 成功
 - **Notes**:
-  - `assets/phase12-completion-guard-checklist.md` に `git diff --stat -- .claude/skills/*/SKILL.md` と changelog 突合チェックを追加
-  - `references/patterns-guideline-type.md` に「Step 1-A で更新した `SKILL.md` / `LOGS.md` も `documentation-changelog.md` に同値転記する」ガイドラインを追加
-  - `system-spec-update-summary.md` と `documentation-changelog.md` の台帳不一致を再監査で見逃さない運用へ補強
+  - `assets/phase12-system-spec-retrospective-template.md` に実績ベース更新ルール、画面検証要求時の `SCREENSHOT + NON_VISUAL` 昇格、苦戦箇所の再利用カード化を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に実測値同期、画面昇格、苦戦箇所の標準化を追加
+  - `references/patterns-success-phase12-advanced.md` に docs-heavy/backend-heavy でも screenshot へ昇格する成功パターンを追加
+  - `SKILL.md` の変更履歴を更新し、再利用時の入口から辿れるようにした
 
 ---
 ## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期ドリフト防止パターンを追加
@@ -2236,3 +2237,8 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 - **Notes**:
   - `references/patterns.md` に「`validate-phase-output --phase 12` 優先ゲート」パターンを追加
   - `verify-all-specs` 単独PASSでは完了判定しない運用を明文化
+
+## 2026-03-19 - Conversation DB robustness retrospective pattern
+
+- Multi-agent 実行後の Phase 12 統合で、system spec retrospective と unassigned formalize を閉じるパターンを追加。
+- 苦戦箇所を次回の短縮解決知見へ変換するテンプレート追記。

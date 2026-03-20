@@ -103,8 +103,29 @@
 | テスト | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` |
 | 実行 | `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only` |
 | ルール | R-01(孤児), R-02(引数不一致/P44), R-03(ハードコード/P27), R-04(未登録) |
-| 仕様 | `ipc-contract-checklist.md` / `quality-requirements.md` |
-| 未タスク | EXT-001(タプル配列), EXT-002(別定数), EXT-003(ipcMain.on) |
+| 仕様 | `ipc-contract-checklist.md` / `quality-requirements.md` / `architecture-implementation-patterns-reference-ipc-drift-detection.md` |
+| 導線 | `task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed-ipc-contract-preload-alignment.md` / `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/` |
+| 未タスク | EXT-001(タプル配列), EXT-002(alias/再export/動的定数), EXT-003(ipcMain.on/safeOn), EXT-004(モジュール分割), EXT-005(R-02精度向上) |
+| テスト | 44件（Line 94.94% / Branch 89.92% / Function 100%） |
+| 実行時間 | 約2.1秒（NFR-01: 10秒以内） |
+| 実測値 | Main 216 handlers / Preload 147 entries / Drifts 169 |
+
+#### CLI コマンド早見表
+
+| コマンド | 用途 |
+| --- | --- |
+| `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only` | Phase 9 品質ゲート（常に exit 0） |
+| `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --format json --report-only` | CI/CD 統合（JSON出力） |
+| `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --strict` | error + warning で exit 1 |
+
+#### 検出ルール早見表
+
+| ルール | 名称 | 重大度 | 検出パターン |
+| --- | --- | --- | --- |
+| R-01 | チャンネル孤児 | warning | Main/Preload の片方のみに存在 |
+| R-02 | 引数形式不一致 | error | Main=object, Preload=primitive（P44対応） |
+| R-03 | ハードコード文字列 | warning | IPC_CHANNELS 定数でなく文字列リテラル（P27対応） |
+| R-04 | 未登録チャンネル | error | Preload にあるが Main にない |
 
 ---
 
@@ -223,6 +244,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-19 | UT-TASK06-007: discovery 導線を completed canonical set に再同期し、implementation pattern detail / completed ledger / EXT-001〜005 を早見表へ反映 |
 | 2026-03-18 | UT-TASK06-007: IPC契約ドリフト自動検出セクション（check-ipc-contracts.ts / R-01~R-04 / EXT-001~003）をIPCチャンネル早見表直後に追加 |
 | 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |
 | 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:*/skill:distribution:* 11チャンネルを追加 |

@@ -70,13 +70,13 @@ Phase 11 の manual test。
 
 ### スクリーンショット対応（P53対策）
 
-設計タスクでは CLI 環境での画面キャプチャは**不要**とする。
+設計タスクでは通常は CLI 環境での画面キャプチャを必須としない。ただし、ユーザーが明示的にスクリーンショット検証を要求した場合は docs-heavy / backend-heavy task でも related UI を対象に representative capture を残し、`NON_VISUAL` 単独で閉じない。
 
 | 状況 | 対応方法 |
 | --- | --- |
-| UIコンポーネントが存在しない | `NON_VISUAL` 判定。スクリーンショット省略可 |
-| 型定義・仕様書のみの変更 | `NON_VISUAL` 判定。設計文書ウォークスルーで代替 |
-| 関連UIが既存で変更なし | upstream screenshot を current workflow へ集約（必要な場合のみ） |
+| UIコンポーネントが存在しない | 通常は `NON_VISUAL`。ただし user 要求時は representative screenshot を追加 |
+| 型定義・仕様書のみの変更 | 通常は `NON_VISUAL`。ただし branch sanity check 要求時は screenshot へ昇格 |
+| 関連UIが既存で変更なし | upstream screenshot または review board harness を current workflow へ集約 |
 
 ### UI タスクの CLI 環境でのスクリーンショット取得（P53対応）
 
@@ -95,8 +95,8 @@ UI タスクで Electron を直接起動できない CLI 環境では、**Playwr
 ```markdown
 ## テスト方式
 
-本タスクは設計タスク（spec_created）のため、UIテストではなく設計文書ウォークスルーを実施。
-スクリーンショット: NON_VISUAL（UI実装なし）
+本タスクは設計タスク（spec_created）だが、ユーザー要求により representative screenshot audit を追加。
+スクリーンショット: SCREENSHOT + NON_VISUAL
 ```
 
 ## 関連ガイド

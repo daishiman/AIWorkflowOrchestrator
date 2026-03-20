@@ -5,6 +5,80 @@
 
 ## 完了タスク
 
+### タスク: UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18完了）
+
+| 項目       | 内容                                                                 |
+| ---------- | -------------------------------------------------------------------- |
+| タスクID   | UT-TASK06-007                                                        |
+| 完了日     | 2026-03-18                                                           |
+| ステータス | **完了**                                                             |
+| タスク種別 | 実装 + テスト + Phase 9 診断ツール + 仕様同期                        |
+| Phase      | Phase 1-13 完了（Phase 13 未実施）                                   |
+| 対象       | `apps/desktop/scripts/check-ipc-contracts.ts` / `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` |
+
+#### 成果物
+
+| 成果物         | パス/内容                                                                                                   |
+| -------------- | ------------------------------------------------------------------------------------------------------------ |
+| ワークフロー   | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/`                           |
+| 実装スクリプト | `apps/desktop/scripts/check-ipc-contracts.ts`                                                                |
+| テスト         | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`                                                |
+| 仕様更新サマリー | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-12/system-spec-update-summary.md` |
+| 更新履歴       | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出   | `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/outputs/phase-12/unassigned-task-detection.md` |
+
+#### 変更理由
+
+- Main / Preload の IPC 契約ドリフトを機械検出し、Phase 9 品質ゲートで回帰を早期発見するため。
+- R-01 〜 R-04 で `main-only` / `preload-only` / 引数形式不一致 / 文字列直書きを診断するため。
+- 既存の実装実態は `scripts/lib/ipc-drift/` 分割案ではなく単一スクリプト `check-ipc-contracts.ts` なので、ledger もそれに合わせて正規化するため。
+
+#### 実装要点
+
+- `HandlerEntry` / `PreloadEntry` / `DriftEntry` / `OrphanEntry` / `DriftReport` を定義した。
+- 検出ルールは `R-01` 〜 `R-04` の 4 本で、Phase 9 の診断ツールとして動作する。
+- CLI オプションは `--report-only`, `--strict`, `--format json` を提供する。
+- `quality-requirements.md`, `ipc-contract-checklist.md`, `architecture-implementation-patterns-reference-ipc-drift-detection.md`, `quick-reference.md`, `resource-map.md` へ必要仕様を同期した。
+- 2026-03-19 再監査で generic/multiline preload 抽出、複数 const object 収集、representative screenshot audit を docs と台帳へ追補した。
+- 将来拡張の未タスクは `UT-TASK06-007-EXT-001` 〜 `EXT-005` として別管理する。
+
+#### Phase 12 再監査結果（2026-03-19）
+
+| 項目 | 結果 |
+| --- | --- |
+| `validate-phase12-implementation-guide` | PASS（10/10） |
+| `validate-phase-output` | Phase 11 PASS / Phase 12 PASS |
+| `validate-phase11-screenshot-coverage` | PASS（5/5） |
+| `verify-all-specs --workflow ... --json` | PASS |
+| `verify-unassigned-links` | PASS（ALL_LINKS_EXIST） |
+| `quick_validate` | aiworkflow / task-specification-creator / skill-creator すべて PASS |
+
+#### 苦戦箇所と解決策
+
+| 苦戦箇所 | 問題 | 解決策 |
+| --- | --- | --- |
+| preload 抽出の想定不足 | `safeInvoke<T>` / `safeOn<T>` や複数行呼び出しが旧 regex では拾えなかった | generic と multiline を許容する抽出パターンへ拡張し、回帰テストを追加した |
+| system spec の過大主張 | P45 相当まで「完全検出済み」と読める記述が残っていた | 実装済み能力と residual scope を分離し、EXT-002 / EXT-005 へ役割を戻した |
+| docs-heavy 画面検証の取りこぼし | user 要求があるのに `NON_VISUAL` 前提の記述が残っていた | representative screenshot audit を current workflow 配下へ追加し、template と手順を両方更新した |
+| follow-up 指示書の stale | `EXT-002` 再定義後も旧スコープ説明や placeholder が残っていた | `docs/30-workflows/unassigned-task/` の5件を再監査し、残余スコープと実行手順を current facts に合わせた |
+
+#### 同種課題の簡潔解決手順
+
+1. まず code の実測値を取り、docs の数値や主張を後追いで直す。
+2. `implementation-guide` / `documentation-changelog` / `phase12-task-spec-compliance-check` を planned wording ではなく実績ベースへそろえる。
+3. `.claude` 正本更新後に index 再生成、validator、mirror parity を同じターンで閉じる。
+4. follow-up は「配置済み」だけで終わらせず、current scope と実行手順まで再監査する。
+
+#### 派生未タスク
+
+| タスクID | 内容 | 参照先 |
+| --- | --- | --- |
+| UT-TASK06-007-EXT-001 | タプル配列経由ハンドラ抽出パターン拡張 | `docs/30-workflows/unassigned-task/ut-task06-007-ext-001-tuple-array-handler-extraction.md` |
+| UT-TASK06-007-EXT-002 | エイリアス / 再export / 動的定数のチャンネル解決強化 | `docs/30-workflows/unassigned-task/ut-task06-007-ext-002-multi-channel-const-resolution.md` |
+| UT-TASK06-007-EXT-003 | ipcMain.on パターン検証強化 | `docs/30-workflows/unassigned-task/ut-task06-007-ext-003-ipc-on-pattern-enhancement.md` |
+| UT-TASK06-007-EXT-004 | check-ipc-contracts.ts モジュール分割 | `docs/30-workflows/unassigned-task/ut-task06-007-ext-004-script-modular-split.md` |
+| UT-TASK06-007-EXT-005 | R-02 セマンティクスチェック精度向上 | `docs/30-workflows/unassigned-task/ut-task06-007-ext-005-r02-semantic-precision.md` |
+
 ### タスク: UT-FIX-SKILL-EXECUTE-INTERFACE-001 skill:execute IPCハンドラ・Preload契約整合（2026-02-25完了）
 
 | 項目       | 内容                                                           |
@@ -53,9 +127,9 @@
 
 | ファイル                                                    | 配置先                               | 判定                                           |
 | ----------------------------------------------------------- | ------------------------------------ | ---------------------------------------------- |
-| `task-imp-skill-ipc-response-contract-guard-001.md`         | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
-| `task-imp-phase12-implementation-guide-quality-gate-001.md` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
-| `task-imp-ipc-preload-spec-sync-ci-guard-001.md`            | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
+| `task-imp-skill-ipc-response-contract-guard-001.md`         | `docs/30-workflows/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
+| `task-imp-phase12-implementation-guide-quality-gate-001.md` | `docs/30-workflows/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
+| `task-imp-ipc-preload-spec-sync-ci-guard-001.md`            | `docs/30-workflows/unassigned-task/` | `--target-file` scoped監査で current=0（準拠） |
 
 #### 再確認時の苦戦箇所と解決策
 
@@ -253,7 +327,7 @@
 
 - Atoms層の基盤部品（StatusIndicator/FilterChip/SkeletonCard/SuggestionBubble/RelativeTime）を新規実装し、Badge/EmptyStateを拡張
 - Apple HIG/WCAGとデザイントークン運用を仕様化し、テーマ横断・a11y検証を実施
-- Phase 10 MINOR 3件を未タスク化して `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` に配置し、`task-workflow.md` 残課題テーブルへ登録
+- Phase 10 MINOR 3件を未タスク化して `docs/30-workflows/unassigned-task/` に配置し、`task-workflow.md` 残課題テーブルへ登録
 
 ---
 
@@ -380,4 +454,3 @@
 - registerSkillFileHandlers / unregisterSkillFileHandlers によるハンドラ登録/解除パターンを実装
 
 ---
-

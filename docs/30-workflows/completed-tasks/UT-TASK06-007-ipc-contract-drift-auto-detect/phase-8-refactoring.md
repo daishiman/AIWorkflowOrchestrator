@@ -24,9 +24,11 @@ Phase 5（実装）・Phase 6-7（テスト拡充・カバレッジ確認）で�
 
 | 資料名        | パス                                                         | 説明                       |
 | ------------- | ------------------------------------------------------------ | -------------------------- |
+| Phase 1要件   | `outputs/phase-1/requirements.md`                            | 受入基準と品質制約の再確認 |
 | Phase 7成果物 | `outputs/phase-7/coverage-report.md`                         | カバレッジ確認結果         |
 | Phase 5実装   | `apps/desktop/scripts/check-ipc-contracts.ts`                | リファクタリング対象       |
 | Phase 5テスト | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` | テスト継続成功を確認       |
+| Phase 6成果物 | `phase-6-test-expansion.md`                                  | 追加テスト観点を確認       |
 | Phase 2設計書 | `outputs/phase-2/design.md`                                  | モジュール構成・型定義設計 |
 
 ### システム仕様（aiworkflow-requirements）
@@ -181,7 +183,7 @@ cd apps/desktop && pnpm vitest run scripts/__tests__/check-ipc-contracts.test.ts
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect --phase 8
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect --phase 8
 ```
 
 ## 次のPhase

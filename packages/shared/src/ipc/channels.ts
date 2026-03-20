@@ -64,6 +64,16 @@ export const SKILL_CHANNELS = {
   SKILL_REMOVE: "skill:remove",
 
   /**
+   * スキル詳細取得
+   */
+  SKILL_GET_DETAIL: "skill:get-detail",
+
+  /**
+   * スキル更新
+   */
+  SKILL_UPDATE: "skill:update",
+
+  /**
    * スキル実行
    */
   SKILL_EXECUTE: "skill:execute",

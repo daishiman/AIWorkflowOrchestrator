@@ -221,6 +221,15 @@ ipcMain.handle(
 4. artifacts を共通セット + domain差分で補完し、7/7一致を確認する。
 5. `task-workflow.md` 完了記録・残課題状態・`LOGS.md` を同一タイミングで同期する。
 
+### TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 への再利用メモ
+
+| 項目 | 内容 |
+| ---- | ---- |
+| current canonical set | `interfaces-agent-sdk-skill-core.md`, `interfaces-agent-sdk-skill-details.md`, `security-skill-ipc-core.md`, `security-electron-ipc-core.md`, `architecture-overview-core.md`, `task-workflow-completed-ipc-contract-preload-alignment.md` |
+| object payload standard | `skill:get-detail` は `{ skillId }`、`skill:update` は `{ skillName, updates }` |
+| same-wave 更新 | `interfaces` / `security` / `task-workflow` / `lessons` を同一ターンで更新する |
+| Phase 12 再監査 | `artifacts.json` / `outputs/artifacts.json` / phase docs / `index.md` を突合する |
+
 ---
 
 ## UT-FIX-SKILL-IMPORT-ID-MISMATCH-001: SkillImportDialog の id/name 契約不整合修正
@@ -274,3 +283,11 @@ ipcMain.handle(
 
 ---
 
+## TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 型ギャップ教訓（2026-03-19）
+
+- `types.ts` L1203 の `skill: import("./skill-api").SkillAPI` パターンにより、skill-api.tsのインターフェース更新が自動反映される
+- P32準拠の二箇所同時更新は types.ts 側の明示的更新が不要だった（import型参照の恩恵）
+- getDetail戻り値型は `Skill` を正本として揃えるべきで、Preload 側の `ImportedSkill` 記述はドリフト源になる
+- `packages/shared/src/ipc/channels.ts` に `SKILL_UPDATE` / `SKILL_GET_DETAIL` を定義し、shared / desktop parity をテストで固定した
+
+---

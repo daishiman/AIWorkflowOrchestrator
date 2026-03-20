@@ -5,7 +5,7 @@
 
 ## 概要
 
-grepベースの静的解析で Main Process ハンドラ（`ipcMain.handle`）と Preload API（`safeInvoke`）の契約ドリフトを自動検出するパターン。
+regex/grep ベースの静的解析で、Main Process ハンドラと Preload API の契約ドリフトを自動検出するパターン。2026-03-19 再監査時点では `safeInvoke<T>` / `safeOn<T>` / 複数行 preload 呼び出し / 複数 const object 収集まで反映済み。
 
 ## スクリプト
 
@@ -18,7 +18,7 @@ grepベースの静的解析で Main Process ハンドラ（`ipcMain.handle`）�
 | R-01 | チャンネル孤児（Main/Preload片方のみ） | warning | - |
 | R-02 | 引数形式不一致（object vs primitive） | error | P44 |
 | R-03 | チャンネル名ハードコード | warning | P27 |
-| R-04 | 未登録チャンネル（Preloadのみ） | error | - |
+| R-04 | 定数定義済みだが Main 未登録 | error | - |
 
 ## 実行方法
 
@@ -30,27 +30,66 @@ pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only --format json
 
 ## 抽出パターン
 
-- Mainハンドラ: `ipcMain.(handle|on)` + マルチライン結合（次5行まで）
-- Preload: `safe(Invoke|On)` パターン
-- チャンネル解決: `IPC_CHANNELS.XXX` → `channels.ts` の定数マッピングで実値に変換
+- Main: `ipcMain.handle` / `ipcMain.on` + マルチライン結合
+- Preload: `safeInvoke` / `safeOn` + generic / 複数行
+- チャンネル解決: `IPC_CHANNELS`, `CHANNELS`, `CHAT_EDIT_CHANNELS` など const object を main/preload/shared から収集
 
 ## 既知の制約
 
-- タプル配列経由登録（`[IPC_CHANNELS.XXX, handler]`）は未抽出（約108件）
-- `CHAT_EDIT_CHANNELS` 等の別定数オブジェクトは未対応
-- ブロックコメント内のコードは `inBlockComment` フラグでスキップ
+- タプル配列経由登録（`[IPC_CHANNELS.XXX, handler]`）は未抽出
+- alias / re-export / 動的定数参照は完全ではない
+- event channel parity（`ipcMain.on` vs `safeOn`）はノイズを残す
 
-## 苦戦箇所と教訓
+## 教訓
 
-1. **マルチラインipcMain.handle**: コードフォーマッターによる改行挿入を考慮し、次行結合が必須
-2. **tsx環境のパス解決**: `require.main === module` が動作しないため `process.argv[1]` ベースで判定
-3. **P57再発**: worktree環境を理由にした仕様書更新の先送りは10件の漏れを生む
+1. preload 側の抽出改善だけでは十分でなく、channel map と main registration pattern を同時に進化させる必要がある
+2. metrics が変わったら workflow outputs / LOGS / backlog を同ターンで更新しないと documentation drift が再発する
+3. P45 は「設計上の目標」と「現在の自動検出能力」を分けて書く
+
+## テスト戦略
+
+### ユニットテスト（44件）
+- T-4-1〜T-4-8: 抽出関数・検出ルール・レポート生成・チャンネル解決（26件）
+- T-6-1〜T-6-4: 異常系・境界値・エッジケース・P44/P45回帰（13件）
+- T-7a〜T-7e: main()関数・CLIオプション・exit code（5件）
+
+### カバレッジ（2026-03-19 測定）
+
+| 指標 | 結果 |
+|---|---|
+| Line | 94.94% |
+| Branch | 89.92% |
+| Function | 100% |
+
+### テスト実行
+
+```bash
+cd apps/desktop && pnpm vitest run scripts/__tests__/check-ipc-contracts.test.ts
+```
+
+### main() テストのパス解決パターン
+
+`process.argv[1]` をスクリプトパスに設定して実コードベースに対する統合テストとして実行。
+fs モックよりも安定し、高カバレッジを達成（P40派生パターン対策）。
+
+## 実行サマリー（2026-03-19 実測）
+
+| 項目 | 値 |
+|---|---|
+| 実行時間 | 約2.1秒 |
+| Main handlers 検出数 | 216 |
+| Preload entries 検出数 | 147 |
+| R-01 (チャンネル孤児) | 107件 |
+| R-02 (引数形式不一致) | 19件 |
+| R-03 (ハードコード文字列) | 5件 |
 
 ## 関連タスク
 
 | タスクID | 内容 | ステータス |
 | --- | --- | --- |
-| UT-TASK06-007 | IPC契約ドリフト自動検出スクリプト | 完了（2026-03-18） |
+| UT-TASK06-007 | IPC契約ドリフト自動検出スクリプト | 完了（2026-03-18、2026-03-19 再監査追補） |
 | UT-TASK06-007-EXT-001 | タプル配列経由ハンドラ抽出拡張 | 未着手 |
-| UT-TASK06-007-EXT-002 | 別定数オブジェクトチャンネル解決 | 未着手 |
-| UT-TASK06-007-EXT-003 | ipcMain.onパターン検証強化 | 未着手 |
+| UT-TASK06-007-EXT-002 | エイリアス / 再export / 動的定数解決強化 | 未着手 |
+| UT-TASK06-007-EXT-003 | ipcMain.on パターン検証強化 | 未着手 |
+| UT-TASK06-007-EXT-004 | check-ipc-contracts.ts モジュール分割 | 未着手 |
+| UT-TASK06-007-EXT-005 | R-02 セマンティクスチェック精度向上 | 未着手 |

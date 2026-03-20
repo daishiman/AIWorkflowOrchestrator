@@ -45,6 +45,7 @@ const mockSkillService = {
   importSkills: vi.fn(),
   removeSkill: vi.fn(),
   getSkillById: vi.fn(),
+  updateSkill: vi.fn(),
   getSkillByName: vi.fn(),
   executeSkill: vi.fn(),
   setSkillExecutor: vi.fn(),
@@ -99,6 +100,7 @@ import { ipcMain } from "electron";
 // チャンネル名定数
 const CHANNELS = {
   GET_DETAIL: "skill:get-detail",
+  UPDATE: "skill:update",
   EXECUTE: "skill:execute",
   ABORT: "skill:abort",
   GET_STATUS: "skill:get-status",
@@ -137,6 +139,7 @@ describe("skillHandlers P42準拠バリデーション", () => {
       removed: false,
     });
     mockSkillService.getSkillById.mockResolvedValue(null);
+    mockSkillService.updateSkill.mockResolvedValue(undefined);
     mockSkillService.getSkillByName.mockResolvedValue(null);
     mockSkillService.executeSkill.mockResolvedValue({
       executionId: "exec-default",
@@ -272,6 +275,85 @@ describe("skillHandlers P42準拠バリデーション", () => {
         expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
         expect((error as { message: string }).message).toBe(
           "skillId must be a non-empty string",
+        );
+      }
+    });
+  });
+
+  // ===========================================================================
+  // skill:update バリデーション
+  // ===========================================================================
+
+  describe("skill:update バリデーション", () => {
+    it("SH-UP-V01: 正常な skillName / updates で正常処理されること", async () => {
+      const handler = getHandler(CHANNELS.UPDATE);
+
+      const result = await handler(
+        {},
+        {
+          skillName: "test-skill",
+          updates: { description: "updated" },
+        },
+      );
+
+      expect(mockSkillService.updateSkill).toHaveBeenCalledWith("test-skill", {
+        description: "updated",
+      });
+      expect((result as { success: boolean }).success).toBe(true);
+    });
+
+    it("SH-UP-V02: 空文字列 skillName で VALIDATION_ERROR が throw されること", async () => {
+      const handler = getHandler(CHANNELS.UPDATE);
+
+      try {
+        await handler({}, { skillName: "", updates: { description: "x" } });
+        throw new Error("Expected VALIDATION_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
+      }
+    });
+
+    it("SH-UP-V03: スペースのみの skillName で VALIDATION_ERROR が throw されること（P42）", async () => {
+      const handler = getHandler(CHANNELS.UPDATE);
+
+      try {
+        await handler({}, { skillName: "   ", updates: { description: "x" } });
+        throw new Error("Expected VALIDATION_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "skillName must be a non-empty string",
+        );
+      }
+    });
+
+    it("SH-UP-V04: updates が null で VALIDATION_ERROR が throw されること", async () => {
+      const handler = getHandler(CHANNELS.UPDATE);
+
+      try {
+        await handler({}, { skillName: "test-skill", updates: null });
+        throw new Error("Expected VALIDATION_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "updates must be a non-null object",
+        );
+      }
+    });
+
+    it("SH-UP-V05: updates が配列で VALIDATION_ERROR が throw されること", async () => {
+      const handler = getHandler(CHANNELS.UPDATE);
+
+      try {
+        await handler({}, { skillName: "test-skill", updates: [] });
+        throw new Error("Expected VALIDATION_ERROR to be thrown");
+      } catch (error) {
+        expect((error as { code: string }).code).toBe("VALIDATION_ERROR");
+        expect((error as { message: string }).message).toBe(
+          "updates must be a non-null object",
         );
       }
     });
@@ -948,6 +1030,15 @@ describe("skillHandlers P42準拠バリデーション", () => {
         channel: CHANNELS.GET_DETAIL,
         makeArgs: (val: unknown) => ({ skillId: val }),
         expectedMessage: "skillId must be a non-empty string",
+      },
+      {
+        name: "skill:update",
+        channel: CHANNELS.UPDATE,
+        makeArgs: (val: unknown) => ({
+          skillName: val,
+          updates: { description: "x" },
+        }),
+        expectedMessage: "skillName must be a non-empty string",
       },
       {
         name: "skill:execute",

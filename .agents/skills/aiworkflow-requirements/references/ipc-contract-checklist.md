@@ -242,14 +242,19 @@ pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only --format json
 - **R-01**: チャンネル孤児（Main/Preloadの片方にのみ存在）- warning
 - **R-02**: 引数形式不一致（P44パターン）- error
 - **R-03**: チャンネル名ハードコード（P27パターン）- warning
-- **R-04**: 未登録チャンネル（Preloadで使用、Mainで未handle）- error
+- **R-04**: 定数定義済みだが Main 未登録のチャンネル - error
 
-既知の制約: タプル配列経由ハンドラ（`[IPC_CHANNELS.XXX, handler]` 形式）は未抽出。
+2026-03-19 再監査時点の補足:
+- preload 抽出は `safeInvoke<T>` / `safeOn<T>` と複数行呼び出しに対応済み
+- チャンネル解決は `IPC_CHANNELS` に限定されず、複数 const object を収集する
+- ただし event parity と alias/re-export/dynamic const は follow-up 管理とする
+
+既知の制約: タプル配列経由ハンドラ（`[IPC_CHANNELS.XXX, handler]` 形式）は未抽出で、event channel parity もノイズを残す。
 
 ### 将来拡張（未タスク）
 
-- [UT-TASK06-007-EXT-001](../../../docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-001-tuple-array-handler-extraction.md): タプル配列経由ハンドラ抽出（`[IPC_CHANNELS.XXX, handler]` 形式の約108件未抽出を解消）
-- [UT-TASK06-007-EXT-002](../../../docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-002-multi-channel-const-resolution.md): 別定数オブジェクト対応（`CHAT_EDIT_CHANNELS` 等 `IPC_CHANNELS` 以外のチャンネル解決）
-- [UT-TASK06-007-EXT-003](../../../docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-003-ipc-on-pattern-enhancement.md): ipcMain.on検証強化（`ipcMain.on` と `safeOn` の照合精度向上）
-- [UT-TASK06-007-EXT-004](../../../docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-004-script-modular-split.md): check-ipc-contracts.ts モジュール分割リファクタリング（C-04制約対応、478行→モジュール分割）
-- [UT-TASK06-007-EXT-005](../../../docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/unassigned-task/ut-task06-007-ext-005-r02-semantic-precision.md): R-02 セマンティクスチェック精度向上（偽陽性削減・P45自動検出）
+- [UT-TASK06-007-EXT-001](../../../docs/30-workflows/unassigned-task/ut-task06-007-ext-001-tuple-array-handler-extraction.md): タプル配列経由ハンドラ抽出（`[IPC_CHANNELS.XXX, handler]` 形式の約108件未抽出を解消）
+- [UT-TASK06-007-EXT-002](../../../docs/30-workflows/unassigned-task/ut-task06-007-ext-002-multi-channel-const-resolution.md): エイリアス / 再export / 動的定数のチャンネル解決強化
+- [UT-TASK06-007-EXT-003](../../../docs/30-workflows/unassigned-task/ut-task06-007-ext-003-ipc-on-pattern-enhancement.md): ipcMain.on検証強化（`ipcMain.on` と `safeOn` の照合精度向上）
+- [UT-TASK06-007-EXT-004](../../../docs/30-workflows/unassigned-task/ut-task06-007-ext-004-script-modular-split.md): check-ipc-contracts.ts モジュール分割リファクタリング（C-04制約対応、578行→モジュール分割）
+- [UT-TASK06-007-EXT-005](../../../docs/30-workflows/unassigned-task/ut-task06-007-ext-005-r02-semantic-precision.md): R-02 セマンティクスチェック精度向上（偽陽性削減・P45自動検出）

@@ -2,247 +2,101 @@
 
 ## メタ情報
 
-| 項目   | 値                                           |
-| ------ | -------------------------------------------- |
-| Phase  | 11                                           |
-| 機能名 | UT-TASK06-007-ipc-contract-drift-auto-detect |
-| 作成日 | 2026-03-18                                   |
+| 項目     | 値                                           |
+| -------- | -------------------------------------------- |
+| Phase    | 11                                           |
+| 機能名   | UT-TASK06-007-ipc-contract-drift-auto-detect |
+| 作成日   | 2026-03-18                                   |
+| 再監査日 | 2026-03-19                                   |
 
 ## 目的
 
-IPC契約ドリフト自動検出スクリプト（`check-ipc-contracts.ts`）が設計通りに動作することをコマンドベースで確認し、設計文書ウォークスルーにより処理フロー・検出ルール・CLIオプションの整合性を検証する。UIコンポーネントの変更はないため、スクリーンショット取得は不要（NON_VISUAL判定）。
+本タスクは docs-heavy / backend-heavy だが、ユーザーから「画面関係の検証はスクリーンショットで行うこと」と明示要求があったため、Phase 11 を `NON_VISUAL` 単独ではなく `SCREENSHOT + 非視覚コマンド検証` の二層で再実施する。
 
 ## 実行タスク
 
-### タスク1: スクリプト動作確認（--report-only）
+- Screenshot Capture: representative dashboard harness を workflow 配下へ撮影し、画面 sanity check の証跡を残す
+- Visual Review: スクリーンショット 5 件を目視確認し、overflow / 可読性 / テーマ破綻の有無を確認する
+- CLI Replay: `check-ipc-contracts.ts` の `report-only` / `json` / `strict` を再実行する
+- Quality Replay: `typecheck` / 対象テスト / 対象カバレッジを再実行する
+- Result Sync: `manual-test-result.md` と `discovered-issues.md` に結果を同期する
 
-**目的**: スクリプトが `--report-only` モードで正常に実行でき、レポートを出力することを確認する。
+## テスト方式
 
-### タスク2: スクリプト動作確認（--format json）
+- `SCREENSHOT`: current workflow 配下に representative dashboard harness を撮影し、branch 全体の画面 sanity check を確認する
+- `NON_VISUAL`: `check-ipc-contracts.ts` の CLI 挙動、typecheck、対象テスト、対象カバレッジを再確認する
 
-**目的**: スクリプトが `--format json` オプションで有効なJSON出力を返すことを確認する。
+## テストケース
 
-### タスク3: 実行時間確認
+| テストケース | 種別       | 対象                                        | 目的                                          | 期待結果                                                 |
+| ------------ | ---------- | ------------------------------------------- | --------------------------------------------- | -------------------------------------------------------- |
+| TC-11-01     | SCREENSHOT | ホーム通常表示（light / desktop）           | 通常状態の余白、情報量、可読性を確認          | 主要カードとタイムラインが欠けずに表示される             |
+| TC-11-02     | SCREENSHOT | ホーム empty state（light / desktop）       | empty state の導線と CTA を確認               | 空状態メッセージと CTA が中央で破綻なく表示される        |
+| TC-11-03     | SCREENSHOT | ホーム loading state（dark / desktop）      | loading skeleton と dark theme の視認性を確認 | skeleton が崩れず、dark 背景で文字コントラストを維持する |
+| TC-11-04     | SCREENSHOT | ホーム通常表示（dark / mobile）             | mobile 幅での積み上がりと overflow を確認     | カードが1列化し、横スクロールや文字切れがない            |
+| TC-11-05     | SCREENSHOT | ホーム通常表示（kanagawa-dragon / desktop） | 別テーマ適用時の可読性と配色破綻を確認        | テーマ切替後も見出し・本文・カード境界が識別できる       |
 
-**目的**: スクリプトの実行時間が10秒以内であることを確認する。
+## 画面カバレッジマトリクス
 
-### タスク4: 設計文書ウォークスルー（処理フロー）
+| テストケース | 状態                               | ルート                                                            | Viewport | 証跡                                                    | 判定基準                                   |
+| ------------ | ---------------------------------- | ----------------------------------------------------------------- | -------- | ------------------------------------------------------- | ------------------------------------------ |
+| TC-11-01     | normal / light / desktop           | `/phase11-dashboard-home.html?state=normal&theme=light`           | 1440x980 | `screenshots/TC-11-01-home-normal-light-desktop.png`    | 3カラム相当のカード配置が崩れない          |
+| TC-11-02     | empty / light / desktop            | `/phase11-dashboard-home.html?state=empty&theme=light`            | 1440x980 | `screenshots/TC-11-02-home-empty-light-desktop.png`     | CTA が欠けず、空状態説明が読める           |
+| TC-11-03     | loading / dark / desktop           | `/phase11-dashboard-home.html?state=loading&theme=dark`           | 1440x980 | `screenshots/TC-11-03-home-loading-dark-desktop.png`    | skeleton と背景のコントラストが維持される  |
+| TC-11-04     | normal / dark / mobile             | `/phase11-dashboard-home.html?state=normal&theme=dark`            | 390x844  | `screenshots/TC-11-04-home-normal-mobile-dark.png`      | 1列レイアウトで overflow しない            |
+| TC-11-05     | normal / kanagawa-dragon / desktop | `/phase11-dashboard-home.html?state=normal&theme=kanagawa-dragon` | 1440x980 | `screenshots/TC-11-05-home-normal-kanagawa-desktop.png` | テーマ変更後も境界・本文・CTA が識別できる |
 
-**目的**: Phase 2 設計書の処理フローと実装が一致していることを、5つのウォークスルー観点で確認する。
+## 非視覚確認項目
 
-### タスク5: 設計文書ウォークスルー（CLIオプション）
-
-**目的**: CLIオプションが設計通りに動作していることを確認する。
-
-## 参照資料
-
-| 参照資料                 | パス                                                         | 内容                                      |
-| ------------------------ | ------------------------------------------------------------ | ----------------------------------------- |
-| Phase 1（要件定義）      | `phase-1-requirements.md`                                    | 受入基準を確認する                        |
-| Phase 2（設計）          | `phase-2-design.md`                                          | 処理フロー・検出ルール・CLIオプション設計 |
-| Phase 3（設計レビュー）  | `phase-3-design-review.md`                                   | レビュー判定と指摘対応を確認する          |
-| Phase 10（最終レビュー） | `phase-10-final-review.md`                                   | 最終判定後の確認観点を確認する            |
-| スクリプト本体           | `apps/desktop/scripts/check-ipc-contracts.ts`                | 実装済みのスクリプトを確認する            |
-| テストファイル           | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` | テストケースの網羅範囲を確認する          |
-
-### システム仕様（aiworkflow-requirements）
-
-| 参照資料                  | パス                                                                          | 内容                       |
-| ------------------------- | ----------------------------------------------------------------------------- | -------------------------- |
-| IPC契約チェックリスト     | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md` | IPC契約検証の正本          |
-| セキュリティ Electron IPC | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`  | IPC セキュリティ設計の正本 |
-| 品質要件                  | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`   | Phase 9 品質ゲート基準     |
+| ID       | コマンド / 方法                                                                       | 期待結果               |
+| -------- | ------------------------------------------------------------------------------------- | ---------------------- |
+| NV-11-06 | `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only`                  | exit 0、診断結果を出力 |
+| NV-11-07 | `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only --format json`    | jq で解釈可能な JSON   |
+| NV-11-08 | `/usr/bin/time -p pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only` | 10秒以内               |
+| NV-11-09 | `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --strict`                       | error 検出時に exit 1  |
+| NV-11-10 | `pnpm --filter @repo/desktop typecheck`                                               | PASS                   |
+| NV-11-11 | `pnpm --filter @repo/desktop test:run scripts/__tests__/check-ipc-contracts.test.ts`  | PASS                   |
 
 ## 実行手順
 
-### ステップ0: タスク種別判定
-
-| タスク種別           | 判定条件                                   | 判定結果 |
-| -------------------- | ------------------------------------------ | -------- |
-| **設計タスク**       | タスク種別が「設計・仕様策定」、UI実装なし | -        |
-| **docs-only タスク** | UI変更なし、ドキュメント・設定変更のみ     | **該当** |
-| **UI タスク**        | Renderer コンポーネントの追加・変更あり    | -        |
-
-本タスクは `apps/desktop/scripts/check-ipc-contracts.ts` へのバックエンドスクリプト追加のみであり、Renderer コンポーネントの変更を含まないため **docs-only タスク** と判定する。
-
-**NON_VISUAL 判定記録**:
-
-| 状況                             | 対応方法                                    |
-| -------------------------------- | ------------------------------------------- |
-| UIコンポーネントが存在しない     | `NON_VISUAL` 判定。スクリーンショット省略可 |
-| バックエンドスクリプトのみの変更 | `NON_VISUAL` 判定。コマンドベース検証で代替 |
-
-### ステップ1: docs-only task 確認項目
-
-- [ ] SKILL.md から family file を辿れるか
-- [ ] LOGS.md から archive を辿れるか
-- [ ] `.claude/` と `.agents/` が一致するか
-- [ ] validator コマンドを再実行できるか
-- [ ] スクリプトが `--report-only` モードで正常に実行できるか
-- [ ] スクリプトが `--format json` で正常なJSON出力を返すか
-- [ ] Phase 2 設計書の処理フローと実装が一致しているか
-- [ ] 検出ルール R-01〜R-04 が設計通りに動作しているか
-
-### ステップ2: TC-11-01 --report-only 動作確認
-
-```bash
-pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only
-```
-
-1. 終了コードが `0` であることを確認する
-2. 出力にドリフト検出結果（検出件数・検出ルール別サマリー）が含まれることを確認する
-3. 確認結果を `outputs/phase-11/manual-test-result.md` に記録する
-
-**期待結果**: スクリプトがエラーなく完了し、レポートが標準出力に表示される
-
-### ステップ3: TC-11-02 --format json 動作確認
-
-```bash
-pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --format json
-```
-
-1. 出力が有効なJSONであることを確認する（`| jq .` でパース可能）
-2. JSONに検出結果の配列・サマリー情報が含まれることを確認する
-3. 確認結果を `outputs/phase-11/manual-test-result.md` に追記する
-
-**期待結果**: 有効なJSON形式でドリフト検出結果が出力される
-
-### ステップ4: TC-11-03 実行時間確認
-
-```bash
-time pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only
-```
-
-1. `real` の値が10秒以内であることを確認する
-2. 確認結果を `outputs/phase-11/manual-test-result.md` に追記する
-
-**期待結果**: 実行時間が10秒以内
-
-### ステップ5: TC-11-04 設計文書ウォークスルー（処理フロー）
-
-Phase 2 設計書（`phase-2-design.md`）の処理フロー図を開き、`apps/desktop/scripts/check-ipc-contracts.ts` の実装コードを読み、以下の5つの観点でウォークスルーする。
-
-**設計文書ウォークスルー5項目テーブル**:
-
-| #   | 観点                            | 確認内容                                                                                          | 結果       |
-| --- | ------------------------------- | ------------------------------------------------------------------------------------------------- | ---------- |
-| 1   | 仕様書の自己完結性              | 前提条件・受入基準・成果物パスが Phase 1-2 仕様書に揃っているか                                   | {{RESULT}} |
-| 2   | 型定義・インターフェースの整合  | ファイル読み込み対象が設計通りか、検出ルール R-01〜R-04 が設計通りに実装されているか              | {{RESULT}} |
-| 3   | スコープ外の未タスク洗い出し    | Phase 2 設計で除外した機能（`ipcMain.on` パターン、AST パーサー等）に関連する未タスク候補がないか | {{RESULT}} |
-| 4   | Phase 3/10 レビュー指摘との照合 | Phase 3（設計レビュー）/ Phase 10（最終レビュー）で指摘された事項が全て解消されているか           | {{RESULT}} |
-| 5   | 後続実装タスクへの引き継ぎ情報  | Phase 12（ドキュメント）で記載すべき技術的注意点や、将来拡張時の注意事項を特定する                | {{RESULT}} |
-
-検出ルール詳細確認:
-
-- R-01: チャンネル名不一致検出
-- R-02: 引数形式不一致検出
-- R-03: 戻り値型不一致検出
-- R-04: 未登録ハンドラ検出
-
-CLIオプション確認:
-
-- `--report-only` / `--strict` / `--format` が設計通りに動作するか
-
-### ステップ6: TC-11-05 設計文書ウォークスルー（CLIオプション）
-
-```bash
-# --strict オプションの動作確認
-pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --strict
-
-# デフォルト動作の確認
-pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts
-```
-
-1. `--strict` 時にドリフト検出があれば非ゼロ終了コードが返されることを確認する
-2. オプション未指定時のデフォルト動作を確認する
-3. 確認結果を `outputs/phase-11/manual-test-result.md` に追記する
-
-**期待結果**: CLIオプションが Phase 2 設計書の仕様通りに動作する
-
-### ステップ7: ウォークスルー発見事項の記録
-
-ウォークスルー発見事項リアルタイム分類欄:
-
-| #   | シナリオ | 発見事項 | 分類 | 対応方針 |
-| --- | -------- | -------- | ---- | -------- |
-| 1   | TC-11-01 | -        | -    | -        |
-| 2   | TC-11-02 | -        | -    | -        |
-| 3   | TC-11-03 | -        | -    | -        |
-| 4   | TC-11-04 | -        | -    | -        |
-| 5   | TC-11-05 | -        | -    | -        |
-
-**分類基準**:
-
-- **Blocker**: Phase 12 完了前に修正必須。仕様整合性・参照リンク切れ・追跡可能性の断絶
-- **Note**: 改善推奨だが Phase 12 完了をブロックしない。未タスク化を検討
-- **Info**: 記録のみ。今後の参考情報として残す
-
-### ステップ8: テストケースサマリー
-
-| テストケース | 目的                                | 期待結果                              |
-| ------------ | ----------------------------------- | ------------------------------------- |
-| TC-11-01     | `--report-only` 動作確認            | レポート出力・終了コード 0            |
-| TC-11-02     | `--format json` 動作確認            | 有効なJSON出力・検出結果配列あり      |
-| TC-11-03     | 実行時間確認                        | 10秒以内で完了                        |
-| TC-11-04     | 処理フロー設計文書ウォークスルー    | Phase 2 設計書と一致                  |
-| TC-11-05     | CLIオプション設計文書ウォークスルー | `--strict` / デフォルト動作が設計通り |
+1. `pnpm --filter @repo/desktop exec node scripts/capture-dashboard-home-phase11.mjs --output-dir ... --port 4283` で representative dashboard harness を current workflow 配下へ capture
+2. 5枚の png を目視確認し、可読性・overflow・テーマ破綻の有無を評価
+3. `check-ipc-contracts.ts` の `report-only` / `json` / `strict` / 実行時間 / typecheck / targeted tests / targeted coverage を再実行
+4. 結果を `manual-test-result.md` と `discovered-issues.md` に同期
 
 ## 統合テスト連携
 
-後続タスクとの結合確認として、以下の3点を手動テスト結果に明記する:
+- Phase 9 で確定した summary 値を Phase 11 の CLI 再検証でも再確認する
+- Phase 11 の screenshot evidence は `manual-test-result.md` の TC-ID と 1:1 で突合する
+- Phase 12 では `validate-phase11-screenshot-coverage.js` と `validate-phase-output.js --phase 11` の結果を documentation 側へ反映する
 
-1. 検出ルール R-01〜R-04 が Phase 2 設計書の仕様と一致しており、既知の IPC ドリフトパターン（P44/P45）を検出できることをウォークスルーで確認済みであること
-2. `--strict` オプションが Phase 9 品質ゲート統合で使用可能な終了コードを返すことを確認済みであること
-3. スクリプトの実行時間が10秒以内であり、CI/CD パイプラインに統合可能なパフォーマンスであることを確認済みであること
+## 参照資料
 
-## 多角的チェック観点（AIが判断）
-
-| 観点           | 確認内容                                                         | 判定 |
-| -------------- | ---------------------------------------------------------------- | ---- |
-| 機能正確性     | 検出ルール R-01〜R-04 が設計通りに動作するか                     | -    |
-| パフォーマンス | スクリプト実行時間が10秒以内か                                   | -    |
-| CLI互換性      | `--report-only` / `--strict` / `--format` が設計通りに動作するか | -    |
-| 設計整合性     | Phase 2 設計書の処理フローと実装が一致しているか                 | -    |
-| エラー耐性     | 不正な引数を渡した際に適切なエラーメッセージが表示されるか       | -    |
+- `phase-2-design.md`
+- `phase-5-implementation.md`
+- `phase-6-test-expansion.md`
+- `outputs/phase-7/coverage-report.md`
+- `outputs/phase-8/refactoring-report.md`
+- `phase-9-quality-assurance.md`
+- `phase-10-final-review.md`
+- `.claude/skills/task-specification-creator/references/phase-template-phase11.md`
+- `.claude/skills/task-specification-creator/references/screenshot-verification-procedure.md`
+- `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`
+- `outputs/phase-11/manual-test-result.md`
+- `outputs/phase-11/discovered-issues.md`
 
 ## 成果物
 
-| 成果物         | パス                                     | 内容                                                       |
-| -------------- | ---------------------------------------- | ---------------------------------------------------------- |
-| 手動テスト結果 | `outputs/phase-11/manual-test-result.md` | TC-11-01〜TC-11-05の実施結果を記録する                     |
-| 発見事項       | `outputs/phase-11/discovered-issues.md`  | ウォークスルーで発見した Blocker・Note を記録する（0件可） |
+| 成果物             | パス                                     | 内容                                      |
+| ------------------ | ---------------------------------------- | ----------------------------------------- |
+| 手動テスト結果     | `outputs/phase-11/manual-test-result.md` | SCREENSHOT 5件 + 非視覚確認 6件の結果     |
+| 発見事項           | `outputs/phase-11/discovered-issues.md`  | 再監査で見つかった仕様・証跡・残課題      |
+| スクリーンショット | `outputs/phase-11/screenshots/`          | png 5件 + `phase11-capture-metadata.json` |
 
 ## 完了条件
 
-- [ ] TC-11-01: `--report-only` モードでスクリプトが終了コード 0 で完了している
-- [ ] TC-11-02: `--format json` で有効なJSON出力が得られている
-- [ ] TC-11-03: スクリプト実行時間が10秒以内である
-- [ ] TC-11-04: Phase 2 設計書の処理フロー・検出ルール R-01〜R-04 と実装が一致している
-- [ ] TC-11-05: CLIオプション（`--report-only` / `--strict` / `--format`）が設計通りに動作している
-- [ ] 手動テスト結果（`outputs/phase-11/manual-test-result.md`）が生成されている
-- [ ] 発見事項（`outputs/phase-11/discovered-issues.md`）が生成されている（0件でも必須）
-- [ ] 全TC（TC-11-01〜TC-11-05）が PASS したことを手動テスト結果に記録済みである
-- [ ] FAIL したTCがある場合は原因と対処方針を手動テスト結果に記録し、前のPhaseへ差し戻す
-- [ ] **本Phase内の全タスクを100%実行完了**
-
-## サブタスク管理
-
-| サブタスク | 担当   | ステータス | 備考                        |
-| ---------- | ------ | ---------- | --------------------------- |
-| TC-11-01   | メイン | 未実施     | --report-only 動作確認      |
-| TC-11-02   | メイン | 未実施     | --format json 動作確認      |
-| TC-11-03   | メイン | 未実施     | 実行時間確認                |
-| TC-11-04   | メイン | 未実施     | 処理フローウォークスルー    |
-| TC-11-05   | メイン | 未実施     | CLIオプションウォークスルー |
-
-## タスク100%実行確認【必須】
-
-```bash
-node docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/scripts/validate-phase-output.js --phase 11
-```
-
-## 次のPhase
-
-完了後、以下のファイルを実行してください:
-
-`docs/30-workflows/UT-TASK06-007-ipc-contract-drift-auto-detect/phase-12-documentation.md`
+- [x] TC-11-01〜TC-11-05 の png 証跡が current workflow 配下に存在する
+- [x] `manual-test-result.md` に TC-ID と png が 1:1 で記録されている
+- [x] `validate-phase11-screenshot-coverage.js` を通せる構成にした
+- [x] `report-only` / `json` / `strict` / typecheck / targeted tests を再実行した
+- [x] 発見事項を `discovered-issues.md` に記録した
