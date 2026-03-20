@@ -68,6 +68,7 @@
 - `renderView` 拡張タスクでは、**画面到達（route）** と **分岐保証（unit test）** を分離する。screenshot は route-based evidence、`App.renderView.*` 系は `vitest` で保証し、同一コマンドに混在させない。
 - 再撮影時は `outputs/phase-11/screenshots/phase11-capture-metadata.json` などの生成時刻と `manual-test-result.md` の実施概要を同期する。
 - current workflow が `spec_created` / docs-heavy でも、upstream UI surface の統合再確認やユーザー要求がある場合は、current workflow 配下 `outputs/phase-11/screenshots/` に representative screenshots を残す。
+- current workflow が design task でも、Phase 11 仕様書に screenshot 契約がある場合は `manual-test-result.md` / `screenshot-coverage.md` / `screenshots/*.png` / metadata JSON を**全て** current workflow 配下へ揃える。png だけ追加して完了扱いにしない。
 - representative screenshot は shell 全景を既定にせず、責務や状態を表す selector / 実文言を待って要素単位で撮影する。`data-testid` が用意できる場合はそれを正本にする。
 - docs-only 判定で初回に `N/A` としていても、後続再監査で画面確認が必要になった場合は `SCREENSHOT` へ昇格し、`TC-ID ↔ png` と coverage を current workflow 正本へ再同期する。
 - docs-heavy task で user が screenshot を要求し、current build 再撮影が環境依存で過剰または不可能でも、same-day upstream evidence を current workflow へ集約し、review board 1件を current workflow で新規 capture する代替経路を許可する。source evidence / review board / Apple review の関係は `manual-test-result.md` と `command-transcript.md` に明記する。

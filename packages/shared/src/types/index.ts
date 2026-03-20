@@ -167,3 +167,6 @@ export * from "./skill-docs";
 
 // SafetyGate型定義 (UT-06-003)
 export * from "./safety-gate";
+
+// 実行能力型定義 (execution-responsibility-contract-foundation)
+export * from "./execution-capability";

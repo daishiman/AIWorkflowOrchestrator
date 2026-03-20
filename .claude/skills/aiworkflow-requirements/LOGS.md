@@ -6,6 +6,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-20 - スキル改善エージェント同期（Trigger に resolveCapability / resolveUiState / resolveCtaContract / contract-matrix 追加 / arch-execution-capability-contract.md 導線追加 / SKILL.md v9.02.07） |
+| 2026-03-20 - TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Phase 11 screen evidence 復旧（review-board screenshot 6件 / coverage 6/6 / artifacts drift 是正） |
+| 2026-03-20 - TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 same-wave sync 完了（execution responsibility canonical entrypoint 追加 / Phase 12 planned wording 是正 / old authmode bridge path 修正） |
 | 2026-03-19 - TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（SkillDetailPanel action buttons / screenshot証跡7件 / backlog path drift 是正 / workflow index undefined 解消） |
 | 2026-03-18 | Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成（TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE）、SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加 |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |
@@ -47,6 +50,62 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 実装完了（2026-03-20）
+
+- タスク名: execution-responsibility-contract-foundation / Task01（型定義基盤）
+- 種別: 実装タスク（shared 型定義 + re-export）
+- 主要成果物:
+  - `packages/shared/src/types/execution-capability.ts`（新規）: AccessCapability 4状態型・UiState 3値型・BlockedInfo・CtaContract・ExecutionCapabilityStatus・ExecutionCapabilityInput・CapabilityContext・UiStateResult・CtaInput 型 + resolveCapability / resolveUiState / resolveCtaContract / assertNoSilentFallback / assertNoPrimaryCta 関数
+  - `packages/shared/src/types/auth-mode.ts`（変更）: AuthModeStatus に capability? / uiState? / blockedReason? / blockedAction? を optional 追加
+  - `apps/desktop/src/renderer/store/slices/chatSlice.ts`（変更）: AccessCapability を shared re-export に変更
+  - `packages/shared/src/types/index.ts`（変更）: execution-capability の re-export 追加
+- system spec 更新:
+  - `references/interfaces-auth-core.md`: ExecutionCapability 型定義セクション追加 + AuthModeStatus 拡張フィールド記録
+  - `references/arch-state-management-core.md`: AccessCapability shared 移動記録 + re-export パターン追加
+  - `references/lessons-learned-current.md`: 苦戦箇所3件追加（テストシグネチャ不一致・CTA ラベルドリフト・型移動 re-export）
+  - `references/task-workflow-backlog.md`: UT-EXEC-01〜03 残課題登録
+
+## TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Phase 11 screen evidence 復旧（2026-03-20）
+
+- タスク名: execution-responsibility-contract-foundation
+- 種別: design task 再監査 / screen evidence 復旧
+- 主要確認:
+  - `phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` を追加し、validator 互換の TC-ID / png 対応を固定
+  - dedicated review-board harness を `apps/desktop/scripts/capture-task-execution-responsibility-contract-foundation-phase11.ts` として追加
+  - `outputs/phase-11/manual-test-result.md` / `screenshot-coverage.md` / `screenshots/*.png` / `phase11-capture-metadata.json` を current workflow 配下へ追加
+  - `validate-phase11-screenshot-coverage` を 6/6 PASS、`verify-all-specs` を 13/13 PASS / warning 0、`validate-phase12-implementation-guide` を 10/10 PASS へ更新
+- system spec / workflow update status:
+  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/phase-11-manual-test.md`
+  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-11/manual-test-plan.md`
+  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-11/manual-test-result.md`
+  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-11/screenshot-plan.json`
+  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-11/screenshot-coverage.md`
+  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-11/discovered-issues.md`
+  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/artifacts.json`
+  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/artifacts.json`
+
+## TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 same-wave sync 完了（2026-03-20）
+
+- タスク名: execution-responsibility-contract-foundation
+- 種別: 設計タスク Phase 12 再監査 / canonical workflow 導線補強
+- 主要確認:
+  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/` の root metadata と Phase 1-13 status を `implementation_ready` + Phase 13 blocked に同期
+  - `workflow-ai-runtime-execution-responsibility-realignment.md` を `.claude/skills/aiworkflow-requirements/` の current canonical entrypoint として追加
+  - `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` の planned wording drift を実績ベースへ是正
+  - 旧 `completed-tasks/ai-runtime-authmode-unification-2/` bridge が削除済み旧パスを向いていたため、current parent pack / standalone Task01 への互換導線へ更新
+- system spec update status:
+  - `references/task-workflow.md`
+  - `references/task-workflow-completed.md`
+  - `references/lessons-learned-current.md`
+  - `references/lessons-learned-phase12-workflow-lifecycle.md`
+  - `references/task-workflow-completed.md`
+  - `references/workflow-ai-runtime-execution-responsibility-realignment.md`
+  - `indexes/resource-map.md`
+  - `SKILL.md`
+  - `LOGS.md`
+- 補足:
+  - Task01 は design task のため status は `spec_created` を維持しつつ、workflow root は Phase 1-12 completed / Phase 13 blocked の current 実績として記録した
 
 ## TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（2026-03-19）
 

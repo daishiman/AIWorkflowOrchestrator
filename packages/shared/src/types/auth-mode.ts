@@ -8,6 +8,8 @@
  * @see docs/30-workflows/TASK-AUTH-MODE-SELECTION-001/outputs/phase-2/auth-mode-service-design.md
  */
 
+import type { AccessCapability, UiState } from "./execution-capability";
+
 // =============================================================================
 // 基本型定義
 // =============================================================================
@@ -83,6 +85,26 @@ export interface AuthModeStatus {
   errorCode?: AuthModeErrorCode;
   guidance?: string;
   lastCheckedAt: number;
+  /**
+   * 実行能力 4 状態（execution-capability.ts より）
+   *
+   * authMode + API key 有無から導出される。省略可能（後方互換維持）。
+   */
+  capability?: AccessCapability;
+  /**
+   * UI 表示状態 3 値（execution-capability.ts より）
+   *
+   * capability と補助条件から resolveUiState() で導出される。省略可能（後方互換維持）。
+   */
+  uiState?: UiState;
+  /**
+   * ブロック理由テキスト。uiState が "blocked" のときのみ付帯。
+   */
+  blockedReason?: string;
+  /**
+   * ブロック解除アクション。uiState が "blocked" のときのみ付帯。
+   */
+  blockedAction?: { label: string; targetRoute: string };
 }
 
 /**

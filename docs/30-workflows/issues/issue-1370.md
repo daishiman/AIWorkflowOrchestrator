@@ -1,0 +1,219 @@
+# [#1370] "[UT-RAG-08-004] HybridRAGEngine any 型安全化"
+
+## メタ情報
+
+```yaml
+task_id: UT-RAG-08-004
+task_name: HybridRAGEngine any 型安全化
+category: リファクタリング
+target_feature: HybridRAG Engine / Type Safety
+priority: 中
+scale: 小規模
+status: 未実施
+source_phase: Phase 5 Unresolved（U-04 / N-04）
+created_date: 2026-03-19
+dependencies: []
+spec_path: docs/30-workflows/unassigned-task/task-rag-08-004-hybrid-rag-engine-type-safety.md
+```
+
+| 項目       | 内容   |
+| ---------- | ------ |
+| 優先度     | 中     |
+| 規模       | 小規模 |
+| ステータス | 未実施 |
+
+---
+
+## 1. なぜこのタスクが必要か（Why）
+
+### 1.1 背景
+
+`hybrid-rag-engine.ts` に `any` が残っていると、実行時の型崩れをコンパイルで検出できない。Phase 12 の指摘では、`unknown` と type predicate を使った安全化が求められている。
+
+### 1.2 問題点・課題
+
+- `any` は型検査を素通りする
+- 実データの shape が変わったときに不具合が遅れて見つかる
+- 重要な検索ロジックで型安全を落とすと、他の安全策の効果も下がる
+
+### 1.3 放置した場合の影響
+
+- 実行時エラーの原因特定が難しくなる
+- 仕様変更の影響範囲を把握しづらくなる
+- 型安全化の方針が他モジュールに広がらない
+
+---
+
+## 2. 何を達成するか（What）
+
+### 2.1 目的
+
+`any` を `unknown` と型判定に置き換え、HybridRAGEngine の入力・中間値の安全性を上げる。
+
+### 2.2 最終ゴール
+
+- `any` 残存箇所がなくなる
+- type predicate で実行時検証が入る
+- 既存動作を壊さない
+
+### 2.3 スコープ
+
+#### 含むもの
+
+- `packages/shared/src/services/search/hybrid-rag-engine.ts`
+- 必要最小限のテスト更新
+
+#### 含まないもの
+
+- HybridRAG の仕様変更
+- 検索アルゴリズムの再設計
+
+### 2.4 成果物
+
+- 型安全化済みコード
+- 更新テスト
+
+---
+
+## 3. どのように実行するか（How）
+
+### 3.1 前提条件
+
+- `any` がどこで使われているかを特定できること
+- 実行時の shape 判定を追加しても挙動が変わらないこと
+
+### 3.2 依存タスク
+
+- UT-RAG-08-002 の前提確認
+
+### 3.3 必要な知識
+
+- TypeScript の `unknown`
+- type predicate
+- 実行時ガードの書き方
+
+### 3.4 推奨アプローチ
+
+`any` を単純に `unknown` に変えるだけで終わらせず、必ず判定関数を挟む。失敗時は早期にエラー化し、曖昧な fallback を増やさない。
+
+---
+
+## 4. 実行手順
+
+### Phase 1: 型調査
+
+#### 目的
+
+`any` の利用点を把握する。
+
+#### 手順
+
+1. `any` の残存箇所を列挙する
+2. 依存する型を確認する
+3. 判定関数の必要箇所を決める
+
+#### 完了条件
+
+- 置換範囲が決まっている
+
+### Phase 2: 置換
+
+#### 目的
+
+`unknown` と type predicate に差し替える。
+
+#### 手順
+
+1. `any` を `unknown` に変える
+2. 判定関数を追加する
+3. 必要ならテストを補う
+
+#### 完了条件
+
+- `any` が残っていない
+
+### Phase 3: 確認
+
+#### 目的
+
+既存挙動を壊していないことを確認する。
+
+#### 手順
+
+1. 型チェックを実行する
+2. 関連テストを実行する
+3. 主要な検索経路を確認する
+
+#### 完了条件
+
+- 型とテストが PASS する
+
+---
+
+## 5. 完了条件チェックリスト
+
+### 機能要件
+
+- [ ] `any` が消えている
+- [ ] 実行時判定で安全に分岐している
+
+### 品質要件
+
+- [ ] 既存の動作が変わっていない
+- [ ] 不要な fallback が増えていない
+
+### ドキュメント要件
+
+- [ ] 変更理由が記録されている
+
+---
+
+## 6. 検証方法
+
+### テストケース
+
+- TC-001: 正常 shape を通過する
+- TC-002: 異常 shape を拒否する
+- TC-003: 既存検索が壊れない
+
+### 検証手順
+
+1. 型チェックを実行する
+2. 関連テストを実行する
+3. 例外経路を軽く確認する
+
+---
+
+## 7. リスクと対策
+
+| リスク                   | 影響度 | 発生確率 | 対策                             |
+| ------------------------ | ------ | -------- | -------------------------------- |
+| 型置換で意図せず挙動変更 | 中     | 中       | 1 箇所ずつ置換して都度テストする |
+| 判定関数が肥大化する     | 低     | 中       | 役割ごとに小さく切り出す         |
+
+---
+
+## 8. 参照情報
+
+### 関連ドキュメント
+
+- `docs/30-workflows/completed-tasks/ai-runtime-authmode-unification/tasks/step-04-par-task-08-rag-embedding-extraction-runtime/outputs/phase-12/unassigned-task-detection.md`
+
+### 参考資料
+
+- `packages/shared/src/services/search/hybrid-rag-engine.ts`
+- `.claude/rules/06-known-pitfalls.md`
+
+---
+
+## 9. 備考
+
+### レビュー指摘の原文（該当する場合）
+
+```
+hybrid-rag-engine.ts に any 型の残存があるため、unknown + type predicate で安全化する。
+```
+
+### 補足事項
+
+安全化後も意味論を変えないこと。

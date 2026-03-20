@@ -1,6 +1,7 @@
 import { StateCreator } from "zustand";
 import type { ChatMessage, RagConnectionStatus } from "../types";
 import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
+import type { AccessCapability } from "@repo/shared/types/execution-capability";
 
 // ============================================
 // ChatPanel Status & Capability Types
@@ -22,15 +23,8 @@ export type ChatPanelStatus =
   | "blocked"
   | "handoff";
 
-/**
- * Access Capability 4 値
- * authMode + API key 有無から導出
- */
-export type AccessCapability =
-  | "integratedRuntime"
-  | "terminalSurface"
-  | "both"
-  | "none";
+// AccessCapability は @repo/shared/types/execution-capability から re-export
+export type { AccessCapability } from "@repo/shared/types/execution-capability";
 
 // ============================================
 // Helper Functions

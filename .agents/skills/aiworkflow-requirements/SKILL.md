@@ -8,7 +8,7 @@ description: |
   • Specification-Driven Development / 適用: 正本仕様同期 / 目的: 実装-仕様整合の維持
   • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
   Trigger:
-  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, ViewType, renderView, view routing, 画面ルーティング
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, ViewType, renderView, view routing, 画面ルーティング, execution responsibility, access capability, resolveCapability, resolveUiState, resolveCtaContract, contract-matrix, runtime policy, integratedRuntime, terminalSurface
 allowed-tools:
   - Read
   - Glob
@@ -80,7 +80,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | カテゴリ         | 主要ファイル                                                                                      |
 | ---------------- | ------------------------------------------------------------------------------------------------- |
 | 概要・品質       | overview.md, quality-requirements.md                                                              |
-| アーキテクチャ   | **architecture-overview.md**, architecture-patterns.md, arch-\*.md                                |
+| アーキテクチャ   | **architecture-overview.md**, architecture-patterns.md, arch-\*.md, **arch-execution-capability-contract.md**（ExecutionCapability / resolveCapability / resolveUiState / resolveCtaContract / contract-matrix） |
 | インターフェース | interfaces-agent-sdk.md, llm-\*.md, rag-search-\*.md                                              |
 | API設計          | api-endpoints.md, api-ipc-\*.md                                                                   |
 | データベース     | database-schema.md, database-implementation.md                                                    |
@@ -186,6 +186,8 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **9.02.07** | **2026-03-20** | **スキル改善エージェント同期**: Trigger に `resolveCapability` / `resolveUiState` / `resolveCtaContract` / `contract-matrix` を追加。アーキテクチャカテゴリに `arch-execution-capability-contract.md` 導線を追加。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **9.02.06** | **2026-03-20** | **TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 same-wave sync**: `workflow-ai-runtime-execution-responsibility-realignment.md` を current canonical entrypoint として追加し、`resource-map.md` / `task-workflow*.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `LOGS.md` を同期。Trigger に `execution responsibility` / `access capability` / `runtime policy` / `integratedRuntime` / `terminalSurface` を追加し、planned wording drift の教訓を skill 正本へ固定 |
 | **9.02.05** | **2026-03-19** | **TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査同期**: `ui-ux-feature-components-reference.md` / `ui-ux-navigation.md` / `arch-state-management-*.md` / `workflow-skill-lifecycle-routing-render-view-foundation.md` / `task-workflow-completed-skill-lifecycle*.md` / `lessons-learned-viewtype-electron-ui.md` を更新し、detail panel 起点の `skill-editor` / `skillAnalysis` handoff、main shell screenshot 7件、selector scope 教訓を system spec 正本へ同期 |
 | **9.02.04** | **2026-03-18** | **UT-TASK06-007 IPC契約ドリフト自動検出完了**: `apps/desktop/scripts/check-ipc-contracts.ts` 実装完了。R-01~R-04の4検出ルール。Phase 9品質ゲート統合。未タスク3件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **9.02.03** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: skill-feedback-report.md の4提案（設計テンプレート改善・レビューゲート改善・依存タスク連携・Phase 12 実績同期）に基づき task-specification-creator / skill-creator の各 references ファイルを更新。aiworkflow-requirements は仕様書品質改善の知見を skill-creator/patterns.md に記録 |

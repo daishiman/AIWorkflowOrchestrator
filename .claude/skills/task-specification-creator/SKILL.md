@@ -57,8 +57,8 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 | 1 | 要件定義 | scope、受入条件、inventory を固定する |
 | 2 | 設計 | topology、SubAgent lane、validation path を設計する |
 | 3 | 設計レビュー | Phase 4 へ進めるかを判定する |
-| 4 | テスト作成 | command suite と expected result を作る |
-| 5 | 実装 | `.claude` 正本を更新し、mirror を同期する |
+| 4 | テスト作成 | command suite と expected result を作る。**Phase 2 設計書の関数シグネチャ（型・引数名・戻り値）と contract-matrix の定数値（CTA ラベル等）を正本としてテストを記述する。Phase 4 テストが契約の正本となる** |
+| 5 | 実装 | `.claude` 正本を更新し、mirror を同期する。**シグネチャを変えたい場合は Phase 4 テストを先に更新するか function overload で両立させる** |
 | 6 | テスト拡充 | fail path、回帰 guard、補助 command を追加する |
 | 7 | カバレッジ確認 | concern と dependency edge の coverage を可視化する |
 | 8 | リファクタリング | duplicate と navigation drift を削る |
@@ -213,6 +213,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **事前に空欄チェックリストを作成**         | documentation-changelog.mdにStep 1-A〜1-D + Step 2の各欄を空欄で事前作成し、逐次消化する                                                                                                                                                                             |
 | **spec-update-workflow.mdを常に参照**      | Phase 12開始時に必ず [spec-update-workflow.md](references/spec-update-workflow.md) を開き、チェックリストを確認                                                                                                                                                      |
 | **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする                                                                                                                                                                                                   |
+| **設計タスクでも未タスク指示書は独立ファイル必須** | P58パターン。「設計タスクだから」という例外判断で `unassigned-task/` への独立ファイル作成を省略しない。内容が簡素でもファイルが存在することが監査ツールの前提 |
 | **LOGS.md/SKILL.md は4ファイル更新**       | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md                                                                                                                           |
 | **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
 | **worktree でも `.claude` 正本を実更新する** | worktree を理由に `.claude/skills/` の実更新を先送りしない。`system-spec-update-summary.md` には「更新予定」ではなく実更新結果を記録し、完了前に `.agents` mirror と parity を確認する |
@@ -383,6 +384,8 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.17** | **2026-03-20** | **スキル改善エージェント同期**: Phase 4/5 execute テーブルに function overload パターンと contract-matrix 正本ルールを追加。Phase 12 苦戦防止 Tips に P58（設計タスクでも未タスク指示書は独立ファイル必須）を追加。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **v10.09.16** | **2026-03-20** | **TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 再監査知見を反映**: `references/spec-update-workflow.md` と `references/phase-12-documentation-guide.md` に、planned wording（`計画済み` / `更新予定` / `PRマージ後`）を incomplete とみなすルールと、Phase 13 を user 承認なしでは `blocked` に固定するルールを追加 |
 | **v10.09.15** | **2026-03-19** | **Phase 12 changelog 同値同期ガードを追加**: `references/phase-12-documentation-guide.md` と `references/phase-12-completion-checklist.md` に、Step 1-A で更新した `.claude/skills/*/SKILL.md` / `.claude/skills/*/LOGS.md` を `documentation-changelog.md` へ canonical path で必ず列挙する確認項目を追加 |
 | **v10.09.14** | **2026-03-19** | **TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査知見を反映**: `references/phase-11-screenshot-guide.md` / `references/phase-template-phase11.md` に main shell handoff capture、shared DOM selector scope、`phase11-capture-metadata.json` / `ui-sanity-visual-review.md` 必須化を追加。`references/phase-12-documentation-guide.md` / `references/phase12-checklist-definition.md` / `references/phase-12-completion-checklist.md` / `references/phase-template-phase12*.md` では `system-spec-update-summary.md` を canonical filename とし、planned wording チェックを `outputs/phase-12/*.md` 全体へ拡張 |
 | **v10.09.13** | **2026-03-18** | **UT-TASK06-007 仕様書一式作成完了**: IPC契約ドリフト自動検出スクリプトのPhase 1-13仕様書を作成。P44/P45/P60パターン自動検出。4検出ルール設計。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |

@@ -271,6 +271,92 @@ Supabase Auth から取得するプロバイダー識別情報。
 
 ---
 
+## ExecutionCapability 型定義（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001）
+
+`packages/shared/src/types/execution-capability.ts` に定義された実行責任契約の型群。
+
+### AccessCapability
+
+AI 実行経路の能力状態を表す4値型。`chatSlice.ts` から re-export で後方互換性を維持。
+
+| 値 | 説明 |
+| --- | --- |
+| `"integratedRuntime"` | integrated AI runtime が利用可能 |
+| `"terminalSurface"` | terminal surface のみ利用可能 |
+| `"both"` | integrated と terminal の両方が利用可能 |
+| `"none"` | どの経路も利用不可 |
+
+**実装場所**: `packages/shared/src/types/execution-capability.ts`
+**re-export**: `apps/desktop/src/renderer/store/slices/chatSlice.ts`
+
+### UiState
+
+UI 表示状態を表す3値型。
+
+| 値 | 説明 |
+| --- | --- |
+| `"ready"` | 実行可能状態 |
+| `"blocked"` | ブロック状態（理由を BlockedInfo で提供） |
+| `"unavailable"` | 利用不可状態 |
+
+### BlockedInfo
+
+ブロック状態の詳細情報。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| reason | string | ブロック理由 |
+| action | string \| undefined | ユーザーに促すアクション |
+
+### CtaContract
+
+CTA（Call to Action）契約。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| primary | CtaItem | 主要 CTA（1件のみ） |
+| secondary | CtaItem \| undefined | 副次 CTA（省略可） |
+
+**制約**: `none` 能力では実行 CTA を DOM に含めない（assertNoPrimaryCta で強制）。
+
+### ExecutionCapabilityStatus
+
+能力解決の結果を包含するメインDTO。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| capability | AccessCapability | 解決された能力値 |
+| uiState | UiState | UI 表示状態 |
+| blockedInfo | BlockedInfo \| undefined | ブロック状態の詳細 |
+| cta | CtaContract | CTA 契約 |
+
+### 解決関数
+
+| 関数名 | 説明 |
+| --- | --- |
+| `resolveCapability(input)` | AccessCapabilityInput から AccessCapability を解決 |
+| `resolveUiState(capability, context)` | capability と CapabilityContext から UiState を解決 |
+| `resolveCtaContract(capability, input)` | capability から CtaContract を解決 |
+| `assertNoSilentFallback(capability)` | silent fallback を禁止するアサーション |
+| `assertNoPrimaryCta(capability)` | none 能力での primary CTA を禁止するアサーション |
+
+**実装場所**: `packages/shared/src/types/execution-capability.ts`
+
+### AuthModeStatus DTO 拡張フィールド（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001）
+
+`packages/shared/src/types/auth-mode.ts` の `AuthModeStatus` に以下の optional フィールドが追加された。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| capability | AccessCapability \| undefined | 解決済み能力値 |
+| uiState | UiState \| undefined | 解決済み UI 状態 |
+| blockedReason | string \| undefined | ブロック理由（uiState === "blocked" 時） |
+| blockedAction | string \| undefined | ブロック解除アクション（uiState === "blocked" 時） |
+
+**関連タスク**: TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 / Task01 完了（2026-03-20）
+
+---
+
 ## ワークスペース型定義
 
 Desktop アプリの複数フォルダ管理機能で使用する型定義。

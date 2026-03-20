@@ -4,6 +4,50 @@
 
 ---
 
+## 2026-03-20 - スキル改善エージェント同期（Phase 4/5 contract-matrix 正本ルール / P58 未タスク独立ファイル必須 / Trigger 拡張）
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | skill-improvement |
+| 変更対象 | `SKILL.md`（Phase 4/5 execute テーブル拡張・Phase 12 苦戦防止 Tips 追加・変更履歴 v10.09.17）、`LOGS.md` |
+| 結果 | Phase 4 テストが contract-matrix の正本となるルール・function overload による Phase 4/5 シグネチャ統一パターン・P58 設計タスクでも未タスク指示書は独立ファイル必須ルールを追加 |
+| 検証 | SKILL.md 行数確認済み（500行以下）|
+
+---
+
+## 2026-03-20 - TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 実装完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | `packages/shared/src/types/execution-capability.ts`（新規）、`packages/shared/src/types/auth-mode.ts`（変更）、`apps/desktop/src/renderer/store/slices/chatSlice.ts`（変更）、`packages/shared/src/types/index.ts`（変更） |
+| 結果 | AccessCapability 4状態型・UiState 3値型・ExecutionCapabilityStatus 等を shared に追加。AuthModeStatus に capability/uiState/blockedReason/blockedAction を optional 追加。chatSlice.ts は re-export パターンで後方互換性を維持。系仕様書5件（interfaces-auth-core / arch-state-management-core / lessons-learned-current / task-workflow-backlog / LOGS.md x2）を同時更新 |
+| 検証 | 型定義テスト PASS、苦戦箇所3件（テストシグネチャ不一致・CTA ラベルドリフト・型移動 re-export）を lessons-learned に記録 |
+
+---
+
+## 2026-03-20 - execution responsibility foundation の screen-evidence 欠落を Phase 11 ガイドへ反映
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | feedback |
+| 変更対象 | `references/phase-11-12-guide.md` |
+| 結果 | design task でも screenshot 契約がある場合は `manual-test-result.md` / `screenshot-coverage.md` / `screenshots/*.png` / metadata JSON を current workflow 配下へ揃えるルールを追加した |
+| 検証 | `quick_validate.js .claude/skills/task-specification-creator` |
+
+---
+
+## 2026-03-20 - execution responsibility foundation 再監査知見を Phase 12/13 ガイドへ反映
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | feedback |
+| 変更対象 | `references/spec-update-workflow.md`, `references/phase-12-documentation-guide.md`, `SKILL.md` |
+| 結果 | planned wording を incomplete 扱いにするルールと、user 承認がない限り Phase 13 を `blocked` に維持するルールを追加した |
+| 検証 | `quick_validate.js .claude/skills/task-specification-creator` |
+
+---
+
 ## 2026-03-19 - Phase 12 changelog と Step 1-A 台帳の同値同期ガードを追加
 
 | 項目 | 内容 |
