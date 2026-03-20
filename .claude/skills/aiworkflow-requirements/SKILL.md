@@ -1,7 +1,14 @@
 ---
 name: aiworkflow-requirements
 description: |
-  AIWorkflowOrchestrator の正本仕様を `references/` から検索・参照・更新するスキル。`resource-map` / `quick-reference` / `topic-map` / `keywords` を起点に必要最小限だけ読む。用途は要件確認、設計・API・IPC 契約確認、UI/状態管理/セキュリティ判断、`task-workflow` / `lessons-learned` / 未タスク同期。主要対象は safeInvoke timeout、settings bypass、skill lifecycle、global nav、Skill Center / Workspace / Agent / Skill Creator 導線再編。Anchors: Specification-Driven Development, Progressive Disclosure。Trigger: 仕様確認、仕様更新、task-workflow同期、lessons-learned同期、API/IPC契約確認、セキュリティ要件確認、safeInvoke、timeout、settings bypass、skill lifecycle、Skill Center、Workspace、Agent、Skill Creator、line budget reform、spec splitting、family split、ToolRiskLevel、SafetyGatePort、AllowedToolEntryV2、processPermissionFallback、executeAbortFlow、executeSkipFlow、DefaultSafetyGate、evaluateSafety、skill:evaluate-safety、ViewType、renderView、ビュー分岐、画面ルーティング。
+  AIWorkflowOrchestratorの正本仕様を `references/` から検索・参照・更新するスキル。
+  resource-map / quick-reference / topic-map を起点に、要件確認、UI・状態管理・API/IPC・security・task-workflow/lessons/unassigned 同期を扱う。
+  主対象: safeInvoke timeout、settings bypass、skill lifecycle、global nav、Skill Center / Workspace / Agent / Skill Creator、ViewType / renderView。
+  Anchors:
+  • Specification-Driven Development / 適用: 正本仕様同期 / 目的: 実装-仕様整合の維持
+  • Progressive Disclosure / 適用: resource-map起点読込 / 目的: 必要最小限参照で漏れ防止
+  Trigger:
+  仕様確認, 仕様更新, task-workflow同期, lessons-learned同期, UI仕様反映, API/IPC契約確認, セキュリティ要件確認, safeInvoke, timeout, settings bypass, skill lifecycle, Skill Center, Workspace, Agent, Skill Creator, ViewType, renderView, view routing, 画面ルーティング, execution responsibility, access capability, resolveCapability, resolveUiState, resolveCtaContract, contract-matrix, runtime policy, integratedRuntime, terminalSurface
 allowed-tools:
   - Read
   - Glob
@@ -10,14 +17,10 @@ allowed-tools:
 ---
 
 # AIWorkflow Requirements Manager
-
 ## 概要
-
 AIWorkflowOrchestratorプロジェクトの全仕様を管理するスキル。
 **このスキルが仕様の正本**であり、references/配下のドキュメントを直接編集・参照する。
-
 ## クイックスタート
-
 ### 仕様を探す
 
 ```bash
@@ -77,7 +80,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | カテゴリ         | 主要ファイル                                                                                      |
 | ---------------- | ------------------------------------------------------------------------------------------------- |
 | 概要・品質       | overview.md, quality-requirements.md                                                              |
-| アーキテクチャ   | **architecture-overview.md**, architecture-patterns.md, arch-\*.md                                |
+| アーキテクチャ   | **architecture-overview.md**, architecture-patterns.md, arch-\*.md, **arch-execution-capability-contract.md**（ExecutionCapability / resolveCapability / resolveUiState / resolveCtaContract / contract-matrix） |
 | インターフェース | interfaces-agent-sdk.md, llm-\*.md, rag-search-\*.md                                              |
 | API設計          | api-endpoints.md, api-ipc-\*.md                                                                   |
 | データベース     | database-schema.md, database-implementation.md                                                    |
@@ -183,9 +186,10 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **9.02.05** | **2026-03-19** | **UT-TASK06-007 再監査同期**: `ipc-contract-checklist.md` / `architecture-implementation-patterns-reference-ipc-drift-detection.md` / `task-workflow-completed-ipc-contract-preload-alignment.md` / `security-electron-ipc.md` / `technology-devops.md` / `deployment-gha.md` を current facts に再同期。generic/multiline preload、複数 const object 解決、representative screenshot audit、実装時の苦戦箇所と簡潔解決手順を system spec から再利用できる形へ追記 |
-| **v-conv-db** | **2026-03-19** | **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了**: `database-implementation-core.md` / `arch-ipc-persistence.md` / `api-ipc-system-core.md` / `security-electron-ipc-core.md` / `task-workflow-completed-ipc-graceful-degradation-lifecycle.md` / `lessons-learned-current.md` を更新 |
-| **9.02.04** | **2026-03-18** | **UT-TASK06-007 IPC契約ドリフト自動検出完了**: `apps/desktop/scripts/check-ipc-contracts.ts` 実装完了。R-01~R-04の4検出ルール。Phase 9品質ゲート統合。当日検出3件に加え、後続 formalize で EXT-004/005 を追加し follow-up 5件へ整理。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **9.02.07** | **2026-03-20** | **スキル改善エージェント同期**: Trigger に `resolveCapability` / `resolveUiState` / `resolveCtaContract` / `contract-matrix` を追加。アーキテクチャカテゴリに `arch-execution-capability-contract.md` 導線を追加。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **9.02.06** | **2026-03-20** | **TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 same-wave sync**: `workflow-ai-runtime-execution-responsibility-realignment.md` を current canonical entrypoint として追加し、`resource-map.md` / `task-workflow*.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `LOGS.md` を同期。Trigger に `execution responsibility` / `access capability` / `runtime policy` / `integratedRuntime` / `terminalSurface` を追加し、planned wording drift の教訓を skill 正本へ固定 |
+| **9.02.05** | **2026-03-19** | **TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査同期**: `ui-ux-feature-components-reference.md` / `ui-ux-navigation.md` / `arch-state-management-*.md` / `workflow-skill-lifecycle-routing-render-view-foundation.md` / `task-workflow-completed-skill-lifecycle*.md` / `lessons-learned-viewtype-electron-ui.md` を更新し、detail panel 起点の `skill-editor` / `skillAnalysis` handoff、main shell screenshot 7件、selector scope 教訓を system spec 正本へ同期 |
+| **9.02.04** | **2026-03-18** | **UT-TASK06-007 IPC契約ドリフト自動検出完了**: `apps/desktop/scripts/check-ipc-contracts.ts` 実装完了。R-01~R-04の4検出ルール。Phase 9品質ゲート統合。未タスク3件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **9.02.03** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: skill-feedback-report.md の4提案（設計テンプレート改善・レビューゲート改善・依存タスク連携・Phase 12 実績同期）に基づき task-specification-creator / skill-creator の各 references ファイルを更新。aiworkflow-requirements は仕様書品質改善の知見を skill-creator/patterns.md に記録 |
 | **9.02.02** | **2026-03-17** | **TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 完了記録追加**: GAP-01/02/03 実装完了記録追加 |
 | **9.02.02** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 再監査同期**: Phase 11 screenshot 3件を再撮影して coverage validator を PASS 化、Phase 12 implementation-guide を 10/10 要件へ補強。`system-spec-update-summary.md` / `documentation-changelog.md` を実績形式へ置換し、`phase12-task-spec-compliance-check.md` を追加。`verify-unassigned-links` の欠落12件を補完し、TASK-08 follow-up 4件を未タスクへ formalize。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |

@@ -1,0 +1,60 @@
+{
+  "TC-01": {
+    "screens": ["review-board-settings", "review-board-main-chat"],
+    "expected_elements": [
+      "capability:integratedRuntime:active",
+      "ui-state:ready",
+      "cta:primary:AI で実行",
+      "cta:secondary:設定を開く"
+    ],
+    "file": "screenshots/TC-01-integrated-runtime-ready.png"
+  },
+  "TC-02": {
+    "screens": ["review-board-settings", "review-board-main-chat"],
+    "expected_elements": [
+      "capability:terminalSurface:active",
+      "ui-state:ready",
+      "cta:primary:ターミナルで実行"
+    ],
+    "file": "screenshots/TC-02-terminal-surface-ready.png"
+  },
+  "TC-03": {
+    "screens": ["review-board-settings", "review-board-main-chat"],
+    "expected_elements": [
+      "capability:both:active",
+      "ui-state:ready",
+      "cta:primary:AI で実行",
+      "cta:secondary:ターミナルで実行"
+    ],
+    "file": "screenshots/TC-03-both-ready.png"
+  },
+  "TC-04": {
+    "screens": ["review-board-settings", "review-board-main-chat"],
+    "expected_elements": [
+      "capability:none:unavailable",
+      "ui-state:unavailable",
+      "cta:primary:hidden",
+      "cta:secondary:セットアップガイド",
+      "reason-text:visible"
+    ],
+    "file": "screenshots/TC-04-none-unavailable.png"
+  },
+  "TC-05": {
+    "screens": ["review-board-transition"],
+    "expected_elements": [
+      "transition:none-blocked->integratedRuntime-ready",
+      "cta:before:設定を開く",
+      "cta:after:AI で実行"
+    ],
+    "file": "screenshots/TC-05-blocked-to-ready-transition.png"
+  },
+  "TC-06": {
+    "screens": ["review-board-guard-panel"],
+    "expected_elements": [
+      "guard:silent-fallback:pass",
+      "guard:no-primary:pass",
+      "message:unavailable"
+    ],
+    "file": "screenshots/TC-06-silent-fallback-guard.png"
+  }
+}

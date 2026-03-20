@@ -5,6 +5,49 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 execution-responsibility-contract-foundation（2026-03-20）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 |
+| ステータス | **仕様書作成完了（`spec_created` / Phase 1-12 completed / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-20 |
+| 対象 | execution responsibility / access capability / CTA contract foundation |
+| 成果物 | `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/` |
+
+#### 実施内容
+
+- `integratedRuntime` / `terminalSurface` / `both` / `none` の capability 語彙と `ready` / `blocked` / `unavailable` の UI 状態語彙を固定した
+- primary CTA 1件 + secondary CTA 1件、`none` では実行 CTA を DOM に含めない、silent fallback / auto-send / hidden prompt injection 禁止を foundation 契約として明文化した
+- current canonical workflow として `workflow-ai-runtime-execution-responsibility-realignment.md` を追加し、`task-workflow.md` / `resource-map.md` / `lessons-learned-current.md` と same-wave sync した
+- Phase 12 再監査で planned wording 残存と worktree 先送りパターンを教訓化し、両 skill のガイドを是正した
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（topic-map.md / keywords.json 再生成） |
+| `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js` | PASS with warnings 5（500行超ファイルの既存警告のみ） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation --json` | PASS（13/13, errors 0, warnings 12） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation --json` | PASS（10/10） |
+| `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements` | PASS（差分なし） |
+| `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator` | PASS（差分なし） |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| current workflow の canonical entrypoint が task-workflow から辿れず、旧 authmode pack だけが見つかる | workflow 名変更後も旧 parent pack だけを参照し続ける | `workflow-ai-runtime-execution-responsibility-realignment.md` を追加し、resource-map / task-workflow から到達可能にした |
+| Phase 12 実更新後も `計画済み` / `更新予定` が成果物に残る | docs-only task で実ファイル更新と成果物更新を別ターンに分ける | planned wording を不完了として扱うルールを skill 正本へ追記し、成果物を実績ベースへ書き換える |
+
+#### 同種課題の簡潔解決手順
+
+1. current workflow 名を canonical workflow spec と task-workflow の両方へ同時登録する。
+2. Phase 12 では `.claude` 正本更新、workflow 成果物更新、mirror sync を同一ターンで閉じる。
+3. `計画済み` / `更新予定` / `PRマージ後` が残っていたら未完了として扱い、実績文へ置換する。
+
 ### タスク: TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 slide-ai-runtime-alignment（2026-03-19）
 
 | 項目 | 値 |
