@@ -1,0 +1,11 @@
+Phase 6 after targeted coverage extension
+Date: 2026-03-20
+
+Statements: 96.31%
+Branches: 87.87%
+Functions: 85.71%
+Lines: 96.31%
+
+Reference:
+- outputs/phase-7/coverage-summary.md
+- apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.coverage.test.tsx

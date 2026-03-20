@@ -75,6 +75,7 @@ function App(): JSX.Element {
   const setCurrentView = useAppStore((state) => state.setCurrentView);
   const goBack = useAppStore((state) => state.goBack);
   const canGoBack = useAppStore((state) => state.viewHistory.length > 1);
+  const viewHistory = useAppStore((state) => state.viewHistory);
   const currentSkillName = useAppStore((state) => state.currentSkillName);
   const setCurrentSkillName = useAppStore((state) => state.setCurrentSkillName);
   const dynamicIsland = useAppStore((state) => state.dynamicIsland);
@@ -302,7 +303,11 @@ function App(): JSX.Element {
             }}
           />
         );
-      case "skillAnalysis":
+      case "skillAnalysis": {
+        const previousView = Array.isArray(viewHistory)
+          ? viewHistory[viewHistory.length - 2]
+          : undefined;
+        const isFromAgent = previousView === "agent";
         return (
           <SkillAnalysisView
             skillName={currentSkillName ?? "demo-skill"}
@@ -310,8 +315,13 @@ function App(): JSX.Element {
               setCurrentView("skillCenter");
               setCurrentSkillName(null);
             }}
+            onNavigateBack={isFromAgent ? () => goBack() : undefined}
+            onNavigateToAgent={
+              isFromAgent ? () => setCurrentView("agent") : undefined
+            }
           />
         );
+      }
       case "skillCreate":
         return (
           <SkillCreateWizard onClose={() => setCurrentView("skillCenter")} />

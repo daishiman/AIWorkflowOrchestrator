@@ -337,6 +337,29 @@ PermissionDialogのモーダル本文で `getDescription()` を呼び出し、�
 
 ---
 
+
+## 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20）
+
+| 項目 | 仕様 |
+| --- | --- |
+| 表示条件 | `selectedSkillName.trim() !== "" && skillExecutionStatus === "completed" && !isExecuting` |
+| 配置 | AgentView チャットインターフェースの下、実行コントロールの上 |
+| aria | `aria-label="スキル改善提案"` region |
+| CTA ボタン | 「分析する」ボタン。click で `currentSkillName` を設定し `skillAnalysis` へ遷移 |
+| 非表示ケース | スキル未選択、実行中、実行未完了 |
+
+**SkillAnalysisView round-trip props（Agent 起点限定）**
+
+| Props | 型 | 条件 |
+| --- | --- | --- |
+| `onNavigateBack` | `() => void` | `viewHistory[length - 2] === "agent"` のとき `App.tsx` から注入 |
+| `onNavigateToAgent` | `() => void` | 同上 |
+
+- `onNavigateBack`: ヘッダー左に「戻る」リンクを表示。click で `agent` view へ戻る
+- `onNavigateToAgent`: フッター右端に「エージェントで再実行」ボタンを表示。click で `agent` view へ遷移
+
+---
+
 ## アクセシビリティ（WCAG 2.1 AA）
 
 | 要件                     | 実装方法                                        |

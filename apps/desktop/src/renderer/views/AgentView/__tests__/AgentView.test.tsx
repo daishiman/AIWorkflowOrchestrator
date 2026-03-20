@@ -102,6 +102,9 @@ vi.mock("../../../store", () => ({
   useClearToast: vi.fn(() => mockClearToast),
   useImportSkill: vi.fn(() => mockImportSkill),
   useRemoveSkill: vi.fn(() => mockRemoveSkill),
+  // Navigation selectors (TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001)
+  useSetCurrentView: vi.fn(() => vi.fn()),
+  useSetCurrentSkillName: vi.fn(() => vi.fn()),
 }));
 
 describe("AgentView", () => {

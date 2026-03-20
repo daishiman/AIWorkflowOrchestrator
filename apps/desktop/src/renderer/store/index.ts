@@ -264,6 +264,10 @@ export const useCanGoBack = () =>
     (state) => Array.isArray(state.viewHistory) && state.viewHistory.length > 1,
   );
 export const useGoBack = () => useAppStore((state) => state.goBack);
+export const useSetCurrentView = () =>
+  useAppStore((state) => state.setCurrentView);
+export const useSetCurrentSkillName = () =>
+  useAppStore((state) => state.setCurrentSkillName);
 export const useStoragePercentage = () =>
   useAppStore((state) =>
     state.dashboardStats.storageTotal > 0

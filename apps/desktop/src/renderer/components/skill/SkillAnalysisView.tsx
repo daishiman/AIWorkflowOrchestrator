@@ -15,7 +15,7 @@
  */
 
 import React from "react";
-import { X } from "lucide-react";
+import { X, ArrowLeft } from "lucide-react";
 import { ScoreDisplay } from "./ScoreDisplay";
 import { SuggestionList } from "./SuggestionList";
 import { RiskPanel } from "./RiskPanel";
@@ -31,6 +31,10 @@ export interface SkillAnalysisViewProps {
   skillName: string;
   /** ビューを閉じるコールバック */
   onClose: () => void;
+  /** 前の画面に戻るコールバック（省略時は戻りリンクを非表示） */
+  onNavigateBack?: () => void;
+  /** エージェント画面に遷移するコールバック（省略時は再実行ボタンを非表示） */
+  onNavigateToAgent?: () => void;
 }
 
 // ============================================
@@ -40,6 +44,8 @@ export interface SkillAnalysisViewProps {
 export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
   skillName,
   onClose,
+  onNavigateBack,
+  onNavigateToAgent,
 }) => {
   const {
     analysis,
@@ -63,9 +69,21 @@ export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
     >
       {/* ヘッダー */}
       <div className="flex items-center justify-between border-b border-[var(--border-primary)] px-6 py-4">
-        <h1 className="text-lg font-semibold text-[var(--text-primary)]">
-          {skillName}
-        </h1>
+        <div className="flex items-center gap-2">
+          {onNavigateBack && (
+            <button
+              onClick={onNavigateBack}
+              aria-label="エージェントに戻る"
+              className="text-[var(--accent-primary)] hover:opacity-80 transition-opacity duration-200"
+            >
+              <ArrowLeft className="inline h-4 w-4" aria-hidden="true" />
+              <span className="text-sm">戻る</span>
+            </button>
+          )}
+          <h1 className="text-lg font-semibold text-[var(--text-primary)]">
+            {skillName}
+          </h1>
+        </div>
         <button
           onClick={onClose}
           aria-label="閉じる"
@@ -143,6 +161,15 @@ export const SkillAnalysisView: React.FC<SkillAnalysisViewProps> = ({
           >
             全自動改善
           </button>
+          {onNavigateToAgent && (
+            <button
+              onClick={onNavigateToAgent}
+              aria-label="エージェントで再実行"
+              className="rounded-lg border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-2 text-sm font-medium text-[var(--text-secondary)] transition-colors duration-200 hover:bg-[var(--bg-secondary)]"
+            >
+              エージェントで再実行
+            </button>
+          )}
         </div>
       )}
     </div>

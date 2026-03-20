@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.7.9 | 2026-03-20 | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 を反映: `AgentView` 実行完了後の改善 CTA、`SkillAnalysisView` の Agent 起点限定 `戻る` / `エージェントで再実行`、Phase 11 screenshot 6件、round-trip 導線を同期 |
 | v1.7.8 | 2026-03-19 | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 を反映: imported `SkillDetailPanel` に `エディタで開く` / `分析する` action zone を追加し、`SkillCenter -> skill-editor / skillAnalysis` handoff、main shell screenshot 7件、keyboard focus / Escape close を同期 |
 | v1.7.7 | 2026-03-18 | TASK-SKILL-LIFECYCLE-02 を反映: `SkillCenterView` ヘッダーに「+ 新規作成」CTA（`data-testid="header-create-cta"`）、`SkillLifecycleJourneyPanel` に3ジョブ別 CTA（create/use/improve）、`useSkillCenter` にナビゲーション関数3つ、`ctaLabel` 型拡張を同期。関連未タスク: `TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001`（ヘッダー CTA の `hidden md:inline` レスポンシブ対応、`docs/30-workflows/unassigned-task/task-imp-skillcenter-header-cta-responsive-001.md`）、`TASK-IMP-SKILLCENTER-CTA-ACCESSIBILITY-001`（CTA 型安全性・アクセシビリティ改善、`docs/30-workflows/unassigned-task/task-imp-skillcenter-cta-accessibility-001.md`）、`TASK-IMP-SKILLCENTER-UI-REFINEMENT-001`（UI 改善: 8pxグリッド準拠・viewStyles分離、`docs/30-workflows/unassigned-task/task-imp-skillcenter-ui-refinement-001.md`） |
 | v1.7.6 | 2026-03-17 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 を反映: `skillAnalysis` / `skillCreate` ViewType と `renderView()` 分岐、`SkillAnalysisView` close→`skillCenter` 導線、Phase 11 screenshot 5件（advanced route fallback）を同期 |
@@ -184,6 +185,19 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | close behavior | 遷移後は `handleCloseDetail()` で detail panel を閉じる |
 | 画面証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons/outputs/phase-11/screenshots/TC-11-01..07` |
 | 補助検証 | `phase11-handoff-diagnostics.json` で `getFileTree` / `analyze` 呼び出しを確認する |
+
+### AgentView improve handoff（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001）
+
+| 観点 | 仕様 |
+| --- | --- |
+| source surface | `AgentView` 実行サマリー直下の CTA region（`role="region"`, `aria-label="スキル改善提案"`） |
+| CTA gate | `selectedSkillName` が空でなく、`skillExecutionStatus === "completed"` かつ `!isExecuting` のときだけ表示する |
+| analysis destination | CTA click は `selectedSkillName` を trim 後に `currentSkillName` へ保存し、`setCurrentView("skillAnalysis")` を実行する |
+| back handoff | `App.tsx` は `viewHistory[length - 2] === "agent"` の場合のみ `SkillAnalysisView` へ `onNavigateBack={goBack}` を注入する |
+| rerun handoff | 同条件で `onNavigateToAgent={() => setCurrentView("agent")}` を注入し、分析後の再実行導線を Agent 起点に限定する |
+| close behavior | close は従来通り `skillCenter` へ戻し `currentSkillName = null` を維持し、Agent 起点の戻り導線とは責務を分離する |
+| 画面証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/outputs/phase-11/screenshots/TC-11-01..06` |
+| 補助検証 | `AgentView.cta.test.tsx`, `SkillAnalysisView.navigation.test.tsx`, `App.renderView.viewtype.test.tsx` |
 
 ### TASK-SKILL-LIFECYCLE-01 苦戦箇所（再利用形式）
 

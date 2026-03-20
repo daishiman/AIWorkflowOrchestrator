@@ -1,0 +1,129 @@
+{
+  "taskId": "TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001",
+  "title": "Slide / Modifier manual fallback alignment",
+  "type": "design",
+  "priority": "medium",
+  "status": "spec_created",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "not_started",
+      "file": "phase-1-requirements.md",
+      "artifacts": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "not_started",
+      "file": "phase-2-design.md",
+      "artifacts": []
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "not_started",
+      "file": "phase-3-design-review.md",
+      "artifacts": []
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "not_started",
+      "file": "phase-4-test-creation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "not_started",
+      "file": "phase-5-implementation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "not_started",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": []
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "not_started",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "not_started",
+      "file": "phase-8-refactoring.md",
+      "artifacts": []
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "not_started",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "not_started",
+      "file": "phase-10-final-review.md",
+      "artifacts": []
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "not_started",
+      "file": "phase-11-manual-test.md",
+      "artifacts": []
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "not_started",
+      "file": "phase-12-documentation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": []
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "Slide / Modifier の runtime lane と manual lane が明示されている",
+      "verified": false
+    },
+    {
+      "id": "AC-2",
+      "description": "direct SDK / silent fallback の整理順と ownership が定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-3",
+      "description": "slide-specific screenshot / walkthrough contract が定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-4",
+      "description": "Task09 governance が拾う follow-up ルールが明記されている",
+      "verified": false
+    }
+  ],
+  "dependencies": [
+    "TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001",
+    "TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001"
+  ],
+  "relatedPitfalls": ["P31", "P48", "P50", "P64", "P65"],
+  "createdAt": "2026-03-19",
+  "updatedAt": "2026-03-19"
+}
