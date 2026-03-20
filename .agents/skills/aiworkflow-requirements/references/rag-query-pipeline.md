@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| v1.2.0     | 2026-03-20 | UT-RAG-08-002 Phase 1-13 仕様書作成完了を反映: HybridRAGFactory pipeline runtime を更新、createFull/createLite 設計詳細を追記 |
 | v1.1.1     | 2026-03-19 | Task08 current-state sync: GraphRAG fallback metadata と HybridRAGFactory not-ready runtime を追記 |
 | v1.0.0     | 2025-01-20 | 初版作成                                                   |
 | v1.1.0     | 2026-01-26 | spec-guidelines準拠: コードブロックを表形式・文章に変換    |
@@ -223,11 +224,47 @@ Corrective RAGで結果品質を評価・補正する。品質に応じて3つ�
 
 | メソッド | 用途 | 状態 |
 | --- | --- | --- |
-| createFull() | フル機能版（LLM分類、CRAG有効） | guidance stub（`[FACTORY_NOT_READY]` を throw） |
-| createLite() | 軽量版（ルールベース、CRAG無効） | guidance stub（`[FACTORY_NOT_READY]` を throw） |
+| createFull() | フル機能版（LLM分類、CRAG有効） | 仕様確定済み（UT-RAG-08-002）、実装待ち |
+| createLite() | 軽量版（ルールベース、CRAG無効） | 仕様確定済み（UT-RAG-08-002）、実装待ち |
 | createForTesting() | テスト用（モック注入可能） | 実装済 |
 
-**NOTE**: current production runtime では createFull() / createLite() を前提にしない。依存モジュール（LLMQueryClassifier, VectorSearchStrategy, GraphSearchStrategy, 各種Reranker, CorrectiveRAG）が未接続のため、呼び出すと guidance Error を返す。
+**NOTE**: current production runtime では createFull() / createLite() を前提にしない。`[FACTORY_NOT_READY]` guidance stub のまま。仕様書作成完了（Phase 1-13）後も実装完了まで guidance Error を返す。
+
+### createFull() 組み立て設計（UT-RAG-08-002）
+
+3LLM系統分離・Reranker4分岐・CRAG条件分岐を明示的に切り分ける設計。
+
+| ステップ | 処理 | 使用クラス |
+| --- | --- | --- |
+| 1 | config バリデーション | `validateFullConfig(config)` |
+| 2 | Query Classifier 生成 | `LLMQueryClassifier(config.llmProvider, new RuleBasedQueryClassifier())` |
+| 3 | Keyword strategy 生成 | `KeywordSearchStrategyAdapter(new KeywordSearchStrategy(config.db))` |
+| 4 | Semantic strategy 生成 | `VectorSearchStrategy(config.db, config.embeddingProvider)` |
+| 5 | Graph strategy 生成 | `GraphSearchStrategy(config.graphStore, config.embeddingProvider, config.communitySummarizer?)` |
+| 6 | Fusion 生成 | `new RRFFusion(config.rrfK ?? 60)` |
+| 7 | Reranker 生成 | `createReranker(config)` — 4分岐（cohere/voyage/llm/none） |
+| 8 | CRAG 生成 | `createCrag(config)` — 条件分岐（enableCRAG + cragLlmClient） |
+| 9 | Engine 生成 | `new HybridRAGEngine(...)` |
+
+**3LLM系統の分離**:
+
+| 系統 | config フィールド | 渡し先 |
+| --- | --- | --- |
+| QueryClassifier 用 | `llmProvider: ILLMProvider` | `LLMQueryClassifier` |
+| LLMReranker 用 | `rerankerLlmClient: ILLMClient（llm/types）` | `LLMReranker` |
+| RelevanceEvaluator 用 | `cragLlmClient: ILLMClient（crag/types）` | `RelevanceEvaluator` |
+
+### createLite() 組み立て設計（UT-RAG-08-002）
+
+| ステップ | 処理 |
+| --- | --- |
+| 1 | `RuleBasedQueryClassifier()` — 引数なし |
+| 2 | `KeywordSearchStrategyAdapter(new KeywordSearchStrategy(config.db))` |
+| 3 | `VectorSearchStrategy(config.db, config.embeddingProvider)` |
+| 4 | `GraphSearchStrategy(config.graphStore, config.embeddingProvider)` |
+| 5 | `new RRFFusion()` — デフォルト k=60 |
+| 6 | `new NoOpReranker()` |
+| 7 | `crag = null` |
 
 ---
 

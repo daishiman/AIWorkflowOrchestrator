@@ -55,6 +55,7 @@
 | スキル配布         | `SkillDistributionService`    | interfaces-agent-sdk-skill.md |
 | LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
 | LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
+| RAG LLMクライアント | `ILLMClient`（crag/types.ts 版 / llm/types.ts 版）型ドリフト→P64 | lessons-learned-rag-embedding-runtime.md (L-RAG-06) |
 
 ---
 
@@ -273,6 +274,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-20 | UT-RAG-08-002: `ILLMClient` 型ドリフト（P64）への参照パスを型定義クイックアクセステーブルに追加。`lessons-learned-rag-embedding-runtime.md` (L-RAG-06) へ導線を登録 |
 | 2026-03-19 | UT-TASK06-007: discovery 導線を completed canonical set に再同期し、implementation pattern detail / completed ledger / EXT-001〜005 を早見表へ反映 |
 | 2026-03-18 | UT-TASK06-007: IPC契約ドリフト自動検出セクション（check-ipc-contracts.ts / R-01~R-04 / EXT-001~003）をIPCチャンネル早見表直後に追加 |
 | 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |

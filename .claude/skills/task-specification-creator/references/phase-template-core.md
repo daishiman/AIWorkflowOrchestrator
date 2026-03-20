@@ -89,6 +89,29 @@ Phase 1、Phase 2、Phase 3。
 - 上流の GAP ID 正本テーブル（ui-ux-diagrams.md 等）を確認し、設計で使用する GAP ID が正本と一致するか検証する
 - 正本テーブルが存在しない場合は、Phase 2 の成果物として GAP ID 正本テーブルを上流文書に追加する
 
+### Factory パターン設計時の型互換性検証 decision tree（Phase 2 で下書き → Phase 3 で確認）
+
+Factory パターンや依存注入を含む設計タスクでは、Phase 2 設計時に以下の decision tree で型配置方針を決定し、**型互換性検証テーブルの下書き**を成果物に含める。Phase 3 でその検証結果を記録する（詳細は Phase 3 セクション参照）。
+
+```
+Factory が返す型 T を使用する注入先 Port/Interface が存在するか？
+  ├─ NO  → 型 T は Factory 実装ファイル内に閉じる（`packages/shared/` 不要）
+  └─ YES → T は注入先 Interface を満たすか（implements / 構造的互換）？
+              ├─ YES → Factory ファイルと注入先が同一パッケージか？
+              │          ├─ YES → 現在のパッケージ内に型定義を置く
+              │          └─ NO  → `packages/shared/` への型集約を検討（未タスク候補）
+              └─ NO  → Phase 2 MAJOR 候補: 型を修正するか注入先 Interface を調整する
+```
+
+**Phase 2 成果物として記載する型互換性検証テーブル（下書き）:**
+
+| Factory | 返す具象型 | 注入先 Interface | 互換性（Phase 3 で確認） |
+| ------- | ---------- | ---------------- | ------------------------ |
+| `{{FactoryName}}` | `{{ConcreteClass}}` | `{{PortInterface}}` | TBD |
+
+- 同名インターフェースが複数パッケージに存在する場合は `grep -rn "interface {{TypeName}}" packages/ apps/` で全定義箇所を確認する
+- 互換性検証は Phase 3 の「同名インターフェース型ドリフト検出」チェックで最終確定する
+
 ## Phase 3 のポイント
 
 - PASS / MINOR / MAJOR の戻り先を明示する。
@@ -110,3 +133,22 @@ Phase 3 で MINOR 判定された指摘は、以下のテーブルで追跡計�
 
 - 「解決予定Phase」を Phase 3 時点で決定し、追跡の見通しを立てる
 - 「解決確認Phase」は Phase 9（品質検証）または Phase 10（最終レビュー）で記録する
+
+### 同名インターフェース型ドリフト検出（Factory パターン適用時）
+
+Factory パターンや依存注入で複数レイヤーに同名インターフェースが存在する場合、型ドリフトが発生しやすい。Phase 3 設計レビューで以下を確認する。
+
+| チェック観点 | 確認内容 | 検出コマンド例 |
+| ---- | ---- | ---- |
+| 同名インターフェースの多重定義 | 例: `ILLMClient` が `packages/shared/` と `apps/desktop/src/` に両方存在しないか | `grep -rn "interface ILLMClient\|type ILLMClient" packages/ apps/` |
+| Factory の生成型と注入先の型互換性 | Factory が返す具象クラスが、注入先の Port/Interface を満たすか | 設計書に型チェック表を記載 |
+| 依存モジュール間の型バージョン不一致 | `packages/shared/` の型を別パッケージが異なるバージョンで定義していないか | `pnpm typecheck` でエラー確認 |
+
+**型互換性検証テーブル**（Factory パターン設計時に記載）:
+
+| Factory | 返す型 | 注入先インターフェース | 互換性 |
+| ------- | ------ | ---------------------- | ------ |
+| `{{FactoryName}}` | `{{ConcreteClass}}` | `{{PortInterface}}` | ✅ / ❌ |
+
+- 非互換が検出された場合は MAJOR 判定とし、Phase 2 へ戻る
+- 同名インターフェースが複数箇所に定義されている場合は `packages/shared/` への統合を検討し、未タスクとして記録する

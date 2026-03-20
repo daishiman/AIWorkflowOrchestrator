@@ -18,7 +18,7 @@
 | AI IPC legacy index | `AI_INDEX` は zero-count + `errors: string[]` の guidance stub | `api-ipc-system-core.md`, `llm-ipc-types.md` |
 | Community IPC | `COMMUNITY_*` は `NOT_IN_SCOPE` guidance-only | `api-ipc-system-core.md`, `llm-ipc-types.md` |
 | GraphRAG | community search failure を warn + `fallbackReason` で可視化 | `interfaces-rag-graphrag-query.md`, `rag-query-pipeline.md` |
-| HybridRAGFactory | `createFull()` / `createLite()` は not-ready | `rag-search-hybrid.md` |
+| HybridRAGFactory | 仕様書作成完了（Phase 1-13、UT-RAG-08-002）、実装待ち。`createFull()` / `createLite()` は `[FACTORY_NOT_READY]` guidance stub のまま | `rag-search-hybrid.md` |
 | CommunitySummarizer | embedding failure は partial failure として扱い、要約保存を継続 | `interfaces-rag-community-summarization.md` |
 
 ---
@@ -117,10 +117,28 @@ Knowledge Graphに対して、3種類の検索戦略を並列実行する。
 
 ---
 
+## known issues
+
+### P64: ILLMClient 型二重定義問題（UT-RAG-08-002 で検出）
+
+`HybridRAGFactory` 実装時に注意が必要な known issue。
+
+| ファイル | 型名 | `complete()` シグネチャ | 用途 |
+| --- | --- | --- | --- |
+| `services/llm/types.ts` | `ILLMClient` | `complete(prompt: string, options?)` | `LLMReranker` |
+| `services/search/crag/types.ts` | `ILLMClient` | `complete({ prompt, maxTokens, temperature })` | `RelevanceEvaluator` |
+
+この2つの `ILLMClient` は同名だが互換性がない。`createFull()` 実装時に
+`LLMReranker` と `RelevanceEvaluator` に同一インスタンスを渡すことはできず、
+config 側で `rerankerLlmClient` と `cragLlmClient` を別フィールドとして区別する。
+
+---
+
 ## 変更履歴
 
 | Version | Date       | Changes                                            |
 | ------- | ---------- | -------------------------------------------------- |
+| 2.0.2   | 2026-03-20 | UT-RAG-08-002 Phase 1-13 仕様書作成完了を反映。HybridRAGFactory runtime を「仕様書作成完了・実装待ち」に更新。P64（ILLMClient 型二重定義）known issue を追記 |
 | 2.0.1   | 2026-03-19 | Task08 current-state snapshot を追加。IPC legacy guidance / GraphRAG fallback / HybridRAGFactory not-ready / CommunitySummarizer partial failure を反映 |
 | 2.0.0   | 2026-01-26 | 5ファイルに分割（945行→インデックス+詳細ファイル） |
 | 1.1.0   | 2026-01-26 | コードブロック（ASCIIアート図）を表形式・文章に変換 |

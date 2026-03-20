@@ -4,6 +4,17 @@
 
 ---
 
+## UT-RAG-08-002 仕様書作成完了（2026-03-20）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success（Phase 3 MAJOR 検出・設計判断待ち）
+- **Notes**:
+  - HybridRAGFactory.createFull/createLite 実配線タスク仕様書作成完了（Phase 1-13、14ファイル）
+  - Phase 3 レビューで ILLMClient 型不整合を検出し設計書に反映
+
+---
+
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
 - **Agent**: task-specification-creator
@@ -700,3 +711,14 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 5ファイル変更、+359行/-22行
 - テスト: 94件全 PASS
 - 未タスク: 2件（UT-CHATVIEW-ERROR-BANNER-I18N-001、UT-AI-CHAT-ERROR-CODE-INVENTORY-001）
+
+---
+
+### 2026-03-20 - UT-RAG-08-002 HybridRAGFactory 実配線タスク仕様書作成
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only 設計タスク（Phase 1-13 仕様書生成） |
+| 変更対象 | `docs/30-workflows/hybrid-rag-factory-wiring/` 仕様書14ファイル |
+| 結果 | HybridRAGFactory.createFull/createLite 実配線タスク仕様書作成完了（Phase 1-13）。Phase 3 レビューで ILLMClient 型不整合を検出し設計書に反映 |
+| 検証 | Phase 1-13 仕様書14ファイル生成完了、Phase 3 設計レビューで ILLMClient 型二重定義問題（crag/types.ts vs llm/types.ts）を MAJOR として検出 |

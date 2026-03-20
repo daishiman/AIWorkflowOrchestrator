@@ -11,9 +11,10 @@
 
 | バージョン | 日付       | 変更内容                                         |
 | ---------- | ---------- | ------------------------------------------------ |
-| v1.0.0     | 2025-01-20 | 初版作成                                         |
-| v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
+| v1.3.0     | 2026-03-20 | UT-RAG-08-002 実装準備: `LLMQueryClassifier` constructor 契約と `ILLMProvider` 要件を追記 |
 | v1.2.0     | 2026-03-19 | Task08 完了記録追加（TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001） |
+| v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
+| v1.0.0     | 2025-01-20 | 初版作成                                         |
 
 ---
 
@@ -66,6 +67,15 @@ HybridRAG検索パイプラインの入口として、検索クエリを分析�
 | ルールベース | `packages/shared/src/services/search/rule-based-query-classifier.ts` |
 | LLMベース    | `packages/shared/src/services/search/llm-query-classifier.ts`        |
 | テスト       | `packages/shared/src/services/search/__tests__/`                     |
+
+### 実装契約
+
+| クラス | constructor | 補足 |
+| --- | --- | --- |
+| `RuleBasedQueryClassifier` | 引数なし | fallback と lite で使用 |
+| `LLMQueryClassifier` | `(llmProvider: ILLMProvider, fallbackClassifier: IQueryClassifier)` | `ILLMClient` ではなく `ILLMProvider` を要求 |
+
+`LLMQueryClassifier` を Factory から配線する場合は、`generate(prompt, options)` を持つ `ILLMProvider` を直接受け取るか、明示 adapter を別責務として用意する。`llm/types` 側 `ILLMClient` をそのまま渡す設計は不可。
 
 ### テスト品質
 

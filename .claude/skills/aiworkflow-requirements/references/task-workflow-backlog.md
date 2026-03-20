@@ -490,6 +490,7 @@
 | UT-CONV-DB-003 | 旧DBパスマイグレーション | MEDIUM | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | ~/.claude/conversations.db → userData/ への移行。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-003-legacy-path-migration.md` |
 | ~~UT-STATUSBADGE-MAPPING-3VALUES-001~~ | ~~StatusBadge マッピング仕様への新3値追加~~ **完了: 2026-03-20（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 same-wave spec sync）** | - | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12（2026-03-20） | `docs/30-workflows/unassigned-task/UT-STATUSBADGE-MAPPING-3VALUES-001.md` |
 | UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001 | blocked分岐テンプレートの標準化 | 中 | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12 スキルフィードバック（2026-03-20） | `docs/30-workflows/unassigned-task/UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001.md` |
+| UT-RAG-08-002 | HybridRAGFactory.createFull/createLite 実配線 | 高 | UT-RAG-08-002 Phase 3 完了、ILLMClient型不整合の設計判断待ち（2026-03-20） | `docs/30-workflows/hybrid-rag-factory-wiring/` |
 
 ### 未タスク管理ルール
 

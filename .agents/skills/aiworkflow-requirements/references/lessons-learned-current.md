@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-20 | 2.2.0 | UT-RAG-08-002: HybridRAGFactory 設計の苦戦箇所3件を追加（RRFFusion 引数形式不一致 / KeywordSearchStrategy ISearchStrategy 非互換 / ILLMClient 型ドリフト→L-RAG-06参照） |
 | 2026-03-20 | 2.1.1 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査の教訓3件を追加 |
 | 2026-03-18 | 2.1.0 | 1598行超過のため分割。2026-03-15以前エントリを archive-2026-03.md へ移動。UT-TASK06-007 苦戦箇所5件を追加 |
 | 2026-03-17 | 2.0.0 | 651行超過のため4ファイルに分割しインデックス化 |
