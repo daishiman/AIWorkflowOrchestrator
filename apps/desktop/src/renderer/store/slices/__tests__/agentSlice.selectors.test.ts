@@ -1297,6 +1297,9 @@ describe("agentSlice - セレクタテスト（UT-STORE-HOOKS-REFACTOR-001）", 
         "error",
         "cancelled",
         "permission_pending",
+        "review",
+        "improve_ready",
+        "reuse_ready",
       ] as const;
 
       for (const status of statuses) {

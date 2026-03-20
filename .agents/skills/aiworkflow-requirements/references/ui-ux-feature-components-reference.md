@@ -87,6 +87,36 @@ AgentView の「実行」責務と分離し、ツールの探索・追加・詳�
 4. destructive action と primary action は detail panel 内で縦方向に分離する。
 5. Phase 12 では `ui-ux-feature-components` / `ui-ux-navigation` / `arch-state-management` / `task-workflow` / `lessons-learned` を同時同期する。
 
+### TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001（2026-03-20）
+
+#### 実装内容（要点）
+
+| 観点 | 内容 |
+| --- | --- |
+| CTA surface | `AgentView` に `aria-label="スキル改善提案"` region を追加し、実行完了後だけ「分析する」を提示する |
+| CTA gate | `selectedSkillName` / `skillExecutionStatus` / `isExecuting` から `canOfferAnalysis` を導出し、未完了・未選択・実行中では非表示にする |
+| analysis handoff | CTA click で `currentSkillName` を設定して `skillAnalysis` へ遷移し、対象スキル名を round-trip 全体で維持する |
+| Agent round-trip | `SkillAnalysisView` に optional props `onNavigateBack` / `onNavigateToAgent` を追加し、Agent 起点のときだけ「戻る」「エージェントで再実行」を表示する |
+| shell guard | `App.tsx` は `viewHistory[length - 2] === "agent"` の場合だけ navigation props を注入し、SkillCenter 起点の analysis UI を汚染しない |
+| 画面証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/outputs/phase-11/screenshots/TC-11-01..06` |
+| 自動検証 | `AgentView.cta.test.tsx`, `AgentView.coverage.test.tsx`, `SkillAnalysisView.navigation.test.tsx`, `App.renderView.viewtype.test.tsx` |
+
+#### 苦戦箇所（再利用形式）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 標準ルール |
+| --- | --- | --- | --- |
+| onboarding overlay が CTA 領域を覆って screenshot が安定しない | App 実画面を harness で起動しても onboarding 完了 state を与えない | screenshot harness の `store.get("onboarding.hasCompleted")` を `true` に固定した | UI証跡 harness は overlay/初期導線の前提 state を明示してから capture する |
+| x64 Node では esbuild バイナリ不一致で capture が失敗する | Volta の x64 Node と arm64 esbuild が混在した worktree で Vite を起動する | `/opt/homebrew/bin/node` と `/opt/homebrew/bin/pnpm` を使う arm64 経路へ切り替えた | Phase 11 capture 前に `process.arch` を確認し、native 依存ツールは実アーキに合わせる |
+| `戻る` と `再実行` の screenshot が最終画面だけ見ると同形に見える | round-trip 先がどちらも AgentView で、画面差分が視覚的に薄い | `phase11-capture-metadata.json` に action 別イベントを保存し、証跡説明を併記した | 同形 screenshot が想定されるときは metadata をセットで正本証跡にする |
+
+#### 同種課題の5分解決カード
+
+1. 実行完了 CTA は store に保持せず、既存 state からの派生値で制御する。
+2. round-trip UI は source surface 固有の props を optional にして、他起点の画面責務を混ぜない。
+3. screenshot harness は onboarding / auth / theme の前提 state を明示的に固定する。
+4. native 依存ツールを使う前に `process.arch` を確認し、arm64/x64 の実行経路を揃える。
+5. 同形 screenshot があり得る場合は metadata や manual-test-result を同時に残す。
+
 ### 状態管理・IPC依存
 
 | 観点 | 採用方針 |

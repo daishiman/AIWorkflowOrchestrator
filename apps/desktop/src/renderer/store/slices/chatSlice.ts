@@ -1,6 +1,7 @@
 import { StateCreator } from "zustand";
 import type { ChatMessage, RagConnectionStatus } from "../types";
 import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
+import type { AccessCapability } from "@repo/shared/types";
 
 // ============================================
 // ChatPanel Status & Capability Types
@@ -22,15 +23,8 @@ export type ChatPanelStatus =
   | "blocked"
   | "handoff";
 
-/**
- * Access Capability 4 値
- * authMode + API key 有無から導出
- */
-export type AccessCapability =
-  | "integratedRuntime"
-  | "terminalSurface"
-  | "both"
-  | "none";
+// AccessCapability は @repo/shared/types/execution-capability から re-export
+export type { AccessCapability } from "@repo/shared/types";
 
 // ============================================
 // Helper Functions
@@ -69,9 +63,9 @@ async function callLLMAPI(
   ragEnabled: boolean,
   selectedProviderId?: LLMProviderId | null,
   selectedModelId?: string | null,
-): Promise<{ success: boolean; message?: string }> {
+): Promise<{ success: boolean; message?: string; error?: string }> {
   if (typeof window === "undefined" || !window.electronAPI?.ai?.chat) {
-    return { success: false };
+    return { success: false, error: "AI_UNAVAILABLE" };
   }
 
   try {
@@ -92,10 +86,14 @@ async function callLLMAPI(
       return { success: true, message: response.data.message };
     }
 
-    return { success: false };
+    return {
+      success: false,
+      error:
+        typeof response.error === "string" ? response.error : "UNKNOWN_ERROR",
+    };
   } catch (error) {
     console.error("Failed to call LLM API:", error);
-    return { success: false };
+    return { success: false, error: "API_CALL_FAILED" };
   }
 }
 
@@ -131,6 +129,9 @@ export interface ChatSlice {
   streamingMessageId: string | null;
   streamingError: StreamingError | null;
 
+  // Chat Error State
+  chatError: string | null;
+
   // System Prompt State
   systemPrompt: string;
   systemPromptUpdatedAt: Date | null;
@@ -144,6 +145,7 @@ export interface ChatSlice {
   setRagConnectionStatus: (status: RagConnectionStatus) => void;
   clearMessages: () => void;
   sendMessage: (message: string) => Promise<void>;
+  clearChatError: () => void;
 
   // ChatPanel Status Actions
   setChatPanelStatus: (status: ChatPanelStatus) => void;
@@ -194,6 +196,9 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
   currentStreamId: null,
   streamingMessageId: null,
   streamingError: null,
+
+  // Chat Error Initial State
+  chatError: null,
 
   // System Prompt Initial State
   systemPrompt: "",
@@ -256,6 +261,7 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
       streamingError: null,
       chatPanelStatus: "idle",
       currentConversationId: null,
+      chatError: null,
     });
   },
 
@@ -273,6 +279,7 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
     set((state) => ({
       chatMessages: [...state.chatMessages, userMessage],
       isSending: true,
+      chatError: null,
     }));
 
     // Call LLM API
@@ -292,9 +299,14 @@ export const createChatSlice: StateCreator<ChatSlice, [], [], ChatSlice> = (
         isSending: false,
       }));
     } else {
-      set({ isSending: false });
+      set({
+        isSending: false,
+        chatError: response.error ?? "UNKNOWN_ERROR",
+      });
     }
   },
+
+  clearChatError: () => set({ chatError: null }),
 
   // Streaming Actions
   startStreaming: (requestId: string) => {

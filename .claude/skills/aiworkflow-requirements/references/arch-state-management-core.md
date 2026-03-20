@@ -394,6 +394,7 @@ ChatPanel を placeholder から real AI chat 経路へ接続するため、既�
 | --- | --- | --- | --- |
 | `chatPanelStatus` | `ChatPanelStatus` | chatSlice | 8状態の状態機械 |
 | `chatMessages` | `ChatMessage[]` | chatSlice | メッセージ一覧 |
+| `chatError` | `string \| null` | chatSlice | Main Chat の non-streaming error banner 用。canonical error code または Main 由来の raw message string を保持 |
 | `currentConversationId` | `string \| null` | chatSlice | 現在の会話ID |
 | `streamingContent` | `string` | chatSlice | 既存維持 |
 | `isStreaming` | `boolean` | chatSlice | 既存維持 |
@@ -429,8 +430,12 @@ interface ChatMessage {
 
 ### 個別セレクタ定義（P31/P48 対策）
 
+`chatError` は `useChatError()` / `useClearChatError()` の個別セレクタで参照し、`ChatView` が alert surface と auto clear timer を担当する。`streamingError` と selector を共有しないことで、non-streaming failure と streaming failure の責務を分離する。
+
 | セレクタ名 | 戻り値型 | 用途 |
 | --- | --- | --- |
+| `useChatError` | `string \| null` | chatError エラーコード取得 |
+| `useClearChatError` | `() => void` | chatError クリアアクション |
 | `useChatPanelStatus` | `ChatPanelStatus` | ChatPanel の現在の状態 |
 | `useResolvedCapability` | `AccessCapability` | runtime capability の解決結果 |
 | `useChatMessages` | `ChatMessage[]`（useShallow 適用 — P48） | メッセージ一覧 |
@@ -498,3 +503,30 @@ TASK-SKILL-LIFECYCLE-08 では publish/distribution 領域の store 責務を設
 ### 実装移行の未タスク
 - `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
 - `UT-SKILL-LIFECYCLE-08-UI-IMPL`
+
+---
+
+## SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001）
+
+UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 で、SkillExecutionStatus 型へ `review` / `improve_ready` / `reuse_ready` を実装済み状態として同期した。
+
+### 新規追加状態
+
+| 状態            | 配置先             | 理由                                         |
+| --------------- | ------------------ | -------------------------------------------- |
+| `review`        | Zustand agentSlice | executionStatus フィールドの値として管理      |
+| `improve_ready` | Zustand agentSlice | executionStatus フィールドの値として管理      |
+| `reuse_ready`   | Zustand agentSlice | executionStatus フィールドの値として管理      |
+
+### 配置根拠
+
+- 既存の `executionStatus: SkillExecutionStatus | null` フィールド（agentSlice）の値域拡張
+- 新規 Slice は不要（同一フィールドの値追加のため）
+- 既存セレクタ `useSkillExecutionStatus()` がそのまま使用可能
+
+### セレクタ設計
+
+- P48 対策: 派生セレクタで `.filter()` を使う場合は `useShallow` を適用
+- P31 対策: 合成 Hook ではなく個別セレクタを使用
+
+> **実装照合済み（2026-03-20）**: `packages/shared/src/types/skill.ts` と `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` で同じ値域が使われていることを確認済み。

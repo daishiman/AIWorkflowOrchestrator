@@ -135,7 +135,9 @@ describe("SkillStreamingView", () => {
           status="permission_pending"
         />,
       );
-      expect(screen.getByTestId("status-badge")).toHaveTextContent("権限確認");
+      expect(screen.getByTestId("status-badge")).toHaveTextContent(
+        "権限確認中",
+      );
     });
 
     it("should render status badge for completed", () => {
@@ -171,6 +173,45 @@ describe("SkillStreamingView", () => {
         />,
       );
       expect(screen.getByTestId("status-badge")).toHaveTextContent("エラー");
+    });
+
+    it("should render status badge for review", () => {
+      render(
+        <SkillStreamingView
+          skillName="test-skill"
+          messages={[]}
+          status="review"
+        />,
+      );
+      expect(screen.getByTestId("status-badge")).toHaveTextContent(
+        "レビュー中",
+      );
+    });
+
+    it("should render status badge for improve_ready", () => {
+      render(
+        <SkillStreamingView
+          skillName="test-skill"
+          messages={[]}
+          status="improve_ready"
+        />,
+      );
+      expect(screen.getByTestId("status-badge")).toHaveTextContent(
+        "改善準備完了",
+      );
+    });
+
+    it("should render status badge for reuse_ready", () => {
+      render(
+        <SkillStreamingView
+          skillName="test-skill"
+          messages={[]}
+          status="reuse_ready"
+        />,
+      );
+      expect(screen.getByTestId("status-badge")).toHaveTextContent(
+        "再利用準備完了",
+      );
     });
 
     it("should not render status badge for idle", () => {

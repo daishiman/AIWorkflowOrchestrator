@@ -2,7 +2,7 @@
 
 > 親仕様書: [task-workflow-completed-skill-lifecycle.md](task-workflow-completed-skill-lifecycle.md)
 > 役割: completed records - UI実装・統合系
-> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
+> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
 
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
 
@@ -89,6 +89,62 @@
 | --- | --- | --- |
 | destination 単独 screenshot では source handoff が読めない | main shell 上で detail panel click から destination まで連続 capture | handoff UI は source-to-destination を同一 shell で撮る |
 | desktop / mobile の二重 DOM が selector strict mode を壊す | panel locator を返し、その scope で button を探す | shared DOM UI は visible container で scope を切る |
+
+---
+
+## TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001: AgentView 改善導線 round-trip 完了記録（2026-03-20）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 |
+| 対象workflow | `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/` |
+| ステータス | Phase 1-12 completed / Phase 13 blocked（ユーザー指示により commit・PR 未実施） |
+| テスト | `AgentView` / `SkillAnalysisView` / `App.renderView` targeted suite PASS |
+| 画面証跡 | TC-11-01..06 screenshot + `phase11-capture-metadata.json` |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| CTA 追加 | `AgentView` に「スキルを分析・改善する」CTA region を追加 |
+| CTA gate | `selectedSkillName` / `skillExecutionStatus` / `isExecuting` から `canOfferAnalysis` を導出 |
+| navigation handoff | CTA click で `currentSkillName` を設定し、`skillAnalysis` へ遷移 |
+| round-trip | `SkillAnalysisView` に optional props `onNavigateBack` / `onNavigateToAgent` を追加 |
+| shell 判定 | `App.tsx` は `viewHistory[length - 2] === "agent"` の場合だけ round-trip props を注入 |
+| screenshot harness | App 実画面 harness を追加し、CTA visible/hidden、analysis、戻る、再実行、dark theme を 6件撮影 |
+
+### 検証証跡
+
+| 区分 | コマンド / 証跡 | 結果 |
+| --- | --- | --- |
+| unit test | `pnpm --filter @repo/desktop exec vitest run src/renderer/views/AgentView/__tests__/AgentView.cta.test.tsx src/renderer/views/AgentView/__tests__/AgentView.coverage.test.tsx src/renderer/components/skill/__tests__/SkillAnalysisView.navigation.test.tsx src/renderer/__tests__/App.renderView.viewtype.test.tsx` | PASS |
+| screenshot | `PATH=/opt/homebrew/bin:$PATH /opt/homebrew/bin/pnpm --filter @repo/desktop run screenshot:skill-lifecycle-routing-step03` | PASS（TC-11-01..06） |
+| coverage | `validate-phase11-screenshot-coverage --workflow .../step-03-seq-task-04-agentview-improve-route` | PASS |
+| guide validator | `validate-phase12-implementation-guide --workflow .../step-03-seq-task-04-agentview-improve-route` | PASS |
+
+### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 解決策 | 再利用ルール |
+| --- | --- | --- |
+| onboarding overlay が CTA capture を妨げる | screenshot harness で `onboarding.hasCompleted=true` を返す mock を入れた | capture 前に overlay / auth / theme 前提 state を固定する |
+| x64 Node + arm64 esbuild で Vite 起動に失敗 | arm64 Node/Pnpm 経路へ切り替えて screenshot を再取得した | native 依存ツールは `process.arch` を確認して実アーキで走らせる |
+| `戻る` / `再実行` の最終画面が同形に見える | `phase11-capture-metadata.json` へ action 別イベントを残した | 同形 screenshot は metadata を正本証跡へ追加する |
+
+### Phase 12 未タスク（9件）
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-FIX-SKILLANALYSIS-ARIA-LABEL-001 | SkillAnalysisView 選択適用ボタン aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillanalysis-aria-label-001.md` |
+| UT-FIX-SKILLANALYSIS-ARIA-LABEL-002 | SkillAnalysisView 全自動改善ボタン aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillanalysis-aria-label-002.md` |
+| UT-FIX-SKILLANALYSIS-ARIA-LABEL-003 | SkillAnalysisView 再試行ボタン aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillanalysis-aria-label-003.md` |
+| UT-FIX-SKILLIMPORT-ARIA-LABEL-001 | SkillImportDialog import button aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillimport-aria-label-001.md` |
+| UT-FIX-APP-CONSOLE-LOG-001 | App 初期化 console.log の削除または debug guard 化 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-app-console-log-001.md` |
+| UT-FIX-APP-INLINE-SELECTOR-001 | App.tsx の inline selector 整理 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-app-inline-selector-001.md` |
+| UT-FIX-VIEWHISTORY-ACCUMULATION-001 | viewHistory 蓄積制御の整理 | 中 | `docs/30-workflows/unassigned-task/task-ut-fix-viewhistory-accumulation-001.md` |
+| UT-FIX-AGENTVIEW-CTA-ACT-WRAP-001 | AgentView CTA test の act warning 解消 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-agentview-cta-act-wrap-001.md` |
+| UT-FIX-VERIFY-ALL-SPECS-BLOCKED-PHASE-001 | `verify-all-specs` の blocked phase 判定整合 | 中 | `docs/30-workflows/unassigned-task/task-ut-fix-verify-all-specs-blocked-phase-001.md` |
 
 ---
 
@@ -487,3 +543,24 @@ ui-ux-diagrams.md の「実装ギャップ一覧（GAP ID 正本）」セクシ�
 | 4 | ui-ux-diagrams.mdのCore Journey図とSkill Lifecycle Panel図で状態遷移の定義が矛盾 | Skill Lifecycle Panel図にReuseReady遷移を追加してCore Journey図と整合 | 上流文書に複数の図がある場合、全図の整合チェックをPhase 3レビュー観点に含める |
 | 5 | worktreeのesbuildアーキテクチャ不一致でスクリーンショット撮影不可（P7再発） | pnpm store prune && pnpm install --forceで解消 | worktree作成後のpnpm installでネイティブモジュール再ビルドが必要 |
 | 6 | SkillLifecyclePanelのラベル変更が仕様書外変更として混入 | Task09 phase-2-design.mdに「ラベル日本語化（LC-UX-PROHIBIT-01対応）」セクションを追記して仕様化 | プロダクションコード変更は必ず先に仕様書に記録してから実施する |
+
+---
+
+## UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 |
+| ステータス | Phase 12完了 |
+| 完了日 | 2026-03-20 |
+| PR | #1388 |
+
+### 実装内容
+
+`SkillExecutionStatus` 型に `review` / `improve_ready` / `reuse_ready` の3値を追加したことに伴い、関連仕様書の同期を実施。
+
+### same-wave で解消した追補
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| UT-STATUSBADGE-MAPPING-3VALUES-001 | StatusBadge の色/ラベルマッピングに review/improve_ready/reuse_ready を追加 | 完了（2026-03-20, `ui-ux-feature-components-advanced.md` 反映済み） |

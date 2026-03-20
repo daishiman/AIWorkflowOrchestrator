@@ -280,6 +280,19 @@ cat docs/30-workflows/completed-tasks/step-04-seq-task-05-created-skill-usage-jo
 
 ---
 
+
+## Agent -> SkillAnalysis handoff 実装完了記録（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20）
+
+Task05「作成済みスキルを使う主導線」の「実行 -> 分析 -> 再実行」ループが TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 で閉じた。
+
+| 接続点 | 実装内容 | 実装アンカー |
+| --- | --- | --- |
+| Agent 改善 CTA | 実行完了後に `canOfferAnalysis` 派生値で CTA を表示。click で `skillAnalysis` へ handoff | `apps/desktop/src/renderer/views/AgentView/index.tsx` |
+| SkillAnalysisView round-trip | `onNavigateBack` / `onNavigateToAgent` optional props で Agent 起点のときだけ戻り導線を表示 | `apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx` |
+| shell guard | `App.tsx` が `viewHistory[length - 2] === "agent"` で起点判定し props を注入 | `apps/desktop/src/renderer/App.tsx` |
+| Store 個別セレクタ | `useSetCurrentView` / `useSetCurrentSkillName` を追加し、合成 Hook 依存を回避 | `apps/desktop/src/renderer/store/index.ts` |
+
+
 ## 5分解決カード
 
 1. broad query で 0 件なら、`TASK-SKILL-LIFECYCLE-05` ではなく `ScoreGateBadge` / `workspacePath` に分割して再検索する。

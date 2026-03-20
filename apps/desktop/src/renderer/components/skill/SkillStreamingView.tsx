@@ -34,10 +34,13 @@ const STATUS_CONFIG: Record<
   { color: string; label: string }
 > = {
   running: { color: "bg-blue-500", label: "実行中..." },
-  permission_pending: { color: "bg-yellow-500", label: "権限確認" },
+  permission_pending: { color: "bg-yellow-500", label: "権限確認中" },
   completed: { color: "bg-green-500", label: "完了" },
   cancelled: { color: "bg-gray-500", label: "キャンセル" },
   error: { color: "bg-red-500", label: "エラー" },
+  review: { color: "bg-purple-500", label: "レビュー中" },
+  improve_ready: { color: "bg-orange-500", label: "改善準備完了" },
+  reuse_ready: { color: "bg-teal-500", label: "再利用準備完了" },
 };
 
 // ============================================

@@ -112,6 +112,14 @@ Phase 6: 完了                           Phase 2へ戻り修正
 | {{SPEC_NAME}} | `.claude/skills/aiworkflow-requirements/references/{{SPEC_FILE}}.md` | {{SPEC_DESCRIPTION}} |
 ```
 
+### 画面遷移 / handoff 系タスクで追加必須
+
+- `outputs/phase-1/spec-extraction-map.md` を必須成果物にし、**system spec** と **current code anchor** の 1:1 対応を記録する。
+- current code anchor は最低でも「route owner」「既存 handoff 実装」「状態 owner」「対象 view」の 4 系統を含める。
+  - 例: `App.tsx` / `useSkillCenter.ts` / `navigationSlice.ts` / `skillLifecycleJourney.ts`
+- Phase 1 の本文に AC-1, AC-2... を**明示列挙**し、`AC-1〜AC-7 を定義する` のような予告だけで終わらせない。
+- 未実装の将来契約を書く場合は、現行 baseline 契約と分離して記述する。`previousView` など未実在 state 名は placeholder としても使わない。
+
 ---
 
 ## 変更履歴

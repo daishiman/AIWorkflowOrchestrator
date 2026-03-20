@@ -1,0 +1,18 @@
+{
+  "workflow": "02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE",
+  "phases": {
+    "1": { "status": "pending", "artifacts": [] },
+    "2": { "status": "pending", "artifacts": [] },
+    "3": { "status": "pending", "artifacts": [] },
+    "4": { "status": "pending", "artifacts": [] },
+    "5": { "status": "pending", "artifacts": [] },
+    "6": { "status": "pending", "artifacts": [] },
+    "7": { "status": "pending", "artifacts": [] },
+    "8": { "status": "pending", "artifacts": [] },
+    "9": { "status": "pending", "artifacts": [] },
+    "10": { "status": "pending", "artifacts": [] },
+    "11": { "status": "pending", "artifacts": [] },
+    "12": { "status": "pending", "artifacts": [] },
+    "13": { "status": "pending", "artifacts": [] }
+  }
+}

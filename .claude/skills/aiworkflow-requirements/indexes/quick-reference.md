@@ -10,6 +10,19 @@
 > **検索パターン集・コードパターン早見は [quick-reference-search-patterns.md](quick-reference-search-patterns.md) に分離**
 > 機能・タスク別のキーワード分割、読む順番、IPC/Zustand/Result 等のコードスニペットを収録
 
+### AI Chat / LLM Integration Fix 即時導線（2026-03-20）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| 4タスクの全体像 | `references/workflow-ai-chat-llm-integration-fix.md` |
+| parent workflow | `docs/30-workflows/ai-chat-llm-integration-fix/index.md` |
+| same-wave artifact inventory | `references/workflow-ai-chat-llm-integration-fix-artifact-inventory.md` |
+| Task 01 canonical root | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` |
+| ChatView error transport 契約 | `references/llm-ipc-types.md`, `references/error-handling-core.md` |
+| LLM selector / persistence | `references/ui-ux-llm-selector.md`, `references/arch-state-management-core.md` |
+| Workspace stream error | `references/llm-streaming.md`, `references/ui-ux-feature-components-details.md` |
+| legacy path 逆引き | `references/legacy-ordinal-family-register.md` |
+
 ---
 
 ## 型定義クイックアクセス
@@ -20,12 +33,16 @@
 | IPC transport      | `IPCResponse<T>`              | interfaces-auth.md         |
 | 認証方式状態       | `AuthModeStatus`              | interfaces-auth.md         |
 | スキル情報         | `Skill`, `SkillMetadata`      | interfaces-agent-sdk.md    |
+| 実行ステータス     | `SkillExecutionStatus`        | packages/shared/src/types/skill.ts |
 | チャットメッセージ | `ChatMessage`                 | interfaces-llm.md          |
 | 会話セッション     | `ChatSession`                 | interfaces-chat-history.md |
 | RAG検索結果        | `SearchResult`                | interfaces-rag-search.md   |
 | エラー             | `AppError`, `ValidationError` | error-handling.md          |
 | CTA制御            | `CTAVisibility`, `CTAState`   | workflow-skill-lifecycle-created-skill-usage-journey.md |
 | ViewType拡張       | `ViewType` (`skillAnalysis` / `skillCreate`) | ui-ux-navigation.md |
+| Agent改善導線      | `currentSkillName`, `selectedSkillName`, `skillExecutionStatus`, `viewHistory` | workflow-skill-lifecycle-routing-render-view-foundation.md, arch-state-management-core.md, arch-state-management-reference.md |
+| SkillCenter analyze handoff | `handleAnalyzeSkill`, `setCurrentSkillName`, `setCurrentView("skillAnalysis")` | workflow-skill-lifecycle-created-skill-usage-journey.md, arch-state-management-reference-permissions-import-lifecycle.md |
+| SkillAnalysis close 契約 | `onClose`, `currentSkillName ?? "demo-skill"`, `viewHistory`, `goBack()` | ui-ux-navigation.md, workflow-skill-lifecycle-routing-render-view-foundation.md |
 | 権限フォールバック | `AbortReason`, `PermissionFlowContext`, `PermissionFlowResult` | interfaces-agent-sdk-executor-core.md |
 | 権限リトライ上限   | `PERMISSION_MAX_RETRIES`      | interfaces-agent-sdk-executor-core.md |
 | SafetyGate評価     | `SafetyGatePort`, `DefaultSafetyGate`, `evaluateSafety` | api-ipc-agent-safety.md, security-skill-execution.md |
@@ -38,6 +55,18 @@
 | スキル配布         | `SkillDistributionService`    | interfaces-agent-sdk-skill.md |
 | LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
 | LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
+
+---
+
+## docs-only status sync
+
+> `SkillExecutionStatus` / status type spec sync 系タスクで、最初に見るべき現状と前提ブロッカー。
+
+| 項目 | 値 |
+| --- | --- |
+| current blocker | `packages/shared/src/types/skill.ts` の `SkillExecutionStatus` は現状 6 値。Task12 は `spec_created` 前提で、Phase 1 では実体確認が先。 |
+| primary refs | `task-workflow-completed-skill-lifecycle-design.md`, `task-workflow-completed-skill-lifecycle-ui.md`, `interfaces-agent-sdk-integration.md`, `arch-state-management-core.md`, `task-workflow.md`, `lessons-learned-current-electron-menu-docs-task0912.md` |
+| read order | `resource-map.md` -> `task-workflow-completed-skill-lifecycle-design.md` -> `task-workflow-completed-skill-lifecycle-ui.md` -> `skill.ts` -> `task-workflow.md` |
 
 ---
 

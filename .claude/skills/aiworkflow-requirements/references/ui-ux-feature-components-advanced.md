@@ -133,7 +133,7 @@ TASK-7D ChatPanel Agent統合で新規追加されたOrganism級コンポーネ�
 |------|------|
 | ファイル | `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx` |
 | レイヤー | Organism（ChatPanel子コンポーネント） |
-| テスト | 33テスト（Line: 99.31%, Branch: 93.75%, Function: 100%） |
+| テスト | 36テスト（`SkillStreamingView.test.tsx` 実測、2026-03-20） |
 | 表示条件 | `isExecuting && selectedSkillName` が真のとき |
 
 ### 構成サブコンポーネント
@@ -142,14 +142,31 @@ TASK-7D ChatPanel Agent統合で新規追加されたOrganism級コンポーネ�
 |---------------|------|-------|
 | StatusBadge | 実行ステータス表示（信号機パターン） | `status: DisplayableStatus` |
 | StreamMessageItem | ストリーミングメッセージ1件の表示 | `message: SkillStreamMessage` |
-| ToolExecutionHistory | ツール実行履歴の折りたたみ表示 | `entries: ToolExecution[]` |
+| ToolExecutionHistory | ツール実行履歴の折りたたみ表示 | `messages: SkillStreamMessage[]` |
 
 ### 型定義
 
 | 型名 | 定義 | 用途 |
 |------|------|------|
 | `DisplayableStatus` | `Exclude<SkillExecutionStatus, 'idle'>` | idle除外の厳密なステータス型 |
-| `SkillStreamMessage` | 判別共用体（text/tool_use/tool_result/error/permission_request） | メッセージ種別の型安全な分岐 |
+| `SkillStreamMessage` | 判別共用体（assistant/tool_use/tool_result/error/status） | メッセージ種別の型安全な分岐 |
+
+### StatusBadge マッピング
+
+| status | 色クラス | ラベル |
+|--------|----------|--------|
+| `running` | `bg-blue-500` | 実行中... |
+| `permission_pending` | `bg-yellow-500` | 権限確認中 |
+| `completed` | `bg-green-500` | 完了 |
+| `cancelled` | `bg-gray-500` | キャンセル |
+| `error` | `bg-red-500` | エラー |
+| `review` | `bg-purple-500` | レビュー中 |
+| `improve_ready` | `bg-orange-500` | 改善準備完了 |
+| `reuse_ready` | `bg-teal-500` | 再利用準備完了 |
+
+補足:
+- `idle` は非表示状態のため `StatusBadge` の描画対象から除外する。
+- `DisplayableStatus` を `Exclude<SkillExecutionStatus, 'idle'>` として定義し、`Record<DisplayableStatus, ...>` で exhaustive check を維持する。
 
 ### 適用パターン
 

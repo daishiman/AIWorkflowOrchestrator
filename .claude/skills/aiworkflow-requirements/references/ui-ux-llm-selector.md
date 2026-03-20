@@ -7,23 +7,26 @@
 
 ## 概要
 
-チャット画面でユーザーが使用するLLM（Large Language Model）プロバイダーとモデルをリアルタイムに切り替える機能。複数のLLMプロバイダー（OpenAI、Anthropic、Google、xAI）と各プロバイダーの複数モデルから選択可能。
+LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Main に同期して `ai.chat` / `llm:stream-chat` の実行経路へ渡す。UI surface は単一画面に固定されず、`LLMSelectorPanel`、AgentView、ChatView/WorkspaceView の blocked guidance が分担している。
 
-**実装場所**:
+**current implementation anchors**:
 
-- コンポーネント: `apps/desktop/src/renderer/components/molecules/LLMSelector/index.tsx`
-- 状態管理: `apps/desktop/src/renderer/store/slices/chatSlice.ts`
-- 表示場所: `apps/desktop/src/renderer/views/ChatView/index.tsx`
+- selector panel: `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx`
+- state owner: `apps/desktop/src/renderer/store/slices/llmSlice.ts`
+- selector hooks: `apps/desktop/src/renderer/store/index.ts`
+- Main sync: `apps/desktop/src/main/ipc/llmConfigProvider.ts`
+- Chat 実行反映: `apps/desktop/src/renderer/store/slices/chatSlice.ts`
+- Workspace Chat 実行反映: `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts`
 
 ## UI構成
 
 | 要素 | 仕様 |
 |------|------|
-| 配置 | チャット画面上部、システムプロンプトトグルボタンの上 |
+| 配置 | `LLMSelectorPanel` を配置する surface、または selectedModel 未選択時の guidance surface |
 | プロバイダードロップダウン | 4つのプロバイダー（OpenAI, Anthropic, Google, xAI）から選択 |
 | モデルドロップダウン | 選択されたプロバイダーの利用可能なモデル一覧から選択 |
-| 現在の選択表示 | バッジ形式で「Current: プロバイダー名 / モデル名」を表示 |
-| リアルタイム切り替え | ドロップダウン選択時に即座に反映、確認ダイアログなし |
+| 現在の選択表示 | provider / model の current selection と health を表示 |
+| リアルタイム切り替え | 選択時に `llmSlice` 更新 → `llm:set-selected-config` で Main 同期 |
 
 ## プロバイダーとモデル一覧
 
@@ -42,17 +45,29 @@
 
 ## 状態管理
 
-**Zustand chatSlice**:
+**Zustand llmSlice**:
 
 | 状態/アクション | 型 | 説明 |
-|-----------------|------|------|
-| currentProviderId | string | 現在のプロバイダーID |
-| currentModelId | string | 現在のモデルID |
-| providers | LLMProvider[] | 利用可能なプロバイダー一覧 |
-| setProvider | (providerId, modelId) => void | プロバイダーとモデルを設定 |
-| setProviders | (providers) => void | プロバイダー一覧を設定 |
+| --- | --- | --- |
+| `providers` | `LLMProvider[]` | 利用可能な provider 一覧 |
+| `selectedProviderId` | `LLMProviderId \| null` | 選択中 provider |
+| `selectedModelId` | `string \| null` | 選択中 model |
+| `fetchProviders()` | `() => Promise<void>` | provider 一覧取得 + default selection 設定 |
+| `selectProvider()` | `(providerId) => void` | provider 切替 + default model 選択 |
+| `selectModel()` | `(modelId) => void` | model 切替 |
+| `checkHealth()` | `(providerId) => Promise<void>` | health check |
 
-**初期値**: デフォルトプロバイダーはOpenAI、デフォルトモデルはgpt-5.2-instantに設定される。
+**同期契約**:
+
+- `selectProvider()` / `selectModel()` は `window.electronAPI.llm.setSelectedConfig()` を呼び、Main 側の current selection を更新する
+- `chatSlice.sendMessage()` は `selectedProviderId` / `selectedModelId` を参照して `AI_CHAT` request に渡す
+- `chatSlice.sendMessage()` 失敗時は `chatError` に error code を設定し、ChatView のインラインエラーバナー（Apple HIG systemRed、5秒自動消去、`role="alert"`）で日本語メッセージを表示する（TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE）
+- `useWorkspaceChatController()` は同じ selection を `streamChat` request に渡す
+
+**注意**:
+
+- current `persist.partialize` には LLM 選択状態は含まれていない
+- そのため再起動後 persist は未実装であり、runtime sync と persist は別 concern で扱う
 
 ## UXフロー
 
@@ -135,29 +150,26 @@
 
 **カバレッジ**: 100%（7/7テストケース合格）
 
-## システムプロンプト連携
+## 実行経路との統合
 
-LLM選択機能はシステムプロンプト機能と統合され、両方の設定を組み合わせてチャットリクエストを送信する。
+| 経路 | current behavior |
+| --- | --- |
+| Main Chat | `chatSlice.sendMessage()` が `providerId` / `modelId` を `AI_CHAT` に渡す |
+| Workspace Chat | `useWorkspaceChatController.sendMessage()` が `streamChat` request に `providerId` / `modelId` を含める |
+| Main fallback | request 未指定時は `llm:set-selected-config` で同期済みの Main state を使用する |
+| blocked guidance | `selectedModelId === null` のとき、Workspace Chat は Settings 誘導を表示する |
 
-**統合仕様**:
-
-- LLM選択（プロバイダー/モデル）とシステムプロンプトは独立して設定可能
-- メッセージ送信時、両方の設定を`AI_CHAT` IPCリクエストに含める
-- プロバイダー/モデル切り替え時もシステムプロンプトは保持される
-
-**IPC統合**:
-
-メッセージ送信時、chatSliceの`sendMessage()`アクションが`window.electronAPI.ai.chat()`を呼び出し、ユーザーメッセージ、システムプロンプト、RAG有効化フラグを送信する。`currentProviderId`/`currentModelId`は将来的にIPC経由で送信予定。
+LLM 選択と system prompt は独立状態だが、Chat 実行時には同じ request 文脈に合流する。
 
 ## 関連タスクドキュメント
 
 | ドキュメント | 内容 |
 |--------------|------|
-| `docs/30-workflows/chat-llm-switching/task-step00-requirements.md` | 要件定義書 |
-| `docs/30-workflows/chat-llm-switching/task-step04-llm-selector.md` | LLMSelector実装仕様書 |
-| `docs/30-workflows/chat-llm-switching/task-step05-refactoring.md` | リファクタリング実施報告 |
-| `docs/30-workflows/chat-llm-switching/task-step07-code-review.md` | コードレビューレポート |
-| `docs/30-workflows/chat-llm-switching/manual-test-report.md` | 手動テスト結果報告 |
+| `docs/30-workflows/ai-chat-llm-integration-fix/index.md` | 4 タスク統合の親workflow |
+| `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | ChatView error surface task（current canonical root） |
+| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | inline guidance task |
+| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | persist task |
+| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` | Workspace Chat error UX task |
 
 ---
 

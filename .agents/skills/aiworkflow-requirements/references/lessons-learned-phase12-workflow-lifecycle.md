@@ -19,10 +19,41 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-20 | 1.4.0 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 の Phase 12 教訓2件を追加 |
 | 2026-03-18 | 1.3.0 | TASK-SKILL-LIFECYCLE-08 仕様書作成4件 + 再監査3件を lessons-learned-current.md から移動 |
 | 2026-03-18 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）。合計5件 |
 | 2026-03-18 | 1.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001
+
+### 苦戦箇所1: current workflow の canonical entrypoint 不足で必要仕様を取りこぼす
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | execution responsibility 系の current workflow は存在するのに、`.claude/skills/aiworkflow-requirements/` 側に旧 authmode pack への導線しかなく、必要仕様抽出時に current task の正本へ辿り着けなかった |
+| 再発条件 | workflow 名を再定義したのに resource-map / task-workflow / workflow integration spec を同一 wave で更新しない |
+| 解決策 | `workflow-ai-runtime-execution-responsibility-realignment.md` を canonical entrypoint として追加し、`resource-map.md` / `task-workflow.md` / parent workflow index の参照を同じターンで揃える |
+| 標準ルール | workflow 名変更や主語変更が入った task は、current canonical workflow spec を 1 ファイル追加し、search entrypoint を複数持たせない |
+| 関連タスク | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 |
+
+### 苦戦箇所2: Phase 12 実更新後も planned wording が残り完了判定を誤る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `.claude` 正本と workflow metadata は更新済みでも、`system-spec-update-summary.md` や `documentation-changelog.md` に `計画済み` / `更新予定` / `PRマージ後に実施` が残っていると、監査上は未完了なのに見かけ上 completed に見えてしまう |
+| 再発条件 | docs-heavy task で「先に実更新、あとで成果物文面修正」の2段階運用を許す |
+| 解決策 | planned wording を incomplete 扱いにするルールを skill 正本へ追加し、実行コマンド・更新ファイル・blocked 条件を実績ベースで記録する |
+| 標準ルール | Phase 12 完了条件は「実更新ファイル一覧 + validator 結果 + planned wording 0件」の3点セットで確認する |
+| 関連タスク | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. current workflow の canonical entrypoint を追加し、resource-map / task-workflow / parent index を同時更新する。
+2. `.claude` 正本を更新した同ターンで workflow 成果物を実績文へ書き換える。
+3. planned wording を grep または validator でゼロ確認してから Phase 12 を閉じる。
 
 ---
 
@@ -360,6 +391,38 @@
 | 標準ルール | Mirror Sync は `rsync` 実行 → `diff -qr` で0件確認 → changelog 事後記録の順序を厳守する（P4 準拠） |
 | 関連パターン | P4（documentation-changelog への早期完了記載） |
 | 関連タスク | TASK-SKILL-LIFECYCLE-02 |
+
+### P66: Phase 12 LOGS.md/SKILL.md 更新の worktree 先送りパターン（P57 再発）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 12 で「worktree 制約のため PR マージ時に実施」と LOGS.md/SKILL.md の更新を先送りしたが、worktree 環境でも `.claude/skills/` は直接編集可能。P57（設計タスクにおける Phase 12 システム仕様書更新の先送りパターン）の再発 |
+| 再発条件 | worktree 環境で Phase 12 を実行し、「worktree だから先送り」と判断する |
+| 解決策 | Phase 12 完了時点で `.claude/skills/` を実更新する。worktree 環境を理由に先送りしない |
+| 標準ルール | Phase 12 テンプレートに「worktree でも .claude/skills/ は編集可能であり、先送りは P57 違反」と明記する |
+| 関連パターン | P57（設計タスクにおける Phase 12 システム仕様書更新の先送りパターン） |
+| 関連タスク | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 |
+
+### P67: 未タスク検出時の「スコープ内対応可能」による3ステップ省略（P3/P58 再発）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 12 で StatusBadge マッピングの未タスクを検出したが、「Task12 スコープ内で対応可能なため省略」と判断し3ステップ（指示書作成 → 残課題テーブル登録 → 関連仕様書リンク追加）を実施しなかった |
+| 再発条件 | 未タスクが「現在のスコープで対応可能」と判断され、3ステップを省略する |
+| 解決策 | 検出した未タスクは件数・規模に関わらず P3 の3ステップを必ず完了する。「他タスクのスコープ内」は省略の理由にならない |
+| 標準ルール | Phase 12 Task 4 のチェックリストに「3ステップに例外はない」を太字で明記する |
+| 関連パターン | P3（未タスク管理の3ステップ不完全）、P58（設計タスクにおける未タスク指示書の配置省略） |
+| 関連タスク | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 |
+
+### P68: ローカル型定義の同期漏れ（型拡張時の P32 派生パターン）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `packages/shared/src/types/skill.ts` の `SkillExecutionStatus` を6値から9値に拡張した際、`apps/desktop/src/renderer/` の `SkillLifecyclePanel.tsx` にローカル定義された `SkillExecutionStatusValue` が古い6値のまま残り typecheck が失敗した |
+| 再発条件 | shared パッケージの union 型を拡張した際、desktop 側に `type X = "a" \| "b" \| ...` のローカル型定義が存在する |
+| 解決策 | ローカル型定義を shared の型を参照する形（`type X = SharedType \| null`）に書き換える。`grep -rn "type.*=.*\"idle\".*\"running\"" apps/desktop/src/` でローカル型定義の残存を検出 |
+| 関連パターン | P32（型定義の二箇所同時更新必須） |
+| 関連タスク | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 |
 
 ### 同種課題の簡潔解決手順（5ステップ）
 

@@ -177,10 +177,55 @@ Phase 12 の `unassigned-task-detection.md` では上記 follow-up を 1 件と�
 
 ---
 
+## TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001: AgentView <-> SkillAnalysis round-trip（2026-03-20）
+
+| 観点 | 反映内容 | 実装アンカー |
+| --- | --- | --- |
+| CTA gate | `AgentView` が `selectedSkillName` / `skillExecutionStatus` / `isExecuting` から改善 CTA の表示可否を導出 | `apps/desktop/src/renderer/views/AgentView/index.tsx` |
+| handoff start | CTA click で対象スキル名を `currentSkillName` へ保持し、`skillAnalysis` へ遷移 | `apps/desktop/src/renderer/views/AgentView/index.tsx` |
+| round-trip guard | `App.tsx` は `viewHistory[length - 2] === "agent"` のときだけ `SkillAnalysisView` に戻り導線を渡す | `apps/desktop/src/renderer/App.tsx` |
+| destination UI | `SkillAnalysisView` は Agent 起点限定で `戻る` / `エージェントで再実行` を表示 | `apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx` |
+| screenshot mode | App 実画面 harness + metadata で CTA 表示/非表示、analysis、戻る、再実行、dark theme を 6件固定 | `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step03-phase11.mjs` |
+
+### テスト証跡（Task04）
+
+| テストファイル | テスト数 | 対象 |
+| --- | --- | --- |
+| `AgentView.cta.test.tsx` | 8 | CTA 表示条件、click handoff、aria 契約 |
+| `AgentView.coverage.test.tsx` | 4 | 実行完了/未完了/未選択/実行中の条件網羅 |
+| `SkillAnalysisView.navigation.test.tsx` | 9 | optional props 表示条件、callback 発火、a11y |
+| `App.renderView.viewtype.test.tsx` | 既存回帰 + 追加 case | `viewHistory` 起点での navigation props 注入 |
+
+### Phase 11 証跡（Task04）
+
+| TC | 証跡 | 内容 |
+| --- | --- | --- |
+| TC-11-01 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/outputs/phase-11/screenshots/TC-11-01-agent-cta-visible-light.png` | AgentView CTA visible |
+| TC-11-02 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/outputs/phase-11/screenshots/TC-11-02-agent-cta-hidden-light.png` | CTA hidden guard |
+| TC-11-03 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/outputs/phase-11/screenshots/TC-11-03-skill-analysis-from-agent-light.png` | Agent 起点 analysis |
+| TC-11-04 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/outputs/phase-11/screenshots/TC-11-04-agent-return-from-analysis-light.png` | 戻る導線 |
+| TC-11-05 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/outputs/phase-11/screenshots/TC-11-05-agent-rerun-from-analysis-light.png` | 再実行導線 |
+| TC-11-06 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/outputs/phase-11/screenshots/TC-11-06-agent-cta-visible-dark.png` | dark theme 回帰 |
+
+### follow-up backlog（Task04）
+
+- `UT-FIX-SKILLANALYSIS-ARIA-LABEL-001`
+- `UT-FIX-SKILLANALYSIS-ARIA-LABEL-002`
+- `UT-FIX-SKILLANALYSIS-ARIA-LABEL-003`
+- `UT-FIX-SKILLIMPORT-ARIA-LABEL-001`
+- `UT-FIX-APP-CONSOLE-LOG-001`
+- `UT-FIX-APP-INLINE-SELECTOR-001`
+- `UT-FIX-VIEWHISTORY-ACCUMULATION-001`
+- `UT-FIX-AGENTVIEW-CTA-ACT-WRAP-001`
+- `UT-FIX-VERIFY-ALL-SPECS-BLOCKED-PHASE-001`
+
+---
+
 ## 変更履歴
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-20 | 1.3.0 | `TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001` の CTA gate、Agent round-trip、Phase 11 screenshot 6件、follow-up 8件を追加 |
 | 2026-03-19 | 1.2.0 | `TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001` の secondary handoff、main shell screenshot 7件、panel-scoped selector ルールを追加 |
 | 2026-03-18 | 1.1.0 | `TASK-SKILL-LIFECYCLE-02` の実装内容、Phase 11証跡、data-testid一覧を追加 |
 | 2026-03-17 | 1.0.0 | `TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001` の実装内容、Phase 11証跡、Phase 12同期、follow-up を統合正本として追加 |

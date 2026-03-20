@@ -412,4 +412,118 @@ describe("chatSlice", () => {
       }
     });
   });
+
+  describe("chatError", () => {
+    it("C-1: chatError の初期値が null であること", () => {
+      expect(store.chatError).toBeNull();
+    });
+
+    it("C-8: clearChatError でエラーが null になること", () => {
+      // まず chatError を手動設定
+      mockSet({ chatError: "API_CALL_FAILED" });
+      store = { ...store, chatError: "API_CALL_FAILED" };
+      store.clearChatError();
+      expect(store.chatError).toBeNull();
+    });
+
+    it("C-9: エラー時も isSending が false に戻ること", async () => {
+      // window.electronAPI を未定義にしてエラーを発生させる
+      (global as any).window = {};
+
+      await store.sendMessage("test");
+      expect(store.isSending).toBe(false);
+    });
+
+    it("C-3: window.electronAPI 未定義時に AI_UNAVAILABLE が設定されること", async () => {
+      (global as any).window = {};
+
+      await store.sendMessage("test");
+      expect(store.chatError).toBe("AI_UNAVAILABLE");
+    });
+
+    it("C-2: sendMessage 成功時に chatError が null のままであること", async () => {
+      const mockChat = vi.fn().mockResolvedValue({
+        success: true,
+        data: { message: "AI response" },
+      });
+      (global as any).window = {
+        electronAPI: { ai: { chat: mockChat } },
+      };
+
+      await store.sendMessage("Hello");
+      expect(store.chatError).toBeNull();
+    });
+
+    it("C-4: response.success=false かつ error ありの場合エラーが設定されること", async () => {
+      const mockChat = vi.fn().mockResolvedValue({
+        success: false,
+        error: "API_KEY_MISSING",
+      });
+      (global as any).window = {
+        electronAPI: { ai: { chat: mockChat } },
+      };
+
+      await store.sendMessage("Hello");
+      expect(store.chatError).toBe("API_KEY_MISSING");
+    });
+
+    it("C-5: response.success=false かつ error なしの場合 UNKNOWN_ERROR が設定されること", async () => {
+      const mockChat = vi.fn().mockResolvedValue({
+        success: false,
+      });
+      (global as any).window = {
+        electronAPI: { ai: { chat: mockChat } },
+      };
+
+      await store.sendMessage("Hello");
+      expect(store.chatError).toBe("UNKNOWN_ERROR");
+    });
+
+    it("C-6: catch ブロック例外時に API_CALL_FAILED が設定されること", async () => {
+      const mockChat = vi.fn().mockRejectedValue(new Error("Network error"));
+      (global as any).window = {
+        electronAPI: { ai: { chat: mockChat } },
+      };
+
+      await store.sendMessage("Hello");
+      expect(store.chatError).toBe("API_CALL_FAILED");
+    });
+
+    it("C-7: sendMessage 呼び出し時に前回の chatError がクリアされること", async () => {
+      // まずエラーを設定
+      mockSet({ chatError: "API_CALL_FAILED" });
+      store = { ...store, chatError: "API_CALL_FAILED" };
+
+      const mockChat = vi.fn().mockResolvedValue({
+        success: true,
+        data: { message: "AI response" },
+      });
+      (global as any).window = {
+        electronAPI: { ai: { chat: mockChat } },
+      };
+
+      await store.sendMessage("Hello");
+      // 成功後に chatError は null であるべき
+      expect(store.chatError).toBeNull();
+    });
+
+    it("C-10: response.error が string 以外の場合 UNKNOWN_ERROR になること", async () => {
+      const mockChat = vi.fn().mockResolvedValue({
+        success: false,
+        error: { code: "ERROR" },
+      });
+      (global as any).window = {
+        electronAPI: { ai: { chat: mockChat } },
+      };
+
+      await store.sendMessage("Hello");
+      expect(store.chatError).toBe("UNKNOWN_ERROR");
+    });
+
+    it("C-13: clearChatError が chatError が null の状態で呼ばれても安全であること", () => {
+      expect(store.chatError).toBeNull();
+      store.clearChatError();
+      expect(store.chatError).toBeNull();
+    });
+  });
 });

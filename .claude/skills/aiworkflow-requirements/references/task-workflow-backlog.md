@@ -9,6 +9,8 @@
 
 | タスクID                                          | タスク名                                                                                                         | 優先度 | 発見元                                                                      | タスク仕様書                                                                                                                                       |
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| UT-CHATVIEW-ERROR-BANNER-I18N-001 | ChatView error banner の error message を i18n 辞書へ移管し、多言語対応と文言差し替えを可能にする | 低 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase 10 MINOR-01 / Phase 12 再監査（2026-03-20） / GitHub Issue #1398 | `docs/30-workflows/unassigned-task/task-ut-chatview-error-banner-i18n-001.md` |
+| UT-AI-CHAT-ERROR-CODE-INVENTORY-001 | `ai.chat` が返す error code と UI-safe message mapping の inventory を `llm-ipc-types.md` / `error-handling.md` に固定する | 中 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase 10 MINOR-02 / Phase 12 再監査（2026-03-20） / GitHub Issue #1397 | `docs/30-workflows/unassigned-task/task-ut-ai-chat-error-code-inventory-001.md` |
 | UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 到達不安定性を guard 化 | 中 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 Phase 11 Note-01（2026-03-17） | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
 | UT-TASK06-001 | RAG state IPC チャンネル設計と仕様書整備 | 中 | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 Phase 10 MINOR-01 / Phase 11 DI-0002（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-task06-001-rag-ipc-spec.md` |
 | UT-TASK06-002 | apiKey.validate() デバウンス完全実装 | 低 | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 Phase 10 MINOR-02 / Phase 11 DI-0003（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-task06-002-api-key-debounce.md` |
@@ -486,6 +488,8 @@
 | UT-CONV-DB-001 | conversationRepository.test.ts 75件SKIP修正 | HIGH | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | P7: better-sqlite3 ABI不一致。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-001-better-sqlite3-abi-rebuild.md` |
 | UT-CONV-DB-002 | Conversation DBスキーマバージョニング | MEDIUM | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | マイグレーション機構の設計・実装。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-002-schema-versioning.md` |
 | UT-CONV-DB-003 | 旧DBパスマイグレーション | MEDIUM | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | ~/.claude/conversations.db → userData/ への移行。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-003-legacy-path-migration.md` |
+| ~~UT-STATUSBADGE-MAPPING-3VALUES-001~~ | ~~StatusBadge マッピング仕様への新3値追加~~ **完了: 2026-03-20（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 same-wave spec sync）** | - | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12（2026-03-20） | `docs/30-workflows/unassigned-task/UT-STATUSBADGE-MAPPING-3VALUES-001.md` |
+| UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001 | blocked分岐テンプレートの標準化 | 中 | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12 スキルフィードバック（2026-03-20） | `docs/30-workflows/unassigned-task/UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001.md` |
 
 ### 未タスク管理ルール
 

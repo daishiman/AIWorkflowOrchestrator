@@ -1,0 +1,44 @@
+[
+  {
+    "tcId": "TC-11-01",
+    "url": "http://127.0.0.1:5196/phase11-agentview-improve-route.html?scenario=cta-visible&theme=light",
+    "file": "TC-11-01-agent-cta-visible-light.png",
+    "selectedSkillChecked": "true",
+    "capturedAt": "2026-03-20T05:05:35.261Z"
+  },
+  {
+    "tcId": "TC-11-02",
+    "url": "http://127.0.0.1:5196/phase11-agentview-improve-route.html?scenario=cta-hidden&theme=light",
+    "file": "TC-11-02-agent-cta-hidden-light.png",
+    "ctaCount": 0,
+    "capturedAt": "2026-03-20T05:05:35.990Z"
+  },
+  {
+    "tcId": "TC-11-03",
+    "url": "http://127.0.0.1:5196/phase11-agentview-improve-route.html?scenario=cta-visible&theme=light",
+    "file": "TC-11-03-skill-analysis-from-agent-light.png",
+    "headerText": "skill-alpha",
+    "capturedAt": "2026-03-20T05:05:36.790Z"
+  },
+  {
+    "tcId": "TC-11-04",
+    "url": "http://127.0.0.1:5196/phase11-agentview-improve-route.html?scenario=analysis&theme=light",
+    "file": "TC-11-04-agent-return-from-analysis-light.png",
+    "selectedSkillChecked": "true",
+    "capturedAt": "2026-03-20T05:05:37.570Z"
+  },
+  {
+    "tcId": "TC-11-05",
+    "url": "http://127.0.0.1:5196/phase11-agentview-improve-route.html?scenario=analysis&theme=light",
+    "file": "TC-11-05-agent-rerun-from-analysis-light.png",
+    "selectedSkillChecked": "true",
+    "capturedAt": "2026-03-20T05:05:38.353Z"
+  },
+  {
+    "tcId": "TC-11-06",
+    "url": "http://127.0.0.1:5196/phase11-agentview-improve-route.html?scenario=cta-visible&theme=dark",
+    "file": "TC-11-06-agent-cta-visible-dark.png",
+    "theme": "dark",
+    "capturedAt": "2026-03-20T05:05:39.052Z"
+  }
+]

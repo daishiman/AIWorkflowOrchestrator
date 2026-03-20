@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { ChatView } from "./index";
@@ -58,6 +58,8 @@ const createMockState = (overrides = {}) => ({
   openSaveTemplateDialog: vi.fn(),
   closeSaveTemplateDialog: vi.fn(),
   selectTemplate: vi.fn(),
+  chatError: null as string | null,
+  clearChatError: vi.fn(),
   ...overrides,
 });
 
@@ -66,6 +68,8 @@ vi.mock("../../store", () => ({
     (selector: (state: ReturnType<typeof createMockState>) => unknown) =>
       selector(createMockState()),
   ),
+  useChatError: vi.fn(() => null),
+  useClearChatError: vi.fn(() => vi.fn()),
 }));
 
 // Helper function to render ChatView with MemoryRouter
@@ -77,10 +81,13 @@ describe("ChatView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     mockNavigate.mockClear();
-    const { useAppStore } = await import("../../store");
+    const { useAppStore, useChatError, useClearChatError } =
+      await import("../../store");
     vi.mocked(useAppStore).mockImplementation(((
       selector: (state: ReturnType<typeof createMockState>) => unknown,
     ) => selector(createMockState())) as never);
+    vi.mocked(useChatError).mockReturnValue(null);
+    vi.mocked(useClearChatError).mockReturnValue(vi.fn());
   });
 
   describe("レンダリング", () => {
@@ -222,6 +229,173 @@ describe("ChatView", () => {
   describe("displayName", () => {
     it("displayNameが設定されている", () => {
       expect(ChatView.displayName).toBe("ChatView");
+    });
+  });
+
+  describe("エラーバナー", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("V-1: chatError が null の場合バナーが表示されない", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue(null);
+
+      render(<ChatView />);
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    });
+
+    it("V-2: chatError が設定された場合バナーが表示される", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("API_CALL_FAILED");
+
+      render(<ChatView />);
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+    });
+
+    it("V-3: AI_UNAVAILABLE コードで正しい日本語メッセージ表示", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("AI_UNAVAILABLE");
+
+      render(<ChatView />);
+      expect(screen.getByText(/AI機能が利用できません/)).toBeInTheDocument();
+    });
+
+    it("V-4: API_CALL_FAILED コードで正しい日本語メッセージ表示", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("API_CALL_FAILED");
+
+      render(<ChatView />);
+      expect(
+        screen.getByText(/メッセージの送信に失敗しました/),
+      ).toBeInTheDocument();
+    });
+
+    it("V-5: UNKNOWN_ERROR コードでフォールバックメッセージ表示", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("UNKNOWN_ERROR");
+
+      render(<ChatView />);
+      expect(
+        screen.getByText(/予期しないエラーが発生しました/),
+      ).toBeInTheDocument();
+    });
+
+    it("V-6: ×ボタンクリックで clearChatError が呼ばれる", async () => {
+      const mockClear = vi.fn();
+      const { useChatError, useClearChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("API_CALL_FAILED");
+      vi.mocked(useClearChatError).mockReturnValue(mockClear);
+
+      render(<ChatView />);
+      const closeButton = screen.getByRole("button", {
+        name: "エラーを閉じる",
+      });
+      fireEvent.click(closeButton);
+      expect(mockClear).toHaveBeenCalledTimes(1);
+    });
+
+    it("V-9: エラーバナーに aria-label が設定されている", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("API_CALL_FAILED");
+
+      render(<ChatView />);
+      const closeButton = screen.getByRole("button", {
+        name: "エラーを閉じる",
+      });
+      expect(closeButton).toHaveAttribute("aria-label", "エラーを閉じる");
+    });
+
+    it("V-10: 未知のエラーコードで UNKNOWN_ERROR フォールバックメッセージ表示", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("CUSTOM_ERROR");
+
+      render(<ChatView />);
+      expect(
+        screen.getByText(/予期しないエラーが発生しました/),
+      ).toBeInTheDocument();
+    });
+
+    it("V-10A: Main Process 由来の日本語メッセージ文字列はそのまま表示される", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue(
+        "APIキーが設定されていません。設定画面でAPIキーを登録してください。",
+      );
+
+      render(<ChatView />);
+      expect(
+        screen.getByText(
+          /APIキーが設定されていません。設定画面でAPIキーを登録してください。/,
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it("V-7: 5秒後に clearChatError が自動呼び出しされる", async () => {
+      const mockClear = vi.fn();
+      const { useChatError, useClearChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("API_CALL_FAILED");
+      vi.mocked(useClearChatError).mockReturnValue(mockClear);
+
+      render(<ChatView />);
+      expect(mockClear).not.toHaveBeenCalled();
+
+      vi.advanceTimersByTime(5000);
+      expect(mockClear).toHaveBeenCalledTimes(1);
+    });
+
+    it("V-11: chatError が null に戻った時にバナーが消える", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("API_CALL_FAILED");
+      const { rerender } = render(<ChatView />);
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+
+      // chatError を null に戻す
+      vi.mocked(useChatError).mockReturnValue(null);
+      rerender(<ChatView />);
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
+    });
+
+    it("V-12: RATE_LIMIT_EXCEEDED で正しいメッセージが表示される", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("RATE_LIMIT_EXCEEDED");
+
+      render(<ChatView />);
+      expect(screen.getByText(/API利用制限に達しました/)).toBeInTheDocument();
+    });
+
+    it("V-13: NETWORK_ERROR で正しいメッセージが表示される", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("NETWORK_ERROR");
+
+      render(<ChatView />);
+      expect(
+        screen.getByText(/ネットワークエラーが発生しました/),
+      ).toBeInTheDocument();
+    });
+
+    it("V-14: API_KEY_MISSING で正しいメッセージが表示される", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("API_KEY_MISSING");
+
+      render(<ChatView />);
+      expect(
+        screen.getByText(/APIキーが設定されていません/),
+      ).toBeInTheDocument();
+    });
+
+    it("V-15: ×ボタンが type=button を持つ", async () => {
+      const { useChatError } = await import("../../store");
+      vi.mocked(useChatError).mockReturnValue("API_CALL_FAILED");
+
+      render(<ChatView />);
+      const closeButton = screen.getByRole("button", {
+        name: "エラーを閉じる",
+      });
+      expect(closeButton).toHaveAttribute("type", "button");
     });
   });
 
