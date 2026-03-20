@@ -10,6 +10,19 @@
 > **検索パターン集・コードパターン早見は [quick-reference-search-patterns.md](quick-reference-search-patterns.md) に分離**
 > 機能・タスク別のキーワード分割、読む順番、IPC/Zustand/Result 等のコードスニペットを収録
 
+### AI Chat / LLM Integration Fix 即時導線（2026-03-20）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| 4タスクの全体像 | `references/workflow-ai-chat-llm-integration-fix.md` |
+| parent workflow | `docs/30-workflows/ai-chat-llm-integration-fix/index.md` |
+| same-wave artifact inventory | `references/workflow-ai-chat-llm-integration-fix-artifact-inventory.md` |
+| Task 01 canonical root | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` |
+| ChatView error transport 契約 | `references/llm-ipc-types.md`, `references/error-handling-core.md` |
+| LLM selector / persistence | `references/ui-ux-llm-selector.md`, `references/arch-state-management-core.md` |
+| Workspace stream error | `references/llm-streaming.md`, `references/ui-ux-feature-components-details.md` |
+| legacy path 逆引き | `references/legacy-ordinal-family-register.md` |
+
 ---
 
 ## 型定義クイックアクセス
@@ -26,6 +39,9 @@
 | エラー             | `AppError`, `ValidationError` | error-handling.md          |
 | CTA制御            | `CTAVisibility`, `CTAState`   | workflow-skill-lifecycle-created-skill-usage-journey.md |
 | ViewType拡張       | `ViewType` (`skillAnalysis` / `skillCreate`) | ui-ux-navigation.md |
+| Agent改善導線      | `currentSkillName`, `selectedSkillName`, `skillExecutionStatus`, `viewHistory` | workflow-skill-lifecycle-routing-render-view-foundation.md, arch-state-management-core.md, arch-state-management-reference.md |
+| SkillCenter analyze handoff | `handleAnalyzeSkill`, `setCurrentSkillName`, `setCurrentView("skillAnalysis")` | workflow-skill-lifecycle-created-skill-usage-journey.md, arch-state-management-reference-permissions-import-lifecycle.md |
+| SkillAnalysis close 契約 | `onClose`, `currentSkillName ?? "demo-skill"`, `viewHistory`, `goBack()` | ui-ux-navigation.md, workflow-skill-lifecycle-routing-render-view-foundation.md |
 | 権限フォールバック | `AbortReason`, `PermissionFlowContext`, `PermissionFlowResult` | interfaces-agent-sdk-executor-core.md |
 | 権限リトライ上限   | `PERMISSION_MAX_RETRIES`      | interfaces-agent-sdk-executor-core.md |
 | SafetyGate評価     | `SafetyGatePort`, `DefaultSafetyGate`, `evaluateSafety` | api-ipc-agent-safety.md, security-skill-execution.md |

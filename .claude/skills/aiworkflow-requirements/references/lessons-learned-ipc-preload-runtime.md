@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-20 | 1.4.0 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査教訓を追加（AIChatResponse.error の code/message drift、Renderer raw message fallback、system spec same-wave 同期） |
 | 2026-03-19 | 1.3.0 | UT-TASK06-007 実装セッション苦戦箇所を追加（esbuild worktree 不一致、process.argv[1] パス解決、fs モック制約、main() カバレッジ改善） |
 | 2026-03-19 | 1.2.0 | UT-TASK06-007 再監査教訓を追加（generic/multiline preload 抽出、spec drift 同期、P45 の書き分け） |
 | 2026-03-18 | 1.1.0 | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 教訓3件を追加（esbuild worktree不一致 P53派生、テスト数伝播 P37派生、P62 DEFAULT_CONFIG三層防御） |
@@ -29,6 +30,34 @@
 ## 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION
 
 > この教訓は lessons-learned-current.md v1.29.97 で追加されたが、変更履歴のみの記録であったため、以下は参照先として機能する。
+
+---
+
+## 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査
+
+### 教訓1: `AIChatResponse.error` を code-only と決めつけない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | spec が `AIChatResponse.error = error code` 前提のまま残ると、Main が返した user-facing message string を Renderer が受ける current runtime を説明できない |
+| 解決策 | `llm-ipc-types.md` と `error-handling-core.md` に「code or user-facing message」の transport 契約を追記した |
+| 標準ルール | transport の `string` は canonical code と raw message の両経路を許容し、Renderer の正規化責務まで明記する |
+
+### 教訓2: Renderer 側は code 判定と raw message fallback を分離する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `chatError` を code 専用 state と記述すると、非 code 文字列を受けたときの UI 表示が spec から抜ける |
+| 解決策 | `arch-state-management-core.md` に `chatError` が code または raw message string を保持することを明記した |
+| 標準ルール | store state の transport 形と UI 変換規則は同じ wave で同期する |
+
+### 教訓3: workflow log だけで「system spec 同期完了」と書かない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow summary や LOGS だけが先に進むと、`llm-ipc-types.md` / `error-handling-core.md` の core contract が古いまま残る |
+| 解決策 | re-audit では workflow doc と core spec を一緒に更新し、mirror parity まで閉じる運用へ戻した |
+| 標準ルール | Phase 12 の「同期完了」は core contract / workflow / backlog / lessons の全更新後にのみ使う |
 
 ---
 

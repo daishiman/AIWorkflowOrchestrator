@@ -1,0 +1,48 @@
+{
+  "capturedAt": "2026-03-20T04:11:05.213Z",
+  "baseUrl": "http://127.0.0.1:54011",
+  "scenarios": [
+    {
+      "tc": "TC-01",
+      "file": "TC-01-integrated-runtime-ready.png",
+      "title": "integratedRuntime ready",
+      "note": "API key のみ有効。in-app lane が primary であることを確認する。",
+      "capturedAt": "2026-03-20T04:10:41.973Z"
+    },
+    {
+      "tc": "TC-02",
+      "file": "TC-02-terminal-surface-ready.png",
+      "title": "terminalSurface ready",
+      "note": "subscription のみ有効。manual lane が primary で自動送信しないことを確認する。",
+      "capturedAt": "2026-03-20T04:10:42.702Z"
+    },
+    {
+      "tc": "TC-03",
+      "file": "TC-03-both-ready.png",
+      "title": "both ready",
+      "note": "両 lane 利用可能。primary は integrated、secondary は terminal であることを確認する。",
+      "capturedAt": "2026-03-20T04:10:43.436Z"
+    },
+    {
+      "tc": "TC-04",
+      "file": "TC-04-none-unavailable.png",
+      "title": "none unavailable",
+      "note": "解決 action がない none。primary CTA を DOM に含めず、setup guide だけを残す。",
+      "capturedAt": "2026-03-20T04:10:44.173Z"
+    },
+    {
+      "tc": "TC-05",
+      "file": "TC-05-blocked-to-ready-transition.png",
+      "title": "blocked -> ready transition",
+      "note": "API key 入力前後で none blocked から integratedRuntime ready へ切り替わることを確認する。",
+      "capturedAt": "2026-03-20T04:10:44.927Z"
+    },
+    {
+      "tc": "TC-06",
+      "file": "TC-06-silent-fallback-guard.png",
+      "title": "silent fallback guard",
+      "note": "none unavailable で guard が暗黙切替を拒否し、実行 CTA を生成しないことを確認する。",
+      "capturedAt": "2026-03-20T04:10:45.658Z"
+    }
+  ]
+}

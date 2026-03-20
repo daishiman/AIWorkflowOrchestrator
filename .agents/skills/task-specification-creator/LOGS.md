@@ -4,6 +4,21 @@
 
 ---
 
+## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12 再監査
+- **Result**: success
+- **Notes**:
+  - current workflow root を `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` に正規化
+  - `phase-11-manual-test.md` / `manual-test-result.md` / `screenshot-plan.json` / `screenshot-coverage.md` を screenshot validator 前提へ再構成
+  - `implementation-guide.md` を 10/10 要件へ補完し、validator 実測を changelog/compliance に同期
+  - `UT-CHATVIEW-ERROR-BANNER-I18N-001` と `UT-AI-CHAT-ERROR-CODE-INVENTORY-001` を formalize
+  - formalize 後の 2 件を 9 セクション形式へ是正し、`audit-unassigned-tasks --json --target-file` を通す前提へ戻した
+  - `index.md` / `artifacts.json` / phase 本文の stale path と phase status を同期
+
+---
+
 ## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（2026-03-19）
 
 - **Agent**: task-specification-creator
@@ -666,3 +681,11 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `phase-11-manual-test.md`, `phase-12-documentation.md`, `outputs/phase-12/*.md`, `docs/30-workflows/unassigned-task/ut-task06-007-ext-00*.md` |
 | 結果 | `implementation-guide.md` を validator 10/10 準拠へ補強し、未タスク5件の配置・実行手順・残余スコープを current facts に再同期した。`task-specification-creator/SKILL.md` 変更履歴も UT-TASK06-007 再監査実績へ更新した |
 | 検証 | `validate-phase12-implementation-guide` PASS、`validate-phase-output` Phase 11/12 PASS、`verify-all-specs --workflow ... --json` PASS、`verify-unassigned-links` PASS、`quick_validate` PASS（warning は legacy baseline） |
+
+### 2026-03-20: TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 完了
+
+- Phase 1-12 完了（Phase 13 はユーザー指示によりスキップ）
+- 実装: chatSlice エラーハンドリング + ChatView エラーバナー
+- 5ファイル変更、+359行/-22行
+- テスト: 94件全 PASS
+- 未タスク: 2件（UT-CHATVIEW-ERROR-BANNER-I18N-001、UT-AI-CHAT-ERROR-CODE-INVENTORY-001）

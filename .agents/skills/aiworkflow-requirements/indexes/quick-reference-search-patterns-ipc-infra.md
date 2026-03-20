@@ -63,6 +63,66 @@ node scripts/search-spec.js "preload invoke hang" -C 3
 3. `references/architecture-implementation-patterns.md` の invoke hang containment パターンを見る
 4. `references/ipc-contract-checklist.md` で channel / payload / whitelist の崩れがないか確認する
 
+## ChatView silent failure / エラー表示を探すとき
+
+このカテゴリは `chatError` `callLLMAPI` `AI_UNAVAILABLE` `API_CALL_FAILED` `ChatView error banner` `silent failure` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "chatError" -C 3
+node scripts/search-spec.js "callLLMAPI" -C 3
+node scripts/search-spec.js "AI_UNAVAILABLE" -C 3
+node scripts/search-spec.js "ChatView error banner" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「バグ修正（ChatView silent failure / エラー表示）」を見る
+2. `references/error-handling.md` で error surface と code-to-message 変換の原則を確認する
+3. `references/arch-state-management-core.md` で `chatSlice` / renderer local state の責務境界を確認する
+4. `references/interfaces-llm.md` と `references/ui-ux-system-prompt.md` で Main Chat surface と LLM UI の接続点を確認する
+5. `references/api-ipc-system-core.md` と `references/lessons-learned-ipc-preload-runtime.md` で runtime sync / fallback 由来の失敗要因を確認する
+6. 実装実体は `apps/desktop/src/renderer/store/slices/chatSlice.ts` `apps/desktop/src/renderer/views/ChatView/index.tsx` `apps/desktop/src/renderer/views/ChatView/ChatView.test.tsx` を照合する
+
+## LLM選択 state persistence / runtime sync を探すとき
+
+このカテゴリは `selectedModelId` `llm:set-selected-config` `llmConfigProvider` `setSelectedConfig` `currentConfig` `syncSelectedConfigToMain` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "selectedModelId" -C 3
+node scripts/search-spec.js "llm:set-selected-config" -C 3
+node scripts/search-spec.js "llmConfigProvider" -C 3
+node scripts/search-spec.js "syncSelectedConfigToMain" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「バグ修正（LLM選択 state persistence / runtime sync）」を見る
+2. `references/api-ipc-system-core.md` で `llm:set-selected-config` と Main 側 runtime 契約を確認する
+3. `references/ui-ux-llm-selector.md` と `references/interfaces-llm.md` で provider/model selection UI 契約を確認する
+4. `references/arch-state-management-core.md` で `llmSlice` の ownership と persist 境界を確認する
+5. `references/lessons-learned-ipc-preload-runtime.md` と `references/security-electron-ipc-core.md` で DEFAULT_CONFIG fallback と preload/runtime drift の教訓を確認する
+6. 実装実体は `apps/desktop/src/renderer/store/slices/llmSlice.ts` `apps/desktop/src/renderer/store/index.ts` `apps/desktop/src/main/ipc/llmConfigProvider.ts` を照合する
+
+## Workspace Chat stream error UX を探すとき
+
+このカテゴリは `WorkspaceChatPanel errorMessage` `onStreamError` `workspace-chat-error` `MODEL_NOT_FOUND` `selectedModelId` `streamChat` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "WorkspaceChatPanel errorMessage" -C 3
+node scripts/search-spec.js "onStreamError" -C 3
+node scripts/search-spec.js "workspace-chat-error" -C 3
+node scripts/search-spec.js "MODEL_NOT_FOUND" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「バグ修正（Workspace Chat stream error UX）」を見る
+2. `references/llm-streaming.md` で stream error / chunk / end 契約を確認する
+3. `references/ui-ux-feature-components-details.md` と `references/interfaces-llm.md` で `WorkspaceChatPanel` / `WorkspaceChatInput` / `useWorkspaceChatController` の責務を確認する
+4. `references/security-electron-ipc-core.md` と `references/arch-state-management-core.md` で error surface と local state ownership を確認する
+5. `references/lessons-learned-ipc-preload-runtime.md` で fallback / runtime drift の再発条件を確認する
+6. 実装実体は `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatInput.tsx` `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` を照合する
+
 ## Light Theme contrast regression guard を探すとき
 
 このカテゴリは `light theme contrast guard` `phase11-static-server` `selector-based capture` `currentViolations` `baselineViolations` `ThemeSelector` `AuthView` `workspace-search` `current build static serve` で検索を分割する。
@@ -149,6 +209,27 @@ node scripts/search-spec.js "SetSelectedConfigParams" -C 3
 5. `references/lessons-learned-current.md` で P42（trim バリデーション）・P60（IPC レスポンス形式不一致）の教訓と UT-TASK06-001〜004 未タスク状況を確認する
 6. `references/task-workflow-backlog.md` で UT-TASK06-001〜004（aiHandlers / llmConfigProvider / disconnected 統一 / AI_CHAT バリデーション）の状況を確認する
 7. 実装実体: `apps/desktop/src/main/ipc/aiHandlers.ts`（AI_CHAT P42バリデーション）`apps/desktop/src/main/ipc/llm.ts`（llm:check-health disconnected統一）`apps/desktop/src/main/services/llmConfigProvider.ts`（DEFAULT_CONFIG廃止）`apps/desktop/src/preload/channels.ts`（AI_CHECK_CONNECTION legacy残置）
+
+## AI Chat / Workspace LLM integration fix を探すとき
+
+このカテゴリは `ChatView` `chatError` `selectedProviderId` `selectedModelId` `llm:set-selected-config` `WorkspaceChatPanel` `onStreamError` `persist` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "chatError" -C 3
+node scripts/search-spec.js "selectedProviderId" -C 3
+node scripts/search-spec.js "llm:set-selected-config" -C 3
+node scripts/search-spec.js "WorkspaceChatPanel" -C 3
+node scripts/search-spec.js "onStreamError" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「バグ修正（AI Chat / LLM integration fix）」を見る
+2. `references/workflow-ai-chat-llm-integration-fix.md` で 4 タスクの concern 別読書セットを確定する
+3. `references/llm-ipc-types.md` で `AIChatResponse.error` と `llm:set-selected-config` 契約を確認する
+4. UI 導線は `references/ui-ux-feature-components.md` と `references/ui-ux-navigation.md` を読む
+5. persist は `references/arch-state-management-reference-persist-hardening-test-quality.md` と `references/arch-ipc-persistence.md` を読む
+6. 実装実体は `apps/desktop/src/renderer/store/slices/chatSlice.ts` `apps/desktop/src/renderer/store/slices/llmSlice.ts` `apps/desktop/src/renderer/store/index.ts` `apps/desktop/src/main/ipc/llmConfigProvider.ts` `apps/desktop/src/renderer/views/ChatView/index.tsx` `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` を照合する
 
 ## AI runtime/auth-mode unification を探すとき
 

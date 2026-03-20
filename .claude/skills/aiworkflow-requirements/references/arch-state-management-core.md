@@ -394,6 +394,7 @@ ChatPanel を placeholder から real AI chat 経路へ接続するため、既�
 | --- | --- | --- | --- |
 | `chatPanelStatus` | `ChatPanelStatus` | chatSlice | 8状態の状態機械 |
 | `chatMessages` | `ChatMessage[]` | chatSlice | メッセージ一覧 |
+| `chatError` | `string \| null` | chatSlice | Main Chat の non-streaming error banner 用。canonical error code または Main 由来の raw message string を保持 |
 | `currentConversationId` | `string \| null` | chatSlice | 現在の会話ID |
 | `streamingContent` | `string` | chatSlice | 既存維持 |
 | `isStreaming` | `boolean` | chatSlice | 既存維持 |
@@ -429,8 +430,12 @@ interface ChatMessage {
 
 ### 個別セレクタ定義（P31/P48 対策）
 
+`chatError` は `useChatError()` / `useClearChatError()` の個別セレクタで参照し、`ChatView` が alert surface と auto clear timer を担当する。`streamingError` と selector を共有しないことで、non-streaming failure と streaming failure の責務を分離する。
+
 | セレクタ名 | 戻り値型 | 用途 |
 | --- | --- | --- |
+| `useChatError` | `string \| null` | chatError エラーコード取得 |
+| `useClearChatError` | `() => void` | chatError クリアアクション |
 | `useChatPanelStatus` | `ChatPanelStatus` | ChatPanel の現在の状態 |
 | `useResolvedCapability` | `AccessCapability` | runtime capability の解決結果 |
 | `useChatMessages` | `ChatMessage[]`（useShallow 適用 — P48） | メッセージ一覧 |

@@ -1,0 +1,208 @@
+{
+  "taskId": "TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001",
+  "title": "agentview-improve-route",
+  "type": "implementation",
+  "priority": "high",
+  "status": "blocked",
+  "dependencies": [
+    "TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001",
+    "TASK-IMP-SKILLCENTER-CREATE-ROUTE-001",
+    "TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001"
+  ],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/spec-extraction-map.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/component-design.md",
+        "outputs/phase-2/state-transition-design.md",
+        "outputs/phase-2/ui-ux-realization.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": ["outputs/phase-3/design-review-report.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/test-plan.md",
+        "apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx",
+        "apps/desktop/src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx",
+        "apps/desktop/src/renderer/__tests__/App.renderView.viewtype.test.tsx"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx",
+        "apps/desktop/src/renderer/views/AgentView/index.tsx",
+        "apps/desktop/src/renderer/App.tsx",
+        "apps/desktop/src/renderer/store/index.ts",
+        "outputs/phase-5/implementation-summary.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/coverage-report-before.txt",
+        "outputs/phase-6/coverage-report-after.txt",
+        "outputs/phase-6/test-additions.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-summary.md",
+        "outputs/phase-7/uncovered-lines.md",
+        "outputs/phase-7/gate-result.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/refactoring-log.md",
+        "outputs/phase-8/review-checklist.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/lint-result.txt",
+        "outputs/phase-9/typecheck-result.txt",
+        "outputs/phase-9/test-result.txt",
+        "outputs/phase-9/qa-summary.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/review-result.md",
+        "outputs/phase-10/minor-task-candidates.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-report.md",
+        "outputs/phase-11/ui-sanity-visual-review.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/screenshot-coverage.md",
+        "outputs/phase-11/screenshots/TC-11-01-agent-cta-visible-light.png",
+        "outputs/phase-11/screenshots/TC-11-02-agent-cta-hidden-light.png",
+        "outputs/phase-11/screenshots/TC-11-03-skill-analysis-from-agent-light.png",
+        "outputs/phase-11/screenshots/TC-11-04-agent-return-from-analysis-light.png",
+        "outputs/phase-11/screenshots/TC-11-05-agent-rerun-from-analysis-light.png",
+        "outputs/phase-11/screenshots/TC-11-06-agent-cta-visible-dark.png",
+        "outputs/phase-11/screenshots/phase11-capture-metadata.json",
+        "outputs/phase-11/screenshots/README.md",
+        "outputs/phase-11/issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "outputs/verification-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": []
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "AgentView でスキル実行完了後に改善 CTA が表示される",
+      "verified": true
+    },
+    {
+      "id": "AC-2",
+      "description": "CTA click で currentSkillName を設定したうえで skillAnalysis に遷移する",
+      "verified": true
+    },
+    {
+      "id": "AC-3",
+      "description": "SkillAnalysisView に Agent 起点の戻り導線が表示され、viewHistory / goBack() で Agent に戻れる",
+      "verified": true
+    },
+    {
+      "id": "AC-4",
+      "description": "SkillAnalysisView から AgentView へ戻って再実行導線を継続できる",
+      "verified": true
+    },
+    {
+      "id": "AC-5",
+      "description": "往復後も対象スキル名が維持される",
+      "verified": true
+    },
+    {
+      "id": "AC-6",
+      "description": "実行未完了またはスキル未選択時は CTA が表示されない",
+      "verified": true
+    },
+    {
+      "id": "AC-7",
+      "description": "Apple HIG / WCAG 2.1 AA に沿った UI と証跡が残る",
+      "verified": true
+    }
+  ],
+  "relatedPitfalls": ["P31", "P39", "P48", "P53"],
+  "createdAt": "2026-03-17",
+  "updatedAt": "2026-03-20T21:30:00+09:00"
+}

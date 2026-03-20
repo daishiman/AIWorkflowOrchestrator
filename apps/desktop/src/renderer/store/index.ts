@@ -187,6 +187,9 @@ export const useExpandedFolders = () =>
   useAppStore((state) => state.expandedFolders);
 export const useChatMessages = () => useAppStore((state) => state.chatMessages);
 export const useIsSending = () => useAppStore((state) => state.isSending);
+export const useChatError = () => useAppStore((state) => state.chatError);
+export const useClearChatError = () =>
+  useAppStore((state) => state.clearChatError);
 export const useGraphNodes = () => useAppStore((state) => state.graphNodes);
 export const useGraphLinks = () => useAppStore((state) => state.graphLinks);
 export const useIsAnimating = () => useAppStore((state) => state.isAnimating);
@@ -261,6 +264,10 @@ export const useCanGoBack = () =>
     (state) => Array.isArray(state.viewHistory) && state.viewHistory.length > 1,
   );
 export const useGoBack = () => useAppStore((state) => state.goBack);
+export const useSetCurrentView = () =>
+  useAppStore((state) => state.setCurrentView);
+export const useSetCurrentSkillName = () =>
+  useAppStore((state) => state.setCurrentSkillName);
 export const useStoragePercentage = () =>
   useAppStore((state) =>
     state.dashboardStats.storageTotal > 0

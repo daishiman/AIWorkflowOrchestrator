@@ -1,0 +1,10 @@
+2026-03-20
+Command:
+cd apps/desktop
+pnpm exec vitest run src/renderer/components/skill/__tests__/SkillAnalysisView.navigation.test.tsx src/renderer/views/AgentView/__tests__/AgentView.cta.test.tsx src/renderer/__tests__/App.renderView.viewtype.test.tsx src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx src/renderer/views/AgentView/__tests__/AgentView.test.tsx src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx
+
+Result:
+PASS
+129 tests passed.
+Known warning:
+- React act(...) warning from async useEffect in App / AgentView (formalized as follow-up task).

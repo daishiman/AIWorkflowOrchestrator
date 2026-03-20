@@ -1,0 +1,219 @@
+# [#1377] "[UT-RAG-08-011] AI_INDEX 失敗時の guidance message テンプレート設計"
+
+## メタ情報
+
+```yaml
+task_id: UT-RAG-08-011
+task_name: AI_INDEX 失敗時の guidance message テンプレート設計
+category: 設計
+target_feature: AI_INDEX / Guidance Message / Error Policy
+priority: 低
+scale: 小規模
+status: 未実施
+source_phase: Phase 10 MINOR（P3-M03）
+created_date: 2026-03-19
+dependencies: []
+spec_path: docs/30-workflows/unassigned-task/task-rag-08-011-ai-index-guidance-message-template.md
+```
+
+| 項目       | 内容   |
+| ---------- | ------ |
+| 優先度     | 低     |
+| 規模       | 小規模 |
+| ステータス | 未実施 |
+
+---
+
+## 1. なぜこのタスクが必要か（Why）
+
+### 1.1 背景
+
+`AI_INDEX` の失敗時メッセージが汎用的で、失敗原因ごとの案内テンプレートが未定義になっている。利用者が次に何を確認すればよいかを示すため、原因別メッセージを設計する必要がある。
+
+### 1.2 問題点・課題
+
+- 失敗理由が一律だと原因切り分けが難しい
+- DB 接続失敗、Embedding 未設定、Index 破損などで案内が違う
+- guidance-only の役割が曖昧になる
+
+### 1.3 放置した場合の影響
+
+- エラー時のサポート負荷が増える
+- ユーザーが次の確認手順を見失う
+- `AI_INDEX` の失敗がただの「失敗」で終わる
+
+---
+
+## 2. 何を達成するか（What）
+
+### 2.1 目的
+
+失敗原因別の guidance message テンプレートを定義し、原因に応じた案内ができるようにする。
+
+### 2.2 最終ゴール
+
+- 原因別テンプレートが定義される
+- Main 側の guidance 文言が整理される
+- `contract-matrix.md` の error policy と整合する
+
+### 2.3 スコープ
+
+#### 含むもの
+
+- テンプレート設計
+- guidance message の分類
+- error policy との整合確認
+
+#### 含まないもの
+
+- 実装コードの追加
+- 画面文言の全面改修
+
+### 2.4 成果物
+
+- guidance message 設計メモ
+- 失敗原因別テンプレート一覧
+
+---
+
+## 3. どのように実行するか（How）
+
+### 3.1 前提条件
+
+- 失敗原因の候補が洗い出せること
+- guidance-only の役割を明確にできること
+
+### 3.2 依存タスク
+
+- UT-RAG-08-010
+
+### 3.3 必要な知識
+
+- エラー分類
+- ユーザー向け案内文の設計
+
+### 3.4 推奨アプローチ
+
+失敗理由を 3〜5 種類に絞り、テンプレートは短く保つ。抽象的な案内を避け、次に確認する項目を明示する。
+
+---
+
+## 4. 実行手順
+
+### Phase 1: 失敗理由整理
+
+#### 目的
+
+案内対象を決める。
+
+#### 手順
+
+1. 失敗原因を列挙する
+2. 似ている原因をまとめる
+3. 優先順を決める
+
+#### 完了条件
+
+- テンプレート対象が決まっている
+
+### Phase 2: テンプレート設計
+
+#### 目的
+
+原因別文言を定義する。
+
+#### 手順
+
+1. 各原因の案内文を作る
+2. 行動指示を短く入れる
+3. error policy と整合させる
+
+#### 完了条件
+
+- 原因別テンプレートが揃う
+
+### Phase 3: 確認
+
+#### 目的
+
+案内が過不足ないか確認する。
+
+#### 手順
+
+1. 文言をレビューする
+2. 重複や曖昧さを減らす
+3. 後続実装に渡す
+
+#### 完了条件
+
+- 迷わない案内になっている
+
+---
+
+## 5. 完了条件チェックリスト
+
+### 機能要件
+
+- [ ] 原因別テンプレートがある
+- [ ] guidance-only と整合する
+
+### 品質要件
+
+- [ ] 文言が短く、次の行動が明確
+- [ ] 汎用案内だけになっていない
+
+### ドキュメント要件
+
+- [ ] 設計理由が残っている
+
+---
+
+## 6. 検証方法
+
+### テストケース
+
+- TC-001: DB 接続失敗の案内が出る
+- TC-002: Embedding 未設定の案内が出る
+- TC-003: Index 破損の案内が出る
+
+### 検証手順
+
+1. 案内文を確認する
+2. 原因別の違いを確認する
+3. error policy と突き合わせる
+
+---
+
+## 7. リスクと対策
+
+| リスク             | 影響度 | 発生確率 | 対策                           |
+| ------------------ | ------ | -------- | ------------------------------ |
+| 文言が増えすぎる   | 低     | 中       | 代表原因だけに絞る             |
+| 汎用文に逆戻りする | 中     | 中       | 原因別テンプレートを必須化する |
+
+---
+
+## 8. 参照情報
+
+### 関連ドキュメント
+
+- `docs/30-workflows/completed-tasks/ai-runtime-authmode-unification/tasks/step-04-par-task-08-rag-embedding-extraction-runtime/outputs/phase-2/contract-matrix.md`
+- `docs/30-workflows/completed-tasks/ai-runtime-authmode-unification/tasks/step-04-par-task-08-rag-embedding-extraction-runtime/outputs/phase-12/unassigned-task-detection.md`
+
+### 参考資料
+
+- `apps/desktop/src/main/ipc/aiHandlers.ts`
+
+---
+
+## 9. 備考
+
+### レビュー指摘の原文（該当する場合）
+
+```
+AI_INDEX の失敗時 guidance message が汎用のみで、失敗原因別テンプレートが未定義。
+```
+
+### 補足事項
+
+案内文は長文化しすぎない。

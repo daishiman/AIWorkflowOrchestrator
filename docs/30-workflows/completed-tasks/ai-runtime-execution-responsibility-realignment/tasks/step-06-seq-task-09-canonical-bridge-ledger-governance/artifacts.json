@@ -1,0 +1,135 @@
+{
+  "taskId": "TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001",
+  "title": "canonical bridge / workflow ledger governance",
+  "type": "design",
+  "priority": "high",
+  "status": "spec_created",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "not_started",
+      "file": "phase-1-requirements.md",
+      "artifacts": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "not_started",
+      "file": "phase-2-design.md",
+      "artifacts": []
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "not_started",
+      "file": "phase-3-design-review.md",
+      "artifacts": []
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "not_started",
+      "file": "phase-4-test-creation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "not_started",
+      "file": "phase-5-implementation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "not_started",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": []
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "not_started",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "not_started",
+      "file": "phase-8-refactoring.md",
+      "artifacts": []
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "not_started",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "not_started",
+      "file": "phase-10-final-review.md",
+      "artifacts": []
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "not_started",
+      "file": "phase-11-manual-test.md",
+      "artifacts": []
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "not_started",
+      "file": "phase-12-documentation.md",
+      "artifacts": []
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "not_started",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": []
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "canonical source table と compatibility bridge rule が定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-2",
+      "description": "spec_created / implementation_ready / completed の状態遷移が定義されている",
+      "verified": false
+    },
+    {
+      "id": "AC-3",
+      "description": "task-workflow / backlog / lessons / legacy register の same-wave 更新ルールがある",
+      "verified": false
+    },
+    {
+      "id": "AC-4",
+      "description": "follow-up formalization と current/baseline の切り分けが一貫している",
+      "verified": false
+    }
+  ],
+  "dependencies": [
+    "TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001",
+    "TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001",
+    "TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001",
+    "TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001",
+    "TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001",
+    "TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001",
+    "TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001",
+    "TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001"
+  ],
+  "relatedPitfalls": ["P31", "P48", "P50", "P64", "P65"],
+  "createdAt": "2026-03-19",
+  "updatedAt": "2026-03-19"
+}
