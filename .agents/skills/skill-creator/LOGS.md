@@ -3,6 +3,17 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE same-wave Phase 12 追補を template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/update-process.md` に `current canonical set / artifact inventory / legacy register / topic-map` の same-wave 更新、`generate-index.js` → `validate-structure.js` → mirror sync → `diff -qr` の検証チェーン、`audit --target-file` を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に canonical navigation、line budget split、legacy register 必須化を追加
+  - docs-heavy / completed / spec_created の再監査で「同期してから検証する」手順を明文化した
+
+---
 ## 2026-03-19 - UT-TASK06-007 再監査知見を Phase 12 テンプレートへ反映
 
 - **Agent**: skill-creator (update)

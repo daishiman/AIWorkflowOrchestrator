@@ -26,7 +26,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 - 理由: UI基盤層の再利用性を優先し、ドメイン状態への依存を避けるため
 - 連携方式: props / callback / controlled component パターンを採用
 ---
-
 ## Store Slice Baseline（TASK-UI-01-A-STORE-SLICE-BASELINE）
 
 ### 概要
@@ -85,7 +84,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | TASK-UI-08-NOTIFICATION-CENTER | NotificationCenter 058e UX 再整備 | **完了**（2026-03-11） |
 | TASK-UI-01-D-VIEWTYPE-ROUTING-NAV | ViewType/導線実装 | **完了**（2026-03-05） |
 ---
-
 ## ChatPanel 実AIチャット配線 初期設計（廃止 → 最終設計は後述セクション参照）
 
 > **注意**: 本セクションは初期設計メモであり、最終設計に置き換えられた。
@@ -96,7 +94,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 > - AccessCapability: canSend/canAbort/canSelectModel/canViewHistory → integratedRuntime/terminalSurface/both/none
 > - セレクタ: 6 個 → 12 個
 ---
-
 ## Workspace Layout 基盤（TASK-UI-04A-WORKSPACE-LAYOUT）
 
 ### 状態配置
@@ -233,7 +230,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `typecheck` | PASS |
 | coverage（task scope） | Line 87.45 / Branch 65.11 / Function 80.39 |
 ---
-
 ## HistorySearch timeline 再設計（TASK-UI-06-HISTORY-SEARCH-VIEW）
 
 ### 更新した Slice / state
@@ -281,7 +277,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | `pnpm --filter @repo/desktop typecheck` | PASS |
 | coverage（task scope） | Lines 88.42 / Branches 80.00 / Functions 90.00 |
 ---
-
 ## ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV）
 
 ### 変更点（状態管理観点）
@@ -302,6 +297,16 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 | close 時の状態復帰 | `SkillAnalysisView` close で `setCurrentView("skillCenter")` + `setCurrentSkillName(null)` | `apps/desktop/src/renderer/App.tsx` |
 | lifecycle 型境界 | `SkillLifecycleJobGuide` に `onAction?: () => void` を追加（既存 job guide 互換を維持） | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` |
 | alias 正規化 | `skill-center` は `normalizeSkillLifecycleView()` で canonical `skillCenter` へ集約 | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` |
+
+### TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001（2026-03-19）
+
+| 観点 | 内容 | 実装ファイル |
+| --- | --- | --- |
+| handoff payload | destination view が読む `currentSkillName` を detail panel click 前に設定する | `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts` |
+| view transition | `handleEditSkill` は `skill-editor`、`handleAnalyzeSkill` は `skillAnalysis` へ遷移する | `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts` |
+| local UI state | destination 遷移後に `handleCloseDetail()` を実行し、detail panel 開閉 state を shell 遷移へ持ち越さない | `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts` |
+| store 境界 | 新規 slice は追加せず、既存 `useAppStore` の `setCurrentView` / `setCurrentSkillName` を再利用する | `apps/desktop/src/renderer/store` |
+| 回帰検証 | `useSkillCenter.test.ts` が `setCurrentSkillName -> setCurrentView -> panel close` の順序を確認する | `apps/desktop/src/renderer/views/SkillCenterView/__tests__/useSkillCenter.test.ts` |
 
 ### 検証証跡
 
@@ -336,7 +341,6 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 4. Phase 11 証跡（`TC-xx` + `.png`）を workflow 配下へ保存し、coverage validator を実行する。  
 5. `lsof -nP -iTCP:5177 -sTCP:LISTEN` で preflight を実施し、分岐結果と未タスク化要否を `task-workflow`/`lessons` に同時記録する。
 ---
-
 ## LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）
 
 > 完了日: 2026-03-17
@@ -376,7 +380,6 @@ export async function getSelectedLLMConfig(): Promise<SelectedLLMConfig | null> 
 - LLM 未選択時はエラーを返してユーザーに選択を促す UX が正しい（`api-ipc-system-core.md` の「未選択時の挙動」に準拠）
 - DEFAULT_CONFIG の暗黙 fallback は設定画面での選択がスキップされる原因になっていた
 ---
-
 ## ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created）
 
 > 完了日: 2026-03-18（設計タスク、spec_created）
@@ -391,6 +394,7 @@ ChatPanel を placeholder から real AI chat 経路へ接続するため、既�
 | --- | --- | --- | --- |
 | `chatPanelStatus` | `ChatPanelStatus` | chatSlice | 8状態の状態機械 |
 | `chatMessages` | `ChatMessage[]` | chatSlice | メッセージ一覧 |
+| `chatError` | `string \| null` | chatSlice | Main Chat の non-streaming error banner 用。canonical error code または Main 由来の raw message string を保持 |
 | `currentConversationId` | `string \| null` | chatSlice | 現在の会話ID |
 | `streamingContent` | `string` | chatSlice | 既存維持 |
 | `isStreaming` | `boolean` | chatSlice | 既存維持 |
@@ -426,8 +430,12 @@ interface ChatMessage {
 
 ### 個別セレクタ定義（P31/P48 対策）
 
+`chatError` は `useChatError()` / `useClearChatError()` の個別セレクタで参照し、`ChatView` が alert surface と auto clear timer を担当する。`streamingError` と selector を共有しないことで、non-streaming failure と streaming failure の責務を分離する。
+
 | セレクタ名 | 戻り値型 | 用途 |
 | --- | --- | --- |
+| `useChatError` | `string \| null` | chatError エラーコード取得 |
+| `useClearChatError` | `() => void` | chatError クリアアクション |
 | `useChatPanelStatus` | `ChatPanelStatus` | ChatPanel の現在の状態 |
 | `useResolvedCapability` | `AccessCapability` | runtime capability の解決結果 |
 | `useChatMessages` | `ChatMessage[]`（useShallow 適用 — P48） | メッセージ一覧 |
@@ -472,9 +480,7 @@ handoff --> ready: return from terminal
 | --- | --- | --- |
 | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 | ChatPanel の実 AI チャット配線（設計） | **spec_created**（2026-03-18） |
 | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 | Main Chat/Settings AI runtime 同期 | **完了**（2026-03-17） |
-
 ---
-
 ## 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created）
 
 TASK-SKILL-LIFECYCLE-08 では publish/distribution 領域の store 責務を設計済み（実装未着手）。
@@ -495,6 +501,5 @@ TASK-SKILL-LIFECYCLE-08 では publish/distribution 領域の store 責務を設
 - `compatibilityResult.level === "breaking"` かつ major バンプなしは confirm 不可。
 
 ### 実装移行の未タスク
-
 - `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
 - `UT-SKILL-LIFECYCLE-08-UI-IMPL`

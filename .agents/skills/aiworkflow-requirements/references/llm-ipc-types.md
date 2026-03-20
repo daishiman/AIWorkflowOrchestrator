@@ -50,7 +50,14 @@ LLMからの応答型。
 | data.message        | string   | AI応答メッセージ                    |
 | data.conversationId | string   | 会話ID                              |
 | data.ragSources     | string[] | RAG参照元ファイルパス（任意）       |
-| error               | string   | エラーメッセージ（success=false時） |
+| error               | string   | `success=false` 時の error code または user-facing message |
+
+**運用方針（2026-03-20）**:
+
+- `AIChatResponse.error` は `API_KEY_MISSING` のような canonical error code を返してよい。
+- ただし Main 側事情で code 化されていない既存経路は、人間可読の message string をそのまま返してよい。
+- Renderer (`chatSlice` / `ChatView`) は `error` を `string` として受け取り、`ALL_CAPS_WITH_UNDERSCORES` 形式なら code として辞書変換し、それ以外は raw message fallback として表示する。
+- したがって `AIChatResponse.error` は「code only」ではなく「code or user-facing message」の union 運用とみなす。
 
 #### AICheckConnectionResponse
 

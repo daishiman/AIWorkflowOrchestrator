@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-20 | 2.1.1 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査の教訓3件を追加 |
 | 2026-03-18 | 2.1.0 | 1598行超過のため分割。2026-03-15以前エントリを archive-2026-03.md へ移動。UT-TASK06-007 苦戦箇所5件を追加 |
 | 2026-03-17 | 2.0.0 | 651行超過のため4ファイルに分割しインデックス化 |
 | 2026-03-17 | 1.30.00 | TASK-SKILL-LIFECYCLE-08 仕様書作成の教訓4件を追加 |
@@ -65,6 +66,34 @@
 → [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md)
 - 設計タスクでの仕様書更新先送り（P57）、未タスク指示書配置省略（P58）
 - 並列エージェント changelog 件数不整合（P59）
+
+---
+
+### 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査
+
+#### 苦戦箇所1: ユーザー指定の current workflow root と parent workflow 想定 root がずれた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | parent workflow は `ai-chat-llm-integration-fix/tasks/01-*` を前提にしていた一方、ユーザーは `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` を current task root として指定した |
+| 解決策 | user 指定 root を canonical とし、workflow/spec 側の旧参照を drift として是正した |
+| 標準ルール | current task root をユーザーが明示した場合、その root を Phase 11/12・system spec 同期の正本として扱う |
+
+#### 苦戦箇所2: worktree でも screenshot 証跡は Playwright + Vite harness で再生成できる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | CLI 環境を理由に screenshot 不可と判断すると、UI task の Phase 11 が未完了のまま残る |
+| 解決策 | `arch -arm64 npx vite --config vite.e2e.config.ts` と Playwright init script で current worktree の representative screenshots を再取得した |
+| 標準ルール | worktree / CLI 環境でも、UI task かつユーザーが画面検証を要求した場合は capture script を作成して screenshot を残す |
+
+#### 苦戦箇所3: `validate-phase12-implementation-guide` の失敗を compliance 文書で握りつぶさない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | implementation guide が 10/10 要件を満たしていないのに、compliance 文書だけ完了扱いにすると Phase 12 の整合性が壊れる |
+| 解決策 | validator 実行結果を正として guide を補完し、compliance / changelog / system-spec-update-summary を同ターンで更新した |
+| 標準ルール | Phase 12 は validator 実測値を正本とし、narrative 側で完了を先に宣言しない |
 
 ---
 
