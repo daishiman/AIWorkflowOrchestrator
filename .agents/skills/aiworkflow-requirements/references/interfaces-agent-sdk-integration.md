@@ -309,14 +309,19 @@ TASK-1-1で実装された16の共通型定義。specification.md §5.1に基づ
 
 #### SkillExecutionStatus
 
-| 値                   | 説明       |
-| -------------------- | ---------- |
-| `idle`               | 待機中     |
-| `running`            | 実行中     |
-| `permission_pending` | 権限待ち   |
-| `completed`          | 完了       |
-| `cancelled`          | キャンセル |
-| `error`              | エラー     |
+| 値                   | 説明                             | 遷移元                           | 遷移先                              |
+| -------------------- | -------------------------------- | -------------------------------- | ----------------------------------- |
+| `idle`               | 待機中（初期状態）               | `error` / `cancelled` / `reuse_ready` / `improve_ready` | `running`                           |
+| `running`            | 実行中                           | `idle` / `improve_ready`         | `completed` / `error` / `cancelled` |
+| `permission_pending` | 権限待ち                         | `running`                        | `running` / `cancelled`             |
+| `completed`          | 完了                             | `running`                        | `review` / `idle`                   |
+| `cancelled`          | キャンセル                       | `running` / `permission_pending` | `idle`                              |
+| `error`              | エラー                           | `running`                        | `idle`                              |
+| `review`             | レビュー中（品質評価待ち）       | `completed`                      | `improve_ready` / `reuse_ready`     |
+| `improve_ready`      | 改善準備完了（改善サイクル入り） | `review`                         | `running` / `idle`                  |
+| `reuse_ready`        | 再利用準備完了                   | `review`                         | `idle`                              |
+
+> **実装照合済み（2026-03-20）**: `packages/shared/src/types/skill.ts` の実値、`SkillStreamingView.tsx` の `STATUS_CONFIG`、`SkillLifecyclePanel.tsx` のローカル型と 9 値が一致していることを確認済み。
 
 ### ストリーミングメッセージ型
 

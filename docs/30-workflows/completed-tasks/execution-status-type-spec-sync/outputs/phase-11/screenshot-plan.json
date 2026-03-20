@@ -1,0 +1,31 @@
+{
+  "workflow": "execution-status-type-spec-sync",
+  "capturedAt": "2026-03-20",
+  "route": "/phase11-execution-status-type-spec-sync.html?theme=light",
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "state": "review",
+      "selector": "[data-testid='phase11-status-review']",
+      "file": "screenshots/TC-11-01-status-review.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "state": "improve_ready",
+      "selector": "[data-testid='phase11-status-improve-ready']",
+      "file": "screenshots/TC-11-02-status-improve-ready.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "state": "reuse_ready",
+      "selector": "[data-testid='phase11-status-reuse-ready']",
+      "file": "screenshots/TC-11-03-status-reuse-ready.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "state": "review_board",
+      "selector": "main",
+      "file": "screenshots/TC-11-04-status-review-board.png"
+    }
+  ]
+}

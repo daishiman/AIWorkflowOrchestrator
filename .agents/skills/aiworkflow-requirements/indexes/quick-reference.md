@@ -33,6 +33,7 @@
 | IPC transport      | `IPCResponse<T>`              | interfaces-auth.md         |
 | 認証方式状態       | `AuthModeStatus`              | interfaces-auth.md         |
 | スキル情報         | `Skill`, `SkillMetadata`      | interfaces-agent-sdk.md    |
+| 実行ステータス     | `SkillExecutionStatus`        | packages/shared/src/types/skill.ts |
 | チャットメッセージ | `ChatMessage`                 | interfaces-llm.md          |
 | 会話セッション     | `ChatSession`                 | interfaces-chat-history.md |
 | RAG検索結果        | `SearchResult`                | interfaces-rag-search.md   |
@@ -54,6 +55,18 @@
 | スキル配布         | `SkillDistributionService`    | interfaces-agent-sdk-skill.md |
 | LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
 | LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
+
+---
+
+## docs-only status sync
+
+> `SkillExecutionStatus` / status type spec sync 系タスクで、最初に見るべき現状と前提ブロッカー。
+
+| 項目 | 値 |
+| --- | --- |
+| current blocker | `packages/shared/src/types/skill.ts` の `SkillExecutionStatus` は現状 6 値。Task12 は `spec_created` 前提で、Phase 1 では実体確認が先。 |
+| primary refs | `task-workflow-completed-skill-lifecycle-design.md`, `task-workflow-completed-skill-lifecycle-ui.md`, `interfaces-agent-sdk-integration.md`, `arch-state-management-core.md`, `task-workflow.md`, `lessons-learned-current-electron-menu-docs-task0912.md` |
+| read order | `resource-map.md` -> `task-workflow-completed-skill-lifecycle-design.md` -> `task-workflow-completed-skill-lifecycle-ui.md` -> `skill.ts` -> `task-workflow.md` |
 
 ---
 

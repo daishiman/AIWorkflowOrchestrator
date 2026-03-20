@@ -1,4 +1,5 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
+import type { SkillExecutionStatus } from "@repo/shared";
 import {
   useClearSkillError,
   useClearStreamingMessages,
@@ -21,14 +22,7 @@ type SkillCreatorMode =
   | "update"
   | "improve-prompt";
 
-type SkillExecutionStatusValue =
-  | "idle"
-  | "running"
-  | "permission_pending"
-  | "completed"
-  | "cancelled"
-  | "error"
-  | null;
+type SkillExecutionStatusValue = SkillExecutionStatus | null;
 
 type SessionRole = "user" | "assistant";
 

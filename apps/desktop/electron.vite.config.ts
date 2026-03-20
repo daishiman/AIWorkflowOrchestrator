@@ -65,6 +65,10 @@ export default defineConfig(({ mode }) => {
               __dirname,
               "src/renderer/phase11-light-theme-contrast-guard.html",
             ),
+            "phase11-execution-status-type-spec-sync": resolve(
+              __dirname,
+              "src/renderer/phase11-execution-status-type-spec-sync.html",
+            ),
           },
         },
       },
