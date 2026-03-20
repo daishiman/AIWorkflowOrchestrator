@@ -1,0 +1,71 @@
+# Phase 6 カバレッジレポート（テスト追加前）
+
+実行日時: 2026-03-20
+実行コマンド:
+  cd apps/desktop
+  pnpm exec vitest run --coverage \
+    --coverage.include="src/renderer/components/skill/SkillAnalysisView.tsx" \
+    --coverage.include="src/renderer/views/AgentView/index.tsx" \
+    src/renderer/components/skill/__tests__/SkillAnalysisView.navigation.test.tsx \
+    src/renderer/views/AgentView/__tests__/AgentView.cta.test.tsx \
+    src/renderer/__tests__/App.renderView.viewtype.test.tsx \
+    src/renderer/components/skill/__tests__/SkillAnalysisView.test.tsx \
+    src/renderer/views/AgentView/__tests__/AgentView.test.tsx \
+    src/renderer/views/AgentView/__tests__/AgentView.layout.test.tsx
+
+## テスト結果
+
+Test Files: 6 passed (6)
+Tests:      129 passed (129)
+
+## カバレッジ（テスト追加前）
+
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   89.41 |    81.89 |   64.28 |   89.41 |
+ components/skill  |   99.06 |    92.85 |     100 |   99.06 |
+  SkillAnalysisView|   99.06 |    92.85 |     100 |   99.06 | 128
+ views/AgentView   |   87.52 |    80.39 |   61.53 |   87.52 |
+  index.tsx        |   87.52 |    80.39 |   61.53 |   87.52 | 338-350,558-564,
+                   |         |          |         |         | 669-677,726-727
+-------------------|---------|----------|---------|---------|-------------------
+
+## 未カバー箇所の分析
+
+### AgentView/index.tsx
+
+| 行番号    | 内容                                              | 優先度 |
+|-----------|---------------------------------------------------|--------|
+| L338-350  | skillExecutionStatus="cancelled" ブランチ         | 高     |
+| L439-440  | handleSkillSelect 内の selectSkill 呼び出し       | 高     |
+| L462-463  | handleCopyHandoffCommand の !handoffGuidance ガード| 中     |
+| L468-469  | clipboard.writeText 失敗時の catch ブランチ       | 中     |
+| L529-530  | handlePermissionModeChange setMode 未定義アーリーリターン | 中 |
+| L539      | handlePermissionModeChange 非 Error catch ブランチ| 中     |
+| L549-551  | handleResetRemembered clearRemembered 未定義ブランチ| 中   |
+| L558-564  | handleResetRemembered エラー catch ブランチ       | 中     |
+| L669-677  | handoffGuidance 存在時の TerminalHandoffCard 表示 | 高     |
+| L726-727  | FloatingExecutionBar の onStop callback           | 高     |
+
+### SkillAnalysisView.tsx
+
+| 行番号 | 内容                           | 優先度 |
+|--------|--------------------------------|--------|
+| L128   | 条件分岐の未カバーブランチ（軽微）| 低   |
+
+### App.tsx
+
+vitest.config.ts の coverage.exclude に `src/renderer/App.tsx` が含まれているため
+カバレッジ対象外。
+
+## 基準未達状況
+
+| 指標              | 現在値   | 基準   | 判定 |
+|-------------------|----------|--------|------|
+| Line Coverage     | 89.41%   | 80%    | PASS |
+| Branch Coverage   | 81.89%   | 60%    | PASS |
+| Function Coverage | 64.28%   | 80%    | FAIL |
+| Stmt Coverage     | 89.41%   | 80%    | PASS |
+
+Function Coverage が 64.28% で基準（80%）を下回っているため、Phase 6 でテストを追加する。

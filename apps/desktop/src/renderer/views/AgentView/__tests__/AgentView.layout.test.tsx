@@ -86,6 +86,9 @@ vi.mock("../../../store", () => ({
   useFetchProviders: vi.fn(() => vi.fn()),
   useSelectProvider: vi.fn(() => vi.fn()),
   useSelectModel: vi.fn(() => vi.fn()),
+  // Navigation selectors (TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001)
+  useSetCurrentView: vi.fn(() => vi.fn()),
+  useSetCurrentSkillName: vi.fn(() => vi.fn()),
 }));
 
 // AgentView をインポート

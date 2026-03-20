@@ -42,6 +42,8 @@ import {
   useFetchProviders,
   useSelectProvider,
   useSelectModel,
+  useSetCurrentView,
+  useSetCurrentSkillName,
 } from "../../store";
 import { GlassPanel } from "../../components/organisms/GlassPanel";
 import { SkillChip } from "../../components/organisms/AgentView/SkillChip";
@@ -58,7 +60,7 @@ import {
   type SkillMetadata,
   type SkillName,
 } from "@repo/shared/types/skill";
-import { Plus, RefreshCw, X, Settings, Search } from "lucide-react";
+import { Plus, RefreshCw, X, Settings, Search, Sparkles } from "lucide-react";
 import type {
   AgentFloatingStatus,
   AgentPermissionMode,
@@ -220,6 +222,8 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   const selectModel = useSelectModel();
 
   // Store actions - 個別セレクタ（P31対策）
+  const setCurrentView = useSetCurrentView();
+  const setCurrentSkillName = useSetCurrentSkillName();
   const fetchSkills = useFetchSkills();
   const selectSkill = useSelectSkill();
   const setSkillFilter = useSetSkillFilter();
@@ -492,6 +496,22 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
     fetchSkills();
   }, [fetchSkills]);
 
+  const canOfferAnalysis = useMemo(() => {
+    if (!selectedSkillName || selectedSkillName.trim().length === 0)
+      return false;
+    if (skillExecutionStatus !== "completed") return false;
+    if (isExecuting) return false;
+    return true;
+  }, [selectedSkillName, skillExecutionStatus, isExecuting]);
+
+  const handleNavigateToAnalysis = useCallback(() => {
+    if (!selectedSkillName) return;
+    const trimmedName = selectedSkillName.trim();
+    if (trimmedName.length === 0) return;
+    setCurrentSkillName(trimmedName);
+    setCurrentView("skillAnalysis");
+  }, [selectedSkillName, setCurrentView, setCurrentSkillName]);
+
   const handleModelSelect = useCallback(
     (providerId: string, modelId: string) => {
       selectProvider(providerId as Parameters<typeof selectProvider>[0]);
@@ -657,6 +677,34 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
             </div>
           )}
         </section>
+
+        {/* CTA バナー: スキル実行完了後に分析ナビゲーションを提案 */}
+        {canOfferAnalysis && (
+          <div
+            className="mx-4 mt-3 flex items-center justify-between rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-4"
+            role="region"
+            aria-label="スキル改善提案"
+          >
+            <div className="flex items-center gap-3">
+              <Sparkles size={18} className="text-[var(--accent-primary)]" />
+              <div>
+                <p className="text-sm font-medium text-[var(--text-primary)]">
+                  スキルを分析・改善する
+                </p>
+                <p className="text-xs text-[var(--text-secondary)]">
+                  実行結果を基にスキルの改善提案を確認できます
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleNavigateToAnalysis}
+              aria-label="スキルを分析・改善する"
+              className="rounded-lg bg-[var(--accent-primary)] px-4 py-2 text-sm font-medium text-[var(--text-inverse)] transition-colors duration-200 hover:opacity-90"
+            >
+              分析する
+            </button>
+          </div>
+        )}
 
         {/* Section 2: 最近の実行 */}
         <section role="region" aria-label="最近の実行">

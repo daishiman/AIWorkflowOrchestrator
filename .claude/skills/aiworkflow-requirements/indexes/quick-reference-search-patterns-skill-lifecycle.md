@@ -65,6 +65,31 @@ node scripts/search-spec.js "direct currentView" -C 3
 5. `references/lessons-learned-current.md` で direct 到達不安定性の再発防止ルールを確認する
 6. 実装実体は `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/store/types.ts` `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step01-phase11.mjs` を照合する
 
+## AgentView→SkillAnalysis 改善導線（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001）を探すとき
+
+このカテゴリは `agentview improve route` `skillLifecycleJourney` `useSkillCenter` `handleAnalyzeSkill` `currentSkillName` `selectedSkillName` `skillExecutionStatus` `viewHistory` `skillAnalysis case` `agent to skill analysis` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "agentview improve route" -C 3
+node scripts/search-spec.js "skillLifecycleJourney" -C 3
+node scripts/search-spec.js "useSkillCenter handleAnalyzeSkill" -C 3
+node scripts/search-spec.js "currentSkillName skillExecutionStatus" -C 3
+node scripts/search-spec.js "skillAnalysis case" -C 3
+node scripts/search-spec.js "agent to skill analysis" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の「UI改修（AgentView→SkillAnalysis 改善導線 / 戻り導線）」を見る
+2. `references/workflow-skill-lifecycle-routing-render-view-foundation.md` で `skillAnalysis` / `currentSkillName` / close 契約を確認する
+3. `references/ui-ux-navigation.md` で ViewType / destination handoff / close baseline を確認する
+4. `references/arch-state-management-core.md` と `references/arch-state-management-reference.md` で `viewHistory` / `currentSkillName` / `selectedSkillName` / `skillExecutionStatus` の ownership を確認する
+5. `references/ui-ux-feature-components-core.md` と `references/ui-ux-feature-components-reference.md` で AgentView / SkillAnalysisView / SkillCenter analyze handoff を確認する
+6. `references/arch-state-management-reference-permissions-import-lifecycle.md` で `handleAnalyzeSkill` の順序契約を確認する
+7. `references/workflow-skill-lifecycle-created-skill-usage-journey.md` は CTA 制御マトリクスの上位仕様として確認する
+8. `references/lessons-learned-skill-import-analysis-view.md` と `references/lessons-learned-ui-agent-view-nav-notification-history.md` で UI 追加時の既知論点を確認する
+9. current code anchor は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts` `apps/desktop/src/renderer/App.tsx` `apps/desktop/src/renderer/store/slices/navigationSlice.ts` を先に確認し、その後 `apps/desktop/src/renderer/views/AgentView/index.tsx` `apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx` `apps/desktop/src/renderer/store/slices/agentSlice.ts` を照合する
+
 ## Skill Lifecycle 評価・採点ゲート（TASK-SKILL-LIFECYCLE-04）を探すとき
 
 このカテゴリは `skill lifecycle scoring gate` `ScoringGate` `evaluatePrompt` `ScoreDelta` `previousAnalysis` `task-fix-eval-store-dispatch-001` `task-fix-score-delta-dedup-001` `canonical path` で検索を分割する。

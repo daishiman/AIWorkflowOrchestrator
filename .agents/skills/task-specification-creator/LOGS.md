@@ -4,6 +4,19 @@
 
 ---
 
+## TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 完了（2026-03-20）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 実行完了
+- **Result**: success
+- **Notes**:
+  - AgentView 改善 CTA バナー + SkillAnalysisView Agent 起点戻り導線を実装
+  - `canOfferAnalysis` 導出、`viewHistory` ベース Agent 起点判定、`onNavigateBack` / `onNavigateToAgent` props 追加
+  - テスト 146+ PASS、カバレッジ Line 96.31% / Branch 87.87% / Func 85.71%
+  - 未タスク 8件検出・formalize
+
+---
+
 ## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（2026-03-19）
 
 - **Agent**: task-specification-creator
@@ -666,3 +679,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `phase-11-manual-test.md`, `phase-12-documentation.md`, `outputs/phase-12/*.md`, `docs/30-workflows/unassigned-task/ut-task06-007-ext-00*.md` |
 | 結果 | `implementation-guide.md` を validator 10/10 準拠へ補強し、未タスク5件の配置・実行手順・残余スコープを current facts に再同期した。`task-specification-creator/SKILL.md` 変更履歴も UT-TASK06-007 再監査実績へ更新した |
 | 検証 | `validate-phase12-implementation-guide` PASS、`validate-phase-output` Phase 11/12 PASS、`verify-all-specs --workflow ... --json` PASS、`verify-unassigned-links` PASS、`quick_validate` PASS（warning は legacy baseline） |
+
+### 2026-03-20 - TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 再監査で validator を補強
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation / documentation |
+| 変更対象 | `scripts/validate-phase-output.js`, `LOGS.md`, Task04 workflow outputs |
+| 結果 | `artifacts.json` と `outputs/artifacts.json` の同値確認、Phase 11 補助成果物（`manual-test-checklist.md` / `manual-test-result.md` / `screenshot-plan.json`）、`outputs/phase-11/screenshots/*.png` 0件検知、Phase 12 の `planned` / `PR作成時に実施` / `PRマージ後` wording 検知を validator へ追加した |
+| 検証 | Task04 current workflow へ `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を再実行予定。mirror 同期とあわせて差分 0 を確認する |

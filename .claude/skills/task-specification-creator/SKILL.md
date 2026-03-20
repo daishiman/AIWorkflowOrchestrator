@@ -383,6 +383,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.02** | **2026-03-20** | **TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 完了記録**: AgentView 改善 CTA + SkillAnalysisView Agent 起点戻り導線を実装。Phase 1-12 完了。未タスク 8 件 formalize。テストモック連鎖更新（P21/P35）パターンを lessons-learned に記録 |
 | **v10.09.01** | **2026-03-19** | **UT-TASK06-007 再監査同期**: `implementation-guide.md` の必須要件（なぜ先行 / 日常例え / TypeScript 型 / API/CLI シグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目）を validator 10/10 に合わせて補強し、`phase-11-manual-test.md` の参照不足 warning を解消。未タスク5件は `docs/30-workflows/unassigned-task/` 配置を再確認し、`EXT-002` 残余スコープ・`EXT-005` 実行手順未完成・数値ドリフトを是正する運用を変更履歴へ追加 |
 | **v10.09.00** | **2026-03-19** | **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了記録**。Phase 1-12 実行完了 |
 | **v10.09.12** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: `references/phase-template-core.md` に concern 数による設計書分割基準テーブル（1-2/3-4/5+ concern）を追加。`references/review-gate-criteria.md` に設計タスク専用の契約品質チェック（前提条件/事後条件・IPC Port 依存・DI 境界表・受入基準トレーサビリティ）を Phase 3 に追加。`references/phase-template-phase12.md` に Task 6（遵守チェックリスト）を必須タスクとして追記。`references/phase-12-documentation-guide.md` に Task 12-6 と planned wording 確認コマンドを追加 |

@@ -1,0 +1,52 @@
+{
+  "taskId": "TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001",
+  "captureScript": "apps/desktop/scripts/capture-task-skill-lifecycle-routing-step03-phase11.mjs",
+  "harness": "/phase11-agentview-improve-route.html",
+  "cases": [
+    {
+      "tcId": "TC-11-01",
+      "scenario": "cta-visible",
+      "theme": "light",
+      "file": "TC-11-01-agent-cta-visible-light.png",
+      "selector": "[aria-label=\"スキル改善提案\"]"
+    },
+    {
+      "tcId": "TC-11-02",
+      "scenario": "cta-hidden",
+      "theme": "light",
+      "file": "TC-11-02-agent-cta-hidden-light.png",
+      "selector": "[data-testid=\"agent-view\"]"
+    },
+    {
+      "tcId": "TC-11-03",
+      "scenario": "cta-visible",
+      "theme": "light",
+      "file": "TC-11-03-skill-analysis-from-agent-light.png",
+      "selector": "[data-testid=\"skill-analysis-view\"]",
+      "action": "click analyze CTA"
+    },
+    {
+      "tcId": "TC-11-04",
+      "scenario": "analysis",
+      "theme": "light",
+      "file": "TC-11-04-agent-return-from-analysis-light.png",
+      "selector": "[data-testid=\"agent-view\"]",
+      "action": "click 戻る"
+    },
+    {
+      "tcId": "TC-11-05",
+      "scenario": "analysis",
+      "theme": "light",
+      "file": "TC-11-05-agent-rerun-from-analysis-light.png",
+      "selector": "[data-testid=\"agent-view\"]",
+      "action": "click エージェントで再実行"
+    },
+    {
+      "tcId": "TC-11-06",
+      "scenario": "cta-visible",
+      "theme": "dark",
+      "file": "TC-11-06-agent-cta-visible-dark.png",
+      "selector": "[aria-label=\"スキル改善提案\"]"
+    }
+  ]
+}
