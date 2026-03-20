@@ -128,15 +128,23 @@ const activeStatuses = useAppStore(
 
 **P31 対策**: アクション関数は個別セレクタで取得し、合成Store Hookの戻り値を useEffect 依存配列に含めない。
 
-### 5. 更新ファイル一覧
+### 5. コード実装ファイル一覧
+
+| ファイル                                                                     | 変更内容                                                                  |
+| ---------------------------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------- |
+| `packages/shared/src/types/skill.ts` (L360-369)                              | SkillExecutionStatus 型に9値定義（review/improve_ready/reuse_ready 追加） |
+| `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx` (L32-44) | STATUS_CONFIG に新3値の色/ラベルマッピング追加                            |
+| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` (L1-40) | `SkillExecutionStatus                                                     | null` を shared 型 import ベースで利用 |
+
+### 6. 仕様書更新ファイル一覧
 
 | ファイル                                         | 変更内容                                        |
 | ------------------------------------------------ | ----------------------------------------------- |
 | `interfaces-agent-sdk-integration.md` (L310-322) | SkillExecutionStatus テーブルを6値から9値に拡張 |
-| `arch-state-management-core.md` (L504-527)       | 拡張状態の配置ルールセクションを追記            |
+| `arch-state-management-core.md` (L509-532)       | 拡張状態の配置ルールセクションを追記            |
 | `topic-map.md`                                   | generate-index.js による自動再生成              |
 | `keywords.json`                                  | generate-index.js による自動再生成              |
 
-### 6. P65 注記
+### 7. P65 注記（実値照合完了）
 
-本タスクは Task12（TASK-IMP-LIFECYCLE-REUSE-IMPROVE-CYCLE-001）の Phase 5 完了前に仕様書を先行更新している。Task12 Phase 5 完了後に `packages/shared/src/types/skill.ts` の実スペルと照合し、差異があれば修正すること。
+「実装照合済み」注記は `packages/shared/src/types/skill.ts` の実スペルと照合済みであることを示す。9値が完全一致しており、STATUS_CONFIG と SkillLifecyclePanel の型参照も整合している。

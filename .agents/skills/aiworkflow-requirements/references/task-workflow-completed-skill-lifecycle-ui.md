@@ -559,8 +559,8 @@ ui-ux-diagrams.md の「実装ギャップ一覧（GAP ID 正本）」セクシ�
 
 `SkillExecutionStatus` 型に `review` / `improve_ready` / `reuse_ready` の3値を追加したことに伴い、関連仕様書の同期を実施。
 
-### 検出された未タスク
+### same-wave で解消した追補
 
 | タスクID | 内容 | ステータス |
 | --- | --- | --- |
-| UT-STATUSBADGE-MAPPING-3VALUES-001 | StatusBadge の色/ラベルマッピングに review/improve_ready/reuse_ready を追加 | 未実施 |
+| UT-STATUSBADGE-MAPPING-3VALUES-001 | StatusBadge の色/ラベルマッピングに review/improve_ready/reuse_ready を追加 | 完了（2026-03-20, `ui-ux-feature-components-advanced.md` 反映済み） |

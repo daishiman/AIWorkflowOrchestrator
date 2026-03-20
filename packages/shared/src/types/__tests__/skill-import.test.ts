@@ -494,9 +494,12 @@ describe("Skill Types - Edge Cases", () => {
       "completed",
       "cancelled",
       "error",
+      "review",
+      "improve_ready",
+      "reuse_ready",
     ];
 
-    expect(statuses).toHaveLength(6);
+    expect(statuses).toHaveLength(9);
     statuses.forEach((status) => {
       expect(typeof status).toBe("string");
     });

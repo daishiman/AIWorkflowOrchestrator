@@ -414,6 +414,16 @@
 | 関連パターン | P3（未タスク管理の3ステップ不完全）、P58（設計タスクにおける未タスク指示書の配置省略） |
 | 関連タスク | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 |
 
+### P68: ローカル型定義の同期漏れ（型拡張時の P32 派生パターン）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `packages/shared/src/types/skill.ts` の `SkillExecutionStatus` を6値から9値に拡張した際、`apps/desktop/src/renderer/` の `SkillLifecyclePanel.tsx` にローカル定義された `SkillExecutionStatusValue` が古い6値のまま残り typecheck が失敗した |
+| 再発条件 | shared パッケージの union 型を拡張した際、desktop 側に `type X = "a" \| "b" \| ...` のローカル型定義が存在する |
+| 解決策 | ローカル型定義を shared の型を参照する形（`type X = SharedType \| null`）に書き換える。`grep -rn "type.*=.*\"idle\".*\"running\"" apps/desktop/src/` でローカル型定義の残存を検出 |
+| 関連パターン | P32（型定義の二箇所同時更新必須） |
+| 関連タスク | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 |
+
 ### 同種課題の簡潔解決手順（5ステップ）
 
 1. Phase 1 開始時に `git diff --stat HEAD` で既実装を P50 チェックし、検証モードへの切替を判断する。

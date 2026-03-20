@@ -5,56 +5,66 @@
 
 ## 更新ファイル一覧
 
-| ファイル                                                                                | 変更概要                                                                                                           |
-| --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-integration.md` | L310-322: SkillExecutionStatus テーブルを6値→9値に拡張。遷移元/遷移先カラム追加。P65注記付与                       |
-| `.claude/skills/aiworkflow-requirements/references/arch-state-management-core.md`       | L504-527: SkillExecutionStatus 拡張状態の配置ルールセクション追記。agentSlice配置、セレクタ設計（P48/P31対策）記載 |
-| `.claude/skills/aiworkflow-requirements/indexes/topic-map.md`                           | generate-index.js による自動再生成（373ファイル分類）                                                              |
-| `.claude/skills/aiworkflow-requirements/indexes/keywords.json`                          | generate-index.js による自動再生成（2368キーワード）                                                               |
-| `.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`                     | generate-index.js による自動再生成                                                                                 |
-| `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                        | generate-index.js による自動再生成                                                                                 |
+### workflow 文書
 
-## 各 Step 完了結果（事後記録）
+| ファイル                                    | 変更概要                                                                 |
+| ------------------------------------------- | ------------------------------------------------------------------------ |
+| `phase-11-manual-test.md`                   | `SCREENSHOT + WALKTHROUGH` へ正規化し、4 件の TC と validator 手順を整理 |
+| `outputs/phase-11/manual-test-result.md`    | 実際の PNG 名、証跡列、validator 結果、mirror parity を反映              |
+| `outputs/phase-11/manual-test-checklist.md` | checklist 形式へ整理                                                     |
+| `outputs/phase-11/screenshot-plan.json`     | current renderer entry の selector / file 名へ更新                       |
+| `outputs/phase-11/screenshot-coverage.md`   | metadata と一致する file 名へ更新                                        |
+| `phase-12-documentation.md`                 | M10-01/M10-02 の解消状態と Phase 12 完了条件を実測に合わせて更新         |
 
-### Step 1-A: タスク完了記録
+### system spec / mirror
 
-- ステータス: スキップ（worktree制約）
-- 理由: LOGS.md / SKILL.md の更新はPRマージ時に main で実施
-- P57対策: system-spec-update-summary.md に明示的に記録済み
+| ファイル                                                                                          | 変更概要                                |
+| ------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-integration.md`           | SkillExecutionStatus 9 値テーブルを保持 |
+| `.claude/skills/aiworkflow-requirements/references/arch-state-management-core.md`                 | 拡張状態の配置ルールを保持              |
+| `.agents/skills/aiworkflow-requirements/indexes/keywords.json`                                    | `.claude` 正本へ同期                    |
+| `.agents/skills/aiworkflow-requirements/indexes/topic-map.md`                                     | `.claude` 正本へ同期                    |
+| `.agents/skills/aiworkflow-requirements/references/task-workflow-backlog.md`                      | stale backlog 記述を解消                |
+| `.agents/skills/aiworkflow-requirements/references/task-workflow-completed-skill-lifecycle-ui.md` | stale 完了記録を解消                    |
 
-### Step 1-B: 実装状況テーブル
+### 台帳 / レポート
 
-- ステータス: 完了
-- 記録: `spec_created` として記録
+| ファイル                                                 | 変更概要                                             |
+| -------------------------------------------------------- | ---------------------------------------------------- |
+| `artifacts.json`                                         | Phase 11 / 12 補助成果物を追加                       |
+| `outputs/artifacts.json`                                 | root `artifacts.json` と同期                         |
+| `outputs/phase-12/system-spec-update-summary.md`         | 実在ファイルと validator 実測に更新                  |
+| `outputs/phase-12/unassigned-task-detection.md`          | 実装/仕様の未タスク 0 件、既存 backlog 1 件へ整理    |
+| `outputs/phase-12/skill-feedback-report.md`              | blocked 前提を除去し、再利用価値のある改善だけを記録 |
+| `outputs/phase-12/phase12-task-spec-compliance-check.md` | validator / parity / 完了判定を実測へ更新            |
 
-### Step 1-C: 関連タスク検索
+## 実行コマンド
 
-- ステータス: 完了
-- 結果: 2箇所で参照（arch-state-management-core.md L504, topic-map.md L2105）
-- 整合性: 確認済み
+```bash
+node apps/desktop/scripts/capture-execution-status-type-spec-sync-phase11.mjs
+pnpm --filter @repo/shared exec vitest run src/types/__tests__/skill.test.ts src/types/__tests__/skill-import.test.ts
+pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillStreamingView.test.tsx src/renderer/store/slices/__tests__/agentSlice.selectors.test.ts
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/execution-status-type-spec-sync --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 11
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 12
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/execution-status-type-spec-sync --json
+diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements
+diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator
+```
 
-### Step 1-D: topic-map.md 再生成
+## 結果
 
-- ステータス: 完了（Phase 5 で実施済み）
-- 結果: 373ファイル分類、2368キーワード索引
-
-### Step 2: システム仕様更新
-
-- ステータス: 完了（Phase 5 で実施済み）
-- 対象: interfaces-agent-sdk-integration.md, arch-state-management-core.md
-- P32準拠: 2ファイル同時更新確認済み
-
-### Step 3: IPC 契約検証
-
-- ステータス: 対象外（IPC修正タスクではない）
-
-### Task 4: 未タスク検出
-
-- ステータス: 完了
-- 検出件数: **1件**（P59対策: unassigned-task-detection.md の件数と照合済み）
-- 内容: UT-1 StatusBadge 色/ラベルマッピング仕様への新3値追加（Task12 スコープで対応予定）
+| 項目                     | 結果   |
+| ------------------------ | ------ |
+| screenshot coverage      | PASS   |
+| phase 11 validator       | PASS   |
+| phase 12 validator       | PASS   |
+| verify-all-specs         | PASS   |
+| aiworkflow mirror parity | diff 0 |
+| task-spec mirror parity  | diff 0 |
 
 ## 最終ステータス
 
-全Step の確認が完了。Step 1-A は worktree 制約によりスキップ（PRマージ時に実施予定）。
-未タスク検出件数: 1件。それ以外の全 Step は完了済み。
+- 実装/仕様の取りこぼし: 0 件
+- 既存 root backlog で管理する横断改善: 1 件（`UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001`）
+- same-wave で解消済みの既存 UT: `UT-STATUSBADGE-MAPPING-3VALUES-001`

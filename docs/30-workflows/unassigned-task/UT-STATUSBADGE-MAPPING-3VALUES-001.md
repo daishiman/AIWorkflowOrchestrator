@@ -10,7 +10,7 @@
 | 対象機能     | DisplayableStatus / StatusBadge コンポーネント                              |
 | 優先度       | 中                                                                          |
 | 見積もり規模 | 小規模                                                                      |
-| ステータス   | 未実施                                                                      |
+| ステータス   | 完了（2026-03-20, same-wave spec sync）                                     |
 | 発見元       | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12                   |
 | 発見日       | 2026-03-20                                                                  |
 | Issue番号    | #1406                                                                       |
@@ -31,6 +31,15 @@ SkillExecutionStatus に review / improve_ready / reuse_ready が追加された
 - StatusBadge コンポーネントで新ステータスが未定義のまま表示される（fallback 表示）
 - TypeScript の exhaustive check が機能しなくなる
 
+### 1.4 解消結果
+
+2026-03-20 の same-wave spec sync で以下を反映済み:
+
+- `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-advanced.md`
+  に `review` / `improve_ready` / `reuse_ready` の色・ラベル・用途を追加
+- `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx`
+  の `STATUS_CONFIG` 実装、および `SkillStreamingView.test.tsx` 36テスト PASS を再確認
+
 ## 2. 何を達成するか
 
 ### 2.1 目的
@@ -50,11 +59,11 @@ ui-ux-feature-components-advanced.md の StatusBadge マッピングテーブル
 ### 3.1 実装手順
 
 1. `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-advanced.md` の StatusBadge マッピングテーブルに以下を追加:
-   - `review`: レビュー中（Apple HIG systemOrange）
-   - `improve_ready`: 改善準備完了（Apple HIG systemTeal）
-   - `reuse_ready`: 再利用可能（Apple HIG systemGreen）
+   - `review`: レビュー中（`bg-purple-500`）
+   - `improve_ready`: 改善準備完了（`bg-orange-500`）
+   - `reuse_ready`: 再利用準備完了（`bg-teal-500`）
 2. exhaustive check パターンの Record 型定義に新3値を含める
-3. variantStyles の Record 定義例を更新
+3. `permission_pending` の表示ラベルを `権限確認中` に合わせて仕様書も更新する
 
 ### 3.2 苦戦箇所の教訓
 
@@ -68,14 +77,14 @@ ui-ux-feature-components-advanced.md の StatusBadge マッピングテーブル
 
 ## 4. 受入基準
 
-- [ ] StatusBadge のマッピングテーブルに3値の色/ラベルが定義されている
-- [ ] テーブル内容が Apple HIG カラーパレットに準拠している
-- [ ] exhaustive check パターンの仕様が更新されている
+- [x] StatusBadge のマッピングテーブルに3値の色/ラベルが定義されている
+- [x] テーブル内容が Tailwind utility 契約に準拠している
+- [x] exhaustive check パターンの仕様が更新されている
 
 ## 5. 参照資料
 
 | 資料                        | パス                                                                                     | 用途         |
 | --------------------------- | ---------------------------------------------------------------------------------------- | ------------ |
 | StatusBadge 仕様            | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-advanced.md` | 更新対象     |
-| Apple HIG カラーパレット    | `.claude/rules/01-architecture.md`                                                       | 色定義の参照 |
-| SkillExecutionStatus 型定義 | `packages/shared/src/types/skill-lifecycle.ts`                                           | 型定義の参照 |
+| UI 実装                     | `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx`                      | 実装確認     |
+| SkillExecutionStatus 型定義 | `packages/shared/src/types/skill.ts`                                                     | 型定義の参照 |

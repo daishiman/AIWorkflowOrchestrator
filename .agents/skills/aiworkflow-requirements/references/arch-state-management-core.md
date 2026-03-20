@@ -508,7 +508,7 @@ TASK-SKILL-LIFECYCLE-08 では publish/distribution 領域の store 責務を設
 
 ## SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001）
 
-TASK-IMP-LIFECYCLE-REUSE-IMPROVE-CYCLE-001（Task12）により、SkillExecutionStatus 型に3値が追加される。
+UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 で、SkillExecutionStatus 型へ `review` / `improve_ready` / `reuse_ready` を実装済み状態として同期した。
 
 ### 新規追加状態
 
@@ -529,4 +529,4 @@ TASK-IMP-LIFECYCLE-REUSE-IMPROVE-CYCLE-001（Task12）により、SkillExecution
 - P48 対策: 派生セレクタで `.filter()` を使う場合は `useShallow` を適用
 - P31 対策: 合成 Hook ではなく個別セレクタを使用
 
-> **P65注記**: 上記は Task12 phase-2-design.md の設計確定値に基づく。Task12 Phase 5 完了後に実値と照合すること。
+> **実装照合済み（2026-03-20）**: `packages/shared/src/types/skill.ts` と `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` で同じ値域が使われていることを確認済み。

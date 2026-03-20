@@ -4,7 +4,7 @@
 
 本パックは、旧 `ai-runtime-authmode-unification` 監査で見えた実装漏れを、`auth mode` ではなく **execution responsibility** を主語に再分解した spec-only workflow である。
 
-今回の目的は実装そのものではない。後続実装が迷わず着手できるよう、`capability`、`policy authority`、`mainline UI`、`manual terminal lane`、`governance` を別々の task と親ドキュメントに固定する。
+後続実装が迷わず着手できるよう、`capability`、`policy authority`、`mainline UI`、`manual terminal lane`、`governance` を別々の task と親ドキュメントに固定する。
 
 旧パックが示した中心命題は引き継ぐ。
 本質は `subscription / api-key` toggle の見た目整理ではなく、**「どの surface で誰が AI を実行するのか」を Main authority で再配線すること**である。

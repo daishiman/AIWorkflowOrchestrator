@@ -4,92 +4,73 @@
 
 - タスクID: UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001
 - 実施日: 2026-03-20
-- テスト種別: 仕様書同期タスク（UI変更なし、スクリーンショット不要）
+- 実施方式: `SCREENSHOT + WALKTHROUGH`
+- capture script: `apps/desktop/scripts/capture-execution-status-type-spec-sync-phase11.mjs`
+- metadata: `outputs/phase-11/screenshots/phase11-capture-metadata.json`
 
 ## テスト結果サマリ
 
-| テスト項目                                           | 結果 |
-| ---------------------------------------------------- | ---- |
-| タスク1: SkillExecutionStatus テーブル 9値の目視検証 | PASS |
-| タスク2: 状態配置ルール整合性検証                    | PASS |
-| タスク3: topic-map インデックス検証                  | PASS |
-| タスク4: 仕様書間リンク検証                          | PASS |
+| テストケース | 種別        | 結果 | 証跡                                                             | 要点                                                         |
+| ------------ | ----------- | ---- | ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| TC-11-01     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-01-status-review.png`        | `review` が `レビュー中` の紫系バッジで表示された            |
+| TC-11-02     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-02-status-improve-ready.png` | `improve_ready` が `改善準備完了` の橙系バッジで表示された   |
+| TC-11-03     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-03-status-reuse-ready.png`   | `reuse_ready` が `再利用準備完了` の青緑系バッジで表示された |
+| TC-11-04     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-04-status-review-board.png`  | 3 状態が同一 board 上で重複なく識別できた                    |
+| NV-11-05     | WALKTHROUGH | PASS | `outputs/phase-11/manual-test-result.md`                         | shared 型、renderer、system spec の 9 値一致を確認した       |
+| NV-11-06     | WALKTHROUGH | PASS | `outputs/phase-11/manual-test-result.md`                         | targeted tests と screenshot coverage validator が成功した   |
+| NV-11-07     | WALKTHROUGH | PASS | `outputs/phase-11/manual-test-result.md`                         | `.claude` / `.agents` parity と phase validator が成功した   |
 
-## 詳細結果
+## docs-heavy walkthrough 5観点
 
-### タスク1: SkillExecutionStatus テーブル 9値の目視検証
+| 観点                  | 結果 | 詳細                                                                                             |
+| --------------------- | ---- | ------------------------------------------------------------------------------------------------ |
+| 仕様書の自己完結性    | PASS | workflow 配下だけで screenshot、validator、mirror sync の導線を追える                            |
+| 型定義・参照整合      | PASS | `packages/shared/src/types/skill.ts`、`SkillStreamingView.tsx`、canonical spec が 9 値で一致した |
+| UI sanity check       | PASS | 4 枚の screenshot で個別表示と全体表示を確認した                                                 |
+| Phase 10 指摘との照合 | PASS | M10-01/M10-02 は Phase 11/12 記録で解消、M10-03 は Phase 13 の approval 制約のみ残る             |
+| handoff completeness  | PASS | Phase 12 で更新すべき文書、未タスク、mirror sync 対象が明確化された                              |
 
-**結果: PASS**
+## 実行コマンド
 
-`interfaces-agent-sdk-integration.md` L310-324 を検証。
+```bash
+node apps/desktop/scripts/capture-execution-status-type-spec-sync-phase11.mjs
+pnpm --filter @repo/shared exec vitest run src/types/__tests__/skill.test.ts src/types/__tests__/skill-import.test.ts
+pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillStreamingView.test.tsx src/renderer/store/slices/__tests__/agentSlice.selectors.test.ts
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/execution-status-type-spec-sync --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 11
+diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements
+diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator
+```
 
-**9値の存在確認:**
+## 実測ログ
 
-| #   | 値                   | 記載 |
-| --- | -------------------- | ---- |
-| 1   | `idle`               | OK   |
-| 2   | `running`            | OK   |
-| 3   | `permission_pending` | OK   |
-| 4   | `completed`          | OK   |
-| 5   | `cancelled`          | OK   |
-| 6   | `error`              | OK   |
-| 7   | `review`             | OK   |
-| 8   | `improve_ready`      | OK   |
-| 9   | `reuse_ready`        | OK   |
+| 項目                          | 結果                     |
+| ----------------------------- | ------------------------ |
+| shared targeted tests         | 2 files / 72 tests PASS  |
+| desktop targeted tests        | 2 files / 158 tests PASS |
+| screenshot coverage validator | PASS                     |
+| phase 11 validator            | PASS                     |
+| aiworkflow mirror parity      | diff 0                   |
+| task-spec mirror parity       | diff 0                   |
 
-**説明の適切性:**
+## 画面証跡
 
-- 各値に簡潔で明確な日本語説明が付与されている
-- 新規3値（review/improve_ready/reuse_ready）にはライフサイクルの役割が明記されている
+- capture method: `current-renderer-entry`
+- route: `/phase11-execution-status-type-spec-sync.html?theme=light`
+- source files:
+  - `apps/desktop/src/renderer/phase11-execution-status-type-spec-sync.html`
+  - `apps/desktop/src/renderer/phase11-execution-status-type-spec-sync.tsx`
+  - `packages/shared/src/types/skill.ts`
+  - `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx`
+  - `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
 
-**遷移元/遷移先の論理整合性:**
+## 発見事項
 
-- `idle` -> `running`: 待機状態からの実行開始。正常
-- `running` -> `completed` / `error` / `cancelled`: 実行中からの3分岐。正常
-- `permission_pending` -> `running` / `cancelled`: 権限承認/拒否の2分岐。正常
-- `completed` -> `review` / `idle`: 完了後のレビュー入りまたはリセット。正常
-- `review` -> `improve_ready` / `reuse_ready`: レビュー結果の2分岐。正常
-- `improve_ready` -> `running` / `idle`: 改善実行またはリセット。正常
-- `reuse_ready` -> `idle`: 再利用準備完了後のリセット。正常
-- **review は completed からのみ遷移可能**: テーブル上 `review` の遷移元は `completed` のみ。整合
+| 分類 | 内容                                                                             | 対応                                                  |
+| ---- | -------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| Info | 初回の Phase 11 成果物は screenshot plan / checklist / coverage の整合が弱かった | current workflow 配下へ補助成果物を補完して再検証した |
+| Info | `.agents` 側 mirror に stale な backlog 記述が残っていた                         | Phase 12 で `.claude` 正本に同期した                  |
 
-**P65注記の存在確認:**
+## 判定
 
-- L324 に P65注記あり。Task12 Phase 5 完了後の照合指示が明記されている
-
-### タスク2: 状態配置ルール整合性検証
-
-**結果: PASS**
-
-**arch-state-management-core.md L504-527 の検証:**
-
-- 新規3値（review/improve_ready/reuse_ready）の配置先が全て `Zustand agentSlice` として記載
-- 配置根拠が明確: 既存 `executionStatus` フィールドの値域拡張であり、新規 Slice 不要
-- セレクタ設計に P48/P31 対策への言及あり
-- P65注記あり
-
-**arch-state-management-reference.md との整合性検証:**
-
-- L321: `executionStatus` フィールドが `SkillExecutionStatus | null` 型で agentSlice に定義されている
-- core.md の「既存の executionStatus フィールド（agentSlice）の値域拡張」という記述と完全整合
-- 既存セレクタ `useSkillExecutionStatus()` がそのまま使用可能という記述は、型の値域拡張（union type への値追加）の性質と一致
-
-### タスク3: topic-map インデックス検証
-
-**結果: PASS**
-
-`topic-map.md` の検索結果:
-
-- L2105: `SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L504` がインデックスに記載
-- セクション名、タスクID、行番号（L504）が arch-state-management-core.md の実際の記載位置と一致
-
-### タスク4: 仕様書間リンク検証
-
-**結果: PASS**
-
-以下の2ファイルの存在を確認:
-
-- `arch-state-management-core.md`: 存在確認済み
-- `interfaces-agent-sdk-integration.md`: 存在確認済み
-
-P65注記内のリンク先（Task12 phase-2-design.md）は外部タスク成果物への参照であり、本タスクスコープ外。仕様書間の直接リンクは切れていない。
+PASS。4 件の visual evidence、targeted tests、validator、mirror parity が current workflow 配下で揃った。

@@ -3,44 +3,72 @@
 > タスク: UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001
 > 実施日: 2026-03-20
 
-## 品質ゲート検証
+## タスク1: workflow validator
 
-### 1. 古い6値定義の残存チェック
-
-**判定: PASS**
-
-- `interfaces-agent-sdk-integration.md` の SkillExecutionStatus テーブルに `review` が含まれていることを確認
-- テーブルには9値全てが記載済み: `idle`, `running`, `permission_pending`, `completed`, `cancelled`, `error`, `review`, `improve_ready`, `reuse_ready`
-- 古い6値のみのテーブルは残存していない
-
-### 2. topic-map.md 最新確認
+### validate-phase-output.js
 
 **判定: PASS**
 
-- `.claude/skills/aiworkflow-requirements/indexes/topic-map.md` が存在
-- 最終更新: 2026-03-20 15:45（本タスクの Phase 5 実行時に再生成済み）
+- 最終結果: 32項目 PASS、0エラー、0警告
+- `outputs/artifacts.json`、Phase 11 補助成果物、Phase 12 文書構造は same-wave で補完済み
 
-### 3. P32準拠: 2ファイル同時更新
+### verify-all-specs.js
 
 **判定: PASS**
 
+- Phase 13 で `phase12-task-spec-compliance-check.md` と `unassigned-task-detection.md` の参照パスが info レベルで検出 -- outputs/phase-12/ 配下に両ファイルが実在するため問題なし
+- globalIssues: 0件
+
+## タスク2: root parity
+
+**判定: PASS**
+
+| 比較対象                   | コマンド   | 結果   |
+| -------------------------- | ---------- | ------ |
+| aiworkflow-requirements    | `diff -qr` | diff 0 |
+| task-specification-creator | `diff -qr` | diff 0 |
+
+- 最終状態では `.claude` と `.agents` の parity が一致
+
+## タスク3: readiness 整合
+
+**判定: PASS**
+
+`packages/shared/src/types/skill.ts` L360-369:
+
+```typescript
+export type SkillExecutionStatus =
+  | "idle"
+  | "running"
+  | "permission_pending"
+  | "completed"
+  | "cancelled"
+  | "error"
+  | "review"
+  | "improve_ready"
+  | "reuse_ready";
 ```
-git diff --stat:
- .../references/arch-state-management-core.md       | 27 ++++++++++++++++++
- .../references/interfaces-agent-sdk-integration.md | 21 ++++++++------
- 2 files changed, 40 insertions(+), 8 deletions(-)
-```
 
-- 両ファイルが同一ブランチ/同一タスクで更新されていることを確認
+- 9値が実コードに存在 -- Phase 1 の ready 判定と一致
+- Phase 5 implementation-summary.md の P65 実値転記と完全一致
 
-### 4. Mirror Parity
+## タスク4: index 再生成確認
 
-**判定: DIVERGENT（既知）**
+**判定: PASS**
 
-- `.claude/` と `.agents/` で両ファイルに差分あり
-- これは本タスクの変更が `.claude/` 側のみに適用されているため
-- Phase 12 で rsync による mirror 同期を実施予定（MEMORY.md の Mirror Sync 手順に準拠）
+| 検証項目      | コマンド            | 結果                       |
+| ------------- | ------------------- | -------------------------- |
+| index 再生成  | `generate-index.js` | 正常終了（2406キーワード） |
+| topic-map.md  | 存在確認            | 最新状態                   |
+| keywords.json | 存在確認            | 最新状態                   |
+| mirror 同期   | `rsync --checksum`  | indexes/ 同期完了          |
+| mirror 再確認 | `diff -qr`          | diff 0                     |
 
 ## 品質ゲート総合判定: PASS
 
-全必須項目（1-3）が PASS。Mirror parity（4）は Phase 12 で解消予定。
+| 項目               | 判定 | 備考                              |
+| ------------------ | ---- | --------------------------------- |
+| workflow validator | PASS | 最終再検証で 0エラー 0警告        |
+| root parity        | PASS | diff 0                            |
+| readiness 整合     | PASS | skill.ts 9値と Phase 1 判定が一致 |
+| index 最新性       | PASS | 2406キーワード、mirror 同期済み   |

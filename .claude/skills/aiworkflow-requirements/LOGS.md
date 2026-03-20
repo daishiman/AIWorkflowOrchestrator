@@ -274,11 +274,20 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 - タスク: SkillExecutionStatus型に3値追加後のシステム仕様書同期
 - 実施内容:
-  - interfaces-agent-sdk-integration.md の SkillExecutionStatus テーブルを6値→9値に拡張（review / improve_ready / reuse_ready）
+  - `packages/shared/src/types/skill.ts`: SkillExecutionStatus に review/improve_ready/reuse_ready 追加（6値→9値）
+  - `SkillStreamingView.tsx`: STATUS_CONFIG に新3値追加（review: purple, improve_ready: orange, reuse_ready: teal）
+  - `SkillLifecyclePanel.tsx`: SkillExecutionStatusValue を `SkillExecutionStatus | null` に簡略化（P68対策）
+  - `phase11-execution-status-type-spec-sync.tsx`: Phase 11 ハーネスの ToolResultMessageContent 型修正
+  - テスト4ファイル更新（全PASS）
+  - interfaces-agent-sdk-integration.md の SkillExecutionStatus テーブルを6値→9値に拡張
   - arch-state-management-core.md に ReuseReady 状態の Zustand agentSlice 配置ルールを追記
+  - lessons-learned P66/P67/P68 追記
   - topic-map.md 再生成
   - .claude/ → .agents/ mirror 同期完了
-- ステータス: Phase 12 完了（Phase 13 は user approval 待ち）
+- 苦戦箇所:
+  - P68: SkillLifecyclePanel のローカル型定義が古い6値のまま残り typecheck 失敗
+  - Phase 11 ハーネスの ToolResultMessageContent 型不正（toolUseId + success + result が必要）
+- ステータス: コード実装完了・Phase 12 完了（Phase 13 は user approval 待ち）
 - 関連Issue: #1388
 
 ## UT-TASK06-007 IPC契約ドリフト自動検出スクリプト完了（2026-03-18）

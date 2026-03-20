@@ -1154,7 +1154,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| コピー履歴機能（TASK-3-2-D） | L6 |
 | アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L115 |
 | SkillStreamingView コンポーネント（TASK-7D） | L126 |
-| SkillEditor UI（TASK-9A / 完了） | L174 |
+| SkillEditor UI（TASK-9A / 完了） | L189 |
 
 ### references/ui-ux-feature-components-core.md
 

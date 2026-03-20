@@ -321,7 +321,7 @@ TASK-1-1で実装された16の共通型定義。specification.md §5.1に基づ
 | `improve_ready`      | 改善準備完了（改善サイクル入り） | `review`                         | `running` / `idle`                  |
 | `reuse_ready`        | 再利用準備完了                   | `review`                         | `idle`                              |
 
-> **P65注記**: 上記3値（review / improve_ready / reuse_ready）は Task12（TASK-IMP-LIFECYCLE-REUSE-IMPROVE-CYCLE-001）の phase-2-design.md 設計確定値。Task12 Phase 5 完了後に `packages/shared/src/types/skill.ts` の実スペルと照合すること。
+> **実装照合済み（2026-03-20）**: `packages/shared/src/types/skill.ts` の実値、`SkillStreamingView.tsx` の `STATUS_CONFIG`、`SkillLifecyclePanel.tsx` のローカル型と 9 値が一致していることを確認済み。
 
 ### ストリーミングメッセージ型
 

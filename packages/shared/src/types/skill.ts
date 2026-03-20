@@ -363,7 +363,10 @@ export type SkillExecutionStatus =
   | "permission_pending"
   | "completed"
   | "cancelled"
-  | "error";
+  | "error"
+  | "review"
+  | "improve_ready"
+  | "reuse_ready";
 
 // ========================================
 // Section: ストリーミングメッセージ（§5.1）

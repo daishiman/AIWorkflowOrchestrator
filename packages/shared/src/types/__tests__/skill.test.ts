@@ -226,15 +226,21 @@ describe("Skill Execution Types", () => {
       "completed",
       "cancelled",
       "error",
+      "review",
+      "improve_ready",
+      "reuse_ready",
     ];
 
-    expect(statuses).toHaveLength(6);
+    expect(statuses).toHaveLength(9);
     expect(statuses).toContain("idle");
     expect(statuses).toContain("running");
     expect(statuses).toContain("permission_pending");
     expect(statuses).toContain("completed");
     expect(statuses).toContain("cancelled");
     expect(statuses).toContain("error");
+    expect(statuses).toContain("review");
+    expect(statuses).toContain("improve_ready");
+    expect(statuses).toContain("reuse_ready");
   });
 });
 

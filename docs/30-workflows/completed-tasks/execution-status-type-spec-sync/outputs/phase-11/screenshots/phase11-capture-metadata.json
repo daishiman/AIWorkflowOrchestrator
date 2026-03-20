@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-03-20T13:34:20.804Z",
+  "captureMethod": "current-renderer-entry",
+  "baseUrl": "http://127.0.0.1:4187",
+  "route": "/phase11-execution-status-type-spec-sync.html?theme=light",
+  "sourceFiles": [
+    "apps/desktop/src/renderer/phase11-execution-status-type-spec-sync.html",
+    "apps/desktop/src/renderer/phase11-execution-status-type-spec-sync.tsx",
+    "packages/shared/src/types/skill.ts",
+    "apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx",
+    "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx"
+  ],
+  "scenarios": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-status-review.png",
+      "description": "review 状態のラベルと配色を確認する",
+      "selector": "[data-testid='phase11-status-review']",
+      "size": 20644
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-status-improve-ready.png",
+      "description": "improve_ready 状態のラベルと配色を確認する",
+      "selector": "[data-testid='phase11-status-improve-ready']",
+      "size": 26146
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-status-reuse-ready.png",
+      "description": "reuse_ready 状態のラベルと配色を確認する",
+      "selector": "[data-testid='phase11-status-reuse-ready']",
+      "size": 27896
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-status-review-board.png",
+      "description": "3状態を並べた review board を確認する",
+      "selector": "main",
+      "size": 108834
+    }
+  ]
+}

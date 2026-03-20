@@ -1,141 +1,134 @@
-# Phase 11: 手動テスト - SkillExecutionStatus 型同期の再監査
+# Phase 11: 手動テスト - SkillExecutionStatus 型同期の視覚検証
 
 ## メタ情報
 
-| 項目               | 値                              |
-| ------------------ | ------------------------------- |
-| Phase              | 11                              |
-| 機能名             | execution-status-type-spec-sync |
-| 作成日             | 2026-03-20                      |
-| タスク種別         | docs-only                       |
-| スクリーンショット | `NON_VISUAL`                    |
+| 項目       | 値                              |
+| ---------- | ------------------------------- |
+| Phase      | 11                              |
+| 機能名     | execution-status-type-spec-sync |
+| 作成日     | 2026-03-20                      |
+| タスク種別 | docs + UI verification          |
+| 検証方式   | `SCREENSHOT + WALKTHROUGH`      |
 
 ## 目的
 
-docs-only task として、`SKILL.md` / `LOGS.md` / root parity / validator 再実行 / 発見事項分類を含む walkthrough を行う。
-
-## docs-only walkthrough の必須5観点
-
-| 観点                            | 内容                                                                 | 必須 |
-| ------------------------------- | -------------------------------------------------------------------- | ---- |
-| 仕様書の自己完結性              | 前提条件・受入基準・成果物パス・blocked 条件が workflow 単体で読める | ✅   |
-| 型定義・参照整合                | `skill.ts` と spec 参照先の関係が誤読なく追える                      | ✅   |
-| スコープ外の未タスク洗い出し    | future implementation を未タスク候補として切り出せる                 | ✅   |
-| Phase 3/10 レビュー指摘との照合 | MINOR / Note が取りこぼされていない                                  | ✅   |
-| 後続実装への handoff            | `型定義→実装` / `契約→テスト` の引き継ぎ項目が残る                   | ✅   |
+`review` / `improve_ready` / `reuse_ready` の 3 状態と review board 全体表示を実画面で確認し、shared 型、system spec、renderer 表示、mirror parity、validator 結果が同じ事実を指す状態に揃える。
 
 ## 実行タスク
 
-- docs-only walkthrough: SKILL / LOGS / docs 導線を確認する
-- root parity walkthrough: mirror 差分を確認する
-- validator walkthrough: 再実行結果を確認する
-- issue 分類: Blocker / Note / Info に整理する
+- Capture 実行: visual harness を build し、4 件の screenshot を取得する
+- 整合確認: shared 型、renderer 実装、system spec の 9 値整合を確認する
+- 検証再実行: `.claude` / `.agents` parity と validator を再実行する
+- handoff 整理: 発見事項を分類し、Phase 12 へ引き継ぐ
 
-### タスク1: docs-only walkthrough
+## テストケース
 
-### タスク2: root parity walkthrough
+| テストケース | 種別        | 検証内容                                                   | 証跡                                                             |
+| ------------ | ----------- | ---------------------------------------------------------- | ---------------------------------------------------------------- |
+| TC-11-01     | SCREENSHOT  | `review` のラベル・配色・文言を確認する                    | `outputs/phase-11/screenshots/TC-11-01-status-review.png`        |
+| TC-11-02     | SCREENSHOT  | `improve_ready` のラベル・配色・文言を確認する             | `outputs/phase-11/screenshots/TC-11-02-status-improve-ready.png` |
+| TC-11-03     | SCREENSHOT  | `reuse_ready` のラベル・配色・文言を確認する               | `outputs/phase-11/screenshots/TC-11-03-status-reuse-ready.png`   |
+| TC-11-04     | SCREENSHOT  | 3状態の review board 全体を確認する                        | `outputs/phase-11/screenshots/TC-11-04-status-review-board.png`  |
+| NV-11-05     | WALKTHROUGH | shared 型、renderer、system spec の 9 値一致を確認する     | `outputs/phase-11/manual-test-result.md`                         |
+| NV-11-06     | WALKTHROUGH | targeted tests と screenshot coverage validator を確認する | `outputs/phase-11/manual-test-result.md`                         |
+| NV-11-07     | WALKTHROUGH | `.claude` / `.agents` parity と phase validator を確認する | `outputs/phase-11/manual-test-result.md`                         |
 
-### タスク3: validator walkthrough
+## 画面カバレッジマトリクス
 
-### タスク4: discovered issues の分類
+| テストケース | 対象               | 確認観点                 | 期待結果                                    | 証跡                                                             |
+| ------------ | ------------------ | ------------------------ | ------------------------------------------- | ---------------------------------------------------------------- |
+| TC-11-01     | review card        | 色・ラベル・用語統一     | `レビュー中` が紫系バッジで表示される       | `outputs/phase-11/screenshots/TC-11-01-status-review.png`        |
+| TC-11-02     | improve_ready card | 色・ラベル・用語統一     | `改善準備完了` が橙系バッジで表示される     | `outputs/phase-11/screenshots/TC-11-02-status-improve-ready.png` |
+| TC-11-03     | reuse_ready card   | 色・ラベル・用語統一     | `再利用準備完了` が青緑系バッジで表示される | `outputs/phase-11/screenshots/TC-11-03-status-reuse-ready.png`   |
+| TC-11-04     | review board 全体  | 視認性・整列・全体可読性 | 3 状態が同一画面で重複なく識別できる        | `outputs/phase-11/screenshots/TC-11-04-status-review-board.png`  |
+
+## walkthrough の必須5観点
+
+| 観点                   | 内容                                                                     | 必須 |
+| ---------------------- | ------------------------------------------------------------------------ | ---- |
+| 仕様書の自己完結性     | workflow 単体で前提条件、成果物、検証経路を追える                        | ✅   |
+| 型定義・参照整合       | `packages/shared/src/types/skill.ts` と canonical spec が 9 値で一致する | ✅   |
+| スコープ外の残課題整理 | 実装/仕様の漏れとプロセス改善 backlog を分離して記録できる               | ✅   |
+| Phase 10 指摘との照合  | M10-01/M10-02 を Phase 11/12 の成果物で回収できる                        | ✅   |
+| handoff の明確性       | Phase 12 で更新すべきファイルと証跡が特定されている                      | ✅   |
 
 ## 参照資料
 
-| 資料名               | パス                                                                             | 説明                      |
-| -------------------- | -------------------------------------------------------------------------------- | ------------------------- |
-| Phase 2 設計         | `outputs/phase-2/design.md`                                                      | 分岐設計                  |
-| Phase 5 実装サマリー | `outputs/phase-5/implementation-summary.md`                                      | ready/blocked 結果        |
-| Phase 6 拡充結果     | `outputs/phase-6/expanded-test-results.md`                                       | parity 結果               |
-| Phase 7 カバレッジ   | `outputs/phase-7/coverage-report.md`                                             | refs / validator coverage |
-| Phase 8 結果         | `outputs/phase-8/refactoring-report.md`                                          | 命名統一                  |
-| Phase 9 品質結果     | `outputs/phase-9/quality-report.md`                                              | quality gate              |
-| Phase 10 結果        | `outputs/phase-10/final-review-result.md`                                        | gate 判定                 |
-| aiworkflow SKILL     | `.claude/skills/aiworkflow-requirements/SKILL.md`                                | family 導線               |
-| aiworkflow LOGS      | `.claude/skills/aiworkflow-requirements/LOGS.md`                                 | archive 導線              |
-| phase11 template     | `.claude/skills/task-specification-creator/references/phase-template-phase11.md` | docs-only 契約            |
+| 資料名               | パス                                              | 説明                          |
+| -------------------- | ------------------------------------------------- | ----------------------------- |
+| Phase 2 設計         | `outputs/phase-2/design.md`                       | 分岐設計                      |
+| Phase 5 実装サマリー | `outputs/phase-5/implementation-summary.md`       | 実装結果                      |
+| Phase 6 拡充結果     | `outputs/phase-6/expanded-test-results.md`        | validator 前提の整理          |
+| Phase 7 カバレッジ   | `outputs/phase-7/coverage-report.md`              | 参照網羅性                    |
+| Phase 8 結果         | `outputs/phase-8/refactoring-report.md`           | 文言統一                      |
+| Phase 9 品質結果     | `outputs/phase-9/quality-report.md`               | validator / parity の最終状態 |
+| Phase 10 結果        | `outputs/phase-10/final-review-result.md`         | M10 系指摘                    |
+| aiworkflow SKILL     | `.claude/skills/aiworkflow-requirements/SKILL.md` | canonical 導線                |
+| aiworkflow LOGS      | `.claude/skills/aiworkflow-requirements/LOGS.md`  | 完了記録                      |
+| screenshot plan      | `outputs/phase-11/screenshot-plan.json`           | TC と画像の対応               |
+| checklist            | `outputs/phase-11/manual-test-checklist.md`       | 実施項目の完了確認            |
 
 ## 実行手順
 
-### ステップ1: docs-only walkthrough を行う
+### ステップ1: build / capture を実行する
 
-- `SKILL.md` から `resource-map` / `topic-map` / refs へ辿れるか
-- `LOGS.md` から archive / changelog に辿れるか
-- `execution-status-type-spec-sync` workflow から正しい成果物名に辿れるか
-- Phase 10 MINOR が Phase 11/12/13 のどこで解消されるか辿れるか
+```bash
+pnpm --filter @repo/desktop build
+node apps/desktop/scripts/capture-execution-status-type-spec-sync-phase11.mjs
+```
 
-### ステップ2: root parity と validator を確認する
+### ステップ2: walkthrough を行う
+
+- `packages/shared/src/types/skill.ts` の 9 値定義を確認する
+- `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx` の `STATUS_CONFIG` を確認する
+- `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-integration.md` と `arch-state-management-core.md` の 9 値記述を確認する
+
+### ステップ3: validator を確認する
+
+```bash
+pnpm --filter @repo/shared exec vitest run src/types/__tests__/skill.test.ts src/types/__tests__/skill-import.test.ts
+pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillStreamingView.test.tsx src/renderer/store/slices/__tests__/agentSlice.selectors.test.ts
+node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/execution-status-type-spec-sync --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 11
+```
+
+### ステップ4: parity を確認する
 
 ```bash
 diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements
 diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 11
 ```
 
-### ステップ3: 発見事項をリアルタイム分類する
+## 統合テスト連携
 
-| #   | シナリオ              | 発見事項 | 分類                  | 対応方針 |
-| --- | --------------------- | -------- | --------------------- | -------- |
-| 1   | docs-only walkthrough |          | Blocker / Note / Info |          |
-| 2   | parity                |          | Blocker / Note / Info |          |
-| 3   | validator             |          | Blocker / Note / Info |          |
-
-### ステップ4: handoff items を確定する
-
-`discovered-issues.md` には分類に加えて、後続へ渡す handoff items を明記する。
-
-| handoff 種別   | 例                                                  | 送り先                              |
-| -------------- | --------------------------------------------------- | ----------------------------------- |
-| 型定義→実装    | `review` / `improve_ready` / `reuse_ready` 実装待ち | Phase 12 未タスク または別実装 task |
-| 契約→テスト    | 実装後に必要な validator / regression               | Phase 12 summary                    |
-| docs-only 補正 | wording / path / artifact 名補正                    | Phase 12 changelog                  |
-
-## 統合テスト連携（Phase 11）
-
-| 検証項目             | 方法                     | 期待結果                 |
-| -------------------- | ------------------------ | ------------------------ |
-| SKILL 導線           | walkthrough              | family file に到達できる |
-| LOGS 導線            | walkthrough              | archive に到達できる     |
-| root parity          | `diff -qr`               | diff 0                   |
-| validator            | `validate-phase-output`  | error 0                  |
-| handoff completeness | discovered issues review | 後続実装へ渡す項目が残る |
+| 検証項目                     | 方法                                              | 期待結果        |
+| ---------------------------- | ------------------------------------------------- | --------------- |
+| representative screenshot    | capture script                                    | 4件の証跡が揃う |
+| shared 型テスト              | `pnpm --filter @repo/shared exec vitest run ...`  | 72/72 PASS      |
+| desktop UI / selector テスト | `pnpm --filter @repo/desktop exec vitest run ...` | 158/158 PASS    |
+| screenshot coverage          | `validate-phase11-screenshot-coverage.js`         | PASS            |
+| mirror parity                | `diff -qr`                                        | diff 0          |
 
 ## 成果物
 
-| 成果物         | パス                                     | 説明                  |
-| -------------- | ---------------------------------------- | --------------------- |
-| 手動テスト結果 | `outputs/phase-11/manual-test-result.md` | walkthrough の詳細    |
-| 手動テスト報告 | `outputs/phase-11/manual-test-report.md` | 実施概要と所見        |
-| 発見事項       | `outputs/phase-11/discovered-issues.md`  | Blocker / Note / Info |
+| 成果物         | パス                                          | 説明                            |
+| -------------- | --------------------------------------------- | ------------------------------- |
+| 手動テスト結果 | `outputs/phase-11/manual-test-result.md`      | screenshot / walkthrough の詳細 |
+| 手動テスト報告 | `outputs/phase-11/manual-test-report.md`      | 実施概要と所見                  |
+| チェックリスト | `outputs/phase-11/manual-test-checklist.md`   | TC / NV の実施記録              |
+| 撮影計画       | `outputs/phase-11/screenshot-plan.json`       | capture 定義                    |
+| カバレッジ     | `outputs/phase-11/screenshot-coverage.md`     | TC と画像の対応                 |
+| 視覚レビュー   | `outputs/phase-11/ui-sanity-visual-review.md` | UI 所見                         |
+| 発見事項       | `outputs/phase-11/discovered-issues.md`       | 差異と解消内容                  |
 
 ## 完了条件
 
-- [ ] docs-only walkthrough が定義されている
-- [ ] `NON_VISUAL` の理由が明記されている
-- [ ] root parity と validator の再実行が定義されている
-- [ ] 発見事項分類欄がある
-- [ ] 必須5観点と handoff items が定義されている
-- [ ] 本Phase内の全タスクを100%実行完了
-
-## サブタスク管理
-
-1. 参照資料の確認
-2. docs-only walkthrough
-3. root parity walkthrough
-4. validator walkthrough
-5. discovered issues 分類
-6. 成果物作成
-7. 完了条件の検証
-
-## タスク100%実行確認【必須】
-
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 各タスクの成果物が生成されている
-- [ ] artifacts.jsonが更新されている
-- [ ] Phase末端で各タスクを100%完了し、完了を明記している
-
-```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 11
-```
+- [x] 4 件の screenshot TC が定義されている
+- [x] screenshot plan / checklist / metadata が揃っている
+- [x] root parity と validator の再実行結果が記録されている
+- [x] 発見事項が分類されている
+- [x] 必須 5 観点と handoff が明確化されている
+- [x] 本 Phase 内の全タスクを実行完了している
 
 ## 次のPhase
 

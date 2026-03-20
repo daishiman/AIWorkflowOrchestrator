@@ -670,7 +670,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | --- | --- |
 | 種別 | documentation / spec-sync |
 | 変更対象 | interfaces-agent-sdk-integration.md, arch-state-management-core.md, topic-map.md |
-| 結果 | SkillExecutionStatus型に3値追加後のシステム仕様書同期。Phase 1-12 完了、Phase 13 は user approval 待ち |
+| 結果 | SkillExecutionStatus型に3値追加（6値→9値）、コード実装完了。Phase 1-12 完了、Phase 13 は user approval 待ち。P68（ローカル型定義の同期漏れ）を lessons-learned に追記 |
 | 検証 | 関連Issue: #1388 |
 
 ---
