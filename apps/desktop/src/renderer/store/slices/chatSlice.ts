@@ -1,7 +1,7 @@
 import { StateCreator } from "zustand";
 import type { ChatMessage, RagConnectionStatus } from "../types";
 import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
-import type { AccessCapability } from "@repo/shared/types/execution-capability";
+import type { AccessCapability } from "@repo/shared/types";
 
 // ============================================
 // ChatPanel Status & Capability Types
@@ -24,7 +24,7 @@ export type ChatPanelStatus =
   | "handoff";
 
 // AccessCapability は @repo/shared/types/execution-capability から re-export
-export type { AccessCapability } from "@repo/shared/types/execution-capability";
+export type { AccessCapability } from "@repo/shared/types";
 
 // ============================================
 // Helper Functions
