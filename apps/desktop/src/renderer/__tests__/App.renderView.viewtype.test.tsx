@@ -186,18 +186,49 @@ vi.mock("@/renderer/components/skill", () => ({
   SkillAnalysisView: ({
     skillName,
     onClose,
+    onNavigateBack,
+    onNavigateToAgent,
   }: {
     skillName: string;
     onClose: () => void;
+    onNavigateBack?: () => void;
+    onNavigateToAgent?: () => void;
   }) =>
     React.createElement(
       "div",
-      { "data-testid": "skill-analysis-view", "data-skill-name": skillName },
+      {
+        "data-testid": "skill-analysis-view",
+        "data-skill-name": skillName,
+        "data-has-navigate-back":
+          onNavigateBack !== undefined ? "true" : "false",
+        "data-has-navigate-to-agent":
+          onNavigateToAgent !== undefined ? "true" : "false",
+      },
       React.createElement(
         "button",
         { "data-testid": "skill-analysis-close", onClick: onClose },
         "close",
       ),
+      onNavigateBack
+        ? React.createElement(
+            "button",
+            {
+              "data-testid": "skill-analysis-navigate-back",
+              onClick: onNavigateBack,
+            },
+            "back",
+          )
+        : null,
+      onNavigateToAgent
+        ? React.createElement(
+            "button",
+            {
+              "data-testid": "skill-analysis-navigate-to-agent",
+              onClick: onNavigateToAgent,
+            },
+            "to-agent",
+          )
+        : null,
     ),
   SkillCreateWizard: ({ onClose }: { onClose: () => void }) =>
     React.createElement(
@@ -535,5 +566,149 @@ describe("App renderView() - skillAnalysis / skillCreate case (TASK-IMP-VIEWTYPE
     const comingSoon = screen.getByTestId("coming-soon");
     expect(comingSoon).toBeTruthy();
     expect(comingSoon.textContent).toContain("未接続のビュー");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// skillAnalysis case: onNavigateBack / onNavigateToAgent props 注入テスト
+// (Task 5-3: App.tsx skillAnalysis case の更新)
+// ---------------------------------------------------------------------------
+
+/**
+ * 各テストで useAppStore モックを設定するヘルパー
+ */
+async function setupSkillAnalysisMock(opts: {
+  viewHistory: string[];
+  currentSkillName?: string | null;
+}) {
+  const { useCurrentView, useAppStore } = await import("@/renderer/store");
+  (useCurrentView as ReturnType<typeof vi.fn>).mockReturnValue("skillAnalysis");
+  (useAppStore as ReturnType<typeof vi.fn>).mockImplementation(
+    (selector: (state: Record<string, unknown>) => unknown) => {
+      return selector({
+        initializeAuth: mockInitializeAuth,
+        isAuthenticated: false,
+        isLoading: false,
+        themeMode: "system",
+        setThemeMode: vi.fn(),
+        updateUserProfile: vi.fn(),
+        userProfile: { name: "Test User" },
+        setCurrentView: mockSetCurrentView,
+        goBack: mockGoBack,
+        viewHistory: opts.viewHistory,
+        currentSkillName: opts.currentSkillName ?? null,
+        setCurrentSkillName: mockSetCurrentSkillName,
+        dynamicIsland: { status: "idle", message: "", visible: false },
+        setWindowSize: mockSetWindowSize,
+      });
+    },
+  );
+}
+
+describe("App renderView() - skillAnalysis: onNavigateBack / onNavigateToAgent 注入 (Task 5-3)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockCurrentSkillName = null;
+    mockCurrentView = "skillAnalysis";
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  it("TC-SA-01: viewHistory の末尾から2番目が 'agent' のとき onNavigateBack / onNavigateToAgent が注入されること", async () => {
+    await setupSkillAnalysisMock({
+      viewHistory: ["dashboard", "agent", "skillAnalysis"],
+      currentSkillName: "my-skill",
+    });
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    const view = screen.getByTestId("skill-analysis-view");
+    expect(view.getAttribute("data-has-navigate-back")).toBe("true");
+    expect(view.getAttribute("data-has-navigate-to-agent")).toBe("true");
+  });
+
+  it("TC-SA-02: viewHistory の末尾から2番目が 'skillCenter' のとき onNavigateBack / onNavigateToAgent が undefined であること", async () => {
+    await setupSkillAnalysisMock({
+      viewHistory: ["dashboard", "skillCenter", "skillAnalysis"],
+      currentSkillName: "my-skill",
+    });
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    const view = screen.getByTestId("skill-analysis-view");
+    expect(view.getAttribute("data-has-navigate-back")).toBe("false");
+    expect(view.getAttribute("data-has-navigate-to-agent")).toBe("false");
+  });
+
+  it("TC-SA-03: viewHistory が1要素のみのとき onNavigateBack / onNavigateToAgent が undefined であること", async () => {
+    await setupSkillAnalysisMock({
+      viewHistory: ["skillAnalysis"],
+      currentSkillName: "my-skill",
+    });
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    const view = screen.getByTestId("skill-analysis-view");
+    expect(view.getAttribute("data-has-navigate-back")).toBe("false");
+    expect(view.getAttribute("data-has-navigate-to-agent")).toBe("false");
+  });
+
+  it("TC-SA-04 (回帰): onClose が setCurrentView('skillCenter') と setCurrentSkillName(null) を呼ぶこと", async () => {
+    await setupSkillAnalysisMock({
+      viewHistory: ["dashboard", "skillCenter", "skillAnalysis"],
+      currentSkillName: "test-skill",
+    });
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    // P39: happy-dom環境では fireEvent を使用
+    fireEvent.click(screen.getByTestId("skill-analysis-close"));
+    expect(mockSetCurrentView).toHaveBeenCalledWith("skillCenter");
+    expect(mockSetCurrentSkillName).toHaveBeenCalledWith(null);
+  });
+
+  it("TC-SA-05 (回帰): currentSkillName が null のとき 'demo-skill' がフォールバックされること", async () => {
+    await setupSkillAnalysisMock({
+      viewHistory: ["dashboard", "skillCenter", "skillAnalysis"],
+      currentSkillName: null,
+    });
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    const view = screen.getByTestId("skill-analysis-view");
+    expect(view.getAttribute("data-skill-name")).toBe("demo-skill");
+  });
+
+  it("TC-SA-06: 'agent' 前遷移時に onNavigateBack を呼ぶと goBack が実行されること", async () => {
+    await setupSkillAnalysisMock({
+      viewHistory: ["dashboard", "agent", "skillAnalysis"],
+      currentSkillName: "my-skill",
+    });
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    fireEvent.click(screen.getByTestId("skill-analysis-navigate-back"));
+    expect(mockGoBack).toHaveBeenCalled();
+  });
+
+  it("TC-SA-07: 'agent' 前遷移時に onNavigateToAgent を呼ぶと setCurrentView('agent') が実行されること", async () => {
+    await setupSkillAnalysisMock({
+      viewHistory: ["dashboard", "agent", "skillAnalysis"],
+      currentSkillName: "my-skill",
+    });
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    fireEvent.click(screen.getByTestId("skill-analysis-navigate-to-agent"));
+    expect(mockSetCurrentView).toHaveBeenCalledWith("agent");
   });
 });

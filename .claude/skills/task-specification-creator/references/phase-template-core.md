@@ -27,8 +27,16 @@ Phase 1、Phase 2、Phase 3。
 
 - **Step 0: P50チェック（必須）** — Phase 1 開始前に対象ファイルの実装状態を `git log` と `grep` で確認し、既実装コードの重複作成を防止する（詳細: [phase-template-phase1.md](phase-template-phase1.md)）。
 - inventory と source scope の差分を固定する。
-- acceptance criteria を番号付きで定義する。
+- acceptance criteria を番号付きで定義し、**本文に AC-1, AC-2... を列挙する**。
+- `spec-extraction-map.md` で aiworkflow-requirements 正本と current code anchor の対応を固定する。
 - Phase 1-3 完了前に Phase 4 へ進まない gate を書く。
+
+### 画面遷移 / handoff 改修タスクの追加ルール
+
+- Phase 1 で **実在する state 名** をコードから確定してから書く。`previousView` / `sourceView` / `isExecutionComplete` のような placeholder を spec に書かない。
+- navigation state と feature state を分離して記録する。
+  - 例: `currentSkillName` / `viewHistory` は navigation、`selectedSkillName` / `skillExecutionStatus` は feature state。
+- 「戻る導線」は既存 `goBack()` / `viewHistory` / 既存 handoff pattern で足りるかを先に確認し、新規 state は最後に検討する。
 
 ## Phase 2 のポイント
 
@@ -36,6 +44,7 @@ Phase 1、Phase 2、Phase 3。
 - lane 数は 3 以下に固定する。
 - validation matrix を command 単位で定義する。
 - DI 境界の型配置判断を明示する（下記フロー参照）。
+- 画面遷移 / handoff 改修では、Phase 1 で確定した **既存 state 名** と **既存 route pattern** をそのまま設計へ持ち込む。未定義 state を設計本文で発明しない。
 
 ### concern 数による設計書分割基準（TASK-SKILL-LIFECYCLE-08 知見）
 

@@ -1,0 +1,8 @@
+2026-03-20
+Command:
+cd apps/desktop
+pnpm exec eslint src/renderer/components/skill/SkillAnalysisView.tsx src/renderer/views/AgentView/index.tsx src/renderer/App.tsx src/renderer/store/index.ts --no-error-on-unmatched-pattern
+
+Result:
+PASS
+No lint errors or warnings.

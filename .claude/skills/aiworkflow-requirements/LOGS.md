@@ -310,6 +310,22 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`: テスト39ケース
   - 検出ルール: R-01（チャンネル孤児/warning）, R-02（引数形式不一致/error, P44対応）, R-03（ハードコード文字列/warning, P27対応）, R-04（未登録チャンネル/error）
   - CLIオプション: --report-only, --strict, --format json|markdown
-  - 実行時間: 1.57秒（NFR-01: 10秒以内）
-- 実コードベース検証結果: 216ハンドラ抽出, 147 Preloadエントリ抽出, R-02不一致19件検出
-- 未タスク3件検出: タプル配列抽出拡張, CHAT_EDIT_CHANNELS対応, ipcMain.on強化
+  - 実行時間: 3.46秒（2026-03-19 再監査、NFR-01: 10秒以内）
+- 実コードベース検証結果: 216 handlers, 189 preload entries, 197 drifts, 119 orphans
+- 2026-03-19 再監査で generic/multiline preload 抽出と複数 const object 収集を反映
+- 後続formalize: EXT-001（タプル配列 main 登録）, EXT-002（エイリアス/再export/動的定数解決）, EXT-003（event parity）, EXT-004（モジュール分割）, EXT-005（R-02精度向上）
+
+## TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 same-wave 同期（2026-03-20）
+
+- タスク名: AgentView 改善導線 round-trip
+- 種別: 実装 + 仕様同期 + 画面再監査
+- ワークフロー: `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/`
+- 主要成果物:
+  - `apps/desktop/src/renderer/views/AgentView/index.tsx`: 実行完了後の改善 CTA と navigation handoff
+  - `apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx`: Agent 起点限定 `戻る` / `エージェントで再実行`
+  - `apps/desktop/src/renderer/App.tsx`: `viewHistory[length - 2] === "agent"` による round-trip props 注入
+  - `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step03-phase11.mjs`: Phase 11 screenshot 6件 capture
+  - `references/ui-ux-navigation.md`, `references/arch-state-management-core.md`, `references/ui-ux-feature-components-reference.md`, `references/workflow-skill-lifecycle-routing-render-view-foundation.md`, `references/task-workflow*.md`, `references/lessons-learned-*.md`: Task04 system spec same-wave 反映
+- 画面検証: `TC-11-01..06` を取得し、CTA visible/hidden、Agent 起点 analysis、戻る、再実行、dark theme を確認
+- 未タスク: 8件を `docs/30-workflows/unassigned-task/` へ formalize（aria-label 4件、App cleanup 2件、viewHistory 1件、act warning 1件）
+- 完了日: 2026-03-20

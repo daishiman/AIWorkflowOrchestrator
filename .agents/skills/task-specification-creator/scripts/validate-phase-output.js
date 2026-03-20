@@ -96,7 +96,144 @@ class PhaseValidator {
       this.validatePhaseFile(phase);
     }
 
+    this.validateArtifactsParity();
+    this.validatePhase11Outputs();
+    this.validatePhase12Wording();
+
     return this.report();
+  }
+
+  validateArtifactsParity() {
+    const artifactsPath = join(this.workflowDir, "artifacts.json");
+    if (!existsSync(artifactsPath)) {
+      this.warnings.push("artifacts.json が存在しません");
+      return;
+    }
+
+    const outputArtifactsPath = join(
+      this.workflowDir,
+      "outputs",
+      "artifacts.json",
+    );
+
+    if (!existsSync(outputArtifactsPath)) {
+      this.errors.push(
+        "root artifacts.json は存在しますが outputs/artifacts.json がありません",
+      );
+      return;
+    }
+
+    const rootContent = readFileSync(artifactsPath, "utf-8").trim();
+    const outputContent = readFileSync(outputArtifactsPath, "utf-8").trim();
+
+    if (rootContent !== outputContent) {
+      this.warnings.push(
+        "artifacts.json と outputs/artifacts.json が一致していません",
+      );
+      return;
+    }
+
+    this.passes.push("artifacts.json: root と outputs/artifacts.json が同期済み");
+  }
+
+  validatePhase11Outputs() {
+    const phase11Files = readdirSync(this.workflowDir).filter(
+      (f) => f.startsWith("phase-11-") && f.endsWith(".md"),
+    );
+    if (phase11Files.length === 0) {
+      return;
+    }
+
+    const phase11Path = join(this.workflowDir, phase11Files[0]);
+    const phase11Content = readFileSync(phase11Path, "utf-8");
+    const phase11OutputDir = join(this.workflowDir, "outputs", "phase-11");
+    const screenshotDir = join(phase11OutputDir, "screenshots");
+    const expectsVisualEvidence =
+      existsSync(screenshotDir) ||
+      /(screen\s*shot|スクリーンショット|画面証跡|UI|View|CTA)/i.test(
+        phase11Content,
+      );
+
+    if (!existsSync(phase11OutputDir)) {
+      this.warnings.push("outputs/phase-11 ディレクトリが存在しません");
+      return;
+    }
+
+    const phase11RequiredFiles = ["manual-test-checklist.md", "manual-test-result.md"];
+    if (expectsVisualEvidence) {
+      phase11RequiredFiles.push("screenshot-plan.json");
+    }
+
+    const missingFiles = phase11RequiredFiles.filter(
+      (file) => !existsSync(join(phase11OutputDir, file)),
+    );
+    if (missingFiles.length > 0) {
+      this.warnings.push(
+        `Phase 11 補助成果物が不足しています: ${missingFiles.join(", ")}`,
+      );
+    } else {
+      this.passes.push(
+        `Phase 11: 補助成果物が揃っています (${phase11RequiredFiles.join(", ")})`,
+      );
+    }
+
+    if (existsSync(screenshotDir)) {
+      const pngFiles = readdirSync(screenshotDir).filter((file) =>
+        /\.png$/i.test(file),
+      );
+      if (pngFiles.length === 0) {
+        this.errors.push(
+          "outputs/phase-11/screenshots は存在しますが PNG 証跡が 0 件です",
+        );
+      } else {
+        this.passes.push(
+          `Phase 11: screenshot PNG 証跡 ${pngFiles.length}件を確認`,
+        );
+      }
+    } else if (expectsVisualEvidence) {
+      this.warnings.push(
+        "Phase 11 は画面証跡を要求していますが outputs/phase-11/screenshots がありません",
+      );
+    }
+  }
+
+  validatePhase12Wording() {
+    const prohibitedPatterns = [
+      { pattern: /\bplanned\b/i, label: "planned" },
+      { pattern: /PR作成時に実施/, label: "PR作成時に実施" },
+      { pattern: /PRマージ後/, label: "PRマージ後" },
+    ];
+    const filesToScan = [];
+
+    const phase12Files = readdirSync(this.workflowDir).filter(
+      (f) => f.startsWith("phase-12-") && f.endsWith(".md"),
+    );
+    phase12Files.forEach((file) => filesToScan.push(join(this.workflowDir, file)));
+
+    const phase12OutputDir = join(this.workflowDir, "outputs", "phase-12");
+    if (existsSync(phase12OutputDir)) {
+      readdirSync(phase12OutputDir)
+        .filter((file) => file.endsWith(".md"))
+        .forEach((file) => filesToScan.push(join(phase12OutputDir, file)));
+    }
+
+    let foundCount = 0;
+    for (const filePath of filesToScan) {
+      const content = readFileSync(filePath, "utf-8");
+      const hits = prohibitedPatterns
+        .filter(({ pattern }) => pattern.test(content))
+        .map(({ label }) => label);
+      if (hits.length > 0) {
+        foundCount += 1;
+        this.warnings.push(
+          `${basename(filePath)}: Phase 12 に計画系 wording が残っています (${hits.join(", ")})`,
+        );
+      }
+    }
+
+    if (filesToScan.length > 0 && foundCount === 0) {
+      this.passes.push("Phase 12: planned wording / PR後追い文言なし");
+    }
   }
 
   validateOptionalPhase0() {

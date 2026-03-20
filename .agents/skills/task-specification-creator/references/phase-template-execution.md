@@ -12,6 +12,12 @@ Phase 4〜10。
 | 5 | `.claude` 正本更新、mirror sync、first validation |
 | 6 | regression check、補助 command、再検証 |
 
+### 画面遷移 / handoff 改修タスクの追加ルール
+
+- Phase 4 では App shell の既存 test bundle を先に探し、`renderView` / routing / callback 注入は既存テストへの追記を優先する。
+- Phase 5 では CTA 条件や戻り導線を **既存 enum / history state** で表現する。`isExecutionComplete` のような新規 boolean は、既存 state で表現できないと証明できた場合だけ追加する。
+- `selectedSkillName` と `currentSkillName` のように責務が近い state は、表示対象・選択状態・route handoff のどれに使うかを明示してから実装する。
+
 ### Phase 4 事前確認: 既存ユーティリティ重複検出【必須】
 
 テスト対象機能で使用する可能性のあるユーティリティ関数が既に存在しないか確認する。

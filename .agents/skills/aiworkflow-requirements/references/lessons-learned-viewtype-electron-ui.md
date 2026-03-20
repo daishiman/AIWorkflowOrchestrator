@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-20 | 1.3.0 | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 の onboarding overlay、arm64 capture 経路、同形 screenshot metadata の教訓を追加 |
 | 2026-03-19 | 1.2.0 | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 の icon map 未登録・PanelContentProps 漏れ・esbuild バイナリ不一致の教訓を追加 |
 | 2026-03-19 | 1.1.0 | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 の main shell handoff capture / shared DOM selector scope の教訓を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
@@ -169,6 +170,55 @@
 | Icon 未表示 | `grep -n "iconName" apps/desktop/src/renderer/components/atoms/Icon/index.tsx` で icon map を確認 | 利用可能なアイコン名に変更する |
 | Props 経路漏れ | callback 引数に親の state が含まれるか確認 | 中間コンポーネントの Props に追加して渡す |
 | esbuild バイナリ不一致 | `node -e "console.log(process.arch)"` でアーキを確認 | `pnpm install` を再実行して正しいバイナリを取得 |
+
+---
+
+## 2026-03-20 TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001
+
+### 苦戦箇所1: onboarding overlay が CTA screenshot を覆って誤判定を誘発
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | App 実画面で AgentView を起動すると onboarding overlay が先に描画され、改善 CTA の visible/hidden 判定が画面証跡で読めなくなった |
+| 再発条件 | 本番 shell を使う screenshot harness で onboarding 完了状態を固定しない場合 |
+| 解決策 | mock `window.electronAPI.store.get({ key: "onboarding.hasCompleted" })` を `true` にし、overlay 非表示を前提 state として固定した |
+| 標準ルール | shell 実画面の screenshot は overlay / onboarding / auth などの前提 state を capture script 側で明示する |
+| 関連タスク | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 |
+
+### 苦戦箇所2: x64 Node 経路では esbuild 不一致で Vite capture が起動しない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Volta 管理の x64 Node から capture script を起動すると `@esbuild/darwin-arm64` 不一致で Vite が失敗した |
+| 再発条件 | worktree 環境で x64 Node / arm64 依存バイナリが混在したまま screenshot コマンドを実行する場合 |
+| 解決策 | `/opt/homebrew/bin/node` と `/opt/homebrew/bin/pnpm` を使う arm64 実行経路へ切り替えた |
+| 標準ルール | native 依存ツールを実行する前に `process.arch` と実バイナリの組み合わせを確認し、capture は実アーキ側へ揃える |
+| 関連パターン | P7（ネイティブモジュールのバイナリ不一致） |
+| 関連タスク | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 |
+
+### 苦戦箇所3: `戻る` と `再実行` の証跡が最終画面だけでは同形に見える
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | どちらの action も最終的には AgentView を再表示するため、PNG 単体では「戻る」と「再実行」の差が読み取りにくかった |
+| 再発条件 | round-trip の action 差分を最終画面キャプチャだけで証明しようとする場合 |
+| 解決策 | `phase11-capture-metadata.json` に scenario と action を記録し、manual-test-result でも差分説明を併記した |
+| 標準ルール | 同形 screenshot が許容される UI は metadata / checklist / result をセットで正本証跡にする |
+| 関連タスク | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. shell 実画面 capture では onboarding / auth / theme の前提 state を先に固定する。
+2. native 依存の Vite / Playwright 系コマンドは `process.arch` を確認し、実アーキ経路で実行する。
+3. 最終画面が同形になる round-trip は metadata と manual test の説明を同時に残す。
+
+### 5分解決カード
+
+| 苦戦箇所 | 即時チェック | 解決策 |
+| --- | --- | --- |
+| overlay が邪魔 | onboarding 完了 state が true か確認 | store mock で overlay 非表示を固定 |
+| Vite が起動しない | `node -p "process.arch + ' ' + process.execPath"` | arm64 Node/Pnpm 経路へ切り替える |
+| screenshot が同形 | metadata に action 名が残っているか確認 | capture metadata を正本証跡に追加する |
 
 ---
 
