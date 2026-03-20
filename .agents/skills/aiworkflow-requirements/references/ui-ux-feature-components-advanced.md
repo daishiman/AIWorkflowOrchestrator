@@ -149,6 +149,8 @@ TASK-7D ChatPanel Agent統合で新規追加されたOrganism級コンポーネ�
 | 型名 | 定義 | 用途 |
 |------|------|------|
 | `DisplayableStatus` | `Exclude<SkillExecutionStatus, 'idle'>` | idle除外の厳密なステータス型 |
+
+> **未タスク**: [UT-STATUSBADGE-MAPPING-3VALUES-001](../../docs/30-workflows/unassigned-task/UT-STATUSBADGE-MAPPING-3VALUES-001.md) -- StatusBadge の色/ラベルマッピングに review / improve_ready / reuse_ready を追加する必要がある
 | `SkillStreamMessage` | 判別共用体（text/tool_use/tool_result/error/permission_request） | メッセージ種別の型安全な分岐 |
 
 ### 適用パターン

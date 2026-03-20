@@ -664,6 +664,17 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | **v10.09.0** | **2026-03-12** | rolling log + archive index 構成へ再編し、line budget と履歴保全を両立させた |
 | **v10.08.60** | **2026-03-12** | light theme contrast regression guard の formalize と Phase 12 再確認を追記 |
 
+### 2026-03-20 - UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / spec-sync |
+| 変更対象 | interfaces-agent-sdk-integration.md, arch-state-management-core.md, topic-map.md |
+| 結果 | SkillExecutionStatus型に3値追加後のシステム仕様書同期。Phase 1-12 完了、Phase 13 は user approval 待ち |
+| 検証 | 関連Issue: #1388 |
+
+---
+
 ### 2026-03-18 - UT-TASK06-007
 
 | 項目 | 内容 |

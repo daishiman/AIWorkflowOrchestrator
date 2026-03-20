@@ -503,3 +503,30 @@ TASK-SKILL-LIFECYCLE-08 では publish/distribution 領域の store 責務を設
 ### 実装移行の未タスク
 - `UT-SKILL-LIFECYCLE-08-TYPE-IMPL`
 - `UT-SKILL-LIFECYCLE-08-UI-IMPL`
+
+---
+
+## SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001）
+
+TASK-IMP-LIFECYCLE-REUSE-IMPROVE-CYCLE-001（Task12）により、SkillExecutionStatus 型に3値が追加される。
+
+### 新規追加状態
+
+| 状態            | 配置先             | 理由                                         |
+| --------------- | ------------------ | -------------------------------------------- |
+| `review`        | Zustand agentSlice | executionStatus フィールドの値として管理      |
+| `improve_ready` | Zustand agentSlice | executionStatus フィールドの値として管理      |
+| `reuse_ready`   | Zustand agentSlice | executionStatus フィールドの値として管理      |
+
+### 配置根拠
+
+- 既存の `executionStatus: SkillExecutionStatus | null` フィールド（agentSlice）の値域拡張
+- 新規 Slice は不要（同一フィールドの値追加のため）
+- 既存セレクタ `useSkillExecutionStatus()` がそのまま使用可能
+
+### セレクタ設計
+
+- P48 対策: 派生セレクタで `.filter()` を使う場合は `useShallow` を適用
+- P31 対策: 合成 Hook ではなく個別セレクタを使用
+
+> **P65注記**: 上記は Task12 phase-2-design.md の設計確定値に基づく。Task12 Phase 5 完了後に実値と照合すること。

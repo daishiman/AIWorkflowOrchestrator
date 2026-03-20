@@ -383,7 +383,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.09.02** | **2026-03-20** | **TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 完了記録追加**: Phase 1-12 完了（Phase 13 はユーザー指示によりスキップ）。chatSlice エラーハンドリング + ChatView エラーバナー実装。5ファイル変更 +359行/-22行。テスト94件全 PASS。未タスク2件（UT-CHATVIEW-ERROR-BANNER-I18N-001・UT-AI-CHAT-ERROR-CODE-INVENTORY-001）formalize。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **v10.09.02** | **2026-03-20** | **UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001**: Phase 1-12 実行完了（仕様書同期タスク） |
 | **v10.09.01** | **2026-03-19** | **UT-TASK06-007 再監査同期**: `implementation-guide.md` の必須要件（なぜ先行 / 日常例え / TypeScript 型 / API/CLI シグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目）を validator 10/10 に合わせて補強し、`phase-11-manual-test.md` の参照不足 warning を解消。未タスク5件は `docs/30-workflows/unassigned-task/` 配置を再確認し、`EXT-002` 残余スコープ・`EXT-005` 実行手順未完成・数値ドリフトを是正する運用を変更履歴へ追加 |
 | **v10.09.00** | **2026-03-19** | **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了記録**。Phase 1-12 実行完了 |
 | **v10.09.12** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: `references/phase-template-core.md` に concern 数による設計書分割基準テーブル（1-2/3-4/5+ concern）を追加。`references/review-gate-criteria.md` に設計タスク専用の契約品質チェック（前提条件/事後条件・IPC Port 依存・DI 境界表・受入基準トレーサビリティ）を Phase 3 に追加。`references/phase-template-phase12.md` に Task 6（遵守チェックリスト）を必須タスクとして追記。`references/phase-12-documentation-guide.md` に Task 12-6 と planned wording 確認コマンドを追加 |

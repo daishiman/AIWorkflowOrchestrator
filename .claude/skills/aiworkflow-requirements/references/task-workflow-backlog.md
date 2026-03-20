@@ -488,6 +488,8 @@
 | UT-CONV-DB-001 | conversationRepository.test.ts 75件SKIP修正 | HIGH | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | P7: better-sqlite3 ABI不一致。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-001-better-sqlite3-abi-rebuild.md` |
 | UT-CONV-DB-002 | Conversation DBスキーマバージョニング | MEDIUM | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | マイグレーション機構の設計・実装。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-002-schema-versioning.md` |
 | UT-CONV-DB-003 | 旧DBパスマイグレーション | MEDIUM | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | ~/.claude/conversations.db → userData/ への移行。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-003-legacy-path-migration.md` |
+| UT-STATUSBADGE-MAPPING-3VALUES-001 | StatusBadge マッピング仕様への新3値追加 | 中 | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12（2026-03-20） | `docs/30-workflows/unassigned-task/UT-STATUSBADGE-MAPPING-3VALUES-001.md` |
+| UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001 | blocked分岐テンプレートの標準化 | 中 | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12 スキルフィードバック（2026-03-20） | `docs/30-workflows/unassigned-task/UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001.md` |
 
 ### 未タスク管理ルール
 

@@ -543,3 +543,24 @@ ui-ux-diagrams.md の「実装ギャップ一覧（GAP ID 正本）」セクシ�
 | 4 | ui-ux-diagrams.mdのCore Journey図とSkill Lifecycle Panel図で状態遷移の定義が矛盾 | Skill Lifecycle Panel図にReuseReady遷移を追加してCore Journey図と整合 | 上流文書に複数の図がある場合、全図の整合チェックをPhase 3レビュー観点に含める |
 | 5 | worktreeのesbuildアーキテクチャ不一致でスクリーンショット撮影不可（P7再発） | pnpm store prune && pnpm install --forceで解消 | worktree作成後のpnpm installでネイティブモジュール再ビルドが必要 |
 | 6 | SkillLifecyclePanelのラベル変更が仕様書外変更として混入 | Task09 phase-2-design.mdに「ラベル日本語化（LC-UX-PROHIBIT-01対応）」セクションを追記して仕様化 | プロダクションコード変更は必ず先に仕様書に記録してから実施する |
+
+---
+
+## UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 |
+| ステータス | Phase 12完了 |
+| 完了日 | 2026-03-20 |
+| PR | #1388 |
+
+### 実装内容
+
+`SkillExecutionStatus` 型に `review` / `improve_ready` / `reuse_ready` の3値を追加したことに伴い、関連仕様書の同期を実施。
+
+### 検出された未タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| UT-STATUSBADGE-MAPPING-3VALUES-001 | StatusBadge の色/ラベルマッピングに review/improve_ready/reuse_ready を追加 | 未実施 |

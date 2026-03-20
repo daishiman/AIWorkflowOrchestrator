@@ -1,0 +1,154 @@
+{
+  "feature": "execution-status-type-spec-sync",
+  "taskId": "UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001",
+  "taskName": "SkillExecutionStatus 型と system spec の同期条件を再監査し、同期 workflow を是正する",
+  "taskType": "docs",
+  "issueNumber": 1388,
+  "created": "2026-03-20T05:00:00Z",
+  "lastUpdated": "2026-03-20T06:55:00Z",
+  "status": "phase_12_completed",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "file": "phase-1-requirements.md",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements.md",
+        "outputs/phase-1/reference-locations.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "file": "phase-2-design.md",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/design.md",
+        "outputs/phase-2/impact-analysis.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビュー",
+      "file": "phase-3-design-review.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "file": "phase-4-test-creation.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-cases.md"]
+    },
+    "5": {
+      "name": "実装",
+      "file": "phase-5-implementation.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "file": "phase-6-test-expansion.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/expanded-test-results.md"]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "file": "phase-7-coverage-check.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "file": "phase-8-refactoring.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "9": {
+      "name": "品質保証",
+      "file": "phase-9-quality-assurance.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "name": "最終レビュー",
+      "file": "phase-10-final-review.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "file": "phase-11-manual-test.md",
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "file": "phase-12-documentation.md",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "file": "phase-13-pr-creation.md",
+      "status": "blocked",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-info.md"
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["4", "5"],
+    "7": ["1", "2", "3", "4", "5", "6"],
+    "8": ["5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "scope": "docs-only readiness audit and conditional spec sync",
+    "primaryFiles": [
+      "packages/shared/src/types/skill.ts",
+      ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-integration.md",
+      ".claude/skills/aiworkflow-requirements/references/arch-state-management-core.md"
+    ],
+    "pitfallMitigations": ["P2", "P26", "P32", "P50", "P65"],
+    "workflowBlockers": [
+      {
+        "kind": "readiness",
+        "sourcePhase": "1",
+        "condition": "`review` / `improve_ready` / `reuse_ready` が packages/shared/src/types/skill.ts に未反映",
+        "status": "active",
+        "effect": "system spec 本文更新は blocked"
+      },
+      {
+        "kind": "approval",
+        "sourcePhase": "13",
+        "condition": "user approval なし",
+        "status": "active",
+        "effect": "commit / PR 作成は blocked"
+      }
+    ],
+    "reviewLoops": {
+      "phase3Fallback": ["1", "2"],
+      "phase10Fallback": ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
+    },
+    "coverageLoop": {
+      "phase7DependsOn": ["1", "2", "3", "4", "5", "6"],
+      "phase9DependsOn": ["5", "6", "7", "8"]
+    }
+  }
+}

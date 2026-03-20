@@ -378,8 +378,8 @@ node scripts/list-specs.js --topics
 | Claude Code CLI統合 | L16 |
 | Session Persistence（セッション永続化） | L119 |
 | Skill Import Agent System 型定義（TASK-1-1） | L219 |
-| 関連ドキュメント | L368 |
-| 変更履歴 | L377 |
+| 関連ドキュメント | L373 |
+| 変更履歴 | L382 |
 
 ### references/interfaces-agent-sdk-skill-advanced.md
 
@@ -476,7 +476,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L6 |
-| ワークスペース型定義 | L274 |
+| ExecutionCapability 型定義（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001） | L274 |
+| ワークスペース型定義 | L360 |
 
 ### references/interfaces-auth-history.md
 
@@ -1014,7 +1015,8 @@ node scripts/list-specs.js --topics
 | コンポーネント仕様 | L43 |
 | インタラクション設計 | L287 |
 | 視覚デザイン | L316 |
-| アクセシビリティ（WCAG 2.1 AA） | L340 |
+| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L341 |
+| アクセシビリティ（WCAG 2.1 AA） | L363 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -1152,7 +1154,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| コピー履歴機能（TASK-3-2-D） | L6 |
 | アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L115 |
 | SkillStreamingView コンポーネント（TASK-7D） | L126 |
-| SkillEditor UI（TASK-9A / 完了） | L172 |
+| SkillEditor UI（TASK-9A / 完了） | L174 |
 
 ### references/ui-ux-feature-components-core.md
 
@@ -1197,10 +1199,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCenterView UI（TASK-UI-05 / 完了） | L6 |
-| Skill Advanced Views UI（TASK-UI-05B / completed） | L193 |
-| SkillAnalysisView UI（TASK-10A-B / completed） | L268 |
-| SkillCreateWizard UI（TASK-10A-C / completed） | L369 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L431 |
+| Skill Advanced Views UI（TASK-UI-05B / completed） | L223 |
+| SkillAnalysisView UI（TASK-10A-B / completed） | L298 |
+| SkillCreateWizard UI（TASK-10A-C / completed） | L399 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L461 |
 
 ### references/ui-ux-feature-components.md
 
@@ -1287,15 +1289,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
-| Global Navigation | L41 |
-| ChatViewナビゲーション | L316 |
-| ナビゲーションボタン仕様 | L322 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L338 |
-| テスト検証済み項目 | L352 |
-| アクセシビリティ対応事例 | L367 |
-| ナビゲーションパターンのベストプラクティス | L399 |
-| 関連ドキュメント | L411 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L420 |
+| Global Navigation | L42 |
+| ChatViewナビゲーション | L330 |
+| ナビゲーションボタン仕様 | L336 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L352 |
+| テスト検証済み項目 | L366 |
+| アクセシビリティ対応事例 | L381 |
+| ナビゲーションパターンのベストプラクティス | L413 |
+| 関連ドキュメント | L425 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L434 |
 
 ### references/ui-ux-panels.md
 
@@ -1841,6 +1843,14 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L239 |
 | 変更履歴 | L251 |
 
+### references/workflow-ai-runtime-execution-responsibility-realignment.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L6 |
+| current canonical set | L12 |
+| extraction matrix | L25 |
+| 実装同期ルール | L37 |
+
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
 | セクション | 行 |
@@ -1965,7 +1975,8 @@ node scripts/list-specs.js --topics
 | Artifact Inventory | L233 |
 | 実装コードアンカー | L255 |
 | same-wave 検証手順 | L267 |
-| 5分解決カード | L283 |
+| Agent -> SkillAnalysis handoff 実装完了記録（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L284 |
+| 5分解決カード | L296 |
 
 ### references/workflow-skill-lifecycle-evaluation-scoring-gate.md
 
@@ -1998,7 +2009,8 @@ node scripts/list-specs.js --topics
 | 同種課題の5分解決カード | L111 |
 | TASK-SKILL-LIFECYCLE-02: SkillCenterView CTA ルーティング（2026-03-18） | L123 |
 | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001: SkillDetailPanel 二次 handoff（2026-03-19） | L155 |
-| 変更履歴 | L180 |
+| TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001: AgentView <-> SkillAnalysis round-trip（2026-03-20） | L180 |
+| 変更履歴 | L224 |
 
 ### references/workflow-workspace-parent-reference-sweep-guard.md
 
@@ -2091,6 +2103,11 @@ node scripts/list-specs.js --topics
 | 利用順序 | L14 |
 | 関連ドキュメント | L19 |
 
+### references/arch-execution-capability-contract.md
+
+| セクション | 行 |
+|------------|----|\n| AccessCapability の shared パッケージ移動（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 / Task01） | L7 |
+
 ### references/arch-feature-addition.md
 
 | セクション | 行 |
@@ -2127,6 +2144,7 @@ node scripts/list-specs.js --topics
 | LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L344 |
 | ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L383 |
 | 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L484 |
+| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L509 |
 
 ### references/arch-state-management-details.md
 
@@ -2154,6 +2172,16 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001） | L6 |
 | TASK-043D: テスト品質ゲート設計（2026-03-08） | L63 |
+
+### references/arch-state-management-reference-selectors.md
+
+| セクション | 行 |
+|------------|----|\n| Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN） | L7 |
+| HistorySearch timeline 再設計（TASK-UI-06-HISTORY-SEARCH-VIEW） | L52 |
+| ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV） | L99 |
+| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L163 |
+| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L202 |
+| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L298 |
 
 ### references/arch-state-management-reference.md
 
@@ -2574,13 +2602,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L29 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L82 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L110 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L153 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L204 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L273 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L311 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L30 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L60 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L113 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L141 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L184 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L235 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L304 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L342 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -2700,10 +2729,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-17 TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 | L28 |
-| 2026-03-19 TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 | L101 |
-| 2026-03-16 TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 | L175 |
-| 派生未タスク | L227 |
+| 2026-03-17 TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 | L29 |
+| 2026-03-19 TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 | L102 |
+| 2026-03-20 TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 | L176 |
+| 2026-03-16 TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 | L225 |
+| 派生未タスク | L277 |
 
 ### references/lessons-learned-workflow-quality-ci-module-resolution.md
 
@@ -3757,13 +3787,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17） | L7 |
 | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001: SkillDetailPanel action buttons handoff 完了記録（2026-03-19） | L56 |
-| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L95 |
-| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L162 |
-| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L243 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L328 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L350 |
-| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L413 |
-| Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L450 |
+| TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001: AgentView 改善導線 round-trip 完了記録（2026-03-20） | L95 |
+| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L151 |
+| TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L218 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L299 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L384 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L406 |
+| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L469 |
+| Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L506 |
+| UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20） | L549 |
 
 ### references/task-workflow-completed-skill-lifecycle.md
 
@@ -3817,8 +3849,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L31 |
-| 関連ドキュメント | L36 |
+| 利用順序 | L32 |
+| 関連ドキュメント | L37 |
 
 ### references/testing-accessibility.md
 
