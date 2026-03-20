@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+// @ts-nocheck — Phase 11 screenshot harness (not production code)
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
