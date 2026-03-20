@@ -383,8 +383,10 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.03** | **2026-03-21** | **UT-RAG-08-002 Phase 12 最終更新**: workflow root / phase本文 / outputs を実績ベースへ同期し、artifact inventory 欠落2件と unassigned task path drift を是正 |
 | **v10.09.02** | **2026-03-20** | **UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001**: Phase 1-12 実行完了（仕様書同期タスク） |
 | **v10.09.01** | **2026-03-19** | **UT-TASK06-007 再監査同期**: `implementation-guide.md` の必須要件（なぜ先行 / 日常例え / TypeScript 型 / API/CLI シグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目）を validator 10/10 に合わせて補強し、`phase-11-manual-test.md` の参照不足 warning を解消。未タスク5件は `docs/30-workflows/unassigned-task/` 配置を再確認し、`EXT-002` 残余スコープ・`EXT-005` 実行手順未完成・数値ドリフトを是正する運用を変更履歴へ追加 |
+| **v10.09.02** | **2026-03-20** | **UT-RAG-08-002 仕様書生成**: Phase 1-13 仕様書14ファイルを生成。Phase 3 レビューで同名インターフェース型ドリフト（ILLMClient）を検出するパターンを確認 |
 | **v10.09.00** | **2026-03-19** | **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了記録**。Phase 1-12 実行完了 |
 | **v10.09.12** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: `references/phase-template-core.md` に concern 数による設計書分割基準テーブル（1-2/3-4/5+ concern）を追加。`references/review-gate-criteria.md` に設計タスク専用の契約品質チェック（前提条件/事後条件・IPC Port 依存・DI 境界表・受入基準トレーサビリティ）を Phase 3 に追加。`references/phase-template-phase12.md` に Task 6（遵守チェックリスト）を必須タスクとして追記。`references/phase-12-documentation-guide.md` に Task 12-6 と planned wording 確認コマンドを追加 |
 | **v10.09.12** | **2026-03-17** | **スキルフィードバック反映（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）**: `references/phase-template-execution.md` に Phase 5 既存テスト回帰確認先行実行ステップを追加。`references/phase-template-phase12.md` に worktree 環境でのシステム仕様書先送り禁止注記（P57再発防止）を追加。`rules/06-known-pitfalls.md` に P62（DEFAULT_CONFIG 暗黙 fallback 禁止）・P63（サブエージェントのインポートパス誤り）を追加 |

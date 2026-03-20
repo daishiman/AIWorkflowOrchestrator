@@ -19,15 +19,11 @@
 | バグ修正（一般）            | error-handling.md, 関連するinterfaces-\*                      | security-\*, quality-requirements.md                                  |
 | バグ修正（Electron Menu / ズーム / ショートカット） | technology-desktop.md, architecture-overview-core.md | lessons-learned-current.md, task-workflow.md |
 | バグ修正（IPC ライフサイクル） | security-electron-ipc.md, architecture-implementation-patterns.md | lessons-learned.md, 06-known-pitfalls.md#P5                          |
-| IPC契約ドリフト自動検出（UT-TASK06-007） | ipc-contract-checklist.md, quality-requirements.md | security-electron-ipc.md, lessons-learned.md (P44/P45/P27) |
+| IPC契約ドリフト自動検出（UT-TASK06-007） | ipc-contract-checklist.md, quality-requirements.md, architecture-implementation-patterns-reference-ipc-drift-detection.md | security-electron-ipc.md, security-electron-ipc-core.md, security-electron-ipc-history.md, task-workflow.md, task-workflow-backlog.md, task-workflow-completed-ipc-contract-preload-alignment.md, lessons-learned-ipc-preload-runtime.md, lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md |
 | バグ修正（Preload safeInvoke timeout / invoke hang） | security-electron-ipc.md, architecture-implementation-patterns.md, ipc-contract-checklist.md | technology-desktop.md, task-workflow.md, lessons-learned.md |
-| バグ修正（ChatView silent failure / エラー表示） | error-handling.md, arch-state-management-core.md, interfaces-llm.md | ui-ux-navigation.md, ui-ux-system-prompt.md, api-ipc-system-core.md, lessons-learned-ipc-preload-runtime.md |
-| バグ修正（LLM選択 state persistence / runtime sync） | api-ipc-system-core.md, arch-state-management-core.md, ui-ux-llm-selector.md | interfaces-llm.md, lessons-learned-ipc-preload-runtime.md, security-electron-ipc-core.md |
-| バグ修正（Workspace Chat stream error UX） | llm-streaming.md, ui-ux-feature-components-details.md, arch-state-management-core.md | interfaces-llm.md, security-electron-ipc-core.md, lessons-learned-ipc-preload-runtime.md |
 | バグ修正（Supabase fallback / 認証IPCフォールバック） | api-ipc-auth.md, architecture-auth-security.md, error-handling.md, interfaces-auth.md | security-electron-ipc.md, ipc-contract-checklist.md, lessons-learned.md |
 | バグ修正（Skill Lifecycle 評価・採点ゲート） | workflow-skill-lifecycle-evaluation-scoring-gate.md, interfaces-agent-sdk-skill-details.md, arch-state-management-details.md | ui-ux-feature-components-reference.md, task-workflow.md, lessons-learned-current.md, `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-eval-store-dispatch-001.md`, `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-score-delta-dedup-001.md` |
 | バグ修正（Skill Lifecycle routing / renderView foundation） | workflow-skill-lifecycle-routing-render-view-foundation.md, ui-ux-navigation.md, arch-state-management-core.md | task-workflow.md, lessons-learned-current.md, `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
-| UI改修（AgentView→SkillAnalysis 改善導線 / 戻り導線） | workflow-skill-lifecycle-routing-render-view-foundation.md, ui-ux-navigation.md, arch-state-management-core.md, arch-state-management-reference.md, ui-ux-feature-components-core.md | workflow-skill-lifecycle-created-skill-usage-journey.md, ui-ux-feature-components.md, ui-ux-feature-components-reference.md, arch-state-management-reference-permissions-import-lifecycle.md, lessons-learned-skill-import-analysis-view.md, lessons-learned-ui-agent-view-nav-notification-history.md, task-workflow.md |
 | 設計仕様（Skill Lifecycle 作成済みスキル利用導線 / CTA制御マトリクス） | workflow-skill-lifecycle-created-skill-usage-journey.md, ui-ux-agent-execution.md, ui-ux-navigation.md, ui-ux-feature-components.md | interfaces-agent-sdk-executor.md, interfaces-agent-sdk-skill.md, arch-state-management.md, llm-workspace-chat-edit.md, task-workflow.md, lessons-learned.md |
 | 設計仕様（Skill Lifecycle 履歴・フィードバック統合） | interfaces-agent-sdk-skill.md, interfaces-agent-sdk-history.md, arch-state-management.md | workflow-skill-lifecycle-created-skill-usage-journey.md, workflow-skill-lifecycle-evaluation-scoring-gate.md, ui-history-search-view.md, ui-ux-history-panel.md, task-workflow.md, lessons-learned-current.md |
 | UI実装                      | ui-ux-components.md, ui-ux-design-system.md                   | ui-ux-\* 関連ファイル                                                 |
@@ -39,6 +35,7 @@
 | セキュリティ定数（Tool Risk Config） | security-implementation.md (§Tool Risk Configuration)  | architecture-implementation-patterns-core.md (§S19), lessons-learned-current.md (§UT-06-001) |
 | データベース操作            | database-schema.md, database-implementation.md                | database-\*, architecture-database.md                                 |
 | RAG/検索機能                | interfaces-rag.md, architecture-rag.md                        | interfaces-rag-\* 詳細ファイル                                        |
+| HybridRAGFactory wiring     | interfaces-rag.md, rag-search-hybrid.md, rag-query-pipeline.md | interfaces-rag-knowledge-graph-store.md, rag-search-crag.md, rag-search-graph.md, rag-services.md, task-workflow.md, lessons-learned-current.md, lessons-learned-rag-embedding-runtime.md |
 | Agent SDK統合               | interfaces-agent-sdk.md（インデックス）                       | interfaces-agent-sdk-\* 分割ファイル                                  |
 | LLM連携                     | interfaces-llm.md                                             | api-endpoints.md (AI Provider)                                        |
 | デプロイ・CI/CD             | deployment.md                                                 | deployment-\*, technology-devops.md                                   |
@@ -50,16 +47,12 @@
 | 会話履歴機能                | interfaces-chat-history.md, architecture-chat-history.md      | api-chat-history.md, ui-ux-history-panel.md                           |
 | 設定画面実装                | ui-ux-settings.md                                             | interfaces-system-prompt.md                                           |
 | バグ修正（APIキー連動 + チャット実行経路整合） | workflow-apikey-chat-tool-integration-alignment.md, api-ipc-system.md, interfaces-auth.md, llm-ipc-types.md | ui-ux-settings.md, security-electron-ipc.md, task-workflow.md, lessons-learned.md |
-| バグ修正（AI Chat / LLM integration fix） | workflow-ai-chat-llm-integration-fix.md, workflow-ai-chat-llm-integration-fix-artifact-inventory.md, workflow-apikey-chat-tool-integration-alignment.md, llm-ipc-types.md, error-handling-core.md, arch-state-management-core.md, legacy-ordinal-family-register.md | ui-ux-llm-selector.md, llm-streaming.md, ui-ux-feature-components.md, ui-ux-navigation.md, error-handling.md, arch-state-management-reference-persist-hardening-test-quality.md, task-workflow.md, lessons-learned.md, lessons-learned-ipc-preload-runtime.md |
 | バグ修正（Light Mode 全画面 white/black 再是正） | workflow-light-theme-global-remediation.md, ui-ux-design-system.md, task-workflow.md | lessons-learned.md, ui-ux-components.md, ui-ux-feature-components.md |
 | バグ修正（Light Theme contrast regression guard / representative screenshot audit） | workflow-light-theme-contrast-regression-guard.md, ui-ux-feature-components.md, lessons-learned.md | ui-ux-design-system.md, task-workflow.md, workflow-light-theme-global-remediation.md |
 | バグ修正（Workspace preview/search resilience / fuzzy no-match / renderer timeout+retry） | workflow-workspace-preview-search-resilience-guard.md, ui-ux-search-panel.md, architecture-implementation-patterns.md | arch-state-management.md, error-handling.md, task-workflow.md, lessons-learned.md |
 | 設計同期（AI runtime/auth-mode unification） | workflow-ai-runtime-authmode-unification.md, ui-ux-settings.md, interfaces-auth.md, api-ipc-system.md, llm-ipc-types.md, legacy-ordinal-family-register.md | task-workflow.md, lessons-learned.md, ui-ux-feature-components.md, `docs/30-workflows/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` |
-| 設計同期（Execution Responsibility / Access Capability Realignment） | workflow-ai-runtime-execution-responsibility-realignment.md, interfaces-auth.md, interfaces-auth-core.md, api-ipc-system.md, api-ipc-system-core.md, llm-ipc-types.md, arch-state-management.md, arch-state-management-core.md, ui-ux-navigation.md, ui-ux-settings-core.md | workflow-ai-runtime-authmode-unification.md, security-electron-ipc-core.md, security-principles.md, task-workflow.md, task-workflow-completed.md, task-workflow-backlog.md, lessons-learned.md, lessons-learned-current.md |
-| 設計仕様（RAG runtime / AI_INDEX / Embedding / Extraction / Graph Summary） | workflow-ai-runtime-authmode-unification.md, api-ipc-system.md, api-ipc-system-core.md, architecture-rag.md, interfaces-rag.md, interfaces-rag-search.md, interfaces-rag-chunk-embedding.md, interfaces-rag-entity-extraction.md | rag-services.md, interfaces-rag-graphrag-query.md, interfaces-rag-community-summarization.md, api-internal-embedding.md, rag-search-hybrid.md, rag-search-crag.md, error-handling.md, security-electron-ipc.md, quality-requirements.md, task-workflow.md, task-workflow-backlog.md（UT-RAG-08-001〜013 バックログ参照）, lessons-learned.md, lessons-learned-rag-embedding-runtime.md（Task08 教訓） |
 | Main Chat / Settings runtime 同期 | api-ipc-system-core.md, llm-ipc-types.md, arch-state-management-core.md | lessons-learned-current.md, task-workflow-backlog.md |
 | バグ修正（Workspace parent pointer / pointer docs / mirror drift / visual re-audit） | workflow-workspace-parent-reference-sweep-guard.md, task-workflow.md, lessons-learned.md | ui-ux-feature-components.md, interfaces-llm.md, interfaces-chat-history.md |
-| 仕様書同期（SkillExecutionStatus / docs-only / spec_created） | task-workflow-completed-skill-lifecycle-design.md, task-workflow-completed-skill-lifecycle-ui.md, task-lifecycle-execution-status-type-spec-sync-001.md | packages/shared/src/types/skill.ts, interfaces-agent-sdk-integration.md, arch-state-management-core.md, task-workflow.md, lessons-learned-current-electron-menu-docs-task0912.md |
 | Workspace Chat Edit AI Runtime 実装（RuntimeResolver / handoff / integrated 分岐） | llm-workspace-chat-edit.md, interfaces-llm.md, api-ipc-agent-core.md | security-electron-ipc-core.md, lessons-learned.md, task-workflow.md |
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
@@ -78,7 +71,6 @@
 補足:
 - advanced route の実体、rollback feature flag、`settings` bypass は `ui-ux-navigation.md` と `architecture-overview.md` を先に読み、現行実装アンカーとして `apps/desktop/src/renderer/App.tsx` を照合する。
 - lifecycle journey contract の正本は `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts`。create / use / improve の job guide、surface responsibility、advanced route policy、downstream contract を 1 箇所で確認する。
-- AgentView 改善導線では `currentSkillName` が navigation handoff、`selectedSkillName` / `skillExecutionStatus` が Agent 実行状態、`viewHistory` が戻り先判定の正本になる。新規 `previousView` / `isExecutionComplete` を前提にしない。
 - lifecycle の create/improve handoff は `ui-ux-feature-components.md` の Store-Driven Lifecycle Integration を読み、現行実装アンカーとして `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` を照合する。
 - global nav の正式契約は `ui-ux-navigation.md` と `apps/desktop/src/renderer/navigation/navContract.ts` の組み合わせで確認する。
 - `settings` 公開 shell の例外条件は `arch-state-management.md` と `ui-ux-settings.md` を読み、現行実装アンカーとして `apps/desktop/src/renderer/utils/shouldResetUnauthenticatedView.ts` を照合する。
@@ -217,8 +209,6 @@
 | workflow-light-theme-contrast-regression-guard.md | current build static serve / selector-based capture / light audit の再利用時 | guard workflow、SubAgent分担、苦戦箇所、5分解決カード |
 | workflow-workspace-preview-search-resilience-guard.md | QuickFileSearch / PreviewPanel / renderer local timeout+retry / `external-dev-server` capture fallback を再利用したい時 | helper 抽出、typed taxonomy、`audit --target-file`、5分解決カード |
 | workflow-ai-runtime-authmode-unification.md | AI runtime/auth-mode foundation と Settings 3領域レビュー反映を再利用したい時 | foundation 契約、current canonical set、artifact inventory、後続9タスク伝搬、Phase 11/12 再監査手順 |
-| workflow-ai-chat-llm-integration-fix.md | ChatView silent failure / selector guidance / persistence / workspace stream error family を再利用したい時 | 4タスク最小読書セット、Task 01 契約、苦戦箇所、current canonical set、same-wave 同期対象 |
-| workflow-ai-chat-llm-integration-fix-artifact-inventory.md | AI Chat / LLM integration fix wave の current canonical set、workflow-local root evidence、未タスク、検証チェーンを引用したい時 | artifact inventory、follow-up task、legacy compatibility、validation chain |
 | workflow-skill-lifecycle-evaluation-scoring-gate.md | SkillAnalysis の評価・採点ゲート統合、`ScoringGate` 契約、`evaluatePrompt` 導線、Phase 12 未タスク canonical path 是正を再利用したい時 | 実装内容、苦戦箇所、current canonical set、artifact inventory、legacy path 互換、same-wave 検証手順 |
 | workflow-skill-lifecycle-created-skill-usage-journey.md | TASK-SKILL-LIFECYCLE-05 の設計仕様（作成済みスキル利用導線 / ScoreGateBadge / PostExecutionActionBar）を再利用したい時 | 3シナリオ導線、仕様抽出マップ、Task04依存契約、Phase別テスト設計入口、5分解決カード |
 | workflow-skill-lifecycle-routing-render-view-foundation.md | ViewType 拡張 / renderView 分岐追加 / advanced route fallback 証跡を再利用したい時 | 実装内容、TC-11-01..05、follow-up 未タスク、5分解決カード |
@@ -388,11 +378,17 @@
 
 | リソース | 役割 | 読み込み条件 |
 |----------|------|-------------|
-| `apps/desktop/scripts/check-ipc-contracts.ts` | IPC契約ドリフト自動検出CLIスクリプト | R-01~R-04ルール、--report-only/--strict/--format | UT-TASK06-007 |
+| `apps/desktop/scripts/check-ipc-contracts.ts` | IPC契約ドリフト自動検出CLIスクリプト | R-01〜R-04ルール、`--report-only` / `--strict` / `--format json` を確認したい時 |
 | ipc-contract-checklist.md | R-01~R-04検出ルール仕様 | 検証ルール確認時 |
 | quality-requirements.md | CI統合品質ゲート | CIパイプライン設計時 |
-| security-electron-ipc.md | IPC契約設計原則 | セキュリティ確認時 |
-| 06-known-pitfalls.md | P44/P45/P27 苦戦パターン | 問題解決時 |
+| architecture-implementation-patterns-reference-ipc-drift-detection.md | UT固有の抽出制約・苦戦箇所・follow-up 5件 | 実装差分を短時間で確認したい時 |
+| task-workflow.md | task-workflow family の入口 | 未タスク登録と family split を確認したい時 |
+| task-workflow-backlog.md | root `unassigned-task/` の未タスク台帳 | follow-up 仕様書の配置先を確認したい時 |
+| task-workflow-completed-ipc-contract-preload-alignment.md | 親タスク完了記録と follow-up ledger | completed 導線を確認したい時 |
+| security-electron-ipc-core.md | preload / main 契約境界の基礎原則 | 契約境界を再確認したい時 |
+| security-electron-ipc-history.md | 過去の IPC drift / hardening 履歴 | 既知の再発パターンを照合したい時 |
+| lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md | Phase 12 での preload alignment 教訓 | 類似の仕様同期漏れを避けたい時 |
+| lessons-learned.md | P44/P45/P27 苦戦パターン | 問題解決時 |
 
 ### 検索クエリ例
 
@@ -413,6 +409,8 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-20 | 1.22.0     | UT-RAG-08-002: HybridRAGFactory wiring 行に `lessons-learned-rag-embedding-runtime.md` を追加。ILLMClient 型ドリフト（L-RAG-06/P64）への導線を登録 |
+| 2026-03-19 | 1.21.1     | UT-TASK06-007 discovery 導線を completed canonical set に再同期。implementation pattern detail / security-electron-ipc-core / security-electron-ipc-history / completed ledger / lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment を追加し、follow-up を EXT-001〜005 に更新 |
 | 2026-03-18 | 1.21.0     | UT-TASK06-007: IPC契約ドリフト自動検出CLIスクリプト（check-ipc-contracts.ts）エントリをクイックルックアップ・タスク別リソースマップに追加。R-01~R-04検出ルール、--report-only/--strict/--format オプション、EXT-001~003未タスクの導線を登録 |
 | 2026-03-17 | 1.20.0     | TASK-SKILL-LIFECYCLE-08: Skill Publishing & Version Compatibility（13型定義・4サービスIF・11 IPCチャンネル）のクイックルックアップ追加。SkillVisibility/PublishReadiness/CompatibilityCheckResult/SkillRegistryService/SkillDistributionService 導線を登録 |
 | 2026-03-17 | 1.20.1     | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001: 「Main Chat / Settings runtime 同期」行を追加。`設計同期（AI runtime/auth-mode unification）` 行に `llm-ipc-types.md` を追加。`llm:check-health` / `llm:set-selected-config` / `AI_CHECK_CONNECTION` IPC チャンネルと `HealthCheckResult` / `SetSelectedConfigParams` 型を各インデックスに登録 |
@@ -422,7 +420,6 @@ node scripts/search-spec.js "safeInvoke"
 | 2026-03-15 | 1.17.0     | TASK-SKILL-LIFECYCLE-05: CTA制御マトリクス実装完了。workflow正本にcurrent canonical set/artifact inventory/苦戦箇所を追加。クイックルックアップに「CTA制御マトリクス」導線を登録 |
 | 2026-03-14 | 1.16.0     | TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001: クイックルックアップに「Workspace Chat Edit AI Runtime 実装」を追加。RuntimeResolver/handoff/integrated 分岐の導線を登録 |
 | 2026-03-13 | 1.15.0     | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 の統合正本 `workflow-workspace-preview-search-resilience-guard.md` を追加。クイックルックアップと UI/UX 一覧にも preview/search resilience・typed taxonomy・`audit --target-file` の導線を登録 |
-| 2026-03-20 | 1.18.0     | docs-only の SkillExecutionStatus / status type spec sync 導線を追加。Task12 の `spec_created` 前提、現行 `skill.ts` 6値、canonical refs（skill lifecycle design/UI + current task指示書）を起点に読む順を明示 |
 | 2026-03-12 | 1.14.0     | TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 の統合正本 `workflow-light-theme-contrast-regression-guard.md` を追加。クイックルックアップと UI/UX 一覧にも current build static serve / selector-based capture / baseline routing の導線を登録 |
 | 2026-03-11 | 1.13.0     | TASK-SKILL-LIFECYCLE-01 完了同期: lifecycle task の逆引きへ `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` を追加し、Skill Center 一次導線・advanced route・settings bypass の実装アンカーを明示 |
 | 2026-03-10 | 1.12.0     | TASK-10A-G: `skill:create` 契約 + ChatPanel 起点ライフサイクル統合テスト向けの導線を追加 |

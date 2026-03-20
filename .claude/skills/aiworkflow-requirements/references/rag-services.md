@@ -11,9 +11,11 @@
 
 | バージョン | 日付       | 変更内容                                         |
 | ---------- | ---------- | ------------------------------------------------ |
-| v1.0.0     | 2025-01-20 | 初版作成                                         |
-| v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
+| v1.3.1     | 2026-03-21 | UT-RAG-08-002 実装完了反映: Task08 完了記録の HybridRAGFactory 状態を guidance stub から実装済み wiring へ補正 |
+| v1.3.0     | 2026-03-20 | UT-RAG-08-002 実装準備: `LLMQueryClassifier` constructor 契約と `ILLMProvider` 要件を追記 |
 | v1.2.0     | 2026-03-19 | Task08 完了記録追加（TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001） |
+| v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
+| v1.0.0     | 2025-01-20 | 初版作成                                         |
 
 ---
 
@@ -66,6 +68,15 @@ HybridRAG検索パイプラインの入口として、検索クエリを分析�
 | ルールベース | `packages/shared/src/services/search/rule-based-query-classifier.ts` |
 | LLMベース    | `packages/shared/src/services/search/llm-query-classifier.ts`        |
 | テスト       | `packages/shared/src/services/search/__tests__/`                     |
+
+### 実装契約
+
+| クラス | constructor | 補足 |
+| --- | --- | --- |
+| `RuleBasedQueryClassifier` | 引数なし | fallback と lite で使用 |
+| `LLMQueryClassifier` | `(llmProvider: ILLMProvider, fallbackClassifier: IQueryClassifier)` | `ILLMClient` ではなく `ILLMProvider` を要求 |
+
+`LLMQueryClassifier` を Factory から配線する場合は、`generate(prompt, options)` を持つ `ILLMProvider` を直接受け取るか、明示 adapter を別責務として用意する。`llm/types` 側 `ILLMClient` をそのまま渡す設計は不可。
 
 ### テスト品質
 
@@ -296,6 +307,6 @@ TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 Phase 1-12 完了:
 
 - 21 surface の capability matrix 定義（3 lane: Index/Embedding/Search）
 - production mock を guidance-only に置換（aiHandlers, communityHandlers）
-- HybridRAGFactory throw stub を FACTORY_NOT_READY guidance に変更
+- HybridRAGFactory は UT-RAG-08-002 で実配線済みとなり、`createFull()` / `createLite()` が `HybridRAGEngine` を返す current runtime へ移行
 - SF-05/07/09 の silent fallback を明示化（warn ログ追加）
 - 未タスク 13件を UT-RAG-08-001〜013 として登録
