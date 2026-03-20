@@ -98,6 +98,12 @@ cd packages/shared && pnpm vitest run --coverage src/services/search/__tests__/h
 | MINOR | lint warning あり / coverage target 未達 / limitation 記録あり | 指摘事項を Phase 10 へ引き継ぎ |
 | MAJOR | typecheck エラーあり / テスト失敗あり                          | Phase 5 または Phase 8 へ戻る  |
 
+## 統合テスト連携
+
+- `HybridRAGFactory.createFull()` の統合観点は、classifier / 3 strategy / fusion / reranker / CRAG の一括配線が成立しているかで確認する。
+- `HybridRAGFactory.createLite()` は rule-based classifier + no-op reranker + null CRAG の軽量構成を維持する。
+- `HybridRAGEngine.search()` 側では filters が 3 strategy に伝播し、graph queryType 非伝播は既知制約として回帰ガードする。
+
 ## 参照資料
 
 | 資料名                         | パス / 場所                                                                                |

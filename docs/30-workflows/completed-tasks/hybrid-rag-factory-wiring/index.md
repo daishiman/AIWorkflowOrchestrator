@@ -2,7 +2,7 @@
 
 ## 概要
 
-`HybridRAGFactory.createFull()` / `createLite()` の本番 wiring を仕様化する単一タスク pack。現行 system spec は 2026-03-19 時点で `guidance stub` を正本としているため、本 pack は「stub 除去前提の current-state 修正 task」であることを明示する。
+`HybridRAGFactory.createFull()` / `createLite()` の実配線は完了した。現在の pack は、実装済み wiring・回帰テスト・same-wave system spec sync・follow-up 台帳を保持する current workflow root である。Phase 13 の PR 作成だけは未着手。
 
 ## メタ情報
 
@@ -10,7 +10,7 @@
 | ---------- | ------------------------------------------------------------------------ |
 | パック名   | `hybrid-rag-factory-wiring`                                              |
 | 優先度     | 高                                                                       |
-| ステータス | `spec_created`                                                           |
+| ステータス | `completed`                                                              |
 | 対象領域   | RAG / Search / Factory wiring                                            |
 | 発見元     | `step-04-par-task-08-rag-embedding-extraction-runtime` Phase 12 未タスク |
 
@@ -20,20 +20,21 @@
 | ---- | --------------- | ------------ | -------------------------------------------------------------------------------- | -------- |
 | 1    | `UT-RAG-08-002` | `tasks/`     | `HybridRAGFactory` の config 契約再定義、adapter 追加、factory wiring、spec sync | 直列     |
 
-## 関心ごとの分離
+## current status
 
-| concern             | 内容                                                                         |
-| ------------------- | ---------------------------------------------------------------------------- |
-| Factory contract    | `FullHybridRAGConfig` / `LiteHybridRAGConfig` を現行実装に合わせて再定義する |
-| Adapter boundary    | `KeywordSearchStrategy` を `ISearchStrategy` 契約へ橋渡しする                |
-| LLM interface split | `ILLMProvider` / shared `ILLMClient` / CRAG `ILLMClient` の境界を明文化する  |
-| System spec sync    | current runtime snapshot を same-wave で更新する                             |
+| concern             | 状態                                                                                                                        |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Factory contract    | `FullHybridRAGConfig` / `LiteHybridRAGConfig` を実装へ同期済み                                                              |
+| Adapter boundary    | `KeywordSearchStrategyAdapter` 追加済み                                                                                     |
+| LLM interface split | `llmProvider` / `rerankerLlmClient` / `cragLlmClient` に責務分離済み                                                        |
+| System spec sync    | `architecture-rag.md` / `rag-search-hybrid.md` / `rag-query-pipeline.md` / `rag-services.md` / backlog / lessons を更新済み |
+| 残課題              | Phase 13 PR 作成、follow-up 3件（UT-RAG-08-006〜008）                                                                       |
 
 ## 仕様抽出方針
 
 - 実行仕様の本体は `tasks/index.md` に集約する。
-- pack 直下では「何の task pack か」「どこから発生したか」「どの task を開けばよいか」だけを持つ。
-- `aiworkflow-requirements` 参照束、API 判定、機械検証、Phase 実行条件は task 側で管理する。
+- pack 直下では task pack の目的・現在地・参照入口だけを保持する。
+- 実装済み事実と未着手の PR 作成を分けて管理する。
 
 ## 関連資料
 

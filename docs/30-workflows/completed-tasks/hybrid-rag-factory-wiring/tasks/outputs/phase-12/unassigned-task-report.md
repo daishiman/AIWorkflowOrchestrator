@@ -12,11 +12,11 @@
 
 ## 1. 検出結果サマリー
 
-| タスクID      | タスク名                                         | 優先度 | 発見元                                      | ステータス |
-| ------------- | ------------------------------------------------ | ------ | ------------------------------------------- | ---------- |
-| UT-RAG-08-006 | GraphSearchStrategy queryType 伝播改善           | 中     | Phase 3 多角的チェック観点 / Phase 10 FU-01 | 未実施     |
-| UT-RAG-08-007 | ILLMClient 型定義統一（UT-RAG-08-002 wave）      | 中     | Phase 10 FU-02                              | 未実施     |
-| UT-RAG-08-008 | HybridRAGFactory communitySummarizer Config 拡張 | 中     | Phase 3 多角的チェック観点 / Phase 10 FU-03 | 未実施     |
+| タスクID      | タスク名                                              | 優先度 | 発見元                                      | ステータス |
+| ------------- | ----------------------------------------------------- | ------ | ------------------------------------------- | ---------- |
+| UT-RAG-08-006 | GraphSearchStrategy queryType 伝播改善                | 中     | Phase 3 多角的チェック観点 / Phase 10 FU-01 | 未実施     |
+| UT-RAG-08-007 | ILLMClient 型定義統一（UT-RAG-08-002 wave）           | 中     | Phase 10 FU-02                              | 未実施     |
+| UT-RAG-08-008 | Graph global mode での communitySummarizer 活用仕上げ | 中     | Phase 3 多角的チェック観点 / Phase 10 FU-03 | 未実施     |
 
 ## 2. 各未タスクの概要
 
@@ -34,11 +34,11 @@
 
 **発見元**: Phase 10 FU-02 formalize。
 
-### UT-RAG-08-008: HybridRAGFactory communitySummarizer Config 拡張
+### UT-RAG-08-008: Graph global mode での communitySummarizer 活用仕上げ
 
-`FullHybridRAGConfig` に `communitySummarizer?: ICommunitySummarizer` フィールドが未定義のため、Factory から `GraphSearchStrategy` へ community summarizer を渡す経路がない。UT-RAG-08-006（queryType 伝播）と組み合わせて Global クエリ対応を完成させるための Config 拡張タスク。
+`FullHybridRAGConfig.communitySummarizer` 自体は実装済みで、Factory から `GraphSearchStrategy` への配線も完了している。残っているのは、UT-RAG-08-006 の queryType 伝播と組み合わせて global query 時に community summary を実際の探索経路で活用する仕上げである。
 
-**発見元**: Phase 3 多角的チェック観点「`communitySummarizer` を optional で full config に含める妥当性」の判定結果から Phase 10 FU-03 として formalize。
+**発見元**: Phase 3 多角的チェック観点「community summary を global graph mode で最後まで活かせているか」の再判定結果から Phase 10 FU-03 として formalize。
 
 ## 3. P3準拠 3ステップ 完了状況
 
@@ -79,5 +79,5 @@ UT-RAG-08-005 は旧ワークフロー（step-04-par-task-08）の成果物で�
 UT-RAG-08-007（ILLMClient 型統一）
   ↓ 型が統一されると以降の alias コードが削除できる
 UT-RAG-08-006（queryType 伝播）  ← UT-RAG-08-008 と並列実施可能
-UT-RAG-08-008（communitySummarizer Config 拡張）
+UT-RAG-08-008（communitySummarizer 活用仕上げ）
 ```

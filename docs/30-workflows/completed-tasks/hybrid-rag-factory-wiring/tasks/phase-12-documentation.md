@@ -25,12 +25,12 @@ implementation guide・system spec sync・未タスク検出・skill feedback �
 
 ## 実行タスク
 
-- [ ] Task 1: `implementation-guide.md` を Part 1 / Part 2 で作成する
-- [ ] Task 2: system spec を same-wave で同期する（Step 1-A 〜 Step 2）
-- [ ] Task 3: `documentation-changelog.md` と `system-spec-update-summary.md` を作成する（全 Task 完了後）
-- [ ] Task 4: `unassigned-task-report.md` を 0 件でも作成する
-- [ ] Task 5: `skill-feedback-report.md` を改善有無に関係なく作成する
-- [ ] `artifacts.json` と `outputs/artifacts.json` を同期する
+- [x] Task 1: `implementation-guide.md` を Part 1 / Part 2 で作成する
+- [x] Task 2: system spec を same-wave で同期する（Step 1-A 〜 Step 2）
+- [x] Task 3: `documentation-changelog.md` と `system-spec-update-summary.md` を作成する（全 Task 完了後）
+- [x] Task 4: `unassigned-task-report.md` を 0 件でも作成する
+- [x] Task 5: `skill-feedback-report.md` を改善有無に関係なく作成する
+- [x] `artifacts.json` と `outputs/artifacts.json` を同期する
 
 ## Task 1: 実装ガイド
 
@@ -68,18 +68,18 @@ implementation guide・system spec sync・未タスク検出・skill feedback �
 
 ### Step 1-A: タスク完了記録（2 ファイル同時更新）
 
-- [ ] `.claude/skills/aiworkflow-requirements/LOGS.md` にタスク完了記録を追加する
-- [ ] `.claude/skills/task-specification-creator/LOGS.md` にタスク完了記録を追加する（**P1/P25 対策: 2 ファイル両方必須**）
-- [ ] `.claude/skills/aiworkflow-requirements/SKILL.md` 変更履歴テーブルを更新する（P29 対策）
-- [ ] `.claude/skills/task-specification-creator/SKILL.md` 変更履歴テーブルを更新する（P29 対策）
+- [x] `.claude/skills/aiworkflow-requirements/LOGS.md` にタスク完了記録を追加する
+- [x] `.claude/skills/task-specification-creator/LOGS.md` にタスク完了記録を追加する（**P1/P25 対策: 2 ファイル両方必須**）
+- [x] `.claude/skills/aiworkflow-requirements/SKILL.md` 変更履歴テーブルを更新する（P29 対策）
+- [x] `.claude/skills/task-specification-creator/SKILL.md` 変更履歴テーブルを更新する（P29 対策）
 
 ### Step 1-B: 実装状況テーブル
 
-- [ ] `HybridRAGFactory` の実装ステータスが変わった場合のみ該当 md を更新する（変更なし → 理由を記録する）
+- [x] `HybridRAGFactory` の実装ステータス変更を反映し、`guidance stub` / `FACTORY_NOT_READY` 前提を削除する
 
 ### Step 1-C: 関連タスクテーブル
 
-- [ ] 以下のコマンドで関連仕様書を検索して更新する:
+- [x] 以下のコマンドで関連仕様書を検索して更新する:
 
 ```bash
 grep -rn "UT-RAG-08-002" .claude/skills/aiworkflow-requirements/references/
@@ -88,21 +88,21 @@ grep -rn "HybridRAGFactory" .claude/skills/aiworkflow-requirements/references/
 
 ### Step 1-D: topic-map.md 再生成（P2 対策）
 
-- [ ] 以下のコマンドで再生成する:
+- [x] 以下のコマンドで再生成する:
 
 ```bash
 node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 ```
 
-- [ ] `indexes/topic-map.md` と `indexes/keywords.json` が更新されていることを確認する
+- [x] `indexes/topic-map.md` と `indexes/keywords.json` が更新されていることを確認する
 
 ### Step 2: domain spec sync
 
 **必須（常に更新）:**
 
-- [ ] `.claude/skills/aiworkflow-requirements/references/architecture-rag.md` を更新する（`FACTORY_NOT_READY` → 実配線完了に更新）
-- [ ] `.claude/skills/aiworkflow-requirements/references/rag-search-hybrid.md` を更新する（factory 設計の最新状態を反映）
-- [ ] `.claude/skills/aiworkflow-requirements/references/rag-query-pipeline.md` を更新する（pipeline runtime snapshot を更新）
+- [x] `.claude/skills/aiworkflow-requirements/references/architecture-rag.md` を更新する（`FACTORY_NOT_READY` → 実配線完了に更新）
+- [x] `.claude/skills/aiworkflow-requirements/references/rag-search-hybrid.md` を更新する（factory 設計の最新状態を反映）
+- [x] `.claude/skills/aiworkflow-requirements/references/rag-query-pipeline.md` を更新する（pipeline runtime snapshot を更新）
 
 **条件付き（契約変更があった場合のみ）:**
 
@@ -115,18 +115,18 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 **API 判定（変更なし）:**
 
-- [ ] `api-*.md` は `N/A` 判定を明記する（service / IPC / public API の変更なし）
+- [x] `api-*.md` は `N/A` 判定を明記する（service / IPC / public API の変更なし）
 
 **条件付きファイルの判定結果を記録する（更新不要なら理由を明示）:**
 
-| ファイル                                  | 判定   | 理由         |
-| ----------------------------------------- | ------ | ------------ |
-| `interfaces-rag.md`                       | 未判定 | 実装後に確認 |
-| `interfaces-rag-search.md`                | 未判定 | 実装後に確認 |
-| `interfaces-rag-knowledge-graph-store.md` | 未判定 | 実装後に確認 |
-| `rag-search-graph.md`                     | 未判定 | 実装後に確認 |
-| `rag-search-crag.md`                      | 未判定 | 実装後に確認 |
-| `rag-services.md`                         | 未判定 | 実装後に確認 |
+| ファイル                                  | 判定 | 理由                                        |
+| ----------------------------------------- | ---- | ------------------------------------------- |
+| `interfaces-rag.md`                       | N/A  | `ILLMProvider` 契約変更なし                 |
+| `interfaces-rag-search.md`                | N/A  | `ISearchStrategy` 契約変更なし              |
+| `interfaces-rag-knowledge-graph-store.md` | N/A  | `IKnowledgeGraphStore` 契約変更なし         |
+| `rag-search-graph.md`                     | N/A  | GraphSearchStrategy 契約変更なし            |
+| `rag-search-crag.md`                      | N/A  | `CRAGOptions` / `IWebSearcher` 契約変更なし |
+| `rag-services.md`                         | 更新 | current inventory の stub 記述が stale      |
 
 ## Task 3: documentation-changelog / summary
 
@@ -144,7 +144,7 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 ## Task 4: 未タスク検出
 
-> **P3 / P38 警告**: 0 件でも指示書ファイルを `docs/30-workflows/hybrid-rag-factory-wiring/unassigned-task/` に作成する。レポートだけでは不十分。
+> **P3 / P38 警告**: 0 件でも指示書ファイルを `docs/30-workflows/unassigned-task/` に作成する。レポートだけでは不十分。
 
 ### 手順
 
@@ -152,7 +152,7 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 2. `graph queryType` 伝播改善（FU-01）を未タスク化するか最終判定する
 3. `ILLMClient` 統一（FU-02）を未タスク化するか最終判定する
 4. 以下の 3 ステップを全て実施する（P58 対策: 設計 task でも省略不可）:
-   1. `docs/30-workflows/hybrid-rag-factory-wiring/unassigned-task/` に指示書ファイルを作成する
+   1. `docs/30-workflows/unassigned-task/` に指示書ファイルを作成する
    2. `.claude/skills/aiworkflow-requirements/references/task-workflow.md` 残課題テーブルに登録する
    3. 関連仕様書（`rag-search-hybrid.md` 等）に参照リンクを追加する
 5. `outputs/phase-12/unassigned-task-report.md` を 0 件でも作成する
@@ -222,19 +222,19 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 ## 完了条件
 
-- [ ] implementation-guide.md が Part 1（日常例え必須）/ Part 2 を含む
-- [ ] LOGS.md が 2 ファイル（aiworkflow-requirements / task-specification-creator）更新済み
-- [ ] SKILL.md 変更履歴が 2 ファイル更新済み（P29 対策）
-- [ ] topic-map.md が再生成済み（P2 対策）
-- [ ] 必須 3 ファイル（architecture-rag.md / rag-search-hybrid.md / rag-query-pipeline.md）の same-wave sync が実施済み
-- [ ] 条件付きファイルの判定結果が記録されている
-- [ ] API N/A 判定が記録されている
-- [ ] unassigned-task-report.md が 0 件でも作成されている（P3 対策）
-- [ ] 未タスクがある場合は 3 ステップ（指示書 / task-workflow 登録 / 関連仕様書リンク）が完了している
-- [ ] skill-feedback-report.md が作成されている（P28 対策）
-- [ ] `documentation-changelog.md` は全 Task 完了後に作成されている（P51 対策）
-- [ ] `documentation-changelog.md` の未タスク件数が `unassigned-task-report.md` と一致している（P59 対策）
-- [ ] `artifacts.json` と `outputs/artifacts.json` が同期している
+- [x] implementation-guide.md が Part 1（日常例え必須）/ Part 2 を含む
+- [x] LOGS.md が 2 ファイル（aiworkflow-requirements / task-specification-creator）更新済み
+- [x] SKILL.md 変更履歴が 2 ファイル更新済み（P29 対策）
+- [x] topic-map.md が再生成済み（P2 対策）
+- [x] 必須 3 ファイル（architecture-rag.md / rag-search-hybrid.md / rag-query-pipeline.md）の same-wave sync が実施済み
+- [x] 条件付きファイルの判定結果が記録されている
+- [x] API N/A 判定が記録されている
+- [x] unassigned-task-report.md が 0 件でも作成されている（P3 対策）
+- [x] 未タスクがある場合は 3 ステップ（指示書 / task-workflow 登録 / 関連仕様書リンク）が完了している
+- [x] skill-feedback-report.md が作成されている（P28 対策）
+- [x] `documentation-changelog.md` は全 Task 完了後に作成されている（P51 対策）
+- [x] `documentation-changelog.md` の未タスク件数が `unassigned-task-report.md` と一致している（P59 対策）
+- [x] `artifacts.json` と `outputs/artifacts.json` が同期している
 
 ## 多角的チェック観点（AIが判断）
 
@@ -246,11 +246,11 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本仕様書の全セクションを読み通し、漏れがないことを確認した
-- [ ] same-wave sync の対象漏れがないことを確認した（必須 3 ファイル + 条件付き判定）
-- [ ] 未タスク管理の 3 ステップが全て完了していることを確認した（P3 対策）
-- [ ] documentation-changelog が全 Task 完了後に作成されていることを確認した（P51 対策）
-- [ ] Phase 13 へ blocked 状態を引き継げることを確認した
+- [x] 本仕様書の全セクションを読み通し、漏れがないことを確認した
+- [x] same-wave sync の対象漏れがないことを確認した（必須 3 ファイル + 条件付き判定）
+- [x] 未タスク管理の 3 ステップが全て完了していることを確認した（P3 対策）
+- [x] documentation-changelog が全 Task 完了後に作成されていることを確認した（P51 対策）
+- [x] Phase 13 へ blocked 状態を引き継げることを確認した
 
 ## 次Phase
 

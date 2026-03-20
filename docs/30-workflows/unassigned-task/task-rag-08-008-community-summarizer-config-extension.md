@@ -1,11 +1,11 @@
-# HybridRAGFactory communitySummarizer Config 拡張
+# Graph global mode での communitySummarizer 活用仕上げ
 
 ## メタ情報
 
 | 項目         | 内容                                                                              |
 | ------------ | --------------------------------------------------------------------------------- |
 | タスクID     | UT-RAG-08-008                                                                     |
-| タスク名     | HybridRAGFactory communitySummarizer Config 拡張                                  |
+| タスク名     | Graph global mode での communitySummarizer 活用仕上げ                             |
 | 分類         | 機能改善                                                                          |
 | 対象機能     | HybridRAG 検索パイプライン - Factory / GraphSearchStrategy                        |
 | 優先度       | 中                                                                                |
@@ -19,64 +19,55 @@
 
 ### 1.1 背景
 
-`HybridRAGFactory.createFull()` では `GraphSearchStrategy` に `communitySummarizer` を渡すための Config フィールドが未定義である。`GraphSearchStrategy` が Global クエリ（`queryType === "global"`）に対応するには community summary を生成する `ICommunitySummarizer` が必要だが、現状の `FullHybridRAGConfig` にはこのフィールドが存在しない。
+`HybridRAGFactory.createFull()` から `GraphSearchStrategy` への `communitySummarizer` 配線自体は完了している。一方で、`HybridRAGEngine` から graph strategy へ `queryType` が伝播していないため、Global クエリでも graph search は `local` mode 相当で動作し、community summary を活かしきれていない。
 
 ### 1.2 問題点・課題
 
-- `FullHybridRAGConfig` に `communitySummarizer?: ICommunitySummarizer` フィールドがないため、Factory から `GraphSearchStrategy` へ community summarizer を渡す経路がない。
-- UT-RAG-08-006（queryType 伝播）で Global クエリ分岐を実装しても、summarizer が null のままでは global search が機能しない。
-- Phase 3 の多角的チェック観点「`communitySummarizer` を optional のまま full config に含める妥当性があるか」に対し、optional で含めることが妥当と判定済み（必須にすると既存のテスト環境構築コストが増加する）。
+- UT-RAG-08-006（queryType 伝播）を実装しても、graph strategy 側で global path を使い分ける仕上げが不足すると community summary を活用できない。
+- current docs では「config 未定義」と誤記されやすく、実装済み部分と未実装部分の境界が曖昧だった。
+- Phase 10 FU-03 として残すべきなのは config 追加そのものではなく、global graph mode の end-to-end 利用完了である。
 
 ## 2. スコープ
 
 ### 含む
 
-- `FullHybridRAGConfig` への `communitySummarizer?: ICommunitySummarizer` フィールド追加
-- `HybridRAGFactory.createFull()` から `GraphSearchStrategy` へ `communitySummarizer` を渡す実装
-- `ICommunitySummarizer` インターフェース定義（未定義の場合）
-- `communitySummarizer` が未指定のときの明示的な null 扱い（暗黙 fallback 禁止 - P62 準拠）
+- graph queryType 伝播後に global mode で `communitySummarizer` を活用する探索経路の実装
+- 必要に応じた `GraphSearchStrategy` / `HybridRAGEngine` / test の同時更新
+- `communitySummarizer` が未指定のときの graceful degradation 方針の明文化
 
 ### 含まない
 
-- `ICommunitySummarizer` の具体的な実装クラス（Knowledge Graph 側のスコープ）
-- `createLite()` への追加（Lite 版は graph を除外しているため対象外）
-- UT-RAG-08-006 の queryType 伝播ロジック本体
+- `ICommunitySummarizer` インターフェース定義そのものの新設
+- `communitySummarizer` フィールド追加（実装済み）
+- `createLite()` への追加
 
 ## 3. 技術コンテキスト
 
-### 想定インターフェース
+### 現状整理
 
 ```typescript
-// ICommunitySummarizer（未定義の場合は新規定義）
-export interface ICommunitySummarizer {
-  summarize(communityId: string): Promise<string>;
-  summarizeBatch(communityIds: string[]): Promise<Map<string, string>>;
-}
-
-// FullHybridRAGConfig 拡張
+// 既に実装済み
 export interface FullHybridRAGConfig {
-  // ...既存フィールド...
-  communitySummarizer?: ICommunitySummarizer; // optional: Global クエリ対応時のみ必要
+  communitySummarizer?: ICommunitySummarizer;
 }
 ```
 
-### Factory での使用箇所
+### 今回の未完了部分
 
 ```typescript
-// createFull() 内
-const graphStrategy = new GraphSearchStrategy(
-  config.graphStore,
-  config.communitySummarizer ?? null, // optional → null fallback（明示的）
-);
+// HybridRAGEngine.search() 側
+const queryType = classification.data.type;
+// current: graph strategy に queryType を渡していない
+await graphStrategy.search(query, limit, filters);
 ```
 
 ### 関連ファイル
 
-| ファイル                                                       | 役割                               |
-| -------------------------------------------------------------- | ---------------------------------- |
-| `packages/shared/src/services/search/hybrid-rag-factory.ts`    | Config 拡張と Factory 実装         |
-| `packages/shared/src/services/search/graph-search-strategy.ts` | communitySummarizer を受け取る対象 |
-| `packages/shared/src/services/search/interfaces.ts`            | ICommunitySummarizer 定義先候補    |
+| ファイル                                                                  | 役割                               |
+| ------------------------------------------------------------------------- | ---------------------------------- |
+| `packages/shared/src/services/search/hybrid-rag-engine.ts`                | queryType 伝播元                   |
+| `packages/shared/src/services/search/strategies/graph-search-strategy.ts` | global mode 活用先                 |
+| `packages/shared/src/services/search/hybrid-rag-factory.ts`               | `communitySummarizer` 配線済み実装 |
 
 ## 4. 依存タスク
 
@@ -89,15 +80,22 @@ UT-RAG-08-002 完了後に実施すること。UT-RAG-08-006 と並列実施も�
 
 ## 5. 受入基準
 
-- [ ] `FullHybridRAGConfig` に `communitySummarizer?: ICommunitySummarizer` フィールドが追加されていること
-- [ ] `createFull()` が `communitySummarizer` を `GraphSearchStrategy` に渡していること
-- [ ] `communitySummarizer` が未指定のとき `null` として明示的に渡されること（暗黙 fallback なし）
-- [ ] `ICommunitySummarizer` インターフェースが定義されていること
+- [ ] global query で graph search が `communitySummarizer` を活用する経路を持つこと
+- [ ] queryType 非伝播が解消され、必要な mode 切替が行われること
+- [ ] `communitySummarizer` 未指定時の graceful degradation が明文化されていること
 - [ ] 全テストが PASS すること
 - [ ] `pnpm typecheck` がエラーゼロで通ること
 
-## 6. 設計判断メモ
+## 6. 苦戦箇所（UT-RAG-08-002 での知見）
 
-- `communitySummarizer` を optional にする理由: 既存のテスト環境（mock 不要）を壊さないため。Global クエリが不要なユースケースでも createFull() を使用できる。
-- P62（暗黙 fallback 禁止）: `communitySummarizer` が未指定のとき `new DefaultCommunitySummarizer()` のような暗黙生成は行わず、明示的に `null` として渡す。
-- `createLite()` は graph 検索を含まないため本タスクの対象外。
+| 箇所                            | 内容                                                                                                                                                                                                                             | 対策                                                                                                                     |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| config 実装済み vs 未実装の境界 | `FullHybridRAGConfig.communitySummarizer` フィールドと Factory→GraphSearchStrategy の配線は完了済みだが、Engine→Strategy の queryType 伝播が欠落しているため global path が動作しない。仕様書に「config 未定義」と誤記されやすい | 実装前に `grep -rn "communitySummarizer" packages/` で現状の配線を確認し、「何が済み・何が未済」を明確にしてから着手する |
+| P62: 暗黙 fallback 禁止         | `communitySummarizer` 未指定時に内部でデフォルトインスタンスを生成する誘惑があるが、P62 違反になる                                                                                                                               | 未指定時は local mode にフォールバックし、ログで「communitySummarizer 未設定のため local mode で実行」と明示する         |
+| UT-RAG-08-006 との依存関係      | queryType 伝播（UT-RAG-08-006）なしでは global path のテストが書けない。並列着手は可能だが、結合テストは UT-RAG-08-006 完了後に実施する必要がある                                                                                | 単体テストでは queryType を直接注入して global path を検証し、結合テストは UT-RAG-08-006 完了後に追加する                |
+
+## 7. 設計判断メモ
+
+- `communitySummarizer` 自体は optional のままでよい。問題は「渡せるか」ではなく「global path で使えているか」。
+- P62（暗黙 fallback 禁止）により、summarizer の暗黙生成は行わない。
+- `createLite()` は graph 検索を持つが、今回の仕上げ対象は full path の global mode に限定する。

@@ -1,0 +1,7 @@
+{
+  "taskId": "UT-RAG-08-002",
+  "phase": 11,
+  "mode": "NON_VISUAL",
+  "screenshotsRequired": false,
+  "reason": "Service wiring task. Command transcript and manual test result are the canonical evidence."
+}

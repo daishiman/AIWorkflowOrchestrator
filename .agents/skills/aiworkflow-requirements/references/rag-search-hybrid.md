@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| v1.2.4     | 2026-03-21 | UT-RAG-08-002 実装完了反映: factory method 状態、current runtime snapshot、config 契約、follow-up 定義を実装実体へ同期 |
 | v1.2.3     | 2026-03-20 | UT-RAG-08-002 Phase 1-13 仕様書作成完了を反映: Factory 設計（3LLM系統分離・Reranker4分岐・CRAG条件分岐）を記録、Phase 3 レビュー結果を追記、wiring blocker 更新 |
 | v1.2.2     | 2026-03-20 | UT-RAG-08-002 実装準備: 仕様抽出順を契約正本優先へ補正し、graph store 契約と same-wave 完了粒度を追記 |
 | v1.2.1     | 2026-03-20 | UT-RAG-08-002 実装準備: wiring blocker checklist と Phase 12 same-wave sync 対象を追記 |
@@ -137,18 +138,18 @@ HybridRAGEngineのファクトリクラス。設定に基づいて適切なコ�
 
 | メソッド           | 状態 | 説明 |
 | ------------------ | ---- | ---- |
-| createFull()       | guidance stub | フル機能エンジン用 entry point。current runtime では `[FACTORY_NOT_READY]` を含む Error を throw |
-| createLite()       | guidance stub | 軽量版エンジン用 entry point。current runtime では `[FACTORY_NOT_READY]` を含む Error を throw |
+| createFull()       | 実装済み | フル機能エンジン用 entry point。`HybridRAGEngine` を返し、classifier / 3 strategy / fusion / reranker / CRAG を配線する |
+| createLite()       | 実装済み | 軽量版エンジン用 entry point。rule-based classifier + no-op reranker + null CRAG を返す |
 | createForTesting() | 実装済 | テスト用エンジン（モック注入） |
 
-### current runtime snapshot（2026-03-20）
+### current runtime snapshot（2026-03-21）
 
 | 項目 | 状態 |
 | --- | --- |
-| production wiring | 未接続（仕様書作成完了・実装待ち） |
-| 仕様書ステータス | UT-RAG-08-002 Phase 1-13 完了。実装の準備が整った状態 |
-| local placeholder types | `IEmbeddingProvider` / `IKnowledgeGraphStore` / `ILLMClient` / `IWebSearcher` をファイル内 placeholder として保持 |
-| 推奨呼び出し | production code は `createFull()` / `createLite()` を前提にしない。テスト用途のみ `createForTesting()` を使用 |
+| production wiring | 接続済み |
+| 仕様書ステータス | UT-RAG-08-002 Phase 12 完了。Phase 13 PR 作成のみ未着手 |
+| local placeholder types | 0件。実型 import へ置換済み |
+| 推奨呼び出し | production code では `createFull()` / `createLite()` を利用可能。テスト用途では `createForTesting()` を利用 |
 
 ### Phase 3 設計レビュー結果（UT-RAG-08-002）
 
@@ -180,9 +181,12 @@ HybridRAGEngineのファクトリクラス。設定に基づいて適切なコ�
 | db                | DrizzleClient        | ✅   | データベースクライアント                |
 | embeddingProvider | IEmbeddingProvider   | ✅   | 埋め込みプロバイダー                    |
 | graphStore        | IKnowledgeGraphStore | ✅   | Knowledge Graphストア                   |
-| llmClient         | ILLMClient           | ✅   | LLMクライアント                         |
+| llmProvider       | ILLMProvider         | ✅   | QueryClassifier 用                      |
 | rerankerType      | string               | ✅   | "cohere" \| "voyage" \| "llm" \| "none" |
+| rerankerLlmClient | ILLMClient           |      | `rerankerType === "llm"` 時に必須       |
+| cragLlmClient     | ILLMClient           |      | `enableCRAG === true` 時に必須          |
 | enableCRAG        | boolean              |      | CRAG有効化                              |
+| communitySummarizer | ICommunitySummarizer |      | GraphSearchStrategy の optional dependency |
 | webSearcher       | IWebSearcher         |      | Web検索プロバイダー                     |
 
 ### 実装準備メモ（UT-RAG-08-002）
@@ -207,10 +211,10 @@ UT-RAG-08-002 のような Factory wiring task では、以下を「依存が揃
 
 | blocker | 現状 | 必要な対応 | ステータス |
 | --- | --- | --- | --- |
-| `KeywordSearchStrategy` 非互換 | `HybridRAGEngine` が要求する `ISearchStrategy` を満たさない | `KeywordSearchStrategyAdapter` を追加する | 仕様確定済み（Phase 5 で実装） |
+| `KeywordSearchStrategy` 非互換 | `HybridRAGEngine` が要求する `ISearchStrategy` を満たさない | `KeywordSearchStrategyAdapter` を追加する | 解消済み |
 | QueryClassifier / Reranker / CRAG の LLM 形状差分 | `ILLMProvider` / shared `ILLMClient` / CRAG `ILLMClient` が分裂している | config 側で `llmProvider` / `rerankerLlmClient` / `cragLlmClient` を区別（alias 設計） | 仕様確定済み（DT-01/DT-02） |
-| graph queryType 伝播不足 | current engine は graph strategy へ `queryType` を渡さない | limitation として記録し、follow-up 化 | Phase 10 follow-up 候補として記録済み |
-| current runtime snapshot 差分 | system spec では `guidance stub` が正本 | Phase 12 で same-wave sync | 同期済み（2026-03-20） |
+| graph queryType 伝播不足 | current engine は graph strategy へ `queryType` を渡さない | limitation として記録し、follow-up 化 | 未解消（UT-RAG-08-006） |
+| current runtime snapshot 差分 | system spec では `guidance stub` が正本 | Phase 12 で same-wave sync | 解消済み（2026-03-21） |
 
 ### 型互換性メモ
 
@@ -264,7 +268,7 @@ UT-RAG-08-002 Phase 3/10 レビューで formalize された follow-up 未タス
 | ------------- | ----------------------------------------------- | ------ | ----------------------------- | ---------- |
 | UT-RAG-08-006 | GraphSearchStrategy queryType 伝播改善          | 中     | Phase 3 多角的チェック / Phase 10 FU-01 | `docs/30-workflows/unassigned-task/task-rag-08-006-graph-query-type-propagation.md` |
 | UT-RAG-08-007 | ILLMClient 型定義統一（UT-RAG-08-002 wave）     | 中     | Phase 10 FU-02                | `docs/30-workflows/unassigned-task/task-rag-08-007-illmclient-type-unification.md` |
-| UT-RAG-08-008 | HybridRAGFactory communitySummarizer Config 拡張 | 中     | Phase 3 多角的チェック / Phase 10 FU-03 | `docs/30-workflows/unassigned-task/task-rag-08-008-community-summarizer-config-extension.md` |
+| UT-RAG-08-008 | Graph global mode での communitySummarizer 活用仕上げ | 中     | Phase 3 多角的チェック / Phase 10 FU-03 | `docs/30-workflows/unassigned-task/task-rag-08-008-community-summarizer-config-extension.md` |
 - `interfaces-rag-search.md`
 - `interfaces-rag-knowledge-graph-store.md`
 - `rag-search-graph.md`

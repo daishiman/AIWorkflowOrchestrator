@@ -11,6 +11,7 @@
 
 | バージョン | 日付       | 変更内容                                                   |
 | ---------- | ---------- | ---------------------------------------------------------- |
+| v1.2.1     | 2026-03-21 | UT-RAG-08-002 実装完了反映: createFull/createLite を実装済みへ更新し、graph queryType 非伝播を既知制約として明記 |
 | v1.2.0     | 2026-03-20 | UT-RAG-08-002 Phase 1-13 仕様書作成完了を反映: HybridRAGFactory pipeline runtime を更新、createFull/createLite 設計詳細を追記 |
 | v1.1.1     | 2026-03-19 | Task08 current-state sync: GraphRAG fallback metadata と HybridRAGFactory not-ready runtime を追記 |
 | v1.0.0     | 2025-01-20 | 初版作成                                                   |
@@ -224,11 +225,11 @@ Corrective RAGで結果品質を評価・補正する。品質に応じて3つ�
 
 | メソッド | 用途 | 状態 |
 | --- | --- | --- |
-| createFull() | フル機能版（LLM分類、CRAG有効） | 仕様確定済み（UT-RAG-08-002）、実装待ち |
-| createLite() | 軽量版（ルールベース、CRAG無効） | 仕様確定済み（UT-RAG-08-002）、実装待ち |
+| createFull() | フル機能版（LLM分類、CRAG有効） | 実装済み |
+| createLite() | 軽量版（ルールベース、CRAG無効） | 実装済み |
 | createForTesting() | テスト用（モック注入可能） | 実装済 |
 
-**NOTE**: current production runtime では createFull() / createLite() を前提にしない。`[FACTORY_NOT_READY]` guidance stub のまま。仕様書作成完了（Phase 1-13）後も実装完了まで guidance Error を返す。
+**NOTE**: current runtime では createFull() / createLite() を production wiring として利用できる。既知制約は graph queryType 非伝播のみで、GraphSearchStrategy は `local` mode 相当で動作する。
 
 ### createFull() 組み立て設計（UT-RAG-08-002）
 

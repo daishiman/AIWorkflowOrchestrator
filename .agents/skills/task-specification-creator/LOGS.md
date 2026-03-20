@@ -4,6 +4,18 @@
 
 ---
 
+## UT-RAG-08-002 Phase 12 最終更新完了（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 最終更新
+- **Result**: success
+- **Notes**:
+  - workflow root / phase-10 / phase-11 / phase-12 の未完了チェックを outputs と同期
+  - `outputs/phase-2/contract-matrix.md` と `outputs/phase-7/integration-test.md` を追加して artifact inventory 欠落を解消
+  - unassigned path を `docs/30-workflows/unassigned-task/` に統一し、UT-RAG-08-008 の task 定義を実装実体に合わせて更新
+
+---
+
 ## UT-RAG-08-002 仕様書作成完了（2026-03-20）
 
 - **Agent**: task-specification-creator

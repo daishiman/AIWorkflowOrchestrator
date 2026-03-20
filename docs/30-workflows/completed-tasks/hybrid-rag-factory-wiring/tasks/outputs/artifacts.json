@@ -3,19 +3,19 @@
   "title": "HybridRAGFactory.createFull/createLite 実配線",
   "type": "implementation",
   "priority": "high",
-  "status": "spec_created",
+  "status": "completed",
   "phases": [
     {
       "phase": 1,
       "name": "要件定義",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-1-requirements.md",
       "artifacts": ["outputs/phase-1/requirements.md"]
     },
     {
       "phase": 2,
       "name": "設計",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-2-design.md",
       "artifacts": [
         "outputs/phase-2/design.md",
@@ -25,35 +25,35 @@
     {
       "phase": 3,
       "name": "設計レビュー",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-3-design-review.md",
       "artifacts": ["outputs/phase-3/design-review.md"]
     },
     {
       "phase": 4,
       "name": "テスト作成",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-4-test-creation.md",
       "artifacts": ["outputs/phase-4/test-matrix.md"]
     },
     {
       "phase": 5,
       "name": "実装",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-5-implementation.md",
       "artifacts": ["outputs/phase-5/implementation-plan.md"]
     },
     {
       "phase": 6,
       "name": "テスト拡充",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-6-test-expansion.md",
       "artifacts": ["outputs/phase-6/regression-plan.md"]
     },
     {
       "phase": 7,
       "name": "カバレッジ確認",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-7-coverage-check.md",
       "artifacts": [
         "outputs/phase-7/coverage-report.md",
@@ -63,21 +63,21 @@
     {
       "phase": 8,
       "name": "リファクタリング",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-8-refactoring.md",
       "artifacts": ["outputs/phase-8/refactoring-log.md"]
     },
     {
       "phase": 9,
       "name": "品質保証",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-9-quality-assurance.md",
       "artifacts": ["outputs/phase-9/quality-report.md"]
     },
     {
       "phase": 10,
       "name": "最終レビュー",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-10-final-review.md",
       "artifacts": [
         "outputs/phase-10/final-review.md",
@@ -87,7 +87,7 @@
     {
       "phase": 11,
       "name": "手動テスト",
-      "status": "not_started",
+      "status": "completed",
       "file": "phase-11-manual-test.md",
       "artifacts": [
         "outputs/phase-11/manual-test-result.md",
@@ -122,39 +122,39 @@
     {
       "id": "AC-01",
       "description": "createFull() が required dependency を満たしたとき HybridRAGEngine を返す",
-      "verified": false
+      "verified": true
     },
     {
       "id": "AC-02",
       "description": "createLite() が RuleBasedQueryClassifier + keyword adapter + VectorSearchStrategy + GraphSearchStrategy + NoOpReranker + null CRAG で engine を返す",
-      "verified": false
+      "verified": true
     },
     {
       "id": "AC-03",
       "description": "FullHybridRAGConfig が llmProvider、rerankerLlmClient、cragLlmClient を責務分離して定義する",
-      "verified": false
+      "verified": true
     },
     {
       "id": "AC-04",
       "description": "@placeholder 型と FACTORY_NOT_READY が除去される",
-      "verified": false
+      "verified": true
     },
     {
       "id": "AC-05",
       "description": "cohereApiKey / voyageApiKey / cragLlmClient など必須依存に silent fallback がない",
-      "verified": false
+      "verified": true
     },
     {
       "id": "AC-06",
       "description": "Phase 12 で architecture-rag.md、rag-search-hybrid.md、rag-query-pipeline.md、task-workflow.md、lessons-learned-current.md を same-wave で更新し、契約変更時のみ interfaces-rag-search.md / interfaces-rag-knowledge-graph-store.md / rag-search-graph.md / rag-search-crag.md / rag-services.md を追加同期する",
-      "verified": false
+      "verified": true
     },
     {
       "id": "AC-07",
       "description": "Phase 4 テストケースが Phase 2 DT-07 の全バリデーション条件をカバーしている",
-      "verified": false
+      "verified": true
     }
   ],
   "createdAt": "2026-03-20",
-  "updatedAt": "2026-03-20"
+  "updatedAt": "2026-03-21"
 }

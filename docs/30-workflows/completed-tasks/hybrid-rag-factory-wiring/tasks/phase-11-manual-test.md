@@ -26,12 +26,12 @@ UI ではなく service wiring task として、non-visual walkthrough を実施
 
 ## 実行タスク
 
-- [ ] command walkthrough: typecheck / test / sample invocation を実行しログを記録する
-- [ ] keyword adapter 動作確認: adapter を経由した keyword search の接続を確認する
-- [ ] reranker 4 分岐の確認: cohere / voyage / llm / none の各分岐が正しく生成されることを確認する
-- [ ] CRAG 条件分岐の確認: `enableCRAG === true` / `false` の両ケースを確認する
-- [ ] limitation walkthrough: graph queryType limitation を手順で再確認する
-- [ ] handoff 整理: Phase 12 の implementation guide に流用できる材料をまとめる
+- [x] command walkthrough: typecheck / test / sample invocation を実行しログを記録する
+- [x] keyword adapter 動作確認: adapter を経由した keyword search の接続を確認する
+- [x] reranker 4 分岐の確認: cohere / voyage / llm / none の各分岐が正しく生成されることを確認する
+- [x] CRAG 条件分岐の確認: `enableCRAG === true` / `false` の両ケースを確認する
+- [x] limitation walkthrough: graph queryType limitation を手順で再確認する
+- [x] handoff 整理: Phase 12 の implementation guide に流用できる材料をまとめる
 
 ## 手動テスト手順
 
@@ -131,6 +131,12 @@ grep -rn "FACTORY_NOT_READY" packages/shared/src/services/search/hybrid-rag-fact
 - これは defect ではなく limitation として記録する。
 - `command-transcript.md` に「graph strategy は local mode で動作する（KL-01）」と明示する。
 
+## 統合テスト連携
+
+- manual walkthrough では `createFull()` / `createLite()` の sample invocation を通じて、factory から engine までの組み立て順序を追う。
+- typecheck / vitest / grep の 3 種の証跡で、実装・テスト・既知制約の整合を確認する。
+- NON_VISUAL task のため、画面キャプチャの代わりに checklist と transcript を統合証跡として保持する。
+
 ## implementation guide 向け材料
 
 Phase 12 の Part 1（中学生レベル）で使う説明素材:
@@ -165,13 +171,13 @@ Phase 12 の Part 2（開発者向け）で使う説明素材:
 
 ## 完了条件
 
-- [ ] NON_VISUAL walkthrough の理由が明記されている（P53 準拠）
-- [ ] MT-01〜MT-08 の確認観点が全て実施されている
-- [ ] 代表コマンドの実行結果ログが `command-transcript.md` に記録されている
-- [ ] 全テスト PASS が `manual-test-result.md` に記録されている
-- [ ] `@placeholder` / `FACTORY_NOT_READY` ゼロ件が確認されている
-- [ ] limitation（KL-01 / KL-02）が再確認されている
-- [ ] Phase 12 implementation guide の材料がまとまっている
+- [x] NON_VISUAL walkthrough の理由が明記されている（P53 準拠）
+- [x] MT-01〜MT-08 の確認観点が全て実施されている
+- [x] 代表コマンドの実行結果ログが `command-transcript.md` に記録されている
+- [x] 全テスト PASS が `manual-test-result.md` に記録されている
+- [x] `@placeholder` / `FACTORY_NOT_READY` ゼロ件が確認されている
+- [x] limitation（KL-01 / KL-02）が再確認されている
+- [x] Phase 12 implementation guide の材料がまとまっている
 
 ## 多角的チェック観点（AIが判断）
 
@@ -182,10 +188,10 @@ Phase 12 の Part 2（開発者向け）で使う説明素材:
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本仕様書の全セクションを読み通し、漏れがないことを確認した
-- [ ] MT-01〜MT-08 の全手順を実施した
-- [ ] handoff 材料が Phase 12 に渡せることを確認した
-- [ ] NON_VISUAL 判定の根拠が記録されていることを確認した
+- [x] 本仕様書の全セクションを読み通し、漏れがないことを確認した
+- [x] MT-01〜MT-08 の全手順を実施した
+- [x] handoff 材料が Phase 12 に渡せることを確認した
+- [x] NON_VISUAL 判定の根拠が記録されていることを確認した
 
 ## 次Phase
 

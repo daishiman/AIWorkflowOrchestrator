@@ -10,7 +10,7 @@
 本ドキュメントはAIWorkflowOrchestratorプロジェクトのRAG（Retrieval-Augmented Generation）アーキテクチャのインデックスです。
 各カテゴリは以下の分割ドキュメントで詳細を定義しています。
 
-## current runtime snapshot（2026-03-19）
+## current runtime snapshot（2026-03-21）
 
 | 領域 | current status | 主参照 |
 | --- | --- | --- |
@@ -18,7 +18,7 @@
 | AI IPC legacy index | `AI_INDEX` は zero-count + `errors: string[]` の guidance stub | `api-ipc-system-core.md`, `llm-ipc-types.md` |
 | Community IPC | `COMMUNITY_*` は `NOT_IN_SCOPE` guidance-only | `api-ipc-system-core.md`, `llm-ipc-types.md` |
 | GraphRAG | community search failure を warn + `fallbackReason` で可視化 | `interfaces-rag-graphrag-query.md`, `rag-query-pipeline.md` |
-| HybridRAGFactory | 仕様書作成完了（Phase 1-13、UT-RAG-08-002）、実装待ち。`createFull()` / `createLite()` は `[FACTORY_NOT_READY]` guidance stub のまま | `rag-search-hybrid.md` |
+| HybridRAGFactory | 実装完了。`createFull()` / `createLite()` は `HybridRAGEngine` を返し、keyword adapter・3系統LLM分離・CRAG条件分岐を current runtime として提供する。graph queryType 非伝播は follow-up 管理 | `rag-search-hybrid.md` |
 | CommunitySummarizer | embedding failure は partial failure として扱い、要約保存を継続 | `interfaces-rag-community-summarization.md` |
 
 ---
@@ -138,6 +138,7 @@ config 側で `rerankerLlmClient` と `cragLlmClient` を別フィールドと�
 
 | Version | Date       | Changes                                            |
 | ------- | ---------- | -------------------------------------------------- |
+| 2.0.3   | 2026-03-21 | UT-RAG-08-002 実装完了を反映。HybridRAGFactory runtime を実配線済みに更新し、known limitation を follow-up 前提へ補正 |
 | 2.0.2   | 2026-03-20 | UT-RAG-08-002 Phase 1-13 仕様書作成完了を反映。HybridRAGFactory runtime を「仕様書作成完了・実装待ち」に更新。P64（ILLMClient 型二重定義）known issue を追記 |
 | 2.0.1   | 2026-03-19 | Task08 current-state snapshot を追加。IPC legacy guidance / GraphRAG fallback / HybridRAGFactory not-ready / CommunitySummarizer partial failure を反映 |
 | 2.0.0   | 2026-01-26 | 5ファイルに分割（945行→インデックス+詳細ファイル） |

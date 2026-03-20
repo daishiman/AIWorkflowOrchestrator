@@ -61,12 +61,12 @@ AIを使った「賢い検索エンジン」を組み立てる**工場**を完�
 
 部品が足りないまま組み立てを始めると、途中で止まって大変なことになります。だから事前に止めます。
 
-| チェック内容                                     | 足りないときのメッセージ                             |
-| ------------------------------------------------ | ---------------------------------------------------- |
-| `rerankerType=cohere` なのに API キーなし        | `cohereApiKey is required for rerankerType=cohere`   |
-| `rerankerType=voyage` なのに API キーなし        | `voyageApiKey is required for rerankerType=voyage`   |
-| `rerankerType=llm` なのに LLM クライアントなし   | `rerankerLlmClient is required for rerankerType=llm` |
-| `enableCRAG=true` なのに CRAG 用クライアントなし | `cragLlmClient is required when enableCRAG=true`     |
+| チェック内容                                     | 足りないときのメッセージ                                                                  |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| `rerankerType=cohere` なのに API キーなし        | `HybridRAGFactory.createFull(): cohereApiKey is required when rerankerType is 'cohere'`   |
+| `rerankerType=voyage` なのに API キーなし        | `HybridRAGFactory.createFull(): voyageApiKey is required when rerankerType is 'voyage'`   |
+| `rerankerType=llm` なのに LLM クライアントなし   | `HybridRAGFactory.createFull(): rerankerLlmClient is required when rerankerType is 'llm'` |
+| `enableCRAG=true` なのに CRAG 用クライアントなし | `HybridRAGFactory.createFull(): cragLlmClient is required when enableCRAG is true`        |
 
 ### 3 種の AI スタッフ
 
@@ -84,7 +84,7 @@ AIを使った「賢い検索エンジン」を組み立てる**工場**を完�
 
 グラフ検索（`GraphSearchStrategy`）には現在ひとつの制約があります。
 
-検索エンジン（`HybridRAGEngine`）は質問の種類（`queryType`）を内部で判断しますが、その情報をグラフ検索機まで**届けていません**。グラフ検索機は常に「汎用の検索」として動作します。
+検索エンジン（`HybridRAGEngine`）は質問の種類（`queryType`）を内部で判断しますが、その情報をグラフ検索機まで**届けていません**。グラフ検索機は常に `local` mode として動作します。
 
 これは「本来は渡すべきだが、今回のタスクでは直さない」と決めた既知の制約です（KL-01: queryType 非伝播）。将来の改善タスクに回されています。
 
@@ -153,7 +153,6 @@ export interface FullHybridRAGConfig {
   // Optional
   communitySummarizer?: ICommunitySummarizer;
   rrfK?: number;
-  ambiguousFilterThreshold?: number;
 }
 ```
 
@@ -261,22 +260,22 @@ static createLite(config: LiteHybridRAGConfig): HybridRAGEngine {
 function validateFullConfig(config: FullHybridRAGConfig): void {
   if (config.rerankerType === "cohere" && !config.cohereApiKey?.trim()) {
     throw new Error(
-      "HybridRAGFactory.createFull(): cohereApiKey is required for rerankerType=cohere",
+      "HybridRAGFactory.createFull(): cohereApiKey is required when rerankerType is 'cohere'",
     );
   }
   if (config.rerankerType === "voyage" && !config.voyageApiKey?.trim()) {
     throw new Error(
-      "HybridRAGFactory.createFull(): voyageApiKey is required for rerankerType=voyage",
+      "HybridRAGFactory.createFull(): voyageApiKey is required when rerankerType is 'voyage'",
     );
   }
   if (config.rerankerType === "llm" && !config.rerankerLlmClient) {
     throw new Error(
-      "HybridRAGFactory.createFull(): rerankerLlmClient is required for rerankerType=llm",
+      "HybridRAGFactory.createFull(): rerankerLlmClient is required when rerankerType is 'llm'",
     );
   }
   if (config.enableCRAG === true && !config.cragLlmClient) {
     throw new Error(
-      "HybridRAGFactory.createFull(): cragLlmClient is required when enableCRAG=true",
+      "HybridRAGFactory.createFull(): cragLlmClient is required when enableCRAG is true",
     );
   }
 }
@@ -361,7 +360,7 @@ static createForTesting(mocks: TestMocks): HybridRAGEngine {
 | KL-01 | `HybridRAGEngine` が `GraphSearchStrategy` へ `queryType` を渡さない                                            | 本 task のスコープ外。follow-up タスクへ |
 | KL-02 | `RerankerLLMClient` (`../llm/types`) と `CragLLMClient` (`./crag/types`) が同名の `ILLMClient` だが別 interface | import alias で回避。統一は別タスクへ    |
 
-KL-01 の影響: graph strategy は常に汎用検索として動作する。`queryType` が `"graph"` の場合でも、graph strategy 側で最適化されたロジックを使えない。動作は正常だがパフォーマンス上限が低い。
+KL-01 の影響: graph strategy は常に `local` mode として動作する。`queryType` が `"global"` や `"relationship"` の場合でも、graph strategy 側で最適化されたロジックを使えない。動作は正常だがパフォーマンス上限が低い。
 
 KL-02 の影響: factory ファイル内では `RerankerLLMClient` / `CragLLMClient` の alias で明示的に区別できている。ただし 2 種の `ILLMClient` が型レベルで統一されていないため、caller 側が混乱するリスクがある。
 

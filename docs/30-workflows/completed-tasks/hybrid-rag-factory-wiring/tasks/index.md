@@ -10,7 +10,7 @@
 | 対象機能     | RAG Search Factory wiring                                                |
 | 優先度       | 高                                                                       |
 | 見積もり規模 | M                                                                        |
-| ステータス   | `spec_created`                                                           |
+| ステータス   | `completed`                                                              |
 | 作成日       | 2026-03-20                                                               |
 | 発見元       | `step-04-par-task-08-rag-embedding-extraction-runtime` Phase 12 未タスク |
 | GitHub Issue | `#1368`                                                                  |
@@ -19,14 +19,14 @@
 
 ### 目的
 
-`packages/shared/src/services/search/hybrid-rag-factory.ts` の `createFull()` / `createLite()` を、現行コードと system spec の両方に整合する形で本番 wiring へ移行する。
+`packages/shared/src/services/search/hybrid-rag-factory.ts` の `createFull()` / `createLite()` を本番 wiring へ移行し、Phase 12 までの成果物と system spec を current runtime に同期する。
 
 ### 現状認識
 
-1. current runtime は `FACTORY_NOT_READY` stub で止まっている。
-2. `KeywordSearchStrategy` は `HybridRAGEngine` が要求する `ISearchStrategy` と非互換である。
-3. `LLMQueryClassifier`、`LLMReranker`、`RelevanceEvaluator` は同じ `llmClient` では直接共有できない。
-4. `GraphSearchStrategy` は engine から `queryType` を受けないため、current engine 契約では local mode で動作する。
+1. `createFull()` / `createLite()` は実装済みで、`HybridRAGEngine` を返す。
+2. `KeywordSearchStrategyAdapter` が追加され、keyword search を `ISearchStrategy` 契約へ橋渡ししている。
+3. `llmProvider`、`rerankerLlmClient`、`cragLlmClient` の 3 系統分離で型ドリフトを回避している。
+4. `GraphSearchStrategy` への `queryType` 非伝播は既知制約として残し、follow-up に切り出している。
 
 ### スコープ
 
@@ -100,18 +100,18 @@
 
 | Phase | 名称             | 仕様書                                                         | ステータス    |
 | ----- | ---------------- | -------------------------------------------------------------- | ------------- |
-| 1     | 要件定義         | [phase-1-requirements.md](./phase-1-requirements.md)           | `not_started` |
-| 2     | 設計             | [phase-2-design.md](./phase-2-design.md)                       | `not_started` |
-| 3     | 設計レビュー     | [phase-3-design-review.md](./phase-3-design-review.md)         | `not_started` |
-| 4     | テスト作成       | [phase-4-test-creation.md](./phase-4-test-creation.md)         | `not_started` |
-| 5     | 実装             | [phase-5-implementation.md](./phase-5-implementation.md)       | `not_started` |
-| 6     | テスト拡充       | [phase-6-test-expansion.md](./phase-6-test-expansion.md)       | `not_started` |
-| 7     | カバレッジ確認   | [phase-7-coverage-check.md](./phase-7-coverage-check.md)       | `not_started` |
-| 8     | リファクタリング | [phase-8-refactoring.md](./phase-8-refactoring.md)             | `not_started` |
-| 9     | 品質保証         | [phase-9-quality-assurance.md](./phase-9-quality-assurance.md) | `not_started` |
-| 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)         | `not_started` |
-| 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | `not_started` |
-| 12    | ドキュメント     | [phase-12-documentation.md](./phase-12-documentation.md)       | `not_started` |
+| 1     | 要件定義         | [phase-1-requirements.md](./phase-1-requirements.md)           | `completed`   |
+| 2     | 設計             | [phase-2-design.md](./phase-2-design.md)                       | `completed`   |
+| 3     | 設計レビュー     | [phase-3-design-review.md](./phase-3-design-review.md)         | `completed`   |
+| 4     | テスト作成       | [phase-4-test-creation.md](./phase-4-test-creation.md)         | `completed`   |
+| 5     | 実装             | [phase-5-implementation.md](./phase-5-implementation.md)       | `completed`   |
+| 6     | テスト拡充       | [phase-6-test-expansion.md](./phase-6-test-expansion.md)       | `completed`   |
+| 7     | カバレッジ確認   | [phase-7-coverage-check.md](./phase-7-coverage-check.md)       | `completed`   |
+| 8     | リファクタリング | [phase-8-refactoring.md](./phase-8-refactoring.md)             | `completed`   |
+| 9     | 品質保証         | [phase-9-quality-assurance.md](./phase-9-quality-assurance.md) | `completed`   |
+| 10    | 最終レビュー     | [phase-10-final-review.md](./phase-10-final-review.md)         | `completed`   |
+| 11    | 手動テスト       | [phase-11-manual-test.md](./phase-11-manual-test.md)           | `completed`   |
+| 12    | ドキュメント     | [phase-12-documentation.md](./phase-12-documentation.md)       | `completed`   |
 | 13    | PR作成           | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | `not_started` |
 
 ## 統合テスト連携（Phase 1〜11 で必須）
@@ -119,12 +119,14 @@
 - adapter を介した keyword / semantic / graph の 3 strategy 接続を各 Phase で扱う。
 - `rerankerType` の 4 分岐と `enableCRAG` の条件分岐を各 Phase で確認する。
 - current engine contract の制約により graph queryType が local-only であることを回帰観点として記録する。
+- Phase 10 までに prefix 付きバリデーションエラーへ統一し、Phase 12 の system spec に反映する。
 
 ## Phase 完了時の必須アクション
 
 - 本 Phase 内の全タスクを 100% 実行完了と記録する。
 - `artifacts.json` と `outputs/artifacts.json` を同時に扱う。
 - Phase 12 までは commit / PR を実施しない。
+- Phase 13 は本タスクでは未着手とし、PR 作成前提の blocking state を維持する。
 
 ## 検証コマンド
 

@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-21 - UT-RAG-08-002 実装完了同期（HybridRAGFactory current runtime / backlog / lessons / artifact inventory / review output 是正） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（UT-CHATVIEW-ERROR-BANNER-I18N-001=#1398 / UT-CHATVIEW-ERROR-CODE-INVENTORY-001=#1397） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（artifact inventory / legacy register / unassigned 9セクション是正 / validate-structure） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（root canonical path 是正 / screenshot 5件 / unassigned 2件 formalize / system spec 同期） |
@@ -52,6 +53,16 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## UT-RAG-08-002 実装完了同期（2026-03-21）
+
+- タスク名: HybridRAGFactory.createFull/createLite 実配線
+- 種別: Phase 12 最終更新
+- 主な反映:
+  - `architecture-rag.md` / `rag-search-hybrid.md` / `rag-query-pipeline.md` / `rag-services.md` を実装済み runtime へ更新
+  - `task-workflow-backlog.md` に current state と follow-up 3件（UT-RAG-08-006〜008）を登録
+  - `lessons-learned-current.md` に stale-doc same-wave sync の教訓を追加
+  - workflow root / phase本文 / outputs を `completed` / `PASS` ベースへ是正
 
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
