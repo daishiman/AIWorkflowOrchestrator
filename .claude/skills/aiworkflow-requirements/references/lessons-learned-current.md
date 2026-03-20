@@ -19,9 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-20 | 2.2.0 | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 の教訓3件と Task04 system spec same-wave 追補を追加 |
-| 2026-03-20 | 2.1.2 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 の実装教訓3件（テストシグネチャ不一致・CTA ラベルドリフト・型移動 re-export）を追加 |
-| 2026-03-20 | 2.1.1 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 の Phase 12 教訓2件を追加 |
+| 2026-03-20 | 2.1.1 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査の教訓3件を追加 |
 | 2026-03-18 | 2.1.0 | 1598行超過のため分割。2026-03-15以前エントリを archive-2026-03.md へ移動。UT-TASK06-007 苦戦箇所5件を追加 |
 | 2026-03-17 | 2.0.0 | 651行超過のため4ファイルに分割しインデックス化 |
 | 2026-03-17 | 1.30.00 | TASK-SKILL-LIFECYCLE-08 仕様書作成の教訓4件を追加 |
@@ -36,7 +34,7 @@
 
 | ファイル | カテゴリ | 含まれるタスク |
 | --- | --- | --- |
-| [lessons-learned-viewtype-electron-ui.md](lessons-learned-viewtype-electron-ui.md) | ViewType / Electron UI | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 |
+| [lessons-learned-viewtype-electron-ui.md](lessons-learned-viewtype-electron-ui.md) | ViewType / Electron UI | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 |
 | [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) | IPC / Preload / AI Runtime | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001, TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 (P57-P61), TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 |
 | [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md) | テスト / 型安全 / 品質 | UT-06-001, UT-06-005 |
 | [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-SKILL-LIFECYCLE-04/05/06/07 |
@@ -51,7 +49,6 @@
 → [lessons-learned-viewtype-electron-ui.md](lessons-learned-viewtype-electron-ui.md)
 - `renderView` 分岐テスト、screenshot 到達確認、P40 テスト実行ディレクトリ依存
 - main shell handoff capture、shared DOM selector scope
-- AgentView 改善 CTA、onboarding overlay 回避、arm64 capture 経路、同形 screenshot metadata
 - Electron role ベースメニュー、Main Process エントリポイント副作用
 
 ### IPC / Preload / AI Runtime / 認証
@@ -72,34 +69,31 @@
 
 ---
 
-### 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 実装（型定義基盤）
+### 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査
 
-#### 苦戦箇所1: テストシグネチャと実装のシグネチャ不一致（function overload で解決）
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | Phase 4 テストが期待する型（`ExecutionCapabilityInput`, `CapabilityContext`, `UiStateResult`, `CtaInput`）と Phase 5 実装が提供する関数シグネチャが一致しなかった。テストは `resolveCapability(input: ExecutionCapabilityInput)` を呼び出す形で記述されていたが、実装は単純な値型を引数に取る形で記述されていた |
-| 解決策 | テストを contract-matrix の正本として扱い、実装側を function overload で修正した。既存の内部シグネチャを保持しつつ、テストが期待する型シグネチャを overload として追加することで両方に対応した |
-| 標準ルール | テストシグネチャは Phase 4 で確定した contract-matrix を正本とする。Phase 5 実装がシグネチャを変えたい場合は Phase 4 テストを更新するか、overload で両立させる |
-| 関連タスク | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 |
-
-#### 苦戦箇所2: CTA ラベルの contract-matrix とのドリフト
+#### 苦戦箇所1: ユーザー指定の current workflow root と parent workflow 想定 root がずれた
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | 実装が「チャットを開始」「ターミナルで開く」等の日本語ラベルを使っていたが、contract-matrix は「AI で実行」「ターミナルで実行」を定義していた。テストはテスト仕様書に記載された contract-matrix のラベルを期待するため、全テストが失敗した |
-| 解決策 | テストが正本のため実装側の CTA ラベルを contract-matrix 準拠の値に修正した |
-| 標準ルール | CTA ラベルは contract-matrix を正本とし、実装内のラベルはそこから派生する。ラベル変更は必ず contract-matrix の変更を先行させる |
-| 関連タスク | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 |
+| 課題 | parent workflow は `ai-chat-llm-integration-fix/tasks/01-*` を前提にしていた一方、ユーザーは `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` を current task root として指定した |
+| 解決策 | user 指定 root を canonical とし、workflow/spec 側の旧参照を drift として是正した |
+| 標準ルール | current task root をユーザーが明示した場合、その root を Phase 11/12・system spec 同期の正本として扱う |
 
-#### 苦戦箇所3: 型の位置移動時の re-export パターン
+#### 苦戦箇所2: worktree でも screenshot 証跡は Playwright + Vite harness で再生成できる
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | `AccessCapability` 型が `chatSlice.ts`（Renderer ローカル）で定義されていたが、shared パッケージへの移動が必要だった。単純に削除すると `chatSlice.ts` を import している既存コードが壊れる |
-| 解決策 | `execution-capability.ts` に型を移動し、`chatSlice.ts` から `export type { AccessCapability } from "@repo/shared"` で re-export することで後方互換性を維持した |
-| 標準ルール | shared 移動時は元の場所から re-export パターンを適用し、呼び出し元の変更を最小化する。型の import 元が `chatSlice` か `@repo/shared` かは実装側の都合であり、呼び出し元への変更なしで移行完了とする |
-| 関連タスク | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 |
+| 課題 | CLI 環境を理由に screenshot 不可と判断すると、UI task の Phase 11 が未完了のまま残る |
+| 解決策 | `arch -arm64 npx vite --config vite.e2e.config.ts` と Playwright init script で current worktree の representative screenshots を再取得した |
+| 標準ルール | worktree / CLI 環境でも、UI task かつユーザーが画面検証を要求した場合は capture script を作成して screenshot を残す |
+
+#### 苦戦箇所3: `validate-phase12-implementation-guide` の失敗を compliance 文書で握りつぶさない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | implementation guide が 10/10 要件を満たしていないのに、compliance 文書だけ完了扱いにすると Phase 12 の整合性が壊れる |
+| 解決策 | validator 実行結果を正として guide を補完し、compliance / changelog / system-spec-update-summary を同ターンで更新した |
+| 標準ルール | Phase 12 は validator 実測値を正本とし、narrative 側で完了を先に宣言しない |
 
 ---
 
@@ -422,26 +416,3 @@
 **問題**: 初回Phase 12で「worktree環境のためPR時に実施」として、LOGS.md x2、SKILL.md x2、quality-requirements.md、ipc-contract-checklist.md、phase-templates.md、task-workflow-backlog.md、未タスク指示書3件の実更新を先送りした。再監査で全10件の漏れが検出された。
 **解決策**: 即座に全ファイルを実更新して漏れを解消。
 **教訓**: P57の教訓「worktree環境でのコンフリクトリスクより、仕様書と実装の乖離リスクの方が高い」を再確認。Phase 12では「計画台帳」ではなく「実更新の完了」が完了条件。
-
-### 2026-03-20 TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 テストモック連鎖更新（P21/P35 再発）
-
-#### 苦戦箇所: 個別セレクタ追加による既存テスト大規模修正
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `useSetCurrentView` / `useSetCurrentSkillName` 個別セレクタを `store/index.ts` に追加したところ、AgentView の既存テスト（`AgentView.test.tsx`, `AgentView.layout.test.tsx`）で `vi.mock` にモックが不足して54テスト失敗。全テストファイルに2行のモック追加が必要だった |
-| 原因 | `vi.mock("@/renderer/store")` で Store 全体をモックしているため、新規 export が追加されるとモック定義の不足でテストが一斉に失敗する |
-| 解決策 | 失敗テストファイルの `vi.mock` ブロックに `useSetCurrentView: vi.fn(() => vi.fn())` / `useSetCurrentSkillName: vi.fn(() => vi.fn())` を追加 |
-| 標準ルール | Store に個別セレクタを追加する前に `grep -rn "vi.mock.*store" apps/desktop/src/` で影響テストファイルを事前特定し、モック追加をセットで実施する |
-| 関連パターン | P21（既存テストへの DI 追加時の大規模修正）、P35（DI 追加時のテストモック大規模修正） |
-| 関連タスク | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 |
-
-#### 苦戦箇所: P40 テスト実行ディレクトリ依存の再発
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `pnpm --filter @repo/desktop exec vitest run apps/desktop/src/...` ではテストファイルが見つからない。`--filter` でパッケージを指定してもパスはパッケージルート相対で解決されるため、`apps/desktop/src/...` のフルパスは不正になる |
-| 解決策 | `cd apps/desktop && pnpm exec vitest run src/...` で実行する |
-| 標準ルール | P40 準拠: テスト実行は常に対象パッケージのディレクトリからの相対パスで行う |
-| 関連パターン | P40（テスト実行ディレクトリ依存） |
-| 関連タスク | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 |

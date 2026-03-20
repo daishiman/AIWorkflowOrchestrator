@@ -6,10 +6,11 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
-| 2026-03-20 - スキル改善エージェント同期（Trigger に resolveCapability / resolveUiState / resolveCtaContract / contract-matrix 追加 / arch-execution-capability-contract.md 導線追加 / SKILL.md v9.02.07） |
-| 2026-03-20 - TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Phase 11 screen evidence 復旧（review-board screenshot 6件 / coverage 6/6 / artifacts drift 是正） |
-| 2026-03-20 - TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 same-wave sync 完了（execution responsibility canonical entrypoint 追加 / Phase 12 planned wording 是正 / old authmode bridge path 修正） |
-| 2026-03-19 - TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（SkillDetailPanel action buttons / screenshot証跡7件 / backlog path drift 是正 / workflow index undefined 解消） |
+| 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（UT-CHATVIEW-ERROR-BANNER-I18N-001=#1398 / UT-CHATVIEW-ERROR-CODE-INVENTORY-001=#1397） |
+| 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（artifact inventory / legacy register / unassigned 9セクション是正 / validate-structure） |
+| 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（root canonical path 是正 / screenshot 5件 / unassigned 2件 formalize / system spec 同期） |
+| 2026-03-19 - TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（conversationDatabase.ts Factory 関数パターン / ipc/index.ts DI シグネチャ変更 / main/index.ts will-quit ライフサイクル管理 / 未タスク3件検出） |
+| 2026-03-19 - TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 canonical path 是正（completed-tasks 正本化 / legacy phase11 screenshot 重複除去 / capture script 同期） |
 | 2026-03-18 | Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成（TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE）、SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加 |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 再監査完了（Phase 11 screenshot 3/3、Phase 12 guide 10/10、未タスク16件補完、system spec 実更新） |
 | 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了（スキル共有・公開・互換性統合 Phase 1-13 仕様書 + 設計タスク型定義・フロー設計） |
@@ -51,87 +52,57 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
-## TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 実装完了（2026-03-20）
+## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
-- タスク名: execution-responsibility-contract-foundation / Task01（型定義基盤）
-- 種別: 実装タスク（shared 型定義 + re-export）
-- 主要成果物:
-  - `packages/shared/src/types/execution-capability.ts`（新規）: AccessCapability 4状態型・UiState 3値型・BlockedInfo・CtaContract・ExecutionCapabilityStatus・ExecutionCapabilityInput・CapabilityContext・UiStateResult・CtaInput 型 + resolveCapability / resolveUiState / resolveCtaContract / assertNoSilentFallback / assertNoPrimaryCta 関数
-  - `packages/shared/src/types/auth-mode.ts`（変更）: AuthModeStatus に capability? / uiState? / blockedReason? / blockedAction? を optional 追加
-  - `apps/desktop/src/renderer/store/slices/chatSlice.ts`（変更）: AccessCapability を shared re-export に変更
-  - `packages/shared/src/types/index.ts`（変更）: execution-capability の re-export 追加
-- system spec 更新:
-  - `references/interfaces-auth-core.md`: ExecutionCapability 型定義セクション追加 + AuthModeStatus 拡張フィールド記録
-  - `references/arch-state-management-core.md`: AccessCapability shared 移動記録 + re-export パターン追加
-  - `references/lessons-learned-current.md`: 苦戦箇所3件追加（テストシグネチャ不一致・CTA ラベルドリフト・型移動 re-export）
-  - `references/task-workflow-backlog.md`: UT-EXEC-01〜03 残課題登録
+- タスク名: ChatView エラーサイレント握りつぶし修正
+- 種別: 実装 + Phase 11/12 再監査
+- 主な反映:
+  - `workflow-ai-chat-llm-integration-fix.md` に current canonical set / Task 01 契約 / follow-up 2件を追加
+  - `ui-ux-llm-selector.md` の関連 task root を current canonical path へ是正
+  - `arch-state-management-core.md` に `chatError` state の責務を追記
+  - `task-workflow-completed-chat-lifecycle-tests.md` / `task-workflow-backlog.md` / `lessons-learned-current.md` を同期
+  - screenshot capture script を追加し、`TC-11-01..05` を current workflow 配下へ固定
 
-## TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Phase 11 screen evidence 復旧（2026-03-20）
+## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（2026-03-20）
 
-- タスク名: execution-responsibility-contract-foundation
-- 種別: design task 再監査 / screen evidence 復旧
-- 主要確認:
-  - `phase-11-manual-test.md` に `テストケース` / `画面カバレッジマトリクス` を追加し、validator 互換の TC-ID / png 対応を固定
-  - dedicated review-board harness を `apps/desktop/scripts/capture-task-execution-responsibility-contract-foundation-phase11.ts` として追加
-  - `outputs/phase-11/manual-test-result.md` / `screenshot-coverage.md` / `screenshots/*.png` / `phase11-capture-metadata.json` を current workflow 配下へ追加
-  - `validate-phase11-screenshot-coverage` を 6/6 PASS、`verify-all-specs` を 13/13 PASS / warning 0、`validate-phase12-implementation-guide` を 10/10 PASS へ更新
-- system spec / workflow update status:
-  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/phase-11-manual-test.md`
-  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-11/manual-test-plan.md`
-  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-11/manual-test-result.md`
-  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-11/screenshot-plan.json`
-  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-11/screenshot-coverage.md`
-  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-11/discovered-issues.md`
-  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/artifacts.json`
-  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/artifacts.json`
+- タスク名: ChatView エラーサイレント握りつぶし修正
+- 種別: Phase 12 same-wave sync 補完
+- 主な反映:
+  - `workflow-ai-chat-llm-integration-fix-artifact-inventory.md` を新設し、current canonical set / validation chain / follow-up task を固定
+  - `legacy-ordinal-family-register.md` に Task 01 root path と旧 unassigned filename 互換行を追加
+  - formalize した 2 件の未タスクを 9 セクション形式へ是正し、target-file audit 前提を回復
+  - `resource-map.md` / `quick-reference.md` / parent workflow doc を artifact inventory 入口まで同期
 
-## TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 same-wave sync 完了（2026-03-20）
+## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（2026-03-20）
 
-- タスク名: execution-responsibility-contract-foundation
-- 種別: 設計タスク Phase 12 再監査 / canonical workflow 導線補強
-- 主要確認:
-  - `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/` の root metadata と Phase 1-13 status を `implementation_ready` + Phase 13 blocked に同期
-  - `workflow-ai-runtime-execution-responsibility-realignment.md` を `.claude/skills/aiworkflow-requirements/` の current canonical entrypoint として追加
-  - `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` の planned wording drift を実績ベースへ是正
-  - 旧 `completed-tasks/ai-runtime-authmode-unification-2/` bridge が削除済み旧パスを向いていたため、current parent pack / standalone Task01 への互換導線へ更新
-- system spec update status:
-  - `references/task-workflow.md`
-  - `references/task-workflow-completed.md`
-  - `references/lessons-learned-current.md`
-  - `references/lessons-learned-phase12-workflow-lifecycle.md`
-  - `references/task-workflow-completed.md`
-  - `references/workflow-ai-runtime-execution-responsibility-realignment.md`
-  - `indexes/resource-map.md`
-  - `SKILL.md`
-  - `LOGS.md`
-- 補足:
-  - Task01 は design task のため status は `spec_created` を維持しつつ、workflow root は Phase 1-12 completed / Phase 13 blocked の current 実績として記録した
+- タスク名: ChatView エラーサイレント握りつぶし修正
+- 種別: follow-up backlog / issue 同期
+- 主な反映:
+  - `UT-CHATVIEW-ERROR-BANNER-I18N-001` の GitHub Issue `#1398` を作成し、仕様書へ `issue_number` を書き戻した
+  - `UT-CHATVIEW-ERROR-CODE-INVENTORY-001` の GitHub Issue `#1397` を作成し、仕様書へ `issue_number` を書き戻した
+  - `task-workflow-backlog.md` / `workflow-ai-chat-llm-integration-fix.md` / artifact inventory に issue 参照を追記した
 
-## TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（2026-03-19）
+## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（2026-03-19）
 
-- タスク名: skilldetail-action-buttons
-- 種別: UI 実装再監査 / system spec same-wave sync
-- 主要確認:
-  - `SkillDetailPanel` に `action-buttons-zone` / `edit-skill-button` / `analyze-skill-button` が imported skill 条件で表示される
-  - `useSkillCenter` が `setCurrentSkillName -> setCurrentView -> handleCloseDetail` の順で `skill-editor` / `skillAnalysis` へ handoff する
-  - Phase 11 screenshot は main shell 上の source-to-destination 証跡として TC-11-01〜07 を再取得済み
-  - `verify-unassigned-links` の missing 17件は実体欠落ではなく `path drift 14件 + stale link 2件 + duplicate 1件` だった
-- system spec update status:
-  - `workflow-skill-lifecycle-routing-render-view-foundation.md`
-  - `ui-ux-navigation.md`
-  - `ui-ux-feature-components-core.md`
-  - `ui-ux-feature-components-reference.md`
-  - `ui-ux-feature-components-advanced.md`
-  - `arch-state-management-core.md`
-  - `arch-state-management-reference-permissions-import-lifecycle.md`
-  - `task-workflow-backlog.md`
-  - `task-workflow-completed-skill-lifecycle-ui.md`
-  - `task-workflow-completed-skill-lifecycle.md`
-  - `task-workflow.md`
-  - `lessons-learned-viewtype-electron-ui.md`
-  - `lessons-learned-current.md`
-- 補足:
-  - `task-specification-creator/scripts/generate-index.js` の artifacts fallback 不足により workflow `index.md` が `undefined` になっていたため、script 側も同一 wave で補正した
+- タスク名: Conversation DB 初期化/IPC graceful degradation 堅牢化
+- 種別: 実装タスク
+- 主な反映:
+  - `conversationDatabase.ts` を追加し、DB 初期化を Factory 関数群へ分離
+  - `registerAllIpcHandlers(mainWindow, conversationDb)` へ DI 化
+  - `app.whenReady()` 初期化 / `will-quit` close / fallback handler による `DB_NOT_AVAILABLE` 返却を明文化
+- 派生未タスク:
+  - `UT-CONV-DB-001` better-sqlite3 ABI rebuild
+  - `UT-CONV-DB-002` schema versioning
+  - `UT-CONV-DB-003` legacy path migration
+
+## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 canonical path 是正（2026-03-19）
+
+- タスク名: ViewType/renderView 基盤拡張 completed path 正本化
+- 種別: 仕様同期・証跡整理
+- 主な反映:
+  - step-01 workflow 正本を `docs/30-workflows/completed-tasks/step-01-seq-task-01-viewtype-renderView-foundation/` に統一
+  - screenshot metadata と capture script の出力先を正本 path に合わせて同期
+  - legacy 配置に残っていた Phase 11 重複証跡を整理
 
 ## Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成（2026-03-18）
 
@@ -306,8 +277,8 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - ワークフロー: UT-TASK06-007-ipc-contract-drift-auto-detect
 - GitHub Issue: #1309
 - 主要成果物:
-  - `apps/desktop/scripts/check-ipc-contracts.ts`: IPC契約ドリフト自動検出スクリプト（478行）
-  - `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`: テスト39ケース
+  - `apps/desktop/scripts/check-ipc-contracts.ts`: IPC契約ドリフト自動検出スクリプト（2026-03-19 再監査時点 578行）
+  - `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`: テスト49ケース
   - 検出ルール: R-01（チャンネル孤児/warning）, R-02（引数形式不一致/error, P44対応）, R-03（ハードコード文字列/warning, P27対応）, R-04（未登録チャンネル/error）
   - CLIオプション: --report-only, --strict, --format json|markdown
   - 実行時間: 3.46秒（2026-03-19 再監査、NFR-01: 10秒以内）
@@ -315,17 +286,10 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 2026-03-19 再監査で generic/multiline preload 抽出と複数 const object 収集を反映
 - 後続formalize: EXT-001（タプル配列 main 登録）, EXT-002（エイリアス/再export/動的定数解決）, EXT-003（event parity）, EXT-004（モジュール分割）, EXT-005（R-02精度向上）
 
-## TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 same-wave 同期（2026-03-20）
+### 2026-03-20: TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 完了
 
-- タスク名: AgentView 改善導線 round-trip
-- 種別: 実装 + 仕様同期 + 画面再監査
-- ワークフロー: `docs/30-workflows/skill-lifecycle-routing/tasks/step-03-seq-task-04-agentview-improve-route/`
-- 主要成果物:
-  - `apps/desktop/src/renderer/views/AgentView/index.tsx`: 実行完了後の改善 CTA と navigation handoff
-  - `apps/desktop/src/renderer/components/skill/SkillAnalysisView.tsx`: Agent 起点限定 `戻る` / `エージェントで再実行`
-  - `apps/desktop/src/renderer/App.tsx`: `viewHistory[length - 2] === "agent"` による round-trip props 注入
-  - `apps/desktop/scripts/capture-task-skill-lifecycle-routing-step03-phase11.mjs`: Phase 11 screenshot 6件 capture
-  - `references/ui-ux-navigation.md`, `references/arch-state-management-core.md`, `references/ui-ux-feature-components-reference.md`, `references/workflow-skill-lifecycle-routing-render-view-foundation.md`, `references/task-workflow*.md`, `references/lessons-learned-*.md`: Task04 system spec same-wave 反映
-- 画面検証: `TC-11-01..06` を取得し、CTA visible/hidden、Agent 起点 analysis、戻る、再実行、dark theme を確認
-- 未タスク: 8件を `docs/30-workflows/unassigned-task/` へ formalize（aria-label 4件、App cleanup 2件、viewHistory 1件、act warning 1件）
-- 完了日: 2026-03-20
+- chatSlice.ts: chatError state + clearChatError アクション追加、callLLMAPI エラー伝搬
+- store/index.ts: useChatError / useClearChatError 個別セレクタ追加（P31対策）
+- ChatView/index.tsx: インラインエラーバナーUI（Apple HIG systemRed、5秒自動消去）
+- テスト: 94件全 PASS（chatSlice 57件、ChatView 37件）
+- 未タスク: 2件検出（i18n対応、エラーコード一覧明文化）

@@ -58,10 +58,10 @@ Phase 2: concern 分離
 system spec / screenshot evidence / unassigned formalize / skill update + mirror に lane 分割
                             ↓
 Phase 3: 実更新
-.claude 正本 / outputs / docs/30-workflows/unassigned-task を同一ターンで更新
+.claude 正本 / outputs / docs/30-workflows/unassigned-task / workflow-<feature>.md / current canonical set / artifact inventory / legacy register / topic-map を同一ターンで更新
                             ↓
 Phase 4: 検証
-verify-all-specs → validate-phase-output → verify-unassigned-links --source → audit --diff-from HEAD → quick_validate / validate_all → diff -qr
+verify-all-specs → validate-phase-output → verify-unassigned-links --source → audit --diff-from HEAD / --target-file → generate-index.js → validate-structure.js → quick_validate / validate_all → mirror sync → diff -qr
                             ↓
 Phase 5: フィードバック
 log-usage + LOGS.md + skill feedback report
@@ -172,8 +172,18 @@ rg -n "primary target|spec_created|screenshot fallback" \
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js \
   --source docs/30-workflows/<workflow>/outputs/phase-12/unassigned-task-detection.md
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js \
+  --json --target-file docs/30-workflows/unassigned-task/<task>.md
 
-# 3. 更新した skill を構造検証
+# 3. canonical navigation と structure を閉じる
+node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js
+
+# 4. mirror sync 後に差分確認
+rsync -a .claude/skills/<skill>/ .agents/skills/<skill>/
+diff -qr .claude/skills/<skill> .agents/skills/<skill>
+
+# 5. 更新した skill を構造検証
 node scripts/quick_validate.js .claude/skills/skill-creator
 node scripts/validate_all.js .claude/skills/skill-creator
 ```

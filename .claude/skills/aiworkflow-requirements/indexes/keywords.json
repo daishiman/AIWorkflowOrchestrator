@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-20T07:57:19.503Z",
-  "totalKeywords": 2382,
+  "generated": "2026-03-20T06:36:56.111Z",
+  "totalKeywords": 2381,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -189,7 +189,6 @@
       "ui-ux-settings.md",
       "ui-ux-system-prompt.md",
       "workflow-ai-runtime-authmode-unification.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
@@ -608,7 +607,6 @@
       "arch-state-management-history.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "arch-state-management-reference-persist-hardening-test-quality.md",
-      "arch-state-management-reference-selectors.md",
       "arch-state-management-reference.md",
       "arch-state-management.md",
       "arch-ui-components-advanced.md",
@@ -876,8 +874,7 @@
       "ui-ux-agent-execution-core.md",
       "ui-ux-agent-execution-details.md",
       "ui-ux-agent-execution-history.md",
-      "ui-ux-agent-execution.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "ui-ux-agent-execution.md"
     ],
     "Dashboard": [
       "api-ipc-agent-advanced.md",
@@ -910,14 +907,15 @@
       "api-ipc-agent-history.md",
       "api-ipc-agent.md",
       "arch-state-management-core.md",
-      "arch-state-management-reference-selectors.md",
       "arch-state-management-reference.md",
       "llm-workspace-chat-edit.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
-      "ui-ux-llm-selector.md"
+      "ui-ux-llm-selector.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md"
     ],
     "Edit": [
       "api-ipc-agent-advanced.md",
@@ -1037,11 +1035,9 @@
       "api-ipc-system-core.md",
       "arch-electron-services-core.md",
       "arch-electron-services-details-part2.md",
-      "arch-execution-capability-contract.md",
       "arch-state-management-core.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "arch-state-management-reference-persist-hardening-test-quality.md",
-      "arch-state-management-reference-selectors.md",
       "arch-state-management-reference.md",
       "arch-state-management.md",
       "arch-ui-components-advanced.md",
@@ -1063,7 +1059,6 @@
       "interfaces-agent-sdk-skill-reference.md",
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk.md",
-      "interfaces-auth-core.md",
       "interfaces-llm.md",
       "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -1145,7 +1140,6 @@
       "testing-component-patterns-core.md",
       "testing-component-patterns-details.md",
       "ui-history-search-view.md",
-      "ui-ux-agent-execution-core.md",
       "ui-ux-agent-execution-details.md",
       "ui-ux-components-core.md",
       "ui-ux-feature-components-advanced.md",
@@ -1336,7 +1330,6 @@
       "arch-electron-services-details-part2.md",
       "arch-state-management-core.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
-      "arch-state-management-reference-selectors.md",
       "arch-state-management.md",
       "claude-code-agents-workflow.md",
       "claude-code-skills-structure.md",
@@ -1455,7 +1448,6 @@
       "arch-electron-services-core.md",
       "arch-state-management-core.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
-      "arch-state-management-reference-selectors.md",
       "arch-state-management.md",
       "claude-code-agents-workflow.md",
       "interfaces-agent-sdk-executor-details.md",
@@ -1482,7 +1474,6 @@
       "api-ipc-agent-core.md",
       "arch-electron-services-core.md",
       "arch-state-management-core.md",
-      "arch-state-management-reference-selectors.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
@@ -1501,7 +1492,6 @@
       "api-ipc-agent-core.md",
       "arch-electron-services-core.md",
       "arch-state-management-core.md",
-      "arch-state-management-reference-selectors.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
@@ -1760,7 +1750,6 @@
       "api-ipc-system-core.md",
       "arch-state-management-core.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
-      "arch-state-management-reference-selectors.md",
       "arch-ui-components-advanced.md",
       "arch-ui-components-core.md",
       "arch-ui-components-details.md",
@@ -1984,7 +1973,6 @@
       "arch-state-management-history.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "arch-state-management-reference-persist-hardening-test-quality.md",
-      "arch-state-management-reference-selectors.md",
       "arch-state-management-reference.md",
       "arch-state-management.md",
       "arch-ui-components-advanced.md",
@@ -2008,7 +1996,6 @@
       "interfaces-agent-sdk-skill-reference.md",
       "interfaces-agent-sdk-ui.md",
       "interfaces-agent-sdk.md",
-      "interfaces-auth-core.md",
       "interfaces-chat-history-core.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
@@ -2054,7 +2041,7 @@
       "api-ipc-system-history.md",
       "api-ipc-system.md",
       "arch-electron-services-details-part2.md",
-      "arch-state-management-reference-selectors.md",
+      "arch-state-management-core.md",
       "glossary.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
@@ -2068,8 +2055,9 @@
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
       "ui-ux-panels.md",
-      "workflow-ai-runtime-authmode-unification.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md",
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "プロバイダー": [
       "api-ipc-system-core.md",
@@ -2129,7 +2117,7 @@
     ],
     "ChatPanel": [
       "api-ipc-system-core.md",
-      "arch-state-management-reference-selectors.md",
+      "arch-state-management-core.md",
       "arch-ui-components-details.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-llm.md",
@@ -2147,20 +2135,16 @@
     "IMP": [
       "api-ipc-system-core.md",
       "arch-electron-services-details-part2.md",
-      "arch-execution-capability-contract.md",
       "arch-state-management-core.md",
-      "arch-state-management-reference-selectors.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill.md",
-      "interfaces-auth-core.md",
       "interfaces-llm.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
@@ -2189,16 +2173,14 @@
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
-      "ui-ux-agent-execution-core.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
       "ui-ux-panels.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "CHATPANEL": [
       "api-ipc-system-core.md",
-      "arch-state-management-reference-selectors.md",
+      "arch-state-management-core.md",
       "interfaces-llm.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "ui-ux-feature-components-core.md",
@@ -2207,7 +2189,7 @@
     ],
     "REAL": [
       "api-ipc-system-core.md",
-      "arch-state-management-reference-selectors.md",
+      "arch-state-management-core.md",
       "interfaces-llm.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "ui-ux-feature-components-core.md",
@@ -2217,7 +2199,6 @@
     "CHAT": [
       "api-ipc-system-core.md",
       "arch-state-management-core.md",
-      "arch-state-management-reference-selectors.md",
       "interfaces-llm.md",
       "lessons-learned-ipc-preload-runtime.md",
       "llm-ipc-types.md",
@@ -2364,7 +2345,7 @@
     ],
     "RUNTIME": [
       "arch-electron-services-details-part2.md",
-      "arch-state-management-reference-selectors.md",
+      "arch-state-management-core.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -2374,7 +2355,7 @@
     ],
     "ROUTING": [
       "arch-electron-services-details-part2.md",
-      "arch-state-management-reference-selectors.md"
+      "arch-state-management-core.md"
     ],
     "INTEGRATION": [
       "arch-electron-services-details-part2.md",
@@ -2448,14 +2429,11 @@
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-rag-embedding-runtime.md",
       "ui-ux-feature-components-details.md",
-      "workflow-ai-runtime-authmode-unification.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
+      "workflow-ai-runtime-authmode-unification.md"
     ],
     "handoff": [
       "arch-electron-services-details-part2.md",
-      "arch-state-management-core.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "DI": [
@@ -2514,82 +2492,6 @@
       "lessons-learned-current.md",
       "master-design.md"
     ],
-    "実行能力契約仕様": [
-      "arch-execution-capability-contract.md"
-    ],
-    "execution": [
-      "arch-execution-capability-contract.md"
-    ],
-    "capability": [
-      "arch-execution-capability-contract.md"
-    ],
-    "contract": [
-      "arch-execution-capability-contract.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
-    ],
-    "AccessCapability": [
-      "arch-execution-capability-contract.md",
-      "arch-state-management-core.md"
-    ],
-    "shared": [
-      "arch-execution-capability-contract.md",
-      "arch-state-management-core.md",
-      "directory-structure-core.md",
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "workflow-light-theme-global-remediation.md"
-    ],
-    "パッケージ移動": [
-      "arch-execution-capability-contract.md",
-      "arch-state-management-core.md"
-    ],
-    "EXECUTION": [
-      "arch-execution-capability-contract.md",
-      "arch-state-management-core.md",
-      "interfaces-auth-core.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "RESPONSIBILITY": [
-      "arch-execution-capability-contract.md",
-      "arch-state-management-core.md",
-      "interfaces-auth-core.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "CONTRACT": [
-      "arch-execution-capability-contract.md",
-      "arch-state-management-core.md",
-      "error-handling-details.md",
-      "interfaces-auth-core.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
-      "testing-component-patterns-details.md"
-    ],
-    "FOUNDATION": [
-      "arch-execution-capability-contract.md",
-      "arch-state-management-core.md",
-      "interfaces-auth-core.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-viewtype-electron-ui.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "ui-ux-feature-components-reference-organisms-history-surfaces.md"
-    ],
-    "Task": [
-      "arch-execution-capability-contract.md",
-      "arch-state-management-core.md",
-      "claude-code-skills-agents.md",
-      "lessons-learned-current-electron-menu-docs-task0912.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "rag-services.md",
-      "task-workflow-completed-skill-lifecycle-design.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "workflow-ai-runtime-authmode-unification.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
-    ],
     "機能追加パターン": [
       "arch-feature-addition.md",
       "architecture-overview-details.md"
@@ -2628,7 +2530,6 @@
       "arch-state-management-history.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "arch-state-management-reference-persist-hardening-test-quality.md",
-      "arch-state-management-reference-selectors.md",
       "arch-state-management-reference.md",
       "arch-state-management.md"
     ],
@@ -2694,6 +2595,14 @@
     "DESIGN": [
       "arch-state-management-core.md"
     ],
+    "FOUNDATION": [
+      "arch-state-management-core.md",
+      "lessons-learned-viewtype-electron-ui.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "ui-ux-feature-components-reference-organisms-history-surfaces.md"
+    ],
     "Slice": [
       "arch-state-management-core.md",
       "arch-state-management-details.md"
@@ -2720,6 +2629,18 @@
       "arch-state-management-core.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md"
+    ],
+    "チャット配線": [
+      "arch-state-management-core.md"
+    ],
+    "初期設計": [
+      "arch-state-management-core.md"
+    ],
+    "廃止": [
+      "arch-state-management-core.md"
+    ],
+    "最終設計は後述セクション参照": [
+      "arch-state-management-core.md"
     ],
     "Layout": [
       "arch-state-management-core.md",
@@ -2763,53 +2684,112 @@
       "ui-ux-feature-components-details.md",
       "ui-ux-settings-core.md"
     ],
-    "AgentView": [
+    "Notification": [
       "arch-state-management-core.md",
-      "arch-ui-components-advanced.md",
-      "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
-      "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
-      "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+      "logs-archive-2026-03-notification-history-sigterm-guard.md",
+      "ui-ux-feature-components-reference-organisms-history-surfaces.md"
     ],
-    "SkillAnalysis": [
+    "HistorySearch": [
       "arch-state-management-core.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+      "lessons-learned-ui-agent-view-nav-notification-history.md",
+      "logs-archive-2026-03-notification-history-sigterm-guard.md"
     ],
-    "状態契約": [
+    "実装同期": [
       "arch-state-management-core.md"
     ],
-    "AGENTVIEW": [
+    "NOTIFICATION": [
       "arch-state-management-core.md",
-      "lessons-learned-viewtype-electron-ui.md",
-      "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
-      "logs-archive-2026-02-console-migration-patterns.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "ui-ux-agent-execution-core.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+      "lessons-learned-ui-agent-view-nav-notification-history.md",
+      "logs-archive-2026-03-history-search-notification-center.md"
     ],
-    "IMPROVE": [
+    "HISTORY": [
       "arch-state-management-core.md",
-      "lessons-learned-viewtype-electron-ui.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "ui-ux-agent-execution-core.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+      "lessons-learned-ui-agent-view-nav-notification-history.md",
+      "logs-archive-2026-03-history-search-notification-center.md",
+      "ui-ux-feature-components-reference-organisms-history-surfaces.md"
     ],
-    "ROUTE": [
+    "DOMAIN": [
+      "arch-state-management-core.md",
+      "lessons-learned-ui-agent-view-nav-notification-history.md"
+    ],
+    "timeline": [
+      "arch-state-management-core.md"
+    ],
+    "再設計": [
+      "arch-state-management-core.md"
+    ],
+    "SEARCH": [
+      "arch-state-management-core.md",
+      "logs-archive-2026-03-history-search-notification-center.md",
+      "ui-ux-feature-components-reference-organisms-history-surfaces.md",
+      "ui-ux-search-panel-details.md"
+    ],
+    "VIEW": [
+      "arch-state-management-core.md",
+      "lessons-learned-ui-agent-view-nav-notification-history.md",
+      "lessons-learned-ui-skill-center-editor-dashboard.md",
+      "logs-archive-2026-03-history-search-notification-center.md",
+      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "logs-archive-2026-03-skill-views-completed-move.md",
+      "task-workflow-completed-agent-view-line-budget.md",
+      "ui-ux-feature-components-reference-organisms-history-surfaces.md"
+    ],
+    "ViewType": [
       "arch-state-management-core.md",
       "lessons-learned-viewtype-electron-ui.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "ui-ux-agent-execution-core.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
+      "task-workflow-completed-skill-lifecycle-ui.md"
+    ],
+    "ナビ導線": [
+      "arch-state-management-core.md"
+    ],
+    "VIEWTYPE": [
+      "arch-state-management-core.md",
+      "lessons-learned-viewtype-electron-ui.md",
+      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
+      "task-workflow-completed-skill-lifecycle-ui.md"
+    ],
+    "NAV": [
+      "arch-state-management-core.md",
+      "lessons-learned-ui-agent-view-nav-notification-history.md"
+    ],
+    "LLMConfigProvider": [
+      "arch-state-management-core.md"
+    ],
+    "状態管理変更": [
+      "arch-state-management-core.md"
+    ],
+    "MAIN": [
+      "arch-state-management-core.md",
+      "llm-ipc-types.md"
+    ],
+    "SETTINGS": [
+      "arch-state-management-core.md",
+      "arch-state-management-reference-persist-hardening-test-quality.md",
+      "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "llm-ipc-types.md",
+      "logs-archive-2026-03-history-search-notification-center.md",
+      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "task-workflow-completed-agent-view-line-budget.md",
+      "ui-ux-settings-core.md"
+    ],
+    "Real": [
+      "arch-state-management-core.md",
+      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
+      "ui-ux-feature-components-core.md"
+    ],
+    "配線": [
+      "arch-state-management-core.md",
+      "task-workflow-completed-skill-lifecycle-archive-2026-03.md"
+    ],
+    "状態管理拡張": [
+      "arch-state-management-core.md"
     ],
     "公開・配布状態管理設計": [
-      "arch-state-management-core.md",
-      "arch-state-management-reference-selectors.md"
+      "arch-state-management-core.md"
     ],
     "Zustand": [
       "arch-state-management-details.md",
@@ -2951,18 +2931,6 @@
     "Hardening": [
       "arch-state-management-reference-persist-hardening-test-quality.md"
     ],
-    "SETTINGS": [
-      "arch-state-management-reference-persist-hardening-test-quality.md",
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "llm-ipc-types.md",
-      "logs-archive-2026-03-history-search-notification-center.md",
-      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
-      "logs-archive-2026-03-line-budget-workflow-consolidation.md",
-      "task-workflow-completed-agent-view-line-budget.md",
-      "ui-ux-settings-core.md"
-    ],
     "PERSIST": [
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
@@ -2982,101 +2950,6 @@
     ],
     "テスト品質ゲート設計": [
       "arch-state-management-reference-persist-hardening-test-quality.md"
-    ],
-    "実装ログ・セレクタ参照": [
-      "arch-state-management-reference-selectors.md"
-    ],
-    "Notification": [
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-ui-agent-view-nav-notification-history.md",
-      "logs-archive-2026-03-notification-history-sigterm-guard.md",
-      "ui-ux-feature-components-reference-organisms-history-surfaces.md"
-    ],
-    "HistorySearch": [
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-ui-agent-view-nav-notification-history.md",
-      "logs-archive-2026-03-notification-history-sigterm-guard.md"
-    ],
-    "実装同期": [
-      "arch-state-management-reference-selectors.md"
-    ],
-    "NOTIFICATION": [
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-ui-agent-view-nav-notification-history.md",
-      "logs-archive-2026-03-history-search-notification-center.md"
-    ],
-    "HISTORY": [
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-ui-agent-view-nav-notification-history.md",
-      "logs-archive-2026-03-history-search-notification-center.md",
-      "ui-ux-feature-components-reference-organisms-history-surfaces.md"
-    ],
-    "DOMAIN": [
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-ui-agent-view-nav-notification-history.md"
-    ],
-    "timeline": [
-      "arch-state-management-reference-selectors.md"
-    ],
-    "再設計": [
-      "arch-state-management-reference-selectors.md"
-    ],
-    "SEARCH": [
-      "arch-state-management-reference-selectors.md",
-      "logs-archive-2026-03-history-search-notification-center.md",
-      "ui-ux-feature-components-reference-organisms-history-surfaces.md",
-      "ui-ux-search-panel-details.md"
-    ],
-    "VIEW": [
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-ui-agent-view-nav-notification-history.md",
-      "lessons-learned-ui-skill-center-editor-dashboard.md",
-      "logs-archive-2026-03-history-search-notification-center.md",
-      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
-      "logs-archive-2026-03-skill-views-completed-move.md",
-      "task-workflow-completed-agent-view-line-budget.md",
-      "ui-ux-feature-components-reference-organisms-history-surfaces.md"
-    ],
-    "ViewType": [
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-viewtype-electron-ui.md",
-      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
-      "task-workflow-completed-skill-lifecycle-ui.md"
-    ],
-    "ナビ導線": [
-      "arch-state-management-reference-selectors.md"
-    ],
-    "VIEWTYPE": [
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-viewtype-electron-ui.md",
-      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
-      "task-workflow-completed-skill-lifecycle-ui.md"
-    ],
-    "NAV": [
-      "arch-state-management-reference-selectors.md",
-      "lessons-learned-ui-agent-view-nav-notification-history.md"
-    ],
-    "LLMConfigProvider": [
-      "arch-state-management-reference-selectors.md"
-    ],
-    "状態管理変更": [
-      "arch-state-management-reference-selectors.md"
-    ],
-    "MAIN": [
-      "arch-state-management-reference-selectors.md",
-      "llm-ipc-types.md"
-    ],
-    "Real": [
-      "arch-state-management-reference-selectors.md",
-      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
-      "ui-ux-feature-components-core.md"
-    ],
-    "配線": [
-      "arch-state-management-reference-selectors.md",
-      "task-workflow-completed-skill-lifecycle-archive-2026-03.md"
-    ],
-    "状態管理拡張": [
-      "arch-state-management-reference-selectors.md"
     ],
     "chatEditSlice": [
       "arch-state-management-reference.md"
@@ -3136,6 +3009,13 @@
     ],
     "アーキテクチャ記録": [
       "arch-ui-components-advanced.md"
+    ],
+    "AgentView": [
+      "arch-ui-components-advanced.md",
+      "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
+      "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
+      "lessons-learned-ui-agent-view-nav-notification-history.md",
+      "lessons-learned-workflow-quality-sdk-tests-loop-guard.md"
     ],
     "Enhancement": [
       "arch-ui-components-advanced.md",
@@ -3728,8 +3608,9 @@
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md",
       "workflow-ai-runtime-authmode-unification.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md",
       "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
@@ -3960,6 +3841,17 @@
       "claude-code-skills-agents.md",
       "claude-code-skills-resources.md"
     ],
+    "Task": [
+      "claude-code-skills-agents.md",
+      "lessons-learned-current-electron-menu-docs-task0912.md",
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "rag-services.md",
+      "task-workflow-completed-skill-lifecycle-design.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
     "仕様書": [
       "claude-code-skills-agents.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
@@ -4016,6 +3908,8 @@
     "docs": [
       "claude-code-skills-process.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md",
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
@@ -4427,6 +4321,11 @@
     "packages": [
       "directory-structure-core.md"
     ],
+    "shared": [
+      "directory-structure-core.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "workflow-light-theme-global-remediation.md"
+    ],
     "詳細構造": [
       "directory-structure-core.md"
     ],
@@ -4454,7 +4353,8 @@
       "ui-ux-atoms-patterns-core.md"
     ],
     "local": [
-      "directory-structure-core.md"
+      "directory-structure-core.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "github": [
       "directory-structure-core.md"
@@ -4597,6 +4497,14 @@
     ],
     "MODE": [
       "error-handling-details.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "testing-component-patterns-details.md"
+    ],
+    "CONTRACT": [
+      "error-handling-details.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "testing-component-patterns-details.md"
@@ -4750,7 +4658,8 @@
       "logs-archive-2026-03-skill-views-completed-move.md",
       "quality-e2e-testing.md",
       "task-workflow-backlog.md",
-      "ui-ux-search-panel-details.md"
+      "ui-ux-search-panel-details.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "ライフサイクルイベントモデル": [
       "interfaces-agent-sdk-history.md"
@@ -4758,7 +4667,9 @@
     "Integration": [
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
-      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md"
+      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md"
     ],
     "Session": [
       "interfaces-agent-sdk-integration.md"
@@ -4852,8 +4763,7 @@
       "ui-ux-agent-execution-details.md",
       "ui-ux-agent-execution-history.md",
       "ui-ux-agent-execution.md",
-      "ui-ux-feature-components-core.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
+      "ui-ux-feature-components-core.md"
     ],
     "AgentSDKPage": [
       "interfaces-agent-sdk-ui.md"
@@ -4927,9 +4837,6 @@
       "interfaces-agent-sdk.md"
     ],
     "認証・プロフィール型定義": [
-      "interfaces-auth-core.md"
-    ],
-    "ExecutionCapability": [
       "interfaces-auth-core.md"
     ],
     "ワークスペース型定義": [
@@ -5087,7 +4994,9 @@
       "llm-streaming.md",
       "rag-desktop-state.md",
       "ui-ux-llm-selector.md",
-      "ui-ux-system-prompt.md"
+      "ui-ux-system-prompt.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md"
     ],
     "対応": [
       "interfaces-llm.md",
@@ -5849,6 +5758,7 @@
     ],
     "ERROR": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -6137,6 +6047,15 @@
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
+    "CHATVIEW": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "SILENT": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "FAILURE": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "EDIT": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6420,6 +6339,7 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "spec-splitting-guidelines.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
@@ -7004,6 +6924,10 @@
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
     ],
+    "AGENTVIEW": [
+      "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
+      "logs-archive-2026-02-console-migration-patterns.md"
+    ],
     "INFINITE": [
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
@@ -7543,8 +7467,7 @@
     ],
     "改善": [
       "logs-archive-2026-01-topic-map-remember-choice.md",
-      "logs-archive-2026-02-permission-history-execution-timestamps.md",
-      "ui-ux-agent-execution-core.md"
+      "logs-archive-2026-02-permission-history-execution-timestamps.md"
     ],
     "タイムスタンプ自動更新": [
       "logs-archive-2026-01-topic-map-remember-choice.md"
@@ -8262,6 +8185,9 @@
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
     ],
+    "contract": [
+      "logs-archive-2026-03-auth-mode-migration-sync.md"
+    ],
     "alignment": [
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -8480,10 +8406,12 @@
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "follow": [
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "up": [
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "の未タスク": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
@@ -8569,7 +8497,9 @@
     ],
     "legacy": [
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
-      "logs-archive-legacy.md"
+      "logs-archive-legacy.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md"
     ],
     "未タスク正規化課題を分離": [
       "logs-archive-2026-03-line-budget-workflow-consolidation.md"
@@ -8801,7 +8731,8 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md"
     ],
     "path": [
-      "logs-archive-2026-03-workflow02-screenshot-guard.md"
+      "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "をシステム仕様へ同期": [
       "logs-archive-2026-03-workflow02-screenshot-guard.md"
@@ -9382,7 +9313,9 @@
       "security-electron-ipc-core.md"
     ],
     "Fix": [
-      "security-electron-ipc-core.md"
+      "security-electron-ipc-core.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md"
     ],
     "skillCreatorAPI": [
       "security-electron-ipc-details.md"
@@ -9559,6 +9492,7 @@
     ],
     "wave": [
       "spec-elegance-consistency-audit.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
@@ -9648,7 +9582,6 @@
     "ワークフロー仕様": [
       "spec-splitting-guidelines.md",
       "workflow-ai-runtime-authmode-unification.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md",
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-onboarding-wizard-alignment.md",
@@ -9755,8 +9688,7 @@
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed-ut-06-safety-gate.md",
-      "ui-ux-components-core.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "ui-ux-components-core.md"
     ],
     "view": [
       "task-workflow-completed-agent-view-line-budget.md"
@@ -9878,17 +9810,6 @@
     ],
     "buttons": [
       "task-workflow-completed-skill-lifecycle-ui.md"
-    ],
-    "改善導線": [
-      "task-workflow-completed-skill-lifecycle-ui.md"
-    ],
-    "round": [
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
-    "trip": [
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "タスク": [
       "task-workflow-completed-skill-lifecycle.md",
@@ -10317,14 +10238,6 @@
     "視覚デザイン": [
       "ui-ux-agent-execution-core.md"
     ],
-    "CTA": [
-      "ui-ux-agent-execution-core.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
-    "バナー": [
-      "ui-ux-agent-execution-core.md"
-    ],
     "実装済": [
       "ui-ux-agent-execution-details.md"
     ],
@@ -10577,7 +10490,7 @@
     "スタイルガイドライン": [
       "ui-ux-llm-selector.md"
     ],
-    "システムプロンプト連携": [
+    "実行経路との統合": [
       "ui-ux-llm-selector.md"
     ],
     "関連タスクドキュメント": [
@@ -10800,28 +10713,9 @@
     "デザイントークン": [
       "ui-ux-system-prompt.md"
     ],
-    "Unification": [
-      "workflow-ai-runtime-authmode-unification.md"
-    ],
-    "今回の確定事項": [
-      "workflow-ai-runtime-authmode-unification.md"
-    ],
-    "canonical": [
-      "workflow-ai-runtime-authmode-unification.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md",
-      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
-      "workflow-permission-fallback-abort-skip-retry.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
-    "set": [
-      "workflow-ai-runtime-authmode-unification.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md",
-      "workflow-permission-fallback-abort-skip-retry.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
     "artifact": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md",
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
       "workflow-permission-fallback-abort-skip-retry.md",
@@ -10829,22 +10723,96 @@
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "inventory": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md",
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
       "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
+    "対象": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md"
+    ],
+    "canonical": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md",
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "set": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md",
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "artifacts": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+    ],
+    "同一": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
+    "で更新した": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
+    "filename": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "compatibility": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
+    "validation": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
+    "chain": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
+    "運用メモ": [
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
+    "仕様抽出マトリクス": [
+      "workflow-ai-chat-llm-integration-fix.md"
+    ],
+    "現行実装アンカー": [
+      "workflow-ai-chat-llm-integration-fix.md"
+    ],
+    "実装・監査ステータス": [
+      "workflow-ai-chat-llm-integration-fix.md"
+    ],
     "parent": [
+      "workflow-ai-chat-llm-integration-fix.md",
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-workspace-parent-reference-sweep-guard.md"
     ],
-    "と依存関係": [
-      "workflow-ai-runtime-authmode-unification.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    "タスク別の最小読書セット": [
+      "workflow-ai-chat-llm-integration-fix.md"
     ],
-    "filename": [
+    "読む順番": [
+      "workflow-ai-chat-llm-integration-fix.md"
+    ],
+    "検索キーワード": [
+      "workflow-ai-chat-llm-integration-fix.md"
+    ],
+    "注意点": [
+      "workflow-ai-chat-llm-integration-fix.md"
+    ],
+    "Unification": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "今回の確定事項": [
+      "workflow-ai-runtime-authmode-unification.md"
+    ],
+    "と依存関係": [
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
     ],
@@ -10891,21 +10859,6 @@
       "workflow-onboarding-wizard-alignment.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
-    ],
-    "Responsibility": [
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
-    ],
-    "Realignment": [
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
-    ],
-    "extraction": [
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
-    ],
-    "matrix": [
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
-    ],
-    "実装同期ルール": [
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "集計": [
       "workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md"
@@ -11075,13 +11028,14 @@
     "検証手順": [
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
+    "CTA": [
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
     "テスト実行": [
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "ビルド確認": [
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
-    ],
-    "artifacts": [
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "json": [

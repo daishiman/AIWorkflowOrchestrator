@@ -28,6 +28,9 @@
 > - `実施予定` / `後続で追記` / `N/A` を完了文言に残さない
 > - user が画面検証を要求したら、docs-heavy / backend-heavy でも `SCREENSHOT + NON_VISUAL` へ昇格する
 > - 苦戦箇所は `症状 / 再発条件 / 解決策 / 標準ルール` の4点で再利用カード化する
+> - `workflow-<feature>.md` を使う wave では `current canonical set` / `artifact inventory` / `legacy-ordinal-family-register.md` / `topic-map` を同一ターンで更新する
+> - `generate-index.js` → `validate-structure.js` → mirror sync → `diff -qr` を完了判定へ含める
+> - 500行超過が出たら semantic filename で family split し、split 後の current canonical set を書き換える
 
 > **統合 workflow 正本を追加する条件**:
 > - 更新先が 4仕様書以上に分散する
@@ -65,8 +68,11 @@
 | planned wording 禁止 | `実施予定` / `後続タスク` / `N/A` を完了文言に残さない |
 | 画面昇格 | user が画面検証を要求したら docs-heavy / backend-heavy でも `SCREENSHOT + NON_VISUAL` を採用する |
 | 苦戦箇所 | `症状 / 再発条件 / 解決策 / 標準ルール` で再利用カード化し、`task-workflow` と `lessons-learned` へ同値転記する |
+| canonical navigation | `current canonical set` / `artifact inventory` / `legacy register` / `topic-map` を same-wave で更新する |
+| line budget | `validate-structure.js` 後に 500 行超過を semantic split し、親 doc と index を追従更新する |
 
 > ここでの「完了」は、代表スクリーンショットと実測証跡が current workflow に保存されていることを含む。
+> 旧 path / 旧 filename が残る場合は、`legacy-ordinal-family-register.md` で current semantic filename へ引き直せる状態を必須とする。
 
 ---
 

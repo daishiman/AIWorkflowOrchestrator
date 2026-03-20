@@ -4,92 +4,41 @@
 
 ---
 
-## TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 完了（2026-03-20）
+## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12 再監査
+- **Result**: success
+- **Notes**:
+  - current workflow root を `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` に正規化
+  - `phase-11-manual-test.md` / `manual-test-result.md` / `screenshot-plan.json` / `screenshot-coverage.md` を screenshot validator 前提へ再構成
+  - `implementation-guide.md` を 10/10 要件へ補完し、validator 実測を changelog/compliance に同期
+  - `UT-CHATVIEW-ERROR-BANNER-I18N-001` と `UT-AI-CHAT-ERROR-CODE-INVENTORY-001` を formalize
+  - formalize 後の 2 件を 9 セクション形式へ是正し、`audit-unassigned-tasks --json --target-file` を通す前提へ戻した
+  - `index.md` / `artifacts.json` / phase 本文の stale path と phase status を同期
+
+---
+
+## TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了（2026-03-19）
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 1-12 実行完了
 - **Result**: success
 - **Notes**:
-  - AgentView 改善 CTA バナー + SkillAnalysisView Agent 起点戻り導線を実装
-  - `canOfferAnalysis` 導出、`viewHistory` ベース Agent 起点判定、`onNavigateBack` / `onNavigateToAgent` props 追加
-  - テスト 146+ PASS、カバレッジ Line 96.31% / Branch 87.87% / Func 85.71%
-  - 未タスク 8件検出・formalize
+  - `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の5成果物を実績化
+  - 苦戦箇所を system spec に反映し、未タスク `UT-CONV-DB-001〜003` を formalize
+  - completed workflow / completed unassigned-task / backlog 導線を同期
 
 ---
 
-## 2026-03-20 - スキル改善エージェント同期（Phase 4/5 contract-matrix 正本ルール / P58 未タスク独立ファイル必須 / Trigger 拡張）
-
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | skill-improvement |
-| 変更対象 | `SKILL.md`（Phase 4/5 execute テーブル拡張・Phase 12 苦戦防止 Tips 追加・変更履歴 v10.09.17）、`LOGS.md` |
-| 結果 | Phase 4 テストが contract-matrix の正本となるルール・function overload による Phase 4/5 シグネチャ統一パターン・P58 設計タスクでも未タスク指示書は独立ファイル必須ルールを追加 |
-| 検証 | SKILL.md 行数確認済み（500行以下）|
-
----
-
-## 2026-03-20 - TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Task01 実装完了
-
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation |
-| 変更対象 | `packages/shared/src/types/execution-capability.ts`（新規）、`packages/shared/src/types/auth-mode.ts`（変更）、`apps/desktop/src/renderer/store/slices/chatSlice.ts`（変更）、`packages/shared/src/types/index.ts`（変更） |
-| 結果 | AccessCapability 4状態型・UiState 3値型・ExecutionCapabilityStatus 等を shared に追加。AuthModeStatus に capability/uiState/blockedReason/blockedAction を optional 追加。chatSlice.ts は re-export パターンで後方互換性を維持。系仕様書5件（interfaces-auth-core / arch-state-management-core / lessons-learned-current / task-workflow-backlog / LOGS.md x2）を同時更新 |
-| 検証 | 型定義テスト PASS、苦戦箇所3件（テストシグネチャ不一致・CTA ラベルドリフト・型移動 re-export）を lessons-learned に記録 |
-
----
-
-## 2026-03-20 - execution responsibility foundation の screen-evidence 欠落を Phase 11 ガイドへ反映
-
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | feedback |
-| 変更対象 | `references/phase-11-12-guide.md` |
-| 結果 | design task でも screenshot 契約がある場合は `manual-test-result.md` / `screenshot-coverage.md` / `screenshots/*.png` / metadata JSON を current workflow 配下へ揃えるルールを追加した |
-| 検証 | `quick_validate.js .claude/skills/task-specification-creator` |
-
----
-
-## 2026-03-20 - execution responsibility foundation 再監査知見を Phase 12/13 ガイドへ反映
-
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | feedback |
-| 変更対象 | `references/spec-update-workflow.md`, `references/phase-12-documentation-guide.md`, `SKILL.md` |
-| 結果 | planned wording を incomplete 扱いにするルールと、user 承認がない限り Phase 13 を `blocked` に維持するルールを追加した |
-| 検証 | `quick_validate.js .claude/skills/task-specification-creator` |
-
----
-
-## 2026-03-19 - Phase 12 changelog と Step 1-A 台帳の同値同期ガードを追加
-
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | feedback |
-| 変更対象 | `references/phase-12-documentation-guide.md`, `references/phase-12-completion-checklist.md`, `SKILL.md` |
-| 結果 | `documentation-changelog.md` に Step 1-A で更新した `SKILL.md` / `LOGS.md` を canonical path で必ず列挙するルールを追加した |
-| 検証 | `quick_validate.js .claude/skills/task-specification-creator` |
-
----
-
-## TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査完了（2026-03-19）
+## Phase 12 canonical summary 名称統一（2026-03-19）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12（re-audit）
+- **Phase**: ガイド/テンプレート是正
 - **Result**: success
 - **Notes**:
-  - Phase 11 screenshot を main shell handoff 証跡として再取得し、TC-11-01〜07 を固定
-  - `implementation-guide.md` を validator literal 要件に合わせて補強し、10/10 PASS に回復
-  - `verify-unassigned-links` の 17件報告を再調査し、`path drift 14件 + stale link 2件 + duplicate 1件` と切り分けて 246/246 PASS へ修正
-  - `generate-index.js` に `featureName` / `createdDate` fallback と Phase 12 完了表示を追加し、workflow `index.md` の `undefined` を解消
-
-### 変更内容
-- Phase 12 出力を実測値ベースへ更新
-- system spec backlog / completed ledger の path drift 是正
-- screenshot 残骸削除と coverage warning 解消
-
-### AC達成状況
-Phase 11 証跡、Phase 12 root evidence、system spec same-wave sync、skill 改善記録の4点を再監査完了
+  - `spec-update-summary.md` から `system-spec-update-summary.md` への canonical 名称統一を反映
+  - `phase-11-12-guide.md` / `spec-update-workflow.md` / `SKILL.md` の残存参照を更新
 
 ---
 
@@ -724,7 +673,6 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果 | IPC契約ドリフト自動検出スクリプトのPhase 1-12完了。Phase 13はBLOCKED（PR待ち） |
 | 検証 | 全40テストケースPASS、手動テストTC-11-01~TC-11-05全PASS |
 
-
 ### 2026-03-19 - UT-TASK06-007 再監査
 
 | 項目 | 内容 |
@@ -734,11 +682,10 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果 | `implementation-guide.md` を validator 10/10 準拠へ補強し、未タスク5件の配置・実行手順・残余スコープを current facts に再同期した。`task-specification-creator/SKILL.md` 変更履歴も UT-TASK06-007 再監査実績へ更新した |
 | 検証 | `validate-phase12-implementation-guide` PASS、`validate-phase-output` Phase 11/12 PASS、`verify-all-specs --workflow ... --json` PASS、`verify-unassigned-links` PASS、`quick_validate` PASS（warning は legacy baseline） |
 
-### 2026-03-20 - TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 再監査で validator を補強
+### 2026-03-20: TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 完了
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation / documentation |
-| 変更対象 | `scripts/validate-phase-output.js`, `LOGS.md`, Task04 workflow outputs |
-| 結果 | `artifacts.json` と `outputs/artifacts.json` の同値確認、Phase 11 補助成果物（`manual-test-checklist.md` / `manual-test-result.md` / `screenshot-plan.json`）、`outputs/phase-11/screenshots/*.png` 0件検知、Phase 12 の `planned` / `PR作成時に実施` / `PRマージ後` wording 検知を validator へ追加した |
-| 検証 | Task04 current workflow へ `validate-phase-output` / `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を再実行予定。mirror 同期とあわせて差分 0 を確認する |
+- Phase 1-12 完了（Phase 13 はユーザー指示によりスキップ）
+- 実装: chatSlice エラーハンドリング + ChatView エラーバナー
+- 5ファイル変更、+359行/-22行
+- テスト: 94件全 PASS
+- 未タスク: 2件（UT-CHATVIEW-ERROR-BANNER-I18N-001、UT-AI-CHAT-ERROR-CODE-INVENTORY-001）

@@ -8,7 +8,7 @@
 
 | ファイル | 責務 | 対象タスク |
 | --- | --- | --- |
-| [task-workflow-completed-skill-lifecycle-ui.md](task-workflow-completed-skill-lifecycle-ui.md) | UI実装・統合系 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12 |
+| [task-workflow-completed-skill-lifecycle-ui.md](task-workflow-completed-skill-lifecycle-ui.md) | UI実装・統合系 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12 |
 | [task-workflow-completed-skill-lifecycle-security.md](task-workflow-completed-skill-lifecycle-security.md) | セキュリティ・権限ガバナンス系 | UT-06-003, UT-06-005, TASK-SKILL-LIFECYCLE-06, UT-06-001 |
 
 ## タスクID 逆引き
@@ -17,7 +17,6 @@
 | --- | --- | --- |
 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 | ui | ViewType/renderView 基盤拡張 |
 | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 | ui | SkillDetailPanel action buttons handoff |
-| TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 | ui | AgentView CTA と SkillAnalysis round-trip |
 | TASK-10A-C | ui | SkillCreateWizard 実装 |
 | TASK-10A-D | ui | スキルライフサイクルUI統合 |
 | TASK-SKILL-LIFECYCLE-04 | ui | 採点・評価・受け入れゲート統合 |

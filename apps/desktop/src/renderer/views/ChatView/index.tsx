@@ -4,18 +4,17 @@
  * ユーザーがAIとリアルタイムで会話するためのメインインターフェース。
  * RAG（Retrieval-Augmented Generation）モードをサポート。
  */
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import clsx from "clsx";
 import { History } from "lucide-react";
 import { GlassPanel } from "../../components/organisms/GlassPanel";
 import { ChatInput } from "../../components/organisms/ChatInput";
 import { ChatMessage } from "../../components/molecules/ChatMessage";
-import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
 import { SystemPromptPanel } from "../../components/organisms/SystemPromptPanel";
 import { SystemPromptToggleButton } from "../../components/atoms/SystemPromptToggleButton";
 import { SaveTemplateDialog } from "../../components/organisms/SaveTemplateDialog";
-import { useAppStore } from "../../store";
+import { useAppStore, useChatError, useClearChatError } from "../../store";
 
 // ============================================
 // 定数定義
@@ -24,6 +23,40 @@ const EMPTY_STATE_MESSAGES = {
   primary: "メッセージを入力してAIと会話を始めましょう",
   hint: "Shift + Enter で改行、Enter で送信",
 } as const;
+
+const ERROR_MESSAGES: Record<string, string> = {
+  AI_UNAVAILABLE: "AI機能が利用できません。アプリを再起動してください。",
+  API_CALL_FAILED:
+    "メッセージの送信に失敗しました。しばらく待ってから再試行してください。",
+  UNKNOWN_ERROR: "予期しないエラーが発生しました。",
+  API_KEY_MISSING:
+    "APIキーが設定されていません。設定画面からAPIキーを入力してください。",
+  PROVIDER_NOT_FOUND: "選択されたAIプロバイダーが見つかりません。",
+  MODEL_NOT_FOUND: "選択されたモデルが見つかりません。",
+  RATE_LIMIT_EXCEEDED:
+    "API利用制限に達しました。しばらく待ってから再試行してください。",
+  NETWORK_ERROR: "ネットワークエラーが発生しました。接続を確認してください。",
+};
+
+const ERROR_CODE_PATTERN = /^[A-Z0-9_]+$/;
+
+function getErrorMessage(code: string): string {
+  const normalized = code.trim();
+  if (normalized.length === 0) {
+    return ERROR_MESSAGES["UNKNOWN_ERROR"] ?? "エラーが発生しました。";
+  }
+
+  if (normalized in ERROR_MESSAGES) {
+    return ERROR_MESSAGES[normalized]!;
+  }
+
+  // Main Process は user-facing message string を返す場合がある。
+  if (!ERROR_CODE_PATTERN.test(normalized)) {
+    return normalized;
+  }
+
+  return ERROR_MESSAGES["UNKNOWN_ERROR"] ?? "エラーが発生しました。";
+}
 
 const RAG_STATUS_MESSAGES = {
   enabled: "RAG有効: ナレッジベースを参照して回答します",
@@ -91,11 +124,26 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   const initializeTemplates = useAppStore((state) => state.initializeTemplates);
 
   // ----------------------------------------
+  // Store State - エラー関連
+  // ----------------------------------------
+  const chatError = useChatError();
+  const clearChatError = useClearChatError();
+
+  // ----------------------------------------
   // Effects - テンプレート初期化
   // ----------------------------------------
   useEffect(() => {
     initializeTemplates();
   }, [initializeTemplates]);
+
+  // ----------------------------------------
+  // Effects - エラー自動消去（5秒タイマー）
+  // ----------------------------------------
+  useEffect(() => {
+    if (!chatError) return;
+    const timer = setTimeout(() => clearChatError(), 5000);
+    return () => clearTimeout(timer);
+  }, [chatError, clearChatError]);
 
   // ----------------------------------------
   // Callbacks - システムプロンプト
@@ -120,11 +168,6 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   );
 
   const existingTemplateNames = templates.map((t) => t.name);
-
-  // ----------------------------------------
-  // Local State
-  // ----------------------------------------
-  const [error] = useState<string | null>(null);
 
   // ----------------------------------------
   // Refs
@@ -156,13 +199,6 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatMessages]);
-
-  // ----------------------------------------
-  // Render - エラー状態
-  // ----------------------------------------
-  if (error) {
-    return <ErrorDisplay message={error} className={className} />;
-  }
 
   // ----------------------------------------
   // Render - メインビュー
@@ -265,6 +301,24 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
           )}
         </div>
       </main>
+
+      {/* エラーバナー */}
+      {chatError && (
+        <div
+          role="alert"
+          className="mx-4 mb-2 flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300"
+        >
+          <span className="flex-1">{getErrorMessage(chatError)}</span>
+          <button
+            type="button"
+            onClick={clearChatError}
+            aria-label="エラーを閉じる"
+            className="ml-2 rounded p-0.5 hover:bg-red-100 dark:hover:bg-red-900"
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       {/* 入力エリア: メッセージ入力フォーム */}
       <footer className="p-4 border-t border-white/10">

@@ -7,6 +7,41 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査記録（2026-03-20）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE |
+| ステータス | **完了（実装 + Phase 11/12 再監査完了 / Phase 13 未実施）** |
+| タイプ | fix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-20 |
+| 対象 | `chatSlice.chatError` / `clearChatError` / `ChatView` alert banner / screenshot 5件 / Phase 12 同期 |
+| 成果物 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/` |
+
+#### 実施内容
+
+- `callLLMAPI()` が `error?: string` を返し、`AI_UNAVAILABLE` / `API_CALL_FAILED` / `UNKNOWN_ERROR` / API由来 error code / raw message string を Renderer へ伝搬
+- `chatSlice.sendMessage()` が送信開始時に `chatError` を clear し、失敗時のみ error code または raw message string を保持
+- `ChatView` が `role="alert"` の error banner、手動 close、5秒 auto clear、日本語文言変換を実装
+- Phase 11 で light/dark を含む representative screenshot 5件を再取得し、current workflow 配下へ固定
+- Phase 12 で workflow root を `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` に正規化し、未タスク2件を formalize
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop screenshot:chatview-error-silent-failure` | PASS（screenshot 5件, metadata生成） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` | PASS |
+
+#### 関連改善タスク
+
+| 未タスクID | 概要 | 参照 | ステータス |
+| --- | --- | --- | --- |
+| UT-CHATVIEW-ERROR-BANNER-I18N-001 | ChatView error banner の i18n 化 | `docs/30-workflows/unassigned-task/task-ut-chatview-error-banner-i18n-001.md` | 未実施 |
+| UT-AI-CHAT-ERROR-CODE-INVENTORY-001 | `ai.chat` error code inventory の仕様固定 | `docs/30-workflows/unassigned-task/task-ut-ai-chat-error-code-inventory-001.md` | 未実施 |
+
 ### タスク: TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 再監査記録（2026-03-17）
 
 | 項目 | 値 |

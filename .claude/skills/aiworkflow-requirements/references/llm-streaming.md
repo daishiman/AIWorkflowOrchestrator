@@ -181,9 +181,15 @@ WorkspaceChatPanel から llm-streaming の SSEフローへの連携が確立。
 | --- | --- |
 | streaming 連携 | `useWorkspaceChatController` から `llm:stream-chat` を呼び出し、chunk/done/error を WorkspaceChatPanel の状態へ反映 |
 | キャンセルフロー | `cancelStream → AbortController.abort() → streamContent クリア` で llm-streaming の AbortController統合パターンを採用 |
-| エラーハンドリング | streaming エラー時は GuidanceBlock の error variant を表示し、エラーコードを ui 層で保持 |
+| エラーハンドリング | streaming エラー時は `useWorkspaceChatController.errorMessage` に保持し、`WorkspaceChatInput` の alert surface で表示する |
 
 ---
+
+### Task 01 との責務境界（2026-03-20 再監査）
+
+- ChatView の `chatError` は non-streaming `sendMessage()` 失敗用の一過性 UI state であり、本仕様の `streamingError` と混在させない
+- Workspace Chat の error UX は `useWorkspaceChatController.errorMessage` / `streamingError` を正本とし、Task 01 の alert banner は参照パターンとしてのみ扱う
+- `API_KEY_MISSING` など共通 error code は許容するが、保持場所と auto clear 条件は surface ごとに分離する
 
 ## 変更履歴
 

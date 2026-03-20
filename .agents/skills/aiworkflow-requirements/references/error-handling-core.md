@@ -100,6 +100,25 @@ type FallbackErrorResponse = {
 
 ---
 
+### AI Chat Renderer error surface（2026-03-20 再監査）
+
+`AIChatResponse.error` は ChatView 系では `string` transport として扱う。current runtime では canonical error code と raw message string が混在しうる。
+
+| パターン | Renderer 側の扱い | 例 |
+| --- | --- | --- |
+| canonical error code | UI 辞書で user-facing message へ変換 | `API_KEY_MISSING`, `NETWORK_ERROR`, `MODEL_NOT_FOUND` |
+| raw message string | そのまま alert banner に表示 | `APIキーが設定されていません。設定画面からAPIキーを入力してください。` |
+| 非 string / 空文字 | `UNKNOWN_ERROR` に正規化 | object payload, `""` |
+
+**標準ルール**:
+
+- Main が code を返せる経路は canonical error code を優先する。
+- legacy / provider-specific 経路で raw message string を返すことは許容する。
+- Renderer は `error` を直接信頼せず、code 判定と raw message fallback を分けて扱う。
+- この契約は `llm-ipc-types.md` と同時に更新する。
+
+---
+
 ### RAG固有エラーコード
 
 RAGパイプライン実装で使用するエラーコード。
@@ -381,4 +400,3 @@ HTTP 429エラーの`Retry-After`ヘッダー（秒単位の数値）をパー�
 リトライ待機中（sleep中）にAbortSignalが発火した場合、即座に待機を中断しAbortErrorをスローする。
 
 ---
-

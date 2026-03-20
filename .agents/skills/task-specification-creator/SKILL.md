@@ -57,8 +57,8 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 | 1 | 要件定義 | scope、受入条件、inventory を固定する |
 | 2 | 設計 | topology、SubAgent lane、validation path を設計する |
 | 3 | 設計レビュー | Phase 4 へ進めるかを判定する |
-| 4 | テスト作成 | command suite と expected result を作る。**Phase 2 設計書の関数シグネチャ（型・引数名・戻り値）と contract-matrix の定数値（CTA ラベル等）を正本としてテストを記述する。Phase 4 テストが契約の正本となる** |
-| 5 | 実装 | `.claude` 正本を更新し、mirror を同期する。**シグネチャを変えたい場合は Phase 4 テストを先に更新するか function overload で両立させる** |
+| 4 | テスト作成 | command suite と expected result を作る |
+| 5 | 実装 | `.claude` 正本を更新し、mirror を同期する |
 | 6 | テスト拡充 | fail path、回帰 guard、補助 command を追加する |
 | 7 | カバレッジ確認 | concern と dependency edge の coverage を可視化する |
 | 8 | リファクタリング | duplicate と navigation drift を削る |
@@ -213,10 +213,9 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **事前に空欄チェックリストを作成**         | documentation-changelog.mdにStep 1-A〜1-D + Step 2の各欄を空欄で事前作成し、逐次消化する                                                                                                                                                                             |
 | **spec-update-workflow.mdを常に参照**      | Phase 12開始時に必ず [spec-update-workflow.md](references/spec-update-workflow.md) を開き、チェックリストを確認                                                                                                                                                      |
 | **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする                                                                                                                                                                                                   |
-| **設計タスクでも未タスク指示書は独立ファイル必須** | P58パターン。「設計タスクだから」という例外判断で `unassigned-task/` への独立ファイル作成を省略しない。内容が簡素でもファイルが存在することが監査ツールの前提 |
 | **LOGS.md/SKILL.md は4ファイル更新**       | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md                                                                                                                           |
 | **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
-| **worktree でも `.claude` 正本を実更新する** | worktree を理由に `.claude/skills/` の実更新を先送りしない。`system-spec-update-summary.md` には「更新予定」ではなく実更新結果を記録し、完了前に `.agents` mirror と parity を確認する |
+| **worktree環境ではLOGS.md/SKILL.md更新を代替記録** | `.worktrees/` 配下で作業する場合、`.claude/skills/` はメインの作業ツリーと同期されないため、`system-spec-update-summary.md` に更新予定内容を記録し、PRマージ後にメインブランチで反映する。`skill-feedback-report.md` に代替フローを使用した旨を明記すること |
 | **並列エージェント完了後はファイルシステムで検証** | P43/P59対策。エージェントがコンテキスト制限で応答不能になった場合、`git diff --stat` + `ls outputs/phase-*/` + `artifacts.json` のPhaseステータスで成果物の存在を確認する |
 
 ---
@@ -276,7 +275,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | Task 12-5 | 改善点なしでも `skill-feedback-report.md` を出し、`phase12-task-spec-compliance-check.md` を root evidence として残す | [references/patterns-phase12-sync.md](references/patterns-phase12-sync.md) |
 | Phase 13 | commit と PR は user の明示承認後だけ | [references/review-gate-criteria.md](references/review-gate-criteria.md) |
 
-UI/UX 実装を含む task では Phase 11 で screenshot と Apple UI/UX 視覚検証を行う。source surface から destination surface へ handoff する task は main shell で source-to-destination capture を行い、`screenshot-plan.json` / `phase11-capture-metadata.json` / `画面カバレッジマトリクス` を揃える。手順は [references/phase-11-screenshot-guide.md](references/phase-11-screenshot-guide.md) と [references/screenshot-verification-procedure.md](references/screenshot-verification-procedure.md) を使う。
+UI/UX 実装を含む task では Phase 11 で screenshot と Apple UI/UX 視覚検証を行う。手順は [references/phase-11-screenshot-guide.md](references/phase-11-screenshot-guide.md) と [references/screenshot-verification-procedure.md](references/screenshot-verification-procedure.md) を使う。
 
 ## リソース導線
 
@@ -384,19 +383,16 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.09.17** | **2026-03-20** | **スキル改善エージェント同期**: Phase 4/5 execute テーブルに function overload パターンと contract-matrix 正本ルールを追加。Phase 12 苦戦防止 Tips に P58（設計タスクでも未タスク指示書は独立ファイル必須）を追加。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
-| **v10.09.16** | **2026-03-20** | **TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 再監査知見を反映**: `references/spec-update-workflow.md` と `references/phase-12-documentation-guide.md` に、planned wording（`計画済み` / `更新予定` / `PRマージ後`）を incomplete とみなすルールと、Phase 13 を user 承認なしでは `blocked` に固定するルールを追加 |
-| **v10.09.15** | **2026-03-19** | **Phase 12 changelog 同値同期ガードを追加**: `references/phase-12-documentation-guide.md` と `references/phase-12-completion-checklist.md` に、Step 1-A で更新した `.claude/skills/*/SKILL.md` / `.claude/skills/*/LOGS.md` を `documentation-changelog.md` へ canonical path で必ず列挙する確認項目を追加 |
-| **v10.09.14** | **2026-03-19** | **TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 再監査知見を反映**: `references/phase-11-screenshot-guide.md` / `references/phase-template-phase11.md` に main shell handoff capture、shared DOM selector scope、`phase11-capture-metadata.json` / `ui-sanity-visual-review.md` 必須化を追加。`references/phase-12-documentation-guide.md` / `references/phase12-checklist-definition.md` / `references/phase-12-completion-checklist.md` / `references/phase-template-phase12*.md` では `system-spec-update-summary.md` を canonical filename とし、planned wording チェックを `outputs/phase-12/*.md` 全体へ拡張 |
-| **v10.09.13** | **2026-03-18** | **UT-TASK06-007 仕様書一式作成完了**: IPC契約ドリフト自動検出スクリプトのPhase 1-13仕様書を作成。P44/P45/P60パターン自動検出。4検出ルール設計。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **v10.09.02** | **2026-03-20** | **TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 完了記録追加**: Phase 1-12 完了（Phase 13 はユーザー指示によりスキップ）。chatSlice エラーハンドリング + ChatView エラーバナー実装。5ファイル変更 +359行/-22行。テスト94件全 PASS。未タスク2件（UT-CHATVIEW-ERROR-BANNER-I18N-001・UT-AI-CHAT-ERROR-CODE-INVENTORY-001）formalize。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **v10.09.01** | **2026-03-19** | **UT-TASK06-007 再監査同期**: `implementation-guide.md` の必須要件（なぜ先行 / 日常例え / TypeScript 型 / API/CLI シグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目）を validator 10/10 に合わせて補強し、`phase-11-manual-test.md` の参照不足 warning を解消。未タスク5件は `docs/30-workflows/unassigned-task/` 配置を再確認し、`EXT-002` 残余スコープ・`EXT-005` 実行手順未完成・数値ドリフトを是正する運用を変更履歴へ追加 |
+| **v10.09.00** | **2026-03-19** | **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了記録**。Phase 1-12 実行完了 |
 | **v10.09.12** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: `references/phase-template-core.md` に concern 数による設計書分割基準テーブル（1-2/3-4/5+ concern）を追加。`references/review-gate-criteria.md` に設計タスク専用の契約品質チェック（前提条件/事後条件・IPC Port 依存・DI 境界表・受入基準トレーサビリティ）を Phase 3 に追加。`references/phase-template-phase12.md` に Task 6（遵守チェックリスト）を必須タスクとして追記。`references/phase-12-documentation-guide.md` に Task 12-6 と planned wording 確認コマンドを追加 |
 | **v10.09.12** | **2026-03-17** | **スキルフィードバック反映（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）**: `references/phase-template-execution.md` に Phase 5 既存テスト回帰確認先行実行ステップを追加。`references/phase-template-phase12.md` に worktree 環境でのシステム仕様書先送り禁止注記（P57再発防止）を追加。`rules/06-known-pitfalls.md` に P62（DEFAULT_CONFIG 暗黙 fallback 禁止）・P63（サブエージェントのインポートパス誤り）を追加 |
 | **v10.09.11** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 再監査完了を反映**: Phase 11 screenshot 再取得（TC-11-01..03）と `validate-phase11-screenshot-coverage` PASS、Phase 12 implementation guide の不足項目補完で `validate-phase12-implementation-guide` 10/10 PASS。`system-spec-update-summary` / `documentation-changelog` を実績形式へ更新し、`phase12-task-spec-compliance-check.md` を追加。未タスク欠落リンク12件復旧 + TASK-08 follow-up 4件 formalize を同ターンで実施 |
-| **v10.09.12** | **2026-03-18** | **Task09-12 仕様書作成（Phase 1-3 設計仕様 + Task09 Phase 4-13 完全版）。P50既実装チェック・P32型変更先確認・GAP ID正本管理・Badge atom再利用検討を各仕様書に反映** |
 | **v10.09.11** | **2026-03-17** | **TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 GAP-01/02/03 実装完了記録追加** |
 | **v10.09.11** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 設計仕様完了（Phase 12 実更新）**: AC-1〜AC-4 全PASS（FAIL 0件）。型定義13種・サービスIF 4種・IPCチャンネル11種をシステム仕様書に実更新。未タスク5件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.10** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 仕様書作成完了**: スキル共有・公開・互換性統合の Phase 1-13 仕様書を作成（設計タスク型）。SkillMetadataProvider / normalizePath / VersionCompatibilityChecker など型定義・フロー設計を完了。Phase 10 PASS（MINOR 指摘対応済み）。artifacts.json 同期済み。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
-| **v10.09.9** | **2026-03-17** | **TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 反映**: Phase 11/12 ガイドに `renderView` 拡張タスクの責務分離ルール（画面到達は route-based screenshot、分岐保証は `App.renderView.*` unit test）を追加。Phase 12 では `spec-update-summary.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `artifacts.json` 同期を必須化し、follow-up 未タスク formalize の3ステップ（指示書→backlog→仕様リンク）を再利用可能パターンとして固定 |
+| **v10.09.9** | **2026-03-17** | **TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 反映**: Phase 11/12 ガイドに `renderView` 拡張タスクの責務分離ルール（画面到達は route-based screenshot、分岐保証は `App.renderView.*` unit test）を追加。Phase 12 では `system-spec-update-summary.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` / `artifacts.json` 同期を必須化し、follow-up 未タスク formalize の3ステップ（指示書→backlog→仕様リンク）を再利用可能パターンとして固定 |
 | **v10.09.8** | **2026-03-16** | **TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了記録**: Section 13 に safeRegister + fallback パターンで conversation:create/list/get/update/delete/addMessage/search の7チャンネルを登録。better-sqlite3 による WAL モード DB 初期化、ConversationRepository 生成、DB 失敗時の Graceful Degradation フォールバックを実装。172テスト ALL PASS |
 | **v10.09.9** | **2026-03-17** | **UT-06-003 / UT-06-005 / TASK-SKILL-LIFECYCLE-08 バッチ同期**: 2026-03-17 時点での実装完了を LOGS.md 2ファイル + SKILL.md 2ファイルに記録（P1/P25対策） |
 | **v10.09.8** | **2026-03-16** | **UT-06-003 DefaultSafetyGate 具象クラス実装完了**: SafetyGatePort 具象クラス DefaultSafetyGate を実装。IPC ハンドラ skill:evaluate-safety を追加。5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約。36テスト全PASS、カバレッジ全100%。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
