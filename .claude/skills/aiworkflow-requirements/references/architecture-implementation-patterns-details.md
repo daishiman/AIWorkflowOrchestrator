@@ -142,22 +142,23 @@ IPC チャンネル名のハードコード文字列を定数参照に置換し�
 
 > **このセクションの役割**: 実装パターン（どう実装するか）を記録する。プロセス面の教訓（何が問題だったか、どう防止するか）については [lessons-learned.md - TASK-9B-H](./lessons-learned.md#task-9b-h-skillcreatorservice-ipcハンドラー登録) を参照。
 
-BrowserWindow とサービスインスタンスを受け取り、IPC ハンドラーを登録するパターン。既存の registerAuthHandlers、registerSkillHandlers と同一構成。
+BrowserWindow と service/facade を受け取り、IPC ハンドラーを登録するパターン。`skillCreatorHandlers.ts` は public entrypoint を維持しつつ、runtime public channels は `creatorHandlers.ts` を内部 helper として統合する。
 
-| 要素     | 説明                                                                                    |
-| -------- | --------------------------------------------------------------------------------------- |
-| 目的     | Main Process で IPC ハンドラーを登録し、Renderer からの要求を処理                       |
-| 構成     | `registerXxxHandlers(mainWindow, service)` 関数で登録、`unregisterXxxHandlers()` で解除 |
-| 適用場面 | 新規 IPC チャンネルグループの追加時                                                     |
-| 適用例   | `registerSkillCreatorHandlers(mainWindow, skillCreatorService)`                         |
+| 要素 | 説明 |
+| --- | --- |
+| 目的 | Main Process で public IPC surface を登録し、Renderer からの要求を処理する |
+| 構成 | `registerXxxHandlers(mainWindow, service, optionalFacade?)` で登録、`unregisterXxxHandlers()` で解除 |
+| 適用場面 | 既存 namespace を維持したまま新規 public channel を追加する時 |
+| 適用例 | `registerSkillCreatorHandlers(mainWindow, skillCreatorService, runtimeSkillCreatorService)` |
 
 **構成要素**:
 
-| 要素                      | 数量        | 説明                                    |
-| ------------------------- | ----------- | --------------------------------------- |
-| `ipcMain.handle()`        | 5チャンネル | Renderer からの invoke リクエストを処理 |
-| `sendXxxProgress()`       | 1チャンネル | Main → Renderer への進捗通知送信        |
-| `unregisterXxxHandlers()` | 1関数       | ハンドラー解除（テスト用）              |
+| 要素 | 数量 | 説明 |
+| --- | --- | --- |
+| `ipcMain.handle()` 標準群 | 12チャンネル | 既存 Skill Creator invoke |
+| `ipcMain.handle()` runtime 群 | 3チャンネル | `plan` / `execute-plan` / `improve-skill` |
+| `sendXxxProgress()` | 1チャンネル | Main → Renderer の progress |
+| `unregisterXxxHandlers()` | 1関数 | 標準群 + runtime 群を対称解除 |
 
 **セキュリティ層（4層防御）**:
 
@@ -181,17 +182,19 @@ BrowserWindow とサービスインスタンスを受け取り、IPC ハンド�
 
 **既存の同パターン実装**:
 
-| ハンドラー                   | ファイル                  | チャンネル数                            |
-| ---------------------------- | ------------------------- | --------------------------------------- |
-| registerAuthHandlers         | `authHandlers.ts`         | 認証関連チャンネル                      |
-| registerSkillHandlers        | `skillHandlers.ts`        | スキル管理・実行チャンネル              |
-| registerSkillCreatorHandlers | `skillCreatorHandlers.ts` | スキル作成チャンネル（5 invoke + 1 on） |
+| ハンドラー | ファイル | チャンネル数 |
+| --- | --- | --- |
+| registerAuthHandlers | `authHandlers.ts` | 認証関連チャンネル |
+| registerSkillHandlers | `skillHandlers.ts` | スキル管理・実行チャンネル |
+| registerSkillCreatorHandlers | `skillCreatorHandlers.ts` | 標準 12 invoke + 1 on、必要時 runtime 3 invoke を内包 |
 
 **実装時の注意点**:
 
-| 注意点                                                   | 対策                                     |
-| -------------------------------------------------------- | ---------------------------------------- |
-| IpcResult型の重複定義（Main側とPreload側で独立に型定義） | @repo/shared/typesに共通型として配置する |
+| 注意点 | 対策 |
+| --- | --- |
+| IpcResult型の重複定義（Main側とPreload側で独立に型定義） | `@repo/shared/types` に共通 contract を配置する |
+| optional facade 不在で channel 未登録にすると renderer 側が generic error になる | runtime helper 側で degraded response を返す |
+| `SkillExecutor` と `authKeyService` の DI 経路が分散しやすい | `ipc/index.ts` で facade を組み立てて `registerSkillCreatorHandlers()` へ渡す |
 
 **プロセス面の教訓（苦戦箇所の詳細）**: [lessons-learned.md - TASK-9B-H 教訓1-8](./lessons-learned.md#task-9b-h-skillcreatorservice-ipcハンドラー登録) を参照。Preload統合漏れ、並列Phase実行、設計-実装乖離、仕様書更新漏れの教訓を記録。
 
@@ -463,4 +466,3 @@ case "skillCreate":
 - S26: 直接IPC→Store個別セレクタ移行パターン（セレクタ設計時の参考）
 
 ---
-

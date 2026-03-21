@@ -256,12 +256,13 @@ AIによるコード生成・編集の結果を保持する。
 ## Skill Creator IPC チャネル
 
 Electronデスクトップアプリでは、IPC通信でスキル作成・管理機能を提供する。
-SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク実行・検証に加え、改善・フォーク・共有・スケジュール・デバッグ・ドキュメント生成・統計取得を行う。
+`SkillCreatorService` と `RuntimeSkillCreatorFacade` を使い分け、スキルの自動判定・作成・タスク実行・検証に加え、runtime plan/execute/improve、改善・フォーク・共有・スケジュール・デバッグ・ドキュメント生成・統計取得を行う。
 
 **実装ファイル**:
 
 - チャンネル定義: `apps/desktop/src/preload/channels.ts`
 - IPCハンドラー: `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`
+- runtime helper: `apps/desktop/src/main/ipc/creatorHandlers.ts`
 - Preload API: `apps/desktop/src/preload/skill-creator-api.ts`
 - 型定義: `apps/desktop/src/preload/skill-creator-api.ts`、`packages/shared/src/types/skillCreator.ts`
 
@@ -274,6 +275,9 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | `skill-creator:execute-tasks`   | Renderer → Main | タスク群実行       | `ExecuteTasksOptions`                                      | `IpcResult<ExecutionReport>`  |
 | `skill-creator:validate`        | Renderer → Main | スキル検証         | `{ skillDir: string }`                                     | `IpcResult<boolean>`          |
 | `skill-creator:validate-schema` | Renderer → Main | スキーマ検証       | `{ schemaName: string; data: unknown }`                    | `IpcResult<boolean>`          |
+| `skill-creator:plan`            | Renderer → Main | runtime plan       | `{ prompt: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
+| `skill-creator:execute-plan`    | Renderer → Main | runtime execute    | `{ planId: string; skillSpec: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorExecuteResult>` |
+| `skill-creator:improve-skill`   | Renderer → Main | runtime improve    | `{ skillName: string; feedback: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `skill-creator:improve`         | Renderer → Main | スキル改善         | `{ skillName: string; autoApply?: boolean }`               | `IpcResult<unknown>`          |
 | `skill-creator:fork`            | Renderer → Main | スキルフォーク     | `{ sourceName: string; newName: string; options?: object }` | `IpcResult<string>`           |
 | `skill-creator:share`           | Renderer → Main | スキル共有         | `{ skillName: string; format: string }`                    | `IpcResult<string>`           |
@@ -292,6 +296,10 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | `CreateSkillOptions`   | スキル作成オプション                 |
 | `ExecuteTasksOptions`  | タスク実行オプション                 |
 | `ExecutionReport`      | タスク実行レポート                   |
+| `RuntimeSkillCreatorPlanResponse` | runtime plan 結果または terminal handoff |
+| `RuntimeSkillCreatorExecuteResult` | runtime execute 結果               |
+| `RuntimeSkillCreatorImproveResponse` | runtime improve 結果または terminal handoff |
+| `TerminalHandoffBundle` | Claude Code handoff bundle          |
 | `SkillCreatorProgress` | 進捗通知データ（Preload型）          |
 | `SkillCreatorAPI`      | Preload APIインターフェース          |
 
@@ -309,11 +317,13 @@ SkillCreatorServiceと連携し、スキルの自動判定・作成・タスク�
 | ---------------------------- | ------ | ------------------------------- |
 | 基本6チャンネル定義          | 完了   | TASK-9B-H-SKILL-CREATOR-IPC     |
 | 拡張7チャンネル定義          | 完了   | TASK-9B（2026-02-26反映）       |
-| ホワイトリスト追加           | 完了   | TASK-9B-H / TASK-9B             |
-| IPCハンドラー実装            | 完了   | TASK-9B-H / TASK-9B             |
-| Preload API実装              | 完了   | TASK-9B-H / TASK-9B             |
-| Sender検証（全12 invoke）    | 完了   | TASK-9B-H / TASK-9B             |
-| P42 3段バリデーション（create含む） | 完了 | UT-9B-H-003 / TASK-9B        |
+| runtime 3チャンネル定義      | 完了   | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 |
+| shared runtime contract 追加 | 完了   | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 |
+| ホワイトリスト追加           | 完了   | TASK-9B-H / TASK-9B / UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 |
+| IPCハンドラー実装            | 完了   | TASK-9B-H / TASK-9B / UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 |
+| Preload API実装              | 完了   | TASK-9B-H / TASK-9B / UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 |
+| Sender検証（全15 invoke）    | 完了   | TASK-9B-H / TASK-9B / UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 |
+| P42 3段バリデーション（create含む） | 完了 | UT-9B-H-003 / TASK-9B / UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 |
 | エラーサニタイズ             | 完了   | UT-9B-H-003                     |
 | パストラバーサル検証         | 完了   | UT-9B-H-003                     |
 | schemaNameホワイトリスト検証 | 完了   | UT-9B-H-003                     |
@@ -337,6 +347,7 @@ Task03 では `skill-creator:*` を単独の create 導線として見せず、�
 | flow | 使用チャネル | renderer 側の正本 |
 | --- | --- | --- |
 | request の方針判定 | `skill-creator:detect-mode` | `SkillLifecyclePanel.handlePrepare` |
+| runtime bridge | `skill-creator:plan` / `skill-creator:execute-plan` / `skill-creator:improve-skill` | workflow-driven runtime handoff / direct public IPC |
 | 実作成 | 使わない | `agentSlice.createSkill()` → `skill:create` |
 | 実行 | 使わない | `agentSlice.executeSkill()` → `skill:execute` |
 | 改善候補 | `skill-creator:improve` | `SkillLifecyclePanel.handlePlanImprovement` |

@@ -4,6 +4,34 @@
 
 ---
 
+## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 追補（impl-spec-to-skill-sync）
+- **Result**: success
+- **Notes**:
+  - resource-map.md に runtime public IPC wiring 導線を追加
+  - 06-known-pitfalls.md に P65（dead-end namespace による IPC contract drift）を追加
+  - aiworkflow-requirements SKILL.md の trigger に RuntimeSkillCreatorFacade / TerminalHandoffBundle / runtime public IPC 関連キーワードを追加
+  - mirror sync（rsync + diff -qr 差分 0 確認）
+
+---
+
+## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 最終同期（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12 最終同期
+- **Result**: success
+- **Notes**:
+  - `outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` を planned wording から実績記録へ置換
+  - `implementation-guide.md` に TypeScript 契約、使用例、エラーハンドリング、エッジケース、設定/定数一覧を補強し、validator 10/10 を狙う構成へ是正
+  - `outputs/artifacts.json` と `phase12-task-spec-compliance-check.md` を追加し、`artifacts.json` と成果物一覧を同一ターンで同期
+  - review board PNG 3件、`manual-test-checklist.md`、`screenshot-plan.json`、`phase11-capture-metadata.json` を current workflow 配下へ揃え、非 UI 中心タスクの Phase 11 fallback を固定
+  - `validate-phase-output.js` を更新し、`phase-01-*` / `phase-1-*` 両系統、`coverage` / `quality` alias、bullet/numbered task list を許容
+  - `verify-all-specs --workflow docs/30-workflows/runtime-skill-creator-ipc-wiring --json` PASS、`pnpm --filter @repo/desktop typecheck` PASS、Vitest 再実行は esbuild platform mismatch により環境阻害として記録
+
+---
+
 ## UT-TASK06-007-EXT-006 完了（2026-03-21）
 
 - **Agent**: task-specification-creator

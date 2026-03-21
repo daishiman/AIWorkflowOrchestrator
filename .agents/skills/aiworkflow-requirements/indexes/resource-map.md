@@ -65,6 +65,7 @@
 | Skill Docs セキュリティ（4チャンネル4層防御） | security-electron-ipc-advanced.md | security-electron-ipc.md, interfaces-agent-sdk-skill-reference-share-debug-analytics.md |
 | 信頼・権限・ガバナンス設計（TASK-SKILL-LIFECYCLE-06） | security-skill-execution.md, interfaces-agent-sdk-executor-details.md, arch-state-management-reference-permissions-import-lifecycle.md | lessons-learned-current.md, task-workflow-backlog.md, workflow-skill-lifecycle-evaluation-scoring-gate.md |
 | 設計仕様（Skill Publishing & Version Compatibility / 互換性チェック・公開判定） | interfaces-agent-sdk-skill.md, security-skill-execution.md, workflow-skill-lifecycle-created-skill-usage-journey.md | api-ipc-agent-core.md, arch-electron-services-core.md, arch-state-management-core.md, lessons-learned-current.md, task-workflow.md |
+| Runtime Skill Creator public IPC wiring（runtime plan/execute/improve 3チャンネル統合） | api-ipc-agent-core.md, security-electron-ipc-details.md, architecture-implementation-patterns-details.md | interfaces-agent-sdk-skill-reference.md, architecture-overview-core.md, lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, task-workflow-completed-ipc-contract-preload-alignment.md |
 
 ---
 

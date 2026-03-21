@@ -44,6 +44,10 @@ import type { SkillExecutionResponse } from "@repo/shared/types/skill";
 // Module-level SkillExecutor instance for abort/getExecutionStatus
 let _skillExecutorInstance: SkillExecutor | null = null;
 
+export function getSkillExecutorInstance(): SkillExecutor | null {
+  return _skillExecutorInstance;
+}
+
 // UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001: エラーサニタイゼーション
 const STACK_TRACE_PATTERN = /\n\s+at\s+.*/g;
 const UNIX_PATH_PATTERN = /\/[\w./\\-]+/g;

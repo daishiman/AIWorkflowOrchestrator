@@ -1,184 +1,192 @@
 /**
- * Creator IPC ハンドラ
+ * Runtime Skill Creator IPC handlers
  *
- * TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001
- *
- * SkillCreatorService の Planner / Executor / Improver role を IPC チャンネルとして公開する。
- * 重要: internal role 名は IPC レスポンスに含めない（P44 準拠）。
+ * RuntimeSkillCreatorFacade を public `skill-creator:*` surface に接続する。
  */
 
-import { ipcMain } from "electron";
-import type { RuntimeSkillCreatorFacade as SkillCreatorService } from "../services/runtime/RuntimeSkillCreatorFacade";
+import { ipcMain, type BrowserWindow, type IpcMainInvokeEvent } from "electron";
+import type {
+  RuntimeSkillCreatorExecuteResult,
+  RuntimeSkillCreatorImproveResponse,
+  RuntimeSkillCreatorPlanResponse,
+} from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
+import { IPC_CHANNELS } from "../../preload/channels";
+import type { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
+import {
+  validateIpcSender,
+  toIPCValidationError,
+} from "../infrastructure/security/ipc-validator";
+import { sanitizeErrorMessage } from "./sanitizeErrorMessage";
 
-// IPC チャンネル定数（既存の channels.ts に追加することも可能だが、新規ファイルで管理）
-export const CREATOR_CHANNELS = {
-  CREATOR_PLAN: "creator:plan",
-  CREATOR_EXECUTE: "creator:execute",
-  CREATOR_IMPROVE: "creator:improve",
-} as const;
+interface IpcResult<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+}
 
-/**
- * Creator IPC ハンドラを登録する
- */
-export function registerCreatorHandlers(
-  creatorService: SkillCreatorService,
+const RUNTIME_SKILL_CREATOR_UNAVAILABLE =
+  "Runtime Skill Creator は現在利用できません";
+
+function validationError(message: string): IpcResult<never> {
+  return { success: false, error: message };
+}
+
+function isBlank(value: unknown): boolean {
+  return typeof value !== "string" || value === "" || value.trim() === "";
+}
+
+function validateSender(
+  event: IpcMainInvokeEvent,
+  channel: string,
+  mainWindow: BrowserWindow,
 ): void {
-  // creator:plan - Planner role（外部名: plan_result）
+  const validation = validateIpcSender(event, channel, {
+    getAllowedWindows: () => [mainWindow],
+  });
+  if (!validation.valid) {
+    throw toIPCValidationError(validation);
+  }
+}
+
+export function registerRuntimeSkillCreatorHandlers(
+  mainWindow: BrowserWindow,
+  runtimeSkillCreatorService?: RuntimeSkillCreatorFacade,
+): void {
   ipcMain.handle(
-    CREATOR_CHANNELS.CREATOR_PLAN,
+    IPC_CHANNELS.SKILL_CREATOR_PLAN,
     async (
-      _event,
+      event: IpcMainInvokeEvent,
       args: { prompt: string; authMode?: AuthMode; apiKey?: string | null },
-    ) => {
-      // P42 3段バリデーション
-      if (
-        typeof args?.prompt !== "string" ||
-        args.prompt === "" ||
-        args.prompt.trim() === ""
-      ) {
-        return {
-          success: false,
-          error: { code: "VALIDATION_ERROR", message: "prompt は必須です" },
-        };
+    ): Promise<IpcResult<RuntimeSkillCreatorPlanResponse>> => {
+      validateSender(event, IPC_CHANNELS.SKILL_CREATOR_PLAN, mainWindow);
+
+      if (isBlank(args?.prompt)) {
+        return validationError("プロンプトが指定されていません");
+      }
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
       }
 
-      const authMode: AuthMode = args.authMode ?? "api-key";
-      const apiKey = args.apiKey ?? null;
-
       try {
-        const result = await creatorService.plan(
+        const result = await runtimeSkillCreatorService.plan(
           args.prompt.trim(),
-          authMode,
-          apiKey,
+          args.authMode ?? "api-key",
+          args.apiKey ?? null,
         );
         return { success: true, data: result };
       } catch (error) {
         return {
           success: false,
-          error: {
-            code: "EXECUTION_FAILED",
-            message: error instanceof Error ? error.message : "Unknown error",
-          },
+          error: sanitizeErrorMessage(
+            error,
+            "Runtime plan の実行に失敗しました",
+          ),
         };
       }
     },
   );
 
-  // creator:execute - Executor role（外部名: execute_result）
   ipcMain.handle(
-    CREATOR_CHANNELS.CREATOR_EXECUTE,
+    IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
     async (
-      _event,
+      event: IpcMainInvokeEvent,
       args: {
         planId: string;
         skillSpec: string;
         authMode?: AuthMode;
         apiKey?: string | null;
       },
-    ) => {
-      // P42 3段バリデーション
-      if (
-        typeof args?.planId !== "string" ||
-        args.planId === "" ||
-        args.planId.trim() === ""
-      ) {
-        return {
-          success: false,
-          error: { code: "VALIDATION_ERROR", message: "planId は必須です" },
-        };
+    ): Promise<IpcResult<RuntimeSkillCreatorExecuteResult>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
+        mainWindow,
+      );
+
+      if (isBlank(args?.planId)) {
+        return validationError("planId が指定されていません");
+      }
+      if (isBlank(args?.skillSpec)) {
+        return validationError("skillSpec が指定されていません");
+      }
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
       }
 
-      const authMode: AuthMode = args.authMode ?? "api-key";
-      const apiKey = args.apiKey ?? null;
-
       try {
-        const planResult = {
-          planId: args.planId.trim(),
-          skillSpec: args.skillSpec ?? "",
-          estimatedSteps: 3,
-        };
-        const result = await creatorService.execute(
-          planResult,
-          authMode,
-          apiKey,
+        const result = await runtimeSkillCreatorService.execute(
+          {
+            planId: args.planId.trim(),
+            skillSpec: args.skillSpec.trim(),
+            estimatedSteps: 3,
+          },
+          args.authMode ?? "api-key",
+          args.apiKey ?? null,
         );
         return { success: true, data: result };
       } catch (error) {
         return {
           success: false,
-          error: {
-            code: "EXECUTION_FAILED",
-            message: error instanceof Error ? error.message : "Unknown error",
-          },
+          error: sanitizeErrorMessage(
+            error,
+            "Runtime execute の実行に失敗しました",
+          ),
         };
       }
     },
   );
 
-  // creator:improve - Improver role（外部名: improve_result）
   ipcMain.handle(
-    CREATOR_CHANNELS.CREATOR_IMPROVE,
+    IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL,
     async (
-      _event,
+      event: IpcMainInvokeEvent,
       args: {
         skillName: string;
         feedback: string;
         authMode?: AuthMode;
         apiKey?: string | null;
       },
-    ) => {
-      // P42 3段バリデーション
-      if (
-        typeof args?.skillName !== "string" ||
-        args.skillName === "" ||
-        args.skillName.trim() === ""
-      ) {
-        return {
-          success: false,
-          error: { code: "VALIDATION_ERROR", message: "skillName は必須です" },
-        };
-      }
-      if (
-        typeof args?.feedback !== "string" ||
-        args.feedback === "" ||
-        args.feedback.trim() === ""
-      ) {
-        return {
-          success: false,
-          error: { code: "VALIDATION_ERROR", message: "feedback は必須です" },
-        };
-      }
+    ): Promise<IpcResult<RuntimeSkillCreatorImproveResponse>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL,
+        mainWindow,
+      );
 
-      const authMode: AuthMode = args.authMode ?? "api-key";
-      const apiKey = args.apiKey ?? null;
+      if (isBlank(args?.skillName)) {
+        return validationError("skillName が指定されていません");
+      }
+      if (isBlank(args?.feedback)) {
+        return validationError("feedback が指定されていません");
+      }
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
 
       try {
-        const result = await creatorService.improve(
+        const result = await runtimeSkillCreatorService.improve(
           args.skillName.trim(),
           args.feedback.trim(),
-          authMode,
-          apiKey,
+          args.authMode ?? "api-key",
+          args.apiKey ?? null,
         );
         return { success: true, data: result };
       } catch (error) {
         return {
           success: false,
-          error: {
-            code: "EXECUTION_FAILED",
-            message: error instanceof Error ? error.message : "Unknown error",
-          },
+          error: sanitizeErrorMessage(
+            error,
+            "Runtime improve の実行に失敗しました",
+          ),
         };
       }
     },
   );
 }
 
-/**
- * Creator IPC ハンドラを解除する
- */
-export function unregisterCreatorHandlers(): void {
-  ipcMain.removeHandler(CREATOR_CHANNELS.CREATOR_PLAN);
-  ipcMain.removeHandler(CREATOR_CHANNELS.CREATOR_EXECUTE);
-  ipcMain.removeHandler(CREATOR_CHANNELS.CREATOR_IMPROVE);
+export function unregisterRuntimeSkillCreatorHandlers(): void {
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL);
 }

@@ -789,3 +789,41 @@ export interface ILLMClient {
 // Factory で共有しようとすると型不整合
 // 解決策: 1箇所に統一するか、Config で分離する
 ```
+
+### P65: Runtime helper の dead-end namespace による IPC contract drift
+
+- **教訓**: runtime 用の internal helper（`creatorHandlers.ts`）が `creator:*` という独自 namespace で handler を登録していたが、public surface は `skill-creator:*` だった。2つの namespace が共存する間に contract drift が発生し、Preload 側と Main 側の型が乖離した。internal helper を「暫定的に追加した別 namespace」として放置すると drift が蓄積する
+- **症状**: Renderer から `skill-creator:plan` を呼んでも handler が未登録、`creator:plan` には handler があるが Preload の allowlist に含まれない
+- **解決策**: internal helper は既存の public entrypoint（`skillCreatorHandlers.ts`）から呼び出す形に統合し、public channel の入口を増やさない。runtime 実装を追加する場合は「新 namespace 追加」ではなく「既存 namespace への handler 追加」を原則とする
+- **再発防止**: Phase 2 設計書に「IPC handler の namespace 一覧」を明示し、新規 namespace の追加は設計レビューで承認を必須とする
+- **関連パターン**: P44（IPC インターフェース不整合）、P45（IPC 引数命名の契約ドリフト）
+- **関連タスク**: UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001
+
+```typescript
+// P65: dead-end namespace（internal helper が別 namespace を作成）
+// creatorHandlers.ts（runtime 用 internal helper）
+ipcMain.handle("creator:plan", async (event, args) => { ... });
+
+// skillCreatorHandlers.ts（public surface）
+ipcMain.handle("skill-creator:plan", async (event, args) => { ... });
+
+// Preload allowlist には skill-creator:* のみ
+// → creator:plan は到達不能な dead-end になる
+
+// 解決策: internal helper を public entrypoint から呼び出す
+// skillCreatorHandlers.ts
+export function registerSkillCreatorHandlers(
+  skillCreatorService: SkillCreatorService,
+  mainWindow: BrowserWindow,
+  runtimeSkillCreatorService?: RuntimeSkillCreatorFacade, // optional DI
+) {
+  // 既存 handler...
+  ipcMain.handle("skill-creator:plan", async (event, args) => {
+    // runtime service があれば委譲、なければ graceful degradation
+    if (!runtimeSkillCreatorService) {
+      return { success: false, error: "Runtime Skill Creator は現在利用できません" };
+    }
+    return runtimeSkillCreatorService.planSkill(args);
+  });
+}
+```

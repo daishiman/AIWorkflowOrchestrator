@@ -1,0 +1,71 @@
+{
+  "workflow": "runtime-skill-creator-ipc-wiring",
+  "captureMethod": "fallback-review-board",
+  "generatedAt": "2026-03-21T10:53:43.846Z",
+  "note": "Phase 11 の representative screenshot。非 UI 中心タスクのため review board 方式を採用。",
+  "screenshots": [
+    {
+      "tcId": "TC-11-09",
+      "file": "screenshots/TC-11-09-skill-creator-runtime-surface-review-board.png",
+      "title": "Skill Creator runtime public surface review board",
+      "captureMethod": "fallback-review-board",
+      "generatedAt": "2026-03-21T10:53:43.583Z",
+      "sourceAnchors": [
+        {
+          "file": "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+          "keyword": "getSkillCreatorApi"
+        },
+        {
+          "file": "apps/desktop/src/preload/index.ts",
+          "keyword": "skillCreator: skillCreatorAPI"
+        },
+        {
+          "file": "apps/desktop/src/preload/skill-creator-api.ts",
+          "keyword": "planSkill:"
+        }
+      ]
+    },
+    {
+      "tcId": "TC-11-10",
+      "file": "screenshots/TC-11-10-runtime-ipc-contract-review-board.png",
+      "title": "Runtime IPC contract review board",
+      "captureMethod": "fallback-review-board",
+      "generatedAt": "2026-03-21T10:53:43.709Z",
+      "sourceAnchors": [
+        {
+          "file": "apps/desktop/src/preload/channels.ts",
+          "keyword": "SKILL_CREATOR_PLAN"
+        },
+        {
+          "file": "apps/desktop/src/main/ipc/creatorHandlers.ts",
+          "keyword": "IPC_CHANNELS.SKILL_CREATOR_PLAN"
+        },
+        {
+          "file": "packages/shared/src/types/skillCreator.ts",
+          "keyword": "export interface SkillCreatorPlanRequest"
+        }
+      ]
+    },
+    {
+      "tcId": "TC-11-11",
+      "file": "screenshots/TC-11-11-runtime-graceful-degradation-review-board.png",
+      "title": "Graceful degradation / auth fallback review board",
+      "captureMethod": "fallback-review-board",
+      "generatedAt": "2026-03-21T10:53:43.846Z",
+      "sourceAnchors": [
+        {
+          "file": "apps/desktop/src/main/ipc/creatorHandlers.ts",
+          "keyword": "RUNTIME_SKILL_CREATOR_UNAVAILABLE"
+        },
+        {
+          "file": "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+          "keyword": "private resolveDecision"
+        },
+        {
+          "file": "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts",
+          "keyword": "resolveWithService"
+        }
+      ]
+    }
+  ]
+}

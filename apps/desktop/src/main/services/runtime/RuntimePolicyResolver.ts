@@ -9,23 +9,8 @@
 
 // AuthMode 型は packages/shared から import
 import type { AuthMode } from "@repo/shared/types/auth-mode";
+import type { TerminalHandoffBundle } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
-
-// TerminalHandoffBundle 型
-export interface TerminalHandoffBundle {
-  /** claude -p "..." 形式のコマンド */
-  launcher: string;
-  /** full prompt context */
-  promptBundle: string;
-  /** 作業ディレクトリ */
-  cwd: string;
-  /** コピー可能なコマンド文字列 */
-  suggestedCommand: string;
-  /** ユーザー向け案内メッセージ */
-  manualRetryRule: string;
-  /** 詳細操作手順（任意） */
-  runbook?: string;
-}
 
 // RuntimeDecision 型
 export type RuntimeDecision =

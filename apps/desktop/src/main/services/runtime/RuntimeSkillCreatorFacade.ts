@@ -16,31 +16,15 @@ import type {
   SkillExecutionRequest,
 } from "../skill/SkillExecutor";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
+import type {
+  RuntimeSkillCreatorExecuteResult as SkillExecuteResult,
+  RuntimeSkillCreatorImproveResponse,
+  RuntimeSkillCreatorPlanResponse,
+  RuntimeSkillCreatorPlanResult as SkillPlanResult,
+} from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 import { RuntimePolicyResolver } from "./RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "./TerminalHandoffBuilder";
-
-/** Planner role の出力 */
-export interface SkillPlanResult {
-  planId: string;
-  skillSpec: string;
-  estimatedSteps: number;
-}
-
-/** Executor role の出力 */
-export interface SkillExecuteResult {
-  executeId: string;
-  skillName: string;
-  success: boolean;
-  error?: string;
-}
-
-/** Improver role の出力 */
-export interface SkillImproveResult {
-  improveId: string;
-  suggestions: string[];
-  revisedSpec?: string;
-}
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -59,22 +43,23 @@ export class RuntimeSkillCreatorFacade {
     this.handoffBuilder = new TerminalHandoffBuilder();
   }
 
+  private resolveDecision(authMode: AuthMode, apiKey: string | null) {
+    if (authMode === "api-key" && (!apiKey || apiKey.trim() === "")) {
+      return this.resolver.resolveWithService(authMode);
+    }
+    return this.resolver.resolve(authMode, apiKey);
+  }
+
   /**
    * Planner role: スキル仕様を受け取り、実行計画を生成する。
-   * IPC 外部名: "plan_result"
+   * Public IPC: "skill-creator:plan"
    */
   async plan(
     skillSpec: string,
     authMode: AuthMode,
     apiKey: string | null,
-  ): Promise<
-    | SkillPlanResult
-    | {
-        type: "terminal_handoff";
-        bundle: ReturnType<TerminalHandoffBuilder["build"]>;
-      }
-  > {
-    const decision = await this.resolver.resolve(authMode, apiKey);
+  ): Promise<RuntimeSkillCreatorPlanResponse> {
+    const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {
       const bundle = this.handoffBuilder.build(
@@ -96,14 +81,14 @@ export class RuntimeSkillCreatorFacade {
   /**
    * Executor role: 計画に基づき Skill を実行・生成する。
    * SkillExecutor に委譲する。
-   * IPC 外部名: "execute_result"
+   * Public IPC: "skill-creator:execute-plan"
    */
   async execute(
     planResult: SkillPlanResult,
     authMode: AuthMode,
     apiKey: string | null,
   ): Promise<SkillExecuteResult> {
-    const decision = await this.resolver.resolve(authMode, apiKey);
+    const decision = await this.resolveDecision(authMode, apiKey);
 
     const request: SkillExecutionRequest = {
       prompt: planResult.skillSpec,
@@ -137,21 +122,15 @@ export class RuntimeSkillCreatorFacade {
 
   /**
    * Improver role: 実行結果を分析し、改善提案を返す。
-   * IPC 外部名: "improve_result"
+   * Public IPC: "skill-creator:improve-skill"
    */
   async improve(
     skillName: string,
     feedback: string,
     authMode: AuthMode,
     apiKey: string | null,
-  ): Promise<
-    | SkillImproveResult
-    | {
-        type: "terminal_handoff";
-        bundle: ReturnType<TerminalHandoffBuilder["build"]>;
-      }
-  > {
-    const decision = await this.resolver.resolve(authMode, apiKey);
+  ): Promise<RuntimeSkillCreatorImproveResponse> {
+    const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {
       const bundle = this.handoffBuilder.build(

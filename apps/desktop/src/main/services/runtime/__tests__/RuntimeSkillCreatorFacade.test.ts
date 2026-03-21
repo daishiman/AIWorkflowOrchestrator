@@ -84,6 +84,79 @@ describe("RuntimeSkillCreatorFacade", () => {
         estimatedSteps: 3,
       });
     });
+
+    it("apiKey 未指定の api-key モードでは authKeyService 経由の解決を使う", async () => {
+      const resolveSpy = vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
+      const resolveWithServiceSpy = vi
+        .spyOn(RuntimePolicyResolver.prototype, "resolveWithService")
+        .mockResolvedValue({
+          type: "integrated_api",
+          apiKey: "stored-key",
+          permissionMode: "default",
+        });
+      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_010);
+
+      const result = await facade.plan("spec body", "api-key", null);
+
+      expect(resolveSpy).not.toHaveBeenCalled();
+      expect(resolveWithServiceSpy).toHaveBeenCalledWith("api-key");
+      expect(result).toEqual({
+        planId: "plan-1710000000010",
+        skillSpec: "spec body",
+        estimatedSteps: 3,
+      });
+    });
+
+    it("apiKey 未指定の api-key モードで stored key がない場合は terminal_handoff", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
+      const resolveWithServiceSpy = vi
+        .spyOn(RuntimePolicyResolver.prototype, "resolveWithService")
+        .mockResolvedValue({
+          type: "terminal_handoff",
+          bundle: {
+            launcher: "claude",
+            promptBundle: "",
+            cwd: "/tmp",
+            suggestedCommand: 'claude -p "fallback"',
+            manualRetryRule: "retry",
+          },
+        });
+      const buildSpy = vi
+        .spyOn(TerminalHandoffBuilder.prototype, "build")
+        .mockReturnValue({
+          launcher: "claude",
+          promptBundle: "prompt",
+          cwd: process.cwd(),
+          suggestedCommand: "cmd",
+          manualRetryRule: "retry",
+        });
+
+      const result = await facade.plan("spec", "api-key", null);
+
+      expect(resolveWithServiceSpy).toHaveBeenCalledWith("api-key");
+      expect(buildSpy).toHaveBeenCalled();
+      expect(result).toHaveProperty("type", "terminal_handoff");
+    });
+
+    it("明示的 apiKey が渡された場合は resolveWithService を使わない", async () => {
+      const resolveSpy = vi
+        .spyOn(RuntimePolicyResolver.prototype, "resolve")
+        .mockResolvedValue({
+          type: "integrated_api",
+          apiKey: "explicit-key",
+          permissionMode: "default",
+        });
+      const resolveWithServiceSpy = vi.spyOn(
+        RuntimePolicyResolver.prototype,
+        "resolveWithService",
+      );
+      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_020);
+
+      await facade.plan("spec", "api-key", "explicit-key");
+
+      expect(resolveSpy).toHaveBeenCalledWith("api-key", "explicit-key");
+      expect(resolveWithServiceSpy).not.toHaveBeenCalled();
+    });
   });
 
   describe("execute", () => {

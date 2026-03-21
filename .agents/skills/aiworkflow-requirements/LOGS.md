@@ -6,12 +6,10 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
-<<<<<<< Updated upstream
+| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（resource-map runtime IPC 導線追加 / P65 dead-end namespace pitfall 追加 / SKILL.md trigger 拡張 / mirror sync） |
+| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（Skill Creator runtime public IPC 3チャネル / shared contract / graceful degradation / Phase 12 final sync） |
 | 2026-03-21 - UT-SLIDE-UI-001 完了同期（Slide Workspace 4領域 UI 実装 / Phase 11 screenshot 10枚 / task09 canonical same-wave 更新） |
-||||||| Stash base
-=======
 | 2026-03-21 - UT-TASK06-007-EXT-006: check-ipc-contracts テスト拡充（20件追加、カバレッジ95.79%、5関数/パターン export追加） |
->>>>>>> Stashed changes
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（UT-CHATVIEW-ERROR-BANNER-I18N-001=#1398 / UT-CHATVIEW-ERROR-CODE-INVENTORY-001=#1397） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（artifact inventory / legacy register / unassigned 9セクション是正 / validate-structure） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（root canonical path 是正 / screenshot 5件 / unassigned 2件 formalize / system spec 同期） |
@@ -58,7 +56,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
-<<<<<<< Updated upstream
+## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（2026-03-21）
+
+- タスク名: Runtime Skill Creator public IPC wiring
+- 種別: IPC 実装 + Phase 12 最終同期
+- 主な反映:
+  - `api-ipc-agent-core.md` / `api-ipc-agent-history.md` / `api-ipc-system-core.md` / `security-electron-ipc-details.md` / `architecture-implementation-patterns-details.md` / `architecture-overview-core.md` / `architecture-overview-history.md` / `interfaces-agent-sdk-skill-reference.md` / `interfaces-agent-sdk-skill-history-contract-fix-changelog.md` に `skill-creator:plan` / `execute-plan` / `improve-skill` の public 契約、architecture drift 是正、型アンカーを同期
+  - `task-workflow-completed-ipc-contract-preload-alignment.md` / `lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` に完了記録・苦戦箇所・4ステップ解決手順を追加
+  - `indexes/quick-reference.md` / `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、current canonical set を再同期
+  - workflow `outputs/phase-12` の planned wording を実績記録へ置換し、`outputs/artifacts.json` と `phase12-task-spec-compliance-check.md` を追加
+  - `LOGS.md` 競合マーカーを解消し、`.claude` 正本更新後に `.agents` mirror parity を再確認した
+
 ## UT-SLIDE-UI-001 完了同期（2026-03-21）
 
 - タスク名: Slide Workspace UI 4領域実装
@@ -71,8 +79,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - `ui-ux-feature-components-details.md` / `api-ipc-system-core.md` / `task-workflow-completed.md` / `workflow-ai-runtime-authmode-unification.md` / `arch-state-management-advanced.md` を current branch へ同期
   - `UT-SLIDE-UI-CLOSE-ERROR-001` / `UT-SLIDE-UI-HIG-LEGACY-001` を pending、`UT-SLIDE-P31-001` / `UT-SLIDE-UI-ACCESSIBILITY-001` を解消済みへ更新
 
-||||||| Stash base
-=======
 ## UT-TASK06-007-EXT-006 完了（2026-03-21）
 
 - タスク名: check-ipc-contracts テスト拡充（5関数/パターン export追加 + 20件追加）
@@ -90,8 +96,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 - 苦戦箇所:
   - ESM 制約: `vi.mock("fs")` を describe 内に置くと実 ESM モジュールへ適用されず → 実ファイル方式に切替
   - lastIndex 残留: モジュールスコープ `/gm` フラグ付き RegExp はテスト間で state が汚染される → 新インスタンス生成で解消
-
->>>>>>> Stashed changes
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
 - タスク名: ChatView エラーサイレント握りつぶし修正
