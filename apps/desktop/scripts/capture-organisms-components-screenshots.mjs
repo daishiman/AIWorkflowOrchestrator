@@ -86,8 +86,6 @@ function createMockScript() {
   return () => {
     const now = new Date().toISOString();
 
-    sessionStorage.setItem("debug-clear-storage", "done");
-
     const mockUser = {
       id: "e2e-user",
       email: "e2e@example.com",
@@ -152,7 +150,10 @@ async function captureScenario(browser, scenario) {
 
   const outputPath = path.join(screenshotDir, scenario.file);
   if (scenario.captureElement) {
-    await page.locator(scenario.selector).first().screenshot({ path: outputPath });
+    await page
+      .locator(scenario.selector)
+      .first()
+      .screenshot({ path: outputPath });
   } else {
     await page.screenshot({
       path: outputPath,

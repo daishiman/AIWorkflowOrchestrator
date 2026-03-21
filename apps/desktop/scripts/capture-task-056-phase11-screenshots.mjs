@@ -66,7 +66,6 @@ async function waitForServer(url, timeoutMs = 60_000) {
 function createMockScript() {
   return (mockSkills) => {
     const now = new Date().toISOString();
-    sessionStorage.setItem("debug-clear-storage", "done");
     localStorage.setItem("dev-skip-auth", "true");
 
     let importedSkills = [];

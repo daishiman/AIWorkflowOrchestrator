@@ -383,6 +383,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.05** | **2026-03-21** | **UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 Phase 12 完了同期**: debug-clear-storage 残骸の repo-wide 棚卸し完了。Phase 1-12 completed / Phase 13 blocked。未タスク 0 件。AC-1〜AC-7 全 PASS。LOGS.md + SKILL.md 同時更新（P1/P25 対策） |
 | **v10.09.04** | **2026-03-21** | **UT-TASK06-007-EXT-006**: check-ipc-contracts テスト拡充（20件追加、カバレッジ95.79%）。Phase 1-12 実行完了。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.03** | **2026-03-21** | **TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査同期**: Phase 11 screenshot task の capture script 正本を wrapper + canonical script 構成へ統一し、`phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を実績形式へ更新。Phase 12 では `phase12-task-spec-compliance-check.md` を root evidence として先行作成し、worktree でも `.claude/skills/` を直接更新するルールを Tips と変更履歴へ反映 |
 | **v10.09.02** | **2026-03-20** | **UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001**: Phase 1-12 実行完了（仕様書同期タスク） |

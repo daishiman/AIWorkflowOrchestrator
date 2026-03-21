@@ -14,7 +14,10 @@ const workflowRoot = path.join(
   repoRoot,
   "docs/30-workflows/completed-tasks/task-045-task-10a-g-lifecycle-test-hardening",
 );
-const defaultOutputDir = path.join(workflowRoot, "outputs/phase-11/screenshots");
+const defaultOutputDir = path.join(
+  workflowRoot,
+  "outputs/phase-11/screenshots",
+);
 
 function parseArgs(argv) {
   const options = {
@@ -61,7 +64,6 @@ function createMockScript() {
     const analysisMode = query.get("mode") ?? "default";
     let applyTriggered = false;
 
-    sessionStorage.setItem("debug-clear-storage", "done");
     localStorage.setItem("dev-skip-auth", "true");
 
     const resolveTheme = () =>
@@ -283,12 +285,15 @@ const scenarios = [
   {
     tcId: "TC-11-01",
     file: "TC-11-01-chatpanel-executing-guard.png",
-    route: "/advanced/concurrency-guard-review?scenario=chat-panel&skipAuth=true",
+    route:
+      "/advanced/concurrency-guard-review?scenario=chat-panel&skipAuth=true",
     viewport: { width: 1440, height: 900 },
     colorScheme: "light",
     readySelector: '[data-testid="chat-panel"]',
     postReady: async (page) => {
-      await page.waitForSelector('[data-testid="skill-management-toggle"][disabled]');
+      await page.waitForSelector(
+        '[data-testid="skill-management-toggle"][disabled]',
+      );
     },
   },
   {
@@ -299,8 +304,12 @@ const scenarios = [
     colorScheme: "light",
     readySelector: '[data-testid="skill-management-panel"]',
     postReady: async (page) => {
-      await page.waitForSelector('[data-testid="imported-skill-card-skill-alpha"]');
-      await page.waitForSelector('[data-testid="available-skill-row-skill-gamma"]');
+      await page.waitForSelector(
+        '[data-testid="imported-skill-card-skill-alpha"]',
+      );
+      await page.waitForSelector(
+        '[data-testid="available-skill-row-skill-gamma"]',
+      );
     },
   },
   {
@@ -317,7 +326,7 @@ const scenarios = [
       );
       await page.getByRole("button", { name: "次へ" }).click();
       await page.getByRole("button", { name: "スキルを生成" }).click();
-      await page.waitForSelector('text=スキルが作成されました');
+      await page.waitForSelector("text=スキルが作成されました");
     },
   },
   {
@@ -328,7 +337,7 @@ const scenarios = [
     colorScheme: "light",
     readySelector: '[data-testid="skill-analysis-view"]',
     postReady: async (page) => {
-      await page.waitForSelector('text=demo-skill');
+      await page.waitForSelector("text=demo-skill");
     },
   },
   {
@@ -339,7 +348,7 @@ const scenarios = [
     colorScheme: "light",
     readySelector: '[data-testid="skill-analysis-view"]',
     postReady: async (page) => {
-      await page.waitForSelector('text=91');
+      await page.waitForSelector("text=91");
     },
   },
 ];
@@ -415,7 +424,9 @@ async function main() {
     browser = await chromium.launch();
     const captures = [];
     for (const scenario of scenarios) {
-      captures.push(await captureScenario(browser, baseUrl, outputDir, scenario));
+      captures.push(
+        await captureScenario(browser, baseUrl, outputDir, scenario),
+      );
       console.log(`✓ ${scenario.file}`);
     }
 

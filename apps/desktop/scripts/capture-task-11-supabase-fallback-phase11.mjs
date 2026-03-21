@@ -198,7 +198,6 @@ async function captureScenario(browser, scenario) {
     const avatarNotConfiguredMessage =
       "Avatar service is not configured. Supabase environment variables are required.";
 
-    window.sessionStorage.setItem("debug-clear-storage", "done");
     window.localStorage.setItem("dev-skip-auth", "true");
     window.__PHASE11_AUTH_HARNESS__ = {
       isAuthenticated: true,
