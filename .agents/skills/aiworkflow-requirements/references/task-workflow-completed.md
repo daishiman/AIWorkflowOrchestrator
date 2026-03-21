@@ -5,6 +5,58 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 runtime-policy-centralization（2026-03-21）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 |
+| ステータス | **仕様書作成完了（`spec_created` / workflow root `implementation_ready` / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-21 |
+| 対象 | surface 横断 runtime policy / health route / handoff contract centralization |
+| 成果物 | `docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/` |
+
+#### 実施内容
+
+- RuntimePolicy / Health DTO / HandoffGuidance の consumption contract を Phase 1〜12 で確定した
+- `index.md` / `artifacts.json` / `outputs/artifacts.json` / `phase-1..13` の status を整合化し、workflow root を `implementation_ready` に正規化した
+- `outputs/phase-12/skill-feedback-report.md` を追加し、Phase 12 必須 6成果物をそろえた
+- current code 再監査で actual centralization gap を確認し、follow-up 4件を formalize した
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（topic-map.md / keywords.json 再生成） |
+| `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js` | PASS with warnings 5（500行超ファイルの既存警告のみ） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（13/13, errors 0, warnings 0, info 1） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（10/10） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-12/unassigned-task-detection.md` | PASS（4/4, missing 0） |
+| `diff -qr .claude/skills/ .agents/skills/` | PASS（差分なし） |
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
+| `UT-CLEANUP-AI-CHECK-CONNECTION-001` | legacy health route cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
+| `UT-CLEANUP-RUNTIME-RESOLVER-001` | deprecated resolver cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
+| `UT-DESIGN-SANITIZE-PLACEMENT-001` | sanitize 配置判断の固定 | 中 | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| design close-out を feature 完了と誤読しやすい | workflow root と completed ledger の意味を分離しない | workflow root=`implementation_ready`、completed=`spec_created` を明記した |
+| docs だけ見て final re-audit を閉じると実装 gap を見逃す | `outputs/` と台帳だけで判断し、current code を見ない | main IPC consumer / facade / shared transport / tests まで sweep し、高優先度 task を formalize した |
+
+#### 同種課題の簡潔解決手順
+
+1. design task の close-out では workflow root と completed ledger の意味を分離する。
+2. Phase 12 最終再監査で current code の主要 consumer と tests を確認する。
+3. 実装 gap は未タスクへ昇格し、backlog / workflow / lessons / completed を同一ターンで同期する。
+
 ### タスク: TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 execution-responsibility-contract-foundation（2026-03-20）
 
 | 項目 | 値 |
@@ -15,7 +67,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-20 |
 | 対象 | execution responsibility / access capability / CTA contract foundation |
-| 成果物 | `docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/` |
+| 成果物 | `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/` |
 
 #### 実施内容
 
@@ -30,8 +82,8 @@
 | --- | --- |
 | `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（topic-map.md / keywords.json 再生成） |
 | `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js` | PASS with warnings 5（500行超ファイルの既存警告のみ） |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation --json` | PASS（13/13, errors 0, warnings 12） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation --json` | PASS（10/10） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation --json` | PASS（13/13, errors 0, warnings 12） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation --json` | PASS（10/10） |
 | `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements` | PASS（差分なし） |
 | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator` | PASS（差分なし） |
 

@@ -215,7 +215,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする                                                                                                                                                                                                   |
 | **LOGS.md/SKILL.md は4ファイル更新**       | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md                                                                                                                           |
 | **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
-| **worktree環境ではLOGS.md/SKILL.md更新を代替記録** | `.worktrees/` 配下で作業する場合、`.claude/skills/` はメインの作業ツリーと同期されないため、`system-spec-update-summary.md` に更新予定内容を記録し、PRマージ後にメインブランチで反映する。`skill-feedback-report.md` に代替フローを使用した旨を明記すること |
+| **worktree環境でもLOGS.md/SKILL.mdを直接更新** | `.worktrees/` 配下で作業していても `.claude/skills/` が正本であることは変わらない。`system-spec-update-summary.md` は代替記録ではなく実更新の要約に使い、LOGS.md / SKILL.md の後追いは禁止する |
 | **並列エージェント完了後はファイルシステムで検証** | P43/P59対策。エージェントがコンテキスト制限で応答不能になった場合、`git diff --stat` + `ls outputs/phase-*/` + `artifacts.json` のPhaseステータスで成果物の存在を確認する |
 
 ---
@@ -383,6 +383,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.03** | **2026-03-21** | **TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査同期**: Phase 11 screenshot task の capture script 正本を wrapper + canonical script 構成へ統一し、`phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を実績形式へ更新。Phase 12 では `phase12-task-spec-compliance-check.md` を root evidence として先行作成し、worktree でも `.claude/skills/` を直接更新するルールを Tips と変更履歴へ反映 |
 | **v10.09.02** | **2026-03-20** | **UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001**: Phase 1-12 実行完了（仕様書同期タスク） |
 | **v10.09.01** | **2026-03-19** | **UT-TASK06-007 再監査同期**: `implementation-guide.md` の必須要件（なぜ先行 / 日常例え / TypeScript 型 / API/CLI シグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目）を validator 10/10 に合わせて補強し、`phase-11-manual-test.md` の参照不足 warning を解消。未タスク5件は `docs/30-workflows/unassigned-task/` 配置を再確認し、`EXT-002` 残余スコープ・`EXT-005` 実行手順未完成・数値ドリフトを是正する運用を変更履歴へ追加 |
 | **v10.09.00** | **2026-03-19** | **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了記録**。Phase 1-12 実行完了 |

@@ -15,6 +15,7 @@
 | L-RAG-04 | Embedding 仕様差分 7件の発見 | P37, P50 | 中 |
 | L-RAG-05 | communityHandlers テストファイル不在 | P9, P21 | 中 |
 | L-RAG-06 | ILLMClient 型の乖離 | P23, P32, P44 | 高 |
+| L-RAG-07 | Factory wiring タスクでの型互換性事前検証パターン | P23, P32, P44 | 高 |
 
 ---
 
@@ -171,3 +172,12 @@ grep -A 20 "interface ILLMClient" apps/desktop/src/main/llm/types.ts
 ```
 
 **関連**: P23（API二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須）、P44（IPC インターフェース不整合）
+
+---
+
+### L-RAG-07: Factory wiring タスクでの型互換性事前検証パターン
+
+- **タスク**: UT-RAG-08-002（HybridRAGFactory 実配線）
+- **教訓**: Factory パターンで複数の依存モジュールを配線する際、各モジュールが要求するインターフェースの型互換性を Phase 2（設計）で検証すべき。UT-RAG-08-002 では `ILLMClient` が `crag/types.ts`（1引数オブジェクト形式）と `llm/types.ts`（2引数形式）で異なるシグネチャを持ち、Phase 3 レビューで MAJOR として検出された
+- **解決策**: Factory が依存する全モジュールのコンストラクタ引数型を Phase 1（要件定義）で FR-00 テーブルに列挙し、Phase 2 で import 元ファイルのインターフェース定義を実際に読んで型互換性を検証する
+- **関連**: L-RAG-06, P23, P64

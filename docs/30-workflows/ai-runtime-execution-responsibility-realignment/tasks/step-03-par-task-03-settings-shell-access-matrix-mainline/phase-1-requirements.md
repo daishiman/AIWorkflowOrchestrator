@@ -40,7 +40,7 @@ Settings / App shell mainline access matrix の現状、対象範囲、受入基
 | interfaces-auth        | .claude/skills/aiworkflow-requirements/references/interfaces-auth.md                                                                       | auth/access 契約の親入口                          |
 | api-ipc-system         | .claude/skills/aiworkflow-requirements/references/api-ipc-system.md                                                                        | system IPC 契約の親入口                           |
 | arch-state-management  | .claude/skills/aiworkflow-requirements/references/arch-state-management.md                                                                 | Renderer 責務境界の親入口                         |
-| Task02 index           | docs/30-workflows/ai-runtime-execution-responsibility-realignment/tasks/step-02-seq-task-02-runtime-policy-centralization/index.md         | 共有 policy の消費契約                            |
+| Task02 index           | docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/index.md                                                               | 共有 policy の消費契約                            |
 | ui-ux-settings         | .claude/skills/aiworkflow-requirements/references/ui-ux-settings.md                                                                        | Settings 正本の親入口                             |
 | ui-ux-settings-core    | .claude/skills/aiworkflow-requirements/references/ui-ux-settings-core.md                                                                   | Settings IA / bypass / screenshot 契約            |
 | ui-ux-navigation       | .claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md                                                                      | settings 公開導線・nav 契約                       |
@@ -58,7 +58,7 @@ common canonical と task 固有 canonical を読み、Settings / App shell main
 
 ```bash
 git log --oneline -10 -- apps/desktop/src/renderer/views/SettingsView/index.tsx
-rg -n "authMode|runtime|handoff|terminal|guidance|health|capability" apps/desktop/src/renderer/views/SettingsView apps/desktop/src/renderer/components/organisms/AppLayout apps/desktop/src/renderer/components/AuthGuard docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation docs/30-workflows/ai-runtime-execution-responsibility-realignment || true
+rg -n "authMode|runtime|handoff|terminal|guidance|health|capability" apps/desktop/src/renderer/views/SettingsView apps/desktop/src/renderer/components/organisms/AppLayout apps/desktop/src/renderer/components/AuthGuard docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation docs/30-workflows/ai-runtime-execution-responsibility-realignment || true
 ```
 
 ### ステップ3: 要件・AC・除外範囲を確定する

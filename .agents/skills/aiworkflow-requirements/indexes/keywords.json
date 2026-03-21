@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-21T01:47:05.332Z",
-  "totalKeywords": 2407,
+  "generated": "2026-03-21T03:26:12.188Z",
+  "totalKeywords": 2415,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1290,6 +1290,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
@@ -3784,6 +3785,12 @@
       "security-api-electron.md",
       "ui-ux-history-panel.md"
     ],
+    "known": [
+      "architecture-rag.md"
+    ],
+    "issues": [
+      "architecture-rag.md"
+    ],
     "仕様詳細": [
       "claude-code-agents-spec.md"
     ],
@@ -5128,6 +5135,7 @@
     ],
     "LLM": [
       "interfaces-llm.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "llm-ipc-types.md",
       "llm-streaming.md",
       "rag-desktop-state.md",
@@ -6226,6 +6234,15 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "ライフサイクル": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "SELECTOR": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "INLINE": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "GUIDANCE": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "仕様書作成": [
@@ -8557,7 +8574,8 @@
     ],
     "up": [
       "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "の未タスク": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
@@ -11045,6 +11063,15 @@
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "実装同期ルール": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "実装ステータススナップショット": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "Follow": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "Backlog": [
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "集計": [

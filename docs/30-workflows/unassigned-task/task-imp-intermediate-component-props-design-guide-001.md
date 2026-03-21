@@ -2,6 +2,12 @@
 
 ## メタ情報
 
+```yaml
+issue_number: 1419
+```
+
+## メタ情報
+
 | 項目         | 内容                                                 |
 | ------------ | ---------------------------------------------------- |
 | タスクID     | UT-IMP-INTERMEDIATE-COMPONENT-PROPS-DESIGN-GUIDE-001 |

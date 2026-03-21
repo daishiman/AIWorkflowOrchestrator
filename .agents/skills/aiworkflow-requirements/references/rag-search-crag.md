@@ -5,7 +5,7 @@
 >
 > **親ドキュメント**: [interfaces-rag-search.md](./interfaces-rag-search.md)
 
-検索結果の関連性をLLMで評価し、必要に応じて補正を行う自己修正RAGパイプライン。
+検索結果の関連性をLLMで評価し、評価結果に応じて補正を行う自己修正RAGパイプライン。
 
 **実装場所**: `packages/shared/src/services/search/crag/`
 
@@ -15,6 +15,7 @@
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| v1.2.0     | 2026-03-20 | UT-RAG-08-002 実装準備: `ILLMClient` 形状差分と adapter 前提を追記 |
 | v1.1.0     | 2026-01-26 | コードブロックを表形式・文章に変換（ガイドライン準拠） |
 | v1.0.0     | -          | 初版作成                                           |
 
@@ -162,6 +163,12 @@ Corrective RAGプロセッサ
 | prompt      | string | プロンプト     |
 | maxTokens   | number | 最大トークン数 |
 | temperature | number | 生成温度       |
+
+**実装メモ**:
+
+- `RelevanceEvaluator` は `complete({ prompt, maxTokens, temperature })` 形状を要求する
+- `services/llm/types.ts` 側 `ILLMClient` は `complete(prompt, options?)` 形状であり、そのままは代入できない
+- `HybridRAGFactory` で CRAG を組み立てる場合は、`llm/types` 側 client からこの形状へ変換する adapter を用意する
 
 ### IWebSearcher
 

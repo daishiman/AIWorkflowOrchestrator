@@ -7,6 +7,7 @@ import {
   getWorkspaceSuggestions,
   type WorkspaceChatController,
 } from "./hooks/useWorkspaceChatController";
+import { useSetCurrentView } from "../../store";
 
 interface WorkspaceChatPanelProps {
   controller: WorkspaceChatController;
@@ -20,6 +21,7 @@ export function WorkspaceChatPanel({
     controller.streamContent.length === 0 &&
     !controller.isStreaming;
 
+  const setCurrentView = useSetCurrentView();
   const isModelBlocked = controller.selectedModelId === null;
 
   return (
@@ -39,6 +41,7 @@ export function WorkspaceChatPanel({
             variant="blocked"
             message="AIモデルが選択されていません。Settings で使用するモデルを設定してください。"
             actionLabel="Settings を開く"
+            onAction={() => setCurrentView("settings")}
           />
         ) : null}
 
