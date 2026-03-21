@@ -1,6 +1,14 @@
 {
-  "generated": "2026-03-21T02:30:08.970Z",
+<<<<<<< Updated upstream
+  "generated": "2026-03-21T03:26:12.188Z",
+  "totalKeywords": 2415,
+||||||| Stash base
+  "generated": "2026-03-20T14:21:40.716Z",
+  "totalKeywords": 2406,
+=======
+  "generated": "2026-03-21T03:11:28.946Z",
   "totalKeywords": 2408,
+>>>>>>> Stashed changes
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -897,6 +905,7 @@
       "api-ipc-system-core.md",
       "arch-state-management-core.md",
       "arch-state-management-reference.md",
+      "lessons-learned-current.md",
       "llm-workspace-chat-edit.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "ui-ux-feature-components-details.md",
@@ -1289,6 +1298,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
@@ -1782,6 +1792,7 @@
       "interfaces-chat-history-details.md",
       "interfaces-rag-file-selection.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-current.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
@@ -2099,6 +2110,7 @@
       "api-ipc-system-core.md",
       "arch-electron-services-details-part2.md",
       "interfaces-agent-sdk-skill-advanced.md",
+      "lessons-learned-current.md",
       "ui-ux-feature-components-details.md"
     ],
     "スライド同期": [
@@ -2404,6 +2416,7 @@
     "SLIDE": [
       "arch-electron-services-details-part2.md",
       "interfaces-agent-sdk-skill-advanced.md",
+      "lessons-learned-current.md",
       "ui-ux-feature-components-details.md"
     ],
     "ALIGNMENT": [
@@ -5130,6 +5143,7 @@
     ],
     "LLM": [
       "interfaces-llm.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "llm-ipc-types.md",
       "llm-streaming.md",
       "rag-desktop-state.md",
@@ -6181,6 +6195,9 @@
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
+    "領域実装": [
+      "lessons-learned-current.md"
+    ],
     "CHATVIEW": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6188,6 +6205,12 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "FAILURE": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "EXT": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "テスト拡充": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "EDIT": [
@@ -6225,6 +6248,15 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "ライフサイクル": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "SELECTOR": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "INLINE": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "GUIDANCE": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "仕様書作成": [
@@ -8556,7 +8588,8 @@
     ],
     "up": [
       "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "の未タスク": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
@@ -11044,6 +11077,15 @@
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "実装同期ルール": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "実装ステータススナップショット": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "Follow": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "Backlog": [
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "集計": [

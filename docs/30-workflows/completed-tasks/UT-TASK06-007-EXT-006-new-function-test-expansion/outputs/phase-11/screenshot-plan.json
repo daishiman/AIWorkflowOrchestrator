@@ -1,0 +1,13 @@
+{
+  "mode": "non-visual-placeholder",
+  "taskId": "UT-TASK06-007-EXT-006",
+  "capturedAt": "2026-03-21",
+  "reason": "CLI script only; no renderer UI or interactive screen exists in scope.",
+  "artifacts": [
+    {
+      "id": "TC-11-NON-VISUAL",
+      "path": "outputs/phase-11/screenshots/TC-11-NON-VISUAL-cli.png",
+      "description": "Placeholder evidence that the Phase 11 visual check is not applicable to this CLI-only task."
+    }
+  ]
+}

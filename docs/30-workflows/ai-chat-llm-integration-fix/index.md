@@ -52,13 +52,14 @@ Task 4 (ストリーミング/エラーUX層)
 | ファイル                                                                            | Task 1 | Task 2 | Task 3 | Task 4 |
 | ----------------------------------------------------------------------------------- | ------ | ------ | ------ | ------ |
 | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                               | **主** | -      | -      | -      |
+| `apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx`                    | -      | **主** | -      | -      |
 | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                | 副     | **主** | -      | -      |
 | `apps/desktop/src/renderer/store/slices/llmSlice.ts`                                | -      | -      | **主** | -      |
 | `apps/desktop/src/renderer/store/index.ts`                                          | -      | -      | **主** | -      |
 | `apps/desktop/src/main/ipc/llmConfigProvider.ts`                                    | -      | -      | **主** | -      |
-| `apps/desktop/src/renderer/views/WorkspaceView/index.tsx`                           | -      | **主** | -      | -      |
+| `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx`              | -      | **主** | -      | **主** |
 | `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` | -      | -      | -      | **主** |
-| `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx`              | -      | -      | -      | **主** |
+| `apps/desktop/src/renderer/views/WorkspaceView/index.tsx`                           | -      | 副     | -      | -      |
 
 ## 実行順序
 
@@ -74,18 +75,18 @@ Phase 4-13（実装以降）: 設計レビュー完了後に順次実行
 ```
 docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/  ← Task 01 canonical root
   phase-1-requirements.md ... phase-13-pr-creation.md
+docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/  ← Task 02 canonical root
+  phase-1-requirements.md ... phase-13-pr-creation.md
 docs/30-workflows/ai-chat-llm-integration-fix/
   index.md
   tasks/
-    02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/            ← P0: 01と並列可
-      phase-1-requirements.md ... phase-13-pr-creation.md
     03-TASK-FIX-LLM-CONFIG-PERSISTENCE/                  ← P1: 01-02と並列可
       phase-1-requirements.md ... phase-13-pr-creation.md
     04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/             ← P1: 01完了後に着手
       phase-1-requirements.md ... phase-13-pr-creation.md
 ```
 
-> Task 01 はユーザー指定に基づき root 直下 workflow が canonical。`ai-chat-llm-integration-fix/tasks/01-*` は legacy path として扱う。
+> Task 01 と Task 02 は root 直下 workflow が canonical。`ai-chat-llm-integration-fix/tasks/01-*` と `ai-chat-llm-integration-fix/tasks/02-*` は legacy path として扱う。
 
 ## システム仕様参照（aiworkflow-requirements）
 
@@ -108,6 +109,6 @@ docs/30-workflows/ai-chat-llm-integration-fix/
 | タスクID | 状態                   | 備考                                                                |
 | -------- | ---------------------- | ------------------------------------------------------------------- |
 | 01       | completed + re-audited | screenshot 5件、system spec same-wave sync、follow-up 2件 formalize |
-| 02       | spec ready             | workflow spec 維持、未実装                                          |
+| 02       | completed + re-audited | screenshot 4件、Task 02 root 正本化、follow-up 2件 formalize        |
 | 03       | spec ready             | workflow spec 維持、未実装                                          |
 | 04       | spec ready             | workflow spec 維持、未実装                                          |

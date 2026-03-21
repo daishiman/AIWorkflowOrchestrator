@@ -215,7 +215,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする                                                                                                                                                                                                   |
 | **LOGS.md/SKILL.md は4ファイル更新**       | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md                                                                                                                           |
 | **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
-| **worktree環境ではLOGS.md/SKILL.md更新を代替記録** | `.worktrees/` 配下で作業する場合、`.claude/skills/` はメインの作業ツリーと同期されないため、`system-spec-update-summary.md` に更新予定内容を記録し、PRマージ後にメインブランチで反映する。`skill-feedback-report.md` に代替フローを使用した旨を明記すること |
+| **worktree環境でもLOGS.md/SKILL.mdを直接更新** | `.worktrees/` 配下で作業していても `.claude/skills/` が正本であることは変わらない。`system-spec-update-summary.md` は代替記録ではなく実更新の要約に使い、LOGS.md / SKILL.md の後追いは禁止する |
 | **並列エージェント完了後はファイルシステムで検証** | P43/P59対策。エージェントがコンテキスト制限で応答不能になった場合、`git diff --stat` + `ls outputs/phase-*/` + `artifacts.json` のPhaseステータスで成果物の存在を確認する |
 
 ---
@@ -383,11 +383,11 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.09.04** | **2026-03-21** | **UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 Phase 12 完了同期**: debug-clear-storage 残骸の repo-wide 棚卸し完了。Phase 1-12 completed / Phase 13 blocked。未タスク 0 件。AC-1〜AC-7 全 PASS。LOGS.md + SKILL.md 同時更新（P1/P25 対策） |
-| **v10.09.03** | **2026-03-21** | **UT-RAG-08-002 Phase 12 最終更新**: workflow root / phase本文 / outputs を実績ベースへ同期し、artifact inventory 欠落2件と unassigned task path drift を是正 |
+| **v10.09.05** | **2026-03-21** | **UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 Phase 12 完了同期**: debug-clear-storage 残骸の repo-wide 棚卸し完了。Phase 1-12 completed / Phase 13 blocked。未タスク 0 件。AC-1〜AC-7 全 PASS。LOGS.md + SKILL.md 同時更新（P1/P25 対策） |
+| **v10.09.04** | **2026-03-21** | **UT-TASK06-007-EXT-006**: check-ipc-contracts テスト拡充（20件追加、カバレッジ95.79%）。Phase 1-12 実行完了。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **v10.09.03** | **2026-03-21** | **TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査同期**: Phase 11 screenshot task の capture script 正本を wrapper + canonical script 構成へ統一し、`phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を実績形式へ更新。Phase 12 では `phase12-task-spec-compliance-check.md` を root evidence として先行作成し、worktree でも `.claude/skills/` を直接更新するルールを Tips と変更履歴へ反映 |
 | **v10.09.02** | **2026-03-20** | **UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001**: Phase 1-12 実行完了（仕様書同期タスク） |
 | **v10.09.01** | **2026-03-19** | **UT-TASK06-007 再監査同期**: `implementation-guide.md` の必須要件（なぜ先行 / 日常例え / TypeScript 型 / API/CLI シグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目）を validator 10/10 に合わせて補強し、`phase-11-manual-test.md` の参照不足 warning を解消。未タスク5件は `docs/30-workflows/unassigned-task/` 配置を再確認し、`EXT-002` 残余スコープ・`EXT-005` 実行手順未完成・数値ドリフトを是正する運用を変更履歴へ追加 |
-| **v10.09.02** | **2026-03-20** | **UT-RAG-08-002 仕様書生成**: Phase 1-13 仕様書14ファイルを生成。Phase 3 レビューで同名インターフェース型ドリフト（ILLMClient）を検出するパターンを確認 |
 | **v10.09.00** | **2026-03-19** | **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了記録**。Phase 1-12 実行完了 |
 | **v10.09.12** | **2026-03-17** | **TASK-SKILL-LIFECYCLE-08 スキルフィードバック反映**: `references/phase-template-core.md` に concern 数による設計書分割基準テーブル（1-2/3-4/5+ concern）を追加。`references/review-gate-criteria.md` に設計タスク専用の契約品質チェック（前提条件/事後条件・IPC Port 依存・DI 境界表・受入基準トレーサビリティ）を Phase 3 に追加。`references/phase-template-phase12.md` に Task 6（遵守チェックリスト）を必須タスクとして追記。`references/phase-12-documentation-guide.md` に Task 12-6 と planned wording 確認コマンドを追加 |
 | **v10.09.12** | **2026-03-17** | **スキルフィードバック反映（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）**: `references/phase-template-execution.md` に Phase 5 既存テスト回帰確認先行実行ステップを追加。`references/phase-template-phase12.md` に worktree 環境でのシステム仕様書先送り禁止注記（P57再発防止）を追加。`rules/06-known-pitfalls.md` に P62（DEFAULT_CONFIG 暗黙 fallback 禁止）・P63（サブエージェントのインポートパス誤り）を追加 |

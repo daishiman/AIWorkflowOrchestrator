@@ -13,7 +13,7 @@
 | 完了日     | 2026-03-18                                                           |
 | ステータス | **完了**                                                             |
 | タスク種別 | 実装 + テスト + Phase 9 診断ツール + 仕様同期                        |
-| Phase      | Phase 1-13 完了（Phase 13 未実施）                                   |
+| Phase      | Phase 1-12 完了 / Phase 13 blocked（commit・PRは未実施）             |
 | 対象       | `apps/desktop/scripts/check-ipc-contracts.ts` / `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts` |
 
 #### 成果物
@@ -41,6 +41,19 @@
 - `quality-requirements.md`, `ipc-contract-checklist.md`, `architecture-implementation-patterns-reference-ipc-drift-detection.md`, `quick-reference.md`, `resource-map.md` へ必要仕様を同期した。
 - 2026-03-19 再監査で generic/multiline preload 抽出、複数 const object 収集、representative screenshot audit を docs と台帳へ追補した。
 - 将来拡張の未タスクは `UT-TASK06-007-EXT-001` 〜 `EXT-005` として別管理する。
+- 2026-03-21 に `UT-TASK06-007-EXT-006` を完了済み拡張として追加し、direct helper tests 20件を反映した。
+
+#### 2026-03-21 追補: UT-TASK06-007-EXT-006 テスト拡充完了
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-TASK06-007-EXT-006 |
+| ステータス | **完了（Phase 1-12 completed / Phase 13 blocked）** |
+| ワークフロー | `docs/30-workflows/UT-TASK06-007-EXT-006-new-function-test-expansion/` |
+| 対象 | `normalizeTypeAnnotation` / `isPrimitiveTypeAnnotation` / `mergeChannelMaps` / `CHANNEL_OBJECT_PATTERN` / `PRELOAD_CALL_START_PATTERN` |
+| 追加成果 | direct unit tests 20件、総テスト69件、Line 95.79% / Branch 91.55% / Function 100% |
+| Phase 12 追補 | `outputs/phase-12/implementation-guide.md`, `outputs/phase-12/system-spec-update-summary.md`, `outputs/phase-12/documentation-changelog.md` |
+| 残未タスク | EXT-001〜EXT-005 のみ継続 |
 
 #### Phase 12 再監査結果（2026-03-19）
 

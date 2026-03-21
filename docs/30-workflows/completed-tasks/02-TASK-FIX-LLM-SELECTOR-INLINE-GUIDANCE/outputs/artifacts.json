@@ -1,0 +1,59 @@
+{
+  "workflow": "02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE",
+  "phases": {
+    "1": { "status": "completed", "artifacts": ["phase-1-requirements.md"] },
+    "2": { "status": "completed", "artifacts": ["phase-2-design.md"] },
+    "3": { "status": "completed", "artifacts": ["phase-3-design-review.md"] },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "apps/desktop/src/renderer/views/ChatView/__tests__/LLMGuidanceBanner.test.tsx",
+        "apps/desktop/src/renderer/views/ChatView/__tests__/ChatView.guidance.test.tsx",
+        "apps/desktop/src/renderer/views/WorkspaceView/__tests__/WorkspaceChatPanel.guidance.test.tsx"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx",
+        "apps/desktop/src/renderer/views/ChatView/index.tsx",
+        "apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx"
+      ]
+    },
+    "6": { "status": "completed", "artifacts": [] },
+    "7": { "status": "completed", "artifacts": [] },
+    "8": { "status": "completed", "artifacts": [] },
+    "9": { "status": "completed", "artifacts": [] },
+    "10": { "status": "completed", "artifacts": ["phase-10-final-review.md"] },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/README.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/screenshots/TC-11-01-chatview-inline-guidance-light.png",
+        "outputs/phase-11/screenshots/TC-11-02-workspace-guidance-blocked-light.png",
+        "outputs/phase-11/screenshots/TC-11-03-chatview-inline-guidance-dark.png",
+        "outputs/phase-11/screenshots/TC-11-04-chatview-inline-guidance-keyboard-focus.png",
+        "outputs/phase-11/screenshots/phase11-capture-metadata.json"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/README.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "component-documentation.md"
+      ]
+    },
+    "13": { "status": "pending", "artifacts": [] }
+  }
+}

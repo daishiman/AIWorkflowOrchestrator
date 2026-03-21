@@ -18,29 +18,34 @@
 
 ---
 
-## UT-RAG-08-002 Phase 12 最終更新完了（2026-03-21）
+## UT-TASK06-007-EXT-006 完了（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12 最終更新
+- **Phase**: Phase 1-12 実行完了
 - **Result**: success
 - **Notes**:
-  - workflow root / phase-10 / phase-11 / phase-12 の未完了チェックを outputs と同期
-  - `outputs/phase-2/contract-matrix.md` と `outputs/phase-7/integration-test.md` を追加して artifact inventory 欠落を解消
-  - unassigned path を `docs/30-workflows/unassigned-task/` に統一し、UT-RAG-08-008 の task 定義を実装実体に合わせて更新
+  - `check-ipc-contracts.ts` の5関数/パターン（normalizeTypeAnnotation / isPrimitiveTypeAnnotation / mergeChannelMaps / CHANNEL_OBJECT_PATTERN / PRELOAD_CALL_START_PATTERN）に `export` を追加
+  - テスト20件追加（T-N 5件 / T-P 6件 / T-M 4件 / T-R 5件）
+  - 既存49件と合わせ69件全PASS、Line 95.79% / Branch 91.55% / Function 100%
+  - `implementation-guide.md`（Part 1/2）/ `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` の6成果物を作成
+  - `architecture-implementation-patterns-reference-ipc-drift-detection.md` の関連タスクテーブルに EXT-006 完了記録を追加
 
 ---
 
-## UT-RAG-08-002 仕様書作成完了（2026-03-20）
+## UT-SLIDE-UI-001 完了同期（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 1-13 完了
-- **Result**: success（Phase 3 MAJOR 検出・設計判断待ち）
+- **Phase**: Phase 11-12
+- **Result**: success
 - **Notes**:
-  - HybridRAGFactory.createFull/createLite 実配線タスク仕様書作成完了（Phase 1-13、14ファイル）
-  - Phase 3 レビューで ILLMClient 型不整合を検出し設計書に反映
+  - `phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を current screenshot 10枚基準へ再構成
+  - `implementation-guide.md` を shared `SyncStatus` 実態、error handling、edge cases、定数一覧込みの実績版へ更新
+  - `system-spec-update-summary.md` で Step 2 を `更新あり` とし、canonical sync 必須ファイルを明示
+  - `unassigned-task-detection.md` を pending / resolved 分離へ更新し、false positive を除去
+  - current branch で解消済みの `UT-SLIDE-P31-001` を closure note 化した
+  - validator と same-wave sync の実績を issue / completed-task / `.claude` 正本へ反映した
 
 ---
-
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
 - **Agent**: task-specification-creator
@@ -737,14 +742,3 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 5ファイル変更、+359行/-22行
 - テスト: 94件全 PASS
 - 未タスク: 2件（UT-CHATVIEW-ERROR-BANNER-I18N-001、UT-AI-CHAT-ERROR-CODE-INVENTORY-001）
-
----
-
-### 2026-03-20 - UT-RAG-08-002 HybridRAGFactory 実配線タスク仕様書作成
-
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | docs-only 設計タスク（Phase 1-13 仕様書生成） |
-| 変更対象 | `docs/30-workflows/hybrid-rag-factory-wiring/` 仕様書14ファイル |
-| 結果 | HybridRAGFactory.createFull/createLite 実配線タスク仕様書作成完了（Phase 1-13）。Phase 3 レビューで ILLMClient 型不整合を検出し設計書に反映 |
-| 検証 | Phase 1-13 仕様書14ファイル生成完了、Phase 3 設計レビューで ILLMClient 型二重定義問題（crag/types.ts vs llm/types.ts）を MAJOR として検出 |

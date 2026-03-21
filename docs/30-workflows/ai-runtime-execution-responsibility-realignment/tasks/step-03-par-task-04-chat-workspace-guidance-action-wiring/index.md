@@ -41,7 +41,7 @@ blocked reason -> action mapping、settings / launcher / copy 導線、policy co
 
 | 参照資料                   | パス                                                                                                          | 内容                                   |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| 親パック index             | docs/30-workflows/ai-runtime-execution-responsibility-realignment/index.md                                    | 依存順・並列可否・Atent Team 分担      |
+| 親パック index             | docs/30-workflows/ai-runtime-execution-responsibility-realignment/index.md                                    | 依存順・並列可否・Agent Team 分担      |
 | historical predecessor     | .claude/skills/aiworkflow-requirements/references/workflow-ai-runtime-authmode-unification.md                 | 既存 execution responsibility 問題設定 |
 | current canonical workflow | .claude/skills/aiworkflow-requirements/references/workflow-ai-runtime-execution-responsibility-realignment.md | required spec 抽出の current 入口      |
 | codepath-1                 | apps/desktop/src/renderer/views/ChatView/index.tsx                                                            | 現状コード/関連ドキュメント            |

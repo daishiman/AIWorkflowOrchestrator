@@ -117,7 +117,7 @@ slide surface の runtime/auth-mode alignment では、Reveal.js HTML と `struc
 
 | 型名 | 種別 | 取りうる値 / 概要 |
 | --- | --- | --- |
-| `SyncStatus` | type | `idle` / `syncing` / `synced` / `error` |
+| `SyncStatus` | type | `synced` / `out-of-sync` / `syncing` / `error` |
 | `SyncDirection` | type | `forward` / `reverse` |
 | `SlideUIStatus` | derived type | `synced` / `running` / `degraded` / `guidance` |
 
@@ -403,7 +403,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 **実装後続タスク**:
 
 - `UT-SLIDE-IMPL-001`: slide IPC ハンドラー実装（channel rename + validateIpcSender + path guard 追加）
-- `UT-SLIDE-UI-001`: slide UI runtime alignment 実装
+- `UT-SLIDE-UI-001`: current branch で UI surface は完了。残件は runtime 側 follow-up に集約
 
 ---
 

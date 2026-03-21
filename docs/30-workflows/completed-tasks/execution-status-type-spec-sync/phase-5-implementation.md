@@ -71,7 +71,7 @@ sed -n '360,390p' packages/shared/src/types/skill.ts
 ready / blocked のどちらでも、Phase 5 の時点で初回検証を行う。
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 5
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 5
 diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements
 ```
 
@@ -123,7 +123,7 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 5
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 5
 ```
 
 ## 次のPhase
