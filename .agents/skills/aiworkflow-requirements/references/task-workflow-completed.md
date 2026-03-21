@@ -5,6 +5,64 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 RuntimePolicyResolver capability bridge（2026-03-21）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | implementation |
+| 優先度 | 中 |
+| 完了日 | 2026-03-21 |
+| 対象 | RuntimePolicyResolver / RuntimeSkillCreatorFacade / creatorHandlers の direct caller capability bridge |
+| 成果物 | `docs/30-workflows/completed-tasks/runtime-policy-resolver-4state/` |
+
+#### 実施内容
+
+- `RuntimeSkillCreatorFacade.execute()` が `decision.capability` を実消費し、`terminalSurface` で handoff bundle を返し `SkillExecutor` を呼ばないよう是正した
+- `creatorHandlers.ts` に `ExecutionCapabilityInput` 正規化を導入し、`creatorHandlers.test.ts` で IPC boundary の raw args 変換と terminal handoff 透過を検証した
+- workflow / system spec / skills / lessons を same-wave sync し、manual evidence の `not_run` 矛盾と artifact parity drift を解消した
+- Phase 13 は user approval 未取得のため blocked とした
+
+#### 発見元
+
+- TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 direct caller lane 分解（2026-03-21）
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（378ファイル分類、`indexes/topic-map.md` / `indexes/keywords.json` 再生成） |
+| `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/runtime-policy-resolver-4state --regenerate` | PASS（13/13 phase files） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/runtime-policy-resolver-4state` | PASS（31項目, 0エラー, 0警告） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/runtime-policy-resolver-4state --strict` | PASS（13/13, errors 0, warnings 0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/runtime-policy-resolver-4state` | PASS（10/10） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/runtime-policy-resolver-4state/outputs/phase-12/unassigned-task-detection.md` | PASS（2/2, missing 0） |
+| `pnpm --filter @repo/shared typecheck` | PASS |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `diff -qr .claude/skills/ .agents/skills/` | PASS（差分なし） |
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| `UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001` | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface の統合 | 高 | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
+| `UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001` | `RuntimePolicyResolver.resolveFromServices()` への subscription 判定 service 統合 | 中 | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| `manual-test-result.md` が `not_run` のまま completed を宣言する | non-visual task の manual evidence を後回しにする | `NON_VISUAL_FALLBACK`、blocker、代替 evidence を同時記録した |
+| internal adapter と public preload 契約を同じ「IPC更新」とみなす | `ipcMain.handle()` 追加だけで system spec を更新済みと書く | internal/public の到達面を分離し、follow-up へ formalize した |
+| `index.md` / `phase-*.md` / `artifacts*` を別ターンで更新する | workflow 本文だけ completed にする | 4点同期を Phase 12 完了条件として固定した |
+
+#### 同種課題の簡潔解決手順
+
+1. `manual-test-result.md` が `not_run` でないことを確認し、fallback 時は blocker と evidence を残す。
+2. internal adapter と public preload / registration の到達面を分離して記録する。
+3. workflow 本文、phase 本文、`artifacts.json`、`outputs/artifacts.json` を同一ターンで同期する。
+
 ### タスク: TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 runtime-policy-centralization（2026-03-21）
 
 | 項目 | 値 |
@@ -15,7 +73,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-21 |
 | 対象 | surface 横断 runtime policy / health route / handoff contract centralization |
-| 成果物 | `docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/` |
+| 成果物 | `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/` |
 
 #### 実施内容
 
@@ -30,9 +88,9 @@
 | --- | --- |
 | `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（topic-map.md / keywords.json 再生成） |
 | `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js` | PASS with warnings 5（500行超ファイルの既存警告のみ） |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（13/13, errors 0, warnings 0, info 1） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（10/10） |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-12/unassigned-task-detection.md` | PASS（4/4, missing 0） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（13/13, errors 0, warnings 0, info 1） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（10/10） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-12/unassigned-task-detection.md` | PASS（4/4, missing 0） |
 | `diff -qr .claude/skills/ .agents/skills/` | PASS（差分なし） |
 
 #### Phase 12 未タスク

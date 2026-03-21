@@ -135,6 +135,42 @@ function readFileContent(filePath) {
   }
 }
 
+function loadArtifacts(workflowDir) {
+  const artifactsPath = path.join(workflowDir, "artifacts.json");
+  if (!fs.existsSync(artifactsPath)) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(fs.readFileSync(artifactsPath, "utf-8"));
+  } catch {
+    return null;
+  }
+}
+
+function collectPhaseStatuses(artifacts) {
+  if (!artifacts?.phases) {
+    return [];
+  }
+
+  if (Array.isArray(artifacts.phases)) {
+    return artifacts.phases
+      .map((phase) => String(phase?.status || "").trim())
+      .filter(Boolean);
+  }
+
+  return Object.values(artifacts.phases)
+    .map((phase) => String(phase?.status || "").trim())
+    .filter(Boolean);
+}
+
+function isWorkflowStarted(artifacts) {
+  const nonStarted = new Set(["pending", "not_started"]);
+  return collectPhaseStatuses(artifacts).some(
+    (status) => !nonStarted.has(status)
+  );
+}
+
 // ====== 検証関数 ======
 
 function verifyCompleteness(workflowDir) {
@@ -274,27 +310,34 @@ function verifyQuality(phaseNum, content) {
   return issues;
 }
 
-function verifyConsistency(phaseNum, content, workflowDir) {
+function verifyConsistency(phaseNum, content, workflowDir, workflowStarted) {
   const issues = [];
   const dependencies = PHASE_DEPENDENCIES[phaseNum] || [];
 
   // 参照資料セクションの確認
   const refSection = content.match(/##\s*参照資料[\s\S]*?(?=\n##(?!#)|$)/);
-  if (refSection && dependencies.length > 0) {
-    // 依存Phaseの成果物が参照されているか
+  const metaSection = content.match(/##\s*メタ情報[\s\S]*?(?=\n##(?!#)|$)/);
+  const searchableContent = content.replace(/```[\s\S]*?```/g, "");
+  if (workflowStarted && refSection && dependencies.length > 0) {
+    // 依存Phaseの成果物が文書内で参照されているか
     for (const depPhase of dependencies) {
       const patterns = [
         `phase-${depPhase}`,
         `Phase ${depPhase}`,
         `Phase${depPhase}`,
       ];
-      const found = patterns.some((p) => refSection[0].includes(p));
+      const found = patterns.some(
+        (p) =>
+          refSection[0].includes(p) ||
+          metaSection?.[0]?.includes(p) ||
+          searchableContent.includes(p),
+      );
       if (!found) {
         issues.push({
           type: "warning",
           category: "consistency",
           phase: phaseNum,
-          message: `依存するPhase ${depPhase}の成果物が参照資料に含まれていない可能性があります`,
+          message: `依存するPhase ${depPhase}の成果物が文書内で参照されていない可能性があります`,
         });
       }
     }
@@ -310,7 +353,7 @@ function verifyConsistency(phaseNum, content, workflowDir) {
   for (const pathMatch of pathMatches) {
     const cleanPath = pathMatch.replace(/`/g, "");
     // outputsディレクトリ内のパスは生成前なのでスキップ
-    if (!cleanPath.startsWith("outputs/")) {
+    if (!cleanPath.startsWith("outputs/") && !cleanPath.includes("/outputs/")) {
       if (cleanPath.includes("{{")) {
         continue;
       }
@@ -358,6 +401,8 @@ function runVerification(options) {
     options.workflow
   );
   results.globalIssues.push(...completenessIssues);
+  const artifacts = loadArtifacts(options.workflow);
+  const workflowStarted = isWorkflowStarted(artifacts);
 
   // 各Phase検証
   for (const [phaseNum, filePath] of Object.entries(phaseFiles)) {
@@ -383,7 +428,7 @@ function runVerification(options) {
     const phaseIssues = [
       ...verifyStructure(num, content),
       ...verifyQuality(num, content),
-      ...verifyConsistency(num, content, options.workflow),
+      ...verifyConsistency(num, content, options.workflow, workflowStarted),
     ];
 
     results.phases[num] = {

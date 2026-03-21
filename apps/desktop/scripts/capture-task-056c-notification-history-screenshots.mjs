@@ -130,7 +130,6 @@ function createMockScript() {
       ]),
     );
 
-    sessionStorage.setItem("debug-clear-storage", "done");
     localStorage.setItem("dev-skip-auth", "true");
 
     window.historyAPI = {

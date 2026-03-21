@@ -50,6 +50,7 @@
 | 「worktree環境なのでStep 1-Aはマージ後でよい」 | **Step 1-A必須** | worktreeでも仕様書更新は実施可能。先送りすると Phase 12 完了条件未達と契約ドリフト再発を招く |
 | 「`outputs/phase-12` が揃っていれば `phase-12-documentation.md` は未更新でもよい」 | **更新必須** | 成果物実体と仕様書本体の実行記録が乖離すると監査で不整合になる。Task 1〜5 の結果を `phase-12-documentation.md` へ同期する |
 | 「`artifacts.json` か `outputs/artifacts.json` の片方だけ更新すればよい」 | **両方同期必須** | 2つの成果物台帳が乖離すると Phase 完了判定と参照リンクの整合が崩れる。完了前に内容を一致させる |
+| 「`index.md` が completed なら `phase-*.md` と `artifacts*` は見なくてよい」 | **4点同期必須** | `index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` がずれると completed false positive が起きる |
 | 「`artifacts.json` が completed なら `index.md` は見なくてよい」 | **`generate-index.js --workflow ... --regenerate` で再生成必須** | workflow index は自動追随しないため、Phase 状態が stale なまま残る。`index.md` の Phase 1-12 / 13 表示を再確認する |
 | 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** | workflow 本文が pending のまま残ると、前提 Phase が未実施に見え、Phase 12 の依存参照や引き継ぎ根拠が崩れる |
 | 「`.agents/skills/...` を更新したので system spec 更新は完了」 | **`.claude/skills/...` が正本。mirror は代替不可** | dual-root repo では `.agents` が mirror の場合がある。Step 1-A/Step 2 の更新先は `.claude/skills/...` を canonical root とし、必要なら mirror 差分は別途確認する |
@@ -59,14 +60,17 @@
 | 「Phase 9の成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** | 命名規約と `validate-phase-output` の期待値に合わせないと警告が残る |
 | 「`documentation-changelog.md` だけあれば Phase 12 は完了扱いにできる」 | **必須5成果物を揃える** | `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` の5点が揃って初めて再監査可能になる |
 | 「Phase 12 成果物に `計画済み` / `更新予定` / `PRマージ後` が残っていても completed にできる」 | **planned wording が1件でも残れば未完了** | 実更新済みでも成果物が事後記録になっていなければ Phase 12 は閉じられない |
+| 「`manual-test-result.md` が `not_run` でも Phase 11/12 は completed にできる」 | **manual evidence 更新が必須** | `not_run` のままでは manual verification が未完了。fallback の場合も blocker と代替 evidence を記録する |
 | 「Phase 13 ファイルを作ったので status は completed にしてよい」 | **user 承認がない限り `blocked` のまま** | Phase 13 は PR 準備までであり、commit / PR 実行権限は user 指示が前提になる |
 | 「`ipc-documentation.md` は概要説明だけでよい」 | **実装契約一致が必須** | `skillHandlers.ts` / `preload/index.ts` の引数・戻り値・エラー契約と一致しないと、API利用者が誤実装する |
+| 「internal adapter を追加したので public IPC / preload も更新済みと書いてよい」 | **到達面の確認が必須** | `ipc/index.ts` の登録点と preload 公開面が変わっていなければ public contract 更新済みとは記録しない |
 | 「`audit-unassigned-tasks` のFAILは今回差分の失敗」 | **baseline/currentを分離** | `--target-file` / `--diff-from` は `current/baseline` 分類で使い、合否は `currentViolations.total` を正本に判定する（scope未指定の全体監査は baseline として別記録） |
 | 「仕様書参照パスは後で直す」 | **Step 1-B前に実在確認** | 非実在ファイル参照が残ると更新対象の誤認が発生する。`test -f <path>` で事前に実在確認する |
 | 「workflow ディレクトリがあるので `../task-xxx.md` はなくてもよい」 | **ブリッジ仕様または参照修正が必須** | Phase 仕様書が親タスク仕様を相対参照している場合、`docs/30-workflows/<workflow>.md` をブリッジとして残すか、各 Phase の参照先を正本へ更新する |
 | 「task-00 参照切れは後続タスクで直す」 | **Phase 12内で即時修正** | `task-013e` / `task-014` など実行導線の参照切れは探索失敗を招く。`task-00-unified-implementation-sequence/` を `test -f` で検証し、必要ならブリッジ仕様を再配置する |
 | 「current workflow だけ直せば親タスク/統合indexは後回しでよい」 | **親導線も同一ターンで正規化** | parent task / 統合 index が削除済み nested workflow や旧 `.md` を指すと、後続探索と検証コマンドが失敗する。`test -d <workflow>` と parent docs の `rg -n "<workflow-id>"` をセットで実行し、current / parent / index を同時更新する |
 | 「standalone task へ移設したので current workflow だけ差し替えれば十分」 | **downstream consumer まで同一 wave で更新** | 後続 task の `TaskXX index` や dependency note が旧 nested path を指したまま残ると、依存関係整合が壊れる。current root / parent pack / downstream consumer / verification-report を同一ターンで再生成する |
+| 「ディレクトリを移設したので workflow 本文はそのままでよい」 | **workflow 本文の canonical path と検証レポートも再生成する** | `index.md` の `current canonical task directory`、各 Phase の `前Phase成果物` / `Task index`、`outputs/verification-report.md` が旧 path のままだと構造 PASS でも意味的には stale。`rg -n "<old-path>" <workflow> <parent> <downstream>` を 0 件にしてから `verify-all-specs` を再実行する |
 | 「current workflow に code diff がないので Phase 11 screenshot は不要」 | **統合UI再確認なら Phase 11 実施** | `spec_created` / docs-heavy task でも upstream UI surface の統合再確認やユーザー要求がある場合は、representative screenshots と Apple UI/UX 視覚検証を current workflow 配下へ残す |
 | 「docs-heavy screenshot 再監査は current build 再撮影しか認めない」 | **representative review board も許可** | UI 実装差分がなく same-day upstream evidence があるなら、source screenshot を current workflow へ集約し、review board を current workflow で新規 capture して Apple review に使ってよい |
 | 「visual TC と dismiss/keyboard 確認に同じ `TC-ID` を使ってよい」 | **`TC-*` と `NV-*`/automated を分離** | screenshot coverage と narrative が別シナリオを同じ ID で指し始めると、未実施誤判定や Phase 12 誤記録を生む |

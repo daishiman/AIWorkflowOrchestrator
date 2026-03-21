@@ -86,8 +86,6 @@ function createMockScript() {
   return () => {
     const now = new Date().toISOString();
 
-    sessionStorage.setItem("debug-clear-storage", "done");
-
     const mockUser = {
       id: "phase11-user",
       email: "phase11@example.com",

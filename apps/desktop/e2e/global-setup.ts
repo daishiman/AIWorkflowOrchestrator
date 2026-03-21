@@ -27,7 +27,6 @@ async function globalSetup(config: FullConfig) {
   };
 
   // ElectronAPIモック・認証状態をページ初期化前に注入する
-  // NOTE: App.tsx の debug-clear-storage reload と競合しないよう sessionStorage を事前設定する
   await page.addInitScript((authState) => {
     // window.electronAPIをモック
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,7 +82,6 @@ async function globalSetup(config: FullConfig) {
       },
     };
 
-    window.sessionStorage.setItem("debug-clear-storage", "done");
     window.localStorage.setItem("auth-storage", JSON.stringify(authState));
     window.localStorage.setItem(
       "claude-auth-token",

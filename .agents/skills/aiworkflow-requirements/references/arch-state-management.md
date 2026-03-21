@@ -47,6 +47,35 @@ feedbackSlice はユーザーフィードバック（SkillFeedback）の収集�
 - 個別セレクタパターンを採用し、合成 Hook は使用しない（P31 対策）
 - `aggregateViews` の派生セレクタ（`.filter()` / `.map()` を含むもの）には `useShallow` を適用する（P48 対策）
 
+
+## LLM 選択状態の永続化（TASK-FIX-LLM-CONFIG-PERSISTENCE）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-LLM-CONFIG-PERSISTENCE |
+| ステータス | `completed` |
+| 関連仕様書 | `ui-ux-llm-selector.md` |
+| 関連ファイル | `apps/desktop/src/renderer/store/slices/llmSlice.ts` |
+
+### llmSlice persist 設定（v2）
+
+| フィールド | 型 | persist対象 | 備考 |
+| --- | --- | --- | --- |
+| `selectedProviderId` | `LLMProviderId \| null` | Yes | v2 で追加。起動時バリデーション対象 |
+| `selectedModelId` | `string \| null` | Yes | v2 で追加。起動時バリデーション対象 |
+| `providers` | `LLMProvider[]` | No | ランタイム取得のため persist 対象外 |
+
+**persist version**: v0 → v2（migrate 関数で旧 state を安全変換）
+
+**起動時バリデーション**: 永続化された `selectedProviderId` / `selectedModelId` が現在のプロバイダーリストに含まれない場合はクリアする。provider が無効なら両方 `null`、provider は有効だが model だけ無効なら model のみ `null` にする。
+
+**P62 対策**: `DEFAULT_CONFIG` への暗黙 fallback を廃止。未選択時はエラー表示。
+
+**関連 follow-up**:
+
+- [`UT-FIX-LLM-FETCHPROVIDERS-RETRY-001`](../../../../docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md)
+- [`UT-FIX-LLM-PERSIST-ENCRYPT-001`](../../../../docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md)
+
 ---
 
 ## 関連ドキュメント

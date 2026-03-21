@@ -19,7 +19,12 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-21 | 2.2.1 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
 | 2026-03-21 | 2.2.0 | UT-SLIDE-UI-001 教訓3件を追加（L-SLIDE-UI-001〜003） |
+| 2026-03-21 | 2.2.2 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓を追記 |
+| 2026-03-21 | 2.2.1 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 最終再監査教訓を追記 |
+| 2026-03-21 | 2.2.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
+
 | 2026-03-20 | 2.1.1 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査の教訓3件を追加 |
 | 2026-03-18 | 2.1.0 | 1598行超過のため分割。2026-03-15以前エントリを archive-2026-03.md へ移動。UT-TASK06-007 苦戦箇所5件を追加 |
 | 2026-03-17 | 2.0.0 | 651行超過のため4ファイルに分割しインデックス化 |
@@ -38,7 +43,9 @@
 | [lessons-learned-viewtype-electron-ui.md](lessons-learned-viewtype-electron-ui.md) | ViewType / Electron UI | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 |
 | [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) | IPC / Preload / AI Runtime | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001, TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 (P57-P61), TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 |
 | [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md) | テスト / 型安全 / 品質 | UT-06-001, UT-06-005 |
-| [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-SKILL-LIFECYCLE-04/05/06/07 |
+| [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE, TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE, TASK-FIX-LLM-CONFIG-PERSISTENCE, TASK-SKILL-LIFECYCLE-04/05/06/07 |
+| [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-SKILL-LIFECYCLE-04/05/06/07, TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001, TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001, TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 |
+
 | [lessons-learned-safety-gate-permission-fallback.md](lessons-learned-safety-gate-permission-fallback.md) | SafetyGate / Permission / Fallback | UT-06-005, TASK-SKILL-LIFECYCLE-08 |
 | [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | アーカイブ | 2026-03-15以前の全エントリ |
 
@@ -67,6 +74,9 @@
 → [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md)
 - 設計タスクでの仕様書更新先送り（P57）、未タスク指示書配置省略（P58）
 - 並列エージェント changelog 件数不整合（P59）
+- persist task の storage key drift、防ぎきれていない false green、family same-wave sync 漏れ
+- spec-only close-out では downstream task status と code diff 0/有を併記する
+
 
 ---
 
@@ -420,22 +430,27 @@
 
 ---
 
-## UT-SLIDE-UI-001: Slide Workspace UI 4領域実装（2026-03-21）
+## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21）
 
-### L-SLIDE-UI-001: SyncStatus と SlideUIStatus の語彙分離
+### 苦戦箇所
 
-**問題**: store 層の `SyncStatus`（`synced | out-of-sync | syncing | error`）と UI 表示で必要な状態（`synced | running | degraded | guidance`）が1対1で対応せず、legacy drift（`"out-of-sync"` vs 正本の `"idle"`）が存在する。
-**解決策**: UI 層独自の `SlideUIStatus` 型を定義し、`deriveSlideUIStatus()` 純粋関数で store 状態から導出する。DDD の Anti-Corruption Layer パターンを UI 層で適用。
-**教訓**: store の語彙と UI の語彙は独立して管理し、導出関数で変換する。store の legacy drift を UI 層に漏洩させない設計が、テストの単純化と将来の store 変更耐性に寄与する。
+#### L-CB-01: packages/shared の exports 未登録による import 解決失敗
 
-### L-SLIDE-UI-002: v8 Function Coverage と useCallback の相互作用
+- **症状**: `@repo/shared/types/execution-capability` が vite の import analysis で解決できず、テストが起動しない
+- **原因**: `execution-capability.ts` は `packages/shared/src/types/` に存在するが、`package.json` の `exports` と `typesVersions`、および `tsup.config.ts` の `entry` に未登録だった
+- **解決策**: 3箇所同時追加が必要: (1) package.json exports (2) package.json typesVersions (3) tsup.config.ts entry。追加後に `pnpm --filter @repo/shared build` でリビルド
+- **教訓**: モノレポで新規サブパスを追加する際は、この3箇所同時更新チェックリストを使う
 
-**問題**: `SlideWorkspace.tsx` の Function Coverage が 33.3% と表示された。テストでは `fireEvent.click` で全コールバックを呼び出し済みだが、v8 は `useCallback` 内のインライン関数を独立関数としてカウントする（P41 パターン）。
-**解決策**: P41 の既知制約として記録し、Line Coverage（89.5%）/ Branch Coverage（84.2%）で基準充足を確認。
-**教訓**: v8 カバレッジの Function Coverage は `useCallback` / インラインコールバックの影響を受けやすい。統合テストでモック hook を使用する場合、内部コールバックの v8 カウントが正確でなくなる。Line/Branch Coverage を主要指標とし、Function Coverage の P41 制約を考慮した判断が必要。
+#### L-CB-02: タスク仕様書のファイルパス精度（skillCreatorHandlers.ts vs creatorHandlers.ts）
 
-### L-SLIDE-UI-003: UI タスクでの same-wave spec 同期
+- **症状**: 仕様書が `skillCreatorHandlers.ts` を direct caller と記載していたが、実際の IPC boundary は `creatorHandlers.ts` だった
+- **原因**: 仕様書作成時に `grep -rn "RuntimeSkillCreatorFacade"` で全使用箇所を確認せず、類似名のファイルを誤認
+- **解決策**: Phase 1（P50チェック）で `grep -rn` により実際の呼び出し元を特定し、仕様書のパスを補正
+- **教訓**: 仕様書に記載するファイルパスは、タスク開始前に `grep` で実際の import/usage を確認してから確定する
 
-**問題**: 「UI 実装のみだから spec 更新不要」と判断しがちだが、実装完了記録・P31 吸収記録・SyncStatus drift 是正など、正本側にも波及する変更が発生した。
-**解決策**: Phase 12 で lessons-learned、task-workflow、resource-map、正本仕様書を同一 wave で更新。
-**教訓**: UI 実装タスクでも `.claude` 正本と follow-up 台帳を同ターンで更新しないと stale が再発する。特に「既存の未解消記録の是正」と「タスク完了記録の反映」は UI タスクでも必須。
+#### L-CB-03: execute() の terminalSurface 未消費パターン
+
+- **症状**: 初期実装で `execute()` の `decision` を `void decision` で棄却していた。terminalSurface のとき SkillExecutor に無条件委譲してしまう
+- **原因**: Phase 2 設計書で execute() の4状態ハンドリングを十分に設計しなかった
+- **解決策**: linter/ユーザーのフィードバックで `RuntimeTerminalHandoffResult` 型を導入し、execute() でも terminalSurface → handoff bundle を返す分岐を追加
+- **教訓**: 3-role facade（plan/execute/improve）で4状態ハンドリングを設計する際は、全 role × 全 capability の matrix を Phase 2 で明示的に埋める

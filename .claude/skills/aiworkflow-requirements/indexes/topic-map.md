@@ -1853,7 +1853,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L38 |
 | 実装ステータススナップショット（2026-03-21） | L45 |
-| Follow-up Backlog | L52 |
+| Follow-up Backlog | L53 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2583,10 +2583,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L34 |
-| クイックリファレンス: カテゴリ別検索ガイド | L47 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L389 |
-| UT-SLIDE-UI-001: Slide Workspace UI 4領域実装（2026-03-21） | L423 |
+| 分割ファイル一覧 | L36 |
+| クイックリファレンス: カテゴリ別検索ガイド | L49 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L392 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L426 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2609,15 +2609,16 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-21 TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE | L31 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L82 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L112 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L165 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L193 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L236 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L287 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L356 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L394 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L33 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L73 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L103 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L152 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L205 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L233 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L276 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L327 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L396 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L434 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
