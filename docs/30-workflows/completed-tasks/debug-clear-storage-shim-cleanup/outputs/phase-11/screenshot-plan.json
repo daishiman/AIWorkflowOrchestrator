@@ -1,0 +1,24 @@
+{
+  "workflow": "docs/30-workflows/debug-clear-storage-shim-cleanup",
+  "phase": 11,
+  "status": "completed",
+  "captureMode": "code-review",
+  "note": "CLI 制約のため実画像は再取得せず、参照計画のみを記録",
+  "targets": [
+    {
+      "tc": "2-1",
+      "subject": "e2e global-setup の debug 前提除去",
+      "evidence": "global-setup.ts のコードレビュー"
+    },
+    {
+      "tc": "3-1",
+      "subject": "screenshot script の storage clear 除去",
+      "evidence": "script 群の静的確認"
+    },
+    {
+      "tc": "4-1",
+      "subject": "Zustand persist 回帰防止",
+      "evidence": "App.tsx の静的確認"
+    }
+  ]
+}

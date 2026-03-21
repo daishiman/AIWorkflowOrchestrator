@@ -117,7 +117,6 @@ function createMockScript() {
       invoke: async () => ({ success: true }),
     };
 
-    window.localStorage.setItem('debug-clear-storage', 'done');
     window.localStorage.setItem('knowledge-studio-store', JSON.stringify({ state: { currentView: 'settings' }, version: 0 }));
   };
 }

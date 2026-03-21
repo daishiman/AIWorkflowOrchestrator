@@ -41,7 +41,8 @@ const mockPayload = {
     {
       id: "notif-001",
       title: "History Search ready",
-      detail: "notification:get-history と history:search の統合スモークを確認済みです。",
+      detail:
+        "notification:get-history と history:search の統合スモークを確認済みです。",
       source: "system",
       type: "info",
       timestamp: now,
@@ -81,11 +82,13 @@ const mockPayload = {
     {
       id: "hist-002",
       title: "History restore proposal",
-      preview: "history:getFileHistory の一覧と restoreVersion 導線を確認した。",
+      preview:
+        "history:getFileHistory の一覧と restoreVersion 導線を確認した。",
       timestamp: now,
       metadata: {
         type: "file",
-        filePath: "docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/index.md",
+        filePath:
+          "docs/30-workflows/completed-tasks/task-056e-integration-gate-and-spec-sync/index.md",
         additions: 12,
         deletions: 0,
       },
@@ -160,7 +163,6 @@ function createMockScript() {
       lastSignInAt: now,
     };
 
-    sessionStorage.setItem("debug-clear-storage", "done");
     localStorage.setItem("dev-skip-auth", "true");
 
     const versionDetailById = Object.fromEntries(
@@ -339,7 +341,9 @@ async function captureDesktop(browser) {
   await context.addInitScript(createMockScript(), clone(mockPayload));
 
   const page = await context.newPage();
-  await page.goto(`${baseUrl}/?skipAuth=true`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${baseUrl}/?skipAuth=true`, {
+    waitUntil: "domcontentloaded",
+  });
   await page.waitForSelector('[aria-label="Main navigation"]', {
     timeout: 60_000,
   });
@@ -383,9 +387,11 @@ async function captureDesktop(browser) {
   await page.goto(`${baseUrl}/chat/history?skipAuth=true`, {
     waitUntil: "domcontentloaded",
   });
-  await page.getByText("セッションが選択されていません", { exact: true }).waitFor({
-    timeout: 20_000,
-  });
+  await page
+    .getByText("セッションが選択されていません", { exact: true })
+    .waitFor({
+      timeout: 20_000,
+    });
   await page.waitForTimeout(300);
   await page.screenshot({
     path: path.join(screenshotDir, "TC-11-04-chat-history-route-desktop.png"),
@@ -403,7 +409,10 @@ async function captureDesktop(browser) {
   });
   await page.waitForTimeout(300);
   await page.screenshot({
-    path: path.join(screenshotDir, "TC-11-05-version-history-route-desktop.png"),
+    path: path.join(
+      screenshotDir,
+      "TC-11-05-version-history-route-desktop.png",
+    ),
     fullPage: true,
   });
 
@@ -418,7 +427,9 @@ async function captureMobile(browser) {
   await context.addInitScript(createMockScript(), clone(mockPayload));
 
   const page = await context.newPage();
-  await page.goto(`${baseUrl}/?skipAuth=true`, { waitUntil: "domcontentloaded" });
+  await page.goto(`${baseUrl}/?skipAuth=true`, {
+    waitUntil: "domcontentloaded",
+  });
   await page.waitForSelector('[aria-label="Main navigation"]', {
     timeout: 60_000,
   });

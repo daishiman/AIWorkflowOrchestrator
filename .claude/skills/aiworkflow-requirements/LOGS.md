@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-21 - UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 final sync（task-workflow backlog completed / mirror lesson parity） |
 | 2026-03-21 - UT-RAG-08-002 実装完了同期（HybridRAGFactory current runtime / backlog / lessons / artifact inventory / review output 是正） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（UT-CHATVIEW-ERROR-BANNER-I18N-001=#1398 / UT-CHATVIEW-ERROR-CODE-INVENTORY-001=#1397） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（artifact inventory / legacy register / unassigned 9セクション是正 / validate-structure） |

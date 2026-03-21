@@ -94,7 +94,6 @@ function createMockScript() {
       },
     ];
 
-    window.sessionStorage.setItem("debug-clear-storage", "done");
     window.localStorage.setItem("dev-skip-auth", "true");
     window.localStorage.setItem(
       "knowledge-studio-store",
@@ -251,7 +250,10 @@ function createMockScript() {
           },
         remove: async () => undefined,
         rescan: async () => skills,
-        execute: async () => ({ success: true, data: { executionId: "exec-1" } }),
+        execute: async () => ({
+          success: true,
+          data: { executionId: "exec-1" },
+        }),
         analyze: async () => ({ success: true, data: { summary: "ok" } }),
         applyImprovements: async () => ({ success: true, data: {} }),
         autoImprove: async () => ({ success: true, data: {} }),
@@ -286,7 +288,10 @@ function createMockScript() {
         setSecure: async () => ({ success: true }),
       },
       app: {
-        getVersion: async () => ({ success: true, data: { version: "phase11" } }),
+        getVersion: async () => ({
+          success: true,
+          data: { version: "phase11" },
+        }),
         onMenuAction: () => () => {},
       },
       window: {
@@ -322,7 +327,15 @@ async function main() {
 
   const server = spawn(
     "pnpm",
-    ["exec", "vite", "--config", "vite.e2e.config.ts", "--port", port, "--strictPort"],
+    [
+      "exec",
+      "vite",
+      "--config",
+      "vite.e2e.config.ts",
+      "--port",
+      port,
+      "--strictPort",
+    ],
     {
       cwd: desktopRoot,
       stdio: ["ignore", "pipe", "pipe"],

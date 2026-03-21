@@ -193,7 +193,6 @@ async function captureScenario(browser, scenario) {
       isOffline: false,
     };
 
-    window.sessionStorage.setItem("debug-clear-storage", "done");
     window.localStorage.setItem("dev-skip-auth", "true");
     window.__PHASE11_AUTHGUARD_TIMEOUT_HARNESS__ = harnessState;
 
@@ -267,7 +266,8 @@ async function captureScenario(browser, scenario) {
           success: true,
           data: {
             mode,
-            resolvedTheme: mode === "system" ? harnessState.resolvedTheme : mode,
+            resolvedTheme:
+              mode === "system" ? harnessState.resolvedTheme : mode,
           },
         }),
         getSystem: async () => ({
@@ -349,7 +349,15 @@ async function main() {
 
   const server = spawn(
     "pnpm",
-    ["exec", "vite", "--config", "vite.e2e.config.ts", "--port", port, "--strictPort"],
+    [
+      "exec",
+      "vite",
+      "--config",
+      "vite.e2e.config.ts",
+      "--port",
+      port,
+      "--strictPort",
+    ],
     {
       cwd: desktopRoot,
       stdio: "pipe",

@@ -74,7 +74,6 @@ function createMockScript() {
   return () => {
     const now = new Date("2026-03-11T16:30:00.000Z").toISOString();
 
-    sessionStorage.setItem("debug-clear-storage", "done");
     localStorage.setItem("dev-skip-auth", "true");
 
     const resolveTheme = () =>
@@ -396,7 +395,9 @@ async function captureAdvancedSupporting(page) {
 async function captureSurfaceOwnership(page) {
   await gotoApp(page);
   await page.getByRole("button", { name: "スキルセンター" }).click();
-  const surfaceOwnership = page.getByTestId("skill-lifecycle-surface-ownership");
+  const surfaceOwnership = page.getByTestId(
+    "skill-lifecycle-surface-ownership",
+  );
   await surfaceOwnership.waitFor({ state: "visible", timeout: 30_000 });
   await wait(500);
   await surfaceOwnership.screenshot({

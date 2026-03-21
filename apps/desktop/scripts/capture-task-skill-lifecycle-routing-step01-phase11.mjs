@@ -86,7 +86,6 @@ function createMockScript() {
 
     const now = new Date("2026-03-17T02:30:00.000Z").toISOString();
 
-    sessionStorage.setItem("debug-clear-storage", "done");
     localStorage.setItem("dev-skip-auth", "true");
 
     const resolveTheme = () =>
@@ -265,7 +264,10 @@ function createMockScript() {
         clearHistory: noop,
       }),
       store: createNamespaceProxy({
-        get: async ({ defaultValue }) => ({ success: true, data: defaultValue }),
+        get: async ({ defaultValue }) => ({
+          success: true,
+          data: defaultValue,
+        }),
         set: noop,
       }),
       skill: createNamespaceProxy({
@@ -416,7 +418,9 @@ async function captureScenario(browser, scenario) {
   const pageErrors = [];
   page.on("pageerror", (error) => {
     pageErrors.push(error.message);
-    process.stderr.write(`[capture-step01-phase11:${scenario.tc}] ${error.message}\n`);
+    process.stderr.write(
+      `[capture-step01-phase11:${scenario.tc}] ${error.message}\n`,
+    );
   });
 
   try {
@@ -476,7 +480,9 @@ async function main() {
       "utf8",
     );
 
-    process.stdout.write(`[capture-step01-phase11] metadata -> ${metadataPath}\n`);
+    process.stdout.write(
+      `[capture-step01-phase11] metadata -> ${metadataPath}\n`,
+    );
   } finally {
     viteProcess.kill("SIGTERM");
   }

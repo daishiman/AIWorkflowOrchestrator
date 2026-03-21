@@ -101,7 +101,6 @@ const context = await browser.newContext({
 });
 
 await context.addInitScript((skills) => {
-  sessionStorage.setItem("debug-clear-storage", "done");
   localStorage.setItem("dev-skip-auth", "true");
 
   const importedSkills = [];
@@ -136,7 +135,10 @@ await context.addInitScript((skills) => {
       getProviders: async () => ({ success: true, data: [] }),
       update: async () => ({ success: false, error: "not-implemented" }),
       linkProvider: async () => ({ success: false, error: "not-implemented" }),
-      unlinkProvider: async () => ({ success: false, error: "not-implemented" }),
+      unlinkProvider: async () => ({
+        success: false,
+        error: "not-implemented",
+      }),
       delete: async () => ({ success: false, error: "not-implemented" }),
     },
     avatar: {
@@ -180,10 +182,7 @@ try {
   });
   await page.waitForTimeout(300);
   await page.screenshot({
-    path: path.join(
-      screenshotDir,
-      "TC-03-detail-panel-malformed-metadata.png",
-    ),
+    path: path.join(screenshotDir, "TC-03-detail-panel-malformed-metadata.png"),
     fullPage: true,
   });
 

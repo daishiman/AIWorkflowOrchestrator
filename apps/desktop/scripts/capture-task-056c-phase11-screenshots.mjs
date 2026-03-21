@@ -20,7 +20,6 @@ const baseUrl = `http://localhost:${vitePort}/?skipAuth=true`;
 
 function createMockScript() {
   return ({ notifications, historyItems, stats }) => {
-    sessionStorage.setItem("debug-clear-storage", "done");
     localStorage.setItem("dev-skip-auth", "true");
 
     const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -80,7 +79,9 @@ function createMockScript() {
               return false;
             }
 
-            const q = String(request.query || "").trim().toLowerCase();
+            const q = String(request.query || "")
+              .trim()
+              .toLowerCase();
             if (q === "") {
               return true;
             }
@@ -177,7 +178,8 @@ async function captureScreenshots(browser) {
         timestamp: "2026-03-05T11:02:00.000Z",
         metadata: {
           type: "file",
-          filePath: "apps/desktop/src/renderer/store/slices/notificationSlice.ts",
+          filePath:
+            "apps/desktop/src/renderer/store/slices/notificationSlice.ts",
           additions: 32,
           deletions: 4,
         },
