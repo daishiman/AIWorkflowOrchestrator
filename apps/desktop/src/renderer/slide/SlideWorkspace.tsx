@@ -57,10 +57,14 @@ export const SlideWorkspace: React.FC = () => {
   }, [openProject]);
 
   const handleCopyCommand = useCallback(() => {
-    if (!navigator.clipboard?.writeText) {
-      return;
+    try {
+      const result = navigator.clipboard?.writeText(terminalCommand);
+      if (result && typeof result.catch === "function") {
+        void result.catch(() => undefined);
+      }
+    } catch {
+      // clipboard API unavailable in some environments
     }
-    void navigator.clipboard.writeText(terminalCommand).catch(() => undefined);
   }, [terminalCommand]);
 
   const handleLaunchTerminal = useCallback(() => {

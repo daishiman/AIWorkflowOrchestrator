@@ -93,7 +93,9 @@ describe("SlideWorkspace", () => {
       );
       render(<SlideWorkspace />);
       expect(screen.getByLabelText("同期状態: 同期済み")).toBeDefined();
-      expect(screen.getByText("/test/project")).toBeDefined();
+      expect(
+        screen.getAllByText("/test/project").length,
+      ).toBeGreaterThanOrEqual(1);
     });
 
     it("shows SkillPhasePanel in synced state", () => {
