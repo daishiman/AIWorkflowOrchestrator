@@ -73,4 +73,4 @@ Task12 の設計では `review` / `improve_ready` / `reuse_ready` を `SkillExec
 | Task12 UI 一次情報     | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed-skill-lifecycle-ui.md`          | UI / selector 影響               |
 | current task ledger    | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                       | backlog / status 同期            |
 | lessons learned        | `.claude/skills/aiworkflow-requirements/references/lessons-learned-current-electron-menu-docs-task0912.md` | P64/P65                          |
-| current workflow       | `docs/30-workflows/execution-status-type-spec-sync/index.md`                                               | readiness-first guarded workflow |
+| current workflow       | `docs/30-workflows/completed-tasks/execution-status-type-spec-sync/index.md`                               | readiness-first guarded workflow |

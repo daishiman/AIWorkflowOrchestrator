@@ -63,7 +63,7 @@ FR-01〜FR-06 と受入基準を見直し、readiness 判定、canonical 抽出�
 ### ステップ2: docs-only 契約をレビューする
 
 - Phase 11 が docs-only walkthrough を持つ
-- Phase 12 が `unassigned-task-detection.md` と `phase12-task-spec-compliance-check.md` を持つ
+- Phase 12 が `outputs/phase-12/unassigned-task-detection.md` と `outputs/phase-12/phase12-task-spec-compliance-check.md` を持つ
 - Phase 13 が user approval まで blocked のまま
 
 ### ステップ3: validator と parity をレビューする
@@ -115,7 +115,7 @@ Phase 11/12/13 に送る追跡項目を `MINOR ID` 単位で確定し、未タ�
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 10
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 10
 ```
 
 ## 次のPhase

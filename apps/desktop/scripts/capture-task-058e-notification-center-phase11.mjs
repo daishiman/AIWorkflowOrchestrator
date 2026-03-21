@@ -26,7 +26,8 @@ const baseNotifications = [
     id: "n-201",
     type: "warning",
     title: "同期ジョブが 1 件遅延しています",
-    detail: "history indexer の再実行を待っています。30 秒後に自動再試行されます。",
+    detail:
+      "history indexer の再実行を待っています。30 秒後に自動再試行されます。",
     timestamp: "2026-03-11T01:12:00.000Z",
     isRead: false,
     source: { kind: "system", eventType: "sync-delay" },
@@ -54,7 +55,6 @@ const baseNotifications = [
 function createMockScript({ notifications }) {
   return ({ payload }) => {
     localStorage.setItem("dev-skip-auth", "true");
-    sessionStorage.setItem("debug-clear-storage", "done");
 
     const clone = (value) => JSON.parse(JSON.stringify(value));
 
@@ -99,7 +99,10 @@ function createMockScript({ notifications }) {
           data: { updatedCount: payload.length },
         }),
         delete: async () => ({ success: true, data: { deleted: true } }),
-        clear: async () => ({ success: true, data: { deletedCount: payload.length } }),
+        clear: async () => ({
+          success: true,
+          data: { deletedCount: payload.length },
+        }),
         onNew: () => () => {},
       },
     };
@@ -152,7 +155,10 @@ async function capture(browser) {
       baseNotifications,
     );
 
-    const idlePath = path.join(screenshotDir, "TC-11-01-desktop-idle-badge.png");
+    const idlePath = path.join(
+      screenshotDir,
+      "TC-11-01-desktop-idle-badge.png",
+    );
     await page.screenshot({ path: idlePath, fullPage: true });
     captures.push({
       testCase: "TC-11-01",
@@ -166,7 +172,10 @@ async function capture(browser) {
       timeout: 15_000,
     });
 
-    const openPath = path.join(screenshotDir, "TC-11-02-desktop-popover-open.png");
+    const openPath = path.join(
+      screenshotDir,
+      "TC-11-02-desktop-popover-open.png",
+    );
     await page.screenshot({ path: openPath, fullPage: true });
     captures.push({
       testCase: "TC-11-02",
@@ -176,7 +185,7 @@ async function capture(browser) {
     });
 
     await page.click('[data-testid="notification-item-n-201"]');
-    await page.waitForSelector('text=history indexer の再実行を待っています', {
+    await page.waitForSelector("text=history indexer の再実行を待っています", {
       timeout: 15_000,
     });
 
@@ -233,7 +242,10 @@ async function capture(browser) {
       timeout: 15_000,
     });
 
-    const tabletPath = path.join(screenshotDir, "TC-11-04-tablet-popover-open.png");
+    const tabletPath = path.join(
+      screenshotDir,
+      "TC-11-04-tablet-popover-open.png",
+    );
     await page.screenshot({ path: tabletPath, fullPage: true });
     captures.push({
       testCase: "TC-11-04",
@@ -257,7 +269,10 @@ async function capture(browser) {
       timeout: 15_000,
     });
 
-    const mobilePath = path.join(screenshotDir, "TC-11-05-mobile-overlay-open.png");
+    const mobilePath = path.join(
+      screenshotDir,
+      "TC-11-05-mobile-overlay-open.png",
+    );
     await page.screenshot({ path: mobilePath, fullPage: true });
     captures.push({
       testCase: "TC-11-05",
@@ -277,7 +292,7 @@ async function capture(browser) {
     );
 
     await page.click('[data-testid="notification-bell-button"]');
-    await page.waitForSelector('text=お知らせはありません', {
+    await page.waitForSelector("text=お知らせはありません", {
       timeout: 15_000,
     });
 

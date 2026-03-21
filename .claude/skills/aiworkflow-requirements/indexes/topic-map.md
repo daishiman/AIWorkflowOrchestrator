@@ -220,8 +220,8 @@ node scripts/list-specs.js --topics
 | 既知の制約 | L37 |
 | 教訓 | L43 |
 | テスト戦略 | L49 |
-| 実行サマリー（2026-03-19 実測） | L75 |
-| 関連タスク | L86 |
+| 実行サマリー（2026-03-21 実測） | L82 |
+| 関連タスク | L93 |
 
 ### references/architecture-implementation-patterns-reference-ipc-fallback-validation.md
 
@@ -1460,10 +1460,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| セキュリティ設定 | L6 |
 | Content Security Policy (CSP) | L20 |
 | IPC通信のセキュリティ | L37 |
-| 実装例: historyAPI | L343 |
-| 実装例: notificationAPI（TASK-UI-08） | L395 |
-| 実装例: slideSettingsAPI | L428 |
-| IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L477 |
+| 実装例: historyAPI | L342 |
+| 実装例: notificationAPI（TASK-UI-08） | L394 |
+| 実装例: slideSettingsAPI | L427 |
+| IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L476 |
 
 ### references/security-electron-ipc-details.md
 
@@ -1831,18 +1831,18 @@ node scripts/list-specs.js --topics
 | 今回の確定事項（2026-03-13） | L19 |
 | Step-03 Task06 再監査追補（2026-03-17） | L29 |
 | Step-04 Task09 再監査追補（2026-03-19） | L37 |
-| 再監査追補（2026-03-14） | L77 |
-| current canonical set（2026-03-14 wave） | L91 |
-| artifact inventory（Step-01 + system spec sync） | L107 |
-| parent docs と依存関係 | L138 |
-| 旧 filename 互換管理 | L151 |
-| 設定画面レビューの必須改善対象 | L158 |
-| 後続タスクへの伝搬先 | L176 |
-| SubAgent 編成（関心ごと分離） | L205 |
-| 同種課題の5分解決カード | L217 |
-| 最適なファイル形成 | L227 |
-| 関連ドキュメント | L239 |
-| 変更履歴 | L251 |
+| 再監査追補（2026-03-14） | L78 |
+| current canonical set（2026-03-14 wave） | L92 |
+| artifact inventory（Step-01 + system spec sync） | L108 |
+| parent docs と依存関係 | L139 |
+| 旧 filename 互換管理 | L152 |
+| 設定画面レビューの必須改善対象 | L159 |
+| 後続タスクへの伝搬先 | L177 |
+| SubAgent 編成（関心ごと分離） | L206 |
+| 同種課題の5分解決カード | L218 |
+| 最適なファイル形成 | L228 |
+| 関連ドキュメント | L240 |
+| 変更履歴 | L252 |
 
 ### references/workflow-ai-runtime-execution-responsibility-realignment.md
 
@@ -1852,7 +1852,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L38 |
 | 実装ステータススナップショット（2026-03-21） | L45 |
-| Follow-up Backlog | L52 |
+| Follow-up Backlog | L53 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2581,39 +2581,42 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L34 |
-| クイックリファレンス: カテゴリ別検索ガイド | L47 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L390 |
+| 分割ファイル一覧 | L36 |
+| クイックリファレンス: カテゴリ別検索ガイド | L49 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L392 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L426 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L30 |
-| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L36 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L64 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L92 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L129 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L195 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L216 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L246 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L288 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L32 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L38 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L66 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L102 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L130 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L167 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L233 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L254 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L284 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L326 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-21 TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE | L31 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L82 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L112 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L165 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L193 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L236 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L287 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L356 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L394 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L33 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L73 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L103 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L152 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L205 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L233 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L276 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L327 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L396 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L434 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 

@@ -18,17 +18,58 @@
 
 ---
 
-## TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査完了（2026-03-21）
+## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 最終ドキュメント更新（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12 再監査
+- **Phase**: Phase 12 final sync
 - **Result**: success
 - **Notes**:
-  - `phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を実績ベースへ更新
-  - `implementation-guide.md` を validator 10/10 要件へ補完
-  - `phase12-task-spec-compliance-check.md` を追加し、root evidence を固定
-  - `UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001` と `UT-FIX-LLM-BANNER-DISMISS-001` を formalize
-  - capture script の canonical entrypoint を `capture-task-fix-llm-selector-inline-guidance-phase11.mjs` に統一
+  - `manual-test-result.md` の `not_run` を `NON_VISUAL_FALLBACK` へ置換し、manual evidence blocker と代替証跡を必須化
+  - `phase-12-documentation-guide.md` と `spec-update-workflow.md` に artifact parity / manual evidence / internal-public IPC 境界ルールを追加
+  - follow-up 2件（Skill Creator public IPC wiring / subscription service integration）を formalize
+  - implementation task の completed record と backlog cleanup を same-wave sync した
+
+---
+
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 final re-audit
+- **Result**: success
+- **Notes**:
+  - `phase-12-documentation.md` を Task 1〜5 + 必須 6成果物前提へ是正
+  - `outputs/phase-12/skill-feedback-report.md` を追加し、Phase 12 の欠落成果物を解消
+  - workflow root=`implementation_ready`、completed ledger=`spec_created` の分離を system spec に同期
+  - `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` を追加し、未タスク件数を 4件へ更新
+  - worktree 環境でも `.claude` 正本更新を先送りしないルールへ修正
+
+---
+
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 spec-only Phase 1-12 完了（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 全完了（設計タスク）
+- **Result**: success
+- **Notes**:
+  - RuntimePolicy / HealthContract / HandoffContract の3 concern を中央集約する設計を Phase 1-12 で完了
+  - DD-1〜DD-6（設計判断6件）、M-1（RuntimeDecisionForRenderer 型）、M-2（resolve シグネチャ）を処置完了
+  - Phase 10 ゲート判定: PASS（AC-1〜AC-4 全て PASS）
+  - downstream Task03-09 は `spec_created` / `not_started` のままで、centralization 本体実装は未着手
+  - 未タスク3件検出: UT-CLEANUP-AI-CHECK-CONNECTION-001 / UT-CLEANUP-RUNTIME-RESOLVER-001 / UT-DESIGN-SANITIZE-PLACEMENT-001
+  - Phase 12 で backlog / workflow / lessons への導線を同一ターンで同期
+  - Phase 12 成果物: implementation-guide.md（Part1 日常アナロジー + Part2 開発者向け）+ 未タスク指示書3件
+
+---
+
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: docs-only / reference normalization
+- **Result**: success
+- **Notes**:
+  - `step-02-seq-task-02-runtime-policy-centralization` を standalone root として再固定し、workflow 本文の self path / Task01 dependency path / verification-report target を current path へ書き戻した
+  - parent pack と Task03-09 downstream consumer の `Task02 index` 参照を current standalone root へ同期した
+  - `references/spec-update-workflow.md` に「standalone task 移設時は downstream consumer まで same-wave 更新する」ルールを追加した
 
 ---
 

@@ -5,6 +5,64 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 RuntimePolicyResolver capability bridge（2026-03-21）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | implementation |
+| 優先度 | 中 |
+| 完了日 | 2026-03-21 |
+| 対象 | RuntimePolicyResolver / RuntimeSkillCreatorFacade / creatorHandlers の direct caller capability bridge |
+| 成果物 | `docs/30-workflows/completed-tasks/runtime-policy-resolver-4state/` |
+
+#### 実施内容
+
+- `RuntimeSkillCreatorFacade.execute()` が `decision.capability` を実消費し、`terminalSurface` で handoff bundle を返し `SkillExecutor` を呼ばないよう是正した
+- `creatorHandlers.ts` に `ExecutionCapabilityInput` 正規化を導入し、`creatorHandlers.test.ts` で IPC boundary の raw args 変換と terminal handoff 透過を検証した
+- workflow / system spec / skills / lessons を same-wave sync し、manual evidence の `not_run` 矛盾と artifact parity drift を解消した
+- Phase 13 は user approval 未取得のため blocked とした
+
+#### 発見元
+
+- TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 direct caller lane 分解（2026-03-21）
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（378ファイル分類、`indexes/topic-map.md` / `indexes/keywords.json` 再生成） |
+| `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/runtime-policy-resolver-4state --regenerate` | PASS（13/13 phase files） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/runtime-policy-resolver-4state` | PASS（31項目, 0エラー, 0警告） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/runtime-policy-resolver-4state --strict` | PASS（13/13, errors 0, warnings 0） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/runtime-policy-resolver-4state` | PASS（10/10） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/runtime-policy-resolver-4state/outputs/phase-12/unassigned-task-detection.md` | PASS（2/2, missing 0） |
+| `pnpm --filter @repo/shared typecheck` | PASS |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+| `diff -qr .claude/skills/ .agents/skills/` | PASS（差分なし） |
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| `UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001` | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface の統合 | 高 | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
+| `UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001` | `RuntimePolicyResolver.resolveFromServices()` への subscription 判定 service 統合 | 中 | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| `manual-test-result.md` が `not_run` のまま completed を宣言する | non-visual task の manual evidence を後回しにする | `NON_VISUAL_FALLBACK`、blocker、代替 evidence を同時記録した |
+| internal adapter と public preload 契約を同じ「IPC更新」とみなす | `ipcMain.handle()` 追加だけで system spec を更新済みと書く | internal/public の到達面を分離し、follow-up へ formalize した |
+| `index.md` / `phase-*.md` / `artifacts*` を別ターンで更新する | workflow 本文だけ completed にする | 4点同期を Phase 12 完了条件として固定した |
+
+#### 同種課題の簡潔解決手順
+
+1. `manual-test-result.md` が `not_run` でないことを確認し、fallback 時は blocker と evidence を残す。
+2. internal adapter と public preload / registration の到達面を分離して記録する。
+3. workflow 本文、phase 本文、`artifacts.json`、`outputs/artifacts.json` を同一ターンで同期する。
+
 ### タスク: TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 runtime-policy-centralization（2026-03-21）
 
 | 項目 | 値 |
@@ -118,6 +176,7 @@
 - Phase 11 は screenshot 5件を取得し、current UI と正本仕様の drift を visual audit として記録した
 - live preview は esbuild native binary mismatch で停止したため、current code 由来の static fallback capture を metadata 付きで保存した
 - `UT-SLIDE-IMPL-001` / `UT-SLIDE-UI-001` / `UT-SLIDE-P31-001` / `UT-SLIDE-HANDOFF-DUP-001` を formalize し、backlog へ登録した
+- 2026-03-21 current branch で `UT-SLIDE-UI-001` は完了、`UT-SLIDE-P31-001` は吸収済みへ更新した
 
 #### 検証証跡
 
@@ -132,14 +191,14 @@
 | `node .../audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（currentViolations=0） |
 | `diff -qr .claude/skills/{aiworkflow-requirements,task-specification-creator,skill-creator} .agents/skills/{aiworkflow-requirements,task-specification-creator,skill-creator}` | PASS |
 
-#### Phase 12 未タスク
+#### follow-up 状況（2026-03-21）
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| 種別 | ID | 概要 | タスク仕様書 |
 | --- | --- | --- | --- |
-| `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | 高 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
-| `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | 高 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-ui-001.md` |
-| `UT-SLIDE-P31-001` | `useSlideProject()` selector migration | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |
-| `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | 低 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
+| pending | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
+| pending | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
+| completed | `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | `docs/30-workflows/completed-tasks/task-ut-slide-ui-001.md` |
+| resolved | `UT-SLIDE-P31-001` | `useSlideProject()` selector migration を current branch で吸収 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |
 
 #### 苦戦箇所
 

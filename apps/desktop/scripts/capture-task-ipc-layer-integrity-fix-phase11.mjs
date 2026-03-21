@@ -18,7 +18,10 @@ const outputDir = path.join(
   workflowRoot,
   "outputs/phase-11/screenshots-app-sanity",
 );
-const metadataPath = path.join(outputDir, "visual-sanity-capture-metadata.json");
+const metadataPath = path.join(
+  outputDir,
+  "visual-sanity-capture-metadata.json",
+);
 const vitePort = process.env.IPC_LAYER_INTEGRITY_SCREENSHOT_PORT ?? "5197";
 const baseUrl = `http://127.0.0.1:${vitePort}`;
 
@@ -78,7 +81,6 @@ function createMockScript() {
   return () => {
     const now = new Date("2026-03-19T15:15:00.000Z").toISOString();
 
-    sessionStorage.setItem("debug-clear-storage", "done");
     localStorage.setItem("dev-skip-auth", "true");
 
     const resolveTheme = () =>

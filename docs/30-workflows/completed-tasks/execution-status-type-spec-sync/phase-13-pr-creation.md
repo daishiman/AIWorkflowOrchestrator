@@ -15,13 +15,13 @@ Phase 12 までの成果物を点検し、user approval が出た場合にのみ
 
 ## blocked record table
 
-| 項目              | 記録内容                                                                             |
-| ----------------- | ------------------------------------------------------------------------------------ |
-| blocked 理由      | user approval 不足、または readiness 未充足                                          |
-| approval 状態     | `not requested` / `requested` / `approved`                                           |
-| Phase 12 完了根拠 | `unassigned-task-detection.md` と `phase12-task-spec-compliance-check.md` の確認結果 |
-| local check 要約  | validator / parity / readiness の要約                                                |
-| PR readiness      | `blocked` / `ready to create`                                                        |
+| 項目              | 記録内容                                                                                                               |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| blocked 理由      | user approval 不足、または readiness 未充足                                                                            |
+| approval 状態     | `not requested` / `requested` / `approved`                                                                             |
+| Phase 12 完了根拠 | `outputs/phase-12/unassigned-task-detection.md` と `outputs/phase-12/phase12-task-spec-compliance-check.md` の確認結果 |
+| local check 要約  | validator / parity / readiness の要約                                                                                  |
+| PR readiness      | `blocked` / `ready to create`                                                                                          |
 
 ## 実行タスク
 
@@ -83,7 +83,7 @@ Phase 12 までの成果物を点検し、user approval が出た場合にのみ
 ## 完了条件
 
 - [ ] blocked 理由が明記されている
-- [ ] `unassigned-task-detection.md` と `phase12-task-spec-compliance-check.md` を前提に確認している
+- [ ] `outputs/phase-12/unassigned-task-detection.md` と `outputs/phase-12/phase12-task-spec-compliance-check.md` を前提に確認している
 - [ ] local check 結果が要約されている
 - [ ] user approval なしでは commit / PR を実行しないと明記されている
 - [ ] blocked record table の 5 項目が定義されている
@@ -106,7 +106,7 @@ Phase 12 までの成果物を点検し、user approval が出た場合にのみ
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 13
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 13
 ```
 
 ## 次のPhase

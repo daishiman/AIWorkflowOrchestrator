@@ -61,7 +61,6 @@ const historyStats = {
 
 function createMockScript() {
   return ({ historyItems: mockHistoryItems, historyStats: mockStats }) => {
-    sessionStorage.setItem("debug-clear-storage", "done");
     localStorage.setItem("dev-skip-auth", "true");
 
     const clone = (value) => JSON.parse(JSON.stringify(value));
@@ -186,10 +185,7 @@ async function captureDesktop(browser) {
 
   try {
     await page.screenshot({
-      path: path.join(
-        screenshotDir,
-        "TC-11-01-desktop-expanded-dashboard.png",
-      ),
+      path: path.join(screenshotDir, "TC-11-01-desktop-expanded-dashboard.png"),
       fullPage: true,
     });
 
@@ -224,10 +220,7 @@ async function captureTablet(browser) {
     await workspaceButton.focus();
     await page.waitForTimeout(250);
     await page.screenshot({
-      path: path.join(
-        screenshotDir,
-        "TC-11-02-tablet-collapsed-focus.png",
-      ),
+      path: path.join(screenshotDir, "TC-11-02-tablet-collapsed-focus.png"),
       fullPage: true,
     });
   } finally {
@@ -249,9 +242,12 @@ async function captureMobile(browser) {
     });
 
     await page.getByRole("button", { name: "その他" }).click();
-    await page.waitForSelector('[role="menu"][aria-label="その他のナビゲーション"]', {
-      timeout: 10_000,
-    });
+    await page.waitForSelector(
+      '[role="menu"][aria-label="その他のナビゲーション"]',
+      {
+        timeout: 10_000,
+      },
+    );
     await page.waitForTimeout(250);
     await page.screenshot({
       path: path.join(screenshotDir, "TC-11-03-mobile-more-menu.png"),

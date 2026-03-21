@@ -42,37 +42,37 @@ Phase 4 の基礎テストに加え、root parity、planned wording、docs-only 
 
 ### ステップ1: parity と validator 前提を拡充確認する
 
-| テストID | 内容                   | コマンド                                                                                                                                         | 期待結果            |
-| -------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
-| T6-1     | aiworkflow root parity | `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`                                                         | diff 0              |
-| T6-2     | task-spec root parity  | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                   | diff 0              |
-| T6-3     | workflow validator     | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/execution-status-type-spec-sync --json` | error 0 / warning 0 |
+| テストID | 内容                   | コマンド                                                                                                                                                         | 期待結果            |
+| -------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| T6-1     | aiworkflow root parity | `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`                                                                         | diff 0              |
+| T6-2     | task-spec root parity  | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                                   | diff 0              |
+| T6-3     | workflow validator     | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/execution-status-type-spec-sync --json` | error 0 / warning 0 |
 
 ### ステップ2: docs-only 固有の漏れを検査する
 
-| テストID | 内容                                      | コマンド                                                                              | 期待結果                         |
-| -------- | ----------------------------------------- | ------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------------------------------ | ----------- |
-| T6-4     | planned wording 残存                      | `rg -n "仕様策定のみ                                                                  | 実行予定                         | 保留として記録" docs/30-workflows/execution-status-type-spec-sync` | 該当なし    |
-| T6-5     | blocker 記録の存在                        | `rg -n "blocked                                                                       | Task12 implementation not landed | readiness" docs/30-workflows/execution-status-type-spec-sync`      | 0件ではない |
-| T6-6     | `unassigned-task-detection.md` 名称の使用 | `rg -n "unassigned-task-detection" docs/30-workflows/execution-status-type-spec-sync` | 0件ではない                      |
+| テストID | 内容                                                       | コマンド                                                                                              | 期待結果                         |
+| -------- | ---------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------------------------------------------------- | ----------- |
+| T6-4     | planned wording 残存                                       | `rg -n "仕様策定のみ                                                                                  | 実行予定                         | 保留として記録" docs/30-workflows/completed-tasks/execution-status-type-spec-sync` | 該当なし    |
+| T6-5     | blocker 記録の存在                                         | `rg -n "blocked                                                                                       | Task12 implementation not landed | readiness" docs/30-workflows/completed-tasks/execution-status-type-spec-sync`      | 0件ではない |
+| T6-6     | `outputs/phase-12/unassigned-task-detection.md` 名称の使用 | `rg -n "unassigned-task-detection" docs/30-workflows/completed-tasks/execution-status-type-spec-sync` | 0件ではない                      |
 
 ### ステップ3: T4 系列の回帰を再実行する
 
 | テストID | 内容                                           | コマンド                                               | 期待結果                   |
-| -------- | ---------------------------------------------- | ------------------------------------------------------ | -------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------- |
+| -------- | ---------------------------------------------- | ------------------------------------------------------ | -------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
 | T6-7     | T4 readiness 回帰                              | `sed -n '360,390p' packages/shared/src/types/skill.ts` | current reality を維持     |
-| T6-8     | ready path refs / blocked path baseline 再確認 | `rg -n "interfaces-agent-sdk-integration               | arch-state-management-core | blocked" docs/30-workflows/execution-status-type-spec-sync`                                  | ready / blocked の両方が確認できる |
-| T6-9     | Phase 5 初回検証の継承確認                     | `rg -n "validate-phase-output                          | diff -qr                   | generate-index" docs/30-workflows/execution-status-type-spec-sync/phase-5-implementation.md` | 初回検証が明記されている           |
+| T6-8     | ready path refs / blocked path baseline 再確認 | `rg -n "interfaces-agent-sdk-integration               | arch-state-management-core | blocked" docs/30-workflows/completed-tasks/execution-status-type-spec-sync`                                  | ready / blocked の両方が確認できる |
+| T6-9     | Phase 5 初回検証の継承確認                     | `rg -n "validate-phase-output                          | diff -qr                   | generate-index" docs/30-workflows/completed-tasks/execution-status-type-spec-sync/phase-5-implementation.md` | 初回検証が明記されている           |
 
 ### ステップ4: validator 一式を実行する
 
-| テストID | 内容                   | コマンド                                                                                                                                         | 期待結果            |
-| -------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------- |
-| T6-10    | quick validate         | `node .claude/skills/task-specification-creator/scripts/quick_validate.js docs/30-workflows/execution-status-type-spec-sync`                     | error 0 / warning 0 |
-| T6-11    | validate all           | `node .claude/skills/task-specification-creator/scripts/validate_all.js docs/30-workflows/execution-status-type-spec-sync`                       | error 0 / warning 0 |
-| T6-12    | phase output validator | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 6`    | error 0 / warning 0 |
-| T6-13    | spec verifier          | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/execution-status-type-spec-sync --json` | error 0 / warning 0 |
-| T6-14    | root diff              | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                   | diff 0              |
+| テストID | 内容                   | コマンド                                                                                                                                                         | 期待結果            |
+| -------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| T6-10    | quick validate         | `node .claude/skills/task-specification-creator/scripts/quick_validate.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync`                     | error 0 / warning 0 |
+| T6-11    | validate all           | `node .claude/skills/task-specification-creator/scripts/validate_all.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync`                       | error 0 / warning 0 |
+| T6-12    | phase output validator | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 6`    | error 0 / warning 0 |
+| T6-13    | spec verifier          | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/execution-status-type-spec-sync --json` | error 0 / warning 0 |
+| T6-14    | root diff              | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                                   | diff 0              |
 
 ## 統合テスト連携（Phase 6）
 
@@ -94,7 +94,7 @@ Phase 4 の基礎テストに加え、root parity、planned wording、docs-only 
 
 - [ ] root parity テストが定義されている
 - [ ] docs-only 固有の漏れ検査が定義されている
-- [ ] `unassigned-task-detection.md` 名称が仕様へ反映されている
+- [ ] `outputs/phase-12/unassigned-task-detection.md` 名称が仕様へ反映されている
 - [ ] `quick_validate.js` / `validate_all.js` / `validate-phase-output.js` / `verify-all-specs.js` / `diff -qr` が定義されている
 - [ ] pass 条件が current error 0 / warning 0 になっている
 - [ ] 本Phase内の全タスクを100%実行完了
@@ -117,7 +117,7 @@ Phase 4 の基礎テストに加え、root parity、planned wording、docs-only 
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 6
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 6
 ```
 
 ## 次のPhase

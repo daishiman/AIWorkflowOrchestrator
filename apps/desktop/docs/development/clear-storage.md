@@ -23,29 +23,21 @@
 
 ### 方法2: コードから強制クリア
 
-**一時的なデバッグコード**を`App.tsx`の冒頭に追加：
+> **Historical Note** (TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001, 2026-03):
+> 以下のデバッグコードパターンは根本原因が解決済みのため、歴史的記録として残しています。
+> `localStorage.clear()` は Zustand persist 状態を破壊するため、App.tsx に追加してはいけません。
+> ストレージクリアが必要な場合は方法1（DevTools）または方法3（electron-store）を使用してください。
+
+~~**一時的なデバッグコード**を`App.tsx`の冒頭に追加：~~
 
 ```typescript
+// [廃止] このパターンは使用禁止です
 // apps/desktop/src/renderer/App.tsx
-function App(): JSX.Element {
-  // 🔧 デバッグ用: 初回起動時にストレージをクリア
-  useEffect(() => {
-    if (import.meta.env.DEV) {
-      const shouldClear = sessionStorage.getItem("debug-clear-storage");
-      if (!shouldClear) {
-        console.log("🔧 [DEBUG] Clearing all storage...");
-        localStorage.clear();
-        sessionStorage.setItem("debug-clear-storage", "done");
-        window.location.reload();
-      }
-    }
-  }, []);
-
-  // 以下、既存のコード...
-}
+// localStorage.clear() + window.location.reload() は
+// Zustand persist 状態を破壊するため禁止されています
 ```
 
-**使用後は削除してください。**
+~~**使用後は削除してください。**~~
 
 ---
 
