@@ -66,6 +66,9 @@
       "@repo/shared/types/auth-mode": [
         "../../packages/shared/src/types/auth-mode.ts"
       ],
+      "@repo/shared/types/execution-capability": [
+        "../../packages/shared/src/types/execution-capability.ts"
+      ],
       "@repo/shared/agent": ["../../packages/shared/src/agent/index.ts"],
       "@repo/shared/schemas": ["../../packages/shared/schemas/index.ts"],
       "@repo/shared/schemas/auth": ["../../packages/shared/schemas/auth.ts"],
