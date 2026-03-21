@@ -27,6 +27,7 @@
 | 「spec_created task なので Step 1-B は不要」 | `spec_created` の記録も Step 1 で残す |
 | 「warning だけなら Phase 12 を閉じてよい」 | pass 基準は validator ごとに明文化する |
 | 「設計タスクなので Step 2 は計画だけ書けばよい」 | `spec_created` でも system spec / lessons / backlog / LOGS の実更新が必要 |
+| 「設計タスクの workflow root も `completed` にしてよい」 | workflow root は `implementation_ready`、completed records は `spec_created`。実装 gap は follow-up task として formalize する |
 | 「generic なファイル名へ書いておけば十分」 | 実際の責務分割に沿った primary target file list を先に確定する |
 
 ## 入口ファイル
@@ -65,6 +66,7 @@
 | 「workflow ディレクトリがあるので `../task-xxx.md` はなくてもよい」 | **ブリッジ仕様または参照修正が必須** | Phase 仕様書が親タスク仕様を相対参照している場合、`docs/30-workflows/<workflow>.md` をブリッジとして残すか、各 Phase の参照先を正本へ更新する |
 | 「task-00 参照切れは後続タスクで直す」 | **Phase 12内で即時修正** | `task-013e` / `task-014` など実行導線の参照切れは探索失敗を招く。`task-00-unified-implementation-sequence/` を `test -f` で検証し、必要ならブリッジ仕様を再配置する |
 | 「current workflow だけ直せば親タスク/統合indexは後回しでよい」 | **親導線も同一ターンで正規化** | parent task / 統合 index が削除済み nested workflow や旧 `.md` を指すと、後続探索と検証コマンドが失敗する。`test -d <workflow>` と parent docs の `rg -n "<workflow-id>"` をセットで実行し、current / parent / index を同時更新する |
+| 「standalone task へ移設したので current workflow だけ差し替えれば十分」 | **downstream consumer まで同一 wave で更新** | 後続 task の `TaskXX index` や dependency note が旧 nested path を指したまま残ると、依存関係整合が壊れる。current root / parent pack / downstream consumer / verification-report を同一ターンで再生成する |
 | 「current workflow に code diff がないので Phase 11 screenshot は不要」 | **統合UI再確認なら Phase 11 実施** | `spec_created` / docs-heavy task でも upstream UI surface の統合再確認やユーザー要求がある場合は、representative screenshots と Apple UI/UX 視覚検証を current workflow 配下へ残す |
 | 「docs-heavy screenshot 再監査は current build 再撮影しか認めない」 | **representative review board も許可** | UI 実装差分がなく same-day upstream evidence があるなら、source screenshot を current workflow へ集約し、review board を current workflow で新規 capture して Apple review に使ってよい |
 | 「visual TC と dismiss/keyboard 確認に同じ `TC-ID` を使ってよい」 | **`TC-*` と `NV-*`/automated を分離** | screenshot coverage と narrative が別シナリオを同じ ID で指し始めると、未実施誤判定や Phase 12 誤記録を生む |

@@ -58,8 +58,8 @@ common canonical と task 固有 canonical を読み、canonical bridge / workfl
 実装前に対象ファイルの現在状態を確認する。
 
 ```bash
-git log --oneline -10 -- docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/index.md
-rg -n "authMode|runtime|handoff|terminal|guidance|health|capability" docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation docs/30-workflows/ai-runtime-execution-responsibility-realignment .claude/skills/aiworkflow-requirements/references || true
+git log --oneline -10 -- docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/index.md
+rg -n "authMode|runtime|handoff|terminal|guidance|health|capability" docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation docs/30-workflows/ai-runtime-execution-responsibility-realignment .claude/skills/aiworkflow-requirements/references || true
 ```
 
 ### ステップ3: 要件・AC・除外範囲を確定する

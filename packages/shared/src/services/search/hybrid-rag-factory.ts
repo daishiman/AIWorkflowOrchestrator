@@ -2,65 +2,37 @@
  * @file HybridRAGFactory実装
  * @description CONV-07-07: HybridRAG統合 - ファクトリクラス
  *
- * NOTE: このファクトリは依存モジュールが完成した後に完全実装される。
- * 現在はテスト用のcreateForTesting()メソッドのみ完全動作する。
- * createFull()とcreateLite()は将来の依存モジュール統合時に有効化される。
+ * 設定に基づいて適切なコンポーネントを組み立て、HybridRAGEngineインスタンスを生成する。
  */
 
 import type { IQueryClassifier } from "./types";
 import type { IFusionStrategy } from "./fusion/types";
 import type { IReranker } from "./reranking/types";
-import type { ICorrectiveRAG } from "./crag/types";
+import type { ICorrectiveRAG, IWebSearcher, CRAGOptions } from "./crag/types";
+import type { ILLMClient as CragLLMClient } from "./crag/types";
 import type { ISearchStrategy } from "./strategies/types";
+import type { LibSQLDatabase } from "drizzle-orm/libsql";
+import type { IEmbeddingProvider } from "../embedding/providers/interfaces";
+import type { IKnowledgeGraphStore } from "../graph/knowledge-graph-store";
+import type { ILLMClient as RerankerLLMClient } from "../llm/types";
+import type { ILLMProvider } from "../extraction/interfaces";
+import type { ICommunitySummarizer } from "../graph/interfaces/community-summarizer.interface";
 import { HybridRAGEngine, type HybridRAGOptions } from "./hybrid-rag-engine";
 import { RRFFusion } from "./fusion/rrf-fusion";
-import { NoOpReranker } from "./reranking/cross-encoder-reranker";
-
-// =============================================================================
-// プレースホルダー型定義（依存モジュール完成後に実際の型にリプレース）
-// =============================================================================
-
-/**
- * Embeddingプロバイダーインターフェース（プレースホルダー）
- * @placeholder 依存モジュール完成後に@repo/shared/services/embedding/typesに置換
- */
-interface IEmbeddingProvider {
-  embed(text: string): Promise<number[]>;
-  embedBatch(texts: string[]): Promise<number[][]>;
-}
-
-/**
- * KnowledgeGraphストアインターフェース（プレースホルダー）
- * @placeholder 依存モジュール完成後に@repo/shared/services/knowledge-graph/typesに置換
- */
-interface IKnowledgeGraphStore {
-  query(query: string, limit?: number): Promise<unknown[]>;
-}
-
-/**
- * LLMクライアントインターフェース（プレースホルダー）
- * @placeholder 依存モジュール完成後に@repo/shared/services/llm/typesに置換
- */
-interface ILLMClient {
-  complete(
-    prompt: string,
-    options?: unknown,
-  ): Promise<{ success: boolean; data?: string; error?: Error }>;
-}
-
-/**
- * Drizzle DBクライアント型（プレースホルダー）
- * @placeholder 依存モジュール完成後に@repo/shared/db/clientに置換
- */
-type DrizzleClient = unknown;
-
-/**
- * Web検索インターフェース（プレースホルダー）
- * @placeholder 依存モジュール完成後に実際の型に置換
- */
-interface IWebSearcher {
-  search(query: string, limit?: number): Promise<unknown[]>;
-}
+import {
+  NoOpReranker,
+  CohereReranker,
+  VoyageReranker,
+  LLMReranker,
+} from "./reranking/cross-encoder-reranker";
+import { RuleBasedQueryClassifier } from "./rule-based-query-classifier";
+import { LLMQueryClassifier } from "./llm-query-classifier";
+import { VectorSearchStrategy } from "./strategies/vector-search-strategy";
+import { GraphSearchStrategy } from "./strategies/graph-search-strategy";
+import { KeywordSearchStrategyAdapter } from "./strategies/keyword-search-strategy-adapter";
+import { KeywordSearchStrategy } from "./keyword-search-strategy";
+import { CorrectiveRAG } from "./crag/corrective-rag";
+import { RelevanceEvaluator } from "./crag/relevance-evaluator";
 
 // =============================================================================
 // 型定義
@@ -71,16 +43,17 @@ interface IWebSearcher {
  */
 export interface FullHybridRAGConfig {
   // 必須: データベース・プロバイダー
-  db: DrizzleClient;
+  db: LibSQLDatabase<Record<string, never>>;
   embeddingProvider: IEmbeddingProvider;
   graphStore: IKnowledgeGraphStore;
-  llmClient: ILLMClient;
+  llmProvider: ILLMProvider;
 
   // Reranker設定
   rerankerType: "cohere" | "voyage" | "llm" | "none";
   cohereApiKey?: string;
   cohereModel?: string;
   voyageApiKey?: string;
+  rerankerLlmClient?: RerankerLLMClient;
   rerankerBatchSize?: number;
 
   // RRF設定
@@ -88,6 +61,7 @@ export interface FullHybridRAGConfig {
 
   // CRAG設定
   enableCRAG?: boolean;
+  cragLlmClient?: CragLLMClient;
   cragMaxEvaluate?: number;
   cragCorrectThreshold?: number;
   cragIncorrectThreshold?: number;
@@ -97,14 +71,16 @@ export interface FullHybridRAGConfig {
   webSearcher?: IWebSearcher;
   enableWebSearch?: boolean;
   enableRefinement?: boolean;
+
+  // GraphSearch追加設定
+  communitySummarizer?: ICommunitySummarizer;
 }
 
 /**
  * 軽量版エンジンの設定
  */
 export interface LiteHybridRAGConfig {
-  // 必須: データベース・プロバイダー
-  db: DrizzleClient;
+  db: LibSQLDatabase<Record<string, never>>;
   embeddingProvider: IEmbeddingProvider;
   graphStore: IKnowledgeGraphStore;
 }
@@ -113,13 +89,10 @@ export interface LiteHybridRAGConfig {
  * テスト用モック設定
  */
 export interface TestMocks {
-  // 必須: 主要コンポーネントのモック
   queryClassifier: IQueryClassifier;
   keywordStrategy: ISearchStrategy;
   semanticStrategy: ISearchStrategy;
   graphStrategy: ISearchStrategy;
-
-  // オプション: その他コンポーネント
   fusion?: IFusionStrategy;
   reranker?: IReranker;
   crag?: ICorrectiveRAG;
@@ -139,72 +112,82 @@ export interface TestMocks {
  * - createFull: フル機能エンジン（LLMベースQueryClassifier、選択可能なReranker、CRAG）
  * - createLite: 軽量版エンジン（ルールベースQueryClassifier、NoOpReranker、CRAG無効）
  * - createForTesting: テスト用エンジン（モック注入可能）
- *
- * @note createFull()とcreateLite()は依存モジュールが完成した後に実装される。
- *       現在はcreateForTesting()のみ完全動作する。
  */
 export class HybridRAGFactory {
+  private static readonly CREATE_FULL_ERROR_PREFIX =
+    "HybridRAGFactory.createFull():";
   /**
    * フル機能エンジンを生成
-   *
-   * @param _config - フル機能エンジンの設定
-   * @returns HybridRAGEngineインスタンス
-   * @throws 依存モジュールが未実装のためエラー
-   *
-   * @todo 依存モジュール完成後に実装
-   * - LLMQueryClassifier
-   * - KeywordSearchStrategy
-   * - VectorSearchStrategy
-   * - GraphSearchStrategy
-   * - CohereReranker, VoyageReranker, LLMReranker
-   * - CorrectiveRAG, RelevanceEvaluator
    */
-  static createFull(_config: FullHybridRAGConfig): HybridRAGEngine {
-    throw new Error(
-      "HybridRAGFactory.createFull() は依存モジュール完成後に利用可能になります。" +
-        "現在は createForTesting() のみ使用できます。" +
-        " [FACTORY_NOT_READY] 必要なモジュール: LLMQueryClassifier, VectorSearchStrategy, GraphSearchStrategy, CohereReranker/VoyageReranker/LLMReranker, CorrectiveRAG",
+  static createFull(config: FullHybridRAGConfig): HybridRAGEngine {
+    HybridRAGFactory.validateFullConfig(config);
+
+    const fallbackClassifier = new RuleBasedQueryClassifier();
+    const queryClassifier = new LLMQueryClassifier(
+      config.llmProvider,
+      fallbackClassifier,
+    );
+
+    const keyword = new KeywordSearchStrategyAdapter(
+      new KeywordSearchStrategy(config.db),
+    );
+    const semantic = new VectorSearchStrategy(
+      config.db,
+      config.embeddingProvider,
+    );
+    const graph = new GraphSearchStrategy(
+      config.graphStore,
+      config.embeddingProvider,
+      config.communitySummarizer,
+    );
+
+    const fusion = new RRFFusion(config.rrfK ?? 60);
+    const reranker = HybridRAGFactory.createReranker(config);
+    const crag = HybridRAGFactory.createCRAG(config);
+
+    return new HybridRAGEngine(
+      queryClassifier,
+      { keyword, semantic, graph },
+      fusion,
+      reranker,
+      crag,
+      {},
     );
   }
 
   /**
    * 軽量版エンジンを生成
-   *
-   * @param _config - 軽量版エンジンの設定
-   * @returns HybridRAGEngineインスタンス
-   * @throws 依存モジュールが未実装のためエラー
-   *
-   * @todo 依存モジュール完成後に実装
-   * - RuleBasedQueryClassifier
-   * - KeywordSearchStrategy
-   * - VectorSearchStrategy
-   * - GraphSearchStrategy
    */
-  static createLite(_config: LiteHybridRAGConfig): HybridRAGEngine {
-    throw new Error(
-      "HybridRAGFactory.createLite() は依存モジュール完成後に利用可能になります。" +
-        "現在は createForTesting() のみ使用できます。" +
-        " [FACTORY_NOT_READY] 必要なモジュール: RuleBasedQueryClassifier, VectorSearchStrategy, GraphSearchStrategy",
+  static createLite(config: LiteHybridRAGConfig): HybridRAGEngine {
+    const queryClassifier = new RuleBasedQueryClassifier();
+
+    const keyword = new KeywordSearchStrategyAdapter(
+      new KeywordSearchStrategy(config.db),
+    );
+    const semantic = new VectorSearchStrategy(
+      config.db,
+      config.embeddingProvider,
+    );
+    const graph = new GraphSearchStrategy(
+      config.graphStore,
+      config.embeddingProvider,
+    );
+
+    const fusion = new RRFFusion();
+    const reranker = new NoOpReranker();
+
+    return new HybridRAGEngine(
+      queryClassifier,
+      { keyword, semantic, graph },
+      fusion,
+      reranker,
+      null,
+      {},
     );
   }
 
   /**
    * テスト用エンジンを生成
-   *
-   * @param mocks - テスト用モック設定
-   * @returns HybridRAGEngineインスタンス
-   *
-   * @example
-   * ```typescript
-   * const engine = HybridRAGFactory.createForTesting({
-   *   queryClassifier: mockQueryClassifier,
-   *   keywordStrategy: mockKeywordStrategy,
-   *   semanticStrategy: mockSemanticStrategy,
-   *   graphStrategy: mockGraphStrategy,
-   * });
-   *
-   * const result = await engine.search("query", 10);
-   * ```
    */
   static createForTesting(mocks: TestMocks): HybridRAGEngine {
     return new HybridRAGEngine(
@@ -218,6 +201,86 @@ export class HybridRAGFactory {
       mocks.reranker ?? new NoOpReranker(),
       mocks.crag ?? null,
       mocks.options ?? {},
+    );
+  }
+
+  // ===========================================================================
+  // Private helpers
+  // ===========================================================================
+
+  private static validateFullConfig(config: FullHybridRAGConfig): void {
+    if (
+      config.rerankerType === "cohere" &&
+      (!config.cohereApiKey || config.cohereApiKey.trim() === "")
+    ) {
+      throw new Error(
+        `${HybridRAGFactory.CREATE_FULL_ERROR_PREFIX} cohereApiKey is required when rerankerType is 'cohere'`,
+      );
+    }
+
+    if (
+      config.rerankerType === "voyage" &&
+      (!config.voyageApiKey || config.voyageApiKey.trim() === "")
+    ) {
+      throw new Error(
+        `${HybridRAGFactory.CREATE_FULL_ERROR_PREFIX} voyageApiKey is required when rerankerType is 'voyage'`,
+      );
+    }
+
+    if (config.rerankerType === "llm" && !config.rerankerLlmClient) {
+      throw new Error(
+        `${HybridRAGFactory.CREATE_FULL_ERROR_PREFIX} rerankerLlmClient is required when rerankerType is 'llm'`,
+      );
+    }
+
+    if (config.enableCRAG && !config.cragLlmClient) {
+      throw new Error(
+        `${HybridRAGFactory.CREATE_FULL_ERROR_PREFIX} cragLlmClient is required when enableCRAG is true`,
+      );
+    }
+  }
+
+  private static createReranker(config: FullHybridRAGConfig): IReranker {
+    switch (config.rerankerType) {
+      case "cohere":
+        return new CohereReranker(config.cohereApiKey!, {
+          model: config.cohereModel,
+        });
+      case "voyage":
+        return new VoyageReranker(config.voyageApiKey!, {});
+      case "llm":
+        return new LLMReranker(config.rerankerLlmClient!, {
+          batchSize: config.rerankerBatchSize,
+        });
+      case "none":
+      default:
+        return new NoOpReranker();
+    }
+  }
+
+  private static createCRAG(
+    config: FullHybridRAGConfig,
+  ): ICorrectiveRAG | null {
+    if (!config.enableCRAG) {
+      return null;
+    }
+
+    const evaluator = new RelevanceEvaluator(config.cragLlmClient!, {
+      maxEvaluate: config.cragMaxEvaluate,
+      correctThreshold: config.cragCorrectThreshold,
+      incorrectThreshold: config.cragIncorrectThreshold,
+    });
+
+    const cragOptions: CRAGOptions = {
+      enableWebSearch: config.enableWebSearch,
+      enableRefinement: config.enableRefinement,
+      ambiguousFilterThreshold: config.ambiguousFilterThreshold,
+    };
+
+    return new CorrectiveRAG(
+      evaluator,
+      config.webSearcher ?? null,
+      cragOptions,
     );
   }
 }

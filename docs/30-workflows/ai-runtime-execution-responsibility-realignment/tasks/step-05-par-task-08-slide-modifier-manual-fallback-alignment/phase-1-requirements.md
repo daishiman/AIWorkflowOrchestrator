@@ -57,7 +57,7 @@ common canonical と task 固有 canonical を読み、Slide / Modifier manual f
 
 ```bash
 git log --oneline -10 -- apps/desktop/src/renderer/slide/SlideWorkspace.tsx
-rg -n "authMode|runtime|handoff|terminal|guidance|health|capability" apps/desktop/src/renderer/slide apps/desktop/src/renderer apps/desktop/src/main/services/slide docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation docs/30-workflows/ai-runtime-execution-responsibility-realignment || true
+rg -n "authMode|runtime|handoff|terminal|guidance|health|capability" apps/desktop/src/renderer/slide apps/desktop/src/renderer apps/desktop/src/main/services/slide docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation docs/30-workflows/ai-runtime-execution-responsibility-realignment || true
 ```
 
 ### ステップ3: 要件・AC・除外範囲を確定する

@@ -669,36 +669,41 @@ describe("HybridRAGEngine", () => {
 
 describe("HybridRAGFactory", () => {
   describe("createFull", () => {
-    it("createFullは依存モジュール未実装のためエラーを投げる", () => {
-      // Given: 任意の設定
+    it("createFullはcohereApiKey未指定でバリデーションエラーを投げる", () => {
+      // Given: cohereApiKey未指定の設定
       const config = {
         db: {},
         embeddingProvider: {},
         graphStore: {},
-        llmClient: {},
+        llmProvider: {},
         rerankerType: "cohere" as const,
       };
 
-      // When/Then: 未実装エラーがスローされる
-      expect(() => HybridRAGFactory.createFull(config)).toThrow(
-        "FACTORY_NOT_READY",
+      // When/Then: バリデーションエラーがスローされる
+      expect(() =>
+        HybridRAGFactory.createFull(
+          config as Parameters<typeof HybridRAGFactory.createFull>[0],
+        ),
+      ).toThrow(
+        "HybridRAGFactory.createFull(): cohereApiKey is required when rerankerType is 'cohere'",
       );
     });
   });
 
   describe("createLite", () => {
-    it("createLiteは依存モジュール未実装のためエラーを投げる", () => {
-      // Given: 任意の設定
+    it("createLiteはエンジンインスタンスを生成する", () => {
+      // Given: 最小限の設定
       const config = {
         db: {},
         embeddingProvider: {},
         graphStore: {},
       };
 
-      // When/Then: 未実装エラーがスローされる
-      expect(() => HybridRAGFactory.createLite(config)).toThrow(
-        "FACTORY_NOT_READY",
+      // When/Then: エラーなしでエンジンが生成される
+      const engine = HybridRAGFactory.createLite(
+        config as Parameters<typeof HybridRAGFactory.createLite>[0],
       );
+      expect(engine).toBeDefined();
     });
   });
 

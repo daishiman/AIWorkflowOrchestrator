@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-20
+> 自動生成: 2026-03-21
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1849,7 +1849,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | current canonical set | L12 |
 | extraction matrix | L25 |
-| 実装同期ルール | L37 |
+| 実装同期ルール | L38 |
+| 実装ステータススナップショット（2026-03-21） | L45 |
+| Follow-up Backlog | L52 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2578,9 +2580,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L33 |
-| クイックリファレンス: カテゴリ別検索ガイド | L46 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L388 |
+| 分割ファイル一覧 | L35 |
+| クイックリファレンス: カテゴリ別検索ガイド | L48 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L391 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2602,14 +2604,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L30 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L60 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L113 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L141 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L184 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L235 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L304 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L342 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L32 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L62 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L111 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L164 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L192 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L235 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L286 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L355 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L393 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 

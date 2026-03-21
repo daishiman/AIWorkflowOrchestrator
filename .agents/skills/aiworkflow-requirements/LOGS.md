@@ -6,6 +6,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（implementation_ready 正規化 / code gap formalize / backlog 4件同期） |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 spec-only Phase 1-12 完了（設計タスク: RuntimePolicy/HealthContract/HandoffContract 中央集約設計、DD-1〜DD-6確定、M-1/M-2処置完了、Task03-09は未着手、未タスク3件を backlog / workflow / lessons へ同期） |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（Task02 root / Task01 completed root / downstream consumer path 同期） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（UT-CHATVIEW-ERROR-BANNER-I18N-001=#1398 / UT-CHATVIEW-ERROR-CODE-INVENTORY-001=#1397） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（artifact inventory / legacy register / unassigned 9セクション是正 / validate-structure） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（root canonical path 是正 / screenshot 5件 / unassigned 2件 formalize / system spec 同期） |
@@ -51,6 +54,26 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（2026-03-21）
+
+- タスク名: runtime policy centralization final re-audit
+- 種別: Phase 12 final sync / implementation gap formalize
+- 主な反映:
+  - Task02 workflow root を `implementation_ready`、completed ledger を `spec_created` として再定義
+  - `outputs/phase-12/skill-feedback-report.md` を追加し、Phase 12 必須 6成果物を充足
+  - `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` を新規 formalize し、backlog を 4件へ更新
+  - current code の runtime policy consumer / AI health route / facade execute path / shared transport / tests の gap を system spec へ同期
+  - worktree でも `.claude` 正本更新を先送りしないルールを task-specification-creator 側へ反映
+
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（2026-03-21）
+
+- タスク名: runtime policy centralization standalone root normalization
+- 種別: docs-only / canonical path sync
+- 主な反映:
+  - `workflow-ai-runtime-execution-responsibility-realignment.md` の current canonical set に Task02 standalone root を追加し、Task01 completed root と同列に扱うよう是正
+  - parent workflow と Task03-09 downstream consumer が参照する Task02 index を `docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/index.md` へ正規化
+  - `outputs/verification-report.md` を再生成し、stale nested path のまま PASS が残る状態を解消
 
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
