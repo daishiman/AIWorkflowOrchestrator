@@ -19,13 +19,63 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-21 | 1.5.1 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査の教訓1件を追加 |
-| 2026-03-21 | 1.5.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
+| 2026-03-21 | 1.5.0 | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE の Phase 12 教訓4件を追加 |
 | 2026-03-20 | 1.4.0 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 の Phase 12 教訓2件を追加 |
 | 2026-03-18 | 1.3.0 | TASK-SKILL-LIFECYCLE-08 仕様書作成4件 + 再監査3件を lessons-learned-current.md から移動 |
 | 2026-03-18 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）。合計5件 |
 | 2026-03-18 | 1.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-21 TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE
+
+### 苦戦箇所1: worktree UI task でも screenshot を pending 扱いにしてはいけない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 11 を placeholder のまま閉じると、UI task の代表証跡が残らず current workflow の説得力が失われる |
+| 再発条件 | build や local harness の不整合を理由に screenshot 取得を後回しにする |
+| 解決策 | current renderer entry を static server で配信し、Playwright から current build を capture した |
+| 標準ルール | worktree / CLI 環境でも UI task は capture script を作成して representative screenshot を残す |
+| 関連タスク | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE |
+
+### 苦戦箇所2: root relocation は parent doc だけ直しても不十分
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task 02 root を `docs/30-workflows/02-...` に移しても、artifact inventory / legacy register / selector spec / backlog が旧 path のままだと検索導線が壊れる |
+| 再発条件 | current canonical root の変更を 1 ファイルだけで閉じる |
+| 解決策 | parent workflow、workflow family spec、artifact inventory、legacy register、backlog、lessons、quick-reference を同一 wave で更新した |
+| 標準ルール | canonical path 変更時は「parent + family spec + inventory + legacy + backlog + lessons + index」を最小同期セットとする |
+| 関連タスク | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE |
+
+### 苦戦箇所3: 未タスク検出は「本レポート内で記録」で済ませてはいけない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | direct scroll と dismiss は scope 外と判定できたが、独立指示書がないと follow-up を再利用できない |
+| 再発条件 | 小規模 follow-up を「コード変更不要」と見なし、独立 task spec を省略する |
+| 解決策 | root `unassigned-task/` に 9 セクション形式の task spec を 2 件作成した |
+| 標準ルール | follow-up を検出したら 1.指示書作成 2.backlog 登録 3.related spec 反映 の 3 ステップを例外なく完了する |
+| 関連タスク | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE |
+
+### 苦戦箇所4: Phase 12 compliance file は最後ではなく最初に置く
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task 1〜5 を埋めた後だと `phase12-task-spec-compliance-check.md` を置き忘れやすい |
+| 再発条件 | docs-heavy task で outputs の作成順が後手に回る |
+| 解決策 | compliance file を先に作成し、validator 結果と root evidence を後から追記する運用へ切り替えた |
+| 標準ルール | Phase 12 開始時に compliance file を空テンプレートで作成し、Task 1〜5 と validator を逐次記入する |
+| 関連タスク | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. current build で capture script を通し、Phase 11 screenshot を先に確保する。
+2. root relocation がある場合は parent / inventory / legacy / backlog / lessons / quick-reference を同時更新する。
+3. follow-up は独立指示書を作ってから backlog と spec へリンクする。
+4. compliance file に validator 実測値を書き戻してから Phase 12 を閉じる。
 
 ---
 
@@ -56,55 +106,6 @@
 1. current workflow の canonical entrypoint を追加し、resource-map / task-workflow / parent index を同時更新する。
 2. `.claude` 正本を更新した同ターンで workflow 成果物を実績文へ書き換える。
 3. planned wording を grep または validator でゼロ確認してから Phase 12 を閉じる。
-
----
-
-## 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001
-
-### 苦戦箇所1: 設計タスクの Phase 12 完了をコード完了と誤読しやすい
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | Task02 の Phase 12 / SKILL / LOGS には完了記録がある一方、`apps/desktop` / `packages/shared` に centralization 実装差分がなく、downstream Task03-09 も `spec_created` / `not_started` のままだった。文面だけ読むと feature 全体が完了したように誤読しやすかった |
-| 再発条件 | design/spec task の close-out で、downstream implementation status と code diff 0 の事実を併記しない |
-| 解決策 | `system-spec-update-summary.md` / workflow 正本 / implementation-guide に「spec-only close-out」「downstream 未着手」「現行コード snapshot」を同一ターンで追記した |
-| 標準ルール | design/spec task の完了ログには `spec-only`、downstream task status、`apps/desktop` / `packages/shared` の差分有無を必ず併記する |
-| 関連タスク | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 |
-
-### 苦戦箇所2: 未タスク指示書だけ作って backlog / 関連仕様書リンクを閉じ忘れる
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `unassigned-task-detection.md` に 3 件の follow-up を記録しても、`task-workflow-backlog.md` と workflow 正本 / lessons への導線がなければ Phase 12 の 3ステップが未完了のまま残る |
-| 再発条件 | P3 の3ステップを「指示書作成」で止め、backlog family と関連仕様書リンク追加を次回や PR マージ時へ先送りする |
-| 解決策 | `task-workflow-backlog.md` / `workflow-ai-runtime-execution-responsibility-realignment.md` / `lessons-learned-phase12-workflow-lifecycle.md` を同ターンで更新し、3件とも導線を閉じた |
-| 標準ルール | Phase 12 の未タスク formalize は「1. 指示書 2. backlog family 3. workflow/lessons 導線」の3点を同一ターンで完了する。PR マージ後対応は禁止 |
-| 関連タスク | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 |
-
-### 同種課題の簡潔解決手順（3ステップ）
-
-1. design/spec task の close-out 時は `spec-only` と downstream 実装 status、code diff 0/有を summary と workflow 正本へ同時記録する。
-2. 未タスク検出後は、指示書だけで止めず `task-workflow-backlog` と workflow/lessons への導線を同ターンで追加する。
-3. planned wording と「PR マージ時に対応」を Phase 12 成果物から除去してから完了扱いにする。
-
-### 苦戦箇所3: design close-out だけ見て current code sweep を省略すると実装 gap を取り逃がす
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | Task02 は docs と台帳の close-out 自体は成立していたが、current code の consumer 実装と test を再確認すると centralization 実装が閉じていなかった |
-| 再発条件 | Phase 12 の再監査で `outputs/` と `.claude` だけを見て、composition root / IPC consumer / execute path / tests を確認しない |
-| 解決策 | `skillHandlers.ts` / `agentHandlers.ts` / `aiHandlers.ts` / `RuntimeSkillCreatorFacade.ts` / shared transport / tests を監査し、高優先度 implementation closure task を formalize した |
-| 標準ルール | design task の final re-audit は docs 監査だけで終えず、current code の主要 consumer とテスト実体を必ず確認する |
-| 関連タスク | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 |
-
-### follow-up 導線
-
-| タスクID | 追跡先 |
-| --- | --- |
-| TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
-| UT-CLEANUP-AI-CHECK-CONNECTION-001 | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
-| UT-CLEANUP-RUNTIME-RESOLVER-001 | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
-| UT-DESIGN-SANITIZE-PLACEMENT-001 | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
 
 ---
 

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-21T01:00:03.900Z",
-  "totalKeywords": 2410,
+  "generated": "2026-03-21T01:06:47.938Z",
+  "totalKeywords": 2409,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1289,6 +1289,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
@@ -2379,7 +2380,6 @@
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
       "llm-ipc-types.md",
       "ui-ux-feature-components-details.md"
@@ -3134,7 +3134,6 @@
     ],
     "CENTRALIZATION": [
       "arch-state-management-reference.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
     ],
     "lifecycleHistorySlice": [
@@ -5126,6 +5125,7 @@
     ],
     "LLM": [
       "interfaces-llm.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "llm-ipc-types.md",
       "llm-streaming.md",
       "rag-desktop-state.md",
@@ -6223,7 +6223,13 @@
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "POLICY": [
+    "SELECTOR": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "INLINE": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "GUIDANCE": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "仕様書作成": [
@@ -8555,8 +8561,7 @@
     ],
     "up": [
       "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "の未タスク": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
@@ -11044,15 +11049,6 @@
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "実装同期ルール": [
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
-    ],
-    "実装ステータススナップショット": [
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
-    ],
-    "Follow": [
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
-    ],
-    "Backlog": [
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "集計": [

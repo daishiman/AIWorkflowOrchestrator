@@ -89,25 +89,28 @@ grep -n ': any\|as any' \
 
 ## レビュー結果（実施者が記入）
 
-| 観点             | 判定  | 指摘事項 |
-| ---------------- | ----- | -------- |
-| 要件充足         | -     | -        |
-| 設計整合性       | -     | -        |
-| 非機能要件       | -     | -        |
-| アクセシビリティ | -     | -        |
-| コードスキャン   | -     | -        |
-| **総合判定**     | **-** | **-**    |
+| 観点             | 判定     | 指摘事項                                               |
+| ---------------- | -------- | ------------------------------------------------------ |
+| 要件充足         | PASS     | FR-1-1〜FR-3-1 全項目充足確認済み                      |
+| 設計整合性       | PASS     | Renderer層のみ、個別セレクタ使用、IPC追加なし          |
+| 非機能要件       | PASS     | systemBlue使用、duration-200、8pxグリッド準拠          |
+| アクセシビリティ | PASS     | role="alert"、aria-label設定、キーボードフォーカス可能 |
+| コードスキャン   | PASS     | any型なし、non-null assertion なし、未使用importなし   |
+| **総合判定**     | **PASS** | Phase 11 へ進む                                        |
 
 ---
 
 ## 参照資料
 
-| ファイル                                 | 用途                                  |
-| ---------------------------------------- | ------------------------------------- |
-| `.claude/rules/05-task-execution.md`     | Phase 10 レビューゲート判定基準       |
-| `.claude/rules/01-architecture.md`       | Apple HIG 準拠確認                    |
-| `.claude/rules/06-known-pitfalls.md#P52` | non-null assertion 残存チェック       |
-| `.claude/rules/06-known-pitfalls.md#P56` | 再評価クローズ時の GitHub Issue Close |
+| ファイル                                                                                  | 用途                                  |
+| ----------------------------------------------------------------------------------------- | ------------------------------------- |
+| `.claude/rules/05-task-execution.md`                                                      | Phase 10 レビューゲート判定基準       |
+| `.claude/rules/01-architecture.md`                                                        | Apple HIG 準拠確認                    |
+| `.claude/rules/06-known-pitfalls.md#P52`                                                  | non-null assertion 残存チェック       |
+| `.claude/rules/06-known-pitfalls.md#P56`                                                  | 再評価クローズ時の GitHub Issue Close |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`            | 設計意図と責務分離の再確認            |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md`    | 実装実体と設計差分の照合              |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-9-quality-assurance.md` | Lint / typecheck / test の最終結果    |
 
 ## 実行手順
 

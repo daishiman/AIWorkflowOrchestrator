@@ -61,9 +61,11 @@ Task 1 のカバレッジ計測結果で不足している箇所に対してテ�
 
 ## 参照資料
 
-| ファイル                           | 用途                           |
-| ---------------------------------- | ------------------------------ |
-| `.claude/rules/02-code-quality.md` | カバレッジ基準（Line 80%以上） |
+| ファイル                                                                               | 用途                                     |
+| -------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-4-test-creation.md`  | 初期テストケース TC-1〜TC-5 の正本       |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md` | 実装済み分岐・例外経路・変更ファイル一覧 |
+| `.claude/rules/02-code-quality.md`                                                     | カバレッジ基準（Line 80%以上）           |
 
 ## 実行手順
 

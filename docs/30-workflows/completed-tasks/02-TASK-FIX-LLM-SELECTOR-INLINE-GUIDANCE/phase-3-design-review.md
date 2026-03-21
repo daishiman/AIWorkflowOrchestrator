@@ -83,11 +83,11 @@ Renderer → Preload (contextBridge) → Main → External Services
 
 ### Task 3: 既存LLMSelectorPanelとの重複回避確認
 
-| チェック項目                                       | 基準                                                                |
-| -------------------------------------------------- | ------------------------------------------------------------------- |
-| LLMGuidanceBanner は LLMSelectorPanel と競合しない | 両者の表示トリガーが異なること、または排他的であること              |
-| ガイダンスバナーはモデル選択機能を持たない         | バナーは「案内」のみで、選択UI自体は Settings 画面に委譲            |
-| 既存の GuidanceBlock 実装を破壊しない              | WorkspaceChatPanel の変更が既存 GuidanceBlock の props を削除しない |
+| チェック項目                                       | 基準                                                                                                                                 |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| LLMGuidanceBanner は LLMSelectorPanel と競合しない | 両者の表示トリガーが異なること、または排他的であること                                                                               |
+| ガイダンスバナーはモデル選択機能を持たない         | バナーは「案内」のみで、選択UI自体は Settings 画面に委譲。GuidanceBlock は既に actionLabel を持つため、onAction の接続のみで完結する |
+| 既存の GuidanceBlock 実装を破壊しない              | WorkspaceChatPanel の変更が既存 GuidanceBlock の props を削除しない                                                                  |
 
 ### Task 4: 実装リスク評価
 
@@ -95,7 +95,7 @@ Renderer → Preload (contextBridge) → Main → External Services
 | ------------------------------------------------------------- | ------ | ---------------------------------------------------------------------- |
 | llmSlice に個別セレクタが存在しない場合の追加                 | 低     | Phase 5 で追加。P31 のパターンに従い安全に実装可能                     |
 | GuidanceBlock が action props を受け取れない場合              | 中     | Phase 5 で GuidanceBlock の Props 拡張が必要。既存テストへの影響を確認 |
-| `setCurrentView` の型が ViewType に "settings" を含まない場合 | 中     | Phase 5 で型定義を確認し、必要に応じて型を拡張                         |
+| `setCurrentView` の型が ViewType に "settings" を含まない場合 | 中     | Phase 5 で型定義を確認し、`settings` が未定義なら型を拡張する          |
 | バナーによるレイアウトシフトでユーザー体験が低下              | 低     | 条件付きレンダリング + CSS transition で対応。Phase 4 でテスト化       |
 
 ### Task 5: レビュー判定
@@ -133,10 +133,10 @@ Renderer → Preload (contextBridge) → Main → External Services
 
 ### 設計成果物
 
-| ファイル                                                                                                               | 用途                   |
-| ---------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` | レビュー対象: 要件定義 |
-| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`       | レビュー対象: 設計     |
+| ファイル                                                                             | 用途                   |
+| ------------------------------------------------------------------------------------ | ---------------------- |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` | レビュー対象: 要件定義 |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`       | レビュー対象: 設計     |
 
 ## 実行手順
 
@@ -164,13 +164,13 @@ Task 5 の判定基準に従って PASS / MINOR / MAJOR を判定し、結果を
 
 ## レビュー結果（実施者が記入）
 
-| 項目                     | 判定  | 指摘事項 |
-| ------------------------ | ----- | -------- |
-| UI/UXレビュー            | -     | -        |
-| 状態管理依存方向         | -     | -        |
-| LLMSelectorPanel重複回避 | -     | -        |
-| 実装リスク評価           | -     | -        |
-| **総合判定**             | **-** | **-**    |
+| 項目                     | 判定     | 指摘事項                                                                             |
+| ------------------------ | -------- | ------------------------------------------------------------------------------------ |
+| UI/UXレビュー            | PASS     | Apple HIG準拠確認済み。systemBlue/systemOrange使用、8pxグリッド、200msアニメーション |
+| 状態管理依存方向         | PASS     | Renderer層内完結、個別セレクタ使用（P31対策済み）、IPC追加なし                       |
+| LLMSelectorPanel重複回避 | PASS     | バナーは案内のみ、選択UIはSettings委譲。GuidanceBlock後退互換                        |
+| 実装リスク評価           | PASS     | セレクタ全て実装済み。WorkspaceChatPanelでuseSetCurrentView直接import要              |
+| **総合判定**             | **PASS** | Phase 4 へ進む                                                                       |
 
 ---
 
@@ -181,11 +181,11 @@ Task 5 の判定基準に従って PASS / MINOR / MAJOR を判定し、結果を
 
 ## 成果物
 
-| 成果物                       | パス                                                                                                                    |
-| ---------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Phase 3 仕様書（本ファイル） | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-3-design-review.md` |
-| レビュー結果記録             | 本ファイル「レビュー結果」セクション                                                                                    |
-| MINOR指摘の未タスク仕様書    | `docs/30-workflows/unassigned-task/` 配下（MINOR判定時のみ）                                                            |
+| 成果物                       | パス                                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------- |
+| Phase 3 仕様書（本ファイル） | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-3-design-review.md` |
+| レビュー結果記録             | 本ファイル「レビュー結果」セクション                                                  |
+| MINOR指摘の未タスク仕様書    | `docs/30-workflows/unassigned-task/` 配下（MINOR判定時のみ）                          |
 
 ## 完了条件
 
