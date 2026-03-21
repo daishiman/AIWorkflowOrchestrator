@@ -6,7 +6,12 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+<<<<<<< Updated upstream
 | 2026-03-21 - UT-SLIDE-UI-001 完了同期（Slide Workspace 4領域 UI 実装 / Phase 11 screenshot 10枚 / task09 canonical same-wave 更新） |
+||||||| Stash base
+=======
+| 2026-03-21 - UT-TASK06-007-EXT-006: check-ipc-contracts テスト拡充（20件追加、カバレッジ95.79%、5関数/パターン export追加） |
+>>>>>>> Stashed changes
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（UT-CHATVIEW-ERROR-BANNER-I18N-001=#1398 / UT-CHATVIEW-ERROR-CODE-INVENTORY-001=#1397） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（artifact inventory / legacy register / unassigned 9セクション是正 / validate-structure） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（root canonical path 是正 / screenshot 5件 / unassigned 2件 formalize / system spec 同期） |
@@ -53,6 +58,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
+<<<<<<< Updated upstream
 ## UT-SLIDE-UI-001 完了同期（2026-03-21）
 
 - タスク名: Slide Workspace UI 4領域実装
@@ -65,6 +71,27 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - `ui-ux-feature-components-details.md` / `api-ipc-system-core.md` / `task-workflow-completed.md` / `workflow-ai-runtime-authmode-unification.md` / `arch-state-management-advanced.md` を current branch へ同期
   - `UT-SLIDE-UI-CLOSE-ERROR-001` / `UT-SLIDE-UI-HIG-LEGACY-001` を pending、`UT-SLIDE-P31-001` / `UT-SLIDE-UI-ACCESSIBILITY-001` を解消済みへ更新
 
+||||||| Stash base
+=======
+## UT-TASK06-007-EXT-006 完了（2026-03-21）
+
+- タスク名: check-ipc-contracts テスト拡充（5関数/パターン export追加 + 20件追加）
+- 種別: テスト拡充タスク
+- ワークフロー: `docs/30-workflows/UT-TASK06-007-EXT-006-new-function-test-expansion/`
+- 主な反映:
+  - `check-ipc-contracts.ts`: `normalizeTypeAnnotation` / `isPrimitiveTypeAnnotation` / `mergeChannelMaps` / `CHANNEL_OBJECT_PATTERN` / `PRELOAD_CALL_START_PATTERN` に `export` キーワードを追加
+  - テスト20件追加（T-N-01〜05 / T-P-01〜06 / T-M-01〜04 / T-R-01〜05）
+  - 既存49件と合わせ69件全PASS、Line 95.79% / Branch 91.55% / Function 100%
+  - `mergeChannelMaps` テストは `mkdtempSync` 実ファイル方式で ESM `vi.mock` 制約を回避
+  - `CHANNEL_OBJECT_PATTERN` テストは `new RegExp(source, "gm")` で lastIndex 汚染を防止
+  - `architecture-implementation-patterns-reference-ipc-drift-detection.md` の関連タスクテーブルに EXT-006 完了記録を追加
+  - `task-workflow-completed-ipc-contract-preload-alignment.md` に追補セクションを追加
+  - `lessons-learned-ipc-preload-runtime.md` に教訓4（lastIndex 汚染）を追加（v1.6.0）
+- 苦戦箇所:
+  - ESM 制約: `vi.mock("fs")` を describe 内に置くと実 ESM モジュールへ適用されず → 実ファイル方式に切替
+  - lastIndex 残留: モジュールスコープ `/gm` フラグ付き RegExp はテスト間で state が汚染される → 新インスタンス生成で解消
+
+>>>>>>> Stashed changes
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
 - タスク名: ChatView エラーサイレント握りつぶし修正

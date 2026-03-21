@@ -110,7 +110,7 @@ FR-01〜FR-06 が Phase 2 の lane / update order / validation matrix に反映�
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 3
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 3
 ```
 
 ## 次のPhase

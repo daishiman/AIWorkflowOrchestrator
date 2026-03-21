@@ -10,7 +10,7 @@
 | 対象機能     | check-ipc-contracts.ts                                                     |
 | 優先度       | 高                                                                         |
 | 見積もり規模 | 小規模                                                                     |
-| ステータス   | 未実施                                                                     |
+| ステータス   | 完了（2026-03-21、Phase 1-12完了 / Phase 13保留）                          |
 | 発見元       | UT-TASK06-007 Phase 7 カバレッジ改善セッション（2026-03-19）               |
 | 発見日       | 2026-03-19                                                                 |
 
@@ -40,7 +40,7 @@ UT-TASK06-007 の実装セッション中に linter（Hook）が `check-ipc-cont
 ### 1.3 放置した場合の影響
 
 - 新関数のリグレッションが検出されないリスク
-- スクリプトが 578 行に増加しており、将来の EXT-004（モジュール分割）時にテスト不足が顕在化する
+- スクリプトが 584 行に増加しており、将来の EXT-004（モジュール分割）時にテスト不足が顕在化する
 
 ---
 
@@ -52,18 +52,18 @@ linter 追加関数の境界値・エッジケーステストを追加し、テ�
 
 ### 2.2 最終ゴール
 
-以下のテストケースが追加され、全 PASS すること:
+以下のテストケース群が追加され、全 PASS すること:
 
-1. `normalizeTypeAnnotation`: arrow function 除去、default value 除去、readonly 除去
-2. `isPrimitiveTypeAnnotation`: union型（`string | number`）→ true、intersection型（`string & Branded`）→ false、空文字列 → false、`readonly string[]` → false
-3. `mergeChannelMaps`: 2ファイルからのマージ、重複キーは先勝ち
-4. `CHANNEL_OBJECT_PATTERN`: 複数 const object、空 body、`as const` なしは無視
+1. `normalizeTypeAnnotation`: パススルー、arrow function 除去、default value 除去、readonly 除去、trim
+2. `isPrimitiveTypeAnnotation`: string / number / union / nullable / object / 空文字列
+3. `mergeChannelMaps`: 単一ファイル、重複キー先勝ち、空リスト、定義なしファイル
+4. `CHANNEL_OBJECT_PATTERN` / `PRELOAD_CALL_START_PATTERN`: 基本マッチ、exportなし const、`as const` なし除外、safeInvoke / safeOn
 
 ### 2.3 スコープ
 
 #### 含むもの
 
-- `check-ipc-contracts.test.ts` へのテストケース追加（約15-20件）
+- `check-ipc-contracts.test.ts` へのテストケース追加（20件）
 - カバレッジ目標: Line 95%以上維持
 
 #### 含まないもの
@@ -84,7 +84,7 @@ linter 追加関数の境界値・エッジケーステストを追加し、テ�
 1. `describe("normalizeTypeAnnotation")` ブロックを追加（5件）
 2. `describe("isPrimitiveTypeAnnotation")` ブロックを追加（6件）
 3. `describe("mergeChannelMaps")` ブロックを追加（4件）
-4. `describe("CHANNEL_OBJECT_PATTERN / multi-line preload")` ブロックを追加（5件）
+4. `describe("CHANNEL_OBJECT_PATTERN / PRELOAD_CALL_START_PATTERN")` ブロックを追加（5件）
 5. カバレッジ計測・確認
 
 ### 3.3 テスト方針
@@ -113,7 +113,7 @@ ESM モジュールを対象とするテストで `vi.mock("fs")` を describe �
 
 | 資料名                       | パス                                                                                                                      | 説明                 |
 | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------- |
-| 対象スクリプト               | `apps/desktop/scripts/check-ipc-contracts.ts`                                                                             | テスト対象（578行）  |
+| 対象スクリプト               | `apps/desktop/scripts/check-ipc-contracts.ts`                                                                             | テスト対象（584行）  |
 | 既存テスト                   | `apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts`                                                              | 49テスト             |
 | IPC drift detection パターン | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns-reference-ipc-drift-detection.md` | テスト戦略セクション |
 | 苦戦箇所記録                 | `.claude/skills/aiworkflow-requirements/references/lessons-learned-ipc-preload-runtime.md`                                | v1.3.0 セクション    |

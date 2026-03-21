@@ -2,6 +2,9 @@
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { resolve } from "node:path";
+import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   extractMainHandlers,
   extractPreloadEntries,
@@ -9,6 +12,11 @@ import {
   matchAndValidate,
   generateReport,
   main,
+  normalizeTypeAnnotation,
+  isPrimitiveTypeAnnotation,
+  mergeChannelMaps,
+  CHANNEL_OBJECT_PATTERN,
+  PRELOAD_CALL_START_PATTERN,
   type HandlerEntry,
   type PreloadEntry,
   type DriftReport,
@@ -817,5 +825,192 @@ describe("main() exit code logic", () => {
     const output = logSpy.mock.calls[0][0] as string;
     expect(output).toContain("IPC Contract Drift Report");
     expect(output).toContain("**Timestamp**");
+  });
+});
+
+// ============================================================================
+// FR-1: normalizeTypeAnnotation
+// ============================================================================
+
+describe("normalizeTypeAnnotation", () => {
+  it("T-N-01: 変換不要な型はそのまま返す", () => {
+    expect(normalizeTypeAnnotation("string")).toBe("string");
+  });
+
+  it("T-N-02: アロー関数シグネチャ(=>以降)を除去する", () => {
+    const result = normalizeTypeAnnotation("(value: string) => void");
+    expect(result).toBe("(value: string)");
+  });
+
+  it("T-N-03: デフォルト値代入(=以降)を除去する", () => {
+    const result = normalizeTypeAnnotation("string = 'default'");
+    expect(result).toBe("string");
+  });
+
+  it("T-N-04: readonly プレフィックスを除去する", () => {
+    const result = normalizeTypeAnnotation("readonly string[]");
+    expect(result).toBe("string[]");
+  });
+
+  it("T-N-05: 前後の余分な空白をトリムする", () => {
+    const result = normalizeTypeAnnotation("  string  ");
+    expect(result).toBe("string");
+  });
+});
+
+// ============================================================================
+// FR-2: isPrimitiveTypeAnnotation
+// ============================================================================
+
+describe("isPrimitiveTypeAnnotation", () => {
+  it("T-P-01: ユニオン型 'string | number' は true を返す", () => {
+    expect(isPrimitiveTypeAnnotation("string | number")).toBe(true);
+  });
+
+  it("T-P-02: intersection 型 'string & Branded' は false を返す", () => {
+    expect(isPrimitiveTypeAnnotation("string & Branded")).toBe(false);
+  });
+
+  it("T-P-03: 空文字列は false を返す", () => {
+    expect(isPrimitiveTypeAnnotation("")).toBe(false);
+  });
+
+  it("T-P-04: readonly 配列型 'readonly string[]' は false を返す", () => {
+    expect(isPrimitiveTypeAnnotation("readonly string[]")).toBe(false);
+  });
+
+  it("T-P-05: undefined を含むユニオン型 'string | undefined' は true を返す", () => {
+    expect(isPrimitiveTypeAnnotation("string | undefined")).toBe(true);
+  });
+
+  it("T-P-06: カスタム型 'MyCustomType' は false を返す", () => {
+    expect(isPrimitiveTypeAnnotation("MyCustomType")).toBe(false);
+  });
+});
+
+// ============================================================================
+// FR-3: mergeChannelMaps
+// ============================================================================
+
+describe("mergeChannelMaps", () => {
+  let tmpDir: string;
+
+  beforeEach(() => {
+    tmpDir = mkdtempSync(join(tmpdir(), "ipc-test-"));
+  });
+
+  afterEach(() => {
+    rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it("T-M-01: 単一ファイルからチャンネルマップを構築する", () => {
+    const content = [
+      `export const IPC_CHANNELS = {`,
+      `  SKILL_IMPORT: 'skill:import',`,
+      `} as const;`,
+    ].join("\n");
+    const filePath = join(tmpDir, "channels.ts");
+    writeFileSync(filePath, content, "utf-8");
+
+    const map = mergeChannelMaps([filePath]);
+
+    expect(map.get("SKILL_IMPORT")).toBe("skill:import");
+    expect(map.get("IPC_CHANNELS.SKILL_IMPORT")).toBe("skill:import");
+  });
+
+  it("T-M-02: 2ファイルを結合し、重複キーは先勝ちで解決する", () => {
+    const content1 = [
+      `export const A = {`,
+      `  KEY_A: 'value-a',`,
+      `  SHARED: 'first',`,
+      `} as const;`,
+    ].join("\n");
+    const content2 = [
+      `export const B = {`,
+      `  KEY_B: 'value-b',`,
+      `  SHARED: 'second',`,
+      `} as const;`,
+    ].join("\n");
+    const file1 = join(tmpDir, "a.ts");
+    const file2 = join(tmpDir, "b.ts");
+    writeFileSync(file1, content1, "utf-8");
+    writeFileSync(file2, content2, "utf-8");
+
+    const map = mergeChannelMaps([file1, file2]);
+
+    expect(map.get("KEY_A")).toBe("value-a");
+    expect(map.get("A.KEY_A")).toBe("value-a");
+    expect(map.get("KEY_B")).toBe("value-b");
+    expect(map.get("B.KEY_B")).toBe("value-b");
+    expect(map.get("SHARED")).toBe("first");
+  });
+
+  it("T-M-03: 空のファイルリストは空のMapを返す", () => {
+    const map = mergeChannelMaps([]);
+    expect(map.size).toBe(0);
+  });
+
+  it("T-M-04: チャンネル定義のないファイルは無視される", () => {
+    const content = `export function doNothing() {}`;
+    const filePath = join(tmpDir, "empty.ts");
+    writeFileSync(filePath, content, "utf-8");
+
+    const map = mergeChannelMaps([filePath]);
+
+    expect(map.size).toBe(0);
+  });
+});
+
+// ============================================================================
+// FR-4: CHANNEL_OBJECT_PATTERN / PRELOAD_CALL_START_PATTERN
+// ============================================================================
+
+describe("CHANNEL_OBJECT_PATTERN / PRELOAD_CALL_START_PATTERN", () => {
+  it("T-R-01: CHANNEL_OBJECT_PATTERN が基本的な as const オブジェクトにマッチする", () => {
+    const source = `const IPC_CHANNELS = { SKILL_IMPORT: 'skill:import' } as const`;
+    const re = new RegExp(CHANNEL_OBJECT_PATTERN.source, "gm");
+    const match = re.exec(source);
+    expect(match).not.toBeNull();
+    expect(match![1]).toBe("IPC_CHANNELS");
+  });
+
+  it("T-R-02: CHANNEL_OBJECT_PATTERN が export 付き as const オブジェクトにマッチする", () => {
+    const source = `export const CHANNELS = { A: 'a:b' } as const`;
+    const re = new RegExp(CHANNEL_OBJECT_PATTERN.source, "gm");
+    const match = re.exec(source);
+    expect(match).not.toBeNull();
+    expect(match![1]).toBe("CHANNELS");
+  });
+
+  it("T-R-03: CHANNEL_OBJECT_PATTERN が as const のないオブジェクトにマッチしない", () => {
+    const source = `const CHANNELS = { A: 'a:b' }`;
+    const re = new RegExp(CHANNEL_OBJECT_PATTERN.source, "gm");
+    const match = re.exec(source);
+    expect(match).toBeNull();
+  });
+
+  it("T-R-04: CHANNEL_OBJECT_PATTERN が複数 const object と空 body を抽出できる", () => {
+    const source = [
+      `const EMPTY = {} as const`,
+      `export const CHANNELS = { A: 'a:b' } as const`,
+    ].join("\n");
+    const re = new RegExp(CHANNEL_OBJECT_PATTERN.source, "gm");
+    const matches = Array.from(source.matchAll(re));
+
+    expect(matches).toHaveLength(2);
+    expect(matches.map((match) => match[1])).toEqual(["EMPTY", "CHANNELS"]);
+  });
+
+  it("T-R-05: PRELOAD_CALL_START_PATTERN が generic 付き safeInvoke / safeOn にマッチする", () => {
+    expect(
+      PRELOAD_CALL_START_PATTERN.test(
+        `safeInvoke<{ success: boolean }>(IPC_CHANNELS.SKILL_IMPORT, skillName)`,
+      ),
+    ).toBe(true);
+    expect(
+      PRELOAD_CALL_START_PATTERN.test(
+        `safeOn<ThemeChanged>(IPC_CHANNELS.SYSTEM_THEME, callback)`,
+      ),
+    ).toBe(true);
   });
 });

@@ -46,8 +46,8 @@ workflow 本文の表現、成果物名、参照パスを統一し、future-stat
 ### ステップ2: 成果物名を統一する
 
 - `phase-9-quality-assurance.md`
-- `unassigned-task-detection.md`
-- `phase12-task-spec-compliance-check.md`
+- `outputs/phase-12/unassigned-task-detection.md`
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`
 
 ### ステップ3: 用語を統一する
 
@@ -93,7 +93,7 @@ workflow 本文の表現、成果物名、参照パスを統一し、future-stat
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 8
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 8
 ```
 
 ## 次のPhase

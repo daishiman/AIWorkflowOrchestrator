@@ -45,6 +45,31 @@ export interface ExecutionSummary {
 }
 
 const MAX_EXECUTION_HISTORY = 10;
+type SkillReviewOutcome = Extract<
+  SkillExecutionStatus,
+  "improve_ready" | "reuse_ready"
+>;
+
+const REVIEWABLE_SKILL_STATUSES: readonly SkillExecutionStatus[] = [
+  "completed",
+  "review",
+  "improve_ready",
+  "reuse_ready",
+];
+
+const RESETTABLE_SKILL_STATUSES: readonly SkillExecutionStatus[] = [
+  "idle",
+  "completed",
+  "review",
+  "improve_ready",
+  "reuse_ready",
+  "cancelled",
+  "error",
+];
+
+function deriveSkillReviewOutcome(analysis: SkillAnalysis): SkillReviewOutcome {
+  return analysis.suggestions.length > 0 ? "improve_ready" : "reuse_ready";
+}
 
 // ============================================
 // エラーメッセージ定数（skillSliceから統合）
@@ -311,6 +336,14 @@ export interface AgentActions {
   ) => Promise<string>;
   /** 分析結果をクリアする */
   clearAnalysis: () => void;
+  /** 実行完了後のレビューを開始する */
+  beginSkillReview: () => void;
+  /** レビュー結果を確定する */
+  completeSkillReview: (outcome: SkillReviewOutcome) => void;
+  /** 改善後の再実行サイクルを開始する */
+  reExecuteAfterImprovement: (prompt: string) => Promise<void>;
+  /** スキル実行サイクルを待機状態へ戻す */
+  resetSkillExecutionCycle: () => void;
 
   // === TASK-UI-03: 実行履歴・詳細設定アクション ===
   /** 実行履歴に追加（先頭に挿入、MAX_EXECUTION_HISTORY件制限） */
@@ -906,13 +939,26 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
       skillError: null,
       currentAnalysis: null,
       previousAnalysis: null,
+      skillExecutionStatus: REVIEWABLE_SKILL_STATUSES.includes(
+        get().skillExecutionStatus ?? "idle",
+      )
+        ? "review"
+        : get().skillExecutionStatus,
     });
     try {
       if (!window.electronAPI?.skill) {
         throw new Error("Skill API not available");
       }
       const result = await window.electronAPI.skill.analyze(skillName.trim());
-      set({ currentAnalysis: result, isAnalyzing: false });
+      set({
+        currentAnalysis: result,
+        isAnalyzing: false,
+        skillExecutionStatus: REVIEWABLE_SKILL_STATUSES.includes(
+          get().skillExecutionStatus ?? "idle",
+        )
+          ? deriveSkillReviewOutcome(result)
+          : get().skillExecutionStatus,
+      });
     } catch (error) {
       set({
         skillError: formatErrorMessage("スキル分析に失敗", error),
@@ -950,7 +996,11 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
       );
       // 改善適用後に再分析して最新状態を取得
       const result = await window.electronAPI.skill.analyze(skillName.trim());
-      set({ currentAnalysis: result, isImproving: false });
+      set({
+        currentAnalysis: result,
+        isImproving: false,
+        skillExecutionStatus: deriveSkillReviewOutcome(result),
+      });
     } catch (error) {
       set({
         skillError: formatErrorMessage("改善適用に失敗", error),
@@ -973,7 +1023,11 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
       await window.electronAPI.skill.autoImprove(skillName.trim());
       // 全自動改善後に再分析
       const result = await window.electronAPI.skill.analyze(skillName.trim());
-      set({ currentAnalysis: result, isImproving: false });
+      set({
+        currentAnalysis: result,
+        isImproving: false,
+        skillExecutionStatus: deriveSkillReviewOutcome(result),
+      });
     } catch (error) {
       set({
         skillError: formatErrorMessage("全自動改善に失敗", error),
@@ -1017,6 +1071,71 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
 
   clearAnalysis: () => {
     set({ currentAnalysis: null, previousAnalysis: null });
+  },
+
+  beginSkillReview: () => {
+    set((state) => {
+      if (!state.skillExecutionStatus) {
+        return {};
+      }
+      if (!REVIEWABLE_SKILL_STATUSES.includes(state.skillExecutionStatus)) {
+        return {};
+      }
+      return {
+        skillExecutionStatus: "review",
+        skillError: null,
+      };
+    });
+  },
+
+  completeSkillReview: (outcome) => {
+    set((state) => {
+      if (!state.skillExecutionStatus) {
+        return {};
+      }
+      if (
+        state.skillExecutionStatus !== "review" &&
+        state.skillExecutionStatus !== "completed"
+      ) {
+        return {};
+      }
+      return {
+        skillExecutionStatus: outcome,
+      };
+    });
+  },
+
+  reExecuteAfterImprovement: async (prompt) => {
+    const { skillExecutionStatus } = get();
+    if (skillExecutionStatus !== "improve_ready") {
+      return;
+    }
+    await get().executeSkill(prompt);
+  },
+
+  resetSkillExecutionCycle: () => {
+    set((state) => {
+      if (state.isExecuting || state.skillExecutionStatus === "running") {
+        return {};
+      }
+      if (
+        state.skillExecutionStatus === "permission_pending" ||
+        !RESETTABLE_SKILL_STATUSES.includes(
+          state.skillExecutionStatus ?? "idle",
+        )
+      ) {
+        return {};
+      }
+      return {
+        isExecuting: false,
+        executionId: null,
+        pendingPermission: null,
+        skillExecutionStatus: "idle",
+        skillError: null,
+        streamingMessages: [],
+        handoffGuidance: null,
+      };
+    });
   },
 
   // === TASK-UI-03: 実行履歴・詳細設定アクション ===
