@@ -1,6 +1,6 @@
 # Legacy Ordinal Family Register
 
-> 最終更新日: 2026-03-20
+> 最終更新日: 2026-03-21
 > 目的: 旧 ordinal filename から current semantic filename への移行結果を family 単位で保持し、旧 citation や旧ログから current 名へ引き直せるようにする
 
 ## 概要
@@ -26,8 +26,9 @@ rename は命名作業ではなく、classification-first の結果として行�
 | `TASK-SKILL-LIFECYCLE-04` Phase 12 | `docs/30-workflows/skill-lifecycle-unification/tasks/unassigned-task/TASK-FIX-EVAL-STORE-DISPATCH-001.md` | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-eval-store-dispatch-001.md` | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/` | 2026-03-14 |
 | `TASK-SKILL-LIFECYCLE-04` Phase 12 | `docs/30-workflows/skill-lifecycle-unification/tasks/unassigned-task/TASK-FIX-SCORE-DELTA-DEDUP-001.md` | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-score-delta-dedup-001.md` | `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/` | 2026-03-14 |
 | `TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` workflow root | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | 2026-03-20 |
-| `TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` Phase 12 unassigned | `docs/30-workflows/unassigned-task/task-chatview-error-message-i18n-support.md` | `docs/30-workflows/unassigned-task/task-ut-chatview-error-banner-i18n-001.md` | `docs/30-workflows/unassigned-task/` | 2026-03-20 |
-| `TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` Phase 12 unassigned | `docs/30-workflows/unassigned-task/task-chatview-ai-chat-error-code-inventory.md` | `docs/30-workflows/unassigned-task/task-ut-ai-chat-error-code-inventory-001.md` | `docs/30-workflows/unassigned-task/` | 2026-03-20 |
+| `TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE` workflow root | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | 2026-03-21 |
+| `TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` Phase 12 unassigned | `docs/30-workflows/unassigned-task/task-chatview-error-message-i18n-support.md` | `docs/30-workflows/completed-tasks/task-ut-chatview-error-banner-i18n-001.md` | `docs/30-workflows/completed-tasks/` | 2026-03-20 |
+| `TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` Phase 12 unassigned | `docs/30-workflows/unassigned-task/task-chatview-ai-chat-error-code-inventory.md` | `docs/30-workflows/completed-tasks/task-ut-ai-chat-error-code-inventory-001.md` | `docs/30-workflows/completed-tasks/` | 2026-03-20 |
 
 ## Family Summary
 

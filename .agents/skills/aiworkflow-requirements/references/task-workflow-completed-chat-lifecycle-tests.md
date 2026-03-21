@@ -7,6 +7,41 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査記録（2026-03-21）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE |
+| ステータス | **完了（実装 + Phase 11/12 再監査完了 / Phase 13 未実施）** |
+| タイプ | fix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-21 |
+| 対象 | `LLMGuidanceBanner` / `ChatView` / `WorkspaceChatPanel` / screenshot 4件 / Phase 12 同期 |
+| 成果物 | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/` |
+
+#### 実施内容
+
+- `LLMGuidanceBanner` を追加し、provider/model 未選択時だけ `role="alert"` の guidance banner を表示
+- `ChatView` から Settings への CTA を `setCurrentView("settings")` で接続
+- `WorkspaceChatPanel` の blocked `GuidanceBlock` に `onAction` を接続し、Settings CTA を表示
+- Phase 11 で representative screenshot 4件と metadata を current workflow 配下へ固定
+- Phase 12 で Task 02 root の canonical path、parent workflow、artifact inventory、backlog、lessons、follow-up 2件を same-wave 同期
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm --filter @repo/desktop screenshot:llm-selector-inline-guidance` | PASS（screenshot 4件, metadata生成） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE` | PASS |
+
+#### 関連改善タスク
+
+| 未タスクID | 概要 | 参照 | ステータス |
+| --- | --- | --- | --- |
+| UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001 | Settings の LLM セクションへ直接到達する導線を追加 | `docs/30-workflows/unassigned-task/task-ut-llm-settings-direct-scroll-001.md` | 未実施 |
+| UT-FIX-LLM-BANNER-DISMISS-001 | guidance banner の dismiss UX を追加 | `docs/30-workflows/unassigned-task/task-ut-llm-guidance-banner-dismiss-001.md` | 未実施 |
+
 ### タスク: TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査記録（2026-03-20）
 
 | 項目 | 値 |

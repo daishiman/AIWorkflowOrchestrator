@@ -15,6 +15,7 @@ import { SystemPromptPanel } from "../../components/organisms/SystemPromptPanel"
 import { SystemPromptToggleButton } from "../../components/atoms/SystemPromptToggleButton";
 import { SaveTemplateDialog } from "../../components/organisms/SaveTemplateDialog";
 import { useAppStore, useChatError, useClearChatError } from "../../store";
+import { LLMGuidanceBanner } from "./LLMGuidanceBanner";
 
 // ============================================
 // 定数定義
@@ -238,6 +239,11 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
           </button>
         </div>
       </header>
+
+      {/* LLMモデル未選択ガイダンスバナー */}
+      <LLMGuidanceBanner
+        onNavigateToSettings={() => setCurrentView("settings")}
+      />
 
       {/* システムプロンプトトグルボタン */}
       <div className="px-4 pt-3">

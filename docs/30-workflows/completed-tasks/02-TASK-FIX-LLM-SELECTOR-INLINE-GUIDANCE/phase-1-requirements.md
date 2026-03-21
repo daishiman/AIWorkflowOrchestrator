@@ -27,6 +27,21 @@ ChatView画面とWorkspaceView画面においてLLMモデル選択UIへの導線
 - `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` — 設定リンクの有無
 - `apps/desktop/src/renderer/store/slices/llmSlice.ts` — selectedModelId / selectedProviderId セレクタの有無
 
+#### P50調査結果（実施済み）
+
+| 調査対象                                  | 結果                                                                                                                  |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `useSelectedModelId`                      | **実装済み** — `store/index.ts` L465-466                                                                              |
+| `useSelectedProviderId`                   | **実装済み** — `store/index.ts` L459-460                                                                              |
+| `useSetCurrentView`                       | **実装済み** — `store/index.ts` L267-268                                                                              |
+| `ChatView/LLMGuidanceBanner.tsx`          | **未存在** — 新規作成が必要                                                                                           |
+| `WorkspaceChatPanel.tsx` の GuidanceBlock | **部分実装** — `actionLabel="Settings を開く"` は設定済み、`onAction` が未接続でボタン非表示                          |
+| GuidanceBlock の Props パターン           | `actionLabel?: string` + `onAction?: () => void` の**分離型**（`action={{ label, onClick }}` オブジェクト型ではない） |
+| GuidanceBlock の variant                  | `"error" \| "handoff" \| "blocked"` の3種類。blocked 時は `--status-primary`（青系）                                  |
+| GuidanceBlock の role                     | `role="status"` を使用                                                                                                |
+
+**フェーズ判断**: Phase 4-5 を「検証・補完」モードに切り替える（P50準拠）。
+
 調査結果に応じた判断:
 
 - 既実装が確認された場合: Phase 4-5 を「検証・補完」モードに切り替え、P50に従い Phase ゲートを調整する
@@ -45,10 +60,10 @@ ChatView画面とWorkspaceView画面においてLLMモデル選択UIへの導線
 
 #### FR-2: WorkspaceViewGuidanceBlock改善
 
-| ID     | 要件                                                           | 受入基準                                        |
-| ------ | -------------------------------------------------------------- | ----------------------------------------------- |
-| FR-2-1 | WorkspaceViewの既存GuidanceBlockに設定画面遷移ボタンを追加する | GuidanceBlock内に設定画面リンクボタンが存在する |
-| FR-2-2 | ボタンクリックでSettings画面LLMセクションへ遷移する            | クリック後にSettings画面が表示される            |
+| ID     | 要件                                                                                                                   | 受入基準                                                |
+| ------ | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| FR-2-1 | WorkspaceViewの既存GuidanceBlockの `onAction` props を接続し設定画面遷移ボタンを有効化する（`actionLabel` は設定済み） | GuidanceBlock内に設定画面リンクボタンが表示され動作する |
+| FR-2-2 | ボタンクリックでSettings画面LLMセクションへ遷移する                                                                    | クリック後にSettings画面が表示される                    |
 
 #### FR-3: Settings画面遷移
 
@@ -97,12 +112,12 @@ ChatView画面とWorkspaceView画面においてLLMモデル選択UIへの導線
 
 ### 実装対象ファイル
 
-| ファイル                                                               | 役割                                        |
-| ---------------------------------------------------------------------- | ------------------------------------------- |
-| `apps/desktop/src/renderer/views/ChatView/index.tsx`                   | ガイダンスバナー追加対象                    |
-| `apps/desktop/src/renderer/views/WorkspaceView/index.tsx`              | 設定リンク追加対象                          |
-| `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` | GuidanceBlock改善対象                       |
-| `apps/desktop/src/renderer/store/slices/llmSlice.ts`                   | selectedModelId/selectedProviderId 状態参照 |
+| ファイル                                                               | 役割                                                                                    |
+| ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `apps/desktop/src/renderer/views/ChatView/index.tsx`                   | ガイダンスバナー追加対象                                                                |
+| `apps/desktop/src/renderer/views/WorkspaceView/index.tsx`              | 設定リンク追加対象                                                                      |
+| `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` | GuidanceBlock改善対象                                                                   |
+| `apps/desktop/src/renderer/store/slices/llmSlice.ts`                   | selectedModelId/selectedProviderId 状態定義（個別セレクタは store/index.ts に実装済み） |
 
 ## 実行手順
 
@@ -140,10 +155,10 @@ grep -n "selectedModelId\|selectedProviderId\|useSelected" \
 
 ## 成果物
 
-| 成果物                       | パス                                                                                                                   |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Phase 1 仕様書（本ファイル） | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` |
-| P50チェック結果              | Phase 2 仕様書の「前提調査結果」セクションに記載                                                                       |
+| 成果物                       | パス                                                                                 |
+| ---------------------------- | ------------------------------------------------------------------------------------ |
+| Phase 1 仕様書（本ファイル） | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` |
+| P50チェック結果              | Phase 2 仕様書の「前提調査結果」セクションに記載                                     |
 
 ## 完了条件
 

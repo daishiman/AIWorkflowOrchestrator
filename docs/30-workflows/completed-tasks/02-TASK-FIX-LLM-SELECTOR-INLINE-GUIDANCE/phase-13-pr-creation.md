@@ -24,7 +24,7 @@
 #### Phase 4〜13 の仕様書
 
 ```bash
-ls docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/
+ls docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/
 ```
 
 | 仕様書                       | 存在確認 |
@@ -51,12 +51,18 @@ ls docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-
 
 #### ドキュメント成果物
 
-| ファイル                                      | 存在確認 |
-| --------------------------------------------- | -------- |
-| outputs/phase-12/implementation-guide.md      | -        |
-| component-documentation.md                    | -        |
-| outputs/phase-12/documentation-changelog.md   | -        |
-| outputs/phase-12/unassigned-task-detection.md | -        |
+| ファイル                                       | 存在確認 |
+| ---------------------------------------------- | -------- |
+| outputs/artifacts.json                         | -        |
+| outputs/phase-11/manual-test-checklist.md      | -        |
+| outputs/phase-11/manual-test-result.md         | -        |
+| outputs/phase-11/discovered-issues.md          | -        |
+| outputs/phase-12/implementation-guide.md       | -        |
+| component-documentation.md                     | -        |
+| outputs/phase-12/system-spec-update-summary.md | -        |
+| outputs/phase-12/documentation-changelog.md    | -        |
+| outputs/phase-12/unassigned-task-detection.md  | -        |
+| outputs/phase-12/skill-feedback-report.md      | -        |
 
 ### Task 2: 最終テスト実行
 
@@ -98,7 +104,6 @@ fix(ui): ChatView/WorkspaceViewにLLMモデル未選択時ガイダンスバナ�
 - `apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx` — 新規作成
 - `apps/desktop/src/renderer/views/ChatView/index.tsx` — バナー統合
 - `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` — GuidanceBlock 改善
-- `apps/desktop/src/renderer/store/slices/llmSlice.ts` — 個別セレクタ追加（必要な場合のみ）
 
 ## Test Plan
 
@@ -110,7 +115,7 @@ fix(ui): ChatView/WorkspaceViewにLLMモデル未選択時ガイダンスバナ�
 ## References
 
 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE
-- Phase 12 documentation: `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/`
+- Phase 12 documentation: `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/`
 ```
 
 ### Task 4: PR 作成（ユーザー確認後実行）
@@ -131,10 +136,19 @@ gh pr create \
 
 ## 参照資料
 
-| ファイル                              | 用途                                    |
-| ------------------------------------- | --------------------------------------- |
-| `.claude/rules/07-git-and-tooling.md` | PR 作成ルール・コミット前チェックリスト |
-| `CLAUDE.md`                           | `--no-verify` 禁止                      |
+| ファイル                                                                                  | 用途                                    |
+| ----------------------------------------------------------------------------------------- | --------------------------------------- |
+| `.claude/rules/07-git-and-tooling.md`                                                     | PR 作成ルール・コミット前チェックリスト |
+| `CLAUDE.md`                                                                               | `--no-verify` 禁止                      |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`            | 実装スコープと設計意図                  |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md`    | 実装変更点                              |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-6-test-expansion.md`    | 追加テスト観点                          |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-7-coverage-check.md`    | coverage gate 結果                      |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-8-refactoring.md`       | リファクタリング内容                    |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-9-quality-assurance.md` | 品質保証結果                            |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-10-final-review.md`     | 最終レビュー結果                        |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-11-manual-test.md`      | Phase 11 evidence の正本                |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-12-documentation.md`    | Phase 12 same-wave sync の正本          |
 
 ## 実行手順
 
@@ -160,7 +174,8 @@ gh pr create \
 
 - [ ] 全 Phase 仕様書（Phase 4〜13）が存在している
 - [ ] 実装ファイルが全て存在している
-- [ ] ドキュメントが全て作成されている
+- [ ] `outputs/artifacts.json` が root `artifacts.json` と同期している
+- [ ] Phase 11 / Phase 12 ドキュメント成果物が全て作成されている
 - [ ] 最終テストが全 PASS している
 - [ ] Lint・型チェックが PASS している
 - [ ] PR タイトルが 70 文字以内

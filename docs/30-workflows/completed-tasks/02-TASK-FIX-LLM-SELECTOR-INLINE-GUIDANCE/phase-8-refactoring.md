@@ -31,10 +31,10 @@ Phase 5 の実装をレビューし、コード品質を改善する。機能は
 
 #### 1-2: 状態管理
 
-| チェック項目                                       | 対象ファイル           |
-| -------------------------------------------------- | ---------------------- |
-| 合成 Hook を使用していない（P31対策）              | LLMGuidanceBanner.tsx  |
-| 派生セレクタに `useShallow` が適切に適用されている | llmSlice.ts（P48対策） |
+| チェック項目                                                        | 対象ファイル           |
+| ------------------------------------------------------------------- | ---------------------- |
+| 合成 Hook を使用していない（P31対策）                               | LLMGuidanceBanner.tsx  |
+| 派生セレクタが存在する場合、`useShallow` の適用要否が判断済みである | llmSlice.ts（P48対策） |
 
 #### 1-3: 命名規則
 
@@ -69,13 +69,18 @@ cd apps/desktop && pnpm vitest run \
 
 ## 参照資料
 
-| ファイル                                 | 用途                                         |
-| ---------------------------------------- | -------------------------------------------- |
-| `.claude/rules/02-code-quality.md`       | コーディング規約                             |
-| `.claude/rules/06-known-pitfalls.md#P31` | Zustand合成Hook無限ループ防止                |
-| `.claude/rules/06-known-pitfalls.md#P46` | HTMLAttributes Props型衝突パターン           |
-| `.claude/rules/06-known-pitfalls.md#P48` | non-null assertion 禁止                      |
-| `.claude/rules/06-known-pitfalls.md#P52` | 同ファイル内 non-null assertion 残存チェック |
+| ファイル                                                                               | 用途                                         |
+| -------------------------------------------------------------------------------------- | -------------------------------------------- |
+| `.claude/rules/02-code-quality.md`                                                     | コーディング規約                             |
+| `.claude/rules/06-known-pitfalls.md#P31`                                               | Zustand合成Hook無限ループ防止                |
+| `.claude/rules/06-known-pitfalls.md#P46`                                               | HTMLAttributes Props型衝突パターン           |
+| `.claude/rules/06-known-pitfalls.md#P48`                                               | non-null assertion 禁止                      |
+| `.claude/rules/06-known-pitfalls.md#P52`                                               | 同ファイル内 non-null assertion 残存チェック |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md`   | 維持すべき要件と UX 境界の正本               |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`         | 設計意図と責務分割                           |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md` | 実装済み変更点                               |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-6-test-expansion.md` | 追加テストで守る境界条件                     |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-7-coverage-check.md` | カバレッジゲート結果                         |
 
 ## 実行手順
 

@@ -15,7 +15,7 @@
 
 Phase 4 で作成したテストを Green にするため、以下の実装を行う:
 
-1. `llmSlice.ts` へ個別セレクタ追加（存在しない場合のみ）
+1. セレクタ実装状況の確認（store/index.ts に実装済み、追加不要）
 2. `LLMGuidanceBanner.tsx` 新規作成
 3. `ChatView/index.tsx` へのバナー統合
 4. `WorkspaceChatPanel.tsx` の GuidanceBlock 改善
@@ -45,22 +45,15 @@ cat apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx
 grep -rn "GuidanceBlock" apps/desktop/src/renderer/
 ```
 
-### Task 2: llmSlice セレクタ追加（既存がない場合のみ）
+### Task 2: セレクタ実装状況の確認（追加不要）
 
-`useSelectedModelId` と `useSelectedProviderId` が存在しない場合、`llmSlice.ts` に追加する。
+P50チェックにより、以下のセレクタが store/index.ts に既に実装済みであることを確認した:
 
-**追加パターン（P31対策: 個別セレクタ）**:
+- `useSelectedModelId()` (L465-466)
+- `useSelectedProviderId()` (L459-460)
+- `useSetCurrentView()` (L267-268)
 
-```typescript
-// 既存セレクタがない場合のみ追加
-export const useSelectedModelId = () =>
-  useAppStore((state) => state.llm.selectedModelId);
-
-export const useSelectedProviderId = () =>
-  useAppStore((state) => state.llm.selectedProviderId);
-```
-
-**注意**: 派生セレクタ（filter/map）ではないため `useShallow` は不要（P48チェック済み）。
+**新規セレクタの追加は不要。** 上記セレクタを import して使用する。
 
 ### Task 3: LLMGuidanceBanner コンポーネント実装
 
@@ -72,6 +65,11 @@ export const useSelectedProviderId = () =>
 interface LLMGuidanceBannerProps {
   onNavigateToSettings: () => void;
 }
+```
+
+```typescript
+// store/index.ts から個別セレクタを import
+import { useSelectedModelId, useSelectedProviderId } from "@/renderer/store";
 ```
 
 **表示条件**: `selectedModelId` または `selectedProviderId` のいずれかが null / undefined のとき表示
@@ -104,6 +102,8 @@ interface LLMGuidanceBannerProps {
 - `onNavigateToSettings` に `() => setCurrentView("settings")` を渡す
 
 ```typescript
+import { useSetCurrentView } from "@/renderer/store";
+
 // ChatView 内での使用例
 const setCurrentView = useSetCurrentView();
 
@@ -124,21 +124,21 @@ return (
 
 **変更方針**:
 
-- 既存 GuidanceBlock に `action` props を追加（GuidanceBlock の props 拡張が必要な場合は拡張する）
+- 既存 GuidanceBlock の `onAction` コールバックを接続する（Props 拡張不要、既に定義済み）
 - ボタンラベル: 「設定画面を開く」
 
-**GuidanceBlock 拡張が必要な場合の対応**:
+**GuidanceBlock の Props は既に `actionLabel` + `onAction` の分離型で定義済み**:
 
 ```typescript
-// GuidanceBlock の Props を拡張（既存 props を壊さない）
 interface GuidanceBlockProps {
+  variant: GuidanceVariant;
   message: string;
-  action?: {
-    label: string;
-    onClick: () => void;
-  };
+  actionLabel?: string;
+  onAction?: () => void;
 }
 ```
+
+Props 拡張は不要。既存の `onAction` に値を渡すだけ。
 
 **WorkspaceChatPanel での使用例**:
 
@@ -146,11 +146,10 @@ interface GuidanceBlockProps {
 const setCurrentView = useSetCurrentView();
 
 <GuidanceBlock
+  variant="blocked"
   message="AIモデルが選択されていません。Settings で使用するモデルを設定してください。"
-  action={{
-    label: "設定画面を開く",
-    onClick: () => setCurrentView("settings"),
-  }}
+  actionLabel="Settings を開く"
+  onAction={() => setCurrentView("settings")}
 />
 ```
 
@@ -171,10 +170,10 @@ cd apps/desktop && pnpm vitest run src/renderer/views/WorkspaceView/__tests__/Wo
 
 ### フェーズ成果物
 
-| ファイル                                                                                                                | 用途         |
-| ----------------------------------------------------------------------------------------------------------------------- | ------------ |
-| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`        | 設計仕様     |
-| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-4-test-creation.md` | テストケース |
+| ファイル                                                                              | 用途         |
+| ------------------------------------------------------------------------------------- | ------------ |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`        | 設計仕様     |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-4-test-creation.md` | テストケース |
 
 ### プロジェクトルール
 
@@ -188,12 +187,12 @@ cd apps/desktop && pnpm vitest run src/renderer/views/WorkspaceView/__tests__/Wo
 
 ### 実装対象ファイル
 
-| ファイル                                                               | 変更種別                               |
-| ---------------------------------------------------------------------- | -------------------------------------- |
-| `apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx`       | 新規作成                               |
-| `apps/desktop/src/renderer/views/ChatView/index.tsx`                   | 変更（バナー追加）                     |
-| `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` | 変更（GuidanceBlock action追加）       |
-| `apps/desktop/src/renderer/store/slices/llmSlice.ts`                   | 変更（セレクタ追加、不足する場合のみ） |
+| ファイル                                                               | 変更種別                                         |
+| ---------------------------------------------------------------------- | ------------------------------------------------ |
+| `apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx`       | 新規作成                                         |
+| `apps/desktop/src/renderer/views/ChatView/index.tsx`                   | 変更（バナー追加）                               |
+| `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` | 変更（GuidanceBlock onAction接続）               |
+| `apps/desktop/src/renderer/store/slices/llmSlice.ts`                   | 変更不要（セレクタは store/index.ts に実装済み） |
 
 ## 実行手順
 
@@ -201,7 +200,7 @@ cd apps/desktop && pnpm vitest run src/renderer/views/WorkspaceView/__tests__/Wo
 
 実装前に必ず対象ファイルを全て読む。未読のままコードを変更しない。
 
-### Step 2: llmSlice セレクタ確認・追加（Task 2）
+### Step 2: セレクタ実装状況確認（Task 2）
 
 ### Step 3: LLMGuidanceBanner 実装（Task 3）
 
@@ -225,16 +224,15 @@ cd apps/desktop && pnpm vitest run src/renderer/views/WorkspaceView/__tests__/Wo
 | LLMGuidanceBanner コンポーネント | `apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx`       |
 | ChatView 変更                    | `apps/desktop/src/renderer/views/ChatView/index.tsx`                   |
 | WorkspaceChatPanel 変更          | `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` |
-| llmSlice セレクタ追加（必要時）  | `apps/desktop/src/renderer/store/slices/llmSlice.ts`                   |
 
 ## 完了条件
 
 - [ ] 既存コードを読み込んでから実装している
 - [ ] `LLMGuidanceBanner.tsx` が新規作成されている
-- [ ] LLMGuidanceBanner が P31 対策済み個別セレクタを使用している
+- [ ] LLMGuidanceBanner が P31 対策済み個別セレクタを使用している → store/index.ts の既存セレクタを import
 - [ ] LLMGuidanceBanner に `role="alert"` が設定されている（WCAG 2.1 AA 準拠）
 - [ ] ChatView に LLMGuidanceBanner が統合されている
-- [ ] WorkspaceChatPanel の GuidanceBlock に設定ボタンが追加されている
+- [ ] WorkspaceChatPanel の GuidanceBlock の `onAction` に設定遷移が接続されている（Props 拡張不要）
 - [ ] 全テストが Green になっている
 - [ ] 既存テストが壊れていない
 

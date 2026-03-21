@@ -27,6 +27,12 @@ Phase 2 設計に基づき、LLMGuidanceBanner コンポーネント・ChatView�
 | `apps/desktop/src/renderer/views/ChatView/index.tsx`                   | `apps/desktop/src/renderer/views/ChatView/__tests__/ChatView.guidance.test.tsx`                |
 | `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` | `apps/desktop/src/renderer/views/WorkspaceView/__tests__/WorkspaceChatPanel.guidance.test.tsx` |
 
+**注意**: 既存テストの配置パターン確認:
+
+- `ChatView.test.tsx` は `ChatView/` 直下（`__tests__/` ではない）
+- `WorkspaceChatPanel.runtime.test.tsx` は `__tests__/` 配下、import は `from "../WorkspaceChatPanel"`
+- 新規テストは `__tests__/` に配置し、既存パターンに合わせた import パスを使用する
+
 ### Task 2: LLMGuidanceBanner テストケース設計
 
 #### TC-1: 表示/非表示制御
@@ -94,14 +100,10 @@ grep -n "environment\|testEnvironment" apps/desktop/vitest.config.ts
 **テストモック設計**:
 
 ```typescript
-// llmSlice の個別セレクタモック（P31対策）
-vi.mock("@/renderer/store/slices/llmSlice", () => ({
+// セレクタは store/index.ts からエクスポートされている
+vi.mock("@/renderer/store", () => ({
   useSelectedModelId: vi.fn(() => null),
   useSelectedProviderId: vi.fn(() => null),
-}));
-
-// ナビゲーションセレクタモック
-vi.mock("@/renderer/store/slices/navigationSlice", () => ({
   useSetCurrentView: vi.fn(() => mockSetCurrentView),
 }));
 ```
@@ -110,10 +112,12 @@ vi.mock("@/renderer/store/slices/navigationSlice", () => ({
 
 ### システム仕様
 
-| ファイル                                                                                                         | 用途                           |
-| ---------------------------------------------------------------------------------------------------------------- | ------------------------------ |
-| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md` | 設計仕様（テスト対象の定義）   |
-| `.claude/rules/02-code-quality.md`                                                                               | テスト設計原則・カバレッジ基準 |
+| ファイル                                                                              | 用途                                     |
+| ------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md`  | 受入条件・UI要件・アクセシビリティ基準   |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`        | 設計仕様（テスト対象の定義）             |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-3-design-review.md` | レビュー指摘、未タスク化対象、ゲート判定 |
+| `.claude/rules/02-code-quality.md`                                                    | テスト設計原則・カバレッジ基準           |
 
 ### プロジェクトルール
 
@@ -135,6 +139,10 @@ ls apps/desktop/src/renderer/views/WorkspaceView/
 # 既存テストのインポートパターン確認（P63対策）
 find apps/desktop/src/renderer/views -name "*.test.tsx" | head -10 | \
   xargs -I{} head -5 {}
+
+# 既存テストのインポートパターン確認（P63対策）
+grep -n "^import" apps/desktop/src/renderer/views/ChatView/ChatView.test.tsx 2>/dev/null
+grep -n "^import" apps/desktop/src/renderer/views/WorkspaceView/__tests__/WorkspaceChatPanel.runtime.test.tsx 2>/dev/null
 ```
 
 ### Step 2: LLMGuidanceBanner テスト作成

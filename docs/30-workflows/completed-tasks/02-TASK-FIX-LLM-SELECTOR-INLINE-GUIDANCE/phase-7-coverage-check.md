@@ -44,9 +44,11 @@ cd apps/desktop && pnpm vitest run \
 
 ## 参照資料
 
-| ファイル                           | 用途           |
-| ---------------------------------- | -------------- |
-| `.claude/rules/02-code-quality.md` | カバレッジ基準 |
+| ファイル                                                                               | 用途                               |
+| -------------------------------------------------------------------------------------- | ---------------------------------- |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md` | 実装変更ファイルと分岐の洗い出し   |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-6-test-expansion.md` | 追加テスト TC-6〜TC-8 と再計測条件 |
+| `.claude/rules/02-code-quality.md`                                                     | カバレッジ基準                     |
 
 ## 実行手順
 

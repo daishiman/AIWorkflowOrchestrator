@@ -19,11 +19,13 @@ Phase 1 で定義した要件を元に、ChatView・WorkspaceView へのイン�
 
 ### Task 1: 前提調査結果の確認
 
-Phase 1 P50チェックの結果を参照し、以下を確認する:
+Phase 1 P50チェックの結果（確認済み）:
 
-- `llmSlice.ts` に `selectedModelId` / `selectedProviderId` の個別セレクタが既に存在するか
-- `WorkspaceChatPanel.tsx` の `GuidanceBlock` の既存実装を把握する
-- `setCurrentView` の型定義と呼び出し方法を確認する
+- `useSelectedModelId` / `useSelectedProviderId` の個別セレクタは **`store/index.ts`** に実装済み（llmSlice.ts ではない）
+- `WorkspaceChatPanel.tsx` の `GuidanceBlock` は `actionLabel="Settings を開く"` が設定済みだが `onAction` が未接続でボタン非表示
+- `setCurrentView` は `useSetCurrentView()` として `store/index.ts` L267-268 に実装済み
+- GuidanceBlock の Props は `actionLabel?: string` + `onAction?: () => void` の分離型（オブジェクト型 `action` ではない）
+- GuidanceBlock の variant は `"error" | "handoff" | "blocked"` の3種類
 
 ### Task 2: コンポーネント設計
 
@@ -95,19 +97,17 @@ const handleNavigateToSettings = () => setCurrentView("settings");
 
 **変更内容**:
 
-- 既存の GuidanceBlock 内「AIモデルが選択されていません」メッセージに設定ボタンを追加
-- ボタンは GuidanceBlock のアクションエリア（メッセージ下部）に配置
+- 既存の GuidanceBlock の `actionLabel` は設定済み。`onAction` コールバックを接続し設定ボタンを有効化する（変更は1行追加のみ）
 
 **GuidanceBlockアクション設計**:
 
 ```typescript
-// GuidanceBlock が action props を受け取る設計（既存実装に合わせて調整）
+// 既存の actionLabel はそのまま活用し、onAction を追加するだけ
 <GuidanceBlock
+  variant="blocked"
   message="AIモデルが選択されていません。Settings で使用するモデルを設定してください。"
-  action={{
-    label: "設定画面を開く",
-    onClick: () => setCurrentView("settings"),
-  }}
+  actionLabel="Settings を開く"
+  onAction={() => setCurrentView("settings")}
 />
 ```
 
@@ -115,31 +115,18 @@ const handleNavigateToSettings = () => setCurrentView("settings");
 
 #### 3-1: llmSlice セレクタ確認・追加
 
-既存セレクタの確認対象:
+以下のセレクタが `store/index.ts` に実装済みであることを確認済み:
 
-- `useSelectedModelId(): string | null`
-- `useSelectedProviderId(): string | null`
+- `useSelectedModelId()` (L465-466)
+- `useSelectedProviderId()` (L459-460)
 
-上記セレクタが存在しない場合、`llmSlice.ts` に追加する:
-
-```typescript
-// llmSlice.ts に追加（既存セレクタがない場合のみ）
-export const useSelectedModelId = () =>
-  useAppStore((state) => state.llm.selectedModelId);
-
-export const useSelectedProviderId = () =>
-  useAppStore((state) => state.llm.selectedProviderId);
-```
+追加の個別セレクタ作成は不要。`llmSlice.ts` への変更は行わない。
 
 **P31チェック**: 派生セレクタ（filter/map）を使わないため `useShallow` は不要。
 
 #### 3-2: ナビゲーションセレクタ確認
 
-既存の `setCurrentView` セレクタが存在するか確認:
-
-- `useSetCurrentView(): (view: ViewType) => void`
-
-存在しない場合、適切なスライスから取得方法を調査する。
+`useSetCurrentView()` が `store/index.ts` L267-268 に実装済み。追加不要。
 
 ### Task 4: コンポーネント依存方向設計
 
@@ -169,11 +156,12 @@ WorkspaceView/WorkspaceChatPanel.tsx
 
 ### システム仕様（aiworkflow-requirements）
 
-| ファイル                                                                     | 用途                                        |
-| ---------------------------------------------------------------------------- | ------------------------------------------- |
-| `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | UI/UX設計哲学、Apple HIG準拠設計原則        |
-| `.claude/skills/aiworkflow-requirements/references/arch-state-management.md` | Zustand Store設計原則、個別セレクタパターン |
-| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`   | デザインシステム仕様                        |
+| ファイル                                                                             | 用途                                        |
+| ------------------------------------------------------------------------------------ | ------------------------------------------- |
+| `.claude/skills/aiworkflow-requirements/references/architecture-overview.md`         | UI/UX設計哲学、Apple HIG準拠設計原則        |
+| `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`         | Zustand Store設計原則、個別セレクタパターン |
+| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`           | デザインシステム仕様                        |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` | 要件定義、受入条件、非機能要件の正本        |
 
 ### プロジェクトルール
 
@@ -187,13 +175,13 @@ WorkspaceView/WorkspaceChatPanel.tsx
 
 ### 実装対象ファイル
 
-| ファイル                                                               | 変更種別                                         |
-| ---------------------------------------------------------------------- | ------------------------------------------------ |
-| `apps/desktop/src/renderer/views/ChatView/index.tsx`                   | 変更（バナー追加）                               |
-| `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` | 変更（GuidanceBlock改善）                        |
-| `apps/desktop/src/renderer/views/WorkspaceView/index.tsx`              | 変更（必要に応じて）                             |
-| `apps/desktop/src/renderer/store/slices/llmSlice.ts`                   | 変更（セレクタ追加、既存セレクタがない場合のみ） |
-| `apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx`       | 新規作成                                         |
+| ファイル                                                               | 変更種別                                                                   |
+| ---------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `apps/desktop/src/renderer/views/ChatView/index.tsx`                   | 変更（バナー追加）                                                         |
+| `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` | 変更（GuidanceBlock改善）                                                  |
+| `apps/desktop/src/renderer/views/WorkspaceView/index.tsx`              | 変更候補（Settings導線の責務が `WorkspaceChatPanel` に収まらない場合のみ） |
+| `apps/desktop/src/renderer/store/slices/llmSlice.ts`                   | 参照のみ（セレクタは store/index.ts に実装済み、変更不要）                 |
+| `apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx`       | 新規作成                                                                   |
 
 ## 実行手順
 
@@ -239,16 +227,16 @@ grep -rn "LLMSelector\|llm-selector" \
 
 ## 成果物
 
-| 成果物                       | パス                                                                                                             |
-| ---------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Phase 2 仕様書（本ファイル） | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md` |
+| 成果物                       | パス                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------ |
+| Phase 2 仕様書（本ファイル） | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md` |
 
 ## 完了条件
 
 - [ ] LLMGuidanceBanner コンポーネントの Props・表示条件・UIレイアウトが設計されている
 - [ ] ChatView への統合方針（バナー配置場所・遷移コールバック）が設計されている
 - [ ] WorkspaceChatPanel GuidanceBlock の改善方針が設計されている
-- [ ] Zustand 個別セレクタの使用方針が明確になっている（P31対策済み）
+- [ ] Zustand 個別セレクタの使用方針が明確になっている（P31対策済み）→ store/index.ts の既存セレクタを使用
 - [ ] 画面遷移パターン（`setCurrentView("settings")`）が確認されている
 - [ ] LLMSelectorPanel との重複がないことが確認されている
 - [ ] 新規 IPC ハンドラなしのRendererのみの変更であることが確認されている

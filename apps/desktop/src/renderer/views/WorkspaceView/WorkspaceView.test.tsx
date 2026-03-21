@@ -85,6 +85,7 @@ vi.mock("@/renderer/store", () => ({
   useAddFiles: () => mockAddFiles,
   useSelectedFiles: () => mockSelectedFiles,
   useRemoveFile: () => mockRemoveFile,
+  useSetCurrentView: () => mockSetCurrentView,
   useAppStore: (selector: (state: typeof mockAppState) => unknown) =>
     selector(mockAppState),
 }));
