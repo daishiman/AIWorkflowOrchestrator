@@ -1,0 +1,33 @@
+{
+  "taskId": "TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001",
+  "phase": 11,
+  "screenshotRequired": false,
+  "reason": "設計タスクのため UI 実装なし。CLI 環境での実画面キャプチャ不可（P53 準拠）",
+  "alternativeEvidence": [
+    {
+      "type": "design_document_diff",
+      "description": "Phase 1-10 の設計成果物の git diff で設計変更の証跡を確認",
+      "command": "git diff --stat -- docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/outputs/"
+    },
+    {
+      "type": "grep_log",
+      "description": "grep ベースの静的確認コマンドの実行ログで禁止パターン不在を証明",
+      "commands": [
+        "grep -rn 'AI_CHECK_CONNECTION' apps/desktop/src/renderer/",
+        "grep -rn 'TerminalHandoffBundle' apps/desktop/src/renderer/",
+        "grep -rn 'RuntimeResolution' apps/desktop/src/renderer/"
+      ]
+    },
+    {
+      "type": "test_results",
+      "description": "Phase 4 で定義したテストケースの実行結果（実装タスク完了後）",
+      "deferred": true,
+      "deferredReason": "設計タスクのため実行不可。後続実装タスクで実施"
+    }
+  ],
+  "implementationTaskScreenshots": {
+    "required": true,
+    "description": "Task03-09 の実装タスクでは Playwright page.screenshot() または Electron webContents.capturePage() で取得",
+    "deferredTo": ["Task03", "Task04", "Task05"]
+  }
+}

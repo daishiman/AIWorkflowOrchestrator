@@ -40,7 +40,7 @@ Main Chat / Workspace の blocked guidance 実配線 の現状、対象範囲、
 | interfaces-auth                  | .claude/skills/aiworkflow-requirements/references/interfaces-auth.md                                                                       | auth/access 契約の親入口                          |
 | api-ipc-system                   | .claude/skills/aiworkflow-requirements/references/api-ipc-system.md                                                                        | system IPC 契約の親入口                           |
 | arch-state-management            | .claude/skills/aiworkflow-requirements/references/arch-state-management.md                                                                 | Renderer 責務境界の親入口                         |
-| Task02 index                     | docs/30-workflows/ai-runtime-execution-responsibility-realignment/tasks/step-02-seq-task-02-runtime-policy-centralization/index.md         | policy / DTO の消費境界                           |
+| Task02 index                     | docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/index.md                                                               | policy / DTO の消費境界                           |
 | interfaces-llm                   | .claude/skills/aiworkflow-requirements/references/interfaces-llm.md                                                                        | LLM / streaming / chat-edit の親入口              |
 | llm-workspace-chat-edit          | .claude/skills/aiworkflow-requirements/references/llm-workspace-chat-edit.md                                                               | RuntimeResolver / HandoffGuidance 契約            |
 | ui-ux-feature-components-details | .claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-details.md                                                      | Workspace guidance / state UX                     |
@@ -58,7 +58,7 @@ common canonical と task 固有 canonical を読み、Main Chat / Workspace の
 
 ```bash
 git log --oneline -10 -- apps/desktop/src/renderer/views/ChatView/index.tsx
-rg -n "authMode|runtime|handoff|terminal|guidance|health|capability" apps/desktop/src/renderer/views/ChatView apps/desktop/src/renderer/views/WorkspaceView apps/desktop/src/renderer/views/WorkspaceView/components docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation docs/30-workflows/ai-runtime-execution-responsibility-realignment || true
+rg -n "authMode|runtime|handoff|terminal|guidance|health|capability" apps/desktop/src/renderer/views/ChatView apps/desktop/src/renderer/views/WorkspaceView apps/desktop/src/renderer/views/WorkspaceView/components docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation docs/30-workflows/ai-runtime-execution-responsibility-realignment || true
 ```
 
 ### ステップ3: 要件・AC・除外範囲を確定する
