@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-21T01:00:03.900Z",
-  "totalKeywords": 2410,
+  "generated": "2026-03-21T07:58:19.540Z",
+  "totalKeywords": 2414,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2167,6 +2167,7 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
@@ -2378,6 +2379,7 @@
       "arch-state-management-reference-selectors.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
@@ -3781,6 +3783,12 @@
       "architecture-rag.md",
       "security-api-electron.md",
       "ui-ux-history-panel.md"
+    ],
+    "known": [
+      "architecture-rag.md"
+    ],
+    "issues": [
+      "architecture-rag.md"
     ],
     "仕様詳細": [
       "claude-code-agents-spec.md"
@@ -6177,6 +6185,18 @@
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
+    "POLICY": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "CAPABILITY": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "BRIDGE": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "CHATVIEW": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6221,9 +6241,6 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "ライフサイクル": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "POLICY": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "仕様書作成": [

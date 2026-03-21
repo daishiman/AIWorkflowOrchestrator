@@ -1,0 +1,94 @@
+{
+  "taskId": "TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001",
+  "taskName": "RuntimePolicyResolver capability bridge",
+  "issueNumber": 1417,
+  "createdAt": "2026-03-21",
+  "completedAt": "2026-03-21",
+  "phases": {
+    "phase-1": { "status": "completed", "file": "phase-1-requirements.md" },
+    "phase-2": { "status": "completed", "file": "phase-2-design.md" },
+    "phase-3": {
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "gate": "PASS"
+    },
+    "phase-4": { "status": "completed", "file": "phase-4-test-creation.md" },
+    "phase-5": { "status": "completed", "file": "phase-5-implementation.md" },
+    "phase-6": { "status": "completed", "file": "phase-6-test-expansion.md" },
+    "phase-7": {
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "coverage": {
+        "line": 100,
+        "branch": 100,
+        "function": 100,
+        "statement": 100
+      }
+    },
+    "phase-8": { "status": "completed", "file": "phase-8-refactoring.md" },
+    "phase-9": {
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "typecheck": "PASS",
+      "lint": "PASS",
+      "test": "PASS"
+    },
+    "phase-10": {
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "gate": "PASS"
+    },
+    "phase-11": { "status": "completed", "file": "phase-11-manual-test.md" },
+    "phase-12": { "status": "completed", "file": "phase-12-documentation.md" },
+    "phase-13": { "status": "blocked", "file": "phase-13-pr-creation.md" }
+  },
+  "outputs": {
+    "shared": {
+      "artifacts": "outputs/artifacts.json",
+      "verification-report": "outputs/verification-report.md"
+    },
+    "phase-11": {
+      "manual-test-checklist": "outputs/phase-11/manual-test-checklist.md",
+      "manual-test-result": "outputs/phase-11/manual-test-result.md"
+    },
+    "phase-12": {
+      "implementation-guide": "outputs/phase-12/implementation-guide.md",
+      "system-spec-update-summary": "outputs/phase-12/system-spec-update-summary.md",
+      "documentation-changelog": "outputs/phase-12/documentation-changelog.md",
+      "unassigned-task-detection": "outputs/phase-12/unassigned-task-detection.md",
+      "skill-feedback-report": "outputs/phase-12/skill-feedback-report.md",
+      "phase12-task-spec-compliance-check": "outputs/phase-12/phase12-task-spec-compliance-check.md"
+    },
+    "phase-13": {
+      "pr-preparation": "outputs/phase-13/pr-preparation.md"
+    }
+  },
+  "dependencies": [
+    "TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001",
+    "TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001"
+  ],
+  "targetFiles": [
+    "apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts",
+    "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+    "apps/desktop/src/main/ipc/creatorHandlers.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimePolicyResolver.test.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts",
+    "apps/desktop/src/main/ipc/__tests__/creatorHandlers.test.ts",
+    "packages/shared/package.json",
+    "packages/shared/tsup.config.ts"
+  ],
+  "changedFiles": [
+    "apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts",
+    "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+    "apps/desktop/src/main/ipc/creatorHandlers.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimePolicyResolver.test.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts",
+    "apps/desktop/src/main/ipc/__tests__/creatorHandlers.test.ts",
+    "packages/shared/package.json",
+    "packages/shared/tsup.config.ts"
+  ],
+  "testResults": {
+    "runtime": { "total": 47, "passed": 47, "failed": 0 },
+    "shared": { "total": 5500, "passed": 5500, "failed": 0 }
+  }
+}

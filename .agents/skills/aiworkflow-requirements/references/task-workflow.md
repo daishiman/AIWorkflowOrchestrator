@@ -8,7 +8,7 @@
 | ファイル | 役割 | 主な見出し |
 | --- | --- | --- |
 | [task-workflow-active.md](task-workflow-active.md) | active guide | 概要 / ドキュメント構成 / フェーズ構造（概要） / 品質ゲート（概要） / 出力テンプレート / 実行時のコマンド・エージェント・スキル |
-| [task-workflow-completed.md](task-workflow-completed.md) | completed records (baseline completed ledger) | 完了タスク / TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001（spec_created, 2026-03-20） |
+| [task-workflow-completed.md](task-workflow-completed.md) | completed records (baseline completed ledger) | 完了タスク / TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（implementation completed, 2026-03-21） |
 | [task-workflow-completed-workspace-chat-lifecycle-tests.md](task-workflow-completed-workspace-chat-lifecycle-tests.md) | completed records (workspace / chat path / lifecycle tests) | 完了タスク |
 | [task-workflow-completed-ipc-graceful-degradation-lifecycle.md](task-workflow-completed-ipc-graceful-degradation-lifecycle.md) | completed records (IPC graceful degradation / lifecycle store integration) | 完了タスク |
 | [task-workflow-completed-notification-history-auth-key-state.md](task-workflow-completed-notification-history-auth-key-state.md) | completed records (notification-history / auth key / state baseline) | 完了タスク |
@@ -26,7 +26,7 @@
 | [workflow-skill-lifecycle-created-skill-usage-journey.md](workflow-skill-lifecycle-created-skill-usage-journey.md) | workflow integration spec（TASK-SKILL-LIFECYCLE-05） | 3シナリオ導線（Immediate / Deferred / History） / Task04依存契約 / Phase 11 screenshot証跡 / follow-up backlog |
 | [workflow-skill-lifecycle-routing-render-view-foundation.md](workflow-skill-lifecycle-routing-render-view-foundation.md) | workflow integration spec（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 family） | ViewType拡張 / renderView分岐 / detail panel secondary handoff / AgentView round-trip / Phase 11 screenshot / Phase 12同期 / follow-up backlog |
 | [workflow-ai-runtime-execution-responsibility-realignment.md](workflow-ai-runtime-execution-responsibility-realignment.md) | workflow integration spec（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001） | execution responsibility / access capability foundation / policy authority / same-wave sync |
-| [task-workflow-backlog.md](task-workflow-backlog.md) | backlog | 残課題（未タスク） |
+| [task-workflow-backlog.md](task-workflow-backlog.md) | backlog | 残課題（未タスク） / 2026-03-21 runtime policy capability bridge follow-up 2件を追加 |
 | [task-workflow-history.md](task-workflow-history.md) | history bundle | 関連ドキュメント / 変更履歴 |
 
 ## 利用順序

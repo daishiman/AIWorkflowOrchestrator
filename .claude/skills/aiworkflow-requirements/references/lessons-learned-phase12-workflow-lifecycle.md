@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-21 | 1.5.2 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓3件を追加 |
 | 2026-03-21 | 1.5.1 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査の教訓1件を追加 |
 | 2026-03-21 | 1.5.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
 | 2026-03-20 | 1.4.0 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 の Phase 12 教訓2件を追加 |
@@ -26,6 +27,46 @@
 | 2026-03-18 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）。合計5件 |
 | 2026-03-18 | 1.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001
+
+### 苦戦箇所1: `manual-test-result.md` が `not_run` のままだと Phase 11/12 completed と衝突する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow 本文と `artifacts.json` は completed でも、`outputs/phase-11/manual-test-result.md` が `not_run` のままだと manual evidence が未完了のまま残る |
+| 再発条件 | non-visual task で「後で rerun する」と考え、manual result の status を更新しない |
+| 解決策 | `NON_VISUAL_FALLBACK` と blocker、代替 evidence を `manual-test-result.md` と Phase 11 本文へ同時記録した |
+| 標準ルール | `manual-test-result.md` が `not_run` のままなら Phase 11 / 12 を completed にしない。fallback の場合も blocker と evidence を必須記録する |
+| 関連タスク | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 |
+
+### 苦戦箇所2: `index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の parity を同一ターンで閉じないと completed false positive が出る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase status が本文と artifact inventory でずれると、completed に見えても validator が warning を返す |
+| 再発条件 | workflow 本文と `outputs/` だけ更新し、root artifact inventory を後回しにする |
+| 解決策 | 4点同期を Phase 12 の必須完了条件として扱い、`validate-phase-output` の warning 0 を目標に修正した |
+| 標準ルール | `index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` は同一ターンで同期し、partial update を残さない |
+| 関連タスク | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 |
+
+### 苦戦箇所3: internal adapter と public IPC / preload contract を混同すると system spec が過大申告になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `creatorHandlers.ts` を実装した事実だけで public `skill-creator:*` contract まで更新済みと読める文面が混入した |
+| 再発条件 | internal `ipcMain.handle()` 実装と app registration / preload 公開面を同じ「IPC更新」として扱う |
+| 解決策 | `creatorHandlers.ts` を internal adapter と明記し、public wiring は follow-up `UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001` に formalize した |
+| 標準ルール | internal adapter 追加だけでは public IPC / preload 更新済みと記録しない。未接続なら follow-up として formalize する |
+| 関連タスク | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. `manual-test-result.md` が `not_run` でないことを先に確認し、fallback なら blocker と代替 evidence を固定する。
+2. workflow 本文、phase 本文、`artifacts.json`、`outputs/artifacts.json` を同一ターンで同期する。
+3. internal IPC adapter と public preload / registration の到達面を分離し、未接続なら follow-up へ昇格する。
 
 ---
 

@@ -4,6 +4,19 @@
 
 ---
 
+## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 最終ドキュメント更新（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 final sync
+- **Result**: success
+- **Notes**:
+  - `manual-test-result.md` の `not_run` を `NON_VISUAL_FALLBACK` へ置換し、manual evidence blocker と代替証跡を必須化
+  - `phase-12-documentation-guide.md` と `spec-update-workflow.md` に artifact parity / manual evidence / internal-public IPC 境界ルールを追加
+  - follow-up 2件（Skill Creator public IPC wiring / subscription service integration）を formalize
+  - implementation task の completed record と backlog cleanup を same-wave sync した
+
+---
+
 ## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（2026-03-21）
 
 - **Agent**: task-specification-creator

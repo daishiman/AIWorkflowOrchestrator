@@ -1,21 +1,22 @@
 /**
  * RuntimeSkillCreatorFacade - Runtime ルーティング対応の Skill Creator Facade
  *
- * TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001
+ * TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001
  *
  * Planner / Executor / Improver の 3 role を持つ。
+ * decision.capability の4状態（integratedRuntime / terminalSurface / both / none）で分岐する。
  * 重要: internal role 名は IPC payload に含めない（TC-4-12, P44 準拠）。
  *
  * 既存の SkillCreatorService（TASK-9B-G）とは別クラス。
  * 既存クラスは Skill ファイル作成 Facade であり、本クラスは
- * runtime routing（integrated_api / terminal_handoff）を担う。
+ * runtime routing（capability bridge）を担う。
  */
 
 import type {
   SkillExecutor,
   SkillExecutionRequest,
 } from "../skill/SkillExecutor";
-import type { AuthMode } from "@repo/shared/types/auth-mode";
+import type { ExecutionCapabilityInput } from "@repo/shared/types/execution-capability";
 import type { IAuthKeyService } from "../auth/types";
 import { RuntimePolicyResolver } from "./RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "./TerminalHandoffBuilder";
@@ -33,6 +34,11 @@ export interface SkillExecuteResult {
   skillName: string;
   success: boolean;
   error?: string;
+}
+
+export interface RuntimeTerminalHandoffResult {
+  type: "terminal_handoff";
+  bundle: ReturnType<TerminalHandoffBuilder["build"]>;
 }
 
 /** Improver role の出力 */
@@ -65,32 +71,28 @@ export class RuntimeSkillCreatorFacade {
    */
   async plan(
     skillSpec: string,
-    authMode: AuthMode,
-    apiKey: string | null,
-  ): Promise<
-    | SkillPlanResult
-    | {
-        type: "terminal_handoff";
-        bundle: ReturnType<TerminalHandoffBuilder["build"]>;
+    input: ExecutionCapabilityInput,
+  ): Promise<SkillPlanResult | RuntimeTerminalHandoffResult> {
+    const decision = this.resolver.resolve(input);
+
+    switch (decision.capability) {
+      case "terminalSurface": {
+        const bundle = this.handoffBuilder.build(
+          `Skill を作成してください: ${skillSpec}`,
+          process.cwd(),
+        );
+        return { type: "terminal_handoff", bundle };
       }
-  > {
-    const decision = await this.resolver.resolve(authMode, apiKey);
-
-    if (decision.type === "terminal_handoff") {
-      const bundle = this.handoffBuilder.build(
-        `Skill を作成してください: ${skillSpec}`,
-        process.cwd(),
-      );
-      return { type: "terminal_handoff", bundle };
+      case "integratedRuntime":
+      case "both": {
+        const planId = `plan-${Date.now()}`;
+        return { planId, skillSpec, estimatedSteps: 3 };
+      }
+      case "none":
+        throw new Error(
+          "Unreachable: capability 'none' は assertNoSilentFallback で阻止される",
+        );
     }
-
-    // integrated_api: 計画を生成
-    const planId = `plan-${Date.now()}`;
-    return {
-      planId,
-      skillSpec,
-      estimatedSteps: 3,
-    };
   }
 
   /**
@@ -100,10 +102,26 @@ export class RuntimeSkillCreatorFacade {
    */
   async execute(
     planResult: SkillPlanResult,
-    authMode: AuthMode,
-    apiKey: string | null,
-  ): Promise<SkillExecuteResult> {
-    const decision = await this.resolver.resolve(authMode, apiKey);
+    input: ExecutionCapabilityInput,
+  ): Promise<SkillExecuteResult | RuntimeTerminalHandoffResult> {
+    const decision = this.resolver.resolve(input);
+
+    switch (decision.capability) {
+      case "terminalSurface": {
+        const bundle = this.handoffBuilder.build(
+          `以下の Skill 実行を継続してください: ${planResult.skillSpec}`,
+          process.cwd(),
+        );
+        return { type: "terminal_handoff", bundle };
+      }
+      case "integratedRuntime":
+      case "both":
+        break;
+      case "none":
+        throw new Error(
+          "Unreachable: capability 'none' は assertNoSilentFallback で阻止される",
+        );
+    }
 
     const request: SkillExecutionRequest = {
       prompt: planResult.skillSpec,
@@ -122,8 +140,6 @@ export class RuntimeSkillCreatorFacade {
       content: planResult.skillSpec,
     };
 
-    // decision は将来の integrated_api/terminal_handoff 分岐で使用予定
-    void decision;
     const response = await this.skillExecutor.execute(request, skillMeta);
 
     return {
@@ -142,33 +158,33 @@ export class RuntimeSkillCreatorFacade {
   async improve(
     skillName: string,
     feedback: string,
-    authMode: AuthMode,
-    apiKey: string | null,
-  ): Promise<
-    | SkillImproveResult
-    | {
-        type: "terminal_handoff";
-        bundle: ReturnType<TerminalHandoffBuilder["build"]>;
+    input: ExecutionCapabilityInput,
+  ): Promise<SkillImproveResult | RuntimeTerminalHandoffResult> {
+    const decision = this.resolver.resolve(input);
+
+    switch (decision.capability) {
+      case "terminalSurface": {
+        const bundle = this.handoffBuilder.build(
+          `スキル "${skillName}" を改善してください: ${feedback}`,
+          process.cwd(),
+        );
+        return { type: "terminal_handoff", bundle };
       }
-  > {
-    const decision = await this.resolver.resolve(authMode, apiKey);
-
-    if (decision.type === "terminal_handoff") {
-      const bundle = this.handoffBuilder.build(
-        `スキル "${skillName}" を改善してください: ${feedback}`,
-        process.cwd(),
-      );
-      return { type: "terminal_handoff", bundle };
+      case "integratedRuntime":
+      case "both": {
+        const improveId = `improve-${Date.now()}`;
+        return {
+          improveId,
+          suggestions: [
+            "エラーハンドリングを強化してください",
+            "入力バリデーションを追加してください",
+          ],
+        };
+      }
+      case "none":
+        throw new Error(
+          "Unreachable: capability 'none' は assertNoSilentFallback で阻止される",
+        );
     }
-
-    // integrated_api: 改善提案を生成
-    const improveId = `improve-${Date.now()}`;
-    return {
-      improveId,
-      suggestions: [
-        "エラーハンドリングを強化してください",
-        "入力バリデーションを追加してください",
-      ],
-    };
   }
 }

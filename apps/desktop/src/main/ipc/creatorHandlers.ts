@@ -1,15 +1,16 @@
 /**
  * Creator IPC ハンドラ
  *
- * TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001
+ * TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001
  *
  * SkillCreatorService の Planner / Executor / Improver role を IPC チャンネルとして公開する。
+ * IPC boundary で raw authMode / apiKey を ExecutionCapabilityInput に正規化する。
  * 重要: internal role 名は IPC レスポンスに含めない（P44 準拠）。
  */
 
 import { ipcMain } from "electron";
 import type { RuntimeSkillCreatorFacade as SkillCreatorService } from "../services/runtime/RuntimeSkillCreatorFacade";
-import type { AuthMode } from "@repo/shared/types/auth-mode";
+import type { ExecutionCapabilityInput } from "@repo/shared/types/execution-capability";
 
 // IPC チャンネル定数（既存の channels.ts に追加することも可能だが、新規ファイルで管理）
 export const CREATOR_CHANNELS = {
@@ -17,6 +18,22 @@ export const CREATOR_CHANNELS = {
   CREATOR_EXECUTE: "creator:execute",
   CREATOR_IMPROVE: "creator:improve",
 } as const;
+
+/**
+ * IPC boundary: raw args から ExecutionCapabilityInput を構築する。
+ * authMode は boundary 正規化のみに使い、capability 語彙に変換する。
+ */
+function buildCapabilityInput(args: {
+  authMode?: string;
+  apiKey?: string | null;
+  apiKeyDegraded?: boolean;
+}): ExecutionCapabilityInput {
+  return {
+    apiKeyValid: typeof args.apiKey === "string" && args.apiKey.trim() !== "",
+    subscriptionValid: args.authMode === "subscription",
+    apiKeyDegraded: args.apiKeyDegraded ?? false,
+  };
+}
 
 /**
  * Creator IPC ハンドラを登録する
@@ -29,7 +46,12 @@ export function registerCreatorHandlers(
     CREATOR_CHANNELS.CREATOR_PLAN,
     async (
       _event,
-      args: { prompt: string; authMode?: AuthMode; apiKey?: string | null },
+      args: {
+        prompt: string;
+        authMode?: string;
+        apiKey?: string | null;
+        apiKeyDegraded?: boolean;
+      },
     ) => {
       // P42 3段バリデーション
       if (
@@ -43,15 +65,10 @@ export function registerCreatorHandlers(
         };
       }
 
-      const authMode: AuthMode = args.authMode ?? "api-key";
-      const apiKey = args.apiKey ?? null;
+      const input = buildCapabilityInput(args);
 
       try {
-        const result = await creatorService.plan(
-          args.prompt.trim(),
-          authMode,
-          apiKey,
-        );
+        const result = await creatorService.plan(args.prompt.trim(), input);
         return { success: true, data: result };
       } catch (error) {
         return {
@@ -73,8 +90,9 @@ export function registerCreatorHandlers(
       args: {
         planId: string;
         skillSpec: string;
-        authMode?: AuthMode;
+        authMode?: string;
         apiKey?: string | null;
+        apiKeyDegraded?: boolean;
       },
     ) => {
       // P42 3段バリデーション
@@ -89,8 +107,7 @@ export function registerCreatorHandlers(
         };
       }
 
-      const authMode: AuthMode = args.authMode ?? "api-key";
-      const apiKey = args.apiKey ?? null;
+      const input = buildCapabilityInput(args);
 
       try {
         const planResult = {
@@ -98,11 +115,7 @@ export function registerCreatorHandlers(
           skillSpec: args.skillSpec ?? "",
           estimatedSteps: 3,
         };
-        const result = await creatorService.execute(
-          planResult,
-          authMode,
-          apiKey,
-        );
+        const result = await creatorService.execute(planResult, input);
         return { success: true, data: result };
       } catch (error) {
         return {
@@ -124,8 +137,9 @@ export function registerCreatorHandlers(
       args: {
         skillName: string;
         feedback: string;
-        authMode?: AuthMode;
+        authMode?: string;
         apiKey?: string | null;
+        apiKeyDegraded?: boolean;
       },
     ) => {
       // P42 3段バリデーション
@@ -150,15 +164,13 @@ export function registerCreatorHandlers(
         };
       }
 
-      const authMode: AuthMode = args.authMode ?? "api-key";
-      const apiKey = args.apiKey ?? null;
+      const input = buildCapabilityInput(args);
 
       try {
         const result = await creatorService.improve(
           args.skillName.trim(),
           args.feedback.trim(),
-          authMode,
-          apiKey,
+          input,
         );
         return { success: true, data: result };
       } catch (error) {

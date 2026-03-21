@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 完了同期（direct caller capability bridge 完了 / follow-up 2件 formalize / manual evidence 是正） |
 | 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（implementation_ready 正規化 / code gap formalize / backlog 4件同期） |
 | 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 spec-only Phase 1-12 完了（設計タスク: RuntimePolicy/HealthContract/HandoffContract 中央集約設計、DD-1〜DD-6確定、M-1/M-2処置完了、Task03-09は未着手、未タスク3件を backlog / workflow / lessons へ同期） |
 | 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（Task02 root / Task01 completed root / downstream consumer path 同期） |
@@ -54,6 +55,16 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 完了同期（2026-03-21）
+
+- タスク名: RuntimePolicyResolver capability bridge
+- 種別: implementation / Phase 12 final sync
+- 主な反映:
+  - `RuntimeSkillCreatorFacade.execute()` が `terminalSurface` で handoff bundle を返し、`SkillExecutor` を呼ばないよう是正
+  - `creatorHandlers.ts` に `ExecutionCapabilityInput` 正規化を導入し、`creatorHandlers.test.ts` を追加
+  - `task-workflow-completed.md` へ implementation completed record を追加し、backlog へ follow-up 2件を formalize
+  - `manual-test-result.md` の `not_run` を `NON_VISUAL_FALLBACK` 証跡へ置換し、artifact parity と internal/public contract 境界を教訓化
 
 ## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（2026-03-21）
 
