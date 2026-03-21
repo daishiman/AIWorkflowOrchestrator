@@ -132,6 +132,10 @@
     "./types/skill-improver": {
       "types": "./dist/src/types/skill-improver.d.ts",
       "import": "./dist/src/types/skill-improver.js"
+    },
+    "./types/execution-capability": {
+      "types": "./dist/src/types/execution-capability.d.ts",
+      "import": "./dist/src/types/execution-capability.js"
     }
   },
   "typesVersions": {
@@ -228,6 +232,9 @@
       ],
       "types/skill-improver": [
         "./src/types/skill-improver.ts"
+      ],
+      "types/execution-capability": [
+        "./src/types/execution-capability.ts"
       ]
     }
   },

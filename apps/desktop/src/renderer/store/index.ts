@@ -713,6 +713,18 @@ export const useCreateSkill = () => useAppStore((state) => state.createSkill);
 /** 分析結果クリアアクション */
 export const useClearAnalysis = () =>
   useAppStore((state) => state.clearAnalysis);
+/** レビュー開始アクション */
+export const useBeginSkillReview = () =>
+  useAppStore((state) => state.beginSkillReview);
+/** レビュー確定アクション */
+export const useCompleteSkillReview = () =>
+  useAppStore((state) => state.completeSkillReview);
+/** 改善後の再実行アクション */
+export const useReExecuteAfterImprovement = () =>
+  useAppStore((state) => state.reExecuteAfterImprovement);
+/** スキル実行サイクルのリセット */
+export const useResetSkillExecutionCycle = () =>
+  useAppStore((state) => state.resetSkillExecutionCycle);
 
 // ==========================================================================
 // スキルインポートライフサイクル派生セレクタ（TASK-10A-E-C）

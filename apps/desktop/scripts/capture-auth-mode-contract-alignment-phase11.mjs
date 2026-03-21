@@ -90,7 +90,10 @@ function createMockScript() {
 
     const setCredentialState = ({ apiKey, subscription }) => {
       window.localStorage.setItem(STORAGE_KEYS.apiKey, String(apiKey));
-      window.localStorage.setItem(STORAGE_KEYS.subscription, String(subscription));
+      window.localStorage.setItem(
+        STORAGE_KEYS.subscription,
+        String(subscription),
+      );
     };
 
     const getCredentialState = () => ({
@@ -164,7 +167,6 @@ function createMockScript() {
     if (window.localStorage.getItem(STORAGE_KEYS.apiKey) === null) {
       setCredentialState({ apiKey: false, subscription: true });
     }
-    window.sessionStorage.setItem("debug-clear-storage", "done");
 
     const mockUser = {
       id: "phase11-user",
@@ -421,7 +423,9 @@ async function waitForStatusMessage(page, message) {
   });
   await page.waitForFunction(
     (expectedMessage) => {
-      const el = document.querySelector("[data-testid='auth-mode-status-message']");
+      const el = document.querySelector(
+        "[data-testid='auth-mode-status-message']",
+      );
       return el?.textContent?.includes(expectedMessage);
     },
     message,
@@ -450,7 +454,15 @@ async function main() {
 
   const server = spawn(
     "pnpm",
-    ["exec", "vite", "--config", "vite.e2e.config.ts", "--port", port, "--strictPort"],
+    [
+      "exec",
+      "vite",
+      "--config",
+      "vite.e2e.config.ts",
+      "--port",
+      port,
+      "--strictPort",
+    ],
     {
       cwd: desktopRoot,
       stdio: ["ignore", "pipe", "pipe"],
@@ -486,13 +498,18 @@ async function main() {
       waitUntil: "domcontentloaded",
       timeout: 90_000,
     });
-    await page.waitForLoadState("networkidle", { timeout: 20_000 }).catch(() => {
-      // fallback to selector waits
-    });
+    await page
+      .waitForLoadState("networkidle", { timeout: 20_000 })
+      .catch(() => {
+        // fallback to selector waits
+      });
     process.stdout.write("[phase11] wait settings view\n");
     await page.getByTestId("settings-view").waitFor({ timeout: 20_000 });
     await waitForAuthMode(page, "subscription");
-    await waitForStatusMessage(page, "Claude Code CLI の認証情報を使用できます");
+    await waitForStatusMessage(
+      page,
+      "Claude Code CLI の認証情報を使用できます",
+    );
 
     const metadata = [];
 
@@ -560,9 +577,11 @@ async function main() {
     );
 
     await page.reload({ waitUntil: "domcontentloaded", timeout: 90_000 });
-    await page.waitForLoadState("networkidle", { timeout: 20_000 }).catch(() => {
-      // fallback to selector waits
-    });
+    await page
+      .waitForLoadState("networkidle", { timeout: 20_000 })
+      .catch(() => {
+        // fallback to selector waits
+      });
     await page.getByTestId("settings-view").waitFor({ timeout: 20_000 });
     await waitForAuthMode(page, "api-key");
     await waitForStatusMessage(page, "Anthropic APIキーを使用できます");
@@ -589,8 +608,12 @@ async function main() {
         height: Math.round(rect.height),
       });
 
-      const selectorRect = selector ? rectToJson(selector.getBoundingClientRect()) : null;
-      const statusRect = status ? rectToJson(status.getBoundingClientRect()) : null;
+      const selectorRect = selector
+        ? rectToJson(selector.getBoundingClientRect())
+        : null;
+      const statusRect = status
+        ? rectToJson(status.getBoundingClientRect())
+        : null;
       const selectedStyle = selected ? window.getComputedStyle(selected) : null;
       const statusStyle = status ? window.getComputedStyle(status) : null;
 

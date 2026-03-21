@@ -50,10 +50,11 @@ const HANDLER_PATTERN =
   /ipcMain\.(handle|on)\s*\(\s*(?:(['"`])([^'"`]+)\2|([A-Z_]+(?:\.[A-Z_]+)+))/;
 const PRELOAD_PATTERN =
   /safe(Invoke|On)(?:<[\s\S]+?>)?\s*\(\s*(?:(['"`])([^'"`]+)\2|([A-Z_]+(?:\.[A-Z_]+)+))(?:\s*,\s*([\s\S]*?))?\s*\)/;
-const CHANNEL_OBJECT_PATTERN =
+export const CHANNEL_OBJECT_PATTERN =
   /(?:export\s+)?const\s+([A-Z][A-Z0-9_]*)\s*=\s*{([\s\S]*?)}\s*as const/gm;
 const CHANNEL_CONST_PATTERN = /^\s*([A-Z0-9_]+)\s*:\s*['"]([^'"]+)['"]/gm;
-const PRELOAD_CALL_START_PATTERN = /safe(?:Invoke|On)(?:<[\s\S]*?>)?\s*\(/;
+export const PRELOAD_CALL_START_PATTERN =
+  /safe(?:Invoke|On)(?:<[\s\S]*?>)?\s*\(/;
 const PRIMITIVE_TS_TYPES = new Set([
   "string",
   "number",
@@ -64,7 +65,7 @@ const PRIMITIVE_TS_TYPES = new Set([
   "undefined",
 ]);
 
-function normalizeTypeAnnotation(typeAnnotation: string): string {
+export function normalizeTypeAnnotation(typeAnnotation: string): string {
   return typeAnnotation
     .replace(/\s*=>[\s\S]*$/, "")
     .replace(/\s*=\s*[\s\S]*$/, "")
@@ -72,7 +73,7 @@ function normalizeTypeAnnotation(typeAnnotation: string): string {
     .trim();
 }
 
-function isPrimitiveTypeAnnotation(typeAnnotation: string): boolean {
+export function isPrimitiveTypeAnnotation(typeAnnotation: string): boolean {
   const normalized = normalizeTypeAnnotation(typeAnnotation)
     .replace(/[()]/g, "")
     .trim();
@@ -267,7 +268,7 @@ export function resolveChannelMap(
   return map;
 }
 
-function mergeChannelMaps(filePaths: string[]): Map<string, string> {
+export function mergeChannelMaps(filePaths: string[]): Map<string, string> {
   const merged = new Map<string, string>();
 
   for (const filePath of filePaths) {

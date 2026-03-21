@@ -86,7 +86,6 @@ function createMockScript() {
 
     const now = new Date("2026-03-18T02:30:00.000Z").toISOString();
 
-    sessionStorage.setItem("debug-clear-storage", "done");
     localStorage.setItem("dev-skip-auth", "true");
 
     const resolveTheme = () =>

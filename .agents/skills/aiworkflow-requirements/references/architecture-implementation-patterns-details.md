@@ -464,3 +464,38 @@ case "skillCreate":
 
 ---
 
+### S-CB-01: Capability Bridge パターン（TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 2026-03-21実装）
+
+`packages/shared` の pure function（`resolveCapability()`）を **単一 authority** とし、Main Process の resolver がラッパーとして機能するパターン。
+
+#### 構造
+
+```
+IPC boundary (creatorHandlers.ts)
+  → buildCapabilityInput(args)     // raw authMode → ExecutionCapabilityInput
+  → RuntimePolicyResolver.resolve(input)
+    → resolveCapability(input)     // packages/shared (pure function)
+    → assertNoSilentFallback(cap)  // "none" → 例外
+    → buildDecision(capability)    // RuntimeDecision 構築
+  → switch (decision.capability)   // 4状態ハンドリング
+```
+
+#### 適用条件
+
+- 判定ロジックが `packages/shared` に pure function として確立済み
+- Main Process の resolver が独自の判定ロジックを持つ必要がない
+- IPC boundary で raw 入力を正規化し、capability 語彙に変換する
+
+#### 注意事項
+
+- `assertNoSilentFallback()` は `resolve()` 内に埋め込む（呼び出し元に任せない）
+- `silent: true` オプションは UI 表示目的で capability を取得する場合のみ使用
+- 3-role facade（plan/execute/improve）では全 role × 全 capability の matrix を設計時に明示する（L-CB-03）
+- モノレポで新規サブパス追加時は package.json exports + typesVersions + tsup.config.ts entry の3箇所同時更新（L-CB-01）
+
+#### 関連パターン
+
+- P62: DEFAULT_CONFIG への暗黙 fallback（assertNoSilentFallback で阻止）
+- P44: IPC インターフェース不整合（buildCapabilityInput で boundary 正規化）
+- L-CB-01〜03: lessons-learned-current.md
+

@@ -10,6 +10,14 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 2026-03-21 | TASK-FIX-LLM-CONFIG-PERSISTENCE | LLM選択状態（selectedProviderId/selectedModelId）の永続化修正。persist partialize拡張、v0→v2 migrate、起動時バリデーション、P62対策を実装 |
 | 2026-03-21 - Task03 root canonicalization / Task02 completed relocation sync（legacy register / generate-index / mirror parity を含む same-wave 更新） |
 | 2026-03-21 - UT-SLIDE-UI-001 完了同期（Slide Workspace 4領域 UI 実装 / Phase 11 screenshot 10枚 / task09 canonical same-wave 更新） |
+| 2026-03-21 - chat-inline-model-selector ワークフロー仕様書作成（TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT / TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION / TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 3タスク Phase 1-13 仕様書 34ファイル） |
+| 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE follow-up formalize（UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001 / UT-FIX-LLM-BANNER-DISMISS-001） |
+| 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査完了（Task02 root 正本化 / screenshot 4件 / system spec same-wave sync） |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 完了同期（direct caller capability bridge 完了 / follow-up 2件 formalize / manual evidence 是正） |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（implementation_ready 正規化 / code gap formalize / backlog 4件同期） |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 spec-only Phase 1-12 完了（設計タスク: RuntimePolicy/HealthContract/HandoffContract 中央集約設計、DD-1〜DD-6確定、M-1/M-2処置完了、Task03-09は未着手、未タスク3件を backlog / workflow / lessons へ同期） |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（Task02 root / Task01 completed root / downstream consumer path 同期） |
+
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（UT-CHATVIEW-ERROR-BANNER-I18N-001=#1398 / UT-CHATVIEW-ERROR-CODE-INVENTORY-001=#1397） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（artifact inventory / legacy register / unassigned 9セクション是正 / validate-structure） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（root canonical path 是正 / screenshot 5件 / unassigned 2件 formalize / system spec 同期） |
@@ -90,16 +98,36 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - 旧 path の repo 残存を `rg` で監査し、`generate-index.js` による `topic-map.md` / `keywords.json` 再生成と mirror parity まで含めて same-wave sync の current facts を修復
 
 ## UT-SLIDE-UI-001 完了同期（2026-03-21）
+## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 完了同期（2026-03-21）
 
-- タスク名: Slide Workspace UI 4領域実装
-- 種別: UI実装 + Phase 11/12 same-wave sync
+
+- タスク名: RuntimePolicyResolver capability bridge
+- 種別: implementation / Phase 12 final sync
 - 主な反映:
-  - `SlideWorkspace.tsx` に guidance/degraded/running/synced 4領域 UI を接続し、settings 導線と `manualSync` retry を有効化
-  - `SlideGuidanceBlock.tsx` / `SlideProgressRow.tsx` / `TerminalLauncher.tsx` / close button に focus ring を追加
-  - `SlideSyncCard.tsx` の synced badge を黒文字へ変更し、コントラストを改善
-  - `apps/desktop/scripts/capture-ut-slide-ui-001-phase11.mjs` で current workflow 配下へ 10枚の screenshot を再生成
-  - `ui-ux-feature-components-details.md` / `api-ipc-system-core.md` / `task-workflow-completed.md` / `workflow-ai-runtime-authmode-unification.md` / `arch-state-management-advanced.md` を current branch へ同期
-  - `UT-SLIDE-UI-CLOSE-ERROR-001` / `UT-SLIDE-UI-HIG-LEGACY-001` を pending、`UT-SLIDE-P31-001` / `UT-SLIDE-UI-ACCESSIBILITY-001` を解消済みへ更新
+  - `RuntimeSkillCreatorFacade.execute()` が `terminalSurface` で handoff bundle を返し、`SkillExecutor` を呼ばないよう是正
+  - `creatorHandlers.ts` に `ExecutionCapabilityInput` 正規化を導入し、`creatorHandlers.test.ts` を追加
+  - `task-workflow-completed.md` へ implementation completed record を追加し、backlog へ follow-up 2件を formalize
+  - `manual-test-result.md` の `not_run` を `NON_VISUAL_FALLBACK` 証跡へ置換し、artifact parity と internal/public contract 境界を教訓化
+
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（2026-03-21）
+
+- タスク名: runtime policy centralization final re-audit
+- 種別: Phase 12 final sync / implementation gap formalize
+- 主な反映:
+  - Task02 workflow root を `implementation_ready`、completed ledger を `spec_created` として再定義
+  - `outputs/phase-12/skill-feedback-report.md` を追加し、Phase 12 必須 6成果物を充足
+  - `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` を新規 formalize し、backlog を 4件へ更新
+  - current code の runtime policy consumer / AI health route / facade execute path / shared transport / tests の gap を system spec へ同期
+  - worktree でも `.claude` 正本更新を先送りしないルールを task-specification-creator 側へ反映
+
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（2026-03-21）
+
+- タスク名: runtime policy centralization standalone root normalization
+- 種別: docs-only / canonical path sync
+- 主な反映:
+  - `workflow-ai-runtime-execution-responsibility-realignment.md` の current canonical set に Task02 standalone root を追加し、Task01 completed root と同列に扱うよう是正
+  - parent workflow と Task03-09 downstream consumer が参照する Task02 index を `docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/index.md` へ正規化
+  - `outputs/verification-report.md` を再生成し、stale nested path のまま PASS が残る状態を解消
 
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 

@@ -28,6 +28,7 @@
 | --- | --- | --- |
 | workflow planning / task decomposition | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/index.md`, `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/index.md`, `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/index.md` | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/design-audit-matrix.md` |
 | runtime policy centralization task 実体 | `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/index.md`, `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-2/contract-matrix.md`, `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-3/gate-decision.md` | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/tasks/step-03-par-task-03-settings-shell-access-matrix-mainline/phase-1-requirements.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/tasks/step-03-par-task-04-chat-workspace-guidance-action-wiring/phase-1-requirements.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/tasks/step-03-par-task-05-terminal-handoff-surface-realization/phase-1-requirements.md` |
+
 | UI/UX mainline / handoff | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/ui-ux-realization.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/ui-ux-diagrams.md` | `ui-ux-navigation.md`, `ui-ux-settings-core.md` |
 | capability foundation | `interfaces-auth.md`, `interfaces-auth-core.md`, `arch-state-management-core.md` | `workflow-ai-runtime-authmode-unification.md` |
 | runtime policy / health route | `api-ipc-system.md`, `api-ipc-system-core.md`, `llm-ipc-types.md` | `security-electron-ipc-core.md`, `security-principles.md` |
@@ -45,15 +46,18 @@
 ## 実装ステータススナップショット（2026-03-21）
 
 - Task02（`TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001`）は **design workflow close-out 完了**。workflow root は `implementation_ready`、completed ledger は `spec_created` として扱う。
+- focused lane `TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001` は `RuntimePolicyResolver` / `RuntimeSkillCreatorFacade` / `creatorHandlers.ts` の direct caller capability bridge を **Phase 1-12 完了**（Phase 13 は user approval 未取得のため blocked）。`resolveCapability()` を authority とし、4状態 switch + `assertNoSilentFallback` enforcement、`execute()` の terminal handoff 分岐、`creatorHandlers.test.ts` による boundary 正規化検証を実装済み。
 - `apps/desktop` / `packages/shared` には centralization を end-to-end で閉じる Task02 起点の実装差分はまだ存在しない。
 - downstream Task03-09 は parent workflow 上で `spec_created` / `not_started` のまま。
-- current code には `skillHandlers.ts` / `agentHandlers.ts` の旧 resolver 依存、`aiHandlers.ts` の policy bypass + `AI_CHECK_CONNECTION` legacy handler、`RuntimeSkillCreatorFacade.ts` の decision 未消費、shared transport / test coverage 不足が残っている。
+- current code には `skillHandlers.ts` / `agentHandlers.ts` の旧 resolver 依存、`aiHandlers.ts` の policy bypass + `AI_CHECK_CONNECTION` legacy handler、public `skill-creator:*` surface と internal `creator:*` adapter の未統合、`resolveFromServices()` の subscription service 未統合が残っている。
 
 ## Follow-up Backlog
 
 | Task | 内容 | 仕様書 |
 | --- | --- | --- |
 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
+| UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface を統合する | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
+| UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001 | `RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
 | UT-CLEANUP-AI-CHECK-CONNECTION-001 | `llm:check-health` への移行完了後に `AI_CHECK_CONNECTION` legacy handler / channel / preload API を削除する | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
 | UT-CLEANUP-RUNTIME-RESOLVER-001 | 全 surface の policy consumer 移行完了後に deprecated `RuntimeResolver` を削除する | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
 | UT-DESIGN-SANITIZE-PLACEMENT-001 | `sanitizeForRenderer()` の配置先を Task04 着手前に確定する | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |

@@ -234,7 +234,6 @@ async function captureScenario(browser, scenario, assetEntries) {
       isOffline: false,
     };
 
-    window.sessionStorage.setItem("debug-clear-storage", "done");
     window.localStorage.setItem("dev-skip-auth", "true");
     window.__PHASE11_LIGHT_THEME_CONTRAST_GUARD__ = harnessPayload;
 
@@ -363,10 +362,7 @@ async function captureScenario(browser, scenario, assetEntries) {
       await captureWorkspaceSearch(page);
     }
 
-    const outputPath = path.join(
-      screenshotDir,
-      path.basename(scenario.output),
-    );
+    const outputPath = path.join(screenshotDir, path.basename(scenario.output));
     await page.locator(scenario.selector).screenshot({
       path: outputPath,
     });
@@ -411,7 +407,9 @@ async function main() {
     });
 
     if (!(await probeStaticServer(readinessUrl))) {
-      throw new Error(`Failed to start local static server for ${readinessUrl}`);
+      throw new Error(
+        `Failed to start local static server for ${readinessUrl}`,
+      );
     }
   }
 

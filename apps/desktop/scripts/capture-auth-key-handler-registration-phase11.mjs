@@ -173,7 +173,6 @@ async function main() {
       invoke: async () => ({ success: true, data: {} }),
     };
 
-    window.sessionStorage.setItem("debug-clear-storage", "done");
     window.localStorage.setItem(
       "knowledge-studio-store",
       JSON.stringify({

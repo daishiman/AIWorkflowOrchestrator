@@ -175,7 +175,6 @@ function ensureElectronApi(theme: HarnessTheme): void {
 
   window.confirm = () => true;
   localStorage.setItem("dev-skip-auth", "true");
-  sessionStorage.setItem("debug-clear-storage", "done");
 
   (
     window as typeof window & {
