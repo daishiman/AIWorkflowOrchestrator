@@ -41,6 +41,7 @@
 - task 09 の primary target は **workflow self を含む10ファイル** (`workflow-ai-runtime-authmode-unification.md` / `api-ipc-system-core.md` / `interfaces-agent-sdk-skill-advanced.md` / `arch-electron-services-details-part2.md` / `ui-ux-feature-components-details.md` / `arch-state-management-advanced.md` / `security-electron-ipc-core.md` / `task-workflow-completed.md` / `task-workflow-backlog.md` / `lessons-learned-ipc-preload-runtime.md`) とした。
 - current code drift として `registerSlideIpcHandlers()` 未接続、legacy channel 名残存、`agent-client.ts` の direct SDK path、`modifier-skill.ts` 残存、SlideWorkspace UI 4領域未反映を記録した。
 - follow-up 未タスク `UT-SLIDE-IMPL-001` / `UT-SLIDE-UI-001` / `UT-SLIDE-P31-001` / `UT-SLIDE-HANDOFF-DUP-001` を formalize した。
+- 2026-03-21 current branch では `UT-SLIDE-UI-001` を完了、`UT-SLIDE-P31-001` を吸収済みへ更新した。
 
 ### task 09 再監査結果サマリー（2026-03-19）
 

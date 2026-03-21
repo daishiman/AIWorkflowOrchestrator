@@ -198,7 +198,6 @@ slide invoke channel はすべて `validateIpcSender -> P42 -> path guard -> bus
 **関連未タスク**:
 
 - `UT-SLIDE-IMPL-001`
-- `UT-SLIDE-UI-001`
 
 ### Conversation IPC セキュリティ契約（TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION / TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001）
 

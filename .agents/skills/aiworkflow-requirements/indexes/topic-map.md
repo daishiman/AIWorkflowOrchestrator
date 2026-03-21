@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-20
+> 自動生成: 2026-03-21
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1459,10 +1459,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| セキュリティ設定 | L6 |
 | Content Security Policy (CSP) | L20 |
 | IPC通信のセキュリティ | L37 |
-| 実装例: historyAPI | L343 |
-| 実装例: notificationAPI（TASK-UI-08） | L395 |
-| 実装例: slideSettingsAPI | L428 |
-| IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L477 |
+| 実装例: historyAPI | L342 |
+| 実装例: notificationAPI（TASK-UI-08） | L394 |
+| 実装例: slideSettingsAPI | L427 |
+| IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L476 |
 
 ### references/security-electron-ipc-details.md
 
@@ -1830,18 +1830,18 @@ node scripts/list-specs.js --topics
 | 今回の確定事項（2026-03-13） | L19 |
 | Step-03 Task06 再監査追補（2026-03-17） | L29 |
 | Step-04 Task09 再監査追補（2026-03-19） | L37 |
-| 再監査追補（2026-03-14） | L77 |
-| current canonical set（2026-03-14 wave） | L91 |
-| artifact inventory（Step-01 + system spec sync） | L107 |
-| parent docs と依存関係 | L138 |
-| 旧 filename 互換管理 | L151 |
-| 設定画面レビューの必須改善対象 | L158 |
-| 後続タスクへの伝搬先 | L176 |
-| SubAgent 編成（関心ごと分離） | L205 |
-| 同種課題の5分解決カード | L217 |
-| 最適なファイル形成 | L227 |
-| 関連ドキュメント | L239 |
-| 変更履歴 | L251 |
+| 再監査追補（2026-03-14） | L78 |
+| current canonical set（2026-03-14 wave） | L92 |
+| artifact inventory（Step-01 + system spec sync） | L108 |
+| parent docs と依存関係 | L139 |
+| 旧 filename 互換管理 | L152 |
+| 設定画面レビューの必須改善対象 | L159 |
+| 後続タスクへの伝搬先 | L177 |
+| SubAgent 編成（関心ごと分離） | L206 |
+| 同種課題の5分解決カード | L218 |
+| 最適なファイル形成 | L228 |
+| 関連ドキュメント | L240 |
+| 変更履歴 | L252 |
 
 ### references/workflow-ai-runtime-execution-responsibility-realignment.md
 
@@ -2578,9 +2578,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L33 |
-| クイックリファレンス: カテゴリ別検索ガイド | L46 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L388 |
+| 分割ファイル一覧 | L34 |
+| クイックリファレンス: カテゴリ別検索ガイド | L47 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L389 |
+| UT-SLIDE-UI-001: Slide Workspace UI 4領域実装（2026-03-21） | L423 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
