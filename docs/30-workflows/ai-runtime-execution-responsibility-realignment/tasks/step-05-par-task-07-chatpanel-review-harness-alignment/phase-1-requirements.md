@@ -58,7 +58,7 @@ common canonical と task 固有 canonical を読み、ChatPanel review harness 
 
 ```bash
 git log --oneline -10 -- apps/desktop/src/renderer/components/chat/ChatPanel.tsx
-rg -n "authMode|runtime|handoff|terminal|guidance|health|capability" apps/desktop/src/renderer/components/chat apps/desktop/src/renderer/hooks apps/desktop/src/renderer docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation docs/30-workflows/ai-runtime-execution-responsibility-realignment || true
+rg -n "authMode|runtime|handoff|terminal|guidance|health|capability" apps/desktop/src/renderer/components/chat apps/desktop/src/renderer/hooks apps/desktop/src/renderer docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation docs/30-workflows/ai-runtime-execution-responsibility-realignment || true
 ```
 
 ### ステップ3: 要件・AC・除外範囲を確定する

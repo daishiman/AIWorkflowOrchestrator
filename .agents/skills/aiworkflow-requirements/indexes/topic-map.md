@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-20
+> 自動生成: 2026-03-21
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -298,14 +298,13 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
-| current runtime snapshot（2026-03-21） | L13 |
+| current runtime snapshot（2026-03-19） | L13 |
 | ドキュメント構成 | L26 |
 | アーキテクチャ概要図 | L38 |
 | 主要コンポーネント | L76 |
 | テスト品質サマリー | L106 |
-| known issues | L120 |
-| 変更履歴 | L137 |
-| 関連ドキュメント | L150 |
+| 変更履歴 | L120 |
+| 関連ドキュメント | L131 |
 
 ---
 
@@ -1850,7 +1849,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | current canonical set | L12 |
 | extraction matrix | L25 |
-| 実装同期ルール | L37 |
+| 実装同期ルール | L38 |
+| 実装ステータススナップショット（2026-03-21） | L45 |
+| Follow-up Backlog | L52 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2581,7 +2582,7 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L18 |
 | 分割ファイル一覧 | L35 |
 | クイックリファレンス: カテゴリ別検索ガイド | L48 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L390 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L391 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2603,20 +2604,21 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L30 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L60 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L113 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L141 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L184 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L235 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L304 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L342 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L32 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L62 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L111 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L164 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L192 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L235 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L286 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L355 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L393 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| 教訓サマリー | L8 |
-| TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 実装教訓（2026-03-19） | L22 |
+| TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 実装教訓（2026-03-19） | L21 |
 
 ### references/lessons-learned-safety-gate-ipc-quality.md
 
@@ -3485,30 +3487,30 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| 概要 | L22 |
-| GraphRAGクエリサービス | L28 |
-| HybridRAG統合パイプライン | L104 |
-| クエリタイプと検索重み | L185 |
-| フォールバック設計 | L196 |
-| パフォーマンス目標 | L210 |
-| HybridRAGFactory | L222 |
-| テスト品質 | L272 |
-| 関連ドキュメント | L281 |
+| 概要 | L20 |
+| GraphRAGクエリサービス | L26 |
+| HybridRAG統合パイプライン | L102 |
+| クエリタイプと検索重み | L183 |
+| フォールバック設計 | L194 |
+| パフォーマンス目標 | L208 |
+| HybridRAGFactory | L220 |
+| テスト品質 | L234 |
+| 関連ドキュメント | L243 |
 
 ### references/rag-search-crag.md
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L14 |
-| アーキテクチャ | L24 |
-| 主要インターフェース | L50 |
-| 型定義 | L70 |
-| 設定オプション | L129 |
-| 外部依存インターフェース | L151 |
-| 定数 | L189 |
-| 型ガード | L207 |
-| アクション決定ロジック | L220 |
-| テスト品質 | L230 |
-| 関連ドキュメント | L240 |
+| アーキテクチャ | L23 |
+| 主要インターフェース | L49 |
+| 型定義 | L69 |
+| 設定オプション | L128 |
+| 外部依存インターフェース | L150 |
+| 定数 | L182 |
+| 型ガード | L200 |
+| アクション決定ロジック | L213 |
+| テスト品質 | L223 |
+| 関連ドキュメント | L233 |
 
 ### references/rag-search-graph.md
 
@@ -3526,16 +3528,16 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| HybridRAGEngineクラス | L29 |
-| HybridRAGResponse | L56 |
-| HybridRAGResult | L76 |
-| PipelineStageResult | L88 |
-| SearchOptions（HybridRAG） | L101 |
-| HybridRAGOptions | L112 |
-| 定数 | L121 |
-| HybridRAGFactory | L131 |
-| テスト品質 | L306 |
-| 関連ドキュメント | L315 |
+| HybridRAGEngineクラス | L24 |
+| HybridRAGResponse | L51 |
+| HybridRAGResult | L71 |
+| PipelineStageResult | L83 |
+| SearchOptions（HybridRAG） | L96 |
+| HybridRAGOptions | L107 |
+| 定数 | L116 |
+| HybridRAGFactory | L126 |
+| テスト品質 | L183 |
+| 関連ドキュメント | L192 |
 
 ### references/rag-search-keyword.md
 
@@ -3583,12 +3585,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
-| 概要 | L22 |
-| クエリ分類器 | L28 |
-| エンティティ抽出サービス (NER) | L88 |
-| コミュニティ検出サービス (Leiden Algorithm) | L174 |
-| 関連ドキュメント | L296 |
-| Task08 完了記録（2026-03-19） | L304 |
+| 概要 | L20 |
+| クエリ分類器 | L26 |
+| エンティティ抽出サービス (NER) | L77 |
+| コミュニティ検出サービス (Leiden Algorithm) | L163 |
+| 関連ドキュメント | L285 |
+| Task08 完了記録（2026-03-19） | L293 |
 
 ### references/rag-vector-search.md
 

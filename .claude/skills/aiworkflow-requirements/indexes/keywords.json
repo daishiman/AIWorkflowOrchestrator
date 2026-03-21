@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-20T16:51:18.711Z",
-  "totalKeywords": 2408,
+  "generated": "2026-03-21T01:00:03.900Z",
+  "totalKeywords": 2410,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2379,6 +2379,7 @@
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
       "llm-ipc-types.md",
       "ui-ux-feature-components-details.md"
@@ -3133,6 +3134,7 @@
     ],
     "CENTRALIZATION": [
       "arch-state-management-reference.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
     ],
     "lifecycleHistorySlice": [
@@ -3779,12 +3781,6 @@
       "architecture-rag.md",
       "security-api-electron.md",
       "ui-ux-history-panel.md"
-    ],
-    "known": [
-      "architecture-rag.md"
-    ],
-    "issues": [
-      "architecture-rag.md"
     ],
     "仕様詳細": [
       "claude-code-agents-spec.md"
@@ -6227,6 +6223,9 @@
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "POLICY": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "仕様書作成": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -8556,7 +8555,8 @@
     ],
     "up": [
       "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "の未タスク": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
@@ -11044,6 +11044,15 @@
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "実装同期ルール": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "実装ステータススナップショット": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "Follow": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "Backlog": [
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "集計": [
