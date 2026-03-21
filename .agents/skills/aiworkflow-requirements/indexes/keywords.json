@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-21T07:58:19.540Z",
-  "totalKeywords": 2414,
+  "generated": "2026-03-21T11:11:48.348Z",
+  "totalKeywords": 2416,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6204,6 +6204,12 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "FAILURE": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "EXT": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "テスト拡充": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "EDIT": [

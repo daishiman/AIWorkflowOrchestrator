@@ -6,6 +6,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-21 - chat-inline-model-selector ワークフロー仕様書作成（TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT / TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION / TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 3タスク Phase 1-13 仕様書 34ファイル） |
+| 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE follow-up formalize（UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001 / UT-FIX-LLM-BANNER-DISMISS-001） |
+| 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査完了（Task02 root 正本化 / screenshot 4件 / system spec same-wave sync） |
 | 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 完了同期（direct caller capability bridge 完了 / follow-up 2件 formalize / manual evidence 是正） |
 | 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（implementation_ready 正規化 / code gap formalize / backlog 4件同期） |
 | 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 spec-only Phase 1-12 完了（設計タスク: RuntimePolicy/HealthContract/HandoffContract 中央集約設計、DD-1〜DD-6確定、M-1/M-2処置完了、Task03-09は未着手、未タスク3件を backlog / workflow / lessons へ同期） |
