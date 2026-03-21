@@ -15,7 +15,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-21 |
 | 対象 | surface 横断 runtime policy / health route / handoff contract centralization |
-| 成果物 | `docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/` |
+| 成果物 | `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/` |
 
 #### 実施内容
 
@@ -30,9 +30,9 @@
 | --- | --- |
 | `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（topic-map.md / keywords.json 再生成） |
 | `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js` | PASS with warnings 5（500行超ファイルの既存警告のみ） |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（13/13, errors 0, warnings 0, info 1） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（10/10） |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-12/unassigned-task-detection.md` | PASS（4/4, missing 0） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（13/13, errors 0, warnings 0, info 1） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（10/10） |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-12/unassigned-task-detection.md` | PASS（4/4, missing 0） |
 | `diff -qr .claude/skills/ .agents/skills/` | PASS（差分なし） |
 
 #### Phase 12 未タスク

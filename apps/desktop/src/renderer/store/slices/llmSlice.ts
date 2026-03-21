@@ -100,6 +100,51 @@ async function checkHealthFromIPC(
 }
 
 // ============================================
+// Validation (TASK-FIX-LLM-CONFIG-PERSISTENCE)
+// ============================================
+
+/**
+ * 永続化されたLLM選択状態を検証し、有効な値のみを返す。
+ *
+ * - providers未取得（空配列）の場合は判断保留 → 既存値を保持
+ * - 無効なProviderIDはnullクリア（P62対策: DEFAULT_CONFIGへのfallback禁止）
+ * - 有効なProviderID + 無効なModelIDの場合、ModelIDのみnullクリア
+ */
+export function validateAndSyncPersistedConfig(
+  persistedProviderId: LLMProviderId | null,
+  persistedModelId: string | null,
+  availableProviders: LLMProvider[],
+): { providerId: LLMProviderId | null; modelId: string | null } {
+  // providers未取得（空配列）の場合は判断保留 → 既存値を保持
+  if (availableProviders.length === 0) {
+    return { providerId: persistedProviderId, modelId: persistedModelId };
+  }
+
+  if (persistedProviderId === null) {
+    return { providerId: null, modelId: null };
+  }
+
+  const providerExists = availableProviders.some(
+    (p) => p.id === persistedProviderId,
+  );
+
+  if (!providerExists) {
+    // P62対策: 無効なProviderIDはnullクリア（DEFAULT_CONFIGへのfallback禁止）
+    return { providerId: null, modelId: null };
+  }
+
+  const provider = availableProviders.find((p) => p.id === persistedProviderId);
+  const modelExists = provider?.models.some(
+    (m: LLMModel) => m.id === persistedModelId,
+  );
+
+  return {
+    providerId: persistedProviderId,
+    modelId: modelExists ? persistedModelId : null,
+  };
+}
+
+// ============================================
 // Slice Creator
 // ============================================
 
@@ -121,20 +166,40 @@ export const createLLMSlice: StateCreator<LLMSlice, [], [], LLMSlice> = (
 
     try {
       const providers = await fetchProvidersFromIPC();
-      const firstProvider = providers[0];
-      const defaultModel = firstProvider
-        ? getDefaultModel(firstProvider)
-        : undefined;
+      const currentState = get();
+
+      // TASK-FIX-LLM-CONFIG-PERSISTENCE: 永続化された選択状態をバリデーション
+      const validated = validateAndSyncPersistedConfig(
+        currentState.selectedProviderId,
+        currentState.selectedModelId,
+        providers,
+      );
+
+      // 初回起動（persistedが両方null）の場合のみfirstProviderを選択
+      const isFirstLaunch =
+        validated.providerId === null &&
+        currentState.selectedProviderId === null;
+      let finalProviderId = validated.providerId;
+      let finalModelId = validated.modelId;
+
+      if (isFirstLaunch && providers.length > 0) {
+        const firstProvider = providers[0];
+        const defaultModel = firstProvider
+          ? getDefaultModel(firstProvider)
+          : undefined;
+        finalProviderId = firstProvider?.id || null;
+        finalModelId = defaultModel?.id || null;
+      }
 
       set({
         providers,
-        selectedProviderId: firstProvider?.id || null,
-        selectedModelId: defaultModel?.id || null,
+        selectedProviderId: finalProviderId,
+        selectedModelId: finalModelId,
         llmIsLoading: false,
       });
 
-      if (firstProvider?.id && defaultModel?.id) {
-        void syncSelectedConfigToMain(firstProvider.id, defaultModel.id);
+      if (finalProviderId && finalModelId) {
+        void syncSelectedConfigToMain(finalProviderId, finalModelId);
       }
     } catch (error) {
       set({

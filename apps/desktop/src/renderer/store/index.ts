@@ -154,6 +154,23 @@ export const useAppStore = create<AppStore>()(
       {
         name: "knowledge-studio-store",
         storage: customStorage,
+        // TASK-FIX-LLM-CONFIG-PERSISTENCE: v2 で selectedProviderId/selectedModelId を追加
+        version: 2,
+        migrate: (persistedState: unknown, version: number) => {
+          if (version === 0 || version === 1) {
+            // v0/v1 → v2: selectedProviderId, selectedModelId を追加（デフォルトnull）
+            const safe =
+              persistedState != null && typeof persistedState === "object"
+                ? persistedState
+                : {};
+            return {
+              ...safe,
+              selectedProviderId: null,
+              selectedModelId: null,
+            } as unknown as AppStore;
+          }
+          return persistedState as AppStore;
+        },
         partialize: (state) => ({
           // Only persist these fields
           currentView: state.currentView,
@@ -165,6 +182,9 @@ export const useAppStore = create<AppStore>()(
           isNavExpanded: state.isNavExpanded,
           permissionHistory: state.permissionHistory,
           notifications: state.notifications,
+          // TASK-FIX-LLM-CONFIG-PERSISTENCE: LLM選択状態を永続化
+          selectedProviderId: state.selectedProviderId,
+          selectedModelId: state.selectedModelId,
         }),
       },
     ),

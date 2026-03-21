@@ -6,6 +6,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-21 - TASK-FIX-LLM-CONFIG-PERSISTENCE Phase12 再監査完了（Phase11 harness 導線、family inventory、completed shard、lessons、mirror parity を同ターン同期） |
+| 2026-03-21 | TASK-FIX-LLM-CONFIG-PERSISTENCE | LLM選択状態（selectedProviderId/selectedModelId）の永続化修正。persist partialize拡張、v0→v2 migrate、起動時バリデーション、P62対策を実装 |
+| 2026-03-21 - Task03 root canonicalization / Task02 completed relocation sync（legacy register / generate-index / mirror parity を含む same-wave 更新） |
 | 2026-03-21 - UT-SLIDE-UI-001 完了同期（Slide Workspace 4領域 UI 実装 / Phase 11 screenshot 10枚 / task09 canonical same-wave 更新） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（UT-CHATVIEW-ERROR-BANNER-I18N-001=#1398 / UT-CHATVIEW-ERROR-CODE-INVENTORY-001=#1397） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（artifact inventory / legacy register / unassigned 9セクション是正 / validate-structure） |
@@ -52,6 +55,39 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+
+## TASK-FIX-LLM-CONFIG-PERSISTENCE 完了（2026-03-21）
+
+- タスク名: LLM 選択状態の永続化修正
+- 種別: バグ修正（persist 境界拡張）
+- 主な反映:
+  - `llmSlice` の `persist.partialize` に `selectedProviderId` / `selectedModelId` を追加
+  - persist version を v0 → v2 へ更新し、migrate 関数で旧 state を安全に変換
+  - 起動時バリデーション：既存プロバイダーリストに含まれない選択値はクリア
+  - P62 対策：`DEFAULT_CONFIG` への暗黙 fallback を廃止し、未選択時はエラー表示
+  - `arch-state-management.md` 関連仕様に persist 対象フィールドを追記
+
+## TASK-FIX-LLM-CONFIG-PERSISTENCE Phase12 再監査完了（2026-03-21）
+
+- タスク名: LLM 選択状態の永続化修正
+- 種別: 実装 + Phase 11/12 same-wave sync
+- 主な反映:
+  - `phase-11-manual-test.md` を `knowledge-studio-store` 基準の dedicated harness 前提へ更新
+  - `workflow-ai-chat-llm-integration-fix.md` / artifact inventory / completed shard / lessons に Task03 close-out を追加
+  - `ui-ux-llm-selector.md` の invalid model/provider 挙動を null クリア契約へ修正
+  - `arch-state-management-reference-persist-hardening-test-quality.md` に Task03 の restore 契約と Phase11 harness ルールを追記
+  - LOGS.md / SKILL.md 2ファイルずつ、parent workflow、mirror parity を same-wave 更新対象へ昇格
+
+## Task03 root canonicalization / Task02 completed relocation sync（2026-03-21）
+
+- タスク名: AI Chat / runtime policy workflow path drift 是正
+- 種別: canonical path same-wave sync
+- 主な反映:
+  - `workflow-ai-chat-llm-integration-fix.md` / `workflow-ai-chat-llm-integration-fix-artifact-inventory.md` / `ui-ux-llm-selector.md` / `legacy-ordinal-family-register.md` に Task 03 の root canonical path を反映
+  - `workflow-ai-runtime-execution-responsibility-realignment.md` / `task-workflow-completed.md` に Task 02 の completed root を反映
+  - parent workflow と downstream consumer の `Task02 index` / directory tree / artifact path を現行正本へ更新
+  - 旧 path の repo 残存を `rg` で監査し、`generate-index.js` による `topic-map.md` / `keywords.json` 再生成と mirror parity まで含めて same-wave sync の current facts を修復
 
 ## UT-SLIDE-UI-001 完了同期（2026-03-21）
 

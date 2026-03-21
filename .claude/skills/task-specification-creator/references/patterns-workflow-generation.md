@@ -31,6 +31,10 @@ workflow 仕様書の設計と phase 境界を安定化させるパターンを�
 3. `phase-N-*.md` の `成果物` と `完了条件` を更新する。
 4. `index.md` の phase status を同期する。
 
+補足:
+- まだ全 Phase が `pending` / `not_started` の skeleton workflow では、`outputs/artifacts.json` と Phase 11 補助成果物を先行生成しない。
+- いずれかの Phase が開始された時点で、root / outputs 台帳同期と Phase 11/12 実体化を必須ゲートへ切り替える。
+
 ## パターン4: family file への責務分離
 
 | 元ファイル | 分離先 |

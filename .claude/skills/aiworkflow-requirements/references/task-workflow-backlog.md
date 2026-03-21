@@ -493,6 +493,9 @@
 | ~~UT-STATUSBADGE-MAPPING-3VALUES-001~~ | ~~StatusBadge マッピング仕様への新3値追加~~ **完了: 2026-03-20（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 same-wave spec sync）** | - | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12（2026-03-20） | `docs/30-workflows/unassigned-task/UT-STATUSBADGE-MAPPING-3VALUES-001.md` |
 | UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001 | blocked分岐テンプレートの標準化 | 中 | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12 スキルフィードバック（2026-03-20） | `docs/30-workflows/unassigned-task/UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001.md` |
 
+| UT-FIX-LLM-PERSIST-ENCRYPT-001 | persist storage暗号化の検討 | 低 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md` |
+| UT-FIX-LLM-FETCHPROVIDERS-RETRY-001 | fetchProviders失敗時のリトライとバリデーション連携 | 中 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md` |
+
 ### 未タスク管理ルール
 
 - 未タスクは `docs/30-workflows/unassigned-task/` に配置

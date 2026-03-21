@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-21 | 1.6.0 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
 | 2026-03-21 | 1.5.0 | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE の Phase 12 教訓4件を追加 |
 | 2026-03-20 | 1.4.0 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 の Phase 12 教訓2件を追加 |
 | 2026-03-18 | 1.3.0 | TASK-SKILL-LIFECYCLE-08 仕様書作成4件 + 再監査3件を lessons-learned-current.md から移動 |
@@ -76,6 +77,46 @@
 2. root relocation がある場合は parent / inventory / legacy / backlog / lessons / quick-reference を同時更新する。
 3. follow-up は独立指示書を作ってから backlog と spec へリンクする。
 4. compliance file に validator 実測値を書き戻してから Phase 12 を閉じる。
+
+---
+
+## 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE
+
+### 苦戦箇所1: persist task の Phase 11 で storage 実体を generic 名で推測すると誤る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | manual test 文書が `electron-store` を前提にしており、実装の正本である Renderer localStorage `knowledge-studio-store` とずれていた |
+| 再発条件 | persistence 系 task で storage key をコードから引かず、過去 task の generic 手順を流用する |
+| 解決策 | Phase 11 仕様書に actual storage key、capture script、harness route、補助キーを明記した |
+| 標準ルール | persist / hydration task の Phase 11 は storage key と validation entrypoint を仕様書へ固定する |
+| 関連タスク | TASK-FIX-LLM-CONFIG-PERSISTENCE |
+
+### 苦戦箇所2: Phase 12 narrative completed が validator 実態より先行すると false green になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | implementation-guide FAIL、必須成果物不足、unassigned report のリンク欠落があっても completed と読める状態が残っていた |
+| 再発条件 | guide validator / link validator / artifacts parity を最後まで待たずに changelog を閉じる |
+| 解決策 | guide を 10/10 前提へ補完し、必須 6 成果物と validator 実行結果を compliance file に集約した |
+| 標準ルール | Phase 12 は validator 実測値、必須 6 成果物、mirror parity の3点セットで閉じる |
+| 関連タスク | TASK-FIX-LLM-CONFIG-PERSISTENCE |
+
+### 苦戦箇所3: current workflow だけ直しても family inventory と completed shard が stale のまま残る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task03 単体の workflow は存在しても、parent workflow / artifact inventory / completed shard / lessons に反映されていないと search entrypoint から完了事実を拾えない |
+| 再発条件 | same-wave sync を「関連仕様書検索結果のうち目についたものだけ」で閉じる |
+| 解決策 | parent workflow、workflow spec、artifact inventory、completed ledger、lessons、LOGS、SKILL を同ターンで更新した |
+| 標準ルール | family task を閉じるときは parent + workflow spec + inventory + completed shard + lessons + logs/skill を最小同期セットにする |
+| 関連タスク | TASK-FIX-LLM-CONFIG-PERSISTENCE |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. storage key / validation entrypoint / harness route を Phase 11 仕様書へ先に固定する。
+2. Phase 12 は guide validator・link validator・必須 6 成果物を先にそろえる。
+3. parent workflow / inventory / completed shard / lessons / LOGS / SKILL を同じターンで更新する。
 
 ---
 
