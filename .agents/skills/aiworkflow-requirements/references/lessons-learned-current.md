@@ -19,7 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-21 | 2.1.2 | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査の教訓4件を追加 |
+| 2026-03-21 | 2.2.0 | UT-SLIDE-UI-001 教訓3件を追加（L-SLIDE-UI-001〜003） |
 | 2026-03-20 | 2.1.1 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査の教訓3件を追加 |
 | 2026-03-18 | 2.1.0 | 1598行超過のため分割。2026-03-15以前エントリを archive-2026-03.md へ移動。UT-TASK06-007 苦戦箇所5件を追加 |
 | 2026-03-17 | 2.0.0 | 651行超過のため4ファイルに分割しインデックス化 |
@@ -38,7 +38,7 @@
 | [lessons-learned-viewtype-electron-ui.md](lessons-learned-viewtype-electron-ui.md) | ViewType / Electron UI | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 |
 | [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) | IPC / Preload / AI Runtime | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001, TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 (P57-P61), TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 |
 | [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md) | テスト / 型安全 / 品質 | UT-06-001, UT-06-005 |
-| [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-SKILL-LIFECYCLE-04/05/06/07, TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE |
+| [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-SKILL-LIFECYCLE-04/05/06/07 |
 | [lessons-learned-safety-gate-permission-fallback.md](lessons-learned-safety-gate-permission-fallback.md) | SafetyGate / Permission / Fallback | UT-06-005, TASK-SKILL-LIFECYCLE-08 |
 | [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | アーカイブ | 2026-03-15以前の全エントリ |
 
@@ -67,7 +67,6 @@
 → [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md)
 - 設計タスクでの仕様書更新先送り（P57）、未タスク指示書配置省略（P58）
 - 並列エージェント changelog 件数不整合（P59）
-- Task 02 root relocation の same-wave sync、worktree screenshot 回収、Phase 12 compliance 先行作成
 
 ---
 
@@ -418,3 +417,25 @@
 **問題**: 初回Phase 12で「worktree環境のためPR時に実施」として、LOGS.md x2、SKILL.md x2、quality-requirements.md、ipc-contract-checklist.md、phase-templates.md、task-workflow-backlog.md、未タスク指示書3件の実更新を先送りした。再監査で全10件の漏れが検出された。
 **解決策**: 即座に全ファイルを実更新して漏れを解消。
 **教訓**: P57の教訓「worktree環境でのコンフリクトリスクより、仕様書と実装の乖離リスクの方が高い」を再確認。Phase 12では「計画台帳」ではなく「実更新の完了」が完了条件。
+
+---
+
+## UT-SLIDE-UI-001: Slide Workspace UI 4領域実装（2026-03-21）
+
+### L-SLIDE-UI-001: SyncStatus と SlideUIStatus の語彙分離
+
+**問題**: store 層の `SyncStatus`（`synced | out-of-sync | syncing | error`）と UI 表示で必要な状態（`synced | running | degraded | guidance`）が1対1で対応せず、legacy drift（`"out-of-sync"` vs 正本の `"idle"`）が存在する。
+**解決策**: UI 層独自の `SlideUIStatus` 型を定義し、`deriveSlideUIStatus()` 純粋関数で store 状態から導出する。DDD の Anti-Corruption Layer パターンを UI 層で適用。
+**教訓**: store の語彙と UI の語彙は独立して管理し、導出関数で変換する。store の legacy drift を UI 層に漏洩させない設計が、テストの単純化と将来の store 変更耐性に寄与する。
+
+### L-SLIDE-UI-002: v8 Function Coverage と useCallback の相互作用
+
+**問題**: `SlideWorkspace.tsx` の Function Coverage が 33.3% と表示された。テストでは `fireEvent.click` で全コールバックを呼び出し済みだが、v8 は `useCallback` 内のインライン関数を独立関数としてカウントする（P41 パターン）。
+**解決策**: P41 の既知制約として記録し、Line Coverage（89.5%）/ Branch Coverage（84.2%）で基準充足を確認。
+**教訓**: v8 カバレッジの Function Coverage は `useCallback` / インラインコールバックの影響を受けやすい。統合テストでモック hook を使用する場合、内部コールバックの v8 カウントが正確でなくなる。Line/Branch Coverage を主要指標とし、Function Coverage の P41 制約を考慮した判断が必要。
+
+### L-SLIDE-UI-003: UI タスクでの same-wave spec 同期
+
+**問題**: 「UI 実装のみだから spec 更新不要」と判断しがちだが、実装完了記録・P31 吸収記録・SyncStatus drift 是正など、正本側にも波及する変更が発生した。
+**解決策**: Phase 12 で lessons-learned、task-workflow、resource-map、正本仕様書を同一 wave で更新。
+**教訓**: UI 実装タスクでも `.claude` 正本と follow-up 台帳を同ターンで更新しないと stale が再発する。特に「既存の未解消記録の是正」と「タスク完了記録の反映」は UI タスクでも必須。

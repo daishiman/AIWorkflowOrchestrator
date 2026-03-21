@@ -4,17 +4,18 @@
 
 ---
 
-## TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査完了（2026-03-21）
+## UT-SLIDE-UI-001 完了同期（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12 再監査
+- **Phase**: Phase 11-12
 - **Result**: success
 - **Notes**:
-  - `phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を実績ベースへ更新
-  - `implementation-guide.md` を validator 10/10 要件へ補完
-  - `phase12-task-spec-compliance-check.md` を追加し、root evidence を固定
-  - `UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001` と `UT-FIX-LLM-BANNER-DISMISS-001` を formalize
-  - capture script の canonical entrypoint を `capture-task-fix-llm-selector-inline-guidance-phase11.mjs` に統一
+  - `phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を current screenshot 10枚基準へ再構成
+  - `implementation-guide.md` を shared `SyncStatus` 実態、error handling、edge cases、定数一覧込みの実績版へ更新
+  - `system-spec-update-summary.md` で Step 2 を `更新あり` とし、canonical sync 必須ファイルを明示
+  - `unassigned-task-detection.md` を pending / resolved 分離へ更新し、false positive を除去
+  - current branch で解消済みの `UT-SLIDE-P31-001` を closure note 化した
+  - validator と same-wave sync の実績を issue / completed-task / `.claude` 正本へ反映した
 
 ---
 

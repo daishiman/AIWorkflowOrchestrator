@@ -70,6 +70,7 @@ describe("useSlideProject", () => {
       expect(result.current.project).toBeNull();
       expect(result.current.syncStatus).toBe("synced");
       expect(result.current.currentPhase).toBe("idle");
+      expect(result.current.lastSyncedAt).toBeNull();
       expect(result.current.isWatching).toBe(false);
       expect(result.current.executionProgress).toBe(0);
       expect(result.current.error).toBeNull();
@@ -90,6 +91,7 @@ describe("useSlideProject", () => {
       expect(result.current.project).toEqual({ path: "/test/project" });
       expect(result.current.isWatching).toBe(true);
       expect(result.current.hasProject).toBe(true);
+      expect(result.current.lastSyncedAt).toBeInstanceOf(Date);
     });
 
     it("should fetch initial sync status", async () => {

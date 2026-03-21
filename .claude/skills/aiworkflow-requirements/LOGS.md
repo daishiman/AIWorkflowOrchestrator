@@ -6,8 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
-| 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE follow-up formalize（UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001 / UT-FIX-LLM-BANNER-DISMISS-001） |
-| 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査完了（Task02 root 正本化 / screenshot 4件 / system spec same-wave sync） |
+| 2026-03-21 - UT-SLIDE-UI-001 完了同期（Slide Workspace 4領域 UI 実装 / Phase 11 screenshot 10枚 / task09 canonical same-wave 更新） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（UT-CHATVIEW-ERROR-BANNER-I18N-001=#1398 / UT-CHATVIEW-ERROR-CODE-INVENTORY-001=#1397） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（artifact inventory / legacy register / unassigned 9セクション是正 / validate-structure） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（root canonical path 是正 / screenshot 5件 / unassigned 2件 formalize / system spec 同期） |
@@ -54,24 +53,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
-## TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査完了（2026-03-21）
+## UT-SLIDE-UI-001 完了同期（2026-03-21）
 
-- タスク名: LLMモデル選択インラインガイダンス追加
-- 種別: 実装 + Phase 11/12 再監査
+- タスク名: Slide Workspace UI 4領域実装
+- 種別: UI実装 + Phase 11/12 same-wave sync
 - 主な反映:
-  - `workflow-ai-chat-llm-integration-fix.md` に Task 02 current canonical set / 契約 / follow-up 2件を追加
-  - `workflow-ai-chat-llm-integration-fix-artifact-inventory.md` に Task 02 root / screenshot / compliance / validation chain を追記
-  - `ui-ux-llm-selector.md` / `legacy-ordinal-family-register.md` / `task-workflow-completed-chat-lifecycle-tests.md` / `task-workflow-backlog.md` / `lessons-learned-current.md` / `indexes/quick-reference.md` を same-wave で更新
-  - Phase 11 screenshot 4件と metadata を current workflow 配下へ固定
-
-## TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE follow-up formalize（2026-03-21）
-
-- タスク名: LLMモデル選択インラインガイダンス追加
-- 種別: follow-up backlog 同期
-- 主な反映:
-  - `UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001` を `docs/30-workflows/unassigned-task/task-ut-llm-settings-direct-scroll-001.md` に formalize
-  - `UT-FIX-LLM-BANNER-DISMISS-001` を `docs/30-workflows/unassigned-task/task-ut-llm-guidance-banner-dismiss-001.md` に formalize
-  - `task-workflow-backlog.md` / artifact inventory / current workflow outputs へ 2 件の導線を追加
+  - `SlideWorkspace.tsx` に guidance/degraded/running/synced 4領域 UI を接続し、settings 導線と `manualSync` retry を有効化
+  - `SlideGuidanceBlock.tsx` / `SlideProgressRow.tsx` / `TerminalLauncher.tsx` / close button に focus ring を追加
+  - `SlideSyncCard.tsx` の synced badge を黒文字へ変更し、コントラストを改善
+  - `apps/desktop/scripts/capture-ut-slide-ui-001-phase11.mjs` で current workflow 配下へ 10枚の screenshot を再生成
+  - `ui-ux-feature-components-details.md` / `api-ipc-system-core.md` / `task-workflow-completed.md` / `workflow-ai-runtime-authmode-unification.md` / `arch-state-management-advanced.md` を current branch へ同期
+  - `UT-SLIDE-UI-CLOSE-ERROR-001` / `UT-SLIDE-UI-HIG-LEGACY-001` を pending、`UT-SLIDE-P31-001` / `UT-SLIDE-UI-ACCESSIBILITY-001` を解消済みへ更新
 
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 

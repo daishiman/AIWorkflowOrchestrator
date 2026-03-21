@@ -213,11 +213,11 @@ modifier-skill.ts の `createModifierSkill()` は定義されているが呼び�
 
 **教訓**: IPC チャネル名を設計する際は、invoke（双方向RPC）と push（一方向通知）を命名規則で明示的に区別すること。push 側に `-changed` サフィックスを付与するパターンを標準化する。
 
-### 10.4 SyncStatus 型の正本差異
+### 10.4 SyncStatus と reverse-sync surface の収束
 
-正本仕様（api-ipc-system-core.md）では `"idle" | "syncing" | "synced" | "error"` だが、現行実装（types.ts）では `"synced" | "out-of-sync" | "syncing" | "error"` と定義されていた。`out-of-sync` vs `idle` の差異を Phase 2 で発見し統一設計を行った。
+current branch で canonical spec は `"synced" | "out-of-sync" | "syncing" | "error"` に同期済みになった。一方、renderer UI は `out-of-sync` を `synced` シェルへ吸収しており、reverse-sync 専用の user-facing surface はまだ未収束である。
 
-**教訓**: 正本仕様書と実装コードの型定義は Phase 1 の初期段階で照合すること。特にユニオン型のメンバー名は grep だけでは差異を見逃しやすい。
+**教訓**: 型差分を直しただけでは drift は閉じない。shared 型、IPC 契約、renderer 表示の 3 層が同じ語彙を使っているかまで確認して完了とみなすこと。
 
 ### 10.5 validateIpcSender 全チャネル未実装
 
