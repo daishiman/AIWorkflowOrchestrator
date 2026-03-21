@@ -789,3 +789,11 @@ export interface ILLMClient {
 // Factory で共有しようとすると型不整合
 // 解決策: 1箇所に統一するか、Config で分離する
 ```
+
+### P65: モノレポ新規サブパス exports 3箇所同時更新漏れ
+
+- **教訓**: `packages/shared` に新規サブパス（`types/execution-capability`）を追加した際、`package.json` の `exports` と `typesVersions` だけ追加し、`tsup.config.ts` の `entry` への追加を忘れた。ビルドは成功するが dist にファイルが生成されず、vite の import analysis で `Failed to resolve import` エラーが発生する
+- **症状**: `pnpm --filter @repo/shared build` は成功するが、消費側（`apps/desktop`）のテストで import 解決失敗
+- **解決策**: 3箇所同時更新チェックリスト: (1) `package.json` exports (2) `package.json` typesVersions (3) `tsup.config.ts` entry。追加後に `pnpm --filter @repo/shared build` でリビルドし、`ls dist/src/types/<name>.*` で出力確認
+- **関連パターン**: P8（幽霊依存）、P32（型定義の二箇所同時更新必須）
+- **関連タスク**: TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001

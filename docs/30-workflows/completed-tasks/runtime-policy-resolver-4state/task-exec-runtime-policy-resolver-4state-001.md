@@ -1,24 +1,22 @@
-# UT-EXEC-02 RuntimePolicyResolver.ts の 4状態化 - タスク指示書
+# TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 RuntimePolicyResolver capability bridge - タスク指示書
 
-## メタ情報
+## Issue 情報
 
 ```yaml
 issue_number: 1417
 ```
 
-## メタ情報
-
-| 項目         | 内容                                                                                                       |
-| ------------ | ---------------------------------------------------------------------------------------------------------- |
-| タスクID     | UT-EXEC-02                                                                                                 |
-| タスク名     | RuntimePolicyResolver.ts の 4状態化                                                                        |
-| 分類         | 機能拡張                                                                                                   |
-| 対象機能     | RuntimePolicyResolver / execution-capability 統合                                                          |
-| 優先度       | 高                                                                                                         |
-| 見積もり規模 | 中規模                                                                                                     |
-| ステータス   | 未実施                                                                                                     |
-| 発見元       | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Phase 2 design-summary.md / Phase 5 実装スコープ |
-| 発見日       | 2026-03-20                                                                                                 |
+| 項目         | 内容                                                                                         |
+| ------------ | -------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001                                                |
+| タスク名     | RuntimePolicyResolver capability bridge                                                      |
+| 分類         | 実装                                                                                         |
+| 対象機能     | RuntimePolicyResolver / RuntimeSkillCreatorFacade / creatorHandlers                          |
+| 優先度       | 高                                                                                           |
+| 見積もり規模 | 中規模                                                                                       |
+| ステータス   | Phase 1-12 完了 / Phase 13 blocked                                                           |
+| 発見元       | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 の direct caller lane 分解 |
+| 発見日       | 2026-03-20                                                                                   |
 
 ---
 
@@ -56,42 +54,42 @@ Task01（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001）で `packag
 
 ### 2.1 目的
 
-`RuntimePolicyResolver.ts` を4状態モデルの中央 authority として再設計し、`resolveCapability()` / `assertNoSilentFallback()` を組み込むことで、実行能力の判定ロジックを単一箇所に集約する。
+`RuntimePolicyResolver.ts` の内部 authority を `resolveCapability()` ベースへ寄せ、direct caller が `decision.capability` の4状態を安全に消費できる bridge を実装する。
 
 ### 2.2 最終ゴール
 
-1. `RuntimePolicyResolver.ts` が `resolveCapability()` を呼び出し、`AccessCapability`（4状態）を返すようになっている
-2. `assertNoSilentFallback()` が `RuntimePolicyResolver.ts` の判定パイプラインに組み込まれ、capability が `"none"` のとき integratedRuntime への暗黙遷移が例外で阻止される
-3. 旧語彙（`authMode` 系の変数名・型名）が `capability` 系に統一されている
-4. `RuntimePolicyResolver.ts` の呼び出し元が4状態に対応したハンドリングを行っている
+1. `RuntimePolicyResolver.ts` が `resolveCapability()` を authority として使用し、返却 decision が `capability` を保持している
+2. `assertNoSilentFallback()` が integrated 実行要求の直前で組み込まれ、capability が `"none"` のとき fail-fast する
+3. raw `authMode` は boundary 正規化のみに残り、business decision は `capability` 系に統一されている
+4. `RuntimeSkillCreatorFacade.ts` と `creatorHandlers.ts` が `decision.capability` を direct branch key として扱っている
 
 ### 2.3 スコープ
 
 #### 含むもの
 
-- `RuntimePolicyResolver.ts` の4状態化リファクタリング
+- `RuntimePolicyResolver.ts` の capability bridge リファクタリング
 - `resolveCapability()` の組み込み（`execution-capability.ts` からの import）
 - `assertNoSilentFallback()` の enforcement 組み込み
-- 旧語彙（`authMode`）から新語彙（`capability`）への変数名・型名統一
-- `RuntimePolicyResolver.ts` の呼び出し元の修正（4状態対応）
+- raw `authMode` から `ExecutionCapabilityInput` への boundary 正規化
+- `RuntimePolicyResolver.ts` の direct caller の修正（4状態対応）
 - 対応するユニットテストの作成・更新
 - Phase 12 ドキュメント更新
 
 #### 含まないもの
 
 - `execution-capability.ts` 自体の型定義・関数の変更（Task01 で確立済み）
+- `skillHandlers.ts` / `agentHandlers.ts` / `aiHandlers.ts` / shared transport / preload 契約の広域収束
 - Renderer 側の UI コンポーネント実装（CTA ボタンの実装は別タスク）
 - `resolveUiState()` / `resolveCtaContract()` の Renderer 側統合（別タスク）
-- Electron IPC ハンドラの新規追加
 
 ### 2.4 成果物
 
-| 成果物                                        | パス / 説明                                            |
-| --------------------------------------------- | ------------------------------------------------------ |
-| リファクタリング済み RuntimePolicyResolver.ts | 既存ファイルの更新                                     |
-| 呼び出し元の修正                              | `RuntimePolicyResolver` を参照している全ファイルの更新 |
-| ユニットテスト                                | `RuntimePolicyResolver` の4状態判定を網羅するテスト    |
-| Phase 12 ドキュメント                         | `docs/30-workflows/` 配下の Phase 成果物               |
+| 成果物                                        | パス / 説明                                                  |
+| --------------------------------------------- | ------------------------------------------------------------ |
+| リファクタリング済み RuntimePolicyResolver.ts | 既存ファイルの更新                                           |
+| 呼び出し元の修正                              | `RuntimeSkillCreatorFacade.ts` / `creatorHandlers.ts` の更新 |
+| ユニットテスト                                | `RuntimePolicyResolver` の4状態判定を網羅するテスト          |
+| Phase 12 ドキュメント                         | `docs/30-workflows/` 配下の Phase 成果物                     |
 
 ---
 
@@ -128,14 +126,14 @@ cat apps/desktop/src/main/**/RuntimePolicyResolver*.ts
 
 1. `RuntimePolicyResolver.ts` の import に `resolveCapability`, `assertNoSilentFallback`, `AccessCapability` を追加
 2. 既存の2状態判定ロジックを `resolveCapability()` 呼び出しに置換
-3. `authMode` 変数名を `capability` に、型名を `AccessCapability` に統一
-4. `assertNoSilentFallback()` を判定パイプラインの最終段に組み込み
+3. public return type は `RuntimeDecision` を維持しつつ `capability` を保持する形に更新
+4. `assertNoSilentFallback()` を integrated 実行要求の最終段に組み込み
 
 **Step 3: 呼び出し元の4状態対応**
 
 1. `grep -rn "RuntimePolicyResolver" apps/desktop/src/` で全呼び出し元を特定
-2. 各呼び出し元で戻り値を `AccessCapability`（4状態）として処理するように修正
-3. `switch` 文で4状態を網羅的にハンドリング（`Record<AccessCapability, ...>` パターン推奨）
+2. `RuntimeSkillCreatorFacade.ts` と `creatorHandlers.ts` が `decision.capability` で処理するように修正
+3. broader consumer は parent closure task 側へ残し、same-wave sync で境界を記録する
 
 ---
 
@@ -145,14 +143,14 @@ cat apps/desktop/src/main/**/RuntimePolicyResolver*.ts
 
 1. `RuntimePolicyResolver.ts` の現在の位置・内容・呼び出し元を全て特定する
 2. 旧2状態（api-key / subscription）から新4状態（integratedRuntime / terminalSurface / both / none）への対応表を作成する
-3. `assertNoSilentFallback()` の組み込み箇所（判定パイプラインのどの段階で呼ぶか）を決定する
+3. `assertNoSilentFallback()` の組み込み箇所（integrated 実行要求のどの段階で呼ぶか）を決定する
 4. 受入基準を定義する
 
 ### Phase 2: 設計
 
 1. `RuntimePolicyResolver.ts` のリファクタリング後のインターフェース設計
    - 入力: `ExecutionCapabilityInput`（apiKeyValid, subscriptionValid, apiKeyDegraded）
-   - 出力: `AccessCapability`（4状態）
+   - 出力: `capability` を保持した `RuntimeDecision`
    - enforcement: `assertNoSilentFallback()` 呼び出し
 2. 呼び出し元の修正設計（各呼び出し元で4状態をどう処理するか）
 3. 語彙統一マッピング表の作成（旧名 -> 新名）
@@ -163,12 +161,12 @@ cat apps/desktop/src/main/**/RuntimePolicyResolver*.ts
    - `execution-capability.ts` の型名・関数名
    - `RuntimePolicyResolver.ts` のリファクタリング後の変数名・型名
    - 呼び出し元のコード内での参照名
-2. 4状態の網羅性確認（`Record<AccessCapability, ...>` パターンで漏れがないか）
+2. 4状態の網羅性確認（`decision.capability` の switch / `Record<AccessCapability, ...>` パターンで漏れがないか）
 3. `assertNoSilentFallback()` の組み込み位置の妥当性確認
 
 ### Phase 4: テスト作成
 
-1. `RuntimePolicyResolver` の4状態判定テスト（各入力パターンに対する期待出力）
+1. `RuntimePolicyResolver` の4状態判定テスト（各入力パターンに対する `decision.capability` 期待値）
    - `{ apiKeyValid: true, subscriptionValid: false }` -> `"integratedRuntime"`
    - `{ apiKeyValid: false, subscriptionValid: true }` -> `"terminalSurface"`
    - `{ apiKeyValid: true, subscriptionValid: true }` -> `"both"`
@@ -178,19 +176,19 @@ cat apps/desktop/src/main/**/RuntimePolicyResolver*.ts
 2. `assertNoSilentFallback()` enforcement テスト
    - capability が `"none"` のとき例外が throw されること
    - capability が `"integratedRuntime"` / `"terminalSurface"` / `"both"` のとき例外が throw されないこと
-3. 呼び出し元の4状態ハンドリングテスト
-4. 旧語彙（`authMode`）がコード内に残存していないことの grep 検証テスト
+3. direct caller の4状態ハンドリングテスト
+4. raw `authMode` が branch key として残存していないことの grep 検証テスト
 
 ### Phase 5: 実装
 
 1. `RuntimePolicyResolver.ts` のリファクタリング
-2. 呼び出し元の修正
-3. 語彙統一
+2. direct caller の修正
+3. boundary 正規化の明示
 
 ### Phase 6: テスト拡充
 
 1. 境界値テスト（`apiKeyDegraded` が `undefined` / `false` / `true` の各パターン）
-2. 呼び出し元の統合テスト
+2. direct caller の統合テスト
 
 ### Phase 7: カバレッジ確認
 
@@ -201,7 +199,7 @@ cat apps/desktop/src/main/**/RuntimePolicyResolver*.ts
 
 ### Phase 8: リファクタリング
 
-1. 語彙ドリフトの最終チェック（`grep -rn "authMode" apps/desktop/src/main/`）
+1. raw `authMode` が branch key として残っていないことの最終チェック
 2. 不要な import / 未使用変数の削除
 
 ### Phase 9: 品質検証
@@ -215,7 +213,7 @@ pnpm --filter @repo/shared test
 
 ### Phase 10: 最終レビュー
 
-1. 4状態の網羅性（switch 文 / Record パターンで全状態がハンドルされているか）
+1. 4状態の網羅性（`decision.capability` の switch 文 / Record パターンで全状態がハンドルされているか）
 2. `assertNoSilentFallback()` の enforcement が正しく機能しているか
 3. 旧語彙の完全排除確認
 4. テストカバレッジ基準の充足確認
@@ -232,17 +230,17 @@ pnpm --filter @repo/shared test
 
 1. Task 1: 実装ガイド作成（`implementation-guide.md`）
 2. Task 2: システム仕様書更新
-   - `aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md` の両方を更新（P1/P25 対策）
-   - `SKILL.md` 変更履歴更新（2ファイル）
+   - `task-workflow-backlog.md` と `workflow-ai-runtime-execution-responsibility-realignment.md` に focused lane を追加
+   - related task table に focused lane の追記余地が残る場合は `arch-execution-capability-contract.md` を更新
    - `topic-map.md` 再生成（P2/P27 対策）
    - `.claude/skills/` と `.agents/skills/` の Mirror Sync（rsync + diff 確認）
 3. Task 3: `documentation-changelog.md` 作成
-4. Task 4: 未タスク検出・`unassigned-task-report.md` 作成（0件でも必須）
+4. Task 4: 未タスク検出・`unassigned-task-detection.md` 作成（0件でも必須）
 
-### Phase 13: 完了
+### Phase 13: PR作成
 
 1. 成果物最終確認
-2. PR 準備
+2. user approval 取得時のみ PR 準備
 
 ---
 
@@ -250,9 +248,9 @@ pnpm --filter @repo/shared test
 
 ### 機能要件
 
-- [ ] `RuntimePolicyResolver.ts` が `resolveCapability()` を呼び出し、`AccessCapability`（4状態）を返す
+- [ ] `RuntimePolicyResolver.ts` が `resolveCapability()` を authority とし、返却 decision が `capability` を保持する
 - [ ] `assertNoSilentFallback()` が判定パイプラインに組み込まれ、capability が `"none"` のとき例外が throw される
-- [ ] 全呼び出し元が4状態（integratedRuntime / terminalSurface / both / none）を網羅的にハンドリングしている
+- [ ] direct caller が4状態（integratedRuntime / terminalSurface / both / none）を網羅的にハンドリングしている
 - [ ] `apiKeyDegraded` フラグによる降格ロジックが正しく動作する
 
 ### 品質要件
@@ -265,12 +263,12 @@ pnpm --filter @repo/shared test
 
 ### ドキュメント要件
 
-- [ ] `aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md` の両方が更新されている
-- [ ] `SKILL.md` 変更履歴が更新されている（2ファイル）
+- [ ] `task-workflow.md` / `task-workflow-backlog.md` / `workflow-ai-runtime-execution-responsibility-realignment.md` が same-wave で更新されている
+- [ ] `arch-execution-capability-contract.md` の related task table が focused lane と矛盾していない
 - [ ] `topic-map.md` が再生成されている
 - [ ] `.claude/skills/` と `.agents/skills/` が同期されている（diff 0件）
 - [ ] `documentation-changelog.md` が作成されている
-- [ ] `unassigned-task-report.md` が作成されている（0件でも必須）
+- [ ] `unassigned-task-detection.md` が作成されている（0件でも必須）
 
 ---
 
@@ -344,12 +342,12 @@ cd apps/desktop && pnpm vitest run --coverage src/main/**/RuntimePolicyResolver*
 
 ### 過去の教訓（Pitfall 参照）
 
-| Pitfall ID | 内容                              | 本タスクでの適用                                                               |
-| ---------- | --------------------------------- | ------------------------------------------------------------------------------ |
-| P1/P25     | LOGS.md 2ファイル更新漏れ         | Phase 12 で aiworkflow-requirements と task-specification-creator の両方を更新 |
-| P2/P27     | topic-map.md 再生成忘れ           | Phase 12 で `node scripts/generate-index.js` を必ず実行                        |
-| P35        | DI 追加時のテストモック大規模修正 | 事前に影響テストファイルを grep で特定し、修正計画を立てる                     |
-| P62        | DEFAULT_CONFIG への暗黙 fallback  | `assertNoSilentFallback()` で enforcement                                      |
+| Pitfall ID | 内容                              | 本タスクでの適用                                                                   |
+| ---------- | --------------------------------- | ---------------------------------------------------------------------------------- |
+| P1/P25     | same-wave canonical sync 漏れ     | Phase 12 で task-workflow / backlog / workflow realignment / mirror を同ターン更新 |
+| P2/P27     | topic-map.md 再生成忘れ           | Phase 12 で `node scripts/generate-index.js` を必ず実行                            |
+| P35        | DI 追加時のテストモック大規模修正 | 事前に影響テストファイルを grep で特定し、修正計画を立てる                         |
+| P62        | DEFAULT_CONFIG への暗黙 fallback  | `assertNoSilentFallback()` で enforcement                                          |
 
 ---
 
@@ -404,15 +402,16 @@ diff -qr ./.claude/skills/ ./.agents/skills/
 # 期待結果: 差分 0 件
 ```
 
-### 教訓 5: LOGS.md 2ファイル更新漏れ（P1/P25）
+### 教訓 5: same-wave canonical sync 漏れ（P1/P25 の再解釈）
 
-`aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md` の両方を同期する必要がある。片方だけ更新して完了とするミスが過去に複数回発生している。Phase 12 Task 2 Step 1-A で明示的にチェックする。
+`task-workflow.md` だけ、あるいは `task-workflow-backlog.md` だけを更新すると canonical root の入口と child file がずれる。focused lane を追加したときは parent entrypoint と child backlog / workflow / contract を同ターンで同期する必要がある。
 
 **確認コマンド**:
 
 ```bash
-# 両方の LOGS.md が更新されているか確認
-git diff --stat -- .claude/skills/aiworkflow-requirements/LOGS.md
-git diff --stat -- .claude/skills/task-specification-creator/LOGS.md
-# 両方に差分があること
+rg -n "TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001" \
+  .claude/skills/aiworkflow-requirements/references/task-workflow.md \
+  .claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md \
+  .claude/skills/aiworkflow-requirements/references/workflow-ai-runtime-execution-responsibility-realignment.md \
+  .claude/skills/aiworkflow-requirements/references/arch-execution-capability-contract.md
 ```

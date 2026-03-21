@@ -1,8 +1,8 @@
 /**
- * RuntimeSkillCreatorFacade Unit Tests
+ * RuntimeSkillCreatorFacade Unit Tests - 4 state capability bridge
  *
- * TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001
- * task-imp-runtime-skill-creator-facade-test-coverage-001 に対応
+ * TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001
+ * Phase 4: 4状態ハンドリングテスト
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -10,6 +10,7 @@ import { RuntimeSkillCreatorFacade } from "../RuntimeSkillCreatorFacade";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
+import type { ExecutionCapabilityInput } from "@repo/shared/types/execution-capability";
 
 describe("RuntimeSkillCreatorFacade", () => {
   let executeMock: ReturnType<typeof vi.fn>;
@@ -28,20 +29,27 @@ describe("RuntimeSkillCreatorFacade", () => {
     vi.restoreAllMocks();
   });
 
-  describe("plan", () => {
-    it("terminal_handoff 判定時は builder の結果を返す", async () => {
-      const resolveSpy = vi
-        .spyOn(RuntimePolicyResolver.prototype, "resolve")
-        .mockResolvedValue({
-          type: "terminal_handoff",
-          bundle: {
-            launcher: "claude",
-            promptBundle: "",
-            cwd: "/tmp",
-            suggestedCommand: 'claude -p "fallback"',
-            manualRetryRule: "retry",
-          },
-        });
+  describe("plan - 4状態ハンドリング", () => {
+    it("integratedRuntime: plan 結果を返す", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockReturnValue({
+        capability: "integratedRuntime",
+      } as ReturnType<RuntimePolicyResolver["resolve"]>);
+      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_000);
+
+      const input: ExecutionCapabilityInput = {
+        apiKeyValid: true,
+        subscriptionValid: false,
+      };
+      const result = await facade.plan("spec body", input);
+
+      expect(result).toEqual({
+        planId: "plan-1710000000000",
+        skillSpec: "spec body",
+        estimatedSteps: 3,
+      });
+    });
+
+    it("terminalSurface: handoff bundle を返す", async () => {
       const handoffBundle = {
         launcher: "claude",
         promptBundle: "Skill を作成してください: spec body",
@@ -49,81 +57,84 @@ describe("RuntimeSkillCreatorFacade", () => {
         suggestedCommand: 'claude -p "spec body"',
         manualRetryRule: "retry",
       };
-      const buildSpy = vi
-        .spyOn(TerminalHandoffBuilder.prototype, "build")
-        .mockReturnValue(handoffBundle);
-
-      const result = await facade.plan("spec body", "subscription", null);
-
-      expect(resolveSpy).toHaveBeenCalledWith("subscription", null);
-      expect(buildSpy).toHaveBeenCalledWith(
-        "Skill を作成してください: spec body",
-        process.cwd(),
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockReturnValue({
+        capability: "terminalSurface",
+        bundle: handoffBundle,
+      } as ReturnType<RuntimePolicyResolver["resolve"]>);
+      vi.spyOn(TerminalHandoffBuilder.prototype, "build").mockReturnValue(
+        handoffBundle,
       );
+
+      const input: ExecutionCapabilityInput = {
+        apiKeyValid: false,
+        subscriptionValid: true,
+      };
+      const result = await facade.plan("spec body", input);
+
       expect(result).toEqual({
         type: "terminal_handoff",
         bundle: handoffBundle,
       });
     });
 
-    it("integrated_api 判定時は plan 結果を返す", async () => {
-      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
-        type: "integrated_api",
-        apiKey: "sk-test",
-        permissionMode: "default",
-      });
+    it("both: デフォルトで integrated を使用する", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockReturnValue({
+        capability: "both",
+      } as ReturnType<RuntimePolicyResolver["resolve"]>);
       vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_000);
-      const buildSpy = vi.spyOn(TerminalHandoffBuilder.prototype, "build");
 
-      const result = await facade.plan("line-1\nline-2", "api-key", "sk-test");
+      const input: ExecutionCapabilityInput = {
+        apiKeyValid: true,
+        subscriptionValid: true,
+      };
+      const result = await facade.plan("spec body", input);
 
-      expect(buildSpy).not.toHaveBeenCalled();
       expect(result).toEqual({
         planId: "plan-1710000000000",
-        skillSpec: "line-1\nline-2",
+        skillSpec: "spec body",
         estimatedSteps: 3,
       });
     });
+
+    it("none: assertNoSilentFallback により到達しない", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockImplementation(
+        () => {
+          throw new Error(
+            "[assertNoSilentFallback] capability が 'none' のとき integratedRuntime への暗黙遷移は禁止されています。",
+          );
+        },
+      );
+
+      const input: ExecutionCapabilityInput = {
+        apiKeyValid: false,
+        subscriptionValid: false,
+      };
+      await expect(facade.plan("spec body", input)).rejects.toThrow(
+        "assertNoSilentFallback",
+      );
+    });
   });
 
-  describe("execute", () => {
-    it("SkillExecutor に request と metadata を委譲し、成功結果を返す", async () => {
-      const resolveSpy = vi
-        .spyOn(RuntimePolicyResolver.prototype, "resolve")
-        .mockResolvedValue({
-          type: "integrated_api",
-          apiKey: "sk-test",
-          permissionMode: "default",
-        });
+  describe("execute - 4状態ハンドリング", () => {
+    it("integratedRuntime: SkillExecutor に委譲する", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockReturnValue({
+        capability: "integratedRuntime",
+      } as ReturnType<RuntimePolicyResolver["resolve"]>);
       executeMock.mockResolvedValue({
         executionId: "exec-001",
         success: true,
       });
 
+      const input: ExecutionCapabilityInput = {
+        apiKeyValid: true,
+        subscriptionValid: false,
+      };
       const result = await facade.execute(
-        {
-          planId: "plan-001",
-          skillSpec: "my-skill\nbody",
-          estimatedSteps: 3,
-        },
-        "api-key",
-        "sk-test",
+        { planId: "plan-001", skillSpec: "my-skill\nbody", estimatedSteps: 3 },
+        input,
       );
 
-      expect(resolveSpy).toHaveBeenCalledWith("api-key", "sk-test");
-      expect(executeMock).toHaveBeenCalledWith(
-        {
-          prompt: "my-skill\nbody",
-          skillId: "creator-plan-001",
-        },
-        expect.objectContaining({
-          id: "creator-plan-001",
-          name: "skill-creator-executor",
-          slug: "skill-creator-executor",
-          content: "my-skill\nbody",
-          allowedTools: ["Read", "Edit", "Write"],
-        }),
-      );
+      expect(executeMock).toHaveBeenCalled();
       expect(result).toEqual({
         executeId: "exec-001",
         skillName: "my-skill",
@@ -132,59 +143,78 @@ describe("RuntimeSkillCreatorFacade", () => {
       });
     });
 
-    it("SkillExecutor のエラーを message に変換し、skillName を 50 文字に切り詰める", async () => {
-      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
-        type: "terminal_handoff",
-        bundle: {
-          launcher: "claude",
-          promptBundle: "",
-          cwd: "/tmp",
-          suggestedCommand: 'claude -p "fallback"',
-          manualRetryRule: "retry",
-        },
-      });
-      executeMock.mockResolvedValue({
-        executionId: "exec-002",
-        success: false,
-        error: {
-          code: "EXECUTION_FAILED",
-          message: "executor failed",
-        },
-      });
-      const longSkillName =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-suffix";
+    it("terminalSurface: handoff bundle を返し SkillExecutor を呼ばない", async () => {
+      const handoffBundle = {
+        launcher: "claude",
+        promptBundle:
+          "以下の Skill 実行を継続してください: long-skill-name\nbody",
+        cwd: process.cwd(),
+        suggestedCommand: 'claude -p "execute"',
+        manualRetryRule: "retry",
+      };
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockReturnValue({
+        capability: "terminalSurface",
+        bundle: handoffBundle,
+      } as ReturnType<RuntimePolicyResolver["resolve"]>);
+      vi.spyOn(TerminalHandoffBuilder.prototype, "build").mockReturnValue(
+        handoffBundle,
+      );
 
+      const input: ExecutionCapabilityInput = {
+        apiKeyValid: false,
+        subscriptionValid: true,
+      };
       const result = await facade.execute(
         {
           planId: "plan-002",
-          skillSpec: `${longSkillName}\nbody`,
+          skillSpec: "long-skill-name\nbody",
           estimatedSteps: 3,
         },
-        "subscription",
-        null,
+        input,
       );
 
       expect(result).toEqual({
+        type: "terminal_handoff",
+        bundle: handoffBundle,
+      });
+      expect(executeMock).not.toHaveBeenCalled();
+    });
+
+    it("both: integrated 経路を優先して SkillExecutor に委譲する", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockReturnValue({
+        capability: "both",
+      } as ReturnType<RuntimePolicyResolver["resolve"]>);
+      executeMock.mockResolvedValue({
+        executionId: "exec-002",
+        success: false,
+        error: { code: "EXECUTION_FAILED", message: "executor failed" },
+      });
+
+      const input: ExecutionCapabilityInput = {
+        apiKeyValid: true,
+        subscriptionValid: true,
+      };
+      const result = await facade.execute(
+        {
+          planId: "plan-002",
+          skillSpec: "long-skill-name\nbody",
+          estimatedSteps: 3,
+        },
+        input,
+      );
+
+      expect(executeMock).toHaveBeenCalledOnce();
+      expect(result).toEqual({
         executeId: "exec-002",
-        skillName: longSkillName.substring(0, 50),
+        skillName: "long-skill-name",
         success: false,
         error: "executor failed",
       });
     });
   });
 
-  describe("improve", () => {
-    it("terminal_handoff 判定時は改善 prompt を bundle 化する", async () => {
-      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
-        type: "terminal_handoff",
-        bundle: {
-          launcher: "claude",
-          promptBundle: "",
-          cwd: "/tmp",
-          suggestedCommand: 'claude -p "fallback"',
-          manualRetryRule: "retry",
-        },
-      });
+  describe("improve - 4状態ハンドリング", () => {
+    it("terminalSurface: 改善 prompt を bundle 化する", async () => {
       const handoffBundle = {
         launcher: "claude",
         promptBundle: 'スキル "skill-a" を改善してください: feedback',
@@ -192,40 +222,40 @@ describe("RuntimeSkillCreatorFacade", () => {
         suggestedCommand: 'claude -p "improve"',
         manualRetryRule: "retry",
       };
-      const buildSpy = vi
-        .spyOn(TerminalHandoffBuilder.prototype, "build")
-        .mockReturnValue(handoffBundle);
-
-      const result = await facade.improve(
-        "skill-a",
-        "feedback",
-        "subscription",
-        null,
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockReturnValue({
+        capability: "terminalSurface",
+        bundle: handoffBundle,
+      } as ReturnType<RuntimePolicyResolver["resolve"]>);
+      vi.spyOn(TerminalHandoffBuilder.prototype, "build").mockReturnValue(
+        handoffBundle,
       );
 
-      expect(buildSpy).toHaveBeenCalledWith(
-        'スキル "skill-a" を改善してください: feedback',
-        process.cwd(),
-      );
+      const input: ExecutionCapabilityInput = {
+        apiKeyValid: false,
+        subscriptionValid: true,
+      };
+      const result = await facade.improve("skill-a", "feedback", input);
+
       expect(result).toEqual({
         type: "terminal_handoff",
         bundle: handoffBundle,
       });
     });
 
-    it("integrated_api 判定時は改善提案を返す", async () => {
-      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
-        type: "integrated_api",
-        apiKey: "sk-test",
-        permissionMode: "default",
-      });
+    it("integratedRuntime: 改善提案を返す", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockReturnValue({
+        capability: "integratedRuntime",
+      } as ReturnType<RuntimePolicyResolver["resolve"]>);
       vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_001);
 
+      const input: ExecutionCapabilityInput = {
+        apiKeyValid: true,
+        subscriptionValid: false,
+      };
       const result = await facade.improve(
         "skill-b",
         "need better validation",
-        "api-key",
-        "sk-test",
+        input,
       );
 
       expect(result).toEqual({

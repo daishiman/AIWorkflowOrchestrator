@@ -4,48 +4,61 @@
 
 ---
 
-## UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 Phase 12 完了同期（2026-03-21）
+## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 最終ドキュメント更新（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12 完了同期
+- **Phase**: Phase 12 final sync
 - **Result**: success
 - **Notes**:
-  - Phase 1-12 全 completed、Phase 13 blocked
-  - debug-clear-storage 残骸の repo-wide 棚卸し・削除・historical note 降格を完了
-  - 未タスク 0 件検出。AC-1〜AC-7 全 PASS
-  - workflow outputs 6 成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）を配置
-  - task-specification-creator/LOGS.md + SKILL.md 同時更新（P1/P25 対策）
+  - `manual-test-result.md` の `not_run` を `NON_VISUAL_FALLBACK` へ置換し、manual evidence blocker と代替証跡を必須化
+  - `phase-12-documentation-guide.md` と `spec-update-workflow.md` に artifact parity / manual evidence / internal-public IPC 境界ルールを追加
+  - follow-up 2件（Skill Creator public IPC wiring / subscription service integration）を formalize
+  - implementation task の completed record と backlog cleanup を same-wave sync した
 
 ---
 
-## UT-TASK06-007-EXT-006 完了（2026-03-21）
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 実行完了
+- **Phase**: Phase 12 final re-audit
 - **Result**: success
 - **Notes**:
-  - `check-ipc-contracts.ts` の5関数/パターン（normalizeTypeAnnotation / isPrimitiveTypeAnnotation / mergeChannelMaps / CHANNEL_OBJECT_PATTERN / PRELOAD_CALL_START_PATTERN）に `export` を追加
-  - テスト20件追加（T-N 5件 / T-P 6件 / T-M 4件 / T-R 5件）
-  - 既存49件と合わせ69件全PASS、Line 95.79% / Branch 91.55% / Function 100%
-  - `implementation-guide.md`（Part 1/2）/ `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` の6成果物を作成
-  - `architecture-implementation-patterns-reference-ipc-drift-detection.md` の関連タスクテーブルに EXT-006 完了記録を追加
+  - `phase-12-documentation.md` を Task 1〜5 + 必須 6成果物前提へ是正
+  - `outputs/phase-12/skill-feedback-report.md` を追加し、Phase 12 の欠落成果物を解消
+  - workflow root=`implementation_ready`、completed ledger=`spec_created` の分離を system spec に同期
+  - `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` を追加し、未タスク件数を 4件へ更新
+  - worktree 環境でも `.claude` 正本更新を先送りしないルールへ修正
 
 ---
 
-## UT-SLIDE-UI-001 完了同期（2026-03-21）
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 spec-only Phase 1-12 完了（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12
+- **Phase**: Phase 1-12 全完了（設計タスク）
 - **Result**: success
 - **Notes**:
-  - `phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を current screenshot 10枚基準へ再構成
-  - `implementation-guide.md` を shared `SyncStatus` 実態、error handling、edge cases、定数一覧込みの実績版へ更新
-  - `system-spec-update-summary.md` で Step 2 を `更新あり` とし、canonical sync 必須ファイルを明示
-  - `unassigned-task-detection.md` を pending / resolved 分離へ更新し、false positive を除去
-  - current branch で解消済みの `UT-SLIDE-P31-001` を closure note 化した
-  - validator と same-wave sync の実績を issue / completed-task / `.claude` 正本へ反映した
+  - RuntimePolicy / HealthContract / HandoffContract の3 concern を中央集約する設計を Phase 1-12 で完了
+  - DD-1〜DD-6（設計判断6件）、M-1（RuntimeDecisionForRenderer 型）、M-2（resolve シグネチャ）を処置完了
+  - Phase 10 ゲート判定: PASS（AC-1〜AC-4 全て PASS）
+  - downstream Task03-09 は `spec_created` / `not_started` のままで、centralization 本体実装は未着手
+  - 未タスク3件検出: UT-CLEANUP-AI-CHECK-CONNECTION-001 / UT-CLEANUP-RUNTIME-RESOLVER-001 / UT-DESIGN-SANITIZE-PLACEMENT-001
+  - Phase 12 で backlog / workflow / lessons への導線を同一ターンで同期
+  - Phase 12 成果物: implementation-guide.md（Part1 日常アナロジー + Part2 開発者向け）+ 未タスク指示書3件
 
 ---
+
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: docs-only / reference normalization
+- **Result**: success
+- **Notes**:
+  - `step-02-seq-task-02-runtime-policy-centralization` を standalone root として再固定し、workflow 本文の self path / Task01 dependency path / verification-report target を current path へ書き戻した
+  - parent pack と Task03-09 downstream consumer の `Task02 index` 参照を current standalone root へ同期した
+  - `references/spec-update-workflow.md` に「standalone task 移設時は downstream consumer まで same-wave 更新する」ルールを追加した
+
+---
+
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
 - **Agent**: task-specification-creator
