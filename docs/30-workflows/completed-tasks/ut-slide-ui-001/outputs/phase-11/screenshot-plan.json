@@ -1,0 +1,69 @@
+{
+  "capturedAt": "2026-03-21T00:41:41.053Z",
+  "captureMode": "static-fallback-from-current-code",
+  "script": "apps/desktop/scripts/capture-ut-slide-ui-001-phase11.mjs",
+  "viewport": "1440x1180",
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "state": "empty-light",
+      "theme": "light",
+      "file": "screenshots/TC-11-01-empty-light.png"
+    },
+    {
+      "tcId": "TC-11-01",
+      "state": "empty-dark",
+      "theme": "dark",
+      "file": "screenshots/TC-11-01-empty-dark.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "state": "synced-light",
+      "theme": "light",
+      "file": "screenshots/TC-11-02-synced-light.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "state": "synced-dark",
+      "theme": "dark",
+      "file": "screenshots/TC-11-02-synced-dark.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "state": "running-light",
+      "theme": "light",
+      "file": "screenshots/TC-11-03-running-light.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "state": "running-dark",
+      "theme": "dark",
+      "file": "screenshots/TC-11-03-running-dark.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "state": "degraded-light",
+      "theme": "light",
+      "file": "screenshots/TC-11-04-degraded-light.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "state": "degraded-dark",
+      "theme": "dark",
+      "file": "screenshots/TC-11-04-degraded-dark.png"
+    },
+    {
+      "tcId": "TC-11-05",
+      "state": "guidance-light",
+      "theme": "light",
+      "file": "screenshots/TC-11-05-guidance-light.png"
+    },
+    {
+      "tcId": "TC-11-05",
+      "state": "guidance-dark",
+      "theme": "dark",
+      "file": "screenshots/TC-11-05-guidance-dark.png"
+    }
+  ],
+  "nonVisualCases": []
+}

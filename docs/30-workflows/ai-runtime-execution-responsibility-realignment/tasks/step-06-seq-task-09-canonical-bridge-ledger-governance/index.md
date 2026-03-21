@@ -41,10 +41,10 @@ canonical source table、bridge rule、spec_created / implementation_ready / com
 
 | 参照資料                   | パス                                                                                                          | 内容                                   |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| 親パック index             | docs/30-workflows/ai-runtime-execution-responsibility-realignment/index.md                                    | 依存順・並列可否・Atent Team 分担      |
+| 親パック index             | docs/30-workflows/ai-runtime-execution-responsibility-realignment/index.md                                    | 依存順・並列可否・Agent Team 分担      |
 | historical predecessor     | .claude/skills/aiworkflow-requirements/references/workflow-ai-runtime-authmode-unification.md                 | 既存 execution responsibility 問題設定 |
 | current canonical workflow | .claude/skills/aiworkflow-requirements/references/workflow-ai-runtime-execution-responsibility-realignment.md | required spec 抽出の current 入口      |
-| codepath-1                 | docs/30-workflows/step-01-seq-task-01-execution-responsibility-contract-foundation/index.md                   | foundation 契約の正本                  |
+| codepath-1                 | docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/index.md   | foundation 契約の正本                  |
 | codepath-2                 | docs/30-workflows/ai-runtime-execution-responsibility-realignment/index.md                                    | 親パック依存順と lane 分離             |
 | codepath-3                 | .claude/skills/aiworkflow-requirements/references/task-workflow.md                                            | 現状コード/関連ドキュメント            |
 | codepath-4                 | .claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md                                    | 現状コード/関連ドキュメント            |

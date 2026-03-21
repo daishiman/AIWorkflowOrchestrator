@@ -16,7 +16,22 @@ import {
  * プロジェクトの開閉、スキル実行、同期管理を提供
  */
 export const useSlideProject = () => {
-  const store = useSlideProjectStore();
+  const projectPath = useSlideProjectStore((state) => state.projectPath);
+  const syncStatus = useSlideProjectStore((state) => state.syncStatus);
+  const currentPhase = useSlideProjectStore((state) => state.currentPhase);
+  const lastSyncAt = useSlideProjectStore((state) => state.lastSyncAt);
+  const isWatching = useSlideProjectStore((state) => state.isWatching);
+  const executionProgress = useSlideProjectStore(
+    (state) => state.executionProgress,
+  );
+  const error = useSlideProjectStore((state) => state.error);
+  const setProject = useSlideProjectStore((state) => state.setProject);
+  const setError = useSlideProjectStore((state) => state.setError);
+  const setWatching = useSlideProjectStore((state) => state.setWatching);
+  const setSyncStatus = useSlideProjectStore((state) => state.setSyncStatus);
+  const setPhase = useSlideProjectStore((state) => state.setPhase);
+  const setProgress = useSlideProjectStore((state) => state.setProgress);
+  const reset = useSlideProjectStore((state) => state.reset);
   const isExecuting = useSlideProjectStore(selectIsExecuting);
   const hasProject = useSlideProjectStore(selectHasProject);
 
@@ -26,8 +41,8 @@ export const useSlideProject = () => {
   const openProject = useCallback(
     async (path: string): Promise<void> => {
       try {
-        store.setProject(path);
-        store.setError(null);
+        setProject(path);
+        setError(null);
 
         // ファイル監視を開始
         const watchResult = await window.slideApi.startWatching(path);
@@ -36,20 +51,20 @@ export const useSlideProject = () => {
             watchResult.error?.message ?? "Failed to start watching",
           );
         }
-        store.setWatching(true);
+        setWatching(true);
 
         // 初期同期状態を取得
         const statusResult = await window.slideApi.getSyncStatus(path);
         if (statusResult.success && statusResult.data) {
-          store.setSyncStatus(statusResult.data);
+          setSyncStatus(statusResult.data);
         }
       } catch (error) {
-        store.setError(
+        setError(
           error instanceof Error ? error.message : "Failed to open project",
         );
       }
     },
-    [store],
+    [setError, setProject, setSyncStatus, setWatching],
   );
 
   /**
@@ -58,83 +73,76 @@ export const useSlideProject = () => {
   const closeProject = useCallback(async (): Promise<void> => {
     try {
       await window.slideApi.stopWatching();
-      store.reset();
+      reset();
     } catch (error) {
       console.error("Failed to close project:", error);
     }
-  }, [store]);
+  }, [reset]);
 
   /**
    * スキルフェーズを実行
    */
   const executePhase = useCallback(
     async (phase: SkillPhase): Promise<SkillExecutionResult | null> => {
-      if (!store.projectPath) {
-        store.setError("No project is open");
+      if (!projectPath) {
+        setError("No project is open");
         return null;
       }
 
       if (isExecuting) {
-        store.setError("Another skill is already executing");
+        setError("Another skill is already executing");
         return null;
       }
 
       try {
-        store.setPhase(phase);
-        store.setError(null);
+        setPhase(phase);
+        setError(null);
 
-        const result = await window.slideApi.executePhase(
-          phase,
-          store.projectPath,
-        );
+        const result = await window.slideApi.executePhase(phase, projectPath);
 
-        store.setPhase("idle");
+        setPhase("idle");
 
         if (result.success && result.data) {
           // 同期状態を更新
-          const statusResult = await window.slideApi.getSyncStatus(
-            store.projectPath,
-          );
+          const statusResult = await window.slideApi.getSyncStatus(projectPath);
           if (statusResult.success && statusResult.data) {
-            store.setSyncStatus(statusResult.data);
+            setSyncStatus(statusResult.data);
           }
           return result.data;
         } else {
-          store.setError(result.error?.message ?? "Execution failed");
+          setError(result.error?.message ?? "Execution failed");
           return null;
         }
       } catch (error) {
-        store.setPhase("idle");
-        store.setError(
-          error instanceof Error ? error.message : "Execution failed",
-        );
+        setPhase("idle");
+        setError(error instanceof Error ? error.message : "Execution failed");
         return null;
       }
     },
-    [store, isExecuting],
+    [isExecuting, projectPath, setError, setPhase, setSyncStatus],
   );
 
   /**
    * 手動同期を実行
    */
   const manualSync = useCallback(async (): Promise<void> => {
-    if (!store.projectPath) return;
+    if (!projectPath) return;
 
     try {
-      store.setSyncStatus("syncing");
-      const result = await window.slideApi.manualSync(store.projectPath);
+      setSyncStatus("syncing");
+      const result = await window.slideApi.manualSync(projectPath);
 
       if (result.success) {
-        store.setSyncStatus("synced");
+        setSyncStatus("synced");
       } else {
-        store.setError(result.error?.message ?? "Sync failed");
-        store.setSyncStatus("error");
+        setError(result.error?.message ?? "Sync failed");
+        setSyncStatus("error");
       }
     } catch (error) {
-      store.setError(error instanceof Error ? error.message : "Sync failed");
-      store.setSyncStatus("error");
+      setError(error instanceof Error ? error.message : "Sync failed");
+      setSyncStatus("error");
     }
-  }, [store]);
+  }, [projectPath, setError, setSyncStatus]);
 
   /**
    * 実行をキャンセル
@@ -142,20 +150,20 @@ export const useSlideProject = () => {
   const cancelExecution = useCallback(async (): Promise<void> => {
     try {
       await window.slideApi.cancelExecution();
-      store.setPhase("idle");
+      setPhase("idle");
     } catch (error) {
       console.error("Failed to cancel execution:", error);
     }
-  }, [store]);
+  }, [setPhase]);
 
   // イベントリスナー設定
   useEffect(() => {
     // structure.md変更イベント
     const unsubscribeStructure = window.slideApi.onStructureChange(async () => {
-      if (store.projectPath) {
-        const result = await window.slideApi.getSyncStatus(store.projectPath);
+      if (projectPath) {
+        const result = await window.slideApi.getSyncStatus(projectPath);
         if (result.success && result.data) {
-          store.setSyncStatus(result.data);
+          setSyncStatus(result.data);
         }
       }
     });
@@ -163,14 +171,14 @@ export const useSlideProject = () => {
     // 同期状態変更イベント
     const unsubscribeSyncStatus = window.slideApi.onSyncStatusChange(
       (status) => {
-        store.setSyncStatus(status);
+        setSyncStatus(status);
       },
     );
 
     // 進捗イベント
     const unsubscribeProgress = window.slideApi.onExecutionProgress(
       (progress) => {
-        store.setProgress(progress);
+        setProgress(progress);
       },
     );
 
@@ -180,16 +188,17 @@ export const useSlideProject = () => {
       unsubscribeSyncStatus();
       unsubscribeProgress();
     };
-  }, [store, store.projectPath]);
+  }, [projectPath, setProgress, setSyncStatus]);
 
   return {
     // State
-    project: store.projectPath ? { path: store.projectPath } : null,
-    syncStatus: store.syncStatus,
-    currentPhase: store.currentPhase,
-    isWatching: store.isWatching,
-    executionProgress: store.executionProgress,
-    error: store.error,
+    project: projectPath ? { path: projectPath } : null,
+    syncStatus,
+    currentPhase,
+    lastSyncedAt: lastSyncAt,
+    isWatching,
+    executionProgress,
+    error,
     isExecuting,
     hasProject,
 

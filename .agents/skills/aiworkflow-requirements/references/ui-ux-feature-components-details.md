@@ -176,74 +176,74 @@
 
 ## Slide Workspace Runtime Alignment（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
 
-> **ステータス**: `spec_created`（2026-03-19 再監査同期）
+> **ステータス**: `UI implemented with runtime follow-up`（2026-03-21 同期）
 
-SlideWorkspace は slide runtime/auth-mode alignment の user-facing surface。現行コードは minimal slide UI まで実装されているが、task 09 で定義した 4領域 UI と runtime/handoff surface は未反映。
+SlideWorkspace は slide runtime/auth-mode alignment の user-facing surface。current branch では task 09 で定義した 4領域 UI が renderer へ実装済みで、残課題は runtime / IPC 契約の未収束部分に絞られる。
 
 ### 4領域コンポーネント
 
 | コンポーネント | 役割 | 状態 |
 | --- | --- | --- |
-| `SlideSyncCard` | project path、sync state、runtime/auth badge を集約 | 正本のみ |
-| `SlideProgressRow` | running 時の progress / cancel surface | 正本のみ |
-| `SlideWatchStatus` | watcher 接続状態と sync direction を表示 | 正本のみ |
-| `SlideGuidanceBlock` | degraded / guidance 時の reason と terminal fallback CTA を表示 | 正本のみ |
+| `SlideSyncCard` | project path、sync state、最終同期時刻、degraded reason を集約 | 実装済み |
+| `SlideProgressRow` | running 時の progress / cancel surface | 実装済み |
+| `SlideWatchStatus` | watcher 接続状態を表示 | 実装済み |
+| `SlideGuidanceBlock` | degraded / guidance 時の reason と CTA を表示 | 実装済み |
 
 ### 状態と CTA
 
-| UI 状態 | 表示条件 | 主 CTA |
-| --- | --- | --- |
-| `synced` | sync 完了・handoff なし | phase 実行 |
-| `running` | phase 実行中または sync 進行中 | cancel |
-| `degraded` | sync error / runtime error | retry / terminal fallback |
-| `guidance` | handoff 必須 | 設定へ移動 / terminal launcher |
+| UI 状態 | 表示条件 | 主 CTA | current branch 備考 |
+| --- | --- | --- | --- |
+| `synced` | handoff なし、error なし、syncing でもない | phase 実行 | `out-of-sync` はこのシェルへ吸収される |
+| `running` | phase 実行中または `syncing` | cancel | `SlideProgressRow` を表示 |
+| `degraded` | `error !== null` または `syncStatus === "error"` | retry / terminal fallback | retry は `manualSync` へ結線済み |
+| `guidance` | `handoffGuidance !== null` | settings / terminal fallback | 設定画面へ遷移可能 |
 
-### 4領域 UI 設計詳細
+### 実装詳細
 
-> **完了タスク**: TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001（spec_created, 2026-03-19）
-
-| コンポーネント | badge / status 詳細 |
+| 項目 | current branch の挙動 |
 | --- | --- |
-| `SlideSyncCard` | sync status badge: `synced` / `running` / `degraded` / `guidance` の4状態をカラー区別 |
-| `SlideProgressRow` | progress bar（0-100%）+ message テキスト。running 状態のみ表示 |
-| `SlideWatchStatus` | watcher active / inactive badge + sync direction（`forward` / `reverse`） |
-| `SlideGuidanceBlock` | failure reason（human readable）+ 次アクション提示 + terminal handoff CTA |
+| `SlideSyncCard` | `variantStyles` を export し、synced badge は黒文字でコントラスト改善済み |
+| `SlideWatchStatus` | `watchPath={project.path}` を渡し、監視中 / 停止中を明示 |
+| `SlideGuidanceBlock` | guidance/degraded で別タイトル・手順・CTA を出し分ける |
+| `TerminalLauncher` | `handoffGuidance.terminalCommand` を表示し、copy は実動作する |
 
-**Persistent Terminal Launcher**: 全状態（synced / running / degraded / guidance）で右下固定表示。`HandoffGuidance.terminalCommand` をコピー/起動するボタンを提供する。
+**Persistent Terminal Launcher**: 全状態で右下固定表示。現状の `onLaunch` は native terminal IPC が無いため copy fallback として動作する。
 
-### current audit（2026-03-19）
+### current audit（2026-03-21）
 
 | 観点 | 現在の確認結果 |
 | --- | --- |
-| empty state | open CTA は存在 |
-| synced state | project path と sync badge はあるが runtime/auth / watch status はない |
-| out-of-sync | `手動同期` ボタンのみ。reverse-sync 用語と guidance surface はない |
-| running | progress / cancel はあるが direction / watch / runtime 情報はない |
-| degraded | error alert はあるが terminal launcher / handoff reason はない |
+| empty state | open CTA が存在 |
+| synced state | sync card / watch status / phase panel が表示される |
+| guidance state | `handoffGuidance` を起点に settings 導線と terminal command を表示 |
+| running state | progress / cancel surface が表示される |
+| degraded state | reason / retry / terminal fallback を表示 |
+| out-of-sync | `synced` シェルへ吸収。reverse-sync 専用表現は未実装 |
 
 ### screenshot 証跡
 
 | TC-ID | 証跡 |
 | --- | --- |
-| `TC-11-01` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/TC-11-01-slide-workspace-empty-state.png` |
-| `TC-11-02` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/TC-11-02-slide-workspace-synced-state.png` |
-| `TC-11-03` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/TC-11-03-slide-workspace-manual-sync-cta.png` |
-| `TC-11-04` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/TC-11-04-slide-workspace-running-progress.png` |
-| `TC-11-05` | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/TC-11-05-slide-workspace-sync-error.png` |
+| `TC-11-01` | `docs/30-workflows/ut-slide-ui-001/outputs/phase-11/screenshots/TC-11-01-empty-light.png` / `TC-11-01-empty-dark.png` |
+| `TC-11-02` | `docs/30-workflows/ut-slide-ui-001/outputs/phase-11/screenshots/TC-11-02-synced-light.png` / `TC-11-02-synced-dark.png` |
+| `TC-11-03` | `docs/30-workflows/ut-slide-ui-001/outputs/phase-11/screenshots/TC-11-03-running-light.png` / `TC-11-03-running-dark.png` |
+| `TC-11-04` | `docs/30-workflows/ut-slide-ui-001/outputs/phase-11/screenshots/TC-11-04-degraded-light.png` / `TC-11-04-degraded-dark.png` |
+| `TC-11-05` | `docs/30-workflows/ut-slide-ui-001/outputs/phase-11/screenshots/TC-11-05-guidance-light.png` / `TC-11-05-guidance-dark.png` |
 
 | 補助証跡 | パス |
 | --- | --- |
-| metadata | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/screenshots/phase11-capture-metadata.json` |
-| manual result | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/outputs/phase-11/manual-test-result.md` |
+| metadata | `docs/30-workflows/ut-slide-ui-001/outputs/phase-11/screenshots/phase11-capture-metadata.json` |
+| manual result | `docs/30-workflows/ut-slide-ui-001/outputs/phase-11/manual-test-result.md` |
 
-live preview は `esbuild` mismatch で失敗したため、current workflow では static fallback を正本証跡とした。live current build での再撮影は `UT-SLIDE-UI-001` で回収する。
+live preview は `esbuild` native binary mismatch で失敗したため、current workflow では static fallback capture を正式証跡として扱う。
 
 ### follow-up
 
 | 未タスクID | 内容 |
 | --- | --- |
-| `UT-SLIDE-UI-001` | UI 4領域の実装と live screenshot 置換 |
-| `UT-SLIDE-IMPL-001` | runtime/auth-mode 実装収束 |
+| `UT-SLIDE-IMPL-001` | runtime/auth-mode 実装収束、native terminal 起動、reverse-sync surface |
+| `UT-SLIDE-UI-CLOSE-ERROR-001` | close/cancel エラーの UI surfacing |
+| `UT-SLIDE-UI-HIG-LEGACY-001` | legacy slide コンポーネントの色統一 |
 
 ## Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW）
 

@@ -10,7 +10,7 @@
 > **検索パターン集・コードパターン早見は [quick-reference-search-patterns.md](quick-reference-search-patterns.md) に分離**
 > 機能・タスク別のキーワード分割、読む順番、IPC/Zustand/Result 等のコードスニペットを収録
 
-### AI Chat / LLM Integration Fix 即時導線（2026-03-20）
+### AI Chat / LLM Integration Fix 即時導線（2026-03-21）
 
 | 目的 | 最初に開くファイル |
 | --- | --- |
@@ -18,6 +18,7 @@
 | parent workflow | `docs/30-workflows/ai-chat-llm-integration-fix/index.md` |
 | same-wave artifact inventory | `references/workflow-ai-chat-llm-integration-fix-artifact-inventory.md` |
 | Task 01 canonical root | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` |
+| Task 02 canonical root | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` |
 | ChatView error transport 契約 | `references/llm-ipc-types.md`, `references/error-handling-core.md` |
 | LLM selector / persistence | `references/ui-ux-llm-selector.md`, `references/arch-state-management-core.md` |
 | Workspace stream error | `references/llm-streaming.md`, `references/ui-ux-feature-components-details.md` |
@@ -55,6 +56,7 @@
 | スキル配布         | `SkillDistributionService`    | interfaces-agent-sdk-skill.md |
 | LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
 | LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
+| RAG LLMクライアント | `ILLMClient`（crag/types.ts 版 / llm/types.ts 版）型ドリフト→P64 | lessons-learned-rag-embedding-runtime.md (L-RAG-06) |
 
 ---
 
@@ -273,6 +275,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-20 | UT-RAG-08-002: `ILLMClient` 型ドリフト（P64）への参照パスを型定義クイックアクセステーブルに追加。`lessons-learned-rag-embedding-runtime.md` (L-RAG-06) へ導線を登録 |
 | 2026-03-19 | UT-TASK06-007: discovery 導線を completed canonical set に再同期し、implementation pattern detail / completed ledger / EXT-001〜005 を早見表へ反映 |
 | 2026-03-18 | UT-TASK06-007: IPC契約ドリフト自動検出セクション（check-ipc-contracts.ts / R-01~R-04 / EXT-001~003）をIPCチャンネル早見表直後に追加 |
 | 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加 |

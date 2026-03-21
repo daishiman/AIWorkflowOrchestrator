@@ -19,11 +19,63 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-21 | 1.5.0 | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE の Phase 12 教訓4件を追加 |
 | 2026-03-20 | 1.4.0 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 の Phase 12 教訓2件を追加 |
 | 2026-03-18 | 1.3.0 | TASK-SKILL-LIFECYCLE-08 仕様書作成4件 + 再監査3件を lessons-learned-current.md から移動 |
 | 2026-03-18 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）。合計5件 |
 | 2026-03-18 | 1.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-21 TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE
+
+### 苦戦箇所1: worktree UI task でも screenshot を pending 扱いにしてはいけない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 11 を placeholder のまま閉じると、UI task の代表証跡が残らず current workflow の説得力が失われる |
+| 再発条件 | build や local harness の不整合を理由に screenshot 取得を後回しにする |
+| 解決策 | current renderer entry を static server で配信し、Playwright から current build を capture した |
+| 標準ルール | worktree / CLI 環境でも UI task は capture script を作成して representative screenshot を残す |
+| 関連タスク | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE |
+
+### 苦戦箇所2: root relocation は parent doc だけ直しても不十分
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task 02 root を `docs/30-workflows/02-...` に移しても、artifact inventory / legacy register / selector spec / backlog が旧 path のままだと検索導線が壊れる |
+| 再発条件 | current canonical root の変更を 1 ファイルだけで閉じる |
+| 解決策 | parent workflow、workflow family spec、artifact inventory、legacy register、backlog、lessons、quick-reference を同一 wave で更新した |
+| 標準ルール | canonical path 変更時は「parent + family spec + inventory + legacy + backlog + lessons + index」を最小同期セットとする |
+| 関連タスク | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE |
+
+### 苦戦箇所3: 未タスク検出は「本レポート内で記録」で済ませてはいけない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | direct scroll と dismiss は scope 外と判定できたが、独立指示書がないと follow-up を再利用できない |
+| 再発条件 | 小規模 follow-up を「コード変更不要」と見なし、独立 task spec を省略する |
+| 解決策 | root `unassigned-task/` に 9 セクション形式の task spec を 2 件作成した |
+| 標準ルール | follow-up を検出したら 1.指示書作成 2.backlog 登録 3.related spec 反映 の 3 ステップを例外なく完了する |
+| 関連タスク | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE |
+
+### 苦戦箇所4: Phase 12 compliance file は最後ではなく最初に置く
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task 1〜5 を埋めた後だと `phase12-task-spec-compliance-check.md` を置き忘れやすい |
+| 再発条件 | docs-heavy task で outputs の作成順が後手に回る |
+| 解決策 | compliance file を先に作成し、validator 結果と root evidence を後から追記する運用へ切り替えた |
+| 標準ルール | Phase 12 開始時に compliance file を空テンプレートで作成し、Task 1〜5 と validator を逐次記入する |
+| 関連タスク | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE |
+
+### 同種課題の簡潔解決手順（4ステップ）
+
+1. current build で capture script を通し、Phase 11 screenshot を先に確保する。
+2. root relocation がある場合は parent / inventory / legacy / backlog / lessons / quick-reference を同時更新する。
+3. follow-up は独立指示書を作ってから backlog と spec へリンクする。
+4. compliance file に validator 実測値を書き戻してから Phase 12 を閉じる。
 
 ---
 
