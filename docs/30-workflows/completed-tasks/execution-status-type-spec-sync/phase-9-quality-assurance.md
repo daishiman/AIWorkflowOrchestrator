@@ -41,8 +41,8 @@
 ### ステップ1: validator を実行する
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 9
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/execution-status-type-spec-sync --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 9
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/execution-status-type-spec-sync --json
 ```
 
 Phase 9 では quality gate に必要な即時判定を行い、Phase 12 Step 1-G ではその結果を成果物へ転記する。
@@ -73,8 +73,8 @@ sed -n '360,390p' packages/shared/src/types/skill.ts
 Phase 12 Step 1-G へ転記する validator summary を固めるため、full validation matrix も実行する。
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/quick_validate.js docs/30-workflows/execution-status-type-spec-sync
-node .claude/skills/task-specification-creator/scripts/validate_all.js docs/30-workflows/execution-status-type-spec-sync
+node .claude/skills/task-specification-creator/scripts/quick_validate.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync
+node .claude/skills/task-specification-creator/scripts/validate_all.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync
 ```
 
 ## 統合テスト連携（Phase 9）
@@ -119,7 +119,7 @@ node .claude/skills/task-specification-creator/scripts/validate_all.js docs/30-w
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 9
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 9
 ```
 
 ## 次のPhase

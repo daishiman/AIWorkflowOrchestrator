@@ -135,11 +135,12 @@
 | 実行 | `pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only` |
 | ルール | R-01(孤児), R-02(引数不一致/P44), R-03(ハードコード/P27), R-04(未登録) |
 | 仕様 | `ipc-contract-checklist.md` / `quality-requirements.md` / `architecture-implementation-patterns-reference-ipc-drift-detection.md` |
-| 導線 | `task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed-ipc-contract-preload-alignment.md` / `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/` |
+| 導線 | `task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed-ipc-contract-preload-alignment.md` / `docs/30-workflows/completed-tasks/UT-TASK06-007-ipc-contract-drift-auto-detect/` / `docs/30-workflows/UT-TASK06-007-EXT-006-new-function-test-expansion/` |
 | 未タスク | EXT-001(タプル配列), EXT-002(alias/再export/動的定数), EXT-003(ipcMain.on/safeOn), EXT-004(モジュール分割), EXT-005(R-02精度向上) |
-| テスト | 44件（Line 94.94% / Branch 89.92% / Function 100%） |
+| 完了済み拡張 | EXT-006（5関数/パターン export追加 + 20件追加テスト） |
+| テスト | 69件（Line 95.79% / Branch 91.55% / Function 100%） |
 | 実行時間 | 約2.1秒（NFR-01: 10秒以内） |
-| 実測値 | Main 216 handlers / Preload 147 entries / Drifts 169 |
+| 実測値 | Main 217 handlers / Preload 189 entries / Drifts 198 / Orphans 120 / `passed=false` |
 
 #### CLI コマンド早見表
 

@@ -1,6 +1,14 @@
 {
+<<<<<<< Updated upstream
   "generated": "2026-03-21T03:26:12.188Z",
   "totalKeywords": 2415,
+||||||| Stash base
+  "generated": "2026-03-20T14:21:40.716Z",
+  "totalKeywords": 2406,
+=======
+  "generated": "2026-03-21T03:11:28.946Z",
+  "totalKeywords": 2408,
+>>>>>>> Stashed changes
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6197,6 +6205,12 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "FAILURE": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "EXT": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "テスト拡充": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "EDIT": [

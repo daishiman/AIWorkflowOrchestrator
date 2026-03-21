@@ -106,7 +106,7 @@ Phase 2 の lane 設計と Phase 3 の review gate から、以下の edge が�
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 7
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 7
 ```
 
 ## 次のPhase

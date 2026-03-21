@@ -48,17 +48,24 @@ pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only --format json
 
 ## テスト戦略
 
-### ユニットテスト（44件）
-- T-4-1〜T-4-8: 抽出関数・検出ルール・レポート生成・チャンネル解決（26件）
-- T-6-1〜T-6-4: 異常系・境界値・エッジケース・P44/P45回帰（13件）
-- T-7a〜T-7e: main()関数・CLIオプション・exit code（5件）
+### ユニットテスト（69件）
 
-### カバレッジ（2026-03-19 測定）
+- ベースライン49件:
+  T-4-1〜T-4-8（抽出関数・検出ルール・レポート生成・チャンネル解決）、
+  T-6-1〜T-6-4（異常系・境界値・エッジケース・P44/P45回帰）、
+  T-7a〜T-7e（`main()` / CLIオプション / exit code）
+- EXT-006 追加20件:
+  T-N-01〜05（`normalizeTypeAnnotation`）、
+  T-P-01〜06（`isPrimitiveTypeAnnotation`）、
+  T-M-01〜04（`mergeChannelMaps`）、
+  T-R-01〜05（`CHANNEL_OBJECT_PATTERN` / `PRELOAD_CALL_START_PATTERN`）
+
+### カバレッジ（2026-03-21 測定）
 
 | 指標 | 結果 |
 |---|---|
-| Line | 94.94% |
-| Branch | 89.92% |
+| Line | 95.79% |
+| Branch | 91.55% |
 | Function | 100% |
 
 ### テスト実行
@@ -72,16 +79,16 @@ cd apps/desktop && pnpm vitest run scripts/__tests__/check-ipc-contracts.test.ts
 `process.argv[1]` をスクリプトパスに設定して実コードベースに対する統合テストとして実行。
 fs モックよりも安定し、高カバレッジを達成（P40派生パターン対策）。
 
-## 実行サマリー（2026-03-19 実測）
+## 実行サマリー（2026-03-21 実測）
 
 | 項目 | 値 |
 |---|---|
 | 実行時間 | 約2.1秒 |
-| Main handlers 検出数 | 216 |
-| Preload entries 検出数 | 147 |
-| R-01 (チャンネル孤児) | 107件 |
-| R-02 (引数形式不一致) | 19件 |
-| R-03 (ハードコード文字列) | 5件 |
+| Main handlers 検出数 | 217 |
+| Preload entries 検出数 | 189 |
+| Drifts | 198件 |
+| Orphans | 120件 |
+| 判定 | `passed: false`（実コード上の既存 drift により FAIL 継続） |
 
 ## 関連タスク
 
@@ -93,3 +100,4 @@ fs モックよりも安定し、高カバレッジを達成（P40派生パタ�
 | UT-TASK06-007-EXT-003 | ipcMain.on パターン検証強化 | 未着手 |
 | UT-TASK06-007-EXT-004 | check-ipc-contracts.ts モジュール分割 | 未着手 |
 | UT-TASK06-007-EXT-005 | R-02 セマンティクスチェック精度向上 | 未着手 |
+| UT-TASK06-007-EXT-006 | check-ipc-contracts テスト拡充（5関数/パターン export追加 + 20件追加） | 完了（2026-03-21、カバレッジ95.79%） |

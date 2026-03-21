@@ -184,7 +184,12 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 | Version     | Date           | Changes                                                                                                                                                                           |
 | ----------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+<<<<<<< Updated upstream
 | **9.02.07** | **2026-03-21** | **TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査同期**: `workflow-ai-chat-llm-integration-fix.md` / `workflow-ai-chat-llm-integration-fix-artifact-inventory.md` / `ui-ux-llm-selector.md` / `legacy-ordinal-family-register.md` / `task-workflow-completed-chat-lifecycle-tests.md` / `task-workflow-backlog.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `lessons-learned-current.md` / `indexes/quick-reference.md` を current facts へ再同期。Task 02 root canonical path、representative screenshot 4件、follow-up 2件、same-wave sync の最小セット、worktree UI capture 回収パターンを system spec 正本へ追記 |
+||||||| Stash base
+=======
+| **9.02.07** | **2026-03-21** | **UT-TASK06-007-EXT-006**: check-ipc-contracts テスト拡充（20件追加、カバレッジ95.79%）。`architecture-implementation-patterns-reference-ipc-drift-detection.md` の関連タスクテーブルに EXT-006 完了記録を追加。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+>>>>>>> Stashed changes
 | **9.02.06** | **2026-03-20** | **UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001**: SkillExecutionStatus 9値テーブル拡張・配置ルール追記 |
 | **9.02.05** | **2026-03-19** | **UT-TASK06-007 再監査同期**: `ipc-contract-checklist.md` / `architecture-implementation-patterns-reference-ipc-drift-detection.md` / `task-workflow-completed-ipc-contract-preload-alignment.md` / `security-electron-ipc.md` / `technology-devops.md` / `deployment-gha.md` を current facts に再同期。generic/multiline preload、複数 const object 解決、representative screenshot audit、実装時の苦戦箇所と簡潔解決手順を system spec から再利用できる形へ追記 |
 | **v-conv-db** | **2026-03-19** | **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了**: `database-implementation-core.md` / `arch-ipc-persistence.md` / `api-ipc-system-core.md` / `security-electron-ipc-core.md` / `task-workflow-completed-ipc-graceful-degradation-lifecycle.md` / `lessons-learned-current.md` を更新 |

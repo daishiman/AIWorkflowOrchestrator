@@ -4,6 +4,20 @@
 
 ---
 
+## UT-TASK06-007-EXT-006 完了（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 実行完了
+- **Result**: success
+- **Notes**:
+  - `check-ipc-contracts.ts` の5関数/パターン（normalizeTypeAnnotation / isPrimitiveTypeAnnotation / mergeChannelMaps / CHANNEL_OBJECT_PATTERN / PRELOAD_CALL_START_PATTERN）に `export` を追加
+  - テスト20件追加（T-N 5件 / T-P 6件 / T-M 4件 / T-R 5件）
+  - 既存49件と合わせ69件全PASS、Line 95.79% / Branch 91.55% / Function 100%
+  - `implementation-guide.md`（Part 1/2）/ `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` の6成果物を作成
+  - `architecture-implementation-patterns-reference-ipc-drift-detection.md` の関連タスクテーブルに EXT-006 完了記録を追加
+
+---
+
 ## UT-SLIDE-UI-001 完了同期（2026-03-21）
 
 - **Agent**: task-specification-creator
@@ -18,7 +32,6 @@
   - validator と same-wave sync の実績を issue / completed-task / `.claude` 正本へ反映した
 
 ---
-
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
 - **Agent**: task-specification-creator
