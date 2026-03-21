@@ -4,7 +4,62 @@
 
 ---
 
+## TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 11/12 close-out（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11-12
+- **Result**: success
+- **Notes**:
+  - `phase-11-manual-test.md` を actual storage key `knowledge-studio-store` と dedicated harness 前提へ更新
+  - `implementation-guide.md` を validator 10/10 要件に合わせて再構成
+  - `system-spec-update-summary.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を追加し、必須 6 成果物を current root にそろえた
+  - parent workflow / artifact inventory / completed shard / lessons / LOGS / SKILL を same-wave sync 対象として明文化した
+
+---
+
+## TASK-FIX-LLM-CONFIG-PERSISTENCE 完了（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 Task 2
+- **Result**: success
+- **Notes**:
+  - `aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md` に完了記録を追加（P1対策: 2ファイル両方）
+  - `aiworkflow-requirements/SKILL.md` と `task-specification-creator/SKILL.md` に変更履歴を追加（P25対策）
+  - `arch-state-management.md` の persist 対象フィールド一覧に `selectedProviderId` / `selectedModelId` を追記
+  - `workflow-ai-chat-llm-integration-fix.md` の TASK-FIX-LLM-CONFIG-PERSISTENCE ステータスを「実装完了」へ更新
+  - `ui-ux-llm-selector.md` の persist 未実装注釈を「実装済み」へ更新
+  - topic-map.md を generate-index.js で再生成
+
+---
+
+## workflow 移設時の本文 stale path ガード追加（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: ガイド/運用ルール是正
+- **Result**: success
+- **Notes**:
+  - `references/spec-update-workflow.md` に、ディレクトリ移設後は `index.md` の canonical path、各 Phase の依存参照、`outputs/verification-report.md` を同一 wave で再生成するルールを追加
+  - `rg -n "<old-path>" <workflow> <parent> <downstream>` を 0 件化してから `verify-all-specs` を再実行する手順を固定
+  - standalone task 移設で「構造 PASS / 意味 stale」になる再発パターンを明文化
+
+---
+
+## pending skeleton workflow validator 調整（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: validator / workflow generation rule sync
+- **Result**: success
+- **Notes**:
+  - `validate-phase-output.js` を更新し、全 Phase が `pending` / `not_started` の workflow では `outputs/artifacts.json` と Phase 11 補助成果物を未開始扱いで保留するよう変更
+  - 設計タスクは `manual-test-plan.md` と `screenshot-plan.json` の `screenshotRequired=false` を Phase 11 evidence として受理し、非視覚 walkthrough を warning 扱いしないよう是正
+  - `verify-all-specs.js` は依存 Phase 参照をメタ情報込みで判定し、`/outputs/` 参照の未生成ノイズを除去
+  - `references/patterns-workflow-generation.md` に pending skeleton workflow の台帳同期切替条件を追記し、validator と skill guidance の期待値を一致させた
+
+---
+
+## UT-SLIDE-UI-001 完了同期（2026-03-21）
 ## chat-inline-model-selector ワークフロー仕様書作成（2026-03-21）
+
 
 - **Agent**: task-specification-creator
 - **Phase**: create（新規ワークフロー作成）

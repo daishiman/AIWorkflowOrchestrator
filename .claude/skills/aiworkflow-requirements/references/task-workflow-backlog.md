@@ -510,6 +510,9 @@
 | UT-RAG-08-007 | ILLMClient 型定義統一（UT-RAG-08-002 wave） | 中 | UT-RAG-08-002 Phase 10/12 follow-up（2026-03-21） | `docs/30-workflows/unassigned-task/task-rag-08-007-illmclient-type-unification.md` |
 | UT-RAG-08-008 | Graph global mode での communitySummarizer 活用仕上げ | 中 | UT-RAG-08-002 Phase 10/12 follow-up（2026-03-21） | `docs/30-workflows/unassigned-task/task-rag-08-008-community-summarizer-config-extension.md` |
 
+| UT-FIX-LLM-PERSIST-ENCRYPT-001 | persist storage暗号化の検討 | 低 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md` |
+| UT-FIX-LLM-FETCHPROVIDERS-RETRY-001 | fetchProviders失敗時のリトライとバリデーション連携 | 中 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md` |
+
 ### 未タスク管理ルール
 
 - 未タスクは `docs/30-workflows/unassigned-task/` に配置

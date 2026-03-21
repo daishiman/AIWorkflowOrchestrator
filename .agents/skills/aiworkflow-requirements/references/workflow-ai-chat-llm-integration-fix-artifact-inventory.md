@@ -6,8 +6,8 @@
 | --- | --- |
 | wave date | 2026-03-21 |
 | parent workflow | `docs/30-workflows/ai-chat-llm-integration-fix/index.md` |
-| primary implemented tasks | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/`, `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` |
-| related workflow specs | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/`, `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` |
+| primary implemented tasks | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/`, `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/`, `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` |
+| related workflow specs | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/`, `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` |
 | purpose | Phase 12 same-wave で参照した current canonical set、workflow-local 成果物、未タスク、検証チェーンを引用可能な形で固定する |
 
 ## current canonical set
@@ -57,13 +57,31 @@
 | phase 12 compliance | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/phase12-task-spec-compliance-check.md` | 準拠チェック |
 | component doc | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/component-documentation.md` | UI surface 契約 |
 
+### Task 03 root
+
+| artifact | path | purpose |
+| --- | --- | --- |
+| workflow root | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | Task 03 canonical root |
+| phase 11 spec | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-11-manual-test.md` | TC-11-01..04 の正本 |
+| phase 11 checklist | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-11/manual-test-checklist.md` | 実施チェック |
+| phase 11 result | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-11/manual-test-result.md` | 実行結果 |
+| phase 11 issues | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-11/discovered-issues.md` | capture blocker と発見事項 |
+| screenshot plan | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-11/screenshot-plan.json` | capture 対象一覧 |
+| screenshot metadata | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-11/screenshots/phase11-capture-metadata.json` | capture 実績 metadata |
+| phase 12 guide | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-12/implementation-guide.md` | Task 1 成果物 |
+| phase 12 summary | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-12/system-spec-update-summary.md` | Step 1-A〜Step 2 実績 |
+| phase 12 changelog | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-12/documentation-changelog.md` | 変更ログ |
+| phase 12 unassigned | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-12/unassigned-task-detection.md` | follow-up 2件の formalize 記録 |
+| phase 12 feedback | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-12/skill-feedback-report.md` | skill feedback |
+| phase 12 compliance | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-12/phase12-task-spec-compliance-check.md` | 準拠チェック |
+
 ### parent workflow / sibling specs
 
 | artifact | path | purpose |
 | --- | --- | --- |
 | parent overview | `docs/30-workflows/ai-chat-llm-integration-fix/index.md` | 4 タスク family overview |
 | task 02 spec | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | selector guidance workflow |
-| task 03 spec | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | persistence workflow |
+| task 03 spec | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | persistence workflow |
 | task 04 spec | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` | workspace error workflow |
 
 ## follow-up 未タスク
@@ -74,13 +92,15 @@
 | `UT-AI-CHAT-ERROR-CODE-INVENTORY-001` | `docs/30-workflows/completed-tasks/task-ut-ai-chat-error-code-inventory-001.md` | ai.chat code inventory の formalization |
 | `UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001` | `docs/30-workflows/unassigned-task/task-ut-llm-settings-direct-scroll-001.md` | Settings の LLM セクションへ直接到達する導線 |
 | `UT-FIX-LLM-BANNER-DISMISS-001` | `docs/30-workflows/unassigned-task/task-ut-llm-guidance-banner-dismiss-001.md` | guidance banner の dismiss UX |
+| `UT-FIX-LLM-FETCHPROVIDERS-RETRY-001` | `docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md` | fetchProviders retry と validation 再実行保証 |
+| `UT-FIX-LLM-PERSIST-ENCRYPT-001` | `docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md` | persist encryption 検討 |
 
 ## 同一 wave で更新した canonical docs
 
 | category | files |
 | --- | --- |
 | workflow spec | `references/workflow-ai-chat-llm-integration-fix.md`, `references/workflow-ai-chat-llm-integration-fix-artifact-inventory.md` |
-| UI / runtime | `references/ui-ux-llm-selector.md`, `references/llm-streaming.md` |
+| UI / runtime | `references/ui-ux-llm-selector.md`, `references/arch-state-management-reference-persist-hardening-test-quality.md`, `references/llm-streaming.md` |
 | ledger / lessons | `references/task-workflow-completed-chat-lifecycle-tests.md`, `references/task-workflow-backlog.md`, `references/lessons-learned-current.md`, `references/lessons-learned-phase12-workflow-lifecycle.md` |
 | navigation / compatibility | `indexes/resource-map.md`, `indexes/quick-reference.md`, `references/legacy-ordinal-family-register.md` |
 | logs / skill guidance | `LOGS.md`, `SKILL.md`, `.claude/skills/task-specification-creator/LOGS.md`, `.claude/skills/task-specification-creator/SKILL.md` |
@@ -91,6 +111,7 @@
 | --- | --- | --- |
 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | Task 01 canonical root drift を是正 |
 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | Task 02 canonical root drift を是正 |
+| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | Task 03 canonical root drift を是正 |
 | `docs/30-workflows/unassigned-task/task-chatview-error-message-i18n-support.md` | `docs/30-workflows/completed-tasks/task-ut-chatview-error-banner-i18n-001.md` | Task 01 follow-up actual path |
 | `docs/30-workflows/unassigned-task/task-chatview-ai-chat-error-code-inventory.md` | `docs/30-workflows/completed-tasks/task-ut-ai-chat-error-code-inventory-001.md` | Task 01 follow-up actual path |
 
@@ -100,10 +121,13 @@
 | --- | --- | --- |
 | `pnpm --filter @repo/desktop screenshot:chatview-error-silent-failure` | PASS | Task 01 画面証跡 5 件取得 |
 | `pnpm --filter @repo/desktop screenshot:llm-selector-inline-guidance` | PASS | Task 02 画面証跡 4 件取得 |
+| `pnpm --filter @repo/desktop screenshot:task-fix-llm-config-persistence` | BLOCKED | Task 03 harness は追加済みだが `esbuild` arch mismatch で screenshot 未生成 |
 | `validate-phase11-screenshot-coverage.js --workflow <Task01>` | PASS | Task 01 screenshot coverage |
 | `validate-phase11-screenshot-coverage.js --workflow <Task02>` | PASS | Task 02 screenshot coverage |
+| `validate-phase12-implementation-guide.js --workflow <Task03>` | 実行対象 | Task 03 guide 10/10 確認 |
 | `validate-phase12-implementation-guide.js --workflow <Task01>` | PASS | Task 01 guide 10/10 |
 | `validate-phase12-implementation-guide.js --workflow <Task02>` | PASS | Task 02 guide 10/10 |
+| `verify-unassigned-links.js --source <Task03>/outputs/phase-12/unassigned-task-detection.md` | 実行対象 | Task 03 follow-up 2件 link 確認 |
 | `verify-unassigned-links.js --source <Task02>/outputs/phase-12/unassigned-task-detection.md` | PASS | Task 02 follow-up link existence |
 | `audit-unassigned-tasks.js --json --target-file <Task02 2 files>` | PASS | Task 02 follow-up 2 件とも `currentViolations=0` |
 | `generate-index.js` | PASS | topic-map / keywords 再生成 |

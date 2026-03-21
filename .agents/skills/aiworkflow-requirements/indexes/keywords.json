@@ -1,6 +1,7 @@
 {
   "generated": "2026-03-21T11:11:48.348Z",
   "totalKeywords": 2416,
+
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1277,6 +1278,7 @@
       "arch-electron-services-details-part2.md",
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management-reference.md",
+      "arch-state-management.md",
       "error-handling-core.md",
       "error-handling-details.md",
       "interfaces-agent-sdk-executor-core.md",
@@ -3082,8 +3084,39 @@
     "拡張仕様": [
       "arch-state-management-reference-permissions-import-lifecycle.md"
     ],
+    "LLM": [
+      "arch-state-management-reference-persist-hardening-test-quality.md",
+      "arch-state-management.md",
+      "interfaces-llm.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "llm-ipc-types.md",
+      "llm-streaming.md",
+      "rag-desktop-state.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-system-prompt.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md"
+    ],
+    "Selection": [
+      "arch-state-management-reference-persist-hardening-test-quality.md"
+    ],
     "Persist": [
       "arch-state-management-reference-persist-hardening-test-quality.md"
+    ],
+    "Validation": [
+      "arch-state-management-reference-persist-hardening-test-quality.md"
+    ],
+    "CONFIG": [
+      "arch-state-management-reference-persist-hardening-test-quality.md",
+      "arch-state-management.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "PERSISTENCE": [
+      "arch-state-management-reference-persist-hardening-test-quality.md",
+      "arch-state-management.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-02-abort-security-loop-guard.md",
+      "logs-archive-legacy.md"
     ],
     "Iterable": [
       "arch-state-management-reference-persist-hardening-test-quality.md"
@@ -3143,6 +3176,9 @@
       "arch-state-management.md"
     ],
     "feedbackSlice": [
+      "arch-state-management.md"
+    ],
+    "選択状態の永続化": [
       "arch-state-management.md"
     ],
     "コンポーネントパターン": [
@@ -5142,6 +5178,7 @@
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
       "workflow-ai-chat-llm-integration-fix.md"
     ],
+
     "対応": [
       "interfaces-llm.md",
       "ui-ux-feature-components-details.md",
@@ -7680,10 +7717,6 @@
     ],
     "用認証キー管理基盤": [
       "logs-archive-2026-02-abort-security-loop-guard.md"
-    ],
-    "PERSISTENCE": [
-      "logs-archive-2026-02-abort-security-loop-guard.md",
-      "logs-archive-legacy.md"
     ],
     "スキル永続化バグ修正": [
       "logs-archive-2026-02-abort-security-loop-guard.md"

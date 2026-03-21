@@ -66,15 +66,17 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 
 **注意**:
 
-- current `persist.partialize` には LLM 選択状態は含まれていない
-- そのため再起動後 persist は未実装であり、runtime sync と persist は別 concern で扱う
+- `persist.partialize` に `selectedProviderId` / `selectedModelId` を追加済み（TASK-FIX-LLM-CONFIG-PERSISTENCE、2026-03-21）
+- persist version: v2（v0→v2 migrate 関数で旧 state を安全変換）
+- 起動時バリデーション: 既存プロバイダーリストに含まれない選択値はクリアする
+- runtime sync と persist は引き続き別 concern で扱う
 
 ## UXフロー
 
 ### プロバイダー切り替え時の動作
 
 1. ユーザーが「Provider」ドロップダウンからプロバイダーを選択
-2. `setProvider()` アクションが即座に実行
+2. `selectProvider()` アクションが即座に実行
 3. 選択されたプロバイダーの最初のモデルが自動選択される
 4. 「Model」ドロップダウンの選択肢が更新される
 5. 「Current」バッジが更新される
@@ -83,7 +85,7 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 ### モデル切り替え時の動作
 
 1. ユーザーが「Model」ドロップダウンからモデルを選択
-2. `setProvider()` アクションが即座に実行
+2. `selectModel()` アクションが即座に実行
 3. 「Current」バッジが更新される
 4. 次のメッセージから新しいモデルが使用される
 
@@ -131,7 +133,8 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 | エラーケース | 対処法 |
 |--------------|--------|
 | プロバイダー一覧が空 | 「No LLM providers available」メッセージを表示 |
-| 選択されたモデルが存在しない | プロバイダーの最初のモデルにフォールバック |
+| 選択されたモデルが存在しない | provider は保持しつつ `selectedModelId=null` にクリアし、再選択を促す |
+| 選択された provider が存在しない | `selectedProviderId=null`, `selectedModelId=null` にクリアし、暗黙 fallback を禁止する |
 | APIキーが未設定 | ドロップダウンは表示するが、メッセージ送信時にエラー表示 |
 
 ## テストカバレッジ
@@ -168,7 +171,7 @@ LLM 選択と system prompt は独立状態だが、Chat 実行時には同じ r
 | `docs/30-workflows/ai-chat-llm-integration-fix/index.md` | 4 タスク統合の親workflow |
 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | ChatView error surface task（current canonical root） |
 | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | inline guidance task |
-| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | persist task |
+| `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | persist task（current canonical root） |
 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` | Workspace Chat error UX task |
 
 ---

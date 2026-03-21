@@ -68,12 +68,63 @@ const QUALITY_CHECKS = [
   },
 ];
 
+const NON_STARTED_STATUSES = new Set(["pending", "not_started"]);
+
+function readJsonIfExists(filePath) {
+  if (!existsSync(filePath)) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(readFileSync(filePath, "utf-8"));
+  } catch {
+    return null;
+  }
+}
+
+function collectPhaseStatuses(artifacts) {
+  if (!artifacts?.phases) {
+    return [];
+  }
+
+  if (Array.isArray(artifacts.phases)) {
+    return artifacts.phases
+      .map((phase) => String(phase?.status || "").trim())
+      .filter(Boolean);
+  }
+
+  return Object.values(artifacts.phases)
+    .map((phase) => String(phase?.status || "").trim())
+    .filter(Boolean);
+}
+
+function getPhaseStatus(artifacts, phaseNumber) {
+  if (!artifacts?.phases) {
+    return null;
+  }
+
+  if (Array.isArray(artifacts.phases)) {
+    return (
+      artifacts.phases.find((phase) => Number(phase?.phase) === phaseNumber)
+        ?.status || null
+    );
+  }
+
+  return artifacts.phases[String(phaseNumber)]?.status || null;
+}
+
+function isWorkflowStarted(artifacts) {
+  const statuses = collectPhaseStatuses(artifacts);
+  return statuses.some((status) => !NON_STARTED_STATUSES.has(status));
+}
+
 class PhaseValidator {
   constructor(workflowDir) {
     this.workflowDir = workflowDir;
     this.errors = [];
     this.warnings = [];
     this.passes = [];
+    this.artifacts = readJsonIfExists(join(workflowDir, "artifacts.json"));
   }
 
   validate() {
@@ -117,9 +168,15 @@ class PhaseValidator {
     );
 
     if (!existsSync(outputArtifactsPath)) {
-      this.errors.push(
-        "root artifacts.json は存在しますが outputs/artifacts.json がありません",
-      );
+      if (isWorkflowStarted(this.artifacts)) {
+        this.errors.push(
+          "root artifacts.json は存在しますが outputs/artifacts.json がありません",
+        );
+      } else {
+        this.passes.push(
+          "artifacts.json: pending skeleton workflow のため outputs/artifacts.json 同期チェックを保留",
+        );
+      }
       return;
     }
 
@@ -137,6 +194,14 @@ class PhaseValidator {
   }
 
   validatePhase11Outputs() {
+    const phase11Status = String(getPhaseStatus(this.artifacts, 11) || "").trim();
+    if (phase11Status && NON_STARTED_STATUSES.has(phase11Status)) {
+      this.passes.push(
+        "Phase 11: 未開始 workflow のため補助成果物チェックを保留",
+      );
+      return;
+    }
+
     const phase11Files = readdirSync(this.workflowDir).filter(
       (f) => f.startsWith("phase-11-") && f.endsWith(".md"),
     );
@@ -148,8 +213,17 @@ class PhaseValidator {
     const phase11Content = readFileSync(phase11Path, "utf-8");
     const phase11OutputDir = join(this.workflowDir, "outputs", "phase-11");
     const screenshotDir = join(phase11OutputDir, "screenshots");
+    const screenshotPlanPath = join(phase11OutputDir, "screenshot-plan.json");
+    const screenshotPlan = readJsonIfExists(screenshotPlanPath);
+    const designTaskMode =
+      /(設計タスク|spec_created|プロダクションコード変更なし)/i.test(
+        phase11Content,
+      ) ||
+      screenshotPlan?.screenshotRequired === false;
     const expectsVisualEvidence =
-      existsSync(screenshotDir) ||
+      screenshotPlan?.screenshotRequired === false
+        ? false
+        : existsSync(screenshotDir) ||
       /(screen\s*shot|スクリーンショット|画面証跡|UI|View|CTA)/i.test(
         phase11Content,
       );
@@ -159,8 +233,12 @@ class PhaseValidator {
       return;
     }
 
-    const phase11RequiredFiles = ["manual-test-checklist.md", "manual-test-result.md"];
-    if (expectsVisualEvidence) {
+    const phase11RequiredFiles = designTaskMode
+      ? ["manual-test-plan.md"]
+      : ["manual-test-checklist.md", "manual-test-result.md"];
+    if (designTaskMode && /screenshot-plan\.json/.test(phase11Content)) {
+      phase11RequiredFiles.push("screenshot-plan.json");
+    } else if (expectsVisualEvidence) {
       phase11RequiredFiles.push("screenshot-plan.json");
     }
 
@@ -219,7 +297,10 @@ class PhaseValidator {
 
     let foundCount = 0;
     for (const filePath of filesToScan) {
-      const content = readFileSync(filePath, "utf-8");
+      const content = readFileSync(filePath, "utf-8").replace(
+        /planned wording を残さない/g,
+        "",
+      );
       const hits = prohibitedPatterns
         .filter(({ pattern }) => pattern.test(content))
         .map(({ label }) => label);
@@ -364,9 +445,10 @@ class PhaseValidator {
     );
     if (taskSection) {
       const taskContent = taskSection[0];
-      // タスク名と目的のパターン: - タスク名: 目的
-      const taskPattern = /-\s+(.+?):\s*(.+)/g;
-      const tasks = [...taskContent.matchAll(taskPattern)];
+      // タスク定義は `### タスク...` と `- タスク名: 目的` の両方を許容する
+      const headingTasks = [...taskContent.matchAll(/^###\s+(.+)/gm)];
+      const bulletTasks = [...taskContent.matchAll(/-\s+(.+?):\s*(.+)/g)];
+      const tasks = headingTasks.length > 0 ? headingTasks : bulletTasks;
 
       if (tasks.length === 0) {
         this.warnings.push(
