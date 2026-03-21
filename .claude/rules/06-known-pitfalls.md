@@ -758,3 +758,34 @@ export function registerSafetyGateHandlers(safetyGate: SafetyGatePort): void {}
 - **解決策**: テスト作成を委譲するサブエージェントの指示に「同ディレクトリの既存テストファイルのインポートパスを必ず参照してから記述すること」を明示的に含める。具体的なコマンド例を与えると効果的: `grep -n "^import" src/path/to/existing.test.ts`
 - **再発防止**: Phase 4 テスト作成サブエージェントの指示テンプレートに「インポートパス参照確認」を必須ステップとして追加する
 - **関連タスク**: TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001
+
+### P64: モノレポ内同名インターフェースのシグネチャドリフト
+
+- **教訓**: 異なるサブモジュール（`crag/types.ts` と `llm/types.ts`）に同名 `ILLMClient` が定義され、メソッドシグネチャが乖離した。`crag/types.ts` は `complete(options: {prompt, maxTokens?, temperature?})` の1引数オブジェクト形式、`llm/types.ts` は `complete(prompt, options?)` の2引数形式。DI 配線（Factory パターン）時にのみ型不整合が顕在化し、各モジュール単独ではコンパイルが通るため検出が困難
+- **症状**: Factory の Config に `llmClient: ILLMClient` を1つ定義したが、`LLMReranker`（llm/types）と `RelevanceEvaluator`（crag/types）で異なる `ILLMClient` を要求しており共有不可能
+- **解決策**: モノレポ内で同名インターフェースを定義する場合は1箇所に集約し、他はインポートする。Factory 設計時に Phase 2 で全依存モジュールの import 元を確認し、同名型の互換性を検証する
+- **関連パターン**: P23（API二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須）
+- **関連タスク**: UT-RAG-08-002, UT-RAG-08-005
+
+```typescript
+// P64: 同名だがシグネチャが異なるインターフェース
+// crag/types.ts
+export interface ILLMClient {
+  complete(options: {
+    prompt: string;
+    maxTokens?: number;
+    temperature?: number;
+  }): Promise<Result<string, Error>>;
+}
+
+// llm/types.ts
+export interface ILLMClient {
+  complete(
+    prompt: string,
+    options?: LLMCompletionOptions,
+  ): Promise<Result<string, Error>>;
+}
+
+// Factory で共有しようとすると型不整合
+// 解決策: 1箇所に統一するか、Config で分離する
+```
