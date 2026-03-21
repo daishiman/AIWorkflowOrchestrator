@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-21T01:06:47.938Z",
-  "totalKeywords": 2409,
+  "generated": "2026-03-21T08:30:03.336Z",
+  "totalKeywords": 2414,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3780,6 +3780,12 @@
       "architecture-rag.md",
       "security-api-electron.md",
       "ui-ux-history-panel.md"
+    ],
+    "known": [
+      "architecture-rag.md"
+    ],
+    "issues": [
+      "architecture-rag.md"
     ],
     "仕様詳細": [
       "claude-code-agents-spec.md"
@@ -8561,7 +8567,8 @@
     ],
     "up": [
       "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "の未タスク": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
@@ -11049,6 +11056,15 @@
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "実装同期ルール": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "実装ステータススナップショット": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "Follow": [
+      "workflow-ai-runtime-execution-responsibility-realignment.md"
+    ],
+    "Backlog": [
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "集計": [

@@ -4,6 +4,20 @@
 
 ---
 
+## chat-inline-model-selector ワークフロー仕様書作成（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: create（新規ワークフロー作成）
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/chat-inline-model-selector/` に34ファイルのタスク仕様書を作成
+  - 3タスク分解: TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT / TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION / TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION
+  - Phase 1-3（共通設計）+ Phase 4-13（タスクごと）の構成
+  - skill準拠検証 + 30種思考法分析によるエレガント改善を実施
+  - 重大修正8項目（サブタスク管理セクション追加、インポートパス矛盾修正、onSelectionChange型統一、Phase 12 Task 5追加等）
+
+---
+
 ## TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査完了（2026-03-21）
 
 - **Agent**: task-specification-creator
