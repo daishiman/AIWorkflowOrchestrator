@@ -61,13 +61,13 @@
 
 ### ステップ3: validation matrix を定義する
 
-| 検証               | コマンド                                                                                                                                         | pass 条件                       |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
-| 参照探索           | `search-spec.js "SkillExecutionStatus"`                                                                                                          | 一次情報と更新候補に到達        |
-| refs grep          | `grep -rn "SkillExecutionStatus" .claude/skills/aiworkflow-requirements/references/`                                                             | 更新対象 / 確認対象が列挙できる |
-| workflow validator | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/execution-status-type-spec-sync --json` | error 0                         |
-| phase validator    | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase N`    | error 0                         |
-| root parity        | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                   | diff 0                          |
+| 検証               | コマンド                                                                                                                                                         | pass 条件                       |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| 参照探索           | `search-spec.js "SkillExecutionStatus"`                                                                                                                          | 一次情報と更新候補に到達        |
+| refs grep          | `grep -rn "SkillExecutionStatus" .claude/skills/aiworkflow-requirements/references/`                                                                             | 更新対象 / 確認対象が列挙できる |
+| workflow validator | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/execution-status-type-spec-sync --json` | error 0                         |
+| phase validator    | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase N`    | error 0                         |
+| root parity        | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                                   | diff 0                          |
 
 ## 統合テスト連携（Phase 2）
 
@@ -117,7 +117,7 @@
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 2
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 2
 ```
 
 ## 次のPhase

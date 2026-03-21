@@ -19,6 +19,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-21 | 1.6.0 | UT-TASK06-007-EXT-006 正規表現 lastIndex 汚染パターン（教訓4）を追加 |
+| 2026-03-21 | 1.5.0 | UT-TASK06-007-EXT-006 Phase 12 再監査教訓を追加（mkdtempSync 一時ディレクトリ戦略、same-wave 指標同期、EXT-006 完了と EXT-001〜005 継続の切り分け） |
 | 2026-03-20 | 1.4.0 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査教訓を追加（AIChatResponse.error の code/message drift、Renderer raw message fallback、system spec same-wave 同期） |
 | 2026-03-19 | 1.3.0 | UT-TASK06-007 実装セッション苦戦箇所を追加（esbuild worktree 不一致、process.argv[1] パス解決、fs モック制約、main() カバレッジ改善） |
 | 2026-03-19 | 1.2.0 | UT-TASK06-007 再監査教訓を追加（generic/multiline preload 抽出、spec drift 同期、P45 の書き分け） |
@@ -58,6 +60,42 @@
 | 課題 | workflow summary や LOGS だけが先に進むと、`llm-ipc-types.md` / `error-handling-core.md` の core contract が古いまま残る |
 | 解決策 | re-audit では workflow doc と core spec を一緒に更新し、mirror parity まで閉じる運用へ戻した |
 | 標準ルール | Phase 12 の「同期完了」は core contract / workflow / backlog / lessons の全更新後にのみ使う |
+
+---
+
+## 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査
+
+### 教訓1: ファイルI/O系ヘルパーは fs モックより `mkdtempSync` 実測の方が短い
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `mergeChannelMaps` の検証で fs モックを広げると、既存 `vi.mock` 配置と競合しやすく、テストの意図も読みにくくなる |
+| 解決策 | `mkdtempSync(join(tmpdir(), "ipc-test-"))` で一時ディレクトリを作り、`writeFileSync` / `rmSync` で完結させた |
+| 標準ルール | Node の純粋なファイル入力ヘルパーは、I/O 規模が小さいなら一時ディレクトリ実測を第一候補にする |
+
+### 教訓4: `/gm` フラグ付き RegExp は lastIndex が共有されるため、テストごとに新インスタンスを生成する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `CHANNEL_OBJECT_PATTERN` / `PRELOAD_CALL_START_PATTERN` のように `/gm` フラグ付きモジュールスコープ RegExp をテスト間で共有すると、前テストの `exec()` により `lastIndex` が残留し、後テストの先頭マッチが失敗する |
+| 解決策 | 各テストケース内で `new RegExp(CHANNEL_OBJECT_PATTERN.source, "gm")` と書き、lastIndex をリセットした新インスタンスを生成する |
+| 標準ルール | `/g` または `/gm` フラグ付き RegExp 定数をテストに使う場合は、`new RegExp(pattern.source, pattern.flags)` で新インスタンスを生成するか、テスト前に `pattern.lastIndex = 0` でリセットする |
+
+### 教訓2: テスト件数を更新したら quick-reference / pattern detail / completed ledger を同ターンで閉じる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | EXT-006 完了後にテストは69件へ増えたが、quick-reference や pattern detail が 44件 / 94.94% のままだと current facts が壊れる |
+| 解決策 | `architecture-implementation-patterns-reference-ipc-drift-detection.md`、`task-workflow-completed-ipc-contract-preload-alignment.md`、`indexes/quick-reference.md` を同一ターンで更新した |
+| 標準ルール | 指標変更は「workflow outputs だけ更新」で止めず、早見表・完了台帳・再利用パターンまで同時に同期する |
+
+### 教訓3: 完了した follow-up と未着手 follow-up を混在させない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | EXT-006 が完了しても、completed ledger と quick-reference が EXT-001〜005 と同列の「未タスク群」に見えると次の判断を誤る |
+| 解決策 | EXT-006 は completed workflow として別導線化し、未着手は EXT-001〜005 だけを残課題として明示した |
+| 標準ルール | follow-up 完了時は「完了済み拡張」と「残未タスク」を見出しレベルで分離する |
 
 ---
 

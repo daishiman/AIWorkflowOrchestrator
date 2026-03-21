@@ -186,20 +186,18 @@ slide store は `syncStatus` だけでは task 09 の runtime/auth-mode alignmen
 - object payload は `useShallow` を使う
 - `useSlideProject()` で store 全体参照を保持しない
 
-#### current drift（2026-03-19）
+#### current drift（2026-03-21）
 
 | 項目 | 現状 |
 | --- | --- |
-| store fields | `syncDirection` / `syncProgress` / `syncError` / `isHandoff` / `handoffGuidance` が未追加 |
-| hook pattern | `useSlideProject()` が `store` 全体参照を effect 依存へ持つ |
-| status 語彙 | `out-of-sync` が残存 |
+| store fields | `syncDirection` / `syncProgress` / `syncError` / `isHandoff` / `handoffGuidance` が slide 専用 store へは未追加 |
+| UI mapping | `out-of-sync` は shared 型として存在するが、Slide UI では `synced` シェルへ吸収される |
 
 #### follow-up
 
 | 未タスクID | 内容 |
 | --- | --- |
-| `UT-SLIDE-IMPL-001` | slide store 契約を正本へ揃える |
-| `UT-SLIDE-P31-001` | `useSlideProject()` の selector migration |
+| `UT-SLIDE-IMPL-001` | slide store 契約と runtime 契約を正本へ揃える |
 
 ### 実装済み個別セレクタ一覧（UT-STORE-HOOKS-REFACTOR-001）
 

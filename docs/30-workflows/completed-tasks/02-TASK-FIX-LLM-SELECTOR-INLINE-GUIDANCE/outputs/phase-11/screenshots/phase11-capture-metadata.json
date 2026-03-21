@@ -1,0 +1,78 @@
+{
+  "generatedAt": "2026-03-21T00:20:48.902Z",
+  "captureMethod": "current-renderer-entry + workspace-layout-harness",
+  "baseUrl": "http://127.0.0.1:4188",
+  "sourceFiles": [
+    "apps/desktop/src/renderer/main.tsx",
+    "apps/desktop/src/renderer/views/ChatView/index.tsx",
+    "apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx",
+    "apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx",
+    "apps/desktop/scripts/capture-task-fix-llm-selector-inline-guidance-phase11.mjs"
+  ],
+  "records": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-chatview-inline-guidance-light.png",
+      "theme": "light",
+      "route": "/?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "selector": "[data-testid=\"chat-view\"]",
+      "capturedAt": "2026-03-21T00:20:46.303Z",
+      "size": 32800,
+      "checks": {
+        "navigationToSettings": true
+      }
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-workspace-guidance-blocked-light.png",
+      "theme": "light",
+      "route": "/?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "selector": "[data-testid=\"workspace-view\"]",
+      "capturedAt": "2026-03-21T00:20:46.868Z",
+      "size": 52346,
+      "checks": {
+        "navigationToSettings": true
+      }
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-chatview-inline-guidance-dark.png",
+      "theme": "dark",
+      "route": "/?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "selector": "[data-testid=\"chat-view\"]",
+      "capturedAt": "2026-03-21T00:20:47.845Z",
+      "size": 34108,
+      "checks": {
+        "navigationToSettings": true
+      }
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-chatview-inline-guidance-keyboard-focus.png",
+      "theme": "light",
+      "route": "/?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "selector": "[data-testid=\"chat-view\"]",
+      "capturedAt": "2026-03-21T00:20:48.894Z",
+      "size": 33443,
+      "checks": {
+        "keyboardFocus": true
+      }
+    }
+  ]
+}

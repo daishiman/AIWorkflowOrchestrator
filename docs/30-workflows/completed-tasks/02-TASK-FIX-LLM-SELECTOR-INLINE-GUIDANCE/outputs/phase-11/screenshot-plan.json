@@ -1,0 +1,55 @@
+{
+  "generatedAt": "2026-03-21T00:20:43.670Z",
+  "captureMethod": "current-renderer-entry + workspace-layout-harness",
+  "baseUrl": "http://127.0.0.1:4188",
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "description": "ChatView で未選択時バナーが表示され、CTA クリックで currentView=settings へ遷移要求されることを確認する。",
+      "route": "/?skipAuth=true",
+      "output": "screenshots/TC-11-01-chatview-inline-guidance-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-02",
+      "description": "WorkspaceView で blocked guidance と『Settings を開く』CTA が表示されることを確認する。",
+      "route": "/?skipAuth=true",
+      "output": "screenshots/TC-11-02-workspace-guidance-blocked-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-03",
+      "description": "ダークモードで ChatView バナーの可読性と CTA 色が維持されることを確認する。",
+      "route": "/?skipAuth=true",
+      "output": "screenshots/TC-11-03-chatview-inline-guidance-dark.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "dark",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-04",
+      "description": "キーボード移動で ChatView バナー CTA にフォーカスできることを確認する。",
+      "route": "/?skipAuth=true",
+      "output": "screenshots/TC-11-04-chatview-inline-guidance-keyboard-focus.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    }
+  ]
+}

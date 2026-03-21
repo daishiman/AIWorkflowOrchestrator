@@ -168,7 +168,7 @@ expect(element.className).toContain(statusStyles.primary);
 | 項目       | 内容                                                                                                                            |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | 課題       | 認証初期化と `window.location.reload()` が競合すると、実画面ではなく灰色単色の証跡が生成される                                  |
-| 再発条件   | キャプチャ前に `sessionStorage.debug-clear-storage` と `localStorage.dev-skip-auth` を固定しない場合                            |
+| 再発条件   | キャプチャ前に `localStorage.dev-skip-auth` を固定しない場合（`debug-clear-storage` は TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 で廃止済み） |
 | 対処       | `capture-task-056c-notification-history-screenshots.mjs` で init script を注入し、`SCREENSHOT` 3件 + `NON_VISUAL` 3件を分離記録 |
 | 標準ルール | Phase 11 は「UI導線=SCREENSHOT」「契約検証=NON_VISUAL」を分離し、同じTC表で管理する                                             |
 

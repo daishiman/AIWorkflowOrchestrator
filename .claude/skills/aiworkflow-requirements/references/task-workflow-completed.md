@@ -176,6 +176,7 @@
 - Phase 11 は screenshot 5件を取得し、current UI と正本仕様の drift を visual audit として記録した
 - live preview は esbuild native binary mismatch で停止したため、current code 由来の static fallback capture を metadata 付きで保存した
 - `UT-SLIDE-IMPL-001` / `UT-SLIDE-UI-001` / `UT-SLIDE-P31-001` / `UT-SLIDE-HANDOFF-DUP-001` を formalize し、backlog へ登録した
+- 2026-03-21 current branch で `UT-SLIDE-UI-001` は完了、`UT-SLIDE-P31-001` は吸収済みへ更新した
 
 #### 検証証跡
 
@@ -190,14 +191,14 @@
 | `node .../audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（currentViolations=0） |
 | `diff -qr .claude/skills/{aiworkflow-requirements,task-specification-creator,skill-creator} .agents/skills/{aiworkflow-requirements,task-specification-creator,skill-creator}` | PASS |
 
-#### Phase 12 未タスク
+#### follow-up 状況（2026-03-21）
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| 種別 | ID | 概要 | タスク仕様書 |
 | --- | --- | --- | --- |
-| `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | 高 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
-| `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | 高 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-ui-001.md` |
-| `UT-SLIDE-P31-001` | `useSlideProject()` selector migration | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |
-| `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | 低 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
+| pending | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
+| pending | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
+| completed | `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | `docs/30-workflows/completed-tasks/task-ut-slide-ui-001.md` |
+| resolved | `UT-SLIDE-P31-001` | `useSlideProject()` selector migration を current branch で吸収 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |
 
 #### 苦戦箇所
 

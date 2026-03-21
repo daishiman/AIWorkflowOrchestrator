@@ -1,0 +1,103 @@
+{
+  "capturedAt": "2026-03-21T00:41:41.053Z",
+  "captureMode": "static-fallback-from-current-code",
+  "failureReason": "esbuild native binary mismatch (@esbuild/darwin-arm64 vs darwin-x64) prevented Vite/Electron live preview in this worktree.",
+  "script": "apps/desktop/scripts/capture-ut-slide-ui-001-phase11.mjs",
+  "viewport": {
+    "width": 1440,
+    "height": 1180
+  },
+  "terminalCommand": "claude --resume slide-runtime",
+  "captures": [
+    {
+      "tc": "TC-11-01",
+      "theme": "light",
+      "file": "TC-11-01-empty-light.png",
+      "path": "outputs/phase-11/screenshots/TC-11-01-empty-light.png",
+      "note": "プロジェクト未選択。空状態カードのみを表示する。",
+      "captureMode": "static-fallback-from-current-code",
+      "capturedAt": "2026-03-21T00:41:42.329Z"
+    },
+    {
+      "tc": "TC-11-01",
+      "theme": "dark",
+      "file": "TC-11-01-empty-dark.png",
+      "path": "outputs/phase-11/screenshots/TC-11-01-empty-dark.png",
+      "note": "プロジェクト未選択。空状態カードのみを表示する。",
+      "captureMode": "static-fallback-from-current-code",
+      "capturedAt": "2026-03-21T00:41:42.419Z"
+    },
+    {
+      "tc": "TC-11-02",
+      "theme": "light",
+      "file": "TC-11-02-synced-light.png",
+      "path": "outputs/phase-11/screenshots/TC-11-02-synced-light.png",
+      "note": "handoff なし。SlideSyncCard / SlideWatchStatus / SkillPhasePanel / TerminalLauncher を表示する。",
+      "captureMode": "static-fallback-from-current-code",
+      "capturedAt": "2026-03-21T00:41:42.500Z"
+    },
+    {
+      "tc": "TC-11-02",
+      "theme": "dark",
+      "file": "TC-11-02-synced-dark.png",
+      "path": "outputs/phase-11/screenshots/TC-11-02-synced-dark.png",
+      "note": "handoff なし。SlideSyncCard / SlideWatchStatus / SkillPhasePanel / TerminalLauncher を表示する。",
+      "captureMode": "static-fallback-from-current-code",
+      "capturedAt": "2026-03-21T00:41:42.584Z"
+    },
+    {
+      "tc": "TC-11-03",
+      "theme": "light",
+      "file": "TC-11-03-running-light.png",
+      "path": "outputs/phase-11/screenshots/TC-11-03-running-light.png",
+      "note": "progress 行と cancel surface を表示する。",
+      "captureMode": "static-fallback-from-current-code",
+      "capturedAt": "2026-03-21T00:41:42.664Z"
+    },
+    {
+      "tc": "TC-11-03",
+      "theme": "dark",
+      "file": "TC-11-03-running-dark.png",
+      "path": "outputs/phase-11/screenshots/TC-11-03-running-dark.png",
+      "note": "progress 行と cancel surface を表示する。",
+      "captureMode": "static-fallback-from-current-code",
+      "capturedAt": "2026-03-21T00:41:42.741Z"
+    },
+    {
+      "tc": "TC-11-04",
+      "theme": "light",
+      "file": "TC-11-04-degraded-light.png",
+      "path": "outputs/phase-11/screenshots/TC-11-04-degraded-light.png",
+      "note": "retry CTA と terminal fallback CTA を表示する。",
+      "captureMode": "static-fallback-from-current-code",
+      "capturedAt": "2026-03-21T00:41:42.824Z"
+    },
+    {
+      "tc": "TC-11-04",
+      "theme": "dark",
+      "file": "TC-11-04-degraded-dark.png",
+      "path": "outputs/phase-11/screenshots/TC-11-04-degraded-dark.png",
+      "note": "retry CTA と terminal fallback CTA を表示する。",
+      "captureMode": "static-fallback-from-current-code",
+      "capturedAt": "2026-03-21T00:41:42.904Z"
+    },
+    {
+      "tc": "TC-11-05",
+      "theme": "light",
+      "file": "TC-11-05-guidance-light.png",
+      "path": "outputs/phase-11/screenshots/TC-11-05-guidance-light.png",
+      "note": "handoffGuidance を反映し、settings CTA を表示する。",
+      "captureMode": "static-fallback-from-current-code",
+      "capturedAt": "2026-03-21T00:41:42.984Z"
+    },
+    {
+      "tc": "TC-11-05",
+      "theme": "dark",
+      "file": "TC-11-05-guidance-dark.png",
+      "path": "outputs/phase-11/screenshots/TC-11-05-guidance-dark.png",
+      "note": "handoffGuidance を反映し、settings CTA を表示する。",
+      "captureMode": "static-fallback-from-current-code",
+      "capturedAt": "2026-03-21T00:41:43.079Z"
+    }
+  ]
+}

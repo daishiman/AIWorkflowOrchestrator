@@ -10,15 +10,15 @@
 
 ## テスト結果サマリ
 
-| テストケース | 種別        | 結果 | 証跡                                                             | 要点                                                         |
-| ------------ | ----------- | ---- | ---------------------------------------------------------------- | ------------------------------------------------------------ |
-| TC-11-01     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-01-status-review.png`        | `review` が `レビュー中` の紫系バッジで表示された            |
-| TC-11-02     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-02-status-improve-ready.png` | `improve_ready` が `改善準備完了` の橙系バッジで表示された   |
-| TC-11-03     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-03-status-reuse-ready.png`   | `reuse_ready` が `再利用準備完了` の青緑系バッジで表示された |
-| TC-11-04     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-04-status-review-board.png`  | 3 状態が同一 board 上で重複なく識別できた                    |
-| NV-11-05     | WALKTHROUGH | PASS | `outputs/phase-11/manual-test-result.md`                         | shared 型、renderer、system spec の 9 値一致を確認した       |
-| NV-11-06     | WALKTHROUGH | PASS | `outputs/phase-11/manual-test-result.md`                         | targeted tests と screenshot coverage validator が成功した   |
-| NV-11-07     | WALKTHROUGH | PASS | `outputs/phase-11/manual-test-result.md`                         | `.claude` / `.agents` parity と phase validator が成功した   |
+| テストケース | 種別        | 結果 | 証跡                                                                                                                                       | 要点                                                         |
+| ------------ | ----------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| TC-11-01     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-01-status-review.png`<br>`outputs/phase-11/screenshots/TC-11-01-review-status-badge.png`               | `review` が `レビュー中` の紫系バッジで表示された            |
+| TC-11-02     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-02-status-improve-ready.png`<br>`outputs/phase-11/screenshots/TC-11-02-improve-ready-status-badge.png` | `improve_ready` が `改善準備完了` の橙系バッジで表示された   |
+| TC-11-03     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-03-status-reuse-ready.png`<br>`outputs/phase-11/screenshots/TC-11-03-reuse-ready-status-badge.png`     | `reuse_ready` が `再利用準備完了` の青緑系バッジで表示された |
+| TC-11-04     | SCREENSHOT  | PASS | `outputs/phase-11/screenshots/TC-11-04-status-review-board.png`                                                                            | 3 状態が同一 board 上で重複なく識別できた                    |
+| NV-11-05     | WALKTHROUGH | PASS | `outputs/phase-11/manual-test-result.md`                                                                                                   | shared 型、renderer、system spec の 9 値一致を確認した       |
+| NV-11-06     | WALKTHROUGH | PASS | `outputs/phase-11/manual-test-result.md`                                                                                                   | targeted tests と screenshot coverage validator が成功した   |
+| NV-11-07     | WALKTHROUGH | PASS | `outputs/phase-11/manual-test-result.md`                                                                                                   | `.claude` / `.agents` parity と phase validator が成功した   |
 
 ## docs-heavy walkthrough 5観点
 
@@ -63,6 +63,10 @@ diff -qr .claude/skills/task-specification-creator .agents/skills/task-specifica
   - `packages/shared/src/types/skill.ts`
   - `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx`
   - `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
+- alias captures:
+  - `outputs/phase-11/screenshots/TC-11-01-review-status-badge.png`
+  - `outputs/phase-11/screenshots/TC-11-02-improve-ready-status-badge.png`
+  - `outputs/phase-11/screenshots/TC-11-03-reuse-ready-status-badge.png`
 
 ## 発見事項
 

@@ -1,0 +1,172 @@
+{
+  "taskId": "UT-TASK06-007-EXT-006",
+  "featureName": "UT-TASK06-007-EXT-006-new-function-test-expansion",
+  "createdAt": "2026-03-21T00:00:00Z",
+  "status": "completed",
+  "totalPhases": 13,
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:16:18.076Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:16:18.606Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design.md",
+          "description": "設計書"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:16:19.108Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/gate-decision.md",
+          "description": "設計レビューゲート判定書"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:19:25.152Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-design.md",
+          "description": "テスト設計記録"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:19:25.196Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/green-confirmation.md",
+          "description": "Green確認レポート"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:22:12.185Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "apps/desktop/scripts/__tests__/check-ipc-contracts.test.ts",
+          "description": "追加テスト不要（69件で基準充足）"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:22:12.236Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:23:45.251Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリング報告書"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:23:45.294Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質レポート"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:23:45.339Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:24:43.363Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果レポート"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-20T23:40:03.730Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "変更記録"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバック"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "準拠チェック"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": []
+    }
+  },
+  "lastUpdated": "2026-03-21T00:27:05.000Z"
+}

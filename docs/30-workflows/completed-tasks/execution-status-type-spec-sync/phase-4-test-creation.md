@@ -65,11 +65,11 @@ ready/blocked の両分岐を機械的に検証できる command suite を作成
 
 ### ステップ4: parity / validator / 多角的観点を定義する
 
-| テストID | 内容                              | 観点               | コマンド                                                                                                                                      | 期待結果                                          |
-| -------- | --------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| T4-10    | `.claude` / `.agents` parity 前提 | document operation | `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`                                                      | diff 0 または差分の所在が説明できる               |
-| T4-11    | workflow validator 前提           | data consistency   | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 4` | error 0                                           |
-| T4-12    | architecture 整合観点の明記       | architecture       | 目視レビュー                                                                                                                                  | ready/blocked と更新対象/確認対象が分離されている |
+| テストID | 内容                              | 観点               | コマンド                                                                                                                                                      | 期待結果                                          |
+| -------- | --------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| T4-10    | `.claude` / `.agents` parity 前提 | document operation | `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`                                                                      | diff 0 または差分の所在が説明できる               |
+| T4-11    | workflow validator 前提           | data consistency   | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 4` | error 0                                           |
+| T4-12    | architecture 整合観点の明記       | architecture       | 目視レビュー                                                                                                                                                  | ready/blocked と更新対象/確認対象が分離されている |
 
 ## 統合テスト連携（Phase 4）
 
@@ -111,7 +111,7 @@ ready/blocked の両分岐を機械的に検証できる command suite を作成
 - [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/execution-status-type-spec-sync --phase 4
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/execution-status-type-spec-sync --phase 4
 ```
 
 ## 次のPhase

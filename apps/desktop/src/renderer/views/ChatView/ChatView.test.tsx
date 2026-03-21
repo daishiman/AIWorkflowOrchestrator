@@ -70,6 +70,8 @@ vi.mock("../../store", () => ({
   ),
   useChatError: vi.fn(() => null),
   useClearChatError: vi.fn(() => vi.fn()),
+  useSelectedModelId: vi.fn(() => "model-1"),
+  useSelectedProviderId: vi.fn(() => "provider-1"),
 }));
 
 // Helper function to render ChatView with MemoryRouter

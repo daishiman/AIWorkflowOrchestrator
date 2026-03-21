@@ -55,6 +55,12 @@ const mockAnalysis: SkillAnalysis = {
   ],
 };
 
+const mockReusableAnalysis: SkillAnalysis = {
+  ...mockAnalysis,
+  overallScore: 93,
+  suggestions: [],
+};
+
 const mockAvailableSkills: SkillMetadata[] = [
   {
     name: "test-skill-1",
@@ -260,6 +266,37 @@ describe("agentSlice - スキルライフサイクルテスト（TASK-10A-D）",
       await promise;
     });
 
+    it("completed 状態から分析を始めると review を経て improve_ready になる", async () => {
+      let resolveAnalyze: ((value: SkillAnalysis) => void) | undefined;
+      window.electronAPI.skill.analyze = vi.fn(
+        () =>
+          new Promise<SkillAnalysis>((resolve) => {
+            resolveAnalyze = resolve;
+          }),
+      );
+      store.skillExecutionStatus = "completed";
+
+      const promise = store.analyzeSkill("test-skill");
+
+      expect(store.skillExecutionStatus).toBe("review");
+
+      resolveAnalyze?.(mockAnalysis);
+      await promise;
+
+      expect(store.skillExecutionStatus).toBe("improve_ready");
+    });
+
+    it("改善提案が0件なら reuse_ready になる", async () => {
+      setupMockElectronAPI({
+        skillAnalyze: mockReusableAnalysis,
+      });
+      store.skillExecutionStatus = "completed";
+
+      await store.analyzeSkill("test-skill");
+
+      expect(store.skillExecutionStatus).toBe("reuse_ready");
+    });
+
     it("分析開始時にskillErrorがクリアされる", async () => {
       store.skillError = "前のエラー";
 
@@ -376,6 +413,16 @@ describe("agentSlice - スキルライフサイクルテスト（TASK-10A-D）",
       );
     });
 
+    it("改善適用後は分析結果に応じて improve_ready になる", async () => {
+      store.skillExecutionStatus = "review";
+
+      await store.applySkillImprovements("test-skill", [
+        mockAnalysis.suggestions[0],
+      ]);
+
+      expect(store.skillExecutionStatus).toBe("improve_ready");
+    });
+
     it("APIエラー時にskillErrorが設定される", async () => {
       setupMockElectronAPI({
         skillApplyImprovementsError: new Error("Improvement failed"),
@@ -474,6 +521,17 @@ describe("agentSlice - スキルライフサイクルテスト（TASK-10A-D）",
       expect(window.electronAPI.skill.analyze).toHaveBeenCalledWith(
         "test-skill",
       );
+    });
+
+    it("全自動改善後に改善提案が無ければ reuse_ready になる", async () => {
+      setupMockElectronAPI({
+        skillAnalyze: mockReusableAnalysis,
+      });
+      store.skillExecutionStatus = "review";
+
+      await store.autoImproveSkill("test-skill");
+
+      expect(store.skillExecutionStatus).toBe("reuse_ready");
     });
 
     it("APIエラー時にskillErrorが設定される", async () => {
@@ -643,6 +701,62 @@ describe("agentSlice - スキルライフサイクルテスト（TASK-10A-D）",
       store.clearAnalysis();
 
       expect(store.currentAnalysis).toBeNull();
+    });
+  });
+
+  // ==========================================================================
+  // レビューサイクルアクション
+  // ==========================================================================
+  describe("レビューサイクルアクション", () => {
+    it("beginSkillReview が completed から review へ遷移させる", () => {
+      store.skillExecutionStatus = "completed";
+
+      store.beginSkillReview();
+
+      expect(store.skillExecutionStatus).toBe("review");
+    });
+
+    it("completeSkillReview が review から improve_ready へ遷移させる", () => {
+      store.skillExecutionStatus = "review";
+
+      store.completeSkillReview("improve_ready");
+
+      expect(store.skillExecutionStatus).toBe("improve_ready");
+    });
+
+    it("reExecuteAfterImprovement が improve_ready から running を開始する", async () => {
+      store.selectedSkillName = "test-skill-1";
+      store.skillExecutionStatus = "improve_ready";
+
+      await store.reExecuteAfterImprovement("改善済みで再実行");
+
+      expect(window.electronAPI.skill.execute).toHaveBeenCalledWith({
+        skillName: "test-skill-1",
+        prompt: "改善済みで再実行",
+      });
+      expect(store.skillExecutionStatus).toBe("running");
+      expect(store.executionId).toBe("exec-123");
+    });
+
+    it("resetSkillExecutionCycle が reuse_ready から idle に戻す", () => {
+      store.skillExecutionStatus = "reuse_ready";
+      store.executionId = "exec-123";
+      store.streamingMessages = [
+        {
+          executionId: "exec-123",
+          type: "assistant",
+          content: { text: "done", isPartial: false },
+          timestamp: Date.now(),
+        },
+      ];
+      store.skillError = "old error";
+
+      store.resetSkillExecutionCycle();
+
+      expect(store.skillExecutionStatus).toBe("idle");
+      expect(store.executionId).toBeNull();
+      expect(store.streamingMessages).toEqual([]);
+      expect(store.skillError).toBeNull();
     });
   });
 

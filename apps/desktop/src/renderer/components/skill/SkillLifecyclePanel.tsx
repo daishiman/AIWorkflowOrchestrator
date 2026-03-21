@@ -1,11 +1,15 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import type { SkillExecutionStatus } from "@repo/shared";
 import {
+  useBeginSkillReview,
   useClearSkillError,
   useClearStreamingMessages,
+  useCompleteSkillReview,
   useCreateSkill,
   useExecuteSkill,
   useIsSkillExecuting,
+  useReExecuteAfterImprovement,
+  useResetSkillExecutionCycle,
   useSelectedSkillName,
   useSelectSkillByName,
   useSkillError,
@@ -67,6 +71,13 @@ const defaultCreateOptions = {
   addAgents: false,
   addReferences: false,
 };
+
+const reviewGateStatuses: SkillExecutionStatus[] = [
+  "completed",
+  "review",
+  "improve_ready",
+  "reuse_ready",
+];
 
 const lifecycleButtonStyles = {
   primary:
@@ -134,8 +145,12 @@ export function SkillLifecyclePanel({
   onClose,
   onOpenWizard,
 }: SkillLifecyclePanelProps) {
+  const beginSkillReview = useBeginSkillReview();
+  const completeSkillReview = useCompleteSkillReview();
   const createSkill = useCreateSkill();
   const executeSkill = useExecuteSkill();
+  const reExecuteAfterImprovement = useReExecuteAfterImprovement();
+  const resetSkillExecutionCycle = useResetSkillExecutionCycle();
   const selectSkillByName = useSelectSkillByName();
   const clearSkillError = useClearSkillError();
   const clearStreamingMessages = useClearStreamingMessages();
@@ -186,6 +201,30 @@ export function SkillLifecyclePanel({
       });
     }
 
+    if (skillExecutionStatus === "review" && createdSkillName) {
+      appendSessionEntry(setSessionEntries, {
+        role: "assistant",
+        title: "レビューを開始しました",
+        detail: `${createdSkillName} の品質評価を進めています。改善が必要か、再利用可能かを整理します。`,
+      });
+    }
+
+    if (skillExecutionStatus === "improve_ready" && createdSkillName) {
+      appendSessionEntry(setSessionEntries, {
+        role: "assistant",
+        title: "改善準備が整いました",
+        detail: `${createdSkillName} は改善サイクルへ入りました。改善後の内容で再実行できます。`,
+      });
+    }
+
+    if (skillExecutionStatus === "reuse_ready" && createdSkillName) {
+      appendSessionEntry(setSessionEntries, {
+        role: "assistant",
+        title: "再利用準備が整いました",
+        detail: `${createdSkillName} は大きな改善なしで再利用できる状態です。`,
+      });
+    }
+
     if (skillExecutionStatus === "error") {
       appendSessionEntry(setSessionEntries, {
         role: "assistant",
@@ -198,6 +237,34 @@ export function SkillLifecyclePanel({
 
     previousStatus.current = skillExecutionStatus;
   }, [createdSkillName, skillError, skillExecutionStatus]);
+
+  const canOpenReviewFlow =
+    Boolean(createdSkillName) &&
+    !isExecuting &&
+    skillExecutionStatus !== null &&
+    reviewGateStatuses.includes(skillExecutionStatus);
+  const canPlanImprovement =
+    Boolean(createdSkillName) &&
+    !isPlanningImprovement &&
+    !isExecuting &&
+    (skillExecutionStatus === "completed" || skillExecutionStatus === "review");
+  const canExecuteSkill =
+    Boolean(createdSkillName) &&
+    !isExecuting &&
+    executionPrompt.trim().length > 0 &&
+    skillExecutionStatus !== "review" &&
+    skillExecutionStatus !== "reuse_ready";
+  const executeButtonLabel =
+    skillExecutionStatus === "improve_ready"
+      ? "改善後に再実行"
+      : isExecuting
+        ? "実行中..."
+        : "実行する";
+
+  const handlePanelClose = () => {
+    resetSkillExecutionCycle();
+    onClose();
+  };
 
   const handlePrepare = async () => {
     const trimmedRequest = request.trim();
@@ -321,7 +388,11 @@ export function SkillLifecyclePanel({
     });
 
     try {
-      await executeSkill(trimmedPrompt);
+      if (skillExecutionStatus === "improve_ready") {
+        await reExecuteAfterImprovement(trimmedPrompt);
+      } else {
+        await executeSkill(trimmedPrompt);
+      }
     } catch (error) {
       setLocalError(
         error instanceof Error ? error.message : "スキル実行に失敗しました。",
@@ -334,10 +405,15 @@ export function SkillLifecyclePanel({
       setLocalError("改善対象のスキルがありません。");
       return;
     }
+    if (!canPlanImprovement) {
+      setLocalError("先に実行を完了してから改善計画を整理してください。");
+      return;
+    }
 
     clearSkillError();
     setLocalError(null);
     setIsPlanningImprovement(true);
+    beginSkillReview();
 
     try {
       const skillCreatorApi = getSkillCreatorApi();
@@ -365,6 +441,9 @@ export function SkillLifecyclePanel({
       }
 
       setCreatorImproveResult(result.data);
+      completeSkillReview(
+        result.data.suggestions.length > 0 ? "improve_ready" : "reuse_ready",
+      );
       appendSessionEntry(setSessionEntries, {
         role: "assistant",
         title: "改善計画を整理しました",
@@ -382,6 +461,28 @@ export function SkillLifecyclePanel({
     } finally {
       setIsPlanningImprovement(false);
     }
+  };
+
+  const handleToggleDetailedAnalysis = () => {
+    if (showDetailedAnalysis) {
+      setShowDetailedAnalysis(false);
+      return;
+    }
+    if (!createdSkillName) {
+      setLocalError("分析対象のスキルがありません。");
+      return;
+    }
+    if (!canOpenReviewFlow) {
+      setLocalError("先に実行を完了してから詳細分析を開いてください。");
+      return;
+    }
+
+    clearSkillError();
+    setLocalError(null);
+    if (skillExecutionStatus === "completed") {
+      beginSkillReview();
+    }
+    setShowDetailedAnalysis(true);
   };
 
   const currentSurfaceError = localError ?? skillError;
@@ -422,7 +523,7 @@ export function SkillLifecyclePanel({
             <button
               type="button"
               className={lifecycleButtonStyles.subtle}
-              onClick={onClose}
+              onClick={handlePanelClose}
             >
               一覧へ戻る
             </button>
@@ -555,14 +656,10 @@ export function SkillLifecyclePanel({
                 type="button"
                 className={lifecycleButtonStyles.primary}
                 onClick={handleExecute}
-                disabled={
-                  !createdSkillName ||
-                  isExecuting ||
-                  executionPrompt.trim().length === 0
-                }
+                disabled={!canExecuteSkill}
                 data-testid="skill-lifecycle-execute-button"
               >
-                {isExecuting ? "実行中..." : "実行する"}
+                {executeButtonLabel}
               </button>
             </div>
             <textarea
@@ -600,7 +697,7 @@ export function SkillLifecyclePanel({
                   type="button"
                   className={lifecycleButtonStyles.secondary}
                   onClick={handlePlanImprovement}
-                  disabled={!createdSkillName || isPlanningImprovement}
+                  disabled={!canPlanImprovement}
                   data-testid="skill-lifecycle-improve-button"
                 >
                   {isPlanningImprovement ? "整理中..." : "改善提案を取得"}
@@ -608,8 +705,8 @@ export function SkillLifecyclePanel({
                 <button
                   type="button"
                   className={lifecycleButtonStyles.subtle}
-                  onClick={() => setShowDetailedAnalysis((current) => !current)}
-                  disabled={!createdSkillName}
+                  onClick={handleToggleDetailedAnalysis}
+                  disabled={!showDetailedAnalysis && !canOpenReviewFlow}
                   data-testid="skill-lifecycle-analysis-toggle"
                 >
                   {showDetailedAnalysis ? "詳細分析を閉じる" : "詳細分析を開く"}

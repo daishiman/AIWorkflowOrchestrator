@@ -83,7 +83,7 @@ const scenarios = [
       );
       await page.click('button:has-text("次へ")');
       await page.click('button:has-text("スキルを生成")');
-      await page.waitForSelector('text=生成中...');
+      await page.waitForSelector("text=生成中...");
       await page.waitForTimeout(150);
     },
   },
@@ -100,7 +100,7 @@ const scenarios = [
       );
       await page.click('button:has-text("次へ")');
       await page.click('button:has-text("スキルを生成")');
-      await page.waitForSelector('text=スキルが作成されました');
+      await page.waitForSelector("text=スキルが作成されました");
       await page.waitForTimeout(150);
     },
   },
@@ -117,7 +117,7 @@ const scenarios = [
       );
       await page.click('button:has-text("次へ")');
       await page.click('button:has-text("スキルを生成")');
-      await page.waitForSelector('text=スキル生成に失敗しました');
+      await page.waitForSelector("text=スキル生成に失敗しました");
       await page.waitForTimeout(150);
     },
   },
@@ -154,8 +154,6 @@ async function waitForServer(url, timeoutMs = 60_000) {
 function createMockScript() {
   return () => {
     const now = new Date().toISOString();
-
-    sessionStorage.setItem("debug-clear-storage", "done");
 
     const mode = new URLSearchParams(window.location.search).get("mode");
 

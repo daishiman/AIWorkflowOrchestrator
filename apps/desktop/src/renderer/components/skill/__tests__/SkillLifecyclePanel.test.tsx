@@ -14,9 +14,13 @@ import {
 
 const mockCreateSkill = vi.fn();
 const mockExecuteSkill = vi.fn();
+const mockReExecuteAfterImprovement = vi.fn();
 const mockSelectSkillByName = vi.fn();
 const mockClearSkillError = vi.fn();
 const mockClearStreamingMessages = vi.fn();
+const mockBeginSkillReview = vi.fn();
+const mockCompleteSkillReview = vi.fn();
+const mockResetSkillExecutionCycle = vi.fn();
 
 type MockStoreState = {
   selectedSkillName: string | null;
@@ -33,6 +37,9 @@ type MockStoreState = {
     | "completed"
     | "cancelled"
     | "error"
+    | "review"
+    | "improve_ready"
+    | "reuse_ready"
     | null;
   skillError: string | null;
 };
@@ -46,8 +53,12 @@ let mockStoreState: MockStoreState = {
 };
 
 vi.mock("../../../store", () => ({
+  useBeginSkillReview: () => mockBeginSkillReview,
   useCreateSkill: () => mockCreateSkill,
+  useCompleteSkillReview: () => mockCompleteSkillReview,
   useExecuteSkill: () => mockExecuteSkill,
+  useReExecuteAfterImprovement: () => mockReExecuteAfterImprovement,
+  useResetSkillExecutionCycle: () => mockResetSkillExecutionCycle,
   useSelectSkillByName: () => mockSelectSkillByName,
   useClearSkillError: () => mockClearSkillError,
   useClearStreamingMessages: () => mockClearStreamingMessages,
@@ -144,6 +155,7 @@ beforeEach(() => {
 
   mockCreateSkill.mockResolvedValue("/skills/lifecycle-skill");
   mockExecuteSkill.mockResolvedValue(undefined);
+  mockReExecuteAfterImprovement.mockResolvedValue(undefined);
 });
 
 afterEach(() => {
@@ -269,7 +281,9 @@ describe("SkillLifecyclePanel", () => {
   });
 
   it("改善提案を取得し、詳細分析ビューを開ける", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+    const view = render(
+      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+    );
 
     await act(async () => {
       fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
@@ -278,14 +292,21 @@ describe("SkillLifecyclePanel", () => {
       fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
     });
 
+    mockStoreState.skillExecutionStatus = "completed";
+    view.rerender(
+      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+    );
+
     await act(async () => {
       fireEvent.click(screen.getByTestId("skill-lifecycle-improve-button"));
     });
 
+    expect(mockBeginSkillReview).toHaveBeenCalledTimes(1);
     expect(window.electronAPI?.skillCreator?.improveSkill).toHaveBeenCalledWith(
       "lifecycle-skill",
       { autoApply: false },
     );
+    expect(mockCompleteSkillReview).toHaveBeenCalledWith("improve_ready");
     expect(
       screen.getByTestId("skill-lifecycle-improve-result"),
     ).toHaveTextContent("ファイル責務を整理する");
@@ -321,6 +342,36 @@ describe("SkillLifecyclePanel", () => {
       },
     };
 
+    const view = render(
+      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+    );
+
+    await act(async () => {
+      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
+        target: { value: "分析スキルを作る" },
+      });
+      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
+    });
+
+    mockStoreState.skillExecutionStatus = "completed";
+    view.rerender(
+      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+    );
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-improve-button"));
+    });
+
+    expect(mockBeginSkillReview).toHaveBeenCalledTimes(1);
+    expect(screen.getByTestId("skill-lifecycle-session-log")).toHaveTextContent(
+      "改善 API は未接続です",
+    );
+    expect(screen.getByTestId("mock-analysis-view")).toHaveTextContent(
+      "lifecycle-skill",
+    );
+  });
+
+  it("実行完了前は改善提案ボタンと詳細分析ボタンが無効", async () => {
     render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
 
     await act(async () => {
@@ -330,15 +381,98 @@ describe("SkillLifecyclePanel", () => {
       fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
     });
 
+    expect(screen.getByTestId("skill-lifecycle-improve-button")).toBeDisabled();
+    expect(
+      screen.getByTestId("skill-lifecycle-analysis-toggle"),
+    ).toBeDisabled();
+  });
+
+  it("改善準備完了後の実行では reExecuteAfterImprovement を呼ぶ", async () => {
+    const view = render(
+      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+    );
+
+    await act(async () => {
+      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
+        target: { value: "会議メモ整形スキルを作る" },
+      });
+      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
+    });
+
+    mockStoreState.skillExecutionStatus = "improve_ready";
+    view.rerender(
+      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+    );
+
+    await act(async () => {
+      fireEvent.change(screen.getByTestId("skill-lifecycle-execution-input"), {
+        target: { value: "改善後のプロンプトで再実行" },
+      });
+      fireEvent.click(screen.getByTestId("skill-lifecycle-execute-button"));
+    });
+
+    expect(mockReExecuteAfterImprovement).toHaveBeenCalledWith(
+      "改善後のプロンプトで再実行",
+    );
+    expect(mockExecuteSkill).not.toHaveBeenCalled();
+  });
+
+  it("改善候補が0件なら reuse_ready を確定する", async () => {
+    (
+      window as Window & {
+        electronAPI?: {
+          skillCreator?: {
+            detectMode?: (request: string) => Promise<{
+              success: boolean;
+              data?: string;
+              error?: string;
+            }>;
+            improveSkill?: () => Promise<{
+              success: boolean;
+              data?: {
+                suggestions: [];
+                applied: boolean;
+              };
+            }>;
+          };
+        };
+      }
+    ).electronAPI = {
+      skillCreator: {
+        detectMode: vi.fn().mockResolvedValue({
+          success: true,
+          data: "collaborative",
+        }),
+        improveSkill: vi.fn().mockResolvedValue({
+          success: true,
+          data: {
+            suggestions: [],
+            applied: false,
+          },
+        }),
+      },
+    };
+
+    const view = render(
+      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+    );
+
+    await act(async () => {
+      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
+        target: { value: "分析スキルを作る" },
+      });
+      fireEvent.click(screen.getByTestId("skill-lifecycle-create-button"));
+    });
+
+    mockStoreState.skillExecutionStatus = "completed";
+    view.rerender(
+      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+    );
+
     await act(async () => {
       fireEvent.click(screen.getByTestId("skill-lifecycle-improve-button"));
     });
 
-    expect(screen.getByTestId("skill-lifecycle-session-log")).toHaveTextContent(
-      "改善 API は未接続です",
-    );
-    expect(screen.getByTestId("mock-analysis-view")).toHaveTextContent(
-      "lifecycle-skill",
-    );
+    expect(mockCompleteSkillReview).toHaveBeenCalledWith("reuse_ready");
   });
 });
