@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-23 - TASK-SC-01-IPC-WIRING-FIX 完了（P65 dead-end namespace 既解消確認 / skill-creator:* 全16チャネル検証 / P65不在テスト+allowlist包含テスト4件追加 / Phase 1-12成果物21ファイル / 未タスク2件: UT-SC-01-IPCRESULT-DEDUP, UT-SC-01-DIP-INTERFACE） |
 | 2026-03-22 - TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了（D1-D6 drift 6件解消 / 12チャネル canonical 統一 / validateIpcSender + P42 3段バリデーション + path guard 全ハンドラ適用 / RuntimeResolver integrated/handoff 分岐 / modifier-skill.ts 統合 / slideSlice 7 store fields 追加 / HandoffGuidance 型共有） |
 | 2026-03-22 - TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（Terminal Handoff Surface Realization 設計 / Concern 3分割 / HandoffGuidance 統一DTO / Manual Boundary 確定 / 未タスク8件検出） |
 | 2026-03-22 - TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了同期（streamingError primary / legacy fallback 分離 / Task03 completed root 移管 / same-wave index 再生成） |

@@ -5,6 +5,18 @@
 
 ## 完了タスク
 
+### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SC-01-IPC-WIRING-FIX |
+| 完了日 | 2026-03-23 |
+| PR | #1478 |
+| 成果 | P65既解消確認、P65不在テスト+allowlist包含テスト4件追加、Phase 1-12成果物21ファイル |
+| 未タスク | UT-SC-01-IPCRESULT-DEDUP (Low), UT-SC-01-DIP-INTERFACE (Low) |
+
+---
+
 ### タスク: TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Terminal Handoff Surface Realization 設計（2026-03-22）
 
 | 項目 | 値 |
