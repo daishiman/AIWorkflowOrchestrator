@@ -1,0 +1,142 @@
+{
+  "task_id": "TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001",
+  "issue_number": 1363,
+  "feature_name": "slide-runtime-alignment-impl",
+  "created_date": "2026-03-22",
+  "phases": {
+    "phase-01": {
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-01-requirements.md"
+    },
+    "phase-02": {
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-02-design.md"
+    },
+    "phase-03": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-03-design-review.md",
+      "result": "PASS"
+    },
+    "phase-04": {
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-04-test-creation.md"
+    },
+    "phase-05": {
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-05-implementation.md"
+    },
+    "phase-06": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-06-test-expansion.md"
+    },
+    "phase-07": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-07-coverage.md"
+    },
+    "phase-08": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-08-refactoring.md"
+    },
+    "phase-09": {
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-09-quality.md"
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "result": "PASS"
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md"
+    },
+    "phase-12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md"
+    },
+    "phase-13": {
+      "name": "完了",
+      "status": "completed",
+      "file": "phase-13-completion.md"
+    }
+  },
+  "drift_items": [
+    {
+      "id": "D1",
+      "description": "IPC handler 未接続",
+      "wave": "A",
+      "severity": "CRITICAL",
+      "status": "resolved",
+      "resolved_date": "2026-03-22"
+    },
+    {
+      "id": "D2",
+      "description": "チャネル名 legacy",
+      "wave": "A",
+      "severity": "HIGH",
+      "status": "resolved",
+      "resolved_date": "2026-03-22"
+    },
+    {
+      "id": "D3",
+      "description": "SDK 直接利用",
+      "wave": "B",
+      "severity": "CRITICAL",
+      "status": "resolved",
+      "resolved_date": "2026-03-22"
+    },
+    {
+      "id": "D4",
+      "description": "modifier-skill 独立実装",
+      "wave": "B",
+      "severity": "MEDIUM",
+      "status": "resolved",
+      "resolved_date": "2026-03-22"
+    },
+    {
+      "id": "D5",
+      "description": "validateIpcSender 未実装",
+      "wave": "A",
+      "severity": "HIGH",
+      "status": "resolved",
+      "resolved_date": "2026-03-22"
+    },
+    {
+      "id": "D6",
+      "description": "slideSlice store fields 不足",
+      "wave": "C",
+      "severity": "MEDIUM",
+      "status": "resolved",
+      "resolved_date": "2026-03-22"
+    }
+  ],
+  "qualityMetrics": {
+    "targetLineCoverage": 80,
+    "targetBranchCoverage": 60,
+    "targetFunctionCoverage": 80,
+    "securityGate": "Wave A + Wave B completion required before production deploy"
+  },
+  "phase12_artifacts": {
+    "implementation_guide": "implementation-guide.md",
+    "documentation_changelog": "documentation-changelog.md",
+    "unassigned_task_report": "unassigned-task-report.md",
+    "skill_feedback_report": "skill-feedback-report.md",
+    "unassigned_tasks": [
+      "unassigned-task/UT-SLIDE-CI-DRIFT-SCAN-001.md",
+      "unassigned-task/UT-SLIDE-GUIDANCE-UI-001.md",
+      "unassigned-task/UT-SLIDE-IPC-TEMPLATE-001.md"
+    ]
+  }
+}

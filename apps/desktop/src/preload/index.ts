@@ -403,20 +403,26 @@ const electronAPI: ElectronAPI = {
 const slideApi: SlideApi = {
   executePhase: (phase: SkillPhase, projectPath: string) =>
     safeInvoke(IPC_CHANNELS.SLIDE_EXECUTE_PHASE, phase, projectPath),
-  startWatching: (projectPath: string) =>
-    safeInvoke(IPC_CHANNELS.SLIDE_START_WATCHING, projectPath),
-  stopWatching: () => safeInvoke(IPC_CHANNELS.SLIDE_STOP_WATCHING),
-  getSyncStatus: (projectPath: string) =>
-    safeInvoke(IPC_CHANNELS.SLIDE_GET_SYNC_STATUS, projectPath),
-  manualSync: (projectPath: string) =>
-    safeInvoke(IPC_CHANNELS.SLIDE_MANUAL_SYNC, projectPath),
-  cancelExecution: () => safeInvoke(IPC_CHANNELS.SLIDE_CANCEL_EXECUTION),
+  watchStart: (projectPath: string) =>
+    safeInvoke(IPC_CHANNELS.SLIDE_WATCH_START, projectPath),
+  watchStop: () => safeInvoke(IPC_CHANNELS.SLIDE_WATCH_STOP),
+  syncStatus: (projectPath: string) =>
+    safeInvoke(IPC_CHANNELS.SLIDE_SYNC_STATUS, projectPath),
+  reverseSync: (projectPath: string) =>
+    safeInvoke(IPC_CHANNELS.SLIDE_REVERSE_SYNC, projectPath),
+  cancel: () => safeInvoke(IPC_CHANNELS.SLIDE_CANCEL),
   onStructureChange: (callback: (path: string) => void) =>
     safeOn<string>(IPC_CHANNELS.SLIDE_STRUCTURE_CHANGED, callback),
-  onSyncStatusChange: (callback: (status: SyncStatus) => void) =>
+  onSyncStatusChanged: (callback: (status: SyncStatus) => void) =>
     safeOn<SyncStatus>(IPC_CHANNELS.SLIDE_SYNC_STATUS_CHANGED, callback),
   onExecutionProgress: (callback: (progress: number) => void) =>
     safeOn<number>(IPC_CHANNELS.SLIDE_EXECUTION_PROGRESS, callback),
+  onSyncProgress: (callback: (progress: number) => void) =>
+    safeOn<number>(IPC_CHANNELS.SLIDE_SYNC_PROGRESS, callback),
+  onSyncError: (callback: (error: string) => void) =>
+    safeOn<string>(IPC_CHANNELS.SLIDE_SYNC_ERROR, callback),
+  onWatchStatus: (callback: (status: string) => void) =>
+    safeOn<string>(IPC_CHANNELS.SLIDE_WATCH_STATUS, callback),
 };
 
 // History API for version history management

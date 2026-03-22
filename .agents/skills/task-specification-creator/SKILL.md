@@ -383,6 +383,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.14** | **2026-03-22** | **TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期**: D1-D6（6件 drift）解消。12チャネル canonical 統一。validateIpcSender + P42 3段バリデーション + path guard 全ハンドラ適用。RuntimeResolver integrated/handoff 分岐。modifier-skill.ts 統合。slideSlice 7 store fields 追加。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.13** | **2026-03-22** | **TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR same-wave sync を反映**: Task 04 の `implementation-guide.md` / `system-spec-update-summary.md` / `phase12-task-spec-compliance-check.md` を追加し、`artifacts.json` phase 12 artifact list を増補。`generate-index.js` 再生成前提で `index.md` を更新可能な状態へ揃えた |
 | **v10.09.12** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 最終ドキュメント更新を反映**: `manual-test-result.md` が `not_run` のままなら Phase 11/12 を閉じないルール、`index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の4点同期、internal adapter と public IPC / preload contract を混同しない判断基準を `phase-12-documentation-guide.md` と `spec-update-workflow.md` へ追加 |
 | **v10.09.11** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査を反映**: design task の workflow root は `implementation_ready`、completed ledger は `spec_created` に分離する運用を追加。`outputs/phase-12` の必須 6成果物、worktree でも `.claude` 正本を先送りしないルール、current code sweep で implementation closure task を formalize する Phase 12 最終監査パターンを変更履歴へ記録 |

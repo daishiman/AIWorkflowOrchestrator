@@ -74,8 +74,9 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 ## Slide IPC API（スライド同期）
 
-> **Task 09 再監査同期**: 2026-03-19  
-> **ステータス**: `spec_created`（正本契約は更新済み、現行コードは legacy drift 残存）
+> **Task 09 再監査同期**: 2026-03-19
+> **実装同期**: 2026-03-22（TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）
+> **ステータス**: `implemented`（12チャネル実装済み、`registerSlideIpcHandlers()` は Main IPC index に接続済み）
 
 ### 概要
 
@@ -121,18 +122,16 @@ slide surface の runtime/auth-mode alignment では、Reveal.js HTML と `struc
 | `SyncDirection` | type | `forward` / `reverse` |
 | `SlideUIStatus` | derived type | `synced` / `running` / `degraded` / `guidance` |
 
-### 現行コード drift（2026-03-19 再監査）
+### drift 解消記録（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）
 
-| current code | 正本契約 | 状態 |
-| --- | --- | --- |
-| `slide:startWatching` | `slide:watch-start` | legacy 名が残存 |
-| `slide:stopWatching` | `slide:watch-stop` | legacy 名が残存 |
-| `slide:getSyncStatus` | `slide:sync-status` | legacy 名が残存 |
-| `slide:manualSync` | `slide:reverse-sync` | legacy 名が残存 |
-| `slide:syncStatusChanged` | `slide:sync-status-changed` | legacy 名が残存 |
-| `slide:executionProgress` | `slide:execution-progress` | legacy 名が残存 |
-| `manualSync -> syncManager.sync(projectPath)` | `reverse-sync` | 用語と処理が不一致 |
-| `registerSlideIpcHandlers()` 未登録 | Main IPC index へ登録済みであること | 未接続 |
+| ID | 旧 drift | 正本契約 | 状態 |
+| --- | --- | --- | --- |
+| D1 | `slide:startWatching` | `slide:watch-start` | 解消済み |
+| D2 | `slide:stopWatching` | `slide:watch-stop` | 解消済み |
+| D3 | `slide:getSyncStatus` | `slide:sync-status` | 解消済み |
+| D4 | `slide:manualSync` | `slide:reverse-sync` | 解消済み |
+| D5 | `slide:syncStatusChanged` / `slide:executionProgress` | `slide:sync-status-changed` / `slide:execution-progress` | 解消済み |
+| D6 | `registerSlideIpcHandlers()` 未登録 | Main IPC index へ登録済みであること | 解消済み（`registerAllIpcHandlers()` 内で `registerSlideIpcHandlers()` を呼び出し） |
 
 ### セキュリティ順序
 
@@ -436,10 +435,10 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | バリデーション設計 | P42 3段バリデーション + `detectPathTraversal` を全 `projectPath` 引数に適用設計完了 |
 | セキュリティ検証順序確立 | `validateIpcSender` → P42バリデーション → パストラバーサル検出 → business logic 委譲 |
 
-**実装後続タスク**:
+**実装完了タスク**:
 
-- `UT-SLIDE-IMPL-001`: slide IPC ハンドラー実装（channel rename + validateIpcSender + path guard 追加）
-- `UT-SLIDE-UI-001`: current branch で UI surface は完了。残件は runtime 側 follow-up に集約
+- `UT-SLIDE-IMPL-001`: slide IPC ハンドラー実装（channel rename + validateIpcSender + path guard 追加） -- **実装済み（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）**
+- `UT-SLIDE-UI-001`: SlideWorkspace UI 4領域実装 -- **completed（2026-03-21）**
 
 ---
 
@@ -447,7 +446,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 
 | タスクID                                             | 概要                                                                              | ステータス |
 | ---------------------------------------------------- | --------------------------------------------------------------------------------- | ---------- |
-| TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001              | Slide IPC チャネル名統一・セキュリティ設計（4 rename + validateIpcSender 設計）   | spec_created |
+| TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001              | Slide IPC チャネル名統一・セキュリティ設計（4 rename + validateIpcSender 設計）   | implemented（2026-03-22, #1363） |
 | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001           | Main/Chat/Settings Runtime 同期（GAP-01〜03 修正）                                | 完了       |
 | TASK-FIX-SKILL-EXECUTOR-AUTHKEY-DI-001               | SkillExecutor への AuthKeyService 注入経路を単一路化                              | 完了       |
 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001              | `auth-key:exists` 判定契約の env fallback 追加                                    | 完了       |

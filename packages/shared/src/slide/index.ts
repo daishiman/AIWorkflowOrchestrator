@@ -11,6 +11,7 @@ export type {
   StructureChange,
   SkillPhase,
   SkillExecutionResult,
+  HandoffGuidance,
   WatcherConfig,
   ChangeContext,
   SlideErrorCode,

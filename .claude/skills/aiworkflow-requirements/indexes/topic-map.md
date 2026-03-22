@@ -894,12 +894,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| AI/チャット IPC チャネル | L6 |
 | Slide IPC API（スライド同期） | L75 |
-| Workspace File Watch IPC API（TASK-UI-04A） | L157 |
-| Conversation IPC API（会話履歴永続化） | L201 |
-| Electron IPC API設計 | L237 |
-| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L369 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L537 |
-| AIプロバイダーAPI連携 | L568 |
+| Workspace File Watch IPC API（TASK-UI-04A） | L156 |
+| Conversation IPC API（会話履歴永続化） | L200 |
+| Electron IPC API設計 | L236 |
+| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L536 |
+| AIプロバイダーAPI連携 | L567 |
 
 ### references/api-ipc-system-details.md
 
@@ -1277,14 +1277,14 @@ node scripts/list-specs.js --topics
 | UI構成 | L21 |
 | プロバイダーとモデル一覧 | L31 |
 | 状態管理 | L46 |
-| UXフロー | L72 |
-| スタイルガイドライン | L92 |
-| アクセシビリティ | L119 |
-| エラーハンドリング | L129 |
-| テストカバレッジ | L137 |
-| 実行経路との統合 | L153 |
-| 関連タスクドキュメント | L164 |
-| 関連ドキュメント | L176 |
+| UXフロー | L74 |
+| スタイルガイドライン | L94 |
+| アクセシビリティ | L121 |
+| エラーハンドリング | L131 |
+| テストカバレッジ | L140 |
+| 実行経路との統合 | L156 |
+| 関連タスクドキュメント | L167 |
+| 関連ドキュメント | L180 |
 
 ### references/ui-ux-navigation.md
 
@@ -1804,13 +1804,13 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 対象 wave | L3 |
-| current canonical set | L13 |
-| workflow-local artifacts | L29 |
-| follow-up 未タスク | L95 |
-| 同一 wave で更新した canonical docs | L106 |
-| legacy path / filename compatibility | L116 |
-| validation chain | L125 |
-| 運用メモ | L145 |
+| current canonical set | L15 |
+| workflow-local artifacts | L31 |
+| follow-up 未タスク | L116 |
+| 同一 wave で更新した canonical docs | L129 |
+| legacy path / filename compatibility | L140 |
+| validation chain | L150 |
+| 運用メモ | L173 |
 
 ### references/workflow-ai-chat-llm-integration-fix.md
 
@@ -1818,12 +1818,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 対象 | L3 |
 | 現行実装アンカー | L12 |
 | current canonical set | L26 |
-| 実装・監査ステータス | L38 |
-| artifact inventory / parent docs / legacy | L78 |
-| タスク別の最小読書セット | L88 |
-| 読む順番 | L130 |
-| 検索キーワード | L139 |
-| 注意点 | L152 |
+| 実装・監査ステータス | L39 |
+| artifact inventory / parent docs / legacy | L87 |
+| タスク別の最小読書セット | L97 |
+| 読む順番 | L139 |
+| 検索キーワード | L148 |
+| 注意点 | L161 |
 
 ### references/workflow-ai-runtime-authmode-unification.md
 
@@ -1832,18 +1832,18 @@ node scripts/list-specs.js --topics
 | 今回の確定事項（2026-03-13） | L19 |
 | Step-03 Task06 再監査追補（2026-03-17） | L29 |
 | Step-04 Task09 再監査追補（2026-03-19） | L37 |
-| 再監査追補（2026-03-14） | L78 |
-| current canonical set（2026-03-14 wave） | L92 |
-| artifact inventory（Step-01 + system spec sync） | L108 |
-| parent docs と依存関係 | L139 |
-| 旧 filename 互換管理 | L152 |
-| 設定画面レビューの必須改善対象 | L159 |
-| 後続タスクへの伝搬先 | L177 |
-| SubAgent 編成（関心ごと分離） | L206 |
-| 同種課題の5分解決カード | L218 |
-| 最適なファイル形成 | L228 |
-| 関連ドキュメント | L240 |
-| 変更履歴 | L252 |
+| 再監査追補（2026-03-14） | L79 |
+| current canonical set（2026-03-14 wave） | L93 |
+| artifact inventory（Step-01 + system spec sync） | L109 |
+| parent docs と依存関係 | L140 |
+| 旧 filename 互換管理 | L153 |
+| 設定画面レビューの必須改善対象 | L160 |
+| 後続タスクへの伝搬先 | L178 |
+| SubAgent 編成（関心ごと分離） | L207 |
+| 同種課題の5分解決カード | L219 |
+| 最適なファイル形成 | L229 |
+| 関連ドキュメント | L241 |
+| 変更履歴 | L253 |
 
 ### references/workflow-ai-runtime-execution-responsibility-realignment.md
 
@@ -1851,9 +1851,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | current canonical set | L12 |
 | extraction matrix | L25 |
-| 実装同期ルール | L38 |
-| 実装ステータススナップショット（2026-03-21） | L45 |
-| Follow-up Backlog | L53 |
+| 実装同期ルール | L39 |
+| 実装ステータススナップショット（2026-03-21） | L46 |
+| Follow-up Backlog | L54 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2174,8 +2174,9 @@ node scripts/list-specs.js --topics
 ### references/arch-state-management-reference-persist-hardening-test-quality.md
 
 | セクション | 行 |
-|------------|----|\n| Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001） | L6 |
-| TASK-043D: テスト品質ゲート設計（2026-03-08） | L63 |
+|------------|----|\n| LLM Selection Persist Validation（TASK-FIX-LLM-CONFIG-PERSISTENCE） | L6 |
+| Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001） | L29 |
+| TASK-043D: テスト品質ゲート設計（2026-03-08） | L86 |
 
 ### references/arch-state-management-reference-selectors.md
 
@@ -2201,7 +2202,8 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L7 |
 | 利用順序 | L18 |
 | lifecycleHistorySlice / feedbackSlice（TASK-SKILL-LIFECYCLE-07） | L23 |
-| 関連ドキュメント | L52 |
+| LLM 選択状態の永続化（TASK-FIX-LLM-CONFIG-PERSISTENCE） | L51 |
+| 関連ドキュメント | L81 |
 
 ### references/arch-ui-components-advanced.md
 
@@ -2482,10 +2484,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | 使い方 | L14 |
 | Current Alias Overrides（個別互換行） | L21 |
-| Family Summary | L34 |
-| Detailed Register | L53 |
-| Section Extract Register (2026-03-17) | L234 |
-| 500-Line Split Register (2026-03-16) | L245 |
+| Family Summary | L36 |
+| Detailed Register | L55 |
+| Section Extract Register (2026-03-17) | L236 |
+| 500-Line Split Register (2026-03-16) | L247 |
 
 ### references/lessons-learned-archive-2026-03-mid.md
 
@@ -2583,10 +2585,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L37 |
-| クイックリファレンス: カテゴリ別検索ガイド | L50 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L411 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L445 |
+| 分割ファイル一覧 | L40 |
+| クイックリファレンス: カテゴリ別検索ガイド | L55 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L417 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L451 |
+| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L478 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2610,16 +2613,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L33 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L73 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L103 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L152 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L205 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L233 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L276 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L327 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L396 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L434 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L36 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L76 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L116 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L146 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L195 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L248 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L276 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L319 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L370 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L439 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L477 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -3859,8 +3863,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L32 |
-| 関連ドキュメント | L37 |
+| 利用順序 | L34 |
+| 関連ドキュメント | L39 |
 
 ### references/testing-accessibility.md
 

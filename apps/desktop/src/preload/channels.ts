@@ -124,16 +124,20 @@ export const IPC_CHANNELS = {
   LLM_STREAM_ERROR: "llm:stream-error",
   LLM_STREAM_CANCEL: "llm:stream-cancel",
 
-  // Slide operations
+  // Slide operations (invoke)
   SLIDE_EXECUTE_PHASE: "slide:executePhase",
-  SLIDE_START_WATCHING: "slide:startWatching",
-  SLIDE_STOP_WATCHING: "slide:stopWatching",
-  SLIDE_GET_SYNC_STATUS: "slide:getSyncStatus",
-  SLIDE_MANUAL_SYNC: "slide:manualSync",
-  SLIDE_CANCEL_EXECUTION: "slide:cancelExecution",
+  SLIDE_WATCH_START: "slide:watch-start",
+  SLIDE_WATCH_STOP: "slide:watch-stop",
+  SLIDE_SYNC_STATUS: "slide:sync-status",
+  SLIDE_REVERSE_SYNC: "slide:reverse-sync",
+  SLIDE_CANCEL: "slide:cancel",
+  // Slide operations (push)
+  SLIDE_SYNC_STATUS_CHANGED: "slide:sync-status-changed",
+  SLIDE_SYNC_PROGRESS: "slide:sync-progress",
+  SLIDE_SYNC_ERROR: "slide:sync-error",
+  SLIDE_EXECUTION_PROGRESS: "slide:execution-progress",
   SLIDE_STRUCTURE_CHANGED: "slide:structureChanged",
-  SLIDE_SYNC_STATUS_CHANGED: "slide:syncStatusChanged",
-  SLIDE_EXECUTION_PROGRESS: "slide:executionProgress",
+  SLIDE_WATCH_STATUS: "slide:watch-status",
 
   // Agent operations
   AGENT_GET_SKILLS: "agent:get-skills",
@@ -456,11 +460,11 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.LLM_STREAM_CANCEL,
   // Slide channels
   IPC_CHANNELS.SLIDE_EXECUTE_PHASE,
-  IPC_CHANNELS.SLIDE_START_WATCHING,
-  IPC_CHANNELS.SLIDE_STOP_WATCHING,
-  IPC_CHANNELS.SLIDE_GET_SYNC_STATUS,
-  IPC_CHANNELS.SLIDE_MANUAL_SYNC,
-  IPC_CHANNELS.SLIDE_CANCEL_EXECUTION,
+  IPC_CHANNELS.SLIDE_WATCH_START,
+  IPC_CHANNELS.SLIDE_WATCH_STOP,
+  IPC_CHANNELS.SLIDE_SYNC_STATUS,
+  IPC_CHANNELS.SLIDE_REVERSE_SYNC,
+  IPC_CHANNELS.SLIDE_CANCEL,
   // Agent channels
   IPC_CHANNELS.AGENT_GET_SKILLS,
   IPC_CHANNELS.AGENT_GET_SKILL_DETAIL,
@@ -656,7 +660,10 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   // Slide channels
   IPC_CHANNELS.SLIDE_STRUCTURE_CHANGED,
   IPC_CHANNELS.SLIDE_SYNC_STATUS_CHANGED,
+  IPC_CHANNELS.SLIDE_SYNC_PROGRESS,
+  IPC_CHANNELS.SLIDE_SYNC_ERROR,
   IPC_CHANNELS.SLIDE_EXECUTION_PROGRESS,
+  IPC_CHANNELS.SLIDE_WATCH_STATUS,
   // Agent channels
   IPC_CHANNELS.AGENT_STATUS_CHANGED,
   IPC_CHANNELS.AGENT_STREAM_CHUNK,

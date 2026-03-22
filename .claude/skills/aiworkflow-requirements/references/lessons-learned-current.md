@@ -24,6 +24,7 @@
 | 2026-03-21 | 2.2.2 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓を追記 |
 | 2026-03-21 | 2.2.1 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 最終再監査教訓を追記 |
 | 2026-03-21 | 2.2.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
+| 2026-03-22 | 2.2.4 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 の苦戦箇所3件を追加（L-SLIDE-RUNTIME-001〜003） |
 | 2026-03-22 | 2.2.3 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加 |
 | 2026-03-20 | 2.1.1 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査の教訓3件を追加 |
 | 2026-03-18 | 2.1.0 | 1598行超過のため分割。2026-03-15以前エントリを archive-2026-03.md へ移動。UT-TASK06-007 苦戦箇所5件を追加 |
@@ -471,3 +472,28 @@
 - **原因**: Phase 2 設計書で execute() の4状態ハンドリングを十分に設計しなかった
 - **解決策**: linter/ユーザーのフィードバックで `RuntimeTerminalHandoffResult` 型を導入し、execute() でも terminalSurface → handoff bundle を返す分岐を追加
 - **教訓**: 3-role facade（plan/execute/improve）で4状態ハンドリングを設計する際は、全 role × 全 capability の matrix を Phase 2 で明示的に埋める
+
+---
+
+## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22）
+
+### L-SLIDE-RUNTIME-001: HandoffGuidance 型の二重定義（P64再発）
+
+- **教訓**: `src/types/handoff.ts` と `src/slide/types.ts` に同名 `HandoffGuidance` が二重定義され、フィールド名が異なった（`terminalCommand` vs `command`）。TypeCheck で初めて顕在化
+- **解決策**: 正本（`src/types/handoff.ts`）を import + re-export で統一。slide/types.ts には独自定義を持たない
+- **関連パターン**: P64（モノレポ内同名インターフェースのシグネチャドリフト）
+- **関連タスク**: TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001
+
+### L-SLIDE-RUNTIME-002: skill-executor.ts リファクタリングによる既存テスト大規模修正（P21再発）
+
+- **教訓**: modifier フェーズに `fs/promises` readFile と `modifier-skill` ユーティリティの依存を追加した結果、既存3テストファイル（skill-executor.test.ts, sdk-integration.test.ts, slide-integration.test.ts）に17テスト失敗が発生。事前に `grep -rn "createSkillExecutor" **/*.test.ts` で影響範囲を把握すべきだった
+- **解決策**: `vi.hoisted` パターンで `fs/promises` + `modifier-skill` のモックを各テストファイルに追加
+- **関連パターン**: P21（DI追加時のテストモック大規模修正）
+- **関連タスク**: TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001
+
+### L-SLIDE-RUNTIME-003: validateSlideRequest ヘルパーの2バリアント設計
+
+- **教訓**: 6 invoke ハンドラの共通バリデーションを DRY 化する際、projectPath の有無で `validateSlideSenderOnly`（sender検証のみ）と `validateSlideRequestWithPath`（sender + path + traversal）の2バリアントに分離した。これにより projectPath を持たないハンドラ（watch-stop, cancel）に誤って path guard が適用されることを防止
+- **解決策**: 引数の有無でバリアントを分離し、型安全にガード
+- **関連パターン**: P54（safeRegister パターン不適合）
+- **関連タスク**: TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001
