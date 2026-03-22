@@ -443,7 +443,7 @@ export function useWorkspaceChatController(params: {
 
   const sendMessage = useCallback(async () => {
     const trimmed = input.trim();
-    if (!trimmed) {
+    if (!trimmed || blockedReason !== null) {
       return;
     }
 
@@ -455,7 +455,7 @@ export function useWorkspaceChatController(params: {
       addToMessages: true,
       persistUserMessage: true,
     });
-  }, [input, sendMessageCore]);
+  }, [input, blockedReason, sendMessageCore]);
 
   const persistAssistantMessage = useCallback(
     async (content: string) => {
