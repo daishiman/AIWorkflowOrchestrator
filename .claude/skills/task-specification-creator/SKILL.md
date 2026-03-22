@@ -200,6 +200,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | LOGS.md が1ファイルのみ更新                           | 必ず aiworkflow-requirements/LOGS.md と task-specification-creator/LOGS.md の両方               |
 | 完了タスクセクションが簡略形式                        | spec-update-workflow.md のテンプレート（テスト結果サマリー + 成果物テーブル）に従う             |
 | `artifacts.json` と `outputs/artifacts.json` が不一致 | Phase 12完了前に2ファイルを同期し、completed成果物の参照切れを0件にする                         |
+| 設計タスクの workflow root を `completed` にしてしまう | workflow root は `implementation_ready`、completed ledger は `spec_created` に分離する          |
 | Phase 10 MINOR指摘を未タスク化せず進行                | **Phase 10レビュー前に** unassigned-task-guidelines.md を読み、MINOR判定→未タスク化ルールを確認 |
 | 未タスク検出レポートで0件判定のまま未修正             | Phase 10 MINOR指摘は必ず未タスク化の対象。「機能に影響なし」は不要判定の理由にならない          |
 | `task-workflow.md` の未タスクリンクが参照切れ         | Step 1-E後に `verify-unassigned-links.js` を実行して `ALL_LINKS_EXIST` を確認する               |
@@ -215,7 +216,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **「全Step確認前に完了と記載しない」厳守** | P4パターン。全Stepの結果を個別に記録してから「Phase 12完了」とする                                                                                                                                                                                                   |
 | **LOGS.md/SKILL.md は4ファイル更新**       | aiworkflow-requirements/LOGS.md, task-specification-creator/LOGS.md, aiworkflow-requirements/SKILL.md, task-specification-creator/SKILL.md                                                                                                                           |
 | **topic-map.md再生成はセクション変更時も** | 新規追加だけでなく、セクション更新・削除時も `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行 |
-| **worktree環境でもLOGS.md/SKILL.mdを直接更新** | `.worktrees/` 配下で作業していても `.claude/skills/` が正本であることは変わらない。`system-spec-update-summary.md` は代替記録ではなく実更新の要約に使い、LOGS.md / SKILL.md の後追いは禁止する |
+| **worktree環境でも `.claude` 正本を実更新する** | worktree を理由に LOGS.md / SKILL.md / backlog / workflow の更新を先送りしない。`.agents/skills/` は `rsync` / `diff` で mirror parity を確認する |
 | **並列エージェント完了後はファイルシステムで検証** | P43/P59対策。エージェントがコンテキスト制限で応答不能になった場合、`git diff --stat` + `ls outputs/phase-*/` + `artifacts.json` のPhaseステータスで成果物の存在を確認する |
 
 ---
@@ -383,14 +384,11 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v10.09.13** | **2026-03-22** | **TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR same-wave sync を反映**: Task 04 の `implementation-guide.md` / `system-spec-update-summary.md` / `phase12-task-spec-compliance-check.md` を追加し、`artifacts.json` phase 12 artifact list を増補。`generate-index.js` 再生成前提で `index.md` を更新可能な状態へ揃えた |
+| **v10.09.13** | **2026-03-22** | **TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新を反映**: `references/phase-12-documentation-guide.md` に human-authored Phase 12 成果物を `outputs/phase-12/` へ固定するルールを追加。`references/spec-update-workflow.md` に shared component task と consumer surface task の completed 判定を分離する基準、および global `docs/30-workflows/unassigned-task/` canonical path を追記 |
 | **v10.09.12** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 最終ドキュメント更新を反映**: `manual-test-result.md` が `not_run` のままなら Phase 11/12 を閉じないルール、`index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の4点同期、internal adapter と public IPC / preload contract を混同しない判断基準を `phase-12-documentation-guide.md` と `spec-update-workflow.md` へ追加 |
 | **v10.09.11** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査を反映**: design task の workflow root は `implementation_ready`、completed ledger は `spec_created` に分離する運用を追加。`outputs/phase-12` の必須 6成果物、worktree でも `.claude` 正本を先送りしないルール、current code sweep で implementation closure task を formalize する Phase 12 最終監査パターンを変更履歴へ記録 |
 | **v10.09.03** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化を反映**: `references/spec-update-workflow.md` に、standalone task へ移設した workflow は current root だけでなく parent pack / downstream consumer / verification-report まで同一 wave で更新するルールを追加。`step-02-seq-task-02-runtime-policy-centralization` の self path / Task01 completed path / parent-child dependency sync を docs-only 再監査パターンとして変更履歴へ記録 |
 | **v10.09.03** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 spec-only Phase 1-12 完了**: 設計タスク全Phase完了。3 concern中央集約設計（DD-1〜DD-6）、M-1/M-2処置、Phase 10 PASS。Task03-09 は `spec_created` / `not_started` のまま、実装は downstream task へ委譲。未タスク3件を backlog / workflow / lessons へ同期。implementation-guide.md（日常アナロジー+開発者向け）作成 |
-| **v10.09.05** | **2026-03-21** | **UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 最終同期**: Phase 12 成果物の planned wording を実績化し、`outputs/artifacts.json` / `phase12-task-spec-compliance-check.md` / review board PNG 3件 / `manual-test-checklist.md` / `screenshot-plan.json` / metadata を current workflow へ同一ターンで固定する運用を変更履歴へ反映。あわせて `validate-phase-output.js` に zero-padding (`phase-01-*`)・alias (`coverage` / `quality`)・bullet/numbered task list 許容を追加し、worktree でも `.claude` 正本更新 + mirror parity + conflict marker 解消まで完了条件に含めることを明文化 |
-| **v10.09.04** | **2026-03-21** | **UT-TASK06-007-EXT-006**: check-ipc-contracts テスト拡充（20件追加、カバレッジ95.79%）。Phase 1-12 実行完了。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
-| **v10.09.03** | **2026-03-21** | **TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査同期**: Phase 11 screenshot task の capture script 正本を wrapper + canonical script 構成へ統一し、`phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を実績形式へ更新。Phase 12 では `phase12-task-spec-compliance-check.md` を root evidence として先行作成し、worktree でも `.claude/skills/` を直接更新するルールを Tips と変更履歴へ反映 |
 | **v10.09.02** | **2026-03-20** | **UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001**: Phase 1-12 実行完了（仕様書同期タスク） |
 | **v10.09.01** | **2026-03-19** | **UT-TASK06-007 再監査同期**: `implementation-guide.md` の必須要件（なぜ先行 / 日常例え / TypeScript 型 / API/CLI シグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目）を validator 10/10 に合わせて補強し、`phase-11-manual-test.md` の参照不足 warning を解消。未タスク5件は `docs/30-workflows/unassigned-task/` 配置を再確認し、`EXT-002` 残余スコープ・`EXT-005` 実行手順未完成・数値ドリフトを是正する運用を変更履歴へ追加 |
 | **v10.09.00** | **2026-03-19** | **TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 完了記録**。Phase 1-12 実行完了 |

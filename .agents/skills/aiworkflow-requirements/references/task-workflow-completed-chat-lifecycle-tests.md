@@ -7,73 +7,39 @@
 
 ## 完了タスク
 
-### タスク: TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了記録（2026-03-22）
+### タスク: TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 完了記録（2026-03-22）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR |
-| ステータス | **完了（streamingError / StreamingErrorDisplay / Phase 12 same-wave sync 完了）** |
-| タイプ | fix |
-| 優先度 | 高 |
+| タスクID | TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT |
+| ステータス | **完了（shared component 実装 + Phase 12 同期完了 / Phase 13 未実施）** |
+| タイプ | ui component |
+| 優先度 | 中 |
 | 完了日 | 2026-03-22 |
-| 対象 | `useWorkspaceChatController.streamingError` / `StreamingErrorDisplay` / `WorkspaceChatPanel` / Phase 11-12 同期 |
-| 成果物 | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/outputs/` |
+| 対象 | `InlineModelSelector` / `llmSlice` selector contract / Phase 12 sync |
+| 成果物 | `docs/30-workflows/chat-inline-model-selector/tasks/01-TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT/outputs/` |
 
 #### 実施内容
 
-- `streamingError` を Workspace Chat の structured error state として定義し、`errorMessage` は legacy inline fallback に整理した
-- `StreamingErrorDisplay` を追加し、`SETTINGS` / `RETRY` / dismiss の 3 導線を統合した
-- `WorkspaceChatPanel` で `streamingError` を `WorkspaceChatInput` より優先して描画し、重複表示を抑止した
-- Phase 11 で representative screenshot 5件と metadata を current workflow 配下へ固定した
-- Task 03 を `completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` に移管し、Task 04 は current root を維持したまま same-wave sync を実施した
-- follow-up 2件を `docs/30-workflows/unassigned-task/` へ formalize した
+- `InlineModelSelector.tsx` を追加し、shared compact selector を実装
+- provider list 未取得時の `fetchProviders()` fallback、provider change 時の `checkHealth()` 呼び出し、default model 選択を統合
+- `index.ts` から component / props / design token を export
+- Phase 12 で canonical path、artifact parity、system spec、backlog、completed ledger を同期
 
 #### 検証証跡
 
 | コマンド | 結果 |
 | --- | --- |
-| `pnpm --filter @repo/desktop screenshot:workspace-chat-stream-error` | PASS（screenshot 5件, metadata生成） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR` | PASS |
-| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（`indexes/topic-map.md` / `indexes/keywords.json` regenerated） |
-| `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR --regenerate` | PASS（index.md regenerated, Phase files 13/13） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR` | PASS（10/10） |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/outputs/phase-12/unassigned-task-detection.md` | PASS |
+| `cd apps/desktop && pnpm exec tsc -p tsconfig.json --noEmit --pretty false` | PASS |
+| `cd apps/desktop && pnpm exec vitest run src/renderer/components/llm/__tests__/InlineModelSelector.test.tsx` | BLOCKED（`esbuild` platform mismatch） |
 
 #### 関連改善タスク
 
 | 未タスクID | 概要 | 参照 | ステータス |
 | --- | --- | --- | --- |
-| UT-WORKSPACE-CHAT-STREAM-ERROR-TRANSITION-001 | StreamingErrorDisplay の表示/非表示にトランジションアニメーションを追加する | `docs/30-workflows/unassigned-task/task-ut-workspace-chat-stream-error-transition-001.md` | 未実施 |
-| UT-WORKSPACE-CHAT-STREAM-ERROR-CONTRAST-001 | systemRed / error background の WCAG AA 検証を文書化する | `docs/30-workflows/unassigned-task/task-ut-workspace-chat-stream-error-contrast-001.md` | 未実施 |
+| TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION | ChatView header へ mount する | `docs/30-workflows/chat-inline-model-selector/tasks/02-TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION/` | 未実施 |
+| TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION | WorkspaceChatPanel へ mount する | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/` | 未実施 |
 
-### タスク: TASK-FIX-LLM-CONFIG-PERSISTENCE 再監査記録（2026-03-21）
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-FIX-LLM-CONFIG-PERSISTENCE |
-| ステータス | **完了（実装 + Phase 11/12 再監査完了 / Phase 13 未実施）** |
-| タイプ | fix |
-| 優先度 | 高 |
-| 完了日 | 2026-03-21 |
-| 対象 | persist v2 / `validateAndSyncPersistedConfig()` / Phase 11 dedicated harness / Phase 12 same-wave sync |
-| 成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/` |
-#### 実施内容
-- `persist.partialize` に `selectedProviderId` / `selectedModelId` を追加し、persist version を `2` へ更新した
-- v0/v1 からの migrate で新規 LLM selection フィールドを `null` 補完する契約を固定した
-- `validateAndSyncPersistedConfig()` により invalid provider を両方 `null`、invalid model を model のみ `null` へクリアする仕様を実装した
-- Phase 11 で dedicated harness / capture script / screenshot plan を current workflow 配下へ追加した
-- Phase 12 で parent workflow / artifact inventory / completed ledger / lessons / follow-up 2件 / LOGS / SKILL を same-wave 同期した
-#### 検証証跡
-| コマンド | 結果 |
-| --- | --- |
-| `pnpm --filter @repo/desktop typecheck` | PASS |
-| `pnpm --filter @repo/desktop screenshot:task-fix-llm-config-persistence` | BLOCKED（`esbuild` arch mismatch） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE` | 実行対象 |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-12/unassigned-task-detection.md` | 実行対象 |
-#### 関連改善タスク
-| 未タスクID | 概要 | 参照 | ステータス |
-| --- | --- | --- | --- |
-| UT-FIX-LLM-FETCHPROVIDERS-RETRY-001 | fetchProviders retry と validation 再実行保証 | `docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md` | 未実施 |
-| UT-FIX-LLM-PERSIST-ENCRYPT-001 | persist encryption 検討 | `docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md` | 未実施 |
 ### タスク: TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査記録（2026-03-21）
 
 | 項目 | 値 |
@@ -84,7 +50,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-21 |
 | 対象 | `LLMGuidanceBanner` / `ChatView` / `WorkspaceChatPanel` / screenshot 4件 / Phase 12 同期 |
-| 成果物 | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/` |
+| 成果物 | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/` |
 
 #### 実施内容
 
@@ -99,8 +65,8 @@
 | コマンド | 結果 |
 | --- | --- |
 | `pnpm --filter @repo/desktop screenshot:llm-selector-inline-guidance` | PASS（screenshot 4件, metadata生成） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE` | PASS |
 
 #### 関連改善タスク
 
@@ -119,7 +85,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-20 |
 | 対象 | `chatSlice.chatError` / `clearChatError` / `ChatView` alert banner / screenshot 5件 / Phase 12 同期 |
-| 成果物 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/` |
+| 成果物 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/` |
 
 #### 実施内容
 
@@ -127,15 +93,15 @@
 - `chatSlice.sendMessage()` が送信開始時に `chatError` を clear し、失敗時のみ error code または raw message string を保持
 - `ChatView` が `role="alert"` の error banner、手動 close、5秒 auto clear、日本語文言変換を実装
 - Phase 11 で light/dark を含む representative screenshot 5件を再取得し、current workflow 配下へ固定
-- Phase 12 で workflow root を `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` に正規化し、未タスク2件を formalize
+- Phase 12 で workflow root を `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` に正規化し、未タスク2件を formalize
 
 #### 検証証跡
 
 | コマンド | 結果 |
 | --- | --- |
 | `pnpm --filter @repo/desktop screenshot:chatview-error-silent-failure` | PASS（screenshot 5件, metadata生成） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` | PASS |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` | PASS |
 
 #### 関連改善タスク
 

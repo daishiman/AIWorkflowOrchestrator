@@ -74,7 +74,7 @@ MINOR判定の指摘事項は全て未タスク仕様書に変換する（省略
 
 ```
 指摘の処理フロー:
-1. docs/30-workflows/chat-inline-model-selector/unassigned-task/ に指示書作成
+1. docs/30-workflows/unassigned-task/ に指示書作成
 2. task-workflow.md 残課題テーブルに登録
 3. 関連仕様書に参照リンク追加
 ```
@@ -147,7 +147,7 @@ MINOR判定の指摘事項は全て未タスク仕様書に変換する（省略
 | 成果物                        | パス                                                                                                                          | 説明             |
 | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ---------------- |
 | Phase 10 仕様書（本ファイル） | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-10-final-review.md` | 最終レビュー結果 |
-| MINOR指摘の未タスク仕様書     | `docs/30-workflows/chat-inline-model-selector/unassigned-task/<指摘内容>.md`                                                  | MINOR時のみ      |
+| MINOR指摘の未タスク仕様書     | `docs/30-workflows/unassigned-task/<指摘内容>.md`                                                                             | MINOR時のみ      |
 
 ## サブタスク管理
 

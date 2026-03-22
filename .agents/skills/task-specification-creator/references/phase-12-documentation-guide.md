@@ -60,6 +60,7 @@
 - validator 実行結果
 - current / baseline の区別
 - artifacts 同期結果
+- human-authored な Phase 12 成果物は task root 直下ではなく `outputs/phase-12/` に置く
 - `index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の4点同期結果
 - Step 1-A で更新した `aiworkflow-requirements` / `task-specification-creator` の `SKILL.md` / `LOGS.md` を canonical path で列挙する
 - `skill-creator` を改善した場合は、`skill-creator/SKILL.md` / `LOGS.md` / 変更した template or reference も同じ changelog に列挙する
@@ -103,3 +104,4 @@ rg -n "計画|予定|TODO|will be|を予定|仕様策定のみ|保留として�
 - `phase12-task-spec-compliance-check.md`
 
 上記 6 ファイルが揃ってから Phase 12 を閉じる。
+配置先はすべて `outputs/phase-12/` とし、task root 直下の `phase-12-documentation.md` は集約サマリーだけを持つ。
