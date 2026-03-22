@@ -144,8 +144,8 @@ guidance CTA から SettingsView の LLM セクションへ直接移動できる
 
 ## 8. 参照情報
 
-- `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`
-- `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/unassigned-task-detection.md`
+- `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`
+- `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/unassigned-task-detection.md`
 - `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`
 - `.claude/skills/aiworkflow-requirements/references/ui-ux-llm-selector.md`
 

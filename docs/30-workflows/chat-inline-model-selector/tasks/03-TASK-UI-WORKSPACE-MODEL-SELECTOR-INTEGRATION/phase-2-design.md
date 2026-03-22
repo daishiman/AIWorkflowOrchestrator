@@ -1,359 +1,188 @@
-# Phase 2: 設計
+# Phase 2: 設計 — WorkspaceChatPanel インラインモデルセレクタ統合
 
 ## メタ情報
 
 | 項目     | 値                                           |
 | -------- | -------------------------------------------- |
 | Phase    | 2                                            |
-| 機能名   | chat-inline-model-selector                   |
+| 機能名   | workspace-inline-model-selector-integration  |
 | タスクID | TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION |
 | 作成日   | 2026-03-21                                   |
+| 更新日   | 2026-03-22                                   |
 
 ## 目的
 
-Phase 1の要件定義に基づき、インラインモデルセレクタのコンポーネント設計・状態管理・配置設計を行う。
+Phase 1の要件定義に基づき、WorkspaceChatPanelへのInlineModelSelector配置設計・GuidanceBlockとの共存設計・useWorkspaceChatControllerとの連動設計を行う。
 
 ## 実行タスク
 
-- コンポーネント設計: InlineModelSelectorのインターフェースと内部構造を定義
-- 配置設計: ChatView/WorkspaceChatPanelへの具体的な配置位置とレイアウトを決定
-- 状態管理設計: 既存llmSliceとの連携パターンを設計
-- 既存コンポーネントとの関係整理: LLMSelectorPanel/LLMGuidanceBannerとの共存設計
+- 配置設計: WorkspaceChatPanelヘッダー部への具体的な配置位置とレイアウトを決定
+- 表示制御設計: GuidanceBlock(variant="blocked")とInlineModelSelectorの共存ルールを設計
+- disabled制御設計: ストリーミング中のInlineModelSelector無効化方式を設計
+- controller連動設計: isModelBlocked判定との連動方式を確認
 
 ## 参照資料
 
-| 資料名           | パス                                                                                                                         | 説明                   |
-| ---------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| Phase 1 要件定義 | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-1-requirements.md` | 要件・受入基準         |
-| LLMSelectorPanel | `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx`                                                              | 既存フル版パネル       |
-| ProviderSelector | `apps/desktop/src/renderer/components/llm/ProviderSelector.tsx`                                                              | プロバイダー選択子部品 |
-| ModelSelector    | `apps/desktop/src/renderer/components/llm/ModelSelector.tsx`                                                                 | モデル選択子部品       |
-| ChatView         | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                                                         | チャット画面           |
-| WorkspaceChat    | `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx`                                                       | ワークスペースチャット |
+| 資料名                     | パス                                                                                                                         | 説明                              |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Phase 1 要件定義           | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-1-requirements.md` | WorkspaceChat統合の要件・受入基準 |
+| WorkspaceChatPanel実装     | `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx`                                                       | 統合先（76行）                    |
+| useWorkspaceChatController | `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts`                                          | チャットコントローラー（652行）   |
+| InlineModelSelector        | `apps/desktop/src/renderer/components/llm/InlineModelSelector.tsx`                                                           | Task 01成果物（462行）            |
 
 ### システム仕様（aiworkflow-requirements）
-
-> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
 
 | 参照資料            | パス                                                                                             | 内容                     |
 | ------------------- | ------------------------------------------------------------------------------------------------ | ------------------------ |
 | UI/UXコンポーネント | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`                          | 既存UIコンポーネント構造 |
-| 状態管理Core        | `.claude/skills/aiworkflow-requirements/references/arch-state-management-core.md`                | LLM Slice設計            |
 | デザイン原則        | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`                   | Apple HIG準拠設計        |
 | 実装パターン        | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns-core.md` | P31/P48対策パターン      |
 
 ## 実行手順
 
-### ステップ1: コンポーネント設計
-
-#### 1.1 InlineModelSelector コンポーネント
-
-**新規コンポーネント**: `apps/desktop/src/renderer/components/llm/InlineModelSelector.tsx`
-
-```typescript
-// Props定義
-export interface InlineModelSelectorProps {
-  /** コンパクト表示（チャットヘッダー向け） */
-  compact?: boolean;
-  /** 追加CSSクラス */
-  className?: string;
-  /** 選択変更時のコールバック（副作用フック用） */
-  onSelectionChange?: (selection: {
-    providerId: string;
-    modelId: string;
-  }) => void;
-  /** 無効化（ストリーミング中等） */
-  disabled?: boolean;
-}
-```
-
-**内部構造（Atomic Design: molecule）**:
+### ステップ1: WorkspaceChatPanel現行レイアウトの分析
 
 ```
-InlineModelSelector (molecule)
-  ├── SelectorTrigger (atom) ← 現在選択中のProvider/Modelを表示するボタン
-  │   ├── ProviderIcon ← プロバイダーアイコン（Anthropic/OpenAI/Google等）
-  │   ├── ModelDisplayName ← "Claude 3.5 Sonnet" 等
-  │   └── HealthDot ← 緑/赤/灰のステータスドット
-  │
-  └── SelectorDropdown (molecule) ← 展開時のドロップダウンパネル
-      ├── ProviderSection ← プロバイダー選択グループ
-      │   └── ProviderOption[] ← 各プロバイダー行
-      └── ModelSection ← モデル選択グループ（選択プロバイダーに連動）
-          └── ModelOption[] ← 各モデル行（コンテキストウィンドウサイズ表示）
-```
-
-#### 1.2 コンポーネントの責務分離
-
-| コンポーネント      | 責務                                 | Store依存            |
-| ------------------- | ------------------------------------ | -------------------- |
-| InlineModelSelector | 全体制御・ドロップダウン開閉         | あり（個別セレクタ） |
-| SelectorTrigger     | 現在の選択状態表示・クリックハンドラ | なし（props受取）    |
-| SelectorDropdown    | プロバイダー/モデル一覧表示          | なし（props受取）    |
-
-**設計判断**: `InlineModelSelector` のみがStoreに接続し、子コンポーネントはpresentationalとする。これにより子コンポーネントの再利用性を保つ。
-
-#### 1.3 既存コンポーネントとの関係
-
-```
-components/llm/
-  ├── LLMSelectorPanel.tsx      ← 既存: Settings向けフルパネル（変更なし）
-  ├── ProviderSelector.tsx      ← 既存: ドロップダウン（内部利用可能）
-  ├── ModelSelector.tsx         ← 既存: ドロップダウン（内部利用可能）
-  ├── HealthIndicator.tsx       ← 既存: ヘルスバッジ（参考にしてHealthDot作成）
-  ├── InlineModelSelector.tsx   ← 新規: チャット向けコンパクト版
-  └── index.ts                  ← 更新: InlineModelSelectorをエクスポート追加
-```
-
-**設計判断**: 既存の `ProviderSelector`/`ModelSelector` は `<select>` ベースのフルサイズUI。インライン版ではドロップダウンパネル内で直接 `<button>` リストを使う新しいUIパターンを採用する。理由: コンパクト表示では `<select>` のOSネイティブUIがデザインに馴染まないため。
-
-### ステップ2: 状態管理設計
-
-#### 2.1 使用するStore個別セレクタ（P31対策）
-
-```typescript
-// InlineModelSelector内で使用する個別セレクタ
-import {
-  useLLMProviders, // プロバイダー一覧
-  useSelectedProviderId, // 選択中プロバイダーID
-  useSelectedModelId, // 選択中モデルID
-  useLLMIsLoading, // ローディング状態
-  useLLMHealthStatus, // ヘルスステータス
-  useFetchProviders, // プロバイダー取得アクション
-  useSelectProvider, // プロバイダー選択アクション
-  useSelectModel, // モデル選択アクション
-  useCheckLLMHealth, // ヘルスチェックアクション
-} from "@/renderer/store";
-```
-
-#### 2.2 状態フロー
-
-```
-ユーザーがドロップダウンを開く
-  → SelectorDropdown表示（ローカル useState: isOpen）
-
-ユーザーがプロバイダーを選択
-  → useSelectProvider(providerId)
-  → llmSlice.selectProvider() 内部で:
-    1. selectedProviderId 更新
-    2. selectedModelId をプロバイダーのデフォルトモデルに自動設定
-    3. window.electronAPI.llm.setSelectedConfig() でMain同期
-  → useCheckLLMHealth(providerId)
-
-ユーザーがモデルを選択
-  → useSelectModel(modelId)
-  → llmSlice.selectModel() 内部で:
-    1. selectedModelId 更新
-    2. window.electronAPI.llm.setSelectedConfig() でMain同期
-  → ドロップダウンを閉じる
-```
-
-#### 2.3 ドロップダウン開閉の状態管理
-
-ドロップダウンの開閉はコンポーネントローカル（`useState`）で管理する。理由:
-
-- 複数画面間で共有する必要がない
-- UIのみに関わるトランジェント状態
-- 03-state-management.md の「コンポーネント固有UI: useState/useReducer」に該当
-
-```typescript
-const [isOpen, setIsOpen] = useState(false);
-```
-
-### ステップ3: 配置設計
-
-#### 3.1 ChatView配置
-
-```
-ChatView (現行)
+WorkspaceChatPanel (現行: 76行)
 ┌─────────────────────────────────────────┐
-│ [Header: システムプロンプトボタン etc.]  │
-│ [LLMGuidanceBanner (未選択時のみ)]      │
+│ <section.flex.flex-col.rounded-3xl>     │
 │                                         │
-│ [メッセージエリア]                       │
+│   <div.border-b>  ← ヘッダー部         │
+│     <h1> Workspace Chat </h1>           │
+│     <p> 説明テキスト </p>               │
+│   </div>                                │
 │                                         │
-│ [ChatInput]                              │
-└─────────────────────────────────────────┘
-
-ChatView (変更後)
-┌─────────────────────────────────────────┐
-│ [Header: [InlineModelSelector] | ...]   │  ← ヘッダー左側に配置
-│ [LLMGuidanceBanner (未選択時のみ)]      │  ← 維持（初回案内として機能）
+│   <div.flex.flex-col.gap-4>             │
+│     {isModelBlocked && (                │
+│       <GuidanceBlock variant="blocked"/>│  ← モデル未選択時
+│     )}                                  │
 │                                         │
-│ [メッセージエリア]                       │
+│     {showSuggestionBubbles && (         │
+│       <WorkspaceSuggestionBubbles />    │  ← ゼロステート
+│     )}                                  │
 │                                         │
-│ [ChatInput]                              │
+│     <WorkspaceChatMessageList />        │  ← メッセージ一覧
+│     <WorkspaceFileContextChips />       │  ← ファイルコンテキスト
+│     <WorkspaceChatInput />              │  ← 入力エリア
+│   </div>                                │
+│ </section>                              │
 └─────────────────────────────────────────┘
 ```
 
-**配置位置**: ヘッダーの左側（SystemPromptToggleButtonの隣）
-**理由**: チャット入力前にモデルを確認・変更する操作フローに合致
-
-#### 3.2 WorkspaceChatPanel配置
+### ステップ2: InlineModelSelector配置設計
 
 ```
-WorkspaceChatPanel (現行)
-┌─────────────────────────────────────────┐
-│ [GuidanceBlock (blocked時のみ)]         │
-│                                         │
-│ [メッセージエリア]                       │
-│                                         │
-│ [WorkspaceChatInput]                     │
-└─────────────────────────────────────────┘
-
 WorkspaceChatPanel (変更後)
 ┌─────────────────────────────────────────┐
-│ [InlineModelSelector (compact)]         │  ← パネル上部に配置
-│ [GuidanceBlock (blocked+未選択時のみ)]  │  ← モデル選択済みなら非表示
+│ <section.flex.flex-col.rounded-3xl>     │
 │                                         │
-│ [メッセージエリア]                       │
+│   <div.border-b>  ← ヘッダー部         │
+│     <h1> Workspace Chat </h1>           │
+│     <p> 説明テキスト </p>               │
+│     <InlineModelSelector compact        │  ← 新規追加
+│       disabled={controller.isStreaming}/>│
+│   </div>                                │
 │                                         │
-│ [WorkspaceChatInput]                     │
+│   <div.flex.flex-col.gap-4>             │
+│     {isModelBlocked && (                │  ← 既存ロジック維持
+│       <GuidanceBlock variant="blocked"/>│
+│     )}                                  │
+│     ... (以降変更なし)                   │
+│   </div>                                │
+│ </section>                              │
 └─────────────────────────────────────────┘
 ```
 
-**配置位置**: パネルの最上部
-**理由**: WorkspaceChatはサイドパネルとして使われるため、コンパクト版を上部に配置
+**配置位置**: ヘッダー部（`div.border-b`）の末尾、説明テキストの下
+**理由**:
 
-#### 3.3 LLMGuidanceBannerとの共存
+1. サイドパネル内のヘッダー直下に配置することで、チャット操作前にモデルを確認できる
+2. compact版（高さ28px）はパネル幅に収まる
+3. GuidanceBlockの上に位置するため、モデル選択 → GuidanceBlock消滅の視覚フローが自然
 
-| 状態                 | InlineModelSelector      | LLMGuidanceBanner      |
-| -------------------- | ------------------------ | ---------------------- |
-| モデル未選択（初回） | 表示（プレースホルダー） | 表示（初回案内として） |
-| モデル選択済み       | 表示（選択中モデル名）   | 非表示（既存動作維持） |
+### ステップ3: 実装変更箇所の特定
 
-**設計判断**: LLMGuidanceBannerは完全に削除せず、初回案内として残す。インラインセレクタとの役割を分離:
-
-- InlineModelSelector: モデルの選択・変更操作
-- LLMGuidanceBanner: API keyの設定案内（Settings遷移が必要なため）
-
-### ステップ4: ビジュアルデザイン
-
-#### 4.1 SelectorTrigger（折りたたみ時）
-
-```
-┌──────────────────────────────────┐
-│ [Icon] Claude 3.5 Sonnet    [v] │  ← 通常サイズ
-└──────────────────────────────────┘
-
-┌─────────────────────────┐
-│ [I] Claude 3.5 Son. [v] │  ← compact版
-└─────────────────────────┘
-
-┌──────────────────────────────────┐
-│ [?] モデルを選択            [v] │  ← 未選択状態
-└──────────────────────────────────┘
-```
-
-#### 4.2 SelectorDropdown（展開時）
-
-```
-┌──────────────────────────────────┐
-│ Provider                         │
-│ ┌──────────────────────────────┐ │
-│ │ [*] Anthropic                │ │  ← 選択中は * マーク
-│ │ [ ] OpenAI                   │ │
-│ │ [ ] Google                   │ │
-│ └──────────────────────────────┘ │
-│                                  │
-│ Model                            │
-│ ┌──────────────────────────────┐ │
-│ │ [*] Claude 3.5 Sonnet        │ │
-│ │     200K context             │ │  ← コンテキストウィンドウサイズ
-│ │ [ ] Claude 3.5 Haiku         │ │
-│ │     200K context             │ │
-│ │ [ ] Claude 3 Opus            │ │
-│ │     200K context             │ │
-│ └──────────────────────────────┘ │
-└──────────────────────────────────┘
-```
-
-#### 4.3 デザイントークン（Apple HIG準拠）
+#### 3.1 WorkspaceChatPanel.tsx の変更
 
 ```typescript
-// 色定義（CSS変数参照）
-const DESIGN_TOKENS = {
-  trigger: {
-    bg: "var(--bg-secondary)", // secondarySystemBackground
-    border: "var(--border-primary)", // opaqueSeparator
-    borderRadius: "8px",
-    padding: "6px 12px", // 8pxグリッド近似
-    height: "32px", // compact: 28px
-  },
-  dropdown: {
-    bg: "var(--bg-primary)", // systemBackground
-    border: "var(--border-primary)",
-    borderRadius: "12px",
-    shadow: "0 4px 12px rgba(0,0,0,0.08)",
-    maxHeight: "320px",
-  },
-  option: {
-    padding: "8px 12px",
-    hoverBg: "var(--bg-tertiary)", // systemGray5 / tertiarySystemBackground
-    selectedColor: "var(--accent)", // systemBlue
-  },
-  healthDot: {
-    size: "8px",
-    healthy: "var(--status-success)", // systemGreen
-    unhealthy: "var(--status-error)", // systemRed
-    unknown: "var(--text-tertiary)", // tertiaryLabel
-  },
-} as const;
+// 追加するimport
+import { InlineModelSelector } from "@/renderer/components/llm";
+
+// ヘッダー部（div.border-b）の末尾に追加
+<InlineModelSelector compact disabled={controller.isStreaming} />
 ```
 
-### ステップ5: エラーハンドリング
+**変更量**: import 1行 + JSX 1行（計2行の追加のみ）
 
-| エラー状態           | UI表示                              | アクション                                                                 |
-| -------------------- | ----------------------------------- | -------------------------------------------------------------------------- |
-| プロバイダー取得失敗 | トリガーに警告アイコン表示          | ドロップダウン内にリトライボタン                                           |
-| ヘルスチェック失敗   | HealthDotが赤                       | ツールチップでエラー詳細表示                                               |
-| 選択同期失敗（IPC）  | エラー情報をllmSlice.llmErrorに格納 | InlineModelSelectorのトリガーに警告アイコン表示 + ツールチップでエラー詳細 |
+**`controller.isStreaming` の取得**: `useWorkspaceChatController` の戻り値として既に利用可能。追加のStore接続は不要。
 
-### ステップ6: アクセシビリティ設計
+#### 3.2 useWorkspaceChatController.ts の変更
 
-```html
-<!-- SelectorTrigger -->
-<button
-  role="combobox"
-  aria-expanded="{isOpen}"
-  aria-haspopup="listbox"
-  aria-label="LLMモデル選択: {selectedModelName || 'モデルを選択'}"
->
-  <!-- SelectorDropdown -->
-  <div role="listbox" aria-label="LLMモデル一覧">
-    <div role="group" aria-label="Provider">
-      <button role="option" aria-selected="{isSelected}">Anthropic</button>
-    </div>
-    <div role="group" aria-label="Model">
-      <button role="option" aria-selected="{isSelected}">
-        Claude 3.5 Sonnet
-      </button>
-    </div>
-  </div>
-</button>
+**変更なし**。現在の実装を確認:
+
+```typescript
+// useWorkspaceChatController.ts内（変更不要）
+const selectedModelId = useAppStore((state) => state.selectedModelId);
+
+// WorkspaceChatPanel.tsx内の既存ロジック（変更不要）
+const isModelBlocked = controller.selectedModelId === null;
 ```
 
-**キーボード操作**:
+InlineModelSelectorがStore（`llmSlice`）を更新すると、`useAppStore((state) => state.selectedModelId)` が反応し、controllerの `selectedModelId` が更新される。これにより `isModelBlocked` が自動で `false` に変わる。追加の連携コードは不要。
 
-- `Enter`/`Space`: ドロップダウン開閉
-- `ArrowDown`/`ArrowUp`: オプション間移動
-- `Escape`: ドロップダウンを閉じる
-- `Tab`: 次の要素にフォーカス移動
+### ステップ4: GuidanceBlock(variant="blocked")との共存設計
+
+| 状態                          | InlineModelSelector      | GuidanceBlock(blocked) |
+| ----------------------------- | ------------------------ | ---------------------- |
+| モデル未選択（初回）          | 表示（プレースホルダー） | 表示（Settings誘導）   |
+| InlineModelSelectorで選択直後 | 表示（選択中モデル名）   | 即座に非表示           |
+| モデル選択済み                | 表示（選択中モデル名）   | 非表示                 |
+| ストリーミング中              | 表示（disabled）         | 非表示（選択済み前提） |
+
+**設計判断**: GuidanceBlock表示制御の既存ロジック（`isModelBlocked = controller.selectedModelId === null`）は変更不要。InlineModelSelectorでStore更新 → controller反応 → isModelBlocked自動更新のパスで動作する。
+
+### ステップ5: disabled制御設計
+
+```typescript
+// WorkspaceChatPanel.tsx内（controllerの既存プロパティを利用）
+<InlineModelSelector compact disabled={controller.isStreaming} />
+```
+
+**`isSending` ではなく `isStreaming` を使用する理由**:
+
+- WorkspaceChatPanelは `useWorkspaceChatController` でストリーミング状態を管理している
+- `controller.isStreaming` が `true` の間はモデル変更を禁止する
+- ChatViewの `isSending`（Store管理）とは異なり、controllerのローカル状態を使用する
+
+### ステップ6: Tab順序設計
+
+```
+Tab順序（WorkspaceChatPanel内）:
+1. h1 "Workspace Chat"（非フォーカス）
+2. InlineModelSelector (combobox)  ← 新規追加
+3. GuidanceBlock内ボタン（表示時のみ）
+4. WorkspaceSuggestionBubbles（表示時のみ）
+5. WorkspaceChatInput
+```
+
+DOMの配置順がそのままTab順序になるため、特別な `tabIndex` 設定は不要。
 
 ## 統合テスト連携（Phase 2）
 
-- コンポーネント単体テスト: InlineModelSelector のドロップダウン動作・選択同期
-- 統合テスト: ChatView/WorkspaceChatPanel での配置・動作検証
-- P31/P48対策テスト: 個別セレクタ使用・再レンダー回数検証
+- WorkspaceChatPanel内にInlineModelSelectorがレンダーされることのテスト
+- `controller.isStreaming=true` 時に `disabled` propが渡されることのテスト
+- GuidanceBlockがモデル選択後に非表示になることのテスト
+- isModelBlocked判定の連動テスト
+- P39対策: happy-dom環境では `fireEvent` を使用
 
 ## 多角的チェック観点
 
-| 観点             | 適用 | 確認内容                                                         |
-| ---------------- | ---- | ---------------------------------------------------------------- |
-| UI/UX            | 該当 | Apple HIG準拠デザイン、コンパクト表示の操作性、配置位置の妥当性  |
-| アーキテクチャ   | 該当 | Atomic Design準拠、Store接続パターン、既存コンポーネントとの関係 |
-| アクセシビリティ | 該当 | WCAG 2.1 AA、キーボード操作、ARIA属性                            |
-| パフォーマンス   | 該当 | P31個別セレクタ、P48 useShallow、ドロップダウン遅延レンダリング  |
+| 観点             | 適用 | 確認内容                                                     |
+| ---------------- | ---- | ------------------------------------------------------------ |
+| UI/UX            | 該当 | サイドパネル内のレイアウト崩れなし、compact版の操作性        |
+| アーキテクチャ   | 該当 | 変更量が最小（2行追加）、既存controller/Store活用            |
+| アクセシビリティ | 該当 | Tab順序の自然さ（Task 01のARIA実装を継承）                   |
+| パフォーマンス   | 該当 | 追加Store接続なし（isStreamingはcontrollerの既存プロパティ） |
 
 ## 成果物
 
@@ -363,15 +192,13 @@ const DESIGN_TOKENS = {
 
 ## 完了条件
 
-- [x] InlineModelSelectorのインターフェース（Props型）を定義
-- [x] 内部コンポーネント構造（Atomic Design）を設計
-- [x] 既存コンポーネントとの関係を整理
-- [x] 状態管理パターン（個別セレクタ使用）を設計
-- [x] ChatView/WorkspaceChatPanelへの配置位置を決定
-- [x] LLMGuidanceBannerとの共存方針を決定
-- [x] ビジュアルデザイン（Apple HIG準拠）を定義
-- [x] エラーハンドリング方針を設計
-- [x] アクセシビリティ設計を完了
+- [x] WorkspaceChatPanel現行レイアウトを分析し配置位置を決定
+- [x] InlineModelSelectorの配置位置とprops設計を完了
+- [x] GuidanceBlock(variant="blocked")との共存設計を完了
+- [x] useWorkspaceChatControllerとの連動設計（変更不要の根拠含む）を完了
+- [x] disabled制御（ストリーミング中）の方式を決定
+- [x] Tab順序設計を完了
+- [x] 影響ファイルの変更箇所と変更量を特定
 - [x] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase

@@ -7,41 +7,38 @@
 
 ## 完了タスク
 
-### タスク: TASK-FIX-LLM-CONFIG-PERSISTENCE 再監査記録（2026-03-21）
+### タスク: TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 完了記録（2026-03-22）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | TASK-FIX-LLM-CONFIG-PERSISTENCE |
-| ステータス | **完了（実装 + Phase 11/12 再監査完了 / Phase 13 未実施）** |
-| タイプ | fix |
-| 優先度 | 高 |
-| 完了日 | 2026-03-21 |
-| 対象 | persist v2 / `validateAndSyncPersistedConfig()` / Phase 11 dedicated harness / Phase 12 same-wave sync |
-| 成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/` |
+| タスクID | TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT |
+| ステータス | **完了（shared component 実装 + Phase 12 同期完了 / Phase 13 未実施）** |
+| タイプ | ui component |
+| 優先度 | 中 |
+| 完了日 | 2026-03-22 |
+| 対象 | `InlineModelSelector` / `llmSlice` selector contract / Phase 12 sync |
+| 成果物 | `docs/30-workflows/chat-inline-model-selector/tasks/01-TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT/outputs/` |
 
 #### 実施内容
 
-- `persist.partialize` に `selectedProviderId` / `selectedModelId` を追加し、persist version を `2` へ更新した
-- v0/v1 からの migrate で新規 LLM selection フィールドを `null` 補完する契約を固定した
-- `validateAndSyncPersistedConfig()` により invalid provider を両方 `null`、invalid model を model のみ `null` へクリアする仕様を実装した
-- Phase 11 で dedicated harness / capture script / screenshot plan を current workflow 配下へ追加した
-- Phase 12 で parent workflow / artifact inventory / completed ledger / lessons / follow-up 2件 / LOGS / SKILL を same-wave 同期した
+- `InlineModelSelector.tsx` を追加し、shared compact selector を実装
+- provider list 未取得時の `fetchProviders()` fallback、provider change 時の `checkHealth()` 呼び出し、default model 選択を統合
+- `index.ts` から component / props / design token を export
+- Phase 12 で canonical path、artifact parity、system spec、backlog、completed ledger を同期
 
 #### 検証証跡
 
 | コマンド | 結果 |
 | --- | --- |
-| `pnpm --filter @repo/desktop typecheck` | PASS |
-| `pnpm --filter @repo/desktop screenshot:task-fix-llm-config-persistence` | BLOCKED（`esbuild` arch mismatch） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE` | 実行対象 |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-12/unassigned-task-detection.md` | 実行対象 |
+| `cd apps/desktop && pnpm exec tsc -p tsconfig.json --noEmit --pretty false` | PASS |
+| `cd apps/desktop && pnpm exec vitest run src/renderer/components/llm/__tests__/InlineModelSelector.test.tsx` | BLOCKED（`esbuild` platform mismatch） |
 
 #### 関連改善タスク
 
 | 未タスクID | 概要 | 参照 | ステータス |
 | --- | --- | --- | --- |
-| UT-FIX-LLM-FETCHPROVIDERS-RETRY-001 | fetchProviders retry と validation 再実行保証 | `docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md` | 未実施 |
-| UT-FIX-LLM-PERSIST-ENCRYPT-001 | persist encryption 検討 | `docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md` | 未実施 |
+| TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION | ChatView header へ mount する | `docs/30-workflows/chat-inline-model-selector/tasks/02-TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION/` | 未実施 |
+| TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION | WorkspaceChatPanel へ mount する | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/` | 未実施 |
 
 ### タスク: TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査記録（2026-03-21）
 

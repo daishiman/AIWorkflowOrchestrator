@@ -1,7 +1,5 @@
 /**
- * WorkspaceChatPanel ランタイム整合テスト (U-01 〜 U-06)
- *
- * 当初 Red として書かれたケースも、現行実装と同期して検証内容を維持する。
+ * WorkspaceChatPanel ランタイム整合テスト (U-01 〜 U-07)
  *
  * P39 準拠: happy-dom 環境では fireEvent を使用（userEvent 使用禁止）
  * P9  準拠: beforeEach で全 mock をリセットし、テスト間の状態共有を防ぐ
@@ -48,6 +46,9 @@ const mockController: WorkspaceChatController = {
   handleComposerKeyDown: vi.fn().mockResolvedValue(undefined),
   selectMentionAtIndex: vi.fn().mockResolvedValue(undefined),
   openMentionPreviewAtIndex: vi.fn(),
+  streamingError: null,
+  retryLastMessage: vi.fn().mockResolvedValue(undefined),
+  dismissStreamingError: vi.fn(),
 };
 
 vi.mock("../hooks/useWorkspaceChatController", () => ({
@@ -172,8 +173,7 @@ describe("WorkspaceChatPanel ランタイム整合テスト", () => {
     expect(screen.getByTestId("workspace-chip-file-1")).toBeInTheDocument();
   });
 
-  // U-05: errorMessage 存在時にエラー表示
-  it("U-05: errorMessage が存在する場合、エラーメッセージが表示されること", () => {
+  it("U-05: errorMessage が存在し streamingError がない場合、inline error が表示される", () => {
     mockController.errorMessage = "AI応答に失敗しました: Stream failed";
 
     render(<WorkspaceChatPanel controller={mockController} />);
@@ -184,13 +184,10 @@ describe("WorkspaceChatPanel ランタイム整合テスト", () => {
     );
   });
 
-  // U-06: blockedReason=NO_MODEL で送信ボタン非活性
-  it("U-06: blockedReason=NO_MODEL の場合、送信ボタンが非活性になること", () => {
-    // input に値を入れて通常は送信可能な状態にする
+  it("U-06: selectedModelId=null の場合、送信ボタンが非活性になる", () => {
     mockController.input = "テスト質問";
     mockController.isSending = false;
     mockController.isStreaming = false;
-
     mockController.selectedModelId = null;
     mockController.blockedReason = "NO_MODEL";
 
@@ -211,5 +208,23 @@ describe("WorkspaceChatPanel ランタイム整合テスト", () => {
 
     expect(screen.getByTestId("workspace-guidance-block")).toBeInTheDocument();
     expect(screen.getByText(/モデルが選択されていません/)).toBeInTheDocument();
+  });
+
+  it("U-07: streamingError が存在する場合、banner を優先し inline error を重複表示しない", () => {
+    mockController.errorMessage = "ネットワークエラーが発生しました。";
+    mockController.streamingError = {
+      code: "NETWORK_ERROR",
+      message: "ネットワークエラーが発生しました。",
+      retryable: true,
+      action: "RETRY",
+    };
+
+    render(<WorkspaceChatPanel controller={mockController} />);
+
+    expect(screen.getByRole("alert")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /再試行/ })).toBeInTheDocument();
+    expect(
+      screen.queryByTestId("workspace-chat-error"),
+    ).not.toBeInTheDocument();
   });
 });

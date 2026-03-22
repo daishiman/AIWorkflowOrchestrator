@@ -5,47 +5,32 @@
 
 ## 完了タスク
 
-### タスク: TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 chat-workspace-guidance-action-wiring（2026-03-22）
+### タスク: TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 Settings shell access matrix mainline design（2026-03-22）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
-| ステータス | **仕様書作成完了（`spec_created` / workflow root `implementation_ready` / Phase 13 blocked）** |
+| タスクID | TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 |
+| ステータス | **完了（Phase 1-13 設計タスク完了 / Phase 13 blocked: user approval 待ち）** |
 | タイプ | design |
 | 優先度 | 高 |
 | 完了日 | 2026-03-22 |
-| 対象 | Main Chat / Workspace の blocked guidance を action へ接続する実配線 |
-| 成果物 | `docs/30-workflows/step-03-par-task-04-chat-workspace-guidance-action-wiring/` |
+| 対象 | Settings Access Matrix Section / AppLayout Persistent Launcher / Public Shell Access Contract |
+| 成果物 | `docs/30-workflows/step-03-par-task-03-settings-shell-access-matrix-mainline/outputs/` |
 
 #### 実施内容
 
-- current workflow root を standalone `docs/30-workflows/step-03-par-task-04-chat-workspace-guidance-action-wiring/` として正規化し、parent workflow の current canonical set へ追記した
-- workflow root は `implementation_ready`、completed ledger は `spec_created` として意味を分離し、Phase 13 は user approval まで blocked とした
-- follow-up / unassigned 候補 4件を same-wave で formalize する前提を task-workflow backlog と lessons に接続した
-- Phase 12 の planned wording guard と screenshot retention ルールを same-wave sync の教訓として記録した
+- Settings 画面に access matrix セクション（CapabilityCard / HealthStatusRow / ProviderSummaryCard）の IA 定義
+- AppLayout header に persistent TerminalLauncher の配置設計
+- 未認証時 guidance-only モード（PUBLIC_UNAUTHENTICATED_VIEWS 不変）の設計
+- AccessCapability x UiState 全5組合せの契約マトリクス定義
+- テストマトリクス（TC-C01〜C06 / TC-H01〜H04 / TC-P01〜P03 / TC-L01〜L03 / SC-01〜SC-06 / RG-01〜RG-06）
+- Phase 10 最終レビュー PASS、AC-1〜AC-4 全 PASS、未タスク 0 件
 
-#### Phase 12 未タスク
+#### 発見元
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| `UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001` | blocked guidance から terminal 起動 action を追加する | 中 | `docs/30-workflows/unassigned-task/UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001.md` |
-| `UT-IMP-CHAT-WORKSPACE-GUIDANCE-RETRY-CONNECTION-IPC-001` | blocked guidance から retry connection IPC を追加する | 中 | `docs/30-workflows/unassigned-task/UT-IMP-CHAT-WORKSPACE-GUIDANCE-RETRY-CONNECTION-IPC-001.md` |
-| `UT-CLEANUP-CHAT-WORKSPACE-GUIDANCE-STATE-001` | chat/workspace guidance state の重複と stale branch を整理する | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-CHAT-WORKSPACE-GUIDANCE-STATE-001.md` |
-| `UT-DESIGN-CHAT-WORKSPACE-GUIDANCE-REASON-PRIORITY-001` | guidance reason priority / fallback ルールを整理する | 中 | `docs/30-workflows/unassigned-task/UT-DESIGN-CHAT-WORKSPACE-GUIDANCE-REASON-PRIORITY-001.md` |
+- ai-runtime-execution-responsibility-realignment 親パックの step-03-par-task-03
 
-#### 苦戦箇所
-
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| standalone root へ移設した task の old path を残したまま parent/downstream を閉じる | current root と completed ledger を別 wave で更新する | root / parent / downstream / task-workflow を同一 wave で同期した |
-| design task で Phase 12 の planned wording を残す | `更新予定` / `計画済み` を future tense のまま残す | 実績ベースへ書き換え、Phase 13 だけ blocked にした |
-| screenshot 要求がある spec_created task で capture script を current root に残さない | screenshot evidence を別 workflow へ逃がす | current workflow root 配下へ capture script と evidence path を残した |
-
-#### 同種課題の簡潔解決手順
-
-1. standalone root の current path と parent/downstream の参照を同一 wave で揃える。
-2. workflow root は `implementation_ready`、completed ledger は `spec_created` に分離する。
-3. follow-up 4件は backlog / lessons / workflow / task-workflow の 4点同期で閉じる。
+---
 
 ### タスク: TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 RuntimePolicyResolver capability bridge（2026-03-21）
 

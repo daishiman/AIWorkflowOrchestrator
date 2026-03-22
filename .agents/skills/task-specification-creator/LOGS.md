@@ -4,16 +4,28 @@
 
 ---
 
-## TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 11/12 close-out（2026-03-21）
+## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12
+- **Phase**: Phase 12 final sync
 - **Result**: success
 - **Notes**:
-  - `phase-11-manual-test.md` を actual storage key `knowledge-studio-store` と dedicated harness 前提へ更新
-  - `implementation-guide.md` を validator 10/10 要件に合わせて再構成
-  - `system-spec-update-summary.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を追加し、必須 6 成果物を current root にそろえた
-  - parent workflow / artifact inventory / completed shard / lessons / LOGS / SKILL を same-wave sync 対象として明文化した
+  - `references/phase-12-documentation-guide.md` に Phase 12 human-authored outputs の canonical 配置を追記
+  - `references/spec-update-workflow.md` に shared component 完了と consumer surface 完了を混同しないルールを追記
+  - global `docs/30-workflows/unassigned-task/` canonical path を再明文化し、workflow 個別 path drift を防ぐガードを追加
+
+---
+
+## TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 docs/spec sync
+- **Result**: success
+- **Notes**:
+  - `workflow-ai-runtime-execution-responsibility-realignment.md` に Task04 standalone root と current canonical set を追記
+  - `task-workflow-completed.md` に `spec_created` / `implementation_ready` / Phase 13 blocked の分離記録を追加
+  - `task-workflow-backlog.md` と `lessons-learned-current.md` / `lessons-learned-phase12-workflow-lifecycle.md` に follow-up 4件と教訓4件を追加
+  - Task04 の same-wave sync を task/workflow/doc/spec の関係性として再記録
 
 ---
 
@@ -31,17 +43,6 @@
   - topic-map.md を generate-index.js で再生成
 
 ---
-
-## TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（2026-03-22）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 docs/spec sync
-- **Result**: success
-- **Notes**:
-  - `workflow-ai-runtime-execution-responsibility-realignment.md` に Task04 standalone root と current canonical set を追記
-  - `task-workflow-completed.md` に `spec_created` / `implementation_ready` / Phase 13 blocked の分離記録を追加
-  - `task-workflow-backlog.md` と `lessons-learned-current.md` / `lessons-learned-phase12-workflow-lifecycle.md` に follow-up 4件と教訓4件を追加
-  - Task04 の same-wave sync を task/workflow/doc/spec の関係性として再記録
 
 ## workflow 移設時の本文 stale path ガード追加（2026-03-21）
 
@@ -67,10 +68,7 @@
   - `references/patterns-workflow-generation.md` に pending skeleton workflow の台帳同期切替条件を追記し、validator と skill guidance の期待値を一致させた
 
 ---
-
-## UT-SLIDE-UI-001 完了同期（2026-03-21）
 ## chat-inline-model-selector ワークフロー仕様書作成（2026-03-21）
-
 
 - **Agent**: task-specification-creator
 - **Phase**: create（新規ワークフロー作成）

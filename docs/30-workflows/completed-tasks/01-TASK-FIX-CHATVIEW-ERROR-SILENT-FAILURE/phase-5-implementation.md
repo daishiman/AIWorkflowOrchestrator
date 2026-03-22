@@ -194,16 +194,16 @@ cd apps/desktop && pnpm typecheck
 
 ## 参照資料
 
-| 資料名               | パス                                                                                   |
-| -------------------- | -------------------------------------------------------------------------------------- |
-| Phase 2 設計書       | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`        |
-| Phase 4 テスト設計   | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-4-test-creation.md` |
-| chatSlice 修正対象   | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                  |
-| store/index.ts       | `apps/desktop/src/renderer/store/index.ts`                                             |
-| ChatView 修正対象    | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                   |
-| 状態管理ルール       | `.claude/rules/03-state-management.md`                                                 |
-| アーキテクチャルール | `.claude/rules/01-architecture.md`                                                     |
-| 既知の落とし穴       | `.claude/rules/06-known-pitfalls.md`                                                   |
+| 資料名               | パス                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------ |
+| Phase 2 設計書       | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`        |
+| Phase 4 テスト設計   | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-4-test-creation.md` |
+| chatSlice 修正対象   | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                                  |
+| store/index.ts       | `apps/desktop/src/renderer/store/index.ts`                                                             |
+| ChatView 修正対象    | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                                   |
+| 状態管理ルール       | `.claude/rules/03-state-management.md`                                                                 |
+| アーキテクチャルール | `.claude/rules/01-architecture.md`                                                                     |
+| 既知の落とし穴       | `.claude/rules/06-known-pitfalls.md`                                                                   |
 
 ## 実行手順
 
@@ -240,12 +240,12 @@ Phase 4 で作成したテストが全て Green になることを確認する�
 
 ## 成果物
 
-| 成果物                       | パス                                                                                    |
-| ---------------------------- | --------------------------------------------------------------------------------------- |
-| Phase 5 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md` |
-| chatSlice.ts 修正済み        | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                   |
-| store/index.ts 修正済み      | `apps/desktop/src/renderer/store/index.ts`                                              |
-| ChatView 修正済み            | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                    |
+| 成果物                       | パス                                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Phase 5 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md` |
+| chatSlice.ts 修正済み        | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                                   |
+| store/index.ts 修正済み      | `apps/desktop/src/renderer/store/index.ts`                                                              |
+| ChatView 修正済み            | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                                    |
 
 ## 完了条件
 

@@ -72,17 +72,17 @@ Electron アプリが起動したら ChatView 画面に遷移する。
 
 ## 参照資料
 
-| 資料名                   | パス                                                                                       |
-| ------------------------ | ------------------------------------------------------------------------------------------ |
-| Phase 2 設計書           | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`            |
-| Phase 5 実装             | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md`    |
-| Phase 6 テスト拡充       | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md`    |
-| Phase 7 カバレッジ確認   | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-7-coverage-check.md`    |
-| Phase 8 リファクタリング | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-8-refactoring.md`       |
-| Phase 9 品質保証         | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-9-quality-assurance.md` |
-| Phase 10 最終レビュー    | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-10-final-review.md`     |
-| Phase 12 ドキュメント    | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-12-documentation.md`    |
-| 既知の落とし穴（P53）    | `.claude/rules/06-known-pitfalls.md`                                                       |
+| 資料名                   | パス                                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Phase 2 設計書           | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`            |
+| Phase 5 実装             | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md`    |
+| Phase 6 テスト拡充       | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md`    |
+| Phase 7 カバレッジ確認   | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-7-coverage-check.md`    |
+| Phase 8 リファクタリング | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-8-refactoring.md`       |
+| Phase 9 品質保証         | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-9-quality-assurance.md` |
+| Phase 10 最終レビュー    | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-10-final-review.md`     |
+| Phase 12 ドキュメント    | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-12-documentation.md`    |
+| 既知の落とし穴（P53）    | `.claude/rules/06-known-pitfalls.md`                                                                       |
 
 ## 実行手順
 
@@ -108,12 +108,12 @@ TC-11-01 〜 TC-11-05 を順次実行し、期待値と実際の動作を比較�
 
 ## 成果物
 
-| 成果物                        | パス                                                                                                  |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Phase 11 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-11-manual-test.md`                 |
-| 手動テスト結果                | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/manual-test-result.md`  |
-| 撮影計画                      | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshot-plan.md`     |
-| 画面カバレッジ                | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshot-coverage.md` |
+| 成果物                        | パス                                                                                                                  |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Phase 11 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-11-manual-test.md`                 |
+| 手動テスト結果                | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/manual-test-result.md`  |
+| 撮影計画                      | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshot-plan.md`     |
+| 画面カバレッジ                | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshot-coverage.md` |
 
 ## 完了条件
 

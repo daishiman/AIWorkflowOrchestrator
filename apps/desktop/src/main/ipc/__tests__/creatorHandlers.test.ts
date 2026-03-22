@@ -1,168 +1,395 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type {
+  BrowserWindow as BrowserWindowType,
+  IpcMainInvokeEvent,
+} from "electron";
+
+const handlerMap = new Map<string, (...args: unknown[]) => unknown>();
 
 vi.mock("electron", () => ({
   ipcMain: {
-    handle: vi.fn(),
-    removeHandler: vi.fn(),
+    handle: vi.fn(
+      (channel: string, handler: (...args: unknown[]) => unknown) => {
+        handlerMap.set(channel, handler);
+      },
+    ),
+    removeHandler: vi.fn((channel: string) => {
+      handlerMap.delete(channel);
+    }),
+  },
+  BrowserWindow: {
+    fromWebContents: vi.fn(),
+    getAllWindows: vi.fn(() => []),
   },
 }));
 
-import { ipcMain } from "electron";
+import { BrowserWindow } from "electron";
+import { IPC_CHANNELS } from "../../../preload/channels";
 import {
-  CREATOR_CHANNELS,
-  registerCreatorHandlers,
-  unregisterCreatorHandlers,
-} from "../creatorHandlers.js";
+  registerRuntimeSkillCreatorHandlers,
+  unregisterRuntimeSkillCreatorHandlers,
+} from "../creatorHandlers";
 
-type RegisteredHandler = (
-  event: Electron.IpcMainInvokeEvent,
-  args: Record<string, unknown>,
-) => Promise<unknown>;
+function createMockMainWindow() {
+  return {
+    id: 1,
+    webContents: {
+      id: 1,
+      getType: () => "window",
+      isDevToolsOpened: () => false,
+    },
+  };
+}
 
-const createMockCreatorService = () => ({
-  plan: vi.fn(),
-  execute: vi.fn(),
-  improve: vi.fn(),
-});
+function createMockEvent(webContentsId = 1): IpcMainInvokeEvent {
+  return {
+    sender: {
+      id: webContentsId,
+      getType: () => "window",
+      isDevToolsOpened: () => false,
+    },
+  } as unknown as IpcMainInvokeEvent;
+}
 
 describe("creatorHandlers", () => {
-  let handlers: Map<string, RegisteredHandler>;
-  let creatorService: ReturnType<typeof createMockCreatorService>;
+  const mockRuntimeSkillCreatorService = {
+    plan: vi.fn(),
+    execute: vi.fn(),
+    improve: vi.fn(),
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
-    handlers = new Map();
-    creatorService = createMockCreatorService();
-
-    (ipcMain.handle as ReturnType<typeof vi.fn>).mockImplementation(
-      (channel: string, handler: RegisteredHandler) => {
-        handlers.set(channel, handler);
-      },
+    handlerMap.clear();
+    (BrowserWindow.fromWebContents as ReturnType<typeof vi.fn>).mockReturnValue(
+      createMockMainWindow(),
     );
   });
 
   afterEach(() => {
-    unregisterCreatorHandlers();
+    unregisterRuntimeSkillCreatorHandlers();
   });
 
-  it("3つの creator channel を登録する", () => {
-    registerCreatorHandlers(creatorService as never);
+  it("runtime service がない場合でも graceful degradation 用ハンドラを登録する", async () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+    );
 
-    expect(handlers.has(CREATOR_CHANNELS.CREATOR_PLAN)).toBe(true);
-    expect(handlers.has(CREATOR_CHANNELS.CREATOR_EXECUTE)).toBe(true);
-    expect(handlers.has(CREATOR_CHANNELS.CREATOR_IMPROVE)).toBe(true);
+    expect(handlerMap.size).toBe(3);
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+    const result = await handler?.(createMockEvent(), { prompt: "spec" });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Runtime Skill Creator は現在利用できません",
+    });
   });
 
-  it("plan handler が raw args を ExecutionCapabilityInput に正規化する", async () => {
-    creatorService.plan.mockResolvedValue({
+  it("3 つの public runtime チャンネルを登録する", () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_PLAN)).toBe(true);
+    expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN)).toBe(true);
+    expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL)).toBe(true);
+    expect(handlerMap.size).toBe(3);
+  });
+
+  it("plan ハンドラが trim 済み prompt と既定 auth を渡す", async () => {
+    mockRuntimeSkillCreatorService.plan.mockResolvedValue({
       planId: "plan-001",
-      skillSpec: "prompt",
+      skillSpec: "spec",
       estimatedSteps: 3,
     });
-    registerCreatorHandlers(creatorService as never);
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
 
-    const handler = handlers.get(CREATOR_CHANNELS.CREATOR_PLAN);
-    expect(handler).toBeDefined();
-
-    await handler!({} as Electron.IpcMainInvokeEvent, {
-      prompt: "  prompt  ",
-      authMode: "subscription",
-      apiKey: null,
-      apiKeyDegraded: true,
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+    const result = await handler?.(createMockEvent(), {
+      prompt: "  spec  ",
     });
 
-    expect(creatorService.plan).toHaveBeenCalledWith("prompt", {
-      apiKeyValid: false,
-      subscriptionValid: true,
-      apiKeyDegraded: true,
-    });
-  });
-
-  it("execute handler は terminal handoff 結果を透過する", async () => {
-    creatorService.execute.mockResolvedValue({
-      type: "terminal_handoff",
-      bundle: {
-        launcher: "claude",
-        promptBundle: "bundle",
-        cwd: "/tmp",
-        suggestedCommand: 'claude -p "bundle"',
-        manualRetryRule: "retry",
-      },
-    });
-    registerCreatorHandlers(creatorService as never);
-
-    const handler = handlers.get(CREATOR_CHANNELS.CREATOR_EXECUTE);
-    expect(handler).toBeDefined();
-
-    const result = await handler!({} as Electron.IpcMainInvokeEvent, {
-      planId: "plan-001",
-      skillSpec: "spec body",
-      authMode: "subscription",
-      apiKey: "",
-    });
-
-    expect(creatorService.execute).toHaveBeenCalledWith(
-      {
-        planId: "plan-001",
-        skillSpec: "spec body",
-        estimatedSteps: 3,
-      },
-      {
-        apiKeyValid: false,
-        subscriptionValid: true,
-        apiKeyDegraded: false,
-      },
+    expect(mockRuntimeSkillCreatorService.plan).toHaveBeenCalledWith(
+      "spec",
+      "api-key",
+      null,
     );
     expect(result).toEqual({
       success: true,
       data: {
-        type: "terminal_handoff",
-        bundle: {
-          launcher: "claude",
-          promptBundle: "bundle",
-          cwd: "/tmp",
-          suggestedCommand: 'claude -p "bundle"',
-          manualRetryRule: "retry",
-        },
+        planId: "plan-001",
+        skillSpec: "spec",
+        estimatedSteps: 3,
       },
     });
   });
 
-  it("improve handler が apiKeyDegraded 未指定時に false を補完する", async () => {
-    creatorService.improve.mockResolvedValue({
-      improveId: "improve-001",
-      suggestions: ["a"],
-    });
-    registerCreatorHandlers(creatorService as never);
+  it("plan ハンドラは空白 prompt を拒否する", async () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
 
-    const handler = handlers.get(CREATOR_CHANNELS.CREATOR_IMPROVE);
-    expect(handler).toBeDefined();
-
-    await handler!({} as Electron.IpcMainInvokeEvent, {
-      skillName: "skill-a",
-      feedback: "feedback",
-      authMode: "api-key",
-      apiKey: "sk-test",
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+    const result = await handler?.(createMockEvent(), {
+      prompt: "   ",
     });
 
-    expect(creatorService.improve).toHaveBeenCalledWith("skill-a", "feedback", {
-      apiKeyValid: true,
-      subscriptionValid: false,
-      apiKeyDegraded: false,
+    expect(result).toEqual({
+      success: false,
+      error: "プロンプトが指定されていません",
+    });
+    expect(mockRuntimeSkillCreatorService.plan).not.toHaveBeenCalled();
+  });
+
+  it("execute ハンドラが planId と skillSpec を trim して委譲する", async () => {
+    mockRuntimeSkillCreatorService.execute.mockResolvedValue({
+      executeId: "exec-001",
+      skillName: "my-skill",
+      success: true,
+    });
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN);
+    const result = await handler?.(createMockEvent(), {
+      planId: "  plan-001  ",
+      skillSpec: "  my-skill\nbody  ",
+      authMode: "subscription",
+      apiKey: null,
+    });
+
+    expect(mockRuntimeSkillCreatorService.execute).toHaveBeenCalledWith(
+      {
+        planId: "plan-001",
+        skillSpec: "my-skill\nbody",
+        estimatedSteps: 3,
+      },
+      "subscription",
+      null,
+    );
+    expect(result).toEqual({
+      success: true,
+      data: {
+        executeId: "exec-001",
+        skillName: "my-skill",
+        success: true,
+      },
     });
   });
 
-  it("unregisterCreatorHandlers が全 channel を解除する", () => {
-    unregisterCreatorHandlers();
+  it("improve ハンドラが feedback を伴って委譲する", async () => {
+    mockRuntimeSkillCreatorService.improve.mockResolvedValue({
+      improveId: "improve-001",
+      suggestions: ["入力を整理する"],
+    });
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
 
-    expect(ipcMain.removeHandler).toHaveBeenCalledWith(
-      CREATOR_CHANNELS.CREATOR_PLAN,
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL);
+    const result = await handler?.(createMockEvent(), {
+      skillName: "  my-skill  ",
+      feedback: "  improve it  ",
+    });
+
+    expect(mockRuntimeSkillCreatorService.improve).toHaveBeenCalledWith(
+      "my-skill",
+      "improve it",
+      "api-key",
+      null,
     );
-    expect(ipcMain.removeHandler).toHaveBeenCalledWith(
-      CREATOR_CHANNELS.CREATOR_EXECUTE,
+    expect(result).toEqual({
+      success: true,
+      data: {
+        improveId: "improve-001",
+        suggestions: ["入力を整理する"],
+      },
+    });
+  });
+
+  it("エラー時はサニタイズ済み文字列を返す", async () => {
+    mockRuntimeSkillCreatorService.plan.mockRejectedValue(
+      new Error("failed at /Users/dm/private token=secret"),
     );
-    expect(ipcMain.removeHandler).toHaveBeenCalledWith(
-      CREATOR_CHANNELS.CREATOR_IMPROVE,
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
     );
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+    const result = (await handler?.(createMockEvent(), {
+      prompt: "spec",
+    })) as { success: boolean; error: string };
+
+    expect(result.success).toBe(false);
+    expect(result.error).not.toContain("/Users/dm/private");
+    expect(result.error).not.toContain("secret");
+  });
+
+  it("不正 sender は toIPCValidationError 経由で reject される", async () => {
+    (BrowserWindow.fromWebContents as ReturnType<typeof vi.fn>).mockReturnValue(
+      null,
+    );
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+    await expect(
+      handler?.(createMockEvent(999), { prompt: "spec" }),
+    ).rejects.toBeDefined();
+  });
+
+  it("execute ハンドラは空白 planId を拒否する", async () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN);
+    const result = await handler?.(createMockEvent(), {
+      planId: "   ",
+      skillSpec: "spec",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "planId が指定されていません",
+    });
+    expect(mockRuntimeSkillCreatorService.execute).not.toHaveBeenCalled();
+  });
+
+  it("improve ハンドラは空白 skillName を拒否する", async () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL);
+    const result = await handler?.(createMockEvent(), {
+      skillName: "",
+      feedback: "some feedback",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "skillName が指定されていません",
+    });
+    expect(mockRuntimeSkillCreatorService.improve).not.toHaveBeenCalled();
+  });
+
+  it("improve ハンドラは空白 feedback を拒否する", async () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL);
+    const result = await handler?.(createMockEvent(), {
+      skillName: "my-skill",
+      feedback: "   ",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "feedback が指定されていません",
+    });
+    expect(mockRuntimeSkillCreatorService.improve).not.toHaveBeenCalled();
+  });
+
+  it("authMode 省略時は既定値 api-key が渡される", async () => {
+    mockRuntimeSkillCreatorService.improve.mockResolvedValue({
+      improveId: "i-1",
+      suggestions: [],
+    });
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL);
+    await handler?.(createMockEvent(), {
+      skillName: "skill",
+      feedback: "fb",
+    });
+
+    expect(mockRuntimeSkillCreatorService.improve).toHaveBeenCalledWith(
+      "skill",
+      "fb",
+      "api-key",
+      null,
+    );
+  });
+
+  it("非 Error オブジェクトの例外にはフォールバックメッセージを返す", async () => {
+    mockRuntimeSkillCreatorService.plan.mockRejectedValue("string error");
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+    const result = (await handler?.(createMockEvent(), {
+      prompt: "spec",
+    })) as { success: boolean; error: string };
+
+    expect(result.success).toBe(false);
+    expect(result.error).toBe("Runtime plan の実行に失敗しました");
+  });
+
+  it("runtime service 未注入時は execute-plan も degraded response を返す", async () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+    );
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN);
+    const result = await handler?.(createMockEvent(), {
+      planId: "plan-1",
+      skillSpec: "spec",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Runtime Skill Creator は現在利用できません",
+    });
+  });
+
+  it("runtime service 未注入時は improve-skill も degraded response を返す", async () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+    );
+
+    const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL);
+    const result = await handler?.(createMockEvent(), {
+      skillName: "skill",
+      feedback: "fb",
+    });
+
+    expect(result).toEqual({
+      success: false,
+      error: "Runtime Skill Creator は現在利用できません",
+    });
+  });
+
+  it("unregister が 3 チャンネルを解除する", () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+    expect(handlerMap.size).toBe(3);
+
+    unregisterRuntimeSkillCreatorHandlers();
+
+    expect(handlerMap.size).toBe(0);
   });
 });

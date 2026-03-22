@@ -64,12 +64,12 @@ git diff --stat
 
 ## 参照資料
 
-| 資料名                   | パス                                                                                    |
-| ------------------------ | --------------------------------------------------------------------------------------- |
-| Phase 5 実装             | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md` |
-| Phase 8 リファクタリング | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-8-refactoring.md`    |
-| コード品質ルール         | `.claude/rules/02-code-quality.md`                                                      |
-| Git ツーリングルール     | `.claude/rules/07-git-and-tooling.md`                                                   |
+| 資料名                   | パス                                                                                                    |
+| ------------------------ | ------------------------------------------------------------------------------------------------------- |
+| Phase 5 実装             | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md` |
+| Phase 8 リファクタリング | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-8-refactoring.md`    |
+| コード品質ルール         | `.claude/rules/02-code-quality.md`                                                                      |
+| Git ツーリングルール     | `.claude/rules/07-git-and-tooling.md`                                                                   |
 
 ## 実行手順
 
@@ -102,9 +102,9 @@ pnpm --filter @repo/desktop test
 
 ## 成果物
 
-| 成果物                       | パス                                                                                       |
-| ---------------------------- | ------------------------------------------------------------------------------------------ |
-| Phase 9 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-9-quality-assurance.md` |
+| 成果物                       | パス                                                                                                       |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Phase 9 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-9-quality-assurance.md` |
 
 ## 完了条件
 

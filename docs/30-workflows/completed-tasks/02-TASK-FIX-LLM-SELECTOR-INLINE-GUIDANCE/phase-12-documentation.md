@@ -21,7 +21,7 @@ Phase 12 は最も漏れが発生しやすい Phase である（P1〜P4参照）
 
 #### Task 1-1: outputs/phase-12/implementation-guide.md Part 1（中学生レベル概念説明）
 
-**ファイルパス**: `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/implementation-guide.md`
+**ファイルパス**: `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/implementation-guide.md`
 
 **Part 1 要件（中学生でも理解できる説明）**:
 
@@ -40,7 +40,7 @@ Phase 12 は最も漏れが発生しやすい Phase である（P1〜P4参照）
 
 #### Task 1-2: component-documentation.md
 
-**ファイルパス**: `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/component-documentation.md`
+**ファイルパス**: `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/component-documentation.md`
 
 - `LLMGuidanceBanner` の Props 一覧・型定義・使用例
 - `GuidanceBlock` の既存 Props 一覧（actionLabel + onAction パターン）
@@ -114,7 +114,7 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 #### Step 1-F: canonical path / current set の同期
 
-今回の workflow は `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE` を canonical root とする。path relocation や導線変更がある場合は以下を確認する:
+今回の workflow は `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE` を canonical root とする。path relocation や導線変更がある場合は以下を確認する:
 
 - [ ] `docs/30-workflows/ai-chat-llm-integration-fix/index.md` の task directory map が current canonical root を指す
 - [ ] path relocation を説明する必要がある場合、`system-spec-update-summary.md` に旧 path と新 path を記録する
@@ -122,8 +122,8 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 #### Step 1-G: validation / mirror drift / registry 同期
 
 ```bash
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE --json
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE
 diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements
 diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator
 ```
@@ -147,7 +147,7 @@ diff -qr .claude/skills/task-specification-creator .agents/skills/task-specifica
 
 **注意**: 全 Step の完了を確認してから「完了」と記録する（P4対策）。
 
-**ファイルパス**: `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/documentation-changelog.md`
+**ファイルパス**: `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/documentation-changelog.md`
 
 記録内容:
 
@@ -161,7 +161,7 @@ diff -qr .claude/skills/task-specification-creator .agents/skills/task-specifica
 
 ### Task 4: 未タスク検出（0件でも必須）
 
-**ファイルパス**: `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/unassigned-task-detection.md`
+**ファイルパス**: `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/unassigned-task-detection.md`
 
 検出した未タスクに対し**3ステップ全完了**（P3・P38・P58対策）:
 
@@ -177,7 +177,7 @@ diff -qr .claude/skills/task-specification-creator .agents/skills/task-specifica
 
 ### Task 5: outputs/phase-12/skill-feedback-report.md 作成【改善点なしでも必須】
 
-**ファイルパス**: `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/skill-feedback-report.md`
+**ファイルパス**: `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/skill-feedback-report.md`
 
 以下を必ず記録する:
 
@@ -188,28 +188,28 @@ diff -qr .claude/skills/task-specification-creator .agents/skills/task-specifica
 
 ## 参照資料
 
-| ファイル                                                                                  | 用途                                             |
-| ----------------------------------------------------------------------------------------- | ------------------------------------------------ |
-| `.claude/rules/05-task-execution.md`                                                      | Phase 12 必須チェックリスト                      |
-| `.claude/rules/06-known-pitfalls.md#P1`                                                   | LOGS.md 2ファイル更新漏れ                        |
-| `.claude/rules/06-known-pitfalls.md#P2`                                                   | topic-map.md 再生成忘れ                          |
-| `.claude/rules/06-known-pitfalls.md#P3`                                                   | 未タスク管理の3ステップ不完全                    |
-| `.claude/rules/06-known-pitfalls.md#P4`                                                   | documentation-changelog 早期完了記載             |
-| `.claude/rules/06-known-pitfalls.md#P29`                                                  | SKILL.md 変更履歴更新漏れ                        |
-| `.claude/rules/06-known-pitfalls.md#P43`                                                  | サブエージェント rate limit 中断対策             |
-| `.claude/rules/06-known-pitfalls.md#P58`                                                  | 設計タスクの未タスク指示書省略禁止               |
-| `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`               | Phase 11/12 の current canonical output 契約     |
-| `.claude/skills/task-specification-creator/references/spec-update-workflow.md`            | Step 1 / Step 2 / validation matrix の正本       |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                      | same-wave で更新する backlog / completion ledger |
-| `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                    | Phase 12 の教訓同期先                            |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`            | 設計意図・責務分離・導線設計                     |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md`    | 実装対象と interface 追加有無                    |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-6-test-expansion.md`    | 追加テストと境界条件                             |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-7-coverage-check.md`    | coverage gate の記録                             |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-8-refactoring.md`       | リファクタリング境界と残存リスク                 |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-9-quality-assurance.md` | Lint / typecheck / test 結果                     |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-10-final-review.md`     | 最終レビュー判定と未タスク化対象                 |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-11-manual-test.md`      | representative evidence と発見課題               |
+| ファイル                                                                                                  | 用途                                             |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| `.claude/rules/05-task-execution.md`                                                                      | Phase 12 必須チェックリスト                      |
+| `.claude/rules/06-known-pitfalls.md#P1`                                                                   | LOGS.md 2ファイル更新漏れ                        |
+| `.claude/rules/06-known-pitfalls.md#P2`                                                                   | topic-map.md 再生成忘れ                          |
+| `.claude/rules/06-known-pitfalls.md#P3`                                                                   | 未タスク管理の3ステップ不完全                    |
+| `.claude/rules/06-known-pitfalls.md#P4`                                                                   | documentation-changelog 早期完了記載             |
+| `.claude/rules/06-known-pitfalls.md#P29`                                                                  | SKILL.md 変更履歴更新漏れ                        |
+| `.claude/rules/06-known-pitfalls.md#P43`                                                                  | サブエージェント rate limit 中断対策             |
+| `.claude/rules/06-known-pitfalls.md#P58`                                                                  | 設計タスクの未タスク指示書省略禁止               |
+| `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                               | Phase 11/12 の current canonical output 契約     |
+| `.claude/skills/task-specification-creator/references/spec-update-workflow.md`                            | Step 1 / Step 2 / validation matrix の正本       |
+| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                      | same-wave で更新する backlog / completion ledger |
+| `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`                                    | Phase 12 の教訓同期先                            |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`            | 設計意図・責務分離・導線設計                     |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md`    | 実装対象と interface 追加有無                    |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-6-test-expansion.md`    | 追加テストと境界条件                             |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-7-coverage-check.md`    | coverage gate の記録                             |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-8-refactoring.md`       | リファクタリング境界と残存リスク                 |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-9-quality-assurance.md` | Lint / typecheck / test 結果                     |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-10-final-review.md`     | 最終レビュー判定と未タスク化対象                 |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-11-manual-test.md`      | representative evidence と発見課題               |
 
 ## 実行手順
 
@@ -235,14 +235,14 @@ Step 1-A → 1-B → 1-C → 1-D → 1-E → 1-F → 1-G の順で実施。各�
 
 ## 成果物
 
-| 成果物                     | パス                                                                                                        |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| 実装ガイド                 | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/implementation-guide.md`       |
-| コンポーネントドキュメント | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/component-documentation.md`                     |
-| system spec 更新サマリー   | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/system-spec-update-summary.md` |
-| Documentation Changelog    | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/documentation-changelog.md`    |
-| 未タスク検出レポート       | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/unassigned-task-detection.md`  |
-| スキルフィードバック       | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/skill-feedback-report.md`      |
+| 成果物                     | パス                                                                                                                        |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 実装ガイド                 | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/implementation-guide.md`       |
+| コンポーネントドキュメント | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/component-documentation.md`                     |
+| system spec 更新サマリー   | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/system-spec-update-summary.md` |
+| Documentation Changelog    | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/documentation-changelog.md`    |
+| 未タスク検出レポート       | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/unassigned-task-detection.md`  |
+| スキルフィードバック       | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/skill-feedback-report.md`      |
 
 ## 完了条件
 

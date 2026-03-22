@@ -5,6 +5,8 @@
  * スキル作成サービスの型定義
  */
 
+import type { AuthMode } from "./auth-mode";
+
 // ============================================
 // モード・エンジン型
 // ============================================
@@ -259,6 +261,112 @@ export interface ImproveResult {
   suggestions: ImproveSuggestion[];
   applied: boolean;
 }
+
+// ============================================
+// Runtime Skill Creator IPC contract
+// ============================================
+
+/**
+ * 公開 skill-creator:plan リクエスト
+ */
+export interface SkillCreatorPlanRequest {
+  prompt: string;
+  authMode?: AuthMode;
+  apiKey?: string | null;
+}
+
+/**
+ * 公開 skill-creator:execute-plan リクエスト
+ */
+export interface SkillCreatorExecutePlanRequest {
+  planId: string;
+  skillSpec: string;
+  authMode?: AuthMode;
+  apiKey?: string | null;
+}
+
+/**
+ * 公開 skill-creator:improve-skill リクエスト
+ */
+export interface SkillCreatorImproveSkillRequest {
+  skillName: string;
+  feedback: string;
+  authMode?: AuthMode;
+  apiKey?: string | null;
+}
+
+export type SkillCreatorPlanResult = RuntimeSkillCreatorPlanResult;
+export type SkillCreatorTerminalHandoffBundle = TerminalHandoffBundle;
+export interface SkillCreatorTerminalHandoffResult {
+  type: "terminal_handoff";
+  bundle: SkillCreatorTerminalHandoffBundle;
+}
+export type SkillCreatorExecutePlanResult = RuntimeSkillCreatorExecuteResult;
+export type SkillCreatorImproveSkillResult = RuntimeSkillCreatorImproveResult;
+
+// ============================================
+// Runtime Skill Creator IPC 型定義
+// ============================================
+
+/**
+ * Terminal handoff で renderer に返す操作バンドル
+ */
+export interface TerminalHandoffBundle {
+  launcher: string;
+  promptBundle: string;
+  cwd: string;
+  suggestedCommand: string;
+  manualRetryRule: string;
+  runbook?: string;
+}
+
+/**
+ * Runtime plan 結果
+ */
+export interface RuntimeSkillCreatorPlanResult {
+  planId: string;
+  skillSpec: string;
+  estimatedSteps: number;
+}
+
+/**
+ * Runtime execute 結果
+ */
+export interface RuntimeSkillCreatorExecuteResult {
+  executeId: string;
+  skillName: string;
+  success: boolean;
+  error?: string;
+}
+
+/**
+ * Runtime improve 結果
+ */
+export interface RuntimeSkillCreatorImproveResult {
+  improveId: string;
+  suggestions: string[];
+  revisedSpec?: string;
+}
+
+/**
+ * Runtime plan IPC の戻り値
+ */
+export type RuntimeSkillCreatorPlanResponse =
+  | RuntimeSkillCreatorPlanResult
+  | {
+      type: "terminal_handoff";
+      bundle: TerminalHandoffBundle;
+    };
+
+/**
+ * Runtime improve IPC の戻り値
+ */
+export type RuntimeSkillCreatorImproveResponse =
+  | RuntimeSkillCreatorImproveResult
+  | {
+      type: "terminal_handoff";
+      bundle: TerminalHandoffBundle;
+    };
 
 /** フォークオプション */
 export interface ForkOptions {

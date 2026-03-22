@@ -156,12 +156,12 @@ WorkspaceView/WorkspaceChatPanel.tsx
 
 ### システム仕様（aiworkflow-requirements）
 
-| ファイル                                                                             | 用途                                        |
-| ------------------------------------------------------------------------------------ | ------------------------------------------- |
-| `.claude/skills/aiworkflow-requirements/references/architecture-overview.md`         | UI/UX設計哲学、Apple HIG準拠設計原則        |
-| `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`         | Zustand Store設計原則、個別セレクタパターン |
-| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`           | デザインシステム仕様                        |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` | 要件定義、受入条件、非機能要件の正本        |
+| ファイル                                                                                             | 用途                                        |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------- |
+| `.claude/skills/aiworkflow-requirements/references/architecture-overview.md`                         | UI/UX設計哲学、Apple HIG準拠設計原則        |
+| `.claude/skills/aiworkflow-requirements/references/arch-state-management.md`                         | Zustand Store設計原則、個別セレクタパターン |
+| `.claude/skills/aiworkflow-requirements/references/ui-ux-design-system.md`                           | デザインシステム仕様                        |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` | 要件定義、受入条件、非機能要件の正本        |
 
 ### プロジェクトルール
 
@@ -227,9 +227,9 @@ grep -rn "LLMSelector\|llm-selector" \
 
 ## 成果物
 
-| 成果物                       | パス                                                                           |
-| ---------------------------- | ------------------------------------------------------------------------------ |
-| Phase 2 仕様書（本ファイル） | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md` |
+| 成果物                       | パス                                                                                           |
+| ---------------------------- | ---------------------------------------------------------------------------------------------- |
+| Phase 2 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md` |
 
 ## 完了条件
 

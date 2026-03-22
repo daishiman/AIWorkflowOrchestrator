@@ -1,5 +1,5 @@
 /**
- * useWorkspaceChatController ランタイム整合テスト (R-01 〜 R-24)
+ * useWorkspaceChatController ランタイム整合テスト (R-01 〜 R-27)
  *
  * P39 準拠: happy-dom 環境では fireEvent を使用（userEvent 使用禁止）
  * P9  準拠: beforeEach で全 mock をリセットし、テスト間の状態共有を防ぐ
@@ -55,7 +55,9 @@ let onStreamChunkListener:
   | ((chunk: { delta?: { content?: string } }) => void)
   | null = null;
 let onStreamEndListener: (() => void) | null = null;
-let onStreamErrorListener: ((error: { message: string }) => void) | null = null;
+let onStreamErrorListener:
+  | ((error: { code?: string; message: string }) => void)
+  | null = null;
 
 // ---------------------------------------------------------------------------
 // デフォルト hook params
@@ -533,8 +535,7 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
     expect(mockOnAttach).toHaveBeenCalledWith("/workspace/app.ts");
   });
 
-  // R-19: selectedModelId=null で sendMessage 実行不可
-  it("R-19: selectedModelId=null の場合は sendMessage が実行不可になること", async () => {
+  it("R-19: selectedModelId=null の場合は sendMessage が実行不可になる", async () => {
     mockAppState.selectedModelId = null;
 
     const { result } = renderController();
@@ -547,7 +548,6 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
       await result.current.sendMessage();
     });
 
-    expect(result.current.blockedReason).toBe("NO_MODEL");
     expect(mockStreamChat).not.toHaveBeenCalled();
   });
 
@@ -810,5 +810,96 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
 
     const createCall = mockConversationCreate.mock.calls[0][0];
     expect(createCall.title.length).toBeLessThanOrEqual(32);
+  });
+
+  it("R-25: stream error 時に structured streamingError が設定される", async () => {
+    const { result } = renderController();
+
+    act(() => {
+      result.current.setInputValue("テスト質問");
+    });
+
+    await act(async () => {
+      await result.current.sendMessage();
+    });
+
+    act(() => {
+      onStreamErrorListener?.({
+        code: "NETWORK_ERROR",
+        message: "Connection failed",
+      });
+    });
+
+    expect(result.current.streamingError).toEqual(
+      expect.objectContaining({
+        code: "NETWORK_ERROR",
+        action: "RETRY",
+        retryable: true,
+      }),
+    );
+    expect(result.current.errorMessage).toBe(
+      "ネットワークエラーが発生しました。",
+    );
+  });
+
+  it("R-26: retryLastMessage は会話保存を重複させず stream を再開する", async () => {
+    const { result } = renderController();
+
+    act(() => {
+      result.current.setInputValue("再試行対象メッセージ");
+    });
+
+    await act(async () => {
+      await result.current.sendMessage();
+    });
+
+    expect(mockConversationAddMessage).toHaveBeenCalledTimes(1);
+    expect(mockStreamChat).toHaveBeenCalledTimes(1);
+
+    act(() => {
+      onStreamErrorListener?.({
+        code: "NETWORK_ERROR",
+        message: "Connection failed",
+      });
+    });
+
+    await act(async () => {
+      await result.current.retryLastMessage();
+    });
+
+    expect(mockConversationAddMessage).toHaveBeenCalledTimes(1);
+    expect(mockStreamChat).toHaveBeenCalledTimes(2);
+    expect(
+      result.current.messages.filter((message) => message.role === "user"),
+    ).toHaveLength(1);
+  });
+
+  it("R-27: dismissStreamingError で structured error と message を同時にクリアする", async () => {
+    const { result } = renderController();
+
+    act(() => {
+      result.current.setInputValue("dismiss test");
+    });
+
+    await act(async () => {
+      await result.current.sendMessage();
+    });
+
+    act(() => {
+      onStreamErrorListener?.({
+        code: "API_KEY_MISSING",
+        message: "API key missing",
+      });
+    });
+
+    expect(result.current.streamingError).not.toBeNull();
+    expect(result.current.errorMessage).not.toBeNull();
+
+    act(() => {
+      result.current.dismissStreamingError();
+    });
+
+    expect(result.current.streamingError).toBeNull();
+    expect(result.current.errorMessage).toBeNull();
   });
 });

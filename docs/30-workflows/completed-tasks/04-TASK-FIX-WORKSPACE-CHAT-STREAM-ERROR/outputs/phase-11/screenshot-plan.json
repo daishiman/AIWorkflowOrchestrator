@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-03-21T23:52:33.646Z",
+  "baseUrl": "http://127.0.0.1:4189",
+  "harnessPath": "/?phase11Harness=workspace-layout&skipAuth=true",
+  "captureMethod": "current-renderer-entry + workspace-layout-harness + seeded-llm-selection",
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "description": "Settings CTA が表示される API_KEY_MISSING のストリーミングエラーを確認する。",
+      "route": "/?phase11Harness=workspace-layout&skipAuth=true",
+      "output": "screenshots/TC-11-01-settings-cta-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-02",
+      "description": "再試行 CTA が表示される NETWORK_ERROR のストリーミングエラーを確認する。",
+      "route": "/?phase11Harness=workspace-layout&skipAuth=true",
+      "output": "screenshots/TC-11-02-retry-cta-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-03",
+      "description": "RATE_LIMIT で retry CTA と hint が同時に出ることを確認する。",
+      "route": "/?phase11Harness=workspace-layout&skipAuth=true",
+      "output": "screenshots/TC-11-03-rate-limit-hint-dark.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "dark",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-04",
+      "description": "dismiss 操作でエラーが閉じられ、入力面が回復することを確認する。",
+      "route": "/?phase11Harness=workspace-layout&skipAuth=true",
+      "output": "screenshots/TC-11-04-dismissed-error-light.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "light",
+      "priority": "A"
+    },
+    {
+      "id": "TC-11-05",
+      "description": "VALIDATION_ERROR で action なしの非操作エラー表示を確認する。",
+      "route": "/?phase11Harness=workspace-layout&skipAuth=true",
+      "output": "screenshots/TC-11-05-validation-error-no-actions-dark.png",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "theme": "dark",
+      "priority": "A"
+    }
+  ]
+}

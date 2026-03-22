@@ -38,6 +38,9 @@ export const IPC_CHANNELS = {
   APP_GET_VERSION: "app:get-version",
   APP_MENU_ACTION: "app:menu-action",
 
+  // Terminal operations
+  TERMINAL_OPEN: "terminal:open",
+
   // Theme operations
   THEME_GET: "theme:get",
   THEME_SET: "theme:set",
@@ -313,6 +316,11 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_VALIDATE_SCHEMA: "skill-creator:validate-schema",
   SKILL_CREATOR_PROGRESS: "skill-creator:progress",
 
+  // Runtime Skill Creator operations
+  SKILL_CREATOR_PLAN: "skill-creator:plan",
+  SKILL_CREATOR_EXECUTE_PLAN: "skill-creator:execute-plan",
+  SKILL_CREATOR_IMPROVE_SKILL: "skill-creator:improve-skill",
+
   // Skill Creator extended operations (TASK-9B Phase 5)
   SKILL_CREATOR_IMPROVE: "skill-creator:improve",
   SKILL_CREATOR_FORK: "skill-creator:fork",
@@ -382,6 +390,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.DASHBOARD_GET_ACTIVITY,
   IPC_CHANNELS.WINDOW_GET_STATE,
   IPC_CHANNELS.APP_GET_VERSION,
+  IPC_CHANNELS.TERMINAL_OPEN,
   // Theme channels
   IPC_CHANNELS.THEME_GET,
   IPC_CHANNELS.THEME_SET,
@@ -592,6 +601,9 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_EXECUTE_TASKS,
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE,
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA,
+  IPC_CHANNELS.SKILL_CREATOR_PLAN,
+  IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
+  IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL,
   // Skill Creator extended channels (TASK-9B Phase 5)
   IPC_CHANNELS.SKILL_CREATOR_IMPROVE,
   IPC_CHANNELS.SKILL_CREATOR_FORK,

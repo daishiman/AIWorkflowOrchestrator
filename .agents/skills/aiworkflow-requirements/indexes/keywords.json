@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-22T01:14:37.618Z",
-  "totalKeywords": 2422,
+  "generated": "2026-03-22T02:34:32.881Z",
+  "totalKeywords": 2417,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1277,7 +1277,6 @@
       "arch-electron-services-details-part2.md",
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management-reference.md",
-      "arch-state-management.md",
       "error-handling-core.md",
       "error-handling-details.md",
       "interfaces-agent-sdk-executor-core.md",
@@ -1290,7 +1289,6 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
@@ -2232,9 +2230,7 @@
       "arch-state-management-core.md",
       "arch-state-management-reference-selectors.md",
       "interfaces-llm.md",
-      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "llm-ipc-types.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -2756,9 +2752,7 @@
     ],
     "WORKSPACE": [
       "arch-state-management-core.md",
-      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-03-history-search-notification-center.md",
@@ -3088,39 +3082,8 @@
     "拡張仕様": [
       "arch-state-management-reference-permissions-import-lifecycle.md"
     ],
-    "LLM": [
-      "arch-state-management-reference-persist-hardening-test-quality.md",
-      "arch-state-management.md",
-      "interfaces-llm.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "llm-ipc-types.md",
-      "llm-streaming.md",
-      "rag-desktop-state.md",
-      "ui-ux-llm-selector.md",
-      "ui-ux-system-prompt.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
-      "workflow-ai-chat-llm-integration-fix.md"
-    ],
-    "Selection": [
-      "arch-state-management-reference-persist-hardening-test-quality.md"
-    ],
     "Persist": [
       "arch-state-management-reference-persist-hardening-test-quality.md"
-    ],
-    "Validation": [
-      "arch-state-management-reference-persist-hardening-test-quality.md"
-    ],
-    "CONFIG": [
-      "arch-state-management-reference-persist-hardening-test-quality.md",
-      "arch-state-management.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "PERSISTENCE": [
-      "arch-state-management-reference-persist-hardening-test-quality.md",
-      "arch-state-management.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-02-abort-security-loop-guard.md",
-      "logs-archive-legacy.md"
     ],
     "Iterable": [
       "arch-state-management-reference-persist-hardening-test-quality.md"
@@ -3180,9 +3143,6 @@
       "arch-state-management.md"
     ],
     "feedbackSlice": [
-      "arch-state-management.md"
-    ],
-    "選択状態の永続化": [
       "arch-state-management.md"
     ],
     "コンポーネントパターン": [
@@ -5172,6 +5132,16 @@
     "IFileWatcher": [
       "interfaces-core.md"
     ],
+    "LLM": [
+      "interfaces-llm.md",
+      "llm-ipc-types.md",
+      "llm-streaming.md",
+      "rag-desktop-state.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-system-prompt.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md"
+    ],
     "対応": [
       "interfaces-llm.md",
       "ui-ux-feature-components-details.md",
@@ -6212,21 +6182,6 @@
     "カテゴリ別検索ガイド": [
       "lessons-learned-current.md"
     ],
-    "GUIDANCE": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "ACTION": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-viewtype-electron-ui.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
-    "WIRING": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
@@ -6804,6 +6759,11 @@
       "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "SKILLDETAIL": [
+      "lessons-learned-viewtype-electron-ui.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "ACTION": [
       "lessons-learned-viewtype-electron-ui.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
@@ -7720,6 +7680,10 @@
     ],
     "用認証キー管理基盤": [
       "logs-archive-2026-02-abort-security-loop-guard.md"
+    ],
+    "PERSISTENCE": [
+      "logs-archive-2026-02-abort-security-loop-guard.md",
+      "logs-archive-legacy.md"
     ],
     "スキル永続化バグ修正": [
       "logs-archive-2026-02-abort-security-loop-guard.md"
@@ -10710,6 +10674,9 @@
       "ui-ux-llm-selector.md"
     ],
     "構成": [
+      "ui-ux-llm-selector.md"
+    ],
+    "共有インラインセレクター": [
       "ui-ux-llm-selector.md"
     ],
     "プロバイダーとモデル一覧": [

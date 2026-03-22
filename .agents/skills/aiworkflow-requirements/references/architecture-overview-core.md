@@ -240,7 +240,7 @@ TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary ent
 | registerAuthHandlers             | Pattern 1: mainWindow のみ  | -            | api-ipc-auth.md          |
 | registerSkillHandlers            | Pattern 3: mainWindow + service | -         | api-ipc-agent.md         |
 | registerChatEditHandlers         | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md         |
-| registerSkillCreatorHandlers     | Pattern 3: mainWindow + service | 13 (12 invoke + 1 progress) | api-ipc-agent.md |
+| registerSkillCreatorHandlers     | Pattern 3: mainWindow + service + optional runtime service | 16 (15 invoke + 1 progress) | api-ipc-system-core.md |
 | registerSkillFileHandlers        | Pattern 3: mainWindow + service | 6         | api-ipc-agent.md |
 | registerSkillDebugHandlers       | Pattern 3: mainWindow + service | 7 (6 invoke + 1 event) | api-ipc-agent.md |
 | registerSkillDocsHandlers        | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md |
@@ -267,12 +267,13 @@ TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary ent
 
 **Pattern 3 詳細（registerSkillCreatorHandlers）**:
 
-- **引数**: `mainWindow: BrowserWindow`, `service: SkillCreatorService`
+- **引数**: `mainWindow: BrowserWindow`, `skillCreatorService: SkillCreatorService`, `runtimeSkillCreatorService?: RuntimeSkillCreatorFacade`
 - **mainWindow用途**: Sender検証（`validateIpcSender`）、進捗通知（`webContents.send`）
-- **service用途**: SkillCreatorServiceへのビジネスロジック委譲
-- **対応チャンネル**: `skill-creator:detect-mode`, `skill-creator:create`, `skill-creator:execute-tasks`, `skill-creator:validate`, `skill-creator:validate-schema`, `skill-creator:improve`, `skill-creator:fork`, `skill-creator:share`, `skill-creator:schedule`, `skill-creator:debug`, `skill-creator:generate-docs`, `skill-creator:stats`, `skill-creator:progress`
-- **セキュリティ**: 全ハンドラーでSender検証、エラーサニタイズ適用
-- **関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）
+- **skillCreatorService用途**: `detect-mode` / `create` / `execute-tasks` / `validate` / `validate-schema` / `improve` / `fork` / `share` / `schedule` / `debug` / `generate-docs` / `stats` を担当
+- **runtimeSkillCreatorService用途**: `skill-creator:plan` / `skill-creator:execute-plan` / `skill-creator:improve-skill` の runtime public bridge を担当し、未注入時も degraded response を返す
+- **対応チャンネル**: `skill-creator:detect-mode`, `skill-creator:create`, `skill-creator:execute-tasks`, `skill-creator:validate`, `skill-creator:validate-schema`, `skill-creator:improve`, `skill-creator:fork`, `skill-creator:share`, `skill-creator:schedule`, `skill-creator:debug`, `skill-creator:generate-docs`, `skill-creator:stats`, `skill-creator:plan`, `skill-creator:execute-plan`, `skill-creator:improve-skill`, `skill-creator:progress`
+- **セキュリティ**: 標準 invoke handler と runtime helper の全経路で Sender検証、P42 準拠の blank 判定、エラーサニタイズを適用
+- **関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）、UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001（2026-03-21完了）
 
 **Pattern 3 詳細（registerSkillDebugHandlers）**:
 

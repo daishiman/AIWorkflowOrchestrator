@@ -83,11 +83,11 @@ pnpm --filter @repo/desktop format
 
 ## 参照資料
 
-| ファイル                                                                               | 用途                         |
-| -------------------------------------------------------------------------------------- | ---------------------------- |
-| `.claude/rules/02-code-quality.md`                                                     | コーディング規約・テスト基準 |
-| `.claude/rules/07-git-and-tooling.md`                                                  | コミット前チェックリスト     |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md` | 実装対象と品質確認範囲の正本 |
+| ファイル                                                                                               | 用途                         |
+| ------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| `.claude/rules/02-code-quality.md`                                                                     | コーディング規約・テスト基準 |
+| `.claude/rules/07-git-and-tooling.md`                                                                  | コミット前チェックリスト     |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md` | 実装対象と品質確認範囲の正本 |
 
 ## 実行手順
 

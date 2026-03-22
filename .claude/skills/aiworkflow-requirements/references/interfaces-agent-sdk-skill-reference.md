@@ -114,7 +114,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | 項目 | 契約 |
 | --- | --- |
 | 表向きの primary 導線 | `SkillManagementPanel` → `SkillLifecyclePanel` の 1 画面 |
-| `skillCreatorAPI` の役割 | `detectMode` / `improveSkill` を使う planner / improver 補助 API |
+| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` を持つ補助 API |
 | create 正本 | `agentSlice.createSkill()` → `window.electronAPI.skill.create()` |
 | execute 正本 | `agentSlice.executeSkill()` → `window.electronAPI.skill.execute()` |
 | 詳細改善 | `SkillAnalysisView` / store action を再利用 |
@@ -124,17 +124,30 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | surface | 使い方 | 理由 |
 | --- | --- | --- |
 | `window.electronAPI.skillCreator.detectMode(request)` | request 文の方針判定のみ | mode を UI に増やさず internal plan に閉じるため |
+| `window.electronAPI.skillCreator.planSkill(prompt, authMode?, apiKey?)` | runtime creator plan を public IPC で要求する | skill 作成 runtime bridge を既存 namespace に保つため |
+| `window.electronAPI.skillCreator.executePlan(planId, skillSpec, authMode?, apiKey?)` | runtime plan 実行を要求する | facade / SkillExecutor の境界を preload から隠蔽するため |
+| `window.electronAPI.skillCreator.improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | runtime 改善を要求する | feedback ベース改善を `skill-creator:*` surface に集約するため |
 | `window.electronAPI.skillCreator.improveSkill(skillName, { autoApply: false })` | 改善候補の事前整理 | creator 提案と詳細分析を分離するため |
 | `useCreateSkill()` | create 実処理 | 一覧再取得・既存権限導線を保つため |
 | `useExecuteSkill()` | execute 実処理 | preflight / permission / streaming 契約を再利用するため |
+
+#### runtime bridge 型アンカー
+
+| surface | request | response | canonical source |
+| --- | --- | --- | --- |
+| `planSkill(prompt, authMode?, apiKey?)` | `SkillCreatorPlanRequest` | `RuntimeSkillCreatorPlanResponse` | `packages/shared/src/types/skillCreator.ts` |
+| `executePlan(planId, skillSpec, authMode?, apiKey?)` | `SkillCreatorExecutePlanRequest` | `RuntimeSkillCreatorExecuteResult` | `packages/shared/src/types/skillCreator.ts` |
+| `improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | `SkillCreatorImproveSkillRequest` | `RuntimeSkillCreatorImproveResponse` | `packages/shared/src/types/skillCreator.ts` |
+
+型定義の正本は `packages/shared/src/types/skillCreator.ts` とし、renderer surface は上記型へ収束する。
 
 #### 進行状況
 
 | role | UIラベル | 実装 | UI 露出ルール |
 | --- | --- | --- | --- |
-| Planner | 方針判定 | `detectMode` | mode label と説明文のみ。新ボタンは増やさない |
-| Executor | 実行状況 | `executeSkill` | 実行ボタン 1 つに集約する |
-| Improver | 改善状況 | `improveSkill` + `SkillAnalysisView` | 事前提案と詳細適用を段階表示する |
+| Planner | 方針判定 | `detectMode` / `planSkill` | runtime bridge は内部導線として扱い、UI の一次導線は増やさない |
+| Executor | 実行状況 | `executeSkill` / `executePlan` | direct execute と runtime creator execute を契約上分離する |
+| Improver | 改善状況 | `improveSkill` / `improveSkillWithFeedback` + `SkillAnalysisView` | 事前提案と runtime 改善を責務別に分ける |
 
 ---
 
@@ -416,4 +429,3 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 2. 近似チャネル（`skill:*` / `skill-creator:*`）は責務境界表を必ず併記する。  
 3. 仕様値（件数など）は `task-workflow.md` を正本化し、周辺成果物へ転記する。  
 4. `verify-all-specs` と `validate-phase-output` で契約同期を確認する。  
-

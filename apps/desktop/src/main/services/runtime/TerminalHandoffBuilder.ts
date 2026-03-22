@@ -4,7 +4,7 @@
  * TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001
  */
 import type { HandoffGuidance } from "@repo/shared/types";
-import type { TerminalHandoffBundle } from "./RuntimePolicyResolver";
+import type { TerminalHandoffBundle } from "@repo/shared/types";
 
 export interface HandoffBuildOptions {
   /** 実行時コンテキスト情報（任意） */

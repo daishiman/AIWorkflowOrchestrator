@@ -18,6 +18,8 @@ import {
   useWorkspaceMentionQuery,
   type WorkspaceMentionCandidate,
 } from "./useWorkspaceMentionQuery";
+import { mapLLMErrorToStreamingError } from "./mapLLMErrorToStreamingError";
+import type { StreamingErrorState } from "../types";
 
 export interface WorkspaceChatMessage {
   id: string;
@@ -51,6 +53,9 @@ export interface WorkspaceChatController {
   ) => Promise<void>;
   selectMentionAtIndex: (index?: number) => Promise<void>;
   openMentionPreviewAtIndex: (index?: number) => void;
+  streamingError: StreamingErrorState | null;
+  retryLastMessage: () => Promise<void>;
+  dismissStreamingError: () => void;
 }
 
 const WORKSPACE_CHAT_USER_ID = "workspace-user";
@@ -187,12 +192,15 @@ export function useWorkspaceChatController(params: {
   const [isStreaming, setIsStreaming] = useState(false);
   const [streamContent, setStreamContent] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [streamingError, setStreamingError] =
+    useState<StreamingErrorState | null>(null);
 
   const streamRequestIdRef = useRef<string | null>(null);
   const streamContentRef = useRef("");
   const isStreamingRef = useRef(false);
   const isSendingRef = useRef(false);
   const conversationIdRef = useRef<string | null>(null);
+  const lastUserMessageRef = useRef<string | null>(null);
 
   useEffect(() => {
     streamContentRef.current = streamContent;
@@ -353,85 +361,101 @@ export function useWorkspaceChatController(params: {
     return response.data.id;
   }, [input]);
 
+  const sendMessageCore = useCallback(
+    async (
+      content: string,
+      options: {
+        addToMessages: boolean;
+        persistUserMessage: boolean;
+      },
+    ) => {
+      if (isSendingRef.current || isStreamingRef.current || !selectedModelId) {
+        return;
+      }
+
+      setErrorMessage(null);
+      setStreamingError(null);
+      isSendingRef.current = true;
+      setIsSending(true);
+
+      lastUserMessageRef.current = content;
+
+      if (options.addToMessages) {
+        const userMessage: WorkspaceChatMessage = {
+          id: `user-${Date.now()}`,
+          role: "user",
+          content,
+          timestamp: new Date().toISOString(),
+        };
+        setMessages((previous) => [...previous, userMessage]);
+      }
+
+      try {
+        const currentConversationId = await ensureConversation();
+
+        if (options.persistUserMessage) {
+          const addUserMessageResponse =
+            await window.conversationAPI.addMessage({
+              sessionId: currentConversationId,
+              message: {
+                role: "user",
+                content,
+              },
+            });
+
+          if (!addUserMessageResponse.success) {
+            throw new Error(
+              addUserMessageResponse.error?.message ??
+                "ユーザーメッセージ保存に失敗しました",
+            );
+          }
+        }
+
+        const contextBlock = await buildFileContextBlock(selectedFiles);
+        const request = buildChatRequest({
+          input: content,
+          contextBlock,
+          selectedModelId,
+          selectedProviderId,
+        });
+
+        streamContentRef.current = "";
+        setStreamContent("");
+        isStreamingRef.current = true;
+        setIsStreaming(true);
+        const streamResult = await window.electronAPI.llm.streamChat(request);
+        streamRequestIdRef.current = streamResult.requestId;
+      } catch (error) {
+        isStreamingRef.current = false;
+        setIsStreaming(false);
+        setErrorMessage(
+          error instanceof Error
+            ? error.message
+            : "メッセージ送信に失敗しました",
+        );
+      } finally {
+        isSendingRef.current = false;
+        setIsSending(false);
+      }
+    },
+    [ensureConversation, selectedFiles, selectedModelId, selectedProviderId],
+  );
+
   const sendMessage = useCallback(async () => {
     const trimmed = input.trim();
-    const activeModelId = selectedModelId;
-    if (
-      !trimmed ||
-      isSendingRef.current ||
-      isStreamingRef.current ||
-      blockedReason !== null ||
-      activeModelId == null
-    ) {
+    if (!trimmed) {
       return;
     }
 
-    setErrorMessage(null);
-    isSendingRef.current = true;
-    setIsSending(true);
-
-    const userMessage: WorkspaceChatMessage = {
-      id: `user-${Date.now()}`,
-      role: "user",
-      content: trimmed,
-      timestamp: new Date().toISOString(),
-    };
-
-    setMessages((previous) => [...previous, userMessage]);
     setInput("");
     setCursorPosition(0);
     setPendingCursorPosition(0);
 
-    try {
-      const currentConversationId = await ensureConversation();
-
-      const addUserMessageResponse = await window.conversationAPI.addMessage({
-        sessionId: currentConversationId,
-        message: {
-          role: "user",
-          content: trimmed,
-        },
-      });
-
-      if (!addUserMessageResponse.success) {
-        throw new Error(
-          addUserMessageResponse.error?.message ??
-            "ユーザーメッセージ保存に失敗しました",
-        );
-      }
-
-      const contextBlock = await buildFileContextBlock(selectedFiles);
-      const request = buildChatRequest({
-        input: trimmed,
-        contextBlock,
-        selectedModelId: activeModelId,
-        selectedProviderId,
-      });
-
-      streamContentRef.current = "";
-      setStreamContent("");
-      isStreamingRef.current = true;
-      setIsStreaming(true);
-      const streamResult = await window.electronAPI.llm.streamChat(request);
-      streamRequestIdRef.current = streamResult.requestId;
-    } catch (error) {
-      isStreamingRef.current = false;
-      setIsStreaming(false);
-      setErrorMessage(
-        error instanceof Error ? error.message : "メッセージ送信に失敗しました",
-      );
-    } finally {
-      isSendingRef.current = false;
-      setIsSending(false);
-    }
-  }, [
-    ensureConversation,
-    input,
-    selectedFiles,
-    blockedReason,
-    selectedModelId,
-    selectedProviderId,
-  ]);
+    await sendMessageCore(trimmed, {
+      addToMessages: true,
+      persistUserMessage: true,
+    });
+  }, [input, sendMessageCore]);
 
   const persistAssistantMessage = useCallback(
     async (content: string) => {
@@ -566,30 +590,9 @@ export function useWorkspaceChatController(params: {
         streamContentRef.current = "";
         setStreamContent("");
 
-        const code = "code" in error ? (error.code as string) : "UNKNOWN";
-        switch (code) {
-          case "API_KEY_MISSING":
-            setErrorMessage(
-              `APIキーが設定されていません。Settings > AI Provider から設定してください。`,
-            );
-            break;
-          case "MODEL_NOT_FOUND":
-            setErrorMessage(
-              `指定されたモデルが見つかりません。Settings でモデルを再選択してください。`,
-            );
-            break;
-          case "VALIDATION_ERROR":
-            setErrorMessage(`リクエストの検証に失敗しました: ${error.message}`);
-            break;
-          case "NETWORK_ERROR":
-            setErrorMessage(
-              `ネットワークエラーが発生しました。接続を確認して再試行してください。`,
-            );
-            break;
-          default:
-            setErrorMessage(`AI応答に失敗しました: ${error.message}`);
-            break;
-        }
+        const structured = mapLLMErrorToStreamingError(error);
+        setStreamingError(structured);
+        setErrorMessage(structured.message);
       },
     );
 
@@ -633,6 +636,23 @@ export function useWorkspaceChatController(params: {
     });
   }, [onAttachSelectedFile, selectedFilePath]);
 
+  const dismissStreamingError = useCallback(() => {
+    setStreamingError(null);
+    setErrorMessage(null);
+  }, []);
+
+  const retryLastMessage = useCallback(async () => {
+    if (!streamingError?.retryable || !lastUserMessageRef.current) {
+      return;
+    }
+    const messageToRetry = lastUserMessageRef.current;
+    dismissStreamingError();
+    await sendMessageCore(messageToRetry, {
+      addToMessages: false,
+      persistUserMessage: false,
+    });
+  }, [streamingError, dismissStreamingError, sendMessageCore]);
+
   return {
     messages,
     input,
@@ -656,6 +676,9 @@ export function useWorkspaceChatController(params: {
     handleComposerKeyDown,
     selectMentionAtIndex,
     openMentionPreviewAtIndex,
+    streamingError,
+    retryLastMessage,
+    dismissStreamingError,
   };
 }
 

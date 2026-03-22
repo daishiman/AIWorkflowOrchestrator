@@ -15,6 +15,7 @@ import { registerProfileHandlers } from "./profileHandlers";
 import { registerAvatarHandlers } from "./avatarHandlers";
 import { registerApiKeyHandlers } from "./apiKeyHandlers";
 import { registerDialogHandlers } from "./dialogHandlers";
+import { registerTerminalHandlers } from "./terminalHandlers";
 import { registerWorkspaceHandlers } from "./workspaceHandlers";
 import { registerSearchHandlers } from "./searchHandlers";
 import { registerFileSelectionHandlers } from "./fileSelectionHandlers";
@@ -36,6 +37,7 @@ import {
   registerSkillScheduleHandlers,
   registerSkillDocsHandlers,
   registerSkillChainHandlers,
+  getSkillExecutorInstance,
 } from "./skillHandlers";
 import { registerSkillAnalyticsHandlers } from "./skillAnalyticsHandlers";
 import { registerSkillShareHandlers } from "./skillHandlers.share";
@@ -88,6 +90,7 @@ import { registerChatEditHandlers } from "./chatEditHandlers";
 import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
+import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
 import Database from "better-sqlite3";
 import { registerConversationHandlers } from "./conversationHandlers";
 import { ConversationRepository } from "../repositories/conversationRepository";
@@ -545,6 +548,7 @@ export function registerAllIpcHandlers(
     ["registerDashboardHandlers", () => registerDashboardHandlers()],
     ["registerGraphHandlers", () => registerGraphHandlers()],
     ["registerAIHandlers", () => registerAIHandlers()],
+    ["registerTerminalHandlers", () => registerTerminalHandlers()],
     ["registerThemeHandlers", () => registerThemeHandlers()],
     ["registerWorkspaceHandlers", () => registerWorkspaceHandlers()],
     ["registerSearchHandlers", () => registerSearchHandlers()],
@@ -875,7 +879,23 @@ export function registerAllIpcHandlers(
   // --- 10. Skill Creator handlers ---
   track("registerSkillCreatorHandlers", () => {
     const skillCreatorService = new SkillCreatorService();
-    registerSkillCreatorHandlers(mainWindow, skillCreatorService);
+    const skillExecutor = getSkillExecutorInstance();
+    if (!skillExecutor) {
+      console.warn(
+        "[IPC] SkillExecutor not available, runtime skill creator handlers will stay degraded",
+      );
+    }
+    const runtimeSkillCreatorService = skillExecutor
+      ? new RuntimeSkillCreatorFacade({
+          skillExecutor,
+          authKeyService,
+        })
+      : undefined;
+    registerSkillCreatorHandlers(
+      mainWindow,
+      skillCreatorService,
+      runtimeSkillCreatorService,
+    );
   });
 
   // --- 11. Claude CLI handlers ---

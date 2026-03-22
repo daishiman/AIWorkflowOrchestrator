@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { SettingsCard } from "../../components/organisms/SettingsCard";
 import { AccountSection } from "../../components/organisms/AccountSection";
@@ -10,6 +10,14 @@ import { ErrorDisplay } from "../../components/atoms/ErrorDisplay";
 import { AuthModeSelector } from "../../components/settings/AuthModeSelector";
 import { AuthKeySection } from "../../components/settings/AuthKeySection";
 import { ThemeSelector } from "../../components/molecules/ThemeSelector";
+import { MainlineAccessMatrixSection } from "./MainlineAccessMatrixSection";
+import {
+  MAINLINE_HELP_URL,
+  MAINLINE_SETUP_GUIDE_URL,
+  copyTextToClipboard,
+  launchMainlineTerminal,
+  openRuntimeAccessUrl,
+} from "../../utils/runtimeAccess";
 import {
   useAppStore,
   useAuthMode,
@@ -19,16 +27,25 @@ import {
   useInitializeAuthMode,
 } from "../../store";
 import type { ThemeMode } from "../../store/types";
+import type { MainlineExecutionAccessState } from "../../features/mainline-access/mainlineAccess";
 
 export interface SettingsViewProps {
   className?: string;
   onOpenOnboarding?: () => void;
+  mainlineAccess?: MainlineExecutionAccessState;
+  onRefreshMainlineHealth?: () => void;
+  onNavigateMainlineExecution?: () => void;
 }
 
 export const SettingsView: React.FC<SettingsViewProps> = ({
   className,
   onOpenOnboarding,
+  mainlineAccess,
+  onRefreshMainlineHealth,
+  onNavigateMainlineExecution,
 }) => {
+  const authModeSectionRef = useRef<HTMLElement | null>(null);
+
   // Use flat store structure
   const autoSyncEnabled = useAppStore((state) => state.autoSyncEnabled);
   const setAutoSyncEnabledAction = useAppStore(
@@ -54,6 +71,19 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const [isLoading] = useState(false);
   const [error] = useState<string | null>(null);
   const [ragEnabled, setRagEnabled] = useState(false);
+  const [mainlineFeedback, setMainlineFeedback] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!mainlineFeedback) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setMainlineFeedback(null);
+    }, 2000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [mainlineFeedback]);
 
   const handleRagToggle = useCallback((checked: boolean) => {
     setRagEnabled(checked);
@@ -76,6 +106,71 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   const handleSave = useCallback(async () => {
     // Save logic would go here
   }, []);
+
+  const copyMainlineCommand = useCallback(async () => {
+    if (!mainlineAccess) {
+      return;
+    }
+
+    const copied = await copyTextToClipboard(
+      mainlineAccess.suggestedTerminalCommand,
+    );
+
+    if (copied) {
+      setMainlineFeedback("ターミナル実行コマンドをコピーしました");
+    } else {
+      setMainlineFeedback("ターミナル実行コマンドのコピーに失敗しました");
+    }
+  }, [mainlineAccess]);
+
+  const handleMainlineAction = useCallback(
+    async (action: string) => {
+      switch (action) {
+        case "executeIntegrated":
+          onNavigateMainlineExecution?.();
+          return;
+        case "executeTerminalHandoff":
+          if (mainlineAccess) {
+            const launched = await launchMainlineTerminal(
+              mainlineAccess.suggestedTerminalCommand,
+            );
+            setMainlineFeedback(
+              launched
+                ? "terminal を起動し、コマンドをコピーしました"
+                : "terminal 起動に失敗しました。コマンドはコピー済みです",
+            );
+          }
+          return;
+        case "copyCommandToClipboard":
+          await copyMainlineCommand();
+          return;
+        case "openHelp":
+          openRuntimeAccessUrl(MAINLINE_HELP_URL);
+          return;
+        case "openSetupGuide":
+          openRuntimeAccessUrl(MAINLINE_SETUP_GUIDE_URL);
+          return;
+        case "refreshHealth":
+          onRefreshMainlineHealth?.();
+          return;
+        case "openSettings":
+          authModeSectionRef.current?.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+          });
+          setMainlineFeedback("認証方式セクションへ移動しました");
+          return;
+        default:
+          return;
+      }
+    },
+    [
+      mainlineAccess,
+      copyMainlineCommand,
+      onNavigateMainlineExecution,
+      onRefreshMainlineHealth,
+    ],
+  );
 
   if (error) {
     return <ErrorDisplay message={error} className={className} />;
@@ -124,7 +219,11 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </section>
 
         {/* Auth Mode Settings - Claude Agent SDK認証方式選択 */}
-        <section role="region" aria-labelledby="auth-mode-settings-heading">
+        <section
+          ref={authModeSectionRef}
+          role="region"
+          aria-labelledby="auth-mode-settings-heading"
+        >
           <SettingsCard
             title="Claude Agent SDK 認証方式"
             description="スキル実行時の認証方式を選択します"
@@ -184,6 +283,31 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
             </SettingsCard>
           </section>
         )}
+
+        {mainlineAccess ? (
+          <section role="region" aria-labelledby="mainline-access-heading">
+            <SettingsCard
+              title="実行アクセスマトリクス"
+              description="mainline UI で利用できる runtime / terminal 導線を確認します"
+              id="mainline-access-heading"
+            >
+              <div className="space-y-3">
+                <MainlineAccessMatrixSection
+                  access={mainlineAccess}
+                  onAction={handleMainlineAction}
+                />
+                {mainlineFeedback ? (
+                  <p
+                    className="text-sm text-[var(--text-secondary)]"
+                    data-testid="mainline-access-feedback"
+                  >
+                    {mainlineFeedback}
+                  </p>
+                ) : null}
+              </div>
+            </SettingsCard>
+          </section>
+        ) : null}
 
         {/* API Keys Settings - 全4プロバイダー対応 */}
         <section role="region" aria-labelledby="api-keys-settings-heading">

@@ -2,7 +2,8 @@
  * Skill Creator IPC Handlers
  *
  * TASK-9B-H: SkillCreatorService用のIPCハンドラー
- * 12のinvokeチャンネル + 1つのprogressチャンネルを提供
+ * 標準の12 invoke + 1 progress に加え、
+ * runtime facade 注入時は public runtime 3 invoke も同じ surface へ統合する。
  *
  * UT-9B-H-003: セキュリティ強化
  * - validatePath: パストラバーサル攻撃防止
@@ -16,10 +17,15 @@ import { ipcMain, BrowserWindow } from "electron";
 import type { IpcMainInvokeEvent } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";
 import type { SkillCreatorService } from "../services/skill/SkillCreatorService";
+import type { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
 import {
   validateIpcSender,
   toIPCValidationError,
 } from "../infrastructure/security/ipc-validator";
+import {
+  registerRuntimeSkillCreatorHandlers,
+  unregisterRuntimeSkillCreatorHandlers,
+} from "./creatorHandlers";
 import type {
   CreateSkillOptions,
   ExecuteTasksOptions,
@@ -121,6 +127,7 @@ function sanitizeErrorMessage(error: unknown): string {
 export function registerSkillCreatorHandlers(
   mainWindow: BrowserWindow,
   skillCreatorService: SkillCreatorService,
+  runtimeSkillCreatorService?: RuntimeSkillCreatorFacade,
 ): void {
   // skill-creator:detect-mode - リクエストからモードを判定
   ipcMain.handle(
@@ -667,6 +674,8 @@ export function registerSkillCreatorHandlers(
       }
     },
   );
+
+  registerRuntimeSkillCreatorHandlers(mainWindow, runtimeSkillCreatorService);
 }
 
 /**
@@ -704,4 +713,5 @@ export function unregisterSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DEBUG);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_STATS);
+  unregisterRuntimeSkillCreatorHandlers();
 }
