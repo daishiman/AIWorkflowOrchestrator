@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-21
+> 自動生成: 2026-03-22
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -423,7 +423,7 @@ node scripts/list-specs.js --topics
 | スキルデバッグ 型定義（TASK-9H） | L91 |
 | スキルドキュメント生成 型定義（TASK-9I） | L141 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
-| スキル分析 型定義（TASK-9J） | L269 |
+| スキル分析 型定義（TASK-9J） | L291 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -1015,10 +1015,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
 | コンポーネント仕様 | L43 |
-| インタラクション設計 | L287 |
-| 視覚デザイン | L316 |
-| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L341 |
-| アクセシビリティ（WCAG 2.1 AA） | L363 |
+| インタラクション設計 | L322 |
+| 視覚デザイン | L351 |
+| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L376 |
+| アクセシビリティ（WCAG 2.1 AA） | L398 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -1851,9 +1851,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | current canonical set | L12 |
 | extraction matrix | L25 |
-| 実装同期ルール | L38 |
-| 実装ステータススナップショット（2026-03-21） | L45 |
-| Follow-up Backlog | L53 |
+| 実装同期ルール | L39 |
+| 実装ステータススナップショット（2026-03-21） | L46 |
+| Follow-up Backlog | L54 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2585,11 +2585,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L36 |
-| クイックリファレンス: カテゴリ別検索ガイド | L49 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L392 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L426 |
-
+| 分割ファイル一覧 | L40 |
+| クイックリファレンス: カテゴリ別検索ガイド | L55 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L400 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L434 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2612,17 +2611,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L33 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L73 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L103 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L152 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L205 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L233 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L276 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L327 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L396 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L434 |
-
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L36 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L76 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L116 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L146 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L195 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L248 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L276 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L319 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L370 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L439 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L477 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -2842,13 +2841,13 @@ node scripts/list-specs.js --topics
 | RuntimeResolver | L153 |
 | AnthropicLLMAdapter | L190 |
 | TerminalHandoffBuilder | L227 |
-| IPCチャンネル | L263 |
-| セキュリティ | L283 |
-| ディレクトリ構成 | L299 |
-| 品質メトリクス | L328 |
-| 関連ドキュメント | L339 |
-| 完了タスク | L367 |
-| 変更履歴 | L427 |
+| IPCチャンネル | L279 |
+| セキュリティ | L299 |
+| ディレクトリ構成 | L315 |
+| 品質メトリクス | L344 |
+| 関連ドキュメント | L355 |
+| 完了タスク | L383 |
+| 変更履歴 | L443 |
 
 ### references/local-agent.md
 
@@ -3862,8 +3861,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L32 |
-| 関連ドキュメント | L37 |
+| 利用順序 | L35 |
+| 関連ドキュメント | L40 |
 
 ### references/testing-accessibility.md
 

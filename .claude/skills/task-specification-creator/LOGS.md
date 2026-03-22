@@ -4,6 +4,22 @@
 
 ---
 
+## TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 設計完了
+- **Result**: success
+- **Notes**:
+  - Concern 3 分割（Launcher / Handoff Card / Consumer Adapter）設計確定
+  - 統一 DTO: HandoffGuidance（terminalCommand / contextSummary / reason）
+  - Manual Boundary: auto-send 禁止 / hidden injection 禁止 / headless execution 禁止
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+  - 未タスク 8 件（MINOR 3 件 + GAP 5 件）を unassigned-task/ に登録
+  - implementation-guide.md（Part 1: 中学生レベル概念説明 / Part 2: 開発者向け）作成
+  - Phase 13 はユーザー指示待ち（blocked）
+
+---
+
 ## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（2026-03-21）
 
 - **Agent**: task-specification-creator
