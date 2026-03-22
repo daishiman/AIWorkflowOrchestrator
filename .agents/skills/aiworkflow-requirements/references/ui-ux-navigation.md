@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.8.0 | 2026-03-22 | TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 を反映: `SettingsView` に mainline access matrix、`AppLayout` と legacy `AppDock` shell header に persistent terminal launcher、blocked CTA の settings 内 recovery、`terminal.open` IPC と targeted 50 tests PASS を同期 |
 | v1.7.9 | 2026-03-20 | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 を反映: `AgentView` 実行完了後の改善 CTA、`SkillAnalysisView` の Agent 起点限定 `戻る` / `エージェントで再実行`、Phase 11 screenshot 6件、round-trip 導線を同期 |
 | v1.7.8 | 2026-03-19 | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 を反映: imported `SkillDetailPanel` に `エディタで開く` / `分析する` action zone を追加し、`SkillCenter -> skill-editor / skillAnalysis` handoff、main shell screenshot 7件、keyboard focus / Escape close を同期 |
 | v1.7.7 | 2026-03-18 | TASK-SKILL-LIFECYCLE-02 を反映: `SkillCenterView` ヘッダーに「+ 新規作成」CTA（`data-testid="header-create-cta"`）、`SkillLifecycleJourneyPanel` に3ジョブ別 CTA（create/use/improve）、`useSkillCenter` にナビゲーション関数3つ、`ctaLabel` 型拡張を同期。関連未タスク: `TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001`（ヘッダー CTA の `hidden md:inline` レスポンシブ対応、`docs/30-workflows/unassigned-task/task-imp-skillcenter-header-cta-responsive-001.md`）、`TASK-IMP-SKILLCENTER-CTA-ACCESSIBILITY-001`（CTA 型安全性・アクセシビリティ改善、`docs/30-workflows/unassigned-task/task-imp-skillcenter-cta-accessibility-001.md`）、`TASK-IMP-SKILLCENTER-UI-REFINEMENT-001`（UI 改善: 8pxグリッド準拠・viewStyles分離、`docs/30-workflows/unassigned-task/task-imp-skillcenter-ui-refinement-001.md`） |
@@ -222,6 +223,16 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | shell bypass | `currentView === "settings"` のとき `SettingsView` を AuthGuard 外で描画する |
 | reset exclusion | 未認証時 view reset は `settings` を除外し、設定作業中に dashboard へ戻さない |
 | 導線 | `Cmd/Ctrl+,` と timeout fallback の `設定画面へ` の両方で到達可能 |
+
+### Mainline Access Matrix / Persistent Launcher（TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001）
+
+| 観点 | 仕様 |
+| --- | --- |
+| settings matrix | `SettingsView` に capability card / health row / provider summary をまとめた `実行アクセスマトリクス` セクションを置く |
+| persistent launcher | `AppLayout` header 右端と `VITE_USE_GLOBAL_NAV_STRIP=false` の legacy shell header の両方に terminal launcher を常設する |
+| launcher action | launcher は `claude --continue` を clipboard へコピーした上で preload `terminal.open` IPC を呼ぶ |
+| blocked recovery | `none` 状態の `設定を開く` は shell 遷移ではなく settings 内の認証方式セクションへ scroll する |
+| unauthenticated | settings shell は公開のまま、matrix は guidance-only、launcher は `disabledReason="認証が必要です"` で非活性にする |
 
 ### 画面証跡
 

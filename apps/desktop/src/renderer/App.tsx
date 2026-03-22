@@ -8,6 +8,7 @@ import { AuthGuard } from "./components/AuthGuard";
 import { ComingSoonView } from "./components/atoms";
 import { AppDock } from "./components/organisms/AppDock";
 import { AppLayout } from "./components/organisms/AppLayout";
+import { TerminalLauncher } from "./components/organisms/AppLayout/TerminalLauncher";
 import { NotificationCenter } from "./components/organisms/NotificationCenter";
 import {
   OnboardingWizard,
@@ -42,8 +43,10 @@ import { SkillAnalysisView, SkillCreateWizard } from "./components/skill";
 import { useNavShortcuts } from "./hooks/useNavShortcuts";
 import { normalizeSkillLifecycleView } from "./navigation/skillLifecycleJourney";
 import { useThemeInitializer } from "./hooks/useThemeInitializer";
+import { useMainlineExecutionAccess } from "./hooks/useMainlineExecutionAccess";
 import type { DockViewType } from "./navigation/navContract";
 import type { ViewType } from "./store/types";
+import { launchMainlineTerminal } from "./utils/runtimeAccess";
 import { shouldResetUnauthenticatedView } from "./utils/shouldResetUnauthenticatedView";
 
 // Note: ChatHistoryProviderの統合はRenderer側でNode.js依存を避けるため削除
@@ -80,6 +83,7 @@ function App(): JSX.Element {
   const setCurrentSkillName = useAppStore((state) => state.setCurrentSkillName);
   const dynamicIsland = useAppStore((state) => state.dynamicIsland);
   const setWindowSize = useAppStore((state) => state.setWindowSize);
+  const mainlineExecutionAccess = useMainlineExecutionAccess();
   const [isOnboardingReady, setIsOnboardingReady] = useState(false);
   const [isOnboardingCompleted, setIsOnboardingCompleted] = useState(false);
   const [isOnboardingDismissed, setIsOnboardingDismissed] = useState(false);
@@ -327,7 +331,14 @@ function App(): JSX.Element {
           <SkillCreateWizard onClose={() => setCurrentView("skillCenter")} />
         );
       case "settings":
-        return <SettingsView onOpenOnboarding={handleOpenOnboarding} />;
+        return (
+          <SettingsView
+            onOpenOnboarding={handleOpenOnboarding}
+            mainlineAccess={mainlineExecutionAccess.access}
+            onRefreshMainlineHealth={mainlineExecutionAccess.refreshHealth}
+            onNavigateMainlineExecution={() => handleViewChange("chat")}
+          />
+        );
       default: {
         return (
           <ComingSoonView
@@ -356,6 +367,7 @@ function App(): JSX.Element {
         onViewChange={(view) => handleViewChange(view as ViewType)}
         onGoBack={handleGoBack}
         canGoBack={canGoBack}
+        mainlineAccess={mainlineExecutionAccess.access}
       >
         {renderView()}
       </AppLayout>
@@ -379,7 +391,19 @@ function App(): JSX.Element {
                 visible={dynamicIsland.visible}
               />
             </div>
-            <div className="flex flex-1 justify-end">
+            <div className="flex flex-1 justify-end gap-3">
+              <TerminalLauncher
+                capability={mainlineExecutionAccess.access.capability}
+                isDisabled={mainlineExecutionAccess.access.launcherDisabled}
+                disabledReason={
+                  mainlineExecutionAccess.access.launcherDisabledReason
+                }
+                onLaunch={() =>
+                  void launchMainlineTerminal(
+                    mainlineExecutionAccess.access.suggestedTerminalCommand,
+                  )
+                }
+              />
               <NotificationCenter />
             </div>
           </div>

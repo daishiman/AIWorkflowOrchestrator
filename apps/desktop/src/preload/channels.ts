@@ -38,6 +38,9 @@ export const IPC_CHANNELS = {
   APP_GET_VERSION: "app:get-version",
   APP_MENU_ACTION: "app:menu-action",
 
+  // Terminal operations
+  TERMINAL_OPEN: "terminal:open",
+
   // Theme operations
   THEME_GET: "theme:get",
   THEME_SET: "theme:set",
@@ -387,6 +390,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.DASHBOARD_GET_ACTIVITY,
   IPC_CHANNELS.WINDOW_GET_STATE,
   IPC_CHANNELS.APP_GET_VERSION,
+  IPC_CHANNELS.TERMINAL_OPEN,
   // Theme channels
   IPC_CHANNELS.THEME_GET,
   IPC_CHANNELS.THEME_SET,

@@ -362,6 +362,44 @@ Settings 画面は認証状態に依存せず常時アクセス可能である�
 
 ---
 
+## Mainline Access Matrix（TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001）
+
+**完了日**: 2026-03-22
+
+### 概要
+
+Settings 画面に `mainline access matrix` を追加し、現在利用可能な実行経路を 1 セクションで判断できるようにする。未認証でも shell 自体は公開しつつ、実行系 CTA は guidance-only に落とす。
+
+### UI 契約
+
+| 観点 | 仕様 |
+| --- | --- |
+| capability card | `integratedRuntime` / `terminalSurface` / `both` / `none` の 4 状態を表示し、shared `resolveCapability()` / `resolveCtaContract()` を唯一の authority とする |
+| health row | selected provider の `connected` / `disconnected` / `error` / `null` を表示し、`disconnected` 時のみ `再確認` CTA を出す |
+| provider summary | provider / model の明示選択を表示し、`DEFAULT_CONFIG` への silent fallback を行わない |
+| blocked recovery | `none` で primary CTA が `設定を開く` の場合、`SettingsView` 内の認証方式セクションへ scroll して no-op を避ける |
+| unauthenticated | matrix 自体は表示するが、実行系 CTA は非表示にし guidance-only 文言を出す |
+| feedback | command copy / terminal 起動 / blocked recovery は `mainline-access-feedback` で短時間表示する |
+
+### 実装ファイル
+
+| ファイル | 役割 |
+| --- | --- |
+| `apps/desktop/src/renderer/features/mainline-access/mainlineAccess.ts` | capability / uiState / launcher disabled reason の導出 |
+| `apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.ts` | auth mode / provider / model / health から access state を構成 |
+| `apps/desktop/src/renderer/views/SettingsView/MainlineAccessMatrixSection.tsx` | capability card / health row / provider summary の描画 |
+| `apps/desktop/src/renderer/views/SettingsView/index.tsx` | settings shell への組み込みと action dispatch |
+
+### 検証
+
+| 種別 | 証跡 |
+| --- | --- |
+| unit / integration | `apps/desktop/src/renderer/views/SettingsView/SettingsView.test.tsx` |
+| state contract | `apps/desktop/src/renderer/features/mainline-access/mainlineAccess.test.ts` |
+| hook | `apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.test.ts` |
+
+---
+
 ## AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001）
 
 **完了日**: 2026-03-11  
@@ -395,4 +433,3 @@ Settings 画面は認証状態に依存せず常時アクセス可能である�
 | TC-11-03 | `outputs/phase-11/screenshots/TC-11-03-settings-authkey-env-fallback.png` | PASS |
 
 ---
-
