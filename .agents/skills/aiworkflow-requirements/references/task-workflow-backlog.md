@@ -20,9 +20,12 @@
 | UT-FIX-LLM-BANNER-DISMISS-001 | LLM guidance banner の dismiss UX を追加 | 低 | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/task-ut-llm-guidance-banner-dismiss-001.md` |
 | UT-WORKSPACE-CHAT-STREAM-ERROR-TRANSITION-001 | StreamingErrorDisplay の表示/非表示トランジションを追加する | 低 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/task-ut-workspace-chat-stream-error-transition-001.md` |
 | UT-WORKSPACE-CHAT-STREAM-ERROR-CONTRAST-001 | StreamingErrorDisplay の WCAG AA コントラスト検証と基準固定を行う | 低 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/task-ut-workspace-chat-stream-error-contrast-001.md` |
+| UT-SLIDE-CI-DRIFT-SCAN-001 | canonical チャネル自動突合 CI | 低 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | - |
+| UT-SLIDE-GUIDANCE-UI-001 | handoffGuidance 表示コンポーネント | 中 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | - |
+| UT-SLIDE-IPC-TEMPLATE-001 | IPC ハンドラ標準テンプレート | 低 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | - |
 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | current code に残る runtime policy centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 12 最終再監査（2026-03-21） | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface を統合する | 高 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 Phase 12 最終ドキュメント更新（2026-03-21） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
-| UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001 | `RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する | 中 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 Phase 12 最終ドキュメント更新（2026-03-21） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
+| ~~UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001~~ | ~~`RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する~~ | ~~中~~ | **完了**: TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）で実装済み | ~~`docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md`~~ |
 | UT-CLEANUP-AI-CHECK-CONNECTION-001 | `llm:check-health` への移行完了後に `AI_CHECK_CONNECTION` legacy handler / channel / preload API を削除する | 低 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 3 MINOR M-3 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
 | UT-CLEANUP-RUNTIME-RESOLVER-001 | 全 surface の policy consumer 移行完了後に deprecated `RuntimeResolver` を削除する | 低 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 DD-1 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
 | UT-DESIGN-SANITIZE-PLACEMENT-001 | `sanitizeForRenderer()` の配置先を IPC handler 内部か共通 utility かで確定し、Task04 着手前に文書化する | 中 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 11 D-1 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
@@ -46,6 +49,8 @@
 | UT-DESIGN-FEEDBACK-SEVERITY-FIELD-001 | フィードバック severity フィールド追加検討 | 低 | TASK-SKILL-LIFECYCLE-07 Phase 11 Note-03（2026-03-16） | `docs/30-workflows/unassigned-task/task-lifecycle-07-feedback-severity-field.md` |
 | UT-IMPL-EVENTQUEUE-FALLBACK-STORAGE-001 | イベントキュー fallback ストレージ設計 | 中 | TASK-SKILL-LIFECYCLE-07 Phase 11 Note-05（2026-03-16） | `docs/30-workflows/unassigned-task/task-lifecycle-07-eventqueue-fallback-storage.md` |
 | UT-FIX-DEBUG-CLEAR-STORAGE-SHIM-CLEANUP-001 | repo-wide に残る `debug-clear-storage` workaround / stale comment / screenshot preflight の棚卸しと削除 | 中 | TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001 Phase 12（2026-03-09） | `docs/30-workflows/completed-tasks/TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001/unassigned-task/task-fix-debug-clear-storage-shim-cleanup-001.md` |
+| UT-SC-01-IPCRESULT-DEDUP | IpcResult<T> 型の二重定義解消（skillCreatorHandlers.ts / creatorHandlers.ts） | 低 | TASK-SC-01-IPC-WIRING-FIX Phase 10 MINOR-1（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-01-IPCRESULT-DEDUP.md` |
+| UT-SC-01-DIP-INTERFACE | registerSkillCreatorHandlers の DIP 準拠インターフェース化（P61対策） | 低 | TASK-SC-01-IPC-WIRING-FIX Phase 10 MINOR-2（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-01-DIP-INTERFACE.md` |
 | UT-IMP-WORKSPACE-PREVIEW-SEARCH-RESILIENCE-GUARD-001 | Workspace Preview / QuickFileSearch の fuzzy no-match、renderer timeout+retry、error taxonomy を共通ガード化 | 中 | TASK-UI-04C-WORKSPACE-PREVIEW Phase 12 follow-up（2026-03-11） | `docs/30-workflows/completed-tasks/task-imp-workspace-preview-search-resilience-guard-001.md` |
 | UT-AI-RUNTIME-TEST-SEPARATION-CRITERIA-001 | 契約テスト（Phase 4）と回帰テスト（Phase 6）の責務境界を明文化し、重複テスト判定基準を固定する | 低 | TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 10 MINOR-05, 2026-03-14） | `docs/30-workflows/unassigned-task/task-imp-ai-runtime-test-separation-criteria-001.md` |
 | TASK-UI-05A-SKILL-EDITOR-VIEW | SkillEditorView（仕様書作成完了 + 実装ファイル実在、統合未完了） | 高 | TASK-UI-05A Phase 1-13（spec_created） + 再監査（2026-03-02） | `docs/30-workflows/skill-editor-view/` |
@@ -82,6 +87,14 @@
 | UT-9G-003 | スケジュール実行通知（sendNotification）実装 | 中 | TASK-9G Phase 12 未タスク検出（NotificationSettings未接続） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-notification-dispatch.md` |
 | UT-9G-004 | SkillScheduler graceful shutdown 実装 | 低 | TASK-9G Phase 12 未タスク検出（終了時クリーンアップ未実装） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-graceful-shutdown.md` |
 | UT-9G-005 | スケジュール実行結果の Renderer push 通知追加 | 低 | TASK-9G Phase 12 未タスク検出（Main→Renderer push未実装） | `docs/30-workflows/completed-tasks/TASK-9G-skill-schedule/unassigned-task/task-skill-schedule-execution-push-event.md` |
+| UT-EXECUTION-ENV-TERMINAL-001 | ExecutionEnvironment Terminal 常設パネル実装 | 高 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-01（2026-03-22） | `docs/30-workflows/unassigned-task/UT-EXECUTION-ENV-TERMINAL-001.md` |
+| UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | toHandoffGuidance() adapter の配置先確定 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 3 MN-1（2026-03-22） | `docs/30-workflows/unassigned-task/UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001.md` |
+| UT-TERMINAL-DOCK-ABORTED-STATE-001 | Terminal Dock の aborted state 定義と遷移ルール追加 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 3 MN-2（2026-03-22） | `docs/30-workflows/unassigned-task/UT-TERMINAL-DOCK-ABORTED-STATE-001.md` |
+| UT-GUIDANCE-BLOCK-HANDOFF-CARD-RULE-001 | GuidanceBlock vs TerminalHandoffCard 使い分けルール明文化 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 3 MN-3（2026-03-22） | `docs/30-workflows/unassigned-task/UT-GUIDANCE-BLOCK-HANDOFF-CARD-RULE-001.md` |
+| UT-TERMINAL-DOCK-SESSION-PERSISTENCE-001 | Terminal Dock セッション永続化設計 | 低 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-04（2026-03-22） | `docs/30-workflows/unassigned-task/UT-TERMINAL-DOCK-SESSION-PERSISTENCE-001.md` |
+| UT-RUNTIME-BUILDER-MIGRATION-001 | TerminalHandoffBuilder → buildForSurface 統一メソッド移行 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-05（2026-03-22） | `docs/30-workflows/unassigned-task/UT-RUNTIME-BUILDER-MIGRATION-001.md` |
+| UT-SKILLDOCS-TERMINAL-HANDOFF-PATH-001 | SkillDocs → Terminal Handoff 導線接続 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-06（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SKILLDOCS-TERMINAL-HANDOFF-PATH-001.md` |
+| UT-GUIDANCE-BLOCK-PROPS-UNIFICATION-001 | GuidanceBlock Props 型統一（GuidanceBlockProps → HandoffGuidance） | 低 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-07（2026-03-22） | `docs/30-workflows/unassigned-task/UT-GUIDANCE-BLOCK-PROPS-UNIFICATION-001.md` |
 | UT-9I-001 | SkillDocGenerator の LLM プロバイダ連携実装 | 中 | TASK-9I Phase 12 未タスク検出（stubQueryFn 暫定実装） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-001-llm-provider-integration.md` |
 | UT-9I-002 | ドキュメントテンプレート CRUD 機能実装 | 低 | TASK-9I Phase 12 未タスク検出（DEFAULT_DOC_TEMPLATE 固定） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-002-template-crud.md` |
 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 | Phase 12 再確認証跡テーブル・未タスクリンク整合ガード | 中 | TASK-9I Phase 12 再確認（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` |
@@ -514,6 +527,10 @@
 
 | UT-FIX-LLM-PERSIST-ENCRYPT-001 | persist storage暗号化の検討 | 低 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md` |
 | UT-FIX-LLM-FETCHPROVIDERS-RETRY-001 | fetchProviders失敗時のリトライとバリデーション連携 | 中 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md` |
+| UT-SC-02-001 | RuntimeSkillCreatorFacade の subscriptionAuthProvider DI 配線 | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-001.md` |
+| UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
+| UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
+| UT-SC-02-004 | bundle 構築の二重責務 | 低 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
 
 ### 未タスク管理ルール
 

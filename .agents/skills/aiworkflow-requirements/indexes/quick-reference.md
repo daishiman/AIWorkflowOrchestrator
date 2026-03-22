@@ -39,6 +39,18 @@
 
 ---
 
+### RuntimePolicyResolver subscription 判定統合（2026-03-22）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| 3パターン分岐ロジック | `references/arch-electron-services-details-part2.md` |
+| execution capability 契約 | `references/arch-execution-capability-contract.md` |
+| IPC 契約（resolveWithService） | `references/api-ipc-system-core.md` |
+| lessons learned | `references/lessons-learned-ipc-preload-runtime.md` |
+| workflow root | `docs/30-workflows/w1b-sc-runtime-policy-closure/` |
+
+---
+
 ## 型定義クイックアクセス
 
 | 用途               | 型名                          | ファイル                   |

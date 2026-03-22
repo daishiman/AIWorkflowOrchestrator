@@ -45,7 +45,7 @@ export const useSlideProject = () => {
         setError(null);
 
         // ファイル監視を開始
-        const watchResult = await window.slideApi.startWatching(path);
+        const watchResult = await window.slideApi.watchStart(path);
         if (!watchResult.success) {
           throw new Error(
             watchResult.error?.message ?? "Failed to start watching",
@@ -54,7 +54,7 @@ export const useSlideProject = () => {
         setWatching(true);
 
         // 初期同期状態を取得
-        const statusResult = await window.slideApi.getSyncStatus(path);
+        const statusResult = await window.slideApi.syncStatus(path);
         if (statusResult.success && statusResult.data) {
           setSyncStatus(statusResult.data);
         }
@@ -72,7 +72,7 @@ export const useSlideProject = () => {
    */
   const closeProject = useCallback(async (): Promise<void> => {
     try {
-      await window.slideApi.stopWatching();
+      await window.slideApi.watchStop();
       reset();
     } catch (error) {
       console.error("Failed to close project:", error);
@@ -104,7 +104,7 @@ export const useSlideProject = () => {
 
         if (result.success && result.data) {
           // 同期状態を更新
-          const statusResult = await window.slideApi.getSyncStatus(projectPath);
+          const statusResult = await window.slideApi.syncStatus(projectPath);
           if (statusResult.success && statusResult.data) {
             setSyncStatus(statusResult.data);
           }
@@ -130,7 +130,7 @@ export const useSlideProject = () => {
 
     try {
       setSyncStatus("syncing");
-      const result = await window.slideApi.manualSync(projectPath);
+      const result = await window.slideApi.reverseSync(projectPath);
 
       if (result.success) {
         setSyncStatus("synced");
@@ -149,7 +149,7 @@ export const useSlideProject = () => {
    */
   const cancelExecution = useCallback(async (): Promise<void> => {
     try {
-      await window.slideApi.cancelExecution();
+      await window.slideApi.cancel();
       setPhase("idle");
     } catch (error) {
       console.error("Failed to cancel execution:", error);
@@ -161,7 +161,7 @@ export const useSlideProject = () => {
     // structure.md変更イベント
     const unsubscribeStructure = window.slideApi.onStructureChange(async () => {
       if (projectPath) {
-        const result = await window.slideApi.getSyncStatus(projectPath);
+        const result = await window.slideApi.syncStatus(projectPath);
         if (result.success && result.data) {
           setSyncStatus(result.data);
         }
@@ -169,7 +169,7 @@ export const useSlideProject = () => {
     });
 
     // 同期状態変更イベント
-    const unsubscribeSyncStatus = window.slideApi.onSyncStatusChange(
+    const unsubscribeSyncStatus = window.slideApi.onSyncStatusChanged(
       (status) => {
         setSyncStatus(status);
       },

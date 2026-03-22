@@ -42,6 +42,7 @@
 - current code drift として `registerSlideIpcHandlers()` 未接続、legacy channel 名残存、`agent-client.ts` の direct SDK path、`modifier-skill.ts` 残存、SlideWorkspace UI 4領域未反映を記録した。
 - follow-up 未タスク `UT-SLIDE-IMPL-001` / `UT-SLIDE-UI-001` / `UT-SLIDE-P31-001` / `UT-SLIDE-HANDOFF-DUP-001` を formalize した。
 - 2026-03-21 current branch では `UT-SLIDE-UI-001` を完了、`UT-SLIDE-P31-001` を吸収済みへ更新した。
+- 2026-03-22 `TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001`（#1363）で `UT-SLIDE-IMPL-001` を実装完了。D1-D6 drift 全件解消、`registerSlideIpcHandlers()` Main IPC index 接続済み、`UT-SLIDE-HANDOFF-DUP-001` を解消済みへ更新した。
 
 ### task 09 再監査結果サマリー（2026-03-19）
 
@@ -253,6 +254,7 @@
 
 | 日付 | バージョン | 変更内容 |
 | --- | --- | --- |
+| 2026-03-22 | 1.0.11 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（#1363）で UT-SLIDE-IMPL-001 実装完了。D1-D6 drift 全件解消、registerSlideIpcHandlers() Main IPC index 接続済み、UT-SLIDE-HANDOFF-DUP-001 解消済み。follow-up 3件（CI-DRIFT-SCAN / GUIDANCE-UI / IPC-TEMPLATE）を backlog 登録 |
 | 2026-03-19 | 1.0.10 | Step-04 Task09 の再監査追補を拡張。validator 実値、Phase 12 root evidence、task09 固有の苦戦箇所と簡潔解決、artifact inventory 補完を反映 |
 | 2026-03-19 | 1.0.9 | Step-04 Task09 の再監査追補。slide primary target 再定義、Phase 11 screenshot 5件と fallback metadata、current code drift、UT-SLIDE 4件 formalize を反映 |
 | 2026-03-17 | 1.0.8 | Step-03 Task06 の再監査結果を追補。Phase 11 実画像証跡（ハーネス）への更新、`AI_CHECK_CONNECTION` legacy 方針明確化、`llm:check-health` 実装契約同期、UT-TASK06-001..004 formalize を反映 |

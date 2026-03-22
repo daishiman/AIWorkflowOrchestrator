@@ -5,6 +5,71 @@
 
 ## 完了タスク
 
+### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SC-01-IPC-WIRING-FIX |
+| 完了日 | 2026-03-23 |
+| PR | #1478 |
+| 成果 | P65既解消確認、P65不在テスト+allowlist包含テスト4件追加、Phase 1-12成果物21ファイル |
+| 未タスク | UT-SC-01-IPCRESULT-DEDUP (Low), UT-SC-01-DIP-INTERFACE (Low) |
+
+---
+
+### タスク: TASK-SC-02-RUNTIME-POLICY-CLOSURE RuntimePolicyResolver subscription 判定統合・3パターン分岐安定化（2026-03-22）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SC-02-RUNTIME-POLICY-CLOSURE |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-22 |
+| 対象 | RuntimePolicyResolver の subscription 判定統合・3パターン分岐安定化 |
+
+#### 実施内容
+
+- RuntimePolicyResolver の subscription 判定統合・3パターン分岐安定化
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-SC-02-001 | RuntimeSkillCreatorFacade の subscriptionAuthProvider DI 配線 | 中 | `docs/30-workflows/unassigned-task/UT-SC-02-001.md` |
+| UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
+| UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
+| UT-SC-02-004 | bundle 構築の二重責務 | 低 | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
+
+---
+
+### タスク: TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Terminal Handoff Surface Realization 設計（2026-03-22）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-22 |
+| 対象 | Claude Code terminal surface / shared handoff UI 共通設計 |
+| 成果物 | `docs/30-workflows/step-03-par-task-05-terminal-handoff-surface-realization/` |
+
+#### 実施内容
+
+- Concern 3 分割設計（Launcher / Handoff Card / Consumer Adapter）を確定
+- 統一 DTO `HandoffGuidance`（terminalCommand / contextSummary / reason）を定義
+- Manual Boundary（MB-1〜MB-4: auto-send / hidden injection / headless execution / credential passthrough 禁止）を確定
+- Consumer → DTO マッピング（5 consumer × 3 surfaceType）と `toHandoffGuidance()` adapter 仕様を設計
+- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+- 未タスク 8 件（MINOR 3 件 + GAP 5 件）を検出・指示書化
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment pack Task 05（2026-03-19）
+
+---
+
 ### タスク: TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 Settings shell access matrix mainline design（2026-03-22）
 
 | 項目 | 値 |

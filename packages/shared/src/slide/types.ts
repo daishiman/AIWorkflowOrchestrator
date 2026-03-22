@@ -3,6 +3,8 @@
  * @module slide/types
  */
 
+import type { HandoffGuidance } from "../types/handoff";
+
 /**
  * スライドプロジェクトの構造
  */
@@ -70,6 +72,10 @@ export interface SkillExecutionResult {
   projectPath?: string;
   /** リトライ回数（エラー時用） */
   retryCount?: number;
+  /** handoff モードかどうか */
+  isHandoff?: boolean;
+  /** handoff 時のガイダンス */
+  guidance?: HandoffGuidance;
 }
 
 /**
@@ -116,6 +122,8 @@ export type SlideErrorCode =
   | "SLIDE_E007" // 同期エラー
   | "SLIDE_E008" // キャンセルエラー
   | "SLIDE_E009" // タイムアウトエラー
+  | "SLIDE_E010" // IPC sender検証エラー
+  | "SLIDE_E011" // バリデーションエラー
   | "SLIDE_E999"; // 不明なエラー
 
 /**
@@ -129,6 +137,9 @@ export interface SlideError {
   /** 詳細情報 */
   details?: Record<string, unknown>;
 }
+
+// HandoffGuidance は src/types/handoff.ts に正本がある。re-export で統一する。
+export type { HandoffGuidance };
 
 /**
  * IPC応答の基本型

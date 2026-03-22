@@ -388,3 +388,22 @@
 2. CLI スクリプトテストは `beforeEach` で `process.argv[1]` をスクリプト絶対パスに固定し `afterEach` で復元
 3. `vi.mock("fs")` はファイルトップレベルに配置。describe 内配置では ESM モジュールへのモック適用が保証されない
 4. `main()` カバレッジは「fs モック」より「パス制御＋実ファイル統合テスト」で達成
+
+---
+
+## TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）
+
+### Optional DI + Graceful Degradation パターン
+
+`RuntimePolicyResolver` のコンストラクタで `subscriptionAuthProvider?: ISubscriptionAuthProvider` を optional にすることで、DI 未注入時は安全側（no-auth）にフォールバックする。これにより:
+- 後方互換性を維持（既存の呼び出し元を変更せずにデプロイ可能）
+- graceful degradation が DI レベルと catch レベルの2層で機能
+- P62（DEFAULT_CONFIG fallback禁止）準拠
+
+### checkSubscription() の try-catch フォールバック
+
+`ISubscriptionAuthProvider.validateToken()` の例外時に `false` を返して no-auth にフォールバックする。P54（safeRegister パターン不適合）と同系統のパターン。戻り値が不要な場合は catch で安全な既定値を返す。
+
+### 苦戦箇所: bundle 構築の責務分散
+
+`TerminalHandoffBundle` の構築が `RuntimePolicyResolver` のプライベートメソッドと `TerminalHandoffBuilder.build()` に分散した。Resolver 側は prompt を含まないダミー bundle を生成するため shell injection リスクはないが、構造的に不整合。今後は TerminalHandoffBuilder に統一すべき（UT-SC-02-004）。

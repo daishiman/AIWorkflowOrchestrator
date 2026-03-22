@@ -1469,14 +1469,17 @@ export interface SlideApi {
     phase: SkillPhase,
     projectPath: string,
   ) => Promise<SlideResponse<SkillExecutionResult>>;
-  startWatching: (projectPath: string) => Promise<SlideResponse>;
-  stopWatching: () => Promise<SlideResponse>;
-  getSyncStatus: (projectPath: string) => Promise<SlideResponse<SyncStatus>>;
-  manualSync: (projectPath: string) => Promise<SlideResponse>;
-  cancelExecution: () => Promise<SlideResponse>;
+  watchStart: (projectPath: string) => Promise<SlideResponse>;
+  watchStop: () => Promise<SlideResponse>;
+  syncStatus: (projectPath: string) => Promise<SlideResponse<SyncStatus>>;
+  reverseSync: (projectPath: string) => Promise<SlideResponse>;
+  cancel: () => Promise<SlideResponse>;
   onStructureChange: (callback: (path: string) => void) => () => void;
-  onSyncStatusChange: (callback: (status: SyncStatus) => void) => () => void;
+  onSyncStatusChanged: (callback: (status: SyncStatus) => void) => () => void;
   onExecutionProgress: (callback: (progress: number) => void) => () => void;
+  onSyncProgress: (callback: (progress: number) => void) => () => void;
+  onSyncError: (callback: (error: string) => void) => () => void;
+  onWatchStatus: (callback: (status: string) => void) => () => void;
 }
 
 // ===== Community operations =====

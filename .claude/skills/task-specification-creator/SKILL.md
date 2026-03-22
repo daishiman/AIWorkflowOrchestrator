@@ -384,6 +384,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.14** | **2026-03-22** | **TASK-SC-02-RUNTIME-POLICY-CLOSURE 仕様書（Phase 1-13）実行完了** |
 | **v10.09.13** | **2026-03-22** | **TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新を反映**: `references/phase-12-documentation-guide.md` に human-authored Phase 12 成果物を `outputs/phase-12/` へ固定するルールを追加。`references/spec-update-workflow.md` に shared component task と consumer surface task の completed 判定を分離する基準、および global `docs/30-workflows/unassigned-task/` canonical path を追記 |
 | **v10.09.12** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 最終ドキュメント更新を反映**: `manual-test-result.md` が `not_run` のままなら Phase 11/12 を閉じないルール、`index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の4点同期、internal adapter と public IPC / preload contract を混同しない判断基準を `phase-12-documentation-guide.md` と `spec-update-workflow.md` へ追加 |
 | **v10.09.11** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査を反映**: design task の workflow root は `implementation_ready`、completed ledger は `spec_created` に分離する運用を追加。`outputs/phase-12` の必須 6成果物、worktree でも `.claude` 正本を先送りしないルール、current code sweep で implementation closure task を formalize する Phase 12 最終監査パターンを変更履歴へ記録 |
