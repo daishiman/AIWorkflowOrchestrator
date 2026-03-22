@@ -10,6 +10,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import type { WorkspaceChatController } from "../hooks/useWorkspaceChatController";
+import {
+  MODEL_SELECTION_GUIDANCE,
+  type ModelSelectionBlockedReason,
+} from "@/renderer/guidance/modelSelectionGuidance";
 
 // ---------------------------------------------------------------------------
 // Mock: store
@@ -35,6 +39,7 @@ const createMockController = (
   selectedFiles: [],
   selectedFilePath: null,
   selectedModelId: null,
+  blockedReason: null as ModelSelectionBlockedReason | null,
   pendingCursorPosition: null,
   mention: {
     isOpen: false,
@@ -78,23 +83,32 @@ describe("WorkspaceChatPanel GuidanceBlock 改善テスト", () => {
   // =========================================================================
   describe("TC-5: GuidanceBlock 改善", () => {
     it("TC-5-1: モデル未選択時 GuidanceBlock に設定ボタンが表示される", () => {
-      const controller = createMockController({ selectedModelId: null });
+      const controller = createMockController({
+        selectedModelId: null,
+        blockedReason: "NO_MODEL",
+      });
 
       render(<WorkspaceChatPanel controller={controller} />);
 
+      expect(
+        screen.getByText(MODEL_SELECTION_GUIDANCE.message),
+      ).toBeInTheDocument();
       const settingsButton = screen.getByRole("button", {
-        name: /Settings/,
+        name: MODEL_SELECTION_GUIDANCE.actionLabel,
       });
       expect(settingsButton).toBeInTheDocument();
     });
 
     it("TC-5-2: 設定ボタンクリックで設定画面へ遷移する", () => {
-      const controller = createMockController({ selectedModelId: null });
+      const controller = createMockController({
+        selectedModelId: null,
+        blockedReason: "NO_MODEL",
+      });
 
       render(<WorkspaceChatPanel controller={controller} />);
 
       const settingsButton = screen.getByRole("button", {
-        name: /Settings/,
+        name: MODEL_SELECTION_GUIDANCE.actionLabel,
       });
       fireEvent.click(settingsButton);
       expect(mockSetCurrentView).toHaveBeenCalledWith("settings");

@@ -9,6 +9,10 @@ import {
   useRemoveFile,
   useSelectedFiles,
 } from "@/renderer/store";
+import {
+  deriveModelSelectionBlockedReason,
+  type ModelSelectionBlockedReason,
+} from "@/renderer/guidance/modelSelectionGuidance";
 import { createSelectedFile } from "../workspaceFileSelection";
 import {
   useWorkspaceMentionQuery,
@@ -34,6 +38,7 @@ export interface WorkspaceChatController {
   selectedFiles: SelectedFile[];
   selectedFilePath: string | null;
   selectedModelId: string | null;
+  blockedReason: ModelSelectionBlockedReason | null;
   mention: ReturnType<typeof useWorkspaceMentionQuery>;
   pendingCursorPosition: number | null;
   setInputValue: (nextValue: string, cursorPosition?: number) => void;
@@ -171,6 +176,10 @@ export function useWorkspaceChatController(params: {
 
   const selectedProviderId = useAppStore((state) => state.selectedProviderId);
   const selectedModelId = useAppStore((state) => state.selectedModelId);
+  const blockedReason = deriveModelSelectionBlockedReason({
+    selectedProviderId,
+    selectedModelId,
+  });
 
   const [messages, setMessages] = useState<WorkspaceChatMessage[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
@@ -434,7 +443,7 @@ export function useWorkspaceChatController(params: {
 
   const sendMessage = useCallback(async () => {
     const trimmed = input.trim();
-    if (!trimmed) {
+    if (!trimmed || blockedReason !== null) {
       return;
     }
 
@@ -446,7 +455,7 @@ export function useWorkspaceChatController(params: {
       addToMessages: true,
       persistUserMessage: true,
     });
-  }, [input, sendMessageCore]);
+  }, [input, blockedReason, sendMessageCore]);
 
   const persistAssistantMessage = useCallback(
     async (content: string) => {
@@ -654,6 +663,7 @@ export function useWorkspaceChatController(params: {
     selectedFiles,
     selectedFilePath,
     selectedModelId,
+    blockedReason,
     mention,
     pendingCursorPosition,
     setInputValue,

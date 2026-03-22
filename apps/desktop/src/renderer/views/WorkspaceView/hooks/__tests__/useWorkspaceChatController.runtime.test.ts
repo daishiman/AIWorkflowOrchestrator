@@ -184,6 +184,7 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
     expect(result.current.isSending).toBe(false);
     expect(result.current.streamContent).toBe("");
     expect(result.current.errorMessage).toBeNull();
+    expect(result.current.blockedReason).toBeNull();
   });
 
   // R-02: setInputValue で input 更新
@@ -741,8 +742,8 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
     expect(result.current.streamContent).toBe("");
   });
 
-  // E-09: selectedProviderId=null で modelId からの推論
-  it("E-09: selectedProviderId=null でも modelId prefix から provider が推論される", async () => {
+  // E-09: selectedProviderId=null は blocked として扱う
+  it("E-09: selectedProviderId=null の場合は blocked となり sendMessage を実行しない", async () => {
     mockAppState.selectedProviderId = null as unknown as "openai";
 
     const { result } = renderController();
@@ -754,10 +755,8 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
       await result.current.sendMessage();
     });
 
-    // streamChat が呼ばれていれば推論成功
-    expect(mockStreamChat).toHaveBeenCalled();
-    const request = mockStreamChat.mock.calls[0][0];
-    expect(request.modelId).toBe("gpt-4o");
+    expect(result.current.blockedReason).toBe("NO_PROVIDER");
+    expect(mockStreamChat).not.toHaveBeenCalled();
   });
 
   // E-11: conversation 未作成状態で addMessage
