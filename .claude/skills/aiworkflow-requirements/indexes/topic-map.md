@@ -423,7 +423,7 @@ node scripts/list-specs.js --topics
 | スキルデバッグ 型定義（TASK-9H） | L91 |
 | スキルドキュメント生成 型定義（TASK-9I） | L141 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
-| スキル分析 型定義（TASK-9J） | L269 |
+| スキル分析 型定義（TASK-9J） | L291 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -894,12 +894,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| AI/チャット IPC チャネル | L6 |
 | Slide IPC API（スライド同期） | L75 |
-| Workspace File Watch IPC API（TASK-UI-04A） | L157 |
-| Conversation IPC API（会話履歴永続化） | L201 |
-| Electron IPC API設計 | L237 |
-| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L369 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L537 |
-| AIプロバイダーAPI連携 | L568 |
+| Workspace File Watch IPC API（TASK-UI-04A） | L156 |
+| Conversation IPC API（会話履歴永続化） | L200 |
+| Electron IPC API設計 | L236 |
+| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L536 |
+| AIプロバイダーAPI連携 | L567 |
 
 ### references/api-ipc-system-details.md
 
@@ -1015,10 +1015,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
 | コンポーネント仕様 | L43 |
-| インタラクション設計 | L287 |
-| 視覚デザイン | L316 |
-| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L341 |
-| アクセシビリティ（WCAG 2.1 AA） | L363 |
+| インタラクション設計 | L322 |
+| 視覚デザイン | L351 |
+| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L376 |
+| アクセシビリティ（WCAG 2.1 AA） | L398 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -1834,18 +1834,18 @@ node scripts/list-specs.js --topics
 | 今回の確定事項（2026-03-13） | L19 |
 | Step-03 Task06 再監査追補（2026-03-17） | L29 |
 | Step-04 Task09 再監査追補（2026-03-19） | L37 |
-| 再監査追補（2026-03-14） | L78 |
-| current canonical set（2026-03-14 wave） | L92 |
-| artifact inventory（Step-01 + system spec sync） | L108 |
-| parent docs と依存関係 | L139 |
-| 旧 filename 互換管理 | L152 |
-| 設定画面レビューの必須改善対象 | L159 |
-| 後続タスクへの伝搬先 | L177 |
-| SubAgent 編成（関心ごと分離） | L206 |
-| 同種課題の5分解決カード | L218 |
-| 最適なファイル形成 | L228 |
-| 関連ドキュメント | L240 |
-| 変更履歴 | L252 |
+| 再監査追補（2026-03-14） | L79 |
+| current canonical set（2026-03-14 wave） | L93 |
+| artifact inventory（Step-01 + system spec sync） | L109 |
+| parent docs と依存関係 | L140 |
+| 旧 filename 互換管理 | L153 |
+| 設定画面レビューの必須改善対象 | L160 |
+| 後続タスクへの伝搬先 | L178 |
+| SubAgent 編成（関心ごと分離） | L207 |
+| 同種課題の5分解決カード | L219 |
+| 最適なファイル形成 | L229 |
+| 関連ドキュメント | L241 |
+| 変更履歴 | L253 |
 
 ### references/workflow-ai-runtime-execution-responsibility-realignment.md
 
@@ -1855,7 +1855,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
 | 実装ステータススナップショット（2026-03-22） | L46 |
-| Follow-up Backlog | L55 |
+| Follow-up Backlog | L56 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2588,10 +2588,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L39 |
-| クイックリファレンス: カテゴリ別検索ガイド | L54 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L416 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L450 |
+| 分割ファイル一覧 | L42 |
+| クイックリファレンス: カテゴリ別検索ガイド | L57 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L133 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L465 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L499 |
+| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L527 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2617,16 +2619,17 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
 | 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L36 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L76 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L116 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L146 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L195 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L248 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L276 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L319 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L370 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L439 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L477 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L76 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L120 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L160 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L190 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L239 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L292 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L320 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L363 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L414 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L483 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L521 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -2846,13 +2849,13 @@ node scripts/list-specs.js --topics
 | RuntimeResolver | L153 |
 | AnthropicLLMAdapter | L190 |
 | TerminalHandoffBuilder | L227 |
-| IPCチャンネル | L263 |
-| セキュリティ | L283 |
-| ディレクトリ構成 | L299 |
-| 品質メトリクス | L328 |
-| 関連ドキュメント | L339 |
-| 完了タスク | L367 |
-| 変更履歴 | L427 |
+| IPCチャンネル | L279 |
+| セキュリティ | L299 |
+| ディレクトリ構成 | L315 |
+| 品質メトリクス | L344 |
+| 関連ドキュメント | L355 |
+| 完了タスク | L383 |
+| 変更履歴 | L443 |
 
 ### references/local-agent.md
 
