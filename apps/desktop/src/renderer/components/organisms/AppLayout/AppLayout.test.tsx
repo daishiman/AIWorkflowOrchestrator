@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { useAppStore } from "../../../store";
 import { AppLayout } from "./index";
+import { buildMainlineExecutionAccessState } from "../../../features/mainline-access/mainlineAccess";
 
 describe("AppLayout", () => {
   beforeEach(() => {
@@ -56,5 +57,53 @@ describe("AppLayout", () => {
     expect(screen.getByRole("button", { name: "その他" })).toBeInTheDocument();
     expect(screen.getByRole("main")).toHaveClass("pb-[88px]");
     expect(onGoBack).toHaveBeenCalledTimes(1);
+  });
+
+  it("mainline terminal launcher が有効時はコマンドを clipboard へコピーする", async () => {
+    const writeTextSpy = vi
+      .spyOn(navigator.clipboard, "writeText")
+      .mockResolvedValue(undefined);
+
+    render(
+      <AppLayout
+        currentView="dashboard"
+        onViewChange={vi.fn()}
+        onGoBack={vi.fn()}
+        canGoBack={false}
+        mainlineAccess={buildMainlineExecutionAccessState({
+          apiKeyValid: false,
+          subscriptionValid: true,
+          isAuthenticated: true,
+        })}
+      >
+        <div>Desktop Content</div>
+      </AppLayout>,
+    );
+
+    fireEvent.click(screen.getByTestId("app-layout-terminal-launcher"));
+
+    expect(writeTextSpy).toHaveBeenCalledWith("claude --continue");
+  });
+
+  it("未認証時の mainline terminal launcher は disabled になる", () => {
+    render(
+      <AppLayout
+        currentView="dashboard"
+        onViewChange={vi.fn()}
+        onGoBack={vi.fn()}
+        canGoBack={false}
+        mainlineAccess={buildMainlineExecutionAccessState({
+          apiKeyValid: true,
+          subscriptionValid: true,
+          isAuthenticated: false,
+        })}
+      >
+        <div>Desktop Content</div>
+      </AppLayout>,
+    );
+
+    const launcher = screen.getByTestId("app-layout-terminal-launcher");
+    expect(launcher).toBeDisabled();
+    expect(launcher).toHaveAttribute("title", "認証が必要です");
   });
 });

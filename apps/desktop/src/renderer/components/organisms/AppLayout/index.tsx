@@ -5,8 +5,11 @@ import { DynamicIsland } from "../../molecules";
 import { NotificationCenter } from "../NotificationCenter";
 import { GlobalNavStrip } from "../GlobalNavStrip";
 import { MobileNavBar } from "../MobileNavBar";
+import { TerminalLauncher } from "./TerminalLauncher";
 import { useDynamicIsland, useResponsiveMode } from "../../../store";
 import type { DockViewType } from "../../../navigation/navContract";
+import type { MainlineExecutionAccessState } from "../../../features/mainline-access/mainlineAccess";
+import { launchMainlineTerminal } from "../../../utils/runtimeAccess";
 
 export interface AppLayoutProps {
   currentView: DockViewType;
@@ -14,6 +17,7 @@ export interface AppLayoutProps {
   onGoBack: () => void;
   canGoBack: boolean;
   children: React.ReactNode;
+  mainlineAccess?: MainlineExecutionAccessState;
 }
 
 export const AppLayout: React.FC<AppLayoutProps> = ({
@@ -22,6 +26,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
   onGoBack,
   canGoBack,
   children,
+  mainlineAccess,
 }) => {
   const dynamicIsland = useDynamicIsland();
   const responsiveMode = useResponsiveMode();
@@ -68,7 +73,19 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
             />
           </div>
 
-          <div className="flex justify-end">
+          <div className="flex items-center justify-end gap-3">
+            {mainlineAccess ? (
+              <TerminalLauncher
+                capability={mainlineAccess.capability}
+                isDisabled={mainlineAccess.launcherDisabled}
+                disabledReason={mainlineAccess.launcherDisabledReason}
+                onLaunch={() =>
+                  void launchMainlineTerminal(
+                    mainlineAccess.suggestedTerminalCommand,
+                  )
+                }
+              />
+            ) : null}
             <NotificationCenter />
           </div>
         </header>
