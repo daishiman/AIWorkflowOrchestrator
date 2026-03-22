@@ -6,6 +6,12 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-22 - TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（Terminal Handoff Surface Realization 設計 / Concern 3分割 / HandoffGuidance 統一DTO / Manual Boundary 確定 / 未タスク8件検出） |
+| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（resource-map runtime IPC 導線追加 / P65 dead-end namespace pitfall 追加 / SKILL.md trigger 拡張 / mirror sync） |
+| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（Skill Creator runtime public IPC 3チャネル / shared contract / graceful degradation / Phase 12 final sync） |
+||||||| 77abcbc7f
+| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（resource-map runtime IPC 導線追加 / P65 dead-end namespace pitfall 追加 / SKILL.md trigger 拡張 / mirror sync） |
+| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（Skill Creator runtime public IPC 3チャネル / shared contract / graceful degradation / Phase 12 final sync） |
 | 2026-03-22 - TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（standalone root / spec_created ledger / backlog 4件 / lessons 4件 / mirror parity） |
 | 2026-03-22 - TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（shared selector contract sync / backlog cleanup / completed ledger 追加 / Phase 12 guide drift 修正） |
 | 2026-03-21 - TASK-FIX-LLM-CONFIG-PERSISTENCE Phase12 再監査完了（Phase11 harness 導線、family inventory、completed shard、lessons、mirror parity を同ターン同期） |

@@ -1,0 +1,187 @@
+{
+  "taskId": "TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001",
+  "phase": 11,
+  "createdAt": "2026-03-22",
+  "note": "設計タスクのため実際のスクリーンショット取得は後続実装タスクで実施。P53対策としてPlaywright自動化を推奨。",
+  "fallbackStrategy": "CLI環境ではPlaywright page.screenshot()またはElectron webContents.capturePage()で取得。未整備段階ではDevTools Console ログ・Zustand Store ダンプ・Network HARエクスポート・DOM スナップショットを代替証跡とする。",
+  "testCases": [
+    {
+      "tcId": "TC-MAN-1",
+      "screen": "TerminalHandoffCard表示中",
+      "state": "handoff triggered",
+      "captureTarget": "TerminalHandoffCard コンポーネント全体（terminalCommand / contextSummary / reason / copyButton / dismissButton）",
+      "elements": [
+        "terminalCommand",
+        "contextSummary",
+        "reason",
+        "copyButton",
+        "dismissButton"
+      ],
+      "screenshotPath": "screenshots/TC-MAN-1-handoff-card.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": false,
+      "fallbackEvidence": "DevTools Elements タブで data-testid=terminal-handoff-card の outerHTML を取得"
+    },
+    {
+      "tcId": "TC-MAN-2",
+      "screen": "copy完了フィードバック表示中",
+      "state": "copy success",
+      "captureTarget": "copy ボタンのフィードバック表示（Toast または アイコン変化）",
+      "elements": ["feedbackToast", "copyButtonIcon"],
+      "screenshotPath": "screenshots/TC-MAN-2-copy-feedback.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": false,
+      "fallbackEvidence": "DevTools Console でクリップボード内容を navigator.clipboard.readText() で取得・記録"
+    },
+    {
+      "tcId": "TC-MAN-3",
+      "screen": "dismiss後の通常表示",
+      "state": "card hidden",
+      "captureTarget": "TerminalHandoffCard が非表示になった後の surface 表示",
+      "elements": [],
+      "screenshotPath": "screenshots/TC-MAN-3-after-dismiss.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": false,
+      "fallbackEvidence": "DevTools Console で window.__zustandStore?.getState()?.handoffGuidance の値（期待値: null）を記録"
+    },
+    {
+      "tcId": "TC-MAN-4",
+      "screen": "App Shell Header（Persistent Launcher 表示）",
+      "state": "launcher visible",
+      "captureTarget": "App Shell Header 右上の terminal launcher ボタン（全 surface 共通）",
+      "elements": [
+        "terminalLauncherButton",
+        "launcherLabel",
+        "launcherAriaLabel"
+      ],
+      "screenshotPath": "screenshots/TC-MAN-4-launcher.png",
+      "playwrightMethod": "page.screenshot({ clip: { x: 0, y: 0, width: 1280, height: 60 } })",
+      "manualBoundary": false,
+      "fallbackEvidence": "DevTools Elements タブで data-testid=terminal-launcher-button の aria-label 属性値を記録"
+    },
+    {
+      "tcId": "TC-MAN-5",
+      "screen": "Terminal Dock open（idle 状態）",
+      "state": "dock idle",
+      "captureTarget": "Terminal Dock 全体（input フィールドが空であることが視認できること）",
+      "elements": ["terminalInput", "transcript", "terminalDockContainer"],
+      "screenshotPath": "screenshots/TC-MAN-5-dock-open.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": true,
+      "manualBoundaryId": "MB-1",
+      "manualBoundaryCheck": "auto-send非発生: input が空文字 かつ 5秒間 transcript 変化なし",
+      "fallbackEvidence": "DevTools Console で document.querySelector('[data-testid=terminal-input]').value が空文字であることを記録"
+    },
+    {
+      "tcId": "TC-MAN-6",
+      "screen": "Terminal Dock reopen（transcript 保持確認）",
+      "state": "transcript preserved",
+      "captureTarget": "close 後 reopen した Terminal Dock（前回 transcript が残っていること）",
+      "elements": ["previousTranscript", "terminalInput"],
+      "screenshotPath": "screenshots/TC-MAN-6-dock-reopen.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": false,
+      "fallbackEvidence": "close 前後の transcript テキストを DevTools Console で textContent として記録し、一致を確認"
+    },
+    {
+      "tcId": "TC-MAN-7",
+      "screen": "guidance-only 状態（GuidanceBlock 表示）",
+      "state": "API key missing",
+      "captureTarget": "GuidanceBlock コンポーネント（設定画面への導線を含む）",
+      "elements": ["guidanceBlock", "settingsLink", "guidanceText"],
+      "screenshotPath": "screenshots/TC-MAN-7-guidance-only.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": true,
+      "manualBoundaryId": "MB-5",
+      "manualBoundaryCheck": "guidance-only判定の正確性: API key 未設定時に全 surface で GuidanceBlock が表示されること",
+      "fallbackEvidence": "DevTools Console で window.__zustandStore?.getState()?.capabilityState の値（期待値: 'guidance-only'）を記録"
+    },
+    {
+      "tcId": "TC-MAN-8",
+      "screen": "blocked 状態（retry ボタン非表示）",
+      "state": "no resolution",
+      "captureTarget": "blocked 状態の UI（retry ボタンが非表示、設定導線のみ）",
+      "elements": ["settingsLink", "blockedMessage"],
+      "screenshotPath": "screenshots/TC-MAN-8-blocked.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": false,
+      "fallbackEvidence": "DevTools Network タブで blocked 状態確認後の API リクエスト件数（期待値: 0件）を HAR エクスポートで記録"
+    },
+    {
+      "tcId": "TC-MAN-9",
+      "screen": "unavailable 状態（launcher disabled 表示）",
+      "state": "CLI tool not found",
+      "captureTarget": "App Shell Header の terminal launcher ボタン（disabled 状態 + tooltip）",
+      "elements": ["terminalLauncherButtonDisabled", "disabledTooltip"],
+      "screenshotPath": "screenshots/TC-MAN-9-unavailable.png",
+      "playwrightMethod": "page.screenshot({ clip: { x: 0, y: 0, width: 1280, height: 80 } })",
+      "manualBoundary": false,
+      "fallbackEvidence": "DevTools Elements タブで data-testid=terminal-launcher-button の aria-disabled 属性値（期待値: 'true'）を記録"
+    },
+    {
+      "tcId": "MB-1",
+      "screen": "Terminal Dock open 直後（auto-send 非発生確認）",
+      "state": "dock idle, input empty",
+      "captureTarget": "Terminal Dock の input フィールド（空文字であることが視認できること）",
+      "elements": ["terminalInput"],
+      "screenshotPath": "screenshots/MB-1-auto-send-check.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": true,
+      "manualBoundaryId": "MB-1",
+      "manualBoundaryCheck": "auto-send禁止: input が空文字 かつ 5秒間 transcript 変化なし",
+      "fallbackEvidence": "DevTools Console の MB-1 チェックスクリプト実行結果（PASS）を記録"
+    },
+    {
+      "tcId": "MB-2",
+      "screen": "TerminalHandoffCard 表示中（API key 非含有確認）",
+      "state": "handoff triggered",
+      "captureTarget": "DevTools Console での API key regex チェック結果",
+      "elements": ["terminalCommand"],
+      "screenshotPath": "screenshots/MB-2-api-key-check.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": true,
+      "manualBoundaryId": "MB-2",
+      "manualBoundaryCheck": "API key非含有: terminalCommand に /sk-[A-Za-z0-9]{20,}/ パターンが 0件",
+      "fallbackEvidence": "DevTools Console の MB-2 チェックスクリプト実行結果（PASS: 非含有）を記録"
+    },
+    {
+      "tcId": "MB-3",
+      "screen": "IPC response payload 確認",
+      "state": "handoff triggered",
+      "captureTarget": "DevTools Network タブの IPC response body（3フィールドのみ）",
+      "elements": ["ipcResponsePayload"],
+      "screenshotPath": "screenshots/MB-3-hidden-injection-check.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": true,
+      "manualBoundaryId": "MB-3",
+      "manualBoundaryCheck": "hidden injection禁止: IPC payload が terminalCommand / contextSummary / reason の3フィールドのみ",
+      "fallbackEvidence": "DevTools Network タブから IPC response を HAR エクスポートし、フィールド数を記録"
+    },
+    {
+      "tcId": "MB-4",
+      "screen": "Activity Monitor（claude プロセス非起動確認）",
+      "state": "dock idle, 5 seconds elapsed",
+      "captureTarget": "Activity Monitor で claude プロセスが起動していないことを示す状態",
+      "elements": ["activityMonitorProcessList"],
+      "screenshotPath": "screenshots/MB-4-headless-check.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": true,
+      "manualBoundaryId": "MB-4",
+      "manualBoundaryCheck": "headless execution禁止: 5秒間 claude プロセスが新規起動しない",
+      "fallbackEvidence": "DevTools Console の MB-4 fetch 件数チェックスクリプト実行結果（0件）を記録"
+    },
+    {
+      "tcId": "MB-5",
+      "screen": "全 surface での GuidanceBlock 表示確認（API key 削除後）",
+      "state": "guidance-only",
+      "captureTarget": "Chat Edit / Runtime / Skill Docs 各 surface の GuidanceBlock 表示",
+      "elements": ["guidanceBlock", "capabilityStateValue"],
+      "screenshotPath": "screenshots/MB-5-guidance-only-check.png",
+      "playwrightMethod": "page.screenshot()",
+      "manualBoundary": true,
+      "manualBoundaryId": "MB-5",
+      "manualBoundaryCheck": "guidance-only判定の正確性: API key 削除後に全 3 surface で GuidanceBlock 表示かつ TerminalHandoffCard 非表示",
+      "fallbackEvidence": "DevTools Console で capabilityState の値（期待値: 'guidance-only'）と各 surface の表示コンポーネントを記録"
+    }
+  ]
+}

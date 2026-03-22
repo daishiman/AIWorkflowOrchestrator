@@ -19,11 +19,16 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-22 | 2.2.3 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 の Phase 12 教訓4件を追加 |
 | 2026-03-21 | 2.2.1 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
 | 2026-03-21 | 2.2.0 | UT-SLIDE-UI-001 教訓3件を追加（L-SLIDE-UI-001〜003） |
 | 2026-03-21 | 2.2.2 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓を追記 |
 | 2026-03-21 | 2.2.1 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 最終再監査教訓を追記 |
 | 2026-03-21 | 2.2.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
+
+| 2026-03-22 | 2.3.0 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 設計タスク教訓3件を追加（L-THSR-001〜003） |
+||||||| 77abcbc7f
+
 | 2026-03-22 | 2.2.3 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加 |
 | 2026-03-20 | 2.1.1 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査の教訓3件を追加 |
 | 2026-03-18 | 2.1.0 | 1598行超過のため分割。2026-03-15以前エントリを archive-2026-03.md へ移動。UT-TASK06-007 苦戦箇所5件を追加 |
@@ -76,6 +81,8 @@
 - 並列エージェント changelog 件数不整合（P59）
 - persist task の storage key drift、防ぎきれていない false green、family same-wave sync 漏れ
 - spec-only close-out では downstream task status と code diff 0/有を併記する
+- standalone root 移設時は parent/downstream/system spec の旧 path を same-wave で閉じる
+- `implementation_ready` / `spec_created` / `blocked` の意味を分離し、Phase 13 だけ future gate に残す
 
 ### 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 同期
 
@@ -122,6 +129,50 @@
 | 課題 | implementation guide が 10/10 要件を満たしていないのに、compliance 文書だけ完了扱いにすると Phase 12 の整合性が壊れる |
 | 解決策 | validator 実行結果を正として guide を補完し、compliance / changelog / system-spec-update-summary を同ターンで更新した |
 | 標準ルール | Phase 12 は validator 実測値を正本とし、narrative 側で完了を先に宣言しない |
+
+---
+
+## TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22）
+
+### 苦戦箇所1: standalone task root を移設したら parent / downstream / workflow spec の旧 path が残りやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task04 root を standalone に切り出しても、親 workflow index と downstream consumer に旧 nested path が残ると current canonical set が二重化する |
+| 再発条件 | workflow root の移設を root index だけで閉じ、parent/downstream/system spec を同一 wave で更新しない |
+| 解決策 | `task-workflow-completed.md` / `task-workflow-backlog.md` / `workflow-ai-runtime-execution-responsibility-realignment.md` / capture script の current root を同時に揃えた |
+| 標準ルール | standalone root の移設は parent/downstream/system spec の旧 path を同一 wave で閉じる |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
+
+### 苦戦箇所2: design task でも Phase 12 の planned wording を残すと complete ではなくなる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 設計タスクの close-out で `計画済み` / `更新予定` を残すと、実更新後でも Phase 12 が未完了に見える |
+| 再発条件 | workflow root は closed でも、compliance / changelog / backlog / lessons が future tense のまま残る |
+| 解決策 | workflow root を `implementation_ready`、completed ledger を `spec_created` として分離し、Phase 13 だけ blocked に固定した |
+| 標準ルール | design task でも Phase 12 deferred wording を残さない |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
+
+### 苦戦箇所3: unassigned detection を backlog だけで閉じると formalize 漏れが起きる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 未タスク化の候補を backlog に積むだけでは、workflow / lessons / task-workflow の導線が閉じない |
+| 再発条件 | formalize を backlog 追加だけで済ませ、completed ledger / lessons / workflow を同時更新しない |
+| 解決策 | unassigned detection を formalize / backlog / workflow / lessons の 4点同期で扱うようにした |
+| 標準ルール | unassigned detection は formalize/backlog/workflow/lessons の 4点同期 |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
+
+### 苦戦箇所4: screenshot 要求がある spec_created task でも current root に capture script を残す必要がある
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | screenshot evidence を upstream task に流すと、current workflow root で再利用できない |
+| 再発条件 | spec_created task で representative screenshot を別 workflow へ移す |
+| 解決策 | current workflow root に dedicated capture script と evidence path を残し、task root から直接追跡できるようにした |
+| 標準ルール | screenshot 要求がある spec_created task でも dedicated capture script を current workflow root に残す |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
 
 ---
 
@@ -471,3 +522,27 @@
 - **原因**: Phase 2 設計書で execute() の4状態ハンドリングを十分に設計しなかった
 - **解決策**: linter/ユーザーのフィードバックで `RuntimeTerminalHandoffResult` 型を導入し、execute() でも terminalSurface → handoff bundle を返す分岐を追加
 - **教訓**: 3-role facade（plan/execute/improve）で4状態ハンドリングを設計する際は、全 role × 全 capability の matrix を Phase 2 で明示的に埋める
+
+---
+
+### TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 設計タスク教訓（2026-03-22）
+
+#### L-THSR-001: 設計タスクの Phase 12 仕様書更新先送りパターン（P57 再発）
+
+- **症状**: system-spec-update-summary.md に「更新内容」を詳細に記載したが、実際の `.claude/skills/` ファイルへの追記が 0 行だった
+- **原因**: 「計画書を書くこと」と「実ファイルへの反映」を混同。system-spec-update-summary を書いた時点で完了と認識してしまった
+- **解決策**: documentation-changelog に `git diff --stat -- .claude/skills/` の実行結果を事後記録として貼り付けるルールを追加
+- **教訓**: 設計タスクでも Phase 12 完了時点で `.claude/skills/` を実更新する。「計画文」ではなく「実績ログ」のみを残す
+
+#### L-THSR-002: Concern 3分割 × 5 Consumer の設計整理手法
+
+- **症状**: Launcher / Handoff Card / Consumer Adapter の 3 concern に対して 5 consumer（Chat Edit / Runtime / Skill Docs / Agent Execution / Manual Launcher）の組合せが発生し、設計の見通しが悪くなった
+- **解決策**: Consumer → DTO マッピングテーブルを Phase 2 で一枚表として定義し、surfaceType 列挙で concern 横断の統一キーを設けた。テーブル化により各 consumer の入力型・変換関数・出力型が一覧で比較でき、冗長パスの早期発見に有効だった
+- **教訓**: 複数 concern × 複数 consumer の設計では、Phase 2 で全組合せのマッピングテーブルを作成し、テーブルの空セルから設計漏れを検出する
+
+#### L-THSR-003: 未タスク件数の system-spec-update-summary ↔ unassigned-task-detection 不整合（P59 再発）
+
+- **症状**: system-spec-update-summary.md に「5 件」と記載されたが、unassigned-task-detection.md の実際の検出件数は「8 件」だった
+- **原因**: Phase 12 を並列エージェントで分担した結果、summary 作成エージェントと未タスク検出エージェントの間で情報が断絶した
+- **解決策**: documentation-changelog は全 Task 完了後にメインエージェントが一括作成する。件数は unassigned-task-detection.md の確定値を参照し、他ファイルの「予測値」を使わない
+- **教訓**: Phase 12 の件数系データは最後に1箇所で確定し、全ファイルにコピーする（逆方向の参照は禁止）
