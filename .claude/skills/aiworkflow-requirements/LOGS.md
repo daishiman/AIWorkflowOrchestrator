@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-23 - TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION 実装完了（ChatView header に InlineModelSelector compact 配置 / disabled={isSending} 連動 / LLMGuidanceBanner 自動連携 / 8テスト追加 62全PASS / ui-ux-llm-selector.md + ui-ux-navigation.md 更新） |
 | 2026-03-22 - TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（shared selector contract sync / backlog cleanup / completed ledger 追加 / Phase 12 guide drift 修正） |
 | 2026-03-21 - chat-inline-model-selector ワークフロー仕様書作成（TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT / TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION / TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 3タスク Phase 1-13 仕様書 34ファイル） |
 | 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE follow-up formalize（UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001 / UT-FIX-LLM-BANNER-DISMISS-001） |

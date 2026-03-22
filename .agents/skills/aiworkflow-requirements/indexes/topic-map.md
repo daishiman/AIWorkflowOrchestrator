@@ -1276,16 +1276,16 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | UI構成 | L23 |
 | 共有インラインセレクター | L34 |
-| プロバイダーとモデル一覧 | L45 |
-| 状態管理 | L60 |
-| UXフロー | L88 |
-| スタイルガイドライン | L108 |
-| アクセシビリティ | L135 |
-| エラーハンドリング | L145 |
-| テストカバレッジ | L153 |
-| 実行経路との統合 | L178 |
-| 関連タスクドキュメント | L189 |
-| 関連ドキュメント | L204 |
+| プロバイダーとモデル一覧 | L51 |
+| 状態管理 | L66 |
+| UXフロー | L94 |
+| スタイルガイドライン | L114 |
+| アクセシビリティ | L141 |
+| エラーハンドリング | L151 |
+| テストカバレッジ | L159 |
+| 実行経路との統合 | L184 |
+| 関連タスクドキュメント | L195 |
+| 関連ドキュメント | L210 |
 
 ### references/ui-ux-navigation.md
 
@@ -1294,13 +1294,13 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L13 |
 | Global Navigation | L43 |
 | ChatViewナビゲーション | L341 |
-| ナビゲーションボタン仕様 | L347 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L363 |
-| テスト検証済み項目 | L377 |
-| アクセシビリティ対応事例 | L392 |
-| ナビゲーションパターンのベストプラクティス | L424 |
-| 関連ドキュメント | L436 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L445 |
+| ナビゲーションボタン仕様 | L371 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L387 |
+| テスト検証済み項目 | L401 |
+| アクセシビリティ対応事例 | L416 |
+| ナビゲーションパターンのベストプラクティス | L448 |
+| 関連ドキュメント | L460 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L469 |
 
 ### references/ui-ux-panels.md
 
@@ -1806,13 +1806,13 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 対象 wave | L3 |
-| current canonical set | L13 |
-| workflow-local artifacts | L29 |
-| follow-up 未タスク | L95 |
-| 同一 wave で更新した canonical docs | L106 |
-| legacy path / filename compatibility | L116 |
-| validation chain | L125 |
-| 運用メモ | L145 |
+| current canonical set | L15 |
+| workflow-local artifacts | L31 |
+| follow-up 未タスク | L116 |
+| 同一 wave で更新した canonical docs | L129 |
+| legacy path / filename compatibility | L140 |
+| validation chain | L150 |
+| 運用メモ | L173 |
 
 ### references/workflow-ai-chat-llm-integration-fix.md
 
@@ -1820,12 +1820,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 対象 | L3 |
 | 現行実装アンカー | L12 |
 | current canonical set | L26 |
-| 実装・監査ステータス | L38 |
-| artifact inventory / parent docs / legacy | L78 |
-| タスク別の最小読書セット | L88 |
-| 読む順番 | L130 |
-| 検索キーワード | L139 |
-| 注意点 | L152 |
+| 実装・監査ステータス | L39 |
+| artifact inventory / parent docs / legacy | L87 |
+| タスク別の最小読書セット | L97 |
+| 読む順番 | L139 |
+| 検索キーワード | L148 |
+| 注意点 | L161 |
 
 ### references/workflow-ai-runtime-authmode-unification.md
 
@@ -1853,9 +1853,9 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | current canonical set | L12 |
 | extraction matrix | L25 |
-| 実装同期ルール | L38 |
-| 実装ステータススナップショット（2026-03-21） | L45 |
-| Follow-up Backlog | L55 |
+| 実装同期ルール | L39 |
+| 実装ステータススナップショット（2026-03-21） | L46 |
+| Follow-up Backlog | L54 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2176,8 +2176,9 @@ node scripts/list-specs.js --topics
 ### references/arch-state-management-reference-persist-hardening-test-quality.md
 
 | セクション | 行 |
-|------------|----|\n| Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001） | L6 |
-| TASK-043D: テスト品質ゲート設計（2026-03-08） | L63 |
+|------------|----|\n| LLM Selection Persist Validation（TASK-FIX-LLM-CONFIG-PERSISTENCE） | L6 |
+| Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001） | L29 |
+| TASK-043D: テスト品質ゲート設計（2026-03-08） | L86 |
 
 ### references/arch-state-management-reference-selectors.md
 
@@ -2203,7 +2204,8 @@ node scripts/list-specs.js --topics
 | 仕様書インデックス | L7 |
 | 利用順序 | L18 |
 | lifecycleHistorySlice / feedbackSlice（TASK-SKILL-LIFECYCLE-07） | L23 |
-| 関連ドキュメント | L52 |
+| LLM 選択状態の永続化（TASK-FIX-LLM-CONFIG-PERSISTENCE） | L51 |
+| 関連ドキュメント | L81 |
 
 ### references/arch-ui-components-advanced.md
 
@@ -2484,10 +2486,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | 使い方 | L14 |
 | Current Alias Overrides（個別互換行） | L21 |
-| Family Summary | L34 |
-| Detailed Register | L53 |
-| Section Extract Register (2026-03-17) | L234 |
-| 500-Line Split Register (2026-03-16) | L245 |
+| Family Summary | L36 |
+| Detailed Register | L55 |
+| Section Extract Register (2026-03-17) | L236 |
+| 500-Line Split Register (2026-03-16) | L247 |
 
 ### references/lessons-learned-archive-2026-03-mid.md
 
@@ -2585,10 +2587,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L37 |
-| クイックリファレンス: カテゴリ別検索ガイド | L50 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L411 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L445 |
+| 分割ファイル一覧 | L39 |
+| クイックリファレンス: カテゴリ別検索ガイド | L54 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L416 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L450 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2612,16 +2614,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L33 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L73 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L103 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L152 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L205 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L233 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L276 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L327 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L396 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L434 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L36 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L76 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L116 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L146 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L195 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L248 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L276 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L319 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L370 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L439 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L477 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -3861,8 +3864,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L32 |
-| 関連ドキュメント | L37 |
+| 利用順序 | L34 |
+| 関連ドキュメント | L39 |
 
 ### references/testing-accessibility.md
 
