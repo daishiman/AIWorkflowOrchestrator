@@ -120,12 +120,12 @@ function installMocks(selectedScenario: HarnessScenario): void {
   } as unknown as typeof window.electronAPI;
 
   window.slideApi = {
-    startWatching: async () => ({ success: true }),
-    getSyncStatus: async () => ({
+    watchStart: async () => ({ success: true }),
+    syncStatus: async () => ({
       success: true,
       data: currentStatus,
     }),
-    stopWatching: async () => ({ success: true }),
+    watchStop: async () => ({ success: true }),
     executePhase: async (phase: SkillPhase) => {
       if (selectedScenario === "running") {
         emitSyncStatus("syncing");
@@ -146,13 +146,13 @@ function installMocks(selectedScenario: HarnessScenario): void {
         },
       };
     },
-    manualSync: async () => {
+    reverseSync: async () => {
       emitSyncStatus("syncing");
       await new Promise((resolve) => setTimeout(resolve, 120));
       emitSyncStatus("synced");
       return { success: true };
     },
-    cancelExecution: async () => {
+    cancel: async () => {
       emitProgress(0);
       emitSyncStatus("error");
       return { success: true };
@@ -161,7 +161,7 @@ function installMocks(selectedScenario: HarnessScenario): void {
       listeners.structure.add(listener);
       return () => listeners.structure.delete(listener);
     },
-    onSyncStatusChange: (listener: SyncStatusListener) => {
+    onSyncStatusChanged: (listener: SyncStatusListener) => {
       listeners.syncStatus.add(listener);
       return () => listeners.syncStatus.delete(listener);
     },
@@ -169,6 +169,9 @@ function installMocks(selectedScenario: HarnessScenario): void {
       listeners.progress.add(listener);
       return () => listeners.progress.delete(listener);
     },
+    onSyncProgress: () => () => {},
+    onSyncError: () => () => {},
+    onWatchStatus: () => () => {},
   } as typeof window.slideApi;
 }
 

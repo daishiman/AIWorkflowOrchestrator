@@ -23,6 +23,7 @@ const mockController: WorkspaceChatController = {
   selectedFiles: [],
   selectedFilePath: null,
   selectedModelId: "gpt-4o",
+  blockedReason: null,
   pendingCursorPosition: null,
   mention: {
     isOpen: false,
@@ -82,6 +83,7 @@ beforeEach(() => {
   mockController.selectedFiles = [];
   mockController.selectedFilePath = null;
   mockController.selectedModelId = "gpt-4o";
+  mockController.blockedReason = null;
   mockController.pendingCursorPosition = null;
   mockController.mention = {
     isOpen: false,
@@ -187,6 +189,7 @@ describe("WorkspaceChatPanel ランタイム整合テスト", () => {
     mockController.isSending = false;
     mockController.isStreaming = false;
     mockController.selectedModelId = null;
+    mockController.blockedReason = "NO_MODEL";
 
     render(<WorkspaceChatPanel controller={mockController} />);
 
@@ -197,8 +200,9 @@ describe("WorkspaceChatPanel ランタイム整合テスト", () => {
   // ===== Phase 6: テスト拡充 (E-05, E-16〜E-22) =====
 
   // E-05: unsupported capability で GuidanceBlock 表示
-  it("E-05: selectedModelId=null で GuidanceBlock が表示される", () => {
+  it("E-05: blockedReason=NO_MODEL で GuidanceBlock が表示される", () => {
     mockController.selectedModelId = null;
+    mockController.blockedReason = "NO_MODEL";
 
     render(<WorkspaceChatPanel controller={mockController} />);
 
