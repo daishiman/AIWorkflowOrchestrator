@@ -141,6 +141,41 @@
 | Copy | クリップボードへ `terminalCommand` をコピーし、完了フィードバックを表示 |
 | Dismiss | `agentSlice.clearHandoffGuidance()` を呼び出し、カードを閉じる |
 
+### HandoffGuidance canonical 定義（TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001）
+
+`HandoffGuidance` は Terminal Handoff Surface の唯一の Props 型（canonical DTO）。
+
+**禁止操作（Manual Boundary）**:
+
+| ID | ルール |
+|-----|------|
+| MB-1 | auto-send（コマンドの自動送信）禁止 |
+| MB-2 | hidden injection（不可視コンテンツの注入）禁止 |
+| MB-3 | headless execution（ユーザー不在での実行）禁止 |
+| MB-4 | credential passthrough（認証情報の直接受け渡し）禁止 |
+
+**Consumer → DTO マッピング**:
+
+| Consumer | 入力型 | surfaceType |
+|----------|--------|-------------|
+| Chat Edit | TerminalHandoffBundle | "chat-edit" |
+| Runtime | TerminalHandoffBundle | "runtime" |
+| Skill Docs | SkillDocsCapabilityResult | "skill-docs" |
+| Agent Execution | TerminalHandoffBundle | "chat-edit" |
+| Manual Launcher | direct construction | "manual" |
+
+#### 完了タスク
+
+| タスクID | Phase | 完了日 | 種別 |
+|----------|-------|--------|------|
+| TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 | Phase 1-13 | 2026-03-22 | 設計完了 |
+
+#### 関連未タスク
+
+- UT-EXECUTION-ENV-TERMINAL-001: ExecutionEnvironment Terminal 常設パネル実装
+- UT-TERMINAL-DOCK-ABORTED-STATE-001: Terminal Dock の aborted state 定義
+- UT-GUIDANCE-BLOCK-HANDOFF-CARD-RULE-001: GuidanceBlock vs TerminalHandoffCard 使い分けルール
+
 ### PermissionDialog（TASK-7C実装済）
 
 | 項目     | 仕様                                                              |

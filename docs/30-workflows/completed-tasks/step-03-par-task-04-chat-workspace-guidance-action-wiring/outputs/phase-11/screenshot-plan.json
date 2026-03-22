@@ -1,0 +1,58 @@
+{
+  "taskId": "TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001",
+  "phase": 11,
+  "createdAt": "2026-03-22",
+  "executedAt": "2026-03-22T00:09:36.242Z",
+  "captureMethod": "current-renderer-entry",
+  "route": "/?skipAuth=true",
+  "viewport": {
+    "width": 1440,
+    "height": 960
+  },
+  "theme": "light",
+  "screenshotTargets": [
+    {
+      "tcId": "TC-11-01",
+      "state": "chat-blocked-no-model",
+      "surface": "ChatView",
+      "description": "ChatView で blocked banner と primary CTA が表示されることを確認する",
+      "evidence": "outputs/phase-11/screenshots/TC-11-01-chat-blocked-light.png",
+      "checks": ["bannerVisible"]
+    },
+    {
+      "tcId": "TC-11-02",
+      "state": "settings-after-guidance-cta",
+      "surface": "SettingsView",
+      "description": "ChatView の CTA クリック後に SettingsView へ 1クリックで遷移することを確認する",
+      "evidence": "outputs/phase-11/screenshots/TC-11-02-settings-after-guidance-cta-light.png",
+      "checks": ["navigationToSettings"]
+    },
+    {
+      "tcId": "TC-11-03",
+      "state": "chat-ready",
+      "surface": "ChatView",
+      "description": "provider / model 選択済みでは blocked banner が非表示であることを確認する",
+      "evidence": "outputs/phase-11/screenshots/TC-11-03-chat-ready-light.png",
+      "checks": ["bannerHidden"]
+    },
+    {
+      "tcId": "TC-11-04",
+      "state": "workspace-blocked-no-model",
+      "surface": "WorkspaceView",
+      "description": "Workspace GuidanceBlock が表示され、settings CTA が配線されていることを確認する",
+      "evidence": "outputs/phase-11/screenshots/TC-11-04-workspace-blocked-light.png",
+      "checks": ["navigationToSettings"]
+    }
+  ],
+  "deferredTargets": [
+    {
+      "tcId": "UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001",
+      "reason": "secondary CTA 用の openTerminal handler が current implementation に存在しない"
+    },
+    {
+      "tcId": "UT-IMP-CHAT-WORKSPACE-GUIDANCE-RETRY-CONNECTION-IPC-001",
+      "reason": "retryConnection IPC 契約と UI wiring が未実装"
+    }
+  ],
+  "fallbackMethod": "not-needed-dedicated-capture-succeeded"
+}

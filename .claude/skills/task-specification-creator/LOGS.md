@@ -4,6 +4,41 @@
 
 ---
 
+## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 final sync
+- **Result**: success
+- **Notes**:
+  - D1-D6（6件の drift）を解消
+  - 12チャネルを正本仕様に統一（invoke 6 + push 6）
+  - validateIpcSender + P42 3段バリデーション + path guard を全ハンドラに適用
+  - RuntimeResolver 統合: integrated/handoff 分岐対応
+  - modifier-skill.ts を skill-executor.ts に統合
+  - slideSlice に正本 7 store fields を追加
+  - HandoffGuidance 型を共有（src/types/handoff.ts 正本を re-export）
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
+## TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 設計完了
+- **Result**: success
+- **Notes**:
+  - Concern 3 分割（Launcher / Handoff Card / Consumer Adapter）設計確定
+  - 統一 DTO: HandoffGuidance（terminalCommand / contextSummary / reason）
+  - Manual Boundary: auto-send 禁止 / hidden injection 禁止 / headless execution 禁止
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+  - 未タスク 8 件（MINOR 3 件 + GAP 5 件）を unassigned-task/ に登録
+  - implementation-guide.md（Part 1: 中学生レベル概念説明 / Part 2: 開発者向け）作成
+  - Phase 13 はユーザー指示待ち（blocked）
+
+---
+
+## TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR same-wave sync（2026-03-22）
+
 ## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 
 - **Agent**: task-specification-creator
@@ -16,6 +51,58 @@
 
 ---
 
+## TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 docs/spec sync
+- **Result**: success
+- **Notes**:
+  - `workflow-ai-runtime-execution-responsibility-realignment.md` に Task04 standalone root と current canonical set を追記
+  - `task-workflow-completed.md` に `spec_created` / `implementation_ready` / Phase 13 blocked の分離記録を追加
+  - `task-workflow-backlog.md` と `lessons-learned-current.md` / `lessons-learned-phase12-workflow-lifecycle.md` に follow-up 4件と教訓4件を追加
+  - Task04 の same-wave sync を task/workflow/doc/spec の関係性として再記録
+
+---
+
+## TASK-FIX-LLM-CONFIG-PERSISTENCE 完了（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 Task 2
+- **Result**: success
+- **Notes**:
+  - `aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md` に完了記録を追加（P1対策: 2ファイル両方）
+  - `aiworkflow-requirements/SKILL.md` と `task-specification-creator/SKILL.md` に変更履歴を追加（P25対策）
+  - `arch-state-management.md` の persist 対象フィールド一覧に `selectedProviderId` / `selectedModelId` を追記
+  - `workflow-ai-chat-llm-integration-fix.md` の TASK-FIX-LLM-CONFIG-PERSISTENCE ステータスを「実装完了」へ更新
+  - `ui-ux-llm-selector.md` の persist 未実装注釈を「実装済み」へ更新
+  - topic-map.md を generate-index.js で再生成
+
+---
+
+## workflow 移設時の本文 stale path ガード追加（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: ガイド/運用ルール是正
+- **Result**: success
+- **Notes**:
+  - `references/spec-update-workflow.md` に、ディレクトリ移設後は `index.md` の canonical path、各 Phase の依存参照、`outputs/verification-report.md` を同一 wave で再生成するルールを追加
+  - `rg -n "<old-path>" <workflow> <parent> <downstream>` を 0 件化してから `verify-all-specs` を再実行する手順を固定
+  - standalone task 移設で「構造 PASS / 意味 stale」になる再発パターンを明文化
+
+---
+
+## pending skeleton workflow validator 調整（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: validator / workflow generation rule sync
+- **Result**: success
+- **Notes**:
+  - `validate-phase-output.js` を更新し、全 Phase が `pending` / `not_started` の workflow では `outputs/artifacts.json` と Phase 11 補助成果物を未開始扱いで保留するよう変更
+  - 設計タスクは `manual-test-plan.md` と `screenshot-plan.json` の `screenshotRequired=false` を Phase 11 evidence として受理し、非視覚 walkthrough を warning 扱いしないよう是正
+  - `verify-all-specs.js` は依存 Phase 参照をメタ情報込みで判定し、`/outputs/` 参照の未生成ノイズを除去
+  - `references/patterns-workflow-generation.md` に pending skeleton workflow の台帳同期切替条件を追記し、validator と skill guidance の期待値を一致させた
+
+---
 ## chat-inline-model-selector ワークフロー仕様書作成（2026-03-21）
 
 - **Agent**: task-specification-creator

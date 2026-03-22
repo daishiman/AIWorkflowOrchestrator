@@ -11,17 +11,20 @@ import { useSlideProjectStore } from "../store";
 
 // window.slideApiをモック
 const mockSlideApi = {
-  startWatching: vi.fn(),
-  stopWatching: vi.fn(),
-  getSyncStatus: vi.fn(),
+  watchStart: vi.fn(),
+  watchStop: vi.fn(),
+  syncStatus: vi.fn(),
   executePhase: vi.fn(),
-  manualSync: vi.fn(),
-  cancelExecution: vi.fn(),
+  reverseSync: vi.fn(),
+  cancel: vi.fn(),
   onStructureChange: vi.fn((_callback: (data: unknown) => void) => vi.fn()),
-  onSyncStatusChange: vi.fn((_callback: (status: string) => void) => vi.fn()),
+  onSyncStatusChanged: vi.fn((_callback: (status: string) => void) => vi.fn()),
   onExecutionProgress: vi.fn((_callback: (progress: number) => void) =>
     vi.fn(),
   ),
+  onSyncProgress: vi.fn((_callback: (progress: number) => void) => vi.fn()),
+  onSyncError: vi.fn((_callback: (error: string) => void) => vi.fn()),
+  onWatchStatus: vi.fn((_callback: (status: string) => void) => vi.fn()),
 };
 
 // グローバルwindowオブジェクトにslideApiを追加
@@ -37,9 +40,9 @@ describe("useSlideProject", () => {
     // Reset store
     useSlideProjectStore.getState().reset();
     // Reset default mock implementations
-    mockSlideApi.startWatching.mockResolvedValue({ success: true });
-    mockSlideApi.stopWatching.mockResolvedValue({ success: true });
-    mockSlideApi.getSyncStatus.mockResolvedValue({
+    mockSlideApi.watchStart.mockResolvedValue({ success: true });
+    mockSlideApi.watchStop.mockResolvedValue({ success: true });
+    mockSlideApi.syncStatus.mockResolvedValue({
       success: true,
       data: "synced",
     });
@@ -51,12 +54,15 @@ describe("useSlideProject", () => {
         duration: 1000,
       },
     });
-    mockSlideApi.manualSync.mockResolvedValue({ success: true });
-    mockSlideApi.cancelExecution.mockResolvedValue({ success: true });
+    mockSlideApi.reverseSync.mockResolvedValue({ success: true });
+    mockSlideApi.cancel.mockResolvedValue({ success: true });
     // Reset event listener mocks to return unsubscribe functions
     mockSlideApi.onStructureChange.mockReturnValue(vi.fn());
-    mockSlideApi.onSyncStatusChange.mockReturnValue(vi.fn());
+    mockSlideApi.onSyncStatusChanged.mockReturnValue(vi.fn());
     mockSlideApi.onExecutionProgress.mockReturnValue(vi.fn());
+    mockSlideApi.onSyncProgress.mockReturnValue(vi.fn());
+    mockSlideApi.onSyncError.mockReturnValue(vi.fn());
+    mockSlideApi.onWatchStatus.mockReturnValue(vi.fn());
   });
 
   afterEach(() => {
@@ -87,7 +93,7 @@ describe("useSlideProject", () => {
         await result.current.openProject("/test/project");
       });
 
-      expect(mockSlideApi.startWatching).toHaveBeenCalledWith("/test/project");
+      expect(mockSlideApi.watchStart).toHaveBeenCalledWith("/test/project");
       expect(result.current.project).toEqual({ path: "/test/project" });
       expect(result.current.isWatching).toBe(true);
       expect(result.current.hasProject).toBe(true);
@@ -95,7 +101,7 @@ describe("useSlideProject", () => {
     });
 
     it("should fetch initial sync status", async () => {
-      mockSlideApi.getSyncStatus.mockResolvedValue({
+      mockSlideApi.syncStatus.mockResolvedValue({
         success: true,
         data: "out-of-sync",
       });
@@ -106,12 +112,12 @@ describe("useSlideProject", () => {
         await result.current.openProject("/test/project");
       });
 
-      expect(mockSlideApi.getSyncStatus).toHaveBeenCalledWith("/test/project");
+      expect(mockSlideApi.syncStatus).toHaveBeenCalledWith("/test/project");
       expect(result.current.syncStatus).toBe("out-of-sync");
     });
 
     it("should handle start watching failure", async () => {
-      mockSlideApi.startWatching.mockResolvedValue({
+      mockSlideApi.watchStart.mockResolvedValue({
         success: false,
         error: { message: "Watch failed" },
       });
@@ -127,7 +133,7 @@ describe("useSlideProject", () => {
     });
 
     it("should handle exception during open", async () => {
-      mockSlideApi.startWatching.mockRejectedValue(new Error("Network error"));
+      mockSlideApi.watchStart.mockRejectedValue(new Error("Network error"));
 
       const { result } = renderHook(() => useSlideProject());
 
@@ -153,7 +159,7 @@ describe("useSlideProject", () => {
         await result.current.closeProject();
       });
 
-      expect(mockSlideApi.stopWatching).toHaveBeenCalled();
+      expect(mockSlideApi.watchStop).toHaveBeenCalled();
       expect(result.current.project).toBeNull();
       expect(result.current.hasProject).toBe(false);
     });
@@ -261,12 +267,12 @@ describe("useSlideProject", () => {
         await result.current.manualSync();
       });
 
-      expect(mockSlideApi.manualSync).toHaveBeenCalledWith("/test/project");
+      expect(mockSlideApi.reverseSync).toHaveBeenCalledWith("/test/project");
       expect(result.current.syncStatus).toBe("synced");
     });
 
     it("should handle sync failure", async () => {
-      mockSlideApi.manualSync.mockResolvedValue({
+      mockSlideApi.reverseSync.mockResolvedValue({
         success: false,
         error: { message: "Sync failed" },
       });
@@ -293,7 +299,7 @@ describe("useSlideProject", () => {
         await result.current.manualSync();
       });
 
-      expect(mockSlideApi.manualSync).not.toHaveBeenCalled();
+      expect(mockSlideApi.reverseSync).not.toHaveBeenCalled();
     });
   });
 
@@ -305,7 +311,7 @@ describe("useSlideProject", () => {
         await result.current.cancelExecution();
       });
 
-      expect(mockSlideApi.cancelExecution).toHaveBeenCalled();
+      expect(mockSlideApi.cancel).toHaveBeenCalled();
       expect(result.current.currentPhase).toBe("idle");
     });
   });
@@ -315,14 +321,14 @@ describe("useSlideProject", () => {
       renderHook(() => useSlideProject());
 
       expect(mockSlideApi.onStructureChange).toHaveBeenCalled();
-      expect(mockSlideApi.onSyncStatusChange).toHaveBeenCalled();
+      expect(mockSlideApi.onSyncStatusChanged).toHaveBeenCalled();
       expect(mockSlideApi.onExecutionProgress).toHaveBeenCalled();
     });
 
     it("should unsubscribe from events on unmount", () => {
       const unsubscribeMock = vi.fn();
       mockSlideApi.onStructureChange.mockReturnValue(unsubscribeMock);
-      mockSlideApi.onSyncStatusChange.mockReturnValue(unsubscribeMock);
+      mockSlideApi.onSyncStatusChanged.mockReturnValue(unsubscribeMock);
       mockSlideApi.onExecutionProgress.mockReturnValue(unsubscribeMock);
 
       const { unmount } = renderHook(() => useSlideProject());
@@ -334,7 +340,7 @@ describe("useSlideProject", () => {
 
     it("should update sync status on sync status change event", async () => {
       let syncStatusCallback: (status: string) => void = vi.fn();
-      mockSlideApi.onSyncStatusChange.mockImplementation((callback: any) => {
+      mockSlideApi.onSyncStatusChanged.mockImplementation((callback: any) => {
         syncStatusCallback = callback;
         return vi.fn();
       });

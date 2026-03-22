@@ -258,6 +258,22 @@ handoff 判定時に `HandoffGuidance` を構築するサービス。ユーザ�
 - `terminalCommand` に API キーを含めない
 - コマンド形式: `claude --add-dir "<workspace>" "<message>"`
 
+### buildForSurface 統一メソッド（TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001）
+
+`TerminalHandoffBuilder` に surface-agnostic な統一ビルドメソッドを追加する設計。
+
+**surfaceType 列挙**:
+
+| surfaceType | 用途 | contextSummary フォーマット |
+|-------------|------|---------------------------|
+| "chat-edit" | Workspace Chat での handoff | 会話コンテキストを含む要約 |
+| "runtime" | Runtime Policy による handoff | ポリシー判定結果を含む要約 |
+| "skill-docs" | Skill Docs クエリからの handoff | ドキュメント参照情報を含む要約 |
+
+#### 関連未タスク
+
+- UT-RUNTIME-BUILDER-MIGRATION-001: 既存 build() → buildForSurface() 移行
+
 ---
 
 ## IPCチャンネル
