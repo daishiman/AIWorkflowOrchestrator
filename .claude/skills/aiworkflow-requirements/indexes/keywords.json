@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-22T01:11:05.587Z",
+  "generated": "2026-03-22T02:34:32.881Z",
   "totalKeywords": 2417,
   "keywords": {
     "チャット履歴": [
@@ -6197,9 +6197,6 @@
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "STREAM": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
     "CHATVIEW": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -10677,6 +10674,9 @@
       "ui-ux-llm-selector.md"
     ],
     "構成": [
+      "ui-ux-llm-selector.md"
+    ],
+    "共有インラインセレクター": [
       "ui-ux-llm-selector.md"
     ],
     "プロバイダーとモデル一覧": [

@@ -7,11 +7,13 @@
 
 ## 概要
 
-LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Main に同期して `ai.chat` / `llm:stream-chat` の実行経路へ渡す。UI surface は単一画面に固定されず、`LLMSelectorPanel`、AgentView、ChatView/WorkspaceView の blocked guidance が分担している。
+LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Main に同期して `ai.chat` / `llm:stream-chat` の実行経路へ渡す。current branch では live surface として `LLMSelectorPanel` と blocked guidance が存在し、shared compact component として `InlineModelSelector` が追加されている。ChatView / WorkspaceChatPanel への live mount は Task02 / Task03 の責務であり、ここでは shared component contract を正本として扱う。
 
 **current implementation anchors**:
 
 - selector panel: `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx`
+- inline compact selector: `apps/desktop/src/renderer/components/llm/InlineModelSelector.tsx`
+- inline compact selector tests: `apps/desktop/src/renderer/components/llm/__tests__/InlineModelSelector.test.tsx`
 - state owner: `apps/desktop/src/renderer/store/slices/llmSlice.ts`
 - selector hooks: `apps/desktop/src/renderer/store/index.ts`
 - Main sync: `apps/desktop/src/main/ipc/llmConfigProvider.ts`
@@ -27,6 +29,18 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 | モデルドロップダウン | 選択されたプロバイダーの利用可能なモデル一覧から選択 |
 | 現在の選択表示 | provider / model の current selection と health を表示 |
 | リアルタイム切り替え | 選択時に `llmSlice` 更新 → `llm:set-selected-config` で Main 同期 |
+| shared compact selector | `InlineModelSelector` が compact UI で provider/model/health を表示する |
+
+## 共有インラインセレクター
+
+| 項目 | current behavior |
+| --- | --- |
+| コンポーネント | `InlineModelSelector` |
+| 配置責務 | Task01 は shared component 作成、Task02/03 が ChatView / Workspace mount を担当 |
+| provider 取得 | `providers` prop 未指定かつ store list が空のとき `fetchProviders()` を呼ぶ |
+| provider 切替 | default model を即時選択し、store mode でも `onSelectionChange` を返す |
+| health 更新 | effective provider の変化時に `checkHealth(providerId)` を呼ぶ |
+| compact 表示 | `compact` prop で trigger padding / font size を縮小する |
 
 ## プロバイダーとモデル一覧
 
@@ -60,23 +74,23 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 **同期契約**:
 
 - `selectProvider()` / `selectModel()` は `window.electronAPI.llm.setSelectedConfig()` を呼び、Main 側の current selection を更新する
+- `InlineModelSelector` は props 直指定モードと store mode の両方を持ち、props が未指定のときだけ store を参照する
 - `chatSlice.sendMessage()` は `selectedProviderId` / `selectedModelId` を参照して `AI_CHAT` request に渡す
 - `chatSlice.sendMessage()` 失敗時は `chatError` に error code を設定し、ChatView のインラインエラーバナー（Apple HIG systemRed、5秒自動消去、`role="alert"`）で日本語メッセージを表示する（TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE）
 - `useWorkspaceChatController()` は同じ selection を `streamChat` request に渡す
 
 **注意**:
 
-- `persist.partialize` に `selectedProviderId` / `selectedModelId` を追加済み（TASK-FIX-LLM-CONFIG-PERSISTENCE、2026-03-21）
-- persist version: v2（v0→v2 migrate 関数で旧 state を安全変換）
-- 起動時バリデーション: 既存プロバイダーリストに含まれない選択値はクリアする
-- runtime sync と persist は引き続き別 concern で扱う
+- current `persist.partialize` には LLM 選択状態は含まれていない
+- そのため再起動後 persist は未実装であり、runtime sync と persist は別 concern で扱う
+- `InlineModelSelector` の live screenshot verification は consumer surface 未統合のため Task02/03 側で実施する
 
 ## UXフロー
 
 ### プロバイダー切り替え時の動作
 
 1. ユーザーが「Provider」ドロップダウンからプロバイダーを選択
-2. `selectProvider()` アクションが即座に実行
+2. `setProvider()` アクションが即座に実行
 3. 選択されたプロバイダーの最初のモデルが自動選択される
 4. 「Model」ドロップダウンの選択肢が更新される
 5. 「Current」バッジが更新される
@@ -85,7 +99,7 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 ### モデル切り替え時の動作
 
 1. ユーザーが「Model」ドロップダウンからモデルを選択
-2. `selectModel()` アクションが即座に実行
+2. `setProvider()` アクションが即座に実行
 3. 「Current」バッジが更新される
 4. 次のメッセージから新しいモデルが使用される
 
@@ -133,8 +147,7 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 | エラーケース | 対処法 |
 |--------------|--------|
 | プロバイダー一覧が空 | 「No LLM providers available」メッセージを表示 |
-| 選択されたモデルが存在しない | provider は保持しつつ `selectedModelId=null` にクリアし、再選択を促す |
-| 選択された provider が存在しない | `selectedProviderId=null`, `selectedModelId=null` にクリアし、暗黙 fallback を禁止する |
+| 選択されたモデルが存在しない | プロバイダーの最初のモデルにフォールバック |
 | APIキーが未設定 | ドロップダウンは表示するが、メッセージ送信時にエラー表示 |
 
 ## テストカバレッジ
@@ -153,6 +166,15 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 
 **カバレッジ**: 100%（7/7テストケース合格）
 
+**shared selector unit tests** (`InlineModelSelector.test.tsx`):
+
+| テストケース | 内容 |
+| --- | --- |
+| provider hydrate | mount 時に `fetchProviders()` が必要条件でのみ呼ばれる |
+| provider selection | default model 選択と `onSelectionChange` が整合する |
+| health refresh | provider change 時に `checkHealth()` が呼ばれる |
+| compact / disabled | compact trigger style と disabled 制御を確認する |
+
 ## 実行経路との統合
 
 | 経路 | current behavior |
@@ -169,11 +191,13 @@ LLM 選択と system prompt は独立状態だが、Chat 実行時には同じ r
 | ドキュメント | 内容 |
 |--------------|------|
 | `docs/30-workflows/ai-chat-llm-integration-fix/index.md` | 4 タスク統合の親workflow |
-| `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | ChatView error surface task（current canonical root） |
-| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | inline guidance task |
-| `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | persist task（completed root） |
-| `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` | Workspace Chat error UX task（current root） |
-| `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | persist task（current canonical root） |
+| `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | ChatView error surface task（current canonical root） |
+| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | inline guidance task |
+| `docs/30-workflows/chat-inline-model-selector/tasks/01-TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT/` | shared compact selector component task |
+| `docs/30-workflows/chat-inline-model-selector/tasks/02-TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION/` | ChatView mount task |
+| `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/` | WorkspaceChatPanel mount task |
+| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | persist task |
+| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` | Workspace Chat error UX task |
 
 ---
 

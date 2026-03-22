@@ -4,85 +4,94 @@
 
 ---
 
-## TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR same-wave sync（2026-03-22）
+## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 12 final sync
 - **Result**: success
 - **Notes**:
-  - `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/outputs/phase-12/implementation-guide.md` を structured error primary / legacy fallback 前提へ更新
-  - `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/outputs/phase-12/system-spec-update-summary.md` と `phase12-task-spec-compliance-check.md` を追加し、Phase 12 必須成果物を complete 化
-  - `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/artifacts.json` の phase 12 artifact list を増補
-  - `generate-index.js` 再実行前提の index / topic-map / artifacts 整合を記録
-  - Task 03 completed root 移管と Task 04 current root を same-wave で同期した
-  - `validate-phase12-implementation-guide` を 10/10 PASS へ回復した
+  - `references/phase-12-documentation-guide.md` に Phase 12 human-authored outputs の canonical 配置を追記
+  - `references/spec-update-workflow.md` に shared component 完了と consumer surface 完了を混同しないルールを追記
+  - global `docs/30-workflows/unassigned-task/` canonical path を再明文化し、workflow 個別 path drift を防ぐガードを追加
 
 ---
 
 ## chat-inline-model-selector ワークフロー仕様書作成（2026-03-21）
-## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12 追補（impl-spec-to-skill-sync）
+- **Phase**: create（新規ワークフロー作成）
 - **Result**: success
 - **Notes**:
-  - resource-map.md に runtime public IPC wiring 導線を追加
-  - 06-known-pitfalls.md に P65（dead-end namespace による IPC contract drift）を追加
-  - aiworkflow-requirements SKILL.md の trigger に RuntimeSkillCreatorFacade / TerminalHandoffBundle / runtime public IPC 関連キーワードを追加
-  - mirror sync（rsync + diff -qr 差分 0 確認）
+  - `docs/30-workflows/chat-inline-model-selector/` に34ファイルのタスク仕様書を作成
+  - 3タスク分解: TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT / TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION / TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION
+  - Phase 1-3（共通設計）+ Phase 4-13（タスクごと）の構成
+  - skill準拠検証 + 30種思考法分析によるエレガント改善を実施
+  - 重大修正8項目（サブタスク管理セクション追加、インポートパス矛盾修正、onSelectionChange型統一、Phase 12 Task 5追加等）
 
 ---
 
-## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 最終同期（2026-03-21）
+## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 最終ドキュメント更新（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12 最終同期
+- **Phase**: Phase 12 final sync
 - **Result**: success
 - **Notes**:
-  - `outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` を planned wording から実績記録へ置換
-  - `implementation-guide.md` に TypeScript 契約、使用例、エラーハンドリング、エッジケース、設定/定数一覧を補強し、validator 10/10 を狙う構成へ是正
-  - `outputs/artifacts.json` と `phase12-task-spec-compliance-check.md` を追加し、`artifacts.json` と成果物一覧を同一ターンで同期
-  - review board PNG 3件、`manual-test-checklist.md`、`screenshot-plan.json`、`phase11-capture-metadata.json` を current workflow 配下へ揃え、非 UI 中心タスクの Phase 11 fallback を固定
-  - `validate-phase-output.js` を更新し、`phase-01-*` / `phase-1-*` 両系統、`coverage` / `quality` alias、bullet/numbered task list を許容
-  - `verify-all-specs --workflow docs/30-workflows/runtime-skill-creator-ipc-wiring --json` PASS、`pnpm --filter @repo/desktop typecheck` PASS、Vitest 再実行は esbuild platform mismatch により環境阻害として記録
+  - `manual-test-result.md` の `not_run` を `NON_VISUAL_FALLBACK` へ置換し、manual evidence blocker と代替証跡を必須化
+  - `phase-12-documentation-guide.md` と `spec-update-workflow.md` に artifact parity / manual evidence / internal-public IPC 境界ルールを追加
+  - follow-up 2件（Skill Creator public IPC wiring / subscription service integration）を formalize
+  - implementation task の completed record と backlog cleanup を same-wave sync した
 
 ---
 
-## UT-TASK06-007-EXT-006 完了（2026-03-21）
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 実行完了
+- **Phase**: Phase 12 final re-audit
 - **Result**: success
 - **Notes**:
-  - `check-ipc-contracts.ts` の5関数/パターン（normalizeTypeAnnotation / isPrimitiveTypeAnnotation / mergeChannelMaps / CHANNEL_OBJECT_PATTERN / PRELOAD_CALL_START_PATTERN）に `export` を追加
-  - テスト20件追加（T-N 5件 / T-P 6件 / T-M 4件 / T-R 5件）
-  - 既存49件と合わせ69件全PASS、Line 95.79% / Branch 91.55% / Function 100%
-  - `implementation-guide.md`（Part 1/2）/ `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` の6成果物を作成
-  - `architecture-implementation-patterns-reference-ipc-drift-detection.md` の関連タスクテーブルに EXT-006 完了記録を追加
+  - `phase-12-documentation.md` を Task 1〜5 + 必須 6成果物前提へ是正
+  - `outputs/phase-12/skill-feedback-report.md` を追加し、Phase 12 の欠落成果物を解消
+  - workflow root=`implementation_ready`、completed ledger=`spec_created` の分離を system spec に同期
+  - `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` を追加し、未タスク件数を 4件へ更新
+  - worktree 環境でも `.claude` 正本更新を先送りしないルールへ修正
 
 ---
 
-## UT-SLIDE-UI-001 完了同期（2026-03-21）
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 spec-only Phase 1-12 完了（2026-03-21）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 11-12
+- **Phase**: Phase 1-12 全完了（設計タスク）
 - **Result**: success
 - **Notes**:
-  - `phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を current screenshot 10枚基準へ再構成
-  - `implementation-guide.md` を shared `SyncStatus` 実態、error handling、edge cases、定数一覧込みの実績版へ更新
-  - `system-spec-update-summary.md` で Step 2 を `更新あり` とし、canonical sync 必須ファイルを明示
-  - `unassigned-task-detection.md` を pending / resolved 分離へ更新し、false positive を除去
-  - current branch で解消済みの `UT-SLIDE-P31-001` を closure note 化した
-  - validator と same-wave sync の実績を issue / completed-task / `.claude` 正本へ反映した
+  - RuntimePolicy / HealthContract / HandoffContract の3 concern を中央集約する設計を Phase 1-12 で完了
+  - DD-1〜DD-6（設計判断6件）、M-1（RuntimeDecisionForRenderer 型）、M-2（resolve シグネチャ）を処置完了
+  - Phase 10 ゲート判定: PASS（AC-1〜AC-4 全て PASS）
+  - downstream Task03-09 は `spec_created` / `not_started` のままで、centralization 本体実装は未着手
+  - 未タスク3件検出: UT-CLEANUP-AI-CHECK-CONNECTION-001 / UT-CLEANUP-RUNTIME-RESOLVER-001 / UT-DESIGN-SANITIZE-PLACEMENT-001
+  - Phase 12 で backlog / workflow / lessons への導線を同一ターンで同期
+  - Phase 12 成果物: implementation-guide.md（Part1 日常アナロジー + Part2 開発者向け）+ 未タスク指示書3件
 
 ---
+
+## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: docs-only / reference normalization
+- **Result**: success
+- **Notes**:
+  - `step-02-seq-task-02-runtime-policy-centralization` を standalone root として再固定し、workflow 本文の self path / Task01 dependency path / verification-report target を current path へ書き戻した
+  - parent pack と Task03-09 downstream consumer の `Task02 index` 参照を current standalone root へ同期した
+  - `references/spec-update-workflow.md` に「standalone task 移設時は downstream consumer まで same-wave 更新する」ルールを追加した
+
+---
+
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 11-12 再監査
 - **Result**: success
 - **Notes**:
-  - current workflow root を `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` に正規化
+  - current workflow root を `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` に正規化
   - `phase-11-manual-test.md` / `manual-test-result.md` / `screenshot-plan.json` / `screenshot-coverage.md` を screenshot validator 前提へ再構成
   - `implementation-guide.md` を 10/10 要件へ補完し、validator 実測を changelog/compliance に同期
   - `UT-CHATVIEW-ERROR-BANNER-I18N-001` と `UT-AI-CHAT-ERROR-CODE-INVENTORY-001` を formalize
