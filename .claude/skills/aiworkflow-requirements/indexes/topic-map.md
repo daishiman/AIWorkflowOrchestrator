@@ -1854,8 +1854,8 @@ node scripts/list-specs.js --topics
 | current canonical set | L12 |
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
-| 実装ステータススナップショット（2026-03-21） | L46 |
-| Follow-up Backlog | L55 |
+| 実装ステータススナップショット（2026-03-22） | L46 |
+| Follow-up Backlog | L56 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2080,14 +2080,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
-| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L100 |
-| SkillScheduler / ScheduleStore（TASK-9G） | L159 |
-| DefaultSafetyGate サービス（UT-06-003） | L188 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L239 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L264 |
-| キャッシュ機構 | L292 |
-| 永続化 | L298 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L304 |
+| RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | L100 |
+| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L129 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L188 |
+| DefaultSafetyGate サービス（UT-06-003） | L217 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L268 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L293 |
+| キャッシュ機構 | L321 |
+| 永続化 | L327 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L333 |
 
 ### references/arch-electron-services-details.md
 
@@ -2610,6 +2611,7 @@ node scripts/list-specs.js --topics
 | 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L275 |
 | 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L305 |
 | 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L347 |
+| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L394 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
