@@ -26,6 +26,19 @@
 
 ---
 
+### Runtime Skill Creator Public IPC 即時導線（2026-03-21）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| public IPC 契約 | `references/api-ipc-agent-core.md` |
+| security detail | `references/security-electron-ipc-details.md` |
+| registration / DI pattern | `references/architecture-implementation-patterns-details.md` |
+| completed ledger | `references/task-workflow-completed-ipc-contract-preload-alignment.md` |
+| lessons | `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` |
+| workflow root | `docs/30-workflows/runtime-skill-creator-ipc-wiring/` |
+
+---
+
 ## 型定義クイックアクセス
 
 | 用途               | 型名                          | ファイル                   |

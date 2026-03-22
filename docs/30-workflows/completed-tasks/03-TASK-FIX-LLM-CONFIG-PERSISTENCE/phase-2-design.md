@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目          | 内容                                                                                           |
-| ------------- | ---------------------------------------------------------------------------------------------- |
-| Phase番号     | 2                                                                                              |
-| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                            |
-| 作成日        | 2026-03-20                                                                                     |
-| 担当          | -                                                                                              |
-| ステータス    | 未着手                                                                                         |
-| 前Phase成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md` |
+| 項目          | 内容                                                                           |
+| ------------- | ------------------------------------------------------------------------------ |
+| Phase番号     | 2                                                                              |
+| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                            |
+| 作成日        | 2026-03-20                                                                     |
+| 担当          | -                                                                              |
+| ステータス    | completed                                                                      |
+| 前Phase成果物 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md` |
 
 ## 目的
 
@@ -202,9 +202,9 @@ type PersistedState = {
 
 ## 成果物
 
-| 成果物                       | パス                                                                                     | 説明     |
-| ---------------------------- | ---------------------------------------------------------------------------------------- | -------- |
-| Phase 2 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md` | 設計詳細 |
+| 成果物                       | パス                                                                     | 説明     |
+| ---------------------------- | ------------------------------------------------------------------------ | -------- |
+| Phase 2 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md` | 設計詳細 |
 
 ## 完了条件
 

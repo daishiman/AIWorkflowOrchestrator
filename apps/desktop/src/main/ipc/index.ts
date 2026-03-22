@@ -36,6 +36,7 @@ import {
   registerSkillScheduleHandlers,
   registerSkillDocsHandlers,
   registerSkillChainHandlers,
+  getSkillExecutorInstance,
 } from "./skillHandlers";
 import { registerSkillAnalyticsHandlers } from "./skillAnalyticsHandlers";
 import { registerSkillShareHandlers } from "./skillHandlers.share";
@@ -88,6 +89,7 @@ import { registerChatEditHandlers } from "./chatEditHandlers";
 import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
+import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
 import Database from "better-sqlite3";
 import { registerConversationHandlers } from "./conversationHandlers";
 import { ConversationRepository } from "../repositories/conversationRepository";
@@ -875,7 +877,23 @@ export function registerAllIpcHandlers(
   // --- 10. Skill Creator handlers ---
   track("registerSkillCreatorHandlers", () => {
     const skillCreatorService = new SkillCreatorService();
-    registerSkillCreatorHandlers(mainWindow, skillCreatorService);
+    const skillExecutor = getSkillExecutorInstance();
+    if (!skillExecutor) {
+      console.warn(
+        "[IPC] SkillExecutor not available, runtime skill creator handlers will stay degraded",
+      );
+    }
+    const runtimeSkillCreatorService = skillExecutor
+      ? new RuntimeSkillCreatorFacade({
+          skillExecutor,
+          authKeyService,
+        })
+      : undefined;
+    registerSkillCreatorHandlers(
+      mainWindow,
+      skillCreatorService,
+      runtimeSkillCreatorService,
+    );
   });
 
   // --- 11. Claude CLI handlers ---

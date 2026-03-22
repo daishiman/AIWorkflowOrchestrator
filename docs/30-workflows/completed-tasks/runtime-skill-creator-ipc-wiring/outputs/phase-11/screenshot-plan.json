@@ -1,0 +1,40 @@
+{
+  "taskId": "UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001",
+  "phase": 11,
+  "captureMethod": "fallback-review-board",
+  "reason": "Renderer UI に直接差分がないため、current workflow 配下に representative review board を生成して public surface を視覚確認する。",
+  "screenshots": [
+    {
+      "tcId": "TC-11-09",
+      "state": "Skill Creator runtime public surface review board",
+      "viewport": "1600x1240",
+      "file": "screenshots/TC-11-09-skill-creator-runtime-surface-review-board.png"
+    },
+    {
+      "tcId": "TC-11-10",
+      "state": "Runtime IPC contract review board",
+      "viewport": "1600x1240",
+      "file": "screenshots/TC-11-10-runtime-ipc-contract-review-board.png"
+    },
+    {
+      "tcId": "TC-11-11",
+      "state": "Graceful degradation / auth fallback review board",
+      "viewport": "1600x1240",
+      "file": "screenshots/TC-11-11-runtime-graceful-degradation-review-board.png"
+    }
+  ],
+  "nonVisualCases": [
+    {
+      "tcId": "TC-11-01",
+      "reason": "関連テスト再実行の可否は CLI 結果で検証"
+    },
+    {
+      "tcId": "TC-11-02",
+      "reason": "型整合は typecheck の結果で検証"
+    },
+    {
+      "tcId": "TC-11-03",
+      "reason": "lint script 未定義は package.json で確認"
+    }
+  ]
+}

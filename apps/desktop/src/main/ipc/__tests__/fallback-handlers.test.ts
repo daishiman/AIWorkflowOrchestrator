@@ -168,6 +168,7 @@ vi.mock("../skillHandlers", () => ({
   registerSkillDocsHandlers: vi.fn(),
   unregisterSkillScheduleHandlers: vi.fn(),
   registerSkillChainHandlers: vi.fn(),
+  getSkillExecutorInstance: vi.fn().mockReturnValue(null),
 }));
 vi.mock("../skillHandlers.share", () => ({
   registerSkillShareHandlers: vi.fn(),

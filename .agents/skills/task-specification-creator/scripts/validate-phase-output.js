@@ -44,6 +44,22 @@ const PHASE_OPTIONAL = {
   optional: true,
 };
 
+const PHASE_FILE_ALIASES = {
+  1: ["requirements"],
+  2: ["design"],
+  3: ["design-review"],
+  4: ["test-creation"],
+  5: ["implementation"],
+  6: ["test-expansion"],
+  7: ["coverage-check", "coverage"],
+  8: ["refactoring"],
+  9: ["quality-assurance", "quality"],
+  10: ["final-review"],
+  11: ["manual-test"],
+  12: ["documentation"],
+  13: ["pr-creation"],
+};
+
 // 後方互換性のためPHASESを維持
 const PHASES = PHASES_REQUIRED;
 
@@ -262,7 +278,11 @@ class PhaseValidator {
       let missingLinks = [];
       for (const phase of PHASES) {
         const phaseNum = String(phase.number);
-        const linkPattern = new RegExp(`phase-${phaseNum}-`, "i");
+        const paddedNum = phaseNum.padStart(2, "0");
+        const linkPattern = new RegExp(
+          `phase-(?:${phaseNum}|${paddedNum})-`,
+          "i",
+        );
         if (!linkPattern.test(content)) {
           missingLinks.push(`Phase ${phaseNum}`);
         }
@@ -280,11 +300,12 @@ class PhaseValidator {
 
   validatePhaseFile(phase) {
     const phaseNum = String(phase.number);
-    const expectedPattern = `phase-${phaseNum}-`;
+    const paddedNum = phaseNum.padStart(2, "0");
+    const expectedPattern = new RegExp(`^phase-(?:${phaseNum}|${paddedNum})-.*\\.md$`);
 
     // ファイル検索
     const files = readdirSync(this.workflowDir).filter(
-      (f) => f.startsWith(expectedPattern) && f.endsWith(".md"),
+      (f) => expectedPattern.test(f),
     );
 
     if (files.length === 0) {
@@ -305,9 +326,15 @@ class PhaseValidator {
 
     // 命名規則チェック
     const expectedName = `phase-${phaseNum}-${phase.name}.md`;
-    if (files[0] !== expectedName) {
+    const allowedNames = (PHASE_FILE_ALIASES[phase.number] || [phase.name]).flatMap(
+      (name) => [
+        `phase-${phaseNum}-${name}.md`,
+        `phase-${paddedNum}-${name}.md`,
+      ],
+    );
+    if (!allowedNames.includes(files[0])) {
       this.warnings.push(
-        `Phase ${phaseNum}: ファイル名が推奨形式と異なります (実際: ${files[0]}, 推奨: ${expectedName})`,
+        `Phase ${phaseNum}: ファイル名が推奨形式と異なります (実際: ${files[0]}, 推奨例: ${expectedName})`,
       );
     }
 
@@ -364,17 +391,18 @@ class PhaseValidator {
     );
     if (taskSection) {
       const taskContent = taskSection[0];
-      // タスク名と目的のパターン: - タスク名: 目的
-      const taskPattern = /-\s+(.+?):\s*(.+)/g;
-      const tasks = [...taskContent.matchAll(taskPattern)];
+      const taskLines = taskContent
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => /^-\s+/.test(line) || /^\d+\.\s+/.test(line));
 
-      if (tasks.length === 0) {
+      if (taskLines.length === 0) {
         this.warnings.push(
           `Phase ${phaseNum}: 実行タスクが定義されていないか、形式が正しくありません`,
         );
       } else {
         this.passes.push(
-          `Phase ${phaseNum}: ${tasks.length}個の実行タスクが定義済み`,
+          `Phase ${phaseNum}: ${taskLines.length}個の実行タスクが定義済み`,
         );
       }
     }

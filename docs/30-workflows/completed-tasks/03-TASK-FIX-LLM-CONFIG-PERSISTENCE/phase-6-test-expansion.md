@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目          | 内容                                                                                             |
-| ------------- | ------------------------------------------------------------------------------------------------ |
-| Phase番号     | 6                                                                                                |
-| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                              |
-| 作成日        | 2026-03-20                                                                                       |
-| 担当          | -                                                                                                |
-| ステータス    | 未着手                                                                                           |
-| 前Phase成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md` |
+| 項目          | 内容                                                                             |
+| ------------- | -------------------------------------------------------------------------------- |
+| Phase番号     | 6                                                                                |
+| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                              |
+| 作成日        | 2026-03-20                                                                       |
+| 担当          | -                                                                                |
+| ステータス    | completed                                                                        |
+| 前Phase成果物 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md` |
 
 ## 目的
 
@@ -102,10 +102,10 @@ type ValidateReturn = ReturnType<typeof validateAndSyncPersistedConfig>;
 
 ### 前Phase成果物
 
-| 資料名             | パス                                                                                             |
-| ------------------ | ------------------------------------------------------------------------------------------------ |
-| Phase 4 テスト設計 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-4-test-creation.md`  |
-| Phase 5 実装       | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md` |
+| 資料名             | パス                                                                             |
+| ------------------ | -------------------------------------------------------------------------------- |
+| Phase 4 テスト設計 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-4-test-creation.md`  |
+| Phase 5 実装       | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md` |
 
 ### 既知の落とし穴
 
@@ -130,10 +130,10 @@ type ValidateReturn = ReturnType<typeof validateAndSyncPersistedConfig>;
 
 ## 成果物
 
-| 成果物                       | パス                                                                                             | 説明                    |
-| ---------------------------- | ------------------------------------------------------------------------------------------------ | ----------------------- |
-| Phase 6 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-6-test-expansion.md` | テスト拡充計画書        |
-| 追加テストコード             | 既存の4テストファイルに追記                                                                      | T5〜T8 テストケース追加 |
+| 成果物                       | パス                                                                             | 説明                    |
+| ---------------------------- | -------------------------------------------------------------------------------- | ----------------------- |
+| Phase 6 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-6-test-expansion.md` | テスト拡充計画書        |
+| 追加テストコード             | 既存の4テストファイルに追記                                                      | T5〜T8 テストケース追加 |
 
 ## 完了条件
 

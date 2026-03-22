@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目          | 内容                                                                                             |
-| ------------- | ------------------------------------------------------------------------------------------------ |
-| Phase番号     | 7                                                                                                |
-| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                              |
-| 作成日        | 2026-03-20                                                                                       |
-| 担当          | -                                                                                                |
-| ステータス    | 未着手                                                                                           |
-| 前Phase成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-6-test-expansion.md` |
+| 項目          | 内容                                                                             |
+| ------------- | -------------------------------------------------------------------------------- |
+| Phase番号     | 7                                                                                |
+| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                              |
+| 作成日        | 2026-03-20                                                                       |
+| 担当          | -                                                                                |
+| ステータス    | completed                                                                        |
+| 前Phase成果物 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-6-test-expansion.md` |
 
 ## 目的
 
@@ -75,9 +75,10 @@ pnpm vitest run --coverage \
 
 ### 前Phase成果物
 
-| 資料名             | パス                                                                                             |
-| ------------------ | ------------------------------------------------------------------------------------------------ |
-| Phase 6 テスト拡充 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-6-test-expansion.md` |
+| 資料名             | パス                                                                             |
+| ------------------ | -------------------------------------------------------------------------------- | -------------------------------- |
+| Phase 6 テスト拡充 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-6-test-expansion.md` |
+| Phase 5 実装       | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md` | 対象コードとカバレッジ境界の確認 |
 
 ### 既知の落とし穴
 
@@ -100,9 +101,9 @@ pnpm vitest run --coverage \
 
 ## 成果物
 
-| 成果物                       | パス                                                                                             | 説明               |
-| ---------------------------- | ------------------------------------------------------------------------------------------------ | ------------------ |
-| Phase 7 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-7-coverage-check.md` | カバレッジ確認結果 |
+| 成果物                       | パス                                                                             | 説明               |
+| ---------------------------- | -------------------------------------------------------------------------------- | ------------------ |
+| Phase 7 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-7-coverage-check.md` | カバレッジ確認結果 |
 
 ## 完了条件
 

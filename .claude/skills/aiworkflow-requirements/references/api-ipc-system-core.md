@@ -366,6 +366,42 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `apiKey:save` / `apiKey:delete` 後に `LLMAdapterFactory.clearInstance(provider)` を実行      | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
 | `llm:set-selected-config` で Renderer 選択状態を Main 側 `ai.chat` 実行経路へ同期            | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
 
+## Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001）
+
+### 概要
+
+`skillCreatorAPI` に runtime public surface を 3 チャンネル追加し、`RuntimeSkillCreatorFacade` の plan / execute / improve を既存 `skill-creator:*` namespace に統合する。
+
+### 実装アンカー
+
+| 層 | ファイル | 役割 |
+| --- | --- | --- |
+| Main registration | `apps/desktop/src/main/ipc/index.ts` | `SkillExecutor` / `authKeyService` から facade を組み立てる |
+| Main public entrypoint | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` | skill creator 標準 surface を維持して runtime helper を登録する |
+| Main runtime helper | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `plan` / `execute-plan` / `improve-skill` handler |
+| Runtime service | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | policy / handoff / execute 委譲 |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `planSkill()` / `executePlan()` / `improveSkillWithFeedback()` |
+| Shared types | `packages/shared/src/types/skillCreator.ts` | request / response / handoff bundle |
+
+### チャンネル一覧
+
+| チャンネル | 用途 | Request | Response |
+| --- | --- | --- | --- |
+| `skill-creator:plan` | runtime plan 作成 | `SkillCreatorPlanRequest` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
+| `skill-creator:execute-plan` | plan 実行 | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResult>` |
+| `skill-creator:improve-skill` | runtime 改善 | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
+
+### 契約メモ
+
+| 項目 | 契約 |
+| --- | --- |
+| authMode 省略時 | handler 側で `api-key` を既定値にする |
+| `apiKey=null` + `authMode=\"api-key\"` | `plan` / `improve` は `resolveWithService()` により保存済み key fallback を試行する |
+| runtime facade 未注入 | 3 チャンネルは登録を維持し、`success: false` + 一定 error string を返す |
+| sender 不正 | `toIPCValidationError` を throw して reject |
+| エラー | `sanitizeErrorMessage()` 後の文字列のみ返す |
+| execute 実行 | `SkillExecutor` へ委譲し、auth key は既存 DI 経路を再利用する |
+
 ### 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）
 
 > 完了日: 2026-03-17

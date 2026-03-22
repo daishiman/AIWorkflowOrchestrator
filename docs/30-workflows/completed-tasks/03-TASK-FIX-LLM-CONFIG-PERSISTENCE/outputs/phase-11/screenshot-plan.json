@@ -1,0 +1,36 @@
+{
+  "generatedAt": "2026-03-21T09:43:46.242Z",
+  "captureMethod": "current-renderer-entry + static-server harness",
+  "baseUrl": "http://127.0.0.1:5182",
+  "harnessUrl": "http://127.0.0.1:5182/phase11-llm-config-persistence.html",
+  "scenarios": [
+    {
+      "id": "TC-11-01",
+      "scenario": "valid",
+      "action": "none",
+      "output": "screenshots/TC-11-01-persist-v2-valid-selection.png",
+      "note": "version 2 の valid selection を localStorage から復元し、selectedProviderId / selectedModelId がそのまま表示される。"
+    },
+    {
+      "id": "TC-11-02",
+      "scenario": "invalid",
+      "action": "none",
+      "output": "screenshots/TC-11-02-invalid-provider-cleared.png",
+      "note": "存在しない provider が null クリアされ、DEFAULT_CONFIG への fallback なしで無効値が可視化される。"
+    },
+    {
+      "id": "TC-11-03",
+      "scenario": "legacy",
+      "action": "none",
+      "output": "screenshots/TC-11-03-legacy-v1-normalized-to-v2.png",
+      "note": "legacy v1 入力が v2 へ正規化されることを確認する。"
+    },
+    {
+      "id": "TC-11-04",
+      "scenario": "valid",
+      "action": "reload",
+      "output": "screenshots/TC-11-04-reload-retains-selected-config.png",
+      "note": "再読み込み後も selectedProviderId / selectedModelId が保持され、mount count が 2 になる。"
+    }
+  ]
+}

@@ -260,8 +260,8 @@ node scripts/list-specs.js --topics
 | セキュリティアーキテクチャ | L146 |
 | 状態管理アーキテクチャ | L180 |
 | データフローアーキテクチャ | L217 |
-| ディレクトリ構造 | L299 |
-| データ構造（型システム） | L361 |
+| ディレクトリ構造 | L300 |
+| データ構造（型システム） | L362 |
 
 ### references/architecture-overview-details.md
 
@@ -429,10 +429,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L264 |
-| スキルチェーン 型定義（TASK-9D） | L314 |
-| スキルスケジュール 型定義（TASK-9G） | L349 |
-| スキルフォーク 型定義（TASK-9E） | L374 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L277 |
+| スキルチェーン 型定義（TASK-9D） | L327 |
+| スキルスケジュール 型定義（TASK-9G） | L362 |
+| スキルフォーク 型定義（TASK-9E） | L387 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -833,10 +833,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| Agent Dashboard IPC チャネル | L6 |
 | Workspace Chat Edit IPC チャネル | L74 |
 | Skill Creator IPC チャネル | L256 |
-| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L352 |
-| スキルファイル操作 IPC チャネル（TASK-9A-B） | L386 |
-| スキル安全性評価・ファイルツリー IPC チャネル | L440 |
-| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L451 |
+| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L363 |
+| スキルファイル操作 IPC チャネル（TASK-9A-B） | L397 |
+| スキル安全性評価・ファイルツリー IPC チャネル | L451 |
+| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L462 |
 
 ### references/api-ipc-agent-details.md
 
@@ -855,7 +855,7 @@ node scripts/list-specs.js --topics
 | 実装パターン参照 | L78 |
 | 関連ドキュメント | L90 |
 | 完了タスク | L102 |
-| 変更履歴 | L140 |
+| 変更履歴 | L141 |
 
 ### references/api-ipc-agent-safety.md
 
@@ -897,8 +897,9 @@ node scripts/list-specs.js --topics
 | Workspace File Watch IPC API（TASK-UI-04A） | L157 |
 | Conversation IPC API（会話履歴永続化） | L201 |
 | Electron IPC API設計 | L237 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L501 |
-| AIプロバイダーAPI連携 | L532 |
+| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L369 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L537 |
+| AIプロバイダーAPI連携 | L568 |
 
 ### references/api-ipc-system-details.md
 
@@ -1469,10 +1470,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 実装例: skillCreatorAPI | L6 |
-| 実装例: skillFileAPI（TASK-9A-B） | L180 |
-| 実装例: skillShareAPI（TASK-9F） | L254 |
-| 実装例: skillChainAPI（TASK-9D） | L333 |
-| 実装例: skillScheduleAPI（TASK-9G） | L373 |
+| 実装例: skillFileAPI（TASK-9A-B） | L185 |
+| 実装例: skillShareAPI（TASK-9F） | L259 |
+| 実装例: skillChainAPI（TASK-9D） | L338 |
+| 実装例: skillScheduleAPI（TASK-9G） | L378 |
 
 ### references/security-electron-ipc-history.md
 
@@ -2554,10 +2555,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| TASK-9B: SkillCreator IPC拡張同期 再監査（2026-02-26） | L6 |
-| 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | L65 |
-| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 教訓 | L157 |
-| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L217 |
-| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L322 |
+| UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 Runtime Skill Creator public IPC wiring（2026-03-21） | L8 |
+| 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | L103 |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 教訓 | L195 |
+| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L255 |
+| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L360 |
 
 ### references/lessons-learned-conversation-db-robustness.md
 

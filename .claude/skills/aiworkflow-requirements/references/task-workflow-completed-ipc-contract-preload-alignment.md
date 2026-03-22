@@ -5,6 +5,54 @@
 
 ## 完了タスク
 
+### タスク: UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 Runtime Skill Creator public IPC wiring（2026-03-21完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 |
+| 完了日 | 2026-03-21 |
+| ステータス | **完了** |
+| タスク種別 | 実装 + テスト + workflow/doc sync |
+| Phase | Phase 1-5 相当実施 / Phase 13 blocked（commit・PRは未実施） |
+| 対象 | `apps/desktop/src/preload/channels.ts`, `apps/desktop/src/preload/skill-creator-api.ts`, `apps/desktop/src/main/ipc/creatorHandlers.ts`, `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`, `apps/desktop/src/main/ipc/index.ts`, `packages/shared/src/types/skillCreator.ts` |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| ワークフロー | `docs/30-workflows/runtime-skill-creator-ipc-wiring/` |
+| shared contract | `packages/shared/src/types/skillCreator.ts` |
+| runtime helper test | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.runtime.test.ts` |
+| preload runtime test | `apps/desktop/src/preload/__tests__/skill-creator-api.runtime.test.ts` |
+
+#### 変更理由
+
+- `RuntimeSkillCreatorFacade` が存在しても public `skill-creator:*` surface に接続されておらず、`creator:*` dead-end が残っていたため。
+- preload/main 間の runtime contract が shared に存在せず、今後の IPC drift を誘発するため。
+
+#### 実装要点
+
+- public channel を `skill-creator:plan`, `skill-creator:execute-plan`, `skill-creator:improve-skill` の3本で追加した。
+- `creatorHandlers.ts` は unregistered handler 群から internal runtime helper へ再構成し、`skillCreatorHandlers.ts` entrypoint から登録する形へ整理した。
+- `RuntimeSkillCreatorFacade` の plan/improve 結果と `TerminalHandoffBundle` を `packages/shared/src/types/skillCreator.ts` に集約した。
+- `getSkillExecutorInstance()` を `skillHandlers.ts` から export し、`ipc/index.ts` で `RuntimeSkillCreatorFacade` を DI するようにした。
+- runtime service 不在時も channel missing にせず、graceful degradation で一定エラーを返す契約にした。
+
+#### 検証結果
+
+| 項目 | 結果 |
+| --- | --- |
+| `pnpm exec tsc -p apps/desktop/tsconfig.json --noEmit` | PASS |
+| `verify-all-specs --workflow docs/30-workflows/runtime-skill-creator-ipc-wiring` | PASS（errors=0） |
+| `pnpm vitest run ...` | 環境要因で未完了（esbuild darwin-arm64 / darwin-x64 mismatch） |
+
+#### 同種課題の簡潔解決手順
+
+1. 先に public channel 名を確定し、main/preload 両方へ同時反映する。
+2. public IPC の戻り値型は shared contract に寄せ、preload/main のローカル重複を減らす。
+3. unregistered helper を増やさず、既存 entrypoint (`skillCreatorHandlers.ts`) から登録する。
+4. DI 不在時は channel 不在ではなく graceful degradation で失敗契約を固定する。
+
 ### タスク: UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18完了）
 
 | 項目       | 内容                                                                 |

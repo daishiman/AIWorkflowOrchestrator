@@ -8,7 +8,7 @@
 | 機能名     | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE) |
 | 作成日     | 2026-03-20                                          |
 | 担当       | -                                                   |
-| ステータス | 未着手                                              |
+| ステータス | completed                                           |
 
 ## 目的
 
@@ -104,9 +104,9 @@ grep -n "currentConfig" apps/desktop/src/main/ipc/llmConfigProvider.ts
 
 ## 成果物
 
-| 成果物                       | パス                                                                                           | 説明               |
-| ---------------------------- | ---------------------------------------------------------------------------------------------- | ------------------ |
-| Phase 1 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md` | 要件定義・受入基準 |
+| 成果物                       | パス                                                                           | 説明               |
+| ---------------------------- | ------------------------------------------------------------------------------ | ------------------ |
+| Phase 1 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md` | 要件定義・受入基準 |
 
 ## 完了条件
 

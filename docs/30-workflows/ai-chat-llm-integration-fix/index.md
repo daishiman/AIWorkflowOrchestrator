@@ -77,6 +77,8 @@ docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/  �
   phase-1-requirements.md ... phase-13-pr-creation.md
 docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/  ← Task 02 canonical root
   phase-1-requirements.md ... phase-13-pr-creation.md
+docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/  ← Task 03 canonical root
+  phase-1-requirements.md ... phase-13-pr-creation.md
 docs/30-workflows/ai-chat-llm-integration-fix/
   index.md
   completed-tasks/
@@ -84,7 +86,7 @@ docs/30-workflows/ai-chat-llm-integration-fix/
   04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/               ← Task 04 current canonical root
 ```
 
-> Task 01 と Task 02 は root 直下 workflow が canonical。`ai-chat-llm-integration-fix/tasks/01-*` と `ai-chat-llm-integration-fix/tasks/02-*` は legacy path として扱う。
+> Task 01〜02 は root 直下 workflow が canonical。Task 03 は `completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` が canonical。旧 `ai-chat-llm-integration-fix/tasks/01-*` / `tasks/02-*` / `tasks/03-*` 参照は legacy path として扱う。Task 04 は現時点では family 配下 `tasks/` が canonical。
 
 ## システム仕様参照（aiworkflow-requirements）
 
@@ -110,3 +112,4 @@ docs/30-workflows/ai-chat-llm-integration-fix/
 | 02       | completed + re-audited | screenshot 4件、Task 02 root 正本化、follow-up 2件 formalize        |
 | 03       | completed              | completed root 移管、persist contract 同期                          |
 | 04       | completed              | streamingError contract、WorkspaceChat error UX 同期                |
+| 03       | completed + re-audited | persist v2、Phase 11 harness、follow-up 2件、same-wave sync 完了    |

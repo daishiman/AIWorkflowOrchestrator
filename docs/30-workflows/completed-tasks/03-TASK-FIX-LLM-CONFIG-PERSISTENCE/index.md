@@ -2,7 +2,7 @@
 
 ## 概要
 
-- current canonical task directory: `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE`
+- current canonical task directory: `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE`
 - Phase 1〜13 の仕様書を本ディレクトリ配下で管理する。
 
 ## Phase 一覧

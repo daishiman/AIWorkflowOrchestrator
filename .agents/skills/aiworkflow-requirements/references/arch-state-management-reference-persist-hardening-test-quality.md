@@ -3,6 +3,29 @@
 > 親仕様書: [arch-state-management.md](arch-state-management.md)
 > 役割: reference bundle
 
+## LLM Selection Persist Validation（TASK-FIX-LLM-CONFIG-PERSISTENCE）
+
+### 目的
+
+`selectedProviderId` / `selectedModelId` の永続化値が stale でも、意図しない fallback を起こさず安全に復元する。
+
+### 契約
+
+| 対象 | 契約 |
+| --- | --- |
+| persist key | `knowledge-studio-store` を正本とする |
+| persist version | `2` |
+| migrate | v0/v1 からの復元時は `selectedProviderId=null`, `selectedModelId=null` を補う |
+| invalid provider | provider/model の両方を `null` にする |
+| invalid model | provider は保持し、model のみ `null` にする |
+| providers 未取得 | 空配列時は判断保留し、永続化値を消さない |
+
+### Phase 11 harness ルール
+
+- dedicated harness は `phase11-llm-config-persistence.tsx` を正本とし、valid / invalid / legacy / reload の 4 状態を固定する
+- capture plan と screenshot evidence は current workflow `outputs/phase-11/` に残す
+- build blocker がある場合でも `manual-test-result.md` と `discovered-issues.md` に同じ理由を書く
+
 ## Persist Iterable Hardening（TASK-FIX-SETTINGS-PERSIST-ITERABLE-HARDENING-001）
 
 ### 目的
@@ -123,4 +146,3 @@ SkillAnalysisView / SkillCreateWizard の Store統合テストを追加し、「
 ### store/index.ts セレクタエクスポート拡張
 
 `apps/desktop/src/renderer/store/index.ts` に63行を追加し、新規個別セレクタのエクスポートを追加。`useCanGoBack` セレクタに `Array.isArray` ガードを適用（DD-03対応）。
-

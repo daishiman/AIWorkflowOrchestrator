@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目          | 内容                                                                                          |
-| ------------- | --------------------------------------------------------------------------------------------- |
-| Phase番号     | 9                                                                                             |
-| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                           |
-| 作成日        | 2026-03-20                                                                                    |
-| 担当          | -                                                                                             |
-| ステータス    | 未着手                                                                                        |
-| 前Phase成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-8-refactoring.md` |
+| 項目          | 内容                                                                          |
+| ------------- | ----------------------------------------------------------------------------- |
+| Phase番号     | 9                                                                             |
+| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                           |
+| 作成日        | 2026-03-20                                                                    |
+| 担当          | -                                                                             |
+| ステータス    | completed                                                                     |
+| 前Phase成果物 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-8-refactoring.md` |
 
 ## 目的
 
@@ -103,6 +103,13 @@ grep -n "name:\|version:" apps/desktop/src/renderer/store/index.ts
 | コーディング規約   | `.claude/rules/02-code-quality.md`      |
 | セキュリティルール | `.claude/rules/04-electron-security.md` |
 
+### 依存Phaseトレーサビリティ
+
+| Phase   | パス                                                                             | 用途                                   |
+| ------- | -------------------------------------------------------------------------------- | -------------------------------------- |
+| Phase 5 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md` | Lint / typecheck / test 対象実装の確認 |
+| Phase 8 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-8-refactoring.md`    | 品質検証直前のコード状態を固定         |
+
 ### 既知の落とし穴
 
 | 落とし穴ID | 説明                       | 対策                        |
@@ -124,9 +131,9 @@ grep -n "name:\|version:" apps/desktop/src/renderer/store/index.ts
 
 ## 成果物
 
-| 成果物                       | パス                                                                                                | 説明         |
-| ---------------------------- | --------------------------------------------------------------------------------------------------- | ------------ |
-| Phase 9 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-9-quality-assurance.md` | 品質検証結果 |
+| 成果物                       | パス                                                                                | 説明         |
+| ---------------------------- | ----------------------------------------------------------------------------------- | ------------ |
+| Phase 9 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-9-quality-assurance.md` | 品質検証結果 |
 
 ## 完了条件
 

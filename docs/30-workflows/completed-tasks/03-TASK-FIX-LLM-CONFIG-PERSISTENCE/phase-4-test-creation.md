@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目          | 内容                                                                                            |
-| ------------- | ----------------------------------------------------------------------------------------------- |
-| Phase番号     | 4                                                                                               |
-| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                             |
-| 作成日        | 2026-03-20                                                                                      |
-| 担当          | -                                                                                               |
-| ステータス    | 未着手                                                                                          |
-| 前Phase成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-3-design-review.md` |
+| 項目          | 内容                                                                            |
+| ------------- | ------------------------------------------------------------------------------- |
+| Phase番号     | 4                                                                               |
+| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                             |
+| 作成日        | 2026-03-20                                                                      |
+| 担当          | -                                                                               |
+| ステータス    | completed                                                                       |
+| 前Phase成果物 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-3-design-review.md` |
 
 ## 目的
 
@@ -194,11 +194,11 @@ describe("validateAndSyncPersistedConfig", () => {
 
 ### 前Phase成果物
 
-| 資料名               | パス                                                                                            |
-| -------------------- | ----------------------------------------------------------------------------------------------- |
-| Phase 1 要件定義     | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md`  |
-| Phase 2 設計         | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md`        |
-| Phase 3 設計レビュー | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-3-design-review.md` |
+| 資料名               | パス                                                                            |
+| -------------------- | ------------------------------------------------------------------------------- |
+| Phase 1 要件定義     | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md`  |
+| Phase 2 設計         | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md`        |
+| Phase 3 設計レビュー | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-3-design-review.md` |
 
 ### 既知の落とし穴
 
@@ -229,13 +229,13 @@ cd apps/desktop && pnpm vitest run src/renderer/store/__tests__/persist-partiali
 
 ## 成果物
 
-| 成果物                       | パス                                                                                            | 説明         |
-| ---------------------------- | ----------------------------------------------------------------------------------------------- | ------------ |
-| Phase 4 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-4-test-creation.md` | テスト設計書 |
-| persist partialize テスト    | `apps/desktop/src/renderer/store/__tests__/persist-partialize.test.ts`                          | T1-1 〜 T1-6 |
-| persist migration テスト     | `apps/desktop/src/renderer/store/__tests__/persist-migration.test.ts`                           | T2-1 〜 T2-7 |
-| バリデーション関数テスト     | `apps/desktop/src/renderer/store/slices/__tests__/llmSlice-validation.test.ts`                  | T3-1 〜 T3-6 |
-| 起動時同期テスト             | `apps/desktop/src/renderer/store/slices/__tests__/llmSlice-sync.test.ts`                        | T4-1 〜 T4-5 |
+| 成果物                       | パス                                                                            | 説明         |
+| ---------------------------- | ------------------------------------------------------------------------------- | ------------ |
+| Phase 4 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-4-test-creation.md` | テスト設計書 |
+| persist partialize テスト    | `apps/desktop/src/renderer/store/__tests__/persist-partialize.test.ts`          | T1-1 〜 T1-6 |
+| persist migration テスト     | `apps/desktop/src/renderer/store/__tests__/persist-migration.test.ts`           | T2-1 〜 T2-7 |
+| バリデーション関数テスト     | `apps/desktop/src/renderer/store/slices/__tests__/llmSlice-validation.test.ts`  | T3-1 〜 T3-6 |
+| 起動時同期テスト             | `apps/desktop/src/renderer/store/slices/__tests__/llmSlice-sync.test.ts`        | T4-1 〜 T4-5 |
 
 ## 完了条件
 

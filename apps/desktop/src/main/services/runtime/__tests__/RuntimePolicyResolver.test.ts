@@ -1,8 +1,8 @@
 /**
- * RuntimePolicyResolver Unit Tests - 4 state capability bridge
+ * RuntimePolicyResolver Unit Tests
  *
- * TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001
- * Phase 4: TC-01〜TC-06 + assertNoSilentFallback enforcement
+ * UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001
+ * AuthMode + apiKey ベースの resolve / resolveWithService を検証
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -20,200 +20,96 @@ describe("RuntimePolicyResolver", () => {
     );
   });
 
-  describe("4状態判定テスト", () => {
-    it("TC-01: apiKeyValid=true, subscriptionValid=false → integratedRuntime", () => {
-      const result = resolver.resolve({
-        apiKeyValid: true,
-        subscriptionValid: false,
-      });
-      expect(result.capability).toBe("integratedRuntime");
-    });
-
-    it("TC-02: apiKeyValid=false, subscriptionValid=true → terminalSurface", () => {
-      const result = resolver.resolve({
-        apiKeyValid: false,
-        subscriptionValid: true,
-      });
-      expect(result.capability).toBe("terminalSurface");
-    });
-
-    it("TC-03: apiKeyValid=true, subscriptionValid=true → both", () => {
-      const result = resolver.resolve({
-        apiKeyValid: true,
-        subscriptionValid: true,
-      });
-      expect(result.capability).toBe("both");
-    });
-
-    it("TC-04: apiKeyValid=false, subscriptionValid=false → none で例外", () => {
-      expect(() =>
-        resolver.resolve({
-          apiKeyValid: false,
-          subscriptionValid: false,
-        }),
-      ).toThrow("assertNoSilentFallback");
-    });
-
-    it("TC-05: apiKeyValid=true, apiKeyDegraded=true → none で例外", () => {
-      expect(() =>
-        resolver.resolve({
-          apiKeyValid: true,
-          subscriptionValid: false,
-          apiKeyDegraded: true,
-        }),
-      ).toThrow("assertNoSilentFallback");
-    });
-
-    it("TC-06: apiKeyValid=true, subscriptionValid=true, apiKeyDegraded=true → terminalSurface", () => {
-      const result = resolver.resolve({
-        apiKeyValid: true,
-        subscriptionValid: true,
-        apiKeyDegraded: true,
-      });
-      expect(result.capability).toBe("terminalSurface");
-    });
-  });
-
-  describe("assertNoSilentFallback enforcement", () => {
-    it("capability none のとき例外が throw される", () => {
-      expect(() =>
-        resolver.resolve({
-          apiKeyValid: false,
-          subscriptionValid: false,
-        }),
-      ).toThrow("assertNoSilentFallback");
-    });
-
-    it("capability integratedRuntime のとき例外が throw されない", () => {
-      expect(() =>
-        resolver.resolve({
-          apiKeyValid: true,
-          subscriptionValid: false,
-        }),
-      ).not.toThrow();
-    });
-
-    it("capability terminalSurface のとき例外が throw されない", () => {
-      expect(() =>
-        resolver.resolve({
-          apiKeyValid: false,
-          subscriptionValid: true,
-        }),
-      ).not.toThrow();
-    });
-
-    it("capability both のとき例外が throw されない", () => {
-      expect(() =>
-        resolver.resolve({
-          apiKeyValid: true,
-          subscriptionValid: true,
-        }),
-      ).not.toThrow();
-    });
-  });
-
-  describe("RuntimeDecision 構造", () => {
-    it("integratedRuntime decision は capability のみを返す", () => {
-      const result = resolver.resolve({
-        apiKeyValid: true,
-        subscriptionValid: false,
-      });
-      expect(result).toEqual({ capability: "integratedRuntime" });
-    });
-
-    it("terminalSurface decision は bundle を保持する", () => {
-      const result = resolver.resolve({
-        apiKeyValid: false,
-        subscriptionValid: true,
-      });
-      expect(result.capability).toBe("terminalSurface");
-      if (result.capability === "terminalSurface") {
-        expect(result.bundle).toBeDefined();
-        expect(result.bundle.launcher).toBe("claude");
+  describe("resolve - integrated_api 判定", () => {
+    it("api-key モードかつ有効な apiKey → integrated_api", async () => {
+      const result = await resolver.resolve("api-key", "sk-test-key");
+      expect(result.type).toBe("integrated_api");
+      if (result.type === "integrated_api") {
+        expect(result.apiKey).toBe("sk-test-key");
       }
     });
 
-    it("both decision は capability のみを返す", () => {
-      const result = resolver.resolve({
-        apiKeyValid: true,
-        subscriptionValid: true,
-      });
-      expect(result).toEqual({ capability: "both" });
+    it("api-key モードかつ空白のみ apiKey → terminal_handoff", async () => {
+      const result = await resolver.resolve("api-key", "   ");
+      expect(result.type).toBe("terminal_handoff");
+    });
+
+    it("api-key モードかつ null apiKey → terminal_handoff", async () => {
+      const result = await resolver.resolve("api-key", null);
+      expect(result.type).toBe("terminal_handoff");
+    });
+
+    it("api-key モードかつ空文字列 apiKey → terminal_handoff", async () => {
+      const result = await resolver.resolve("api-key", "");
+      expect(result.type).toBe("terminal_handoff");
     });
   });
 
-  describe("apiKeyDegraded 境界値テスト (Phase 6)", () => {
-    it("TC-07: apiKeyValid=true, subscriptionValid=false, apiKeyDegraded=undefined → integratedRuntime", () => {
-      const result = resolver.resolve({
-        apiKeyValid: true,
-        subscriptionValid: false,
-      });
-      expect(result.capability).toBe("integratedRuntime");
+  describe("resolve - terminal_handoff 判定", () => {
+    it("subscription モード → terminal_handoff", async () => {
+      const result = await resolver.resolve("subscription", null);
+      expect(result.type).toBe("terminal_handoff");
+      if (result.type === "terminal_handoff") {
+        expect(result.bundle).toBeDefined();
+        expect(result.bundle.launcher).toBe("claude");
+        expect(result.bundle.cwd).toBeDefined();
+        expect(result.bundle.suggestedCommand).toBeDefined();
+      }
     });
 
-    it("TC-08: apiKeyValid=true, subscriptionValid=false, apiKeyDegraded=false → integratedRuntime", () => {
-      const result = resolver.resolve({
-        apiKeyValid: true,
-        subscriptionValid: false,
-        apiKeyDegraded: false,
-      });
-      expect(result.capability).toBe("integratedRuntime");
-    });
-
-    it("TC-09: apiKeyValid=true, subscriptionValid=true, apiKeyDegraded=undefined → both", () => {
-      const result = resolver.resolve({
-        apiKeyValid: true,
-        subscriptionValid: true,
-      });
-      expect(result.capability).toBe("both");
-    });
-
-    it("TC-10: apiKeyValid=true, subscriptionValid=true, apiKeyDegraded=false → both", () => {
-      const result = resolver.resolve({
-        apiKeyValid: true,
-        subscriptionValid: true,
-        apiKeyDegraded: false,
-      });
-      expect(result.capability).toBe("both");
-    });
-
-    it("TC-11: apiKeyValid=false, subscriptionValid=false, apiKeyDegraded=true → none で例外", () => {
-      expect(() =>
-        resolver.resolve({
-          apiKeyValid: false,
-          subscriptionValid: false,
-          apiKeyDegraded: true,
-        }),
-      ).toThrow("assertNoSilentFallback");
+    it("subscription モードでも apiKey を渡す → terminal_handoff", async () => {
+      const result = await resolver.resolve("subscription", "sk-key");
+      expect(result.type).toBe("terminal_handoff");
     });
   });
 
-  describe("resolveFromServices", () => {
-    it("authKeyService から apiKey を取得して capability を返す", async () => {
+  describe("resolve - integrated_api の構造", () => {
+    it("permissionMode が default であること", async () => {
+      const result = await resolver.resolve("api-key", "sk-test");
+      if (result.type === "integrated_api") {
+        expect(result.permissionMode).toBe("default");
+      }
+    });
+
+    it("apiKey が trim されること", async () => {
+      const result = await resolver.resolve("api-key", "  sk-test  ");
+      if (result.type === "integrated_api") {
+        expect(result.apiKey).toBe("sk-test");
+      }
+    });
+  });
+
+  describe("resolve - terminal_handoff の構造", () => {
+    it("bundle に必須フィールドが含まれること", async () => {
+      const result = await resolver.resolve("api-key", null);
+      if (result.type === "terminal_handoff") {
+        expect(result.bundle.launcher).toBe("claude");
+        expect(typeof result.bundle.cwd).toBe("string");
+        expect(typeof result.bundle.suggestedCommand).toBe("string");
+        expect(typeof result.bundle.manualRetryRule).toBe("string");
+        expect(typeof result.bundle.promptBundle).toBe("string");
+      }
+    });
+  });
+
+  describe("resolveWithService", () => {
+    it("authKeyService から apiKey を取得して integrated_api を返す", async () => {
       mockAuthKeyService.getKey.mockResolvedValue("sk-service-key");
-      const result = await resolver.resolveFromServices();
+      const result = await resolver.resolveWithService("api-key");
       expect(mockAuthKeyService.getKey).toHaveBeenCalledOnce();
-      expect(result.capability).toBe("integratedRuntime");
+      expect(result.type).toBe("integrated_api");
     });
 
-    it("authKeyService が null を返すとき none で例外", async () => {
+    it("authKeyService が null を返すとき terminal_handoff", async () => {
       mockAuthKeyService.getKey.mockResolvedValue(null);
-      await expect(resolver.resolveFromServices()).rejects.toThrow(
-        "assertNoSilentFallback",
-      );
+      const result = await resolver.resolveWithService("api-key");
+      expect(result.type).toBe("terminal_handoff");
     });
 
-    it("silent: true のとき none でも例外を throw しない", async () => {
-      mockAuthKeyService.getKey.mockResolvedValue(null);
-      const result = await resolver.resolveFromServices({ silent: true });
-      expect(result.capability).toBe("none");
-    });
-
-    it("authKeyService なしの場合 none で例外", async () => {
+    it("authKeyService なしの場合 terminal_handoff", async () => {
       const resolverWithout = new RuntimePolicyResolver();
-      await expect(resolverWithout.resolveFromServices()).rejects.toThrow(
-        "assertNoSilentFallback",
-      );
+      const result = await resolverWithout.resolveWithService("api-key");
+      expect(result.type).toBe("terminal_handoff");
     });
   });
 });

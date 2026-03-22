@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目          | 内容                                                                                             |
-| ------------- | ------------------------------------------------------------------------------------------------ |
-| Phase番号     | 8                                                                                                |
-| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                              |
-| 作成日        | 2026-03-20                                                                                       |
-| 担当          | -                                                                                                |
-| ステータス    | 未着手                                                                                           |
-| 前Phase成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-7-coverage-check.md` |
+| 項目          | 内容                                                                             |
+| ------------- | -------------------------------------------------------------------------------- |
+| Phase番号     | 8                                                                                |
+| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                              |
+| 作成日        | 2026-03-20                                                                       |
+| 担当          | -                                                                                |
+| ステータス    | completed                                                                        |
+| 前Phase成果物 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-7-coverage-check.md` |
 
 ## 目的
 
@@ -93,6 +93,16 @@ pnpm lint
 | ---------------- | ---------------------------------- |
 | TypeScript型安全 | `.claude/rules/02-code-quality.md` |
 
+### 依存Phaseトレーサビリティ
+
+| Phase   | パス                                                                             | 用途                            |
+| ------- | -------------------------------------------------------------------------------- | ------------------------------- |
+| Phase 1 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md`   | 受入基準と非機能要件の再確認    |
+| Phase 2 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md`         | persist v2 / P62 設計判断の確認 |
+| Phase 5 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md` | 実装修正点の確認                |
+| Phase 6 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-6-test-expansion.md` | 回帰テスト観点の確認            |
+| Phase 7 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-7-coverage-check.md` | カバレッジ結果の確認            |
+
 ### 既知の落とし穴
 
 | 落とし穴ID | 説明                                     | 対策                                         |
@@ -118,7 +128,7 @@ pnpm lint
 
 | 成果物                       | パス                                                                                             | 説明                   |
 | ---------------------------- | ------------------------------------------------------------------------------------------------ | ---------------------- |
-| Phase 8 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-8-refactoring.md`    | リファクタリング計画書 |
+| Phase 8 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-8-refactoring.md`                    | リファクタリング計画書 |
 | リファクタリング済みコード   | `apps/desktop/src/renderer/store/index.ts`, `apps/desktop/src/renderer/store/slices/llmSlice.ts` | 改善されたコード       |
 
 ## 完了条件

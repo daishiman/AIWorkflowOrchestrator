@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目          | 内容                                                                                     |
-| ------------- | ---------------------------------------------------------------------------------------- |
-| Phase番号     | 3                                                                                        |
-| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                      |
-| 作成日        | 2026-03-20                                                                               |
-| 担当          | -                                                                                        |
-| ステータス    | 未着手                                                                                   |
-| 前Phase成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md` |
+| 項目          | 内容                                                                     |
+| ------------- | ------------------------------------------------------------------------ |
+| Phase番号     | 3                                                                        |
+| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                      |
+| 作成日        | 2026-03-20                                                               |
+| 担当          | -                                                                        |
+| ステータス    | completed                                                                |
+| 前Phase成果物 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md` |
 
 ## 目的
 
@@ -46,7 +46,7 @@ grep -n "name:" apps/desktop/src/renderer/store/index.ts
 
 - [ ] Phase 2 設計のpartialize関数に `apiKey`, `token`, `secret`, `password` 等の認証情報が含まれていないことを確認する
 - [ ] `selectedProviderId` と `selectedModelId` の値がAPIキー等の機密情報ではなく、単なる識別子文字列であることを確認する
-- [ ] electron-storeの保存先（ユーザーデータディレクトリ）が適切に保護されているかを確認する
+- [ ] electron-storeの保存先が OS 標準のユーザーデータディレクトリ配下に限定され、権限境界を越えないことを確認する
 
 **セキュリティルール参照**: `.claude/rules/04-electron-security.md` の「認証セキュリティ」セクション
 
@@ -67,8 +67,8 @@ grep -n "apiKey\|token\|secret\|password" apps/desktop/src/renderer/store/slices
 
 - [ ] `selectedProviderId` が既存のpersistフィールド名と重複していないことを確認する
 - [ ] `selectedModelId` が既存のpersistフィールド名と重複していないことを確認する
-- [ ] 既存のstoreスライス（authSlice, agentSliceなど）に同名フィールドがないことを確認する
-- [ ] Zustand devtoolsでのデバッグ時に新フィールドが適切に表示されることを想定する
+- [ ] 既存のstoreスライス（authSlice, agentSlice, chatSlice）に同名フィールドがないことを確認する
+- [ ] Zustand devtoolsで新フィールド名が識別可能な形で表示されることを確認する
 
 **チェックコマンド**:
 
@@ -151,10 +151,10 @@ ls apps/desktop/src/renderer/store/slices/
 
 ### 前Phase成果物
 
-| 資料名           | パス                                                                                           |
-| ---------------- | ---------------------------------------------------------------------------------------------- |
-| Phase 1 要件定義 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md` |
-| Phase 2 設計     | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md`       |
+| 資料名           | パス                                                                           |
+| ---------------- | ------------------------------------------------------------------------------ |
+| Phase 1 要件定義 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md` |
+| Phase 2 設計     | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md`       |
 
 ## 実行手順
 
@@ -172,9 +172,9 @@ ls apps/desktop/src/renderer/store/slices/
 
 ## 成果物
 
-| 成果物                       | パス                                                                                            | 説明             |
-| ---------------------------- | ----------------------------------------------------------------------------------------------- | ---------------- |
-| Phase 3 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-3-design-review.md` | 設計レビュー結果 |
+| 成果物                       | パス                                                                            | 説明             |
+| ---------------------------- | ------------------------------------------------------------------------------- | ---------------- |
+| Phase 3 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-3-design-review.md` | 設計レビュー結果 |
 
 ## 完了条件
 

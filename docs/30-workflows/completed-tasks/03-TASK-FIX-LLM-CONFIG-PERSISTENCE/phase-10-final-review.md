@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目          | 内容                                                                                                |
-| ------------- | --------------------------------------------------------------------------------------------------- |
-| Phase番号     | 10                                                                                                  |
-| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                                 |
-| 作成日        | 2026-03-20                                                                                          |
-| 担当          | -                                                                                                   |
-| ステータス    | 未着手                                                                                              |
-| 前Phase成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-9-quality-assurance.md` |
+| 項目          | 内容                                                                                |
+| ------------- | ----------------------------------------------------------------------------------- |
+| Phase番号     | 10                                                                                  |
+| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                 |
+| 作成日        | 2026-03-20                                                                          |
+| 担当          | -                                                                                   |
+| ステータス    | completed                                                                           |
+| 前Phase成果物 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-9-quality-assurance.md` |
 
 ## 目的
 
@@ -69,7 +69,7 @@ MINOR判定の指摘事項は全て未タスク仕様書に変換する（省略
 ```
 指摘の処理フロー:
 1. unassigned-task/ に指示書作成
-2. task-workflow.md 残課題テーブルに登録
+2. `.claude/skills/aiworkflow-requirements/references/task-workflow.md` の残課題テーブルに登録
 3. 関連仕様書に参照リンク追加
 ```
 
@@ -106,11 +106,12 @@ MINOR判定の指摘事項は全て未タスク仕様書に変換する（省略
 
 ### 前Phase成果物
 
-| 資料名           | パス                                                                                                |
-| ---------------- | --------------------------------------------------------------------------------------------------- |
-| Phase 1 要件定義 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md`      |
-| Phase 2 設計     | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md`            |
-| Phase 9 品質検証 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-9-quality-assurance.md` |
+| 資料名           | パス                                                                                |
+| ---------------- | ----------------------------------------------------------------------------------- | ---------------------- |
+| Phase 1 要件定義 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-1-requirements.md`      |
+| Phase 2 設計     | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md`            |
+| Phase 5 実装     | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md`    | 実装差分レビューの正本 |
+| Phase 9 品質検証 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-9-quality-assurance.md` |
 
 ### 既知の落とし穴
 
@@ -134,10 +135,10 @@ MINOR判定の指摘事項は全て未タスク仕様書に変換する（省略
 
 ## 成果物
 
-| 成果物                        | パス                                                                                            | 説明             |
-| ----------------------------- | ----------------------------------------------------------------------------------------------- | ---------------- |
-| Phase 10 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-10-final-review.md` | 最終レビュー結果 |
-| MINOR指摘の未タスク仕様書     | `docs/30-workflows/unassigned-task/<指摘内容>.md`                                               | MINOR時のみ      |
+| 成果物                        | パス                                                                            | 説明             |
+| ----------------------------- | ------------------------------------------------------------------------------- | ---------------- |
+| Phase 10 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-10-final-review.md` | 最終レビュー結果 |
+| MINOR指摘の未タスク仕様書     | `docs/30-workflows/unassigned-task/<指摘内容>.md`                               | MINOR時のみ      |
 
 ## 完了条件
 

@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目          | 内容                                                                                            |
-| ------------- | ----------------------------------------------------------------------------------------------- |
-| Phase番号     | 5                                                                                               |
-| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                             |
-| 作成日        | 2026-03-20                                                                                      |
-| 担当          | -                                                                                               |
-| ステータス    | 未着手                                                                                          |
-| 前Phase成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-4-test-creation.md` |
+| 項目          | 内容                                                                            |
+| ------------- | ------------------------------------------------------------------------------- |
+| Phase番号     | 5                                                                               |
+| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                             |
+| 作成日        | 2026-03-20                                                                      |
+| 担当          | -                                                                               |
+| ステータス    | completed                                                                       |
+| 前Phase成果物 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-4-test-creation.md` |
 
 ## 目的
 
@@ -211,10 +211,10 @@ pnpm vitest run src/renderer/store/
 
 ### 前Phase成果物
 
-| 資料名             | パス                                                                                            |
-| ------------------ | ----------------------------------------------------------------------------------------------- |
-| Phase 2 設計       | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md`        |
-| Phase 4 テスト設計 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-4-test-creation.md` |
+| 資料名             | パス                                                                            |
+| ------------------ | ------------------------------------------------------------------------------- |
+| Phase 2 設計       | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md`        |
+| Phase 4 テスト設計 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-4-test-creation.md` |
 
 ### 既知の落とし穴
 
@@ -245,11 +245,11 @@ pnpm vitest run src/renderer/store/
 
 ## 成果物
 
-| 成果物                       | パス                                                                                             | 説明                           |
-| ---------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------ |
-| Phase 5 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md` | 実装手順書                     |
-| store/index.ts 修正          | `apps/desktop/src/renderer/store/index.ts`                                                       | partialize拡張・migrate追加    |
-| llmSlice.ts 修正             | `apps/desktop/src/renderer/store/slices/llmSlice.ts`                                             | バリデーション関数・起動時同期 |
+| 成果物                       | パス                                                                             | 説明                           |
+| ---------------------------- | -------------------------------------------------------------------------------- | ------------------------------ |
+| Phase 5 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md` | 実装手順書                     |
+| store/index.ts 修正          | `apps/desktop/src/renderer/store/index.ts`                                       | partialize拡張・migrate追加    |
+| llmSlice.ts 修正             | `apps/desktop/src/renderer/store/slices/llmSlice.ts`                             | バリデーション関数・起動時同期 |
 
 ## 完了条件
 

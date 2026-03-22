@@ -2,14 +2,14 @@
 
 ## メタ情報
 
-| 項目          | 内容                                                                                             |
-| ------------- | ------------------------------------------------------------------------------------------------ |
-| Phase番号     | 13                                                                                               |
-| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                                              |
-| 作成日        | 2026-03-20                                                                                       |
-| 担当          | -                                                                                                |
-| ステータス    | 未着手                                                                                           |
-| 前Phase成果物 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-12-documentation.md` |
+| 項目          | 内容                                                                             |
+| ------------- | -------------------------------------------------------------------------------- |
+| Phase番号     | 13                                                                               |
+| 機能名        | LLM設定永続化修正 (TASK-FIX-LLM-CONFIG-PERSISTENCE)                              |
+| 作成日        | 2026-03-20                                                                       |
+| 担当          | -                                                                                |
+| ステータス    | blocked                                                                          |
+| 前Phase成果物 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-12-documentation.md` |
 
 ## 目的
 
@@ -57,10 +57,10 @@ cd apps/desktop && pnpm vitest run src/renderer/store/
 
 ```bash
 # Phase 12 で作成したドキュメントの確認
-ls docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/
+ls docs/30-workflows/ai-chat-llm-integration-fix/
 
 # 実装ガイドの確認
-cat docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-12/implementation-guide.md | head -50
+cat docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-12/implementation-guide.md | head -50
 ```
 
 **確認チェックリスト**:
@@ -90,7 +90,7 @@ git add apps/desktop/src/renderer/store/index.ts
 git add apps/desktop/src/renderer/store/slices/llmSlice.ts
 git add apps/desktop/src/renderer/store/__tests__/
 git add apps/desktop/src/renderer/store/slices/__tests__/
-git add docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/
+git add docs/30-workflows/ai-chat-llm-integration-fix/
 
 # コミット（conventional commits 形式）
 git commit -m "fix(store): persist selectedProviderId/ModelId across restarts
@@ -130,7 +130,7 @@ gh pr create \
 
 ## Related
 - Task: TASK-FIX-LLM-CONFIG-PERSISTENCE
-- Design: docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md
+- Design: docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md
 EOF
 )" \
   --base main
@@ -160,9 +160,23 @@ gh issue close <issue-number> --comment \
 
 ### 前Phase成果物
 
-| 資料名                | パス                                                                                             |
-| --------------------- | ------------------------------------------------------------------------------------------------ |
-| Phase 12 ドキュメント | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-12-documentation.md` |
+| 資料名                | パス                                                                             |
+| --------------------- | -------------------------------------------------------------------------------- |
+| Phase 12 ドキュメント | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-12-documentation.md` |
+
+### 依存Phaseトレーサビリティ
+
+| Phase    | パス                                                                                | 用途                            |
+| -------- | ----------------------------------------------------------------------------------- | ------------------------------- |
+| Phase 2  | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-2-design.md`            | PR 説明で参照する設計判断の正本 |
+| Phase 5  | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-5-implementation.md`    | 実装差分の確認                  |
+| Phase 6  | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-6-test-expansion.md`    | 追加テスト群の確認              |
+| Phase 7  | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-7-coverage-check.md`    | coverage gate の確認            |
+| Phase 8  | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-8-refactoring.md`       | 最終リファクタ済みコードの確認  |
+| Phase 9  | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-9-quality-assurance.md` | lint/typecheck/test 結果の確認  |
+| Phase 10 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-10-final-review.md`     | レビュー判定の確認              |
+| Phase 11 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-11-manual-test.md`      | 手動テスト証跡の確認            |
+| Phase 12 | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-12-documentation.md`    | ドキュメント同期の確認          |
 
 ## 実行手順
 
@@ -174,11 +188,11 @@ gh issue close <issue-number> --comment \
 
 ## 成果物
 
-| 成果物                        | パス                                                                                           | 説明               |
-| ----------------------------- | ---------------------------------------------------------------------------------------------- | ------------------ |
-| Phase 13 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-13-pr-creation.md` | 完了フェーズ手順書 |
-| コミット                      | git log HEAD                                                                                   | 修正内容のコミット |
-| PR                            | GitHub PR URL                                                                                  | レビュー待ちのPR   |
+| 成果物                        | パス                                                                           | 説明               |
+| ----------------------------- | ------------------------------------------------------------------------------ | ------------------ |
+| Phase 13 仕様書（本ファイル） | `docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/phase-13-pr-creation.md` | 完了フェーズ手順書 |
+| コミット                      | git log HEAD                                                                   | 修正内容のコミット |
+| PR                            | GitHub PR URL                                                                  | レビュー待ちのPR   |
 
 ## 完了条件
 
