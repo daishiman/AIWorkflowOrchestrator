@@ -62,6 +62,11 @@ import {
   unregisterSkillCreatorHandlers,
   sendSkillCreatorProgress,
 } from "../skillCreatorHandlers";
+import {
+  IPC_CHANNELS as CHANNELS_CONST,
+  ALLOWED_INVOKE_CHANNELS,
+  ALLOWED_ON_CHANNELS,
+} from "../../../preload/channels";
 
 // Helper functions
 function createMockMainWindow() {
@@ -644,6 +649,63 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
         progress,
       );
       expect(destroyedWindow.webContents.send).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("P65 dead-end namespace 不在確認", () => {
+    it("IPC-P65-001: creator:* namespace のハンドラが登録されていないこと", () => {
+      const deadEndChannels = [
+        "creator:plan",
+        "creator:execute-plan",
+        "creator:improve-skill",
+        "creator:detect-mode",
+        "creator:create",
+        "creator:execute-tasks",
+        "creator:validate",
+        "creator:validate-schema",
+      ];
+
+      for (const channel of deadEndChannels) {
+        expect(handlerMap.has(channel)).toBe(false);
+      }
+    });
+
+    it("IPC-P65-002: 全登録チャネルが skill-creator: prefix を持つこと", () => {
+      for (const channel of handlerMap.keys()) {
+        expect(channel).toMatch(/^skill-creator:/);
+      }
+    });
+  });
+
+  describe("Allowlist 包含確認", () => {
+    it("IPC-AL-001: 全15 invoke チャネルが ALLOWED_INVOKE_CHANNELS に含まれること", () => {
+      const skillCreatorInvokeChannels = [
+        CHANNELS_CONST.SKILL_CREATOR_DETECT_MODE,
+        CHANNELS_CONST.SKILL_CREATOR_CREATE,
+        CHANNELS_CONST.SKILL_CREATOR_EXECUTE_TASKS,
+        CHANNELS_CONST.SKILL_CREATOR_VALIDATE,
+        CHANNELS_CONST.SKILL_CREATOR_VALIDATE_SCHEMA,
+        CHANNELS_CONST.SKILL_CREATOR_IMPROVE,
+        CHANNELS_CONST.SKILL_CREATOR_FORK,
+        CHANNELS_CONST.SKILL_CREATOR_SHARE,
+        CHANNELS_CONST.SKILL_CREATOR_SCHEDULE,
+        CHANNELS_CONST.SKILL_CREATOR_DEBUG,
+        CHANNELS_CONST.SKILL_CREATOR_GENERATE_DOCS,
+        CHANNELS_CONST.SKILL_CREATOR_STATS,
+        CHANNELS_CONST.SKILL_CREATOR_PLAN,
+        CHANNELS_CONST.SKILL_CREATOR_EXECUTE_PLAN,
+        CHANNELS_CONST.SKILL_CREATOR_IMPROVE_SKILL,
+      ];
+
+      for (const channel of skillCreatorInvokeChannels) {
+        expect(ALLOWED_INVOKE_CHANNELS).toContain(channel);
+      }
+    });
+
+    it("IPC-AL-002: progress チャネルが ALLOWED_ON_CHANNELS に含まれること", () => {
+      expect(ALLOWED_ON_CHANNELS).toContain(
+        CHANNELS_CONST.SKILL_CREATOR_PROGRESS,
+      );
     });
   });
 });

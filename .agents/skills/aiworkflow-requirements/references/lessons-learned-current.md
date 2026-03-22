@@ -471,3 +471,13 @@
 - **原因**: Phase 2 設計書で execute() の4状態ハンドリングを十分に設計しなかった
 - **解決策**: linter/ユーザーのフィードバックで `RuntimeTerminalHandoffResult` 型を導入し、execute() でも terminalSurface → handoff bundle を返す分岐を追加
 - **教訓**: 3-role facade（plan/execute/improve）で4状態ハンドリングを設計する際は、全 role × 全 capability の matrix を Phase 2 で明示的に埋める
+
+### TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION 苦戦箇所（2026-03-23）
+
+#### L-CMS-01: コンポーネント統合時の既存テスト mock 波及（P21/P35 拡張）
+
+- **症状**: ChatView に InlineModelSelector を追加後、既存テスト（ChatView.test.tsx, ChatView.guidance.test.tsx）が全37件+2件失敗。`No "useLLMProviders" export is defined on the "../../store" mock` エラー
+- **原因**: InlineModelSelector が内部で8個の Store セレクタ（useLLMProviders, useSelectedProviderId, useSelectModel 等）を使用。vi.mock でこれらを宣言しないと、レンダリング時に未定義エラーが発生
+- **解決策**: 既存テストの vi.mock に7個のセレクタ mock を追加（useLLMProviders, useLLMHealthStatus, useFetchProviders, useSelectProvider, useSelectModel, useCheckLLMHealth, useIsSending）
+- **教訓**: 既存ビューにコンポーネントを追加する際は、追加コンポーネントが使用する全 Store セレクタを `grep -rn "use.*=" components/path/Component.tsx` で事前特定し、既存テストの vi.mock に追加する。mock 漏れ1個で全テスト失敗するため、事前確認が必須
+- **再発防止**: Phase 4 テスト作成前に「既存テストの mock 影響調査」を必須ステップとして含める

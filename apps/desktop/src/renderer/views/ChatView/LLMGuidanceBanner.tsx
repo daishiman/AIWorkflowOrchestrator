@@ -1,5 +1,10 @@
 import React from "react";
 import { useSelectedModelId, useSelectedProviderId } from "../../store";
+import {
+  createGuidanceActionDispatcher,
+  deriveModelSelectionBlockedReason,
+  getModelSelectionGuidance,
+} from "../../guidance/modelSelectionGuidance";
 
 interface LLMGuidanceBannerProps {
   onNavigateToSettings: () => void;
@@ -10,10 +15,20 @@ export const LLMGuidanceBanner: React.FC<LLMGuidanceBannerProps> = ({
 }) => {
   const selectedModelId = useSelectedModelId();
   const selectedProviderId = useSelectedProviderId();
+  const blockedReason = deriveModelSelectionBlockedReason({
+    selectedProviderId,
+    selectedModelId,
+  });
+  const guidance = getModelSelectionGuidance(blockedReason);
+  const resolveAction = createGuidanceActionDispatcher({
+    openSettings: onNavigateToSettings,
+  });
+  const primaryAction = guidance?.primaryAction;
+  const onPrimaryAction = primaryAction
+    ? resolveAction(primaryAction.type)
+    : undefined;
 
-  const isModelSelected = selectedModelId != null && selectedProviderId != null;
-
-  if (isModelSelected) {
+  if (!guidance) {
     return null;
   }
 
@@ -26,16 +41,18 @@ export const LLMGuidanceBanner: React.FC<LLMGuidanceBannerProps> = ({
         &#x26A0;
       </span>
       <span className="flex-1 text-gray-900 dark:text-gray-100">
-        AIモデルが選択されていません
+        {guidance.message}
       </span>
-      <button
-        type="button"
-        onClick={onNavigateToSettings}
-        aria-label="設定画面へ移動"
-        className="shrink-0 rounded-md px-3 py-1 text-sm font-medium text-[#007AFF] hover:bg-blue-50 dark:text-[#0A84FF] dark:hover:bg-blue-950 transition-colors duration-200"
-      >
-        設定画面へ
-      </button>
+      {primaryAction && onPrimaryAction ? (
+        <button
+          type="button"
+          onClick={onPrimaryAction}
+          aria-label={primaryAction.ariaLabel ?? primaryAction.label}
+          className="shrink-0 rounded-md px-3 py-1 text-sm font-medium text-[#007AFF] hover:bg-blue-50 dark:text-[#0A84FF] dark:hover:bg-blue-950 transition-colors duration-200"
+        >
+          {primaryAction.label}
+        </button>
+      ) : null}
     </div>
   );
 };

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-22T21:15:06.139Z",
-  "totalKeywords": 2436,
+  "generated": "2026-03-22T23:58:51.165Z",
+  "totalKeywords": 2439,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2237,7 +2237,8 @@
     ],
     "WIRING": [
       "api-ipc-system-core.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "ChatPanel": [
       "api-ipc-system-core.md",
@@ -2283,6 +2284,7 @@
       "arch-state-management-reference-selectors.md",
       "interfaces-llm.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "llm-ipc-types.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -2438,7 +2440,21 @@
       "ui-ux-settings-core.md"
     ],
     "CLOSURE": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "RuntimePolicyResolver": [
       "arch-electron-services-details-part2.md"
+    ],
+    "SC": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "POLICY": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "採用計画": [
       "arch-electron-services-details-part2.md"
@@ -2782,6 +2798,7 @@
     "WORKSPACE": [
       "arch-state-management-core.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-03-history-search-notification-center.md",
@@ -6244,10 +6261,6 @@
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
-    "POLICY": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "CAPABILITY": [
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -6319,6 +6332,15 @@
     ],
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "GUIDANCE": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ACTION": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-viewtype-electron-ui.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "仕様書作成": [
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -6830,11 +6852,6 @@
       "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "SKILLDETAIL": [
-      "lessons-learned-viewtype-electron-ui.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
-    "ACTION": [
       "lessons-learned-viewtype-electron-ui.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"

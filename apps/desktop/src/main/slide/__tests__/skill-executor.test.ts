@@ -8,6 +8,26 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { createSkillExecutor } from "../skill-executor";
 import type { SkillPhase } from "@repo/shared";
 
+// vi.hoistedで制御可能なモック関数を作成
+const { mockReadFile, mockBuildModifierPrompt, mockParseModifierResponse } =
+  vi.hoisted(() => ({
+    mockReadFile: vi.fn(),
+    mockBuildModifierPrompt: vi.fn(),
+    mockParseModifierResponse: vi.fn(),
+  }));
+
+// fs/promisesのモック（modifier フェーズの readFile 用）
+vi.mock("fs/promises", () => ({
+  readFile: mockReadFile,
+  default: { readFile: mockReadFile },
+}));
+
+// modifier-skillのモック（modifier フェーズのプロンプト構築・レスポンスパース用）
+vi.mock("../modifier-skill", () => ({
+  buildModifierPrompt: mockBuildModifierPrompt,
+  parseModifierResponse: mockParseModifierResponse,
+}));
+
 // AgentClientのモック（SDK統合テスト用）
 const mockAgentAPI = {
   query: vi.fn().mockResolvedValue({
@@ -29,6 +49,13 @@ describe("SkillExecutor", () => {
 
   beforeEach(() => {
     vi.useFakeTimers();
+    // modifier フェーズ用モックのデフォルト値設定
+    mockReadFile.mockResolvedValue("mock file content");
+    mockBuildModifierPrompt.mockReturnValue("mock modifier prompt");
+    mockParseModifierResponse.mockReturnValue({
+      success: true,
+      changes: [],
+    });
   });
 
   afterEach(() => {

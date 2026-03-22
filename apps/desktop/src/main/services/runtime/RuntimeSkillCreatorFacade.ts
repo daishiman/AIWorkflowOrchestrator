@@ -15,7 +15,10 @@ import type {
   SkillExecutor,
   SkillExecutionRequest,
 } from "../skill/SkillExecutor";
-import type { AuthMode } from "@repo/shared/types/auth-mode";
+import type {
+  AuthMode,
+  ISubscriptionAuthProvider,
+} from "@repo/shared/types/auth-mode";
 import type {
   RuntimeSkillCreatorExecuteResult as SkillExecuteResult,
   RuntimeSkillCreatorImproveResponse,
@@ -30,6 +33,7 @@ import { TerminalHandoffBuilder } from "./TerminalHandoffBuilder";
 export interface RuntimeSkillCreatorFacadeDeps {
   skillExecutor: SkillExecutor;
   authKeyService?: IAuthKeyService;
+  subscriptionAuthProvider?: ISubscriptionAuthProvider;
 }
 
 export class RuntimeSkillCreatorFacade {
@@ -39,7 +43,10 @@ export class RuntimeSkillCreatorFacade {
 
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
-    this.resolver = new RuntimePolicyResolver(deps.authKeyService);
+    this.resolver = new RuntimePolicyResolver(
+      deps.authKeyService,
+      deps.subscriptionAuthProvider,
+    );
     this.handoffBuilder = new TerminalHandoffBuilder();
   }
 

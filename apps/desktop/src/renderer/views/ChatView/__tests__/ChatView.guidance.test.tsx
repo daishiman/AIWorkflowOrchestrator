@@ -10,6 +10,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
+import { MODEL_SELECTION_GUIDANCE } from "@/renderer/guidance/modelSelectionGuidance";
 
 // ---------------------------------------------------------------------------
 // Mock: react-router-dom
@@ -72,6 +73,13 @@ vi.mock("@/renderer/store", () => ({
   useSelectedModelId: () => mockUseSelectedModelId(),
   useSelectedProviderId: () => mockUseSelectedProviderId(),
   useSetCurrentView: () => mockSetCurrentView,
+  useLLMProviders: vi.fn(() => []),
+  useLLMHealthStatus: vi.fn(() => ({})),
+  useFetchProviders: vi.fn(() => vi.fn()),
+  useSelectProvider: vi.fn(() => vi.fn()),
+  useSelectModel: vi.fn(() => vi.fn()),
+  useCheckLLMHealth: vi.fn(() => vi.fn()),
+  useIsSending: vi.fn(() => false),
 }));
 
 // ---------------------------------------------------------------------------
@@ -108,7 +116,7 @@ describe("ChatView LLMGuidanceBanner 統合テスト", () => {
       );
       expect(screen.getByRole("alert")).toBeInTheDocument();
       expect(
-        screen.getByText(/AIモデルが選択されていません/),
+        screen.getByText(MODEL_SELECTION_GUIDANCE.message),
       ).toBeInTheDocument();
     });
 
@@ -121,7 +129,9 @@ describe("ChatView LLMGuidanceBanner 統合テスト", () => {
           <ChatView />
         </MemoryRouter>,
       );
-      const settingsButton = screen.getByRole("button", { name: /設定画面/ });
+      const settingsButton = screen.getByRole("button", {
+        name: MODEL_SELECTION_GUIDANCE.actionAriaLabel,
+      });
       fireEvent.click(settingsButton);
       expect(mockSetCurrentView).toHaveBeenCalledWith("settings");
     });

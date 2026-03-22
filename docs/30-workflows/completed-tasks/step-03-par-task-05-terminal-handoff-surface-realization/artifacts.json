@@ -1,0 +1,178 @@
+{
+  "taskId": "TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001",
+  "title": "Claude Code terminal surface / shared handoff UI",
+  "type": "design",
+  "priority": "high",
+  "status": "all_phases_complete",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "complete",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/current-state-inventory.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "complete",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/contract-matrix.md",
+        "outputs/phase-2/validation-matrix.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "complete",
+      "gateDecision": "PASS",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "outputs/phase-3/design-review-report.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "complete",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/test-matrix.md",
+        "outputs/phase-4/mock-strategy.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "complete",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "outputs/phase-5/implementation-plan.md",
+        "outputs/phase-5/file-change-scope.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "complete",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/regression-expansion-plan.md",
+        "outputs/phase-6/edge-case-matrix.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "complete",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-targets.md",
+        "outputs/phase-7/integration-gate.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "complete",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/refactor-boundaries.md",
+        "outputs/phase-8/simplification-candidates.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "complete",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/quality-checklist.md",
+        "outputs/phase-9/risk-register.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "complete",
+      "gateDecision": "PASS",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/final-review-report.md",
+        "outputs/phase-10/final-gate-decision.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "complete",
+      "note": "設計タスクのため walkthrough シナリオ・screenshot 計画・MB チェックリストを作成。実際の手動テストは後続実装タスクで実施。",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-plan.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "complete",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ],
+      "unassignedTaskCount": 8
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked_awaiting_user_instruction",
+      "note": "PR はユーザー指示があるまで作成しない",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": ["outputs/phase-13/pr-preparation.md"]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "persistent launcher と shared handoff card の UI 責務が定義されている",
+      "verified": true,
+      "evidence": "outputs/phase-2/design-summary.md Concern-A/B"
+    },
+    {
+      "id": "AC-2",
+      "description": "copy command / copy context / open working directory の許容操作が明示されている",
+      "verified": true,
+      "evidence": "outputs/phase-2/contract-matrix.md 許容操作テーブル"
+    },
+    {
+      "id": "AC-3",
+      "description": "Skill Docs を含む guidance-only consumer が同一 DTO を使う設計になっている",
+      "verified": true,
+      "evidence": "outputs/phase-2/design-summary.md Concern-C Consumer→DTO マッピング表"
+    },
+    {
+      "id": "AC-4",
+      "description": "manual-only boundary（auto-send 禁止・hidden injection 禁止）が screenshot 契約まで落ちている",
+      "verified": true,
+      "evidence": "outputs/phase-11/screenshot-plan.json MB-1〜MB-4"
+    }
+  ],
+  "dependencies": ["TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001"],
+  "relatedPitfalls": ["P31", "P48", "P50", "P55", "P62", "P64", "P65"],
+  "createdAt": "2026-03-19",
+  "updatedAt": "2026-03-22"
+}

@@ -15,6 +15,7 @@ import { SystemPromptPanel } from "../../components/organisms/SystemPromptPanel"
 import { SystemPromptToggleButton } from "../../components/atoms/SystemPromptToggleButton";
 import { SaveTemplateDialog } from "../../components/organisms/SaveTemplateDialog";
 import { useAppStore, useChatError, useClearChatError } from "../../store";
+import { InlineModelSelector } from "../../components/llm";
 import { LLMGuidanceBanner } from "./LLMGuidanceBanner";
 
 // ============================================
@@ -216,9 +217,12 @@ export const ChatView: React.FC<ChatViewProps> = ({ className }) => {
     >
       {/* ヘッダー: タイトルとナビゲーション */}
       <header className="flex items-center justify-between p-4 border-b border-white/10">
-        <div>
-          <h1 className="text-lg font-semibold text-white">AIチャット</h1>
-          <p className="text-sm text-gray-400">{ragStatusMessage}</p>
+        <div className="flex items-center gap-3">
+          <div>
+            <h1 className="text-lg font-semibold text-white">AIチャット</h1>
+            <p className="text-sm text-gray-400">{ragStatusMessage}</p>
+          </div>
+          <InlineModelSelector compact disabled={isSending} />
         </div>
         <div className="flex items-center gap-2">
           <button

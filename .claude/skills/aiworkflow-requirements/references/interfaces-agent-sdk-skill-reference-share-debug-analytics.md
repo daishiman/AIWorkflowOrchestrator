@@ -264,6 +264,28 @@ interface SkillDocsCapabilityResult {
 
 > 未タスク: [UT-SKILL-DOCS-TERMINAL-HANDOFF-001](../../../docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-skill-docs-terminal-handoff-001.md) — terminal-handoff 実パス実装
 
+### Consumer Adapter: toHandoffGuidance()（TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001）
+
+各 consumer の出力を `HandoffGuidance` 統一 DTO へ変換する adapter 関数群。
+
+**配置先**: `packages/shared/src/types/handoff.ts`（UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 解決時に確定）
+
+**Consumer → DTO マッピング**:
+
+| Consumer | 入力型 | 変換関数 | surfaceType |
+|----------|--------|----------|-------------|
+| Chat Edit | TerminalHandoffBundle | toHandoffGuidance | "chat-edit" |
+| Runtime | TerminalHandoffBundle | toHandoffGuidance | "runtime" |
+| Skill Docs | SkillDocsCapabilityResult | skillDocsToHandoffGuidance | "skill-docs" |
+| Agent Execution | TerminalHandoffBundle | toHandoffGuidance | "chat-edit" |
+| Manual Launcher | - (direct construction) | - | "manual" |
+
+#### 関連未タスク
+
+- UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001: adapter 配置先確定
+- UT-SKILLDOCS-TERMINAL-HANDOFF-PATH-001: SkillDocs → Terminal Handoff 導線接続
+- UT-GUIDANCE-BLOCK-PROPS-UNIFICATION-001: GuidanceBlock Props 型統一
+
 ---
 
 ## スキル分析 型定義（TASK-9J）

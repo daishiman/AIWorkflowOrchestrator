@@ -13,6 +13,16 @@
 
 ---
 
+||||||| 6f1c58b3d
+## TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: ChatView header に InlineModelSelector を compact mode で配置。disabled={isSending} でストリーミング中ロック。LLMGuidanceBanner は Store reactivity で自動連携（変更不要）。統合テスト8件追加、全62テスト PASS。ui-ux-llm-selector.md / ui-ux-navigation.md を更新。
+- **影響ファイル**: ChatView/index.tsx, ChatView.test.tsx, ChatView.guidance.test.tsx, ChatView.integration.test.tsx (新規)
+- **未タスク**: UT-CHATVIEW-MODEL-SELECTOR-DATA-TESTID-001 (Low: data-testid 追加)
+
+---
+
 ## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 
 - **Agent**: task-specification-creator
