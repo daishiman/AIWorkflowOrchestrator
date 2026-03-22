@@ -9,6 +9,10 @@ import {
   useRemoveFile,
   useSelectedFiles,
 } from "@/renderer/store";
+import {
+  deriveModelSelectionBlockedReason,
+  type ModelSelectionBlockedReason,
+} from "@/renderer/guidance/modelSelectionGuidance";
 import { createSelectedFile } from "../workspaceFileSelection";
 import {
   useWorkspaceMentionQuery,
@@ -32,6 +36,7 @@ export interface WorkspaceChatController {
   selectedFiles: SelectedFile[];
   selectedFilePath: string | null;
   selectedModelId: string | null;
+  blockedReason: ModelSelectionBlockedReason | null;
   mention: ReturnType<typeof useWorkspaceMentionQuery>;
   pendingCursorPosition: number | null;
   setInputValue: (nextValue: string, cursorPosition?: number) => void;
@@ -166,6 +171,10 @@ export function useWorkspaceChatController(params: {
 
   const selectedProviderId = useAppStore((state) => state.selectedProviderId);
   const selectedModelId = useAppStore((state) => state.selectedModelId);
+  const blockedReason = deriveModelSelectionBlockedReason({
+    selectedProviderId,
+    selectedModelId,
+  });
 
   const [messages, setMessages] = useState<WorkspaceChatMessage[]>([]);
   const [conversationId, setConversationId] = useState<string | null>(null);
@@ -346,11 +355,13 @@ export function useWorkspaceChatController(params: {
 
   const sendMessage = useCallback(async () => {
     const trimmed = input.trim();
+    const activeModelId = selectedModelId;
     if (
       !trimmed ||
       isSendingRef.current ||
       isStreamingRef.current ||
-      !selectedModelId
+      blockedReason !== null ||
+      activeModelId == null
     ) {
       return;
     }
@@ -393,7 +404,7 @@ export function useWorkspaceChatController(params: {
       const request = buildChatRequest({
         input: trimmed,
         contextBlock,
-        selectedModelId,
+        selectedModelId: activeModelId,
         selectedProviderId,
       });
 
@@ -417,6 +428,7 @@ export function useWorkspaceChatController(params: {
     ensureConversation,
     input,
     selectedFiles,
+    blockedReason,
     selectedModelId,
     selectedProviderId,
   ]);
@@ -631,6 +643,7 @@ export function useWorkspaceChatController(params: {
     selectedFiles,
     selectedFilePath,
     selectedModelId,
+    blockedReason,
     mention,
     pendingCursorPosition,
     setInputValue,

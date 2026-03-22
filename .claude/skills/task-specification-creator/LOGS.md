@@ -32,6 +32,17 @@
 
 ---
 
+## TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 docs/spec sync
+- **Result**: success
+- **Notes**:
+  - `workflow-ai-runtime-execution-responsibility-realignment.md` に Task04 standalone root と current canonical set を追記
+  - `task-workflow-completed.md` に `spec_created` / `implementation_ready` / Phase 13 blocked の分離記録を追加
+  - `task-workflow-backlog.md` と `lessons-learned-current.md` / `lessons-learned-phase12-workflow-lifecycle.md` に follow-up 4件と教訓4件を追加
+  - Task04 の same-wave sync を task/workflow/doc/spec の関係性として再記録
+
 ## workflow 移設時の本文 stale path ガード追加（2026-03-21）
 
 - **Agent**: task-specification-creator

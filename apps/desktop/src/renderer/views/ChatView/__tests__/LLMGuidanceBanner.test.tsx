@@ -11,6 +11,7 @@
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { MODEL_SELECTION_GUIDANCE } from "@/renderer/guidance/modelSelectionGuidance";
 
 // ---------------------------------------------------------------------------
 // Mock: store 個別セレクタ
@@ -109,7 +110,7 @@ describe("LLMGuidanceBanner", () => {
         <LLMGuidanceBanner onNavigateToSettings={mockOnNavigateToSettings} />,
       );
       expect(
-        screen.getByText(/AIモデルが選択されていません/),
+        screen.getByText(MODEL_SELECTION_GUIDANCE.message),
       ).toBeInTheDocument();
     });
 
@@ -118,7 +119,9 @@ describe("LLMGuidanceBanner", () => {
         <LLMGuidanceBanner onNavigateToSettings={mockOnNavigateToSettings} />,
       );
       expect(
-        screen.getByRole("button", { name: /設定画面/ }),
+        screen.getByRole("button", {
+          name: MODEL_SELECTION_GUIDANCE.actionAriaLabel,
+        }),
       ).toBeInTheDocument();
     });
 
@@ -138,7 +141,9 @@ describe("LLMGuidanceBanner", () => {
       render(
         <LLMGuidanceBanner onNavigateToSettings={mockOnNavigateToSettings} />,
       );
-      const button = screen.getByRole("button", { name: /設定画面/ });
+      const button = screen.getByRole("button", {
+        name: MODEL_SELECTION_GUIDANCE.actionAriaLabel,
+      });
       fireEvent.click(button);
       expect(mockOnNavigateToSettings).toHaveBeenCalledTimes(1);
     });
@@ -147,7 +152,9 @@ describe("LLMGuidanceBanner", () => {
       render(
         <LLMGuidanceBanner onNavigateToSettings={mockOnNavigateToSettings} />,
       );
-      const button = screen.getByRole("button", { name: /設定画面/ });
+      const button = screen.getByRole("button", {
+        name: MODEL_SELECTION_GUIDANCE.actionAriaLabel,
+      });
       button.focus();
       expect(document.activeElement).toBe(button);
     });
@@ -196,7 +203,9 @@ describe("LLMGuidanceBanner", () => {
       render(
         <LLMGuidanceBanner onNavigateToSettings={mockOnNavigateToSettings} />,
       );
-      const button = screen.getByRole("button", { name: /設定画面/ });
+      const button = screen.getByRole("button", {
+        name: MODEL_SELECTION_GUIDANCE.actionAriaLabel,
+      });
       expect(button).toHaveAttribute("aria-label");
     });
   });

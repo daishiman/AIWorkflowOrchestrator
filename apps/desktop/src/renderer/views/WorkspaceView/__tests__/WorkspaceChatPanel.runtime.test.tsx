@@ -1,9 +1,7 @@
 /**
  * WorkspaceChatPanel ランタイム整合テスト (U-01 〜 U-06)
  *
- * TDD Red フェーズ:
- *   - U-05: errorMessage 存在時にエラー表示 → WorkspaceChatPanel 本体に未実装のため Red
- *   - U-06: selectedModelId=null で送信ボタン非活性 → WorkspaceChatPanel 本体に未実装のため Red
+ * 当初 Red として書かれたケースも、現行実装と同期して検証内容を維持する。
  *
  * P39 準拠: happy-dom 環境では fireEvent を使用（userEvent 使用禁止）
  * P9  準拠: beforeEach で全 mock をリセットし、テスト間の状態共有を防ぐ
@@ -27,6 +25,7 @@ const mockController: WorkspaceChatController = {
   selectedFiles: [],
   selectedFilePath: null,
   selectedModelId: "gpt-4o",
+  blockedReason: null,
   pendingCursorPosition: null,
   mention: {
     isOpen: false,
@@ -83,6 +82,7 @@ beforeEach(() => {
   mockController.selectedFiles = [];
   mockController.selectedFilePath = null;
   mockController.selectedModelId = "gpt-4o";
+  mockController.blockedReason = null;
   mockController.pendingCursorPosition = null;
   mockController.mention = {
     isOpen: false,
@@ -172,47 +172,40 @@ describe("WorkspaceChatPanel ランタイム整合テスト", () => {
     expect(screen.getByTestId("workspace-chip-file-1")).toBeInTheDocument();
   });
 
-  // U-05: errorMessage 存在時にエラー表示（Red フェーズ）
-  // WorkspaceChatPanel 本体には errorMessage 表示が未実装のため Red になることが期待される。
-  // WorkspaceChatInput 内の data-testid="workspace-chat-error" が WorkspaceChatPanel
-  // の props.controller 経由でレンダリングされる場合は Green になるが、
-  // 現在 WorkspaceChatPanel 自体にはエラー表示要素がない。
-  it("U-05: errorMessage が存在する場合、エラーメッセージが表示されること（Red フェーズ）", () => {
+  // U-05: errorMessage 存在時にエラー表示
+  it("U-05: errorMessage が存在する場合、エラーメッセージが表示されること", () => {
     mockController.errorMessage = "AI応答に失敗しました: Stream failed";
 
     render(<WorkspaceChatPanel controller={mockController} />);
 
-    // WorkspaceChatPanel 本体にエラー表示がないため失敗することが期待される
     expect(screen.getByTestId("workspace-chat-error")).toBeInTheDocument();
     expect(screen.getByTestId("workspace-chat-error")).toHaveTextContent(
       "AI応答に失敗しました: Stream failed",
     );
   });
 
-  // U-06: selectedModelId=null で送信ボタン非活性（Red フェーズ）
-  // WorkspaceChatPanel / WorkspaceChatInput は現在 selectedModelId を参照しないため Red。
-  it("U-06: selectedModelId=null の場合、送信ボタンが非活性になること（Red フェーズ）", () => {
+  // U-06: blockedReason=NO_MODEL で送信ボタン非活性
+  it("U-06: blockedReason=NO_MODEL の場合、送信ボタンが非活性になること", () => {
     // input に値を入れて通常は送信可能な状態にする
     mockController.input = "テスト質問";
     mockController.isSending = false;
     mockController.isStreaming = false;
 
-    // P62: selectedModelId=null で送信ボタンが非活性になること
     mockController.selectedModelId = null;
+    mockController.blockedReason = "NO_MODEL";
 
     render(<WorkspaceChatPanel controller={mockController} />);
 
     const sendButton = screen.getByTestId("workspace-chat-send");
-    // 期待: selectedModelId=null なら disabled
-    // 現状: WorkspaceChatInput は canSend を input/isSending/isStreaming のみで判定 → enabled → Red
     expect(sendButton).toBeDisabled();
   });
 
   // ===== Phase 6: テスト拡充 (E-05, E-16〜E-22) =====
 
   // E-05: unsupported capability で GuidanceBlock 表示
-  it("E-05: selectedModelId=null で GuidanceBlock が表示される", () => {
+  it("E-05: blockedReason=NO_MODEL で GuidanceBlock が表示される", () => {
     mockController.selectedModelId = null;
+    mockController.blockedReason = "NO_MODEL";
 
     render(<WorkspaceChatPanel controller={mockController} />);
 

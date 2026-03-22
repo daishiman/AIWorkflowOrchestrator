@@ -73,6 +73,50 @@
 
 ---
 
+## 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001
+
+### 苦戦箇所1: standalone task root 移設時は parent / downstream / system spec の旧 path を同一 wave で閉じる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task04 root を standalone に移したのに、親 workflow index と downstream consumer の旧 nested path が残ると current canonical set が二重化する |
+| 再発条件 | workflow root の移設を root index だけで閉じ、parent/downstream/system spec を同一 wave で更新しない |
+| 解決策 | `task-workflow-completed.md` / `task-workflow-backlog.md` / `workflow-ai-runtime-execution-responsibility-realignment.md` を同時更新し、current root を固定した |
+| 標準ルール | standalone root の移設は parent/downstream/system spec の旧 path を同一 wave で閉じる |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
+
+### 苦戦箇所2: design task でも Phase 12 の planned wording を残すと complete ではなくなる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `計画済み` / `更新予定` が成果物に残ると、実更新後でも Phase 12 が未完了に見える |
+| 再発条件 | workflow root は closed でも、compliance / changelog / backlog / lessons が future tense のまま残る |
+| 解決策 | workflow root を `implementation_ready`、completed ledger を `spec_created` に分離し、Phase 13 だけ blocked に固定した |
+| 標準ルール | design task でも Phase 12 deferred wording を残さない |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
+
+### 苦戦箇所3: unassigned detection を backlog だけで閉じると formalize 漏れが起きる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 未タスク化の候補を backlog に積むだけでは、workflow / lessons / task-workflow の導線が閉じない |
+| 再発条件 | formalize を backlog 追加だけで済ませ、completed ledger / lessons / workflow を同時更新しない |
+| 解決策 | unassigned detection を formalize / backlog / workflow / lessons の 4点同期で扱うようにした |
+| 標準ルール | unassigned detection は formalize/backlog/workflow/lessons の 4点同期 |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
+
+### 苦戦箇所4: screenshot 要求がある spec_created task でも dedicated capture script を current workflow root に残す必要がある
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | screenshot evidence を upstream task に流すと、current workflow root で再利用できない |
+| 再発条件 | spec_created task で representative screenshot を別 workflow へ移す |
+| 解決策 | current workflow root に dedicated capture script と evidence path を残し、task root から直接追跡できるようにした |
+| 標準ルール | screenshot 要求がある spec_created task でも dedicated capture script を current workflow root に残す |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
+
+---
+
 ## 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE
 
 ### 苦戦箇所1: persist task の Phase 11 で storage 実体を generic 名で推測すると誤る

@@ -10,7 +10,7 @@
 | [task-workflow-active.md](task-workflow-active.md) | active guide | 概要 / ドキュメント構成 / フェーズ構造（概要） / 品質ゲート（概要） / 出力テンプレート / 実行時のコマンド・エージェント・スキル |
 | [task-workflow-completed.md](task-workflow-completed.md) | completed records (baseline completed ledger) | 完了タスク / TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001（spec_created, 2026-03-20） |
 | [task-workflow-completed-workspace-chat-lifecycle-tests.md](task-workflow-completed-workspace-chat-lifecycle-tests.md) | completed records (workspace / chat path / lifecycle tests) | 完了タスク / TASK-FIX-LLM-CONFIG-PERSISTENCE 再監査記録（2026-03-21） |
-| [task-workflow-completed.md](task-workflow-completed.md) | completed records (baseline completed ledger) | 完了タスク / TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（implementation completed, 2026-03-21） |
+| [task-workflow-completed.md](task-workflow-completed.md) | completed records (baseline completed ledger) | 完了タスク / TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（spec_created, 2026-03-22） / TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（implementation completed, 2026-03-21） |
 | [task-workflow-completed-workspace-chat-lifecycle-tests.md](task-workflow-completed-workspace-chat-lifecycle-tests.md) | completed records (workspace / chat path / lifecycle tests) | 完了タスク |
 
 | [task-workflow-completed-ipc-graceful-degradation-lifecycle.md](task-workflow-completed-ipc-graceful-degradation-lifecycle.md) | completed records (IPC graceful degradation / lifecycle store integration) | 完了タスク |

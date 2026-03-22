@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-22 - TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（standalone root / spec_created ledger / backlog 4件 / lessons 4件 / mirror parity） |
 | 2026-03-21 - TASK-FIX-LLM-CONFIG-PERSISTENCE Phase12 再監査完了（Phase11 harness 導線、family inventory、completed shard、lessons、mirror parity を同ターン同期） |
 | 2026-03-21 | TASK-FIX-LLM-CONFIG-PERSISTENCE | LLM選択状態（selectedProviderId/selectedModelId）の永続化修正。persist partialize拡張、v0→v2 migrate、起動時バリデーション、P62対策を実装 |
 | 2026-03-21 - Task03 root canonicalization / Task02 completed relocation sync（legacy register / generate-index / mirror parity を含む same-wave 更新） |
@@ -96,6 +97,16 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - `workflow-ai-runtime-execution-responsibility-realignment.md` / `task-workflow-completed.md` に Task 02 の completed root を反映
   - parent workflow と downstream consumer の `Task02 index` / directory tree / artifact path を現行正本へ更新
   - 旧 path の repo 残存を `rg` で監査し、`generate-index.js` による `topic-map.md` / `keywords.json` 再生成と mirror parity まで含めて same-wave sync の current facts を修復
+
+## TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（2026-03-22）
+
+- タスク名: chat-workspace-guidance-action-wiring
+- 種別: docs/spec sync
+- 主な反映:
+  - `workflow-ai-runtime-execution-responsibility-realignment.md` に Task04 standalone root と current canonical set を追記
+  - `task-workflow-completed.md` に `spec_created` / `implementation_ready` / Phase 13 blocked の分離記録を追加
+  - `task-workflow-backlog.md` と `lessons-learned-current.md` / `lessons-learned-phase12-workflow-lifecycle.md` に follow-up 4件と教訓4件を追加
+  - Task04 の same-wave sync を task/workflow/doc/spec の関係性として再記録
 
 ## UT-SLIDE-UI-001 完了同期（2026-03-21）
 ## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 完了同期（2026-03-21）

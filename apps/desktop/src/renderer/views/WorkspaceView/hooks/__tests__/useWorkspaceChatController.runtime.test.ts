@@ -1,9 +1,6 @@
 /**
  * useWorkspaceChatController ランタイム整合テスト (R-01 〜 R-24)
  *
- * TDD Red フェーズ:
- *   - R-19: selectedModelId=null で sendMessage が実行不可 → 現在 fallback("gpt-4o") があるため Red
- *
  * P39 準拠: happy-dom 環境では fireEvent を使用（userEvent 使用禁止）
  * P9  準拠: beforeEach で全 mock をリセットし、テスト間の状態共有を防ぐ
  */
@@ -185,6 +182,7 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
     expect(result.current.isSending).toBe(false);
     expect(result.current.streamContent).toBe("");
     expect(result.current.errorMessage).toBeNull();
+    expect(result.current.blockedReason).toBeNull();
   });
 
   // R-02: setInputValue で input 更新
@@ -535,11 +533,8 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
     expect(mockOnAttach).toHaveBeenCalledWith("/workspace/app.ts");
   });
 
-  // R-19: selectedModelId=null で sendMessage 実行不可（Red フェーズ）
-  // 現在の実装では `selectedModelId ?? "gpt-4o"` の fallback があるため、
-  // このテストは Red（失敗）になることが期待される。
-  it("R-19: selectedModelId=null の場合は sendMessage が実行不可になること（Red フェーズ）", async () => {
-    // selectedModelId を null に設定
+  // R-19: selectedModelId=null で sendMessage 実行不可
+  it("R-19: selectedModelId=null の場合は sendMessage が実行不可になること", async () => {
     mockAppState.selectedModelId = null;
 
     const { result } = renderController();
@@ -552,8 +547,7 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
       await result.current.sendMessage();
     });
 
-    // 期待: selectedModelId=null のため sendMessage は no-op（streamChat が呼ばれない）
-    // 現状: fallback で gpt-4o が使われるため streamChat が呼ばれる → Red
+    expect(result.current.blockedReason).toBe("NO_MODEL");
     expect(mockStreamChat).not.toHaveBeenCalled();
   });
 
@@ -748,8 +742,8 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
     expect(result.current.streamContent).toBe("");
   });
 
-  // E-09: selectedProviderId=null で modelId からの推論
-  it("E-09: selectedProviderId=null でも modelId prefix から provider が推論される", async () => {
+  // E-09: selectedProviderId=null は blocked として扱う
+  it("E-09: selectedProviderId=null の場合は blocked となり sendMessage を実行しない", async () => {
     mockAppState.selectedProviderId = null as unknown as "openai";
 
     const { result } = renderController();
@@ -761,10 +755,8 @@ describe("useWorkspaceChatController ランタイム整合テスト", () => {
       await result.current.sendMessage();
     });
 
-    // streamChat が呼ばれていれば推論成功
-    expect(mockStreamChat).toHaveBeenCalled();
-    const request = mockStreamChat.mock.calls[0][0];
-    expect(request.modelId).toBe("gpt-4o");
+    expect(result.current.blockedReason).toBe("NO_PROVIDER");
+    expect(mockStreamChat).not.toHaveBeenCalled();
   });
 
   // E-11: conversation 未作成状態で addMessage

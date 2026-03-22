@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { getModelSelectionGuidance } from "../../guidance/modelSelectionGuidance";
 import { WorkspaceMentionDropdown } from "./WorkspaceMentionDropdown";
 import type { WorkspaceChatController } from "./hooks/useWorkspaceChatController";
 
@@ -10,6 +11,7 @@ export function WorkspaceChatInput({
   controller,
 }: WorkspaceChatInputProps): JSX.Element {
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  const blockedGuidance = getModelSelectionGuidance(controller.blockedReason);
 
   useEffect(() => {
     if (controller.pendingCursorPosition === null || !inputRef.current) {
@@ -28,7 +30,7 @@ export function WorkspaceChatInput({
     controller.input.trim().length > 0 &&
     !controller.isSending &&
     !controller.isStreaming &&
-    controller.selectedModelId !== null;
+    controller.blockedReason === null;
 
   return (
     <div className="space-y-3">
@@ -90,12 +92,12 @@ export function WorkspaceChatInput({
         ) : null}
 
         <div className="mt-3 flex items-center justify-end gap-2">
-          {controller.selectedModelId === null ? (
+          {blockedGuidance ? (
             <span
               className="text-xs text-[var(--text-primary)] opacity-50"
               data-testid="workspace-chat-model-missing"
             >
-              Settings でモデルを選択してください
+              {blockedGuidance.inputHint}
             </span>
           ) : null}
 
