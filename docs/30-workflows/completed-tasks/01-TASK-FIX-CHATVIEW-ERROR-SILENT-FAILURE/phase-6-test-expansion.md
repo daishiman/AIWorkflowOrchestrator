@@ -70,13 +70,13 @@ it("V-10: 未知のエラーコード 'CUSTOM_ERROR' で UNKNOWN_ERROR メッセ
 
 ## 参照資料
 
-| 資料名                  | パス                                                                                    |
-| ----------------------- | --------------------------------------------------------------------------------------- |
-| Phase 4 テスト設計      | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-4-test-creation.md`  |
-| Phase 5 実装            | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md` |
-| コード品質ルール（TDD） | `.claude/rules/02-code-quality.md`                                                      |
-| chatSlice.ts            | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                   |
-| ChatView                | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                    |
+| 資料名                  | パス                                                                                                    |
+| ----------------------- | ------------------------------------------------------------------------------------------------------- |
+| Phase 4 テスト設計      | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-4-test-creation.md`  |
+| Phase 5 実装            | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md` |
+| コード品質ルール（TDD） | `.claude/rules/02-code-quality.md`                                                                      |
+| chatSlice.ts            | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                                   |
+| ChatView                | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                                    |
 
 ## 実行手順
 
@@ -100,11 +100,11 @@ Task 2-4 を参考に不足テストを追加する。
 
 ## 成果物
 
-| 成果物                       | パス                                                                                    |
-| ---------------------------- | --------------------------------------------------------------------------------------- |
-| Phase 6 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md` |
-| chatSlice テスト拡充済み     | `apps/desktop/src/renderer/store/slices/chatSlice.test.ts`                              |
-| ChatView テスト拡充済み      | `apps/desktop/src/renderer/views/ChatView/ChatView.test.tsx`                            |
+| 成果物                       | パス                                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Phase 6 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md` |
+| chatSlice テスト拡充済み     | `apps/desktop/src/renderer/store/slices/chatSlice.test.ts`                                              |
+| ChatView テスト拡充済み      | `apps/desktop/src/renderer/views/ChatView/ChatView.test.tsx`                                            |
 
 ## 完了条件
 

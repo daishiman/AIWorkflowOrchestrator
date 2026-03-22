@@ -12,7 +12,7 @@ const desktopRoot = path.resolve(__dirname, "..");
 const repoRoot = path.resolve(desktopRoot, "..", "..");
 const workflowDir = path.join(
   repoRoot,
-  "docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE",
+  "docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE",
 );
 const phase11Dir = path.join(workflowDir, "outputs/phase-11");
 const screenshotDir = path.join(phase11Dir, "screenshots");

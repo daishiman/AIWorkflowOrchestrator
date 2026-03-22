@@ -82,17 +82,17 @@ cd apps/desktop && pnpm vitest run src/renderer/views/ChatView/
 
 ## 参照資料
 
-| 資料名                 | パス                                                                                    |
-| ---------------------- | --------------------------------------------------------------------------------------- |
-| Phase 1 要件定義       | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md`   |
-| Phase 2 設計書         | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`         |
-| Phase 5 実装           | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md` |
-| Phase 6 テスト拡充     | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md` |
-| Phase 7 カバレッジ確認 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-7-coverage-check.md` |
-| コード品質ルール       | `.claude/rules/02-code-quality.md`                                                      |
-| 既知の落とし穴（P19）  | `.claude/rules/06-known-pitfalls.md`                                                    |
-| chatSlice.ts           | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                   |
-| ChatView               | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                    |
+| 資料名                 | パス                                                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------------- |
+| Phase 1 要件定義       | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md`   |
+| Phase 2 設計書         | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`         |
+| Phase 5 実装           | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md` |
+| Phase 6 テスト拡充     | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md` |
+| Phase 7 カバレッジ確認 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-7-coverage-check.md` |
+| コード品質ルール       | `.claude/rules/02-code-quality.md`                                                                      |
+| 既知の落とし穴（P19）  | `.claude/rules/06-known-pitfalls.md`                                                                    |
+| chatSlice.ts           | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                                   |
+| ChatView               | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                                    |
 
 ## 実行手順
 
@@ -115,11 +115,11 @@ Phase 5 で実装したコードを読み、Task 1-2 の観点でリファクタ
 
 ## 成果物
 
-| 成果物                            | パス                                                                                 |
-| --------------------------------- | ------------------------------------------------------------------------------------ |
-| Phase 8 仕様書（本ファイル）      | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-8-refactoring.md` |
-| chatSlice.ts リファクタリング済み | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                |
-| ChatView リファクタリング済み     | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                 |
+| 成果物                            | パス                                                                                                 |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Phase 8 仕様書（本ファイル）      | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-8-refactoring.md` |
+| chatSlice.ts リファクタリング済み | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                                |
+| ChatView リファクタリング済み     | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                                 |
 
 ## 完了条件
 

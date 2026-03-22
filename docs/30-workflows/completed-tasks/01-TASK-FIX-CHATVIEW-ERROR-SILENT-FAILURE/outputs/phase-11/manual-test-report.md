@@ -6,11 +6,11 @@
 
 ## 参照先
 
-| 種別           | パス                                                                                                  |
-| -------------- | ----------------------------------------------------------------------------------------------------- |
-| 手動テスト結果 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/manual-test-result.md`  |
-| 撮影計画       | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshot-plan.md`     |
-| 画面カバレッジ | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshot-coverage.md` |
+| 種別           | パス                                                                                                                  |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- |
+| 手動テスト結果 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/manual-test-result.md`  |
+| 撮影計画       | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshot-plan.md`     |
+| 画面カバレッジ | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshot-coverage.md` |
 
 ## 補足
 

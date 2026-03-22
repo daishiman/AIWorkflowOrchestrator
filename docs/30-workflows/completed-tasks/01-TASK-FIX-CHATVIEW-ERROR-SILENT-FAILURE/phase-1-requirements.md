@@ -112,9 +112,9 @@ grep -n "chatError" apps/desktop/src/renderer/views/ChatView/index.tsx
 
 ## 成果物
 
-| 成果物                       | パス                                                                                  |
-| ---------------------------- | ------------------------------------------------------------------------------------- |
-| Phase 1 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md` |
+| 成果物                       | パス                                                                                                  |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Phase 1 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md` |
 
 ## 完了条件
 

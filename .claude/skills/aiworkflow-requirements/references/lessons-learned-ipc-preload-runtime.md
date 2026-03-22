@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-22 | 1.7.0 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加（structured error primary / legacy fallback 分離、Task 03 root 移管の同波反映） |
 | 2026-03-21 | 1.6.0 | UT-TASK06-007-EXT-006 正規表現 lastIndex 汚染パターン（教訓4）を追加 |
 | 2026-03-21 | 1.5.0 | UT-TASK06-007-EXT-006 Phase 12 再監査教訓を追加（mkdtempSync 一時ディレクトリ戦略、same-wave 指標同期、EXT-006 完了と EXT-001〜005 継続の切り分け） |
 | 2026-03-20 | 1.4.0 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査教訓を追加（AIChatResponse.error の code/message drift、Renderer raw message fallback、system spec same-wave 同期） |
@@ -32,6 +33,26 @@
 ## 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION
 
 > この教訓は lessons-learned-current.md v1.29.97 で追加されたが、変更履歴のみの記録であったため、以下は参照先として機能する。
+
+---
+
+## 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR
+
+### 教訓1: structured error と legacy fallback は同じ名前空間で扱わない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `streamingError` と `errorMessage` を同列に扱うと、WorkspaceChatPanel で二重表示や責務混在が起きる |
+| 解決策 | `streamingError` を primary contract、`errorMessage` を legacy fallback として分離した |
+| 標準ルール | 新しい状態を追加する場合は、primary / fallback / deprecated を先に分けてから UI に配線する |
+
+### 教訓2: completed root への移管と current root の更新は同じ wave で行う
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task 03 の root 移管だけ先に進むと、Task 04 の canonical set や artifact inventory が stale path を参照しやすい |
+| 解決策 | `workflow-ai-chat-llm-integration-fix.md` / artifact inventory / parent workflow / logs を同波で更新した |
+| 標準ルール | root migration があるタスクは、workflow-local と system spec の両方を同 wave で閉じる |
 
 ---
 

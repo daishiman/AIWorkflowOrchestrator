@@ -1,0 +1,79 @@
+{
+  "generatedAt": "2026-03-22T00:09:36.242Z",
+  "captureMethod": "current-renderer-entry",
+  "baseUrl": "http://127.0.0.1:4191",
+  "sourceFiles": [
+    "apps/desktop/src/renderer/guidance/modelSelectionGuidance.ts",
+    "apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx",
+    "apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx",
+    "apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatInput.tsx",
+    "apps/desktop/src/renderer/views/WorkspaceView/components/GuidanceBlock.tsx",
+    "apps/desktop/scripts/capture-task-chat-workspace-guidance-action-wiring-phase11.mjs"
+  ],
+  "records": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-chat-blocked-light.png",
+      "theme": "light",
+      "route": "/?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "selector": "[data-testid=\"chat-view\"]",
+      "capturedAt": "2026-03-22T00:09:33.464Z",
+      "size": 38124,
+      "checks": {
+        "bannerVisible": true
+      }
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-settings-after-guidance-cta-light.png",
+      "theme": "light",
+      "route": "/?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "selector": "[data-testid=\"settings-view\"]",
+      "capturedAt": "2026-03-22T00:09:34.427Z",
+      "size": 53950,
+      "checks": {
+        "navigationToSettings": true
+      }
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-chat-ready-light.png",
+      "theme": "light",
+      "route": "/?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "selector": "[data-testid=\"chat-view\"]",
+      "capturedAt": "2026-03-22T00:09:35.320Z",
+      "size": 26099,
+      "checks": {
+        "bannerHidden": true
+      }
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-workspace-blocked-light.png",
+      "theme": "light",
+      "route": "/?skipAuth=true",
+      "viewport": {
+        "width": 1440,
+        "height": 960
+      },
+      "selector": "[data-testid=\"workspace-view\"]",
+      "capturedAt": "2026-03-22T00:09:36.105Z",
+      "size": 52033,
+      "checks": {
+        "navigationToSettings": true
+      }
+    }
+  ]
+}

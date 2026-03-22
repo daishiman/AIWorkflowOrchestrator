@@ -49,11 +49,11 @@ cd apps/desktop && pnpm vitest run --coverage \
 
 ## 参照資料
 
-| 資料名                             | パス                                                                                    |
-| ---------------------------------- | --------------------------------------------------------------------------------------- |
-| Phase 5 実装                       | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md` |
-| Phase 6 テスト拡充                 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md` |
-| コード品質ルール（カバレッジ基準） | `.claude/rules/02-code-quality.md`                                                      |
+| 資料名                             | パス                                                                                                    |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Phase 5 実装                       | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md` |
+| Phase 6 テスト拡充                 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md` |
+| コード品質ルール（カバレッジ基準） | `.claude/rules/02-code-quality.md`                                                                      |
 
 ## 実行手順
 
@@ -77,9 +77,9 @@ Task 2 の表に実測値を記入し、合否を判定する。
 
 ## 成果物
 
-| 成果物                       | パス                                                                                    |
-| ---------------------------- | --------------------------------------------------------------------------------------- |
-| Phase 7 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-7-coverage-check.md` |
+| 成果物                       | パス                                                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Phase 7 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-7-coverage-check.md` |
 
 ## 完了条件
 

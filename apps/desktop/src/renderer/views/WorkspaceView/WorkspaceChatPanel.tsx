@@ -1,8 +1,14 @@
+import { useCallback } from "react";
 import { WorkspaceChatInput } from "./WorkspaceChatInput";
 import { WorkspaceChatMessageList } from "./WorkspaceChatMessageList";
 import { WorkspaceFileContextChips } from "./WorkspaceFileContextChips";
 import { WorkspaceSuggestionBubbles } from "./WorkspaceSuggestionBubbles";
+import {
+  createGuidanceActionDispatcher,
+  getModelSelectionGuidance,
+} from "../../guidance/modelSelectionGuidance";
 import { GuidanceBlock } from "./components/GuidanceBlock";
+import { StreamingErrorDisplay } from "./components/StreamingErrorDisplay";
 import {
   getWorkspaceSuggestions,
   type WorkspaceChatController,
@@ -22,7 +28,22 @@ export function WorkspaceChatPanel({
     !controller.isStreaming;
 
   const setCurrentView = useSetCurrentView();
-  const isModelBlocked = controller.selectedModelId === null;
+  const blockedGuidance = getModelSelectionGuidance(controller.blockedReason);
+  const resolveAction = createGuidanceActionDispatcher({
+    openSettings: () => setCurrentView("settings"),
+  });
+  const primaryAction = blockedGuidance?.primaryAction;
+  const secondaryAction = blockedGuidance?.secondaryAction;
+  const onPrimaryAction = primaryAction
+    ? resolveAction(primaryAction.type)
+    : undefined;
+  const onSecondaryAction = secondaryAction
+    ? resolveAction(secondaryAction.type)
+    : undefined;
+
+  const handleOpenSettings = useCallback(() => {
+    setCurrentView("settings");
+  }, [setCurrentView]);
 
   return (
     <section className="flex h-full min-h-0 flex-col rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
@@ -36,16 +57,18 @@ export function WorkspaceChatPanel({
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-4 px-5 py-5">
-        {isModelBlocked ? (
+        {blockedGuidance ? (
           <GuidanceBlock
             variant="blocked"
-            message="AIモデルが選択されていません。Settings で使用するモデルを設定してください。"
-            actionLabel="Settings を開く"
-            onAction={() => setCurrentView("settings")}
+            message={blockedGuidance.message}
+            actionLabel={primaryAction?.label}
+            onAction={onPrimaryAction}
+            secondaryActionLabel={secondaryAction?.label}
+            onSecondaryAction={onSecondaryAction}
           />
         ) : null}
 
-        {showSuggestionBubbles && !isModelBlocked ? (
+        {showSuggestionBubbles && !blockedGuidance ? (
           <div className="space-y-2" data-testid="workspace-chat-zero-state">
             <p className="text-sm text-[var(--text-primary)] opacity-70">
               最初の質問を選ぶか、そのまま入力して始めてください。
@@ -67,6 +90,16 @@ export function WorkspaceChatPanel({
           selectedFiles={controller.selectedFiles}
           onRemove={controller.removeSelectedFile}
         />
+
+        {controller.streamingError ? (
+          <StreamingErrorDisplay
+            error={controller.streamingError}
+            onDismiss={controller.dismissStreamingError}
+            onRetry={controller.retryLastMessage}
+            onOpenSettings={handleOpenSettings}
+            isRetrying={controller.isSending}
+          />
+        ) : null}
 
         <WorkspaceChatInput controller={controller} />
       </div>

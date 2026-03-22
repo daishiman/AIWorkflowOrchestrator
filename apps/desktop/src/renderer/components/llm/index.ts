@@ -15,3 +15,7 @@ export type { HealthIndicatorProps } from "./HealthIndicator";
 
 export { LLMSelectorPanel } from "./LLMSelectorPanel";
 export type { LLMSelectorPanelProps } from "./LLMSelectorPanel";
+
+export { InlineModelSelector } from "./InlineModelSelector";
+export type { InlineModelSelectorProps } from "./InlineModelSelector";
+export { selectorTriggerStyles, healthDotStyles } from "./InlineModelSelector";

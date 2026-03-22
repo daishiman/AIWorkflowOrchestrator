@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-22 | 2.2.3 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 の Phase 12 教訓4件を追加 |
 | 2026-03-21 | 2.2.1 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
 | 2026-03-21 | 2.2.0 | UT-SLIDE-UI-001 教訓3件を追加（L-SLIDE-UI-001〜003） |
 | 2026-03-21 | 2.2.2 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓を追記 |
@@ -26,6 +27,9 @@
 | 2026-03-21 | 2.2.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
 
 | 2026-03-22 | 2.3.0 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 設計タスク教訓3件を追加（L-THSR-001〜003） |
+||||||| 77abcbc7f
+
+| 2026-03-22 | 2.2.3 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加 |
 | 2026-03-20 | 2.1.1 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査の教訓3件を追加 |
 | 2026-03-18 | 2.1.0 | 1598行超過のため分割。2026-03-15以前エントリを archive-2026-03.md へ移動。UT-TASK06-007 苦戦箇所5件を追加 |
 | 2026-03-17 | 2.0.0 | 651行超過のため4ファイルに分割しインデックス化 |
@@ -42,7 +46,7 @@
 | ファイル | カテゴリ | 含まれるタスク |
 | --- | --- | --- |
 | [lessons-learned-viewtype-electron-ui.md](lessons-learned-viewtype-electron-ui.md) | ViewType / Electron UI | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 |
-| [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) | IPC / Preload / AI Runtime | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001, TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 (P57-P61), TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 |
+| [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) | IPC / Preload / AI Runtime | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001, TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 (P57-P61), TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001, TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR |
 | [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md) | テスト / 型安全 / 品質 | UT-06-001, UT-06-005 |
 | [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE, TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE, TASK-FIX-LLM-CONFIG-PERSISTENCE, TASK-SKILL-LIFECYCLE-04/05/06/07 |
 | [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-SKILL-LIFECYCLE-04/05/06/07, TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001, TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001, TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 |
@@ -77,7 +81,26 @@
 - 並列エージェント changelog 件数不整合（P59）
 - persist task の storage key drift、防ぎきれていない false green、family same-wave sync 漏れ
 - spec-only close-out では downstream task status と code diff 0/有を併記する
+- standalone root 移設時は parent/downstream/system spec の旧 path を same-wave で閉じる
+- `implementation_ready` / `spec_created` / `blocked` の意味を分離し、Phase 13 だけ future gate に残す
 
+### 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 同期
+
+#### 苦戦箇所1: structured error と legacy fallback を同じ UI で二重表示しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `streamingError` と `errorMessage` を同時に表示すると、Workspace Chat のエラー surface が重複し、同じ内容が2回見える |
+| 解決策 | `StreamingErrorDisplay` を primary surface に固定し、`WorkspaceChatInput` の inline error は fallback に限定した |
+| 標準ルール | structured error がある場合は fallback を suppress し、同じ状態を2 surface で表示しない |
+
+#### 苦戦箇所2: task03 移管と task04 current root を同じ wave で更新しないと canonical path がずれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task 03 を completed root に移しても、parent workflow / artifact inventory / legacy register のいずれかが旧 `tasks/03-*` を参照すると canonical path が分岐する |
+| 解決策 | Task03 completed root、Task04 current root、parent workflow、artifact inventory、legacy register を同一 wave で更新した |
+| 標準ルール | path relocation は root だけで閉じず、参照先一覧をまとめて同期する |
 
 ---
 
@@ -87,8 +110,8 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | parent workflow は `ai-chat-llm-integration-fix/tasks/01-*` を前提にしていた一方、ユーザーは `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` を current task root として指定した |
-| 解決策 | user 指定 root を canonical とし、workflow/spec 側の旧参照を drift として是正した |
+| 課題 | parent workflow は `ai-chat-llm-integration-fix/tasks/01-*` を前提にしていた一方、current canonical root は `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` へ移行していた |
+| 解決策 | completed root を canonical とし、workflow/spec 側の旧参照を drift として是正した |
 | 標準ルール | current task root をユーザーが明示した場合、その root を Phase 11/12・system spec 同期の正本として扱う |
 
 #### 苦戦箇所2: worktree でも screenshot 証跡は Playwright + Vite harness で再生成できる
@@ -106,6 +129,50 @@
 | 課題 | implementation guide が 10/10 要件を満たしていないのに、compliance 文書だけ完了扱いにすると Phase 12 の整合性が壊れる |
 | 解決策 | validator 実行結果を正として guide を補完し、compliance / changelog / system-spec-update-summary を同ターンで更新した |
 | 標準ルール | Phase 12 は validator 実測値を正本とし、narrative 側で完了を先に宣言しない |
+
+---
+
+## TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22）
+
+### 苦戦箇所1: standalone task root を移設したら parent / downstream / workflow spec の旧 path が残りやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task04 root を standalone に切り出しても、親 workflow index と downstream consumer に旧 nested path が残ると current canonical set が二重化する |
+| 再発条件 | workflow root の移設を root index だけで閉じ、parent/downstream/system spec を同一 wave で更新しない |
+| 解決策 | `task-workflow-completed.md` / `task-workflow-backlog.md` / `workflow-ai-runtime-execution-responsibility-realignment.md` / capture script の current root を同時に揃えた |
+| 標準ルール | standalone root の移設は parent/downstream/system spec の旧 path を同一 wave で閉じる |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
+
+### 苦戦箇所2: design task でも Phase 12 の planned wording を残すと complete ではなくなる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 設計タスクの close-out で `計画済み` / `更新予定` を残すと、実更新後でも Phase 12 が未完了に見える |
+| 再発条件 | workflow root は closed でも、compliance / changelog / backlog / lessons が future tense のまま残る |
+| 解決策 | workflow root を `implementation_ready`、completed ledger を `spec_created` として分離し、Phase 13 だけ blocked に固定した |
+| 標準ルール | design task でも Phase 12 deferred wording を残さない |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
+
+### 苦戦箇所3: unassigned detection を backlog だけで閉じると formalize 漏れが起きる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 未タスク化の候補を backlog に積むだけでは、workflow / lessons / task-workflow の導線が閉じない |
+| 再発条件 | formalize を backlog 追加だけで済ませ、completed ledger / lessons / workflow を同時更新しない |
+| 解決策 | unassigned detection を formalize / backlog / workflow / lessons の 4点同期で扱うようにした |
+| 標準ルール | unassigned detection は formalize/backlog/workflow/lessons の 4点同期 |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
+
+### 苦戦箇所4: screenshot 要求がある spec_created task でも current root に capture script を残す必要がある
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | screenshot evidence を upstream task に流すと、current workflow root で再利用できない |
+| 再発条件 | spec_created task で representative screenshot を別 workflow へ移す |
+| 解決策 | current workflow root に dedicated capture script と evidence path を残し、task root から直接追跡できるようにした |
+| 標準ルール | screenshot 要求がある spec_created task でも dedicated capture script を current workflow root に残す |
+| 関連タスク | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 |
 
 ---
 

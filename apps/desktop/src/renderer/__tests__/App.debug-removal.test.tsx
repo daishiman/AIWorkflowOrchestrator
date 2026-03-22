@@ -57,6 +57,27 @@ vi.mock("@/renderer/hooks/useNavShortcuts", () => ({
   useNavShortcuts: vi.fn(),
 }));
 
+// Mainline execution access モック
+vi.mock("@/renderer/hooks/useMainlineExecutionAccess", () => ({
+  useMainlineExecutionAccess: vi.fn(() => ({
+    access: {
+      capability: "none",
+      uiState: "unavailable",
+      ctaContract: {
+        primary: null,
+        secondary: { label: "セットアップガイド", action: "openSetupGuide" },
+      },
+      health: null,
+      selectedProvider: undefined,
+      selectedModel: undefined,
+      isAuthenticated: false,
+      launcherDisabled: true,
+      launcherDisabledReason: "認証が必要です",
+    },
+    refreshHealth: vi.fn(),
+  })),
+}));
+
 // React Router モック
 vi.mock("react-router-dom", () => ({
   BrowserRouter: ({ children }: { children: React.ReactNode }) =>

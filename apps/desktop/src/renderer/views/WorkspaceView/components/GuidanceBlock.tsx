@@ -8,6 +8,8 @@ export interface GuidanceBlockProps {
   message: string;
   actionLabel?: string;
   onAction?: () => void;
+  secondaryActionLabel?: string;
+  onSecondaryAction?: () => void;
 }
 
 const variantStyles: Record<
@@ -41,7 +43,14 @@ const variantIcons: Record<GuidanceVariant, string> = {
 };
 
 export const GuidanceBlock = memo<GuidanceBlockProps>(
-  ({ variant, message, actionLabel, onAction }) => {
+  ({
+    variant,
+    message,
+    actionLabel,
+    onAction,
+    secondaryActionLabel,
+    onSecondaryAction,
+  }) => {
     const styles = variantStyles[variant];
 
     return (
@@ -62,20 +71,35 @@ export const GuidanceBlock = memo<GuidanceBlockProps>(
           {message}
         </p>
 
-        {actionLabel && onAction && (
-          <button
-            type="button"
-            onClick={onAction}
-            className={clsx(
-              "mt-1 rounded-lg px-4 py-2 text-sm font-medium",
-              "transition-opacity duration-200",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2",
-              styles.button,
-            )}
-          >
-            {actionLabel}
-          </button>
-        )}
+        {(actionLabel && onAction) ||
+        (secondaryActionLabel && onSecondaryAction) ? (
+          <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+            {actionLabel && onAction ? (
+              <button
+                type="button"
+                onClick={onAction}
+                className={clsx(
+                  "rounded-lg px-4 py-2 text-sm font-medium",
+                  "transition-opacity duration-200",
+                  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2",
+                  styles.button,
+                )}
+              >
+                {actionLabel}
+              </button>
+            ) : null}
+
+            {secondaryActionLabel && onSecondaryAction ? (
+              <button
+                type="button"
+                onClick={onSecondaryAction}
+                className="rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-primary)] px-4 py-2 text-sm font-medium text-[var(--text-primary)] transition-colors duration-200 hover:border-[var(--status-primary)] hover:text-[var(--status-primary)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2"
+              >
+                {secondaryActionLabel}
+              </button>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     );
   },

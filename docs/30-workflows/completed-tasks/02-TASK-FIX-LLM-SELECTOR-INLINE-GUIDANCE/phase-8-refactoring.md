@@ -69,18 +69,18 @@ cd apps/desktop && pnpm vitest run \
 
 ## 参照資料
 
-| ファイル                                                                               | 用途                                         |
-| -------------------------------------------------------------------------------------- | -------------------------------------------- |
-| `.claude/rules/02-code-quality.md`                                                     | コーディング規約                             |
-| `.claude/rules/06-known-pitfalls.md#P31`                                               | Zustand合成Hook無限ループ防止                |
-| `.claude/rules/06-known-pitfalls.md#P46`                                               | HTMLAttributes Props型衝突パターン           |
-| `.claude/rules/06-known-pitfalls.md#P48`                                               | non-null assertion 禁止                      |
-| `.claude/rules/06-known-pitfalls.md#P52`                                               | 同ファイル内 non-null assertion 残存チェック |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md`   | 維持すべき要件と UX 境界の正本               |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`         | 設計意図と責務分割                           |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md` | 実装済み変更点                               |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-6-test-expansion.md` | 追加テストで守る境界条件                     |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-7-coverage-check.md` | カバレッジゲート結果                         |
+| ファイル                                                                                               | 用途                                         |
+| ------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| `.claude/rules/02-code-quality.md`                                                                     | コーディング規約                             |
+| `.claude/rules/06-known-pitfalls.md#P31`                                                               | Zustand合成Hook無限ループ防止                |
+| `.claude/rules/06-known-pitfalls.md#P46`                                                               | HTMLAttributes Props型衝突パターン           |
+| `.claude/rules/06-known-pitfalls.md#P48`                                                               | non-null assertion 禁止                      |
+| `.claude/rules/06-known-pitfalls.md#P52`                                                               | 同ファイル内 non-null assertion 残存チェック |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md`   | 維持すべき要件と UX 境界の正本               |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`         | 設計意図と責務分割                           |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md` | 実装済み変更点                               |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-6-test-expansion.md` | 追加テストで守る境界条件                     |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-7-coverage-check.md` | カバレッジゲート結果                         |
 
 ## 実行手順
 

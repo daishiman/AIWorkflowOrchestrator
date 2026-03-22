@@ -48,19 +48,19 @@
 
 ## 参照資料
 
-| 資料名                   | パス                                                                                       |
-| ------------------------ | ------------------------------------------------------------------------------------------ |
-| Phase 2 設計書           | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`            |
-| Phase 5 実装             | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md`    |
-| Phase 6 テスト拡充       | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md`    |
-| Phase 7 カバレッジ確認   | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-7-coverage-check.md`    |
-| Phase 8 リファクタリング | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-8-refactoring.md`       |
-| Phase 9 品質保証         | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-9-quality-assurance.md` |
-| Phase 10 最終レビュー    | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-10-final-review.md`     |
-| Phase 11 手動テスト      | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-11-manual-test.md`      |
-| Phase 12 ドキュメント    | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-12-documentation.md`    |
-| execute-workflow         | `.claude/skills/task-specification-creator/references/execute-workflow.md`                 |
-| Git ツーリングルール     | `.claude/rules/07-git-and-tooling.md`                                                      |
+| 資料名                   | パス                                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| Phase 2 設計書           | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`            |
+| Phase 5 実装             | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md`    |
+| Phase 6 テスト拡充       | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md`    |
+| Phase 7 カバレッジ確認   | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-7-coverage-check.md`    |
+| Phase 8 リファクタリング | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-8-refactoring.md`       |
+| Phase 9 品質保証         | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-9-quality-assurance.md` |
+| Phase 10 最終レビュー    | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-10-final-review.md`     |
+| Phase 11 手動テスト      | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-11-manual-test.md`      |
+| Phase 12 ドキュメント    | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-12-documentation.md`    |
+| execute-workflow         | `.claude/skills/task-specification-creator/references/execute-workflow.md`                                 |
+| Git ツーリングルール     | `.claude/rules/07-git-and-tooling.md`                                                                      |
 
 ## 実行手順
 
@@ -83,12 +83,12 @@ user の明示承認があるまで commit / PR 作成には進まない。
 
 ## 成果物
 
-| 成果物                        | パス                                                                                                  |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Phase 13 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-13-pr-creation.md`                 |
-| local check results           | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/local-check-results.md` |
-| change summary                | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/change-summary.md`      |
-| PR info draft                 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/pr-info.md`             |
+| 成果物                        | パス                                                                                                                  |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Phase 13 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-13-pr-creation.md`                 |
+| local check results           | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/local-check-results.md` |
+| change summary                | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/change-summary.md`      |
+| PR info draft                 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/pr-info.md`             |
 
 ## 完了条件
 

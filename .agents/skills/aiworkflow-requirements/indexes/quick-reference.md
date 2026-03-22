@@ -17,8 +17,8 @@
 | 4タスクの全体像 | `references/workflow-ai-chat-llm-integration-fix.md` |
 | parent workflow | `docs/30-workflows/ai-chat-llm-integration-fix/index.md` |
 | same-wave artifact inventory | `references/workflow-ai-chat-llm-integration-fix-artifact-inventory.md` |
-| Task 01 canonical root | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` |
-| Task 02 canonical root | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` |
+| Task 01 canonical root | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` |
+| Task 02 canonical root | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` |
 | ChatView error transport 契約 | `references/llm-ipc-types.md`, `references/error-handling-core.md` |
 | LLM selector / persistence | `references/ui-ux-llm-selector.md`, `references/arch-state-management-core.md` |
 | Workspace stream error | `references/llm-streaming.md`, `references/ui-ux-feature-components-details.md` |

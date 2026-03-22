@@ -155,10 +155,10 @@ grep -n "selectedModelId\|selectedProviderId\|useSelected" \
 
 ## 成果物
 
-| 成果物                       | パス                                                                                 |
-| ---------------------------- | ------------------------------------------------------------------------------------ |
-| Phase 1 仕様書（本ファイル） | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` |
-| P50チェック結果              | Phase 2 仕様書の「前提調査結果」セクションに記載                                     |
+| 成果物                       | パス                                                                                                 |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Phase 1 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` |
+| P50チェック結果              | Phase 2 仕様書の「前提調査結果」セクションに記載                                                     |
 
 ## 完了条件
 
