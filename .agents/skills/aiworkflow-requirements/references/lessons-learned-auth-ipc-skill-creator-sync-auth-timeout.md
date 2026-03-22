@@ -5,6 +5,44 @@
 
 ## TASK-9B: SkillCreator IPC拡張同期 再監査（2026-02-26）
 
+## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 Runtime Skill Creator public IPC wiring（2026-03-21）
+
+### 苦戦箇所と解決策
+
+#### 1. public surface は `skillCreatorHandlers.ts` なのに runtime 実装だけ `creator:*` に分岐していた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | runtime 用 `creatorHandlers.ts` が未登録のまま残り、public `skill-creator:*` surface と contract drift を起こしていた |
+| 原因 | capability bridge 実装時に internal helper と public handler の責務境界を分けず、別 namespace を暫定追加していた |
+| 解決策 | `creatorHandlers.ts` を internal runtime helper に再構成し、`skillCreatorHandlers.ts` entrypoint から `skill-creator:plan/execute-plan/improve-skill` を登録する形へ統一した |
+| 教訓 | Electron IPC は「handler を増やす」のではなく「public surface の入口を増やさない」を優先すると drift が減る |
+
+#### 2. preload/main の runtime contract が shared に存在せず、型の重複先がぶれていた
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `RuntimeSkillCreatorFacade` の戻り値型と Preload API の公開型が別々に存在し、将来の IPC drift 余地が大きかった |
+| 原因 | 追加した runtime bridge を「内部実装」と見なし、public IPC contract として shared 型へ上げていなかった |
+| 解決策 | `TerminalHandoffBundle` と runtime plan/execute/improve response を `packages/shared/src/types/skillCreator.ts` に集約した |
+| 教訓 | public IPC で renderer に見える payload は、使用中 UI がなくても shared contract に昇格させた方が保守しやすい |
+
+#### 3. DI 不在時に「handler 未登録」にするか「一定エラー応答」にするかの判断
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillExecutor` 未初期化時に handler 登録自体をスキップすると、Renderer からは `No handler registered` になり UX と監査が不安定になる |
+| 原因 | graceful degradation を registration failure の文脈だけで考え、public channel の安定性を別扱いしていた |
+| 解決策 | handler は常に登録し、runtime service がなければ `"Runtime Skill Creator は現在利用できません"` を返す契約にした |
+| 教訓 | public IPC では「channel missing」より「一定の failure envelope」を返す方がデバッグと仕様同期が楽になる |
+
+### 同種課題向け簡潔解決手順（4ステップ）
+
+1. `channels.ts` を起点に public channel 名を決め、preload/main/helper を同時に合わせる。
+2. shared contract を先に定義し、戻り値型のローカル重複を避ける。
+3. 既存 entrypoint から内部 helper を登録する形に寄せ、dead-end namespace を増やさない。
+4. runtime DI が欠ける経路は handler missing ではなく graceful degradation で固定する。
+
 ### タスク概要
 
 | 項目       | 内容                                                                                                         |
@@ -356,4 +394,3 @@ function getAuthState(isTimedOut: boolean, isLoading: boolean, isAuthenticated: 
 4. workflow outputs、system spec、LOGS/SKILL を同一ターンで閉じる。
 
 ---
-

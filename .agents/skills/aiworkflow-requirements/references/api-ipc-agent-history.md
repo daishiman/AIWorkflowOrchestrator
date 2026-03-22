@@ -118,6 +118,7 @@
 | TASK-9A-B  | スキルファイル操作IPCハンドラー実装  | 2026-02-19 | 6チャンネル追加（skill:readFile/writeFile/createFile/deleteFile/listBackups/restoreBackup）、Preload API実装、セキュリティ準拠、65テスト全PASS |
 | TASK-9B    | SkillCreator IPC拡張反映 | 2026-02-26 | SkillCreator IPC契約を 13チャンネル（12 invoke + 1 progress）へ同期。`skill-creator:improve/fork/share/schedule/debug/generate-docs/stats` を追加反映し、`SkillCreatorProgress` 契約を `phase/percentage/message` に実装準拠化 |
 | TASK-9B-H  | SkillCreatorService IPCハンドラー登録 | 2026-02-12 | 6チャンネル追加（5 invoke + 1 progress）、SkillCreatorAPI Preload実装、セキュリティ準拠 |
+| UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | Runtime Skill Creator public IPC wiring | 2026-03-21 | `skill-creator:plan/execute-plan/improve-skill` 3チャネル、shared runtime contract、`skillCreatorHandlers.ts` entrypoint 統合、graceful degradation を同期 |
 
 ### TASK-9E 実装時の苦戦箇所（IPC契約観点）
 
@@ -141,6 +142,7 @@
 
 | バージョン | 日付       | 変更内容                                                                     |
 | ---------- | ---------- | ---------------------------------------------------------------------------- |
+| v1.16.7    | 2026-03-21 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 反映: Skill Creator IPC契約を 16 チャンネル（15 invoke + 1 progress）へ更新し、`skill-creator:plan/execute-plan/improve-skill`、shared runtime contract、graceful degradation を追記 |
 | v1.16.6    | 2026-03-05 | TASK-10A-E-A 追補: share IPC セクションへ「実装内容（IPC契約）」「苦戦箇所」「5ステップ手順」を追加し、Step 2同時同期・`code/errorCode` 二軸固定・画像+diagnostics 証跡の3点を標準化 |
 | v1.16.5    | 2026-03-05 | TASK-10A-E-A反映: share IPC（`skill:importFromSource/export/validateSource`）の失敗契約へ `errorCode` を追記。sender失敗 `ERR_2004`、validation `ERR_1001`、unknown例外 `ERR_5001` を明文化し、`IPC_CHANNELS` 定数参照と実装テスト（Main 34 / Preload 60）の整合を記録 |
 | v1.16.4    | 2026-03-04 | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` 契約セクションを追加し、失敗レスポンス `errorCode`・Renderer preflight・`auth-key:exists` store+env 判定順・Preload `Error.code` 転写を同期 |
@@ -171,4 +173,3 @@
 | v1.2.0     | 2026-02-02 | TASK-WCE-WORKSPACE-001: workspacePathパラメータ追加、完了タスク追加          |
 | v1.1.0     | 2026-01-26 | TypeScriptコードブロックを表形式に変換（spec-guidelines.md準拠）             |
 | v1.0.0     | 2026-01-25 | 初版作成                                                                     |
-

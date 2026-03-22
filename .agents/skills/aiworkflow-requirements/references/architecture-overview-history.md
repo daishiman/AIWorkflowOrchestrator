@@ -68,6 +68,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v2.18.5 | 2026-03-21 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 反映: `registerSkillCreatorHandlers` を `mainWindow + SkillCreatorService + optional RuntimeSkillCreatorFacade` の 3 引数構成へ更新し、チャンネル数を 16（15 invoke + 1 progress）へ同期。runtime public 3 チャンネルと graceful degradation 前提を Architecture Overview に反映 |
 | v2.18.4 | 2026-03-11 | TASK-SKILL-LIFECYCLE-01 完了同期: `SkillCenterView` を lifecycle primary entry surface として追記し、`App.tsx` の `normalizeSkillLifecycleView()` による `skill-center` alias canonicalization を Desktop Renderer レイアウト構成へ反映 |
 | v2.18.3 | 2026-03-06 | TASK-UI-02 反映: Desktop Renderer の標準レイアウトを `AppLayout + GlobalNavStrip + MobileNavBar` へ更新し、`uiSlice` の nav状態、feature flag rollback path、`useNavShortcuts` の戻る導線を追記 |
 | v2.18.2 | 2026-03-02 | TASK-10A-C反映: `registerSkillHandlers` の対応チャネルへ `skill:create` を追加し、Pattern 3 の関連タスクに TASK-10A-C を追記 |
@@ -86,4 +87,3 @@
 | 1.2.0 | 2026-01-26 | 開発ガイドライン参照追加 |
 | 1.1.0 | 2026-01-26 | ディレクトリ構造、データ構造、機能追加パターン、テンプレート追加 |
 | 1.0.0 | 2026-01-26 | 初版作成 - アーキテクチャ総論 |
-

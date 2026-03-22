@@ -9,57 +9,62 @@
 
 - チャンネル定義: `apps/desktop/src/preload/channels.ts`
 - Preload API: `apps/desktop/src/preload/skill-creator-api.ts`
-- ハンドラー: `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`
-- 型定義: `apps/desktop/src/preload/types.ts`
+- 標準 handler: `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`
+- runtime helper: `apps/desktop/src/main/ipc/creatorHandlers.ts`
+- 共有型: `packages/shared/src/types/skillCreator.ts`
 
-**チャンネルホワイトリスト方式**:
+**公開 surface 構成**:
 
-`SKILL_CREATOR_CHANNELS`定数として、許可されたIPCチャンネルのみを定義する。invoke用5チャンネル、on用1チャンネルの計6チャンネルを管理する。
+| グループ | 件数 | 代表チャネル | 備考 |
+| --- | --- | --- | --- |
+| 標準 Skill Creator invoke | 12 | `skill-creator:detect-mode`, `skill-creator:create`, `skill-creator:improve` | TASK-9B-H 系の基盤 |
+| runtime public invoke | 3 | `skill-creator:plan`, `skill-creator:execute-plan`, `skill-creator:improve-skill` | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 |
+| push | 1 | `skill-creator:progress` | progress 通知 |
 
-| 定数名                        | チャンネル名                    | 用途           | ホワイトリスト |
-| ----------------------------- | ------------------------------- | -------------- | -------------- |
-| SKILL_CREATOR_DETECT_MODE     | `skill-creator:detect-mode`     | モード自動判定 | ALLOWED_INVOKE |
-| SKILL_CREATOR_CREATE          | `skill-creator:create`          | スキル新規作成 | ALLOWED_INVOKE |
-| SKILL_CREATOR_EXECUTE_TASKS   | `skill-creator:execute-tasks`   | タスク群実行   | ALLOWED_INVOKE |
-| SKILL_CREATOR_VALIDATE        | `skill-creator:validate`        | スキル検証     | ALLOWED_INVOKE |
-| SKILL_CREATOR_VALIDATE_SCHEMA | `skill-creator:validate-schema` | スキーマ検証   | ALLOWED_INVOKE |
-| SKILL_CREATOR_PROGRESS        | `skill-creator:progress`        | 進捗通知       | ALLOWED_ON     |
+runtime public invoke の契約:
 
-**実装場所**: `apps/desktop/src/preload/channels.ts`
+| 定数名 | チャンネル名 | request | response |
+| --- | --- | --- | --- |
+| `SKILL_CREATOR_PLAN` | `skill-creator:plan` | `SkillCreatorPlanRequest` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
+| `SKILL_CREATOR_EXECUTE_PLAN` | `skill-creator:execute-plan` | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResult>` |
+| `SKILL_CREATOR_IMPROVE_SKILL` | `skill-creator:improve-skill` | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 
 **セキュリティ検証パターン**:
 
-全5 invokeハンドラーで以下のセキュリティ検証を実施する:
+標準 handler と runtime helper はどちらも `IPC_CHANNELS` + allowlist を前提にし、以下の順序で防御する。
 
-1. **Sender検証**: `validateIpcSender(event, mainWindow)` で送信元BrowserWindowを検証。DevToolsからの呼び出しを検出・拒否
-2. **引数バリデーション**: typeof手動チェック + `validatePath()` によるパストラバーサル/NULLバイト/UNCパス検証
-3. **スキーマ名ホワイトリスト**: `ALLOWED_SCHEMA_NAMES`（`task-spec`/`skill-spec`/`mode`）以外を拒否
-4. **エラーサニタイズ**: `sanitizeErrorMessage()` でスタックトレース・ファイルパス・機密文字列（token/key/password/secret）をマスクして返却
+1. **Sender検証**: `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })`
+2. **引数バリデーション**:
+   - 標準 handler: P42 + `validatePath()` / schema whitelist を用途別に適用
+   - runtime helper: `prompt` / `planId` / `skillSpec` / `skillName` / `feedback` に P42 準拠の blank 判定を適用
+3. **エラーサニタイズ**: `sanitizeErrorMessage()` で path / token / stack を除去
+4. **Graceful Degradation**: `RuntimeSkillCreatorFacade` 未注入時も 3 チャンネルは登録し、`Runtime Skill Creator は現在利用できません` を返す
 
-**エラーサニタイズ仕様**:
+**runtime helper の戻り値契約**:
 
-| 入力パターン                 | 返却メッセージ                                            |
-| ---------------------------- | --------------------------------------------------------- |
-| 引数バリデーションエラー     | 各ハンドラー定義の日本語エラーメッセージを返却            |
-| パストラバーサル検出         | `"無効なパスが指定されました: <paramName>"`               |
-| schemaNameホワイトリスト違反 | `"無効なスキーマ名が指定されました: <schemaName>"`        |
-| Sender検証失敗               | `"Unauthorized IPC sender"`                               |
-| Errorオブジェクト            | `sanitizeErrorMessage()` でサニタイズした `error.message` |
-| Error以外のthrown value      | `"スキル作成処理でエラーが発生しました"`                  |
+| ケース | 挙動 |
+| --- | --- |
+| sender 検証失敗 | `toIPCValidationError` を throw して reject |
+| P42 バリデーション失敗 | `{ success: false, error: string }` |
+| service 未注入 | `{ success: false, error: "Runtime Skill Creator は現在利用できません" }` |
+| service 例外 | `sanitizeErrorMessage()` 後の文字列を `error` に返す |
+| handoff | `{ success: true, data: { type: "terminal_handoff", bundle } }` |
 
 **IPCセキュリティ要件**:
 
-| 要件                         | 実装                                    | 確認方法                           |
-| ---------------------------- | --------------------------------------- | ---------------------------------- |
-| ホワイトリスト（チャンネル） | `SKILL_CREATOR_CHANNELS`定数で管理      | 定義外チャンネルはエラー           |
-| sender検証                   | `validateIpcSender()`                   | DevTools/外部からの拒否            |
-| 型安全性                     | `IpcResult<T>`型で統一                  | TypeScript型チェック               |
-| サンドボックス分離           | contextBridgeで公開                     | contextIsolation=true              |
-| 引数検証                     | 各ハンドラーでtypeof + `validatePath()` | バリデーションテスト               |
-| ホワイトリスト（schemaName） | `ALLOWED_SCHEMA_NAMES` で検証           | 不正値入力テスト                   |
-| エラーサニタイズ             | `sanitizeErrorMessage()` でマスク返却   | スタック/パス/機密情報非露出テスト |
+| 要件 | 実装 | 確認方法 |
+| --- | --- | --- |
+| ホワイトリスト（チャンネル） | `IPC_CHANNELS` + `ALLOWED_INVOKE_CHANNELS` / `ALLOWED_ON_CHANNELS` | preload test |
+| sender検証 | `validateIpcSender()` | security test |
+| 型安全性 | `@repo/shared/types` の request/response 型 | typecheck |
+| サンドボックス分離 | contextBridge 経由の `skillCreatorAPI` | preload 実装確認 |
+| エラーサニタイズ | `sanitizeErrorMessage()` | path / token 非露出 test |
+| runtime service 不在時の動作 | graceful degradation | `creatorHandlers.test.ts` |
 
-**関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）
+**関連タスク**:
+
+- TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）
+- UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001（current branch）
 
 **関連未タスク（UT-9B-H-003教訓反映済み、2026-02-13）**:
 
@@ -409,4 +414,3 @@ Supabase 未設定時に `profile:*` / `avatar:*` の handler が未登録だと
 **関連タスク**: TASK-9G（2026-02-27完了）
 
 ---
-

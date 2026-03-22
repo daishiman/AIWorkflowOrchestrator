@@ -1,116 +1,82 @@
 /**
- * RuntimePolicyResolver - capability bridge を通じて runtime 実行経路を解決する
+ * RuntimePolicyResolver - runtime 実行経路を解決する
  *
- * TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001
+ * TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001
  *
- * resolveCapability() を単一 authority とし、4状態（integratedRuntime / terminalSurface / both / none）
- * を AccessCapability として返す。assertNoSilentFallback() で "none" からの暗黙遷移を阻止する。
+ * authMode と apiKey を受け取り、実行経路（integrated_api / terminal_handoff）を決定する。
+ * Skill / Agent / Skill Creator の全 surface が共通して参照する。
  */
 
-import {
-  type AccessCapability,
-  type ExecutionCapabilityInput,
-  resolveCapability,
-  assertNoSilentFallback,
-} from "@repo/shared/types/execution-capability";
+// AuthMode 型は packages/shared から import
+import type { AuthMode } from "@repo/shared/types/auth-mode";
+import type { TerminalHandoffBundle } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 
-// TerminalHandoffBundle 型
-export interface TerminalHandoffBundle {
-  /** claude -p "..." 形式のコマンド */
-  launcher: string;
-  /** full prompt context */
-  promptBundle: string;
-  /** 作業ディレクトリ */
-  cwd: string;
-  /** コピー可能なコマンド文字列 */
-  suggestedCommand: string;
-  /** ユーザー向け案内メッセージ */
-  manualRetryRule: string;
-  /** 詳細操作手順（任意） */
-  runbook?: string;
-}
-
-/**
- * 4状態対応の RuntimeDecision
- *
- * capability フィールドでまず4状態を判定し、
- * その後 bundle を参照する。
- */
+// RuntimeDecision 型
 export type RuntimeDecision =
-  | { capability: "integratedRuntime" }
-  | { capability: "terminalSurface"; bundle: TerminalHandoffBundle }
-  | { capability: "both" }
-  | { capability: "none" };
+  | {
+      type: "integrated_api";
+      apiKey: string;
+      permissionMode?: "default" | "acceptEdits" | "bypassPermissions";
+    }
+  | {
+      type: "terminal_handoff";
+      bundle: TerminalHandoffBundle;
+    };
 
 export interface IRuntimePolicyResolver {
-  resolve(input: ExecutionCapabilityInput): RuntimeDecision;
-  resolveFromServices(options?: { silent?: boolean }): Promise<RuntimeDecision>;
+  resolve(authMode: AuthMode, apiKey: string | null): Promise<RuntimeDecision>;
 }
 
 export class RuntimePolicyResolver implements IRuntimePolicyResolver {
   constructor(private readonly authKeyService?: IAuthKeyService) {}
 
   /**
-   * ExecutionCapabilityInput から RuntimeDecision（4状態）を解決する。
+   * authMode と apiKey から RuntimeDecision を解決する。
    *
-   * パイプライン:
-   *   入力(ExecutionCapabilityInput)
-   *     → resolveCapability(input)      ← packages/shared
-   *     → assertNoSilentFallback(cap)   ← "none" で例外
-   *     → RuntimeDecision 構築          ← 付随データ（bundle）を付与
-   *     → return
+   * ルール:
+   * - authMode === "api-key" かつ apiKey が非空文字列 → integrated_api
+   * - authMode === "subscription" → terminal_handoff
+   * - authMode === "api-key" かつ apiKey が null/空  → terminal_handoff (fallback)
    */
-  resolve(input: ExecutionCapabilityInput): RuntimeDecision {
-    const capability: AccessCapability = resolveCapability(input);
-    assertNoSilentFallback(capability);
+  async resolve(
+    authMode: AuthMode,
+    apiKey: string | null,
+  ): Promise<RuntimeDecision> {
+    // "api-key" モードかつ有効な apiKey があれば integrated_api
+    if (
+      authMode === "api-key" &&
+      typeof apiKey === "string" &&
+      apiKey.trim() !== ""
+    ) {
+      return {
+        type: "integrated_api",
+        apiKey: apiKey.trim(),
+        permissionMode: "default",
+      };
+    }
 
-    return this.buildDecision(capability);
+    // それ以外（subscription モード、または api-key だが apiKey が空）は terminal_handoff
+    const bundle = this.buildDefaultBundle();
+    return {
+      type: "terminal_handoff",
+      bundle,
+    };
   }
 
   /**
-   * authKeyService を使って入力を自動構築し、RuntimeDecision を解決するヘルパー。
-   * silent: true で assertNoSilentFallback を抑制する（UI 表示目的で取得する際に使用）。
+   * authMode を自動解決するヘルパー（authKeyService が DI されている場合）
    */
-  async resolveFromServices(
-    options: { silent?: boolean } = {},
-  ): Promise<RuntimeDecision> {
+  async resolveWithService(authMode: AuthMode): Promise<RuntimeDecision> {
     const apiKey = this.authKeyService
       ? await this.authKeyService.getKey()
       : null;
-
-    const input: ExecutionCapabilityInput = {
-      apiKeyValid: typeof apiKey === "string" && apiKey.trim() !== "",
-      subscriptionValid: false,
-    };
-
-    const capability: AccessCapability = resolveCapability(input);
-
-    if (!options.silent) {
-      assertNoSilentFallback(capability);
-    }
-
-    return this.buildDecision(capability);
-  }
-
-  private buildDecision(capability: AccessCapability): RuntimeDecision {
-    switch (capability) {
-      case "integratedRuntime":
-        return { capability: "integratedRuntime" };
-      case "terminalSurface": {
-        const bundle = this.buildDefaultBundle();
-        return { capability: "terminalSurface", bundle };
-      }
-      case "both":
-        return { capability: "both" };
-      case "none":
-        return { capability: "none" };
-    }
+    return this.resolve(authMode, apiKey);
   }
 
   private buildDefaultBundle(): TerminalHandoffBundle {
     const cwd = process.cwd();
-    const suggestedCommand = `claude -p "(スキルのプロンプトを入力してください)"`;
+    const suggestedCommand = `claude -p "（スキルのプロンプトを入力してください）"`;
     return {
       launcher: "claude",
       promptBundle: "",

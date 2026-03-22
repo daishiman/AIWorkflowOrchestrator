@@ -19,7 +19,11 @@ import type {
   CreateSkillOptions,
   ExecuteTasksOptions,
   ExecutionReport,
+  RuntimeSkillCreatorExecuteResult,
+  RuntimeSkillCreatorImproveResponse,
+  RuntimeSkillCreatorPlanResponse,
 } from "@repo/shared/types";
+import type { AuthMode } from "@repo/shared/types/auth-mode";
 
 /**
  * IPC結果型
@@ -83,6 +87,35 @@ export interface SkillCreatorAPI {
     schemaName: string,
     data: unknown,
   ) => Promise<IpcResult<boolean>>;
+
+  /**
+   * Runtime plan: スキル仕様から実行計画を生成する
+   */
+  planSkill: (
+    prompt: string,
+    authMode?: AuthMode,
+    apiKey?: string | null,
+  ) => Promise<IpcResult<RuntimeSkillCreatorPlanResponse>>;
+
+  /**
+   * Runtime execute: 計画に基づいてスキルを実行する
+   */
+  executePlan: (
+    planId: string,
+    skillSpec: string,
+    authMode?: AuthMode,
+    apiKey?: string | null,
+  ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResult>>;
+
+  /**
+   * Runtime improve: フィードバックに基づいてスキルを改善する
+   */
+  improveSkillWithFeedback: (
+    skillName: string,
+    feedback: string,
+    authMode?: AuthMode,
+    apiKey?: string | null,
+  ) => Promise<IpcResult<RuntimeSkillCreatorImproveResponse>>;
 
   /**
    * スキルを改善する
@@ -224,6 +257,39 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA, {
       schemaName,
       data,
+    }),
+
+  planSkill: (
+    prompt: string,
+    authMode?: AuthMode,
+    apiKey?: string | null,
+  ): Promise<IpcResult<RuntimeSkillCreatorPlanResponse>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_PLAN, { prompt, authMode, apiKey }),
+
+  executePlan: (
+    planId: string,
+    skillSpec: string,
+    authMode?: AuthMode,
+    apiKey?: string | null,
+  ): Promise<IpcResult<RuntimeSkillCreatorExecuteResult>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN, {
+      planId,
+      skillSpec,
+      authMode,
+      apiKey,
+    }),
+
+  improveSkillWithFeedback: (
+    skillName: string,
+    feedback: string,
+    authMode?: AuthMode,
+    apiKey?: string | null,
+  ): Promise<IpcResult<RuntimeSkillCreatorImproveResponse>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL, {
+      skillName,
+      feedback,
+      authMode,
+      apiKey,
     }),
 
   improveSkill: (
