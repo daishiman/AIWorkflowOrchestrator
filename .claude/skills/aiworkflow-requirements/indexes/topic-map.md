@@ -1291,15 +1291,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
-| Global Navigation | L42 |
-| ChatViewナビゲーション | L330 |
-| ナビゲーションボタン仕様 | L336 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L352 |
-| テスト検証済み項目 | L366 |
-| アクセシビリティ対応事例 | L381 |
-| ナビゲーションパターンのベストプラクティス | L413 |
-| 関連ドキュメント | L425 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L434 |
+| Global Navigation | L43 |
+| ChatViewナビゲーション | L341 |
+| ナビゲーションボタン仕様 | L347 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L363 |
+| テスト検証済み項目 | L377 |
+| アクセシビリティ対応事例 | L392 |
+| ナビゲーションパターンのベストプラクティス | L424 |
+| 関連ドキュメント | L436 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L445 |
 
 ### references/ui-ux-panels.md
 
@@ -1377,7 +1377,8 @@ node scripts/list-specs.js --topics
 | ツール許可設定（Permission Settings） | L184 |
 | 権限要求履歴パネル（Permission History Panel） | L249 |
 | Settings 画面の AuthGuard 非依存アクセス（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001） | L322 |
-| AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001） | L365 |
+| Mainline Access Matrix（TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001） | L365 |
+| AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001） | L403 |
 
 ### references/ui-ux-settings-details.md
 
@@ -1853,7 +1854,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L38 |
 | 実装ステータススナップショット（2026-03-21） | L45 |
-| Follow-up Backlog | L53 |
+| Follow-up Backlog | L55 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 

@@ -15,6 +15,7 @@ import { registerProfileHandlers } from "./profileHandlers";
 import { registerAvatarHandlers } from "./avatarHandlers";
 import { registerApiKeyHandlers } from "./apiKeyHandlers";
 import { registerDialogHandlers } from "./dialogHandlers";
+import { registerTerminalHandlers } from "./terminalHandlers";
 import { registerWorkspaceHandlers } from "./workspaceHandlers";
 import { registerSearchHandlers } from "./searchHandlers";
 import { registerFileSelectionHandlers } from "./fileSelectionHandlers";
@@ -547,6 +548,7 @@ export function registerAllIpcHandlers(
     ["registerDashboardHandlers", () => registerDashboardHandlers()],
     ["registerGraphHandlers", () => registerGraphHandlers()],
     ["registerAIHandlers", () => registerAIHandlers()],
+    ["registerTerminalHandlers", () => registerTerminalHandlers()],
     ["registerThemeHandlers", () => registerThemeHandlers()],
     ["registerWorkspaceHandlers", () => registerWorkspaceHandlers()],
     ["registerSearchHandlers", () => registerSearchHandlers()],
