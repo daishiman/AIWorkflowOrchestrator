@@ -1,10 +1,5 @@
 import React from "react";
-
-export interface HandoffGuidance {
-  terminalCommand: string;
-  contextSummary: string;
-  reason: string;
-}
+import type { HandoffGuidance } from "@repo/shared/types";
 
 export interface HandoffBlockProps {
   guidance: HandoffGuidance;

@@ -4,6 +4,15 @@
 
 ---
 
+## UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 タスク仕様書実行完了（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**: toHandoffGuidance() adapter 配置先確定と統一実装。全成果物出力済み。
+
+---
+
 ## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 
 - **Agent**: task-specification-creator

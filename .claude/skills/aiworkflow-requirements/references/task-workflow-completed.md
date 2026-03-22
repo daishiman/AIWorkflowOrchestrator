@@ -5,6 +5,20 @@
 
 ## 完了タスク
 
+### タスク: UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 toHandoffGuidance() Adapter 配置先確定と統一実装（2026-03-22）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 |
+| ステータス | **完了（Phase 1-12 完了）** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 関連Issue | #1457 |
+| 実施内容 | `apps/desktop/src/main/adapters/handoff/` に Discriminated Union ベース adapter 関数を新規作成。HandoffBlock.tsx P23 型二重定義解消。18テスト全PASS（Line 90.08%/Branch 73.07%/Function 100%）。sanitizePath/validateLauncher によるセキュリティ強化 |
+| 未タスク | MN-1: UT-HANDOFF-SKILL-DOCS-CONSUMER-001、MN-3: UT-FIX-WORKSPACE-CHAT-EDIT-HANDOFF-GUIDANCE-TYPE-UNIFICATION-001 |
+
+---
+
 ### タスク: TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 Settings shell access matrix mainline design（2026-03-22）
 
 | 項目 | 値 |

@@ -1,0 +1,199 @@
+{
+  "taskId": "UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001",
+  "taskName": "toHandoffGuidance() Adapter 配置先確定と統一実装",
+  "featureName": "terminal-handoff-adapter-placement",
+  "createdDate": "2026-03-22",
+  "completedDate": "2026-03-22",
+  "githubIssue": "#1457",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "specPath": "phase-1-requirements.md",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements.md"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "specPath": "phase-2-design.md",
+      "artifacts": [
+        {
+          "name": "設計書",
+          "path": "outputs/phase-2/design-summary.md"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "specPath": "phase-3-design-review.md",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review-result.md"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "specPath": "phase-4-test.md",
+      "artifacts": [
+        {
+          "name": "テストコード",
+          "path": "apps/desktop/src/main/adapters/handoff/__tests__/toHandoffGuidance.test.ts",
+          "type": "code"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "specPath": "phase-5-implementation.md",
+      "artifacts": [
+        {
+          "name": "型定義",
+          "path": "apps/desktop/src/main/adapters/handoff/types.ts",
+          "type": "code"
+        },
+        {
+          "name": "adapter関数",
+          "path": "apps/desktop/src/main/adapters/handoff/toHandoffGuidance.ts",
+          "type": "code"
+        },
+        {
+          "name": "re-export",
+          "path": "apps/desktop/src/main/adapters/handoff/index.ts",
+          "type": "code"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "specPath": "phase-6-test-expansion.md",
+      "artifacts": [
+        {
+          "name": "拡充テストコード",
+          "path": "apps/desktop/src/main/adapters/handoff/__tests__/toHandoffGuidance.test.ts",
+          "type": "code"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specPath": "phase-7-coverage.md",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "specPath": "phase-8-refactoring.md",
+      "artifacts": []
+    },
+    "phase-9": {
+      "name": "品質検証",
+      "status": "completed",
+      "specPath": "phase-9-quality.md",
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "specPath": "phase-10-final-review.md",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "specPath": "phase-11-manual-test.md",
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md"
+        },
+        {
+          "name": "発見課題一覧",
+          "path": "outputs/phase-11/discovered-issues.md"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specPath": "phase-12-documentation.md",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md"
+        },
+        {
+          "name": "システム仕様更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md"
+        },
+        {
+          "name": "Phase12整合性チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "specPath": "phase-13-pr-creation.md",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md"
+        }
+      ]
+    }
+  },
+  "qualityMetrics": {
+    "coverageTarget": {
+      "line": "90%+",
+      "branch": "60%+",
+      "function": "90%+"
+    },
+    "coverageActual": {
+      "line": "90.08%",
+      "branch": "73.07%",
+      "function": "100%"
+    },
+    "testCount": 16,
+    "existingTestsImpact": "none (176 existing tests still passing)"
+  }
+}

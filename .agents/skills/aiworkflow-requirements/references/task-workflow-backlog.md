@@ -470,7 +470,9 @@
 | TASK-IMP-SKILL-LIFECYCLE-05-AMBIGUITY-CRITERIA-CLARIFICATION-001 | テスト合否基準の曖昧表現除去 | 中 | TASK-SKILL-LIFECYCLE-05 Phase 12（2026-03-15） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-ambiguity-criteria-clarification-001.md` |
 | TASK-IMP-SKILL-LIFECYCLE-05-EMPTY-STATE-DETAIL-DESIGN-001 | Skill Center Empty State 詳細設計補完 | 低 | TASK-SKILL-LIFECYCLE-05 Phase 12（2026-03-15） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-empty-state-detail-design-001.md` |
 | TASK-IMP-SKILL-LIFECYCLE-05-E2E-SCENARIOS-COVERAGE-001 | 3シナリオ導線の E2E カバレッジ固定 | 中 | TASK-SKILL-LIFECYCLE-05 Phase 12（2026-03-15） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-e2e-scenarios-coverage-001.md` |
-| UT-SKILL-DOCS-TERMINAL-HANDOFF-001 | terminal-handoff実パス実装 | 中 | SkillDocsCapabilityResolverのterminal-handoff判定にLLM到達不可の実判定パスを追加 | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
+| ~~UT-SKILL-DOCS-TERMINAL-HANDOFF-001~~ | ~~terminal-handoff実パス実装~~ **adapter配置完了（UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001, 2026-03-22）** | 中 | SkillDocsCapabilityResolverのterminal-handoff判定にLLM到達不可の実判定パスを追加 | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
+| UT-HANDOFF-SKILL-DOCS-CONSUMER-001 | Skill Docs Consumer (C4) の HandoffSource 追加 | 低 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 Phase 3 MN-1 | `docs/30-workflows/unassigned-task/UT-HANDOFF-SKILL-DOCS-CONSUMER-001.md` |
+| UT-FIX-WORKSPACE-CHAT-EDIT-HANDOFF-GUIDANCE-TYPE-UNIFICATION-001 | workspace-chat-edit/types の HandoffGuidance ローカル定義を正本に統一 | 中 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 Phase 10 MN-3（P23） | `docs/30-workflows/unassigned-task/UT-FIX-WORKSPACE-CHAT-EDIT-HANDOFF-GUIDANCE-TYPE-UNIFICATION-001.md` |
 | UT-SPEC-LINE-BUDGET-SPLIT-001 | aiworkflow-requirements 500行超過仕様書の責務分割 | 低 | arch-electron-services-details.md(502行) / task-workflow-completed-skill-lifecycle(535行) / task-workflow-completed-workspace-chat(522行) の3ファイルを500行以下に分割 | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
 
 | ~~UT-06-001~~ | ~~ToolRiskConfig 実装~~ **実装完了（2026-03-16）** | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出 → UT-06-001 で実装完了 | `docs/30-workflows/tool-risk-config-implementation/` |
