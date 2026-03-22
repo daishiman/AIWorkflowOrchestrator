@@ -58,7 +58,7 @@ describe("useSlideProject", () => {
     mockSlideApi.cancel.mockResolvedValue({ success: true });
     // Reset event listener mocks to return unsubscribe functions
     mockSlideApi.onStructureChange.mockReturnValue(vi.fn());
-    mockSlideApi.onSyncStatusChangedd.mockReturnValue(vi.fn());
+    mockSlideApi.onSyncStatusChanged.mockReturnValue(vi.fn());
     mockSlideApi.onExecutionProgress.mockReturnValue(vi.fn());
     mockSlideApi.onSyncProgress.mockReturnValue(vi.fn());
     mockSlideApi.onSyncError.mockReturnValue(vi.fn());
