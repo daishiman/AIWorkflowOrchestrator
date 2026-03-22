@@ -779,6 +779,24 @@ export interface AuthModeAPI {
   ) => () => void;
 }
 
+export interface TerminalOpenRequest {
+  cwd?: string;
+  command?: string;
+}
+
+export interface TerminalOpenResponse {
+  success: boolean;
+  data?: {
+    cwd: string;
+    command?: string;
+  };
+  error?: string;
+}
+
+export interface TerminalAPI {
+  open: (request?: TerminalOpenRequest) => Promise<TerminalOpenResponse>;
+}
+
 // Auth Key Types (TASK-FIX-16-1)
 export interface AuthKeySetResponse {
   success: boolean;
@@ -1049,6 +1067,8 @@ export interface ElectronAPI {
     getVersion: () => Promise<AppGetVersionResponse>;
     onMenuAction: (callback: (event: MenuActionEvent) => void) => () => void;
   };
+
+  terminal: TerminalAPI;
 
   theme: {
     get: () => Promise<ThemeGetResponse>;

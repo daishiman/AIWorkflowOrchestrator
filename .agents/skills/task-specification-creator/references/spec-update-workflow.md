@@ -29,6 +29,7 @@
 | 「設計タスクなので Step 2 は計画だけ書けばよい」 | `spec_created` でも system spec / lessons / backlog / LOGS の実更新が必要 |
 | 「設計タスクの workflow root も `completed` にしてよい」 | workflow root は `implementation_ready`、completed records は `spec_created`。実装 gap は follow-up task として formalize する |
 | 「generic なファイル名へ書いておけば十分」 | 実際の責務分割に沿った primary target file list を先に確定する |
+| 「shared component を作ったので consumer surface 仕様も completed にしてよい」 | shared component の contract だけを更新し、ChatView / Workspace など mount 先の completed は consumer task 完了まで保留する |
 
 ## 入口ファイル
 
@@ -45,10 +46,12 @@
 | 「未タスク指示書のunassigned-task/配置は見送り」 | **作成が必要** | ガイドラインの「条件」要件を確認し、検出件数が1件以上の場合は原則作成する |
 | 「実行タスクは表だけ記載すれば十分」 | **表+箇条書きの両方必須** | `phase-12-documentation.md` は実行タスクの表と `- Task 12-X:` 箇条書きを両方残すことで、機械検証と人間可読性の両方を満たす |
 | 「未完了の未タスクを completed-tasks/unassigned-task に置いてよい」 | **配置先判定を必須記録** | 未完了は `docs/30-workflows/unassigned-task/`、完了移管済みのみ `docs/30-workflows/completed-tasks/unassigned-task/`。混在は参照ドリフトを招く |
+| 「workflow 個別配下の `unassigned-task/` を作ってよい」 | **global canonical path を使う** | 未タスク指示書は `docs/30-workflows/unassigned-task/` を正本とし、workflow 個別 path を増やさない |
 | 「task-workflow.md の未タスクリンクは後で直す」 | **Step 1-Eで即時整合** | 参照切れが残ると後続タスクの探索が失敗する。`verify-unassigned-links.js` で機械検証する |
 | 「task-specification-creator/LOGS.mdは後で更新」 | **Step 1-A必須** | 両方のLOGS.md（aiworkflow-requirements + task-specification-creator）を同時に更新すること。後回しにすると漏れる |
 | 「worktree環境なのでStep 1-Aはマージ後でよい」 | **Step 1-A必須** | worktreeでも仕様書更新は実施可能。先送りすると Phase 12 完了条件未達と契約ドリフト再発を招く |
 | 「`outputs/phase-12` が揃っていれば `phase-12-documentation.md` は未更新でもよい」 | **更新必須** | 成果物実体と仕様書本体の実行記録が乖離すると監査で不整合になる。Task 1〜5 の結果を `phase-12-documentation.md` へ同期する |
+| 「Phase 12 成果物を task root 直下へ置いてもよい」 | **`outputs/phase-12/` へ配置必須** | human-authored outputs が root と混在すると validator と artifact inventory がずれる |
 | 「`artifacts.json` か `outputs/artifacts.json` の片方だけ更新すればよい」 | **両方同期必須** | 2つの成果物台帳が乖離すると Phase 完了判定と参照リンクの整合が崩れる。完了前に内容を一致させる |
 | 「`index.md` が completed なら `phase-*.md` と `artifacts*` は見なくてよい」 | **4点同期必須** | `index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` がずれると completed false positive が起きる |
 | 「`artifacts.json` が completed なら `index.md` は見なくてよい」 | **`generate-index.js --workflow ... --regenerate` で再生成必須** | workflow index は自動追随しないため、Phase 状態が stale なまま残る。`index.md` の Phase 1-12 / 13 表示を再確認する |

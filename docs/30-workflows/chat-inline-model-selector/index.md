@@ -1,104 +1,58 @@
-# チャット内インラインモデルセレクタ - タスク仕様書群
+# チャット内インラインモデルセレクタ
 
 ## メタ情報
 
-| 項目           | 値                                                                  |
-| -------------- | ------------------------------------------------------------------- |
-| ワークフロー名 | chat-inline-model-selector                                          |
-| 作成日         | 2026-03-21                                                          |
-| 目的           | 各チャット画面でLLMモデルを直接選択できるインラインUIを提供する     |
-| 優先度         | P1                                                                  |
-| 前提           | ai-chat-llm-integration-fix Task 03（永続化）は本ワークフローと独立 |
+| 項目           | 値                                                                                 |
+| -------------- | ---------------------------------------------------------------------------------- |
+| ワークフロー名 | `chat-inline-model-selector`                                                       |
+| 作成日         | 2026-03-21                                                                         |
+| 更新日         | 2026-03-22                                                                         |
+| 目的           | ChatView / WorkspaceChatPanel から直接 LLM provider / model を選べる導線を整備する |
+| 現在状態       | Task 01 は共有コンポーネント実装済み、Task 02 / Task 03 は仕様書作成済み・未実装   |
 
-## 背景
+## 概要
 
-現在のAIWorkflowOrchestratorでは、LLMモデルの選択は設定画面（Settings）でのみ可能であり、チャット画面からは「未選択時の警告バナー → Settings誘導」という間接的な導線しかない。ChatGPTやCursorのように、チャット画面で直接モデルを切り替えるUXが求められている。
+本ワークフローは、設定画面に閉じていた LLM 選択をチャット導線へ近づけるための 3 タスク構成です。実体ファイルはすべて `tasks/` 配下にあり、workflow root 直下に共通 Phase 1〜3 は存在しません。
 
-### 現状の課題
+## タスク一覧
 
-1. **操作コストが高い**: モデルを変更するためにSettingsに遷移し、戻ってくる必要がある
-2. **コンテキスト切断**: チャット中にSettings遷移するとフローが途切れる
-3. **モデル選択UIの未配置**: ChatView/WorkspaceChatPanelにモデル選択コンポーネントがない
-4. **共通化の不足**: `components/llm/` に再利用可能な部品はあるが、チャット向けのコンパクト版がない
+| 実行順 | タスク                                                                                                           | 状態           | 概要                                                                            |
+| ------ | ---------------------------------------------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------- |
+| 01     | [TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT](./tasks/01-TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT/index.md)           | 実装済み       | `InlineModelSelector` 共通コンポーネント、unit test、export、Phase 12 close-out |
+| 02     | [TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION](./tasks/02-TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION/index.md)   | `spec_created` | ChatView header への配置、GuidanceBanner 連携、screen capture                   |
+| 03     | [TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION](./tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/index.md) | `spec_created` | WorkspaceChatPanel への配置、blocked guidance 連携、screen capture              |
 
-### 既存資産
+## 依存関係
 
-- `components/llm/LLMSelectorPanel.tsx` (224行): フル版パネル（Store直接接続済み）
-- `components/llm/ProviderSelector.tsx`: プロバイダー選択ドロップダウン
-- `components/llm/ModelSelector.tsx`: モデル選択ドロップダウン
-- `components/llm/HealthIndicator.tsx`: ヘルスステータスバッジ
-- `llmSlice.ts`: `selectedProviderId`/`selectedModelId` 状態管理済み
-- IPC: `llm:set-selected-config` でMain Process同期済み
+- Task 01 が shared component を提供する
+- Task 02 / Task 03 は Task 01 完了後に独立して進行できる
+- representative screenshot による live UI 検証は Task 02 / Task 03 の統合後に実施する
 
-## タスク分解（SRP準拠・実行順序付き）
+## 実装アンカー
 
-| 実行順 | タスクID                                     | 責務                                                       | 優先度 | 依存関係 |
-| ------ | -------------------------------------------- | ---------------------------------------------------------- | ------ | -------- |
-| 01     | TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT      | チャット向けコンパクトモデルセレクタ共通コンポーネント作成 | P1     | なし     |
-| 02     | TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION  | ChatViewへのインラインモデルセレクタ配置                   | P1     | 01       |
-| 03     | TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION | WorkspaceChatPanelへのインラインモデルセレクタ配置         | P1     | 01       |
+| 項目               | パス                                                                   |
+| ------------------ | ---------------------------------------------------------------------- |
+| 共通コンポーネント | `apps/desktop/src/renderer/components/llm/InlineModelSelector.tsx`     |
+| export             | `apps/desktop/src/renderer/components/llm/index.ts`                    |
+| ChatView 統合先    | `apps/desktop/src/renderer/views/ChatView/index.tsx`                   |
+| Workspace 統合先   | `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` |
+| Zustand state      | `apps/desktop/src/renderer/store/slices/llmSlice.ts`                   |
 
-> **実行順序の意図**: Task 01が共通コンポーネント、Task 02-03はその利用側。Task 02と03は01完了後に並列実行可能。
+## ディレクトリ構造
 
-## タスク間の関心分離
-
-```
-Task 01 (共通コンポーネント層)
-  components/llm/InlineModelSelector.tsx ← 新規作成
-  既存 ProviderSelector/ModelSelector を内部利用
-
-Task 02 (ChatView統合層)
-  views/ChatView/index.tsx ← InlineModelSelector配置
-  views/ChatView/LLMGuidanceBanner.tsx ← 役割調整
-
-Task 03 (WorkspaceChat統合層)
-  views/WorkspaceView/WorkspaceChatPanel.tsx ← InlineModelSelector配置
-  views/WorkspaceView/hooks/useWorkspaceChatController.ts ← blocked状態調整
-```
-
-## 影響ファイル一覧
-
-| ファイル                                                                            | Task 01 | Task 02 | Task 03 |
-| ----------------------------------------------------------------------------------- | ------- | ------- | ------- |
-| `apps/desktop/src/renderer/components/llm/InlineModelSelector.tsx`                  | **主**  | -       | -       |
-| `apps/desktop/src/renderer/components/llm/index.ts`                                 | 副      | -       | -       |
-| `apps/desktop/src/renderer/views/ChatView/index.tsx`                                | -       | **主**  | -       |
-| `apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx`                    | -       | 副      | -       |
-| `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx`              | -       | -       | **主**  |
-| `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` | -       | -       | 副      |
-
-## 関連する既存タスク
-
-| タスクID                                       | 関係                                     | ステータス   |
-| ---------------------------------------------- | ---------------------------------------- | ------------ |
-| TASK-FIX-LLM-CONFIG-PERSISTENCE (Task03)       | モデル選択の永続化（本タスクとは独立）   | spec_created |
-| TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR           | エラー時のUI改善（本タスク後に着手推奨） | spec_created |
-| Issue #1220                                    | liveLLMAdapterモデルIDハードコード       | 未着手       |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING | blocked状態のaction wiring               | spec_created |
-
-## 仕様書ディレクトリ構造
-
-```
+```text
 docs/30-workflows/chat-inline-model-selector/
-  index.md                                              ← 本ファイル
-  phase-1-requirements.md                               ← Phase 1: 要件定義
-  phase-2-design.md                                     ← Phase 2: 設計
-  phase-3-design-review.md                              ← Phase 3: 設計レビュー
+  index.md
   tasks/
-    01-TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT/         ← 共通コンポーネント
-      phase-4-test.md ... phase-13-pr-creation.md
-    02-TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION/     ← ChatView統合
-      phase-4-test.md ... phase-13-pr-creation.md
-    03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/    ← WorkspaceChat統合
-      phase-4-test.md ... phase-13-pr-creation.md
+    01-TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT/
+    02-TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION/
+    03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/
 ```
 
-## システム仕様参照（aiworkflow-requirements）
+## システム仕様参照
 
-| 参照資料           | パス                                                                              | 内容                      |
-| ------------------ | --------------------------------------------------------------------------------- | ------------------------- |
-| UI/UX設計          | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`           | 既存UIコンポーネント構造  |
-| 状態管理           | `.claude/skills/aiworkflow-requirements/references/arch-state-management-core.md` | LLM Slice設計             |
-| LLM IPC契約        | `.claude/skills/aiworkflow-requirements/references/llm-ipc-types.md`              | llm:set-selected-config等 |
-| ナビゲーション     | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`           | 画面遷移・導線設計        |
-| エラーハンドリング | `.claude/skills/aiworkflow-requirements/references/error-handling-core.md`        | UIエラー表示パターン      |
+| 資料                       | パス                                                                                                                                                                               |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| LLM 選択 UI 正本           | `.claude/skills/aiworkflow-requirements/references/ui-ux-llm-selector.md`                                                                                                          |
+| ナビゲーション             | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`                                                                                                            |
+| backlog / completed ledger | `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md` / `.claude/skills/aiworkflow-requirements/references/task-workflow-completed-chat-lifecycle-tests.md` |

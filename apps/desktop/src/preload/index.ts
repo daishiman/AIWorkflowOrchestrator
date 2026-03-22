@@ -195,6 +195,10 @@ const electronAPI: ElectronAPI = {
       safeOn<MenuActionEvent>(IPC_CHANNELS.APP_MENU_ACTION, callback),
   },
 
+  terminal: {
+    open: (request) => safeInvoke(IPC_CHANNELS.TERMINAL_OPEN, request),
+  },
+
   theme: {
     get: () => safeInvoke(IPC_CHANNELS.THEME_GET),
     set: (request: ThemeSetRequest) =>

@@ -1,182 +1,153 @@
-# Phase 1: 要件定義
+# Phase 1: 要件定義 — WorkspaceChatPanel インラインモデルセレクタ統合
 
 ## メタ情報
 
 | 項目     | 値                                           |
 | -------- | -------------------------------------------- |
 | Phase    | 1                                            |
-| 機能名   | chat-inline-model-selector                   |
+| 機能名   | workspace-inline-model-selector-integration  |
 | タスクID | TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION |
 | 作成日   | 2026-03-21                                   |
+| 更新日   | 2026-03-22                                   |
 
 ## 目的
 
-チャット画面でLLMモデルを直接選択できるインラインUIの要件・スコープ・受け入れ基準を明文化する。
+Task 01で作成済みの `InlineModelSelector` コンポーネントをWorkspaceChatPanelに統合し、ワークスペースチャット画面から直接LLMモデルを選択・変更できるようにする。
+
+## 前提条件
+
+| 項目                       | 状態     | 説明                                                                    |
+| -------------------------- | -------- | ----------------------------------------------------------------------- |
+| InlineModelSelector (共通) | 完了     | `components/llm/InlineModelSelector.tsx` (462行) — Task 01成果物        |
+| index.ts エクスポート      | 完了     | `components/llm/index.ts` から `InlineModelSelector` をエクスポート済み |
+| llmSlice Store             | 利用可能 | `selectedProviderId` / `selectedModelId` / 個別セレクタ群が利用可能     |
+| IPC契約                    | 利用可能 | `llm:set-selected-config` でMain Process同期済み                        |
 
 ## 実行タスク
 
-- 要件抽出: ユーザー要求と既存資産から機能要件・非機能要件を抽出
-- 受け入れ基準作成: 各要件に対して検証可能な受け入れ基準を定義
-- P50チェック: 既存実装・既存タスクとの重複を調査
+- WorkspaceChat固有の要件抽出: WorkspaceChatPanelへのInlineModelSelector配置に関する機能要件を定義
+- GuidanceBlockとの共存ルール定義: 既存blocked判定とインラインセレクタの表示制御を定義
+- useWorkspaceChatControllerとの連動設計: blocked状態とモデル選択の関係を定義
+- 受け入れ基準作成: WorkspaceChat統合に限定した検証可能な受け入れ基準を定義
+- P50チェック: WorkspaceChatPanelに同等機能が既実装でないか確認
 
 ## 参照資料
 
-| 資料名           | パス                                                                   | 説明                       |
-| ---------------- | ---------------------------------------------------------------------- | -------------------------- |
-| ワークフロー概要 | `docs/30-workflows/chat-inline-model-selector/index.md`                | 本ワークフローの全体像     |
-| LLMセレクタ実装  | `apps/desktop/src/renderer/components/llm/LLMSelectorPanel.tsx`        | 既存フル版パネル(224行)    |
-| ChatView実装     | `apps/desktop/src/renderer/views/ChatView/index.tsx`                   | チャット画面の現行実装     |
-| WorkspaceChat    | `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx` | ワークスペースチャット実装 |
-| llmSlice         | `apps/desktop/src/renderer/store/slices/llmSlice.ts`                   | LLM状態管理(261行)         |
-| ガイダンスバナー | `apps/desktop/src/renderer/views/ChatView/LLMGuidanceBanner.tsx`       | 未選択時警告バナー         |
+| 資料名                     | パス                                                                                | 説明                            |
+| -------------------------- | ----------------------------------------------------------------------------------- | ------------------------------- |
+| ワークフロー概要           | `docs/30-workflows/chat-inline-model-selector/index.md`                             | 全体像・タスク分解              |
+| WorkspaceChatPanel実装     | `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx`              | 統合先（76行）                  |
+| useWorkspaceChatController | `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` | チャットコントローラー（652行） |
+| InlineModelSelector        | `apps/desktop/src/renderer/components/llm/InlineModelSelector.tsx`                  | Task 01成果物（462行）          |
+| llmSlice                   | `apps/desktop/src/renderer/store/slices/llmSlice.ts`                                | LLM状態管理                     |
 
 ### システム仕様（aiworkflow-requirements）
-
-> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
 
 | 参照資料            | パス                                                                              | 内容                     |
 | ------------------- | --------------------------------------------------------------------------------- | ------------------------ |
 | UI/UXコンポーネント | `.claude/skills/aiworkflow-requirements/references/ui-ux-components.md`           | 既存UIコンポーネント構造 |
 | 状態管理Core        | `.claude/skills/aiworkflow-requirements/references/arch-state-management-core.md` | LLM Slice設計            |
-| LLM IPC型           | `.claude/skills/aiworkflow-requirements/references/llm-ipc-types.md`              | IPC契約定義              |
 | UI/UXデザイン原則   | `.claude/skills/aiworkflow-requirements/references/ui-ux-design-principles.md`    | Apple HIG準拠設計        |
 
 ## 実行手順
 
 ### ステップ0: P50チェック - 既実装状態の調査（必須）
 
-既存コードベースに同等の機能がすでに実装されていないか確認する。
+| 対象                                 | 状態                                                               |
+| ------------------------------------ | ------------------------------------------------------------------ |
+| WorkspaceChatPanel内モデル選択UI     | 未実装（GuidanceBlock variant="blocked" = Settings誘導のみ）       |
+| WorkspaceChatPanelヘッダーのセレクタ | 未実装（ヘッダーにはタイトル「Workspace Chat」+ 説明テキストのみ） |
+| InlineModelSelector import           | WorkspaceChatPanel内に未import                                     |
+| useWorkspaceChatController内の選択UI | なし（selectedModelIdのnullチェックのみ、UIは未提供）              |
 
-**調査結果:**
-
-| 対象                   | 状態                                                                 |
-| ---------------------- | -------------------------------------------------------------------- |
-| ChatView内モデル選択UI | 未実装（LLMGuidanceBanner=警告バナーのみ）                           |
-| WorkspaceChat内選択UI  | 未実装（GuidanceBlock=Settings誘導のみ）                             |
-| ChatPanel内スタブ版    | 存在するがonSelect空で無効（`components/chat/LLMSelectorPanel.tsx`） |
-| 共通コンポーネント     | `components/llm/` にフル版パネル・子コンポーネントが存在             |
-| 関連タスク仕様書       | 永続化(Task03)・エラーUI(Task04)は存在するがインラインUI選択は未定義 |
-
-**P50判定**: 新規実装が必要。既存の `components/llm/` を基盤として利用可能。
+**P50判定**: WorkspaceChatPanelへの統合は未実装。Task 01成果物を配置する作業が必要。
 
 ### ステップ1: 機能要件（FR）
 
-#### FR-1: インラインモデルセレクタコンポーネント
+#### FR-1: WorkspaceChatPanelへのInlineModelSelector配置
 
-チャット画面のヘッダーまたは入力エリア上部に配置可能なコンパクトなモデル選択UIを共通コンポーネントとして作成する。
+- FR-1.1: WorkspaceChatPanelのヘッダー部（タイトル領域の下部）にInlineModelSelectorを配置する
+- FR-1.2: WorkspaceChatPanelはサイドパネルとして使用されるため、InlineModelSelectorは `compact` モードで表示する
+- FR-1.3: ストリーミング中（`controller.isStreaming === true`）はInlineModelSelectorを `disabled` にする
 
-- FR-1.1: 現在選択中のプロバイダー名とモデル名をコンパクトに表示する
-- FR-1.2: クリックでドロップダウンを展開し、プロバイダーとモデルを選択できる
-- FR-1.3: プロバイダー変更時にモデルリストが連動して更新される
-- FR-1.4: 選択変更時に `llmSlice.selectProvider()` / `llmSlice.selectModel()` を呼び出し、Main Processに同期する
-- FR-1.5: ヘルスステータスをアイコンで表示する（正常=緑、異常=赤、未確認=灰）
-- FR-1.6: 未選択状態では「モデルを選択」プレースホルダーを表示する
+#### FR-2: GuidanceBlock(variant="blocked")との表示制御
 
-#### FR-2: ChatViewへの配置
+- FR-2.1: モデル選択済みの場合、GuidanceBlock(variant="blocked")を非表示にする
+- FR-2.2: モデル未選択状態ではGuidanceBlockを表示し、Settings画面への誘導を維持する
+- FR-2.3: InlineModelSelectorでモデルを選択した直後、GuidanceBlockが即座に非表示になる
 
-- FR-2.1: ChatViewのメッセージエリア上部（ヘッダー部分）にインラインモデルセレクタを配置する
-- FR-2.2: モデル選択済みの場合、LLMGuidanceBannerは非表示のままとする（既存動作維持）
-- FR-2.3: モデル未選択状態でもインラインセレクタから直接選択可能にし、Settings遷移を不要にする
+#### FR-3: useWorkspaceChatControllerとの連動
 
-#### FR-3: WorkspaceChatPanelへの配置
-
-- FR-3.1: WorkspaceChatPanelの入力エリア上部にインラインモデルセレクタを配置する
-- FR-3.2: モデル選択済みの場合、既存のGuidanceBlock(variant="blocked")を非表示にする
-- FR-3.3: WorkspaceChatControllerのblocked判定と連動する
+- FR-3.1: `controller.selectedModelId` が `null` の場合の `isModelBlocked` 判定は既存ロジックを維持する
+- FR-3.2: InlineModelSelectorでモデルを選択すると、Store経由で `controller.selectedModelId` が更新され、`isModelBlocked` が自動で `false` に変わる
+- FR-3.3: モデル選択後、WorkspaceChatInputが有効化される（`isModelBlocked` による制御で実現済み）
 
 ### ステップ2: 非機能要件（NFR）
 
-#### NFR-1: パフォーマンス
+#### NFR-1: サイドパネルレイアウト
 
-- NFR-1.1: ドロップダウンの展開/折りたたみのアニメーション duration を CSS で 200ms に設定する
-- NFR-1.2: プロバイダー/モデル選択時のStore更新は100ms以内に画面反映される
-- NFR-1.3: 個別セレクタ（P31対策）を使用し、不要な再レンダーを防止する
+- NFR-1.1: WorkspaceChatPanelはサイドパネルとして横幅が制限されるため、compact版でも横幅を占有しすぎないこと
+- NFR-1.2: InlineModelSelector追加でパネル全体のスクロールが発生しないこと
 
-#### NFR-2: アクセシビリティ（WCAG 2.1 AA）
+#### NFR-2: パフォーマンス
 
-- NFR-2.1: キーボード操作で全機能にアクセス可能（Tab/Enter/Escape）
-- NFR-2.2: ARIA属性を適切に付与（`role="combobox"`, `aria-expanded`, `aria-label`）
-- NFR-2.3: コントラスト比4.5:1以上を確保
+- NFR-2.1: InlineModelSelector追加によるWorkspaceChatPanelの初期レンダリング時間が有意に増加しないこと
+- NFR-2.2: P31対策: InlineModelSelector内部の個別セレクタ使用はTask 01で対策済み。WorkspaceChatPanel側で追加のStore接続は不要
 
-#### NFR-3: デザイン一貫性
+#### NFR-3: アクセシビリティ
 
-- NFR-3.1: Apple HIG準拠のカラーパレット・角丸・シャドウを使用
-- NFR-3.2: ライト/ダークモード両対応
-- NFR-3.3: 8pxグリッドでスペーシングを統一
-- NFR-3.4: 既存の `components/llm/` のビジュアルスタイルと統一
-
-#### NFR-4: 再利用性
-
-- NFR-4.1: 共通コンポーネントとして `components/llm/` に配置する
-- NFR-4.2: ChatView/WorkspaceChat以外の画面（将来的なAgent実行画面等）でも使用可能な設計
-- NFR-4.3: `compact` プロパティでサイズ切り替えが可能
+- NFR-3.1: InlineModelSelectorのアクセシビリティはTask 01で実装済み。WorkspaceChatPanel側で追加のARIA属性は不要
+- NFR-3.2: Tab順序: パネル内のフォーカス順が自然であること（InlineModelSelector → チャットメッセージ → 入力エリア）
 
 ### ステップ3: スコープ定義
 
 #### スコープ内
 
-- チャット内インラインモデルセレクタの共通コンポーネント作成
-- ChatViewへの配置と既存LLMGuidanceBannerとの連携
-- WorkspaceChatPanelへの配置と既存GuidanceBlockとの連携
-- 既存の `llmSlice` Store / IPC を使用したモデル選択機能
+- WorkspaceChatPanel (`views/WorkspaceView/WorkspaceChatPanel.tsx`) への `InlineModelSelector` 配置
+- GuidanceBlock(variant="blocked") との表示制御連携
+- ストリーミング中の `disabled` 制御
+- `isModelBlocked` 判定との連動確認
 
 #### スコープ外
 
+- InlineModelSelectorコンポーネントの修正（Task 01で完了済み）
+- ChatViewへの配置（Task 02で対応）
+- useWorkspaceChatController.ts のリファクタリング
 - per-chatモデル選択（各チャットごとに異なるモデルを記憶する機能）
-- LLM設定の永続化（TASK-FIX-LLM-CONFIG-PERSISTENCEで対応）
 - ストリーミングエラーのUI改善（TASK-FIX-WORKSPACE-CHAT-STREAM-ERRORで対応）
-- Settings画面のモデル選択UIの変更
 - 新規IPCチャンネルの追加（既存IPCで対応可能）
 
 ### ステップ4: 受け入れ基準
 
-#### AC-1: 共通コンポーネントの動作
+#### AC-1: InlineModelSelectorの表示
 
-- `InlineModelSelector` コンポーネントが `components/llm/` に存在する
-- ドロップダウンでプロバイダーとモデルを選択できる
-- 選択変更がZustand Store経由でMain Processに同期される
-- `compact` propでサイズ切り替えが機能する
-- ヘルスステータスが視覚的に表示される
+- WorkspaceChatPanelのヘッダー部にInlineModelSelectorが表示される
+- compact モードで表示される
+- ストリーミング中は disabled 状態になる
 
-#### AC-2: ChatViewでの動作
+#### AC-2: GuidanceBlockとの連携
 
-- ChatViewのヘッダー部分にインラインモデルセレクタが表示される
-- モデル未選択状態からインラインセレクタで直接選択できる
-- 選択後にLLMGuidanceBannerが非表示になる
-- チャット送信がモデル選択に連動して動作する
+- モデル未選択 → InlineModelSelector（プレースホルダー表示）+ GuidanceBlock(variant="blocked") の両方が表示される
+- InlineModelSelectorでモデル選択 → GuidanceBlockが非表示になる
+- 既にモデル選択済み → InlineModelSelector（選択中モデル名）のみ表示、GuidanceBlockなし
 
-#### AC-3: WorkspaceChatでの動作
+#### AC-3: チャット入力の有効化
 
-- WorkspaceChatPanelにインラインモデルセレクタが表示される
-- モデル未選択時のGuidanceBlock(variant="blocked")がセレクタに置き換わる
-- 選択後にチャット入力が有効化される
+- モデル未選択時: チャット入力はblocked状態（既存動作維持）
+- InlineModelSelectorでモデル選択後: チャット入力が有効化される
+- 選択後の送信がInlineModelSelectorで選択したモデルで実行される
 
-#### AC-4: アクセシビリティ
+#### AC-4: レイアウト維持
 
-- キーボードのみで全操作が完了する
-- スクリーンリーダーで選択状態が読み上げられる
-- ライト/ダークモード両方でコントラスト比基準を満たす
+- サイドパネル内でレイアウト崩れがないこと
+- Tab順序が自然であること
 
-#### AC-5: 再利用性
+## 影響ファイル
 
-- `components/llm/index.ts` からエクスポートされている
-- ChatView/WorkspaceChat以外のコンテキストでも使用可能なAPI設計
-
-## 統合テスト連携（Phase 1）
-
-- 受け入れ基準AC-1〜AC-5をテストケース設計の基盤とする
-- 既存の `LLMSelectorPanel.test.tsx` のテストパターンを参考にする
-- P31（Zustand無限ループ）対策として個別セレクタの使用をテストで検証する
-
-## 多角的チェック観点
-
-| 観点             | 適用   | 確認内容                                    |
-| ---------------- | ------ | ------------------------------------------- |
-| UI/UX            | 該当   | Apple HIG準拠、コンパクト表示の操作性       |
-| アーキテクチャ   | 該当   | 既存Store/IPC活用、コンポーネント分離       |
-| アクセシビリティ | 該当   | WCAG 2.1 AA、キーボード操作、ARIA属性       |
-| セキュリティ     | 非該当 | 新規IPC追加なし、既存セキュリティ契約を維持 |
-| パフォーマンス   | 該当   | 再レンダー最小化、P31/P48対策               |
+| ファイル                                                                            | 変更種別 | 内容                                                         |
+| ----------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------ |
+| `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx`              | **主**   | InlineModelSelector import + ヘッダー部への配置              |
+| `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts` | 副       | 変更不要の可能性あり（isModelBlocked判定は既存ロジック利用） |
 
 ## 成果物
 
@@ -187,11 +158,11 @@
 ## 完了条件
 
 - [x] P50チェック（既実装調査）を完了
-- [x] 機能要件（FR-1〜FR-3）を定義
-- [x] 非機能要件（NFR-1〜NFR-4）を定義
+- [x] WorkspaceChat固有の機能要件（FR-1〜FR-3）を定義
+- [x] WorkspaceChat固有の非機能要件（NFR-1〜NFR-3）を定義
 - [x] スコープ（含む/含まない）を明確化
-- [x] 受け入れ基準（AC-1〜AC-5）を定義
-- [x] 関連する既存タスクとの関係を整理
+- [x] 受け入れ基準（AC-1〜AC-4）を定義
+- [x] 影響ファイルを特定
 - [x] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase

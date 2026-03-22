@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-22T09:03:35.274Z",
-  "totalKeywords": 2425,
+  "generated": "2026-03-22T10:51:43.317Z",
+  "totalKeywords": 2434,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2210,6 +2210,7 @@
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
       "ui-ux-panels.md",
+      "ui-ux-settings-core.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
@@ -2236,7 +2237,9 @@
     ],
     "WIRING": [
       "api-ipc-system-core.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "ChatPanel": [
       "api-ipc-system-core.md",
@@ -2281,7 +2284,9 @@
       "arch-state-management-core.md",
       "arch-state-management-reference-selectors.md",
       "interfaces-llm.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "llm-ipc-types.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -2782,7 +2787,9 @@
     ],
     "WORKSPACE": [
       "arch-state-management-core.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-03-history-search-notification-center.md",
@@ -6242,6 +6249,17 @@
     "カテゴリ別検索ガイド": [
       "lessons-learned-current.md"
     ],
+    "GUIDANCE": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ACTION": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-viewtype-electron-ui.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
@@ -6822,11 +6840,6 @@
       "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "SKILLDETAIL": [
-      "lessons-learned-viewtype-electron-ui.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
-    "ACTION": [
       "lessons-learned-viewtype-electron-ui.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
@@ -10731,6 +10744,9 @@
     "構成": [
       "ui-ux-llm-selector.md"
     ],
+    "共有インラインセレクター": [
+      "ui-ux-llm-selector.md"
+    ],
     "プロバイダーとモデル一覧": [
       "ui-ux-llm-selector.md"
     ],
@@ -10913,6 +10929,27 @@
       "ui-ux-settings-core.md"
     ],
     "非依存アクセス": [
+      "ui-ux-settings-core.md"
+    ],
+    "Mainline": [
+      "ui-ux-settings-core.md"
+    ],
+    "Access": [
+      "ui-ux-settings-core.md"
+    ],
+    "Matrix": [
+      "ui-ux-settings-core.md"
+    ],
+    "SHELL": [
+      "ui-ux-settings-core.md"
+    ],
+    "ACCESS": [
+      "ui-ux-settings-core.md"
+    ],
+    "MATRIX": [
+      "ui-ux-settings-core.md"
+    ],
+    "MAINLINE": [
       "ui-ux-settings-core.md"
     ],
     "AuthKeySection": [

@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import { SettingsView } from "./index";
+import { buildMainlineExecutionAccessState } from "../../features/mainline-access/mainlineAccess";
 
 // Mock AccountSection to avoid complex auth state dependencies
 vi.mock("../../components/organisms/AccountSection", () => ({
@@ -112,6 +113,7 @@ vi.mock("../../store", () => ({
 describe("SettingsView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
+    Element.prototype.scrollIntoView = vi.fn();
     mockAuthModeValues.mode = "subscription";
     mockAuthModeValues.status = null;
     mockAuthModeValues.isLoading = false;
@@ -254,6 +256,122 @@ describe("SettingsView", () => {
       );
 
       expect(handleOpenOnboarding).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("実行アクセスマトリクス", () => {
+    it("mainlineAccess が渡された場合は access matrix を表示する", () => {
+      render(
+        <SettingsView
+          mainlineAccess={buildMainlineExecutionAccessState({
+            apiKeyValid: true,
+            subscriptionValid: true,
+            isAuthenticated: true,
+            selectedProviderName: "Anthropic",
+            selectedModelName: "Claude 3.7 Sonnet",
+            healthStatus: {
+              status: "connected",
+              providerId: "anthropic",
+              checkedAt: new Date("2026-03-22T00:00:00Z"),
+            },
+          })}
+        />,
+      );
+
+      expect(screen.getByText("実行アクセスマトリクス")).toBeInTheDocument();
+      expect(screen.getByTestId("mainline-capability-title")).toHaveTextContent(
+        "全機能利用可能",
+      );
+      expect(
+        within(screen.getByTestId("mainline-health-row")).getByText(
+          /Anthropic \/ 接続済み/,
+        ),
+      ).toBeInTheDocument();
+      expect(
+        within(screen.getByTestId("mainline-provider-summary")).getByText(
+          "Claude 3.7 Sonnet",
+        ),
+      ).toBeInTheDocument();
+    });
+
+    it("AI で実行 CTA で onNavigateMainlineExecution を呼び出す", () => {
+      const handleNavigate = vi.fn();
+
+      render(
+        <SettingsView
+          mainlineAccess={buildMainlineExecutionAccessState({
+            apiKeyValid: true,
+            subscriptionValid: false,
+            isAuthenticated: true,
+          })}
+          onNavigateMainlineExecution={handleNavigate}
+        />,
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: "AI で実行" }));
+
+      expect(handleNavigate).toHaveBeenCalledTimes(1);
+    });
+
+    it("未認証時は guidance-only を表示し CTA を隠す", () => {
+      render(
+        <SettingsView
+          mainlineAccess={buildMainlineExecutionAccessState({
+            apiKeyValid: true,
+            subscriptionValid: true,
+            isAuthenticated: false,
+          })}
+        />,
+      );
+
+      expect(screen.getByTestId("mainline-guidance-only")).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "AI で実行" }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("health が disconnected のとき再確認 CTA で onRefreshMainlineHealth を呼ぶ", () => {
+      const handleRefresh = vi.fn();
+
+      render(
+        <SettingsView
+          mainlineAccess={buildMainlineExecutionAccessState({
+            apiKeyValid: false,
+            subscriptionValid: true,
+            isAuthenticated: true,
+            selectedProviderName: "OpenAI",
+            healthStatus: {
+              status: "disconnected",
+              providerId: "openai",
+              checkedAt: new Date("2026-03-22T00:00:00Z"),
+            },
+          })}
+          onRefreshMainlineHealth={handleRefresh}
+        />,
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: "再確認" }));
+
+      expect(handleRefresh).toHaveBeenCalledTimes(1);
+    });
+
+    it("blocked 状態の設定を開く CTA は認証方式セクションへ誘導する", () => {
+      render(
+        <SettingsView
+          mainlineAccess={buildMainlineExecutionAccessState({
+            apiKeyValid: false,
+            subscriptionValid: false,
+            isAuthenticated: true,
+          })}
+        />,
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: "設定を開く" }));
+
+      expect(screen.getByTestId("mainline-access-feedback")).toHaveTextContent(
+        "認証方式セクションへ移動しました",
+      );
+      expect(Element.prototype.scrollIntoView).toHaveBeenCalled();
     });
   });
 

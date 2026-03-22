@@ -5,6 +5,61 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Terminal Handoff Surface Realization 設計（2026-03-22）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-22 |
+| 対象 | Claude Code terminal surface / shared handoff UI 共通設計 |
+| 成果物 | `docs/30-workflows/step-03-par-task-05-terminal-handoff-surface-realization/` |
+
+#### 実施内容
+
+- Concern 3 分割設計（Launcher / Handoff Card / Consumer Adapter）を確定
+- 統一 DTO `HandoffGuidance`（terminalCommand / contextSummary / reason）を定義
+- Manual Boundary（MB-1〜MB-4: auto-send / hidden injection / headless execution / credential passthrough 禁止）を確定
+- Consumer → DTO マッピング（5 consumer × 3 surfaceType）と `toHandoffGuidance()` adapter 仕様を設計
+- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+- 未タスク 8 件（MINOR 3 件 + GAP 5 件）を検出・指示書化
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment pack Task 05（2026-03-19）
+
+---
+
+||||||| 77abcbc7f
+### タスク: TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 Settings shell access matrix mainline design（2026-03-22）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 |
+| ステータス | **完了（Phase 1-13 設計タスク完了 / Phase 13 blocked: user approval 待ち）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-22 |
+| 対象 | Settings Access Matrix Section / AppLayout Persistent Launcher / Public Shell Access Contract |
+| 成果物 | `docs/30-workflows/step-03-par-task-03-settings-shell-access-matrix-mainline/outputs/` |
+
+#### 実施内容
+
+- Settings 画面に access matrix セクション（CapabilityCard / HealthStatusRow / ProviderSummaryCard）の IA 定義
+- AppLayout header に persistent TerminalLauncher の配置設計
+- 未認証時 guidance-only モード（PUBLIC_UNAUTHENTICATED_VIEWS 不変）の設計
+- AccessCapability x UiState 全5組合せの契約マトリクス定義
+- テストマトリクス（TC-C01〜C06 / TC-H01〜H04 / TC-P01〜P03 / TC-L01〜L03 / SC-01〜SC-06 / RG-01〜RG-06）
+- Phase 10 最終レビュー PASS、AC-1〜AC-4 全 PASS、未タスク 0 件
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment 親パックの step-03-par-task-03
+
+---
+
 ### タスク: TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 RuntimePolicyResolver capability bridge（2026-03-21）
 
 | 項目 | 値 |

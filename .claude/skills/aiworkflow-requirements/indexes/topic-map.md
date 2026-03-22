@@ -423,7 +423,7 @@ node scripts/list-specs.js --topics
 | スキルデバッグ 型定義（TASK-9H） | L91 |
 | スキルドキュメント生成 型定義（TASK-9I） | L141 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
-| スキル分析 型定義（TASK-9J） | L269 |
+| スキル分析 型定義（TASK-9J） | L291 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -1015,10 +1015,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
 | コンポーネント仕様 | L43 |
-| インタラクション設計 | L287 |
-| 視覚デザイン | L316 |
-| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L341 |
-| アクセシビリティ（WCAG 2.1 AA） | L363 |
+| インタラクション設計 | L322 |
+| 視覚デザイン | L351 |
+| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L376 |
+| アクセシビリティ（WCAG 2.1 AA） | L398 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -1274,32 +1274,33 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
-| UI構成 | L21 |
-| プロバイダーとモデル一覧 | L31 |
-| 状態管理 | L46 |
-| UXフロー | L74 |
-| スタイルガイドライン | L94 |
-| アクセシビリティ | L121 |
-| エラーハンドリング | L131 |
-| テストカバレッジ | L140 |
-| 実行経路との統合 | L156 |
-| 関連タスクドキュメント | L167 |
-| 関連ドキュメント | L180 |
+| UI構成 | L23 |
+| 共有インラインセレクター | L34 |
+| プロバイダーとモデル一覧 | L45 |
+| 状態管理 | L60 |
+| UXフロー | L88 |
+| スタイルガイドライン | L108 |
+| アクセシビリティ | L135 |
+| エラーハンドリング | L145 |
+| テストカバレッジ | L153 |
+| 実行経路との統合 | L178 |
+| 関連タスクドキュメント | L189 |
+| 関連ドキュメント | L204 |
 
 ### references/ui-ux-navigation.md
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
-| Global Navigation | L42 |
-| ChatViewナビゲーション | L330 |
-| ナビゲーションボタン仕様 | L336 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L352 |
-| テスト検証済み項目 | L366 |
-| アクセシビリティ対応事例 | L381 |
-| ナビゲーションパターンのベストプラクティス | L413 |
-| 関連ドキュメント | L425 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L434 |
+| Global Navigation | L43 |
+| ChatViewナビゲーション | L341 |
+| ナビゲーションボタン仕様 | L347 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L363 |
+| テスト検証済み項目 | L377 |
+| アクセシビリティ対応事例 | L392 |
+| ナビゲーションパターンのベストプラクティス | L424 |
+| 関連ドキュメント | L436 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L445 |
 
 ### references/ui-ux-panels.md
 
@@ -1377,7 +1378,8 @@ node scripts/list-specs.js --topics
 | ツール許可設定（Permission Settings） | L184 |
 | 権限要求履歴パネル（Permission History Panel） | L249 |
 | Settings 画面の AuthGuard 非依存アクセス（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001） | L322 |
-| AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001） | L365 |
+| Mainline Access Matrix（TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001） | L365 |
+| AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001） | L403 |
 
 ### references/ui-ux-settings-details.md
 
@@ -1853,7 +1855,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
 | 実装ステータススナップショット（2026-03-21） | L46 |
-| Follow-up Backlog | L54 |
+| Follow-up Backlog | L55 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2585,11 +2587,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L40 |
-| クイックリファレンス: カテゴリ別検索ガイド | L55 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L417 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L451 |
-| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L478 |
+| 分割ファイル一覧 | L42 |
+| クイックリファレンス: カテゴリ別検索ガイド | L57 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L133 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L465 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L499 |
+| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L527 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2614,16 +2617,17 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
 | 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L36 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L76 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L116 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L146 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L195 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L248 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L276 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L319 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L370 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L439 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L477 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L76 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L120 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L160 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L190 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L239 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L292 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L320 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L363 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L414 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L483 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L521 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -2843,13 +2847,13 @@ node scripts/list-specs.js --topics
 | RuntimeResolver | L153 |
 | AnthropicLLMAdapter | L190 |
 | TerminalHandoffBuilder | L227 |
-| IPCチャンネル | L263 |
-| セキュリティ | L283 |
-| ディレクトリ構成 | L299 |
-| 品質メトリクス | L328 |
-| 関連ドキュメント | L339 |
-| 完了タスク | L367 |
-| 変更履歴 | L427 |
+| IPCチャンネル | L279 |
+| セキュリティ | L299 |
+| ディレクトリ構成 | L315 |
+| 品質メトリクス | L344 |
+| 関連ドキュメント | L355 |
+| 完了タスク | L383 |
+| 変更履歴 | L443 |
 
 ### references/local-agent.md
 
