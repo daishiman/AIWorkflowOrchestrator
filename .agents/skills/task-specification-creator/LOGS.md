@@ -4,49 +4,12 @@
 
 ---
 
-## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
+## TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12 final sync
-- **Result**: success
-- **Notes**:
-  - P65 dead-end namespace 既解消確認
-  - skill-creator:\* 全16チャネル検証完了
-  - P65不在テスト + allowlist包含テスト 4件追加
-  - 未タスク2件: UT-SC-01-IPCRESULT-DEDUP, UT-SC-01-DIP-INTERFACE
-
----
-
-## TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 system spec sync
-- **Result**: success
-- **Notes**:
-  - RuntimePolicyResolver に ISubscriptionAuthProvider.validateToken() による実サブスクリプション判定を統合
-  - 3パターン分岐（integrated_api / terminal_handoff subscription / terminal_handoff no-auth）を安定化
-  - graceful degradation（AuthKeyService/SubscriptionAuthProvider 例外時のフォールバック）を実装
-  - P42（trim バリデーション）、P48（non-null assertion 除去）、P62（DEFAULT_CONFIG fallback 禁止）準拠
-  - 変更ファイル: RuntimePolicyResolver.ts, RuntimeSkillCreatorFacade.ts
-  - テスト: 25テスト全PASS、Line 100%, Branch 90.47%, Function 100%
-  - 未タスク: 4件（UT-SC-02-001〜004）
-
----
-
-## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 final sync
-- **Result**: success
-- **Notes**:
-  - D1-D6（6件の drift）を解消
-  - 12チャネルを正本仕様に統一（invoke 6 + push 6）
-  - validateIpcSender + P42 3段バリデーション + path guard を全ハンドラに適用
-  - RuntimeResolver 統合: integrated/handoff 分岐対応
-  - modifier-skill.ts を skill-executor.ts に統合
-  - slideSlice に正本 7 store fields を追加
-  - HandoffGuidance 型を共有（src/types/handoff.ts 正本を re-export）
-  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+- **変更内容**: ChatView header に InlineModelSelector を compact mode で配置。disabled={isSending} でストリーミング中ロック。LLMGuidanceBanner は Store reactivity で自動連携（変更不要）。統合テスト8件追加、全62テスト PASS。ui-ux-llm-selector.md / ui-ux-navigation.md を更新。
+- **影響ファイル**: ChatView/index.tsx, ChatView.test.tsx, ChatView.guidance.test.tsx, ChatView.integration.test.tsx (新規)
+- **未タスク**: UT-CHATVIEW-MODEL-SELECTOR-DATA-TESTID-001 (Low: data-testid 追加)
 
 ---
 

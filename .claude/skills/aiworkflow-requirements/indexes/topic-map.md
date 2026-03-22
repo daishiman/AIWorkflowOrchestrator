@@ -1276,16 +1276,16 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | UI構成 | L23 |
 | 共有インラインセレクター | L34 |
-| プロバイダーとモデル一覧 | L45 |
-| 状態管理 | L60 |
-| UXフロー | L88 |
-| スタイルガイドライン | L108 |
-| アクセシビリティ | L135 |
-| エラーハンドリング | L145 |
-| テストカバレッジ | L153 |
-| 実行経路との統合 | L178 |
-| 関連タスクドキュメント | L189 |
-| 関連ドキュメント | L204 |
+| プロバイダーとモデル一覧 | L51 |
+| 状態管理 | L66 |
+| UXフロー | L94 |
+| スタイルガイドライン | L114 |
+| アクセシビリティ | L141 |
+| エラーハンドリング | L151 |
+| テストカバレッジ | L159 |
+| 実行経路との統合 | L184 |
+| 関連タスクドキュメント | L195 |
+| 関連ドキュメント | L210 |
 
 ### references/ui-ux-navigation.md
 
@@ -1294,13 +1294,13 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L13 |
 | Global Navigation | L43 |
 | ChatViewナビゲーション | L341 |
-| ナビゲーションボタン仕様 | L347 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L363 |
-| テスト検証済み項目 | L377 |
-| アクセシビリティ対応事例 | L392 |
-| ナビゲーションパターンのベストプラクティス | L424 |
-| 関連ドキュメント | L436 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L445 |
+| ナビゲーションボタン仕様 | L371 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L387 |
+| テスト検証済み項目 | L401 |
+| アクセシビリティ対応事例 | L416 |
+| ナビゲーションパターンのベストプラクティス | L448 |
+| 関連ドキュメント | L460 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L469 |
 
 ### references/ui-ux-panels.md
 
@@ -2588,12 +2588,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L42 |
-| クイックリファレンス: カテゴリ別検索ガイド | L57 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L133 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L465 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L499 |
-| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L527 |
+| 分割ファイル一覧 | L39 |
+| クイックリファレンス: カテゴリ別検索ガイド | L54 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L416 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L450 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

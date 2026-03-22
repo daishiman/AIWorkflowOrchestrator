@@ -72,6 +72,13 @@ vi.mock("../../store", () => ({
   useClearChatError: vi.fn(() => vi.fn()),
   useSelectedModelId: vi.fn(() => "model-1"),
   useSelectedProviderId: vi.fn(() => "provider-1"),
+  useLLMProviders: vi.fn(() => []),
+  useLLMHealthStatus: vi.fn(() => ({})),
+  useFetchProviders: vi.fn(() => vi.fn()),
+  useSelectProvider: vi.fn(() => vi.fn()),
+  useSelectModel: vi.fn(() => vi.fn()),
+  useCheckLLMHealth: vi.fn(() => vi.fn()),
+  useIsSending: vi.fn(() => false),
 }));
 
 // Helper function to render ChatView with MemoryRouter
