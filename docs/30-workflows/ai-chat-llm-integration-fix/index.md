@@ -73,17 +73,15 @@ Phase 4-13（実装以降）: 設計レビュー完了後に順次実行
 ## 仕様書ディレクトリ構造
 
 ```
-docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/  ← Task 01 canonical root
+docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/  ← Task 01 canonical root
   phase-1-requirements.md ... phase-13-pr-creation.md
-docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/  ← Task 02 canonical root
+docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/  ← Task 02 canonical root
   phase-1-requirements.md ... phase-13-pr-creation.md
 docs/30-workflows/ai-chat-llm-integration-fix/
   index.md
-  tasks/
-    03-TASK-FIX-LLM-CONFIG-PERSISTENCE/                  ← P1: 01-02と並列可
-      phase-1-requirements.md ... phase-13-pr-creation.md
-    04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/             ← P1: 01完了後に着手
-      phase-1-requirements.md ... phase-13-pr-creation.md
+  completed-tasks/
+    03-TASK-FIX-LLM-CONFIG-PERSISTENCE/                  ← Task 03 completed root
+  04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/               ← Task 04 current canonical root
 ```
 
 > Task 01 と Task 02 は root 直下 workflow が canonical。`ai-chat-llm-integration-fix/tasks/01-*` と `ai-chat-llm-integration-fix/tasks/02-*` は legacy path として扱う。
@@ -110,5 +108,5 @@ docs/30-workflows/ai-chat-llm-integration-fix/
 | -------- | ---------------------- | ------------------------------------------------------------------- |
 | 01       | completed + re-audited | screenshot 5件、system spec same-wave sync、follow-up 2件 formalize |
 | 02       | completed + re-audited | screenshot 4件、Task 02 root 正本化、follow-up 2件 formalize        |
-| 03       | spec ready             | workflow spec 維持、未実装                                          |
-| 04       | spec ready             | workflow spec 維持、未実装                                          |
+| 03       | completed              | completed root 移管、persist contract 同期                          |
+| 04       | completed              | streamingError contract、WorkspaceChat error UX 同期                |

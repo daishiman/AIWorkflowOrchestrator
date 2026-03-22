@@ -87,18 +87,18 @@ pnpm --filter @repo/desktop screenshot:llm-selector-inline-guidance
 
 ## 参照資料
 
-| ファイル                                                                                                                | 用途                                |
-| ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                                             | Phase 11 screenshot / evidence 契約 |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`                                          | Guidance 導線設計                   |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md`                                  | 実装対象ファイル                    |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-6-test-expansion.md`                                  | 追加テストと境界条件                |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-7-coverage-check.md`                                  | coverage gate の記録                |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-8-refactoring.md`                                     | リファクタリング境界と残存リスク    |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-9-quality-assurance.md`                               | test / lint / typecheck の検証結果  |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-10-final-review.md`                                   | 最終レビュー判定と未タスク化対象    |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-11/screenshot-plan.json`                      | capture plan                        |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-11/screenshots/phase11-capture-metadata.json` | 実行結果 metadata                   |
+| ファイル                                                                                                                                | 用途                                |
+| --------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                                                             | Phase 11 screenshot / evidence 契約 |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`                                          | Guidance 導線設計                   |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md`                                  | 実装対象ファイル                    |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-6-test-expansion.md`                                  | 追加テストと境界条件                |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-7-coverage-check.md`                                  | coverage gate の記録                |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-8-refactoring.md`                                     | リファクタリング境界と残存リスク    |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-9-quality-assurance.md`                               | test / lint / typecheck の検証結果  |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-10-final-review.md`                                   | 最終レビュー判定と未タスク化対象    |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-11/screenshot-plan.json`                      | capture plan                        |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-11/screenshots/phase11-capture-metadata.json` | 実行結果 metadata                   |
 
 ## 実行手順
 

@@ -102,15 +102,15 @@ grep -n ': any\|as any' \
 
 ## 参照資料
 
-| ファイル                                                                                  | 用途                                  |
-| ----------------------------------------------------------------------------------------- | ------------------------------------- |
-| `.claude/rules/05-task-execution.md`                                                      | Phase 10 レビューゲート判定基準       |
-| `.claude/rules/01-architecture.md`                                                        | Apple HIG 準拠確認                    |
-| `.claude/rules/06-known-pitfalls.md#P52`                                                  | non-null assertion 残存チェック       |
-| `.claude/rules/06-known-pitfalls.md#P56`                                                  | 再評価クローズ時の GitHub Issue Close |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`            | 設計意図と責務分離の再確認            |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md`    | 実装実体と設計差分の照合              |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-9-quality-assurance.md` | Lint / typecheck / test の最終結果    |
+| ファイル                                                                                                  | 用途                                  |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `.claude/rules/05-task-execution.md`                                                                      | Phase 10 レビューゲート判定基準       |
+| `.claude/rules/01-architecture.md`                                                                        | Apple HIG 準拠確認                    |
+| `.claude/rules/06-known-pitfalls.md#P52`                                                                  | non-null assertion 残存チェック       |
+| `.claude/rules/06-known-pitfalls.md#P56`                                                                  | 再評価クローズ時の GitHub Issue Close |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`            | 設計意図と責務分離の再確認            |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-5-implementation.md`    | 実装実体と設計差分の照合              |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-9-quality-assurance.md` | Lint / typecheck / test の最終結果    |
 
 ## 実行手順
 

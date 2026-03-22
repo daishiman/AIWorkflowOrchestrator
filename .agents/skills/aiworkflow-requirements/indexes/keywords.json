@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-21T11:11:48.348Z",
-  "totalKeywords": 2416,
+  "generated": "2026-03-22T01:11:05.587Z",
+  "totalKeywords": 2417,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6196,6 +6196,9 @@
     "BRIDGE": [
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "STREAM": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "CHATVIEW": [
       "lessons-learned-ipc-preload-runtime.md"

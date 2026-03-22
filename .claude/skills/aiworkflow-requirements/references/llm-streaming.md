@@ -181,15 +181,23 @@ WorkspaceChatPanel から llm-streaming の SSEフローへの連携が確立。
 | --- | --- |
 | streaming 連携 | `useWorkspaceChatController` から `llm:stream-chat` を呼び出し、chunk/done/error を WorkspaceChatPanel の状態へ反映 |
 | キャンセルフロー | `cancelStream → AbortController.abort() → streamContent クリア` で llm-streaming の AbortController統合パターンを採用 |
-| エラーハンドリング | streaming エラー時は `useWorkspaceChatController.errorMessage` に保持し、`WorkspaceChatInput` の alert surface で表示する |
+| エラーハンドリング | streaming エラー時は `useWorkspaceChatController.streamingError` を正本にし、`errorMessage` は legacy fallback として `WorkspaceChatInput` へ渡す |
 
 ---
 
 ### Task 01 との責務境界（2026-03-20 再監査）
 
 - ChatView の `chatError` は non-streaming `sendMessage()` 失敗用の一過性 UI state であり、本仕様の `streamingError` と混在させない
-- Workspace Chat の error UX は `useWorkspaceChatController.errorMessage` / `streamingError` を正本とし、Task 01 の alert banner は参照パターンとしてのみ扱う
+- Workspace Chat の error UX は `useWorkspaceChatController.streamingError` を正本とし、`errorMessage` は raw message fallback に限定する。Task 01 の alert banner は参照パターンとしてのみ扱う
 - `API_KEY_MISSING` など共通 error code は許容するが、保持場所と auto clear 条件は surface ごとに分離する
+
+### TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 同期メモ（2026-03-22）
+
+| 観点 | 内容 |
+| --- | --- |
+| structured error | `StreamingErrorState` を `useWorkspaceChatController` で管理し、`StreamingErrorDisplay` が primary surface を担当する |
+| fallback | `errorMessage` は `streamingError` が無いときのみ inline に出す |
+| recover | `dismissStreamingError()` で structured/raw を同時に clear し、`retryLastMessage()` は retryable のみ再送する |
 
 ## 変更履歴
 

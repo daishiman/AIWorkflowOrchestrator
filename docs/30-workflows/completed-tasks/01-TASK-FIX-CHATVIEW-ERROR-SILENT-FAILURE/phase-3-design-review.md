@@ -133,10 +133,10 @@ Phase 2 の設計内容を多角的に検証し、実装前に問題を検出す
 
 ### 前Phase成果物
 
-| 成果物         | パス                                                                                  |
-| -------------- | ------------------------------------------------------------------------------------- |
-| Phase 1 仕様書 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md` |
-| Phase 2 仕様書 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`       |
+| 成果物         | パス                                                                                                  |
+| -------------- | ----------------------------------------------------------------------------------------------------- |
+| Phase 1 仕様書 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md` |
+| Phase 2 仕様書 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`       |
 
 ## 実行手順
 
@@ -163,9 +163,9 @@ MINOR指摘があれば未タスク仕様書を作成し、`docs/30-workflows/un
 
 ## 成果物
 
-| 成果物                       | パス                                                                                   |
-| ---------------------------- | -------------------------------------------------------------------------------------- |
-| Phase 3 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-3-design-review.md` |
+| 成果物                       | パス                                                                                                   |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Phase 3 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-3-design-review.md` |
 
 ## 完了条件
 

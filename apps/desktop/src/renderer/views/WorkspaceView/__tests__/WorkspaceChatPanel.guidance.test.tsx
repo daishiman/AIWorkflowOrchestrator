@@ -57,6 +57,9 @@ const createMockController = (
   handleComposerKeyDown: vi.fn().mockResolvedValue(undefined),
   selectMentionAtIndex: vi.fn().mockResolvedValue(undefined),
   openMentionPreviewAtIndex: vi.fn(),
+  streamingError: null,
+  retryLastMessage: vi.fn().mockResolvedValue(undefined),
+  dismissStreamingError: vi.fn(),
   ...overrides,
 });
 

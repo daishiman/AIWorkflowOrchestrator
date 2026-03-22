@@ -33,6 +33,7 @@
     "screenshot:skill-lifecycle-routing-step03": "node scripts/capture-task-skill-lifecycle-routing-step03-phase11.mjs",
     "screenshot:execution-status-type-spec-sync": "node scripts/capture-execution-status-type-spec-sync-phase11.mjs",
     "screenshot:llm-selector-inline-guidance": "node scripts/capture-llm-selector-inline-guidance-phase11.mjs",
+    "screenshot:workspace-chat-stream-error": "node scripts/capture-workspace-chat-stream-error-phase11.mjs",
     "guard:light-theme-contrast": "node scripts/light-theme-contrast-guard.mjs",
     "package": "electron-builder --config electron-builder.yml",
     "package:mac": "electron-builder --mac --config electron-builder.yml",

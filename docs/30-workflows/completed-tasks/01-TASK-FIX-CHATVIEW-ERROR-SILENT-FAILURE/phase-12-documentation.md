@@ -102,24 +102,24 @@ Step 2:
 
 ## 参照資料
 
-| 資料名                           | パス                                                                                                  |
-| -------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| Phase 2 設計書                   | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`                       |
-| Phase 5 実装                     | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md`               |
-| Phase 6 テスト拡充               | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md`               |
-| Phase 7 カバレッジ確認           | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-7-coverage-check.md`               |
-| Phase 8 リファクタリング         | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-8-refactoring.md`                  |
-| Phase 9 品質保証                 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-9-quality-assurance.md`            |
-| Phase 10 最終レビュー            | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-10-final-review.md`                |
-| Phase 11 手動テスト              | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-11-manual-test.md`                 |
-| Phase 11 手動テスト結果          | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/manual-test-result.md`  |
-| Phase 11 画面カバレッジ          | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshot-coverage.md` |
-| task-workflow                    | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                  |
-| Phase 12 テンプレート            | `.claude/skills/task-specification-creator/references/phase-template-phase12.md`                      |
-| phase-11-12-guide                | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                           |
-| spec-update-workflow             | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`                        |
-| aiworkflow-requirements skill    | `.claude/skills/aiworkflow-requirements/SKILL.md`                                                     |
-| task-specification-creator skill | `.claude/skills/task-specification-creator/SKILL.md`                                                  |
+| 資料名                           | パス                                                                                                                  |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Phase 2 設計書                   | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`                       |
+| Phase 5 実装                     | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md`               |
+| Phase 6 テスト拡充               | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-6-test-expansion.md`               |
+| Phase 7 カバレッジ確認           | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-7-coverage-check.md`               |
+| Phase 8 リファクタリング         | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-8-refactoring.md`                  |
+| Phase 9 品質保証                 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-9-quality-assurance.md`            |
+| Phase 10 最終レビュー            | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-10-final-review.md`                |
+| Phase 11 手動テスト              | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-11-manual-test.md`                 |
+| Phase 11 手動テスト結果          | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/manual-test-result.md`  |
+| Phase 11 画面カバレッジ          | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshot-coverage.md` |
+| task-workflow                    | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                                                  |
+| Phase 12 テンプレート            | `.claude/skills/task-specification-creator/references/phase-template-phase12.md`                                      |
+| phase-11-12-guide                | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                                           |
+| spec-update-workflow             | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`                                        |
+| aiworkflow-requirements skill    | `.claude/skills/aiworkflow-requirements/SKILL.md`                                                                     |
+| task-specification-creator skill | `.claude/skills/task-specification-creator/SKILL.md`                                                                  |
 
 ## 実行手順
 
@@ -151,22 +151,22 @@ mirror parity を確認するため、`.claude/skills/` と `.agents/skills/` �
 
 ```bash
 node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js \
-  --workflow docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE
+  --workflow docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE
 ```
 
 必要がある場合は `manual-test-result.md` と `screenshot-coverage.md` の TC-ID / 参照名一致も確認する。
 
 ## 成果物
 
-| 成果物                        | パス                                                                                                                 |
-| ----------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Phase 12 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-12-documentation.md`                              |
-| 実装ガイド                    | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/implementation-guide.md`               |
-| 仕様書更新サマリー            | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/system-spec-update-summary.md`         |
-| documentation-changelog       | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/documentation-changelog.md`            |
-| 未タスク検出                  | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/unassigned-task-detection.md`          |
-| skill feedback                | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/skill-feedback-report.md`              |
-| compliance check              | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/phase12-task-spec-compliance-check.md` |
+| 成果物                        | パス                                                                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Phase 12 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-12-documentation.md`                              |
+| 実装ガイド                    | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/implementation-guide.md`               |
+| 仕様書更新サマリー            | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/system-spec-update-summary.md`         |
+| documentation-changelog       | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/documentation-changelog.md`            |
+| 未タスク検出                  | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/unassigned-task-detection.md`          |
+| skill feedback                | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/skill-feedback-report.md`              |
+| compliance check              | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/phase12-task-spec-compliance-check.md` |
 
 ## 完了条件
 

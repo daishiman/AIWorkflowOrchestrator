@@ -4,6 +4,21 @@
 
 ---
 
+## TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR same-wave sync（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 final sync
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/outputs/phase-12/implementation-guide.md` を structured error primary / legacy fallback 前提へ更新
+  - `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/outputs/phase-12/system-spec-update-summary.md` と `phase12-task-spec-compliance-check.md` を追加し、Phase 12 必須成果物を complete 化
+  - `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/artifacts.json` の phase 12 artifact list を増補
+  - `generate-index.js` 再実行前提の index / topic-map / artifacts 整合を記録
+  - Task 03 completed root 移管と Task 04 current root を same-wave で同期した
+  - `validate-phase12-implementation-guide` を 10/10 PASS へ回復した
+
+---
+
 ## chat-inline-model-selector ワークフロー仕様書作成（2026-03-21）
 
 - **Agent**: task-specification-creator
@@ -79,7 +94,7 @@
 - **Phase**: Phase 11-12 再監査
 - **Result**: success
 - **Notes**:
-  - current workflow root を `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` に正規化
+  - current workflow root を `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` に正規化
   - `phase-11-manual-test.md` / `manual-test-result.md` / `screenshot-plan.json` / `screenshot-coverage.md` を screenshot validator 前提へ再構成
   - `implementation-guide.md` を 10/10 要件へ補完し、validator 実測を changelog/compliance に同期
   - `UT-CHATVIEW-ERROR-BANNER-I18N-001` と `UT-AI-CHAT-ERROR-CODE-INVENTORY-001` を formalize

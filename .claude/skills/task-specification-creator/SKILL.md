@@ -384,6 +384,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.13** | **2026-03-22** | **TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR same-wave sync を反映**: Task 04 の `implementation-guide.md` / `system-spec-update-summary.md` / `phase12-task-spec-compliance-check.md` を追加し、`artifacts.json` phase 12 artifact list を増補。`generate-index.js` 再生成前提で `index.md` を更新可能な状態へ揃えた |
 | **v10.09.12** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 最終ドキュメント更新を反映**: `manual-test-result.md` が `not_run` のままなら Phase 11/12 を閉じないルール、`index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の4点同期、internal adapter と public IPC / preload contract を混同しない判断基準を `phase-12-documentation-guide.md` と `spec-update-workflow.md` へ追加 |
 | **v10.09.11** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査を反映**: design task の workflow root は `implementation_ready`、completed ledger は `spec_created` に分離する運用を追加。`outputs/phase-12` の必須 6成果物、worktree でも `.claude` 正本を先送りしないルール、current code sweep で implementation closure task を formalize する Phase 12 最終監査パターンを変更履歴へ記録 |
 | **v10.09.03** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化を反映**: `references/spec-update-workflow.md` に、standalone task へ移設した workflow は current root だけでなく parent pack / downstream consumer / verification-report まで同一 wave で更新するルールを追加。`step-02-seq-task-02-runtime-policy-centralization` の self path / Task01 completed path / parent-child dependency sync を docs-only 再監査パターンとして変更履歴へ記録 |

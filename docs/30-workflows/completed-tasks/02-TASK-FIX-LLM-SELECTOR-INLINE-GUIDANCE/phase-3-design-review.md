@@ -133,10 +133,10 @@ Renderer → Preload (contextBridge) → Main → External Services
 
 ### 設計成果物
 
-| ファイル                                                                             | 用途                   |
-| ------------------------------------------------------------------------------------ | ---------------------- |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` | レビュー対象: 要件定義 |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`       | レビュー対象: 設計     |
+| ファイル                                                                                             | 用途                   |
+| ---------------------------------------------------------------------------------------------------- | ---------------------- |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md` | レビュー対象: 要件定義 |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`       | レビュー対象: 設計     |
 
 ## 実行手順
 
@@ -181,11 +181,11 @@ Task 5 の判定基準に従って PASS / MINOR / MAJOR を判定し、結果を
 
 ## 成果物
 
-| 成果物                       | パス                                                                                  |
-| ---------------------------- | ------------------------------------------------------------------------------------- |
-| Phase 3 仕様書（本ファイル） | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-3-design-review.md` |
-| レビュー結果記録             | 本ファイル「レビュー結果」セクション                                                  |
-| MINOR指摘の未タスク仕様書    | `docs/30-workflows/unassigned-task/` 配下（MINOR判定時のみ）                          |
+| 成果物                       | パス                                                                                                  |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Phase 3 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-3-design-review.md` |
+| レビュー結果記録             | 本ファイル「レビュー結果」セクション                                                                  |
+| MINOR指摘の未タスク仕様書    | `docs/30-workflows/unassigned-task/` 配下（MINOR判定時のみ）                                          |
 
 ## 完了条件
 

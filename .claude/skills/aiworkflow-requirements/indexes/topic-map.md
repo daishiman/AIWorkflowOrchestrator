@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-21
+> 自動生成: 2026-03-22
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1171,13 +1171,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| Workspace Layout Foundation（TASK-UI-04A-WORKSPACE-LAYOUT） | L6 |
 | Workspace Chat Panel（TASK-UI-04B-WORKSPACE-CHAT） | L76 |
-| Slide Workspace Runtime Alignment（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L177 |
-| Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW） | L248 |
-| Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001） | L318 |
-| ChatPanel 実チャット配線設計（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L368 |
-| SkillStreamDisplay コンポーネント（TASK-3-2） | L432 |
-| i18n対応（TASK-3-2-B） | L483 |
-| 完了タスク | L532 |
+| Slide Workspace Runtime Alignment（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L187 |
+| Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW） | L258 |
+| Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001） | L328 |
+| ChatPanel 実チャット配線設計（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L378 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L442 |
+| i18n対応（TASK-3-2-B） | L493 |
+| 完了タスク | L542 |
 
 ### references/ui-ux-feature-components-history.md
 
@@ -1805,11 +1805,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 対象 wave | L3 |
 | current canonical set | L13 |
 | workflow-local artifacts | L29 |
-| follow-up 未タスク | L69 |
-| 同一 wave で更新した canonical docs | L78 |
-| legacy path / filename compatibility | L88 |
-| validation chain | L97 |
-| 運用メモ | L113 |
+| follow-up 未タスク | L95 |
+| 同一 wave で更新した canonical docs | L106 |
+| legacy path / filename compatibility | L116 |
+| validation chain | L125 |
+| 運用メモ | L145 |
 
 ### references/workflow-ai-chat-llm-integration-fix.md
 
@@ -1818,11 +1818,11 @@ node scripts/list-specs.js --topics
 | 現行実装アンカー | L12 |
 | current canonical set | L26 |
 | 実装・監査ステータス | L38 |
-| artifact inventory / parent docs / legacy | L71 |
-| タスク別の最小読書セット | L81 |
-| 読む順番 | L123 |
-| 検索キーワード | L132 |
-| 注意点 | L145 |
+| artifact inventory / parent docs / legacy | L78 |
+| タスク別の最小読書セット | L88 |
+| 読む順番 | L130 |
+| 検索キーワード | L139 |
+| 注意点 | L152 |
 
 ### references/workflow-ai-runtime-authmode-unification.md
 
@@ -2141,13 +2141,13 @@ node scripts/list-specs.js --topics
 | Workspace Layout 基盤（TASK-UI-04A-WORKSPACE-LAYOUT） | L97 |
 | Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW） | L130 |
 | Workspace Chat Panel 統合（TASK-UI-04B-WORKSPACE-CHAT） | L160 |
-| Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN） | L188 |
-| HistorySearch timeline 再設計（TASK-UI-06-HISTORY-SEARCH-VIEW） | L233 |
-| ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV） | L280 |
-| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L344 |
-| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L383 |
-| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L484 |
-| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L509 |
+| Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN） | L195 |
+| HistorySearch timeline 再設計（TASK-UI-06-HISTORY-SEARCH-VIEW） | L240 |
+| ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV） | L287 |
+| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L351 |
+| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L390 |
+| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L491 |
+| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L516 |
 
 ### references/arch-state-management-details.md
 
@@ -2481,10 +2481,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | 使い方 | L14 |
 | Current Alias Overrides（個別互換行） | L21 |
-| Family Summary | L33 |
-| Detailed Register | L52 |
-| Section Extract Register (2026-03-17) | L233 |
-| 500-Line Split Register (2026-03-16) | L244 |
+| Family Summary | L34 |
+| Detailed Register | L53 |
+| Section Extract Register (2026-03-17) | L234 |
+| 500-Line Split Register (2026-03-16) | L245 |
 
 ### references/lessons-learned-archive-2026-03-mid.md
 
@@ -2581,26 +2581,27 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L36 |
-| クイックリファレンス: カテゴリ別検索ガイド | L49 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L392 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L426 |
+| 分割ファイル一覧 | L37 |
+| クイックリファレンス: カテゴリ別検索ガイド | L50 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L411 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L445 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L32 |
-| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L38 |
-| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L66 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L102 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L130 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L167 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L233 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L254 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L284 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L326 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L33 |
+| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L39 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L59 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L87 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L123 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L151 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L188 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L254 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L275 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L305 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L347 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -2824,7 +2825,7 @@ node scripts/list-specs.js --topics
 | 型安全性の保証 | L158 |
 | 関連ドキュメント | L166 |
 | 完了タスク記録 | L174 |
-| 変更履歴 | L194 |
+| 変更履歴 | L202 |
 
 ### references/llm-workspace-chat-edit.md
 
