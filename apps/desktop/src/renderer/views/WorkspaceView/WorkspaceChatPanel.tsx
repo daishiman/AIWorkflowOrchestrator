@@ -1,8 +1,10 @@
+import { useCallback } from "react";
 import { WorkspaceChatInput } from "./WorkspaceChatInput";
 import { WorkspaceChatMessageList } from "./WorkspaceChatMessageList";
 import { WorkspaceFileContextChips } from "./WorkspaceFileContextChips";
 import { WorkspaceSuggestionBubbles } from "./WorkspaceSuggestionBubbles";
 import { GuidanceBlock } from "./components/GuidanceBlock";
+import { StreamingErrorDisplay } from "./components/StreamingErrorDisplay";
 import {
   getWorkspaceSuggestions,
   type WorkspaceChatController,
@@ -23,6 +25,10 @@ export function WorkspaceChatPanel({
 
   const setCurrentView = useSetCurrentView();
   const isModelBlocked = controller.selectedModelId === null;
+
+  const handleOpenSettings = useCallback(() => {
+    setCurrentView("settings");
+  }, [setCurrentView]);
 
   return (
     <section className="flex h-full min-h-0 flex-col rounded-3xl border border-[var(--border-subtle)] bg-[var(--bg-secondary)]">
@@ -67,6 +73,16 @@ export function WorkspaceChatPanel({
           selectedFiles={controller.selectedFiles}
           onRemove={controller.removeSelectedFile}
         />
+
+        {controller.streamingError ? (
+          <StreamingErrorDisplay
+            error={controller.streamingError}
+            onDismiss={controller.dismissStreamingError}
+            onRetry={controller.retryLastMessage}
+            onOpenSettings={handleOpenSettings}
+            isRetrying={controller.isSending}
+          />
+        ) : null}
 
         <WorkspaceChatInput controller={controller} />
       </div>

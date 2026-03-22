@@ -1,7 +1,7 @@
 # タスク仕様書 検証レポート
 
 > 検証日時: 2026-03-20T06:06:17.996Z
-> 対象: docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE
+> 対象: docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE
 
 ## サマリー
 
@@ -72,6 +72,6 @@
 
 ### Phase 13: PR作成 ✅
 
-- ℹ️ [consistency] 参照パス「docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/local-check-results.md」の存在を確認してください
-- ℹ️ [consistency] 参照パス「docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/change-summary.md」の存在を確認してください
-- ℹ️ [consistency] 参照パス「docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/pr-info.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/local-check-results.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/change-summary.md」の存在を確認してください
+- ℹ️ [consistency] 参照パス「docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-13/pr-info.md」の存在を確認してください

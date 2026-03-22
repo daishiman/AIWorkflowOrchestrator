@@ -2,13 +2,13 @@
 
 ## メタ情報
 
-| 項目          | 値                                                                                                                      |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Phase番号     | 8                                                                                                                       |
-| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                                                                |
-| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                                                    |
-| 作成日        | 2026-03-20                                                                                                              |
-| 前Phase成果物 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-7-coverage-check.md` |
+| 項目          | 値                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------- |
+| Phase番号     | 8                                                                                     |
+| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                              |
+| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                  |
+| 作成日        | 2026-03-20                                                                            |
+| 前Phase成果物 | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-7-coverage-check.md` |
 
 ## 目的
 
@@ -76,13 +76,13 @@ pnpm --filter @repo/desktop lint
 
 ## 参照資料
 
-| ドキュメント           | パス                                                                                                                    | 参照目的               |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------- |
-| Phase 5 実装           | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-5-implementation.md` | 実装ファイル一覧       |
-| P19 型キャスト禁止     | `.claude/rules/06-known-pitfalls.md`                                                                                    | `as` キャスト禁止      |
-| P31 useCallback対策    | `.claude/rules/06-known-pitfalls.md`                                                                                    | 依存配列確認           |
-| P48 non-null assertion | `.claude/rules/06-known-pitfalls.md`                                                                                    | `!` 禁止               |
-| コード品質ルール       | `.claude/rules/02-code-quality.md`                                                                                      | TypeScript型安全・規約 |
+| ドキュメント           | パス                                                                                  | 参照目的               |
+| ---------------------- | ------------------------------------------------------------------------------------- | ---------------------- |
+| Phase 5 実装           | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-5-implementation.md` | 実装ファイル一覧       |
+| P19 型キャスト禁止     | `.claude/rules/06-known-pitfalls.md`                                                  | `as` キャスト禁止      |
+| P31 useCallback対策    | `.claude/rules/06-known-pitfalls.md`                                                  | 依存配列確認           |
+| P48 non-null assertion | `.claude/rules/06-known-pitfalls.md`                                                  | `!` 禁止               |
+| コード品質ルール       | `.claude/rules/02-code-quality.md`                                                    | TypeScript型安全・規約 |
 
 ## 実行手順
 
@@ -92,15 +92,15 @@ pnpm --filter @repo/desktop lint
 
 ## 統合テスト連携
 
-- 現行実装との差分、対象テスト、依存タスクとの接続点をこのPhaseで確認・更新する。
-- 追加・変更したテスト観点は対応する `apps/desktop/src/` の実装ファイルと1対1で突合する。
+- refactor 後も `map` / `display` / `controller` / `panel` の各 test suite が green であることを必須とする。
+- screenshot 5 件と manual result のファイル名は refactor 前後で不変とし、Phase 11 evidence drift を防ぐ。
 
 ## 成果物
 
-| 成果物                             | パス                                                                                                                 | 形式       |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------- |
-| リファクタリング済み実装ファイル群 | `apps/desktop/src/renderer/views/WorkspaceView/`                                                                     | TypeScript |
-| Phase 8 仕様書（本ファイル）       | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-8-refactoring.md` | Markdown   |
+| 成果物                             | パス                                                                               | 形式       |
+| ---------------------------------- | ---------------------------------------------------------------------------------- | ---------- |
+| リファクタリング済み実装ファイル群 | `apps/desktop/src/renderer/views/WorkspaceView/`                                   | TypeScript |
+| Phase 8 仕様書（本ファイル）       | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-8-refactoring.md` | Markdown   |
 
 ## 完了条件
 

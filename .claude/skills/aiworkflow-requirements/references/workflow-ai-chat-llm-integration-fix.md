@@ -28,10 +28,11 @@
 | concern | canonical artifact |
 | --- | --- |
 | parent workflow | `docs/30-workflows/ai-chat-llm-integration-fix/index.md` |
-| Task 01 current workflow | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` |
-| Task 02 current workflow | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` |
+| Task 01 current workflow | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` |
+| Task 02 current workflow | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` |
+| Task 03 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` |
+| Task 04 | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` |
 | Task 03 current workflow | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` |
-| Task 04 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` |
 | artifact inventory | `references/workflow-ai-chat-llm-integration-fix-artifact-inventory.md` |
 | legacy compatibility | `references/legacy-ordinal-family-register.md` |
 
@@ -41,15 +42,16 @@
 | --- | --- | --- |
 | `TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE` | 実装 + Phase 11/12 再監査済み | `chatSlice.chatError` / `clearChatError` / `ChatView` alert banner / screenshot 5件 / follow-up 2件 |
 | `TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE` | 実装 + Phase 11/12 再監査済み | `LLMGuidanceBanner` / `WorkspaceChatPanel` CTA 接続 / screenshot 4件 / follow-up 2件 |
+| `TASK-FIX-LLM-CONFIG-PERSISTENCE` | completed + same-wave sync | persist 境界の主 concern / completed root 移管 |
+| `TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR` | completed + same-wave sync | Workspace stream error UX / streamingError contract |
 | `TASK-FIX-LLM-CONFIG-PERSISTENCE` | 実装 + Phase 11/12 再監査済み | persist partialize 拡張、v0→v2 migrate、起動時バリデーション、Phase 11 harness、follow-up 2件 |
-| `TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR` | workflow spec あり | Workspace stream error UX の主 concern |
 
 ### Task 01 で今回固定した契約
 
 - `callLLMAPI()` は `{ success, message?, error? }` を返し、Renderer 内で canonical error code または raw message string を扱う
 - `chatSlice.sendMessage()` は送信開始時に `chatError` をクリアし、失敗時に code または raw message を保持する
 - `ChatView` は `role="alert"` のバナーで error code を日本語文言へ変換し、非 code 文字列は raw message fallback として表示する。手動 close と 5 秒 auto clear を持つ
-- Phase 11 evidence は `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshots/TC-11-01..05` を正本とする
+- Phase 11 evidence は `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshots/TC-11-01..05` を正本とする
 - follow-up は `task-ut-chatview-error-banner-i18n-001.md` と `task-ut-ai-chat-error-code-inventory-001.md` へ formalize した
 
 ### Task 02 で今回固定した契約
@@ -57,24 +59,30 @@
 - `LLMGuidanceBanner` は `useSelectedModelId()` と `useSelectedProviderId()` を直接読み、provider/model が両方そろった時だけ `null` を返す
 - `ChatView` は banner をヘッダー直下へ配置し、`onNavigateToSettings={() => setCurrentView("settings")}` で navigation を委譲する
 - `WorkspaceChatPanel` は `GuidanceBlock` の `actionLabel` と `onAction` をそろえて blocked CTA を表示する
-- Phase 11 evidence は `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-11/screenshots/TC-11-01..04` と `phase11-capture-metadata.json` を正本とする
+- Phase 11 evidence は `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-11/screenshots/TC-11-01..04` と `phase11-capture-metadata.json` を正本とする
 - follow-up は `docs/30-workflows/unassigned-task/task-ut-llm-settings-direct-scroll-001.md` と `docs/30-workflows/unassigned-task/task-ut-llm-guidance-banner-dismiss-001.md` へ formalize した
 
-### Task 03 で今回固定した契約
+### Task 04 で今回固定した契約
 
+- `useWorkspaceChatController` は `streamingError` を primary structured error state とし、`errorMessage` は inline fallback に限定する
+- `StreamingErrorDisplay` は `SETTINGS` / `RETRY` / dismiss を統合し、`WorkspaceChatPanel` が `WorkspaceChatInput` より優先描画する
+- Phase 11 evidence は `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/outputs/phase-11/screenshots/TC-11-01..05` と `phase11-capture-metadata.json` を正本とする
+- follow-up は `docs/30-workflows/unassigned-task/task-ut-workspace-chat-stream-error-transition-001.md` と `docs/30-workflows/unassigned-task/task-ut-workspace-chat-stream-error-contrast-001.md` へ formalize した
+
+### Task 03 で今回固定した契約
 - `persist.partialize` は `selectedProviderId` / `selectedModelId` を `knowledge-studio-store` へ保存する
 - persist version は `2` とし、v0/v1 は migrate で `selectedProviderId=null`, `selectedModelId=null` を補う
 - `validateAndSyncPersistedConfig()` は providers 未取得時は判断保留、無効 provider は両方 `null`、無効 model は model のみ `null` にする
 - Phase 11 evidence は `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-11/` を正本とし、dedicated harness / capture script / screenshot plan を current workflow 配下へ固定する
 - follow-up は `docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md` と `docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md` を正本とする
-
 ### 今回の苦戦箇所と標準ルール
 
 | 苦戦箇所 | 再発条件 | 解決策 | 今後の標準ルール |
 | --- | --- | --- | --- |
+| workflow root の canonical path が親配下 `tasks/01-*` / `tasks/02-*` と completed root で揺れる | family workflow と個別 workflow を別タイミングで更新する | Task 01 / Task 02 とも `completed-tasks/` 配下へ canonical を固定した | parent doc、workflow spec、artifact inventory、legacy register を同一 wave で更新する |
 | workflow root の canonical path が親配下 `tasks/01-*` / `tasks/02-*` / `tasks/03-*` と root 直下で揺れる | family workflow と個別 workflow を別タイミングで更新する | Task 01〜03 を root workflow canonical に固定した | parent doc、workflow spec、artifact inventory、legacy register、workflow 本文の stale path を同一 wave で更新する |
 | worktree UI task で screenshot を placeholder 扱いしやすい | build 不整合や local harness の古い前提で capture を諦める | current renderer entry + static server + Playwright で representative screenshot を再取得した | UI task の Phase 11 は capture script を追加してでも evidence を残す |
-| formalize 済み未タスクが見出し不足や配置ずれで audit に落ちる | 内容だけ埋めて 9 セクションや配置ルールを外す | Task 02 follow-up を root `unassigned-task/` に 9 セクション形式で作成した | unassigned は `verify-unassigned-links` と `audit --target-file` をセットで閉じる |
+| formalize 済み未タスクが見出し不足や配置ずれで audit に落ちる | 内容だけ埋めて 9 セクションや配置ルールを外す | Task 02 / Task 04 follow-up を root `unassigned-task/` に 9 セクション形式で作成した | unassigned は `verify-unassigned-links` と `audit --target-file` をセットで閉じる |
 
 ## artifact inventory / parent docs / legacy
 
@@ -155,5 +163,6 @@
 - `llm-workspace-chat-edit.md` は Workspace Chat "Edit" 用の Main Process 仕様であり、通常の Workspace Chat surface とは責務が異なる。
 - `arch-state-management.md` は入口であり、persist 実装判断では `arch-state-management-reference-persist-hardening-test-quality.md` まで降りる。
 - ChatView 側の silent failure と Workspace 側の stream error は類似だが、前者は store action、後者は hook local state が主体である。
+- Task 01 / Task 02 の workflow root は `completed-tasks/` 配下を canonical とし、旧 `ai-chat-llm-integration-fix/tasks/01-*` / `tasks/02-*` 参照は drift として扱う。
 - Task 01〜03 の workflow root は root 直下 workflow を canonical とし、旧 `ai-chat-llm-integration-fix/tasks/01-*` / `tasks/02-*` / `tasks/03-*` 参照は drift として扱う。Task 04 だけは現時点では family 配下 `tasks/` が canonical である。
 - artifact inventory、legacy register、parent doc、index 群は same-wave 同期対象であり、Task 01 または Task 02 だけ更新して閉じない。

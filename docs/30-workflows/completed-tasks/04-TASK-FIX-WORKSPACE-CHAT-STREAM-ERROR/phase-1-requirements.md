@@ -162,14 +162,15 @@ AC-6: エラーのdismiss
 
 ## 統合テスト連携
 
-- 現行実装との差分、対象テスト、依存タスクとの接続点をこのPhaseで確認・更新する。
-- 追加・変更したテスト観点は対応する `apps/desktop/src/` の実装ファイルと1対1で突合する。
+- `useWorkspaceChatController.runtime.test.ts` で structured error state、retry、dismiss の状態遷移を固定する。
+- `WorkspaceChatPanel.runtime.test.tsx` で `streamingError` 優先表示と inline fallback の境界を固定する。
+- Phase 11 では `pnpm --filter @repo/desktop screenshot:workspace-chat-stream-error` により Settings / Retry / dismiss / non-action error を visual evidence として残す。
 
 ## 成果物
 
-| 成果物                           | パス                                                                                                                  | 形式     |
-| -------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------- |
-| Phase 1 要件定義書（本ファイル） | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-1-requirements.md` | Markdown |
+| 成果物                           | パス                                                                                | 形式     |
+| -------------------------------- | ----------------------------------------------------------------------------------- | -------- |
+| Phase 1 要件定義書（本ファイル） | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-1-requirements.md` | Markdown |
 
 ## 完了条件
 

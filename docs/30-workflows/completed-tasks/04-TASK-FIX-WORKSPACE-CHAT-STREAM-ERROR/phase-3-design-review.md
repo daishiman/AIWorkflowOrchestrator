@@ -2,13 +2,13 @@
 
 ## メタ情報
 
-| 項目          | 値                                                                                                              |
-| ------------- | --------------------------------------------------------------------------------------------------------------- |
-| Phase番号     | 3                                                                                                               |
-| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                                                        |
-| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                                            |
-| 作成日        | 2026-03-20                                                                                                      |
-| 前Phase成果物 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-2-design.md` |
+| 項目          | 値                                                                            |
+| ------------- | ----------------------------------------------------------------------------- |
+| Phase番号     | 3                                                                             |
+| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                      |
+| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                          |
+| 作成日        | 2026-03-20                                                                    |
+| 前Phase成果物 | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-2-design.md` |
 
 ## 目的
 
@@ -133,10 +133,10 @@ grep -rn "streamingError\|StreamingErrorState\|ErrorAction" \
 
 ### Phase成果物
 
-| ドキュメント | パス                                                                                                                  |
-| ------------ | --------------------------------------------------------------------------------------------------------------------- |
-| 要件定義書   | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-1-requirements.md` |
-| 設計書       | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-2-design.md`       |
+| ドキュメント | パス                                                                                |
+| ------------ | ----------------------------------------------------------------------------------- |
+| 要件定義書   | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-1-requirements.md` |
+| 設計書       | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-2-design.md`       |
 
 ## 実行手順
 
@@ -153,15 +153,15 @@ grep -rn "streamingError\|StreamingErrorState\|ErrorAction" \
 
 ## 統合テスト連携
 
-- 現行実装との差分、対象テスト、依存タスクとの接続点をこのPhaseで確認・更新する。
-- 追加・変更したテスト観点は対応する `apps/desktop/src/` の実装ファイルと1対1で突合する。
+- `mapLLMErrorToStreamingError.test.ts`、`StreamingErrorDisplay.test.tsx`、`useWorkspaceChatController.runtime.test.ts`、`WorkspaceChatPanel.runtime.test.tsx` の 4 系統で責務分離を検証できることを確認する。
+- Phase 11 screenshot に必要な 5 シナリオをここで固定し、Phase 10/11 の evidence drift を防ぐ。
 
 ## 成果物
 
-| 成果物                               | パス                                                                                                                   | 形式       |
-| ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Phase 3 設計レビュー書（本ファイル） | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-3-design-review.md` | Markdown   |
-| レビュー判定結果                     | 本ファイルの Task 3 セクションに記録                                                                                   | インライン |
+| 成果物                               | パス                                                                                 | 形式       |
+| ------------------------------------ | ------------------------------------------------------------------------------------ | ---------- |
+| Phase 3 設計レビュー書（本ファイル） | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-3-design-review.md` | Markdown   |
+| レビュー判定結果                     | 本ファイルの Task 3 セクションに記録                                                 | インライン |
 
 ## 完了条件
 

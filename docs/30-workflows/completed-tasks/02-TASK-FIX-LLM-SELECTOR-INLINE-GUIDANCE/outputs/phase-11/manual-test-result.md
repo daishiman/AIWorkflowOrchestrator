@@ -9,5 +9,5 @@
 
 ## 補助証跡
 
-- screenshot plan: `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-11/screenshot-plan.json`
-- metadata: `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-11/screenshots/phase11-capture-metadata.json`
+- screenshot plan: `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-11/screenshot-plan.json`
+- metadata: `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-11/screenshots/phase11-capture-metadata.json`

@@ -163,15 +163,15 @@ describe("エラーバナー", () => {
 
 ## 参照資料
 
-| 資料名               | パス                                                                                   |
-| -------------------- | -------------------------------------------------------------------------------------- |
-| Phase 1 要件定義     | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md`  |
-| Phase 2 設計書       | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`        |
-| Phase 3 設計レビュー | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-3-design-review.md` |
-| コード品質ルール     | `.claude/rules/02-code-quality.md`                                                     |
-| 既知の落とし穴       | `.claude/rules/06-known-pitfalls.md`                                                   |
-| chatSlice 実装       | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                  |
-| ChatView 実装        | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                   |
+| 資料名               | パス                                                                                                   |
+| -------------------- | ------------------------------------------------------------------------------------------------------ |
+| Phase 1 要件定義     | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md`  |
+| Phase 2 設計書       | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`        |
+| Phase 3 設計レビュー | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-3-design-review.md` |
+| コード品質ルール     | `.claude/rules/02-code-quality.md`                                                                     |
+| 既知の落とし穴       | `.claude/rules/06-known-pitfalls.md`                                                                   |
+| chatSlice 実装       | `apps/desktop/src/renderer/store/slices/chatSlice.ts`                                                  |
+| ChatView 実装        | `apps/desktop/src/renderer/views/ChatView/index.tsx`                                                   |
 
 ## 実行手順
 
@@ -206,11 +206,11 @@ cd apps/desktop && pnpm vitest run src/renderer/views/ChatView/ChatView.test.tsx
 
 ## 成果物
 
-| 成果物                          | パス                                                                                     |
-| ------------------------------- | ---------------------------------------------------------------------------------------- |
-| Phase 4 仕様書（本ファイル）    | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-4-test-creation.md`   |
-| chatSlice テスト追加            | `apps/desktop/src/renderer/store/slices/chatSlice.test.ts`（またはテストファイルパス）   |
-| ChatView エラーバナーテスト追加 | `apps/desktop/src/renderer/views/ChatView/ChatView.test.tsx`（またはテストファイルパス） |
+| 成果物                          | パス                                                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Phase 4 仕様書（本ファイル）    | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-4-test-creation.md` |
+| chatSlice テスト追加            | `apps/desktop/src/renderer/store/slices/chatSlice.test.ts`（またはテストファイルパス）                 |
+| ChatView エラーバナーテスト追加 | `apps/desktop/src/renderer/views/ChatView/ChatView.test.tsx`（またはテストファイルパス）               |
 
 ## 完了条件
 

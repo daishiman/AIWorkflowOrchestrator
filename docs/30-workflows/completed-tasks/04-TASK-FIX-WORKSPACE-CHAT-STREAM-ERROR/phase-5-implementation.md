@@ -2,13 +2,13 @@
 
 ## メタ情報
 
-| 項目          | 値                                                                                                                     |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Phase番号     | 5                                                                                                                      |
-| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                                                               |
-| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                                                   |
-| 作成日        | 2026-03-20                                                                                                             |
-| 前Phase成果物 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-4-test-creation.md` |
+| 項目          | 値                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------ |
+| Phase番号     | 5                                                                                    |
+| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                             |
+| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                 |
+| 作成日        | 2026-03-20                                                                           |
+| 前Phase成果物 | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-4-test-creation.md` |
 
 ## 目的
 
@@ -366,13 +366,13 @@ pnpm --filter @repo/desktop lint
 
 ## 参照資料
 
-| ドキュメント         | パス                                                                                                                   | 参照目的                    |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------- |
-| Phase 2 設計書       | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-2-design.md`        | 型定義・実装設計            |
-| Phase 4 テスト       | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-4-test-creation.md` | テストケース確認            |
-| P50 既実装確認       | `.claude/rules/06-known-pitfalls.md`                                                                                   | 実装前の現状調査必須        |
-| P31 無限ループ対策   | `.claude/rules/06-known-pitfalls.md`                                                                                   | useCallback依存配列チェック |
-| アーキテクチャルール | `.claude/rules/01-architecture.md`                                                                                     | Apple HIG カラー定義        |
+| ドキュメント         | パス                                                                                 | 参照目的                    |
+| -------------------- | ------------------------------------------------------------------------------------ | --------------------------- |
+| Phase 2 設計書       | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-2-design.md`        | 型定義・実装設計            |
+| Phase 4 テスト       | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-4-test-creation.md` | テストケース確認            |
+| P50 既実装確認       | `.claude/rules/06-known-pitfalls.md`                                                 | 実装前の現状調査必須        |
+| P31 無限ループ対策   | `.claude/rules/06-known-pitfalls.md`                                                 | useCallback依存配列チェック |
+| アーキテクチャルール | `.claude/rules/01-architecture.md`                                                   | Apple HIG カラー定義        |
 
 ## 実行手順
 
@@ -386,19 +386,19 @@ pnpm --filter @repo/desktop lint
 
 ## 統合テスト連携
 
-- 現行実装との差分、対象テスト、依存タスクとの接続点をこのPhaseで確認・更新する。
-- 追加・変更したテスト観点は対応する `apps/desktop/src/` の実装ファイルと1対1で突合する。
+- Phase 4 で追加した unit / component / runtime tests を green にしながら実装を進める。
+- `WorkspaceChatPanel` と `WorkspaceChatInput` の error surface 重複は panel runtime test と screenshot で確認する。
 
 ## 成果物
 
-| 成果物                               | パス                                                                                                                    | 形式       |
-| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- | ---------- |
-| 型定義                               | `apps/desktop/src/renderer/views/WorkspaceView/types.ts`（または既存ファイル）                                          | TypeScript |
-| mapLLMErrorToStreamingError          | `apps/desktop/src/renderer/views/WorkspaceView/hooks/mapLLMErrorToStreamingError.ts`                                    | TypeScript |
-| StreamingErrorDisplay コンポーネント | `apps/desktop/src/renderer/views/WorkspaceView/components/StreamingErrorDisplay.tsx`                                    | TypeScript |
-| useWorkspaceChatController（拡張後） | `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts`                                     | TypeScript |
-| WorkspaceChatPanel（統合後）         | `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx`                                                  | TypeScript |
-| Phase 5 仕様書（本ファイル）         | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-5-implementation.md` | Markdown   |
+| 成果物                               | パス                                                                                  | 形式       |
+| ------------------------------------ | ------------------------------------------------------------------------------------- | ---------- |
+| 型定義                               | `apps/desktop/src/renderer/views/WorkspaceView/types.ts`（または既存ファイル）        | TypeScript |
+| mapLLMErrorToStreamingError          | `apps/desktop/src/renderer/views/WorkspaceView/hooks/mapLLMErrorToStreamingError.ts`  | TypeScript |
+| StreamingErrorDisplay コンポーネント | `apps/desktop/src/renderer/views/WorkspaceView/components/StreamingErrorDisplay.tsx`  | TypeScript |
+| useWorkspaceChatController（拡張後） | `apps/desktop/src/renderer/views/WorkspaceView/hooks/useWorkspaceChatController.ts`   | TypeScript |
+| WorkspaceChatPanel（統合後）         | `apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx`                | TypeScript |
+| Phase 5 仕様書（本ファイル）         | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-5-implementation.md` | Markdown   |
 
 ## 完了条件
 

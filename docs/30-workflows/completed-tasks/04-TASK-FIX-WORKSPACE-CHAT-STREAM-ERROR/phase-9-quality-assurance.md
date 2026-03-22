@@ -2,13 +2,13 @@
 
 ## メタ情報
 
-| 項目          | 値                                                                                                                   |
-| ------------- | -------------------------------------------------------------------------------------------------------------------- |
-| Phase番号     | 9                                                                                                                    |
-| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                                                             |
-| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                                                 |
-| 作成日        | 2026-03-20                                                                                                           |
-| 前Phase成果物 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-8-refactoring.md` |
+| 項目          | 値                                                                                 |
+| ------------- | ---------------------------------------------------------------------------------- |
+| Phase番号     | 9                                                                                  |
+| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                           |
+| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                               |
+| 作成日        | 2026-03-20                                                                         |
+| 前Phase成果物 | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-8-refactoring.md` |
 
 ## 目的
 
@@ -95,12 +95,12 @@ grep -rn "console.log.*key\|console.log.*token\|console.log.*password" \
 
 ## 参照資料
 
-| ドキュメント       | パス                                                                                                                 | 参照目的                   |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------- | -------------------------- |
-| Phase 8 リファクタ | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-8-refactoring.md` | リファクタリング済み成果物 |
-| コード品質ルール   | `.claude/rules/02-code-quality.md`                                                                                   | TypeScript・テスト品質基準 |
-| セキュリティルール | `.claude/rules/04-electron-security.md`                                                                              | IPC変更なし確認            |
-| P19 型キャスト     | `.claude/rules/06-known-pitfalls.md`                                                                                 | as キャスト禁止            |
+| ドキュメント       | パス                                                                               | 参照目的                   |
+| ------------------ | ---------------------------------------------------------------------------------- | -------------------------- |
+| Phase 8 リファクタ | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-8-refactoring.md` | リファクタリング済み成果物 |
+| コード品質ルール   | `.claude/rules/02-code-quality.md`                                                 | TypeScript・テスト品質基準 |
+| セキュリティルール | `.claude/rules/04-electron-security.md`                                            | IPC変更なし確認            |
+| P19 型キャスト     | `.claude/rules/06-known-pitfalls.md`                                               | as キャスト禁止            |
 
 ## 実行手順
 
@@ -112,15 +112,15 @@ grep -rn "console.log.*key\|console.log.*token\|console.log.*password" \
 
 ## 統合テスト連携
 
-- 現行実装との差分、対象テスト、依存タスクとの接続点をこのPhaseで確認・更新する。
-- 追加・変更したテスト観点は対応する `apps/desktop/src/` の実装ファイルと1対1で突合する。
+- targeted suite 63 tests PASS、build、Phase 11 screenshot coverage、Phase 12 implementation guide validator を品質ゲートへ接続する。
+- docs/local outputs と same-wave system spec は artifacts / changelog / compliance の 3 系統で相互確認する。
 
 ## 成果物
 
-| 成果物                       | パス                                                                                                                       | 形式       |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| 品質検証サマリー（Task 5）   | 本ファイルの Task 5 セクション（実行後に更新）                                                                             | インライン |
-| Phase 9 仕様書（本ファイル） | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-9-quality-assurance.md` | Markdown   |
+| 成果物                       | パス                                                                                     | 形式       |
+| ---------------------------- | ---------------------------------------------------------------------------------------- | ---------- |
+| 品質検証サマリー（Task 5）   | 本ファイルの Task 5 セクション（実行後に更新）                                           | インライン |
+| Phase 9 仕様書（本ファイル） | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-9-quality-assurance.md` | Markdown   |
 
 ## 完了条件
 

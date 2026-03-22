@@ -170,10 +170,10 @@ cd apps/desktop && pnpm vitest run src/renderer/views/WorkspaceView/__tests__/Wo
 
 ### フェーズ成果物
 
-| ファイル                                                                              | 用途         |
-| ------------------------------------------------------------------------------------- | ------------ |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`        | 設計仕様     |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-4-test-creation.md` | テストケース |
+| ファイル                                                                                              | 用途         |
+| ----------------------------------------------------------------------------------------------------- | ------------ |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`        | 設計仕様     |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-4-test-creation.md` | テストケース |
 
 ### プロジェクトルール
 

@@ -169,10 +169,11 @@ LLM 選択と system prompt は独立状態だが、Chat 実行時には同じ r
 | ドキュメント | 内容 |
 |--------------|------|
 | `docs/30-workflows/ai-chat-llm-integration-fix/index.md` | 4 タスク統合の親workflow |
-| `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | ChatView error surface task（current canonical root） |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | inline guidance task |
+| `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/` | ChatView error surface task（current canonical root） |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` | inline guidance task |
+| `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | persist task（completed root） |
+| `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` | Workspace Chat error UX task（current root） |
 | `docs/30-workflows/completed-tasks/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/` | persist task（current canonical root） |
-| `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/` | Workspace Chat error UX task |
 
 ---
 

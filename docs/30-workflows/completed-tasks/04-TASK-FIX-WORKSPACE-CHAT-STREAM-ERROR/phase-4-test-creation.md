@@ -2,13 +2,13 @@
 
 ## メタ情報
 
-| 項目          | 値                                                                                                                     |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| Phase番号     | 4                                                                                                                      |
-| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                                                               |
-| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                                                   |
-| 作成日        | 2026-03-20                                                                                                             |
-| 前Phase成果物 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-3-design-review.md` |
+| 項目          | 値                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------ |
+| Phase番号     | 4                                                                                    |
+| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                             |
+| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                 |
+| 作成日        | 2026-03-20                                                                           |
+| 前Phase成果物 | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-3-design-review.md` |
 
 ## 目的
 
@@ -340,13 +340,13 @@ describe("useWorkspaceChatController - streamingError", () => {
 
 ## 参照資料
 
-| ドキュメント       | パス                                                                                                                  | 参照目的                     |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| Phase 1 要件定義書 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-1-requirements.md` | 受入基準 AC-1〜AC-6          |
-| Phase 2 設計書     | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-2-design.md`       | 型定義・マッピング設計       |
-| P39 happy-dom      | `.claude/rules/06-known-pitfalls.md`                                                                                  | userEvent禁止・fireEvent使用 |
-| P63 インポートパス | `.claude/rules/06-known-pitfalls.md`                                                                                  | 既存テストパターン参照必須   |
-| コード品質ルール   | `.claude/rules/02-code-quality.md`                                                                                    | カバレッジ基準               |
+| ドキュメント       | パス                                                                                | 参照目的                     |
+| ------------------ | ----------------------------------------------------------------------------------- | ---------------------------- |
+| Phase 1 要件定義書 | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-1-requirements.md` | 受入基準 AC-1〜AC-6          |
+| Phase 2 設計書     | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-2-design.md`       | 型定義・マッピング設計       |
+| P39 happy-dom      | `.claude/rules/06-known-pitfalls.md`                                                | userEvent禁止・fireEvent使用 |
+| P63 インポートパス | `.claude/rules/06-known-pitfalls.md`                                                | 既存テストパターン参照必須   |
+| コード品質ルール   | `.claude/rules/02-code-quality.md`                                                  | カバレッジ基準               |
 
 ## 実行手順
 
@@ -354,24 +354,26 @@ describe("useWorkspaceChatController - streamingError", () => {
 2. **Task 2**: `mapLLMErrorToStreamingError` の単体テストファイルを作成する
 3. **Task 3**: `StreamingErrorDisplay` のコンポーネントテストファイルを作成する
 4. **Task 4**: `useWorkspaceChatController` のエラーハンドリングテストを作成する（既存テストとのマージ方針を確認する）
-5. テストを実行し Red であることを確認する（TDD: Red フェーズ）
+5. テストを実行し、未実装箇所に対する失敗または不足を確認する
    ```bash
    cd apps/desktop && pnpm vitest run src/renderer/views/WorkspaceView
    ```
 
 ## 統合テスト連携
 
-- 現行実装との差分、対象テスト、依存タスクとの接続点をこのPhaseで確認・更新する。
-- 追加・変更したテスト観点は対応する `apps/desktop/src/` の実装ファイルと1対1で突合する。
+- `mapLLMErrorToStreamingError.test.ts` が pure mapping を固定する。
+- `StreamingErrorDisplay.test.tsx` が button / hint / a11y surface を固定する。
+- `useWorkspaceChatController.runtime.test.ts` が hook の retry / dismiss / state reset を固定する。
+- `WorkspaceChatPanel.runtime.test.tsx` が panel-to-input の統合境界を固定する。
 
 ## 成果物
 
-| 成果物                                  | パス                                                                                                                   | 形式       |
-| --------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------- |
-| mapLLMErrorToStreamingError テスト      | `apps/desktop/src/renderer/views/WorkspaceView/hooks/__tests__/mapLLMErrorToStreamingError.test.ts`                    | TypeScript |
-| StreamingErrorDisplay テスト            | `apps/desktop/src/renderer/views/WorkspaceView/components/__tests__/StreamingErrorDisplay.test.tsx`                    | TypeScript |
-| useWorkspaceChatController エラーテスト | `apps/desktop/src/renderer/views/WorkspaceView/hooks/__tests__/useWorkspaceChatController.streamingError.test.ts`      | TypeScript |
-| Phase 4 仕様書（本ファイル）            | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-4-test-creation.md` | Markdown   |
+| 成果物                                  | パス                                                                                                       | 形式       |
+| --------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------- |
+| mapLLMErrorToStreamingError テスト      | `apps/desktop/src/renderer/views/WorkspaceView/hooks/__tests__/mapLLMErrorToStreamingError.test.ts`        | TypeScript |
+| StreamingErrorDisplay テスト            | `apps/desktop/src/renderer/views/WorkspaceView/components/__tests__/StreamingErrorDisplay.test.tsx`        | TypeScript |
+| useWorkspaceChatController エラーテスト | `apps/desktop/src/renderer/views/WorkspaceView/hooks/__tests__/useWorkspaceChatController.runtime.test.ts` | TypeScript |
+| Phase 4 仕様書（本ファイル）            | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-4-test-creation.md`                       | Markdown   |
 
 ## 完了条件
 

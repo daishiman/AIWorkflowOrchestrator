@@ -112,12 +112,12 @@ vi.mock("@/renderer/store", () => ({
 
 ### システム仕様
 
-| ファイル                                                                              | 用途                                     |
-| ------------------------------------------------------------------------------------- | ---------------------------------------- |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md`  | 受入条件・UI要件・アクセシビリティ基準   |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`        | 設計仕様（テスト対象の定義）             |
-| `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-3-design-review.md` | レビュー指摘、未タスク化対象、ゲート判定 |
-| `.claude/rules/02-code-quality.md`                                                    | テスト設計原則・カバレッジ基準           |
+| ファイル                                                                                              | 用途                                     |
+| ----------------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-1-requirements.md`  | 受入条件・UI要件・アクセシビリティ基準   |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-2-design.md`        | 設計仕様（テスト対象の定義）             |
+| `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/phase-3-design-review.md` | レビュー指摘、未タスク化対象、ゲート判定 |
+| `.claude/rules/02-code-quality.md`                                                                    | テスト設計原則・カバレッジ基準           |
 
 ### プロジェクトルール
 

@@ -6,6 +6,14 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-22 - TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了同期（streamingError primary / legacy fallback 分離 / Task03 completed root 移管 / same-wave index 再生成） |
+| 2026-03-21 - chat-inline-model-selector ワークフロー仕様書作成（TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT / TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION / TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 3タスク Phase 1-13 仕様書 34ファイル） |
+| 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE follow-up formalize（UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001 / UT-FIX-LLM-BANNER-DISMISS-001） |
+| 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査完了（Task02 root 正本化 / screenshot 4件 / system spec same-wave sync） |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 完了同期（direct caller capability bridge 完了 / follow-up 2件 formalize / manual evidence 是正） |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（implementation_ready 正規化 / code gap formalize / backlog 4件同期） |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 spec-only Phase 1-12 完了（設計タスク: RuntimePolicy/HealthContract/HandoffContract 中央集約設計、DD-1〜DD-6確定、M-1/M-2処置完了、Task03-09は未着手、未タスク3件を backlog / workflow / lessons へ同期） |
+| 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（Task02 root / Task01 completed root / downstream consumer path 同期） |
 | 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（resource-map runtime IPC 導線追加 / P65 dead-end namespace pitfall 追加 / SKILL.md trigger 拡張 / mirror sync） |
 | 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（Skill Creator runtime public IPC 3チャネル / shared contract / graceful degradation / Phase 12 final sync） |
 | 2026-03-21 - UT-SLIDE-UI-001 完了同期（Slide Workspace 4領域 UI 実装 / Phase 11 screenshot 10枚 / task09 canonical same-wave 更新） |
@@ -56,6 +64,19 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
+## TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了同期（2026-03-22）
+
+- タスク名: WorkspaceChat ストリーミングエラーUX改善
+- 種別: documentation / spec-sync
+- 主な反映:
+  - `workflow-ai-chat-llm-integration-fix.md` の Task 03 / Task 04 状態を `completed` へ同期
+  - `workflow-ai-chat-llm-integration-fix-artifact-inventory.md` で canonical root / completed status / Task03 移管を固定
+  - `llm-streaming.md` / `ui-ux-feature-components-details.md` / `arch-state-management-core.md` で `streamingError` primary contract を追加
+  - `task-workflow-completed-chat-lifecycle-tests.md` / `task-workflow.md` / `lessons-learned-current.md` / `lessons-learned-ipc-preload-runtime.md` を same-wave 更新
+  - `task-specification-creator` の index 再生成と Task 04 output 台帳の整合を回復
+  - `validate-phase12-implementation-guide` を 10/10 PASS へ回復
+
+## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 完了同期（2026-03-21）
 ## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（2026-03-21）
 
 - タスク名: Runtime Skill Creator public IPC wiring

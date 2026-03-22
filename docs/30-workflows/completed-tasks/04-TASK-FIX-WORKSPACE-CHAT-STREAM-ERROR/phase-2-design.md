@@ -2,13 +2,13 @@
 
 ## メタ情報
 
-| 項目          | 値                                                                                                                    |
-| ------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Phase番号     | 2                                                                                                                     |
-| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                                                              |
-| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                                                  |
-| 作成日        | 2026-03-20                                                                                                            |
-| 前Phase成果物 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-1-requirements.md` |
+| 項目          | 値                                                                                  |
+| ------------- | ----------------------------------------------------------------------------------- |
+| Phase番号     | 2                                                                                   |
+| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                            |
+| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                |
+| 作成日        | 2026-03-20                                                                          |
+| 前Phase成果物 | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-1-requirements.md` |
 
 ## 目的
 
@@ -317,9 +317,9 @@ grep -rn "navigate.*settings\|settings.*navigate\|openSettings\|useNavigate" \
 
 ### Phase 1成果物
 
-| ドキュメント | パス                                                                                                                  |
-| ------------ | --------------------------------------------------------------------------------------------------------------------- |
-| 要件定義書   | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-1-requirements.md` |
+| ドキュメント | パス                                                                                |
+| ------------ | ----------------------------------------------------------------------------------- |
+| 要件定義書   | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-1-requirements.md` |
 
 ### 実装ファイル
 
@@ -342,14 +342,15 @@ grep -rn "navigate.*settings\|settings.*navigate\|openSettings\|useNavigate" \
 
 ## 統合テスト連携
 
-- 現行実装との差分、対象テスト、依存タスクとの接続点をこのPhaseで確認・更新する。
-- 追加・変更したテスト観点は対応する `apps/desktop/src/` の実装ファイルと1対1で突合する。
+- `StreamingErrorState` / `StreamingErrorAction` は unit test と component test の fixture 型として共通利用する。
+- `retryLastMessage()` / `dismissStreamingError()` は runtime test で panel 経由の挙動まで検証できる設計にする。
+- Phase 11 capture script で Settings / Retry / dismiss / non-action error を visual evidence として残す前提で設計する。
 
 ## 成果物
 
-| 成果物                       | パス                                                                                                            | 形式     |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------------- | -------- |
-| Phase 2 設計書（本ファイル） | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-2-design.md` | Markdown |
+| 成果物                       | パス                                                                          | 形式     |
+| ---------------------------- | ----------------------------------------------------------------------------- | -------- |
+| Phase 2 設計書（本ファイル） | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-2-design.md` | Markdown |
 
 ## 完了条件
 

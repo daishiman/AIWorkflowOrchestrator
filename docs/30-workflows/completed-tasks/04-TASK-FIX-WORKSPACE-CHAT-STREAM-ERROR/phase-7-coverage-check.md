@@ -2,13 +2,13 @@
 
 ## メタ情報
 
-| 項目          | 値                                                                                                                      |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| Phase番号     | 7                                                                                                                       |
-| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                                                                |
-| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                                                    |
-| 作成日        | 2026-03-20                                                                                                              |
-| 前Phase成果物 | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-6-test-expansion.md` |
+| 項目          | 値                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------- |
+| Phase番号     | 7                                                                                     |
+| 機能名        | WorkspaceChat ストリーミングエラーUX改善                                              |
+| タスクID      | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR                                                  |
+| 作成日        | 2026-03-20                                                                            |
+| 前Phase成果物 | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-6-test-expansion.md` |
 
 ## 目的
 
@@ -58,11 +58,11 @@ Vitestの v8 カバレッジプロバイダはインライン arrow function を
 
 ## 参照資料
 
-| ドキュメント     | パス                                                                                                                    | 参照目的           |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| Phase 6 拡充     | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-6-test-expansion.md` | 追加テスト一覧     |
-| コード品質ルール | `.claude/rules/02-code-quality.md`                                                                                      | カバレッジ基準定義 |
-| P41 v8カバレッジ | `.claude/rules/06-known-pitfalls.md`                                                                                    | インライン関数対策 |
+| ドキュメント     | パス                                                                                  | 参照目的           |
+| ---------------- | ------------------------------------------------------------------------------------- | ------------------ |
+| Phase 6 拡充     | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-6-test-expansion.md` | 追加テスト一覧     |
+| コード品質ルール | `.claude/rules/02-code-quality.md`                                                    | カバレッジ基準定義 |
+| P41 v8カバレッジ | `.claude/rules/06-known-pitfalls.md`                                                  | インライン関数対策 |
 
 ## 実行手順
 
@@ -74,15 +74,15 @@ Vitestの v8 カバレッジプロバイダはインライン arrow function を
 
 ## 統合テスト連携
 
-- 現行実装との差分、対象テスト、依存タスクとの接続点をこのPhaseで確認・更新する。
-- 追加・変更したテスト観点は対応する `apps/desktop/src/` の実装ファイルと1対1で突合する。
+- coverage の主対象は `mapLLMErrorToStreamingError.ts`、`StreamingErrorDisplay.tsx`、`useWorkspaceChatController.ts`、`WorkspaceChatPanel.tsx` である。
+- unit / component / runtime / screenshot の 4 層で coverage gap を埋める。
 
 ## 成果物
 
-| 成果物                                   | パス                                                                                                                    | 形式       |
-| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------- |
-| カバレッジ確認結果（Task 2テーブル更新） | 本ファイルのTask 2セクション                                                                                            | インライン |
-| Phase 7 仕様書（本ファイル）             | `docs/30-workflows/ai-chat-llm-integration-fix/tasks/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-7-coverage-check.md` | Markdown   |
+| 成果物                                   | パス                                                                                  | 形式       |
+| ---------------------------------------- | ------------------------------------------------------------------------------------- | ---------- |
+| カバレッジ確認結果（Task 2テーブル更新） | 本ファイルのTask 2セクション                                                          | インライン |
+| Phase 7 仕様書（本ファイル）             | `docs/30-workflows/04-TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR/phase-7-coverage-check.md` | Markdown   |
 
 ## 完了条件
 

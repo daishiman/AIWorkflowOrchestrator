@@ -2,11 +2,11 @@
 
 ## メタ情報
 
-| 項目           | 値                                                            |
-| -------------- | ------------------------------------------------------------- |
-| タスクID       | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE                         |
-| 作成日         | 2026-03-21                                                    |
-| canonical root | `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` |
+| 項目           | 値                                                                            |
+| -------------- | ----------------------------------------------------------------------------- |
+| タスクID       | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE                                         |
+| 作成日         | 2026-03-21                                                                    |
+| canonical root | `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/` |
 
 ## Step 1-A: タスク完了記録
 
@@ -61,6 +61,6 @@
 
 ## Path Relocation
 
-- canonical root: `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/`
-- legacy path: `docs/30-workflows/ai-chat-llm-integration-fix/tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/`
+- canonical root: `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/`
+- legacy path: `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/`
 - `legacy-ordinal-family-register.md` に relocation 行を追加し、parent workflow / inventory / selector spec の参照先を揃えた
