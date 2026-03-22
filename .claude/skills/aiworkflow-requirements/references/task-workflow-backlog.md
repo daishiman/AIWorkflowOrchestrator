@@ -24,7 +24,7 @@
 | UT-SLIDE-IPC-TEMPLATE-001 | IPC ハンドラ標準テンプレート | 低 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | - |
 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | current code に残る runtime policy centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 12 最終再監査（2026-03-21） | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface を統合する | 高 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 Phase 12 最終ドキュメント更新（2026-03-21） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
-| UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001 | `RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する | 中 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 Phase 12 最終ドキュメント更新（2026-03-21） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
+| ~~UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001~~ | ~~`RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する~~ | ~~中~~ | **完了**: TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）で実装済み | ~~`docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md`~~ |
 | UT-CLEANUP-AI-CHECK-CONNECTION-001 | `llm:check-health` への移行完了後に `AI_CHECK_CONNECTION` legacy handler / channel / preload API を削除する | 低 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 3 MINOR M-3 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
 | UT-CLEANUP-RUNTIME-RESOLVER-001 | 全 surface の policy consumer 移行完了後に deprecated `RuntimeResolver` を削除する | 低 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 DD-1 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
 | UT-DESIGN-SANITIZE-PLACEMENT-001 | `sanitizeForRenderer()` の配置先を IPC handler 内部か共通 utility かで確定し、Task04 着手前に文書化する | 中 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 11 D-1 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
@@ -524,6 +524,10 @@
 
 | UT-FIX-LLM-PERSIST-ENCRYPT-001 | persist storage暗号化の検討 | 低 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md` |
 | UT-FIX-LLM-FETCHPROVIDERS-RETRY-001 | fetchProviders失敗時のリトライとバリデーション連携 | 中 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md` |
+| UT-SC-02-001 | RuntimeSkillCreatorFacade の subscriptionAuthProvider DI 配線 | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-001.md` |
+| UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
+| UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
+| UT-SC-02-004 | bundle 構築の二重責務 | 低 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
 
 ### 未タスク管理ルール
 

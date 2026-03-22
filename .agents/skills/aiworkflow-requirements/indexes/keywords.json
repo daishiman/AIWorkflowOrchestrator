@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-22T10:51:43.317Z",
-  "totalKeywords": 2434,
+  "generated": "2026-03-22T10:05:22.958Z",
+  "totalKeywords": 2435,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2237,9 +2237,7 @@
     ],
     "WIRING": [
       "api-ipc-system-core.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "ChatPanel": [
       "api-ipc-system-core.md",
@@ -2284,9 +2282,7 @@
       "arch-state-management-core.md",
       "arch-state-management-reference-selectors.md",
       "interfaces-llm.md",
-      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "llm-ipc-types.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -2442,7 +2438,21 @@
       "ui-ux-settings-core.md"
     ],
     "CLOSURE": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "RuntimePolicyResolver": [
       "arch-electron-services-details-part2.md"
+    ],
+    "SC": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "POLICY": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "採用計画": [
       "arch-electron-services-details-part2.md"
@@ -2450,7 +2460,6 @@
     "SLIDE": [
       "arch-electron-services-details-part2.md",
       "interfaces-agent-sdk-skill-advanced.md",
-      "lessons-learned-current.md",
       "ui-ux-feature-components-details.md"
     ],
     "ALIGNMENT": [
@@ -2458,7 +2467,6 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
-      "lessons-learned-current.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
@@ -2787,9 +2795,7 @@
     ],
     "WORKSPACE": [
       "arch-state-management-core.md",
-      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-03-history-search-notification-center.md",
@@ -6249,23 +6255,8 @@
     "カテゴリ別検索ガイド": [
       "lessons-learned-current.md"
     ],
-    "GUIDANCE": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "ACTION": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-viewtype-electron-ui.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
-    ],
-    "POLICY": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "CAPABILITY": [
       "lessons-learned-current.md",
@@ -6840,6 +6831,11 @@
       "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "SKILLDETAIL": [
+      "lessons-learned-viewtype-electron-ui.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "ACTION": [
       "lessons-learned-viewtype-electron-ui.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"

@@ -6,17 +6,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
-| 2026-03-22 - TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了（D1-D6 drift 6件解消 / 12チャネル canonical 統一 / validateIpcSender + P42 3段バリデーション + path guard 全ハンドラ適用 / RuntimeResolver integrated/handoff 分岐 / modifier-skill.ts 統合 / slideSlice 7 store fields 追加 / HandoffGuidance 型共有） |
-| 2026-03-22 - TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（Terminal Handoff Surface Realization 設計 / Concern 3分割 / HandoffGuidance 統一DTO / Manual Boundary 確定 / 未タスク8件検出） |
-| 2026-03-22 - TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了同期（streamingError primary / legacy fallback 分離 / Task03 completed root 移管 / same-wave index 再生成） |
-| 2026-03-22 - TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（standalone root / spec_created ledger / backlog 4件 / lessons 4件 / mirror parity） |
+| 2026-03-22 - TASK-SC-02-RUNTIME-POLICY-CLOSURE（RuntimePolicyResolver サブスクリプション判定統合 / 3パターン分岐安定化 / graceful degradation / 25テスト全PASS / 未タスク4件） |
 | 2026-03-22 - TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（shared selector contract sync / backlog cleanup / completed ledger 追加 / Phase 12 guide drift 修正） |
-| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（resource-map runtime IPC 導線追加 / P65 dead-end namespace pitfall 追加 / SKILL.md trigger 拡張 / mirror sync） |
-| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（Skill Creator runtime public IPC 3チャネル / shared contract / graceful degradation / Phase 12 final sync） |
-| 2026-03-21 - TASK-FIX-LLM-CONFIG-PERSISTENCE Phase12 再監査完了（Phase11 harness 導線、family inventory、completed shard、lessons、mirror parity を同ターン同期） |
-| 2026-03-21 | TASK-FIX-LLM-CONFIG-PERSISTENCE | LLM選択状態（selectedProviderId/selectedModelId）の永続化修正。persist partialize拡張、v0→v2 migrate、起動時バリデーション、P62対策を実装 |
-| 2026-03-21 - Task03 root canonicalization / Task02 completed relocation sync（legacy register / generate-index / mirror parity を含む same-wave 更新） |
-| 2026-03-21 - UT-SLIDE-UI-001 完了同期（Slide Workspace 4領域 UI 実装 / Phase 11 screenshot 10枚 / task09 canonical same-wave 更新） |
 | 2026-03-21 - chat-inline-model-selector ワークフロー仕様書作成（TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT / TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION / TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 3タスク Phase 1-13 仕様書 34ファイル） |
 | 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE follow-up formalize（UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001 / UT-FIX-LLM-BANNER-DISMISS-001） |
 | 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査完了（Task02 root 正本化 / screenshot 4件 / system spec same-wave sync） |
@@ -70,6 +61,16 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
+## TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）
+
+- RuntimePolicyResolver に ISubscriptionAuthProvider.validateToken() による実サブスクリプション判定を統合
+- 3パターン分岐（integrated_api / terminal_handoff subscription / terminal_handoff no-auth）を安定化
+- graceful degradation（AuthKeyService/SubscriptionAuthProvider 例外時のフォールバック）を実装
+- P42（trim バリデーション）、P48（non-null assertion 除去）、P62（DEFAULT_CONFIG fallback 禁止）準拠
+- 変更ファイル: RuntimePolicyResolver.ts, RuntimeSkillCreatorFacade.ts
+- テスト: 25テスト全PASS、Line 100%, Branch 90.47%, Function 100%
+- 未タスク: 4件（UT-SC-02-001〜004）
+
 ## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 
 - タスク名: shared compact model selector final doc update
@@ -80,36 +81,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - `task-workflow-completed-chat-lifecycle-tests.md` に Task01 の完了記録と compile / vitest blocker を追加
   - task-specification-creator 側の `phase-12-documentation-guide.md` / `spec-update-workflow.md` に outputs 配置と shared component sync ルールを追加
 
-## TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（2026-03-22）
-
-- タスク名: chat-workspace-guidance-action-wiring
-- 種別: docs/spec sync
-- 主な反映:
-  - `workflow-ai-runtime-execution-responsibility-realignment.md` に Task04 standalone root と current canonical set を追記
-  - `task-workflow-completed.md` に `spec_created` / `implementation_ready` / Phase 13 blocked の分離記録を追加
-  - `task-workflow-backlog.md` と `lessons-learned-current.md` / `lessons-learned-phase12-workflow-lifecycle.md` に follow-up 4件と教訓4件を追加
-  - Task04 の same-wave sync を task/workflow/doc/spec の関係性として再記録
-
-## TASK-FIX-LLM-CONFIG-PERSISTENCE Phase12 再監査完了（2026-03-21）
-
-- タスク名: LLM 選択状態の永続化修正
-- 種別: 実装 + Phase 11/12 same-wave sync
-- 主な反映:
-  - `phase-11-manual-test.md` を `knowledge-studio-store` 基準の dedicated harness 前提へ更新
-  - `workflow-ai-chat-llm-integration-fix.md` / artifact inventory / completed shard / lessons に Task03 close-out を追加
-  - `ui-ux-llm-selector.md` の invalid model/provider 挙動を null クリア契約へ修正
-  - `arch-state-management-reference-persist-hardening-test-quality.md` に Task03 の restore 契約と Phase11 harness ルールを追記
-  - LOGS.md / SKILL.md 2ファイルずつ、parent workflow、mirror parity を same-wave 更新対象へ昇格
-
-## Task03 root canonicalization / Task02 completed relocation sync（2026-03-21）
-
-- タスク名: AI Chat / runtime policy workflow path drift 是正
-- 種別: canonical path same-wave sync
-- 主な反映:
-  - `workflow-ai-chat-llm-integration-fix.md` / `workflow-ai-chat-llm-integration-fix-artifact-inventory.md` / `ui-ux-llm-selector.md` / `legacy-ordinal-family-register.md` に Task 03 の root canonical path を反映
-  - `workflow-ai-runtime-execution-responsibility-realignment.md` / `task-workflow-completed.md` に Task 02 の completed root を反映
-  - parent workflow と downstream consumer の `Task02 index` / directory tree / artifact path を現行正本へ更新
-  - 旧 path の repo 残存を `rg` で監査し、`generate-index.js` による `topic-map.md` / `keywords.json` 再生成と mirror parity まで含めて same-wave sync の current facts を修復
 ## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 完了同期（2026-03-21）
 
 - タスク名: RuntimePolicyResolver capability bridge

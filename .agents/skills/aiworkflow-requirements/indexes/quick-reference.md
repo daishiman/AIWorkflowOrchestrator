@@ -39,17 +39,15 @@
 
 ---
 
-### Terminal Handoff Surface Realization 即時導線（2026-03-22）
+### RuntimePolicyResolver subscription 判定統合（2026-03-22）
 
 | 目的 | 最初に開くファイル |
 | --- | --- |
-| HandoffGuidance canonical / MB テーブル | `references/ui-ux-agent-execution-core.md` |
-| Consumer Adapter / toHandoffGuidance | `references/interfaces-agent-sdk-skill-reference-share-debug-analytics.md` |
-| buildForSurface 統一メソッド | `references/llm-workspace-chat-edit.md` |
-| 設計タスク教訓 | `references/lessons-learned-current.md` |
-| 完了記録 | `references/task-workflow-completed.md` |
-| 未タスク 8 件 | `references/task-workflow-backlog.md` |
-| workflow root | `docs/30-workflows/step-03-par-task-05-terminal-handoff-surface-realization/` |
+| 3パターン分岐ロジック | `references/arch-electron-services-details-part2.md` |
+| execution capability 契約 | `references/arch-execution-capability-contract.md` |
+| IPC 契約（resolveWithService） | `references/api-ipc-system-core.md` |
+| lessons learned | `references/lessons-learned-ipc-preload-runtime.md` |
+| workflow root | `docs/30-workflows/w1b-sc-runtime-policy-closure/` |
 
 ---
 
@@ -62,7 +60,6 @@
 | 認証方式状態       | `AuthModeStatus`              | interfaces-auth.md         |
 | スキル情報         | `Skill`, `SkillMetadata`      | interfaces-agent-sdk.md    |
 | 実行ステータス     | `SkillExecutionStatus`        | packages/shared/src/types/skill.ts |
-| Handoff 案内       | `HandoffGuidance`             | ui-ux-agent-execution-core.md |
 | チャットメッセージ | `ChatMessage`                 | interfaces-llm.md          |
 | 会話セッション     | `ChatSession`                 | interfaces-chat-history.md |
 | RAG検索結果        | `SearchResult`                | interfaces-rag-search.md   |

@@ -5,34 +5,32 @@
 
 ## 完了タスク
 
-### タスク: TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Terminal Handoff Surface Realization 設計（2026-03-22）
+### タスク: TASK-SC-02-RUNTIME-POLICY-CLOSURE RuntimePolicyResolver subscription 判定統合・3パターン分岐安定化（2026-03-22）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | design |
+| タスクID | TASK-SC-02-RUNTIME-POLICY-CLOSURE |
+| ステータス | **完了** |
+| タイプ | implementation |
 | 優先度 | 高 |
 | 完了日 | 2026-03-22 |
-| 対象 | Claude Code terminal surface / shared handoff UI 共通設計 |
-| 成果物 | `docs/30-workflows/step-03-par-task-05-terminal-handoff-surface-realization/` |
+| 対象 | RuntimePolicyResolver の subscription 判定統合・3パターン分岐安定化 |
 
 #### 実施内容
 
-- Concern 3 分割設計（Launcher / Handoff Card / Consumer Adapter）を確定
-- 統一 DTO `HandoffGuidance`（terminalCommand / contextSummary / reason）を定義
-- Manual Boundary（MB-1〜MB-4: auto-send / hidden injection / headless execution / credential passthrough 禁止）を確定
-- Consumer → DTO マッピング（5 consumer × 3 surfaceType）と `toHandoffGuidance()` adapter 仕様を設計
-- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
-- 未タスク 8 件（MINOR 3 件 + GAP 5 件）を検出・指示書化
+- RuntimePolicyResolver の subscription 判定統合・3パターン分岐安定化
 
-#### 発見元
+#### Phase 12 未タスク
 
-- ai-runtime-execution-responsibility-realignment pack Task 05（2026-03-19）
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-SC-02-001 | RuntimeSkillCreatorFacade の subscriptionAuthProvider DI 配線 | 中 | `docs/30-workflows/unassigned-task/UT-SC-02-001.md` |
+| UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
+| UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
+| UT-SC-02-004 | bundle 構築の二重責務 | 低 | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
 
 ---
 
-||||||| 77abcbc7f
 ### タスク: TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 Settings shell access matrix mainline design（2026-03-22）
 
 | 項目 | 値 |
@@ -250,8 +248,8 @@
 
 | 種別 | ID | 概要 | タスク仕様書 |
 | --- | --- | --- | --- |
-| completed | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 -- **実装済み（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）** | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
-| completed | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 -- **解消済み（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）** | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
+| pending | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
+| pending | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
 | completed | `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | `docs/30-workflows/completed-tasks/task-ut-slide-ui-001.md` |
 | resolved | `UT-SLIDE-P31-001` | `useSlideProject()` selector migration を current branch で吸収 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |
 
