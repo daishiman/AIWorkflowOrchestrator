@@ -1,18 +1,25 @@
 /**
+
  * RuntimePolicyResolver - runtime 実行経路を解決する
  *
- * TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001
+ * TASK-SC-02-RUNTIME-POLICY-CLOSURE
  *
  * authMode と apiKey を受け取り、実行経路（integrated_api / terminal_handoff）を決定する。
  * Skill / Agent / Skill Creator の全 surface が共通して参照する。
+ *
+ * 3パターン分岐:
+ * - パターンA: apiKey 有効 → integrated_api
+ * - パターンB: apiKey 無効 + subscription 無効 → terminal_handoff (no-auth)
+ * - パターンC: apiKey 無効 + subscription 有効 → terminal_handoff (subscription)
  */
 
-// AuthMode 型は packages/shared から import
-import type { AuthMode } from "@repo/shared/types/auth-mode";
+import type {
+  AuthMode,
+  ISubscriptionAuthProvider,
+} from "@repo/shared/types/auth-mode";
 import type { TerminalHandoffBundle } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 
-// RuntimeDecision 型
 export type RuntimeDecision =
   | {
       type: "integrated_api";
@@ -26,64 +33,82 @@ export type RuntimeDecision =
 
 export interface IRuntimePolicyResolver {
   resolve(authMode: AuthMode, apiKey: string | null): Promise<RuntimeDecision>;
+  resolveWithService(authMode: AuthMode): Promise<RuntimeDecision>;
 }
 
 export class RuntimePolicyResolver implements IRuntimePolicyResolver {
-  constructor(private readonly authKeyService?: IAuthKeyService) {}
+  constructor(
+    private readonly authKeyService?: IAuthKeyService,
+    private readonly subscriptionAuthProvider?: ISubscriptionAuthProvider,
+  ) {}
 
-  /**
-   * authMode と apiKey から RuntimeDecision を解決する。
-   *
-   * ルール:
-   * - authMode === "api-key" かつ apiKey が非空文字列 → integrated_api
-   * - authMode === "subscription" → terminal_handoff
-   * - authMode === "api-key" かつ apiKey が null/空  → terminal_handoff (fallback)
-   */
   async resolve(
-    authMode: AuthMode,
+    _authMode: AuthMode,
     apiKey: string | null,
   ): Promise<RuntimeDecision> {
-    // "api-key" モードかつ有効な apiKey があれば integrated_api
-    if (
-      authMode === "api-key" &&
-      typeof apiKey === "string" &&
-      apiKey.trim() !== ""
-    ) {
+    const trimmedKey = typeof apiKey === "string" ? apiKey.trim() : "";
+    if (trimmedKey !== "") {
       return {
         type: "integrated_api",
-        apiKey: apiKey.trim(),
+        apiKey: trimmedKey,
         permissionMode: "default",
       };
     }
 
-    // それ以外（subscription モード、または api-key だが apiKey が空）は terminal_handoff
-    const bundle = this.buildDefaultBundle();
-    return {
-      type: "terminal_handoff",
-      bundle,
-    };
+    const isSubscriptionValid = await this.checkSubscription();
+    const bundle = isSubscriptionValid
+      ? this.buildSubscriptionBundle()
+      : this.buildNoAuthBundle();
+    return { type: "terminal_handoff", bundle };
   }
 
-  /**
-   * authMode を自動解決するヘルパー（authKeyService が DI されている場合）
-   */
   async resolveWithService(authMode: AuthMode): Promise<RuntimeDecision> {
-    const apiKey = this.authKeyService
-      ? await this.authKeyService.getKey()
-      : null;
+    let apiKey: string | null = null;
+    try {
+      apiKey = this.authKeyService ? await this.authKeyService.getKey() : null;
+    } catch (error) {
+      console.warn(
+        "[RuntimePolicyResolver] AuthKeyService.getKey() failed, falling back to subscription check",
+        error instanceof Error ? error.message : "unknown error",
+      );
+    }
     return this.resolve(authMode, apiKey);
   }
 
-  private buildDefaultBundle(): TerminalHandoffBundle {
-    const cwd = process.cwd();
-    const suggestedCommand = `claude -p "（スキルのプロンプトを入力してください）"`;
+  private async checkSubscription(): Promise<boolean> {
+    if (!this.subscriptionAuthProvider) return false;
+    try {
+      return await this.subscriptionAuthProvider.validateToken();
+    } catch (error) {
+      console.warn(
+        "[RuntimePolicyResolver] subscription validation failed, falling back to no-auth",
+        error instanceof Error ? error.message : "unknown error",
+      );
+      return false;
+    }
+  }
+
+  private buildSubscriptionBundle(): TerminalHandoffBundle {
     return {
       launcher: "claude",
       promptBundle: "",
-      cwd,
-      suggestedCommand,
+      cwd: process.cwd(),
+      suggestedCommand: 'claude -p "（スキルのプロンプトを入力してください）"',
       manualRetryRule:
-        "以下のコマンドを terminal で実行してください。Claude Code が必要です。",
+        "Claude Code サブスクリプションが有効です。以下のコマンドをターミナルで実行してください。",
+      runbook:
+        "1. ターミナルを開く\n2. 以下のコマンドを実行\n3. Claude Code CLI がサブスクリプション認証で実行されます",
+    };
+  }
+
+  private buildNoAuthBundle(): TerminalHandoffBundle {
+    return {
+      launcher: "claude",
+      promptBundle: "",
+      cwd: process.cwd(),
+      suggestedCommand: 'claude -p "（スキルのプロンプトを入力してください）"',
+      manualRetryRule:
+        "認証情報が設定されていません。設定画面で API Key を設定するか、Claude Code CLI で /login を実行してください。",
     };
   }
 }
