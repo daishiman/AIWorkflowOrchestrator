@@ -60,7 +60,7 @@ export const selectorTriggerStyles = {
   default:
     "border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:bg-[var(--bg-tertiary)]",
   active:
-    "border border-[var(--accent)] bg-[var(--bg-secondary)] text-[var(--text-primary)]",
+    "border border-[var(--accent-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)]",
   disabled:
     "border border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-tertiary)] cursor-not-allowed opacity-60",
   normalSize: "px-3 py-1.5",
@@ -82,7 +82,7 @@ export const dropdownStyles = {
     "px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-[var(--text-tertiary)]",
   option:
     "flex w-full items-center gap-2 px-3 py-2 text-sm text-left transition-colors hover:bg-[var(--bg-tertiary)]",
-  optionSelected: "text-[var(--accent)] font-medium",
+  optionSelected: "text-[var(--accent-primary)] font-medium",
   optionDefault: "text-[var(--text-primary)]",
   emptyMessage: "px-3 py-2 text-sm text-[var(--text-tertiary)] italic",
 } as const;
