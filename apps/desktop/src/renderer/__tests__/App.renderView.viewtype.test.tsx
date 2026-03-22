@@ -49,6 +49,19 @@ vi.mock("@/renderer/store", () => ({
   ),
   useCurrentView: vi.fn(() => mockCurrentView),
   useResponsiveMode: vi.fn(() => "desktop"),
+  useIsAuthenticated: vi.fn(() => false),
+  useValidateAuthMode: vi.fn(() => vi.fn()),
+  useFetchProviders: vi.fn(() => vi.fn()),
+  useSelectedProviderId: vi.fn(() => null),
+  useSelectedLLMProvider: vi.fn(() => null),
+  useSelectedLLMModel: vi.fn(() => null),
+  useLLMHealthStatus: vi.fn(() => null),
+  useCheckLLMHealth: vi.fn(() => vi.fn()),
+  useDynamicIsland: vi.fn(() => ({
+    status: "idle",
+    message: "",
+    visible: false,
+  })),
 }));
 
 vi.mock("@/renderer/hooks/useThemeInitializer", () => ({
@@ -57,6 +70,26 @@ vi.mock("@/renderer/hooks/useThemeInitializer", () => ({
 
 vi.mock("@/renderer/hooks/useNavShortcuts", () => ({
   useNavShortcuts: vi.fn(),
+}));
+
+vi.mock("@/renderer/hooks/useMainlineExecutionAccess", () => ({
+  useMainlineExecutionAccess: vi.fn(() => ({
+    access: {
+      capability: "none",
+      uiState: "unavailable",
+      ctaContract: {
+        primary: null,
+        secondary: { label: "セットアップガイド", action: "openSetupGuide" },
+      },
+      health: null,
+      selectedProvider: undefined,
+      selectedModel: undefined,
+      isAuthenticated: false,
+      launcherDisabled: true,
+      launcherDisabledReason: "認証が必要です",
+    },
+    refreshHealth: vi.fn(),
+  })),
 }));
 
 vi.mock("react-router-dom", () => ({
