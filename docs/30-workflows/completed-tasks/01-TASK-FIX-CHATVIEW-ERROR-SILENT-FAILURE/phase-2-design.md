@@ -195,9 +195,9 @@ validation path は以下で固定する。
 
 ### 前Phase成果物
 
-| 成果物         | パス                                                                                  |
-| -------------- | ------------------------------------------------------------------------------------- |
-| Phase 1 仕様書 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md` |
+| 成果物         | パス                                                                                                  |
+| -------------- | ----------------------------------------------------------------------------------------------------- |
+| Phase 1 仕様書 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md` |
 
 ## 実行手順
 
@@ -234,9 +234,9 @@ grep -n "^export const use" apps/desktop/src/renderer/store/index.ts
 
 ## 成果物
 
-| 成果物                       | パス                                                                            |
-| ---------------------------- | ------------------------------------------------------------------------------- |
-| Phase 2 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md` |
+| 成果物                       | パス                                                                                            |
+| ---------------------------- | ----------------------------------------------------------------------------------------------- |
+| Phase 2 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md` |
 
 ## 完了条件
 

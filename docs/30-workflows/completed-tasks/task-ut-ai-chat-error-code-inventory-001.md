@@ -135,8 +135,8 @@ ai.chat のエラーコード一覧を整理し、表示文言・発生条件・
 
 ## 8. 参照情報
 
-- `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-12-documentation.md`
-- `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/unassigned-task-detection.md`
+- `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-12-documentation.md`
+- `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-12/unassigned-task-detection.md`
 - `.claude/skills/aiworkflow-requirements/references/workflow-ai-chat-llm-integration-fix.md`
 - `.claude/skills/aiworkflow-requirements/references/llm-ipc-types.md`
 

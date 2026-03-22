@@ -336,6 +336,7 @@
 
 | 日付       | バージョン | 変更内容                                               |
 | ---------- | ---------- | ------------------------------------------------------ |
+| 2026-03-21 | 1.43.5     | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補: `planSkill` / `executePlan` / `improveSkillWithFeedback` の renderer surface に対して `SkillCreatorPlanRequest` / `SkillCreatorExecutePlanRequest` / `SkillCreatorImproveSkillRequest` と `RuntimeSkillCreator*Response` の型アンカーを追加し、`packages/shared/src/types/skillCreator.ts` を canonical source として明記 |
 | 2026-03-05 | 1.43.4     | SkillService/SkillExecutor DIフロー表を実装に同期。`new SkillExecutor(mainWindow, undefined, authKeyService)` へ更新し、AuthKeyService注入経路を明示 |
 | 2026-03-04 | 1.43.3     | TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001 反映: `skill:execute` 失敗契約を `{ success:false, error, errorCode? }` に拡張し、`AUTHENTICATION_ERROR` 伝搬と Renderer preflight（`auth-key:exists`）の境界を追加。完了タスク記録と苦戦箇所・再利用手順を追記 |
 | 2026-03-03 | 1.43.2     | UT-UI-05A-GETFILETREE-001 完了同期: SkillFileManager API に `getFileTree(skillName): Promise<SkillFileTreeNode[]>` を追加し、`SkillFileTreeNode` 型を定義。TASK-9A-B 完了記録を基盤6ch表記へ整理し、`skill:getFileTree` 追加タスクの完了記録を追記 |
@@ -401,4 +402,3 @@
 | 2026-01-28 | 1.2.0      | TASK-6-1完了: SkillSlice型定義セクション追加                                                              |
 | 2026-01-26 | 1.1.0      | コードブロックを表形式・文章に変換（ガイドライン準拠）                                                    |
 | 2026-01-26 | 1.0.0      | interfaces-agent-sdk.mdから分割                                                                           |
-

@@ -1,0 +1,48 @@
+{
+  "generatedAt": "2026-03-21T23:52:53.046Z",
+  "baseUrl": "http://127.0.0.1:4189",
+  "harnessPath": "/?phase11Harness=workspace-layout&skipAuth=true",
+  "captureMethod": "current-renderer-entry + workspace-layout-harness + seeded-llm-selection",
+  "records": [
+    {
+      "tc": "TC-11-01",
+      "file": "TC-11-01-settings-cta-light.png",
+      "description": "Settings CTA が表示される API_KEY_MISSING のストリーミングエラーを確認する。",
+      "theme": "light",
+      "errorCode": "API_KEY_MISSING",
+      "capturedAt": "2026-03-21T23:52:50.785Z"
+    },
+    {
+      "tc": "TC-11-02",
+      "file": "TC-11-02-retry-cta-light.png",
+      "description": "再試行 CTA が表示される NETWORK_ERROR のストリーミングエラーを確認する。",
+      "theme": "light",
+      "errorCode": "NETWORK_ERROR",
+      "capturedAt": "2026-03-21T23:52:51.350Z"
+    },
+    {
+      "tc": "TC-11-03",
+      "file": "TC-11-03-rate-limit-hint-dark.png",
+      "description": "RATE_LIMIT で retry CTA と hint が同時に出ることを確認する。",
+      "theme": "dark",
+      "errorCode": "RATE_LIMIT",
+      "capturedAt": "2026-03-21T23:52:51.885Z"
+    },
+    {
+      "tc": "TC-11-04",
+      "file": "TC-11-04-dismissed-error-light.png",
+      "description": "dismiss 操作でエラーが閉じられ、入力面が回復することを確認する。",
+      "theme": "light",
+      "errorCode": "NETWORK_ERROR",
+      "capturedAt": "2026-03-21T23:52:52.474Z"
+    },
+    {
+      "tc": "TC-11-05",
+      "file": "TC-11-05-validation-error-no-actions-dark.png",
+      "description": "VALIDATION_ERROR で action なしの非操作エラー表示を確認する。",
+      "theme": "dark",
+      "errorCode": "VALIDATION_ERROR",
+      "capturedAt": "2026-03-21T23:52:53.043Z"
+    }
+  ]
+}

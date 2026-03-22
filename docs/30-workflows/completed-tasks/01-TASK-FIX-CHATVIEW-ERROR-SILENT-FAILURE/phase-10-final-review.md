@@ -84,14 +84,14 @@ Phase 2 の設計と実装を照合する:
 
 ## 参照資料
 
-| 資料名           | パス                                                                                       |
-| ---------------- | ------------------------------------------------------------------------------------------ |
-| Phase 1 要件定義 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md`      |
-| Phase 2 設計書   | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`            |
-| Phase 5 実装     | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md`    |
-| Phase 9 品質検証 | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-9-quality-assurance.md` |
-| タスク実行ルール | `.claude/rules/05-task-execution.md`                                                       |
-| 既知の落とし穴   | `.claude/rules/06-known-pitfalls.md`                                                       |
+| 資料名           | パス                                                                                                       |
+| ---------------- | ---------------------------------------------------------------------------------------------------------- |
+| Phase 1 要件定義 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-1-requirements.md`      |
+| Phase 2 設計書   | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-2-design.md`            |
+| Phase 5 実装     | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-5-implementation.md`    |
+| Phase 9 品質検証 | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-9-quality-assurance.md` |
+| タスク実行ルール | `.claude/rules/05-task-execution.md`                                                                       |
+| 既知の落とし穴   | `.claude/rules/06-known-pitfalls.md`                                                                       |
 
 ## 実行手順
 
@@ -118,9 +118,9 @@ MINOR 指摘がある場合は `docs/30-workflows/unassigned-task/` に独立し
 
 ## 成果物
 
-| 成果物                        | パス                                                                                   |
-| ----------------------------- | -------------------------------------------------------------------------------------- |
-| Phase 10 仕様書（本ファイル） | `docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-10-final-review.md` |
+| 成果物                        | パス                                                                                                   |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Phase 10 仕様書（本ファイル） | `docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/phase-10-final-review.md` |
 
 ## 完了条件
 

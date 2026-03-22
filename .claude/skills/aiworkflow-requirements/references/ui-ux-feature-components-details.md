@@ -84,7 +84,8 @@
 | `WorkspaceChatPanel` | organism | `WorkspaceView` | zero state / log / chips / input の統合 |
 | `WorkspaceChatMessageList` | molecule | `WorkspaceChatPanel` | user/assistant/streaming 表示 |
 | `WorkspaceFileContextChips` | molecule | `WorkspaceChatPanel` | 添付背景情報の表示・削除 |
-| `WorkspaceChatInput` | molecule | `WorkspaceChatPanel` | 送信・mention・cancel・error 表示 |
+| `WorkspaceChatInput` | molecule | `WorkspaceChatPanel` | 送信・mention・cancel・legacy error fallback 表示 |
+| `StreamingErrorDisplay` | molecule | `WorkspaceChatPanel` | structured streaming error の primary 表示 |
 | `WorkspaceMentionDropdown` | molecule | `WorkspaceChatInput` | `@mention` 候補表示と選択 |
 | `WorkspaceSuggestionBubbles` | molecule | `WorkspaceChatPanel` | 初回提案バブル |
 | `useWorkspaceChatController` | hook | `WorkspaceView` | stream / conversation / mention / attach の制御 |
@@ -97,6 +98,7 @@
 | file context | 選択中ファイルを背景情報へ追加し、最大3件をチップ表示する |
 | mention | `@` 入力でファイル候補を表示し、keyboard（Arrow/Enter/Tab）で選択できる |
 | stream | chunk/end/error/cancel を UI 状態へ反映する |
+| stream error | `StreamingErrorDisplay` が `streamingError` を primary surface として扱い、`errorMessage` は inline fallback としてのみ使う |
 | persistence | user/assistant を `conversationAPI.addMessage` で保存する |
 | a11y | `role="log"` + `aria-live="polite"` と `role="alert"` を維持する |
 
@@ -109,6 +111,14 @@
 | 型検証 | `pnpm exec tsc --noEmit` PASS |
 | 画面証跡 | Phase 11 screenshot 8件（zero/mention/stream/error/compact/keyboard） |
 | 視覚レビュー | Apple UI/UX 観点で light/dark 階層・compact 幅を確認 |
+
+### 完了タスク記録（TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR）
+
+| 項目 | 内容 |
+| --- | --- |
+| 完了日 | 2026-03-22 |
+| 対象 | `WorkspaceChatPanel` / `StreamingErrorDisplay` / `useWorkspaceChatController` |
+| 要点 | `streamingError` を primary にし、`errorMessage` は legacy fallback に分離。`Settings` / `Retry` / dismiss の3導線を統合した |
 
 ### 関連タスク
 

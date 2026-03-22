@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-22 - TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了同期（streamingError primary / legacy fallback 分離 / Task03 completed root 移管 / same-wave index 再生成） |
 | 2026-03-21 - chat-inline-model-selector ワークフロー仕様書作成（TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT / TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION / TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 3タスク Phase 1-13 仕様書 34ファイル） |
 | 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE follow-up formalize（UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001 / UT-FIX-LLM-BANNER-DISMISS-001） |
 | 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査完了（Task02 root 正本化 / screenshot 4件 / system spec same-wave sync） |
@@ -13,6 +14,10 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（implementation_ready 正規化 / code gap formalize / backlog 4件同期） |
 | 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 spec-only Phase 1-12 完了（設計タスク: RuntimePolicy/HealthContract/HandoffContract 中央集約設計、DD-1〜DD-6確定、M-1/M-2処置完了、Task03-09は未着手、未タスク3件を backlog / workflow / lessons へ同期） |
 | 2026-03-21 - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（Task02 root / Task01 completed root / downstream consumer path 同期） |
+| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（resource-map runtime IPC 導線追加 / P65 dead-end namespace pitfall 追加 / SKILL.md trigger 拡張 / mirror sync） |
+| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（Skill Creator runtime public IPC 3チャネル / shared contract / graceful degradation / Phase 12 final sync） |
+| 2026-03-21 - UT-SLIDE-UI-001 完了同期（Slide Workspace 4領域 UI 実装 / Phase 11 screenshot 10枚 / task09 canonical same-wave 更新） |
+| 2026-03-21 - UT-TASK06-007-EXT-006: check-ipc-contracts テスト拡充（20件追加、カバレッジ95.79%、5関数/パターン export追加） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE follow-up issue sync（UT-CHATVIEW-ERROR-BANNER-I18N-001=#1398 / UT-CHATVIEW-ERROR-CODE-INVENTORY-001=#1397） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE Phase12 same-wave 追補（artifact inventory / legacy register / unassigned 9セクション是正 / validate-structure） |
 | 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（root canonical path 是正 / screenshot 5件 / unassigned 2件 formalize / system spec 同期） |
@@ -59,36 +64,59 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
+## TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了同期（2026-03-22）
+
+- タスク名: WorkspaceChat ストリーミングエラーUX改善
+- 種別: documentation / spec-sync
+- 主な反映:
+  - `workflow-ai-chat-llm-integration-fix.md` の Task 03 / Task 04 状態を `completed` へ同期
+  - `workflow-ai-chat-llm-integration-fix-artifact-inventory.md` で canonical root / completed status / Task03 移管を固定
+  - `llm-streaming.md` / `ui-ux-feature-components-details.md` / `arch-state-management-core.md` で `streamingError` primary contract を追加
+  - `task-workflow-completed-chat-lifecycle-tests.md` / `task-workflow.md` / `lessons-learned-current.md` / `lessons-learned-ipc-preload-runtime.md` を same-wave 更新
+  - `task-specification-creator` の index 再生成と Task 04 output 台帳の整合を回復
+  - `validate-phase12-implementation-guide` を 10/10 PASS へ回復
+
 ## TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 完了同期（2026-03-21）
+## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（2026-03-21）
 
-- タスク名: RuntimePolicyResolver capability bridge
-- 種別: implementation / Phase 12 final sync
+- タスク名: Runtime Skill Creator public IPC wiring
+- 種別: IPC 実装 + Phase 12 最終同期
 - 主な反映:
-  - `RuntimeSkillCreatorFacade.execute()` が `terminalSurface` で handoff bundle を返し、`SkillExecutor` を呼ばないよう是正
-  - `creatorHandlers.ts` に `ExecutionCapabilityInput` 正規化を導入し、`creatorHandlers.test.ts` を追加
-  - `task-workflow-completed.md` へ implementation completed record を追加し、backlog へ follow-up 2件を formalize
-  - `manual-test-result.md` の `not_run` を `NON_VISUAL_FALLBACK` 証跡へ置換し、artifact parity と internal/public contract 境界を教訓化
+  - `api-ipc-agent-core.md` / `api-ipc-agent-history.md` / `api-ipc-system-core.md` / `security-electron-ipc-details.md` / `architecture-implementation-patterns-details.md` / `architecture-overview-core.md` / `architecture-overview-history.md` / `interfaces-agent-sdk-skill-reference.md` / `interfaces-agent-sdk-skill-history-contract-fix-changelog.md` に `skill-creator:plan` / `execute-plan` / `improve-skill` の public 契約、architecture drift 是正、型アンカーを同期
+  - `task-workflow-completed-ipc-contract-preload-alignment.md` / `lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` に完了記録・苦戦箇所・4ステップ解決手順を追加
+  - `indexes/quick-reference.md` / `indexes/topic-map.md` / `indexes/keywords.json` を再生成し、current canonical set を再同期
+  - workflow `outputs/phase-12` の planned wording を実績記録へ置換し、`outputs/artifacts.json` と `phase12-task-spec-compliance-check.md` を追加
+  - `LOGS.md` 競合マーカーを解消し、`.claude` 正本更新後に `.agents` mirror parity を再確認した
 
-## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査（2026-03-21）
+## UT-SLIDE-UI-001 完了同期（2026-03-21）
 
-- タスク名: runtime policy centralization final re-audit
-- 種別: Phase 12 final sync / implementation gap formalize
+- タスク名: Slide Workspace UI 4領域実装
+- 種別: UI実装 + Phase 11/12 same-wave sync
 - 主な反映:
-  - Task02 workflow root を `implementation_ready`、completed ledger を `spec_created` として再定義
-  - `outputs/phase-12/skill-feedback-report.md` を追加し、Phase 12 必須 6成果物を充足
-  - `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` を新規 formalize し、backlog を 4件へ更新
-  - current code の runtime policy consumer / AI health route / facade execute path / shared transport / tests の gap を system spec へ同期
-  - worktree でも `.claude` 正本更新を先送りしないルールを task-specification-creator 側へ反映
+  - `SlideWorkspace.tsx` に guidance/degraded/running/synced 4領域 UI を接続し、settings 導線と `manualSync` retry を有効化
+  - `SlideGuidanceBlock.tsx` / `SlideProgressRow.tsx` / `TerminalLauncher.tsx` / close button に focus ring を追加
+  - `SlideSyncCard.tsx` の synced badge を黒文字へ変更し、コントラストを改善
+  - `apps/desktop/scripts/capture-ut-slide-ui-001-phase11.mjs` で current workflow 配下へ 10枚の screenshot を再生成
+  - `ui-ux-feature-components-details.md` / `api-ipc-system-core.md` / `task-workflow-completed.md` / `workflow-ai-runtime-authmode-unification.md` / `arch-state-management-advanced.md` を current branch へ同期
+  - `UT-SLIDE-UI-CLOSE-ERROR-001` / `UT-SLIDE-UI-HIG-LEGACY-001` を pending、`UT-SLIDE-P31-001` / `UT-SLIDE-UI-ACCESSIBILITY-001` を解消済みへ更新
 
-## TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化（2026-03-21）
+## UT-TASK06-007-EXT-006 完了（2026-03-21）
 
-- タスク名: runtime policy centralization standalone root normalization
-- 種別: docs-only / canonical path sync
+- タスク名: check-ipc-contracts テスト拡充（5関数/パターン export追加 + 20件追加）
+- 種別: テスト拡充タスク
+- ワークフロー: `docs/30-workflows/UT-TASK06-007-EXT-006-new-function-test-expansion/`
 - 主な反映:
-  - `workflow-ai-runtime-execution-responsibility-realignment.md` の current canonical set に Task02 standalone root を追加し、Task01 completed root と同列に扱うよう是正
-  - parent workflow と Task03-09 downstream consumer が参照する Task02 index を `docs/30-workflows/step-02-seq-task-02-runtime-policy-centralization/index.md` へ正規化
-  - `outputs/verification-report.md` を再生成し、stale nested path のまま PASS が残る状態を解消
-
+  - `check-ipc-contracts.ts`: `normalizeTypeAnnotation` / `isPrimitiveTypeAnnotation` / `mergeChannelMaps` / `CHANNEL_OBJECT_PATTERN` / `PRELOAD_CALL_START_PATTERN` に `export` キーワードを追加
+  - テスト20件追加（T-N-01〜05 / T-P-01〜06 / T-M-01〜04 / T-R-01〜05）
+  - 既存49件と合わせ69件全PASS、Line 95.79% / Branch 91.55% / Function 100%
+  - `mergeChannelMaps` テストは `mkdtempSync` 実ファイル方式で ESM `vi.mock` 制約を回避
+  - `CHANNEL_OBJECT_PATTERN` テストは `new RegExp(source, "gm")` で lastIndex 汚染を防止
+  - `architecture-implementation-patterns-reference-ipc-drift-detection.md` の関連タスクテーブルに EXT-006 完了記録を追加
+  - `task-workflow-completed-ipc-contract-preload-alignment.md` に追補セクションを追加
+  - `lessons-learned-ipc-preload-runtime.md` に教訓4（lastIndex 汚染）を追加（v1.6.0）
+- 苦戦箇所:
+  - ESM 制約: `vi.mock("fs")` を describe 内に置くと実 ESM モジュールへ適用されず → 実ファイル方式に切替
+  - lastIndex 残留: モジュールスコープ `/gm` フラグ付き RegExp はテスト間で state が汚染される → 新インスタンス生成で解消
 ## TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査完了（2026-03-20）
 
 - タスク名: ChatView エラーサイレント握りつぶし修正

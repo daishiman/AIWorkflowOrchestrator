@@ -163,11 +163,18 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 | 状態 | 所有者 | 理由 |
 | --- | --- | --- |
-| messages / input / streamContent / error | `useWorkspaceChatController` | chat固有の一時状態で view 内に閉じる |
+| messages / input / streamContent / errorMessage / streamingError | `useWorkspaceChatController` | chat固有の一時状態で view 内に閉じる。structured error は `StreamingErrorDisplay`、raw fallback は `WorkspaceChatInput` で扱う |
 | selected context files | `fileSelectionSlice` | 04A/04B で共有される背景情報 |
 | selected workspace file | `workspaceSlice` | file browser / preview / chat attach で共通利用 |
 | selected provider/model | `llmSlice`（selector） | 既存 LLM 設定を再利用 |
 | conversationId | `useWorkspaceChatController` | workspace chat session の局所管理 |
+
+### Workspace Chat streaming error contract（TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR）
+
+- `streamingError` は Workspace Chat の primary structured error state として `useWorkspaceChatController` が所有する
+- `errorMessage` は raw message の fallback であり、`streamingError` が存在する間は重複表示しない
+- `dismissStreamingError()` は `streamingError` と `errorMessage` を同時に clear する
+- `retryLastMessage()` は `streamingError.retryable` と `lastUserMessageRef` の両方が揃う場合のみ再送する
 
 ### フロー契約
 
@@ -398,7 +405,7 @@ ChatPanel を placeholder から real AI chat 経路へ接続するため、既�
 | `currentConversationId` | `string \| null` | chatSlice | 現在の会話ID |
 | `streamingContent` | `string` | chatSlice | 既存維持 |
 | `isStreaming` | `boolean` | chatSlice | 既存維持 |
-| `streamingError` | `{ code: string; message: string; retryable: boolean } \| null` | chatSlice | 既存維持 |
+| `streamingError` | `StreamingErrorState \| null` | `useWorkspaceChatController` | Workspace Chat の structured error state。`StreamingErrorDisplay` へ渡す |
 
 ### 型定義
 

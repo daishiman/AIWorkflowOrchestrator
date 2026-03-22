@@ -144,8 +144,8 @@ spec_path: docs/30-workflows/unassigned-task/task-ut-llm-guidance-banner-dismiss
 
 ## 8. 参照情報
 
-- `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/component-documentation.md`
-- `docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/unassigned-task-detection.md`
+- `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/component-documentation.md`
+- `docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE/outputs/phase-12/unassigned-task-detection.md`
 - `.claude/skills/aiworkflow-requirements/references/ui-ux-llm-selector.md`
 - `.claude/skills/aiworkflow-requirements/references/error-handling.md`
 

@@ -1,7 +1,7 @@
 {
   "capturedAt": "2026-03-20T05:20:05.359Z",
-  "workflowDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260320-113457-wt-3/docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE",
-  "screenshotDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260320-113457-wt-3/docs/30-workflows/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshots",
+  "workflowDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260320-113457-wt-3/docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE",
+  "screenshotDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260320-113457-wt-3/docs/30-workflows/completed-tasks/01-TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE/outputs/phase-11/screenshots",
   "baseUrl": "http://127.0.0.1:4173/?skipAuth=true",
   "files": [
     "TC-11-01-default-light.png",

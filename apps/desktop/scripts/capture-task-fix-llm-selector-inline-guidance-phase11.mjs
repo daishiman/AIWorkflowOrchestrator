@@ -14,7 +14,7 @@ const desktopRoot = path.join(repoRoot, "apps/desktop");
 const rendererRoot = path.join(desktopRoot, "out/renderer");
 const workflowRoot = path.join(
   repoRoot,
-  "docs/30-workflows/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE",
+  "docs/30-workflows/completed-tasks/02-TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE",
 );
 const phase11Root = path.join(workflowRoot, "outputs/phase-11");
 const screenshotDir = path.join(phase11Root, "screenshots");

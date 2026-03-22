@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-03-21T10:10:04.762Z",
+  "captureMethod": "fallback-static-review-board",
+  "blocker": "primary electron-vite build blocked by esbuild architecture mismatch (@esbuild/darwin-arm64 with node x64)",
+  "sourceFiles": [
+    "apps/desktop/src/renderer/phase11-llm-config-persistence.html",
+    "apps/desktop/src/renderer/phase11-llm-config-persistence.tsx",
+    "apps/desktop/scripts/capture-task-fix-llm-config-persistence-phase11.mjs"
+  ],
+  "reviewBoard": "docs/30-workflows/03-TASK-FIX-LLM-CONFIG-PERSISTENCE/outputs/phase-11/review-board.html",
+  "screenshots": [
+    {
+      "testId": "TC-11-01",
+      "fileName": "TC-11-01-persist-v2-valid-selection.png",
+      "capturedAt": "2026-03-21T10:10:04.508Z",
+      "size": 142196
+    },
+    {
+      "testId": "TC-11-02",
+      "fileName": "TC-11-02-invalid-provider-cleared.png",
+      "capturedAt": "2026-03-21T10:10:04.602Z",
+      "size": 139945
+    },
+    {
+      "testId": "TC-11-03",
+      "fileName": "TC-11-03-legacy-v1-normalized-to-v2.png",
+      "capturedAt": "2026-03-21T10:10:04.687Z",
+      "size": 106382
+    },
+    {
+      "testId": "TC-11-04",
+      "fileName": "TC-11-04-reload-retains-selected-config.png",
+      "capturedAt": "2026-03-21T10:10:04.762Z",
+      "size": 119763
+    }
+  ]
+}
