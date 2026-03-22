@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-22T09:52:22.849Z",
+  "generated": "2026-03-22T10:51:43.317Z",
   "totalKeywords": 2434,
   "keywords": {
     "チャット履歴": [
@@ -2450,6 +2450,7 @@
     "SLIDE": [
       "arch-electron-services-details-part2.md",
       "interfaces-agent-sdk-skill-advanced.md",
+      "lessons-learned-current.md",
       "ui-ux-feature-components-details.md"
     ],
     "ALIGNMENT": [
@@ -2457,6 +2458,7 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",

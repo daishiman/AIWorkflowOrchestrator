@@ -115,12 +115,12 @@ function installMocks(selectedScenario: HarnessScenario): void {
   } as unknown as typeof window.electronAPI;
 
   globalWindow.slideApi = {
-    startWatching: async (_projectPath: string) => ({ success: true }),
-    getSyncStatus: async () => ({
+    watchStart: async (_projectPath: string) => ({ success: true }),
+    syncStatus: async () => ({
       success: true,
       data: currentStatus,
     }),
-    stopWatching: async () => ({ success: true }),
+    watchStop: async () => ({ success: true }),
     executePhase: async (phase: SkillPhase, projectPath: string) => {
       if (selectedScenario !== "running") {
         return {
@@ -157,7 +157,7 @@ function installMocks(selectedScenario: HarnessScenario): void {
         },
       };
     },
-    manualSync: async (_projectPath: string) => {
+    reverseSync: async (_projectPath: string) => {
       if (selectedScenario === "sync-error") {
         return {
           success: false,
@@ -172,7 +172,7 @@ function installMocks(selectedScenario: HarnessScenario): void {
       emitSyncStatus("synced");
       return { success: true };
     },
-    cancelExecution: async () => {
+    cancel: async () => {
       emitProgress(0);
       emitSyncStatus("error");
       return { success: true };
@@ -181,7 +181,7 @@ function installMocks(selectedScenario: HarnessScenario): void {
       listeners.structure.add(listener);
       return () => listeners.structure.delete(listener);
     },
-    onSyncStatusChange: (listener: SyncStatusListener) => {
+    onSyncStatusChanged: (listener: SyncStatusListener) => {
       listeners.syncStatus.add(listener);
       return () => listeners.syncStatus.delete(listener);
     },
@@ -189,6 +189,9 @@ function installMocks(selectedScenario: HarnessScenario): void {
       listeners.progress.add(listener);
       return () => listeners.progress.delete(listener);
     },
+    onSyncProgress: () => () => {},
+    onSyncError: () => () => {},
+    onWatchStatus: () => () => {},
   } as unknown as typeof window.slideApi;
 }
 

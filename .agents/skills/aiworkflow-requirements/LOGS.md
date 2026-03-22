@@ -6,14 +6,13 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-22 - TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了（D1-D6 drift 6件解消 / 12チャネル canonical 統一 / validateIpcSender + P42 3段バリデーション + path guard 全ハンドラ適用 / RuntimeResolver integrated/handoff 分岐 / modifier-skill.ts 統合 / slideSlice 7 store fields 追加 / HandoffGuidance 型共有） |
 | 2026-03-22 - TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（Terminal Handoff Surface Realization 設計 / Concern 3分割 / HandoffGuidance 統一DTO / Manual Boundary 確定 / 未タスク8件検出） |
-| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（resource-map runtime IPC 導線追加 / P65 dead-end namespace pitfall 追加 / SKILL.md trigger 拡張 / mirror sync） |
-| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（Skill Creator runtime public IPC 3チャネル / shared contract / graceful degradation / Phase 12 final sync） |
-||||||| 77abcbc7f
-| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（resource-map runtime IPC 導線追加 / P65 dead-end namespace pitfall 追加 / SKILL.md trigger 拡張 / mirror sync） |
-| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（Skill Creator runtime public IPC 3チャネル / shared contract / graceful degradation / Phase 12 final sync） |
+| 2026-03-22 - TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了同期（streamingError primary / legacy fallback 分離 / Task03 completed root 移管 / same-wave index 再生成） |
 | 2026-03-22 - TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（standalone root / spec_created ledger / backlog 4件 / lessons 4件 / mirror parity） |
 | 2026-03-22 - TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（shared selector contract sync / backlog cleanup / completed ledger 追加 / Phase 12 guide drift 修正） |
+| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（resource-map runtime IPC 導線追加 / P65 dead-end namespace pitfall 追加 / SKILL.md trigger 拡張 / mirror sync） |
+| 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（Skill Creator runtime public IPC 3チャネル / shared contract / graceful degradation / Phase 12 final sync） |
 | 2026-03-21 - TASK-FIX-LLM-CONFIG-PERSISTENCE Phase12 再監査完了（Phase11 harness 導線、family inventory、completed shard、lessons、mirror parity を同ターン同期） |
 | 2026-03-21 | TASK-FIX-LLM-CONFIG-PERSISTENCE | LLM選択状態（selectedProviderId/selectedModelId）の永続化修正。persist partialize拡張、v0→v2 migrate、起動時バリデーション、P62対策を実装 |
 | 2026-03-21 - Task03 root canonicalization / Task02 completed relocation sync（legacy register / generate-index / mirror parity を含む same-wave 更新） |
