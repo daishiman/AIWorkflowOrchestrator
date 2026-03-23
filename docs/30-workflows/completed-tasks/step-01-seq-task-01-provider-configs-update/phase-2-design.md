@@ -272,17 +272,17 @@ function inferProviderId(modelId: string): LLMProviderId | null {
 
 ## 参照資料
 
-| 資料名           | パス                                                                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Phase 1 要件定義 | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/phase-1-requirements.md` |
-| 現行実装         | `apps/desktop/src/main/handlers/llm.ts`                                                                                        |
-| 共有型定義       | `packages/shared/src/types/llm/schemas.ts`                                                                                     |
+| 資料名           | パス                                                                                    |
+| ---------------- | --------------------------------------------------------------------------------------- |
+| Phase 1 要件定義 | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/phase-1-requirements.md` |
+| 現行実装         | `apps/desktop/src/main/handlers/llm.ts`                                                 |
+| 共有型定義       | `packages/shared/src/types/llm/schemas.ts`                                              |
 
 ## 成果物
 
-| 成果物               | パス                                                                                                                             | 形式     |
-| -------------------- | -------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| 設計書（本ファイル） | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/outputs/phase-2/design.md` | Markdown |
+| 成果物               | パス                                                                                      | 形式     |
+| -------------------- | ----------------------------------------------------------------------------------------- | -------- |
+| 設計書（本ファイル） | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-2/design.md` | Markdown |
 
 ## 完了条件
 
@@ -295,6 +295,32 @@ function inferProviderId(modelId: string): LLMProviderId | null {
 ## 統合テスト連携
 
 Phase 2 では統合テストは実施しない。Phase 4 でテストを設計する際に、本 Phase のデータ設計（Task 2-2）をテストの期待値として使用する。
+
+## 多角的チェック観点（AIが判断）
+
+| 観点           | 適用判断                       | 仕様参照先                                   |
+| -------------- | ------------------------------ | -------------------------------------------- |
+| アーキテクチャ | Main Process のデータ定義変更  | `aiworkflow-requirements: architecture-*.md` |
+| API設計        | IPC レスポンス形式への影響確認 | `aiworkflow-requirements: api-*.md`          |
+
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 統合テスト連携の実施
+4. 成果物の作成・配置
+5. 完了条件の検証
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次の Phase
 

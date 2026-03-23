@@ -6,6 +6,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-23 - TASK-LLM-MOD-01 完了（PROVIDER_CONFIGS モデル定義更新 / OpenAI 6モデル・Anthropic 3モデル・Google 3モデル・xAI 3モデル最新化 / description フィールド追加 / inferProviderId o3/o4 対応 / 38テスト追加全PASS / 未タスク3件: UT-LLM-MOD-01-001〜003） |
+| 2026-03-23 - TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（WorkspaceChatPanel header に InlineModelSelector compact 配置 / disabled={controller.isStreaming} 連動 / GuidanceBlock(blocked) 自動連携 / 11テスト追加 146全PASS / ui-ux-llm-selector.md + task-workflow 更新） |
+| 2026-03-23 - TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION 実装完了（ChatView header に InlineModelSelector compact 配置 / disabled={isSending} 連動 / LLMGuidanceBanner 自動連携 / 8テスト追加 62全PASS / ui-ux-llm-selector.md + ui-ux-navigation.md 更新） |
 | 2026-03-23 - UT-CONV-DB-001 完了（better-sqlite3 75件テスト SKIP 修正 / rebuild:native スクリプト追加 / P66 CPU アーキテクチャ不一致パターン記録） |
 | 2026-03-23 - TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 設計フェーズ完了（SlideUIStatus 4状態 / 2 lane 分離 / UI 4領域 / cleanup 順序9ステップ / 未タスク5件検出） |
 | 2026-03-22 - TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計フェーズ完了（TranscriptProvenance 型定義 / 3操作フロー / provenance chip / 未タスク2件検出） |

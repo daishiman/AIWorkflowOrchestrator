@@ -47,21 +47,24 @@ describe("PROVIDER_CONFIGS - モデル定義更新検証（TASK-LLM-MOD-01）", 
   });
 
   describe("T-01: OpenAI モデル定義", () => {
-    it("should include gpt-4.1 as default model", async () => {
+    it("should include gpt-5.4 as default model", async () => {
       const providers = await handleGetProviders();
       const openai = providers.find((p) => p.id === "openai");
       expect(openai).toBeDefined();
-      const defaultModel = openai!.models.find((m) => m.isDefault);
-      expect(defaultModel?.id).toBe("gpt-4.1");
+      const defaultModel = openai?.models.find((m) => m.isDefault);
+      expect(defaultModel).toBeDefined();
+      expect(defaultModel?.id).toBe("gpt-5.4");
     });
 
-    it("should include all 5 new OpenAI models", async () => {
+    it("should include all 6 new OpenAI models", async () => {
       const providers = await handleGetProviders();
       const openai = providers.find((p) => p.id === "openai");
-      const modelIds = openai!.models.map((m) => m.id);
-      expect(modelIds).toContain("gpt-4.1");
-      expect(modelIds).toContain("gpt-4.1-mini");
-      expect(modelIds).toContain("gpt-4.1-nano");
+      expect(openai).toBeDefined();
+      const modelIds = openai?.models.map((m) => m.id);
+      expect(modelIds).toContain("gpt-5.4");
+      expect(modelIds).toContain("gpt-5.4-mini");
+      expect(modelIds).toContain("gpt-5.4-nano");
+      expect(modelIds).toContain("gpt-5.4-pro");
       expect(modelIds).toContain("o3");
       expect(modelIds).toContain("o4-mini");
     });
@@ -69,30 +72,37 @@ describe("PROVIDER_CONFIGS - モデル定義更新検証（TASK-LLM-MOD-01）", 
     it("should not include legacy OpenAI models", async () => {
       const providers = await handleGetProviders();
       const openai = providers.find((p) => p.id === "openai");
-      const modelIds = openai!.models.map((m) => m.id);
+      expect(openai).toBeDefined();
+      const modelIds = openai?.models.map((m) => m.id);
       expect(modelIds).not.toContain("gpt-4o");
       expect(modelIds).not.toContain("gpt-4o-mini");
       expect(modelIds).not.toContain("gpt-4-turbo");
     });
 
-    it("should set gpt-4.1 contextWindow to 1048576", async () => {
+    it("should set gpt-5.4 contextWindow to 1050000", async () => {
       const providers = await handleGetProviders();
       const openai = providers.find((p) => p.id === "openai");
-      const model = openai!.models.find((m) => m.id === "gpt-4.1");
-      expect(model?.contextWindow).toBe(1048576);
+      expect(openai).toBeDefined();
+      const model = openai?.models.find((m) => m.id === "gpt-5.4");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(1050000);
     });
 
     it("should set o3 contextWindow to 200000", async () => {
       const providers = await handleGetProviders();
       const openai = providers.find((p) => p.id === "openai");
-      const model = openai!.models.find((m) => m.id === "o3");
+      expect(openai).toBeDefined();
+      const model = openai?.models.find((m) => m.id === "o3");
+      expect(model).toBeDefined();
       expect(model?.contextWindow).toBe(200000);
     });
 
     it("should set o4-mini contextWindow to 200000", async () => {
       const providers = await handleGetProviders();
       const openai = providers.find((p) => p.id === "openai");
-      const model = openai!.models.find((m) => m.id === "o4-mini");
+      expect(openai).toBeDefined();
+      const model = openai?.models.find((m) => m.id === "o4-mini");
+      expect(model).toBeDefined();
       expect(model?.contextWindow).toBe(200000);
     });
   });
@@ -101,14 +111,17 @@ describe("PROVIDER_CONFIGS - モデル定義更新検証（TASK-LLM-MOD-01）", 
     it("should include claude-sonnet-4-6 as default model", async () => {
       const providers = await handleGetProviders();
       const anthropic = providers.find((p) => p.id === "anthropic");
-      const defaultModel = anthropic!.models.find((m) => m.isDefault);
+      expect(anthropic).toBeDefined();
+      const defaultModel = anthropic?.models.find((m) => m.isDefault);
+      expect(defaultModel).toBeDefined();
       expect(defaultModel?.id).toBe("claude-sonnet-4-6");
     });
 
     it("should include all 3 new Anthropic models", async () => {
       const providers = await handleGetProviders();
       const anthropic = providers.find((p) => p.id === "anthropic");
-      const modelIds = anthropic!.models.map((m) => m.id);
+      expect(anthropic).toBeDefined();
+      const modelIds = anthropic?.models.map((m) => m.id);
       expect(modelIds).toContain("claude-sonnet-4-6");
       expect(modelIds).toContain("claude-opus-4-6");
       expect(modelIds).toContain("claude-haiku-4-5");
@@ -117,7 +130,8 @@ describe("PROVIDER_CONFIGS - モデル定義更新検証（TASK-LLM-MOD-01）", 
     it("should not include legacy Anthropic models", async () => {
       const providers = await handleGetProviders();
       const anthropic = providers.find((p) => p.id === "anthropic");
-      const modelIds = anthropic!.models.map((m) => m.id);
+      expect(anthropic).toBeDefined();
+      const modelIds = anthropic?.models.map((m) => m.id);
       expect(modelIds).not.toContain("claude-3-5-sonnet-20241022");
       expect(modelIds).not.toContain("claude-3-opus-20240229");
       expect(modelIds).not.toContain("claude-3-haiku-20240307");
@@ -125,51 +139,60 @@ describe("PROVIDER_CONFIGS - モデル定義更新検証（TASK-LLM-MOD-01）", 
   });
 
   describe("T-03: Google モデル定義", () => {
-    it("should include gemini-2.5-flash as default model", async () => {
+    it("should include gemini-3-flash-preview as default model", async () => {
       const providers = await handleGetProviders();
       const google = providers.find((p) => p.id === "google");
-      const defaultModel = google!.models.find((m) => m.isDefault);
-      expect(defaultModel?.id).toBe("gemini-2.5-flash");
+      expect(google).toBeDefined();
+      const defaultModel = google?.models.find((m) => m.isDefault);
+      expect(defaultModel).toBeDefined();
+      expect(defaultModel?.id).toBe("gemini-3-flash-preview");
     });
 
     it("should include all 3 new Google models", async () => {
       const providers = await handleGetProviders();
       const google = providers.find((p) => p.id === "google");
-      const modelIds = google!.models.map((m) => m.id);
-      expect(modelIds).toContain("gemini-2.5-flash");
-      expect(modelIds).toContain("gemini-2.5-pro");
-      expect(modelIds).toContain("gemini-2.5-flash-lite");
+      expect(google).toBeDefined();
+      const modelIds = google?.models.map((m) => m.id);
+      expect(modelIds).toContain("gemini-3-flash-preview");
+      expect(modelIds).toContain("gemini-3.1-pro-preview");
+      expect(modelIds).toContain("gemini-3.1-flash-lite-preview");
     });
 
     it("should not include legacy Google models", async () => {
       const providers = await handleGetProviders();
       const google = providers.find((p) => p.id === "google");
-      const modelIds = google!.models.map((m) => m.id);
+      expect(google).toBeDefined();
+      const modelIds = google?.models.map((m) => m.id);
       expect(modelIds).not.toContain("gemini-1.5-pro");
       expect(modelIds).not.toContain("gemini-1.5-flash");
     });
   });
 
   describe("T-04: xAI モデル定義", () => {
-    it("should include grok-3 as default model", async () => {
+    it("should include grok-4-1-fast-non-reasoning as default model", async () => {
       const providers = await handleGetProviders();
       const xai = providers.find((p) => p.id === "xai");
-      const defaultModel = xai!.models.find((m) => m.isDefault);
-      expect(defaultModel?.id).toBe("grok-3");
+      expect(xai).toBeDefined();
+      const defaultModel = xai?.models.find((m) => m.isDefault);
+      expect(defaultModel).toBeDefined();
+      expect(defaultModel?.id).toBe("grok-4-1-fast-non-reasoning");
     });
 
-    it("should include both new xAI models", async () => {
+    it("should include all 3 new xAI models", async () => {
       const providers = await handleGetProviders();
       const xai = providers.find((p) => p.id === "xai");
-      const modelIds = xai!.models.map((m) => m.id);
-      expect(modelIds).toContain("grok-3");
+      expect(xai).toBeDefined();
+      const modelIds = xai?.models.map((m) => m.id);
+      expect(modelIds).toContain("grok-4-1-fast-non-reasoning");
       expect(modelIds).toContain("grok-3-mini");
+      expect(modelIds).toContain("grok-4-1-fast-reasoning");
     });
 
     it("should not include legacy xAI models", async () => {
       const providers = await handleGetProviders();
       const xai = providers.find((p) => p.id === "xai");
-      const modelIds = xai!.models.map((m) => m.id);
+      expect(xai).toBeDefined();
+      const modelIds = xai?.models.map((m) => m.id);
       expect(modelIds).not.toContain("grok-beta");
     });
   });
@@ -181,14 +204,15 @@ describe("PROVIDER_CONFIGS - モデル定義更新検証（TASK-LLM-MOD-01）", 
       for (const providerId of targetProviders) {
         const provider = providers.find((p) => p.id === providerId);
         expect(provider).toBeDefined();
-        for (const model of provider!.models) {
+        for (const model of provider?.models ?? []) {
           expect(
-            typeof (model as { description?: string }).description,
+            "description" in model && typeof model.description === "string",
             `provider ${providerId}, model ${model.id} の description が undefined`,
-          ).toBe("string");
+          ).toBe(true);
           expect(
-            ((model as { description?: string }).description ?? "").trim()
-              .length,
+            "description" in model
+              ? (model.description as string).trim().length
+              : 0,
             `provider ${providerId}, model ${model.id} の description が空文字列`,
           ).toBeGreaterThan(0);
         }
@@ -298,7 +322,7 @@ describe("inferProviderId - 新パターン検証（TASK-LLM-MOD-01）", () => {
       const mockAdapter = {
         sendChat: vi.fn().mockResolvedValue({
           content: "test",
-          model: "gemini-2.5-flash",
+          model: "gemini-3-flash-preview",
           usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 },
           finishReason: "stop",
         }),
@@ -311,7 +335,7 @@ describe("inferProviderId - 新パターン検証（TASK-LLM-MOD-01）", () => {
 
       await handleSendChat({
         messages: [{ role: "user", content: "test" }],
-        modelId: "gemini-2.5-flash",
+        modelId: "gemini-3-flash-preview",
       });
 
       expect(LLMAdapterFactory.getAdapter).toHaveBeenCalledWith("google");
@@ -336,17 +360,17 @@ cd apps/desktop && pnpm vitest run src/main/handlers/__tests__/llm.test.ts
 
 期待する結果:
 
-- `PROVIDER_CONFIGS - モデル定義更新検証` の全テスト: FAIL（`gpt-4.1` が存在しないため）
+- `PROVIDER_CONFIGS - モデル定義更新検証` の全テスト: FAIL（`gpt-5.4` が存在しないため）
 - `inferProviderId - 新パターン検証` の T-07〜T-08: PASS（現行コードで既に対応済み）
 
 ## 参照資料
 
-| 資料名             | パス                                                                                                                     |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------ |
-| Phase 2 設計       | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/phase-2-design.md` |
-| 現行テストファイル | `apps/desktop/src/main/handlers/__tests__/llm.test.ts`                                                                   |
-| コード品質ルール   | `.claude/rules/02-code-quality.md`                                                                                       |
-| 既知の落とし穴 P63 | `.claude/rules/06-known-pitfalls.md`（サブエージェントのインポートパス誤り）                                             |
+| 資料名             | パス                                                                              |
+| ------------------ | --------------------------------------------------------------------------------- |
+| Phase 2 設計       | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/phase-2-design.md` |
+| 現行テストファイル | `apps/desktop/src/main/handlers/__tests__/llm.test.ts`                            |
+| コード品質ルール   | `.claude/rules/02-code-quality.md`                                                |
+| 既知の落とし穴 P63 | `.claude/rules/06-known-pitfalls.md`（サブエージェントのインポートパス誤り）      |
 
 ## 成果物
 
@@ -357,7 +381,7 @@ cd apps/desktop && pnpm vitest run src/main/handlers/__tests__/llm.test.ts
 ## 完了条件
 
 - [ ] `apps/desktop/src/main/handlers/__tests__/llm.test.ts` の既存 import パスを確認した
-- [ ] T-01〜T-06（PROVIDER_CONFIGS 検証）のテストを追加した（計 14 テストケース）
+- [ ] T-01〜T-06（PROVIDER_CONFIGS 検証）のテストを追加した（計 17 テストケース）
 - [ ] T-07〜T-08（inferProviderId 検証）のテストを追加した（計 4 テストケース）
 - [ ] T-01〜T-06 が Red（失敗）であることを実行結果で確認した
 - [ ] T-07〜T-08 が既存実装でパスすることを確認した（inferProviderId は変更不要の確認）
@@ -366,6 +390,31 @@ cd apps/desktop && pnpm vitest run src/main/handlers/__tests__/llm.test.ts
 ## 統合テスト連携
 
 Phase 4 では追加テストの Red フェーズ確認のみを行う。統合テストは Phase 5 の実装後に実施する。
+
+## 多角的チェック観点
+
+| 観点             | 確認内容                                                       |
+| ---------------- | -------------------------------------------------------------- |
+| P48 準拠         | テストコード内に non-null assertion (`!`) が残存していないこと |
+| P49 準拠         | `as` キャストではなく `in` 演算子で実行時型検証していること    |
+| P63 準拠         | import パスが既存テストファイルと一致していること              |
+| テストケース数   | T-01〜T-06: 17件、T-07〜T-08: 4件、合計: 21件                  |
+| Red フェーズ確認 | T-01〜T-06 が FAIL、T-07〜T-08 が PASS であること              |
+
+## サブタスク管理
+
+| サブタスク | 状態   | 担当   |
+| ---------- | ------ | ------ |
+| Task 4-1   | 未着手 | メイン |
+| Task 4-2   | 未着手 | メイン |
+| Task 4-3   | 未着手 | メイン |
+| Task 4-4   | 未着手 | メイン |
+
+## タスク 100% 実行確認
+
+- [ ] 全 Task（4-1〜4-4）の完了条件を満たした
+- [ ] 多角的チェック観点を全て確認した
+- [ ] 成果物が全て生成された
 
 ## 次の Phase
 

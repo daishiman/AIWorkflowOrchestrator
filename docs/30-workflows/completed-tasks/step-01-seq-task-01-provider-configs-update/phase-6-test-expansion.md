@@ -43,71 +43,90 @@ describe("PROVIDER_CONFIGS - 拡充テスト（TASK-LLM-MOD-01）", () => {
       const providers = await handleGetProviders();
       const openrouter = providers.find((p) => p.id === "openrouter");
       expect(openrouter).toBeDefined();
-      const modelIds = openrouter!.models.map((m) => m.id);
+      // 注意: OpenRouter のモデルID（openai/gpt-4o 等）は OpenRouter 更新タスクで変更される可能性がある
+      const modelIds = openrouter?.models.map((m) => m.id);
       expect(modelIds).toContain("openai/gpt-4o");
       expect(modelIds).toContain("anthropic/claude-3.5-sonnet");
       expect(modelIds).toContain("google/gemini-pro-1.5");
       expect(modelIds).toContain("meta-llama/llama-3.1-405b-instruct");
-      expect(openrouter!.models).toHaveLength(4);
+      expect(openrouter?.models).toHaveLength(4);
     });
 
     it("should keep OpenRouter default model unchanged", async () => {
       const providers = await handleGetProviders();
       const openrouter = providers.find((p) => p.id === "openrouter");
-      const defaultModel = openrouter!.models.find((m) => m.isDefault);
+      expect(openrouter).toBeDefined();
+      const defaultModel = openrouter?.models.find((m) => m.isDefault);
+      expect(defaultModel).toBeDefined();
       expect(defaultModel?.id).toBe("openai/gpt-4o");
     });
   });
 
   describe("T-10: contextWindow 精度確認", () => {
-    it("should set gpt-4.1-mini contextWindow to 1048576", async () => {
+    it("should set gpt-5.4-mini contextWindow to 1050000", async () => {
       const providers = await handleGetProviders();
       const openai = providers.find((p) => p.id === "openai");
-      const model = openai!.models.find((m) => m.id === "gpt-4.1-mini");
-      expect(model?.contextWindow).toBe(1048576);
+      expect(openai).toBeDefined();
+      const model = openai?.models.find((m) => m.id === "gpt-5.4-mini");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(1050000);
     });
 
-    it("should set gpt-4.1-nano contextWindow to 1048576", async () => {
+    it("should set gpt-5.4-nano contextWindow to 1050000", async () => {
       const providers = await handleGetProviders();
       const openai = providers.find((p) => p.id === "openai");
-      const model = openai!.models.find((m) => m.id === "gpt-4.1-nano");
-      expect(model?.contextWindow).toBe(1048576);
+      expect(openai).toBeDefined();
+      const model = openai?.models.find((m) => m.id === "gpt-5.4-nano");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(1050000);
     });
 
     it("should set claude-opus-4-6 contextWindow to 200000", async () => {
       const providers = await handleGetProviders();
       const anthropic = providers.find((p) => p.id === "anthropic");
-      const model = anthropic!.models.find((m) => m.id === "claude-opus-4-6");
+      expect(anthropic).toBeDefined();
+      const model = anthropic?.models.find((m) => m.id === "claude-opus-4-6");
+      expect(model).toBeDefined();
       expect(model?.contextWindow).toBe(200000);
     });
 
     it("should set claude-haiku-4-5 contextWindow to 200000", async () => {
       const providers = await handleGetProviders();
       const anthropic = providers.find((p) => p.id === "anthropic");
-      const model = anthropic!.models.find((m) => m.id === "claude-haiku-4-5");
+      expect(anthropic).toBeDefined();
+      const model = anthropic?.models.find((m) => m.id === "claude-haiku-4-5");
+      expect(model).toBeDefined();
       expect(model?.contextWindow).toBe(200000);
     });
 
-    it("should set gemini-2.5-pro contextWindow to 1048576", async () => {
+    it("should set gemini-3.1-pro-preview contextWindow to 1048576", async () => {
       const providers = await handleGetProviders();
       const google = providers.find((p) => p.id === "google");
-      const model = google!.models.find((m) => m.id === "gemini-2.5-pro");
+      expect(google).toBeDefined();
+      const model = google?.models.find(
+        (m) => m.id === "gemini-3.1-pro-preview",
+      );
+      expect(model).toBeDefined();
       expect(model?.contextWindow).toBe(1048576);
     });
 
-    it("should set gemini-2.5-flash-lite contextWindow to 1048576", async () => {
+    it("should set gemini-3.1-flash-lite-preview contextWindow to 1048576", async () => {
       const providers = await handleGetProviders();
       const google = providers.find((p) => p.id === "google");
-      const model = google!.models.find(
-        (m) => m.id === "gemini-2.5-flash-lite",
+      expect(google).toBeDefined();
+      const model = google?.models.find(
+        (m) => m.id === "gemini-3.1-flash-lite-preview",
       );
+      expect(model).toBeDefined();
       expect(model?.contextWindow).toBe(1048576);
     });
 
     it("should set grok-3-mini contextWindow to 131072", async () => {
       const providers = await handleGetProviders();
       const xai = providers.find((p) => p.id === "xai");
-      const model = xai!.models.find((m) => m.id === "grok-3-mini");
+      expect(xai).toBeDefined();
+      const model = xai?.models.find((m) => m.id === "grok-3-mini");
+      expect(model).toBeDefined();
       expect(model?.contextWindow).toBe(131072);
     });
   });
@@ -132,38 +151,42 @@ describe("PROVIDER_CONFIGS - 拡充テスト（TASK-LLM-MOD-01）", () => {
   });
 
   describe("T-12: モデル数確認", () => {
-    it("should return 5 models for OpenAI", async () => {
+    it("should return 6 models for OpenAI", async () => {
       const providers = await handleGetProviders();
       const openai = providers.find((p) => p.id === "openai");
-      expect(openai!.models).toHaveLength(5);
+      expect(openai).toBeDefined();
+      expect(openai?.models).toHaveLength(6);
     });
 
     it("should return 3 models for Anthropic", async () => {
       const providers = await handleGetProviders();
       const anthropic = providers.find((p) => p.id === "anthropic");
-      expect(anthropic!.models).toHaveLength(3);
+      expect(anthropic).toBeDefined();
+      expect(anthropic?.models).toHaveLength(3);
     });
 
     it("should return 3 models for Google", async () => {
       const providers = await handleGetProviders();
       const google = providers.find((p) => p.id === "google");
-      expect(google!.models).toHaveLength(3);
+      expect(google).toBeDefined();
+      expect(google?.models).toHaveLength(3);
     });
 
-    it("should return 2 models for xAI", async () => {
+    it("should return 3 models for xAI", async () => {
       const providers = await handleGetProviders();
       const xai = providers.find((p) => p.id === "xai");
-      expect(xai!.models).toHaveLength(2);
+      expect(xai).toBeDefined();
+      expect(xai?.models).toHaveLength(3);
     });
   });
 
   describe("T-13: handleSendChat での新モデル使用確認", () => {
-    it("should accept gpt-4.1 as modelId in handleSendChat", async () => {
+    it("should accept gpt-5.4 as modelId in handleSendChat", async () => {
       vi.mocked(SecureStorage.getApiKey).mockResolvedValue("test-api-key");
       const mockAdapter = {
         sendChat: vi.fn().mockResolvedValue({
           content: "response",
-          model: "gpt-4.1",
+          model: "gpt-5.4",
           usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 },
           finishReason: "stop",
         }),
@@ -176,7 +199,7 @@ describe("PROVIDER_CONFIGS - 拡充テスト（TASK-LLM-MOD-01）", () => {
 
       const result = await handleSendChat({
         messages: [{ role: "user", content: "hello" }],
-        modelId: "gpt-4.1",
+        modelId: "gpt-5.4",
       });
 
       expect(result.success).toBe(true);
@@ -229,11 +252,11 @@ cd apps/desktop && pnpm vitest run src/main/handlers/__tests__/llm.test.ts --cov
 
 ## 参照資料
 
-| 資料名             | パス                                                                                                                            |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| Phase 4 テスト     | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/phase-4-test-creation.md` |
-| 現行テストファイル | `apps/desktop/src/main/handlers/__tests__/llm.test.ts`                                                                          |
-| コード品質ルール   | `.claude/rules/02-code-quality.md`（カバレッジ基準）                                                                            |
+| 資料名             | パス                                                                                     |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| Phase 4 テスト     | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/phase-4-test-creation.md` |
+| 現行テストファイル | `apps/desktop/src/main/handlers/__tests__/llm.test.ts`                                   |
+| コード品質ルール   | `.claude/rules/02-code-quality.md`（カバレッジ基準）                                     |
 
 ## 成果物
 
@@ -261,6 +284,29 @@ Phase 6 の全テストが PASS した後、以下で関連ファイルへの影
 ```bash
 cd apps/desktop && pnpm vitest run src/main/handlers/__tests__/
 ```
+
+## 多角的チェック観点
+
+| 観点             | 確認内容                                                                    |
+| ---------------- | --------------------------------------------------------------------------- |
+| P48 準拠         | テストコード内に non-null assertion (`!`) が残存していないこと              |
+| OpenRouter 注意  | T-09 のモデルIDは OpenRouter 更新タスクで変更される可能性がある旨を注記した |
+| カバレッジ基準   | Line: 80%、Branch: 60%、Function: 80% を達成していること                    |
+| 既存テスト非破壊 | Phase 4/5 で追加した全テストが引き続き PASS していること                    |
+
+## サブタスク管理
+
+| サブタスク | 状態   | 担当   |
+| ---------- | ------ | ------ |
+| Task 6-1   | 未着手 | メイン |
+| Task 6-2   | 未着手 | メイン |
+| Task 6-3   | 未着手 | メイン |
+
+## タスク 100% 実行確認
+
+- [ ] 全 Task（6-1〜6-3）の完了条件を満たした
+- [ ] 多角的チェック観点を全て確認した
+- [ ] 成果物が全て生成された
 
 ## 次の Phase
 
