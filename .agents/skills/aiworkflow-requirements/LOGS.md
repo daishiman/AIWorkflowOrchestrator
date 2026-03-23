@@ -6,6 +6,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-23 - UT-CONV-DB-001 完了（better-sqlite3 75件テスト SKIP 修正 / rebuild:native スクリプト追加 / P66 CPU アーキテクチャ不一致パターン記録） |
+| 2026-03-23 - TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 設計フェーズ完了（SlideUIStatus 4状態 / 2 lane 分離 / UI 4領域 / cleanup 順序9ステップ / 未タスク5件検出） |
 | 2026-03-22 - TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計フェーズ完了（TranscriptProvenance 型定義 / 3操作フロー / provenance chip / 未タスク2件検出） |
 | 2026-03-22 - TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（Terminal Handoff Surface Realization 設計 / Concern 3分割 / HandoffGuidance 統一DTO / Manual Boundary 確定 / 未タスク8件検出） |
 | 2026-03-22 - TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（standalone root / spec_created ledger / backlog 4件 / lessons 4件 / mirror parity） |
@@ -68,6 +70,19 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 設計フェーズ完了（2026-03-23）
+
+- タスク名: slide-modifier-manual-fallback-alignment
+- 種別: 設計タスク Phase 1-13 完了（Phase 13 blocked）
+- 主な反映:
+  - SlideUIStatus 4状態（synced/running/degraded/guidance）と不正遷移4パターン禁止を設計
+  - 2 lane 分離（integrated/manual）と UI 4領域（progress row/guidance block/fallback card/terminal launcher）契約を確定
+  - Cleanup 順序9ステップを dependency DAG として定義（agent-client.ts Agent SDK adapter 化まで）
+  - ModifierResponse 拡張（fallback_reason/suggested_action optional）を設計
+  - Phase 3 設計レビュー PASS（MINOR 1件: MN-01 SlideCapabilityDTO IPC channel は UT-SLIDE-IMPL-001 で追跡）
+  - Phase 10 最終レビュー PASS（AC-1〜AC-4 全件充足）
+  - 未タスク 5 件検出（UT-SLIDE-IMPL-001/UT-SLIDE-UI-001/UT-SLIDE-P31-001/UT-SLIDE-HANDOFF-DUP-001/Task09 IPC namespace 統一）
 
 ## TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計フェーズ完了（2026-03-22）
 

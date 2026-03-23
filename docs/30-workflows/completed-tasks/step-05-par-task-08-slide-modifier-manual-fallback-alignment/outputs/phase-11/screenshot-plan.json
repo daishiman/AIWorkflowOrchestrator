@@ -1,0 +1,111 @@
+{
+  "taskId": "TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001",
+  "phase": 11,
+  "description": "UX-07 TC-ID に対応するスクリーンショット撮影計画。設計タスクのため実際の撮影は UT-SLIDE-UI-001 で実施する。",
+  "generatedAt": "2026-03-23",
+  "captureTargets": [
+    {
+      "tcId": "UX-07-S01",
+      "state": "synced",
+      "captureTarget": "SlideWorkspace コンポーネント全体",
+      "captureCondition": "slide 同期が正常完了した直後",
+      "visibleElements": ["progress-row"],
+      "hiddenElements": [
+        "guidance-block",
+        "fallback-card",
+        "terminal-launcher"
+      ],
+      "captureMethod": "Playwright page.screenshot() または Electron webContents.capturePage()",
+      "outputPath": "screenshots/UX-07-S01-synced.png",
+      "verificationPoints": [
+        "progress-row の data-testid が visible",
+        "guidance-block が DOM に存在しないか display:none",
+        "fallback-card が DOM に存在しないか display:none",
+        "terminal-launcher が DOM に存在しないか display:none"
+      ]
+    },
+    {
+      "tcId": "UX-07-S02",
+      "state": "running",
+      "captureTarget": "SlideWorkspace コンポーネント全体",
+      "captureCondition": "startSync アクション発火直後（同期開始から 500ms 以内）",
+      "visibleElements": ["progress-row"],
+      "hiddenElements": [
+        "guidance-block",
+        "fallback-card",
+        "terminal-launcher"
+      ],
+      "captureMethod": "Playwright page.screenshot() またはアニメーション一時停止後にキャプチャ",
+      "outputPath": "screenshots/UX-07-S02-running.png",
+      "verificationPoints": [
+        "progress-row が visible かつアニメーション CSS クラスが付与されている",
+        "guidance-block が非表示",
+        "fallback-card が非表示",
+        "terminal-launcher が非表示"
+      ]
+    },
+    {
+      "tcId": "UX-07-S03",
+      "state": "degraded",
+      "captureTarget": "SlideWorkspace コンポーネント全体",
+      "captureCondition": "reportDegradation アクション発火後（degraded 状態に遷移した直後）",
+      "visibleElements": ["progress-row", "guidance-block", "fallback-card"],
+      "hiddenElements": ["terminal-launcher"],
+      "captureMethod": "Playwright page.screenshot()",
+      "outputPath": "screenshots/UX-07-S03-degraded.png",
+      "verificationPoints": [
+        "progress-row が visible",
+        "guidance-block が visible",
+        "fallback-card が visible かつ CTA ボタンが存在する",
+        "terminal-launcher が非表示"
+      ]
+    },
+    {
+      "tcId": "UX-07-S04",
+      "state": "guidance",
+      "captureTarget": "SlideWorkspace コンポーネント全体",
+      "captureCondition": "requestGuidance アクション発火後（fallback card の CTA クリック後）",
+      "visibleElements": [
+        "progress-row",
+        "guidance-block",
+        "terminal-launcher"
+      ],
+      "hiddenElements": ["fallback-card"],
+      "captureMethod": "Playwright page.screenshot()",
+      "outputPath": "screenshots/UX-07-S04-guidance.png",
+      "verificationPoints": [
+        "progress-row が visible",
+        "guidance-block が visible",
+        "terminal-launcher が visible かつ terminal 起動ボタンが存在する",
+        "fallback-card が非表示"
+      ]
+    },
+    {
+      "tcId": "UX-07-S05",
+      "state": "fallback-transition",
+      "captureTarget": "SlideWorkspace コンポーネント全体（遷移中）",
+      "captureCondition": "fallback card の CTA クリック直後から guidance 状態遷移完了まで",
+      "visibleElements": [
+        "progress-row",
+        "guidance-block",
+        "terminal-launcher"
+      ],
+      "hiddenElements": ["fallback-card"],
+      "captureMethod": "Playwright page.screenshot()（遷移完了後）またはアニメーション中間フレーム",
+      "outputPath": "screenshots/UX-07-S05-fallback-transition.png",
+      "verificationPoints": [
+        "遷移完了後の状態が UX-07-S04 と同一であること",
+        "ストアの uiStatus が 'guidance' になっていること",
+        "遷移アニメーション（200〜300ms）が自然に見えること"
+      ]
+    }
+  ],
+  "captureEnvironment": {
+    "tool": "Playwright または Electron webContents.capturePage()",
+    "windowSize": "1280x800（デフォルト）",
+    "theme": "light（Apple systemBackground: #FFFFFF）",
+    "locale": "ja-JP",
+    "note": "CLI 環境では xvfb-run または headless モードを使用する（P53 対策）"
+  },
+  "implementationNote": "本 JSON は設計タスクの一環として作成した。実際の撮影は UT-SLIDE-UI-001 の Phase 11 で実施すること。撮影後は outputs/phase-11/discovered-issues.md に発見事項を記録する。"
+}

@@ -519,9 +519,10 @@
 | UT-SKILL-LIFECYCLE-08-IPC-TEST | `skill:publishing:*` / `skill:distribution:*` 11チャネルの統合テストを実装（P42/P60/P61 回帰ガード） | 中 | TASK-SKILL-LIFECYCLE-08 Phase 12 未タスク検出（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-ipc-test.md` |
 | UT-SKILL-LIFECYCLE-08-UI-IMPL | 公開導線UI（VisibilityBadge/PublishFlowDialog/CompatibilityResultView 等）を実装 | 中 | TASK-SKILL-LIFECYCLE-08 Phase 12 未タスク検出（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-ui-impl.md` |
 | UT-SKILL-LIFECYCLE-08-NAMING-FIX | TASK-SKILL-LIFECYCLE-08 の命名規約違反（boolean prefix）是正 | 低 | TASK-SKILL-LIFECYCLE-08 Phase 9/12 レビュー（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-naming-fix.md` |
-| UT-CONV-DB-001 | conversationRepository.test.ts 75件SKIP修正 | HIGH | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | P7: better-sqlite3 ABI不一致。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-001-better-sqlite3-abi-rebuild.md` |
+| ~~UT-CONV-DB-001~~ | ~~conversationRepository.test.ts 75件SKIP修正~~ **完了: 2026-03-23（rebuild:native スクリプト追加 + P66 記録）** | - | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | `docs/30-workflows/completed-tasks/conv-db-001-repository-test-skip-fix/` |
 | UT-CONV-DB-002 | Conversation DBスキーマバージョニング | MEDIUM | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | マイグレーション機構の設計・実装。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-002-schema-versioning.md` |
 | UT-CONV-DB-003 | 旧DBパスマイグレーション | MEDIUM | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | ~/.claude/conversations.db → userData/ への移行。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-003-legacy-path-migration.md` |
+| UT-CONV-DB-004 | ネイティブモジュール環境自動整備（CI/postinstall） | MEDIUM | UT-CONV-DB-001 Phase 6 未タスク検出（2026-03-22） | `docs/30-workflows/unassigned-task/task-conv-db-004-native-module-rebuild-automation.md` |
 | ~~UT-STATUSBADGE-MAPPING-3VALUES-001~~ | ~~StatusBadge マッピング仕様への新3値追加~~ **完了: 2026-03-20（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 same-wave spec sync）** | - | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12（2026-03-20） | `docs/30-workflows/unassigned-task/UT-STATUSBADGE-MAPPING-3VALUES-001.md` |
 | UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001 | blocked分岐テンプレートの標準化 | 中 | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12 スキルフィードバック（2026-03-20） | `docs/30-workflows/unassigned-task/UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001.md` |
 | UT-RAG-08-002 | HybridRAGFactory.createFull/createLite 実配線 | 高 | UT-RAG-08-002 Phase 12 完了、PR未着手（2026-03-21） | `docs/30-workflows/hybrid-rag-factory-wiring/` |
@@ -535,6 +536,12 @@
 | UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
 | UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
 | UT-SC-02-004 | bundle 構築の二重責務 | 低 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
+
+| UT-SLIDE-IMPL-001 | Modifier / agent-client 実装（SlideModifier 本体 + AgentClient ラッパー実装） | 高 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-IMPL-001.md` |
+| UT-SLIDE-UI-001 | SlideWorkspace UI 4領域実装（toolbar / canvas / property-panel / status-bar） | 高 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-UI-001.md` |
+| UT-SLIDE-P31-001 | P31/P48 無限ループ対策実装（SlideSlice 派生セレクタへの useShallow 適用） | 中 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-P31-001.md` |
+| UT-SLIDE-HANDOFF-DUP-001 | terminal handoff 重複解消（ChatPanel handoff と Slide handoff の共通 DTO 一本化） | 中 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-HANDOFF-DUP-001.md` |
+| UT-SLIDE-TASK09-IPC-NAMESPACE-001 | slide:sync:* legacy IPC channel の namespace 統一（`slide:*` への canonical 移行） | 中 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-TASK09-IPC-NAMESPACE-001.md` |
 
 ### 未タスク管理ルール
 

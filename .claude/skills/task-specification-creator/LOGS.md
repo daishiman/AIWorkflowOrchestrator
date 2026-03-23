@@ -4,6 +4,37 @@
 
 ---
 
+## UT-CONV-DB-001 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-6 簡易版 + Phase 12 追補
+- **Result**: success
+- **Notes**:
+  - better-sqlite3 ネイティブバイナリの CPU アーキテクチャ不一致（arm64 vs x86_64）を pnpm rebuild で解決
+  - conversationRepository.test.ts 75件テストを全 PASS に復帰
+  - `apps/desktop/package.json` に `rebuild:native` スクリプトを追加（永続的修正）
+  - P66（CPU アーキテクチャ不一致）を 06-known-pitfalls.md に追記済み
+  - UT-CONV-DB-004（ネイティブモジュール環境自動整備）を未タスクとして検出・指示書作成
+
+---
+
+## TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 設計完了（Phase 13 blocked）
+- **Result**: success
+- **Notes**:
+  - SlideUIStatus 4状態（synced/running/degraded/guidance）と不正遷移4パターン禁止を設計
+  - 2 lane 分離（integrated/manual）と UI 4領域（progress row/guidance block/fallback card/terminal launcher）契約を確定
+  - Cleanup 順序9ステップを dependency DAG として定義
+  - Phase 3 設計レビュー PASS（MINOR 1件: MN-01 SlideCapabilityDTO IPC channel）
+  - Phase 10 最終レビュー PASS（AC-1〜AC-4 全件充足）
+  - 未タスク 5 件検出（UT-SLIDE-IMPL-001/UT-SLIDE-UI-001/UT-SLIDE-P31-001/UT-SLIDE-HANDOFF-DUP-001/Task09 IPC namespace 統一）
+  - implementation-guide.md（Part 1: ロボット係員と手動係員アナロジー / Part 2: 開発者向け）作成
+  - Phase 13 はユーザー指示待ち（blocked）
+
+---
+
 ## TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（2026-03-22）
 
 - **Agent**: task-specification-creator
