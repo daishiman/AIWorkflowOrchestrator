@@ -28,7 +28,7 @@ RuntimeSkillCreatorFacade.plan() の現行スタブ実装を調査し、Resource
 ## 参照資料
 
 - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
-- `apps/desktop/src/main/services/resource/ResourceLoader.ts`（または相当ファイル）
+- `apps/desktop/src/main/services/skill/ResourceLoader.ts`
 - `packages/shared/src/types/skillCreator.ts`
 - `.claude/skills/skill-creator/agents/discover-problem.md`
 - `.claude/skills/skill-creator/agents/design-workflow.md`
@@ -37,7 +37,7 @@ RuntimeSkillCreatorFacade.plan() の現行スタブ実装を調査し、Resource
 
 ## 成果物
 
-- `docs/30-workflows/skill-creator-llm-integration/phase-01-requirements-output.md`（要件定義書）
+- `phase-01-requirements-output.md`（要件定義書）
 
 ## 完了条件
 

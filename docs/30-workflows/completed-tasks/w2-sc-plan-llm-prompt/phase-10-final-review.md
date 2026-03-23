@@ -24,7 +24,7 @@
 3. **FR-1 対応確認**
    - 機能要件 FR-1 の全項目と実装の対応を確認する
 4. **セキュリティレビュー**
-   - プロンプトに API キーや PII が含まれていないことを確認する（P33 対策）
+   - プロンプトに API キーや PII が含まれていないことを確認する（04-electron-security.md 認証セキュリティ原則準拠）
    - ResourceLoader が読み込むファイルパスにパストラバーサルの余地がないことを確認する
 5. **コード品質最終確認**
    - `any` 型・`@ts-ignore` の残存がないことを確認する
@@ -34,13 +34,13 @@
 
 ## 参照資料
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-09-quality-verification.md`
+- `phase-09-quality-verification.md`
 - `packages/shared/src/types/skillCreator.ts`（型定義確認）
 - `.claude/rules/04-electron-security.md`（セキュリティ確認）
 
 ## 成果物
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-10-review-output.md`（最終レビュー結果）
+- `phase-10-review-output.md`（最終レビュー結果）
   - 判定: PASS / MINOR / MAJOR / CRITICAL
   - AC-1 / AC-4 充足確認
   - 指摘事項リスト（MINOR は未タスク化必須）

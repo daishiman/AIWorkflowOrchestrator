@@ -5,6 +5,22 @@
 ---
 
 ## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
+||||||| Stash base
+## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
+## TASK-SC-03-PLAN-LLM-PROMPT 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 final sync
+- **Result**: success
+- **Notes**:
+  - RuntimeSkillCreatorFacade.plan() のスタブ実装を LLM 呼び出しに置き換え
+  - agent 仕様書注入 + JSON レスポンスパースを実装
+  - planPromptConstants.ts を新規作成しプロンプト定数を分離
+  - RuntimeSkillCreatorFacade.plan.test.ts を新規作成
+
+---
+
+## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
 
 - **Agent**: task-specification-creator
 - **変更内容**: WorkspaceChatPanel header に InlineModelSelector を compact mode で配置。disabled={controller.isStreaming} でストリーミング中ロック。GuidanceBlock(blocked) は Store reactivity で自動連携（変更不要）。統合テスト11件追加、全146テスト PASS。ui-ux-llm-selector.md / task-workflow 更新。

@@ -32,12 +32,12 @@
 
 ## 参照資料
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-10-final-review.md`
+- `phase-10-final-review.md`
 - `.claude/rules/06-known-pitfalls.md`（P53: CLI 環境でのスクリーンショット取得制約）
 
 ## 成果物
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-11-manual-test-output.md`（手動テスト結果記録）
+- `phase-11-manual-test-output.md`（手動テスト結果記録）
   - 各シナリオの入力・出力の記録
   - 実際の LLM レスポンス（JSON 構造）のサンプル
 
@@ -47,7 +47,7 @@
 - [ ] シナリオ A・B の結果（入力・出力 JSON）を記録した
 - [ ] terminal_handoff 経路が正常に動作することを確認した
 - [ ] 無効 API キー時のエラーハンドリングを確認した
-- [ ] 結果を `03-phase-11-manual-test-output.md` に記録した
+- [ ] 結果を `phase-11-manual-test-output.md` に記録した
 
 ## 次のPhase
 

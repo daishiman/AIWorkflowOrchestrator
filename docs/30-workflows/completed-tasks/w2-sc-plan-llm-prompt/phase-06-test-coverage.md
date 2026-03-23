@@ -30,8 +30,8 @@ Phase 4 で作成したテストのカバレッジ不足箇所（LLM レスポ�
 
 ## 参照資料
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-04-test-creation.md`
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-05-implementation.md`
+- `phase-04-test-creation.md`
+- `phase-05-implementation.md`
 - `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts`（既存テスト）
 
 ## 成果物

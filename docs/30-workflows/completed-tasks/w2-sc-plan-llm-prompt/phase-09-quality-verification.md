@@ -37,7 +37,7 @@ Lint・型チェック・全テスト実行を行い、コードが品質基準�
 ## 成果物
 
 - 品質検証結果ログ（コンソール出力）
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-09-quality-output.md`（実行結果サマリー）
+- `phase-09-quality-output.md`（実行結果サマリー）
 
 ## 完了条件
 

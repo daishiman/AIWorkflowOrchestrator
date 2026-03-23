@@ -32,8 +32,8 @@ Phase 2 設計に基づき、plan() の LLM 呼び出しテスト・JSON スキ�
 
 ## 参照資料
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-02-design.md`
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-03-design-review.md`
+- `phase-02-design.md`
+- `phase-03-design-review.md`
 - `apps/desktop/src/main/services/runtime/__tests__/`（既存テストのインポートパス参照）
 
 ## 成果物
