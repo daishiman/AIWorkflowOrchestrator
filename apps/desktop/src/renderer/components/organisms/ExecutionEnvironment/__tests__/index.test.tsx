@@ -48,14 +48,14 @@ describe("ExecutionEnvironment", () => {
       expect(screen.getByTestId("no-preview")).toBeInTheDocument();
     });
 
-    it("type='terminal'の場合、Terminalプレースホルダーが表示される", () => {
-      // Given: environmentType="terminal"（将来実装）
+    it("type='terminal'の場合、待機中Placeholderが表示される（handoffGuidance未指定）", () => {
+      // Given: environmentType="terminal"、handoffGuidance なし
       render(
         <ExecutionEnvironment environmentType="terminal" content={null} />,
       );
 
-      // Then: 未実装メッセージが表示される
-      expect(screen.getByText(/coming soon/i)).toBeInTheDocument();
+      // Then: 待機中プレースホルダーが表示される
+      expect(screen.getByTestId("terminal-waiting")).toBeInTheDocument();
     });
 
     it("type='code'の場合、Codeプレースホルダーが表示される", () => {

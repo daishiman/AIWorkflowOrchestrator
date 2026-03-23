@@ -276,7 +276,7 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `skill-creator:validate`        | Renderer → Main | スキル検証         | `{ skillDir: string }`                                     | `IpcResult<boolean>`          |
 | `skill-creator:validate-schema` | Renderer → Main | スキーマ検証       | `{ schemaName: string; data: unknown }`                    | `IpcResult<boolean>`          |
 | `skill-creator:plan`            | Renderer → Main | runtime plan       | `{ prompt: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
-| `skill-creator:execute-plan`    | Renderer → Main | runtime execute    | `{ planId: string; skillSpec: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorExecuteResult>` |
+| `skill-creator:execute-plan`    | Renderer → Main | runtime execute    | `{ planId: string; skillSpec: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
 | `skill-creator:improve-skill`   | Renderer → Main | runtime improve    | `{ skillName: string; feedback: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `skill-creator:improve`         | Renderer → Main | スキル改善         | `{ skillName: string; autoApply?: boolean }`               | `IpcResult<unknown>`          |
 | `skill-creator:fork`            | Renderer → Main | スキルフォーク     | `{ sourceName: string; newName: string; options?: object }` | `IpcResult<string>`           |
@@ -297,7 +297,7 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `ExecuteTasksOptions`  | タスク実行オプション                 |
 | `ExecutionReport`      | タスク実行レポート                   |
 | `RuntimeSkillCreatorPlanResponse` | runtime plan 結果または terminal handoff |
-| `RuntimeSkillCreatorExecuteResult` | runtime execute 結果               |
+| `RuntimeSkillCreatorExecuteResponse` | runtime execute 結果または terminal handoff |
 | `RuntimeSkillCreatorImproveResponse` | runtime improve 結果または terminal handoff |
 | `TerminalHandoffBundle` | Claude Code handoff bundle          |
 | `SkillCreatorProgress` | 進捗通知データ（Preload型）          |

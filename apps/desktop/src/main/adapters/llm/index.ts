@@ -18,10 +18,10 @@ export type {
 export { BaseLLMAdapter } from "./BaseLLMAdapter";
 
 // Provider adapters
-export { OpenAIAdapter } from "./OpenAIAdapter";
+export { OpenAICompatibleAdapter } from "./OpenAICompatibleAdapter";
+export type { OpenAICompatibleProviderConfig } from "./OpenAICompatibleAdapter";
 export { AnthropicAdapter } from "./AnthropicAdapter";
 export { GoogleAdapter } from "./GoogleAdapter";
-export { xAIAdapter } from "./xAIAdapter";
 
 // Factory
 export { LLMAdapterFactory } from "./LLMAdapterFactory";

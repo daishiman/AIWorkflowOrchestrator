@@ -22,10 +22,9 @@ import { SecureStorage } from "@/main/services/secureStorage";
 import { LLMAdapterFactory } from "../LLMAdapterFactory";
 
 // Adapters to be implemented (for type checking)
-import { OpenAIAdapter } from "../OpenAIAdapter";
+import { OpenAICompatibleAdapter } from "../OpenAICompatibleAdapter";
 import { AnthropicAdapter } from "../AnthropicAdapter";
 import { GoogleAdapter } from "../GoogleAdapter";
-import { xAIAdapter } from "../xAIAdapter";
 
 describe("LLMAdapterFactory", () => {
   beforeEach(() => {
@@ -42,7 +41,7 @@ describe("LLMAdapterFactory", () => {
 
       const adapter = await LLMAdapterFactory.getAdapter("openai");
 
-      expect(adapter).toBeInstanceOf(OpenAIAdapter);
+      expect(adapter).toBeInstanceOf(OpenAICompatibleAdapter);
       expect(adapter.providerId).toBe("openai");
     });
 
@@ -93,7 +92,7 @@ describe("LLMAdapterFactory", () => {
 
       const adapter = await LLMAdapterFactory.getAdapter("xai");
 
-      expect(adapter).toBeInstanceOf(xAIAdapter);
+      expect(adapter).toBeInstanceOf(OpenAICompatibleAdapter);
       expect(adapter.providerId).toBe("xai");
     });
   });
@@ -249,9 +248,15 @@ describe("LLMAdapterFactory", () => {
       const providerIds = LLMAdapterFactory.getAllProviderIds();
 
       expect(providerIds).toEqual(
-        expect.arrayContaining(["openai", "anthropic", "google", "xai"]),
+        expect.arrayContaining([
+          "openai",
+          "anthropic",
+          "google",
+          "xai",
+          "openrouter",
+        ]),
       );
-      expect(providerIds).toHaveLength(4);
+      expect(providerIds).toHaveLength(5);
     });
   });
 });

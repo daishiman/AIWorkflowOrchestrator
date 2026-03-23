@@ -8,13 +8,14 @@ import { z } from "zod";
 
 /**
  * LLMプロバイダーID
- * 対応プロバイダー: OpenAI, Anthropic, Google, xAI
+ * 対応プロバイダー: OpenAI, Anthropic, Google, xAI, OpenRouter
  */
 export const LLMProviderIdSchema = z.enum([
   "openai",
   "anthropic",
   "google",
   "xai",
+  "openrouter",
 ]);
 
 export type LLMProviderId = z.infer<typeof LLMProviderIdSchema>;

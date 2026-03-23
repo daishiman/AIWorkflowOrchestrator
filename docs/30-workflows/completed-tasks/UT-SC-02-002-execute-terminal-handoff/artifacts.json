@@ -1,0 +1,109 @@
+{
+  "taskId": "UT-SC-02-002",
+  "featureName": "UT-SC-02-002-execute-terminal-handoff",
+  "createdAt": "2026-03-23",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "phase-01-requirements.md",
+        "outputs/phase-1/requirements-definition.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["phase-02-design.md", "outputs/phase-2/design-summary.md"]
+    },
+    "3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": [
+        "phase-03-design-review.md",
+        "outputs/phase-3/design-review-report.md"
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "phase-04-test-creation.md",
+        "outputs/phase-4/test-matrix.md"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        "phase-05-implementation.md",
+        "outputs/phase-5/implementation-plan.md"
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "phase-06-test-expansion.md",
+        "outputs/phase-6/edge-case-matrix.md"
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        "phase-07-coverage.md",
+        "outputs/phase-7/coverage-targets.md"
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        "phase-08-refactoring.md",
+        "outputs/phase-8/refactor-boundaries.md"
+      ]
+    },
+    "9": {
+      "name": "品質検証",
+      "status": "completed",
+      "artifacts": [
+        "phase-09-quality.md",
+        "outputs/phase-9/quality-checklist.md"
+      ]
+    },
+    "10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": [
+        "phase-10-final-review.md",
+        "outputs/phase-10/final-review-report.md"
+      ]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/manual-test-plan.md"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "artifacts": [
+        "phase-12-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/system-spec-update-summary.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "completed",
+      "artifacts": ["phase-13-pr.md"]
+    }
+  }
+}

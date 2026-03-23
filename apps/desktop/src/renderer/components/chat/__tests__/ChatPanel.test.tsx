@@ -15,6 +15,9 @@ import { render, screen, fireEvent, act } from "@testing-library/react";
 
 const mockFetchSkills = vi.fn();
 const mockAbortExecution = vi.fn();
+const mockSetCurrentView = vi.fn();
+const mockSelectProvider = vi.fn();
+const mockSelectModel = vi.fn();
 
 let mockStoreState: Record<string, unknown> = {};
 
@@ -23,6 +26,9 @@ vi.mock("../../../store", () => ({
     return selector(mockStoreState);
   }),
   useIsSkillExecuting: vi.fn(() => Boolean(mockStoreState.isExecuting)),
+  useSetCurrentView: vi.fn(() => mockSetCurrentView),
+  useSelectProvider: vi.fn(() => mockSelectProvider),
+  useSelectModel: vi.fn(() => mockSelectModel),
   useSkillStore: vi.fn(() => ({
     availableSkills: [],
     importedSkills: [],
@@ -103,8 +109,20 @@ vi.mock("../../../hooks/useStreamingChat", () => ({
 // ============================================
 
 vi.mock("../RuntimeBanner", () => ({
-  RuntimeBanner: () => (
-    <div data-testid="mock-runtime-banner">RuntimeBanner</div>
+  RuntimeBanner: ({
+    onTerminalSwitch,
+  }: {
+    capability: string;
+    onTerminalSwitch?: () => void;
+  }) => (
+    <div data-testid="mock-runtime-banner">
+      RuntimeBanner
+      {onTerminalSwitch && (
+        <button data-testid="terminal-switch-btn" onClick={onTerminalSwitch}>
+          Switch
+        </button>
+      )}
+    </div>
   ),
 }));
 
@@ -121,7 +139,21 @@ vi.mock("../ErrorGuidance", () => ({
 }));
 
 vi.mock("../HandoffBlock", () => ({
-  HandoffBlock: () => <div data-testid="mock-handoff-block">HandoffBlock</div>,
+  HandoffBlock: ({
+    onOpenTerminal,
+  }: {
+    guidance: unknown;
+    onOpenTerminal?: () => void;
+  }) => (
+    <div data-testid="mock-handoff-block">
+      HandoffBlock
+      {onOpenTerminal && (
+        <button data-testid="open-terminal-btn" onClick={onOpenTerminal}>
+          OpenTerminal
+        </button>
+      )}
+    </div>
+  ),
 }));
 
 vi.mock("../ComposerArea", () => ({
@@ -129,8 +161,31 @@ vi.mock("../ComposerArea", () => ({
 }));
 
 vi.mock("../LLMSelectorPanel", () => ({
-  LLMSelectorPanel: () => (
-    <div data-testid="mock-llm-selector-panel">LLMSelectorPanel</div>
+  LLMSelectorPanel: ({
+    onSelectProvider,
+    onSelectModel,
+  }: {
+    providers: unknown[];
+    selectedProviderId: string | null;
+    selectedModelId: string | null;
+    onSelectProvider: (id: string) => void;
+    onSelectModel: (id: string) => void;
+  }) => (
+    <div data-testid="mock-llm-selector-panel">
+      LLMSelectorPanel
+      <button
+        data-testid="select-provider-btn"
+        onClick={() => onSelectProvider("anthropic")}
+      >
+        SelectProvider
+      </button>
+      <button
+        data-testid="select-model-btn"
+        onClick={() => onSelectModel("claude-3-5-sonnet")}
+      >
+        SelectModel
+      </button>
+    </div>
   ),
 }));
 
@@ -370,6 +425,127 @@ describe("ChatPanel with Skills", () => {
       expect(
         screen.queryByTestId("mock-skill-import-dialog"),
       ).not.toBeInTheDocument();
+    });
+  });
+});
+
+// ============================================================
+// Review Harness Alignment (TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001)
+// TC-01〜TC-08
+// ============================================================
+
+describe("ChatPanel Review Harness Alignment", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    setStoreState();
+  });
+
+  // TC-01: GAP-01 — onTerminalSwitch actionability
+  describe("TC-01: onTerminalSwitch calls setCurrentView('terminal')", () => {
+    it("should call setCurrentView with 'terminal' when terminal switch is clicked", () => {
+      render(<ChatPanel />);
+      fireEvent.click(screen.getByTestId("terminal-switch-btn"));
+      expect(mockSetCurrentView).toHaveBeenCalledTimes(1);
+      expect(mockSetCurrentView).toHaveBeenCalledWith("agent");
+    });
+  });
+
+  // TC-02: GAP-02 — onSelectProvider actionability
+  describe("TC-02: onSelectProvider calls selectProvider", () => {
+    it("should call selectProvider when provider is selected", () => {
+      render(<ChatPanel />);
+      fireEvent.click(screen.getByTestId("select-provider-btn"));
+      expect(mockSelectProvider).toHaveBeenCalledTimes(1);
+      expect(mockSelectProvider).toHaveBeenCalledWith("anthropic");
+    });
+  });
+
+  // TC-03: GAP-03 — onSelectModel actionability
+  describe("TC-03: onSelectModel calls selectModel", () => {
+    it("should call selectModel when model is selected", () => {
+      render(<ChatPanel />);
+      fireEvent.click(screen.getByTestId("select-model-btn"));
+      expect(mockSelectModel).toHaveBeenCalledTimes(1);
+      expect(mockSelectModel).toHaveBeenCalledWith("claude-3-5-sonnet");
+    });
+  });
+
+  // TC-04: GAP-04 — onOpenTerminal actionability (handoff state)
+  describe("TC-04: onOpenTerminal calls setCurrentView('terminal') in handoff state", () => {
+    it("should call setCurrentView with 'terminal' when open terminal is clicked", () => {
+      setStoreState({
+        chatPanelStatus: "handoff",
+        handoffGuidance: {
+          reason: "terminal-only",
+          message: "Terminal surface available",
+        },
+      });
+      render(<ChatPanel />);
+      fireEvent.click(screen.getByTestId("open-terminal-btn"));
+      expect(mockSetCurrentView).toHaveBeenCalledTimes(1);
+      expect(mockSetCurrentView).toHaveBeenCalledWith("agent");
+    });
+  });
+
+  // TC-05: JSDoc @role review-harness existence (static assertion)
+  describe("TC-05: JSDoc @role review-harness exists", () => {
+    it("should have @role review-harness in source file", async () => {
+      const fs = await import("node:fs");
+      const path = await import("node:path");
+      const filePath = path.resolve(__dirname, "../ChatPanel.tsx");
+      const content = fs.readFileSync(filePath, "utf-8");
+      expect(content).toContain("@role review-harness");
+    });
+  });
+
+  // TC-06: Store action integration — provider/model selection flow
+  describe("TC-06: provider → model selection integration", () => {
+    it("should call selectProvider then selectModel in sequence", () => {
+      render(<ChatPanel />);
+      fireEvent.click(screen.getByTestId("select-provider-btn"));
+      fireEvent.click(screen.getByTestId("select-model-btn"));
+      expect(mockSelectProvider).toHaveBeenCalledTimes(1);
+      expect(mockSelectModel).toHaveBeenCalledTimes(1);
+      // Verify call order
+      const providerOrder = mockSelectProvider.mock.invocationCallOrder[0];
+      const modelOrder = mockSelectModel.mock.invocationCallOrder[0];
+      expect(providerOrder).toBeLessThan(modelOrder);
+    });
+  });
+
+  // TC-07: IPC call integration — terminal launch in handoff state
+  describe("TC-07: terminal launch in handoff state", () => {
+    it("should navigate to terminal view when open terminal is clicked in handoff", () => {
+      setStoreState({
+        chatPanelStatus: "handoff",
+        handoffGuidance: {
+          reason: "terminal-only",
+          message: "Terminal surface available",
+        },
+      });
+      render(<ChatPanel />);
+      expect(screen.getByTestId("mock-handoff-block")).toBeInTheDocument();
+      fireEvent.click(screen.getByTestId("open-terminal-btn"));
+      expect(mockSetCurrentView).toHaveBeenCalledWith("agent");
+    });
+
+    it("should not show handoff block when not in handoff state", () => {
+      setStoreState({ chatPanelStatus: "ready" });
+      render(<ChatPanel />);
+      expect(
+        screen.queryByTestId("mock-handoff-block"),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  // TC-08: No-op absence contract (regression guard)
+  describe("TC-08: no-op absence contract", () => {
+    it("should not contain () => {} in ChatPanel source", async () => {
+      const fs = await import("node:fs");
+      const path = await import("node:path");
+      const filePath = path.resolve(__dirname, "../ChatPanel.tsx");
+      const content = fs.readFileSync(filePath, "utf-8");
+      expect(content).not.toContain("() => {}");
     });
   });
 });

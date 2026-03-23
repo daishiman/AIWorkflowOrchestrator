@@ -136,7 +136,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | surface | request | response | canonical source |
 | --- | --- | --- | --- |
 | `planSkill(prompt, authMode?, apiKey?)` | `SkillCreatorPlanRequest` | `RuntimeSkillCreatorPlanResponse` | `packages/shared/src/types/skillCreator.ts` |
-| `executePlan(planId, skillSpec, authMode?, apiKey?)` | `SkillCreatorExecutePlanRequest` | `RuntimeSkillCreatorExecuteResult` | `packages/shared/src/types/skillCreator.ts` |
+| `executePlan(planId, skillSpec, authMode?, apiKey?)` | `SkillCreatorExecutePlanRequest` | `RuntimeSkillCreatorExecuteResponse` | `packages/shared/src/types/skillCreator.ts` |
 | `improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | `SkillCreatorImproveSkillRequest` | `RuntimeSkillCreatorImproveResponse` | `packages/shared/src/types/skillCreator.ts` |
 
 型定義の正本は `packages/shared/src/types/skillCreator.ts` とし、renderer surface は上記型へ収束する。

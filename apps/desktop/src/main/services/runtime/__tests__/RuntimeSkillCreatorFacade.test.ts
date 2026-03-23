@@ -29,7 +29,7 @@ describe("RuntimeSkillCreatorFacade", () => {
   });
 
   describe("plan", () => {
-    it("terminal_handoff 判定時は builder の結果を返す", async () => {
+    it("terminal_handoff 判定時は buildForSurface の結果を返す", async () => {
       const resolveSpy = vi
         .spyOn(RuntimePolicyResolver.prototype, "resolve")
         .mockResolvedValue({
@@ -42,27 +42,29 @@ describe("RuntimeSkillCreatorFacade", () => {
             manualRetryRule: "retry",
           },
         });
-      const handoffBundle = {
-        launcher: "claude",
-        promptBundle: "Skill を作成してください: spec body",
-        cwd: process.cwd(),
-        suggestedCommand: 'claude -p "spec body"',
-        manualRetryRule: "retry",
+      const handoffGuidance = {
+        terminalCommand: 'claude -p "Skill を作成してください: spec body"',
+        contextSummary: "surface=skill skill=unknown",
+        reason: "terminal_handoff",
       };
       const buildSpy = vi
-        .spyOn(TerminalHandoffBuilder.prototype, "build")
-        .mockReturnValue(handoffBundle);
+        .spyOn(TerminalHandoffBuilder.prototype, "buildForSurface")
+        .mockReturnValue(handoffGuidance);
 
       const result = await facade.plan("spec body", "subscription", null);
 
       expect(resolveSpy).toHaveBeenCalledWith("subscription", null);
       expect(buildSpy).toHaveBeenCalledWith(
-        "Skill を作成してください: spec body",
-        process.cwd(),
+        expect.objectContaining({
+          surfaceType: "runtime",
+          runtimeType: "skill",
+          prompt: "Skill を作成してください: spec body",
+        }),
+        "terminal_handoff",
       );
       expect(result).toEqual({
         type: "terminal_handoff",
-        bundle: handoffBundle,
+        guidance: handoffGuidance,
       });
     });
 
@@ -73,7 +75,10 @@ describe("RuntimeSkillCreatorFacade", () => {
         permissionMode: "default",
       });
       vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_000);
-      const buildSpy = vi.spyOn(TerminalHandoffBuilder.prototype, "build");
+      const buildSpy = vi.spyOn(
+        TerminalHandoffBuilder.prototype,
+        "buildForSurface",
+      );
 
       const result = await facade.plan("line-1\nline-2", "api-key", "sk-test");
 
@@ -82,6 +87,12 @@ describe("RuntimeSkillCreatorFacade", () => {
         planId: "plan-1710000000000",
         skillSpec: "line-1\nline-2",
         estimatedSteps: 3,
+        skillName: "",
+        description: "",
+        agents: [],
+        scripts: [],
+        triggers: [],
+        anchors: [],
       });
     });
 
@@ -104,6 +115,12 @@ describe("RuntimeSkillCreatorFacade", () => {
         planId: "plan-1710000000010",
         skillSpec: "spec body",
         estimatedSteps: 3,
+        skillName: "",
+        description: "",
+        agents: [],
+        scripts: [],
+        triggers: [],
+        anchors: [],
       });
     });
 
@@ -122,13 +139,11 @@ describe("RuntimeSkillCreatorFacade", () => {
           },
         });
       const buildSpy = vi
-        .spyOn(TerminalHandoffBuilder.prototype, "build")
+        .spyOn(TerminalHandoffBuilder.prototype, "buildForSurface")
         .mockReturnValue({
-          launcher: "claude",
-          promptBundle: "prompt",
-          cwd: process.cwd(),
-          suggestedCommand: "cmd",
-          manualRetryRule: "retry",
+          terminalCommand: 'claude -p "spec"',
+          contextSummary: "surface=skill skill=unknown",
+          reason: "terminal_handoff",
         });
 
       const result = await facade.plan("spec", "api-key", null);
@@ -207,14 +222,9 @@ describe("RuntimeSkillCreatorFacade", () => {
 
     it("SkillExecutor のエラーを message に変換し、skillName を 50 文字に切り詰める", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
-        type: "terminal_handoff",
-        bundle: {
-          launcher: "claude",
-          promptBundle: "",
-          cwd: "/tmp",
-          suggestedCommand: 'claude -p "fallback"',
-          manualRetryRule: "retry",
-        },
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
       });
       executeMock.mockResolvedValue({
         executionId: "exec-002",
@@ -233,8 +243,8 @@ describe("RuntimeSkillCreatorFacade", () => {
           skillSpec: `${longSkillName}\nbody`,
           estimatedSteps: 3,
         },
-        "subscription",
-        null,
+        "api-key",
+        "sk-test",
       );
 
       expect(result).toEqual({
@@ -244,10 +254,8 @@ describe("RuntimeSkillCreatorFacade", () => {
         error: "executor failed",
       });
     });
-  });
 
-  describe("improve", () => {
-    it("terminal_handoff 判定時は改善 prompt を bundle 化する", async () => {
+    it("terminal_handoff 判定時は builder の結果を返す", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "terminal_handoff",
         bundle: {
@@ -260,14 +268,253 @@ describe("RuntimeSkillCreatorFacade", () => {
       });
       const handoffBundle = {
         launcher: "claude",
-        promptBundle: 'スキル "skill-a" を改善してください: feedback',
+        promptBundle: "Skill を実行してください: my-skill\nbody",
         cwd: process.cwd(),
-        suggestedCommand: 'claude -p "improve"',
+        suggestedCommand: 'claude -p "execute"',
         manualRetryRule: "retry",
       };
       const buildSpy = vi
         .spyOn(TerminalHandoffBuilder.prototype, "build")
         .mockReturnValue(handoffBundle);
+
+      const result = await facade.execute(
+        {
+          planId: "plan-003",
+          skillSpec: "my-skill\nbody",
+          estimatedSteps: 3,
+        },
+        "subscription",
+        null,
+      );
+
+      expect(buildSpy).toHaveBeenCalledWith("my-skill\nbody", process.cwd());
+      expect(executeMock).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        type: "terminal_handoff",
+        bundle: handoffBundle,
+      });
+    });
+
+    it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff を返す場合", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
+      vi.spyOn(
+        RuntimePolicyResolver.prototype,
+        "resolveWithService",
+      ).mockResolvedValue({
+        type: "terminal_handoff",
+        bundle: {
+          launcher: "claude",
+          promptBundle: "",
+          cwd: "/tmp",
+          suggestedCommand: 'claude -p "fallback"',
+          manualRetryRule: "retry",
+        },
+      });
+      const buildSpy = vi
+        .spyOn(TerminalHandoffBuilder.prototype, "build")
+        .mockReturnValue({
+          launcher: "claude",
+          promptBundle: "prompt",
+          cwd: process.cwd(),
+          suggestedCommand: "cmd",
+          manualRetryRule: "retry",
+        });
+
+      const result = await facade.execute(
+        {
+          planId: "plan-004",
+          skillSpec: "spec",
+          estimatedSteps: 3,
+        },
+        "api-key",
+        null,
+      );
+
+      expect(buildSpy).toHaveBeenCalled();
+      expect(executeMock).not.toHaveBeenCalled();
+      expect(result).toHaveProperty("type", "terminal_handoff");
+    });
+
+    it("明示的 apiKey 指定でも terminal_handoff は正しく返る", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+        type: "terminal_handoff",
+        bundle: {
+          launcher: "claude",
+          promptBundle: "",
+          cwd: "/tmp",
+          suggestedCommand: 'claude -p "fallback"',
+          manualRetryRule: "retry",
+        },
+      });
+      const handoffBundle = {
+        launcher: "claude",
+        promptBundle: "spec body",
+        cwd: process.cwd(),
+        suggestedCommand: "cmd",
+        manualRetryRule: "retry",
+      };
+      vi.spyOn(TerminalHandoffBuilder.prototype, "build").mockReturnValue(
+        handoffBundle,
+      );
+
+      const result = await facade.execute(
+        {
+          planId: "plan-005",
+          skillSpec: "spec body",
+          estimatedSteps: 3,
+        },
+        "api-key",
+        "explicit-key",
+      );
+
+      expect(executeMock).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        type: "terminal_handoff",
+        bundle: handoffBundle,
+      });
+    });
+
+    it("apiKey 未指定の api-key モードで resolveWithService が integrated_api を返す場合は executor に委譲する", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
+      vi.spyOn(
+        RuntimePolicyResolver.prototype,
+        "resolveWithService",
+      ).mockResolvedValue({
+        type: "integrated_api",
+        apiKey: "stored-key",
+        permissionMode: "default",
+      });
+      executeMock.mockResolvedValue({
+        executionId: "exec-006",
+        success: true,
+      });
+      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_006);
+
+      const result = await facade.execute(
+        {
+          planId: "plan-006",
+          skillSpec: "spec body",
+          estimatedSteps: 3,
+        },
+        "api-key",
+        null,
+      );
+
+      expect(executeMock).toHaveBeenCalled();
+      expect(result).toEqual({
+        executeId: "exec-006",
+        skillName: "spec body",
+        success: true,
+        error: undefined,
+      });
+    });
+
+    it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff を返す場合は build 引数が正しい", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
+      vi.spyOn(
+        RuntimePolicyResolver.prototype,
+        "resolveWithService",
+      ).mockResolvedValue({
+        type: "terminal_handoff",
+        bundle: {
+          launcher: "claude",
+          promptBundle: "",
+          cwd: "/tmp",
+          suggestedCommand: 'claude -p "fallback"',
+          manualRetryRule: "retry",
+        },
+      });
+      const handoffBundle = {
+        launcher: "claude",
+        promptBundle: "stored-spec",
+        cwd: process.cwd(),
+        suggestedCommand: "cmd",
+        manualRetryRule: "retry",
+      };
+      const buildSpy = vi
+        .spyOn(TerminalHandoffBuilder.prototype, "build")
+        .mockReturnValue(handoffBundle);
+
+      const result = await facade.execute(
+        {
+          planId: "plan-007",
+          skillSpec: "stored-spec",
+          estimatedSteps: 3,
+        },
+        "api-key",
+        null,
+      );
+
+      expect(buildSpy).toHaveBeenCalledWith("stored-spec", process.cwd());
+      expect(executeMock).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        type: "terminal_handoff",
+        bundle: handoffBundle,
+      });
+    });
+
+    it("明示的 apiKey が渡された場合は resolveWithService を使わない", async () => {
+      const resolveSpy = vi
+        .spyOn(RuntimePolicyResolver.prototype, "resolve")
+        .mockResolvedValue({
+          type: "terminal_handoff",
+          bundle: {
+            launcher: "claude",
+            promptBundle: "",
+            cwd: "/tmp",
+            suggestedCommand: 'claude -p "fallback"',
+            manualRetryRule: "retry",
+          },
+        });
+      const resolveWithServiceSpy = vi.spyOn(
+        RuntimePolicyResolver.prototype,
+        "resolveWithService",
+      );
+      vi.spyOn(TerminalHandoffBuilder.prototype, "build").mockReturnValue({
+        launcher: "claude",
+        promptBundle: "spec",
+        cwd: process.cwd(),
+        suggestedCommand: "cmd",
+        manualRetryRule: "retry",
+      });
+
+      await facade.execute(
+        {
+          planId: "plan-008",
+          skillSpec: "spec",
+          estimatedSteps: 3,
+        },
+        "api-key",
+        "explicit-key",
+      );
+
+      expect(resolveSpy).toHaveBeenCalledWith("api-key", "explicit-key");
+      expect(resolveWithServiceSpy).not.toHaveBeenCalled();
+      expect(executeMock).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("improve", () => {
+    it("terminal_handoff 判定時は改善 prompt を guidance 化する", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+        type: "terminal_handoff",
+        bundle: {
+          launcher: "claude",
+          promptBundle: "",
+          cwd: "/tmp",
+          suggestedCommand: 'claude -p "fallback"',
+          manualRetryRule: "retry",
+        },
+      });
+      const handoffGuidance = {
+        terminalCommand:
+          'claude -p "スキル \\"skill-a\\" を改善してください: feedback"',
+        contextSummary: "surface=skill skill=skill-a",
+        reason: "terminal_handoff",
+      };
+      const buildSpy = vi
+        .spyOn(TerminalHandoffBuilder.prototype, "buildForSurface")
+        .mockReturnValue(handoffGuidance);
 
       const result = await facade.improve(
         "skill-a",
@@ -277,12 +524,17 @@ describe("RuntimeSkillCreatorFacade", () => {
       );
 
       expect(buildSpy).toHaveBeenCalledWith(
-        'スキル "skill-a" を改善してください: feedback',
-        process.cwd(),
+        expect.objectContaining({
+          surfaceType: "runtime",
+          runtimeType: "skill",
+          skillName: "skill-a",
+          prompt: 'スキル "skill-a" を改善してください: feedback',
+        }),
+        "terminal_handoff",
       );
       expect(result).toEqual({
         type: "terminal_handoff",
-        bundle: handoffBundle,
+        guidance: handoffGuidance,
       });
     });
 
