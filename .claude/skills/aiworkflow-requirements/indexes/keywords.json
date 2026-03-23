@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-22T23:58:51.165Z",
-  "totalKeywords": 2439,
+  "generated": "2026-03-23T03:10:39.299Z",
+  "totalKeywords": 2436,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6269,18 +6269,6 @@
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "TERMINAL": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "HANDOFF": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "ADAPTER": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "PLACEMENT": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
     "STREAM": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6319,6 +6307,9 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "CODE": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "SURFACE": [

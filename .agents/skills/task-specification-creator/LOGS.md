@@ -4,12 +4,12 @@
 
 ---
 
-## UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 タスク仕様書実行完了（2026-03-22）
+## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 完了
-- **Result**: success
-- **Notes**: toHandoffGuidance() adapter 配置先確定と統一実装。全成果物出力済み。
+- **変更内容**: WorkspaceChatPanel header に InlineModelSelector を compact mode で配置。disabled={controller.isStreaming} でストリーミング中ロック。GuidanceBlock(blocked) は Store reactivity で自動連携（変更不要）。統合テスト11件追加、全146テスト PASS。ui-ux-llm-selector.md / task-workflow 更新。
+- **影響ファイル**: WorkspaceChatPanel.tsx, WorkspaceView.test.tsx, WorkspaceChatPanel.guidance.test.tsx, WorkspaceChatPanel.integration.test.tsx (新規)
+- **未タスク**: 0件
 
 ---
 

@@ -336,3 +336,23 @@ interface SkillDocsCapabilityResult {
 | ~~UT-IMP-TASK9J-PHASE12-IPC-SYNC-AUTO-VERIFY-001~~ | ~~TASK-9J Phase 12 IPC同期自動検証ガード（5仕様書同期 + handler/register/preload 三点突合）~~ | ~~中~~ | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task9j-phase12-ipc-sync-auto-verify-001.md` |
 
 ---
+
+## assertNoSilentFallback ガード（P62 対策）
+
+UT-EXECUTION-ENV-TERMINAL-001 で実装。Provider/Model 未選択時に DEFAULT_CONFIG への暗黙 fallback を防止するランタイムガード。
+
+| 項目       | 値                                                                 |
+| ---------- | ------------------------------------------------------------------ |
+| 配置       | `apps/desktop/src/main/ipc/llmConfigProvider.ts`                   |
+| 関数名     | `assertNoSilentFallback()`                                         |
+| 戻り値型   | `SelectedLLMConfig`（non-null 保証）                               |
+| 例外       | `LLMConfigNotSelectedError`（code: `LLM_CONFIG_NOT_SELECTED`）     |
+| 責務       | LLM 呼び出し前に Provider/Model 未選択を検出し、暗黙 fallback 防止 |
+| 関連タスク | UT-EXECUTION-ENV-TERMINAL-001                                      |
+
+#### 関連未タスク
+
+- UT-ASSERT-NO-SILENT-FALLBACK-WIRING-001: 既存 LLM エントリポイント（`aiHandlers.ts` 等）への結線
+- UT-EXECUTION-ENV-TERMINAL-RENDERER-ERROR-UI-001: Renderer 側エラー表示 UI（`terminal-config-error`）
+
+---
