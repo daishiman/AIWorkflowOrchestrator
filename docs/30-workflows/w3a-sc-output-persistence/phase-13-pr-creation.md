@@ -4,9 +4,11 @@
 
 | 項目     | 値                            |
 | -------- | ----------------------------- |
+| 機能名   | w3a-sc-output-persistence     |
 | Phase    | 13                            |
 | タスクID | TASK-SC-04-OUTPUT-PERSISTENCE |
 | 作成日   | 2026-03-22                    |
+| 更新日   | 2026-03-23                    |
 
 ## 目的
 
@@ -36,14 +38,41 @@
    - PR 本文: Summary（1-3箇条書き）+ Test Plan を含める
    - `gh pr create` で PR を作成する
 
+## 実行手順
+
+### 1. ユーザーにローカル動作確認を依頼【必須】
+
+PR作成前に、ユーザーにローカル環境での動作確認を依頼する。
+
+### 2. 変更サマリーの提示と許可確認【必須】
+
+変更内容のサマリーを提示し、PRを作成してよいかユーザーに確認する。
+
+**重要**: ユーザーから明示的な許可を得るまでPR作成を実行しないこと。
+
+### 3. `/ai:diff-to-pr` を実行
+
+ユーザーの許可を得た後、PR作成を実行する。
+
+```
+/ai:diff-to-pr
+```
+
+### 4. 実行結果の確認
+
+- PRが作成されていること
+- CIが通過していること
+
 ## 参照資料
 
-- `docs/30-workflows/skill-creator-llm-integration/04-phase-12-documentation.md`
+- `docs/30-workflows/w3a-sc-output-persistence/phase-12-documentation.md`
 - `.claude/rules/07-git-and-tooling.md`（PR 作成ルール）
 
 ## 成果物
 
-- GitHub Pull Request（ユーザー承認後）
+| 成果物 | パス                          | 説明     |
+| ------ | ----------------------------- | -------- |
+| PR情報 | `outputs/phase-13/pr-info.md` | PR URL等 |
 
 ## PR 内容テンプレート
 
@@ -68,6 +97,43 @@
 - [ ] コミット前チェックリスト（lint / typecheck / test）を全て実行した
 - [ ] ユーザーの承認を得た
 - [ ] PR を作成した（ユーザー承認後のみ）
+
+## タスク完了処理【必須】
+
+**PRが作成され、CIが通過した後、タスクディレクトリを完了タスクフォルダに移動する。**
+
+```bash
+# タスクディレクトリをcompleted-tasksに移動
+mv docs/30-workflows/w3a-sc-output-persistence/ docs/30-workflows/completed-tasks/
+
+# 移動を確認
+ls docs/30-workflows/completed-tasks/ | grep w3a-sc-output-persistence
+
+# 変更をコミット
+git add docs/30-workflows/
+git commit -m "docs(workflows): w3a-sc-output-persistenceをcompleted-tasksに移動"
+git push
+```
+
+## サブタスク管理
+
+Phase実行開始時に、TaskCreateツールで以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 成果物の作成・配置
+4. 完了条件の検証
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次のPhase
 

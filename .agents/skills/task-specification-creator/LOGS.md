@@ -20,34 +20,22 @@
 
 ---
 
-## UT-SC-02-002 完了（2026-03-23）
+## TASK-SC-04-OUTPUT-PERSISTENCE 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 1-12 完了
 - **Result**: success
 - **Notes**:
-  - execute() の terminal_handoff 未分岐修正（セキュリティ修正）
-  - RuntimeSkillCreatorExecuteResponse Union型追加
-  - void decision; 除去、plan/improve/execute パターン統一
-  - 15テスト全PASS、Line/Function Coverage 100%
+  - SkillFileWriter クラス新規作成（LLM 生成スキルコンテンツの永続化）
+  - SkillGeneratedContent 型を packages/shared/src/types/skillCreator.ts に追加
+  - RuntimeSkillCreatorFacade.execute() に永続化フロー統合（extractGeneratedContent + persist）
+  - P42 準拠3段バリデーション + 6層パストラバーサル防止
+  - アトミック書き込み + ロールバック（部分書き込み防止）
+  - 26テスト全 PASS
+  - 未タスク 1 件: UT-SC-04-001（SkillFileWriter インターフェース抽出 P61）
 
 ---
 
-## UT-EXECUTION-ENV-TERMINAL-001 完了（2026-03-23）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 完了
-- **Result**: success
-- **Notes**:
-  - ExecutionEnvironment.terminal の placeholder → TerminalHandoffCard 本実装
-  - assertNoSilentFallback() ガード実装（P62 対策）
-  - LLMConfigNotSelectedError カスタムエラー型追加
-  - 18テストケース（T-1〜T-18）全 PASS
-  - LOGS.md 2ファイル + interfaces 仕様書更新（P1/P25 対策）
-
----
-
-## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
 ## UT-SC-02-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -78,6 +66,20 @@
 ## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
 ## TASK-LLM-MOD-01 完了（2026-03-23）
 
+## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
+
+## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
+## TASK-SC-03-PLAN-LLM-PROMPT 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: WorkspaceChatPanel header に InlineModelSelector を compact mode で配置。disabled={controller.isStreaming} でストリーミング中ロック。GuidanceBlock(blocked) は Store reactivity で自動連携（変更不要）。統合テスト11件追加、全146テスト PASS。ui-ux-llm-selector.md / task-workflow 更新。
+- **影響ファイル**: WorkspaceChatPanel.tsx, WorkspaceView.test.tsx, WorkspaceChatPanel.guidance.test.tsx, WorkspaceChatPanel.integration.test.tsx (新規)
+- **未タスク**: 0件
+
+---
+
+## TASK-SC-03-PLAN-LLM-PROMPT 完了（2026-03-23）
+
 - **Agent**: task-specification-creator
 - **Phase**: Phase 12 final sync
 - **Result**: success
@@ -91,6 +93,22 @@
 ---
 
 ## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: WorkspaceChatPanel header に InlineModelSelector を compact mode で配置。disabled={controller.isStreaming} でストリーミング中ロック。GuidanceBlock(blocked) は Store reactivity で自動連携（変更不要）。統合テスト11件追加、全146テスト PASS。ui-ux-llm-selector.md / task-workflow 更新。
+- **影響ファイル**: WorkspaceChatPanel.tsx, WorkspaceView.test.tsx, WorkspaceChatPanel.guidance.test.tsx, WorkspaceChatPanel.integration.test.tsx (新規)
+- **未タスク**: 0件
+
+---
+
+## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: P65 dead-end namespace 既解消確認。skill-creator:* 全16チャネル検証。P65不在テスト + allowlist 包含テスト4件追加。Phase 1-12成果物21ファイル。
+- **未タスク**: 2件（UT-SC-01-IPCRESULT-DEDUP, UT-SC-01-DIP-INTERFACE）
+
+---
+
 ## UT-CONV-DB-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator

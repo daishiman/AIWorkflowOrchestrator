@@ -28,6 +28,8 @@ import type {
 import type { IAuthKeyService } from "../auth/types";
 import type { ILLMAdapter } from "../../adapters/llm/types";
 import type { ResourceLoader } from "../skill/ResourceLoader";
+import type { SkillFileWriter } from "../skill/SkillFileWriter";
+import type { SkillGeneratedContent } from "@repo/shared/types";
 import { RuntimePolicyResolver } from "./RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "./TerminalHandoffBuilder";
 import {
@@ -42,6 +44,7 @@ export interface RuntimeSkillCreatorFacadeDeps {
   subscriptionAuthProvider?: ISubscriptionAuthProvider;
   llmAdapter?: ILLMAdapter;
   resourceLoader?: ResourceLoader;
+  skillFileWriter?: SkillFileWriter;
 }
 
 export class RuntimeSkillCreatorFacade {
@@ -50,11 +53,13 @@ export class RuntimeSkillCreatorFacade {
   private readonly skillExecutor: SkillExecutor;
   private readonly llmAdapter?: ILLMAdapter;
   private readonly resourceLoader?: ResourceLoader;
+  private readonly skillFileWriter?: SkillFileWriter;
 
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
     this.llmAdapter = deps.llmAdapter;
     this.resourceLoader = deps.resourceLoader;
+    this.skillFileWriter = deps.skillFileWriter;
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
       deps.subscriptionAuthProvider,
@@ -189,12 +194,67 @@ export class RuntimeSkillCreatorFacade {
 
     const response = await this.skillExecutor.execute(request, skillMeta);
 
+    const skillName =
+      planResult.skillSpec.split("\n")[0]?.substring(0, 50) ?? "unnamed";
+
+    // SkillFileWriter が注入されている場合、LLM 生成コンテンツを永続化
+    if (response.success && this.skillFileWriter) {
+      try {
+        const generatedContent = this.extractGeneratedContent(planResult);
+        await this.skillFileWriter.persist(skillName, generatedContent);
+      } catch (err: unknown) {
+        const errorMessage =
+          err != null && typeof err === "object" && "message" in err
+            ? String((err as { message: string }).message)
+            : "Failed to persist skill files";
+        return {
+          executeId: response.executionId,
+          skillName,
+          success: false,
+          error: `Skill execution succeeded but file persistence failed: ${errorMessage}`,
+        };
+      }
+    }
+
     return {
       executeId: response.executionId,
-      skillName:
-        planResult.skillSpec.split("\n")[0]?.substring(0, 50) ?? "unnamed",
+      skillName,
       success: response.success,
       error: response.error?.message,
+    };
+  }
+
+  private extractGeneratedContent(
+    planResult: SkillPlanResult,
+  ): SkillGeneratedContent {
+    const agentEntries = planResult.agents.map((a) => ({
+      name: a.name,
+      content: `# ${a.name}\n\n${a.role}`,
+    }));
+
+    const scriptEntries = planResult.scripts.map((s) => ({
+      name: s.name,
+      content: `// ${s.name}\n// ${s.purpose}`,
+    }));
+
+    return {
+      skillMd: [
+        `# ${planResult.skillName || "Unnamed Skill"}`,
+        "",
+        planResult.description || "",
+        "",
+        planResult.triggers.length > 0
+          ? `Trigger: ${planResult.triggers.join(", ")}`
+          : "",
+        planResult.anchors.length > 0
+          ? `Anchors: ${planResult.anchors.join(", ")}`
+          : "",
+      ]
+        .filter(Boolean)
+        .join("\n"),
+      agents: agentEntries,
+      scripts: scriptEntries,
+      references: [],
     };
   }
 

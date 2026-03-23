@@ -2599,6 +2599,7 @@ node scripts/list-specs.js --topics
 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L137 |
 | UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L469 |
 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L503 |
+| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L530 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

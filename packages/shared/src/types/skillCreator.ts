@@ -347,6 +347,24 @@ export interface RuntimeSkillCreatorExecuteResult {
 }
 
 /**
+ * LLM が生成したスキルコンテンツを保持する中間データ型。
+ * RuntimeSkillCreatorExecuteResult（成功/失敗のみ）とは別に、
+ * execute() 内部でキャプチャされ SkillFileWriter.persist() に渡される。
+ *
+ * TASK-SC-04-OUTPUT-PERSISTENCE
+ */
+export interface SkillGeneratedContent {
+  /** SKILL.md の全内容（必須、空文字列不可） */
+  skillMd: string;
+  /** agents/ 配下に配置するエージェント定義 */
+  agents: Array<{ name: string; content: string }>;
+  /** scripts/ 配下に配置するスクリプトファイル */
+  scripts: Array<{ name: string; content: string }>;
+  /** references/ 配下に配置する参照ドキュメント */
+  references: Array<{ name: string; content: string }>;
+}
+
+/**
  * Runtime improve 結果
  */
 export interface RuntimeSkillCreatorImproveResult {
