@@ -401,6 +401,21 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | プロンプト定数ファイル新規作成 | `apps/desktop/src/main/services/runtime/planPromptConstants.ts` | システムプロンプト・JSON スキーマ指示・プロンプトビルダー |
 | RuntimeSkillCreatorPlanResult 型拡充 | `packages/shared/src/types/skillCreator.ts` | `skillName` / `description` / `agents` / `scripts` / `triggers` / `anchors` フィールド追加 |
 
+### 完了タスク（TASK-SC-05-IMPROVE-LLM）
+
+> 完了日: 2026-03-23
+
+| 変更項目 | ファイル | 内容 |
+| -------- | -------- | ---- |
+| improve() LLM 統合 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | スタブ実装を LLM 呼び出しに置換。`buildImproveUserPrompt` + `parseImproveResponse` + `mapToSuggestion` + `handleImproveError` 追加 |
+| プロンプト定数ファイル新規作成 | `apps/desktop/src/main/services/runtime/improvePromptConstants.ts` | `IMPROVE_RESPONSE_SCHEMA_INSTRUCTION` + JSON スキーマ指示 |
+| `RuntimeSkillCreatorImproveSuggestion` 型追加 | `packages/shared/src/types/skillCreator.ts` | `section` / `before` / `after` / `reason` フィールド |
+| `RuntimeSkillCreatorImproveResult.suggestions` 型変更 | `packages/shared/src/types/skillCreator.ts` | `string[]` → `RuntimeSkillCreatorImproveSuggestion[]` |
+| `ApplyImprovementResult` 型追加 | `packages/shared/src/types/skillCreator.ts` | `applied` / `skipped` / `skippedDetails` / `errors` フィールド |
+| `RuntimeSkillCreatorImproveErrorResponse` 型追加 | `packages/shared/src/types/skillCreator.ts` | `success: false` + `error: { code, message }` |
+| `applyImprovement()` メソッド追加 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `before`/`after` テキスト置換による改善適用 |
+| `SkillFileManager` DI 追加 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `RuntimeSkillCreatorFacadeDeps.skillFileManager` (optional) |
+
 ### 契約メモ
 
 | 項目 | 契約 |

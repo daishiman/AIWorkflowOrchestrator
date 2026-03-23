@@ -441,3 +441,16 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - ChatView/index.tsx: インラインエラーバナーUI（Apple HIG systemRed、5秒自動消去）
 - テスト: 94件全 PASS（chatSlice 57件、ChatView 37件）
 - 未タスク: 2件検出（i18n対応、エラーコード一覧明文化）
+
+### 2026-03-23: TASK-SC-05-IMPROVE-LLM 完了
+
+- RuntimeSkillCreatorFacade.improve() の stub を LLM 統合に置換
+- 主要変更:
+  - improve() に LLM 呼び出しパス追加（resolveDecision → SKILL.md 読込 → prompt 構築 → sendChat → パース）
+  - applyImprovement() メソッド新規追加（before/after テキスト置換）
+  - improvePromptConstants.ts 新規作成（IMPROVE_RESPONSE_SCHEMA_INSTRUCTION）
+  - RuntimeSkillCreatorImproveSuggestion 型追加（section/before/after/reason）
+  - SkillFileManager を DI 依存に追加（optional）
+- テスト: 21件追加、全92件 PASS
+- カバレッジ: Line 91.2%, Branch 78.07%, Function 100%
+- 未タスク: 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI）
