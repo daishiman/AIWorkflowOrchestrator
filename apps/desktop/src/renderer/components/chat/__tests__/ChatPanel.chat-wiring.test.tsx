@@ -47,6 +47,9 @@ vi.mock("../../../store", () => ({
     fetchSkills: mockFetchSkills,
     rescanSkills: vi.fn(),
   })),
+  useSetCurrentView: vi.fn(() => vi.fn()),
+  useSelectProvider: vi.fn(() => vi.fn()),
+  useSelectModel: vi.fn(() => vi.fn()),
   // 新規セレクタ（Phase 5 実装予定、TDD Red フェーズではまだ存在しない）
   useChatPanelStatus: vi.fn(() => mockStoreState.chatPanelStatus ?? "idle"),
   useSetChatPanelStatus: vi.fn(() => mockSetChatPanelStatus),

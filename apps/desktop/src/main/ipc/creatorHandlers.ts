@@ -6,7 +6,7 @@
 
 import { ipcMain, type BrowserWindow, type IpcMainInvokeEvent } from "electron";
 import type {
-  RuntimeSkillCreatorExecuteResult,
+  RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorPlanResponse,
 } from "@repo/shared/types";
@@ -97,7 +97,7 @@ export function registerRuntimeSkillCreatorHandlers(
         authMode?: AuthMode;
         apiKey?: string | null;
       },
-    ): Promise<IpcResult<RuntimeSkillCreatorExecuteResult>> => {
+    ): Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>> => {
       validateSender(
         event,
         IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
@@ -120,6 +120,12 @@ export function registerRuntimeSkillCreatorHandlers(
             planId: args.planId.trim(),
             skillSpec: args.skillSpec.trim(),
             estimatedSteps: 3,
+            skillName: "",
+            description: "",
+            agents: [],
+            scripts: [],
+            triggers: [],
+            anchors: [],
           },
           args.authMode ?? "api-key",
           args.apiKey ?? null,

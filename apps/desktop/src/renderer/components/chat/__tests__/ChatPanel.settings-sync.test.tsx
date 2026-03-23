@@ -50,6 +50,9 @@ vi.mock("../../../store", () => ({
   useSelectedProviderId: vi.fn(() => mockStoreState.selectedProviderId ?? null),
   useSelectedModelId: vi.fn(() => mockStoreState.selectedModelId ?? null),
   useChatPanelStatus: vi.fn(() => mockStoreState.chatPanelStatus ?? "idle"),
+  useSetCurrentView: vi.fn(() => vi.fn()),
+  useSelectProvider: vi.fn(() => vi.fn()),
+  useSelectModel: vi.fn(() => vi.fn()),
 }));
 
 // ============================================

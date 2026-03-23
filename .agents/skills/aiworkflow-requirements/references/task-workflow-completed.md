@@ -57,6 +57,7 @@
 
 ---
 
+
 ### タスク: TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Terminal Handoff Surface Realization 設計（2026-03-22）
 
 | 項目 | 値 |
@@ -81,6 +82,59 @@
 #### 発見元
 
 - ai-runtime-execution-responsibility-realignment pack Task 05（2026-03-19）
+
+---
+
+### タスク: TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 ChatPanel Review Harness Alignment 設計（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-23 |
+| 対象 | ChatPanel review harness の task-specification-creator Phase 11 整合設計 |
+| 成果物 | `docs/30-workflows/completed-tasks/step-05-par-task-07-chatpanel-review-harness-alignment/` |
+
+#### 実施内容
+
+- ChatPanel 8 状態定義（idle/loading/streaming/complete/error/review/guidance/terminal）を確定
+- 3 Lane 設計（Lane A: Review Board Integration / Lane B: State Machine Harness / Lane C: Handoff Navigation）を確定
+- GAP-01〜04（onTerminalSwitch/onSelectProvider/onSelectModel/onOpenTerminal）の no-op 排除設計
+- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+- 未タスク 3 件（openTerminal IPC handler / role 型追加 / ViewType terminal 追加）を検出・指示書化
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment pack Task 07（2026-03-23）
+
+---
+
+### タスク: TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 Transcript -> Chat Provenance Linkage 設計（2026-03-22）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 |
+| ステータス | **仕様書作成完了（`spec_created` / workflow root `implementation_ready` / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-22 |
+| 対象 | Transcript -> Chat 手動3操作連携 / Provenance Chip / Metadata Contract |
+| 成果物 | `docs/30-workflows/step-04-seq-task-06-transcript-to-chat-provenance-linkage/` |
+
+#### 実施内容
+
+- TranscriptProvenance 型定義（sourceType / sharedAt / sessionTitle / messageRange / originalContent）
+- 3操作フロー: OP-1（選択範囲をチャットへ送る）/ OP-2（直近出力を添付）/ OP-3（セッションを貼り付ける）
+- Provenance Chip の表示条件・dismiss 動作・履歴復元ロジック
+- Terminal Handoff (Task 05) との責務分離・CTA 表示領域の非競合保証
+- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+- 未タスク 2 件（M-1: SelectedFile source / M-2: TranscriptSession 型）を検出・指示書化
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment pack Task 06（2026-03-19）
 
 ---
 
@@ -301,8 +355,8 @@
 
 | 種別 | ID | 概要 | タスク仕様書 |
 | --- | --- | --- | --- |
-| completed | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 -- **実装済み（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）** | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
-| completed | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 -- **解消済み（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）** | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
+| pending | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
+| pending | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
 | completed | `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | `docs/30-workflows/completed-tasks/task-ut-slide-ui-001.md` |
 | resolved | `UT-SLIDE-P31-001` | `useSlideProject()` selector migration を current branch で吸収 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |
 

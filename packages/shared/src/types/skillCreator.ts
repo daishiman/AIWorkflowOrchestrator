@@ -328,6 +328,12 @@ export interface RuntimeSkillCreatorPlanResult {
   planId: string;
   skillSpec: string;
   estimatedSteps: number;
+  skillName: string;
+  description: string;
+  agents: Array<{ name: string; role: string }>;
+  scripts: Array<{ name: string; purpose: string }>;
+  triggers: string[];
+  anchors: string[];
 }
 
 /**
@@ -357,6 +363,16 @@ export type RuntimeSkillCreatorPlanResponse =
   | {
       type: "terminal_handoff";
       guidance: HandoffGuidance;
+    };
+
+/**
+ * Runtime execute IPC の戻り値
+ */
+export type RuntimeSkillCreatorExecuteResponse =
+  | RuntimeSkillCreatorExecuteResult
+  | {
+      type: "terminal_handoff";
+      bundle: TerminalHandoffBundle;
     };
 
 /**

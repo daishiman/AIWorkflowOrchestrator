@@ -9,10 +9,12 @@
 
 import type { LLMProviderId } from "@repo/shared/types/llm/schemas";
 import type { ILLMAdapter, LLMAdapterConfig } from "./types";
-import { OpenAIAdapter } from "./OpenAIAdapter";
+import {
+  OpenAICompatibleAdapter,
+  type OpenAICompatibleProviderConfig,
+} from "./OpenAICompatibleAdapter";
 import { AnthropicAdapter } from "./AnthropicAdapter";
 import { GoogleAdapter } from "./GoogleAdapter";
-import { xAIAdapter } from "./xAIAdapter";
 import { SecureStorage } from "@/main/services/secureStorage";
 
 /**
@@ -24,6 +26,32 @@ type AdapterFactory = (
 ) => ILLMAdapter;
 
 /**
+ * OpenAI互換プロバイダーの設定マップ
+ * 新しいOpenAI互換プロバイダーはここに追加するだけで対応可能
+ */
+const OPENAI_COMPATIBLE_CONFIGS: Record<
+  string,
+  OpenAICompatibleProviderConfig
+> = {
+  openai: {
+    providerId: "openai",
+    defaultBaseUrl: "https://api.openai.com/v1",
+  },
+  xai: {
+    providerId: "xai",
+    defaultBaseUrl: "https://api.x.ai/v1",
+  },
+  openrouter: {
+    providerId: "openrouter",
+    defaultBaseUrl: "https://openrouter.ai/api/v1",
+    extraHeaders: {
+      "HTTP-Referer": "https://aiworkflow.app",
+      "X-Title": "AIWorkflowOrchestrator",
+    },
+  },
+};
+
+/**
  * サポートされるプロバイダーIDのリスト
  */
 const SUPPORTED_PROVIDER_IDS: LLMProviderId[] = [
@@ -31,6 +59,7 @@ const SUPPORTED_PROVIDER_IDS: LLMProviderId[] = [
   "anthropic",
   "google",
   "xai",
+  "openrouter",
 ];
 
 /**
@@ -42,11 +71,18 @@ class LLMAdapterFactoryImpl {
   private readonly instances = new Map<LLMProviderId, ILLMAdapter>();
 
   constructor() {
-    // デフォルトアダプターを登録
-    this.register(
-      "openai",
-      (apiKey, config) => new OpenAIAdapter(apiKey, config),
-    );
+    // OpenAI互換プロバイダーを設定駆動で一括登録
+    for (const [id, providerConfig] of Object.entries(
+      OPENAI_COMPATIBLE_CONFIGS,
+    )) {
+      this.register(
+        id as LLMProviderId,
+        (apiKey, config) =>
+          new OpenAICompatibleAdapter(providerConfig, apiKey, config),
+      );
+    }
+
+    // 独自API形式のプロバイダーは個別アダプターで登録
     this.register(
       "anthropic",
       (apiKey, config) => new AnthropicAdapter(apiKey, config),
@@ -55,7 +91,6 @@ class LLMAdapterFactoryImpl {
       "google",
       (apiKey, config) => new GoogleAdapter(apiKey, config),
     );
-    this.register("xai", (apiKey, config) => new xAIAdapter(apiKey, config));
   }
 
   /**

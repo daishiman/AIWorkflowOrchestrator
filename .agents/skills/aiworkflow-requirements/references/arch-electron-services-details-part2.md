@@ -126,6 +126,20 @@ export type RuntimeResolution =
 
 AuthKeyService/SubscriptionAuthProvider の例外時は terminal_handoff (no-auth) にフォールバック。DEFAULT_CONFIG への暗黙 fallback は禁止（P62）。
 
+### RuntimeSkillCreatorFacade との統合（UT-SC-02-002）
+
+> 完了日: 2026-03-23
+
+`RuntimeSkillCreatorFacade` の全3メソッドで terminal_handoff 早期リターンパターンが統一済み。
+
+| メソッド | terminal_handoff 分岐 | Union型 | 追加タスク |
+| --- | --- | --- | --- |
+| `plan()` | 有（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | `RuntimeSkillCreatorPlanResponse` | -- |
+| `execute()` | 有（UT-SC-02-002） | `RuntimeSkillCreatorExecuteResponse` | UT-SC-02-002 |
+| `improve()` | 有（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | `RuntimeSkillCreatorImproveResponse` | -- |
+
+`RuntimeSkillCreatorExecuteResponse` は `packages/shared/src/types/skillCreator.ts` に追加し、`packages/shared/src/types/index.ts` からバレルエクスポート済み。`creatorHandlers.ts` の `skill-creator:execute-plan` 戻り値型も更新済み。Preload 側型定義は UT-SC-02-005 で対応予定。
+
 ## Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
 
 > **ステータス**: `spec_created`（2026-03-19 再監査同期）

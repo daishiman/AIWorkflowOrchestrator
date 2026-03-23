@@ -51,6 +51,14 @@ const cta = resolveCtaContract(capability, ctaInput);
 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | RuntimePolicyResolver capability bridge | **完了**（2026-03-21） | direct caller lane で resolveCapability() を authority として使用。assertNoSilentFallback enforcement 組み込み。execute() で terminalSurface handoff 分岐追加。internal `creatorHandlers.ts` adapter test 追加 |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | Skill Creator public IPC wiring 統合 | 残課題 | internal `creator:*` と public `skill-creator:*` の境界整理 |
 | UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001 | subscription service 統合 | **完了**（2026-03-22） | TASK-SC-02-RUNTIME-POLICY-CLOSURE で実装。`ISubscriptionAuthProvider.validateToken()` による実サブスクリプション判定を統合。3パターン分岐（integrated_api / terminal_handoff subscription / terminal_handoff no-auth）安定化 |
+| TASK-SC-03 | Plan LLM プロンプト構築 | **完了**（2026-03-23） | plan() に LLM 呼び出し・JSON パース・型ガードを実装 |
 | UT-EXEC-01 | ExecutionCapabilityStatus を chatSlice に統合 | 残課題 | |
 | UT-EXEC-02 | resolveCapability ストリーミング/エラー状態結合テスト | 残課題 | |
 | UT-EXEC-03 | CTA ラベル多言語対応設計 | 残課題 | |
+| UT-SC-03-001 | IResourceLoader インターフェース抽出 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-001.md` |
+| UT-SC-03-002 | 動的 apiKey 注入 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-002.md` |
+| UT-SC-03-003 | DI 配線の実装 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-003.md` |
+| UT-SC-03-004 | SkillBlueprint 互換移行 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-004.md` |
+| UT-SC-03-005 | plan() エラーハンドリングの Result<T,E> パターン移行 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-005.md` |
+| UT-SC-03-006 | buildPlanSystemPrompt / parsePlanResponse 単体テスト追加 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-006.md` |
+| UT-SC-03-007 | improve() P42 準拠バリデーション追加 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-007.md` |

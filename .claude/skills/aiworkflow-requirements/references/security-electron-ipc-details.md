@@ -26,7 +26,7 @@ runtime public invoke の契約:
 | 定数名 | チャンネル名 | request | response |
 | --- | --- | --- | --- |
 | `SKILL_CREATOR_PLAN` | `skill-creator:plan` | `SkillCreatorPlanRequest` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
-| `SKILL_CREATOR_EXECUTE_PLAN` | `skill-creator:execute-plan` | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResult>` |
+| `SKILL_CREATOR_EXECUTE_PLAN` | `skill-creator:execute-plan` | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
 | `SKILL_CREATOR_IMPROVE_SKILL` | `skill-creator:improve-skill` | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 
 **セキュリティ検証パターン**:
