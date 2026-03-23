@@ -51,11 +51,21 @@ export * from "./src/claude-cli";
 // Agent Execution types (AGENT-005)
 export * from "./src/types/agent-execution";
 
-// Permission Store types (TASK-3-1-E)
+// Permission Store types (TASK-3-1-E, UT-06-002)
 export type {
   AllowedToolEntry,
   PermissionStoreSchema,
   IPermissionStore,
+  ExpiryPolicy,
+  AllowedToolEntryV2,
+  IPermissionStoreV2,
+  PermissionStoreSchemaV2,
+  ClearSessionResponse,
+} from "./src/types/permission-store";
+
+export {
+  calcExpiresAt,
+  PERMISSION_HISTORY_MAX_ENTRIES,
 } from "./src/types/permission-store";
 
 // Safety Gate types (UT-06-003)

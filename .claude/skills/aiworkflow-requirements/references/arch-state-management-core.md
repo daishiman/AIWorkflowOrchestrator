@@ -537,3 +537,78 @@ UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 で、SkillExecutionStatus 型�
 - P31 対策: 合成 Hook ではなく個別セレクタを使用
 
 > **実装照合済み（2026-03-20）**: `packages/shared/src/types/skill.ts` と `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` で同じ値域が使われていることを確認済み。
+
+---
+
+## Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created）
+
+> 設計完了日: 2026-03-23（spec_created、プロダクションコード実装は未着手）
+
+### 概要
+
+Slide 機能における Modifier 操作と Manual Fallback の整合設計を確定した。`SlideUIStatus`（4値）・`SlideLane`（2値）・`SlideCapabilityDTO` の型契約を定義し、禁止遷移4件を明文化する。新規 Slice は追加しない（既存 `agentSlice` / `chatSlice` の拡張で対応）。
+
+### 型定義
+
+```typescript
+type SlideUIStatus =
+  | "synced"    // AI と手動の状態が一致している
+  | "running"   // Modifier による変換処理中
+  | "degraded"  // Modifier 失敗 / agent-client 到達不可
+  | "guidance"; // Manual Fallback ガイダンス表示中
+
+type SlideLane =
+  | "integrated" // Integrated Runtime 経由（AI Modifier 使用可）
+  | "manual";    // Manual Lane（ユーザー手動操作のみ）
+
+interface SlideCapabilityDTO {
+  laneType: SlideLane;
+  modifier: SlideModifierRef | null;       // integrated 時のみ非 null
+  agentClient: AgentClientRef | null;      // integrated 時のみ非 null
+  fallbackReason: string | null;           // degraded / guidance 時のみ非 null
+  guidance: HandoffGuidance | null;        // guidance 状態時のみ非 null
+}
+```
+
+### 禁止遷移（4件）
+
+| ID | 禁止遷移 | 理由 |
+| --- | --- | --- |
+| FT-1 | `integrated` → `manual` の自動格下げ | ユーザーの明示的操作なしに lane を変更すると暗黙 fallback（P62 再発）になる |
+| FT-2 | `guidance` 状態中の `modifier` 呼び出し | guidance 表示中は AI 操作を受け付けない（Manual Boundary MB-1 準拠） |
+| FT-3 | `degraded` 状態中の `agentClient` 呼び出し | agent-client が到達不可のまま呼び出すと silent failure になる |
+| FT-4 | `synced` 状態時の `fallbackReason` 設定 | synced = 正常状態であり fallback 理由が共存してはならない |
+
+### 状態遷移
+
+```
+[*] --> synced
+synced --> running: Modifier 実行開始
+running --> synced: Modifier 完了（AI と手動が再一致）
+running --> degraded: Modifier 失敗 / agent-client 到達不可
+degraded --> guidance: ユーザーが Manual Fallback を選択
+degraded --> running: 再試行（明示的ユーザー操作）
+guidance --> synced: Manual 操作完了後に AI 同期
+guidance --> degraded: Manual 操作キャンセル
+```
+
+### IPC チャネル設計（slide:sync:* / 暫定）
+
+| チャネル | 方向 | 用途 |
+| --- | --- | --- |
+| `slide:sync:status` | Main → Renderer | SlideUIStatus の push 通知 |
+| `slide:sync:capability` | Renderer → Main | SlideCapabilityDTO の取得 |
+| `slide:sync:fallback` | Renderer → Main | Manual Fallback への明示的遷移要求 |
+
+> **注意**: `slide:sync:*` は暫定 namespace。`slide:*` への canonical 統一は UT-SLIDE-TASK09-IPC-NAMESPACE-001 で対応予定。
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 | 本設計タスク | **spec_created**（2026-03-23） |
+| UT-SLIDE-IMPL-001 | Modifier / agent-client 実装 | 未着手（HIGH） |
+| UT-SLIDE-UI-001 | SlideWorkspace UI 4領域実装 | 未着手（HIGH） |
+| UT-SLIDE-P31-001 | P31/P48 無限ループ対策実装 | 未着手（MEDIUM） |
+| UT-SLIDE-HANDOFF-DUP-001 | terminal handoff 重複解消 | 未着手（MEDIUM） |
+| UT-SLIDE-TASK09-IPC-NAMESPACE-001 | slide:sync:* legacy IPC channel の namespace 統一 | 未着手（MEDIUM） |

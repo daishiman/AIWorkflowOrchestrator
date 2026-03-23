@@ -113,8 +113,10 @@ describe("PermissionStore Integration Tests", () => {
       const store1 = new PermissionStore();
       store1.allowTool("Read");
 
-      // ストアに保存されたデータを取得
-      const savedData = mockStore.set.mock.calls[0][0] as PermissionStoreSchema;
+      // ストアに保存されたデータを取得（V1→V2マイグレーションで先にsetが呼ばれるため最後の呼び出しを使用）
+      const lastCall =
+        mockStore.set.mock.calls[mockStore.set.mock.calls.length - 1];
+      const savedData = lastCall[0] as PermissionStoreSchema;
 
       // 再起動をシミュレート
       mockStoreData = savedData;
@@ -137,8 +139,10 @@ describe("PermissionStore Integration Tests", () => {
       expect(store1.isToolAllowed("Read")).toBe(true);
       store1.revokeTool("Read");
 
-      // 再起動シミュレート
-      const savedData = mockStore.set.mock.calls[0][0] as PermissionStoreSchema;
+      // 再起動シミュレート（V1→V2マイグレーションで先にsetが呼ばれるため最後の呼び出しを使用）
+      const lastCall =
+        mockStore.set.mock.calls[mockStore.set.mock.calls.length - 1];
+      const savedData = lastCall[0] as PermissionStoreSchema;
       mockStoreData = savedData;
       const store2 = new PermissionStore();
 

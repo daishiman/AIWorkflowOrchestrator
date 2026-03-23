@@ -207,6 +207,21 @@ const SKILL_DISTRIBUTION_CHANNELS = {
 
 ---
 
+## IPermissionStoreV2 インターフェース（UT-06-002）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-06-002 |
+| ステータス | completed（Phase 1-12, 2026-03-23） |
+| 型定義 | `packages/shared/src/types/permission-store.ts` |
+| 実装 | `apps/desktop/src/main/services/skill/PermissionStore.ts` |
+
+V1 の PermissionStore を V2 へ拡張。AllowedToolEntryV2（expiresAt / skillName / expiryPolicy）、ExpiryPolicy union 型、calcExpiresAt 純関数、isToolAllowed 6分岐フロー、permission:clear-session IPC チャネルを追加。
+
+詳細仕様: [security-skill-execution.md - Permission Store V2](security-skill-execution.md#permission-store-v2ut-06-002)
+
+---
+
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`

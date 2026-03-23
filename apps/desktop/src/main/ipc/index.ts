@@ -91,6 +91,7 @@ import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
 import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
+import { SkillFileWriter } from "../services/skill/SkillFileWriter";
 import Database from "better-sqlite3";
 import {
   registerSlideIpcHandlers,
@@ -895,10 +896,12 @@ export function registerAllIpcHandlers(
         "[IPC] SkillExecutor not available, runtime skill creator handlers will stay degraded",
       );
     }
+    const skillFileWriter = new SkillFileWriter(skillBasePath);
     const runtimeSkillCreatorService = skillExecutor
       ? new RuntimeSkillCreatorFacade({
           skillExecutor,
           authKeyService,
+          skillFileWriter,
         })
       : undefined;
     registerSkillCreatorHandlers(

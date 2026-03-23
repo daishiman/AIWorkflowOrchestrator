@@ -2,18 +2,47 @@
  * PermissionStore - 権限設定永続化ストア
  *
  * TASK-3-1-E: rememberChoice機能永続化
+ * UT-06-002: AllowedToolEntryV2 PermissionStore 適用
  *
  * ユーザーが「次回から確認しない」を選択したツールの許可設定を
  * electron-storeで永続化する。インメモリキャッシュにより高速アクセスを提供。
+ *
+ * V2: 失効ポリシー（session/time_24h/time_7d/permanent）によるスコープ管理、
+ * スキル名照合、期限切れ自動削除をサポート。
  */
 
 import ElectronStore from "electron-store";
 import log from "electron-log";
 import type {
   AllowedToolEntry,
-  IPermissionStore,
+  AllowedToolEntryV2,
+  IPermissionStoreV2,
   PermissionStoreSchema,
+  PermissionStoreSchemaV2,
+  ExpiryPolicy,
 } from "@repo/shared";
+
+/**
+ * 失効ポリシーに基づき expiresAt を計算する（ローカル実装）
+ *
+ * @repo/shared の calcExpiresAt と同一ロジック。
+ * ESM/CJS モジュール解決の問題を回避するためローカルに配置。
+ */
+function calcExpiresAtLocal(
+  policy: ExpiryPolicy,
+  allowedAt: number,
+): number | undefined {
+  switch (policy) {
+    case "session":
+      return undefined;
+    case "time_24h":
+      return allowedAt + 86_400_000;
+    case "time_7d":
+      return allowedAt + 604_800_000;
+    case "permanent":
+      return undefined;
+  }
+}
 
 /**
  * スキーマのデフォルト値
@@ -46,12 +75,12 @@ const DEFAULT_SCHEMA: PermissionStoreSchema = {
  * store.revokeTool("Read");
  * ```
  */
-export class PermissionStore implements IPermissionStore {
+export class PermissionStore implements IPermissionStoreV2 {
   /** electron-store インスタンス */
   private store: ElectronStore<PermissionStoreSchema>;
 
   /** ツール許可のインメモリキャッシュ（高速アクセス用） */
-  private toolCache: Map<string, AllowedToolEntry>;
+  private toolCache: Map<string, AllowedToolEntryV2>;
 
   /**
    * コンストラクタ
@@ -67,16 +96,53 @@ export class PermissionStore implements IPermissionStore {
   }
 
   /**
-   * ツールが許可済みかどうかを確認（O(1)）
+   * ツールが許可済みかどうかを確認（6分岐フロー）
+   *
+   * (1) エントリなし → false
+   * (2) expiresAt undefined → skillName チェックへ
+   * (3) expiresAt < now → 削除 & false
+   * (4) expiresAt >= now → skillName チェックへ
+   * (5) skillName 不一致 → false
+   * (6) 全条件クリア → true
    *
    * @param toolName - ツール名
+   * @param skillName - 呼び出し元スキル名（省略時は全スキルに対する許可を確認）
    * @returns 許可済みの場合 true
    */
-  isToolAllowed(toolName: string): boolean {
+  isToolAllowed(toolName: string, skillName?: string): boolean {
     if (!toolName || toolName.trim() === "") {
       return false;
     }
-    return this.toolCache.has(toolName);
+
+    // (1) エントリ取得
+    const entry = this.toolCache.get(toolName);
+    if (!entry) {
+      return false;
+    }
+
+    // (2)(3)(4) 期限チェック
+    if (entry.expiresAt !== undefined) {
+      if (entry.expiresAt < Date.now()) {
+        // (3) 期限切れ → 削除
+        this.toolCache.delete(toolName);
+        this.updateStore();
+        return false;
+      }
+      // (4) 期限内 → skillName チェックへ
+    }
+    // (2) expiresAt undefined → skillName チェックへ
+
+    // (5) skillName チェック
+    if (
+      entry.skillName !== undefined &&
+      skillName !== undefined &&
+      entry.skillName !== skillName
+    ) {
+      return false;
+    }
+
+    // (6) 全条件クリア
+    return true;
   }
 
   /**
@@ -135,6 +201,61 @@ export class PermissionStore implements IPermissionStore {
   }
 
   /**
+   * AllowedToolEntryV2 を受け入れてツールを許可
+   *
+   * expiryPolicy に基づき expiresAt を自動計算。
+   * session/permanent は expiresAt を強制 undefined にリセット（整合性保証）。
+   */
+  allowToolV2(entry: AllowedToolEntryV2): void {
+    const policy = entry.expiryPolicy ?? "permanent";
+
+    const allowedAtMs =
+      typeof entry.allowedAt === "string"
+        ? new Date(entry.allowedAt).getTime()
+        : entry.allowedAt;
+
+    // session/permanent は expiresAt を強制 undefined にリセット
+    const expiresAt =
+      policy === "session" || policy === "permanent"
+        ? undefined
+        : (entry.expiresAt ?? calcExpiresAtLocal(policy, allowedAtMs));
+
+    const v2Entry: AllowedToolEntryV2 = {
+      ...entry,
+      expiresAt,
+      expiryPolicy: policy,
+    };
+
+    this.toolCache.set(entry.toolName, v2Entry);
+    this.updateStore();
+
+    log.info(
+      `[PermissionStore] Tool permission added (V2): ${entry.toolName} [${policy}]`,
+    );
+  }
+
+  /**
+   * 現在有効な許可エントリを全て返す（期限切れは自動削除）
+   */
+  getAllowedToolEntriesV2(): AllowedToolEntryV2[] {
+    const now = Date.now();
+    let hasExpired = false;
+
+    for (const [key, entry] of this.toolCache.entries()) {
+      if (entry.expiresAt !== undefined && entry.expiresAt < now) {
+        this.toolCache.delete(key);
+        hasExpired = true;
+      }
+    }
+
+    if (hasExpired) {
+      this.updateStore();
+    }
+
+    return Array.from(this.toolCache.values());
+  }
+
+  /**
    * 全ての許可設定をクリア
    */
   clearAll(): void {
@@ -146,27 +267,38 @@ export class PermissionStore implements IPermissionStore {
   }
 
   /**
-   * セッション内の一時許可エントリを一括取り消し
+   * セッションスコープのエントリのみ削除
    *
-   * UT-06-005: abort フロー Step 2 で使用。
-   * セッション内で許可されたツールを全て取り消す。
+   * expiryPolicy === "session" のエントリを全て削除する。
+   * permanent / time スコープのエントリは残存する。
    *
-   * @param _sessionId - セッションID（将来のセッション別管理用）
+   * @param sessionId - セッションID
    * @returns 取り消されたエントリ数
    */
-  revokeSessionEntries(_sessionId: string): number {
-    // 現在の実装ではセッション別管理はないため、全エントリを取り消す
-    const count = this.toolCache.size;
-    if (count > 0) {
-      this.toolCache.clear();
-      this.updateStore();
-      log.info(`[PermissionStore] Session entries revoked: ${count} tools`);
+  revokeSessionEntries(sessionId: string): number {
+    let removedCount = 0;
+
+    for (const [key, entry] of this.toolCache.entries()) {
+      if (entry.expiryPolicy === "session") {
+        this.toolCache.delete(key);
+        removedCount++;
+      }
     }
-    return count;
+
+    if (removedCount > 0) {
+      this.updateStore();
+      log.info(
+        `[PermissionStore] Session entries revoked: ${removedCount} (session: ${sessionId})`,
+      );
+    }
+
+    return removedCount;
   }
 
   /**
    * キャッシュを初期化（起動時に呼び出し）
+   *
+   * V1 データは V2 にマイグレーション（永続・全スキル対象として変換）
    */
   private initializeCache(): void {
     try {
@@ -180,9 +312,22 @@ export class PermissionStore implements IPermissionStore {
         return;
       }
 
-      // キャッシュを構築
+      // V1→V2 マイグレーション
+      if (data.version === 1) {
+        const migrated = this.migrateV1ToV2(data);
+        for (const entry of migrated.allowedTools) {
+          this.toolCache.set(entry.toolName, entry);
+        }
+        this.updateStore();
+        log.info(
+          `[PermissionStore] Migrated V1→V2: ${this.toolCache.size} tools`,
+        );
+        return;
+      }
+
+      // V2 データのキャッシュ構築
       for (const entry of data.allowedTools) {
-        this.toolCache.set(entry.toolName, entry);
+        this.toolCache.set(entry.toolName, entry as AllowedToolEntryV2);
       }
 
       log.info(`[PermissionStore] Loaded ${this.toolCache.size} allowed tools`);
@@ -195,17 +340,37 @@ export class PermissionStore implements IPermissionStore {
   }
 
   /**
-   * キャッシュからストアを更新
+   * V1→V2 マイグレーション
+   *
+   * V1 エントリは永続・全スキル対象として変換
+   */
+  private migrateV1ToV2(
+    v1Data: PermissionStoreSchema,
+  ): PermissionStoreSchemaV2 {
+    return {
+      version: 2,
+      allowedTools: v1Data.allowedTools.map((entry) => ({
+        ...entry,
+        expiresAt: undefined,
+        skillName: undefined,
+        expiryPolicy: "permanent" as const,
+      })),
+      updatedAt: new Date().toISOString(),
+    };
+  }
+
+  /**
+   * キャッシュからストアを更新（V2 スキーマ）
    */
   private updateStore(): void {
     try {
-      const schema: PermissionStoreSchema = {
-        version: 1,
+      const schema: PermissionStoreSchemaV2 = {
+        version: 2,
         allowedTools: Array.from(this.toolCache.values()),
         updatedAt: new Date().toISOString(),
       };
 
-      this.store.set(schema);
+      this.store.set(schema as unknown as PermissionStoreSchema);
     } catch (error) {
       log.error("[PermissionStore] Failed to save store:", error);
     }
@@ -256,6 +421,6 @@ export class PermissionStore implements IPermissionStore {
  *
  * @returns IPermissionStore インスタンス
  */
-export function createPermissionStore(): IPermissionStore {
+export function createPermissionStore(): IPermissionStoreV2 {
   return new PermissionStore();
 }
