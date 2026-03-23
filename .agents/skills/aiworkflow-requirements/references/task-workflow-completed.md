@@ -5,7 +5,41 @@
 
 ## 完了タスク
 
+### タスク: TASK-SC-04-OUTPUT-PERSISTENCE SkillFileWriter LLM生成スキルコンテンツ永続化（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SC-04-OUTPUT-PERSISTENCE |
+| 完了日 | 2026-03-23 |
+| ステータス | **完了** |
+| 優先度 | 高 |
+| 対象 | SkillFileWriter / SkillGeneratedContent / RuntimeSkillCreatorFacade.execute() |
+| 成果物 | `docs/30-workflows/w3a-sc-output-persistence/` |
+
+#### 実施内容
+
+- SkillFileWriter クラス新規作成（LLM 生成スキルコンテンツの `.claude/skills/{skillName}/` への永続化）
+- SkillGeneratedContent 型を `packages/shared/src/types/skillCreator.ts` に追加
+- RuntimeSkillCreatorFacade.execute() に永続化フロー統合（extractGeneratedContent + persist）
+- 6層パストラバーサル防止 + P42 準拠3段バリデーション
+- アトミック書き込み + ロールバック（部分書き込み防止）
+- 26テスト全 PASS
+
+#### 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-SC-04-001 | SkillFileWriter インターフェース抽出（P61 DIP準拠） | 低 | `docs/30-workflows/unassigned-task/UT-SC-04-001.md` |
+
+---
+
 ### タスク: UT-CONV-DB-001 better-sqlite3 75件テスト SKIP 修正（2026-03-23）
+
+### タスク: UT-EXECUTION-ENV-TERMINAL-001 ExecutionEnvironment Terminal 本実装 + assertNoSilentFallback（2026-03-23）
+
+### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
+
+### タスク: TASK-SC-03-PLAN-LLM-PROMPT RuntimeSkillCreatorFacade.plan() LLM プロンプト統合（2026-03-23）
 
 | 項目 | 値 |
 | --- | --- |
