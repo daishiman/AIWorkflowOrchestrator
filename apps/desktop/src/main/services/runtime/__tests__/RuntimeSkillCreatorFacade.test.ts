@@ -538,7 +538,7 @@ describe("RuntimeSkillCreatorFacade", () => {
       });
     });
 
-    it("integrated_api 判定時は改善提案を返す", async () => {
+    it("integrated_api 判定時（graceful degradation: LLM 未注入）はスタブを返す", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "integrated_api",
         apiKey: "sk-test",
@@ -553,12 +553,10 @@ describe("RuntimeSkillCreatorFacade", () => {
         "sk-test",
       );
 
+      // llmAdapter/resourceLoader 未注入のため graceful degradation
       expect(result).toEqual({
         improveId: "improve-1710000000001",
-        suggestions: [
-          "エラーハンドリングを強化してください",
-          "入力バリデーションを追加してください",
-        ],
+        suggestions: [],
       });
     });
   });

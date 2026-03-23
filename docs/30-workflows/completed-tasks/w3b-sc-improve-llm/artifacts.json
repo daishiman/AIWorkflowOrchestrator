@@ -1,0 +1,73 @@
+{
+  "workflow": "w3b-sc-improve-llm",
+  "taskId": "TASK-SC-05-IMPROVE-LLM",
+  "phases": {
+    "1": { "status": "completed", "artifacts": ["phase-01-requirements.md"] },
+    "2": { "status": "completed", "artifacts": ["phase-02-design.md"] },
+    "3": { "status": "completed", "artifacts": ["phase-03-design-review.md"] },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "phase-04-test-creation.md",
+        "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "phase-05-implementation.md",
+        "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+        "apps/desktop/src/main/services/runtime/improvePromptConstants.ts",
+        "packages/shared/src/types/skillCreator.ts",
+        "packages/shared/src/types/index.ts"
+      ]
+    },
+    "6": { "status": "completed", "artifacts": ["phase-06-test-expansion.md"] },
+    "7": { "status": "completed", "artifacts": ["phase-07-coverage.md"] },
+    "8": { "status": "completed", "artifacts": ["phase-08-refactoring.md"] },
+    "9": {
+      "status": "completed",
+      "artifacts": ["phase-09-quality-verification.md"]
+    },
+    "10": { "status": "completed", "artifacts": ["phase-10-final-review.md"] },
+    "11": {
+      "status": "completed",
+      "artifacts": ["phase-11-manual-testing.md"]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "phase-12-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": { "status": "completed", "artifacts": ["phase-13-pr-creation.md"] }
+  },
+  "unassignedTasks": [
+    "docs/30-workflows/unassigned-task/UT-SC-05-IPC-DI-WIRING.md",
+    "docs/30-workflows/unassigned-task/UT-SC-05-APPLY-IMPROVEMENT-UI.md"
+  ],
+  "testSummary": {
+    "total": 21,
+    "passed": 21,
+    "failed": 0,
+    "coverage": {
+      "line": 91.2,
+      "branch": 78.07,
+      "function": 100
+    }
+  },
+  "qualityMetrics": {
+    "designConsistency": 4.6,
+    "minimalComplexity": 4.8,
+    "codeBeauty": 4.5,
+    "testCoverage": 4.4,
+    "documentationIntegrity": 4.2,
+    "overall": 4.5,
+    "notes": "plan() と同一パターン踏襲により設計一貫性が高い。isValidImproveResponse の空文字列 before バグ修正で堅牢性向上。P4/P51 早期完了記載の再発を検出・是正済み。"
+  }
+}

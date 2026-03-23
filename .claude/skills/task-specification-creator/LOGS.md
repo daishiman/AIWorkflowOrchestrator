@@ -985,3 +985,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 5ファイル変更、+359行/-22行
 - テスト: 94件全 PASS
 - 未タスク: 2件（UT-CHATVIEW-ERROR-BANNER-I18N-001、UT-AI-CHAT-ERROR-CODE-INVENTORY-001）
+
+### 2026-03-23: TASK-SC-05-IMPROVE-LLM 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
+| 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
+| 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
