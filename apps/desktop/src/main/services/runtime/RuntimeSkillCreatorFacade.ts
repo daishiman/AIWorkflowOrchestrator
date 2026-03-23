@@ -20,7 +20,7 @@ import type {
   ISubscriptionAuthProvider,
 } from "@repo/shared/types/auth-mode";
 import type {
-  RuntimeSkillCreatorExecuteResult as SkillExecuteResult,
+  RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorPlanResult as SkillPlanResult,
@@ -94,8 +94,16 @@ export class RuntimeSkillCreatorFacade {
     planResult: SkillPlanResult,
     authMode: AuthMode,
     apiKey: string | null,
-  ): Promise<SkillExecuteResult> {
+  ): Promise<RuntimeSkillCreatorExecuteResponse> {
     const decision = await this.resolveDecision(authMode, apiKey);
+
+    if (decision.type === "terminal_handoff") {
+      const bundle = this.handoffBuilder.build(
+        planResult.skillSpec,
+        process.cwd(),
+      );
+      return { type: "terminal_handoff", bundle };
+    }
 
     const request: SkillExecutionRequest = {
       prompt: planResult.skillSpec,
@@ -114,8 +122,6 @@ export class RuntimeSkillCreatorFacade {
       content: planResult.skillSpec,
     };
 
-    // decision は将来の integrated_api/terminal_handoff 分岐で使用予定
-    void decision;
     const response = await this.skillExecutor.execute(request, skillMeta);
 
     return {
