@@ -19,7 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-23 | 1.9.0 | UT-RUNTIME-BUILDER-MIGRATION-001 教訓2件を追加（L-RBM-001: shared型変更の3レイヤー波及、L-RBM-002: sanitize テスト正規表現パターン） |
+| 2026-03-23 | 1.9.0 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 設計教訓3件を追加（状態機械禁止遷移設計、dual-lane アーキテクチャ、IPC namespace 設計時の P65 再発防止） |
 | 2026-03-23 | 1.8.0 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 苦戦箇所2件を追加（エスケープテスト lookbehind regex パターン、adapter サニタイズ対象の統一漏れ） |
 | 2026-03-22 | 1.7.0 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加（structured error primary / legacy fallback 分離、Task 03 root 移管の同波反映） |
 | 2026-03-21 | 1.6.0 | UT-TASK06-007-EXT-006 正規表現 lastIndex 汚染パターン（教訓4）を追加 |
@@ -430,38 +430,26 @@
 
 `TerminalHandoffBundle` の構築が `RuntimePolicyResolver` のプライベートメソッドと `TerminalHandoffBuilder.build()` に分散した。Resolver 側は prompt を含まないダミー bundle を生成するため shell injection リスクはないが、構造的に不整合。今後は TerminalHandoffBuilder に統一すべき（UT-SC-02-004）。
 
-
 ---
 
-## UT-RUNTIME-BUILDER-MIGRATION-001: buildForSurface() 統一メソッド追加
+## 2026-03-23 TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001
 
-### L-RBM-001: shared 型変更の3レイヤー波及（P32 拡張）
+### 教訓1: 状態機械の禁止遷移は設計時に明示化する
 
-`RuntimeSkillCreatorPlanResponse` の `bundle: TerminalHandoffBundle` → `guidance: HandoffGuidance` 変更時に、以下の3レイヤーが連鎖的に更新必要だった:
+- **背景**: SlideUIStatus（synced/running/degraded/guidance）の4状態で、禁止遷移パターン（FT-1〜FT-4）を Phase 2 設計レビュー前に定義できた
+- **知見**: 禁止遷移を先に列挙すると、許可遷移が自然に導出される。「何ができるか」ではなく「何がダメか」から設計するとレビューが効率化する
+- **5分解決カード**: 新規状態機械を設計する際は、まず禁止遷移を列挙（FT テーブル）してから許可遷移図を描く
 
-1. `packages/shared/src/types/skillCreator.ts`（型定義本体）
-2. `RuntimeSkillCreatorFacade.ts`（実装コード）
-3. `RuntimeSkillCreatorFacade.test.ts`（モック + アサーション）
+### 教訓2: dual-lane（integrated/manual）パターンの分離基準
 
-P32 は「2箇所同時更新」として定義されているが、テストモックを含めると「N箇所」になる。型変更前に `grep -rn "プロパティ名" apps/ packages/` で全参照を洗い出す手順を標準化すべき。
+- **背景**: SlideModifier（Agent SDK adapter）と Manual Fallback（ターミナル直接操作）を `SlideLane` 型で分離した
+- **知見**: 「同じ目的を別手段で達成する」機能は、1つの状態に混在させるとフォールバックロジックが複雑化する。lane 型で型レベルで分離し、各 lane の capability を DTO として公開するのが安全
+- **関連パターン**: P62（DEFAULT_CONFIG fallback 禁止）- 暗黙のフォールバックを禁止し、明示的な lane 選択を強制する設計
+- **5分解決カード**: 同目的・別手段の機能は `Lane` 型で型レベル分離し、capability DTO で各 lane の利用可能性を Renderer に伝達する
 
-### L-RBM-002: sanitize テスト正規表現のlookbehind パターン
+### 教訓3: IPC namespace 設計時の P65 再発防止
 
-`\$(dangerous)` が `\$(dangerous)` にエスケープされた後、テストで「未エスケープの `$(` がないこと」を検証する正規表現に lookbehind assertion（`(?<!\\)\$\(`）が必要だった。初回は `/\$\([^\\]/` というパターンを使ったが、これはエスケープ**後**の `\$(` にもマッチしてしまい FAIL した。JavaScript の lookbehind assertion（`(?<!\\)`）は ES2018 以降で使用可能。
-
----
-
-## UT-SC-02-002: execute() terminal_handoff 分岐追加（2026-03-23）
-
-### 苦戦箇所
-
-| # | 問題 | 解決策 | 再発防止 |
-|---|---|---|---|
-| 1 | esbuild バイナリ不一致（P66再発）: worktree 環境で `ESBUILD_BINARY_PATH` 環境変数での回避が必要だった | `ESBUILD_BINARY_PATH` を worktree のテスト実行前に設定 | worktree 作成後に `pnpm rebuild esbuild` を実行するか、環境変数を設定する |
-| 2 | `packages/shared/src/types/index.ts` のバレルエクスポート追加が Phase 5 仕様書で言及されておらず、Phase 9 の型チェックで発覚 | Phase 9 で手動追加して解消 | Phase 2 設計書に「新規型定義時は `index.ts` バレルエクスポートも変更スコープに含める」チェック項目を追加する |
-| 3 | Preload 側の型定義が追従していない（P44/P45パターン）: Main Process 側は修正済みだが Preload 側の戻り値型が旧型のまま | 未タスク UT-SC-02-005 として切り出し | IPC 型変更タスクでは Phase 2 に「3レイヤー同時変更チェック（Main handler / Preload API / Shared types）」を含める |
-
-### 知見
-
-- `plan()` / `improve()` と同一の早期リターンパターンを適用することで、3メソッドの分岐構造を統一できた。TDD (Red -> Green -> Refactor) が小規模タスクに効果的にフィットした
-- `creatorHandlers.ts` の型不整合を Phase 5 仕様書で予告し、Phase 9 で実際に検出・最小限修正するフローが有効だった
+- **背景**: `slide:sync:*` を暫定 namespace として設計したが、P65（dead-end namespace）の再発リスクを Phase 10 最終レビューで検出し、UT-SLIDE-TASK09-IPC-NAMESPACE-001 として未タスク化した
+- **知見**: 設計タスクで IPC チャネルを新規定義する際は、Phase 2 の時点で既存 namespace 一覧を `grep -rn "ipcMain.handle" apps/desktop/src/main/` で確認し、新規 namespace 追加の可否をレビューに含める
+- **関連パターン**: P65（dead-end namespace）、P44（IPC インターフェース不整合）
+- **5分解決カード**: 新規 IPC namespace は既存 namespace 一覧と突合し、設計レビューで承認してから追加する

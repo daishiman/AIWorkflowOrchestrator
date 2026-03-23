@@ -4,56 +4,34 @@
 
 ---
 
-## UT-RUNTIME-BUILDER-MIGRATION-001 実装完了（2026-03-23）
+## UT-CONV-DB-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
-- **変更内容**: `TerminalHandoffBuilder` に `buildForSurface()` 統一メソッドを追加。discriminated union 型による3 surfaceType（chat-edit / runtime / skill-docs）分岐、never型 exhaustive check（P62対策）、sanitizePrompt 全surface統一適用（P55対策）。旧メソッド3件に `@deprecated` 付与。呼び出し元4箇所（chatEditHandlers / agentHandlers / skillHandlers / RuntimeSkillCreatorFacade）を移行。テスト28件全PASS。
-- **影響ファイル**: runtime/TerminalHandoffBuilder.ts, chat-edit/TerminalHandoffBuilder.ts, ipc/chatEditHandlers.ts, ipc/agentHandlers.ts, ipc/skillHandlers.ts, RuntimeSkillCreatorFacade.ts, TerminalHandoffBuilder.test.ts, RuntimeSkillCreatorFacade.test.ts, llm-workspace-chat-edit.md, packages/shared/src/types/skillCreator.ts
-- **未タスク**: 2件（UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001, UT-RUNTIME-FACADE-RETURN-TYPE-001）
+- **Phase**: Phase 1-6 簡易版 + Phase 12 追補
+- **Result**: success
+- **Notes**:
+  - better-sqlite3 ネイティブバイナリの CPU アーキテクチャ不一致（arm64 vs x86_64）を pnpm rebuild で解決
+  - conversationRepository.test.ts 75件テストを全 PASS に復帰
+  - `apps/desktop/package.json` に `rebuild:native` スクリプトを追加（永続的修正）
+  - P66（CPU アーキテクチャ不一致）を 06-known-pitfalls.md に追記済み
+  - UT-CONV-DB-004（ネイティブモジュール環境自動整備）を未タスクとして検出・指示書作成
 
 ---
 
-## UT-SC-02-002 完了（2026-03-23）
+## TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 完了
+- **Phase**: Phase 1-13 設計完了（Phase 13 blocked）
 - **Result**: success
 - **Notes**:
-  - execute() の terminal_handoff 未分岐修正（セキュリティ修正）
-  - RuntimeSkillCreatorExecuteResponse Union型追加
-  - void decision; 除去、plan/improve/execute パターン統一
-  - 15テスト全PASS、Line/Function Coverage 100%
-
----
-
-## UT-EXECUTION-ENV-TERMINAL-001 完了（2026-03-23）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 完了
-- **Result**: success
-- **Notes**:
-  - ExecutionEnvironment.terminal の placeholder → TerminalHandoffCard 本実装
-  - assertNoSilentFallback() ガード実装（P62 対策）
-  - LLMConfigNotSelectedError カスタムエラー型追加
-  - 18テストケース（T-1〜T-18）全 PASS
-  - LOGS.md 2ファイル + interfaces 仕様書更新（P1/P25 対策）
-
----
-
-## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 final sync
-- **Result**: success
-- **Notes**:
-  - D1-D6（6件の drift）を解消
-  - 12チャネルを正本仕様に統一（invoke 6 + push 6）
-  - validateIpcSender + P42 3段バリデーション + path guard を全ハンドラに適用
-  - RuntimeResolver 統合: integrated/handoff 分岐対応
-  - modifier-skill.ts を skill-executor.ts に統合
-  - slideSlice に正本 7 store fields を追加
-  - HandoffGuidance 型を共有（src/types/handoff.ts 正本を re-export）
-  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+  - SlideUIStatus 4状態（synced/running/degraded/guidance）と不正遷移4パターン禁止を設計
+  - 2 lane 分離（integrated/manual）と UI 4領域（progress row/guidance block/fallback card/terminal launcher）契約を確定
+  - Cleanup 順序9ステップを dependency DAG として定義
+  - Phase 3 設計レビュー PASS（MINOR 1件: MN-01 SlideCapabilityDTO IPC channel）
+  - Phase 10 最終レビュー PASS（AC-1〜AC-4 全件充足）
+  - 未タスク 5 件検出（UT-SLIDE-IMPL-001/UT-SLIDE-UI-001/UT-SLIDE-P31-001/UT-SLIDE-HANDOFF-DUP-001/Task09 IPC namespace 統一）
+  - implementation-guide.md（Part 1: ロボット係員と手動係員アナロジー / Part 2: 開発者向け）作成
+  - Phase 13 はユーザー指示待ち（blocked）
 
 ---
 
@@ -73,7 +51,23 @@
 
 ---
 
-## TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR same-wave sync（2026-03-22）
+## TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 完了（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 設計完了
+- **Result**: success
+- **Notes**:
+  - TranscriptProvenance 型定義（5フィールド）・3操作フロー・provenance chip 設計を確定
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+  - MINOR指摘 M-1/M-2 を未タスクとして管理（M-3 は実装仕様確定）
+  - implementation-guide.md（Part 1: 郵便消印アナロジー / Part 2: 開発者向け）作成
+  - Phase 13 はユーザー指示待ち（blocked）
+
+---
+
+## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（2026-03-21）
+
+---
 
 ## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 

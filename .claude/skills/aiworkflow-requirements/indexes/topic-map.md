@@ -424,7 +424,6 @@ node scripts/list-specs.js --topics
 | スキルドキュメント生成 型定義（TASK-9I） | L141 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
 | スキル分析 型定義（TASK-9J） | L291 |
-| assertNoSilentFallback ガード（P62 対策） | L340 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -1016,10 +1015,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
 | コンポーネント仕様 | L43 |
-| インタラクション設計 | L324 |
-| 視覚デザイン | L353 |
-| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L378 |
-| アクセシビリティ（WCAG 2.1 AA） | L400 |
+| インタラクション設計 | L322 |
+| 視覚デザイン | L351 |
+| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L376 |
+| アクセシビリティ（WCAG 2.1 AA） | L398 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -2153,6 +2152,7 @@ node scripts/list-specs.js --topics
 | ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L390 |
 | 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L491 |
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L516 |
+| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L543 |
 
 ### references/arch-state-management-details.md
 
@@ -2572,9 +2572,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 2026-03-19 TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 | L18 |
-| 問題パターン（一般化） | L38 |
-| 5分で確認する順序 | L44 |
-| 次回の判断ルール | L51 |
+| 2026-03-23 UT-CONV-DB-001: CPU アーキテクチャ不一致によるテスト SKIP（P66） | L38 |
+| 問題パターン（一般化） | L56 |
+| 5分で確認する順序 | L62 |
+| 次回の判断ルール | L69 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -2589,12 +2590,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L44 |
-| クイックリファレンス: カテゴリ別検索ガイド | L59 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L135 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L467 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L501 |
-| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L529 |
+| 分割ファイル一覧 | L43 |
+| クイックリファレンス: カテゴリ別検索ガイド | L58 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L134 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L466 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L500 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2614,7 +2614,7 @@ node scripts/list-specs.js --topics
 | 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L327 |
 | 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L369 |
 | TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L416 |
-| UT-RUNTIME-BUILDER-MIGRATION-001: buildForSurface() 統一メソッド追加 | L435 |
+| 2026-03-23 TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 | L435 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -2852,13 +2852,13 @@ node scripts/list-specs.js --topics
 | RuntimeResolver | L153 |
 | AnthropicLLMAdapter | L190 |
 | TerminalHandoffBuilder | L227 |
-| IPCチャンネル | L300 |
-| セキュリティ | L320 |
-| ディレクトリ構成 | L336 |
-| 品質メトリクス | L365 |
-| 関連ドキュメント | L376 |
-| 完了タスク | L404 |
-| 変更履歴 | L464 |
+| IPCチャンネル | L279 |
+| セキュリティ | L299 |
+| ディレクトリ構成 | L315 |
+| 品質メトリクス | L344 |
+| 関連ドキュメント | L355 |
+| 完了タスク | L383 |
+| 変更履歴 | L443 |
 
 ### references/local-agent.md
 
