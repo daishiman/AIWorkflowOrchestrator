@@ -267,3 +267,34 @@ SkillCreatorService はスキル生成・改善・運用支援を統合する Fa
 | `CodeGenerator.ts` | コード生成補助 |
 | `ApiIntegrator.ts` | 外部API統合補助 |
 | `SkillValidator.ts` | 検証処理補助 |
+
+### SkillFileWriter（TASK-SC-04-OUTPUT-PERSISTENCE 実装）
+
+> **実装完了**: 2026-03-23（TASK-SC-04-OUTPUT-PERSISTENCE）
+> **実装場所**: `apps/desktop/src/main/services/skill/SkillFileWriter.ts`
+
+LLM 生成スキルコンテンツを `.claude/skills/{skillName}/` に永続化するサービスクラス。`RuntimeSkillCreatorFacade.execute()` から呼び出される。
+
+| 責務 | 内容 |
+| --- | --- |
+| パストラバーサル防止 | P42準拠6層バリデーション（型チェック → 空文字列 → trim → `..` 禁止 → スラッシュ禁止 → 絶対パス禁止） |
+| アトミック書き込み | 一時ファイルへの書き込み後にリネームでアトミック化 |
+| ロールバック | 書き込み失敗時に一時ファイルを削除して整合性を維持 |
+| ディレクトリ作成 | 必要に応じて `mkdir -p` 相当の再帰的ディレクトリ作成 |
+
+**型定義**:
+
+| 型名 | 定義場所 | 説明 |
+| --- | --- | --- |
+| `SkillGeneratedContent` | `packages/shared/src/types/skillCreator.ts` | LLM 生成コンテンツ（skillMd / agents / scripts / references の4フィールド） |
+
+**関連ファイル**:
+
+| ファイル | 役割 |
+| --- | --- |
+| `apps/desktop/src/main/services/skill/SkillFileWriter.ts` | 永続化本体サービス |
+| `apps/desktop/src/main/services/skill/__tests__/SkillFileWriter.test.ts` | 28テスト（パストラバーサル・アトミック書き込み・ロールバック・skillMdバリデーション） |
+| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | execute() から SkillFileWriter を呼び出す Facade |
+| `packages/shared/src/types/skillCreator.ts` | SkillGeneratedContent 型の正本 |
+
+**未タスク**: `UT-SC-04-001` — SkillFileWriter のインターフェース抽出（P61対策、LOW優先度）

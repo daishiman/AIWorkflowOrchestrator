@@ -82,6 +82,9 @@
 | LLMヘルスチェック結果 | `HealthCheckResult` | llm-ipc-types.md |
 | LLM設定同期 | `SetSelectedConfigParams` | llm-ipc-types.md |
 | RAG LLMクライアント | `ILLMClient`（crag/types.ts 版 / llm/types.ts 版）型ドリフト→P64 | lessons-learned-rag-embedding-runtime.md (L-RAG-06) |
+| Slide UI状態 | `SlideUIStatus` (`synced` / `running` / `degraded` / `guidance`) | arch-state-management-core.md |
+| Slide レーン分離 | `SlideLane` (`integrated` / `manual`) | arch-state-management-core.md |
+| Slide 能力DTO | `SlideCapabilityDTO` (laneType / modifier / agentClient / fallbackReason / guidance) | arch-state-management-core.md |
 
 ---
 

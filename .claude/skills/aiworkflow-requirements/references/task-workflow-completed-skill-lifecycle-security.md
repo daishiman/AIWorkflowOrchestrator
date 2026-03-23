@@ -125,3 +125,46 @@ Phase 10 ゲート判定: PASS
 Phase 11 手動テスト: NON_VISUAL（CLI環境、UI変更なし）
 
 後続ブロッカー解消: UT-06-004（PermissionDialog）、TASK-SKILL-LIFECYCLE-08
+
+## UT-06-002: AllowedToolEntryV2 PermissionStore V2 拡張完了記録（2026-03-23）
+
+### メタ情報
+
+| 項目         | 値                                                                         |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | UT-06-002                                                                  |
+| タスク名     | AllowedToolEntryV2 PermissionStore 適用                                    |
+| ワークフロー | `docs/30-workflows/UT-06-002-permission-store-v2/`                         |
+| 完了日       | 2026-03-23                                                                 |
+| ステータス   | Phase 1-12 完了（Phase 13 PR待ち）                                         |
+
+### 実装サマリ
+
+- **AllowedToolEntryV2**: V1 拡張。expiresAt / skillName / expiryPolicy フィールド追加
+- **ExpiryPolicy**: `"session"` / `"time_24h"` / `"time_7d"` / `"permanent"` の4種
+- **isToolAllowed 6分岐フロー**: Lazy eviction パターンで期限切れエントリを遅延削除
+- **allowToolV2**: ExpiryPolicy に応じた expiresAt 自動計算（calcExpiresAt）
+- **permission:clear-session IPC**: セッション終了時のセッションスコープ権限一括クリア
+- **V1→V2 マイグレーション**: 起動時に V1 エントリを自動的に V2 形式へアップグレード
+- **revokeSessionEntries (V2)**: セッション別の権限エントリ取消
+- **getAllowedToolEntriesV2**: V2 形式での全エントリ取得
+
+### 新規型定義
+
+- `AllowedToolEntryV2` / `ExpiryPolicy` / `IPermissionStoreV2` / `PermissionStoreSchemaV2` / `ClearSessionResponse`
+
+### 新規関数
+
+- `calcExpiresAt(policy: ExpiryPolicy): number | null`
+
+### 未タスク検出
+
+| ID             | 内容                    | 優先度 |
+| -------------- | ----------------------- | ------ |
+| UT-06-002-UT-1 | sender 検証追加         | 中     |
+| UT-06-002-UT-2 | before-quit フック      | 中     |
+| UT-06-002-UT-3 | calcExpiresAtLocal 重複解消 | 低 |
+| UT-06-002-UT-4 | ロガー統一              | 低     |
+
+Phase 10 ゲート判定: PASS
+Phase 11 手動テスト: NON_VISUAL（CLI環境、UI変更なし）

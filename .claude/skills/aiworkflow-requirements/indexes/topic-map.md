@@ -430,10 +430,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L277 |
-| スキルチェーン 型定義（TASK-9D） | L327 |
-| スキルスケジュール 型定義（TASK-9G） | L362 |
-| スキルフォーク 型定義（TASK-9E） | L387 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L316 |
+| スキルチェーン 型定義（TASK-9D） | L366 |
+| スキルスケジュール 型定義（TASK-9G） | L401 |
+| スキルフォーク 型定義（TASK-9E） | L426 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -899,8 +899,8 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L200 |
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L536 |
-| AIプロバイダーAPI連携 | L567 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L562 |
+| AIプロバイダーAPI連携 | L593 |
 
 ### references/api-ipc-system-details.md
 
@@ -1312,7 +1312,8 @@ node scripts/list-specs.js --topics
 | パネル共通ガイドライン | L58 |
 | ChatPanel 実AIチャット配線設計（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L80 |
 | ChatPanel統合パターン（TASK-7D） | L124 |
-| 関連ドキュメント | L162 |
+| ChatPanel Review Harness（TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001） | L162 |
+| 関連ドキュメント | L192 |
 
 ### references/ui-ux-portal-patterns.md
 
@@ -1856,7 +1857,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
 | 実装ステータススナップショット（2026-03-22） | L46 |
-| Follow-up Backlog | L58 |
+| Follow-up Backlog | L59 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2589,12 +2590,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L44 |
-| クイックリファレンス: カテゴリ別検索ガイド | L59 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L135 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L467 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L501 |
-| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L529 |
+| 分割ファイル一覧 | L45 |
+| クイックリファレンス: カテゴリ別検索ガイド | L60 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L136 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L468 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L502 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2614,25 +2614,26 @@ node scripts/list-specs.js --topics
 | 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L327 |
 | 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L369 |
 | TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L416 |
-| UT-RUNTIME-BUILDER-MIGRATION-001: buildForSurface() 統一メソッド追加 | L435 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L435 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L36 |
-| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L76 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L120 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L160 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L190 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L239 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L292 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L320 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L363 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L414 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L483 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L521 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L37 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L77 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L121 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L161 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L191 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L240 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L293 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L321 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L364 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L415 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L484 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L522 |
+| 2026-03-23 TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓 | L617 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -2852,13 +2853,13 @@ node scripts/list-specs.js --topics
 | RuntimeResolver | L153 |
 | AnthropicLLMAdapter | L190 |
 | TerminalHandoffBuilder | L227 |
-| IPCチャンネル | L300 |
-| セキュリティ | L320 |
-| ディレクトリ構成 | L336 |
-| 品質メトリクス | L365 |
-| 関連ドキュメント | L376 |
-| 完了タスク | L404 |
-| 変更履歴 | L464 |
+| IPCチャンネル | L279 |
+| セキュリティ | L299 |
+| ディレクトリ構成 | L315 |
+| 品質メトリクス | L344 |
+| 関連ドキュメント | L355 |
+| 完了タスク | L383 |
+| 変更履歴 | L443 |
 
 ### references/local-agent.md
 

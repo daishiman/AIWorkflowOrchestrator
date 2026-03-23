@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-23T07:35:59.150Z",
-  "totalKeywords": 2443,
+  "generated": "2026-03-23T12:04:00.270Z",
+  "totalKeywords": 2444,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2264,6 +2264,7 @@
       "arch-state-management-core.md",
       "arch-state-management-reference-selectors.md",
       "interfaces-llm.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
@@ -2464,7 +2465,6 @@
     "SLIDE": [
       "arch-electron-services-details-part2.md",
       "interfaces-agent-sdk-skill-advanced.md",
-      "lessons-learned-current.md",
       "ui-ux-feature-components-details.md"
     ],
     "ALIGNMENT": [
@@ -2472,7 +2472,7 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
-      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
@@ -2481,7 +2481,8 @@
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "testing-component-patterns-details.md",
-      "ui-ux-feature-components-details.md"
+      "ui-ux-feature-components-details.md",
+      "ui-ux-panels.md"
     ],
     "SkillScheduler": [
       "arch-electron-services-details-part2.md"
@@ -3138,6 +3139,7 @@
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management.md",
       "interfaces-llm.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "llm-ipc-types.md",
       "llm-streaming.md",
@@ -3715,6 +3717,7 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md"
     ],
@@ -6356,20 +6359,13 @@
     "実装セッション": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "BUILDER": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "MIGRATION": [
+    "IMPROVE": [
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-skill-execute-hook-migration.md",
-      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
-    ],
-    "buildForSurface": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "統一メソッド追加": [
-      "lessons-learned-ipc-preload-runtime.md"
+      "lessons-learned-viewtype-electron-ui.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "ui-ux-agent-execution-core.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -6386,6 +6382,14 @@
     ],
     "実績同期": [
       "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "REVIEW": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-panels.md"
+    ],
+    "HARNESS": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-panels.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
@@ -6507,6 +6511,11 @@
     "COMPONENT": [
       "lessons-learned-skill-execute-hook-migration.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
+    ],
+    "MIGRATION": [
+      "lessons-learned-skill-execute-hook-migration.md",
+      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "個別セレクタ": [
       "lessons-learned-skill-execute-hook-migration.md"
@@ -6892,13 +6901,6 @@
       "lessons-learned-viewtype-electron-ui.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-02-console-migration-patterns.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "ui-ux-agent-execution-core.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
-    "IMPROVE": [
-      "lessons-learned-viewtype-electron-ui.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "ui-ux-agent-execution-core.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
@@ -10845,6 +10847,12 @@
       "ui-ux-panels.md"
     ],
     "チャット配線設計": [
+      "ui-ux-panels.md"
+    ],
+    "Review": [
+      "ui-ux-panels.md"
+    ],
+    "Harness": [
       "ui-ux-panels.md"
     ],
     "Portal": [

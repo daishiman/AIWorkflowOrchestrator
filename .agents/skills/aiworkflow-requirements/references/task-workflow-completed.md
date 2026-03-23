@@ -5,58 +5,92 @@
 
 ## 完了タスク
 
-### タスク: UT-RUNTIME-BUILDER-MIGRATION-001 buildForSurface() 統一メソッド追加（2026-03-23）
+### タスク: TASK-SC-04-OUTPUT-PERSISTENCE SkillFileWriter LLM生成スキルコンテンツ永続化（2026-03-23）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | UT-RUNTIME-BUILDER-MIGRATION-001 |
-| ステータス | **完了（Phase 1-12 完了）** |
-| タイプ | implementation |
-| 優先度 | 高 |
+| タスクID | TASK-SC-04-OUTPUT-PERSISTENCE |
 | 完了日 | 2026-03-23 |
-| 対象 | TerminalHandoffBuilder buildForSurface() 統一メソッド |
-| 成果物 | `docs/30-workflows/runtime-builder-migration/` |
+| ステータス | **完了** |
+| 優先度 | 高 |
+| 対象 | SkillFileWriter / SkillGeneratedContent / RuntimeSkillCreatorFacade.execute() |
+| 成果物 | `docs/30-workflows/w3a-sc-output-persistence/` |
 
 #### 実施内容
 
-- `runtime/TerminalHandoffBuilder` に `buildForSurface()` 統一メソッドを追加（discriminated union 型 × exhaustive check）
-- 旧メソッド（`build`, `buildForAgentExecution`, `buildForSkillExecution`）に `@deprecated` 付与（runtime 3件 + chat-edit 1件）
-- 呼び出し元4箇所（chatEditHandlers / agentHandlers / skillHandlers / RuntimeSkillCreatorFacade）を移行
-- `RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorImproveResponse` の `bundle → guidance` 型変更
-- テスト28件全PASS
+- SkillFileWriter クラス新規作成（LLM 生成スキルコンテンツの `.claude/skills/{skillName}/` への永続化）
+- SkillGeneratedContent 型を `packages/shared/src/types/skillCreator.ts` に追加
+- RuntimeSkillCreatorFacade.execute() に永続化フロー統合（extractGeneratedContent + persist）
+- 6層パストラバーサル防止 + P42 準拠3段バリデーション
+- アトミック書き込み + ロールバック（部分書き込み防止）
+- 26テスト全 PASS
 
-#### 発見元
+#### 未タスク
 
-- TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 2 設計 GAP
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-SC-04-001 | SkillFileWriter インターフェース抽出（P61 DIP準拠） | 低 | `docs/30-workflows/unassigned-task/UT-SC-04-001.md` |
 
 ---
+
+### タスク: UT-CONV-DB-001 better-sqlite3 75件テスト SKIP 修正（2026-03-23）
 
 ### タスク: UT-EXECUTION-ENV-TERMINAL-001 ExecutionEnvironment Terminal 本実装 + assertNoSilentFallback（2026-03-23）
 
+### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
+
+### タスク: TASK-SC-03-PLAN-LLM-PROMPT RuntimeSkillCreatorFacade.plan() LLM プロンプト統合（2026-03-23）
+
 | 項目 | 値 |
 | --- | --- |
-| タスクID | UT-EXECUTION-ENV-TERMINAL-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 pending）** |
-| タイプ | implementation |
+| タスクID | UT-CONV-DB-001 |
+| ステータス | **実装完了** |
+| タイプ | bugfix / test-infrastructure |
 | 優先度 | 高 |
 | 完了日 | 2026-03-23 |
-| 対象 | ExecutionEnvironment.terminal 本実装 / assertNoSilentFallback ガード |
-| 成果物 | `docs/30-workflows/execution-env-terminal/` |
+| 対象 | better-sqlite3 ネイティブバイナリ / conversationRepository.test.ts |
+| 成果物 | `docs/30-workflows/completed-tasks/conv-db-001-repository-test-skip-fix/` |
 
 #### 実施内容
 
-- `ExecutionEnvironment.terminal` の placeholder を `TerminalHandoffCard` を使った本実装に移行
-- `assertNoSilentFallback()` ガード関数と `LLMConfigNotSelectedError` エラー型を llmConfigProvider.ts に追加（P62 対策）
-- HandoffGuidance null 時の待機中 Placeholder 表示
-- テスト 18 ケース追加（assertNoSilentFallback 10 + terminal 8）、全 PASS
-- interfaces-agent-sdk-skill-reference-share-debug-analytics.md に assertNoSilentFallback 仕様を追記
+- better-sqlite3 ネイティブバイナリの CPU アーキテクチャ不一致（arm64 vs x86_64、P66）を pnpm rebuild で解決
+- `apps/desktop/package.json` に `rebuild:native` スクリプトを追加（永続的修正）
+- conversationRepository.test.ts 75件テストを全 PASS に復帰（4.28s）
+- conversation 関連テスト 160件全 PASS（回帰なし）
+- P66 を 06-known-pitfalls.md に追記
+- UT-CONV-DB-004（ネイティブモジュール環境自動整備）を未タスクとして作成
 
 #### 発見元
 
-- TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-01（P62 対策）
+- 親タスク: TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001
+- 関連 Pitfall: P7, P66
+
+### タスク: TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Slide Modifier Manual Fallback Alignment 設計（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 |
+| ステータス | **仕様書作成完了（`spec_created` / 設計タスク / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-23 |
+| 対象 | Slide Modifier / SlideUIStatus 状態機械 / Manual Fallback 整合設計 |
+| 成果物 | `docs/30-workflows/step-05-par-task-08-slide-modifier-manual-fallback-alignment/` |
+
+#### 実施内容
+
+- SlideUIStatus（synced / running / degraded / guidance）と SlideLane（integrated / manual）の型定義を確定
+- SlideCapabilityDTO（laneType / modifier / agentClient / fallbackReason / guidance）の契約設計
+- 禁止遷移4件（integrated→manual 自動格下げ / guidance 中 modifier 呼出 / degraded 中 agentClient 呼出 / synced 時 fallbackReason 設定）の仕様明文化
+- Manual Fallback 境界ルール（MB-1〜MB-4）と slide:sync:* IPC チャネル設計
+- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+- 未タスク 5 件（UT-SLIDE-IMPL-001 / UT-SLIDE-UI-001 / UT-SLIDE-P31-001 / UT-SLIDE-HANDOFF-DUP-001 / UT-SLIDE-TASK09-IPC-NAMESPACE-001）を検出・backlog 登録
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment pack step-05-par-task-08（2026-03-23）
 
 ---
-
 
 ### タスク: TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Terminal Handoff Surface Realization 設計（2026-03-22）
 
@@ -82,32 +116,6 @@
 #### 発見元
 
 - ai-runtime-execution-responsibility-realignment pack Task 05（2026-03-19）
-
----
-
-### タスク: TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 ChatPanel Review Harness Alignment 設計（2026-03-23）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-23 |
-| 対象 | ChatPanel review harness の task-specification-creator Phase 11 整合設計 |
-| 成果物 | `docs/30-workflows/completed-tasks/step-05-par-task-07-chatpanel-review-harness-alignment/` |
-
-#### 実施内容
-
-- ChatPanel 8 状態定義（idle/loading/streaming/complete/error/review/guidance/terminal）を確定
-- 3 Lane 設計（Lane A: Review Board Integration / Lane B: State Machine Harness / Lane C: Handoff Navigation）を確定
-- GAP-01〜04（onTerminalSwitch/onSelectProvider/onSelectModel/onOpenTerminal）の no-op 排除設計
-- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
-- 未タスク 3 件（openTerminal IPC handler / role 型追加 / ViewType terminal 追加）を検出・指示書化
-
-#### 発見元
-
-- ai-runtime-execution-responsibility-realignment pack Task 07（2026-03-23）
 
 ---
 

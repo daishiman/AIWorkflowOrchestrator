@@ -4,12 +4,35 @@
 
 ---
 
-## UT-RUNTIME-BUILDER-MIGRATION-001 実装完了（2026-03-23）
+## UT-06-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
-- **変更内容**: `TerminalHandoffBuilder` に `buildForSurface()` 統一メソッドを追加。discriminated union 型による3 surfaceType（chat-edit / runtime / skill-docs）分岐、never型 exhaustive check（P62対策）、sanitizePrompt 全surface統一適用（P55対策）。旧メソッド3件に `@deprecated` 付与。呼び出し元4箇所（chatEditHandlers / agentHandlers / skillHandlers / RuntimeSkillCreatorFacade）を移行。テスト28件全PASS。
-- **影響ファイル**: runtime/TerminalHandoffBuilder.ts, chat-edit/TerminalHandoffBuilder.ts, ipc/chatEditHandlers.ts, ipc/agentHandlers.ts, ipc/skillHandlers.ts, RuntimeSkillCreatorFacade.ts, TerminalHandoffBuilder.test.ts, RuntimeSkillCreatorFacade.test.ts, llm-workspace-chat-edit.md, packages/shared/src/types/skillCreator.ts
-- **未タスク**: 2件（UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001, UT-RUNTIME-FACADE-RETURN-TYPE-001）
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - AllowedToolEntryV2 PermissionStore V2 拡張実装
+  - ExpiryPolicy 4種（session/time_24h/time_7d/permanent）
+  - isToolAllowed 6分岐フロー（lazy eviction）
+  - permission:clear-session IPC チャネル追加
+  - V1→V2 自動マイグレーション
+  - カバレッジ: Line 95.5%, Branch 90.6%, Function 94.1%
+  - 未タスク4件検出（sender検証/before-quit/calcExpiresAtLocal重複解消/ロガー統一）
+
+---
+
+## TASK-SC-04-OUTPUT-PERSISTENCE 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - SkillFileWriter クラス新規作成（LLM 生成スキルコンテンツの永続化）
+  - SkillGeneratedContent 型を packages/shared/src/types/skillCreator.ts に追加
+  - RuntimeSkillCreatorFacade.execute() に永続化フロー統合（extractGeneratedContent + persist）
+  - P42 準拠3段バリデーション + 6層パストラバーサル防止
+  - アトミック書き込み + ロールバック（部分書き込み防止）
+  - 26テスト全 PASS
+  - 未タスク 1 件: UT-SC-04-001（SkillFileWriter インターフェース抽出 P61）
 
 ---
 
@@ -41,19 +64,79 @@
 ---
 
 ## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
+## TASK-LLM-MOD-01 完了（2026-03-23）
+
+## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
+
+## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
+## TASK-SC-03-PLAN-LLM-PROMPT 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: WorkspaceChatPanel header に InlineModelSelector を compact mode で配置。disabled={controller.isStreaming} でストリーミング中ロック。GuidanceBlock(blocked) は Store reactivity で自動連携（変更不要）。統合テスト11件追加、全146テスト PASS。ui-ux-llm-selector.md / task-workflow 更新。
+- **影響ファイル**: WorkspaceChatPanel.tsx, WorkspaceView.test.tsx, WorkspaceChatPanel.guidance.test.tsx, WorkspaceChatPanel.integration.test.tsx (新規)
+- **未タスク**: 0件
+
+---
+
+## TASK-SC-03-PLAN-LLM-PROMPT 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
 - **Phase**: Phase 12 final sync
 - **Result**: success
 - **Notes**:
-  - D1-D6（6件の drift）を解消
-  - 12チャネルを正本仕様に統一（invoke 6 + push 6）
-  - validateIpcSender + P42 3段バリデーション + path guard を全ハンドラに適用
-  - RuntimeResolver 統合: integrated/handoff 分岐対応
-  - modifier-skill.ts を skill-executor.ts に統合
-  - slideSlice に正本 7 store fields を追加
-  - HandoffGuidance 型を共有（src/types/handoff.ts 正本を re-export）
-  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+  - PROVIDER_CONFIGS モデル定義を2026年3月時点最新に更新
+  - OpenAI 6モデル / Anthropic 3モデル / Google 3モデル / xAI 3モデル
+  - description フィールド追加、inferProviderId に o3/o4 prefix 対応
+  - 38テスト追加、全PASS
+  - 未タスク3件（UT-LLM-MOD-01-001〜003）検出・backlog登録
+
+---
+
+## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: WorkspaceChatPanel header に InlineModelSelector を compact mode で配置。disabled={controller.isStreaming} でストリーミング中ロック。GuidanceBlock(blocked) は Store reactivity で自動連携（変更不要）。統合テスト11件追加、全146テスト PASS。ui-ux-llm-selector.md / task-workflow 更新。
+- **影響ファイル**: WorkspaceChatPanel.tsx, WorkspaceView.test.tsx, WorkspaceChatPanel.guidance.test.tsx, WorkspaceChatPanel.integration.test.tsx (新規)
+- **未タスク**: 0件
+
+---
+
+## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: P65 dead-end namespace 既解消確認。skill-creator:* 全16チャネル検証。P65不在テスト + allowlist 包含テスト4件追加。Phase 1-12成果物21ファイル。
+- **未タスク**: 2件（UT-SC-01-IPCRESULT-DEDUP, UT-SC-01-DIP-INTERFACE）
+
+---
+
+## UT-CONV-DB-001 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-6 簡易版 + Phase 12 追補
+- **Result**: success
+- **Notes**:
+  - better-sqlite3 ネイティブバイナリの CPU アーキテクチャ不一致（arm64 vs x86_64）を pnpm rebuild で解決
+  - conversationRepository.test.ts 75件テストを全 PASS に復帰
+  - `apps/desktop/package.json` に `rebuild:native` スクリプトを追加（永続的修正）
+  - P66（CPU アーキテクチャ不一致）を 06-known-pitfalls.md に追記済み
+  - UT-CONV-DB-004（ネイティブモジュール環境自動整備）を未タスクとして検出・指示書作成
+
+---
+
+## TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 設計完了（Phase 13 blocked）
+- **Result**: success
+- **Notes**:
+  - SlideUIStatus 4状態（synced/running/degraded/guidance）と不正遷移4パターン禁止を設計
+  - 2 lane 分離（integrated/manual）と UI 4領域（progress row/guidance block/fallback card/terminal launcher）契約を確定
+  - Cleanup 順序9ステップを dependency DAG として定義
+  - Phase 3 設計レビュー PASS（MINOR 1件: MN-01 SlideCapabilityDTO IPC channel）
+  - Phase 10 最終レビュー PASS（AC-1〜AC-4 全件充足）
+  - 未タスク 5 件検出（UT-SLIDE-IMPL-001/UT-SLIDE-UI-001/UT-SLIDE-P31-001/UT-SLIDE-HANDOFF-DUP-001/Task09 IPC namespace 統一）
+  - implementation-guide.md（Part 1: ロボット係員と手動係員アナロジー / Part 2: 開発者向け）作成
+  - Phase 13 はユーザー指示待ち（blocked）
 
 ---
 
@@ -73,7 +156,23 @@
 
 ---
 
-## TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR same-wave sync（2026-03-22）
+## TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 完了（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 設計完了
+- **Result**: success
+- **Notes**:
+  - TranscriptProvenance 型定義（5フィールド）・3操作フロー・provenance chip 設計を確定
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+  - MINOR指摘 M-1/M-2 を未タスクとして管理（M-3 は実装仕様確定）
+  - implementation-guide.md（Part 1: 郵便消印アナロジー / Part 2: 開発者向け）作成
+  - Phase 13 はユーザー指示待ち（blocked）
+
+---
+
+## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（2026-03-21）
+
+---
 
 ## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 
@@ -904,3 +1003,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 5ファイル変更、+359行/-22行
 - テスト: 94件全 PASS
 - 未タスク: 2件（UT-CHATVIEW-ERROR-BANNER-I18N-001、UT-AI-CHAT-ERROR-CODE-INVENTORY-001）
+
+### 2026-03-23: TASK-SC-05-IMPROVE-LLM 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
+| 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
+| 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |

@@ -2,6 +2,7 @@
  * Permission Store Types - 権限設定永続化の型定義
  *
  * TASK-3-1-E: rememberChoice機能永続化
+ * UT-06-002: AllowedToolEntryV2 PermissionStore 適用
  *
  * @module permission-store
  */
@@ -126,4 +127,82 @@ export interface IPermissionStore {
    * @returns 取り消されたエントリ数
    */
   revokeSessionEntries?(sessionId: string): number;
+}
+
+// ============================================================
+// V2 型定義 (UT-06-002)
+// ============================================================
+
+/** 失効ポリシー種別 */
+export type ExpiryPolicy = "session" | "time_24h" | "time_7d" | "permanent";
+
+/**
+ * V2: 失効情報・スキル名を持つ拡張エントリ
+ *
+ * 後方互換性: V1 の AllowedToolEntry（expiresAt/skillName/expiryPolicy 未定義）は
+ * 「無期限有効・全スキル対象・permanent」として動作する
+ */
+export interface AllowedToolEntryV2 extends AllowedToolEntry {
+  /** 失効タイムスタンプ（Unix ms）。undefined = 無期限 */
+  expiresAt?: number;
+  /** 適用対象スキル名。undefined = 全スキルに適用 */
+  skillName?: string;
+  /** 失効ポリシー種別 */
+  expiryPolicy?: ExpiryPolicy;
+}
+
+/**
+ * 失効ポリシーに基づき expiresAt を計算する
+ *
+ * | ポリシー   | expiresAt              | 備考             |
+ * | ---------- | ---------------------- | ---------------- |
+ * | session    | undefined              | セッション終了時 |
+ * | time_24h   | allowedAt + 86400000   | 24時間後         |
+ * | time_7d    | allowedAt + 604800000  | 7日後            |
+ * | permanent  | undefined              | 明示取り消しまで |
+ */
+export function calcExpiresAt(
+  policy: ExpiryPolicy,
+  allowedAt: number,
+): number | undefined {
+  switch (policy) {
+    case "session":
+      return undefined;
+    case "time_24h":
+      return allowedAt + 86_400_000;
+    case "time_7d":
+      return allowedAt + 604_800_000;
+    case "permanent":
+      return undefined;
+  }
+}
+
+export const PERMISSION_HISTORY_MAX_ENTRIES = 1000;
+
+/**
+ * V2 PermissionStore インターフェース
+ */
+export interface IPermissionStoreV2 extends IPermissionStore {
+  isToolAllowed(toolName: string, skillName?: string): boolean;
+  allowToolV2(entry: AllowedToolEntryV2): void;
+  revokeSessionEntries(sessionId: string): number;
+  getAllowedToolEntriesV2(): AllowedToolEntryV2[];
+}
+
+/**
+ * V2 electron-store スキーマ
+ */
+export interface PermissionStoreSchemaV2 {
+  version: 2;
+  allowedTools: AllowedToolEntryV2[];
+  updatedAt: string;
+}
+
+/**
+ * permission:clear-session レスポンス型
+ */
+export interface ClearSessionResponse {
+  success: boolean;
+  removedCount?: number;
+  error?: { code: string; message: string };
 }
