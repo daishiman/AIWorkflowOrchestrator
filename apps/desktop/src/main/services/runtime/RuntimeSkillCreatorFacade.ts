@@ -69,11 +69,16 @@ export class RuntimeSkillCreatorFacade {
     const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {
-      const bundle = this.handoffBuilder.build(
-        `Skill を作成してください: ${skillSpec}`,
-        process.cwd(),
+      const guidance = this.handoffBuilder.buildForSurface(
+        {
+          surfaceType: "runtime",
+          runtimeType: "skill",
+          prompt: `Skill を作成してください: ${skillSpec}`,
+          workingDirectory: process.cwd(),
+        },
+        "terminal_handoff",
       );
-      return { type: "terminal_handoff", bundle };
+      return { type: "terminal_handoff", guidance };
     }
 
     // integrated_api: 計画を生成
@@ -140,11 +145,17 @@ export class RuntimeSkillCreatorFacade {
     const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {
-      const bundle = this.handoffBuilder.build(
-        `スキル "${skillName}" を改善してください: ${feedback}`,
-        process.cwd(),
+      const guidance = this.handoffBuilder.buildForSurface(
+        {
+          surfaceType: "runtime",
+          runtimeType: "skill",
+          skillName,
+          prompt: `スキル "${skillName}" を改善してください: ${feedback}`,
+          workingDirectory: process.cwd(),
+        },
+        "terminal_handoff",
       );
-      return { type: "terminal_handoff", bundle };
+      return { type: "terminal_handoff", guidance };
     }
 
     // integrated_api: 改善提案を生成

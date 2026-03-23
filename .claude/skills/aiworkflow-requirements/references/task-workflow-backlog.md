@@ -93,7 +93,7 @@
 | UT-TERMINAL-DOCK-ABORTED-STATE-001 | Terminal Dock の aborted state 定義と遷移ルール追加 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 3 MN-2（2026-03-22） | `docs/30-workflows/unassigned-task/UT-TERMINAL-DOCK-ABORTED-STATE-001.md` |
 | UT-GUIDANCE-BLOCK-HANDOFF-CARD-RULE-001 | GuidanceBlock vs TerminalHandoffCard 使い分けルール明文化 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 3 MN-3（2026-03-22） | `docs/30-workflows/unassigned-task/UT-GUIDANCE-BLOCK-HANDOFF-CARD-RULE-001.md` |
 | UT-TERMINAL-DOCK-SESSION-PERSISTENCE-001 | Terminal Dock セッション永続化設計 | 低 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-04（2026-03-22） | `docs/30-workflows/unassigned-task/UT-TERMINAL-DOCK-SESSION-PERSISTENCE-001.md` |
-| UT-RUNTIME-BUILDER-MIGRATION-001 | TerminalHandoffBuilder → buildForSurface 統一メソッド移行 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-05（2026-03-22） | `docs/30-workflows/unassigned-task/UT-RUNTIME-BUILDER-MIGRATION-001.md` |
+| ~~UT-RUNTIME-BUILDER-MIGRATION-001~~ | ~~TerminalHandoffBuilder → buildForSurface 統一メソッド移行~~ **完了（2026-03-23）** | ~~中~~ | ~~TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-05（2026-03-22）~~ | ~~`docs/30-workflows/unassigned-task/UT-RUNTIME-BUILDER-MIGRATION-001.md`~~ |
 | UT-SKILLDOCS-TERMINAL-HANDOFF-PATH-001 | SkillDocs → Terminal Handoff 導線接続 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-06（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SKILLDOCS-TERMINAL-HANDOFF-PATH-001.md` |
 | UT-GUIDANCE-BLOCK-PROPS-UNIFICATION-001 | GuidanceBlock Props 型統一（GuidanceBlockProps → HandoffGuidance） | 低 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-07（2026-03-22） | `docs/30-workflows/unassigned-task/UT-GUIDANCE-BLOCK-PROPS-UNIFICATION-001.md` |
 | UT-9I-001 | SkillDocGenerator の LLM プロバイダ連携実装 | 中 | TASK-9I Phase 12 未タスク検出（stubQueryFn 暫定実装） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-001-llm-provider-integration.md` |
@@ -532,6 +532,8 @@
 | UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
 | UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
 | UT-SC-02-004 | bundle 構築の二重責務 | 低 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
+| UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001 | chat-edit/TerminalHandoffBuilder.ts の完全削除（buildForSurface 移行完了後） | 中 | UT-RUNTIME-BUILDER-MIGRATION-001 Phase 10 MINOR-1（2026-03-23） | `docs/30-workflows/unassigned-task/UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001.md` |
+| UT-RUNTIME-FACADE-RETURN-TYPE-001 | RuntimeSkillCreatorFacade 全呼び出し元の bundle→guidance 型統一 | 中 | UT-RUNTIME-BUILDER-MIGRATION-001 Phase 10 MINOR-2（2026-03-23） | `docs/30-workflows/unassigned-task/UT-RUNTIME-FACADE-RETURN-TYPE-001.md` |
 
 ### 未タスク管理ルール
 

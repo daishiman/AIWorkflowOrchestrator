@@ -2,17 +2,12 @@
 
 ## メタ情報
 
-```yaml
-issue_number: 1461
-```
-
-## メタ情報
-
 | 項目       | 内容                                                       |
 | ---------- | ---------------------------------------------------------- |
 | タスクID   | UT-RUNTIME-BUILDER-MIGRATION-001                           |
+| Issue      | #1461                                                      |
 | 由来       | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 設計 GAP |
-| ステータス | unassigned                                                 |
+| ステータス | completed                                                  |
 | 優先度     | high（Consumer Adapter 実装の前提）                        |
 | 作成日     | 2026-03-22                                                 |
 | 関連仕様書 | llm-workspace-chat-edit.md                                 |
@@ -36,12 +31,12 @@ Phase 2 設計で `TerminalHandoffBuilder.buildForSurface()` を統一エント�
 
 ## 参照資料
 
-| 参照資料                   | パス                                                                                                                |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| design-summary.md          | docs/30-workflows/step-03-par-task-05-terminal-handoff-surface-realization/outputs/phase-2/design-summary.md        |
-| contract-matrix.md         | docs/30-workflows/step-03-par-task-05-terminal-handoff-surface-realization/outputs/phase-2/contract-matrix.md       |
-| implementation-guide.md    | docs/30-workflows/step-03-par-task-05-terminal-handoff-surface-realization/outputs/phase-12/implementation-guide.md |
-| llm-workspace-chat-edit.md | .claude/skills/aiworkflow-requirements/references/llm-workspace-chat-edit.md                                        |
+| 参照資料                   | パス                                                                                                                                |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| design-summary.md          | docs/30-workflows/completed-tasks/step-03-par-task-05-terminal-handoff-surface-realization/outputs/phase-2/design-summary.md        |
+| contract-matrix.md         | docs/30-workflows/completed-tasks/step-03-par-task-05-terminal-handoff-surface-realization/outputs/phase-2/contract-matrix.md       |
+| implementation-guide.md    | docs/30-workflows/completed-tasks/step-03-par-task-05-terminal-handoff-surface-realization/outputs/phase-12/implementation-guide.md |
+| llm-workspace-chat-edit.md | .claude/skills/aiworkflow-requirements/references/llm-workspace-chat-edit.md                                                        |
 
 ## 受入基準
 
@@ -50,6 +45,7 @@ Phase 2 設計で `TerminalHandoffBuilder.buildForSurface()` を統一エント�
 - [ ] `buildForSurface()` の unit test が 12 件以上作成されている
 - [ ] 旧メソッドの呼び出し元が全て `buildForSurface()` に移行されている（または migration コメントが付いている）
 - [ ] `llm-workspace-chat-edit.md` の `buildForSurface()` 仕様が更新されている
+- [ ] 未知の surfaceType でエラーが throw される（P62 対策）
 
 ## 注意事項
 

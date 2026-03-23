@@ -5,6 +5,32 @@
 
 ## 完了タスク
 
+### タスク: UT-RUNTIME-BUILDER-MIGRATION-001 buildForSurface() 統一メソッド追加（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-RUNTIME-BUILDER-MIGRATION-001 |
+| ステータス | **完了（Phase 1-12 完了）** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-23 |
+| 対象 | TerminalHandoffBuilder buildForSurface() 統一メソッド |
+| 成果物 | `docs/30-workflows/runtime-builder-migration/` |
+
+#### 実施内容
+
+- `runtime/TerminalHandoffBuilder` に `buildForSurface()` 統一メソッドを追加（discriminated union 型 × exhaustive check）
+- 旧メソッド（`build`, `buildForAgentExecution`, `buildForSkillExecution`）に `@deprecated` 付与（runtime 3件 + chat-edit 1件）
+- 呼び出し元4箇所（chatEditHandlers / agentHandlers / skillHandlers / RuntimeSkillCreatorFacade）を移行
+- `RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorImproveResponse` の `bundle → guidance` 型変更
+- テスト28件全PASS
+
+#### 発見元
+
+- TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 2 設計 GAP
+
+---
+
 ### タスク: UT-EXECUTION-ENV-TERMINAL-001 ExecutionEnvironment Terminal 本実装 + assertNoSilentFallback（2026-03-23）
 
 | 項目 | 値 |

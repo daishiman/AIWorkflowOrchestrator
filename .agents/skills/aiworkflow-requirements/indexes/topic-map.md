@@ -261,7 +261,7 @@ node scripts/list-specs.js --topics
 | 状態管理アーキテクチャ | L180 |
 | データフローアーキテクチャ | L217 |
 | ディレクトリ構造 | L300 |
-| データ構造（型システム） | L362 |
+| データ構造（型システム） | L364 |
 
 ### references/architecture-overview-details.md
 
@@ -1277,16 +1277,16 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | UI構成 | L23 |
 | 共有インラインセレクター | L34 |
-| プロバイダーとモデル一覧 | L45 |
-| 状態管理 | L60 |
-| UXフロー | L88 |
-| スタイルガイドライン | L108 |
-| アクセシビリティ | L135 |
-| エラーハンドリング | L145 |
-| テストカバレッジ | L153 |
-| 実行経路との統合 | L178 |
-| 関連タスクドキュメント | L189 |
-| 関連ドキュメント | L204 |
+| プロバイダーとモデル一覧 | L51 |
+| 状態管理 | L66 |
+| UXフロー | L94 |
+| スタイルガイドライン | L114 |
+| アクセシビリティ | L141 |
+| エラーハンドリング | L151 |
+| テストカバレッジ | L159 |
+| 実行経路との統合 | L184 |
+| 関連タスクドキュメント | L195 |
+| 関連ドキュメント | L210 |
 
 ### references/ui-ux-navigation.md
 
@@ -1295,13 +1295,13 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L13 |
 | Global Navigation | L43 |
 | ChatViewナビゲーション | L341 |
-| ナビゲーションボタン仕様 | L347 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L363 |
-| テスト検証済み項目 | L377 |
-| アクセシビリティ対応事例 | L392 |
-| ナビゲーションパターンのベストプラクティス | L424 |
-| 関連ドキュメント | L436 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L445 |
+| ナビゲーションボタン仕様 | L371 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L387 |
+| テスト検証済み項目 | L401 |
+| アクセシビリティ対応事例 | L416 |
+| ナビゲーションパターンのベストプラクティス | L448 |
+| 関連ドキュメント | L460 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L469 |
 
 ### references/ui-ux-panels.md
 
@@ -1855,8 +1855,8 @@ node scripts/list-specs.js --topics
 | current canonical set | L12 |
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
-| 実装ステータススナップショット（2026-03-21） | L46 |
-| Follow-up Backlog | L55 |
+| 実装ステータススナップショット（2026-03-22） | L46 |
+| Follow-up Backlog | L58 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2081,14 +2081,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
-| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L100 |
-| SkillScheduler / ScheduleStore（TASK-9G） | L159 |
-| DefaultSafetyGate サービス（UT-06-003） | L188 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L239 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L264 |
-| キャッシュ機構 | L292 |
-| 永続化 | L298 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L304 |
+| RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | L100 |
+| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L129 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L188 |
+| DefaultSafetyGate サービス（UT-06-003） | L217 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L268 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L293 |
+| キャッシュ機構 | L321 |
+| 永続化 | L327 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L333 |
 
 ### references/arch-electron-services-details.md
 
@@ -2588,29 +2589,32 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L43 |
-| クイックリファレンス: カテゴリ別検索ガイド | L58 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L134 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L466 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L500 |
-| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L528 |
+| 分割ファイル一覧 | L44 |
+| クイックリファレンス: カテゴリ別検索ガイド | L59 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L135 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L467 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L501 |
+| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L529 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L33 |
-| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L39 |
-| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L59 |
-| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L87 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L123 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L151 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L188 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L254 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L275 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L305 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L347 |
+| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L35 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L55 |
+| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L61 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L81 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L109 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L145 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L173 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L210 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L276 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L297 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L327 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L369 |
+| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L416 |
+| UT-RUNTIME-BUILDER-MIGRATION-001: buildForSurface() 統一メソッド追加 | L435 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -2848,13 +2852,13 @@ node scripts/list-specs.js --topics
 | RuntimeResolver | L153 |
 | AnthropicLLMAdapter | L190 |
 | TerminalHandoffBuilder | L227 |
-| IPCチャンネル | L279 |
-| セキュリティ | L299 |
-| ディレクトリ構成 | L315 |
-| 品質メトリクス | L344 |
-| 関連ドキュメント | L355 |
-| 完了タスク | L383 |
-| 変更履歴 | L443 |
+| IPCチャンネル | L300 |
+| セキュリティ | L320 |
+| ディレクトリ構成 | L336 |
+| 品質メトリクス | L365 |
+| 関連ドキュメント | L376 |
+| 完了タスク | L404 |
+| 変更履歴 | L464 |
 
 ### references/local-agent.md
 
