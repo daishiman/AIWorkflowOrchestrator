@@ -384,6 +384,10 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.17** | **2026-03-23** | **UT-RUNTIME-BUILDER-MIGRATION-001 実装完了同期**: buildForSurface() 統一メソッド Phase 1-12 完了。discriminated union 型 × exhaustive check × sanitizePrompt 全surface適用。テスト28件全PASS。未タスク2件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **v10.09.15** | **2026-03-23** | **TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了同期**: WorkspaceChatPanel header mount 完了。Phase 4-12 全完了、11統合テスト、146テスト全PASS。LOGS.md + SKILL.md 2ファイル同時更新（P1/P25対策） |
+| **v10.09.14** | **2026-03-22** | **TASK-SC-02-RUNTIME-POLICY-CLOSURE 仕様書（Phase 1-13）実行完了** |
+| **v10.09.13** | **2026-03-22** | **TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新を反映**: `references/phase-12-documentation-guide.md` に human-authored Phase 12 成果物を `outputs/phase-12/` へ固定するルールを追加。`references/spec-update-workflow.md` に shared component task と consumer surface task の completed 判定を分離する基準、および global `docs/30-workflows/unassigned-task/` canonical path を追記 |
 | **v10.09.16** | **2026-03-23** | **UT-SC-02-002 完了同期**: execute() terminal_handoff 分岐追加（セキュリティ修正）。RuntimeSkillCreatorExecuteResponse Union型追加、void decision 除去、plan/improve/execute パターン統一。15テスト全PASS。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.15** | **2026-03-23** | **UT-EXECUTION-ENV-TERMINAL-001 完了同期**: ExecutionEnvironment.terminal 本実装 + assertNoSilentFallback ガード（P62 対策）。Phase 1-12 完了。テスト 18 ケース追加（PASS） |
 | **v10.09.14** | **2026-03-22** | **TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期**: D1-D6（6件 drift）解消。12チャネル canonical 統一。validateIpcSender + P42 3段バリデーション + path guard 全ハンドラ適用。RuntimeResolver integrated/handoff 分岐。modifier-skill.ts 統合。slideSlice 7 store fields 追加。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |

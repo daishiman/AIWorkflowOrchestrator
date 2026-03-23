@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-23 | 1.9.0 | UT-RUNTIME-BUILDER-MIGRATION-001 教訓2件を追加（L-RBM-001: shared型変更の3レイヤー波及、L-RBM-002: sanitize テスト正規表現パターン） |
 | 2026-03-23 | 1.8.0 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 苦戦箇所2件を追加（エスケープテスト lookbehind regex パターン、adapter サニタイズ対象の統一漏れ） |
 | 2026-03-22 | 1.7.0 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加（structured error primary / legacy fallback 分離、Task 03 root 移管の同波反映） |
 | 2026-03-21 | 1.6.0 | UT-TASK06-007-EXT-006 正規表現 lastIndex 汚染パターン（教訓4）を追加 |
@@ -428,6 +429,25 @@
 ### 苦戦箇所: bundle 構築の責務分散
 
 `TerminalHandoffBundle` の構築が `RuntimePolicyResolver` のプライベートメソッドと `TerminalHandoffBuilder.build()` に分散した。Resolver 側は prompt を含まないダミー bundle を生成するため shell injection リスクはないが、構造的に不整合。今後は TerminalHandoffBuilder に統一すべき（UT-SC-02-004）。
+
+
+---
+
+## UT-RUNTIME-BUILDER-MIGRATION-001: buildForSurface() 統一メソッド追加
+
+### L-RBM-001: shared 型変更の3レイヤー波及（P32 拡張）
+
+`RuntimeSkillCreatorPlanResponse` の `bundle: TerminalHandoffBundle` → `guidance: HandoffGuidance` 変更時に、以下の3レイヤーが連鎖的に更新必要だった:
+
+1. `packages/shared/src/types/skillCreator.ts`（型定義本体）
+2. `RuntimeSkillCreatorFacade.ts`（実装コード）
+3. `RuntimeSkillCreatorFacade.test.ts`（モック + アサーション）
+
+P32 は「2箇所同時更新」として定義されているが、テストモックを含めると「N箇所」になる。型変更前に `grep -rn "プロパティ名" apps/ packages/` で全参照を洗い出す手順を標準化すべき。
+
+### L-RBM-002: sanitize テスト正規表現のlookbehind パターン
+
+`\$(dangerous)` が `\$(dangerous)` にエスケープされた後、テストで「未エスケープの `$(` がないこと」を検証する正規表現に lookbehind assertion（`(?<!\\)\$\(`）が必要だった。初回は `/\$\([^\\]/` というパターンを使ったが、これはエスケープ**後**の `\$(` にもマッチしてしまい FAIL した。JavaScript の lookbehind assertion（`(?<!\\)`）は ES2018 以降で使用可能。
 
 ---
 

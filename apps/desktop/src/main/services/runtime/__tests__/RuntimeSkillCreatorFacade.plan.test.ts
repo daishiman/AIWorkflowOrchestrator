@@ -241,16 +241,15 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
           manualRetryRule: "retry",
         },
       });
-      const handoffBundle = {
-        launcher: "claude",
-        promptBundle: "Skill を作成してください: spec",
-        cwd: process.cwd(),
-        suggestedCommand: 'claude -p "spec"',
-        manualRetryRule: "retry",
+      const handoffGuidance = {
+        terminalCommand: 'claude -p "Skill を作成してください: spec"',
+        contextSummary: "surface=skill skill=unknown",
+        reason: "terminal_handoff",
       };
-      vi.spyOn(TerminalHandoffBuilder.prototype, "build").mockReturnValue(
-        handoffBundle,
-      );
+      vi.spyOn(
+        TerminalHandoffBuilder.prototype,
+        "buildForSurface",
+      ).mockReturnValue(handoffGuidance);
 
       const result = await facade.plan("spec", "subscription", null);
 
@@ -261,11 +260,11 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
       // terminal_handoff が返る
       expect(result).toEqual({
         type: "terminal_handoff",
-        bundle: handoffBundle,
+        guidance: handoffGuidance,
       });
     });
 
-    it("terminal_handoff のレスポンス構造が従来と同一", async () => {
+    it("terminal_handoff のレスポンス構造が guidance 形式", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "terminal_handoff",
         bundle: {
@@ -276,28 +275,26 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
           manualRetryRule: "retry",
         },
       });
-      const expectedBundle = {
-        launcher: "claude",
-        promptBundle: "Skill を作成してください: my-spec",
-        cwd: process.cwd(),
-        suggestedCommand: 'claude -p "my-spec"',
-        manualRetryRule: "retry",
+      const expectedGuidance = {
+        terminalCommand: 'claude -p "Skill を作成してください: my-spec"',
+        contextSummary: "surface=skill skill=unknown",
+        reason: "terminal_handoff",
       };
-      vi.spyOn(TerminalHandoffBuilder.prototype, "build").mockReturnValue(
-        expectedBundle,
-      );
+      vi.spyOn(
+        TerminalHandoffBuilder.prototype,
+        "buildForSurface",
+      ).mockReturnValue(expectedGuidance);
 
       const result = await facade.plan("my-spec", "subscription", null);
 
       expect(result).toHaveProperty("type", "terminal_handoff");
-      expect(result).toHaveProperty("bundle");
-      const bundle = (result as { type: string; bundle: typeof expectedBundle })
-        .bundle;
-      expect(bundle).toHaveProperty("launcher", "claude");
-      expect(bundle).toHaveProperty("promptBundle");
-      expect(bundle).toHaveProperty("cwd");
-      expect(bundle).toHaveProperty("suggestedCommand");
-      expect(bundle).toHaveProperty("manualRetryRule");
+      expect(result).toHaveProperty("guidance");
+      const guidance = (
+        result as { type: string; guidance: typeof expectedGuidance }
+      ).guidance;
+      expect(guidance).toHaveProperty("terminalCommand");
+      expect(guidance).toHaveProperty("contextSummary");
+      expect(guidance).toHaveProperty("reason", "terminal_handoff");
     });
   });
 

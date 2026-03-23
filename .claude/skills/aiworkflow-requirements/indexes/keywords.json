@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-23T05:07:16.057Z",
-  "totalKeywords": 2442,
+  "generated": "2026-03-23T07:35:59.150Z",
+  "totalKeywords": 2443,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1267,9 +1267,7 @@
     "execute": [
       "api-ipc-agent-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "security-electron-ipc-advanced.md",
-      "task-workflow-completed-skill-lifecycle-design.md"
+      "security-electron-ipc-advanced.md"
     ],
     "契約": [
       "api-ipc-agent-core.md",
@@ -1763,7 +1761,6 @@
       "security-implementation.md",
       "security-skill-execution.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
-      "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed-ut-06-safety-gate.md",
@@ -2453,8 +2450,7 @@
     ],
     "SC": [
       "arch-electron-services-details-part2.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "task-workflow-completed-skill-lifecycle-design.md"
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "POLICY": [
       "arch-electron-services-details-part2.md",
@@ -2521,8 +2517,6 @@
     ],
     "handoff": [
       "arch-electron-services-details-part2.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
@@ -6362,13 +6356,20 @@
     "実装セッション": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "terminal": [
-      "lessons-learned-ipc-preload-runtime.md",
-      "task-workflow-completed-skill-lifecycle-design.md"
+    "BUILDER": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
-    "分岐追加": [
+    "MIGRATION": [
       "lessons-learned-ipc-preload-runtime.md",
-      "task-workflow-completed-skill-lifecycle-design.md"
+      "lessons-learned-skill-execute-hook-migration.md",
+      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "buildForSurface": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "統一メソッド追加": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -6506,11 +6507,6 @@
     "COMPONENT": [
       "lessons-learned-skill-execute-hook-migration.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
-    ],
-    "MIGRATION": [
-      "lessons-learned-skill-execute-hook-migration.md",
-      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "個別セレクタ": [
       "lessons-learned-skill-execute-hook-migration.md"

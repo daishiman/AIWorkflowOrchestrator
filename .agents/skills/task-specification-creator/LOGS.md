@@ -4,6 +4,15 @@
 
 ---
 
+## UT-RUNTIME-BUILDER-MIGRATION-001 実装完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: `TerminalHandoffBuilder` に `buildForSurface()` 統一メソッドを追加。discriminated union 型による3 surfaceType（chat-edit / runtime / skill-docs）分岐、never型 exhaustive check（P62対策）、sanitizePrompt 全surface統一適用（P55対策）。旧メソッド3件に `@deprecated` 付与。呼び出し元4箇所（chatEditHandlers / agentHandlers / skillHandlers / RuntimeSkillCreatorFacade）を移行。テスト28件全PASS。
+- **影響ファイル**: runtime/TerminalHandoffBuilder.ts, chat-edit/TerminalHandoffBuilder.ts, ipc/chatEditHandlers.ts, ipc/agentHandlers.ts, ipc/skillHandlers.ts, RuntimeSkillCreatorFacade.ts, TerminalHandoffBuilder.test.ts, RuntimeSkillCreatorFacade.test.ts, llm-workspace-chat-edit.md, packages/shared/src/types/skillCreator.ts
+- **未タスク**: 2件（UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001, UT-RUNTIME-FACADE-RETURN-TYPE-001）
+
+---
+
 ## UT-SC-02-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
