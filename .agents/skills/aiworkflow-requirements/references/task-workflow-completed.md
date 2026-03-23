@@ -5,59 +5,6 @@
 
 ## 完了タスク
 
-### タスク: UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 toHandoffGuidance() Adapter 配置先確定と統一実装（2026-03-22）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 |
-| ステータス | **完了（Phase 1-12 完了）** |
-| タイプ | implementation |
-| 優先度 | 高 |
-| 関連Issue | #1457 |
-| 実施内容 | `apps/desktop/src/main/adapters/handoff/` に Discriminated Union ベース adapter 関数を新規作成。HandoffBlock.tsx P23 型二重定義解消。18テスト全PASS（Line 90.08%/Branch 73.07%/Function 100%）。sanitizePath/validateLauncher によるセキュリティ強化 |
-| 未タスク | MN-1: UT-HANDOFF-SKILL-DOCS-CONSUMER-001、MN-3: UT-FIX-WORKSPACE-CHAT-EDIT-HANDOFF-GUIDANCE-TYPE-UNIFICATION-001 |
-
----
-
-||||||| 6f1c58b3d
-### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SC-01-IPC-WIRING-FIX |
-| 完了日 | 2026-03-23 |
-| PR | #1478 |
-| 成果 | P65既解消確認、P65不在テスト+allowlist包含テスト4件追加、Phase 1-12成果物21ファイル |
-| 未タスク | UT-SC-01-IPCRESULT-DEDUP (Low), UT-SC-01-DIP-INTERFACE (Low) |
-
----
-
-### タスク: TASK-SC-02-RUNTIME-POLICY-CLOSURE RuntimePolicyResolver subscription 判定統合・3パターン分岐安定化（2026-03-22）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SC-02-RUNTIME-POLICY-CLOSURE |
-| ステータス | **完了** |
-| タイプ | implementation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-22 |
-| 対象 | RuntimePolicyResolver の subscription 判定統合・3パターン分岐安定化 |
-
-#### 実施内容
-
-- RuntimePolicyResolver の subscription 判定統合・3パターン分岐安定化
-
-#### Phase 12 未タスク
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-SC-02-001 | RuntimeSkillCreatorFacade の subscriptionAuthProvider DI 配線 | 中 | `docs/30-workflows/unassigned-task/UT-SC-02-001.md` |
-| UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
-| UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
-| UT-SC-02-004 | bundle 構築の二重責務 | 低 | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
-
----
-
 ### タスク: TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Terminal Handoff Surface Realization 設計（2026-03-22）
 
 | 項目 | 値 |
@@ -82,6 +29,33 @@
 #### 発見元
 
 - ai-runtime-execution-responsibility-realignment pack Task 05（2026-03-19）
+
+---
+
+### タスク: TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 Transcript -> Chat Provenance Linkage 設計（2026-03-22）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 |
+| ステータス | **仕様書作成完了（`spec_created` / workflow root `implementation_ready` / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-22 |
+| 対象 | Transcript -> Chat 手動3操作連携 / Provenance Chip / Metadata Contract |
+| 成果物 | `docs/30-workflows/step-04-seq-task-06-transcript-to-chat-provenance-linkage/` |
+
+#### 実施内容
+
+- TranscriptProvenance 型定義（sourceType / sharedAt / sessionTitle / messageRange / originalContent）
+- 3操作フロー: OP-1（選択範囲をチャットへ送る）/ OP-2（直近出力を添付）/ OP-3（セッションを貼り付ける）
+- Provenance Chip の表示条件・dismiss 動作・履歴復元ロジック
+- Terminal Handoff (Task 05) との責務分離・CTA 表示領域の非競合保証
+- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+- 未タスク 2 件（M-1: SelectedFile source / M-2: TranscriptSession 型）を検出・指示書化
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment pack Task 06（2026-03-19）
 
 ---
 
