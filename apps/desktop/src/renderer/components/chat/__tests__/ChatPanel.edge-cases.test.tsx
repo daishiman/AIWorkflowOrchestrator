@@ -46,6 +46,9 @@ vi.mock("../../../store", () => ({
     fetchSkills: mockFetchSkills,
     rescanSkills: vi.fn(),
   })),
+  useSetCurrentView: vi.fn(() => vi.fn()),
+  useSelectProvider: vi.fn(() => vi.fn()),
+  useSelectModel: vi.fn(() => vi.fn()),
 }));
 
 // ============================================
