@@ -92,17 +92,17 @@
 
 Task01 だけは `tasks/` 配下に置かず、親パック全体の上流契約として standalone に管理する。理由は、Task02-09 の leaf task ではなく、全 task が参照する foundation 契約だからである。
 
-| 順序 | タスクID                                                  | ディレクトリ                                                           | 責務                                                                          | 実行順序      |
-| ---- | --------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------- |
-| 1    | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | `../step-01-seq-task-01-execution-responsibility-contract-foundation`  | capability、状態語彙、CTA 契約、禁止事項を固定する                            | step-01 / seq |
-| 2    | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001                | `../completed-tasks/step-02-seq-task-02-runtime-policy-centralization` | RuntimePolicy / HealthPolicy / HandoffGuidance の中央 authority を設計する    | step-02 / seq |
-| 3    | TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001        | `tasks/step-03-par-task-03-settings-shell-access-matrix-mainline`      | Settings / AppLayout / public shell に access matrix を実装可能な形で定義する | step-03 / par |
-| 4    | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001        | `../step-03-par-task-04-chat-workspace-guidance-action-wiring`         | Main Chat / Workspace の blocked guidance を action へ接続する                | step-03 / par |
-| 5    | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001         | `tasks/step-03-par-task-05-terminal-handoff-surface-realization`       | persistent launcher、handoff card、docs consumer を共通化する                 | step-03 / par |
-| 6    | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001        | `tasks/step-04-seq-task-06-transcript-to-chat-provenance-linkage`      | transcript share の 3 操作と provenance 契約を固定する                        | step-04 / seq |
-| 7    | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001           | `tasks/step-05-par-task-07-chatpanel-review-harness-alignment`         | ChatPanel を review harness として整列させる                                  | step-05 / par |
-| 8    | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001     | `tasks/step-05-par-task-08-slide-modifier-manual-fallback-alignment`   | slide / modifier の legacy lane を manual fallback 契約へ合わせる             | step-05 / par |
-| 9    | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001           | `tasks/step-06-seq-task-09-canonical-bridge-ledger-governance`         | canonical bridge、status 定義、backlog / lessons sync を閉じる                | step-06 / seq |
+| 順序 | タスクID                                                  | ディレクトリ                                                                   | 責務                                                                          | 実行順序      |
+| ---- | --------------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------- | ------------- |
+| 1    | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | `../step-01-seq-task-01-execution-responsibility-contract-foundation`          | capability、状態語彙、CTA 契約、禁止事項を固定する                            | step-01 / seq |
+| 2    | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001                | `../completed-tasks/step-02-seq-task-02-runtime-policy-centralization`         | RuntimePolicy / HealthPolicy / HandoffGuidance の中央 authority を設計する    | step-02 / seq |
+| 3    | TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001        | `tasks/step-03-par-task-03-settings-shell-access-matrix-mainline`              | Settings / AppLayout / public shell に access matrix を実装可能な形で定義する | step-03 / par |
+| 4    | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001        | `../step-03-par-task-04-chat-workspace-guidance-action-wiring`                 | Main Chat / Workspace の blocked guidance を action へ接続する                | step-03 / par |
+| 5    | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001         | `tasks/step-03-par-task-05-terminal-handoff-surface-realization`               | persistent launcher、handoff card、docs consumer を共通化する                 | step-03 / par |
+| 6    | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001        | `../completed-tasks/step-04-seq-task-06-transcript-to-chat-provenance-linkage` | transcript share の 3 操作と provenance 契約を固定する                        | step-04 / seq |
+| 7    | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001           | `tasks/step-05-par-task-07-chatpanel-review-harness-alignment`                 | ChatPanel を review harness として整列させる                                  | step-05 / par |
+| 8    | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001     | `tasks/step-05-par-task-08-slide-modifier-manual-fallback-alignment`           | slide / modifier の legacy lane を manual fallback 契約へ合わせる             | step-05 / par |
+| 9    | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001           | `tasks/step-06-seq-task-09-canonical-bridge-ledger-governance`                 | canonical bridge、status 定義、backlog / lessons sync を閉じる                | step-06 / seq |
 
 ## タスク通称
 

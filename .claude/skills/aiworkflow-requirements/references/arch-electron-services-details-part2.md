@@ -97,6 +97,35 @@ export type RuntimeResolution =
 | --- | --- | --- |
 | UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001 | Skill/Agent runtime routing 統合クロージャ | 完了（2026-03-15） |
 
+## RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE）
+
+> 完了日: 2026-03-22
+
+### インターフェース
+
+| メソッド | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| `resolve(authMode, apiKey)` | `AuthMode`, `string \| null` | `Promise<RuntimeDecision>` | apiKey + subscription 判定で3パターン分岐 |
+| `resolveWithService(authMode)` | `AuthMode` | `Promise<RuntimeDecision>` | AuthKeyService から apiKey を自動取得して resolve() を呼ぶ |
+
+### RuntimeDecision 型
+
+| type | 条件 | フィールド |
+| --- | --- | --- |
+| `integrated_api` | apiKey.trim() !== "" | `apiKey`, `permissionMode` |
+| `terminal_handoff` | subscription 有効 or no-auth | `bundle: TerminalHandoffBundle` |
+
+### DI 構成
+
+| 依存 | 型 | optional | 未注入時 |
+| --- | --- | --- | --- |
+| authKeyService | IAuthKeyService | Yes | apiKey = null |
+| subscriptionAuthProvider | ISubscriptionAuthProvider | Yes | subscription = false (no-auth) |
+
+### graceful degradation
+
+AuthKeyService/SubscriptionAuthProvider の例外時は terminal_handoff (no-auth) にフォールバック。DEFAULT_CONFIG への暗黙 fallback は禁止（P62）。
+
 ## Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
 
 > **ステータス**: `spec_created`（2026-03-19 再監査同期）

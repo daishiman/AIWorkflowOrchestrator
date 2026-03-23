@@ -73,6 +73,13 @@ vi.mock("@/renderer/store", () => ({
   useSelectedModelId: () => mockUseSelectedModelId(),
   useSelectedProviderId: () => mockUseSelectedProviderId(),
   useSetCurrentView: () => mockSetCurrentView,
+  useLLMProviders: vi.fn(() => []),
+  useLLMHealthStatus: vi.fn(() => ({})),
+  useFetchProviders: vi.fn(() => vi.fn()),
+  useSelectProvider: vi.fn(() => vi.fn()),
+  useSelectModel: vi.fn(() => vi.fn()),
+  useCheckLLMHealth: vi.fn(() => vi.fn()),
+  useIsSending: vi.fn(() => false),
 }));
 
 // ---------------------------------------------------------------------------

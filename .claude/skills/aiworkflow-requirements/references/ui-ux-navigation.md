@@ -340,9 +340,33 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 
 ## ChatViewナビゲーション
 
-ChatViewには履歴ページへの導線として、ヘッダー右上にナビゲーションボタンを配置する。
+ChatViewには履歴ページへの導線として、ヘッダーにナビゲーション要素を配置する。
 
-**実装場所**: `apps/desktop/src/renderer/views/ChatView/index.tsx:136-143`
+### ヘッダー構造
+
+ChatView ヘッダーは左右2ブロックで構成する。
+
+| 位置 | 要素 | 説明 |
+|------|------|------|
+| 左側 | タイトル | チャットビューのタイトルテキスト |
+| 左側 | RAGステータス | RAG機能の有効/無効表示 |
+| 左側 | InlineModelSelector | 選択中のProvider/Modelをインライン表示し、クリックでモデル切替可能 |
+| 右側 | スキル管理ボタン | スキル一覧・管理画面への導線 |
+| 右側 | 履歴ボタン | `/chat/history` への遷移（Lucide `History` アイコン） |
+
+**InlineModelSelector**: `apps/desktop/src/renderer/components/organisms/InlineModelSelector` で実装。選択中のProvider名・Model名をコンパクトに表示し、クリックでドロップダウンを開いてモデルを切り替える。
+
+### LLMGuidanceBanner との共存
+
+| 条件 | LLMGuidanceBanner | InlineModelSelector |
+|------|-------------------|---------------------|
+| Provider/Model 未選択 | 表示（設定誘導） | 表示（プレースホルダー「モデルを選択」） |
+| Provider/Model 選択済み | 非表示 | 表示（選択中モデル名） |
+| ストリーミング中 | 非表示（選択済み前提） | 表示（disabled） |
+
+InlineModelSelector は常に表示される。LLMGuidanceBanner は Provider/Model 両方が選択済みの場合に自動で非表示になる（Store 更新による React reactivity）。
+
+**実装場所**: `apps/desktop/src/renderer/views/ChatView/index.tsx`
 
 ## ナビゲーションボタン仕様
 

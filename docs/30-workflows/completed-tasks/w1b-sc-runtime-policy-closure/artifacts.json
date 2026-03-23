@@ -1,0 +1,93 @@
+{
+  "taskId": "TASK-SC-02-RUNTIME-POLICY-CLOSURE",
+  "featureName": "w1b-sc-runtime-policy-closure",
+  "status": "phase12_completed",
+  "createdAt": "2026-03-22",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements-definition.md"]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/design-summary.md"]
+    },
+    "3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-report.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-matrix.md"]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-plan.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/edge-case-matrix.md"]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-targets.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactor-boundaries.md"]
+    },
+    "9": {
+      "name": "品質検証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-checklist.md"]
+    },
+    "10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-plan.md"]
+    },
+    "12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/system-spec-update-summary.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": ["outputs/phase-13/pr-preparation.md"]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-22T22:18:47.055Z",
-  "totalKeywords": 2434,
+  "generated": "2026-03-23T01:56:30.754Z",
+  "totalKeywords": 2439,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2442,7 +2442,21 @@
       "ui-ux-settings-core.md"
     ],
     "CLOSURE": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "RuntimePolicyResolver": [
       "arch-electron-services-details-part2.md"
+    ],
+    "SC": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "POLICY": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "採用計画": [
       "arch-electron-services-details-part2.md"
@@ -6261,10 +6275,6 @@
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
-    "POLICY": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "CAPABILITY": [
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -6272,6 +6282,18 @@
     "BRIDGE": [
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "TERMINAL": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "HANDOFF": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "ADAPTER": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "PLACEMENT": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "STREAM": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -6311,9 +6333,6 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "CODE": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "SURFACE": [
