@@ -535,6 +535,9 @@
 | UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
 | UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
 | UT-SC-02-004 | bundle 構築の二重責務 | 低 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
+| UT-CHATPANEL-OPEN-TERMINAL-IPC-HANDLER | openTerminal IPC handler 確認・実装（app:open-terminal チャネル登録・Preload allowlist 追加） | 高 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-chatpanel-open-terminal-ipc-handler.md` |
+| UT-CHATPANEL-PROPS-ROLE-TYPE | ChatPanelProps role 型追加検討（'mainline' \| 'review-harness'、P46 衝突評価） | 低 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-chatpanel-props-role-type.md` |
+| UT-VIEWTYPE-TERMINAL-ADDITION | ViewType に "terminal" を追加（handleTerminalSwitch/handleOpenTerminal の代替解消） | 中 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-viewtype-terminal-addition.md` |
 
 ### 未タスク管理ルール
 

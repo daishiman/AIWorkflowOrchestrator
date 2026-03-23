@@ -32,6 +32,32 @@
 
 ---
 
+### タスク: TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 ChatPanel Review Harness Alignment 設計（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-23 |
+| 対象 | ChatPanel review harness の task-specification-creator Phase 11 整合設計 |
+| 成果物 | `docs/30-workflows/completed-tasks/step-05-par-task-07-chatpanel-review-harness-alignment/` |
+
+#### 実施内容
+
+- ChatPanel 8 状態定義（idle/loading/streaming/complete/error/review/guidance/terminal）を確定
+- 3 Lane 設計（Lane A: Review Board Integration / Lane B: State Machine Harness / Lane C: Handoff Navigation）を確定
+- GAP-01〜04（onTerminalSwitch/onSelectProvider/onSelectModel/onOpenTerminal）の no-op 排除設計
+- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+- 未タスク 3 件（openTerminal IPC handler / role 型追加 / ViewType terminal 追加）を検出・指示書化
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment pack Task 07（2026-03-23）
+
+---
+
 ### タスク: TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 Transcript -> Chat Provenance Linkage 設計（2026-03-22）
 
 | 項目 | 値 |

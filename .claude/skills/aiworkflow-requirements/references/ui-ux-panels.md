@@ -159,6 +159,36 @@ TASK-7D ChatPanel Agent統合で確立されたパネル統合パターン。既
 
 ---
 
+## ChatPanel Review Harness（TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001）
+
+ChatPanel は review harness として機能し、mainline（ChatView）との契約整合性を維持しながら UI レビュー・ビジュアル検証を行う。JSDoc `@role review-harness` で役割を明示。
+
+### Lane 設計
+
+| Lane | コンポーネント | 役割 |
+|------|---------------|------|
+| Mainline | ChatView | 本番 AI チャット |
+| Review Harness | ChatPanel | UI 確認・ビジュアル検証 |
+
+### GAP-01〜04 no-op 排除
+
+| GAP | コールバック | handler | 配線先 |
+|-----|------------|---------|--------|
+| GAP-01 | onTerminalSwitch | handleTerminalSwitch | `setCurrentView("agent")` |
+| GAP-02 | onSelectProvider | handleSelectProvider | `selectProvider(id)` |
+| GAP-03 | onSelectModel | handleSelectModel | `selectModel(id)` |
+| GAP-04 | onOpenTerminal | handleOpenTerminal | `setCurrentView("agent")` |
+
+GAP-01/04 は ViewType "terminal" 未追加のため "agent" で代替。後続: UT-VIEWTYPE-TERMINAL-ADDITION。
+
+### 設計完了記録（2026-03-23）
+
+- Phase 1-13 完了（設計タスク）、テスト 24件 ALL PASS
+- 未タスク 3件: UT-CHATPANEL-OPEN-TERMINAL-IPC-HANDLER / UT-CHATPANEL-PROPS-ROLE-TYPE / UT-VIEWTYPE-TERMINAL-ADDITION
+- 仕様書: `docs/30-workflows/step-05-par-task-07-chatpanel-review-harness-alignment/`
+
+---
+
 ## 関連ドキュメント
 
 - [基本UI/UXガイドライン](./ui-ux-basics.md)

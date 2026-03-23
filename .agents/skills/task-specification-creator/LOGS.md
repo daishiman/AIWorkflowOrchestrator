@@ -4,6 +4,21 @@
 
 ---
 
+## TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 設計完了
+- **Result**: success
+- **Notes**:
+  - ChatPanel の review harness を task-specification-creator の Phase 11 に整合させる設計タスク
+  - 8状態定義（idle / loading / streaming / complete / error / review / guidance / terminal）確定
+  - 3 Lane 設計（Review Lane / Guidance Lane / Terminal Lane）確立
+  - GAP-01〜04 の no-op 排除設計を確定
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+
+---
+
 ## TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（2026-03-22）
 
 - **Agent**: task-specification-creator

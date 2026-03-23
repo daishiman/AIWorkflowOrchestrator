@@ -384,6 +384,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.08** | **2026-03-23** | **TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 完了同期**: ChatPanel Review Harness Alignment 設計タスク（Phase 1-13）完了。8状態定義 / 3 Lane 設計 / GAP-01〜04 no-op 排除設計確定。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.07** | **2026-03-22** | **TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 完了同期**: Transcript -> Chat Provenance Linkage 設計タスク（Phase 1-13）完了。TranscriptProvenance 型定義 / 3操作フロー / provenance chip 設計確定。MINOR指摘 M-1/M-2 を未タスク化。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.06** | **2026-03-22** | **TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了同期**: Terminal Handoff Surface Realization 設計タスク（Phase 1-13）完了。Concern 3分割設計 / HandoffGuidance 統一DTO / Manual Boundary / 未タスク 8 件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.05** | **2026-03-21** | **UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 最終同期**: Phase 12 成果物の planned wording を実績化し、`outputs/artifacts.json` / `phase12-task-spec-compliance-check.md` / review board PNG 3件 / `manual-test-checklist.md` / `screenshot-plan.json` / metadata を current workflow へ同一ターンで固定する運用を変更履歴へ反映。あわせて `validate-phase-output.js` に zero-padding (`phase-01-*`)・alias (`coverage` / `quality`)・bullet/numbered task list 許容を追加し、worktree でも `.claude` 正本更新 + mirror parity + conflict marker 解消まで完了条件に含めることを明文化 |

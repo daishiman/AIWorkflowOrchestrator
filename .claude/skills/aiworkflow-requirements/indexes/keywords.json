@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-22T22:14:36.065Z",
-  "totalKeywords": 2434,
+  "generated": "2026-03-23T05:00:14.233Z",
+  "totalKeywords": 2443,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2264,6 +2264,7 @@
       "arch-state-management-core.md",
       "arch-state-management-reference-selectors.md",
       "interfaces-llm.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
@@ -2442,7 +2443,21 @@
       "ui-ux-settings-core.md"
     ],
     "CLOSURE": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "RuntimePolicyResolver": [
       "arch-electron-services-details-part2.md"
+    ],
+    "SC": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "POLICY": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "採用計画": [
       "arch-electron-services-details-part2.md"
@@ -2457,6 +2472,7 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
@@ -2465,7 +2481,8 @@
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "testing-component-patterns-details.md",
-      "ui-ux-feature-components-details.md"
+      "ui-ux-feature-components-details.md",
+      "ui-ux-panels.md"
     ],
     "SkillScheduler": [
       "arch-electron-services-details-part2.md"
@@ -3698,6 +3715,7 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md"
     ],
@@ -6261,10 +6279,6 @@
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
-    "POLICY": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "CAPABILITY": [
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -6272,6 +6286,18 @@
     "BRIDGE": [
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "TERMINAL": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "HANDOFF": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "ADAPTER": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "PLACEMENT": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "STREAM": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -6313,9 +6339,6 @@
     "CODE": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "TERMINAL": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
     "SURFACE": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6340,6 +6363,14 @@
     ],
     "実績同期": [
       "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "REVIEW": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-panels.md"
+    ],
+    "HARNESS": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-panels.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
@@ -10809,6 +10840,12 @@
       "ui-ux-panels.md"
     ],
     "チャット配線設計": [
+      "ui-ux-panels.md"
+    ],
+    "Review": [
+      "ui-ux-panels.md"
+    ],
+    "Harness": [
       "ui-ux-panels.md"
     ],
     "Portal": [
