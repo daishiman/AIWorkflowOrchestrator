@@ -8,7 +8,11 @@
  */
 
 import { ipcMain } from "electron";
-import type { IPermissionStore, AllowedToolEntry } from "@repo/shared";
+import type {
+  IPermissionStore,
+  AllowedToolEntry,
+  ClearSessionResponse,
+} from "@repo/shared";
 import { IPC_CHANNELS } from "../../preload/channels";
 
 /**
@@ -100,7 +104,48 @@ export function registerPermissionStoreHandlers(
     },
   );
 
-  console.info("[PermissionHandlers] Registered 3 permission IPC handlers");
+  /**
+   * permission:clear-session - セッションエントリのクリア (UT-06-002)
+   *
+   * P42準拠 3段バリデーション適用
+   */
+  ipcMain.handle(
+    IPC_CHANNELS.PERMISSION_CLEAR_SESSION,
+    async (
+      _event,
+      args: { sessionId?: string },
+    ): Promise<ClearSessionResponse> => {
+      try {
+        // P42準拠 3段バリデーション
+        const sessionId = args?.sessionId;
+        if (typeof sessionId !== "string" || sessionId.trim() === "") {
+          return {
+            success: false,
+            error: {
+              code: "VALIDATION_ERROR",
+              message: "sessionId must be a non-empty string",
+            },
+          };
+        }
+
+        const removedCount = permissionStore.revokeSessionEntries
+          ? permissionStore.revokeSessionEntries(sessionId.trim())
+          : 0;
+        return { success: true, removedCount };
+      } catch (error) {
+        console.error("[PermissionHandlers] Failed to clear session:", error);
+        return {
+          success: false,
+          error: {
+            code: "INTERNAL_ERROR",
+            message: "Failed to clear session entries",
+          },
+        };
+      }
+    },
+  );
+
+  console.info("[PermissionHandlers] Registered 4 permission IPC handlers");
 }
 
 /**
@@ -110,6 +155,7 @@ export function unregisterPermissionStoreHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.PERMISSION_GET_ALLOWED_TOOLS);
   ipcMain.removeHandler(IPC_CHANNELS.PERMISSION_REVOKE_TOOL);
   ipcMain.removeHandler(IPC_CHANNELS.PERMISSION_CLEAR_ALL);
+  ipcMain.removeHandler(IPC_CHANNELS.PERMISSION_CLEAR_SESSION);
 
   console.info("[PermissionHandlers] Unregistered permission IPC handlers");
 }

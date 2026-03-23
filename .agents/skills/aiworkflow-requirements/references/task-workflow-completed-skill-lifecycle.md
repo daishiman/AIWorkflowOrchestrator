@@ -9,7 +9,7 @@
 | ファイル | 責務 | 対象タスク |
 | --- | --- | --- |
 | [task-workflow-completed-skill-lifecycle-ui.md](task-workflow-completed-skill-lifecycle-ui.md) | UI実装・統合系 | TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12 |
-| [task-workflow-completed-skill-lifecycle-security.md](task-workflow-completed-skill-lifecycle-security.md) | セキュリティ・権限ガバナンス系 | UT-06-003, UT-06-005, TASK-SKILL-LIFECYCLE-06, UT-06-001 |
+| [task-workflow-completed-skill-lifecycle-security.md](task-workflow-completed-skill-lifecycle-security.md) | セキュリティ・権限ガバナンス系 | UT-06-003, UT-06-005, TASK-SKILL-LIFECYCLE-06, UT-06-001, UT-06-002 |
 
 ## タスクID 逆引き
 
@@ -28,3 +28,4 @@
 | UT-06-005 | security | Permission Fallback 実装 |
 | TASK-SKILL-LIFECYCLE-06 | security | 信頼・権限ガバナンス設計 |
 | UT-06-001 | security | tool-risk-config 実装 |
+| UT-06-002 | security | AllowedToolEntryV2 PermissionStore V2 拡張 |

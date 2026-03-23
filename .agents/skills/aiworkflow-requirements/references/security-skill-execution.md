@@ -361,6 +361,79 @@ PreToolUseフックでは、ツール名と引数に基づいてセキュリテ�
 
 ---
 
+## Permission Store V2（UT-06-002）
+
+**実装タスク**: UT-06-002（2026-03-23完了）
+**実装場所**: `apps/desktop/src/main/services/skill/PermissionStore.ts`
+**型定義**: `packages/shared/src/types/permission-store.ts`
+
+### 概要
+
+V1 の AllowedToolEntry を拡張し、有効期限（expiresAt）・スキルスコープ（skillName）・期限ポリシー（expiryPolicy）を追加。セッション単位の権限管理と期限切れエントリの自動クリーンアップ（lazy eviction）を実現する。
+
+### V2 型定義
+
+**ExpiryPolicy**:
+
+| 値 | 有効期限 | expiresAt |
+| --- | --- | --- |
+| `session` | アプリ終了まで | `undefined`（セッション終了時に revokeSessionEntries で削除） |
+| `time_24h` | 24 時間 | `allowedAt + 86_400_000` |
+| `time_7d` | 7 日間 | `allowedAt + 604_800_000` |
+| `permanent` | 無期限 | `undefined`（削除されない限り有効） |
+
+**AllowedToolEntryV2**（AllowedToolEntry を extends）:
+
+| フィールド | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| toolName | string | Yes | ツール識別子（V1 継承） |
+| allowedAt | string | Yes | 許可日時 ISO 8601（V1 継承） |
+| expiresAt | number | No | 有効期限 UNIX ミリ秒 |
+| skillName | string | No | スキルスコープ（未指定=全スキル） |
+| expiryPolicy | ExpiryPolicy | No | 期限ポリシー |
+
+**PermissionStoreSchemaV2**:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| version | number | スキーマバージョン（2） |
+| allowedTools | AllowedToolEntryV2[] | V2 許可ツール一覧 |
+| updatedAt | string | 最終更新日時 ISO 8601 |
+
+### V2 API
+
+| メソッド | 戻り値 | 説明 |
+| --- | --- | --- |
+| `isToolAllowed(toolName, skillName?)` | `boolean` | 6 分岐フローでツール許可判定（lazy eviction 付き） |
+| `allowToolV2(entry)` | `void` | V2 エントリ登録（session/permanent の expiresAt 強制リセット） |
+| `revokeSessionEntries(sessionId)` | `{ revokedCount: number }` | session スコープエントリのみ選択削除 |
+| `getAllowedToolEntriesV2()` | `AllowedToolEntryV2[]` | 期限切れ自動クリーンアップ付き一覧取得 |
+
+### isToolAllowed 6 分岐フロー
+
+| 分岐 | 条件 | 結果 |
+| --- | --- | --- |
+| 1 | エントリなし | `false` |
+| 2 | expiresAt 未定義 | skillName チェックへ |
+| 3 | 期限切れ（Date.now() > expiresAt） | エントリ削除 → `false` |
+| 4 | 有効期限内 | skillName チェックへ |
+| 5 | skillName 不一致 | `false` |
+| 6 | 全条件パス | `true` |
+
+### V1→V2 マイグレーション
+
+起動時に `initializeCache()` で V1 エントリを検出し、`expiryPolicy: undefined`（permanent 相当）・`skillName: undefined`（全スキル）として V2 形式に自動変換する。version フィールドが 1 → 2 に更新される。
+
+### IPC チャネル
+
+| チャネル | 方向 | 引数 | 戻り値 |
+| --- | --- | --- | --- |
+| `permission:clear-session` | R→M | `{ sessionId: string }` | `ClearSessionResponse` |
+
+P42 準拠 3 段バリデーション: `typeof sessionId !== "string"` → `sessionId === ""` → `sessionId.trim() === ""`
+
+---
+
 ## Permission フォールバック セキュリティ（UT-06-005）
 
 #### fail-closed 原則の適用
@@ -466,6 +539,7 @@ Critical ツールは `autoDenyDefault: true` のため、PermissionDialog を�
 
 | バージョン | 日付       | 変更内容                                         |
 | ---------- | ---------- | ------------------------------------------------ |
+| v1.7.0     | 2026-03-23 | UT-06-002 反映: Permission Store V2 セクション追加（AllowedToolEntryV2 / ExpiryPolicy / isToolAllowed 6分岐 / V1→V2 マイグレーション / permission:clear-session IPC） |
 | v1.6.0     | 2026-03-17 | UT-06-005-A 反映: PreToolUse Hook への fallback 統合契約、Permission timeout 30秒化、PermissionTimeoutError→abort("timeout") の fail-closed 経路を追記 |
 | v1.5.0     | 2026-03-17 | DefaultSafetyGate 具象クラス実装完了（UT-06-003）: SafetyGatePort → DefaultSafetyGate 具象化フロー、protectedPaths 設定、DI パターンを [arch-electron-services-details-part2.md](./arch-electron-services-details-part2.md) に記録 |
 | v1.4.0     | 2026-03-16 | ToolRiskLevel参照追加: TASK-SKILL-LIFECYCLE-06設計成果物への参照リンク |

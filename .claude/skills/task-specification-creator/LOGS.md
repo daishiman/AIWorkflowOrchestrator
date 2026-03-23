@@ -4,6 +4,22 @@
 
 ---
 
+## UT-06-002 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - AllowedToolEntryV2 PermissionStore V2 拡張実装
+  - ExpiryPolicy 4種（session/time_24h/time_7d/permanent）
+  - isToolAllowed 6分岐フロー（lazy eviction）
+  - permission:clear-session IPC チャネル追加
+  - V1→V2 自動マイグレーション
+  - カバレッジ: Line 95.5%, Branch 90.6%, Function 94.1%
+  - 未タスク4件検出（sender検証/before-quit/calcExpiresAtLocal重複解消/ロガー統一）
+
+---
+
 ## UT-SC-02-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator

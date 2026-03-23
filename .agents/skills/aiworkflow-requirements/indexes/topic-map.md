@@ -444,7 +444,8 @@ node scripts/list-specs.js --topics
 | TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 の読み分け | L23 |
 | ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07） | L31 |
 | 公開・互換性型定義（TASK-SKILL-LIFECYCLE-08） | L56 |
-| 関連ドキュメント | L210 |
+| IPermissionStoreV2 インターフェース（UT-06-002） | L210 |
+| 関連ドキュメント | L225 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -899,8 +900,8 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L200 |
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L536 |
-| AIプロバイダーAPI連携 | L567 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L547 |
+| AIプロバイダーAPI連携 | L578 |
 
 ### references/api-ipc-system-details.md
 
@@ -1312,7 +1313,8 @@ node scripts/list-specs.js --topics
 | パネル共通ガイドライン | L58 |
 | ChatPanel 実AIチャット配線設計（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L80 |
 | ChatPanel統合パターン（TASK-7D） | L124 |
-| 関連ドキュメント | L162 |
+| ChatPanel Review Harness（TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001） | L162 |
+| 関連ドキュメント | L192 |
 
 ### references/ui-ux-portal-patterns.md
 
@@ -1377,10 +1379,10 @@ node scripts/list-specs.js --topics
 | セキュリティ要件 | L146 |
 | テスト要件 | L161 |
 | ツール許可設定（Permission Settings） | L184 |
-| 権限要求履歴パネル（Permission History Panel） | L249 |
-| Settings 画面の AuthGuard 非依存アクセス（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001） | L322 |
-| Mainline Access Matrix（TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001） | L365 |
-| AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001） | L403 |
+| 権限要求履歴パネル（Permission History Panel） | L250 |
+| Settings 画面の AuthGuard 非依存アクセス（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001） | L323 |
+| Mainline Access Matrix（TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001） | L366 |
+| AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001） | L404 |
 
 ### references/ui-ux-settings-details.md
 
@@ -1546,11 +1548,12 @@ node scripts/list-specs.js --topics
 | Skill Lifecycle 実行境界（TASK-SKILL-LIFECYCLE-03） | L245 |
 | テストカバレッジ | L264 |
 | Permission Store（権限永続化） | L280 |
-| Permission フォールバック セキュリティ（UT-06-005） | L364 |
-| 公開判定セキュリティ（TASK-SKILL-LIFECYCLE-08 / spec_created） | L399 |
-| 関連ドキュメント | L442 |
-| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L452 |
-| 変更履歴 | L465 |
+| Permission Store V2（UT-06-002） | L364 |
+| Permission フォールバック セキュリティ（UT-06-005） | L437 |
+| 公開判定セキュリティ（TASK-SKILL-LIFECYCLE-08 / spec_created） | L472 |
+| 関連ドキュメント | L515 |
+| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L525 |
+| 変更履歴 | L538 |
 
 ### references/security-skill-ipc-core.md
 
@@ -1856,7 +1859,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
 | 実装ステータススナップショット（2026-03-22） | L46 |
-| Follow-up Backlog | L58 |
+| Follow-up Backlog | L59 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2589,12 +2592,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L43 |
-| クイックリファレンス: カテゴリ別検索ガイド | L58 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L134 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L466 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L500 |
-| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L528 |
+| 分割ファイル一覧 | L44 |
+| クイックリファレンス: カテゴリ別検索ガイド | L59 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L135 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L467 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L501 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2621,18 +2623,19 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L36 |
-| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L76 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L120 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L160 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L190 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L239 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L292 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L320 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L363 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L414 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L483 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L521 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L37 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L77 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L121 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L161 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L191 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L240 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L293 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L321 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L364 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L415 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L484 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L522 |
+| 2026-03-23 TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓 | L617 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -3805,6 +3808,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L7 |
 | UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L45 |
 | TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L82 |
+| UT-06-002: AllowedToolEntryV2 PermissionStore V2 拡張完了記録（2026-03-23） | L129 |
 
 ### references/task-workflow-completed-skill-lifecycle-ui.md
 
