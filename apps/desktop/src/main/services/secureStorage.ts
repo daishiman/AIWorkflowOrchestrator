@@ -13,10 +13,18 @@ import {
 } from "../infrastructure/apiKeyStorage";
 
 const apiKeyStorage = createApiKeyStorage();
-const ALL_PROVIDERS: LLMProviderId[] = ["openai", "anthropic", "google", "xai"];
+const ALL_PROVIDERS: LLMProviderId[] = [
+  "openai",
+  "anthropic",
+  "google",
+  "xai",
+  "openrouter",
+];
 
 function toAIProvider(providerId: LLMProviderId): AIProvider {
-  return providerId;
+  // LLMProviderId は AIProvider のスーパーセット（"openrouter" 追加分）
+  // apiKeyStorage は文字列キーで保存するため、実行時の互換性は保証される
+  return providerId as AIProvider;
 }
 
 /**

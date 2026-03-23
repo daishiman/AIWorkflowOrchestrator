@@ -10,14 +10,15 @@ import { IPC_CHANNELS } from "../../preload/channels";
 import { LLMAdapterFactory } from "../adapters/llm/LLMAdapterFactory";
 import { SecureStorage } from "../services/secureStorage";
 import { setSelectedLLMConfig } from "../ipc/llmConfigProvider";
-import type {
-  LLMProvider,
-  LLMProviderId,
-  LLMChatRequestInput,
-  LLMChatResponse,
-  HealthCheckResult,
-  LLMError,
-  LLMErrorCode,
+import {
+  LLMProviderIdSchema,
+  type LLMProvider,
+  type LLMProviderId,
+  type LLMChatRequestInput,
+  type LLMChatResponse,
+  type HealthCheckResult,
+  type LLMError,
+  type LLMErrorCode,
 } from "@repo/shared/types/llm/schemas";
 
 /**
@@ -109,6 +110,36 @@ const PROVIDER_CONFIGS: Array<{
         name: "Grok Beta",
         contextWindow: 131072,
         isDefault: true,
+      },
+    ],
+  },
+  {
+    id: "openrouter",
+    name: "OpenRouter",
+    models: [
+      {
+        id: "openai/gpt-4o",
+        name: "GPT-4o (via OpenRouter)",
+        contextWindow: 128000,
+        isDefault: true,
+      },
+      {
+        id: "anthropic/claude-3.5-sonnet",
+        name: "Claude 3.5 Sonnet (via OpenRouter)",
+        contextWindow: 200000,
+        isDefault: false,
+      },
+      {
+        id: "google/gemini-pro-1.5",
+        name: "Gemini 1.5 Pro (via OpenRouter)",
+        contextWindow: 2097152,
+        isDefault: false,
+      },
+      {
+        id: "meta-llama/llama-3.1-405b-instruct",
+        name: "Llama 3.1 405B (via OpenRouter)",
+        contextWindow: 131072,
+        isDefault: false,
       },
     ],
   },
@@ -416,17 +447,21 @@ export function handleStreamCancel(params: { requestId: string }): {
 // Helper functions
 
 function isValidProviderId(id: unknown): id is LLMProviderId {
-  return (
-    typeof id === "string" &&
-    ["openai", "anthropic", "google", "xai"].includes(id)
-  );
+  return LLMProviderIdSchema.safeParse(id).success;
 }
 
 function inferProviderId(modelId: string): LLMProviderId | null {
-  if (modelId.startsWith("gpt-")) return "openai";
+  if (
+    modelId.startsWith("gpt-") ||
+    modelId.startsWith("o3") ||
+    modelId.startsWith("o4")
+  )
+    return "openai";
   if (modelId.startsWith("claude-")) return "anthropic";
   if (modelId.startsWith("gemini-")) return "google";
   if (modelId.startsWith("grok-")) return "xai";
+  // OpenRouterのモデルIDは "provider/model" 形式
+  if (modelId.includes("/")) return "openrouter";
   return null;
 }
 
