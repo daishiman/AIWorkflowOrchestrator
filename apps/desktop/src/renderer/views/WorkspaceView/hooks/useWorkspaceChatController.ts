@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { LLMError } from "@repo/shared/types/llm/schemas";
+import type { LLMError, LLMProviderId } from "@repo/shared/types/llm/schemas";
 import type { SelectedFile } from "@repo/shared/schemas";
 import type { FileNode } from "@/preload/types";
 import {
@@ -138,7 +138,7 @@ function buildChatRequest(params: {
   input: string;
   contextBlock: string;
   selectedModelId: string;
-  selectedProviderId: "openai" | "anthropic" | "google" | "xai" | null;
+  selectedProviderId: LLMProviderId | null;
 }) {
   const body =
     params.contextBlock.length > 0

@@ -8,6 +8,20 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | --- |
 | 2026-03-23 - TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（WorkspaceChatPanel header に InlineModelSelector compact 配置 / disabled={controller.isStreaming} 連動 / GuidanceBlock(blocked) 自動連携 / 11テスト追加 146全PASS / ui-ux-llm-selector.md + task-workflow 更新） |
 | 2026-03-23 - TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION 実装完了（ChatView header に InlineModelSelector compact 配置 / disabled={isSending} 連動 / LLMGuidanceBanner 自動連携 / 8テスト追加 62全PASS / ui-ux-llm-selector.md + ui-ux-navigation.md 更新） |
+||||||| Stash base
+| 2026-03-23 - TASK-SC-01-IPC-WIRING-FIX 完了（P65 dead-end namespace 既解消確認 / skill-creator:* 全16チャネル検証 / P65不在テスト+allowlist包含テスト4件追加 / Phase 1-12成果物21ファイル / 未タスク2件: UT-SC-01-IPCRESULT-DEDUP, UT-SC-01-DIP-INTERFACE） |
+| 2026-03-22 - TASK-SC-02-RUNTIME-POLICY-CLOSURE（RuntimePolicyResolver サブスクリプション判定統合 / 3パターン分岐安定化 / graceful degradation / 25テスト全PASS / 未タスク4件） |
+| 2026-03-22 - TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了（D1-D6 drift 6件解消 / 12チャネル canonical 統一 / validateIpcSender + P42 3段バリデーション + path guard 全ハンドラ適用 / RuntimeResolver integrated/handoff 分岐 / modifier-skill.ts 統合 / slideSlice 7 store fields 追加 / HandoffGuidance 型共有） |
+| 2026-03-22 - TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（Terminal Handoff Surface Realization 設計 / Concern 3分割 / HandoffGuidance 統一DTO / Manual Boundary 確定 / 未タスク8件検出） |
+| 2026-03-22 - TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了同期（streamingError primary / legacy fallback 分離 / Task03 completed root 移管 / same-wave index 再生成） |
+| 2026-03-22 - TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（standalone root / spec_created ledger / backlog 4件 / lessons 4件 / mirror parity） |
+| 2026-03-23 - TASK-SC-03-PLAN-LLM-PROMPT 完了（RuntimeSkillCreatorFacade.plan() LLM プロンプト統合 / agent 仕様書注入 + JSON レスポンスパース / スタブ実装を実 LLM 呼び出しに置き換え） |
+| 2026-03-23 - TASK-SC-01-IPC-WIRING-FIX 完了（P65 dead-end namespace 既解消確認 / skill-creator:* 全16チャネル検証 / P65不在テスト+allowlist包含テスト4件追加 / Phase 1-12成果物21ファイル / 未タスク2件: UT-SC-01-IPCRESULT-DEDUP, UT-SC-01-DIP-INTERFACE） |
+| 2026-03-22 - TASK-SC-02-RUNTIME-POLICY-CLOSURE（RuntimePolicyResolver サブスクリプション判定統合 / 3パターン分岐安定化 / graceful degradation / 25テスト全PASS / 未タスク4件） |
+| 2026-03-22 - TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了（D1-D6 drift 6件解消 / 12チャネル canonical 統一 / validateIpcSender + P42 3段バリデーション + path guard 全ハンドラ適用 / RuntimeResolver integrated/handoff 分岐 / modifier-skill.ts 統合 / slideSlice 7 store fields 追加 / HandoffGuidance 型共有） |
+| 2026-03-22 - TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（Terminal Handoff Surface Realization 設計 / Concern 3分割 / HandoffGuidance 統一DTO / Manual Boundary 確定 / 未タスク8件検出） |
+| 2026-03-22 - TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了同期（streamingError primary / legacy fallback 分離 / Task03 completed root 移管 / same-wave index 再生成） |
+| 2026-03-22 - TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（standalone root / spec_created ledger / backlog 4件 / lessons 4件 / mirror parity） |
 | 2026-03-22 - TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（shared selector contract sync / backlog cleanup / completed ledger 追加 / Phase 12 guide drift 修正） |
 | 2026-03-21 - chat-inline-model-selector ワークフロー仕様書作成（TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT / TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION / TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 3タスク Phase 1-13 仕様書 34ファイル） |
 | 2026-03-21 - TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE follow-up formalize（UT-FIX-LLM-SETTINGS-DIRECT-SCROLL-001 / UT-FIX-LLM-BANNER-DISMISS-001） |

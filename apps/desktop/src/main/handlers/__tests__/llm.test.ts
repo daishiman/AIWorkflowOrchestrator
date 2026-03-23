@@ -133,16 +133,22 @@ describe("LLM IPC Handlers", () => {
       expect(anthropic?.isAvailable).toBe(false);
     });
 
-    it("should return all 4 providers", async () => {
+    it("should return all 5 providers", async () => {
       (SecureStorage.getApiKey as ReturnType<typeof vi.fn>).mockResolvedValue(
         null,
       );
 
       const result = await handleGetProviders();
 
-      expect(result).toHaveLength(4);
+      expect(result).toHaveLength(5);
       expect(result.map((p) => p.id)).toEqual(
-        expect.arrayContaining(["openai", "anthropic", "google", "xai"]),
+        expect.arrayContaining([
+          "openai",
+          "anthropic",
+          "google",
+          "xai",
+          "openrouter",
+        ]),
       );
     });
 
