@@ -1,0 +1,80 @@
+{
+  "taskId": "TASK-LLM-MOD-01",
+  "taskName": "PROVIDER_CONFIGS モデル定義 + inferProviderId 更新",
+  "createdAt": "2026-03-23",
+  "completedAt": "2026-03-23",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-1/requirements.md",
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-1/affected-tests.md"
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-2/design.md"
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-3/design-review.md"
+      ]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": ["apps/desktop/src/main/handlers/__tests__/llm.test.ts"]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": ["apps/desktop/src/main/handlers/llm.ts"]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": ["apps/desktop/src/main/handlers/__tests__/llm.test.ts"]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-7/coverage-report.md"
+      ]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": ["apps/desktop/src/main/handlers/llm.ts"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-9/qa-results.md"
+      ]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-10/final-review.md"
+      ]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-11/manual-test-results.md"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-12/implementation-guide.md",
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-12/documentation-changelog.md",
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-12/unassigned-task-report.md",
+        "docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "status": "completed",
+      "artifacts": []
+    }
+  }
+}

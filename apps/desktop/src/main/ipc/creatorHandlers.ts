@@ -6,7 +6,7 @@
 
 import { ipcMain, type BrowserWindow, type IpcMainInvokeEvent } from "electron";
 import type {
-  RuntimeSkillCreatorExecuteResult,
+  RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorPlanResponse,
 } from "@repo/shared/types";
@@ -97,7 +97,7 @@ export function registerRuntimeSkillCreatorHandlers(
         authMode?: AuthMode;
         apiKey?: string | null;
       },
-    ): Promise<IpcResult<RuntimeSkillCreatorExecuteResult>> => {
+    ): Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>> => {
       validateSender(
         event,
         IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,

@@ -44,6 +44,12 @@
       "status": "completed",
       "file": "phase-6-regression-check.md",
       "outputs": ["outputs/phase-6/regression-report.md"]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "file": null,
+      "outputs": ["outputs/phase-12/implementation-guide.md"]
     }
   },
   "dependencies": {
@@ -58,6 +64,6 @@
     "targetPassRate": "100%",
     "regressionScope": "apps/desktop/src/main/",
     "acceptanceCriteria": ["AC-1", "AC-2", "AC-3", "AC-4"],
-    "knownPitfalls": ["P7", "P9"]
+    "knownPitfalls": ["P7", "P9", "P66"]
   }
 }

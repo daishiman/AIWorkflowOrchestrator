@@ -11,6 +11,10 @@ import path from "path";
 import type { SendWithContextRequest, HandoffGuidance } from "./types";
 
 export class TerminalHandoffBuilder {
+  /**
+   * @deprecated runtime/TerminalHandoffBuilder.buildForSurface() を使用してください。
+   * 移行先: buildForSurface({ surfaceType: "chat-edit", ... }, reason)
+   */
   build(request: SendWithContextRequest, reason: string): HandoffGuidance {
     const contextSummary = this.buildContextSummary(request);
     const terminalCommand = this.buildTerminalCommand(request, contextSummary);

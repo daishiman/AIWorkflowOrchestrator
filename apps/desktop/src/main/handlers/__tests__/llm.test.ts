@@ -471,3 +471,505 @@ describe("LLM IPC Handlers", () => {
     });
   });
 });
+
+describe("PROVIDER_CONFIGS - モデル定義更新検証（TASK-LLM-MOD-01）", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(SecureStorage.getApiKey).mockResolvedValue("test-api-key");
+  });
+
+  describe("T-01: OpenAI モデル定義", () => {
+    it("should include gpt-5.4 as default model", async () => {
+      const providers = await handleGetProviders();
+      const openai = providers.find((p) => p.id === "openai");
+      expect(openai).toBeDefined();
+      const defaultModel = openai?.models.find((m) => m.isDefault);
+      expect(defaultModel).toBeDefined();
+      expect(defaultModel?.id).toBe("gpt-5.4");
+    });
+
+    it("should include all 6 new OpenAI models", async () => {
+      const providers = await handleGetProviders();
+      const openai = providers.find((p) => p.id === "openai");
+      expect(openai).toBeDefined();
+      const modelIds = openai?.models.map((m) => m.id);
+      expect(modelIds).toContain("gpt-5.4");
+      expect(modelIds).toContain("gpt-5.4-mini");
+      expect(modelIds).toContain("gpt-5.4-nano");
+      expect(modelIds).toContain("gpt-5.4-pro");
+      expect(modelIds).toContain("o3");
+      expect(modelIds).toContain("o4-mini");
+    });
+
+    it("should not include legacy OpenAI models", async () => {
+      const providers = await handleGetProviders();
+      const openai = providers.find((p) => p.id === "openai");
+      expect(openai).toBeDefined();
+      const modelIds = openai?.models.map((m) => m.id);
+      expect(modelIds).not.toContain("gpt-4o");
+      expect(modelIds).not.toContain("gpt-4o-mini");
+      expect(modelIds).not.toContain("gpt-4-turbo");
+    });
+
+    it("should set gpt-5.4 contextWindow to 1050000", async () => {
+      const providers = await handleGetProviders();
+      const openai = providers.find((p) => p.id === "openai");
+      expect(openai).toBeDefined();
+      const model = openai?.models.find((m) => m.id === "gpt-5.4");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(1050000);
+    });
+
+    it("should set o3 contextWindow to 200000", async () => {
+      const providers = await handleGetProviders();
+      const openai = providers.find((p) => p.id === "openai");
+      expect(openai).toBeDefined();
+      const model = openai?.models.find((m) => m.id === "o3");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(200000);
+    });
+
+    it("should set o4-mini contextWindow to 200000", async () => {
+      const providers = await handleGetProviders();
+      const openai = providers.find((p) => p.id === "openai");
+      expect(openai).toBeDefined();
+      const model = openai?.models.find((m) => m.id === "o4-mini");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(200000);
+    });
+  });
+
+  describe("T-02: Anthropic モデル定義", () => {
+    it("should include claude-sonnet-4-6 as default model", async () => {
+      const providers = await handleGetProviders();
+      const anthropic = providers.find((p) => p.id === "anthropic");
+      expect(anthropic).toBeDefined();
+      const defaultModel = anthropic?.models.find((m) => m.isDefault);
+      expect(defaultModel).toBeDefined();
+      expect(defaultModel?.id).toBe("claude-sonnet-4-6");
+    });
+
+    it("should include all 3 new Anthropic models", async () => {
+      const providers = await handleGetProviders();
+      const anthropic = providers.find((p) => p.id === "anthropic");
+      expect(anthropic).toBeDefined();
+      const modelIds = anthropic?.models.map((m) => m.id);
+      expect(modelIds).toContain("claude-sonnet-4-6");
+      expect(modelIds).toContain("claude-opus-4-6");
+      expect(modelIds).toContain("claude-haiku-4-5");
+    });
+
+    it("should not include legacy Anthropic models", async () => {
+      const providers = await handleGetProviders();
+      const anthropic = providers.find((p) => p.id === "anthropic");
+      expect(anthropic).toBeDefined();
+      const modelIds = anthropic?.models.map((m) => m.id);
+      expect(modelIds).not.toContain("claude-3-5-sonnet-20241022");
+      expect(modelIds).not.toContain("claude-3-opus-20240229");
+      expect(modelIds).not.toContain("claude-3-haiku-20240307");
+    });
+  });
+
+  describe("T-03: Google モデル定義", () => {
+    it("should include gemini-3-flash-preview as default model", async () => {
+      const providers = await handleGetProviders();
+      const google = providers.find((p) => p.id === "google");
+      expect(google).toBeDefined();
+      const defaultModel = google?.models.find((m) => m.isDefault);
+      expect(defaultModel).toBeDefined();
+      expect(defaultModel?.id).toBe("gemini-3-flash-preview");
+    });
+
+    it("should include all 3 new Google models", async () => {
+      const providers = await handleGetProviders();
+      const google = providers.find((p) => p.id === "google");
+      expect(google).toBeDefined();
+      const modelIds = google?.models.map((m) => m.id);
+      expect(modelIds).toContain("gemini-3-flash-preview");
+      expect(modelIds).toContain("gemini-3.1-pro-preview");
+      expect(modelIds).toContain("gemini-3.1-flash-lite-preview");
+    });
+
+    it("should not include legacy Google models", async () => {
+      const providers = await handleGetProviders();
+      const google = providers.find((p) => p.id === "google");
+      expect(google).toBeDefined();
+      const modelIds = google?.models.map((m) => m.id);
+      expect(modelIds).not.toContain("gemini-1.5-pro");
+      expect(modelIds).not.toContain("gemini-1.5-flash");
+    });
+  });
+
+  describe("T-04: xAI モデル定義", () => {
+    it("should include grok-4-1-fast-non-reasoning as default model", async () => {
+      const providers = await handleGetProviders();
+      const xai = providers.find((p) => p.id === "xai");
+      expect(xai).toBeDefined();
+      const defaultModel = xai?.models.find((m) => m.isDefault);
+      expect(defaultModel).toBeDefined();
+      expect(defaultModel?.id).toBe("grok-4-1-fast-non-reasoning");
+    });
+
+    it("should include all 3 new xAI models", async () => {
+      const providers = await handleGetProviders();
+      const xai = providers.find((p) => p.id === "xai");
+      expect(xai).toBeDefined();
+      const modelIds = xai?.models.map((m) => m.id);
+      expect(modelIds).toContain("grok-4-1-fast-non-reasoning");
+      expect(modelIds).toContain("grok-3-mini");
+      expect(modelIds).toContain("grok-4-1-fast-reasoning");
+    });
+
+    it("should not include legacy xAI models", async () => {
+      const providers = await handleGetProviders();
+      const xai = providers.find((p) => p.id === "xai");
+      expect(xai).toBeDefined();
+      const modelIds = xai?.models.map((m) => m.id);
+      expect(modelIds).not.toContain("grok-beta");
+    });
+  });
+
+  describe("T-05: description フィールド", () => {
+    it("should have non-empty description for all new models in all providers", async () => {
+      const providers = await handleGetProviders();
+      const targetProviders = ["openai", "anthropic", "google", "xai"];
+      for (const providerId of targetProviders) {
+        const provider = providers.find((p) => p.id === providerId);
+        expect(provider).toBeDefined();
+        for (const model of provider?.models ?? []) {
+          expect(
+            "description" in model && typeof model.description === "string",
+            `provider ${providerId}, model ${model.id} の description が undefined`,
+          ).toBe(true);
+          expect(
+            "description" in model
+              ? (model.description as string).trim().length
+              : 0,
+            `provider ${providerId}, model ${model.id} の description が空文字列`,
+          ).toBeGreaterThan(0);
+        }
+      }
+    });
+  });
+
+  describe("T-06: isDefault 一意性", () => {
+    it("should have exactly one default model per provider", async () => {
+      const providers = await handleGetProviders();
+      for (const provider of providers) {
+        const defaultModels = provider.models.filter((m) => m.isDefault);
+        expect(
+          defaultModels.length,
+          `provider ${provider.id} の isDefault: true が ${defaultModels.length} 個`,
+        ).toBe(1);
+      }
+    });
+  });
+});
+
+describe("inferProviderId - 新パターン検証（TASK-LLM-MOD-01）", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe("T-07: o3/o4 プレフィックスの OpenAI 解決", () => {
+    it("should resolve o3 model to openai provider via handleSendChat", async () => {
+      vi.mocked(SecureStorage.getApiKey).mockResolvedValue("test-api-key");
+      const mockAdapter = {
+        sendChat: vi.fn().mockResolvedValue({
+          content: "test",
+          model: "o3",
+          usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 },
+          finishReason: "stop",
+        }),
+        checkHealth: vi.fn(),
+        streamChat: vi.fn(),
+      };
+      vi.mocked(LLMAdapterFactory.getAdapter).mockResolvedValue(
+        mockAdapter as never,
+      );
+
+      const result = await handleSendChat({
+        messages: [{ role: "user", content: "test" }],
+        modelId: "o3",
+      });
+
+      expect(result.success).toBe(true);
+      expect(LLMAdapterFactory.getAdapter).toHaveBeenCalledWith("openai");
+    });
+
+    it("should resolve o4-mini model to openai provider via handleSendChat", async () => {
+      vi.mocked(SecureStorage.getApiKey).mockResolvedValue("test-api-key");
+      const mockAdapter = {
+        sendChat: vi.fn().mockResolvedValue({
+          content: "test",
+          model: "o4-mini",
+          usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 },
+          finishReason: "stop",
+        }),
+        checkHealth: vi.fn(),
+        streamChat: vi.fn(),
+      };
+      vi.mocked(LLMAdapterFactory.getAdapter).mockResolvedValue(
+        mockAdapter as never,
+      );
+
+      const result = await handleSendChat({
+        messages: [{ role: "user", content: "test" }],
+        modelId: "o4-mini",
+      });
+
+      expect(result.success).toBe(true);
+      expect(LLMAdapterFactory.getAdapter).toHaveBeenCalledWith("openai");
+    });
+  });
+
+  describe("T-08: 既存パターンの継続動作確認", () => {
+    it("should still resolve claude- prefix to anthropic", async () => {
+      vi.mocked(SecureStorage.getApiKey).mockResolvedValue("test-api-key");
+      const mockAdapter = {
+        sendChat: vi.fn().mockResolvedValue({
+          content: "test",
+          model: "claude-sonnet-4-6",
+          usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 },
+          finishReason: "stop",
+        }),
+        checkHealth: vi.fn(),
+        streamChat: vi.fn(),
+      };
+      vi.mocked(LLMAdapterFactory.getAdapter).mockResolvedValue(
+        mockAdapter as never,
+      );
+
+      await handleSendChat({
+        messages: [{ role: "user", content: "test" }],
+        modelId: "claude-sonnet-4-6",
+      });
+
+      expect(LLMAdapterFactory.getAdapter).toHaveBeenCalledWith("anthropic");
+    });
+
+    it("should still resolve gemini- prefix to google", async () => {
+      vi.mocked(SecureStorage.getApiKey).mockResolvedValue("test-api-key");
+      const mockAdapter = {
+        sendChat: vi.fn().mockResolvedValue({
+          content: "test",
+          model: "gemini-3-flash-preview",
+          usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 },
+          finishReason: "stop",
+        }),
+        checkHealth: vi.fn(),
+        streamChat: vi.fn(),
+      };
+      vi.mocked(LLMAdapterFactory.getAdapter).mockResolvedValue(
+        mockAdapter as never,
+      );
+
+      await handleSendChat({
+        messages: [{ role: "user", content: "test" }],
+        modelId: "gemini-3-flash-preview",
+      });
+
+      expect(LLMAdapterFactory.getAdapter).toHaveBeenCalledWith("google");
+    });
+  });
+});
+
+describe("PROVIDER_CONFIGS - 拡充テスト（TASK-LLM-MOD-01）", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(SecureStorage.getApiKey).mockResolvedValue("test-api-key");
+  });
+
+  describe("T-09: OpenRouter 維持確認", () => {
+    it("should keep OpenRouter models unchanged", async () => {
+      const providers = await handleGetProviders();
+      const openrouter = providers.find((p) => p.id === "openrouter");
+      expect(openrouter).toBeDefined();
+      const modelIds = openrouter?.models.map((m) => m.id);
+      expect(modelIds).toContain("openai/gpt-4o");
+      expect(modelIds).toContain("anthropic/claude-3.5-sonnet");
+      expect(modelIds).toContain("google/gemini-pro-1.5");
+      expect(modelIds).toContain("meta-llama/llama-3.1-405b-instruct");
+      expect(openrouter?.models).toHaveLength(4);
+    });
+
+    it("should keep OpenRouter default model unchanged", async () => {
+      const providers = await handleGetProviders();
+      const openrouter = providers.find((p) => p.id === "openrouter");
+      expect(openrouter).toBeDefined();
+      const defaultModel = openrouter?.models.find((m) => m.isDefault);
+      expect(defaultModel).toBeDefined();
+      expect(defaultModel?.id).toBe("openai/gpt-4o");
+    });
+  });
+
+  describe("T-10: contextWindow 精度確認", () => {
+    it("should set gpt-5.4-mini contextWindow to 1050000", async () => {
+      const providers = await handleGetProviders();
+      const openai = providers.find((p) => p.id === "openai");
+      expect(openai).toBeDefined();
+      const model = openai?.models.find((m) => m.id === "gpt-5.4-mini");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(1050000);
+    });
+
+    it("should set gpt-5.4-nano contextWindow to 1050000", async () => {
+      const providers = await handleGetProviders();
+      const openai = providers.find((p) => p.id === "openai");
+      expect(openai).toBeDefined();
+      const model = openai?.models.find((m) => m.id === "gpt-5.4-nano");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(1050000);
+    });
+
+    it("should set claude-opus-4-6 contextWindow to 200000", async () => {
+      const providers = await handleGetProviders();
+      const anthropic = providers.find((p) => p.id === "anthropic");
+      expect(anthropic).toBeDefined();
+      const model = anthropic?.models.find((m) => m.id === "claude-opus-4-6");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(200000);
+    });
+
+    it("should set claude-haiku-4-5 contextWindow to 200000", async () => {
+      const providers = await handleGetProviders();
+      const anthropic = providers.find((p) => p.id === "anthropic");
+      expect(anthropic).toBeDefined();
+      const model = anthropic?.models.find((m) => m.id === "claude-haiku-4-5");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(200000);
+    });
+
+    it("should set gemini-3.1-pro-preview contextWindow to 1048576", async () => {
+      const providers = await handleGetProviders();
+      const google = providers.find((p) => p.id === "google");
+      expect(google).toBeDefined();
+      const model = google?.models.find(
+        (m) => m.id === "gemini-3.1-pro-preview",
+      );
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(1048576);
+    });
+
+    it("should set gemini-3.1-flash-lite-preview contextWindow to 1048576", async () => {
+      const providers = await handleGetProviders();
+      const google = providers.find((p) => p.id === "google");
+      expect(google).toBeDefined();
+      const model = google?.models.find(
+        (m) => m.id === "gemini-3.1-flash-lite-preview",
+      );
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(1048576);
+    });
+
+    it("should set grok-3-mini contextWindow to 131072", async () => {
+      const providers = await handleGetProviders();
+      const xai = providers.find((p) => p.id === "xai");
+      expect(xai).toBeDefined();
+      const model = xai?.models.find((m) => m.id === "grok-3-mini");
+      expect(model).toBeDefined();
+      expect(model?.contextWindow).toBe(131072);
+    });
+  });
+
+  describe("T-11: プロバイダー総数確認", () => {
+    it("should return 5 providers", async () => {
+      const providers = await handleGetProviders();
+      expect(providers).toHaveLength(5);
+    });
+
+    it("should return providers in correct order", async () => {
+      const providers = await handleGetProviders();
+      const ids = providers.map((p) => p.id);
+      expect(ids).toEqual([
+        "openai",
+        "anthropic",
+        "google",
+        "xai",
+        "openrouter",
+      ]);
+    });
+  });
+
+  describe("T-12: モデル数確認", () => {
+    it("should return 6 models for OpenAI", async () => {
+      const providers = await handleGetProviders();
+      const openai = providers.find((p) => p.id === "openai");
+      expect(openai).toBeDefined();
+      expect(openai?.models).toHaveLength(6);
+    });
+
+    it("should return 3 models for Anthropic", async () => {
+      const providers = await handleGetProviders();
+      const anthropic = providers.find((p) => p.id === "anthropic");
+      expect(anthropic).toBeDefined();
+      expect(anthropic?.models).toHaveLength(3);
+    });
+
+    it("should return 3 models for Google", async () => {
+      const providers = await handleGetProviders();
+      const google = providers.find((p) => p.id === "google");
+      expect(google).toBeDefined();
+      expect(google?.models).toHaveLength(3);
+    });
+
+    it("should return 3 models for xAI", async () => {
+      const providers = await handleGetProviders();
+      const xai = providers.find((p) => p.id === "xai");
+      expect(xai).toBeDefined();
+      expect(xai?.models).toHaveLength(3);
+    });
+  });
+
+  describe("T-13: handleSendChat での新モデル使用確認", () => {
+    it("should accept gpt-5.4 as modelId in handleSendChat", async () => {
+      vi.mocked(SecureStorage.getApiKey).mockResolvedValue("test-api-key");
+      const mockAdapter = {
+        sendChat: vi.fn().mockResolvedValue({
+          content: "response",
+          model: "gpt-5.4",
+          usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 },
+          finishReason: "stop",
+        }),
+        checkHealth: vi.fn(),
+        streamChat: vi.fn(),
+      };
+      vi.mocked(LLMAdapterFactory.getAdapter).mockResolvedValue(
+        mockAdapter as never,
+      );
+
+      const result = await handleSendChat({
+        messages: [{ role: "user", content: "hello" }],
+        modelId: "gpt-5.4",
+      });
+
+      expect(result.success).toBe(true);
+      expect(LLMAdapterFactory.getAdapter).toHaveBeenCalledWith("openai");
+    });
+
+    it("should accept claude-sonnet-4-6 as modelId in handleSendChat", async () => {
+      vi.mocked(SecureStorage.getApiKey).mockResolvedValue("test-api-key");
+      const mockAdapter = {
+        sendChat: vi.fn().mockResolvedValue({
+          content: "response",
+          model: "claude-sonnet-4-6",
+          usage: { promptTokens: 10, completionTokens: 20, totalTokens: 30 },
+          finishReason: "stop",
+        }),
+        checkHealth: vi.fn(),
+        streamChat: vi.fn(),
+      };
+      vi.mocked(LLMAdapterFactory.getAdapter).mockResolvedValue(
+        mockAdapter as never,
+      );
+
+      const result = await handleSendChat({
+        messages: [{ role: "user", content: "hello" }],
+        modelId: "claude-sonnet-4-6",
+      });
+
+      expect(result.success).toBe(true);
+      expect(LLMAdapterFactory.getAdapter).toHaveBeenCalledWith("anthropic");
+    });
+  });
+});

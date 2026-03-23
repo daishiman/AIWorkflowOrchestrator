@@ -256,23 +256,44 @@ handoff 判定時に `HandoffGuidance` を構築するサービス。ユーザ�
 ### セキュリティ
 
 - `terminalCommand` に API キーを含めない
-- コマンド形式: `claude --add-dir "<workspace>" "<message>"`
+- コマンド形式: `claude -p "<prompt>"`（buildForSurface 統一後。旧形式 `claude --add-dir` は @deprecated）
 
-### buildForSurface 統一メソッド（TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001）
+### buildForSurface 統一メソッド（実装完了: UT-RUNTIME-BUILDER-MIGRATION-001）
 
-`TerminalHandoffBuilder` に surface-agnostic な統一ビルドメソッドを追加する設計。
+`runtime/TerminalHandoffBuilder.buildForSurface()` で全 surface の HandoffGuidance 生成を統一。
 
-**surfaceType 列挙**:
+**メソッドシグネチャ**:
 
-| surfaceType | 用途 | contextSummary フォーマット |
-|-------------|------|---------------------------|
-| "chat-edit" | Workspace Chat での handoff | 会話コンテキストを含む要約 |
-| "runtime" | Runtime Policy による handoff | ポリシー判定結果を含む要約 |
-| "skill-docs" | Skill Docs クエリからの handoff | ドキュメント参照情報を含む要約 |
+```typescript
+buildForSurface(
+  request: BuildForSurfaceRequest,
+  reason: HandoffGuidance["reason"],
+): HandoffGuidance
+```
 
-#### 関連未タスク
+**surfaceType 列挙（discriminated union）**:
 
-- UT-RUNTIME-BUILDER-MIGRATION-001: 既存 build() → buildForSurface() 移行
+| surfaceType  | リクエスト型              | contextSummary フォーマット                            |
+| ------------ | ------------------------- | ------------------------------------------------------ |
+| "chat-edit"  | `ChatEditSurfaceRequest`  | `command={commandType} files={filePaths} workspace=..` |
+| "runtime"    | `RuntimeSurfaceRequest`   | `surface={agent\|skill} skill={skillToken}`            |
+| "skill-docs" | `SkillDocsSurfaceRequest` | `surface=skill-docs query={queryText}`                 |
+
+**P62 対策**: 未知の surfaceType は `never` 型 exhaustive check でエラーを throw（DEFAULT_CONFIG fallback 禁止）。
+
+**旧メソッド**:
+
+| メソッド                   | ステータス   | 移行先                                                     |
+| -------------------------- | ------------ | ---------------------------------------------------------- |
+| `build()`                  | @deprecated  | `buildForSurface({ surfaceType: "runtime", ... }, reason)` |
+| `buildForAgentExecution()` | @deprecated  | `buildForSurface({ surfaceType: "runtime", runtimeType: "agent", ... }, reason)` |
+| `buildForSkillExecution()` | @deprecated  | `buildForSurface({ surfaceType: "runtime", runtimeType: "skill", ... }, reason)` |
+
+#### 関連タスク
+
+- UT-RUNTIME-BUILDER-MIGRATION-001: 実装完了（2026-03-23）
+- UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001: chat-edit/TerminalHandoffBuilder.ts 削除（未着手）
+- UT-RUNTIME-FACADE-RETURN-TYPE-001: RuntimeSkillCreatorFacade 戻り値型波及確認（未着手）
 
 ---
 

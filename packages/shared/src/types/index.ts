@@ -88,11 +88,21 @@ export type {
 
 export { DEFAULT_SLIDE_SETTINGS } from "./slideSettings";
 
-// Permission Store型定義 (TASK-3-1-E)
+// Permission Store型定義 (TASK-3-1-E, UT-06-002)
 export type {
   AllowedToolEntry,
   PermissionStoreSchema,
   IPermissionStore,
+  ExpiryPolicy,
+  AllowedToolEntryV2,
+  IPermissionStoreV2,
+  PermissionStoreSchemaV2,
+  ClearSessionResponse,
+} from "./permission-store";
+
+export {
+  calcExpiresAt,
+  PERMISSION_HISTORY_MAX_ENTRIES,
 } from "./permission-store";
 
 // SkillCreator型定義 (TASK-9B-G)
@@ -128,6 +138,7 @@ export type {
   RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorExecuteResult,
+  RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorImproveResult,
   RuntimeSkillCreatorImproveResponse,
   ForkOptions,

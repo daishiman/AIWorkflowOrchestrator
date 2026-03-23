@@ -294,10 +294,11 @@ export const IPC_CHANNELS = {
   CHAT_EDIT_GET_SELECTION: "chat-edit:get-selection",
   CHAT_EDIT_SEND_WITH_CONTEXT: "chat-edit:send-with-context",
 
-  // Permission operations (TASK-3-1-E)
+  // Permission operations (TASK-3-1-E, UT-06-002)
   PERMISSION_GET_ALLOWED_TOOLS: "permission:getAllowedTools",
   PERMISSION_REVOKE_TOOL: "permission:revokeTool",
   PERMISSION_CLEAR_ALL: "permission:clearAll",
+  PERMISSION_CLEAR_SESSION: "permission:clear-session",
 
   // Auth Key operations (TASK-FIX-16-1)
   AUTH_KEY_SET: "auth-key:set",
@@ -585,10 +586,11 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.CHAT_EDIT_WRITE_FILE,
   IPC_CHANNELS.CHAT_EDIT_GET_SELECTION,
   IPC_CHANNELS.CHAT_EDIT_SEND_WITH_CONTEXT,
-  // Permission channels (TASK-3-1-E)
+  // Permission channels (TASK-3-1-E, UT-06-002)
   IPC_CHANNELS.PERMISSION_GET_ALLOWED_TOOLS,
   IPC_CHANNELS.PERMISSION_REVOKE_TOOL,
   IPC_CHANNELS.PERMISSION_CLEAR_ALL,
+  IPC_CHANNELS.PERMISSION_CLEAR_SESSION,
   // Auth Key channels (TASK-FIX-16-1)
   IPC_CHANNELS.AUTH_KEY_SET,
   IPC_CHANNELS.AUTH_KEY_EXISTS,

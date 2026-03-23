@@ -105,10 +105,10 @@ describe("Permission Store IPC Handlers", () => {
       );
     });
 
-    it("3つのハンドラーが登録される", () => {
+    it("4つのハンドラーが登録される（V2: clear-session 含む）", () => {
       registerPermissionStoreHandlers(mockPermissionStore);
 
-      expect(mockIpcMainHandle).toHaveBeenCalledTimes(3);
+      expect(mockIpcMainHandle).toHaveBeenCalledTimes(4);
     });
   });
 
@@ -409,5 +409,106 @@ describe("Permission Store IPC Handlers - Edge Cases", () => {
 
       expect(result).toBeDefined();
     });
+  });
+});
+
+// =================================================================
+// V2: permission:clear-session テスト (UT-06-002)
+// =================================================================
+
+describe("Permission Store IPC Handlers V2 - permission:clear-session", () => {
+  let handlers: Map<
+    string,
+    (event: IpcMainInvokeEvent, ...args: unknown[]) => unknown
+  >;
+
+  const mockPermissionStoreV2: IPermissionStore & {
+    revokeSessionEntries: ReturnType<typeof vi.fn>;
+  } = {
+    isToolAllowed: vi.fn(),
+    allowTool: vi.fn(),
+    revokeTool: vi.fn(),
+    getAllowedTools: vi.fn().mockReturnValue([]),
+    getAllowedToolEntries: vi.fn().mockReturnValue([]),
+    clearAll: vi.fn(),
+    revokeSessionEntries: vi.fn().mockReturnValue(0),
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    handlers = new Map();
+
+    mockIpcMainHandle.mockImplementation(
+      (
+        channel: string,
+        handler: (event: IpcMainInvokeEvent, ...args: unknown[]) => unknown,
+      ) => {
+        handlers.set(channel, handler);
+      },
+    );
+
+    mockPermissionStoreV2.revokeSessionEntries.mockReturnValue(0);
+  });
+
+  afterEach(() => {
+    vi.clearAllMocks();
+  });
+
+  // TC-IPC-01: 正常系 — session エントリのクリア
+  it("有効な sessionId でセッションエントリをクリアする", async () => {
+    mockPermissionStoreV2.revokeSessionEntries.mockReturnValue(3);
+    registerPermissionStoreHandlers(mockPermissionStoreV2);
+    const handler = handlers.get("permission:clear-session");
+
+    expect(handler).toBeDefined();
+    const result = (await handler!({} as IpcMainInvokeEvent, {
+      sessionId: "test-session-123",
+    })) as { success: boolean; removedCount: number };
+
+    expect(result.success).toBe(true);
+    expect(result.removedCount).toBe(3);
+    expect(mockPermissionStoreV2.revokeSessionEntries).toHaveBeenCalledWith(
+      "test-session-123",
+    );
+  });
+
+  // TC-IPC-02: P42準拠 — sessionId が空文字列
+  it("空文字列の sessionId でバリデーションエラーを返す", async () => {
+    registerPermissionStoreHandlers(mockPermissionStoreV2);
+    const handler = handlers.get("permission:clear-session");
+
+    const result = (await handler!({} as IpcMainInvokeEvent, {
+      sessionId: "",
+    })) as { success: boolean; error: { code: string } };
+
+    expect(result.success).toBe(false);
+    expect(result.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  // TC-IPC-03: P42準拠 — sessionId がスペースのみ
+  it("スペースのみの sessionId でバリデーションエラーを返す", async () => {
+    registerPermissionStoreHandlers(mockPermissionStoreV2);
+    const handler = handlers.get("permission:clear-session");
+
+    const result = (await handler!({} as IpcMainInvokeEvent, {
+      sessionId: "   ",
+    })) as { success: boolean; error: { code: string } };
+
+    expect(result.success).toBe(false);
+    expect(result.error.code).toBe("VALIDATION_ERROR");
+  });
+
+  // TC-IPC-04: P42準拠 — sessionId が undefined / missing
+  it("sessionId が未定義でバリデーションエラーを返す", async () => {
+    registerPermissionStoreHandlers(mockPermissionStoreV2);
+    const handler = handlers.get("permission:clear-session");
+
+    const result = (await handler!({} as IpcMainInvokeEvent, {})) as {
+      success: boolean;
+      error: { code: string };
+    };
+
+    expect(result.success).toBe(false);
+    expect(result.error.code).toBe("VALIDATION_ERROR");
   });
 });

@@ -6,6 +6,7 @@
  */
 
 import type { AuthMode } from "./auth-mode";
+import type { HandoffGuidance } from "./handoff";
 
 // ============================================
 // モード・エンジン型
@@ -299,7 +300,7 @@ export type SkillCreatorPlanResult = RuntimeSkillCreatorPlanResult;
 export type SkillCreatorTerminalHandoffBundle = TerminalHandoffBundle;
 export interface SkillCreatorTerminalHandoffResult {
   type: "terminal_handoff";
-  bundle: SkillCreatorTerminalHandoffBundle;
+  guidance: HandoffGuidance;
 }
 export type SkillCreatorExecutePlanResult = RuntimeSkillCreatorExecuteResult;
 export type SkillCreatorImproveSkillResult = RuntimeSkillCreatorImproveResult;
@@ -361,6 +362,16 @@ export type RuntimeSkillCreatorPlanResponse =
   | RuntimeSkillCreatorPlanResult
   | {
       type: "terminal_handoff";
+      guidance: HandoffGuidance;
+    };
+
+/**
+ * Runtime execute IPC の戻り値
+ */
+export type RuntimeSkillCreatorExecuteResponse =
+  | RuntimeSkillCreatorExecuteResult
+  | {
+      type: "terminal_handoff";
       bundle: TerminalHandoffBundle;
     };
 
@@ -371,7 +382,7 @@ export type RuntimeSkillCreatorImproveResponse =
   | RuntimeSkillCreatorImproveResult
   | {
       type: "terminal_handoff";
-      bundle: TerminalHandoffBundle;
+      guidance: HandoffGuidance;
     };
 
 /** フォークオプション */

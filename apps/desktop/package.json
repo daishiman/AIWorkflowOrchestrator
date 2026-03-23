@@ -36,6 +36,7 @@
     "screenshot:llm-config-persistence": "node scripts/capture-llm-config-persistence-phase11.mjs",
     "screenshot:task-fix-llm-config-persistence": "node scripts/capture-task-fix-llm-config-persistence-phase11.mjs",
     "guard:light-theme-contrast": "node scripts/light-theme-contrast-guard.mjs",
+    "rebuild:native": "pnpm rebuild better-sqlite3 && pnpm rebuild esbuild",
     "package": "electron-builder --config electron-builder.yml",
     "package:mac": "electron-builder --mac --config electron-builder.yml",
     "package:win": "electron-builder --win --config electron-builder.yml"
