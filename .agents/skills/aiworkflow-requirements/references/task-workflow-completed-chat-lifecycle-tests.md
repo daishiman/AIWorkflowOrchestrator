@@ -37,8 +37,8 @@
 
 | 未タスクID | 概要 | 参照 | ステータス |
 | --- | --- | --- | --- |
-| TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION | ChatView header へ mount する | `docs/30-workflows/chat-inline-model-selector/tasks/02-TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION/` | 未実施 |
-| TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION | WorkspaceChatPanel へ mount する | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/` | 未実施 |
+| TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION | ChatView header へ mount する（compact mode, disabled={isSending}, LLMGuidanceBanner 自動連携） | `docs/30-workflows/02-TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION/` | 実装完了（2026-03-23） |
+| TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION | WorkspaceChatPanel header へ mount する（compact mode, disabled={controller.isStreaming}, GuidanceBlock(blocked) 自動連携） | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/` | 実装完了（2026-03-23） |
 
 ### タスク: TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査記録（2026-03-21）
 

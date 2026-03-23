@@ -26,6 +26,7 @@
 | 2026-03-21 | 2.2.1 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 最終再監査教訓を追記 |
 | 2026-03-21 | 2.2.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
 | 2026-03-22 | 2.2.4 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 の苦戦箇所3件を追加（L-SLIDE-RUNTIME-001〜003） |
+| 2026-03-23 | 2.3.1 | UT-EXECUTION-ENV-TERMINAL-001 教訓1件を追加（L-EXEC-TERMINAL-001） |
 | 2026-03-22 | 2.3.0 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 設計タスク教訓3件を追加（L-THSR-001〜003） |
 | 2026-03-22 | 2.2.3 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加 |
 | 2026-03-20 | 2.1.1 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査の教訓3件を追加 |
@@ -570,3 +571,12 @@
 - **原因**: Phase 12 を並列エージェントで分担した結果、summary 作成エージェントと未タスク検出エージェントの間で情報が断絶した
 - **解決策**: documentation-changelog は全 Task 完了後にメインエージェントが一括作成する。件数は unassigned-task-detection.md の確定値を参照し、他ファイルの「予測値」を使わない
 - **教訓**: Phase 12 の件数系データは最後に1箇所で確定し、全ファイルにコピーする（逆方向の参照は禁止）
+
+### UT-EXECUTION-ENV-TERMINAL-001（2026-03-23）
+
+#### L-EXEC-TERMINAL-001: モノレポ package.json exports 未定義のサブパス import
+
+- **症状**: `@repo/shared/types/handoff` で import したところ TypeScript が TS2307（モジュール未検出）エラーを出力。テスト（Vitest）では alias 解決により動作するが `tsc --noEmit` で失敗
+- **原因**: `packages/shared/package.json` の `exports` フィールドに `./types/handoff` サブパスが未定義。`./types` までしか定義されていない
+- **解決策**: 既存コードの import パターン（`@repo/shared` ルート or `@repo/shared/types`）を `grep` で確認してから import を記述する。今回は `@repo/shared` ルートからの import に修正
+- **教訓**: モノレポで新しい型を import する際は、`package.json` の `exports` フィールドと既存コードの import パターンを事前確認する。テスト環境（Vitest alias）と TypeScript コンパイラ（tsc）でモジュール解決ロジックが異なるため、テスト PASS だけでは不十分

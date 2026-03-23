@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-22
+> 自動生成: 2026-03-23
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -424,6 +424,7 @@ node scripts/list-specs.js --topics
 | スキルドキュメント生成 型定義（TASK-9I） | L141 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
 | スキル分析 型定義（TASK-9J） | L291 |
+| assertNoSilentFallback ガード（P62 対策） | L340 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -1015,10 +1016,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
 | コンポーネント仕様 | L43 |
-| インタラクション設計 | L322 |
-| 視覚デザイン | L351 |
-| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L376 |
-| アクセシビリティ（WCAG 2.1 AA） | L398 |
+| インタラクション設計 | L324 |
+| 視覚デザイン | L353 |
+| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L378 |
+| アクセシビリティ（WCAG 2.1 AA） | L400 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -1854,8 +1855,8 @@ node scripts/list-specs.js --topics
 | current canonical set | L12 |
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
-| 実装ステータススナップショット（2026-03-22） | L46 |
-| Follow-up Backlog | L56 |
+| 実装ステータススナップショット（2026-03-21） | L46 |
+| Follow-up Backlog | L55 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2080,15 +2081,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
-| RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | L100 |
-| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L129 |
-| SkillScheduler / ScheduleStore（TASK-9G） | L188 |
-| DefaultSafetyGate サービス（UT-06-003） | L217 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L268 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L293 |
-| キャッシュ機構 | L321 |
-| 永続化 | L327 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L333 |
+| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L100 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L159 |
+| DefaultSafetyGate サービス（UT-06-003） | L188 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L239 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L264 |
+| キャッシュ機構 | L292 |
+| 永続化 | L298 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L304 |
 
 ### references/arch-electron-services-details.md
 
@@ -2588,12 +2588,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L42 |
-| クイックリファレンス: カテゴリ別検索ガイド | L57 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L133 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L465 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L499 |
-| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L527 |
+| 分割ファイル一覧 | L43 |
+| クイックリファレンス: カテゴリ別検索ガイド | L58 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L134 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L466 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L500 |
+| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L528 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2611,7 +2611,6 @@ node scripts/list-specs.js --topics
 | 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L275 |
 | 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L305 |
 | 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L347 |
-| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L394 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 

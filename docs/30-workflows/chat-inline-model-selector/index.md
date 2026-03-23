@@ -6,9 +6,9 @@
 | -------------- | ---------------------------------------------------------------------------------- |
 | ワークフロー名 | `chat-inline-model-selector`                                                       |
 | 作成日         | 2026-03-21                                                                         |
-| 更新日         | 2026-03-22                                                                         |
+| 更新日         | 2026-03-23                                                                         |
 | 目的           | ChatView / WorkspaceChatPanel から直接 LLM provider / model を選べる導線を整備する |
-| 現在状態       | Task 01 は共有コンポーネント実装済み、Task 02 / Task 03 は仕様書作成済み・未実装   |
+| 現在状態       | Task 01〜03 全て実装済み                                                           |
 
 ## 概要
 
@@ -16,11 +16,11 @@
 
 ## タスク一覧
 
-| 実行順 | タスク                                                                                                           | 状態           | 概要                                                                            |
-| ------ | ---------------------------------------------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------- |
-| 01     | [TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT](./tasks/01-TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT/index.md)           | 実装済み       | `InlineModelSelector` 共通コンポーネント、unit test、export、Phase 12 close-out |
-| 02     | [TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION](./tasks/02-TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION/index.md)   | `spec_created` | ChatView header への配置、GuidanceBanner 連携、screen capture                   |
-| 03     | [TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION](./tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/index.md) | `spec_created` | WorkspaceChatPanel への配置、blocked guidance 連携、screen capture              |
+| 実行順 | タスク                                                                                                                      | 状態     | 概要                                                                            |
+| ------ | --------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------- |
+| 01     | [TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT](./tasks/01-TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT/index.md)                      | 実装済み | `InlineModelSelector` 共通コンポーネント、unit test、export、Phase 12 close-out |
+| 02     | [TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION](./tasks/02-TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION/index.md)              | 実装済み | ChatView header への配置、GuidanceBanner 連携、screen capture                   |
+| 03     | [TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION](../completed-tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/index.md) | 実装済み | WorkspaceChatPanel への配置、blocked guidance 連携、screen capture              |
 
 ## 依存関係
 

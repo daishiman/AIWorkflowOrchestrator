@@ -7,14 +7,18 @@
 import React from "react";
 import clsx from "clsx";
 import type { EnvironmentType, PreviewContent } from "@repo/shared/types/agent";
+import type { HandoffGuidance } from "@repo/shared";
 import { HTMLPreviewEnvironment } from "../HTMLPreviewEnvironment";
 import { MarkdownPreviewEnvironment } from "../MarkdownPreviewEnvironment";
+import { TerminalHandoffCard } from "../TerminalHandoffCard";
 
 export interface ExecutionEnvironmentProps {
   /** 環境タイプ */
   environmentType: EnvironmentType;
   /** プレビューコンテンツ */
   content: PreviewContent | null;
+  /** terminal 用 HandoffGuidance */
+  handoffGuidance?: HandoffGuidance | null;
   /** リフレッシュハンドラ */
   onRefresh?: () => void;
   /** エラーハンドラ */
@@ -84,12 +88,12 @@ const PLACEHOLDER_CONFIG = {
     subtitle: "環境タイプを選択してプレビューを有効にしてください",
     testId: "no-preview",
   },
-  terminal: {
+  terminalWaiting: {
     iconPath:
       "M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z",
     title: "ターミナル環境",
-    subtitle: "Coming soon",
-    testId: "terminal-placeholder",
+    subtitle: "実行コンテキストを待機中...",
+    testId: "terminal-waiting",
   },
   code: {
     iconPath: "M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4",
@@ -112,6 +116,7 @@ const PLACEHOLDER_CONFIG = {
 export const ExecutionEnvironment: React.FC<ExecutionEnvironmentProps> = ({
   environmentType,
   content,
+  handoffGuidance,
   onRefresh,
   onError,
   className,
@@ -151,7 +156,20 @@ export const ExecutionEnvironment: React.FC<ExecutionEnvironmentProps> = ({
             return <MarkdownPreviewEnvironment content={contentString} />;
 
           case "terminal":
-            return <Placeholder {...PLACEHOLDER_CONFIG.terminal} />;
+            if (!handoffGuidance) {
+              return <Placeholder {...PLACEHOLDER_CONFIG.terminalWaiting} />;
+            }
+            return (
+              <TerminalHandoffCard
+                guidance={handoffGuidance}
+                onCopyCommand={() => {
+                  navigator.clipboard
+                    .writeText(handoffGuidance.terminalCommand)
+                    .catch(() => {});
+                }}
+                onDismiss={() => {}}
+              />
+            );
 
           case "code":
             return <Placeholder {...PLACEHOLDER_CONFIG.code} />;
