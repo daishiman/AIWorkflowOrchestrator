@@ -184,7 +184,7 @@ gh issue close <issue-number> --comment \
 
 ## サブタスク管理
 
-Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+Phase実行開始時に、TaskCreateツールで以下のサブタスクを作成すること:
 
 1. 参照資料の確認
 2. 実行タスクの実施（各タスクごとに1サブタスク）
@@ -217,6 +217,7 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 - [ ] `--no-verify` を使わずにコミットを作成した
 - [ ] PR を作成した（Summary + Test Plan を含む）
 - [ ] GitHub Issue が存在する場合はクローズした
+- [ ] CI（GitHub Actions）が通過していることを確認した
 
 ## タスク完了
 

@@ -7,8 +7,9 @@
 | Phase番号     | 7                                                                                                                              |
 | 機能名        | WorkspaceChatPanelへのインラインモデルセレクタ配置 (TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION)                              |
 | 作成日        | 2026-03-21                                                                                                                     |
+| 更新日        | 2026-03-23                                                                                                                     |
 | 担当          | -                                                                                                                              |
-| ステータス    | 未着手                                                                                                                         |
+| ステータス    | 完了                                                                                                                           |
 | 前Phase成果物 | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-6-test-expansion.md` |
 
 ## 目的
@@ -105,7 +106,7 @@ pnpm vitest run --coverage \
 
 ## サブタスク管理
 
-Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+Phase実行開始時に、TaskCreateツールで以下のサブタスクを作成すること:
 
 1. 参照資料の確認
 2. 実行タスクの実施（各タスクごとに1サブタスク）

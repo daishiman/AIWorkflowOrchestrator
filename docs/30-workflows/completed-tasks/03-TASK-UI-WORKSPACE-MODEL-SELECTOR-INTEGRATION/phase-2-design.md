@@ -43,7 +43,8 @@ Phase 1の要件定義に基づき、WorkspaceChatPanelへのInlineModelSelector
 ### ステップ1: WorkspaceChatPanel現行レイアウトの分析
 
 ```
-WorkspaceChatPanel (現行: 76行)
+WorkspaceChatPanel (現行: 108行)
+Props: { controller: WorkspaceChatController }
 ┌─────────────────────────────────────────┐
 │ <section.flex.flex-col.rounded-3xl>     │
 │                                         │
@@ -53,40 +54,52 @@ WorkspaceChatPanel (現行: 76行)
 │   </div>                                │
 │                                         │
 │   <div.flex.flex-col.gap-4>             │
-│     {isModelBlocked && (                │
-│       <GuidanceBlock variant="blocked"/>│  ← モデル未選択時
-│     )}                                  │
+│     {blockedGuidance ? (                │
+│       <GuidanceBlock variant="blocked"  │  ← モデル未選択時
+│         message={...} onAction={...}/>  │    （blockedReason由来）
+│     ) : null}                           │
 │                                         │
-│     {showSuggestionBubbles && (         │
+│     {showSuggestionBubbles &&           │
+│       !blockedGuidance ? (              │
 │       <WorkspaceSuggestionBubbles />    │  ← ゼロステート
-│     )}                                  │
+│     ) : null}                           │
 │                                         │
 │     <WorkspaceChatMessageList />        │  ← メッセージ一覧
 │     <WorkspaceFileContextChips />       │  ← ファイルコンテキスト
+│     <StreamingErrorDisplay />           │  ← エラー表示（条件付き）
 │     <WorkspaceChatInput />              │  ← 入力エリア
 │   </div>                                │
 │ </section>                              │
 └─────────────────────────────────────────┘
+
+データフロー（GuidanceBlock表示制御）:
+1. controller.blockedReason: ModelSelectionBlockedReason | null
+2. blockedGuidance = getModelSelectionGuidance(controller.blockedReason)
+3. blockedGuidance が非null → GuidanceBlock 表示
 ```
 
 ### ステップ2: InlineModelSelector配置設計
 
 ```
 WorkspaceChatPanel (変更後)
+Props: { controller: WorkspaceChatController }
 ┌─────────────────────────────────────────┐
 │ <section.flex.flex-col.rounded-3xl>     │
 │                                         │
 │   <div.border-b>  ← ヘッダー部         │
 │     <h1> Workspace Chat </h1>           │
 │     <p> 説明テキスト </p>               │
-│     <InlineModelSelector compact        │  ← 新規追加
-│       disabled={controller.isStreaming}/>│
+│     <div.mt-3>                          │  ← 新規追加
+│       <InlineModelSelector compact      │
+│         disabled={controller.isStreaming}│
+│     </div>                              │
 │   </div>                                │
 │                                         │
 │   <div.flex.flex-col.gap-4>             │
-│     {isModelBlocked && (                │  ← 既存ロジック維持
-│       <GuidanceBlock variant="blocked"/>│
-│     )}                                  │
+│     {blockedGuidance ? (                │  ← 既存ロジック維持
+│       <GuidanceBlock variant="blocked"  │    （blockedReason由来）
+│         message={...} onAction={...}/>  │
+│     ) : null}                           │
 │     ... (以降変更なし)                   │
 │   </div>                                │
 │ </section>                              │
@@ -106,15 +119,17 @@ WorkspaceChatPanel (変更後)
 
 ```typescript
 // 追加するimport
-import { InlineModelSelector } from "@/renderer/components/llm";
+import { InlineModelSelector } from "../../components/llm";
 
-// ヘッダー部（div.border-b）の末尾に追加
-<InlineModelSelector compact disabled={controller.isStreaming} />
+// ヘッダー部（div.border-b）内、</p>の後に追加
+<div className="mt-3">
+  <InlineModelSelector compact disabled={controller.isStreaming} />
+</div>
 ```
 
-**変更量**: import 1行 + JSX 1行（計2行の追加のみ）
+**変更量**: import 1行 + JSX 3行（wrapper div含む）
 
-**`controller.isStreaming` の取得**: `useWorkspaceChatController` の戻り値として既に利用可能。追加のStore接続は不要。
+**`controller.isStreaming` の取得**: `WorkspaceChatController` の戻り値として既に利用可能（props経由で受け取る）。追加のStore接続は不要。
 
 #### 3.2 useWorkspaceChatController.ts の変更
 
@@ -122,13 +137,15 @@ import { InlineModelSelector } from "@/renderer/components/llm";
 
 ```typescript
 // useWorkspaceChatController.ts内（変更不要）
-const selectedModelId = useAppStore((state) => state.selectedModelId);
+// selectedProviderId / selectedModelId → deriveModelSelectionBlockedReason() で blockedReason を算出
+// blockedReason: ModelSelectionBlockedReason | null を返却
 
 // WorkspaceChatPanel.tsx内の既存ロジック（変更不要）
-const isModelBlocked = controller.selectedModelId === null;
+const blockedGuidance = getModelSelectionGuidance(controller.blockedReason);
+// blockedGuidance が非null → GuidanceBlock表示
 ```
 
-InlineModelSelectorがStore（`llmSlice`）を更新すると、`useAppStore((state) => state.selectedModelId)` が反応し、controllerの `selectedModelId` が更新される。これにより `isModelBlocked` が自動で `false` に変わる。追加の連携コードは不要。
+InlineModelSelectorがStore（`llmSlice`）の `selectedProviderId` / `selectedModelId` を更新すると、`deriveModelSelectionBlockedReason()` が `null` を返し、controllerの `blockedReason` が `null` に変わる。これにより `blockedGuidance` が `null` になり GuidanceBlock が非表示になる。追加の連携コードは不要。
 
 ### ステップ4: GuidanceBlock(variant="blocked")との共存設計
 
@@ -139,7 +156,7 @@ InlineModelSelectorがStore（`llmSlice`）を更新すると、`useAppStore((st
 | モデル選択済み                | 表示（選択中モデル名）   | 非表示                 |
 | ストリーミング中              | 表示（disabled）         | 非表示（選択済み前提） |
 
-**設計判断**: GuidanceBlock表示制御の既存ロジック（`isModelBlocked = controller.selectedModelId === null`）は変更不要。InlineModelSelectorでStore更新 → controller反応 → isModelBlocked自動更新のパスで動作する。
+**設計判断**: GuidanceBlock表示制御の既存ロジック（`blockedGuidance = getModelSelectionGuidance(controller.blockedReason)`）は変更不要。InlineModelSelectorでStore更新 → `deriveModelSelectionBlockedReason()` → `controller.blockedReason = null` → `blockedGuidance = null` → GuidanceBlock非表示のパスで動作する。
 
 ### ステップ5: disabled制御設計
 
@@ -180,7 +197,7 @@ DOMの配置順がそのままTab順序になるため、特別な `tabIndex` �
 | 観点             | 適用 | 確認内容                                                     |
 | ---------------- | ---- | ------------------------------------------------------------ |
 | UI/UX            | 該当 | サイドパネル内のレイアウト崩れなし、compact版の操作性        |
-| アーキテクチャ   | 該当 | 変更量が最小（2行追加）、既存controller/Store活用            |
+| アーキテクチャ   | 該当 | 変更量が最小（4行追加）、既存controller/Store活用            |
 | アクセシビリティ | 該当 | Tab順序の自然さ（Task 01のARIA実装を継承）                   |
 | パフォーマンス   | 該当 | 追加Store接続なし（isStreamingはcontrollerの既存プロパティ） |
 
@@ -189,6 +206,26 @@ DOMの配置順がそのままTab順序になるため、特別な `tabIndex` �
 | 成果物 | パス                                                                                                                   | 説明           |
 | ------ | ---------------------------------------------------------------------------------------------------------------------- | -------------- |
 | 設計書 | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-2-design.md` | 本ドキュメント |
+
+## サブタスク管理
+
+Phase実行開始時に、TaskCreateツールで以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 統合テスト連携の実施
+4. 成果物の作成・配置
+5. 完了条件の検証
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 各タスクの成果物が生成されている
+- [x] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 完了条件
 

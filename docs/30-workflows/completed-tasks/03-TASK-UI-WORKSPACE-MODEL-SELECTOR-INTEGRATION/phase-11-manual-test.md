@@ -7,8 +7,9 @@
 | Phase番号     | 11                                                                                                                            |
 | 機能名        | WorkspaceChatPanelへのインラインモデルセレクタ配置 (TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION)                             |
 | 作成日        | 2026-03-21                                                                                                                    |
+| 更新日        | 2026-03-23                                                                                                                    |
 | 担当          | -                                                                                                                             |
-| ステータス    | 未着手                                                                                                                        |
+| ステータス    | 完了                                                                                                                          |
 | 前Phase成果物 | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-10-final-review.md` |
 
 ## 目的
@@ -159,9 +160,11 @@ pnpm dev
 
 ## 成果物
 
-| 成果物                        | パス                                                                                                                         | 説明           |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| Phase 11 仕様書（本ファイル） | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-11-manual-test.md` | 手動テスト結果 |
+| 成果物                        | パス                                                                                                                                       | 説明                                    |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- |
+| Phase 11 仕様書（本ファイル） | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-11-manual-test.md`               | 手動テスト結果                          |
+| スクリーンショット計画        | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/outputs/phase-11/screenshot-plan.md`   | 撮影シナリオ・命名規則                  |
+| 発見課題一覧                  | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/outputs/phase-11/discovered-issues.md` | 手動テストで発見した課題（0件でも作成） |
 
 ## 画面カバレッジマトリクス
 
@@ -174,7 +177,7 @@ pnpm dev
 
 ## サブタスク管理
 
-Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+Phase実行開始時に、TaskCreateツールで以下のサブタスクを作成すること:
 
 1. 参照資料の確認
 2. 実行タスクの実施（各タスクごとに1サブタスク）
@@ -205,6 +208,9 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 - [ ] シナリオ3（パネルレイアウト視覚確認・compact表示）が合格したことを確認した
 - [ ] シナリオ4（モデル未選択時のガイダンス表示確認）が合格したことを確認した
 - [ ] テスト結果まとめテーブルに全シナリオの結果を記入した
+- [ ] スクリーンショット計画（screenshot-plan.md）を作成した
+- [ ] 発見課題一覧（discovered-issues.md）を作成した（0件でも必須）
+- [ ] ライトモード・ダークモード両方で視覚確認を実施した
 
 ## 次のPhase
 

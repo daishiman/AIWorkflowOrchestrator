@@ -7,13 +7,14 @@
 | Phase番号     | 6                                                                                                                              |
 | 機能名        | WorkspaceChatPanelへのインラインモデルセレクタ配置 (TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION)                              |
 | 作成日        | 2026-03-21                                                                                                                     |
+| 更新日        | 2026-03-23                                                                                                                     |
 | 担当          | -                                                                                                                              |
-| ステータス    | 未着手                                                                                                                         |
+| ステータス    | 完了                                                                                                                           |
 | 前Phase成果物 | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-5-implementation.md` |
 
 ## 目的
 
-Phase 7 のカバレッジ確認（Line: 80%以上、Branch: 60%以上、Function: 80%以上）に備え、エッジケース・同時表示パターン・パネル状態変化に関するテストを追加する。
+Phase 7 のカバレッジ確認（Line: 80%以上、Branch: 60%以上、Function: 80%以上）に備え、エッジケース・状態遷移パターンに関するテストを追加する。
 
 ## 実行タスク
 
@@ -34,75 +35,102 @@ pnpm vitest run --coverage \
 
 **追加テストファイル**: Phase 4 で作成した `WorkspaceChatPanel.integration.test.tsx` に追記
 
-| ID  | テスト名                                                                      | 目的                     |
-| --- | ----------------------------------------------------------------------------- | ------------------------ |
-| E-1 | ワークスペース切り替え時にInlineModelSelectorの選択状態が維持される           | エッジケース・Branch補完 |
-| E-2 | パネルリサイズ後もInlineModelSelector(compact)のレイアウトが崩れない          | エッジケース             |
-| E-3 | GuidanceBlock(blocked)とInlineModelSelectorが同時に表示される初期状態が正しい | 同時表示テスト           |
-| E-4 | ストリーミング開始時にInlineModelSelectorがdisabledになり、完了時に解除される | 状態遷移テスト           |
-| E-5 | API key未設定GuidanceBlockがモデル選択後も引き続き表示される                  | 独立条件テスト           |
+| ID  | テスト名                                                                                | 目的                     |
+| --- | --------------------------------------------------------------------------------------- | ------------------------ |
+| E-1 | blockedReason="NO_PROVIDER"の場合にGuidanceBlockが表示される                            | Branch補完               |
+| E-2 | InlineModelSelectorとGuidanceBlockが同時に表示される初期状態（blockedReason!=null）     | 同時表示テスト           |
+| E-3 | ストリーミング開始時にdisabledになり、完了時に解除される（rerender検証）                | 状態遷移テスト           |
+| E-4 | blockedReason=null時にゼロステート（WorkspaceSuggestionBubbles）が表示される            | 条件分岐テスト           |
+| E-5 | StreamingErrorDisplayがstreamingError存在時に表示される（既存機能のリグレッション防止） | リグレッション防止テスト |
 
-**テストコード例**:
+**テストコード例（createMockControllerパターン、P39準拠）**:
 
 ```typescript
-// E-1: ワークスペース切り替え時の状態維持
-it("E-1: ワークスペース切り替え後もInlineModelSelectorの状態が維持される", () => {
-  const { rerender } = render(<WorkspaceChatPanel workspaceId="ws-1" />);
-  // モデルを選択
-  fireEvent.click(screen.getByTestId("model-select-trigger"));
-
-  // ワークスペース切り替え
-  rerender(<WorkspaceChatPanel workspaceId="ws-2" />);
-
-  // セレクタ自体は引き続き表示されている（ストア状態はワークスペース非依存）
-  expect(screen.getByTestId("inline-model-selector")).toBeInTheDocument();
+// E-1: NO_PROVIDER の場合も GuidanceBlock が表示される（Branch補完）
+it("E-1: blockedReason='NO_PROVIDER'の場合にGuidanceBlockが表示される", () => {
+  const controller = createMockController({
+    selectedModelId: null,
+    blockedReason: "NO_PROVIDER",
+  });
+  render(<WorkspaceChatPanel controller={controller} />);
+  expect(screen.getByTestId("workspace-guidance-block")).toBeInTheDocument();
 });
 
-// E-3: 初期状態での同時表示
-it("E-3: 初期状態でGuidanceBlock(blocked)とInlineModelSelectorが同時に表示される", () => {
-  render(<WorkspaceChatPanel initialModelSelected={false} />);
+// E-2: InlineModelSelectorとGuidanceBlockの同時表示
+it("E-2: blockedReason!=null時にInlineModelSelectorとGuidanceBlockが同時に表示される", () => {
+  const controller = createMockController({
+    selectedModelId: null,
+    blockedReason: "NO_MODEL",
+  });
+  render(<WorkspaceChatPanel controller={controller} />);
 
   // 両方が同時に表示されていること
-  expect(screen.getByTestId("inline-model-selector")).toBeInTheDocument();
-  expect(screen.getByTestId("guidance-block-blocked")).toBeInTheDocument();
+  expect(screen.getByRole("combobox")).toBeInTheDocument(); // InlineModelSelector
+  expect(screen.getByTestId("workspace-guidance-block")).toBeInTheDocument(); // GuidanceBlock
 });
 
-// E-5: API key未設定GuidanceBlockの独立性
-it("E-5: モデル選択後もAPI key未設定GuidanceBlockは表示される", async () => {
-  render(<WorkspaceChatPanel hasApiKey={false} initialModelSelected={false} />);
-
-  // モデルを選択
-  await act(async () => {
-    fireEvent.click(screen.getByTestId("model-select-trigger"));
+// E-3: ストリーミング開始/完了でdisabled状態が遷移する
+it("E-3: ストリーミング開始でdisabledになり、完了で解除される", () => {
+  const idleController = createMockController({
+    selectedModelId: "gpt-4o",
+    blockedReason: null,
+    isStreaming: false,
   });
+  const { rerender } = render(<WorkspaceChatPanel controller={idleController} />);
 
-  // blocked GuidanceBlockは非表示
-  expect(screen.queryByTestId("guidance-block-blocked")).not.toBeInTheDocument();
-  // API key GuidanceBlockは引き続き表示
-  expect(screen.getByTestId("guidance-block-apikey")).toBeInTheDocument();
+  const selector = screen.getByRole("combobox");
+  expect(selector).not.toBeDisabled();
+
+  // ストリーミング開始
+  const streamingController = createMockController({
+    selectedModelId: "gpt-4o",
+    blockedReason: null,
+    isStreaming: true,
+  });
+  rerender(<WorkspaceChatPanel controller={streamingController} />);
+  expect(screen.getByRole("combobox")).toBeDisabled();
+
+  // ストリーミング完了
+  rerender(<WorkspaceChatPanel controller={idleController} />);
+  expect(screen.getByRole("combobox")).not.toBeDisabled();
+});
+
+// E-4: blockedReason=null + メッセージなし → ゼロステート表示
+it("E-4: blockedReason=null時にゼロステート（suggestion bubbles）が表示される", () => {
+  const controller = createMockController({
+    selectedModelId: "gpt-4o",
+    blockedReason: null,
+    messages: [],
+    streamContent: "",
+    isStreaming: false,
+  });
+  render(<WorkspaceChatPanel controller={controller} />);
+  expect(screen.getByTestId("workspace-chat-zero-state")).toBeInTheDocument();
+});
+
+// E-5: streamingError存在時にStreamingErrorDisplayが表示される
+it("E-5: streamingError存在時にStreamingErrorDisplayが表示される", () => {
+  const controller = createMockController({
+    selectedModelId: "gpt-4o",
+    blockedReason: null,
+    streamingError: {
+      type: "network",
+      message: "接続エラー",
+      isRetryable: true,
+      timestamp: Date.now(),
+    },
+  });
+  render(<WorkspaceChatPanel controller={controller} />);
+  expect(screen.getByText("接続エラー")).toBeInTheDocument();
 });
 ```
 
-### タスク3: 型安全性テスト
-
-```typescript
-// InlineModelSelectorにcompact propが正しい型で渡されることを型レベルで検証
-// TypeScriptコンパイル時にエラーが出ないことで確認
-
-// WorkspaceChatPanelのprops型にisStreamingが含まれることを確認
-import type { WorkspaceChatPanelProps } from "../WorkspaceChatPanel";
-// type check: isStreaming?: boolean
-```
-
-### タスク4: リグレッションテスト
+### タスク3: リグレッションテスト
 
 ```bash
 # WorkspaceView全体のテスト実行（P40対策）
 cd apps/desktop
 pnpm vitest run src/renderer/views/WorkspaceView/
-
-# 変更前後の差分確認
-git diff --stat apps/desktop/src/renderer/views/WorkspaceView/
 ```
 
 ## 参照資料
@@ -132,10 +160,9 @@ git diff --stat apps/desktop/src/renderer/views/WorkspaceView/
 ## 実行手順
 
 1. **タスク1の実施**: カバレッジを仮計測し、不足箇所を特定する
-2. **タスク2の実施**: E-1〜E-5のエッジケーステストを追加する（fireEvent使用、P39準拠）
-3. **タスク3の実施**: 型安全性テストを追加する（TypeScriptコンパイルで確認）
-4. **タスク4の実施**: リグレッションテストを実行する
-5. **再計測**: カバレッジが改善されたことを確認する（Phase 7 の基準値に近づいているか）
+2. **タスク2の実施**: E-1〜E-5のエッジケーステストを追加する（createMockControllerパターン、fireEvent使用、P39準拠）
+3. **タスク3の実施**: リグレッションテストを実行する
+4. **再計測**: カバレッジが改善されたことを確認する（Phase 7 の基準値に近づいているか）
 
 ## 統合テスト連携
 
@@ -151,7 +178,7 @@ git diff --stat apps/desktop/src/renderer/views/WorkspaceView/
 
 ## サブタスク管理
 
-Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+Phase実行開始時に、TaskCreateツールで以下のサブタスクを作成すること:
 
 1. 参照資料の確認
 2. 実行タスクの実施（各タスクごとに1サブタスク）
@@ -178,11 +205,11 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 ## 完了条件
 
 - [ ] タスク1でカバレッジ仮計測を実施し、不足箇所を特定した
-- [ ] E-1（ワークスペース切り替え時の状態維持）テストを追加した
-- [ ] E-2（パネルリサイズ時のcompactレイアウト）テストを追加した
-- [ ] E-3（GuidanceBlockとInlineModelSelectorの同時表示）テストを追加した
-- [ ] E-4（ストリーミング開始/完了時のdisabled状態遷移）テストを追加した
-- [ ] E-5（API key GuidanceBlockの独立性）テストを追加した
+- [ ] E-1（blockedReason="NO_PROVIDER"でGuidanceBlock表示）テストを追加した
+- [ ] E-2（InlineModelSelectorとGuidanceBlockの同時表示）テストを追加した
+- [ ] E-3（ストリーミング開始/完了時のdisabled状態遷移）テストを追加した
+- [ ] E-4（ゼロステート表示条件）テストを追加した
+- [ ] E-5（StreamingErrorDisplay表示）テストを追加した
 - [ ] 全追加テストがPASSであることを確認した
 - [ ] P41対策（インライン関数のカバレッジ確認）を実施した
 - [ ] P39対策: 全テストで `fireEvent` を使用し、`userEvent` を使用していない

@@ -8,12 +8,24 @@
 | タスクID      | `TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION`                                                                               |
 | 作成日        | 2026-03-21                                                                                                                   |
 | 更新日        | 2026-03-22                                                                                                                   |
-| ステータス    | 未着手                                                                                                                       |
+| ステータス    | 完了                                                                                                                         |
 | 前Phase成果物 | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-11-manual-test.md` |
 
 ## 目的
 
 WorkspaceChatPanel へ `InlineModelSelector` を統合した結果を、implementation guide、system spec、task ledger、未タスク管理へ同期する。
+
+## 事前チェック（既知の落とし穴確認）
+
+| Pitfall | 確認内容                                                                                   | チェック |
+| ------- | ------------------------------------------------------------------------------------------ | -------- |
+| P1/P25  | LOGS.md は aiworkflow-requirements と task-specification-creator の**2ファイル**を更新する | [ ]      |
+| P2/P27  | topic-map.md は `node generate-index.js` で**必ず再生成**する                              | [ ]      |
+| P3/P38  | 未タスクは `docs/30-workflows/unassigned-task/` に独立ファイルとして配置する               | [ ]      |
+| P4/P51  | documentation-changelog は全Step完了後に**事後記録**する（実行前に完了と書かない）         | [ ]      |
+| P29     | SKILL.md の変更履歴テーブルも更新する（LOGS.md だけでは不十分）                            | [ ]      |
+| P43     | サブエージェント使用時は3ファイル以下/エージェントに分割する                               | [ ]      |
+| P57     | 設計タスクでも Phase 12 完了時点で `.claude/skills/` を実更新する                          | [ ]      |
 
 ## 実行タスク
 
@@ -66,6 +78,11 @@ WorkspaceChatPanel へ `InlineModelSelector` を統合した結果を、implemen
 - [ ] `ui-ux-llm-selector.md` と task ledger の更新有無を判断し、結果を記録した
 - [ ] `generate-index.js` と mirror sync を実行した
 - [ ] 未タスクがある場合は `docs/30-workflows/unassigned-task/` に配置した
+- [ ] LOGS.md を aiworkflow-requirements と task-specification-creator の**2ファイル**更新した（P1/P25対策）
+- [ ] SKILL.md 変更履歴を aiworkflow-requirements と task-specification-creator の**2ファイル**更新した（P29対策）
+- [ ] `grep -rn "TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION" .claude/skills/aiworkflow-requirements/references/` で関連仕様書を検索し更新した（Step 1-C）
+- [ ] artifacts.json の Phase 1-12 ステータスを確認した
+- [ ] 事前チェックテーブルの全項目をチェックした
 
 ## 次のPhase
 
