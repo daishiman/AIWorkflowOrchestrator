@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-23T00:06:14.900Z",
-  "totalKeywords": 2435,
+  "generated": "2026-03-23T05:07:16.057Z",
+  "totalKeywords": 2442,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1267,7 +1267,9 @@
     "execute": [
       "api-ipc-agent-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
-      "security-electron-ipc-advanced.md"
+      "lessons-learned-ipc-preload-runtime.md",
+      "security-electron-ipc-advanced.md",
+      "task-workflow-completed-skill-lifecycle-design.md"
     ],
     "契約": [
       "api-ipc-agent-core.md",
@@ -1761,6 +1763,7 @@
       "security-implementation.md",
       "security-skill-execution.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
+      "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed-ut-06-safety-gate.md",
@@ -2442,7 +2445,22 @@
       "ui-ux-settings-core.md"
     ],
     "CLOSURE": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "RuntimePolicyResolver": [
       "arch-electron-services-details-part2.md"
+    ],
+    "SC": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-lifecycle-design.md"
+    ],
+    "POLICY": [
+      "arch-electron-services-details-part2.md",
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "採用計画": [
       "arch-electron-services-details-part2.md"
@@ -2503,6 +2521,8 @@
     ],
     "handoff": [
       "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
@@ -6273,10 +6293,6 @@
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
-    "POLICY": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "CAPABILITY": [
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -6284,6 +6300,18 @@
     "BRIDGE": [
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "TERMINAL": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "HANDOFF": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "ADAPTER": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "PLACEMENT": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "STREAM": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -6325,9 +6353,6 @@
     "CODE": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "TERMINAL": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
     "SURFACE": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6336,6 +6361,14 @@
     ],
     "実装セッション": [
       "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "terminal": [
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-lifecycle-design.md"
+    ],
+    "分岐追加": [
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-lifecycle-design.md"
     ],
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"

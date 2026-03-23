@@ -387,7 +387,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | チャンネル | 用途 | Request | Response |
 | --- | --- | --- | --- |
 | `skill-creator:plan` | runtime plan 作成 | `SkillCreatorPlanRequest` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
-| `skill-creator:execute-plan` | plan 実行 | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResult>` |
+| `skill-creator:execute-plan` | plan 実行 | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
 | `skill-creator:improve-skill` | runtime 改善 | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 
 ### 契約メモ

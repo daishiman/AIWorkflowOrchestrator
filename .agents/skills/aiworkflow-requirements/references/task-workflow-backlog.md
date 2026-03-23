@@ -526,6 +526,7 @@
 
 | UT-FIX-LLM-PERSIST-ENCRYPT-001 | persist storage暗号化の検討 | 低 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md` |
 | UT-FIX-LLM-FETCHPROVIDERS-RETRY-001 | fetchProviders失敗時のリトライとバリデーション連携 | 中 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md` |
+| UT-SC-02-005 | Preload skill-creator-api.ts execute 戻り値型更新 | 中 | UT-SC-02-002-execute-terminal-handoff（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-02-005.md` |
 
 ### 未タスク管理ルール
 
