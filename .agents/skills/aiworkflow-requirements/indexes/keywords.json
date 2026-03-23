@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-23T05:46:06.316Z",
-  "totalKeywords": 2444,
+  "generated": "2026-03-23T05:07:16.057Z",
+  "totalKeywords": 2442,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1267,7 +1267,9 @@
     "execute": [
       "api-ipc-agent-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
-      "security-electron-ipc-advanced.md"
+      "lessons-learned-ipc-preload-runtime.md",
+      "security-electron-ipc-advanced.md",
+      "task-workflow-completed-skill-lifecycle-design.md"
     ],
     "契約": [
       "api-ipc-agent-core.md",
@@ -1761,6 +1763,7 @@
       "security-implementation.md",
       "security-skill-execution.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
+      "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed-ut-06-safety-gate.md",
@@ -2264,7 +2267,6 @@
       "arch-state-management-core.md",
       "arch-state-management-reference-selectors.md",
       "interfaces-llm.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
@@ -2451,7 +2453,8 @@
     ],
     "SC": [
       "arch-electron-services-details-part2.md",
-      "lessons-learned-ipc-preload-runtime.md"
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-lifecycle-design.md"
     ],
     "POLICY": [
       "arch-electron-services-details-part2.md",
@@ -2465,6 +2468,7 @@
     "SLIDE": [
       "arch-electron-services-details-part2.md",
       "interfaces-agent-sdk-skill-advanced.md",
+      "lessons-learned-current.md",
       "ui-ux-feature-components-details.md"
     ],
     "ALIGNMENT": [
@@ -2472,7 +2476,7 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-current.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
@@ -2481,8 +2485,7 @@
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "testing-component-patterns-details.md",
-      "ui-ux-feature-components-details.md",
-      "ui-ux-panels.md"
+      "ui-ux-feature-components-details.md"
     ],
     "SkillScheduler": [
       "arch-electron-services-details-part2.md"
@@ -2518,6 +2521,8 @@
     ],
     "handoff": [
       "arch-electron-services-details-part2.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
@@ -3716,7 +3721,6 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md"
     ],
@@ -6358,6 +6362,14 @@
     "実装セッション": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "terminal": [
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-lifecycle-design.md"
+    ],
+    "分岐追加": [
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-lifecycle-design.md"
+    ],
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -6373,14 +6385,6 @@
     ],
     "実績同期": [
       "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "REVIEW": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "ui-ux-panels.md"
-    ],
-    "HARNESS": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "ui-ux-panels.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
@@ -10845,12 +10849,6 @@
       "ui-ux-panels.md"
     ],
     "チャット配線設計": [
-      "ui-ux-panels.md"
-    ],
-    "Review": [
-      "ui-ux-panels.md"
-    ],
-    "Harness": [
       "ui-ux-panels.md"
     ],
     "Portal": [

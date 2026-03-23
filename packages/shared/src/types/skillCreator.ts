@@ -365,6 +365,16 @@ export type RuntimeSkillCreatorPlanResponse =
     };
 
 /**
+ * Runtime execute IPC の戻り値
+ */
+export type RuntimeSkillCreatorExecuteResponse =
+  | RuntimeSkillCreatorExecuteResult
+  | {
+      type: "terminal_handoff";
+      bundle: TerminalHandoffBundle;
+    };
+
+/**
  * Runtime improve IPC の戻り値
  */
 export type RuntimeSkillCreatorImproveResponse =

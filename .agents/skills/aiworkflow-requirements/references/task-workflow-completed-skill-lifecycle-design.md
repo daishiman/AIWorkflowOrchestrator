@@ -291,3 +291,32 @@ ui-ux-diagrams.md の「実装ギャップ一覧（GAP ID 正本）」セクシ�
 | 4 | ui-ux-diagrams.mdのCore Journey図とSkill Lifecycle Panel図で状態遷移の定義が矛盾 | Skill Lifecycle Panel図にReuseReady遷移を追加してCore Journey図と整合 | 上流文書に複数の図がある場合、全図の整合チェックをPhase 3レビュー観点に含める |
 | 5 | worktreeのesbuildアーキテクチャ不一致でスクリーンショット撮影不可（P7再発） | pnpm store prune && pnpm install --forceで解消 | worktree作成後のpnpm installでネイティブモジュール再ビルドが必要 |
 | 6 | SkillLifecyclePanelのラベル変更が仕様書外変更として混入 | Task09 phase-2-design.mdに「ラベル日本語化（LC-UX-PROHIBIT-01対応）」セクションを追記して仕様化 | プロダクションコード変更は必ず先に仕様書に記録してから実施する |
+
+## UT-SC-02-002: execute() terminal_handoff 分岐追加 完了記録（2026-03-23）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-SC-02-002 |
+| 機能名 | UT-SC-02-002-execute-terminal-handoff |
+| 対象workflow | `docs/30-workflows/UT-SC-02-002-execute-terminal-handoff/` |
+| ステータス | completed（Phase 1-13） |
+| 元タスク | TASK-SC-02-RUNTIME-POLICY-CLOSURE |
+
+### 反映内容
+
+| 観点 | 内容 |
+| --- | --- |
+| Union型追加 | `RuntimeSkillCreatorExecuteResponse` を `packages/shared/src/types/skillCreator.ts` に追加。plan/improve と同一パターン |
+| 分岐ロジック | `RuntimeSkillCreatorFacade.execute()` に terminal_handoff 早期リターン分岐を追加。`void decision;` 除去 |
+| IPC型更新 | `creatorHandlers.ts` の `skill-creator:execute-plan` 戻り値型を `RuntimeSkillCreatorExecuteResponse` に更新 |
+| バレルエクスポート | `packages/shared/src/types/index.ts` に `RuntimeSkillCreatorExecuteResponse` エクスポート追加 |
+| テスト | 15テスト全PASS（execute 8テスト: terminal_handoff/integrated_api 各パス検証） |
+| カバレッジ | Line/Function Coverage 100% |
+
+### 未タスク
+
+| ID | 内容 | 優先度 |
+| --- | --- | --- |
+| UT-SC-02-005 | Preload skill-creator-api.ts execute 戻り値型更新（P44/P45パターン） | 中 |

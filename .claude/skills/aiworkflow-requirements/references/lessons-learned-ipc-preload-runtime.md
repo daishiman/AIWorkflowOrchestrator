@@ -428,3 +428,20 @@
 ### 苦戦箇所: bundle 構築の責務分散
 
 `TerminalHandoffBundle` の構築が `RuntimePolicyResolver` のプライベートメソッドと `TerminalHandoffBuilder.build()` に分散した。Resolver 側は prompt を含まないダミー bundle を生成するため shell injection リスクはないが、構造的に不整合。今後は TerminalHandoffBuilder に統一すべき（UT-SC-02-004）。
+
+---
+
+## UT-SC-02-002: execute() terminal_handoff 分岐追加（2026-03-23）
+
+### 苦戦箇所
+
+| # | 問題 | 解決策 | 再発防止 |
+|---|---|---|---|
+| 1 | esbuild バイナリ不一致（P66再発）: worktree 環境で `ESBUILD_BINARY_PATH` 環境変数での回避が必要だった | `ESBUILD_BINARY_PATH` を worktree のテスト実行前に設定 | worktree 作成後に `pnpm rebuild esbuild` を実行するか、環境変数を設定する |
+| 2 | `packages/shared/src/types/index.ts` のバレルエクスポート追加が Phase 5 仕様書で言及されておらず、Phase 9 の型チェックで発覚 | Phase 9 で手動追加して解消 | Phase 2 設計書に「新規型定義時は `index.ts` バレルエクスポートも変更スコープに含める」チェック項目を追加する |
+| 3 | Preload 側の型定義が追従していない（P44/P45パターン）: Main Process 側は修正済みだが Preload 側の戻り値型が旧型のまま | 未タスク UT-SC-02-005 として切り出し | IPC 型変更タスクでは Phase 2 に「3レイヤー同時変更チェック（Main handler / Preload API / Shared types）」を含める |
+
+### 知見
+
+- `plan()` / `improve()` と同一の早期リターンパターンを適用することで、3メソッドの分岐構造を統一できた。TDD (Red -> Green -> Refactor) が小規模タスクに効果的にフィットした
+- `creatorHandlers.ts` の型不整合を Phase 5 仕様書で予告し、Phase 9 で実際に検出・最小限修正するフローが有効だった
