@@ -36,7 +36,7 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 | 項目 | current behavior |
 | --- | --- |
 | コンポーネント | `InlineModelSelector` |
-| 配置責務 | Task01 は shared component 作成（完了）、Task02 が ChatView header mount（実装済み: compact mode, disabled={isSending}）、Task03 が Workspace mount を担当 |
+| 配置責務 | Task01 は shared component 作成（完了）、Task02 が ChatView header mount（実装済み: compact mode, disabled={isSending}）、Task03 が WorkspaceChatPanel header mount（実装済み: compact mode, disabled={controller.isStreaming}） |
 | provider 取得 | `providers` prop 未指定かつ store list が空のとき `fetchProviders()` を呼ぶ |
 | provider 切替 | default model を即時選択し、store mode でも `onSelectionChange` を返す |
 | health 更新 | effective provider の変化時に `checkHealth(providerId)` を呼ぶ |

@@ -7,8 +7,9 @@
 | Phase番号     | 9                                                                                                                           |
 | 機能名        | WorkspaceChatPanelへのインラインモデルセレクタ配置 (TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION)                           |
 | 作成日        | 2026-03-21                                                                                                                  |
+| 更新日        | 2026-03-23                                                                                                                  |
 | 担当          | -                                                                                                                           |
-| ステータス    | 未着手                                                                                                                      |
+| ステータス    | 完了                                                                                                                        |
 | 前Phase成果物 | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-8-refactoring.md` |
 
 ## 目的
@@ -71,13 +72,13 @@ pnpm vitest run
 ```bash
 # InlineModelSelectorのARIAラベル確認
 grep -n "aria-" apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx
-grep -n "aria-" apps/desktop/src/renderer/components/InlineModelSelector.tsx 2>/dev/null || true
+grep -n "aria-" apps/desktop/src/renderer/components/llm/InlineModelSelector.tsx
 ```
 
 **確認項目**:
 
 - InlineModelSelector（compact）にARIAラベルが付与されていること
-- ストリーミング中のdisabled状態が `aria-disabled` で正しく伝達されていること
+- ストリーミング中のdisabled状態がHTML `disabled` 属性で正しく伝達されていること
 - GuidanceBlockにARIAロールが適切に設定されていること
 
 ### タスク5: 品質検証結果の記録
@@ -134,7 +135,7 @@ grep -n "aria-" apps/desktop/src/renderer/components/InlineModelSelector.tsx 2>/
 
 ## サブタスク管理
 
-Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+Phase実行開始時に、TaskCreateツールで以下のサブタスクを作成すること:
 
 1. 参照資料の確認
 2. 実行タスクの実施（各タスクごとに1サブタスク）

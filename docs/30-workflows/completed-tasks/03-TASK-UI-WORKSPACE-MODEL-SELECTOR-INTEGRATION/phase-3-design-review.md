@@ -35,23 +35,23 @@ Phase 1（要件定義）とPhase 2（設計）の妥当性を検証し、Phase 
 
 ### ステップ1: 要件-設計トレーサビリティマトリクス
 
-| 要件    | 設計対応箇所                                   | 実現性 | 備考                                                           |
-| ------- | ---------------------------------------------- | ------ | -------------------------------------------------------------- |
-| FR-1.1  | ステップ2: ヘッダー部末尾配置                  | OK     | 説明テキストの下、GuidanceBlockの上                            |
-| FR-1.2  | ステップ2: `compact` prop                      | OK     | サイドパネル幅に適合する compact モード                        |
-| FR-1.3  | ステップ5: `disabled={controller.isStreaming}` | OK     | controllerの既存プロパティを利用                               |
-| FR-2.1  | ステップ4: 共存テーブル                        | OK     | 選択済み → GuidanceBlock非表示（既存 isModelBlocked ロジック） |
-| FR-2.2  | ステップ4: 共存テーブル                        | OK     | 未選択 → GuidanceBlock表示維持                                 |
-| FR-2.3  | ステップ3.2: controller変更なし                | OK     | Store更新 → controller反応 → isModelBlocked自動更新            |
-| FR-3.1  | ステップ3.2: 既存ロジック維持                  | OK     | `controller.selectedModelId === null` の判定は変更なし         |
-| FR-3.2  | ステップ3.2: Store経由自動更新                 | OK     | InlineModelSelector → Store → controller、追加コード不要       |
-| FR-3.3  | ステップ3.2: isModelBlocked連動                | OK     | GuidanceBlock + 入力制御が連動して解除される                   |
-| NFR-1.1 | ステップ2: compact版                           | OK     | 高さ28px、サイドパネル幅に収まる                               |
-| NFR-1.2 | ステップ2: ヘッダー部配置                      | OK     | ヘッダー内の追加要素で全体スクロールは発生しない               |
-| NFR-2.1 | ステップ3.1: 変更2行のみ                       | OK     | 最小変更でレンダリング影響なし                                 |
-| NFR-2.2 | Task 01: 個別セレクタ使用済み                  | OK     | P31対策はTask 01で完了                                         |
-| NFR-3.1 | Task 01: ARIA実装済み                          | OK     | combobox/listbox/option パターン                               |
-| NFR-3.2 | ステップ6: Tab順序                             | OK     | DOM配置順で自然なフォーカス移動                                |
+| 要件    | 設計対応箇所                                                      | 実現性 | 備考                                                           |
+| ------- | ----------------------------------------------------------------- | ------ | -------------------------------------------------------------- |
+| FR-1.1  | ステップ2: ヘッダー部末尾配置                                     | OK     | 説明テキストの下、GuidanceBlockの上                            |
+| FR-1.2  | ステップ2: `compact` prop                                         | OK     | サイドパネル幅に適合する compact モード                        |
+| FR-1.3  | ステップ5: `disabled={controller.isStreaming}`                    | OK     | controllerの既存プロパティを利用                               |
+| FR-2.1  | ステップ4: 共存テーブル                                           | OK     | 選択済み → GuidanceBlock非表示（既存 isModelBlocked ロジック） |
+| FR-2.2  | ステップ4: 共存テーブル                                           | OK     | 未選択 → GuidanceBlock表示維持                                 |
+| FR-2.3  | ステップ3.2: controller変更なし                                   | OK     | Store更新 → controller反応 → isModelBlocked自動更新            |
+| FR-3.1  | ステップ3.2: 既存ロジック維持                                     | OK     | `controller.selectedModelId === null` の判定は変更なし         |
+| FR-3.2  | ステップ3.2: Store経由自動更新                                    | OK     | InlineModelSelector → Store → controller、追加コード不要       |
+| FR-3.3  | ステップ3.2: isModelBlocked連動                                   | OK     | GuidanceBlock + 入力制御が連動して解除される                   |
+| NFR-1.1 | ステップ2: compact版                                              | OK     | 高さ28px、サイドパネル幅に収まる                               |
+| NFR-1.2 | ステップ2: ヘッダー部配置                                         | OK     | ヘッダー内の追加要素で全体スクロールは発生しない               |
+| NFR-2.1 | ステップ3.1: 変更4行のみ（import + wrapper div + JSX + 閉じタグ） | OK     | 最小変更でレンダリング影響なし                                 |
+| NFR-2.2 | Task 01: 個別セレクタ使用済み                                     | OK     | P31対策はTask 01で完了                                         |
+| NFR-3.1 | Task 01: ARIA実装済み                                             | OK     | combobox/listbox/option パターン                               |
+| NFR-3.2 | ステップ6: Tab順序                                                | OK     | DOM配置順で自然なフォーカス移動                                |
 
 **トレーサビリティ判定**: 全要件が設計で網羅されている。
 
@@ -65,7 +65,7 @@ Phase 1（要件定義）とPhase 2（設計）の妥当性を検証し、Phase 
 | IPC既存チャンネル利用        | OK     | 新規IPCなし                                                             |
 | Apple HIG準拠                | OK     | Task 01のデザイントークンを継承                                         |
 | レイヤー依存方向             | OK     | Renderer（Panel）→ Component（InlineModelSelector）→ Store              |
-| 最小変更原則                 | OK     | import 1行 + JSX 1行 = 計2行の追加のみ                                  |
+| 最小変更原則                 | OK     | import 1行 + JSX 3行（wrapper div含む）= 計4行の追加のみ                |
 | controller分離               | OK     | Panel=表示責務、controller=ロジック責務。InlineModelSelectorはStore直結 |
 
 ### ステップ3: リスク評価（known-pitfalls照合）
@@ -86,16 +86,16 @@ Phase 1（要件定義）とPhase 2（設計）の妥当性を検証し、Phase 
 データフロー検証:
 1. ユーザーがInlineModelSelectorでモデル選択
 2. InlineModelSelector内 → useSelectModel(modelId) → llmSlice.selectModel()
-3. llmSlice → selectedModelId を更新 + IPC同期
-4. useWorkspaceChatController内 → useAppStore((state) => state.selectedModelId)
-   → selectedModelId が非null に変化
-5. WorkspaceChatPanel内 → isModelBlocked = controller.selectedModelId === null
-   → false に変化
-6. GuidanceBlock(variant="blocked") が非表示になる
-7. WorkspaceChatInput が有効化される
+3. llmSlice → selectedProviderId / selectedModelId を更新 + IPC同期
+4. useWorkspaceChatController内 → deriveModelSelectionBlockedReason({selectedProviderId, selectedModelId})
+   → blockedReason が null に変化
+5. WorkspaceChatPanel内 → blockedGuidance = getModelSelectionGuidance(controller.blockedReason)
+   → blockedGuidance が null に変化
+6. {blockedGuidance ? <GuidanceBlock .../> : null} → null → GuidanceBlock非表示
+7. WorkspaceChatInput が有効化される（blockedReasonベースの制御）
 ```
 
-**判定**: 全ステップで既存のリアクティブパスが機能する。追加の連携コードは不要。Store → controller → Panelの単方向データフローが正しく設計されている。
+**判定**: 全ステップで既存のリアクティブパスが機能する。追加の連携コードは不要。Store → `deriveModelSelectionBlockedReason` → controller.blockedReason → Panel の単方向データフローが正しく設計されている。
 
 ### ステップ5: 懸念事項と判断
 
@@ -125,6 +125,41 @@ Phase 1（要件定義）とPhase 2（設計）の妥当性を検証し、Phase 
 | 懸念事項                  | 管理可能 |
 
 **総合判定: PASS** — Phase 4（テスト作成）に進行可能。
+
+### レビュー判定基準（Phase 3ゲート）
+
+| 判定              | 条件             | アクション            |
+| ----------------- | ---------------- | --------------------- |
+| PASS              | 設計が要件を網羅 | Phase 4 へ            |
+| MINOR             | 軽微な記述不整合 | 指摘対応後 Phase 4 へ |
+| MAJOR（要件問題） | 要件自体に不備   | Phase 1 へ戻る        |
+| MAJOR（設計問題） | 設計に根本的問題 | Phase 2 へ戻る        |
+
+## 統合テスト連携
+
+- Phase 2の統合テスト連携セクションで定義されたテスト方針の妥当性を確認
+- P39対策（happy-dom環境でのfireEvent使用）の明記を検証
+- テストケースと要件のトレーサビリティを確認
+
+## サブタスク管理
+
+Phase実行開始時に、TaskCreateツールで以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 統合テスト連携の実施
+4. 成果物の作成・配置
+5. 完了条件の検証
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 各タスクの成果物が生成されている
+- [x] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 成果物
 

@@ -7,8 +7,9 @@
 | Phase番号     | 10                                                                                                                      |
 | 機能名        | WorkspaceChatPanelへのインラインモデルセレクタ配置 (TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION)                       |
 | 作成日        | 2026-03-21                                                                                                              |
+| 更新日        | 2026-03-23                                                                                                              |
 | 担当          | -                                                                                                                       |
-| ステータス    | 未着手                                                                                                                  |
+| ステータス    | 完了                                                                                                                    |
 | 前Phase成果物 | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-9-quality.md` |
 
 ## 目的
@@ -19,17 +20,18 @@ Phase 1 の受入基準AC-3（WorkspaceChatでの動作）に対して実装が�
 
 ### レビュー観点1: AC-3（WorkspaceChatでの動作）受入基準の充足確認
 
-Phase 1 で定義したAC-3の受入基準を実装が満たしているか確認する。
+Phase 1 で定義した受入基準を実装が満たしているか確認する。
 
-| 受入基準                                                           | 確認方法                               | 結果 |
-| ------------------------------------------------------------------ | -------------------------------------- | ---- |
-| WorkspaceChatPanelの上部にInlineModelSelector(compact)が表示される | コードを確認してcompact=true配置を確認 | -    |
-| モデル選択後にGuidanceBlock(variant="blocked")が非表示になる       | テストI-2のPASSを確認                  | -    |
-| モデル未選択時にGuidanceBlock(variant="blocked")が表示される       | テストI-3のPASSを確認                  | -    |
-| モデル選択後にチャット入力フィールドが有効化される                 | テストI-4のPASSを確認                  | -    |
-| ストリーミング中はInlineModelSelectorがdisabledになる              | テストI-5のPASSを確認                  | -    |
-| useWorkspaceChatControllerのblocked判定と連動する                  | テストI-6のPASSを確認                  | -    |
-| API key未設定のGuidanceBlockはモデル選択後も維持される             | テストE-5のPASSを確認                  | -    |
+| 受入基準                                                           | 確認方法                     | 結果 |
+| ------------------------------------------------------------------ | ---------------------------- | ---- |
+| WorkspaceChatPanelの上部にInlineModelSelector(compact)が表示される | コード確認 + テストI-1のPASS | -    |
+| blockedReason=null時にGuidanceBlockが非表示になる                  | テストI-2のPASSを確認        | -    |
+| blockedReason="NO_MODEL"時にGuidanceBlockが表示される              | テストI-3のPASSを確認        | -    |
+| blockedReason=null（モデル選択済み）でチャット操作が可能           | テストI-4のPASSを確認        | -    |
+| ストリーミング中はInlineModelSelectorがdisabledになる              | テストI-5のPASSを確認        | -    |
+| controller.blockedReasonの変化でGuidanceBlock表示が連動する        | テストI-6のPASSを確認        | -    |
+| InlineModelSelectorとGuidanceBlockが同時表示される（初期状態）     | テストE-2のPASSを確認        | -    |
+| ストリーミング開始/完了でdisabled状態が遷移する                    | テストE-3のPASSを確認        | -    |
 
 ### レビュー観点2: UI/UX品質レビュー（Apple HIG準拠）
 
@@ -151,7 +153,7 @@ MINOR判定の指摘事項は全て未タスク仕様書に変換する（省略
 
 ## サブタスク管理
 
-Phase実行開始時に、TodoWriteツールで以下のサブタスクを作成すること:
+Phase実行開始時に、TaskCreateツールで以下のサブタスクを作成すること:
 
 1. 参照資料の確認
 2. 実行タスクの実施（各タスクごとに1サブタスク）

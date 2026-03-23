@@ -155,6 +155,32 @@ Task 01で作成済みの `InlineModelSelector` コンポーネントをWorkspac
 | ---------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------- |
 | 要件定義書 | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-1-requirements.md` | 本ドキュメント |
 
+## 統合テスト連携
+
+- WorkspaceChatPanel内にInlineModelSelectorがレンダーされることのテスト設計の起点
+- `controller.isStreaming=true` 時に `disabled` propが渡されることのテスト設計の起点
+- GuidanceBlockがモデル選択後に非表示になることのテスト設計の起点
+
+## サブタスク管理
+
+Phase実行開始時に、TaskCreateツールで以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 統合テスト連携の実施
+4. 成果物の作成・配置
+5. 完了条件の検証
+
+**重要**: 各サブタスクは実行完了後すぐにcompletedに更新すること。
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 各タスクの成果物が生成されている
+- [x] Phase末端で各タスクを100%完了し、完了を明記している
+
 ## 完了条件
 
 - [x] P50チェック（既実装調査）を完了
