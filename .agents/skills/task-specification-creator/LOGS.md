@@ -4,6 +4,37 @@
 
 ---
 
+## UT-EXECUTION-ENV-TERMINAL-001 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - ExecutionEnvironment.terminal の placeholder → TerminalHandoffCard 本実装
+  - assertNoSilentFallback() ガード実装（P62 対策）
+  - LLMConfigNotSelectedError カスタムエラー型追加
+  - 18テストケース（T-1〜T-18）全 PASS
+  - LOGS.md 2ファイル + interfaces 仕様書更新（P1/P25 対策）
+
+---
+
+## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 final sync
+- **Result**: success
+- **Notes**:
+  - D1-D6（6件の drift）を解消
+  - 12チャネルを正本仕様に統一（invoke 6 + push 6）
+  - validateIpcSender + P42 3段バリデーション + path guard を全ハンドラに適用
+  - RuntimeResolver 統合: integrated/handoff 分岐対応
+  - modifier-skill.ts を skill-executor.ts に統合
+  - slideSlice に正本 7 store fields を追加
+  - HandoffGuidance 型を共有（src/types/handoff.ts 正本を re-export）
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25対策）
+
+---
+
 ## TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（2026-03-22）
 
 - **Agent**: task-specification-creator
@@ -20,23 +51,7 @@
 
 ---
 
-## TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 完了（2026-03-22）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-13 設計完了
-- **Result**: success
-- **Notes**:
-  - TranscriptProvenance 型定義（5フィールド）・3操作フロー・provenance chip 設計を確定
-  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
-  - MINOR指摘 M-1/M-2 を未タスクとして管理（M-3 は実装仕様確定）
-  - implementation-guide.md（Part 1: 郵便消印アナロジー / Part 2: 開発者向け）作成
-  - Phase 13 はユーザー指示待ち（blocked）
-
----
-
-## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（2026-03-21）
-
----
+## TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR same-wave sync（2026-03-22）
 
 ## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 

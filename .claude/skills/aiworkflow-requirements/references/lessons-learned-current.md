@@ -25,8 +25,8 @@
 | 2026-03-21 | 2.2.2 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓を追記 |
 | 2026-03-21 | 2.2.1 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 最終再監査教訓を追記 |
 | 2026-03-21 | 2.2.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
-
-| 2026-03-22 | 2.3.1 | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計タスク教訓2件を追加（L-TCPL-001〜002） |
+| 2026-03-22 | 2.2.4 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 の苦戦箇所3件を追加（L-SLIDE-RUNTIME-001〜003） |
+| 2026-03-23 | 2.3.1 | UT-EXECUTION-ENV-TERMINAL-001 教訓1件を追加（L-EXEC-TERMINAL-001） |
 | 2026-03-22 | 2.3.0 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 設計タスク教訓3件を追加（L-THSR-001〜003） |
 | 2026-03-22 | 2.2.3 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加 |
 | 2026-03-20 | 2.1.1 | TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査の教訓3件を追加 |
@@ -522,23 +522,31 @@
 - **解決策**: linter/ユーザーのフィードバックで `RuntimeTerminalHandoffResult` 型を導入し、execute() でも terminalSurface → handoff bundle を返す分岐を追加
 - **教訓**: 3-role facade（plan/execute/improve）で4状態ハンドリングを設計する際は、全 role × 全 capability の matrix を Phase 2 で明示的に埋める
 
+
 ---
 
-### TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計タスク教訓（2026-03-22）
+## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22）
 
-#### L-TCPL-001: worktree マージ後の conflict marker 残骸が複数ファイルに波及
+### L-SLIDE-RUNTIME-001: HandoffGuidance 型の二重定義（P64再発）
 
-- **症状**: `||||||| 77abcbc7f` の conflict marker 残骸が LOGS.md x2、SKILL.md x2、task-workflow-completed.md、lessons-learned-current.md の計6ファイルに残存していた。`<<<<<<<`/`=======`/`>>>>>>>` は解消済みだが base marker だけが取り残されていた
-- **原因**: worktree でのマージ時に `diff3` スタイルのマージ出力で base marker が残り、目視レビューで見落とした。重複行（base 版のコンテンツ）も同時に残存し、ファイルが膨張していた
-- **解決策**: worktree マージ後は `grep -rn '||||||| ' .claude/skills/` で全ファイルを走査し、base marker と重複行を同時に除去する
-- **教訓**: `<<<<<<<` / `>>>>>>>` の解消だけでは不十分。`diff3` marker は3種ではなく4種（`|||||||` 含む）をチェックする
+- **教訓**: `src/types/handoff.ts` と `src/slide/types.ts` に同名 `HandoffGuidance` が二重定義され、フィールド名が異なった（`terminalCommand` vs `command`）。TypeCheck で初めて顕在化
+- **解決策**: 正本（`src/types/handoff.ts`）を import + re-export で統一。slide/types.ts には独自定義を持たない
+- **関連パターン**: P64（モノレポ内同名インターフェースのシグネチャドリフト）
+- **関連タスク**: TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001
 
-#### L-TCPL-002: standalone root 移設後の stale path 14件 + P3 3ステップ漏れ
+### L-SLIDE-RUNTIME-002: skill-executor.ts リファクタリングによる既存テスト大規模修正（P21再発）
 
-- **症状**: `tasks/` サブディレクトリから standalone root に移設した後、全13 Phase spec ファイルの「Task index」参照行が旧パスのまま残存（14件）。加えて P3 3ステップ（backlog 登録 / 関連仕様書リンク）が未完了だった
-- **原因**: ディレクトリ移設時に index.md と artifacts.json のパスは更新したが、各 Phase spec 内の参照資料テーブルは手動更新対象であることを認識していなかった
-- **解決策**: standalone root 移設時は `grep -rn '<old-path>' <new-dir>/` で全ファイルの旧パス参照を走査し、0件化してから完了とする。P3 3ステップはチェックボックスの `[ ]` → `[x]` 更新を含めて実行する
-- **教訓**: ディレクトリ移設は「コピー + パス更新」の2段階ではなく「コピー + 全 grep 走査 + P3 3ステップ」の3段階で完了とする
+- **教訓**: modifier フェーズに `fs/promises` readFile と `modifier-skill` ユーティリティの依存を追加した結果、既存3テストファイル（skill-executor.test.ts, sdk-integration.test.ts, slide-integration.test.ts）に17テスト失敗が発生。事前に `grep -rn "createSkillExecutor" **/*.test.ts` で影響範囲を把握すべきだった
+- **解決策**: `vi.hoisted` パターンで `fs/promises` + `modifier-skill` のモックを各テストファイルに追加
+- **関連パターン**: P21（DI追加時のテストモック大規模修正）
+- **関連タスク**: TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001
+
+### L-SLIDE-RUNTIME-003: validateSlideRequest ヘルパーの2バリアント設計
+
+- **教訓**: 6 invoke ハンドラの共通バリデーションを DRY 化する際、projectPath の有無で `validateSlideSenderOnly`（sender検証のみ）と `validateSlideRequestWithPath`（sender + path + traversal）の2バリアントに分離した。これにより projectPath を持たないハンドラ（watch-stop, cancel）に誤って path guard が適用されることを防止
+- **解決策**: 引数の有無でバリアントを分離し、型安全にガード
+- **関連パターン**: P54（safeRegister パターン不適合）
+- **関連タスク**: TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001
 
 ---
 
@@ -563,3 +571,12 @@
 - **原因**: Phase 12 を並列エージェントで分担した結果、summary 作成エージェントと未タスク検出エージェントの間で情報が断絶した
 - **解決策**: documentation-changelog は全 Task 完了後にメインエージェントが一括作成する。件数は unassigned-task-detection.md の確定値を参照し、他ファイルの「予測値」を使わない
 - **教訓**: Phase 12 の件数系データは最後に1箇所で確定し、全ファイルにコピーする（逆方向の参照は禁止）
+
+### UT-EXECUTION-ENV-TERMINAL-001（2026-03-23）
+
+#### L-EXEC-TERMINAL-001: モノレポ package.json exports 未定義のサブパス import
+
+- **症状**: `@repo/shared/types/handoff` で import したところ TypeScript が TS2307（モジュール未検出）エラーを出力。テスト（Vitest）では alias 解決により動作するが `tsc --noEmit` で失敗
+- **原因**: `packages/shared/package.json` の `exports` フィールドに `./types/handoff` サブパスが未定義。`./types` までしか定義されていない
+- **解決策**: 既存コードの import パターン（`@repo/shared` ルート or `@repo/shared/types`）を `grep` で確認してから import を記述する。今回は `@repo/shared` ルートからの import に修正
+- **教訓**: モノレポで新しい型を import する際は、`package.json` の `exports` フィールドと既存コードの import パターンを事前確認する。テスト環境（Vitest alias）と TypeScript コンパイラ（tsc）でモジュール解決ロジックが異なるため、テスト PASS だけでは不十分

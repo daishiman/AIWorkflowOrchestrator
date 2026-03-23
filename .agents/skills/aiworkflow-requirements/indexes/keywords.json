@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-23T01:56:30.754Z",
-  "totalKeywords": 2439,
+  "generated": "2026-03-23T00:06:14.900Z",
+  "totalKeywords": 2435,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2442,21 +2442,7 @@
       "ui-ux-settings-core.md"
     ],
     "CLOSURE": [
-      "arch-electron-services-details-part2.md",
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "RuntimePolicyResolver": [
       "arch-electron-services-details-part2.md"
-    ],
-    "SC": [
-      "arch-electron-services-details-part2.md",
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "POLICY": [
-      "arch-electron-services-details-part2.md",
-      "lessons-learned-current.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "採用計画": [
       "arch-electron-services-details-part2.md"
@@ -2464,6 +2450,7 @@
     "SLIDE": [
       "arch-electron-services-details-part2.md",
       "interfaces-agent-sdk-skill-advanced.md",
+      "lessons-learned-current.md",
       "ui-ux-feature-components-details.md"
     ],
     "ALIGNMENT": [
@@ -2471,6 +2458,7 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
@@ -2691,6 +2679,7 @@
     "対策": [
       "arch-state-management-advanced.md",
       "arch-state-management-reference.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "security-input-validation.md"
     ],
     "Store": [
@@ -4941,6 +4930,15 @@
     "スキル分析": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
     ],
+    "assertNoSilentFallback": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
+    ],
+    "ガード": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "security-electron-ipc-advanced.md"
+    ],
     "SkillCreatorService": [
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
@@ -6275,6 +6273,10 @@
     "契約ドリフト自動検出スクリプト": [
       "lessons-learned-current.md"
     ],
+    "POLICY": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "CAPABILITY": [
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -6282,18 +6284,6 @@
     "BRIDGE": [
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "TERMINAL": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "HANDOFF": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "ADAPTER": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "PLACEMENT": [
-      "lessons-learned-ipc-preload-runtime.md"
     ],
     "STREAM": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -6333,6 +6323,9 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "CODE": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "SURFACE": [
@@ -6924,11 +6917,6 @@
     ],
     "設定ファイル整合": [
       "lessons-learned-workflow-quality-ci-module-resolution.md"
-    ],
-    "ガード": [
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "logs-archive-2026-03-workflow02-screenshot-guard.md",
-      "security-electron-ipc-advanced.md"
     ],
     "Vitest": [
       "lessons-learned-workflow-quality-ci-module-resolution.md",
