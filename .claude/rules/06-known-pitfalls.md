@@ -192,6 +192,27 @@ const pattern = new RegExp(escapeRegExp(os.homedir()), "g");
 - **教訓**: Node.js バージョン更新後は `pnpm store prune && pnpm install --force` が必要。通常の install ではキャッシュされた古いバイナリが残る
 - **関連**: [07-git-and-tooling.md#Husky Hooks](./07-git-and-tooling.md)
 
+### P66: CPU アーキテクチャ不一致によるネイティブモジュールロード失敗（P7 派生）
+
+- **教訓**: Apple Silicon Mac で Rosetta 2 経由の x86_64 Node.js を使用している場合、`pnpm install` が arm64 キャッシュからバイナリを復元し、`dlopen` 時に `incompatible architecture (have 'arm64', need 'x86_64')` エラーが発生する。P7（ABI バージョン不一致）とは異なり、`.node` ファイルは存在するがアーキテクチャが不一致
+- **症状**: `Error: dlopen(...better_sqlite3.node...): mach-o file, but is an incompatible architecture`。`require()` 失敗 → 条件付き describe が `describe.skip` にフォールバック → テストが silent skip
+- **診断**: `file node_modules/.../better_sqlite3.node` でバイナリのアーキテクチャを確認し、`node -e "console.log(process.arch)"` と照合する
+- **解決策**: `pnpm rebuild better-sqlite3` で現在の実行アーキテクチャ向けにリビルド。esbuild 等の他のネイティブモジュールも同様にリビルドが必要な場合がある
+- **再発防止**: worktree 作成後に `pnpm rebuild` を実行するセットアップスクリプト、CI キャッシュキーに `process.arch` を含める
+- **関連パターン**: P7（ネイティブモジュールのバイナリ不一致）
+- **関連タスク**: UT-CONV-DB-001
+
+```bash
+# 診断コマンド
+file node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3/build/Release/better_sqlite3.node
+node -e "console.log('arch:', process.arch)"
+uname -m
+
+# 修正コマンド
+pnpm rebuild better-sqlite3
+pnpm rebuild esbuild  # Vitest 実行にも必要
+```
+
 ### P8: 幽霊依存
 
 - **教訓**: テスト環境では通るが実行時にモジュール未検出エラーになる。`import` するライブラリは必ず自身の `package.json` に宣言
@@ -792,12 +813,13 @@ export interface ILLMClient {
 
 ### P65: Runtime helper の dead-end namespace による IPC contract drift
 
+- **ステータス**: ✅ **解決済み**（TASK-SC-01-IPC-WIRING-FIX、2026-03-23）
 - **教訓**: runtime 用の internal helper（`creatorHandlers.ts`）が `creator:*` という独自 namespace で handler を登録していたが、public surface は `skill-creator:*` だった。2つの namespace が共存する間に contract drift が発生し、Preload 側と Main 側の型が乖離した。internal helper を「暫定的に追加した別 namespace」として放置すると drift が蓄積する
 - **症状**: Renderer から `skill-creator:plan` を呼んでも handler が未登録、`creator:plan` には handler があるが Preload の allowlist に含まれない
 - **解決策**: internal helper は既存の public entrypoint（`skillCreatorHandlers.ts`）から呼び出す形に統合し、public channel の入口を増やさない。runtime 実装を追加する場合は「新 namespace 追加」ではなく「既存 namespace への handler 追加」を原則とする
 - **再発防止**: Phase 2 設計書に「IPC handler の namespace 一覧」を明示し、新規 namespace の追加は設計レビューで承認を必須とする
 - **関連パターン**: P44（IPC インターフェース不整合）、P45（IPC 引数命名の契約ドリフト）
-- **関連タスク**: UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001
+- **関連タスク**: UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001, TASK-SC-01-IPC-WIRING-FIX
 
 ```typescript
 // P65: dead-end namespace（internal helper が別 namespace を作成）

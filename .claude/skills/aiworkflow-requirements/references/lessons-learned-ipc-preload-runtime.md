@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-23 | 1.8.0 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 苦戦箇所2件を追加（エスケープテスト lookbehind regex パターン、adapter サニタイズ対象の統一漏れ） |
 | 2026-03-22 | 1.7.0 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加（structured error primary / legacy fallback 分離、Task 03 root 移管の同波反映） |
 | 2026-03-21 | 1.6.0 | UT-TASK06-007-EXT-006 正規表現 lastIndex 汚染パターン（教訓4）を追加 |
 | 2026-03-21 | 1.5.0 | UT-TASK06-007-EXT-006 Phase 12 再監査教訓を追加（mkdtempSync 一時ディレクトリ戦略、same-wave 指標同期、EXT-006 完了と EXT-001〜005 継続の切り分け） |
@@ -27,6 +28,26 @@
 | 2026-03-19 | 1.2.0 | UT-TASK06-007 再監査教訓を追加（generic/multiline preload 抽出、spec drift 同期、P45 の書き分け） |
 | 2026-03-18 | 1.1.0 | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 教訓3件を追加（esbuild worktree不一致 P53派生、テスト数伝播 P37派生、P62 DEFAULT_CONFIG三層防御） |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001
+
+### 苦戦箇所1: エスケープテストの部分文字列マッチ
+
+- **症状**: `\$HOME` は部分文字列として `$HOME` を含むため、`not.toContain("$HOME")` がエスケープ済み文字列に対して偽陽性を返す
+- **原因**: `toContain` は部分文字列マッチであり、エスケープ文字 `\` の有無を区別しない
+- **解決策**: lookbehind regex `not.toMatch(/(?<!\\)\$HOME/)` で「エスケープされていない `$`」の非存在を検証
+- **関連パターン**: P55（正規表現メタ文字を含むパス）
+- **5分解決カード**: エスケープテストでは `toContain` ではなく lookbehind regex で未エスケープ文字の非存在を検証する
+
+### 苦戦箇所2: adapter サニタイズ対象の統一漏れ
+
+- **症状**: prompt 系フィールドのみ `sanitizeForShell` を適用し、`workspacePath`/`workingDirectory`/`launcher` フィールドが無サニタイズでコマンドに挿入されていた
+- **原因**: 30種思考法分析（批判的思考・帰納的思考）で初めて発見。「パスはシステム由来で安全」という暗黙の前提が検証されていなかった
+- **解決策**: `sanitizePath()` でパスのダブルクォート・バックスラッシュをエスケープ、`validateLauncher()` でランチャー名を英数字+ハイフン+アンダースコアに制限
+- **関連パターン**: P42（.trim() バリデーション漏れ）の拡張パターン
+- **5分解決カード**: adapter/builder で外部入力をコマンド文字列に埋め込む場合、プロンプト系だけでなくパス系・実行ファイル名もサニタイズ対象にする
 
 ---
 
@@ -388,3 +409,22 @@
 2. CLI スクリプトテストは `beforeEach` で `process.argv[1]` をスクリプト絶対パスに固定し `afterEach` で復元
 3. `vi.mock("fs")` はファイルトップレベルに配置。describe 内配置では ESM モジュールへのモック適用が保証されない
 4. `main()` カバレッジは「fs モック」より「パス制御＋実ファイル統合テスト」で達成
+
+---
+
+## TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）
+
+### Optional DI + Graceful Degradation パターン
+
+`RuntimePolicyResolver` のコンストラクタで `subscriptionAuthProvider?: ISubscriptionAuthProvider` を optional にすることで、DI 未注入時は安全側（no-auth）にフォールバックする。これにより:
+- 後方互換性を維持（既存の呼び出し元を変更せずにデプロイ可能）
+- graceful degradation が DI レベルと catch レベルの2層で機能
+- P62（DEFAULT_CONFIG fallback禁止）準拠
+
+### checkSubscription() の try-catch フォールバック
+
+`ISubscriptionAuthProvider.validateToken()` の例外時に `false` を返して no-auth にフォールバックする。P54（safeRegister パターン不適合）と同系統のパターン。戻り値が不要な場合は catch で安全な既定値を返す。
+
+### 苦戦箇所: bundle 構築の責務分散
+
+`TerminalHandoffBundle` の構築が `RuntimePolicyResolver` のプライベートメソッドと `TerminalHandoffBuilder.build()` に分散した。Resolver 側は prompt を含まないダミー bundle を生成するため shell injection リスクはないが、構造的に不整合。今後は TerminalHandoffBuilder に統一すべき（UT-SC-02-004）。
