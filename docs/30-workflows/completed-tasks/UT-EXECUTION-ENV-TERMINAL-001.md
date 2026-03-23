@@ -12,7 +12,7 @@ issue_number: 1456
 | ---------- | ---------------------------------------------------------------------- |
 | タスクID   | UT-EXECUTION-ENV-TERMINAL-001                                          |
 | 由来       | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 設計 GAP（P62 対策） |
-| ステータス | unassigned                                                             |
+| ステータス | completed                                                              |
 | 優先度     | high（P62 対策）                                                       |
 | 作成日     | 2026-03-22                                                             |
 | 関連仕様書 | interfaces-agent-sdk-skill-reference-share-debug-analytics.md          |

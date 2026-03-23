@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-22
+> 自動生成: 2026-03-23
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -424,6 +424,7 @@ node scripts/list-specs.js --topics
 | スキルドキュメント生成 型定義（TASK-9I） | L141 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
 | スキル分析 型定義（TASK-9J） | L291 |
+| assertNoSilentFallback ガード（P62 対策） | L340 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -1015,10 +1016,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
 | コンポーネント仕様 | L43 |
-| インタラクション設計 | L322 |
-| 視覚デザイン | L351 |
-| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L376 |
-| アクセシビリティ（WCAG 2.1 AA） | L398 |
+| インタラクション設計 | L324 |
+| 視覚デザイン | L353 |
+| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L378 |
+| アクセシビリティ（WCAG 2.1 AA） | L400 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -2587,12 +2588,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L42 |
-| クイックリファレンス: カテゴリ別検索ガイド | L57 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L133 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L465 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L499 |
-| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L527 |
+| 分割ファイル一覧 | L43 |
+| クイックリファレンス: カテゴリ別検索ガイド | L58 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L134 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L466 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L500 |
+| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L528 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

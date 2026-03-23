@@ -5,6 +5,32 @@
 
 ## 完了タスク
 
+### タスク: UT-EXECUTION-ENV-TERMINAL-001 ExecutionEnvironment Terminal 本実装 + assertNoSilentFallback（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-EXECUTION-ENV-TERMINAL-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 pending）** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-23 |
+| 対象 | ExecutionEnvironment.terminal 本実装 / assertNoSilentFallback ガード |
+| 成果物 | `docs/30-workflows/execution-env-terminal/` |
+
+#### 実施内容
+
+- `ExecutionEnvironment.terminal` の placeholder を `TerminalHandoffCard` を使った本実装に移行
+- `assertNoSilentFallback()` ガード関数と `LLMConfigNotSelectedError` エラー型を llmConfigProvider.ts に追加（P62 対策）
+- HandoffGuidance null 時の待機中 Placeholder 表示
+- テスト 18 ケース追加（assertNoSilentFallback 10 + terminal 8）、全 PASS
+- interfaces-agent-sdk-skill-reference-share-debug-analytics.md に assertNoSilentFallback 仕様を追記
+
+#### 発見元
+
+- TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-01（P62 対策）
+
+---
+
 ### タスク: TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Terminal Handoff Surface Realization 設計（2026-03-22）
 
 | 項目 | 値 |
@@ -32,7 +58,6 @@
 
 ---
 
-||||||| 77abcbc7f
 ### タスク: TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 Settings shell access matrix mainline design（2026-03-22）
 
 | 項目 | 値 |
