@@ -27,7 +27,7 @@ Phase 2 設計・Phase 4 テストに基づき、RuntimeSkillCreatorFacade.plan(
 3. **プロンプトビルダー実装**
    - `buildPlanSystemPrompt(agents: string[]): string` 関数を実装する
    - JSON スキーマをシステムプロンプトの末尾に付加する
-   - マジックストリングは定数化する（P8 対策）
+   - マジックストリングは定数化する
 4. **LLM 呼び出しと レスポンスパーサー実装**
    - AnthropicAdapter.complete() を呼び出す
    - レスポンステキストから JSON を抽出・パースする
@@ -40,8 +40,8 @@ Phase 2 設計・Phase 4 テストに基づき、RuntimeSkillCreatorFacade.plan(
 
 ## 参照資料
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-02-design.md`
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-04-test-creation.md`
+- `phase-02-design.md`
+- `phase-04-test-creation.md`
 - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
 - `apps/desktop/src/main/adapters/llm/AnthropicAdapter.ts`
 - `packages/shared/src/types/skillCreator.ts`

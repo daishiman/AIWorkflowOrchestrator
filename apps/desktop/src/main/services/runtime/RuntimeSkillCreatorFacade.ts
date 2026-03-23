@@ -26,23 +26,35 @@ import type {
   RuntimeSkillCreatorPlanResult as SkillPlanResult,
 } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
+import type { ILLMAdapter } from "../../adapters/llm/types";
+import type { ResourceLoader } from "../skill/ResourceLoader";
 import { RuntimePolicyResolver } from "./RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "./TerminalHandoffBuilder";
+import {
+  PLAN_PROMPT_CONSTANTS,
+  PLAN_RESPONSE_SCHEMA_INSTRUCTION,
+} from "./planPromptConstants";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
   skillExecutor: SkillExecutor;
   authKeyService?: IAuthKeyService;
   subscriptionAuthProvider?: ISubscriptionAuthProvider;
+  llmAdapter?: ILLMAdapter;
+  resourceLoader?: ResourceLoader;
 }
 
 export class RuntimeSkillCreatorFacade {
   private readonly resolver: RuntimePolicyResolver;
   private readonly handoffBuilder: TerminalHandoffBuilder;
   private readonly skillExecutor: SkillExecutor;
+  private readonly llmAdapter?: ILLMAdapter;
+  private readonly resourceLoader?: ResourceLoader;
 
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
+    this.llmAdapter = deps.llmAdapter;
+    this.resourceLoader = deps.resourceLoader;
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
       deps.subscriptionAuthProvider,
@@ -69,6 +81,7 @@ export class RuntimeSkillCreatorFacade {
     const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {
+      // terminal_handoff 経路ではバリデーションスキップ（handoff側が処理）
       const bundle = this.handoffBuilder.build(
         `Skill を作成してください: ${skillSpec}`,
         process.cwd(),
@@ -76,12 +89,59 @@ export class RuntimeSkillCreatorFacade {
       return { type: "terminal_handoff", bundle };
     }
 
-    // integrated_api: 計画を生成
+    // integrated_api: 入力バリデーション（P42 準拠3段バリデーション）
+    if (typeof skillSpec !== "string" || skillSpec.trim() === "") {
+      throw new Error("skillSpec must be a non-empty string");
+    }
+
+    // integrated_api: LLM で計画を生成
     const planId = `plan-${Date.now()}`;
+
+    // Graceful degradation: llmAdapter/resourceLoader 未注入時はスタブ
+    if (!this.llmAdapter || !this.resourceLoader) {
+      return {
+        planId,
+        skillSpec,
+        estimatedSteps: 3,
+        skillName: "",
+        description: "",
+        agents: [],
+        scripts: [],
+        triggers: [],
+        anchors: [],
+      };
+    }
+
+    // agent 仕様書を読み込む
+    const agentSpecs: Array<{ name: string; content: string }> = [];
+    for (const name of PLAN_PROMPT_CONSTANTS.AGENT_NAMES) {
+      const content = await this.resourceLoader.loadAgent(name);
+      agentSpecs.push({ name, content });
+    }
+
+    // LLM 呼び出し
+    const systemPrompt = buildPlanSystemPrompt(agentSpecs);
+    const response = await this.llmAdapter.sendChat({
+      modelId: PLAN_PROMPT_CONSTANTS.DEFAULT_MODEL_ID,
+      systemPrompt,
+      messages: [{ role: "user", content: skillSpec }],
+      maxTokens: PLAN_PROMPT_CONSTANTS.DEFAULT_MAX_TOKENS,
+      temperature: PLAN_PROMPT_CONSTANTS.DEFAULT_TEMPERATURE,
+    });
+
+    // レスポンスパース
+    const parsed = parsePlanResponse(response.content);
+
     return {
       planId,
       skillSpec,
-      estimatedSteps: 3,
+      estimatedSteps: parsed.agents.length + parsed.scripts.length,
+      skillName: parsed.skillName,
+      description: parsed.description,
+      agents: parsed.agents,
+      scripts: parsed.scripts,
+      triggers: parsed.triggers,
+      anchors: parsed.anchors,
     };
   }
 
@@ -157,4 +217,108 @@ export class RuntimeSkillCreatorFacade {
       ],
     };
   }
+}
+
+// --- Helper functions (module-scope, exported for testing) ---
+
+interface LLMPlanResponse {
+  skillName: string;
+  description: string;
+  agents: Array<{ name: string; role: string }>;
+  scripts: Array<{ name: string; purpose: string }>;
+  triggers: string[];
+  anchors: string[];
+}
+
+export function buildPlanSystemPrompt(
+  agentSpecs: Array<{ name: string; content: string }>,
+): string {
+  const agentSections = agentSpecs
+    .map(
+      ({ name, content }) =>
+        `${PLAN_PROMPT_CONSTANTS.AGENT_SEPARATOR_START} ${name} ===\n${content}\n${PLAN_PROMPT_CONSTANTS.AGENT_SEPARATOR_END} ${name} ===`,
+    )
+    .join("\n\n");
+
+  return `${agentSections}\n\n${PLAN_RESPONSE_SCHEMA_INSTRUCTION}`;
+}
+
+/** Markdownコードブロック（```json ... ``` や ``` ... ```）を除去する */
+function stripMarkdownCodeBlock(text: string): string {
+  const trimmed = text.trim();
+  const match = trimmed.match(/^```(?:json)?\s*\n([\s\S]*?)\n\s*```$/);
+  return match ? match[1].trim() : trimmed;
+}
+
+export function parsePlanResponse(responseText: string): LLMPlanResponse {
+  // LLM がMarkdownコードブロックで囲む場合があるため strip する
+  const cleaned = stripMarkdownCodeBlock(responseText);
+  const parsed: unknown = JSON.parse(cleaned);
+
+  if (!isValidPlanResponse(parsed)) {
+    throw new Error("LLM response does not match expected plan schema");
+  }
+
+  return parsed;
+}
+
+function isValidArrayOfStrings(value: unknown): value is string[] {
+  return Array.isArray(value) && value.every((v) => typeof v === "string");
+}
+
+function isValidAgentEntry(
+  entry: unknown,
+): entry is { name: string; role: string } {
+  return (
+    entry != null &&
+    typeof entry === "object" &&
+    "name" in entry &&
+    typeof entry.name === "string" &&
+    entry.name.trim() !== "" &&
+    "role" in entry &&
+    typeof entry.role === "string" &&
+    entry.role.trim() !== ""
+  );
+}
+
+function isValidScriptEntry(
+  entry: unknown,
+): entry is { name: string; purpose: string } {
+  return (
+    entry != null &&
+    typeof entry === "object" &&
+    "name" in entry &&
+    typeof entry.name === "string" &&
+    entry.name.trim() !== "" &&
+    "purpose" in entry &&
+    typeof entry.purpose === "string" &&
+    entry.purpose.trim() !== ""
+  );
+}
+
+function isValidPlanResponse(value: unknown): value is LLMPlanResponse {
+  if (value == null || typeof value !== "object") return false;
+
+  if (!("skillName" in value) || typeof value.skillName !== "string")
+    return false;
+  if (value.skillName.trim() === "") return false;
+
+  if (!("description" in value) || typeof value.description !== "string")
+    return false;
+  if (value.description.trim() === "") return false;
+
+  if (!("agents" in value) || !Array.isArray(value.agents)) return false;
+  if (value.agents.length === 0) return false;
+  if (!value.agents.every(isValidAgentEntry)) return false;
+
+  if (!("scripts" in value) || !Array.isArray(value.scripts)) return false;
+  if (!value.scripts.every(isValidScriptEntry)) return false;
+
+  if (!("triggers" in value) || !isValidArrayOfStrings(value.triggers))
+    return false;
+
+  if (!("anchors" in value) || !isValidArrayOfStrings(value.anchors))
+    return false;
+
+  return true;
 }

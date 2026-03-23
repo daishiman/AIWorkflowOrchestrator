@@ -33,12 +33,12 @@ Phase 2 で作成した設計の妥当性を多角的に検証する。特に ag
 
 ## 参照資料
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-02-design.md`（前 Phase 成果物）
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-02-design-output.md`
+- `phase-02-design.md`（前 Phase 成果物）
+- `phase-02-design-output.md`
 
 ## 成果物
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-03-review-output.md`（レビュー結果）
+- `phase-03-review-output.md`（レビュー結果）
   - 判定: PASS / MINOR / MAJOR
   - 指摘事項リスト（MINOR は未タスク化必須）
 

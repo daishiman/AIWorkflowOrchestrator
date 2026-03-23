@@ -532,6 +532,13 @@
 | UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
 | UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
 | UT-SC-02-004 | bundle 構築の二重責務 | 低 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
+| UT-SC-03-001 | IResourceLoader インターフェース定義と DI パターン統一 | 低 | TASK-SC-03-PLAN-LLM-PROMPT Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-001.md` |
+| UT-SC-03-002 | plan() 実行時の動的 apiKey 設定メカニズム | 低 | TASK-SC-03-PLAN-LLM-PROMPT Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-002.md` |
+| UT-SC-03-003 | ipc/index.ts DI 配線の実装 | 中 | TASK-SC-03-PLAN-LLM-PROMPT Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-003.md` |
+| UT-SC-03-004 | plan() 出力型の SkillBlueprint 互換移行 | 高 | TASK-SC-03-PLAN-LLM-PROMPT Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-004.md` |
+| UT-SC-03-005 | plan() エラーハンドリングの Result<T,E> パターン移行 | 中 | TASK-SC-03-PLAN-LLM-PROMPT エレガント検証（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-005.md` |
+| UT-SC-03-006 | buildPlanSystemPrompt / parsePlanResponse 単体テスト追加 | 低 | TASK-SC-03-PLAN-LLM-PROMPT エレガント検証（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-006.md` |
+| UT-SC-03-007 | improve() P42 準拠バリデーション追加 | 低 | TASK-SC-03-PLAN-LLM-PROMPT エレガント検証（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-007.md` |
 
 ### 未タスク管理ルール
 

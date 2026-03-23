@@ -6,6 +6,39 @@
 ## 完了タスク
 
 ### タスク: UT-EXECUTION-ENV-TERMINAL-001 ExecutionEnvironment Terminal 本実装 + assertNoSilentFallback（2026-03-23）
+||||||| Stash base
+### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
+### タスク: TASK-SC-03-PLAN-LLM-PROMPT RuntimeSkillCreatorFacade.plan() LLM プロンプト統合（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SC-03-PLAN-LLM-PROMPT |
+| 完了日 | 2026-03-23 |
+| ステータス | **完了** |
+| 優先度 | 高 |
+| 対象 | RuntimeSkillCreatorFacade.plan() / planPromptConstants / RuntimeSkillCreatorPlanResult |
+| 成果物 | `docs/30-workflows/skill-creator-llm-integration/w2-sc-plan-llm-prompt/` |
+
+#### 実施内容
+
+- plan() のスタブ実装を LLM 呼び出し（agent 仕様書注入 + JSON レスポンスパース）に置き換えた
+- ResourceLoader.loadAgent() で3つの agent 仕様書（discover-problem / design-workflow / plan-structure）を読み込み system prompt に注入
+- AnthropicAdapter（ILLMAdapter インターフェース経由の DI）で LLM を呼び出し、parsePlanResponse() で JSON をパースして RuntimeSkillCreatorPlanResult にマッピング
+- terminal_handoff 経路は一切変更なし（AC-4 充足）
+- 入力バリデーション（P42 準拠3段バリデーション）を追加
+
+#### 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-SC-03-001 | IResourceLoader インターフェース定義と DI パターン統一 | 低 | `docs/30-workflows/unassigned-task/UT-SC-03-001.md` |
+| UT-SC-03-002 | plan() 実行時の動的 apiKey 設定メカニズム | 低 | `docs/30-workflows/unassigned-task/UT-SC-03-002.md` |
+| UT-SC-03-003 | ipc/index.ts DI 配線の実装 | 中 | `docs/30-workflows/unassigned-task/UT-SC-03-003.md` |
+| UT-SC-03-004 | plan() 出力型の SkillBlueprint 互換移行 | 高 | `docs/30-workflows/unassigned-task/UT-SC-03-004.md` |
+
+---
+
+### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
 
 | 項目 | 値 |
 | --- | --- |

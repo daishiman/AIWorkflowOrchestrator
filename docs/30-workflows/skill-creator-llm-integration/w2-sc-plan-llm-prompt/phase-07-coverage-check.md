@@ -29,13 +29,13 @@ plan() の全分岐（integrated_api / terminal_handoff / エラー系）のカ�
 
 ## 参照資料
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-06-test-coverage.md`
+- `phase-06-test-coverage.md`
 - `.claude/rules/02-code-quality.md`（カバレッジ基準）
 
 ## 成果物
 
 - カバレッジレポート（コンソール出力またはスクリーンショット）
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-07-coverage-output.md`（基準充足の記録）
+- `phase-07-coverage-output.md`（基準充足の記録）
 
 ## 完了条件
 

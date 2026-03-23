@@ -82,6 +82,12 @@ describe("RuntimeSkillCreatorFacade", () => {
         planId: "plan-1710000000000",
         skillSpec: "line-1\nline-2",
         estimatedSteps: 3,
+        skillName: "",
+        description: "",
+        agents: [],
+        scripts: [],
+        triggers: [],
+        anchors: [],
       });
     });
 
@@ -104,6 +110,12 @@ describe("RuntimeSkillCreatorFacade", () => {
         planId: "plan-1710000000010",
         skillSpec: "spec body",
         estimatedSteps: 3,
+        skillName: "",
+        description: "",
+        agents: [],
+        scripts: [],
+        triggers: [],
+        anchors: [],
       });
     });
 

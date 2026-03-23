@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-23 | 2.3.1 | TASK-SC-03-PLAN-LLM-PROMPT の LLM プロンプト統合教訓3件を追加（L-SC03-001〜003） |
 | 2026-03-22 | 2.2.3 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 の Phase 12 教訓4件を追加 |
 | 2026-03-21 | 2.2.1 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
 | 2026-03-21 | 2.2.0 | UT-SLIDE-UI-001 教訓3件を追加（L-SLIDE-UI-001〜003） |
@@ -580,3 +581,24 @@
 - **原因**: `packages/shared/package.json` の `exports` フィールドに `./types/handoff` サブパスが未定義。`./types` までしか定義されていない
 - **解決策**: 既存コードの import パターン（`@repo/shared` ルート or `@repo/shared/types`）を `grep` で確認してから import を記述する。今回は `@repo/shared` ルートからの import に修正
 - **教訓**: モノレポで新しい型を import する際は、`package.json` の `exports` フィールドと既存コードの import パターンを事前確認する。テスト環境（Vitest alias）と TypeScript コンパイラ（tsc）でモジュール解決ロジックが異なるため、テスト PASS だけでは不十分
+||||||| Stash base
+
+### TASK-SC-03-PLAN-LLM-PROMPT（2026-03-23）
+
+#### L-SC03-001: agent 仕様書注入による LLM プロンプト設計パターン
+
+- **パターン**: `ResourceLoader.loadAgent()` で複数の agent 仕様書を読み込み、`buildPlanSystemPrompt()` で区切り文字付き連結 + JSON スキーマ指示を末尾付加する
+- **効果**: LLM に「問題発見 → 設計 → 構造」の段階的思考を誘導し、構造化 JSON を確実に返させる
+- **再利用先**: execute() / improve() メソッドの LLM 統合時に同パターンを適用可能
+
+#### L-SC03-002: `in` 演算子ベース型ガード（parsePlanResponse）
+
+- **パターン**: LLM レスポンス（`unknown` 型）を `in` 演算子 + `typeof` + `Array.isArray()` で段階的に検証する型ガード関数群（`isValidPlanResponse` / `isValidAgentEntry` / `isValidScriptEntry`）
+- **効果**: P49（`as` キャスト）を完全回避し、実行時型安全性を確保。テストでのバリデーションエラー検証も容易
+- **教訓**: 外部入力（LLM レスポンス）の検証は必ず `in` 演算子ベースで行い、`as` キャストを使わない
+
+#### L-SC03-003: ILLMAdapter オプション DI による graceful degradation
+
+- **パターン**: `llmAdapter?: ILLMAdapter` をオプション注入し、未注入時はスタブレスポンスを返す
+- **効果**: DI 配線（ipc/index.ts）が未完了でも Facade が生成可能。テスト時のモック差し替えも容易
+- **教訓**: 外部サービス依存の DI はオプション注入 + graceful degradation をデフォルトにする（P54 対策と統合）

@@ -498,6 +498,7 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **8.42.0** | **2026-02-06** | **DEBT-SEC-001仕様構造最適化**: csrf-state-parameter.md新規作成（OAuth CSRF/State詳細を分離）、security-principles.md軽量化（参照リンク追加）、patterns.md拡充（OAuth成功/失敗パターン10件追加） |
 | **8.41.1** | **2026-02-06** | **DEBT-SEC-001完了**: security-principles.md更新（CSRF対策セクション）、architecture-auth-security.md更新（PKCE実装詳細）、api-ipc-auth.md更新（認証IPC Channel仕様） |
 | **8.41.0** | **2026-03-14** | **TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001完了**: llm-workspace-chat-edit.md更新。55テスト全PASS |
+| **9.02.12** | **2026-03-23** | **TASK-SC-03-PLAN-LLM-PROMPT 完了**: RuntimeSkillCreatorFacade.plan() に LLM 呼び出し（buildPlanSystemPrompt + parsePlanResponse）・JSON パース・型ガードを実装。planPromptConstants.ts 新規作成。RuntimeSkillCreatorPlanResult 型拡充。テスト18件 ALL PASS。未タスク4件検出（UT-SC-03-001〜004） |
 | 2026-03-16 | TASK-SKILL-LIFECYCLE-06 | 信頼・権限・ガバナンス統合の設計定義を追加 |
 
 > 古い履歴（v9.01.90以前・v8.41.0以前）は [LOGS.md](LOGS.md) / [references/logs-archive-index.md](references/logs-archive-index.md) を参照。

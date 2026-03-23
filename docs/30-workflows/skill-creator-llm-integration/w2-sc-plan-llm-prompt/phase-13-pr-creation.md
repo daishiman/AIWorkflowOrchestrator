@@ -34,7 +34,7 @@
 
 ## 参照資料
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-12-documentation.md`
+- `phase-12-documentation.md`
 - `.claude/rules/07-git-and-tooling.md`（PR 作成ルール）
 
 ## 成果物

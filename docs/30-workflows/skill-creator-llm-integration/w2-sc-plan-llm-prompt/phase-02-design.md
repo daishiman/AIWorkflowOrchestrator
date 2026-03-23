@@ -45,14 +45,14 @@ plan() が LLM を呼び出すための詳細設計を行う。プロンプト�
 
 ## 参照資料
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-01-requirements.md`（前 Phase 成果物）
+- `phase-01-requirements.md`（前 Phase 成果物）
 - `apps/desktop/src/main/adapters/llm/AnthropicAdapter.ts`
 - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
 - `packages/shared/src/types/skillCreator.ts`
 
 ## 成果物
 
-- `docs/30-workflows/skill-creator-llm-integration/03-phase-02-design-output.md`（設計書）
+- `phase-02-design-output.md`（設計書）
   - プロンプト構造図
   - レスポンス JSON スキーマ（完全版）
   - AnthropicAdapter DI 設計（クラス図）

@@ -498,6 +498,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 | **v10.08.0** | **2026-03-04** | **TASK-FIX-SKILL-IMPORT 3連続是正の再監査を反映**: `01/02/03` workflow を再監査し、`aiworkflow-requirements` 正本6仕様書（api-ipc/interfaces/arch-state/ui-ux-feature/task-workflow/lessons）へ実装内容と苦戦箇所を同期。Phase 12 Task 5 必須の4ファイル（`LOGS.md` x2 + `SKILL.md` x2）を同一ターンで更新し、`verify-all-specs`（3workflow）/`validate-phase-output`（3workflow）/`validate-phase11-screenshot-coverage`（workflow03）/`audit --diff-from HEAD` の証跡を固定 |
 | **v10.07.0-v10.03.0** | **2026-03-03〜2026-03-02** | **Phase 12 再監査・完了同期の標準化**: TASK-10A-D/C/B 再監査、Phase 13 PR本文連携強化、Phase 11 画面カバレッジマトリクス改善、Phase 12 準拠再確認パターン確立。詳細は `LOGS.md` を参照 |
 | **v10.02.0-v9.90.0** | **2026-03-02〜2026-02-25** | **Phase 12 完了同期と再監査ルールの整備**: `artifacts.json` / `outputs` 同期、完了ゲート化、unassigned audit scope control、quick_validate 運用標準化。詳細は `LOGS.md` を参照 |
+| 2026-03-23 | TASK-SC-03-PLAN-LLM-PROMPT | RuntimeSkillCreatorFacade.plan() LLM プロンプト統合 |
 > 補足: v9.89.0 以前の履歴は `LOGS.md` に保持（監査証跡を維持）。
 
 詳細な履歴と usage log は [LOGS.md](LOGS.md) と [references/logs-archive-index.md](references/logs-archive-index.md) を参照。

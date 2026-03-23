@@ -390,6 +390,17 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `skill-creator:execute-plan` | plan 実行 | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResult>` |
 | `skill-creator:improve-skill` | runtime 改善 | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 
+
+### 完了タスク（TASK-SC-03-PLAN-LLM-PROMPT）
+
+> 完了日: 2026-03-23
+
+| 変更項目 | ファイル | 内容 |
+| -------- | -------- | ---- |
+| スタブ実装を LLM 呼び出しに置換 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `buildPlanSystemPrompt` + `parsePlanResponse` による LLM 統合。入力バリデーション・JSON パース・型ガード追加 |
+| プロンプト定数ファイル新規作成 | `apps/desktop/src/main/services/runtime/planPromptConstants.ts` | システムプロンプト・JSON スキーマ指示・プロンプトビルダー |
+| RuntimeSkillCreatorPlanResult 型拡充 | `packages/shared/src/types/skillCreator.ts` | `skillName` / `description` / `agents` / `scripts` / `triggers` / `anchors` フィールド追加 |
+
 ### 契約メモ
 
 | 項目 | 契約 |
