@@ -13,7 +13,6 @@
 
 ---
 
-||||||| 6f1c58b3d
 ## TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
 
 - **Agent**: task-specification-creator

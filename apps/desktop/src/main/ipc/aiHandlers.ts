@@ -10,7 +10,7 @@ import type {
 import { LLMAdapterFactory } from "../adapters/llm/LLMAdapterFactory";
 import { buildMessages } from "../utils/buildMessages";
 import { getSelectedLLMConfig } from "./llmConfigProvider";
-import type { LLMError } from "@repo/shared/types/llm/schemas";
+import type { LLMError, LLMProviderId } from "@repo/shared/types/llm/schemas";
 
 // Mock conversation storage
 const conversations = new Map<string, string[]>();
@@ -84,7 +84,7 @@ export function registerAIHandlers(): void {
         // Resolve provider/model:
         // 1) request explicit selection
         // 2) fallback to main process selected config
-        let providerId: "openai" | "anthropic" | "google" | "xai";
+        let providerId: LLMProviderId;
         let modelId: string;
 
         if (request.providerId || request.modelId) {

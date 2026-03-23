@@ -19,7 +19,6 @@
 
 ---
 
-||||||| 6f1c58b3d
 ### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
 
 | 項目 | 値 |
