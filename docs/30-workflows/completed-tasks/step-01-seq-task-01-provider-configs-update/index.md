@@ -26,12 +26,12 @@
 
 レガシーモデルを削除し、最新モデルに置換する。
 
-| プロバイダー | 削除するモデル                                               | 追加するモデル                                                                                                |
-| ------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
-| OpenAI       | `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`                       | `gpt-5.4` (default, 1.05M ctx), `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.4-pro`, `o3`, `o4-mini`                |
-| Anthropic    | `claude-3-5-sonnet-*`, `claude-3-opus-*`, `claude-3-haiku-*` | `claude-sonnet-4-6` (default), `claude-opus-4-6`, `claude-haiku-4-5`（変更なし）                              |
-| Google       | `gemini-1.5-pro`, `gemini-1.5-flash`                         | `gemini-3-flash-preview` (default, 1M ctx), `gemini-3.1-pro-preview`, `gemini-3.1-flash-lite-preview`         |
-| xAI          | `grok-beta`                                                  | `grok-4-1-fast-reasoning` (default, 2M ctx), `grok-4-1-fast-non-reasoning`, `grok-4`, `grok-3`, `grok-3-mini` |
+| プロバイダー | 削除するモデル                                               | 追加するモデル                                                                                        |
+| ------------ | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| OpenAI       | `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`                       | `gpt-5.4` (default, 1.05M ctx), `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.4-pro`, `o3`, `o4-mini`        |
+| Anthropic    | `claude-3-5-sonnet-*`, `claude-3-opus-*`, `claude-3-haiku-*` | `claude-sonnet-4-6` (default), `claude-opus-4-6`, `claude-haiku-4-5`（変更なし）                      |
+| Google       | `gemini-1.5-pro`, `gemini-1.5-flash`                         | `gemini-3-flash-preview` (default, 1M ctx), `gemini-3.1-pro-preview`, `gemini-3.1-flash-lite-preview` |
+| xAI          | `grok-beta`                                                  | `grok-4-1-fast-non-reasoning` (default, 2M ctx), `grok-4-1-fast-reasoning`, `grok-3-mini`             |
 
 > **注記**: Gemini 2.5 は 2026年6月17日廃止予定。GPT-4.1 系は ChatGPT から退役済み（API では利用可能だが非推奨）。
 
@@ -68,3 +68,13 @@ if (
 - [ ] `inferProviderId` が `o3`/`o4` プレフィックスを正しく解決する
 - [ ] TypeScript コンパイルが通る
 - [ ] 既存テストの期待値との整合性が確認されている（不整合は Task04 で対応）
+
+## 関連未タスク
+
+| タスクID          | タスク名                                          | 優先度 | 指示書                                                   |
+| ----------------- | ------------------------------------------------- | ------ | -------------------------------------------------------- |
+| UT-LLM-MOD-01-001 | 保存済みユーザー設定の移行戦略                    | 中     | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-001.md` |
+| UT-LLM-MOD-01-002 | LLMProvider 共有型への description フィールド追加 | 低     | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-002.md` |
+| UT-LLM-MOD-01-003 | 既存テストのモデルIDフィクスチャ更新              | 低     | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-003.md` |
+| UT-LLM-MOD-01-004 | システム仕様書の旧モデルIDテーブル更新            | 中     | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-004.md` |
+| UT-LLM-MOD-01-005 | PROVIDER_CONFIGS/inferProviderId 三重管理解消     | 中     | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-005.md` |

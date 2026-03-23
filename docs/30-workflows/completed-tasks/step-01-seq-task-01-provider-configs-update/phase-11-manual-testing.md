@@ -26,9 +26,10 @@ Electron アプリを起動できる環境がある場合、以下のシナリ�
 2. Settings > AI Provider を開く
 3. Provider として "OpenAI" を選択する
 4. モデル一覧に以下が表示されることを確認する:
-   - `GPT-4.1`（デフォルト選択されている）
-   - `GPT-4.1 mini`
-   - `GPT-4.1 nano`
+   - `GPT-5.4`（デフォルト選択されている）
+   - `GPT-5.4 mini`
+   - `GPT-5.4 nano`
+   - `GPT-5.4 Pro`
    - `o3`
    - `o4-mini`
 5. 旧モデル（`GPT-4o`, `GPT-4o mini`, `GPT-4 Turbo`）が表示されないことを確認する
@@ -46,17 +47,18 @@ Electron アプリを起動できる環境がある場合、以下のシナリ�
 
 1. Provider として "Google" を選択する
 2. モデル一覧に以下が表示されることを確認する:
-   - `Gemini 2.5 Flash`（デフォルト選択されている）
-   - `Gemini 2.5 Pro`
-   - `Gemini 2.5 Flash Lite`
+   - `Gemini 3 Flash`（デフォルト選択されている）
+   - `Gemini 3.1 Pro`
+   - `Gemini 3.1 Flash-Lite`
 3. 旧モデル（`Gemini 1.5 Pro`, `Gemini 1.5 Flash`）が表示されないことを確認する
 
 #### シナリオ MT-04: xAI モデル一覧の確認
 
 1. Provider として "xAI" を選択する
 2. モデル一覧に以下が表示されることを確認する:
-   - `Grok 3`（デフォルト選択されている）
+   - `Grok 4.1 Fast`（デフォルト選択されている）
    - `Grok 3 Mini`
+   - `Grok 4.1 Fast Reasoning`
 3. 旧モデル（`Grok Beta`）が表示されないことを確認する
 
 #### シナリオ MT-05: description 表示確認（該当 UI がある場合）
@@ -80,14 +82,14 @@ cd apps/desktop && cat > /tmp/test-providers.mjs << 'EOF'
 // テスト実行経由で PROVIDER_CONFIGS の内容を確認する
 EOF
 
-pnpm vitest run src/main/handlers/__tests__/llm.test.ts --reporter=verbose 2>&1 | grep -E "(PASS|FAIL|✓|✗|gpt-4\.1|claude-sonnet|gemini-2\.5|grok-3)"
+pnpm vitest run src/main/handlers/__tests__/llm.test.ts --reporter=verbose 2>&1 | grep -E "(PASS|FAIL|✓|✗|gpt-5\.4|claude-sonnet|gemini-3|grok-4)"
 ```
 
 #### 代替確認 MT-B: PROVIDER_CONFIGS の内容検証スクリプト
 
 ```bash
 # 新モデルIDの存在確認
-grep -c "gpt-4.1\|claude-sonnet-4-6\|gemini-2.5-flash\|grok-3" apps/desktop/src/main/handlers/llm.ts
+grep -c "gpt-5.4\|claude-sonnet-4-6\|gemini-3-flash-preview\|grok-4-1-fast-non-reasoning" apps/desktop/src/main/handlers/llm.ts
 # 期待値: 4以上
 
 # 旧モデルIDの非存在確認
@@ -108,17 +110,17 @@ grep -c "gpt-4o\|claude-3-5-sonnet\|gemini-1\.5\|grok-beta" apps/desktop/src/mai
 
 ## 参照資料
 
-| 資料名                | パス                                                                                                                            |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| Phase 10 最終レビュー | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/phase-10-final-review.md` |
-| 実装ファイル          | `apps/desktop/src/main/handlers/llm.ts`                                                                                         |
-| 既知の落とし穴 P53    | `.claude/rules/06-known-pitfalls.md`（CLI 環境でのスクリーンショット取得制約）                                                  |
+| 資料名                | パス                                                                                     |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| Phase 10 最終レビュー | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/phase-10-final-review.md` |
+| 実装ファイル          | `apps/desktop/src/main/handlers/llm.ts`                                                  |
+| 既知の落とし穴 P53    | `.claude/rules/06-known-pitfalls.md`（CLI 環境でのスクリーンショット取得制約）           |
 
 ## 成果物
 
-| 成果物             | パス                                                                                                                                           | 形式     |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| 手動テスト結果記録 | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/outputs/phase-11/manual-test-results.md` | Markdown |
+| 成果物             | パス                                                                                                    | 形式     |
+| ------------------ | ------------------------------------------------------------------------------------------------------- | -------- |
+| 手動テスト結果記録 | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-11/manual-test-results.md` | Markdown |
 
 ## 完了条件
 
@@ -134,6 +136,32 @@ grep -c "gpt-4o\|claude-3-5-sonnet\|gemini-1\.5\|grok-beta" apps/desktop/src/mai
 ```bash
 cd apps/desktop && pnpm vitest run src/main/handlers/__tests__/
 ```
+
+## 多角的チェック観点（AIが判断）
+
+| 観点           | 適用判断                       | 仕様参照先                                   |
+| -------------- | ------------------------------ | -------------------------------------------- |
+| アーキテクチャ | Main Process のデータ定義変更  | `aiworkflow-requirements: architecture-*.md` |
+| API設計        | IPC レスポンス形式への影響確認 | `aiworkflow-requirements: api-*.md`          |
+
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 統合テスト連携の実施
+4. 成果物の作成・配置
+5. 完了条件の検証
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次の Phase
 

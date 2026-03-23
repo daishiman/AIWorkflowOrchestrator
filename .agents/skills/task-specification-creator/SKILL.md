@@ -384,6 +384,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.16** | **2026-03-23** | **TASK-LLM-MOD-01 完了同期**: PROVIDER_CONFIGS モデル定義更新 Phase 1-13 実行完了。OpenAI/Anthropic/Google/xAI 全プロバイダー最新化、description フィールド追加、38テスト追加。未タスク3件を backlog 登録・指示書作成。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.15** | **2026-03-23** | **TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了同期**: WorkspaceChatPanel header mount 完了。Phase 4-12 全完了、11統合テスト、146テスト全PASS。LOGS.md + SKILL.md 2ファイル同時更新（P1/P25対策） |
 | **v10.09.14** | **2026-03-22** | **TASK-SC-02-RUNTIME-POLICY-CLOSURE 仕様書（Phase 1-13）実行完了** |
 | **v10.09.13** | **2026-03-22** | **TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新を反映**: `references/phase-12-documentation-guide.md` に human-authored Phase 12 成果物を `outputs/phase-12/` へ固定するルールを追加。`references/spec-update-workflow.md` に shared component task と consumer surface task の completed 判定を分離する基準、および global `docs/30-workflows/unassigned-task/` canonical path を追記 |

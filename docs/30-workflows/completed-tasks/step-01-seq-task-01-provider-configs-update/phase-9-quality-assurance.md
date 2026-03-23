@@ -90,17 +90,17 @@ grep -n "gpt-4o\|gpt-4-turbo\|claude-3-5-sonnet\|claude-3-opus\|claude-3-haiku\|
 
 ## 参照資料
 
-| 資料名                   | パス                                                                                                                          |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| Phase 8 リファクタリング | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/phase-8-refactoring.md` |
-| 実装ファイル             | `apps/desktop/src/main/handlers/llm.ts`                                                                                       |
-| コード品質ルール         | `.claude/rules/02-code-quality.md`                                                                                            |
+| 資料名                   | パス                                                                                   |
+| ------------------------ | -------------------------------------------------------------------------------------- |
+| Phase 8 リファクタリング | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/phase-8-refactoring.md` |
+| 実装ファイル             | `apps/desktop/src/main/handlers/llm.ts`                                                |
+| コード品質ルール         | `.claude/rules/02-code-quality.md`                                                     |
 
 ## 成果物
 
-| 成果物       | パス                                                                                                                                 | 形式     |
-| ------------ | ------------------------------------------------------------------------------------------------------------------------------------ | -------- |
-| 品質保証記録 | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/outputs/phase-9/qa-results.md` | Markdown |
+| 成果物       | パス                                                                                          | 形式     |
+| ------------ | --------------------------------------------------------------------------------------------- | -------- |
+| 品質保証記録 | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-9/qa-results.md` | Markdown |
 
 ## 完了条件
 
@@ -120,6 +120,32 @@ cd apps/desktop && pnpm vitest run src/main/
 ```
 
 期待する結果: 全テスト PASS
+
+## 多角的チェック観点（AIが判断）
+
+| 観点           | 適用判断                       | 仕様参照先                                   |
+| -------------- | ------------------------------ | -------------------------------------------- |
+| アーキテクチャ | Main Process のデータ定義変更  | `aiworkflow-requirements: architecture-*.md` |
+| API設計        | IPC レスポンス形式への影響確認 | `aiworkflow-requirements: api-*.md`          |
+
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 統合テスト連携の実施
+4. 成果物の作成・配置
+5. 完了条件の検証
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次の Phase
 

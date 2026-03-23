@@ -65,14 +65,14 @@
 
 #### 要件 R-04: xAI モデル更新
 
-| 項目       | 値                                                           |
-| ---------- | ------------------------------------------------------------ |
-| 削除モデル | `grok-beta`                                                  |
-| 追加モデル | `grok-4-1-fast-reasoning`（default, contextWindow: 2097152） |
-|            | `grok-4-1-fast-non-reasoning`（contextWindow: 2097152）      |
-|            | `grok-4`（contextWindow: 131072）                            |
-|            | `grok-3`（contextWindow: 131072）                            |
-|            | `grok-3-mini`（contextWindow: 131072）                       |
+| 項目       | 値                                                               |
+| ---------- | ---------------------------------------------------------------- |
+| 削除モデル | `grok-beta`                                                      |
+| 追加モデル | `grok-4-1-fast-non-reasoning`（default, contextWindow: 2097152） |
+|            | `grok-4-1-fast-reasoning`（contextWindow: 2097152）              |
+|            | `grok-3-mini`（contextWindow: 131072）                           |
+
+> Phase 2 設計で「速度重視/バランス/精度重視」3モデル構成に決定。`grok-4` と `grok-3` は中間帯として除外。default は非推論モデル（バランス重視）。
 
 #### 要件 R-05: OpenRouter モデル（変更なし）
 
@@ -115,35 +115,61 @@ OpenRouter の `PROVIDER_CONFIGS` は今回の変更スコープ外とする。�
 
 ## 参照資料
 
-| 資料名               | パス                                                                                                            |
-| -------------------- | --------------------------------------------------------------------------------------------------------------- |
-| 現行実装             | `apps/desktop/src/main/handlers/llm.ts`                                                                         |
-| 現行テスト           | `apps/desktop/src/main/handlers/__tests__/llm.test.ts`                                                          |
-| OpenAI モデル調査    | `docs/30-workflows/llm-provider-model-modernization/research/openai-models.md`                                  |
-| Anthropic モデル調査 | `docs/30-workflows/llm-provider-model-modernization/research/anthropic-models.md`                               |
-| Google モデル調査    | `docs/30-workflows/llm-provider-model-modernization/research/google-models.md`                                  |
-| xAI モデル調査       | `docs/30-workflows/llm-provider-model-modernization/research/xai-models.md`                                     |
-| タスク概要           | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/index.md` |
+| 資料名               | パス                                                                              |
+| -------------------- | --------------------------------------------------------------------------------- |
+| 現行実装             | `apps/desktop/src/main/handlers/llm.ts`                                           |
+| 現行テスト           | `apps/desktop/src/main/handlers/__tests__/llm.test.ts`                            |
+| OpenAI モデル調査    | `docs/30-workflows/llm-provider-model-modernization/research/openai-models.md`    |
+| Anthropic モデル調査 | `docs/30-workflows/llm-provider-model-modernization/research/anthropic-models.md` |
+| Google モデル調査    | `docs/30-workflows/llm-provider-model-modernization/research/google-models.md`    |
+| xAI モデル調査       | `docs/30-workflows/llm-provider-model-modernization/research/xai-models.md`       |
+| タスク概要           | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/index.md`          |
 
 ## 成果物
 
-| 成果物                   | パス                                                                                                                                     | 形式              |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| 要件定義書（本ファイル） | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/outputs/phase-1/requirements.md`   | Markdown          |
-| 影響テスト一覧           | `docs/30-workflows/llm-provider-model-modernization/tasks/step-01-seq-task-01-provider-configs-update/outputs/phase-1/affected-tests.md` | Markdown テーブル |
+| 成果物                   | パス                                                                                              | 形式              |
+| ------------------------ | ------------------------------------------------------------------------------------------------- | ----------------- |
+| 要件定義書（本ファイル） | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-1/requirements.md`   | Markdown          |
+| 影響テスト一覧           | `docs/30-workflows/step-01-seq-task-01-provider-configs-update/outputs/phase-1/affected-tests.md` | Markdown テーブル |
 
 ## 完了条件
 
 - [ ] `PROVIDER_CONFIGS` の現在のモデル一覧（全プロバイダー）を記録した
 - [ ] 削除対象モデルID（12個）を確定した
 - [ ] 追加対象モデルID（13個）とそのメタデータ（contextWindow, isDefault）を確定した
-- [ ] 受入基準 AC-01〜AC-10 を定義した
+- [ ] 受入基準 AC-01〜AC-11 を定義した
 - [ ] 既存テストへの影響範囲を特定した（影響ありのテストIDを列挙）
 - [ ] スコープ外事項を明記した
 
 ## 統合テスト連携
 
 Phase 1 では統合テストは実施しない。Phase 4 でテストファイルを作成する際に、本 Phase で特定した影響テスト一覧を参照する。
+
+## 多角的チェック観点（AIが判断）
+
+| 観点           | 適用判断                       | 仕様参照先                                   |
+| -------------- | ------------------------------ | -------------------------------------------- |
+| アーキテクチャ | Main Process のデータ定義変更  | `aiworkflow-requirements: architecture-*.md` |
+| API設計        | IPC レスポンス形式への影響確認 | `aiworkflow-requirements: api-*.md`          |
+
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. 参照資料の確認
+2. 実行タスクの実施（各タスクごとに1サブタスク）
+3. 統合テスト連携の実施
+4. 成果物の作成・配置
+5. 完了条件の検証
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次の Phase
 

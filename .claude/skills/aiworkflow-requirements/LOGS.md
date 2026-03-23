@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-23 - TASK-LLM-MOD-01 完了（PROVIDER_CONFIGS モデル定義更新 / OpenAI 6モデル・Anthropic 3モデル・Google 3モデル・xAI 3モデル最新化 / description フィールド追加 / inferProviderId o3/o4 対応 / 38テスト追加全PASS / 未タスク3件: UT-LLM-MOD-01-001〜003） |
 | 2026-03-23 - TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（WorkspaceChatPanel header に InlineModelSelector compact 配置 / disabled={controller.isStreaming} 連動 / GuidanceBlock(blocked) 自動連携 / 11テスト追加 146全PASS / ui-ux-llm-selector.md + task-workflow 更新） |
 | 2026-03-23 - TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION 実装完了（ChatView header に InlineModelSelector compact 配置 / disabled={isSending} 連動 / LLMGuidanceBanner 自動連携 / 8テスト追加 62全PASS / ui-ux-llm-selector.md + ui-ux-navigation.md 更新） |
 ||||||| Stash base
