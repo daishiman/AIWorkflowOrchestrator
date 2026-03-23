@@ -68,15 +68,29 @@ pnpm rebuild esbuild
 | ロードテスト           | `node -e "require('better-sqlite3')"` | OK                                                    |
 | メモリDB作成           | `new s(':memory:')` → `db.close()`    | OK                                                    |
 
-## リビルド手順（再現用）
+## 永続的な修正: package.json スクリプト追加
+
+前回の実装（2026-03-22）ではローカルでのリビルド実行のみで、永続的なコード変更がなかった。
+今回（2026-03-23）、`apps/desktop/package.json` に `rebuild:native` スクリプトを追加し、
+新しい worktree や CI 環境でも一発で復旧可能にした。
+
+```json
+{
+  "scripts": {
+    "rebuild:native": "pnpm rebuild better-sqlite3 && pnpm rebuild esbuild"
+  }
+}
+```
+
+### 使用方法
 
 ```bash
-# 1. better-sqlite3 リビルド
-pnpm rebuild better-sqlite3
+cd apps/desktop
+pnpm run rebuild:native
+```
 
-# 2. esbuild リビルド（Vitest 実行に必要）
-pnpm rebuild esbuild
+### 検証コマンド
 
-# 3. 検証
+```bash
 node -e "const s = require('better-sqlite3'); const db = new s(':memory:'); db.close(); console.log('OK')"
 ```

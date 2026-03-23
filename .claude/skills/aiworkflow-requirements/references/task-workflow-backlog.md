@@ -24,6 +24,13 @@
 | UT-SLIDE-IPC-TEMPLATE-001 | IPC ハンドラ標準テンプレート | 低 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | - |
 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | current code に残る runtime policy centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 12 最終再監査（2026-03-21） | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface を統合する | 高 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 Phase 12 最終ドキュメント更新（2026-03-21） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
+| ~~UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001~~ | ~~`RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する~~ | ~~中~~ | **完了**: TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）で実装済み | ~~`docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md`~~ |
+| UT-WORKSPACE-MOCK-CONTROLLER-DEDUP-001 | WorkspaceView テストの createMockController ヘルパー共通化 | 低 | TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 30種思考法分析（2026-03-23） | `docs/30-workflows/unassigned-task/task-ut-workspace-mock-controller-dedup-001.md` |
+| UT-LLM-MOD-01-001 | 保存済みユーザー設定の移行戦略（旧モデルIDフォールバック） | 中 | TASK-LLM-MOD-01 Phase 3 U-01（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-001.md` |
+| UT-LLM-MOD-01-002 | LLMProvider 共有型への description フィールド追加 | 低 | TASK-LLM-MOD-01 Phase 3 U-02（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-002.md` |
+| UT-LLM-MOD-01-003 | 既存テストのモデルIDフィクスチャ更新 | 低 | TASK-LLM-MOD-01 Phase 1 影響テスト調査（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-003.md` |
+| UT-LLM-MOD-01-004 | システム仕様書の旧モデルIDテーブル更新（9ファイル） | 中 | TASK-LLM-MOD-01 30種思考法分析（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-004.md` |
+| UT-LLM-MOD-01-005 | PROVIDER_CONFIGS/inferProviderId/LLMProviderIdSchema 三重管理解消 | 中 | TASK-LLM-MOD-01 30種思考法分析 KJ法テーマA（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-005.md` |
 | UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001 | `RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する | 中 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 Phase 12 最終ドキュメント更新（2026-03-21） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
 | UT-CLEANUP-AI-CHECK-CONNECTION-001 | `llm:check-health` への移行完了後に `AI_CHECK_CONNECTION` legacy handler / channel / preload API を削除する | 低 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 3 MINOR M-3 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
 | UT-CLEANUP-RUNTIME-RESOLVER-001 | 全 surface の policy consumer 移行完了後に deprecated `RuntimeResolver` を削除する | 低 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 DD-1 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
@@ -89,7 +96,7 @@
 | UT-TERMINAL-DOCK-ABORTED-STATE-001 | Terminal Dock の aborted state 定義と遷移ルール追加 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 3 MN-2（2026-03-22） | `docs/30-workflows/unassigned-task/UT-TERMINAL-DOCK-ABORTED-STATE-001.md` |
 | UT-GUIDANCE-BLOCK-HANDOFF-CARD-RULE-001 | GuidanceBlock vs TerminalHandoffCard 使い分けルール明文化 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 3 MN-3（2026-03-22） | `docs/30-workflows/unassigned-task/UT-GUIDANCE-BLOCK-HANDOFF-CARD-RULE-001.md` |
 | UT-TERMINAL-DOCK-SESSION-PERSISTENCE-001 | Terminal Dock セッション永続化設計 | 低 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-04（2026-03-22） | `docs/30-workflows/unassigned-task/UT-TERMINAL-DOCK-SESSION-PERSISTENCE-001.md` |
-| UT-RUNTIME-BUILDER-MIGRATION-001 | TerminalHandoffBuilder → buildForSurface 統一メソッド移行 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-05（2026-03-22） | `docs/30-workflows/unassigned-task/UT-RUNTIME-BUILDER-MIGRATION-001.md` |
+| ~~UT-RUNTIME-BUILDER-MIGRATION-001~~ | ~~TerminalHandoffBuilder → buildForSurface 統一メソッド移行~~ **完了（2026-03-23）** | ~~中~~ | ~~TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-05（2026-03-22）~~ | ~~`docs/30-workflows/unassigned-task/UT-RUNTIME-BUILDER-MIGRATION-001.md`~~ |
 | UT-SKILLDOCS-TERMINAL-HANDOFF-PATH-001 | SkillDocs → Terminal Handoff 導線接続 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-06（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SKILLDOCS-TERMINAL-HANDOFF-PATH-001.md` |
 | UT-GUIDANCE-BLOCK-PROPS-UNIFICATION-001 | GuidanceBlock Props 型統一（GuidanceBlockProps → HandoffGuidance） | 低 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-07（2026-03-22） | `docs/30-workflows/unassigned-task/UT-GUIDANCE-BLOCK-PROPS-UNIFICATION-001.md` |
 | UT-EXECUTION-ENV-TERMINAL-RENDERER-ERROR-UI-001 | Renderer 側 Provider/Model 未選択エラー表示 UI | 中 | UT-EXECUTION-ENV-TERMINAL-001 30種思考法レビュー AC-5 設計乖離（2026-03-23） | `docs/30-workflows/unassigned-task/UT-EXECUTION-ENV-TERMINAL-RENDERER-ERROR-UI-001.md` |
@@ -521,9 +528,10 @@
 | UT-SKILL-LIFECYCLE-08-IPC-TEST | `skill:publishing:*` / `skill:distribution:*` 11チャネルの統合テストを実装（P42/P60/P61 回帰ガード） | 中 | TASK-SKILL-LIFECYCLE-08 Phase 12 未タスク検出（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-ipc-test.md` |
 | UT-SKILL-LIFECYCLE-08-UI-IMPL | 公開導線UI（VisibilityBadge/PublishFlowDialog/CompatibilityResultView 等）を実装 | 中 | TASK-SKILL-LIFECYCLE-08 Phase 12 未タスク検出（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-ui-impl.md` |
 | UT-SKILL-LIFECYCLE-08-NAMING-FIX | TASK-SKILL-LIFECYCLE-08 の命名規約違反（boolean prefix）是正 | 低 | TASK-SKILL-LIFECYCLE-08 Phase 9/12 レビュー（2026-03-17） | `docs/30-workflows/unassigned-task/task-ut-skill-lifecycle-08-naming-fix.md` |
-| UT-CONV-DB-001 | conversationRepository.test.ts 75件SKIP修正 | HIGH | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | P7: better-sqlite3 ABI不一致。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-001-better-sqlite3-abi-rebuild.md` |
+| ~~UT-CONV-DB-001~~ | ~~conversationRepository.test.ts 75件SKIP修正~~ **完了: 2026-03-23（rebuild:native スクリプト追加 + P66 記録）** | - | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | `docs/30-workflows/completed-tasks/conv-db-001-repository-test-skip-fix/` |
 | UT-CONV-DB-002 | Conversation DBスキーマバージョニング | MEDIUM | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | マイグレーション機構の設計・実装。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-002-schema-versioning.md` |
 | UT-CONV-DB-003 | 旧DBパスマイグレーション | MEDIUM | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001（2026-03-19） | ~/.claude/conversations.db → userData/ への移行。`docs/30-workflows/completed-tasks/unassigned-task/task-conv-db-003-legacy-path-migration.md` |
+| UT-CONV-DB-004 | ネイティブモジュール環境自動整備（CI/postinstall） | MEDIUM | UT-CONV-DB-001 Phase 6 未タスク検出（2026-03-22） | `docs/30-workflows/unassigned-task/task-conv-db-004-native-module-rebuild-automation.md` |
 | ~~UT-STATUSBADGE-MAPPING-3VALUES-001~~ | ~~StatusBadge マッピング仕様への新3値追加~~ **完了: 2026-03-20（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 same-wave spec sync）** | - | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12（2026-03-20） | `docs/30-workflows/unassigned-task/UT-STATUSBADGE-MAPPING-3VALUES-001.md` |
 | UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001 | blocked分岐テンプレートの標準化 | 中 | UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001 Phase 12 スキルフィードバック（2026-03-20） | `docs/30-workflows/unassigned-task/UT-BLOCKED-BRANCH-TEMPLATE-STANDARDIZATION-001.md` |
 | UT-RAG-08-002 | HybridRAGFactory.createFull/createLite 実配線 | 高 | UT-RAG-08-002 Phase 12 完了、PR未着手（2026-03-21） | `docs/30-workflows/hybrid-rag-factory-wiring/` |
@@ -533,7 +541,19 @@
 
 | UT-FIX-LLM-PERSIST-ENCRYPT-001 | persist storage暗号化の検討 | 低 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-PERSIST-ENCRYPT-001.md` |
 | UT-FIX-LLM-FETCHPROVIDERS-RETRY-001 | fetchProviders失敗時のリトライとバリデーション連携 | 中 | TASK-FIX-LLM-CONFIG-PERSISTENCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/UT-FIX-LLM-FETCHPROVIDERS-RETRY-001.md` |
+| UT-SC-02-001 | RuntimeSkillCreatorFacade の subscriptionAuthProvider DI 配線 | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-001.md` |
+| ~~UT-SC-02-002~~ | ~~execute() の terminal_handoff 未分岐~~ | ~~高~~ | ~~TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22）~~ | ~~完了~~ |
+| UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
+| UT-SC-02-004 | bundle 構築の二重責務 | 低 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
 | UT-SC-02-005 | Preload skill-creator-api.ts execute 戻り値型更新 | 中 | UT-SC-02-002-execute-terminal-handoff（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-02-005.md` |
+| UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001 | chat-edit/TerminalHandoffBuilder.ts の完全削除（buildForSurface 移行完了後） | 中 | UT-RUNTIME-BUILDER-MIGRATION-001 Phase 10 MINOR-1（2026-03-23） | `docs/30-workflows/unassigned-task/UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001.md` |
+| UT-RUNTIME-FACADE-RETURN-TYPE-001 | RuntimeSkillCreatorFacade 全呼び出し元の bundle→guidance 型統一 | 中 | UT-RUNTIME-BUILDER-MIGRATION-001 Phase 10 MINOR-2（2026-03-23） | `docs/30-workflows/unassigned-task/UT-RUNTIME-FACADE-RETURN-TYPE-001.md` |
+
+| UT-SLIDE-IMPL-001 | Modifier / agent-client 実装（SlideModifier 本体 + AgentClient ラッパー実装） | 高 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-IMPL-001.md` |
+| UT-SLIDE-UI-001 | SlideWorkspace UI 4領域実装（toolbar / canvas / property-panel / status-bar） | 高 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-UI-001.md` |
+| UT-SLIDE-P31-001 | P31/P48 無限ループ対策実装（SlideSlice 派生セレクタへの useShallow 適用） | 中 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-P31-001.md` |
+| UT-SLIDE-HANDOFF-DUP-001 | terminal handoff 重複解消（ChatPanel handoff と Slide handoff の共通 DTO 一本化） | 中 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-HANDOFF-DUP-001.md` |
+| UT-SLIDE-TASK09-IPC-NAMESPACE-001 | slide:sync:* legacy IPC channel の namespace 統一（`slide:*` への canonical 移行） | 中 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-TASK09-IPC-NAMESPACE-001.md` |
 
 ### 未タスク管理ルール
 

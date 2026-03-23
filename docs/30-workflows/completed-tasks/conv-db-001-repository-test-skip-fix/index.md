@@ -71,11 +71,12 @@ better-sqlite3 のネイティブバイナリを Node.js v22 に合わせてリ�
 
 ## 6. 完了条件
 
-- [ ] better-sqlite3 のネイティブバイナリが正しくビルドされている
-- [ ] `conversationRepository.test.ts` の75件が全て PASS
-- [ ] `describeIfBetterSqlite3` が `describe` に解決されている
-- [ ] 他のテスト（conversation 関連85件）に影響がない
-- [ ] リビルド手順がドキュメント化されている
+- [x] better-sqlite3 のネイティブバイナリが正しくビルドされている
+- [x] `conversationRepository.test.ts` の75件が全て PASS
+- [x] `describeIfBetterSqlite3` が `describe` に解決されている
+- [x] 他のテスト（conversation 関連85件）に影響がない
+- [x] リビルド手順がドキュメント化されている
+- [x] `apps/desktop/package.json` に `rebuild:native` スクリプトが追加されている（永続的修正）
 
 ## 7. リスクと対策
 

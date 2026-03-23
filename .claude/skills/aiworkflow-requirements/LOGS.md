@@ -10,12 +10,20 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 2026-03-23 - UT-SC-02-002 完了（execute() terminal_handoff 分岐追加 / RuntimeSkillCreatorExecuteResponse Union型 / void decision 除去 / 15テスト全PASS） |
 | 2026-03-23 - UT-EXECUTION-ENV-TERMINAL-001 完了（ExecutionEnvironment.terminal 本実装 + assertNoSilentFallback ガード / P62 対策 / 18テストケース） |
 | 2026-03-22 - TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了（D1-D6 drift 6件解消 / 12チャネル canonical 統一 / validateIpcSender + P42 3段バリデーション + path guard 全ハンドラ適用 / RuntimeResolver integrated/handoff 分岐 / modifier-skill.ts 統合 / slideSlice 7 store fields 追加 / HandoffGuidance 型共有） |
+| 2026-03-23 - UT-SC-02-002 完了（execute() terminal_handoff 分岐追加 / RuntimeSkillCreatorExecuteResponse Union型 / void decision 除去 / 15テスト全PASS） |
+| 2026-03-23 - UT-EXECUTION-ENV-TERMINAL-001 完了（ExecutionEnvironment.terminal 本実装 + assertNoSilentFallback ガード / P62 対策 / 18テストケース） |
+| 2026-03-22 - TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了（D1-D6 drift 6件解消 / 12チャネル canonical 統一 / validateIpcSender + P42 3段バリデーション + path guard 全ハンドラ適用 / RuntimeResolver integrated/handoff 分岐 / modifier-skill.ts 統合 / slideSlice 7 store fields 追加 / HandoffGuidance 型共有） |
+| 2026-03-23 - TASK-LLM-MOD-01 完了（PROVIDER_CONFIGS モデル定義更新 / OpenAI 6モデル・Anthropic 3モデル・Google 3モデル・xAI 3モデル最新化 / description フィールド追加 / inferProviderId o3/o4 対応 / 38テスト追加全PASS / 未タスク3件: UT-LLM-MOD-01-001〜003） |
+| 2026-03-23 - TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（WorkspaceChatPanel header に InlineModelSelector compact 配置 / disabled={controller.isStreaming} 連動 / GuidanceBlock(blocked) 自動連携 / 11テスト追加 146全PASS / ui-ux-llm-selector.md + task-workflow 更新） |
+| 2026-03-23 - TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION 実装完了（ChatView header に InlineModelSelector compact 配置 / disabled={isSending} 連動 / LLMGuidanceBanner 自動連携 / 8テスト追加 62全PASS / ui-ux-llm-selector.md + ui-ux-navigation.md 更新） |
+| 2026-03-23 - UT-CONV-DB-001 完了（better-sqlite3 75件テスト SKIP 修正 / rebuild:native スクリプト追加 / P66 CPU アーキテクチャ不一致パターン記録） |
+| 2026-03-23 - TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 設計フェーズ完了（SlideUIStatus 4状態 / 2 lane 分離 / UI 4領域 / cleanup 順序9ステップ / 未タスク5件検出） |
+| 2026-03-22 - TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計フェーズ完了（TranscriptProvenance 型定義 / 3操作フロー / provenance chip / 未タスク2件検出） |
 | 2026-03-22 - TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（Terminal Handoff Surface Realization 設計 / Concern 3分割 / HandoffGuidance 統一DTO / Manual Boundary 確定 / 未タスク8件検出） |
-| 2026-03-22 - TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 完了同期（streamingError primary / legacy fallback 分離 / Task03 completed root 移管 / same-wave index 再生成） |
 | 2026-03-22 - TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（standalone root / spec_created ledger / backlog 4件 / lessons 4件 / mirror parity） |
-| 2026-03-22 - TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（shared selector contract sync / backlog cleanup / completed ledger 追加 / Phase 12 guide drift 修正） |
 | 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（resource-map runtime IPC 導線追加 / P65 dead-end namespace pitfall 追加 / SKILL.md trigger 拡張 / mirror sync） |
 | 2026-03-21 - UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 完了同期（Skill Creator runtime public IPC 3チャネル / shared contract / graceful degradation / Phase 12 final sync） |
+| 2026-03-22 - TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（shared selector contract sync / backlog cleanup / completed ledger 追加 / Phase 12 guide drift 修正） |
 | 2026-03-21 - TASK-FIX-LLM-CONFIG-PERSISTENCE Phase12 再監査完了（Phase11 harness 導線、family inventory、completed shard、lessons、mirror parity を同ターン同期） |
 | 2026-03-21 | TASK-FIX-LLM-CONFIG-PERSISTENCE | LLM選択状態（selectedProviderId/selectedModelId）の永続化修正。persist partialize拡張、v0→v2 migrate、起動時バリデーション、P62対策を実装 |
 | 2026-03-21 - Task03 root canonicalization / Task02 completed relocation sync（legacy register / generate-index / mirror parity を含む same-wave 更新） |
@@ -72,6 +80,33 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 設計フェーズ完了（2026-03-23）
+
+- タスク名: slide-modifier-manual-fallback-alignment
+- 種別: 設計タスク Phase 1-13 完了（Phase 13 blocked）
+- 主な反映:
+  - SlideUIStatus 4状態（synced/running/degraded/guidance）と不正遷移4パターン禁止を設計
+  - 2 lane 分離（integrated/manual）と UI 4領域（progress row/guidance block/fallback card/terminal launcher）契約を確定
+  - Cleanup 順序9ステップを dependency DAG として定義（agent-client.ts Agent SDK adapter 化まで）
+  - ModifierResponse 拡張（fallback_reason/suggested_action optional）を設計
+  - Phase 3 設計レビュー PASS（MINOR 1件: MN-01 SlideCapabilityDTO IPC channel は UT-SLIDE-IMPL-001 で追跡）
+  - Phase 10 最終レビュー PASS（AC-1〜AC-4 全件充足）
+  - 未タスク 5 件検出（UT-SLIDE-IMPL-001/UT-SLIDE-UI-001/UT-SLIDE-P31-001/UT-SLIDE-HANDOFF-DUP-001/Task09 IPC namespace 統一）
+
+## TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計フェーズ完了（2026-03-22）
+
+- タスク名: transcript-to-chat-provenance-linkage
+- 種別: 設計タスク Phase 1-13 完了
+- 主な反映:
+  - `TranscriptProvenance` 型定義（sourceType / sharedAt / sessionTitle / messageRange / originalContent）
+  - 3操作フロー: OP-1（選択範囲をチャットへ送る）/ OP-2（直近出力を添付）/ OP-3（セッションを貼り付ける）
+  - Provenance Chip: 表示条件・dismiss 動作・履歴復元ロジック
+  - Terminal Handoff (Task 05) との責務分離・CTA 表示領域の非競合保証
+  - MINOR指摘 M-1（SelectedFile source対応）/ M-2（TranscriptSession型）を未タスク化
+  - M-3（truncation上限）は10,000文字として実装仕様に確定
+  - Phase 3/10 ともに PASS 判定
+  - Phase 13 はユーザー指示待ち（blocked）
 
 ## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 
