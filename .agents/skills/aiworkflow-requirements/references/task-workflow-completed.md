@@ -5,41 +5,29 @@
 
 ## 完了タスク
 
-### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
+### タスク: UT-EXECUTION-ENV-TERMINAL-001 ExecutionEnvironment Terminal 本実装 + assertNoSilentFallback（2026-03-23）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | TASK-SC-01-IPC-WIRING-FIX |
-| 完了日 | 2026-03-23 |
-| PR | #1478 |
-| 成果 | P65既解消確認、P65不在テスト+allowlist包含テスト4件追加、Phase 1-12成果物21ファイル |
-| 未タスク | UT-SC-01-IPCRESULT-DEDUP (Low), UT-SC-01-DIP-INTERFACE (Low) |
-
----
-
-### タスク: TASK-SC-02-RUNTIME-POLICY-CLOSURE RuntimePolicyResolver subscription 判定統合・3パターン分岐安定化（2026-03-22）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SC-02-RUNTIME-POLICY-CLOSURE |
-| ステータス | **完了** |
+| タスクID | UT-EXECUTION-ENV-TERMINAL-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 pending）** |
 | タイプ | implementation |
 | 優先度 | 高 |
-| 完了日 | 2026-03-22 |
-| 対象 | RuntimePolicyResolver の subscription 判定統合・3パターン分岐安定化 |
+| 完了日 | 2026-03-23 |
+| 対象 | ExecutionEnvironment.terminal 本実装 / assertNoSilentFallback ガード |
+| 成果物 | `docs/30-workflows/execution-env-terminal/` |
 
 #### 実施内容
 
-- RuntimePolicyResolver の subscription 判定統合・3パターン分岐安定化
+- `ExecutionEnvironment.terminal` の placeholder を `TerminalHandoffCard` を使った本実装に移行
+- `assertNoSilentFallback()` ガード関数と `LLMConfigNotSelectedError` エラー型を llmConfigProvider.ts に追加（P62 対策）
+- HandoffGuidance null 時の待機中 Placeholder 表示
+- テスト 18 ケース追加（assertNoSilentFallback 10 + terminal 8）、全 PASS
+- interfaces-agent-sdk-skill-reference-share-debug-analytics.md に assertNoSilentFallback 仕様を追記
 
-#### Phase 12 未タスク
+#### 発見元
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-SC-02-001 | RuntimeSkillCreatorFacade の subscriptionAuthProvider DI 配線 | 中 | `docs/30-workflows/unassigned-task/UT-SC-02-001.md` |
-| UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
-| UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
-| UT-SC-02-004 | bundle 構築の二重責務 | 低 | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
+- TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-01（P62 対策）
 
 ---
 
@@ -287,8 +275,8 @@
 
 | 種別 | ID | 概要 | タスク仕様書 |
 | --- | --- | --- | --- |
-| pending | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
-| pending | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
+| completed | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 -- **実装済み（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）** | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
+| completed | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 -- **解消済み（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）** | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
 | completed | `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | `docs/30-workflows/completed-tasks/task-ut-slide-ui-001.md` |
 | resolved | `UT-SLIDE-P31-001` | `useSlideProject()` selector migration を current branch で吸収 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |
 

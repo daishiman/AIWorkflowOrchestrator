@@ -1,0 +1,124 @@
+{
+  "meta": {
+    "taskId": "TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001",
+    "confirmedDate": "2026-03-22",
+    "purpose": "V-M1~V-M9の各テストケースにおけるスクリーンショットキャプチャ計画",
+    "p53_note": "P53対策: CLI環境ではElectronアプリの実画面キャプチャが困難なため、fallback captureとしてPlaywrightのpage.screenshot()またはwebContents.capturePage()をスクリプト化する方針を採用する"
+  },
+  "fallback_capture_strategy": {
+    "primary": "Playwright E2Eテストのpage.screenshot()でキャプチャ",
+    "secondary": "Electron webContents.capturePage()をスクリプト化してキャプチャ",
+    "tertiary": "CLI環境ではxvfb-runを使用してヘッドレスキャプチャ",
+    "last_resort": "自動テスト結果（DOM snapshot / test output）を間接的な視覚検証として記録"
+  },
+  "screenshots": [
+    {
+      "tc_id": "V-M1-S1",
+      "test_case": "V-M1",
+      "description": "TranscriptPanel初期表示状態",
+      "screen_state": "TranscriptPanel が開かれた直後",
+      "expected_display": [
+        "TranscriptPanel がメインコンテンツ領域に表示されている",
+        "セッションメッセージのリストが表示されている",
+        "AI/ユーザーメッセージが視覚的に区別されている",
+        "TranscriptSelectionToolbar は非表示"
+      ],
+      "capture_target": "TranscriptPanel コンポーネント全体",
+      "capture_command": "page.locator('[data-testid=\"transcript-panel\"]').screenshot({ path: 'vm1-s1-transcript-panel.png' })"
+    },
+    {
+      "tc_id": "V-M2-S1",
+      "test_case": "V-M2",
+      "description": "テキスト選択後のToolbar表示",
+      "screen_state": "ユーザーがテキストを選択した直後（300ms以内）",
+      "expected_display": [
+        "選択テキストがハイライト表示されている",
+        "TranscriptSelectionToolbar が選択範囲の近傍に表示されている",
+        "OP-1ボタン（選択範囲をチャットへ送る）が表示されている",
+        "OP-2ボタン（直近出力を添付）が表示されている"
+      ],
+      "capture_target": "選択テキストとToolbarを含む領域",
+      "capture_command": "page.locator('[data-testid=\"transcript-selection-toolbar\"]').screenshot({ path: 'vm2-s1-selection-toolbar.png' })"
+    },
+    {
+      "tc_id": "V-M2-S2",
+      "test_case": "V-M2",
+      "description": "OP-1実行後のChatPanel状態",
+      "screen_state": "OP-1実行後、ChatPanelの入力エリアに選択テキストが追記された状態",
+      "expected_display": [
+        "ChatPanelの入力エリアに選択テキストが引用形式で表示されている",
+        "ユーザーがまだ送信していない状態（入力エリアにフォーカスがある）",
+        "TranscriptPanelの選択が解除されている"
+      ],
+      "capture_target": "ChatPanelの入力エリア",
+      "capture_command": "page.locator('[data-testid=\"chat-input-area\"]').screenshot({ path: 'vm2-s2-chat-input-after-op1.png' })"
+    },
+    {
+      "tc_id": "V-M2-S3",
+      "test_case": "V-M2",
+      "description": "OP-1送信後のProvenanceChip表示",
+      "screen_state": "ユーザーがメッセージを送信した後、ChatPanelにProvenanceChipが表示された状態",
+      "expected_display": [
+        "送信済みメッセージにTranscriptProvenanceChipが表示されている",
+        "チップに sourceType（選択範囲）・sessionTitle・sharedAtが表示されている",
+        "チップがメッセージの可読性を損なわない配置になっている"
+      ],
+      "capture_target": "ProvenanceChipを含むChatメッセージ",
+      "capture_command": "page.locator('[data-testid=\"provenance-chip\"]').screenshot({ path: 'vm2-s3-provenance-chip.png' })"
+    },
+    {
+      "tc_id": "V-M3-S1",
+      "test_case": "V-M3",
+      "description": "OP-2実行後のChatPanel状態",
+      "screen_state": "OP-2（直近出力を添付）実行後",
+      "expected_display": [
+        "ChatPanelの入力エリアに直近AI出力が追記されている",
+        "選択範囲ではなく直近出力の内容が追記されている"
+      ],
+      "capture_target": "ChatPanelの入力エリア",
+      "capture_command": "page.locator('[data-testid=\"chat-input-area\"]').screenshot({ path: 'vm3-s1-chat-input-after-op2.png' })"
+    },
+    {
+      "tc_id": "V-M4-S1",
+      "test_case": "V-M4",
+      "description": "OP-3実行後の貼り付け確認",
+      "screen_state": "OP-3（セッションを貼り付ける）実行後",
+      "expected_display": [
+        "ChatPanelの入力エリアにセッション全体（または切り捨て後）が表示されている",
+        "10,000文字超の場合は末尾に「...[省略]」が表示されている"
+      ],
+      "capture_target": "ChatPanelの入力エリア（スクロールして末尾も確認）",
+      "capture_command": "page.locator('[data-testid=\"chat-input-area\"]').screenshot({ path: 'vm4-s1-chat-input-after-op3.png' })"
+    },
+    {
+      "tc_id": "V-M5-S1",
+      "test_case": "V-M5",
+      "description": "ProvenanceChipのホバー状態",
+      "screen_state": "ProvenanceChipにホバーした状態",
+      "expected_display": [
+        "ツールチップまたはポップオーバーが表示されている",
+        "sourceType・sessionTitle・sharedAtの詳細が表示されている"
+      ],
+      "capture_target": "ProvenanceChipとホバー表示全体",
+      "capture_command": "page.locator('[data-testid=\"provenance-chip\"]').hover(); page.screenshot({ path: 'vm5-s1-chip-hover.png' })"
+    },
+    {
+      "tc_id": "V-M9-S1",
+      "test_case": "V-M9",
+      "description": "エラー表示状態",
+      "screen_state": "OP-3実行時にエラーが発生した状態",
+      "expected_display": [
+        "ユーザーフレンドリーなエラーメッセージが表示されている",
+        "内部パス・スタックトレースが含まれていない",
+        "再試行ボタンまたはキャンセルボタンが表示されている"
+      ],
+      "capture_target": "エラーメッセージ表示領域",
+      "capture_command": "page.locator('[data-testid=\"error-display\"]').screenshot({ path: 'vm9-s1-error-display.png' })"
+    }
+  ],
+  "cli_fallback_script": {
+    "description": "CLI環境でのキャプチャスクリプトのひな型",
+    "command": "xvfb-run --auto-servernum --server-args='-screen 0 1280x800x24' pnpm --filter @repo/desktop playwright test --headed --screenshot=on 2>/dev/null",
+    "alternative": "pnpm --filter @repo/desktop exec electron . --screenshot-mode 2>/dev/null"
+  }
+}
