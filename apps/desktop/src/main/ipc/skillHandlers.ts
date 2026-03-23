@@ -390,8 +390,10 @@ export function registerSkillHandlers(
         const resolution = await runtimeResolver.resolve();
         if (resolution.type === "handoff") {
           const builder = new TerminalHandoffBuilder();
-          const guidance = builder.buildForSkillExecution(
+          const guidance = builder.buildForSurface(
             {
+              surfaceType: "runtime",
+              runtimeType: "skill",
               skillName: hasSkillName ? args.skillName : undefined,
               skillId: hasSkillName ? undefined : args.skillId,
               prompt: hasSkillName ? args.prompt : undefined,

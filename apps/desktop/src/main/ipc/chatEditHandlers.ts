@@ -9,7 +9,7 @@ import { ChatEditService } from "../services/chat-edit/ChatEditService";
 import { ContextBuilder } from "../services/chat-edit/ContextBuilder";
 import { FileService } from "../services/chat-edit/FileService";
 import { RuntimeResolver } from "../services/chat-edit/RuntimeResolver";
-import { TerminalHandoffBuilder } from "../services/chat-edit/TerminalHandoffBuilder";
+import { TerminalHandoffBuilder } from "../services/runtime/TerminalHandoffBuilder";
 import { isAllowedPath } from "../services/chat-edit/utils/PathValidator";
 import {
   validateIpcSender,
@@ -177,7 +177,16 @@ export function registerChatEditHandlers(
 
       if (resolution.type === "handoff") {
         const builder = new TerminalHandoffBuilder();
-        const guidance = builder.build(args, resolution.reason);
+        const guidance = builder.buildForSurface(
+          {
+            surfaceType: "chat-edit",
+            commandType: args.command.type,
+            filePaths: args.contexts.map((ctx) => ctx.filePath),
+            message: args.message,
+            workspacePath: args.workspacePath,
+          },
+          resolution.reason,
+        );
         return { success: true, handoff: true, guidance };
       }
 

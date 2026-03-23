@@ -35,6 +35,24 @@ registerAllIpcHandlers の第2引数 `conversationDb` が undefined/null/Databas
 
 ---
 
+## 2026-03-23 UT-CONV-DB-001: CPU アーキテクチャ不一致によるテスト SKIP（P66）
+
+### 教訓4: ネイティブモジュールの silent skip パターン
+
+better-sqlite3 の `.node` バイナリが arm64 でビルドされていたが、Node.js が Rosetta 2 経由で x86_64 として動作していた。`dlopen` エラーが `try-catch` で捕捉され、`BetterSqlite3Ctor = null` → `describe.skip` となり、75件テストが**静かにスキップ**された。テスト結果に FAIL が出ないため問題の発見が遅れた。
+
+**苦戦箇所**: `pnpm rebuild better-sqlite3` でローカル修正できるが、この変更は `node_modules/` 内のバイナリ変更のみで git にコミットできない。前回の実装ではドキュメントだけが完了し、永続的なコード変更がゼロだった。
+
+**解決策**: `apps/desktop/package.json` に `rebuild:native` スクリプト（`pnpm rebuild better-sqlite3 && pnpm rebuild esbuild`）を追加し、再現可能なリビルド手順を git に永続化した。
+
+**一般化**: ネイティブモジュールのバイナリは git 管理できないが、「バイナリを生成するコマンド」は package.json で管理できる。
+
+### 教訓5: esbuild も同時リビルドが必要
+
+better-sqlite3 だけリビルドしても、Vitest 実行に必要な esbuild も同じアーキテクチャ不一致で失敗する。ネイティブモジュールの問題は複数のパッケージに波及する。
+
+---
+
 ## 問題パターン（一般化）
 
 - DB が開いたことと、IPC 群が安全に登録できたことを同じ成功として扱うと、後段の不整合を見落とす。

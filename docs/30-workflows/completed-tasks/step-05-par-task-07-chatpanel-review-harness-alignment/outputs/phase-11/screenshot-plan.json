@@ -1,0 +1,143 @@
+{
+  "taskId": "TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001",
+  "createdAt": "2026-03-23",
+  "phase": "Phase 11 - Manual Test",
+  "note": "CLI環境ではElectronアプリの実画面キャプチャが困難なため、P53対策としてPlaywrightスクリプトによる代替取得方針を採用する",
+  "captureMethod": "playwright-screenshot",
+  "captureScript": "npx playwright screenshot --full-page {url}",
+  "testCases": [
+    {
+      "id": "MT-01",
+      "target": "ChatPanel review-empty",
+      "state": "review-only role visible",
+      "description": "ChatPanel が empty 状態で review harness として表示されることを確認する",
+      "url": "http://localhost:3000/review-harness?state=empty",
+      "storybookStory": "ChatPanel/ReviewHarness/Empty",
+      "expectedElements": [
+        "EmptyState コンポーネント",
+        "案内テキスト",
+        "no-op CTA が disabled または非表示"
+      ],
+      "relatedGap": null,
+      "implementationStatus": "pre-implementation",
+      "captureTimings": [
+        "設計タスク後",
+        "後続実装タスク完了後（before/after比較用）"
+      ]
+    },
+    {
+      "id": "MT-02",
+      "target": "blocked → settings transition",
+      "state": "settings view shown",
+      "description": "ChatPanel が blocked 状態で設定画面に遷移することを確認する（GAP-03 解消検証）",
+      "url": "http://localhost:3000/review-harness?state=blocked",
+      "storybookStory": "ChatPanel/ReviewHarness/Blocked",
+      "expectedElements": [
+        "BlockedBanner コンポーネント",
+        "「設定を開く」CTA ボタン（active状態）",
+        "クリック後に SettingsView が表示される"
+      ],
+      "relatedGap": "GAP-03",
+      "implementationStatus": "pending-gap-resolution",
+      "captureTimings": ["後続実装タスク完了後"],
+      "preCondition": "chatSlice.state === 'blocked'",
+      "postCondition": "SettingsView が表示されている"
+    },
+    {
+      "id": "MT-03",
+      "target": "handoff → terminal launch",
+      "state": "terminal opened",
+      "description": "ChatPanel が handoff 状態でターミナルが起動することを確認する（GAP-04 解消検証）",
+      "url": "http://localhost:3000/review-harness?state=handoff",
+      "storybookStory": "ChatPanel/ReviewHarness/Handoff",
+      "expectedElements": [
+        "HandoffBanner コンポーネント",
+        "「ターミナルを開く」CTA ボタン（active状態）",
+        "クリック後に OS ターミナルが起動する"
+      ],
+      "relatedGap": "GAP-04",
+      "relatedMinor": "MINOR-A",
+      "relatedRisk": "RISK-1",
+      "implementationStatus": "pending-gap-resolution",
+      "captureTimings": ["後続実装タスク完了後（RISK-1 確認済みの場合のみ）"],
+      "skipCondition": "app:open-terminal IPC channel が Main Process に未登録の場合はスキップ",
+      "preCondition": "chatSlice.state === 'handoff'",
+      "postCondition": "OS のターミナルアプリが起動している"
+    },
+    {
+      "id": "MT-04",
+      "target": "streaming → Escape cancel",
+      "state": "cancelled state",
+      "description": "ChatPanel が streaming 状態で Escape キーによりキャンセルされることを確認する（GAP-02 解消検証）",
+      "url": "http://localhost:3000/review-harness?state=streaming",
+      "storybookStory": "ChatPanel/ReviewHarness/Streaming",
+      "expectedElements": [
+        "StreamingPanel コンポーネント（リアルタイムトークン表示）",
+        "「キャンセル」CTA ボタン",
+        "Escape キーまたはキャンセルボタンで cancelled 状態に遷移"
+      ],
+      "relatedGap": "GAP-02",
+      "implementationStatus": "pending-gap-resolution",
+      "captureTimings": ["後続実装タスク完了後"],
+      "preCondition": "chatSlice.state === 'streaming'",
+      "postCondition": "chatSlice.state === 'cancelled' かつ CancelledNotice が表示される",
+      "keyboardShortcut": "Escape"
+    },
+    {
+      "id": "MT-05",
+      "target": "RuntimeBanner capability",
+      "state": "correct badge shown",
+      "description": "RuntimeBanner が現在のランタイムモードに応じた正しいバッジを表示することを確認する",
+      "url": "http://localhost:3000/review-harness?state=idle",
+      "storybookStory": "ChatPanel/ReviewHarness/Idle",
+      "expectedElements": [
+        "RuntimeBanner コンポーネント",
+        "ランタイムモードに対応するバッジ（Local/Cloud/Hybrid）",
+        "バッジの色がモードを視覚的に区別している"
+      ],
+      "relatedGap": null,
+      "implementationStatus": "verifiable-now",
+      "captureTimings": [
+        "現時点でも実施可能",
+        "後続実装タスク完了後（回帰確認）"
+      ],
+      "modes": [
+        {
+          "mode": "Local",
+          "expectedBadgeColor": "systemGreen (#34C759 light / #30D158 dark)",
+          "expectedBadgeText": "Local"
+        },
+        {
+          "mode": "Cloud",
+          "expectedBadgeColor": "systemBlue (#007AFF light / #0A84FF dark)",
+          "expectedBadgeText": "Cloud"
+        },
+        {
+          "mode": "Hybrid",
+          "expectedBadgeColor": "systemOrange (#FF9500 light / #FF9F0A dark)",
+          "expectedBadgeText": "Hybrid"
+        }
+      ]
+    }
+  ],
+  "alternativeEvidenceStrategy": {
+    "reason": "P53: CLI環境ではElectronアプリの実画面キャプチャが困難",
+    "alternatives": [
+      {
+        "method": "playwright-screenshot",
+        "command": "npx playwright screenshot --full-page {url}",
+        "applicableTo": ["MT-01", "MT-05"]
+      },
+      {
+        "method": "vitest-test-result",
+        "command": "pnpm --filter @repo/desktop test -- --reporter=verbose --grep 'ChatPanel'",
+        "applicableTo": ["MT-02", "MT-03", "MT-04"]
+      },
+      {
+        "method": "storybook-snapshot",
+        "command": "pnpm storybook test --story 'ChatPanel/*'",
+        "applicableTo": ["MT-01", "MT-02", "MT-03", "MT-04", "MT-05"]
+      }
+    ]
+  }
+}

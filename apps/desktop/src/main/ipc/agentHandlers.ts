@@ -66,8 +66,10 @@ export function registerAgentExecutionHandlers(
             success: false,
             handoff: true,
             error: resolution.reason,
-            guidance: builder.buildForAgentExecution(
+            guidance: builder.buildForSurface(
               {
+                surfaceType: "runtime",
+                runtimeType: "agent",
                 skillId: request.skillId,
                 prompt: request.prompt,
                 workingDirectory: request.workingDirectory,

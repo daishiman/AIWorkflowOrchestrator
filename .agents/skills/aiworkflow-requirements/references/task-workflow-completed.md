@@ -5,62 +5,56 @@
 
 ## 完了タスク
 
-### タスク: UT-EXECUTION-ENV-TERMINAL-001 ExecutionEnvironment Terminal 本実装 + assertNoSilentFallback（2026-03-23）
-||||||| Stash base
-### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
-### タスク: TASK-SC-03-PLAN-LLM-PROMPT RuntimeSkillCreatorFacade.plan() LLM プロンプト統合（2026-03-23）
+### タスク: UT-CONV-DB-001 better-sqlite3 75件テスト SKIP 修正（2026-03-23）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | TASK-SC-03-PLAN-LLM-PROMPT |
-| 完了日 | 2026-03-23 |
-| ステータス | **完了** |
+| タスクID | UT-CONV-DB-001 |
+| ステータス | **実装完了** |
+| タイプ | bugfix / test-infrastructure |
 | 優先度 | 高 |
-| 対象 | RuntimeSkillCreatorFacade.plan() / planPromptConstants / RuntimeSkillCreatorPlanResult |
-| 成果物 | `docs/30-workflows/skill-creator-llm-integration/w2-sc-plan-llm-prompt/` |
+| 完了日 | 2026-03-23 |
+| 対象 | better-sqlite3 ネイティブバイナリ / conversationRepository.test.ts |
+| 成果物 | `docs/30-workflows/completed-tasks/conv-db-001-repository-test-skip-fix/` |
 
 #### 実施内容
 
-- plan() のスタブ実装を LLM 呼び出し（agent 仕様書注入 + JSON レスポンスパース）に置き換えた
-- ResourceLoader.loadAgent() で3つの agent 仕様書（discover-problem / design-workflow / plan-structure）を読み込み system prompt に注入
-- AnthropicAdapter（ILLMAdapter インターフェース経由の DI）で LLM を呼び出し、parsePlanResponse() で JSON をパースして RuntimeSkillCreatorPlanResult にマッピング
-- terminal_handoff 経路は一切変更なし（AC-4 充足）
-- 入力バリデーション（P42 準拠3段バリデーション）を追加
-
-#### 未タスク
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-SC-03-001 | IResourceLoader インターフェース定義と DI パターン統一 | 低 | `docs/30-workflows/unassigned-task/UT-SC-03-001.md` |
-| UT-SC-03-002 | plan() 実行時の動的 apiKey 設定メカニズム | 低 | `docs/30-workflows/unassigned-task/UT-SC-03-002.md` |
-| UT-SC-03-003 | ipc/index.ts DI 配線の実装 | 中 | `docs/30-workflows/unassigned-task/UT-SC-03-003.md` |
-| UT-SC-03-004 | plan() 出力型の SkillBlueprint 互換移行 | 高 | `docs/30-workflows/unassigned-task/UT-SC-03-004.md` |
-
----
-
-### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-EXECUTION-ENV-TERMINAL-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 pending）** |
-| タイプ | implementation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-23 |
-| 対象 | ExecutionEnvironment.terminal 本実装 / assertNoSilentFallback ガード |
-| 成果物 | `docs/30-workflows/execution-env-terminal/` |
-
-#### 実施内容
-
-- `ExecutionEnvironment.terminal` の placeholder を `TerminalHandoffCard` を使った本実装に移行
-- `assertNoSilentFallback()` ガード関数と `LLMConfigNotSelectedError` エラー型を llmConfigProvider.ts に追加（P62 対策）
-- HandoffGuidance null 時の待機中 Placeholder 表示
-- テスト 18 ケース追加（assertNoSilentFallback 10 + terminal 8）、全 PASS
-- interfaces-agent-sdk-skill-reference-share-debug-analytics.md に assertNoSilentFallback 仕様を追記
+- better-sqlite3 ネイティブバイナリの CPU アーキテクチャ不一致（arm64 vs x86_64、P66）を pnpm rebuild で解決
+- `apps/desktop/package.json` に `rebuild:native` スクリプトを追加（永続的修正）
+- conversationRepository.test.ts 75件テストを全 PASS に復帰（4.28s）
+- conversation 関連テスト 160件全 PASS（回帰なし）
+- P66 を 06-known-pitfalls.md に追記
+- UT-CONV-DB-004（ネイティブモジュール環境自動整備）を未タスクとして作成
 
 #### 発見元
 
-- TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-01（P62 対策）
+- 親タスク: TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001
+- 関連 Pitfall: P7, P66
+
+### タスク: TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Slide Modifier Manual Fallback Alignment 設計（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 |
+| ステータス | **仕様書作成完了（`spec_created` / 設計タスク / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-23 |
+| 対象 | Slide Modifier / SlideUIStatus 状態機械 / Manual Fallback 整合設計 |
+| 成果物 | `docs/30-workflows/step-05-par-task-08-slide-modifier-manual-fallback-alignment/` |
+
+#### 実施内容
+
+- SlideUIStatus（synced / running / degraded / guidance）と SlideLane（integrated / manual）の型定義を確定
+- SlideCapabilityDTO（laneType / modifier / agentClient / fallbackReason / guidance）の契約設計
+- 禁止遷移4件（integrated→manual 自動格下げ / guidance 中 modifier 呼出 / degraded 中 agentClient 呼出 / synced 時 fallbackReason 設定）の仕様明文化
+- Manual Fallback 境界ルール（MB-1〜MB-4）と slide:sync:* IPC チャネル設計
+- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+- 未タスク 5 件（UT-SLIDE-IMPL-001 / UT-SLIDE-UI-001 / UT-SLIDE-P31-001 / UT-SLIDE-HANDOFF-DUP-001 / UT-SLIDE-TASK09-IPC-NAMESPACE-001）を検出・backlog 登録
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment pack step-05-par-task-08（2026-03-23）
 
 ---
 
@@ -88,6 +82,33 @@
 #### 発見元
 
 - ai-runtime-execution-responsibility-realignment pack Task 05（2026-03-19）
+
+---
+
+### タスク: TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 Transcript -> Chat Provenance Linkage 設計（2026-03-22）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 |
+| ステータス | **仕様書作成完了（`spec_created` / workflow root `implementation_ready` / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-22 |
+| 対象 | Transcript -> Chat 手動3操作連携 / Provenance Chip / Metadata Contract |
+| 成果物 | `docs/30-workflows/step-04-seq-task-06-transcript-to-chat-provenance-linkage/` |
+
+#### 実施内容
+
+- TranscriptProvenance 型定義（sourceType / sharedAt / sessionTitle / messageRange / originalContent）
+- 3操作フロー: OP-1（選択範囲をチャットへ送る）/ OP-2（直近出力を添付）/ OP-3（セッションを貼り付ける）
+- Provenance Chip の表示条件・dismiss 動作・履歴復元ロジック
+- Terminal Handoff (Task 05) との責務分離・CTA 表示領域の非競合保証
+- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+- 未タスク 2 件（M-1: SelectedFile source / M-2: TranscriptSession 型）を検出・指示書化
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment pack Task 06（2026-03-19）
 
 ---
 
@@ -308,8 +329,8 @@
 
 | 種別 | ID | 概要 | タスク仕様書 |
 | --- | --- | --- | --- |
-| completed | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 -- **実装済み（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）** | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
-| completed | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 -- **解消済み（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）** | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
+| pending | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
+| pending | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
 | completed | `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | `docs/30-workflows/completed-tasks/task-ut-slide-ui-001.md` |
 | resolved | `UT-SLIDE-P31-001` | `useSlideProject()` selector migration を current branch で吸収 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |
 

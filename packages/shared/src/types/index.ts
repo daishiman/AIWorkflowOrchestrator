@@ -128,6 +128,7 @@ export type {
   RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorExecuteResult,
+  RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorImproveResult,
   RuntimeSkillCreatorImproveResponse,
   ForkOptions,

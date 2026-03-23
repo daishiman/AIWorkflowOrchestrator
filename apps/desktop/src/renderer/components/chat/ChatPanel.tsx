@@ -3,6 +3,11 @@
  * @description チャットパネル統合コンポーネント - 実 AI チャット配線
  * @feature chatpanel-real-chat-wiring
  * @task TASK-IMP-CHATPANEL-REAL-AI-CHAT-001
+ * @role review-harness
+ *
+ * Review Harness として機能する ChatPanel。
+ * mainline（ChatView）との契約整合性を維持しながら、
+ * UI レビューおよびビジュアル検証を目的として設計されている。
  *
  * 3 つの placeholder（model-selector-slot, message-list-slot, chat-input-slot）を
  * 実コンポーネントに置換し、useStreamingChat 経由で LLM ストリーミングチャットを提供する。
@@ -10,6 +15,8 @@
  * 状態機械: idle → ready → streaming → completed/cancelled/error
  *   blocked: provider/model 未選択 or API key 未設定
  *   handoff: terminal surface のみ利用可能
+ *
+ * @see TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001
  */
 
 import React, {
@@ -21,7 +28,13 @@ import React, {
   useRef,
 } from "react";
 import type { SkillMetadata } from "@repo/shared";
-import { useAppStore, useIsSkillExecuting } from "../../store";
+import {
+  useAppStore,
+  useIsSkillExecuting,
+  useSetCurrentView,
+  useSelectProvider,
+  useSelectModel,
+} from "../../store";
 import { useStreamingChat } from "../../hooks/useStreamingChat";
 import { SkillSelector } from "../skill/SkillSelector";
 import { SkillImportDialog } from "../skill/SkillImportDialog";
@@ -106,6 +119,36 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
       ? "APIキーが設定されていません。設定画面でAPIキーを入力してください"
       : "プロバイダーとモデルを選択してください";
 
+    // === Review Harness Handlers (GAP-01〜04 no-op elimination) ===
+    const setCurrentView = useSetCurrentView();
+    const selectProvider = useSelectProvider();
+    const selectModel = useSelectModel();
+
+    const handleTerminalSwitch = useCallback(() => {
+      // Terminal view は未実装（ViewType に "terminal" なし）。
+      // agent view が最も近い代替先。将来 terminal view 追加時に更新する。
+      setCurrentView("agent");
+    }, [setCurrentView]);
+
+    const handleSelectProvider = useCallback(
+      (id: string) => {
+        selectProvider(id as Parameters<typeof selectProvider>[0]);
+      },
+      [selectProvider],
+    );
+
+    const handleSelectModel = useCallback(
+      (id: string) => {
+        selectModel(id);
+      },
+      [selectModel],
+    );
+
+    // GAP-04: app:open-terminal IPC は未実装のため agent view navigation で代替
+    const handleOpenTerminal = useCallback(() => {
+      setCurrentView("agent");
+    }, [setCurrentView]);
+
     // === Handlers ===
     const handleImportRequest = (skill: SkillMetadata) => {
       setImportDialogSkill(skill);
@@ -172,15 +215,15 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
         >
           <RuntimeBanner
             capability={resolvedCapability}
-            onTerminalSwitch={() => {}}
+            onTerminalSwitch={handleTerminalSwitch}
           />
 
           <LLMSelectorPanel
             providers={providers ?? []}
             selectedProviderId={selectedProviderId}
             selectedModelId={selectedModelId}
-            onSelectProvider={() => {}}
-            onSelectModel={() => {}}
+            onSelectProvider={handleSelectProvider}
+            onSelectModel={handleSelectModel}
           />
 
           <SkillSelector />
@@ -221,7 +264,7 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
               {isHandoff && handoffGuidance && (
                 <HandoffBlock
                   guidance={handoffGuidance}
-                  onOpenTerminal={() => {}}
+                  onOpenTerminal={handleOpenTerminal}
                 />
               )}
 
