@@ -1,15 +1,25 @@
 /**
  * スキル実行器
- * Claude Agent SDK経由でスキルを実行する
+ * RuntimeResolver 経由でランタイムモードを判定し、
+ * integrated モードでは Agent SDK 経由でスキルを実行、
+ * handoff モードではガイダンスを返す。
  * @module main/slide/skill-executor
  */
 
 import type {
   SkillPhase,
   SkillExecutionResult,
-  StructureChange,
+  HandoffGuidance,
 } from "@repo/shared";
 import { getAgentAPI } from "./agent-client";
+import {
+  RuntimeResolver,
+  type RuntimeResolution,
+} from "../services/runtime/RuntimeResolver";
+import type { IAuthKeyService, IAuthModeService } from "../services/auth/types";
+import { buildModifierPrompt, parseModifierResponse } from "./modifier-skill";
+import type { ModifierContext } from "./modifier-skill";
+import { readFile } from "fs/promises";
 
 /**
  * スキル実行器インターフェース
@@ -26,6 +36,14 @@ export interface SkillExecutor {
   onProgress(callback: (progress: number) => void): void;
   /** 実行中かどうか */
   isExecuting(): boolean;
+}
+
+/**
+ * スキル実行器の依存関係
+ */
+export interface SkillExecutorDeps {
+  authKeyService?: IAuthKeyService;
+  authModeService?: IAuthModeService;
 }
 
 /**
@@ -73,46 +91,141 @@ const getSystemPromptForPhase = (phase: SkillPhase): string => {
 };
 
 /**
- * スキルレスポンスをパースする
- */
-const parseSkillResponse = (
-  phase: SkillPhase,
-  content: string,
-): { output: string; changes?: StructureChange[] } => {
-  if (phase === "modifier") {
-    try {
-      const parsed = JSON.parse(content) as { changes?: StructureChange[] };
-      return {
-        output: content,
-        changes: parsed.changes || [],
-      };
-    } catch {
-      return { output: content, changes: [] };
-    }
-  }
-  return { output: content };
-};
-
-/**
  * SDK実行タイムアウト（ミリ秒）
  */
 const SDK_TIMEOUT = 30000;
 
 /**
+ * handoff モード時のガイダンスを生成する
+ * @param phase - 実行フェーズ
+ * @param projectPath - プロジェクトパス
+ * @param reason - RuntimeResolver が handoff を選択した理由
+ * @returns HandoffGuidance
+ */
+export function buildHandoffGuidance(
+  phase: SkillPhase,
+  projectPath: string,
+  reason: string,
+): HandoffGuidance {
+  const phaseLabel: Record<SkillPhase, string> = {
+    hearing: "ヒアリング",
+    structure: "構造設計",
+    html: "HTML生成",
+    modifier: "逆同期",
+  };
+
+  return {
+    terminalCommand: `claude --project "${projectPath}" --phase ${phase}`,
+    contextSummary: `スライド「${phaseLabel[phase]}」フェーズの実行 (プロジェクト: ${projectPath})`,
+    reason,
+  };
+}
+
+/**
  * スキル実行器を作成する
+ * @param deps - 依存関係（RuntimeResolver 用）
  * @returns SkillExecutorインスタンス
  */
-export const createSkillExecutor = (): SkillExecutor => {
+export const createSkillExecutor = (
+  deps?: SkillExecutorDeps,
+): SkillExecutor => {
   let cancelled = false;
   let executing = false;
   let abortController: AbortController | null = null;
   const progressCallbacks: Array<(progress: number) => void> = [];
+
+  // RuntimeResolver（DI で注入された場合のみ有効）
+  const runtimeResolver =
+    deps?.authKeyService && deps?.authModeService
+      ? new RuntimeResolver(deps.authKeyService, deps.authModeService)
+      : null;
 
   /**
    * 進捗を通知する
    */
   const emitProgress = (progress: number): void => {
     progressCallbacks.forEach((cb) => cb(progress));
+  };
+
+  /**
+   * RuntimeResolver でモードを判定する
+   */
+  const resolveRuntime = async (): Promise<RuntimeResolution> => {
+    if (!runtimeResolver) {
+      // RuntimeResolver が未注入の場合は integrated をデフォルトとする
+      return { type: "integrated" };
+    }
+    return runtimeResolver.resolve();
+  };
+
+  /**
+   * integrated モードでスキルを実行する
+   */
+  const executeIntegrated = async (
+    phase: SkillPhase,
+    projectPath: string,
+    startTime: number,
+  ): Promise<SkillExecutionResult> => {
+    const skillName = getSkillName(phase);
+
+    // modifier フェーズは modifier-skill.ts のユーティリティを使用（AC-4）
+    if (phase === "modifier") {
+      const htmlPath = `${projectPath}/index.html`;
+      const structurePath = `${projectPath}/structure.md`;
+
+      const [htmlContent, structureContent] = await Promise.all([
+        readFile(htmlPath, "utf-8"),
+        readFile(structurePath, "utf-8"),
+      ]);
+
+      const context: ModifierContext = {
+        projectPath,
+        htmlContent,
+        structureContent,
+      };
+
+      const prompt = buildModifierPrompt(context);
+      const agentAPI = getAgentAPI();
+      const response = await agentAPI.query({
+        prompt,
+        options: {
+          systemPrompt:
+            "You are a slide structure analyzer. Analyze HTML changes and output JSON format only.",
+          timeout: SDK_TIMEOUT,
+        },
+      });
+
+      const parsed = parseModifierResponse(response.content);
+      return {
+        phase,
+        success: parsed.success,
+        output: `Skill ${skillName} executed successfully`,
+        duration: Date.now() - startTime,
+        changes: parsed.changes || [],
+        direction: "reverse" as const,
+        projectPath,
+      };
+    }
+
+    // 他のフェーズ
+    const prompt = generateSkillPrompt(phase, projectPath);
+    const systemPrompt = getSystemPromptForPhase(phase);
+
+    const agentAPI = getAgentAPI();
+    await agentAPI.query({
+      prompt,
+      options: {
+        systemPrompt,
+        timeout: SDK_TIMEOUT,
+      },
+    });
+
+    return {
+      phase,
+      success: true,
+      output: `Skill ${skillName} executed successfully`,
+      duration: Date.now() - startTime,
+    };
   };
 
   return {
@@ -134,61 +247,36 @@ export const createSkillExecutor = (): SkillExecutor => {
       try {
         emitProgress(0);
 
-        // スキル名を取得
-        const skillName = getSkillName(phase);
-
-        // プロンプトを生成
-        const prompt = generateSkillPrompt(phase, projectPath);
-        const systemPrompt = getSystemPromptForPhase(phase);
+        // RuntimeResolver でモードを判定（AC-3）
+        const resolution = await resolveRuntime();
 
         emitProgress(25);
 
-        // キャンセルチェック
         if (cancelled) {
           throw new Error("Cancelled");
         }
 
-        emitProgress(50);
-
-        // Agent SDKを使用してスキルを実行
-        const agentAPI = getAgentAPI();
-        const response = await agentAPI.query({
-          prompt,
-          options: {
-            systemPrompt,
-            timeout: SDK_TIMEOUT,
-          },
-        });
-
-        // キャンセルチェック
-        if (cancelled) {
-          throw new Error("Cancelled");
-        }
-
-        // レスポンスをパース
-        const parsed = parseSkillResponse(phase, response.content);
-
-        emitProgress(100);
-
-        // modifierスキルの場合は追加情報を含める
-        if (phase === "modifier") {
+        // handoff モード: ガイダンスを返す
+        if (resolution.type === "handoff") {
+          emitProgress(100);
           return {
             phase,
             success: true,
-            output: `Skill ${skillName} executed successfully`,
             duration: Date.now() - startTime,
-            changes: parsed.changes || [],
-            direction: "reverse" as const,
-            projectPath,
+            isHandoff: true,
+            guidance: buildHandoffGuidance(
+              phase,
+              projectPath,
+              resolution.reason,
+            ),
           };
         }
 
-        return {
-          phase,
-          success: true,
-          output: `Skill ${skillName} executed successfully`,
-          duration: Date.now() - startTime,
-        };
+        // integrated モード: SDK 経由で実行
+        emitProgress(50);
+        const result = await executeIntegrated(phase, projectPath, startTime);
+        emitProgress(100);
+        return result;
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : "Unknown error";

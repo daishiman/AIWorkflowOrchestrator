@@ -92,6 +92,10 @@ import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edi
 import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
 import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
 import Database from "better-sqlite3";
+import {
+  registerSlideIpcHandlers,
+  unregisterSlideIpcHandlers,
+} from "../slide/ipc-handlers";
 import { registerConversationHandlers } from "./conversationHandlers";
 import { ConversationRepository } from "../repositories/conversationRepository";
 import { initializeConversationDatabase } from "../database/conversationDatabase";
@@ -441,6 +445,9 @@ export function unregisterAllIpcHandlers(): void {
   // auth-key handlers は内部登録状態を持つため、先に専用解除を実行する
   unregisterAuthKeyHandlers();
 
+  // slide handlers は内部状態 (watcher/executor/syncManager) を持つため専用解除
+  unregisterSlideIpcHandlers();
+
   const allChannels = Object.values(IPC_CHANNELS);
   for (const channel of allChannels) {
     ipcMain.removeHandler(channel);
@@ -563,6 +570,9 @@ export function registerAllIpcHandlers(
   // --- 2. mainWindow 依存ハンドラ ---
   track("registerWindowHandlers", () => registerWindowHandlers(mainWindow));
   track("registerDialogHandlers", () => registerDialogHandlers(mainWindow));
+
+  // --- 2.5. Slide IPC handlers (D1 fix) ---
+  track("registerSlideIpcHandlers", () => registerSlideIpcHandlers(mainWindow));
 
   // --- 3. Theme watcher ---
   // setupThemeWatcher は unsubscribe 関数を返すため個別に扱う

@@ -327,6 +327,8 @@ TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary ent
 | apps/desktop/src/main/services/environment/ | 環境サービス |
 | apps/desktop/src/main/services/skill/ | スキルサービス |
 | apps/desktop/src/main/services/skill/ | スキル作成サービス（SkillCreatorService含む） |
+| apps/desktop/src/main/adapters/llm/ | LLM Adapter（Anthropic/OpenAI/Google/xAI） |
+| apps/desktop/src/main/adapters/handoff/ | Handoff Adapter（HandoffSource → HandoffGuidance 変換。Discriminated Union: chat-edit/agent/skill/bundle） |
 | apps/desktop/src/main/ipc/ | IPCハンドラ |
 | apps/desktop/src/main/infrastructure/ | インフラ（DB、セキュリティ） |
 | apps/desktop/src/main/infrastructure/db/ | better-sqlite3 |

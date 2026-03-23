@@ -55,6 +55,7 @@
 | Main Chat / Settings runtime 同期 | api-ipc-system-core.md, llm-ipc-types.md, arch-state-management-core.md | lessons-learned-current.md, task-workflow-backlog.md |
 | バグ修正（Workspace parent pointer / pointer docs / mirror drift / visual re-audit） | workflow-workspace-parent-reference-sweep-guard.md, task-workflow.md, lessons-learned.md | ui-ux-feature-components.md, interfaces-llm.md, interfaces-chat-history.md |
 | Workspace Chat Edit AI Runtime 実装（RuntimeResolver / handoff / integrated 分岐） | llm-workspace-chat-edit.md, interfaces-llm.md, api-ipc-agent-core.md | security-electron-ipc-core.md, lessons-learned.md, task-workflow.md |
+| RuntimePolicyResolver subscription 判定統合（3パターン分岐: integrated_api / terminal_handoff subscription / no-auth） | arch-execution-capability-contract.md, arch-electron-services-details-part2.md, api-ipc-system-core.md | lessons-learned-ipc-preload-runtime.md, task-workflow-completed.md, task-workflow-backlog.md |
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |

@@ -36,11 +36,17 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 | 項目 | current behavior |
 | --- | --- |
 | コンポーネント | `InlineModelSelector` |
-| 配置責務 | Task01 は shared component 作成、Task02/03 が ChatView / Workspace mount を担当 |
+| 配置責務 | Task01 は shared component 作成（完了）、Task02 が ChatView header mount（実装済み: compact mode, disabled={isSending}）、Task03 が Workspace mount を担当 |
 | provider 取得 | `providers` prop 未指定かつ store list が空のとき `fetchProviders()` を呼ぶ |
 | provider 切替 | default model を即時選択し、store mode でも `onSelectionChange` を返す |
 | health 更新 | effective provider の変化時に `checkHealth(providerId)` を呼ぶ |
 | compact 表示 | `compact` prop で trigger padding / font size を縮小する |
+
+### 関連未タスク（2026-03-23 追補）
+
+| 未タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| UT-CHATVIEW-MODEL-SELECTOR-DATA-TESTID-001 | InlineModelSelector ルート要素に data-testid 追加 | `docs/30-workflows/unassigned-task/ut-chatview-model-selector-data-testid-001.md` |
 
 ## プロバイダーとモデル一覧
 
