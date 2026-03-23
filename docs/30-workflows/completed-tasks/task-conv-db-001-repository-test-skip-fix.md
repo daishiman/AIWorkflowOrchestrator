@@ -2,24 +2,20 @@
 
 ## メタ情報
 
-```yaml
-issue_number: 1340
-```
-
-## メタ情報
-
-| 項目         | 内容                                                |
-| ------------ | --------------------------------------------------- |
-| タスクID     | UT-CONV-DB-001                                      |
-| タスク名     | conversationRepository.test.ts 75件SKIP修正         |
-| 分類         | テスト基盤改善                                      |
-| 対象機能     | Conversation DB テスト                              |
-| 優先度       | HIGH                                                |
-| 見積もり規模 | Small (Phase 1-6簡易版)                             |
-| ステータス   | unassigned                                          |
-| 発見元       | Phase 12（TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001） |
-| 発見日       | 2026-03-19                                          |
-| 親タスク     | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001             |
+| 項目         | 内容                                                                     |
+| ------------ | ------------------------------------------------------------------------ |
+| タスクID     | UT-CONV-DB-001                                                           |
+| タスク名     | conversationRepository.test.ts 75件SKIP修正                              |
+| 分類         | テスト基盤改善                                                           |
+| 対象機能     | Conversation DB テスト                                                   |
+| 優先度       | HIGH                                                                     |
+| 見積もり規模 | Small (Phase 1-6簡易版)                                                  |
+| ステータス   | completed                                                                |
+| 完了日       | 2026-03-22                                                               |
+| 発見元       | Phase 12（TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001）                      |
+| 発見日       | 2026-03-19                                                               |
+| 親タスク     | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001                                  |
+| Issue        | [#1340](https://github.com/daishiman/AIWorkflowOrchestrator/issues/1340) |
 
 ## 1. なぜこのタスクが必要か（Why）
 

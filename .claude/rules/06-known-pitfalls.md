@@ -192,6 +192,27 @@ const pattern = new RegExp(escapeRegExp(os.homedir()), "g");
 - **教訓**: Node.js バージョン更新後は `pnpm store prune && pnpm install --force` が必要。通常の install ではキャッシュされた古いバイナリが残る
 - **関連**: [07-git-and-tooling.md#Husky Hooks](./07-git-and-tooling.md)
 
+### P66: CPU アーキテクチャ不一致によるネイティブモジュールロード失敗（P7 派生）
+
+- **教訓**: Apple Silicon Mac で Rosetta 2 経由の x86_64 Node.js を使用している場合、`pnpm install` が arm64 キャッシュからバイナリを復元し、`dlopen` 時に `incompatible architecture (have 'arm64', need 'x86_64')` エラーが発生する。P7（ABI バージョン不一致）とは異なり、`.node` ファイルは存在するがアーキテクチャが不一致
+- **症状**: `Error: dlopen(...better_sqlite3.node...): mach-o file, but is an incompatible architecture`。`require()` 失敗 → 条件付き describe が `describe.skip` にフォールバック → テストが silent skip
+- **診断**: `file node_modules/.../better_sqlite3.node` でバイナリのアーキテクチャを確認し、`node -e "console.log(process.arch)"` と照合する
+- **解決策**: `pnpm rebuild better-sqlite3` で現在の実行アーキテクチャ向けにリビルド。esbuild 等の他のネイティブモジュールも同様にリビルドが必要な場合がある
+- **再発防止**: worktree 作成後に `pnpm rebuild` を実行するセットアップスクリプト、CI キャッシュキーに `process.arch` を含める
+- **関連パターン**: P7（ネイティブモジュールのバイナリ不一致）
+- **関連タスク**: UT-CONV-DB-001
+
+```bash
+# 診断コマンド
+file node_modules/.pnpm/better-sqlite3@*/node_modules/better-sqlite3/build/Release/better_sqlite3.node
+node -e "console.log('arch:', process.arch)"
+uname -m
+
+# 修正コマンド
+pnpm rebuild better-sqlite3
+pnpm rebuild esbuild  # Vitest 実行にも必要
+```
+
 ### P8: 幽霊依存
 
 - **教訓**: テスト環境では通るが実行時にモジュール未検出エラーになる。`import` するライブラリは必ず自身の `package.json` に宣言
