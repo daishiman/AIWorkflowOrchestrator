@@ -327,6 +327,12 @@ export interface RuntimeSkillCreatorPlanResult {
   planId: string;
   skillSpec: string;
   estimatedSteps: number;
+  skillName: string;
+  description: string;
+  agents: Array<{ name: string; role: string }>;
+  scripts: Array<{ name: string; purpose: string }>;
+  triggers: string[];
+  anchors: string[];
 }
 
 /**

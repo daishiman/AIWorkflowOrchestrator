@@ -88,6 +88,14 @@ vi.mock("@/renderer/store", () => ({
   useSetCurrentView: () => mockSetCurrentView,
   useAppStore: (selector: (state: typeof mockAppState) => unknown) =>
     selector(mockAppState),
+  useLLMProviders: () => [],
+  useSelectedProviderId: () => null,
+  useSelectedModelId: () => null,
+  useLLMHealthStatus: () => "unknown",
+  useFetchProviders: () => vi.fn(),
+  useSelectProvider: () => vi.fn(),
+  useSelectModel: () => vi.fn(),
+  useCheckLLMHealth: () => vi.fn(),
 }));
 
 function setViewportWidth(width: number): void {

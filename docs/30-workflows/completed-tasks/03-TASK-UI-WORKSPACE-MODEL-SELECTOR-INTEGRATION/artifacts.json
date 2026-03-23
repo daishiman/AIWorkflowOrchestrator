@@ -1,0 +1,116 @@
+{
+  "taskId": "TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION",
+  "featureName": "workspace-inline-model-selector-integration",
+  "createdAt": "2026-03-21",
+  "updatedAt": "2026-03-23",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-1-requirements.md"
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-2-design.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "gate": "PASS",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-3-design-review.md"
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-4-test.md",
+        "apps/desktop/src/renderer/views/WorkspaceView/__tests__/WorkspaceChatPanel.integration.test.tsx"
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-5-implementation.md",
+        "apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx"
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-6-test-expansion.md"
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-7-coverage.md"
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-8-refactoring.md"
+      ]
+    },
+    "9": {
+      "name": "品質検証",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-9-quality.md"
+      ]
+    },
+    "10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-10-final-review.md"
+      ]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-11-manual-test.md"
+      ]
+    },
+    "12": {
+      "name": "ドキュメント",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-12-documentation.md"
+      ]
+    },
+    "13": {
+      "name": "完了",
+      "status": "pending",
+      "artifacts": [
+        "docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/phase-13-pr-creation.md"
+      ]
+    }
+  },
+  "impactFiles": [
+    {
+      "path": "apps/desktop/src/renderer/views/WorkspaceView/WorkspaceChatPanel.tsx",
+      "changeType": "modify",
+      "description": "InlineModelSelector(compact) 配置 + disabled制御"
+    }
+  ],
+  "dependencies": [
+    {
+      "taskId": "TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT",
+      "type": "requires",
+      "description": "Task 01: InlineModelSelector共通コンポーネント"
+    }
+  ]
+}

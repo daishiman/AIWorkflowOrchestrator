@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-23 | 1.7.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003） |
 | 2026-03-21 | 1.6.0 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
 | 2026-03-21 | 1.5.0 | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE の Phase 12 教訓4件を追加 |
 | 2026-03-21 | 1.5.2 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓3件を追加 |
@@ -610,3 +611,36 @@
 3. happy-dom 環境では `fireEvent` + `act()` を使用し、`userEvent` は禁止する（P39 準拠）。
 4. テスト数・カバレッジ値はメインエージェントが一括実行結果からクロスチェックする。
 5. Mirror Sync は実行→確認→記録の順で事後記録する（P4 準拠）。
+
+---
+
+## 2026-03-23 TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓
+
+### L-CHRHA-001: GAP ラベルドリフト（Phase 間のドキュメント不整合）
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | Phase 8（refactor-boundaries.md）と Phase 12（implementation-guide.md）の GAP ラベルが Phase 1 正本（current-state-inventory.md）と乖離した。Phase 1 では GAP-01=onTerminalSwitch だが、Phase 8/12 では GAP-01=onSendMessage と誤記 |
+| 原因 | Phase 間でドキュメントをコピーする際に、正本を参照せずに記憶に基づいて記述した |
+| 解決策 | GAP ラベルドリフト是正を実施し、Phase 1 正本に統一。事後修正をドキュメントチェンジログに記録 |
+| 再発防止 | Phase 8/12 のドキュメント作成時は Phase 1 の正本定義を grep で参照してからラベルを記述する |
+| 関連タスク | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 |
+
+### L-CHRHA-002: DEFERRED 判断の誤り（worktree 内ファイル存在確認の省略）
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | system-spec-update-summary.md で ui-ux-panels.md を「worktree に存在しない」と判断し DEFERRED としたが、実際にはファイルが存在していた |
+| 原因 | worktree 環境で正本ファイルの存在を実際に確認せず、「worktree だから存在しないだろう」という推測で先送りした |
+| 解決策 | 事後検証で存在を確認し、Review Harness セクションを ui-ux-panels.md に追加 |
+| 再発防止 | DEFERRED 判断の前に `ls` / `find` で対象ファイルの存在を実際に確認する。P57 の亜種として記録 |
+| 関連パターン | P57（設計タスクでのシステム仕様書更新先送り）、P26（システム仕様書更新遅延） |
+| 関連タスク | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 |
+
+### L-CHRHA-003: ViewType union 型と string の型不一致
+
+| 項目 | 内容 |
+|------|------|
+| 課題 | `selectProvider(id)` の引数型が `LLMProviderId`（union 型）だが、コールバックから渡される `id` は `string` 型。直接代入すると型エラーが発生 |
+| 解決策 | `useCallback` ラッパーで `id as Parameters<typeof selectProvider>[0]` を使用。将来的には selectProvider の引数型を string に緩和するか、コールバック側で union 型を渡す |
+| 関連タスク | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 |

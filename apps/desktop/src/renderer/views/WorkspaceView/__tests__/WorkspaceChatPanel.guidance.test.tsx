@@ -22,6 +22,14 @@ const mockSetCurrentView = vi.fn();
 
 vi.mock("@/renderer/store", () => ({
   useSetCurrentView: () => mockSetCurrentView,
+  useLLMProviders: () => [],
+  useSelectedProviderId: () => null,
+  useSelectedModelId: () => null,
+  useLLMHealthStatus: () => "unknown",
+  useFetchProviders: () => vi.fn(),
+  useSelectProvider: () => vi.fn(),
+  useSelectModel: () => vi.fn(),
+  useCheckLLMHealth: () => vi.fn(),
 }));
 
 // ---------------------------------------------------------------------------
