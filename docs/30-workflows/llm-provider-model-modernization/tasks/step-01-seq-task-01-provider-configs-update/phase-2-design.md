@@ -63,25 +63,32 @@ const PROVIDER_CONFIGS: Array<{
   name: "OpenAI",
   models: [
     {
-      id: "gpt-4.1",
-      name: "GPT-4.1",
-      contextWindow: 1048576,
+      id: "gpt-5.4",
+      name: "GPT-5.4",
+      contextWindow: 1050000,
       isDefault: true,
-      description: "OpenAI最新フラッグシップモデル。コンテキストウィンドウ1M tokens",
+      description: "OpenAI最新フラッグシップモデル。コンテキストウィンドウ1.05M tokens",
     },
     {
-      id: "gpt-4.1-mini",
-      name: "GPT-4.1 mini",
-      contextWindow: 1048576,
+      id: "gpt-5.4-mini",
+      name: "GPT-5.4 mini",
+      contextWindow: 1050000,
       isDefault: false,
-      description: "GPT-4.1の軽量版。高速・低コスト",
+      description: "GPT-5.4の軽量版。高速・低コスト",
     },
     {
-      id: "gpt-4.1-nano",
-      name: "GPT-4.1 nano",
-      contextWindow: 1048576,
+      id: "gpt-5.4-nano",
+      name: "GPT-5.4 nano",
+      contextWindow: 1050000,
       isDefault: false,
-      description: "GPT-4.1の超軽量版。最速・最低コスト",
+      description: "GPT-5.4の超軽量版。最速・最低コスト",
+    },
+    {
+      id: "gpt-5.4-pro",
+      name: "GPT-5.4 Pro",
+      contextWindow: 1050000,
+      isDefault: false,
+      description: "GPT-5.4の高性能版。複雑なタスク向け",
     },
     {
       id: "o3",
@@ -135,31 +142,33 @@ const PROVIDER_CONFIGS: Array<{
 
 #### Google（差し替え）
 
+速度重視/バランス/精度重視の3モデル構成:
+
 ```typescript
 {
   id: "google",
   name: "Google",
   models: [
     {
-      id: "gemini-2.5-flash",
-      name: "Gemini 2.5 Flash",
+      id: "gemini-3.1-flash-lite-preview",
+      name: "Gemini 3.1 Flash-Lite",
+      contextWindow: 1048576,
+      isDefault: false,
+      description: "Google最速・最低コストモデル（速度重視）",
+    },
+    {
+      id: "gemini-3-flash-preview",
+      name: "Gemini 3 Flash",
       contextWindow: 1048576,
       isDefault: true,
-      description: "Google最新高速モデル。1Mトークンコンテキスト対応",
+      description: "Google高速バランスモデル。1Mトークンコンテキスト対応（Gemini 2.5は2026年6月廃止予定）",
     },
     {
-      id: "gemini-2.5-pro",
-      name: "Gemini 2.5 Pro",
+      id: "gemini-3.1-pro-preview",
+      name: "Gemini 3.1 Pro",
       contextWindow: 1048576,
       isDefault: false,
-      description: "Google最高性能モデル。複雑な推論・長文対応",
-    },
-    {
-      id: "gemini-2.5-flash-lite",
-      name: "Gemini 2.5 Flash Lite",
-      contextWindow: 1048576,
-      isDefault: false,
-      description: "Gemini 2.5 Flashの超軽量版。最低コスト",
+      description: "Google最高性能モデル。複雑な推論・長文対応（精度重視）",
     },
   ],
 }
@@ -167,24 +176,33 @@ const PROVIDER_CONFIGS: Array<{
 
 #### xAI（差し替え）
 
+速度重視/バランス/精度重視の3モデル構成:
+
 ```typescript
 {
   id: "xai",
   name: "xAI",
   models: [
     {
-      id: "grok-3",
-      name: "Grok 3",
-      contextWindow: 131072,
-      isDefault: true,
-      description: "xAIの最新フラッグシップモデル",
-    },
-    {
       id: "grok-3-mini",
       name: "Grok 3 Mini",
       contextWindow: 131072,
       isDefault: false,
-      description: "Grok 3の軽量版。高速・低コスト",
+      description: "Grok 3の軽量版。高速・低コスト（速度重視）",
+    },
+    {
+      id: "grok-4-1-fast-non-reasoning",
+      name: "Grok 4.1 Fast",
+      contextWindow: 2097152,
+      isDefault: true,
+      description: "xAI最新高速モデル（非推論）。2Mトークンコンテキスト対応（バランス）",
+    },
+    {
+      id: "grok-4-1-fast-reasoning",
+      name: "Grok 4.1 Fast Reasoning",
+      contextWindow: 2097152,
+      isDefault: false,
+      description: "xAI最新高速推論モデル。2Mトークンコンテキスト対応（精度重視）",
     },
   ],
 }
@@ -234,14 +252,14 @@ function inferProviderId(modelId: string): LLMProviderId | null {
 
 ### Task 2-5: 差し替え前後のモデル数比較
 
-| プロバイダー | 現行モデル数 | 変更後モデル数 | 差分 |
-| ------------ | ------------ | -------------- | ---- |
-| OpenAI       | 3            | 5              | +2   |
-| Anthropic    | 3            | 3              | 0    |
-| Google       | 2            | 3              | +1   |
-| xAI          | 1            | 2              | +1   |
-| OpenRouter   | 4            | 4              | 0    |
-| 合計         | 13           | 17             | +4   |
+| プロバイダー | 現行モデル数 | 変更後モデル数 | 差分 | 構成方針                              |
+| ------------ | ------------ | -------------- | ---- | ------------------------------------- |
+| OpenAI       | 3            | 6              | +3   | gpt-5.4系4モデル + o3/o4-mini 2モデル |
+| Anthropic    | 3            | 3              | 0    | 速度重視/バランス/精度重視            |
+| Google       | 2            | 3              | +1   | 速度重視/バランス/精度重視            |
+| xAI          | 1            | 3              | +2   | 速度重視/バランス/精度重視            |
+| OpenRouter   | 4            | 4              | 0    | 変更なし                              |
+| 合計         | 13           | 19             | +6   |                                       |
 
 ### Task 2-6: IPC レスポンス形式への影響確認
 

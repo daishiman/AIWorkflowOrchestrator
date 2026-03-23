@@ -60,7 +60,7 @@ grep -n "systemPrompt\|system_instruction\|prepend" \
 | `v1` で `system_instruction` が使用可能 | `baseUrl` の変更なし（`v1` を維持）        |
 | `v1` で `system_instruction` が使用不可 | `baseUrl` のデフォルト値を `v1beta` に変更 |
 
-**調査結果** (`research/google-models.md` より): `system_instruction` は Gemini 2.5 以降で `v1beta` で確実に使用可能。`v1` でも使用可能かは要確認。安全策として `v1beta` を使用する方針を採用する。
+**調査結果** (`research/google-models.md` より): `system_instruction` は Gemini 2.5 以降で `v1beta` で確実に使用可能。Gemini 3系（`gemini-3-flash-preview`, `gemini-3.1-pro-preview`, `gemini-3.1-flash-lite-preview`）も同様に `v1beta` が推奨。`v1` でも使用可能かは要確認。安全策として `v1beta` を使用する方針を採用する。また Gemini 3系では `thinking_level` および Thought Signatures が新機能として追加されているが、本タスクのスコープ外とし、後続タスクで対応する。
 
 ## 非機能要件 (NFR)
 

@@ -26,12 +26,14 @@
 
 レガシーモデルを削除し、最新モデルに置換する。
 
-| プロバイダー | 削除するモデル                                               | 追加するモデル                                                          |
-| ------------ | ------------------------------------------------------------ | ----------------------------------------------------------------------- |
-| OpenAI       | `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`                       | `gpt-4.1` (default), `gpt-4.1-mini`, `gpt-4.1-nano`, `o3`, `o4-mini`    |
-| Anthropic    | `claude-3-5-sonnet-*`, `claude-3-opus-*`, `claude-3-haiku-*` | `claude-sonnet-4-6` (default), `claude-opus-4-6`, `claude-haiku-4-5`    |
-| Google       | `gemini-1.5-pro`, `gemini-1.5-flash`                         | `gemini-2.5-flash` (default), `gemini-2.5-pro`, `gemini-2.5-flash-lite` |
-| xAI          | `grok-beta`                                                  | `grok-3` (default), `grok-3-mini`                                       |
+| プロバイダー | 削除するモデル                                               | 追加するモデル                                                                                                |
+| ------------ | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| OpenAI       | `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`                       | `gpt-5.4` (default, 1.05M ctx), `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.4-pro`, `o3`, `o4-mini`                |
+| Anthropic    | `claude-3-5-sonnet-*`, `claude-3-opus-*`, `claude-3-haiku-*` | `claude-sonnet-4-6` (default), `claude-opus-4-6`, `claude-haiku-4-5`（変更なし）                              |
+| Google       | `gemini-1.5-pro`, `gemini-1.5-flash`                         | `gemini-3-flash-preview` (default, 1M ctx), `gemini-3.1-pro-preview`, `gemini-3.1-flash-lite-preview`         |
+| xAI          | `grok-beta`                                                  | `grok-4-1-fast-reasoning` (default, 2M ctx), `grok-4-1-fast-non-reasoning`, `grok-4`, `grok-3`, `grok-3-mini` |
+
+> **注記**: Gemini 2.5 は 2026年6月17日廃止予定。GPT-4.1 系は ChatGPT から退役済み（API では利用可能だが非推奨）。
 
 ### Task 1-2: description フィールド追加
 
@@ -40,7 +42,8 @@
 ### Task 1-3: inferProviderId パターン追加
 
 ```typescript
-// o3/o4 プレフィックスを OpenAI にマッピング
+// gpt-（gpt-5.4 を含む）/ o3 / o4 プレフィックスを OpenAI にマッピング
+// 注: 既存の gpt- パターンで gpt-5.4 系も包含されるが、明示的に確認すること
 if (
   modelId.startsWith("gpt-") ||
   modelId.startsWith("o3") ||
@@ -48,6 +51,8 @@ if (
 )
   return "openai";
 ```
+
+> `gpt-5.4` は `gpt-` プレフィックスで既存パターンにより `openai` に解決される。現行コードに `o3`/`o4` パターンが既存の場合、`inferProviderId` への変更は不要。現行コードを確認して判断すること。
 
 ## 参照資料
 

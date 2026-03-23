@@ -33,10 +33,12 @@ models: [
 
 ### Claude 4.6 世代（最新）
 
-| モデルID            | 表示名            | Context Window    | 特徴                                           | 推奨用途                         |
-| ------------------- | ----------------- | ----------------- | ---------------------------------------------- | -------------------------------- |
-| `claude-sonnet-4-6` | Claude Sonnet 4.6 | 200,000 (1M beta) | コーディング・指示追従が大幅改善、コスト効率良 | デフォルト推奨。日常タスク全般   |
-| `claude-opus-4-6`   | Claude Opus 4.6   | 200,000           | 最も高性能、複雑な推論・コーディング           | 複雑なタスク、高精度が必要な場合 |
+| モデルID            | 表示名            | Context Window    | 特徴                                                                     | 推奨用途                         |
+| ------------------- | ----------------- | ----------------- | ------------------------------------------------------------------------ | -------------------------------- |
+| `claude-sonnet-4-6` | Claude Sonnet 4.6 | 200,000 (1M beta) | コーディング・指示追従が大幅改善、コスト効率良。Claude Codeで70%の支持率 | デフォルト推奨。日常タスク全般   |
+| `claude-opus-4-6`   | Claude Opus 4.6   | 200,000           | 最も高性能、最も複雑な推論・コーディング向け                             | 複雑なタスク、高精度が必要な場合 |
+
+> Sonnet 4.6 は Claude Code ユーザーの70%に支持されており（vs Sonnet 4.5）、日常的なコーディングタスクのデフォルトとして推奨。
 
 ### Claude 4.5 世代
 
@@ -104,6 +106,54 @@ Opus 4.6 / Sonnet 4.6 では `effort` パラメータがサポートされ、推
 - `max`: 最大推論（トークン制限なし）
 
 現時点では Adapter 側で対応不要（将来の改善タスク候補）。
+
+## 推奨モデル構成（PROVIDER_CONFIGS）
+
+ユーザーが用途に応じて選択できるよう、速度/コスト/精度の3軸で3モデルを構成する。
+
+| ティア       | モデルID            | 表示名            | Context Window    | 速度 | コスト | 精度 | デフォルト  | 用途                                         |
+| ------------ | ------------------- | ----------------- | ----------------- | ---- | ------ | ---- | ----------- | -------------------------------------------- |
+| Speed        | `claude-haiku-4-5`  | Claude Haiku 4.5  | 200,000           | S    | S      | B    | -           | 高頻度・低コストタスク、分類・要約           |
+| Balanced     | `claude-sonnet-4-6` | Claude Sonnet 4.6 | 200,000 (1M beta) | A    | A      | A    | **default** | 日常タスク全般、コーディング補助             |
+| Max Accuracy | `claude-opus-4-6`   | Claude Opus 4.6   | 200,000           | B    | C      | S    | -           | 最も複雑な推論・コーディング、高精度が必要時 |
+
+> 評価凡例: S = 最高 / A = 高 / B = 中 / C = 低
+
+### PROVIDER_CONFIGS 実装コード
+
+```typescript
+{
+  id: "anthropic",
+  name: "Anthropic",
+  baseUrl: "https://api.anthropic.com/v1",
+  models: [
+    {
+      id: "claude-haiku-4-5",
+      name: "Claude Haiku 4.5",
+      contextWindow: 200000,
+      isDefault: false,
+    },
+    {
+      id: "claude-sonnet-4-6",
+      name: "Claude Sonnet 4.6",
+      contextWindow: 200000,
+      isDefault: true,
+    },
+    {
+      id: "claude-opus-4-6",
+      name: "Claude Opus 4.6",
+      contextWindow: 200000,
+      isDefault: false,
+    },
+  ],
+}
+```
+
+### 選択ガイド
+
+- **「とにかく速く・安く」**: `claude-haiku-4-5` -- Sonnet 4レベルのコーディング性能を持ちつつ最速・最低コスト。分類、要約、バリデーションに最適
+- **「標準的なタスク全般」**: `claude-sonnet-4-6` (default) -- Claude Code で70%の支持率。コーディング・指示追従が大幅改善
+- **「最高精度が必要」**: `claude-opus-4-6` -- 最も複雑なタスク向け。effort パラメータで推論の深さを制御可能
 
 ## 既存 Adapter への影響
 

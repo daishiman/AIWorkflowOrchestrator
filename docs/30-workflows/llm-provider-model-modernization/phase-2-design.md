@@ -70,12 +70,16 @@ Task01 ─┬→ Task02 ─┐
 
 **設計判断**:
 
-| 判断事項                     | 決定                        | 根拠                                                                    |
-| ---------------------------- | --------------------------- | ----------------------------------------------------------------------- |
-| デフォルトモデルの選定       | 各社の主力モデル            | OpenAI: gpt-4.1, Anthropic: claude-sonnet-4-6, Google: gemini-2.5-flash |
-| Context Window 値            | 各社公式ドキュメント値      | research/\*.md 参照                                                     |
-| OpenRouter モデル            | 変更しない                  | スコープ外                                                              |
-| `description` フィールド追加 | `PROVIDER_CONFIGS` 型に追加 | LLMModelSchema との整合性                                               |
+| 判断事項                     | 決定                        | 根拠                                                                                                        |
+| ---------------------------- | --------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| デフォルトモデルの選定       | 各社の最新主力モデル        | OpenAI: gpt-5.4, Anthropic: claude-sonnet-4-6, Google: gemini-3-flash-preview, xAI: grok-4-1-fast-reasoning |
+| Context Window 値            | 各社公式ドキュメント値      | research/\*.md 参照（gpt-5.4: 1.05M, gemini-3系: 1M, grok-4-1: 2M）                                         |
+| OpenRouter モデル            | 変更しない                  | スコープ外（動的リスト取得は Task07 で対応済み）                                                            |
+| `description` フィールド追加 | `PROVIDER_CONFIGS` 型に追加 | LLMModelSchema との整合性                                                                                   |
+| GPT-5.4 シリーズ採用根拠     | ChatGPT 退役モデルを排除    | gpt-4.1/o3/o4-mini は ChatGPT から退役。API 経由では利用可能だが新規採用は gpt-5.4 系を優先                 |
+| Gemini 3系採用根拠           | Gemini 2.5 廃止への対応     | 2026年6月17日廃止予定のため、Gemini 3系（preview）に移行                                                    |
+
+**モデル構成方針**: 各プロバイダーで「速度重視/バランス/精度重視」から選択できるよう構成する。OpenAI は gpt-5.4系 4モデル + 推論モデル 2モデルの計 6モデル。
 
 **影響範囲**: `handleGetProviders` の戻り値が変わるため、テスト期待値の更新が必須（Task04）。
 
@@ -100,16 +104,17 @@ Task01 ─┬→ Task02 ─┐
 1. `formatContents` から systemPrompt ロジックを分離
 2. `buildRequestBody` ヘルパーメソッドを追加
 3. `sendChat` / `streamChat` のリクエストボディを更新
-4. API バージョンの判断
+4. API バージョンの判断（Gemini 3系対応含む）
 
 **設計判断**:
 
-| 判断事項                    | 決定                                      | 根拠                                  |
-| --------------------------- | ----------------------------------------- | ------------------------------------- |
-| API バージョン              | `v1beta` に変更（安全策）                 | `system_instruction` の確実なサポート |
-| `formatContents` リファクタ | systemPrompt を分離                       | SoC（関心の分離）                     |
-| `buildRequestBody` 導入     | sendChat/streamChat の共通化              | DRY 原則                              |
-| systemPrompt 省略時         | `system_instruction` フィールド自体を省略 | API 仕様に準拠                        |
+| 判断事項                    | 決定                                      | 根拠                                                                             |
+| --------------------------- | ----------------------------------------- | -------------------------------------------------------------------------------- |
+| API バージョン              | `v1beta` に変更（安全策）                 | `system_instruction` の確実なサポート。Gemini 3系 preview API でも v1beta が推奨 |
+| `formatContents` リファクタ | systemPrompt を分離                       | SoC（関心の分離）                                                                |
+| `buildRequestBody` 導入     | sendChat/streamChat の共通化              | DRY 原則                                                                         |
+| systemPrompt 省略時         | `system_instruction` フィールド自体を省略 | API 仕様に準拠                                                                   |
+| Gemini 3系 新機能           | `thinking_level` / Thought Signatures     | 未対応。将来の拡張ポイントとして `buildRequestBody` 内に注釈を残す               |
 
 **コード設計**:
 
@@ -191,12 +196,15 @@ Step-04 (直列): Task05 — スキーマ拡張（オプション）
 
 ## リスク分析
 
-| リスク                                    | 影響度 | 対策                                        |
-| ----------------------------------------- | ------ | ------------------------------------------- |
-| GoogleAdapter の v1/v1beta 判断ミス       | 中     | Task03 内で API バージョン検証テストを実施  |
-| inferProviderId の o3/o4 パターン漏れ     | 高     | Task04 で網羅的テストケースを追加           |
-| 保存済み設定との不整合                    | 中     | NFR-01 に基づくフォールバック検討           |
-| system_instruction フィールドの後方互換性 | 低     | v1beta で確実にサポートされることを確認済み |
+| リスク                                        | 影響度 | 対策                                                                   |
+| --------------------------------------------- | ------ | ---------------------------------------------------------------------- |
+| GoogleAdapter の v1/v1beta 判断ミス           | 中     | Task03 内で API バージョン検証テストを実施。Gemini 3系は v1beta を使用 |
+| inferProviderId の gpt-5/o3/o4 パターン漏れ   | 高     | Task04 で網羅的テストケースを追加（`gpt-5.4`, `o3`, `o4-mini` 等）     |
+| 保存済み設定との不整合                        | 中     | NFR-01 に基づくフォールバック検討（旧モデルID選択済みユーザー対応）    |
+| system_instruction フィールドの後方互換性     | 低     | v1beta で確実にサポートされることを確認済み                            |
+| Gemini 3系 preview モデルの安定性             | 中     | preview ラベル付きモデルはAPI仕様変更リスクあり。GA後に再検討予定      |
+| gpt-5.4 系モデルの reasoning.effort 対応      | 低     | 現時点では未対応。将来の拡張ポイントとして注記のみ（後続タスク候補）   |
+| Grok 4-1 系モデルの 2M コンテキストウィンドウ | 低     | contextWindow フィールドを 2097152 に設定（正確な値は要確認）          |
 
 ## 成果物
 

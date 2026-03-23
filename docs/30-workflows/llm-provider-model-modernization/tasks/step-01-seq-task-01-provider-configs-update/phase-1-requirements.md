@@ -31,11 +31,14 @@
 | 項目       | 値                                           |
 | ---------- | -------------------------------------------- |
 | 削除モデル | `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`       |
-| 追加モデル | `gpt-4.1`（default, contextWindow: 1048576） |
-|            | `gpt-4.1-mini`（contextWindow: 1048576）     |
-|            | `gpt-4.1-nano`（contextWindow: 1048576）     |
+| 追加モデル | `gpt-5.4`（default, contextWindow: 1050000） |
+|            | `gpt-5.4-mini`（contextWindow: 1050000）     |
+|            | `gpt-5.4-nano`（contextWindow: 1050000）     |
+|            | `gpt-5.4-pro`（contextWindow: 1050000）      |
 |            | `o3`（contextWindow: 200000）                |
 |            | `o4-mini`（contextWindow: 200000）           |
+
+> GPT-4.1 系は ChatGPT から退役済み。API 経由では利用可能だが、gpt-5.4 系を新規採用とする。
 
 #### 要件 R-02: Anthropic モデル更新
 
@@ -46,22 +49,30 @@
 |            | `claude-opus-4-6`（contextWindow: 200000）                                        |
 |            | `claude-haiku-4-5`（contextWindow: 200000）                                       |
 
+> Anthropic モデルは変更なし（claude-sonnet-4-6 / opus-4-6 / haiku-4-5 は現時点で最新）。
+
 #### 要件 R-03: Google モデル更新
 
-| 項目       | 値                                                    |
-| ---------- | ----------------------------------------------------- |
-| 削除モデル | `gemini-1.5-pro`, `gemini-1.5-flash`                  |
-| 追加モデル | `gemini-2.5-flash`（default, contextWindow: 1048576） |
-|            | `gemini-2.5-pro`（contextWindow: 1048576）            |
-|            | `gemini-2.5-flash-lite`（contextWindow: 1048576）     |
+| 項目       | 値                                                          |
+| ---------- | ----------------------------------------------------------- |
+| 削除モデル | `gemini-1.5-pro`, `gemini-1.5-flash`                        |
+| 追加モデル | `gemini-3-flash-preview`（default, contextWindow: 1048576） |
+|            | `gemini-3.1-pro-preview`（contextWindow: 1048576）          |
+|            | `gemini-3.1-flash-lite-preview`（contextWindow: 1048576）   |
+
+> Gemini 2.5 は 2026年6月17日廃止予定のため、Gemini 3系（preview）に移行する。
+> Gemini 3系は thinking_level / Thought Signatures をサポート（GoogleAdapter 拡張で対応予定）。
 
 #### 要件 R-04: xAI モデル更新
 
-| 項目       | 値                                         |
-| ---------- | ------------------------------------------ |
-| 削除モデル | `grok-beta`                                |
-| 追加モデル | `grok-3`（default, contextWindow: 131072） |
-|            | `grok-3-mini`（contextWindow: 131072）     |
+| 項目       | 値                                                           |
+| ---------- | ------------------------------------------------------------ |
+| 削除モデル | `grok-beta`                                                  |
+| 追加モデル | `grok-4-1-fast-reasoning`（default, contextWindow: 2097152） |
+|            | `grok-4-1-fast-non-reasoning`（contextWindow: 2097152）      |
+|            | `grok-4`（contextWindow: 131072）                            |
+|            | `grok-3`（contextWindow: 131072）                            |
+|            | `grok-3-mini`（contextWindow: 131072）                       |
 
 #### 要件 R-05: OpenRouter モデル（変更なし）
 
@@ -78,18 +89,19 @@ OpenRouter の `PROVIDER_CONFIGS` は今回の変更スコープ外とする。�
 
 ### Task 1-3: 受入基準定義
 
-| ID    | 受入基準                                                                                                              |
-| ----- | --------------------------------------------------------------------------------------------------------------------- |
-| AC-01 | `handleGetProviders()` が OpenAI プロバイダーで `gpt-4.1` を `isDefault: true` で返す                                 |
-| AC-02 | `handleGetProviders()` が Anthropic プロバイダーで `claude-sonnet-4-6` を `isDefault: true` で返す                    |
-| AC-03 | `handleGetProviders()` が Google プロバイダーで `gemini-2.5-flash` を `isDefault: true` で返す                        |
-| AC-04 | `handleGetProviders()` が xAI プロバイダーで `grok-3` を `isDefault: true` で返す                                     |
-| AC-05 | 旧モデルID（`gpt-4o`, `claude-3-5-sonnet-20241022`, `gemini-1.5-pro`, `grok-beta`）が `PROVIDER_CONFIGS` に存在しない |
-| AC-06 | `inferProviderId("o3")` が `"openai"` を返す                                                                          |
-| AC-07 | `inferProviderId("o4-mini")` が `"openai"` を返す                                                                     |
-| AC-08 | 各モデルオブジェクトに `description` フィールドが存在する（空文字列不可）                                             |
-| AC-09 | TypeScript コンパイルエラーが 0 件                                                                                    |
-| AC-10 | 既存の `inferProviderId` が返す値（`anthropic`, `google`, `xai`, `openrouter`）は変更されない                         |
+| ID    | 受入基準                                                                                                               |
+| ----- | ---------------------------------------------------------------------------------------------------------------------- |
+| AC-01 | `handleGetProviders()` が OpenAI プロバイダーで `gpt-5.4` を `isDefault: true` で返す                                  |
+| AC-02 | `handleGetProviders()` が Anthropic プロバイダーで `claude-sonnet-4-6` を `isDefault: true` で返す                     |
+| AC-03 | `handleGetProviders()` が Google プロバイダーで `gemini-3-flash-preview` を `isDefault: true` で返す                   |
+| AC-04 | `handleGetProviders()` が xAI プロバイダーで `grok-4-1-fast-non-reasoning` を `isDefault: true` で返す（バランス重視） |
+| AC-05 | 旧モデルID（`gpt-4o`, `claude-3-5-sonnet-20241022`, `gemini-1.5-pro`, `grok-beta`）が `PROVIDER_CONFIGS` に存在しない  |
+| AC-06 | `inferProviderId("o3")` が `"openai"` を返す                                                                           |
+| AC-07 | `inferProviderId("o4-mini")` が `"openai"` を返す                                                                      |
+| AC-08 | `inferProviderId("gpt-5.4")` が `"openai"` を返す（`gpt-` プレフィックスパターンで対応可能か確認）                     |
+| AC-09 | 各モデルオブジェクトに `description` フィールドが存在する（空文字列不可）                                              |
+| AC-10 | TypeScript コンパイルエラーが 0 件                                                                                     |
+| AC-11 | 既存の `inferProviderId` が返す値（`anthropic`, `google`, `xai`, `openrouter`）は変更されない                          |
 
 ### Task 1-4: スコープ外事項の明記
 

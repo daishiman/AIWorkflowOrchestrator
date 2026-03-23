@@ -27,16 +27,18 @@ grep -n "inferProviderId" apps/desktop/src/main/handlers/llm.ts
 
 ### FR-01: PROVIDER_CONFIGS モデル定義の最新化
 
-| プロバイダー | 削除するモデル                                               | 追加するモデル                                                          | 優先度 |
-| ------------ | ------------------------------------------------------------ | ----------------------------------------------------------------------- | ------ |
-| OpenAI       | `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`                       | `gpt-4.1` (default), `gpt-4.1-mini`, `gpt-4.1-nano`, `o3`, `o4-mini`    | 必須   |
-| Anthropic    | `claude-3-5-sonnet-*`, `claude-3-opus-*`, `claude-3-haiku-*` | `claude-sonnet-4-6` (default), `claude-opus-4-6`, `claude-haiku-4-5`    | 必須   |
-| Google       | `gemini-1.5-pro`, `gemini-1.5-flash`                         | `gemini-2.5-flash` (default), `gemini-2.5-pro`, `gemini-2.5-flash-lite` | 必須   |
-| xAI          | `grok-beta`                                                  | `grok-3` (default), `grok-3-mini`                                       | 必須   |
+| プロバイダー | 削除するモデル                                               | 追加するモデル                                                                                                    | 優先度 |
+| ------------ | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------- | ------ |
+| OpenAI       | `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`                       | `gpt-5.4` (default, 1.05M ctx), `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.4-pro`, `o3`, `o4-mini`                    | 必須   |
+| Anthropic    | `claude-3-5-sonnet-*`, `claude-3-opus-*`, `claude-3-haiku-*` | `claude-sonnet-4-6` (default), `claude-opus-4-6`, `claude-haiku-4-5`（変更なし）                                  | 必須   |
+| Google       | `gemini-1.5-pro`, `gemini-1.5-flash`                         | `gemini-3-flash-preview` (default, 1M ctx), `gemini-3.1-pro-preview`, `gemini-3.1-flash-lite-preview`             | 必須   |
+| xAI          | `grok-beta`                                                  | `grok-3-mini` (速度重視), `grok-4-1-fast-non-reasoning` (default, バランス), `grok-4-1-fast-reasoning` (精度重視) | 必須   |
+
+> **注記**: Gemini 2.5 は 2026年6月17日廃止予定のため Gemini 3系に移行。GPT-4.1 は ChatGPT から退役済みのため gpt-5.4 系を採用。
 
 ### FR-02: inferProviderId パターン追加
 
-`o3`/`o4` プレフィックスを OpenAI にマッピングする条件分岐を追加する。
+`o3`/`o4` プレフィックスを OpenAI にマッピングする条件分岐を追加する。また `gpt-5` プレフィックスも OpenAI にマッピングされることを確認する（既存の `gpt-` パターンで対応可能か検証すること）。
 
 ### FR-03: AnthropicAdapter ヘルスチェックモデル更新
 
@@ -76,11 +78,15 @@ systemPrompt を `user` ロール埋め込みワークアラウンドから `sys
 - AC-01: `handleGetProviders` が返すプロバイダーリストに最新モデルのみが含まれる
 - AC-02: `inferProviderId("o3")` が `"openai"` を返す
 - AC-03: `inferProviderId("o4-mini")` が `"openai"` を返す
-- AC-04: AnthropicAdapter のヘルスチェックが `claude-haiku-4-5` を使用する
-- AC-05: GoogleAdapter が systemPrompt を `system_instruction` フィールドで送信する
-- AC-06: GoogleAdapter が systemPrompt なしの場合に `system_instruction` を省略する
-- AC-07: `pnpm typecheck` が PASS する
-- AC-08: `pnpm vitest run` で全テストが PASS する
+- AC-04: `inferProviderId("gpt-5.4")` が `"openai"` を返す（`gpt-` プレフィックスで対応可能か確認）
+- AC-05: AnthropicAdapter のヘルスチェックが `claude-haiku-4-5` を使用する
+- AC-06: GoogleAdapter が systemPrompt を `system_instruction` フィールドで送信する（Gemini 3 API 対応）
+- AC-07: GoogleAdapter が systemPrompt なしの場合に `system_instruction` を省略する
+- AC-08: OpenAI プロバイダーのデフォルトモデルが `gpt-5.4` である
+- AC-09: Google プロバイダーのデフォルトモデルが `gemini-3-flash-preview` である
+- AC-10: xAI プロバイダーのデフォルトモデルが `grok-4-1-fast-non-reasoning` である（バランス重視）
+- AC-11: `pnpm typecheck` が PASS する
+- AC-12: `pnpm vitest run` で全テストが PASS する
 
 ## スコープ
 

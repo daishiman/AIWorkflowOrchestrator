@@ -12,7 +12,7 @@
 
 ## 目的
 
-GoogleAdapter の systemPrompt 処理を、`user` ロールへの埋め込みワークアラウンドから、Gemini API の正式な `system_instruction` フィールドに移行する。
+GoogleAdapter の systemPrompt 処理を、`user` ロールへの埋め込みワークアラウンドから、Gemini API の正式な `system_instruction` フィールドに移行する。対象モデルは Task01 で追加される Gemini 3系（`gemini-3-flash-preview`, `gemini-3.1-pro-preview`, `gemini-3.1-flash-lite-preview`）を含む。
 
 ## 対象ファイル
 
@@ -76,12 +76,15 @@ private buildRequestBody(request: LLMChatRequestInput): Record<string, unknown> 
 
 ### Task 3-4: APIバージョン検討
 
-`v1` で `system_instruction` が使用可能か確認し、不可能な場合は `v1beta` に切り替える。
+`v1` で `system_instruction` が使用可能か確認し、不可能な場合は `v1beta` に切り替える。Gemini 3系（preview モデル）では `v1beta` を推奨する。
 
-| 判断                                | 対応                       |
-| ----------------------------------- | -------------------------- |
-| v1 で system_instruction が使える   | baseUrl 変更なし           |
-| v1 で system_instruction が使えない | baseUrl を `v1beta` に変更 |
+| 判断                                | 対応                                                      |
+| ----------------------------------- | --------------------------------------------------------- |
+| v1 で system_instruction が使える   | baseUrl 変更なし                                          |
+| v1 で system_instruction が使えない | baseUrl を `v1beta` に変更                                |
+| Gemini 3系 preview モデルを使用     | `v1beta` を優先（preview モデルは v1beta での提供が基本） |
+
+> **注記**: Gemini 3系の新機能（`thinking_level`, Thought Signatures）は本タスクのスコープ外。将来の拡張ポイントとして `buildRequestBody` 内にコメントを残すこと。
 
 ## 参照資料
 

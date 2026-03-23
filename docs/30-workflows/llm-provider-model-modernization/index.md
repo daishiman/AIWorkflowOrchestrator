@@ -22,24 +22,26 @@
 
 ### 現状と最新の対比
 
-| プロバイダー   | 現在の定義（レガシー）                                                            | 最新で使うべきモデル                                          |
-| -------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------- |
-| **OpenAI**     | `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`                                            | `gpt-4.1`, `gpt-4.1-mini`, `gpt-4.1-nano`, `o3`, `o4-mini`    |
-| **Anthropic**  | `claude-3-5-sonnet-20241022`, `claude-3-opus-20240229`, `claude-3-haiku-20240307` | `claude-sonnet-4-6`, `claude-opus-4-6`, `claude-haiku-4-5`    |
-| **Google**     | `gemini-1.5-pro`, `gemini-1.5-flash`                                              | `gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash-lite` |
-| **xAI**        | `grok-beta`                                                                       | `grok-3`, `grok-3-mini`                                       |
-| **OpenRouter** | 未対応                                                                            | `openai/gpt-4o`, `anthropic/claude-3.5-sonnet` 他             |
+| プロバイダー   | 現在の定義（レガシー）                                                            | 最新で使うべきモデル                                                                                                 |
+| -------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| **OpenAI**     | `gpt-4o`, `gpt-4o-mini`, `gpt-4-turbo`                                            | `gpt-5.4`(flagship, 1.05M ctx), `gpt-5.4-mini`, `gpt-5.4-nano`, `gpt-5.4-pro`, `o3`, `o4-mini`                       |
+| **Anthropic**  | `claude-3-5-sonnet-20241022`, `claude-3-opus-20240229`, `claude-3-haiku-20240307` | `claude-sonnet-4-6`, `claude-opus-4-6`, `claude-haiku-4-5`（変更なし）                                               |
+| **Google**     | `gemini-1.5-pro`, `gemini-1.5-flash`                                              | `gemini-3-flash-preview`(1M ctx), `gemini-3.1-pro-preview`, `gemini-3.1-flash-lite-preview`                          |
+| **xAI**        | `grok-beta`                                                                       | `grok-3-mini`(速度重視), `grok-4-1-fast-non-reasoning`(default,バランス), `grok-4-1-fast-reasoning`(精度重視,2M ctx) |
+| **OpenRouter** | 未対応                                                                            | 300+ モデル、OpenAI互換API（動的モデルリスト取得）                                                                   |
+
+> **注記**: Gemini 2.5 は 2026年6月17日に廃止予定。GPT-4.1 系は ChatGPT から退役済み（API では引き続き利用可能）。
 
 ### API構成の変更点
 
-| プロバイダー   | 現状の問題                                                | 修正内容                                                           |
-| -------------- | --------------------------------------------------------- | ------------------------------------------------------------------ |
-| **OpenAI**     | `inferProviderId` が `o3`/`o4-mini` に未対応              | `o3`/`o4` プレフィックスパターン追加（実装済み）                   |
-| **Anthropic**  | ヘルスチェックが `claude-3-haiku-20240307` を使用         | `claude-haiku-4-5` に更新                                          |
-| **Google**     | `system_instruction` 未使用（userロールワークアラウンド） | `system_instruction` フィールド対応、APIバージョン検討             |
-| **xAI**        | OpenAIと99%同一コードが別ファイルに重複                   | `OpenAICompatibleAdapter` で統合（実装済み）                       |
-| **OpenRouter** | 全レイヤーで未対応                                        | 型→アダプター→ファクトリ→ハンドラ→ストレージ→UI 全統合（実装済み） |
-| **UI**         | APIキー未設定プロバイダーのモデルが選択可能               | `isAvailable` フィルタリング追加（実装済み）                       |
+| プロバイダー   | 現状の問題                                                | 修正内容                                                                                            |
+| -------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **OpenAI**     | `inferProviderId` が `gpt-5` プレフィックスに未対応       | `gpt-5` プレフィックスパターン追加検討。`reasoning.effort` (none/low/medium/high/xhigh)対応も要検討 |
+| **Anthropic**  | ヘルスチェックが `claude-3-haiku-20240307` を使用         | `claude-haiku-4-5` に更新                                                                           |
+| **Google**     | `system_instruction` 未使用（userロールワークアラウンド） | `system_instruction` フィールド対応、Gemini 3 新機能（thinking_level, Thought Signatures）検討      |
+| **xAI**        | OpenAIと99%同一コードが別ファイルに重複                   | `OpenAICompatibleAdapter` で統合（実装済み）                                                        |
+| **OpenRouter** | 全レイヤーで未対応                                        | 型→アダプター→ファクトリ→ハンドラ→ストレージ→UI 全統合（実装済み）                                  |
+| **UI**         | APIキー未設定プロバイダーのモデルが選択可能               | `isAvailable` フィルタリング追加（実装済み）                                                        |
 
 ## 新アーキテクチャ（実装済み）
 
@@ -145,9 +147,10 @@ Phase 2: 実装（依存関係に基づく直列 + 並列）
 
 ## 各プロバイダー詳細調査
 
-| ファイル                       | 内容                              |
-| ------------------------------ | --------------------------------- |
-| `research/openai-models.md`    | OpenAI 最新モデル・API仕様        |
-| `research/anthropic-models.md` | Anthropic 最新モデル・API仕様     |
-| `research/google-models.md`    | Google Gemini 最新モデル・API仕様 |
-| `research/xai-models.md`       | xAI 最新モデル・API仕様           |
+| ファイル                        | 内容                                                 |
+| ------------------------------- | ---------------------------------------------------- |
+| `research/openai-models.md`     | OpenAI 最新モデル・API仕様                           |
+| `research/anthropic-models.md`  | Anthropic 最新モデル・API仕様                        |
+| `research/google-models.md`     | Google Gemini 最新モデル・API仕様（Gemini 3対応）    |
+| `research/xai-models.md`        | xAI 最新モデル・API仕様（Grok 4系対応）              |
+| `research/openrouter-models.md` | OpenRouter 統合ガイド（300+ モデル、動的リスト取得） |
