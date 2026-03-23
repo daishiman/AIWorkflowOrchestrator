@@ -4,37 +4,52 @@
 
 ---
 
-## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
-||||||| Stash base
-## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
-## TASK-SC-03-PLAN-LLM-PROMPT 完了（2026-03-23）
+## TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12 final sync
+- **Phase**: Phase 1-13 設計完了
 - **Result**: success
 - **Notes**:
-  - RuntimeSkillCreatorFacade.plan() のスタブ実装を LLM 呼び出しに置き換え
-  - agent 仕様書注入 + JSON レスポンスパースを実装
-  - planPromptConstants.ts を新規作成しプロンプト定数を分離
-  - RuntimeSkillCreatorFacade.plan.test.ts を新規作成
+  - ChatPanel の review harness を task-specification-creator の Phase 11 に整合させる設計タスク
+  - 8状態定義（idle / loading / streaming / complete / error / review / guidance / terminal）確定
+  - 3 Lane 設計（Review Lane / Guidance Lane / Terminal Lane）確立
+  - GAP-01〜04 の no-op 排除設計を確定
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
 
 ---
 
-## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
+## TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了（2026-03-22）
 
 - **Agent**: task-specification-creator
-- **変更内容**: WorkspaceChatPanel header に InlineModelSelector を compact mode で配置。disabled={controller.isStreaming} でストリーミング中ロック。GuidanceBlock(blocked) は Store reactivity で自動連携（変更不要）。統合テスト11件追加、全146テスト PASS。ui-ux-llm-selector.md / task-workflow 更新。
-- **影響ファイル**: WorkspaceChatPanel.tsx, WorkspaceView.test.tsx, WorkspaceChatPanel.guidance.test.tsx, WorkspaceChatPanel.integration.test.tsx (新規)
-- **未タスク**: 0件
+- **Phase**: Phase 1-13 設計完了
+- **Result**: success
+- **Notes**:
+  - Concern 3 分割（Launcher / Handoff Card / Consumer Adapter）設計確定
+  - 統一 DTO: HandoffGuidance（terminalCommand / contextSummary / reason）
+  - Manual Boundary: auto-send 禁止 / hidden injection 禁止 / headless execution 禁止
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+  - 未タスク 8 件（MINOR 3 件 + GAP 5 件）を unassigned-task/ に登録
+  - implementation-guide.md（Part 1: 中学生レベル概念説明 / Part 2: 開発者向け）作成
+  - Phase 13 はユーザー指示待ち（blocked）
 
 ---
 
-## TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
+## TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 完了（2026-03-22）
 
 - **Agent**: task-specification-creator
-- **変更内容**: ChatView header に InlineModelSelector を compact mode で配置。disabled={isSending} でストリーミング中ロック。LLMGuidanceBanner は Store reactivity で自動連携（変更不要）。統合テスト8件追加、全62テスト PASS。ui-ux-llm-selector.md / ui-ux-navigation.md を更新。
-- **影響ファイル**: ChatView/index.tsx, ChatView.test.tsx, ChatView.guidance.test.tsx, ChatView.integration.test.tsx (新規)
-- **未タスク**: UT-CHATVIEW-MODEL-SELECTOR-DATA-TESTID-001 (Low: data-testid 追加)
+- **Phase**: Phase 1-13 設計完了
+- **Result**: success
+- **Notes**:
+  - TranscriptProvenance 型定義（5フィールド）・3操作フロー・provenance chip 設計を確定
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+  - MINOR指摘 M-1/M-2 を未タスクとして管理（M-3 は実装仕様確定）
+  - implementation-guide.md（Part 1: 郵便消印アナロジー / Part 2: 開発者向け）作成
+  - Phase 13 はユーザー指示待ち（blocked）
+
+---
+
+## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（2026-03-21）
 
 ---
 
@@ -50,6 +65,58 @@
 
 ---
 
+## TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 same-wave sync（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 docs/spec sync
+- **Result**: success
+- **Notes**:
+  - `workflow-ai-runtime-execution-responsibility-realignment.md` に Task04 standalone root と current canonical set を追記
+  - `task-workflow-completed.md` に `spec_created` / `implementation_ready` / Phase 13 blocked の分離記録を追加
+  - `task-workflow-backlog.md` と `lessons-learned-current.md` / `lessons-learned-phase12-workflow-lifecycle.md` に follow-up 4件と教訓4件を追加
+  - Task04 の same-wave sync を task/workflow/doc/spec の関係性として再記録
+
+---
+
+## TASK-FIX-LLM-CONFIG-PERSISTENCE 完了（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 Task 2
+- **Result**: success
+- **Notes**:
+  - `aiworkflow-requirements/LOGS.md` と `task-specification-creator/LOGS.md` に完了記録を追加（P1対策: 2ファイル両方）
+  - `aiworkflow-requirements/SKILL.md` と `task-specification-creator/SKILL.md` に変更履歴を追加（P25対策）
+  - `arch-state-management.md` の persist 対象フィールド一覧に `selectedProviderId` / `selectedModelId` を追記
+  - `workflow-ai-chat-llm-integration-fix.md` の TASK-FIX-LLM-CONFIG-PERSISTENCE ステータスを「実装完了」へ更新
+  - `ui-ux-llm-selector.md` の persist 未実装注釈を「実装済み」へ更新
+  - topic-map.md を generate-index.js で再生成
+
+---
+
+## workflow 移設時の本文 stale path ガード追加（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: ガイド/運用ルール是正
+- **Result**: success
+- **Notes**:
+  - `references/spec-update-workflow.md` に、ディレクトリ移設後は `index.md` の canonical path、各 Phase の依存参照、`outputs/verification-report.md` を同一 wave で再生成するルールを追加
+  - `rg -n "<old-path>" <workflow> <parent> <downstream>` を 0 件化してから `verify-all-specs` を再実行する手順を固定
+  - standalone task 移設で「構造 PASS / 意味 stale」になる再発パターンを明文化
+
+---
+
+## pending skeleton workflow validator 調整（2026-03-21）
+
+- **Agent**: task-specification-creator
+- **Phase**: validator / workflow generation rule sync
+- **Result**: success
+- **Notes**:
+  - `validate-phase-output.js` を更新し、全 Phase が `pending` / `not_started` の workflow では `outputs/artifacts.json` と Phase 11 補助成果物を未開始扱いで保留するよう変更
+  - 設計タスクは `manual-test-plan.md` と `screenshot-plan.json` の `screenshotRequired=false` を Phase 11 evidence として受理し、非視覚 walkthrough を warning 扱いしないよう是正
+  - `verify-all-specs.js` は依存 Phase 参照をメタ情報込みで判定し、`/outputs/` 参照の未生成ノイズを除去
+  - `references/patterns-workflow-generation.md` に pending skeleton workflow の台帳同期切替条件を追記し、validator と skill guidance の期待値を一致させた
+
+---
 ## chat-inline-model-selector ワークフロー仕様書作成（2026-03-21）
 
 - **Agent**: task-specification-creator

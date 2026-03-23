@@ -11,7 +11,7 @@
 | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ~~TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION~~ | ~~ChatViewへのインラインモデルセレクタ配置~~ | ~~中~~ | ~~chat-inline-model-selector ワークフロー Task 02（2026-03-21）~~ | ~~実装完了（2026-03-23）→ completed ledger へ移動~~ |
 | UT-CHATVIEW-MODEL-SELECTOR-DATA-TESTID-001 | InlineModelSelector に data-testid 属性を追加 | 低 | TASK-UI-CHATVIEW-MODEL-SELECTOR-INTEGRATION Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-chatview-model-selector-data-testid-001.md` |
-| ~~TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION~~ | ~~WorkspaceChatPanelへのインラインモデルセレクタ配置~~ | ~~中~~ | ~~chat-inline-model-selector ワークフロー Task 03（2026-03-21）~~ | ~~実装完了（2026-03-23）→ completed ledger へ移動~~ |
+| TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION | WorkspaceChatPanelへのインラインモデルセレクタ配置 | 中 | chat-inline-model-selector ワークフロー Task 03（2026-03-21） | `docs/30-workflows/chat-inline-model-selector/tasks/03-TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION/` |
 | UT-PER-CHAT-MODEL-SELECTION-DESIGN-001 | per-chatモデル選択への拡張設計 | 低 | chat-inline-model-selector Phase 1 スコープ外 + 30種思考法（2026-03-21） | `docs/30-workflows/unassigned-task/task-ut-per-chat-model-selection-design-001.md` |
 | UT-GLOBAL-MODEL-CHANGE-NOTIFICATION-001 | グローバルモデル変更時の他画面通知UI | 中 | chat-inline-model-selector Phase 2/3 + 30種思考法（2026-03-21） | `docs/30-workflows/unassigned-task/task-ut-global-model-change-notification-001.md` |
 | UT-MODEL-SEARCH-FILTER-UI-001 | モデル数増加時の検索/絞り込みUI | 低 | chat-inline-model-selector Phase 2 + 30種思考法（2026-03-21） | `docs/30-workflows/unassigned-task/task-ut-model-search-filter-ui-001.md` |
@@ -26,7 +26,6 @@
 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | current code に残る runtime policy centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 12 最終再監査（2026-03-21） | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface を統合する | 高 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 Phase 12 最終ドキュメント更新（2026-03-21） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
 | ~~UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001~~ | ~~`RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する~~ | ~~中~~ | **完了**: TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）で実装済み | ~~`docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md`~~ |
-| UT-WORKSPACE-MOCK-CONTROLLER-DEDUP-001 | WorkspaceView テストの createMockController ヘルパー共通化 | 低 | TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 30種思考法分析（2026-03-23） | `docs/30-workflows/unassigned-task/task-ut-workspace-mock-controller-dedup-001.md` |
 | UT-CLEANUP-AI-CHECK-CONNECTION-001 | `llm:check-health` への移行完了後に `AI_CHECK_CONNECTION` legacy handler / channel / preload API を削除する | 低 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 3 MINOR M-3 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
 | UT-CLEANUP-RUNTIME-RESOLVER-001 | 全 surface の policy consumer 移行完了後に deprecated `RuntimeResolver` を削除する | 低 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 DD-1 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
 | UT-DESIGN-SANITIZE-PLACEMENT-001 | `sanitizeForRenderer()` の配置先を IPC handler 内部か共通 utility かで確定し、Task04 着手前に文書化する | 中 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 11 D-1 / Phase 12 close-out（2026-03-21） | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
@@ -96,6 +95,8 @@
 | UT-RUNTIME-BUILDER-MIGRATION-001 | TerminalHandoffBuilder → buildForSurface 統一メソッド移行 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-05（2026-03-22） | `docs/30-workflows/unassigned-task/UT-RUNTIME-BUILDER-MIGRATION-001.md` |
 | UT-SKILLDOCS-TERMINAL-HANDOFF-PATH-001 | SkillDocs → Terminal Handoff 導線接続 | 中 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-06（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SKILLDOCS-TERMINAL-HANDOFF-PATH-001.md` |
 | UT-GUIDANCE-BLOCK-PROPS-UNIFICATION-001 | GuidanceBlock Props 型統一（GuidanceBlockProps → HandoffGuidance） | 低 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Phase 11 GAP-07（2026-03-22） | `docs/30-workflows/unassigned-task/UT-GUIDANCE-BLOCK-PROPS-UNIFICATION-001.md` |
+| UT-TRANSCRIPT-M-1 | TranscriptProvenance.sourceType に `'file'` を追加し、SelectedFile source 対応 | 中 | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 Phase 3 M-1（2026-03-22） | `docs/30-workflows/unassigned-task/ut-transcript-m1-selected-file-source.md` |
+| UT-TRANSCRIPT-M-2 | TranscriptSession 型の独立設計（OP-3 専用メタデータ格納） | 低 | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 Phase 3 M-2（2026-03-22） | `docs/30-workflows/unassigned-task/ut-transcript-m2-session-type.md` |
 | UT-9I-001 | SkillDocGenerator の LLM プロバイダ連携実装 | 中 | TASK-9I Phase 12 未タスク検出（stubQueryFn 暫定実装） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-001-llm-provider-integration.md` |
 | UT-9I-002 | ドキュメントテンプレート CRUD 機能実装 | 低 | TASK-9I Phase 12 未タスク検出（DEFAULT_DOC_TEMPLATE 固定） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-ut-9i-002-template-crud.md` |
 | UT-IMP-PHASE12-EVIDENCE-LINK-GUARD-001 | Phase 12 再確認証跡テーブル・未タスクリンク整合ガード | 中 | TASK-9I Phase 12 再確認（苦戦箇所抽出・2026-02-28） | `docs/30-workflows/completed-tasks/TASK-9I-skill-docs/unassigned-task/task-imp-phase12-evidence-link-guard-001.md` |
@@ -485,7 +486,9 @@
 | TASK-IMP-SKILL-LIFECYCLE-05-AMBIGUITY-CRITERIA-CLARIFICATION-001 | テスト合否基準の曖昧表現除去 | 中 | TASK-SKILL-LIFECYCLE-05 Phase 12（2026-03-15） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-ambiguity-criteria-clarification-001.md` |
 | TASK-IMP-SKILL-LIFECYCLE-05-EMPTY-STATE-DETAIL-DESIGN-001 | Skill Center Empty State 詳細設計補完 | 低 | TASK-SKILL-LIFECYCLE-05 Phase 12（2026-03-15） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-empty-state-detail-design-001.md` |
 | TASK-IMP-SKILL-LIFECYCLE-05-E2E-SCENARIOS-COVERAGE-001 | 3シナリオ導線の E2E カバレッジ固定 | 中 | TASK-SKILL-LIFECYCLE-05 Phase 12（2026-03-15） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-lifecycle-05-e2e-scenarios-coverage-001.md` |
-| UT-SKILL-DOCS-TERMINAL-HANDOFF-001 | terminal-handoff実パス実装 | 中 | SkillDocsCapabilityResolverのterminal-handoff判定にLLM到達不可の実判定パスを追加 | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
+| ~~UT-SKILL-DOCS-TERMINAL-HANDOFF-001~~ | ~~terminal-handoff実パス実装~~ **adapter配置完了（UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001, 2026-03-22）** | 中 | SkillDocsCapabilityResolverのterminal-handoff判定にLLM到達不可の実判定パスを追加 | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
+| UT-HANDOFF-SKILL-DOCS-CONSUMER-001 | Skill Docs Consumer (C4) の HandoffSource 追加 | 低 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 Phase 3 MN-1 | `docs/30-workflows/unassigned-task/UT-HANDOFF-SKILL-DOCS-CONSUMER-001.md` |
+| UT-FIX-WORKSPACE-CHAT-EDIT-HANDOFF-GUIDANCE-TYPE-UNIFICATION-001 | workspace-chat-edit/types の HandoffGuidance ローカル定義を正本に統一 | 中 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 Phase 10 MN-3（P23） | `docs/30-workflows/unassigned-task/UT-FIX-WORKSPACE-CHAT-EDIT-HANDOFF-GUIDANCE-TYPE-UNIFICATION-001.md` |
 | UT-SPEC-LINE-BUDGET-SPLIT-001 | aiworkflow-requirements 500行超過仕様書の責務分割 | 低 | arch-electron-services-details.md(502行) / task-workflow-completed-skill-lifecycle(535行) / task-workflow-completed-workspace-chat(522行) の3ファイルを500行以下に分割 | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
 
 | ~~UT-06-001~~ | ~~ToolRiskConfig 実装~~ **実装完了（2026-03-16）** | 高 | TASK-SKILL-LIFECYCLE-06 Phase 12 未タスク検出 → UT-06-001 で実装完了 | `docs/30-workflows/tool-risk-config-implementation/` |
@@ -532,13 +535,9 @@
 | UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
 | UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
 | UT-SC-02-004 | bundle 構築の二重責務 | 低 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
-| UT-SC-03-001 | IResourceLoader インターフェース定義と DI パターン統一 | 低 | TASK-SC-03-PLAN-LLM-PROMPT Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-001.md` |
-| UT-SC-03-002 | plan() 実行時の動的 apiKey 設定メカニズム | 低 | TASK-SC-03-PLAN-LLM-PROMPT Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-002.md` |
-| UT-SC-03-003 | ipc/index.ts DI 配線の実装 | 中 | TASK-SC-03-PLAN-LLM-PROMPT Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-003.md` |
-| UT-SC-03-004 | plan() 出力型の SkillBlueprint 互換移行 | 高 | TASK-SC-03-PLAN-LLM-PROMPT Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-004.md` |
-| UT-SC-03-005 | plan() エラーハンドリングの Result<T,E> パターン移行 | 中 | TASK-SC-03-PLAN-LLM-PROMPT エレガント検証（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-005.md` |
-| UT-SC-03-006 | buildPlanSystemPrompt / parsePlanResponse 単体テスト追加 | 低 | TASK-SC-03-PLAN-LLM-PROMPT エレガント検証（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-006.md` |
-| UT-SC-03-007 | improve() P42 準拠バリデーション追加 | 低 | TASK-SC-03-PLAN-LLM-PROMPT エレガント検証（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-03-007.md` |
+| UT-CHATPANEL-OPEN-TERMINAL-IPC-HANDLER | openTerminal IPC handler 確認・実装（app:open-terminal チャネル登録・Preload allowlist 追加） | 高 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-chatpanel-open-terminal-ipc-handler.md` |
+| UT-CHATPANEL-PROPS-ROLE-TYPE | ChatPanelProps role 型追加検討（'mainline' \| 'review-harness'、P46 衝突評価） | 低 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-chatpanel-props-role-type.md` |
+| UT-VIEWTYPE-TERMINAL-ADDITION | ViewType に "terminal" を追加（handleTerminalSwitch/handleOpenTerminal の代替解消） | 中 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-viewtype-terminal-addition.md` |
 
 ### 未タスク管理ルール
 

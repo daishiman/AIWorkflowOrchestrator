@@ -1,0 +1,168 @@
+{
+  "taskId": "TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001",
+  "title": "ChatPanel review harness alignment",
+  "type": "design",
+  "priority": "medium",
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "phase-1/requirements-definition.md",
+        "phase-1/scope-definition.md",
+        "phase-1/current-state-inventory.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "phase-2/design-summary.md",
+        "phase-2/contract-matrix.md",
+        "phase-2/validation-matrix.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "phase-3/design-review-report.md",
+        "phase-3/gate-decision.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": ["phase-4/test-matrix.md", "phase-4/mock-strategy.md"]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "phase-5/implementation-plan.md",
+        "phase-5/file-change-scope.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "phase-6/regression-expansion-plan.md",
+        "phase-6/edge-case-matrix.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "phase-7/coverage-targets.md",
+        "phase-7/integration-gate.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "phase-8/refactor-boundaries.md",
+        "phase-8/simplification-candidates.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": ["phase-9/quality-checklist.md", "phase-9/risk-register.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "phase-10/final-review-report.md",
+        "phase-10/final-gate-decision.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "phase-11/manual-test-plan.md",
+        "phase-11/screenshot-plan.json",
+        "phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "phase-12/implementation-guide.md",
+        "phase-12/system-spec-update-summary.md",
+        "phase-12/documentation-changelog.md",
+        "phase-12/unassigned-task-detection.md",
+        "phase-12/phase12-task-spec-compliance-check.md",
+        "phase-12/skill-feedback-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "completed",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": ["phase-13/pr-preparation.md"]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "ChatPanel の role が mainline ではなく review harness であることが明文化されている",
+      "verified": true
+    },
+    {
+      "id": "AC-2",
+      "description": "placeholder / no-op を許さない state / action contract が定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-3",
+      "description": "mainline と harness の差分が表形式で固定されている",
+      "verified": true
+    },
+    {
+      "id": "AC-4",
+      "description": "panel 統合パターンと launcher / fallback UX が整合している",
+      "verified": true
+    }
+  ],
+  "dependencies": [
+    "TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001",
+    "TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001",
+    "TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001",
+    "TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001"
+  ],
+  "relatedPitfalls": ["P31", "P48", "P50", "P64", "P65"],
+  "createdAt": "2026-03-19",
+  "updatedAt": "2026-03-23"
+}
