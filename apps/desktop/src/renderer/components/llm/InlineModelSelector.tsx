@@ -330,7 +330,9 @@ export function InlineModelSelector({
   const checkHealth = useCheckLLMHealth();
 
   // Props override Store (for standalone usage / testing)
-  const providers = providersProp ?? storeProviders ?? [];
+  // APIキー設定済みのプロバイダーのみ表示（P62: 未設定プロバイダーは非表示）
+  const allProviders = providersProp ?? storeProviders ?? [];
+  const providers = allProviders.filter((p) => p.isAvailable);
   const currentProviderId =
     selectedProviderIdProp !== undefined
       ? selectedProviderIdProp

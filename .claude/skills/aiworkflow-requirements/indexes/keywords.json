@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-23T05:00:14.233Z",
-  "totalKeywords": 2443,
+  "generated": "2026-03-23T05:46:06.316Z",
+  "totalKeywords": 2444,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2694,6 +2694,7 @@
     "対策": [
       "arch-state-management-advanced.md",
       "arch-state-management-reference.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "security-input-validation.md"
     ],
     "Store": [
@@ -4945,6 +4946,15 @@
     "スキル分析": [
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
     ],
+    "assertNoSilentFallback": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md"
+    ],
+    "ガード": [
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "security-electron-ipc-advanced.md"
+    ],
     "SkillCreatorService": [
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
@@ -6936,11 +6946,6 @@
     ],
     "設定ファイル整合": [
       "lessons-learned-workflow-quality-ci-module-resolution.md"
-    ],
-    "ガード": [
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "logs-archive-2026-03-workflow02-screenshot-guard.md",
-      "security-electron-ipc-advanced.md"
     ],
     "Vitest": [
       "lessons-learned-workflow-quality-ci-module-resolution.md",

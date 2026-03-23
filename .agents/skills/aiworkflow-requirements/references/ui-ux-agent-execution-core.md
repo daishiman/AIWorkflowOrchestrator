@@ -172,7 +172,9 @@
 
 #### 関連未タスク
 
-- UT-EXECUTION-ENV-TERMINAL-001: ExecutionEnvironment Terminal 常設パネル実装
+- ~~UT-EXECUTION-ENV-TERMINAL-001: ExecutionEnvironment Terminal 常設パネル実装~~ **（完了 2026-03-23）**
+  - UT-EXECUTION-ENV-TERMINAL-RENDERER-ERROR-UI-001: Renderer 側 Provider/Model 未選択エラー表示 UI
+  - UT-ASSERT-NO-SILENT-FALLBACK-WIRING-001: assertNoSilentFallback の既存 LLM エントリポイント結線
 - UT-TERMINAL-DOCK-ABORTED-STATE-001: Terminal Dock の aborted state 定義
 - UT-GUIDANCE-BLOCK-HANDOFF-CARD-RULE-001: GuidanceBlock vs TerminalHandoffCard 使い分けルール
 

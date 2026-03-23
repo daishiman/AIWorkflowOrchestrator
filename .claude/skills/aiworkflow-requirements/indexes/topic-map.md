@@ -424,6 +424,7 @@ node scripts/list-specs.js --topics
 | スキルドキュメント生成 型定義（TASK-9I） | L141 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
 | スキル分析 型定義（TASK-9J） | L291 |
+| assertNoSilentFallback ガード（P62 対策） | L340 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -898,8 +899,8 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L200 |
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L536 |
-| AIプロバイダーAPI連携 | L567 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L547 |
+| AIプロバイダーAPI連携 | L578 |
 
 ### references/api-ipc-system-details.md
 
@@ -1015,10 +1016,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
 | コンポーネント仕様 | L43 |
-| インタラクション設計 | L322 |
-| 視覚デザイン | L351 |
-| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L376 |
-| アクセシビリティ（WCAG 2.1 AA） | L398 |
+| インタラクション設計 | L324 |
+| 視覚デザイン | L353 |
+| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L378 |
+| アクセシビリティ（WCAG 2.1 AA） | L400 |
 
 ### references/ui-ux-agent-execution-details.md
 

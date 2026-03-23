@@ -14,6 +14,7 @@ import {
   type WorkspaceChatController,
 } from "./hooks/useWorkspaceChatController";
 import { useSetCurrentView } from "../../store";
+import { InlineModelSelector } from "../../components/llm";
 
 interface WorkspaceChatPanelProps {
   controller: WorkspaceChatController;
@@ -54,6 +55,9 @@ export function WorkspaceChatPanel({
         <p className="mt-1 text-sm text-[var(--text-primary)] opacity-70">
           ファイル背景情報と会話履歴を使って、作業コンテキストに沿った回答を得られます。
         </p>
+        <div className="mt-3">
+          <InlineModelSelector compact disabled={controller.isStreaming} />
+        </div>
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col gap-4 px-5 py-5">
