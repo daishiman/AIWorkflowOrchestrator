@@ -32,7 +32,33 @@
 
 ---
 
-||||||| 77abcbc7f
+### タスク: TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 Transcript -> Chat Provenance Linkage 設計（2026-03-22）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 |
+| ステータス | **仕様書作成完了（`spec_created` / workflow root `implementation_ready` / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-22 |
+| 対象 | Transcript -> Chat 手動3操作連携 / Provenance Chip / Metadata Contract |
+| 成果物 | `docs/30-workflows/step-04-seq-task-06-transcript-to-chat-provenance-linkage/` |
+
+#### 実施内容
+
+- TranscriptProvenance 型定義（sourceType / sharedAt / sessionTitle / messageRange / originalContent）
+- 3操作フロー: OP-1（選択範囲をチャットへ送る）/ OP-2（直近出力を添付）/ OP-3（セッションを貼り付ける）
+- Provenance Chip の表示条件・dismiss 動作・履歴復元ロジック
+- Terminal Handoff (Task 05) との責務分離・CTA 表示領域の非競合保証
+- Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+- 未タスク 2 件（M-1: SelectedFile source / M-2: TranscriptSession 型）を検出・指示書化
+
+#### 発見元
+
+- ai-runtime-execution-responsibility-realignment pack Task 06（2026-03-19）
+
+---
+
 ### タスク: TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 Settings shell access matrix mainline design（2026-03-22）
 
 | 項目 | 値 |

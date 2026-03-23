@@ -1855,7 +1855,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
 | 実装ステータススナップショット（2026-03-21） | L46 |
-| Follow-up Backlog | L55 |
+| Follow-up Backlog | L57 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2587,11 +2587,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L44 |
-| クイックリファレンス: カテゴリ別検索ガイド | L59 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L135 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L467 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L501 |
+| 分割ファイル一覧 | L43 |
+| クイックリファレンス: カテゴリ別検索ガイド | L58 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L134 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L466 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L500 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

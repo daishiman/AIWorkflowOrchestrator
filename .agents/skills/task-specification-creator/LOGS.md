@@ -20,9 +20,24 @@
 
 ---
 
+## TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 完了（2026-03-22）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 設計完了
+- **Result**: success
+- **Notes**:
+  - TranscriptProvenance 型定義（5フィールド）・3操作フロー・provenance chip 設計を確定
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
+  - MINOR指摘 M-1/M-2 を未タスクとして管理（M-3 は実装仕様確定）
+  - implementation-guide.md（Part 1: 郵便消印アナロジー / Part 2: 開発者向け）作成
+  - Phase 13 はユーザー指示待ち（blocked）
+
+---
+
 ## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（2026-03-21）
-||||||| 77abcbc7f
-## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 追補同期（2026-03-21）
+
+---
+
 ## TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新（2026-03-22）
 
 - **Agent**: task-specification-creator
