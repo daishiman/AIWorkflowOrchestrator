@@ -415,6 +415,8 @@ const slideApi: SlideApi = {
   reverseSync: (projectPath: string) =>
     safeInvoke(IPC_CHANNELS.SLIDE_REVERSE_SYNC, projectPath),
   cancel: () => safeInvoke(IPC_CHANNELS.SLIDE_CANCEL),
+  getCapability: (sessionId: string) =>
+    safeInvoke(IPC_CHANNELS.SLIDE_CAPABILITY_GET, { sessionId }),
   onStructureChange: (callback: (path: string) => void) =>
     safeOn<string>(IPC_CHANNELS.SLIDE_STRUCTURE_CHANGED, callback),
   onSyncStatusChanged: (callback: (status: SyncStatus) => void) =>

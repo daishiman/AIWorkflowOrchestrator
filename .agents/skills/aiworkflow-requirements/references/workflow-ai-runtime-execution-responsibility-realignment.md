@@ -55,6 +55,7 @@
 - current code には `skillHandlers.ts` / `agentHandlers.ts` の旧 resolver 依存、`aiHandlers.ts` の policy bypass + `AI_CHECK_CONNECTION` legacy handler、public `skill-creator:*` surface と internal `creator:*` adapter の未統合が残っている。
 - TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）で RuntimePolicyResolver に ISubscriptionAuthProvider.validateToken() による subscription 判定を統合済み。3パターン分岐（integrated_api / terminal_handoff subscription / terminal_handoff no-auth）が安定動作している。
 - Task07（`TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001`）は **design workflow close-out 完了**（2026-03-23）。ChatPanel review harness を task-specification-creator Phase 11 に整合。8状態定義（idle/loading/streaming/complete/error/review/guidance/terminal）、3 Lane 設計（Review Board Integration / State Machine Harness / Handoff Navigation）、GAP-01〜04 の no-op 排除設計を確定。workflow root は `implementation_ready`、completed ledger は `spec_created`、Phase 13 は user approval まで blocked。Task07 follow-up は `UT-CHATPANEL-OPEN-TERMINAL-IPC-HANDLER` / `UT-CHATPANEL-PROPS-ROLE-TYPE` / `UT-VIEWTYPE-TERMINAL-ADDITION` の 3 件。
+- Task09（`TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001`）は **design workflow close-out 完了**（2026-03-23）。Canonical Source Table（5カテゴリ）、Bridge Rule（legacy 無期限保持 + 新規追加禁止）、State Machine（spec_created→implementation_ready→completed、type 別条件分岐）、Same-Wave Sync Protocol（Step A→E 順序実行）、Follow-up Formalization 3ステップを governance 仕様として確定。workflow root は `implementation_ready`、completed ledger は `spec_created`、Phase 13 は user approval まで blocked。Task09 follow-up は `UT-WORKTREE-RSYNC-CAUTION-001` の 1 件。
 
 ## Follow-up Backlog
 
@@ -75,3 +76,4 @@
 | UT-CHATPANEL-OPEN-TERMINAL-IPC-HANDLER | openTerminal IPC handler の確認・実装 | `docs/30-workflows/unassigned-task/ut-chatpanel-open-terminal-ipc-handler.md` |
 | UT-CHATPANEL-PROPS-ROLE-TYPE | ChatPanelProps role 型追加検討 | `docs/30-workflows/unassigned-task/ut-chatpanel-props-role-type.md` |
 | UT-VIEWTYPE-TERMINAL-ADDITION | ViewType に "terminal" を追加 | `docs/30-workflows/unassigned-task/ut-viewtype-terminal-addition.md` |
+| UT-WORKTREE-RSYNC-CAUTION-001 | rsync コマンドの worktree 環境注意書き追加（R-15 関連） | `docs/30-workflows/unassigned-task/worktree-rsync-caution-annotation.md` |

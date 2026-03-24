@@ -138,6 +138,30 @@ export interface SlideError {
   details?: Record<string, unknown>;
 }
 
+/**
+ * Modifier Skillのレスポンス（shared 正本）
+ */
+export interface ModifierResponse {
+  success: boolean;
+  changes?: StructureChange[];
+  error?: string;
+  /** manual fallback が発生した理由 */
+  fallback_reason?: string;
+  /** ユーザーへの推奨アクション */
+  suggested_action?: string;
+}
+
+export type SlideLane = "integrated" | "manual";
+export type ApiKeySource = "safeStorage" | "env" | "none";
+export type SlideUIStatus = "synced" | "running" | "degraded" | "guidance";
+
+export interface SlideCapabilityDTO {
+  lane: SlideLane;
+  apiKeySource: ApiKeySource;
+  uiStatus: SlideUIStatus;
+  blockedReason?: string;
+}
+
 // HandoffGuidance は src/types/handoff.ts に正本がある。re-export で統一する。
 export type { HandoffGuidance };
 

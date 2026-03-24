@@ -17,6 +17,7 @@ export type ViewType =
   | "skillCreate"
   // エージェント・ワークフロー
   | "agent"
+  | "executionConsole"
   | "chainBuilder"
   | "scheduleManager"
   // 検索・履歴

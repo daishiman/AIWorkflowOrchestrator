@@ -169,6 +169,10 @@ function installMocks(selectedScenario: HarnessScenario): void {
       listeners.progress.add(listener);
       return () => listeners.progress.delete(listener);
     },
+    getCapability: async () => ({
+      success: true,
+      data: { lane: "integrated", apiKeySource: "env", uiStatus: "synced" },
+    }),
     onSyncProgress: () => () => {},
     onSyncError: () => () => {},
     onWatchStatus: () => () => {},

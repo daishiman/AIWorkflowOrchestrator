@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-24T02:54:54.433Z",
-  "totalKeywords": 2460,
+  "generated": "2026-03-24T07:46:37.615Z",
+  "totalKeywords": 2469,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1765,6 +1765,7 @@
       "security-electron-ipc.md",
       "security-implementation.md",
       "security-skill-execution.md",
+      "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
@@ -2461,6 +2462,7 @@
       "arch-electron-services-details-part2.md",
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
     ],
     "POLICY": [
@@ -6354,6 +6356,25 @@
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "CANONICAL": [
+      "lessons-learned-current.md"
+    ],
+    "LEDGER": [
+      "lessons-learned-current.md"
+    ],
+    "GOVERNANCE": [
+      "lessons-learned-current.md"
+    ],
+    "契約テスト教訓": [
+      "lessons-learned-current.md"
+    ],
+    "SkillBlueprint": [
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "型移行": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -10042,6 +10063,15 @@
       "task-workflow-completed-chat-lifecycle-tests.md"
     ],
     "create": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "型追加・": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "plan": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "出力互換移行": [
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
     "redirect": [

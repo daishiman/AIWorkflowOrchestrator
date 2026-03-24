@@ -9,7 +9,7 @@ import { TerminalLauncher } from "./TerminalLauncher";
 import { useDynamicIsland, useResponsiveMode } from "../../../store";
 import type { DockViewType } from "../../../navigation/navContract";
 import type { MainlineExecutionAccessState } from "../../../features/mainline-access/mainlineAccess";
-import { launchMainlineTerminal } from "../../../utils/runtimeAccess";
+import { openExecutionConsole } from "../../../actions/executionConsole";
 
 export interface AppLayoutProps {
   currentView: DockViewType;
@@ -79,11 +79,7 @@ export const AppLayout: React.FC<AppLayoutProps> = ({
                 capability={mainlineAccess.capability}
                 isDisabled={mainlineAccess.launcherDisabled}
                 disabledReason={mainlineAccess.launcherDisabledReason}
-                onLaunch={() =>
-                  void launchMainlineTerminal(
-                    mainlineAccess.suggestedTerminalCommand,
-                  )
-                }
+                onLaunch={() => openExecutionConsole()}
               />
             ) : null}
             <NotificationCenter />

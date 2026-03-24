@@ -94,6 +94,16 @@ vi.mock("../../skill/SkillManagementPanel", () => ({
 }));
 
 // ============================================
+// Shared Action Mock
+// ============================================
+
+const mockOpenExecutionConsole = vi.fn();
+vi.mock("../../../actions/executionConsole", () => ({
+  openExecutionConsole: (...args: unknown[]) =>
+    mockOpenExecutionConsole(...args),
+}));
+
+// ============================================
 // useStreamingChat Mock
 // ============================================
 
@@ -441,12 +451,11 @@ describe("ChatPanel Review Harness Alignment", () => {
   });
 
   // TC-01: GAP-01 — onTerminalSwitch actionability
-  describe("TC-01: onTerminalSwitch calls setCurrentView('terminal')", () => {
-    it("should call setCurrentView with 'terminal' when terminal switch is clicked", () => {
+  describe("TC-01: onTerminalSwitch calls openExecutionConsole()", () => {
+    it("should call openExecutionConsole when terminal switch is clicked", () => {
       render(<ChatPanel />);
       fireEvent.click(screen.getByTestId("terminal-switch-btn"));
-      expect(mockSetCurrentView).toHaveBeenCalledTimes(1);
-      expect(mockSetCurrentView).toHaveBeenCalledWith("agent");
+      expect(mockOpenExecutionConsole).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -471,8 +480,8 @@ describe("ChatPanel Review Harness Alignment", () => {
   });
 
   // TC-04: GAP-04 — onOpenTerminal actionability (handoff state)
-  describe("TC-04: onOpenTerminal calls setCurrentView('terminal') in handoff state", () => {
-    it("should call setCurrentView with 'terminal' when open terminal is clicked", () => {
+  describe("TC-04: onOpenTerminal calls openExecutionConsole() in handoff state", () => {
+    it("should call openExecutionConsole when open terminal is clicked", () => {
       setStoreState({
         chatPanelStatus: "handoff",
         handoffGuidance: {
@@ -482,8 +491,7 @@ describe("ChatPanel Review Harness Alignment", () => {
       });
       render(<ChatPanel />);
       fireEvent.click(screen.getByTestId("open-terminal-btn"));
-      expect(mockSetCurrentView).toHaveBeenCalledTimes(1);
-      expect(mockSetCurrentView).toHaveBeenCalledWith("agent");
+      expect(mockOpenExecutionConsole).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -515,7 +523,7 @@ describe("ChatPanel Review Harness Alignment", () => {
 
   // TC-07: IPC call integration — terminal launch in handoff state
   describe("TC-07: terminal launch in handoff state", () => {
-    it("should navigate to terminal view when open terminal is clicked in handoff", () => {
+    it("should call openExecutionConsole when open terminal is clicked in handoff", () => {
       setStoreState({
         chatPanelStatus: "handoff",
         handoffGuidance: {
@@ -526,7 +534,7 @@ describe("ChatPanel Review Harness Alignment", () => {
       render(<ChatPanel />);
       expect(screen.getByTestId("mock-handoff-block")).toBeInTheDocument();
       fireEvent.click(screen.getByTestId("open-terminal-btn"));
-      expect(mockSetCurrentView).toHaveBeenCalledWith("agent");
+      expect(mockOpenExecutionConsole).toHaveBeenCalledTimes(1);
     });
 
     it("should not show handoff block when not in handoff state", () => {
