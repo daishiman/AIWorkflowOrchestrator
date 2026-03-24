@@ -19,17 +19,19 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-24 | 2.5.0 | TASK-LLM-MOD-03 苦戦箇所2件を追加（L-LLM-MOD-03-001〜002: baseUrl変更のcross-file依存 / system_instruction条件付加の設計判断） |
 | 2026-03-22 | 2.2.3 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 の Phase 12 教訓4件を追加 |
 | 2026-03-21 | 2.2.1 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
 | 2026-03-21 | 2.2.0 | UT-SLIDE-UI-001 教訓3件を追加（L-SLIDE-UI-001〜003） |
 | 2026-03-21 | 2.2.2 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓を追記 |
 | 2026-03-21 | 2.2.1 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 最終再監査教訓を追記 |
 | 2026-03-21 | 2.2.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
-| 2026-03-22 | 2.2.4 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 の苦戦箇所3件を追加（L-SLIDE-RUNTIME-001〜003） |
+
+| 2026-03-23 | 2.5.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（→ [ipc-preload-runtime](lessons-learned-ipc-preload-runtime.md): LLM統合パターン再利用、空文字列beforeバグ、P4/P51再発） |
 | 2026-03-23 | 2.4.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003: GAP ラベルドリフト / DEFERRED 判断誤り / ViewType 型不一致） |
-| 2026-03-23 | 2.3.2 | UT-RUNTIME-BUILDER-MIGRATION-001 教訓2件を追加（L-RBM-001: shared型3レイヤー波及、L-RBM-002: sanitize テスト正規表現） |
 | 2026-03-24 | 2.5.1 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓2件を追加（L-CBLG-003: テストマトリクスファイル参照誤り、L-CBLG-004: TS1501 regex /s flag） |
 | 2026-03-23 | 2.5.0 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 教訓2件を追加（L-CBLG-001: Phase 10 MINOR 照合漏れ、L-CBLG-002: Step A-E 先送り P57 違反） |
+| 2026-03-23 | 2.3.2 | UT-RUNTIME-BUILDER-MIGRATION-001 教訓2件を追加（L-RBM-001: shared型3レイヤー波及、L-RBM-002: sanitize テスト正規表現） |
 | 2026-03-23 | 2.3.1 | UT-EXECUTION-ENV-TERMINAL-001 教訓1件を追加（L-EXEC-TERMINAL-001） |
 | 2026-03-22 | 2.3.1 | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計タスク教訓2件を追加（L-TCPL-001〜002） |
 | 2026-03-22 | 2.3.0 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 設計タスク教訓3件を追加（L-THSR-001〜003） |
@@ -87,6 +89,30 @@
 - spec-only close-out では downstream task status と code diff 0/有を併記する
 - standalone root 移設時は parent/downstream/system spec の旧 path を same-wave で閉じる
 - `implementation_ready` / `spec_created` / `blocked` の意味を分離し、Phase 13 だけ future gate に残す
+
+### 2026-03-24 TASK-LLM-MOD-03 GoogleAdapter system_instruction 対応
+
+#### 苦戦箇所1（L-LLM-MOD-03-001）: baseUrl v1→v1beta 変更の cross-file 依存
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `GoogleAdapter.ts` の `baseUrl` を `v1` から `v1beta` に変更した際、`GoogleAdapter.test.ts` の MSW モック URL は Phase 4-5 で更新したが、`streaming.test.ts` の MSW モック URL 3 箇所が `v1` のまま残っていた。Phase 9（品質保証）で全 Adapter テストを実行して初めて発見された |
+| 再発条件 | アダプターの URL/エンドポイント変更時に、対象テストファイル以外のテストが同じ URL をモックしているケースを見逃す |
+| 解決策 | `streaming.test.ts` の MSW ハンドラ URL 3 箇所を `v1beta` に修正。Phase 9 の全テスト実行ゲートがなければ検出できなかった |
+| 標準ルール | URL/エンドポイント変更時は `grep -rn "旧URL" __tests__/` で全テストファイルの使用箇所を検索してから変更する |
+| 関連タスク | TASK-LLM-MOD-03 |
+
+#### 苦戦箇所2（L-LLM-MOD-03-002）: system_instruction の条件付加における trim ガード
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `request.systemPrompt` が空文字列 `""` やスペースのみ `"   "` の場合に、空の `system_instruction` を送信すると Gemini API がエラーを返す可能性がある。Phase 5 で `request.systemPrompt` の truthy チェックだけだと空文字列はブロックできるが、スペースのみは通過する |
+| 解決策 | `request.systemPrompt?.trim()` で trim 後の truthy チェックに統一。P42（.trim() バリデーション漏れ）パターンを適用 |
+| 標準ルール | 外部 API に送信する文字列フィールドは `.trim()` 後の truthy チェックを標準とする |
+| 関連パターン | P42（文字列引数の .trim() バリデーション漏れ） |
+| 関連タスク | TASK-LLM-MOD-03 |
+
+---
 
 ### 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR 同期
 

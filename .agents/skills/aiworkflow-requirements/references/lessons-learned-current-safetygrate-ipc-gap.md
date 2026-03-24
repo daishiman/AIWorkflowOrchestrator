@@ -322,3 +322,22 @@ if (error != null && typeof error === "object" && "code" in error && typeof erro
 3. catch ブロック内の `error: unknown` には `in` 演算子パターンのみ使用し、`as` キャストを禁止する。
 4. ternary 演算子の分岐カバレッジは `vitest run --coverage --reporter=json` で JSON 出力して分析する。
 5. 未タスク指示書は必ず `docs/30-workflows/unassigned-task/` に配置する。
+
+---
+
+### UT-SC-03-003: RuntimeSkillCreatorFacade DI配線（2026-03-24）
+
+#### 苦戦箇所と知見
+
+1. **Setter Injection の適用判断（P34）**: `LLMAdapterFactory.getAdapter("anthropic")` は非同期で完了するため、Constructor Injection では対応不可。`setLLMAdapter()` による Setter Injection + fire-and-forget async パターン（`void (async () => { ... })()`）で解決。DI パターン選択は「依存オブジェクトの生成タイミング」で判断する。
+
+2. **Graceful Degradation の設計**: LLMAdapter 未注入状態で `plan()` が呼ばれた場合、例外ではなくスタブ応答（`{ steps: ["LLMAdapter未設定のため..."] }`）を返す設計にした。これにより IPC ハンドラ側でエラーハンドリング不要になり、Renderer が安全にフォールバック表示できる。
+
+3. **Phase 10 MINOR 判定 → 未タスク化の必須性**: Phase 10 で PASS 判定としつつ MINOR 2件を記録した。05-task-execution.md の「MINOR は全て未タスク仕様書に変換（省略不可）」ルールにより、後日 Phase 12 監査で FAIL となった。Phase 10 MINOR は件数に関わらず P3 3ステップ（①指示書 → ②backlog 登録 → ③関連仕様書リンク追加）を必ず完了すること。
+
+#### 同種課題の簡潔解決手順（4ステップ）
+
+1. 非同期依存の DI は Setter Injection + fire-and-forget async を使う（P34 準拠）。
+2. 未注入状態のメソッド呼び出しは例外ではなくスタブ応答で graceful degradation する。
+3. Phase 10 MINOR は「機能影響なし」でも P3 3ステップを省略しない。
+4. `readonly` プロパティに Setter Injection を適用する場合は `readonly` を解除する。

@@ -234,6 +234,7 @@ IPCResult型は成功または失敗を表すユニオン型であり、以下�
 | permission:getAllowedTools | 許可ツール取得 | なし                 | { tools: AllowedToolEntry[] }      |
 | permission:revokeTool      | 許可取消       | { toolName: string } | { success: boolean }               |
 | permission:clearAll        | 全クリア       | なし                 | { success: boolean, clearedCount } |
+| permission:clear-session   | セッションクリア | { sessionId: string } | ClearSessionResponse               |
 
 ### テストカバレッジ
 

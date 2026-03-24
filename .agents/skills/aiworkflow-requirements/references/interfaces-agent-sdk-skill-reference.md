@@ -141,6 +141,45 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 
 型定義の正本は `packages/shared/src/types/skillCreator.ts` とし、renderer surface は上記型へ収束する。
 
+#### improve() 型定義詳細（TASK-SC-05-IMPROVE-LLM）
+
+**RuntimeSkillCreatorImproveSuggestion** — 構造化された改善提案:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `section` | `string` | 対象セクション名 |
+| `before` | `string` | 変更前テキスト（空文字列不可） |
+| `after` | `string` | 変更後テキスト |
+| `reason` | `string` | 変更理由（LLM の issue + pattern を統合） |
+
+**RuntimeSkillCreatorImproveResult** — improve 成功時レスポンス:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `improveId` | `string` | 改善セッション ID（`improve-{timestamp}`） |
+| `suggestions` | `RuntimeSkillCreatorImproveSuggestion[]` | 改善提案配列（旧: `string[]`） |
+| `revisedSpec?` | `string` | LLM が生成した改善後 SKILL.md 全文（optional） |
+
+**ApplyImprovementResult** — 改善適用結果:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `applied` | `number` | 適用成功件数 |
+| `skipped` | `number` | スキップ件数（before 不一致） |
+| `skippedDetails` | `Array<{ section: string; reason: string }>` | スキップ詳細 |
+| `errors` | `string[]` | 書き込みエラー一覧 |
+
+**RuntimeSkillCreatorImproveErrorResponse** — improve エラー時レスポンス（P60 準拠 IPC wrapper 形式）:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `success` | `false` | 固定値 |
+| `error.code` | `string` | エラーコード（VALIDATION_ERROR / SKILL_NOT_FOUND / READ_ERROR / PARSE_ERROR / LLM_ERROR / READONLY_SKILL） |
+| `error.message` | `string` | エラー詳細メッセージ |
+
+**RuntimeSkillCreatorImproveResponse** — union 型:
+`RuntimeSkillCreatorImproveResult | { type: "terminal_handoff"; bundle: TerminalHandoffBundle } | RuntimeSkillCreatorImproveErrorResponse`
+
 #### 進行状況
 
 | role | UIラベル | 実装 | UI 露出ルール |
@@ -425,7 +464,40 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. 型定義・Preload API・IPC契約の3点を同一ターンで更新する。  
-2. 近似チャネル（`skill:*` / `skill-creator:*`）は責務境界表を必ず併記する。  
-3. 仕様値（件数など）は `task-workflow.md` を正本化し、周辺成果物へ転記する。  
-4. `verify-all-specs` と `validate-phase-output` で契約同期を確認する。  
+1. 型定義・Preload API・IPC契約の3点を同一ターンで更新する。
+2. 近似チャネル（`skill:*` / `skill-creator:*`）は責務境界表を必ず併記する。
+3. 仕様値（件数など）は `task-workflow.md` を正本化し、周辺成果物へ転記する。
+4. `verify-all-specs` と `validate-phase-output` で契約同期を確認する。
+
+---
+
+## RuntimeSkillCreatorFacade（UT-SC-03-003）
+
+### 概要
+
+LLM ランタイムを使用してスキルの plan / execute / improve を実行する Facade。Main Process の IPC ハンドラ（`skill-creator:*`）から呼び出される。
+
+### Setter Injection メソッド
+
+| メソッド | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| `setLLMAdapter(adapter)` | `adapter: ILLMAdapter` | `void` | LLM Adapter を遅延注入する（P34: Setter Injection パターン）。`LLMAdapterFactory.getAdapter()` が非同期のため、コンストラクタ時点では注入できない。注入前は graceful degradation でスタブ応答を返す。冪等（複数回呼び出し時は最後の adapter を使用）。 |
+
+### DI 配線（ipc/index.ts）
+
+- `ResourceLoader`: `DEFAULT_SKILL_CREATOR_PATH` でコンストラクタ注入
+- `LLMAdapter`: fire-and-forget async で `LLMAdapterFactory.getAdapter("anthropic")` → `setLLMAdapter()` で遅延注入
+- `SkillFileWriter`: `skillBasePath` でコンストラクタ注入
+
+### 実装ファイル
+
+| ファイル | パス | 説明 |
+| --- | --- | --- |
+| RuntimeSkillCreatorFacade.ts | `apps/desktop/src/main/services/runtime/` | Facade 本体 |
+| creatorHandlers.ts | `apps/desktop/src/main/ipc/` | IPC ハンドラ（internal helper） |
+
+### 完了タスク
+
+| タスクID | 完了日 | ステータス | 概要 |
+| --- | --- | --- | --- |
+| UT-SC-03-003 | 2026-03-24 | 完了 | DI 配線実装。setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。29テスト全PASS |

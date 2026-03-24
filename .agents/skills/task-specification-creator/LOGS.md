@@ -21,6 +21,144 @@
 
 ---
 
+## UT-SC-03-003 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - RuntimeSkillCreatorFacade DI配線実装（TASK-SC-03 派生）
+  - setLLMAdapter() Setter Injection（P34準拠）+ ResourceLoader コンストラクタ注入
+  - fire-and-forget async で LLMAdapterFactory.getAdapter("anthropic") 遅延注入
+  - graceful degradation: LLMAdapter 未注入時はスタブ応答
+  - テスト: TC-1〜TC-9 計11テスト全PASS
+  - 未タスク: 2件（UT-SC-03-003-M01 subscriptionAuthProvider DI配線追加, UT-SC-03-003-M02 テスト内 undefined キャスト除去）
+
+---
+
+## TASK-LLM-MOD-03 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 full execution
+- **Result**: success
+- **Notes**:
+  - GoogleAdapter の systemPrompt 処理を user ロールワークアラウンドから system_instruction フィールドに移行
+  - baseUrl デフォルト値を v1 から v1beta に変更
+  - buildRequestBody private メソッドで sendChat/streamChat の DRY 統合
+  - 19 テスト全 PASS / streaming.test.ts の MSW URL 修正（3箇所）
+  - 未タスク 2 件（UT-LLM-MOD-03-TYPE-01〜02）検出・backlog 登録
+
+---
+
+## TASK-LLM-MOD-02 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success
+- **Notes**:
+  - AnthropicAdapter.ts L207 の model ID を claude-3-haiku-20240307 から claude-haiku-4-5 に更新
+  - HC-001 テスト追加（checkHealth model フィールド検証）
+  - 12テスト全PASS、TypeCheck エラー0、Lint エラー0
+  - 未タスク2件（TASK-LLM-MOD-HEALTHCHECK-CONST, TASK-LLM-MOD-HEALTHCHECK-BODY）検出・登録
+
+---
+
+## UT-06-003-PRELOAD-API-IMPL 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: `preload/skill-api.ts` に `evaluateSafety` メソッドを追加。`SkillAPI` インターフェース + `skillAPI` オブジェクトの両方に実装。`safeInvoke(IPC_CHANNELS.SKILL_EVALUATE_SAFETY, skillName)` でラップ形式透過。`SafetyGateResult` 型は `@repo/shared` から import（P23準拠）。
+- **影響ファイル**: preload/skill-api.ts, preload/__tests__/skill-api.evaluateSafety.test.ts, preload/__tests__/skill-api.test.ts, preload/__tests__/skill-api.unification.test.ts
+- **テスト**: T-1〜T-6（6テスト）全PASS、既存テスト回帰なし（117テスト全PASS）
+- **Pitfall準拠**: P23/P27/P42/P60/P61 全項目PASS
+
+---
+
+## UT-06-002 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - AllowedToolEntryV2 PermissionStore V2 拡張実装
+  - ExpiryPolicy 4種（session/time_24h/time_7d/permanent）
+  - isToolAllowed 6分岐フロー（lazy eviction）
+  - permission:clear-session IPC チャネル追加
+  - V1→V2 自動マイグレーション
+  - カバレッジ: Line 95.5%, Branch 90.6%, Function 94.1%
+  - 未タスク4件検出（sender検証/before-quit/calcExpiresAtLocal重複解消/ロガー統一）
+
+---
+
+## UT-SC-02-002 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - execute() の terminal_handoff 未分岐修正（セキュリティ修正）
+  - RuntimeSkillCreatorExecuteResponse Union型追加
+  - void decision; 除去、plan/improve/execute パターン統一
+  - 15テスト全PASS、Line/Function Coverage 100%
+
+---
+
+## UT-EXECUTION-ENV-TERMINAL-001 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - ExecutionEnvironment.terminal の placeholder → TerminalHandoffCard 本実装
+  - assertNoSilentFallback() ガード実装（P62 対策）
+  - LLMConfigNotSelectedError カスタムエラー型追加
+  - 18テストケース（T-1〜T-18）全 PASS
+  - LOGS.md 2ファイル + interfaces 仕様書更新（P1/P25 対策）
+
+---
+
+## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
+
+## TASK-LLM-MOD-01 完了（2026-03-23）
+
+## TASK-SC-04-OUTPUT-PERSISTENCE 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - SkillFileWriter クラス新規作成（LLM 生成スキルコンテンツの永続化）
+  - SkillGeneratedContent 型を packages/shared/src/types/skillCreator.ts に追加
+  - RuntimeSkillCreatorFacade.execute() に永続化フロー統合（extractGeneratedContent + persist）
+  - P42 準拠3段バリデーション + 6層パストラバーサル防止
+  - アトミック書き込み + ロールバック（部分書き込み防止）
+  - 26テスト全 PASS
+  - 未タスク 1 件: UT-SC-04-001（SkillFileWriter インターフェース抽出 P61）
+
+---
+
+## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: WorkspaceChatPanel header に InlineModelSelector を compact mode で配置。disabled={controller.isStreaming} でストリーミング中ロック。GuidanceBlock(blocked) は Store reactivity で自動連携（変更不要）。統合テスト11件追加、全146テスト PASS。ui-ux-llm-selector.md / task-workflow 更新。
+- **影響ファイル**: WorkspaceChatPanel.tsx, WorkspaceView.test.tsx, WorkspaceChatPanel.guidance.test.tsx, WorkspaceChatPanel.integration.test.tsx (新規)
+- **未タスク**: 0件
+
+---
+
+## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
+## TASK-SC-03-PLAN-LLM-PROMPT 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 final sync
+- **Result**: success
+- **Notes**:
+  - PROVIDER_CONFIGS モデル定義を2026年3月時点最新に更新
+  - OpenAI 6モデル / Anthropic 3モデル / Google 3モデル / xAI 3モデル
+  - description フィールド追加、inferProviderId に o3/o4 prefix 対応
+  - 38テスト追加、全PASS
+  - 未タスク3件（UT-LLM-MOD-01-001〜003）検出・backlog登録
+
+---
 ## UT-CONV-DB-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -915,3 +1053,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 5ファイル変更、+359行/-22行
 - テスト: 94件全 PASS
 - 未タスク: 2件（UT-CHATVIEW-ERROR-BANNER-I18N-001、UT-AI-CHAT-ERROR-CODE-INVENTORY-001）
+
+### 2026-03-23: TASK-SC-05-IMPROVE-LLM 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
+| 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
+| 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
