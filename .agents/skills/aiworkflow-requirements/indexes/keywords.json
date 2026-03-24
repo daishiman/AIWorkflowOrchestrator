@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-24T00:06:00.099Z",
-  "totalKeywords": 2458,
+  "generated": "2026-03-24T07:46:37.615Z",
+  "totalKeywords": 2469,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1724,6 +1724,7 @@
       "arch-state-management-core.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-executor-details.md",
+      "interfaces-agent-sdk-skill-reference.md",
       "interfaces-agent-sdk-skill.md",
       "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -1764,6 +1765,7 @@
       "security-electron-ipc.md",
       "security-implementation.md",
       "security-skill-execution.md",
+      "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
@@ -2458,7 +2460,9 @@
     ],
     "SC": [
       "arch-electron-services-details-part2.md",
+      "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
     ],
     "POLICY": [
@@ -2482,7 +2486,6 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
-      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
@@ -5007,6 +5010,9 @@
       "testing-component-patterns-details.md",
       "ui-ux-feature-components-advanced.md"
     ],
+    "RuntimeSkillCreatorFacade": [
+      "interfaces-agent-sdk-skill-reference.md"
+    ],
     "LAYER": [
       "interfaces-agent-sdk-skill.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -6350,6 +6356,25 @@
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "CANONICAL": [
+      "lessons-learned-current.md"
+    ],
+    "LEDGER": [
+      "lessons-learned-current.md"
+    ],
+    "GOVERNANCE": [
+      "lessons-learned-current.md"
+    ],
+    "契約テスト教訓": [
+      "lessons-learned-current.md"
+    ],
+    "SkillBlueprint": [
+      "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "型移行": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -7337,6 +7362,9 @@
       "ui-history-data-types.md"
     ],
     "アダプター実装": [
+      "llm-ipc-types.md"
+    ],
+    "MOD": [
       "llm-ipc-types.md"
     ],
     "ストリーミングレスポンス仕様": [
@@ -10035,6 +10063,15 @@
       "task-workflow-completed-chat-lifecycle-tests.md"
     ],
     "create": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "型追加・": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "plan": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "出力互換移行": [
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
     "redirect": [

@@ -1,6 +1,6 @@
 export type GuidanceActionType =
   | "open-settings"
-  | "open-terminal"
+  | "open-execution-console"
   | "copy-command"
   | "retry-connection";
 
@@ -22,7 +22,7 @@ interface ModelSelectionGuidanceConfig {
 
 export interface GuidanceActionHandlers {
   openSettings?: () => void;
-  openTerminal?: () => void;
+  openExecutionConsole?: () => void;
   copyCommand?: () => void;
   retryConnection?: () => void;
 }
@@ -33,10 +33,10 @@ const SETTINGS_ACTION = Object.freeze({
   ariaLabel: "設定画面へ移動",
 } as const);
 
-const TERMINAL_ACTION = Object.freeze({
-  type: "open-terminal",
-  label: "ターミナルを開く",
-  ariaLabel: "ターミナルを開く",
+const EXECUTION_CONSOLE_ACTION = Object.freeze({
+  type: "open-execution-console",
+  label: "実行コンソールを開く",
+  ariaLabel: "実行コンソールを開く",
 } as const);
 
 const MODEL_SELECTION_MESSAGE =
@@ -56,14 +56,14 @@ export const MODEL_SELECTION_BLOCKED_GUIDANCE_MAP = Object.freeze({
     message: MODEL_SELECTION_MESSAGE,
     inputHint: MODEL_SELECTION_INPUT_HINT,
     primaryAction: SETTINGS_ACTION,
-    secondaryAction: TERMINAL_ACTION,
+    secondaryAction: EXECUTION_CONSOLE_ACTION,
   }),
   NO_MODEL: Object.freeze({
     reason: "NO_MODEL",
     message: MODEL_SELECTION_MESSAGE,
     inputHint: MODEL_SELECTION_INPUT_HINT,
     primaryAction: SETTINGS_ACTION,
-    secondaryAction: TERMINAL_ACTION,
+    secondaryAction: EXECUTION_CONSOLE_ACTION,
   }),
 } satisfies Record<ModelSelectionBlockedReason, ModelSelectionGuidanceConfig>);
 
@@ -95,8 +95,8 @@ export function createGuidanceActionDispatcher(
     switch (actionType) {
       case "open-settings":
         return handlers.openSettings;
-      case "open-terminal":
-        return handlers.openTerminal;
+      case "open-execution-console":
+        return handlers.openExecutionConsole;
       case "copy-command":
         return handlers.copyCommand;
       case "retry-connection":

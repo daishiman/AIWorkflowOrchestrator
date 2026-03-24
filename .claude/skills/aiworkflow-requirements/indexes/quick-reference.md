@@ -85,6 +85,11 @@
 | Slide UI状態 | `SlideUIStatus` (`synced` / `running` / `degraded` / `guidance`) | arch-state-management-core.md |
 | Slide レーン分離 | `SlideLane` (`integrated` / `manual`) | arch-state-management-core.md |
 | Slide 能力DTO | `SlideCapabilityDTO` (laneType / modifier / agentClient / fallbackReason / guidance) | arch-state-management-core.md |
+| SkillBlueprint | `SkillBlueprint` (skillName / description / category / customizations / files / reasoning) | packages/shared/src/types/skillCreator.ts |
+| テンプレートカテゴリ | `SkillCategory` (`simple` / `standard` / `complex` / `automation` / `integration`) | packages/shared/src/types/skillCreator.ts |
+| 生成予定ファイル | `PlannedFile` (path / purpose) | packages/shared/src/types/skillCreator.ts |
+| カテゴリテンプレート定数 | `CATEGORY_TEMPLATES: Record<SkillCategory, CategoryTemplate>` | packages/shared/src/types/skillCreator.ts |
+| Runtime plan 結果 | `RuntimeSkillCreatorPlanResult extends SkillBlueprint` (+ planId / skillSpec / agents / scripts) | packages/shared/src/types/skillCreator.ts |
 
 ---
 

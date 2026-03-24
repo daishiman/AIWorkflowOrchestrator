@@ -13,13 +13,15 @@ describe("GuidanceBlock", () => {
         message="ガイダンス"
         actionLabel="設定を見る"
         onAction={onAction}
-        secondaryActionLabel="ターミナルを開く"
+        secondaryActionLabel="実行コンソールを開く"
         onSecondaryAction={onSecondaryAction}
       />,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "設定を見る" }));
-    fireEvent.click(screen.getByRole("button", { name: "ターミナルを開く" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "実行コンソールを開く" }),
+    );
 
     expect(onAction).toHaveBeenCalledTimes(1);
     expect(onSecondaryAction).toHaveBeenCalledTimes(1);
@@ -30,12 +32,12 @@ describe("GuidanceBlock", () => {
       <GuidanceBlock
         variant="blocked"
         message="ガイダンス"
-        secondaryActionLabel="ターミナルを開く"
+        secondaryActionLabel="実行コンソールを開く"
       />,
     );
 
     expect(
-      screen.queryByRole("button", { name: "ターミナルを開く" }),
+      screen.queryByRole("button", { name: "実行コンソールを開く" }),
     ).not.toBeInTheDocument();
   });
 });

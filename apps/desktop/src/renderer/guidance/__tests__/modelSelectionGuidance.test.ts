@@ -37,7 +37,7 @@ describe("modelSelectionGuidance", () => {
     const guidance = getModelSelectionGuidance("NO_MODEL");
 
     expect(guidance?.primaryAction.type).toBe("open-settings");
-    expect(guidance?.secondaryAction.type).toBe("open-terminal");
+    expect(guidance?.secondaryAction.type).toBe("open-execution-console");
   });
 
   it("dispatcher は未実装 handler を no-op 化せず undefined を返す", () => {
@@ -50,6 +50,6 @@ describe("modelSelectionGuidance", () => {
     settingsHandler?.();
 
     expect(openSettings).toHaveBeenCalledTimes(1);
-    expect(dispatch("open-terminal")).toBeUndefined();
+    expect(dispatch("open-execution-console")).toBeUndefined();
   });
 });

@@ -32,7 +32,7 @@ describe("GoogleAdapter", () => {
     it("should return LLMChatResponse for valid request", async () => {
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent",
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
           () => {
             return HttpResponse.json({
               candidates: [
@@ -76,7 +76,7 @@ describe("GoogleAdapter", () => {
 
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1/models/*",
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
           ({ request }) => {
             capturedUrl = new URL(request.url);
             return HttpResponse.json({
@@ -114,7 +114,7 @@ describe("GoogleAdapter", () => {
 
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1/models/*",
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
           async ({ request }) => {
             capturedBody = (await request.json()) as Record<string, unknown>;
             return HttpResponse.json({
@@ -154,12 +154,12 @@ describe("GoogleAdapter", () => {
       ]);
     });
 
-    it("should prepend systemPrompt as user message", async () => {
+    it("should send systemPrompt as system_instruction field", async () => {
       let capturedBody: Record<string, unknown> = {};
 
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1/models/*",
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
           async ({ request }) => {
             capturedBody = (await request.json()) as Record<string, unknown>;
             return HttpResponse.json({
@@ -181,21 +181,103 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-pro",
+        modelId: "gemini-2.5-flash",
         messages: [{ role: "user", content: "Hello" }],
         systemPrompt: "You are a helpful assistant.",
       };
 
       await adapter.sendChat(request);
 
-      // Gemini doesn't support system role directly, so it's prepended as user message
+      expect(capturedBody.system_instruction).toEqual({
+        parts: [{ text: "You are a helpful assistant." }],
+      });
       expect(capturedBody.contents).toEqual([
-        {
-          role: "user",
-          parts: [{ text: "System: You are a helpful assistant." }],
-        },
         { role: "user", parts: [{ text: "Hello" }] },
       ]);
+    });
+
+    it("should omit system_instruction when systemPrompt is not provided", async () => {
+      let capturedBody: Record<string, unknown> = {};
+
+      server.use(
+        http.post(
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
+          async ({ request }) => {
+            capturedBody = (await request.json()) as Record<string, unknown>;
+            return HttpResponse.json({
+              candidates: [
+                {
+                  content: { parts: [{ text: "Response" }] },
+                  finishReason: "STOP",
+                },
+              ],
+              usageMetadata: {
+                promptTokenCount: 5,
+                candidatesTokenCount: 5,
+                totalTokenCount: 10,
+              },
+            });
+          },
+        ),
+      );
+
+      const request: LLMChatRequestInput = {
+        providerId: "google",
+        modelId: "gemini-2.5-flash",
+        messages: [{ role: "user", content: "Hello" }],
+      };
+
+      await adapter.sendChat(request);
+
+      expect(capturedBody.system_instruction).toBeUndefined();
+      expect(capturedBody.contents).toEqual([
+        { role: "user", parts: [{ text: "Hello" }] },
+      ]);
+    });
+
+    it("should include temperature and maxOutputTokens in generationConfig with systemPrompt", async () => {
+      let capturedBody: Record<string, unknown> = {};
+
+      server.use(
+        http.post(
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
+          async ({ request }) => {
+            capturedBody = (await request.json()) as Record<string, unknown>;
+            return HttpResponse.json({
+              candidates: [
+                {
+                  content: { parts: [{ text: "Response" }] },
+                  finishReason: "STOP",
+                },
+              ],
+              usageMetadata: {
+                promptTokenCount: 5,
+                candidatesTokenCount: 5,
+                totalTokenCount: 10,
+              },
+            });
+          },
+        ),
+      );
+
+      const request: LLMChatRequestInput = {
+        providerId: "google",
+        modelId: "gemini-2.5-flash",
+        messages: [{ role: "user", content: "Test" }],
+        systemPrompt: "Be concise.",
+        temperature: 0.5,
+        maxTokens: 512,
+      };
+
+      await adapter.sendChat(request);
+
+      expect(capturedBody.system_instruction).toEqual({
+        parts: [{ text: "Be concise." }],
+      });
+      expect(capturedBody.generationConfig).toMatchObject({
+        temperature: 0.5,
+        maxOutputTokens: 512,
+      });
     });
 
     it("should convert temperature and maxTokens", async () => {
@@ -203,7 +285,7 @@ describe("GoogleAdapter", () => {
 
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1/models/*",
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
           async ({ request }) => {
             capturedBody = (await request.json()) as Record<string, unknown>;
             return HttpResponse.json({
@@ -238,13 +320,87 @@ describe("GoogleAdapter", () => {
         maxOutputTokens: 1000,
       });
     });
+
+    it("should omit system_instruction when systemPrompt is whitespace only", async () => {
+      let capturedBody: Record<string, unknown> = {};
+
+      server.use(
+        http.post(
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
+          async ({ request }) => {
+            capturedBody = (await request.json()) as Record<string, unknown>;
+            return HttpResponse.json({
+              candidates: [
+                {
+                  content: { parts: [{ text: "Response" }] },
+                  finishReason: "STOP",
+                },
+              ],
+              usageMetadata: {
+                promptTokenCount: 5,
+                candidatesTokenCount: 5,
+                totalTokenCount: 10,
+              },
+            });
+          },
+        ),
+      );
+
+      const request: LLMChatRequestInput = {
+        providerId: "google",
+        modelId: "gemini-2.5-flash",
+        messages: [{ role: "user", content: "Hello" }],
+        systemPrompt: "   ",
+      };
+
+      await adapter.sendChat(request);
+
+      expect(capturedBody.system_instruction).toBeUndefined();
+    });
+
+    it("should omit system_instruction when systemPrompt is empty string", async () => {
+      let capturedBody: Record<string, unknown> = {};
+
+      server.use(
+        http.post(
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
+          async ({ request }) => {
+            capturedBody = (await request.json()) as Record<string, unknown>;
+            return HttpResponse.json({
+              candidates: [
+                {
+                  content: { parts: [{ text: "Response" }] },
+                  finishReason: "STOP",
+                },
+              ],
+              usageMetadata: {
+                promptTokenCount: 5,
+                candidatesTokenCount: 5,
+                totalTokenCount: 10,
+              },
+            });
+          },
+        ),
+      );
+
+      const request: LLMChatRequestInput = {
+        providerId: "google",
+        modelId: "gemini-2.5-flash",
+        messages: [{ role: "user", content: "Hello" }],
+        systemPrompt: "",
+      };
+
+      await adapter.sendChat(request);
+
+      expect(capturedBody.system_instruction).toBeUndefined();
+    });
   });
 
   describe("Error Mapping", () => {
     it("should map 400 to UNKNOWN error", async () => {
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1/models/*",
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
           () => {
             return HttpResponse.json(
               { error: { message: "Invalid request" } },
@@ -268,7 +424,7 @@ describe("GoogleAdapter", () => {
     it("should map 401/403 to API_KEY_INVALID", async () => {
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1/models/*",
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
           () => {
             return HttpResponse.json(
               { error: { message: "API key invalid" } },
@@ -298,7 +454,7 @@ describe("GoogleAdapter", () => {
 
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1/models/*",
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
           () => {
             return HttpResponse.json(
               { error: { message: "Resource exhausted" } },
@@ -328,7 +484,7 @@ describe("GoogleAdapter", () => {
 
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1/models/*",
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
           () => {
             return HttpResponse.error();
           },
@@ -349,10 +505,55 @@ describe("GoogleAdapter", () => {
   });
 
   describe("streamChat", () => {
+    it("should send system_instruction in streamChat", async () => {
+      let capturedBody: Record<string, unknown> = {};
+
+      server.use(
+        http.post(
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
+          async ({ request }) => {
+            capturedBody = (await request.json()) as Record<string, unknown>;
+            const encoder = new TextEncoder();
+            const stream = new ReadableStream({
+              start(controller) {
+                controller.enqueue(
+                  encoder.encode(
+                    'data: {"candidates":[{"content":{"parts":[{"text":"Hi"}]},"finishReason":"STOP"}]}\n\n',
+                  ),
+                );
+                controller.close();
+              },
+            });
+            return new HttpResponse(stream, {
+              headers: { "Content-Type": "text/event-stream" },
+            });
+          },
+        ),
+      );
+
+      const request: LLMChatRequestInput = {
+        providerId: "google",
+        modelId: "gemini-2.5-flash",
+        messages: [{ role: "user", content: "Hi" }],
+        systemPrompt: "You are concise.",
+        stream: true,
+      };
+
+      const chunks: StreamChunk[] = [];
+      for await (const chunk of adapter.streamChat(request)) {
+        chunks.push(chunk);
+      }
+
+      expect(capturedBody.system_instruction).toEqual({
+        parts: [{ text: "You are concise." }],
+      });
+      expect(chunks.length).toBeGreaterThan(0);
+    });
+
     it("should yield chunks from streaming response", async () => {
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1/models/*",
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
           () => {
             const encoder = new TextEncoder();
             const stream = new ReadableStream({
@@ -392,20 +593,84 @@ describe("GoogleAdapter", () => {
 
       expect(chunks.length).toBeGreaterThan(0);
     });
+
+    it("should ignore invalid JSON chunks in streamChat", async () => {
+      server.use(
+        http.post(
+          "https://generativelanguage.googleapis.com/v1beta/models/*",
+          () => {
+            const encoder = new TextEncoder();
+            const stream = new ReadableStream({
+              start(controller) {
+                controller.enqueue(encoder.encode("data: INVALID_JSON\n\n"));
+                controller.enqueue(
+                  encoder.encode(
+                    'data: {"candidates":[{"content":{"parts":[{"text":"Valid chunk"}]}}]}\n\n',
+                  ),
+                );
+                controller.close();
+              },
+            });
+            return new HttpResponse(stream, {
+              headers: { "Content-Type": "text/event-stream" },
+            });
+          },
+        ),
+      );
+
+      const request: LLMChatRequestInput = {
+        providerId: "google",
+        modelId: "gemini-2.5-flash",
+        messages: [{ role: "user", content: "Hi" }],
+        stream: true,
+      };
+
+      const chunks: StreamChunk[] = [];
+      for await (const chunk of adapter.streamChat(request)) {
+        chunks.push(chunk);
+      }
+
+      expect(chunks.length).toBe(1);
+      expect(chunks[0].delta.content).toBe("Valid chunk");
+    });
   });
 
   describe("checkHealth", () => {
     it("should return connected status for successful API call", async () => {
       server.use(
-        http.get("https://generativelanguage.googleapis.com/v1/models", () => {
-          return HttpResponse.json({ models: [{ name: "gemini-pro" }] });
-        }),
+        http.get(
+          "https://generativelanguage.googleapis.com/v1beta/models",
+          () => {
+            return HttpResponse.json({ models: [{ name: "gemini-pro" }] });
+          },
+        ),
       );
 
       const result = await adapter.checkHealth();
 
       expect(result.status).toBe("connected");
       expect(result.latency).toBeGreaterThanOrEqual(0);
+    });
+
+    it("should return error status when health check fails", async () => {
+      server.use(
+        http.get(
+          "https://generativelanguage.googleapis.com/v1beta/models",
+          () => {
+            return HttpResponse.json(
+              { error: { message: "Service unavailable" } },
+              { status: 503 },
+            );
+          },
+        ),
+      );
+
+      const result = await adapter.checkHealth();
+
+      expect(result.status).toBe("error");
+      expect(result.providerId).toBe("google");
+      expect(result.errorMessage).toBeDefined();
+      expect(result.checkedAt).toBeInstanceOf(Date);
     });
   });
 
