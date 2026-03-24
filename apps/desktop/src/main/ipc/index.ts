@@ -931,7 +931,12 @@ export function registerAllIpcHandlers(
         skillCreatorService,
         runtimeSkillCreatorService,
       );
-    })();
+    })().catch((error) => {
+      console.error(
+        "[IPC] registerSkillCreatorHandlers async setup failed:",
+        error,
+      );
+    });
   });
 
   // --- 11. Claude CLI handlers ---
