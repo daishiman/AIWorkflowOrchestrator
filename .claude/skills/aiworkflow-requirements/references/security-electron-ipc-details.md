@@ -28,6 +28,7 @@ runtime public invoke の契約:
 | `SKILL_CREATOR_PLAN` | `skill-creator:plan` | `SkillCreatorPlanRequest` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
 | `SKILL_CREATOR_EXECUTE_PLAN` | `skill-creator:execute-plan` | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
 | `SKILL_CREATOR_IMPROVE_SKILL` | `skill-creator:improve-skill` | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
+| `SKILL_CREATOR_APPLY_IMPROVEMENT` | `skill-creator:apply-improvement` | `{ skillName: string; suggestions: RuntimeSkillCreatorImproveSuggestion[] }` | `IpcResult<ApplyImprovementResult>` |
 
 **セキュリティ検証パターン**:
 

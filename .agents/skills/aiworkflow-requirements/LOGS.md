@@ -6,12 +6,11 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
-| 2026-03-24 - UT-SC-05-IPC-DI-WIRING 完了（RuntimeSkillCreatorFacade DI配線完了 / Main Process IPC層 index.ts で skillFileManager・llmAdapter・resourceLoader の3依存を DI配線 / IIFEパターン非同期初期化 / Graceful Degradation 維持） |
+| 2026-03-24 - TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了（DockState 8状態 / session persistence / artifact-first result / manual share bridge / transcript provenance 設計確定 / Phase 1-12 completed / 未タスク3件検出: UT-IMP-SESSION-DOCK-TESTID-DEDUP-001, UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001, UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001） |
 | 2026-03-24 - TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 完了（ViewType executionConsole 追加 / openExecutionConsole() shared action / CTA 7箇所統一 / agent 代替除去 / 既存未タスク2件解決 / 新規未タスク2件検出） |
 | 2026-03-24 - TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト追補（Vitest 70テスト / 7カテゴリ / 親パック4文書コンプライアンス検証 / 教訓2件 L-CBLG-003/004） |
 | 2026-03-24 - TASK-LLM-MOD-03 完了（GoogleAdapter system_instruction 対応 / baseUrl v1→v1beta / buildRequestBody DRY統合 / formatContents systemPrompt分離 / 19テスト全PASS / streaming.test.ts v1beta URL修正 / 未タスク2件: UT-LLM-MOD-03-TYPE-01〜02） |
 | 2026-03-24 - UT-SC-03-003 完了（RuntimeSkillCreatorFacade DI配線 / setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter / 11テスト全PASS / 未タスク2件: M01 subscriptionAuthProvider, M02 undefined キャスト除去） |
-| 2026-03-24 - UT-SC-03-004 完了（SkillBlueprint 型移行 / RuntimeSkillCreatorPlanResult 互換化 / packages/shared skillCreator.ts 型定義更新 / RuntimeSkillCreatorFacade.plan() 戻り値型統一 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | 2026-03-23 - TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 設計フェーズ完了同期（Canonical Source Table 5カテゴリ / Bridge Rule / State Machine / Same-Wave Sync Protocol Step A-E / Follow-up Formalization 3ステップ / 未タスク1件 UT-WORKTREE-RSYNC-CAUTION-001） |
 | 2026-03-23 - TASK-LLM-MOD-02 完了（AnthropicAdapter ヘルスチェックモデル更新 / L207 model ID を claude-3-haiku-20240307 から claude-haiku-4-5 に変更 / HC-001 テスト追加 / 12テスト全PASS / 未タスク2件: TASK-LLM-MOD-HEALTHCHECK-CONST, TASK-LLM-MOD-HEALTHCHECK-BODY） |
 | 2026-03-23 - UT-06-003-PRELOAD-API-IMPL 完了（evaluateSafety Preload API 追加 / safeInvoke + IPC_CHANNELS.SKILL_EVALUATE_SAFETY / T-1〜T-6 テスト全PASS / P23/P27/P42/P60/P61 準拠確認済み） |
@@ -91,17 +90,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
-
-## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
-
-- タスク名: RuntimeSkillCreatorFacade DI配線完了
-- 種別: 実装タスク
-- 主な反映:
-  - Main Process IPC層（`apps/desktop/src/main/ipc/index.ts`）で RuntimeSkillCreatorFacade に3つの依存（skillFileManager, llmAdapter, resourceLoader）をDI配線
-  - IIFEパターンで非同期初期化を実装し、Graceful Degradation を維持
-  - 先行タスク TASK-SC-05-IMPROVE-LLM で SkillFileManager が DI 依存に追加されたことに対応
-- 変更ファイル: `apps/desktop/src/main/ipc/index.ts`
-- 関連タスク: TASK-SC-05-IMPROVE-LLM
 
 ## UT-SC-03-003 DI配線完了（2026-03-24）
 
@@ -487,3 +475,15 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - テスト: 21件追加、全92件 PASS
 - カバレッジ: Line 91.2%, Branch 78.07%, Function 100%
 - 未タスク: 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI）
+
+### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
+
+- 改善提案 承認/適用 UI の Phase 1-12 完了
+- 主要変更:
+  - IPC: `skill-creator:apply-improvement` チャンネル追加（channels.ts, creatorHandlers.ts）
+  - Preload: `applyRuntimeImprovement` メソッド追加（skill-creator-api.ts）
+  - Renderer: ImprovementProposalItem/List/ApplyResult/Panel 4コンポーネント新規作成
+  - セキュリティ: P42準拠3段バリデーション、isSuggestion型ガード（P49準拠）、sanitizeErrorMessage
+  - P60準拠IpcResult<T>ラッパー形式、P65準拠skill-creator:*namespace統合
+- テスト: 62件全PASS（6ファイル）
+- 未タスク: 0件

@@ -8,7 +8,9 @@ import { ipcMain, type BrowserWindow, type IpcMainInvokeEvent } from "electron";
 import type {
   RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorImproveResponse,
+  RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
+  ApplyImprovementResult,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 import { IPC_CHANNELS } from "../../preload/channels";
@@ -34,6 +36,43 @@ function validationError(message: string): IpcResult<never> {
 
 function isBlank(value: unknown): boolean {
   return typeof value !== "string" || value === "" || value.trim() === "";
+}
+
+function isSuggestion(
+  value: unknown,
+): value is RuntimeSkillCreatorImproveSuggestion {
+  return (
+    value != null &&
+    typeof value === "object" &&
+    "section" in value &&
+    typeof value.section === "string" &&
+    "before" in value &&
+    typeof value.before === "string" &&
+    "after" in value &&
+    typeof value.after === "string" &&
+    "reason" in value &&
+    typeof value.reason === "string"
+  );
+}
+
+function validateSuggestions(suggestions: unknown): IpcResult<never> | null {
+  if (!Array.isArray(suggestions)) {
+    return validationError("suggestions が配列ではありません");
+  }
+  if (suggestions.length === 0) {
+    return validationError("suggestions が空です");
+  }
+  if (suggestions.length > 100) {
+    return validationError("suggestions が上限（100件）を超えています");
+  }
+  for (let i = 0; i < suggestions.length; i++) {
+    if (!isSuggestion(suggestions[i])) {
+      return validationError(
+        `suggestions[${i}] の構造が不正です（section/before/after/reason は全て string 必須）`,
+      );
+    }
+  }
+  return null;
 }
 
 function validateSender(
@@ -122,10 +161,6 @@ export function registerRuntimeSkillCreatorHandlers(
             estimatedSteps: 3,
             skillName: "",
             description: "",
-            category: "standard",
-            customizations: {},
-            files: [],
-            reasoning: "",
             agents: [],
             scripts: [],
             triggers: [],
@@ -193,10 +228,54 @@ export function registerRuntimeSkillCreatorHandlers(
       }
     },
   );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT,
+    async (
+      event: IpcMainInvokeEvent,
+      args: {
+        skillName: string;
+        suggestions: RuntimeSkillCreatorImproveSuggestion[];
+      },
+    ): Promise<IpcResult<ApplyImprovementResult>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT,
+        mainWindow,
+      );
+
+      if (isBlank(args?.skillName)) {
+        return validationError("skillName が指定されていません");
+      }
+
+      const suggestionsError = validateSuggestions(args?.suggestions);
+      if (suggestionsError) {
+        return suggestionsError;
+      }
+
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        const result = await runtimeSkillCreatorService.applyImprovement(
+          args.skillName.trim(),
+          args.suggestions,
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(error, "改善提案の適用に失敗しました"),
+        };
+      }
+    },
+  );
 }
 
 export function unregisterRuntimeSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT);
 }

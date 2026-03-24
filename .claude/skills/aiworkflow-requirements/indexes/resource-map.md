@@ -69,7 +69,6 @@
 | 設計仕様（Skill Publishing & Version Compatibility / 互換性チェック・公開判定） | interfaces-agent-sdk-skill.md, security-skill-execution.md, workflow-skill-lifecycle-created-skill-usage-journey.md | api-ipc-agent-core.md, arch-electron-services-core.md, arch-state-management-core.md, lessons-learned-current.md, task-workflow.md |
 | Runtime Skill Creator public IPC wiring（runtime plan/execute/improve 3チャンネル統合） | api-ipc-agent-core.md, security-electron-ipc-details.md, architecture-implementation-patterns-details.md | interfaces-agent-sdk-skill-reference.md, architecture-overview-core.md, lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, task-workflow-completed-ipc-contract-preload-alignment.md |
 | 設計仕様（Slide Modifier / Manual Fallback / SlideUIStatus 状態機械） | arch-state-management-core.md, ui-ux-agent-execution-core.md, llm-workspace-chat-edit.md | lessons-learned-ipc-preload-runtime.md, task-workflow-backlog.md, task-workflow-completed.md |
-| SkillBlueprint 型移行（plan() 出力型 extends SkillBlueprint） | arch-execution-capability-contract.md, packages/shared/src/types/skillCreator.ts | lessons-learned-ipc-preload-runtime.md, task-workflow-completed-skill-create-ui-integration.md |
 
 ---
 

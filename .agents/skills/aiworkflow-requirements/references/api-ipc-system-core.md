@@ -416,24 +416,6 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `applyImprovement()` メソッド追加 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `before`/`after` テキスト置換による改善適用 |
 | `SkillFileManager` DI 追加 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `RuntimeSkillCreatorFacadeDeps.skillFileManager` (optional) |
 
-
-### 完了タスク（UT-SC-05-IPC-DI-WIRING）
-
-> 完了日: 2026-03-24
-
-| 変更項目 | ファイル | 内容 |
-| -------- | -------- | ---- |
-| RuntimeSkillCreatorFacade DI 配線統合 | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` | `skillFileManager` / `llmAdapter` / `resourceLoader` を Facade に注入し、`skill-creator:*` ハンドラで実 LLM 呼び出しを可能化 |
-| dead-end namespace 廃止（P65対策） | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `creator:*` namespace を廃止し `skill-creator:*` に統合 |
-| Graceful Degradation | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` | `runtimeFacade` 未注入時は `success: false` + エラーメッセージ |
-
-#### 関連未タスク
-
-| 未タスクID | 内容 | 優先度 | 参照先 |
-| --- | --- | --- | --- |
-| UT-SC-05-UT-1 | LLMプロバイダー動的切替（APIキー設定後のアプリ再起動不要化） | 高 | `docs/30-workflows/unassigned-task/ut-sc-05-ut-1-llm-provider-dynamic-switch.md` |
-| UT-SC-05-UT-2 | track()/safeRegister async対応 | 中 | `docs/30-workflows/unassigned-task/ut-sc-05-ut-2-track-async-callback.md` |
-
 ### 契約メモ
 
 | 項目 | 契約 |

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-24T11:12:47.958Z",
-  "totalKeywords": 2469,
+  "generated": "2026-03-24T11:10:08.213Z",
+  "totalKeywords": 2474,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1765,7 +1765,6 @@
       "security-electron-ipc.md",
       "security-implementation.md",
       "security-skill-execution.md",
-      "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
@@ -1789,6 +1788,7 @@
       "arch-ui-components.md",
       "architecture-chat-history.md",
       "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
       "architecture-overview-core.md",
       "error-handling-details.md",
@@ -1799,6 +1799,7 @@
       "interfaces-chat-history-details.md",
       "interfaces-rag-file-selection.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-current.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
@@ -2055,7 +2056,8 @@
       "api-ipc-auth.md",
       "architecture-auth-security-core.md",
       "error-handling-details.md",
-      "logs-archive-2026-02-abort-security-loop-guard.md"
+      "logs-archive-2026-02-abort-security-loop-guard.md",
+      "ui-ux-agent-execution-core.md"
     ],
     "REFRESH": [
       "api-ipc-auth.md",
@@ -2460,9 +2462,10 @@
     ],
     "SC": [
       "arch-electron-services-details-part2.md",
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-skill-reference.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
     ],
     "POLICY": [
@@ -3142,6 +3145,7 @@
     "Import": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "arch-ui-components-advanced.md",
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-integration.md"
     ],
     "SkillCenter": [
@@ -3727,6 +3731,20 @@
     ],
     "Wrapper": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md"
+    ],
+    "Dynamic": [
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md"
+    ],
+    "型伝播パターン": [
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md"
+    ],
+    "APPLY": [
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "lessons-learned-current.md"
+    ],
+    "IMPROVEMENT": [
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "lessons-learned-current.md"
     ],
     "AUTO": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
@@ -4946,7 +4964,8 @@
       "workflow-ai-chat-llm-integration-fix.md"
     ],
     "Session": [
-      "interfaces-agent-sdk-integration.md"
+      "interfaces-agent-sdk-integration.md",
+      "ui-ux-agent-execution-core.md"
     ],
     "Persistence": [
       "interfaces-agent-sdk-integration.md"
@@ -6354,7 +6373,8 @@
     ],
     "BRIDGE": [
       "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-agent-execution-core.md"
     ],
     "CANONICAL": [
       "lessons-learned-current.md"
@@ -6368,12 +6388,15 @@
     "契約テスト教訓": [
       "lessons-learned-current.md"
     ],
-    "SkillBlueprint": [
-      "lessons-learned-ipc-preload-runtime.md",
-      "task-workflow-completed-skill-create-ui-integration.md"
+    "改善提案": [
+      "lessons-learned-current.md"
     ],
-    "型移行": [
-      "lessons-learned-ipc-preload-runtime.md"
+    "承認": [
+      "lessons-learned-current.md"
+    ],
+    "適用": [
+      "lessons-learned-current.md",
+      "logs-archive-2026-02-completed-move-preload-sync.md"
     ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -8029,9 +8052,6 @@
     "テンプレート最適化": [
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md"
-    ],
-    "適用": [
-      "logs-archive-2026-02-completed-move-preload-sync.md"
     ],
     "再監査補完": [
       "logs-archive-2026-02-completed-move-preload-sync.md"
@@ -10065,15 +10085,6 @@
     "create": [
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
-    "型追加・": [
-      "task-workflow-completed-skill-create-ui-integration.md"
-    ],
-    "plan": [
-      "task-workflow-completed-skill-create-ui-integration.md"
-    ],
-    "出力互換移行": [
-      "task-workflow-completed-skill-create-ui-integration.md"
-    ],
     "redirect": [
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-workspace-chat-lifecycle-tests.md"
@@ -10547,7 +10558,8 @@
       "ui-history-data-types.md"
     ],
     "設計仕様": [
-      "ui-history-design.md"
+      "ui-history-design.md",
+      "ui-ux-agent-execution-core.md"
     ],
     "パフォーマンス": [
       "ui-history-design.md"
@@ -10634,6 +10646,18 @@
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "バナー": [
+      "ui-ux-agent-execution-core.md"
+    ],
+    "Dock": [
+      "ui-ux-agent-execution-core.md"
+    ],
+    "DOCK": [
+      "ui-ux-agent-execution-core.md"
+    ],
+    "ARTIFACT": [
+      "ui-ux-agent-execution-core.md"
+    ],
+    "設計確定": [
       "ui-ux-agent-execution-core.md"
     ],
     "実装済": [

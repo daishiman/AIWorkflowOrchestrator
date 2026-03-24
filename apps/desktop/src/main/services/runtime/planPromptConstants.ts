@@ -26,19 +26,6 @@ The JSON must conform to the following schema:
 {
   "skillName": "string - kebab-case name for the skill (e.g., 'github-issue-classifier')",
   "description": "string - one-line description of what the skill does",
-  "category": "string - one of: simple, standard, complex, automation, integration",
-  "customizations": {
-    "additionalDirectories": ["string[] - extra dirs beyond category template (optional)"],
-    "additionalFiles": [{ "path": "string", "purpose": "string" }],
-    "excludedDefaults": ["string[] - template defaults to exclude (optional)"]
-  },
-  "files": [
-    {
-      "path": "string - relative path like agents/foo.md",
-      "purpose": "string - what this file does"
-    }
-  ],
-  "reasoning": "string - why this category and structure were chosen",
   "agents": [
     {
       "name": "string - agent file name without extension (e.g., 'classify-issues')",
@@ -59,7 +46,4 @@ Rules:
 - skillName must be kebab-case
 - agents array must have at least 1 entry
 - All string fields must be non-empty
-- category must be one of: simple, standard, complex, automation, integration
-- files should list all planned output files including agents and scripts
-- reasoning should explain the category choice
 ${PLAN_PROMPT_CONSTANTS.RESPONSE_FORMAT_END}`;
