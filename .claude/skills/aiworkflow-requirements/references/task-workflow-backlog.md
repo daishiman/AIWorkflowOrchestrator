@@ -575,6 +575,12 @@
 | UT-TASKSPEC-DESIGN-TEMPLATE-BRANCH-001 | type:design テンプレート分岐追加（Phase 4-9 の設計タスク向け読み替え自動化） | 中 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案1（2026-03-24） | `docs/30-workflows/unassigned-task/UT-TASKSPEC-DESIGN-TEMPLATE-BRANCH-001.md` |
 | UT-TASKSPEC-DRY-REFERENCE-TABLE-001 | 参照テーブル DRY 原則強化（共通参照を index.md に集約） | 低 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案2（2026-03-24） | `docs/30-workflows/unassigned-task/UT-TASKSPEC-DRY-REFERENCE-TABLE-001.md` |
 | UT-TASKSPEC-SKILL-FEEDBACK-MANDATORY-001 | Phase 12 skill-feedback-report 必須化（テンプレート・artifacts.json 自動追加） | 中 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案3（2026-03-24） | `docs/30-workflows/unassigned-task/UT-TASKSPEC-SKILL-FEEDBACK-MANDATORY-001.md` |
+| TASK-SC-07 | SkillCreateWizard への LLM 生成フロー接続 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION Phase 3 R-2（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION.md` |
+| TASK-SC-08 | onProgress コールバックによるリアルタイムプログレス更新 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION Phase 3 R-3（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE.md` |
+| TASK-SC-09 | detectMode "improve" モードハンドリング実装 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-09-IMPROVE-MODE-HANDLING.md` |
+| TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 | 低 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-10-AGENT-SLICE-GENERATION-SPLIT.md` |
+| TASK-SC-11 | AbortController による planSkill/executePlan キャンセル機構 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-11-ABORT-CONTROLLER-PLAN-CANCEL.md` |
+| TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 | 低 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-12-HYBRID-STATE-PATTERN-GUIDE.md` |
 
 ### 未タスク管理ルール
 

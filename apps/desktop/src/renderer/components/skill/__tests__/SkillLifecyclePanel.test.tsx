@@ -14,10 +14,12 @@ import {
 
 const mockCreateSkill = vi.fn();
 const mockExecuteSkill = vi.fn();
+const mockFetchSkills = vi.fn();
 const mockReExecuteAfterImprovement = vi.fn();
 const mockSelectSkillByName = vi.fn();
 const mockClearSkillError = vi.fn();
 const mockClearStreamingMessages = vi.fn();
+const mockClearGenerationState = vi.fn();
 const mockBeginSkillReview = vi.fn();
 const mockCompleteSkillReview = vi.fn();
 const mockResetSkillExecutionCycle = vi.fn();
@@ -57,16 +59,29 @@ vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
   useCompleteSkillReview: () => mockCompleteSkillReview,
   useExecuteSkill: () => mockExecuteSkill,
+  useFetchSkills: () => mockFetchSkills,
   useReExecuteAfterImprovement: () => mockReExecuteAfterImprovement,
   useResetSkillExecutionCycle: () => mockResetSkillExecutionCycle,
   useSelectSkillByName: () => mockSelectSkillByName,
   useClearSkillError: () => mockClearSkillError,
   useClearStreamingMessages: () => mockClearStreamingMessages,
+  useClearGenerationState: () => mockClearGenerationState,
   useSelectedSkillName: () => mockStoreState.selectedSkillName,
   useIsSkillExecuting: () => mockStoreState.isExecuting,
   useStreamingMessages: () => mockStoreState.streamingMessages,
   useSkillExecutionStatus: () => mockStoreState.skillExecutionStatus,
   useSkillError: () => mockStoreState.skillError,
+  // LLM Generation selectors (defaults for existing tests)
+  useIsSkillGenerating: () => false,
+  useGenerationProgress: () => null,
+  useGenerationError: () => null,
+  useCurrentPlanId: () => null,
+  useCurrentPlanResult: () => null,
+  useSetIsSkillGenerating: () => vi.fn(),
+  useSetGenerationProgress: () => vi.fn(),
+  useSetGenerationError: () => vi.fn(),
+  useSetCurrentPlanId: () => vi.fn(),
+  useSetCurrentPlanResult: () => vi.fn(),
 }));
 
 vi.mock("../SkillStreamingView", () => ({

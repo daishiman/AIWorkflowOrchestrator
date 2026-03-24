@@ -6,6 +6,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-24 - TASK-SC-06-UI-RUNTIME-CONNECTION 完了（SkillLifecyclePanel → RuntimeSkillCreatorFacade plan→execute フロー接続 / agentSlice に PlanResult型+5 state+6 actions 追加 / store/index.ts に11個別セレクタ追加（P31対策） / handlePrepare detectMode→planSkill自動呼出し / integrated_api/terminal_handoff 結果表示 / 33テスト全PASS / 未タスク6件: TASK-SC-07〜SC-12） |
+| 2026-03-24 - UT-SC-05-IPC-DI-WIRING 完了（RuntimeSkillCreatorFacade DI配線完了 / Main Process IPC層 index.ts で skillFileManager・llmAdapter・resourceLoader の3依存を DI配線 / IIFEパターン非同期初期化 / Graceful Degradation 維持） |
 | 2026-03-24 - TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了（DockState 8状態 / session persistence / artifact-first result / manual share bridge / transcript provenance 設計確定 / Phase 1-12 completed / 未タスク3件検出: UT-IMP-SESSION-DOCK-TESTID-DEDUP-001, UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001, UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001） |
 | 2026-03-24 - TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 完了（ViewType executionConsole 追加 / openExecutionConsole() shared action / CTA 7箇所統一 / agent 代替除去 / 既存未タスク2件解決 / 新規未タスク2件検出） |
 | 2026-03-24 - TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト追補（Vitest 70テスト / 7カテゴリ / 親パック4文書コンプライアンス検証 / 教訓2件 L-CBLG-003/004） |

@@ -325,6 +325,44 @@ export type SkillLifecycleJobGuide = {
 
 **S13との使い分け**: S13はキー→スタイルの静的マッピング（コンパイル時網羅性保証）、S20は配列要素にアクションを含む動的UI生成（実行時条件レンダリング）。
 
+#### S33: Hybrid State Pattern（ローカル useState + Zustand Store の併用）
+
+**発見タスク**: TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24）
+
+**問題**: 非同期 API（planSkill/executePlan）の結果を Zustand Store に格納すると、Store 更新→再レンダーのサイクルで UI の即時フィードバックが遅延する。一方、useState だけでは他コンポーネントから状態を参照できない。
+
+**解決策**: ローカル状態（useState）と Zustand Store の両方に同じデータを格納し、優先度付きで統合する。
+
+```typescript
+// SkillLifecyclePanel.tsx
+const storePlanResult = useCurrentPlanResult(); // Zustand Store
+const [localPlanResult, setLocalPlanResult] = useState<PlanResult | null>(null);
+
+// ローカル優先で統合（ローカルがnullならストアにフォールバック）
+const activePlanResult = localPlanResult ?? storePlanResult;
+
+// API 呼び出し成功時: 両方に格納
+setLocalPlanResult(planResult.data);      // 即時 UI 更新
+setCurrentPlanResult(planResult.data);    // 永続化・共有用
+
+// 計画実行完了時: ローカルをクリアしてストア側を優先に戻す
+setLocalPlanResult(null);
+clearGenerationState();
+```
+
+**適用基準**:
+- API レスポンスを即座に UI に反映する必要がある場合
+- 同じデータを他コンポーネントからも参照する可能性がある場合
+- ストアの更新サイクルによる遅延が UX に影響する場合
+
+**注意事項**:
+- SSoT（Single Source of Truth）が曖昧になるリスクがある。Phase 2 設計書に「どちらが SSoT か」「クリア順序」を明記すること
+- テストではローカル状態とストア状態の両方を考慮する必要がある
+- ローカル状態が残ったままストア側を更新しても UI に反映されない（ローカル優先のため）
+
+**関連パターン**: P31（Zustand Store Hooks 無限ループ）、S18（useShallow 派生セレクタ）
+**関連タスク**: TASK-SC-06-UI-RUNTIME-CONNECTION、TASK-SC-12（ガイドドキュメント化予定）
+
 ---
 
 ## バックエンド実装パターン
