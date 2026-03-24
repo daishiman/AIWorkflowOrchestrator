@@ -129,6 +129,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         case "executeIntegrated":
           onNavigateMainlineExecution?.();
           return;
+        case "openTerminal":
         case "executeTerminalHandoff":
           if (mainlineAccess) {
             const launched = await launchMainlineTerminal(
