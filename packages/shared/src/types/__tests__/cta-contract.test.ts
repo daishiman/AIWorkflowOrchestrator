@@ -290,49 +290,4 @@ describe("Concern C: resolveCtaContract - CTA 表示契約", () => {
       });
     });
   });
-
-  // ----------------------------------------------------------
-  // CC-N1〜CC-N5: 新 5 状態の CTA テスト（Phase 2 D-5 準拠）
-  // ----------------------------------------------------------
-  describe("CC-N1〜N5: 新 5 状態の CTA（Phase 2 D-5）", () => {
-    it("CC-N1: streaming 状態 - primary は '停止'(stopStreaming)", () => {
-      const cta = resolveCtaContract("streaming", "integratedRuntime");
-      expect(cta.primary?.label).toBe("停止");
-      expect(cta.primary?.action).toBe("stopStreaming");
-      expect(cta.secondary?.label).toBe("最新へ移動");
-      expect(cta.secondary?.action).toBe("scrollToLatest");
-    });
-
-    it("CC-N2: handoff 状態 - primary は 'terminal を開く'(openTerminal)", () => {
-      const cta = resolveCtaContract("handoff", "terminalSurface");
-      expect(cta.primary?.label).toBe("terminal を開く");
-      expect(cta.primary?.action).toBe("openTerminal");
-      expect(cta.secondary?.label).toBe("コマンドをコピー");
-      expect(cta.secondary?.action).toBe("copyCommandToClipboard");
-    });
-
-    it("CC-N3: terminal-only 状態 - primary は 'terminal を開く'(openTerminal)", () => {
-      const cta = resolveCtaContract("terminal-only", "terminalSurface");
-      expect(cta.primary?.label).toBe("terminal を開く");
-      expect(cta.primary?.action).toBe("openTerminal");
-      expect(cta.secondary?.label).toBe("コマンドをコピー");
-      expect(cta.secondary?.action).toBe("copyCommandToClipboard");
-    });
-
-    it("CC-N4: guidance-only 状態 - primary は '設定を見る'(openSettings)", () => {
-      const cta = resolveCtaContract("guidance-only", "none");
-      expect(cta.primary?.label).toBe("設定を見る");
-      expect(cta.primary?.action).toBe("openSettings");
-      expect(cta.secondary?.label).toBe("ヘルプを表示");
-      expect(cta.secondary?.action).toBe("openHelp");
-    });
-
-    it("CC-N5: degraded 状態 - primary は 'manual fallback'(openManualFallback)", () => {
-      const cta = resolveCtaContract("degraded", "integratedRuntime");
-      expect(cta.primary?.label).toBe("manual fallback");
-      expect(cta.primary?.action).toBe("openManualFallback");
-      expect(cta.secondary?.label).toBe("ヘルプを表示");
-      expect(cta.secondary?.action).toBe("openHelp");
-    });
-  });
 });

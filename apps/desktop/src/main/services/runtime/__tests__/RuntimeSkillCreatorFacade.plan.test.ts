@@ -9,10 +9,7 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  RuntimeSkillCreatorFacade,
-  parsePlanResponse,
-} from "../RuntimeSkillCreatorFacade";
+import { RuntimeSkillCreatorFacade } from "../RuntimeSkillCreatorFacade";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
@@ -46,35 +43,6 @@ function createMockSkillExecutor(): SkillExecutor {
 
 /** 有効な LLM レスポンス JSON を生成する */
 function validPlanResponseJson() {
-  return JSON.stringify({
-    skillName: "github-issue-classifier",
-    description: "GitHubのIssueを自動分類するスキル",
-    category: "standard",
-    customizations: {},
-    files: [
-      {
-        path: "agents/classify-issues.md",
-        purpose: "Issueの内容を分析して分類する",
-      },
-      {
-        path: "scripts/validate-labels.js",
-        purpose: "ラベルの妥当性を検証する",
-      },
-    ],
-    reasoning: "Issue分類はエージェントとスクリプトの標準構成が最適",
-    agents: [
-      { name: "classify-issues", role: "Issueの内容を分析して分類する" },
-    ],
-    scripts: [
-      { name: "validate-labels.js", purpose: "ラベルの妥当性を検証する" },
-    ],
-    triggers: ["GitHub Issue作成時"],
-    anchors: ["GitHub API v4"],
-  });
-}
-
-/** 旧形式（新フィールドなし）の LLM レスポンス JSON を生成する */
-function legacyPlanResponseJson() {
   return JSON.stringify({
     skillName: "github-issue-classifier",
     description: "GitHubのIssueを自動分類するスキル",
@@ -253,23 +221,7 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
       ]);
       expect(planResult.triggers).toEqual(["GitHub Issue作成時"]);
       expect(planResult.anchors).toEqual(["GitHub API v4"]);
-      // SkillBlueprint 新フィールド
-      expect(planResult.category).toBe("standard");
-      expect(planResult.customizations).toEqual({});
-      expect(planResult.files).toEqual([
-        {
-          path: "agents/classify-issues.md",
-          purpose: "Issueの内容を分析して分類する",
-        },
-        {
-          path: "scripts/validate-labels.js",
-          purpose: "ラベルの妥当性を検証する",
-        },
-      ]);
-      expect(planResult.reasoning).toBe(
-        "Issue分類はエージェントとスクリプトの標準構成が最適",
-      );
-      // estimatedSteps = files.length（files が存在する場合）
+      // estimatedSteps = agents.length + scripts.length
       expect(planResult.estimatedSteps).toBe(2);
     });
   });
@@ -373,58 +325,6 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
       expect(result).toHaveProperty("planId", "plan-1710000000000");
       expect(result).toHaveProperty("skillSpec", "テスト入力");
       expect(result).toHaveProperty("estimatedSteps", 3);
-      // SkillBlueprint 新フィールドのデフォルト値
-      expect(result).toHaveProperty("category", "standard");
-      expect(result).toHaveProperty("customizations", {});
-      expect(result).toHaveProperty("files", []);
-      expect(result).toHaveProperty("reasoning", "");
-    });
-  });
-
-  // ------------------------------------------------------------------
-  // 4b. SkillBlueprint Graceful degradation テスト（旧形式 LLM レスポンス）
-  // ------------------------------------------------------------------
-  describe("SkillBlueprint Graceful degradation（旧形式レスポンス）", () => {
-    it("LLM が新フィールドを返さない場合、デフォルト値が適用される", async () => {
-      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
-        type: "integrated_api",
-        apiKey: "sk-test",
-        permissionMode: "default",
-      });
-      (mockResourceLoader.loadAgent as ReturnType<typeof vi.fn>)
-        .mockResolvedValueOnce("agent1")
-        .mockResolvedValueOnce("agent2")
-        .mockResolvedValueOnce("agent3");
-      (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
-        content: legacyPlanResponseJson(),
-        model: "claude-sonnet-4-20250514",
-        usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
-      });
-
-      const result = await facade.plan("テスト入力", "api-key", "sk-test");
-
-      // terminal_handoff ではない
-      expect(result).not.toHaveProperty("type", "terminal_handoff");
-
-      const planResult = result as Record<string, unknown>;
-      // Graceful degradation デフォルト値
-      expect(planResult.category).toBe("standard");
-      expect(planResult.customizations).toEqual({});
-      expect(planResult.reasoning).toBe("");
-      // files は agents + scripts から自動生成
-      expect(planResult.files).toEqual([
-        {
-          path: "agents/classify-issues.md",
-          purpose: "Issueの内容を分析して分類する",
-        },
-        {
-          path: "scripts/validate-labels.js",
-          purpose: "ラベルの妥当性を検証する",
-        },
-      ]);
-      // 既存フィールドは保持
-      expect(planResult.skillName).toBe("github-issue-classifier");
-      expect(planResult.description).toBe("GitHubのIssueを自動分類するスキル");
     });
   });
 
@@ -682,107 +582,5 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
         facade.plan("テスト入力", "api-key", "sk-test"),
       ).rejects.toThrow("LLM response does not match expected plan schema");
     });
-  });
-});
-
-// ------------------------------------------------------------------
-// parsePlanResponse() 単体テスト（SkillBlueprint Graceful degradation）
-// ------------------------------------------------------------------
-describe("parsePlanResponse() SkillBlueprint フィールド", () => {
-  const baseResponse = {
-    skillName: "test-skill",
-    description: "A test skill",
-    agents: [{ name: "agent1", role: "role1" }],
-    scripts: [{ name: "script1.js", purpose: "purpose1" }],
-    triggers: ["trigger1"],
-    anchors: ["anchor1"],
-  };
-
-  it("新フィールドが全て含まれる場合、そのまま返す", () => {
-    const input = {
-      ...baseResponse,
-      category: "complex",
-      customizations: { additionalDirectories: ["extra"] },
-      files: [{ path: "agents/agent1.md", purpose: "role1" }],
-      reasoning: "Complex structure needed",
-    };
-    const result = parsePlanResponse(JSON.stringify(input));
-    expect(result.category).toBe("complex");
-    expect(result.customizations).toEqual({ additionalDirectories: ["extra"] });
-    expect(result.files).toEqual([
-      { path: "agents/agent1.md", purpose: "role1" },
-    ]);
-    expect(result.reasoning).toBe("Complex structure needed");
-  });
-
-  it("category が未返却の場合、'standard' がデフォルト適用される", () => {
-    const result = parsePlanResponse(JSON.stringify(baseResponse));
-    expect(result.category).toBe("standard");
-  });
-
-  it("customizations が未返却の場合、{} がデフォルト適用される", () => {
-    const result = parsePlanResponse(JSON.stringify(baseResponse));
-    expect(result.customizations).toEqual({});
-  });
-
-  it("files が未返却の場合、agents + scripts から自動生成される", () => {
-    const result = parsePlanResponse(JSON.stringify(baseResponse));
-    expect(result.files).toEqual([
-      { path: "agents/agent1.md", purpose: "role1" },
-      { path: "scripts/script1.js", purpose: "purpose1" },
-    ]);
-  });
-
-  it("reasoning が未返却の場合、空文字列がデフォルト適用される", () => {
-    const result = parsePlanResponse(JSON.stringify(baseResponse));
-    expect(result.reasoning).toBe("");
-  });
-
-  it("不正な category 文字列の場合、バリデーションエラーがスローされる", () => {
-    const input = { ...baseResponse, category: "invalid_category" };
-    expect(() => parsePlanResponse(JSON.stringify(input))).toThrow(
-      "LLM response does not match expected plan schema",
-    );
-  });
-
-  it("不正な files（path欠如）の場合、バリデーションエラーがスローされる", () => {
-    const input = {
-      ...baseResponse,
-      files: [{ purpose: "no path field" }],
-    };
-    expect(() => parsePlanResponse(JSON.stringify(input))).toThrow(
-      "LLM response does not match expected plan schema",
-    );
-  });
-
-  it("5つのカテゴリ値が全て有効", () => {
-    for (const cat of [
-      "simple",
-      "standard",
-      "complex",
-      "automation",
-      "integration",
-    ]) {
-      const input = { ...baseResponse, category: cat };
-      const result = parsePlanResponse(JSON.stringify(input));
-      expect(result.category).toBe(cat);
-    }
-  });
-
-  it("customizations に不正な additionalDirectories がある場合、バリデーションエラーがスローされる", () => {
-    const input = {
-      ...baseResponse,
-      customizations: { additionalDirectories: [123] },
-    };
-    expect(() => parsePlanResponse(JSON.stringify(input))).toThrow(
-      "LLM response does not match expected plan schema",
-    );
-  });
-
-  it("不正な category（数値）の場合、バリデーションエラーがスローされる", () => {
-    const input = { ...baseResponse, category: 42 };
-    expect(() => parsePlanResponse(JSON.stringify(input))).toThrow(
-      "LLM response does not match expected plan schema",
-    );
   });
 });

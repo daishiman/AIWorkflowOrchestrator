@@ -26,10 +26,7 @@ import type {
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorPlanResult as SkillPlanResult,
   ApplyImprovementResult,
-  SkillTemplateCategory,
-  PlannedFile,
 } from "@repo/shared/types";
-import { CATEGORY_TEMPLATES } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 import type { ILLMAdapter } from "../../adapters/llm/types";
 import type { ResourceLoader } from "../skill/ResourceLoader";
@@ -140,10 +137,6 @@ export class RuntimeSkillCreatorFacade {
         estimatedSteps: 3,
         skillName: "",
         description: "",
-        category: "standard",
-        customizations: {},
-        files: [],
-        reasoning: "",
         agents: [],
         scripts: [],
         triggers: [],
@@ -174,16 +167,9 @@ export class RuntimeSkillCreatorFacade {
     return {
       planId,
       skillSpec,
-      estimatedSteps:
-        parsed.files && parsed.files.length > 0
-          ? parsed.files.length
-          : parsed.agents.length + parsed.scripts.length,
+      estimatedSteps: parsed.agents.length + parsed.scripts.length,
       skillName: parsed.skillName,
       description: parsed.description,
-      category: parsed.category ?? "standard",
-      customizations: parsed.customizations ?? {},
-      files: parsed.files ?? [],
-      reasoning: parsed.reasoning ?? "",
       agents: parsed.agents,
       scripts: parsed.scripts,
       triggers: parsed.triggers,
@@ -398,14 +384,6 @@ export class RuntimeSkillCreatorFacade {
 interface LLMPlanResponse {
   skillName: string;
   description: string;
-  category?: SkillTemplateCategory;
-  customizations?: {
-    additionalDirectories?: string[];
-    additionalFiles?: PlannedFile[];
-    excludedDefaults?: string[];
-  };
-  files?: PlannedFile[];
-  reasoning?: string;
   agents: Array<{ name: string; role: string }>;
   scripts: Array<{ name: string; purpose: string }>;
   triggers: string[];
@@ -441,21 +419,7 @@ export function parsePlanResponse(responseText: string): LLMPlanResponse {
     throw new Error("LLM response does not match expected plan schema");
   }
 
-  // Graceful degradation: 新フィールドが未返却の場合のデフォルト値
-  return {
-    ...parsed,
-    category: isValidCategory(parsed.category) ? parsed.category : "standard",
-    customizations: isValidCustomizations(parsed.customizations)
-      ? parsed.customizations
-      : {},
-    files: isValidFilesArray(parsed.files)
-      ? parsed.files
-      : generateFilesFromAgentsAndScripts(parsed.agents, parsed.scripts),
-    reasoning:
-      "reasoning" in parsed && typeof parsed.reasoning === "string"
-        ? parsed.reasoning
-        : "",
-  };
+  return parsed;
 }
 
 function isValidArrayOfStrings(value: unknown): value is string[] {
@@ -492,71 +456,6 @@ function isValidScriptEntry(
   );
 }
 
-const VALID_CATEGORIES: ReadonlySet<string> = new Set(
-  Object.keys(CATEGORY_TEMPLATES),
-);
-
-function isValidCategory(value: unknown): value is SkillTemplateCategory {
-  return typeof value === "string" && VALID_CATEGORIES.has(value);
-}
-
-function isValidPlannedFileEntry(entry: unknown): entry is PlannedFile {
-  return (
-    entry != null &&
-    typeof entry === "object" &&
-    "path" in entry &&
-    typeof entry.path === "string" &&
-    entry.path.trim() !== "" &&
-    "purpose" in entry &&
-    typeof entry.purpose === "string" &&
-    entry.purpose.trim() !== ""
-  );
-}
-
-function isValidFilesArray(value: unknown): value is PlannedFile[] {
-  return Array.isArray(value) && value.every(isValidPlannedFileEntry);
-}
-
-function isValidCustomizations(
-  value: unknown,
-): value is LLMPlanResponse["customizations"] {
-  if (value == null || typeof value !== "object") return false;
-  if (
-    "additionalDirectories" in value &&
-    value.additionalDirectories != null &&
-    !isValidArrayOfStrings(value.additionalDirectories)
-  )
-    return false;
-  if (
-    "additionalFiles" in value &&
-    value.additionalFiles != null &&
-    !isValidFilesArray(value.additionalFiles)
-  )
-    return false;
-  if (
-    "excludedDefaults" in value &&
-    value.excludedDefaults != null &&
-    !isValidArrayOfStrings(value.excludedDefaults)
-  )
-    return false;
-  return true;
-}
-
-/** agents + scripts から PlannedFile[] を自動生成（Graceful degradation 用） */
-function generateFilesFromAgentsAndScripts(
-  agents: Array<{ name: string; role: string }>,
-  scripts: Array<{ name: string; purpose: string }>,
-): PlannedFile[] {
-  const files: PlannedFile[] = [];
-  for (const agent of agents) {
-    files.push({ path: `agents/${agent.name}.md`, purpose: agent.role });
-  }
-  for (const script of scripts) {
-    files.push({ path: `scripts/${script.name}`, purpose: script.purpose });
-  }
-  return files;
-}
-
 function isValidPlanResponse(value: unknown): value is LLMPlanResponse {
   if (value == null || typeof value !== "object") return false;
 
@@ -579,35 +478,6 @@ function isValidPlanResponse(value: unknown): value is LLMPlanResponse {
     return false;
 
   if (!("anchors" in value) || !isValidArrayOfStrings(value.anchors))
-    return false;
-
-  // 新フィールドはオプショナル: 存在する場合のみ型チェック
-  if (
-    "category" in value &&
-    value.category != null &&
-    !isValidCategory(value.category)
-  )
-    return false;
-
-  if (
-    "files" in value &&
-    value.files != null &&
-    !isValidFilesArray(value.files)
-  )
-    return false;
-
-  if (
-    "customizations" in value &&
-    value.customizations != null &&
-    !isValidCustomizations(value.customizations)
-  )
-    return false;
-
-  if (
-    "reasoning" in value &&
-    value.reasoning != null &&
-    typeof value.reasoning !== "string"
-  )
     return false;
 
   return true;

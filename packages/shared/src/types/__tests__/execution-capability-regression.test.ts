@@ -382,8 +382,8 @@ describe("E-7: both → API key 削除 → terminalSurface への capability 劣
     expect(result).not.toBe("both");
   });
 
-  it("劣化後の resolveUiState が 'terminal-only' であること（terminalSurface は利用可能）", () => {
-    // terminalSurface に劣化した場合、8 値ロジック P3 により terminal-only を返す
+  it("劣化後の resolveUiState が 'ready' であること（terminalSurface は利用可能）", () => {
+    // terminalSurface に劣化しても、UI state は ready であること
     const degradedCapability = resolveCapability({
       apiKeyValid: false,
       subscriptionValid: true,
@@ -395,7 +395,7 @@ describe("E-7: both → API key 削除 → terminalSurface への capability 劣
       hasResolutionAction: false,
     };
     const result = resolveUiState(ctx);
-    expect(result.uiState).toBe("terminal-only");
+    expect(result.uiState).toBe("ready");
   });
 
   it("劣化後の resolveCtaContract primary が 'ターミナルで実行' になること", () => {
@@ -575,7 +575,7 @@ describe("統合: capability 判定 → UI state → CTA 契約の連鎖整合�
     vi.clearAllMocks();
   });
 
-  it("both → degraded → terminalSurface → terminal-only → terminal CTA の連鎖が正しいこと", () => {
+  it("both → degraded → terminalSurface → ready → terminal CTA の連鎖が正しいこと", () => {
     // Step 1: both だが degraded → terminalSurface
     const capability = resolveCapability({
       apiKeyValid: true,
@@ -584,18 +584,18 @@ describe("統合: capability 判定 → UI state → CTA 契約の連鎖整合�
     });
     expect(capability).toBe("terminalSurface");
 
-    // Step 2: terminalSurface + terminal 利用可能 → terminal-only（8 値ロジック P3）
+    // Step 2: terminalSurface + terminal 利用可能 → ready
     const uiResult = resolveUiState({
       capability,
       isConnectionAvailable: false,
       isTerminalAvailable: true,
       hasResolutionAction: false,
     });
-    expect(uiResult.uiState).toBe("terminal-only");
+    expect(uiResult.uiState).toBe("ready");
 
-    // Step 3: terminal-only → openTerminal CTA
+    // Step 3: terminalSurface + ready → terminal handoff CTA
     const cta = resolveCtaContract({ capability, uiState: uiResult.uiState });
-    expect(cta.primary?.action).toBe("openTerminal");
+    expect(cta.primary?.action).toBe("executeTerminalHandoff");
 
     // Step 4: assertNoPrimaryCta を通過すること
     expect(() =>

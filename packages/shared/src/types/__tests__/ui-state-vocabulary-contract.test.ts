@@ -125,13 +125,13 @@ describe("Concern B: resolveUiState - state 語彙変換", () => {
   });
 
   // ----------------------------------------------------------
-  // CB-2: terminalSurface / terminal 利用可能 → terminal-only（8 値ロジック P3）
+  // CB-2: terminalSurface / terminal 利用可能 → ready
   // ----------------------------------------------------------
   describe("CB-2: capability=terminalSurface, terminal 利用可能", () => {
-    it("uiState が 'terminal-only' であること（8 値ロジック P3）", () => {
-      // terminal launcher が利用可能なら terminal-only を返す（P3 優先順位）
+    it("uiState が 'ready' であること", () => {
+      // terminal launcher が利用可能なら ready を返すこと
       const result = resolveUiState(contextTerminalReady);
-      expect(result.uiState).toBe("terminal-only");
+      expect(result.uiState).toBe("ready");
     });
 
     it("blockedReason が undefined であること", () => {
@@ -248,17 +248,8 @@ describe("Concern B: resolveUiState - state 語彙変換", () => {
   // 型安全性テスト: uiState が 3 種類の有効な値のいずれかに限定される
   // ----------------------------------------------------------
   describe("型テスト: uiState の値制約", () => {
-    it("uiState が有効な 8 値のいずれかであること", () => {
-      const validStates: UiState[] = [
-        "ready",
-        "blocked",
-        "unavailable",
-        "streaming",
-        "handoff",
-        "terminal-only",
-        "guidance-only",
-        "degraded",
-      ];
+    it("uiState が 'ready' / 'blocked' / 'unavailable' のいずれかであること", () => {
+      const validStates: UiState[] = ["ready", "blocked", "unavailable"];
 
       const contexts: CapabilityContext[] = [
         contextIntegratedReady,

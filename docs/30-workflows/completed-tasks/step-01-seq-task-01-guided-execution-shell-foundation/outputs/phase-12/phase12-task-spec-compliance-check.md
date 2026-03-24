@@ -48,14 +48,14 @@
 
 ### Task 12-4: Unassigned Task Detection
 
-| Check                                                  | Status | Notes                                                                                     |
-| ------------------------------------------------------ | ------ | ----------------------------------------------------------------------------------------- |
-| `outputs/phase-12/unassigned-task-detection.md` exists | Done   | Created 2026-03-24                                                                        |
-| Detection count reported (0 is acceptable)             | Done   | 0 new tasks detected                                                                      |
-| Detection method documented                            | Done   | 3-source review (Phase outputs, MINOR findings, final review)                             |
-| Resolved unassigned tasks recorded                     | Done   | 2 tasks (ut-viewtype-terminal-addition, UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001) |
-| P3/P38 3-step compliance                               | Done   | N/A for 0 new tasks; close process for 2 resolved tasks documented                        |
-| P56 GitHub Issue close reminder                        | Done   | Included in close process                                                                 |
+| Check                                                  | Status | Notes                                                                                                                                  |
+| ------------------------------------------------------ | ------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `outputs/phase-12/unassigned-task-detection.md` exists | Done   | Created 2026-03-24                                                                                                                     |
+| Detection count reported (0 is acceptable)             | Done   | 2 new tasks detected (UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001, UT-RENAME-RUNTIME-ACCESS-TERMINAL-HELPERS-001)                   |
+| Detection method documented                            | Done   | 3-source review (Phase outputs, MINOR findings, final review)                                                                          |
+| Resolved unassigned tasks recorded                     | Done   | 2 tasks (ut-viewtype-terminal-addition, UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001)                                              |
+| P3/P38 3-step compliance                               | Done   | 2 new tasks: instruction files created in unassigned-task/, backlog registered, spec linked. 2 resolved tasks close process documented |
+| P56 GitHub Issue close reminder                        | Done   | Included in close process                                                                                                              |
 
 ### Task 12-5: Compliance Check
 

@@ -4,15 +4,18 @@
 
 ---
 
-## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
+## TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了（2026-03-24）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12 完了記録追加
+- **Phase**: Phase 1-12 完了（Phase 13 blocked）
 - **Result**: success
 - **Notes**:
-  - Main Process IPC層（`apps/desktop/src/main/ipc/index.ts`）で RuntimeSkillCreatorFacade に3つの依存（skillFileManager, llmAdapter, resourceLoader）をDI配線
-  - IIFEパターンで非同期初期化を実装し、Graceful Degradation を維持
-  - 先行タスク TASK-SC-05-IMPROVE-LLM で SkillFileManager が DI 依存に追加されたことに対応
+  - session dock、transcript persistence、artifact-first result、manual share の設計タスク完了
+  - DockState 8状態（collapsed/ready/handoff/running/done/aborted/unavailable/guidance-only）定義
+  - session persistence: session ID 採番、保持件数、reopen restore、cleanup 条件
+  - artifact bridge: 成果物 -> 要約 -> transcript 詳細の表示順
+  - manual share: 手動3操作 + provenance chip
+  - 未タスク3件検出（UT-IMP-SESSION-DOCK-TESTID-DEDUP-001, UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001, UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001）
 
 ---
 
@@ -31,24 +34,6 @@
 
 ---
 
-## TASK-IMP-UISTATE-CONTRACT-EXTENSION-001 完了（2026-03-24）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 完了
-- **Result**: success
-- **Notes**:
-  - UiState 3値→8値拡張（ready/blocked/unavailable + streaming/handoff/terminal-only/guidance-only/degraded）
-  - resolveUiState() P1-P8 優先順位チェーン実装（CapabilityContext overload 1）
-  - resolveCtaContract() 新5状態CTA マッピング追加
-  - Guard関数2個追加: assertStreamingCtaContract / assertHandoffGuidanceExists
-  - CapabilityContext に4 optional boolean fields 追加: isStreaming / isHandoffRequired / isDegraded / hasAlternativeGuidance
-  - overload 2 後方互換性維持（@deprecated）
-  - テスト: uistate-resolve 32件 + contract-matrix 26件 + cta-contract 29件 + regression 48件 = 全144件 PASS
-  - Phase 6: エッジケース5件 + 境界値3件 + overload後方互換5件 = 13テスト追加
-  - 未タスク: 0件
-
----
-
 ## TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -63,22 +48,6 @@
   - 契約テストスクリプト `scripts/__tests__/canonical-bridge-ledger-governance.test.ts` を追加作成（Vitest 70テスト / 7カテゴリ: Contract/Unit/Integration/Artifact/EdgeCase/Regression/Rollback）
   - 親パック4文書（index.md / ui-ux-realization.md / ui-ux-diagrams.md / design-audit-matrix.md）のコンプライアンス検証を完了
   - 教訓2件追加: L-CBLG-003（Phase 4 テストマトリクスのファイル参照誤り）、L-CBLG-004（TypeScript TS1501 regex /s flag ES2018+ 要件）
-
----
-
-## TASK-LLM-MOD-04 完了（2026-03-24）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-13 完了（P50パターン: 検証・補完モード）
-- **Result**: success
-- **Notes**:
-  - テスト期待値更新タスク。Task01-03 実装時にテスト更新が同時完了していたため、コード変更0行
-  - 対象7ファイル 149テスト全PASS検証（R-01〜R-05 全充足）
-  - llm.test.ts: PROVIDER_CONFIGS T-01〜T-13 + inferProviderId o3/o4-mini T-07/T-08 確認済み
-  - AnthropicAdapter.test.ts: ヘルスチェック claude-haiku-4-5 期待値確認済み
-  - GoogleAdapter.test.ts: system_instruction 6テストケース確認済み
-  - カバレッジ: llm.ts Line 84.86% / Branch 70.68% / Function 91.66%、GoogleAdapter.ts 100%/90.32%/100%
-  - 未タスク1件: UT-LLM-MOD-04-001（OpenAI/xAIアダプターテストのレガシーモデルID統一、low優先度）
 
 ---
 
@@ -111,22 +80,6 @@
 
 ---
 
-
-## UT-SLIDE-IMPL-001 完了（2026-03-24）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 完了
-- **Result**: success
-- **Notes**:
-  - Slide Modifier / agent-client 実装（Task08 派生）
-  - ModifierResponse 型拡張（fallback_reason / suggested_action optional 追加）
-  - agent-client.ts DI版 createModifierAgentAPI ファクトリ実装
-  - SlideCapabilityDTO + slide:capability:get IPC channel + P42 3段バリデーション
-  - channel-sync テスト（Preload ⇔ Main チャネル名一致検証）
-  - 未タスク: 0件
-
----
-
 ## TASK-LLM-MOD-02 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -139,22 +92,6 @@
   - 未タスク2件（TASK-LLM-MOD-HEALTHCHECK-CONST, TASK-LLM-MOD-HEALTHCHECK-BODY）検出・登録
 
 ---
-
-## UT-SC-03-004 完了（2026-03-24）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-13 完了
-- **Result**: success
-- **Notes**:
-  - SkillBlueprint 型を RuntimeSkillCreatorPlanResult に互換移行
-  - packages/shared/src/types/skillCreator.ts の型定義更新
-  - RuntimeSkillCreatorFacade.plan() 戻り値型統一
-  - creatorHandlers.ts および planPromptConstants.ts 更新
-  - 型テスト（skillCreator.type.test.ts）追加
-  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
-
----
-
 
 ## UT-06-003-PRELOAD-API-IMPL 完了（2026-03-23）
 
@@ -1154,3 +1091,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
 | 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
 | 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
+
+### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | channels.ts, creatorHandlers.ts, skill-creator-api.ts（既存変更）+ ImprovementProposalItem/List/ApplyResult/Panel（新規4コンポーネント） |
+| 結果 | Phase 1-12 完了。改善提案の承認/適用UIを実装。IPC `skill-creator:apply-improvement` + Preload `applyRuntimeImprovement` + diff表示UIコンポーネント。62テスト全PASS |
+| 検証 | 未タスク 0件。P42/P44/P47/P48/P49/P60/P65 準拠確認済み |

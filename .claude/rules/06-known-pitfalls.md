@@ -850,58 +850,26 @@ export function registerSkillCreatorHandlers(
 }
 ```
 
-### P67: resolveCtaContract overload 2 の引数順不整合
+### P67: React Props Silent Drop（destructuring 除外による未使用検出不能）
 
-- **教訓**: `resolveCtaContract` の overload 2（positional args）が `(capability, uiState)` の順で定義されていたが、テストコードは全て `(uiState, capability)` の順で呼び出していた。プロダクションコードは全て overload 1（object form）を使用していたため、コンパイル時も実行時も顕在化せず、Phase 5 テスト実行で初めて発覚した
-- **症状**: テストが `resolveCtaContract("streaming", "integratedRuntime")` と呼ぶが、実装は第1引数を `capability` として処理し、意図しない CTA が返る
-- **解決策**: overload 2 のシグネチャを `(uiState, capability)` に修正。grep で全呼び出し元を確認し、プロダクションコードが overload 1 のみ使用していることを検証した上で安全に変更
-- **再発防止**: 複数 overload を持つ関数は、overload 間で引数順序を統一する。テスト側の呼び出し順が設計意図と一致しているかを Phase 4 で明示的に検証する
-- **関連パターン**: P44（IPC インターフェース不整合）、P60（IPC テスト応答形式の不一致）
-- **関連タスク**: TASK-IMP-UISTATE-CONTRACT-EXTENSION-001
-
-```typescript
-// ❌ overload 2 の引数順がテストコードと不一致
-export function resolveCtaContract(
-  capability: AccessCapability,
-  uiState: UiState,
-): CtaContract;
-
-// テスト側は (uiState, capability) で呼んでいた
-resolveCtaContract("streaming", "integratedRuntime");
-
-// ✅ overload 2 を (uiState, capability) に統一
-export function resolveCtaContract(
-  uiState: UiState,
-  capability: AccessCapability,
-): CtaContract;
-```
-
-### P68: UiState union 拡張による既存テスト期待値波及
-
-- **教訓**: UiState を3値（ready/blocked/unavailable）から8値に拡張した際、既存の `resolveUiState` ロジックが新しい状態（`terminal-only`）を返すようになり、4つの既存テストが失敗した。特に `terminalSurface` + `isTerminalAvailable: true` の組み合わせが `ready` から `terminal-only` に変わることで、CTA 期待値も連鎖的に変更が必要だった
-- **症状**: regression テストと vocabulary contract テストの両方で期待値不一致。`ready` を期待するが `terminal-only` が返る
-- **解決策**: union 型拡張前に `grep -rn "resolveUiState\|resolveCtaContract" **/*.test.ts` で全テストの期待値を洗い出し、優先度チェーンの変更による波及を事前にマッピングする
-- **再発防止**: union 型拡張時は「既存テストへの影響マトリクス」を Phase 4 で作成し、変更が必要なテストケースを事前にリストアップする
-- **関連パターン**: P60（IPC テスト応答形式の不一致）
-- **関連タスク**: TASK-IMP-UISTATE-CONTRACT-EXTENSION-001
+- **教訓**: TypeScript は React コンポーネントの Props destructuring で特定の prop を除外しても型エラーを出さない。`onClose` のような必須 callback prop が destructuring から除外されても、コンパイル・テスト全 PASS のまま見過ごされる。Phase 10 最終レビューで人間が発見するまで検出できなかった
+- **症状**: コンポーネントのパネル閉じるボタンが無反応、`onClose` が undefined のまま呼ばれない
+- **解決策**: Props destructuring 後に `// Props: onClose, suggestions, ...` のようなコメントで全 Props を列挙するか、ESLint `no-unused-vars` を Props に対しても適用する。Phase 10 レビューチェックリストに「全 Props が destructuring に含まれているか」を追加
+- **再発防止**: コンポーネント実装時に Props interface の全フィールドと destructuring を突合する。`Object.keys(props)` でランタイム検証するデバッグテストを追加することも有効
+- **関連パターン**: P44（IPC インターフェース不整合）
+- **関連タスク**: UT-SC-05-APPLY-IMPROVEMENT-UI
 
 ```typescript
-// ❌ 拡張前: terminalSurface + isTerminalAvailable → "ready"
-expect(
-  resolveUiState({ capability: "terminalSurface", isTerminalAvailable: true }),
-).toBe("ready");
+// P67: TypeScript は警告しない
+interface PanelProps {
+  onClose: () => void;
+  suggestions: Suggestion[];
+  skillName: string;
+}
 
-// ✅ 拡張後: P3 優先度チェーンにより → "terminal-only"
-expect(
-  resolveUiState({ capability: "terminalSurface", isTerminalAvailable: true }),
-).toBe("terminal-only");
+// ❌ onClose が destructuring から除外されているが型エラーなし
+const Panel: React.FC<PanelProps> = ({ suggestions, skillName }) => { ... };
+
+// ✅ 全 Props を destructuring に含める
+const Panel: React.FC<PanelProps> = ({ onClose, suggestions, skillName }) => { ... };
 ```
-
-### P69: worktree 環境での v8 カバレッジプロバイダのパス解決問題
-
-- **教訓**: git worktree 環境（`.worktrees/task-xxx/`）で Vitest の v8 カバレッジプロバイダを実行すると、カバレッジツールがソースファイルのパスを正しく解決できない場合がある。worktree のシンボリックリンク構造と v8 のソースマップ解決が競合し、カバレッジレポートが生成されない、または不正確になる
-- **症状**: `pnpm vitest run --coverage` がカバレッジデータを収集できない、または `Error: Unable to resolve source map` エラーが発生
-- **解決策**: worktree 環境ではカバレッジ取得を手動ブランチ検証で代替する。または本体リポジトリディレクトリから `npx vitest run --coverage` を実行する
-- **再発防止**: worktree でのカバレッジ取得が必要な場合は、`--coverage.provider=istanbul` に切り替えることで回避できる可能性がある（v8 固有の問題のため）
-- **関連パターン**: P66（CPU アーキテクチャ不一致によるネイティブモジュールロード失敗）、P41（v8 カバレッジプロバイダのインライン関数カウント）
-- **関連タスク**: TASK-IMP-UISTATE-CONTRACT-EXTENSION-001

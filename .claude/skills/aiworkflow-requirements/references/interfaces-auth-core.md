@@ -291,18 +291,13 @@ AI 実行経路の能力状態を表す4値型。`chatSlice.ts` から re-export
 
 ### UiState
 
-UI 表示状態を表す8値型（TASK-IMP-UISTATE-CONTRACT-EXTENSION-001 で3値→8値に拡張）。
+UI 表示状態を表す3値型。
 
 | 値 | 説明 |
 | --- | --- |
 | `"ready"` | 実行可能状態 |
 | `"blocked"` | ブロック状態（理由を BlockedInfo で提供） |
 | `"unavailable"` | 利用不可状態 |
-| `"streaming"` | ストリーミング受信中（P1: 最優先） |
-| `"handoff"` | ターミナルへの委譲が必要（HandoffGuidance 付属） |
-| `"terminal-only"` | ターミナル専用（terminalSurface + isTerminalAvailable） |
-| `"guidance-only"` | 代替案内のみ（capability=none + hasAlternativeGuidance） |
-| `"degraded"` | 品質低下状態（capability有り + isDegraded） |
 
 ### BlockedInfo
 
@@ -340,13 +335,10 @@ CTA（Call to Action）契約。
 | 関数名 | 説明 |
 | --- | --- |
 | `resolveCapability(input)` | AccessCapabilityInput から AccessCapability を解決 |
-| `resolveUiState(context: CapabilityContext)` | CapabilityContext から UiStateResult（capability + uiState + cta）を一括解決（Overload 1、推奨） |
-| `resolveUiState(capability, context)` | capability と CapabilityContext から UiState を解決（Overload 2、@deprecated） |
+| `resolveUiState(capability, context)` | capability と CapabilityContext から UiState を解決 |
 | `resolveCtaContract(capability, input)` | capability から CtaContract を解決 |
 | `assertNoSilentFallback(capability)` | silent fallback を禁止するアサーション |
 | `assertNoPrimaryCta(capability)` | none 能力での primary CTA を禁止するアサーション |
-| `assertStreamingCtaContract(cta)` | streaming 状態の CTA が pause/cancel のみであることを検証 |
-| `assertHandoffGuidanceExists(result)` | handoff 状態で HandoffGuidance が付属していることを検証 |
 
 **実装場所**: `packages/shared/src/types/execution-capability.ts`
 

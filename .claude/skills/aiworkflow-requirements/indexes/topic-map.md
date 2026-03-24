@@ -207,7 +207,8 @@ node scripts/list-specs.js --topics
 | 未タスク監査スコープ分離パターン（UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001） | L298 |
 | 共有型インポート標準パターン（TASK-10A-D） | L348 |
 | IPC レスポンス Wrapper パターン（UT-06-003 2026-03-17実装） | L389 |
-| S-IPC-AUTO: IPC契約ドリフト自動検出パターン（UT-TASK06-007） | L470 |
+| Dynamic Import 型伝播パターン（UT-SC-05-APPLY-IMPROVEMENT-UI 2026-03-24実装） | L470 |
+| S-IPC-AUTO: IPC契約ドリフト自動検出パターン（UT-TASK06-007） | L514 |
 
 ### references/architecture-implementation-patterns-reference-ipc-drift-detection.md
 
@@ -430,11 +431,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L316 |
-| スキルチェーン 型定義（TASK-9D） | L366 |
-| スキルスケジュール 型定義（TASK-9G） | L401 |
-| スキルフォーク 型定義（TASK-9E） | L426 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L474 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L317 |
+| スキルチェーン 型定義（TASK-9D） | L367 |
+| スキルスケジュール 型定義（TASK-9G） | L402 |
+| スキルフォーク 型定義（TASK-9E） | L427 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L475 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -481,7 +482,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L6 |
 | ExecutionCapability 型定義（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001） | L274 |
-| ワークスペース型定義 | L368 |
+| ワークスペース型定義 | L360 |
 
 ### references/interfaces-auth-history.md
 
@@ -836,10 +837,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| Agent Dashboard IPC チャネル | L6 |
 | Workspace Chat Edit IPC チャネル | L74 |
 | Skill Creator IPC チャネル | L256 |
-| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L363 |
-| スキルファイル操作 IPC チャネル（TASK-9A-B） | L397 |
-| スキル安全性評価・ファイルツリー IPC チャネル | L451 |
-| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L462 |
+| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L364 |
+| スキルファイル操作 IPC チャネル（TASK-9A-B） | L398 |
+| スキル安全性評価・ファイルツリー IPC チャネル | L452 |
+| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L463 |
 
 ### references/api-ipc-agent-details.md
 
@@ -901,8 +902,8 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L200 |
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L580 |
-| AIプロバイダーAPI連携 | L611 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L562 |
+| AIプロバイダーAPI連携 | L593 |
 
 ### references/api-ipc-system-details.md
 
@@ -1021,7 +1022,8 @@ node scripts/list-specs.js --topics
 | インタラクション設計 | L324 |
 | 視覚デザイン | L353 |
 | 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L378 |
-| アクセシビリティ（WCAG 2.1 AA） | L400 |
+| Session Dock 設計仕様（TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001, 2026-03-24 設計確定） | L400 |
+| アクセシビリティ（WCAG 2.1 AA） | L472 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -1476,10 +1478,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 実装例: skillCreatorAPI | L6 |
-| 実装例: skillFileAPI（TASK-9A-B） | L185 |
-| 実装例: skillShareAPI（TASK-9F） | L259 |
-| 実装例: skillChainAPI（TASK-9D） | L338 |
-| 実装例: skillScheduleAPI（TASK-9G） | L378 |
+| 実装例: skillFileAPI（TASK-9A-B） | L186 |
+| 実装例: skillShareAPI（TASK-9F） | L260 |
+| 実装例: skillChainAPI（TASK-9D） | L339 |
+| 実装例: skillScheduleAPI（TASK-9G） | L379 |
 
 ### references/security-electron-ipc-history.md
 
@@ -2601,27 +2603,27 @@ node scripts/list-specs.js --topics
 | UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L497 |
 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L531 |
 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L614 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L630 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-24 UT-SC-03-004（SkillBlueprint 型移行） | L36 |
-| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L62 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L82 |
-| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L88 |
-| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L108 |
-| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L136 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L172 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L200 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L237 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L303 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L324 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L354 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L396 |
-| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L443 |
-| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L462 |
+| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L35 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L55 |
+| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L61 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L81 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L109 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L145 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L173 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L210 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L276 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L297 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L327 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L369 |
+| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L416 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L435 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -3766,7 +3768,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L8 |
 | TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L75 |
-| UT-SC-03-004: SkillBlueprint 型追加・plan() 出力互換移行（2026-03-24） | L241 |
 
 ### references/task-workflow-completed-skill-import-skill-center-nav.md
 
