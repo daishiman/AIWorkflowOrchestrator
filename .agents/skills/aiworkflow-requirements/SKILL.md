@@ -530,5 +530,6 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 | **8.41.1** | **2026-02-06** | **DEBT-SEC-001完了**: security-principles.md更新（CSRF対策セクション）、architecture-auth-security.md更新（PKCE実装詳細）、api-ipc-auth.md更新（認証IPC Channel仕様） |
 | **8.41.0** | **2026-03-14** | **TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001完了**: llm-workspace-chat-edit.md更新。55テスト全PASS |
 | 2026-03-16 | TASK-SKILL-LIFECYCLE-06 | 信頼・権限・ガバナンス統合の設計定義を追加 |
+| 2026-03-24 | TASK-LLM-MOD-04 | テスト期待値更新完了同期（P50パターン: コード変更0行 / 149テスト全PASS / UT-LLM-MOD-04-001 backlog登録 / lessons-learned P50教訓追記） |
 
 > 古い履歴（v9.01.90以前・v8.41.0以前）は [LOGS.md](LOGS.md) / [references/logs-archive-index.md](references/logs-archive-index.md) を参照。

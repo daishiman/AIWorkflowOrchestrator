@@ -48,6 +48,22 @@
 
 ---
 
+## TASK-LLM-MOD-04 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了（P50パターン: 検証・補完モード）
+- **Result**: success
+- **Notes**:
+  - テスト期待値更新タスク。Task01-03 実装時にテスト更新が同時完了していたため、コード変更0行
+  - 対象7ファイル 149テスト全PASS検証（R-01〜R-05 全充足）
+  - llm.test.ts: PROVIDER_CONFIGS T-01〜T-13 + inferProviderId o3/o4-mini T-07/T-08 確認済み
+  - AnthropicAdapter.test.ts: ヘルスチェック claude-haiku-4-5 期待値確認済み
+  - GoogleAdapter.test.ts: system_instruction 6テストケース確認済み
+  - カバレッジ: llm.ts Line 84.86% / Branch 70.68% / Function 91.66%、GoogleAdapter.ts 100%/90.32%/100%
+  - 未タスク1件: UT-LLM-MOD-04-001（OpenAI/xAIアダプターテストのレガシーモデルID統一、low優先度）
+
+---
+
 ## UT-SC-03-003 完了（2026-03-24）
 
 - **Agent**: task-specification-creator

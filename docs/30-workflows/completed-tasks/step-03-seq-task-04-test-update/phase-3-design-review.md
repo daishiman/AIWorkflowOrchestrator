@@ -23,11 +23,11 @@ Phase 1 の R-01〜R-05 と Phase 2 の設計が対応しているか確認す�
 
 | 要件ID | 要件概要                              | 対応設計                     | 確認結果 |
 | ------ | ------------------------------------- | ---------------------------- | -------- |
-| R-01   | handleGetProviders 期待値更新         | Task 2-1 変更箇所 A          | -        |
-| R-02   | inferProviderId o3/o4-mini テスト追加 | Task 2-1 変更箇所 B          | -        |
-| R-03   | AnthropicAdapter ヘルスチェック更新   | Task 2-3                     | -        |
-| R-04   | GoogleAdapter system_instruction 追加 | Task 2-4                     | -        |
-| R-05   | 全テスト PASS                         | Task 4-4（Phase 5 後の確認） | -        |
+| R-01   | handleGetProviders 期待値更新         | Task 2-1 変更箇所 A          | OK       |
+| R-02   | inferProviderId o3/o4-mini テスト追加 | Task 2-1 変更箇所 B          | OK       |
+| R-03   | AnthropicAdapter ヘルスチェック更新   | Task 2-3                     | OK       |
+| R-04   | GoogleAdapter system_instruction 追加 | Task 2-4                     | OK       |
+| R-05   | 全テスト PASS                         | Task 4-4（Phase 5 後の確認） | OK       |
 
 ### Task 3-2: 技術的妥当性チェック
 

@@ -13,7 +13,7 @@
 
 ## 目的
 
-実装ガイドの作成・システム仕様書の更新・未タスク検出の3作業を行い、TASK-LLM-MOD-04 の成果物を記録する。
+実装ガイドの作成・システム仕様書の更新・未タスク検出・スキルフィードバックの5タスクを行い、TASK-LLM-MOD-04 の成果物を記録する。
 
 ---
 
@@ -118,17 +118,16 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 `docs/30-workflows/llm-provider-model-modernization/` の changelog または本ファイル末尾に記録:
 
-```markdown
-## TASK-LLM-MOD-04 ドキュメント更新記録
+## TASK-LLM-MOD-04 ドキュメント更新記録（実績）
 
-- Task 1 実装ガイド: 作成完了（本ファイル）
-- Task 2 Step 1-A: LOGS.md 2ファイル更新（実行後に記録）
-- Task 2 Step 1-C: 関連タスクテーブル確認（実行後に記録）
-- Task 2 Step 1-D: topic-map.md 再生成（変更あり/なしを記録）
-- Task 2 Step 2: 対象外（新規インターフェースなし）
-- Task 3: 本セクションを全 Step 完了後に更新
-- Task 4: unassigned-task-report.md 作成（実行後に記録）
-```
+- Task 1 実装ガイド: 作成完了（本ファイル Part 1 / Part 2）
+- Task 2 Step 1-A: LOGS.md 2ファイル更新完了（aiworkflow-requirements/LOGS.md + task-specification-creator/LOGS.md）
+- Task 2 Step 1-C: `grep -rn "TASK-LLM-MOD-04" .claude/skills/aiworkflow-requirements/references/` 実行 → 該当なし（更新不要）
+- Task 2 Step 1-D: `node generate-index.js` 実行完了（378ファイル分類、topic-map.md + keywords.json 再生成済み）
+- Task 2 Step 2: 対象外（新規インターフェース・アーキテクチャ変更なし）
+- Task 3: 本セクション — 全 Step 完了後に実績記録（P4/P51 準拠）
+- Task 4: unassigned-task-report.md 作成完了（UT-LLM-MOD-04-001 1件検出・記録済み）
+- Task 5: スキルフィードバックレポート — P50パターン応用実績・テンプレート改善提案を記録（P28準拠）
 
 ---
 
@@ -138,9 +137,9 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 Phase 5〜11 の実施中に検出した未タスクを以下に記録する:
 
-| 未タスクID       | 内容 | 優先度 | 指示書パス |
-| ---------------- | ---- | ------ | ---------- |
-| （実行時に記入） |      |        |            |
+| 未タスクID        | 内容                                                                                        | 優先度 | 指示書パス                                               |
+| ----------------- | ------------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------- |
+| UT-LLM-MOD-04-001 | OpenAIAdapter.test.ts / xAIAdapter.test.ts のレガシーモデルID（gpt-4o, grok-1）を新IDに統一 | low    | `docs/30-workflows/unassigned-task/UT-LLM-MOD-04-001.md` |
 
 0件の場合も `unassigned-task-report.md` を作成すること（P3/P38 対応）。
 
@@ -162,6 +161,24 @@ grep -n "TASK-LLM-MOD-04" docs/30-workflows/llm-provider-model-modernization/una
 
 ---
 
+## Task 5: スキルフィードバックレポート（P28 準拠）
+
+> 改善点なしでも出力必須（SKILL.md L178-188）
+
+### テンプレート改善
+
+- Phase 5 で P50（既実装防御の発見）が発動した場合のチェックボックス処理ルールが Phase テンプレートに未定義。Phase 5-11 のテンプレートに「P50 適用時は `[x] P50: スキップ（変更0行確認済み）` を完了条件先頭に追加する」パターンを追加すべき
+
+### ワークフロー改善
+
+- テスト更新専任タスク（Test lane）は、依存タスクの実装と同時にテスト更新が完了しているケースがある（P50）。Phase 1 または Phase 5 冒頭に「依存タスクの実装diff で対象テストファイルも更新済みか」を確認するステップを追加することで、P50 の早期発見が可能
+
+### ドキュメント改善
+
+- 改善点なし（テスト更新タスクの仕様書構造は他タスクと整合しており再利用性は十分）
+
+---
+
 ## 参照資料
 
 | 資料                                        | 用途                                     |
@@ -179,6 +196,7 @@ grep -n "TASK-LLM-MOD-04" docs/30-workflows/llm-provider-model-modernization/una
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
 | 実装ガイド（本ファイル Task 1） | `phase-12-documentation.md`                                                                                          |
 | unassigned-task-report.md       | `docs/30-workflows/llm-provider-model-modernization/tasks/step-03-seq-task-04-test-update/unassigned-task-report.md` |
+| skill-feedback-report           | 本ファイル Task 5 参照                                                                                               |
 
 ## 完了条件
 
@@ -189,21 +207,27 @@ grep -n "TASK-LLM-MOD-04" docs/30-workflows/llm-provider-model-modernization/una
 
 ### Task 2: システム仕様書更新
 
-- [ ] aiworkflow-requirements/LOGS.md を更新した
-- [ ] task-specification-creator/LOGS.md を更新した（2ファイル更新確認）
-- [ ] 関連タスクテーブルを確認した（grep 実行済み）
-- [ ] topic-map.md を再生成した（または変更なしを確認した）
+- [x] aiworkflow-requirements/LOGS.md を更新した
+- [x] task-specification-creator/LOGS.md を更新した（2ファイル更新確認）
+- [x] 関連タスクテーブルを確認した（grep 実行済み — 該当なし）
+- [x] topic-map.md を再生成した（378ファイル分類、2460キーワード）
 
 ### Task 3: documentation-changelog
 
-- [ ] 全 Step 完了後に changelog セクションに実行結果を記録した
-- [ ] 「完了」と記載したのは実際に実行した後であることを確認した
+- [x] 全 Step 完了後に changelog セクションに実行結果を記録した
+- [x] 「完了」と記載したのは実際に実行した後であることを確認した
 
 ### Task 4: 未タスク検出
 
-- [ ] unassigned-task-report.md を作成した（0件の場合も作成）
-- [ ] 検出した未タスクは3ステップ全完了した
-- [ ] unassigned-task-detection.md の件数・ステータスを更新した
+- [x] unassigned-task-report.md を作成した（1件: UT-LLM-MOD-04-001）
+- [x] 検出した未タスクは3ステップ全完了した
+- [x] unassigned-task-detection.md の件数・ステータスを更新した
+
+### Task 5: スキルフィードバックレポート
+
+- [x] テンプレート改善点を記録した（P50チェックボックスパターン）
+- [x] ワークフロー改善点を記録した（P50早期発見ステップ）
+- [x] ドキュメント改善点を確認した（改善なし）
 
 ## 次のPhase
 
