@@ -1,0 +1,140 @@
+{
+  "taskId": "TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001",
+  "type": "design",
+  "phase": 11,
+  "createdAt": "2026-03-23",
+  "note": "設計タスクのため UI スクリーンショットは対象外。bash コマンドの実行証跡を capture 対象とする。walkthrough 結果は manual-test-plan.md に記録済み。",
+  "screenshots": [],
+  "alternativeEvidence": {
+    "type": "walkthrough-log",
+    "file": "outputs/phase-11/manual-test-plan.md",
+    "sections": [
+      "3. Manual テストケースの Walkthrough（M-1〜M-5）",
+      "4. Drift 検出コマンド実行確認",
+      "5. State Machine 遷移パスの手動トレース"
+    ]
+  },
+  "captures": [
+    {
+      "tcId": "TC-01",
+      "captureTarget": "ls -la 出力（設計成果物ファイル構造）",
+      "captureMethod": "bash",
+      "command": "ls -la docs/30-workflows/completed-tasks/step-06-seq-task-09-canonical-bridge-ledger-governance/outputs/phase-*/",
+      "expectedOutputPattern": "phase-1: 3 files, phase-2: 3 files, phase-3: 2 files, phase-8: 2 files, phase-9: 2 files, phase-10: 2 files",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-02",
+      "captureTarget": "grep 出力（Canonical Source Table 5カテゴリ）",
+      "captureMethod": "bash",
+      "command": "grep -c 'Workflow Ledger|Lessons Learned|System Spec|Indexes|Skill Meta' outputs/phase-2/design-summary.md",
+      "expectedOutputPattern": "5 以上の整数",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-03",
+      "captureTarget": "grep 出力（State Machine 3状態）",
+      "captureMethod": "bash",
+      "command": "grep -c 'spec_created|implementation_ready|completed' outputs/phase-2/contract-matrix.md",
+      "expectedOutputPattern": "3 以上の整数",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-04",
+      "captureTarget": "grep 出力（type 別条件分離）",
+      "captureMethod": "bash",
+      "command": "grep -n 'type: design|type: implementation' outputs/phase-2/contract-matrix.md",
+      "expectedOutputPattern": "2行以上（行番号付き）",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-05",
+      "captureTarget": "grep 出力（Step A〜E の5ステップ）",
+      "captureMethod": "bash",
+      "command": "grep -n '^Step [A-E]:' outputs/phase-2/design-summary.md",
+      "expectedOutputPattern": "5行（Step A: / Step B: / Step C: / Step D: / Step E:）",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-06",
+      "captureTarget": "grep 出力（P43 制約記載）",
+      "captureMethod": "bash",
+      "command": "grep -rn '最大3ファイル/エージェント|P43' outputs/phase-2/",
+      "expectedOutputPattern": "2件以上（複数ファイルから）",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-07",
+      "captureTarget": "grep 出力（rsync + diff コマンド）",
+      "captureMethod": "bash",
+      "command": "grep -n 'rsync.*--checksum|diff -qr' outputs/phase-2/design-summary.md",
+      "expectedOutputPattern": "2行（rsync コマンドと diff コマンド）",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-08",
+      "captureTarget": "grep 出力（Follow-up 3ステップ）",
+      "captureMethod": "bash",
+      "command": "grep -n 'unassigned-task|backlog|参照リンク' outputs/phase-2/design-summary.md",
+      "expectedOutputPattern": "3件以上",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-09",
+      "captureTarget": "grep 出力（current/baseline 移管条件）",
+      "captureMethod": "bash",
+      "command": "grep -n 'wave 完了|archive|移管' outputs/phase-2/design-summary.md",
+      "expectedOutputPattern": "3件以上",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-10",
+      "captureTarget": "grep 出力（禁止アクション5件）",
+      "captureMethod": "bash",
+      "command": "grep -c 'silent fallback|local 判定|no-op|agents.*直接|LOGS.md' outputs/phase-2/contract-matrix.md",
+      "expectedOutputPattern": "5 以上の整数",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-11",
+      "captureTarget": "grep 出力（不採用件数確認）",
+      "captureMethod": "bash",
+      "command": "grep -c '不採用' outputs/phase-8/simplification-candidates.md",
+      "expectedOutputPattern": "10 以上の整数",
+      "result": "PASS"
+    },
+    {
+      "tcId": "TC-12",
+      "captureTarget": "grep 出力（PARTIAL 件数確認）",
+      "captureMethod": "bash",
+      "command": "grep -c 'PARTIAL' outputs/phase-9/risk-register.md",
+      "expectedOutputPattern": "1（R-15 のみ）",
+      "result": "PASS"
+    },
+    {
+      "tcId": "M-1",
+      "captureTarget": "walkthrough 実行ログ（Step A 対象ファイル存在確認）",
+      "captureMethod": "bash",
+      "command": "ls -la .claude/skills/aiworkflow-requirements/references/task-workflow*.md",
+      "expectedOutputPattern": "task-workflow.md, task-workflow-active.md, task-workflow-completed*.md, task-workflow-backlog.md",
+      "result": "PASS"
+    },
+    {
+      "tcId": "M-2",
+      "captureTarget": "walkthrough 実行ログ（mirror sync 差分確認）",
+      "captureMethod": "bash",
+      "command": "diff -qr ./.claude/skills/ ./.agents/skills/ 2>/dev/null | head -5",
+      "expectedOutputPattern": "差分の有無を記録（Phase 11 時点では差分が存在する場合あり）",
+      "result": "PASS",
+      "note": "worktree 環境のため差分が存在する可能性あり。Phase 12 Step E で解消予定。"
+    },
+    {
+      "tcId": "M-4",
+      "captureTarget": "artifacts.json の status フィールド確認",
+      "captureMethod": "bash",
+      "command": "grep '\"status\"' outputs/artifacts.json",
+      "expectedOutputPattern": "\"spec_created\" または遷移条件充足を確認",
+      "result": "PASS"
+    }
+  ]
+}

@@ -1860,7 +1860,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
 | 実装ステータススナップショット（2026-03-22） | L46 |
-| Follow-up Backlog | L59 |
+| Follow-up Backlog | L60 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2595,11 +2595,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L46 |
-| クイックリファレンス: カテゴリ別検索ガイド | L61 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L161 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L493 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L527 |
+| 分割ファイル一覧 | L50 |
+| クイックリファレンス: カテゴリ別検索ガイド | L65 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L165 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L497 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L531 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L614 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
