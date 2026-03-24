@@ -8,6 +8,8 @@
 | タスクID | UT-SC-05-IPC-DI-WIRING |
 | 作成日   | 2026-03-23             |
 
+> **テスト種別**: NON_VISUAL（IPC 配線タスク、UI 変更なし）
+
 ## 目的
 
 DI 配線変更が Electron アプリの起動シーケンスに影響しないこと、および SkillCreator 機能が正常に動作することを手動で確認する。
@@ -42,6 +44,8 @@ window.electronAPI?.skillCreator?.plan?.("test spec");
 - API キー設定済みの場合: LLM 応答を含むオブジェクト
 - API キー未設定の場合: Graceful Degradation のスタブ応答（`{ planId: "plan-...", suggestions: [] }` 形式）
 
+> **IIFE 登録タイミング確認**: `registerSkillCreatorHandlers` 内で IIFE パターン（`void (async () => { ... })()`）を採用しているため、`llmAdapter` の取得は fire-and-forget で非同期に行われる。上記コマンドが `undefined` や `TypeError` を返さず正常な応答を返すことで、ハンドラ登録が完了していることを確認できる。
+
 ### Task 3: CLI 環境での代替確認
 
 CLI 環境（Electron アプリ起動不可能な場合）では、以下のテスト実行で間接的に動作確認する:
@@ -58,6 +62,28 @@ cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorHandlers -
 - Phase 5 実装（`phase-05-implementation.md`）
 - `.claude/rules/06-known-pitfalls.md` P53（CLI 環境でのスクリーンショット取得制約）
 
+## 統合テスト連携
+
+- 本 Phase の手動テスト結果は、Phase 9 の品質検証テスト（223件全PASS）と組み合わせて IPC 配線の動作を確認する
+- IIFE パターンの非同期初期化完了後にハンドラが正常応答することを、Phase 4 の既存テストスイートで間接検証済み
+
+## 多角的チェック観点
+
+| 観点           | チェック内容                                             | 結果 |
+| -------------- | -------------------------------------------------------- | ---- |
+| セキュリティ   | APIキー・トークンがログに露出しないこと                  | -    |
+| パフォーマンス | IIFE非同期初期化がBrowserWindow表示前に完了すること      | -    |
+| 互換性         | 既存のskill-creator:\*ハンドラ応答形式が維持されること   | -    |
+| エラー耐性     | LLMAdapter取得失敗時にGraceful Degradationが機能すること | -    |
+
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを管理すること:
+
+- [ ] Task 1: IPC通信成功テスト実行
+- [ ] Task 2: Graceful Degradationテスト実行
+- [ ] Task 3: CLI代替確認（verbose テスト出力）
+
 ## 成果物
 
 - 手動テスト結果（本仕様書に結果テーブルを記録）
@@ -67,6 +93,12 @@ cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorHandlers -
 - [ ] Electron アプリ起動確認を実施した（または CLI 代替確認を実施した）
 - [ ] IPC ハンドラ登録を確認した（または verbose テスト出力で確認した）
 - [ ] Graceful Degradation が API キー未設定環境で機能することを確認した
+
+## タスク100%実行確認【必須】
+
+- [ ] Task 1（Electron アプリ起動確認 または CLI 代替確認）を実施した
+- [ ] Task 2（IPC ハンドラ登録確認）を実施した
+- [ ] Task 3（CLI 環境での代替確認）が必要な場合に実施した
 
 ## 次のPhase
 

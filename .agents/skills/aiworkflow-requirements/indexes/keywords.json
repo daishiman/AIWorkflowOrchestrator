@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-24T00:06:00.099Z",
+  "generated": "2026-03-24T04:01:25.929Z",
   "totalKeywords": 2458,
   "keywords": {
     "チャット履歴": [
@@ -2482,7 +2482,6 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
-      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",

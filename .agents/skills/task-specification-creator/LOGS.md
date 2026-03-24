@@ -4,6 +4,18 @@
 
 ---
 
+## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 完了記録追加
+- **Result**: success
+- **Notes**:
+  - Main Process IPC層（`apps/desktop/src/main/ipc/index.ts`）で RuntimeSkillCreatorFacade に3つの依存（skillFileManager, llmAdapter, resourceLoader）をDI配線
+  - IIFEパターンで非同期初期化を実装し、Graceful Degradation を維持
+  - 先行タスク TASK-SC-05-IMPROVE-LLM で SkillFileManager が DI 依存に追加されたことに対応
+
+---
+
 ## TASK-LLM-MOD-02 完了（2026-03-23）
 
 - **Agent**: task-specification-creator

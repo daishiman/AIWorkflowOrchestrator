@@ -32,7 +32,7 @@ cd apps/desktop && pnpm typecheck
 
 - 追加した import が型として正しいこと
 - `ILLMAdapter | undefined` の型互換性に問題がないこと
-- `skillFileManager` が L701 のスコープから参照可能であること
+- `skillFileManager` が L702 で宣言済みであり、関数スコープ内から参照可能であること
 
 ### Task 3: 全テスト実行
 
@@ -53,6 +53,40 @@ cd apps/desktop && pnpm prettier --check src/main/ipc/index.ts
 
 - `.claude/rules/02-code-quality.md`
 - `.claude/rules/07-git-and-tooling.md`（コミット前チェックリスト）
+
+## 統合テスト連携
+
+品質検証フェーズで実行する全テストコマンド:
+
+```bash
+cd apps/desktop && pnpm vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade
+cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorHandlers
+cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorIpc
+```
+
+カバレッジ基準: Line 80%+, Branch 60%+, Function 80%+
+
+## 多角的チェック観点（AIが判断）
+
+| 観点           | 参照先                                                 |
+| -------------- | ------------------------------------------------------ |
+| IPC通信        | `aiworkflow-requirements: api-*.md`, `interfaces-*.md` |
+| セキュリティ   | `aiworkflow-requirements: security-api-electron.md`    |
+| アーキテクチャ | `aiworkflow-requirements: architecture-*.md`           |
+| コード品質     | `.claude/rules/02-code-quality.md`                     |
+
+## サブタスク管理
+
+- [ ] Task 1: ESLint 検証（`apps/desktop/src/main/ipc/index.ts` エラーなし確認）
+- [ ] Task 2: TypeScript 型チェック（import・型互換性・スコープ参照確認）
+- [ ] Task 3: 全テスト実行（RuntimeSkillCreatorFacade + skillCreator 系全件PASS）
+- [ ] Task 4: Prettier フォーマット確認（index.ts フォーマット整合確認）
+
+## タスク100%実行確認【必須】
+
+- [ ] 上記サブタスク全てを実行したか
+- [ ] 実行スキップしたタスクがある場合、理由を記録したか
+- [ ] 各コマンドの実行結果を成果物として記録したか
 
 ## 成果物
 

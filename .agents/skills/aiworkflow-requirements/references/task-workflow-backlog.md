@@ -548,8 +548,10 @@
 | UT-CHATPANEL-OPEN-TERMINAL-IPC-HANDLER | openTerminal IPC handler 確認・実装（app:open-terminal チャネル登録・Preload allowlist 追加） | 高 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-chatpanel-open-terminal-ipc-handler.md` |
 | UT-CHATPANEL-PROPS-ROLE-TYPE | ChatPanelProps role 型追加検討（'mainline' \| 'review-harness'、P46 衝突評価） | 低 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-chatpanel-props-role-type.md` |
 | UT-VIEWTYPE-TERMINAL-ADDITION | ViewType に "terminal" を追加（handleTerminalSwitch/handleOpenTerminal の代替解消） | 中 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-viewtype-terminal-addition.md` |
-| UT-SC-05-IPC-DI-WIRING | RuntimeSkillCreatorFacade に skillFileManager/llmAdapter/resourceLoader DI 配線 | 高 | TASK-SC-05-IMPROVE-LLM Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-05-IPC-DI-WIRING.md` |
+| ~~UT-SC-05-IPC-DI-WIRING~~ | ~~RuntimeSkillCreatorFacade に skillFileManager/llmAdapter/resourceLoader DI 配線~~ | ~~高~~ | ~~TASK-SC-05-IMPROVE-LLM Phase 12（2026-03-23）~~ | **完了**: UT-SC-05-IPC-DI-WIRING（2026-03-24）→ completed ledger へ移動 |
 | UT-SC-05-APPLY-IMPROVEMENT-UI | applyImprovement() の Renderer 側承認 UI + IPC ハンドラ登録 | 中 | TASK-SC-05-IMPROVE-LLM Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-05-APPLY-IMPROVEMENT-UI.md` |
+| UT-SC-05-UT-1 | LLMプロバイダー動的切替（APIキー設定後のアプリ再起動不要化） | 高 | UT-SC-05-IPC-DI-WIRING Phase 12（2026-03-24） | `docs/30-workflows/unassigned-task/ut-sc-05-ut-1-llm-provider-dynamic-switch.md` |
+| UT-SC-05-UT-2 | track()/safeRegister async対応 | 低 | UT-SC-05-IPC-DI-WIRING Phase 12（2026-03-24） | `docs/30-workflows/unassigned-task/ut-sc-05-ut-2-track-async-callback.md` |
 
 ### 未タスク管理ルール
 

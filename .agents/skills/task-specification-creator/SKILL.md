@@ -384,6 +384,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.19** | **2026-03-24** | **UT-SC-05-IPC-DI-WIRING 完了同期**: Main Process IPC層（`index.ts`）で RuntimeSkillCreatorFacade に3依存（skillFileManager, llmAdapter, resourceLoader）をDI配線。IIFEパターン非同期初期化。Graceful Degradation 維持。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.18** | **2026-03-23** | **UT-06-003-PRELOAD-API-IMPL 完了同期**: `evaluateSafety` Preload API 追加（IPC 4層完結）。safeInvoke + IPC_CHANNELS.SKILL_EVALUATE_SAFETY。T-1〜T-6 テスト6件全PASS。P23/P27/P42/P60/P61 準拠。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.17** | **2026-03-23** | **TASK-LLM-MOD-02 完了同期**: AnthropicAdapter ヘルスチェックモデルを claude-3-haiku-20240307 から claude-haiku-4-5 に更新。HC-001 テスト追加。未タスク2件（TASK-LLM-MOD-HEALTHCHECK-CONST / TASK-LLM-MOD-HEALTHCHECK-BODY）検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.16** | **2026-03-23** | **TASK-LLM-MOD-01 完了同期**: PROVIDER_CONFIGS モデル定義更新 Phase 1-13 実行完了。OpenAI/Anthropic/Google/xAI 全プロバイダー最新化、description フィールド追加、38テスト追加。未タスク3件を backlog 登録・指示書作成。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
