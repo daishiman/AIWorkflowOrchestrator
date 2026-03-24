@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-24 - UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 完了（navContract.ts DockViewType/NAV_SECTIONS/NAV_SHORTCUT_TO_VIEW に executionConsole 追加 / Icon play-circle 追加 / Cmd+9 ショートカット / テスト期待値更新 / 未タスク0件） |
 | 2026-03-24 - UT-SC-05-IPC-DI-WIRING 完了（RuntimeSkillCreatorFacade DI配線完了 / Main Process IPC層 index.ts で skillFileManager・llmAdapter・resourceLoader の3依存を DI配線 / IIFEパターン非同期初期化 / Graceful Degradation 維持） |
 | 2026-03-24 - TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 完了（ViewType executionConsole 追加 / openExecutionConsole() shared action / CTA 7箇所統一 / agent 代替除去 / 既存未タスク2件解決 / 新規未タスク2件検出） |
 | 2026-03-24 - TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト追補（Vitest 70テスト / 7カテゴリ / 親パック4文書コンプライアンス検証 / 教訓2件 L-CBLG-003/004） |

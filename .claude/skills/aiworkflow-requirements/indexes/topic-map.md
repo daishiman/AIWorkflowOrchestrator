@@ -387,9 +387,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| SkillSlice型定義（TASK-6-1） | L6 |
 | Slide Runtime / Modifier Skill Alignment（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L98 |
-| ChatPanel統合（TASK-7D） | L164 |
-| SkillFileManager（TASK-9A-A） | L199 |
-| テストアーキテクチャ（TASK-8C-A） | L297 |
+| ChatPanel統合（TASK-7D） | L189 |
+| SkillFileManager（TASK-9A-A） | L224 |
+| テストアーキテクチャ（TASK-8C-A） | L322 |
 
 ### references/interfaces-agent-sdk-skill-core.md
 
@@ -897,12 +897,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| AI/チャット IPC チャネル | L6 |
 | Slide IPC API（スライド同期） | L75 |
-| Workspace File Watch IPC API（TASK-UI-04A） | L156 |
-| Conversation IPC API（会話履歴永続化） | L200 |
-| Electron IPC API設計 | L236 |
-| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L580 |
-| AIプロバイダーAPI連携 | L611 |
+| Workspace File Watch IPC API（TASK-UI-04A） | L161 |
+| Conversation IPC API（会話履歴永続化） | L205 |
+| Electron IPC API設計 | L241 |
+| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L373 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L585 |
+| AIプロバイダーAPI連携 | L616 |
 
 ### references/api-ipc-system-details.md
 
