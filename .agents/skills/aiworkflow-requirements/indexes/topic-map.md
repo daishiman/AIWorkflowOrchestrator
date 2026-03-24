@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-23
+> 自動生成: 2026-03-24
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -430,10 +430,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L277 |
-| スキルチェーン 型定義（TASK-9D） | L327 |
-| スキルスケジュール 型定義（TASK-9G） | L362 |
-| スキルフォーク 型定義（TASK-9E） | L387 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L316 |
+| スキルチェーン 型定義（TASK-9D） | L366 |
+| スキルスケジュール 型定義（TASK-9G） | L401 |
+| スキルフォーク 型定義（TASK-9E） | L426 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -444,7 +444,8 @@ node scripts/list-specs.js --topics
 | TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 の読み分け | L23 |
 | ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07） | L31 |
 | 公開・互換性型定義（TASK-SKILL-LIFECYCLE-08） | L56 |
-| 関連ドキュメント | L210 |
+| IPermissionStoreV2 インターフェース（UT-06-002） | L210 |
+| 関連ドキュメント | L225 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -862,8 +863,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| スキル安全性評価 IPC チャネル（UT-06-003） | L8 |
-| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L71 |
-| 変更履歴 | L102 |
+| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L72 |
+| 変更履歴 | L103 |
 
 ### references/api-ipc-agent.md
 
@@ -899,8 +900,8 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L200 |
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L547 |
-| AIプロバイダーAPI連携 | L578 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L562 |
+| AIプロバイダーAPI連携 | L593 |
 
 ### references/api-ipc-system-details.md
 
@@ -1378,10 +1379,10 @@ node scripts/list-specs.js --topics
 | セキュリティ要件 | L146 |
 | テスト要件 | L161 |
 | ツール許可設定（Permission Settings） | L184 |
-| 権限要求履歴パネル（Permission History Panel） | L249 |
-| Settings 画面の AuthGuard 非依存アクセス（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001） | L322 |
-| Mainline Access Matrix（TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001） | L365 |
-| AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001） | L403 |
+| 権限要求履歴パネル（Permission History Panel） | L250 |
+| Settings 画面の AuthGuard 非依存アクセス（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001） | L323 |
+| Mainline Access Matrix（TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001） | L366 |
+| AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001） | L404 |
 
 ### references/ui-ux-settings-details.md
 
@@ -1547,11 +1548,12 @@ node scripts/list-specs.js --topics
 | Skill Lifecycle 実行境界（TASK-SKILL-LIFECYCLE-03） | L245 |
 | テストカバレッジ | L264 |
 | Permission Store（権限永続化） | L280 |
-| Permission フォールバック セキュリティ（UT-06-005） | L364 |
-| 公開判定セキュリティ（TASK-SKILL-LIFECYCLE-08 / spec_created） | L399 |
-| 関連ドキュメント | L442 |
-| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L452 |
-| 変更履歴 | L465 |
+| Permission Store V2（UT-06-002） | L364 |
+| Permission フォールバック セキュリティ（UT-06-005） | L437 |
+| 公開判定セキュリティ（TASK-SKILL-LIFECYCLE-08 / spec_created） | L472 |
+| 関連ドキュメント | L515 |
+| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L525 |
+| 変更履歴 | L538 |
 
 ### references/security-skill-ipc-core.md
 
@@ -2616,7 +2618,7 @@ node scripts/list-specs.js --topics
 | 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L327 |
 | 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L369 |
 | TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L416 |
-| 2026-03-23 TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 | L435 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L435 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -3808,6 +3810,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L7 |
 | UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L45 |
 | TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L82 |
+| UT-06-002: AllowedToolEntryV2 PermissionStore V2 拡張完了記録（2026-03-23） | L129 |
 
 ### references/task-workflow-completed-skill-lifecycle-ui.md
 
@@ -3834,8 +3837,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L8 |
-| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L46 |
-| UT-06-001: tool-risk-config-implementation 完了記録（2026-03-16） | L83 |
+| UT-06-003-PRELOAD-API-IMPL: evaluateSafety Preload API 追加完了記録（2026-03-23） | L46 |
+| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L85 |
+| UT-06-001: tool-risk-config-implementation 完了記録（2026-03-16） | L122 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 

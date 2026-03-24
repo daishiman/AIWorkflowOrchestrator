@@ -43,6 +43,45 @@
 
 ---
 
+## UT-06-003-PRELOAD-API-IMPL: evaluateSafety Preload API 追加完了記録（2026-03-23）
+
+### タスク概要
+
+| 項目         | 内容                                                                       |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | UT-06-003-PRELOAD-API-IMPL                                                 |
+| 機能         | Preload 層に evaluateSafety safeInvoke 呼び出し追加（Renderer → Main 通信チェーン完成） |
+| 実施日       | 2026-03-23                                                                 |
+| ステータス   | completed（Phase 1-13）                                                    |
+| ワークフロー | `docs/30-workflows/safety-gate-preload-api/`                               |
+| テスト       | 6 tests PASS（skill-api.evaluateSafety.test.ts）                           |
+
+### 実装内容
+
+1. **evaluateSafety メソッド**: `skillAPI` に `evaluateSafety(skillName: string)` を追加。`safeInvoke` + `IPC_CHANNELS.SKILL_EVALUATE_SAFETY` で Main Process の SafetyGate を呼び出し
+2. **ホワイトリスト登録**: `ALLOWED_INVOKE_CHANNELS` に `SKILL_EVALUATE_SAFETY` を追加
+3. **型定義**: `SafetyGateResult` を `@repo/shared` からインポート、インターフェースに追加
+
+### 成果物
+
+| ファイル | 内容 |
+| --- | --- |
+| `apps/desktop/src/preload/skill-api.ts` | evaluateSafety interface + 実装 |
+| `apps/desktop/src/preload/__tests__/skill-api.evaluateSafety.test.ts` | T-1〜T-6 テスト |
+
+### 検証証跡
+
+| 検証項目 | 結果 |
+| --- | --- |
+| テスト | 6テスト全PASS |
+| P23（型二重定義なし） | PASS |
+| P27（ハードコード文字列なし） | PASS |
+| P42（Main側バリデーション） | PASS（スコープ外） |
+| P60（レスポンス形式） | PASS |
+| P61（DIP/SafetyGatePort） | PASS |
+
+---
+
 ## UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16）
 
 ### タスク概要

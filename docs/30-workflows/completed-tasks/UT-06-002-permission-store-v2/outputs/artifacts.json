@@ -1,0 +1,161 @@
+{
+  "taskId": "UT-06-002",
+  "taskName": "AllowedToolEntryV2 PermissionStore 適用",
+  "issueNumber": 1297,
+  "createdAt": "2026-03-23",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements.md"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "設計書",
+          "path": "outputs/phase-2/design.md"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review.md"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "テスト設計書",
+          "path": "outputs/phase-4/test-design.md"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装仕様書",
+          "path": "outputs/phase-5/implementation.md"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "テスト拡充仕様",
+          "path": "outputs/phase-6/test-expansion.md"
+        }
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "リファクタリング記録",
+          "path": "outputs/phase-8/refactoring.md"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質検証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/phase-11-manual-test.md"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md"
+        },
+        {
+          "name": "システム仕様更新サマリ",
+          "path": "outputs/phase-12/system-spec-update-summary.md"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "PR仕様",
+          "path": "outputs/phase-13/phase-13-pr.md"
+        }
+      ]
+    }
+  },
+  "qualityMetrics": {
+    "lineCoverage": "95.5%",
+    "branchCoverage": "90.6%",
+    "functionCoverage": "94.1%",
+    "typeErrors": "0",
+    "lintErrors": "0"
+  }
+}
