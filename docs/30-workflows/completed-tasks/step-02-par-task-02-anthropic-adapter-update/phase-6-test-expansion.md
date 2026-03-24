@@ -72,6 +72,7 @@ cd apps/desktop && pnpm vitest run src/main/adapters/llm/__tests__/AnthropicAdap
 - [ ] 追加テストが不要（スコープ外）であることを根拠付きで記録した
 - [ ] `max_tokens` / `messages` 検証テストを Phase 12 の未タスク候補として記録した
 - [ ] `cd apps/desktop && pnpm vitest run` で全テストが **PASS** である
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
 

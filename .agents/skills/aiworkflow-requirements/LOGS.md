@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-23 - TASK-LLM-MOD-02 完了（AnthropicAdapter ヘルスチェックモデル更新 / L207 model ID を claude-3-haiku-20240307 から claude-haiku-4-5 に変更 / HC-001 テスト追加 / 12テスト全PASS / 未タスク2件: TASK-LLM-MOD-HEALTHCHECK-CONST, TASK-LLM-MOD-HEALTHCHECK-BODY） |
 | 2026-03-23 - UT-06-003-PRELOAD-API-IMPL 完了（evaluateSafety Preload API 追加 / safeInvoke + IPC_CHANNELS.SKILL_EVALUATE_SAFETY / T-1〜T-6 テスト全PASS / P23/P27/P42/P60/P61 準拠確認済み） |
 | 2026-03-23 - UT-06-002 完了同期（AllowedToolEntryV2 PermissionStore V2 拡張 / ExpiryPolicy 4種 / isToolAllowed 6分岐 / permission:clear-session IPC / V1→V2 マイグレーション / 未タスク4件） |
 | 2026-03-23 - UT-SC-02-002 完了（execute() terminal_handoff 分岐追加 / RuntimeSkillCreatorExecuteResponse Union型 / void decision 除去 / 15テスト全PASS） |

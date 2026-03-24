@@ -204,7 +204,7 @@ export class AnthropicAdapter extends BaseLLMAdapter {
             "anthropic-version": this.apiVersion,
           },
           body: JSON.stringify({
-            model: "claude-3-haiku-20240307", // 最安モデル
+            model: "claude-haiku-4-5", // 最安・最速モデル
             messages: [{ role: "user", content: "Hi" }],
             max_tokens: 1,
           }),

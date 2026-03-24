@@ -18,20 +18,20 @@ Phase 1〜12 の全成果物を最終確認し、PR 準備を完了する。
 
 ### Task 13-1: 成果物チェックリスト最終確認
 
-| Phase | 成果物                                              | 確認方法                                         | 判定 |
-| ----- | --------------------------------------------------- | ------------------------------------------------ | ---- |
-| 1     | `phase-1-requirements.md`（AC-001〜AC-005 定義）    | ファイル存在・内容確認                           | 確認 |
-| 2     | `phase-2-design.md`（変更箇所・テスト設計）         | ファイル存在・内容確認                           | 確認 |
-| 3     | `phase-3-design-review.md`（判定: PASS）            | ファイル存在・判定確認                           | 確認 |
-| 4     | `AnthropicAdapter.test.ts`（HC-001 追加）           | `grep -n "should use claude-haiku-4-5" ...`      | 確認 |
-| 5     | `AnthropicAdapter.ts`（L207 変更済み）              | `grep -n "claude-haiku-4-5" AnthropicAdapter.ts` | 確認 |
-| 6     | `phase-6-test-expansion.md`（拡充評価済み）         | ファイル存在・内容確認                           | 確認 |
-| 7     | `phase-7-coverage.md`（カバレッジ基準達成）         | ファイル存在・数値確認                           | 確認 |
-| 8     | `phase-8-refactoring.md`（変更不要と確認）          | ファイル存在・内容確認                           | 確認 |
-| 9     | `phase-9-quality-assurance.md`（全3項目 PASS）      | ファイル存在・結果確認                           | 確認 |
-| 10    | `phase-10-final-review.md`（判定: PASS）            | ファイル存在・判定確認                           | 確認 |
-| 11    | `phase-11-manual-testing.md`（MT-01/MT-03 実施）    | ファイル存在・結果確認                           | 確認 |
-| 12    | 実装ガイド Part 1 / Part 2、changelog、未タスク報告 | `outputs/phase-12/` の 4 ファイル存在確認        | 確認 |
+| Phase | 成果物                                                                    | 確認方法                                         | 判定 |
+| ----- | ------------------------------------------------------------------------- | ------------------------------------------------ | ---- |
+| 1     | `phase-1-requirements.md`（AC-001〜AC-005 定義）                          | ファイル存在・内容確認                           | 確認 |
+| 2     | `phase-2-design.md`（変更箇所・テスト設計）                               | ファイル存在・内容確認                           | 確認 |
+| 3     | `phase-3-design-review.md`（判定: PASS）                                  | ファイル存在・判定確認                           | 確認 |
+| 4     | `AnthropicAdapter.test.ts`（HC-001 追加）                                 | `grep -n "should use claude-haiku-4-5" ...`      | 確認 |
+| 5     | `AnthropicAdapter.ts`（L207 変更済み）                                    | `grep -n "claude-haiku-4-5" AnthropicAdapter.ts` | 確認 |
+| 6     | `phase-6-test-expansion.md`（拡充評価済み）                               | ファイル存在・内容確認                           | 確認 |
+| 7     | `phase-7-coverage.md`（カバレッジ基準達成）                               | ファイル存在・数値確認                           | 確認 |
+| 8     | `phase-8-refactoring.md`（変更不要と確認）                                | ファイル存在・内容確認                           | 確認 |
+| 9     | `phase-9-quality-assurance.md`（全3項目 PASS）                            | ファイル存在・結果確認                           | 確認 |
+| 10    | `phase-10-final-review.md`（判定: PASS）                                  | ファイル存在・判定確認                           | 確認 |
+| 11    | `phase-11-manual-testing.md`（MT-01/MT-03 実施）                          | ファイル存在・結果確認                           | 確認 |
+| 12    | 実装ガイド Part 1 / Part 2、changelog、未タスク報告、スキルフィードバック | `outputs/phase-12/` の 5 ファイル存在確認        | 確認 |
 
 ### Task 13-2: 最終コード確認
 
@@ -110,11 +110,11 @@ feat(adapter): AnthropicAdapter ヘルスチェックモデルを claude-haiku-4
 
 ## 成果物
 
-| 成果物                   | パス                                                                                                                           | 備考            |
-| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | --------------- |
-| Phase 13 完了記録        | `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/phase-13-completion.md` | 本ファイル      |
-| AnthropicAdapter.ts      | `apps/desktop/src/main/adapters/llm/AnthropicAdapter.ts`                                                                       | L207 変更済み   |
-| AnthropicAdapter.test.ts | `apps/desktop/src/main/adapters/llm/__tests__/AnthropicAdapter.test.ts`                                                        | HC-001 追加済み |
+| 成果物                   | パス                                                                                    | 備考            |
+| ------------------------ | --------------------------------------------------------------------------------------- | --------------- |
+| Phase 13 完了記録        | `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/phase-13-completion.md` | 本ファイル      |
+| AnthropicAdapter.ts      | `apps/desktop/src/main/adapters/llm/AnthropicAdapter.ts`                                | L207 変更済み   |
+| AnthropicAdapter.test.ts | `apps/desktop/src/main/adapters/llm/__tests__/AnthropicAdapter.test.ts`                 | HC-001 追加済み |
 
 ## 完了条件
 
@@ -124,6 +124,7 @@ feat(adapter): AnthropicAdapter ヘルスチェックモデルを claude-haiku-4
 - [ ] 全テストが **PASS** である
 - [ ] PR タイトル・本文が `phase-13-completion.md` に記載されている
 - [ ] Task04（ブロック対象）への完了通知方法を記録した
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 完了
 

@@ -103,6 +103,7 @@ pnpm --filter @repo/desktop typecheck
 - [ ] HC-001 テストが **PASS**（Green 状態）である
 - [ ] 既存テスト全件（`ADP-008` / `ADP-009` / `ADP-010` / `streamChat` / その他 `checkHealth`）が **PASS** である
 - [ ] `pnpm --filter @repo/desktop typecheck` がエラー0件である
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
 

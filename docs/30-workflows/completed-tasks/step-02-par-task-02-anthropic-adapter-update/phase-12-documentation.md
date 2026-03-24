@@ -20,7 +20,7 @@
 
 ### Task 1-1: 実装ガイド Part 1（中学生レベルの概念説明）
 
-**成果物パス**: `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/implementation-guide-part1.md`
+**成果物パス**: `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/implementation-guide-part1.md`
 
 以下の内容で作成する。
 
@@ -48,7 +48,7 @@ AI アシスタントにも、「正常に動いているか確認する」た�
 
 ### Task 1-2: 実装ガイド Part 2（開発者向け技術詳細）
 
-**成果物パス**: `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/implementation-guide-part2.md`
+**成果物パス**: `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/implementation-guide-part2.md`
 
 以下の内容で作成する。
 
@@ -113,10 +113,12 @@ it("should use claude-haiku-4-5 as health check model", async () => {
 
 本タスクの完了を以下のファイルに記録する。
 
-| 更新対象                                            | 更新内容                                                    |
-| --------------------------------------------------- | ----------------------------------------------------------- |
-| `.claude/skills/aiworkflow-requirements/LOGS.md`    | TASK-LLM-MOD-02 完了エントリを追加                          |
-| `.claude/skills/task-specification-creator/LOGS.md` | TASK-LLM-MOD-02 完了エントリを追加（**2ファイル両方必須**） |
+| 更新対象                                             | 更新内容                                                        |
+| ---------------------------------------------------- | --------------------------------------------------------------- |
+| `.claude/skills/aiworkflow-requirements/LOGS.md`     | TASK-LLM-MOD-02 完了エントリを追加                              |
+| `.claude/skills/task-specification-creator/LOGS.md`  | TASK-LLM-MOD-02 完了エントリを追加（**4ファイル全て必須**）     |
+| `.claude/skills/aiworkflow-requirements/SKILL.md`    | TASK-LLM-MOD-02 変更履歴エントリを追加                          |
+| `.claude/skills/task-specification-creator/SKILL.md` | TASK-LLM-MOD-02 変更履歴エントリを追加（**4ファイル全て必須**） |
 
 #### 追加するエントリ例（LOGS.md）
 
@@ -167,7 +169,7 @@ P2 / P27 対策: 仕様書に変更がある場合は必ず再生成する。
 
 ## Task 3: documentation-changelog.md
 
-**成果物パス**: `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/documentation-changelog.md`
+**成果物パス**: `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/documentation-changelog.md`
 
 全 Step 完了後に以下の内容で作成する（P4 対策: 全 Step 確認前に「完了」と記載しない）。
 
@@ -202,7 +204,7 @@ P2 / P27 対策: 仕様書に変更がある場合は必ず再生成する。
 
 ## Task 4: 未タスク検出
 
-**成果物パス**: `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/unassigned-task-report.md`
+**成果物パス**: `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/unassigned-task-report.md`
 
 ### 検出した未タスク候補
 
@@ -215,7 +217,7 @@ P2 / P27 対策: 仕様書に変更がある場合は必ず再生成する。
 
 各候補について以下を実施する（P3 / P38 対策）:
 
-1. `docs/30-workflows/llm-provider-model-modernization/tasks/unassigned-task/` に指示書を作成する
+1. `docs/30-workflows/unassigned-task/` に指示書を作成する
 2. `docs/30-workflows/task-workflow.md` の残課題テーブルに登録する（存在する場合）
 3. 関連仕様書に参照リンクを追加する
 
@@ -236,6 +238,42 @@ P2 / P27 対策: 仕様書に変更がある場合は必ず再生成する。
 
 ---
 
+## Task 5: スキルフィードバックレポート
+
+**成果物パス**: `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/skill-feedback-report.md`
+
+改善点なしでも出力必須（SKILL.md 準拠）。
+
+### 検討観点
+
+| 観点             | 記録内容                                                          |
+| ---------------- | ----------------------------------------------------------------- |
+| テンプレート改善 | 1行変更タスクに対する Phase テンプレートの軽量化オプション検討    |
+| ワークフロー改善 | checkHealth のモデルID定数化による将来の変更容易性向上            |
+| ドキュメント改善 | ヘルスチェック仕様の横断ガイドライン化（全 Adapter 共通パターン） |
+
+### skill-feedback-report.md の内容
+
+```markdown
+# スキルフィードバックレポート — TASK-LLM-MOD-02
+
+## 報告日: 2026-03-23
+
+## テンプレート改善
+
+- 1行変更（定数値の差し替え）タスクでは、Phase 6-8 の内容が「変更不要」の確認のみになる。極小変更向けの軽量テンプレートの検討を提案する
+
+## ワークフロー改善
+
+- ヘルスチェックモデルIDがハードコードされている設計は、モデル退役のたびに同種タスクが発生する。定数化による改善を提案済み（TASK-LLM-MOD-HEALTHCHECK-CONST）
+
+## ドキュメント改善
+
+- 改善点なし（本タスクの変更は既存ドキュメント構造に影響しない）
+```
+
+---
+
 ## 参照資料
 
 | ドキュメント                                                    | 用途                               |
@@ -248,12 +286,13 @@ P2 / P27 対策: 仕様書に変更がある場合は必ず再生成する。
 
 ## 成果物
 
-| 成果物                     | パス                                                                                                                                                   | 備考                    |
-| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------- |
-| 実装ガイド Part 1          | `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/implementation-guide-part1.md` | 新規作成                |
-| 実装ガイド Part 2          | `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/implementation-guide-part2.md` | 新規作成                |
-| documentation-changelog.md | `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/documentation-changelog.md`    | 新規作成                |
-| unassigned-task-report.md  | `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/unassigned-task-report.md`     | 新規作成（0件でも必須） |
+| 成果物                       | パス                                                                                                            | 備考                           |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| 実装ガイド Part 1            | `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/implementation-guide-part1.md` | 新規作成                       |
+| 実装ガイド Part 2            | `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/implementation-guide-part2.md` | 新規作成                       |
+| documentation-changelog.md   | `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/documentation-changelog.md`    | 新規作成                       |
+| unassigned-task-report.md    | `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/unassigned-task-report.md`     | 新規作成（0件でも必須）        |
+| スキルフィードバックレポート | `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/outputs/phase-12/skill-feedback-report.md`      | 新規作成（改善点なしでも必須） |
 
 ## 完了条件
 
@@ -265,7 +304,7 @@ P2 / P27 対策: 仕様書に変更がある場合は必ず再生成する。
 ### Task 2
 
 - [ ] `.claude/skills/aiworkflow-requirements/LOGS.md` を更新した
-- [ ] `.claude/skills/task-specification-creator/LOGS.md` を更新した（**2ファイル必須 / P1 / P25対策**）
+- [ ] `.claude/skills/task-specification-creator/LOGS.md` を更新した（**4ファイル必須 / P1 / P25対策**）
 - [ ] 関連仕様書を grep で特定し、更新が必要なものを更新した
 - [ ] `node generate-index.js` で topic-map.md を再生成した（P2 / P27対策）
 
@@ -278,6 +317,13 @@ P2 / P27 対策: 仕様書に変更がある場合は必ず再生成する。
 
 - [ ] `unassigned-task-report.md` を作成した（0件でも必須）
 - [ ] 検出した未タスク2件について3ステップ（指示書作成 / テーブル登録 / リンク追加）を実施した（P3 / P38対策）
+
+### Task 5
+
+- [ ] `skill-feedback-report.md` を作成した（改善点なしでも必須 / P28対策）
+- [ ] テンプレート・ワークフロー・ドキュメントの3観点で検討結果を記録した
+
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
 
