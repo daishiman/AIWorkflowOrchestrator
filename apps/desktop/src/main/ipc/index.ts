@@ -92,9 +92,10 @@ import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edi
 import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
 import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
 import { SkillFileWriter } from "../services/skill/SkillFileWriter";
+import { LLMAdapterFactory } from "../adapters/llm/LLMAdapterFactory";
+import type { ILLMAdapter } from "../adapters/llm/types";
 import { ResourceLoader } from "../services/skill/ResourceLoader";
 import { DEFAULT_SKILL_CREATOR_PATH } from "../services/skill/constants";
-import { LLMAdapterFactory } from "../adapters/llm/LLMAdapterFactory";
 import Database from "better-sqlite3";
 import {
   registerSlideIpcHandlers,
@@ -892,44 +893,50 @@ export function registerAllIpcHandlers(
 
   // --- 10. Skill Creator handlers ---
   track("registerSkillCreatorHandlers", () => {
-    const skillCreatorService = new SkillCreatorService();
-    const skillExecutor = getSkillExecutorInstance();
-    if (!skillExecutor) {
-      console.warn(
-        "[IPC] SkillExecutor not available, runtime skill creator handlers will stay degraded",
+    void (async () => {
+      const skillCreatorService = new SkillCreatorService();
+      const skillExecutor = getSkillExecutorInstance();
+      if (!skillExecutor) {
+        console.warn(
+          "[IPC] SkillExecutor not available, runtime skill creator handlers will stay degraded",
+        );
+      }
+
+      // LLM アダプター取得（API キー未設定時は undefined にフォールバック）
+      let llmAdapter: ILLMAdapter | undefined;
+      try {
+        llmAdapter = await LLMAdapterFactory.getAdapter("anthropic");
+      } catch {
+        console.warn(
+          "[IPC] LLM adapter not available (API key may not be set), skill creator LLM features will be degraded",
+        );
+      }
+
+      // ResourceLoader: skill-creator リソース読み込み基盤
+      const resourceLoader = new ResourceLoader(DEFAULT_SKILL_CREATOR_PATH);
+
+      const skillFileWriter = new SkillFileWriter(skillBasePath);
+      const runtimeSkillCreatorService = skillExecutor
+        ? new RuntimeSkillCreatorFacade({
+            skillExecutor,
+            authKeyService,
+            skillFileWriter,
+            llmAdapter,
+            resourceLoader,
+            skillFileManager,
+          })
+        : undefined;
+      registerSkillCreatorHandlers(
+        mainWindow,
+        skillCreatorService,
+        runtimeSkillCreatorService,
       );
-    }
-    const skillFileWriter = new SkillFileWriter(skillBasePath);
-    const resourceLoader = new ResourceLoader(DEFAULT_SKILL_CREATOR_PATH);
-    const runtimeSkillCreatorService = skillExecutor
-      ? new RuntimeSkillCreatorFacade({
-          skillExecutor,
-          authKeyService,
-          skillFileWriter,
-          resourceLoader,
-        })
-      : undefined;
-
-    // LLMAdapter を非同期で取得し Setter Injection（fire-and-forget — P34 準拠）
-    if (runtimeSkillCreatorService) {
-      void (async () => {
-        try {
-          const adapter = await LLMAdapterFactory.getAdapter("anthropic");
-          runtimeSkillCreatorService.setLLMAdapter(adapter);
-        } catch (error: unknown) {
-          console.warn(
-            "[IPC] LLMAdapter initialization failed, skill creator will use stub responses:",
-            error instanceof Error ? error.message : "Unknown error",
-          );
-        }
-      })();
-    }
-
-    registerSkillCreatorHandlers(
-      mainWindow,
-      skillCreatorService,
-      runtimeSkillCreatorService,
-    );
+    })().catch((error) => {
+      console.error(
+        "[IPC] registerSkillCreatorHandlers async setup failed:",
+        error,
+      );
+    });
   });
 
   // --- 11. Claude CLI handlers ---

@@ -4,6 +4,33 @@
 
 ---
 
+## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 完了記録追加
+- **Result**: success
+- **Notes**:
+  - Main Process IPC層（`apps/desktop/src/main/ipc/index.ts`）で RuntimeSkillCreatorFacade に3つの依存（skillFileManager, llmAdapter, resourceLoader）をDI配線
+  - IIFEパターンで非同期初期化を実装し、Graceful Degradation を維持
+  - 先行タスク TASK-SC-05-IMPROVE-LLM で SkillFileManager が DI 依存に追加されたことに対応
+
+---
+
+## TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - 実行コンソールの名称、route、shared launcher、mainline entry 設計タスク完了
+  - ViewType `executionConsole` 追加、`openExecutionConsole()` shared action 定義
+  - CTA 7箇所統一（ChatPanel, LLMGuidanceBanner, WorkspaceChatPanel, HandoffBlock, TerminalHandoffCard, PersistentTerminalLauncher, TerminalLauncher）
+  - agent 代替遷移除去方針確定
+  - 既存未タスク2件解決（ut-viewtype-terminal-addition, UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001）
+  - 新規未タスク2件検出（ut-imp-navcontract-execution-console-entry-001, ut-rename-runtime-access-terminal-helpers-001）
+
+---
+
 ## TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -18,6 +45,22 @@
   - 契約テストスクリプト `scripts/__tests__/canonical-bridge-ledger-governance.test.ts` を追加作成（Vitest 70テスト / 7カテゴリ: Contract/Unit/Integration/Artifact/EdgeCase/Regression/Rollback）
   - 親パック4文書（index.md / ui-ux-realization.md / ui-ux-diagrams.md / design-audit-matrix.md）のコンプライアンス検証を完了
   - 教訓2件追加: L-CBLG-003（Phase 4 テストマトリクスのファイル参照誤り）、L-CBLG-004（TypeScript TS1501 regex /s flag ES2018+ 要件）
+
+---
+
+## TASK-LLM-MOD-04 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了（P50パターン: 検証・補完モード）
+- **Result**: success
+- **Notes**:
+  - テスト期待値更新タスク。Task01-03 実装時にテスト更新が同時完了していたため、コード変更0行
+  - 対象7ファイル 149テスト全PASS検証（R-01〜R-05 全充足）
+  - llm.test.ts: PROVIDER_CONFIGS T-01〜T-13 + inferProviderId o3/o4-mini T-07/T-08 確認済み
+  - AnthropicAdapter.test.ts: ヘルスチェック claude-haiku-4-5 期待値確認済み
+  - GoogleAdapter.test.ts: system_instruction 6テストケース確認済み
+  - カバレッジ: llm.ts Line 84.86% / Branch 70.68% / Function 91.66%、GoogleAdapter.ts 100%/90.32%/100%
+  - 未タスク1件: UT-LLM-MOD-04-001（OpenAI/xAIアダプターテストのレガシーモデルID統一、low優先度）
 
 ---
 
@@ -50,6 +93,22 @@
 
 ---
 
+
+## UT-SLIDE-IMPL-001 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - Slide Modifier / agent-client 実装（Task08 派生）
+  - ModifierResponse 型拡張（fallback_reason / suggested_action optional 追加）
+  - agent-client.ts DI版 createModifierAgentAPI ファクトリ実装
+  - SlideCapabilityDTO + slide:capability:get IPC channel + P42 3段バリデーション
+  - channel-sync テスト（Preload ⇔ Main チャネル名一致検証）
+  - 未タスク: 0件
+
+---
+
 ## TASK-LLM-MOD-02 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -63,6 +122,22 @@
 
 ---
 
+## UT-SC-03-004 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success
+- **Notes**:
+  - SkillBlueprint 型を RuntimeSkillCreatorPlanResult に互換移行
+  - packages/shared/src/types/skillCreator.ts の型定義更新
+  - RuntimeSkillCreatorFacade.plan() 戻り値型統一
+  - creatorHandlers.ts および planPromptConstants.ts 更新
+  - 型テスト（skillCreator.type.test.ts）追加
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+
+---
+
+
 ## UT-06-003-PRELOAD-API-IMPL 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -72,7 +147,6 @@
 - **Pitfall準拠**: P23/P27/P42/P60/P61 全項目PASS
 
 ---
-
 ## UT-06-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator

@@ -59,11 +59,7 @@ describe("AppLayout", () => {
     expect(onGoBack).toHaveBeenCalledTimes(1);
   });
 
-  it("mainline terminal launcher が有効時はコマンドを clipboard へコピーする", async () => {
-    const writeTextSpy = vi
-      .spyOn(navigator.clipboard, "writeText")
-      .mockResolvedValue(undefined);
-
+  it("mainline terminal launcher が有効時は execution console を開く", () => {
     render(
       <AppLayout
         currentView="dashboard"
@@ -82,7 +78,7 @@ describe("AppLayout", () => {
 
     fireEvent.click(screen.getByTestId("app-layout-terminal-launcher"));
 
-    expect(writeTextSpy).toHaveBeenCalledWith("claude --continue");
+    expect(useAppStore.getState().currentView).toBe("executionConsole");
   });
 
   it("未認証時の mainline terminal launcher は disabled になる", () => {
