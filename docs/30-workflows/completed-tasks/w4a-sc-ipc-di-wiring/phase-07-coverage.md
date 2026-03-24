@@ -40,6 +40,39 @@ cd apps/desktop && pnpm vitest run --coverage src/main/services/runtime/__tests_
 - `.claude/rules/02-code-quality.md`（カバレッジ基準）
 - Phase 6 テスト拡充（`phase-06-test-expansion.md`）
 
+## 統合テスト連携
+
+以下のコマンドで関連テストを実行し、全て PASS することを確認する:
+
+```bash
+cd apps/desktop && pnpm vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade
+cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorHandlers
+cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorIpc
+```
+
+## 多角的チェック観点（AIが判断）
+
+IPC 配線タスクとして、以下の観点で実装内容を評価する:
+
+- IPC 通信: `aiworkflow-requirements: api-*.md`, `interfaces-*.md`
+- セキュリティ: `aiworkflow-requirements: security-api-electron.md`
+- アーキテクチャ: `aiworkflow-requirements: architecture-*.md`
+
+## サブタスク管理
+
+| #   | タスク名       | ステータス |
+| --- | -------------- | ---------- |
+| 1   | カバレッジ計測 | 未着手     |
+| 2   | 基準照合       | 未着手     |
+| 3   | 判定           | 未着手     |
+
+## タスク100%実行確認【必須】
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
 ## 成果物
 
 - カバレッジ計測結果（本仕様書に計測結果テーブルを記録）

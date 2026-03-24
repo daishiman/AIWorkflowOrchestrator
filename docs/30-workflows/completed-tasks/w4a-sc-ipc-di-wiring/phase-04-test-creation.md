@@ -20,7 +20,7 @@ DI 配線完了後に `plan()` と `improve()` が LLM 呼び出しパスを通�
 
 | ファイル                                    | テスト数 |
 | ------------------------------------------- | -------- |
-| `RuntimeSkillCreatorFacade.test.ts`         | 9        |
+| `RuntimeSkillCreatorFacade.test.ts`         | 15       |
 | `RuntimeSkillCreatorFacade.plan.test.ts`    | 20       |
 | `RuntimeSkillCreatorFacade.improve.test.ts` | 21       |
 | `skillCreatorHandlers.runtime.test.ts`      | 5        |
@@ -28,7 +28,7 @@ DI 配線完了後に `plan()` と `improve()` が LLM 呼び出しパスを通�
 | `skillCreatorHandlers.security.test.ts`     | 39       |
 | `skillCreatorIpc.integration.test.ts`       | 71       |
 
-合計: 211 件
+合計: 217 件
 
 ### Task 2: DI 配線検証テストの設計
 
@@ -75,10 +75,44 @@ cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorIpc
 - `.claude/rules/06-known-pitfalls.md` P63（サブエージェントによるインポートパス誤り）
 - `.claude/rules/06-known-pitfalls.md` P60（IPC テスト応答形式の不一致）
 
+## 統合テスト連携
+
+以下のコマンドで関連テストを実行し、全て PASS することを確認する:
+
+```bash
+cd apps/desktop && pnpm vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade
+cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorHandlers
+cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorIpc
+```
+
+## 多角的チェック観点（AIが判断）
+
+IPC 配線タスクとして、以下の観点で実装内容を評価する:
+
+- IPC 通信: `aiworkflow-requirements: api-*.md`, `interfaces-*.md`
+- セキュリティ: `aiworkflow-requirements: security-api-electron.md`
+- アーキテクチャ: `aiworkflow-requirements: architecture-*.md`
+
+## サブタスク管理
+
+| #   | タスク名                 | ステータス |
+| --- | ------------------------ | ---------- |
+| 1   | 既存テストの確認         | 未着手     |
+| 2   | DI 配線検証テストの設計  | 未着手     |
+| 3   | テスト実装               | 未着手     |
+| 4   | 全既存テストの PASS 確認 | 未着手     |
+
+## タスク100%実行確認【必須】
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
 ## 成果物
 
 - 追加テストケース（既存テストファイルへの追記、必要な場合のみ）
-- 既存テスト 211 件の PASS 確認ログ
+- 既存テスト 217 件の PASS 確認ログ
 
 ## 完了条件
 

@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-24 - UT-SC-05-IPC-DI-WIRING 完了（RuntimeSkillCreatorFacade DI配線完了 / Main Process IPC層 index.ts で skillFileManager・llmAdapter・resourceLoader の3依存を DI配線 / IIFEパターン非同期初期化 / Graceful Degradation 維持） |
 | 2026-03-24 - TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 完了（ViewType executionConsole 追加 / openExecutionConsole() shared action / CTA 7箇所統一 / agent 代替除去 / 既存未タスク2件解決 / 新規未タスク2件検出） |
 | 2026-03-24 - TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト追補（Vitest 70テスト / 7カテゴリ / 親パック4文書コンプライアンス検証 / 教訓2件 L-CBLG-003/004） |
 | 2026-03-24 - TASK-LLM-MOD-03 完了（GoogleAdapter system_instruction 対応 / baseUrl v1→v1beta / buildRequestBody DRY統合 / formatContents systemPrompt分離 / 19テスト全PASS / streaming.test.ts v1beta URL修正 / 未タスク2件: UT-LLM-MOD-03-TYPE-01〜02） |
@@ -89,6 +90,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
+
+- タスク名: RuntimeSkillCreatorFacade DI配線完了
+- 種別: 実装タスク
+- 主な反映:
+  - Main Process IPC層（`apps/desktop/src/main/ipc/index.ts`）で RuntimeSkillCreatorFacade に3つの依存（skillFileManager, llmAdapter, resourceLoader）をDI配線
+  - IIFEパターンで非同期初期化を実装し、Graceful Degradation を維持
+  - 先行タスク TASK-SC-05-IMPROVE-LLM で SkillFileManager が DI 依存に追加されたことに対応
+- 変更ファイル: `apps/desktop/src/main/ipc/index.ts`
+- 関連タスク: TASK-SC-05-IMPROVE-LLM
 
 ## UT-SC-03-003 DI配線完了（2026-03-24）
 

@@ -26,9 +26,9 @@ cd apps/desktop && pnpm vitest run --coverage src/main/services/runtime/__tests_
 
 | ファイル                       | 確認する分岐                                                |
 | ------------------------------ | ----------------------------------------------------------- |
-| `RuntimeSkillCreatorFacade.ts` | L111-123（plan の llmAdapter/resourceLoader 未注入分岐）    |
-| `RuntimeSkillCreatorFacade.ts` | L242-248（improve の llmAdapter/resourceLoader 未注入分岐） |
-| `RuntimeSkillCreatorFacade.ts` | L252-259（improve の skillFileManager 未注入分岐）          |
+| `RuntimeSkillCreatorFacade.ts` | L120-132（plan の llmAdapter/resourceLoader 未注入分岐）    |
+| `RuntimeSkillCreatorFacade.ts` | L257-262（improve の llmAdapter/resourceLoader 未注入分岐） |
+| `RuntimeSkillCreatorFacade.ts` | L266-274（improve の skillFileManager 未注入分岐）          |
 
 ### Task 2: 不足テストの追加
 
@@ -54,6 +54,39 @@ cd apps/desktop && pnpm vitest run src/main/services/runtime/__tests__/RuntimeSk
 - Phase 4 テスト作成（`phase-04-test-creation.md`）
 - `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts`
 - `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts`
+
+## 統合テスト連携
+
+以下のコマンドで関連テストを実行し、全て PASS することを確認する:
+
+```bash
+cd apps/desktop && pnpm vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade
+cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorHandlers
+cd apps/desktop && pnpm vitest run src/main/ipc/__tests__/skillCreatorIpc
+```
+
+## 多角的チェック観点（AIが判断）
+
+IPC 配線タスクとして、以下の観点で実装内容を評価する:
+
+- IPC 通信: `aiworkflow-requirements: api-*.md`, `interfaces-*.md`
+- セキュリティ: `aiworkflow-requirements: security-api-electron.md`
+- アーキテクチャ: `aiworkflow-requirements: architecture-*.md`
+
+## サブタスク管理
+
+| #   | タスク名         | ステータス |
+| --- | ---------------- | ---------- |
+| 1   | カバレッジ分析   | 未着手     |
+| 2   | 不足テストの追加 | 未着手     |
+| 3   | テスト実行       | 未着手     |
+
+## タスク100%実行確認【必須】
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 成果物
 
