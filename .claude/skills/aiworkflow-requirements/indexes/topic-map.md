@@ -1165,10 +1165,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L51 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L158 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L225 |
-| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L373 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L57 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L164 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L231 |
+| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L379 |
 
 ### references/ui-ux-feature-components-details.md
 
