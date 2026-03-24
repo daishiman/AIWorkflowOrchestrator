@@ -4,6 +4,75 @@
 
 ---
 
+## TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 設計完了（Phase 13 blocked）
+- **Result**: success
+- **Notes**:
+  - Canonical Source Table（5カテゴリ）、Bridge Rule（legacy 無期限保持 + 新規追加禁止）、State Machine（spec_created→implementation_ready→completed）、Same-Wave Sync Protocol（Step A→E 順序実行）、Follow-up Formalization 3ステップを governance 仕様として確定
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS（MINOR 2件: M-01 rsync worktree 注意、M-02 Phase 12 解消）
+  - 未タスク 1 件検出（UT-WORKTREE-RSYNC-CAUTION-001）
+  - Phase 12 Step A-E を Same-Wave Sync Protocol で実行（P57 対策: 設計タスクでも先送りしない）
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+  - 契約テストスクリプト `scripts/__tests__/canonical-bridge-ledger-governance.test.ts` を追加作成（Vitest 70テスト / 7カテゴリ: Contract/Unit/Integration/Artifact/EdgeCase/Regression/Rollback）
+  - 親パック4文書（index.md / ui-ux-realization.md / ui-ux-diagrams.md / design-audit-matrix.md）のコンプライアンス検証を完了
+  - 教訓2件追加: L-CBLG-003（Phase 4 テストマトリクスのファイル参照誤り）、L-CBLG-004（TypeScript TS1501 regex /s flag ES2018+ 要件）
+
+---
+
+## UT-SC-03-003 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - RuntimeSkillCreatorFacade DI配線実装（TASK-SC-03 派生）
+  - setLLMAdapter() Setter Injection（P34準拠）+ ResourceLoader コンストラクタ注入
+  - fire-and-forget async で LLMAdapterFactory.getAdapter("anthropic") 遅延注入
+  - graceful degradation: LLMAdapter 未注入時はスタブ応答
+  - テスト: TC-1〜TC-9 計11テスト全PASS
+  - 未タスク: 2件（UT-SC-03-003-M01 subscriptionAuthProvider DI配線追加, UT-SC-03-003-M02 テスト内 undefined キャスト除去）
+
+---
+
+## TASK-LLM-MOD-03 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 full execution
+- **Result**: success
+- **Notes**:
+  - GoogleAdapter の systemPrompt 処理を user ロールワークアラウンドから system_instruction フィールドに移行
+  - baseUrl デフォルト値を v1 から v1beta に変更
+  - buildRequestBody private メソッドで sendChat/streamChat の DRY 統合
+  - 19 テスト全 PASS / streaming.test.ts の MSW URL 修正（3箇所）
+  - 未タスク 2 件（UT-LLM-MOD-03-TYPE-01〜02）検出・backlog 登録
+
+---
+
+## TASK-LLM-MOD-02 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success
+- **Notes**:
+  - AnthropicAdapter.ts L207 の model ID を claude-3-haiku-20240307 から claude-haiku-4-5 に更新
+  - HC-001 テスト追加（checkHealth model フィールド検証）
+  - 12テスト全PASS、TypeCheck エラー0、Lint エラー0
+  - 未タスク2件（TASK-LLM-MOD-HEALTHCHECK-CONST, TASK-LLM-MOD-HEALTHCHECK-BODY）検出・登録
+
+---
+
+## UT-06-003-PRELOAD-API-IMPL 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: `preload/skill-api.ts` に `evaluateSafety` メソッドを追加。`SkillAPI` インターフェース + `skillAPI` オブジェクトの両方に実装。`safeInvoke(IPC_CHANNELS.SKILL_EVALUATE_SAFETY, skillName)` でラップ形式透過。`SafetyGateResult` 型は `@repo/shared` から import（P23準拠）。
+- **影響ファイル**: preload/skill-api.ts, preload/__tests__/skill-api.evaluateSafety.test.ts, preload/__tests__/skill-api.test.ts, preload/__tests__/skill-api.unification.test.ts
+- **テスト**: T-1〜T-6（6テスト）全PASS、既存テスト回帰なし（117テスト全PASS）
+- **Pitfall準拠**: P23/P27/P42/P60/P61 全項目PASS
+
+---
+
 ## UT-06-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -48,6 +117,7 @@
 ---
 
 ## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
+
 ## TASK-LLM-MOD-01 完了（2026-03-23）
 
 ## TASK-SC-04-OUTPUT-PERSISTENCE 完了（2026-03-23）
@@ -89,8 +159,6 @@
   - 未タスク3件（UT-LLM-MOD-01-001〜003）検出・backlog登録
 
 ---
-
-## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
 ## UT-CONV-DB-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator

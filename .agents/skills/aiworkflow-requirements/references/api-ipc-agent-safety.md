@@ -13,6 +13,7 @@
 
 - チャンネル定義: `apps/desktop/src/preload/channels.ts`（`SKILL_EVALUATE_SAFETY`）
 - IPCハンドラー: `apps/desktop/src/main/ipc/safetyGateHandlers.ts`
+- Preload API: `apps/desktop/src/preload/skill-api.ts`（`evaluateSafety`）
 - 型定義: `packages/shared/src/types/safety-gate.ts`
 
 ### チャネル仕様
@@ -62,7 +63,7 @@
 
 | 未タスクID | 概要 | 優先度 | 指示書 |
 | --- | --- | --- | --- |
-| UT-06-003-PRELOAD-API-IMPL | Preload 層 safeInvoke 呼び出し追加 | 高 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-06-003-preload-api-impl.md` |
+| ~~UT-06-003-PRELOAD-API-IMPL~~ | ~~Preload 層 safeInvoke 呼び出し追加~~ | ~~高~~ | ~~`docs/30-workflows/safety-gate-preload-api/`~~ **完了 2026-03-23** |
 | UT-06-003-METADATA-PROVIDER-IMPL | stub metadataProvider を SkillMetadataProvider 実装に置換 | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-06-003-metadata-provider-impl.md` |
 | UT-06-003-DIP-REFACTOR | unregisterSafetyGateHandlers 追加（P5 対策） | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-06-003-dip-refactor.md` |
 

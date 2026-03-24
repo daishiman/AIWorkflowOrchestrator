@@ -464,7 +464,40 @@ Preload API（`skill-api.ts` 内の chain メソッド群）は TASK-UI-05B（Sk
 
 ### 同種課題の簡潔解決手順（4ステップ）
 
-1. 型定義・Preload API・IPC契約の3点を同一ターンで更新する。  
-2. 近似チャネル（`skill:*` / `skill-creator:*`）は責務境界表を必ず併記する。  
-3. 仕様値（件数など）は `task-workflow.md` を正本化し、周辺成果物へ転記する。  
-4. `verify-all-specs` と `validate-phase-output` で契約同期を確認する。  
+1. 型定義・Preload API・IPC契約の3点を同一ターンで更新する。
+2. 近似チャネル（`skill:*` / `skill-creator:*`）は責務境界表を必ず併記する。
+3. 仕様値（件数など）は `task-workflow.md` を正本化し、周辺成果物へ転記する。
+4. `verify-all-specs` と `validate-phase-output` で契約同期を確認する。
+
+---
+
+## RuntimeSkillCreatorFacade（UT-SC-03-003）
+
+### 概要
+
+LLM ランタイムを使用してスキルの plan / execute / improve を実行する Facade。Main Process の IPC ハンドラ（`skill-creator:*`）から呼び出される。
+
+### Setter Injection メソッド
+
+| メソッド | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| `setLLMAdapter(adapter)` | `adapter: ILLMAdapter` | `void` | LLM Adapter を遅延注入する（P34: Setter Injection パターン）。`LLMAdapterFactory.getAdapter()` が非同期のため、コンストラクタ時点では注入できない。注入前は graceful degradation でスタブ応答を返す。冪等（複数回呼び出し時は最後の adapter を使用）。 |
+
+### DI 配線（ipc/index.ts）
+
+- `ResourceLoader`: `DEFAULT_SKILL_CREATOR_PATH` でコンストラクタ注入
+- `LLMAdapter`: fire-and-forget async で `LLMAdapterFactory.getAdapter("anthropic")` → `setLLMAdapter()` で遅延注入
+- `SkillFileWriter`: `skillBasePath` でコンストラクタ注入
+
+### 実装ファイル
+
+| ファイル | パス | 説明 |
+| --- | --- | --- |
+| RuntimeSkillCreatorFacade.ts | `apps/desktop/src/main/services/runtime/` | Facade 本体 |
+| creatorHandlers.ts | `apps/desktop/src/main/ipc/` | IPC ハンドラ（internal helper） |
+
+### 完了タスク
+
+| タスクID | 完了日 | ステータス | 概要 |
+| --- | --- | --- | --- |
+| UT-SC-03-003 | 2026-03-24 | 完了 | DI 配線実装。setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。29テスト全PASS |

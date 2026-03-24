@@ -305,6 +305,27 @@ describe("AnthropicAdapter", () => {
       expect(result.latency).toBeGreaterThanOrEqual(0);
     });
 
+    it("should use claude-haiku-4-5 as health check model", async () => {
+      let capturedBody: Record<string, unknown> = {};
+
+      server.use(
+        http.post(
+          "https://api.anthropic.com/v1/messages",
+          async ({ request }) => {
+            capturedBody = (await request.json()) as Record<string, unknown>;
+            return HttpResponse.json({
+              content: [{ type: "text", text: "pong" }],
+              usage: { input_tokens: 1, output_tokens: 1 },
+            });
+          },
+        ),
+      );
+
+      await adapter.checkHealth();
+
+      expect(capturedBody.model).toBe("claude-haiku-4-5");
+    });
+
     it("should return error status for failed ping", async () => {
       server.use(
         http.post("https://api.anthropic.com/v1/messages", () => {

@@ -713,7 +713,7 @@ describe("統一SkillAPI - 呼び出し元移行テスト", () => {
 // 8. 統一API構造テスト
 // ============================================================
 describe("統一SkillAPI - API構造検証", () => {
-  it("統一APIが48メソッドを持つ（fileTree API・fork API・共有API・ドキュメントAPI・分析/改善API・チェーンAPI含む）", () => {
+  it("統一APIが51メソッドを持つ（fileTree API・fork API・共有API・ドキュメントAPI・分析/改善API・チェーンAPI・SafetyGate API含む）", () => {
     const expectedMethods: (keyof SkillAPI)[] = [
       "list",
       "getImported",
@@ -772,7 +772,7 @@ describe("統一SkillAPI - API構造検証", () => {
     const methodCount = Object.keys(skillAPI).filter(
       (key) => typeof (skillAPI as Record<string, unknown>)[key] === "function",
     ).length;
-    expect(methodCount).toBe(50); // TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001: getDetail + update 追加
+    expect(methodCount).toBe(51); // UT-06-003-PRELOAD-API-IMPL: evaluateSafety 追加
   });
 
   it("全イベントリスナーメソッドがunsubscribe関数を返す", () => {

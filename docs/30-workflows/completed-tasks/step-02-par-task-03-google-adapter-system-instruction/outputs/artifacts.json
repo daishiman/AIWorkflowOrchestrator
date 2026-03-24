@@ -1,0 +1,65 @@
+{
+  "taskId": "TASK-LLM-MOD-03",
+  "title": "GoogleAdapter system_instruction 対応",
+  "createdAt": "2026-03-24",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements-summary.md"]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/design-summary.md"]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-creation-result.md"]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-result.md"]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion-result.md"]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-result.md"]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-result.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-assurance-result.md"]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-testing-result.md"]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/unassigned-task-detection.md"
+      ]
+    },
+    "phase-13": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-13/completion-result.md"]
+    }
+  }
+}

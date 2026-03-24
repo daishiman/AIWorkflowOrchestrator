@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-23
+> 自動生成: 2026-03-24
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -434,6 +434,7 @@ node scripts/list-specs.js --topics
 | スキルチェーン 型定義（TASK-9D） | L366 |
 | スキルスケジュール 型定義（TASK-9G） | L401 |
 | スキルフォーク 型定義（TASK-9E） | L426 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L474 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -444,7 +445,8 @@ node scripts/list-specs.js --topics
 | TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001 の読み分け | L23 |
 | ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07） | L31 |
 | 公開・互換性型定義（TASK-SKILL-LIFECYCLE-08） | L56 |
-| 関連ドキュメント | L210 |
+| IPermissionStoreV2 インターフェース（UT-06-002） | L210 |
+| 関連ドキュメント | L225 |
 
 ### references/interfaces-agent-sdk-ui.md
 
@@ -862,8 +864,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| スキル安全性評価 IPC チャネル（UT-06-003） | L8 |
-| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L71 |
-| 変更履歴 | L102 |
+| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L72 |
+| 変更履歴 | L103 |
 
 ### references/api-ipc-agent.md
 
@@ -1378,10 +1380,10 @@ node scripts/list-specs.js --topics
 | セキュリティ要件 | L146 |
 | テスト要件 | L161 |
 | ツール許可設定（Permission Settings） | L184 |
-| 権限要求履歴パネル（Permission History Panel） | L249 |
-| Settings 画面の AuthGuard 非依存アクセス（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001） | L322 |
-| Mainline Access Matrix（TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001） | L365 |
-| AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001） | L403 |
+| 権限要求履歴パネル（Permission History Panel） | L250 |
+| Settings 画面の AuthGuard 非依存アクセス（TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001） | L323 |
+| Mainline Access Matrix（TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001） | L366 |
+| AuthKeySection 表示契約（TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001） | L404 |
 
 ### references/ui-ux-settings-details.md
 
@@ -1547,11 +1549,12 @@ node scripts/list-specs.js --topics
 | Skill Lifecycle 実行境界（TASK-SKILL-LIFECYCLE-03） | L245 |
 | テストカバレッジ | L264 |
 | Permission Store（権限永続化） | L280 |
-| Permission フォールバック セキュリティ（UT-06-005） | L364 |
-| 公開判定セキュリティ（TASK-SKILL-LIFECYCLE-08 / spec_created） | L399 |
-| 関連ドキュメント | L442 |
-| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L452 |
-| 変更履歴 | L465 |
+| Permission Store V2（UT-06-002） | L364 |
+| Permission フォールバック セキュリティ（UT-06-005） | L437 |
+| 公開判定セキュリティ（TASK-SKILL-LIFECYCLE-08 / spec_created） | L472 |
+| 関連ドキュメント | L515 |
+| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L525 |
+| 変更履歴 | L538 |
 
 ### references/security-skill-ipc-core.md
 
@@ -1857,7 +1860,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
 | 実装ステータススナップショット（2026-03-22） | L46 |
-| Follow-up Backlog | L59 |
+| Follow-up Backlog | L60 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2083,14 +2086,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
 | RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | L100 |
-| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L129 |
-| SkillScheduler / ScheduleStore（TASK-9G） | L188 |
-| DefaultSafetyGate サービス（UT-06-003） | L217 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L268 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L293 |
-| キャッシュ機構 | L321 |
-| 永続化 | L327 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L333 |
+| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L143 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L202 |
+| DefaultSafetyGate サービス（UT-06-003） | L231 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L282 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L307 |
+| キャッシュ機構 | L335 |
+| 永続化 | L341 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L347 |
 
 ### references/arch-electron-services-details.md
 
@@ -2154,6 +2157,7 @@ node scripts/list-specs.js --topics
 | ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L390 |
 | 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L491 |
 | SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L516 |
+| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L543 |
 
 ### references/arch-state-management-details.md
 
@@ -2573,9 +2577,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 2026-03-19 TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 | L18 |
-| 問題パターン（一般化） | L38 |
-| 5分で確認する順序 | L44 |
-| 次回の判断ルール | L51 |
+| 2026-03-23 UT-CONV-DB-001: CPU アーキテクチャ不一致によるテスト SKIP（P66） | L38 |
+| 問題パターン（一般化） | L56 |
+| 5分で確認する順序 | L62 |
+| 次回の判断ルール | L69 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -2590,11 +2595,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L45 |
-| クイックリファレンス: カテゴリ別検索ガイド | L60 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L136 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L468 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L502 |
+| 分割ファイル一覧 | L50 |
+| クイックリファレンス: カテゴリ別検索ガイド | L65 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L165 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L497 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L531 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L614 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2823,9 +2829,10 @@ node scripts/list-specs.js --topics
 | バリデーション関数 | L243 |
 | IPC通信 | L254 |
 | LLMアダプター実装 | L288 |
-| 関連ドキュメント | L326 |
-| 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L334 |
-| 変更履歴 | L349 |
+| 関連ドキュメント | L342 |
+| 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L350 |
+| 完了タスク（TASK-LLM-MOD-03） | L365 |
+| 変更履歴 | L377 |
 
 ### references/llm-streaming.md
 
@@ -2853,13 +2860,13 @@ node scripts/list-specs.js --topics
 | RuntimeResolver | L153 |
 | AnthropicLLMAdapter | L190 |
 | TerminalHandoffBuilder | L227 |
-| IPCチャンネル | L279 |
-| セキュリティ | L299 |
-| ディレクトリ構成 | L315 |
-| 品質メトリクス | L344 |
-| 関連ドキュメント | L355 |
-| 完了タスク | L383 |
-| 変更履歴 | L443 |
+| IPCチャンネル | L300 |
+| セキュリティ | L320 |
+| ディレクトリ構成 | L336 |
+| 品質メトリクス | L365 |
+| 関連ドキュメント | L376 |
+| 完了タスク | L404 |
+| 変更履歴 | L464 |
 
 ### references/local-agent.md
 
@@ -3798,6 +3805,7 @@ node scripts/list-specs.js --topics
 | TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L168 |
 | TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L205 |
 | Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L254 |
+| UT-SC-02-002: execute() terminal_handoff 分岐追加 完了記録（2026-03-23） | L295 |
 
 ### references/task-workflow-completed-skill-lifecycle-security.md
 
@@ -3805,6 +3813,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L7 |
 | UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L45 |
 | TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L82 |
+| UT-06-002: AllowedToolEntryV2 PermissionStore V2 拡張完了記録（2026-03-23） | L129 |
 
 ### references/task-workflow-completed-skill-lifecycle-ui.md
 
@@ -3831,8 +3840,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L8 |
-| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L46 |
-| UT-06-001: tool-risk-config-implementation 完了記録（2026-03-16） | L83 |
+| UT-06-003-PRELOAD-API-IMPL: evaluateSafety Preload API 追加完了記録（2026-03-23） | L46 |
+| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L85 |
+| UT-06-001: tool-risk-config-implementation 完了記録（2026-03-16） | L122 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 
