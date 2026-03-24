@@ -14,7 +14,43 @@
 
 実装完了後のドキュメントを整備し、実装ガイド・システム仕様書更新・未タスク検出を行う。
 
+## 事前チェック【必須】
+
+本Phase開始前に以下を確認:
+
+- [ ] Phase 11 の完了条件が全て満たされている
+- [ ] Phase 10 の判定結果が PASS または MINOR（対応済み）である
+
 ## 実行タスク
+
+### テーブル形式
+
+| タスク    | 名称                         | 成果物パス                                       |
+| --------- | ---------------------------- | ------------------------------------------------ |
+| Task 12-1 | 実装ガイド作成               | `outputs/phase-12/implementation-guide.md`       |
+| Task 12-2 | システム仕様書更新           | `outputs/phase-12/system-spec-update-summary.md` |
+| Task 12-3 | ドキュメント更新履歴         | `outputs/phase-12/documentation-changelog.md`    |
+| Task 12-4 | 未タスク検出                 | `outputs/phase-12/unassigned-task-detection.md`  |
+| Task 12-5 | スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`      |
+
+### 箇条書き形式
+
+- Task 12-1: 実装ガイド作成（Part 1: 中学生レベル概念説明、Part 2: 開発者向け技術詳細）
+- Task 12-2: システム仕様書更新（spec-update-workflow.md 準拠）
+- Task 12-3: ドキュメント更新履歴（全 Step 完了後に記録。P4対策）
+- Task 12-4: 未タスク検出（0件でも記録必須。P3/P38の3ステップ完了）
+- Task 12-5: スキルフィードバックレポート（改善点なしでもレポート作成。P28対策）
+
+## 参照資料
+
+| 資料名           | パス                                                  | 内容                                      |
+| ---------------- | ----------------------------------------------------- | ----------------------------------------- |
+| タスク実行ルール | `.claude/rules/05-task-execution.md`                  | Phase 12 必須チェックリスト               |
+| 既知の落とし穴   | `.claude/rules/06-known-pitfalls.md`                  | P1〜P4・P25〜P28（Phase 12 インシデント） |
+| 仕様書更新手順   | `task-specification-creator: spec-update-workflow.md` | Step 1-A〜Step 3 の詳細手順               |
+| PR作成コマンド   | `task-specification-creator: commands.md`             | `/ai:diff-to-pr` の使用方法               |
+
+## 実行手順
 
 ### Task 12-1: 実装ガイド作成
 
@@ -35,7 +71,7 @@
 AIWorkflowOrchestrator で Google の Gemini AI を使うとき、今まではこんな感じで会話していました:
 
 ```
-[ユーザー役 / "ねえ、あなたは丁寧な口調のアシスタントね、よろしく"] ← システム指示をこっそり混ぜていた
+[ユーザー役 / "ねえ、あなたは丁寧な口調のアシスタントね、よろしく"] <- システム指示をこっそり混ぜていた
 [ユーザー役 / "今日の天気は？"]
 ```
 
@@ -46,13 +82,13 @@ AIWorkflowOrchestrator で Google の Gemini AI を使うとき、今までは�
 Gemini API には専用の「役割指示フォーム」（`system_instruction`）があります。これを使うと:
 
 ```
-[システム役割指示 / "あなたは丁寧な口調のアシスタントです"]  ← 専用フォームで指示
-[ユーザー役 / "今日の天気は？"]  ← 純粋な会話だけ
+[システム役割指示 / "あなたは丁寧な口調のアシスタントです"]  <- 専用フォームで指示
+[ユーザー役 / "今日の天気は？"]  <- 純粋な会話だけ
 ```
 
 受付の人にあらかじめ「マニュアル」を渡しておくイメージです。会話の中に変な割り込みが入らなくなります。
 
-**APIバージョンの変更（v1 → v1beta）**
+**APIバージョンの変更（v1 -> v1beta）**
 
 Gemini API には「安定版（v1）」と「ベータ版（v1beta）」があります。`system_instruction` という新しい機能は「v1beta」で確実に使えるため、接続先を v1beta に変更しました。v1beta は「新機能を試す開発者向けバージョン」と思ってください。
 
@@ -80,7 +116,7 @@ private buildRequestBody(request: LLMChatRequestInput): Record<string, unknown> 
       maxOutputTokens: request.maxTokens,
     },
   };
-  if (request.systemPrompt) {
+  if (request.systemPrompt?.trim()) {
     body.system_instruction = {
       parts: [{ text: request.systemPrompt }],
     };
@@ -95,7 +131,7 @@ private buildRequestBody(request: LLMChatRequestInput): Record<string, unknown> 
 
 **テストへの影響**:
 
-- MSW モック URL を全件 `v1` → `v1beta` に更新
+- MSW モック URL を全件 `v1` -> `v1beta` に更新
 - `"should prepend systemPrompt as user message"` を削除し `"should send systemPrompt as system_instruction field"` に置換
 - 新規テスト 5 件追加（`ADP-012-SI-01`〜`ADP-012-SI-03`、`ADP-STREAM-SI-01`、`T6-01`〜`T6-03`）
 
@@ -110,6 +146,8 @@ private buildRequestBody(request: LLMChatRequestInput): Record<string, unknown> 
   "generationConfig": { "temperature": 0.7, "maxOutputTokens": 4096 }
 }
 ```
+
+**成果物**: `outputs/phase-12/implementation-guide.md`
 
 ---
 
@@ -137,8 +175,8 @@ grep -rn "GoogleAdapter\|system_instruction\|TASK-LLM-MOD-03" \
 
 LLM アダプターの実装ステータステーブルが仕様書に存在する場合は更新する:
 
-- `GoogleAdapter` の `system_instruction` 対応: 未実装 → 実装済み
-- `baseUrl`: `v1` → `v1beta`
+- `GoogleAdapter` の `system_instruction` 対応: 未実装 -> 実装済み
+- `baseUrl`: `v1` -> `v1beta`
 
 #### Step 1-C: 関連タスクテーブルの確認
 
@@ -161,6 +199,10 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 #### Step 3: IPC 契約検証（IPC 修正なしのため省略）
 
 本タスクは IPC ハンドラーを変更しないため、IPC 契約チェックリストの実施は不要。
+
+**成果物**: `outputs/phase-12/system-spec-update-summary.md`
+
+---
 
 ### Task 12-3: documentation-changelog.md の更新
 
@@ -194,38 +236,87 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 - Phase 12 実装ガイド (Part1/Part2) 作成
 ```
 
+**成果物**: `outputs/phase-12/documentation-changelog.md`
+
+---
+
 ### Task 12-4: 未タスク検出
 
 本タスクで発見した改善点を未タスクとして登録する。
 
-| 検出事項                                                                        | タスクID候補          | 優先度 | 対応                                                                                     |
-| ------------------------------------------------------------------------------- | --------------------- | ------ | ---------------------------------------------------------------------------------------- |
-| `buildRequestBody` 戻り値型の厳密化（`GeminiRequestBody` 型定義）               | UT-LLM-MOD-03-TYPE-01 | 低     | `docs/30-workflows/llm-provider-model-modernization/tasks/unassigned-task/` に指示書作成 |
-| `GeminiGenerateContentResponse` の `usageMetadata` フィールドの optional 化検討 | UT-LLM-MOD-03-TYPE-02 | 低     | 同上                                                                                     |
+| 検出事項                                                                        | タスクID候補          | 優先度 | 対応                                              |
+| ------------------------------------------------------------------------------- | --------------------- | ------ | ------------------------------------------------- |
+| `buildRequestBody` 戻り値型の厳密化（`GeminiRequestBody` 型定義）               | UT-LLM-MOD-03-TYPE-01 | 低     | `docs/30-workflows/unassigned-task/` に指示書作成 |
+| `GeminiGenerateContentResponse` の `usageMetadata` フィールドの optional 化検討 | UT-LLM-MOD-03-TYPE-02 | 低     | 同上                                              |
 
 **未タスク 0 件の場合**: 0 件であることを明示して完了とする。
 
+**未タスク配置先**: `docs/30-workflows/unassigned-task/` に指示書を作成（P38対策: `tasks/` 直下ではなく `unassigned-task/` 配下に配置）
+
 **未タスク管理の 3 ステップ** (P3 対策):
 
-1. `docs/30-workflows/llm-provider-model-modernization/tasks/unassigned-task/` に指示書ファイル作成
+1. `docs/30-workflows/unassigned-task/` に指示書ファイル作成
 2. `task-workflow.md` 残課題テーブルに登録
 3. 関連仕様書（本ファイル `phase-12-documentation.md`）に参照リンク追加
 
-## 参照資料
+**成果物**: `outputs/phase-12/unassigned-task-detection.md`
 
-| 資料名           | パス                                 | 内容                                      |
-| ---------------- | ------------------------------------ | ----------------------------------------- |
-| タスク実行ルール | `.claude/rules/05-task-execution.md` | Phase 12 必須チェックリスト               |
-| 既知の落とし穴   | `.claude/rules/06-known-pitfalls.md` | P1〜P4・P25〜P28（Phase 12 インシデント） |
+---
+
+### Task 12-5: スキルフィードバックレポート
+
+本タスク実行を通じて発見したスキル改善点を記録する。
+
+**確認項目**:
+
+- Phase テンプレートの過不足
+- ワークフロー上のボトルネック
+- ドキュメント品質基準の妥当性
+
+**改善点がない場合**: 「改善点なし」として skill-feedback-report.md を作成する（P28対策: レポート未作成を許容しない）。
+
+**成果物**: `outputs/phase-12/skill-feedback-report.md`
+
+## 漏れやすいポイント
+
+Phase 12 は漏れが最も発生しやすい Phase。以下を特に注意:
+
+- LOGS.md は2箇所（aiworkflow-requirements / task-specification-creator）の**両方**を更新する（P1/P25対策）
+- topic-map.md はセクション追加だけでなく削除・更新時も再生成する（P2/P27対策）
+- 未タスクは3ステップ全完了: (1)指示書作成 -> (2)task-workflow残課題テーブル登録 -> (3)関連仕様書リンク追加（P3対策）
+- documentation-changelog には全Step完了**後**に記録する（P4対策: 実行前に「完了」と書かない）
+
+## フォールバック手順
+
+サブエージェントが rate limit で中断した場合（P43対策）:
+
+1. `git diff --stat -- .claude/skills/` で実際の変更ファイルを確認
+2. 未完了の Step を特定して手動完了
+3. LOGS.md への「完了」記録は全ファイル更新後の最終ステップとする
+
+## 苦戦箇所の記録【推奨】
+
+Phase 12 実行中に困難を感じた箇所を記録し、次回以降のタスクに活かす。
+
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する。
+
+| 観点           | 適用判断                           | 仕様参照先                                   |
+| -------------- | ---------------------------------- | -------------------------------------------- |
+| セキュリティ   | 認証・認可・入力検証が関係する場合 | `aiworkflow-requirements: security-*.md`     |
+| アーキテクチャ | 設計・構造変更の場合               | `aiworkflow-requirements: architecture-*.md` |
+| API設計        | API実装・変更の場合                | `aiworkflow-requirements: api-*.md`          |
 
 ## 成果物
 
-| 成果物                  | パス                                                                            | 説明                                 |
-| ----------------------- | ------------------------------------------------------------------------------- | ------------------------------------ |
-| 実装ガイド              | `phase-12-documentation.md`（本ファイル）の Task 12-1                           | Part1（日常例え）・Part2（技術詳細） |
-| システム仕様書更新記録  | LOGS.md・SKILL.md（2ファイル各）                                                | タスク完了記録                       |
-| documentation-changelog | `docs/30-workflows/llm-provider-model-modernization/documentation-changelog.md` | 変更内容記録                         |
-| 未タスク報告            | `phase-12-documentation.md`（本ファイル）の Task 12-4                           | 検出件数・対応記録                   |
+| 成果物               | パス                                             | 説明                                 |
+| -------------------- | ------------------------------------------------ | ------------------------------------ |
+| 実装ガイド           | `outputs/phase-12/implementation-guide.md`       | Part1（日常例え）・Part2（技術詳細） |
+| 仕様書更新サマリー   | `outputs/phase-12/system-spec-update-summary.md` | Step 1-A〜Step 3 の実行結果          |
+| ドキュメント更新履歴 | `outputs/phase-12/documentation-changelog.md`    | 変更ファイル・Step完了結果           |
+| 未タスク検出レポート | `outputs/phase-12/unassigned-task-detection.md`  | 検出件数・対応記録                   |
+| スキルフィードバック | `outputs/phase-12/skill-feedback-report.md`      | スキル改善提案または「改善点なし」   |
 
 ## 完了条件
 
@@ -235,10 +326,21 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 - [ ] `task-specification-creator/LOGS.md` が更新されている（**2ファイル両方**: P1・P25対策）
 - [ ] `aiworkflow-requirements/SKILL.md` の変更履歴が更新されている
 - [ ] `task-specification-creator/SKILL.md` の変更履歴が更新されている
-- [ ] `topic-map.md` が再生成されている（P2・P27対策: セクション変更があれば必須）
-- [ ] `documentation-changelog.md` に全 Step 完了後に記録されている（P4対策: 実行前に「完了」と記載しない）
+- [ ] `topic-map.md` が再生成されている（P2・P27対策）
+- [ ] `documentation-changelog.md` に全 Step 完了後に記録されている（P4対策）
 - [ ] 未タスク検出を実施している（0 件でも記録する）
 - [ ] 未タスクが存在する場合は P3 の 3 ステップが全て完了している
+- [ ] スキルフィードバックレポートが作成されている（P28対策）
+- [ ] **本Phase内の全タスクを100%実行完了**
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次のPhase
 

@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-23
+> 自動生成: 2026-03-24
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -2594,11 +2594,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L46 |
-| クイックリファレンス: カテゴリ別検索ガイド | L61 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L137 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L469 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L503 |
+| 分割ファイル一覧 | L47 |
+| クイックリファレンス: カテゴリ別検索ガイド | L62 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L162 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L494 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L528 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2827,9 +2827,10 @@ node scripts/list-specs.js --topics
 | バリデーション関数 | L243 |
 | IPC通信 | L254 |
 | LLMアダプター実装 | L288 |
-| 関連ドキュメント | L326 |
-| 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L334 |
-| 変更履歴 | L349 |
+| 関連ドキュメント | L342 |
+| 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L350 |
+| 完了タスク（TASK-LLM-MOD-03） | L365 |
+| 変更履歴 | L377 |
 
 ### references/llm-streaming.md
 

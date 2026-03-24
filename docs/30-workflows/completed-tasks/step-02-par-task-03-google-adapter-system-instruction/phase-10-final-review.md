@@ -94,6 +94,29 @@ git diff HEAD -- apps/desktop/src/main/adapters/llm/__tests__/GoogleAdapter.test
 | MAJOR    | 設計・実装に問題あり           | 影響範囲に応じて Phase 1-5 へ戻る  |
 | CRITICAL | 要件を満たしていない           | Phase 1 へ戻り要件再確認           |
 
+## 統合テスト連携【必須】
+
+最終レビューで統合テスト結果を確認:
+
+| レビュー項目 | 確認内容                  | 結果       |
+| ------------ | ------------------------- | ---------- |
+| 全テスト結果 | ユニット/統合/E2E全て成功 | {{RESULT}} |
+| カバレッジ   | 基準達成                  | {{RESULT}} |
+| 接続テスト   | フロント/バック接続成功   | {{RESULT}} |
+
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する。
+**具体的なチェック項目はAIがタスク内容に応じて判断・適用する。**
+
+| 観点               | 適用判断                           | 仕様参照先                                   |
+| ------------------ | ---------------------------------- | -------------------------------------------- |
+| セキュリティ       | 認証・認可・入力検証が関係する場合 | `aiworkflow-requirements: security-*.md`     |
+| アーキテクチャ     | 設計・構造変更の場合               | `aiworkflow-requirements: architecture-*.md` |
+| API設計            | API実装・変更の場合                | `aiworkflow-requirements: api-*.md`          |
+| エラーハンドリング | 例外処理が必要な場合               | `aiworkflow-requirements: error-handling.md` |
+| パフォーマンス     | 性能要件がある場合                 | `aiworkflow-requirements: architecture-*.md` |
+
 ## 参照資料
 
 | 資料名     | パス                           | 内容                   |
@@ -117,6 +140,16 @@ git diff HEAD -- apps/desktop/src/main/adapters/llm/__tests__/GoogleAdapter.test
 - [ ] 未タスク候補が記録されている
 - [ ] PASS/MINOR/MAJOR/CRITICAL の判定が記録されている
 - [ ] MINOR 以上の指摘は未タスク仕様書に変換されている（MINOR でも省略不可）
+- [ ] **本Phase内の全タスクを100%実行完了**
+
+## タスク100%実行確認【必須】
+
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次のPhase
 

@@ -75,6 +75,20 @@
 
 ---
 
+## TASK-LLM-MOD-03 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 full execution
+- **Result**: success
+- **Notes**:
+  - GoogleAdapter の systemPrompt 処理を user ロールワークアラウンドから system_instruction フィールドに移行
+  - baseUrl デフォルト値を v1 から v1beta に変更
+  - buildRequestBody private メソッドで sendChat/streamChat の DRY 統合
+  - 19 テスト全 PASS / streaming.test.ts の MSW URL 修正（3箇所）
+  - 未タスク 2 件（UT-LLM-MOD-03-TYPE-01〜02）検出・backlog 登録
+
+---
+
 ## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
 ## TASK-LLM-MOD-01 完了（2026-03-23）
 

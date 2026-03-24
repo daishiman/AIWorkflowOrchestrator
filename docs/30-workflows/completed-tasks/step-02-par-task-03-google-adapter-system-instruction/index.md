@@ -30,7 +30,7 @@ GoogleAdapter の systemPrompt 処理を、`user` ロールへの埋め込みワ
 // 現在
 private formatContents(request: LLMChatRequestInput) {
   const contents = [];
-  if (request.systemPrompt) {
+  if (request.systemPrompt?.trim()) {
     contents.push({ role: "user", parts: [{ text: `System: ${request.systemPrompt}` }] });
   }
   contents.push(...request.messages.map(...));
@@ -60,7 +60,7 @@ private buildRequestBody(request: LLMChatRequestInput): Record<string, unknown> 
     },
   };
 
-  if (request.systemPrompt) {
+  if (request.systemPrompt?.trim()) {
     body.system_instruction = {
       parts: [{ text: request.systemPrompt }],
     };
@@ -88,11 +88,11 @@ private buildRequestBody(request: LLMChatRequestInput): Record<string, unknown> 
 
 ## 参照資料
 
-- [research/google-models.md](../../research/google-models.md)
+- [research/google-models.md](../llm-provider-model-modernization/research/google-models.md)
 
 ## 完了条件
 
-- [ ] systemPrompt が `system_instruction` フィールドで送信される
-- [ ] systemPrompt なしの場合に `system_instruction` フィールドが省略される
-- [ ] `sendChat` / `streamChat` 両方で正しく動作する
-- [ ] TypeScript コンパイルが通る
+- [x] systemPrompt が `system_instruction` フィールドで送信される
+- [x] systemPrompt なしの場合に `system_instruction` フィールドが省略される
+- [x] `sendChat` / `streamChat` 両方で正しく動作する
+- [x] TypeScript コンパイルが通る

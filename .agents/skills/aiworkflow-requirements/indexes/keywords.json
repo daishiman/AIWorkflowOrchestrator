@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-23T10:07:43.081Z",
-  "totalKeywords": 2455,
+  "generated": "2026-03-24T02:25:23.433Z",
+  "totalKeywords": 2456,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7336,6 +7336,9 @@
       "ui-history-data-types.md"
     ],
     "アダプター実装": [
+      "llm-ipc-types.md"
+    ],
+    "MOD": [
       "llm-ipc-types.md"
     ],
     "ストリーミングレスポンス仕様": [
