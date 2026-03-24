@@ -6,6 +6,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-24 - TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト追補（Vitest 70テスト / 7カテゴリ / 親パック4文書コンプライアンス検証 / 教訓2件 L-CBLG-003/004） |
+| 2026-03-23 - TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 設計フェーズ完了同期（Canonical Source Table 5カテゴリ / Bridge Rule / State Machine / Same-Wave Sync Protocol Step A-E / Follow-up Formalization 3ステップ / 未タスク1件 UT-WORKTREE-RSYNC-CAUTION-001） |
 | 2026-03-23 - UT-CONV-DB-001 完了（better-sqlite3 75件テスト SKIP 修正 / rebuild:native スクリプト追加 / P66 CPU アーキテクチャ不一致パターン記録） |
 | 2026-03-23 - TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 設計フェーズ完了（SlideUIStatus 4状態 / 2 lane 分離 / UI 4領域 / cleanup 順序9ステップ / 未タスク5件検出） |
 | 2026-03-22 - TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計フェーズ完了（TranscriptProvenance 型定義 / 3操作フロー / provenance chip / 未タスク2件検出） |

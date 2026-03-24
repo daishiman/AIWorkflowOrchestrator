@@ -4,6 +4,23 @@
 
 ---
 
+## TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 設計完了（Phase 13 blocked）
+- **Result**: success
+- **Notes**:
+  - Canonical Source Table（5カテゴリ）、Bridge Rule（legacy 無期限保持 + 新規追加禁止）、State Machine（spec_created→implementation_ready→completed）、Same-Wave Sync Protocol（Step A→E 順序実行）、Follow-up Formalization 3ステップを governance 仕様として確定
+  - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS（MINOR 2件: M-01 rsync worktree 注意、M-02 Phase 12 解消）
+  - 未タスク 1 件検出（UT-WORKTREE-RSYNC-CAUTION-001）
+  - Phase 12 Step A-E を Same-Wave Sync Protocol で実行（P57 対策: 設計タスクでも先送りしない）
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+  - 契約テストスクリプト `scripts/__tests__/canonical-bridge-ledger-governance.test.ts` を追加作成（Vitest 70テスト / 7カテゴリ: Contract/Unit/Integration/Artifact/EdgeCase/Regression/Rollback）
+  - 親パック4文書（index.md / ui-ux-realization.md / ui-ux-diagrams.md / design-audit-matrix.md）のコンプライアンス検証を完了
+  - 教訓2件追加: L-CBLG-003（Phase 4 テストマトリクスのファイル参照誤り）、L-CBLG-004（TypeScript TS1501 regex /s flag ES2018+ 要件）
+
+---
+
 ## UT-CONV-DB-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator

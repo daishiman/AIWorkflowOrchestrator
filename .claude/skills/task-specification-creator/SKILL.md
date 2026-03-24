@@ -384,6 +384,8 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.17** | **2026-03-24** | **TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト追補**: 設計タスク成果物の契約テスト70件を `scripts/__tests__/canonical-bridge-ledger-governance.test.ts` に作成。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
+| **v10.09.16** | **2026-03-23** | **TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 完了同期**: Canonical Bridge / Workflow Ledger Governance 設計タスク（Phase 1-13）完了。Canonical Source Table 5カテゴリ / Bridge Rule / State Machine / Same-Wave Sync Protocol Step A-E / Follow-up Formalization 3ステップ。未タスク1件（UT-WORKTREE-RSYNC-CAUTION-001）。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.15** | **2026-03-23** | **TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 完了同期**: Slide/Modifier manual fallback alignment 設計タスク（Phase 1-13）完了。SlideUIStatus 4状態 / 2 lane / UI 4領域 / cleanup 9ステップ / 未タスク5件。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.07** | **2026-03-22** | **TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 完了同期**: Transcript -> Chat Provenance Linkage 設計タスク（Phase 1-13）完了。TranscriptProvenance 型定義 / 3操作フロー / provenance chip 設計確定。MINOR指摘 M-1/M-2 を未タスク化。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.06** | **2026-03-22** | **TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了同期**: Terminal Handoff Surface Realization 設計タスク（Phase 1-13）完了。Concern 3分割設計 / HandoffGuidance 統一DTO / Manual Boundary / 未タスク 8 件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |

@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-23
+> 自動生成: 2026-03-24
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -424,6 +424,7 @@ node scripts/list-specs.js --topics
 | スキルドキュメント生成 型定義（TASK-9I） | L141 |
 | Skill Docs Runtime Integration 型定義（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001） | L205 |
 | スキル分析 型定義（TASK-9J） | L291 |
+| assertNoSilentFallback ガード（P62 対策） | L340 |
 
 ### references/interfaces-agent-sdk-skill-reference.md
 
@@ -898,8 +899,8 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L200 |
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L536 |
-| AIプロバイダーAPI連携 | L567 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L547 |
+| AIプロバイダーAPI連携 | L578 |
 
 ### references/api-ipc-system-details.md
 
@@ -1015,10 +1016,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | コンポーネント階層 | L12 |
 | コンポーネント仕様 | L43 |
-| インタラクション設計 | L322 |
-| 視覚デザイン | L351 |
-| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L376 |
-| アクセシビリティ（WCAG 2.1 AA） | L398 |
+| インタラクション設計 | L324 |
+| 視覚デザイン | L353 |
+| 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L378 |
+| アクセシビリティ（WCAG 2.1 AA） | L400 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -1311,7 +1312,8 @@ node scripts/list-specs.js --topics
 | パネル共通ガイドライン | L58 |
 | ChatPanel 実AIチャット配線設計（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L80 |
 | ChatPanel統合パターン（TASK-7D） | L124 |
-| 関連ドキュメント | L162 |
+| ChatPanel Review Harness（TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001） | L162 |
+| 関連ドキュメント | L192 |
 
 ### references/ui-ux-portal-patterns.md
 
@@ -1855,7 +1857,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
 | 実装ステータススナップショット（2026-03-22） | L46 |
-| Follow-up Backlog | L58 |
+| Follow-up Backlog | L60 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2081,14 +2083,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
 | RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | L100 |
-| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L129 |
-| SkillScheduler / ScheduleStore（TASK-9G） | L188 |
-| DefaultSafetyGate サービス（UT-06-003） | L217 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L268 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L293 |
-| キャッシュ機構 | L321 |
-| 永続化 | L327 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L333 |
+| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L143 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L202 |
+| DefaultSafetyGate サービス（UT-06-003） | L231 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L282 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L307 |
+| キャッシュ機構 | L335 |
+| 永続化 | L341 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L347 |
 
 ### references/arch-electron-services-details.md
 
@@ -2590,11 +2592,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L43 |
-| クイックリファレンス: カテゴリ別検索ガイド | L58 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L134 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L466 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L500 |
+| 分割ファイル一覧 | L48 |
+| クイックリファレンス: カテゴリ別検索ガイド | L63 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L139 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L471 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L505 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L588 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2621,18 +2624,19 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L36 |
-| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L76 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L120 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L160 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L190 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L239 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L292 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L320 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L363 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L414 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L483 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L521 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L37 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L77 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L121 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L161 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L191 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L240 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L293 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L321 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L364 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L415 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L484 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L522 |
+| 2026-03-23 TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓 | L617 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -2852,13 +2856,13 @@ node scripts/list-specs.js --topics
 | RuntimeResolver | L153 |
 | AnthropicLLMAdapter | L190 |
 | TerminalHandoffBuilder | L227 |
-| IPCチャンネル | L279 |
-| セキュリティ | L299 |
-| ディレクトリ構成 | L315 |
-| 品質メトリクス | L344 |
-| 関連ドキュメント | L355 |
-| 完了タスク | L383 |
-| 変更履歴 | L443 |
+| IPCチャンネル | L300 |
+| セキュリティ | L320 |
+| ディレクトリ構成 | L336 |
+| 品質メトリクス | L365 |
+| 関連ドキュメント | L376 |
+| 完了タスク | L404 |
+| 変更履歴 | L464 |
 
 ### references/local-agent.md
 
@@ -3797,6 +3801,7 @@ node scripts/list-specs.js --topics
 | TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L168 |
 | TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L205 |
 | Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L254 |
+| UT-SC-02-002: execute() terminal_handoff 分岐追加 完了記録（2026-03-23） | L295 |
 
 ### references/task-workflow-completed-skill-lifecycle-security.md
 

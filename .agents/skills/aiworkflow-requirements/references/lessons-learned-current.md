@@ -28,6 +28,8 @@
 | 2026-03-22 | 2.2.4 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 の苦戦箇所3件を追加（L-SLIDE-RUNTIME-001〜003） |
 | 2026-03-23 | 2.4.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003: GAP ラベルドリフト / DEFERRED 判断誤り / ViewType 型不一致） |
 | 2026-03-23 | 2.3.2 | UT-RUNTIME-BUILDER-MIGRATION-001 教訓2件を追加（L-RBM-001: shared型3レイヤー波及、L-RBM-002: sanitize テスト正規表現） |
+| 2026-03-24 | 2.5.1 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓2件を追加（L-CBLG-003: テストマトリクスファイル参照誤り、L-CBLG-004: TS1501 regex /s flag） |
+| 2026-03-23 | 2.5.0 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 教訓2件を追加（L-CBLG-001: Phase 10 MINOR 照合漏れ、L-CBLG-002: Step A-E 先送り P57 違反） |
 | 2026-03-23 | 2.3.1 | UT-EXECUTION-ENV-TERMINAL-001 教訓1件を追加（L-EXEC-TERMINAL-001） |
 | 2026-03-22 | 2.3.1 | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計タスク教訓2件を追加（L-TCPL-001〜002） |
 | 2026-03-22 | 2.3.0 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 設計タスク教訓3件を追加（L-THSR-001〜003） |
@@ -566,3 +568,35 @@
 - **原因**: Phase 12 を並列エージェントで分担した結果、summary 作成エージェントと未タスク検出エージェントの間で情報が断絶した
 - **解決策**: documentation-changelog は全 Task 完了後にメインエージェントが一括作成する。件数は unassigned-task-detection.md の確定値を参照し、他ファイルの「予測値」を使わない
 - **教訓**: Phase 12 の件数系データは最後に1箇所で確定し、全ファイルにコピーする（逆方向の参照は禁止）
+
+### TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001（2026-03-23）
+
+#### L-CBLG-001: Phase 10 MINOR 指摘と unassigned-task-detection の照合漏れ
+
+- **症状**: Phase 10 final-gate-decision.md に MINOR M-01（rsync worktree 注意書き不足）が記録されていたが、Phase 12 Task 4 の unassigned-task-detection.md では「0件」と記載された
+- **原因**: unassigned-task-detection 作成時に Phase 10 の MINOR 一覧を確認せず、「設計タスクは Phase 4-11 をスキップ」という誤った判断で Phase 10 MINOR を無視した
+- **解決策**: Phase 12 Task 4 開始時に `phase-10/final-gate-decision.md` の MINOR 一覧を必ず読み込み、各 MINOR の対応状況（未タスク化 or Phase 12 内解決）を照合する
+- **教訓**: 設計タスクであっても Phase 10 は実施されるため、Phase 10 MINOR の照合は省略不可
+
+#### L-CBLG-002: 設計タスク + worktree 環境での Step A-E 先送り（P57 違反）
+
+- **症状**: documentation-changelog.md で Step A-E が全て「計画済（PR マージ後に実施）」と記載された。P57（設計タスクでも Phase 12 完了時点で実更新する）に違反
+- **原因**: worktree 環境でのコンフリクトリスクを過大評価し、P57 ルールよりも先送りを優先した
+- **解決策**: worktree 環境であっても `.claude/skills/` の実更新は Phase 12 内で実施する。コンフリクトが発生した場合はその場で解決する方が、仕様書と実装の乖離リスクより低い
+- **教訓**: 「worktree だから」は Step A-E 先送りの正当な理由にならない。P57 は worktree 環境にも適用される
+
+## TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24）
+
+### L-CBLG-003: Phase 4 テストマトリクスのファイル参照誤り
+
+- **苦戦箇所**: Phase 4 の test-matrix.md で、テストケース C-3/U-2-5/I-6 が `contract-matrix.md` を参照先として指定していたが、実際の `rsync` コマンドや bridge rule の記載は `design-summary.md` にあった。テスト実装時に初めてファイル参照誤りが発覚し、3テストのアサーション修正が必要になった
+- **解決策**: テストマトリクス作成時に参照先ファイルの内容を `grep` で実際に確認してからテストケースに記載する。契約テストでは `readOutput()` ヘルパーで Phase 別ファイルを読み込む設計にし、参照先変更が1箇所で済むようにする
+- **再利用**: 設計タスクの Phase 4 でテストマトリクスを書く際は、参照ファイルパスをハードコードする前に `grep -l "検索語" outputs/phase-2/` で所在を確認する
+
+### L-CBLG-004: TypeScript TS1501 regex /s flag は ES2018+ 必須
+
+- **苦戦箇所**: Rollback テストで `/Step A.*中断|中断.*Step A/s` のように dotAll flag (`/s`) を使用したところ、TypeScript が TS1501 エラー（This regular expression flag is only available when targeting 'es2018' or later）を出力した。プロジェクトの tsconfig target が ES2018 未満のため使用不可
+- **解決策**: `/s` flag の代わりに `[\s\S]` で改行を含む任意文字にマッチさせる。`/Step A[\s\S]*中断|中断[\s\S]*Step A/` で同等の動作を実現
+- **再利用**: TypeScript テストで複数行マッチが必要な場合は `[\s\S]*` パターンを標準とする
+
+> 5分解決カード: テストマトリクスの参照先ファイル誤り → `grep -l "keyword" outputs/phase-*/` → アサーション対象変数を修正 → テスト再実行

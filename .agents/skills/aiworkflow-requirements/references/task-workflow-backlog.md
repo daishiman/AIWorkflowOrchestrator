@@ -19,9 +19,9 @@
 | UT-FIX-LLM-BANNER-DISMISS-001 | LLM guidance banner の dismiss UX を追加 | 低 | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE Phase 12（2026-03-21） | `docs/30-workflows/unassigned-task/task-ut-llm-guidance-banner-dismiss-001.md` |
 | UT-WORKSPACE-CHAT-STREAM-ERROR-TRANSITION-001 | StreamingErrorDisplay の表示/非表示トランジションを追加する | 低 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/task-ut-workspace-chat-stream-error-transition-001.md` |
 | UT-WORKSPACE-CHAT-STREAM-ERROR-CONTRAST-001 | StreamingErrorDisplay の WCAG AA コントラスト検証と基準固定を行う | 低 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/task-ut-workspace-chat-stream-error-contrast-001.md` |
-| UT-SLIDE-CI-DRIFT-SCAN-001 | canonical チャネル自動突合 CI | 低 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | - |
-| UT-SLIDE-GUIDANCE-UI-001 | handoffGuidance 表示コンポーネント | 中 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | - |
-| UT-SLIDE-IPC-TEMPLATE-001 | IPC ハンドラ標準テンプレート | 低 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | - |
+| UT-SLIDE-CI-DRIFT-SCAN-001 | canonical チャネル自動突合 CI | 低 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | `docs/30-workflows/unassigned-task/UT-SLIDE-CI-DRIFT-SCAN-001.md` |
+| UT-SLIDE-GUIDANCE-UI-001 | handoffGuidance 表示コンポーネント | 中 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | `docs/30-workflows/unassigned-task/UT-SLIDE-GUIDANCE-UI-001.md` |
+| UT-SLIDE-IPC-TEMPLATE-001 | IPC ハンドラ標準テンプレート | 低 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 Phase 12（2026-03-22, #1363） | `docs/30-workflows/unassigned-task/UT-SLIDE-IPC-TEMPLATE-001.md` |
 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | current code に残る runtime policy centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 12 最終再監査（2026-03-21） | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface を統合する | 高 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 Phase 12 最終ドキュメント更新（2026-03-21） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
 | UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001 | `RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する | 中 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 Phase 12 最終ドキュメント更新（2026-03-21） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
@@ -540,6 +540,10 @@
 | UT-SLIDE-P31-001 | P31/P48 無限ループ対策実装（SlideSlice 派生セレクタへの useShallow 適用） | 中 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-P31-001.md` |
 | UT-SLIDE-HANDOFF-DUP-001 | terminal handoff 重複解消（ChatPanel handoff と Slide handoff の共通 DTO 一本化） | 中 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-HANDOFF-DUP-001.md` |
 | UT-SLIDE-TASK09-IPC-NAMESPACE-001 | slide:sync:* legacy IPC channel の namespace 統一（`slide:*` への canonical 移行） | 中 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SLIDE-TASK09-IPC-NAMESPACE-001.md` |
+| UT-WORKTREE-RSYNC-CAUTION-001 | rsync コマンドの worktree 環境注意書き追加（R-15 関連） | 低 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 10 MINOR M-01（2026-03-23） | `docs/30-workflows/unassigned-task/worktree-rsync-caution-annotation.md` |
+| UT-TASKSPEC-DESIGN-TEMPLATE-BRANCH-001 | type:design テンプレート分岐追加（Phase 4-9 の設計タスク向け読み替え自動化） | 中 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案1（2026-03-24） | `docs/30-workflows/unassigned-task/UT-TASKSPEC-DESIGN-TEMPLATE-BRANCH-001.md` |
+| UT-TASKSPEC-DRY-REFERENCE-TABLE-001 | 参照テーブル DRY 原則強化（共通参照を index.md に集約） | 低 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案2（2026-03-24） | `docs/30-workflows/unassigned-task/UT-TASKSPEC-DRY-REFERENCE-TABLE-001.md` |
+| UT-TASKSPEC-SKILL-FEEDBACK-MANDATORY-001 | Phase 12 skill-feedback-report 必須化（テンプレート・artifacts.json 自動追加） | 中 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案3（2026-03-24） | `docs/30-workflows/unassigned-task/UT-TASKSPEC-SKILL-FEEDBACK-MANDATORY-001.md` |
 
 ### 未タスク管理ルール
 
