@@ -397,6 +397,78 @@ PermissionDialogのモーダル本文で `getDescription()` を呼び出し、�
 
 ---
 
+## Session Dock 設計仕様（TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001, 2026-03-24 設計確定）
+
+### DockState 8 状態
+
+| 状態          | 意味                         | 表示グループ |
+| ------------- | ---------------------------- | ------------ |
+| collapsed     | パネル閉                     | Inactive     |
+| ready         | 準備完了                     | Pending      |
+| handoff       | CLI 引き渡し中               | Pending      |
+| running       | CLI 実行中                   | Active       |
+| done          | 正常完了                     | Complete     |
+| aborted       | 中止 / エラー                | Complete     |
+| unavailable   | CLI 利用不可                 | Inactive     |
+| guidance-only | 読み取り専用ガイダンス表示   | Inactive     |
+
+型定義: `packages/shared/src/types/dock-state.ts`
+
+### 主要遷移（T1-T10）
+
+| ID | From → To                       | トリガー              | ガード                                  |
+| -- | -------------------------------- | --------------------- | --------------------------------------- |
+| T1 | collapsed → ready               | GUIDANCE_RECEIVED     | handoffGuidance != null && cliAvailable |
+| T4 | handoff → running               | CLI_SESSION_START     | sessionId != null                       |
+| T5 | running → done                  | CLI_SESSION_COMPLETE  | exitCode === 0                          |
+| T6 | running → aborted               | CLI_SESSION_ABORT     | exitCode !== 0 OR userAbort             |
+
+設計判断 MN-01: `running → collapsed` 直接遷移は**禁止**（実行中プロセスの見失い防止）。
+
+### SessionDockState（agentSlice 拡張）
+
+```typescript
+interface SessionDockState {
+  dockState: DockState;
+  sessionId: string | null;
+  isDockOpen: boolean;
+  transcriptEntries: TranscriptEntry[];
+  artifactSummary: ArtifactSummaryData | null;
+  errorSummary: ErrorSummaryData | null;
+  shareHistory: ShareRecord[];
+}
+```
+
+セレクタ: P31 準拠の個別セレクタ + P48 準拠の `useShallow` 適用（配列セレクタ）。
+
+### Artifact-First 表示順序
+
+| 優先度 | コンポーネント    | 表示条件                            |
+| ------ | ----------------- | ----------------------------------- |
+| 1      | ArtifactSummary   | done/aborted (primary surface)      |
+| 2      | ExecutionSummary  | done/aborted (secondary)            |
+| 3      | TranscriptDetail  | done/aborted (折りたたみ, tertiary) |
+| 4      | ShareRail         | done/aborted (footer)               |
+
+### Manual Share（手動3操作 + Provenance）
+
+| 操作            | SharePayload.type | 説明                    |
+| --------------- | ----------------- | ----------------------- |
+| Selection Share | `"selection"`     | テキスト選択 → 送信     |
+| Latest Attach   | `"latest"`        | 最新エントリを添付      |
+| Session Paste   | `"session"`       | セッション要約を貼り付け |
+
+全共有に `ProvenanceChip`（出典表示）を付与。CREDENTIAL_PATTERNS でサニタイズ後に送信。
+
+### Session Persistence
+
+- Session ID: `session-{crypto.randomUUID()}`
+- 保持: 最大10件 / 24時間 / FIFO cleanup
+- Running session は cleanup から除外
+- Reopen: `claudeCliAPI.getSession(sessionId)` → 失敗時は `ready` にフォールバック
+
+---
+
 ## アクセシビリティ（WCAG 2.1 AA）
 
 | 要件                     | 実装方法                                        |

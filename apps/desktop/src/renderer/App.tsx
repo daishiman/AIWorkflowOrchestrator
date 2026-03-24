@@ -71,7 +71,6 @@ function App(): JSX.Element {
   const userProfileName = useAppStore((state) => state.userProfile?.name ?? "");
 
   useEffect(() => {
-    console.log("🔍 [App] Initializing auth...");
     initializeAuth();
   }, [initializeAuth]);
 
@@ -290,7 +289,11 @@ function App(): JSX.Element {
       case "agent":
         return <AgentView />;
       case "executionConsole":
-        return <ExecutionConsoleView />;
+        return (
+          <React.Suspense fallback={null}>
+            <ExecutionConsoleView />
+          </React.Suspense>
+        );
       case "skillCenter":
         return <SkillCenterView />;
       case "historySearch":

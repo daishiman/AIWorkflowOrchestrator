@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-24T06:45:57.179Z",
-  "totalKeywords": 2464,
+  "generated": "2026-03-24T09:08:26.425Z",
+  "totalKeywords": 2468,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2054,7 +2054,8 @@
       "api-ipc-auth.md",
       "architecture-auth-security-core.md",
       "error-handling-details.md",
-      "logs-archive-2026-02-abort-security-loop-guard.md"
+      "logs-archive-2026-02-abort-security-loop-guard.md",
+      "ui-ux-agent-execution-core.md"
     ],
     "REFRESH": [
       "api-ipc-auth.md",
@@ -4944,7 +4945,8 @@
       "workflow-ai-chat-llm-integration-fix.md"
     ],
     "Session": [
-      "interfaces-agent-sdk-integration.md"
+      "interfaces-agent-sdk-integration.md",
+      "ui-ux-agent-execution-core.md"
     ],
     "Persistence": [
       "interfaces-agent-sdk-integration.md"
@@ -6352,7 +6354,8 @@
     ],
     "BRIDGE": [
       "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-agent-execution-core.md"
     ],
     "CANONICAL": [
       "lessons-learned-current.md"
@@ -10529,7 +10532,8 @@
       "ui-history-data-types.md"
     ],
     "設計仕様": [
-      "ui-history-design.md"
+      "ui-history-design.md",
+      "ui-ux-agent-execution-core.md"
     ],
     "パフォーマンス": [
       "ui-history-design.md"
@@ -10616,6 +10620,18 @@
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "バナー": [
+      "ui-ux-agent-execution-core.md"
+    ],
+    "Dock": [
+      "ui-ux-agent-execution-core.md"
+    ],
+    "DOCK": [
+      "ui-ux-agent-execution-core.md"
+    ],
+    "ARTIFACT": [
+      "ui-ux-agent-execution-core.md"
+    ],
+    "設計確定": [
       "ui-ux-agent-execution-core.md"
     ],
     "実装済": [
