@@ -11,14 +11,27 @@ import type {
   SkillExecutionResult,
   SlideResponse,
   SlideErrorCode,
+  SlideCapabilityDTO,
 } from "@repo/shared";
+/** Valid SkillPhase values for runtime validation */
+const VALID_PHASES: readonly string[] = [
+  "hearing",
+  "structure",
+  "html",
+  "modifier",
+];
+
+function isValidPhase(value: string): value is SkillPhase {
+  return VALID_PHASES.includes(value);
+}
+
 import { createSlideWatcher, SlideWatcher } from "./file-watcher";
 import { createSkillExecutor, SkillExecutor } from "./skill-executor";
 import { createSyncManager, SyncManager } from "./sync-manager";
 import { validateIpcSender } from "../infrastructure/security/ipc-validator";
 import { sanitizeErrorMessage } from "../ipc/sanitizeErrorMessage";
 
-// invoke (Renderer -> Main): 6 channels
+// invoke (Renderer -> Main): 7 channels
 export const SLIDE_INVOKE_CHANNELS = {
   EXECUTE_PHASE: "slide:executePhase",
   WATCH_START: "slide:watch-start",
@@ -26,6 +39,7 @@ export const SLIDE_INVOKE_CHANNELS = {
   SYNC_STATUS: "slide:sync-status",
   REVERSE_SYNC: "slide:reverse-sync",
   CANCEL: "slide:cancel",
+  CAPABILITY_GET: "slide:capability:get",
 } as const;
 
 // push (Main -> Renderer): 6 channels
@@ -118,6 +132,20 @@ function validateSlideRequestWithPath(
   return { valid: true, projectPath: projectPath.trim() };
 }
 
+/**
+ * Resolve slide capability based on current state
+ * @param _sessionId - Session identifier (for future per-session state)
+ */
+function resolveSlideCapability(_sessionId: string): SlideCapabilityDTO {
+  // 現時点では静的な状態を返す
+  // 将来的に authKeyService / RuntimePolicyResolver との統合時に動的化
+  return {
+    lane: "integrated",
+    apiKeySource: "env",
+    uiStatus: "synced",
+  };
+}
+
 /** Current watcher */
 let watcher: SlideWatcher | null = null;
 /** Skill executor */
@@ -157,7 +185,16 @@ export const registerSlideIpcHandlers = (mainWindow: BrowserWindow): void => {
           },
         };
       }
-      const validPhase = phase as SkillPhase;
+      if (!isValidPhase(phase.trim())) {
+        return {
+          success: false,
+          error: {
+            code: "SLIDE_E011",
+            message: "invalid phase value",
+          },
+        };
+      }
+      const validPhase = phase.trim() as SkillPhase;
 
       // 3. projectPath validation (P42 + path traversal)
       const pathValidation = validateSlideRequestWithPath(
@@ -425,6 +462,69 @@ export const registerSlideIpcHandlers = (mainWindow: BrowserWindow): void => {
       }
     },
   );
+
+  // Capability get
+  ipcMain.handle(
+    SLIDE_INVOKE_CHANNELS.CAPABILITY_GET,
+    async (
+      event: IpcMainInvokeEvent,
+      args: unknown,
+    ): Promise<SlideResponse<SlideCapabilityDTO>> => {
+      // 1. Sender validation
+      const senderError = validateSlideSenderOnly(
+        event,
+        SLIDE_INVOKE_CHANNELS.CAPABILITY_GET,
+        mainWindow,
+      );
+      if (senderError) return senderError as SlideResponse<SlideCapabilityDTO>;
+
+      // 2. P42 3-stage validation for sessionId
+      const typedArgs = args as { sessionId?: unknown } | null | undefined;
+      if (typeof typedArgs?.sessionId !== "string") {
+        return {
+          success: false,
+          error: {
+            code: "SLIDE_E011",
+            message: "sessionId must be a string",
+          },
+        };
+      }
+      if (typedArgs.sessionId === "") {
+        return {
+          success: false,
+          error: {
+            code: "SLIDE_E011",
+            message: "sessionId must not be empty",
+          },
+        };
+      }
+      if (typedArgs.sessionId.trim() === "") {
+        return {
+          success: false,
+          error: {
+            code: "SLIDE_E011",
+            message: "sessionId must not be whitespace only",
+          },
+        };
+      }
+
+      try {
+        const capability = resolveSlideCapability(typedArgs.sessionId.trim());
+        return { success: true, data: capability };
+      } catch (error) {
+        return {
+          success: false,
+          error: {
+            code: "SLIDE_E006",
+            message: sanitizeErrorMessage(
+              error,
+              "Failed to resolve capability",
+            ),
+          },
+        };
+      }
+    },
+  );
 };
 
 /**
@@ -437,6 +537,7 @@ export const unregisterSlideIpcHandlers = (): void => {
   ipcMain.removeHandler(SLIDE_INVOKE_CHANNELS.SYNC_STATUS);
   ipcMain.removeHandler(SLIDE_INVOKE_CHANNELS.REVERSE_SYNC);
   ipcMain.removeHandler(SLIDE_INVOKE_CHANNELS.CANCEL);
+  ipcMain.removeHandler(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
 
   // Cleanup
   if (watcher) {

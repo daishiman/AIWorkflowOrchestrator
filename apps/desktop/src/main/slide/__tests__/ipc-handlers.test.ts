@@ -142,8 +142,8 @@ describe("IPC Handlers", () => {
   // SLIDE_INVOKE_CHANNELS
   // ==========================================================================
   describe("SLIDE_INVOKE_CHANNELS", () => {
-    it("should have 6 invoke channels", () => {
-      expect(Object.keys(SLIDE_INVOKE_CHANNELS)).toHaveLength(6);
+    it("should have 7 invoke channels", () => {
+      expect(Object.keys(SLIDE_INVOKE_CHANNELS)).toHaveLength(7);
     });
 
     it("should have correct channel values", () => {
@@ -204,9 +204,9 @@ describe("IPC Handlers", () => {
   // IPC handler registration
   // ==========================================================================
   describe("IPC handler registration", () => {
-    it("should register 6 handlers on registerSlideIpcHandlers", () => {
+    it("should register 7 handlers on registerSlideIpcHandlers", () => {
       registerSlideIpcHandlers(mockMainWindow);
-      expect(mockHandle).toHaveBeenCalledTimes(6);
+      expect(mockHandle).toHaveBeenCalledTimes(7);
     });
 
     it("should register handlers with correct channel names", () => {
@@ -219,12 +219,15 @@ describe("IPC Handlers", () => {
       expect(registeredChannels).toContain(SLIDE_INVOKE_CHANNELS.SYNC_STATUS);
       expect(registeredChannels).toContain(SLIDE_INVOKE_CHANNELS.REVERSE_SYNC);
       expect(registeredChannels).toContain(SLIDE_INVOKE_CHANNELS.CANCEL);
+      expect(registeredChannels).toContain(
+        SLIDE_INVOKE_CHANNELS.CAPABILITY_GET,
+      );
     });
 
-    it("should remove 6 handlers on unregisterSlideIpcHandlers", () => {
+    it("should remove 7 handlers on unregisterSlideIpcHandlers", () => {
       registerSlideIpcHandlers(mockMainWindow);
       unregisterSlideIpcHandlers();
-      expect(mockRemoveHandler).toHaveBeenCalledTimes(6);
+      expect(mockRemoveHandler).toHaveBeenCalledTimes(7);
     });
 
     it("should remove handlers with correct channel names", () => {
@@ -240,6 +243,159 @@ describe("IPC Handlers", () => {
       expect(removedChannels).toContain(SLIDE_INVOKE_CHANNELS.SYNC_STATUS);
       expect(removedChannels).toContain(SLIDE_INVOKE_CHANNELS.REVERSE_SYNC);
       expect(removedChannels).toContain(SLIDE_INVOKE_CHANNELS.CANCEL);
+      expect(removedChannels).toContain(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+    });
+  });
+
+  // ==========================================================================
+  // slide:capability:get handler (UT-SLIDE-IMPL-001 T2-1-1 ~ T2-2-2)
+  // ==========================================================================
+  describe("slide:capability:get", () => {
+    it("T2-1-1: should return VALIDATION_ERROR when sessionId is undefined", async () => {
+      registerSlideIpcHandlers(mockMainWindow);
+      const handlers = getRegisteredHandlers();
+      const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+      expect(handler).toBeDefined();
+
+      const event = createMockEvent();
+      const result = (await handler!(event, { sessionId: undefined })) as {
+        success: boolean;
+        error?: { code: string; message: string };
+      };
+
+      expect(result.success).toBe(false);
+      expect(result.error?.code).toBe("SLIDE_E011");
+    });
+
+    it("T2-1-2: should return VALIDATION_ERROR when sessionId is a number", async () => {
+      registerSlideIpcHandlers(mockMainWindow);
+      const handlers = getRegisteredHandlers();
+      const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+
+      const event = createMockEvent();
+      const result = (await handler!(event, { sessionId: 123 })) as {
+        success: boolean;
+        error?: { code: string; message: string };
+      };
+
+      expect(result.success).toBe(false);
+      expect(result.error?.code).toBe("SLIDE_E011");
+    });
+
+    it("T2-1-3: should return VALIDATION_ERROR when sessionId is empty string", async () => {
+      registerSlideIpcHandlers(mockMainWindow);
+      const handlers = getRegisteredHandlers();
+      const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+
+      const event = createMockEvent();
+      const result = (await handler!(event, { sessionId: "" })) as {
+        success: boolean;
+        error?: { code: string; message: string };
+      };
+
+      expect(result.success).toBe(false);
+      expect(result.error?.code).toBe("SLIDE_E011");
+    });
+
+    it("T2-1-4: should return VALIDATION_ERROR when sessionId is whitespace only", async () => {
+      registerSlideIpcHandlers(mockMainWindow);
+      const handlers = getRegisteredHandlers();
+      const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+
+      const event = createMockEvent();
+      const result = (await handler!(event, { sessionId: "   " })) as {
+        success: boolean;
+        error?: { code: string; message: string };
+      };
+
+      expect(result.success).toBe(false);
+      expect(result.error?.code).toBe("SLIDE_E011");
+    });
+
+    it("T2-1-5: should return capability DTO for valid sessionId", async () => {
+      registerSlideIpcHandlers(mockMainWindow);
+      const handlers = getRegisteredHandlers();
+      const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+
+      const event = createMockEvent();
+      const result = (await handler!(event, {
+        sessionId: "valid-session-123",
+      })) as {
+        success: boolean;
+        data?: { lane: string; apiKeySource: string; uiStatus: string };
+      };
+
+      expect(result.success).toBe(true);
+      expect(result.data).toBeDefined();
+      expect(result.data?.lane).toBe("integrated");
+      expect(result.data?.apiKeySource).toBe("env");
+      expect(result.data?.uiStatus).toBe("synced");
+    });
+
+    it("T2-1-6: should return VALIDATION_ERROR when args is null", async () => {
+      registerSlideIpcHandlers(mockMainWindow);
+      const handlers = getRegisteredHandlers();
+      const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+
+      const event = createMockEvent();
+      const result = (await handler!(event, null)) as {
+        success: boolean;
+        error?: { code: string; message: string };
+      };
+
+      expect(result.success).toBe(false);
+      expect(result.error?.code).toBe("SLIDE_E011");
+    });
+
+    it("T2-1-7: should return VALIDATION_ERROR when args is undefined", async () => {
+      registerSlideIpcHandlers(mockMainWindow);
+      const handlers = getRegisteredHandlers();
+      const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+
+      const event = createMockEvent();
+      const result = (await handler!(event, undefined)) as {
+        success: boolean;
+        error?: { code: string; message: string };
+      };
+
+      expect(result.success).toBe(false);
+      expect(result.error?.code).toBe("SLIDE_E011");
+    });
+
+    it("T2-2-1: should return success:true and data on valid request (P60)", async () => {
+      registerSlideIpcHandlers(mockMainWindow);
+      const handlers = getRegisteredHandlers();
+      const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+
+      const event = createMockEvent();
+      const result = (await handler!(event, {
+        sessionId: "test-session",
+      })) as Record<string, unknown>;
+
+      expect(result).toHaveProperty("success", true);
+      expect(result).toHaveProperty("data");
+      const data = result.data as Record<string, unknown>;
+      expect(data).toHaveProperty("lane");
+      expect(data).toHaveProperty("apiKeySource");
+      expect(data).toHaveProperty("uiStatus");
+    });
+
+    it("T2-2-2: should return success:false and error on validation failure (P60)", async () => {
+      registerSlideIpcHandlers(mockMainWindow);
+      const handlers = getRegisteredHandlers();
+      const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+
+      const event = createMockEvent();
+      const result = (await handler!(event, { sessionId: "" })) as Record<
+        string,
+        unknown
+      >;
+
+      expect(result).toHaveProperty("success", false);
+      expect(result).toHaveProperty("error");
+      const error = result.error as Record<string, unknown>;
+      expect(error).toHaveProperty("code");
+      expect(error).toHaveProperty("message");
     });
   });
 
@@ -388,6 +544,22 @@ describe("IPC Handlers", () => {
 
         expect(result.success).toBe(false);
         expect(result.error?.code).toBe("SLIDE_E011");
+      });
+
+      it("should reject invalid phase value", async () => {
+        const handler = handlers.get(SLIDE_INVOKE_CHANNELS.EXECUTE_PHASE);
+        const result = (await handler!(
+          event,
+          "invalid-phase",
+          "/valid/path",
+        )) as {
+          success: boolean;
+          error?: { code: string; message: string };
+        };
+
+        expect(result.success).toBe(false);
+        expect(result.error?.code).toBe("SLIDE_E011");
+        expect(result.error?.message).toBe("invalid phase value");
       });
     });
 
@@ -1036,6 +1208,131 @@ describe("IPC Handlers", () => {
 
       // At minimum, "syncing" and "synced" (since reverse-sync uses its own sync logic)
       expect(statusChangedCalls.length).toBeGreaterThanOrEqual(1);
+    });
+  });
+
+  // ==========================================================================
+  // slide:capability:get handler (UT-SLIDE-IMPL-001)
+  // テストID: T2-1-1 ~ T2-1-7, T2-2-1 ~ T2-2-2
+  // ==========================================================================
+  describe("slide:capability:get", () => {
+    let handlers: Map<
+      string,
+      (event: IpcMainInvokeEvent, ...args: unknown[]) => Promise<unknown>
+    >;
+    let event: IpcMainInvokeEvent;
+
+    beforeEach(() => {
+      registerSlideIpcHandlers(mockMainWindow);
+      handlers = getRegisteredHandlers();
+      event = createMockEvent();
+    });
+
+    describe("P42 3-stage validation", () => {
+      it("T2-1-1: should reject undefined sessionId", async () => {
+        const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+        expect(handler).toBeDefined();
+        const result = (await handler!(event, { sessionId: undefined })) as {
+          success: boolean;
+          error?: { code: string; message: string };
+        };
+        expect(result.success).toBe(false);
+        expect(result.error?.code).toBe("SLIDE_E011");
+      });
+
+      it("T2-1-2: should reject number sessionId", async () => {
+        const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+        const result = (await handler!(event, { sessionId: 123 })) as {
+          success: boolean;
+          error?: { code: string; message: string };
+        };
+        expect(result.success).toBe(false);
+        expect(result.error?.code).toBe("SLIDE_E011");
+      });
+
+      it("T2-1-3: should reject empty string sessionId", async () => {
+        const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+        const result = (await handler!(event, { sessionId: "" })) as {
+          success: boolean;
+          error?: { code: string; message: string };
+        };
+        expect(result.success).toBe(false);
+        expect(result.error?.code).toBe("SLIDE_E011");
+        expect(result.error?.message).toContain("empty");
+      });
+
+      it("T2-1-4: should reject whitespace-only sessionId", async () => {
+        const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+        const result = (await handler!(event, { sessionId: "   " })) as {
+          success: boolean;
+          error?: { code: string; message: string };
+        };
+        expect(result.success).toBe(false);
+        expect(result.error?.code).toBe("SLIDE_E011");
+        expect(result.error?.message).toContain("whitespace");
+      });
+
+      it("T2-1-5: should return capability for valid sessionId", async () => {
+        const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+        const result = (await handler!(event, {
+          sessionId: "test-session-123",
+        })) as {
+          success: boolean;
+          data?: { lane: string; apiKeySource: string; uiStatus: string };
+        };
+        expect(result.success).toBe(true);
+        expect(result.data).toBeDefined();
+        expect(result.data?.lane).toBeDefined();
+        expect(result.data?.apiKeySource).toBeDefined();
+        expect(result.data?.uiStatus).toBeDefined();
+      });
+
+      it("T2-1-6: should reject null args", async () => {
+        const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+        const result = (await handler!(event, null)) as {
+          success: boolean;
+          error?: { code: string; message: string };
+        };
+        expect(result.success).toBe(false);
+        expect(result.error?.code).toBe("SLIDE_E011");
+      });
+
+      it("T2-1-7: should reject undefined args", async () => {
+        const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+        const result = (await handler!(event, undefined)) as {
+          success: boolean;
+          error?: { code: string; message: string };
+        };
+        expect(result.success).toBe(false);
+        expect(result.error?.code).toBe("SLIDE_E011");
+      });
+    });
+
+    describe("P60 response format", () => {
+      it("T2-2-1: should return { success: true, data } on valid request", async () => {
+        const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+        const result = (await handler!(event, {
+          sessionId: "valid-session",
+        })) as {
+          success: boolean;
+          data?: unknown;
+          error?: unknown;
+        };
+        expect(result).toHaveProperty("success", true);
+        expect(result).toHaveProperty("data");
+        expect(result).not.toHaveProperty("error");
+      });
+
+      it("T2-2-2: should return { success: false, error: { code, message } } on invalid request", async () => {
+        const handler = handlers.get(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET);
+        const result = (await handler!(event, { sessionId: "" })) as {
+          success: boolean;
+          error?: { code: string; message: string };
+        };
+        expect(result.success).toBe(false);
+        expect(result.error).toHaveProperty("code");
+        expect(result.error).toHaveProperty("message");
+      });
     });
   });
 });

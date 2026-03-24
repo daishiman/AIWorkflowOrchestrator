@@ -10,6 +10,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 2026-03-24 - TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 完了（ViewType executionConsole 追加 / openExecutionConsole() shared action / CTA 7箇所統一 / agent 代替除去 / 既存未タスク2件解決 / 新規未タスク2件検出） |
 | 2026-03-24 - TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト追補（Vitest 70テスト / 7カテゴリ / 親パック4文書コンプライアンス検証 / 教訓2件 L-CBLG-003/004） |
 | 2026-03-24 - TASK-LLM-MOD-03 完了（GoogleAdapter system_instruction 対応 / baseUrl v1→v1beta / buildRequestBody DRY統合 / formatContents systemPrompt分離 / 19テスト全PASS / streaming.test.ts v1beta URL修正 / 未タスク2件: UT-LLM-MOD-03-TYPE-01〜02） |
+| 2026-03-24 - UT-SLIDE-IMPL-001 完了（Slide Modifier / agent-client 実装 / ModifierResponse型拡張 fallback_reason+suggested_action / agent-client.ts DI版 createModifierAgentAPI / SlideCapabilityDTO + slide:capability:get IPC / P42 3段バリデーション / channel-sync テスト / 未タスク0件） |
 | 2026-03-24 - UT-SC-03-003 完了（RuntimeSkillCreatorFacade DI配線 / setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter / 11テスト全PASS / 未タスク2件: M01 subscriptionAuthProvider, M02 undefined キャスト除去） |
 | 2026-03-24 - UT-SC-03-004 完了（SkillBlueprint 型移行 / RuntimeSkillCreatorPlanResult 互換化 / packages/shared skillCreator.ts 型定義更新 / RuntimeSkillCreatorFacade.plan() 戻り値型統一 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | 2026-03-23 - TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 設計フェーズ完了同期（Canonical Source Table 5カテゴリ / Bridge Rule / State Machine / Same-Wave Sync Protocol Step A-E / Follow-up Formalization 3ステップ / 未タスク1件 UT-WORKTREE-RSYNC-CAUTION-001） |

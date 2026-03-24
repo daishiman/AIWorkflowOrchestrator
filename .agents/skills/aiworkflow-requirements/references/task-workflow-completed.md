@@ -424,7 +424,7 @@
 
 | 種別 | ID | 概要 | タスク仕様書 |
 | --- | --- | --- | --- |
-| pending | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
+| **completed** | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束（ModifierResponse 型拡張 / agent-client DI 化 / SlideCapabilityDTO + `slide:capability:get` IPC / P42 3段バリデーション / channel-sync テスト）（2026-03-24） | `docs/30-workflows/completed-tasks/slide-impl-001/` |
 | pending | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
 | completed | `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | `docs/30-workflows/completed-tasks/task-ut-slide-ui-001.md` |
 | resolved | `UT-SLIDE-P31-001` | `useSlideProject()` selector migration を current branch で吸収 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |

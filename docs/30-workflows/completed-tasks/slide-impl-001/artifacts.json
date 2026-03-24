@@ -1,0 +1,114 @@
+{
+  "taskId": "UT-SLIDE-IMPL-001",
+  "featureName": "slide-impl-001",
+  "createdAt": "2026-03-24",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/slide-impl-001/phase-1-requirements.md",
+        "docs/30-workflows/slide-impl-001/outputs/phase-1/requirements.md"
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/slide-impl-001/phase-2-design.md",
+        "docs/30-workflows/slide-impl-001/outputs/phase-2/design.md"
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/slide-impl-001/phase-3-design-review.md",
+        "docs/30-workflows/slide-impl-001/outputs/phase-3/design-review.md"
+      ]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/slide-impl-001/phase-4-test-creation.md",
+        "apps/desktop/src/main/slide/__tests__/modifier-skill.test.ts",
+        "apps/desktop/src/main/slide/__tests__/ipc-handlers.test.ts",
+        "apps/desktop/src/main/slide/__tests__/agent-client.test.ts",
+        "apps/desktop/src/main/slide/__tests__/channel-sync.test.ts"
+      ]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/slide-impl-001/phase-5-implementation.md",
+        "packages/shared/src/slide/types.ts",
+        "packages/shared/src/slide/index.ts",
+        "apps/desktop/src/main/slide/agent-client.ts",
+        "apps/desktop/src/main/slide/modifier-skill.ts",
+        "apps/desktop/src/main/slide/ipc-handlers.ts",
+        "apps/desktop/src/preload/channels.ts",
+        "apps/desktop/src/preload/index.ts",
+        "apps/desktop/src/preload/types.ts"
+      ]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/slide-impl-001/phase-6-test-expansion.md"
+      ]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": ["docs/30-workflows/slide-impl-001/phase-7-coverage.md"]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": ["docs/30-workflows/slide-impl-001/phase-8-refactoring.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": ["docs/30-workflows/slide-impl-001/phase-9-quality.md"]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": ["docs/30-workflows/slide-impl-001/phase-10-final-review.md"]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": ["docs/30-workflows/slide-impl-001/phase-11-manual-test.md"]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/slide-impl-001/phase-12-documentation.md",
+        "docs/30-workflows/slide-impl-001/outputs/phase-12/implementation-guide.md",
+        "docs/30-workflows/slide-impl-001/outputs/phase-12/ipc-documentation.md",
+        "docs/30-workflows/slide-impl-001/outputs/phase-12/documentation-changelog.md",
+        "docs/30-workflows/slide-impl-001/outputs/phase-12/system-spec-update-summary.md",
+        "docs/30-workflows/slide-impl-001/outputs/phase-12/unassigned-task-detection.md",
+        "docs/30-workflows/slide-impl-001/outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "status": "in_progress",
+      "artifacts": ["docs/30-workflows/slide-impl-001/phase-13-completion.md"]
+    }
+  },
+  "codeChanges": {
+    "packages/shared/src/slide/types.ts": "ModifierResponse 型拡張 + SlideCapabilityDTO + SlideLane + ApiKeySource + SlideUIStatus 新規定義",
+    "packages/shared/src/slide/index.ts": "新規型の re-export 追加",
+    "apps/desktop/src/main/slide/agent-client.ts": "DI パターン createModifierAgentAPI ファクトリ + AgentClientDependencies インターフェース",
+    "apps/desktop/src/main/slide/modifier-skill.ts": "parseModifierResponse に fallback_reason / suggested_action パース追加",
+    "apps/desktop/src/main/slide/ipc-handlers.ts": "slide:capability:get handler + P42 3段バリデーション + isValidPhase phase値バリデーション + resolveSlideCapability",
+    "apps/desktop/src/preload/channels.ts": "SLIDE_CAPABILITY_GET 定数 + ALLOWED_INVOKE_CHANNELS 登録",
+    "apps/desktop/src/preload/index.ts": "slideApi.getCapability() 追加",
+    "apps/desktop/src/preload/types.ts": "SlideCapabilityDTO 型追加"
+  },
+  "testFiles": [
+    "apps/desktop/src/main/slide/__tests__/modifier-skill.test.ts",
+    "apps/desktop/src/main/slide/__tests__/ipc-handlers.test.ts",
+    "apps/desktop/src/main/slide/__tests__/agent-client.test.ts",
+    "apps/desktop/src/main/slide/__tests__/channel-sync.test.ts"
+  ],
+  "unassignedTasks": 1,
+  "securityFixes": [
+    "phase値バリデーション追加（isValidPhase type guard - 任意文字列が SkillPhase にキャストされるセキュリティホール修正）"
+  ]
+}

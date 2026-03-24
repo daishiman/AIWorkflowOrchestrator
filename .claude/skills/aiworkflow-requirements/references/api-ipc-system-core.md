@@ -102,6 +102,7 @@ slide surface の runtime/auth-mode alignment では、Reveal.js HTML と `struc
 | `slide:sync-status` | status 取得 | `{ projectPath }` | `SlideResponse<{ status: SyncStatus, direction?: SyncDirection, watching?: boolean }>` |
 | `slide:reverse-sync` | manual reverse-sync | `{ projectPath }` | `SlideResponse<SkillExecutionResult>` |
 | `slide:cancel` | 実行キャンセル | none | `SlideResponse<void>` |
+| `slide:capability:get` | Slide 能力情報取得 | `{ sessionId: string }` | `SlideResponse<SlideCapabilityDTO>` |
 
 ### push チャネル（Main → Renderer）
 
@@ -121,6 +122,10 @@ slide surface の runtime/auth-mode alignment では、Reveal.js HTML と `struc
 | `SyncStatus` | type | `synced` / `out-of-sync` / `syncing` / `error` |
 | `SyncDirection` | type | `forward` / `reverse` |
 | `SlideUIStatus` | derived type | `synced` / `running` / `degraded` / `guidance` |
+| `SlideLane` | type | `integrated` / `manual` |
+| `ApiKeySource` | type | `safeStorage` / `env` / `none` |
+| `SlideCapabilityDTO` | interface | `{ lane: SlideLane, apiKeySource: ApiKeySource, uiStatus: SlideUIStatus, blockedReason?: string }` |
+| `ModifierResponse` | interface | 拡張: `fallback_reason?: string`, `suggested_action?: string` optional フィールド追加（UT-SLIDE-IMPL-001） |
 
 ### drift 解消記録（2026-03-22, TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001, #1363）
 
