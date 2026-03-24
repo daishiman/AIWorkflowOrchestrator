@@ -23,8 +23,7 @@ describe("buildMainlineExecutionAccessState", () => {
     });
 
     expect(result.capability).toBe("terminalSurface");
-    expect(result.uiState).toBe("terminal-only");
-    expect(result.ctaContract.primary?.action).toBe("openTerminal");
+    expect(result.ctaContract.primary?.action).toBe("executeTerminalHandoff");
     expect(result.launcherDisabled).toBe(false);
     expect(result.launcherDisabledReason).toBeUndefined();
   });
@@ -67,8 +66,7 @@ describe("buildMainlineExecutionAccessState", () => {
     });
 
     expect(result.capability).toBe("terminalSurface");
-    expect(result.uiState).toBe("terminal-only");
-    expect(result.ctaContract.primary?.action).toBe("openTerminal");
+    expect(result.ctaContract.primary?.action).toBe("executeTerminalHandoff");
     expect(result.launcherDisabled).toBe(false);
   });
 

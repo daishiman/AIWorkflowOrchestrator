@@ -481,7 +481,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L6 |
 | ExecutionCapability 型定義（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001） | L274 |
-| ワークスペース型定義 | L368 |
+| ワークスペース型定義 | L360 |
 
 ### references/interfaces-auth-history.md
 
@@ -901,8 +901,8 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L200 |
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L580 |
-| AIプロバイダーAPI連携 | L611 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L562 |
+| AIプロバイダーAPI連携 | L593 |
 
 ### references/api-ipc-system-details.md
 
@@ -1021,7 +1021,8 @@ node scripts/list-specs.js --topics
 | インタラクション設計 | L324 |
 | 視覚デザイン | L353 |
 | 改善 CTA バナー（TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 / 2026-03-20） | L378 |
-| アクセシビリティ（WCAG 2.1 AA） | L400 |
+| Session Dock 設計仕様（TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001, 2026-03-24 設計確定） | L400 |
+| アクセシビリティ（WCAG 2.1 AA） | L472 |
 
 ### references/ui-ux-agent-execution-details.md
 
@@ -2607,21 +2608,20 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-24 UT-SC-03-004（SkillBlueprint 型移行） | L36 |
-| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L62 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L82 |
-| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L88 |
-| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L108 |
-| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L136 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L172 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L200 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L237 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L303 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L324 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L354 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L396 |
-| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L443 |
-| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L462 |
+| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L35 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L55 |
+| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L61 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L81 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L109 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L145 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L173 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L210 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L276 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L297 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L327 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L369 |
+| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L416 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L435 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -3766,7 +3766,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L8 |
 | TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L75 |
-| UT-SC-03-004: SkillBlueprint 型追加・plan() 出力互換移行（2026-03-24） | L241 |
 
 ### references/task-workflow-completed-skill-import-skill-center-nav.md
 

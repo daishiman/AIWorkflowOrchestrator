@@ -47,7 +47,6 @@ const cta = resolveCtaContract(capability, ctaInput);
 
 | タスクID | 内容 | ステータス | 備考 |
 | --- | --- | --- | --- |
-| TASK-IMP-UISTATE-CONTRACT-EXTENSION-001 | UiState 8値拡張（3値→8値）/ resolveUiState P1-P8 / resolveCtaContract 新5状態CTA / Guard関数2個 | **完了**（2026-03-24） | Phase 6 エッジケース13テスト追加。全144テストPASS。未タスク0件 |
 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | ExecutionResponsibility 契約基盤 | **完了**（2026-03-20） | |
 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | RuntimePolicyResolver capability bridge | **完了**（2026-03-21） | direct caller lane で resolveCapability() を authority として使用。assertNoSilentFallback enforcement 組み込み。execute() で terminalSurface handoff 分岐追加。internal `creatorHandlers.ts` adapter test 追加 |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | Skill Creator public IPC wiring 統合 | 残課題 | internal `creator:*` と public `skill-creator:*` の境界整理 |
@@ -59,7 +58,7 @@ const cta = resolveCtaContract(capability, ctaInput);
 | UT-SC-03-001 | IResourceLoader インターフェース抽出 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-001.md` |
 | UT-SC-03-002 | 動的 apiKey 注入 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-002.md` |
 | UT-SC-03-003 | DI 配線の実装 | **完了**（2026-03-24） | TASK-SC-03 派生。setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。`docs/30-workflows/completed-tasks/ut-sc-03-003-di-wiring/`。MINOR 2件: [UT-SC-03-003-M01](../../../docs/30-workflows/unassigned-task/UT-SC-03-003-M01-subscription-auth-provider-injection.md), [UT-SC-03-003-M02](../../../docs/30-workflows/unassigned-task/UT-SC-03-003-M02-test-type-cast-cleanup.md) |
-| UT-SC-03-004 | SkillBlueprint 互換移行 | **完了**（2026-03-24） | TASK-SC-03 派生。`docs/30-workflows/completed-tasks/ut-sc-03-004-skill-blueprint-migration/` |
+| UT-SC-03-004 | SkillBlueprint 互換移行 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-004.md` |
 | UT-SC-03-005 | plan() エラーハンドリングの Result<T,E> パターン移行 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-005.md` |
 | UT-SC-03-006 | buildPlanSystemPrompt / parsePlanResponse 単体テスト追加 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-006.md` |
 | UT-SC-03-007 | improve() P42 準拠バリデーション追加 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-007.md` |

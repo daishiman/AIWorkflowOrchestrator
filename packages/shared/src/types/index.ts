@@ -95,15 +95,6 @@ export type {
   IPermissionStore,
 } from "./permission-store";
 
-// SkillBlueprint 型定義 (UT-SC-03-004)
-export type {
-  SkillTemplateCategory,
-  CategoryTemplate,
-  PlannedFile,
-  SkillBlueprint,
-} from "./skillCreator";
-export { CATEGORY_TEMPLATES } from "./skillCreator";
-
 // SkillCreator型定義 (TASK-9B-G)
 export type {
   SkillCreatorMode,

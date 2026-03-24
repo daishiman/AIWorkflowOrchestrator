@@ -19,7 +19,6 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-24 | 1.10.0 | UT-SC-03-004 教訓3件を追加（esbuild worktree arch mismatch、2層バリデーション境界、BGエージェント doc 精度乖離） |
 | 2026-03-23 | 1.9.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（LLM統合パターン再利用、空文字列beforeバグ、P4/P51早期完了記載の再発） |
 | 2026-03-23 | 1.8.0 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 苦戦箇所2件を追加（エスケープテスト lookbehind regex パターン、adapter サニタイズ対象の統一漏れ） |
 | 2026-03-22 | 1.7.0 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加（structured error primary / legacy fallback 分離、Task 03 root 移管の同波反映） |
@@ -30,32 +29,6 @@
 | 2026-03-19 | 1.2.0 | UT-TASK06-007 再監査教訓を追加（generic/multiline preload 抽出、spec drift 同期、P45 の書き分け） |
 | 2026-03-18 | 1.1.0 | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 教訓3件を追加（esbuild worktree不一致 P53派生、テスト数伝播 P37派生、P62 DEFAULT_CONFIG三層防御） |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
-
----
-
-## 2026-03-24 UT-SC-03-004（SkillBlueprint 型移行）
-
-### 苦戦箇所1: esbuild worktree アーキテクチャ不一致（P66 派生）
-
-- **症状**: worktree 環境で `vitest run` が `ERR_DLOPEN_FAILED` で全テスト失敗
-- **原因**: pnpm store の arm64 esbuild バイナリが x64 Node.js と不一致
-- **解決策**: `ESBUILD_BINARY_PATH` 環境変数で x64 バイナリを明示指定して回避
-- **恒久対策**: worktree 作成後に `pnpm rebuild esbuild` を実行するセットアップスクリプトに含める
-- **5分解決カード**: worktree でテスト全滅 → `file node_modules/.../esbuild` でアーキテクチャ確認 → `pnpm rebuild esbuild` または `ESBUILD_BINARY_PATH` 設定
-
-### 苦戦箇所2: isValidPlanResponse / parsePlanResponse 2層バリデーション境界
-
-- **症状**: Phase 4 テストで「不正 category → Graceful degradation でデフォルト適用」を期待したが、実際は `isValidPlanResponse()` がリジェクト
-- **原因**: 2つの関数の責務分担が Phase 2 設計書で明示されていなかった。「存在するが不正 → リジェクト」と「不在 → デフォルト適用」の境界が曖昧
-- **解決策**: テスト 3 件のアサーションを `toThrow("LLM response does not match expected plan schema")` に修正
-- **5分解決カード**: LLM レスポンス処理で「構造検証層」と「デフォルト適用層」を分ける場合、Phase 2 設計書に入出力契約を明示する
-
-### 苦戦箇所3: バックグラウンドエージェントのドキュメント精度乖離
-
-- **症状**: Phase 12 BGエージェントが生成した implementation-guide.md / api-documentation.md の型定義（カテゴリ値、フィールド名、インターフェース構造）が実装と大幅に異なる
-- **原因**: エージェント指示に「実際のソースコードから型定義を引用」が含まれていなかった
-- **解決策**: 手動で正確な型定義に修正。今後のエージェント指示テンプレートに「Phase 5 で変更したファイルを Read して引用」を必須ステップとして追加
-- **5分解決カード**: ドキュメント生成エージェントには必ず「対象ソースファイルの Read」を指示に含める
 
 ---
 

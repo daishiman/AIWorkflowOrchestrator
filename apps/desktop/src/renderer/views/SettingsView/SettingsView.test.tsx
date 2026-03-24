@@ -1,36 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import {
-  render,
-  screen,
-  fireEvent,
-  within,
-  waitFor,
-} from "@testing-library/react";
+import { render, screen, fireEvent, within } from "@testing-library/react";
 import { SettingsView } from "./index";
 import { buildMainlineExecutionAccessState } from "../../features/mainline-access/mainlineAccess";
-
-const {
-  mockCopyTextToClipboard,
-  mockLaunchMainlineTerminal,
-  mockOpenRuntimeAccessUrl,
-} = vi.hoisted(() => ({
-  mockCopyTextToClipboard: vi.fn(async () => true),
-  mockLaunchMainlineTerminal: vi.fn(async () => true),
-  mockOpenRuntimeAccessUrl: vi.fn(),
-}));
-
-vi.mock("../../utils/runtimeAccess", async (importOriginal) => {
-  const actual =
-    await importOriginal<typeof import("../../utils/runtimeAccess")>();
-  return {
-    ...actual,
-    MAINLINE_HELP_URL: "https://example.com/help",
-    MAINLINE_SETUP_GUIDE_URL: "https://example.com/setup",
-    copyTextToClipboard: mockCopyTextToClipboard,
-    launchMainlineTerminal: mockLaunchMainlineTerminal,
-    openRuntimeAccessUrl: mockOpenRuntimeAccessUrl,
-  };
-});
 
 // Mock AccountSection to avoid complex auth state dependencies
 vi.mock("../../components/organisms/AccountSection", () => ({
@@ -143,8 +114,6 @@ describe("SettingsView", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
     Element.prototype.scrollIntoView = vi.fn();
-    mockCopyTextToClipboard.mockResolvedValue(true);
-    mockLaunchMainlineTerminal.mockResolvedValue(true);
     mockAuthModeValues.mode = "subscription";
     mockAuthModeValues.status = null;
     mockAuthModeValues.isLoading = false;
@@ -342,27 +311,6 @@ describe("SettingsView", () => {
       fireEvent.click(screen.getByRole("button", { name: "AI で実行" }));
 
       expect(handleNavigate).toHaveBeenCalledTimes(1);
-    });
-
-    it("terminal-only 状態の primary CTA で terminal launch を呼び出す", async () => {
-      const access = buildMainlineExecutionAccessState({
-        apiKeyValid: false,
-        subscriptionValid: true,
-        isAuthenticated: true,
-      });
-
-      render(<SettingsView mainlineAccess={access} />);
-
-      fireEvent.click(screen.getByRole("button", { name: "terminal を開く" }));
-
-      await waitFor(() => {
-        expect(mockLaunchMainlineTerminal).toHaveBeenCalledWith(
-          access.suggestedTerminalCommand,
-        );
-      });
-      expect(screen.getByTestId("mainline-access-feedback")).toHaveTextContent(
-        "terminal を起動し、コマンドをコピーしました",
-      );
     });
 
     it("未認証時は guidance-only を表示し CTA を隠す", () => {

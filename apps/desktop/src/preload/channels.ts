@@ -134,8 +134,6 @@ export const IPC_CHANNELS = {
   SLIDE_SYNC_STATUS: "slide:sync-status",
   SLIDE_REVERSE_SYNC: "slide:reverse-sync",
   SLIDE_CANCEL: "slide:cancel",
-  // Slide capability
-  SLIDE_CAPABILITY_GET: "slide:capability:get",
   // Slide operations (push)
   SLIDE_SYNC_STATUS_CHANGED: "slide:sync-status-changed",
   SLIDE_SYNC_PROGRESS: "slide:sync-progress",
@@ -472,7 +470,6 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SLIDE_SYNC_STATUS,
   IPC_CHANNELS.SLIDE_REVERSE_SYNC,
   IPC_CHANNELS.SLIDE_CANCEL,
-  IPC_CHANNELS.SLIDE_CAPABILITY_GET,
   // Agent channels
   IPC_CHANNELS.AGENT_GET_SKILLS,
   IPC_CHANNELS.AGENT_GET_SKILL_DETAIL,
