@@ -1,17 +1,30 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import type { SkillExecutionStatus } from "@repo/shared";
+import type { PlanResult } from "../../store/slices/agentSlice";
 import {
   useBeginSkillReview,
+  useClearGenerationState,
   useClearSkillError,
   useClearStreamingMessages,
   useCompleteSkillReview,
   useCreateSkill,
+  useCurrentPlanId,
+  useCurrentPlanResult,
   useExecuteSkill,
+  useFetchSkills,
+  useGenerationError,
+  useGenerationProgress,
   useIsSkillExecuting,
+  useIsSkillGenerating,
   useReExecuteAfterImprovement,
   useResetSkillExecutionCycle,
   useSelectedSkillName,
   useSelectSkillByName,
+  useSetCurrentPlanId,
+  useSetCurrentPlanResult,
+  useSetGenerationError,
+  useSetGenerationProgress,
+  useSetIsSkillGenerating,
   useSkillError,
   useSkillExecutionStatus,
   useStreamingMessages,
@@ -24,7 +37,8 @@ type SkillCreatorMode =
   | "orchestrate"
   | "create"
   | "update"
-  | "improve-prompt";
+  | "improve-prompt"
+  | "plan";
 
 type SkillExecutionStatusValue = SkillExecutionStatus | null;
 
@@ -50,6 +64,17 @@ type IpcResult<T> = {
 
 type SkillCreatorRuntimeApi = {
   detectMode?: (request: string) => Promise<IpcResult<SkillCreatorMode>>;
+  planSkill?: (
+    prompt: string,
+    authMode?: string,
+    apiKey?: string,
+  ) => Promise<IpcResult<PlanResult>>;
+  executePlan?: (
+    planId: string,
+    skillSpec?: unknown,
+    authMode?: string,
+    apiKey?: string,
+  ) => Promise<IpcResult<{ skillName: string; skillPath: string }>>;
   improveSkill?: (
     skillName: string,
     options?: { autoApply?: boolean },
@@ -94,6 +119,7 @@ const modeLabels: Record<SkillCreatorMode, string> = {
   create: "直作成",
   update: "更新",
   "improve-prompt": "プロンプト改善",
+  plan: "計画生成",
 };
 
 const severityStyles: Record<ImproveSuggestion["severity"], string> = {
@@ -138,27 +164,50 @@ function appendSessionEntry(
 
 export interface SkillLifecyclePanelProps {
   onClose: () => void;
-  onOpenWizard: () => void;
+  onOpenWizard?: () => void;
+  skillName?: string;
 }
 
 export function SkillLifecyclePanel({
   onClose,
   onOpenWizard,
+  skillName: _skillName,
 }: SkillLifecyclePanelProps) {
   const beginSkillReview = useBeginSkillReview();
   const completeSkillReview = useCompleteSkillReview();
   const createSkill = useCreateSkill();
   const executeSkill = useExecuteSkill();
+  const fetchSkills = useFetchSkills();
   const reExecuteAfterImprovement = useReExecuteAfterImprovement();
   const resetSkillExecutionCycle = useResetSkillExecutionCycle();
   const selectSkillByName = useSelectSkillByName();
   const clearSkillError = useClearSkillError();
   const clearStreamingMessages = useClearStreamingMessages();
+  const clearGenerationState = useClearGenerationState();
   const selectedSkillName = useSelectedSkillName();
   const isExecuting = useIsSkillExecuting();
   const streamingMessages = useStreamingMessages();
   const skillExecutionStatus = useSkillExecutionStatus();
   const skillError = useSkillError();
+
+  // LLM Generation state (TASK-SC-06-UI-RUNTIME-CONNECTION)
+  const isGenerating = useIsSkillGenerating();
+  const generationProgress = useGenerationProgress();
+  const generationError = useGenerationError();
+  const storePlanResult = useCurrentPlanResult();
+  const storePlanId = useCurrentPlanId();
+  const setIsGenerating = useSetIsSkillGenerating();
+  const setGenerationProgress = useSetGenerationProgress();
+  const setGenerationError = useSetGenerationError();
+  const setCurrentPlanId = useSetCurrentPlanId();
+  const setCurrentPlanResult = useSetCurrentPlanResult();
+
+  // Local plan result state for immediate UI feedback (hybrid with store)
+  const [localPlanResult, setLocalPlanResult] = useState<PlanResult | null>(
+    null,
+  );
+  const activePlanResult = localPlanResult ?? storePlanResult;
+  const activeGenerationError = generationError;
 
   const [request, setRequest] = useState("");
   const [detectedMode, setDetectedMode] = useState<SkillCreatorMode | null>(
@@ -259,7 +308,7 @@ export function SkillLifecyclePanel({
       ? "改善後に再実行"
       : isExecuting
         ? "実行中..."
-        : "実行する";
+        : "スキルを実行する";
 
   const handlePanelClose = () => {
     resetSkillExecutionCycle();
@@ -272,6 +321,9 @@ export function SkillLifecyclePanel({
       setLocalError("まず作りたいスキルの依頼文を入力してください。");
       return;
     }
+
+    // R-1: isGenerating ガード（二重呼出防止）
+    if (isGenerating) return;
 
     clearSkillError();
     setLocalError(null);
@@ -301,6 +353,44 @@ export function SkillLifecyclePanel({
         throw new Error(result.error ?? "mode 判定に失敗しました。");
       }
 
+      // detectMode が "plan" を返した場合、planSkill を自動呼出し
+      if (result.data === "plan") {
+        if (!skillCreatorApi.planSkill) {
+          setGenerationError("planSkill API が利用できません");
+          return;
+        }
+
+        try {
+          setIsGenerating(true);
+          setGenerationProgress("計画を生成中...");
+
+          const planResult = await skillCreatorApi.planSkill(
+            trimmedRequest,
+            "",
+            "",
+          );
+
+          if (!planResult.success || !planResult.data) {
+            setGenerationError(planResult.error ?? "計画生成に失敗しました");
+            return;
+          }
+
+          setLocalPlanResult(planResult.data);
+          setCurrentPlanResult(planResult.data);
+          if (planResult.data.planId) {
+            setCurrentPlanId(planResult.data.planId);
+          }
+        } catch (err) {
+          setGenerationError(
+            err instanceof Error ? err.message : "計画生成に失敗しました",
+          );
+        } finally {
+          setIsGenerating(false);
+          setGenerationProgress(null);
+        }
+        return;
+      }
+
       setDetectedMode(result.data);
       appendSessionEntry(setSessionEntries, {
         role: "assistant",
@@ -315,6 +405,40 @@ export function SkillLifecyclePanel({
     } finally {
       setIsPreparing(false);
     }
+  };
+
+  const handleExecutePlan = async () => {
+    const planId = storePlanId ?? activePlanResult?.planId;
+    if (!planId) return;
+
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.executePlan) return;
+
+    try {
+      setIsGenerating(true);
+      const result = await skillCreatorApi.executePlan(planId, request.trim());
+      if (!result.success || !result.data) {
+        setGenerationError(result.error ?? "計画実行に失敗しました");
+        return;
+      }
+      await fetchSkills();
+      if (result.data.skillName) {
+        selectSkillByName(result.data.skillName);
+      }
+      setLocalPlanResult(null);
+      clearGenerationState();
+    } catch (err) {
+      setGenerationError(
+        err instanceof Error ? err.message : "計画実行に失敗しました",
+      );
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleCancelPlan = () => {
+    setLocalPlanResult(null);
+    clearGenerationState();
   };
 
   const handleCreate = async () => {
@@ -587,6 +711,70 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
+      {generationProgress ? (
+        <div
+          aria-live="polite"
+          className="rounded-xl border border-[var(--accent-primary)] bg-[var(--accent-primary)]/5 px-4 py-3 text-sm text-[var(--accent-primary)]"
+          data-testid="skill-lifecycle-generation-progress"
+        >
+          {generationProgress}
+        </div>
+      ) : null}
+
+      {activeGenerationError ? (
+        <div
+          role="alert"
+          className="rounded-xl border border-[var(--status-error)] bg-[var(--status-error)]/5 px-4 py-3 text-sm text-[var(--status-error)]"
+        >
+          {activeGenerationError}
+        </div>
+      ) : null}
+
+      {activePlanResult?.type === "integrated_api" ? (
+        <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
+          <h3 className="text-base font-semibold text-[var(--text-primary)]">
+            生成計画
+          </h3>
+          <p className="mt-2 text-sm text-[var(--text-secondary)]">
+            推定ステップ数: {activePlanResult.estimatedSteps}
+          </p>
+          <div className="mt-4 flex gap-2">
+            <button
+              type="button"
+              className={lifecycleButtonStyles.primary}
+              onClick={handleExecutePlan}
+              disabled={isGenerating}
+            >
+              実行する
+            </button>
+            <button
+              type="button"
+              className={lifecycleButtonStyles.secondary}
+              onClick={handleCancelPlan}
+            >
+              キャンセル
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {activePlanResult?.type === "terminal_handoff" &&
+      activePlanResult.guidance ? (
+        <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
+          <h3 className="text-base font-semibold text-[var(--text-primary)]">
+            ターミナルハンドオフ
+          </h3>
+          <p className="mt-2 text-sm text-[var(--text-secondary)]">
+            {activePlanResult.guidance.reason}
+          </p>
+          {activePlanResult.guidance.command ? (
+            <code className="mt-2 block rounded-lg bg-[var(--bg-primary)] px-3 py-2 text-xs text-[var(--text-primary)]">
+              {activePlanResult.guidance.command}
+            </code>
+          ) : null}
+        </div>
+      ) : null}
+
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.9fr)]">
         <section className="space-y-4">
           <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
@@ -604,10 +792,14 @@ export function SkillLifecyclePanel({
                 type="button"
                 className={lifecycleButtonStyles.secondary}
                 onClick={handlePrepare}
-                disabled={isPreparing || isCreating}
+                disabled={isPreparing || isCreating || isGenerating}
                 data-testid="skill-lifecycle-prepare-button"
               >
-                {isPreparing ? "判定中..." : "方針を決める"}
+                {isPreparing
+                  ? "判定中..."
+                  : isGenerating
+                    ? "計画生成中..."
+                    : "方針を決める"}
               </button>
             </div>
             <textarea

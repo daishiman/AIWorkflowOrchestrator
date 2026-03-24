@@ -4,6 +4,30 @@
 
 ---
 
+## TASK-SC-06-UI-RUNTIME-CONNECTION 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 完了記録追加
+- **Result**: success
+- **Notes**:
+  - SkillLifecyclePanel → RuntimeSkillCreatorFacade の plan→execute フロー接続
+  - agentSlice.ts に PlanResult 型 + 5 state fields + 6 actions 追加
+  - store/index.ts に 11 個別セレクタ追加（P31 対策）
+  - handlePrepare: detectMode → planSkill 自動呼出し
+  - integrated_api / terminal_handoff の結果表示 JSX
+  - 33 テスト全 PASS（SkillLifecyclePanel 22件 + agentSlice 11件）
+  - 未タスク 6 件（TASK-SC-07〜SC-12: SkillCreateWizard接続, onProgress, improveモード, generationSlice分割, AbortController, Hybrid State Patternガイド）
+
+## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 完了記録追加
+- **Result**: success
+- **Notes**:
+  - Main Process IPC層（`apps/desktop/src/main/ipc/index.ts`）で RuntimeSkillCreatorFacade に3つの依存（skillFileManager, llmAdapter, resourceLoader）をDI配線
+  - IIFEパターンで非同期初期化を実装し、Graceful Degradation を維持
+  - 先行タスク TASK-SC-05-IMPROVE-LLM で SkillFileManager が DI 依存に追加されたことに対応
+
 ## TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了（2026-03-24）
 
 - **Agent**: task-specification-creator

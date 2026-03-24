@@ -269,3 +269,53 @@
 #### 未タスク
 
 未タスク0件。
+---
+
+### タスク: TASK-SC-06-UI-RUNTIME-CONNECTION SkillLifecyclePanel → RuntimeSkillCreatorFacade plan/execute フロー接続（2026-03-24完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SC-06-UI-RUNTIME-CONNECTION |
+| 完了日 | 2026-03-24 |
+| ステータス | **完了（Phase 1-12 完了、Phase 13 PR 未作成）** |
+| タスク種別 | UI → Runtime IPC 接続 |
+| 対象 | `SkillLifecyclePanel.tsx`, `agentSlice.ts`, `store/index.ts` |
+
+### 変更概要
+
+| レイヤー | 変更内容 |
+| --- | --- |
+| UI コンポーネント | `SkillLifecyclePanel.tsx` に handlePrepare（detectMode → planSkill 自動呼出し）、handleExecutePlan、handleCancelPlan を追加 |
+| Zustand Store | `agentSlice.ts` に PlanResult 型 + 5 フィールド（isGenerating/generationProgress/generationError/currentPlanId/currentPlanResult）+ 6 アクション + clearGenerationState を追加 |
+| Store セレクタ | `store/index.ts` に 11 個の個別セレクタ追加（P31 対策: 5 状態 + 6 アクション） |
+| JSX 表示 | integrated_api 計画パネル + terminal_handoff ガイダンス表示 + generationProgress 進捗表示 + generationError エラー表示 |
+
+### テスト結果
+
+| テストファイル | テスト数 | 結果 |
+| --- | --- | --- |
+| `SkillLifecyclePanel.llm-generation.test.tsx` | 12 | PASS |
+| `agentSlice.generation.test.ts` | 11 | PASS |
+| `SkillLifecyclePanel.test.tsx` | 10 | PASS |
+| **合計** | **33** | **全 PASS** |
+
+### レビュー修正（30 思考法 + エレガント検証）
+
+| 修正ID | 内容 |
+| --- | --- |
+| C-1 | `executePlan(planId)` → `executePlan(planId, request.trim())` skillSpec 引数追加 |
+| C-2 | `generationProgress` 変数宣言 + JSX 表示追加（aria-live="polite"） |
+| C-3 | 「方針を決める」ボタン disabled に `isGenerating` 追加 + テキスト3状態化 |
+| C-4 | ローカル `type PlanResult` 削除 → agentSlice import に一本化 |
+| C-5 | `selectSkillByName(result.data.skillName)` に undefined ガード追加 |
+
+### 後続未タスク
+
+| タスクID | 概要 |
+| --- | --- |
+| TASK-SC-07 | SkillCreateWizard への LLM 生成フロー接続 |
+| TASK-SC-08 | onProgress コールバックによるリアルタイムプログレス更新 |
+| TASK-SC-09 | detectMode "improve" モードハンドリング実装 |
+| TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 |
+| TASK-SC-11 | AbortController による planSkill/executePlan キャンセル機構 |
+| TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 |

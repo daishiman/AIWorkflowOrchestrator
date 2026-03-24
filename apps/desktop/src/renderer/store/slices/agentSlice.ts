@@ -28,6 +28,16 @@ import type {
 import type { HandoffGuidance } from "../../features/workspace-chat-edit/types";
 import { preflightSkillExecutionAuth } from "../../utils/skillExecutionAuthPreflight";
 
+/**
+ * LLM 生成計画の結果型（TASK-SC-06-UI-RUNTIME-CONNECTION）
+ */
+export interface PlanResult {
+  type: "integrated_api" | "terminal_handoff";
+  planId?: string;
+  estimatedSteps?: number;
+  guidance?: { reason: string; command: string };
+}
+
 // Re-export for backward compatibility
 export type { AgentExecutionStatus } from "@repo/shared/types/agent";
 
@@ -202,6 +212,18 @@ export interface AgentState {
   // === Terminal Handoff ===
   /** ターミナルハンドオフ案内（null は非表示） */
   handoffGuidance: HandoffGuidance | null;
+
+  // === LLM Generation state (TASK-SC-06-UI-RUNTIME-CONNECTION) ===
+  /** LLM 生成中フラグ */
+  isGenerating: boolean;
+  /** 生成進捗メッセージ（null は非表示） */
+  generationProgress: string | null;
+  /** 生成エラーメッセージ（null はエラーなし） */
+  generationError: string | null;
+  /** 現在の計画 ID */
+  currentPlanId: string | null;
+  /** 現在の計画結果 */
+  currentPlanResult: PlanResult | null;
 }
 
 /**
@@ -359,6 +381,20 @@ export interface AgentActions {
   /** ハンドオフ案内をクリア */
   clearHandoffGuidance: () => void;
 
+  // === LLM Generation アクション (TASK-SC-06-UI-RUNTIME-CONNECTION) ===
+  /** LLM 生成中フラグを設定 */
+  setIsGenerating: (isGenerating: boolean) => void;
+  /** 生成進捗メッセージを設定 */
+  setGenerationProgress: (progress: string | null) => void;
+  /** 生成エラーメッセージを設定 */
+  setGenerationError: (error: string | null) => void;
+  /** 現在の計画 ID を設定 */
+  setCurrentPlanId: (planId: string | null) => void;
+  /** 現在の計画結果を設定 */
+  setCurrentPlanResult: (result: PlanResult | null) => void;
+  /** 全生成状態フィールドをリセット */
+  clearGenerationState: () => void;
+
   // === 内部アクション（IPCイベントハンドラ用） ===
   _handleStreamMessage: (msg: SkillStreamMessage) => void;
   _handleComplete: (executionId: string) => void;
@@ -439,6 +475,13 @@ const initialAgentState: AgentState = {
 
   // === Terminal Handoff 初期状態 ===
   handoffGuidance: null,
+
+  // === LLM Generation 初期状態 (TASK-SC-06-UI-RUNTIME-CONNECTION) ===
+  isGenerating: false,
+  generationProgress: null,
+  generationError: null,
+  currentPlanId: null,
+  currentPlanResult: null,
 };
 
 /**
@@ -1157,6 +1200,27 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
   setHandoffGuidance: (guidance) => set({ handoffGuidance: guidance }),
 
   clearHandoffGuidance: () => set({ handoffGuidance: null }),
+
+  // === LLM Generation アクション (TASK-SC-06-UI-RUNTIME-CONNECTION) ===
+
+  setIsGenerating: (isGenerating) => set({ isGenerating }),
+
+  setGenerationProgress: (generationProgress) => set({ generationProgress }),
+
+  setGenerationError: (generationError) => set({ generationError }),
+
+  setCurrentPlanId: (currentPlanId) => set({ currentPlanId }),
+
+  setCurrentPlanResult: (currentPlanResult) => set({ currentPlanResult }),
+
+  clearGenerationState: () =>
+    set({
+      isGenerating: false,
+      generationProgress: null,
+      generationError: null,
+      currentPlanId: null,
+      currentPlanResult: null,
+    }),
 
   // === 内部ハンドラ（IPCイベント用） ===
 

@@ -29,6 +29,7 @@
 
 | 2026-03-23 | 2.5.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（→ [ipc-preload-runtime](lessons-learned-ipc-preload-runtime.md): LLM統合パターン再利用、空文字列beforeバグ、P4/P51再発） |
 | 2026-03-23 | 2.4.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003: GAP ラベルドリフト / DEFERRED 判断誤り / ViewType 型不一致） |
+| 2026-03-24 | 2.6.0 | TASK-SC-06-UI-RUNTIME-CONNECTION 苦戦箇所3件を追加（→ [ipc-preload-runtime](lessons-learned-ipc-preload-runtime.md): Hybrid State Pattern SSoT問題、executePlan引数設計ミス、PlanResult型一本化） |
 | 2026-03-24 | 2.5.1 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓2件を追加（L-CBLG-003: テストマトリクスファイル参照誤り、L-CBLG-004: TS1501 regex /s flag） |
 | 2026-03-23 | 2.5.0 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 教訓2件を追加（L-CBLG-001: Phase 10 MINOR 照合漏れ、L-CBLG-002: Step A-E 先送り P57 違反） |
 | 2026-03-23 | 2.3.2 | UT-RUNTIME-BUILDER-MIGRATION-001 教訓2件を追加（L-RBM-001: shared型3レイヤー波及、L-RBM-002: sanitize テスト正規表現） |
@@ -75,6 +76,7 @@
 - AuthMode 値乖離（P57）、同名ファイル二重存在（P58）、Preload API 未公開（P59）
 - サービススコープ制限（P60）、動的アダプタ注入（P61）
 - LLM adapter bind() パターン、CapabilityResolver、esbuild platform mismatch
+- Hybrid State Pattern（localPlanResult + store）SSoT 問題、executePlan skillSpec 引数漏れ
 
 ### テスト / 型安全 / 品質検証
 → [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md)

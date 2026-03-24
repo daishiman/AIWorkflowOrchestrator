@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-24T11:10:08.213Z",
-  "totalKeywords": 2474,
+  "generated": "2026-03-24T11:58:24.541Z",
+  "totalKeywords": 2476,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -793,6 +793,7 @@
     ],
     "Generation": [
       "api-internal-embedding.md",
+      "arch-state-management-core.md",
       "architecture-embedding-pipeline.md",
       "llm-embedding.md"
     ],
@@ -1800,6 +1801,7 @@
       "interfaces-rag-file-selection.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
@@ -2463,6 +2465,7 @@
     "SC": [
       "arch-electron-services-details-part2.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "arch-state-management-core.md",
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -3054,6 +3057,34 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md"
     ],
+    "LLM": [
+      "arch-state-management-core.md",
+      "arch-state-management-reference-persist-hardening-test-quality.md",
+      "arch-state-management.md",
+      "interfaces-llm.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "llm-ipc-types.md",
+      "llm-streaming.md",
+      "rag-desktop-state.md",
+      "ui-ux-llm-selector.md",
+      "ui-ux-system-prompt.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-chat-llm-integration-fix.md"
+    ],
+    "State": [
+      "arch-state-management-core.md",
+      "csrf-state-parameter.md",
+      "logs-archive-2026-02-abort-security-loop-guard.md",
+      "security-implementation.md"
+    ],
+    "配置ルール": [
+      "arch-state-management-core.md"
+    ],
+    "CONNECTION": [
+      "arch-state-management-core.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "Zustand": [
       "arch-state-management-details.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
@@ -3182,20 +3213,6 @@
     ],
     "拡張仕様": [
       "arch-state-management-reference-permissions-import-lifecycle.md"
-    ],
-    "LLM": [
-      "arch-state-management-reference-persist-hardening-test-quality.md",
-      "arch-state-management.md",
-      "interfaces-llm.md",
-      "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "llm-ipc-types.md",
-      "llm-streaming.md",
-      "rag-desktop-state.md",
-      "ui-ux-llm-selector.md",
-      "ui-ux-system-prompt.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
-      "workflow-ai-chat-llm-integration-fix.md"
     ],
     "Selection": [
       "arch-state-management-reference-persist-hardening-test-quality.md"
@@ -4250,11 +4267,6 @@
     ],
     "構造仕様": [
       "claude-code-skills-structure.md"
-    ],
-    "State": [
-      "csrf-state-parameter.md",
-      "logs-archive-2026-02-abort-security-loop-guard.md",
-      "security-implementation.md"
     ],
     "Parameter": [
       "csrf-state-parameter.md",
