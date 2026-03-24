@@ -16,7 +16,7 @@
   - handlePrepare: detectMode → planSkill 自動呼出し
   - integrated_api / terminal_handoff の結果表示 JSX
   - 33 テスト全 PASS（SkillLifecyclePanel 22件 + agentSlice 11件）
-  - 未タスク 2 件（TASK-SC-07, TASK-SC-08）
+  - 未タスク 6 件（TASK-SC-07〜SC-12: SkillCreateWizard接続, onProgress, improveモード, generationSlice分割, AbortController, Hybrid State Patternガイド）
 
 ## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
 

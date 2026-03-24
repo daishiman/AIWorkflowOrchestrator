@@ -19,7 +19,7 @@ SkillLifecyclePanel / SkillCreateWizard から RuntimeSkillCreatorFacade の pla
 - 現行フロー調査: SkillLifecyclePanel / SkillCreateWizard / Preload API / IPC / Main Process / RuntimeSkillCreatorFacade / Zustand Store の現状を調査する
 - ギャップ分析: UI→Runtime 接続が必要な箇所（G1-G6）を特定する
 - 受入基準定義: AC-1, AC-3, AC-4, AC-7 の達成条件を明文化する
-- Zustand 状態追加要件定義: AgentSlice に追加する5フィールド + 7セレクタの要件を定義する
+- Zustand 状態追加要件定義: AgentSlice に追加する5フィールド + 11セレクタの要件を定義する
 
 ## 現行フロー調査結果
 
@@ -262,16 +262,16 @@ Phase実行開始時にTaskCreateで以下のサブタスクを作成する:
 - [x] `window.electronAPI.skillCreator.*` の利用可能メソッドを確認した
 - [x] DescribeStep の UI 変更要件を定義した（既存テキストエリアを活用）
 - [x] TerminalHandoff 表示要件を定義した
-- [x] Zustand 状態追加要件を定義した（5フィールド + 7セレクタ）
+- [x] Zustand 状態追加要件を定義した（5フィールド + 11セレクタ）
 - [x] AC-1, AC-3, AC-4, AC-7 の達成条件を明文化した
 - [x] 既存 skill:create フローとの後方互換性要件を確認した
 - [x] ギャップ分析（G1-G6）を完了した
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了した
-- [ ] 各タスクの成果物が生成されている
-- [ ] 完了条件を全て満たしている
+- [x] 本Phase内の全タスクを100%実行完了した
+- [x] 各タスクの成果物が生成されている
+- [x] 完了条件を全て満たしている
 
 ## 次のPhase
 

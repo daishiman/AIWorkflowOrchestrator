@@ -262,25 +262,29 @@ grep -n "executePlan" apps/desktop/src/renderer/hooks/useSkillLLMGeneration.ts 2
 
 ## 最終レビュー結果サマリー（実行時に記入）
 
-### 判定: （PASS / MINOR / MAJOR / CRITICAL）
+### 判定: MINOR
 
-| 確認項目                                | 結果 | 備考 |
-| --------------------------------------- | ---- | ---- |
-| AC-1（LLM 生成フロー開始）              | -    | -    |
-| AC-3（TerminalHandoff UI 状態表示）     | -    | -    |
-| AC-4（execute 完了後スキル利用可能）    | -    | -    |
-| AC-7（既存フロー非破壊）                | -    | -    |
-| P31 対策（合成 Hook 無限ループ防止）    | -    | -    |
-| P48 対策（useShallow 適用確認）         | -    | -    |
-| WCAG 2.1 AA アクセシビリティ            | -    | -    |
-| P52 対策（non-null assertion 残存なし） | -    | -    |
-| P44/P45 対策（IPC 引数契約整合）        | -    | -    |
+| 確認項目                                | 結果 | 備考                                    |
+| --------------------------------------- | ---- | --------------------------------------- |
+| AC-1（LLM 生成フロー開始）              | PASS | detectMode → planSkill 連鎖呼び出し確認 |
+| AC-3（TerminalHandoff UI 状態表示）     | PASS | isGenerating ロック・ガイダンス表示確認 |
+| AC-4（execute 完了後スキル利用可能）    | PASS | fetchSkills → selectSkillByName 確認    |
+| AC-7（既存フロー非破壊）                | PASS | handleCreate 変更なし確認               |
+| P31 対策（合成 Hook 無限ループ防止）    | PASS | 個別セレクタ使用確認                    |
+| P48 対策（useShallow 適用確認）         | PASS | プリミティブ値のみ、useShallow 不要     |
+| WCAG 2.1 AA アクセシビリティ            | PASS | role="alert"、aria-live="polite" 確認   |
+| P52 対策（non-null assertion 残存なし） | PASS | non-null assertion 残存なし             |
+| P44/P45 対策（IPC 引数契約整合）        | PASS | 引数名セマンティクス一致確認            |
 
-### 指摘事項（あれば記入）
+### 指摘事項
 
-| ID  | 種別 | 内容 | 対応方針 |
-| --- | ---- | ---- | -------- |
-| -   | -    | -    | -        |
+| ID  | 種別  | 内容                                                                     | 対応方針           |
+| --- | ----- | ------------------------------------------------------------------------ | ------------------ |
+| C-1 | MINOR | executePlan 引数不足（authMode/apiKey 未渡し）                           | Phase 3 で修正完了 |
+| C-2 | MINOR | generationProgress が UI に未表示になるケースあり                        | Phase 3 で修正完了 |
+| C-3 | MINOR | ボタン disabled 条件が不完全（isGenerating のみで currentPlanId 未考慮） | Phase 3 で修正完了 |
+| C-4 | MINOR | PlanResult 型が agentSlice.ts と preload 側で二重定義                    | Phase 3 で修正完了 |
+| C-5 | MINOR | skillName ガード欠落（result.data.skillName が falsy の場合の処理）      | Phase 3 で修正完了 |
 
 ## 参照資料
 
@@ -370,11 +374,11 @@ ARIA 属性の存在確認。
 
 ## タスク100%実行確認【必須】
 
-- [ ] 上記の完了条件を全てチェックした
-- [ ] 実行手順の全ステップ（ステップ1〜7）を実行した
-- [ ] 多角的チェック観点の全項目を確認した
-- [ ] サブタスク管理テーブルのステータスを全て更新した
-- [ ] 統合テスト連携の全項目を確認した
+- [x] 上記の完了条件を全てチェックした
+- [x] 実行手順の全ステップ（ステップ1〜7）を実行した
+- [x] 多角的チェック観点の全項目を確認した
+- [x] サブタスク管理テーブルのステータスを全て更新した
+- [x] 統合テスト連携の全項目を確認した
 
 ## 次のPhase
 

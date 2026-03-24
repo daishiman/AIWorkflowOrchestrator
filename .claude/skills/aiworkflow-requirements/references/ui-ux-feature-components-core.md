@@ -41,6 +41,10 @@
 
 - [TASK-SC-07](../../../../docs/30-workflows/unassigned-task/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION.md): SkillCreateWizard への LLM 生成フロー接続
 - [TASK-SC-08](../../../../docs/30-workflows/unassigned-task/TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE.md): onProgress コールバックによるリアルタイムプログレス更新
+- [TASK-SC-09](../../../../docs/30-workflows/unassigned-task/TASK-SC-09-IMPROVE-MODE-HANDLING.md): detectMode "improve" モードハンドリング実装
+- [TASK-SC-10](../../../../docs/30-workflows/unassigned-task/TASK-SC-10-AGENT-SLICE-GENERATION-SPLIT.md): agentSlice LLM Generation state を generationSlice に分割
+- [TASK-SC-11](../../../../docs/30-workflows/unassigned-task/TASK-SC-11-ABORT-CONTROLLER-PLAN-CANCEL.md): AbortController による planSkill/executePlan キャンセル機構
+- [TASK-SC-12](../../../../docs/30-workflows/unassigned-task/TASK-SC-12-HYBRID-STATE-PATTERN-GUIDE.md): Hybrid State Pattern ガイドドキュメント化
 
 ### 共通仕様
 

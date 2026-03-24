@@ -118,10 +118,10 @@ const currentSurfaceError = localError ?? skillError;
 **処理フロー**
 
 1. `setIsGenerating(true)`
-2. `executePlan(planId)` を IPC 呼出し
+2. `executePlan(planId, request.trim())` を IPC 呼出し（`skillSpec` に依頼文を渡す）
 3. 成功:
    - `fetchSkills()` でスキル一覧を更新
-   - `selectSkillByName(result.data.skillName)` で自動選択
+   - `result.data.skillName` が存在する場合のみ `selectSkillByName()` で自動選択
    - `setLocalPlanResult(null)` でローカル状態クリア
    - `clearGenerationState()` で Store の 5 フィールドをリセット
 4. 失敗: `setGenerationError`

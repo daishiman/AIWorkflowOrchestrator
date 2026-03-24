@@ -224,14 +224,14 @@ const handleExecutePlan = async () => {
   if (!planId) return;
   // ...
   setIsGenerating(true);
-  const result = await skillCreatorApi.executePlan(planId);
-  // 成功 --> fetchSkills() --> selectSkillByName() --> localPlanResult クリア --> clearGenerationState()
+  const result = await skillCreatorApi.executePlan(planId, request.trim());
+  // 成功 --> fetchSkills() --> skillName存在時のみ selectSkillByName() --> localPlanResult クリア --> clearGenerationState()
   // 失敗 --> setGenerationError
   // finally: setIsGenerating(false)
 };
 ```
 
-`planId` は `storePlanId ?? activePlanResult?.planId` の順で取得する。実行成功後は `fetchSkills()` でスキル一覧を更新し、`selectSkillByName()` で生成されたスキルを自動選択する。
+`planId` は `storePlanId ?? activePlanResult?.planId` の順で取得する。`skillSpec` には `request.trim()` を渡す。実行成功後は `fetchSkills()` でスキル一覧を更新し、`result.data.skillName` が存在する場合のみ `selectSkillByName()` で自動選択する。
 
 ### Terminal Handoff の表示条件
 

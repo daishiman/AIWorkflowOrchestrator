@@ -28,7 +28,7 @@ Phase 1 のギャップ分析（G1-G6）を解消するための具体的な設�
 
 - フロー設計: handlePrepare → planSkill → executePlan の接続フローを設計する
 - SkillLifecyclePanel 変更設計: handlePlanSkill / handleExecutePlan の具体的な実装設計を記述する
-- Zustand 状態設計: AgentSlice への5フィールド + 6アクション + 7セレクタの追加設計
+- Zustand 状態設計: AgentSlice への5フィールド + 6アクション + 11セレクタの追加設計
 - Plan 結果表示 UI 設計: SkillLifecyclePanel の Step 1 内に plan 結果表示セクションを設計する
 - TerminalHandoff 表示設計: 既存 handoffGuidance UI の活用方針を策定する
 - 後方互換設計: 既存 skill:create フローとの共存設計を策定する
@@ -367,7 +367,7 @@ Phase実行開始時にTaskCreateで以下のサブタスクを作成する:
 - [x] handlePrepare → planSkill → executePlan のフローを設計した
 - [x] handlePlanSkill / handleExecutePlan の具体的な実装設計を記述した
 - [x] Zustand 状態（isGenerating, generationProgress, generationError, currentPlanId, currentPlanResult）を設計した
-- [x] 個別セレクタを設計した（P31 対策: 7セレクタ）
+- [x] 個別セレクタを設計した（P31 対策: 11セレクタ）
 - [x] P48 対策の要否を判定した（プリミティブ値のみのため useShallow 不要）
 - [x] Plan 結果表示 UI を設計した
 - [x] TerminalHandoff 表示設計を確認した（既存 handoffGuidance UI 活用）
@@ -377,9 +377,9 @@ Phase実行開始時にTaskCreateで以下のサブタスクを作成する:
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了した
-- [ ] 各タスクの成果物が生成されている
-- [ ] 完了条件を全て満たしている
+- [x] 本Phase内の全タスクを100%実行完了した
+- [x] 各タスクの成果物が生成されている
+- [x] 完了条件を全て満たしている
 
 ## 次のPhase
 

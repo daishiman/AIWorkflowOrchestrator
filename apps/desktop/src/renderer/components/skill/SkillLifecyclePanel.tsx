@@ -1,5 +1,6 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import type { SkillExecutionStatus } from "@repo/shared";
+import type { PlanResult } from "../../store/slices/agentSlice";
 import {
   useBeginSkillReview,
   useClearGenerationState,
@@ -12,6 +13,7 @@ import {
   useExecuteSkill,
   useFetchSkills,
   useGenerationError,
+  useGenerationProgress,
   useIsSkillExecuting,
   useIsSkillGenerating,
   useReExecuteAfterImprovement,
@@ -58,13 +60,6 @@ type IpcResult<T> = {
   success: boolean;
   data?: T;
   error?: string;
-};
-
-type PlanResult = {
-  type: "integrated_api" | "terminal_handoff";
-  planId?: string;
-  estimatedSteps?: number;
-  guidance?: { reason: string; command: string };
 };
 
 type SkillCreatorRuntimeApi = {
@@ -197,6 +192,7 @@ export function SkillLifecyclePanel({
 
   // LLM Generation state (TASK-SC-06-UI-RUNTIME-CONNECTION)
   const isGenerating = useIsSkillGenerating();
+  const generationProgress = useGenerationProgress();
   const generationError = useGenerationError();
   const storePlanResult = useCurrentPlanResult();
   const storePlanId = useCurrentPlanId();
@@ -420,13 +416,15 @@ export function SkillLifecyclePanel({
 
     try {
       setIsGenerating(true);
-      const result = await skillCreatorApi.executePlan(planId);
+      const result = await skillCreatorApi.executePlan(planId, request.trim());
       if (!result.success || !result.data) {
         setGenerationError(result.error ?? "計画実行に失敗しました");
         return;
       }
       await fetchSkills();
-      selectSkillByName(result.data.skillName);
+      if (result.data.skillName) {
+        selectSkillByName(result.data.skillName);
+      }
       setLocalPlanResult(null);
       clearGenerationState();
     } catch (err) {
@@ -713,6 +711,16 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
+      {generationProgress ? (
+        <div
+          aria-live="polite"
+          className="rounded-xl border border-[var(--accent-primary)] bg-[var(--accent-primary)]/5 px-4 py-3 text-sm text-[var(--accent-primary)]"
+          data-testid="skill-lifecycle-generation-progress"
+        >
+          {generationProgress}
+        </div>
+      ) : null}
+
       {activeGenerationError ? (
         <div
           role="alert"
@@ -784,10 +792,14 @@ export function SkillLifecyclePanel({
                 type="button"
                 className={lifecycleButtonStyles.secondary}
                 onClick={handlePrepare}
-                disabled={isPreparing || isCreating}
+                disabled={isPreparing || isCreating || isGenerating}
                 data-testid="skill-lifecycle-prepare-button"
               >
-                {isPreparing ? "判定中..." : "方針を決める"}
+                {isPreparing
+                  ? "判定中..."
+                  : isGenerating
+                    ? "計画生成中..."
+                    : "方針を決める"}
               </button>
             </div>
             <textarea

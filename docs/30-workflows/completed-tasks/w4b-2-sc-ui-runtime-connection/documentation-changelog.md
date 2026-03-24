@@ -36,12 +36,16 @@
 
 ## Task 4: 未タスク検出
 
-- 検出件数: 2 件
+- 検出件数: 6 件（初回 2 件 + レビュー追加 4 件）
 - [x] TASK-SC-07 指示書作成: `docs/30-workflows/unassigned-task/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION.md`
 - [x] TASK-SC-08 指示書作成: `docs/30-workflows/unassigned-task/TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE.md`
 - [x] `task-workflow-backlog.md` 残課題テーブルに TASK-SC-07/SC-08 を登録
 - [x] `ui-ux-feature-components-core.md` に TASK-SC-07/SC-08 の参照リンクを追加
 - [x] 再評価クローズ対象の GitHub Issue なし（新規未タスクのみ）
+- [x] TASK-SC-09 指示書作成: `docs/30-workflows/unassigned-task/TASK-SC-09-IMPROVE-MODE-HANDLING.md`（レビュー追加）
+- [x] TASK-SC-10 指示書作成: `docs/30-workflows/unassigned-task/TASK-SC-10-AGENT-SLICE-GENERATION-SPLIT.md`（レビュー追加）
+- [x] TASK-SC-11 指示書作成: `docs/30-workflows/unassigned-task/TASK-SC-11-ABORT-CONTROLLER-PLAN-CANCEL.md`（レビュー追加）
+- [x] TASK-SC-12 指示書作成: `docs/30-workflows/unassigned-task/TASK-SC-12-HYBRID-STATE-PATTERN-GUIDE.md`（レビュー追加）
 
 ## Task 5: スキルフィードバックレポート
 
@@ -49,6 +53,17 @@
 - テンプレート改善: 2 件（IPC レスポンス wrapper 形式標準化、MockStoreState テンプレート化）
 - ワークフロー改善: 2 件（expect.anything() 注意喚起、Hybrid State Pattern ドキュメント化）
 - ドキュメント改善: 2 件（PlanResult 型共通化ガイド、P40 早見表）
+
+## Post-Review: コード修正（30 思考法 + エレガント検証）
+
+- [x] C-1: `executePlan(planId)` → `executePlan(planId, request.trim())` skillSpec 引数追加（P44/P45 対策）
+- [x] C-2: `generationProgress` 変数宣言 + JSX 表示追加（`aria-live="polite"` アクセシビリティ対応）
+- [x] C-3: 「方針を決める」ボタン disabled に `isGenerating` 追加 + テキスト3状態化
+- [x] C-4: ローカル `type PlanResult` 削除 → agentSlice からの import に一本化（Single Source of Truth）
+- [x] C-5: `selectSkillByName(result.data.skillName)` に undefined ガード追加
+- [x] implementation-guide.md の handleExecutePlan フロー更新（C-1/C-5 反映）
+- [x] component-documentation.md の handleExecutePlan 処理フロー更新（C-1/C-5 反映）
+- テスト結果: 33 テスト全 PASS
 
 ## Step 6: 成果物検証（P43 対策）
 
