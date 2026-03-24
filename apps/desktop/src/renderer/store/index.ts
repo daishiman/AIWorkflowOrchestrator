@@ -837,6 +837,48 @@ export const useClearExecutionHistory = () =>
   useAppStore((state) => state.clearExecutionHistory);
 
 // ==========================================================================
+// LLM Generation selectors (TASK-SC-06-UI-RUNTIME-CONNECTION)
+// P31 対策: 個別セレクタのみ
+// ==========================================================================
+
+// --- 状態セレクタ ---
+/** LLM 生成中フラグ */
+export const useIsSkillGenerating = () =>
+  useAppStore((state) => state.isGenerating);
+/** 生成進捗メッセージ */
+export const useGenerationProgress = () =>
+  useAppStore((state) => state.generationProgress);
+/** 生成エラーメッセージ */
+export const useGenerationError = () =>
+  useAppStore((state) => state.generationError);
+/** 現在の計画 ID */
+export const useCurrentPlanId = () =>
+  useAppStore((state) => state.currentPlanId);
+/** 現在の計画結果 */
+export const useCurrentPlanResult = () =>
+  useAppStore((state) => state.currentPlanResult);
+
+// --- アクションセレクタ ---
+/** LLM 生成中フラグを設定 */
+export const useSetIsSkillGenerating = () =>
+  useAppStore((state) => state.setIsGenerating);
+/** 生成進捗メッセージを設定 */
+export const useSetGenerationProgress = () =>
+  useAppStore((state) => state.setGenerationProgress);
+/** 生成エラーメッセージを設定 */
+export const useSetGenerationError = () =>
+  useAppStore((state) => state.setGenerationError);
+/** 現在の計画 ID を設定 */
+export const useSetCurrentPlanId = () =>
+  useAppStore((state) => state.setCurrentPlanId);
+/** 現在の計画結果を設定 */
+export const useSetCurrentPlanResult = () =>
+  useAppStore((state) => state.setCurrentPlanResult);
+/** 全生成状態フィールドをリセット */
+export const useClearGenerationState = () =>
+  useAppStore((state) => state.clearGenerationState);
+
+// ==========================================================================
 // Terminal Handoff selectors
 // ==========================================================================
 

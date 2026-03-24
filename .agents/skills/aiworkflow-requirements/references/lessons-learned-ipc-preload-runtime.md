@@ -19,6 +19,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-24 | 1.11.0 | TASK-SC-06-UI-RUNTIME-CONNECTION 苦戦箇所3件を追加（L-SC-06-001〜003: Hybrid State Pattern SSoT問題、executePlan引数設計ミス、PlanResult型一本化） |
+| 2026-03-24 | 1.10.0 | UT-SC-03-004 教訓3件を追加（esbuild worktree arch mismatch、2層バリデーション境界、BGエージェント doc 精度乖離） |
 | 2026-03-23 | 1.9.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（LLM統合パターン再利用、空文字列beforeバグ、P4/P51早期完了記載の再発） |
 | 2026-03-23 | 1.8.0 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 苦戦箇所2件を追加（エスケープテスト lookbehind regex パターン、adapter サニタイズ対象の統一漏れ） |
 | 2026-03-22 | 1.7.0 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加（structured error primary / legacy fallback 分離、Task 03 root 移管の同波反映） |
@@ -445,3 +447,34 @@
 ### 苦戦箇所: P4/P51 早期完了記載の再発
 
 `documentation-changelog.md` に Step 2「完了」と記載されたが、`interfaces-agent-sdk-skill-reference.md` への型定義追記が実際には未実施だった。P57（先送りパターン）も併発。Phase 12 の同期対象は全ファイル更新後に「完了」を記録すべき。
+
+---
+
+## TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24）
+
+### 苦戦箇所1（L-SC-06-001）: Hybrid State Pattern と Single Source of Truth の衝突
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillLifecyclePanel` で `localPlanResult`（useState）と `storePlanResult`（Zustand）の両方に PlanResult を格納する Hybrid State Pattern を採用した。`activePlanResult = localPlanResult ?? storePlanResult` で統合しているが、どちらが SSoT かが曖昧になり、テストでの状態再現が困難になった |
+| 症状 | ストア側だけ更新してもローカル側が null でない限り UI が更新されない。テストで `setCurrentPlanResult` を呼んでも表示に反映されないケースが発生 |
+| 解決策 | ローカル状態は「即時 UI フィードバック」用、Zustand は「永続化・他コンポーネント共有」用と責務を明確化。`setLocalPlanResult(null)` で明示的にクリアしてからストア側を優先する設計に統一 |
+| 関連パターン | P31（Zustand Store Hooks 無限ループ）、P48（useShallow 未適用） |
+| 再発防止 | Hybrid State Pattern を採用する場合は、Phase 2 設計書に「どちらが SSoT か」「クリア順序」を明記する。TASK-SC-12 でガイド化予定 |
+
+### 苦戦箇所2（L-SC-06-002）: executePlan 引数設計ミス（P44/P45 派生）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 初回実装で `executePlan(planId)` と引数1つで呼び出していたが、runtime API 側は `executePlan(planId, skillSpec)` の2引数を期待していた。Phase 10 レビューで C-1 として検出され、`executePlan(planId, request.trim())` に修正 |
+| 症状 | planSkill で生成した計画に基づいて executePlan を呼んでも、skillSpec が undefined のため空のスキルが生成される |
+| 解決策 | IPC API のシグネチャを Phase 2 設計書に明示し、呼び出し側のテストで引数の数と型を検証する |
+| 関連パターン | P44（IPC インターフェース不整合）、P45（IPC 引数命名の契約ドリフト） |
+
+### 苦戦箇所3（L-SC-06-003）: PlanResult 型の二重定義（C-4 問題）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillLifecyclePanel.tsx` にローカル `type PlanResult` を定義し、`agentSlice.ts` にも `export interface PlanResult` を定義していた。両者が乖離した場合にコンパイルエラーが出ず、実行時に型不整合が発生する |
+| 解決策 | ローカル型定義を削除し、`agentSlice.ts` からの import に一本化（Single Source of Truth）。Phase 10 レビュー C-4 で修正 |
+| 関連パターン | P23（API 二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須） |
