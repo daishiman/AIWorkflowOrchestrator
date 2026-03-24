@@ -4,6 +4,21 @@
 
 ---
 
+## TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - 実行コンソールの名称、route、shared launcher、mainline entry 設計タスク完了
+  - ViewType `executionConsole` 追加、`openExecutionConsole()` shared action 定義
+  - CTA 7箇所統一（ChatPanel, LLMGuidanceBanner, WorkspaceChatPanel, HandoffBlock, TerminalHandoffCard, PersistentTerminalLauncher, TerminalLauncher）
+  - agent 代替遷移除去方針確定
+  - 既存未タスク2件解決（ut-viewtype-terminal-addition, UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001）
+  - 新規未タスク2件検出（ut-imp-navcontract-execution-console-entry-001, ut-rename-runtime-access-terminal-helpers-001）
+
+---
+
 ## TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -72,7 +87,6 @@
 - **Pitfall準拠**: P23/P27/P42/P60/P61 全項目PASS
 
 ---
-
 ## UT-06-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
