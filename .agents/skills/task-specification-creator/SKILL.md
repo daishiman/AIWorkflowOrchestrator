@@ -384,6 +384,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.21** | **2026-03-24** | **TASK-IMP-UISTATE-CONTRACT-EXTENSION-001 完了同期**: UiState 8値拡張（3値→8値）。resolveUiState() P1-P8優先順位チェーン。resolveCtaContract() 新5状態CTAマッピング。Guard関数2個。Phase 6 エッジケース13テスト追加。全144テストPASS。未タスク0件。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.20** | **2026-03-24** | **UT-SC-05-IPC-DI-WIRING 完了同期**: Main Process IPC層（`index.ts`）で RuntimeSkillCreatorFacade に3依存（skillFileManager, llmAdapter, resourceLoader）をDI配線。IIFEパターン非同期初期化。Graceful Degradation 維持。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.19** | **2026-03-24** | **TASK-LLM-MOD-03 完了同期**: GoogleAdapter system_instruction 対応。baseUrl v1→v1beta、buildRequestBody DRY統合、formatContents systemPrompt分離。19テスト全PASS。Phase 1-13 full execution。未タスク2件（UT-LLM-MOD-03-TYPE-01〜02）backlog登録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.19** | **2026-03-24** | **UT-SC-03-004 完了同期**: SkillBlueprint 型移行（RuntimeSkillCreatorPlanResult 互換化）。`packages/shared/src/types/skillCreator.ts` 型定義更新、`RuntimeSkillCreatorFacade.plan()` 戻り値型統一、creatorHandlers.ts + planPromptConstants.ts 更新、型テスト追加。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |

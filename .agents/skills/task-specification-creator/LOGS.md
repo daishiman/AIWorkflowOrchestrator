@@ -31,6 +31,24 @@
 
 ---
 
+## TASK-IMP-UISTATE-CONTRACT-EXTENSION-001 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - UiState 3値→8値拡張（ready/blocked/unavailable + streaming/handoff/terminal-only/guidance-only/degraded）
+  - resolveUiState() P1-P8 優先順位チェーン実装（CapabilityContext overload 1）
+  - resolveCtaContract() 新5状態CTA マッピング追加
+  - Guard関数2個追加: assertStreamingCtaContract / assertHandoffGuidanceExists
+  - CapabilityContext に4 optional boolean fields 追加: isStreaming / isHandoffRequired / isDegraded / hasAlternativeGuidance
+  - overload 2 後方互換性維持（@deprecated）
+  - テスト: uistate-resolve 32件 + contract-matrix 26件 + cta-contract 29件 + regression 48件 = 全144件 PASS
+  - Phase 6: エッジケース5件 + 境界値3件 + overload後方互換5件 = 13テスト追加
+  - 未タスク: 0件
+
+---
+
 ## TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator

@@ -47,6 +47,7 @@ const cta = resolveCtaContract(capability, ctaInput);
 
 | タスクID | 内容 | ステータス | 備考 |
 | --- | --- | --- | --- |
+| TASK-IMP-UISTATE-CONTRACT-EXTENSION-001 | UiState 8値拡張（3値→8値）/ resolveUiState P1-P8 / resolveCtaContract 新5状態CTA / Guard関数2個 | **完了**（2026-03-24） | Phase 6 エッジケース13テスト追加。全144テストPASS。未タスク0件 |
 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | ExecutionResponsibility 契約基盤 | **完了**（2026-03-20） | |
 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | RuntimePolicyResolver capability bridge | **完了**（2026-03-21） | direct caller lane で resolveCapability() を authority として使用。assertNoSilentFallback enforcement 組み込み。execute() で terminalSurface handoff 分岐追加。internal `creatorHandlers.ts` adapter test 追加 |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | Skill Creator public IPC wiring 統合 | 残課題 | internal `creator:*` と public `skill-creator:*` の境界整理 |
