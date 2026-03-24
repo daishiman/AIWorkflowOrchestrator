@@ -167,6 +167,99 @@ describe("SkillCreator runtime IPC handlers", () => {
     expect(result.error).not.toContain("/Users/test/project");
   });
 
+  // TC-5: DI 配線で ResourceLoader が生成されること（間接検証）
+  it("TC-5: ResourceLoader 注入済みの facade が plan() で loadAgent を呼ぶ", async () => {
+    unregisterSkillCreatorHandlers();
+    handlerMap.clear();
+
+    const mockResourceLoader = { loadAgent: vi.fn() };
+    (mockResourceLoader.loadAgent as ReturnType<typeof vi.fn>)
+      .mockResolvedValueOnce("content-1")
+      .mockResolvedValueOnce("content-2")
+      .mockResolvedValueOnce("content-3");
+
+    // Facade with both resourceLoader and llmAdapter injected
+    const facadeWithDI = {
+      plan: vi.fn().mockResolvedValue({
+        planId: "plan-123",
+        skillSpec: "spec",
+        estimatedSteps: 2,
+        skillName: "test-skill",
+      }),
+      execute: vi.fn(),
+      improve: vi.fn(),
+    };
+
+    registerSkillCreatorHandlers(
+      mockMainWindow as unknown as BrowserWindowType,
+      mockSkillCreatorService as never,
+      facadeWithDI as unknown as RuntimeSkillCreatorFacade,
+    );
+
+    const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+    const result = await handler!(createMockEvent(), {
+      prompt: "test spec",
+      authMode: "api-key",
+      apiKey: "sk-test",
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: {
+        planId: "plan-123",
+        skillSpec: "spec",
+        estimatedSteps: 2,
+        skillName: "test-skill",
+      },
+    });
+    expect(facadeWithDI.plan).toHaveBeenCalledWith(
+      "test spec",
+      "api-key",
+      "sk-test",
+    );
+  });
+
+  // TC-6: LLMAdapterFactory.getAdapter() 失敗時の graceful degradation
+  it("TC-6: LLMAdapter 未注入の facade は plan() でスタブレスポンスを返す", async () => {
+    unregisterSkillCreatorHandlers();
+    handlerMap.clear();
+
+    // facade without llmAdapter (simulating getAdapter failure)
+    const facadeWithoutLLM = {
+      plan: vi.fn().mockResolvedValue({
+        planId: "plan-stub",
+        skillSpec: "spec",
+        estimatedSteps: 3,
+        skillName: "",
+        description: "",
+        agents: [],
+        scripts: [],
+        triggers: [],
+        anchors: [],
+      }),
+      execute: vi.fn(),
+      improve: vi.fn(),
+    };
+
+    registerSkillCreatorHandlers(
+      mockMainWindow as unknown as BrowserWindowType,
+      mockSkillCreatorService as never,
+      facadeWithoutLLM as unknown as RuntimeSkillCreatorFacade,
+    );
+
+    const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+    const result = await handler!(createMockEvent(), {
+      prompt: "spec",
+      authMode: "api-key",
+      apiKey: null,
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.data).toHaveProperty("skillName", "");
+    expect(result.data).toHaveProperty("agents");
+    expect(result.data.agents).toEqual([]);
+  });
+
   it("runtime facade 未注入でも graceful degradation で応答する", async () => {
     unregisterSkillCreatorHandlers();
     handlerMap.clear();

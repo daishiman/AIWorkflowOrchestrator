@@ -454,10 +454,10 @@ describe("LLM Adapter Streaming Tests", () => {
 
     describe("TC-GO-001: candidates[0].content.parts受信", () => {
       it("should yield chunks from SSE stream", async () => {
-        // Google API uses /v1/ and query params for SSE
+        // Google API uses /v1beta/ and query params for SSE
         server.use(
           http.post(
-            "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp:streamGenerateContent",
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:streamGenerateContent",
             () => {
               const encoder = new TextEncoder();
               const stream = new ReadableStream({
@@ -502,7 +502,7 @@ describe("LLM Adapter Streaming Tests", () => {
       it("should detect stream completion on finishReason STOP", async () => {
         server.use(
           http.post(
-            "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp:streamGenerateContent",
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:streamGenerateContent",
             () => {
               const encoder = new TextEncoder();
               const stream = new ReadableStream({
@@ -547,7 +547,7 @@ describe("LLM Adapter Streaming Tests", () => {
 
         server.use(
           http.post(
-            "https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp:streamGenerateContent",
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:streamGenerateContent",
             () => {
               return HttpResponse.json(
                 { error: { message: "API key not valid" } },

@@ -32,7 +32,7 @@ export interface TerminalHandoffCardProps {
  * Terminal で実行する必要がある場合に表示するガイドカード。
  * - suggestedCommand をコピーできる
  * - 作業ディレクトリを表示
- * - terminal を開くボタン（省略可能）
+ * - 端末で続けるボタン（省略可能）
  */
 export function TerminalHandoffCard({
   bundle,
@@ -76,7 +76,7 @@ export function TerminalHandoffCard({
       {/* ヘッダー */}
       <div className="mb-3 flex items-center gap-2">
         <span className="text-base font-semibold text-[var(--text-primary)]">
-          Terminal で続けてください
+          端末で続けてください
         </span>
       </div>
 
@@ -127,7 +127,7 @@ export function TerminalHandoffCard({
             onClick={onOpenTerminal}
             className="rounded-md bg-[var(--accent-primary)] px-4 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent-primary)]"
           >
-            terminal を開く
+            端末で続ける
           </button>
         )}
         {onClose && (

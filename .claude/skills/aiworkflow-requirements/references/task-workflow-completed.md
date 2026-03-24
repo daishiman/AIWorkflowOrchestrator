@@ -5,6 +5,42 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 guided-execution-shell-foundation（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 |
+| ステータス | **完了** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-24 |
+| 対象 | 実行コンソールの名称、route、shared launcher、mainline entry |
+| 成果物 | `docs/30-workflows/step-01-seq-task-01-guided-execution-shell-foundation/` |
+
+#### 実施内容
+
+- ViewType に `executionConsole` を追加し、route / view 分岐を整備
+- `openExecutionConsole()` shared action を定義し、CTA 7箇所を統一
+- agent 代替経路を除去し、実行コンソールへの導線を一本化
+- 2件の既存未タスクを解決（ut-viewtype-terminal-addition、UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001）
+- 2件の新規未タスクを検出（UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001、UT-RENAME-RUNTIME-ACCESS-TERMINAL-HELPERS-001）
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 | navContract.ts に executionConsole エントリ追加 | 高 | `docs/30-workflows/unassigned-task/ut-imp-navcontract-execution-console-entry-001.md` |
+| UT-RENAME-RUNTIME-ACCESS-TERMINAL-HELPERS-001 | runtimeAccess.ts の terminal 系ヘルパー名称変更 | 低 | `docs/30-workflows/unassigned-task/ut-rename-runtime-access-terminal-helpers-001.md` |
+
+#### 解決した既存未タスク
+
+| 未タスクID | 概要 | 解決方法 |
+| --- | --- | --- |
+| ut-viewtype-terminal-addition | ViewType に "terminal" を追加 | executionConsole ViewType 追加で解決 |
+| UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001 | Chat/Workspace guidance の open terminal 導線 | CTA wiring 統一で解決 |
+
+---
+
 ### タスク: TASK-SC-04-OUTPUT-PERSISTENCE SkillFileWriter LLM生成スキルコンテンツ永続化（2026-03-23）
 
 | 項目 | 値 |
@@ -37,6 +73,33 @@
 
 ### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
 ### タスク: TASK-SC-03-PLAN-LLM-PROMPT RuntimeSkillCreatorFacade.plan() LLM プロンプト統合（2026-03-23）
+### タスク: UT-SC-03-003 RuntimeSkillCreatorFacade DI 配線（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-SC-03-003 |
+| 親タスク | TASK-SC-03-PLAN-LLM-PROMPT |
+| ステータス | **完了** |
+| 完了日 | 2026-03-24 |
+| 対象 | RuntimeSkillCreatorFacade setLLMAdapter / ipc/index.ts DI 配線 |
+| 成果物 | `docs/30-workflows/completed-tasks/ut-sc-03-003-di-wiring/` |
+
+#### 実施内容
+
+- `RuntimeSkillCreatorFacade.ts`: `llmAdapter` readonly 解除 + `setLLMAdapter(adapter: ILLMAdapter): void` Setter Injection 追加（P34 準拠）
+- `ipc/index.ts`: ResourceLoader コンストラクタ注入（`DEFAULT_SKILL_CREATOR_PATH`）+ LLMAdapterFactory.getAdapter("anthropic") fire-and-forget async 遅延注入
+- graceful degradation: LLMAdapter 未注入時はスタブ応答
+- TC-1〜TC-9 計11テスト全 PASS
+
+#### 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-SC-03-003-M01 | subscriptionAuthProvider DI 配線追加 | 低 | `docs/30-workflows/unassigned-task/UT-SC-03-003-M01-subscription-auth-provider-injection.md` |
+| UT-SC-03-003-M02 | テスト内 undefined キャスト除去 | 低 | `docs/30-workflows/unassigned-task/UT-SC-03-003-M02-test-type-cast-cleanup.md` |
+
+---
+
 ### タスク: UT-CONV-DB-001 better-sqlite3 75件テスト SKIP 修正（2026-03-23）
 
 | 項目 | 値 |
@@ -815,3 +878,45 @@
 | --- | --- | --- |
 | UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
 | UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
+
+### タスク: TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 canonical bridge / workflow ledger governance 設計（2026-03-23）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 |
+| ステータス | **仕様書作成完了（`implementation_ready` / 設計タスク / Phase 13 blocked）** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-23 |
+| 対象 | canonical source table / bridge rule / state machine / same-wave sync protocol / follow-up formalization |
+| 成果物 | `docs/30-workflows/completed-tasks/step-06-seq-task-09-canonical-bridge-ledger-governance/` |
+
+#### 実施内容
+
+- Canonical Source Table（5カテゴリ: Workflow Ledger / Lessons Learned / System Spec / Indexes / Skill Meta）を定義
+- Compatibility Bridge Rule（legacy path の無期限保持 + 新規追加禁止 + deprecation timeline）を設計
+- State Machine（spec_created → implementation_ready → completed）を type:design / type:implementation 別に定義
+- Same-Wave Sync Protocol（Step A→E の順序実行）を設計し、P1/P25/P2/P27/P43/P56/P57/P59 の回帰防止策を組み込み
+- Follow-up Formalization 3ステップ（指示書作成 → backlog 登録 → 発見元リンク追加）を設計タスクでも省略不可として定義
+- 契約テストスクリプト `scripts/__tests__/canonical-bridge-ledger-governance.test.ts` を作成（Vitest 70テスト: Contract C-1〜C-12 / Unit U-1-1〜U-3-8 / Integration I-1〜I-6 / Artifact Existence / Edge Case BC-1〜BC-12 / Regression / Rollback & Recovery）
+- 親パック4文書コンプライアンス検証を完了（全要件充足確認）
+- 教訓2件を追加（L-CBLG-003: テストマトリクスファイル参照誤り、L-CBLG-004: TS1501 regex /s flag）
+- Current / Baseline 切り分け（wave 完了条件での移管判定）を定義
+
+#### 発見元
+
+- 親パック: ai-runtime-execution-responsibility-realignment（step-06 / seq-task-09）
+- 関連 Pitfall: P1, P2, P3, P4, P25, P26, P27, P38, P43, P51, P56, P57, P58, P59, P65
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| --- | --- | --- |
+| Phase 10 MINOR M-01 が unassigned-task-detection で 0件と記録された | Phase 10 MINOR を Phase 12 Task 4 で正しくカウントしない場合 | Phase 10 final-gate-decision.md の MINOR 一覧と unassigned-task-detection.md の件数を必ず照合する |
+| Step A-E が「PRマージ後」として先送りされた（P57 違反） | 設計タスク + worktree 環境で先送り判断が入る場合 | P57 準拠: 設計タスクでも Phase 12 完了時点で .claude/skills/ を実更新する |
+
+#### Phase 12で登録した関連未タスク
+
+| タスクID | 概要 | 参照 |
+| --- | --- | --- |
+| (M-01 follow-up) | rsync コマンドの worktree 環境注意書き追加 | `docs/30-workflows/unassigned-task/worktree-rsync-caution-annotation.md` |
