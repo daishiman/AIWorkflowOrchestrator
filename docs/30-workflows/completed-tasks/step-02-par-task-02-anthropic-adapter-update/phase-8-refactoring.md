@@ -97,6 +97,7 @@ cd apps/desktop && pnpm vitest run src/main/adapters/llm/__tests__/AnthropicAdap
 - [ ] テストコードのリファクタリング評価を実施した（変更不要と判断）
 - [ ] Green 状態が維持されていることを `pnpm vitest run` で確認した
 - [ ] 未タスク候補（定数化・追加テスト）を記録した
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
 

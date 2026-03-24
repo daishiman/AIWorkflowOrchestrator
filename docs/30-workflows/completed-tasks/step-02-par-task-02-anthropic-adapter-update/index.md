@@ -40,7 +40,7 @@ model: "claude-haiku-4-5", // 最安・最速モデル
 
 ## 参照資料
 
-- [research/anthropic-models.md](../../research/anthropic-models.md)
+- [research/anthropic-models.md](../llm-provider-model-modernization/research/anthropic-models.md)
 
 ## 完了条件
 

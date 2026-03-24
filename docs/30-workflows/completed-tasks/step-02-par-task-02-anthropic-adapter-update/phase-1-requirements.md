@@ -16,6 +16,18 @@
 
 ## 実行タスク
 
+### Task 1-0: P50チェック — 既実装状態の調査（必須）
+
+Phase 1 開始前に対象ファイルの実装状態を確認し、既実装コードの重複作成を防止する。
+
+```bash
+git log --oneline -10 apps/desktop/src/main/adapters/llm/AnthropicAdapter.ts
+grep -n "claude-3-haiku-20240307\|claude-haiku-4-5" apps/desktop/src/main/adapters/llm/AnthropicAdapter.ts
+```
+
+- 現在のモデルIDが `claude-3-haiku-20240307` であることを確認する
+- `claude-haiku-4-5` への変更が未実施であることを確認する
+
 ### Task 1-1: 変更スコープの確定
 
 以下の変更スコープを確認・確定する。
@@ -64,16 +76,18 @@
 
 ## 成果物
 
-| 成果物             | パス                                                                                                                            | 備考       |
-| ------------------ | ------------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| Phase 1 要件定義書 | `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/phase-1-requirements.md` | 本ファイル |
+| 成果物             | パス                                                                                     | 備考       |
+| ------------------ | ---------------------------------------------------------------------------------------- | ---------- |
+| Phase 1 要件定義書 | `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/phase-1-requirements.md` | 本ファイル |
 
 ## 完了条件
 
+- [ ] P50チェック: `AnthropicAdapter.ts` が未修正状態であることを確認した
 - [ ] 変更スコープが1ファイル1行（L207）であることを確認した
 - [ ] AC-001〜AC-005 が定義され、各検証方法が明確である
 - [ ] Task01（PROVIDER_CONFIGS更新）が完了していることを前提条件として記録した
 - [ ] 非機能要件（影響範囲の限定）が文書化された
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
 

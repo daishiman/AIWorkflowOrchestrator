@@ -91,9 +91,9 @@ cd apps/desktop && pnpm vitest run src/main/adapters/llm/__tests__/AnthropicAdap
 
 ## 成果物
 
-| 成果物               | パス                                                                                                                                 | 備考                             |
-| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------- |
-| Phase 9 品質保証記録 | `docs/30-workflows/llm-provider-model-modernization/tasks/step-02-par-task-02-anthropic-adapter-update/phase-9-quality-assurance.md` | 本ファイル（結果は実行後に記入） |
+| 成果物               | パス                                                                                          | 備考                             |
+| -------------------- | --------------------------------------------------------------------------------------------- | -------------------------------- |
+| Phase 9 品質保証記録 | `docs/30-workflows/step-02-par-task-02-anthropic-adapter-update/phase-9-quality-assurance.md` | 本ファイル（結果は実行後に記入） |
 
 ## 完了条件
 
@@ -101,6 +101,7 @@ cd apps/desktop && pnpm vitest run src/main/adapters/llm/__tests__/AnthropicAdap
 - [ ] `pnpm --filter @repo/desktop typecheck` でエラーが 0 件である
 - [ ] `cd apps/desktop && pnpm vitest run` で `AnthropicAdapter.test.ts` の全テストが **PASS** である
 - [ ] 3 項目全て合格した後に Phase 10 へ進む
+- [ ] **本Phase内の全タスクを100%実行完了**
 
 ## 次のPhase
 

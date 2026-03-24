@@ -384,6 +384,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.17** | **2026-03-23** | **TASK-LLM-MOD-02 完了同期**: AnthropicAdapter ヘルスチェックモデルを claude-3-haiku-20240307 から claude-haiku-4-5 に更新。HC-001 テスト追加。未タスク2件（TASK-LLM-MOD-HEALTHCHECK-CONST / TASK-LLM-MOD-HEALTHCHECK-BODY）検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.16** | **2026-03-23** | **TASK-LLM-MOD-01 完了同期**: PROVIDER_CONFIGS モデル定義更新 Phase 1-13 実行完了。OpenAI/Anthropic/Google/xAI 全プロバイダー最新化、description フィールド追加、38テスト追加。未タスク3件を backlog 登録・指示書作成。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.15** | **2026-03-23** | **TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了同期**: WorkspaceChatPanel header mount 完了。Phase 4-12 全完了、11統合テスト、146テスト全PASS。LOGS.md + SKILL.md 2ファイル同時更新（P1/P25対策） |
 | **v10.09.14** | **2026-03-22** | **TASK-SC-02-RUNTIME-POLICY-CLOSURE 仕様書（Phase 1-13）実行完了** |
