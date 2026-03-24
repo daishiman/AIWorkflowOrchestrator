@@ -1,0 +1,86 @@
+{
+  "taskId": "TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001",
+  "note": "設計タスクのため実スクリーンショットは実装タスクで取得。P53対策: Playwright page.screenshot() または Electron webContents.capturePage() を使用。",
+  "screenshots": [
+    {
+      "id": "SS-01",
+      "name": "dock-collapsed",
+      "description": "collapsed state の最小限 status bar 表示",
+      "state": "collapsed",
+      "captureMethod": "page.screenshot({ clip: { x, y, width, height } })",
+      "scenario": "S1-2"
+    },
+    {
+      "id": "SS-02",
+      "name": "dock-ready",
+      "description": "ready state の guidance 表示 + 実行するCTA",
+      "state": "ready",
+      "captureMethod": "page.screenshot()",
+      "scenario": "S1-1"
+    },
+    {
+      "id": "SS-03",
+      "name": "dock-running",
+      "description": "running state の transcript streaming + 中止するCTA",
+      "state": "running",
+      "captureMethod": "page.screenshot()",
+      "scenario": "S2-1"
+    },
+    {
+      "id": "SS-04",
+      "name": "dock-done-artifact-first",
+      "description": "done state の Artifact-First 表示（[1]〜[4] の全レイヤー）",
+      "state": "done",
+      "captureMethod": "page.screenshot({ fullPage: true })",
+      "scenario": "S3-1"
+    },
+    {
+      "id": "SS-05",
+      "name": "dock-done-empty-artifact",
+      "description": "done state で artifact が空の場合の表示",
+      "state": "done",
+      "captureMethod": "page.screenshot()",
+      "scenario": "S3-2"
+    },
+    {
+      "id": "SS-06",
+      "name": "dock-aborted-error-summary",
+      "description": "aborted state の Error Summary 表示",
+      "state": "aborted",
+      "captureMethod": "page.screenshot()",
+      "scenario": "S2-2"
+    },
+    {
+      "id": "SS-07",
+      "name": "share-rail-dropdown",
+      "description": "Share Rail の 1 ドロップダウン展開状態",
+      "state": "done",
+      "captureMethod": "page.screenshot()",
+      "scenario": "S4-1"
+    },
+    {
+      "id": "SS-08",
+      "name": "provenance-chip",
+      "description": "共有メッセージに付与された Provenance Chip の inline 表示",
+      "state": "done",
+      "captureMethod": "page.screenshot({ clip: { x, y, width, height } })",
+      "scenario": "S4-1"
+    },
+    {
+      "id": "SS-09",
+      "name": "dock-unavailable",
+      "description": "unavailable state のインストール導線",
+      "state": "unavailable",
+      "captureMethod": "page.screenshot()",
+      "scenario": "S5-1"
+    },
+    {
+      "id": "SS-10",
+      "name": "dock-guidance-only",
+      "description": "guidance-only state の guidance 表示（実行CTA なし）",
+      "state": "guidance-only",
+      "captureMethod": "page.screenshot()",
+      "scenario": "S5-2"
+    }
+  ]
+}

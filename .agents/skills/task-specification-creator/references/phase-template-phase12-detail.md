@@ -135,6 +135,12 @@ grep -rn "TASK-UI-03" docs/30-workflows/unassigned-task/
 - 更新対象: `.claude/skills/aiworkflow-requirements/references/`
 - **更新不要の場合**: `documentation-changelog.md` に「更新なし」と理由を明記
 
+**設計タスク（type: design）の場合（P57 対策）**:
+- 設計で確定した仕様（型定義・状態遷移・インターフェース）は、対応する仕様書に**設計確定セクション**として実反映する
+- 「実装タスク完了後に更新」と先送りしない（P57 再発防止）
+- 型定義ファイルが未作成で `arch-state-management.md` 等への追記が困難な場合は、UI/UX 仕様書（`ui-ux-*.md`）に設計仕様セクションを追加する
+- `system-spec-update-summary.md` には実施状態を「実施済み」「一部実施済み」等の実績で記録する（「計画のみ」は原則不可）
+
 ### Task 3: ドキュメント更新履歴 & artifacts.json更新【必須】
 
 ```bash

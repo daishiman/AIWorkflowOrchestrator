@@ -18,6 +18,20 @@
 
 ---
 
+## TASK-SC-06-UI-RUNTIME-CONNECTION 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 完了記録追加
+- **Result**: success
+- **Notes**:
+  - SkillLifecyclePanel → RuntimeSkillCreatorFacade の plan→execute フロー接続
+  - agentSlice.ts に PlanResult 型 + 5 state fields + 6 actions 追加
+  - store/index.ts に 11 個別セレクタ追加（P31 対策）
+  - handlePrepare: detectMode → planSkill 自動呼出し
+  - integrated_api / terminal_handoff の結果表示 JSX
+  - 33 テスト全 PASS（SkillLifecyclePanel 22件 + agentSlice 11件）
+  - 未タスク 6 件（TASK-SC-07〜SC-12: SkillCreateWizard接続, onProgress, improveモード, generationSlice分割, AbortController, Hybrid State Patternガイド）
+
 ## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -27,6 +41,19 @@
   - Main Process IPC層（`apps/desktop/src/main/ipc/index.ts`）で RuntimeSkillCreatorFacade に3つの依存（skillFileManager, llmAdapter, resourceLoader）をDI配線
   - IIFEパターンで非同期初期化を実装し、Graceful Degradation を維持
   - 先行タスク TASK-SC-05-IMPROVE-LLM で SkillFileManager が DI 依存に追加されたことに対応
+
+## TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了（Phase 13 blocked）
+- **Result**: success
+- **Notes**:
+  - session dock、transcript persistence、artifact-first result、manual share の設計タスク完了
+  - DockState 8状態（collapsed/ready/handoff/running/done/aborted/unavailable/guidance-only）定義
+  - session persistence: session ID 採番、保持件数、reopen restore、cleanup 条件
+  - artifact bridge: 成果物 -> 要約 -> transcript 詳細の表示順
+  - manual share: 手動3操作 + provenance chip
+  - 未タスク3件検出（UT-IMP-SESSION-DOCK-TESTID-DEDUP-001, UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001, UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001）
 
 ---
 
@@ -62,22 +89,6 @@
 
 ---
 
-## TASK-LLM-MOD-04 完了（2026-03-24）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-13 完了（P50パターン: 検証・補完モード）
-- **Result**: success
-- **Notes**:
-  - テスト期待値更新タスク。Task01-03 実装時にテスト更新が同時完了していたため、コード変更0行
-  - 対象7ファイル 149テスト全PASS検証（R-01〜R-05 全充足）
-  - llm.test.ts: PROVIDER_CONFIGS T-01〜T-13 + inferProviderId o3/o4-mini T-07/T-08 確認済み
-  - AnthropicAdapter.test.ts: ヘルスチェック claude-haiku-4-5 期待値確認済み
-  - GoogleAdapter.test.ts: system_instruction 6テストケース確認済み
-  - カバレッジ: llm.ts Line 84.86% / Branch 70.68% / Function 91.66%、GoogleAdapter.ts 100%/90.32%/100%
-  - 未タスク1件: UT-LLM-MOD-04-001（OpenAI/xAIアダプターテストのレガシーモデルID統一、low優先度）
-
----
-
 ## UT-SC-03-003 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -107,22 +118,6 @@
 
 ---
 
-
-## UT-SLIDE-IMPL-001 完了（2026-03-24）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 完了
-- **Result**: success
-- **Notes**:
-  - Slide Modifier / agent-client 実装（Task08 派生）
-  - ModifierResponse 型拡張（fallback_reason / suggested_action optional 追加）
-  - agent-client.ts DI版 createModifierAgentAPI ファクトリ実装
-  - SlideCapabilityDTO + slide:capability:get IPC channel + P42 3段バリデーション
-  - channel-sync テスト（Preload ⇔ Main チャネル名一致検証）
-  - 未タスク: 0件
-
----
-
 ## TASK-LLM-MOD-02 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -135,22 +130,6 @@
   - 未タスク2件（TASK-LLM-MOD-HEALTHCHECK-CONST, TASK-LLM-MOD-HEALTHCHECK-BODY）検出・登録
 
 ---
-
-## UT-SC-03-004 完了（2026-03-24）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-13 完了
-- **Result**: success
-- **Notes**:
-  - SkillBlueprint 型を RuntimeSkillCreatorPlanResult に互換移行
-  - packages/shared/src/types/skillCreator.ts の型定義更新
-  - RuntimeSkillCreatorFacade.plan() 戻り値型統一
-  - creatorHandlers.ts および planPromptConstants.ts 更新
-  - 型テスト（skillCreator.type.test.ts）追加
-  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
-
----
-
 
 ## UT-06-003-PRELOAD-API-IMPL 完了（2026-03-23）
 
@@ -1150,3 +1129,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
 | 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
 | 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
+
+### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | channels.ts, creatorHandlers.ts, skill-creator-api.ts（既存変更）+ ImprovementProposalItem/List/ApplyResult/Panel（新規4コンポーネント） |
+| 結果 | Phase 1-12 完了。改善提案の承認/適用UIを実装。IPC `skill-creator:apply-improvement` + Preload `applyRuntimeImprovement` + diff表示UIコンポーネント。62テスト全PASS |
+| 検証 | 未タスク 0件。P42/P44/P47/P48/P49/P60/P65 準拠確認済み |

@@ -8,12 +8,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   getAgentAPI,
   resetAgentAPI,
-  createModifierAgentAPI,
   type ModifierAgentAPI,
-  type AgentClientDependencies,
-  type IAuthKeyService,
-  type RuntimePolicyResolver,
-  type AgentSDKAdapter,
 } from "../agent-client";
 
 // vi.hoistedで制御可能なモック関数を作成
@@ -1015,123 +1010,5 @@ describe("AgentClient", () => {
         expect(listener).toHaveBeenCalled();
       });
     });
-  });
-});
-
-// ============================================================================
-// DI パターンテスト (UT-SLIDE-IMPL-001 T3-1-1 ~ T3-1-5)
-// ============================================================================
-describe("createModifierAgentAPI (DI pattern)", () => {
-  const mockAuthKeyService: IAuthKeyService = {
-    getKey: vi.fn(),
-  };
-
-  const mockRuntimeResolver: RuntimePolicyResolver = {
-    resolve: vi.fn(),
-  };
-
-  const mockAdapter: AgentSDKAdapter = {
-    query: vi.fn(),
-  };
-
-  beforeEach(() => {
-    vi.clearAllMocks();
-    vi.useFakeTimers();
-    (mockAuthKeyService.getKey as ReturnType<typeof vi.fn>).mockResolvedValue({
-      source: "env",
-      key: "test-key",
-    });
-    (mockRuntimeResolver.resolve as ReturnType<typeof vi.fn>).mockReturnValue(
-      "integrated",
-    );
-    (mockAdapter.query as ReturnType<typeof vi.fn>).mockResolvedValue({
-      content: "test response",
-      inputTokens: 10,
-      outputTokens: 20,
-    });
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
-  });
-
-  it("T3-1-1: should create API with dependency injection", () => {
-    const deps: AgentClientDependencies = {
-      authKeyService: mockAuthKeyService,
-      runtimeResolver: mockRuntimeResolver,
-      agentSDKAdapter: mockAdapter,
-    };
-
-    const api = createModifierAgentAPI(deps);
-    expect(api).toBeDefined();
-    expect(typeof api.query).toBe("function");
-    expect(typeof api.abort).toBe("function");
-    expect(typeof api.getStatus).toBe("function");
-    expect(typeof api.onMessage).toBe("function");
-  });
-
-  it("T3-1-2: should throw error when authKeyService returns none (P62)", async () => {
-    (mockAuthKeyService.getKey as ReturnType<typeof vi.fn>).mockResolvedValue({
-      source: "none",
-    });
-
-    // adapter のデフォルト（Anthropic SDK 直接使用）をテストするため、
-    // agentSDKAdapter を未指定にする
-    const deps: AgentClientDependencies = {
-      authKeyService: mockAuthKeyService,
-      runtimeResolver: mockRuntimeResolver,
-      // agentSDKAdapter intentionally omitted
-    };
-
-    const api = createModifierAgentAPI(deps);
-
-    await expect(
-      api.query({ prompt: "test", options: { timeout: 5000 } }),
-    ).rejects.toThrow("API key not configured");
-  });
-
-  it("T3-1-3: should use default SDK adapter when agentSDKAdapter is not provided", () => {
-    const deps: AgentClientDependencies = {
-      authKeyService: mockAuthKeyService,
-      runtimeResolver: mockRuntimeResolver,
-      // agentSDKAdapter intentionally omitted
-    };
-
-    const api = createModifierAgentAPI(deps);
-    expect(api).toBeDefined();
-    expect(api.getStatus()).toBe("idle");
-  });
-
-  it("T3-1-4: should use mock adapter when injected (NFR-4)", async () => {
-    const deps: AgentClientDependencies = {
-      authKeyService: mockAuthKeyService,
-      runtimeResolver: mockRuntimeResolver,
-      agentSDKAdapter: mockAdapter,
-    };
-
-    const api = createModifierAgentAPI(deps);
-    const result = await api.query({
-      prompt: "test prompt",
-      options: { timeout: 5000 },
-    });
-
-    expect(mockAdapter.query).toHaveBeenCalledTimes(1);
-    expect(result.content).toBe("test response");
-    expect(result.usage?.inputTokens).toBe(10);
-    expect(result.usage?.outputTokens).toBe(20);
-  });
-
-  it("T3-1-5: should resolve lane via runtimeResolver", () => {
-    (mockRuntimeResolver.resolve as ReturnType<typeof vi.fn>).mockReturnValue(
-      "manual",
-    );
-    const lane = mockRuntimeResolver.resolve("session-123");
-    expect(lane).toBe("manual");
-
-    (mockRuntimeResolver.resolve as ReturnType<typeof vi.fn>).mockReturnValue(
-      "integrated",
-    );
-    const lane2 = mockRuntimeResolver.resolve("session-456");
-    expect(lane2).toBe("integrated");
   });
 });

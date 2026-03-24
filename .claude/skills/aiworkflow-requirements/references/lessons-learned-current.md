@@ -29,6 +29,7 @@
 
 | 2026-03-23 | 2.5.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（→ [ipc-preload-runtime](lessons-learned-ipc-preload-runtime.md): LLM統合パターン再利用、空文字列beforeバグ、P4/P51再発） |
 | 2026-03-23 | 2.4.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003: GAP ラベルドリフト / DEFERRED 判断誤り / ViewType 型不一致） |
+| 2026-03-24 | 2.6.0 | TASK-SC-06-UI-RUNTIME-CONNECTION 苦戦箇所3件を追加（→ [ipc-preload-runtime](lessons-learned-ipc-preload-runtime.md): Hybrid State Pattern SSoT問題、executePlan引数設計ミス、PlanResult型一本化） |
 | 2026-03-24 | 2.5.1 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓2件を追加（L-CBLG-003: テストマトリクスファイル参照誤り、L-CBLG-004: TS1501 regex /s flag） |
 | 2026-03-23 | 2.5.0 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 教訓2件を追加（L-CBLG-001: Phase 10 MINOR 照合漏れ、L-CBLG-002: Step A-E 先送り P57 違反） |
 | 2026-03-23 | 2.3.2 | UT-RUNTIME-BUILDER-MIGRATION-001 教訓2件を追加（L-RBM-001: shared型3レイヤー波及、L-RBM-002: sanitize テスト正規表現） |
@@ -75,6 +76,7 @@
 - AuthMode 値乖離（P57）、同名ファイル二重存在（P58）、Preload API 未公開（P59）
 - サービススコープ制限（P60）、動的アダプタ注入（P61）
 - LLM adapter bind() パターン、CapabilityResolver、esbuild platform mismatch
+- Hybrid State Pattern（localPlanResult + store）SSoT 問題、executePlan skillSpec 引数漏れ
 
 ### テスト / 型安全 / 品質検証
 → [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md)
@@ -626,3 +628,25 @@
 - **再利用**: TypeScript テストで複数行マッチが必要な場合は `[\s\S]*` パターンを標準とする
 
 > 5分解決カード: テストマトリクスの参照先ファイル誤り → `grep -l "keyword" outputs/phase-*/` → アサーション対象変数を修正 → テスト再実行
+
+## UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI
+
+### L-AIUI-001: React Props Silent Drop は TypeScript で検出不能
+
+- **苦戦箇所**: `ImprovementProposalPanel` の `onClose` prop が destructuring から除外されていたが、TypeScript コンパイル・62テスト全 PASS・ESLint 0件の状態で Phase 10 最終レビューまで検出できなかった。パネル閉じるボタンが未実装のまま放置されていた
+- **解決策**: Phase 10 レビューで発見後、destructuring に `onClose` を追加し、パネル閉じるボタン（`aria-label="パネルを閉じる"`）を追加。P-6〜P-8 テスト3件を追加して検証
+- **再利用**: コンポーネント実装後に Props interface の全フィールドと destructuring の突合チェックを行う。新規 Pitfall P67 として登録済み
+
+### L-AIUI-002: `import()` 型伝播で Preload 型二重管理を解消
+
+- **苦戦箇所**: `preload/types.ts` に `SkillCreatorAPI` の全メソッドを列挙する方式だと、P23/P32 の二重管理リスクがある
+- **解決策**: `import("./skill-creator-api").SkillCreatorAPI` の `import()` 型を使用し、実装ファイルから型を自動伝播させる構造を採用。新メソッド `applyRuntimeImprovement` の追加時に `types.ts` の変更が不要だった
+- **再利用**: Preload API の型定義は `import()` 型伝播パターン（S36）を標準とする
+
+### L-AIUI-003: Mock 型安全性ギャップ — `vi.fn().mockResolvedValue()` は `any` を受容
+
+- **苦戦箇所**: H-18 テストで `ApplyImprovementResult.errors` の mock データを `{ section, message }[]` で定義したが、実際の型は `string[]`。`vi.fn().mockResolvedValue()` が `any` を受け入れるため、TypeScript は型不整合を検出しなかった
+- **解決策**: Phase 10 レビューで mock データの型を `string[]` に修正。`mockResolvedValue` に明示的な型引数（`mockResolvedValue<ApplyImprovementResult>({...})`）を使用する方針を策定
+- **再利用**: テスト mock の戻り値には `satisfies` または明示的型引数で型チェックを強制する
+
+> 5分解決カード: Props silent drop → Props interface と destructuring のフィールド数を比較 → 不足フィールドを追加 → テスト追加

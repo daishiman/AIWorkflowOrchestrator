@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-24 | 1.11.0 | TASK-SC-06-UI-RUNTIME-CONNECTION 苦戦箇所3件を追加（L-SC-06-001〜003: Hybrid State Pattern SSoT問題、executePlan引数設計ミス、PlanResult型一本化） |
 | 2026-03-24 | 1.10.0 | UT-SC-03-004 教訓3件を追加（esbuild worktree arch mismatch、2層バリデーション境界、BGエージェント doc 精度乖離） |
 | 2026-03-23 | 1.9.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（LLM統合パターン再利用、空文字列beforeバグ、P4/P51早期完了記載の再発） |
 | 2026-03-23 | 1.8.0 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 苦戦箇所2件を追加（エスケープテスト lookbehind regex パターン、adapter サニタイズ対象の統一漏れ） |
@@ -30,32 +31,6 @@
 | 2026-03-19 | 1.2.0 | UT-TASK06-007 再監査教訓を追加（generic/multiline preload 抽出、spec drift 同期、P45 の書き分け） |
 | 2026-03-18 | 1.1.0 | TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 教訓3件を追加（esbuild worktree不一致 P53派生、テスト数伝播 P37派生、P62 DEFAULT_CONFIG三層防御） |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
-
----
-
-## 2026-03-24 UT-SC-03-004（SkillBlueprint 型移行）
-
-### 苦戦箇所1: esbuild worktree アーキテクチャ不一致（P66 派生）
-
-- **症状**: worktree 環境で `vitest run` が `ERR_DLOPEN_FAILED` で全テスト失敗
-- **原因**: pnpm store の arm64 esbuild バイナリが x64 Node.js と不一致
-- **解決策**: `ESBUILD_BINARY_PATH` 環境変数で x64 バイナリを明示指定して回避
-- **恒久対策**: worktree 作成後に `pnpm rebuild esbuild` を実行するセットアップスクリプトに含める
-- **5分解決カード**: worktree でテスト全滅 → `file node_modules/.../esbuild` でアーキテクチャ確認 → `pnpm rebuild esbuild` または `ESBUILD_BINARY_PATH` 設定
-
-### 苦戦箇所2: isValidPlanResponse / parsePlanResponse 2層バリデーション境界
-
-- **症状**: Phase 4 テストで「不正 category → Graceful degradation でデフォルト適用」を期待したが、実際は `isValidPlanResponse()` がリジェクト
-- **原因**: 2つの関数の責務分担が Phase 2 設計書で明示されていなかった。「存在するが不正 → リジェクト」と「不在 → デフォルト適用」の境界が曖昧
-- **解決策**: テスト 3 件のアサーションを `toThrow("LLM response does not match expected plan schema")` に修正
-- **5分解決カード**: LLM レスポンス処理で「構造検証層」と「デフォルト適用層」を分ける場合、Phase 2 設計書に入出力契約を明示する
-
-### 苦戦箇所3: バックグラウンドエージェントのドキュメント精度乖離
-
-- **症状**: Phase 12 BGエージェントが生成した implementation-guide.md / api-documentation.md の型定義（カテゴリ値、フィールド名、インターフェース構造）が実装と大幅に異なる
-- **原因**: エージェント指示に「実際のソースコードから型定義を引用」が含まれていなかった
-- **解決策**: 手動で正確な型定義に修正。今後のエージェント指示テンプレートに「Phase 5 で変更したファイルを Read して引用」を必須ステップとして追加
-- **5分解決カード**: ドキュメント生成エージェントには必ず「対象ソースファイルの Read」を指示に含める
 
 ---
 
@@ -472,3 +447,34 @@
 ### 苦戦箇所: P4/P51 早期完了記載の再発
 
 `documentation-changelog.md` に Step 2「完了」と記載されたが、`interfaces-agent-sdk-skill-reference.md` への型定義追記が実際には未実施だった。P57（先送りパターン）も併発。Phase 12 の同期対象は全ファイル更新後に「完了」を記録すべき。
+
+---
+
+## TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24）
+
+### 苦戦箇所1（L-SC-06-001）: Hybrid State Pattern と Single Source of Truth の衝突
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillLifecyclePanel` で `localPlanResult`（useState）と `storePlanResult`（Zustand）の両方に PlanResult を格納する Hybrid State Pattern を採用した。`activePlanResult = localPlanResult ?? storePlanResult` で統合しているが、どちらが SSoT かが曖昧になり、テストでの状態再現が困難になった |
+| 症状 | ストア側だけ更新してもローカル側が null でない限り UI が更新されない。テストで `setCurrentPlanResult` を呼んでも表示に反映されないケースが発生 |
+| 解決策 | ローカル状態は「即時 UI フィードバック」用、Zustand は「永続化・他コンポーネント共有」用と責務を明確化。`setLocalPlanResult(null)` で明示的にクリアしてからストア側を優先する設計に統一 |
+| 関連パターン | P31（Zustand Store Hooks 無限ループ）、P48（useShallow 未適用） |
+| 再発防止 | Hybrid State Pattern を採用する場合は、Phase 2 設計書に「どちらが SSoT か」「クリア順序」を明記する。TASK-SC-12 でガイド化予定 |
+
+### 苦戦箇所2（L-SC-06-002）: executePlan 引数設計ミス（P44/P45 派生）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 初回実装で `executePlan(planId)` と引数1つで呼び出していたが、runtime API 側は `executePlan(planId, skillSpec)` の2引数を期待していた。Phase 10 レビューで C-1 として検出され、`executePlan(planId, request.trim())` に修正 |
+| 症状 | planSkill で生成した計画に基づいて executePlan を呼んでも、skillSpec が undefined のため空のスキルが生成される |
+| 解決策 | IPC API のシグネチャを Phase 2 設計書に明示し、呼び出し側のテストで引数の数と型を検証する |
+| 関連パターン | P44（IPC インターフェース不整合）、P45（IPC 引数命名の契約ドリフト） |
+
+### 苦戦箇所3（L-SC-06-003）: PlanResult 型の二重定義（C-4 問題）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillLifecyclePanel.tsx` にローカル `type PlanResult` を定義し、`agentSlice.ts` にも `export interface PlanResult` を定義していた。両者が乖離した場合にコンパイルエラーが出ず、実行時に型不整合が発生する |
+| 解決策 | ローカル型定義を削除し、`agentSlice.ts` からの import に一本化（Single Source of Truth）。Phase 10 レビュー C-4 で修正 |
+| 関連パターン | P23（API 二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須） |

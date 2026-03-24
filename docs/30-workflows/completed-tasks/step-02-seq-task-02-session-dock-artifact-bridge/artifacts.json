@@ -1,0 +1,173 @@
+{
+  "taskId": "TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001",
+  "title": "session dock、transcript、artifact-first result、manual share",
+  "type": "design",
+  "priority": "high",
+  "status": "spec_created",
+  "dependencies": ["TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001"],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/state-inventory.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/session-state-contract.md",
+        "outputs/phase-2/artifact-bridge-design.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "outputs/phase-3/design-review-report.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/test-matrix.md",
+        "outputs/phase-4/mock-strategy.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "outputs/phase-5/implementation-plan.md",
+        "outputs/phase-5/file-change-scope.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/regression-expansion-plan.md",
+        "outputs/phase-6/edge-case-matrix.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-targets.md",
+        "outputs/phase-7/integration-gate.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/refactor-boundaries.md",
+        "outputs/phase-8/simplification-candidates.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質検証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/quality-checklist.md",
+        "outputs/phase-9/risk-register.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/final-review-report.md",
+        "outputs/phase-10/final-gate-decision.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-plan.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": ["outputs/phase-13/pr-preparation.md"]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "dock state が collapsed / ready / handoff / running / done / aborted / unavailable / guidance-only まで定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-2",
+      "description": "session persistence、session ID、reopen restore の方針が定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-3",
+      "description": "transcript share は手動3操作と provenance chip を前提に定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-4",
+      "description": "実行後の primary surface が raw log ではなく artifact summary になっている",
+      "verified": true
+    },
+    {
+      "id": "AC-5",
+      "description": "error summary が done / aborted state で表示される",
+      "verified": true
+    }
+  ],
+  "createdAt": "2026-03-23",
+  "updatedAt": "2026-03-24"
+}
