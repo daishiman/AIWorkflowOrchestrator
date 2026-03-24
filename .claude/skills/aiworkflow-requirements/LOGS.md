@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-24 - UT-SC-03-003 完了（RuntimeSkillCreatorFacade DI配線 / setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter / 11テスト全PASS / 未タスク2件: M01 subscriptionAuthProvider, M02 undefined キャスト除去） |
 | 2026-03-23 - UT-06-002 完了同期（AllowedToolEntryV2 PermissionStore V2 拡張 / ExpiryPolicy 4種 / isToolAllowed 6分岐 / permission:clear-session IPC / V1→V2 マイグレーション / 未タスク4件） |
 | 2026-03-23 - UT-SC-02-002 完了（execute() terminal_handoff 分岐追加 / RuntimeSkillCreatorExecuteResponse Union型 / void decision 除去 / 15テスト全PASS） |
 | 2026-03-23 - UT-EXECUTION-ENV-TERMINAL-001 完了（ExecutionEnvironment.terminal 本実装 + assertNoSilentFallback ガード / P62 対策 / 18テストケース） |
@@ -82,6 +83,19 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## UT-SC-03-003 DI配線完了（2026-03-24）
+
+- タスク名: RuntimeSkillCreatorFacade DI配線
+- 種別: 実装タスク Phase 1-12 完了
+- 親タスク: TASK-SC-03-PLAN-LLM-PROMPT
+- 主な反映:
+  - `RuntimeSkillCreatorFacade.ts`: `llmAdapter` readonly 解除、`setLLMAdapter(adapter: ILLMAdapter): void` メソッド追加（Setter Injection / P34準拠）
+  - `ipc/index.ts`: `ResourceLoader` コンストラクタ注入 + `LLMAdapterFactory.getAdapter("anthropic")` fire-and-forget async で LLMAdapter 遅延注入
+  - テスト: TC-1〜TC-4（Facade単体）+ TC-5〜TC-6（IPC配線）+ TC-7〜TC-9（冪等性・graceful degradation）= 11テスト全PASS
+  - `arch-execution-capability-contract.md` の UT-SC-03-003 ステータスを「完了（2026-03-24）」に更新
+  - `interfaces-agent-sdk-skill-reference.md` に RuntimeSkillCreatorFacade セクション追加（setLLMAdapter() メソッド仕様）
+  - 未タスク: 2件検出（UT-SC-03-003-M01 subscriptionAuthProvider DI配線追加, UT-SC-03-003-M02 テスト内 undefined キャスト除去）
 
 ## TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 設計フェーズ完了（2026-03-23）
 

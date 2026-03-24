@@ -384,6 +384,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.18** | **2026-03-24** | **UT-SC-03-003 DI配線完了同期**: RuntimeSkillCreatorFacade DI配線（TASK-SC-03派生）。setLLMAdapter() Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。11テスト全PASS。未タスク2件（M01 subscriptionAuthProvider DI配線追加, M02 テスト内 undefined キャスト除去）。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.17** | **2026-03-23** | **UT-06-002 完了同期**: AllowedToolEntryV2 PermissionStore V2 拡張。Phase 1-12 完了。ExpiryPolicy 4種 / isToolAllowed 6分岐 / permission:clear-session IPC / V1→V2 マイグレーション。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.16** | **2026-03-23** | **UT-SC-02-002 完了同期**: execute() terminal_handoff 分岐追加（セキュリティ修正）。RuntimeSkillCreatorExecuteResponse Union型追加、void decision 除去、plan/improve/execute パターン統一。15テスト全PASS。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.15** | **2026-03-23** | **UT-EXECUTION-ENV-TERMINAL-001 完了同期**: ExecutionEnvironment.terminal 本実装 + assertNoSilentFallback ガード（P62 対策）。Phase 1-12 完了。テスト 18 ケース追加（PASS） |

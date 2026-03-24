@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-23
+> 自動生成: 2026-03-24
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -434,6 +434,7 @@ node scripts/list-specs.js --topics
 | スキルチェーン 型定義（TASK-9D） | L327 |
 | スキルスケジュール 型定義（TASK-9G） | L362 |
 | スキルフォーク 型定義（TASK-9E） | L387 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L435 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -2594,12 +2595,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L46 |
-| クイックリファレンス: カテゴリ別検索ガイド | L61 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L137 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L469 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L503 |
-| TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001（2026-03-22） | L530 |
+| 分割ファイル一覧 | L48 |
+| クイックリファレンス: カテゴリ別検索ガイド | L63 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L139 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L471 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L505 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

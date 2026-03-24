@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-23T10:07:43.081Z",
-  "totalKeywords": 2455,
+  "generated": "2026-03-24T01:17:04.585Z",
+  "totalKeywords": 2456,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1723,6 +1723,7 @@
       "arch-state-management-core.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-executor-details.md",
+      "interfaces-agent-sdk-skill-reference.md",
       "interfaces-agent-sdk-skill.md",
       "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -2456,6 +2457,7 @@
     ],
     "SC": [
       "arch-electron-services-details-part2.md",
+      "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-ipc-preload-runtime.md",
       "task-workflow-completed-skill-lifecycle-design.md"
     ],
@@ -5007,6 +5009,9 @@
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "testing-component-patterns-details.md",
       "ui-ux-feature-components-advanced.md"
+    ],
+    "RuntimeSkillCreatorFacade": [
+      "interfaces-agent-sdk-skill-reference.md"
     ],
     "LAYER": [
       "interfaces-agent-sdk-skill.md",

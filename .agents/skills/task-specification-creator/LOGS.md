@@ -4,6 +4,21 @@
 
 ---
 
+## UT-SC-03-003 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - RuntimeSkillCreatorFacade DI配線実装（TASK-SC-03 派生）
+  - setLLMAdapter() Setter Injection（P34準拠）+ ResourceLoader コンストラクタ注入
+  - fire-and-forget async で LLMAdapterFactory.getAdapter("anthropic") 遅延注入
+  - graceful degradation: LLMAdapter 未注入時はスタブ応答
+  - テスト: TC-1〜TC-9 計11テスト全PASS
+  - 未タスク: 2件（UT-SC-03-003-M01 subscriptionAuthProvider DI配線追加, UT-SC-03-003-M02 テスト内 undefined キャスト除去）
+
+---
+
 ## UT-06-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -17,22 +32,6 @@
   - V1→V2 自動マイグレーション
   - カバレッジ: Line 95.5%, Branch 90.6%, Function 94.1%
   - 未タスク4件検出（sender検証/before-quit/calcExpiresAtLocal重複解消/ロガー統一）
-
----
-
-## TASK-SC-04-OUTPUT-PERSISTENCE 完了（2026-03-23）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 1-12 完了
-- **Result**: success
-- **Notes**:
-  - SkillFileWriter クラス新規作成（LLM 生成スキルコンテンツの永続化）
-  - SkillGeneratedContent 型を packages/shared/src/types/skillCreator.ts に追加
-  - RuntimeSkillCreatorFacade.execute() に永続化フロー統合（extractGeneratedContent + persist）
-  - P42 準拠3段バリデーション + 6層パストラバーサル防止
-  - アトミック書き込み + ロールバック（部分書き込み防止）
-  - 26テスト全 PASS
-  - 未タスク 1 件: UT-SC-04-001（SkillFileWriter インターフェース抽出 P61）
 
 ---
 
@@ -66,10 +65,23 @@
 ## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
 ## TASK-LLM-MOD-01 完了（2026-03-23）
 
-## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
+## TASK-SC-04-OUTPUT-PERSISTENCE 完了（2026-03-23）
 
-## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
-## TASK-SC-03-PLAN-LLM-PROMPT 完了（2026-03-23）
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - SkillFileWriter クラス新規作成（LLM 生成スキルコンテンツの永続化）
+  - SkillGeneratedContent 型を packages/shared/src/types/skillCreator.ts に追加
+  - RuntimeSkillCreatorFacade.execute() に永続化フロー統合（extractGeneratedContent + persist）
+  - P42 準拠3段バリデーション + 6層パストラバーサル防止
+  - アトミック書き込み + ロールバック（部分書き込み防止）
+  - 26テスト全 PASS
+  - 未タスク 1 件: UT-SC-04-001（SkillFileWriter インターフェース抽出 P61）
+
+---
+
+## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
 
 - **Agent**: task-specification-creator
 - **変更内容**: WorkspaceChatPanel header に InlineModelSelector を compact mode で配置。disabled={controller.isStreaming} でストリーミング中ロック。GuidanceBlock(blocked) は Store reactivity で自動連携（変更不要）。統合テスト11件追加、全146テスト PASS。ui-ux-llm-selector.md / task-workflow 更新。
@@ -78,6 +90,7 @@
 
 ---
 
+## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
 ## TASK-SC-03-PLAN-LLM-PROMPT 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -93,22 +106,6 @@
 ---
 
 ## TASK-UI-WORKSPACE-MODEL-SELECTOR-INTEGRATION 実装完了（2026-03-23）
-
-- **Agent**: task-specification-creator
-- **変更内容**: WorkspaceChatPanel header に InlineModelSelector を compact mode で配置。disabled={controller.isStreaming} でストリーミング中ロック。GuidanceBlock(blocked) は Store reactivity で自動連携（変更不要）。統合テスト11件追加、全146テスト PASS。ui-ux-llm-selector.md / task-workflow 更新。
-- **影響ファイル**: WorkspaceChatPanel.tsx, WorkspaceView.test.tsx, WorkspaceChatPanel.guidance.test.tsx, WorkspaceChatPanel.integration.test.tsx (新規)
-- **未タスク**: 0件
-
----
-
-## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
-
-- **Agent**: task-specification-creator
-- **変更内容**: P65 dead-end namespace 既解消確認。skill-creator:* 全16チャネル検証。P65不在テスト + allowlist 包含テスト4件追加。Phase 1-12成果物21ファイル。
-- **未タスク**: 2件（UT-SC-01-IPCRESULT-DEDUP, UT-SC-01-DIP-INTERFACE）
-
----
-
 ## UT-CONV-DB-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator

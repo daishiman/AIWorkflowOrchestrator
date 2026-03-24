@@ -51,7 +51,7 @@ export class RuntimeSkillCreatorFacade {
   private readonly resolver: RuntimePolicyResolver;
   private readonly handoffBuilder: TerminalHandoffBuilder;
   private readonly skillExecutor: SkillExecutor;
-  private readonly llmAdapter?: ILLMAdapter;
+  private llmAdapter?: ILLMAdapter;
   private readonly resourceLoader?: ResourceLoader;
   private readonly skillFileWriter?: SkillFileWriter;
 
@@ -65,6 +65,19 @@ export class RuntimeSkillCreatorFacade {
       deps.subscriptionAuthProvider,
     );
     this.handoffBuilder = new TerminalHandoffBuilder();
+  }
+
+  /**
+   * LLMAdapter を遅延注入する（Setter Injection — P34 準拠）。
+   * LLMAdapterFactory.getAdapter() が非同期のため、コンストラクタ時点では
+   * 注入できない。注入前は graceful degradation でスタブ応答を返す。
+   * 冪等: 複数回呼び出した場合、最後に渡された adapter が使用される。
+   *
+   * @param adapter - 注入する ILLMAdapter インスタンス
+   * @see P34 in .claude/rules/06-known-pitfalls.md
+   */
+  setLLMAdapter(adapter: ILLMAdapter): void {
+    this.llmAdapter = adapter;
   }
 
   private resolveDecision(authMode: AuthMode, apiKey: string | null) {
