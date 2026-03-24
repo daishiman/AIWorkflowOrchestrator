@@ -19,6 +19,30 @@
 
 ---
 
+||||||| d25162720
+## TASK-LLM-MOD-02 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success
+- **Notes**:
+  - AnthropicAdapter.ts L207 の model ID を claude-3-haiku-20240307 から claude-haiku-4-5 に更新
+  - HC-001 テスト追加（checkHealth model フィールド検証）
+  - 12テスト全PASS、TypeCheck エラー0、Lint エラー0
+  - 未タスク2件（TASK-LLM-MOD-HEALTHCHECK-CONST, TASK-LLM-MOD-HEALTHCHECK-BODY）検出・登録
+
+---
+
+## UT-06-003-PRELOAD-API-IMPL 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: `preload/skill-api.ts` に `evaluateSafety` メソッドを追加。`SkillAPI` インターフェース + `skillAPI` オブジェクトの両方に実装。`safeInvoke(IPC_CHANNELS.SKILL_EVALUATE_SAFETY, skillName)` でラップ形式透過。`SafetyGateResult` 型は `@repo/shared` から import（P23準拠）。
+- **影響ファイル**: preload/skill-api.ts, preload/__tests__/skill-api.evaluateSafety.test.ts, preload/__tests__/skill-api.test.ts, preload/__tests__/skill-api.unification.test.ts
+- **テスト**: T-1〜T-6（6テスト）全PASS、既存テスト回帰なし（117テスト全PASS）
+- **Pitfall準拠**: P23/P27/P42/P60/P61 全項目PASS
+
+---
+
 ## UT-06-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -1000,3 +1024,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 5ファイル変更、+359行/-22行
 - テスト: 94件全 PASS
 - 未タスク: 2件（UT-CHATVIEW-ERROR-BANNER-I18N-001、UT-AI-CHAT-ERROR-CODE-INVENTORY-001）
+
+### 2026-03-23: TASK-SC-05-IMPROVE-LLM 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
+| 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
+| 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |

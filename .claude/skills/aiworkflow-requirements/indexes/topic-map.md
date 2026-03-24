@@ -430,11 +430,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L277 |
-| スキルチェーン 型定義（TASK-9D） | L327 |
-| スキルスケジュール 型定義（TASK-9G） | L362 |
-| スキルフォーク 型定義（TASK-9E） | L387 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L435 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L316 |
+| スキルチェーン 型定義（TASK-9D） | L366 |
+| スキルスケジュール 型定義（TASK-9G） | L401 |
+| スキルフォーク 型定義（TASK-9E） | L426 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -864,8 +863,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| スキル安全性評価 IPC チャネル（UT-06-003） | L8 |
-| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L71 |
-| 変更履歴 | L102 |
+| スキルファイルツリー取得 IPC チャネル（TASK-UI-05A） | L72 |
+| 変更履歴 | L103 |
 
 ### references/api-ipc-agent.md
 
@@ -901,8 +900,8 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L200 |
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L547 |
-| AIプロバイダーAPI連携 | L578 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L562 |
+| AIプロバイダーAPI連携 | L593 |
 
 ### references/api-ipc-system-details.md
 
@@ -2595,11 +2594,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L48 |
-| クイックリファレンス: カテゴリ別検索ガイド | L63 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L139 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L471 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L505 |
+| 分割ファイル一覧 | L46 |
+| クイックリファレンス: カテゴリ別検索ガイド | L61 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L137 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L469 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L503 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2619,7 +2618,7 @@ node scripts/list-specs.js --topics
 | 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L327 |
 | 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L369 |
 | TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L416 |
-| 2026-03-23 TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 | L435 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L435 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -3838,8 +3837,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| UT-06-003: DefaultSafetyGate 具象クラス実装完了記録（2026-03-16） | L8 |
-| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L46 |
-| UT-06-001: tool-risk-config-implementation 完了記録（2026-03-16） | L83 |
+| UT-06-003-PRELOAD-API-IMPL: evaluateSafety Preload API 追加完了記録（2026-03-23） | L46 |
+| UT-06-005: abort/skip/retry/timeout Permission Fallback 実装完了記録（2026-03-16） | L85 |
+| UT-06-001: tool-risk-config-implementation 完了記録（2026-03-16） | L122 |
 
 ### references/task-workflow-completed-workspace-chat-lifecycle-tests.md
 

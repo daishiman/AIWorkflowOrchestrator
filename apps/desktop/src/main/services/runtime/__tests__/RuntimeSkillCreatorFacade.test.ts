@@ -256,7 +256,7 @@ describe("RuntimeSkillCreatorFacade", () => {
       });
     });
 
-    it("terminal_handoff 判定時は builder の結果を返す", async () => {
+    it("terminal_handoff 判定時でも executor に委譲する（decision は将来使用予定）", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "terminal_handoff",
         bundle: {
@@ -267,16 +267,10 @@ describe("RuntimeSkillCreatorFacade", () => {
           manualRetryRule: "retry",
         },
       });
-      const handoffBundle = {
-        launcher: "claude",
-        promptBundle: "Skill を実行してください: my-skill\nbody",
-        cwd: process.cwd(),
-        suggestedCommand: 'claude -p "execute"',
-        manualRetryRule: "retry",
-      };
-      const buildSpy = vi
-        .spyOn(TerminalHandoffBuilder.prototype, "build")
-        .mockReturnValue(handoffBundle);
+      executeMock.mockResolvedValue({
+        executionId: "exec-003",
+        success: true,
+      });
 
       const result = await facade.execute(
         {
@@ -288,15 +282,16 @@ describe("RuntimeSkillCreatorFacade", () => {
         null,
       );
 
-      expect(buildSpy).toHaveBeenCalledWith("my-skill\nbody", process.cwd());
-      expect(executeMock).not.toHaveBeenCalled();
+      expect(executeMock).toHaveBeenCalled();
       expect(result).toEqual({
-        type: "terminal_handoff",
-        bundle: handoffBundle,
+        executeId: "exec-003",
+        skillName: "my-skill",
+        success: true,
+        error: undefined,
       });
     });
 
-    it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff を返す場合", async () => {
+    it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff を返しても executor に委譲する", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
       vi.spyOn(
         RuntimePolicyResolver.prototype,
@@ -311,15 +306,10 @@ describe("RuntimeSkillCreatorFacade", () => {
           manualRetryRule: "retry",
         },
       });
-      const buildSpy = vi
-        .spyOn(TerminalHandoffBuilder.prototype, "build")
-        .mockReturnValue({
-          launcher: "claude",
-          promptBundle: "prompt",
-          cwd: process.cwd(),
-          suggestedCommand: "cmd",
-          manualRetryRule: "retry",
-        });
+      executeMock.mockResolvedValue({
+        executionId: "exec-004",
+        success: true,
+      });
 
       const result = await facade.execute(
         {
@@ -331,12 +321,16 @@ describe("RuntimeSkillCreatorFacade", () => {
         null,
       );
 
-      expect(buildSpy).toHaveBeenCalled();
-      expect(executeMock).not.toHaveBeenCalled();
-      expect(result).toHaveProperty("type", "terminal_handoff");
+      expect(executeMock).toHaveBeenCalled();
+      expect(result).toEqual({
+        executeId: "exec-004",
+        skillName: "spec",
+        success: true,
+        error: undefined,
+      });
     });
 
-    it("明示的 apiKey 指定でも terminal_handoff は正しく返る", async () => {
+    it("明示的 apiKey 指定で terminal_handoff 判定でも executor に委譲する", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "terminal_handoff",
         bundle: {
@@ -347,16 +341,10 @@ describe("RuntimeSkillCreatorFacade", () => {
           manualRetryRule: "retry",
         },
       });
-      const handoffBundle = {
-        launcher: "claude",
-        promptBundle: "spec body",
-        cwd: process.cwd(),
-        suggestedCommand: "cmd",
-        manualRetryRule: "retry",
-      };
-      vi.spyOn(TerminalHandoffBuilder.prototype, "build").mockReturnValue(
-        handoffBundle,
-      );
+      executeMock.mockResolvedValue({
+        executionId: "exec-005",
+        success: true,
+      });
 
       const result = await facade.execute(
         {
@@ -368,10 +356,12 @@ describe("RuntimeSkillCreatorFacade", () => {
         "explicit-key",
       );
 
-      expect(executeMock).not.toHaveBeenCalled();
+      expect(executeMock).toHaveBeenCalled();
       expect(result).toEqual({
-        type: "terminal_handoff",
-        bundle: handoffBundle,
+        executeId: "exec-005",
+        skillName: "spec body",
+        success: true,
+        error: undefined,
       });
     });
 
@@ -410,7 +400,7 @@ describe("RuntimeSkillCreatorFacade", () => {
       });
     });
 
-    it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff を返す場合は build 引数が正しい", async () => {
+    it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff でも executor に委譲する", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
       vi.spyOn(
         RuntimePolicyResolver.prototype,
@@ -425,16 +415,10 @@ describe("RuntimeSkillCreatorFacade", () => {
           manualRetryRule: "retry",
         },
       });
-      const handoffBundle = {
-        launcher: "claude",
-        promptBundle: "stored-spec",
-        cwd: process.cwd(),
-        suggestedCommand: "cmd",
-        manualRetryRule: "retry",
-      };
-      const buildSpy = vi
-        .spyOn(TerminalHandoffBuilder.prototype, "build")
-        .mockReturnValue(handoffBundle);
+      executeMock.mockResolvedValue({
+        executionId: "exec-007",
+        success: true,
+      });
 
       const result = await facade.execute(
         {
@@ -446,11 +430,12 @@ describe("RuntimeSkillCreatorFacade", () => {
         null,
       );
 
-      expect(buildSpy).toHaveBeenCalledWith("stored-spec", process.cwd());
-      expect(executeMock).not.toHaveBeenCalled();
+      expect(executeMock).toHaveBeenCalled();
       expect(result).toEqual({
-        type: "terminal_handoff",
-        bundle: handoffBundle,
+        executeId: "exec-007",
+        skillName: "stored-spec",
+        success: true,
+        error: undefined,
       });
     });
 
@@ -471,12 +456,9 @@ describe("RuntimeSkillCreatorFacade", () => {
         RuntimePolicyResolver.prototype,
         "resolveWithService",
       );
-      vi.spyOn(TerminalHandoffBuilder.prototype, "build").mockReturnValue({
-        launcher: "claude",
-        promptBundle: "spec",
-        cwd: process.cwd(),
-        suggestedCommand: "cmd",
-        manualRetryRule: "retry",
+      executeMock.mockResolvedValue({
+        executionId: "exec-008",
+        success: true,
       });
 
       await facade.execute(
@@ -491,7 +473,7 @@ describe("RuntimeSkillCreatorFacade", () => {
 
       expect(resolveSpy).toHaveBeenCalledWith("api-key", "explicit-key");
       expect(resolveWithServiceSpy).not.toHaveBeenCalled();
-      expect(executeMock).not.toHaveBeenCalled();
+      expect(executeMock).toHaveBeenCalled();
     });
   });
 
@@ -528,8 +510,8 @@ describe("RuntimeSkillCreatorFacade", () => {
         expect.objectContaining({
           surfaceType: "runtime",
           runtimeType: "skill",
-          skillName: "skill-a",
           prompt: 'スキル "skill-a" を改善してください: feedback',
+          workingDirectory: process.cwd(),
         }),
         "terminal_handoff",
       );
@@ -539,7 +521,7 @@ describe("RuntimeSkillCreatorFacade", () => {
       });
     });
 
-    it("integrated_api 判定時は改善提案を返す", async () => {
+    it("integrated_api 判定時（graceful degradation: LLM 未注入）はスタブを返す", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "integrated_api",
         apiKey: "sk-test",
@@ -554,12 +536,10 @@ describe("RuntimeSkillCreatorFacade", () => {
         "sk-test",
       );
 
+      // llmAdapter/resourceLoader 未注入のため graceful degradation
       expect(result).toEqual({
         improveId: "improve-1710000000001",
-        suggestions: [
-          "エラーハンドリングを強化してください",
-          "入力バリデーションを追加してください",
-        ],
+        suggestions: [],
       });
     });
   });

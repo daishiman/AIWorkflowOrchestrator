@@ -7,6 +7,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 見出し |
 | --- |
 | 2026-03-24 - UT-SC-03-003 完了（RuntimeSkillCreatorFacade DI配線 / setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter / 11テスト全PASS / 未タスク2件: M01 subscriptionAuthProvider, M02 undefined キャスト除去） |
+||||||| d25162720
+| 2026-03-23 - TASK-LLM-MOD-02 完了（AnthropicAdapter ヘルスチェックモデル更新 / L207 model ID を claude-3-haiku-20240307 から claude-haiku-4-5 に変更 / HC-001 テスト追加 / 12テスト全PASS / 未タスク2件: TASK-LLM-MOD-HEALTHCHECK-CONST, TASK-LLM-MOD-HEALTHCHECK-BODY） |
+| 2026-03-23 - UT-06-003-PRELOAD-API-IMPL 完了（evaluateSafety Preload API 追加 / safeInvoke + IPC_CHANNELS.SKILL_EVALUATE_SAFETY / T-1〜T-6 テスト全PASS / P23/P27/P42/P60/P61 準拠確認済み） |
 | 2026-03-23 - UT-06-002 完了同期（AllowedToolEntryV2 PermissionStore V2 拡張 / ExpiryPolicy 4種 / isToolAllowed 6分岐 / permission:clear-session IPC / V1→V2 マイグレーション / 未タスク4件） |
 | 2026-03-23 - UT-SC-02-002 完了（execute() terminal_handoff 分岐追加 / RuntimeSkillCreatorExecuteResponse Union型 / void decision 除去 / 15テスト全PASS） |
 | 2026-03-23 - UT-EXECUTION-ENV-TERMINAL-001 完了（ExecutionEnvironment.terminal 本実装 + assertNoSilentFallback ガード / P62 対策 / 18テストケース） |
@@ -455,3 +458,16 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - ChatView/index.tsx: インラインエラーバナーUI（Apple HIG systemRed、5秒自動消去）
 - テスト: 94件全 PASS（chatSlice 57件、ChatView 37件）
 - 未タスク: 2件検出（i18n対応、エラーコード一覧明文化）
+
+### 2026-03-23: TASK-SC-05-IMPROVE-LLM 完了
+
+- RuntimeSkillCreatorFacade.improve() の stub を LLM 統合に置換
+- 主要変更:
+  - improve() に LLM 呼び出しパス追加（resolveDecision → SKILL.md 読込 → prompt 構築 → sendChat → パース）
+  - applyImprovement() メソッド新規追加（before/after テキスト置換）
+  - improvePromptConstants.ts 新規作成（IMPROVE_RESPONSE_SCHEMA_INSTRUCTION）
+  - RuntimeSkillCreatorImproveSuggestion 型追加（section/before/after/reason）
+  - SkillFileManager を DI 依存に追加（optional）
+- テスト: 21件追加、全92件 PASS
+- カバレッジ: Line 91.2%, Branch 78.07%, Function 100%
+- 未タスク: 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI）

@@ -19,7 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-23 | 1.9.0 | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 設計教訓3件を追加（状態機械禁止遷移設計、dual-lane アーキテクチャ、IPC namespace 設計時の P65 再発防止） |
+| 2026-03-23 | 1.9.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（LLM統合パターン再利用、空文字列beforeバグ、P4/P51早期完了記載の再発） |
 | 2026-03-23 | 1.8.0 | UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 苦戦箇所2件を追加（エスケープテスト lookbehind regex パターン、adapter サニタイズ対象の統一漏れ） |
 | 2026-03-22 | 1.7.0 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加（structured error primary / legacy fallback 分離、Task 03 root 移管の同波反映） |
 | 2026-03-21 | 1.6.0 | UT-TASK06-007-EXT-006 正規表現 lastIndex 汚染パターン（教訓4）を追加 |
@@ -432,24 +432,16 @@
 
 ---
 
-## 2026-03-23 TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001
+## TASK-SC-05-IMPROVE-LLM（2026-03-23）
 
-### 教訓1: 状態機械の禁止遷移は設計時に明示化する
+### LLM 統合パターンの再利用
 
-- **背景**: SlideUIStatus（synced/running/degraded/guidance）の4状態で、禁止遷移パターン（FT-1〜FT-4）を Phase 2 設計レビュー前に定義できた
-- **知見**: 禁止遷移を先に列挙すると、許可遷移が自然に導出される。「何ができるか」ではなく「何がダメか」から設計するとレビューが効率化する
-- **5分解決カード**: 新規状態機械を設計する際は、まず禁止遷移を列挙（FT テーブル）してから許可遷移図を描く
+`improve()` は `plan()` と同一パターン（ResourceLoader + ILLMAdapter + RESPONSE_SCHEMA_INSTRUCTION + stripMarkdownCodeBlock + type predicate）で実装。新規 LLM 統合メソッド追加時はこのパターンをテンプレートとして使える。`improvePromptConstants.ts` を `planPromptConstants.ts` と対称に作成し、定数管理を統一した。
 
-### 教訓2: dual-lane（integrated/manual）パターンの分離基準
+### 苦戦箇所: isValidImproveResponse の空文字列 before バグ
 
-- **背景**: SlideModifier（Agent SDK adapter）と Manual Fallback（ターミナル直接操作）を `SlideLane` 型で分離した
-- **知見**: 「同じ目的を別手段で達成する」機能は、1つの状態に混在させるとフォールバックロジックが複雑化する。lane 型で型レベルで分離し、各 lane の capability を DTO として公開するのが安全
-- **関連パターン**: P62（DEFAULT_CONFIG fallback 禁止）- 暗黙のフォールバックを禁止し、明示的な lane 選択を強制する設計
-- **5分解決カード**: 同目的・別手段の機能は `Lane` 型で型レベル分離し、capability DTO で各 lane の利用可能性を Renderer に伝達する
+`isValidImproveResponse()` が `typeof item.before === "string"` のみで検証し、空文字列を許容していた。`String.prototype.includes("")` は常に `true`、`String.prototype.replace("", after)` は先頭に不正挿入するため、SKILL.md が破壊される。`item.before.trim() === ""` チェックを追加して解決。LLM 出力のバリデーションでは型だけでなく値の意味的妥当性まで検証すべき（P42 の LLM 出力応用）。
 
-### 教訓3: IPC namespace 設計時の P65 再発防止
+### 苦戦箇所: P4/P51 早期完了記載の再発
 
-- **背景**: `slide:sync:*` を暫定 namespace として設計したが、P65（dead-end namespace）の再発リスクを Phase 10 最終レビューで検出し、UT-SLIDE-TASK09-IPC-NAMESPACE-001 として未タスク化した
-- **知見**: 設計タスクで IPC チャネルを新規定義する際は、Phase 2 の時点で既存 namespace 一覧を `grep -rn "ipcMain.handle" apps/desktop/src/main/` で確認し、新規 namespace 追加の可否をレビューに含める
-- **関連パターン**: P65（dead-end namespace）、P44（IPC インターフェース不整合）
-- **5分解決カード**: 新規 IPC namespace は既存 namespace 一覧と突合し、設計レビューで承認してから追加する
+`documentation-changelog.md` に Step 2「完了」と記載されたが、`interfaces-agent-sdk-skill-reference.md` への型定義追記が実際には未実施だった。P57（先送りパターン）も併発。Phase 12 の同期対象は全ファイル更新後に「完了」を記録すべき。

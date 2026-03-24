@@ -20,22 +20,28 @@ import type {
   ISubscriptionAuthProvider,
 } from "@repo/shared/types/auth-mode";
 import type {
-  RuntimeSkillCreatorExecuteResponse,
+  RuntimeSkillCreatorExecuteResult as SkillExecuteResult,
   RuntimeSkillCreatorImproveResponse,
+  RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorPlanResult as SkillPlanResult,
+  ApplyImprovementResult,
 } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 import type { ILLMAdapter } from "../../adapters/llm/types";
 import type { ResourceLoader } from "../skill/ResourceLoader";
+import type { SkillFileManager } from "../skill/SkillFileManager";
 import type { SkillFileWriter } from "../skill/SkillFileWriter";
-import type { SkillGeneratedContent } from "@repo/shared/types";
 import { RuntimePolicyResolver } from "./RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "./TerminalHandoffBuilder";
 import {
   PLAN_PROMPT_CONSTANTS,
   PLAN_RESPONSE_SCHEMA_INSTRUCTION,
 } from "./planPromptConstants";
+import {
+  IMPROVE_PROMPT_CONSTANTS,
+  IMPROVE_RESPONSE_SCHEMA_INSTRUCTION,
+} from "./improvePromptConstants";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -44,6 +50,7 @@ export interface RuntimeSkillCreatorFacadeDeps {
   subscriptionAuthProvider?: ISubscriptionAuthProvider;
   llmAdapter?: ILLMAdapter;
   resourceLoader?: ResourceLoader;
+  skillFileManager?: SkillFileManager;
   skillFileWriter?: SkillFileWriter;
 }
 
@@ -53,12 +60,14 @@ export class RuntimeSkillCreatorFacade {
   private readonly skillExecutor: SkillExecutor;
   private llmAdapter?: ILLMAdapter;
   private readonly resourceLoader?: ResourceLoader;
+  private readonly skillFileManager?: SkillFileManager;
   private readonly skillFileWriter?: SkillFileWriter;
 
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
     this.llmAdapter = deps.llmAdapter;
     this.resourceLoader = deps.resourceLoader;
+    this.skillFileManager = deps.skillFileManager;
     this.skillFileWriter = deps.skillFileWriter;
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
@@ -177,16 +186,8 @@ export class RuntimeSkillCreatorFacade {
     planResult: SkillPlanResult,
     authMode: AuthMode,
     apiKey: string | null,
-  ): Promise<RuntimeSkillCreatorExecuteResponse> {
+  ): Promise<SkillExecuteResult> {
     const decision = await this.resolveDecision(authMode, apiKey);
-
-    if (decision.type === "terminal_handoff") {
-      const bundle = this.handoffBuilder.build(
-        planResult.skillSpec,
-        process.cwd(),
-      );
-      return { type: "terminal_handoff", bundle };
-    }
 
     const request: SkillExecutionRequest = {
       prompt: planResult.skillSpec,
@@ -205,69 +206,16 @@ export class RuntimeSkillCreatorFacade {
       content: planResult.skillSpec,
     };
 
+    // decision は将来の integrated_api/terminal_handoff 分岐で使用予定
+    void decision;
     const response = await this.skillExecutor.execute(request, skillMeta);
-
-    const skillName =
-      planResult.skillSpec.split("\n")[0]?.substring(0, 50) ?? "unnamed";
-
-    // SkillFileWriter が注入されている場合、LLM 生成コンテンツを永続化
-    if (response.success && this.skillFileWriter) {
-      try {
-        const generatedContent = this.extractGeneratedContent(planResult);
-        await this.skillFileWriter.persist(skillName, generatedContent);
-      } catch (err: unknown) {
-        const errorMessage =
-          err != null && typeof err === "object" && "message" in err
-            ? String((err as { message: string }).message)
-            : "Failed to persist skill files";
-        return {
-          executeId: response.executionId,
-          skillName,
-          success: false,
-          error: `Skill execution succeeded but file persistence failed: ${errorMessage}`,
-        };
-      }
-    }
 
     return {
       executeId: response.executionId,
-      skillName,
+      skillName:
+        planResult.skillSpec.split("\n")[0]?.substring(0, 50) ?? "unnamed",
       success: response.success,
       error: response.error?.message,
-    };
-  }
-
-  private extractGeneratedContent(
-    planResult: SkillPlanResult,
-  ): SkillGeneratedContent {
-    const agentEntries = planResult.agents.map((a) => ({
-      name: a.name,
-      content: `# ${a.name}\n\n${a.role}`,
-    }));
-
-    const scriptEntries = planResult.scripts.map((s) => ({
-      name: s.name,
-      content: `// ${s.name}\n// ${s.purpose}`,
-    }));
-
-    return {
-      skillMd: [
-        `# ${planResult.skillName || "Unnamed Skill"}`,
-        "",
-        planResult.description || "",
-        "",
-        planResult.triggers.length > 0
-          ? `Trigger: ${planResult.triggers.join(", ")}`
-          : "",
-        planResult.anchors.length > 0
-          ? `Anchors: ${planResult.anchors.join(", ")}`
-          : "",
-      ]
-        .filter(Boolean)
-        .join("\n"),
-      agents: agentEntries,
-      scripts: scriptEntries,
-      references: [],
     };
   }
 
@@ -288,7 +236,6 @@ export class RuntimeSkillCreatorFacade {
         {
           surfaceType: "runtime",
           runtimeType: "skill",
-          skillName,
           prompt: `スキル "${skillName}" を改善してください: ${feedback}`,
           workingDirectory: process.cwd(),
         },
@@ -297,15 +244,138 @@ export class RuntimeSkillCreatorFacade {
       return { type: "terminal_handoff", guidance };
     }
 
-    // integrated_api: 改善提案を生成
+    // P42 準拠 3段バリデーション
+    if (typeof skillName !== "string" || skillName.trim() === "") {
+      return {
+        success: false,
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "skillName must be a non-empty string",
+        },
+      };
+    }
+    if (typeof feedback !== "string" || feedback.trim() === "") {
+      return {
+        success: false,
+        error: {
+          code: "VALIDATION_ERROR",
+          message: "feedback must be a non-empty string",
+        },
+      };
+    }
+
     const improveId = `improve-${Date.now()}`;
-    return {
-      improveId,
-      suggestions: [
-        "エラーハンドリングを強化してください",
-        "入力バリデーションを追加してください",
-      ],
-    };
+
+    // Graceful degradation: llmAdapter/resourceLoader 未注入時はスタブ
+    if (!this.llmAdapter || !this.resourceLoader) {
+      return {
+        improveId,
+        suggestions: [],
+      };
+    }
+
+    try {
+      // SKILL.md 読み込み
+      if (!this.skillFileManager) {
+        return {
+          success: false,
+          error: {
+            code: "READ_ERROR",
+            message: "skillFileManager is not available",
+          },
+        };
+      }
+      const skillContent = await this.skillFileManager.readFile(
+        skillName,
+        "SKILL.md",
+      );
+
+      // プロンプト読み込み
+      const agentPrompt = await this.resourceLoader.loadAgent(
+        IMPROVE_PROMPT_CONSTANTS.AGENT_NAME,
+      );
+
+      // system プロンプト = improve-prompt.md + IMPROVE_RESPONSE_SCHEMA_INSTRUCTION
+      const systemPrompt = `${agentPrompt}\n\n${IMPROVE_RESPONSE_SCHEMA_INSTRUCTION}`;
+
+      // user プロンプト
+      const userPrompt = buildImproveUserPrompt(feedback, skillContent);
+
+      // LLM 呼び出し
+      const response = await this.llmAdapter.sendChat({
+        modelId: IMPROVE_PROMPT_CONSTANTS.DEFAULT_MODEL_ID,
+        systemPrompt,
+        messages: [{ role: "user", content: userPrompt }],
+        maxTokens: IMPROVE_PROMPT_CONSTANTS.DEFAULT_MAX_TOKENS,
+        temperature: IMPROVE_PROMPT_CONSTANTS.DEFAULT_TEMPERATURE,
+      });
+
+      // レスポンスパース
+      const parseResult = parseImproveResponse(response.content);
+      if (!parseResult.success) {
+        return {
+          success: false,
+          error: { code: "PARSE_ERROR", message: parseResult.error },
+        };
+      }
+
+      return {
+        improveId,
+        suggestions: parseResult.suggestions,
+        revisedSpec: parseResult.revisedSpec,
+      };
+    } catch (error: unknown) {
+      return handleImproveError(error);
+    }
+  }
+
+  /**
+   * 改善提案を SKILL.md に適用する。
+   * before/after テキストによる文字列置換を順次適用。
+   */
+  async applyImprovement(
+    skillName: string,
+    suggestions: RuntimeSkillCreatorImproveSuggestion[],
+  ): Promise<ApplyImprovementResult> {
+    if (!this.skillFileManager) {
+      return {
+        applied: 0,
+        skipped: 0,
+        skippedDetails: [],
+        errors: ["skillFileManager is not available"],
+      };
+    }
+
+    let content = await this.skillFileManager.readFile(skillName, "SKILL.md");
+    let applied = 0;
+    let skipped = 0;
+    const skippedDetails: Array<{ section: string; reason: string }> = [];
+    const errors: string[] = [];
+
+    for (const suggestion of suggestions) {
+      if (content.includes(suggestion.before)) {
+        content = content.replace(suggestion.before, suggestion.after);
+        applied++;
+      } else {
+        skipped++;
+        skippedDetails.push({
+          section: suggestion.section,
+          reason: `before text not found in SKILL.md`,
+        });
+      }
+    }
+
+    if (applied > 0) {
+      try {
+        await this.skillFileManager.writeFile(skillName, "SKILL.md", content);
+      } catch (error: unknown) {
+        const errMsg =
+          error instanceof Error ? error.message : "Unknown write error";
+        errors.push(errMsg);
+      }
+    }
+
+    return { applied, skipped, skippedDetails, errors };
   }
 }
 
@@ -411,4 +481,145 @@ function isValidPlanResponse(value: unknown): value is LLMPlanResponse {
     return false;
 
   return true;
+}
+
+// --- improve() Helper functions ---
+
+interface LLMImprovement {
+  section: string;
+  issue?: string;
+  pattern?: string;
+  before: string;
+  after: string;
+}
+
+interface LLMImproveResponse {
+  improvements: LLMImprovement[];
+  improvedContent?: string;
+}
+
+interface ImproveParseSuccess {
+  success: true;
+  suggestions: RuntimeSkillCreatorImproveSuggestion[];
+  revisedSpec?: string;
+}
+
+interface ImproveParseFailure {
+  success: false;
+  error: string;
+}
+
+type ImproveParseResult = ImproveParseSuccess | ImproveParseFailure;
+
+export function buildImproveUserPrompt(
+  feedback: string,
+  skillContent: string,
+): string {
+  return `以下のスキルに対するフィードバックに基づいて、改善提案を生成してください。
+
+## フィードバック
+${feedback}
+
+## 現在のSKILL.md
+${skillContent}`;
+}
+
+/** LLM 改善提案の1件を RuntimeSkillCreatorImproveSuggestion に変換する */
+function mapToSuggestion(
+  raw: LLMImprovement,
+): RuntimeSkillCreatorImproveSuggestion {
+  const reason =
+    [raw.issue, raw.pattern ? `(改善パターン: ${raw.pattern})` : ""]
+      .filter(Boolean)
+      .join(" ") || "改善理由の詳細は提供されていません";
+
+  return {
+    section: raw.section,
+    before: raw.before,
+    after: raw.after,
+    reason,
+  };
+}
+
+/** LLM レスポンスが有効な improve 形式かを検証する（P49: in 演算子使用） */
+function isValidImproveResponse(value: unknown): value is LLMImproveResponse {
+  if (value == null || typeof value !== "object") return false;
+  if (!("improvements" in value) || !Array.isArray(value.improvements))
+    return false;
+
+  return value.improvements.every((item: unknown) => {
+    if (item == null || typeof item !== "object") return false;
+    if (!("section" in item) || typeof item.section !== "string") return false;
+    if (!("before" in item) || typeof item.before !== "string") return false;
+    if (!("after" in item) || typeof item.after !== "string") return false;
+    // 空文字列 before は content.includes("") → 常に true となり
+    // content.replace("", after) で先頭に不正挿入されるため拒否する
+    if (item.before.trim() === "") return false;
+    return true;
+  });
+}
+
+/** LLM レスポンス文字列から改善提案をパースする */
+export function parseImproveResponse(responseText: string): ImproveParseResult {
+  try {
+    const cleaned = stripMarkdownCodeBlock(responseText);
+    const parsed: unknown = JSON.parse(cleaned);
+
+    if (!isValidImproveResponse(parsed)) {
+      return {
+        success: false,
+        error: "LLM response does not match expected improve schema",
+      };
+    }
+
+    const suggestions = parsed.improvements.map(mapToSuggestion);
+    return {
+      success: true,
+      suggestions,
+      revisedSpec:
+        "improvedContent" in parsed &&
+        typeof parsed.improvedContent === "string"
+          ? parsed.improvedContent
+          : undefined,
+    };
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error ? error.message : "Unknown parse error";
+    return { success: false, error: message };
+  }
+}
+
+/** improve() のエラーをIPC wrapper形式に変換する */
+function handleImproveError(
+  error: unknown,
+): RuntimeSkillCreatorImproveResponse {
+  if (error instanceof Error) {
+    const name = error.constructor.name;
+    if (name === "SkillNotFoundError") {
+      return {
+        success: false,
+        error: { code: "SKILL_NOT_FOUND", message: error.message },
+      };
+    }
+    if (name === "FileNotFoundError") {
+      return {
+        success: false,
+        error: { code: "READ_ERROR", message: error.message },
+      };
+    }
+    if (name === "ReadonlySkillError") {
+      return {
+        success: false,
+        error: { code: "READONLY_SKILL", message: error.message },
+      };
+    }
+    return {
+      success: false,
+      error: { code: "LLM_ERROR", message: error.message },
+    };
+  }
+  return {
+    success: false,
+    error: { code: "LLM_ERROR", message: "Unknown error" },
+  };
 }

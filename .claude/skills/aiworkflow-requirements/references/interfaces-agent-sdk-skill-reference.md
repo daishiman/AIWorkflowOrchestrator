@@ -141,6 +141,45 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 
 型定義の正本は `packages/shared/src/types/skillCreator.ts` とし、renderer surface は上記型へ収束する。
 
+#### improve() 型定義詳細（TASK-SC-05-IMPROVE-LLM）
+
+**RuntimeSkillCreatorImproveSuggestion** — 構造化された改善提案:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `section` | `string` | 対象セクション名 |
+| `before` | `string` | 変更前テキスト（空文字列不可） |
+| `after` | `string` | 変更後テキスト |
+| `reason` | `string` | 変更理由（LLM の issue + pattern を統合） |
+
+**RuntimeSkillCreatorImproveResult** — improve 成功時レスポンス:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `improveId` | `string` | 改善セッション ID（`improve-{timestamp}`） |
+| `suggestions` | `RuntimeSkillCreatorImproveSuggestion[]` | 改善提案配列（旧: `string[]`） |
+| `revisedSpec?` | `string` | LLM が生成した改善後 SKILL.md 全文（optional） |
+
+**ApplyImprovementResult** — 改善適用結果:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `applied` | `number` | 適用成功件数 |
+| `skipped` | `number` | スキップ件数（before 不一致） |
+| `skippedDetails` | `Array<{ section: string; reason: string }>` | スキップ詳細 |
+| `errors` | `string[]` | 書き込みエラー一覧 |
+
+**RuntimeSkillCreatorImproveErrorResponse** — improve エラー時レスポンス（P60 準拠 IPC wrapper 形式）:
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `success` | `false` | 固定値 |
+| `error.code` | `string` | エラーコード（VALIDATION_ERROR / SKILL_NOT_FOUND / READ_ERROR / PARSE_ERROR / LLM_ERROR / READONLY_SKILL） |
+| `error.message` | `string` | エラー詳細メッセージ |
+
+**RuntimeSkillCreatorImproveResponse** — union 型:
+`RuntimeSkillCreatorImproveResult | { type: "terminal_handoff"; bundle: TerminalHandoffBundle } | RuntimeSkillCreatorImproveErrorResponse`
+
 #### 進行状況
 
 | role | UIラベル | 実装 | UI 露出ルール |

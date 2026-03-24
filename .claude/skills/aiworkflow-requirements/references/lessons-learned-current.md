@@ -19,18 +19,15 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-23 | 2.3.2 | TASK-SC-04-OUTPUT-PERSISTENCE の SkillFileWriter 永続化教訓2件を追加（L-SC04-001〜002） |
-| 2026-03-23 | 2.3.1 | TASK-SC-03-PLAN-LLM-PROMPT の LLM プロンプト統合教訓3件を追加（L-SC03-001〜003） |
 | 2026-03-22 | 2.2.3 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 の Phase 12 教訓4件を追加 |
 | 2026-03-21 | 2.2.1 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
 | 2026-03-21 | 2.2.0 | UT-SLIDE-UI-001 教訓3件を追加（L-SLIDE-UI-001〜003） |
 | 2026-03-21 | 2.2.2 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓を追記 |
 | 2026-03-21 | 2.2.1 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 最終再監査教訓を追記 |
 | 2026-03-21 | 2.2.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
-| 2026-03-22 | 2.2.4 | TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 の苦戦箇所3件を追加（L-SLIDE-RUNTIME-001〜003） |
+
+| 2026-03-23 | 2.5.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（→ [ipc-preload-runtime](lessons-learned-ipc-preload-runtime.md): LLM統合パターン再利用、空文字列beforeバグ、P4/P51再発） |
 | 2026-03-23 | 2.4.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003: GAP ラベルドリフト / DEFERRED 判断誤り / ViewType 型不一致） |
-| 2026-03-23 | 2.3.2 | UT-RUNTIME-BUILDER-MIGRATION-001 教訓2件を追加（L-RBM-001: shared型3レイヤー波及、L-RBM-002: sanitize テスト正規表現） |
-| 2026-03-23 | 2.3.1 | UT-EXECUTION-ENV-TERMINAL-001 教訓1件を追加（L-EXEC-TERMINAL-001） |
 | 2026-03-22 | 2.3.1 | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 設計タスク教訓2件を追加（L-TCPL-001〜002） |
 | 2026-03-22 | 2.3.0 | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 設計タスク教訓3件を追加（L-THSR-001〜003） |
 | 2026-03-22 | 2.2.3 | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR の same-wave sync 教訓を追加 |
@@ -568,46 +565,3 @@
 - **原因**: Phase 12 を並列エージェントで分担した結果、summary 作成エージェントと未タスク検出エージェントの間で情報が断絶した
 - **解決策**: documentation-changelog は全 Task 完了後にメインエージェントが一括作成する。件数は unassigned-task-detection.md の確定値を参照し、他ファイルの「予測値」を使わない
 - **教訓**: Phase 12 の件数系データは最後に1箇所で確定し、全ファイルにコピーする（逆方向の参照は禁止）
-
-### UT-EXECUTION-ENV-TERMINAL-001（2026-03-23）
-
-#### L-EXEC-TERMINAL-001: モノレポ package.json exports 未定義のサブパス import
-
-- **症状**: `@repo/shared/types/handoff` で import したところ TypeScript が TS2307（モジュール未検出）エラーを出力。テスト（Vitest）では alias 解決により動作するが `tsc --noEmit` で失敗
-- **原因**: `packages/shared/package.json` の `exports` フィールドに `./types/handoff` サブパスが未定義。`./types` までしか定義されていない
-- **解決策**: 既存コードの import パターン（`@repo/shared` ルート or `@repo/shared/types`）を `grep` で確認してから import を記述する。今回は `@repo/shared` ルートからの import に修正
-- **教訓**: モノレポで新しい型を import する際は、`package.json` の `exports` フィールドと既存コードの import パターンを事前確認する。テスト環境（Vitest alias）と TypeScript コンパイラ（tsc）でモジュール解決ロジックが異なるため、テスト PASS だけでは不十分
-
-### TASK-SC-03-PLAN-LLM-PROMPT（2026-03-23）
-
-#### L-SC03-001: agent 仕様書注入による LLM プロンプト設計パターン
-
-- **パターン**: `ResourceLoader.loadAgent()` で複数の agent 仕様書を読み込み、`buildPlanSystemPrompt()` で区切り文字付き連結 + JSON スキーマ指示を末尾付加する
-- **効果**: LLM に「問題発見 → 設計 → 構造」の段階的思考を誘導し、構造化 JSON を確実に返させる
-- **再利用先**: execute() / improve() メソッドの LLM 統合時に同パターンを適用可能
-
-#### L-SC03-002: `in` 演算子ベース型ガード（parsePlanResponse）
-
-- **パターン**: LLM レスポンス（`unknown` 型）を `in` 演算子 + `typeof` + `Array.isArray()` で段階的に検証する型ガード関数群（`isValidPlanResponse` / `isValidAgentEntry` / `isValidScriptEntry`）
-- **効果**: P49（`as` キャスト）を完全回避し、実行時型安全性を確保。テストでのバリデーションエラー検証も容易
-- **教訓**: 外部入力（LLM レスポンス）の検証は必ず `in` 演算子ベースで行い、`as` キャストを使わない
-
-#### L-SC03-003: ILLMAdapter オプション DI による graceful degradation
-
-- **パターン**: `llmAdapter?: ILLMAdapter` をオプション注入し、未注入時はスタブレスポンスを返す
-- **効果**: DI 配線（ipc/index.ts）が未完了でも Facade が生成可能。テスト時のモック差し替えも容易
-- **教訓**: 外部サービス依存の DI はオプション注入 + graceful degradation をデフォルトにする（P54 対策と統合）
-
-### TASK-SC-04-OUTPUT-PERSISTENCE（2026-03-23）
-
-#### L-SC04-001: `fs.access()` の ENOENT 例外を「正常系」として扱うパターン
-
-- **パターン**: ディレクトリ存在確認に `fs.access()` を使用する場合、ディレクトリが存在しないと ENOENT 例外がスローされる。これを try-catch で捕捉し、catch 内で `fs.mkdir()` を実行する「error-as-success」パターン
-- **効果**: `fs.existsSync()` による TOCTOU 競合を回避し、ディレクトリ作成の原子性を向上
-- **教訓**: Node.js ファイルシステム API では「例外 = エラー」ではなく「例外 = 状態通知」として設計されるケースがある。特に `fs.access()` / `fs.stat()` は存在チェック目的で使われるが、非存在時に例外をスローするため、try-catch を正常フローの一部として設計する必要がある
-
-#### L-SC04-002: OS レベルトランザクション不在下でのアトミック書き込み戦略
-
-- **パターン**: ファイルシステムには RDBMS のような COMMIT/ROLLBACK がないため、SkillFileWriter では「書き込み済みファイルパスのリスト」を保持し、エラー発生時に明示的に `fs.unlink()` で削除する手動ロールバック戦略を採用
-- **効果**: 複数ファイル（SKILL.md + agents/ + scripts/ + references/）の書き込み途中でエラーが発生した場合、部分的に書き込まれた不完全なスキルディレクトリが残存しない
-- **教訓**: ファイルシステムへの複数ファイル永続化では、(1) 書き込み順序の決定 (2) 各書き込み成功後のパス記録 (3) エラー時の逆順削除 の3ステップが最小限のアトミック性保証になる。tmpdir への書き込み後に rename する方式はより堅牢だが、クロスデバイス rename の制約がある
