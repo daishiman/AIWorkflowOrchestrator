@@ -78,6 +78,21 @@
 ---
 
 
+## UT-SLIDE-IMPL-001 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - Slide Modifier / agent-client 実装（Task08 派生）
+  - ModifierResponse 型拡張（fallback_reason / suggested_action optional 追加）
+  - agent-client.ts DI版 createModifierAgentAPI ファクトリ実装
+  - SlideCapabilityDTO + slide:capability:get IPC channel + P42 3段バリデーション
+  - channel-sync テスト（Preload ⇔ Main チャネル名一致検証）
+  - 未タスク: 0件
+
+---
+
 ## TASK-LLM-MOD-02 完了（2026-03-23）
 
 - **Agent**: task-specification-creator

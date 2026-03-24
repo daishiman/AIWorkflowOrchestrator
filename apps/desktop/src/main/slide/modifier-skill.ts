@@ -9,6 +9,8 @@
 
 import { readFile } from "fs/promises";
 import { getAgentAPI } from "./agent-client";
+import type { ModifierResponse, StructureChange } from "@repo/shared";
+export type { ModifierResponse, StructureChange };
 
 /**
  * HTMLファイルの最大サイズ（10MB）
@@ -22,25 +24,6 @@ export interface ModifierContext {
   projectPath: string;
   htmlContent: string;
   structureContent: string;
-}
-
-/**
- * 構造変更の型
- */
-export interface StructureChange {
-  type: "modify" | "add" | "delete";
-  section: string;
-  before?: string;
-  after?: string;
-}
-
-/**
- * Modifier Skillのレスポンス
- */
-export interface ModifierResponse {
-  success: boolean;
-  changes?: StructureChange[];
-  error?: string;
 }
 
 /**
@@ -243,6 +226,12 @@ export function parseModifierResponse(response: string): ModifierResponse {
   return {
     success: true,
     changes: validatedChanges,
+    fallback_reason:
+      typeof obj.fallback_reason === "string" ? obj.fallback_reason : undefined,
+    suggested_action:
+      typeof obj.suggested_action === "string"
+        ? obj.suggested_action
+        : undefined,
   };
 }
 

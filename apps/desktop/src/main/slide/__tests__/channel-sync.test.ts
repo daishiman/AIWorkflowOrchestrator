@@ -74,6 +74,12 @@ describe("Preload <-> Main チャネル同期 (P44)", () => {
     it("CANCEL should match", () => {
       expect(SLIDE_INVOKE_CHANNELS.CANCEL).toBe(IPC_CHANNELS.SLIDE_CANCEL);
     });
+
+    it("CAPABILITY_GET should match", () => {
+      expect(SLIDE_INVOKE_CHANNELS.CAPABILITY_GET).toBe(
+        IPC_CHANNELS.SLIDE_CAPABILITY_GET,
+      );
+    });
   });
 
   describe("push channels should match", () => {
@@ -111,6 +117,25 @@ describe("Preload <-> Main チャネル同期 (P44)", () => {
       expect(SLIDE_PUSH_CHANNELS.WATCH_STATUS).toBe(
         IPC_CHANNELS.SLIDE_WATCH_STATUS,
       );
+    });
+  });
+
+  // UT-SLIDE-IMPL-001 T4-1 ~ T4-3: SLIDE_CAPABILITY_GET チャネル検証
+  describe("SLIDE_CAPABILITY_GET channel (T4-1 ~ T4-3)", () => {
+    it("T4-1: SLIDE_CAPABILITY_GET should be defined in IPC_CHANNELS", () => {
+      expect(IPC_CHANNELS.SLIDE_CAPABILITY_GET).toBeDefined();
+    });
+
+    it("T4-2: SLIDE_CAPABILITY_GET should be in ALLOWED_INVOKE_CHANNELS", async () => {
+      const { ALLOWED_INVOKE_CHANNELS } =
+        await import("../../../preload/channels");
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(
+        IPC_CHANNELS.SLIDE_CAPABILITY_GET,
+      );
+    });
+
+    it("T4-3: channel name should be slide:capability:get", () => {
+      expect(IPC_CHANNELS.SLIDE_CAPABILITY_GET).toBe("slide:capability:get");
     });
   });
 
