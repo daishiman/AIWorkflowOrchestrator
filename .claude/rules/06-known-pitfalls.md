@@ -849,3 +849,27 @@ export function registerSkillCreatorHandlers(
   });
 }
 ```
+
+### P67: React Props Silent Drop（destructuring 除外による未使用検出不能）
+
+- **教訓**: TypeScript は React コンポーネントの Props destructuring で特定の prop を除外しても型エラーを出さない。`onClose` のような必須 callback prop が destructuring から除外されても、コンパイル・テスト全 PASS のまま見過ごされる。Phase 10 最終レビューで人間が発見するまで検出できなかった
+- **症状**: コンポーネントのパネル閉じるボタンが無反応、`onClose` が undefined のまま呼ばれない
+- **解決策**: Props destructuring 後に `// Props: onClose, suggestions, ...` のようなコメントで全 Props を列挙するか、ESLint `no-unused-vars` を Props に対しても適用する。Phase 10 レビューチェックリストに「全 Props が destructuring に含まれているか」を追加
+- **再発防止**: コンポーネント実装時に Props interface の全フィールドと destructuring を突合する。`Object.keys(props)` でランタイム検証するデバッグテストを追加することも有効
+- **関連パターン**: P44（IPC インターフェース不整合）
+- **関連タスク**: UT-SC-05-APPLY-IMPROVEMENT-UI
+
+```typescript
+// P67: TypeScript は警告しない
+interface PanelProps {
+  onClose: () => void;
+  suggestions: Suggestion[];
+  skillName: string;
+}
+
+// ❌ onClose が destructuring から除外されているが型エラーなし
+const Panel: React.FC<PanelProps> = ({ suggestions, skillName }) => { ... };
+
+// ✅ 全 Props を destructuring に含める
+const Panel: React.FC<PanelProps> = ({ onClose, suggestions, skillName }) => { ... };
+```

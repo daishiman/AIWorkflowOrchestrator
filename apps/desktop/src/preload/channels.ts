@@ -325,6 +325,7 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_PLAN: "skill-creator:plan",
   SKILL_CREATOR_EXECUTE_PLAN: "skill-creator:execute-plan",
   SKILL_CREATOR_IMPROVE_SKILL: "skill-creator:improve-skill",
+  SKILL_CREATOR_APPLY_IMPROVEMENT: "skill-creator:apply-improvement",
 
   // Skill Creator extended operations (TASK-9B Phase 5)
   SKILL_CREATOR_IMPROVE: "skill-creator:improve",
@@ -610,6 +611,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_PLAN,
   IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
   IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL,
+  IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT,
   // Skill Creator extended channels (TASK-9B Phase 5)
   IPC_CHANNELS.SKILL_CREATOR_IMPROVE,
   IPC_CHANNELS.SKILL_CREATOR_FORK,

@@ -29,6 +29,8 @@ SKILL_CREATOR_APPLY_IMPROVEMENT: "skill-creator:apply-improvement",
 
 #### 1-2. IPC ハンドラ（creatorHandlers.ts）
 
+以下は**規範的参照実装**である。Phase 5 で本コードを基に実装し、Phase 8 で `isSuggestion()` 型ガード関数への抽出を行う:
+
 ```typescript
 // registerRuntimeSkillCreatorHandlers() 内に追加
 ipcMain.handle(
@@ -114,9 +116,9 @@ ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT);
 
 ### Task 2: Preload API 設計
 
-#### 2-1. skill-api.ts
+#### 2-1. skill-creator-api.ts
 
-既存の skillCreator セクション（`SKILL_CREATOR_IMPROVE_SKILL` の呼び出し後）に追加:
+既存の Runtime Skill Creator セクション（`SKILL_CREATOR_IMPROVE_SKILL` の呼び出し後）に追加:
 
 ```typescript
 // Runtime Skill Creator - Apply Improvement
@@ -137,7 +139,7 @@ applyRuntimeImprovement: (
 
 #### 2-2. 型定義
 
-`preload/types.ts` の既存 skillCreator API セクションに以下を追加:
+`preload/types.ts` の既存 Runtime Skill Creator API セクションに以下を追加:
 
 ```typescript
 applyRuntimeImprovement: (
@@ -153,14 +155,15 @@ applyRuntimeImprovement: (
 #### 3-1. コンポーネント階層（Atomic Design）
 
 ```
-ImprovementProposalPanel (organisms)
-  ├── ToolBar (molecules) - 全選択/全解除/適用ボタン
+ImprovementProposalPanel (organisms) ← 状態管理 + IPC 呼び出し
+  ├── ToolBar (内部実装) - 全選択/全解除/適用ボタン
   ├── ImprovementProposalList (organisms) - 提案リスト
   │   └── ImprovementProposalItem[] (molecules) - 個別提案
-  │       ├── DiffBlock (atoms) - before/after 表示
-  │       └── Checkbox (atoms) - 承認チェック
+  │       └── before/after diff ブロック (インライン実装)
   └── ImprovementApplyResult (molecules) - 適用結果表示
 ```
+
+注: `DiffBlock` と `Checkbox` を独立 atoms として抽出するかは Phase 8（リファクタリング）で判断する。Phase 5 では `ImprovementProposalItem` 内にインライン実装する。
 
 #### 3-2. ImprovementProposalItem Props
 
@@ -249,7 +252,86 @@ export const diffStyles = {
 } as const;
 ```
 
+### Task 3.5: 接続先設計
+
+#### パネルの配置先
+
+`ImprovementProposalPanel` は `improveSkill` 実行後の結果表示として、既存の Skill Creator 実行フロー内に組み込む。
+
+```
+[Skill Creator 実行画面]
+  ├── plan() → PlanResult 表示
+  ├── execute() → ExecuteResult 表示
+  └── improve() → ImproveSuggestion[] 取得
+       └── ImprovementProposalPanel 表示
+            ├── 提案一覧（ImprovementProposalList）
+            ├── [適用] → applyRuntimeImprovement()
+            └── ImprovementApplyResult 表示
+```
+
+#### suggestions の出所
+
+`improveSkill` IPC の実行結果（`RuntimeSkillCreatorImproveResponse.suggestions`）を Renderer 側で state に保持し、`ImprovementProposalPanel` に Props として渡す。
+
+```typescript
+// 呼び出し元（SkillCreatorView 等）での使用イメージ
+const [suggestions, setSuggestions] = useState<
+  RuntimeSkillCreatorImproveSuggestion[]
+>([]);
+const [showProposalPanel, setShowProposalPanel] = useState(false);
+
+// improve 実行後
+const result =
+  await window.electronAPI.skillCreator.improveRuntimeSkill(skillName);
+if (result.success && result.data.suggestions.length > 0) {
+  setSuggestions(result.data.suggestions);
+  setShowProposalPanel(true);
+}
+```
+
+#### ImprovementProposalPanel Props
+
+```typescript
+export interface ImprovementProposalPanelProps {
+  skillName: string;
+  suggestions: RuntimeSkillCreatorImproveSuggestion[];
+  onClose: () => void;
+  onApplyComplete?: (result: ApplyImprovementResult) => void;
+}
+```
+
+`ImprovementProposalPanel` は内部で `selectedIndices`、`isApplying`、`applyResult`、`error` を `useState` で管理し、`ImprovementProposalList` と `ImprovementApplyResult` を子コンポーネントとして描画する。
+
 ### Task 4: データフロー
+
+#### 全体フロー（improve → proposals → apply）
+
+```
+[Renderer]                    [Preload]                     [Main Process]
+    |                            |                              |
+    |-- improveRuntimeSkill --->|-- skill-creator:improve ---->|
+    |                            |   -skill                    |-- facade.improve()
+    |<-- suggestions[] ---------|<-- IpcResult<Improve...> ---|
+    |                            |                              |
+    | setState(suggestions)      |                              |
+    | showProposalPanel(true)    |                              |
+    |                            |                              |
+    | ユーザーが提案を選択       |                              |
+    | [適用] ボタン押下          |                              |
+    |                            |                              |
+    |-- applyRuntimeImprovement-|-- skill-creator:apply ------>|
+    |   (skillName, selected)   |   -improvement               |
+    |                            |                              |-- validateIpcSender()
+    |                            |                              |-- validateArgs()
+    |                            |                              |-- facade.applyImprovement()
+    |                            |                              |
+    |<-- IpcResult<Apply...> ---|<-- IpcResult<Apply...> -----|
+    |                            |                              |
+    | 結果を表示                 |                              |
+    | onApplyComplete() 通知     |                              |
+```
+
+#### 適用フロー（詳細）
 
 ```
 [Renderer]                    [Preload]                     [Main Process]
@@ -285,6 +367,41 @@ export const diffStyles = {
 ## 成果物
 
 - 本ファイル（`phase-02-design.md`）
+- ※ ImprovementProposalPanel の接続先設計（Task 3.5）を含む
+
+## 統合テスト連携
+
+本 Phase（設計）で統合テスト観点を設計する:
+
+- IPC ハンドラ引数形式（`{ skillName, suggestions }` オブジェクト）と Preload API 呼び出し形式の一致確認
+- `improveSkill` → `ImprovementProposalPanel` 表示 → `applyRuntimeImprovement` の E2E フロー設計
+- Phase 6 統合テスト（I-1 ~ I-3）の設計根拠を本 Phase で確定
+
+## 多角的チェック観点
+
+| 観点           | 適用判断                        | 仕様参照先                                          |
+| -------------- | ------------------------------- | --------------------------------------------------- |
+| セキュリティ   | IPC ハンドラバリデーション設計  | `aiworkflow-requirements: security-electron-ipc.md` |
+| UI/UX          | Atomic Design 階層 + diff 表示  | `aiworkflow-requirements: ui-ux-*.md`               |
+| アーキテクチャ | 3層データフロー設計             | `aiworkflow-requirements: architecture-*.md`        |
+| IPC通信        | チャンネル定義 + レスポンス形式 | `aiworkflow-requirements: api-*.md`                 |
+| Preload        | safeInvoke + 型定義             | `aiworkflow-requirements: security-api-electron.md` |
+
+## サブタスク管理
+
+Phase 実行開始時に以下のサブタスクを作成:
+
+1. IPC チャンネル・ハンドラ設計（Task 1）
+2. Preload API 設計（Task 2）
+3. Renderer コンポーネント設計（Task 3）
+4. 接続先設計（Task 3.5）
+5. データフロー図作成（Task 4）
+
+## タスク100%実行確認
+
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.json が更新されている
 
 ## 完了条件
 
@@ -297,6 +414,8 @@ export const diffStyles = {
 - [x] CSS 変数ベースのスタイル設計が P47 準拠で記述されている
 - [x] データフローが3層で図示されている
 - [x] レスポンス形式が P60 準拠の wrapper 形式で統一されている
+- [x] ImprovementProposalPanel の接続先（improve 結果からの遷移）が設計されている
+- [x] suggestions の出所（improveSkill レスポンス → state → Props）が設計されている
 
 ## 次の Phase
 

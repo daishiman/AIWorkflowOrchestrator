@@ -36,7 +36,7 @@ pnpm typecheck
 重点チェック項目:
 
 - `creatorHandlers.ts` の新ハンドラ型定義
-- `skill-api.ts` の `applyRuntimeImprovement` メソッド型
+- `skill-creator-api.ts` の `applyRuntimeImprovement` メソッド型
 - 新規コンポーネントの Props 型
 
 ### Task 3: 全テスト実行
@@ -58,12 +58,12 @@ grep -n "SKILL_CREATOR_APPLY_IMPROVEMENT" apps/desktop/src/preload/channels.ts
 grep -n "SKILL_CREATOR_APPLY_IMPROVEMENT" apps/desktop/src/main/ipc/creatorHandlers.ts
 
 # Preload API での使用確認
-grep -n "SKILL_CREATOR_APPLY_IMPROVEMENT" apps/desktop/src/preload/skill-api.ts
+grep -n "SKILL_CREATOR_APPLY_IMPROVEMENT" apps/desktop/src/preload/skill-creator-api.ts
 ```
 
 - [ ] `channels.ts`: チャンネル定義 + `ALLOWED_INVOKE_CHANNELS` に存在
 - [ ] `creatorHandlers.ts`: `ipcMain.handle` + `ipcMain.removeHandler` に存在
-- [ ] `skill-api.ts`: `safeInvoke` で参照されている
+- [ ] `skill-creator-api.ts`: `safeInvoke` で参照されている
 - [ ] ハードコード文字列（`"skill-creator:apply-improvement"`）がハンドラ・Preload に存在しない（P27 準拠）
 
 ### Task 5: セキュリティ確認
@@ -81,6 +81,34 @@ grep -n "SKILL_CREATOR_APPLY_IMPROVEMENT" apps/desktop/src/preload/skill-api.ts
 ## 成果物
 
 - 品質検証結果（本ファイルのチェックリストに記録）
+
+## 統合テスト連携
+
+本 Phase（品質検証）では全テスト実行により統合テスト（I-1 ~ I-5）を含む全テストの PASS を確認する。
+
+## 多角的チェック観点
+
+| 観点         | 適用判断                  | 仕様参照先                               |
+| ------------ | ------------------------- | ---------------------------------------- |
+| セキュリティ | IPC 契約検証（3箇所一致） | `.claude/rules/04-electron-security.md`  |
+| コード品質   | ESLint + TypeScript       | `.claude/rules/02-code-quality.md`       |
+| IPC通信      | ハードコード文字列検出    | `.claude/rules/06-known-pitfalls.md` P27 |
+
+## サブタスク管理
+
+Phase 実行開始時に以下のサブタスクを作成:
+
+1. ESLint 実行（Task 1）
+2. TypeScript 型チェック（Task 2）
+3. 全テスト実行（Task 3）
+4. IPC 契約検証（Task 4）
+5. セキュリティ確認（Task 5）
+
+## タスク100%実行確認
+
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.json が更新されている
 
 ## 完了条件
 
