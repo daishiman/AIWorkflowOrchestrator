@@ -75,6 +75,33 @@ cd apps/desktop && pnpm vitest run \
 - リファクタリング済みの全対象ファイル
 - `apps/desktop/src/renderer/components/skill/improvementStyles.ts`（新規: 必要な場合）
 
+## 統合テスト連携
+
+本 Phase（リファクタリング）ではテスト変更なし。リファクタリング後に既存テスト全件 PASS を確認する。
+
+## 多角的チェック観点
+
+| 観点           | 適用判断                   | 仕様参照先                           |
+| -------------- | -------------------------- | ------------------------------------ |
+| コード品質     | 重複排除・命名改善         | `.claude/rules/02-code-quality.md`   |
+| セキュリティ   | P49 型ガード `in` 演算子   | `.claude/rules/06-known-pitfalls.md` |
+| アーキテクチャ | Atomic Design 分割の適切性 | `.claude/rules/01-architecture.md`   |
+
+## サブタスク管理
+
+Phase 実行開始時に以下のサブタスクを作成:
+
+1. IPC ハンドラリファクタリング（Task 1: isSuggestion 型ガード抽出）
+2. Renderer コンポーネントリファクタリング（Task 2: スタイル分離・共通化検討）
+3. コード品質チェック（Task 3）
+4. テスト再実行（Task 4）
+
+## タスク100%実行確認
+
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.json が更新されている
+
 ## 完了条件
 
 - [ ] suggestion バリデーションが独立関数に抽出されている

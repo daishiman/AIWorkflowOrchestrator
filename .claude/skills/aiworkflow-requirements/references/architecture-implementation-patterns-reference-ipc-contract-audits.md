@@ -467,6 +467,50 @@ expect(result).toEqual({
 
 ---
 
+## Dynamic Import 型伝播パターン（UT-SC-05-APPLY-IMPROVEMENT-UI 2026-03-24実装）
+
+### S36: Preload types.ts の `import()` 型伝播パターン
+
+> **発見タスク**: UT-SC-05-APPLY-IMPROVEMENT-UI
+> **関連Pitfall**: P67（React Props Silent Drop）
+
+#### 問題
+
+Preload API に新メソッドを追加する際、`preload/types.ts` の型定義と `preload/skill-creator-api.ts` の実装の両方を手動で同期する必要がある。型定義の二重管理（P23/P32 パターン）が発生し、メソッド追加時に片方の更新漏れが起きやすい。
+
+#### 解決策
+
+`preload/types.ts` で `import()` 型を使用して実装ファイルから型を自動伝播させる。
+
+```typescript
+// preload/types.ts
+export interface ElectronAPI {
+  skillCreator: import("./skill-creator-api").SkillCreatorAPI;
+  // ↑ skill-creator-api.ts の export type が自動伝播
+}
+```
+
+この方式により、`skill-creator-api.ts` に新メソッド（`applyRuntimeImprovement` 等）を追加すると、`types.ts` の `ElectronAPI` 型に自動的に反映される。`types.ts` 側で個別メソッドを列挙する必要がない。
+
+#### メリットと注意点
+
+| 項目 | 内容 |
+| --- | --- |
+| メリット | メソッド追加時の型更新が1箇所で完結 |
+| メリット | P23/P32 の二重管理リスクを構造的に排除 |
+| 注意点 | `import()` 先のファイルが存在しないとコンパイルエラー |
+| 注意点 | 循環参照に注意（types.ts → api.ts → types.ts は禁止） |
+
+#### 適用基準
+
+| 条件 | 適用 |
+| --- | --- |
+| Preload API の型定義 | 推奨（`import()` 型伝播を使用） |
+| 共有型（packages/shared） | 非推奨（明示的な export/import を使用） |
+| IPC ハンドラの型定義 | 非推奨（Main Process 側は明示的に定義） |
+
+---
+
 ## S-IPC-AUTO: IPC契約ドリフト自動検出パターン（UT-TASK06-007）
 
 > 詳細は [architecture-implementation-patterns-reference-ipc-drift-detection.md](architecture-implementation-patterns-reference-ipc-drift-detection.md) を参照

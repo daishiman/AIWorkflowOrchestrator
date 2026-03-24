@@ -21,7 +21,9 @@ import type {
   ExecutionReport,
   RuntimeSkillCreatorExecuteResult,
   RuntimeSkillCreatorImproveResponse,
+  RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
+  ApplyImprovementResult,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 
@@ -116,6 +118,14 @@ export interface SkillCreatorAPI {
     authMode?: AuthMode,
     apiKey?: string | null,
   ) => Promise<IpcResult<RuntimeSkillCreatorImproveResponse>>;
+
+  /**
+   * Runtime apply-improvement: 改善提案を選択的に適用する
+   */
+  applyRuntimeImprovement: (
+    skillName: string,
+    suggestions: RuntimeSkillCreatorImproveSuggestion[],
+  ) => Promise<IpcResult<ApplyImprovementResult>>;
 
   /**
    * スキルを改善する
@@ -290,6 +300,15 @@ export const skillCreatorAPI: SkillCreatorAPI = {
       feedback,
       authMode,
       apiKey,
+    }),
+
+  applyRuntimeImprovement: (
+    skillName: string,
+    suggestions: RuntimeSkillCreatorImproveSuggestion[],
+  ): Promise<IpcResult<ApplyImprovementResult>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT, {
+      skillName,
+      suggestions,
     }),
 
   improveSkill: (

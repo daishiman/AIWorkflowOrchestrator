@@ -14,13 +14,21 @@
 
 `RuntimeSkillCreatorFacade.applyImprovement()` が Main Process に実装済みであるにもかかわらず、Renderer 側で改善提案を一覧表示・個別承認・適用する UI コンポーネントが存在しない問題を解決する。IPC ハンドラ `skill-creator:apply-improvement` の登録、Preload API への `applyImprovement` メソッド追加、および Renderer UI コンポーネントの新規作成を行う。
 
+### P50: 既実装状態の調査
+
+- `RuntimeSkillCreatorFacade.applyImprovement()` は `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` L309-352 に実装済み（Main Process 側のみ）
+- IPC ハンドラ `skill-creator:apply-improvement` は未登録（本タスクのスコープ）
+- Preload API `applyRuntimeImprovement` は未実装（本タスクのスコープ）
+- Renderer コンポーネントは未作成（本タスクのスコープ）
+- 結論: IPC/Preload/Renderer の3層が未実装であり、新規実装タスクとして進行する
+
 ## 背景
 
 - `RuntimeSkillCreatorFacade.applyImprovement()` は `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` L309-352 に実装済み
 - `RuntimeSkillCreatorImproveSuggestion` 型（section/before/after/reason）は `packages/shared/src/types/skillCreator.ts` L352-357 に定義済み
 - `ApplyImprovementResult` 型（applied/skipped/skippedDetails/errors）は `packages/shared/src/types/skillCreator.ts` L371-376 に定義済み
 - IPC チャンネル `SKILL_CREATOR_IMPROVE_SKILL` は登録済みだが、`applyImprovement` 専用のチャンネルは未登録
-- Preload API の `skill-api.ts` には既存の `applyImprovements`（SkillImprover 用）が存在するが、RuntimeSkillCreatorFacade 用の `applyImprovement` は未実装
+- Preload API の `skill-api.ts` には既存の `applyImprovements`（SkillImprover 用）が存在するが、Runtime Skill Creator 用の Preload API は `skill-creator-api.ts` に集約されており、`applyImprovement` は未実装
 
 ## 要件一覧
 
@@ -33,10 +41,11 @@
 - `suggestions` は `Array.isArray()` で実行時型検証する
 - 各 suggestion の `section`/`before`/`after`/`reason` は `typeof === "string"` で検証する
 - `ALLOWED_INVOKE_CHANNELS` ホワイトリストにチャンネルを追加する
+- `suggestions` 配列の要素数が 100 を超える場合はバリデーションエラーを返す（DoS 防御）
 
 ### FR-2: Preload API 追加
 
-- `skill-api.ts` の skillCreator セクションに `applyImprovement` メソッドを追加する
+- `skill-creator-api.ts` の Runtime Skill Creator セクションに `applyImprovement` メソッドを追加する
 - メソッドシグネチャ: `applyImprovement(skillName: string, suggestions: RuntimeSkillCreatorImproveSuggestion[]) => Promise<ApplyImprovementResult>`
 - `safeInvoke` を使用し、`IPC_CHANNELS` 定数でチャンネル名を参照する
 - `preload/types.ts` の `ElectronAPI` 型定義に `applyImprovement` を追加する
@@ -92,7 +101,7 @@
 - [ ] `skill-creator:apply-improvement` IPC チャンネルが `channels.ts` に定義されている
 - [ ] `creatorHandlers.ts` にハンドラが登録され、P42 準拠バリデーションが実装されている
 - [ ] `unregisterRuntimeSkillCreatorHandlers` でハンドラが解除される
-- [ ] Preload API に `applyImprovement` メソッドが追加されている
+- [ ] Preload API に `applyRuntimeImprovement` メソッドが追加されている
 - [ ] `ALLOWED_INVOKE_CHANNELS` にチャンネルが追加されている
 - [ ] 改善提案一覧が section/before/after/reason を diff 形式で表示する
 - [ ] 個別提案の承認/拒否がチェックボックスで選択可能である
@@ -106,20 +115,22 @@
 
 ### 既存ファイル（修正）
 
-| ファイルパス                                   | 修正内容                                                                              |
-| ---------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `apps/desktop/src/preload/channels.ts`         | `SKILL_CREATOR_APPLY_IMPROVEMENT` チャンネル定義追加 + `ALLOWED_INVOKE_CHANNELS` 追加 |
-| `apps/desktop/src/main/ipc/creatorHandlers.ts` | `skill-creator:apply-improvement` ハンドラ登録 + unregister 追加                      |
-| `apps/desktop/src/preload/skill-api.ts`        | `applyImprovement` メソッド追加                                                       |
-| `apps/desktop/src/preload/types.ts`            | `ElectronAPI` 型に `applyImprovement` 追加（該当セクションが存在する場合）            |
+| ファイルパス                                    | 修正内容                                                                              |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `apps/desktop/src/preload/channels.ts`          | `SKILL_CREATOR_APPLY_IMPROVEMENT` チャンネル定義追加 + `ALLOWED_INVOKE_CHANNELS` 追加 |
+| `apps/desktop/src/main/ipc/creatorHandlers.ts`  | `skill-creator:apply-improvement` ハンドラ登録 + unregister 追加                      |
+| `apps/desktop/src/preload/skill-creator-api.ts` | `applyRuntimeImprovement` メソッド追加                                                |
+| `apps/desktop/src/preload/types.ts`             | `ElectronAPI` 型に `applyImprovement` 追加（該当セクションが存在する場合）            |
+| `apps/desktop/src/preload/types.ts`             | `ElectronAPI` 型定義に `applyRuntimeImprovement` メソッドの型追加                     |
 
 ### 新規ファイル
 
-| ファイルパス                                                             | 内容                                    |
-| ------------------------------------------------------------------------ | --------------------------------------- |
-| `apps/desktop/src/renderer/components/skill/ImprovementProposalList.tsx` | 改善提案一覧コンポーネント（organisms） |
-| `apps/desktop/src/renderer/components/skill/ImprovementProposalItem.tsx` | 改善提案個別アイテム（molecules）       |
-| `apps/desktop/src/renderer/components/skill/ImprovementApplyResult.tsx`  | 適用結果表示コンポーネント（molecules） |
+| ファイルパス                                                              | 内容                                                  |
+| ------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `apps/desktop/src/renderer/components/skill/ImprovementProposalList.tsx`  | 改善提案一覧コンポーネント（organisms）               |
+| `apps/desktop/src/renderer/components/skill/ImprovementProposalItem.tsx`  | 改善提案個別アイテム（molecules）                     |
+| `apps/desktop/src/renderer/components/skill/ImprovementApplyResult.tsx`   | 適用結果表示コンポーネント（molecules）               |
+| `apps/desktop/src/renderer/components/skill/ImprovementProposalPanel.tsx` | 改善提案パネル（organisms / 状態管理 + 接続ポイント） |
 
 ## 参照パターン（既知の落とし穴）
 
@@ -147,6 +158,40 @@
 ## 成果物
 
 - 本ファイル（`phase-01-requirements.md`）
+
+## 統合テスト連携
+
+本 Phase（要件定義）では統合テスト対象を特定する:
+
+- IPC ハンドラ ↔ Preload API の引数形式一致テスト（P44 準拠）
+- Preload API → Renderer コンポーネントの Props 型互換テスト
+- 統合テスト（I-1 ~ I-3）で E2E フロー検証
+
+## 多角的チェック観点
+
+| 観点           | 適用判断                        | 仕様参照先                                          |
+| -------------- | ------------------------------- | --------------------------------------------------- |
+| セキュリティ   | IPC ハンドラ入力検証            | `aiworkflow-requirements: security-electron-ipc.md` |
+| UI/UX          | diff 表示 + Apple HIG 準拠      | `aiworkflow-requirements: ui-ux-*.md`               |
+| アーキテクチャ | 3層分離（IPC/Preload/Renderer） | `aiworkflow-requirements: architecture-*.md`        |
+| IPC通信        | チャンネル定義 + ホワイトリスト | `aiworkflow-requirements: api-*.md`                 |
+| Preload        | contextBridge API 公開          | `aiworkflow-requirements: security-api-electron.md` |
+
+## サブタスク管理
+
+Phase 実行開始時に以下のサブタスクを作成:
+
+1. 参照資料の確認（既存ハンドラパターン + 型定義の所在確認）
+2. P50 既実装状態の調査
+3. 要件抽出（FR-1 ~ FR-5, NFR-1 ~ NFR-3）
+4. 受入基準の定義
+5. 修正対象ファイルの特定
+
+## タスク100%実行確認
+
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.json が更新されている
 
 ## 完了条件
 

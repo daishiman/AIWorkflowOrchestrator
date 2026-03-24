@@ -279,6 +279,7 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `skill-creator:execute-plan`    | Renderer → Main | runtime execute    | `{ planId: string; skillSpec: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
 | `skill-creator:improve-skill`   | Renderer → Main | runtime improve    | `{ skillName: string; feedback: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `skill-creator:improve`         | Renderer → Main | スキル改善         | `{ skillName: string; autoApply?: boolean }`               | `IpcResult<unknown>`          |
+| `skill-creator:apply-improvement` | Renderer → Main | 改善提案適用     | `{ skillName: string; suggestions: RuntimeSkillCreatorImproveSuggestion[] }` | `IpcResult<ApplyImprovementResult>` |
 | `skill-creator:fork`            | Renderer → Main | スキルフォーク     | `{ sourceName: string; newName: string; options?: object }` | `IpcResult<string>`           |
 | `skill-creator:share`           | Renderer → Main | スキル共有         | `{ skillName: string; format: string }`                    | `IpcResult<string>`           |
 | `skill-creator:schedule`        | Renderer → Main | スケジュール設定   | `{ skillName: string; schedule: object }`                  | `IpcResult<void>`             |

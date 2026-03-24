@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-24T09:08:26.425Z",
-  "totalKeywords": 2468,
+  "generated": "2026-03-24T11:10:08.213Z",
+  "totalKeywords": 2474,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1788,6 +1788,7 @@
       "arch-ui-components.md",
       "architecture-chat-history.md",
       "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
       "architecture-overview-core.md",
       "error-handling-details.md",
@@ -1798,6 +1799,7 @@
       "interfaces-chat-history-details.md",
       "interfaces-rag-file-selection.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-current.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
@@ -2460,7 +2462,9 @@
     ],
     "SC": [
       "arch-electron-services-details-part2.md",
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-skill-reference.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "task-workflow-completed-skill-lifecycle-design.md"
     ],
@@ -3141,6 +3145,7 @@
     "Import": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "arch-ui-components-advanced.md",
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-integration.md"
     ],
     "SkillCenter": [
@@ -3726,6 +3731,20 @@
     ],
     "Wrapper": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md"
+    ],
+    "Dynamic": [
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md"
+    ],
+    "型伝播パターン": [
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md"
+    ],
+    "APPLY": [
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "lessons-learned-current.md"
+    ],
+    "IMPROVEMENT": [
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "lessons-learned-current.md"
     ],
     "AUTO": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
@@ -6369,6 +6388,16 @@
     "契約テスト教訓": [
       "lessons-learned-current.md"
     ],
+    "改善提案": [
+      "lessons-learned-current.md"
+    ],
+    "承認": [
+      "lessons-learned-current.md"
+    ],
+    "適用": [
+      "lessons-learned-current.md",
+      "logs-archive-2026-02-completed-move-preload-sync.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -8023,9 +8052,6 @@
     "テンプレート最適化": [
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md"
-    ],
-    "適用": [
-      "logs-archive-2026-02-completed-move-preload-sync.md"
     ],
     "再監査補完": [
       "logs-archive-2026-02-completed-move-preload-sync.md"

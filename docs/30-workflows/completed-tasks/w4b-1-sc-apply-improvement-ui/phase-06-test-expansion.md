@@ -59,15 +59,17 @@ Phase 4-5 で作成した基本テストに加え、境界値・異常系・組�
 
 **ファイル**: `apps/desktop/src/renderer/components/skill/__tests__/ImprovementProposal.integration.test.tsx`
 
-| ID  | テスト名                 | 内容                                                             |
-| --- | ------------------------ | ---------------------------------------------------------------- |
-| I-1 | 提案選択→適用フロー      | ImprovementProposalList から ImprovementApplyResult への画面遷移 |
-| I-2 | 全選択→適用→結果表示     | 全提案を選択して適用し、結果が表示される                         |
-| I-3 | エラー時のフォールバック | IPC 通信失敗時にエラーメッセージが表示される                     |
+| ID  | テスト名                    | 内容                                                             |
+| --- | --------------------------- | ---------------------------------------------------------------- |
+| I-1 | 提案選択→適用フロー         | ImprovementProposalList から ImprovementApplyResult への画面遷移 |
+| I-2 | 全選択→適用→結果表示        | 全提案を選択して適用し、結果が表示される                         |
+| I-3 | エラー時のフォールバック    | IPC 通信失敗時にエラーメッセージが表示される                     |
+| I-4 | エラー後の再選択→再試行     | IPC 通信失敗後にエラーを閉じ、再選択して適用が成功する           |
+| I-5 | 部分選択→全解除→再選択→適用 | 全解除→再選択の複合操作後に適用が正しく動作する                  |
 
 ## 参照資料
 
-- `docs/30-workflows/w4b-sc-apply-improvement-ui/phase-04-test-creation.md`（基本テスト）
+- `docs/30-workflows/w4b-1-sc-apply-improvement-ui/phase-04-test-creation.md`（基本テスト）
 - `.claude/rules/02-code-quality.md`（テスト設計の注意: P9 テスト間リーク防止）
 - `.claude/rules/06-known-pitfalls.md` P39（happy-dom: fireEvent 使用）
 
@@ -79,11 +81,40 @@ Phase 4-5 で作成した基本テストに加え、境界値・異常系・組�
 - `apps/desktop/src/renderer/components/skill/__tests__/ImprovementApplyResult.test.tsx`（追加テスト）
 - `apps/desktop/src/renderer/components/skill/__tests__/ImprovementProposal.integration.test.tsx`（新規）
 
+## 統合テスト連携
+
+本 Phase（テスト拡充）で統合テスト（I-1 ~ I-5）を作成:
+
+- I-1 ~ I-3: 基本 E2E フロー（Phase 4 設計に基づく）
+- I-4: エラー後リカバリーフロー
+- I-5: 複合操作フロー
+
+## 多角的チェック観点
+
+| 観点         | 適用判断             | 仕様参照先                                          |
+| ------------ | -------------------- | --------------------------------------------------- |
+| セキュリティ | 境界値バリデーション | `aiworkflow-requirements: security-electron-ipc.md` |
+| UI/UX        | 大量提案のスクロール | `aiworkflow-requirements: ui-ux-*.md`               |
+
+## サブタスク管理
+
+Phase 実行開始時に以下のサブタスクを作成:
+
+1. IPC ハンドラ境界値テスト追加（Task 1: H-12 ~ H-18）
+2. Renderer コンポーネント追加テスト（Task 2: C-8 ~ C-10, L-9 ~ L-11, R-6 ~ R-8）
+3. 統合テスト作成（Task 3: I-1 ~ I-5）
+
+## タスク100%実行確認
+
+- [ ] 本 Phase 内の全タスクを 100% 実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.json が更新されている
+
 ## 完了条件
 
 - [ ] 境界値テスト（H-12 ~ H-18）が追加されている
 - [ ] コンポーネント追加テスト（C-8 ~ C-10, L-9 ~ L-11, R-6 ~ R-8）が追加されている
-- [ ] 統合テスト（I-1 ~ I-3）が作成されている
+- [ ] 統合テスト（I-1 ~ I-5）が作成されている（I-4, I-5 追加）
 - [ ] 全テストが PASS する
 - [ ] テスト間で状態共有がない（`beforeEach` でリセット）
 

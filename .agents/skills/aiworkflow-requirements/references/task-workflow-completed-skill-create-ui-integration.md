@@ -202,3 +202,70 @@
 | --- | --- | --- |
 | UT-SC-05-IPC-DI-WIRING | IPC/DI 配線（improve ハンドラの Main Process 登録） | `docs/30-workflows/unassigned-task/UT-SC-05-IPC-DI-WIRING.md` |
 | UT-SC-05-APPLY-IMPROVEMENT-UI | 改善提案適用 UI（Renderer 側の表示・適用フロー） | `docs/30-workflows/unassigned-task/UT-SC-05-APPLY-IMPROVEMENT-UI.md` |
+---
+
+### タスク: UT-SC-05-IPC-DI-WIRING RuntimeSkillCreatorFacade IPC/DI 配線（2026-03-24完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-SC-05-IPC-DI-WIRING |
+| 完了日 | 2026-03-24 |
+| ステータス | **完了（Phase 1-13 完了）** |
+| タスク種別 | IPC/DI 配線 + テスト |
+| 親タスク | TASK-SC-05-IMPROVE-LLM |
+| 対象 | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`, `apps/desktop/src/main/ipc/index.ts`, `apps/desktop/src/main/ipc/creatorHandlers.ts` |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| ワークフロー一式 | `docs/30-workflows/skill-creator-llm-integration/w4a-sc-ipc-di-wiring/` |
+| テストファイル | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.integration.test.ts` |
+
+#### 変更理由
+
+- `RuntimeSkillCreatorFacade` に `skillFileManager` / `llmAdapter` / `resourceLoader` を DI 配線し、`skill-creator:plan` / `skill-creator:execute-plan` / `skill-creator:improve-skill` ハンドラで実際の LLM 呼び出しを可能にした
+- `creatorHandlers.ts` の dead-end namespace（`creator:*`）を廃止し、`skillCreatorHandlers.ts` の public surface（`skill-creator:*`）に統合（P65 対策）
+- Graceful Degradation パターンを適用し、`runtimeFacade` 未注入時は `success: false` + エラーメッセージを返す
+
+#### 未タスク
+
+| 未タスクID | 内容 | 参照先 |
+| --- | --- | --- |
+| UT-SC-05-UT-1 | LLMプロバイダー動的切替（APIキー設定後のアプリ再起動不要化） | `docs/30-workflows/unassigned-task/ut-sc-05-ut-1-llm-provider-dynamic-switch.md` |
+| UT-SC-05-UT-2 | track()/safeRegister async対応 | `docs/30-workflows/unassigned-task/ut-sc-05-ut-2-track-async-callback.md` |
+
+---
+
+### タスク: UT-SC-05-APPLY-IMPROVEMENT-UI 改善提案 承認/適用 UI（2026-03-24完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-SC-05-APPLY-IMPROVEMENT-UI |
+| 完了日 | 2026-03-24 |
+| ステータス | **完了（Phase 1-12 完了、Phase 13 PR準備待ち）** |
+| タスク種別 | IPC ハンドラ + Preload API + Renderer UI |
+| 親タスク | TASK-SC-05-IMPROVE-LLM |
+| 対象 | `creatorHandlers.ts`, `channels.ts`, `skill-creator-api.ts`, `ImprovementProposalItem.tsx`, `ImprovementProposalList.tsx`, `ImprovementApplyResult.tsx`, `ImprovementProposalPanel.tsx` |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| ワークフロー一式 | `docs/30-workflows/completed-tasks/w4b-1-sc-apply-improvement-ui/` |
+| IPC ハンドラ | `apps/desktop/src/main/ipc/creatorHandlers.ts` L232-273 |
+| Preload API | `apps/desktop/src/preload/skill-creator-api.ts` L305-312 |
+| Renderer コンポーネント | `apps/desktop/src/renderer/components/skill/Improvement*.tsx` (4ファイル) |
+| テスト (62件) | `__tests__/creatorHandlers.applyImprovement.test.ts` (19件), `__tests__/ImprovementProposal*.test.tsx` (38件), `__tests__/ImprovementProposal.integration.test.tsx` (5件) |
+
+#### 変更理由
+
+- `RuntimeSkillCreatorFacade.applyImprovement()` が Main Process に実装済みだったが、IPC/Preload/Renderer の3層が未接続だった
+- IPC ハンドラ `skill-creator:apply-improvement` を `skill-creator:*` namespace に統合（P65 準拠）
+- P42/P44/P47/P48/P49/P60/P65 の7つの Pitfall 対策を適用
+- `isSuggestion()` 型ガード + `validateSuggestions()` によるセキュアなバリデーション
+- Renderer 4コンポーネント（Item/List/ApplyResult/Panel）で提案選択→IPC呼び出し→結果表示のフローを実装
+
+#### 未タスク
+
+未タスク0件。
