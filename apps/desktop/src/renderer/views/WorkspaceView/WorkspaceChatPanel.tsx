@@ -15,6 +15,7 @@ import {
 } from "./hooks/useWorkspaceChatController";
 import { useSetCurrentView } from "../../store";
 import { InlineModelSelector } from "../../components/llm";
+import { openExecutionConsole } from "../../actions/executionConsole";
 
 interface WorkspaceChatPanelProps {
   controller: WorkspaceChatController;
@@ -32,6 +33,7 @@ export function WorkspaceChatPanel({
   const blockedGuidance = getModelSelectionGuidance(controller.blockedReason);
   const resolveAction = createGuidanceActionDispatcher({
     openSettings: () => setCurrentView("settings"),
+    openExecutionConsole: () => openExecutionConsole(),
   });
   const primaryAction = blockedGuidance?.primaryAction;
   const secondaryAction = blockedGuidance?.secondaryAction;

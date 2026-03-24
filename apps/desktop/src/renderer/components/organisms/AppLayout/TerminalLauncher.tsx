@@ -22,14 +22,14 @@ export const TerminalLauncher: React.FC<TerminalLauncherProps> = ({
       onClick={onLaunch}
       disabled={isDisabled}
       title={disabledReason}
-      aria-label="ターミナルを開く"
+      aria-label="実行コンソールを開く"
       data-testid="app-layout-terminal-launcher"
       data-capability={capability}
       className="min-w-[112px]"
     >
       <span className="flex items-center gap-2">
         <Icon name="monitor" size={14} />
-        <span>{capability === "both" ? "AI + Terminal" : "Terminal"}</span>
+        <span>実行コンソール</span>
       </span>
     </Button>
   );

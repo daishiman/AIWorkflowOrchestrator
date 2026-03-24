@@ -5,6 +5,42 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 guided-execution-shell-foundation（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 |
+| ステータス | **完了** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-24 |
+| 対象 | 実行コンソールの名称、route、shared launcher、mainline entry |
+| 成果物 | `docs/30-workflows/step-01-seq-task-01-guided-execution-shell-foundation/` |
+
+#### 実施内容
+
+- ViewType に `executionConsole` を追加し、route / view 分岐を整備
+- `openExecutionConsole()` shared action を定義し、CTA 7箇所を統一
+- agent 代替経路を除去し、実行コンソールへの導線を一本化
+- 2件の既存未タスクを解決（ut-viewtype-terminal-addition、UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001）
+- 2件の新規未タスクを検出（UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001、UT-RENAME-RUNTIME-ACCESS-TERMINAL-HELPERS-001）
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 | navContract.ts に executionConsole エントリ追加 | 高 | `docs/30-workflows/unassigned-task/ut-imp-navcontract-execution-console-entry-001.md` |
+| UT-RENAME-RUNTIME-ACCESS-TERMINAL-HELPERS-001 | runtimeAccess.ts の terminal 系ヘルパー名称変更 | 低 | `docs/30-workflows/unassigned-task/ut-rename-runtime-access-terminal-helpers-001.md` |
+
+#### 解決した既存未タスク
+
+| 未タスクID | 概要 | 解決方法 |
+| --- | --- | --- |
+| ut-viewtype-terminal-addition | ViewType に "terminal" を追加 | executionConsole ViewType 追加で解決 |
+| UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001 | Chat/Workspace guidance の open terminal 導線 | CTA wiring 統一で解決 |
+
+---
+
 ### タスク: TASK-SC-04-OUTPUT-PERSISTENCE SkillFileWriter LLM生成スキルコンテンツ永続化（2026-03-23）
 
 | 項目 | 値 |

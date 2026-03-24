@@ -12,9 +12,9 @@ export const PersistentTerminalLauncher: React.FC<
     <button
       data-testid="persistent-terminal-launcher"
       onClick={onLaunch}
-      aria-label="ターミナルを開く"
+      aria-label="実行コンソールを開く"
     >
-      ターミナルを開く: {command}
+      実行コンソールを開く: {command}
     </button>
   );
 };
