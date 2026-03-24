@@ -4,6 +4,21 @@
 
 ---
 
+## TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了（Phase 13 blocked）
+- **Result**: success
+- **Notes**:
+  - session dock、transcript persistence、artifact-first result、manual share の設計タスク完了
+  - DockState 8状態（collapsed/ready/handoff/running/done/aborted/unavailable/guidance-only）定義
+  - session persistence: session ID 採番、保持件数、reopen restore、cleanup 条件
+  - artifact bridge: 成果物 -> 要約 -> transcript 詳細の表示順
+  - manual share: 手動3操作 + provenance chip
+  - 未タスク3件検出（UT-IMP-SESSION-DOCK-TESTID-DEDUP-001, UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001, UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001）
+
+---
+
 ## TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 完了（2026-03-24）
 
 - **Agent**: task-specification-creator

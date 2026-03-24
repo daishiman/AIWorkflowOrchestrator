@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-24 - TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了（DockState 8状態 / session persistence / artifact-first result / manual share bridge / transcript provenance 設計確定 / Phase 1-12 completed / 未タスク3件検出: UT-IMP-SESSION-DOCK-TESTID-DEDUP-001, UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001, UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001） |
 | 2026-03-24 - TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 完了（ViewType executionConsole 追加 / openExecutionConsole() shared action / CTA 7箇所統一 / agent 代替除去 / 既存未タスク2件解決 / 新規未タスク2件検出） |
 | 2026-03-24 - TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト追補（Vitest 70テスト / 7カテゴリ / 親パック4文書コンプライアンス検証 / 教訓2件 L-CBLG-003/004） |
 | 2026-03-24 - TASK-LLM-MOD-03 完了（GoogleAdapter system_instruction 対応 / baseUrl v1→v1beta / buildRequestBody DRY統合 / formatContents systemPrompt分離 / 19テスト全PASS / streaming.test.ts v1beta URL修正 / 未タスク2件: UT-LLM-MOD-03-TYPE-01〜02） |
