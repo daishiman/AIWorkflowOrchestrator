@@ -98,6 +98,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | `validateSkill` | `(skillDir: string)` | `Promise<boolean>` | 生成スキル検証 |
 | `validateWithSchema` | `(schemaName: string, data: unknown)` | `Promise<boolean>` | スキーマ検証 |
 | `improveSkill` | `(skillName: string, autoApply: boolean)` | `Promise<unknown>` | 改善提案生成/適用 |
+| `applyRuntimeImprovement` | `(skillName: string, suggestions: RuntimeSkillCreatorImproveSuggestion[])` | `Promise<IpcResult<ApplyImprovementResult>>` | runtime 改善提案適用（`skill-creator:apply-improvement` 契約） |
 | `forkSkill` | `(sourceName: string, newName: string, options: object)` | `Promise<string>` | SkillCreator向けフォーク（`skill-creator:fork` 契約） |
 | `shareSkill` | `(action: string, target: string, skillName: string)` | `Promise<string>` | 共有/エクスポート |
 | `scheduleSkill` | `(skillName: string, schedule: object)` | `Promise<void>` | 実行スケジュール設定 |

@@ -4,7 +4,7 @@
   "priority": "Medium",
   "detectedFrom": "TASK-SC-05-IMPROVE-LLM Phase 12",
   "createdAt": "2026-03-23",
-  "workflowDir": "docs/30-workflows/w4b-sc-apply-improvement-ui",
+  "workflowDir": "docs/30-workflows/w4b-1-sc-apply-improvement-ui",
   "phases": [
     {
       "phase": 1,
@@ -21,67 +21,67 @@
     {
       "phase": 3,
       "name": "設計レビュー",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-03-design-review.md"
     },
     {
       "phase": 4,
       "name": "テスト作成",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-04-test-creation.md"
     },
     {
       "phase": 5,
       "name": "実装",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-05-implementation.md"
     },
     {
       "phase": 6,
       "name": "テスト拡充",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-06-test-expansion.md"
     },
     {
       "phase": 7,
       "name": "カバレッジ確認",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-07-coverage.md"
     },
     {
       "phase": 8,
       "name": "リファクタリング",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-08-refactoring.md"
     },
     {
       "phase": 9,
       "name": "品質検証",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-09-quality-verification.md"
     },
     {
       "phase": 10,
       "name": "最終レビュー",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-10-final-review.md"
     },
     {
       "phase": 11,
       "name": "手動テスト",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-11-manual-testing.md"
     },
     {
       "phase": 12,
       "name": "ドキュメント",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-12-documentation.md"
     },
     {
       "phase": 13,
       "name": "完了",
-      "status": "pending",
+      "status": "completed",
       "artifact": "phase-13-pr-creation.md"
     }
   ],
@@ -89,16 +89,18 @@
     "modify": [
       "apps/desktop/src/preload/channels.ts",
       "apps/desktop/src/main/ipc/creatorHandlers.ts",
-      "apps/desktop/src/preload/skill-api.ts"
+      "apps/desktop/src/preload/skill-creator-api.ts"
     ],
     "create": [
       "apps/desktop/src/renderer/components/skill/ImprovementProposalItem.tsx",
       "apps/desktop/src/renderer/components/skill/ImprovementProposalList.tsx",
       "apps/desktop/src/renderer/components/skill/ImprovementApplyResult.tsx",
+      "apps/desktop/src/renderer/components/skill/ImprovementProposalPanel.tsx",
       "apps/desktop/src/main/ipc/__tests__/creatorHandlers.applyImprovement.test.ts",
       "apps/desktop/src/renderer/components/skill/__tests__/ImprovementProposalItem.test.tsx",
       "apps/desktop/src/renderer/components/skill/__tests__/ImprovementProposalList.test.tsx",
       "apps/desktop/src/renderer/components/skill/__tests__/ImprovementApplyResult.test.tsx",
+      "apps/desktop/src/renderer/components/skill/__tests__/ImprovementProposalPanel.test.tsx",
       "apps/desktop/src/renderer/components/skill/__tests__/ImprovementProposal.integration.test.tsx"
     ]
   },
@@ -115,7 +117,7 @@
   ],
   "testCases": {
     "ipcHandler": {
-      "count": 18,
+      "count": 19,
       "ids": [
         "H-1",
         "H-2",
@@ -128,6 +130,7 @@
         "H-9",
         "H-10",
         "H-11",
+        "H-11a",
         "H-12",
         "H-13",
         "H-14",
@@ -138,7 +141,7 @@
       ]
     },
     "improvementProposalItem": {
-      "count": 10,
+      "count": 11,
       "ids": [
         "C-1",
         "C-2",
@@ -149,7 +152,8 @@
         "C-7",
         "C-8",
         "C-9",
-        "C-10"
+        "C-10",
+        "C-10a"
       ]
     },
     "improvementProposalList": {
@@ -172,10 +176,14 @@
       "count": 8,
       "ids": ["R-1", "R-2", "R-3", "R-4", "R-5", "R-6", "R-7", "R-8"]
     },
-    "integration": {
-      "count": 3,
-      "ids": ["I-1", "I-2", "I-3"]
+    "improvementProposalPanel": {
+      "count": 8,
+      "ids": ["P-1", "P-2", "P-3", "P-4", "P-5", "P-6", "P-7", "P-8"]
     },
-    "total": 50
+    "integration": {
+      "count": 5,
+      "ids": ["I-1", "I-2", "I-3", "I-4", "I-5"]
+    },
+    "total": 62
   }
 }

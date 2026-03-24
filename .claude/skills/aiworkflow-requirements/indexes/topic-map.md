@@ -207,7 +207,8 @@ node scripts/list-specs.js --topics
 | 未タスク監査スコープ分離パターン（UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001） | L298 |
 | 共有型インポート標準パターン（TASK-10A-D） | L348 |
 | IPC レスポンス Wrapper パターン（UT-06-003 2026-03-17実装） | L389 |
-| S-IPC-AUTO: IPC契約ドリフト自動検出パターン（UT-TASK06-007） | L470 |
+| Dynamic Import 型伝播パターン（UT-SC-05-APPLY-IMPROVEMENT-UI 2026-03-24実装） | L470 |
+| S-IPC-AUTO: IPC契約ドリフト自動検出パターン（UT-TASK06-007） | L514 |
 
 ### references/architecture-implementation-patterns-reference-ipc-drift-detection.md
 
@@ -430,11 +431,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L316 |
-| スキルチェーン 型定義（TASK-9D） | L366 |
-| スキルスケジュール 型定義（TASK-9G） | L401 |
-| スキルフォーク 型定義（TASK-9E） | L426 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L474 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L317 |
+| スキルチェーン 型定義（TASK-9D） | L367 |
+| スキルスケジュール 型定義（TASK-9G） | L402 |
+| スキルフォーク 型定義（TASK-9E） | L427 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L475 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -836,10 +837,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| Agent Dashboard IPC チャネル | L6 |
 | Workspace Chat Edit IPC チャネル | L74 |
 | Skill Creator IPC チャネル | L256 |
-| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L363 |
-| スキルファイル操作 IPC チャネル（TASK-9A-B） | L397 |
-| スキル安全性評価・ファイルツリー IPC チャネル | L451 |
-| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L462 |
+| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L364 |
+| スキルファイル操作 IPC チャネル（TASK-9A-B） | L398 |
+| スキル安全性評価・ファイルツリー IPC チャネル | L452 |
+| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L463 |
 
 ### references/api-ipc-agent-details.md
 
@@ -1477,10 +1478,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 実装例: skillCreatorAPI | L6 |
-| 実装例: skillFileAPI（TASK-9A-B） | L185 |
-| 実装例: skillShareAPI（TASK-9F） | L259 |
-| 実装例: skillChainAPI（TASK-9D） | L338 |
-| 実装例: skillScheduleAPI（TASK-9G） | L378 |
+| 実装例: skillFileAPI（TASK-9A-B） | L186 |
+| 実装例: skillShareAPI（TASK-9F） | L260 |
+| 実装例: skillChainAPI（TASK-9D） | L339 |
+| 実装例: skillScheduleAPI（TASK-9G） | L379 |
 
 ### references/security-electron-ipc-history.md
 
@@ -2602,6 +2603,7 @@ node scripts/list-specs.js --topics
 | UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L497 |
 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L531 |
 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L614 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L630 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
