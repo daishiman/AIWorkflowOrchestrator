@@ -27,6 +27,7 @@ import type {
   SkillPermissionResponse,
   SkillMetadata,
   ImportedSkill,
+  SafetyGateResult,
 } from "@repo/shared";
 import type {
   ShareTarget,
@@ -362,6 +363,19 @@ export interface SkillAPI {
    * @returns 改善結果
    */
   autoImprove: (skillName: string) => Promise<ImprovementResult>;
+
+  // === SafetyGate API (UT-06-003-PRELOAD-API-IMPL) ===
+
+  /**
+   * スキルの安全性を評価する
+   * @param skillName - 評価対象のスキル名
+   * @returns 安全性評価結果（ラップ形式）
+   */
+  evaluateSafety: (skillName: string) => Promise<{
+    success: boolean;
+    data?: SafetyGateResult;
+    error?: { code: string; message: string };
+  }>;
 
   // === Skill Debug API (TASK-9H) ===
 
@@ -793,6 +807,11 @@ export const skillAPI: SkillAPI = {
       analysis: {} as SkillAnalysis,
       options: { autoFix: true } as ImprovementOptions,
     }),
+
+  // === SafetyGate API (UT-06-003-PRELOAD-API-IMPL) ===
+
+  evaluateSafety: (skillName: string) =>
+    safeInvoke(IPC_CHANNELS.SKILL_EVALUATE_SAFETY, skillName),
 
   // === Skill Debug API (TASK-9H) ===
 

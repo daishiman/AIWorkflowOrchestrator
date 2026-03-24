@@ -57,7 +57,7 @@ const cta = resolveCtaContract(capability, ctaInput);
 | UT-EXEC-03 | CTA ラベル多言語対応設計 | 残課題 | |
 | UT-SC-03-001 | IResourceLoader インターフェース抽出 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-001.md` |
 | UT-SC-03-002 | 動的 apiKey 注入 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-002.md` |
-| UT-SC-03-003 | DI 配線の実装 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-003.md` |
+| UT-SC-03-003 | DI 配線の実装 | **完了**（2026-03-24） | TASK-SC-03 派生。setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。`docs/30-workflows/completed-tasks/ut-sc-03-003-di-wiring/`。MINOR 2件: [UT-SC-03-003-M01](../../../docs/30-workflows/unassigned-task/UT-SC-03-003-M01-subscription-auth-provider-injection.md), [UT-SC-03-003-M02](../../../docs/30-workflows/unassigned-task/UT-SC-03-003-M02-test-type-cast-cleanup.md) |
 | UT-SC-03-004 | SkillBlueprint 互換移行 | 残課題 | TASK-SC-03 派生。`docs/30-workflows/unassigned-task/UT-SC-03-004.md` |
 | UT-SC-03-005 | plan() エラーハンドリングの Result<T,E> パターン移行 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-005.md` |
 | UT-SC-03-006 | buildPlanSystemPrompt / parsePlanResponse 単体テスト追加 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-006.md` |

@@ -91,6 +91,10 @@ import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
 import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
+import { SkillFileWriter } from "../services/skill/SkillFileWriter";
+import { ResourceLoader } from "../services/skill/ResourceLoader";
+import { DEFAULT_SKILL_CREATOR_PATH } from "../services/skill/constants";
+import { LLMAdapterFactory } from "../adapters/llm/LLMAdapterFactory";
 import Database from "better-sqlite3";
 import {
   registerSlideIpcHandlers,
@@ -895,12 +899,32 @@ export function registerAllIpcHandlers(
         "[IPC] SkillExecutor not available, runtime skill creator handlers will stay degraded",
       );
     }
+    const skillFileWriter = new SkillFileWriter(skillBasePath);
+    const resourceLoader = new ResourceLoader(DEFAULT_SKILL_CREATOR_PATH);
     const runtimeSkillCreatorService = skillExecutor
       ? new RuntimeSkillCreatorFacade({
           skillExecutor,
           authKeyService,
+          skillFileWriter,
+          resourceLoader,
         })
       : undefined;
+
+    // LLMAdapter を非同期で取得し Setter Injection（fire-and-forget — P34 準拠）
+    if (runtimeSkillCreatorService) {
+      void (async () => {
+        try {
+          const adapter = await LLMAdapterFactory.getAdapter("anthropic");
+          runtimeSkillCreatorService.setLLMAdapter(adapter);
+        } catch (error: unknown) {
+          console.warn(
+            "[IPC] LLMAdapter initialization failed, skill creator will use stub responses:",
+            error instanceof Error ? error.message : "Unknown error",
+          );
+        }
+      })();
+    }
+
     registerSkillCreatorHandlers(
       mainWindow,
       skillCreatorService,

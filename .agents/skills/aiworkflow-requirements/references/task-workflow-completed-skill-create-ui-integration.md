@@ -150,3 +150,55 @@
 3. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行し、合否は `currentViolations` で判定する。
 4. UIタスクではスクリーンショットを目視し、証跡表に「状態名 + 検証目的」を追記する。
 5. `task-workflow.md` と `lessons-learned.md` の両方に同じ再発防止ルールを転記して完了とする。
+
+---
+
+### タスク: TASK-SC-05-IMPROVE-LLM RuntimeSkillCreatorFacade.improve() LLMプロンプト統合（2026-03-23完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SC-05-IMPROVE-LLM |
+| 完了日 | 2026-03-23 |
+| ステータス | **完了（Phase 1-13 完了）** |
+| タスク種別 | 実装 + テスト |
+| Phase | Phase 1-13 完了 |
+| 対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`, `apps/desktop/src/main/services/runtime/improvePromptConstants.ts`, `packages/shared/src/types/skillCreator.ts`, `packages/shared/src/types/index.ts` |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| ワークフロー一式 | `docs/30-workflows/w3b-sc-improve-llm/` |
+| 実装ガイド | `docs/30-workflows/w3b-sc-improve-llm/outputs/phase-12/implementation-guide.md` |
+| ドキュメント更新履歴 | `docs/30-workflows/w3b-sc-improve-llm/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出レポート | `docs/30-workflows/w3b-sc-improve-llm/outputs/phase-12/unassigned-task-detection.md` |
+| テストファイル | `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts` |
+
+#### 変更理由
+
+- `RuntimeSkillCreatorFacade.improve()` の LLM プロンプト統合により、スキル改善提案の自動生成を実現
+- plan() と同一の LLM 統合パターン（プロンプト定数分離 + JSON パース + バリデーション）を踏襲
+- `isValidImproveResponse` で空文字列 `before` の拒否ロジックを追加（`String.includes("")` は常に true を返すバグ対策）
+
+#### テスト結果
+
+| 指標 | 結果 |
+| --- | --- |
+| テスト数 | 21（全PASS） |
+| Line Coverage | 91.2% |
+| Branch Coverage | 78.07% |
+| Function Coverage | 100% |
+
+#### 苦戦箇所と解決策
+
+| 苦戦箇所 | 問題 | 解決策 |
+| --- | --- | --- |
+| `isValidImproveResponse` 空文字列 before | `before: ""` で `content.includes("")` が常に true → `content.replace("", after)` で先頭にゴミ挿入 | `item.before.trim() === ""` チェックを追加して拒否 |
+| P4/P51 早期完了記載再発 | `documentation-changelog.md` に Step 2 完了と記載したが `interfaces-agent-sdk-skill-reference.md` 未更新 | 実績ベースで事後記録する運用に是正 |
+
+#### 未タスク
+
+| 未タスクID | 内容 | 参照先 |
+| --- | --- | --- |
+| UT-SC-05-IPC-DI-WIRING | IPC/DI 配線（improve ハンドラの Main Process 登録） | `docs/30-workflows/unassigned-task/UT-SC-05-IPC-DI-WIRING.md` |
+| UT-SC-05-APPLY-IMPROVEMENT-UI | 改善提案適用 UI（Renderer 側の表示・適用フロー） | `docs/30-workflows/unassigned-task/UT-SC-05-APPLY-IMPROVEMENT-UI.md` |
