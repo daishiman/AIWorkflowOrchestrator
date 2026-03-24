@@ -24,6 +24,10 @@ import { ChatView } from "./views/ChatView";
 import { GraphView } from "./views/GraphView";
 import { SettingsView } from "./views/SettingsView";
 import { AgentView } from "./views/AgentView";
+
+const ExecutionConsoleView = React.lazy(
+  () => import("./views/ExecutionConsoleView"),
+);
 import { SkillManagementPanel } from "./components/skill/SkillManagementPanel";
 import { SkillChainBuilder } from "./views/SkillChainBuilder";
 import { ScheduleManager } from "./views/ScheduleManager";
@@ -46,7 +50,7 @@ import { useThemeInitializer } from "./hooks/useThemeInitializer";
 import { useMainlineExecutionAccess } from "./hooks/useMainlineExecutionAccess";
 import type { DockViewType } from "./navigation/navContract";
 import type { ViewType } from "./store/types";
-import { launchMainlineTerminal } from "./utils/runtimeAccess";
+import { openExecutionConsole } from "./actions/executionConsole";
 import { shouldResetUnauthenticatedView } from "./utils/shouldResetUnauthenticatedView";
 
 // Note: ChatHistoryProviderの統合はRenderer側でNode.js依存を避けるため削除
@@ -285,6 +289,8 @@ function App(): JSX.Element {
         return <GraphView />;
       case "agent":
         return <AgentView />;
+      case "executionConsole":
+        return <ExecutionConsoleView />;
       case "skillCenter":
         return <SkillCenterView />;
       case "historySearch":
@@ -398,11 +404,7 @@ function App(): JSX.Element {
                 disabledReason={
                   mainlineExecutionAccess.access.launcherDisabledReason
                 }
-                onLaunch={() =>
-                  void launchMainlineTerminal(
-                    mainlineExecutionAccess.access.suggestedTerminalCommand,
-                  )
-                }
+                onLaunch={() => openExecutionConsole()}
               />
               <NotificationCenter />
             </div>

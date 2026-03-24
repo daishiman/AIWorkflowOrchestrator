@@ -5,6 +5,7 @@ import {
   deriveModelSelectionBlockedReason,
   getModelSelectionGuidance,
 } from "../../guidance/modelSelectionGuidance";
+import { openExecutionConsole } from "../../actions/executionConsole";
 
 interface LLMGuidanceBannerProps {
   onNavigateToSettings: () => void;
@@ -22,10 +23,15 @@ export const LLMGuidanceBanner: React.FC<LLMGuidanceBannerProps> = ({
   const guidance = getModelSelectionGuidance(blockedReason);
   const resolveAction = createGuidanceActionDispatcher({
     openSettings: onNavigateToSettings,
+    openExecutionConsole: () => openExecutionConsole(),
   });
   const primaryAction = guidance?.primaryAction;
   const onPrimaryAction = primaryAction
     ? resolveAction(primaryAction.type)
+    : undefined;
+  const secondaryAction = guidance?.secondaryAction;
+  const onSecondaryAction = secondaryAction
+    ? resolveAction(secondaryAction.type)
     : undefined;
 
   if (!guidance) {
@@ -51,6 +57,16 @@ export const LLMGuidanceBanner: React.FC<LLMGuidanceBannerProps> = ({
           className="shrink-0 rounded-md px-3 py-1 text-sm font-medium text-[#007AFF] hover:bg-blue-50 dark:text-[#0A84FF] dark:hover:bg-blue-950 transition-colors duration-200"
         >
           {primaryAction.label}
+        </button>
+      ) : null}
+      {secondaryAction && onSecondaryAction ? (
+        <button
+          type="button"
+          onClick={onSecondaryAction}
+          aria-label={secondaryAction.ariaLabel ?? secondaryAction.label}
+          className="shrink-0 rounded-md px-3 py-1 text-sm font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)] transition-colors duration-200"
+        >
+          {secondaryAction.label}
         </button>
       ) : null}
     </div>

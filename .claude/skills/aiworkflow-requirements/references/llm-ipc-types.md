@@ -310,6 +310,22 @@ LLMモデル情報の型定義。
 | HealthIndicator | 接続状態インジケーター | `components/llm/HealthIndicator.tsx` |
 | LLMSelectorPanel | 統合パネル | `components/llm/LLMSelectorPanel.tsx` |
 
+### GoogleAdapter: system_instruction 対応（TASK-LLM-MOD-03, 2026-03-24）
+
+GoogleAdapter は Gemini API の `system_instruction` フィールドを使用してシステムプロンプトを送信する。
+
+| 項目 | 内容 |
+| --- | --- |
+| API バージョン | `v1beta`（`system_instruction` の安定サポートに必要） |
+| baseUrl デフォルト | `https://generativelanguage.googleapis.com/v1beta` |
+| systemPrompt 送信方式 | `system_instruction.parts[].text` フィールド（旧: user ロールメッセージとして挿入） |
+| リクエストボディ構築 | `buildRequestBody()` private メソッドで `contents` / `generationConfig` / `system_instruction` を統合 |
+| formatContents 責務 | `request.messages` のみを Gemini 形式に変換（systemPrompt は含まない） |
+
+**注意事項**:
+- `system_instruction` は `request.systemPrompt?.trim()` が truthy な場合のみ付加される
+- `v1beta` 変更により、streaming.test.ts の MSW モック URL も `v1beta` に更新が必要（cross-file 依存）
+
 ### アーキテクチャパターン
 
 - **Adapterパターン**: 各プロバイダーのAPIを統一インターフェースに変換
@@ -346,10 +362,23 @@ LLMモデル情報の型定義。
 - `status: "error"` は `HealthCheckResultSchema` の有効な値だが、**catch ブロック（ネットワーク到達不能時）** は `"disconnected"` を返すべき。`"error"` はアダプター内部の論理エラー（例: 認証失敗）に使用する
 - 既存テスト `llm.test.ts` L231 が `status: "error"` を期待していたため、`"disconnected"` に修正が必要だった（GAP-02 の波及影響）
 
+## 完了タスク（TASK-LLM-MOD-03）
+
+> 完了日: 2026-03-24
+
+| 変更項目 | ファイル | 内容 |
+| -------- | -------- | ---- |
+| baseUrl v1→v1beta 移行 | `GoogleAdapter.ts` | デフォルト baseUrl を `v1beta` に変更。`system_instruction` フィールドの安定サポートに必要 |
+| system_instruction 対応 | `GoogleAdapter.ts` | systemPrompt を user ロールメッセージではなく `system_instruction` フィールドで送信 |
+| buildRequestBody 追加 | `GoogleAdapter.ts` | `sendChat`/`streamChat` の共通リクエストボディ構築を private メソッドに集約（DRY） |
+| formatContents 責務分離 | `GoogleAdapter.ts` | `formatContents` から systemPrompt 挿入ロジックを除去し、メッセージ変換のみに特化 |
+| MSW URL v1beta 修正 | `streaming.test.ts` | MSW モックの URL 3 箇所を `v1` → `v1beta` に修正 |
+
 ## 変更履歴
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| 1.3.0 | 2026-03-24 | TASK-LLM-MOD-03 を反映: GoogleAdapter system_instruction 対応セクション追加、完了タスクセクション追加 |
 | 1.2.0 | 2026-03-17 | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 を反映: `llm:check-health` catch ブロックの `status: "error"` → `"disconnected"` 変更を記録 |
 | 1.1.0 | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `AIChatRequest` に `providerId/modelId` を追加し、`llm:set-selected-config` と `AI_CHAT` の provider/model 解決順を明文化 |
 | 1.0.0 | 2026-01-26 | 初版作成 |

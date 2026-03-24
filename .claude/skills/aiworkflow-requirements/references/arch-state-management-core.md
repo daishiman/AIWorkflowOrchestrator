@@ -299,9 +299,10 @@ TASK-UI-00-DESIGN-FOUNDATION で追加した Molecules / Organisms は、アプ�
 
 | 観点 | 内容 | 実装ファイル |
 | --- | --- | --- |
-| ViewType 拡張 | `skillAnalysis` / `skillCreate` を `ViewType` に追加 | `apps/desktop/src/renderer/store/types.ts` |
-| renderView 導線 | `skillAnalysis` は `SkillAnalysisView`、`skillCreate` は `SkillCreateWizard` を返す | `apps/desktop/src/renderer/App.tsx` |
+| ViewType 拡張 | `skillAnalysis` / `skillCreate` / `executionConsole` を `ViewType` に追加 | `apps/desktop/src/renderer/store/types.ts` |
+| renderView 導線 | `skillAnalysis` は `SkillAnalysisView`、`skillCreate` は `SkillCreateWizard`、`executionConsole` は `ExecutionConsoleView` を返す | `apps/desktop/src/renderer/App.tsx` |
 | close 時の状態復帰 | `SkillAnalysisView` close で `setCurrentView("skillCenter")` + `setCurrentSkillName(null)` | `apps/desktop/src/renderer/App.tsx` |
+| ExecutionConsoleView | stub view。`openExecutionConsole()` shared action で遷移。session/terminal state は後続タスクに委譲（TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001） | `apps/desktop/src/renderer/views/ExecutionConsoleView/index.tsx` |
 | lifecycle 型境界 | `SkillLifecycleJobGuide` に `onAction?: () => void` を追加（既存 job guide 互換を維持） | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` |
 | alias 正規化 | `skill-center` は `normalizeSkillLifecycleView()` で canonical `skillCenter` へ集約 | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts` |
 

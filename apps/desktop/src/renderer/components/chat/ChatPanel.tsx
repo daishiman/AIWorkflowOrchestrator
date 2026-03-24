@@ -31,7 +31,6 @@ import type { SkillMetadata } from "@repo/shared";
 import {
   useAppStore,
   useIsSkillExecuting,
-  useSetCurrentView,
   useSelectProvider,
   useSelectModel,
 } from "../../store";
@@ -47,6 +46,7 @@ import { ErrorGuidance } from "./ErrorGuidance";
 import { HandoffBlock } from "./HandoffBlock";
 import { ComposerArea } from "./ComposerArea";
 import { LLMSelectorPanel } from "./LLMSelectorPanel";
+import { openExecutionConsole } from "../../actions/executionConsole";
 
 // ============================================
 // Types
@@ -120,15 +120,12 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
       : "プロバイダーとモデルを選択してください";
 
     // === Review Harness Handlers (GAP-01〜04 no-op elimination) ===
-    const setCurrentView = useSetCurrentView();
     const selectProvider = useSelectProvider();
     const selectModel = useSelectModel();
 
     const handleTerminalSwitch = useCallback(() => {
-      // Terminal view は未実装（ViewType に "terminal" なし）。
-      // agent view が最も近い代替先。将来 terminal view 追加時に更新する。
-      setCurrentView("agent");
-    }, [setCurrentView]);
+      openExecutionConsole();
+    }, []);
 
     const handleSelectProvider = useCallback(
       (id: string) => {
@@ -144,10 +141,9 @@ export const ChatPanel = forwardRef<ChatPanelHandle, ChatPanelProps>(
       [selectModel],
     );
 
-    // GAP-04: app:open-terminal IPC は未実装のため agent view navigation で代替
     const handleOpenTerminal = useCallback(() => {
-      setCurrentView("agent");
-    }, [setCurrentView]);
+      openExecutionConsole();
+    }, []);
 
     // === Handlers ===
     const handleImportRequest = (skill: SkillMetadata) => {

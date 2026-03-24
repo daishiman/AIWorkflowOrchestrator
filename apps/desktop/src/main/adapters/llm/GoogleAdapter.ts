@@ -47,7 +47,7 @@ export class GoogleAdapter extends BaseLLMAdapter {
   ) {
     super(apiKey, config);
     this.baseUrl =
-      config?.baseUrl ?? "https://generativelanguage.googleapis.com/v1";
+      config?.baseUrl ?? "https://generativelanguage.googleapis.com/v1beta";
   }
 
   /**
@@ -62,13 +62,7 @@ export class GoogleAdapter extends BaseLLMAdapter {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            contents: this.formatContents(request),
-            generationConfig: {
-              temperature: request.temperature,
-              maxOutputTokens: request.maxTokens,
-            },
-          }),
+          body: JSON.stringify(this.buildRequestBody(request)),
         },
       );
 
@@ -108,13 +102,7 @@ export class GoogleAdapter extends BaseLLMAdapter {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          contents: this.formatContents(request),
-          generationConfig: {
-            temperature: request.temperature,
-            maxOutputTokens: request.maxTokens,
-          },
-        }),
+        body: JSON.stringify(this.buildRequestBody(request)),
       },
       signal,
     );
@@ -175,30 +163,36 @@ export class GoogleAdapter extends BaseLLMAdapter {
   }
 
   /**
-   * メッセージをGemini API形式に変換
+   * 会話メッセージを Gemini API の contents 形式に変換する
+   * systemPrompt は buildRequestBody で system_instruction フィールドとして設定するため、
+   * 本メソッドは request.messages のみを変換する
    */
   private formatContents(request: LLMChatRequestInput) {
-    const contents: Array<{
-      role: string;
-      parts: Array<{ text: string }>;
-    }> = [];
+    return request.messages.map((m) => ({
+      role: m.role === "assistant" ? "model" : "user",
+      parts: [{ text: m.content }],
+    }));
+  }
 
-    // Geminiはsystem roleを直接サポートしないため、
-    // userロールでシステムプロンプトを追加
-    if (request.systemPrompt) {
-      contents.push({
-        role: "user",
-        parts: [{ text: `System: ${request.systemPrompt}` }],
-      });
+  /**
+   * リクエストボディを構築する
+   * systemPrompt が指定された場合は system_instruction フィールドを追加する
+   */
+  private buildRequestBody(
+    request: LLMChatRequestInput,
+  ): Record<string, unknown> {
+    const body: Record<string, unknown> = {
+      contents: this.formatContents(request),
+      generationConfig: {
+        temperature: request.temperature,
+        maxOutputTokens: request.maxTokens,
+      },
+    };
+    if (request.systemPrompt?.trim()) {
+      body.system_instruction = {
+        parts: [{ text: request.systemPrompt }],
+      };
     }
-
-    contents.push(
-      ...request.messages.map((m) => ({
-        role: m.role === "assistant" ? "model" : "user",
-        parts: [{ text: m.content }],
-      })),
-    );
-
-    return contents;
+    return body;
   }
 }

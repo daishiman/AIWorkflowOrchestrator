@@ -434,6 +434,7 @@ node scripts/list-specs.js --topics
 | スキルチェーン 型定義（TASK-9D） | L366 |
 | スキルスケジュール 型定義（TASK-9G） | L401 |
 | スキルフォーク 型定義（TASK-9E） | L426 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L474 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -900,8 +901,8 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L200 |
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L562 |
-| AIプロバイダーAPI連携 | L593 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L580 |
+| AIプロバイダーAPI連携 | L611 |
 
 ### references/api-ipc-system-details.md
 
@@ -1294,15 +1295,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
-| Global Navigation | L43 |
-| ChatViewナビゲーション | L341 |
-| ナビゲーションボタン仕様 | L371 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L387 |
-| テスト検証済み項目 | L401 |
-| アクセシビリティ対応事例 | L416 |
-| ナビゲーションパターンのベストプラクティス | L448 |
-| 関連ドキュメント | L460 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L469 |
+| Global Navigation | L44 |
+| ChatViewナビゲーション | L343 |
+| ナビゲーションボタン仕様 | L373 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L389 |
+| テスト検証済み項目 | L403 |
+| アクセシビリティ対応事例 | L418 |
+| ナビゲーションパターンのベストプラクティス | L450 |
+| 関連ドキュメント | L462 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L471 |
 
 ### references/ui-ux-panels.md
 
@@ -1859,7 +1860,7 @@ node scripts/list-specs.js --topics
 | extraction matrix | L25 |
 | 実装同期ルール | L39 |
 | 実装ステータススナップショット（2026-03-22） | L46 |
-| Follow-up Backlog | L59 |
+| Follow-up Backlog | L60 |
 
 ### references/workflow-aiworkflow-requirements-line-budget-reform-artifact-inventory.md
 
@@ -2152,11 +2153,11 @@ node scripts/list-specs.js --topics
 | Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN） | L195 |
 | HistorySearch timeline 再設計（TASK-UI-06-HISTORY-SEARCH-VIEW） | L240 |
 | ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV） | L287 |
-| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L351 |
-| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L390 |
-| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L491 |
-| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L516 |
-| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L543 |
+| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L352 |
+| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L391 |
+| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L492 |
+| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L517 |
+| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L544 |
 
 ### references/arch-state-management-details.md
 
@@ -2594,11 +2595,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L45 |
-| クイックリファレンス: カテゴリ別検索ガイド | L60 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L136 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L468 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L502 |
+| 分割ファイル一覧 | L50 |
+| クイックリファレンス: カテゴリ別検索ガイド | L65 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L165 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L497 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L531 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L614 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2827,9 +2829,10 @@ node scripts/list-specs.js --topics
 | バリデーション関数 | L243 |
 | IPC通信 | L254 |
 | LLMアダプター実装 | L288 |
-| 関連ドキュメント | L326 |
-| 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L334 |
-| 変更履歴 | L349 |
+| 関連ドキュメント | L342 |
+| 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L350 |
+| 完了タスク（TASK-LLM-MOD-03） | L365 |
+| 変更履歴 | L377 |
 
 ### references/llm-streaming.md
 

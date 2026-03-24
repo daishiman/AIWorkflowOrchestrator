@@ -18,7 +18,7 @@ export const HandoffBlock: React.FC<HandoffBlockProps> = ({
         data-testid="persistent-terminal-launcher"
         onClick={onOpenTerminal}
       >
-        ターミナルを開く
+        端末で続ける
       </button>
     </div>
   );

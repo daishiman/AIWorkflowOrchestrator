@@ -1,0 +1,139 @@
+{
+  "taskId": "TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001",
+  "phase": 11,
+  "createdAt": "2026-03-24",
+  "screenshots": [
+    {
+      "id": "SS-01",
+      "screen": "App Shell - GlobalNavStrip",
+      "description": "GlobalNavStrip に「実行コンソール」nav item が表示されている状態",
+      "conditions": {
+        "theme": ["light", "dark"],
+        "viewport": "desktop",
+        "state": "executionConsole nav item visible"
+      },
+      "checkpoints": [
+        "nav item label が「実行コンソール」である",
+        "nav item icon が play-circle である",
+        "active 状態のハイライトが正しく表示される"
+      ],
+      "captureMethod": "webContents.capturePage() or Playwright screenshot",
+      "relatedWalkthrough": "WT-1"
+    },
+    {
+      "id": "SS-02",
+      "screen": "App Shell - ExecutionConsoleLauncher",
+      "description": "AppLayout の ExecutionConsoleLauncher ボタンが表示されている状態",
+      "conditions": {
+        "theme": ["light", "dark"],
+        "viewport": "desktop",
+        "state": "launcher button visible"
+      },
+      "checkpoints": [
+        "ボタンの aria-label に「ターミナル」が含まれない",
+        "ボタンの表示テキストが「実行コンソール」系である"
+      ],
+      "captureMethod": "webContents.capturePage() or Playwright screenshot",
+      "relatedWalkthrough": "WT-2"
+    },
+    {
+      "id": "SS-03",
+      "screen": "ExecutionConsoleView - stub",
+      "description": "ExecutionConsoleView の stub 画面が表示されている状態",
+      "conditions": {
+        "theme": ["light", "dark"],
+        "viewport": "desktop",
+        "state": "currentView === executionConsole"
+      },
+      "checkpoints": [
+        "stub メッセージが画面中央に表示されている",
+        "nav item の active 状態が executionConsole になっている",
+        "背景色がテーマに適合している"
+      ],
+      "captureMethod": "webContents.capturePage() or Playwright screenshot",
+      "relatedWalkthrough": "WT-1"
+    },
+    {
+      "id": "SS-04",
+      "screen": "Chat Surface - HandoffBlock",
+      "description": "HandoffBlock の CTA ボタンが「端末で続ける」で表示されている状態",
+      "conditions": {
+        "theme": ["light"],
+        "viewport": "desktop",
+        "state": "handoff guidance active"
+      },
+      "checkpoints": [
+        "ボタン label が「端末で続ける」である",
+        "「ターミナルを開く」が表示されていない"
+      ],
+      "captureMethod": "webContents.capturePage() or Playwright screenshot",
+      "relatedWalkthrough": "WT-3"
+    },
+    {
+      "id": "SS-05",
+      "screen": "Chat Surface - LLMGuidanceBanner",
+      "description": "NO_PROVIDER 状態で LLMGuidanceBanner が secondary CTA を表示",
+      "conditions": {
+        "theme": ["light"],
+        "viewport": "desktop",
+        "state": "selectedProviderId === null"
+      },
+      "checkpoints": [
+        "secondary CTA の label が「実行コンソールを開く」である",
+        "「ターミナルを開く」が表示されていない",
+        "primary CTA（設定を見る）と secondary CTA の視覚的区別が明確"
+      ],
+      "captureMethod": "webContents.capturePage() or Playwright screenshot",
+      "relatedWalkthrough": "WT-4"
+    },
+    {
+      "id": "SS-06",
+      "screen": "Chat Surface - TerminalHandoffCard",
+      "description": "TerminalHandoffCard の CTA ボタンが「端末で続ける」で表示されている状態",
+      "conditions": {
+        "theme": ["light"],
+        "viewport": "desktop",
+        "state": "terminal handoff card visible"
+      },
+      "checkpoints": [
+        "ボタン label が「端末で続ける」である",
+        "「terminal を開く」が表示されていない"
+      ],
+      "captureMethod": "webContents.capturePage() or Playwright screenshot",
+      "relatedWalkthrough": "WT-5"
+    },
+    {
+      "id": "SS-07",
+      "screen": "Workspace Surface - GuidanceBanner",
+      "description": "Workspace の guidance banner が secondary CTA を表示",
+      "conditions": {
+        "theme": ["light"],
+        "viewport": "desktop",
+        "state": "selectedProviderId === null, workspace view active"
+      },
+      "checkpoints": [
+        "secondary CTA の label が「実行コンソールを開く」である",
+        "「ターミナルを開く」が表示されていない"
+      ],
+      "captureMethod": "webContents.capturePage() or Playwright screenshot",
+      "relatedWalkthrough": "WT-6"
+    },
+    {
+      "id": "SS-08",
+      "screen": "Back Navigation",
+      "description": "ExecutionConsoleView から Cmd+[ でダッシュボードに戻った状態",
+      "conditions": {
+        "theme": ["light"],
+        "viewport": "desktop",
+        "state": "navigated back from executionConsole to dashboard"
+      },
+      "checkpoints": [
+        "ダッシュボードが再表示されている",
+        "nav item の active 状態が dashboard に戻っている"
+      ],
+      "captureMethod": "webContents.capturePage() or Playwright screenshot",
+      "relatedWalkthrough": "WT-9"
+    }
+  ],
+  "p53Note": "CLI 環境ではスクリーンショットの直接撮影が困難なため、Playwright の page.screenshot() または Electron の webContents.capturePage() をスクリプト化して取得する。手動実行が不可能な場合は Vitest + Testing Library による DOM 構造の間接検証で代替する。"
+}
