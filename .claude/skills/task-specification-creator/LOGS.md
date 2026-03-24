@@ -4,6 +4,16 @@
 
 ---
 
+## UT-06-003-PRELOAD-API-IMPL 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **変更内容**: `preload/skill-api.ts` に `evaluateSafety` メソッドを追加。`SkillAPI` インターフェース + `skillAPI` オブジェクトの両方に実装。`safeInvoke(IPC_CHANNELS.SKILL_EVALUATE_SAFETY, skillName)` でラップ形式透過。`SafetyGateResult` 型は `@repo/shared` から import（P23準拠）。
+- **影響ファイル**: preload/skill-api.ts, preload/__tests__/skill-api.evaluateSafety.test.ts, preload/__tests__/skill-api.test.ts, preload/__tests__/skill-api.unification.test.ts
+- **テスト**: T-1〜T-6（6テスト）全PASS、既存テスト回帰なし（117テスト全PASS）
+- **Pitfall準拠**: P23/P27/P42/P60/P61 全項目PASS
+
+---
+
 ## UT-06-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
