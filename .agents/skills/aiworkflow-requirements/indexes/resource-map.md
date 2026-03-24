@@ -414,6 +414,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-24 | 1.23.0     | TASK-LLM-MOD-04 完了同期: task-workflow-backlog に UT-LLM-MOD-04-001 登録。lessons-learned-current-safetygrate-ipc-gap.md に P50 教訓追記 |
 | 2026-03-20 | 1.22.0     | UT-RAG-08-002: HybridRAGFactory wiring 行に `lessons-learned-rag-embedding-runtime.md` を追加。ILLMClient 型ドリフト（L-RAG-06/P64）への導線を登録 |
 | 2026-03-19 | 1.21.1     | UT-TASK06-007 discovery 導線を completed canonical set に再同期。implementation pattern detail / security-electron-ipc-core / security-electron-ipc-history / completed ledger / lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment を追加し、follow-up を EXT-001〜005 に更新 |
 | 2026-03-18 | 1.21.0     | UT-TASK06-007: IPC契約ドリフト自動検出CLIスクリプト（check-ipc-contracts.ts）エントリをクイックルックアップ・タスク別リソースマップに追加。R-01~R-04検出ルール、--report-only/--strict/--format オプション、EXT-001~003未タスクの導線を登録 |

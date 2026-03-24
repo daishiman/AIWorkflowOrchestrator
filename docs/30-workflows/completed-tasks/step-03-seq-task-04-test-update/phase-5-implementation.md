@@ -161,8 +161,14 @@ Task 5-9 の実行結果が全 PASS になれば、Task01〜03 の実装が期�
 | 更新済み AnthropicAdapter.test.ts | `apps/desktop/src/main/adapters/llm/__tests__/AnthropicAdapter.test.ts` |
 | 更新済み GoogleAdapter.test.ts    | `apps/desktop/src/main/adapters/llm/__tests__/GoogleAdapter.test.ts`    |
 
+## P50 適用記録
+
+> Task01-03 実装時にテスト更新が同時完了していたことを Phase 5 事前確認で発見。
+> 「検証・補完モード」に切り替え、変更0行で全要件充足を確認した。
+
 ## 完了条件
 
+- [x] P50 パターン適用: Task01-03 完了時にテスト更新済みであることを確認（変更0行）
 - [ ] Task01〜03 が完了済みであることを確認した
 - [ ] llm.test.ts の handleGetProviders 期待値が PROVIDER_CONFIGS と一致している
 - [ ] inferProviderId に o3 / o4-mini のテストケースが追加されている

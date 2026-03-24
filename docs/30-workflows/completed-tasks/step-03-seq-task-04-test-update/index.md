@@ -57,6 +57,15 @@ cd apps/desktop && pnpm vitest run src/main/adapters/llm/__tests__/
 - [06-known-pitfalls.md#P40](../../../../.claude/rules/06-known-pitfalls.md): テスト実行ディレクトリ依存（モノレポ）
 - [06-known-pitfalls.md#P39](../../../../.claude/rules/06-known-pitfalls.md): happy-dom環境でのuserEvent非互換
 
+## 成果物
+
+| 成果物                   | パス                                                  |
+| ------------------------ | ----------------------------------------------------- |
+| タスク概要（本ファイル） | `index.md`                                            |
+| Phase 1-13 仕様書        | `phase-1-requirements.md` 〜 `phase-13-completion.md` |
+| 未タスク検出レポート     | `unassigned-task-report.md`                           |
+| artifacts.json           | `artifacts.json`                                      |
+
 ## 完了条件
 
 - [ ] 全テストファイルのモデルID期待値が新定義に合致している
