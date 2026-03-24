@@ -37,6 +37,35 @@
 
 ### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
 ### タスク: TASK-SC-03-PLAN-LLM-PROMPT RuntimeSkillCreatorFacade.plan() LLM プロンプト統合（2026-03-23）
+### タスク: UT-SC-03-003 RuntimeSkillCreatorFacade DI 配線（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-SC-03-003 |
+| 親タスク | TASK-SC-03-PLAN-LLM-PROMPT |
+| ステータス | **完了** |
+| 完了日 | 2026-03-24 |
+| 対象 | RuntimeSkillCreatorFacade setLLMAdapter / ipc/index.ts DI 配線 |
+| 成果物 | `docs/30-workflows/completed-tasks/ut-sc-03-003-di-wiring/` |
+
+#### 実施内容
+
+- `RuntimeSkillCreatorFacade.ts`: `llmAdapter` readonly 解除 + `setLLMAdapter(adapter: ILLMAdapter): void` Setter Injection 追加（P34 準拠）
+- `ipc/index.ts`: ResourceLoader コンストラクタ注入（`DEFAULT_SKILL_CREATOR_PATH`）+ LLMAdapterFactory.getAdapter("anthropic") fire-and-forget async 遅延注入
+- graceful degradation: LLMAdapter 未注入時はスタブ応答
+- TC-1〜TC-9 計11テスト全 PASS
+
+#### 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-SC-03-003-M01 | subscriptionAuthProvider DI 配線追加 | 低 | `docs/30-workflows/unassigned-task/UT-SC-03-003-M01-subscription-auth-provider-injection.md` |
+| UT-SC-03-003-M02 | テスト内 undefined キャスト除去 | 低 | `docs/30-workflows/unassigned-task/UT-SC-03-003-M02-test-type-cast-cleanup.md` |
+
+---
+
+### タスク: UT-CONV-DB-001 better-sqlite3 75件テスト SKIP 修正（2026-03-23）
+||||||| d25162720
 ### タスク: UT-CONV-DB-001 better-sqlite3 75件テスト SKIP 修正（2026-03-23）
 
 | 項目 | 値 |

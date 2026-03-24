@@ -4,6 +4,22 @@
 
 ---
 
+## UT-SC-03-003 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - RuntimeSkillCreatorFacade DI配線実装（TASK-SC-03 派生）
+  - setLLMAdapter() Setter Injection（P34準拠）+ ResourceLoader コンストラクタ注入
+  - fire-and-forget async で LLMAdapterFactory.getAdapter("anthropic") 遅延注入
+  - graceful degradation: LLMAdapter 未注入時はスタブ応答
+  - テスト: TC-1〜TC-9 計11テスト全PASS
+  - 未タスク: 2件（UT-SC-03-003-M01 subscriptionAuthProvider DI配線追加, UT-SC-03-003-M02 テスト内 undefined キャスト除去）
+
+---
+
+||||||| d25162720
 ## TASK-LLM-MOD-02 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
