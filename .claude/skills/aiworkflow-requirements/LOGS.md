@@ -6,8 +6,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-24 - TASK-LLM-MOD-03 完了（GoogleAdapter system_instruction 対応 / baseUrl v1→v1beta / buildRequestBody DRY統合 / formatContents systemPrompt分離 / 19テスト全PASS / streaming.test.ts v1beta URL修正 / 未タスク2件: UT-LLM-MOD-03-TYPE-01〜02） |
 | 2026-03-24 - UT-SC-03-003 完了（RuntimeSkillCreatorFacade DI配線 / setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter / 11テスト全PASS / 未タスク2件: M01 subscriptionAuthProvider, M02 undefined キャスト除去） |
-||||||| d25162720
 | 2026-03-23 - TASK-LLM-MOD-02 完了（AnthropicAdapter ヘルスチェックモデル更新 / L207 model ID を claude-3-haiku-20240307 から claude-haiku-4-5 に変更 / HC-001 テスト追加 / 12テスト全PASS / 未タスク2件: TASK-LLM-MOD-HEALTHCHECK-CONST, TASK-LLM-MOD-HEALTHCHECK-BODY） |
 | 2026-03-23 - UT-06-003-PRELOAD-API-IMPL 完了（evaluateSafety Preload API 追加 / safeInvoke + IPC_CHANNELS.SKILL_EVALUATE_SAFETY / T-1〜T-6 テスト全PASS / P23/P27/P42/P60/P61 準拠確認済み） |
 | 2026-03-23 - UT-06-002 完了同期（AllowedToolEntryV2 PermissionStore V2 拡張 / ExpiryPolicy 4種 / isToolAllowed 6分岐 / permission:clear-session IPC / V1→V2 マイグレーション / 未タスク4件） |

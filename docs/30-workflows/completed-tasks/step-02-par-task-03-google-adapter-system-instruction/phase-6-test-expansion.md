@@ -177,6 +177,23 @@ cd apps/desktop && pnpm vitest run --coverage \
 | テスト作成       | `phase-4-test-creation.md`         | Phase 4 で追加したテストケース |
 | コード品質ルール | `.claude/rules/02-code-quality.md` | カバレッジ基準                 |
 
+## 統合テスト連携
+
+カバレッジが基準を満たさない場合は、Phase 7 の判定が「未達」になり Phase 6 に戻る。追加テストは Task04（step-03 のテスト更新）でも参照されるため、正確なテストコードを維持すること。
+
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する。
+**具体的なチェック項目はAIがタスク内容に応じて判断・適用する。**
+
+| 観点               | 適用判断                           | 仕様参照先                                   |
+| ------------------ | ---------------------------------- | -------------------------------------------- |
+| セキュリティ       | 認証・認可・入力検証が関係する場合 | `aiworkflow-requirements: security-*.md`     |
+| アーキテクチャ     | 設計・構造変更の場合               | `aiworkflow-requirements: architecture-*.md` |
+| API設計            | API実装・変更の場合                | `aiworkflow-requirements: api-*.md`          |
+| エラーハンドリング | 例外処理が必要な場合               | `aiworkflow-requirements: error-handling.md` |
+| パフォーマンス     | 性能要件がある場合                 | `aiworkflow-requirements: architecture-*.md` |
+
 ## 成果物
 
 | 成果物                 | パス                                                                 | 説明                  |
@@ -193,10 +210,16 @@ cd apps/desktop && pnpm vitest run --coverage \
 - [ ] Line Coverage 80% 以上を達成している
 - [ ] Branch Coverage 60% 以上を達成している
 - [ ] Function Coverage 80% 以上を達成している
+- [ ] **本Phase内の全タスクを100%実行完了**
 
-## 統合テスト連携
+## タスク100%実行確認【必須】
 
-カバレッジが基準を満たさない場合は、Phase 7 の判定が「未達」になり Phase 6 に戻る。追加テストは Task04（step-03 のテスト更新）でも参照されるため、正確なテストコードを維持すること。
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次のPhase
 

@@ -32,6 +32,8 @@
 | UT-LLM-MOD-01-003 | 既存テストのモデルIDフィクスチャ更新 | 低 | TASK-LLM-MOD-01 Phase 1 影響テスト調査（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-003.md` |
 | UT-LLM-MOD-01-004 | システム仕様書の旧モデルIDテーブル更新（9ファイル） | 中 | TASK-LLM-MOD-01 30種思考法分析（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-004.md` |
 | UT-LLM-MOD-01-005 | PROVIDER_CONFIGS/inferProviderId/LLMProviderIdSchema 三重管理解消 | 中 | TASK-LLM-MOD-01 30種思考法分析 KJ法テーマA（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-005.md` |
+| UT-LLM-MOD-03-TYPE-01 | buildRequestBody 戻り値型の厳密化（GeminiRequestBody 型定義） | 低 | TASK-LLM-MOD-03 Phase 10 未タスク検出（2026-03-24） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-03-TYPE-01.md` |
+| UT-LLM-MOD-03-TYPE-02 | GeminiGenerateContentResponse の usageMetadata optional 化検討 | 低 | TASK-LLM-MOD-03 Phase 10 未タスク検出（2026-03-24） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-03-TYPE-02.md` |
 | TASK-LLM-MOD-HEALTHCHECK-CONST | ヘルスチェックモデルIDの定数化（全 Adapter 統一） + `ANTHROPIC_VALIDATION_MODEL` 旧ID更新 | 低 | TASK-LLM-MOD-02 Phase 8（2026-03-23） | `docs/30-workflows/unassigned-task/task-llm-mod-healthcheck-const.md` |
 | TASK-LLM-MOD-HEALTHCHECK-BODY | checkHealth の max_tokens / messages 固定値テスト（HC-002/HC-003） | 低 | TASK-LLM-MOD-02 Phase 6（2026-03-23） | `docs/30-workflows/unassigned-task/task-llm-mod-healthcheck-body.md` |
 | UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001 | `RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する | 中 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 Phase 12 最終ドキュメント更新（2026-03-21） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |

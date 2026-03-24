@@ -291,6 +291,23 @@ cd apps/desktop && pnpm vitest run src/main/adapters/llm/__tests__/GoogleAdapter
 | 設計レビュー | `phase-3-design-review.md`                                           | 既存テスト影響分析            |
 | 現行テスト   | `apps/desktop/src/main/adapters/llm/__tests__/GoogleAdapter.test.ts` | 既存テストケース              |
 
+## 統合テスト連携
+
+本 Phase で追加するテストは Task04（step-03 のテスト更新）の前提となる。Task04 はこれらのテストが Green になった後に期待値の最終整合確認を行う。
+
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する。
+**具体的なチェック項目はAIがタスク内容に応じて判断・適用する。**
+
+| 観点               | 適用判断                           | 仕様参照先                                   |
+| ------------------ | ---------------------------------- | -------------------------------------------- |
+| セキュリティ       | 認証・認可・入力検証が関係する場合 | `aiworkflow-requirements: security-*.md`     |
+| アーキテクチャ     | 設計・構造変更の場合               | `aiworkflow-requirements: architecture-*.md` |
+| API設計            | API実装・変更の場合                | `aiworkflow-requirements: api-*.md`          |
+| エラーハンドリング | 例外処理が必要な場合               | `aiworkflow-requirements: error-handling.md` |
+| パフォーマンス     | 性能要件がある場合                 | `aiworkflow-requirements: architecture-*.md` |
+
 ## 成果物
 
 | 成果物                 | パス                                                                 | 説明                        |
@@ -305,10 +322,16 @@ cd apps/desktop && pnpm vitest run src/main/adapters/llm/__tests__/GoogleAdapter
 - [ ] `ADP-012-SI-03`（buildRequestBody の generationConfig テスト）が追加されている
 - [ ] `ADP-STREAM-SI-01`（streamChat での system_instruction テスト）が追加されている
 - [ ] Phase 5 実装前にテストが Red であることを確認済み（`pnpm vitest run` で失敗を確認）
+- [ ] **本Phase内の全タスクを100%実行完了**
 
-## 統合テスト連携
+## タスク100%実行確認【必須】
 
-本 Phase で追加するテストは Task04（step-03 のテスト更新）の前提となる。Task04 はこれらのテストが Green になった後に期待値の最終整合確認を行う。
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次のPhase
 

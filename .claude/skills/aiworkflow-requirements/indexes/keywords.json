@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-24T00:06:00.099Z",
-  "totalKeywords": 2458,
+  "generated": "2026-03-24T02:54:54.433Z",
+  "totalKeywords": 2460,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1724,6 +1724,7 @@
       "arch-state-management-core.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-executor-details.md",
+      "interfaces-agent-sdk-skill-reference.md",
       "interfaces-agent-sdk-skill.md",
       "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -2458,6 +2459,7 @@
     ],
     "SC": [
       "arch-electron-services-details-part2.md",
+      "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-ipc-preload-runtime.md",
       "task-workflow-completed-skill-lifecycle-design.md"
     ],
@@ -2482,7 +2484,6 @@
       "error-handling-details.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
-      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
@@ -5007,6 +5008,9 @@
       "testing-component-patterns-details.md",
       "ui-ux-feature-components-advanced.md"
     ],
+    "RuntimeSkillCreatorFacade": [
+      "interfaces-agent-sdk-skill-reference.md"
+    ],
     "LAYER": [
       "interfaces-agent-sdk-skill.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
@@ -7337,6 +7341,9 @@
       "ui-history-data-types.md"
     ],
     "アダプター実装": [
+      "llm-ipc-types.md"
+    ],
+    "MOD": [
       "llm-ipc-types.md"
     ],
     "ストリーミングレスポンス仕様": [

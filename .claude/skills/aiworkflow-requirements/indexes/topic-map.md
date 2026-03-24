@@ -434,6 +434,7 @@ node scripts/list-specs.js --topics
 | スキルチェーン 型定義（TASK-9D） | L366 |
 | スキルスケジュール 型定義（TASK-9G） | L401 |
 | スキルフォーク 型定義（TASK-9E） | L426 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L474 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -2596,9 +2597,9 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L18 |
 | 分割ファイル一覧 | L46 |
 | クイックリファレンス: カテゴリ別検索ガイド | L61 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L137 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L469 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L503 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L161 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L493 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L527 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2827,9 +2828,10 @@ node scripts/list-specs.js --topics
 | バリデーション関数 | L243 |
 | IPC通信 | L254 |
 | LLMアダプター実装 | L288 |
-| 関連ドキュメント | L326 |
-| 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L334 |
-| 変更履歴 | L349 |
+| 関連ドキュメント | L342 |
+| 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L350 |
+| 完了タスク（TASK-LLM-MOD-03） | L365 |
+| 変更履歴 | L377 |
 
 ### references/llm-streaming.md
 

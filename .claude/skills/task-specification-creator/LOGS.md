@@ -87,6 +87,49 @@
 ---
 
 ## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
+
+## UT-SC-02-002 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - execute() の terminal_handoff 未分岐修正（セキュリティ修正）
+  - RuntimeSkillCreatorExecuteResponse Union型追加
+  - void decision; 除去、plan/improve/execute パターン統一
+  - 15テスト全PASS、Line/Function Coverage 100%
+
+---
+
+## UT-EXECUTION-ENV-TERMINAL-001 完了（2026-03-23）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - ExecutionEnvironment.terminal の placeholder → TerminalHandoffCard 本実装
+  - assertNoSilentFallback() ガード実装（P62 対策）
+  - LLMConfigNotSelectedError カスタムエラー型追加
+  - 18テストケース（T-1〜T-18）全 PASS
+  - LOGS.md 2ファイル + interfaces 仕様書更新（P1/P25 対策）
+
+---
+
+## TASK-LLM-MOD-03 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 full execution
+- **Result**: success
+- **Notes**:
+  - GoogleAdapter の systemPrompt 処理を user ロールワークアラウンドから system_instruction フィールドに移行
+  - baseUrl デフォルト値を v1 から v1beta に変更
+  - buildRequestBody private メソッドで sendChat/streamChat の DRY 統合
+  - 19 テスト全 PASS / streaming.test.ts の MSW URL 修正（3箇所）
+  - 未タスク 2 件（UT-LLM-MOD-03-TYPE-01〜02）検出・backlog 登録
+
+---
+
+## TASK-IMP-SLIDE-RUNTIME-ALIGNMENT-001 完了同期（2026-03-22）
 ## TASK-LLM-MOD-01 完了（2026-03-23）
 
 ## TASK-SC-04-OUTPUT-PERSISTENCE 完了（2026-03-23）

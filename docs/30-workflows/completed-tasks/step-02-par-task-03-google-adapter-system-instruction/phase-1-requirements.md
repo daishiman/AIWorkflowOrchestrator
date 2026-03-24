@@ -122,12 +122,29 @@ grep -n "systemPrompt\|system_instruction\|prepend" \
 
 ## 参照資料
 
-| 資料名           | パス                               | 内容                                              |
-| ---------------- | ---------------------------------- | ------------------------------------------------- |
-| Google API調査   | `../../research/google-models.md`  | Gemini 最新モデル・API仕様・v1/v1betaトレードオフ |
-| Task03 概要      | `./index.md`                       | タスク概要・完了条件                              |
-| 全体要件定義     | `../../phase-1-requirements.md`    | FR-04: GoogleAdapter system_instruction 対応      |
-| コード品質ルール | `.claude/rules/02-code-quality.md` | TypeScript型安全・テスト基準                      |
+| 資料名           | パス                                                            | 内容                                              |
+| ---------------- | --------------------------------------------------------------- | ------------------------------------------------- |
+| Google API調査   | `../llm-provider-model-modernization/research/google-models.md` | Gemini 最新モデル・API仕様・v1/v1betaトレードオフ |
+| Task03 概要      | `./index.md`                                                    | タスク概要・完了条件                              |
+| 全体要件定義     | `../../phase-1-requirements.md`                                 | FR-04: GoogleAdapter system_instruction 対応      |
+| コード品質ルール | `.claude/rules/02-code-quality.md`                              | TypeScript型安全・テスト基準                      |
+
+## 統合テスト連携
+
+本タスク（Task03）は Task02（AnthropicAdapter更新）と並列実行可能。Task04（テスト更新）は本タスク完了後に開始する。Task04 では本タスクで更新した `GoogleAdapter.test.ts` の内容を参照してテスト期待値の整合性を確認すること。
+
+## 多角的チェック観点（AIが判断）
+
+タスクの性質に応じて、以下の観点を確認する。
+**具体的なチェック項目はAIがタスク内容に応じて判断・適用する。**
+
+| 観点               | 適用判断                           | 仕様参照先                                   |
+| ------------------ | ---------------------------------- | -------------------------------------------- |
+| セキュリティ       | 認証・認可・入力検証が関係する場合 | `aiworkflow-requirements: security-*.md`     |
+| アーキテクチャ     | 設計・構造変更の場合               | `aiworkflow-requirements: architecture-*.md` |
+| API設計            | API実装・変更の場合                | `aiworkflow-requirements: api-*.md`          |
+| エラーハンドリング | 例外処理が必要な場合               | `aiworkflow-requirements: error-handling.md` |
+| パフォーマンス     | 性能要件がある場合                 | `aiworkflow-requirements: architecture-*.md` |
 
 ## 成果物
 
@@ -142,10 +159,16 @@ grep -n "systemPrompt\|system_instruction\|prepend" \
 - [x] スコープの含む/含まないが明確に区分されている
 - [x] 関連ファイル一覧が特定されている
 - [x] APIバージョン判断の根拠が記録されている
+- [ ] **本Phase内の全タスクを100%実行完了**
 
-## 統合テスト連携
+## タスク100%実行確認【必須】
 
-本タスク（Task03）は Task02（AnthropicAdapter更新）と並列実行可能。Task04（テスト更新）は本タスク完了後に開始する。Task04 では本タスクで更新した `GoogleAdapter.test.ts` の内容を参照してテスト期待値の整合性を確認すること。
+Phase完了前に以下を確認:
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次のPhase
 
