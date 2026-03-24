@@ -41,6 +41,31 @@
 
 ---
 
+### タスク: TASK-IMP-UISTATE-CONTRACT-EXTENSION-001 UiState 8値拡張（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-UISTATE-CONTRACT-EXTENSION-001 |
+| 完了日 | 2026-03-24 |
+| ステータス | **完了** |
+| 優先度 | 高 |
+| 対象 | `packages/shared/src/types/execution-capability.ts` |
+| 成果物 | `docs/30-workflows/completed-tasks/impl-task-a-uistate-contract-extension/` |
+
+#### 実施内容
+
+- UiState 3値→8値拡張（ready / blocked / unavailable + streaming / handoff / terminal-only / guidance-only / degraded）
+- resolveUiState() P1-P8 優先順位チェーン実装（Overload 1: CapabilityContext → UiStateResult）
+- resolveCtaContract() 新5状態CTA マッピング追加（streaming / handoff / terminal-only / guidance-only / degraded）
+- Guard関数2個追加（assertStreamingCtaContract / assertHandoffGuidanceExists）
+- CapabilityContext に4 optional boolean fields 追加（isStreaming / isHandoffRequired / isDegraded / hasAlternativeGuidance）
+- Overload 2 後方互換性維持（@deprecated）
+- テスト: uistate-resolve 32件 + contract-matrix 26件 + 全144件 PASS
+- Phase 6 エッジケース13テスト追加（EC-2〜EC-6, BV-1〜BV-3, OL-1〜OL-5）
+- 未タスク: 0件
+
+---
+
 ### タスク: TASK-SC-04-OUTPUT-PERSISTENCE SkillFileWriter LLM生成スキルコンテンツ永続化（2026-03-23）
 
 | 項目 | 値 |

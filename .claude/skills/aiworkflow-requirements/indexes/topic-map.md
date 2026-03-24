@@ -481,7 +481,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L6 |
 | ExecutionCapability 型定義（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001） | L274 |
-| ワークスペース型定義 | L360 |
+| ワークスペース型定義 | L368 |
 
 ### references/interfaces-auth-history.md
 

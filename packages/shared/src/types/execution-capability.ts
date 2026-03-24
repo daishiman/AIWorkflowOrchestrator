@@ -2,11 +2,14 @@
  * Execution Capability 型定義
  *
  * authMode と認証情報の有無から導出される「実行能力」を表す型群。
- * UI 状態（ready / blocked / unavailable）と CTA 契約（ボタンラベル・アクション）を
+ * UI 状態（8 値）と CTA 契約（ボタンラベル・アクション）を
  * pure function で導出する。
+
  *
  * @module execution-capability
  */
+
+import type { HandoffGuidance } from "./handoff";
 
 // =============================================================================
 // 基本型定義
@@ -37,13 +40,22 @@ export const CAPABILITY_VALUES = [
 ] as const satisfies readonly AccessCapability[];
 
 /**
- * UI 表示状態 3 値
+ * UI 表示状態 8 値
  *
- * - ready: 実行可能（capability が integratedRuntime / terminalSurface / both）
- * - blocked: 設定が必要（認証情報が不足、ただし回復操作がある）
- * - unavailable: この画面ではアクションを取れない（設定画面への誘導なし）
+ * 既存 3 値（ready / blocked / unavailable）に
+ * streaming / handoff / terminal-only / guidance-only / degraded を追加。
+ *
+ * @see phase-2-design.md D-1
  */
-export type UiState = "ready" | "blocked" | "unavailable";
+export type UiState =
+  | "ready"
+  | "blocked"
+  | "unavailable"
+  | "streaming"
+  | "handoff"
+  | "terminal-only"
+  | "guidance-only"
+  | "degraded";
 
 /**
  * 有効な UiState 値の readonly tuple
@@ -52,6 +64,11 @@ export const UI_STATE_VALUES = [
   "ready",
   "blocked",
   "unavailable",
+  "streaming",
+  "handoff",
+  "terminal-only",
+  "guidance-only",
+  "degraded",
 ] as const satisfies readonly UiState[];
 
 // =============================================================================
@@ -70,21 +87,38 @@ export interface ExecutionCapabilityInput {
 
 /**
  * UI state 判定の入力コンテキスト（Concern B）
+ *
+ * @see phase-2-design.md D-2
  */
 export interface CapabilityContext {
   capability: AccessCapability;
   isConnectionAvailable: boolean;
   isTerminalAvailable: boolean;
   hasResolutionAction: boolean;
+
+  /** streaming 状態判定（optional, デフォルト false）
+   * @see phase-2-design.md D-2
+   */
+  isStreaming?: boolean;
+  /** handoff 条件成立判定（optional, デフォルト false） */
+  isHandoffRequired?: boolean;
+  /** degraded（legacy lane 品質低下）判定（optional, デフォルト false） */
+  isDegraded?: boolean;
+  /** guidance-only 条件判定（optional, デフォルト false） */
+  hasAlternativeGuidance?: boolean;
 }
 
 /**
  * UI state 判定結果（Concern B）
+ *
+ * @see phase-2-design.md D-4
  */
 export interface UiStateResult {
   uiState: UiState;
   blockedReason?: string;
   blockedAction?: { label: string; targetRoute: string };
+  /** handoff 状態で返す terminal 委譲ガイダンス */
+  handoffGuidance?: HandoffGuidance;
 }
 
 /**
@@ -170,50 +204,92 @@ export function resolveCapability(
 /**
  * capability コンテキストから UiState を導出する
  *
- * 判定ロジック:
- * - capability が integratedRuntime/terminalSurface/both → ready
- * - capability が none かつ hasResolutionAction → blocked（理由+解決action付き）
- * - capability が none かつ hasResolutionAction=false → unavailable
+ * 評価優先順位（Phase 2 D-3 準拠）:
+ * P1: streaming → P2: handoff → P3: terminal-only →
+ * P4: degraded → P5: ready → P6: guidance-only →
+ * P7: blocked → P8: unavailable
+ *
+ * @see phase-2-design.md D-3
  */
 export function resolveUiState(context: CapabilityContext): UiStateResult;
+/** @deprecated overload 1 への移行を推奨 */
 export function resolveUiState(
   capability: AccessCapability,
   conditions: { hasCredentialPath: boolean },
-): UiState;
+): "ready" | "blocked" | "unavailable";
 export function resolveUiState(
   capabilityOrContext: AccessCapability | CapabilityContext,
   conditions?: { hasCredentialPath: boolean },
 ): UiState | UiStateResult {
-  // overload 1: CapabilityContext
+  // overload 1: CapabilityContext（8 値対応）
   if (typeof capabilityOrContext === "object") {
-    const ctx = capabilityOrContext;
-    if (
-      ctx.capability === "integratedRuntime" ||
-      ctx.capability === "terminalSurface" ||
-      ctx.capability === "both"
-    ) {
-      return { uiState: "ready" };
+    const {
+      capability,
+      isStreaming = false,
+      isHandoffRequired = false,
+      isDegraded = false,
+      hasAlternativeGuidance = false,
+      isTerminalAvailable,
+      hasResolutionAction,
+    } = capabilityOrContext;
+
+    // P1: streaming は最優先（実行中の表示状態）
+    if (isStreaming) {
+      return { uiState: "streaming" };
     }
 
-    // capability === "none"
-    if (ctx.hasResolutionAction) {
+    // P2: handoff（terminal へ委譲する条件が成立）
+    if (
+      isHandoffRequired &&
+      (capability === "terminalSurface" || capability === "both")
+    ) {
       return {
-        uiState: "blocked",
-        blockedReason: "認証情報が設定されていません",
-        blockedAction: {
-          label: "設定を開く",
-          targetRoute: "/settings",
-        },
+        uiState: "handoff",
+        handoffGuidance: buildHandoffGuidance(capabilityOrContext),
       };
     }
 
+    // P3: terminal-only（terminal のみが利用可能）
+    if (capability === "terminalSurface" && !isTerminalAvailable) {
+      return { uiState: "unavailable" };
+    }
+    if (capability === "terminalSurface") {
+      return { uiState: "terminal-only" };
+    }
+
+    // P4: degraded（capability ありだが品質低下。integratedRuntime/both で到達可能）
+    if (isDegraded && capability !== "none") {
+      return { uiState: "degraded" };
+    }
+
+    // P5: ready（通常の実行可能状態）
+    if (capability === "integratedRuntime" || capability === "both") {
+      return { uiState: "ready" };
+    }
+
+    // capability === "none" の分岐
+    // P6: guidance-only
+    if (hasAlternativeGuidance) {
+      return { uiState: "guidance-only" };
+    }
+
+    // P7: blocked
+    if (hasResolutionAction) {
+      return {
+        uiState: "blocked",
+        blockedReason: "認証情報が設定されていません",
+        blockedAction: { label: "設定を開く", targetRoute: "/settings" },
+      };
+    }
+
+    // P8: unavailable（P62 準拠: 明示的なデフォルト）
     return {
       uiState: "unavailable",
       blockedReason: "利用可能な実行環境がありません",
     };
   }
 
-  // overload 2: simple (AccessCapability, conditions)
+  // overload 2: 後方互換（3 値のみ）
   const capability = capabilityOrContext;
   if (
     capability === "both" ||
@@ -225,6 +301,21 @@ export function resolveUiState(
   return conditions!.hasCredentialPath ? "blocked" : "unavailable";
 }
 
+/**
+ * handoff ガイダンスを構築するヘルパー（pure function）
+ */
+function buildHandoffGuidance(context: CapabilityContext): HandoffGuidance {
+  return {
+    terminalCommand: "claude --resume",
+    contextSummary:
+      "統合ランタイムで実行できないタスクです。ターミナルで継続してください。",
+    reason:
+      context.capability === "terminalSurface"
+        ? "統合ランタイムが利用できないため、ターミナルへ委譲します"
+        : "このタスクはターミナルでの実行が推奨されます",
+  };
+}
+
 // =============================================================================
 // Concern C: CTA 契約導出
 // =============================================================================
@@ -232,35 +323,40 @@ export function resolveUiState(
 /**
  * capability × uiState から CTA 契約を導出する
  *
- * contract-matrix 準拠:
- * | capability        | uiState     | primary            | secondary          |
- * |-------------------|-------------|--------------------|--------------------|
- * | integratedRuntime | ready       | AI で実行          | 設定を開く         |
- * | terminalSurface   | ready       | ターミナルで実行   | コマンドをコピー   |
- * | both              | ready       | AI で実行          | ターミナルで実行   |
- * | none              | blocked     | 設定を開く         | ヘルプを表示       |
- * | none              | unavailable | (null)             | セットアップガイド |
+ * contract-matrix 準拠（Phase 2 D-5 拡張）:
+ * | uiState        | capability        | primary              | secondary            |
+ * |----------------|-------------------|----------------------|----------------------|
+ * | ready          | integratedRuntime | AI で実行            | 設定を開く           |
+ * | ready          | terminalSurface   | ターミナルで実行     | コマンドをコピー     |
+ * | ready          | both              | AI で実行            | ターミナルで実行     |
+ * | blocked        | none              | 設定を開く           | ヘルプを表示         |
+ * | unavailable    | *                 | (null)               | セットアップガイド   |
+ * | streaming      | *                 | 停止                 | 最新へ移動           |
+ * | handoff        | *                 | terminal を開く      | コマンドをコピー     |
+ * | terminal-only  | *                 | terminal を開く      | コマンドをコピー     |
+ * | guidance-only  | *                 | 設定を見る           | ヘルプを表示         |
+ * | degraded       | *                 | manual fallback      | ヘルプを表示         |
  */
 export function resolveCtaContract(input: CtaInput): CtaContract;
 export function resolveCtaContract(
-  capability: AccessCapability,
   uiState: UiState,
+  capability: AccessCapability,
 ): CtaContract;
 export function resolveCtaContract(
-  capabilityOrInput: AccessCapability | CtaInput,
-  uiStateArg?: UiState,
+  uiStateOrInput: UiState | CtaInput,
+  capabilityArg?: AccessCapability,
 ): CtaContract {
   const capability =
-    typeof capabilityOrInput === "object"
-      ? capabilityOrInput.capability
-      : capabilityOrInput;
+    typeof uiStateOrInput === "object"
+      ? uiStateOrInput.capability
+      : capabilityArg!;
   const uiState =
-    typeof capabilityOrInput === "object"
-      ? capabilityOrInput.uiState
-      : uiStateArg!;
+    typeof uiStateOrInput === "object"
+      ? uiStateOrInput.uiState
+      : uiStateOrInput;
   const blockedAction =
-    typeof capabilityOrInput === "object"
-      ? capabilityOrInput.blockedAction
+    typeof uiStateOrInput === "object"
+      ? uiStateOrInput.blockedAction
       : undefined;
 
   if (uiState === "unavailable") {
@@ -276,6 +372,48 @@ export function resolveCtaContract(
         label: blockedAction?.label ?? "設定を開く",
         action: "openSettings",
       },
+      secondary: { label: "ヘルプを表示", action: "openHelp" },
+    };
+  }
+
+  // Phase 2 D-5: 新 5 状態の CTA マッピング
+  if (uiState === "streaming") {
+    return {
+      primary: { label: "停止", action: "stopStreaming" },
+      secondary: { label: "最新へ移動", action: "scrollToLatest" },
+    };
+  }
+
+  if (uiState === "handoff") {
+    return {
+      primary: { label: "terminal を開く", action: "openTerminal" },
+      secondary: {
+        label: "コマンドをコピー",
+        action: "copyCommandToClipboard",
+      },
+    };
+  }
+
+  if (uiState === "terminal-only") {
+    return {
+      primary: { label: "terminal を開く", action: "openTerminal" },
+      secondary: {
+        label: "コマンドをコピー",
+        action: "copyCommandToClipboard",
+      },
+    };
+  }
+
+  if (uiState === "guidance-only") {
+    return {
+      primary: { label: "設定を見る", action: "openSettings" },
+      secondary: { label: "ヘルプを表示", action: "openHelp" },
+    };
+  }
+
+  if (uiState === "degraded") {
+    return {
+      primary: { label: "manual fallback", action: "openManualFallback" },
       secondary: { label: "ヘルプを表示", action: "openHelp" },
     };
   }
@@ -340,6 +478,38 @@ export function assertNoPrimaryCta(
   if (uiState === "unavailable" && ctaContract.primary !== null) {
     throw new Error(
       "[assertNoPrimaryCta] uiState が 'unavailable' のとき primary CTA は null でなければなりません。",
+    );
+  }
+}
+
+/**
+ * streaming 状態のとき CTA primary ラベルが "停止" であることを検証するガード
+ *
+ * @see phase-2-design.md D-7
+ */
+export function assertStreamingCtaContract(
+  uiState: UiState,
+  ctaContract: CtaContract,
+): void {
+  if (uiState === "streaming" && ctaContract.primary?.label !== "停止") {
+    throw new Error(
+      "[assertStreamingCtaContract] uiState が 'streaming' のとき primary CTA ラベルは '停止' でなければなりません。",
+    );
+  }
+}
+
+/**
+ * handoff 状態のとき handoffGuidance が存在することを検証するガード
+ *
+ * @see phase-2-design.md D-7
+ */
+export function assertHandoffGuidanceExists(
+  uiState: UiState,
+  result: UiStateResult,
+): void {
+  if (uiState === "handoff" && !result.handoffGuidance) {
+    throw new Error(
+      "[assertHandoffGuidanceExists] uiState が 'handoff' のとき handoffGuidance は必須です。",
     );
   }
 }
