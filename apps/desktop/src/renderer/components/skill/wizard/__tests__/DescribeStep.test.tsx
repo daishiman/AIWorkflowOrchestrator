@@ -267,4 +267,85 @@ describe("DescribeStep", () => {
       expect(screen.getByRole("button", { name: "次へ" })).toBeEnabled();
     });
   });
+
+  // ==========================================================
+  // Phase 4 追加: TASK-SC-07 AC-1 - 生成モード選択UI
+  // ==========================================================
+  describe("生成モード選択UI（AC-1）", () => {
+    let mockOnGenerationModeChange: ReturnType<typeof vi.fn>;
+
+    beforeEach(() => {
+      mockOnGenerationModeChange = vi.fn();
+    });
+
+    it("generationMode='template' でテンプレートラジオが選択状態になる", () => {
+      render(
+        <DescribeStep
+          description="テストスキル"
+          onDescriptionChange={mockOnDescriptionChange}
+          generationMode="template"
+          onGenerationModeChange={mockOnGenerationModeChange}
+          onNext={mockOnNext}
+        />,
+      );
+      const templateRadio = screen.getByRole("radio", { name: /テンプレート/ });
+      expect(templateRadio).toBeChecked();
+    });
+
+    it("generationMode='llm' でLLMラジオが選択状態になる", () => {
+      render(
+        <DescribeStep
+          description="テストスキル"
+          onDescriptionChange={mockOnDescriptionChange}
+          generationMode="llm"
+          onGenerationModeChange={mockOnGenerationModeChange}
+          onNext={mockOnNext}
+        />,
+      );
+      const llmRadio = screen.getByRole("radio", { name: /LLM/ });
+      expect(llmRadio).toBeChecked();
+    });
+
+    it("LLMラジオ選択でonGenerationModeChangeが'llm'で呼ばれる", () => {
+      render(
+        <DescribeStep
+          description="テストスキル"
+          onDescriptionChange={mockOnDescriptionChange}
+          generationMode="template"
+          onGenerationModeChange={mockOnGenerationModeChange}
+          onNext={mockOnNext}
+        />,
+      );
+      const llmRadio = screen.getByRole("radio", { name: /LLM/ });
+      fireEvent.click(llmRadio);
+      expect(mockOnGenerationModeChange).toHaveBeenCalledWith("llm");
+    });
+
+    it("テンプレートラジオ選択でonGenerationModeChangeが'template'で呼ばれる", () => {
+      render(
+        <DescribeStep
+          description="テストスキル"
+          onDescriptionChange={mockOnDescriptionChange}
+          generationMode="llm"
+          onGenerationModeChange={mockOnGenerationModeChange}
+          onNext={mockOnNext}
+        />,
+      );
+      const templateRadio = screen.getByRole("radio", { name: /テンプレート/ });
+      fireEvent.click(templateRadio);
+      expect(mockOnGenerationModeChange).toHaveBeenCalledWith("template");
+    });
+
+    it("generationMode未指定時もonNextは動作する（後方互換）", () => {
+      render(
+        <DescribeStep
+          description="テストスキル"
+          onDescriptionChange={mockOnDescriptionChange}
+          onNext={mockOnNext}
+        />,
+      );
+      const button = screen.getByRole("button", { name: "次へ" });
+      expect(button).toBeEnabled();
+    });
+  });
 });

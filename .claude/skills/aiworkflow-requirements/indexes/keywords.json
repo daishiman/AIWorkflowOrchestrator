@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-25T02:35:58.812Z",
-  "totalKeywords": 2485,
+  "generated": "2026-03-25T06:05:05.000Z",
+  "totalKeywords": 2489,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6547,6 +6547,13 @@
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
+    "CREATE": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "WIZARD": [
+      "lessons-learned-ipc-preload-runtime.md",
+      "ui-ux-navigation.md"
+    ],
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -11035,9 +11042,6 @@
       "workflow-onboarding-wizard-alignment.md"
     ],
     "ONBOARDING": [
-      "ui-ux-navigation.md"
-    ],
-    "WIZARD": [
       "ui-ux-navigation.md"
     ],
     "パネル・セレクター": [

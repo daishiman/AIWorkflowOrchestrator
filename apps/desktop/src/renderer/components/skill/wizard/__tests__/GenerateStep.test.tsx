@@ -9,8 +9,9 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { GenerateStep } from "../GenerateStep";
+import type { PlanResult } from "../../../../store/slices/agentSlice";
 
 describe("GenerateStep", () => {
   beforeEach(() => {
@@ -112,9 +113,318 @@ describe("GenerateStep", () => {
       expect(
         container.querySelector('[role="status"]'),
       ).not.toBeInTheDocument();
+    });
+  });
+
+  // ==========================================================
+  // Phase 4 追加: TASK-SC-07 AC-3,4,5,6,7,8
+  // ==========================================================
+  const mockOnExecutePlan = vi.fn();
+  const mockOnCancelPlan = vi.fn();
+
+  describe("generationProgress 表示（AC-6）", () => {
+    it("generationProgress が設定されているとき進捗テキストが表示される", () => {
+      render(
+        <GenerateStep
+          isGenerating={true}
+          error={null}
+          generationMode="llm"
+          generationProgress="計画を生成中..."
+          planResult={null}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(screen.getByText("計画を生成中...")).toBeInTheDocument();
+    });
+
+    it("generationProgress=null のとき進捗テキストが表示されない", () => {
+      render(
+        <GenerateStep
+          isGenerating={true}
+          error={null}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={null}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(screen.queryByText("計画を生成中...")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("plan 結果表示（AC-3）", () => {
+    const planResult: PlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+    };
+
+    it("planResult が設定されているとき生成計画セクションが表示される", () => {
+      render(
+        <GenerateStep
+          isGenerating={false}
+          error={null}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={planResult}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(screen.getByText("生成計画")).toBeInTheDocument();
+      expect(screen.getByText(/5/)).toBeInTheDocument();
+    });
+
+    it("planResult=null のとき生成計画セクションが表示されない", () => {
+      render(
+        <GenerateStep
+          isGenerating={false}
+          error={null}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={null}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(screen.queryByText("生成計画")).not.toBeInTheDocument();
+    });
+
+    it("terminal_handoff のとき guidance が表示される", () => {
+      const terminalPlan: PlanResult = {
+        type: "terminal_handoff",
+        guidance: {
+          reason: "大規模タスクはCLIで実行する必要があります",
+          command: "npx skill-creator plan",
+        },
+      };
+      render(
+        <GenerateStep
+          isGenerating={false}
+          error={null}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={terminalPlan}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
       expect(
-        container.querySelector('[aria-live="polite"]'),
+        screen.getByText(/大規模タスクはCLIで実行する必要があります/),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe("実行ボタン（AC-4）", () => {
+    const planResult: PlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 3,
+    };
+
+    it("planResult が設定されているとき「実行する」ボタンが表示される", () => {
+      render(
+        <GenerateStep
+          isGenerating={false}
+          error={null}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={planResult}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(
+        screen.getByRole("button", { name: "実行する" }),
+      ).toBeInTheDocument();
+    });
+
+    it("「実行する」クリックで onExecutePlan が呼ばれる", () => {
+      render(
+        <GenerateStep
+          isGenerating={false}
+          error={null}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={planResult}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      expect(mockOnExecutePlan).toHaveBeenCalledTimes(1);
+    });
+
+    it("isGenerating=true のとき「実行する」ボタンが disabled になる", () => {
+      render(
+        <GenerateStep
+          isGenerating={true}
+          error={null}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={planResult}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(screen.getByRole("button", { name: "実行する" })).toBeDisabled();
+    });
+  });
+
+  describe("キャンセルボタン（AC-5）", () => {
+    const planResult: PlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 3,
+    };
+
+    it("planResult が設定されているとき「キャンセル」ボタンが表示される", () => {
+      render(
+        <GenerateStep
+          isGenerating={false}
+          error={null}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={planResult}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(
+        screen.getByRole("button", { name: "キャンセル" }),
+      ).toBeInTheDocument();
+    });
+
+    it("「キャンセル」クリックで onCancelPlan が呼ばれる", () => {
+      render(
+        <GenerateStep
+          isGenerating={false}
+          error={null}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={planResult}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
+      expect(mockOnCancelPlan).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("テンプレートモード非破壊（AC-8）", () => {
+    it("generationMode='template' のとき実行/キャンセルボタンが表示されない", () => {
+      render(
+        <GenerateStep
+          isGenerating={true}
+          error={null}
+          generationMode="template"
+          generationProgress={null}
+          planResult={null}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(
+        screen.queryByRole("button", { name: "実行する" }),
       ).not.toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "キャンセル" }),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  describe("生成中キャンセル（P2）", () => {
+    it("LLMモードで生成中にキャンセルボタンが表示される", () => {
+      render(
+        <GenerateStep
+          isGenerating={true}
+          error={null}
+          generationMode="llm"
+          generationProgress="計画を生成中..."
+          planResult={null}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(
+        screen.getByRole("button", { name: "キャンセル" }),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "実行する" }),
+      ).not.toBeInTheDocument();
+    });
+
+    it("生成中キャンセルクリックで onCancelPlan が呼ばれる", () => {
+      render(
+        <GenerateStep
+          isGenerating={true}
+          error={null}
+          generationMode="llm"
+          generationProgress="計画を生成中..."
+          planResult={null}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
+      expect(mockOnCancelPlan).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("エラー時リカバリー（P1）", () => {
+    it("LLMモードでエラー時に「最初からやり直す」ボタンが表示される", () => {
+      render(
+        <GenerateStep
+          isGenerating={false}
+          error={new Error("計画生成に失敗しました")}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={null}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(
+        screen.getByRole("button", { name: "最初からやり直す" }),
+      ).toBeInTheDocument();
+    });
+
+    it("「最初からやり直す」クリックで onCancelPlan が呼ばれる", () => {
+      render(
+        <GenerateStep
+          isGenerating={false}
+          error={new Error("計画生成に失敗しました")}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={null}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "最初からやり直す" }));
+      expect(mockOnCancelPlan).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("generationError 表示（AC-7）", () => {
+    it("error が設定されているときエラーメッセージが表示される", () => {
+      render(
+        <GenerateStep
+          isGenerating={false}
+          error={new Error("planSkill 呼び出しに失敗しました")}
+          generationMode="llm"
+          generationProgress={null}
+          planResult={null}
+          onExecutePlan={mockOnExecutePlan}
+          onCancelPlan={mockOnCancelPlan}
+        />,
+      );
+      expect(
+        screen.getByText("planSkill 呼び出しに失敗しました"),
+      ).toBeInTheDocument();
     });
   });
 });
