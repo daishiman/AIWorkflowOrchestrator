@@ -12,7 +12,7 @@ describe("GlobalNavStrip", () => {
     });
   });
 
-  it("9項目を3セクションで描画する", () => {
+  it("10項目を3セクションで描画する", () => {
     const { container } = render(
       <GlobalNavStrip
         currentView="dashboard"
@@ -22,7 +22,7 @@ describe("GlobalNavStrip", () => {
     );
 
     expect(container.querySelectorAll('[data-nav-item="true"]')).toHaveLength(
-      9,
+      10,
     );
     expect(screen.getAllByRole("group")).toHaveLength(3);
   });
@@ -58,9 +58,9 @@ describe("GlobalNavStrip", () => {
     expect(navItems[1]).toHaveFocus();
 
     fireEvent.keyDown(navItems[1] as HTMLButtonElement, { key: "End" });
-    expect(navItems[8]).toHaveFocus();
+    expect(navItems[9]).toHaveFocus();
 
-    fireEvent.keyDown(navItems[8] as HTMLButtonElement, { key: "Home" });
+    fireEvent.keyDown(navItems[9] as HTMLButtonElement, { key: "Home" });
     expect(navItems[0]).toHaveFocus();
   });
 
