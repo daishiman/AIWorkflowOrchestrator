@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-25 | 2.8.0 | TASK-SC-08-E2E-VALIDATION 教訓3件を追加（L-SC-E2E-001: IPC handlerMap モックパターン、L-SC-E2E-002: TerminalHandoff セキュリティ検証、L-SC-E2E-003: Phase仕様書パス移動時の参照ドリフト） |
 | 2026-03-25 | 2.8.0 | TASK-SC-07-STREAMING-PROGRESS-UI 教訓4件を追加（L-SC-07-001: Slice名前衝突回避、L-SC-07-002: P5対策safeOn cleanup、L-SC-07-003: P47対策ErrorCards網羅性、L-SC-07-004: ローカルstate vs Zustand二重管理） |
 | 2026-03-25 | 2.7.0 | UT-SC-05-IPC-DI-WIRING 教訓2件を追加（L-IPC-DI-001: 仕様書作成時点とコード乖離、L-IPC-DI-002: オプショナルDIサイレントデグラデーション） |
 | 2026-03-24 | 2.5.0 | TASK-LLM-MOD-03 苦戦箇所2件を追加（L-LLM-MOD-03-001〜002: baseUrl変更のcross-file依存 / system_instruction条件付加の設計判断） |
@@ -766,3 +767,28 @@
 | 標準ルール | 既存ハンドラへの機能追加は optional パラメータ + interface DI で拡張する（P61 パターン適用） |
 | 関連パターン | P61（DIP 違反の遅発検出）、ApprovalGate Enforcement パターン |
 | 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+---
+
+## TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25）
+
+### L-SC-E2E-001: IPC handlerMap モックパターン
+
+- **症状**: Electron の `ipcMain.handle` を直接モックすると、ハンドラ登録のタイミング依存でテストが不安定になる
+- **原因**: `vi.mock('electron')` だけではハンドラの呼び出しチェーンをテストできない
+- **解決策**: `handlerMap: Record<string, Function>` をキャプチャし、`ipcMain.handle` のモック内で格納。テスト時は `handlerMap[channelName](event, args)` で直接呼び出す
+- **関連Pitfall**: P60（IPC テスト応答形式不一致）
+
+### L-SC-E2E-002: TerminalHandoff セキュリティ検証
+
+- **症状**: `suggestedCommand` の形式検証が不十分だと、シェルインジェクションの脆弱性が残る
+- **原因**: CLI コマンド文字列の妥当性を正規表現のみで検証していた
+- **解決策**: (1) `/^[a-zA-Z]/` でアルファベット開始を検証 (2) `;`, `|`, `$()`, `` ` `` のシェルメタ文字を禁止 (3) NFR-1 準拠で API Key 等の機密情報が含まれないことをアサート
+- **関連Pitfall**: NFR-1（機密情報漏洩防止）
+
+### L-SC-E2E-003: Phase仕様書パス移動時の参照ドリフト
+
+- **症状**: Phase仕様書ディレクトリを移動した後、「次のPhase」リンクが旧パスのまま残り、ナビゲーションが壊れる
+- **原因**: ディレクトリ名変更時に、Phase仕様書内の相対パス参照が自動更新されない
+- **解決策**: 移動後に `grep -r "旧パス" 新ディレクトリ/` で残存参照を検出し、一括置換する
+- **新規Pitfall候補**: P-NEW: Phase仕様書ディレクトリ移動時の「次のPhase」リンク残存

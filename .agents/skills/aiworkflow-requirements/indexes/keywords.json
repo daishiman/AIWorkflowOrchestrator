@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-25T02:35:58.812Z",
-  "totalKeywords": 2479,
+  "generated": "2026-03-25T10:50:44.662Z",
+  "totalKeywords": 2490,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -11603,6 +11603,48 @@
     ],
     "resilience": [
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "Console": [
+      "api-ipc-system-core.md"
+    ],
+    "Safety": [
+      "api-ipc-system-core.md"
+    ],
+    "Governance": [
+      "api-ipc-system-core.md"
+    ],
+    "CONSOLE": [
+      "api-ipc-system-core.md",
+      "architecture-implementation-patterns-core.md",
+      "lessons-learned-current.md",
+      "security-api-electron.md",
+      "security-electron-ipc-core.md"
+    ],
+    "SAFETY": [
+      "api-ipc-system-core.md",
+      "architecture-implementation-patterns-core.md",
+      "lessons-learned-current.md",
+      "security-api-electron.md",
+      "security-electron-ipc-core.md"
+    ],
+    "ApprovalGate": [
+      "architecture-implementation-patterns-core.md",
+      "security-electron-ipc-core.md"
+    ],
+    "Enforcement": [
+      "architecture-implementation-patterns-core.md"
+    ],
+    "からの教訓": [
+      "lessons-learned-current.md"
+    ],
+    "セキュリティ契約": [
+      "security-electron-ipc-core.md"
+    ],
+    "検証": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "TerminalHandoff": [
+      "task-workflow-completed-skill-create-ui-integration.md"
     ]
   }
 }

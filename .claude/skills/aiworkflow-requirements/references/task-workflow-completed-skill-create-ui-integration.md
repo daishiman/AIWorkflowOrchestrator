@@ -357,3 +357,41 @@
 | TASK-SC-07-DEBOUNCE | デバウンス100ms実装 | 中 |
 | TASK-SC-07-OPEN-SETTINGS | 設定画面遷移実装 | 中 |
 | TASK-SC-07-PARSE-ERROR-CODE | エラーコード構造化 | 中 |
+
+---
+
+## TASK-SC-08-E2E-VALIDATION: Skill Creator LLM統合 E2E検証 + TerminalHandoff（2026-03-25）
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-SC-08-E2E-VALIDATION |
+| タスク名 | w5b-sc-e2e-terminal-handoff |
+| 分類 | E2E検証 + verify実装 + TerminalHandoff |
+| ステータス | implementation_completed（Phase 1-12完了、Phase 13 PR待ち） |
+| Wave | 5（w5b） |
+| 前提タスク | w3a, w3b, w4 |
+| 関連FR | FR-4（verify）, FR-6（TerminalHandoff） |
+| 関連AC | AC-1〜AC-8 |
+| 仕様書パス | `docs/30-workflows/w5b-sc-e2e-terminal-handoff/` |
+
+### 成果物
+
+| 種別 | ファイル | 状態 |
+|------|---------|------|
+| テスト | `apps/desktop/src/test/e2e/skill-creator-integration.test.ts` (25テスト) | PASS |
+| テスト | `apps/desktop/src/test/e2e/terminal-handoff.test.ts` (11テスト) | PASS |
+| ヘルパー | `apps/desktop/src/test/helpers/skill-creator-test-helpers.ts` | 完了 |
+| ドキュメント | Phase 1-12 出力 21ファイル | 完了 |
+
+### テスト結果
+
+| メトリクス | 結果 | 基準 |
+|-----------|------|------|
+| テスト合計 | 36/36 PASS | 全PASS |
+| Line Coverage | 89.04% | ≥80% |
+| Branch Coverage | 77.41% | ≥60% |
+| Function Coverage | 100% | ≥80% |
+
+### 未タスク
+
+検出件数: 0件
