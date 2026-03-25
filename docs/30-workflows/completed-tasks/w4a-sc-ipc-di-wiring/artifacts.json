@@ -1,0 +1,122 @@
+{
+  "taskId": "UT-SC-05-IPC-DI-WIRING",
+  "title": "RuntimeSkillCreatorFacade DI 配線完了",
+  "priority": "High",
+  "detectedFrom": "TASK-SC-05-IMPROVE-LLM Phase 12",
+  "createdAt": "2026-03-23",
+  "branch": "feature/task-sc-05-improve-llm",
+  "targetFiles": ["apps/desktop/src/main/ipc/index.ts"],
+  "relatedFiles": [
+    "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+    "apps/desktop/src/main/adapters/llm/LLMAdapterFactory.ts",
+    "apps/desktop/src/main/adapters/llm/types.ts",
+    "apps/desktop/src/main/services/skill/ResourceLoader.ts",
+    "apps/desktop/src/main/services/skill/SkillFileManager.ts",
+    "apps/desktop/src/main/services/skill/constants.ts"
+  ],
+  "testFiles": [
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts",
+    "apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.runtime.test.ts",
+    "apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.validation.test.ts",
+    "apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.security.test.ts",
+    "apps/desktop/src/main/ipc/__tests__/skillCreatorIpc.integration.test.ts"
+  ],
+  "knownPitfalls": ["P34", "P65", "P63", "P60"],
+  "mainTaskSpec": "index.md",
+  "phases": {
+    "phase-01": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifact": "phase-01-requirements.md",
+      "outputs": []
+    },
+    "phase-02": {
+      "name": "設計",
+      "status": "completed",
+      "artifact": "phase-02-design.md",
+      "outputs": []
+    },
+    "phase-03": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifact": "phase-03-design-review.md",
+      "outputs": ["outputs/phase-3/gate-decision.md"]
+    },
+    "phase-04": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifact": "phase-04-test-creation.md",
+      "outputs": ["outputs/phase-4/test-design.md"]
+    },
+    "phase-05": {
+      "name": "実装",
+      "status": "completed",
+      "artifact": "phase-05-implementation.md",
+      "outputs": []
+    },
+    "phase-06": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifact": "phase-06-test-expansion.md",
+      "outputs": ["outputs/phase-6/coverage-analysis.md"]
+    },
+    "phase-07": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifact": "phase-07-coverage.md",
+      "outputs": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-08": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifact": "phase-08-refactoring.md",
+      "outputs": []
+    },
+    "phase-09": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifact": "phase-09-quality-verification.md",
+      "outputs": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifact": "phase-10-final-review.md",
+      "outputs": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifact": "phase-11-manual-testing.md",
+      "outputs": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifact": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifact": "phase-13-pr-creation.md",
+      "outputs": [
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md"
+      ]
+    }
+  }
+}
