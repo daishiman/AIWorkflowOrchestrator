@@ -1,8 +1,7 @@
 /**
  * @file GenerateStep.test.tsx
  * @description GenerateStep コンポーネント ユニットテスト
- * @phase Phase 4: テスト作成（TDD: Red -> Green）
- * @task TASK-10A-C
+ * @task TASK-SC-07-STREAMING-PROGRESS-UI
  *
  * P39準拠: fireEventのみ使用（happy-dom環境でuserEvent禁止）
  * P9準拠: beforeEachで状態リセット
@@ -11,420 +10,371 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { GenerateStep } from "../GenerateStep";
+import type { GenerateStepProps } from "../GenerateStep";
 import type { PlanResult } from "../../../../store/slices/agentSlice";
+
+// ---- ヘルパー ----
+
+const baseProps: GenerateStepProps = {
+  stage: "idle",
+  percent: 0,
+  message: "",
+};
+
+function renderStep(overrides: Partial<GenerateStepProps> = {}) {
+  return render(<GenerateStep {...baseProps} {...overrides} />);
+}
 
 describe("GenerateStep", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  // ------------------------------------------
-  // 1. isGenerating=trueでスピナー表示
-  // ------------------------------------------
-  it("isGenerating=trueでスピナーが表示される", () => {
-    render(<GenerateStep isGenerating={true} error={null} />);
-
-    const spinner = screen.getByRole("status");
-    expect(spinner).toBeInTheDocument();
-  });
-
-  // ------------------------------------------
-  // 2. isGenerating=trueで「生成中...」テキスト表示
-  // ------------------------------------------
-  it("isGenerating=trueで「生成中...」テキストが表示される", () => {
-    render(<GenerateStep isGenerating={true} error={null} />);
-
-    expect(screen.getByText("生成中...")).toBeInTheDocument();
-  });
-
-  // ------------------------------------------
-  // 3. isGenerating=falseでスピナー非表示
-  // ------------------------------------------
-  it("isGenerating=falseでスピナーが表示されない", () => {
-    render(<GenerateStep isGenerating={false} error={null} />);
-
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
-    expect(screen.queryByText("生成中...")).not.toBeInTheDocument();
-  });
-
-  // ------------------------------------------
-  // 4. error設定でエラーメッセージ表示
-  // ------------------------------------------
-  it("error設定でエラーメッセージが表示される", () => {
-    const testError = new Error("接続に失敗しました");
-    render(<GenerateStep isGenerating={false} error={testError} />);
-
-    expect(screen.getByText("接続に失敗しました")).toBeInTheDocument();
-  });
-
-  // ------------------------------------------
-  // 5. error=nullでエラー非表示
-  // ------------------------------------------
-  it("error=nullでエラーメッセージが表示されない", () => {
-    render(<GenerateStep isGenerating={false} error={null} />);
-
-    // エラーメッセージの要素がないことを確認
-    expect(
-      screen.queryByText("スキル生成に失敗しました"),
-    ).not.toBeInTheDocument();
-  });
-
-  // ------------------------------------------
-  // 6. aria-liveが存在
-  // ------------------------------------------
-  it("isGenerating=trueでaria-live='polite'要素が存在する", () => {
-    const { container } = render(
-      <GenerateStep isGenerating={true} error={null} />,
-    );
-
-    const liveRegion = container.querySelector('[aria-live="polite"]');
-    expect(liveRegion).toBeInTheDocument();
-  });
-
-  // ------------------------------------------
-  // 7. エラーメッセージが空の場合のフォールバック
-  // ------------------------------------------
-  it("error.messageが空の場合にフォールバックメッセージが表示される", () => {
-    const emptyError = new Error("");
-    render(<GenerateStep isGenerating={false} error={emptyError} />);
-
-    expect(screen.getByText("スキル生成に失敗しました")).toBeInTheDocument();
-  });
-
-  // ------------------------------------------
-  // 8. isGeneratingとerrorが同時に設定可能
-  // ------------------------------------------
-  it("isGeneratingとerrorが同時に表示される", () => {
-    const testError = new Error("タイムアウトしました");
-    render(<GenerateStep isGenerating={true} error={testError} />);
-
-    expect(screen.getByRole("status")).toBeInTheDocument();
-    expect(screen.getByText("タイムアウトしました")).toBeInTheDocument();
-  });
-
   // ==========================================================
-  // Phase 6: 追加異常系
+  // プログレスバー
   // ==========================================================
-  describe("GenerateStep - 追加異常系", () => {
-    it("isGenerating=false かつ error=null のときスピナーもエラーも表示されない", () => {
-      const { container } = render(
-        <GenerateStep isGenerating={false} error={null} />,
+  describe("プログレスバー", () => {
+    it("idle ではプログレスバーが表示されない", () => {
+      renderStep({ stage: "idle" });
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+    });
+
+    it("planning でプログレスバーが表示される", () => {
+      renderStep({ stage: "planning", percent: 10 });
+      const bar = screen.getByRole("progressbar");
+      expect(bar).toBeInTheDocument();
+      expect(bar).toHaveAttribute("aria-valuenow", "10");
+      expect(bar).toHaveAttribute("aria-valuemin", "0");
+      expect(bar).toHaveAttribute("aria-valuemax", "100");
+    });
+
+    it("done でプログレスバーが表示される", () => {
+      renderStep({ stage: "done", percent: 100 });
+      expect(screen.getByRole("progressbar")).toBeInTheDocument();
+    });
+
+    it("error ではプログレスバーが表示されない", () => {
+      renderStep({
+        stage: "error",
+        error: { code: "LLM_ERROR", message: "err" },
+      });
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+    });
+
+    it("cancelled ではプログレスバーが表示されない", () => {
+      renderStep({ stage: "cancelled" });
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+    });
+
+    it("percent がクランプされる（-10 → 0%, 200 → 100%）", () => {
+      const { rerender } = render(
+        <GenerateStep
+          {...baseProps}
+          stage="planning"
+          percent={-10}
+          message=""
+        />,
       );
+      const bar = screen.getByRole("progressbar");
+      expect(bar).toHaveAttribute("aria-valuenow", "-10");
+      const inner = bar.querySelector("div");
+      expect(inner?.style.width).toBe("0%");
+
+      rerender(
+        <GenerateStep
+          {...baseProps}
+          stage="planning"
+          percent={200}
+          message=""
+        />,
+      );
+      const inner2 = screen.getByRole("progressbar").querySelector("div");
+      expect(inner2?.style.width).toBe("100%");
+    });
+  });
+
+  // ==========================================================
+  // ステップリスト
+  // ==========================================================
+  describe("ステップリスト", () => {
+    it("planning ステージで4段階のステップが表示される", () => {
+      renderStep({ stage: "planning", percent: 10 });
       expect(
-        container.querySelector('[role="status"]'),
+        screen.getByText("スキルの構造を計画しています..."),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("SKILL.md を生成しています..."),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("エージェント定義を生成しています..."),
+      ).toBeInTheDocument();
+      expect(screen.getByText("スキルを検証しています...")).toBeInTheDocument();
+    });
+
+    it("generating-agents で前のステップが completed 表示される", () => {
+      renderStep({ stage: "generating-agents", percent: 60 });
+      const checkmarks = screen.getAllByText("✓");
+      expect(checkmarks).toHaveLength(2);
+    });
+
+    it("done では全ステップが completed 表示される", () => {
+      renderStep({ stage: "done", percent: 100 });
+      const checkmarks = screen.getAllByText("✓");
+      expect(checkmarks).toHaveLength(4);
+    });
+
+    it("idle ではステップリストが表示されない", () => {
+      renderStep({ stage: "idle" });
+      expect(
+        screen.queryByText("スキルの構造を計画しています..."),
       ).not.toBeInTheDocument();
     });
   });
 
   // ==========================================================
-  // Phase 4 追加: TASK-SC-07 AC-3,4,5,6,7,8
+  // メッセージ表示
   // ==========================================================
-  const mockOnExecutePlan = vi.fn();
-  const mockOnCancelPlan = vi.fn();
-
-  describe("generationProgress 表示（AC-6）", () => {
-    it("generationProgress が設定されているとき進捗テキストが表示される", () => {
-      render(
-        <GenerateStep
-          isGenerating={true}
-          error={null}
-          generationMode="llm"
-          generationProgress="計画を生成中..."
-          planResult={null}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(screen.getByText("計画を生成中...")).toBeInTheDocument();
+  describe("メッセージ表示", () => {
+    it("生成中にメッセージが表示される", () => {
+      renderStep({
+        stage: "generating-skill",
+        percent: 30,
+        message: "ファイル構造を解析中...",
+      });
+      expect(screen.getByText("ファイル構造を解析中...")).toBeInTheDocument();
     });
 
-    it("generationProgress=null のとき進捗テキストが表示されない", () => {
-      render(
-        <GenerateStep
-          isGenerating={true}
-          error={null}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={null}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(screen.queryByText("計画を生成中...")).not.toBeInTheDocument();
+    it("idle ではメッセージが表示されない", () => {
+      renderStep({ stage: "idle", message: "test" });
+      expect(screen.queryByText("test")).not.toBeInTheDocument();
     });
   });
 
-  describe("plan 結果表示（AC-3）", () => {
-    const planResult: PlanResult = {
-      type: "integrated_api",
-      planId: "plan-001",
-      estimatedSteps: 5,
-    };
-
-    it("planResult が設定されているとき生成計画セクションが表示される", () => {
-      render(
-        <GenerateStep
-          isGenerating={false}
-          error={null}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={planResult}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(screen.getByText("生成計画")).toBeInTheDocument();
-      expect(screen.getByText(/5/)).toBeInTheDocument();
+  // ==========================================================
+  // プレビュー
+  // ==========================================================
+  describe("プレビュー", () => {
+    it("previewContent が渡された場合にプレビューパネルが表示される", () => {
+      renderStep({
+        stage: "generating-skill",
+        percent: 40,
+        previewContent: "# SKILL.md\nname: test",
+      });
+      expect(screen.getByText("プレビュー")).toBeInTheDocument();
+      const pre = screen.getByText((_content, element) => {
+        return (
+          element?.tagName === "PRE" &&
+          element.textContent === "# SKILL.md\nname: test"
+        );
+      });
+      expect(pre).toBeInTheDocument();
     });
 
-    it("planResult=null のとき生成計画セクションが表示されない", () => {
-      render(
-        <GenerateStep
-          isGenerating={false}
-          error={null}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={null}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(screen.queryByText("生成計画")).not.toBeInTheDocument();
+    it("previewContent が null の場合にプレビューが表示されない", () => {
+      renderStep({ stage: "generating-skill", percent: 40 });
+      expect(screen.queryByText("プレビュー")).not.toBeInTheDocument();
     });
+  });
 
-    it("terminal_handoff のとき guidance が表示される", () => {
-      const terminalPlan: PlanResult = {
-        type: "terminal_handoff",
-        guidance: {
-          reason: "大規模タスクはCLIで実行する必要があります",
-          command: "npx skill-creator plan",
+  // ==========================================================
+  // エラー表示
+  // ==========================================================
+  describe("エラー表示", () => {
+    it("API_KEY_NOT_SET エラーで「設定を開く」ボタンが表示される", () => {
+      const onOpenSettings = vi.fn();
+      renderStep({
+        stage: "error",
+        percent: 0,
+        error: {
+          code: "API_KEY_NOT_SET",
+          message: "APIキーが設定されていません",
         },
-      };
-      render(
-        <GenerateStep
-          isGenerating={false}
-          error={null}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={terminalPlan}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(
-        screen.getByText(/大規模タスクはCLIで実行する必要があります/),
-      ).toBeInTheDocument();
+        onOpenSettings,
+      });
+      const alert = screen.getByRole("alert");
+      expect(alert).toBeInTheDocument();
+      expect(screen.getByText("APIキーが未設定です")).toBeInTheDocument();
+      const button = screen.getByText("設定を開く");
+      fireEvent.click(button);
+      expect(onOpenSettings).toHaveBeenCalledOnce();
+    });
+
+    it("LLM_ERROR エラーでリトライボタンが表示される", () => {
+      const onRetry = vi.fn();
+      renderStep({
+        stage: "error",
+        percent: 0,
+        error: { code: "LLM_ERROR", message: "レートリミット超過" },
+        onRetry,
+      });
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+      expect(screen.getByText("生成エラー")).toBeInTheDocument();
+      const button = screen.getByText("リトライ");
+      fireEvent.click(button);
+      expect(onRetry).toHaveBeenCalledOnce();
+    });
+
+    it("NETWORK_ERROR エラーで接続確認メッセージが表示される", () => {
+      renderStep({
+        stage: "error",
+        percent: 0,
+        error: { code: "NETWORK_ERROR", message: "接続がタイムアウトしました" },
+      });
+      expect(screen.getByRole("alert")).toBeInTheDocument();
+      expect(screen.getByText("ネットワークエラー")).toBeInTheDocument();
+      expect(screen.getByText("接続を確認してください")).toBeInTheDocument();
+    });
+
+    it("error が null の場合はエラーが表示されない", () => {
+      renderStep({ stage: "planning", percent: 10 });
+      expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     });
   });
 
-  describe("実行ボタン（AC-4）", () => {
+  // ==========================================================
+  // キャンセルボタン
+  // ==========================================================
+  describe("キャンセルボタン", () => {
+    it("生成中にキャンセルボタンが表示される", () => {
+      const onCancel = vi.fn();
+      renderStep({ stage: "planning", percent: 10, onCancel });
+      const button = screen.getByText("キャンセル");
+      fireEvent.click(button);
+      expect(onCancel).toHaveBeenCalledOnce();
+    });
+
+    it("idle ではキャンセルボタンが表示されない", () => {
+      renderStep({ stage: "idle", onCancel: vi.fn() });
+      expect(screen.queryByText("キャンセル")).not.toBeInTheDocument();
+    });
+
+    it("done ではキャンセルボタンが表示されない", () => {
+      renderStep({ stage: "done", percent: 100, onCancel: vi.fn() });
+      expect(screen.queryByText("キャンセル")).not.toBeInTheDocument();
+    });
+
+    it("onCancel が未定義の場合はキャンセルボタンが表示されない", () => {
+      renderStep({ stage: "planning", percent: 10 });
+      expect(screen.queryByText("キャンセル")).not.toBeInTheDocument();
+    });
+  });
+
+  // ==========================================================
+  // 完了・キャンセル済み表示
+  // ==========================================================
+  describe("完了・キャンセル済み表示", () => {
+    it("done で完了メッセージが表示される", () => {
+      renderStep({ stage: "done", percent: 100 });
+      expect(screen.getByText("生成が完了しました")).toBeInTheDocument();
+    });
+
+    it("cancelled でキャンセルメッセージが表示される", () => {
+      renderStep({ stage: "cancelled" });
+      expect(screen.getByText("キャンセルしました")).toBeInTheDocument();
+    });
+  });
+
+  // ==========================================================
+  // Legacy LLM plan/execute
+  // ==========================================================
+  describe("LLM plan/execute 互換表示", () => {
     const planResult: PlanResult = {
       type: "integrated_api",
       planId: "plan-001",
       estimatedSteps: 3,
     };
 
-    it("planResult が設定されているとき「実行する」ボタンが表示される", () => {
-      render(
-        <GenerateStep
-          isGenerating={false}
-          error={null}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={planResult}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
+    it("planResult が渡されると生成計画と実行するボタンが表示される", () => {
+      const onExecutePlan = vi.fn();
+      const onCancelPlan = vi.fn();
+      renderStep({
+        generationMode: "llm",
+        planResult,
+        onExecutePlan,
+        onCancelPlan,
+      });
+
+      expect(screen.getByText("生成計画")).toBeInTheDocument();
       expect(
         screen.getByRole("button", { name: "実行する" }),
       ).toBeInTheDocument();
-    });
-
-    it("「実行する」クリックで onExecutePlan が呼ばれる", () => {
-      render(
-        <GenerateStep
-          isGenerating={false}
-          error={null}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={planResult}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
       fireEvent.click(screen.getByRole("button", { name: "実行する" }));
-      expect(mockOnExecutePlan).toHaveBeenCalledTimes(1);
+      expect(onExecutePlan).toHaveBeenCalledOnce();
     });
 
-    it("isGenerating=true のとき「実行する」ボタンが disabled になる", () => {
-      render(
-        <GenerateStep
-          isGenerating={true}
-          error={null}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={planResult}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(screen.getByRole("button", { name: "実行する" })).toBeDisabled();
-    });
-  });
+    it("LLM エラー時は「最初からやり直す」ボタンが表示される", () => {
+      const onCancelPlan = vi.fn();
+      renderStep({
+        generationMode: "llm",
+        stage: "error",
+        percent: 0,
+        error: {
+          code: "LLM_ERROR",
+          message: "planSkill 呼び出しに失敗しました",
+        },
+        onCancelPlan,
+      });
 
-  describe("キャンセルボタン（AC-5）", () => {
-    const planResult: PlanResult = {
-      type: "integrated_api",
-      planId: "plan-001",
-      estimatedSteps: 3,
-    };
-
-    it("planResult が設定されているとき「キャンセル」ボタンが表示される", () => {
-      render(
-        <GenerateStep
-          isGenerating={false}
-          error={null}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={planResult}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(
-        screen.getByRole("button", { name: "キャンセル" }),
-      ).toBeInTheDocument();
-    });
-
-    it("「キャンセル」クリックで onCancelPlan が呼ばれる", () => {
-      render(
-        <GenerateStep
-          isGenerating={false}
-          error={null}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={planResult}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
-      expect(mockOnCancelPlan).toHaveBeenCalledTimes(1);
+      const button = screen.getByRole("button", { name: "最初からやり直す" });
+      fireEvent.click(button);
+      expect(onCancelPlan).toHaveBeenCalledOnce();
     });
   });
 
-  describe("テンプレートモード非破壊（AC-8）", () => {
-    it("generationMode='template' のとき実行/キャンセルボタンが表示されない", () => {
-      render(
-        <GenerateStep
-          isGenerating={true}
-          error={null}
-          generationMode="template"
-          generationProgress={null}
-          planResult={null}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(
-        screen.queryByRole("button", { name: "実行する" }),
-      ).not.toBeInTheDocument();
-      expect(
-        screen.queryByRole("button", { name: "キャンセル" }),
-      ).not.toBeInTheDocument();
+  // ==========================================================
+  // アクセシビリティ
+  // ==========================================================
+  describe("アクセシビリティ", () => {
+    it("ステップリストに aria-live='polite' が設定されている", () => {
+      const { container } = renderStep({ stage: "planning", percent: 10 });
+      const liveRegion = container.querySelector('[aria-live="polite"]');
+      expect(liveRegion).toBeInTheDocument();
     });
   });
 
-  describe("生成中キャンセル（P2）", () => {
-    it("LLMモードで生成中にキャンセルボタンが表示される", () => {
-      render(
-        <GenerateStep
-          isGenerating={true}
-          error={null}
-          generationMode="llm"
-          generationProgress="計画を生成中..."
-          planResult={null}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(
-        screen.getByRole("button", { name: "キャンセル" }),
-      ).toBeInTheDocument();
-      expect(
-        screen.queryByRole("button", { name: "実行する" }),
-      ).not.toBeInTheDocument();
-    });
-
-    it("生成中キャンセルクリックで onCancelPlan が呼ばれる", () => {
-      render(
-        <GenerateStep
-          isGenerating={true}
-          error={null}
-          generationMode="llm"
-          generationProgress="計画を生成中..."
-          planResult={null}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
-      expect(mockOnCancelPlan).toHaveBeenCalledTimes(1);
+  // ==========================================================
+  // ref forwarding
+  // ==========================================================
+  describe("ref forwarding", () => {
+    it("ref が正しくフォワードされる", () => {
+      const ref = { current: null as HTMLDivElement | null };
+      render(<GenerateStep ref={ref} {...baseProps} />);
+      expect(ref.current).toBeInstanceOf(HTMLDivElement);
     });
   });
 
-  describe("エラー時リカバリー（P1）", () => {
-    it("LLMモードでエラー時に「最初からやり直す」ボタンが表示される", () => {
-      render(
-        <GenerateStep
-          isGenerating={false}
-          error={new Error("計画生成に失敗しました")}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={null}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(
-        screen.getByRole("button", { name: "最初からやり直す" }),
-      ).toBeInTheDocument();
+  // ==========================================================
+  // 境界値テスト
+  // ==========================================================
+  describe("境界値テスト", () => {
+    it("percent = 0 でプログレスバーの幅が 0%", () => {
+      renderStep({ stage: "planning", percent: 0 });
+      const bar = screen.getByRole("progressbar");
+      const inner = bar.querySelector("div");
+      expect(inner?.style.width).toBe("0%");
     });
 
-    it("「最初からやり直す」クリックで onCancelPlan が呼ばれる", () => {
-      render(
-        <GenerateStep
-          isGenerating={false}
-          error={new Error("計画生成に失敗しました")}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={null}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      fireEvent.click(screen.getByRole("button", { name: "最初からやり直す" }));
-      expect(mockOnCancelPlan).toHaveBeenCalledTimes(1);
+    it("percent = 50 でプログレスバーの幅が 50%", () => {
+      renderStep({ stage: "generating-skill", percent: 50 });
+      const bar = screen.getByRole("progressbar");
+      const inner = bar.querySelector("div");
+      expect(inner?.style.width).toBe("50%");
     });
-  });
 
-  describe("generationError 表示（AC-7）", () => {
-    it("error が設定されているときエラーメッセージが表示される", () => {
-      render(
-        <GenerateStep
-          isGenerating={false}
-          error={new Error("planSkill 呼び出しに失敗しました")}
-          generationMode="llm"
-          generationProgress={null}
-          planResult={null}
-          onExecutePlan={mockOnExecutePlan}
-          onCancelPlan={mockOnCancelPlan}
-        />,
-      );
-      expect(
-        screen.getByText("planSkill 呼び出しに失敗しました"),
-      ).toBeInTheDocument();
+    it("percent = 100 でプログレスバーの幅が 100%", () => {
+      renderStep({ stage: "done", percent: 100 });
+      const bar = screen.getByRole("progressbar");
+      const inner = bar.querySelector("div");
+      expect(inner?.style.width).toBe("100%");
+    });
+
+    it("previewContent が空文字列の場合はプレビューが表示されない", () => {
+      renderStep({
+        stage: "generating-skill",
+        percent: 40,
+        previewContent: "",
+      });
+      expect(screen.queryByText("プレビュー")).not.toBeInTheDocument();
     });
   });
 });

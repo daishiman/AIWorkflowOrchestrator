@@ -12,7 +12,12 @@ import {
   GenerateStep,
   CompleteStep,
 } from "./wizard";
-import type { WizardOptions, GenerationMode } from "./wizard";
+import type {
+  WizardOptions,
+  GenerationMode,
+  GenerationError,
+  GenerationStage,
+} from "./wizard";
 import type { PlanResult } from "../../store/slices/agentSlice";
 import { useWizardStep } from "./hooks/useWizardStep";
 import {
@@ -29,8 +34,37 @@ import {
   useSetCurrentPlanId,
   useClearGenerationState,
 } from "../../store";
+import { useStreamingProgress } from "../../hooks/useStreamingProgress";
+import { useCancelGeneration } from "../../hooks/useCancelGeneration";
 
 const STEPS = ["説明入力", "設定", "生成", "完了"];
+
+function resolveStage(
+  streamingStage: GenerationStage,
+  isGenerating: boolean,
+  localError: GenerationError | null,
+): GenerationStage {
+  if (localError && !isGenerating) return "error";
+  if (streamingStage !== "idle") return streamingStage;
+  if (isGenerating) return "planning";
+  return "idle";
+}
+
+function bridgeLocalError(error: Error | null): GenerationError | null {
+  if (!error) return null;
+  return {
+    code: "LLM_ERROR",
+    message: error.message || "スキル生成に失敗しました",
+  };
+}
+
+function bridgeGenerationError(error: string | null): GenerationError | null {
+  if (!error) return null;
+  return {
+    code: "LLM_ERROR",
+    message: error,
+  };
+}
 
 const DEFAULT_OPTIONS: WizardOptions = {
   generateTasks: true,
@@ -75,6 +109,8 @@ export const SkillCreateWizard = React.forwardRef<
 >(({ onClose }, ref) => {
   const { currentStep, goNext, goBack, goToStep } = useWizardStep(STEPS.length);
   const createSkill = useCreateSkill();
+  const streaming = useStreamingProgress();
+  const { cancelGeneration } = useCancelGeneration();
 
   // Existing local state
   const [description, setDescription] = useState("");
@@ -97,8 +133,8 @@ export const SkillCreateWizard = React.forwardRef<
   const storePlanResult = useCurrentPlanResult();
   const storePlanId = useCurrentPlanId();
   const setStoreIsGenerating = useSetIsSkillGenerating();
-  const setGenerationProgress = useSetGenerationProgress();
-  const setGenerationError = useSetGenerationError();
+  const setStoreGenerationProgress = useSetGenerationProgress();
+  const setStoreGenerationError = useSetGenerationError();
   const setCurrentPlanResult = useSetCurrentPlanResult();
   const setCurrentPlanId = useSetCurrentPlanId();
   const clearGenerationState = useClearGenerationState();
@@ -138,8 +174,8 @@ export const SkillCreateWizard = React.forwardRef<
     if (isSkillGenerating) return;
     goToStep(2);
     setStoreIsGenerating(true);
-    setGenerationProgress("計画を生成中...");
-    setGenerationError(null);
+    setStoreGenerationProgress("計画を生成中...");
+    setStoreGenerationError(null);
     try {
       const api = getSkillCreatorApi();
       if (!api.planSkill) {
@@ -153,15 +189,15 @@ export const SkillCreateWizard = React.forwardRef<
           setCurrentPlanId(result.data.planId);
         }
       } else {
-        setGenerationError(result.error ?? "計画生成に失敗しました");
+        setStoreGenerationError(result.error ?? "計画生成に失敗しました");
       }
     } catch (err) {
-      setGenerationError(
+      setStoreGenerationError(
         err instanceof Error ? err.message : "計画生成に失敗しました",
       );
     } finally {
       setStoreIsGenerating(false);
-      setGenerationProgress(null);
+      setStoreGenerationProgress(null);
     }
   };
 
@@ -169,7 +205,7 @@ export const SkillCreateWizard = React.forwardRef<
   const handleExecutePlan = async () => {
     if (!storePlanId || !localPlanResult) return;
     setStoreIsGenerating(true);
-    setGenerationError(null);
+    setStoreGenerationError(null);
     try {
       const api = getSkillCreatorApi();
       if (!api.executePlan) {
@@ -182,10 +218,10 @@ export const SkillCreateWizard = React.forwardRef<
         clearGenerationState();
         goToStep(3);
       } else {
-        setGenerationError(result.error ?? "スキル生成に失敗しました");
+        setStoreGenerationError(result.error ?? "スキル生成に失敗しました");
       }
     } catch (err) {
-      setGenerationError(
+      setStoreGenerationError(
         err instanceof Error ? err.message : "スキル生成に失敗しました",
       );
     } finally {
@@ -208,6 +244,21 @@ export const SkillCreateWizard = React.forwardRef<
       goNext();
     }
   };
+
+  const activePlanResult = localPlanResult ?? storePlanResult;
+  const llmError = bridgeGenerationError(generationError);
+  const templateError = streaming.error ?? bridgeLocalError(error);
+  const resolvedStage =
+    generationMode === "llm"
+      ? resolveStage("idle", isSkillGenerating, llmError)
+      : resolveStage(streaming.stage, isGenerating, templateError);
+  const resolvedPercent =
+    generationMode === "llm" ? (isSkillGenerating ? 25 : 0) : streaming.percent;
+  const resolvedMessage =
+    generationMode === "llm" ? (generationProgress ?? "") : streaming.message;
+  const resolvedPreview =
+    generationMode === "llm" ? null : streaming.previewContent;
+  const resolvedError = generationMode === "llm" ? llmError : templateError;
 
   return (
     <div
@@ -241,13 +292,31 @@ export const SkillCreateWizard = React.forwardRef<
       {currentStep === 2 && (
         <div data-testid="wizard-step-generate">
           <GenerateStep
-            isGenerating={isSkillGenerating || isGenerating}
-            error={generationError ? new Error(generationError) : error}
+            stage={resolvedStage}
+            percent={resolvedPercent}
+            message={resolvedMessage}
+            previewContent={resolvedPreview}
+            error={resolvedError}
             generationMode={generationMode}
-            generationProgress={generationProgress}
-            planResult={localPlanResult ?? storePlanResult}
-            onExecutePlan={handleExecutePlan}
-            onCancelPlan={handleCancelPlan}
+            generationProgress={
+              generationMode === "llm" ? generationProgress : null
+            }
+            isGenerating={
+              generationMode === "llm"
+                ? isSkillGenerating
+                : isGenerating || streaming.isGenerating
+            }
+            planResult={generationMode === "llm" ? activePlanResult : null}
+            onExecutePlan={
+              generationMode === "llm" ? handleExecutePlan : undefined
+            }
+            onCancelPlan={
+              generationMode === "llm" ? handleCancelPlan : undefined
+            }
+            onCancel={
+              generationMode === "template" ? cancelGeneration : undefined
+            }
+            onRetry={generationMode === "template" ? handleGenerate : undefined}
           />
         </div>
       )}

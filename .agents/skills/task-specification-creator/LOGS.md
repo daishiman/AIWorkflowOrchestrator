@@ -4,6 +4,24 @@
 
 ---
 
+## TASK-SC-07-STREAMING-PROGRESS-UI 完了（2026-03-25）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success
+- **Notes**:
+  - GenerateStep ストリーミング進捗UI実装（ProgressBar / StepList 4段階 / PreviewPanel / ErrorCards / CancelButton）
+  - generationProgressSlice 独立スライス新設（5 state fields / 7 actions / persist除外）
+  - useStreamingProgress Hook（IPC→Store橋渡し / P5対策cleanup / P31個別セレクタ）
+  - useCancelGeneration Hook（AbortController管理 / cancelled stage遷移）
+  - ErrorCards atoms リファクタリング（generate-step/ErrorCards.tsx に3種統合 / P47 Record型マッピング）
+  - store/index.ts に個別セレクタ9点追加（P31対策）
+  - SkillCreateWizard 統合（resolveStage / bridgeLocalError / onRetry接続）
+  - 114テスト全PASS（GenerateStep 44件 / useStreamingProgress 29件 / useCancelGeneration 4件 / SkillCreateWizard 37件）
+  - 未タスク4件: TASK-SC-07-IPC-CANCEL / TASK-SC-07-DEBOUNCE / TASK-SC-07-OPEN-SETTINGS / TASK-SC-07-PARSE-ERROR-CODE
+
+---
+
 ## TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了（2026-03-25）
 
 - **Agent**: task-specification-creator

@@ -32,6 +32,24 @@ vi.mock("../../../store", () => ({
   useClearGenerationState: () => vi.fn(),
 }));
 
+vi.mock("../../../hooks/useStreamingProgress", () => ({
+  useStreamingProgress: () => ({
+    stage: "idle",
+    percent: 0,
+    message: "",
+    previewContent: null,
+    error: null,
+    isGenerating: false,
+  }),
+}));
+
+vi.mock("../../../hooks/useCancelGeneration", () => ({
+  useCancelGeneration: () => ({
+    cancelGeneration: vi.fn(),
+    startGeneration: vi.fn(),
+  }),
+}));
+
 describe("SkillCreateWizard", () => {
   let mockOnClose: ReturnType<typeof vi.fn>;
 
@@ -176,7 +194,7 @@ describe("SkillCreateWizard", () => {
       });
     });
 
-    it("IPC 失敗時にエラーメッセージが表示される", async () => {
+    it("IPC 失敗時にエラーカードが表示される", async () => {
       mockCreateSkill.mockRejectedValue(new Error("生成失敗"));
 
       render(<SkillCreateWizard onClose={mockOnClose} />);
@@ -199,6 +217,7 @@ describe("SkillCreateWizard", () => {
         }
       });
 
+      expect(screen.getByRole("alert")).toBeInTheDocument();
       expect(screen.getByText("生成失敗")).toBeInTheDocument();
     });
 
@@ -225,6 +244,7 @@ describe("SkillCreateWizard", () => {
         }
       });
 
+      expect(screen.getByRole("alert")).toBeInTheDocument();
       expect(screen.getByText("スキル生成に失敗しました")).toBeInTheDocument();
     });
   });
@@ -365,7 +385,7 @@ describe("SkillCreateWizard", () => {
   // Phase 6: 境界値・異常系テスト
   // ============================================================
   describe("境界値・異常系テスト", () => {
-    it("TC-CW-S01: 生成中（isGenerating=true）にスピナーと「生成中...」テキストが表示される", async () => {
+    it("TC-CW-S01: 生成中（isGenerating=true）にプログレスバーとステップ表示がされる", async () => {
       // createSkill を解決しないまま保留して isGenerating=true 状態をキャプチャ
       let resolvePromise: (value: string) => void;
       mockCreateSkill.mockReturnValue(
@@ -387,9 +407,11 @@ describe("SkillCreateWizard", () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
 
-      // GenerateStep が表示される
-      expect(screen.getByText("生成中...")).toBeInTheDocument();
-      expect(screen.getByRole("status")).toBeInTheDocument();
+      // GenerateStep が表示される（ストリーミング idle + isGenerating=true → planning ステージ）
+      expect(screen.getByRole("progressbar")).toBeInTheDocument();
+      expect(
+        screen.getByText("スキルの構造を計画しています..."),
+      ).toBeInTheDocument();
 
       // テスト終了のためPromiseを解決
       await act(async () => {
