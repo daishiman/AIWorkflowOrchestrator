@@ -58,6 +58,7 @@ import {
   ArrowUp,
   ArrowDown,
   Replace,
+  PlayCircle,
   Plus,
   type LucideIcon,
 } from "lucide-react";
@@ -119,6 +120,7 @@ export type IconName =
   | "arrow-down"
   | "file"
   | "folder-search"
+  | "play-circle"
   | "replace"
   | "plus";
 
@@ -187,6 +189,7 @@ const iconMap: Record<IconName, LucideIcon> = {
   "arrow-down": ArrowDown,
   file: File,
   "folder-search": FolderSearch,
+  "play-circle": PlayCircle,
   replace: Replace,
   plus: Plus,
 };

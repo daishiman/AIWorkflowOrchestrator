@@ -1443,16 +1443,9 @@ import type {
   SkillExecutionResult,
   SyncStatus,
   SlideResponse,
-  SlideCapabilityDTO,
 } from "@repo/shared";
 
-export type {
-  SkillPhase,
-  SkillExecutionResult,
-  SyncStatus,
-  SlideResponse,
-  SlideCapabilityDTO,
-};
+export type { SkillPhase, SkillExecutionResult, SyncStatus, SlideResponse };
 
 export interface SlideExecutePhaseRequest {
   phase: SkillPhase;
@@ -1481,9 +1474,6 @@ export interface SlideApi {
   syncStatus: (projectPath: string) => Promise<SlideResponse<SyncStatus>>;
   reverseSync: (projectPath: string) => Promise<SlideResponse>;
   cancel: () => Promise<SlideResponse>;
-  getCapability: (
-    sessionId: string,
-  ) => Promise<SlideResponse<SlideCapabilityDTO>>;
   onStructureChange: (callback: (path: string) => void) => () => void;
   onSyncStatusChanged: (callback: (status: SyncStatus) => void) => () => void;
   onExecutionProgress: (callback: (progress: number) => void) => () => void;

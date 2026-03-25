@@ -202,7 +202,6 @@
 | --- | --- | --- |
 | UT-SC-05-IPC-DI-WIRING | IPC/DI 配線（improve ハンドラの Main Process 登録） | `docs/30-workflows/unassigned-task/UT-SC-05-IPC-DI-WIRING.md` |
 | UT-SC-05-APPLY-IMPROVEMENT-UI | 改善提案適用 UI（Renderer 側の表示・適用フロー） | `docs/30-workflows/unassigned-task/UT-SC-05-APPLY-IMPROVEMENT-UI.md` |
-
 ---
 
 ### タスク: UT-SC-05-IPC-DI-WIRING RuntimeSkillCreatorFacade IPC/DI 配線（2026-03-24完了）
@@ -238,41 +237,85 @@
 
 ---
 
-## UT-SC-03-004: SkillBlueprint 型追加・plan() 出力互換移行（2026-03-24）
-
-### タスク概要
+### タスク: UT-SC-05-APPLY-IMPROVEMENT-UI 改善提案 承認/適用 UI（2026-03-24完了）
 
 | 項目 | 内容 |
 | --- | --- |
-| タスクID | UT-SC-03-004 |
-| 機能 | RuntimeSkillCreatorPlanResult を extends SkillBlueprint に移行 |
-| 実施日 | 2026-03-24 |
-| ステータス | completed（Phase 1-13） |
-| ワークフロー | `docs/30-workflows/completed-tasks/ut-sc-03-004-skill-blueprint-migration/` |
+| タスクID | UT-SC-05-APPLY-IMPROVEMENT-UI |
+| 完了日 | 2026-03-24 |
+| ステータス | **完了（Phase 1-12 完了、Phase 13 PR準備待ち）** |
+| タスク種別 | IPC ハンドラ + Preload API + Renderer UI |
+| 親タスク | TASK-SC-05-IMPROVE-LLM |
+| 対象 | `creatorHandlers.ts`, `channels.ts`, `skill-creator-api.ts`, `ImprovementProposalItem.tsx`, `ImprovementProposalList.tsx`, `ImprovementApplyResult.tsx`, `ImprovementProposalPanel.tsx` |
 
-### 反映内容
+#### 成果物
 
-| 観点 | 内容 |
+| 成果物 | パス/内容 |
 | --- | --- |
-| 型定義 | `SkillBlueprint`, `SkillCategory`, `PlannedFile`, `CategoryTemplate`, `CATEGORY_TEMPLATES` を `packages/shared/src/types/skillCreator.ts` に追加 |
-| 型拡張 | `RuntimeSkillCreatorPlanResult extends SkillBlueprint` に変更（後方互換維持） |
-| Graceful degradation | `parsePlanResponse()` で旧形式 LLM レスポンス（新フィールド不在）にデフォルト値を適用 |
-| LLM プロンプト | `planPromptConstants.ts` に category/files/reasoning のスキーマ指示を追加 |
-| IPC | `creatorHandlers.ts` execute ハンドラに新フィールドデフォルト値を追加 |
-| barrel export | `packages/shared/src/types/index.ts` に新型の re-export を追加 |
-| 下流ブロッカー | w3a（TASK-SC-04-OUTPUT-PERSISTENCE / SkillFileWriter）のブロッカー解除 |
+| ワークフロー一式 | `docs/30-workflows/completed-tasks/w4b-1-sc-apply-improvement-ui/` |
+| IPC ハンドラ | `apps/desktop/src/main/ipc/creatorHandlers.ts` L232-273 |
+| Preload API | `apps/desktop/src/preload/skill-creator-api.ts` L305-312 |
+| Renderer コンポーネント | `apps/desktop/src/renderer/components/skill/Improvement*.tsx` (4ファイル) |
+| テスト (62件) | `__tests__/creatorHandlers.applyImprovement.test.ts` (19件), `__tests__/ImprovementProposal*.test.tsx` (38件), `__tests__/ImprovementProposal.integration.test.tsx` (5件) |
+
+#### 変更理由
+
+- `RuntimeSkillCreatorFacade.applyImprovement()` が Main Process に実装済みだったが、IPC/Preload/Renderer の3層が未接続だった
+- IPC ハンドラ `skill-creator:apply-improvement` を `skill-creator:*` namespace に統合（P65 準拠）
+- P42/P44/P47/P48/P49/P60/P65 の7つの Pitfall 対策を適用
+- `isSuggestion()` 型ガード + `validateSuggestions()` によるセキュアなバリデーション
+- Renderer 4コンポーネント（Item/List/ApplyResult/Panel）で提案選択→IPC呼び出し→結果表示のフローを実装
+
+#### 未タスク
+
+未タスク0件。
+---
+
+### タスク: TASK-SC-06-UI-RUNTIME-CONNECTION SkillLifecyclePanel → RuntimeSkillCreatorFacade plan/execute フロー接続（2026-03-24完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SC-06-UI-RUNTIME-CONNECTION |
+| 完了日 | 2026-03-24 |
+| ステータス | **完了（Phase 1-12 完了、Phase 13 PR 未作成）** |
+| タスク種別 | UI → Runtime IPC 接続 |
+| 対象 | `SkillLifecyclePanel.tsx`, `agentSlice.ts`, `store/index.ts` |
+
+### 変更概要
+
+| レイヤー | 変更内容 |
+| --- | --- |
+| UI コンポーネント | `SkillLifecyclePanel.tsx` に handlePrepare（detectMode → planSkill 自動呼出し）、handleExecutePlan、handleCancelPlan を追加 |
+| Zustand Store | `agentSlice.ts` に PlanResult 型 + 5 フィールド（isGenerating/generationProgress/generationError/currentPlanId/currentPlanResult）+ 6 アクション + clearGenerationState を追加 |
+| Store セレクタ | `store/index.ts` に 11 個の個別セレクタ追加（P31 対策: 5 状態 + 6 アクション） |
+| JSX 表示 | integrated_api 計画パネル + terminal_handoff ガイダンス表示 + generationProgress 進捗表示 + generationError エラー表示 |
 
 ### テスト結果
 
-| 指標 | 結果 |
-| --- | --- |
-| テスト数 | 71（全 PASS: 型テスト 9 + plan テスト 31 + stub テスト 15 + IPC テスト 16） |
-| TypeCheck | shared PASS, desktop PASS（エラー 0 件） |
-
-### 苦戦箇所と解決策
-
-| 苦戦箇所 | 問題 | 解決策 |
+| テストファイル | テスト数 | 結果 |
 | --- | --- | --- |
-| esbuild arch mismatch (P66) | worktree で arm64/x64 不一致 | `ESBUILD_BINARY_PATH` 環境変数で回避 |
-| 2層バリデーション境界 | isValidPlanResponse（リジェクト）と parsePlanResponse（デフォルト適用）の責務境界が Phase 4 テスト設計時に曖昧 | テスト 3 件のアサーション修正。Phase 2 で入出力契約を明示すべき |
-| BG エージェント doc 精度 | Phase 12 エージェントが生成したドキュメントの型定義が実装と乖離 | 指示に「ソースコードを Read して型定義を引用」を明示的に含める |
+| `SkillLifecyclePanel.llm-generation.test.tsx` | 12 | PASS |
+| `agentSlice.generation.test.ts` | 11 | PASS |
+| `SkillLifecyclePanel.test.tsx` | 10 | PASS |
+| **合計** | **33** | **全 PASS** |
+
+### レビュー修正（30 思考法 + エレガント検証）
+
+| 修正ID | 内容 |
+| --- | --- |
+| C-1 | `executePlan(planId)` → `executePlan(planId, request.trim())` skillSpec 引数追加 |
+| C-2 | `generationProgress` 変数宣言 + JSX 表示追加（aria-live="polite"） |
+| C-3 | 「方針を決める」ボタン disabled に `isGenerating` 追加 + テキスト3状態化 |
+| C-4 | ローカル `type PlanResult` 削除 → agentSlice import に一本化 |
+| C-5 | `selectSkillByName(result.data.skillName)` に undefined ガード追加 |
+
+### 後続未タスク
+
+| タスクID | 概要 |
+| --- | --- |
+| TASK-SC-07 | SkillCreateWizard への LLM 生成フロー接続 |
+| TASK-SC-08 | onProgress コールバックによるリアルタイムプログレス更新 |
+| TASK-SC-09 | detectMode "improve" モードハンドリング実装 |
+| TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 |
+| TASK-SC-11 | AbortController による planSkill/executePlan キャンセル機構 |
+| TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 |

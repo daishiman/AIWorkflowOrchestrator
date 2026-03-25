@@ -613,9 +613,8 @@ describe("IPC Handler Graceful Degradation", () => {
         result = registerAllIpcHandlers(mockWindow);
       }).not.toThrow();
 
-      // successCount は 1（registerSkillCreatorHandlers は IIFE パターンで非同期実行されるため、
-      // track() の同期 try-catch では失敗を検出できず常に成功とカウントされる）
-      expect(result!.successCount).toBe(1);
+      // successCount は 0
+      expect(result!.successCount).toBe(0);
       // failureCount > 0
       expect(result!.failureCount).toBeGreaterThan(0);
       // failures 配列の長さが failureCount と一致

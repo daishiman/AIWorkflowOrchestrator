@@ -17,11 +17,6 @@ export type {
   SlideErrorCode,
   SlideError,
   SlideResponse,
-  ModifierResponse,
-  SlideLane,
-  ApiKeySource,
-  SlideUIStatus,
-  SlideCapabilityDTO,
 } from "./types";
 
 // スライドプロジェクト操作のエクスポート

@@ -108,8 +108,8 @@ slide 逆同期は `modifier-skill.ts` と `agent-client.ts` の legacy path を
 | ファイル | 現状 | 目標責務 |
 | --- | --- | --- |
 | `apps/desktop/src/main/slide/skill-executor.ts` | slide phase 実行の中心 | RuntimeResolver 統合後の唯一の実行入口 |
-| `apps/desktop/src/main/slide/modifier-skill.ts` | reverse-sync 専用ロジック（shared 型 import 移行済み） | `skill-executor.ts` へ統合し縮退予定 |
-| `apps/desktop/src/main/slide/agent-client.ts` | DI版 `createModifierAgentAPI()` + レガシー `getAgentAPI()` 並行 | レガシー path 縮退後に DI 版のみ残存 |
+| `apps/desktop/src/main/slide/modifier-skill.ts` | reverse-sync 専用ロジック | `skill-executor.ts` へ統合し縮退予定 |
+| `apps/desktop/src/main/slide/agent-client.ts` | SDK 直呼び、safeStorage/env fallback | 廃止予定 |
 | `apps/desktop/src/main/slide/sync-manager.ts` | sync status authority | reverse-sync / watch 状態の authority |
 
 ### 正本契約
@@ -136,23 +136,8 @@ slide 逆同期は `modifier-skill.ts` と `agent-client.ts` の legacy path を
 | --- | --- | --- |
 | runtime 判定 | slide path で `RuntimeResolver` 未使用 | 未反映 |
 | handoffGuidance | slide result に未搭載 | 未反映 |
-| agent client | DI版 `createModifierAgentAPI(deps)` 追加（UT-SLIDE-IMPL-001） | legacy `getAgentAPI()` と並行運用中 |
-| modifier | shared 型 import 移行済み、`parseModifierResponse` 拡張フィールド対応 | 統合設計完了 |
-
-### AgentClientDependencies DI インターフェース（UT-SLIDE-IMPL-001 追加）
-
-> **実装ファイル**: `apps/desktop/src/main/slide/agent-client.ts`
-> **パターン**: P34（遅延初期化 DI）、P62（デフォルト fallback 禁止）
-
-| インターフェース | メソッド | 戻り値 |
-| --- | --- | --- |
-| `IAuthKeyService` | `getKey()` | `Promise<{ source: ApiKeySource; key?: string }>` |
-| `RuntimePolicyResolver` | `resolve(sessionId?)` | `SlideLane` (`"integrated"` / `"manual"`) |
-| `AgentSDKAdapter` | `query(params)` | `Promise<{ content: string; inputTokens: number; outputTokens: number }>` |
-
-`AgentClientDependencies` は上記3つの DI 依存を束ねるオブジェクト型。`agentSDKAdapter` は optional（遅延初期化対応）。
-
-**ファクトリ**: `createModifierAgentAPI(deps: AgentClientDependencies): ModifierAgentAPI`
+| agent client | `@anthropic-ai/sdk` / `safeStorage` / `electron-store` / env fallback 直利用 | legacy path 残存 |
+| modifier | 専用ファイルとして残存 | 統合未実施 |
 
 ### modifier-skill.ts 二重実装解消設計
 
@@ -163,26 +148,16 @@ slide 逆同期は `modifier-skill.ts` と `agent-client.ts` の legacy path を
 | メソッド | 現在の実装先 | 統合先 |
 | --- | --- | --- |
 | `buildModifierPrompt()` | `modifier-skill.ts` | `skill-executor.ts`（`phase === "modifier"` 分岐内） |
-| `parseModifierResponse()` | `modifier-skill.ts`（拡張フィールド `fallback_reason` / `suggested_action` 対応済み） | `skill-executor.ts`（`phase === "modifier"` 分岐内） |
+| `parseModifierResponse()` | `modifier-skill.ts` | `skill-executor.ts`（`phase === "modifier"` 分岐内） |
 
-**廃止対象**: `modifier-skill.ts` は `skill-executor.ts` への統合完了後に削除予定。
-
-### ModifierResponse 型拡張（UT-SLIDE-IMPL-001）
-
-`packages/shared/src/slide/types.ts` に以下の optional フィールドを追加:
-
-| フィールド | 型 | 用途 |
-| --- | --- | --- |
-| `fallback_reason` | `string?` | manual fallback 発生理由 |
-| `suggested_action` | `string?` | ユーザー推奨アクション |
+**廃止対象**: `modifier-skill.ts` は `skill-executor.ts` への統合完了後に削除予定（`UT-SLIDE-IMPL-001` で実施）。
 
 ### follow-up
 
-| 未タスクID | 内容 | ステータス |
-| --- | --- | --- |
-| `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | **completed**（2026-03-24） |
-| `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義の解消 | pending |
-| `UT-SLIDE-CAPABILITY-DYNAMIC-001` | `resolveSlideCapability` 動的実装（RuntimePolicyResolver / IAuthKeyService 統合） | pending |
+| 未タスクID | 内容 |
+| --- | --- |
+| `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 |
+| `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義の解消 |
 
 ---
 

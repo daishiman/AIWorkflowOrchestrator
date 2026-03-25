@@ -75,7 +75,7 @@ describe("creatorHandlers", () => {
       createMockMainWindow() as unknown as BrowserWindowType,
     );
 
-    expect(handlerMap.size).toBe(3);
+    expect(handlerMap.size).toBe(4);
 
     const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
     const result = await handler?.(createMockEvent(), { prompt: "spec" });
@@ -86,7 +86,7 @@ describe("creatorHandlers", () => {
     });
   });
 
-  it("3 つの public runtime チャンネルを登録する", () => {
+  it("4 つの public runtime チャンネルを登録する", () => {
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
@@ -95,7 +95,10 @@ describe("creatorHandlers", () => {
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_PLAN)).toBe(true);
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN)).toBe(true);
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL)).toBe(true);
-    expect(handlerMap.size).toBe(3);
+    expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT)).toBe(
+      true,
+    );
+    expect(handlerMap.size).toBe(4);
   });
 
   it("plan ハンドラが trim 済み prompt と既定 auth を渡す", async () => {
@@ -173,10 +176,6 @@ describe("creatorHandlers", () => {
         estimatedSteps: 3,
         skillName: "",
         description: "",
-        category: "standard",
-        customizations: {},
-        files: [],
-        reasoning: "",
         agents: [],
         scripts: [],
         triggers: [],
@@ -391,12 +390,12 @@ describe("creatorHandlers", () => {
     });
   });
 
-  it("unregister が 3 チャンネルを解除する", () => {
+  it("unregister が 4 チャンネルを解除する", () => {
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
     );
-    expect(handlerMap.size).toBe(3);
+    expect(handlerMap.size).toBe(4);
 
     unregisterRuntimeSkillCreatorHandlers();
 

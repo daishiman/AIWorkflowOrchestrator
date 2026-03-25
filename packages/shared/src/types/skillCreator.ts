@@ -306,78 +306,6 @@ export type SkillCreatorExecutePlanResult = RuntimeSkillCreatorExecuteResult;
 export type SkillCreatorImproveSkillResult = RuntimeSkillCreatorImproveResult;
 
 // ============================================
-// SkillBlueprint 関連型 (UT-SC-03-004)
-// ============================================
-
-/**
- * テンプレートカテゴリ（正本 index.md L268-273）
- */
-export type SkillTemplateCategory =
-  | "simple"
-  | "standard"
-  | "complex"
-  | "automation"
-  | "integration";
-
-/**
- * カテゴリごとのベース構造テンプレート
- */
-export interface CategoryTemplate {
-  dirs: string[];
-  desc: string;
-}
-
-/**
- * 生成予定ファイル
- */
-export interface PlannedFile {
-  path: string;
-  purpose: string;
-}
-
-/**
- * plan() の出力型（正本 index.md L297-311 準拠）
- */
-export interface SkillBlueprint {
-  skillName: string;
-  description: string;
-  category: SkillTemplateCategory;
-  customizations: {
-    additionalDirectories?: string[];
-    additionalFiles?: PlannedFile[];
-    excludedDefaults?: string[];
-  };
-  files: PlannedFile[];
-  reasoning: string;
-}
-
-/**
- * カテゴリごとのテンプレート定数
- */
-export const CATEGORY_TEMPLATES: Record<
-  SkillTemplateCategory,
-  CategoryTemplate
-> = {
-  simple: { dirs: [], desc: "SKILL.md のみ" },
-  standard: {
-    dirs: ["agents", "references"],
-    desc: "LLM Task 仕様書 + 参照資料",
-  },
-  complex: {
-    dirs: ["agents", "scripts", "references", "schemas"],
-    desc: "スクリプト + バリデーション付き",
-  },
-  automation: {
-    dirs: ["agents", "scripts", "assets"],
-    desc: "自動化スクリプト + テンプレート",
-  },
-  integration: {
-    dirs: ["agents", "scripts", "references", "schemas", "assets"],
-    desc: "外部連携 + フル構成",
-  },
-};
-
-// ============================================
 // Runtime Skill Creator IPC 型定義
 // ============================================
 
@@ -395,14 +323,13 @@ export interface TerminalHandoffBundle {
 
 /**
  * Runtime plan 結果
- * SkillBlueprint を extends し、plan 固有のメタ情報を追加する。
- * UT-SC-03-004: SkillBlueprint 互換移行
  */
-export interface RuntimeSkillCreatorPlanResult extends SkillBlueprint {
+export interface RuntimeSkillCreatorPlanResult {
   planId: string;
   skillSpec: string;
-  /** @deprecated files.length で代替可能。後方互換のため残す */
   estimatedSteps: number;
+  skillName: string;
+  description: string;
   agents: Array<{ name: string; role: string }>;
   scripts: Array<{ name: string; purpose: string }>;
   triggers: string[];

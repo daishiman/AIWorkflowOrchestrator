@@ -5,6 +5,36 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 |
+| ステータス | **設計完了** |
+| タイプ | design |
+| 優先度 | 高 |
+| 完了日 | 2026-03-24 |
+| 対象 | session dock、transcript、artifact-first result、manual share |
+| 成果物 | `docs/30-workflows/completed-tasks/step-02-seq-task-02-session-dock-artifact-bridge/` |
+
+#### 実施内容
+
+- DockState 8状態（collapsed/ready/handoff/running/done/aborted/unavailable/guidance-only）定義
+- SessionDockState / session ID / reopen restore 方針設計
+- transcript share: 手動3操作 + provenance chip 前提設計
+- artifact-first result 表示順定義
+- error summary の done/aborted state 表示設計
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-IMP-SESSION-DOCK-TESTID-DEDUP-001 | HandoffBlock / PersistentTerminalLauncher の data-testid 衝突解消 | 低 | `docs/30-workflows/unassigned-task/UT-IMP-SESSION-DOCK-TESTID-DEDUP-001.md` |
+| UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001 | CREDENTIAL_PATTERNS に AWS/GCP/Azure キー形式追加 | 中 | `docs/30-workflows/unassigned-task/UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001.md` |
+| UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001 | transcript 展開時の Share Rail 表示位置調整 | 低 | `docs/30-workflows/unassigned-task/UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001.md` |
+
+---
+
 ### タスク: TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 guided-execution-shell-foundation（2026-03-24）
 
 | 項目 | 値 |
@@ -38,6 +68,31 @@
 | --- | --- | --- |
 | ut-viewtype-terminal-addition | ViewType に "terminal" を追加 | executionConsole ViewType 追加で解決 |
 | UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001 | Chat/Workspace guidance の open terminal 導線 | CTA wiring 統一で解決 |
+
+---
+
+### タスク: UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 navContract executionConsole エントリ追加（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-24 |
+| 対象 | navContract.ts の DockViewType / NAV_SECTIONS / NAV_SHORTCUT_TO_VIEW + Icon play-circle |
+| 成果物 | `docs/30-workflows/ut-imp-navcontract-execution-console-entry-001/` |
+| 親タスク | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 |
+| GitHub Issue | #1553 (CLOSED) |
+
+#### 実施内容
+
+- DockViewType に `"executionConsole"` を追加（Extract パターン）
+- NAV_SECTIONS sub セクションに executionConsole エントリ追加（icon: play-circle, shortcut: Cmd+9）
+- NAV_SHORTCUT_TO_VIEW に `"9": "executionConsole"` マッピング追加
+- Icon コンポーネントに PlayCircle (lucide-react) / "play-circle" (IconName / iconMap) 追加
+- テスト期待値更新: navContract.test.ts, types.test.ts, Icon.test.tsx（59 tests PASS）
+- 未タスク: 0件
 
 ---
 
@@ -424,7 +479,7 @@
 
 | 種別 | ID | 概要 | タスク仕様書 |
 | --- | --- | --- | --- |
-| **completed** | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束（ModifierResponse 型拡張 / agent-client DI 化 / SlideCapabilityDTO + `slide:capability:get` IPC / P42 3段バリデーション / channel-sync テスト）（2026-03-24） | `docs/30-workflows/completed-tasks/slide-impl-001/` |
+| pending | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
 | pending | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
 | completed | `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | `docs/30-workflows/completed-tasks/task-ut-slide-ui-001.md` |
 | resolved | `UT-SLIDE-P31-001` | `useSlideProject()` selector migration を current branch で吸収 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |

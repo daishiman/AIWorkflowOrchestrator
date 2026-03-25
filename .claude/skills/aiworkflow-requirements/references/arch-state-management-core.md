@@ -613,3 +613,88 @@ guidance --> degraded: Manual 操作キャンセル
 | UT-SLIDE-P31-001 | P31/P48 無限ループ対策実装 | 未着手（MEDIUM） |
 | UT-SLIDE-HANDOFF-DUP-001 | terminal handoff 重複解消 | 未着手（MEDIUM） |
 | UT-SLIDE-TASK09-IPC-NAMESPACE-001 | slide:sync:* legacy IPC channel の namespace 統一 | 未着手（MEDIUM） |
+
+---
+
+## LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION）
+
+> 完了日: 2026-03-24
+
+### 概要
+
+SkillLifecyclePanel → RuntimeSkillCreatorFacade の plan/execute フロー接続に伴い、agentSlice に LLM Generation 状態フィールド5件とアクション6件を追加した。新規 Slice は追加せず、既存 `agentSlice` を拡張する判断を採用（スキル作成ドメインの凝集性を維持するため）。
+
+### 追加状態フィールド（agentSlice）
+
+| フィールド | 型 | 初期値 | 用途 |
+| --- | --- | --- | --- |
+| `isGenerating` | `boolean` | `false` | LLM 生成中フラグ（二重実行ガード R-1） |
+| `generationProgress` | `string` | `""` | 進捗メッセージ表示用 |
+| `generationError` | `string \| null` | `null` | 生成エラー表示用 |
+| `currentPlanId` | `string \| null` | `null` | 実行中プランの ID |
+| `currentPlanResult` | `PlanResult \| null` | `null` | プラン結果（Store 側、Hybrid State Pattern の片翼） |
+
+### PlanResult 型
+
+```typescript
+interface PlanResult {
+  type: "integrated_api" | "terminal_handoff";
+  planId?: string;
+  estimatedSteps?: number;
+  guidance?: { reason: string; command: string };
+}
+```
+
+### アクション（6件）
+
+| アクション | 引数 | 用途 |
+| --- | --- | --- |
+| `setIsGenerating` | `boolean` | 生成開始/終了の切替 |
+| `setGenerationProgress` | `string` | 進捗メッセージ更新 |
+| `setGenerationError` | `string \| null` | エラー設定/クリア |
+| `setCurrentPlanId` | `string \| null` | プラン ID 設定 |
+| `setCurrentPlanResult` | `PlanResult \| null` | プラン結果設定 |
+| `clearGenerationState` | なし | 全5フィールドを初期値にリセット |
+
+### 個別セレクタ（11件、P31 対策）
+
+| セレクタ | 返却型 |
+| --- | --- |
+| `useIsGenerating` | `boolean` |
+| `useGenerationProgress` | `string` |
+| `useGenerationError` | `string \| null` |
+| `useCurrentPlanId` | `string \| null` |
+| `useCurrentPlanResult` | `PlanResult \| null` |
+| `useSetIsGenerating` | `(v: boolean) => void` |
+| `useSetGenerationProgress` | `(v: string) => void` |
+| `useSetGenerationError` | `(v: string \| null) => void` |
+| `useSetCurrentPlanId` | `(v: string \| null) => void` |
+| `useSetCurrentPlanResult` | `(v: PlanResult \| null) => void` |
+| `useClearGenerationState` | `() => void` |
+
+### Hybrid State Pattern（S33 適用）
+
+SkillLifecyclePanel では `useState`（ローカル）と Zustand Store を併用する Hybrid State Pattern を採用:
+
+```typescript
+const activePlanResult = localPlanResult ?? storePlanResult;
+```
+
+- **ローカル（useState）**: 即時 UI 反映用（IPC レスポンス直後に設定）
+- **Store（Zustand）**: クロスコンポーネント共有用（SkillCreateWizard 等からの参照）
+- **優先順位**: ローカル > Store（nullish coalescing）
+
+### 配置判断の根拠
+
+| 選択肢 | 判断 | 理由 |
+| --- | --- | --- |
+| agentSlice 拡張 | **採用** | スキル作成ドメインの凝集性を維持。agentSlice が既にスキル関連状態を管理 |
+| generationSlice 新設 | 却下（後続検討） | 現時点では5フィールドのみで Slice 分割の規模に達しない。TASK-SC-10 で再評価 |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-SC-06-UI-RUNTIME-CONNECTION | SkillLifecyclePanel → RuntimeSkillCreatorFacade plan/execute フロー接続 | **完了**（2026-03-24） |
+| TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 | 未着手（LOW） |
+| TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 | 未着手（LOW） |

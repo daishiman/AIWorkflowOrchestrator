@@ -74,11 +74,12 @@ describe("ViewType 型 - skillAnalysis / skillCreate 追加（TASK-IMP-VIEWTYPE-
       "analyticsDashboard",
       "skill-editor",
       "skill-center",
+      "executionConsole",
     ];
-    expect(existingViewTypes).toHaveLength(15);
+    expect(existingViewTypes).toHaveLength(16);
   });
 
-  it("TC-VT-04: ViewType union が合計 17 member を持つこと", () => {
+  it("TC-VT-04: ViewType union が合計 18 member を持つこと", () => {
     const allViewTypes: ViewType[] = [
       "dashboard",
       "workspace",
@@ -97,7 +98,8 @@ describe("ViewType 型 - skillAnalysis / skillCreate 追加（TASK-IMP-VIEWTYPE-
       "skill-center",
       "skillAnalysis",
       "skillCreate",
+      "executionConsole",
     ];
-    expect(allViewTypes).toHaveLength(17);
+    expect(allViewTypes).toHaveLength(18);
   });
 });
