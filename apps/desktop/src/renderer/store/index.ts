@@ -53,6 +53,10 @@ import {
   createHistorySearchSlice,
   type HistorySearchSlice,
 } from "./slices/historySearchSlice";
+import {
+  createGenerationProgressSlice,
+  type GenerationProgressSlice,
+} from "./slices/generationProgressSlice";
 
 // Combined store type
 // TASK-FIX-6-1: SkillSliceは削除済み。状態はAgentSliceに統合
@@ -73,7 +77,8 @@ export type AppStore = NavigationSlice &
   ChatEditSlice &
   PermissionHistorySlice &
   NotificationSlice &
-  HistorySearchSlice;
+  HistorySearchSlice &
+  GenerationProgressSlice;
 
 // Custom storage for Set serialization
 const customStorage = {
@@ -150,6 +155,7 @@ export const useAppStore = create<AppStore>()(
         ...createPermissionHistorySlice(...args),
         ...createNotificationSlice(...args),
         ...createHistorySearchSlice(...args),
+        ...createGenerationProgressSlice(...args),
       }),
       {
         name: "knowledge-studio-store",
@@ -891,6 +897,42 @@ export const useSetHandoffGuidance = () =>
 /** ハンドオフ案内をクリア */
 export const useClearHandoffGuidance = () =>
   useAppStore((state) => state.clearHandoffGuidance);
+
+// ==========================================================================
+// Streaming Generation Progress selectors (TASK-SC-07-STREAMING-PROGRESS-UI)
+// P31 対策: 個別セレクタのみ
+// ==========================================================================
+
+// --- 状態セレクタ ---
+/** ストリーミング生成ステージ */
+export const useStreamingStage = () =>
+  useAppStore((state) => state.streamingStage);
+/** ストリーミング生成パーセント */
+export const useStreamingPercent = () =>
+  useAppStore((state) => state.streamingPercent);
+/** ストリーミング生成メッセージ */
+export const useStreamingMessage = () =>
+  useAppStore((state) => state.streamingMessage);
+/** ストリーミングプレビューコンテンツ */
+export const useStreamingPreviewContent = () =>
+  useAppStore((state) => state.streamingPreviewContent);
+/** ストリーミング生成エラー */
+export const useStreamingGenerationError = () =>
+  useAppStore((state) => state.genProgressError);
+
+// --- アクションセレクタ ---
+/** ストリーミング進捗を一括更新 */
+export const useUpdateStreamingProgress = () =>
+  useAppStore((state) => state.updateStreamingProgress);
+/** ストリーミング進捗をリセット */
+export const useResetStreamingProgress = () =>
+  useAppStore((state) => state.resetStreamingProgress);
+/** ストリーミングステージを設定 */
+export const useSetStreamingStage = () =>
+  useAppStore((state) => state.setStreamingStage);
+/** ストリーミングエラーを設定 */
+export const useSetStreamingError = () =>
+  useAppStore((state) => state.setGenProgressError);
 
 // ==========================================================================
 // ChatPanel Status selectors (TASK-IMP-CHATPANEL-REAL-AI-CHAT-001)

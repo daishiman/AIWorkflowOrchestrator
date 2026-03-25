@@ -3,6 +3,20 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-25 - TASK-SC-07-STREAMING-PROGRESS-UI スキルフィードバック反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - Phase 11 CLI環境代替パターン（P53）: Electron未起動時のスクリーンショット代替として自動テスト（Vitest）による証跡を使用。`discovered-issues.md` に代替根拠を明記する運用を標準化
+  - Phase 7 glob指定効率化: テストカバレッジ計測時に `--glob` オプションで対象ファイルを限定し、不要ファイルの計測を回避するパターン
+  - Phase 8 ErrorCards リファクタリング: エラーカード3種を個別atoms→1ファイル統合（`generate-step/ErrorCards.tsx`）に集約。`Record<ErrorCode, ReactNode>` 型マッピングで型安全性維持
+  - Phase 12 worktree制約: worktree環境では `.claude/skills/` への直接書き込みがセキュリティフックで拒否される場合がある。`.agents/skills/` 側を先行更新し、マージ後に mirror sync する運用
+  - `references/patterns.md` に上記4パターンを追記予定（後続タスクで実施）
+
+---
+
 ## 2026-03-20 - TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE same-wave Phase 12 追補を template へ反映
 
 - **Agent**: skill-creator (update)

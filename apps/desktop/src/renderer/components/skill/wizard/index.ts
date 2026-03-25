@@ -5,7 +5,12 @@ export type { DescribeStepProps } from "./DescribeStep";
 export { ConfigureStep } from "./ConfigureStep";
 export type { WizardOptions, ConfigureStepProps } from "./ConfigureStep";
 export { GenerateStep } from "./GenerateStep";
-export type { GenerateStepProps } from "./GenerateStep";
+export type {
+  GenerateStepProps,
+  GenerationError,
+  GenerationStage,
+  GenerationErrorCode,
+} from "./GenerateStep";
 export { CompleteStep } from "./CompleteStep";
 export type { CompleteStepProps } from "./CompleteStep";
 

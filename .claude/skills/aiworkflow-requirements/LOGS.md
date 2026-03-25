@@ -6,8 +6,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-25 - TASK-SC-07-STREAMING-PROGRESS-UI 完了（ストリーミング進捗UI実装 / GenerateStep UI改修・generationProgressSlice独立スライス・useStreamingProgress・useCancelGeneration・ErrorCards atoms / 個別セレクタ9点（P31対策） / テスト114件全PASS / 未タスク4件: IPC cancel送信・デバウンス100ms・設定画面遷移・エラーコード構造化） |
 | 2026-03-25 - TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了（HealthPolicy 統一インターフェース / health-policy.ts 新規作成 / resolveHealthPolicy() 5段階導出ルール / RuntimePolicyResolver DI統合 / mainlineAccess.ts 消費 / HealthIndicator.tsx 表示統合 / apiKeyDegraded @deprecated v0.8.0 / 38テスト全PASS / 未タスク3件: UT-HEALTH-POLICY-MAINLINE-MIGRATION-001, UT-HEALTH-POLICY-RUNTIME-INJECTION-001, UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001） |
-| 2026-03-25 - TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION 完了（SkillCreateWizard LLM生成フロー接続 / GenerationMode "llm"\|"template" / localPlanResult+storePlanResult Hybrid State / 11 Store hooks / Symmetric Clear Pattern / 7 optional Props 非破壊拡張 / 17テスト全PASS / 未タスク2件: UT-SC-07-STORE-CONFLICT-GUARD, UT-SC-07-AUTH-MODE-API-KEY-IMPL） |
+| 2026-03-25 - TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION 完了（SkillCreateWizard LLM生成フロー接続 / GenerationMode "llm"|"template" / localPlanResult+storePlanResult Hybrid State / 11 Store hooks / Symmetric Clear Pattern / 7 optional Props 非破壊拡張 / 17テスト全PASS / 未タスク2件: UT-SC-07-STORE-CONFLICT-GUARD, UT-SC-07-AUTH-MODE-API-KEY-IMPL） |
 | 2026-03-24 - UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 完了（navContract.ts DockViewType/NAV_SECTIONS/NAV_SHORTCUT_TO_VIEW に executionConsole 追加 / Icon play-circle 追加 / Cmd+9 ショートカット / テスト期待値更新 / 未タスク0件） |
 | 2026-03-24 - TASK-SC-06-UI-RUNTIME-CONNECTION 完了（SkillLifecyclePanel → RuntimeSkillCreatorFacade plan→execute フロー接続 / agentSlice に PlanResult型+5 state+6 actions 追加 / store/index.ts に11個別セレクタ追加（P31対策） / handlePrepare detectMode→planSkill自動呼出し / integrated_api/terminal_handoff 結果表示 / 33テスト全PASS / 未タスク6件: TASK-SC-07〜SC-12） |
 | 2026-03-24 - UT-06-002-UT-1 完了（permission-store-handlers 全4ハンドラに withValidation sender 検証追加 / mainWindow DI / 42テスト全PASS / 16新規セキュリティテスト / 未タスク0件） |

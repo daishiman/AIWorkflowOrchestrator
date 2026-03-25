@@ -68,6 +68,24 @@ vi.mock("../../../store", () => ({
   useClearGenerationState: () => mockClearGenerationState,
 }));
 
+vi.mock("../../../hooks/useStreamingProgress", () => ({
+  useStreamingProgress: () => ({
+    stage: "idle",
+    percent: 0,
+    message: "",
+    previewContent: null,
+    error: null,
+    isGenerating: false,
+  }),
+}));
+
+vi.mock("../../../hooks/useCancelGeneration", () => ({
+  useCancelGeneration: () => ({
+    cancelGeneration: vi.fn(),
+    startGeneration: vi.fn(),
+  }),
+}));
+
 // --- window.electronAPI モック ---
 const mockPlanSkill = vi.fn();
 const mockExecutePlan = vi.fn();

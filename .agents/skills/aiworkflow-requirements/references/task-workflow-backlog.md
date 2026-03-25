@@ -563,6 +563,7 @@
 | ~~UT-SC-05-APPLY-IMPROVEMENT-UI~~ | ~~applyImprovement() の Renderer 側承認 UI + IPC ハンドラ登録~~ | ~~中~~ | ~~TASK-SC-05-IMPROVE-LLM Phase 12（2026-03-23）~~ | **完了**: UT-SC-05-APPLY-IMPROVEMENT-UI（2026-03-24）→ completed ledger へ移動 |
 | UT-SC-05-UT-1 | LLMプロバイダー動的切替（APIキー設定後のアプリ再起動不要化） | 高 | UT-SC-05-IPC-DI-WIRING Phase 12（2026-03-24） | `docs/30-workflows/unassigned-task/ut-sc-05-ut-1-llm-provider-dynamic-switch.md` |
 | UT-SC-05-UT-2 | track()/safeRegister async対応 | 低 | UT-SC-05-IPC-DI-WIRING Phase 12（2026-03-24） | `docs/30-workflows/unassigned-task/ut-sc-05-ut-2-track-async-callback.md` |
+| UT-SC-05-UT-3 | Phase 3 コード差分分析の標準タスク化（task-specification-creator改善） | 中 | UT-SC-05-IPC-DI-WIRING Phase 12 skill-feedback（2026-03-25） | `docs/30-workflows/unassigned-task/ut-sc-05-ut-3-phase3-code-diff-analysis.md` |
 | ~~UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001~~ | ~~navContract.ts に executionConsole エントリ追加~~ | ~~高~~ | ~~TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 Phase 10（2026-03-24）~~ | **完了**: UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001（2026-03-24）→ completed ledger へ移動 |
 | UT-RENAME-RUNTIME-ACCESS-TERMINAL-HELPERS-001 | runtimeAccess.ts の terminal 系ヘルパー名称変更 | 低 | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 M-1（2026-03-24） | `docs/30-workflows/unassigned-task/ut-rename-runtime-access-terminal-helpers-001.md` |
 
@@ -581,6 +582,10 @@
 | TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 | 低 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-10-AGENT-SLICE-GENERATION-SPLIT.md` |
 | TASK-SC-11 | AbortController による planSkill/executePlan キャンセル機構 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-11-ABORT-CONTROLLER-PLAN-CANCEL.md` |
 | TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 | 低 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-12-HYBRID-STATE-PATTERN-GUIDE.md` |
+| TASK-SC-07-IPC-CANCEL | skill-creator:cancel IPC送信の実装（GenerateStep キャンセルボタンから Main Process への中断シグナル送信） | 高 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+| TASK-SC-07-DEBOUNCE | デバウンス100ms実装（createSkill 呼び出しの連打防止） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+| TASK-SC-07-OPEN-SETTINGS | 設定画面遷移実装（API_KEY_MISSING エラー時の「設定を開く」ボタン押下で SettingsView へ遷移） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+| TASK-SC-07-PARSE-ERROR-CODE | エラーコード構造化（IPC エラーレスポンスから GenerationErrorCode を判定するパーサー実装） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
 
 ### 未タスク管理ルール
 

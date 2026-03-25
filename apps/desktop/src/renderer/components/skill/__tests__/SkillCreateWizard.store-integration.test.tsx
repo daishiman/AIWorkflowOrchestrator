@@ -35,6 +35,24 @@ vi.mock("../../../store", () => ({
   useClearGenerationState: () => vi.fn(),
 }));
 
+vi.mock("../../../hooks/useStreamingProgress", () => ({
+  useStreamingProgress: () => ({
+    stage: "idle",
+    percent: 0,
+    message: "",
+    previewContent: null,
+    error: null,
+    isGenerating: false,
+  }),
+}));
+
+vi.mock("../../../hooks/useCancelGeneration", () => ({
+  useCancelGeneration: () => ({
+    cancelGeneration: vi.fn(),
+    startGeneration: vi.fn(),
+  }),
+}));
+
 // window.electronAPI スパイ（直接呼び出しがないことを検証）
 const spySkillCreate = vi.fn();
 

@@ -319,3 +319,41 @@
 | TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 |
 | TASK-SC-11 | AbortController による planSkill/executePlan キャンセル機構 |
 | TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 |
+
+---
+
+### タスク: TASK-SC-07-STREAMING-PROGRESS-UI ストリーミング進捗UI実装（2026-03-25完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SC-07-STREAMING-PROGRESS-UI |
+| 完了日 | 2026-03-25 |
+| ステータス | **完了（Phase 1-13 完了）** |
+| タスク種別 | UI 実装 + Store 分割 + Hook 追加 |
+| ワークフロー | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| ワークフロー一式 | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+| GenerateStep UI改修 | `apps/desktop/src/renderer/components/skill/wizard/generate-step/` |
+| generationProgressSlice 独立スライス | `apps/desktop/src/renderer/store/slices/generationProgressSlice.ts` |
+| useStreamingProgress Hook | `apps/desktop/src/renderer/hooks/useStreamingProgress.ts` |
+| useCancelGeneration Hook | `apps/desktop/src/renderer/hooks/useCancelGeneration.ts` |
+| ErrorCards atoms | `apps/desktop/src/renderer/components/skill/wizard/generate-step/ErrorCards.tsx` |
+
+#### テスト結果
+
+| 指標 | 結果 |
+| --- | --- |
+| テスト数 | 114（全PASS） |
+
+#### 後続未タスク
+
+| タスクID | 概要 | 優先度 |
+| --- | --- | --- |
+| TASK-SC-07-IPC-CANCEL | skill-creator:cancel IPC送信の実装 | 高 |
+| TASK-SC-07-DEBOUNCE | デバウンス100ms実装 | 中 |
+| TASK-SC-07-OPEN-SETTINGS | 設定画面遷移実装 | 中 |
+| TASK-SC-07-PARSE-ERROR-CODE | エラーコード構造化 | 中 |
