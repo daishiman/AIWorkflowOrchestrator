@@ -371,6 +371,13 @@ export const IPC_CHANNELS = {
 
   // Skill safety gate operations (TASK-SAFETY-GATE)
   SKILL_EVALUATE_SAFETY: "skill:evaluate-safety",
+
+  // Approval / Disclosure operations (TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001)
+  APPROVAL_RESPOND: "approval:respond",
+  APPROVAL_REQUEST: "approval:request",
+  EXECUTION_GET_DISCLOSURE_INFO: "execution:get-disclosure-info",
+  EXECUTION_GET_TERMINAL_LOG: "execution:get-terminal-log",
+  EXECUTION_GET_COPY_COMMAND: "execution:get-copy-command",
 } as const;
 
 export type IpcChannel = (typeof IPC_CHANNELS)[keyof typeof IPC_CHANNELS];
@@ -649,6 +656,11 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_DEBUG_EVALUATE,
   // Skill safety gate channels (TASK-SAFETY-GATE)
   IPC_CHANNELS.SKILL_EVALUATE_SAFETY,
+  // Approval / Disclosure channels (TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001)
+  IPC_CHANNELS.APPROVAL_RESPOND,
+  IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO,
+  IPC_CHANNELS.EXECUTION_GET_TERMINAL_LOG,
+  IPC_CHANNELS.EXECUTION_GET_COPY_COMMAND,
 ];
 
 export const ALLOWED_ON_CHANNELS: readonly string[] = [
@@ -702,4 +714,6 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_DEBUG_EVENT,
   // Notification event channels
   IPC_CHANNELS.NOTIFICATION_NEW,
+  // Approval push notification (TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001)
+  IPC_CHANNELS.APPROVAL_REQUEST,
 ];

@@ -1195,3 +1195,21 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
 | 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
 | 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
+### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | channels.ts, creatorHandlers.ts, skill-creator-api.ts（既存変更）+ ImprovementProposalItem/List/ApplyResult/Panel（新規4コンポーネント） |
+| 結果 | Phase 1-12 完了。改善提案の承認/適用UIを実装。IPC `skill-creator:apply-improvement` + Preload `applyRuntimeImprovement` + diff表示UIコンポーネント。62テスト全PASS |
+| 検証 | 未タスク 0件。P42/P44/P47/P48/P49/P60/P65 準拠確認済み |
+
+### 2026-03-24: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | 設計・実装タスク |
+| 仕様書ディレクトリ | docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/ |
+| Phase 12 成果物 | implementation-guide.md, system-spec-update-summary.md, documentation-changelog.md, unassigned-task-detection.md, phase12-task-spec-compliance-check.md, skill-feedback-report.md |
+| 未タスク検出 | 10件（UT-1〜UT-10） |
+| 改善提案 | 3件（SF-1〜SF-3） |

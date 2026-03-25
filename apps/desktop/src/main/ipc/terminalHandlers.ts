@@ -6,12 +6,14 @@ import type {
   TerminalOpenRequest,
   TerminalOpenResponse,
 } from "../../preload/types";
+import type { IApprovalGate } from "../services/runtime/ApprovalGate";
 
 export interface TerminalHandlerDependencies {
   ipcMain?: typeof ipcMain;
   spawn?: typeof spawn;
   platform?: NodeJS.Platform;
   cwdResolver?: () => string;
+  approvalGate?: IApprovalGate;
 }
 
 function quoteForShell(input: string): string {
@@ -83,6 +85,34 @@ export function registerTerminalHandlers(
       request: TerminalOpenRequest = {},
     ): Promise<TerminalOpenResponse> => {
       try {
+        // DENY-9: 承認なしの外部プロセス起動を拒否 (APR-T3)
+        const gate = deps.approvalGate;
+        if (gate) {
+          const sessionId = (request as Record<string, unknown>).sessionId;
+          const approvalToken = (request as Record<string, unknown>)
+            .approvalToken;
+          if (
+            typeof sessionId !== "string" ||
+            typeof approvalToken !== "string"
+          ) {
+            return {
+              success: false,
+              error: "Approval is required to open an external terminal",
+            };
+          }
+          const status = gate.checkApproval(
+            sessionId,
+            "terminal:open",
+            approvalToken,
+          );
+          if (!status.approved) {
+            return {
+              success: false,
+              error: `Terminal open rejected: ${status.reason}`,
+            };
+          }
+        }
+
         const cwd = path.resolve(request.cwd ?? cwdResolver());
         const command = request.command?.trim() || undefined;
         const { file, args } = buildTerminalLaunchConfig(

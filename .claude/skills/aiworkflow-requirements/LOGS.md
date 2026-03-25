@@ -493,3 +493,22 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - テスト: 21件追加、全92件 PASS
 - カバレッジ: Line 91.2%, Branch 78.07%, Function 100%
 - 未タスク: 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI）
+### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
+
+- 改善提案 承認/適用 UI の Phase 1-12 完了
+- 主要変更:
+  - IPC: `skill-creator:apply-improvement` チャンネル追加（channels.ts, creatorHandlers.ts）
+  - Preload: `applyRuntimeImprovement` メソッド追加（skill-creator-api.ts）
+  - Renderer: ImprovementProposalItem/List/ApplyResult/Panel 4コンポーネント新規作成
+  - セキュリティ: P42準拠3段バリデーション、isSuggestion型ガード（P49準拠）、sanitizeErrorMessage
+  - P60準拠IpcResult<T>ラッパー形式、P65準拠skill-creator:*namespace統合
+- テスト: 62件全PASS（6ファイル）
+- 未タスク: 0件
+
+## 2026-03-24: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001
+
+- タスク種別: 設計・実装タスク
+- 内容: Advanced Console Safety Governance（ApprovalGate、Consumer Auth Guard、3層レイヤー、5 IPC channel）
+- Phase: 1-12完了、13(PR) blocked
+- 成果物: 設計文書 + IPC handler + Service + UI component
+- ブランチ: feature/advanced-console-safety-governance
