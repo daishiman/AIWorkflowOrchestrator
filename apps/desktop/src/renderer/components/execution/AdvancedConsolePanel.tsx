@@ -95,7 +95,7 @@ export const AdvancedConsolePanel: React.FC<AdvancedConsolePanelProps> = ({
       {isOpen && (
         <div
           id="advanced-console-panel"
-          className="mt-2 rounded-md border border-[var(--border-secondary)] bg-[var(--bg-tertiary)]"
+          className="mt-2 rounded-md border border-[var(--border-subtle)] bg-[var(--bg-tertiary)]"
           data-testid="advanced-console-panel"
           role="region"
           aria-label="高度な表示パネル"
@@ -116,7 +116,7 @@ export const AdvancedConsolePanel: React.FC<AdvancedConsolePanelProps> = ({
 
           {/* Copy command（Tertiary CTA — パネル内に閉じている: CTA-R5） */}
           {copyCommand && (
-            <div className="border-t border-[var(--border-secondary)] px-3 py-2">
+            <div className="border-t border-[var(--border-subtle)] px-3 py-2">
               <div className="flex items-center justify-between gap-2">
                 <code className="flex-1 truncate text-xs text-[var(--text-secondary)]">
                   {copyCommand}
@@ -125,7 +125,7 @@ export const AdvancedConsolePanel: React.FC<AdvancedConsolePanelProps> = ({
                   type="button"
                   onClick={handleCopyCommand}
                   disabled={isReadOnly}
-                  className="shrink-0 rounded px-2 py-1 text-xs text-[var(--text-link)] hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+                  className="shrink-0 rounded px-2 py-1 text-xs text-[var(--accent-primary)] hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-50"
                   data-testid="advanced-console-copy"
                   aria-label="コマンドをコピー"
                 >

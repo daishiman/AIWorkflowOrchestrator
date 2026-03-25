@@ -43,7 +43,7 @@ export const SessionDisclosureBanner: React.FC<
   if (isGuidanceOnly) {
     return (
       <div
-        className="rounded-md border border-[var(--border-secondary)] bg-[var(--bg-secondary)] px-4 py-3"
+        className="rounded-md border border-[var(--border-subtle)] bg-[var(--bg-secondary)] px-4 py-3"
         data-testid="disclosure-banner"
         role="status"
         aria-label="AI 利用情報"
@@ -61,7 +61,7 @@ export const SessionDisclosureBanner: React.FC<
 
   return (
     <div
-      className="rounded-md border border-[var(--border-warning)] bg-[var(--bg-warning-subtle)] px-4 py-3"
+      className="rounded-md border border-[var(--status-warning)] bg-[var(--status-warning-subtle)] px-4 py-3"
       data-testid="disclosure-banner"
       role="status"
       aria-label="AI 利用情報"

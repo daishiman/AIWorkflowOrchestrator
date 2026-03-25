@@ -69,7 +69,7 @@ export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
 
   return (
     <div
-      className="rounded-lg border border-[var(--border-warning)] bg-[var(--bg-primary)] p-4 shadow-lg"
+      className="rounded-lg border border-[var(--status-warning)] bg-[var(--bg-primary)] p-4 shadow-lg"
       data-testid="approval-sheet"
       role="dialog"
       aria-label={title}
@@ -86,7 +86,7 @@ export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
 
       {/* 送信先情報（外部送信時のみ） */}
       {operationType === "external_send" && destination && (
-        <div className="mt-2 rounded border border-[var(--border-secondary)] bg-[var(--bg-secondary)] px-3 py-2">
+        <div className="mt-2 rounded border border-[var(--border-subtle)] bg-[var(--bg-secondary)] px-3 py-2">
           <span className="text-xs font-medium text-[var(--text-tertiary)]">
             送信先:
           </span>
@@ -98,7 +98,7 @@ export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
 
       {/* データ概要 */}
       {dataSummary && (
-        <div className="mt-2 rounded border border-[var(--border-secondary)] bg-[var(--bg-secondary)] px-3 py-2">
+        <div className="mt-2 rounded border border-[var(--border-subtle)] bg-[var(--bg-secondary)] px-3 py-2">
           <span className="text-xs font-medium text-[var(--text-tertiary)]">
             データ概要:
           </span>
@@ -130,7 +130,7 @@ export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
           <button
             type="button"
             onClick={onShowDetails}
-            className="rounded px-3 py-1.5 text-sm text-[var(--text-link)] hover:bg-[var(--bg-hover)]"
+            className="rounded px-3 py-1.5 text-sm text-[var(--accent-primary)] hover:bg-[var(--bg-hover)]"
             data-testid="approval-details"
           >
             詳細を見る
