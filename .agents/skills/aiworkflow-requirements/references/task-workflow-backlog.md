@@ -589,3 +589,6 @@
 - 優先度「高」のタスクから順に実施
 
 ---
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高 | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver の HealthPolicy 注入元実装 | 高 | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md` |
+| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0） | 中 | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |

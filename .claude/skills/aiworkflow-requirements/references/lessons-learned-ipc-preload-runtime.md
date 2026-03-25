@@ -478,3 +478,17 @@
 | 課題 | `SkillLifecyclePanel.tsx` にローカル `type PlanResult` を定義し、`agentSlice.ts` にも `export interface PlanResult` を定義していた。両者が乖離した場合にコンパイルエラーが出ず、実行時に型不整合が発生する |
 | 解決策 | ローカル型定義を削除し、`agentSlice.ts` からの import に一本化（Single Source of Truth）。Phase 10 レビュー C-4 で修正 |
 | 関連パターン | P23（API 二重定義の型管理複雑性）、P32（型定義の二箇所同時更新必須） |
+
+---
+
+## TASK-IMP-HEALTH-POLICY-UNIFICATION-001（2026-03-25）
+
+### L-HEALTH-001: @deprecated フィールドの段階的移行パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| タスク | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 |
+| 教訓 | `apiKeyDegraded` を直接削除せず `@deprecated v0.8.0` マーク + optional DI で新旧パスを共存させた。消費側は healthPolicy が渡されれば優先、未渡しなら旧 apiKeyDegraded にフォールバックする dual-path パターン。strangler fig pattern のフィールドレベル適用 |
+| 適用条件 | 既存フィールドを新インターフェースに移行する際、全消費者を同時に更新できない場合 |
+| コード例 | `const isDegraded = input.healthPolicy ? input.healthPolicy.isDegraded : (input.apiKeyDegraded ?? false);` |
+| 関連パターン | P26（システム仕様書更新遅延）、P34（遅延初期化 DI パターン選択） |

@@ -357,6 +357,67 @@ CTA（Call to Action）契約。
 
 ---
 
+## HealthPolicy 統一インターフェース（TASK-IMP-HEALTH-POLICY-UNIFICATION-001）
+
+`packages/shared/src/types/health-policy.ts` に定義された接続状態判定の統一ポリシー。37ファイルに分散していた health check ロジックを集約する。
+
+### HealthStatus
+
+総合ヘルスステータスを表す4値型。
+
+| 値 | 説明 |
+| --- | --- |
+| `"healthy"` | 接続正常 |
+| `"degraded"` | 接続可能だが品質低下（レート制限・API key 劣化） |
+| `"unhealthy"` | 接続不可（切断・エラー） |
+| `"unknown"` | ヘルスチェック未実施 |
+
+### HealthPolicy
+
+統一ポリシーインターフェース。RuntimePolicyResolver（Main Process）と mainlineAccess（Renderer）が共通消費する。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| isConnectionAvailable | boolean | 接続が利用可能か |
+| isDegraded | boolean | 品質低下状態か |
+| isRateLimited | boolean | レート制限中か |
+| healthStatus | HealthStatus | 総合ステータス |
+| lastCheckedAt | Date \| null | 最終チェック日時 |
+| errorDetail | string \| undefined | エラー詳細（unhealthy 時） |
+
+### HealthPolicyInput
+
+resolveHealthPolicy() への入力。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| connectionStatus | `"connected" \| "disconnected" \| "error"` | 接続状態 |
+| isApiKeyValid | boolean | API key 有効性（将来拡張用、現在未使用） |
+| apiKeyDegraded | boolean | API key 劣化状態 |
+| isRateLimited | boolean | レート制限中か |
+| lastHealthCheck | HealthCheckResult \| null | 最終ヘルスチェック結果 |
+
+### resolveHealthPolicy()
+
+HealthPolicyInput から HealthPolicy を導出する純粋関数。優先度順の5段階ルール:
+
+| 優先度 | 条件 | 結果 | isConnectionAvailable | isDegraded |
+| --- | --- | --- | --- | --- |
+| 1 | lastHealthCheck === null | unknown | false | false |
+| 2 | connectionStatus === "disconnected" \| "error" | unhealthy | false | false |
+| 3 | isRateLimited === true | degraded | true | true |
+| 4 | apiKeyDegraded === true | degraded | true | true |
+| 5 | それ以外 | healthy | true | false |
+
+**実装場所**: `packages/shared/src/types/health-policy.ts`
+**re-export**: `packages/shared/src/types/index.ts` L193-199
+
+### @deprecated 移行パス
+
+`ExecutionCapabilityInput.apiKeyDegraded` は `@deprecated v0.8.0` マーク済み。移行先: `HealthPolicy.isDegraded`
+
+---
+
 ## ワークスペース型定義
 
 Desktop アプリの複数フォルダ管理機能で使用する型定義。

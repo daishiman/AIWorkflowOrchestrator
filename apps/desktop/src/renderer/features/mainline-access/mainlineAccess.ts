@@ -1,4 +1,5 @@
 import type { HealthCheckResult } from "@repo/shared/types/llm/schemas";
+import type { HealthPolicy } from "@repo/shared/types";
 import {
   resolveCapability,
   resolveCtaContract,
@@ -19,6 +20,7 @@ export type MainlineHealthStatus = HealthCheckResult["status"] | null;
 export interface MainlineExecutionAccessInput {
   apiKeyValid: boolean;
   subscriptionValid: boolean;
+  /** @deprecated HealthPolicy.isDegraded を使用 */
   apiKeyDegraded?: boolean;
   isAuthenticated: boolean;
   hasResolutionAction?: boolean;
@@ -26,6 +28,8 @@ export interface MainlineExecutionAccessInput {
   selectedModelName?: string;
   healthStatus?: HealthCheckResult;
   isLoading?: boolean;
+  /** 統一 HealthPolicy（optional: 未指定時は既存動作を維持） */
+  healthPolicy?: HealthPolicy;
 }
 
 export interface MainlineExecutionAccessState {
@@ -57,15 +61,24 @@ function toBlockedInfo(result: UiStateResult): BlockedInfo | undefined {
 export function buildMainlineExecutionAccessState(
   input: MainlineExecutionAccessInput,
 ): MainlineExecutionAccessState {
+  // HealthPolicy が渡された場合はそちらを優先（D-5）
+  const isConnectionAvailable = input.healthPolicy
+    ? input.healthPolicy.isConnectionAvailable
+    : input.healthStatus?.status === "connected";
+
+  const isDegraded = input.healthPolicy
+    ? input.healthPolicy.isDegraded
+    : (input.apiKeyDegraded ?? false);
+
   const capability = resolveCapability({
     apiKeyValid: input.apiKeyValid,
     subscriptionValid: input.subscriptionValid,
-    apiKeyDegraded: input.apiKeyDegraded,
+    apiKeyDegraded: isDegraded,
   });
 
   const uiResult = resolveUiState({
     capability,
-    isConnectionAvailable: input.healthStatus?.status === "connected",
+    isConnectionAvailable: isConnectionAvailable ?? false,
     isTerminalAvailable:
       capability === "both" || capability === "terminalSurface",
     hasResolutionAction: input.hasResolutionAction ?? true,
