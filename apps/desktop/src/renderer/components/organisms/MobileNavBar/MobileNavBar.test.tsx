@@ -27,7 +27,7 @@ describe("MobileNavBar", () => {
     expect(screen.queryByText("履歴検索")).not.toBeInTheDocument();
   });
 
-  it("More メニューで残り4項目を表示し、選択時に onViewChange を呼ぶ", () => {
+  it("More メニューで残り5項目を表示し、選択時に onViewChange を呼ぶ", () => {
     const onViewChange = vi.fn();
     render(
       <MobileNavBar currentView="dashboard" onViewChange={onViewChange} />,
@@ -38,7 +38,7 @@ describe("MobileNavBar", () => {
     const menu = screen.getByRole("menu", {
       name: "その他のナビゲーション",
     });
-    expect(within(menu).getAllByRole("menuitem")).toHaveLength(4);
+    expect(within(menu).getAllByRole("menuitem")).toHaveLength(5);
 
     fireEvent.click(within(menu).getByRole("menuitem", { name: /履歴検索/ }));
     expect(onViewChange).toHaveBeenCalledWith("historySearch");

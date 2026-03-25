@@ -71,6 +71,31 @@
 
 ---
 
+### タスク: UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 navContract executionConsole エントリ追加（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-24 |
+| 対象 | navContract.ts の DockViewType / NAV_SECTIONS / NAV_SHORTCUT_TO_VIEW + Icon play-circle |
+| 成果物 | `docs/30-workflows/ut-imp-navcontract-execution-console-entry-001/` |
+| 親タスク | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 |
+| GitHub Issue | #1553 (CLOSED) |
+
+#### 実施内容
+
+- DockViewType に `"executionConsole"` を追加（Extract パターン）
+- NAV_SECTIONS sub セクションに executionConsole エントリ追加（icon: play-circle, shortcut: Cmd+9）
+- NAV_SHORTCUT_TO_VIEW に `"9": "executionConsole"` マッピング追加
+- Icon コンポーネントに PlayCircle (lucide-react) / "play-circle" (IconName / iconMap) 追加
+- テスト期待値更新: navContract.test.ts, types.test.ts, Icon.test.tsx（59 tests PASS）
+- 未タスク: 0件
+
+---
+
 ### タスク: TASK-SC-04-OUTPUT-PERSISTENCE SkillFileWriter LLM生成スキルコンテンツ永続化（2026-03-23）
 
 | 項目 | 値 |
@@ -950,3 +975,38 @@
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | (M-01 follow-up) | rsync コマンドの worktree 環境注意書き追加 | `docs/30-workflows/unassigned-task/worktree-rsync-caution-annotation.md` |
+
+---
+
+### タスク: TASK-IMP-HEALTH-POLICY-UNIFICATION-001 HealthPolicy 統一インターフェース（2026-03-25）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-25 |
+| 親パック | ai-runtime-execution-responsibility-realignment |
+| 対応ギャップ | Gap-3（HealthPolicy の統一不足） |
+| 成果物 | `docs/30-workflows/impl-task-b-health-policy-unification/` |
+
+#### 実施内容
+
+- `packages/shared/src/types/health-policy.ts` — HealthPolicy 型 + resolveHealthPolicy() pure function（23テスト）
+- `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts` — HealthPolicy DI + degraded 分岐（8テスト）
+- `apps/desktop/src/renderer/features/mainline-access/mainlineAccess.ts` — HealthPolicy 消費（7テスト）
+- `apps/desktop/src/renderer/components/llm/HealthIndicator.tsx` — HealthPolicy props 追加
+- `packages/shared/src/types/execution-capability.ts` — apiKeyDegraded @deprecated v0.8.0
+
+#### テスト
+
+38件追加（全PASS）
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver の HealthPolicy 注入元実装 | 高 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md` |
+| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0） | 中 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |

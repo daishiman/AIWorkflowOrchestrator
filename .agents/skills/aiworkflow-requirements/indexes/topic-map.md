@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-24
+> 自動生成: 2026-03-25
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -482,7 +482,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L6 |
 | ExecutionCapability 型定義（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001） | L274 |
-| ワークスペース型定義 | L360 |
+| HealthPolicy 統一インターフェース（TASK-IMP-HEALTH-POLICY-UNIFICATION-001） | L360 |
+| ワークスペース型定義 | L421 |
 
 ### references/interfaces-auth-history.md
 
@@ -2121,6 +2122,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| AccessCapability の shared パッケージ移動（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 / Task01） | L7 |
+| HealthPolicy 統合（TASK-IMP-HEALTH-POLICY-UNIFICATION-001） | L66 |
 
 ### references/arch-feature-addition.md
 
@@ -2611,7 +2613,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-24 UT-SC-03-004（SkillBlueprint 型移行） | L23 |
 | 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L37 |
 | 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L57 |
 | 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L63 |
@@ -2627,6 +2628,7 @@ node scripts/list-specs.js --topics
 | TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L418 |
 | TASK-SC-05-IMPROVE-LLM（2026-03-23） | L437 |
 | TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L453 |
+| TASK-IMP-HEALTH-POLICY-UNIFICATION-001（2026-03-25） | L484 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -4055,3 +4057,4 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L199 |
 
 ---
+

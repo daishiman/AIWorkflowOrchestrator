@@ -2,18 +2,21 @@
  * Permission Store Handlers - 権限設定用IPCハンドラー
  *
  * TASK-3-1-E: rememberChoice機能永続化
+ * UT-06-002-UT-1: sender 検証追加
  *
  * 設定画面用の権限管理IPCハンドラーを提供する。
  * PermissionStoreを使用した永続化権限の管理機能。
  */
 
 import { ipcMain } from "electron";
+import type { BrowserWindow } from "electron";
 import type {
   IPermissionStore,
   AllowedToolEntry,
   ClearSessionResponse,
 } from "@repo/shared";
 import { IPC_CHANNELS } from "../../preload/channels";
+import { withValidation } from "../infrastructure/security/ipc-validator";
 
 /**
  * permission:getAllowedTools のレスポンス型
@@ -40,28 +43,36 @@ export interface ClearAllResponse {
 /**
  * 権限管理IPCハンドラーを登録する
  *
+ * @param mainWindow - メインウィンドウ（sender 検証用）
  * @param permissionStore - PermissionStoreインスタンス
  */
 export function registerPermissionStoreHandlers(
+  mainWindow: BrowserWindow,
   permissionStore: IPermissionStore,
 ): void {
+  const validationOptions = { getAllowedWindows: () => [mainWindow] };
+
   /**
    * permission:getAllowedTools - 許可済みツール一覧を取得
    */
   ipcMain.handle(
     IPC_CHANNELS.PERMISSION_GET_ALLOWED_TOOLS,
-    async (): Promise<GetAllowedToolsResponse> => {
-      try {
-        const tools = permissionStore.getAllowedToolEntries();
-        return { tools };
-      } catch (error) {
-        console.error(
-          "[PermissionHandlers] Failed to get allowed tools:",
-          error,
-        );
-        return { tools: [] };
-      }
-    },
+    withValidation(
+      IPC_CHANNELS.PERMISSION_GET_ALLOWED_TOOLS,
+      async (): Promise<GetAllowedToolsResponse> => {
+        try {
+          const tools = permissionStore.getAllowedToolEntries();
+          return { tools };
+        } catch (error) {
+          console.error(
+            "[PermissionHandlers] Failed to get allowed tools:",
+            error,
+          );
+          return { tools: [] };
+        }
+      },
+      validationOptions,
+    ),
   );
 
   /**
@@ -69,19 +80,29 @@ export function registerPermissionStoreHandlers(
    */
   ipcMain.handle(
     IPC_CHANNELS.PERMISSION_REVOKE_TOOL,
-    async (
-      _event,
-      args: { toolName?: string },
-    ): Promise<RevokeToolResponse> => {
-      try {
-        const toolName = String(args?.toolName ?? "");
-        permissionStore.revokeTool(toolName);
-        return { success: true };
-      } catch (error) {
-        console.error("[PermissionHandlers] Failed to revoke tool:", error);
-        return { success: false };
-      }
-    },
+    withValidation(
+      IPC_CHANNELS.PERMISSION_REVOKE_TOOL,
+      async (
+        _event,
+        args: { toolName?: string },
+      ): Promise<RevokeToolResponse> => {
+        try {
+          // P42準拠 3段バリデーション
+          if (
+            typeof args?.toolName !== "string" ||
+            args.toolName.trim() === ""
+          ) {
+            return { success: false };
+          }
+          permissionStore.revokeTool(args.toolName.trim());
+          return { success: true };
+        } catch (error) {
+          console.error("[PermissionHandlers] Failed to revoke tool:", error);
+          return { success: false };
+        }
+      },
+      validationOptions,
+    ),
   );
 
   /**
@@ -89,19 +110,23 @@ export function registerPermissionStoreHandlers(
    */
   ipcMain.handle(
     IPC_CHANNELS.PERMISSION_CLEAR_ALL,
-    async (): Promise<ClearAllResponse> => {
-      try {
-        const clearedCount = permissionStore.getAllowedTools().length;
-        permissionStore.clearAll();
-        return { success: true, clearedCount };
-      } catch (error) {
-        console.error(
-          "[PermissionHandlers] Failed to clear all permissions:",
-          error,
-        );
-        return { success: false, clearedCount: 0 };
-      }
-    },
+    withValidation(
+      IPC_CHANNELS.PERMISSION_CLEAR_ALL,
+      async (): Promise<ClearAllResponse> => {
+        try {
+          const clearedCount = permissionStore.getAllowedTools().length;
+          permissionStore.clearAll();
+          return { success: true, clearedCount };
+        } catch (error) {
+          console.error(
+            "[PermissionHandlers] Failed to clear all permissions:",
+            error,
+          );
+          return { success: false, clearedCount: 0 };
+        }
+      },
+      validationOptions,
+    ),
   );
 
   /**
@@ -111,38 +136,42 @@ export function registerPermissionStoreHandlers(
    */
   ipcMain.handle(
     IPC_CHANNELS.PERMISSION_CLEAR_SESSION,
-    async (
-      _event,
-      args: { sessionId?: string },
-    ): Promise<ClearSessionResponse> => {
-      try {
-        // P42準拠 3段バリデーション
-        const sessionId = args?.sessionId;
-        if (typeof sessionId !== "string" || sessionId.trim() === "") {
+    withValidation(
+      IPC_CHANNELS.PERMISSION_CLEAR_SESSION,
+      async (
+        _event,
+        args: { sessionId?: string },
+      ): Promise<ClearSessionResponse> => {
+        try {
+          // P42準拠 3段バリデーション
+          const sessionId = args?.sessionId;
+          if (typeof sessionId !== "string" || sessionId.trim() === "") {
+            return {
+              success: false,
+              error: {
+                code: "VALIDATION_ERROR",
+                message: "sessionId must be a non-empty string",
+              },
+            };
+          }
+
+          const removedCount = permissionStore.revokeSessionEntries
+            ? permissionStore.revokeSessionEntries(sessionId.trim())
+            : 0;
+          return { success: true, removedCount };
+        } catch (error) {
+          console.error("[PermissionHandlers] Failed to clear session:", error);
           return {
             success: false,
             error: {
-              code: "VALIDATION_ERROR",
-              message: "sessionId must be a non-empty string",
+              code: "INTERNAL_ERROR",
+              message: "Failed to clear session entries",
             },
           };
         }
-
-        const removedCount = permissionStore.revokeSessionEntries
-          ? permissionStore.revokeSessionEntries(sessionId.trim())
-          : 0;
-        return { success: true, removedCount };
-      } catch (error) {
-        console.error("[PermissionHandlers] Failed to clear session:", error);
-        return {
-          success: false,
-          error: {
-            code: "INTERNAL_ERROR",
-            message: "Failed to clear session entries",
-          },
-        };
-      }
-    },
+      },
+      validationOptions,
+    ),
   );
 
   console.info("[PermissionHandlers] Registered 4 permission IPC handlers");

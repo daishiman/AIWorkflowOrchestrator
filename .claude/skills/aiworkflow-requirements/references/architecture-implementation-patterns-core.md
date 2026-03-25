@@ -529,3 +529,52 @@ UT-06-001（TOOL_RISK_CONFIG 定数定義）
 
 ---
 
+---
+
+## ApprovalGate Enforcement パターン（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001）
+
+### 目的
+
+外部送信操作（terminal 経由のコマンド実行等）に対して承認フローを強制し、ユーザーの明示的な同意なしに操作が完了しないことを保証する。
+
+### 実装
+
+| 要素 | 内容 |
+| --- | --- |
+| インターフェース | `IApprovalGate` — `request()` / `grant(token)` / `validate(token)` / `revoke(token)` / `revokeAll()` |
+| 実装クラス | `DefaultApprovalGate` — Node.js `crypto.randomBytes(32).toString('hex')` でトークン生成 |
+| ファイル | `src/main/services/runtime/ApprovalGate.ts` |
+
+### ライフサイクル
+
+```
+request() → grant(token) → validate(token) → revoke(token)
+                                  ↓
+                            revokeAll() （セッション終了時）
+```
+
+### 制約条件
+
+| 制約 | 値 |
+| --- | --- |
+| TTL | 300秒（トークン生成から5分） |
+| ワンタイム使用 | validate() 成功後に自動 revoke |
+| トークン長 | 64文字 hex（32バイト） |
+
+### DI パターン
+
+```typescript
+// terminalHandlers.ts での使用例
+function registerTerminalHandlers(
+  mainWindow: BrowserWindow,
+  approvalGate?: IApprovalGate,  // optional: 既存コードへの影響を最小化
+) { ... }
+```
+
+コンストラクタ注入（optional パラメータ）で既存コードへの影響を最小化しつつテスタビリティを確保する。未注入時は ApprovalGate なしで動作する degraded モードとして扱う。
+
+### 関連
+
+- `approvalHandlers.ts`: `approval:respond` チャンネルで承認/拒否応答を受け付け、3段バリデーション（必須チェック/型チェック/trim チェック）を実施
+- `terminalHandlers.ts`: ApprovalGate を optional で受け取り、外部送信前に `validate(token)` でトークン検証
+- `IApprovalGate` インターフェースにより DIP 準拠（UT-SC-01-DIP-INTERFACE パターン適用）

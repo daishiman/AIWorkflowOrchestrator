@@ -11,7 +11,7 @@ description: |
 
   Trigger:
   task-9D〜9J 仕様書で path drift / artifacts drift / IPC命名差分を検出した時に使う。
-  task-9d, task-9e, task-9f, task-9g, task-9h, task-9i, task-9j, ipc, preload, channels, skill-api, artifacts, spec alignment
+  task-9d, task-9e, task-9f, task-9g, task-9h, task-9i, task-9j, ipc, preload, channels, skill-api, artifacts, spec alignment, approval:respond, approval:request, execution:get-disclosure-info, execution:get-terminal-log, execution:get-copy-command, approvalHandlers, disclosureHandlers, advancedConsoleHandlers
 allowed-tools:
   - Read
   - Write

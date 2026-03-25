@@ -56,6 +56,7 @@
 | バグ修正（Workspace parent pointer / pointer docs / mirror drift / visual re-audit） | workflow-workspace-parent-reference-sweep-guard.md, task-workflow.md, lessons-learned.md | ui-ux-feature-components.md, interfaces-llm.md, interfaces-chat-history.md |
 | Workspace Chat Edit AI Runtime 実装（RuntimeResolver / handoff / integrated 分岐） | llm-workspace-chat-edit.md, interfaces-llm.md, api-ipc-agent-core.md | security-electron-ipc-core.md, lessons-learned.md, task-workflow.md |
 | RuntimePolicyResolver subscription 判定統合（3パターン分岐: integrated_api / terminal_handoff subscription / no-auth） | arch-execution-capability-contract.md, arch-electron-services-details-part2.md, api-ipc-system-core.md | lessons-learned-ipc-preload-runtime.md, task-workflow-completed.md, task-workflow-backlog.md |
+| HealthPolicy 統一ポリシー（接続状態 health check 集約 / degraded 判定 / resolveHealthPolicy pure function） | arch-execution-capability-contract.md, interfaces-auth-core.md | lessons-learned-ipc-preload-runtime.md, task-workflow-backlog.md |
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
 | 権限/Permission実装         | security-skill-execution.md, interfaces-agent-sdk-executor.md | security-api-electron.md, ui-ux-settings.md, arch-state-management.md |
@@ -69,6 +70,7 @@
 | 設計仕様（Skill Publishing & Version Compatibility / 互換性チェック・公開判定） | interfaces-agent-sdk-skill.md, security-skill-execution.md, workflow-skill-lifecycle-created-skill-usage-journey.md | api-ipc-agent-core.md, arch-electron-services-core.md, arch-state-management-core.md, lessons-learned-current.md, task-workflow.md |
 | Runtime Skill Creator public IPC wiring（runtime plan/execute/improve 3チャンネル統合） | api-ipc-agent-core.md, security-electron-ipc-details.md, architecture-implementation-patterns-details.md | interfaces-agent-sdk-skill-reference.md, architecture-overview-core.md, lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, task-workflow-completed-ipc-contract-preload-alignment.md |
 | 設計仕様（Slide Modifier / Manual Fallback / SlideUIStatus 状態機械） | arch-state-management-core.md, ui-ux-agent-execution-core.md, llm-workspace-chat-edit.md | lessons-learned-ipc-preload-runtime.md, task-workflow-backlog.md, task-workflow-completed.md |
+| 設計・実装（Advanced Console Safety Governance / ApprovalGate / 3層レイヤー） | security-electron-ipc-core.md, api-ipc-system-core.md, architecture-implementation-patterns-core.md | architecture-overview-core.md, lessons-learned-current.md, task-workflow-completed.md, task-workflow-backlog.md |
 
 ---
 
@@ -413,6 +415,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-25 | 1.23.0     | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001: ApprovalGate/Consumer Auth Guard/3層レイヤーのクイックルックアップ追加。security-electron-ipc-core.md, api-ipc-system-core.md, architecture-implementation-patterns-core.md への導線を登録 |
 | 2026-03-20 | 1.22.0     | UT-RAG-08-002: HybridRAGFactory wiring 行に `lessons-learned-rag-embedding-runtime.md` を追加。ILLMClient 型ドリフト（L-RAG-06/P64）への導線を登録 |
 | 2026-03-19 | 1.21.1     | UT-TASK06-007 discovery 導線を completed canonical set に再同期。implementation pattern detail / security-electron-ipc-core / security-electron-ipc-history / completed ledger / lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment を追加し、follow-up を EXT-001〜005 に更新 |
 | 2026-03-18 | 1.21.0     | UT-TASK06-007: IPC契約ドリフト自動検出CLIスクリプト（check-ipc-contracts.ts）エントリをクイックルックアップ・タスク別リソースマップに追加。R-01~R-04検出ルール、--report-only/--strict/--format オプション、EXT-001~003未タスクの導線を登録 |

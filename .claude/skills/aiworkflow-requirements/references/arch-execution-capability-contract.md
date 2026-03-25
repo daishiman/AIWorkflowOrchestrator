@@ -62,3 +62,42 @@ const cta = resolveCtaContract(capability, ctaInput);
 | UT-SC-03-005 | plan() エラーハンドリングの Result<T,E> パターン移行 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-005.md` |
 | UT-SC-03-006 | buildPlanSystemPrompt / parsePlanResponse 単体テスト追加 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-006.md` |
 | UT-SC-03-007 | improve() P42 準拠バリデーション追加 | 残課題 | TASK-SC-03 エレガント検証。`docs/30-workflows/unassigned-task/UT-SC-03-007.md` |
+
+## HealthPolicy 統合（TASK-IMP-HEALTH-POLICY-UNIFICATION-001）
+
+> 完了日: 2026-03-25
+
+### 設計概要
+
+接続状態判定の統一ポリシーとして `HealthPolicy` インターフェースを導入し、`RuntimePolicyResolver` と `mainlineAccess.ts` が共通消費する設計。37ファイルに分散していた health check ロジックを `resolveHealthPolicy()` 純粋関数に集約。
+
+### RuntimePolicyResolver への DI パターン（D-4）
+
+コンストラクタ第3引数に `healthPolicy?: HealthPolicy` を optional DI で注入。
+
+```typescript
+constructor(
+  private readonly authKeyService?: IAuthKeyService,
+  private readonly subscriptionAuthProvider?: ISubscriptionAuthProvider,
+  private readonly healthPolicy?: HealthPolicy,  // D-4
+) {}
+```
+
+isDegraded チェックは resolve() の最初に実行され、P62 対策として degraded 時は integrated_api を一切返さない。
+
+### mainlineAccess.ts での消費パターン（D-5）
+
+`MainlineExecutionAccessInput` に `healthPolicy?: HealthPolicy` を追加。渡された場合は HealthPolicy から isConnectionAvailable / isDegraded を導出し、既存の healthStatus / apiKeyDegraded より優先する。
+
+### HealthIndicator.tsx 表示統合（D-6）
+
+`HealthIndicatorProps` に `healthPolicy?: HealthPolicy` を追加。`getStatusDisplay()` が healthPolicy を優先し、`healthPolicyDisplayMap` で4値ステータスを表示色・テキストにマッピング。
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス | 備考 |
+| --- | --- | --- | --- |
+| TASK-IMP-HEALTH-POLICY-UNIFICATION-001 | HealthPolicy 統一インターフェース | **完了**（2026-03-25） | Gap-3 解消。38テスト全PASS |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess 移行 | 残課題 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver 注入元実装 | 残課題 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md` |
+| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded 除去（v0.8.0） | 残課題 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |

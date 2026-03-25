@@ -4,6 +4,36 @@
 
 ---
 
+## TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了（2026-03-25）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 完了記録追加
+- **Result**: success
+- **Notes**:
+  - HealthPolicy 統一インターフェース実装（Gap-3 解消）
+  - `packages/shared/src/types/health-policy.ts` 新規作成（HealthPolicy 型 + resolveHealthPolicy() pure function）
+  - `RuntimePolicyResolver.ts` に HealthPolicy DI + degraded 分岐追加（P62 対策）
+  - `mainlineAccess.ts` に HealthPolicy 消費ロジック追加
+  - `HealthIndicator.tsx` に HealthPolicy props 追加
+  - `apiKeyDegraded` に @deprecated v0.8.0 マーク
+  - 38 テスト全 PASS（health-policy 23件 + RuntimePolicyResolver 8件 + mainlineAccess 7件）
+  - 未タスク 3 件（UT-HEALTH-POLICY-MAINLINE-MIGRATION-001, UT-HEALTH-POLICY-RUNTIME-INJECTION-001, UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001）
+
+---
+
+## UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success
+- **Notes**:
+  - navContract.ts の DockViewType/NAV_SECTIONS/NAV_SHORTCUT_TO_VIEW に executionConsole エントリ追加
+  - Icon コンポーネントに play-circle アイコン追加（Lucide PlayCircle）
+  - Cmd+9 ショートカット割当（sub セクション配置）
+  - テスト期待値更新: navContract.test.ts + types.test.ts + Icon.test.tsx
+  - 未タスク: 0件
+
+---
 ## TASK-SC-06-UI-RUNTIME-CONNECTION 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -18,6 +48,22 @@
   - 33 テスト全 PASS（SkillLifecyclePanel 22件 + agentSlice 11件）
   - 未タスク 6 件（TASK-SC-07〜SC-12: SkillCreateWizard接続, onProgress, improveモード, generationSlice分割, AbortController, Hybrid State Patternガイド）
 
+---
+
+## UT-06-002-UT-1 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - `permission-store-handlers.ts` の全4ハンドラ（getAllowedTools / revokeTool / clearAll / clear-session）に `withValidation` sender 検証を追加
+  - 関数シグネチャに `mainWindow: BrowserWindow` を第1引数として追加（P34 DI パターン）
+  - `validationOptions` を共有化し4重複を排除
+  - 42テスト全PASS（26既存 + 16新規セキュリティテスト SEC-01〜SEC-14 + P42/unregister）
+  - 未タスク0件
+
+---
+
 ## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -27,6 +73,8 @@
   - Main Process IPC層（`apps/desktop/src/main/ipc/index.ts`）で RuntimeSkillCreatorFacade に3つの依存（skillFileManager, llmAdapter, resourceLoader）をDI配線
   - IIFEパターンで非同期初期化を実装し、Graceful Degradation を維持
   - 先行タスク TASK-SC-05-IMPROVE-LLM で SkillFileManager が DI 依存に追加されたことに対応
+
+---
 
 ## TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了（2026-03-24）
 
@@ -75,6 +123,22 @@
 
 ---
 
+## TASK-LLM-MOD-04 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了（P50パターン: 検証・補完モード）
+- **Result**: success
+- **Notes**:
+  - テスト期待値更新タスク。Task01-03 実装時にテスト更新が同時完了していたため、コード変更0行
+  - 対象7ファイル 149テスト全PASS検証（R-01〜R-05 全充足）
+  - llm.test.ts: PROVIDER_CONFIGS T-01〜T-13 + inferProviderId o3/o4-mini T-07/T-08 確認済み
+  - AnthropicAdapter.test.ts: ヘルスチェック claude-haiku-4-5 期待値確認済み
+  - GoogleAdapter.test.ts: system_instruction 6テストケース確認済み
+  - カバレッジ: llm.ts Line 84.86% / Branch 70.68% / Function 91.66%、GoogleAdapter.ts 100%/90.32%/100%
+  - 未タスク1件: UT-LLM-MOD-04-001（OpenAI/xAIアダプターテストのレガシーモデルID統一、low優先度）
+
+---
+
 ## UT-SC-03-003 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -104,6 +168,22 @@
 
 ---
 
+
+## UT-SLIDE-IMPL-001 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了
+- **Result**: success
+- **Notes**:
+  - Slide Modifier / agent-client 実装（Task08 派生）
+  - ModifierResponse 型拡張（fallback_reason / suggested_action optional 追加）
+  - agent-client.ts DI版 createModifierAgentAPI ファクトリ実装
+  - SlideCapabilityDTO + slide:capability:get IPC channel + P42 3段バリデーション
+  - channel-sync テスト（Preload ⇔ Main チャネル名一致検証）
+  - 未タスク: 0件
+
+---
+
 ## TASK-LLM-MOD-02 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -116,6 +196,22 @@
   - 未タスク2件（TASK-LLM-MOD-HEALTHCHECK-CONST, TASK-LLM-MOD-HEALTHCHECK-BODY）検出・登録
 
 ---
+
+## UT-SC-03-004 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success
+- **Notes**:
+  - SkillBlueprint 型を RuntimeSkillCreatorPlanResult に互換移行
+  - packages/shared/src/types/skillCreator.ts の型定義更新
+  - RuntimeSkillCreatorFacade.plan() 戻り値型統一
+  - creatorHandlers.ts および planPromptConstants.ts 更新
+  - 型テスト（skillCreator.type.test.ts）追加
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+
+---
+
 
 ## UT-06-003-PRELOAD-API-IMPL 完了（2026-03-23）
 
@@ -1115,7 +1211,6 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
 | 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
 | 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
-
 ### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
 
 | 項目 | 内容 |
@@ -1124,3 +1219,13 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | channels.ts, creatorHandlers.ts, skill-creator-api.ts（既存変更）+ ImprovementProposalItem/List/ApplyResult/Panel（新規4コンポーネント） |
 | 結果 | Phase 1-12 完了。改善提案の承認/適用UIを実装。IPC `skill-creator:apply-improvement` + Preload `applyRuntimeImprovement` + diff表示UIコンポーネント。62テスト全PASS |
 | 検証 | 未タスク 0件。P42/P44/P47/P48/P49/P60/P65 準拠確認済み |
+
+### 2026-03-24: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | 設計・実装タスク |
+| 仕様書ディレクトリ | docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/ |
+| Phase 12 成果物 | implementation-guide.md, system-spec-update-summary.md, documentation-changelog.md, unassigned-task-detection.md, phase12-task-spec-compliance-check.md, skill-feedback-report.md |
+| 未タスク検出 | 10件（UT-1〜UT-10） |
+| 改善提案 | 3件（SF-1〜SF-3） |

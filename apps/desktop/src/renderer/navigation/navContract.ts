@@ -13,6 +13,7 @@ export type DockViewType = Extract<
   | "historySearch"
   | "graph"
   | "editor"
+  | "executionConsole"
   | "settings"
 >;
 
@@ -103,6 +104,13 @@ export const NAV_SECTIONS = [
         mobileLabel: "編集",
         shortcut: "Cmd+8",
       },
+      {
+        id: "executionConsole",
+        icon: "play-circle",
+        label: "実行コンソール",
+        mobileLabel: "実行",
+        shortcut: "Cmd+9",
+      },
     ],
   },
   {
@@ -143,6 +151,7 @@ export const NAV_SHORTCUT_TO_VIEW: Readonly<Record<string, DockViewType>> = {
   "6": "historySearch",
   "7": "graph",
   "8": "editor",
+  "9": "executionConsole",
   ",": "settings",
 };
 

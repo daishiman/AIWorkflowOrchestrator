@@ -219,7 +219,7 @@
 
 | 成果物 | パス/内容 |
 | --- | --- |
-| ワークフロー一式 | `docs/30-workflows/skill-creator-llm-integration/w4a-sc-ipc-di-wiring/` |
+| ワークフロー一式 | `docs/30-workflows/completed-tasks/w4a-sc-ipc-di-wiring/` |
 | テストファイル | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.integration.test.ts` |
 
 #### 変更理由
