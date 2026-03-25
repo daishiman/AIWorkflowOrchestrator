@@ -36,10 +36,11 @@
 | Dashboard Home Enhancement | TASK-UI-07 | DashboardView, GreetingHeader, DashboardSuggestionSection, RecentTimeline | 完了 | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/` |
 | ChatPanel Real AI Chat Wiring | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 | RuntimeBanner, ChatMessageList, ComposerArea, ErrorGuidance, HandoffBlock | spec_created | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-seq-task-05-chatpanel-real-chat-wiring/` |
 | UI→Runtime Connection (plan/execute) | TASK-SC-06-UI-RUNTIME-CONNECTION | SkillLifecyclePanel, agentSlice, store/index.ts | 完了 | `docs/30-workflows/w4b-2-sc-ui-runtime-connection/` |
+| Wizard LLM Generation Flow | TASK-SC-07 | SkillCreateWizard, DescribeStep, GenerateStep | 完了 | `docs/30-workflows/completed-tasks/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/` |
 
 #### 未タスク（TASK-SC-06 後続）
 
-- [TASK-SC-07](../../../../docs/30-workflows/unassigned-task/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION.md): SkillCreateWizard への LLM 生成フロー接続
+- ~~TASK-SC-07: SkillCreateWizard への LLM 生成フロー接続~~ → **完了**（2026-03-25）
 - [TASK-SC-08](../../../../docs/30-workflows/unassigned-task/TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE.md): onProgress コールバックによるリアルタイムプログレス更新
 - [TASK-SC-09](../../../../docs/30-workflows/unassigned-task/TASK-SC-09-IMPROVE-MODE-HANDLING.md): detectMode "improve" モードハンドリング実装
 - [TASK-SC-10](../../../../docs/30-workflows/unassigned-task/TASK-SC-10-AGENT-SLICE-GENERATION-SPLIT.md): agentSlice LLM Generation state を generationSlice に分割

@@ -21,6 +21,18 @@ const mockCreateSkill = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
+  // TASK-SC-07: LLM generation hooks (Store統合テスト非破壊用)
+  useIsSkillGenerating: () => false,
+  useGenerationProgress: () => null,
+  useGenerationError: () => null,
+  useCurrentPlanResult: () => null,
+  useCurrentPlanId: () => null,
+  useSetIsSkillGenerating: () => vi.fn(),
+  useSetGenerationProgress: () => vi.fn(),
+  useSetGenerationError: () => vi.fn(),
+  useSetCurrentPlanResult: () => vi.fn(),
+  useSetCurrentPlanId: () => vi.fn(),
+  useClearGenerationState: () => vi.fn(),
 }));
 
 // window.electronAPI スパイ（直接呼び出しがないことを検証）

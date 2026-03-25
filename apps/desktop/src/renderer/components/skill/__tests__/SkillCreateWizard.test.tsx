@@ -18,6 +18,18 @@ const mockCreateSkill = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
+  // TASK-SC-07: LLM generation hooks (テンプレートフロー非破壊テスト用)
+  useIsSkillGenerating: () => false,
+  useGenerationProgress: () => null,
+  useGenerationError: () => null,
+  useCurrentPlanResult: () => null,
+  useCurrentPlanId: () => null,
+  useSetIsSkillGenerating: () => vi.fn(),
+  useSetGenerationProgress: () => vi.fn(),
+  useSetGenerationError: () => vi.fn(),
+  useSetCurrentPlanResult: () => vi.fn(),
+  useSetCurrentPlanId: () => vi.fn(),
+  useClearGenerationState: () => vi.fn(),
 }));
 
 describe("SkillCreateWizard", () => {

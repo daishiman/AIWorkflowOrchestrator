@@ -313,7 +313,7 @@
 
 | タスクID | 概要 |
 | --- | --- |
-| TASK-SC-07 | SkillCreateWizard への LLM 生成フロー接続 |
+| ~~TASK-SC-07~~ | ~~SkillCreateWizard への LLM 生成フロー接続~~ → **完了**（2026-03-25） |
 | TASK-SC-08 | onProgress コールバックによるリアルタイムプログレス更新 |
 | TASK-SC-09 | detectMode "improve" モードハンドリング実装 |
 | TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 |
