@@ -1,0 +1,158 @@
+{
+  "taskId": "TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001",
+  "phase": 11,
+  "createdAt": "2026-03-24",
+  "note": "設計タスクのためスクリーンショットは実装後に取得する。本JSONは取得すべき代表画面の定義。",
+  "p53Compliance": "CLI環境では実画面キャプチャ不可。実装タスク完了後にPlaywright page.screenshot() またはElectron webContents.capturePage() で取得する。",
+  "screens": [
+    {
+      "id": "SCR-01",
+      "name": "Approval Sheet - 外部送信確認",
+      "description": "LLM API呼び出し前のApproval Sheet表示状態。操作タイトル、操作説明、送信先情報、データ概要、停止方法、承認/拒否ボタンが見える状態。",
+      "sessionState": "ready",
+      "trigger": "APR-T1",
+      "expectedElements": [
+        "操作タイトル「外部送信の確認」",
+        "操作説明テキスト",
+        "送信先情報（LLM API名）",
+        "データ概要",
+        "停止方法テキスト",
+        "「承認」ボタン",
+        "「拒否」ボタン",
+        "「詳細を見る」リンク（オプション）"
+      ],
+      "relatedRequirements": ["FR-1a", "FR-1b", "FR-1c", "FR-1d"]
+    },
+    {
+      "id": "SCR-02",
+      "name": "Approval Sheet - 危険操作確認",
+      "description": "ファイル書き込み前のApproval Sheet表示状態。dangerous_operation種別の表示。",
+      "sessionState": "ready",
+      "trigger": "APR-T2",
+      "expectedElements": [
+        "操作タイトル「操作の確認」",
+        "操作説明（サニタイズ済みパス）",
+        "影響範囲の説明",
+        "「承認」ボタン",
+        "「拒否」ボタン"
+      ],
+      "relatedRequirements": ["FR-1a", "FR-1c", "FR-1e"]
+    },
+    {
+      "id": "SCR-03",
+      "name": "Approval Sheet - Terminal Handoff確認",
+      "description": "handoff state でのApproval Sheet。handoff理由とterminal操作内容の開示が含まれる。",
+      "sessionState": "handoff",
+      "trigger": "APR-T3",
+      "expectedElements": [
+        "handoff理由テキスト",
+        "terminalで行われる操作の説明",
+        "copy command（API key非含有）",
+        "「承認」ボタン",
+        "「拒否」ボタン"
+      ],
+      "relatedRequirements": ["FR-1a", "FR-1e", "FR-3b"]
+    },
+    {
+      "id": "SCR-04",
+      "name": "Session Disclosure Banner - 初回表示",
+      "description": "Session open（collapsed -> ready遷移）時のDisclosure Banner表示。AIモデル名と外部送信先種別が含まれる。",
+      "sessionState": "ready",
+      "trigger": "session_open",
+      "expectedElements": [
+        "AIサービス名（例: Claude 3.5 Sonnet）",
+        "外部送信先種別リスト（例: LLM API）",
+        "「AI が操作を支援していること」の明示テキスト",
+        "「外部サービスへのデータ送信が発生する可能性」テキスト",
+        "dismissボタン"
+      ],
+      "relatedRequirements": ["FR-2a", "FR-2b", "FR-3a", "FR-3b"]
+    },
+    {
+      "id": "SCR-05",
+      "name": "Session Disclosure Banner - dismiss後（再表示アイコン）",
+      "description": "Disclosure Banner dismiss後のSession Dockヘッダー。再表示アイコンが表示されている状態。",
+      "sessionState": "ready",
+      "trigger": "banner_dismiss",
+      "expectedElements": [
+        "Session Dockヘッダー",
+        "再表示アイコン（info icon）",
+        "バナー本体は非表示"
+      ],
+      "relatedRequirements": ["FR-2c"]
+    },
+    {
+      "id": "SCR-06",
+      "name": "Advanced Console Panel - opt-in前（非表示）",
+      "description": "ExecutionConsoleViewの初期表示。Advanced Console Panelが非表示で、「高度な表示」CTAがsecondary以下に配置されている状態。",
+      "sessionState": "ready",
+      "trigger": "initial_render",
+      "expectedElements": [
+        "Primary CTA「実行する」",
+        "「高度な表示」CTA（secondary/tertiaryレベル）",
+        "Advanced Console Panelは非表示"
+      ],
+      "relatedRequirements": ["FR-4a", "FR-4b", "FR-4c"]
+    },
+    {
+      "id": "SCR-07",
+      "name": "Advanced Console Panel - opt-in後（展開）",
+      "description": "ユーザーが「高度な表示」を選択した後のAdvanced Console Panel展開状態。Raw Terminal Output、Copy Command、Operation Logが表示される。",
+      "sessionState": "ready",
+      "trigger": "advanced_console_toggle",
+      "expectedElements": [
+        "「高度な表示」パネルヘッダー + 閉じるボタン",
+        "Raw Terminal Outputセクション",
+        "Copy Commandセクション + コピーボタン",
+        "Operation Logセクション",
+        "直接コマンド入力フィールドは非存在"
+      ],
+      "relatedRequirements": ["FR-4a", "FR-4d"]
+    },
+    {
+      "id": "SCR-08",
+      "name": "CTA階層 - ready state",
+      "description": "ready stateでのCTA配置。Primary CTAが1個で、「高度な表示」がsecondary以下に配置されている。",
+      "sessionState": "ready",
+      "trigger": "state_transition",
+      "expectedElements": [
+        "Primary CTA「実行する」（1個のみ）",
+        "「高度な表示」（secondary/tertiary配置）",
+        "Primary CTAに「terminal」ラベルなし"
+      ],
+      "relatedRequirements": ["MUST-6", "MUST-8"]
+    },
+    {
+      "id": "SCR-09",
+      "name": "CTA階層 - handoff state",
+      "description": "handoff stateでのCTA配置。Primary CTAは「キャンセル」、「端末で続ける」はsecondary。",
+      "sessionState": "handoff",
+      "trigger": "state_transition",
+      "expectedElements": [
+        "Primary CTA「キャンセル」",
+        "Secondary CTA「端末で続ける」",
+        "「高度な表示」（tertiary配置）"
+      ],
+      "relatedRequirements": ["MUST-6", "MUST-7"]
+    },
+    {
+      "id": "SCR-10",
+      "name": "Layer構造全体図",
+      "description": "Layer 1（Primary Surface）、Layer 2（Safety Surface）、Layer 3（Detail Surface）が全て表示された状態の全体図。",
+      "sessionState": "ready",
+      "trigger": "all_layers_visible",
+      "expectedElements": [
+        "Layer 1: Action Card, Runtime Banner, Session Dock",
+        "Layer 2: Disclosure Banner（表示中）",
+        "Layer 3: Advanced Console Panel（opt-in展開中）",
+        "層構造が視覚的に分離されている"
+      ],
+      "relatedRequirements": ["AC-4"]
+    }
+  ],
+  "captureMethod": {
+    "primary": "Playwright page.screenshot()",
+    "alternative": "Electron webContents.capturePage()",
+    "automation": "後続の実装タスクにて自動スクリーンショット取得スクリプトを作成する"
+  }
+}

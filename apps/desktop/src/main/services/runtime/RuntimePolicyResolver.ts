@@ -46,6 +46,13 @@ export class RuntimePolicyResolver implements IRuntimePolicyResolver {
     _authMode: AuthMode,
     apiKey: string | null,
   ): Promise<RuntimeDecision> {
+    // DENY-1: claude.ai consumer 認証の流用を拒否
+    if (typeof apiKey === "string" && isConsumerToken(apiKey)) {
+      throw new Error(
+        "Consumer authentication tokens (claude.ai) are not accepted. Please use an API key.",
+      );
+    }
+
     const trimmedKey = typeof apiKey === "string" ? apiKey.trim() : "";
     if (trimmedKey !== "") {
       return {
@@ -111,4 +118,13 @@ export class RuntimePolicyResolver implements IRuntimePolicyResolver {
         "認証情報が設定されていません。設定画面で API Key を設定するか、Claude Code CLI で /login を実行してください。",
     };
   }
+}
+
+/**
+ * claude.ai consumer token パターンを検出する (CAG-1)
+ * sess- prefix は claude.ai session token の既知パターン
+ */
+function isConsumerToken(token: string): boolean {
+  const trimmed = token.trim();
+  return trimmed.startsWith("sess-") || trimmed.startsWith("sessionKey=");
 }

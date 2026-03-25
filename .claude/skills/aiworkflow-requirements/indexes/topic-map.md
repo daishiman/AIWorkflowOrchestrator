@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-24
+> 自動生成: 2026-03-25
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -182,6 +182,7 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L12 |
 | バックエンド実装パターン | L368 |
 | 共有パッケージ実装パターン | L453 |
+| ApprovalGate Enforcement パターン（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L534 |
 
 ### references/architecture-implementation-patterns-details.md
 
@@ -261,8 +262,8 @@ node scripts/list-specs.js --topics
 | セキュリティアーキテクチャ | L146 |
 | 状態管理アーキテクチャ | L180 |
 | データフローアーキテクチャ | L217 |
-| ディレクトリ構造 | L300 |
-| データ構造（型システム） | L364 |
+| ディレクトリ構造 | L303 |
+| データ構造（型システム） | L367 |
 
 ### references/architecture-overview-details.md
 
@@ -903,7 +904,8 @@ node scripts/list-specs.js --topics
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
 | ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L562 |
-| AIプロバイダーAPI連携 | L593 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L593 |
+| AIプロバイダーAPI連携 | L624 |
 
 ### references/api-ipc-system-details.md
 
@@ -1441,8 +1443,9 @@ node scripts/list-specs.js --topics
 | テスト品質サマリー | L51 |
 | 完了タスク | L65 |
 | 完了タスク | L80 |
-| 変更履歴 | L91 |
-| 関連ドキュメント | L109 |
+| 完了タスク（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L91 |
+| 変更履歴 | L105 |
+| 関連ドキュメント | L123 |
 
 ### references/security-api.md
 
@@ -1473,6 +1476,7 @@ node scripts/list-specs.js --topics
 | 実装例: notificationAPI（TASK-UI-08） | L394 |
 | 実装例: slideSettingsAPI | L427 |
 | IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L476 |
+| ApprovalGate セキュリティ契約（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L491 |
 
 ### references/security-electron-ipc-details.md
 
@@ -2598,20 +2602,20 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L51 |
-| クイックリファレンス: カテゴリ別検索ガイド | L66 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L167 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L499 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L533 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L616 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L632 |
+| 分割ファイル一覧 | L52 |
+| クイックリファレンス: カテゴリ別検索ガイド | L67 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L192 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L524 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L558 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L641 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L657 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L681 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-24 UT-SC-03-004（SkillBlueprint 型移行） | L23 |
 | 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L37 |
 | 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L57 |
 | 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L63 |

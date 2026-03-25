@@ -71,6 +71,31 @@
 
 ---
 
+### タスク: UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 navContract executionConsole エントリ追加（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-24 |
+| 対象 | navContract.ts の DockViewType / NAV_SECTIONS / NAV_SHORTCUT_TO_VIEW + Icon play-circle |
+| 成果物 | `docs/30-workflows/ut-imp-navcontract-execution-console-entry-001/` |
+| 親タスク | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 |
+| GitHub Issue | #1553 (CLOSED) |
+
+#### 実施内容
+
+- DockViewType に `"executionConsole"` を追加（Extract パターン）
+- NAV_SECTIONS sub セクションに executionConsole エントリ追加（icon: play-circle, shortcut: Cmd+9）
+- NAV_SHORTCUT_TO_VIEW に `"9": "executionConsole"` マッピング追加
+- Icon コンポーネントに PlayCircle (lucide-react) / "play-circle" (IconName / iconMap) 追加
+- テスト期待値更新: navContract.test.ts, types.test.ts, Icon.test.tsx（59 tests PASS）
+- 未タスク: 0件
+
+---
+
 ### タスク: TASK-SC-04-OUTPUT-PERSISTENCE SkillFileWriter LLM生成スキルコンテンツ永続化（2026-03-23）
 
 | 項目 | 値 |

@@ -71,6 +71,31 @@
 
 ---
 
+### タスク: UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 navContract executionConsole エントリ追加（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-24 |
+| 対象 | navContract.ts の DockViewType / NAV_SECTIONS / NAV_SHORTCUT_TO_VIEW + Icon play-circle |
+| 成果物 | `docs/30-workflows/ut-imp-navcontract-execution-console-entry-001/` |
+| 親タスク | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 |
+| GitHub Issue | #1553 (CLOSED) |
+
+#### 実施内容
+
+- DockViewType に `"executionConsole"` を追加（Extract パターン）
+- NAV_SECTIONS sub セクションに executionConsole エントリ追加（icon: play-circle, shortcut: Cmd+9）
+- NAV_SHORTCUT_TO_VIEW に `"9": "executionConsole"` マッピング追加
+- Icon コンポーネントに PlayCircle (lucide-react) / "play-circle" (IconName / iconMap) 追加
+- テスト期待値更新: navContract.test.ts, types.test.ts, Icon.test.tsx（59 tests PASS）
+- 未タスク: 0件
+
+---
+
 ### タスク: TASK-SC-04-OUTPUT-PERSISTENCE SkillFileWriter LLM生成スキルコンテンツ永続化（2026-03-23）
 
 | 項目 | 値 |
@@ -950,3 +975,37 @@
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | (M-01 follow-up) | rsync コマンドの worktree 環境注意書き追加 | `docs/30-workflows/unassigned-task/worktree-rsync-caution-annotation.md` |
+
+---
+
+### タスク: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Advanced Console Safety Governance（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | design / implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-24 |
+| ブランチ | feature/advanced-console-safety-governance |
+| 対象 | ApprovalGate、Consumer Auth Guard、3層レイヤー、5 IPC channel |
+| 成果物 | `docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/` |
+
+#### 実施内容
+
+- `ApprovalGate` / `IApprovalGate` を新規実装（TTL 300秒、ワンタイムトークン、DI パターン）
+- Consumer Auth Guard（`isConsumerToken` 判定）を terminalHandlers に組み込み
+- 3層レイヤーアーキテクチャ: Primary Surface → Safety Surface → Detail Surface
+- 5 IPC チャンネル新設: `approval:respond`、`execution:get-terminal-log`、`execution:get-copy-command`、`execution:get-disclosure-info`、`approval:request`
+- `advancedConsoleHandlers.ts` / `approvalHandlers.ts` / `disclosureHandlers.ts` の3ハンドラファイルを新規作成
+- Phase 13（PR）は user approval 未取得のため blocked
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 |
+| --- | --- | --- |
+| UT-6 | main/ipc/index.ts へ advancedConsole/approval/disclosure の3ハンドラ追加 | HIGH |
+| UT-7 | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH |
+| UT-8 | Main→Renderer への承認要求プッシュ通知（webContents.send） | HIGH |
+| UT-9 | abort/done 時に ApprovalGate.revokeAll() でトークンクリア | MEDIUM |
+| UT-10 | disclosureHandlers.ts 独立テスト作成 | LOW |

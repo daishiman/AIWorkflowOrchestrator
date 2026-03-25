@@ -1,0 +1,107 @@
+# Phase 7: カバレッジ確認
+
+## メタ情報
+
+| 項目     | 値                     |
+| -------- | ---------------------- |
+| Phase    | 7                      |
+| 機能名   | Skill Creator DI 配線  |
+| タスクID | UT-SC-05-IPC-DI-WIRING |
+| 作成日   | 2026-03-23             |
+
+## 目的
+
+カバレッジ基準の充足を確認する。未達の場合は Phase 6 へ戻る。
+
+## 背景
+
+Phase 6 でテスト拡充を行った後、カバレッジ基準（Line 80%+, Branch 60%+, Function 80%+）の達成状況を計測する。未達の場合はPhase 6に差し戻す。
+
+## 実行タスク
+
+### Task 1: カバレッジ計測
+
+```bash
+cd apps/desktop && pnpm vitest run --coverage src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade
+```
+
+### Task 2: 基準照合
+
+| 指標              | 最低基準 | 推奨基準 | 計測結果 |
+| ----------------- | -------- | -------- | -------- |
+| Line Coverage     | 80%      | 90%      | -        |
+| Branch Coverage   | 60%      | 70%      | -        |
+| Function Coverage | 80%      | 90%      | -        |
+
+対象ファイル: `RuntimeSkillCreatorFacade.ts`
+
+### Task 3: 判定
+
+- 全指標が最低基準以上 → Phase 8 へ進む
+- いずれかの指標が最低基準未満 → Phase 6 へ戻り、不足テストを追加する
+
+## 参照資料
+
+- `.claude/rules/02-code-quality.md`（カバレッジ基準）
+- Phase 6 テスト拡充（`phase-06-test-expansion.md`）
+
+## 成果物
+
+- カバレッジ計測結果（本仕様書に計測結果テーブルを記録）
+
+## 完了条件
+
+- [ ] カバレッジ計測を実施した
+- [ ] 計測結果テーブルに数値を記録した
+- [ ] 全指標が最低基準（Line 80%, Branch 60%, Function 80%）以上であることを確認した
+
+## 統合テスト連携
+
+カバレッジ基準（Line 80%+, Branch 60%+, Function 80%+）の達成を確認する。未達の場合は Phase 6 に戻る。
+
+## サブタスク管理
+
+Phase実行開始時に、以下のサブタスクを作成すること:
+
+1. カバレッジ計測コマンド実行（Task 1）
+2. 基準照合テーブルの数値記入（Task 2）
+3. PASS/FAIL 判定（Task 3）
+
+## タスク100%実行確認【必須】
+
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+
+```bash
+# Phase完了時の検証コマンド
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/w4a-sc-ipc-di-wiring --phase 7
+```
+
+---
+
+## Phase実行記録
+
+Phase完了後、以下を記録してください:
+
+| タスク                 | 結果 | 備考 |
+| ---------------------- | ---- | ---- |
+| Task 1: カバレッジ計測 | -    | -    |
+| Task 2: 基準照合       | -    | -    |
+| Task 3: 判定           | -    | -    |
+
+### 発見事項
+
+- 良かった点: -
+- 問題点: -
+- 改善提案: -
+
+### 次Phaseへの引き継ぎ事項
+
+- -
+
+## 次のPhase
+
+Phase 8: リファクタリング（カバレッジ基準充足時）
+Phase 6: テスト拡充（カバレッジ基準未達時）
