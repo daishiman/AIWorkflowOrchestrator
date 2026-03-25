@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-24
+> 自動生成: 2026-03-25
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -2611,7 +2611,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-24 UT-SC-03-004（SkillBlueprint 型移行） | L23 |
 | 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L37 |
 | 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L57 |
 | 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L63 |
@@ -4055,3 +4054,4 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L199 |
 
 ---
+
