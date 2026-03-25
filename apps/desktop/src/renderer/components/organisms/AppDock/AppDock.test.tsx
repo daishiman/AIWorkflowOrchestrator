@@ -23,10 +23,10 @@ describe("AppDock", () => {
       );
     });
 
-    it("9個のナビゲーションアイテムを表示する", () => {
+    it("10個のナビゲーションアイテムを表示する", () => {
       render(<AppDock {...defaultProps} />);
       const buttons = screen.getAllByRole("button");
-      expect(buttons).toHaveLength(9);
+      expect(buttons).toHaveLength(10);
     });
   });
 
@@ -70,6 +70,11 @@ describe("AppDock", () => {
       render(<AppDock {...defaultProps} />);
       expect(screen.getByLabelText("履歴検索")).toBeInTheDocument();
     });
+
+    it("ExecutionConsoleアイテムを表示する", () => {
+      render(<AppDock {...defaultProps} />);
+      expect(screen.getByLabelText("実行コンソール")).toBeInTheDocument();
+    });
   });
 
   describe("インタラクション", () => {
@@ -101,6 +106,9 @@ describe("AppDock", () => {
 
       fireEvent.click(screen.getByLabelText("エディタ"));
       expect(handleViewChange).toHaveBeenCalledWith("editor");
+
+      fireEvent.click(screen.getByLabelText("実行コンソール"));
+      expect(handleViewChange).toHaveBeenCalledWith("executionConsole");
 
       fireEvent.click(screen.getByLabelText("設定"));
       expect(handleViewChange).toHaveBeenCalledWith("settings");

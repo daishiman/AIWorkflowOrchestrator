@@ -857,7 +857,7 @@ export function registerAllIpcHandlers(
   // Permission Store handlers (TASK-3-1-E)
   const permissionStore = new PermissionStore();
   track("registerPermissionStoreHandlers", () => {
-    registerPermissionStoreHandlers(permissionStore);
+    registerPermissionStoreHandlers(mainWindow, permissionStore);
   });
 
   // Safety Gate handlers (TASK-SAFETY-GATE)
@@ -907,6 +907,7 @@ export function registerAllIpcHandlers(
           authKeyService,
           skillFileWriter,
           resourceLoader,
+          skillFileManager, // improve() / applyImprovement() で SKILL.md 読み書きに使用
         })
       : undefined;
 

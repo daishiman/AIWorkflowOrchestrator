@@ -1,0 +1,83 @@
+{
+  "taskId": "UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001",
+  "taskName": "navContract.ts に executionConsole エントリ追加",
+  "issueNumber": 1553,
+  "createdAt": "2026-03-24",
+  "completedAt": "2026-03-24",
+  "qualityMetrics": {
+    "targetFiles": 5,
+    "testCases": 11,
+    "coverageTargets": {
+      "line": "80%",
+      "branch": "60%",
+      "function": "80%"
+    }
+  },
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "specFile": "phase-1-requirements-definition.md",
+      "outputDir": "outputs/phase-1"
+    },
+    "phase-2": {
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2"
+    },
+    "phase-3": {
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3"
+    },
+    "phase-4": {
+      "status": "completed",
+      "specFile": "phase-4-test-cases.md",
+      "outputDir": "outputs/phase-4"
+    },
+    "phase-5": {
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5"
+    },
+    "phase-6": {
+      "status": "completed",
+      "specFile": "phase-6-test-enhancement.md",
+      "outputDir": "outputs/phase-6"
+    },
+    "phase-7": {
+      "status": "completed",
+      "specFile": "phase-7-coverage-report.md",
+      "outputDir": "outputs/phase-7"
+    },
+    "phase-8": {
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8"
+    },
+    "phase-9": {
+      "status": "completed",
+      "specFile": "phase-9-quality-verification.md",
+      "outputDir": "outputs/phase-9"
+    },
+    "phase-10": {
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10"
+    },
+    "phase-11": {
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11"
+    },
+    "phase-12": {
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12"
+    },
+    "phase-13": {
+      "status": "in_progress",
+      "specFile": "phase-13-completion.md",
+      "outputDir": "outputs/phase-13"
+    }
+  }
+}

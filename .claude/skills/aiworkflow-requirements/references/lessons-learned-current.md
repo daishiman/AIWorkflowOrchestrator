@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-25 | 2.7.0 | UT-SC-05-IPC-DI-WIRING 教訓2件を追加（L-IPC-DI-001: 仕様書作成時点とコード乖離、L-IPC-DI-002: オプショナルDIサイレントデグラデーション） |
 | 2026-03-24 | 2.5.0 | TASK-LLM-MOD-03 苦戦箇所2件を追加（L-LLM-MOD-03-001〜002: baseUrl変更のcross-file依存 / system_instruction条件付加の設計判断） |
 | 2026-03-22 | 2.2.3 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 の Phase 12 教訓4件を追加 |
 | 2026-03-21 | 2.2.1 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
@@ -91,6 +92,30 @@
 - spec-only close-out では downstream task status と code diff 0/有を併記する
 - standalone root 移設時は parent/downstream/system spec の旧 path を same-wave で閉じる
 - `implementation_ready` / `spec_created` / `blocked` の意味を分離し、Phase 13 だけ future gate に残す
+
+### 2026-03-25 UT-SC-05-IPC-DI-WIRING DI配線完了
+
+#### L-IPC-DI-001: 仕様書作成時点と実装時点のコード乖離
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 1-2 で「3依存（skillFileManager, llmAdapter, resourceLoader）がすべて未注入」を前提に設計したが、Phase 3 実行時に resourceLoader と llmAdapter は既に別タスク（TASK-SC-05-IMPROVE-LLM）で注入済みだった。実際の変更は `skillFileManager` の1行追加のみ |
+| 再発条件 | 仕様書作成後に他タスクが先に実装をマージし、前提コードが変化した場合 |
+| 解決策 | Phase 3 の設計レビューで現状コードとの差分分析を実施し、実際の変更量を特定。仕様書の前提を修正 |
+| 標準ルール | Phase 3 開始時に `git diff` または `grep` で仕様書のコードスニペットと現状コードの差分を確認する。コミットハッシュを仕様書に記録する |
+| 関連パターン | P34（遅延初期化 DI パターン） |
+| 関連タスク | UT-SC-05-IPC-DI-WIRING |
+
+#### L-IPC-DI-002: オプショナル DI のサイレントデグラデーション
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `RuntimeSkillCreatorFacadeDeps` のフィールドがすべてオプショナルであるため、依存未注入でも TypeScript のコンパイルエラーが発生せず、Graceful Degradation が「正常動作」として長期間見過ごされた |
+| 解決策 | Graceful Degradation 発動時のログ計装で「意図しない degradation」を検出可能にする。必須依存は Required フィールドに変更することを検討 |
+| 標準ルール | オプショナル DI フィールドを使用する場合、Graceful Degradation 発動時にログ（warn レベル）を出力する |
+| 関連タスク | UT-SC-05-IPC-DI-WIRING |
+
+---
 
 ### 2026-03-24 TASK-LLM-MOD-03 GoogleAdapter system_instruction 対応
 

@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-24
+> 自動生成: 2026-03-25
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -2598,20 +2598,19 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L51 |
-| クイックリファレンス: カテゴリ別検索ガイド | L66 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L167 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L499 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L533 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L616 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L632 |
+| 分割ファイル一覧 | L52 |
+| クイックリファレンス: カテゴリ別検索ガイド | L67 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L192 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L524 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L558 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L641 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L657 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-24 UT-SC-03-004（SkillBlueprint 型移行） | L23 |
 | 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L37 |
 | 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L57 |
 | 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L63 |
@@ -4055,3 +4054,4 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L199 |
 
 ---
+
