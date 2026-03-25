@@ -485,3 +485,54 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 - unregister: `ipcMain.removeHandler(IPC_CHANNELS.SKILL_UPDATE)` L844 で P5対策
 
 ---
+
+---
+
+## ApprovalGate セキュリティ契約（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001）
+
+> 完了日: 2026-03-25
+
+### ApprovalGate 基本契約
+
+| 項目 | 契約 |
+| --- | --- |
+| 動作プロセス | Main プロセスでのみ動作する（Renderer 非公開） |
+| トークン生成 | `crypto.randomBytes(32)` による安全なランダムトークン |
+| トークン有効期限 | TTL = 300 秒（`APPROVAL_TTL_SECONDS = 300`） |
+| トークン使用 | 単一操作ごとに失効（ワンタイム使用） |
+| DI 対応 | `IApprovalGate` インターフェースで依存注入可能 |
+
+### DENY パターン（追加定義）
+
+| ID | パターン | 内容 |
+| --- | --- | --- |
+| DENY-5 | API key 非公開 | API key を Renderer に渡さない |
+| DENY-6 | terminal command sanitize | terminal command に API key を含有させない（`sanitizeForApiKeys` 関数で除去） |
+| DENY-9 | 外部送信承認必須 | 外部送信時は ApprovalGate 承認が必須 |
+
+### Consumer Auth Guard（CAG）
+
+| ルール | 内容 |
+| --- | --- |
+| CAG-1 | `RuntimePolicyResolver.isConsumerToken()` で `sess-` プレフィックスを検出 |
+| CAG-2 | `RuntimePolicyResolver.isConsumerToken()` で `sessionKey=` プレフィックスを検出 |
+| CAG-3 | Consumer token 検出時は外部送信を常にブロックする |
+
+### No Auto-Send（NAS）
+
+| ルール | 内容 |
+| --- | --- |
+| NAS-1 | 外部送信操作はユーザーの明示的アクション（ボタンクリック）が必須 |
+| NAS-2 | auto-send / auto-execute 機能の実装を禁止する |
+| NAS-3 | `approval:respond` は Renderer から明示的に invoke される場合のみ有効 |
+| NAS-4 | バックグラウンドでの自動承認・自動送信は禁止する |
+
+### 実装ファイル
+
+| ファイル | 役割 |
+| --- | --- |
+| `apps/desktop/src/main/services/runtime/ApprovalGate.ts` | ワンタイムトークン生成・TTL 管理・IApprovalGate インターフェース |
+| `apps/desktop/src/main/ipc/approvalHandlers.ts` | `approval:respond` invoke / `approval:request` push handler |
+| `apps/desktop/src/main/ipc/advancedConsoleHandlers.ts` | `execution:get-terminal-log` / `execution:get-copy-command` handler |
+| `apps/desktop/src/main/ipc/disclosureHandlers.ts` | `execution:get-disclosure-info` handler |
+| `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts` | `isConsumerToken()` による CAG 判定・NAS 強制 |

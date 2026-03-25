@@ -1,0 +1,147 @@
+{
+  "taskId": "TASK-SC-08-E2E-VALIDATION",
+  "taskName": "w5b-sc-e2e-terminal-handoff",
+  "featureName": "Skill Creator LLM統合 E2E検証 + TerminalHandoff",
+  "createdDate": "2026-03-25",
+  "wave": 5,
+  "prerequisites": [
+    "w3a-sc-output-persistence",
+    "w3b-sc-improve-llm",
+    "w4-sc-ui-runtime-connection"
+  ],
+  "relatedFR": ["FR-4", "FR-6"],
+  "relatedAC": ["AC-1", "AC-2", "AC-3", "AC-4", "AC-5", "AC-6", "AC-7", "AC-8"],
+  "phases": {
+    "phase-01": {
+      "name": "要件定義",
+      "file": "phase-01-requirements.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-1/e2e-test-scenarios.md",
+        "outputs/phase-1/ac-fr-scenario-mapping.md",
+        "outputs/phase-1/nfr-verification-items.md",
+        "outputs/phase-1/ipc-inventory.md"
+      ]
+    },
+    "phase-02": {
+      "name": "設計",
+      "file": "phase-02-design.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-2/test-infrastructure-design.md",
+        "outputs/phase-2/ipc-response-definitions.md",
+        "outputs/phase-2/terminal-handoff-verification.md",
+        "outputs/phase-2/performance-measurement.md",
+        "outputs/phase-2/test-file-structure.md"
+      ]
+    },
+    "phase-03": {
+      "name": "設計レビューゲート",
+      "file": "phase-03-design-review.md",
+      "status": "completed",
+      "outputs": ["outputs/phase-3/design-review-report.md"]
+    },
+    "phase-04": {
+      "name": "テスト作成",
+      "file": "phase-04-test-creation.md",
+      "status": "completed",
+      "outputs": [
+        "apps/desktop/src/test/e2e/skill-creator-integration.test.ts",
+        "apps/desktop/src/test/e2e/terminal-handoff.test.ts",
+        "apps/desktop/src/test/helpers/skill-creator-test-helpers.ts"
+      ]
+    },
+    "phase-05": {
+      "name": "実装",
+      "file": "phase-05-implementation.md",
+      "status": "completed",
+      "outputs": ["apps/desktop/src/test/helpers/skill-creator-test-helpers.ts"]
+    },
+    "phase-06": {
+      "name": "テスト拡充",
+      "file": "phase-06-test-coverage.md",
+      "status": "completed",
+      "outputs": ["apps/desktop/src/test/e2e/skill-creator-integration.test.ts"]
+    },
+    "phase-07": {
+      "name": "カバレッジ確認",
+      "file": "phase-07-coverage-check.md",
+      "status": "completed",
+      "outputs": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-08": {
+      "name": "リファクタリング",
+      "file": "phase-08-refactoring.md",
+      "status": "completed",
+      "outputs": [
+        "apps/desktop/src/test/helpers/skill-creator-test-helpers.ts",
+        "apps/desktop/src/test/e2e/skill-creator-integration.test.ts",
+        "apps/desktop/src/test/e2e/terminal-handoff.test.ts"
+      ]
+    },
+    "phase-09": {
+      "name": "品質検証",
+      "file": "phase-09-quality-verification.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/quality-gate-result.md"
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "file": "phase-10-final-review.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-10/final-review-report.md",
+        "outputs/phase-10/ac-verification.md",
+        "outputs/phase-10/nfr-verification.md"
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "file": "phase-11-manual-test.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-11/manual-test-results.md",
+        "outputs/phase-11/screenshots/",
+        "outputs/phase-11/cli-execution-log.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "file": "phase-12-documentation.md",
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/test-results-report.md",
+        "outputs/phase-12/overall-completion-report.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "file": "phase-13-completion.md",
+      "status": "pending",
+      "outputs": ["outputs/phase-13/pr-info.md"]
+    }
+  },
+  "testScenarios": {
+    "A": { "name": "正常フロー", "ac": ["AC-1", "AC-2"], "nfr": ["NFR-2"] },
+    "B": { "name": "TerminalHandoff", "ac": ["AC-4"], "nfr": ["NFR-1"] },
+    "C": { "name": "LLMエラー回復", "ac": ["AC-7"], "nfr": ["NFR-4"] },
+    "D": { "name": "improve機能", "ac": ["AC-5"], "nfr": [] },
+    "E": { "name": "後方互換", "ac": ["AC-8"], "nfr": ["NFR-3"] }
+  },
+  "ipcChannels": [
+    "skill-creator:plan",
+    "skill-creator:execute-plan",
+    "skill-creator:verify",
+    "skill-creator:improve-skill",
+    "skill-creator:cancel",
+    "SKILL_CREATOR_PROGRESS",
+    "skill:create"
+  ]
+}

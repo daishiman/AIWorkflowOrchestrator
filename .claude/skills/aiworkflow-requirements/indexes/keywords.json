@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-25T06:05:05.000Z",
-  "totalKeywords": 2489,
+  "generated": "2026-03-25T10:50:44.662Z",
+  "totalKeywords": 2491,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -11658,6 +11658,12 @@
     ],
     "resilience": [
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "検証": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "TerminalHandoff": [
+      "task-workflow-completed-skill-create-ui-integration.md"
     ]
   }
 }

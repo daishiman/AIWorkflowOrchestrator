@@ -2606,7 +2606,9 @@ node scripts/list-specs.js --topics
 | UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L573 |
 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L607 |
 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L690 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L706 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L707 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L731 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L772 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -4057,4 +4059,3 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L199 |
 
 ---
-

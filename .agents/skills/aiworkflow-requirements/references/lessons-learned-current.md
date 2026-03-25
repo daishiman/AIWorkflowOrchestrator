@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-25 | 2.8.0 | TASK-SC-08-E2E-VALIDATION 教訓3件を追加（L-SC-E2E-001: IPC handlerMap モックパターン、L-SC-E2E-002: TerminalHandoff セキュリティ検証、L-SC-E2E-003: Phase仕様書パス移動時の参照ドリフト） |
 | 2026-03-25 | 2.8.0 | TASK-SC-07-STREAMING-PROGRESS-UI 教訓4件を追加（L-SC-07-001: Slice名前衝突回避、L-SC-07-002: P5対策safeOn cleanup、L-SC-07-003: P47対策ErrorCards網羅性、L-SC-07-004: ローカルstate vs Zustand二重管理） |
 | 2026-03-25 | 2.7.0 | UT-SC-05-IPC-DI-WIRING 教訓2件を追加（L-IPC-DI-001: 仕様書作成時点とコード乖離、L-IPC-DI-002: オプショナルDIサイレントデグラデーション） |
 | 2026-03-24 | 2.5.0 | TASK-LLM-MOD-03 苦戦箇所2件を追加（L-LLM-MOD-03-001〜002: baseUrl変更のcross-file依存 / system_instruction条件付加の設計判断） |
@@ -724,3 +725,69 @@
 - **再利用**: テスト mock の戻り値には `satisfies` または明示的型引数で型チェックを強制する
 
 > 5分解決カード: Props silent drop → Props interface と destructuring のフィールド数を比較 → 不足フィールドを追加 → テスト追加
+
+---
+
+## TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24）
+
+### 1. 設計タスクでもプロダクションコードが含まれる場合がある
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | タスク種別を「設計タスク」として開始したが、ApprovalGate / Consumer Auth Guard / 3ハンドラファイル等の実装が含まれていた |
+| 解決策 | タスク分析の早期（Phase 1-2）に「設計のみか実装を伴うか」を明示的に判断し、種別を「設計・実装タスク」に更新する |
+| 標準ルール | Phase 2 設計レビュー時点で新規ファイル作成が発生するなら「実装タスク」として種別を修正する |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+### 2. IPC channel 数の整合
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 仕様書間で IPC channel 数を記載する際、Phase が進むにつれてチャンネル数が変動し、ドキュメント間で不整合が生じた |
+| 解決策 | 仕様書の IPC channel 数は実装後に grep で実測し、全ドキュメントで同一の正確な数値を使用する |
+| 標準ルール | IPC channel 数を記載する場合は `grep -rn "ipcMain.handle" src/main/ipc/` で実測値を確認してから記載する |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+### 3. 3層レイヤーアーキテクチャは安全ガバナンスに有効
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実行コンソールの安全ガバナンスを単一コンポーネントで実装しようとすると、UX と安全性のトレードオフが生じる |
+| 解決策 | Primary Surface（概要表示） → Safety Surface（承認要求） → Detail Surface（ログ詳細）の3層に分離することで段階的開示を実現し、UX と安全性を両立した |
+| 標準ルール | 承認フロー + 情報開示が要件に含まれる画面は、3層分離を設計の起点とする |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+### 4. ApprovalGate の DI パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 既存の terminalHandlers.ts に承認ゲートを追加する際、既存のコードへの影響を最小化しながらテスタビリティを確保する必要があった |
+| 解決策 | `IApprovalGate` インターフェースによる DI でテスタビリティを確保しつつ、optional パラメータで既存コードへの影響を最小化した。未注入時は degraded モードとして動作 |
+| 標準ルール | 既存ハンドラへの機能追加は optional パラメータ + interface DI で拡張する（P61 パターン適用） |
+| 関連パターン | P61（DIP 違反の遅発検出）、ApprovalGate Enforcement パターン |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+---
+
+## TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25）
+
+### L-SC-E2E-001: IPC handlerMap モックパターン
+
+- **症状**: Electron の `ipcMain.handle` を直接モックすると、ハンドラ登録のタイミング依存でテストが不安定になる
+- **原因**: `vi.mock('electron')` だけではハンドラの呼び出しチェーンをテストできない
+- **解決策**: `handlerMap: Record<string, Function>` をキャプチャし、`ipcMain.handle` のモック内で格納。テスト時は `handlerMap[channelName](event, args)` で直接呼び出す
+- **関連Pitfall**: P60（IPC テスト応答形式不一致）
+
+### L-SC-E2E-002: TerminalHandoff セキュリティ検証
+
+- **症状**: `suggestedCommand` の形式検証が不十分だと、シェルインジェクションの脆弱性が残る
+- **原因**: CLI コマンド文字列の妥当性を正規表現のみで検証していた
+- **解決策**: (1) `/^[a-zA-Z]/` でアルファベット開始を検証 (2) `;`, `|`, `$()`, `` ` `` のシェルメタ文字を禁止 (3) NFR-1 準拠で API Key 等の機密情報が含まれないことをアサート
+- **関連Pitfall**: NFR-1（機密情報漏洩防止）
+
+### L-SC-E2E-003: Phase仕様書パス移動時の参照ドリフト
+
+- **症状**: Phase仕様書ディレクトリを移動した後、「次のPhase」リンクが旧パスのまま残り、ナビゲーションが壊れる
+- **原因**: ディレクトリ名変更時に、Phase仕様書内の相対パス参照が自動更新されない
+- **解決策**: 移動後に `grep -r "旧パス" 新ディレクトリ/` で残存参照を検出し、一括置換する
+- **新規Pitfall候補**: P-NEW: Phase仕様書ディレクトリ移動時の「次のPhase」リンク残存

@@ -590,6 +590,37 @@ TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel が使用する
 
 ---
 
+## Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001）
+
+> 完了日: 2026-03-25
+> ステータス: `implemented`
+
+### チャンネル一覧
+
+| チャネル | 方向 | 種別 | 用途 |
+| --- | --- | --- | --- |
+| `approval:respond` | Renderer → Main | invoke | 承認/拒否応答送信 |
+| `approval:request` | Main → Renderer | push (on) | 承認要求プッシュ通知 |
+| `execution:get-disclosure-info` | Renderer → Main | invoke | AI開示情報取得 |
+| `execution:get-terminal-log` | Renderer → Main | invoke | ターミナルログ取得 |
+| `execution:get-copy-command` | Renderer → Main | invoke | コピーコマンド取得 |
+
+### 実装アンカー
+
+| 層 | ファイル | 役割 |
+| --- | --- | --- |
+| Main approval handler | `apps/desktop/src/main/ipc/approvalHandlers.ts` | `approval:respond` / `approval:request` push 境界 |
+| Main advanced console handler | `apps/desktop/src/main/ipc/advancedConsoleHandlers.ts` | `execution:get-terminal-log` / `execution:get-copy-command` |
+| Main disclosure handler | `apps/desktop/src/main/ipc/disclosureHandlers.ts` | `execution:get-disclosure-info` |
+| Main approval gate service | `apps/desktop/src/main/services/runtime/ApprovalGate.ts` | ワンタイムトークン生成・検証 |
+| Main runtime policy | `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts` | Consumer Auth Guard / NAS 判定 |
+| Preload channels | `apps/desktop/src/preload/channels.ts` | 5チャンネルのホワイトリスト登録 |
+| Renderer hook | `apps/desktop/src/renderer/hooks/useApprovalFlow.ts` | 承認フロー UI 制御 |
+| Renderer hook | `apps/desktop/src/renderer/hooks/useAdvancedConsole.ts` | Advanced Console 状態管理 |
+| Renderer view | `apps/desktop/src/renderer/views/ExecutionConsoleView/index.tsx` | 3層レイヤー描画（Primary/Safety/Detail Surface） |
+
+---
+
 ## AIプロバイダーAPI連携
 
 ### 対応プロバイダー
