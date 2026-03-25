@@ -595,3 +595,6 @@
 | UT-8 | Approval Request Push実装 | HIGH | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（統合） | Main→Renderer への承認要求プッシュ通知（webContents.send） |
 | UT-9 | revokeAll() セッション終了時呼び出し | MEDIUM | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（統合） | abort/done 時に ApprovalGate.revokeAll() でトークンクリア |
 | UT-10 | disclosureHandlers.ts 独立テスト | LOW | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（品質） | dismiss/reopen/state 取得の単体テスト作成 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高 | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver の HealthPolicy 注入元実装 | 高 | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md` |
+| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0） | 中 | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |

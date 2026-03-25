@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-25T01:57:14.316Z",
-  "totalKeywords": 2476,
+  "generated": "2026-03-25T02:35:58.812Z",
+  "totalKeywords": 2479,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2473,6 +2473,8 @@
     ],
     "POLICY": [
       "arch-electron-services-details-part2.md",
+      "arch-execution-capability-contract.md",
+      "interfaces-auth-core.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -2551,6 +2553,7 @@
     ],
     "統合": [
       "arch-electron-services-details-part2.md",
+      "arch-execution-capability-contract.md",
       "arch-state-management-core.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "architecture-file-conversion.md",
@@ -2669,6 +2672,20 @@
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "HealthPolicy": [
+      "arch-execution-capability-contract.md",
+      "interfaces-auth-core.md"
+    ],
+    "HEALTH": [
+      "arch-execution-capability-contract.md",
+      "interfaces-auth-core.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "UNIFICATION": [
+      "arch-execution-capability-contract.md",
+      "interfaces-auth-core.md",
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "機能追加パターン": [
       "arch-feature-addition.md",
@@ -5171,6 +5188,9 @@
     "ExecutionCapability": [
       "interfaces-auth-core.md"
     ],
+    "統一インターフェース": [
+      "interfaces-auth-core.md"
+    ],
     "ワークスペース型定義": [
       "interfaces-auth-core.md"
     ],
@@ -6444,9 +6464,6 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "AUTHMODE": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "UNIFICATION": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "再確認追補": [

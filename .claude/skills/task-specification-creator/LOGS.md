@@ -4,6 +4,23 @@
 
 ---
 
+## TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了（2026-03-25）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 完了記録追加
+- **Result**: success
+- **Notes**:
+  - HealthPolicy 統一インターフェース実装（Gap-3 解消）
+  - `packages/shared/src/types/health-policy.ts` 新規作成（HealthPolicy 型 + resolveHealthPolicy() pure function）
+  - `RuntimePolicyResolver.ts` に HealthPolicy DI + degraded 分岐追加（P62 対策）
+  - `mainlineAccess.ts` に HealthPolicy 消費ロジック追加
+  - `HealthIndicator.tsx` に HealthPolicy props 追加
+  - `apiKeyDegraded` に @deprecated v0.8.0 マーク
+  - 38 テスト全 PASS（health-policy 23件 + RuntimePolicyResolver 8件 + mainlineAccess 7件）
+  - 未タスク 3 件（UT-HEALTH-POLICY-MAINLINE-MIGRATION-001, UT-HEALTH-POLICY-RUNTIME-INJECTION-001, UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001）
+
+---
+
 ## UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -17,7 +34,6 @@
   - 未タスク: 0件
 
 ---
-
 ## TASK-SC-06-UI-RUNTIME-CONNECTION 完了（2026-03-24）
 
 - **Agent**: task-specification-creator

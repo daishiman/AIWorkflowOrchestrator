@@ -64,7 +64,11 @@ export const UI_STATE_VALUES = [
 export interface ExecutionCapabilityInput {
   apiKeyValid: boolean;
   subscriptionValid: boolean;
-  /** API key は有効だが接続 timeout / degraded 状態 */
+  /**
+   * API key は有効だが接続 timeout / degraded 状態
+   * @deprecated v0.8.0 で削除予定。HealthPolicy.isDegraded を使用してください。
+   * @see TASK-IMP-HEALTH-POLICY-UNIFICATION-001
+   */
   apiKeyDegraded?: boolean;
 }
 

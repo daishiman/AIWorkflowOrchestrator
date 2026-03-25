@@ -17,7 +17,7 @@ import type {
   AuthMode,
   ISubscriptionAuthProvider,
 } from "@repo/shared/types/auth-mode";
-import type { TerminalHandoffBundle } from "@repo/shared/types";
+import type { TerminalHandoffBundle, HealthPolicy } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 
 export type RuntimeDecision =
@@ -40,6 +40,7 @@ export class RuntimePolicyResolver implements IRuntimePolicyResolver {
   constructor(
     private readonly authKeyService?: IAuthKeyService,
     private readonly subscriptionAuthProvider?: ISubscriptionAuthProvider,
+    private readonly healthPolicy?: HealthPolicy,
   ) {}
 
   async resolve(
@@ -52,7 +53,21 @@ export class RuntimePolicyResolver implements IRuntimePolicyResolver {
         "Consumer authentication tokens (claude.ai) are not accepted. Please use an API key.",
       );
     }
-
+    // degraded チェック: HealthPolicy 経由（D-4）
+    // P62 対策: degraded 時は integrated_api への暗黙 fallback を禁止
+    if (this.healthPolicy?.isDegraded) {
+      const isSubscriptionValid = await this.checkSubscription();
+      if (isSubscriptionValid) {
+        return {
+          type: "terminal_handoff",
+          bundle: this.buildDegradedBundle(),
+        };
+      }
+      return {
+        type: "terminal_handoff",
+        bundle: this.buildNoAuthBundle(),
+      };
+    }
     const trimmedKey = typeof apiKey === "string" ? apiKey.trim() : "";
     if (trimmedKey !== "") {
       return {
@@ -105,6 +120,19 @@ export class RuntimePolicyResolver implements IRuntimePolicyResolver {
         "Claude Code サブスクリプションが有効です。以下のコマンドをターミナルで実行してください。",
       runbook:
         "1. ターミナルを開く\n2. 以下のコマンドを実行\n3. Claude Code CLI がサブスクリプション認証で実行されます",
+    };
+  }
+
+  private buildDegradedBundle(): TerminalHandoffBundle {
+    return {
+      launcher: "claude",
+      promptBundle: "",
+      cwd: process.cwd(),
+      suggestedCommand: 'claude -p "（プロンプトを入力してください）"',
+      manualRetryRule:
+        "接続品質が低下しています。ターミナルで手動実行してください。",
+      runbook:
+        "1. ターミナルを開く\n2. 接続状態を確認\n3. 手動でコマンドを実行",
     };
   }
 

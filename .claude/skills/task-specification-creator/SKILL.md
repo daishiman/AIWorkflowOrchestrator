@@ -384,6 +384,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.23** | **2026-03-25** | **TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了同期**: HealthPolicy 統一インターフェース。health-policy.ts 新規作成（HealthPolicy/HealthPolicyInput/resolveHealthPolicy）。RuntimePolicyResolver DI統合 + mainlineAccess 消費 + HealthIndicator 表示統合。apiKeyDegraded @deprecated v0.8.0。38テスト全PASS。未タスク3件（UT-HEALTH-POLICY-MAINLINE/RUNTIME-INJECTION/DEPRECATED-REMOVAL）backlog登録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.22** | **2026-03-24** | **UT-SC-05-APPLY-IMPROVEMENT-UI 完了同期**: 改善提案 承認/適用UI。IPC `skill-creator:apply-improvement` + Preload `applyRuntimeImprovement` + Renderer 4コンポーネント。P42/P44/P47/P48/P49/P60/P65準拠。62テスト全PASS。未タスク0件。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.21** | **2026-03-24** | **TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了同期**: session dock / transcript persistence / artifact-first result / manual share bridge 設計タスク（Phase 1-12）完了。DockState 8状態 / session persistence / artifact bridge / manual share 設計確定。未タスク3件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.21** | **2026-03-24** | **UT-06-002-UT-1 完了同期**: `permission-store-handlers.ts` 全4ハンドラに `withValidation` sender 検証追加。`mainWindow: BrowserWindow` DI（P34）。42テスト全PASS（16新規 SEC-01〜SEC-14 + P42/unregister）。未タスク0件。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
