@@ -590,3 +590,8 @@
 - 優先度「高」のタスクから順に実施
 
 ---
+| UT-6 | IPC Handler登録 | HIGH | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（統合） | main/ipc/index.ts へ advancedConsole/approval/disclosure の3ハンドラ追加 |
+| UT-7 | Preload API公開 | HIGH | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（統合） | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 |
+| UT-8 | Approval Request Push実装 | HIGH | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（統合） | Main→Renderer への承認要求プッシュ通知（webContents.send） |
+| UT-9 | revokeAll() セッション終了時呼び出し | MEDIUM | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（統合） | abort/done 時に ApprovalGate.revokeAll() でトークンクリア |
+| UT-10 | disclosureHandlers.ts 独立テスト | LOW | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（品質） | dismiss/reopen/state 取得の単体テスト作成 |

@@ -675,3 +675,44 @@
 - **再利用**: テスト mock の戻り値には `satisfies` または明示的型引数で型チェックを強制する
 
 > 5分解決カード: Props silent drop → Props interface と destructuring のフィールド数を比較 → 不足フィールドを追加 → テスト追加
+
+---
+
+## TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24）
+
+### 1. 設計タスクでもプロダクションコードが含まれる場合がある
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | タスク種別を「設計タスク」として開始したが、ApprovalGate / Consumer Auth Guard / 3ハンドラファイル等の実装が含まれていた |
+| 解決策 | タスク分析の早期（Phase 1-2）に「設計のみか実装を伴うか」を明示的に判断し、種別を「設計・実装タスク」に更新する |
+| 標準ルール | Phase 2 設計レビュー時点で新規ファイル作成が発生するなら「実装タスク」として種別を修正する |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+### 2. IPC channel 数の整合
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 仕様書間で IPC channel 数を記載する際、Phase が進むにつれてチャンネル数が変動し、ドキュメント間で不整合が生じた |
+| 解決策 | 仕様書の IPC channel 数は実装後に grep で実測し、全ドキュメントで同一の正確な数値を使用する |
+| 標準ルール | IPC channel 数を記載する場合は `grep -rn "ipcMain.handle" src/main/ipc/` で実測値を確認してから記載する |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+### 3. 3層レイヤーアーキテクチャは安全ガバナンスに有効
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実行コンソールの安全ガバナンスを単一コンポーネントで実装しようとすると、UX と安全性のトレードオフが生じる |
+| 解決策 | Primary Surface（概要表示） → Safety Surface（承認要求） → Detail Surface（ログ詳細）の3層に分離することで段階的開示を実現し、UX と安全性を両立した |
+| 標準ルール | 承認フロー + 情報開示が要件に含まれる画面は、3層分離を設計の起点とする |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+### 4. ApprovalGate の DI パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 既存の terminalHandlers.ts に承認ゲートを追加する際、既存のコードへの影響を最小化しながらテスタビリティを確保する必要があった |
+| 解決策 | `IApprovalGate` インターフェースによる DI でテスタビリティを確保しつつ、optional パラメータで既存コードへの影響を最小化した。未注入時は degraded モードとして動作 |
+| 標準ルール | 既存ハンドラへの機能追加は optional パラメータ + interface DI で拡張する（P61 パターン適用） |
+| 関連パターン | P61（DIP 違反の遅発検出）、ApprovalGate Enforcement パターン |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |

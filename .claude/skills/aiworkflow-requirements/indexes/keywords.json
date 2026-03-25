@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-25T02:05:57.890Z",
-  "totalKeywords": 2476,
+  "generated": "2026-03-25T02:34:57.129Z",
+  "totalKeywords": 2485,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1051,6 +1051,7 @@
       "arch-ui-components-advanced.md",
       "arch-ui-components-details.md",
       "architecture-auth-security-core.md",
+      "architecture-implementation-patterns-core.md",
       "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
@@ -1127,6 +1128,7 @@
       "logs-archive-legacy.md",
       "quality-e2e-testing.md",
       "quality-requirements.md",
+      "security-api-electron.md",
       "security-electron-ipc-advanced.md",
       "security-electron-ipc-core.md",
       "security-electron-ipc-details.md",
@@ -2177,6 +2179,7 @@
       "arch-execution-capability-contract.md",
       "arch-state-management-core.md",
       "arch-state-management-reference-selectors.md",
+      "architecture-implementation-patterns-core.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
@@ -2212,6 +2215,7 @@
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "security-api-electron.md",
       "security-electron-ipc-core.md",
       "security-skill-ipc-core.md",
       "security-skill-ipc.md",
@@ -2307,6 +2311,50 @@
       "ui-ux-feature-components-details.md",
       "ui-ux-panels.md",
       "ui-ux-settings-core.md"
+    ],
+    "Advanced": [
+      "api-ipc-system-core.md",
+      "arch-state-management-reference-permissions-import-lifecycle.md",
+      "arch-ui-components-details.md",
+      "ui-ux-feature-components-reference.md"
+    ],
+    "Console": [
+      "api-ipc-system-core.md"
+    ],
+    "Safety": [
+      "api-ipc-system-core.md"
+    ],
+    "Governance": [
+      "api-ipc-system-core.md"
+    ],
+    "ADVANCED": [
+      "api-ipc-system-core.md",
+      "architecture-implementation-patterns-core.md",
+      "lessons-learned-current.md",
+      "lessons-learned-ui-skill-center-editor-dashboard.md",
+      "security-api-electron.md",
+      "security-electron-ipc-core.md"
+    ],
+    "CONSOLE": [
+      "api-ipc-system-core.md",
+      "architecture-implementation-patterns-core.md",
+      "lessons-learned-current.md",
+      "security-api-electron.md",
+      "security-electron-ipc-core.md"
+    ],
+    "SAFETY": [
+      "api-ipc-system-core.md",
+      "architecture-implementation-patterns-core.md",
+      "lessons-learned-current.md",
+      "security-api-electron.md",
+      "security-electron-ipc-core.md"
+    ],
+    "GOVERNANCE": [
+      "api-ipc-system-core.md",
+      "architecture-implementation-patterns-core.md",
+      "lessons-learned-current.md",
+      "security-api-electron.md",
+      "security-electron-ipc-core.md"
     ],
     "エンティティ抽出サービス": [
       "api-ipc-system-details.md",
@@ -3094,6 +3142,7 @@
     ],
     "パターン": [
       "arch-state-management-details.md",
+      "architecture-implementation-patterns-core.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "claude-code-skills-resources.md",
       "testing-dialog-patterns.md",
@@ -3120,11 +3169,6 @@
     ],
     "権限要求履歴管理": [
       "arch-state-management-reference-permissions-import-lifecycle.md"
-    ],
-    "Advanced": [
-      "arch-state-management-reference-permissions-import-lifecycle.md",
-      "arch-ui-components-details.md",
-      "ui-ux-feature-components-reference.md"
     ],
     "Views": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
@@ -3594,6 +3638,13 @@
       "architecture-implementation-patterns-core.md"
     ],
     "共有パッケージ実装パターン": [
+      "architecture-implementation-patterns-core.md"
+    ],
+    "ApprovalGate": [
+      "architecture-implementation-patterns-core.md",
+      "security-electron-ipc-core.md"
+    ],
+    "Enforcement": [
       "architecture-implementation-patterns-core.md"
     ],
     "実装": [
@@ -6394,9 +6445,6 @@
     "LEDGER": [
       "lessons-learned-current.md"
     ],
-    "GOVERNANCE": [
-      "lessons-learned-current.md"
-    ],
     "契約テスト教訓": [
       "lessons-learned-current.md"
     ],
@@ -6409,6 +6457,9 @@
     "適用": [
       "lessons-learned-current.md",
       "logs-archive-2026-02-completed-move-preload-sync.md"
+    ],
+    "からの教訓": [
+      "lessons-learned-current.md"
     ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -6942,9 +6993,6 @@
     ],
     "EDITOR": [
       "lessons-learned-ui-agent-view-nav-notification-history.md"
-    ],
-    "ADVANCED": [
-      "lessons-learned-ui-skill-center-editor-dashboard.md"
     ],
     "VIEWS": [
       "lessons-learned-ui-skill-center-editor-dashboard.md"
@@ -9692,6 +9740,9 @@
       "security-electron-ipc-core.md",
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
       "workflow-ai-chat-llm-integration-fix.md"
+    ],
+    "セキュリティ契約": [
+      "security-electron-ipc-core.md"
     ],
     "skillCreatorAPI": [
       "security-electron-ipc-details.md"
