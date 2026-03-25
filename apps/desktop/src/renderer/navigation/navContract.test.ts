@@ -41,7 +41,7 @@ describe("navContract", () => {
         "footer",
       ]);
       expect(NAV_SECTIONS.map((section) => section.items.length)).toEqual([
-        6, 2, 1,
+        6, 3, 1,
       ]);
     });
 
@@ -55,6 +55,7 @@ describe("navContract", () => {
         "historySearch",
         "graph",
         "editor",
+        "executionConsole",
         "settings",
       ]);
       expect(APP_DOCK_NAV_ITEMS.map((item) => item.shortcut)).toEqual([
@@ -66,6 +67,7 @@ describe("navContract", () => {
         "Cmd+6",
         "Cmd+7",
         "Cmd+8",
+        "Cmd+9",
         "Cmd+,",
       ]);
     });
@@ -82,6 +84,7 @@ describe("navContract", () => {
         "historySearch",
         "graph",
         "editor",
+        "executionConsole",
         "settings",
       ]);
     });
@@ -98,6 +101,21 @@ describe("navContract", () => {
       expect(
         getViewFromNavigationShortcut(createEvent({ key: "8", metaKey: true })),
       ).toBe("editor");
+    });
+
+    it("Cmd+9 を executionConsole に解決する", () => {
+      expect(
+        getViewFromNavigationShortcut(createEvent({ key: "9", metaKey: true })),
+      ).toBe("executionConsole");
+      expect(
+        getViewFromNavigationShortcut(createEvent({ key: "9", ctrlKey: true })),
+      ).toBe("executionConsole");
+    });
+
+    it("Cmd+0 は割当外のため null を返す", () => {
+      expect(
+        getViewFromNavigationShortcut(createEvent({ key: "0", metaKey: true })),
+      ).toBeNull();
     });
 
     it("Cmd/Ctrl + , を settings に解決する", () => {
@@ -204,10 +222,10 @@ describe("navContract", () => {
   });
 
   describe("NAV_SHORTCUT_TO_VIEW", () => {
-    it("定義済みショートカットが AppDock の9項目を一意にカバーする", () => {
+    it("定義済みショートカットが AppDock の10項目を一意にカバーする", () => {
       const shortcutViews = Object.values(NAV_SHORTCUT_TO_VIEW);
-      expect(shortcutViews).toHaveLength(9);
-      expect(new Set(shortcutViews).size).toBe(9);
+      expect(shortcutViews).toHaveLength(10);
+      expect(new Set(shortcutViews).size).toBe(10);
     });
   });
 });

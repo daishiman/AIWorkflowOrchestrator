@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-24 - UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 完了（navContract.ts DockViewType/NAV_SECTIONS/NAV_SHORTCUT_TO_VIEW に executionConsole 追加 / Icon play-circle 追加 / Cmd+9 ショートカット / テスト期待値更新 / 未タスク0件） |
 | 2026-03-24 - TASK-SC-06-UI-RUNTIME-CONNECTION 完了（SkillLifecyclePanel → RuntimeSkillCreatorFacade plan→execute フロー接続 / agentSlice に PlanResult型+5 state+6 actions 追加 / store/index.ts に11個別セレクタ追加（P31対策） / handlePrepare detectMode→planSkill自動呼出し / integrated_api/terminal_handoff 結果表示 / 33テスト全PASS / 未タスク6件: TASK-SC-07〜SC-12） |
 | 2026-03-24 - UT-SC-05-IPC-DI-WIRING 完了（RuntimeSkillCreatorFacade DI配線完了 / Main Process IPC層 index.ts で skillFileManager・llmAdapter・resourceLoader の3依存を DI配線 / IIFEパターン非同期初期化 / Graceful Degradation 維持） |
 | 2026-03-24 - TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了（DockState 8状態 / session persistence / artifact-first result / manual share bridge / transcript provenance 設計確定 / Phase 1-12 completed / 未タスク3件検出: UT-IMP-SESSION-DOCK-TESTID-DEDUP-001, UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001, UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001） |

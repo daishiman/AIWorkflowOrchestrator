@@ -4,6 +4,20 @@
 
 ---
 
+## UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 完了（2026-03-24）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success
+- **Notes**:
+  - navContract.ts の DockViewType/NAV_SECTIONS/NAV_SHORTCUT_TO_VIEW に executionConsole エントリ追加
+  - Icon コンポーネントに play-circle アイコン追加（Lucide PlayCircle）
+  - Cmd+9 ショートカット割当（sub セクション配置）
+  - テスト期待値更新: navContract.test.ts + types.test.ts + Icon.test.tsx
+  - 未タスク: 0件
+
+---
+
 ## TASK-SC-06-UI-RUNTIME-CONNECTION 完了（2026-03-24）
 
 - **Agent**: task-specification-creator

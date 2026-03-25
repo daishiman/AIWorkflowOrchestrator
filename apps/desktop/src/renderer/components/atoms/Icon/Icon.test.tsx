@@ -61,6 +61,7 @@ describe("Icon", () => {
       "chevron-right",
       "chevron-down",
       "play",
+      "play-circle",
       "pause",
     ];
 
