@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-26 - TASK-SDK-02 workflow-engine-runtime-orchestration Phase 12 sync（`SkillCreatorWorkflowEngine` 新設 / facade から owner 分離 / `execute()` terminal_handoff early return / `ResourceLoader.getBasePath()` provenance 追加 / runtime/shared/IPC/preload 47テスト PASS / system spec と skill を same-wave sync） |
 | 2026-03-26 - TASK-SDK-01 manifest-contract-foundation Phase 12 close-out sync（WorkflowManifest contract + ManifestLoader 実装完了 / shared 型 `WORKFLOW_MANIFEST_SCHEMA_VERSION` + `WorkflowManifest*` 追加 / ManifestLoader を read→validate→normalize→cache に限定 / typecheck PASS / Vitest は esbuild mismatch blocker / system spec 本文は既存 current facts を再利用し、completed ledger・lessons・skill update を same-wave sync） |
 | 2026-03-25 - TASK-SC-08-E2E-VALIDATION 完了（Skill Creator LLM統合 E2Eテスト + TerminalHandoff検証 / 5シナリオ（A: 正常フロー, B: TerminalHandoff, C: LLMエラー回復, D: improve, E: 後方互換）/ 36テスト全PASS / Lines 89%, Branches 77%, Functions 100% / suggestedCommand CLI形式検証・シェルインジェクション防止 / テストヘルパー共通化 / 未タスク0件 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）） |
 | 2026-03-25 - TASK-SC-07-STREAMING-PROGRESS-UI 完了（ストリーミング進捗UI実装 / GenerateStep UI改修・generationProgressSlice独立スライス・useStreamingProgress・useCancelGeneration・ErrorCards atoms / 個別セレクタ9点（P31対策） / テスト114件全PASS / 未タスク4件: IPC cancel送信・デバウンス100ms・設定画面遷移・エラーコード構造化） |

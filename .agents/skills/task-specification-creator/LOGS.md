@@ -4,6 +4,20 @@
 
 ---
 
+## TASK-SDK-02 workflow-engine-runtime-orchestration 完了（2026-03-26）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync
+- **Result**: success
+- **Notes**:
+  - runtime orchestration task の close-out として、system spec 本文が current かどうかだけでなく owner 分離・bridge/current fact の更新要否を再判定した
+  - `spec-update-workflow.md` に「channel 追加がなくても Facade/Engine owner 変更・`terminal_handoff` early return・`resumeTokenEnvelope` owner 変更があれば Step 2 必須」とする判断ルールを追加
+  - current workflow の `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を実績ベースへ更新
+  - 環境 blocker は既存 `task-fix-worktree-native-binary-guard-001.md` と重複確認済みのため未タスク新設なし
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+
+---
+
 ## TASK-SDK-01 manifest-contract-foundation 完了（2026-03-26）
 
 - **Agent**: task-specification-creator
@@ -1274,6 +1288,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
 | 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
 | 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
+
 ### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
 
 | 項目 | 内容 |

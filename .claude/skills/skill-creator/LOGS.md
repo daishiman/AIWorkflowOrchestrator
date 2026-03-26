@@ -3,6 +3,18 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-26 - TASK-SDK-02 workflow-engine-runtime-orchestration の知見を template/pattern へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「public bridge と workflow state owner の分離パターン」を追加
+  - `Facade` は public bridge、`Engine` は state owner、`terminal_handoff` は early return、`resumeTokenEnvelope` / provenance は同一 owner に集約する再利用ルールを標準化
+  - Phase 12 では response union だけでなく「禁止される副作用」も tests / system spec / changelog に残す観点を明記
+  - LOGS.md + SKILL.md 同時更新
+
+---
 ## 2026-03-26 - TASK-SDK-01 manifest-contract-foundation の Phase 12 close-out を template へ反映
 
 - **Agent**: skill-creator (update)

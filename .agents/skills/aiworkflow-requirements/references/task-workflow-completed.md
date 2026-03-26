@@ -82,6 +82,32 @@
 - 環境 blocker: Vitest は `esbuild` version mismatch で未実行。既存の native binary / worktree guard 系 tracker を再利用し、重複未タスクは新設しない
 
 ---
+### タスク: TASK-SDK-02 workflow-engine-runtime-orchestration（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-02 |
+| ステータス | **完了** |
+| タイプ | implementation / runtime-orchestration |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | `RuntimeSkillCreatorFacade` / `SkillCreatorWorkflowEngine` / `ResourceLoader` / runtime/shared tests / Phase 1-12 outputs |
+| 成果物 | `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
+
+#### 実施内容
+
+- `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` を新設し、`currentPhase` / `awaitingUserInput` / `verifyResult` / phase artifacts / `resumeTokenEnvelope` の owner を engine に集約
+- `RuntimeSkillCreatorFacade.plan()` が review state を engine へ記録し、`execute()` は `terminal_handoff` 時に executor を呼ばず early return、`integrated_api` 時に verify phase へ遷移する current fact を固定
+- `ResourceLoader.getBasePath()` を追加し、source provenance を `resumeTokenEnvelope.sourceProvenance` として保持可能にした
+- runtime/shared/IPC/preload テスト 47 件を PASS 化し、workflow 側では Phase 5〜10 summary と Phase 12 close-out evidence を補完した
+- system spec は `architecture-overview-core.md` / `arch-electron-services-details-part2.md` / `api-ipc-system-core.md` / lessons / index を same-wave で更新し、mirror parity まで確認した
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- 環境 blocker は既存 `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` の管轄と重複するため、新設しない
+
+---
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）
 
 | 項目 | 値 |

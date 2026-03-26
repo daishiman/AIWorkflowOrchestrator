@@ -4,6 +4,20 @@
 
 ---
 
+## TASK-SDK-02 workflow-engine-runtime-orchestration 完了（2026-03-26）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync
+- **Result**: success
+- **Notes**:
+  - runtime orchestration task の close-out として、system spec 本文が current かどうかだけでなく owner 分離・bridge/current fact の更新要否を再判定した
+  - `spec-update-workflow.md` に「channel 追加がなくても Facade/Engine owner 変更・`terminal_handoff` early return・`resumeTokenEnvelope` owner 変更があれば Step 2 必須」とする判断ルールを追加
+  - current workflow の `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を実績ベースへ更新
+  - 環境 blocker は既存 `task-fix-worktree-native-binary-guard-001.md` と重複確認済みのため未タスク新設なし
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+
+---
+
 ## TASK-SDK-01 manifest-contract-foundation 完了（2026-03-26）
 
 - **Agent**: task-specification-creator

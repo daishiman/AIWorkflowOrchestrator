@@ -1,0 +1,11 @@
+{
+  "workflow": "step-03-par-task-04-user-interaction-bridge-and-phase-ui",
+  "captureRequired": false,
+  "reason": "task-spec 作成タスクであり、主 evidence は walkthrough 文書",
+  "screenshots": [],
+  "focusAreas": [
+    "phase badge と question host の分離",
+    "provenance summary block",
+    "execute terminal handoff visible 化"
+  ]
+}
