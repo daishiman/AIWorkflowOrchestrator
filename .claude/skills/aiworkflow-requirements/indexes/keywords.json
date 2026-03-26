@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-26T03:08:05.969Z",
-  "totalKeywords": 2476,
+  "generated": "2026-03-26T07:38:33.089Z",
+  "totalKeywords": 2493,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1222,6 +1222,7 @@
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "security-skill-execution.md",
       "security-skill-ipc-core.md",
+      "task-workflow-completed-skill-create-ui-integration.md",
       "ui-ux-feature-components-reference.md",
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
@@ -1231,7 +1232,8 @@
     "Creator": [
       "api-ipc-agent-core.md",
       "api-ipc-system-core.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "task-workflow-completed-skill-create-ui-integration.md"
     ],
     "skill": [
       "api-ipc-agent-core.md",
@@ -2469,6 +2471,7 @@
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
     ],
     "POLICY": [
@@ -2610,6 +2613,7 @@
     ],
     "contract": [
       "arch-execution-capability-contract.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
     "AccessCapability": [
@@ -3067,6 +3071,7 @@
       "llm-ipc-types.md",
       "llm-streaming.md",
       "rag-desktop-state.md",
+      "task-workflow-completed-skill-create-ui-integration.md",
       "ui-ux-llm-selector.md",
       "ui-ux-system-prompt.md",
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
@@ -3796,6 +3801,7 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md"
@@ -4901,6 +4907,7 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "interfaces-agent-sdk.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
@@ -6410,6 +6417,19 @@
       "lessons-learned-current.md",
       "logs-archive-2026-02-completed-move-preload-sync.md"
     ],
+    "からの教訓": [
+      "lessons-learned-current.md"
+    ],
+    "VALIDATION": [
+      "lessons-learned-current.md",
+      "lessons-learned-skill-validation-logging-deprecation.md",
+      "lessons-learned-workflow-quality-line-budget-reform.md",
+      "logs-archive-2026-02-completed-move-preload-sync.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "logs-archive-2026-02-validator-task-9f-task-9b.md",
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6480,6 +6500,12 @@
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "ライフサイクル": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "manifest": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "foundation": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "仕様書作成": [
@@ -6767,14 +6793,6 @@
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md"
-    ],
-    "VALIDATION": [
-      "lessons-learned-skill-validation-logging-deprecation.md",
-      "lessons-learned-workflow-quality-line-budget-reform.md",
-      "logs-archive-2026-02-completed-move-preload-sync.md",
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "logs-archive-2026-02-validator-task-9f-task-9b.md"
     ],
     "CONSISTENCY": [
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -10095,6 +10113,12 @@
       "task-workflow-completed-chat-lifecycle-tests.md"
     ],
     "create": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "検証": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "TerminalHandoff": [
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
     "redirect": [

@@ -4,6 +4,20 @@
 
 ---
 
+## TASK-SDK-01 manifest-contract-foundation 完了（2026-03-26）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync
+- **Result**: success
+- **Notes**:
+  - workflow manifest foundation 実装完了後の Phase 12 反映を実施
+  - `WORKFLOW_MANIFEST_SCHEMA_VERSION` と `WorkflowManifest*` 型群、`ManifestLoader`、fixture/test の存在を current facts として確認
+  - `spec-update-workflow.md` に foundation / internal-contract task 向けの no-op Step 2 根拠記録ルールを追加
+  - test blocker は `esbuild` mismatch。既存未タスクとの重複確認を先行し、重複新設を避ける運用を追記
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+
+---
+
 ## TASK-SC-08-E2E-VALIDATION 完了（2026-03-25）
 
 - **Agent**: task-specification-creator
@@ -1211,6 +1225,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.1** | **2026-03-26** | 要件レビュー思考法を追加。task-specification-creator の SKILL.md に、システム思考・戦略/価値・問題解決の3系統レビュー、5つの一次出力、4条件評価、因果ループ/責務境界/価値コスト均衡チェックを追記 |
 | **v10.09.0** | **2026-03-12** | rolling log + archive index 構成へ再編し、line budget と履歴保全を両立させた |
 | **v10.08.60** | **2026-03-12** | light theme contrast regression guard の formalize と Phase 12 再確認を追記 |
 
@@ -1259,6 +1274,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
 | 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
 | 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
+
 ### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
 
 | 項目 | 内容 |

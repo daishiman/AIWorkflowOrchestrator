@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-26 | 1.8.0 | TASK-SDK-01 manifest-contract-foundation の Phase 12 教訓2件を追加 |
 | 2026-03-23 | 1.7.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003） |
 | 2026-03-21 | 1.6.0 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
 | 2026-03-21 | 1.5.0 | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE の Phase 12 教訓4件を追加 |
@@ -31,6 +32,36 @@
 | 2026-03-18 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）。合計5件 |
 | 2026-03-18 | 1.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-26 TASK-SDK-01 manifest-contract-foundation
+
+### 苦戦箇所1: foundation / internal-contract task は Step 2 の本文追記が不要でも、Step 1 と skill sync を省略できない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | manifest foundation の型・loader 契約は system spec 正本へ既に反映済みだったが、「追記不要」を「Phase 12 作業不要」と誤読しやすかった |
+| 再発条件 | internal contract task で `interfaces-*` / `architecture-*` に current facts が既にあり、Phase 12 を completed ledger と lessons なしで閉じる |
+| 解決策 | Step 2 no-op の根拠を `system-spec-update-summary.md` と `documentation-changelog.md` に残し、completed ledger / lessons / LOGS / SKILL 更新を同一ターンで完了した |
+| 標準ルール | domain spec 本文が既に current でも、Step 1-A〜1-G と skill sync は必須。Step 2 は「更新なし」ではなく「no-op 根拠付き完了」として扱う |
+| 関連タスク | TASK-SDK-01 |
+
+### 苦戦箇所2: test runner の環境 blocker は新規未タスク化より先に既存 follow-up と重複確認する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `Vitest + esbuild` の起動失敗を見つけた時、新規未タスクを毎回作ると native binary / worktree guard の既存台帳と重複しやすい |
+| 再発条件 | code/typecheck は完了しているが test runner が環境要因で落ち、既存 backlog を検索せずに follow-up を新設する |
+| 解決策 | native binary / worktree guard 系の既存未タスクを検索し、今回差分が同種 blocker なら重複作成せず evidence だけ current workflow へ記録した |
+| 標準ルール | Phase 12 で環境 blocker を見つけたら、まず既存 `unassigned-task/` と lessons を検索し、重複しない場合のみ新規 formalize する |
+| 関連タスク | TASK-SDK-01 |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. Step 2 対象の system spec 本文が既に current かを先に確認し、no-op なら根拠を Phase 12 成果物へ明記する。
+2. Step 1-A〜1-G、completed ledger、lessons、LOGS、SKILL を同一ターンで閉じる。
+3. test/environment blocker は既存未タスクとの重複検索を先に行い、重複しない時だけ新規 formalize する。
 
 ---
 

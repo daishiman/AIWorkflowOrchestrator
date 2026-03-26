@@ -55,6 +55,33 @@
 - Preload runtime テスト・Renderer テストを更新し全 PASS を確認
 
 ---
+### タスク: TASK-SDK-01 manifest-contract-foundation（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-01 |
+| ステータス | **完了** |
+| タイプ | implementation / contract-foundation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | `packages/shared` workflow manifest contract、desktop main `ManifestLoader`、Phase 1-12 outputs |
+| 成果物 | `docs/30-workflows/step-01-seq-task-01-manifest-contract-foundation/` |
+
+#### 実施内容
+
+- `packages/shared/src/types/skillCreator.ts` に `WORKFLOW_MANIFEST_SCHEMA_VERSION` と `WorkflowManifest*` 型群を追加
+- `apps/desktop/src/main/services/runtime/ManifestLoader.ts` を追加し、責務を `read -> validate -> normalize -> cache` に固定
+- fixture と unit test を追加し、unknown field / schema mismatch / hook drift / phase order / missing resource / cache drift を監査
+- Phase 1-12 成果物、`artifacts.json`、`outputs/artifacts.json` を completed へ同期
+- system spec の manifest foundation アンカーは既存正本に反映済みであることを再確認し、Phase 12 では completed ledger / lessons / skill update を中心に close-out した
+
+#### Phase 12 未タスク
+
+- `task-imp-task-sdk-01-phase12-compliance-sync-001`（Issue #1643）: Phase 12 実績同期と implementation-guide / status drift の是正
+- `task-imp-manifest-loader-contract-hardening-001`（Issue #1644）: `ManifestLoader` の参照整合・cache・テスト補強
+- 環境 blocker: Vitest は `esbuild` version mismatch で未実行。既存の native binary / worktree guard 系 tracker を再利用し、重複未タスクは新設しない
+
+---
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）
 
 | 項目 | 値 |

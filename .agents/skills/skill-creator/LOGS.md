@@ -3,6 +3,18 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-26 - TASK-SDK-01 manifest-contract-foundation の Phase 12 close-out を template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「foundation / internal-contract task の no-op Step 2 と blocker 重複防止」パターンを追加
+  - system spec 本文が既に current の場合でも completed ledger / lessons / LOGS / SKILL / mirror sync を同一ターンで閉じる運用を標準化
+  - test runner / native binary / worktree blocker は既存 `unassigned-task/` を先に検索し、重複未タスク化を避ける判断基準を追加
+  - LOGS.md + SKILL.md 同時更新
+
+---
 ## 2026-03-25 - TASK-SC-07-STREAMING-PROGRESS-UI スキルフィードバック反映
 
 - **Agent**: skill-creator (update)

@@ -142,6 +142,19 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 
 型定義の正本は `packages/shared/src/types/skillCreator.ts` とし、renderer surface は上記型へ収束する。
 
+#### workflow manifest foundation 型アンカー
+
+runtime bridge の public surface とは別に、workflow engine foundation では次の internal shared contract を使う。
+
+| 項目 | canonical source | 用途 |
+| --- | --- | --- |
+| `WORKFLOW_MANIFEST_SCHEMA_VERSION` | `packages/shared/src/types/skillCreator.ts` | manifest schema の固定版数 |
+| `WorkflowManifest` / `WorkflowManifestPhase` / `WorkflowManifestResourceDescriptor` / `WorkflowManifestHook` | `packages/shared/src/types/skillCreator.ts` | `workflow-manifest.json` の read/validate 契約 |
+| `NormalizedWorkflowManifestResourceDescriptor` / `LoadedWorkflowManifest` | `packages/shared/src/types/skillCreator.ts` | runtime 側で絶対パス・cache key・hash を持つ読み込み済み manifest 契約 |
+| `ManifestLoader` | `apps/desktop/src/main/services/runtime/ManifestLoader.ts` | read / validate / normalize / cache のみを担当し、route/state authority は持たない |
+
+この foundation contract は Task01 で固定した internal boundary であり、`planSkill` / `executePlan` / `improveSkillWithFeedback` の public IPC response 形状を直接は変更しない。
+
 #### improve() 型定義詳細（TASK-SC-05-IMPROVE-LLM）
 
 **RuntimeSkillCreatorImproveSuggestion** — 構造化された改善提案:

@@ -278,6 +278,18 @@ TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary ent
 - **セキュリティ**: 標準 invoke handler と runtime helper の全経路で Sender検証、P42 準拠の blank 判定、エラーサニタイズを適用
 - **関連タスク**: TASK-9B-H-SKILL-CREATOR-IPC（2026-02-12完了）、UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001（2026-03-21完了）
 
+### Skill Creator Runtime Orchestration Foundation
+
+`registerSkillCreatorHandlers` が公開する runtime bridge の背後では、Skill Creator runtime を次の 3 層で分ける。
+
+| 層 | コンポーネント | 役割 |
+| --- | --- | --- |
+| public bridge | `RuntimeSkillCreatorFacade` | `skill-creator:plan/execute-plan/improve-skill` の public response と degraded response を返す |
+| workflow foundation | `ManifestLoader`, `WorkflowManifest*` | `workflow-manifest.json` の read / validate / normalize / cache と shared contract を担う |
+| future state owner | `SkillCreatorWorkflowEngine` | `currentPhase` / `awaitingUserInput` / `verifyResult` / phase artifacts / `resumeTokenEnvelope` の owner になる |
+
+この構成では、`RuntimeSkillCreatorFacade` は state owner ではなく public bridge に留まり、`ManifestLoader` も route authority へ昇格しない。owner 分離と downstream handoff は Task02 workflow 仕様書を正本とする。
+
 **Pattern 3 詳細（registerSkillDebugHandlers）**:
 
 - **引数**: `mainWindow: BrowserWindow`

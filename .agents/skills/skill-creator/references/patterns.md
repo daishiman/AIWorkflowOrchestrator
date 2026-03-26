@@ -7529,6 +7529,24 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **発見日**: 2026-03-17
 - **関連タスク**: TASK-SKILL-LIFECYCLE-08
 
+### [Phase12] foundation / internal-contract task の no-op Step 2 と blocker 重複防止（TASK-SDK-01）
+
+- **状況**: shared 型や foundation service を実装した task では、system spec 本文に current facts が既に載っていることがある。一方で test runner blocker を見つけると、既存未タスクと重複した follow-up を量産しやすい
+- **アプローチ**:
+  - 先に system spec 正本を検索し、current facts が存在する場合は Step 2 を no-op 扱いにする。ただし `system-spec-update-summary.md` と `documentation-changelog.md` へ判断根拠を必ず記録する
+  - Step 2 が no-op でも、completed ledger / lessons / LOGS / SKILL / mirror sync は同一ターンで閉じる
+  - test runner / native binary / worktree blocker は新規未タスク化前に `docs/30-workflows/unassigned-task/` を検索し、既存台帳との重複を確認する
+- **成功パターン**:
+  - 「domain spec 本文は current」「Step 1 と skill sync は未実施」の2状態を分離して扱う
+  - `diff -qr` を含む mirror parity と validator 実行結果を close-out evidence に残す
+  - blocker は current workflow の risk/evidence に記録し、既存未タスクがあれば重複作成しない
+- **失敗パターン**:
+  - Step 2 の本文追記が不要なことを理由に completed ledger / lessons / LOGS / SKILL 更新まで省略する
+  - environment blocker を見つけるたびに別 ID の未タスクを増やし、native binary/worktree guard の既存導線を分断する
+- **適用条件**: manifest foundation、shared contract、internal adapter、runtime bridge など、domain spec 本文が先行同期されている Phase 12 close-out
+- **発見日**: 2026-03-26
+- **関連タスク**: TASK-SDK-01
+
 ---
 
 ## 詳細パターン索引
@@ -7554,5 +7572,6 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 
 | 日付 | 変更内容 |
 | --- | --- |
+| 2026-03-26 | TASK-SDK-01 の close-out を反映し、foundation / internal-contract task 向けの no-op Step 2 判定と blocker 重複未タスク化防止パターンを追加 |
 | 2026-03-18 | 500行制限準拠のため10ファイルに分割、ハブファイル化 |
 | 2026-03-18 | 500行超えの2ファイルをさらに分割（-b サフィックス追加）、重複ファイル4件削除 |

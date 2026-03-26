@@ -1,0 +1,5 @@
+{
+  "captureRequired": false,
+  "reason": "Task02 は runtime ownership と orchestration contract を固定する task であり、この phase では文書 walkthrough が判定主体になる。",
+  "targets": []
+}
