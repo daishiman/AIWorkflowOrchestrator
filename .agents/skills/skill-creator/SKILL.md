@@ -237,6 +237,12 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 > `resolve-skill-dependencies.md` で設計した参照構造は、skill-creatorが他スキルの
 > SKILL.mdを読み込んで公開インターフェースを特定する際のパターンそのもの。
 
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| **10.37.43** | **2026-03-26** | **TASK-SDK-01 hardening sync を template へ反映**: docs-heavy Phase 12 follow-up に code hardening が入った時の same-wave rollback-to-current ルール、carry-forward 0件同期、compile gate と env-blocked test の分離記録を `references/patterns.md` / `references/update-process.md` へ追加 |
+
 ---
 
 ## 変更履歴
@@ -292,6 +298,7 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | ------------ | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **10.37.12** | **2026-03-07** | **TASK-10A-F Store駆動スキルライフサイクルUI統合の仕様同期**: `arch-state-management.md` に Case B方式の状態管理設計を追加。`lessons-learned.md` に Store mock統一パターン等5件の苦戦箇所を追加。`architecture-implementation-patterns.md` に S19（直接IPC→Store移行パターン）を新設。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）                                                                                                                                                                                       |
 | **10.37.12** | **2026-03-06** | **TASK-10A-E-C の Phase 12再監査知見をパターン化**: `references/patterns.md` に「`documentation-changelog.md` の計画記述残置を排除して実更新ログへ昇格する」パターンと、「未タスク指示書を9見出しテンプレート準拠で作成し `audit --target-file` で個別検証する」パターンを追加。Phase 12 での完了誤判定と未タスクフォーマット逸脱の再発防止を標準化                                                                                                                                                                                          |
+| **10.37.13** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の Phase 12 運用知見を反映**: `references/update-process.md` に targeted suite PASS / wider suite blocker / duplicate backlog check を分離する Phase 3.6 を追加。`assets/phase12-system-spec-retrospective-template.md` に blocker dedup と targeted/wider suite 記録欄を追加し、既存未タスクと重複した formalize を防ぐ運用を標準化 |
 | **10.37.12** | **2026-03-19** | **UT-TASK06-007 再監査知見を Phase 12 テンプレートへ反映**: `assets/phase12-system-spec-retrospective-template.md` に実績ベース更新ルール、画面検証要求時の `SCREENSHOT + NON_VISUAL` 昇格、苦戦箇所の `症状 / 再発条件 / 解決策 / 標準ルール` 化を追加。`assets/phase12-spec-sync-subagent-template.md` に実測値同期と画面昇格を追記し、`references/patterns-success-phase12-advanced.md` に docs-heavy/backend-heavy でも screenshot へ昇格する成功パターンを追加。`LOGS.md` を含めて skill-creator の入口から再利用しやすい形へ整理した |
 | **10.37.11** | **2026-03-06** | **domain spec 同期ブロックを新設し Phase 12 テンプレートへ接続**: `assets/phase12-domain-spec-sync-block-template.md` を新規追加し、`interfaces` / `api-ipc` / `security` / `ui-ux-feature` などの仕様書へ `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` を同粒度で配置する標準ブロックを定義。`phase12-system-spec-retrospective-template.md` / `phase12-spec-sync-subagent-template.md` / `references/resource-map.md` / `references/patterns.md` を更新し、domain spec 側の記述漏れを完了チェックへ組み込んだ |
 | **10.37.10** | **2026-03-06** | **TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 再監査知見を skill-creator へ反映**: `assets/phase12-system-spec-retrospective-template.md` の重複手順（6.2）を修正し、IPC transport 契約更新時の `references/ipc-contract-checklist.md` / `indexes/quick-reference.md` 同期要件を追加。`assets/phase12-spec-sync-subagent-template.md` へ同 cross-cutting doc / 専用 harness 記録の完了条件を追記し、`references/patterns.md` に auth-mode 由来の成功パターン「shared transport DTO + cross-cutting doc + 専用 harness 同期」を追加             |

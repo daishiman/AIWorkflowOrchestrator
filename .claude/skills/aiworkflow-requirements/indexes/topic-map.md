@@ -904,9 +904,9 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L201 |
 | Electron IPC API設計 | L237 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L369 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L575 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L606 |
-| AIプロバイダーAPI連携 | L637 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L585 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L616 |
+| AIプロバイダーAPI連携 | L647 |
 
 ### references/api-ipc-system-details.md
 
@@ -2577,10 +2577,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| TASK-9B: SkillCreator IPC拡張同期 再監査（2026-02-26） | L6 |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 Runtime Skill Creator public IPC wiring（2026-03-21） | L8 |
 | TASK-SDK-02 workflow-engine-runtime-orchestration（2026-03-26） | L10 |
-| 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | L141 |
-| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 教訓 | L233 |
-| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L293 |
-| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L398 |
+| UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle hardening（2026-03-26） | L48 |
+| 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | L188 |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 教訓 | L280 |
+| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L340 |
+| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L445 |
 
 ### references/lessons-learned-conversation-db-robustness.md
 

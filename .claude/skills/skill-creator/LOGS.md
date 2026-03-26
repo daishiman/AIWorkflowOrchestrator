@@ -3,6 +3,29 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の close-out パターンを template/pattern へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「runtime failure lifecycle bug-fix の same-wave close-out」パターンを追加
+  - reject / `success:false` / review required の区別、failure artifact append、`awaitingUserInput.reason` 固定、exact workaround command 記録を Phase 12 の再利用ルールとして標準化
+  - `.claude` completed ledger / lessons / quick-reference / resource-map 更新後に mirror sync と `diff -qr` まで閉じる運用を再確認
+
+---
+## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の Phase 12 運用知見を template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に targeted suite PASS と wider suite blocker を分離し、既存 backlog と重複しないことを確認してから formalize する lane を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に blocker dedup と targeted/wider suite 記録欄を追加
+  - runtime failure lifecycle のように public payload は不変でも state semantics が変わる実装で、template 側から重複未タスクを増やさない運用を標準化
+  - LOGS.md + SKILL.md 同時更新
+
+---
 ## 2026-03-26 - TASK-SDK-02 workflow-engine-runtime-orchestration の知見を template/pattern へ反映
 
 - **Agent**: skill-creator (update)
@@ -13,6 +36,17 @@
   - `Facade` は public bridge、`Engine` は state owner、`terminal_handoff` は early return、`resumeTokenEnvelope` / provenance は同一 owner に集約する再利用ルールを標準化
   - Phase 12 では response union だけでなく「禁止される副作用」も tests / system spec / changelog に残す観点を明記
   - LOGS.md + SKILL.md 同時更新
+
+---
+## 2026-03-26 - TASK-SDK-01 hardening sync を skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「docs-heavy follow-up に code hardening が混ざったら source spec / outputs / skill update を同一 wave で戻す」パターンを追加
+  - `references/update-process.md` に carry-forward 0件化、compile gate と env-blocked test の分離記録、internal hardening の書き方を追記
+  - `SKILL.md` の変更履歴を更新し、Phase 12 再利用時の入口から辿れるようにした
 
 ---
 ## 2026-03-26 - TASK-SDK-01 manifest-contract-foundation の Phase 12 close-out を template へ反映

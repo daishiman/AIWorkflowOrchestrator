@@ -1,0 +1,11 @@
+{
+  "workflow": "step-02-seq-task-02-phase11-phase12-evidence-compliance",
+  "decision": "non_visual",
+  "captureMethod": "review-board markdown -> qlmanage thumbnail",
+  "generatedAt": "2026-03-26",
+  "reason": "corrective workflow does not introduce UI delta; review board png is stored as representative evidence",
+  "artifacts": [
+    "outputs/phase-11/screenshots/TC-11-01-evidence-compliance-review-board.png",
+    "outputs/phase-11/manual-test-result.md"
+  ]
+}

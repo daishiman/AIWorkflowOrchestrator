@@ -5,6 +5,35 @@
 
 ## 完了タスク
 
+### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine の失敗系 state lifecycle 是正（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 |
+| ステータス | **完了** |
+| タイプ | implementation / bugfix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | `RuntimeSkillCreatorFacade.execute()` / `SkillCreatorWorkflowEngine` / runtime tests / Phase 1-12 outputs |
+| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-fix-runtime-workflow-engine-failure-lifecycle-001.md` |
+| GitHub Issue | #1646 |
+
+#### 実施内容
+
+- `SkillCreatorWorkflowEngine.ts` に transition guard、append artifact、`ensureReviewReadyState()`、`verification_review` 保存を追加し、失敗経路も review owner に統一
+- `RuntimeSkillCreatorFacade.ts` で executor reject を catch し、失敗 snapshot を保存して `execute` 停滞を解消
+- `SkillCreatorWorkflowEngine.test.ts` と `RuntimeSkillCreatorFacade.workflow-orchestration.test.ts` に reject / `success:false` / invalid transition / review path テストを追加
+- 親 workflow の `ownership-matrix.md` / `phase-6-test-expansion.md` / related outputs を current fact へ同期
+- targeted vitest 35 件 PASS、workflow validators PASS、wider suite の `ManifestLoader.test.ts` alias blocker は既存 backlog 管轄として重複未タスク化しない運用を固定
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- wider runtime suite の `@repo/shared/types` alias blocker は既存 `docs/30-workflows/unassigned-task/task-renderer-build-fix.md` などの module-resolution 系 tracker と重複するため新設しない
+
+---
+
 ### タスク: UT-LLM-MOD-01-005 PROVIDER_CONFIGS/inferProviderId/LLMProviderIdSchema 三重管理解消（2026-03-25）
 
 | 項目 | 値 |
@@ -72,13 +101,14 @@
 - `packages/shared/src/types/skillCreator.ts` に `WORKFLOW_MANIFEST_SCHEMA_VERSION` と `WorkflowManifest*` 型群を追加
 - `apps/desktop/src/main/services/runtime/ManifestLoader.ts` を追加し、責務を `read -> validate -> normalize -> cache` に固定
 - fixture と unit test を追加し、unknown field / schema mismatch / hook drift / phase order / missing resource / cache drift を監査
+- `LoadedWorkflowManifest.manifestContentHash`、`resource.phaseIds` / `phase.resourceIds` 相互参照検証、same-`mtime` cache hardening を follow-up 同一波で実装した
 - Phase 1-12 成果物、`artifacts.json`、`outputs/artifacts.json` を completed へ同期
 - system spec の manifest foundation アンカーは既存正本に反映済みであることを再確認し、Phase 12 では completed ledger / lessons / skill update を中心に close-out した
 
 #### Phase 12 未タスク
 
-- `task-imp-task-sdk-01-phase12-compliance-sync-001`（Issue #1643）: Phase 12 実績同期と implementation-guide / status drift の是正
-- `task-imp-manifest-loader-contract-hardening-001`（Issue #1644）: `ManifestLoader` の参照整合・cache・テスト補強
+- ~~`task-imp-task-sdk-01-phase12-compliance-sync-001`（Issue #1643）~~ **完了: 2026-03-26** `docs/30-workflows/completed-tasks/task-sdk-01-phase12-compliance-sync/`
+- ~~`task-imp-manifest-loader-contract-hardening-001`（Issue #1644）~~ **完了: 2026-03-26** `UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001` の runtime contract sync で吸収
 - 環境 blocker: Vitest は `esbuild` version mismatch で未実行。既存の native binary / worktree guard 系 tracker を再利用し、重複未タスクは新設しない
 
 ---
@@ -106,6 +136,63 @@
 
 - 新規未タスク 0 件
 - 環境 blocker は既存 `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` の管轄と重複するため、新設しない
+
+---
+### タスク: UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001 task-sdk-01-phase12-compliance-sync（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | docs-improvement / phase12-close-out |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | `TASK-SDK-01` の Phase 12 監査証跡、台帳同期、parent `index.md` status parity |
+| 成果物 | `docs/30-workflows/completed-tasks/task-sdk-01-phase12-compliance-sync/` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-01-phase12-compliance-sync-001.md` |
+| GitHub Issue | #1643 |
+
+#### 実施内容
+
+- parent workflow の `outputs/phase-12/*.md` を current facts ベースへ再構成し、`implementation-guide.md` を validator 10/10 へ是正
+- `phase-11-manual-test.md` と `outputs/phase-11/*` に docs-only task 用の validator compatibility placeholder 運用を追加
+- `generate-index.js` を `artifacts.json` の phases 配列 / オブジェクト両対応へ修正し、parent `index.md` の Phase 12/13 status drift を再発防止した
+- `packages/shared` / `apps/desktop` に manifest contract hardening を実装し、`manifestContentHash` / 相互参照検証 / same-`mtime` cache guard を current follow-up へ吸収した
+- `task-workflow-backlog.md`、`task-workflow-completed.md`、`lessons-learned-phase12-workflow-lifecycle.md` を same-wave で同期した
+- `verify-all-specs.js`、`validate-phase-output.js`、`validate-phase12-implementation-guide.js`、`audit-unassigned-tasks --target-file` を再実行し、current evidence を固定した
+
+#### Phase 12 未タスク
+
+- 追加の機能未タスクは 0 件
+- 環境 blocker として `Vitest + esbuild` mismatch のみ継続管理し、既存 tracker を再利用する
+
+---
+### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 runtime workflow engine failure lifecycle（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 |
+| ステータス | **完了** |
+| タイプ | implementation / failure-lifecycle-fix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | `RuntimeSkillCreatorFacade` / `SkillCreatorWorkflowEngine` failure path、runtime tests、parent workflow docs、Phase 1-12 outputs |
+| 成果物 | `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
+| 親タスク | TASK-SDK-02 |
+
+#### 実施内容
+
+- `SkillCreatorWorkflowEngine.ts` に `execution_error` / `execution_failed` / `verification_review` を区別する failure reason と invalid transition guard を追加
+- failure artifact を upsert ではなく append に変更し、latest accessor を通じて snapshot 系の読み出しを安定化
+- `recordVerifyFailure(..., "review")` で `awaitingUserInput.reason = "verification_review"` と prompt を保存する契約へ是正
+- `RuntimeSkillCreatorFacade.execute()` で executor reject を `execution_error` として保存し、`success:false` は verify pending へ進めず `execution_failed` snapshot として保存
+- `SkillCreatorWorkflowEngine.test.ts` / `RuntimeSkillCreatorFacade.workflow-orchestration.test.ts` に reject / `success:false` / repeated failure append / invalid transition / verification review の回帰を追加
+- parent workflow の `ownership-matrix.md` / `phase-6-test-expansion.md` と current workflow の Phase 12 成果物を実装実績へ同期
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- `ESBUILD_BINARY_PATH=... pnpm vitest ... --run` で targeted verification を実施済み。native binary / worktree blocker は既存 `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` と重複するため新設しない
 
 ---
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）

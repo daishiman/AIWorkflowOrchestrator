@@ -9,6 +9,44 @@
 
 ## TASK-SDK-02 workflow-engine-runtime-orchestration（2026-03-26）
 
+## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle（2026-03-26）
+
+### 苦戦箇所と解決策
+
+#### 1. `executor reject` と `success:false` を同じ failure とみなすと downstream review 契約が崩れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `RuntimeSkillCreatorFacade.execute()` が reject / `success:false` / verify review required を同列に扱うと、verify pending へ誤遷移し、Task04/08 が参照する review 契約と実装がずれる |
+| 原因 | `ExecutionResult` の失敗と promise reject を「どちらも失敗だから同じ snapshot でよい」とまとめ、state transition の意味論を固定していなかった |
+| 解決策 | `execution_error` / `execution_failed` / `verification_review` を分離し、reject は `recordExecutionFailure()`、`success:false` は verify 非遷移の failure snapshot、review required は `awaitingUserInput` に閉じ込めた |
+| 教訓 | runtime failure lifecycle は「失敗した」ではなく「どの owner が次を決めるか」で分類すると downstream contract が崩れにくい |
+
+#### 2. failure artifact を upsert すると時系列監査が失われる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 同じ artifact kind を上書きすると repeated failure の履歴が消え、どの実行で何が起きたかを Phase 12 や review で再現しにくい |
+| 原因 | success path の snapshot 更新パターンを failure path にも流用し、history と latest snapshot を区別していなかった |
+| 解決策 | artifact 生成を append ベースへ変更し、読み出し側は latest accessor で現在値を取る構成に整理した |
+| 教訓 | workflow engine の failure artifact は「履歴を append、消費は latest accessor」の二層に分けると監査性と実装単純さを両立しやすい |
+
+#### 3. toolchain workaround を記録せずに close-out すると再検証が再現できない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktree 環境では素の `pnpm vitest` が esbuild binary mismatch で落ちるため、Phase 12 に exact command を残さないと再検証者が同じ失敗を踏む |
+| 原因 | blocker の存在だけ記録し、実際に PASS した回避コマンドを system spec / workflow outputs / skill update へ横展開していなかった |
+| 解決策 | `ESBUILD_BINARY_PATH=... pnpm vitest ... --run` を verification command として成果物へ明記し、未タスクは既存 native binary guard を再利用する方針に固定した |
+| 教訓 | 環境 blocker を新設しない場合でも、「何で PASS したか」の exact command は lessons と implementation-guide の両方へ残す必要がある |
+
+### 同種課題向け簡潔解決手順（4ステップ）
+
+1. reject / `success:false` / review required を別 reason に分け、verify pending へ進めてよい経路を先に固定する。
+2. failure artifact は append、参照は latest accessor として owner の責務を分離する。
+3. `awaitingUserInput` は `verification_review` のように次の owner が分かる reason を必ず持たせる。
+4. toolchain workaround で検証した場合は PASS した exact command を Phase 12 成果物、lessons、skill logs に同値転記する。
+
 ### 苦戦箇所と解決策
 
 #### 1. facade が public bridge と state owner を兼務したままだと downstream task の責務境界が崩れる
@@ -44,6 +82,53 @@
 2. `terminal_handoff` は early return にし、禁止すべき副作用をテストで固定する。
 3. `resumeTokenEnvelope` / verify state / artifacts は同一 owner に集約する。
 4. source root は `ResourceLoader` 由来の snapshot として engine に記録し、shared/preload/ipc parity test を同時に回す。
+
+## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle hardening（2026-03-26）
+
+### 苦戦箇所と解決策
+
+#### 1. `success:false` を verify pending に流すと response union は正しくても review contract が壊れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | execute 結果が `success:false` でも verify pending へ進むと、Renderer は再レビュー待ちを認識できず Task04 / Task08 の前提が崩れる |
+| 原因 | `success:false` を「統合実行は終わったので verify へ送る」と解釈し、review へ戻す契約が state machine に入っていなかった |
+| 解決策 | `recordExecuteResult()` を review path に寄せ、`verification_review` と `awaitingUserInput` を同時保存する形へ統一した |
+| 教訓 | runtime union は `success` 値ごとの phase contract まで定義しないと、戻り値型だけ current でも state drift が起きる |
+
+#### 2. executor reject を facade 外へ漏らすと `execute` 停滞と証跡欠落が同時に起きる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skillExecutor.execute()` reject 時に state が `execute` のまま残り、失敗 artifact / `verifyResult` / review prompt が一切残らない |
+| 原因 | integrated path を success response 前提で組み、例外経路の snapshot 保存 owner を決めていなかった |
+| 解決策 | `RuntimeSkillCreatorFacade.execute()` で reject を catch し、engine に failure snapshot を保存した上で sanitize 済み error を返す |
+| 教訓 | runtime facade は public bridge でも「engine へ失敗 snapshot を残す責務」だけは持つ必要がある |
+
+#### 3. transition guard を追加すると plan 起点互換が壊れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | invalid jump を拒否する `assertTransition()` を入れると、既存の plan 起点 review state 初期化まで弾いてしまう |
+| 原因 | guard 導入前に存在した暗黙初期化と、正式 state machine の境界が未分離だった |
+| 解決策 | `ensureReviewReadyState()` を追加し、plan 起点互換の初期化だけを明示 API に分離した |
+| 教訓 | state guard は「禁止遷移」と同時に「許可される互換初期化」の入口も明文化しないと後方互換を壊す |
+
+#### 4. artifact append と upsert の曖昧さが review 再入時の監査性を落とす
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | ownership matrix は append 前提なのに実装が upsert だと、失敗履歴が潰れて再現調査しづらい |
+| 原因 | artifact を「現在値 snapshot」と「phase 履歴」のどちらで扱うかが契約化されていなかった |
+| 解決策 | 実装を append に揃え、親 workflow の ownership / phase-6 文書も same-wave で修正した |
+| 教訓 | artifact 戦略は実装コメントではなく contract なので、append/upsert を曖昧語で残さない |
+
+### 同種課題向け簡潔解決手順（4ステップ）
+
+1. `success:true` / `success:false` / reject / handoff の4経路を表にして、phase / prompt / artifact を先に固定する。
+2. facade は error を catch して engine へ snapshot を残し、public response は sanitize した最小情報だけ返す。
+3. transition guard と互換初期化 API を対で実装し、plan 起点や resume 起点を明文化する。
+4. artifact 戦略は append/upsert のどちらかに揃え、tests と ownership matrix を同ターンで更新する。
 
 ### 苦戦箇所と解決策
 

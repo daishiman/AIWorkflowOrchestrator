@@ -1,0 +1,4 @@
+初回の failure lifecycle 追加後、transition guard が plan 起点の既存経路を止めた。
+対応方針:
+- review 正規化 helper を追加する
+- plan 終了直後の execute / handoff を review 起点へ揃える

@@ -1,0 +1,11 @@
+{
+  "taskId": "UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001",
+  "mode": "validator-compat",
+  "captures": [
+    {
+      "id": "doc-path-check",
+      "purpose": "Phase 11 validator compatibility placeholder for docs-only workflow",
+      "output": "outputs/phase-11/screenshots/01-doc-path-check.png"
+    }
+  ]
+}

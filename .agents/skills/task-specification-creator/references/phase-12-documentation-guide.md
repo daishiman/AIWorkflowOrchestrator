@@ -53,6 +53,7 @@
 - topic-map.md の再生成（`generate-index.js` 実行）
 - 新規型定義がある場合は `interfaces-*.md` への型定義配置
 - `task-workflow.md` の完了タスク記録
+- docs-only 前提で作成した follow-up に後からコード変更が入った場合は、`phase-*.md` と `outputs/phase-12/*.md` の narrative も同じターンで current facts に戻す
 
 サブエージェントに委譲する場合も、「設計タスクだから更新不要」という判断を許容しない。
 

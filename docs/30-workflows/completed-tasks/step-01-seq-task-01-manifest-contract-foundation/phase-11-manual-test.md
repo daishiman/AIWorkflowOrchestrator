@@ -28,11 +28,12 @@
 
 ## NON_VISUAL 判定記録
 
-| 状況                        | 対応                                                    |
-| --------------------------- | ------------------------------------------------------- |
-| current workflow が文書中心 | checklist / result / discovered-issues を正本証跡にする |
-| Renderer UI 差分なし        | screenshot / review board を必須にしない                |
-| 読解可能性の確認が主目的    | 文章による根拠記録を優先する                            |
+| 状況                        | 対応                                                                 |
+| --------------------------- | -------------------------------------------------------------------- |
+| current workflow が文書中心 | checklist / result / discovered-issues を正本証跡にする              |
+| Renderer UI 差分なし        | screenshot / review board を必須にしない                             |
+| 読解可能性の確認が主目的    | 文章による根拠記録を優先する                                         |
+| validator 互換が必要        | `screenshot-plan.json` と placeholder PNG を補助成果物として保存する |
 
 ## 実行タスク
 
@@ -87,15 +88,17 @@
 
 - Phase 12 は manual walkthrough で出た issue だけを同期対象に加える。
 - Phase 13 は Phase 11 の結果が揃うまで blocked のままにする。
-- NON_VISUAL task のため screenshot-plan.json や `screenshots/` は初期成果物に含めない。後続で画面確認が必要になった場合のみ current workflow 配下へ追加する。
+- NON_VISUAL task のため UI レビュー用 screenshot は要求しないが、validator 互換のため `screenshot-plan.json` と placeholder PNG を補助成果物として保存し、manual-test-result 側で非UI証跡であることを明記する。
 
 ## 成果物
 
-| 成果物                | パス                                        | 説明             |
-| --------------------- | ------------------------------------------- | ---------------- |
-| manual-test-checklist | `outputs/phase-11/manual-test-checklist.md` | walkthrough 手順 |
-| manual-test-result    | `outputs/phase-11/manual-test-result.md`    | 実施結果         |
-| discovered-issues     | `outputs/phase-11/discovered-issues.md`     | 発見事項         |
+| 成果物                 | パス                                                      | 説明                                |
+| ---------------------- | --------------------------------------------------------- | ----------------------------------- |
+| manual-test-checklist  | `outputs/phase-11/manual-test-checklist.md`               | walkthrough 手順                    |
+| manual-test-result     | `outputs/phase-11/manual-test-result.md`                  | 実施結果                            |
+| discovered-issues      | `outputs/phase-11/discovered-issues.md`                   | 発見事項                            |
+| screenshot-plan        | `outputs/phase-11/screenshot-plan.json`                   | validator 互換用の placeholder plan |
+| placeholder screenshot | `outputs/phase-11/screenshots/non-visual-placeholder.png` | validator 互換用の非UI証跡          |
 
 ## 完了条件
 

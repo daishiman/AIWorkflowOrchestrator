@@ -17,6 +17,11 @@ export type SkillCreatorAwaitingUserInputReason =
   | "plan_review"
   | "verification_review";
 
+export type SkillCreatorWorkflowFailureReason =
+  | "execution_error"
+  | "execution_failed"
+  | "verification_review";
+
 export interface SkillCreatorAwaitingUserInput {
   reason: SkillCreatorAwaitingUserInputReason;
   prompt: string;
@@ -25,6 +30,7 @@ export interface SkillCreatorAwaitingUserInput {
 
 export interface SkillCreatorVerifyResult {
   status: "pending" | "pass" | "fail";
+  reason?: SkillCreatorWorkflowFailureReason;
   message?: string;
   nextAction?: "review" | "improve";
   updatedAt: string;
@@ -94,7 +100,7 @@ export class SkillCreatorWorkflowEngine {
   ): SkillCreatorWorkflowStateSnapshot {
     const state = this.ensureWorkflow(planResult.planId, sourceProvenance);
     this.captureRouteSnapshot(state, decision, "plan");
-    this.upsertArtifact(state, "plan", "plan_result", {
+    this.appendArtifact(state, "plan", "plan_result", {
       planId: planResult.planId,
       skillName: planResult.skillName,
       estimatedSteps: planResult.estimatedSteps,
@@ -119,15 +125,17 @@ export class SkillCreatorWorkflowEngine {
     sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
   ): SkillCreatorWorkflowStateSnapshot {
     const state = this.ensureWorkflow(planResult.planId, sourceProvenance);
-    if (
-      !state.phaseArtifacts.some((artifact) => artifact.kind === "plan_result")
-    ) {
-      this.upsertArtifact(state, "plan", "plan_result", {
+    if (!this.getLatestArtifact(state, "plan_result")) {
+      this.appendArtifact(state, "plan", "plan_result", {
         planId: planResult.planId,
         skillName: planResult.skillName,
         estimatedSteps: planResult.estimatedSteps,
       });
     }
+    if (state.currentPhase === "plan") {
+      state.currentPhase = "review";
+    }
+    this.assertTransition(state.currentPhase, "execute");
 
     this.captureRouteSnapshot(state, decision, "review");
     state.currentPhase = "execute";
@@ -142,7 +150,17 @@ export class SkillCreatorWorkflowEngine {
     result: RuntimeSkillCreatorExecuteResult,
   ): SkillCreatorWorkflowStateSnapshot {
     const state = this.getRequiredWorkflow(planId);
-    this.upsertArtifact(state, "execute", "execute_result", {
+    this.assertTransition(state.currentPhase, "verify");
+    if (!result.success) {
+      return this.recordExecutionFailure(planId, {
+        executeId: result.executeId,
+        skillName: result.skillName,
+        reason: "execution_failed",
+        message: result.error ?? "Skill execution failed.",
+      });
+    }
+
+    this.appendArtifact(state, "execute", "execute_result", {
       executeId: result.executeId,
       skillName: result.skillName,
       success: result.success,
@@ -155,7 +173,45 @@ export class SkillCreatorWorkflowEngine {
       nextAction: "review",
       updatedAt: nowIso(),
     };
-    this.upsertArtifact(state, "verify", "verify_result", state.verifyResult);
+    this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
+  }
+
+  recordExecutionFailure(
+    planId: string,
+    input: {
+      executeId: string;
+      skillName: string;
+      reason: Exclude<SkillCreatorWorkflowFailureReason, "verification_review">;
+      message: string;
+    },
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.getRequiredWorkflow(planId);
+    this.assertPhase(state.currentPhase, "execute", "execute");
+    const updatedAt = nowIso();
+    this.appendArtifact(state, "execute", "execute_result", {
+      executeId: input.executeId,
+      skillName: input.skillName,
+      success: false,
+      error: input.message,
+      reason: input.reason,
+    });
+
+    state.currentPhase = "review";
+    state.awaitingUserInput = {
+      reason: "verification_review",
+      prompt: buildVerificationReviewPrompt(input.message),
+      requestedAt: updatedAt,
+    };
+    state.verifyResult = {
+      status: "fail",
+      reason: "verification_review",
+      message: input.message,
+      nextAction: "review",
+      updatedAt,
+    };
+    this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
     this.refreshResumeToken(state);
     return this.snapshot(state);
   }
@@ -167,18 +223,20 @@ export class SkillCreatorWorkflowEngine {
     sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
   ): SkillCreatorWorkflowStateSnapshot {
     const state = this.ensureWorkflow(planResult.planId, sourceProvenance);
-    if (
-      !state.phaseArtifacts.some((artifact) => artifact.kind === "plan_result")
-    ) {
-      this.upsertArtifact(state, "plan", "plan_result", {
+    if (!this.getLatestArtifact(state, "plan_result")) {
+      this.appendArtifact(state, "plan", "plan_result", {
         planId: planResult.planId,
         skillName: planResult.skillName,
         estimatedSteps: planResult.estimatedSteps,
       });
     }
+    if (state.currentPhase === "plan") {
+      state.currentPhase = "review";
+    }
+    this.assertTransition(state.currentPhase, "handoff");
 
     this.captureRouteSnapshot(state, decision, "review");
-    this.upsertArtifact(state, "handoff", "handoff_bundle", {
+    this.appendArtifact(state, "handoff", "handoff_bundle", {
       launcher: bundle.launcher,
       suggestedCommand: bundle.suggestedCommand,
       manualRetryRule: bundle.manualRetryRule,
@@ -197,14 +255,28 @@ export class SkillCreatorWorkflowEngine {
     nextAction: "review" | "improve" = "improve",
   ): SkillCreatorWorkflowStateSnapshot {
     const state = this.getRequiredWorkflow(planId);
+    this.assertTransition(
+      state.currentPhase,
+      nextAction === "improve" ? "improve" : "review",
+    );
+    const updatedAt = nowIso();
     state.currentPhase = nextAction === "improve" ? "improve" : "review";
+    state.awaitingUserInput =
+      nextAction === "review"
+        ? {
+            reason: "verification_review",
+            prompt: buildVerificationReviewPrompt(message),
+            requestedAt: updatedAt,
+          }
+        : null;
     state.verifyResult = {
       status: "fail",
+      reason: nextAction === "review" ? "verification_review" : undefined,
       message,
       nextAction,
-      updatedAt: nowIso(),
+      updatedAt,
     };
-    this.upsertArtifact(state, "verify", "verify_result", state.verifyResult);
+    this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
     this.refreshResumeToken(state);
     return this.snapshot(state);
   }
@@ -269,32 +341,71 @@ export class SkillCreatorWorkflowEngine {
   ): void {
     const snapshot = toRouteSnapshot(decision);
     state.routeSnapshot = snapshot;
-    this.upsertArtifact(state, phase, "route_snapshot", snapshot);
+    this.appendArtifact(state, phase, "route_snapshot", snapshot);
   }
 
-  private upsertArtifact(
+  private appendArtifact(
     state: SkillCreatorWorkflowState,
     phase: SkillCreatorWorkflowPhase,
     kind: SkillCreatorWorkflowArtifact["kind"],
     payload: unknown,
   ): void {
-    const existingIndex = state.phaseArtifacts.findIndex(
-      (artifact) => artifact.phase === phase && artifact.kind === kind,
-    );
     const artifact: SkillCreatorWorkflowArtifact = {
-      id: `${state.planId}:${phase}:${kind}`,
+      id: `${state.planId}:${phase}:${kind}:${state.phaseArtifacts.length + 1}`,
       phase,
       kind,
       createdAt: nowIso(),
       payload,
     };
+    state.phaseArtifacts.push(artifact);
+  }
 
-    if (existingIndex >= 0) {
-      state.phaseArtifacts[existingIndex] = artifact;
+  private getLatestArtifact(
+    state: SkillCreatorWorkflowState,
+    kind: SkillCreatorWorkflowArtifact["kind"],
+  ): SkillCreatorWorkflowArtifact | undefined {
+    return [...state.phaseArtifacts]
+      .reverse()
+      .find((artifact) => artifact.kind === kind);
+  }
+
+  private assertTransition(
+    currentPhase: SkillCreatorWorkflowPhase,
+    nextPhase: SkillCreatorWorkflowPhase,
+  ): void {
+    const allowedTransitions: Record<
+      SkillCreatorWorkflowPhase,
+      SkillCreatorWorkflowPhase[]
+    > = {
+      plan: ["review"],
+      review: ["execute", "handoff"],
+      execute: ["verify"],
+      verify: ["review", "improve"],
+      improve: [],
+      handoff: [],
+    };
+
+    if (allowedTransitions[currentPhase].includes(nextPhase)) {
       return;
     }
 
-    state.phaseArtifacts.push(artifact);
+    throw new Error(
+      `invalid workflow transition: ${currentPhase} -> ${nextPhase}`,
+    );
+  }
+
+  private assertPhase(
+    currentPhase: SkillCreatorWorkflowPhase,
+    expectedPhase: SkillCreatorWorkflowPhase,
+    attemptedPhase: SkillCreatorWorkflowPhase,
+  ): void {
+    if (currentPhase === expectedPhase) {
+      return;
+    }
+
+    throw new Error(
+      `invalid workflow transition: ${currentPhase} -> ${attemptedPhase}`,
+    );
   }
 
   private refreshResumeToken(state: SkillCreatorWorkflowState): void {
@@ -355,4 +466,8 @@ function toRouteSnapshot(decision: RuntimeDecision): SkillCreatorRouteSnapshot {
 
 function nowIso(): string {
   return new Date().toISOString();
+}
+
+function buildVerificationReviewPrompt(message: string): string {
+  return `検証結果を確認し、修正方針を判断してください: ${message}`;
 }

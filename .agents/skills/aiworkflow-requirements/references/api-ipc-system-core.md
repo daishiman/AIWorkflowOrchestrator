@@ -392,6 +392,15 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `skill-creator:execute-plan` | plan 実行 | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
 | `skill-creator:improve-skill` | runtime 改善 | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 
+### execute-plan failure lifecycle 契約（UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001）
+
+| ケース | public response | engine state | 補足 |
+| --- | --- | --- | --- |
+| `terminal_handoff` | `success: true` + `data.success: false` + `handoff: true` | review 維持 | executor 非実行 |
+| `integrated_api` + `success: true` | `success: true` + `data.success: true` | verify phase | verify pending へ進む |
+| `integrated_api` + `success: false` | `success: true` + `data.success: false` | review phase + `verification_review` | `awaitingUserInput` と失敗 artifact を保存 |
+| executor reject | `success: false` + sanitize 済み error | review phase + `verification_review` | reject snapshot を facade catch で記録 |
+
 
 ### 完了タスク（TASK-SC-03-PLAN-LLM-PROMPT）
 
@@ -436,6 +445,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | execute handoff hardening | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `terminal_handoff` では executor を呼ばず early return、`integrated_api` では engine を verify phase まで進める |
 | provenance source 固定 | `apps/desktop/src/main/services/skill/ResourceLoader.ts` | `getBasePath()` を追加し、runtime source provenance を manifest / resume envelope と同期 |
 | shared parity test | `packages/shared/src/types/__tests__/skillCreator.contract-parity.test.ts` | plan / execute / improve の runtime union と preload / ipc parity を回帰テスト化 |
+| failure lifecycle hardening | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts`, `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `success:false` / reject / `verification_review` を review path へ統一し、transition guard と append artifact を固定 |
 | sender 不正 | `toIPCValidationError` を throw して reject |
 | エラー | `sanitizeErrorMessage()` 後の文字列のみ返す |
 | execute 実行 | `SkillExecutor` へ委譲し、auth key は既存 DI 経路を再利用する |

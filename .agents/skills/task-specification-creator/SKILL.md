@@ -218,6 +218,12 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 📖 [references/spec-update-workflow.md](references/spec-update-workflow.md)
 📖 [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md)
 
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| **6.18.12** | **2026-03-26** | **TASK-SDK-01 hardening sync を guide へ反映**: docs-only follow-up に後からコード変更が入った時は source workflow と `outputs/phase-12/*.md` を同一ターンで current facts へ戻すルールを `phase-12-documentation-guide.md` に追加 |
+
 ---
 
 ### Task 5: スキルフィードバックレポート（改善点なしでも出力必須）
@@ -429,11 +435,13 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.25** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 完了同期**: public IPC shape が不変でも `Facade/Engine` owner 変更、`review/verify` 遷移意味変更、`success:false` / reject の failure lifecycle 変更、artifact append/upsert 方針変更があれば Step 2 必須とする判断を `spec-update-workflow.md` / `spec-update-step2-domain-sync.md` へ反映。重複未タスク防止と wider suite blocker の既存 tracker 優先も明文化 |
 | **v10.09.24** | **2026-03-26** | **要件レビュー思考法を追加**: task-specification-creator で要件草案を扱う際に、システム系 + 戦略・価値系 + 問題解決系の3系統レビュー、5つの一次出力、4条件評価、因果ループ/状態所有権/価値コスト均衡の確認を必須化 |
 | **v10.09.23** | **2026-03-25** | **TASK-SC-08-E2E-VALIDATION 完了同期**: Skill Creator LLM統合 E2Eテスト + TerminalHandoff検証。Phase 1-12完了。5シナリオ36テスト全PASS。Lines 89%・Branches 77%・Functions 100%。未タスク0件。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.23** | **2026-03-25** | **TASK-SC-07-STREAMING-PROGRESS-UI 完了同期**: ストリーミング進捗UI Phase 1-13 完了。generationProgressSlice独立スライス・useStreamingProgress・useCancelGeneration・ErrorCards atoms・個別セレクタ9点。114テスト全PASS。未タスク4件（IPC cancel送信・デバウンス100ms・設定画面遷移・エラーコード構造化）。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.23** | **2026-03-25** | **TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了同期**: HealthPolicy 統一インターフェース。health-policy.ts 新規作成（HealthPolicy/HealthPolicyInput/resolveHealthPolicy）。RuntimePolicyResolver DI統合 + mainlineAccess 消費 + HealthIndicator 表示統合。apiKeyDegraded @deprecated v0.8.0。38テスト全PASS。未タスク3件（UT-HEALTH-POLICY-MAINLINE/RUNTIME-INJECTION/DEPRECATED-REMOVAL）backlog登録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.23** | **2026-03-25** | **UT-LLM-MOD-01-005 完了同期**: completed-tasks canonical root の Phase 12 close-out を再監査。`implementation-guide.md` の 10/10 validator 要件、`manual-test-checklist.md` / `outputs/artifacts.json` / `phase12-task-spec-compliance-check.md` の補助成果物必須化、未タスク raw メモの full template 昇格、`audit-unassigned-tasks --target-file` による current/baseline 分離記録を reference 群へ反映。 |
+| **v10.09.24** | **2026-03-26** | **TASK-SDK-01 Phase 12 compliance sync follow-up formalize**: execution workflow の Phase 12 task 分解を Task 12-6 まで是正し、`.claude` 参照を repo-root 基準の実在相対パスへ統一。`task-workflow.md` / backlog / topic-map / keywords と same-wave で閉じ、今回差分が未タスク formalize と台帳同期のみであるため Step 2 domain spec 更新は no-op とする判断を変更履歴へ追記 |
 | **v10.09.22** | **2026-03-24** | **UT-SC-05-APPLY-IMPROVEMENT-UI 完了同期**: 改善提案 承認/適用UI。IPC `skill-creator:apply-improvement` + Preload `applyRuntimeImprovement` + Renderer 4コンポーネント。P42/P44/P47/P48/P49/P60/P65準拠。62テスト全PASS。未タスク0件。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.21** | **2026-03-24** | **TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了同期**: session dock / transcript persistence / artifact-first result / manual share bridge 設計タスク（Phase 1-12）完了。DockState 8状態 / session persistence / artifact bridge / manual share 設計確定。未タスク3件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.21** | **2026-03-24** | **UT-06-002-UT-1 完了同期**: `permission-store-handlers.ts` 全4ハンドラに `withValidation` sender 検証追加。`mainWindow: BrowserWindow` DI（P34）。42テスト全PASS（16新規 SEC-01〜SEC-14 + P42/unregister）。未タスク0件。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
@@ -467,6 +475,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 | **v10.09.13** | **2026-03-22** | **TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 の same-wave sync を反映**: `references/workflow-ai-runtime-execution-responsibility-realignment.md` に Task04 standalone root を追加し、`task-workflow-completed.md` へ `spec_created` / `implementation_ready` / Phase 13 blocked の分離記録を追加。`task-workflow-backlog.md` と `lessons-learned-current.md` / `lessons-learned-phase12-workflow-lifecycle.md` に follow-up 4件と教訓4件を同期し、worktree でも parent/downstream/system spec の旧 path を同一 wave で閉じる運用を追記 |
 | **v10.09.06** | **2026-03-22** | **TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 完了同期**: Terminal Handoff Surface Realization 設計タスク（Phase 1-13）完了。Concern 3分割設計 / HandoffGuidance 統一DTO / Manual Boundary / 未タスク 8 件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.05** | **2026-03-21** | **UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 最終同期**: Phase 12 成果物の planned wording を実績化し、`outputs/artifacts.json` / `phase12-task-spec-compliance-check.md` / review board PNG 3件 / `manual-test-checklist.md` / `screenshot-plan.json` / metadata を current workflow へ同一ターンで固定する運用を変更履歴へ反映。あわせて `validate-phase-output.js` に zero-padding (`phase-01-*`)・alias (`coverage` / `quality`)・bullet/numbered task list 許容を追加し、worktree でも `.claude` 正本更新 + mirror parity + conflict marker 解消まで完了条件に含めることを明文化 |
+| **v10.09.16** | **2026-03-26** | **TASK-SDK-07 execution-governance-and-handoff-alignment の close-out を反映**: docs-only governance task 向けに、Task08 へ渡す canonical 前提文の固定、Phase 3 の Manual Boundary 自己完結レビュー表、Phase 5 の downstream 実装対象への責務収束、Phase 12 の `.claude` 正本 2 skill 反映 + mirror audit 記録を実績ベースで閉じる運用を変更履歴へ追加 |
 | **v10.09.04** | **2026-03-21** | **UT-TASK06-007-EXT-006**: check-ipc-contracts テスト拡充（20件追加、カバレッジ95.79%）。Phase 1-12 実行完了。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.15** | **2026-03-26** | **TASK-SDK-02 workflow-engine-runtime-orchestration の close-out を反映**: `references/spec-update-workflow.md` に、runtime orchestration task では channel 追加がなくても Facade/Engine owner 分離、`terminal_handoff` early return、`resumeTokenEnvelope` / provenance owner 変更があれば Step 2 必須とする判断ルールを追加。current workflow の `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を実績ベースで閉じる運用も明文化 |
 | **v10.09.14** | **2026-03-22** | **TASK-UI-INLINE-MODEL-SELECTOR-COMPONENT 最終ドキュメント更新を反映**: `references/phase-12-documentation-guide.md` に human-authored Phase 12 成果物を `outputs/phase-12/` へ固定するルールを追加。`references/spec-update-workflow.md` に shared component task と consumer surface task の completed 判定を分離する基準、および global `docs/30-workflows/unassigned-task/` canonical path を追記 |

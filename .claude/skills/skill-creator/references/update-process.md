@@ -63,6 +63,9 @@ Phase 3: 実更新
 Phase 3.5: stale fact cleanup
 テスト件数 / coverage / out-of-scope 注記 / planned wording / 日付を current facts へそろえ、phase-12 成果物と未タスク指示書の記述ドリフトを消す
                             ↓
+Phase 3.6: blocker / backlog dedup
+targeted suite PASS と wider suite blocker を分離し、既存 `docs/30-workflows/unassigned-task/` / `completed-tasks/unassigned-task/` を検索して重複 formalize を防ぐ
+                            ↓
 Phase 4: 検証
 verify-all-specs → validate-phase-output → verify-unassigned-links --source → audit --diff-from HEAD / --target-file → generate-index.js → validate-structure.js → quick_validate / validate_all → mirror sync → diff -qr
                             ↓
@@ -219,3 +222,9 @@ node scripts/validate_all.js .claude/skills/my-skill
 - **新規作成プロセス**: See [creation-process.md](creation-process.md)
 - **フィードバック**: See [feedback-loop.md](feedback-loop.md)
 - **品質基準**: See [quality-standards.md](quality-standards.md)
+## 2026-03-26 追補: docs-heavy follow-up への code hardening 混入
+
+- close-out / spec sync 専用 workflow にコード変更が入った場合は、`outputs/phase-12/*.md` の narrative と source workflow 本文を先に current facts へ戻す。
+- internal contract hardening は「新仕様追加」ではなく「existing contract の hardening current facts」として system spec へ追記する。
+- carry-forward していた follow-up を同ターンで解消したら、completed ledger / unassigned detection / quick-reference を 0 件状態へそろえる。
+- compile gate PASS と env-blocked test は別行で記録し、`typecheck PASS + Vitest blocker` のように境界を明示する。

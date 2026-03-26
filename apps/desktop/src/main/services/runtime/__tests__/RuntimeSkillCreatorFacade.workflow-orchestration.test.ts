@@ -108,6 +108,91 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
     });
   });
 
+  it("execute() success:false は verification_review 付きで review に戻す", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockResolvedValue({
+      executionId: "exec-101",
+      success: false,
+      error: {
+        code: "EXECUTION_FAILED",
+        message: "executor failed",
+      },
+    });
+
+    const result = await facade.execute(
+      createPlanResult(),
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toEqual({
+      executeId: "exec-101",
+      skillName: "engine-test",
+      success: false,
+      error: "executor failed",
+    });
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-100");
+    expect(snapshot).toMatchObject({
+      currentPhase: "review",
+      awaitingUserInput: {
+        reason: "verification_review",
+      },
+      verifyResult: {
+        status: "fail",
+        reason: "verification_review",
+        message: "executor failed",
+        nextAction: "review",
+      },
+    });
+  });
+
+  it("execute() reject は失敗 snapshot を保存して error result を返す", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_200);
+    executeMock.mockRejectedValue(new Error("executor rejected"));
+
+    const result = await facade.execute(
+      createPlanResult(),
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toEqual({
+      executeId: "exec-error-1710000000200",
+      skillName: "engine-test",
+      success: false,
+      error: "executor rejected",
+    });
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-100");
+    expect(snapshot).toMatchObject({
+      currentPhase: "review",
+      awaitingUserInput: {
+        reason: "verification_review",
+      },
+      verifyResult: {
+        status: "fail",
+        reason: "verification_review",
+        message: "executor rejected",
+        nextAction: "review",
+      },
+    });
+    expect(
+      snapshot?.phaseArtifacts.filter(
+        (artifact) => artifact.kind === "execute_result",
+      ),
+    ).toHaveLength(1);
+  });
+
   it("execute() terminal_handoff は executor を呼ばず handoff state を保存する", async () => {
     vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
       type: "terminal_handoff",
@@ -144,6 +229,82 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
       routeSnapshot: {
         type: "terminal_handoff",
         launcher: "claude",
+      },
+    });
+  });
+
+  it("execute() success:false は verification_review 付きで review に戻す", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockResolvedValue({
+      executionId: "exec-101",
+      success: false,
+      error: {
+        code: "EXECUTION_FAILED",
+        message: "executor failed",
+      },
+    });
+
+    const result = await facade.execute(
+      createPlanResult(),
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toEqual({
+      executeId: "exec-101",
+      skillName: "engine-test",
+      success: false,
+      error: "executor failed",
+    });
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-100");
+    expect(snapshot).toMatchObject({
+      currentPhase: "review",
+      awaitingUserInput: {
+        reason: "verification_review",
+      },
+      verifyResult: {
+        status: "fail",
+        nextAction: "review",
+        message: "executor failed",
+      },
+    });
+  });
+
+  it("execute() reject は失敗 snapshot を保存して error result を返す", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockRejectedValue(new Error("network down"));
+
+    const result = await facade.execute(
+      createPlanResult(),
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toMatchObject({
+      success: false,
+      error: "network down",
+    });
+    expect(result).toHaveProperty("executeId");
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-100");
+    expect(snapshot).toMatchObject({
+      currentPhase: "review",
+      awaitingUserInput: {
+        reason: "verification_review",
+      },
+      verifyResult: {
+        status: "fail",
+        nextAction: "review",
+        message: "network down",
       },
     });
   });

@@ -11,6 +11,7 @@
 | UI contract 変更 | `ui-ux-*.md` |
 | security contract 変更 | `security-*.md` |
 | shared runtime catalog / registry 変更 | `interfaces-*.md`, `ui-ux-*.md`, `api-*.md` の関連正本 |
+| phase owner / transition semantics / failure lifecycle 変更 | `architecture-*.md`, `api-*.md`, `lessons-learned*.md`, `task-workflow*.md` |
 
 ## 更新不要の代表例
 
@@ -26,5 +27,6 @@
 2. 他レイヤーが依存する境界が変わったか。
 3. 既存 spec の table / completion record / lessons だけで足りるか。
 4. shared catalog が source-of-truth として昇格した場合、UI/IPC/型 docs まで連鎖更新が必要か。
+5. public IPC shape が不変でも、state owner・review/verify 遷移・failure lifecycle が変わったなら Step 2 を実施する。
 
 上の 4 つがすべて No なら Step 2 は「更新なし」として閉じる。
