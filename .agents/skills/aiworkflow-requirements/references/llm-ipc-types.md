@@ -1,384 +1,232 @@
 # LLM IPC型定義・Multi-LLM Provider
 
 > 本ドキュメントは統合システム設計仕様書の一部です。
-> 管理: .claude/skills/aiworkflow-requirements/
->
-> **親ドキュメント**: [interfaces-llm.md](./interfaces-llm.md)
+> 管理: `.claude/skills/aiworkflow-requirements/`
+> 親ドキュメント: [interfaces-llm.md](./interfaces-llm.md)
+
+---
+
+## 概要
+
+LLM 関連の current contract は、shared schema と Main/Renderer の境界で次のように分担する。
+
+| レイヤー | 正本 | 役割 |
+| --- | --- | --- |
+| provider catalog | `packages/shared/src/types/llm/schemas/provider-registry.ts` | provider / model 一覧、`PROVIDER_IDS`、`inferProviderId()` の正本 |
+| runtime validation | `packages/shared/src/types/llm/schemas/provider.ts` | `LLMProviderIdSchema` / `LLMProviderSchema` / `LLMModelSchema` |
+| Main IPC | `apps/desktop/src/main/handlers/llm.ts` | `llm:get-providers` / `llm:set-selected-config` / `llm:check-health` / chat 実行 |
+| preload API | `apps/desktop/src/preload/types.ts` | Renderer から見える `window.electronAPI.llm.*` 契約 |
+| selection state | `apps/desktop/src/renderer/store/slices/llmSlice.ts` | 選択状態、persist、health 表示 |
+
+`PROVIDER_CONFIGS` が provider catalog の唯一の正本であり、`LLMProviderIdSchema` と `inferProviderId()` はそこから自動追従する。
 
 ---
 
 ## LLM チャット関連型定義（Desktop IPC）
 
-### 概要
+### AIChatRequest
 
-Electronデスクトップアプリでは、Renderer ProcessからMain ProcessへのIPC通信でLLMチャット機能を提供する。型定義は共通インターフェースとして実装される。
+Renderer から Main に渡す簡易チャット request（`apps/desktop/src/preload/types.ts`）。
 
-**実装ファイル**:
+| フィールド | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| `message` | `string` | ✓ | ユーザーメッセージ |
+| `systemPrompt` | `string` | - | システムプロンプト |
+| `ragEnabled` | `boolean` | - | RAG 有効化フラグ |
+| `conversationId` | `string` | - | 会話継続用 ID |
+| `providerId` | `LLMProviderId` | - | 明示 provider 指定 |
+| `modelId` | `string` | - | 明示 model 指定 |
 
-- `apps/desktop/src/preload/types.ts` - IPC型定義
-- `apps/desktop/src/renderer/store/types.ts` - Store型定義
+補足:
 
-### IPC 型定義
+- `providerId` と `modelId` はセット指定を前提とする
+- request 側未指定時は `llm:set-selected-config` で同期済みの Main state を使う
+- どちらにも値がない場合は暗黙 fallback せずエラーとする
 
-#### AIChatRequest
+### AIChatResponse
 
-LLMへのメッセージ送信リクエスト型。
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `success` | `boolean` | 成功/失敗 |
+| `data.message` | `string` | 応答本文 |
+| `data.conversationId` | `string` | 会話 ID |
+| `data.ragSources` | `string[]` | RAG 参照元 |
+| `error` | `string` | error code または user-facing message |
 
-| フィールド     | 型      | 必須 | 説明                                   |
-| -------------- | ------- | ---- | -------------------------------------- |
-| message        | string  | ✓    | ユーザーメッセージ                     |
-| systemPrompt   | string  | -    | システムプロンプト（AIの振る舞い指定） |
-| ragEnabled     | boolean | ✓    | RAG機能有効化フラグ                    |
-| conversationId | string  | -    | 会話ID（既存会話の続きの場合に指定）   |
-| providerId     | LLMProviderId | - | 送信時に明示的に使用するプロバイダーID |
-| modelId        | string  | -    | 送信時に明示的に使用するモデルID       |
+### AICheckConnectionResponse
 
-**補足**:
+legacy 接続確認 surface。新規 UI は `llm:check-health` を primary とする。
 
-- `providerId` と `modelId` はセット指定のみ有効（片方のみはエラー）
-- `providerId` / `modelId` は空文字・トリム後空文字を禁止
-- 省略時は Main 側に同期済みの選択状態（`llm:set-selected-config`）を使用する
-- request と Main 側選択状態がどちらも未設定の場合はエラーを返す（暗黙 fallback なし）
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `success` | `boolean` | 成功/失敗 |
+| `data.status` | `"connected" \| "disconnected" \| "error"` | 接続状態 |
+| `data.indexedDocuments` | `number` | index 済み文書数 |
+| `data.lastSyncTime` | `Date?` | 最終同期時刻 |
 
-#### AIChatResponse
+### AIIndexResponse / CommunityResult
 
-LLMからの応答型。
-
-| フィールド          | 型       | 説明                                |
-| ------------------- | -------- | ----------------------------------- |
-| success             | boolean  | 成功/失敗フラグ                     |
-| data.message        | string   | AI応答メッセージ                    |
-| data.conversationId | string   | 会話ID                              |
-| data.ragSources     | string[] | RAG参照元ファイルパス（任意）       |
-| error               | string   | `success=false` 時の error code または user-facing message |
-
-**運用方針（2026-03-20）**:
-
-- `AIChatResponse.error` は `API_KEY_MISSING` のような canonical error code を返してよい。
-- ただし Main 側事情で code 化されていない既存経路は、人間可読の message string をそのまま返してよい。
-- Renderer (`chatSlice` / `ChatView`) は `error` を `string` として受け取り、`ALL_CAPS_WITH_UNDERSCORES` 形式なら code として辞書変換し、それ以外は raw message fallback として表示する。
-- したがって `AIChatResponse.error` は「code only」ではなく「code or user-facing message」の union 運用とみなす。
-
-#### AICheckConnectionResponse
-
-AI/RAG接続状態確認の応答型。
-
-| フィールド            | 型                                       | 説明                   |
-| --------------------- | ---------------------------------------- | ---------------------- |
-| success               | boolean                                  | 成功/失敗フラグ        |
-| data.status           | "connected" \| "disconnected" \| "error" | 接続状態               |
-| data.indexedDocuments | number                                   | インデックス済み文書数 |
-| data.lastSyncTime     | Date?                                    | 最終同期時刻（省略可） |
-
-**運用方針（2026-03-17）**:
-
-- `AICheckConnectionResponse` は legacy 互換のため保持する。
-- 新規UI/新規実装の health check は `llm:check-health` を使用する。
-
-#### AIIndexRequest
-
-RAGドキュメントインデックス作成リクエスト型。
-
-| フィールド | 型      | 必須 | 説明                         |
-| ---------- | ------- | ---- | ---------------------------- |
-| folderPath | string  | ✓    | インデックス対象フォルダパス |
-| recursive  | boolean | -    | 再帰的検索フラグ             |
-
-#### AIIndexResponse
-
-インデックス作成結果の応答型。
-
-| フィールド        | 型                        | 説明                           |
-| ----------------- | ------------------------- | ------------------------------ |
-| success           | boolean                   | 成功/失敗フラグ                |
-| data.indexedCount | number                    | インデックス化されたファイル数 |
-| data.skippedCount | number                    | スキップされたファイル数       |
-| data.errors       | string[]                  | guidance / エラーメッセージ一覧 |
-
-**運用方針（2026-03-19）**:
-
-- `AI_INDEX` は current runtime では guidance-only stub。
-- `indexedCount` / `skippedCount` は 0 固定、`errors` に利用不可理由を入れて返す。
-
-#### CommunityResult<T>
-
-Community IPC の preload 型。current runtime では guidance-only response の統一面としても使う。
-
-| フィールド     | 型                               | 説明 |
-| -------------- | -------------------------------- | ---- |
-| ok             | boolean                          | 成功/失敗フラグ |
-| value          | T                                | 成功時データ |
-| error.code     | string                           | エラーコード |
-| error.message  | string                           | 人間可読メッセージ |
-
-**運用方針（2026-03-19）**:
-
-- `communityHandlers.ts` は全 `COMMUNITY_*` で `ok: false` + `error.code = "NOT_IN_SCOPE"` を返す。
-- `value` は成功時のみ存在し、guidance-only response では省略される。
-
-### Store 型定義
-
-#### LLMProvider
-
-LLMプロバイダー情報型。
-
-| フィールド | 型            | 説明                     |
-| ---------- | ------------- | ------------------------ |
-| id         | LLMProviderId | プロバイダーID（Enum型） |
-| name       | string        | プロバイダー名（表示用） |
-| models     | LLMModel[]    | 利用可能なモデル一覧     |
-
-#### LLMModel
-
-LLMモデル情報型。
-
-| フィールド | 型     | 説明               |
-| ---------- | ------ | ------------------ |
-| id         | string | モデルID           |
-| name       | string | モデル名（表示用） |
-
-#### LLMProviderId
-
-プロバイダーID列挙型。OpenAI、Anthropic、Google、xAIの4つの値を持つ。
+- `AI_INDEX` は current runtime では guidance-only stub
+- `CommunityResult<T>` は `ok/value/error` を持つ共通 IPC surface
 
 ---
 
-## Multi-LLM Provider Switching 型定義
+## Provider Registry SSoT
 
-> **実装**: `packages/shared/src/types/llm/schemas/`
-> **状態管理**: `apps/desktop/src/renderer/store/slices/llmSlice.ts`
-> **詳細設計**: `docs/30-workflows/chat-multi-llm-switching/outputs/phase-12/implementation-guide.md`
+### current canonical facts
 
-### 概要
+```text
+provider-registry.ts
+  PROVIDER_CONFIGS
+    -> PROVIDER_IDS
+    -> inferProviderId()
+provider.ts
+  LLMProviderIdSchema = z.enum(PROVIDER_IDS)
+llm.ts
+  handleGetProviders() が PROVIDER_CONFIGS を参照
+```
 
-チャット内でLLMプロバイダー・モデルを動的に切り替える機能の型定義。Zodスキーマによる型安全性とランタイムバリデーションを提供。
+### shared provider catalog 型
 
-### Zodスキーマ型定義
+| 型 | フィールド |
+| --- | --- |
+| `ProviderConfigEntry` | `id`, `name`, `modelPrefixes`, `specialMatcher?`, `models` |
+| `ProviderModelEntry` | `id`, `name`, `contextWindow`, `isDefault`, `description?` |
+| `ProviderIdUnion` | `(typeof PROVIDER_CONFIGS)[number]["id"]` |
 
-#### LLMProviderSchema
+### 導出ルール
 
-LLMプロバイダーの完全な型定義。
+| 項目 | current behavior |
+| --- | --- |
+| `PROVIDER_IDS` | `PROVIDER_CONFIGS.map((p) => p.id)` 由来の tuple |
+| `LLMProviderIdSchema` | `z.enum(PROVIDER_IDS)` |
+| `inferProviderId(modelId)` | `specialMatcher` を先、`modelPrefixes` を後に評価 |
+| OpenRouter 判定 | `modelId.includes("/")` を `specialMatcher` で処理 |
 
-| フィールド       | 型             | 必須 | 説明                     |
-| ---------------- | -------------- | ---- | ------------------------ |
-| id               | LLMProviderId  | ✓    | プロバイダーID           |
-| name             | string         | ✓    | プロバイダー名（表示用） |
-| description      | string         | -    | 説明文                   |
-| iconUrl          | string         | -    | アイコンURL              |
-| models           | LLMModel[]     | ✓    | 利用可能なモデル一覧     |
-| isAvailable      | boolean        | ✓    | 利用可能フラグ           |
-| apiKeyConfigured | boolean        | ✓    | APIキー設定済みフラグ    |
+### current provider set
 
-#### LLMModelSchema
+| providerId | 表示名 | 代表モデル | 補足 |
+| --- | --- | --- | --- |
+| `openai` | OpenAI | `gpt-5.4`, `o3` | `gpt-`, `o3`, `o4` prefix で推定 |
+| `anthropic` | Anthropic | `claude-sonnet-4-6`, `claude-haiku-4-5` | `claude-` prefix |
+| `google` | Google | `gemini-3-flash-preview`, `gemini-3.1-pro-preview` | `gemini-` prefix |
+| `xai` | xAI | `grok-4-1-fast-non-reasoning`, `grok-3-mini` | `grok-` prefix |
+| `openrouter` | OpenRouter | `openai/gpt-4o`, `anthropic/claude-3.5-sonnet` | slash formを `specialMatcher` で判定 |
 
-LLMモデル情報の型定義。
+---
 
-| フィールド  | 型      | 必須 | 説明                 |
-| ----------- | ------- | ---- | -------------------- |
-| id          | string  | ✓    | モデルID             |
-| name        | string  | ✓    | モデル名（表示用）   |
-| description | string  | -    | 説明文               |
-| maxTokens   | number  | ✓    | 最大トークン数       |
-| isDefault   | boolean | ✓    | デフォルトモデルか   |
+## Renderer / Main surface 型
 
-#### LLMChatRequestSchema
+### LLMProviderSchema
 
-チャットリクエストの型定義。
+current public surface は次の 5 フィールドのみ。
 
-| フィールド   | 型           | 必須 | 説明                        |
-| ------------ | ------------ | ---- | --------------------------- |
-| messages     | LLMMessage[] | ✓    | メッセージ配列              |
-| modelId      | string       | ✓    | 使用するモデルID            |
-| systemPrompt | string       | -    | システムプロンプト          |
-| temperature  | number       | -    | 温度パラメータ（0-2）       |
-| maxTokens    | number       | -    | 最大出力トークン数          |
-| stream       | boolean      | -    | ストリーミング有効フラグ    |
+| フィールド | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| `id` | `LLMProviderId` | ✓ | provider ID |
+| `name` | `string` | ✓ | 表示名 |
+| `icon` | `string` | - | URL 文字列。未設定可 |
+| `isAvailable` | `boolean` | ✓ | API key 有無ベースの利用可否 |
+| `models` | `LLMModel[]` | ✓ | 利用可能モデル一覧 |
 
-#### LLMChatResponseSchema
+### LLMModelSchema
 
-チャットレスポンスの型定義（Discriminated Union）。
+| フィールド | 型 | 必須 | 説明 |
+| --- | --- | --- | --- |
+| `id` | `string` | ✓ | model ID |
+| `name` | `string` | ✓ | 表示名 |
+| `description` | `string` | - | 補足説明 |
+| `contextWindow` | `number` | - | token 上限の目安 |
+| `isDefault` | `boolean` | ✓ | default model か |
 
-**成功時**:
-| フィールド | 型              | 説明           |
-| ---------- | --------------- | -------------- |
-| success    | true (literal)  | 成功フラグ     |
-| data       | LLMResponseData | レスポンスデータ |
+明示的に current surface から外れているもの:
 
-**失敗時**:
-| フィールド | 型              | 説明       |
-| ---------- | --------------- | ---------- |
-| success    | false (literal) | 失敗フラグ |
-| error      | LLMError        | エラー情報 |
-
-#### LLMErrorSchema
-
-エラー情報の型定義。
-
-| フィールド   | 型           | 必須 | 説明                   |
-| ------------ | ------------ | ---- | ---------------------- |
-| code         | LLMErrorCode | ✓    | エラーコード           |
-| message      | string       | ✓    | エラーメッセージ       |
-| details      | Record       | -    | 追加詳細情報           |
-| retryable    | boolean      | ✓    | リトライ可能か         |
-| retryAfterMs | number       | -    | リトライ待機時間（ms） |
-
-#### LLMErrorCode
-
-エラーコード列挙型。API_KEY_MISSING、API_KEY_INVALID、NETWORK_ERROR、TIMEOUT、RATE_LIMIT、CONTEXT_LENGTH_EXCEEDED、CONTENT_FILTER、MODEL_NOT_FOUND、SERVICE_UNAVAILABLE、UNKNOWNの10種類。
-
-#### HealthCheckResultSchema
-
-ヘルスチェック結果の型定義。
-
-| フィールド  | 型               | 必須 | 説明               |
-| ----------- | ---------------- | ---- | ------------------ |
-| providerId  | LLMProviderId    | ✓    | プロバイダーID     |
-| status      | connected/disconnected/error | ✓ | 接続状態     |
-| latency     | number           | -    | レイテンシ（ms）   |
-| checkedAt   | Date             | ✓    | チェック日時       |
-| errorMessage| string           | -    | エラーメッセージ   |
+- `iconUrl`
+- `apiKeyConfigured`
+- `maxTokens`
 
 ---
 
 ## バリデーション関数
 
-| 関数名                  | 説明                               |
-| ----------------------- | ---------------------------------- |
-| validateChatRequest     | リクエストを検証（エラー時throw）  |
-| validateChatResponse    | レスポンスを検証（エラー時throw）  |
-| safeParseChatRequest    | リクエストを安全にパース           |
-| safeParseChatResponse   | レスポンスを安全にパース           |
+| 関数名 | 説明 |
+| --- | --- |
+| `validateChatRequest` | `LLMChatRequestSchema.parse()` |
+| `validateChatResponse` | `LLMChatResponseSchema.parse()` |
+| `validateIPCRequest` | `IPCChatRequestSchema.parse()` |
+| `validateError` | `LLMErrorSchema.parse()` |
+| `safeParseChatResponse` | response を安全に parse |
+
+関連 schema:
+
+- `LLMChatRequestSchema`
+- `LLMChatResponseSchema`
+- `LLMErrorSchema`
+- `HealthCheckResultSchema`
 
 ---
 
 ## IPC通信
 
-| チャンネル           | メソッド | 入力             | 出力                    | 説明                   |
-| -------------------- | -------- | ---------------- | ----------------------- | ---------------------- |
-| llm:get-providers    | invoke   | なし             | LLMProvider[]           | プロバイダー一覧取得   |
-| llm:set-selected-config | invoke | `{ providerId, modelId }` | `{ success: boolean, error?: string }` | Renderer選択状態をMainへ同期 |
-| llm:check-health     | invoke   | `LLMProviderId`（preload） / `{ providerId }`（Main handler） | HealthCheckResult | ヘルスチェック実行 |
-| llm:send-chat        | invoke   | LLMChatRequest   | LLMChatResponse         | チャット送信           |
-| llm:stream-chat      | send/on  | LLMChatRequest   | LLMStreamChunk (連続)   | ストリーミングチャット |
+### preload surface
 
-### AI_CHAT の provider/model 解決順
+`apps/desktop/src/preload/types.ts`
+
+| チャンネル / API | 入力 | 出力 | 説明 |
+| --- | --- | --- | --- |
+| `llm.getProviders()` | なし | `Promise<LLMProvider[]>` | provider 一覧取得 |
+| `llm.setSelectedConfig()` | `{ providerId, modelId }` | `Promise<{ success: boolean; error?: string }>` | Renderer 選択状態を Main へ同期 |
+| `llm.checkHealth()` | `providerId` | `Promise<HealthCheckResult>` | 接続確認 |
+| `llm.sendChat()` | `LLMChatRequest` | `Promise<LLMChatResponse>` | 非 stream chat |
+| `llm.streamChat()` | `LLMChatRequest` | `Promise<{ requestId: string }>` | stream 開始 |
+| `llm.cancelStream()` | `requestId` | `Promise<{ success: boolean }>` | stream 中断 |
+
+### Main handler facts
+
+| handler | current behavior |
+| --- | --- |
+| `handleGetProviders()` | `PROVIDER_CONFIGS` を走査し、`SecureStorage.getApiKey(config.id)` から `isAvailable` を決定する |
+| `handleGetProviders()` models | `readonly` catalog を `[...config.models]` で mutable `LLMProvider[]` surface に橋渡しする |
+| `handleSetSelectedConfig()` | providerId 妥当性と `modelId.trim()` を検証する |
+| `handleCheckHealth()` | 失敗時は `status: "disconnected"` を返す |
+| `handleSendChat()` | `request.providerId ?? inferProviderId(request.modelId)` で provider を決定する |
+
+### provider / model 解決順
 
 | 優先順位 | 条件 | 使用値 |
 | --- | --- | --- |
-| 1 | `AIChatRequest.providerId` と `modelId` が両方ある | request 指定値を使用 |
-| 2 | request 側指定なし | Main 側選択状態（`setSelectedLLMConfig`）を使用 |
-| 3 | どちらも未設定 | エラー（LLM未選択）を返却 |
-
-### LLMSetSelectedConfigRequest
-
-| フィールド | 型 | 必須 | 説明 |
-| --- | --- | --- | --- |
-| providerId | LLMProviderId | ✓ | 選択中プロバイダー |
-| modelId | string | ✓ | 選択中モデル |
-
-### LLMSetSelectedConfigResponse
-
-| フィールド | 型 | 説明 |
-| --- | --- | --- |
-| success | boolean | 同期成功フラグ |
-| error | string | 同期失敗時メッセージ |
+| 1 | request に `providerId` と `modelId` がある | request 指定値 |
+| 2 | request 側未指定 | Main 側の同期済み選択状態 |
+| 3 | どちらも未設定 | エラー |
 
 ---
 
-## LLMアダプター実装
+## UIアンカー
 
-> **実装**: `apps/desktop/src/main/adapters/llm/`
-> **IPCハンドラー**: `apps/desktop/src/main/handlers/llm.ts`
-> **UIコンポーネント**: `apps/desktop/src/renderer/components/llm/`
-> **詳細ガイド**: `docs/30-workflows/llm-ui-ipc-adapter-implementation/outputs/phase-12/implementation-guide.md`
-
-### 対応プロバイダー
-
-| プロバイダー | アダプター | 主要モデル |
-| ------------ | ---------- | ---------- |
-| OpenAI | OpenAIAdapter | GPT-4o, GPT-4-turbo, GPT-3.5-turbo |
-| Anthropic | AnthropicAdapter | Claude 3.5 Sonnet, Claude 3 Opus, Claude 3 Haiku |
-| Google | GoogleAdapter | Gemini 1.5 Pro, Gemini 2.0 Flash |
-| xAI | xAIAdapter | Grok-2, Grok-2-mini |
-
-### UIコンポーネント
-
-| コンポーネント | 責務 | パス |
-| -------------- | ---- | ---- |
-| ProviderSelector | プロバイダー選択UI | `components/llm/ProviderSelector.tsx` |
-| ModelSelector | モデル選択UI | `components/llm/ModelSelector.tsx` |
-| HealthIndicator | 接続状態インジケーター | `components/llm/HealthIndicator.tsx` |
-| LLMSelectorPanel | 統合パネル | `components/llm/LLMSelectorPanel.tsx` |
-
-### GoogleAdapter: system_instruction 対応（TASK-LLM-MOD-03, 2026-03-24）
-
-GoogleAdapter は Gemini API の `system_instruction` フィールドを使用してシステムプロンプトを送信する。
-
-| 項目 | 内容 |
+| コンポーネント | 役割 |
 | --- | --- |
-| API バージョン | `v1beta`（`system_instruction` の安定サポートに必要） |
-| baseUrl デフォルト | `https://generativelanguage.googleapis.com/v1beta` |
-| systemPrompt 送信方式 | `system_instruction.parts[].text` フィールド（旧: user ロールメッセージとして挿入） |
-| リクエストボディ構築 | `buildRequestBody()` private メソッドで `contents` / `generationConfig` / `system_instruction` を統合 |
-| formatContents 責務 | `request.messages` のみを Gemini 形式に変換（systemPrompt は含まない） |
-
-**注意事項**:
-- `system_instruction` は `request.systemPrompt?.trim()` が truthy な場合のみ付加される
-- `v1beta` 変更により、streaming.test.ts の MSW モック URL も `v1beta` に更新が必要（cross-file 依存）
-
-### アーキテクチャパターン
-
-- **Adapterパターン**: 各プロバイダーのAPIを統一インターフェースに変換
-- **Factoryパターン**: プロバイダーIDからアダプターインスタンスを生成
-- **Template Methodパターン**: BaseLLMAdapterで共通処理（リトライ、エラーハンドリング）を実装
-
-### 品質メトリクス
-
-- テストカバレッジ: 99.25% (Statement)、90.56% (Branch)
-- 全360件の自動テスト成功
+| `ProviderSelector` | provider 選択 |
+| `ModelSelector` | model 選択 |
+| `HealthIndicator` | health 表示 |
+| `LLMSelectorPanel` | フルパネル UI |
+| `InlineModelSelector` | compact selector |
 
 ---
 
 ## 関連ドキュメント
 
-- [LLMインターフェース概要](./interfaces-llm.md)
-- [LLMストリーミング仕様](./llm-streaming.md)
-- [Embedding Generation仕様](./llm-embedding.md)
+- [interfaces-llm.md](./interfaces-llm.md)
+- [ui-ux-llm-selector.md](./ui-ux-llm-selector.md)
+- [llm-streaming.md](./llm-streaming.md)
 
 ---
-
-## 完了タスク（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001）
-
-> 完了日: 2026-03-17
-
-| 変更項目 | ファイル | 内容 |
-| -------- | -------- | ---- |
-| GAP-02: `llm:check-health` catch ブロック修正 | `apps/desktop/src/main/handlers/llm.ts` | catch ブロックの `status: "error"` → `status: "disconnected"` に変更。`HealthCheckResultSchema` の enum（`connected \| disconnected \| error`）のうち、catch が返すべき値は `"disconnected"` が正しい（接続試行失敗を示す） |
-| `handleSetSelectedConfig` バリデーション確認 | `apps/desktop/src/main/handlers/llm.ts` | `modelId` の trim バリデーションが既に実装済みであることを確認・記録 |
-| `HealthCheckResultSchema` status 確認 | `packages/shared/src/types/llm/schemas/` | `status: "connected" \| "disconnected" \| "error"` の定義済みを確認。catch ブロックの `"disconnected"` 変更により enum との整合性が確保された |
-
-**注意事項**:
-
-- `status: "error"` は `HealthCheckResultSchema` の有効な値だが、**catch ブロック（ネットワーク到達不能時）** は `"disconnected"` を返すべき。`"error"` はアダプター内部の論理エラー（例: 認証失敗）に使用する
-- 既存テスト `llm.test.ts` L231 が `status: "error"` を期待していたため、`"disconnected"` に修正が必要だった（GAP-02 の波及影響）
-
-## 完了タスク（TASK-LLM-MOD-03）
-
-> 完了日: 2026-03-24
-
-| 変更項目 | ファイル | 内容 |
-| -------- | -------- | ---- |
-| baseUrl v1→v1beta 移行 | `GoogleAdapter.ts` | デフォルト baseUrl を `v1beta` に変更。`system_instruction` フィールドの安定サポートに必要 |
-| system_instruction 対応 | `GoogleAdapter.ts` | systemPrompt を user ロールメッセージではなく `system_instruction` フィールドで送信 |
-| buildRequestBody 追加 | `GoogleAdapter.ts` | `sendChat`/`streamChat` の共通リクエストボディ構築を private メソッドに集約（DRY） |
-| formatContents 責務分離 | `GoogleAdapter.ts` | `formatContents` から systemPrompt 挿入ロジックを除去し、メッセージ変換のみに特化 |
-| MSW URL v1beta 修正 | `streaming.test.ts` | MSW モックの URL 3 箇所を `v1` → `v1beta` に修正 |
 
 ## 変更履歴
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| 1.3.0 | 2026-03-24 | TASK-LLM-MOD-03 を反映: GoogleAdapter system_instruction 対応セクション追加、完了タスクセクション追加 |
-| 1.2.0 | 2026-03-17 | TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 を反映: `llm:check-health` catch ブロックの `status: "error"` → `"disconnected"` 変更を記録 |
-| 1.1.0 | 2026-03-11 | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001 を反映: `AIChatRequest` に `providerId/modelId` を追加し、`llm:set-selected-config` と `AI_CHAT` の provider/model 解決順を明文化 |
+| 1.4.0 | 2026-03-25 | UT-LLM-MOD-01-005 を反映: `provider-registry.ts` を SSoT として明記し、5 provider / `LLMProviderSchema` current fields / `handleGetProviders()` の実装事実へ同期 |
+| 1.3.0 | 2026-03-24 | TASK-LLM-MOD-03 を反映: GoogleAdapter system_instruction / `v1beta` 反映 |
+| 1.2.0 | 2026-03-17 | `llm:check-health` catch の `disconnected` 返却を反映 |
+| 1.1.0 | 2026-03-11 | `providerId/modelId` 指定と `llm:set-selected-config` を反映 |
 | 1.0.0 | 2026-01-26 | 初版作成 |

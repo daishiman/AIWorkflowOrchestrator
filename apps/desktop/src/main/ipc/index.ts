@@ -907,6 +907,7 @@ export function registerAllIpcHandlers(
           authKeyService,
           skillFileWriter,
           resourceLoader,
+          skillFileManager, // improve() / applyImprovement() で SKILL.md 読み書きに使用
         })
       : undefined;
 

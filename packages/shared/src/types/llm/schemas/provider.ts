@@ -5,18 +5,13 @@
  */
 
 import { z } from "zod";
+import { PROVIDER_IDS } from "./provider-registry";
 
 /**
  * LLMプロバイダーID
- * 対応プロバイダー: OpenAI, Anthropic, Google, xAI, OpenRouter
+ * PROVIDER_CONFIGS から自動導出（SSoT）
  */
-export const LLMProviderIdSchema = z.enum([
-  "openai",
-  "anthropic",
-  "google",
-  "xai",
-  "openrouter",
-]);
+export const LLMProviderIdSchema = z.enum(PROVIDER_IDS);
 
 export type LLMProviderId = z.infer<typeof LLMProviderIdSchema>;
 

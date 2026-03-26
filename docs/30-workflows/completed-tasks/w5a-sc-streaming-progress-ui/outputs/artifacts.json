@@ -1,0 +1,48 @@
+{
+  "taskId": "TASK-SC-07-STREAMING-PROGRESS-UI",
+  "phases": {
+    "phase-01": {
+      "status": "complete",
+      "artifacts": ["outputs/phase-1/requirements-analysis.md"]
+    },
+    "phase-02": {
+      "status": "complete",
+      "artifacts": ["outputs/phase-2/design-document.md"]
+    },
+    "phase-03": {
+      "status": "complete",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-04": { "status": "complete" },
+    "phase-05": { "status": "complete" },
+    "phase-06": { "status": "complete" },
+    "phase-07": { "status": "complete" },
+    "phase-08": { "status": "complete" },
+    "phase-09": { "status": "complete" },
+    "phase-10": { "status": "complete" },
+    "phase-11": {
+      "status": "complete",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "phase-12": {
+      "status": "complete",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "status": "complete",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md"
+      ]
+    }
+  }
+}

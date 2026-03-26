@@ -181,3 +181,27 @@ node scripts/search-spec.js "publish readiness" -C 3
 4. `references/workflow-skill-lifecycle-created-skill-usage-journey.md` と `references/workflow-skill-lifecycle-evaluation-scoring-gate.md` で Task05/Task04 依存契約を確認する
 5. `references/ui-history-search-view.md` / `references/ui-ux-history-panel.md` で UI 観測項目を確認する
 6. workflow 実体は `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/` の Phase 1〜12 成果物で照合する
+
+## SkillCreateWizard LLM接続（TASK-SC-07）を探すとき
+
+このカテゴリは `TASK-SC-07` `SkillCreateWizard` `LLM connection` `GenerationMode` `planSkill` `executePlan` `localPlanResult` `storePlanResult` `useIsSkillGenerating` `useGenerationProgress` `useClearGenerationState` で検索を分割する。
+
+```bash
+node scripts/search-spec.js "TASK-SC-07" -C 3
+node scripts/search-spec.js "SkillCreateWizard LLM" -C 3
+node scripts/search-spec.js "GenerationMode" -C 3
+node scripts/search-spec.js "planSkill executePlan" -C 3
+node scripts/search-spec.js "localPlanResult" -C 3
+node scripts/search-spec.js "useIsSkillGenerating" -C 3
+node scripts/search-spec.js "useClearGenerationState" -C 3
+```
+
+読む順番:
+
+1. `indexes/resource-map.md` の TASK-SC-07 changelog エントリで概要を把握する
+2. `references/arch-state-management-core.md` の TASK-SC-07 セクションで Props/State/Store hooks/Handler 契約を確認する
+3. `references/ui-ux-feature-components-core.md` で SkillCreateWizard の UI 仕様を確認する
+4. `references/lessons-learned-ipc-preload-runtime.md` で L-SC-07-001〜004（vi.mock gaps / non-destructive extension / symmetric clear / GenerationMode SSoT）を確認する
+5. `references/task-workflow-completed-skill-create-ui-integration.md` で完了記録を確認する
+6. `references/task-workflow-backlog.md` で UT-SC-07-STORE-CONFLICT-GUARD / UT-SC-07-AUTH-MODE-API-KEY-IMPL を確認する
+7. 実装実体は `apps/desktop/src/renderer/components/skill/SkillCreateWizard/index.tsx` `apps/desktop/src/renderer/components/skill/SkillCreateWizard/types.ts` `apps/desktop/src/renderer/store/slices/agentSlice.ts` を照合する

@@ -51,6 +51,33 @@
 
 ---
 
+### Advanced Console Safety Governance（2026-03-25）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| ApprovalGate セキュリティ契約 | `references/security-electron-ipc-core.md` |
+| 5 IPC channel 契約 | `references/api-ipc-system-core.md` |
+| ApprovalGate Enforcement パターン | `references/architecture-implementation-patterns-core.md` |
+| 3層レイヤー / handler 登録 | `references/architecture-overview-core.md` |
+| 設計レッスン | `references/lessons-learned-current.md` |
+| 未タスク（UT-6〜10） | `references/task-workflow-backlog.md` |
+| 実装ガイド | `docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/outputs/phase-12/implementation-guide.md` |
+
+---
+
+### LLM provider registry SSoT（2026-03-25）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| provider / model 正本 | `references/llm-ipc-types.md` |
+| UI surface | `references/ui-ux-llm-selector.md` |
+| LLM 全体インデックス | `references/interfaces-llm.md` |
+| 教訓 | `references/lessons-learned-test-typesafety.md` |
+| completed ledger | `references/task-workflow-completed.md` |
+| workflow root | `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/` |
+
+---
+
 ## 型定義クイックアクセス
 
 | 用途               | 型名                          | ファイル                   |
@@ -85,6 +112,9 @@
 | Slide UI状態 | `SlideUIStatus` (`synced` / `running` / `degraded` / `guidance`) | arch-state-management-core.md |
 | Slide レーン分離 | `SlideLane` (`integrated` / `manual`) | arch-state-management-core.md |
 | Slide 能力DTO | `SlideCapabilityDTO` (laneType / modifier / agentClient / fallbackReason / guidance) | arch-state-management-core.md |
+| 承認ゲート | `IApprovalGate`, `DefaultApprovalGate` | security-electron-ipc-core.md |
+| Consumer Auth Guard | `isConsumerToken()` (`sess-` / `sessionKey=` prefix) | security-electron-ipc-core.md |
+| API Key 除去 | `sanitizeForApiKeys()` | security-electron-ipc-core.md |
 
 ---
 
@@ -138,6 +168,16 @@
 | `skill:distribution:export`  | スキルエクスポート |
 | `skill:distribution:fork`    | スキルフォーク |
 | `skill:distribution:share`   | 共有リンク生成 |
+
+### 承認・安全ガバナンス
+
+| チャンネル | 用途 |
+| --- | --- |
+| `approval:respond` | Renderer→Main 承認/拒否応答送信 |
+| `approval:request` | Main→Renderer 承認要求プッシュ通知 |
+| `execution:get-disclosure-info` | AI開示情報取得 |
+| `execution:get-terminal-log` | ターミナルログ取得 |
+| `execution:get-copy-command` | コピーコマンド取得 |
 
 ### チャット
 
@@ -304,6 +344,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-25 | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001: 即時導線セクション追加、承認・安全ガバナンス IPCチャンネル5件追加、IApprovalGate/isConsumerToken/sanitizeForApiKeys 型定義追加 |
 | 2026-03-20 | UT-RAG-08-002: `ILLMClient` 型ドリフト（P64）への参照パスを型定義クイックアクセステーブルに追加。`lessons-learned-rag-embedding-runtime.md` (L-RAG-06) へ導線を登録 |
 | 2026-03-19 | UT-TASK06-007: discovery 導線を completed canonical set に再同期し、implementation pattern detail / completed ledger / EXT-001〜005 を早見表へ反映 |
 | 2026-03-18 | UT-TASK06-007: IPC契約ドリフト自動検出セクション（check-ipc-contracts.ts / R-01~R-04 / EXT-001~003）をIPCチャンネル早見表直後に追加 |

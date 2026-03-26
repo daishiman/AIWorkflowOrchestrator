@@ -4,6 +4,71 @@
 
 ---
 
+## TASK-SC-08-E2E-VALIDATION 完了（2026-03-25）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-12 完了（Phase 13 PR作成はユーザー承認待ち）
+- **Result**: success
+- **Notes**:
+  - Skill Creator LLM統合 E2E テスト + TerminalHandoff 検証
+  - 5シナリオ: A(正常フロー) / B(TerminalHandoff) / C(LLMエラー回復) / D(improve) / E(後方互換)
+  - 36テスト全PASS（skill-creator-integration 25件 + terminal-handoff 11件）
+  - カバレッジ: Lines 89.04% / Branches 77.41% / Functions 100%
+  - 成果物: Phase 1-12 出力21ファイル + コード3ファイル
+  - 未タスク: 0件
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+
+---
+
+## TASK-SC-07-STREAMING-PROGRESS-UI 完了（2026-03-25）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-13 完了
+- **Result**: success
+- **Notes**:
+  - GenerateStep ストリーミング進捗UI実装（ProgressBar / StepList 4段階 / PreviewPanel / ErrorCards / CancelButton）
+  - generationProgressSlice 独立スライス新設（5 state fields / 7 actions / persist除外）
+  - useStreamingProgress Hook（IPC→Store橋渡し / P5対策cleanup / P31個別セレクタ）
+  - useCancelGeneration Hook（AbortController管理 / cancelled stage遷移）
+  - ErrorCards atoms リファクタリング（generate-step/ErrorCards.tsx に3種統合 / P47 Record型マッピング）
+  - store/index.ts に個別セレクタ9点追加（P31対策）
+  - SkillCreateWizard 統合（resolveStage / bridgeLocalError / onRetry接続）
+  - 114テスト全PASS（GenerateStep 44件 / useStreamingProgress 29件 / useCancelGeneration 4件 / SkillCreateWizard 37件）
+  - 未タスク4件: TASK-SC-07-IPC-CANCEL / TASK-SC-07-DEBOUNCE / TASK-SC-07-OPEN-SETTINGS / TASK-SC-07-PARSE-ERROR-CODE
+
+---
+
+## TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了（2026-03-25）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 完了記録追加
+- **Result**: success
+- **Notes**:
+  - HealthPolicy 統一インターフェース実装（Gap-3 解消）
+  - `packages/shared/src/types/health-policy.ts` 新規作成（HealthPolicy 型 + resolveHealthPolicy() pure function）
+  - `RuntimePolicyResolver.ts` に HealthPolicy DI + degraded 分岐追加（P62 対策）
+  - `mainlineAccess.ts` に HealthPolicy 消費ロジック追加
+  - `HealthIndicator.tsx` に HealthPolicy props 追加
+  - `apiKeyDegraded` に @deprecated v0.8.0 マーク
+  - 38 テスト全 PASS（health-policy 23件 + RuntimePolicyResolver 8件 + mainlineAccess 7件）
+  - 未タスク 3 件（UT-HEALTH-POLICY-MAINLINE-MIGRATION-001, UT-HEALTH-POLICY-RUNTIME-INJECTION-001, UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001）
+
+---
+
+## UT-LLM-MOD-01-005 完了（2026-03-25）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/` を canonical root として再検証
+  - `implementation-guide.md` を validator 10/10 要件へ整形
+  - `manual-test-checklist.md` / `outputs/artifacts.json` / `phase12-task-spec-compliance-check.md` の補助成果物要件を充足
+  - follow-up 2件を raw メモではなく full template 準拠の未タスク指示書へ昇格
+  - `audit-unassigned-tasks --target-file` の current/baseline 分離を運用ルールへ反映
+
+---
+
 ## UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -17,7 +82,6 @@
   - 未タスク: 0件
 
 ---
-
 ## TASK-SC-06-UI-RUNTIME-CONNECTION 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -1195,3 +1259,21 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
 | 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
 | 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
+### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation |
+| 変更対象 | channels.ts, creatorHandlers.ts, skill-creator-api.ts（既存変更）+ ImprovementProposalItem/List/ApplyResult/Panel（新規4コンポーネント） |
+| 結果 | Phase 1-12 完了。改善提案の承認/適用UIを実装。IPC `skill-creator:apply-improvement` + Preload `applyRuntimeImprovement` + diff表示UIコンポーネント。62テスト全PASS |
+| 検証 | 未タスク 0件。P42/P44/P47/P48/P49/P60/P65 準拠確認済み |
+
+### 2026-03-24: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | 設計・実装タスク |
+| 仕様書ディレクトリ | docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/ |
+| Phase 12 成果物 | implementation-guide.md, system-spec-update-summary.md, documentation-changelog.md, unassigned-task-detection.md, phase12-task-spec-compliance-check.md, skill-feedback-report.md |
+| 未タスク検出 | 10件（UT-1〜UT-10） |
+| 改善提案 | 3件（SF-1〜SF-3） |

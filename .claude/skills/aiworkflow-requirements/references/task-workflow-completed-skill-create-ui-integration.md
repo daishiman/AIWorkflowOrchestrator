@@ -219,7 +219,7 @@
 
 | 成果物 | パス/内容 |
 | --- | --- |
-| ワークフロー一式 | `docs/30-workflows/skill-creator-llm-integration/w4a-sc-ipc-di-wiring/` |
+| ワークフロー一式 | `docs/30-workflows/completed-tasks/w4a-sc-ipc-di-wiring/` |
 | テストファイル | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.integration.test.ts` |
 
 #### 変更理由
@@ -313,9 +313,85 @@
 
 | タスクID | 概要 |
 | --- | --- |
-| TASK-SC-07 | SkillCreateWizard への LLM 生成フロー接続 |
+| ~~TASK-SC-07~~ | ~~SkillCreateWizard への LLM 生成フロー接続~~ → **完了**（2026-03-25） |
 | TASK-SC-08 | onProgress コールバックによるリアルタイムプログレス更新 |
 | TASK-SC-09 | detectMode "improve" モードハンドリング実装 |
 | TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 |
 | TASK-SC-11 | AbortController による planSkill/executePlan キャンセル機構 |
 | TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 |
+
+---
+
+### タスク: TASK-SC-07-STREAMING-PROGRESS-UI ストリーミング進捗UI実装（2026-03-25完了）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-SC-07-STREAMING-PROGRESS-UI |
+| 完了日 | 2026-03-25 |
+| ステータス | **完了（Phase 1-13 完了）** |
+| タスク種別 | UI 実装 + Store 分割 + Hook 追加 |
+| ワークフロー | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| ワークフロー一式 | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+| GenerateStep UI改修 | `apps/desktop/src/renderer/components/skill/wizard/generate-step/` |
+| generationProgressSlice 独立スライス | `apps/desktop/src/renderer/store/slices/generationProgressSlice.ts` |
+| useStreamingProgress Hook | `apps/desktop/src/renderer/hooks/useStreamingProgress.ts` |
+| useCancelGeneration Hook | `apps/desktop/src/renderer/hooks/useCancelGeneration.ts` |
+| ErrorCards atoms | `apps/desktop/src/renderer/components/skill/wizard/generate-step/ErrorCards.tsx` |
+
+#### テスト結果
+
+| 指標 | 結果 |
+| --- | --- |
+| テスト数 | 114（全PASS） |
+
+#### 後続未タスク
+
+| タスクID | 概要 | 優先度 |
+| --- | --- | --- |
+| TASK-SC-07-IPC-CANCEL | skill-creator:cancel IPC送信の実装 | 高 |
+| TASK-SC-07-DEBOUNCE | デバウンス100ms実装 | 中 |
+| TASK-SC-07-OPEN-SETTINGS | 設定画面遷移実装 | 中 |
+| TASK-SC-07-PARSE-ERROR-CODE | エラーコード構造化 | 中 |
+
+---
+
+## TASK-SC-08-E2E-VALIDATION: Skill Creator LLM統合 E2E検証 + TerminalHandoff（2026-03-25）
+
+| 項目 | 内容 |
+|------|------|
+| タスクID | TASK-SC-08-E2E-VALIDATION |
+| タスク名 | w5b-sc-e2e-terminal-handoff |
+| 分類 | E2E検証 + verify実装 + TerminalHandoff |
+| ステータス | implementation_completed（Phase 1-12完了、Phase 13 PR待ち） |
+| Wave | 5（w5b） |
+| 前提タスク | w3a, w3b, w4 |
+| 関連FR | FR-4（verify）, FR-6（TerminalHandoff） |
+| 関連AC | AC-1〜AC-8 |
+| 仕様書パス | `docs/30-workflows/w5b-sc-e2e-terminal-handoff/` |
+
+### 成果物
+
+| 種別 | ファイル | 状態 |
+|------|---------|------|
+| テスト | `apps/desktop/src/test/e2e/skill-creator-integration.test.ts` (25テスト) | PASS |
+| テスト | `apps/desktop/src/test/e2e/terminal-handoff.test.ts` (11テスト) | PASS |
+| ヘルパー | `apps/desktop/src/test/helpers/skill-creator-test-helpers.ts` | 完了 |
+| ドキュメント | Phase 1-12 出力 21ファイル | 完了 |
+
+### テスト結果
+
+| メトリクス | 結果 | 基準 |
+|-----------|------|------|
+| テスト合計 | 36/36 PASS | 全PASS |
+| Line Coverage | 89.04% | ≥80% |
+| Branch Coverage | 77.41% | ≥60% |
+| Function Coverage | 100% | ≥80% |
+
+### 未タスク
+
+検出件数: 0件

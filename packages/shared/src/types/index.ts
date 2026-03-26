@@ -189,3 +189,11 @@ export * from "./safety-gate";
 
 // 実行能力型定義 (execution-responsibility-contract-foundation)
 export * from "./execution-capability";
+
+// HealthPolicy 統一インターフェース (TASK-IMP-HEALTH-POLICY-UNIFICATION-001)
+export type {
+  HealthStatus,
+  HealthPolicy,
+  HealthPolicyInput,
+} from "./health-policy";
+export { resolveHealthPolicy } from "./health-policy";

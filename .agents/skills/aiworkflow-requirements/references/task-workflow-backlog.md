@@ -31,7 +31,8 @@
 | UT-LLM-MOD-01-002 | LLMProvider 共有型への description フィールド追加 | 低 | TASK-LLM-MOD-01 Phase 3 U-02（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-002.md` |
 | UT-LLM-MOD-01-003 | 既存テストのモデルIDフィクスチャ更新 | 低 | TASK-LLM-MOD-01 Phase 1 影響テスト調査（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-003.md` |
 | UT-LLM-MOD-01-004 | システム仕様書の旧モデルIDテーブル更新（9ファイル） | 中 | TASK-LLM-MOD-01 30種思考法分析（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-004.md` |
-| UT-LLM-MOD-01-005 | PROVIDER_CONFIGS/inferProviderId/LLMProviderIdSchema 三重管理解消 | 中 | TASK-LLM-MOD-01 30種思考法分析 KJ法テーマA（2026-03-23） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-01-005.md` |
+| task-llm-adapter-factory-provider-ids-ssot | `LLMAdapterFactory` の `SUPPORTED_PROVIDER_IDS` を `provider-registry.ts` 由来に寄せる | 中 | UT-LLM-MOD-01-005 Phase 12 未タスク検出（2026-03-25） | `docs/30-workflows/unassigned-task/task-llm-adapter-factory-provider-ids-ssot.md` |
+| task-llm-handle-get-providers-readonly-models | `handleGetProviders()` の readonly models bridge を解消する | 低 | UT-LLM-MOD-01-005 Phase 12 未タスク検出（2026-03-25） | `docs/30-workflows/unassigned-task/task-llm-handle-get-providers-readonly-models.md` |
 | UT-LLM-MOD-03-TYPE-01 | buildRequestBody 戻り値型の厳密化（GeminiRequestBody 型定義） | 低 | TASK-LLM-MOD-03 Phase 10 未タスク検出（2026-03-24） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-03-TYPE-01.md` |
 | UT-LLM-MOD-03-TYPE-02 | GeminiGenerateContentResponse の usageMetadata optional 化検討 | 低 | TASK-LLM-MOD-03 Phase 10 未タスク検出（2026-03-24） | `docs/30-workflows/unassigned-task/UT-LLM-MOD-03-TYPE-02.md` |
 | TASK-LLM-MOD-HEALTHCHECK-CONST | ヘルスチェックモデルIDの定数化（全 Adapter 統一） + `ANTHROPIC_VALIDATION_MODEL` 旧ID更新 | 低 | TASK-LLM-MOD-02 Phase 8（2026-03-23） | `docs/30-workflows/unassigned-task/task-llm-mod-healthcheck-const.md` |
@@ -563,6 +564,7 @@
 | ~~UT-SC-05-APPLY-IMPROVEMENT-UI~~ | ~~applyImprovement() の Renderer 側承認 UI + IPC ハンドラ登録~~ | ~~中~~ | ~~TASK-SC-05-IMPROVE-LLM Phase 12（2026-03-23）~~ | **完了**: UT-SC-05-APPLY-IMPROVEMENT-UI（2026-03-24）→ completed ledger へ移動 |
 | UT-SC-05-UT-1 | LLMプロバイダー動的切替（APIキー設定後のアプリ再起動不要化） | 高 | UT-SC-05-IPC-DI-WIRING Phase 12（2026-03-24） | `docs/30-workflows/unassigned-task/ut-sc-05-ut-1-llm-provider-dynamic-switch.md` |
 | UT-SC-05-UT-2 | track()/safeRegister async対応 | 低 | UT-SC-05-IPC-DI-WIRING Phase 12（2026-03-24） | `docs/30-workflows/unassigned-task/ut-sc-05-ut-2-track-async-callback.md` |
+| UT-SC-05-UT-3 | Phase 3 コード差分分析の標準タスク化（task-specification-creator改善） | 中 | UT-SC-05-IPC-DI-WIRING Phase 12 skill-feedback（2026-03-25） | `docs/30-workflows/unassigned-task/ut-sc-05-ut-3-phase3-code-diff-analysis.md` |
 | ~~UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001~~ | ~~navContract.ts に executionConsole エントリ追加~~ | ~~高~~ | ~~TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 Phase 10（2026-03-24）~~ | **完了**: UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001（2026-03-24）→ completed ledger へ移動 |
 | UT-RENAME-RUNTIME-ACCESS-TERMINAL-HELPERS-001 | runtimeAccess.ts の terminal 系ヘルパー名称変更 | 低 | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 M-1（2026-03-24） | `docs/30-workflows/unassigned-task/ut-rename-runtime-access-terminal-helpers-001.md` |
 
@@ -581,6 +583,10 @@
 | TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 | 低 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-10-AGENT-SLICE-GENERATION-SPLIT.md` |
 | TASK-SC-11 | AbortController による planSkill/executePlan キャンセル機構 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-11-ABORT-CONTROLLER-PLAN-CANCEL.md` |
 | TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 | 低 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-12-HYBRID-STATE-PATTERN-GUIDE.md` |
+| TASK-SC-07-IPC-CANCEL | skill-creator:cancel IPC送信の実装（GenerateStep キャンセルボタンから Main Process への中断シグナル送信） | 高 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+| TASK-SC-07-DEBOUNCE | デバウンス100ms実装（createSkill 呼び出しの連打防止） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+| TASK-SC-07-OPEN-SETTINGS | 設定画面遷移実装（API_KEY_MISSING エラー時の「設定を開く」ボタン押下で SettingsView へ遷移） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+| TASK-SC-07-PARSE-ERROR-CODE | エラーコード構造化（IPC エラーレスポンスから GenerationErrorCode を判定するパーサー実装） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
 
 ### 未タスク管理ルール
 
@@ -589,3 +595,11 @@
 - 優先度「高」のタスクから順に実施
 
 ---
+| UT-6 | IPC Handler登録 | HIGH | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（統合） | main/ipc/index.ts へ advancedConsole/approval/disclosure の3ハンドラ追加 |
+| UT-7 | Preload API公開 | HIGH | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（統合） | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 |
+| UT-8 | Approval Request Push実装 | HIGH | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（統合） | Main→Renderer への承認要求プッシュ通知（webContents.send） |
+| UT-9 | revokeAll() セッション終了時呼び出し | MEDIUM | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（統合） | abort/done 時に ApprovalGate.revokeAll() でトークンクリア |
+| UT-10 | disclosureHandlers.ts 独立テスト | LOW | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 12（品質） | dismiss/reopen/state 取得の単体テスト作成 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高 | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver の HealthPolicy 注入元実装 | 高 | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md` |
+| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0） | 中 | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |

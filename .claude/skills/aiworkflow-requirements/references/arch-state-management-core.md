@@ -660,12 +660,12 @@ interface PlanResult {
 
 | セレクタ | 返却型 |
 | --- | --- |
-| `useIsGenerating` | `boolean` |
+| `useIsSkillGenerating` | `boolean` |
 | `useGenerationProgress` | `string` |
 | `useGenerationError` | `string \| null` |
 | `useCurrentPlanId` | `string \| null` |
 | `useCurrentPlanResult` | `PlanResult \| null` |
-| `useSetIsGenerating` | `(v: boolean) => void` |
+| `useSetIsSkillGenerating` | `(v: boolean) => void` |
 | `useSetGenerationProgress` | `(v: string) => void` |
 | `useSetGenerationError` | `(v: string \| null) => void` |
 | `useSetCurrentPlanId` | `(v: string \| null) => void` |
@@ -674,7 +674,7 @@ interface PlanResult {
 
 ### Hybrid State Pattern（S33 適用）
 
-SkillLifecyclePanel では `useState`（ローカル）と Zustand Store を併用する Hybrid State Pattern を採用:
+SkillLifecyclePanel / SkillCreateWizard では `useState`（ローカル）と Zustand Store を併用する Hybrid State Pattern を採用:
 
 ```typescript
 const activePlanResult = localPlanResult ?? storePlanResult;
@@ -696,5 +696,28 @@ const activePlanResult = localPlanResult ?? storePlanResult;
 | タスクID | 内容 | ステータス |
 | --- | --- | --- |
 | TASK-SC-06-UI-RUNTIME-CONNECTION | SkillLifecyclePanel → RuntimeSkillCreatorFacade plan/execute フロー接続 | **完了**（2026-03-24） |
+| TASK-SC-07 | SkillCreateWizard LLM 生成フロー接続（Hybrid State Pattern + 対称クリア） | **完了**（2026-03-25） |
 | TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 | 未着手（LOW） |
+
+#### TASK-SC-07 SkillCreateWizard LLM 接続 実装詳細
+
+**追加 Props:**
+
+| コンポーネント | Prop | 型 | 必須 |
+|---------------|------|-----|------|
+| DescribeStep | generationMode | GenerationMode | optional |
+| DescribeStep | onGenerationModeChange | (mode: GenerationMode) => void | optional |
+| GenerateStep | generationMode | GenerationMode | optional |
+| GenerateStep | generationProgress | string \| null | optional |
+| GenerateStep | planResult | PlanResult \| null | optional |
+| GenerateStep | onExecutePlan | () => void | optional |
+| GenerateStep | onCancelPlan | () => void | optional |
+
+**追加 State（SkillCreateWizard）:** `generationMode` (useState: "llm" \| "template"), `localPlanResult` (useState: Hybrid State Pattern ローカル側)
+
+**追加 Store Hooks（11個）:** useIsSkillGenerating, useGenerationProgress, useGenerationError, useCurrentPlanResult, useCurrentPlanId + 各 setter + useClearGenerationState
+
+**ハンドラ:** handleLlmGenerate (planSkill 呼び出し), handleExecutePlan (executePlan + 対称クリア), handleCancelPlan (DescribeStep 戻り + 対称クリア), handleDescribeNext (generationMode 分岐)
+
+**型定義:** `GenerationMode` = wizard/index.ts（SSoT）, `SkillCreatorRuntimeApi` = SkillCreateWizard.tsx ローカル型
 | TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 | 未着手（LOW） |

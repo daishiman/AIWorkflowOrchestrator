@@ -39,6 +39,8 @@
 - 更新した spec と理由
 - canonical root / mirror policy
 - canonical filename は `system-spec-update-summary.md`
+- `artifacts.json` と `outputs/artifacts.json` の同期結果も書く
+- Phase 11 が NON_VISUAL の場合でも `manual-test-checklist.md` など補助成果物の有無を記録する
 
 ### 設計タスク（docs-only）での注意
 
@@ -70,6 +72,8 @@
 
 - 0件でも summary を残す
 - 1件以上なら formalize path を記録する
+- raw メモで終わらせず、`audit-unassigned-tasks.js --target-file` が通る full template まで昇格させる
+- repo 全体の baseline 違反が多い場合は `current` と `baseline` を分離して記録する
 
 ## Task 12-5: skill feedback
 
@@ -85,6 +89,7 @@
 - `outputs/phase-11/manual-test-result.md` が `not_run` のままなら Phase 11 / 12 を completed にしない
 - internal adapter の実装だけで public IPC / preload contract 更新済みとは記録しない
 - Phase 13 は user approval 未取得なら `blocked` を維持し、completed へ進めない
+- skill を更新した場合は canonical `.claude/skills/...` と mirror `.agents/skills/...` の parity も記録する
 
 **確認コマンド（docs-only / UI task 共通で必須）**:
 
