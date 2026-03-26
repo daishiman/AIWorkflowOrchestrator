@@ -1,0 +1,12 @@
+{
+  "mode": "non_visual",
+  "reason": "SkillCreatorWorkflowEngine の artifact append 是正であり UI 変更を含まないため",
+  "captures": [
+    {
+      "id": "TC-11-01",
+      "target": "workflow state snapshot",
+      "required": false,
+      "status": "not_applicable"
+    }
+  ]
+}

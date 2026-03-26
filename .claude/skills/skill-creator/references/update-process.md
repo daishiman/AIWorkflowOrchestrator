@@ -229,3 +229,5 @@ node scripts/validate_all.js .claude/skills/my-skill
 - internal contract hardening は「新仕様追加」ではなく「existing contract の hardening current facts」として system spec へ追記する。
 - carry-forward していた follow-up を同ターンで解消したら、completed ledger / unassigned detection / quick-reference を 0 件状態へそろえる。
 - compile gate PASS と env-blocked test は別行で記録し、`typecheck PASS + Vitest blocker` のように境界を明示する。
+- Step 2 domain spec が no-op でも、Step 1 の completed ledger / lessons / LOGS / SKILL history / source unassigned status は no-op にしない。
+- Phase 12 root evidence を手編集した後は `rg "\\*\\*\\* Add File:|\\*\\*\\* Begin Patch|\\*\\*\\* End Patch"` で patch marker 混入を監査し、artifact existence だけで false green にしない。

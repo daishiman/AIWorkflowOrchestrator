@@ -138,6 +138,31 @@
 - 環境 blocker は既存 `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` の管轄と重複するため、新設しない
 
 ---
+### タスク: UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 runtime workflow failure verify artifact append 是正（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | implementation-closure / runtime-workflow-follow-up |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | `SkillCreatorWorkflowEngine` verify artifact strategy / runtime tests / workflow pack close-out |
+| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-verify-artifact-append-001/` |
+
+#### 実施内容
+
+- `SkillCreatorWorkflowEngine.recordExecuteResult()` / `recordVerifyFailure()` の `verify_result` 戦略を upsert から append へ変更し、pending/fail を履歴正本へ残す current fact を固定
+- `RuntimeSkillCreatorFacade.workflow-orchestration.test.ts` と `SkillCreatorWorkflowEngine.test.ts` に failure append / repeated failure 回帰ケースを追加し、`execute_result=2件` / `verify_result=4件` の履歴増分を検証
+- workflow pack 側では stale method 名（`recordExecutionFailure()`）を current code に合わせて是正し、Phase 12 の 6成果物と completed metadata を current facts へ更新
+- source unassigned task `docs/30-workflows/unassigned-task/task-ut-imp-runtime-workflow-verify-artifact-append-001.md` を completed 状態へ更新し、workflow root への導線を固定
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- 今回差分は runtime workflow follow-up の局所是正で閉じたため、既存 backlog と重複する未タスクは新設しない
+
+---
 ### タスク: UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001 task-sdk-01-phase12-compliance-sync（2026-03-26）
 
 | 項目 | 値 |

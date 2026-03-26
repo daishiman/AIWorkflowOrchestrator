@@ -196,6 +196,59 @@ describe("SkillCreatorWorkflowEngine", () => {
       message: "verify failed",
       nextAction: "improve",
     });
+    const verifyArtifacts = snapshot.phaseArtifacts.filter(
+      (artifact) => artifact.kind === "verify_result",
+    );
+    expect(verifyArtifacts).toHaveLength(2);
+    expect(verifyArtifacts.at(-1)?.payload).toMatchObject(
+      snapshot.verifyResult!,
+    );
+  });
+
+  it("repeated failure でも execute_result / verify_result を append する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    const planResult = createPlanResult();
+    const decision = {
+      type: "integrated_api" as const,
+      apiKey: "sk-test",
+      permissionMode: "default" as const,
+    };
+
+    engine.recordPlanResult(planResult, decision);
+    engine.recordExecuteStart(planResult, decision);
+    engine.recordExecuteResult("plan-001", {
+      executeId: "exec-001",
+      skillName: "test-skill",
+      success: true,
+    });
+    engine.recordVerifyFailure("plan-001", "verify failed #1", "improve");
+
+    engine.recordExecuteStart(planResult, decision);
+    const snapshot = engine.recordExecuteResult("plan-001", {
+      executeId: "exec-002",
+      skillName: "test-skill",
+      success: true,
+    });
+    const failedSnapshot = engine.recordVerifyFailure(
+      "plan-001",
+      "verify failed #2",
+      "improve",
+    );
+
+    expect(
+      snapshot.phaseArtifacts.filter(
+        (artifact) => artifact.kind === "execute_result",
+      ),
+    ).toHaveLength(2);
+    expect(
+      failedSnapshot.phaseArtifacts.filter(
+        (artifact) => artifact.kind === "verify_result",
+      ),
+    ).toHaveLength(4);
+    expect(failedSnapshot.verifyResult).toMatchObject({
+      status: "fail",
+      message: "verify failed #2",
+    });
   });
 
   it("verify review は awaitingUserInput.reason=verification_review を生成する", () => {

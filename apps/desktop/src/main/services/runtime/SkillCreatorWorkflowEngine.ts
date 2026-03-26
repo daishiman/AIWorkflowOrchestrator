@@ -159,7 +159,6 @@ export class SkillCreatorWorkflowEngine {
         message: result.error ?? "Skill execution failed.",
       });
     }
-
     this.appendArtifact(state, "execute", "execute_result", {
       executeId: result.executeId,
       skillName: result.skillName,
@@ -344,22 +343,6 @@ export class SkillCreatorWorkflowEngine {
     this.appendArtifact(state, phase, "route_snapshot", snapshot);
   }
 
-  private appendArtifact(
-    state: SkillCreatorWorkflowState,
-    phase: SkillCreatorWorkflowPhase,
-    kind: SkillCreatorWorkflowArtifact["kind"],
-    payload: unknown,
-  ): void {
-    const artifact: SkillCreatorWorkflowArtifact = {
-      id: `${state.planId}:${phase}:${kind}:${state.phaseArtifacts.length + 1}`,
-      phase,
-      kind,
-      createdAt: nowIso(),
-      payload,
-    };
-    state.phaseArtifacts.push(artifact);
-  }
-
   private getLatestArtifact(
     state: SkillCreatorWorkflowState,
     kind: SkillCreatorWorkflowArtifact["kind"],
@@ -381,7 +364,7 @@ export class SkillCreatorWorkflowEngine {
       review: ["execute", "handoff"],
       execute: ["verify"],
       verify: ["review", "improve"],
-      improve: [],
+      improve: ["execute"],
       handoff: [],
     };
 
@@ -406,6 +389,27 @@ export class SkillCreatorWorkflowEngine {
     throw new Error(
       `invalid workflow transition: ${currentPhase} -> ${attemptedPhase}`,
     );
+  }
+
+  private appendArtifact(
+    state: SkillCreatorWorkflowState,
+    phase: SkillCreatorWorkflowPhase,
+    kind: SkillCreatorWorkflowArtifact["kind"],
+    payload: unknown,
+  ): void {
+    const sequence =
+      state.phaseArtifacts.filter(
+        (artifact) => artifact.phase === phase && artifact.kind === kind,
+      ).length + 1;
+    const artifact: SkillCreatorWorkflowArtifact = {
+      id: `${state.planId}:${phase}:${kind}:${sequence}`,
+      phase,
+      kind,
+      createdAt: nowIso(),
+      payload,
+    };
+
+    state.phaseArtifacts.push(artifact);
   }
 
   private refreshResumeToken(state: SkillCreatorWorkflowState): void {

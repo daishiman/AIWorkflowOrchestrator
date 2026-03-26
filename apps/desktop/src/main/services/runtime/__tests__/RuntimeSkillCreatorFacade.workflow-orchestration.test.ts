@@ -193,6 +193,39 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
     ).toHaveLength(1);
   });
 
+  it("failure verify_result artifact を facade snapshot から読める", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockResolvedValue({
+      executionId: "exec-100",
+      success: true,
+    });
+
+    await facade.execute(createPlanResult(), "api-key", "sk-test");
+    workflowEngine.recordVerifyFailure("plan-100", "verify failed", "improve");
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-100");
+    const verifyArtifacts =
+      snapshot?.phaseArtifacts.filter(
+        (artifact) => artifact.kind === "verify_result",
+      ) ?? [];
+
+    expect(snapshot).toMatchObject({
+      currentPhase: "improve",
+      verifyResult: {
+        status: "fail",
+        message: "verify failed",
+        nextAction: "improve",
+      },
+    });
+    expect(verifyArtifacts).toHaveLength(2);
+    expect(verifyArtifacts.at(-1)?.payload).toMatchObject(
+      snapshot?.verifyResult ?? {},
+    );
+  });
   it("execute() terminal_handoff は executor を呼ばず handoff state を保存する", async () => {
     vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
       type: "terminal_handoff",

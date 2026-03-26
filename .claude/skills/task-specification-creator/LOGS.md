@@ -37,6 +37,18 @@
   - `spec-update-workflow.md` に「channel 追加がなくても Facade/Engine owner 変更・`terminal_handoff` early return・`resumeTokenEnvelope` owner 変更があれば Step 2 必須」とする判断ルールを追加
   - current workflow の `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を実績ベースへ更新
   - 環境 blocker は既存 `task-fix-worktree-native-binary-guard-001.md` と重複確認済みのため未タスク新設なし
+
+---
+## UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 完了（2026-03-26）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync
+- **Result**: success
+- **Notes**:
+  - current workflow の stale method 名 `recordExecutionFailure()` を `recordExecuteResult()` / `recordVerifyFailure()` へ是正
+  - source unassigned task を completed 状態へ更新し、workflow root と status を整合させた
+  - `task-workflow-completed.md` / lessons / LOGS / SKILL history を same-wave で同期し、Step 1-A を no-op にしない current fact へ戻した
+  - `generate-index.js` を再実行して aiworkflow-requirements indexes/topic-map/keywords を current state に更新する
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
 
 ---

@@ -1,0 +1,71 @@
+{
+  "feature": "ut-imp-runtime-workflow-verify-artifact-append-001",
+  "created": "2026-03-26T00:00:00.000Z",
+  "lastUpdated": "2026-03-26T12:51:26.018Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/spec-extraction-map.md"]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/ownership-matrix.md"]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-summary.md"]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-matrix.md"]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-scope.md"]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion-summary.md"]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-traceability.md"]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-summary.md"]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/quality-assurance-log.md",
+        "outputs/verification-report.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-summary.md"]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshot-plan.json"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": { "status": "blocked", "artifacts": [] }
+  }
+}
