@@ -38,6 +38,32 @@ const STATUS_DISPLAY = {
   skipped: 'スキップ',
 };
 
+function normalizeStatus(status) {
+  if (status === 'complete') {
+    return 'completed';
+  }
+  if (status === 'not_started') {
+    return 'pending';
+  }
+  return status;
+}
+
+function getPhaseMap(phases) {
+  if (!phases) {
+    return {};
+  }
+
+  if (Array.isArray(phases)) {
+    return Object.fromEntries(
+      phases
+        .filter((phase) => phase && typeof phase.phase === 'number')
+        .map((phase) => [String(phase.phase), phase]),
+    );
+  }
+
+  return phases;
+}
+
 // 引数パース
 function parseArgs(args) {
   const result = {
@@ -94,11 +120,16 @@ function findPhaseFiles(workflowDir) {
 
 // index.md生成
 function deriveOverallStatus(phases) {
-  if (!phases) {
+  const phaseMap = getPhaseMap(phases);
+
+  if (Object.keys(phaseMap).length === 0) {
     return 'in_progress';
   }
 
-  const phaseStatuses = Array.from({ length: 13 }, (_, index) => phases[String(index + 1)]?.status || 'pending');
+  const phaseStatuses = Array.from(
+    { length: 13 },
+    (_, index) => normalizeStatus(phaseMap[String(index + 1)]?.status) || 'pending'
+  );
   const phase1to12 = phaseStatuses.slice(0, 12);
   const phase13 = phaseStatuses[12];
 
@@ -106,12 +137,16 @@ function deriveOverallStatus(phases) {
     if (phase13 === 'completed') {
       return 'completed';
     }
-    if (phase13 === 'pending' || phase13 === 'not_started') {
+    if (
+      phase13 === 'pending' ||
+      phase13 === 'blocked' ||
+      phase13 === 'blocked_awaiting_user_instruction'
+    ) {
       return 'phase12_completed';
     }
   }
 
-  if (phaseStatuses.every((status) => status === 'pending' || status === 'not_started')) {
+  if (phaseStatuses.every((status) => status === 'pending')) {
     return 'pending';
   }
 
@@ -128,7 +163,9 @@ function generateIndex(workflowDir, artifacts, phaseFiles, workflowDisplayPath) 
   const createdDate = createdSource
     ? new Date(createdSource).toISOString().split('T')[0]
     : new Date().toISOString().split('T')[0];
-  const overallStatus = artifacts.status || deriveOverallStatus(artifacts.phases);
+  const overallStatus =
+    normalizeStatus(artifacts.status) || deriveOverallStatus(artifacts.phases);
+  const phaseMap = getPhaseMap(artifacts.phases);
 
   let content = `# ${featureName} - タスク実行仕様書
 
@@ -153,7 +190,7 @@ function generateIndex(workflowDir, artifacts, phaseFiles, workflowDisplayPath) 
   for (let i = 1; i <= 13; i++) {
     const phaseName = PHASE_NAMES[i];
     const phaseFile = phaseFiles[i] || `phase-${i}-*.md`;
-    const phaseStatus = artifacts.phases?.[String(i)]?.status || 'pending';
+    const phaseStatus = normalizeStatus(phaseMap[String(i)]?.status) || 'pending';
     const statusDisplay = STATUS_DISPLAY[phaseStatus] || phaseStatus;
 
     content += `| ${i} | ${phaseName} | [${phaseFile}](${phaseFile}) | ${statusDisplay} |\n`;
@@ -200,7 +237,7 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js \\
 
   // 成果物一覧を生成
   for (let i = 1; i <= 13; i++) {
-    const phaseArtifacts = artifacts.phases?.[String(i)]?.artifacts || [];
+    const phaseArtifacts = phaseMap[String(i)]?.artifacts || [];
     const artifactList =
       phaseArtifacts.length > 0
         ? phaseArtifacts

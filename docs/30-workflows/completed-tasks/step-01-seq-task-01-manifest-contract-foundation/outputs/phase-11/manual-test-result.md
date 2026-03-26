@@ -2,12 +2,12 @@
 
 ## 実施概要
 
-| 項目     | 内容                                                      |
-| -------- | --------------------------------------------------------- |
-| 実施種別 | docs-only walkthrough                                     |
-| 対象     | manifest scope / current code anchor / downstream handoff |
-| 画像証跡 | 不要                                                      |
-| 実施日   | 2026-03-26                                                |
+| 項目     | 内容                                                               |
+| -------- | ------------------------------------------------------------------ |
+| 実施種別 | docs-only walkthrough                                              |
+| 対象     | manifest scope / current code anchor / downstream handoff          |
+| 画像証跡 | validator 互換用 placeholder PNG を保存（UI レビュー用途ではない） |
+| 実施日   | 2026-03-26                                                         |
 
 ## テスト結果
 
@@ -21,3 +21,4 @@
 
 - 文書だけで scope と non-scope を追える
 - open issue は toolchain 側の test 実行ブロッカーのみ
+- `outputs/phase-11/screenshots/non-visual-placeholder.png` は validator 互換用であり、視覚品質評価の根拠には使わない

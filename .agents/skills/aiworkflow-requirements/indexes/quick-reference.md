@@ -91,6 +91,21 @@
 
 ---
 
+### TASK-SDK-01 Phase 12 close-out / follow-up sync（2026-03-26）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| close-out follow-up の全体像 | `references/task-workflow-completed.md` |
+| manifest foundation の教訓 | `references/lessons-learned-phase12-workflow-lifecycle.md` |
+| runtime hardening current facts | `references/interfaces-agent-sdk-skill-reference.md` |
+| backlog / carry-forward 判定 | `references/task-workflow-completed.md` |
+| workflow ledger 導線 | `references/task-workflow.md` |
+| 実装完了 root | `docs/30-workflows/completed-tasks/step-01-seq-task-01-manifest-contract-foundation/` |
+| follow-up workflow root | `docs/30-workflows/completed-tasks/task-sdk-01-phase12-compliance-sync/` |
+| follow-up 指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-01-phase12-compliance-sync-001.md` |
+
+---
+
 ## 型定義クイックアクセス
 
 | 用途               | 型名                          | ファイル                   |
