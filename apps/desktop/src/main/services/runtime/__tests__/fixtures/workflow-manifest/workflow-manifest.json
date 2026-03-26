@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "workflowId": "task-sdk-01-foundation",
+  "phases": [
+    {
+      "id": "phase-1",
+      "title": "manifest scope",
+      "resourceIds": ["manifest-overview"],
+      "entryHookId": "load-manifest",
+      "exitHookId": "publish-scope"
+    },
+    {
+      "id": "phase-2",
+      "title": "loader boundary",
+      "dependsOn": ["phase-1"],
+      "resourceIds": ["cache-target"],
+      "entryHookId": "validate-loader",
+      "exitHookId": "publish-loader"
+    }
+  ],
+  "resources": [
+    {
+      "id": "manifest-overview",
+      "kind": "reference",
+      "path": "./resources/manifest-overview.md",
+      "phaseIds": ["phase-1"]
+    },
+    {
+      "id": "cache-target",
+      "kind": "reference",
+      "path": "./resources/cache-target.md",
+      "phaseIds": ["phase-2"]
+    }
+  ],
+  "entry": [
+    {
+      "id": "load-manifest",
+      "command": "load scope definition"
+    },
+    {
+      "id": "validate-loader",
+      "command": "validate loader boundary"
+    }
+  ],
+  "exit": [
+    {
+      "id": "publish-scope",
+      "command": "handoff scope summary"
+    },
+    {
+      "id": "publish-loader",
+      "command": "handoff loader summary"
+    }
+  ]
+}

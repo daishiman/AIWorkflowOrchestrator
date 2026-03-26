@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-26 - TASK-SDK-01 manifest-contract-foundation Phase 12 close-out sync（WorkflowManifest contract + ManifestLoader 実装完了 / shared 型 `WORKFLOW_MANIFEST_SCHEMA_VERSION` + `WorkflowManifest*` 追加 / ManifestLoader を read→validate→normalize→cache に限定 / typecheck PASS / Vitest は esbuild mismatch blocker / system spec 本文は既存 current facts を再利用し、completed ledger・lessons・skill update を same-wave sync） |
 | 2026-03-25 - TASK-SC-08-E2E-VALIDATION 完了（Skill Creator LLM統合 E2Eテスト + TerminalHandoff検証 / 5シナリオ（A: 正常フロー, B: TerminalHandoff, C: LLMエラー回復, D: improve, E: 後方互換）/ 36テスト全PASS / Lines 89%, Branches 77%, Functions 100% / suggestedCommand CLI形式検証・シェルインジェクション防止 / テストヘルパー共通化 / 未タスク0件 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）） |
 | 2026-03-25 - TASK-SC-07-STREAMING-PROGRESS-UI 完了（ストリーミング進捗UI実装 / GenerateStep UI改修・generationProgressSlice独立スライス・useStreamingProgress・useCancelGeneration・ErrorCards atoms / 個別セレクタ9点（P31対策） / テスト114件全PASS / 未タスク4件: IPC cancel送信・デバウンス100ms・設定画面遷移・エラーコード構造化） |
 | 2026-03-25 - TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了（HealthPolicy 統一インターフェース / health-policy.ts 新規作成 / resolveHealthPolicy() 5段階導出ルール / RuntimePolicyResolver DI統合 / mainlineAccess.ts 消費 / HealthIndicator.tsx 表示統合 / apiKeyDegraded @deprecated v0.8.0 / 38テスト全PASS / 未タスク3件: UT-HEALTH-POLICY-MAINLINE-MIGRATION-001, UT-HEALTH-POLICY-RUNTIME-INJECTION-001, UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001） |

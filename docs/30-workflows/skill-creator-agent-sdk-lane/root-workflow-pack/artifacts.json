@@ -1,0 +1,94 @@
+{
+  "workflow": "skill-creator-agent-sdk-lane",
+  "status": "spec_created",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "requirements",
+      "status": "complete",
+      "file": "phase-1-requirements.md"
+    },
+    {
+      "phase": 2,
+      "name": "design",
+      "status": "complete",
+      "file": "phase-2-design.md"
+    },
+    {
+      "phase": 3,
+      "name": "design-review",
+      "status": "complete",
+      "file": "phase-3-design-review.md"
+    },
+    {
+      "phase": 4,
+      "name": "test-creation",
+      "status": "complete",
+      "file": "phase-4-test-creation.md"
+    },
+    {
+      "phase": 5,
+      "name": "implementation",
+      "status": "complete",
+      "file": "phase-5-implementation.md"
+    },
+    {
+      "phase": 6,
+      "name": "test-expansion",
+      "status": "complete",
+      "file": "phase-6-test-expansion.md"
+    },
+    {
+      "phase": 7,
+      "name": "coverage-check",
+      "status": "complete",
+      "file": "phase-7-coverage-check.md"
+    },
+    {
+      "phase": 8,
+      "name": "refactoring",
+      "status": "complete",
+      "file": "phase-8-refactoring.md"
+    },
+    {
+      "phase": 9,
+      "name": "quality-assurance",
+      "status": "complete",
+      "file": "phase-9-quality-assurance.md"
+    },
+    {
+      "phase": 10,
+      "name": "final-review",
+      "status": "complete",
+      "file": "phase-10-final-review.md"
+    },
+    {
+      "phase": 11,
+      "name": "manual-test",
+      "status": "complete",
+      "file": "phase-11-manual-test.md"
+    },
+    {
+      "phase": 12,
+      "name": "documentation",
+      "status": "complete",
+      "file": "phase-12-documentation.md"
+    },
+    {
+      "phase": 13,
+      "name": "pr-creation",
+      "status": "blocked",
+      "file": "phase-13-pr-creation.md"
+    }
+  ],
+  "tasks": [
+    "step-01-seq-task-01-manifest-contract-foundation",
+    "step-02-seq-task-02-workflow-engine-runtime-orchestration",
+    "step-03-par-task-03-context-budget-and-resource-selection",
+    "step-03-par-task-04-user-interaction-bridge-and-phase-ui",
+    "step-04-par-task-05-create-entry-mainline-unification",
+    "step-04-par-task-06-verify-and-improve-lifecycle-surface",
+    "step-05-seq-task-07-execution-governance-and-handoff-alignment",
+    "step-06-seq-task-08-session-persistence-and-resume-contract"
+  ]
+}

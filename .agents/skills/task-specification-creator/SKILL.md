@@ -28,6 +28,51 @@ allowed-tools:
 | Progressive Disclosure | 必要な reference だけを段階的に読む |
 | 1 File = 1 Responsibility | 大きくなった guide は family file へ分離する |
 | `.claude` Canonical | 正本は `.claude/skills/...`、`.agents/skills/...` は mirror |
+
+## 要件レビュー思考法
+
+要件草案や設計草案を扱うときは、機能列挙のレビューで止めず、次の3系統を必ず通す。
+
+- システム系: システム思考、因果関係分析、因果ループ、依存関係、責務境界、状態所有権
+- 戦略・価値系: 価値提案、戦略的思考、why、トレードオン、プラスサム、価値とコストの均衡
+- 問題解決系: 改善思考、仮説思考、論点思考、KJ法、優先順位付け
+
+特に workflow / lane / UI統合 / runtime orchestration / verify 導入を含むタスクでは、次を明示してから Phase 1 へ進む。
+
+1. 真の論点は何か
+2. 依存関係・責務境界の問題点は何か
+3. 価値とコストの不均衡箇所はどこか
+4. 改善優先順位はどうあるべきか
+5. 4条件の評価はどうか
+
+### 真の論点の掘り方
+
+- 現象ではなく主問題を1文で固定する。
+- 1つの提案に複数案件が混ざっていないかを切り分ける。
+- `what` / `how` だけでなく `why now` / `why this way` を仮説として書く。
+
+### 因果と境界の確認
+
+- 強化ループとバランスループを最低1本ずつ書く。
+- 実行状態、phase 遷移、verify fail 後の意思決定権がどこにあるかを明記する。
+- `Facade` / `Engine` / `Service` / `Bridge` / `Store` / `UI` の状態所有権を混在させない。
+
+### 価値とコストの見方
+
+- 初回スコープで得る価値と、導入コストが最も大きい部品を分けて書く。
+- 将来拡張を初回価値と混同しない。
+- verify / session persistence / UI統合のような高コスト項目は、初期層と将来層を分離する。
+
+### 4条件の評価
+
+`4条件` は原則として次で評価する。
+
+- 価値性: 誰のどのコストをどれだけ下げるかが定義されているか
+- 実現性: 初回スコープで実装可能な厚みに収まっているか
+- 整合性: 責務境界、依存関係、状態所有権が矛盾なく閉じているか
+- 運用性: 導入後の verify、resume、spec sync、監査運用が破綻しないか
+
+要件レビュー出力では、上の5項目を一次結論として先に示し、その後に補足として因果ループ、KJ法クラスタ、戦略仮説を足す。
 ## クイックスタート
 
 | モード | 用途 | 最初に読むもの |
@@ -384,6 +429,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v10.09.24** | **2026-03-26** | **要件レビュー思考法を追加**: task-specification-creator で要件草案を扱う際に、システム系 + 戦略・価値系 + 問題解決系の3系統レビュー、5つの一次出力、4条件評価、因果ループ/状態所有権/価値コスト均衡の確認を必須化 |
 | **v10.09.23** | **2026-03-25** | **TASK-SC-08-E2E-VALIDATION 完了同期**: Skill Creator LLM統合 E2Eテスト + TerminalHandoff検証。Phase 1-12完了。5シナリオ36テスト全PASS。Lines 89%・Branches 77%・Functions 100%。未タスク0件。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.23** | **2026-03-25** | **TASK-SC-07-STREAMING-PROGRESS-UI 完了同期**: ストリーミング進捗UI Phase 1-13 完了。generationProgressSlice独立スライス・useStreamingProgress・useCancelGeneration・ErrorCards atoms・個別セレクタ9点。114テスト全PASS。未タスク4件（IPC cancel送信・デバウンス100ms・設定画面遷移・エラーコード構造化）。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.23** | **2026-03-25** | **TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了同期**: HealthPolicy 統一インターフェース。health-policy.ts 新規作成（HealthPolicy/HealthPolicyInput/resolveHealthPolicy）。RuntimePolicyResolver DI統合 + mainlineAccess 消費 + HealthIndicator 表示統合。apiKeyDegraded @deprecated v0.8.0。38テスト全PASS。未タスク3件（UT-HEALTH-POLICY-MAINLINE/RUNTIME-INJECTION/DEPRECATED-REMOVAL）backlog登録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
@@ -428,6 +474,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 | **v10.09.05** | **2026-03-21** | **TASK-FIX-LLM-CONFIG-PERSISTENCE 完了記録追加**: Phase 12 Task 2 システム仕様書更新を実施。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）。arch-state-management.md に persist v2（selectedProviderId/selectedModelId）追記、workflow-ai-chat-llm-integration-fix.md ステータス更新、topic-map.md 再生成 |
 | **v10.09.04** | **2026-03-21** | **workflow canonical path sync と validator 改善を反映**: `03-TASK-FIX-LLM-CONFIG-PERSISTENCE` の completed-tasks canonical path と `step-02-seq-task-02-runtime-policy-centralization` の completed-tasks 正本化に合わせて workflow 本文の stale path を是正。`validate-phase-output.js` は pending skeleton workflow の `outputs/artifacts.json` / Phase 11 補助成果物を開始前チェック対象から外し、設計タスクの `manual-test-plan.md` + `screenshotRequired=false` を正当な Phase 11 evidence として受理するよう改善。`verify-all-specs.js` は依存 Phase 参照をメタ情報込みで判定し、`/outputs/` 参照の未生成ノイズを除去。`references/patterns-workflow-generation.md` に skeleton workflow の台帳同期切替条件を追記 |
 | **v10.09.03** | **2026-03-21** | **TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE 再監査同期**: Phase 11 screenshot task の capture script 正本を wrapper + canonical script 構成へ統一し、`phase-11-manual-test.md` / `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を実績形式へ更新。Phase 12 では `phase12-task-spec-compliance-check.md` を root evidence として先行作成し、worktree でも `.claude/skills/` を直接更新するルールを Tips と変更履歴へ反映 |
+| **v10.09.13** | **2026-03-26** | **TASK-SDK-01 manifest-contract-foundation の Phase 12 close-out を反映**: `references/spec-update-workflow.md` に foundation / internal-contract task 向けの no-op Step 2 判定ルールを追加し、system spec 本文が既に current でも Step 1-A〜1-G、completed ledger、lessons、LOGS/SKILL 更新を省略しない運用を追記。あわせて test runner blocker は既存 `unassigned-task/` との重複確認を先行する規則を明文化 |
 | **v10.09.12** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 最終ドキュメント更新を反映**: `manual-test-result.md` が `not_run` のままなら Phase 11/12 を閉じないルール、`index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の4点同期、internal adapter と public IPC / preload contract を混同しない判断基準を `phase-12-documentation-guide.md` と `spec-update-workflow.md` へ追加 |
 | **v10.09.11** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査を反映**: design task の workflow root は `implementation_ready`、completed ledger は `spec_created` に分離する運用を追加。`outputs/phase-12` の必須 6成果物、worktree でも `.claude` 正本を先送りしないルール、current code sweep で implementation closure task を formalize する Phase 12 最終監査パターンを変更履歴へ記録 |
 | **v10.09.03** | **2026-03-21** | **TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 standalone root 正規化を反映**: `references/spec-update-workflow.md` に、standalone task へ移設した workflow は current root だけでなく parent pack / downstream consumer / verification-report まで同一 wave で更新するルールを追加。`step-02-seq-task-02-runtime-policy-centralization` の self path / Task01 completed path / parent-child dependency sync を docs-only 再監査パターンとして変更履歴へ記録 |

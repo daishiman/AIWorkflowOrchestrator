@@ -116,6 +116,13 @@ export type {
   ImproveOptions,
   ImproveSuggestion,
   ImproveResult,
+  WorkflowManifestResourceKind,
+  WorkflowManifestHook,
+  WorkflowManifestResourceDescriptor,
+  WorkflowManifestPhase,
+  WorkflowManifest,
+  NormalizedWorkflowManifestResourceDescriptor,
+  LoadedWorkflowManifest,
   SkillCreatorPlanRequest,
   SkillCreatorPlanResult,
   SkillCreatorTerminalHandoffBundle,
@@ -143,6 +150,7 @@ export type {
   DebugResult,
   UsageStats,
 } from "./skillCreator";
+export { WORKFLOW_MANIFEST_SCHEMA_VERSION } from "./skillCreator";
 
 // ファイル選択型定義
 export type {

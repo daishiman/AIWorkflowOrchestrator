@@ -264,6 +264,63 @@ export interface ImproveResult {
 }
 
 // ============================================
+// Workflow manifest contract
+// ============================================
+
+export const WORKFLOW_MANIFEST_SCHEMA_VERSION = 1 as const;
+
+export type WorkflowManifestResourceKind =
+  | "agent"
+  | "reference"
+  | "schema"
+  | "asset";
+
+export interface WorkflowManifestHook {
+  id: string;
+  command: string;
+  description?: string;
+}
+
+export interface WorkflowManifestResourceDescriptor {
+  id: string;
+  kind: WorkflowManifestResourceKind;
+  path: string;
+  optional?: boolean;
+  phaseIds?: string[];
+}
+
+export interface WorkflowManifestPhase {
+  id: string;
+  title: string;
+  dependsOn?: string[];
+  resourceIds?: string[];
+  entryHookId: string;
+  exitHookId: string;
+}
+
+export interface WorkflowManifest {
+  schemaVersion: typeof WORKFLOW_MANIFEST_SCHEMA_VERSION;
+  workflowId: string;
+  phases: WorkflowManifestPhase[];
+  resources: WorkflowManifestResourceDescriptor[];
+  entry: WorkflowManifestHook[];
+  exit: WorkflowManifestHook[];
+}
+
+export interface NormalizedWorkflowManifestResourceDescriptor extends WorkflowManifestResourceDescriptor {
+  absolutePath: string;
+}
+
+export interface LoadedWorkflowManifest extends WorkflowManifest {
+  sourcePath: string;
+  manifestDir: string;
+  manifestMtimeMs: number;
+  resourceDescriptorHash: string;
+  cacheKey: string;
+  resources: NormalizedWorkflowManifestResourceDescriptor[];
+}
+
+// ============================================
 // Runtime Skill Creator IPC contract
 // ============================================
 

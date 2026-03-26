@@ -1,0 +1,197 @@
+{
+  "taskId": "TASK-SDK-01",
+  "title": "manifest contract foundation",
+  "type": "design",
+  "priority": "high",
+  "status": "completed",
+  "dependencies": [],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/manifest-scope-definition.md",
+        "outputs/phase-1/manifest-non-scope-register.md",
+        "outputs/phase-1/current-code-anchor-map.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/manifest-schema-design.md",
+        "outputs/phase-2/loader-boundary-design.md",
+        "outputs/phase-2/cache-invalidation-design.md",
+        "outputs/phase-2/authority-split-matrix.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/review-findings.md",
+        "outputs/phase-3/downstream-handoff.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/test-matrix.md",
+        "outputs/phase-4/schema-fixture-plan.md",
+        "outputs/phase-4/negative-case-catalog.md",
+        "outputs/phase-4/test-command-plan.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "outputs/phase-5/file-change-plan.md",
+        "outputs/phase-5/implementation-sequence.md",
+        "outputs/phase-5/manifest-sample.json",
+        "outputs/phase-5/spec-update-plan.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/backward-compatibility-cases.md",
+        "outputs/phase-6/cache-drift-cases.md",
+        "outputs/phase-6/edge-case-matrix.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/requirements-traceability.md",
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/uncovered-items.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/schema-slimming-plan.md",
+        "outputs/phase-8/naming-audit.md",
+        "outputs/phase-8/duplication-check.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/quality-checklist.md",
+        "outputs/phase-9/risk-register.md",
+        "outputs/phase-9/spec-sync-checklist.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/open-decisions.md",
+        "outputs/phase-10/task02-handoff-checklist.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": ["outputs/phase-13/pr-preparation.md"]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "manifest が保持する範囲を phase / resource / entry-exit に限定し、非責務が明文化されている",
+      "verified": true
+    },
+    {
+      "id": "AC-2",
+      "description": "schema、loader、cache invalidation の責務境界が RuntimeSkillCreatorFacade、SkillCreatorService、IPC 層と衝突しない",
+      "verified": true
+    },
+    {
+      "id": "AC-3",
+      "description": "Task02 は phase topology、Task03 は resource descriptor、Task04 は entry-exit hook を追加解釈なしで受け取れる",
+      "verified": true
+    },
+    {
+      "id": "AC-4",
+      "description": "現行コード anchor と aiworkflow-requirements の参照先が 1:1 で対応付けられている",
+      "verified": true
+    }
+  ],
+  "concerns": [
+    {
+      "id": "A",
+      "name": "scope / non-scope 契約",
+      "description": "manifest が吸収する変更とコード修正が必要な変更を分ける"
+    },
+    {
+      "id": "B",
+      "name": "schema / loader / cache 境界",
+      "description": "file schema、loader lifecycle、cache invalidation を定義する"
+    },
+    {
+      "id": "C",
+      "name": "downstream handoff",
+      "description": "Task02、Task03、Task04 が消費する入力契約を固定する"
+    }
+  ],
+  "createdAt": "2026-03-26",
+  "updatedAt": "2026-03-26"
+}

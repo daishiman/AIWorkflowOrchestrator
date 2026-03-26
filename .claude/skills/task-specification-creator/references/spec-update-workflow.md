@@ -58,6 +58,8 @@
 | 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** | workflow 本文が pending のまま残ると、前提 Phase が未実施に見え、Phase 12 の依存参照や引き継ぎ根拠が崩れる |
 | 「`.agents/skills/...` を更新したので system spec 更新は完了」 | **`.claude/skills/...` が正本。mirror は代替不可** | dual-root repo では `.agents` が mirror の場合がある。Step 1-A/Step 2 の更新先は `.claude/skills/...` を canonical root とし、必要なら mirror 差分は別途確認する |
 | 「mirror sync 完了は summary 記述だけでよい」 | **`diff -qr <canonical> <mirror>` の実行結果が必須** | 実際には mirror へ反映されていないまま Phase 12 を閉じる事故が起きる。完了判定はコマンド結果で裏付ける |
+| 「foundation / internal-contract task は system spec 本文が既に current なら Phase 12 で触らなくてよい」 | **Step 1 と no-op 根拠記録は必須** | Step 2 の本文追記が不要でも、completed ledger / lessons / LOGS / SKILL 更新と no-op 根拠の記録を省略してはいけない |
+| 「test runner blocker を見つけたら毎回新規未タスクを作る」 | **既存未タスクとの重複確認を先行** | native binary / worktree guard 系 blocker は既存台帳がある場合が多い。新規 formalize 前に `docs/30-workflows/unassigned-task/` を検索する |
 | 「user が正本 root を明示していても既定の root ルールを優先してよい」 | **user 指定rootを canonical root として扱う** | `.claude/skills/...` のように user が正本を明示した場合は、その root を canonical root とし、他 root は mirror として drift 記録と同期対象にする |
 | 「`origin/main...HEAD` が 0 件なら current worktree も未実装だ」 | **`origin/main...HEAD` と `git diff HEAD` を分離記録** | branch への commit 差分と current worktree 差分は別物。再監査では両方を記録し、どちらを根拠に status を付けたか明記する |
 | 「Phase 9の成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** | 命名規約と `validate-phase-output` の期待値に合わせないと警告が残る |
@@ -929,6 +931,7 @@ grep -rn "permission-tool-icons" references/
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-26 | TASK-SDK-01 manifest foundation の close-out を反映し、foundation / internal-contract task で system spec 本文が current の場合も Step 1 と no-op 根拠記録を必須化。環境 blocker は既存未タスクとの重複確認を先行するルールを追加 |
 | 2026-03-12 | TASK-SKILL-LIFECYCLE-04 の再監査を反映し、「既存 IPC 再利用でも public preload API 追加や shared barrel export 追加があれば Step 2 必須」とする判断ルールを追加 |
 | 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、誤判断パターンへ `index.md` stale を追加。チェックリストへ `generate-index.js --workflow ... --regenerate` と workflow index 状態確認を追記 |
 | 2026-03-06 | TASK-UI-02 再々監査を反映し、誤判断パターンへ「`phase-1..11` 本文 pending 残置」を追加。更新漏れ防止チェックリストへ phase 本文 stale の `rg` 確認を追記 |
