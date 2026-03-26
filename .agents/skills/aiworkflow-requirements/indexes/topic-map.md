@@ -182,6 +182,7 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L12 |
 | バックエンド実装パターン | L368 |
 | 共有パッケージ実装パターン | L453 |
+| ApprovalGate Enforcement パターン（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L534 |
 
 ### references/architecture-implementation-patterns-details.md
 
@@ -261,8 +262,8 @@ node scripts/list-specs.js --topics
 | セキュリティアーキテクチャ | L146 |
 | 状態管理アーキテクチャ | L180 |
 | データフローアーキテクチャ | L217 |
-| ディレクトリ構造 | L300 |
-| データ構造（型システム） | L364 |
+| ディレクトリ構造 | L303 |
+| データ構造（型システム） | L367 |
 
 ### references/architecture-overview-details.md
 
@@ -904,7 +905,8 @@ node scripts/list-specs.js --topics
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
 | ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L562 |
-| AIプロバイダーAPI連携 | L593 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L593 |
+| AIプロバイダーAPI連携 | L624 |
 
 ### references/api-ipc-system-details.md
 
@@ -1168,10 +1170,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L61 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L168 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L235 |
-| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L383 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L62 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L169 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L236 |
+| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L384 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1442,8 +1444,9 @@ node scripts/list-specs.js --topics
 | テスト品質サマリー | L51 |
 | 完了タスク | L65 |
 | 完了タスク | L80 |
-| 変更履歴 | L91 |
-| 関連ドキュメント | L109 |
+| 完了タスク（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L91 |
+| 変更履歴 | L105 |
+| 関連ドキュメント | L123 |
 
 ### references/security-api.md
 
@@ -1474,6 +1477,7 @@ node scripts/list-specs.js --topics
 | 実装例: notificationAPI（TASK-UI-08） | L394 |
 | 実装例: slideSettingsAPI | L427 |
 | IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L476 |
+| ApprovalGate セキュリティ契約（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L491 |
 
 ### references/security-electron-ipc-details.md
 
@@ -2602,35 +2606,36 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L18 |
 | 分割ファイル一覧 | L53 |
 | クイックリファレンス: カテゴリ別検索ガイド | L68 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L241 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L573 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L607 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L690 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L707 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L731 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L772 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L242 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L574 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L608 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L691 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L708 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L732 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L773 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L37 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L57 |
-| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L63 |
-| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L83 |
-| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L111 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L147 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L175 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L212 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L278 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L299 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L329 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L371 |
-| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L418 |
-| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L437 |
-| TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L453 |
-| TASK-IMP-HEALTH-POLICY-UNIFICATION-001（2026-03-25） | L484 |
+| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L38 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L58 |
+| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L64 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L84 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L112 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L148 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L176 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L213 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L279 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L300 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L330 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L372 |
+| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L419 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L438 |
+| TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L454 |
+| TASK-IMP-HEALTH-POLICY-UNIFICATION-001（2026-03-25） | L485 |
+| TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION（2026-03-25） | L499 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 

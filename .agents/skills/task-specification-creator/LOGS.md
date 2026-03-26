@@ -55,6 +55,20 @@
 
 ---
 
+## UT-LLM-MOD-01-005 完了（2026-03-25）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/` を canonical root として再検証
+  - `implementation-guide.md` を validator 10/10 要件へ整形
+  - `manual-test-checklist.md` / `outputs/artifacts.json` / `phase12-task-spec-compliance-check.md` の補助成果物要件を充足
+  - follow-up 2件を raw メモではなく full template 準拠の未タスク指示書へ昇格
+  - `audit-unassigned-tasks --target-file` の current/baseline 分離を運用ルールへ反映
+
+---
+
 ## UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -1245,7 +1259,6 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
 | 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
 | 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
-
 ### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
 
 | 項目 | 内容 |
