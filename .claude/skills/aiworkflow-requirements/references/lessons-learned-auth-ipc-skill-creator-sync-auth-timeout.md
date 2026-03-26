@@ -152,6 +152,14 @@
 | 解決策 | owner / provenance / persisted contract / resume namespace rule を architecture / services / task-workflow へ same-wave で追補した |
 | 教訓 | runtime orchestration 系 task は channel 不変でも、state owner と persistence contract の整理があれば Step 2 対象として扱う |
 
+### follow-up: verify_result append drift 是正（UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 / 2026-03-26）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | engine 導入後も `verify_result` が一部 upsert のままだと、latest state は正しくても artifact 正本から failure history を再構成できない |
+| 原因 | owner 分離は完了していたが、pending/fail の履歴戦略を `recordExecuteResult()` / `recordVerifyFailure()` の双方で append に統一し切れていなかった |
+| 解決策 | `appendArtifact()` を導入し、`execute_result` / `verify_result` を時系列で残す current fact へ是正した |
+| 教訓 | workflow engine follow-up では「owner が正しいか」だけでなく、「latest snapshot と artifact ledger の append/upsert 方針が一致しているか」まで再監査する必要がある |
 ### 苦戦箇所と解決策
 
 #### 1. public surface は `skillCreatorHandlers.ts` なのに runtime 実装だけ `creator:*` に分岐していた

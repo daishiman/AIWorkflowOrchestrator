@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-26T12:29:34.967Z",
+  "generated": "2026-03-26T14:45:18.027Z",
   "totalKeywords": 2503,
   "keywords": {
     "チャット履歴": [
@@ -1739,6 +1739,7 @@
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -6642,6 +6643,20 @@
     "foundation": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "WORKFLOW": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-task-10a-c-final-audit.md"
+    ],
+    "VERIFY": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ARTIFACT": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-agent-execution-core.md"
+    ],
+    "APPEND": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "仕様書作成": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -10797,9 +10812,6 @@
       "ui-ux-agent-execution-core.md"
     ],
     "DOCK": [
-      "ui-ux-agent-execution-core.md"
-    ],
-    "ARTIFACT": [
       "ui-ux-agent-execution-core.md"
     ],
     "設計確定": [

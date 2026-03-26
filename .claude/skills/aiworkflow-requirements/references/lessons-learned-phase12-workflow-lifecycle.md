@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-26 | 1.8.3 | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の Phase 12 教訓2件を追加 |
 | 2026-03-26 | 1.8.2 | TASK-SDK-01 hardening sync の Phase 12 教訓3件を追加 |
 | 2026-03-26 | 1.8.1 | TASK-SDK-01 manifest-contract-foundation / follow-up completion の Phase 12 教訓4件へ更新 |
 | 2026-03-23 | 1.7.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003） |
@@ -37,6 +38,30 @@
 ---
 
 ## 2026-03-26 TASK-SDK-01 manifest-contract-foundation
+
+## 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001
+
+### 苦戦箇所1: internal bugfix でも Step 2 no-op を理由に Step 1 台帳同期まで省略すると completed が false green になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | public IPC / preload / shared type の変更がない task では Phase 12 全体を no-op と誤読しやすく、completed ledger / lessons / LOGS / SKILL が未更新のままでも workflow だけ completed に見えてしまう |
+| 再発条件 | Step 2 が不要な internal bugfix で、Step 1-A / 1-C の same-wave 記録を「仕様変更なしだから不要」と判断する |
+| 解決策 | `task-workflow-completed.md` / `lessons-learned-phase12-workflow-lifecycle.md` / LOGS.md 2ファイル / SKILL.md 2ファイル / 元未タスク指示書を同一ターンで更新した |
+| 標準ルール | Step 2 domain spec が no-op でも、Step 1 の completed ledger / lessons / skill sync は必須。workflow root だけで close しない |
+| 関連タスク | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 |
+
+### 苦戦箇所2: Phase 12 成果物に apply_patch の断片が混入すると validator が通っても root evidence が壊れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `phase12-task-spec-compliance-check.md` の末尾に `*** Add File:` 断片が混入し、artifact 自体は存在していても evidence 文書が破損していた |
+| 再発条件 | 追加ファイル作成を含む大きな patch 後に、成果物本文へ patch marker が残っていないかを grep で確認しない |
+| 解決策 | Phase 12 完了前に workflow root 配下へ `rg "\\*\\*\\* Add File:|\\*\\*\\* Begin Patch|\\*\\*\\* End Patch"` を実行し、混入を検出・除去した |
+| 標準ルール | Phase 12 root evidence を編集した後は patch marker 混入監査を追加し、artifact existence だけでなく本文破損も確認する |
+| 関連タスク | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 |
+
+---
 
 ### 苦戦箇所0: docs-only follow-up が途中で code hardening task に変わったら、source spec と outputs の両方を current facts へ同一ターンで戻す
 

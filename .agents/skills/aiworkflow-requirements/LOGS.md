@@ -10,6 +10,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 2026-03-26 - TASK-SDK-07 execution-governance-and-handoff-alignment spec_created sync（Skill Creator governance bundle の canonical 前提、quick-reference/resource-map 導線、task-spec close-out evidence を `.claude` 正本へ反映） |
 | 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 spec_created sync（failure lifecycle task spec を追加し、Phase 1〜11 の統合テスト連携、Phase 12 実績化、quick-reference/resource-map 導線を same-wave 更新） |
 | 2026-03-26 - TASK-SDK-02 follow-up ledger/backlog sync（parent `unassigned-task-detection.md` の 4件 formalized task を `task-workflow-completed.md` と `task-workflow-backlog.md` へ反映し、spec_created workflow discoverability を復旧） |
+| 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 close-out sync（`execute_result` / `verify_result` を append 戦略へ統一し、completed ledger・lessons・unassigned status・workflow pack current facts を same-wave sync） |
 | 2026-03-26 - TASK-SDK-02 workflow-engine-runtime-orchestration Phase 12 sync（`SkillCreatorWorkflowEngine` 新設 / facade から owner 分離 / `execute()` terminal_handoff early return / `ResourceLoader.getBasePath()` provenance 追加 / runtime/shared/IPC/preload 47テスト PASS / system spec と skill を same-wave sync） |
 | 2026-03-26 - TASK-SDK-01 hardening sync（`interfaces-agent-sdk-skill-reference.md` に `manifestContentHash` / 相互参照検証 / duplicate reject / same-`mtime` cache guard を追記し、completed ledger と lessons を carry-forward 0件へ再同期） |
 | 2026-03-26 - TASK-SDK-01 Phase 12 compliance sync follow-up formalize（`UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001` を backlog 正本へ追加 / `task-workflow.md` 導線更新 / topic-map・keywords 再生成 / Step 2 は domain spec no-op と判定し、Step 1 same-wave 記録を補完） |
@@ -152,6 +153,18 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - 先行タスク TASK-SC-05-IMPROVE-LLM で SkillFileManager が DI 依存に追加されたことに対応
 - 変更ファイル: `apps/desktop/src/main/ipc/index.ts`
 - 関連タスク: TASK-SC-05-IMPROVE-LLM
+
+---
+## UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 完了（2026-03-26）
+
+- タスク名: runtime workflow failure verify artifact append 是正
+- 種別: runtime follow-up implementation
+- 主な反映:
+  - `SkillCreatorWorkflowEngine.ts` の `execute_result` / `verify_result` を append 戦略へ統一
+  - runtime tests に failure append / repeated failure 回帰ケースを追加
+  - workflow pack の stale method 名、Phase 12 no-op 誤判定、source unassigned status を current fact に修正
+  - `task-workflow-completed.md` / lessons / LOGS.md / SKILL.md を same-wave sync
+- 関連タスク: TASK-SDK-02, UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001
 
 ## UT-SC-03-003 DI配線完了（2026-03-24）
 

@@ -37,6 +37,17 @@
   - failure lifecycle 系の Phase 12 で起きた shallow compliance / future sync target 放置を再発防止パターンとして昇格した
 
 ---
+## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の Phase 12 close-out drift を template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期は省略しない」ルールを追加
+  - Phase 12 root evidence 編集後に patch marker 混入を `rg` で監査する手順を追記し、validator pass だけで close しない運用を明文化
+  - source unassigned task の status と completed workflow root を同一ターンで整合させる close-out 観点をテンプレートへ昇格
+
+---
 ## 2026-03-26 - TASK-SDK-02 workflow-engine-runtime-orchestration の知見を template/pattern へ反映
 
 - **Agent**: skill-creator (update)
