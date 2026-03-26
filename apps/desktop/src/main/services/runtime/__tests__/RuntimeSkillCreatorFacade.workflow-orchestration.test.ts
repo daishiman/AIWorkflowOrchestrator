@@ -108,6 +108,87 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
     });
   });
 
+  it("execute() success:false は verify pending へ進めず failure snapshot を保存する", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockResolvedValue({
+      executionId: "exec-101",
+      success: false,
+      error: {
+        code: "EXECUTION_FAILED",
+        message: "executor failed",
+      },
+    });
+
+    const result = await facade.execute(
+      createPlanResult(),
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toEqual({
+      executeId: "exec-101",
+      skillName: "engine-test",
+      success: false,
+      error: "executor failed",
+    });
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-100");
+    expect(snapshot).toMatchObject({
+      currentPhase: "execute",
+      awaitingUserInput: null,
+      verifyResult: {
+        status: "fail",
+        reason: "execution_failed",
+        message: "executor failed",
+        nextAction: "review",
+      },
+    });
+  });
+
+  it("execute() reject は facade が捕捉し failure snapshot を保存する", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_200);
+    executeMock.mockRejectedValue(new Error("executor rejected"));
+
+    const result = await facade.execute(
+      createPlanResult(),
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toEqual({
+      executeId: "exec-error-1710000000200",
+      skillName: "engine-test",
+      success: false,
+      error: "executor rejected",
+    });
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-100");
+    expect(snapshot).toMatchObject({
+      currentPhase: "execute",
+      awaitingUserInput: null,
+      verifyResult: {
+        status: "fail",
+        reason: "execution_error",
+        message: "executor rejected",
+        nextAction: "review",
+      },
+    });
+    expect(
+      snapshot?.phaseArtifacts.filter(
+        (artifact) => artifact.kind === "execute_result",
+      ),
+    ).toHaveLength(1);
+  });
+
   it("execute() terminal_handoff は executor を呼ばず handoff state を保存する", async () => {
     vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
       type: "terminal_handoff",

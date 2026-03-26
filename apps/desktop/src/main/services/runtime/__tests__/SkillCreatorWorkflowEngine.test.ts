@@ -86,6 +86,43 @@ describe("SkillCreatorWorkflowEngine", () => {
     ]);
   });
 
+  it("execute failure を execute phase の failure snapshot として保持する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    const planResult = createPlanResult();
+
+    engine.recordPlanResult(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    engine.recordExecuteStart(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+
+    const snapshot = engine.recordExecutionFailure("plan-001", {
+      executeId: "exec-002",
+      skillName: "test-skill",
+      reason: "execution_failed",
+      message: "executor failed",
+    });
+
+    expect(snapshot.currentPhase).toBe("execute");
+    expect(snapshot.awaitingUserInput).toBeNull();
+    expect(snapshot.verifyResult).toMatchObject({
+      status: "fail",
+      reason: "execution_failed",
+      message: "executor failed",
+      nextAction: "review",
+    });
+    expect(
+      snapshot.phaseArtifacts.filter(
+        (artifact) => artifact.kind === "execute_result",
+      ),
+    ).toHaveLength(1);
+  });
+
   it("terminal_handoff execute を handoff phase と resume envelope に固定する", () => {
     const engine = new SkillCreatorWorkflowEngine();
     const planResult = createPlanResult();
@@ -152,5 +189,111 @@ describe("SkillCreatorWorkflowEngine", () => {
       message: "verify failed",
       nextAction: "improve",
     });
+  });
+
+  it("verify review は awaitingUserInput.reason=verification_review を生成する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    const planResult = createPlanResult();
+
+    engine.recordPlanResult(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    engine.recordExecuteStart(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    engine.recordExecuteResult("plan-001", {
+      executeId: "exec-003",
+      skillName: "test-skill",
+      success: true,
+    });
+
+    const snapshot = engine.recordVerifyFailure(
+      "plan-001",
+      "verification requires review",
+      "review",
+    );
+
+    expect(snapshot.currentPhase).toBe("review");
+    expect(snapshot.awaitingUserInput).toMatchObject({
+      reason: "verification_review",
+    });
+    expect(snapshot.awaitingUserInput?.prompt).toContain(
+      "verification requires review",
+    );
+    expect(snapshot.verifyResult).toMatchObject({
+      status: "fail",
+      reason: "verification_review",
+      nextAction: "review",
+    });
+  });
+
+  it("invalid transition は state と artifact を変更せず reject する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    const planResult = createPlanResult();
+
+    const snapshot = engine.recordPlanResult(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+
+    expect(() =>
+      engine.recordExecuteResult("plan-001", {
+        executeId: "exec-invalid",
+        skillName: "test-skill",
+        success: true,
+      }),
+    ).toThrow("invalid workflow transition: review -> verify");
+    expect(engine.getWorkflowState("plan-001")).toEqual(snapshot);
+  });
+
+  it("repeated failure でも execute artifact を append する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    const planResult = createPlanResult();
+
+    engine.recordPlanResult(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    engine.recordExecuteStart(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    engine.recordExecutionFailure("plan-001", {
+      executeId: "exec-010",
+      skillName: "test-skill",
+      reason: "execution_error",
+      message: "first failure",
+    });
+    engine.recordExecutionFailure("plan-001", {
+      executeId: "exec-011",
+      skillName: "test-skill",
+      reason: "execution_failed",
+      message: "second failure",
+    });
+
+    const snapshot = engine.getWorkflowState("plan-001");
+    const executeArtifacts =
+      snapshot?.phaseArtifacts.filter(
+        (artifact) => artifact.kind === "execute_result",
+      ) ?? [];
+
+    expect(executeArtifacts).toHaveLength(2);
+    expect(executeArtifacts.map((artifact) => artifact.payload)).toEqual([
+      expect.objectContaining({
+        executeId: "exec-010",
+        reason: "execution_error",
+      }),
+      expect.objectContaining({
+        executeId: "exec-011",
+        reason: "execution_failed",
+      }),
+    ]);
   });
 });

@@ -7585,6 +7585,23 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **発見日**: 2026-03-26
 - **関連タスク**: TASK-SDK-01, UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001
 
+### [Phase12] runtime failure lifecycle bug-fix の same-wave close-out（UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001）
+
+- **状況**: runtime bug-fix task では code/test 修正だけ先に閉じがちだが、reject / `success:false` / review required の意味論が変わると completed ledger / lessons / quick-reference / resource-map も同ターンで更新しないと再利用導線が stale になる
+- **アプローチ**:
+  - failure reason を `execution_error` / `execution_failed` / `verification_review` のように owner 観点で分離し、verify pending へ進めてよい経路を明示する
+  - failure artifact は upsert ではなく append、参照は latest accessor へ固定し、history と current snapshot の責務を分ける
+  - `awaitingUserInput` には次の owner が分かる reason を必ず保存し、Phase 12 の implementation-guide / compliance check にも同値転記する
+  - 環境 workaround でテストを通した場合は `ESBUILD_BINARY_PATH=... pnpm vitest ... --run` のような exact command を verification-report / system-spec-update-summary / lessons に残す
+  - canonical `.claude` 更新後は `generate-index.js` → `validate-structure.js` → mirror sync → `diff -qr` を必ず閉じる
+- **結果**: failure lifecycle 変更が code だけに閉じず、system spec と skill の再利用導線まで current fact に揃う
+- **適用条件**: runtime facade / workflow engine / IPC failure path / review state の bug-fix task
+- **失敗パターン**:
+  - reject と `success:false` を同じ failure と見なし、verify pending へ誤遷移させる
+  - artifact を上書きして repeated failure の履歴を失う
+  - PASS した workaround command を残さず、再検証者が同じ環境落ちを踏む
+- **発見日**: 2026-03-26
+- **関連タスク**: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001
 ---
 
 ## 詳細パターン索引

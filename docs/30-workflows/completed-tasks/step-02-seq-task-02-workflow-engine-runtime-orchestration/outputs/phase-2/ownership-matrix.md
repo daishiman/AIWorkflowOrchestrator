@@ -2,15 +2,15 @@
 
 ## State Owner
 
-| 項目                                 | owner  | mutation authority                                           | external visibility                                  |
-| ------------------------------------ | ------ | ------------------------------------------------------------ | ---------------------------------------------------- |
-| `currentPhase`                       | engine | engine の phase transition API                               | facade 経由で renderer へ要約表示                    |
-| `awaitingUserInput`                  | engine | engine が input request を生成し、Task04 bridge が回答を戻す | renderer は request を表示する                       |
-| `verifyResult`                       | engine | verify runner または verify adapter が engine へ書き戻す     | facade 経由で renderer へ公開する                    |
-| phase artifacts                      | engine | engine が phase 完了時に append する                         | facade が summary を返す                             |
-| `resumeTokenEnvelope`                | engine | engine が serialize し Task08 へ渡す                         | facade が public response に埋め込む場合だけ公開する |
-| `routeDecision` snapshot             | facade | `RuntimePolicyResolver` を用いた facade                      | engine へ input として渡す                           |
-| `terminal_handoff` guidance / bundle | facade | facade                                                       | renderer へ public union response で返す             |
+| 項目                                 | owner  | mutation authority                                                                   | external visibility                                  |
+| ------------------------------------ | ------ | ------------------------------------------------------------------------------------ | ---------------------------------------------------- |
+| `currentPhase`                       | engine | engine の phase transition API                                                       | facade 経由で renderer へ要約表示                    |
+| `awaitingUserInput`                  | engine | engine が input request を生成し、Task04 bridge が回答を戻す                         | renderer は request を表示する                       |
+| `verifyResult`                       | engine | verify runner または verify adapter が engine へ書き戻す                             | facade 経由で renderer へ公開する                    |
+| phase artifacts                      | engine | engine が成功・失敗を含む各 attempt を append し、consumer は latest accessor で読む | facade が summary を返す                             |
+| `resumeTokenEnvelope`                | engine | engine が serialize し Task08 へ渡す                                                 | facade が public response に埋め込む場合だけ公開する |
+| `routeDecision` snapshot             | facade | `RuntimePolicyResolver` を用いた facade                                              | engine へ input として渡す                           |
+| `terminal_handoff` guidance / bundle | facade | facade                                                                               | renderer へ public union response で返す             |
 
 ## 責務境界ガード
 
@@ -23,14 +23,20 @@
 
 ## Phase Transition
 
-| from      | to        | guard                                         | owner                                               |
-| --------- | --------- | --------------------------------------------- | --------------------------------------------------- |
-| `plan`    | `review`  | plan result が構造化されている                | engine                                              |
-| `review`  | `execute` | user approval がある                          | engine                                              |
-| `review`  | `handoff` | route snapshot が `terminal_handoff`          | facade が bundle を返し、engine は state を保存する |
-| `execute` | `verify`  | execution result が受理される                 | engine                                              |
-| `verify`  | `improve` | verify status が fail                         | engine                                              |
-| `verify`  | `review`  | verify status が pass かつ user review が必要 | engine                                              |
+| from      | to        | guard                                                                                                        | owner                                               |
+| --------- | --------- | ------------------------------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| `plan`    | `review`  | plan result が構造化されている                                                                               | engine                                              |
+| `review`  | `execute` | user approval がある                                                                                         | engine                                              |
+| `review`  | `handoff` | route snapshot が `terminal_handoff`                                                                         | facade が bundle を返し、engine は state を保存する |
+| `execute` | `verify`  | execution result が受理される                                                                                | engine                                              |
+| `execute` | `execute` | executor reject / `success:false`。failure snapshot を保存し verify pending へ進めない                       | engine                                              |
+| `verify`  | `improve` | verify status が fail                                                                                        | engine                                              |
+| `verify`  | `review`  | verify status が fail かつ user review が必要。`awaitingUserInput.reason = "verification_review"` を保存する | engine                                              |
+
+## Failure Guard
+
+- invalid transition は reject し、`currentPhase` / `awaitingUserInput` / `verifyResult` / phase artifacts を変更しない。
+- facade は executor reject を捕捉して engine に failure snapshot 作成だけを委譲する。
 
 ## Public Boundary
 
