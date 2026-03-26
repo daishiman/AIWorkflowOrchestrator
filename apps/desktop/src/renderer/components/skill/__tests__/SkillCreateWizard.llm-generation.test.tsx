@@ -1,0 +1,658 @@
+/**
+ * @vitest-environment happy-dom
+ * @file SkillCreateWizard.llm-generation.test.tsx
+ * @description SkillCreateWizard LLM 生成フロー統合テスト
+ * @phase Phase 4: テスト作成（TDD: Red -> Green）
+ * @task TASK-SC-07
+ *
+ * AC-2: LLM選択 -> planSkill 呼出
+ * AC-4: executePlan -> CompleteStep 遷移
+ * AC-5: キャンセル -> DescribeStep 戻り
+ * AC-8: テンプレートフロー非破壊
+ * AC-9: PlanResult Single Source of Truth
+ * AC-10: 対称クリア
+ */
+
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import {
+  act,
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+} from "@testing-library/react";
+import { SkillCreateWizard } from "../SkillCreateWizard";
+
+// --- mock 関数定義（vi.mock 巻き上げ前に宣言）---
+const mockCreateSkill = vi.fn();
+const mockSetIsGenerating = vi.fn();
+const mockSetGenerationError = vi.fn();
+const mockSetGenerationProgress = vi.fn();
+const mockSetCurrentPlanId = vi.fn();
+const mockSetCurrentPlanResult = vi.fn();
+const mockClearGenerationState = vi.fn();
+
+type MockStoreState = {
+  isGenerating: boolean;
+  generationProgress: string | null;
+  generationError: string | null;
+  currentPlanId: string | null;
+  currentPlanResult: {
+    type: "integrated_api" | "terminal_handoff";
+    planId?: string;
+    estimatedSteps?: number;
+    guidance?: { reason: string; command: string };
+  } | null;
+};
+
+let mockStoreState: MockStoreState = {
+  isGenerating: false,
+  generationProgress: null,
+  generationError: null,
+  currentPlanId: null,
+  currentPlanResult: null,
+};
+
+vi.mock("../../../store", () => ({
+  useCreateSkill: () => mockCreateSkill,
+  useIsSkillGenerating: () => mockStoreState.isGenerating,
+  useGenerationProgress: () => mockStoreState.generationProgress,
+  useGenerationError: () => mockStoreState.generationError,
+  useCurrentPlanId: () => mockStoreState.currentPlanId,
+  useCurrentPlanResult: () => mockStoreState.currentPlanResult,
+  useSetIsSkillGenerating: () => mockSetIsGenerating,
+  useSetGenerationError: () => mockSetGenerationError,
+  useSetGenerationProgress: () => mockSetGenerationProgress,
+  useSetCurrentPlanId: () => mockSetCurrentPlanId,
+  useSetCurrentPlanResult: () => mockSetCurrentPlanResult,
+  useClearGenerationState: () => mockClearGenerationState,
+}));
+
+vi.mock("../../../hooks/useStreamingProgress", () => ({
+  useStreamingProgress: () => ({
+    stage: "idle",
+    percent: 0,
+    message: "",
+    previewContent: null,
+    error: null,
+    isGenerating: false,
+  }),
+}));
+
+vi.mock("../../../hooks/useCancelGeneration", () => ({
+  useCancelGeneration: () => ({
+    cancelGeneration: vi.fn(),
+    startGeneration: vi.fn(),
+  }),
+}));
+
+// --- window.electronAPI モック ---
+const mockPlanSkill = vi.fn();
+const mockExecutePlan = vi.fn();
+
+describe("SkillCreateWizard LLM生成フロー", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockStoreState = {
+      isGenerating: false,
+      generationProgress: null,
+      generationError: null,
+      currentPlanId: null,
+      currentPlanResult: null,
+    };
+    mockCreateSkill.mockResolvedValue("/path/to/skill");
+    mockPlanSkill.mockResolvedValue({
+      success: true,
+      data: {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      },
+    });
+    mockExecutePlan.mockResolvedValue({
+      success: true,
+      data: { skillName: "test-skill", skillPath: "/path/to/test-skill" },
+    });
+    (window as Window & { electronAPI?: unknown }).electronAPI = {
+      skillCreator: {
+        planSkill: mockPlanSkill,
+        executePlan: mockExecutePlan,
+      },
+    };
+  });
+
+  afterEach(() => {
+    cleanup();
+    delete (window as Window & { electronAPI?: unknown }).electronAPI;
+  });
+
+  // ============================================================
+  // AC-1: 生成モード選択UI
+  // ============================================================
+  describe("AC-1: 生成モード選択UI", () => {
+    it("DescribeStep に生成モード選択のラジオボタンが表示される", () => {
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+      expect(
+        screen.getByRole("radio", { name: /テンプレート/ }),
+      ).toBeInTheDocument();
+      expect(screen.getByRole("radio", { name: /LLM/ })).toBeInTheDocument();
+    });
+
+    it("デフォルトでテンプレートラジオが選択されている", () => {
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+      expect(screen.getByRole("radio", { name: /テンプレート/ })).toBeChecked();
+    });
+  });
+
+  // ============================================================
+  // W-1, W-2, W-3 (AC-2): LLMモード -> planSkill
+  // ============================================================
+  describe("AC-2: LLMモード -> planSkill呼出", () => {
+    it("W-1: LLMモード選択 + 次へクリックで planSkill が呼ばれる", async () => {
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テストスキル" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockPlanSkill).toHaveBeenCalledWith("テストスキル");
+    });
+
+    it("W-2: planSkill 呼出し時に setGenerationProgress が呼ばれる", async () => {
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSetGenerationProgress).toHaveBeenCalledWith("計画を生成中...");
+    });
+
+    it("W-3: planSkill 成功時に setCurrentPlanResult が呼ばれる", async () => {
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSetCurrentPlanResult).toHaveBeenCalledWith({
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      });
+    });
+  });
+
+  // ============================================================
+  // W-4, W-5 (AC-4): executePlan -> CompleteStep
+  // ============================================================
+  describe("AC-4: executePlan -> CompleteStep遷移", () => {
+    it("W-4: 実行するクリックで executePlan が呼ばれる", async () => {
+      // planSkill成功後の状態をセットアップ
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      };
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      // LLMモード選択して次へ
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      // planSkill成功後、ローカルにplanResultが設定されるので実行ボタンが表示されるはず
+      // ただし store mock は planSkill 後にre-renderされないため、
+      // localPlanResult を使って実行ボタンが出ることをテスト
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "実行する" }),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      expect(mockExecutePlan).toHaveBeenCalledWith("plan-001", "テスト");
+    });
+
+    it("W-5: executePlan 成功後に CompleteStep に遷移する", async () => {
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      };
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "実行する" }),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(screen.getByText("スキルが作成されました")).toBeInTheDocument();
+    });
+  });
+
+  // ============================================================
+  // W-6 (AC-5): キャンセル -> DescribeStep
+  // ============================================================
+  describe("AC-5: キャンセル -> DescribeStep戻り", () => {
+    it("W-6: キャンセルクリックで DescribeStep に戻る", async () => {
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      };
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "キャンセル" }),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
+
+      // DescribeStep に戻っている
+      expect(screen.getByRole("textbox")).toBeInTheDocument();
+      expect(screen.getByText("スキルの説明")).toBeInTheDocument();
+    });
+  });
+
+  // ============================================================
+  // W-7, W-8 (AC-8): テンプレートフロー非破壊
+  // ============================================================
+  describe("AC-8: テンプレートフロー非破壊", () => {
+    it("W-7: テンプレートモード（デフォルト）で ConfigureStep に遷移する", () => {
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      expect(screen.getByText("タスク生成")).toBeInTheDocument();
+      expect(mockPlanSkill).not.toHaveBeenCalled();
+    });
+
+    it("W-8: テンプレートモードで createSkill が呼ばれる", async () => {
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+      });
+
+      expect(mockCreateSkill).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // ============================================================
+  // W-10, W-11 (AC-10): 対称クリア
+  // ============================================================
+  describe("AC-10: 対称クリア", () => {
+    it("W-10: executePlan 成功後に clearGenerationState が呼ばれる", async () => {
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      };
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "実行する" }),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockClearGenerationState).toHaveBeenCalledTimes(1);
+    });
+
+    it("W-11: キャンセル後に clearGenerationState が呼ばれる（対称クリア）", async () => {
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      };
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "キャンセル" }),
+        ).toBeInTheDocument();
+      });
+
+      fireEvent.click(screen.getByRole("button", { name: "キャンセル" }));
+
+      expect(mockClearGenerationState).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  // ============================================================
+  // E-3 (AC-7): executePlan 失敗パス
+  // ============================================================
+  describe("executePlan エラーパス", () => {
+    it("E-3: executePlan が失敗レスポンスを返すとき setGenerationError が呼ばれる", async () => {
+      mockExecutePlan.mockResolvedValue({
+        success: false,
+        error: "スキル生成に失敗しました",
+      });
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      };
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "実行する" }),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSetGenerationError).toHaveBeenCalledWith(
+        "スキル生成に失敗しました",
+      );
+    });
+
+    it("E-5: executePlan が例外をスローするとき setGenerationError が呼ばれる", async () => {
+      mockExecutePlan.mockRejectedValue(new Error("ネットワークエラー"));
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      };
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "実行する" }),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSetGenerationError).toHaveBeenCalledWith("ネットワークエラー");
+    });
+  });
+
+  // ============================================================
+  // Phase 6: エラーパス (E シリーズ)
+  // ============================================================
+  describe("planSkill エラーパス", () => {
+    it("E-1: planSkill が失敗レスポンスを返すとき setGenerationError が呼ばれる", async () => {
+      mockPlanSkill.mockResolvedValue({
+        success: false,
+        error: "APIキーが無効です",
+      });
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSetGenerationError).toHaveBeenCalledWith("APIキーが無効です");
+    });
+
+    it("E-2: planSkill が例外をスローするとき setGenerationError が呼ばれる", async () => {
+      mockPlanSkill.mockRejectedValue(new Error("ネットワークエラー"));
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSetGenerationError).toHaveBeenCalledWith("ネットワークエラー");
+    });
+
+    it("E-4: planSkill 失敗後に setIsGenerating(false) が呼ばれる", async () => {
+      mockPlanSkill.mockRejectedValue(new Error("失敗"));
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      const calls = mockSetIsGenerating.mock.calls;
+      expect(calls[calls.length - 1]).toEqual([false]);
+    });
+  });
+
+  // ============================================================
+  // Phase 6: API 未接続フォールバック (F シリーズ)
+  // ============================================================
+  describe("API未接続フォールバック", () => {
+    it("F-2: planSkill が undefined のとき setGenerationError が呼ばれてクラッシュしない", async () => {
+      (window as Window & { electronAPI?: unknown }).electronAPI = {
+        skillCreator: {
+          executePlan: mockExecutePlan,
+        },
+      };
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSetGenerationError).toHaveBeenCalled();
+    });
+  });
+
+  // ============================================================
+  // Phase 6: 二重呼出防止 (G シリーズ)
+  // ============================================================
+  describe("二重呼出防止ガード", () => {
+    it("G-1: isGenerating=true 中に planSkill が呼ばれない", async () => {
+      mockStoreState.isGenerating = true;
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockPlanSkill).not.toHaveBeenCalled();
+    });
+  });
+
+  // ============================================================
+  // Phase 6: モード切替検証 (M シリーズ)
+  // ============================================================
+  describe("generationMode切替後の遷移", () => {
+    it("M-1: LLM から テンプレートに切替後 ConfigureStep に遷移する", () => {
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.click(screen.getByRole("radio", { name: /テンプレート/ }));
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      expect(screen.getByText("タスク生成")).toBeInTheDocument();
+      expect(mockPlanSkill).not.toHaveBeenCalled();
+    });
+
+    it("M-3: デフォルトはテンプレートモードで ConfigureStep に遷移する", () => {
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      expect(
+        screen.getByRole("button", { name: "スキルを生成" }),
+      ).toBeInTheDocument();
+    });
+  });
+});

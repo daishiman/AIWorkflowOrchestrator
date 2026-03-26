@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-24T11:58:24.541Z",
-  "totalKeywords": 2476,
+  "generated": "2026-03-25T10:50:44.662Z",
+  "totalKeywords": 2490,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2464,8 +2464,8 @@
     ],
     "SC": [
       "arch-electron-services-details-part2.md",
-      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "arch-state-management-core.md",
+      "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -2473,6 +2473,8 @@
     ],
     "POLICY": [
       "arch-electron-services-details-part2.md",
+      "arch-execution-capability-contract.md",
+      "interfaces-auth-core.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -2551,6 +2553,7 @@
     ],
     "統合": [
       "arch-electron-services-details-part2.md",
+      "arch-execution-capability-contract.md",
       "arch-state-management-core.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
       "architecture-file-conversion.md",
@@ -2669,6 +2672,20 @@
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md"
+    ],
+    "HealthPolicy": [
+      "arch-execution-capability-contract.md",
+      "interfaces-auth-core.md"
+    ],
+    "HEALTH": [
+      "arch-execution-capability-contract.md",
+      "interfaces-auth-core.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "UNIFICATION": [
+      "arch-execution-capability-contract.md",
+      "interfaces-auth-core.md",
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "機能追加パターン": [
       "arch-feature-addition.md",
@@ -5171,6 +5188,9 @@
     "ExecutionCapability": [
       "interfaces-auth-core.md"
     ],
+    "統一インターフェース": [
+      "interfaces-auth-core.md"
+    ],
     "ワークスペース型定義": [
       "interfaces-auth-core.md"
     ],
@@ -6444,9 +6464,6 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "AUTHMODE": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "UNIFICATION": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "再確認追補": [
@@ -11586,6 +11603,48 @@
     ],
     "resilience": [
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "Console": [
+      "api-ipc-system-core.md"
+    ],
+    "Safety": [
+      "api-ipc-system-core.md"
+    ],
+    "Governance": [
+      "api-ipc-system-core.md"
+    ],
+    "CONSOLE": [
+      "api-ipc-system-core.md",
+      "architecture-implementation-patterns-core.md",
+      "lessons-learned-current.md",
+      "security-api-electron.md",
+      "security-electron-ipc-core.md"
+    ],
+    "SAFETY": [
+      "api-ipc-system-core.md",
+      "architecture-implementation-patterns-core.md",
+      "lessons-learned-current.md",
+      "security-api-electron.md",
+      "security-electron-ipc-core.md"
+    ],
+    "ApprovalGate": [
+      "architecture-implementation-patterns-core.md",
+      "security-electron-ipc-core.md"
+    ],
+    "Enforcement": [
+      "architecture-implementation-patterns-core.md"
+    ],
+    "からの教訓": [
+      "lessons-learned-current.md"
+    ],
+    "セキュリティ契約": [
+      "security-electron-ipc-core.md"
+    ],
+    "検証": [
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "TerminalHandoff": [
+      "task-workflow-completed-skill-create-ui-integration.md"
     ]
   }
 }

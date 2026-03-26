@@ -19,6 +19,9 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-25 | 2.8.0 | TASK-SC-08-E2E-VALIDATION 教訓3件を追加（L-SC-E2E-001: IPC handlerMap モックパターン、L-SC-E2E-002: TerminalHandoff セキュリティ検証、L-SC-E2E-003: Phase仕様書パス移動時の参照ドリフト） |
+| 2026-03-25 | 2.8.0 | TASK-SC-07-STREAMING-PROGRESS-UI 教訓4件を追加（L-SC-07-001: Slice名前衝突回避、L-SC-07-002: P5対策safeOn cleanup、L-SC-07-003: P47対策ErrorCards網羅性、L-SC-07-004: ローカルstate vs Zustand二重管理） |
+| 2026-03-25 | 2.7.0 | UT-SC-05-IPC-DI-WIRING 教訓2件を追加（L-IPC-DI-001: 仕様書作成時点とコード乖離、L-IPC-DI-002: オプショナルDIサイレントデグラデーション） |
 | 2026-03-24 | 2.5.0 | TASK-LLM-MOD-03 苦戦箇所2件を追加（L-LLM-MOD-03-001〜002: baseUrl変更のcross-file依存 / system_instruction条件付加の設計判断） |
 | 2026-03-22 | 2.2.3 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 の Phase 12 教訓4件を追加 |
 | 2026-03-21 | 2.2.1 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
@@ -29,6 +32,7 @@
 
 | 2026-03-23 | 2.5.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（→ [ipc-preload-runtime](lessons-learned-ipc-preload-runtime.md): LLM統合パターン再利用、空文字列beforeバグ、P4/P51再発） |
 | 2026-03-23 | 2.4.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003: GAP ラベルドリフト / DEFERRED 判断誤り / ViewType 型不一致） |
+| 2026-03-25 | 2.7.0 | TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION 教訓4件を追加（→ [ipc-preload-runtime](lessons-learned-ipc-preload-runtime.md): vi.mock gaps、非破壊拡張、Symmetric Clear横展開、GenerationMode SSoT） |
 | 2026-03-24 | 2.6.0 | TASK-SC-06-UI-RUNTIME-CONNECTION 苦戦箇所3件を追加（→ [ipc-preload-runtime](lessons-learned-ipc-preload-runtime.md): Hybrid State Pattern SSoT問題、executePlan引数設計ミス、PlanResult型一本化） |
 | 2026-03-24 | 2.5.1 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓2件を追加（L-CBLG-003: テストマトリクスファイル参照誤り、L-CBLG-004: TS1501 regex /s flag） |
 | 2026-03-23 | 2.5.0 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 教訓2件を追加（L-CBLG-001: Phase 10 MINOR 照合漏れ、L-CBLG-002: Step A-E 先送り P57 違反） |
@@ -91,6 +95,78 @@
 - spec-only close-out では downstream task status と code diff 0/有を併記する
 - standalone root 移設時は parent/downstream/system spec の旧 path を same-wave で閉じる
 - `implementation_ready` / `spec_created` / `blocked` の意味を分離し、Phase 13 だけ future gate に残す
+
+### 2026-03-25 TASK-SC-07-STREAMING-PROGRESS-UI ストリーミング進捗UI実装
+
+#### L-SC-07-001: Slice名前衝突回避（`streamingError` → `genProgressError` への改名）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `generationProgressSlice` に `streamingError` フィールドを定義したところ、既存の `chatSlice` に同名フィールドが存在していたため、Store マージ時に型衝突が発生した |
+| 再発条件 | 新規 Slice を追加する際に、既存 Slice のフィールド名と重複するキーを使用した場合 |
+| 解決策 | `streamingError` → `genProgressError` に改名し、Slice スコープを明示するプレフィックスを付与した |
+| 標準ルール | 新規 Slice 追加前に `store/index.ts` の既存フィールド名を grep して衝突を事前チェックする |
+| 関連パターン | P31（Store セレクタの SSoT） |
+| 関連タスク | TASK-SC-07-STREAMING-PROGRESS-UI |
+
+#### L-SC-07-002: P5対策（safeOn cleanup の useEffect return 必須化）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `useStreamingProgress` Hook で `safeOn` によるIPCリスナー登録を行ったが、`useEffect` の cleanup 関数を返し忘れたため、コンポーネントのアンマウント後もリスナーが残存し、二重登録が発生した |
+| 再発条件 | `safeOn` / `ipcRenderer.on` を `useEffect` 内で呼び出す際に cleanup return を省略した場合 |
+| 解決策 | `useEffect` 内で `const cleanup = safeOn(...)` を受け取り、`return () => cleanup()` を必ず返す |
+| 標準ルール | IPC リスナーを登録する `useEffect` は必ず cleanup return を含めるルールをコードレビューチェックリストに追加する |
+| 関連パターン | P5（IPC リスナー二重登録防止） |
+| 関連タスク | TASK-SC-07-STREAMING-PROGRESS-UI |
+
+#### L-SC-07-003: P47対策（`Record<GenerationErrorCode, ReactNode>` による ErrorCards 網羅性保証）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | ErrorCards コンポーネントでエラーコードごとの表示を `switch` 文で実装していたが、新しい `GenerationErrorCode` 追加時に case 漏れが TypeScript では検出されなかった |
+| 再発条件 | エラーコードの union 型が拡張された際に、対応するビューコンポーネント側の分岐が更新されない場合 |
+| 解決策 | `const ERROR_CARDS: Record<GenerationErrorCode, ReactNode>` として全コードをキーとするオブジェクト型で定義し、TypeScript の完全性チェックを活用した |
+| 標準ルール | エラーコード → UI マッピングは `switch` ではなく `Record<ErrorCode, ReactNode>` パターンで実装する |
+| 関連パターン | P47（Exhaustive Check） |
+| 関連タスク | TASK-SC-07-STREAMING-PROGRESS-UI |
+
+#### L-SC-07-004: ローカルstate vs Zustand二重管理（createSkillのPromise rejectがIPCチャンネルを経由しないため、resolveStage/bridgeLocalErrorによるブリッジが必要）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `createSkill` の IPC 呼び出しは Promise を返すが、ストリーミング進捗イベントは別チャンネルの `safeOn` で受け取る設計になっており、Promise の reject と IPC イベントの到着順序が保証されなかった。Store（`generationProgressSlice`）とローカル state の両方で進捗を管理すると SSoT が崩れた |
+| 再発条件 | IPC の request/response と push イベントを混在させるストリーミングパターンで、進捗状態の管理先を一元化しない場合 |
+| 解決策 | `resolveStage`（IPC Promise resolve 時に Store へ反映）と `bridgeLocalError`（ローカル catch を Store エラーへ橋渡し）の2つのブリッジ関数を設け、IPC レスポンスと Store 状態を同期させた |
+| 標準ルール | ストリーミング進捗パターンでは Promise 側と push イベント側を Store に集約し、ローカル state との二重管理を避ける |
+| 関連パターン | P31（Store SSoT）, Hybrid State Pattern |
+| 関連タスク | TASK-SC-07-STREAMING-PROGRESS-UI |
+
+---
+
+### 2026-03-25 UT-SC-05-IPC-DI-WIRING DI配線完了
+
+#### L-IPC-DI-001: 仕様書作成時点と実装時点のコード乖離
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 1-2 で「3依存（skillFileManager, llmAdapter, resourceLoader）がすべて未注入」を前提に設計したが、Phase 3 実行時に resourceLoader と llmAdapter は既に別タスク（TASK-SC-05-IMPROVE-LLM）で注入済みだった。実際の変更は `skillFileManager` の1行追加のみ |
+| 再発条件 | 仕様書作成後に他タスクが先に実装をマージし、前提コードが変化した場合 |
+| 解決策 | Phase 3 の設計レビューで現状コードとの差分分析を実施し、実際の変更量を特定。仕様書の前提を修正 |
+| 標準ルール | Phase 3 開始時に `git diff` または `grep` で仕様書のコードスニペットと現状コードの差分を確認する。コミットハッシュを仕様書に記録する |
+| 関連パターン | P34（遅延初期化 DI パターン） |
+| 関連タスク | UT-SC-05-IPC-DI-WIRING |
+
+#### L-IPC-DI-002: オプショナル DI のサイレントデグラデーション
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `RuntimeSkillCreatorFacadeDeps` のフィールドがすべてオプショナルであるため、依存未注入でも TypeScript のコンパイルエラーが発生せず、Graceful Degradation が「正常動作」として長期間見過ごされた |
+| 解決策 | Graceful Degradation 発動時のログ計装で「意図しない degradation」を検出可能にする。必須依存は Required フィールドに変更することを検討 |
+| 標準ルール | オプショナル DI フィールドを使用する場合、Graceful Degradation 発動時にログ（warn レベル）を出力する |
+| 関連タスク | UT-SC-05-IPC-DI-WIRING |
+
+---
 
 ### 2026-03-24 TASK-LLM-MOD-03 GoogleAdapter system_instruction 対応
 
@@ -650,3 +726,69 @@
 - **再利用**: テスト mock の戻り値には `satisfies` または明示的型引数で型チェックを強制する
 
 > 5分解決カード: Props silent drop → Props interface と destructuring のフィールド数を比較 → 不足フィールドを追加 → テスト追加
+
+---
+
+## TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24）
+
+### 1. 設計タスクでもプロダクションコードが含まれる場合がある
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | タスク種別を「設計タスク」として開始したが、ApprovalGate / Consumer Auth Guard / 3ハンドラファイル等の実装が含まれていた |
+| 解決策 | タスク分析の早期（Phase 1-2）に「設計のみか実装を伴うか」を明示的に判断し、種別を「設計・実装タスク」に更新する |
+| 標準ルール | Phase 2 設計レビュー時点で新規ファイル作成が発生するなら「実装タスク」として種別を修正する |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+### 2. IPC channel 数の整合
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 仕様書間で IPC channel 数を記載する際、Phase が進むにつれてチャンネル数が変動し、ドキュメント間で不整合が生じた |
+| 解決策 | 仕様書の IPC channel 数は実装後に grep で実測し、全ドキュメントで同一の正確な数値を使用する |
+| 標準ルール | IPC channel 数を記載する場合は `grep -rn "ipcMain.handle" src/main/ipc/` で実測値を確認してから記載する |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+### 3. 3層レイヤーアーキテクチャは安全ガバナンスに有効
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実行コンソールの安全ガバナンスを単一コンポーネントで実装しようとすると、UX と安全性のトレードオフが生じる |
+| 解決策 | Primary Surface（概要表示） → Safety Surface（承認要求） → Detail Surface（ログ詳細）の3層に分離することで段階的開示を実現し、UX と安全性を両立した |
+| 標準ルール | 承認フロー + 情報開示が要件に含まれる画面は、3層分離を設計の起点とする |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+### 4. ApprovalGate の DI パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 既存の terminalHandlers.ts に承認ゲートを追加する際、既存のコードへの影響を最小化しながらテスタビリティを確保する必要があった |
+| 解決策 | `IApprovalGate` インターフェースによる DI でテスタビリティを確保しつつ、optional パラメータで既存コードへの影響を最小化した。未注入時は degraded モードとして動作 |
+| 標準ルール | 既存ハンドラへの機能追加は optional パラメータ + interface DI で拡張する（P61 パターン適用） |
+| 関連パターン | P61（DIP 違反の遅発検出）、ApprovalGate Enforcement パターン |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+
+---
+
+## TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25）
+
+### L-SC-E2E-001: IPC handlerMap モックパターン
+
+- **症状**: Electron の `ipcMain.handle` を直接モックすると、ハンドラ登録のタイミング依存でテストが不安定になる
+- **原因**: `vi.mock('electron')` だけではハンドラの呼び出しチェーンをテストできない
+- **解決策**: `handlerMap: Record<string, Function>` をキャプチャし、`ipcMain.handle` のモック内で格納。テスト時は `handlerMap[channelName](event, args)` で直接呼び出す
+- **関連Pitfall**: P60（IPC テスト応答形式不一致）
+
+### L-SC-E2E-002: TerminalHandoff セキュリティ検証
+
+- **症状**: `suggestedCommand` の形式検証が不十分だと、シェルインジェクションの脆弱性が残る
+- **原因**: CLI コマンド文字列の妥当性を正規表現のみで検証していた
+- **解決策**: (1) `/^[a-zA-Z]/` でアルファベット開始を検証 (2) `;`, `|`, `$()`, `` ` `` のシェルメタ文字を禁止 (3) NFR-1 準拠で API Key 等の機密情報が含まれないことをアサート
+- **関連Pitfall**: NFR-1（機密情報漏洩防止）
+
+### L-SC-E2E-003: Phase仕様書パス移動時の参照ドリフト
+
+- **症状**: Phase仕様書ディレクトリを移動した後、「次のPhase」リンクが旧パスのまま残り、ナビゲーションが壊れる
+- **原因**: ディレクトリ名変更時に、Phase仕様書内の相対パス参照が自動更新されない
+- **解決策**: 移動後に `grep -r "旧パス" 新ディレクトリ/` で残存参照を検出し、一括置換する
+- **新規Pitfall候補**: P-NEW: Phase仕様書ディレクトリ移動時の「次のPhase」リンク残存

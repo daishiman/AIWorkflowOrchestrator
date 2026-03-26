@@ -975,3 +975,72 @@
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | (M-01 follow-up) | rsync コマンドの worktree 環境注意書き追加 | `docs/30-workflows/unassigned-task/worktree-rsync-caution-annotation.md` |
+
+---
+
+### タスク: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Advanced Console Safety Governance（2026-03-24）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | design / implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-24 |
+| ブランチ | feature/advanced-console-safety-governance |
+| 対象 | ApprovalGate、Consumer Auth Guard、3層レイヤー、5 IPC channel |
+| 成果物 | `docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/` |
+
+#### 実施内容
+
+- `ApprovalGate` / `IApprovalGate` を新規実装（TTL 300秒、ワンタイムトークン、DI パターン）
+- Consumer Auth Guard（`isConsumerToken` 判定）を terminalHandlers に組み込み
+- 3層レイヤーアーキテクチャ: Primary Surface → Safety Surface → Detail Surface
+- 5 IPC チャンネル新設: `approval:respond`、`execution:get-terminal-log`、`execution:get-copy-command`、`execution:get-disclosure-info`、`approval:request`
+- `advancedConsoleHandlers.ts` / `approvalHandlers.ts` / `disclosureHandlers.ts` の3ハンドラファイルを新規作成
+- Phase 13（PR）は user approval 未取得のため blocked
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 |
+| --- | --- | --- |
+| UT-6 | main/ipc/index.ts へ advancedConsole/approval/disclosure の3ハンドラ追加 | HIGH |
+| UT-7 | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH |
+| UT-8 | Main→Renderer への承認要求プッシュ通知（webContents.send） | HIGH |
+| UT-9 | abort/done 時に ApprovalGate.revokeAll() でトークンクリア | MEDIUM |
+| UT-10 | disclosureHandlers.ts 独立テスト作成 | LOW |
+
+---
+
+### タスク: TASK-IMP-HEALTH-POLICY-UNIFICATION-001 HealthPolicy 統一インターフェース（2026-03-25）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-25 |
+| 親パック | ai-runtime-execution-responsibility-realignment |
+| 対応ギャップ | Gap-3（HealthPolicy の統一不足） |
+| 成果物 | `docs/30-workflows/impl-task-b-health-policy-unification/` |
+
+#### 実施内容
+
+- `packages/shared/src/types/health-policy.ts` — HealthPolicy 型 + resolveHealthPolicy() pure function（23テスト）
+- `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts` — HealthPolicy DI + degraded 分岐（8テスト）
+- `apps/desktop/src/renderer/features/mainline-access/mainlineAccess.ts` — HealthPolicy 消費（7テスト）
+- `apps/desktop/src/renderer/components/llm/HealthIndicator.tsx` — HealthPolicy props 追加
+- `packages/shared/src/types/execution-capability.ts` — apiKeyDegraded @deprecated v0.8.0
+
+#### テスト
+
+38件追加（全PASS）
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver の HealthPolicy 注入元実装 | 高 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md` |
+| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0） | 中 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |

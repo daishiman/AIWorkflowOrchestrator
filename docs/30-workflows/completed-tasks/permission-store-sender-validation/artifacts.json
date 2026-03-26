@@ -1,0 +1,106 @@
+{
+  "taskId": "UT-06-002-UT-1",
+  "title": "permission-store-handlers sender 検証追加",
+  "issue": "#1527",
+  "createdAt": "2026-03-24",
+  "branch": "fix/UT-06-002-UT-1-permission-store-sender-validation",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": ["phase-1-requirements.md"]
+    },
+    "phase-2": {
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": ["phase-2-design.md"]
+    },
+    "phase-3": {
+      "status": "completed",
+      "file": "phase-3-design-review.md",
+      "artifacts": ["phase-3-design-review.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": ["phase-4-test-creation.md"]
+    },
+    "phase-5": {
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": ["phase-5-implementation.md"]
+    },
+    "phase-6": {
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": ["phase-6-test-expansion.md"]
+    },
+    "phase-7": {
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "phase-7-coverage-check.md",
+        "outputs/phase-7/coverage-report.md"
+      ]
+    },
+    "phase-8": {
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": ["phase-8-refactoring.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "phase-9-quality-assurance.md",
+        "outputs/phase-9/quality-report.md"
+      ]
+    },
+    "phase-10": {
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "phase-10-final-review.md",
+        "outputs/phase-10/review-result.md"
+      ]
+    },
+    "phase-11": {
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "phase-12-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "status": "completed",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": ["phase-13-pr-creation.md"]
+    }
+  },
+  "qualityMetrics": {
+    "targetCoverage": {
+      "line": 80,
+      "branch": 60,
+      "function": 80
+    },
+    "testCases": {
+      "existing": 25,
+      "new": {
+        "phase4": 10,
+        "phase6": 4
+      }
+    }
+  }
+}

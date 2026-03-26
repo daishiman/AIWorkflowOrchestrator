@@ -246,6 +246,9 @@ TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary ent
 | registerSkillDocsHandlers        | Pattern 3: mainWindow + service | 4         | api-ipc-agent.md |
 | registerSkillScheduleHandlers    | Pattern 4: mainWindow + service + store | 5 | api-ipc-agent.md |
 | registerSkillAnalyticsHandlers   | Pattern 3: mainWindow + service | 5 | api-ipc-agent.md |
+| advancedConsoleHandlers | `src/main/ipc/advancedConsoleHandlers.ts` | Advanced Console データ取得（ターミナルログ・コピーコマンド） | - |
+| approvalHandlers | `src/main/ipc/approvalHandlers.ts` | 承認/拒否応答処理（P42 3段バリデーション付き） | - |
+| disclosureHandlers | `src/main/ipc/disclosureHandlers.ts` | AI開示情報取得・dismiss/reopen状態管理 | - |
 
 **Pattern 3 詳細（registerSkillHandlers）**:
 

@@ -1,0 +1,160 @@
+{
+  "taskId": "TASK-SC-07",
+  "taskName": "skill-create-wizard-llm-connection",
+  "featureName": "TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION",
+  "createdDate": "2026-03-24",
+  "githubIssue": 1588,
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputs": [
+        "outputs/phase-1/inventory.md",
+        "outputs/phase-1/api-contract.md",
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/scope.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputs": [
+        "outputs/phase-2/component-topology.md",
+        "outputs/phase-2/data-flow.md",
+        "outputs/phase-2/type-definitions.md",
+        "outputs/phase-2/api-access-pattern.md",
+        "outputs/phase-2/step-transition.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specFile": "phase-3-design-review.md",
+      "outputs": [
+        "outputs/phase-3/sc06-avoidance-check.md",
+        "outputs/phase-3/ac-coverage-check.md",
+        "outputs/phase-3/non-destructive-check.md",
+        "outputs/phase-3/review-result.md"
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "specFile": "phase-4-test-creation.md",
+      "outputs": [
+        "apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx",
+        "apps/desktop/src/renderer/components/skill/wizard/__tests__/DescribeStep.test.tsx",
+        "apps/desktop/src/renderer/components/skill/wizard/__tests__/GenerateStep.test.tsx",
+        "outputs/phase-4/tdd-red-result.md"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "specFile": "phase-5-implementation.md",
+      "outputs": [
+        "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx",
+        "apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx",
+        "apps/desktop/src/renderer/components/skill/wizard/GenerateStep.tsx",
+        "apps/desktop/src/renderer/components/skill/wizard/index.ts",
+        "outputs/phase-5/implementation-checklist.md"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "specFile": "phase-6-test-expansion.md",
+      "outputs": ["outputs/phase-6/expansion-test-results.md"]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "specFile": "phase-7-coverage-check.md",
+      "outputs": [
+        "outputs/phase-7/coverage-raw.md",
+        "outputs/phase-7/coverage-gate-judgment.md",
+        "outputs/phase-7/uncovered-branches.md",
+        "outputs/phase-7/gate-decision.md",
+        "outputs/phase-7/coverage-final-summary.md"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "specFile": "phase-8-refactoring.md",
+      "outputs": [
+        "outputs/phase-8/duplication-report.md",
+        "outputs/phase-8/type-consolidation.md",
+        "outputs/phase-8/api-consolidation.md",
+        "outputs/phase-8/component-refactoring.md",
+        "outputs/phase-8/tdd-confirmation.md"
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputs": [
+        "outputs/phase-9/typecheck-result.md",
+        "outputs/phase-9/lint-result.md",
+        "outputs/phase-9/test-result.md",
+        "outputs/phase-9/security-check.md",
+        "outputs/phase-9/qa-summary.md"
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specFile": "phase-10-final-review.md",
+      "outputs": [
+        "outputs/phase-10/ac-verification.md",
+        "outputs/phase-10/sc06-avoidance-final.md",
+        "outputs/phase-10/review-decision.md",
+        "outputs/phase-10/final-review-summary.md"
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "specFile": "phase-11-manual-test.md",
+      "outputs": [
+        "outputs/phase-11/screenshots/01-describe-llm-mode.png",
+        "outputs/phase-11/screenshots/02-generate-step-plan-result.png",
+        "outputs/phase-11/screenshots/03-complete-step.png",
+        "outputs/phase-11/screenshots/04-cancel-to-describe.png",
+        "outputs/phase-11/screenshots/05-template-flow.png",
+        "outputs/phase-11/screenshots/06-error-state.png",
+        "outputs/phase-11/ux-check.md",
+        "outputs/phase-11/manual-test-summary.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/spec-update-log.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/doc-update-history.md",
+        "outputs/phase-12/unassigned-task-report.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "specFile": "phase-13-pr-creation.md",
+      "outputs": [
+        "outputs/phase-13/pre-pr-check.md",
+        "outputs/phase-13/commit-log.md",
+        "outputs/phase-13/pr-body.md",
+        "outputs/phase-13/pr-created.md",
+        "outputs/phase-13/ci-result.md",
+        "outputs/phase-13/completion-report.md"
+      ]
+    }
+  }
+}

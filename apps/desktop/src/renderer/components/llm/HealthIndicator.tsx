@@ -6,21 +6,40 @@
 
 import React, { useState, useCallback } from "react";
 import type { HealthCheckResult } from "@repo/shared/types/llm";
+import type { HealthPolicy, HealthStatus } from "@repo/shared/types";
 
 export interface HealthIndicatorProps {
-  healthStatus: HealthCheckResult | undefined;
+  /** @deprecated HealthPolicy を使用してください（D-6） */
+  healthStatus?: HealthCheckResult | undefined;
+  /** 統一 HealthPolicy（D-6: healthPolicy.healthStatus で表示切替） */
+  healthPolicy?: HealthPolicy;
   onRefresh?: () => void;
   isChecking?: boolean;
   size?: "sm" | "md" | "lg";
   className?: string;
 }
 
+/** HealthPolicy.healthStatus → 表示プロパティのマッピング */
+const healthPolicyDisplayMap: Record<
+  HealthStatus,
+  { color: string; text: string }
+> = {
+  healthy: { color: "bg-green-500", text: "接続良好" },
+  degraded: { color: "bg-yellow-500", text: "品質低下" },
+  unhealthy: { color: "bg-red-500", text: "接続不可" },
+  unknown: { color: "bg-gray-400", text: "未確認" },
+};
+
 /**
  * Get display properties based on health status
+ *
+ * HealthPolicy が渡された場合はそちらを優先（D-6）。
+ * 未渡し時は既存の HealthCheckResult から導出（後方互換）。
  */
 function getStatusDisplay(
   status: HealthCheckResult | undefined,
   isChecking: boolean,
+  healthPolicy?: HealthPolicy,
 ) {
   if (isChecking) {
     return {
@@ -30,6 +49,17 @@ function getStatusDisplay(
     };
   }
 
+  // HealthPolicy 優先パス（D-6）
+  if (healthPolicy) {
+    const display = healthPolicyDisplayMap[healthPolicy.healthStatus];
+    return {
+      color: display.color,
+      text: healthPolicy.errorDetail ?? display.text,
+      showSpinner: false,
+    };
+  }
+
+  // 後方互換パス: HealthCheckResult から導出
   if (!status) {
     return {
       color: "bg-gray-400",
@@ -74,6 +104,7 @@ const sizeClasses = {
 
 export const HealthIndicator: React.FC<HealthIndicatorProps> = ({
   healthStatus,
+  healthPolicy,
   onRefresh,
   isChecking = false,
   size = "md",
@@ -83,6 +114,7 @@ export const HealthIndicator: React.FC<HealthIndicatorProps> = ({
   const { color, text, showSpinner } = getStatusDisplay(
     healthStatus,
     isChecking,
+    healthPolicy,
   );
 
   const handleRefresh = useCallback(() => {

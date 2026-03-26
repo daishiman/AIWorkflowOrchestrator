@@ -88,6 +88,20 @@ API認証・認可、Electron IPC、スキル実行のセキュリティ設計�
 
 ---
 
+## 完了タスク（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001）
+
+> 完了日: 2026-03-25
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
+| 実装内容 | ApprovalGate による承認フロー、Consumer Auth Guard（CAG）、sanitizeForApiKeys による API key 除去、3層レイヤーアーキテクチャ（Primary / Safety / Detail Surface） |
+| 主要コンポーネント | ApprovalGate.ts, approvalHandlers.ts, advancedConsoleHandlers.ts, disclosureHandlers.ts, RuntimePolicyResolver.ts |
+| 追加チャンネル | `approval:respond` / `approval:request` / `execution:get-disclosure-info` / `execution:get-terminal-log` / `execution:get-copy-command` |
+| セキュリティ契約 | DENY-5（API key 非公開）、DENY-6（terminal command sanitize）、DENY-9（外部送信承認必須）、CAG-1〜3、NAS-1〜4 |
+
+---
+
 ## 変更履歴
 
 | バージョン | 日付       | 変更内容                                                                     |
