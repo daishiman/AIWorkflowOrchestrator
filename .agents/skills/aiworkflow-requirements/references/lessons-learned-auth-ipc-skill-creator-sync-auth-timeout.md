@@ -7,6 +7,44 @@
 
 ## UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 Runtime Skill Creator public IPC wiring（2026-03-21）
 
+## TASK-SDK-02 workflow-engine-runtime-orchestration（2026-03-26）
+
+### 苦戦箇所と解決策
+
+#### 1. facade が public bridge と state owner を兼務したままだと downstream task の責務境界が崩れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `RuntimeSkillCreatorFacade` に phase/state を残したままだと、Task03/04/08 が facade 前提で設計され、engine 導入後に route/state/UI 責務が再混在する |
+| 原因 | public IPC bridge と workflow state owner を「同じ runtime service」と見なし、review / verify / resume の保存責務を facade へ寄せていた |
+| 解決策 | `SkillCreatorWorkflowEngine` を新設し、`currentPhase` / `awaitingUserInput` / `verifyResult` / artifacts / `resumeTokenEnvelope` を engine の単独 owner にした |
+| 教訓 | runtime orchestration では「public bridge」と「workflow state owner」を別クラスに切り分けた方が downstream handoff と spec sync が安定する |
+
+#### 2. `terminal_handoff` 経路で executor を呼ぶと public contract は正しくても state と副作用がねじれる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `execute()` が `terminal_handoff` 判定後も executor 側へ進むと、public response は handoff でも内部副作用が integrated path と混線する |
+| 原因 | policy 判定と state 遷移の owner が分離されておらず、「戻り値の union が合っていればよい」という認識で止まっていた |
+| 解決策 | `RuntimeSkillCreatorFacade.execute()` を early return 化し、handoff は engine に handoff state だけを記録、integrated path のみ verify phase へ進めた |
+| 教訓 | runtime union の検証は戻り値型だけでなく「禁止される副作用」を含めてテスト化する必要がある |
+
+#### 3. source provenance を path 定数に頼ると resume contract と Task03 resource selection の境界が曖昧になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `DEFAULT_SKILL_CREATOR_PATH` だけを前提にすると、dynamic source root / manifest snapshot / resume route snapshot の provenance が別々に漂流する |
+| 原因 | resource root を compile-time constant と runtime snapshot のどちらで持つかを固定していなかった |
+| 解決策 | `ResourceLoader.getBasePath()` を追加し、engine が `resumeTokenEnvelope.sourceProvenance` として current source root を保持する形へ整理した |
+| 教訓 | resume や downstream handoff に渡す provenance は「path 定数」ではなく「engine が固定した snapshot」として残すと再利用しやすい |
+
+### 同種課題向け簡潔解決手順（4ステップ）
+
+1. `RuntimeSkillCreatorFacade` の責務を public bridge に限定し、owner 候補を `engine` / `renderer` / downstream task に棚卸しする。
+2. `terminal_handoff` は early return にし、禁止すべき副作用をテストで固定する。
+3. `resumeTokenEnvelope` / verify state / artifacts は同一 owner に集約する。
+4. source root は `ResourceLoader` 由来の snapshot として engine に記録し、shared/preload/ipc parity test を同時に回す。
+
 ### 苦戦箇所と解決策
 
 #### 1. public surface は `skillCreatorHandlers.ts` なのに runtime 実装だけ `creator:*` に分岐していた

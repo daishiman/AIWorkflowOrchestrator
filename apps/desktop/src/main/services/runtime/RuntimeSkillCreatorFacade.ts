@@ -20,6 +20,7 @@ import type {
   ISubscriptionAuthProvider,
 } from "@repo/shared/types/auth-mode";
 import type {
+  RuntimeSkillCreatorExecuteResponse as SkillExecuteResponse,
   RuntimeSkillCreatorExecuteResult as SkillExecuteResult,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
@@ -33,6 +34,10 @@ import type { ResourceLoader } from "../skill/ResourceLoader";
 import type { SkillFileManager } from "../skill/SkillFileManager";
 import type { SkillFileWriter } from "../skill/SkillFileWriter";
 import { RuntimePolicyResolver } from "./RuntimePolicyResolver";
+import {
+  SkillCreatorWorkflowEngine,
+  type SkillCreatorWorkflowSourceProvenance,
+} from "./SkillCreatorWorkflowEngine";
 import { TerminalHandoffBuilder } from "./TerminalHandoffBuilder";
 import {
   PLAN_PROMPT_CONSTANTS,
@@ -49,6 +54,7 @@ export interface RuntimeSkillCreatorFacadeDeps {
   authKeyService?: IAuthKeyService;
   subscriptionAuthProvider?: ISubscriptionAuthProvider;
   llmAdapter?: ILLMAdapter;
+  workflowEngine?: SkillCreatorWorkflowEngine;
   resourceLoader?: ResourceLoader;
   skillFileManager?: SkillFileManager;
   skillFileWriter?: SkillFileWriter;
@@ -58,6 +64,7 @@ export class RuntimeSkillCreatorFacade {
   private readonly resolver: RuntimePolicyResolver;
   private readonly handoffBuilder: TerminalHandoffBuilder;
   private readonly skillExecutor: SkillExecutor;
+  private readonly workflowEngine: SkillCreatorWorkflowEngine;
   private llmAdapter?: ILLMAdapter;
   private readonly resourceLoader?: ResourceLoader;
   private readonly skillFileManager?: SkillFileManager;
@@ -65,6 +72,8 @@ export class RuntimeSkillCreatorFacade {
 
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
+    this.workflowEngine =
+      deps.workflowEngine ?? new SkillCreatorWorkflowEngine();
     this.llmAdapter = deps.llmAdapter;
     this.resourceLoader = deps.resourceLoader;
     this.skillFileManager = deps.skillFileManager;
@@ -89,11 +98,30 @@ export class RuntimeSkillCreatorFacade {
     this.llmAdapter = adapter;
   }
 
+  getWorkflowStateSnapshot(planId: string) {
+    return this.workflowEngine.getWorkflowState(planId);
+  }
+
   private resolveDecision(authMode: AuthMode, apiKey: string | null) {
     if (authMode === "api-key" && (!apiKey || apiKey.trim() === "")) {
       return this.resolver.resolveWithService(authMode);
     }
     return this.resolver.resolve(authMode, apiKey);
+  }
+
+  private buildSourceProvenance():
+    | SkillCreatorWorkflowSourceProvenance
+    | undefined {
+    const resolvedSkillCreatorRoot =
+      this.resourceLoader &&
+      typeof this.resourceLoader.getBasePath === "function"
+        ? this.resourceLoader.getBasePath()
+        : undefined;
+    if (!resolvedSkillCreatorRoot) {
+      return undefined;
+    }
+
+    return { resolvedSkillCreatorRoot };
   }
 
   /**
@@ -128,10 +156,11 @@ export class RuntimeSkillCreatorFacade {
 
     // integrated_api: LLM で計画を生成
     const planId = `plan-${Date.now()}`;
+    const sourceProvenance = this.buildSourceProvenance();
 
     // Graceful degradation: llmAdapter/resourceLoader 未注入時はスタブ
     if (!this.llmAdapter || !this.resourceLoader) {
-      return {
+      const planResult = {
         planId,
         skillSpec,
         estimatedSteps: 3,
@@ -142,6 +171,12 @@ export class RuntimeSkillCreatorFacade {
         triggers: [],
         anchors: [],
       };
+      this.workflowEngine.recordPlanResult(
+        planResult,
+        decision,
+        sourceProvenance,
+      );
+      return planResult;
     }
 
     // agent 仕様書を読み込む
@@ -164,7 +199,7 @@ export class RuntimeSkillCreatorFacade {
     // レスポンスパース
     const parsed = parsePlanResponse(response.content);
 
-    return {
+    const planResult = {
       planId,
       skillSpec,
       estimatedSteps: parsed.agents.length + parsed.scripts.length,
@@ -175,6 +210,12 @@ export class RuntimeSkillCreatorFacade {
       triggers: parsed.triggers,
       anchors: parsed.anchors,
     };
+    this.workflowEngine.recordPlanResult(
+      planResult,
+      decision,
+      sourceProvenance,
+    );
+    return planResult;
   }
 
   /**
@@ -186,8 +227,25 @@ export class RuntimeSkillCreatorFacade {
     planResult: SkillPlanResult,
     authMode: AuthMode,
     apiKey: string | null,
-  ): Promise<SkillExecuteResult> {
+  ): Promise<SkillExecuteResponse> {
     const decision = await this.resolveDecision(authMode, apiKey);
+    const sourceProvenance = this.buildSourceProvenance();
+
+    if (decision.type === "terminal_handoff") {
+      this.workflowEngine.recordExecuteHandoff(
+        planResult,
+        decision,
+        decision.bundle,
+        sourceProvenance,
+      );
+      return { type: "terminal_handoff", bundle: decision.bundle };
+    }
+
+    this.workflowEngine.recordExecuteStart(
+      planResult,
+      decision,
+      sourceProvenance,
+    );
 
     const request: SkillExecutionRequest = {
       prompt: planResult.skillSpec,
@@ -206,17 +264,17 @@ export class RuntimeSkillCreatorFacade {
       content: planResult.skillSpec,
     };
 
-    // decision は将来の integrated_api/terminal_handoff 分岐で使用予定
-    void decision;
     const response = await this.skillExecutor.execute(request, skillMeta);
 
-    return {
+    const executeResult: SkillExecuteResult = {
       executeId: response.executionId,
       skillName:
         planResult.skillSpec.split("\n")[0]?.substring(0, 50) ?? "unnamed",
       success: response.success,
       error: response.error?.message,
     };
+    this.workflowEngine.recordExecuteResult(planResult.planId, executeResult);
+    return executeResult;
   }
 
   /**

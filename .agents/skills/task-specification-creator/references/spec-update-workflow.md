@@ -742,6 +742,10 @@ IPC チャンネルの追加・変更を伴うタスクの場合、Step 2 で以
 > 既存 IPC を再利用していても、`window.electronAPI.skill.*` などの public preload method を追加した場合、または `packages/shared` の barrel export を増やした場合は Step 2 対象とみなす。
 > この場合は少なくとも `api-ipc-agent.md`、`interfaces-agent-sdk-skill.md`、`task-workflow.md` を更新し、必要に応じて `lessons-learned.md` に再利用ルールを残す。
 
+> **TASK-SDK-02 で追加した判断ルール**:
+> runtime orchestration / workflow engine task では、public channel 名が不変でも `Facade` と `Engine` の owner 分離、`terminal_handoff` 早期 return、`resumeTokenEnvelope` / provenance snapshot の保持先が変わった時点で Step 2 対象とみなす。
+> この場合は少なくとも `architecture-overview-core.md`、`arch-electron-services-details-part2.md`、`api-ipc-system-core.md`、`task-workflow-completed.md` を更新し、bridge と state owner を別行で記録する。
+
 ### Step 2: システム仕様更新（条件付き）
 
 **更新判断基準に該当する場合のみ**実行。
@@ -931,6 +935,7 @@ grep -rn "permission-tool-icons" references/
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-26 | TASK-SDK-02 workflow-engine-runtime-orchestration を反映し、runtime orchestration task では channel 追加がなくても owner 分離・early return・resume/provenance owner 変更があれば Step 2 必須とする判断ルールを追加 |
 | 2026-03-26 | TASK-SDK-01 manifest foundation の close-out を反映し、foundation / internal-contract task で system spec 本文が current の場合も Step 1 と no-op 根拠記録を必須化。環境 blocker は既存未タスクとの重複確認を先行するルールを追加 |
 | 2026-03-12 | TASK-SKILL-LIFECYCLE-04 の再監査を反映し、「既存 IPC 再利用でも public preload API 追加や shared barrel export 追加があれば Step 2 必須」とする判断ルールを追加 |
 | 2026-03-06 | TASK-UI-02 Phase 12 再整合を反映し、誤判断パターンへ `index.md` stale を追加。チェックリストへ `generate-index.js --workflow ... --regenerate` と workflow index 状態確認を追記 |

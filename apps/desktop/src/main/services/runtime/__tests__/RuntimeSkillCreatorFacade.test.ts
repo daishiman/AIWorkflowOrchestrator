@@ -256,7 +256,7 @@ describe("RuntimeSkillCreatorFacade", () => {
       });
     });
 
-    it("terminal_handoff 判定時でも executor に委譲する（decision は将来使用予定）", async () => {
+    it("terminal_handoff 判定時は executor を呼ばず bundle を返す", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "terminal_handoff",
         bundle: {
@@ -282,16 +282,20 @@ describe("RuntimeSkillCreatorFacade", () => {
         null,
       );
 
-      expect(executeMock).toHaveBeenCalled();
+      expect(executeMock).not.toHaveBeenCalled();
       expect(result).toEqual({
-        executeId: "exec-003",
-        skillName: "my-skill",
-        success: true,
-        error: undefined,
+        type: "terminal_handoff",
+        bundle: {
+          launcher: "claude",
+          promptBundle: "",
+          cwd: "/tmp",
+          suggestedCommand: 'claude -p "fallback"',
+          manualRetryRule: "retry",
+        },
       });
     });
 
-    it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff を返しても executor に委譲する", async () => {
+    it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff を返すと bundle を返す", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
       vi.spyOn(
         RuntimePolicyResolver.prototype,
@@ -321,16 +325,20 @@ describe("RuntimeSkillCreatorFacade", () => {
         null,
       );
 
-      expect(executeMock).toHaveBeenCalled();
+      expect(executeMock).not.toHaveBeenCalled();
       expect(result).toEqual({
-        executeId: "exec-004",
-        skillName: "spec",
-        success: true,
-        error: undefined,
+        type: "terminal_handoff",
+        bundle: {
+          launcher: "claude",
+          promptBundle: "",
+          cwd: "/tmp",
+          suggestedCommand: 'claude -p "fallback"',
+          manualRetryRule: "retry",
+        },
       });
     });
 
-    it("明示的 apiKey 指定で terminal_handoff 判定でも executor に委譲する", async () => {
+    it("明示的 apiKey 指定で terminal_handoff 判定なら executor を呼ばない", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "terminal_handoff",
         bundle: {
@@ -356,12 +364,16 @@ describe("RuntimeSkillCreatorFacade", () => {
         "explicit-key",
       );
 
-      expect(executeMock).toHaveBeenCalled();
+      expect(executeMock).not.toHaveBeenCalled();
       expect(result).toEqual({
-        executeId: "exec-005",
-        skillName: "spec body",
-        success: true,
-        error: undefined,
+        type: "terminal_handoff",
+        bundle: {
+          launcher: "claude",
+          promptBundle: "",
+          cwd: "/tmp",
+          suggestedCommand: 'claude -p "fallback"',
+          manualRetryRule: "retry",
+        },
       });
     });
 
@@ -400,7 +412,7 @@ describe("RuntimeSkillCreatorFacade", () => {
       });
     });
 
-    it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff でも executor に委譲する", async () => {
+    it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff なら bundle を返す", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
       vi.spyOn(
         RuntimePolicyResolver.prototype,
@@ -430,12 +442,16 @@ describe("RuntimeSkillCreatorFacade", () => {
         null,
       );
 
-      expect(executeMock).toHaveBeenCalled();
+      expect(executeMock).not.toHaveBeenCalled();
       expect(result).toEqual({
-        executeId: "exec-007",
-        skillName: "stored-spec",
-        success: true,
-        error: undefined,
+        type: "terminal_handoff",
+        bundle: {
+          launcher: "claude",
+          promptBundle: "",
+          cwd: "/tmp",
+          suggestedCommand: 'claude -p "fallback"',
+          manualRetryRule: "retry",
+        },
       });
     });
 
@@ -473,7 +489,7 @@ describe("RuntimeSkillCreatorFacade", () => {
 
       expect(resolveSpy).toHaveBeenCalledWith("api-key", "explicit-key");
       expect(resolveWithServiceSpy).not.toHaveBeenCalled();
-      expect(executeMock).toHaveBeenCalled();
+      expect(executeMock).not.toHaveBeenCalled();
     });
   });
 

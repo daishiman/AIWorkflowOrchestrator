@@ -130,15 +130,15 @@ AuthKeyService/SubscriptionAuthProvider の例外時は terminal_handoff (no-aut
 
 > 完了日: 2026-03-23
 
-`RuntimeSkillCreatorFacade` の全3メソッドで terminal_handoff 早期リターンパターンが統一済み。
+`RuntimeSkillCreatorFacade` の全3メソッドで terminal_handoff 早期リターンパターンが統一済み。Task02 では facade から workflow state owner を切り離し、`SkillCreatorWorkflowEngine` に phase/state/artifact ownership を集約した。
 
 | メソッド | terminal_handoff 分岐 | Union型 | 追加タスク |
 | --- | --- | --- | --- |
-| `plan()` | 有（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | `RuntimeSkillCreatorPlanResponse` | -- |
-| `execute()` | 有（UT-SC-02-002） | `RuntimeSkillCreatorExecuteResponse` | UT-SC-02-002 |
+| `plan()` | 有（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | `RuntimeSkillCreatorPlanResponse` | review state を engine へ記録 |
+| `execute()` | 有（UT-SC-02-002 / TASK-SDK-02） | `RuntimeSkillCreatorExecuteResponse` | handoff 時は executor 非実行、integrated 時は verify phase へ遷移 |
 | `improve()` | 有（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | `RuntimeSkillCreatorImproveResponse` | -- |
 
-`RuntimeSkillCreatorExecuteResponse` は `packages/shared/src/types/skillCreator.ts` に追加し、`packages/shared/src/types/index.ts` からバレルエクスポート済み。`creatorHandlers.ts` の `skill-creator:execute-plan` 戻り値型も更新済み。Preload 側型定義は UT-SC-02-005 で完了（2026-03-25）。
+`RuntimeSkillCreatorExecuteResponse` は `packages/shared/src/types/skillCreator.ts` に追加し、`packages/shared/src/types/index.ts` からバレルエクスポート済み。`creatorHandlers.ts` の `skill-creator:execute-plan` 戻り値型も更新済み。Preload 側型定義は UT-SC-02-005 で完了（2026-03-25）。Task02 では `ResourceLoader.getBasePath()` を provenance source として engine の `resumeTokenEnvelope.sourceProvenance` に固定した。
 
 ### workflow manifest foundation（TASK-SDK-01 → TASK-SDK-02 handoff）
 
@@ -148,7 +148,7 @@ Task01 で固定した workflow manifest contract は、Task02 以降の runtime
 | --- | --- | --- |
 | `ManifestLoader` | `workflow-manifest.json` の read / validate / normalize / cache | route decision、phase 遷移、permission/session authority |
 | `WorkflowManifest*` 型群 | manifest schema の shared contract | public IPC response 型の代替 |
-| `SkillCreatorWorkflowEngine` | phase/state owner と artifact ownership | manifest schema 解釈の source of truth 化 |
+| `SkillCreatorWorkflowEngine` | phase/state owner と artifact ownership、`resumeTokenEnvelope` / verify state の保持 | manifest schema 解釈の source of truth 化 |
 
 `ManifestLoader` は foundation service であり、`RuntimeSkillCreatorFacade` や `RuntimePolicyResolver` と同じ authority layer に昇格させない。owner 分離の正本は Task02 workflow 仕様書に従う。
 

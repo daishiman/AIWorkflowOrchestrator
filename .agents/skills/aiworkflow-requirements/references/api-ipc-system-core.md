@@ -379,7 +379,8 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | Main registration | `apps/desktop/src/main/ipc/index.ts` | `SkillExecutor` / `authKeyService` から facade を組み立てる |
 | Main public entrypoint | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` | skill creator 標準 surface を維持して runtime helper を登録する |
 | Main runtime helper | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `plan` / `execute-plan` / `improve-skill` handler |
-| Runtime service | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | policy / handoff / execute 委譲 |
+| Runtime service | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | public bridge。policy / handoff / execute を判断し、state 更新は engine へ委譲 |
+| Workflow engine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `currentPhase` / `awaitingUserInput` / `verifyResult` / artifacts / `resumeTokenEnvelope` の owner |
 | Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `planSkill()` / `executePlan()` / `improveSkillWithFeedback()` |
 | Shared types | `packages/shared/src/types/skillCreator.ts` | request / response / handoff bundle |
 
@@ -424,6 +425,17 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | authMode 省略時 | handler 側で `api-key` を既定値にする |
 | `apiKey=null` + `authMode=\"api-key\"` | `plan` / `improve` は `resolveWithService()` により保存済み key fallback を試行する |
 | runtime facade 未注入 | 3 チャンネルは登録を維持し、`success: false` + 一定 error string を返す |
+
+### 完了タスク（TASK-SDK-02 workflow-engine-runtime-orchestration）
+
+> 完了日: 2026-03-26
+
+| 変更項目 | ファイル | 内容 |
+| -------- | -------- | ---- |
+| workflow state owner 分離 | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | facade から `currentPhase` / `awaitingUserInput` / `verifyResult` / artifacts / `resumeTokenEnvelope` ownership を分離 |
+| execute handoff hardening | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `terminal_handoff` では executor を呼ばず early return、`integrated_api` では engine を verify phase まで進める |
+| provenance source 固定 | `apps/desktop/src/main/services/skill/ResourceLoader.ts` | `getBasePath()` を追加し、runtime source provenance を manifest / resume envelope と同期 |
+| shared parity test | `packages/shared/src/types/__tests__/skillCreator.contract-parity.test.ts` | plan / execute / improve の runtime union と preload / ipc parity を回帰テスト化 |
 | sender 不正 | `toIPCValidationError` を throw して reject |
 | エラー | `sanitizeErrorMessage()` 後の文字列のみ返す |
 | execute 実行 | `SkillExecutor` へ委譲し、auth key は既存 DI 経路を再利用する |

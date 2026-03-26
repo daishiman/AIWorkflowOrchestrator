@@ -7547,6 +7547,25 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **発見日**: 2026-03-26
 - **関連タスク**: TASK-SDK-01
 
+### [Architecture] public bridge と workflow state owner の分離パターン（TASK-SDK-02）
+
+- **状況**: runtime orchestration task では `Facade` に state を残したまま feature を足すと、public IPC / phase state / resume / verify が同じ層に滞留し、後続 task の責務境界が崩れやすい
+- **アプローチ**:
+  - `Facade` は public bridge、`Engine` は workflow state owner として役割を固定する
+  - `terminal_handoff` は early return にし、禁止される副作用（executor 実行など）もテストで固定する
+  - `resumeTokenEnvelope` / verify state / artifacts / source provenance は同じ owner に束ねる
+- **成功パターン**:
+  - `architecture-overview` と service detail で bridge / owner を別行に記載する
+  - `RuntimeSkillCreatorFacade.execute()` の handoff 経路に「呼ばれない依存」をテストで明示する
+  - `ResourceLoader.getBasePath()` のような runtime provenance source を engine snapshot に昇格する
+- **失敗パターン**:
+  - public response union が合っていることだけを見て、内部副作用の分離を確認しない
+  - `resumeTokenEnvelope` を facade / renderer / downstream task に分散保持する
+  - owner 分離後も Phase 12 の system spec / lessons / quick-reference へ current fact を戻さない
+- **適用条件**: runtime orchestration、workflow engine、session resume、verify 導入、handoff/integrated 二経路を持つ task
+- **発見日**: 2026-03-26
+- **関連タスク**: TASK-SDK-02
+
 ---
 
 ## 詳細パターン索引
@@ -7572,6 +7591,7 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 
 | 日付 | 変更内容 |
 | --- | --- |
+| 2026-03-26 | TASK-SDK-02 を反映し、public bridge と workflow state owner の分離パターンを追加 |
 | 2026-03-26 | TASK-SDK-01 の close-out を反映し、foundation / internal-contract task 向けの no-op Step 2 判定と blocker 重複未タスク化防止パターンを追加 |
 | 2026-03-18 | 500行制限準拠のため10ファイルに分割、ハブファイル化 |
 | 2026-03-18 | 500行超えの2ファイルをさらに分割（-b サフィックス追加）、重複ファイル4件削除 |
