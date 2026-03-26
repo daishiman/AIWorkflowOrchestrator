@@ -2578,6 +2578,7 @@ node scripts/list-specs.js --topics
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 Runtime Skill Creator public IPC wiring（2026-03-21） | L8 |
 | TASK-SDK-02 workflow-engine-runtime-orchestration（2026-03-26） | L10 |
 | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle hardening（2026-03-26） | L48 |
+| TASK-SDK-08 session-persistence-and-resume-contract（2026-03-26） | L94 |
 | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | L188 |
 | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 教訓 | L280 |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L340 |
@@ -4070,4 +4071,3 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L199 |
 
 ---
-

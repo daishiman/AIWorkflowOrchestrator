@@ -152,6 +152,8 @@ Task01 で固定した workflow manifest contract は、Task02 以降の runtime
 
 `ManifestLoader` は foundation service であり、`RuntimeSkillCreatorFacade` や `RuntimePolicyResolver` と同じ authority layer に昇格させない。owner 分離の正本は Task02 workflow 仕様書に従う。
 
+Task08 session persistence/resume contract では、上記 owner 分離を保ったまま `SkillCreatorWorkflowEngine` snapshot を checkpoint repository へ受け渡す。`resumeTokenEnvelope` は persisted payload の代替ではなく、compatibility evaluator は `routeSnapshot` / `sourceProvenance` / revision / lease を使って restore 可否を判定する。resume を public expose する場合も `agent:resumeSession` とは別の `skill-creator:*` namespace に置く。
+
 ## Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
 
 > **ステータス**: `spec_created`（2026-03-19 再監査同期）

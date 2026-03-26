@@ -48,8 +48,10 @@
 | public IPC と `execute-plan` failure lifecycle 契約 | `references/api-ipc-system-core.md` |
 | auth / ipc 教訓 | `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` |
 | completed ledger | `references/task-workflow-completed.md` |
-| workflow root | `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
-| follow-up 実装 root | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
+| follow-up backlog | `references/task-workflow-backlog.md` |
+| workflow root | `docs/30-workflows/completed-tasks/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
+| failure lifecycle follow-up | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
+| path sync follow-up | `docs/30-workflows/completed-tasks/ut-imp-task-sdk-02-system-spec-and-path-sync-001/` |
 
 ---
 
@@ -69,10 +71,10 @@
 
 | 目的 | 最初に開くファイル |
 | --- | --- |
-| 実装済み failure lifecycle task の全体像 | `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/index.md` |
+| 実装済み failure lifecycle task の全体像 | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/index.md` |
 | owner / consumer rule の current fact | `references/architecture-overview-core.md`, `references/arch-electron-services-details-part2.md` |
 | public IPC と workflow engine の境界 | `references/api-ipc-system-core.md` |
-| 親 task の foundation | `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
+| 親 task の foundation | `docs/30-workflows/completed-tasks/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
 | completed ledger / close-out | `references/task-workflow-completed.md`, `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` |
 
 ---

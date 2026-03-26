@@ -1,0 +1,11 @@
+{
+  "captureRequired": false,
+  "mode": "docs-only",
+  "reason": "Task08 is a contract-first specification task with no new UI surface in scope.",
+  "artifacts": [
+    "outputs/phase-11/manual-test-checklist.md",
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/manual-test-report.md",
+    "outputs/phase-11/discovered-issues.md"
+  ]
+}

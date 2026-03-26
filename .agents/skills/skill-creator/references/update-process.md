@@ -62,6 +62,7 @@ Phase 3: 実更新
                             ↓
 Phase 3.5: stale fact cleanup
 テスト件数 / coverage / out-of-scope 注記 / planned wording / 日付を current facts へそろえ、phase-12 成果物と未タスク指示書の記述ドリフトを消す
+`spec_created` workflow は root が `completed-tasks/` 配下でも status を勝手に `completed` へ上げず、implementation guide Part 2 は「current contract + target delta」で書いて future sync target の棚上げで終わらせない
                             ↓
 Phase 3.6: blocker / backlog dedup
 targeted suite PASS と wider suite blocker を分離し、既存 `docs/30-workflows/unassigned-task/` / `completed-tasks/unassigned-task/` を検索して重複 formalize を防ぐ

@@ -13,6 +13,11 @@
 - 「なぜ必要か」を先に説明してから「何をするか」を説明
 - 作成後に `references/phase12-checklist-definition.md` と `validate-phase12-implementation-guide.js` で内容要件を確認する
 
+**Part 2 追補ルール**:
+- `spec_created` workflow では「実装済み」と書かず、`current contract` と `target delta` を分けて書く
+- API シグネチャ、使用例、エラーハンドリング、設定可能パラメータ/定数一覧を省略しない
+- `future sync target` の列挙だけで終わらせず、今回 wave で何を更新し、何を no-op 判定したかを対応する成果物へ残す
+
 **Part 1 テンプレート**:
 ```markdown
 ### X.X [機能名]とは何か
@@ -86,6 +91,7 @@
 - Task 1〜5 の全完了を確認してから作成する（早期完了記載禁止）
 - 全タスクが「完了」と記録されてから Phase 12 を閉じる
 - `documentation-changelog.md` だけでなく `outputs/phase-12/*.md` 全体に planned wording（「計画」「予定」「TODO」）が残っていないことを確認する
+- `spec_created` workflow は root path と status の整合も確認し、`completed-tasks/` 配下にあることを理由に `completed` へ上げない
 - `計画済み` / `更新予定` / `作成待` / `完了または計画済み` は未完了扱いとし、compliance-check を PASS にしない
 - `outputs/phase-11/manual-test-result.md` が `not_run` のままなら Phase 11 / 12 を completed にしない
 - internal adapter の実装だけで public IPC / preload contract 更新済みとは記録しない
