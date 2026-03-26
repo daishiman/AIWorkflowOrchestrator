@@ -189,6 +189,7 @@ export class SkillCreatorWorkflowEngine {
   ): SkillCreatorWorkflowStateSnapshot {
     const state = this.getRequiredWorkflow(planId);
     this.assertPhase(state.currentPhase, "execute", "execute");
+    const updatedAt = nowIso();
     this.appendArtifact(state, "execute", "execute_result", {
       executeId: input.executeId,
       skillName: input.skillName,
@@ -197,15 +198,20 @@ export class SkillCreatorWorkflowEngine {
       reason: input.reason,
     });
 
-    state.currentPhase = "execute";
-    state.awaitingUserInput = null;
+    state.currentPhase = "review";
+    state.awaitingUserInput = {
+      reason: "verification_review",
+      prompt: buildVerificationReviewPrompt(input.message),
+      requestedAt: updatedAt,
+    };
     state.verifyResult = {
       status: "fail",
-      reason: input.reason,
+      reason: "verification_review",
       message: input.message,
       nextAction: "review",
-      updatedAt: nowIso(),
+      updatedAt,
     };
+    this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
     this.refreshResumeToken(state);
     return this.snapshot(state);
   }

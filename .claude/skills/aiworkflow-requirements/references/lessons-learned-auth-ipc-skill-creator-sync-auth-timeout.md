@@ -83,6 +83,53 @@
 3. `resumeTokenEnvelope` / verify state / artifacts は同一 owner に集約する。
 4. source root は `ResourceLoader` 由来の snapshot として engine に記録し、shared/preload/ipc parity test を同時に回す。
 
+## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle hardening（2026-03-26）
+
+### 苦戦箇所と解決策
+
+#### 1. `success:false` を verify pending に流すと response union は正しくても review contract が壊れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | execute 結果が `success:false` でも verify pending へ進むと、Renderer は再レビュー待ちを認識できず Task04 / Task08 の前提が崩れる |
+| 原因 | `success:false` を「統合実行は終わったので verify へ送る」と解釈し、review へ戻す契約が state machine に入っていなかった |
+| 解決策 | `recordExecuteResult()` を review path に寄せ、`verification_review` と `awaitingUserInput` を同時保存する形へ統一した |
+| 教訓 | runtime union は `success` 値ごとの phase contract まで定義しないと、戻り値型だけ current でも state drift が起きる |
+
+#### 2. executor reject を facade 外へ漏らすと `execute` 停滞と証跡欠落が同時に起きる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skillExecutor.execute()` reject 時に state が `execute` のまま残り、失敗 artifact / `verifyResult` / review prompt が一切残らない |
+| 原因 | integrated path を success response 前提で組み、例外経路の snapshot 保存 owner を決めていなかった |
+| 解決策 | `RuntimeSkillCreatorFacade.execute()` で reject を catch し、engine に failure snapshot を保存した上で sanitize 済み error を返す |
+| 教訓 | runtime facade は public bridge でも「engine へ失敗 snapshot を残す責務」だけは持つ必要がある |
+
+#### 3. transition guard を追加すると plan 起点互換が壊れやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | invalid jump を拒否する `assertTransition()` を入れると、既存の plan 起点 review state 初期化まで弾いてしまう |
+| 原因 | guard 導入前に存在した暗黙初期化と、正式 state machine の境界が未分離だった |
+| 解決策 | `ensureReviewReadyState()` を追加し、plan 起点互換の初期化だけを明示 API に分離した |
+| 教訓 | state guard は「禁止遷移」と同時に「許可される互換初期化」の入口も明文化しないと後方互換を壊す |
+
+#### 4. artifact append と upsert の曖昧さが review 再入時の監査性を落とす
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | ownership matrix は append 前提なのに実装が upsert だと、失敗履歴が潰れて再現調査しづらい |
+| 原因 | artifact を「現在値 snapshot」と「phase 履歴」のどちらで扱うかが契約化されていなかった |
+| 解決策 | 実装を append に揃え、親 workflow の ownership / phase-6 文書も same-wave で修正した |
+| 教訓 | artifact 戦略は実装コメントではなく contract なので、append/upsert を曖昧語で残さない |
+
+### 同種課題向け簡潔解決手順（4ステップ）
+
+1. `success:true` / `success:false` / reject / handoff の4経路を表にして、phase / prompt / artifact を先に固定する。
+2. facade は error を catch して engine へ snapshot を残し、public response は sanitize した最小情報だけ返す。
+3. transition guard と互換初期化 API を対で実装し、plan 起点や resume 起点を明文化する。
+4. artifact 戦略は append/upsert のどちらかに揃え、tests と ownership matrix を同ターンで更新する。
+
 ### 苦戦箇所と解決策
 
 #### 1. public surface は `skillCreatorHandlers.ts` なのに runtime 実装だけ `creator:*` に分岐していた

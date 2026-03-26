@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-26T11:38:44.412Z",
+  "generated": "2026-03-26T12:29:34.967Z",
   "totalKeywords": 2500,
   "keywords": {
     "チャット履歴": [
@@ -6401,6 +6401,10 @@
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed-skill-lifecycle.md"
     ],
+    "hardening": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "logs-archive-2026-03-line-budget-workflow-consolidation.md"
+    ],
     "APIKEY": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
@@ -9026,9 +9030,6 @@
       "logs-archive-2026-03-line-budget-workflow-consolidation.md"
     ],
     "ライフサイクル統合テスト": [
-      "logs-archive-2026-03-line-budget-workflow-consolidation.md"
-    ],
-    "hardening": [
       "logs-archive-2026-03-line-budget-workflow-consolidation.md"
     ],
     "実装の": [

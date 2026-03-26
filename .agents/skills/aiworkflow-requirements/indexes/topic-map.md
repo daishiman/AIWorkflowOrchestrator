@@ -432,11 +432,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L336 |
-| スキルチェーン 型定義（TASK-9D） | L386 |
-| スキルスケジュール 型定義（TASK-9G） | L421 |
-| スキルフォーク 型定義（TASK-9E） | L446 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L494 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L330 |
+| スキルチェーン 型定義（TASK-9D） | L380 |
+| スキルスケジュール 型定義（TASK-9G） | L415 |
+| スキルフォーク 型定義（TASK-9E） | L440 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L488 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -904,9 +904,9 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L201 |
 | Electron IPC API設計 | L237 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L369 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L575 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L606 |
-| AIプロバイダーAPI連携 | L637 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L585 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L616 |
+| AIプロバイダーAPI連携 | L647 |
 
 ### references/api-ipc-system-details.md
 
@@ -2577,11 +2577,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| TASK-9B: SkillCreator IPC拡張同期 再監査（2026-02-26） | L6 |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 Runtime Skill Creator public IPC wiring（2026-03-21） | L8 |
 | TASK-SDK-02 workflow-engine-runtime-orchestration（2026-03-26） | L10 |
-| UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle（2026-03-26） | L12 |
-| 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | L179 |
-| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 教訓 | L271 |
-| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L331 |
-| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L436 |
+| UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle hardening（2026-03-26） | L48 |
+| 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | L188 |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 教訓 | L280 |
+| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L340 |
+| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L445 |
 
 ### references/lessons-learned-conversation-db-robustness.md
 
@@ -2645,20 +2645,20 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L39 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L119 |
-| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L159 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L203 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L243 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L273 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L322 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L375 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L403 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L446 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L497 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L566 |
-| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L604 |
-| 2026-03-23 TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓 | L699 |
+| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L38 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L68 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L108 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L152 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L192 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L222 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L271 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L324 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L352 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L395 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L446 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L515 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L553 |
+| 2026-03-23 TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓 | L648 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 

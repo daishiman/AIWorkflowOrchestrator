@@ -1,0 +1,12 @@
+{
+  "workflow": "step-02-seq-task-02-phase11-phase12-evidence-compliance",
+  "decision": "non_visual",
+  "captures": [
+    {
+      "tcId": "TC-11-01",
+      "kind": "review_board",
+      "output": "outputs/phase-11/screenshots/TC-11-01-evidence-compliance-review-board.png",
+      "source": "phase-1/requirements.md + parent workflow evidence contract summary"
+    }
+  ]
+}

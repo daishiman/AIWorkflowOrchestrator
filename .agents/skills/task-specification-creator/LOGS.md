@@ -15,6 +15,18 @@
   - Phase 12 は `.claude` 正本 2 skill 反映、planned wording 除去、mirror audit 記録まで含めて閉じた
 
 ---
+## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 完了（2026-03-26）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync
+- **Result**: success
+- **Notes**:
+  - runtime failure lifecycle 是正を対象に、public IPC shape 不変でも Step 2 が必要になる判断条件を `spec-update-step2-domain-sync.md` と `spec-update-workflow.md` へ追記
+  - `success:false` / reject / review return / artifact append のような state semantics 変更は architecture / api / lessons / ledger の同時更新が必要であることを明文化
+  - wider suite blocker は既存 module-resolution 系未タスクと重複確認し、新規未タスクを増やさない運用を固定
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+
+---
 ## TASK-SDK-02 workflow-engine-runtime-orchestration 完了（2026-03-26）
 
 - **Agent**: task-specification-creator

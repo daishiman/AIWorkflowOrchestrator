@@ -165,6 +165,17 @@
 | テスト追加のみ（戦略不変）               | テストケース数増加、カバレッジ向上のみ |
 | ドキュメント誤記修正                     | typo修正、表現改善                 |
 
+### Runtime orchestration / failure lifecycle の補足判断
+
+次の変更は public IPC の request/response 形状が変わらなくても Step 2 を実施する。
+
+- `Facade` / `Engine` / `Store` の state owner が変わる
+- `review` / `verify` / `resume` / `handoff` の phase 遷移意味が変わる
+- `success:false` / reject / retry の扱いが変わる
+- artifacts の append / upsert / snapshot 方針が変わる
+
+理由: downstream task と system spec は payload 形状だけでなく state semantics に依存するため。
+
 ### 判断フローチャート
 
 ```

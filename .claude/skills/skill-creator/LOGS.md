@@ -14,6 +14,18 @@
   - `.claude` completed ledger / lessons / quick-reference / resource-map 更新後に mirror sync と `diff -qr` まで閉じる運用を再確認
 
 ---
+## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の Phase 12 運用知見を template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に targeted suite PASS と wider suite blocker を分離し、既存 backlog と重複しないことを確認してから formalize する lane を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に blocker dedup と targeted/wider suite 記録欄を追加
+  - runtime failure lifecycle のように public payload は不変でも state semantics が変わる実装で、template 側から重複未タスクを増やさない運用を標準化
+  - LOGS.md + SKILL.md 同時更新
+
+---
 ## 2026-03-26 - TASK-SDK-02 workflow-engine-runtime-orchestration の知見を template/pattern へ反映
 
 - **Agent**: skill-creator (update)
