@@ -1,0 +1,10 @@
+# Validation Command Matrix
+
+| 順序 | コマンド                                                                                                                                                                                        | 対象                | 目的                          |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ----------------------------- |
+| 1    | `node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/step-02-seq-task-02-phase11-phase12-evidence-compliance`                     | corrective workflow | Phase 出力構造の確認          |
+| 2    | `node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/step-02-seq-task-02-phase11-phase12-evidence-compliance --json`        | corrective workflow | cross-phase 整合性確認        |
+| 3    | `node .agents/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration`                                   | parent workflow     | parent outputs の整合性確認   |
+| 4    | `node .agents/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration --json`                      | parent workflow     | parent cross-phase 整合性確認 |
+| 5    | `node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration --json`  | parent workflow     | Phase 11 evidence 契約確認    |
+| 6    | `node .agents/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration --json` | parent workflow     | implementation guide 骨格確認 |

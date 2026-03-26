@@ -1,0 +1,12 @@
+{
+  "workflow": "step-02-seq-task-02-workflow-engine-runtime-orchestration",
+  "decision": "non_visual",
+  "captureMethod": "review-board markdown -> qlmanage thumbnail",
+  "generatedAt": "2026-03-26",
+  "reason": "runtime orchestration corrective wave has no UI delta; review board png is retained as representative evidence",
+  "artifacts": [
+    "outputs/phase-11/screenshots/TC-11-01-runtime-orchestration-review-board.png",
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/manual-test-checklist.md"
+  ]
+}

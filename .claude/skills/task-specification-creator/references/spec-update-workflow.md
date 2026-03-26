@@ -165,6 +165,17 @@
 | テスト追加のみ（戦略不変）               | テストケース数増加、カバレッジ向上のみ |
 | ドキュメント誤記修正                     | typo修正、表現改善                 |
 
+### Runtime orchestration / failure lifecycle の補足判断
+
+次の変更は public IPC の request/response 形状が変わらなくても Step 2 を実施する。
+
+- `Facade` / `Engine` / `Store` の state owner が変わる
+- `review` / `verify` / `resume` / `handoff` の phase 遷移意味が変わる
+- `success:false` / reject / retry の扱いが変わる
+- artifacts の append / upsert / snapshot 方針が変わる
+
+理由: downstream task と system spec は payload 形状だけでなく state semantics に依存するため。
+
 ### 判断フローチャート
 
 ```
@@ -935,6 +946,7 @@ grep -rn "permission-tool-icons" references/
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-26 | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 を反映し、runtime bug-fix task でも completed ledger / lessons / quick-reference / resource-map まで same-wave 更新し、環境 workaround で PASS した exact test command を Phase 12 成果物へ同値転記するルールを追加 |
 | 2026-03-26 | TASK-SDK-02 workflow-engine-runtime-orchestration を反映し、runtime orchestration task では channel 追加がなくても owner 分離・early return・resume/provenance owner 変更があれば Step 2 必須とする判断ルールを追加 |
 | 2026-03-26 | TASK-SDK-01 manifest foundation の close-out を反映し、foundation / internal-contract task で system spec 本文が current の場合も Step 1 と no-op 根拠記録を必須化。環境 blocker は既存未タスクとの重複確認を先行するルールを追加 |
 | 2026-03-12 | TASK-SKILL-LIFECYCLE-04 の再監査を反映し、「既存 IPC 再利用でも public preload API 追加や shared barrel export 追加があれば Step 2 必須」とする判断ルールを追加 |

@@ -6,6 +6,10 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 implementation sync（failure lifecycle 実装完了を canonical completed/lessons/index/log へ反映し、exact vitest workaround command と no-new-unassigned 方針を same-wave 記録） |
+| 2026-03-26 - TASK-SDK-07 execution-governance-and-handoff-alignment spec_created sync（Skill Creator governance bundle の canonical 前提、quick-reference/resource-map 導線、task-spec close-out evidence を `.claude` 正本へ反映） |
+| 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 spec_created sync（failure lifecycle task spec を追加し、Phase 1〜11 の統合テスト連携、Phase 12 実績化、quick-reference/resource-map 導線を same-wave 更新） |
+| 2026-03-26 - TASK-SDK-02 follow-up ledger/backlog sync（parent `unassigned-task-detection.md` の 4件 formalized task を `task-workflow-completed.md` と `task-workflow-backlog.md` へ反映し、spec_created workflow discoverability を復旧） |
 | 2026-03-26 - TASK-SDK-02 workflow-engine-runtime-orchestration Phase 12 sync（`SkillCreatorWorkflowEngine` 新設 / facade から owner 分離 / `execute()` terminal_handoff early return / `ResourceLoader.getBasePath()` provenance 追加 / runtime/shared/IPC/preload 47テスト PASS / system spec と skill を same-wave sync） |
 | 2026-03-26 - TASK-SDK-01 hardening sync（`interfaces-agent-sdk-skill-reference.md` に `manifestContentHash` / 相互参照検証 / duplicate reject / same-`mtime` cache guard を追記し、completed ledger と lessons を carry-forward 0件へ再同期） |
 | 2026-03-26 - TASK-SDK-01 Phase 12 compliance sync follow-up formalize（`UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001` を backlog 正本へ追加 / `task-workflow.md` 導線更新 / topic-map・keywords 再生成 / Step 2 は domain spec no-op と判定し、Step 1 same-wave 記録を補完） |
@@ -106,6 +110,37 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## TASK-SDK-07 execution-governance-and-handoff-alignment spec_created sync（2026-03-26）
+
+- タスク名: execution-governance-and-handoff-alignment
+- 種別: docs-only / spec_created
+- 主な反映:
+  - Skill Creator governance bundle の参照初動を `indexes/quick-reference.md` と `indexes/resource-map.md` に追加
+- Task07 workflow 側で固定した canonical 前提を `.claude` 正本基準の読み方に接続
+- `.claude` を canonical root、`.agents` を mirror とする運用を再確認し、mirror audit は `diff -qr` で別記する方針を保持
+
+## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 implementation sync（2026-03-26）
+
+- タスク名: runtime workflow engine failure lifecycle
+- 種別: implementation / Phase 12 final sync
+- 主な反映:
+  - `indexes/resource-map.md` / `indexes/quick-reference.md` の failure lifecycle 導線を spec_created wording から implementation/current fact wording へ更新
+  - `references/task-workflow-completed.md` に completed record を追加し、reject / `success:false` / `verification_review` / append history / exact vitest workaround command を close-out evidence として固定
+  - `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` に failure reason 分離、append history、`ESBUILD_BINARY_PATH` workaround の 3教訓を追加
+  - 新規未タスクは作成せず、既存 `task-fix-worktree-native-binary-guard-001.md` 再利用方針を再確認
+  - `.claude` 正本更新後に `generate-index.js` / `validate-structure.js` / mirror sync / `diff -qr` で parity を再検証する前提を明文化
+
+## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 spec_created sync（2026-03-26）
+
+- タスク名: Runtime workflow engine failure lifecycle 是正仕様
+- 種別: docs-only / spec_created
+- 主な反映:
+  - `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` を current workflow root として整理
+  - Phase 1〜11 に `統合テスト連携` を追加し、reject / `success:false` / verify要再確認 / invalid transition の 4視点を downstream 契約へ接続
+  - Phase 12 の implementation guide / system-spec-update-summary / documentation-changelog / compliance check を実績ベースへ更新
+  - `indexes/quick-reference.md` と `indexes/resource-map.md` に failure lifecycle 導線を追加
+  - 正本 root は `.claude/skills/aiworkflow-requirements/` であり、`.agents` は mirror として扱う方針を再確認
 
 ## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
 

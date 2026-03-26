@@ -31,6 +31,7 @@
 > - `workflow-<feature>.md` を使う wave では `current canonical set` / `artifact inventory` / `legacy-ordinal-family-register.md` / `topic-map` を同一ターンで更新する
 > - `generate-index.js` → `validate-structure.js` → mirror sync → `diff -qr` を完了判定へ含める
 > - 500行超過が出たら semantic filename で family split し、split 後の current canonical set を書き換える
+> - targeted suite PASS と wider suite blocker は分離記録し、wider blocker は既存未タスクとの重複確認後にのみ formalize する
 
 > **統合 workflow 正本を追加する条件**:
 > - 更新先が 4仕様書以上に分散する
@@ -71,9 +72,19 @@
 | canonical navigation | `current canonical set` / `artifact inventory` / `legacy register` / `topic-map` を same-wave で更新する |
 | line budget | `validate-structure.js` 後に 500 行超過を semantic split し、親 doc と index を追従更新する |
 | stale fact cleanup | 古いテスト件数 / coverage / out-of-scope 注記 / 日付 / follow-up 件数を `outputs/phase-12` と未タスク指示書で同一値へそろえる |
+| `spec_created` close-out | workflow root が `completed-tasks/` 配下でも status は `spec_created` を維持し、Part 2 は `current contract + target delta` で書く |
 
 > ここでの「完了」は、代表スクリーンショットと実測証跡が current workflow に保存されていることを含む。
 > 旧 path / 旧 filename が残る場合は、`legacy-ordinal-family-register.md` で current semantic filename へ引き直せる状態を必須とする。
+
+### 2.4 targeted / wider suite / backlog dedup
+
+| 観点 | 記録内容 |
+| --- | --- |
+| targeted tests | 今回変更箇所を直接守る test file と pass 件数 |
+| wider suite | 範囲外 blocker がある場合は file / error / current owner task を明記 |
+| duplicate backlog check | `docs/30-workflows/unassigned-task/` と `docs/30-workflows/completed-tasks/unassigned-task/` への検索結果 |
+| formalize decision | `新規未タスク化` / `既存 tracker 再利用` / `対応不要` のいずれかを明記 |
 
 ---
 

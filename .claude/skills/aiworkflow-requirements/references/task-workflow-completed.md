@@ -5,6 +5,35 @@
 
 ## 完了タスク
 
+### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine の失敗系 state lifecycle 是正（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 |
+| ステータス | **完了** |
+| タイプ | implementation / bugfix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | `RuntimeSkillCreatorFacade.execute()` / `SkillCreatorWorkflowEngine` / runtime tests / Phase 1-12 outputs |
+| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-fix-runtime-workflow-engine-failure-lifecycle-001.md` |
+| GitHub Issue | #1646 |
+
+#### 実施内容
+
+- `SkillCreatorWorkflowEngine.ts` に transition guard、append artifact、`ensureReviewReadyState()`、`verification_review` 保存を追加し、失敗経路も review owner に統一
+- `RuntimeSkillCreatorFacade.ts` で executor reject を catch し、失敗 snapshot を保存して `execute` 停滞を解消
+- `SkillCreatorWorkflowEngine.test.ts` と `RuntimeSkillCreatorFacade.workflow-orchestration.test.ts` に reject / `success:false` / invalid transition / review path テストを追加
+- 親 workflow の `ownership-matrix.md` / `phase-6-test-expansion.md` / related outputs を current fact へ同期
+- targeted vitest 35 件 PASS、workflow validators PASS、wider suite の `ManifestLoader.test.ts` alias blocker は既存 backlog 管轄として重複未タスク化しない運用を固定
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- wider runtime suite の `@repo/shared/types` alias blocker は既存 `docs/30-workflows/unassigned-task/task-renderer-build-fix.md` などの module-resolution 系 tracker と重複するため新設しない
+
+---
+
 ### タスク: UT-LLM-MOD-01-005 PROVIDER_CONFIGS/inferProviderId/LLMProviderIdSchema 三重管理解消（2026-03-25）
 
 | 項目 | 値 |
@@ -136,6 +165,59 @@
 
 - 追加の機能未タスクは 0 件
 - 環境 blocker として `Vitest + esbuild` mismatch のみ継続管理し、既存 tracker を再利用する
+
+---
+### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 runtime workflow engine failure lifecycle（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 |
+| ステータス | **完了** |
+| タイプ | implementation / failure-lifecycle-fix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | `RuntimeSkillCreatorFacade` / `SkillCreatorWorkflowEngine` failure path、runtime tests、parent workflow docs、Phase 1-12 outputs |
+| 成果物 | `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
+| 親タスク | TASK-SDK-02 |
+
+#### 実施内容
+
+- `SkillCreatorWorkflowEngine.ts` に `execution_error` / `execution_failed` / `verification_review` を区別する failure reason と invalid transition guard を追加
+- failure artifact を upsert ではなく append に変更し、latest accessor を通じて snapshot 系の読み出しを安定化
+- `recordVerifyFailure(..., "review")` で `awaitingUserInput.reason = "verification_review"` と prompt を保存する契約へ是正
+- `RuntimeSkillCreatorFacade.execute()` で executor reject を `execution_error` として保存し、`success:false` は verify pending へ進めず `execution_failed` snapshot として保存
+- `SkillCreatorWorkflowEngine.test.ts` / `RuntimeSkillCreatorFacade.workflow-orchestration.test.ts` に reject / `success:false` / repeated failure append / invalid transition / verification review の回帰を追加
+- parent workflow の `ownership-matrix.md` / `phase-6-test-expansion.md` と current workflow の Phase 12 成果物を実装実績へ同期
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- `ESBUILD_BINARY_PATH=... pnpm vitest ... --run` で targeted verification を実施済み。native binary / worktree blocker は既存 `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` と重複するため新設しない
+
+---
+### タスク: TASK-SDK-08 session-persistence-and-resume-contract（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-08 |
+| ステータス | **設計完了** |
+| タイプ | design / session-persistence |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | workflow checkpoint / compatibility evaluator / revision lease / Phase 1-13 docs pack |
+| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/` |
+
+#### 実施内容
+
+- `SkillCreatorWorkflowEngine` の state を persisted checkpoint の正本入力として固定し、`resumeTokenEnvelope` と persisted payload の責務分離を定義
+- compatibility evaluator が `routeSnapshot` / `sourceProvenance` / manifest hash / revision / lease を見て `compatible` / `compatible_with_warning` / `incompatible` / `conflict` を返す設計を追加
+- checkpoint は phase boundary 単位に限定し、mid-stream resume / rewind / fork を初回 scope から除外
+- public resume surface を追加する場合は `skill-creator:*` namespace を使い、`agent:resumeSession` を流用しない方針を確定
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- shared types / session storage / preload-main wiring の本実装は後続 wave へ引き継ぐ
 
 ---
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）

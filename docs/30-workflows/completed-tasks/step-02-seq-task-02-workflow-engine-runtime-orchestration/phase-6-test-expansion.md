@@ -40,11 +40,14 @@
 
 - invalid transition、artifact append failure、resume envelope 生成失敗のケースを追加する。
 - `verifyResult` が fail のときに engine が next action を保持できるかを確認する。
+- execute reject、`success:false`、`verification_review` の 3 経路を別ケースで固定し、`verify/pending` への誤遷移を許可しない。
+- repeated failure でも `execute_result` artifact が append され、履歴の末尾を latest として読めることを確認する。
 
 ### ステップ2: route branch の失敗系を追加する
 
 - auth key なし、subscription 有効、service 例外の 3 パターンを回帰ケースへ入れる。
 - `execute()` が handoff bundle を返す経路と executor 実行経路を分離して確認する。
+- facade が executor reject を catch して failure snapshot を保存することを確認する。
 
 ### ステップ3: public contract drift を追加監視する
 
@@ -54,6 +57,7 @@
 ## 統合テスト連携
 
 - Phase 4 の suite に `resume envelope`, `verify fail`, `graceful degradation`, `public contract drift` の観点を追加する。
+- `reject`, `success:false`, `verification_review`, `repeated failure append`, `invalid transition rejection` を targeted regression として維持する。
 - Phase 7 で owner coverage と route coverage を集計する。
 
 ## 成果物

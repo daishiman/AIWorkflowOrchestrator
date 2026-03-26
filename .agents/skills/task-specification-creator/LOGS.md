@@ -3,6 +3,30 @@
 ## 役割
 
 ---
+## TASK-SDK-07 execution-governance-and-handoff-alignment 仕様書改善（2026-03-26）
+
+- **Agent**: task-specification-creator
+- **Phase**: spec_created workflow refinement
+- **Result**: success
+- **Notes**:
+  - Task07 workflow の Phase 1/2/3/5/12 を再整理し、Task08 へ渡す canonical 前提文を固定
+  - Phase 3 に Manual Boundary と shared contract 再利用の自己完結レビュー表を追加し、references 依存の読み解きを削減
+  - Phase 5 は docs-only wave であることを明示し、downstream 実装対象の説明へ責務を収束
+  - Phase 12 は `.claude` 正本 2 skill 反映、planned wording 除去、mirror audit 記録まで含めて閉じた
+
+---
+## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 完了（2026-03-26）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync
+- **Result**: success
+- **Notes**:
+  - runtime failure lifecycle 是正を対象に、public IPC shape 不変でも Step 2 が必要になる判断条件を `spec-update-step2-domain-sync.md` と `spec-update-workflow.md` へ追記
+  - `success:false` / reject / review return / artifact append のような state semantics 変更は architecture / api / lessons / ledger の同時更新が必要であることを明文化
+  - wider suite blocker は既存 module-resolution 系未タスクと重複確認し、新規未タスクを増やさない運用を固定
+  - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
+
+---
 ## TASK-SDK-02 workflow-engine-runtime-orchestration 完了（2026-03-26）
 
 - **Agent**: task-specification-creator
@@ -37,6 +61,32 @@
   - workflow 仕様内の `.claude` 参照を repo-root 基準の実在相対パスへ修正
   - `task-workflow.md` / backlog / topic-map / keywords の導線同期を補完
   - Step 2 は interface/API/定数変更なしのため no-op。代わりに LOGS.md 2ファイル + SKILL.md 2ファイル更新を same-wave で実施
+
+---
+
+## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 完了（2026-03-26）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync
+- **Result**: success
+- **Notes**:
+  - failure lifecycle bug-fix task でも Phase 12 は workflow outputs だけで閉じず、`.claude` 正本の completed ledger / lessons / quick-reference / resource-map まで same-wave で更新する必要があることを再確認した
+  - `reject` / `success:false` / `verification_review` のように failure reason を分離した実装では、implementation-guide と compliance check に「verify pending へ進めない経路」を current fact として明記するルールを補強した
+  - `pnpm vitest` が環境依存で不安定な場合は、PASS した exact wrapper command を verification-report / implementation-guide / system spec summary に同値転記し、未タスクは既存 blocker との重複確認を先行する
+  - workflow 側の no-op 記述が `.claude` 実更新と矛盾しないかを close-out 最後に再監査する運用を固定した
+
+---
+
+## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 仕様書改善（2026-03-26）
+
+- **Agent**: task-specification-creator
+- **Phase**: spec_created workflow refinement
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` の Phase 1〜11 に `統合テスト連携` を補完し、テンプレ準拠を回復
+  - `.agents` mirror 参照を `.claude` 正本参照へ是正し、Phase 12 は quick-reference / resource-map / LOGS 実更新ベースへ変更
+  - `implementation-guide.md` を Part 1/2 の validator 観点に合わせて再構成し、Part 2 に型定義・シグネチャ・使用例・エラーハンドリング・設定一覧を追加
+  - `artifacts.json` と `outputs/artifacts.json` を同値化し、verification-report のコマンド root も current workflow へ正規化
 
 ---
 ## TASK-SDK-01 manifest-contract-foundation 完了（2026-03-26）
@@ -1337,3 +1387,21 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/completed-tasks/UT-SC-02-005-preload-execute-type-update/`, `outputs/phase-3/6/7/8/9/10/11/12`, `artifacts.json` |
 | 結果 | Phase 3/6/7/8/9/10/11/12 の必須成果物名を仕様書準拠へ補完し、`implementation-guide.md` / `system-spec-update-summary.md` / `quality-report.md` / `manual-test-result.md` を current facts に同期した。`.claude` / `.agents` の LOGS・SKILL も同一ターンで更新 |
 | 検証 | 対象4ファイル 54/54 PASS、coverage Line 89.56 / Branch 80.88 / Function 88.88、`pnpm exec tsc --noEmit` PASS、`pnpm exec eslint ...` PASS |
+
+### 2026-03-26 - TASK-SDK-08 task spec elegance sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / spec-alignment |
+| 変更対象 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/` の Phase 4/7/8/10/11/12/13 と outputs |
+| 結果 | strict warning を出していた依存成果物参照を補完し、Phase 11 を `TC-*` / 画面カバレッジ形式へ、Phase 12 を必須5タスク準拠へ再構成した。system spec update summary も no-op から same-wave sync 記録へ是正 |
+| 検証 | `validate-phase-output.js` / `verify-all-specs.js --strict` を再実行して確認 |
+
+### 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Phase 12 stale-fact cleanup sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / phase12-guard |
+| 変更対象 | `references/phase-12-documentation-guide.md` |
+| 結果 | `spec_created` workflow の implementation guide Part 2 を `current contract + target delta` で書くこと、API/使用例/設定表の省略禁止、`completed-tasks/` 配下でも status を `completed` へ上げないことを明文化した |
+| 検証 | current workflow の `phase12-task-spec-compliance-check.md` と突合して確認 |
