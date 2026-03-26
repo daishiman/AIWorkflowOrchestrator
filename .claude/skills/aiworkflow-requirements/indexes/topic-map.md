@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-25
+> 自動生成: 2026-03-26
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -182,7 +182,6 @@ node scripts/list-specs.js --topics
 | フロントエンド実装パターン | L12 |
 | バックエンド実装パターン | L368 |
 | 共有パッケージ実装パターン | L453 |
-| ApprovalGate Enforcement パターン（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L534 |
 
 ### references/architecture-implementation-patterns-details.md
 
@@ -262,8 +261,8 @@ node scripts/list-specs.js --topics
 | セキュリティアーキテクチャ | L146 |
 | 状態管理アーキテクチャ | L180 |
 | データフローアーキテクチャ | L217 |
-| ディレクトリ構造 | L303 |
-| データ構造（型システム） | L367 |
+| ディレクトリ構造 | L300 |
+| データ構造（型システム） | L364 |
 
 ### references/architecture-overview-details.md
 
@@ -483,8 +482,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 認証・プロフィール型定義 | L6 |
 | ExecutionCapability 型定義（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001） | L274 |
-| HealthPolicy 統一インターフェース（TASK-IMP-HEALTH-POLICY-UNIFICATION-001） | L360 |
-| ワークスペース型定義 | L421 |
+| ワークスペース型定義 | L360 |
 
 ### references/interfaces-auth-history.md
 
@@ -905,8 +903,7 @@ node scripts/list-specs.js --topics
 | Electron IPC API設計 | L236 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L368 |
 | ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L562 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L593 |
-| AIプロバイダーAPI連携 | L624 |
+| AIプロバイダーAPI連携 | L593 |
 
 ### references/api-ipc-system-details.md
 
@@ -1170,10 +1167,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L62 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L169 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L236 |
-| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L384 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L61 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L168 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L235 |
+| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L383 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1444,9 +1441,8 @@ node scripts/list-specs.js --topics
 | テスト品質サマリー | L51 |
 | 完了タスク | L65 |
 | 完了タスク | L80 |
-| 完了タスク（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L91 |
-| 変更履歴 | L105 |
-| 関連ドキュメント | L123 |
+| 変更履歴 | L91 |
+| 関連ドキュメント | L109 |
 
 ### references/security-api.md
 
@@ -1477,7 +1473,6 @@ node scripts/list-specs.js --topics
 | 実装例: notificationAPI（TASK-UI-08） | L394 |
 | 実装例: slideSettingsAPI | L427 |
 | IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L476 |
-| ApprovalGate セキュリティ契約（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L491 |
 
 ### references/security-electron-ipc-details.md
 
@@ -2126,7 +2121,6 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| AccessCapability の shared パッケージ移動（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 / Task01） | L7 |
-| HealthPolicy 統合（TASK-IMP-HEALTH-POLICY-UNIFICATION-001） | L66 |
 
 ### references/arch-feature-addition.md
 
@@ -2604,15 +2598,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L53 |
-| クイックリファレンス: カテゴリ別検索ガイド | L68 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L242 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L574 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L608 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L691 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L708 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L732 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L773 |
+| 分割ファイル一覧 | L51 |
+| クイックリファレンス: カテゴリ別検索ガイド | L66 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L167 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L499 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L533 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L616 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L632 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2634,8 +2626,7 @@ node scripts/list-specs.js --topics
 | TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L419 |
 | TASK-SC-05-IMPROVE-LLM（2026-03-23） | L438 |
 | TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L454 |
-| TASK-IMP-HEALTH-POLICY-UNIFICATION-001（2026-03-25） | L485 |
-| TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION（2026-03-25） | L499 |
+| UT-SC-02-005（2026-03-25） | L485 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -4064,3 +4055,4 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L199 |
 
 ---
+

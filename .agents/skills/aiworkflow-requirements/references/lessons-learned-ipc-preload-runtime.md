@@ -19,6 +19,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-25 | 1.13.0 | UT-SC-02-005 教訓1件を追加（L-SC-07-005: Preload executePlan 型追従漏れ、IPC ハンドラ変更時の3層走査） |
+| 2026-03-25 | 1.12.0 | TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION 教訓4件を追加（L-SC-07-001〜004: vi.mock gaps、非破壊拡張、Symmetric Clear横展開、GenerationMode SSoT） |
 | 2026-03-24 | 1.11.0 | TASK-SC-06-UI-RUNTIME-CONNECTION 苦戦箇所3件を追加（L-SC-06-001〜003: Hybrid State Pattern SSoT問題、executePlan引数設計ミス、PlanResult型一本化） |
 | 2026-03-24 | 1.10.0 | UT-SC-03-004 教訓3件を追加（esbuild worktree arch mismatch、2層バリデーション境界、BGエージェント doc 精度乖離） |
 | 2026-03-23 | 1.9.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（LLM統合パターン再利用、空文字列beforeバグ、P4/P51早期完了記載の再発） |
@@ -492,3 +494,55 @@
 | 適用条件 | 既存フィールドを新インターフェースに移行する際、全消費者を同時に更新できない場合 |
 | コード例 | `const isDegraded = input.healthPolicy ? input.healthPolicy.isDegraded : (input.apiKeyDegraded ?? false);` |
 | 関連パターン | P26（システム仕様書更新遅延）、P34（遅延初期化 DI パターン選択） |
+
+---
+
+## TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION（2026-03-25）
+
+### 苦戦箇所1（L-SC-07-001）: vi.mock gaps — Store hook追加時の既存テスト全破壊
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | TASK-SC-07 で agentSlice に11個の新規 Store hooks を追加したところ、`SkillCreateWizard.store-integration.test.tsx` の `vi.mock('../../../store')` に新しい hook が定義されておらず、15テストが一括 FAIL した |
+| 解決策 | Store hooks を追加する際は、`grep -r "vi.mock.*store" --include="*.test.*"` で全テストファイルの vi.mock 定義を検索し、欠落分を補完する |
+| 関連パターン | P23（API 二重定義の型管理複雑性）、P31（Zustand Store Hooks 無限ループ） |
+| 再発防止 | Store hook 追加の PR チェックリストに「既存テストの vi.mock 更新確認」を必須項目として追加する |
+
+### 苦戦箇所2（L-SC-07-002）: 非破壊拡張 — Optional Props による後方互換性確保
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | SkillCreateWizard に7個の新規 Props（generationMode, isGenerating 等）を追加する際、既存の呼び出し元に影響を与えずに拡張する必要があった |
+| 解決策 | 全新規 Props を `?`（optional）として定義し、コンポーネント内部でデフォルト値にフォールバックする。既存テストは変更不要 |
+| 関連パターン | P44（IPC インターフェース不整合） |
+
+### 苦戦箇所3（L-SC-07-003）: Symmetric Clear Pattern — handleExecutePlan と handleCancelPlan の対称的クリア
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | handleExecutePlan のみで `setLocalPlanResult(null)` + `clearGenerationState()` を実行し、handleCancelPlan ではクリアを忘れると、キャンセル後にステール状態が残る |
+| 解決策 | 両ハンドラで同一のクリア処理を対称的に実行する（Symmetric Clear Pattern）。コードレビューで「対になるハンドラ」の存在を確認するチェックを追加 |
+| 関連パターン | L-SC-06-001（Hybrid State Pattern と SSoT の衝突） |
+
+### 苦戦箇所4（L-SC-07-004）: GenerationMode SSoT — 型定義の Single Source of Truth
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `GenerationMode` 型が wizard/index.tsx にローカル定義されると、他コンポーネントとの型共有時に二重定義リスクが発生する |
+| 解決策 | `GenerationMode = "llm" \| "template"` を wizard/types.ts に集約し、全参照先から import する（SSoT 原則） |
+| 関連パターン | P23（API 二重定義の型管理複雑性）、L-SC-06-003（PlanResult 型の二重定義） |
+
+---
+
+## UT-SC-02-005（2026-03-25）
+
+### 苦戦箇所1（L-SC-07-005）: Preload executePlan 型追従漏れ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | IPC ハンドラ（`creatorHandlers.ts`）の `skill-creator:execute-plan` 戻り値型が `RuntimeSkillCreatorExecuteResponse` に更新されたが、Preload（`skill-creator-api.ts`）の `executePlan` 戻り値型が旧型 `RuntimeSkillCreatorExecuteResult` のまま残存していた |
+| 症状 | Renderer 側で `terminal_handoff` 型の存在を前提にナロイングを書いても、Preload 型定義が旧型のため TypeScript が誤ったシグネチャを提供し続け、実行時に型不整合が発生する |
+| 原因 | P44/P45 パターンの典型例。IPC ハンドラ変更時に Preload → Renderer の3層を同時に走査する習慣が欠けていた |
+| 修正内容 | Preload の `executePlan` 戻り値型を `RuntimeSkillCreatorExecuteResponse` に更新し、Renderer（`SkillLifecyclePanel.tsx`）に `terminal_handoff` 型ナロイングを追加した |
+| 関連パターン | P44（IPC インターフェース不整合）、P45（IPC 引数命名の契約ドリフト） |
+| 再発防止 | IPC ハンドラの戻り値型変更時は必ず「IPC ハンドラ → Preload API → Renderer 消費箇所」の3層を同一ターンで走査して型追従を確認する |

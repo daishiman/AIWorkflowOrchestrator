@@ -138,7 +138,7 @@ AuthKeyService/SubscriptionAuthProvider の例外時は terminal_handoff (no-aut
 | `execute()` | 有（UT-SC-02-002） | `RuntimeSkillCreatorExecuteResponse` | UT-SC-02-002 |
 | `improve()` | 有（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | `RuntimeSkillCreatorImproveResponse` | -- |
 
-`RuntimeSkillCreatorExecuteResponse` は `packages/shared/src/types/skillCreator.ts` に追加し、`packages/shared/src/types/index.ts` からバレルエクスポート済み。`creatorHandlers.ts` の `skill-creator:execute-plan` 戻り値型も更新済み。Preload 側型定義は UT-SC-02-005 で対応予定。
+`RuntimeSkillCreatorExecuteResponse` は `packages/shared/src/types/skillCreator.ts` に追加し、`packages/shared/src/types/index.ts` からバレルエクスポート済み。`creatorHandlers.ts` の `skill-creator:execute-plan` 戻り値型も更新済み。Preload 側型定義は UT-SC-02-005 で完了（2026-03-25）。
 
 ## Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
 

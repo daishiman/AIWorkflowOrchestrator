@@ -1,0 +1,11 @@
+{
+  "taskId": "UT-SC-02-005",
+  "phase": 11,
+  "captureRequired": false,
+  "reason": "本タスクは型契約と分岐処理の修正であり、視覚 UI の差分を伴わないため",
+  "artifacts": [
+    "manual-test-result.md",
+    "manual-test-report.md",
+    "discovered-issues.md"
+  ]
+}

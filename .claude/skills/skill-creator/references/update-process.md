@@ -60,6 +60,9 @@ system spec / screenshot evidence / unassigned formalize / skill update + mirror
 Phase 3: 実更新
 .claude 正本 / outputs / docs/30-workflows/unassigned-task / workflow-<feature>.md / current canonical set / artifact inventory / legacy register / topic-map を同一ターンで更新
                             ↓
+Phase 3.5: stale fact cleanup
+テスト件数 / coverage / out-of-scope 注記 / planned wording / 日付を current facts へそろえ、phase-12 成果物と未タスク指示書の記述ドリフトを消す
+                            ↓
 Phase 4: 検証
 verify-all-specs → validate-phase-output → verify-unassigned-links --source → audit --diff-from HEAD / --target-file → generate-index.js → validate-structure.js → quick_validate / validate_all → mirror sync → diff -qr
                             ↓
@@ -183,7 +186,12 @@ node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js
 rsync -a .claude/skills/<skill>/ .agents/skills/<skill>/
 diff -qr .claude/skills/<skill> .agents/skills/<skill>
 
-# 5. 更新した skill を構造検証
+# 5. stale fact cleanup を閉じる
+rg -n "実施予定|後続タスク|N/A|予定|202[0-9]-[0-9]{2}-[0-9]{2}" \
+  docs/30-workflows/<workflow>/outputs/phase-12 \
+  docs/30-workflows/unassigned-task/<task>.md
+
+# 6. 更新した skill を構造検証
 node scripts/quick_validate.js .claude/skills/skill-creator
 node scripts/validate_all.js .claude/skills/skill-creator
 ```

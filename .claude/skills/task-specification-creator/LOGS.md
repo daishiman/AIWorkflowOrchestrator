@@ -1277,3 +1277,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | Phase 12 成果物 | implementation-guide.md, system-spec-update-summary.md, documentation-changelog.md, unassigned-task-detection.md, phase12-task-spec-compliance-check.md, skill-feedback-report.md |
 | 未タスク検出 | 10件（UT-1〜UT-10） |
 | 改善提案 | 3件（SF-1〜SF-3） |
+
+### 2026-03-25 - UT-SC-02-005
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | implementation / documentation |
+| 変更対象 | `docs/30-workflows/completed-tasks/UT-SC-02-005-preload-execute-type-update/`, `outputs/phase-3/6/7/8/9/10/11/12`, `artifacts.json` |
+| 結果 | Phase 3/6/7/8/9/10/11/12 の必須成果物名を仕様書準拠へ補完し、`implementation-guide.md` / `system-spec-update-summary.md` / `quality-report.md` / `manual-test-result.md` を current facts に同期した。`.claude` / `.agents` の LOGS・SKILL も同一ターンで更新 |
+| 検証 | 対象4ファイル 54/54 PASS、coverage Line 89.56 / Branch 80.88 / Function 88.88、`pnpm exec tsc --noEmit` PASS、`pnpm exec eslint ...` PASS |

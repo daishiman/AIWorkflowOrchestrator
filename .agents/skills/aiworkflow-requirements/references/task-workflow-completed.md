@@ -36,7 +36,25 @@
 | task-llm-handle-get-providers-readonly-models | `handleGetProviders()` の readonly models bridge を解消する | 低 | `docs/30-workflows/unassigned-task/task-llm-handle-get-providers-readonly-models.md` |
 
 ---
+### タスク: UT-SC-02-005 Preload skill-creator-api.ts の execute 戻り値型更新（2026-03-25）
 
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-SC-02-005 |
+| ステータス | **完了**（2026-03-25） |
+| タイプ | バグ修正 |
+| 優先度 | 中 |
+| 完了日 | 2026-03-25 |
+| 対象 | `apps/desktop/src/preload/skill-creator-api.ts`, `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` |
+| 親タスク | UT-SC-02-002 |
+
+#### 実施内容
+
+- `skill-creator-api.ts` の `executePlan` 戻り値型を旧型 `RuntimeSkillCreatorExecuteResult` から `RuntimeSkillCreatorExecuteResponse` に統一
+- `SkillLifecyclePanel.tsx` に `terminal_handoff` 型ナロイング追加（P44/P45 パターン対応）
+- Preload runtime テスト・Renderer テストを更新し全 PASS を確認
+
+---
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）
 
 | 項目 | 値 |
@@ -1010,6 +1028,41 @@
 
 ---
 
+### タスク: TASK-IMP-HEALTH-POLICY-UNIFICATION-001 HealthPolicy 統一インターフェース（2026-03-25）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-25 |
+| 親パック | ai-runtime-execution-responsibility-realignment |
+| 対応ギャップ | Gap-3（HealthPolicy の統一不足） |
+| 成果物 | `docs/30-workflows/completed-tasks/impl-task-b-health-policy-unification/` |
+
+#### 実施内容
+
+- `packages/shared/src/types/health-policy.ts` — HealthPolicy 型 + resolveHealthPolicy() pure function（23テスト）
+- `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts` — HealthPolicy DI + degraded 分岐（8テスト）
+- `apps/desktop/src/renderer/features/mainline-access/mainlineAccess.ts` — HealthPolicy 消費（7テスト）
+- `apps/desktop/src/renderer/components/llm/HealthIndicator.tsx` — HealthPolicy props 追加
+- `packages/shared/src/types/execution-capability.ts` — apiKeyDegraded @deprecated v0.8.0
+
+#### テスト
+
+38件追加（全PASS）
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver の HealthPolicy 注入元実装 | 高 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md` |
+| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0） | 中 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |
+
+---
+
 ### タスク: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Advanced Console Safety Governance（2026-03-24）
 
 | 項目 | 値 |
@@ -1041,38 +1094,3 @@
 | UT-8 | Main→Renderer への承認要求プッシュ通知（webContents.send） | HIGH |
 | UT-9 | abort/done 時に ApprovalGate.revokeAll() でトークンクリア | MEDIUM |
 | UT-10 | disclosureHandlers.ts 独立テスト作成 | LOW |
-
----
-
-### タスク: TASK-IMP-HEALTH-POLICY-UNIFICATION-001 HealthPolicy 統一インターフェース（2026-03-25）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 |
-| ステータス | **完了** |
-| タイプ | implementation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-25 |
-| 親パック | ai-runtime-execution-responsibility-realignment |
-| 対応ギャップ | Gap-3（HealthPolicy の統一不足） |
-| 成果物 | `docs/30-workflows/impl-task-b-health-policy-unification/` |
-
-#### 実施内容
-
-- `packages/shared/src/types/health-policy.ts` — HealthPolicy 型 + resolveHealthPolicy() pure function（23テスト）
-- `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts` — HealthPolicy DI + degraded 分岐（8テスト）
-- `apps/desktop/src/renderer/features/mainline-access/mainlineAccess.ts` — HealthPolicy 消費（7テスト）
-- `apps/desktop/src/renderer/components/llm/HealthIndicator.tsx` — HealthPolicy props 追加
-- `packages/shared/src/types/execution-capability.ts` — apiKeyDegraded @deprecated v0.8.0
-
-#### テスト
-
-38件追加（全PASS）
-
-#### Phase 12 未タスク
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver の HealthPolicy 注入元実装 | 高 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md` |
-| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0） | 中 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |

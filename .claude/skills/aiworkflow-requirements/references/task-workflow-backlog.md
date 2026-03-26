@@ -554,7 +554,8 @@
 | UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
 | UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
 | UT-SC-02-004 | bundle 構築の二重責務 | 低 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
-| UT-SC-02-005 | Preload skill-creator-api.ts execute 戻り値型更新 | 中 | UT-SC-02-002-execute-terminal-handoff（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-02-005.md` |
+| ~~UT-SC-02-005~~ | ~~Preload skill-creator-api.ts execute 戻り値型更新~~ | ~~中~~ | ~~UT-SC-02-002-execute-terminal-handoff（2026-03-23）~~ | **完了**（2026-03-25）→ completed ledger へ移動 |
+| UT-SC-02-006 | SkillLifecyclePanel execute handoff UI 接続 | 中 | UT-SC-02-005 review（2026-03-26） | `docs/30-workflows/unassigned-task/ut-sc-02-006-skill-lifecycle-panel-execute-handoff-ui-connection.md` |
 | UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001 | chat-edit/TerminalHandoffBuilder.ts の完全削除（buildForSurface 移行完了後） | 中 | UT-RUNTIME-BUILDER-MIGRATION-001 Phase 10 MINOR-1（2026-03-23） | `docs/30-workflows/unassigned-task/UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001.md` |
 | UT-RUNTIME-FACADE-RETURN-TYPE-001 | RuntimeSkillCreatorFacade 全呼び出し元の bundle→guidance 型統一 | 中 | UT-RUNTIME-BUILDER-MIGRATION-001 Phase 10 MINOR-2（2026-03-23） | `docs/30-workflows/unassigned-task/UT-RUNTIME-FACADE-RETURN-TYPE-001.md` |
 | UT-CHATPANEL-OPEN-TERMINAL-IPC-HANDLER | openTerminal IPC handler 確認・実装（app:open-terminal チャネル登録・Preload allowlist 追加） | 高 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-chatpanel-open-terminal-ipc-handler.md` |

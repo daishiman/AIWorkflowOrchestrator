@@ -234,6 +234,144 @@ describe("SkillCreator Preload API", () => {
   });
 
   // ============================================
+  // Runtime / 補助 API テスト
+  // ============================================
+
+  describe("追加 API メソッド", () => {
+    it("applyRuntimeImprovement が正しいチャンネルとargsでinvokeを呼び出すこと", async () => {
+      const expectedResult = {
+        success: true,
+        data: { applied: 1, skipped: 0, skippedDetails: [], errors: [] },
+      };
+      const suggestions = [
+        {
+          section: "SKILL.md",
+          before: "old",
+          after: "new",
+          reason: "改善提案",
+        },
+      ];
+      mockInvoke.mockResolvedValue(expectedResult);
+
+      const result = await skillCreatorAPI.applyRuntimeImprovement(
+        "test-skill",
+        suggestions,
+      );
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT,
+        {
+          skillName: "test-skill",
+          suggestions,
+        },
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("forkSkill が正しいチャンネルとargsでinvokeを呼び出すこと", async () => {
+      const expectedResult = {
+        success: true,
+        data: "/skills/forked-skill",
+      };
+      mockInvoke.mockResolvedValue(expectedResult);
+
+      const result = await skillCreatorAPI.forkSkill(
+        "base-skill",
+        "forked-skill",
+        { copyAgents: true },
+      );
+
+      expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_CREATOR_FORK, {
+        sourceName: "base-skill",
+        newName: "forked-skill",
+        options: { copyAgents: true },
+      });
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("shareSkill が正しいチャンネルとargsでinvokeを呼び出すこと", async () => {
+      const expectedResult = {
+        success: true,
+        data: "/exports/test-skill.zip",
+      };
+      mockInvoke.mockResolvedValue(expectedResult);
+
+      const result = await skillCreatorAPI.shareSkill("test-skill", "zip");
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_SHARE,
+        {
+          skillName: "test-skill",
+          format: "zip",
+        },
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("scheduleSkill が正しいチャンネルとargsでinvokeを呼び出すこと", async () => {
+      const expectedResult = { success: true, data: undefined };
+      const schedule = { cron: "0 9 * * 1-5", timezone: "Asia/Tokyo" };
+      mockInvoke.mockResolvedValue(expectedResult);
+
+      const result = await skillCreatorAPI.scheduleSkill(
+        "test-skill",
+        schedule,
+      );
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_SCHEDULE,
+        {
+          skillName: "test-skill",
+          schedule,
+        },
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("generateDocs が正しいチャンネルとargsでinvokeを呼び出すこと", async () => {
+      const expectedResult = {
+        success: true,
+        data: "# Generated Docs",
+      };
+      mockInvoke.mockResolvedValue(expectedResult);
+
+      const result = await skillCreatorAPI.generateDocs("test-skill", "md", [
+        "overview",
+        "usage",
+      ]);
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_GENERATE_DOCS,
+        {
+          skillName: "test-skill",
+          format: "md",
+          sections: ["overview", "usage"],
+        },
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("getStats が正しいチャンネルとargsでinvokeを呼び出すこと", async () => {
+      const expectedResult = {
+        success: true,
+        data: { runs: 12, successRate: 0.91 },
+      };
+      mockInvoke.mockResolvedValue(expectedResult);
+
+      const result = await skillCreatorAPI.getStats("test-skill", "30d");
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_STATS,
+        {
+          skillName: "test-skill",
+          period: "30d",
+        },
+      );
+      expect(result).toEqual(expectedResult);
+    });
+  });
+
+  // ============================================
   // onProgress テスト
   // ============================================
 
