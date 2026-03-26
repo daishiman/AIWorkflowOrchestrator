@@ -65,4 +65,8 @@ export class ResourceLoader {
   clearCache(): void {
     this.cache.clear();
   }
+
+  getBasePath(): string {
+    return this.basePath;
+  }
 }

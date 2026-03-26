@@ -39,6 +39,19 @@
 
 ---
 
+### Runtime Skill Creator Workflow Engine Orchestration（2026-03-26）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| owner 分離の current fact | `references/architecture-overview-core.md` |
+| facade / engine / provenance 詳細 | `references/arch-electron-services-details-part2.md` |
+| public IPC と workflow engine の境界 | `references/api-ipc-system-core.md` |
+| auth / ipc 教訓 | `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` |
+| completed ledger | `references/task-workflow-completed.md` |
+| workflow root | `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
+
+---
+
 ### RuntimePolicyResolver subscription 判定統合（2026-03-22）
 
 | 目的 | 最初に開くファイル |
