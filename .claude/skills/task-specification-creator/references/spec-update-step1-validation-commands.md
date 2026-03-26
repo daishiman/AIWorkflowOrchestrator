@@ -21,6 +21,7 @@ node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.j
 
 - 正常時: `ALL_LINKS_EXIST` が出力され、exit code 0
 - 異常時: `missing` と欠損パスが出力されるため、該当参照を修正して再実行
+- 注意: repo 全体 baseline 欠損が多い場合でも、今回追加した未タスクは `--target-file` 監査で current/baseline を分離して評価する
 
 ---
 
@@ -153,6 +154,7 @@ comm -3 \
 
 - 正常時: `phase-*.md` に旧 `unassigned-task` 参照が残っていない、`comm -3` の出力が空
 - 異常時: 完了済みタスクの参照を `completed-tasks` に更新し、旧成果物・`.tmp-*` 一時ファイルを削除して再実行
+- Phase 11 が completed の場合は `outputs/phase-11/manual-test-checklist.md` の存在も確認する
 
 ---
 
@@ -192,6 +194,11 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 ```text
 audit-unassigned-tasks: 全体 <PASS/FAIL>（baseline: N件, current: M件）→ current <PASS/FAIL>
 ```
+
+補足:
+
+- `current = 0` でも repo 全体 `baseline` が非 0 の場合は、その差を `documentation-changelog.md` と `phase12-task-spec-compliance-check.md` に明記する
+- `verify-unassigned-links.js` が repo 全体欠損で失敗する場合も、今回追加した `target-file` の current を PASS 根拠として別記録する
 
 ---
 

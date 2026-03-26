@@ -19,7 +19,51 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-25 | 1.1.0 | UT-LLM-MOD-01-005 の教訓3件を追加（provider registry SSoT / optional `specialMatcher` narrowing / readonly bridge の follow-up 化） |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-25 UT-LLM-MOD-01-005（provider registry SSoT）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | UT-LLM-MOD-01-005 |
+| 目的 | `PROVIDER_CONFIGS` / `inferProviderId()` / `LLMProviderIdSchema` の三重管理を解消し、`provider-registry.ts` を正本化する |
+| 完了日 | 2026-03-25 |
+| ステータス | **完了（Phase 1-12）** |
+
+### 苦戦箇所1: `as const satisfies` と `z.enum()` tuple 要件の両立
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `PROVIDER_CONFIGS` は `as const satisfies readonly ProviderConfigEntry[]` で安全に保持したい一方、`z.enum()` は `[string, ...string[]]` の tuple を要求するため、そのままでは `LLMProviderIdSchema` を組み立てにくい |
+| 解決策 | `ProviderIdUnion = (typeof PROVIDER_CONFIGS)[number]["id"]` を先に定義し、`PROVIDER_IDS` を `ProviderIdUnion` tuple として cast した |
+| 教訓 | runtime catalog を SSoT にする場合、`satisfies` と tuple cast を組み合わせて「正本の型安全」と「Zod enum の要件」を両立させる |
+
+### 苦戦箇所2: optional `specialMatcher` の narrowing
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | OpenRouter のような meta provider は prefix ではなく slash form で判定したいが、`specialMatcher?` を optional にすると直接呼び出しで narrowing が崩れる |
+| 解決策 | `inferProviderId()` で `"specialMatcher" in provider` を使って narrowing してから呼び出した |
+| 教訓 | optional function property を持つ union-like catalog は、存在チェックを経由してから評価する |
+
+### 苦戦箇所3: shared readonly models と Main mutable surface のずれ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `provider-registry.ts` の `models` は readonly だが、`LLMProviderSchema` は mutable `LLMModel[]` を前提としているため `handleGetProviders()` で `[...config.models]` が必要になった |
+| 解決策 | 今回タスクでは Main surface を維持し、bridge の存在を明文化した上で未タスク `task-llm-handle-get-providers-readonly-models` に切り出した |
+| 教訓 | shared catalog を正本化するときは、readonly と public surface の境界差分をその場で消し切れない場合がある。曖昧なまま残さず follow-up として formalize する |
+
+### 同種課題の簡潔解決手順
+
+1. catalog 正本は `as const satisfies` で固定する。
+2. Zod enum が必要なら、正本配列から tuple を導出して `z.enum()` へ渡す。
+3. optional matcher / readonly bridge のような境界差分は、その場で解決するか未タスクへ formalize する。
 
 ---
 

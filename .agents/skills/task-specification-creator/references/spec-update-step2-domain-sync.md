@@ -10,6 +10,7 @@
 | state / data flow 変更 | `arch-state-management.md`, `database-*.md` |
 | UI contract 変更 | `ui-ux-*.md` |
 | security contract 変更 | `security-*.md` |
+| shared runtime catalog / registry 変更 | `interfaces-*.md`, `ui-ux-*.md`, `api-*.md` の関連正本 |
 
 ## 更新不要の代表例
 
@@ -17,11 +18,13 @@
 - interface 不変の refactor
 - typo 修正
 - テストケース追加のみ
+- internal 実装だけで shared/public contract が不変な場合
 
 ## 判定メモ
 
 1. 外部から見える contract が変わったか。
 2. 他レイヤーが依存する境界が変わったか。
 3. 既存 spec の table / completion record / lessons だけで足りるか。
+4. shared catalog が source-of-truth として昇格した場合、UI/IPC/型 docs まで連鎖更新が必要か。
 
-上の 3 つがすべて No なら Step 2 は「更新なし」として閉じる。
+上の 4 つがすべて No なら Step 2 は「更新なし」として閉じる。

@@ -55,6 +55,20 @@
 
 ---
 
+## UT-LLM-MOD-01-005 完了（2026-03-25）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync
+- **Result**: success
+- **Notes**:
+  - `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/` を canonical root として再検証
+  - `implementation-guide.md` を validator 10/10 要件へ整形
+  - `manual-test-checklist.md` / `outputs/artifacts.json` / `phase12-task-spec-compliance-check.md` の補助成果物要件を充足
+  - follow-up 2件を raw メモではなく full template 準拠の未タスク指示書へ昇格
+  - `audit-unassigned-tasks --target-file` の current/baseline 分離を運用ルールへ反映
+
+---
+
 ## UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 完了（2026-03-24）
 
 - **Agent**: task-specification-creator

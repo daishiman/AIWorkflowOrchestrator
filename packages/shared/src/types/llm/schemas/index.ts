@@ -4,6 +4,17 @@
  * @feature chat-multi-llm-switching
  */
 
+// プロバイダーレジストリ（SSoT）
+export {
+  PROVIDER_CONFIGS,
+  PROVIDER_IDS,
+  inferProviderId,
+} from "./provider-registry";
+export type {
+  ProviderConfigEntry,
+  ProviderModelEntry,
+} from "./provider-registry";
+
 // プロバイダー
 export {
   LLMProviderIdSchema,
