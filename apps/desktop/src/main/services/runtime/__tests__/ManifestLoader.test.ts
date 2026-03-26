@@ -208,7 +208,7 @@ describe("ManifestLoader", () => {
 
     expect(second).not.toBe(first);
     expect(second.manifestContentHash).not.toBe(first.manifestContentHash);
-    expect(second.cacheKey).toBe(first.cacheKey);
+    expect(second.resourceDescriptorHash).toBe(first.resourceDescriptorHash);
     expect(second.phases[0]?.title).toBe("manifest scope hardened");
   });
 });
