@@ -39,16 +39,17 @@
 
 ---
 
-### Runtime Skill Creator Workflow Engine Orchestration（2026-03-26）
+### Runtime Skill Creator Workflow Engine Orchestration / Failure Lifecycle（2026-03-26）
 
 | 目的 | 最初に開くファイル |
 | --- | --- |
-| owner 分離の current fact | `references/architecture-overview-core.md` |
-| facade / engine / provenance 詳細 | `references/arch-electron-services-details-part2.md` |
-| public IPC と workflow engine の境界 | `references/api-ipc-system-core.md` |
+| owner 分離と failure review return | `references/architecture-overview-core.md` |
+| facade / engine / transition guard / artifact append 詳細 | `references/arch-electron-services-details-part2.md` |
+| public IPC と `execute-plan` failure lifecycle 契約 | `references/api-ipc-system-core.md` |
 | auth / ipc 教訓 | `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` |
 | completed ledger | `references/task-workflow-completed.md` |
 | workflow root | `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
+| follow-up 実装 root | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
 
 ---
 

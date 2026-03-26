@@ -1,0 +1,10 @@
+{
+  "mode": "non-visual-review-board",
+  "items": [
+    {
+      "id": "MT-11-STATE-BOARD",
+      "purpose": "failure lifecycle state transition review board",
+      "output": "outputs/phase-11/screenshots/non-visual-state-review-board.png"
+    }
+  ]
+}

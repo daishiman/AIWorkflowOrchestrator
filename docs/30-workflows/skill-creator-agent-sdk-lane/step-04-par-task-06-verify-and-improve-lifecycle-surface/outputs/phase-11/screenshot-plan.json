@@ -1,0 +1,20 @@
+{
+  "workflow": "step-04-par-task-06-verify-and-improve-lifecycle-surface",
+  "captures": [
+    {
+      "id": "MT-01",
+      "name": "verify-detail-integrated",
+      "surface": "integrated_api"
+    },
+    {
+      "id": "MT-03",
+      "name": "apply-result-integrated",
+      "surface": "integrated_api"
+    },
+    {
+      "id": "MT-05",
+      "name": "handoff-guidance-side-panel",
+      "surface": "terminal_handoff"
+    }
+  ]
+}

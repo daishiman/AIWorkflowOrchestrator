@@ -5,6 +5,35 @@
 
 ## 完了タスク
 
+### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine の失敗系 state lifecycle 是正（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 |
+| ステータス | **完了** |
+| タイプ | implementation / bugfix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | `RuntimeSkillCreatorFacade.execute()` / `SkillCreatorWorkflowEngine` / runtime tests / Phase 1-12 outputs |
+| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-fix-runtime-workflow-engine-failure-lifecycle-001.md` |
+| GitHub Issue | #1646 |
+
+#### 実施内容
+
+- `SkillCreatorWorkflowEngine.ts` に transition guard、append artifact、`ensureReviewReadyState()`、`verification_review` 保存を追加し、失敗経路も review owner に統一
+- `RuntimeSkillCreatorFacade.ts` で executor reject を catch し、失敗 snapshot を保存して `execute` 停滞を解消
+- `SkillCreatorWorkflowEngine.test.ts` と `RuntimeSkillCreatorFacade.workflow-orchestration.test.ts` に reject / `success:false` / invalid transition / review path テストを追加
+- 親 workflow の `ownership-matrix.md` / `phase-6-test-expansion.md` / related outputs を current fact へ同期
+- targeted vitest 35 件 PASS、workflow validators PASS、wider suite の `ManifestLoader.test.ts` alias blocker は既存 backlog 管轄として重複未タスク化しない運用を固定
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- wider runtime suite の `@repo/shared/types` alias blocker は既存 `docs/30-workflows/unassigned-task/task-renderer-build-fix.md` などの module-resolution 系 tracker と重複するため新設しない
+
+---
+
 ### タスク: UT-LLM-MOD-01-005 PROVIDER_CONFIGS/inferProviderId/LLMProviderIdSchema 三重管理解消（2026-03-25）
 
 | 項目 | 値 |

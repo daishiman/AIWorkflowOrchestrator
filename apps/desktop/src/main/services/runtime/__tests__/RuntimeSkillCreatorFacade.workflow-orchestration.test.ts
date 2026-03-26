@@ -228,4 +228,80 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
       },
     });
   });
+
+  it("execute() success:false は verification_review 付きで review に戻す", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockResolvedValue({
+      executionId: "exec-101",
+      success: false,
+      error: {
+        code: "EXECUTION_FAILED",
+        message: "executor failed",
+      },
+    });
+
+    const result = await facade.execute(
+      createPlanResult(),
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toEqual({
+      executeId: "exec-101",
+      skillName: "engine-test",
+      success: false,
+      error: "executor failed",
+    });
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-100");
+    expect(snapshot).toMatchObject({
+      currentPhase: "review",
+      awaitingUserInput: {
+        reason: "verification_review",
+      },
+      verifyResult: {
+        status: "fail",
+        nextAction: "review",
+        message: "executor failed",
+      },
+    });
+  });
+
+  it("execute() reject は失敗 snapshot を保存して error result を返す", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockRejectedValue(new Error("network down"));
+
+    const result = await facade.execute(
+      createPlanResult(),
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toMatchObject({
+      success: false,
+      error: "network down",
+    });
+    expect(result).toHaveProperty("executeId");
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-100");
+    expect(snapshot).toMatchObject({
+      currentPhase: "review",
+      awaitingUserInput: {
+        reason: "verification_review",
+      },
+      verifyResult: {
+        status: "fail",
+        nextAction: "review",
+        message: "network down",
+      },
+    });
+  });
 });

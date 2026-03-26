@@ -130,15 +130,15 @@ AuthKeyService/SubscriptionAuthProvider の例外時は terminal_handoff (no-aut
 
 > 完了日: 2026-03-23
 
-`RuntimeSkillCreatorFacade` の全3メソッドで terminal_handoff 早期リターンパターンが統一済み。Task02 では facade から workflow state owner を切り離し、`SkillCreatorWorkflowEngine` に phase/state/artifact ownership を集約した。
+`RuntimeSkillCreatorFacade` の全3メソッドで terminal_handoff 早期リターンパターンが統一済み。Task02 では facade から workflow state owner を切り離し、`SkillCreatorWorkflowEngine` に phase/state/artifact ownership を集約した。2026-03-26 の follow-up 実装で failure lifecycle も同 owner に寄せ、reject / `success:false` / verify review の全経路を review-ready state として記録する。
 
 | メソッド | terminal_handoff 分岐 | Union型 | 追加タスク |
 | --- | --- | --- | --- |
 | `plan()` | 有（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | `RuntimeSkillCreatorPlanResponse` | review state を engine へ記録 |
-| `execute()` | 有（UT-SC-02-002 / TASK-SDK-02） | `RuntimeSkillCreatorExecuteResponse` | handoff 時は executor 非実行、integrated 時は verify phase へ遷移 |
+| `execute()` | 有（UT-SC-02-002 / TASK-SDK-02 / UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001） | `RuntimeSkillCreatorExecuteResponse` | handoff 時は executor 非実行、integrated success は verify phase、`success:false` / reject は review phase + `verification_review` へ遷移 |
 | `improve()` | 有（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | `RuntimeSkillCreatorImproveResponse` | -- |
 
-`RuntimeSkillCreatorExecuteResponse` は `packages/shared/src/types/skillCreator.ts` に追加し、`packages/shared/src/types/index.ts` からバレルエクスポート済み。`creatorHandlers.ts` の `skill-creator:execute-plan` 戻り値型も更新済み。Preload 側型定義は UT-SC-02-005 で完了（2026-03-25）。Task02 では `ResourceLoader.getBasePath()` を provenance source として engine の `resumeTokenEnvelope.sourceProvenance` に固定した。
+`RuntimeSkillCreatorExecuteResponse` は `packages/shared/src/types/skillCreator.ts` に追加し、`packages/shared/src/types/index.ts` からバレルエクスポート済み。`creatorHandlers.ts` の `skill-creator:execute-plan` 戻り値型も更新済み。Preload 側型定義は UT-SC-02-005 で完了（2026-03-25）。Task02 では `ResourceLoader.getBasePath()` を provenance source として engine の `resumeTokenEnvelope.sourceProvenance` に固定した。failure lifecycle follow-up では `assertTransition()` と `ensureReviewReadyState()` を追加し、plan 起点互換を維持しながら invalid jump を拒否し、artifacts を append で保持する current fact に揃えた。
 
 ### workflow manifest foundation（TASK-SDK-01 → TASK-SDK-02 handoff）
 
