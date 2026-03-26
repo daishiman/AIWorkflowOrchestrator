@@ -364,7 +364,7 @@ export class SkillCreatorWorkflowEngine {
       review: ["execute", "handoff"],
       execute: ["verify"],
       verify: ["review", "improve"],
-      improve: [],
+      improve: ["execute"],
       handoff: [],
     };
 
