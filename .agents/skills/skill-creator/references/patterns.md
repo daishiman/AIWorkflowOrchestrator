@@ -7566,6 +7566,42 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **発見日**: 2026-03-26
 - **関連タスク**: TASK-SDK-02
 
+### [Phase12] docs-heavy follow-up に code hardening が混ざったら source spec / outputs / skill update を同一 wave で戻す（TASK-SDK-01）
+
+- **状況**: Phase 12 close-out 用の docs-heavy workflow に対して、後続のユーザー要求で `packages/` / `apps/` のコード hardening が追加されることがある
+- **アプローチ**:
+  - 先に current workflow の root 仕様と `outputs/phase-12/*.md` を見直し、docs-only wording を current facts へ書き換える
+  - system spec には「新仕様追加」ではなく「existing contract の hardening current facts」として追記し、completed ledger / lessons / skill logs を同一 wave で閉じる
+  - carry-forward として残していた follow-up が実装済みになったら、未タスク検出レポートと completed ledger を同じターンで 0 件へ揃える
+- **成功パターン**:
+  - `system-spec-update-summary.md` に docs sync と runtime sync を別ステップで記録する
+  - `manifestContentHash` のような internal hardening も、実装済みなら lesson/pattern に一般化して残す
+  - compile gate PASS と env-blocked test を分離記録し、未確認範囲を曖昧にしない
+- **失敗パターン**:
+  - source workflow は docs-only のまま、変更ファイル一覧だけ code-heavy になる
+  - backlog 継続を残したまま completed ledger 側で hardening 実装済みと記録する
+  - env blocker を理由に current facts の同期まで後回しにする
+- **適用条件**: docs-heavy / spec-heavy の Phase 12 follow-up に、shared type や runtime service の追加 hardening が混ざる場合
+- **発見日**: 2026-03-26
+- **関連タスク**: TASK-SDK-01, UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001
+
+### [Phase12] runtime failure lifecycle bug-fix の same-wave close-out（UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001）
+
+- **状況**: runtime bug-fix task では code/test 修正だけ先に閉じがちだが、reject / `success:false` / review required の意味論が変わると completed ledger / lessons / quick-reference / resource-map も同ターンで更新しないと再利用導線が stale になる
+- **アプローチ**:
+  - failure reason を `execution_error` / `execution_failed` / `verification_review` のように owner 観点で分離し、verify pending へ進めてよい経路を明示する
+  - failure artifact は upsert ではなく append、参照は latest accessor へ固定し、history と current snapshot の責務を分ける
+  - `awaitingUserInput` には次の owner が分かる reason を必ず保存し、Phase 12 の implementation-guide / compliance check にも同値転記する
+  - 環境 workaround でテストを通した場合は `ESBUILD_BINARY_PATH=... pnpm vitest ... --run` のような exact command を verification-report / system-spec-update-summary / lessons に残す
+  - canonical `.claude` 更新後は `generate-index.js` → `validate-structure.js` → mirror sync → `diff -qr` を必ず閉じる
+- **結果**: failure lifecycle 変更が code だけに閉じず、system spec と skill の再利用導線まで current fact に揃う
+- **適用条件**: runtime facade / workflow engine / IPC failure path / review state の bug-fix task
+- **失敗パターン**:
+  - reject と `success:false` を同じ failure と見なし、verify pending へ誤遷移させる
+  - artifact を上書きして repeated failure の履歴を失う
+  - PASS した workaround command を残さず、再検証者が同じ環境落ちを踏む
+- **発見日**: 2026-03-26
+- **関連タスク**: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001
 ---
 
 ## 詳細パターン索引

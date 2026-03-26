@@ -52,6 +52,30 @@
 
 ---
 
+### Skill Creator Execution Governance Bundle（2026-03-26）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| Task07 governance bundle の全体像 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-05-seq-task-07-execution-governance-and-handoff-alignment/index.md` |
+| route authority / route owner | `references/workflow-ai-runtime-execution-responsibility-realignment.md` |
+| shared `HandoffGuidance` / Manual Boundary | `references/ui-ux-agent-execution-core.md` |
+| approval / disclosure contract | `references/api-ipc-system-core.md` |
+| shared DTO / consumer mapping | `references/interfaces-agent-sdk-skill-reference-share-debug-analytics.md` |
+
+---
+
+### Runtime Workflow Engine Failure Lifecycle（2026-03-26）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| 実装済み failure lifecycle task の全体像 | `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/index.md` |
+| owner / consumer rule の current fact | `references/architecture-overview-core.md`, `references/arch-electron-services-details-part2.md` |
+| public IPC と workflow engine の境界 | `references/api-ipc-system-core.md` |
+| 親 task の foundation | `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
+| completed ledger / close-out | `references/task-workflow-completed.md`, `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` |
+
+---
+
 ### RuntimePolicyResolver subscription 判定統合（2026-03-22）
 
 | 目的 | 最初に開くファイル |
@@ -88,6 +112,21 @@
 | 教訓 | `references/lessons-learned-test-typesafety.md` |
 | completed ledger | `references/task-workflow-completed.md` |
 | workflow root | `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/` |
+
+---
+
+### TASK-SDK-01 Phase 12 close-out / follow-up sync（2026-03-26）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| close-out follow-up の全体像 | `references/task-workflow-completed.md` |
+| manifest foundation の教訓 | `references/lessons-learned-phase12-workflow-lifecycle.md` |
+| runtime hardening current facts | `references/interfaces-agent-sdk-skill-reference.md` |
+| backlog / carry-forward 判定 | `references/task-workflow-completed.md` |
+| workflow ledger 導線 | `references/task-workflow.md` |
+| 実装完了 root | `docs/30-workflows/completed-tasks/step-01-seq-task-01-manifest-contract-foundation/` |
+| follow-up workflow root | `docs/30-workflows/completed-tasks/task-sdk-01-phase12-compliance-sync/` |
+| follow-up 指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-01-phase12-compliance-sync-001.md` |
 
 ---
 

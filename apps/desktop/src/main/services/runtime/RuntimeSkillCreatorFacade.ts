@@ -264,7 +264,25 @@ export class RuntimeSkillCreatorFacade {
       content: planResult.skillSpec,
     };
 
-    const response = await this.skillExecutor.execute(request, skillMeta);
+    let response;
+    try {
+      response = await this.skillExecutor.execute(request, skillMeta);
+    } catch (error) {
+      const executeResult: SkillExecuteResult = {
+        executeId: `exec-error-${Date.now()}`,
+        skillName:
+          planResult.skillSpec.split("\n")[0]?.substring(0, 50) ?? "unnamed",
+        success: false,
+        error: toExecutionErrorMessage(error),
+      };
+      this.workflowEngine.recordExecutionFailure(planResult.planId, {
+        executeId: executeResult.executeId,
+        skillName: executeResult.skillName,
+        reason: "execution_error",
+        message: executeResult.error ?? "Skill execution failed.",
+      });
+      return executeResult;
+    }
 
     const executeResult: SkillExecuteResult = {
       executeId: response.executionId,
@@ -273,7 +291,17 @@ export class RuntimeSkillCreatorFacade {
       success: response.success,
       error: response.error?.message,
     };
-    this.workflowEngine.recordExecuteResult(planResult.planId, executeResult);
+    if (executeResult.success) {
+      this.workflowEngine.recordExecuteResult(planResult.planId, executeResult);
+      return executeResult;
+    }
+
+    this.workflowEngine.recordExecutionFailure(planResult.planId, {
+      executeId: executeResult.executeId,
+      skillName: executeResult.skillName,
+      reason: "execution_failed",
+      message: executeResult.error ?? "Skill execution failed.",
+    });
     return executeResult;
   }
 
@@ -680,4 +708,14 @@ function handleImproveError(
     success: false,
     error: { code: "LLM_ERROR", message: "Unknown error" },
   };
+}
+
+function toExecutionErrorMessage(error: unknown): string {
+  if (error instanceof Error && error.message.trim() !== "") {
+    return error.message;
+  }
+  if (typeof error === "string" && error.trim() !== "") {
+    return error;
+  }
+  return "Skill execution failed.";
 }

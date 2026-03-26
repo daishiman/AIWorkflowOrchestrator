@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-26T09:47:26.608Z",
-  "totalKeywords": 2498,
+  "generated": "2026-03-26T11:38:44.412Z",
+  "totalKeywords": 2500,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1479,6 +1479,7 @@
       "interfaces-agent-sdk-history.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
@@ -6377,6 +6378,29 @@
     "engine": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
+    "WORKFLOW": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "logs-archive-2026-03-task-10a-c-final-audit.md"
+    ],
+    "ENGINE": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "FAILURE": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "failure": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "lifecycle": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "task-workflow-completed-chat-lifecycle-tests.md",
+      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
+      "task-workflow-completed-skill-lifecycle-design.md",
+      "task-workflow-completed-skill-lifecycle-security.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed-skill-lifecycle.md"
+    ],
     "APIKEY": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
@@ -6541,9 +6565,6 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "SILENT": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "FAILURE": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "EXT": [
@@ -9146,9 +9167,6 @@
     "TWO": [
       "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
-    "WORKFLOW": [
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
-    ],
     "BUNDLE": [
       "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
@@ -10185,14 +10203,6 @@
     ],
     "JST": [
       "task-workflow-completed-agent-view-line-budget.md"
-    ],
-    "lifecycle": [
-      "task-workflow-completed-chat-lifecycle-tests.md",
-      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
-      "task-workflow-completed-skill-lifecycle-design.md",
-      "task-workflow-completed-skill-lifecycle-security.md",
-      "task-workflow-completed-skill-lifecycle-ui.md",
-      "task-workflow-completed-skill-lifecycle.md"
     ],
     "tests": [
       "task-workflow-completed-chat-lifecycle-tests.md"

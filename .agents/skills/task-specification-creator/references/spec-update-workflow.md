@@ -935,6 +935,7 @@ grep -rn "permission-tool-icons" references/
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-03-26 | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 を反映し、runtime bug-fix task でも completed ledger / lessons / quick-reference / resource-map まで same-wave 更新し、環境 workaround で PASS した exact test command を Phase 12 成果物へ同値転記するルールを追加 |
 | 2026-03-26 | TASK-SDK-02 workflow-engine-runtime-orchestration を反映し、runtime orchestration task では channel 追加がなくても owner 分離・early return・resume/provenance owner 変更があれば Step 2 必須とする判断ルールを追加 |
 | 2026-03-26 | TASK-SDK-01 manifest foundation の close-out を反映し、foundation / internal-contract task で system spec 本文が current の場合も Step 1 と no-op 根拠記録を必須化。環境 blocker は既存未タスクとの重複確認を先行するルールを追加 |
 | 2026-03-12 | TASK-SKILL-LIFECYCLE-04 の再監査を反映し、「既存 IPC 再利用でも public preload API 追加や shared barrel export 追加があれば Step 2 必須」とする判断ルールを追加 |

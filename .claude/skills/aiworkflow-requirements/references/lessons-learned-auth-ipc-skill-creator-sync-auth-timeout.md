@@ -9,6 +9,44 @@
 
 ## TASK-SDK-02 workflow-engine-runtime-orchestration（2026-03-26）
 
+## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle（2026-03-26）
+
+### 苦戦箇所と解決策
+
+#### 1. `executor reject` と `success:false` を同じ failure とみなすと downstream review 契約が崩れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `RuntimeSkillCreatorFacade.execute()` が reject / `success:false` / verify review required を同列に扱うと、verify pending へ誤遷移し、Task04/08 が参照する review 契約と実装がずれる |
+| 原因 | `ExecutionResult` の失敗と promise reject を「どちらも失敗だから同じ snapshot でよい」とまとめ、state transition の意味論を固定していなかった |
+| 解決策 | `execution_error` / `execution_failed` / `verification_review` を分離し、reject は `recordExecutionFailure()`、`success:false` は verify 非遷移の failure snapshot、review required は `awaitingUserInput` に閉じ込めた |
+| 教訓 | runtime failure lifecycle は「失敗した」ではなく「どの owner が次を決めるか」で分類すると downstream contract が崩れにくい |
+
+#### 2. failure artifact を upsert すると時系列監査が失われる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 同じ artifact kind を上書きすると repeated failure の履歴が消え、どの実行で何が起きたかを Phase 12 や review で再現しにくい |
+| 原因 | success path の snapshot 更新パターンを failure path にも流用し、history と latest snapshot を区別していなかった |
+| 解決策 | artifact 生成を append ベースへ変更し、読み出し側は latest accessor で現在値を取る構成に整理した |
+| 教訓 | workflow engine の failure artifact は「履歴を append、消費は latest accessor」の二層に分けると監査性と実装単純さを両立しやすい |
+
+#### 3. toolchain workaround を記録せずに close-out すると再検証が再現できない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktree 環境では素の `pnpm vitest` が esbuild binary mismatch で落ちるため、Phase 12 に exact command を残さないと再検証者が同じ失敗を踏む |
+| 原因 | blocker の存在だけ記録し、実際に PASS した回避コマンドを system spec / workflow outputs / skill update へ横展開していなかった |
+| 解決策 | `ESBUILD_BINARY_PATH=... pnpm vitest ... --run` を verification command として成果物へ明記し、未タスクは既存 native binary guard を再利用する方針に固定した |
+| 教訓 | 環境 blocker を新設しない場合でも、「何で PASS したか」の exact command は lessons と implementation-guide の両方へ残す必要がある |
+
+### 同種課題向け簡潔解決手順（4ステップ）
+
+1. reject / `success:false` / review required を別 reason に分け、verify pending へ進めてよい経路を先に固定する。
+2. failure artifact は append、参照は latest accessor として owner の責務を分離する。
+3. `awaitingUserInput` は `verification_review` のように次の owner が分かる reason を必ず持たせる。
+4. toolchain workaround で検証した場合は PASS した exact command を Phase 12 成果物、lessons、skill logs に同値転記する。
+
 ### 苦戦箇所と解決策
 
 #### 1. facade が public bridge と state owner を兼務したままだと downstream task の責務境界が崩れる

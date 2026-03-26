@@ -28,7 +28,7 @@
 | [workflow-skill-lifecycle-created-skill-usage-journey.md](workflow-skill-lifecycle-created-skill-usage-journey.md) | workflow integration spec（TASK-SKILL-LIFECYCLE-05） | 3シナリオ導線（Immediate / Deferred / History） / Task04依存契約 / Phase 11 screenshot証跡 / follow-up backlog |
 | [workflow-skill-lifecycle-routing-render-view-foundation.md](workflow-skill-lifecycle-routing-render-view-foundation.md) | workflow integration spec（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 family） | ViewType拡張 / renderView分岐 / detail panel secondary handoff / AgentView round-trip / Phase 11 screenshot / Phase 12同期 / follow-up backlog |
 | [workflow-ai-runtime-execution-responsibility-realignment.md](workflow-ai-runtime-execution-responsibility-realignment.md) | workflow integration spec（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001） | execution responsibility / access capability foundation / policy authority / same-wave sync |
-| [task-workflow-backlog.md](task-workflow-backlog.md) | backlog | 残課題（未タスク） / 2026-03-21 runtime policy capability bridge follow-up 2件を追加 |
+| [task-workflow-backlog.md](task-workflow-backlog.md) | backlog | 残課題（未タスク） / 2026-03-21 runtime policy capability bridge follow-up 2件 / 2026-03-26 TASK-SDK-01 follow-up は code hardening 吸収後に close |
 | [task-workflow-history.md](task-workflow-history.md) | history bundle | 関連ドキュメント / 変更履歴 |
 
 ## 利用順序

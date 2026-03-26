@@ -12,6 +12,7 @@ import { WORKFLOW_MANIFEST_SCHEMA_VERSION } from "@repo/shared/types";
 
 type ManifestCacheEntry = {
   cacheKey: string;
+  manifestContentHash: string;
   manifest: LoadedWorkflowManifest;
 };
 
@@ -34,6 +35,12 @@ function isNonEmptyString(value: unknown): value is string {
 
 function uniqueStrings(values: string[]): boolean {
   return new Set(values).size === values.length;
+}
+
+function ensureUniqueArrayValues(name: string, values: string[]): void {
+  if (!uniqueStrings(values)) {
+    throw new Error(`${name} は一意である必要があります`);
+  }
 }
 
 function ensureTopLevelFields(manifest: Record<string, unknown>): void {
@@ -119,12 +126,17 @@ function validateResources(
       }
     }
 
+    const phaseIds = resource.phaseIds?.map((value: string) => value.trim());
+    if (phaseIds) {
+      ensureUniqueArrayValues(`resources[${index}].phaseIds`, phaseIds);
+    }
+
     return {
       id: resource.id.trim(),
       kind: resource.kind,
-      path: resource.path,
+      path: resource.path.trim(),
       optional: resource.optional,
-      phaseIds: resource.phaseIds?.map((value: string) => value.trim()),
+      phaseIds,
     } as WorkflowManifestResourceDescriptor;
   });
 
@@ -177,11 +189,21 @@ function validatePhases(phases: unknown): WorkflowManifestPhase[] {
       }
     }
 
+    const dependsOn = phase.dependsOn?.map((value: string) => value.trim());
+    if (dependsOn) {
+      ensureUniqueArrayValues(`phases[${index}].dependsOn`, dependsOn);
+    }
+
+    const resourceIds = phase.resourceIds?.map((value: string) => value.trim());
+    if (resourceIds) {
+      ensureUniqueArrayValues(`phases[${index}].resourceIds`, resourceIds);
+    }
+
     return {
       id: phase.id.trim(),
       title: phase.title.trim(),
-      dependsOn: phase.dependsOn?.map((value: string) => value.trim()),
-      resourceIds: phase.resourceIds?.map((value: string) => value.trim()),
+      dependsOn,
+      resourceIds,
       entryHookId: phase.entryHookId.trim(),
       exitHookId: phase.exitHookId.trim(),
     };
@@ -237,6 +259,50 @@ function assertPhaseReferences(
   });
 }
 
+function assertResourcePhaseReferences(
+  phases: WorkflowManifestPhase[],
+  resources: WorkflowManifestResourceDescriptor[],
+): void {
+  const phaseIds = new Set(phases.map((phase) => phase.id));
+  const phaseResourceMap = new Map(
+    phases.map((phase) => [phase.id, new Set(phase.resourceIds ?? [])]),
+  );
+  const resourceMap = new Map(
+    resources.map((resource) => [resource.id, resource]),
+  );
+
+  resources.forEach((resource) => {
+    for (const phaseId of resource.phaseIds ?? []) {
+      if (!phaseIds.has(phaseId)) {
+        throw new Error(
+          `resource ${resource.id} の phaseId が未定義です: ${phaseId}`,
+        );
+      }
+
+      if (!phaseResourceMap.get(phaseId)?.has(resource.id)) {
+        throw new Error(
+          `resource ${resource.id} が phaseIds で参照する ${phaseId} が phases.resourceIds と一致しません`,
+        );
+      }
+    }
+  });
+
+  phases.forEach((phase) => {
+    for (const resourceId of phase.resourceIds ?? []) {
+      const resource = resourceMap.get(resourceId);
+      if (!resource?.phaseIds) {
+        continue;
+      }
+
+      if (!resource.phaseIds.includes(phase.id)) {
+        throw new Error(
+          `phase ${phase.id} の resourceId ${resourceId} が resources.phaseIds と一致しません`,
+        );
+      }
+    }
+  });
+}
+
 function buildResourceDescriptorHash(
   resources: Array<{
     id: string;
@@ -257,6 +323,13 @@ function buildResourceDescriptorHash(
     .digest("hex");
 }
 
+function buildManifestContentHash(manifest: WorkflowManifest): string {
+  return crypto
+    .createHash("sha256")
+    .update(JSON.stringify(manifest))
+    .digest("hex");
+}
+
 export class ManifestLoader {
   private readonly cache = new Map<string, ManifestCacheEntry>();
 
@@ -268,6 +341,7 @@ export class ManifestLoader {
     const parsed = JSON.parse(raw) as unknown;
 
     const manifest = this.validateManifest(parsed);
+    const manifestContentHash = buildManifestContentHash(manifest);
     const normalizedResources = await Promise.all(
       manifest.resources.map(async (resource) => {
         const absolutePath = path.resolve(manifestDir, resource.path);
@@ -290,7 +364,10 @@ export class ManifestLoader {
     ].join(":");
 
     const cached = this.cache.get(absoluteManifestPath);
-    if (cached?.cacheKey === cacheKey) {
+    if (
+      cached?.cacheKey === cacheKey &&
+      cached.manifestContentHash === manifestContentHash
+    ) {
       return cached.manifest;
     }
 
@@ -299,6 +376,7 @@ export class ManifestLoader {
       sourcePath: absoluteManifestPath,
       manifestDir,
       manifestMtimeMs: stat.mtimeMs,
+      manifestContentHash,
       resourceDescriptorHash,
       cacheKey,
       resources: normalizedResources,
@@ -306,6 +384,7 @@ export class ManifestLoader {
 
     this.cache.set(absoluteManifestPath, {
       cacheKey,
+      manifestContentHash,
       manifest: loadedManifest,
     });
 
@@ -347,6 +426,7 @@ export class ManifestLoader {
       new Set(entry.map((hook) => hook.id)),
       new Set(exit.map((hook) => hook.id)),
     );
+    assertResourcePhaseReferences(phases, resources);
 
     return {
       schemaVersion: WORKFLOW_MANIFEST_SCHEMA_VERSION,

@@ -19,7 +19,8 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
-| 2026-03-26 | 1.8.0 | TASK-SDK-01 manifest-contract-foundation の Phase 12 教訓2件を追加 |
+| 2026-03-26 | 1.8.2 | TASK-SDK-01 hardening sync の Phase 12 教訓3件を追加 |
+| 2026-03-26 | 1.8.1 | TASK-SDK-01 manifest-contract-foundation / follow-up completion の Phase 12 教訓4件へ更新 |
 | 2026-03-23 | 1.7.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003） |
 | 2026-03-21 | 1.6.0 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
 | 2026-03-21 | 1.5.0 | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE の Phase 12 教訓4件を追加 |
@@ -36,6 +37,36 @@
 ---
 
 ## 2026-03-26 TASK-SDK-01 manifest-contract-foundation
+
+### 苦戦箇所0: docs-only follow-up が途中で code hardening task に変わったら、source spec と outputs の両方を current facts へ同一ターンで戻す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 12 close-out follow-up を docs-heavy 前提で閉じていた状態に、後続ユーザー要求で `packages/` / `apps/` の runtime hardening が追加されると、workflow 本文と outputs が docs-only のまま自己矛盾する |
+| 再発条件 | follow-up workflow の root 仕様や `system-spec-update-summary.md` より先にコードだけ更新し、source workflow 側の目的文・Task 12 narrative を据え置く |
+| 解決策 | code change を取り込んだ同一ターンで workflow 本文、Phase 12 outputs、completed ledger、lessons、skill update を current facts へ再同期した |
+| 標準ルール | docs-only / spec-only task でも、後続スコープ拡張でコード変更が入ったら source spec・outputs・台帳・skill feedback を同一ターンで実績ベースへ書き換える |
+| 関連タスク | TASK-SDK-01, UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001 |
+
+### 苦戦箇所0.5: manifest cache は `mtime` ベースのままだと false hit を止め切れない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktree や restore で `mtime` が変わらない条件だと、manifest 本文が変化しても cache が古い normalized result を返しうる |
+| 再発条件 | `cacheKey` と resource hash だけで cache hit を判定し、manifest 全体の構造差分を比較しない |
+| 解決策 | `LoadedWorkflowManifest` に `manifestContentHash` を持たせ、canonicalized manifest 本文 hash で cache 判定を補強した |
+| 標準ルール | foundation loader で schema-valid な構造体を cache する場合、timestamp ではなく canonical content hash を併用する |
+| 関連タスク | TASK-SDK-01 |
+
+### 苦戦箇所0.6: 参照配列の型検証だけでは manifest graph の整合 drift を防げない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `resource.phaseIds` と `phase.resourceIds` がどちらも配列型でも、片側だけの参照や未定義 phase 参照が残ると runtime graph が壊れる |
+| 再発条件 | schema validation を通した後に、双方向参照の一致確認と重複値チェックを行わない |
+| 解決策 | `ManifestLoader` に相互参照検証と duplicate reject を追加し、Vitest で未定義 phase / mismatch / same-`mtime` 再読込を固定した |
+| 標準ルール | graph 型 manifest は「型が正しい」だけで完了にせず、両方向リンク整合と duplicate 不在を load 時点で監査する |
+| 関連タスク | TASK-SDK-01 |
 
 ### 苦戦箇所1: foundation / internal-contract task は Step 2 の本文追記が不要でも、Step 1 と skill sync を省略できない
 
@@ -57,11 +88,31 @@
 | 標準ルール | Phase 12 で環境 blocker を見つけたら、まず既存 `unassigned-task/` と lessons を検索し、重複しない場合のみ新規 formalize する |
 | 関連タスク | TASK-SDK-01 |
 
+### 苦戦箇所3: `generate-index.js` が `artifacts.json` の phases 配列を添字参照すると Phase 12/13 の status drift が再発する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `artifacts.json` の `phases` を配列で持つ workflow で `generate-index.js` が `phases["12"]` のように参照すると、Phase 12 に Phase 13 の status が表示される |
+| 再発条件 | parent `index.md` を再生成するたびに Phase 12=`blocked` / Phase 13=`未実施` のような false status が混入する |
+| 解決策 | `generate-index.js` を配列 / オブジェクト両対応に修正し、node:test で Phase 12/13 の status 出力を固定した |
+| 標準ルール | Phase status を再生成するスクリプトは `artifacts.json` の構造差分を吸収し、Phase 12/13 drift をテストで固定する |
+| 関連タスク | TASK-SDK-01, UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001 |
+
+### 苦戦箇所4: docs-only Phase 11 でも validator 互換の補助成果物を残し、その用途を明記しないと warning が消えない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | UI 実装差分がない NON_VISUAL task でも、Phase 11 本文に `UI` や `画面証跡` が含まれると `validate-phase-output.js` が `screenshot-plan.json` と `screenshots/` を要求する |
+| 再発条件 | docs-only walkthrough で manual result だけ残し、補助成果物の placeholder 方針を明文化しない |
+| 解決策 | `screenshot-plan.json` と placeholder PNG を validator compatibility 用に保存し、manual-test-result と discovered-issues で UI レビュー根拠ではないことを明記した |
+| 標準ルール | docs-only Phase 11 で validator が補助成果物を要求する場合は placeholder を保存し、用途を「validator 互換用」と文章で固定する |
+| 関連タスク | TASK-SDK-01, UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001 |
+
 ### 同種課題の簡潔解決手順（3ステップ）
 
-1. Step 2 対象の system spec 本文が既に current かを先に確認し、no-op なら根拠を Phase 12 成果物へ明記する。
-2. Step 1-A〜1-G、completed ledger、lessons、LOGS、SKILL を同一ターンで閉じる。
-3. test/environment blocker は既存未タスクとの重複検索を先に行い、重複しない時だけ新規 formalize する。
+1. docs-only 前提だった follow-up に code hardening が入ったら、source spec / outputs / completed ledger を current facts へ戻す。
+2. Step 2 対象の system spec 本文が既に current かを先に確認し、no-op なら根拠を Phase 12 成果物へ明記する。
+3. parent `index.md` 再生成、docs-only Phase 11 placeholder、test/environment blocker の既存未タスク重複確認を同一ターンで閉じる。
 
 ---
 

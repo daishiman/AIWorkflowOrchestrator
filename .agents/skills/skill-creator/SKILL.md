@@ -237,6 +237,12 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 > `resolve-skill-dependencies.md` で設計した参照構造は、skill-creatorが他スキルの
 > SKILL.mdを読み込んで公開インターフェースを特定する際のパターンそのもの。
 
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| **10.37.43** | **2026-03-26** | **TASK-SDK-01 hardening sync を template へ反映**: docs-heavy Phase 12 follow-up に code hardening が入った時の same-wave rollback-to-current ルール、carry-forward 0件同期、compile gate と env-blocked test の分離記録を `references/patterns.md` / `references/update-process.md` へ追加 |
+
 ---
 
 ## 変更履歴

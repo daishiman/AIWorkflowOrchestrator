@@ -1,7 +1,7 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-26T06:59:25.682Z
-> 対象: docs/30-workflows/step-01-seq-task-01-manifest-contract-foundation
+> 検証日時: 2026-03-26T11:21:09.078Z
+> 対象: docs/30-workflows/completed-tasks/step-01-seq-task-01-manifest-contract-foundation
 
 ## サマリー
 
@@ -67,9 +67,3 @@
 ### Phase 13: PR作成 ✅
 
 問題なし
-
-## 実装ターン補足
-
-- 2026-03-26 実装ターンで `ManifestLoader`、shared contract、fixture、phase outputs を追加
-- 型検査は PASS
-- Vitest は `esbuild` version mismatch により未実行
