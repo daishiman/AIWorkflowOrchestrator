@@ -58,7 +58,7 @@ Phase 12 の必須 5 タスクを manifest foundation 用に定義し、implemen
 
 1. implementation guide の Part 1 では「レシピの目次を別紙に分ける」比喩で manifest の役割を説明する。
 2. Part 2 では schema field、loader boundary、cache invalidation、downstream handoff を技術者向けに説明する。
-3. Task 12-2 Step 1-A は ledger sync として `task-workflow-completed*` と `lessons-learned*`、`LOGS.md`、必要なら `SKILL.md` の更新対象を先に確定する。
+3. Task 12-2 Step 1-A は ledger sync として `task-workflow-completed*` と `lessons-learned*`、`LOGS.md`、`SKILL.md` の更新対象を先に確定する。
 4. Task 12-2 Step 1-B は implementation task として `completed` を実装状況テーブルへ反映し、Phase 13 の `blocked` と混同しない。
 5. Task 12-2 Step 1-C は関連タスク / 未タスク候補テーブルを grep で洗い、`docs/30-workflows/unassigned-task/` への formalize 要否を判断する。
 6. Task 12-2 Step 2 は contract sync として `arch-electron-services-details-part2.md`、`arch-execution-capability-contract.md` を主対象にし、`security-electron-ipc.md` と `api-ipc-system-core.md` は public contract 変更時のみ更新する。

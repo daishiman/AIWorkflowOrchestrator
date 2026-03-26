@@ -3,7 +3,6 @@
 ## 役割
 
 ---
-
 ## TASK-SDK-02 workflow-engine-runtime-orchestration 完了（2026-03-26）
 
 - **Agent**: task-specification-creator
@@ -17,7 +16,29 @@
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
 
 ---
+## TASK-SDK-01 hardening sync guide update（2026-03-26）
 
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 guide refinement
+- **Result**: success
+- **Notes**:
+  - `phase-12-documentation-guide.md` に、docs-only follow-up へ後から code change が入った場合の source workflow / outputs 同一ターン同期ルールを追加
+  - task-spec close-out 時に docs-heavy wording と code-heavy 実績が乖離しないよう、narrative 更新を明示的な必須作業へ昇格
+
+---
+
+## TASK-SDK-01 Phase 12 compliance sync follow-up formalize（2026-03-26）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 1-3 spec refinement + Step 1 same-wave sync
+- **Result**: success
+- **Notes**:
+  - `UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001` execution workflow の Phase 12 task 分解を 12-6 まで是正
+  - workflow 仕様内の `.claude` 参照を repo-root 基準の実在相対パスへ修正
+  - `task-workflow.md` / backlog / topic-map / keywords の導線同期を補完
+  - Step 2 は interface/API/定数変更なしのため no-op。代わりに LOGS.md 2ファイル + SKILL.md 2ファイル更新を same-wave で実施
+
+---
 ## TASK-SDK-01 manifest-contract-foundation 完了（2026-03-26）
 
 - **Agent**: task-specification-creator

@@ -1,0 +1,11 @@
+{
+  "taskId": "TASK-SDK-01",
+  "mode": "validator-compat",
+  "captures": [
+    {
+      "id": "non-visual-placeholder",
+      "purpose": "Phase 11 validator compatibility placeholder for non-visual manifest foundation walkthrough",
+      "output": "outputs/phase-11/screenshots/non-visual-placeholder.png"
+    }
+  ]
+}

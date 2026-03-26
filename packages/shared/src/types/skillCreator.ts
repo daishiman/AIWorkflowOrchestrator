@@ -315,6 +315,7 @@ export interface LoadedWorkflowManifest extends WorkflowManifest {
   sourcePath: string;
   manifestDir: string;
   manifestMtimeMs: number;
+  manifestContentHash: string;
   resourceDescriptorHash: string;
   cacheKey: string;
   resources: NormalizedWorkflowManifestResourceDescriptor[];

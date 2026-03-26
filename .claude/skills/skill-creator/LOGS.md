@@ -15,6 +15,17 @@
   - LOGS.md + SKILL.md 同時更新
 
 ---
+## 2026-03-26 - TASK-SDK-01 hardening sync を skill-creator へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に「docs-heavy follow-up に code hardening が混ざったら source spec / outputs / skill update を同一 wave で戻す」パターンを追加
+  - `references/update-process.md` に carry-forward 0件化、compile gate と env-blocked test の分離記録、internal hardening の書き方を追記
+  - `SKILL.md` の変更履歴を更新し、Phase 12 再利用時の入口から辿れるようにした
+
+---
 ## 2026-03-26 - TASK-SDK-01 manifest-contract-foundation の Phase 12 close-out を template へ反映
 
 - **Agent**: skill-creator (update)
