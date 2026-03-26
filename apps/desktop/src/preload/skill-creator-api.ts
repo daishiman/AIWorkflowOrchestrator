@@ -19,7 +19,7 @@ import type {
   CreateSkillOptions,
   ExecuteTasksOptions,
   ExecutionReport,
-  RuntimeSkillCreatorExecuteResult,
+  RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
@@ -107,7 +107,7 @@ export interface SkillCreatorAPI {
     skillSpec: string,
     authMode?: AuthMode,
     apiKey?: string | null,
-  ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResult>>;
+  ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>>;
 
   /**
    * Runtime improve: フィードバックに基づいてスキルを改善する
@@ -281,7 +281,7 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     skillSpec: string,
     authMode?: AuthMode,
     apiKey?: string | null,
-  ): Promise<IpcResult<RuntimeSkillCreatorExecuteResult>> =>
+  ): Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN, {
       planId,
       skillSpec,

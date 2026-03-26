@@ -2267,3 +2267,13 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 - Multi-agent 実行後の Phase 12 統合で、system spec retrospective と unassigned formalize を閉じるパターンを追加。
 - 苦戦箇所を次回の短縮解決知見へ変換するテンプレート追記。
+
+## 2026-03-26 - UT-SC-02-005 stale fact cleanup rule
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/update-process.md` に Phase 12 retrospective の `Phase 3.5: stale fact cleanup` を追加
+  - `assets/phase12-system-spec-retrospective-template.md` に stale fact cleanup 行を追加し、テスト件数 / coverage / out-of-scope 注記 / 日付 / follow-up 件数の同値同期を明文化
+  - Phase 12 の same-wave sync では outputs 生成だけでなく、report と unassigned-task の記述ドリフト除去まで同一ターンで閉じる運用を標準化

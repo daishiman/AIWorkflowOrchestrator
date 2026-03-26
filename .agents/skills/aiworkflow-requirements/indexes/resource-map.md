@@ -39,6 +39,7 @@
 | HybridRAGFactory wiring     | interfaces-rag.md, rag-search-hybrid.md, rag-query-pipeline.md | interfaces-rag-knowledge-graph-store.md, rag-search-crag.md, rag-search-graph.md, rag-services.md, task-workflow.md, lessons-learned-current.md, lessons-learned-rag-embedding-runtime.md |
 | Agent SDK統合               | interfaces-agent-sdk.md（インデックス）                       | interfaces-agent-sdk-\* 分割ファイル                                  |
 | LLM連携                     | interfaces-llm.md                                             | api-endpoints.md (AI Provider)                                        |
+| LLM provider registry SSoT 同期 | llm-ipc-types.md, interfaces-llm.md, ui-ux-llm-selector.md | lessons-learned-test-typesafety.md, task-workflow-completed.md, task-workflow-backlog.md |
 | デプロイ・CI/CD             | deployment.md                                                 | deployment-\*, technology-devops.md                                   |
 | テスト実装                  | quality-requirements.md (TDD)                                 | 機能に応じたinterfaces-\*                                             |
 | コンポーネントテスト        | testing-component-patterns.md                                 | testing-fixtures.md, testing-accessibility.md                         |
@@ -415,6 +416,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-25 | 1.23.1     | TASK-SC-07 完了同期: Wizard LLM Generation Flow。arch-state-management-core, ui-ux-feature-components-core, lessons-learned-ipc-preload-runtime, task-workflow-completed 更新。L-SC-07-001〜004 追加 |
 | 2026-03-25 | 1.23.0     | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001: ApprovalGate/Consumer Auth Guard/3層レイヤーのクイックルックアップ追加。security-electron-ipc-core.md, api-ipc-system-core.md, architecture-implementation-patterns-core.md への導線を登録 |
 | 2026-03-20 | 1.22.0     | UT-RAG-08-002: HybridRAGFactory wiring 行に `lessons-learned-rag-embedding-runtime.md` を追加。ILLMClient 型ドリフト（L-RAG-06/P64）への導線を登録 |
 | 2026-03-19 | 1.21.1     | UT-TASK06-007 discovery 導線を completed canonical set に再同期。implementation pattern detail / security-electron-ipc-core / security-electron-ipc-history / completed ledger / lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment を追加し、follow-up を EXT-001〜005 に更新 |

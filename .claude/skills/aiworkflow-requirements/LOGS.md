@@ -10,6 +10,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 2026-03-25 - TASK-SC-07-STREAMING-PROGRESS-UI 完了（ストリーミング進捗UI実装 / GenerateStep UI改修・generationProgressSlice独立スライス・useStreamingProgress・useCancelGeneration・ErrorCards atoms / 個別セレクタ9点（P31対策） / テスト114件全PASS / 未タスク4件: IPC cancel送信・デバウンス100ms・設定画面遷移・エラーコード構造化） |
 | 2026-03-25 - TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了（HealthPolicy 統一インターフェース / health-policy.ts 新規作成 / resolveHealthPolicy() 5段階導出ルール / RuntimePolicyResolver DI統合 / mainlineAccess.ts 消費 / HealthIndicator.tsx 表示統合 / apiKeyDegraded @deprecated v0.8.0 / 38テスト全PASS / 未タスク3件: UT-HEALTH-POLICY-MAINLINE-MIGRATION-001, UT-HEALTH-POLICY-RUNTIME-INJECTION-001, UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001） |
 | 2026-03-25 - TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION 完了（SkillCreateWizard LLM生成フロー接続 / GenerationMode "llm"|"template" / localPlanResult+storePlanResult Hybrid State / 11 Store hooks / Symmetric Clear Pattern / 7 optional Props 非破壊拡張 / 17テスト全PASS / 未タスク2件: UT-SC-07-STORE-CONFLICT-GUARD, UT-SC-07-AUTH-MODE-API-KEY-IMPL） |
+| 2026-03-25 - UT-LLM-MOD-01-005 完了同期（`provider-registry.ts` を LLM provider catalog の正本として system spec へ反映 / `llm-ipc-types.md`・`interfaces-llm.md`・`ui-ux-llm-selector.md` を current contract に同期 / lessons・quick-reference・resource-map を更新 / follow-up 2件を backlog/completed 導線へ接続） |
 | 2026-03-24 - UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 完了（navContract.ts DockViewType/NAV_SECTIONS/NAV_SHORTCUT_TO_VIEW に executionConsole 追加 / Icon play-circle 追加 / Cmd+9 ショートカット / テスト期待値更新 / 未タスク0件） |
 | 2026-03-24 - TASK-SC-06-UI-RUNTIME-CONNECTION 完了（SkillLifecyclePanel → RuntimeSkillCreatorFacade plan→execute フロー接続 / agentSlice に PlanResult型+5 state+6 actions 追加 / store/index.ts に11個別セレクタ追加（P31対策） / handlePrepare detectMode→planSkill自動呼出し / integrated_api/terminal_handoff 結果表示 / 33テスト全PASS / 未タスク6件: TASK-SC-07〜SC-12） |
 | 2026-03-24 - UT-06-002-UT-1 完了（permission-store-handlers 全4ハンドラに withValidation sender 検証追加 / mainWindow DI / 42テスト全PASS / 16新規セキュリティテスト / 未タスク0件） |
@@ -516,3 +517,16 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - Phase: 1-12完了、13(PR) blocked
 - 成果物: 設計文書 + IPC handler + Service + UI component
 - ブランチ: feature/advanced-console-safety-governance
+
+## UT-SC-02-005 preload execute 型追従の Phase 12 整理（2026-03-25）
+
+- タスク名: Preload `executePlan` 戻り値型を `RuntimeSkillCreatorExecuteResponse` に統一
+- 種別: implementation / documentation
+- ワークフロー: `docs/30-workflows/completed-tasks/UT-SC-02-005-preload-execute-type-update/`
+- 主要成果物:
+  - `skill-creator-api.ts`: `executePlan` 戻り値型を shared execute union へ更新
+  - `SkillLifecyclePanel.tsx`: `isExecuteTerminalHandoff()` 追加、Renderer 側 execute response も shared union へ統一
+  - `skill-creator-api.runtime.test.ts` / `skill-creator-api.test.ts` / `SkillLifecyclePanel.llm-generation.test.tsx`: `terminal_handoff` 実 shape と失敗 envelope を固定
+  - workflow `outputs/phase-3/6/7/8/9/10/11/12`: 必須成果物名を仕様書準拠に補完
+- テスト結果: 対象4ファイル 54/54 PASS、coverage Line 89.56 / Branch 80.88 / Function 88.88、typecheck PASS、eslint PASS
+- mirror: `.claude` 正本 / `.agents` mirror の差分を解消済み

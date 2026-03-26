@@ -61,12 +61,24 @@ Renderer Processの各コンポーネントからのリクエストは、IPC Bri
 
 ## 対応LLMプロバイダー
 
-| プロバイダー | モデル例                         | コンテキストウィンドウ |
-| ------------ | -------------------------------- | ---------------------- |
-| OpenAI       | gpt-5.2-instant, gpt-4           | 400K, 8K               |
-| Anthropic    | claude-sonnet-4.5, claude-3-opus | 200K (1M beta), 200K   |
-| Google       | gemini-3-flash, gemini-pro       | 1M, 32K                |
-| xAI          | grok-4.1-fast, grok-1            | 2M, 8K                 |
+current branch の provider catalog 正本は
+`packages/shared/src/types/llm/schemas/provider-registry.ts`。
+本節は代表例のみを載せ、詳細な current contract は
+[llm-ipc-types.md](./llm-ipc-types.md) を参照する。
+
+| プロバイダー | 代表モデル例 | current note |
+| ------------ | ------------ | ------------ |
+| OpenAI | `gpt-5.4`, `o3` | `gpt-` / `o3` / `o4` prefix で推定 |
+| Anthropic | `claude-sonnet-4-6`, `claude-haiku-4-5` | `claude-` prefix |
+| Google | `gemini-3-flash-preview`, `gemini-3.1-pro-preview` | `gemini-` prefix |
+| xAI | `grok-4-1-fast-non-reasoning`, `grok-3-mini` | `grok-` prefix |
+| OpenRouter | `openai/gpt-4o`, `anthropic/claude-3.5-sonnet` | slash form を `specialMatcher` で判定 |
+
+### 読む順番
+
+1. provider/model 正本を確認する: [llm-ipc-types.md](./llm-ipc-types.md)
+2. UI surface を確認する: [ui-ux-llm-selector.md](./ui-ux-llm-selector.md)
+3. stream / workspace 実行経路を確認する: [llm-streaming.md](./llm-streaming.md), [llm-workspace-chat-edit.md](./llm-workspace-chat-edit.md)
 
 ---
 

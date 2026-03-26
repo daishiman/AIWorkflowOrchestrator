@@ -7,7 +7,13 @@
 
 ## 概要
 
-LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Main に同期して `ai.chat` / `llm:stream-chat` の実行経路へ渡す。current branch では live surface として `LLMSelectorPanel` と blocked guidance が存在し、shared compact component として `InlineModelSelector` が追加されている。ChatView / WorkspaceChatPanel への live mount は Task02 / Task03 の責務であり、ここでは shared component contract を正本として扱う。
+LLM 選択機能は責務が 2 層に分かれる。provider/model catalog の正本は
+`packages/shared/src/types/llm/schemas/provider-registry.ts`、
+Renderer 側の選択状態の正本は `llmSlice` である。
+`llmSlice` は選択状態を Main に同期し、`ai.chat` / `llm:stream-chat`
+の実行経路へ渡す。current branch では live surface として
+`LLMSelectorPanel` と blocked guidance が存在し、shared compact component
+として `InlineModelSelector` が追加されている。
 
 **current implementation anchors**:
 
@@ -25,7 +31,7 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 | 要素 | 仕様 |
 |------|------|
 | 配置 | `LLMSelectorPanel` を配置する surface、または selectedModel 未選択時の guidance surface |
-| プロバイダードロップダウン | 4つのプロバイダー（OpenAI, Anthropic, Google, xAI）から選択 |
+| プロバイダードロップダウン | 5つのプロバイダー（OpenAI, Anthropic, Google, xAI, OpenRouter）から選択 |
 | モデルドロップダウン | 選択されたプロバイダーの利用可能なモデル一覧から選択 |
 | 現在の選択表示 | provider / model の current selection と health を表示 |
 | リアルタイム切り替え | 選択時に `llmSlice` 更新 → `llm:set-selected-config` で Main 同期 |
@@ -50,18 +56,17 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 
 ## プロバイダーとモデル一覧
 
-| プロバイダー | モデルID | モデル名 | コンテキストウィンドウ |
-|--------------|----------|----------|----------------------|
-| **OpenAI** | gpt-5.2-instant | GPT-5.2 Instant | 400K |
-| | gpt-4 | GPT-4 | 8K |
-| **Anthropic** | claude-sonnet-4.5 | Claude Sonnet 4.5 | 200K (1M beta) |
-| | claude-3-opus | Claude 3 Opus | 200K |
-| **Google** | gemini-3-flash | Gemini 3 Flash | 1M |
-| | gemini-pro | Gemini Pro | 32K |
-| **xAI** | grok-4.1-fast | Grok 4.1 Fast | 2M |
-| | grok-1 | Grok 1 | 8K |
+一覧の正本は `llm:get-providers` が返す `LLMProvider[]` であり、
+その元データは `provider-registry.ts` の `PROVIDER_CONFIGS` にある。
+本節は current code の代表例のみを示す。
 
-**注**: 上記モデルはuser-stories.mdの仕様に基づく。実際のモデル名とコンテキストウィンドウはプロバイダーのAPI仕様に準拠。
+| プロバイダー | 代表モデル | current note |
+|--------------|------------|--------------|
+| **OpenAI** | `gpt-5.4`, `gpt-5.4-mini`, `o3` | `gpt-` / `o3` / `o4` 系 |
+| **Anthropic** | `claude-sonnet-4-6`, `claude-opus-4-6`, `claude-haiku-4-5` | `claude-` 系 |
+| **Google** | `gemini-3-flash-preview`, `gemini-3.1-pro-preview` | `gemini-` 系 |
+| **xAI** | `grok-4-1-fast-non-reasoning`, `grok-4-1-fast-reasoning` | `grok-` 系 |
+| **OpenRouter** | `openai/gpt-4o`, `anthropic/claude-3.5-sonnet` | slash form の meta provider |
 
 ## 状態管理
 
@@ -87,8 +92,9 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 
 **注意**:
 
-- current `persist.partialize` には LLM 選択状態は含まれていない
-- そのため再起動後 persist は未実装であり、runtime sync と persist は別 concern で扱う
+- `persist.partialize` には `selectedProviderId` / `selectedModelId` が含まれる
+- 再起動後は `validateAndSyncPersistedConfig()` が persisted 値を検証し、無効な provider は `null` クリアする
+- provider 未選択の初回起動時だけ、`fetchProviders()` 後に先頭 provider + default model を採用する
 - `InlineModelSelector` の live screenshot verification は consumer surface 未統合のため Task02/03 側で実施する
 
 ## UXフロー
@@ -105,7 +111,7 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 ### モデル切り替え時の動作
 
 1. ユーザーが「Model」ドロップダウンからモデルを選択
-2. `setProvider()` アクションが即座に実行
+2. `selectModel()` アクションが即座に実行
 3. 「Current」バッジが更新される
 4. 次のメッセージから新しいモデルが使用される
 
@@ -153,7 +159,7 @@ LLM 選択機能は Renderer の `llmSlice` を正本とし、選択状態を Ma
 | エラーケース | 対処法 |
 |--------------|--------|
 | プロバイダー一覧が空 | 「No LLM providers available」メッセージを表示 |
-| 選択されたモデルが存在しない | プロバイダーの最初のモデルにフォールバック |
+| persisted provider / model が無効 | `validateAndSyncPersistedConfig()` で `null` クリアし、暗黙 fallback はしない |
 | APIキーが未設定 | ドロップダウンは表示するが、メッセージ送信時にエラー表示 |
 
 ## テストカバレッジ

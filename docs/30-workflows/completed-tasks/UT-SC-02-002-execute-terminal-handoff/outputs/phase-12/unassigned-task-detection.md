@@ -14,7 +14,7 @@
 
 ## 未タスク管理 3ステップ（完了）
 
-1. `docs/30-workflows/unassigned-task/UT-SC-02-005.md` に指示書作成 -> 完了
+1. `docs/30-workflows/completed-tasks/UT-SC-02-005.md` に指示書作成 -> 完了
 2. `task-workflow-backlog.md` 残課題テーブルに登録 -> 完了
 3. 関連仕様書に参照リンク追加 -> 該当なし（UT-SC-02-002 仕様書内で参照済み）
 

@@ -5,6 +5,56 @@
 
 ## 完了タスク
 
+### タスク: UT-LLM-MOD-01-005 PROVIDER_CONFIGS/inferProviderId/LLMProviderIdSchema 三重管理解消（2026-03-25）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-LLM-MOD-01-005 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | implementation / refactor |
+| 優先度 | 中 |
+| 完了日 | 2026-03-25 |
+| 対象 | `provider-registry.ts` を正本にした provider / model 管理 |
+| 成果物 | `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/UT-LLM-MOD-01-005.md` |
+| GitHub Issue | #1524 |
+
+#### 実施内容
+
+- `packages/shared/src/types/llm/schemas/provider-registry.ts` を新設し、`PROVIDER_CONFIGS` / `PROVIDER_IDS` / `inferProviderId()` を正本化
+- `packages/shared/src/types/llm/schemas/provider.ts` の `LLMProviderIdSchema` を `z.enum(PROVIDER_IDS)` へ置換
+- `packages/shared/src/types/llm/schemas/index.ts` から provider registry 関連 export を公開
+- `apps/desktop/src/main/handlers/llm.ts` のローカル `PROVIDER_CONFIGS` / `inferProviderId` を削除し shared 正本へ統一
+- `provider-registry.test.ts` を追加し、SSoT 導出・OpenRouter 優先判定・競合 prefix を固定化
+- `api-ipc-system-core.md` に provider ID 正本と `openrouter` 対応を反映
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| task-llm-adapter-factory-provider-ids-ssot | `LLMAdapterFactory` の `SUPPORTED_PROVIDER_IDS` を `provider-registry.ts` 由来に寄せる | 中 | `docs/30-workflows/unassigned-task/task-llm-adapter-factory-provider-ids-ssot.md` |
+| task-llm-handle-get-providers-readonly-models | `handleGetProviders()` の readonly models bridge を解消する | 低 | `docs/30-workflows/unassigned-task/task-llm-handle-get-providers-readonly-models.md` |
+
+---
+### タスク: UT-SC-02-005 Preload skill-creator-api.ts の execute 戻り値型更新（2026-03-25）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-SC-02-005 |
+| ステータス | **完了**（2026-03-25） |
+| タイプ | バグ修正 |
+| 優先度 | 中 |
+| 完了日 | 2026-03-25 |
+| 対象 | `apps/desktop/src/preload/skill-creator-api.ts`, `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` |
+| 親タスク | UT-SC-02-002 |
+
+#### 実施内容
+
+- `skill-creator-api.ts` の `executePlan` 戻り値型を旧型 `RuntimeSkillCreatorExecuteResult` から `RuntimeSkillCreatorExecuteResponse` に統一
+- `SkillLifecyclePanel.tsx` に `terminal_handoff` 型ナロイング追加（P44/P45 パターン対応）
+- Preload runtime テスト・Renderer テストを更新し全 PASS を確認
+
+---
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）
 
 | 項目 | 値 |

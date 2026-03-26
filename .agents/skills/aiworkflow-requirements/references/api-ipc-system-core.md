@@ -53,7 +53,8 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 - **バリデーション**:
   - `providerId` / `modelId` は片方のみ指定を禁止
   - `providerId` / `modelId` は空文字・トリム後空文字を禁止
-  - `providerId` は `"openai" | "anthropic" | "google" | "xai"` のみ許可
+  - `providerId` は `"openai" | "anthropic" | "google" | "xai" | "openrouter"` のみ許可（正本: `packages/shared/src/types/llm/schemas/provider-registry.ts` の PROVIDER_CONFIGS）
+- **プロバイダーID正本**: `packages/shared/src/types/llm/schemas/provider-registry.ts` の `PROVIDER_CONFIGS` が SSoT。`LLMProviderIdSchema` と `inferProviderId` は PROVIDER_CONFIGS から自動導出される（UT-LLM-MOD-01-005 で確立）
 
 #### LLM選択同期 IPC
 

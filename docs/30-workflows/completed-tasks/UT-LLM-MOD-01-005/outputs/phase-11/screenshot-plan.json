@@ -1,0 +1,10 @@
+{
+  "mode": "non_visual_placeholder",
+  "reason": "validate-phase-output.js の heuristic が phase-11 文書内の review / guide / suite を visual evidence と判定するため、NON_VISUAL タスクであることを明示する補助成果物を配置する。",
+  "artifacts": [
+    {
+      "file": "outputs/phase-11/screenshots/non-visual-placeholder.png",
+      "description": "NON_VISUAL タスク用のプレースホルダー PNG。UI 証跡ではない。"
+    }
+  ]
+}

@@ -65,6 +65,19 @@
 
 ---
 
+### LLM provider registry SSoT（2026-03-25）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| provider / model 正本 | `references/llm-ipc-types.md` |
+| UI surface | `references/ui-ux-llm-selector.md` |
+| LLM 全体インデックス | `references/interfaces-llm.md` |
+| 教訓 | `references/lessons-learned-test-typesafety.md` |
+| completed ledger | `references/task-workflow-completed.md` |
+| workflow root | `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/` |
+
+---
+
 ## 型定義クイックアクセス
 
 | 用途               | 型名                          | ファイル                   |

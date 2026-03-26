@@ -1,5 +1,6 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import type { SkillExecutionStatus } from "@repo/shared";
+import type { RuntimeSkillCreatorExecuteResponse } from "@repo/shared/types";
 import type { PlanResult } from "../../store/slices/agentSlice";
 import {
   useBeginSkillReview,
@@ -74,7 +75,7 @@ type SkillCreatorRuntimeApi = {
     skillSpec?: unknown,
     authMode?: string,
     apiKey?: string,
-  ) => Promise<IpcResult<{ skillName: string; skillPath: string }>>;
+  ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>>;
   improveSkill?: (
     skillName: string,
     options?: { autoApply?: boolean },
@@ -87,6 +88,15 @@ type SessionEntry = {
   title: string;
   detail: string;
 };
+
+function isExecuteTerminalHandoff(
+  response: RuntimeSkillCreatorExecuteResponse,
+): response is Extract<
+  RuntimeSkillCreatorExecuteResponse,
+  { type: "terminal_handoff" }
+> {
+  return "type" in response && response.type === "terminal_handoff";
+}
 
 const defaultExecutionPrompt =
   "このスキルの基本動作を確認し、改善余地があれば短くまとめてください。";
@@ -421,9 +431,19 @@ export function SkillLifecyclePanel({
         setGenerationError(result.error ?? "計画実行に失敗しました");
         return;
       }
+      const executeResponse = result.data;
+      // terminal_handoff: planSkill と同様にガイダンス UI へ接続予定
+      // TODO(terminal-handoff-ui): TerminalHandoffCard コンポーネントへ bundle を渡す
+      if (isExecuteTerminalHandoff(executeResponse)) {
+        console.info(
+          "[SkillLifecyclePanel] terminal_handoff received:",
+          executeResponse.bundle,
+        );
+        return;
+      }
       await fetchSkills();
-      if (result.data.skillName) {
-        selectSkillByName(result.data.skillName);
+      if (executeResponse.skillName) {
+        selectSkillByName(executeResponse.skillName);
       }
       setLocalPlanResult(null);
       clearGenerationState();

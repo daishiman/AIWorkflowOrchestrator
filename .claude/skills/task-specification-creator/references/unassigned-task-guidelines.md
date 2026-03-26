@@ -14,6 +14,12 @@
 
 **目標**: 100人中100人が同じ理解でタスクを実行できる品質
 
+**重要**:
+
+- Phase 12 で発見した follow-up は raw メモのまま閉じない
+- `docs/30-workflows/unassigned-task/` に置く時点で full template 準拠へ昇格させる
+- `audit-unassigned-tasks.js --target-file <path>` で `currentViolations = 0` を確認してから完了扱いにする
+
 ---
 
 ## split guide
