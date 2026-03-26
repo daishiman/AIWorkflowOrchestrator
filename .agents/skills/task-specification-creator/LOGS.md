@@ -1387,3 +1387,21 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/completed-tasks/UT-SC-02-005-preload-execute-type-update/`, `outputs/phase-3/6/7/8/9/10/11/12`, `artifacts.json` |
 | 結果 | Phase 3/6/7/8/9/10/11/12 の必須成果物名を仕様書準拠へ補完し、`implementation-guide.md` / `system-spec-update-summary.md` / `quality-report.md` / `manual-test-result.md` を current facts に同期した。`.claude` / `.agents` の LOGS・SKILL も同一ターンで更新 |
 | 検証 | 対象4ファイル 54/54 PASS、coverage Line 89.56 / Branch 80.88 / Function 88.88、`pnpm exec tsc --noEmit` PASS、`pnpm exec eslint ...` PASS |
+
+### 2026-03-26 - TASK-SDK-08 task spec elegance sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / spec-alignment |
+| 変更対象 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/` の Phase 4/7/8/10/11/12/13 と outputs |
+| 結果 | strict warning を出していた依存成果物参照を補完し、Phase 11 を `TC-*` / 画面カバレッジ形式へ、Phase 12 を必須5タスク準拠へ再構成した。system spec update summary も no-op から same-wave sync 記録へ是正 |
+| 検証 | `validate-phase-output.js` / `verify-all-specs.js --strict` を再実行して確認 |
+
+### 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Phase 12 stale-fact cleanup sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / phase12-guard |
+| 変更対象 | `references/phase-12-documentation-guide.md` |
+| 結果 | `spec_created` workflow の implementation guide Part 2 を `current contract + target delta` で書くこと、API/使用例/設定表の省略禁止、`completed-tasks/` 配下でも status を `completed` へ上げないことを明文化した |
+| 検証 | current workflow の `phase12-task-spec-compliance-check.md` と突合して確認 |

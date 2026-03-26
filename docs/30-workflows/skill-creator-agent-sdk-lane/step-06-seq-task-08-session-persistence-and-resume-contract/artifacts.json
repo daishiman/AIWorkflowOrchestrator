@@ -1,0 +1,118 @@
+{
+  "workflow": "step-06-seq-task-08-session-persistence-and-resume-contract",
+  "taskId": "TASK-SDK-08",
+  "status": "spec_created",
+  "parentWorkflow": "skill-creator-agent-sdk-lane",
+  "dependsOnTasks": ["TASK-SDK-02", "TASK-SDK-07"],
+  "phases": [
+    {
+      "phase": 1,
+      "name": "requirements",
+      "status": "complete",
+      "file": "phase-1-requirements.md"
+    },
+    {
+      "phase": 2,
+      "name": "design",
+      "status": "complete",
+      "file": "phase-2-design.md"
+    },
+    {
+      "phase": 3,
+      "name": "design-review",
+      "status": "complete",
+      "file": "phase-3-design-review.md"
+    },
+    {
+      "phase": 4,
+      "name": "test-creation",
+      "status": "complete",
+      "file": "phase-4-test-creation.md"
+    },
+    {
+      "phase": 5,
+      "name": "implementation",
+      "status": "complete",
+      "file": "phase-5-implementation.md"
+    },
+    {
+      "phase": 6,
+      "name": "test-expansion",
+      "status": "complete",
+      "file": "phase-6-test-expansion.md"
+    },
+    {
+      "phase": 7,
+      "name": "coverage-check",
+      "status": "complete",
+      "file": "phase-7-coverage-check.md"
+    },
+    {
+      "phase": 8,
+      "name": "refactoring",
+      "status": "complete",
+      "file": "phase-8-refactoring.md"
+    },
+    {
+      "phase": 9,
+      "name": "quality-assurance",
+      "status": "complete",
+      "file": "phase-9-quality-assurance.md"
+    },
+    {
+      "phase": 10,
+      "name": "final-review",
+      "status": "complete",
+      "file": "phase-10-final-review.md"
+    },
+    {
+      "phase": 11,
+      "name": "manual-test",
+      "status": "complete",
+      "file": "phase-11-manual-test.md"
+    },
+    {
+      "phase": 12,
+      "name": "documentation",
+      "status": "complete",
+      "file": "phase-12-documentation.md"
+    },
+    {
+      "phase": 13,
+      "name": "pr-creation",
+      "status": "blocked",
+      "file": "phase-13-pr-creation.md"
+    }
+  ],
+  "artifacts": {
+    "phase1": ["outputs/phase-1/spec-extraction-map.md"],
+    "phase2": [
+      "outputs/phase-2/persistence-compatibility-matrix.md",
+      "outputs/phase-2/checkpoint-topology.md"
+    ],
+    "phase3": [
+      "outputs/phase-3/design-review-gate.md",
+      "outputs/phase-3/skill-compliance-and-elegance-review.md"
+    ],
+    "phase4": ["outputs/phase-4/test-matrix.md"],
+    "phase11": [
+      "outputs/phase-11/manual-test-checklist.md",
+      "outputs/phase-11/manual-test-result.md",
+      "outputs/phase-11/manual-test-report.md",
+      "outputs/phase-11/discovered-issues.md",
+      "outputs/phase-11/screenshot-plan.json"
+    ],
+    "phase12": [
+      "outputs/phase-12/implementation-guide.md",
+      "outputs/phase-12/system-spec-update-summary.md",
+      "outputs/phase-12/documentation-changelog.md",
+      "outputs/phase-12/unassigned-task-detection.md",
+      "outputs/phase-12/skill-feedback-report.md",
+      "outputs/phase-12/phase12-task-spec-compliance-check.md"
+    ],
+    "phase13": [
+      "outputs/phase-13/local-check-result.md",
+      "outputs/phase-13/change-summary.md"
+    ]
+  }
+}

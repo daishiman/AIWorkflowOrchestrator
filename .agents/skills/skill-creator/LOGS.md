@@ -26,6 +26,17 @@
   - LOGS.md + SKILL.md 同時更新
 
 ---
+## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の Phase 12 stale-fact cleanup ルールを反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に、`spec_created` workflow が `completed-tasks/` 配下でも status を `completed` へ上げず、implementation guide Part 2 を `current contract + target delta` で書くルールを追加
+  - `assets/phase12-system-spec-retrospective-template.md` に同じ close-out 判定を追加し、planned wording 除去と status alignment を同時に確認できるようにした
+  - failure lifecycle 系の Phase 12 で起きた shallow compliance / future sync target 放置を再発防止パターンとして昇格した
+
+---
 ## 2026-03-26 - TASK-SDK-02 workflow-engine-runtime-orchestration の知見を template/pattern へ反映
 
 - **Agent**: skill-creator (update)

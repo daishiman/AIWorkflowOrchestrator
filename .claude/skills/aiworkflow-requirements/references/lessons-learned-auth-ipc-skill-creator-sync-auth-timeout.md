@@ -130,6 +130,28 @@
 3. transition guard と互換初期化 API を対で実装し、plan 起点や resume 起点を明文化する。
 4. artifact 戦略は append/upsert のどちらかに揃え、tests と ownership matrix を同ターンで更新する。
 
+## TASK-SDK-08 session-persistence-and-resume-contract（2026-03-26）
+
+### 苦戦箇所と解決策
+
+#### 1. `resumeTokenEnvelope` をそのまま永続化契約とみなすと runtime snapshot と checkpoint responsibility が混線する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | engine が持つ `resumeTokenEnvelope` をそのまま保存形式とみなすと、route drift / provenance drift / stale write rule を evaluator へ閉じ込めにくい |
+| 原因 | runtime snapshot と persisted payload を別責務として分けていなかった |
+| 解決策 | Task08 で `resumeTokenEnvelope` は runtime snapshot、persisted checkpoint は repository 契約として別型に分け、compatibility evaluator が両者を比較する構成にした |
+| 教訓 | resume 用 snapshot と persistence 用 contract は「似ていても別物」として切り分けた方が silent resume を防ぎやすい |
+
+#### 2. channel 追加がなくても persistence/resume 契約整理は system spec Step 2 の対象になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | public IPC をまだ増やしていないため Phase 12 を no-op と誤認しやすかった |
+| 原因 | Step 2 を「新規 channel の有無」だけで判定していた |
+| 解決策 | owner / provenance / persisted contract / resume namespace rule を architecture / services / task-workflow へ same-wave で追補した |
+| 教訓 | runtime orchestration 系 task は channel 不変でも、state owner と persistence contract の整理があれば Step 2 対象として扱う |
+
 ### 苦戦箇所と解決策
 
 #### 1. public surface は `skillCreatorHandlers.ts` なのに runtime 実装だけ `creator:*` に分岐していた

@@ -288,6 +288,8 @@ TASK-SKILL-LIFECYCLE-01 以降、`SkillCenterView` は lifecycle の primary ent
 | workflow foundation | `ManifestLoader`, `WorkflowManifest*` | `workflow-manifest.json` の read / validate / normalize / cache と shared contract を担う |
 | workflow state owner | `SkillCreatorWorkflowEngine` | `currentPhase` / `awaitingUserInput` / `verifyResult` / phase artifacts / `resumeTokenEnvelope` を保持し、source provenance snapshot を route snapshot と同一 envelope に固定する |
 
+Task08 session persistence/resume contract では、この engine state を永続化の正本入力として扱う。`resumeTokenEnvelope` 自体は runtime snapshot、persisted checkpoint は別契約とし、checkpoint は phase boundary 単位、resume public surface を追加する場合は `skill-creator:*` namespace を使って `agent:resumeSession` を流用しない。
+
 この構成では、`RuntimeSkillCreatorFacade` は state owner ではなく public bridge に留まり、`plan()` の review state 記録、`execute()` の `terminal_handoff` 早期 return、`integrated_api` 完了時の verify 遷移記録を engine へ委譲する。`success: false` と executor reject は verify pending に進めず review へ戻し、`verification_review` と失敗 snapshot を engine が保持する。`ManifestLoader` も route authority へ昇格しない。owner 分離と downstream handoff は Task02 workflow 仕様書を正本とする。
 
 **Pattern 3 詳細（registerSkillDebugHandlers）**:

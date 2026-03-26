@@ -1,6 +1,6 @@
 {
   "generated": "2026-03-26T12:29:34.967Z",
-  "totalKeywords": 2500,
+  "totalKeywords": 2503,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6404,6 +6404,19 @@
     "hardening": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md"
+    ],
+    "session": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "persistence": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "and": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-templates.md"
+    ],
+    "resume": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "APIKEY": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",

@@ -195,6 +195,31 @@
 - `ESBUILD_BINARY_PATH=... pnpm vitest ... --run` で targeted verification を実施済み。native binary / worktree blocker は既存 `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` と重複するため新設しない
 
 ---
+### タスク: TASK-SDK-08 session-persistence-and-resume-contract（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-08 |
+| ステータス | **設計完了** |
+| タイプ | design / session-persistence |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| 対象 | workflow checkpoint / compatibility evaluator / revision lease / Phase 1-13 docs pack |
+| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/` |
+
+#### 実施内容
+
+- `SkillCreatorWorkflowEngine` の state を persisted checkpoint の正本入力として固定し、`resumeTokenEnvelope` と persisted payload の責務分離を定義
+- compatibility evaluator が `routeSnapshot` / `sourceProvenance` / manifest hash / revision / lease を見て `compatible` / `compatible_with_warning` / `incompatible` / `conflict` を返す設計を追加
+- checkpoint は phase boundary 単位に限定し、mid-stream resume / rewind / fork を初回 scope から除外
+- public resume surface を追加する場合は `skill-creator:*` namespace を使い、`agent:resumeSession` を流用しない方針を確定
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- shared types / session storage / preload-main wiring の本実装は後続 wave へ引き継ぐ
+
+---
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）
 
 | 項目 | 値 |
