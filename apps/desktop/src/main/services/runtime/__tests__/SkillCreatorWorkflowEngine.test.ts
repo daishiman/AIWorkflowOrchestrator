@@ -86,7 +86,7 @@ describe("SkillCreatorWorkflowEngine", () => {
     ]);
   });
 
-  it("execute failure を execute phase の failure snapshot として保持する", () => {
+  it("execute failure を verification_review 付きの review snapshot として保持する", () => {
     const engine = new SkillCreatorWorkflowEngine();
     const planResult = createPlanResult();
 
@@ -108,14 +108,21 @@ describe("SkillCreatorWorkflowEngine", () => {
       message: "executor failed",
     });
 
-    expect(snapshot.currentPhase).toBe("execute");
-    expect(snapshot.awaitingUserInput).toBeNull();
+    expect(snapshot.currentPhase).toBe("review");
+    expect(snapshot.awaitingUserInput).toMatchObject({
+      reason: "verification_review",
+    });
     expect(snapshot.verifyResult).toMatchObject({
       status: "fail",
-      reason: "execution_failed",
+      reason: "verification_review",
       message: "executor failed",
       nextAction: "review",
     });
+    expect(
+      snapshot.phaseArtifacts.filter(
+        (artifact) => artifact.kind === "verify_result",
+      ),
+    ).toHaveLength(1);
     expect(
       snapshot.phaseArtifacts.filter(
         (artifact) => artifact.kind === "execute_result",
@@ -251,7 +258,7 @@ describe("SkillCreatorWorkflowEngine", () => {
     expect(engine.getWorkflowState("plan-001")).toEqual(snapshot);
   });
 
-  it("repeated failure でも execute artifact を append する", () => {
+  it("re-execute 後の repeated failure でも execute artifact を append する", () => {
     const engine = new SkillCreatorWorkflowEngine();
     const planResult = createPlanResult();
 
@@ -271,6 +278,11 @@ describe("SkillCreatorWorkflowEngine", () => {
       reason: "execution_error",
       message: "first failure",
     });
+    engine.recordExecuteStart(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
     engine.recordExecutionFailure("plan-001", {
       executeId: "exec-011",
       skillName: "test-skill",
@@ -283,8 +295,13 @@ describe("SkillCreatorWorkflowEngine", () => {
       snapshot?.phaseArtifacts.filter(
         (artifact) => artifact.kind === "execute_result",
       ) ?? [];
+    const verifyArtifacts =
+      snapshot?.phaseArtifacts.filter(
+        (artifact) => artifact.kind === "verify_result",
+      ) ?? [];
 
     expect(executeArtifacts).toHaveLength(2);
+    expect(verifyArtifacts).toHaveLength(2);
     expect(executeArtifacts.map((artifact) => artifact.payload)).toEqual([
       expect.objectContaining({
         executeId: "exec-010",

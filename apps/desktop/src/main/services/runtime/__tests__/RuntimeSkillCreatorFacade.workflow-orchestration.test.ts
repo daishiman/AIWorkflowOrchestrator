@@ -108,7 +108,7 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
     });
   });
 
-  it("execute() success:false は verify pending へ進めず failure snapshot を保存する", async () => {
+  it("execute() success:false は verification_review 付きで review に戻す", async () => {
     vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
       type: "integrated_api",
       apiKey: "sk-test",
@@ -138,18 +138,20 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
 
     const snapshot = facade.getWorkflowStateSnapshot("plan-100");
     expect(snapshot).toMatchObject({
-      currentPhase: "execute",
-      awaitingUserInput: null,
+      currentPhase: "review",
+      awaitingUserInput: {
+        reason: "verification_review",
+      },
       verifyResult: {
         status: "fail",
-        reason: "execution_failed",
+        reason: "verification_review",
         message: "executor failed",
         nextAction: "review",
       },
     });
   });
 
-  it("execute() reject は facade が捕捉し failure snapshot を保存する", async () => {
+  it("execute() reject は失敗 snapshot を保存して error result を返す", async () => {
     vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
       type: "integrated_api",
       apiKey: "sk-test",
@@ -173,11 +175,13 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
 
     const snapshot = facade.getWorkflowStateSnapshot("plan-100");
     expect(snapshot).toMatchObject({
-      currentPhase: "execute",
-      awaitingUserInput: null,
+      currentPhase: "review",
+      awaitingUserInput: {
+        reason: "verification_review",
+      },
       verifyResult: {
         status: "fail",
-        reason: "execution_error",
+        reason: "verification_review",
         message: "executor rejected",
         nextAction: "review",
       },
