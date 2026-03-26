@@ -554,7 +554,8 @@
 | UT-SC-02-002 | execute() の terminal_handoff 未分岐 | 高 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-002.md` |
 | UT-SC-02-003 | Facade の DIP 違反（P61再発） | 中 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-003.md` |
 | UT-SC-02-004 | bundle 構築の二重責務 | 低 | TASK-SC-02-RUNTIME-POLICY-CLOSURE Phase 12（2026-03-22） | `docs/30-workflows/unassigned-task/UT-SC-02-004.md` |
-| UT-SC-02-005 | Preload skill-creator-api.ts execute 戻り値型更新 | 中 | UT-SC-02-002-execute-terminal-handoff（2026-03-23） | `docs/30-workflows/unassigned-task/UT-SC-02-005.md` |
+| ~~UT-SC-02-005~~ | ~~Preload skill-creator-api.ts execute 戻り値型更新~~ | ~~中~~ | ~~UT-SC-02-002-execute-terminal-handoff（2026-03-23）~~ | **完了**（2026-03-25）→ completed ledger へ移動 |
+| UT-SC-02-006 | SkillLifecyclePanel execute handoff UI 接続 | 中 | UT-SC-02-005 review（2026-03-26） | `docs/30-workflows/unassigned-task/ut-sc-02-006-skill-lifecycle-panel-execute-handoff-ui-connection.md` |
 | UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001 | chat-edit/TerminalHandoffBuilder.ts の完全削除（buildForSurface 移行完了後） | 中 | UT-RUNTIME-BUILDER-MIGRATION-001 Phase 10 MINOR-1（2026-03-23） | `docs/30-workflows/unassigned-task/UT-RUNTIME-BUILDER-DELETE-CHAT-EDIT-001.md` |
 | UT-RUNTIME-FACADE-RETURN-TYPE-001 | RuntimeSkillCreatorFacade 全呼び出し元の bundle→guidance 型統一 | 中 | UT-RUNTIME-BUILDER-MIGRATION-001 Phase 10 MINOR-2（2026-03-23） | `docs/30-workflows/unassigned-task/UT-RUNTIME-FACADE-RETURN-TYPE-001.md` |
 | UT-CHATPANEL-OPEN-TERMINAL-IPC-HANDLER | openTerminal IPC handler 確認・実装（app:open-terminal チャネル登録・Preload allowlist 追加） | 高 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 Phase 12（2026-03-23） | `docs/30-workflows/unassigned-task/ut-chatpanel-open-terminal-ipc-handler.md` |
@@ -577,16 +578,19 @@
 | UT-TASKSPEC-DESIGN-TEMPLATE-BRANCH-001 | type:design テンプレート分岐追加（Phase 4-9 の設計タスク向け読み替え自動化） | 中 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案1（2026-03-24） | `docs/30-workflows/unassigned-task/UT-TASKSPEC-DESIGN-TEMPLATE-BRANCH-001.md` |
 | UT-TASKSPEC-DRY-REFERENCE-TABLE-001 | 参照テーブル DRY 原則強化（共通参照を index.md に集約） | 低 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案2（2026-03-24） | `docs/30-workflows/unassigned-task/UT-TASKSPEC-DRY-REFERENCE-TABLE-001.md` |
 | UT-TASKSPEC-SKILL-FEEDBACK-MANDATORY-001 | Phase 12 skill-feedback-report 必須化（テンプレート・artifacts.json 自動追加） | 中 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 Phase 12 skill-feedback 改善提案3（2026-03-24） | `docs/30-workflows/unassigned-task/UT-TASKSPEC-SKILL-FEEDBACK-MANDATORY-001.md` |
-| TASK-SC-07 | SkillCreateWizard への LLM 生成フロー接続 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION Phase 3 R-2（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION.md` |
+| ~~TASK-SC-07~~ | ~~SkillCreateWizard への LLM 生成フロー接続~~ | ~~中~~ | **完了**（2026-03-25） | `docs/30-workflows/completed-tasks/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/` |
 | TASK-SC-08 | onProgress コールバックによるリアルタイムプログレス更新 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION Phase 3 R-3（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-08-ON-PROGRESS-REALTIME-UPDATE.md` |
 | TASK-SC-09 | detectMode "improve" モードハンドリング実装 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-09-IMPROVE-MODE-HANDLING.md` |
 | TASK-SC-10 | agentSlice LLM Generation state を generationSlice に分割 | 低 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-10-AGENT-SLICE-GENERATION-SPLIT.md` |
 | TASK-SC-11 | AbortController による planSkill/executePlan キャンセル機構 | 中 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-11-ABORT-CONTROLLER-PLAN-CANCEL.md` |
 | TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 | 低 | TASK-SC-06-UI-RUNTIME-CONNECTION レビュー（2026-03-24） | `docs/30-workflows/unassigned-task/TASK-SC-12-HYBRID-STATE-PATTERN-GUIDE.md` |
-| TASK-SC-07-IPC-CANCEL | skill-creator:cancel IPC送信の実装（GenerateStep キャンセルボタンから Main Process への中断シグナル送信） | 高 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
-| TASK-SC-07-DEBOUNCE | デバウンス100ms実装（createSkill 呼び出しの連打防止） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
-| TASK-SC-07-OPEN-SETTINGS | 設定画面遷移実装（API_KEY_MISSING エラー時の「設定を開く」ボタン押下で SettingsView へ遷移） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
-| TASK-SC-07-PARSE-ERROR-CODE | エラーコード構造化（IPC エラーレスポンスから GenerationErrorCode を判定するパーサー実装） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/w5a-sc-streaming-progress-ui/` |
+| TASK-SC-07-IPC-CANCEL | skill-creator:cancel IPC送信の実装（GenerateStep キャンセルボタンから Main Process への中断シグナル送信） | 高 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/TASK-SC-07-IPC-CANCEL.md` |
+| TASK-SC-07-DEBOUNCE | デバウンス100ms実装（createSkill 呼び出しの連打防止） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/TASK-SC-07-DEBOUNCE.md` |
+| TASK-SC-07-OPEN-SETTINGS | 設定画面遷移実装（API_KEY_MISSING エラー時の「設定を開く」ボタン押下で SettingsView へ遷移） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/TASK-SC-07-OPEN-SETTINGS.md` |
+| TASK-SC-07-PARSE-ERROR-CODE | エラーコード構造化（IPC エラーレスポンスから GenerationErrorCode を判定するパーサー実装） | 中 | TASK-SC-07-STREAMING-PROGRESS-UI Phase 12（2026-03-25） | `docs/30-workflows/unassigned-task/TASK-SC-07-PARSE-ERROR-CODE.md` |
+| TASK-SC-13 | authMode/apiKey パラメータ実装 | 中 | TASK-SC-07 Phase 12 レビュー（2026-03-25） | `docs/30-workflows/unassigned-task/TASK-SC-13-AUTH-MODE-API-KEY-IMPLEMENTATION.md` |
+| TASK-SC-14 | SkillCreatorRuntimeApi 型の共有パッケージ移行 | 低 | TASK-SC-07 レビュー P6（2026-03-25） | `docs/30-workflows/unassigned-task/TASK-SC-14-SKILL-CREATOR-RUNTIME-API-TYPE-SHARING.md` |
+| TASK-SC-15 | Store 競合防止 UI 制御 | 低 | TASK-SC-07 Phase 12 レビュー（2026-03-25） | `docs/30-workflows/unassigned-task/TASK-SC-15-STORE-COMPETITION-PREVENTION.md` |
 
 ### 未タスク管理ルール
 

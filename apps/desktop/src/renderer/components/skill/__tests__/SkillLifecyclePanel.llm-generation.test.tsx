@@ -11,6 +11,7 @@ import {
   render,
   screen,
 } from "@testing-library/react";
+import type { TerminalHandoffBundle } from "@repo/shared/types";
 
 // --- mock 関数定義（vi.mock 巻き上げ前に宣言）---
 const mockCreateSkill = vi.fn();
@@ -125,6 +126,14 @@ const mockDetectMode = vi.fn();
 const mockPlanSkill = vi.fn();
 const mockExecutePlan = vi.fn();
 
+const buildTerminalHandoffBundle = (): TerminalHandoffBundle => ({
+  launcher: "claude",
+  promptBundle: "runtime-skill prompt",
+  cwd: "/tmp/runtime-skill",
+  suggestedCommand: 'claude -p "runtime-skill prompt"',
+  manualRetryRule: "認証設定を確認してから CLI で再実行する",
+});
+
 beforeEach(() => {
   vi.clearAllMocks();
   mockStoreState = {
@@ -160,8 +169,9 @@ beforeEach(() => {
   mockExecutePlan.mockResolvedValue({
     success: true,
     data: {
+      executeId: "exec-001",
       skillName: "new-skill",
-      skillPath: "/skills/new-skill",
+      success: true,
     },
   });
   mockFetchSkills.mockResolvedValue(undefined);
@@ -444,5 +454,97 @@ describe("U-12: planSkill API unavailable graceful degradation", () => {
 
     // Should not crash and should set error
     expect(mockSetGenerationError).toHaveBeenCalled();
+  });
+});
+
+// =====================================================================
+// U-13: executePlan が terminal_handoff を返した場合、fetchSkills/selectSkillByName が呼ばれない
+// =====================================================================
+describe("U-13: executePlan terminal_handoff triggers early return", () => {
+  it("terminal_handoff レスポンス受信時に fetchSkills が呼ばれず早期リターンする", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+    mockStoreState.currentPlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+    };
+    mockExecutePlan.mockResolvedValue({
+      success: true,
+      data: {
+        type: "terminal_handoff",
+        bundle: buildTerminalHandoffBundle(),
+      },
+    });
+
+    renderPanel();
+
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    expect(mockExecutePlan).toHaveBeenCalledTimes(1);
+    expect(mockFetchSkills).not.toHaveBeenCalled();
+    expect(mockSelectSkillByName).not.toHaveBeenCalled();
+  });
+});
+
+// =====================================================================
+// U-14: executePlan が失敗レスポンスを返した場合、generationError が設定される
+// =====================================================================
+describe("U-14: executePlan failure propagates error", () => {
+  it("executePlan が success:false を返すと generationError が設定される", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+    mockStoreState.currentPlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+    };
+    mockExecutePlan.mockResolvedValue({
+      success: false,
+      error: "実行に失敗しました",
+    });
+
+    renderPanel();
+
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    expect(mockSetGenerationError).toHaveBeenCalledWith("実行に失敗しました");
+    expect(mockFetchSkills).not.toHaveBeenCalled();
+    expect(mockSelectSkillByName).not.toHaveBeenCalled();
+  });
+});
+
+// =====================================================================
+// U-15: executePlan が data なし成功レスポンスを返した場合、デフォルトエラーが設定される
+// =====================================================================
+describe("U-15: executePlan empty data uses default error", () => {
+  it("executePlan が success:true かつ data なしのとき既定メッセージを設定する", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+    mockStoreState.currentPlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+    };
+    mockExecutePlan.mockResolvedValue({
+      success: true,
+      data: undefined,
+    });
+
+    renderPanel();
+
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    expect(mockSetGenerationError).toHaveBeenCalledWith(
+      "計画実行に失敗しました",
+    );
+    expect(mockFetchSkills).not.toHaveBeenCalled();
+    expect(mockSelectSkillByName).not.toHaveBeenCalled();
   });
 });

@@ -18,6 +18,14 @@ vi.mock("electron", () => ({
 import { skillCreatorAPI } from "../skill-creator-api";
 import type { SkillCreatorAPI } from "../skill-creator-api";
 
+const terminalHandoffBundle = {
+  launcher: "claude",
+  promptBundle: "large-spec",
+  cwd: "/tmp/runtime-skill",
+  suggestedCommand: 'claude -p "large-spec"',
+  manualRetryRule: "認証設定を確認してから CLI で再実行する",
+};
+
 describe("SkillCreator runtime preload API", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -157,5 +165,40 @@ describe("SkillCreator runtime preload API", () => {
         apiKey: undefined,
       },
     );
+  });
+
+  it("executePlan が terminal_handoff レスポンスを返す場合も正しく受け取れる", async () => {
+    const terminalHandoffResponse = {
+      success: true,
+      data: {
+        type: "terminal_handoff" as const,
+        bundle: terminalHandoffBundle,
+      },
+    };
+    mockInvoke.mockResolvedValue(terminalHandoffResponse);
+
+    const result = await skillCreatorAPI.executePlan(
+      "plan-002",
+      "large-spec",
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toEqual(terminalHandoffResponse);
+    expect(result.data).toHaveProperty("type", "terminal_handoff");
+  });
+
+  it("executePlan が失敗レスポンスを返す場合も envelope を保持する", async () => {
+    const expected = {
+      success: false,
+      error: "実行に失敗しました",
+    };
+    mockInvoke.mockResolvedValue(expected);
+
+    const result = await skillCreatorAPI.executePlan("plan-003", "broken-spec");
+
+    expect(result).toEqual(expected);
+    expect(result.success).toBe(false);
+    expect(result.error).toBe("実行に失敗しました");
   });
 });

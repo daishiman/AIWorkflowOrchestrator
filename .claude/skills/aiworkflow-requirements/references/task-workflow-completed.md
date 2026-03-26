@@ -36,7 +36,25 @@
 | task-llm-handle-get-providers-readonly-models | `handleGetProviders()` の readonly models bridge を解消する | 低 | `docs/30-workflows/unassigned-task/task-llm-handle-get-providers-readonly-models.md` |
 
 ---
+### タスク: UT-SC-02-005 Preload skill-creator-api.ts の execute 戻り値型更新（2026-03-25）
 
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-SC-02-005 |
+| ステータス | **完了**（2026-03-25） |
+| タイプ | バグ修正 |
+| 優先度 | 中 |
+| 完了日 | 2026-03-25 |
+| 対象 | `apps/desktop/src/preload/skill-creator-api.ts`, `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` |
+| 親タスク | UT-SC-02-002 |
+
+#### 実施内容
+
+- `skill-creator-api.ts` の `executePlan` 戻り値型を旧型 `RuntimeSkillCreatorExecuteResult` から `RuntimeSkillCreatorExecuteResponse` に統一
+- `SkillLifecyclePanel.tsx` に `terminal_handoff` 型ナロイング追加（P44/P45 パターン対応）
+- Preload runtime テスト・Renderer テストを更新し全 PASS を確認
+
+---
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）
 
 | 項目 | 値 |
