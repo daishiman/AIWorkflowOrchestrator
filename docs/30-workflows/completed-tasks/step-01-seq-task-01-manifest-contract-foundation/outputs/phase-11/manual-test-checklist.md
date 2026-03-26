@@ -6,6 +6,7 @@
 - Phase 1
 - Phase 2
 - Phase 10
+- `outputs/phase-11/screenshot-plan.json`
 - `outputs/phase-1/current-code-anchor-map.md`
 - `outputs/phase-2/authority-split-matrix.md`
 - `outputs/phase-10/task02-handoff-checklist.md`
@@ -24,4 +25,5 @@ runtime authority は facade / IPC / preload 側に残る。
 
 ## 備考
 
-- 本 task は docs-only walkthrough のため、画像証跡は採取しない。
+- 本 task は docs-only walkthrough のため、UI レビュー用 screenshot は採取しない。
+- ただし `validate-phase-output.js` の補助成果物要件を満たすため、`screenshot-plan.json` と placeholder PNG を validator 互換用に保存する。

@@ -218,6 +218,12 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 📖 [references/spec-update-workflow.md](references/spec-update-workflow.md)
 📖 [agents/generate-unassigned-task.md](agents/generate-unassigned-task.md)
 
+## 変更履歴
+
+| Version | Date | Changes |
+| --- | --- | --- |
+| **6.18.12** | **2026-03-26** | **TASK-SDK-01 hardening sync を guide へ反映**: docs-only follow-up に後からコード変更が入った時は source workflow と `outputs/phase-12/*.md` を同一ターンで current facts へ戻すルールを `phase-12-documentation-guide.md` に追加 |
+
 ---
 
 ### Task 5: スキルフィードバックレポート（改善点なしでも出力必須）
@@ -434,6 +440,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 | **v10.09.23** | **2026-03-25** | **TASK-SC-07-STREAMING-PROGRESS-UI 完了同期**: ストリーミング進捗UI Phase 1-13 完了。generationProgressSlice独立スライス・useStreamingProgress・useCancelGeneration・ErrorCards atoms・個別セレクタ9点。114テスト全PASS。未タスク4件（IPC cancel送信・デバウンス100ms・設定画面遷移・エラーコード構造化）。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.23** | **2026-03-25** | **TASK-IMP-HEALTH-POLICY-UNIFICATION-001 完了同期**: HealthPolicy 統一インターフェース。health-policy.ts 新規作成（HealthPolicy/HealthPolicyInput/resolveHealthPolicy）。RuntimePolicyResolver DI統合 + mainlineAccess 消費 + HealthIndicator 表示統合。apiKeyDegraded @deprecated v0.8.0。38テスト全PASS。未タスク3件（UT-HEALTH-POLICY-MAINLINE/RUNTIME-INJECTION/DEPRECATED-REMOVAL）backlog登録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.23** | **2026-03-25** | **UT-LLM-MOD-01-005 完了同期**: completed-tasks canonical root の Phase 12 close-out を再監査。`implementation-guide.md` の 10/10 validator 要件、`manual-test-checklist.md` / `outputs/artifacts.json` / `phase12-task-spec-compliance-check.md` の補助成果物必須化、未タスク raw メモの full template 昇格、`audit-unassigned-tasks --target-file` による current/baseline 分離記録を reference 群へ反映。 |
+| **v10.09.24** | **2026-03-26** | **TASK-SDK-01 Phase 12 compliance sync follow-up formalize**: execution workflow の Phase 12 task 分解を Task 12-6 まで是正し、`.claude` 参照を repo-root 基準の実在相対パスへ統一。`task-workflow.md` / backlog / topic-map / keywords と same-wave で閉じ、今回差分が未タスク formalize と台帳同期のみであるため Step 2 domain spec 更新は no-op とする判断を変更履歴へ追記 |
 | **v10.09.22** | **2026-03-24** | **UT-SC-05-APPLY-IMPROVEMENT-UI 完了同期**: 改善提案 承認/適用UI。IPC `skill-creator:apply-improvement` + Preload `applyRuntimeImprovement` + Renderer 4コンポーネント。P42/P44/P47/P48/P49/P60/P65準拠。62テスト全PASS。未タスク0件。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.21** | **2026-03-24** | **TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 設計完了同期**: session dock / transcript persistence / artifact-first result / manual share bridge 設計タスク（Phase 1-12）完了。DockState 8状態 / session persistence / artifact bridge / manual share 設計確定。未タスク3件検出。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |
 | **v10.09.21** | **2026-03-24** | **UT-06-002-UT-1 完了同期**: `permission-store-handlers.ts` 全4ハンドラに `withValidation` sender 検証追加。`mainWindow: BrowserWindow` DI（P34）。42テスト全PASS（16新規 SEC-01〜SEC-14 + P42/unregister）。未タスク0件。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策） |

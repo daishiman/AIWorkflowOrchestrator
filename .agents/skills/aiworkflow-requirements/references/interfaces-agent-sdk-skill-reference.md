@@ -150,10 +150,16 @@ runtime bridge の public surface とは別に、workflow engine foundation で�
 | --- | --- | --- |
 | `WORKFLOW_MANIFEST_SCHEMA_VERSION` | `packages/shared/src/types/skillCreator.ts` | manifest schema の固定版数 |
 | `WorkflowManifest` / `WorkflowManifestPhase` / `WorkflowManifestResourceDescriptor` / `WorkflowManifestHook` | `packages/shared/src/types/skillCreator.ts` | `workflow-manifest.json` の read/validate 契約 |
-| `NormalizedWorkflowManifestResourceDescriptor` / `LoadedWorkflowManifest` | `packages/shared/src/types/skillCreator.ts` | runtime 側で絶対パス・cache key・hash を持つ読み込み済み manifest 契約 |
+| `NormalizedWorkflowManifestResourceDescriptor` / `LoadedWorkflowManifest` | `packages/shared/src/types/skillCreator.ts` | runtime 側で絶対パス・cache key・resource hash・`manifestContentHash` を持つ読み込み済み manifest 契約 |
 | `ManifestLoader` | `apps/desktop/src/main/services/runtime/ManifestLoader.ts` | read / validate / normalize / cache のみを担当し、route/state authority は持たない |
 
 この foundation contract は Task01 で固定した internal boundary であり、`planSkill` / `executePlan` / `improveSkillWithFeedback` の public IPC response 形状を直接は変更しない。
+
+#### manifest hardening current facts（2026-03-26）
+
+- `LoadedWorkflowManifest.manifestContentHash` は canonicalized manifest 全体の内容 hash を保持し、`mtime` が同一でも manifest 本文差分を cache hit に紛れ込ませない。
+- `ManifestLoader` は `resource.phaseIds` と `phase.resourceIds` の両方向整合を検証し、未定義 phase 参照や片方向だけの関連付けを reject する。
+- `ManifestLoader` は `phaseIds` / `resourceIds` / `dependsOn` の重複値を reject し、foundation contract の drift を read 時点で止める。
 
 #### improve() 型定義詳細（TASK-SC-05-IMPROVE-LLM）
 

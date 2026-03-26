@@ -49,6 +49,7 @@ describe("ManifestLoader", () => {
       entryHookId: "load-manifest",
       exitHookId: "publish-scope",
     });
+    expect(manifest.manifestContentHash).toMatch(/^[a-f0-9]{64}$/);
   });
 
   it("未許可 top-level field を拒否する", async () => {
@@ -131,6 +132,38 @@ describe("ManifestLoader", () => {
     await expect(loader.loadManifest(manifestPath)).rejects.toThrow();
   });
 
+  it("resource.phaseIds の未定義 phase 参照を拒否する", async () => {
+    const { manifestPath, tempDir } = await createTempManifestFromFixture();
+    cleanupDirs.push(tempDir);
+    const raw = JSON.parse(await fs.readFile(manifestPath, "utf-8")) as {
+      resources: Array<Record<string, unknown>>;
+    };
+    raw.resources[0]!.phaseIds = ["phase-9"];
+    await fs.writeFile(manifestPath, JSON.stringify(raw, null, 2));
+
+    const loader = new ManifestLoader();
+
+    await expect(loader.loadManifest(manifestPath)).rejects.toThrow(
+      "resource manifest-overview の phaseId が未定義です: phase-9",
+    );
+  });
+
+  it("phase.resourceIds と resources.phaseIds の不一致を拒否する", async () => {
+    const { manifestPath, tempDir } = await createTempManifestFromFixture();
+    cleanupDirs.push(tempDir);
+    const raw = JSON.parse(await fs.readFile(manifestPath, "utf-8")) as {
+      resources: Array<Record<string, unknown>>;
+    };
+    raw.resources[0]!.phaseIds = ["phase-2"];
+    await fs.writeFile(manifestPath, JSON.stringify(raw, null, 2));
+
+    const loader = new ManifestLoader();
+
+    await expect(loader.loadManifest(manifestPath)).rejects.toThrow(
+      "resource manifest-overview が phaseIds で参照する phase-2 が phases.resourceIds と一致しません",
+    );
+  });
+
   it("同一 cache key では同じ参照を返し、mtime 更新後は再読込する", async () => {
     const { manifestPath, tempDir } = await createTempManifestFromFixture();
     cleanupDirs.push(tempDir);
@@ -154,5 +187,28 @@ describe("ManifestLoader", () => {
     expect(third.resources[1]?.absolutePath).toBe(
       path.join(tempDir, "resources/cache-target-v2.md"),
     );
+  });
+
+  it("manifest 内容が変わった場合は mtime が同じでも再読込する", async () => {
+    const { manifestPath, tempDir } = await createTempManifestFromFixture();
+    cleanupDirs.push(tempDir);
+    const loader = new ManifestLoader();
+
+    const first = await loader.loadManifest(manifestPath);
+    const originalStat = await fs.stat(manifestPath);
+    const raw = JSON.parse(await fs.readFile(manifestPath, "utf-8")) as {
+      phases: Array<Record<string, unknown>>;
+    };
+
+    raw.phases[0]!.title = "manifest scope hardened";
+    await fs.writeFile(manifestPath, JSON.stringify(raw, null, 2));
+    await fs.utimes(manifestPath, originalStat.atime, originalStat.mtime);
+
+    const second = await loader.loadManifest(manifestPath);
+
+    expect(second).not.toBe(first);
+    expect(second.manifestContentHash).not.toBe(first.manifestContentHash);
+    expect(second.cacheKey).toBe(first.cacheKey);
+    expect(second.phases[0]?.title).toBe("manifest scope hardened");
   });
 });
