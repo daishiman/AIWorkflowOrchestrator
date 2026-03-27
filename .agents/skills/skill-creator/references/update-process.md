@@ -68,6 +68,9 @@ code wave が後から入った `spec_created` task では screenshot `N/A` / St
 Phase 3.6: blocker / backlog dedup
 targeted suite PASS と wider suite blocker を分離し、既存 `docs/30-workflows/unassigned-task/` / `completed-tasks/unassigned-task/` を検索して重複 formalize を防ぐ
                             ↓
+Phase 3.7: screenshot / compliance hardening
+placeholder-only evidence を排除し、`TC-ID ↔ png ↔ screenshot-coverage.md ↔ metadata JSON` の current workflow 完結性、implementation guide Part 2 の型/使用例/エラー/設定充足、compliance-check の実測値根拠を同時に監査
+                            ↓
 Phase 4: 検証
 verify-all-specs → validate-phase-output → verify-unassigned-links --source → audit --diff-from HEAD / --target-file → generate-index.js → validate-structure.js → quick_validate / validate_all → mirror sync → diff -qr
                             ↓
@@ -232,4 +235,6 @@ node scripts/validate_all.js .claude/skills/my-skill
 - compile gate PASS と env-blocked test は別行で記録し、`typecheck PASS + Vitest blocker` のように境界を明示する。
 - Step 2 domain spec が no-op でも、Step 1 の completed ledger / lessons / LOGS / SKILL history / source unassigned status は no-op にしない。
 - public IPC shape が不変でも、internal contract・source provenance・owner boundary・runtime helper class が current fact として増えた場合は Step 2 を no-op にしない。
+- authority injection・shared auth mode service・decision vocabulary・reason source of truth のいずれかを composition root で変更した場合も internal hardening とみなし、Step 2 / lessons / skill feedback を更新する。
+- handler / consumer テストの期待値は実体 enum と同じ語彙へ合わせ、`integrated_api` / `terminal_handoff` のような canonical vocabulary と reason source 単一化を summary に残す。
 - Phase 12 root evidence を手編集した後は `rg "\\*\\*\\* Add File:|\\*\\*\\* Begin Patch|\\*\\*\\* End Patch"` で patch marker 混入を監査し、artifact existence だけで false green にしない。

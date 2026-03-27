@@ -3,6 +3,17 @@
 ## 役割
 
 ---
+## implementation spec to skill sync（2026-03-27）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 guide validation
+- **Result**: success
+- **Notes**:
+  - completed workflow root が `docs/30-workflows/completed-tasks/` へ移った task は、`verification-report.md` の target path、`system-spec-update-summary.md` の exact path、`phase12-task-spec-compliance-check.md` の status 根拠を同一ターンで更新する運用を再確認した
+  - `spec_created` task は completed root 配下でも root status を自動で `completed` に上げず、Phase 13 `blocked` と evidence parity を優先する close-out ルールを適用した
+  - implementation close-out task では Step 2 no-op の誤判定を防ぐため、internal authority / reason source 変更を skill 更新対象として記録した
+
+---
 ## TASK-SDK-04 implementation spec sync（2026-03-27）
 
 - **Agent**: task-specification-creator
@@ -12,6 +23,17 @@
   - `spec-update-workflow.md` に「`spec_created` task に後から code 実装が入った場合は Step 2 と screenshot 方針を再判定する」ルールを追加
   - Phase 12 は `新規未タスク 0件` を維持することより、current gap を formalize することを優先する判断基準へ補強した
   - completed-tasks 配下 workflow の canonical path を close-out 文書と validator コマンドへ同時反映する運用を明文化した
+
+---
+## UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 close-out hardening（2026-03-27）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11/12 guard refinement
+- **Result**: success
+- **Notes**:
+  - `phase-11-12-guide.md` に placeholder-only screenshot PASS 禁止、review board fallback 時の `TC-ID ↔ png ↔ coverage ↔ metadata` 必須化を追記
+  - `phase-12-documentation-guide.md` に Part 2 の型定義・使用例・エラー/edge case・設定一覧必須化と shallow compliance PASS 禁止を追記
+  - spec_created / docs-heavy task でも current workflow 配下の Phase 11 evidence を空の placeholder だけで閉じない close-out ルールを固定
 
 ---
 ## TASK-SDK-07 execution-governance-and-handoff-alignment 仕様書改善（2026-03-26）

@@ -5,6 +5,48 @@
 
 ## 完了タスク
 
+### タスク: TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 runtime policy centralization current code close-out（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | implementation / close-out |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| 対象 | `apps/desktop/src/main/ipc/index.ts`, `agentHandlers.ts`, `skillHandlers.ts`, runtime tests, current workflow outputs |
+| 成果物 | `docs/30-workflows/completed-tasks/task-imp-runtime-policy-centralization-implementation-closure-001/` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
+| GitHub Issue | #1663 |
+
+#### 実施内容
+
+- `index.ts` で `RuntimePolicyResolver` / `createAuthModeService()` / `StubSubscriptionAuthProvider` を共通注入し、Agent / Skill consumer の authority を 1 箇所へ統合
+- `agentHandlers.ts` と `skillHandlers.ts` が `resolveWithService(authModeService.getMode())` を消費し、`terminal_handoff` 時は `bundle.manualRetryRule` を error / guidance 理由の正本に固定
+- `agentHandlers.runtime.test.ts` と `skillHandlers.runtime.test.ts` を `integrated_api` / `terminal_handoff` / backward-compatible path に更新し、既存 agent / skill baseline suite と `typecheck` も PASS
+- `docs/30-workflows/completed-tasks/task-imp-runtime-policy-centralization-implementation-closure-001/outputs/phase-1` から `phase-12` を出力し、runtime workflow / backlog / completed ledger を same-wave sync
+
+#### 検証証跡
+
+| コマンド | 結果 |
+| --- | --- |
+| `pnpm install --force` | PASS |
+| `pnpm --filter @repo/shared build` | PASS |
+| `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/agentHandlers.runtime.test.ts src/main/ipc/__tests__/skillHandlers.runtime.test.ts` | PASS |
+| `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/agentHandlers.test.ts` | PASS |
+| `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/skillHandlers.execute.test.ts src/main/ipc/__tests__/skillHandlers.contract.test.ts` | PASS |
+| `pnpm --filter @repo/desktop typecheck` | PASS |
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| `UT-CLEANUP-AI-CHECK-CONNECTION-001` | legacy health route cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
+| `UT-CLEANUP-RUNTIME-RESOLVER-001` | deprecated resolver cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
+| `UT-DESIGN-SANITIZE-PLACEMENT-001` | sanitize 配置判断の固定 | 中 | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
+
+---
+
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine の失敗系 state lifecycle 是正（2026-03-26）
 
 | 項目 | 値 |
@@ -148,7 +190,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-27 |
 | 対象 | `RuntimeSkillCreatorFacade` plan/improve resource loading、`SkillCreatorSourceResolver`、`PhaseResourcePlanner`、`ResolvedResourceReader`、runtime tests、Phase 1-12 outputs |
-| 成果物 | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/` |
+| 成果物 | `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/` |
 
 #### 実施内容
 
@@ -228,7 +270,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-26 |
 | 対象 | `RuntimeSkillCreatorFacade` / `SkillCreatorWorkflowEngine` failure path、runtime tests、parent workflow docs、Phase 1-12 outputs |
-| 成果物 | `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
+| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
 | 親タスク | TASK-SDK-02 |
 
 #### 実施内容
@@ -647,7 +689,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
+| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
 | `UT-CLEANUP-AI-CHECK-CONNECTION-001` | legacy health route cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
 | `UT-CLEANUP-RUNTIME-RESOLVER-001` | deprecated resolver cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
 | `UT-DESIGN-SANITIZE-PLACEMENT-001` | sanitize 配置判断の固定 | 中 | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |

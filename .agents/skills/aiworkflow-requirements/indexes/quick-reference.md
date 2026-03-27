@@ -35,7 +35,7 @@
 | registration / DI pattern | `references/architecture-implementation-patterns-details.md` |
 | completed ledger | `references/task-workflow-completed-ipc-contract-preload-alignment.md` |
 | lessons | `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` |
-| workflow root | `docs/30-workflows/runtime-skill-creator-ipc-wiring/` |
+| workflow root | `docs/30-workflows/completed-tasks/runtime-skill-creator-ipc-wiring/` |
 
 ---
 
@@ -59,7 +59,7 @@
 
 | 目的 | 最初に開くファイル |
 | --- | --- |
-| Task03 実装全体像 | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/index.md` |
+| Task03 実装全体像 | `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/index.md` |
 | multi-root / budget / degrade の current contract | `references/interfaces-agent-sdk-skill-reference.md` |
 | service owner と pipeline detail | `references/arch-electron-services-details-part2.md` |
 | completed ledger | `references/task-workflow-completed.md` |
@@ -88,6 +88,19 @@
 | public IPC と workflow engine の境界 | `references/api-ipc-system-core.md` |
 | 親 task の foundation | `docs/30-workflows/completed-tasks/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
 | completed ledger / close-out | `references/task-workflow-completed.md`, `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` |
+
+---
+
+### Runtime Skill Creator Verify Detail / Reverify（2026-03-27）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| public IPC 契約 | `references/api-ipc-agent-core.md` |
+| main / preload / shared current fact | `references/api-ipc-system-core.md` |
+| renderer consumer / DTO 利用面 | `references/interfaces-agent-sdk-skill-reference.md` |
+| backlog / carry-forward root | `references/task-workflow-backlog.md` |
+| workflow root | `docs/30-workflows/completed-tasks/ut-imp-task-sdk-06-layer34-verify-expansion-001/` |
+| Phase 11/12 教訓 | `references/lessons-learned-phase12-workflow-lifecycle.md` |
 
 ---
 

@@ -278,6 +278,8 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `skill-creator:plan`            | Renderer → Main | runtime plan       | `{ prompt: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
 | `skill-creator:execute-plan`    | Renderer → Main | runtime execute    | `{ planId: string; skillSpec: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
 | `skill-creator:improve-skill`   | Renderer → Main | runtime improve    | `{ skillName: string; feedback: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
+| `skill-creator:get-verify-detail` | Renderer → Main | verify detail 取得 | `{ planId: string }` | `IpcResult<RuntimeSkillCreatorVerifyDetailResponse>` |
+| `skill-creator:reverify-workflow` | Renderer → Main | verify loop 再要求 | `{ planId: string }` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
 | `skill-creator:improve`         | Renderer → Main | スキル改善         | `{ skillName: string; autoApply?: boolean }`               | `IpcResult<unknown>`          |
 | `skill-creator:apply-improvement` | Renderer → Main | 改善提案適用     | `{ skillName: string; suggestions: RuntimeSkillCreatorImproveSuggestion[] }` | `IpcResult<ApplyImprovementResult>` |
 | `skill-creator:fork`            | Renderer → Main | スキルフォーク     | `{ sourceName: string; newName: string; options?: object }` | `IpcResult<string>`           |

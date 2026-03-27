@@ -241,8 +241,9 @@ vi.mock("../authKeyHandlers", () => ({
 }));
 vi.mock("../../services/auth", () => ({
   AuthKeyService: vi.fn().mockImplementation(() => ({})),
+  StubSubscriptionAuthProvider: vi.fn().mockImplementation(() => ({})),
   createAuthKeyStorage: vi.fn().mockReturnValue({}),
-  createAuthModeService: vi.fn().mockReturnValue({}),
+  createAuthModeService: vi.fn().mockReturnValue({ getMode: vi.fn() }),
 }));
 vi.mock("../../infrastructure", () => ({
   getSupabaseClient: vi.fn().mockReturnValue(null),
@@ -652,7 +653,10 @@ describe("IPC Handler Double Registration Prevention", () => {
         expect.anything(),
         expect.anything(),
         expect.objectContaining({
-          resolve: expect.any(Function),
+          resolveWithService: expect.any(Function),
+        }),
+        expect.objectContaining({
+          getMode: expect.any(Function),
         }),
       );
 

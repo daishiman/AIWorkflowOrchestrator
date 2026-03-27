@@ -12,6 +12,8 @@ import type {
   RuntimeSkillCreatorPlanResponse,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
+  RuntimeSkillCreatorReverifyResponse,
+  RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
@@ -371,6 +373,75 @@ export function registerRuntimeSkillCreatorHandlers(
       }
     },
   );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { planId: string },
+    ): Promise<IpcResult<RuntimeSkillCreatorVerifyDetailResponse>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL,
+        mainWindow,
+      );
+
+      if (isBlank(args?.planId)) {
+        return validationError("planId が指定されていません");
+      }
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        const result = runtimeSkillCreatorService.getVerifyDetail(
+          args.planId.trim(),
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(
+            error,
+            "verify detail の取得に失敗しました",
+          ),
+        };
+      }
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { planId: string },
+    ): Promise<IpcResult<RuntimeSkillCreatorReverifyResponse>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW,
+        mainWindow,
+      );
+
+      if (isBlank(args?.planId)) {
+        return validationError("planId が指定されていません");
+      }
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        const result = runtimeSkillCreatorService.reverifyWorkflow(
+          args.planId.trim(),
+        );
+        return { success: true, data: result };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(error, "再検証の要求に失敗しました"),
+        };
+      }
+    },
+  );
 }
 
 export function unregisterRuntimeSkillCreatorHandlers(): void {
@@ -380,4 +451,6 @@ export function unregisterRuntimeSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW);
 }

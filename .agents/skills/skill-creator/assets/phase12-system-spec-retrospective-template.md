@@ -74,6 +74,7 @@
 | stale fact cleanup | 古いテスト件数 / coverage / out-of-scope 注記 / 日付 / follow-up 件数を `outputs/phase-12` と未タスク指示書で同一値へそろえる |
 | `spec_created` close-out | workflow root が `completed-tasks/` 配下でも status は `spec_created` を維持し、Part 2 は `current contract + target delta` で書く |
 | internal hardening 判定 | public response が不変でも、runtime helper class / owner boundary / source provenance / budget degrade ルールが増えたら Step 2 を `更新あり` と判定する |
+| screenshot/compliance hardening | placeholder-only PNG で完了扱いにせず、`TC-ID ↔ png ↔ coverage ↔ metadata ↔ fallback reason` と implementation guide Part 2 の必須項目を実測値で閉じる |
 
 > ここでの「完了」は、代表スクリーンショットと実測証跡が current workflow に保存されていることを含む。
 > 旧 path / 旧 filename が残る場合は、`legacy-ordinal-family-register.md` で current semantic filename へ引き直せる状態を必須とする。
@@ -86,6 +87,7 @@
 | wider suite | 範囲外 blocker がある場合は file / error / current owner task を明記 |
 | duplicate backlog check | `docs/30-workflows/unassigned-task/` と `docs/30-workflows/completed-tasks/unassigned-task/` への検索結果 |
 | formalize decision | `新規未タスク化` / `既存 tracker 再利用` / `対応不要` のいずれかを明記 |
+| screenshot evidence | `TC-ID`、review board/actual png、`screenshot-coverage.md`、metadata JSON、fallback reason、source evidence を current workflow に揃えたか |
 
 ---
 
