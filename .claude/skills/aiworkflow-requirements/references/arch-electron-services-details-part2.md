@@ -154,6 +154,19 @@ Task01 で固定した workflow manifest contract は、Task02 以降の runtime
 
 Task08 session persistence/resume contract では、上記 owner 分離を保ったまま `SkillCreatorWorkflowEngine` snapshot を checkpoint repository へ受け渡す。`resumeTokenEnvelope` は persisted payload の代替ではなく、compatibility evaluator は `routeSnapshot` / `sourceProvenance` / revision / lease を使って restore 可否を判定する。resume を public expose する場合も `agent:resumeSession` とは別の `skill-creator:*` namespace に置く。
 
+### Task03 dynamic source / selection hardening（2026-03-27）
+
+Task03 実装では、workflow manifest foundation の上に source discovery と resource selection の internal layer を追加した。
+
+| コンポーネント | 役割 | 非責務 |
+| --- | --- | --- |
+| `SkillCreatorSourceResolver` | manifest / explicit / env / home / repo の candidate root を列挙し、required path の不足を `structure_mismatch` として検出 | prompt 組み立て、budget 削減、public response 生成 |
+| `PhaseResourcePlanner` | operation ごとの required/optional resource を解決し、budget 超過時に drop 順と `degradeReasons` を確定 | source authority、shared contract 変更 |
+| `ResolvedResourceReader` | selected absolute path を優先読込し、legacy `ResourceLoader` を compatibility fallback に限定 | root 選定、owner 判定 |
+| `RuntimeSkillCreatorFacade` | pipeline を呼び出して `sourceProvenance` を engine snapshot へ橋渡しする public bridge | state owner、manifest schema owner |
+
+この追加は internal hardening であり、`RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorExecuteResponse` / `RuntimeSkillCreatorImproveResponse` の public shape は変更しない。一方で `SkillCreatorWorkflowSourceProvenance` は `candidateRoots` / `selectedRoots` / `selectedResourceIds` / `droppedResourceIds` / `structureSignature` / `degradeReasons` を持つ current fact に更新された。
+
 ## Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
 
 > **ステータス**: `spec_created`（2026-03-19 再監査同期）

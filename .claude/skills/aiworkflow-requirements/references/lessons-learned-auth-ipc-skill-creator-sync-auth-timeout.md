@@ -67,14 +67,14 @@
 | 解決策 | `RuntimeSkillCreatorFacade.execute()` を early return 化し、handoff は engine に handoff state だけを記録、integrated path のみ verify phase へ進めた |
 | 教訓 | runtime union の検証は戻り値型だけでなく「禁止される副作用」を含めてテスト化する必要がある |
 
-#### 3. source provenance を path 定数に頼ると resume contract と Task03 resource selection の境界が曖昧になる
+#### 3. source provenance を単一 path に頼ると resume contract と Task03 resource selection の境界が曖昧になる
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | `DEFAULT_SKILL_CREATOR_PATH` だけを前提にすると、dynamic source root / manifest snapshot / resume route snapshot の provenance が別々に漂流する |
-| 原因 | resource root を compile-time constant と runtime snapshot のどちらで持つかを固定していなかった |
-| 解決策 | `ResourceLoader.getBasePath()` を追加し、engine が `resumeTokenEnvelope.sourceProvenance` として current source root を保持する形へ整理した |
-| 教訓 | resume や downstream handoff に渡す provenance は「path 定数」ではなく「engine が固定した snapshot」として残すと再利用しやすい |
+| 課題 | `DEFAULT_SKILL_CREATOR_PATH` や単一 `getBasePath()` だけを前提にすると、dynamic source root / manifest snapshot / resume route snapshot の provenance が別々に漂流する |
+| 原因 | resource root を compile-time constant・single-root loader・multi-root selection のどこで持つかを固定していなかった |
+| 解決策 | `getSkillCreatorRootCandidates()` + `SkillCreatorSourceResolver` + `PhaseResourcePlanner` で candidate / selected / dropped を確定し、engine が `resumeTokenEnvelope.sourceProvenance` に snapshot を保持する形へ整理した |
+| 教訓 | resume や downstream handoff に渡す provenance は「どの root を選び、何を落としたか」まで含む snapshot として残すと再利用しやすい |
 
 ### 同種課題向け簡潔解決手順（4ステップ）
 

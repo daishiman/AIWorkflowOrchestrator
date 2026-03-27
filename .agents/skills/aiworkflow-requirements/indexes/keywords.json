@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-26T14:45:18.027Z",
-  "totalKeywords": 2503,
+  "generated": "2026-03-26T23:25:33.930Z",
+  "totalKeywords": 2505,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2664,6 +2664,7 @@
     ],
     "contract": [
       "arch-execution-capability-contract.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -6381,6 +6382,7 @@
     ],
     "WORKFLOW": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
     "ENGINE": [
@@ -6642,10 +6644,6 @@
     ],
     "foundation": [
       "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "WORKFLOW": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
     "VERIFY": [
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -6972,9 +6970,6 @@
       "lessons-learned-skill-validation-logging-deprecation.md"
     ],
     "templates": [
-      "lessons-learned-templates.md"
-    ],
-    "and": [
       "lessons-learned-templates.md"
     ],
     "checklist": [

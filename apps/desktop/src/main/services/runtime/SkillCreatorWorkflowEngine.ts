@@ -41,6 +41,12 @@ export interface SkillCreatorWorkflowSourceProvenance {
   resourceDescriptorHash?: string;
   manifestPath?: string;
   manifestCacheKey?: string;
+  candidateRoots?: string[];
+  selectedRoots?: string[];
+  selectedResourceIds?: string[];
+  droppedResourceIds?: string[];
+  structureSignature?: string;
+  degradeReasons?: string[];
 }
 
 export interface SkillCreatorRouteSnapshot {

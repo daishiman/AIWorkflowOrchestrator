@@ -16,10 +16,10 @@
 
 1. Phase 2 のテンプレートに「current canonical facts / target delta / non-goals」の小見出しを標準追加すると、仮想 interface だけで設計を書き切る事故を減らせる。
 2. Phase 11 docs-heavy walkthrough の完成条件に、`manual-test-report.md` と `discovered-issues.md` を実質必須として明記すると、仮置き状態のまま close しにくくなる。
-3. Phase 12 の compliance check には、存在確認だけでなく Task 12-1〜12-6 の実質監査表を最初から要求した方がよい。
+3. Phase 12 の compliance check には、存在確認だけでなく Task 12-1〜12-6 の実質監査表と Step 2 no-op/更新あり判定を最初から要求した方がよい。
 
 ### `aiworkflow-requirements`
 
-1. canonical docs 更新判断の前に、「今回の差分は public contract 変更か、既存正本を使った task spec の再表現か」を判定する no-op フローを短く明文化すると迷いが減る。
-2. `ManifestLoader` / shared type / IPC response の ownership 境界を reference 側でも強調すると、`ResourceLoader` を source authority に誤昇格させにくい。
-3. `WorkflowManifestPhase.resourceIds`、`LoadedWorkflowManifest` foundation fields、`RuntimeSkillCreatorExecuteResponse` を Task03 のような設計タスクで優先参照すべき anchor として見つけやすくすると、仕様照合が速くなる。
+1. canonical docs 更新判断の前に、「public IPC shape は不変でも internal contract / provenance field が増えたら Step 2 更新あり」と判定する短いフローを明文化すると迷いが減る。
+2. `ManifestLoader` / source resolver / planner / reader / shared type / IPC response の ownership 境界を reference 側でも強調すると、`ResourceLoader` を source authority に誤昇格させにくい。
+3. `WorkflowManifestPhase.resourceIds`、`LoadedWorkflowManifest` foundation fields、`getSkillCreatorRootCandidates()`、`SkillCreatorWorkflowSourceProvenance` を Task03 のような実装タスクで優先参照すべき anchor として見つけやすくすると、仕様照合が速くなる。

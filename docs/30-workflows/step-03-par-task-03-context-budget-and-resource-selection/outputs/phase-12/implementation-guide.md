@@ -1,5 +1,14 @@
 # Implementation Guide
 
+## 2026-03-27 実装反映
+
+- `SkillCreatorSourceResolver` を新規追加し、固定 `DEFAULT_SKILL_CREATOR_PATH` 1本ではなく複数候補 root を列挙・監査できるようにした。
+- `PhaseResourcePlanner` を新規追加し、resource kind、tier、budget、degrade reason を `RuntimeSkillCreatorFacade` から分離した。
+- `ResolvedResourceReader` を新規追加し、選択済み absolute path 読み込みと legacy `ResourceLoader` 再利用を両立させた。
+- `RuntimeSkillCreatorFacade.plan()` / `improve()` は dynamic pipeline 注入時に selective loading を使い、未注入時のみ従来の fixed loader 経路へフォールバックする。
+- `apps/desktop/src/main/ipc/index.ts` は runtime facade 生成時に resolver / planner / reader を注入するよう更新した。
+- public IPC shape (`RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorExecuteResponse` / `RuntimeSkillCreatorImproveResponse`) は変更していない。
+
 ## Part 1: 中学生レベルの説明
 
 ### 1.1 この task がそろえるもの
@@ -147,7 +156,65 @@ interface ResolvedResourceReader {
 4. `ResolvedResourceReader` が選ばれた resource を読む。
 5. `ResourceLoader` は leaf read の互換レイヤとして残し、既存コードからの移行点を限定する。
 
-### 2.5 エラーハンドリングと縮退
+### 2.5 API シグネチャと使用例
+
+```ts
+class RuntimeSkillCreatorFacade {
+  plan(
+    skillSpec: string,
+    authMode: AuthMode,
+    apiKey: string | null,
+  ): Promise<RuntimeSkillCreatorPlanResponse>;
+
+  improve(
+    skillName: string,
+    feedback: string,
+    authMode: AuthMode,
+    apiKey: string | null,
+  ): Promise<RuntimeSkillCreatorImproveResponse>;
+}
+```
+
+```ts
+const facade = new RuntimeSkillCreatorFacade({
+  skillExecutor,
+  llmAdapter,
+  resourceLoader,
+  sourceResolver: new SkillCreatorSourceResolver(),
+  resourcePlanner: new PhaseResourcePlanner(),
+  resolvedResourceReader: new ResolvedResourceReader(resourceLoader),
+});
+
+const plan = await facade.plan("Slack 通知 skill を作る", "api-key", "sk-test");
+const improve = await facade.improve(
+  "slack-notifier",
+  "失敗時の再試行方針を追加する",
+  "api-key",
+  "sk-test",
+);
+```
+
+要点:
+
+- `plan()` は dynamic pipeline がある場合、required/optional resource を選別して system prompt を構築する。
+- `improve()` は `SKILL.md` と improve prompt、必要に応じて追加 reference を読み、JSON schema instruction を末尾に付与する。
+
+### 2.6 設定可能パラメータと定数
+
+| 定数 / パラメータ                                               | 定義箇所                    | 役割                                 |
+| --------------------------------------------------------------- | --------------------------- | ------------------------------------ |
+| `PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES = 16384`    | `planPromptConstants.ts`    | plan 用の context budget 上限        |
+| `PLAN_PROMPT_CONSTANTS.DEFAULT_MODEL_ID`                        | `planPromptConstants.ts`    | plan 用モデル                        |
+| `PLAN_PROMPT_CONSTANTS.DEFAULT_MAX_TOKENS`                      | `planPromptConstants.ts`    | plan 応答長の上限                    |
+| `PLAN_PROMPT_CONSTANTS.DEFAULT_TEMPERATURE`                     | `planPromptConstants.ts`    | plan 生成温度                        |
+| `IMPROVE_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES = 12288` | `improvePromptConstants.ts` | improve 用の context budget 上限     |
+| `IMPROVE_PROMPT_CONSTANTS.DEFAULT_MODEL_ID`                     | `improvePromptConstants.ts` | improve 用モデル                     |
+| `IMPROVE_PROMPT_CONSTANTS.DEFAULT_MAX_TOKENS`                   | `improvePromptConstants.ts` | improve 応答長の上限                 |
+| `IMPROVE_PROMPT_CONSTANTS.DEFAULT_TEMPERATURE`                  | `improvePromptConstants.ts` | improve 生成温度                     |
+| `PhaseResourceRequest.tier`                                     | `PhaseResourcePlanner.ts`   | required / optional と drop 順の制御 |
+| `PhaseResourceRequest.required`                                 | `PhaseResourcePlanner.ts`   | 必須 resource の fail-fast 判定      |
+
+### 2.7 エラーハンドリングと縮退
 
 | ケース                                           | 期待動作                                                        |
 | ------------------------------------------------ | --------------------------------------------------------------- |
@@ -157,13 +224,13 @@ interface ResolvedResourceReader {
 | root 競合                                        | 選ばれた root と非採用候補を provenance に残す                  |
 | public response 変更が必要になった               | Task03 の範囲外として Step 2 reopen 条件へ送る                  |
 
-### 2.6 非目標
+### 2.8 非目標
 
 - `ManifestLoader` を別責務へ分解し直すこと
 - `RuntimeSkillCreatorExecuteResponse` など public IPC 形状を変えること
 - `ResourceLoader` を source authority に作り替えること
 
-### 2.7 実装対象ファイル
+### 2.9 実装対象ファイル
 
 - `packages/shared/src/types/skillCreator.ts`
   - 現時点では読み取り正本。public type 拡張が必要になった場合のみ更新対象
@@ -171,6 +238,6 @@ interface ResolvedResourceReader {
   - foundation snapshot の再利用先。原則として redesign しない
 - `apps/desktop/src/main/services/skill/ResourceLoader.ts`
   - leaf reader / compatibility adapter として扱う
-- 新規候補 `apps/desktop/src/main/services/runtime/SkillCreatorSourceResolver.ts`
-- 新規候補 `apps/desktop/src/main/services/runtime/PhaseResourcePlanner.ts`
-- 新規候補 `apps/desktop/src/main/services/runtime/ResolvedResourceReader.ts`
+- `apps/desktop/src/main/services/runtime/SkillCreatorSourceResolver.ts`
+- `apps/desktop/src/main/services/runtime/PhaseResourcePlanner.ts`
+- `apps/desktop/src/main/services/runtime/ResolvedResourceReader.ts`

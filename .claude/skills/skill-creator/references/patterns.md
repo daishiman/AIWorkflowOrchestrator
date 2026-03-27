@@ -7562,6 +7562,22 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
   - public response union が合っていることだけを見て、内部副作用の分離を確認しない
   - `resumeTokenEnvelope` を facade / renderer / downstream task に分散保持する
   - owner 分離後も Phase 12 の system spec / lessons / quick-reference へ current fact を戻さない
+
+### [Phase12] public shape 不変でも internal contract hardening は Step 2 no-op にしない（TASK-SDK-03）
+
+- **状況**: public IPC response は不変でも、runtime helper class、source provenance field、budget/degrade ルールが実装されると system spec の current fact が古くなりやすい
+- **アプローチ**:
+  - `phase-12-documentation.md` / `documentation-changelog.md` / `system-spec-update-summary.md` を同時に開き、public shape と internal contract を分けて判定する
+  - `references/interfaces-agent-sdk-skill-reference.md` / `arch-electron-services-details-part2.md` / `task-workflow-completed.md` / `lessons-learned*.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` を same-wave で更新する
+  - `candidateRoots` / `selectedRoots` / `selectedResourceIds` / `droppedResourceIds` / `structureSignature` / `degradeReasons` のような provenance field は lessons と completed ledger の両方へ current fact を戻す
+- **成功パターン**:
+  - 「public contract は不変」「internal contract は更新あり」の2状態を分離して記録する
+  - helper class の追加を domain spec の current fact として反映し、Task 12-2 を no-op にしない
+  - new unassigned 0 件でも Step 2 更新と same-wave mirror parity を閉じる
+- **失敗パターン**:
+  - `spec_created` や docs-heavy に見えることを理由に Step 2 を自動で no-op 扱いする
+  - implementation guide だけ current にして、system spec / lessons / quick-reference を古いまま残す
+  - provenance field 追加を「内部実装だから不要」と見なして completed ledger へ書かない
 - **適用条件**: runtime orchestration、workflow engine、session resume、verify 導入、handoff/integrated 二経路を持つ task
 - **発見日**: 2026-03-26
 - **関連タスク**: TASK-SDK-02

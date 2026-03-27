@@ -508,6 +508,23 @@ LLM ランタイムを使用してスキルの plan / execute / improve を実�
 - `ResourceLoader`: `DEFAULT_SKILL_CREATOR_PATH` でコンストラクタ注入
 - `LLMAdapter`: fire-and-forget async で `LLMAdapterFactory.getAdapter("anthropic")` → `setLLMAdapter()` で遅延注入
 - `SkillFileWriter`: `skillBasePath` でコンストラクタ注入
+- `SkillCreatorSourceResolver`: multi-root source discovery を担当
+- `PhaseResourcePlanner`: operation ごとの resource selection / budget / degrade を担当
+- `ResolvedResourceReader`: absolute path 優先読込 + legacy `ResourceLoader` fallback を担当
+
+### dynamic resource pipeline（TASK-SDK-03 / 2026-03-27）
+
+Task03 実装で、`plan()` / `improve()` は固定 root 前提の resource 読み込みだけでなく、manifest / explicit / env / home / repo を跨ぐ dynamic pipeline を使えるようになった。
+
+| 要素 | canonical source | 役割 |
+| --- | --- | --- |
+| `getSkillCreatorRootCandidates()` | `apps/desktop/src/main/services/skill/constants.ts` | `explicit -> env -> home -> repo` の候補 root を列挙し、重複 path を除去する |
+| `SkillCreatorSourceResolver` | `apps/desktop/src/main/services/runtime/SkillCreatorSourceResolver.ts` | required path を満たす candidate root を列挙し、`structure_mismatch` を判定する |
+| `PhaseResourcePlanner` | `apps/desktop/src/main/services/runtime/PhaseResourcePlanner.ts` | `PhaseResourceRequest[]` を解決し、`selectedResourceIds` / `droppedResourceIds` / `degradeReasons` を確定する |
+| `ResolvedResourceReader` | `apps/desktop/src/main/services/runtime/ResolvedResourceReader.ts` | selected absolute path を読み、必要時のみ legacy loader へ後方互換 fallback する |
+| `PLAN_RESOURCE_REQUESTS` / `IMPROVE_RESOURCE_REQUESTS` | `apps/desktop/src/main/services/runtime/planPromptConstants.ts`, `apps/desktop/src/main/services/runtime/improvePromptConstants.ts` | plan / improve の required/optional resource と context budget を定義する |
+
+`RuntimeSkillCreatorFacade` は public bridge のまま維持し、pipeline が返す `candidateRoots` / `selectedRoots` / `selectedResourceIds` / `droppedResourceIds` / `structureSignature` / `degradeReasons` を `SkillCreatorWorkflowSourceProvenance` へ固定する。public `RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorImproveResponse` の shape は変更しない。
 
 ### 実装ファイル
 
