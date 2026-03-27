@@ -262,8 +262,8 @@ node scripts/list-specs.js --topics
 | セキュリティアーキテクチャ | L146 |
 | 状態管理アーキテクチャ | L180 |
 | データフローアーキテクチャ | L217 |
-| ディレクトリ構造 | L315 |
-| データ構造（型システム） | L379 |
+| ディレクトリ構造 | L317 |
+| データ構造（型システム） | L381 |
 
 ### references/architecture-overview-details.md
 
@@ -432,11 +432,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L330 |
-| スキルチェーン 型定義（TASK-9D） | L380 |
-| スキルスケジュール 型定義（TASK-9G） | L415 |
-| スキルフォーク 型定義（TASK-9E） | L440 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L488 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L336 |
+| スキルチェーン 型定義（TASK-9D） | L386 |
+| スキルスケジュール 型定義（TASK-9G） | L421 |
+| スキルフォーク 型定義（TASK-9E） | L446 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L494 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -2093,14 +2093,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
 | RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | L100 |
-| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L155 |
-| SkillScheduler / ScheduleStore（TASK-9G） | L214 |
-| DefaultSafetyGate サービス（UT-06-003） | L243 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L294 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L319 |
-| キャッシュ機構 | L347 |
-| 永続化 | L353 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L359 |
+| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L170 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L229 |
+| DefaultSafetyGate サービス（UT-06-003） | L258 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L309 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L334 |
+| キャッシュ機構 | L362 |
+| 永続化 | L368 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L374 |
 
 ### references/arch-electron-services-details.md
 
@@ -2577,12 +2577,13 @@ node scripts/list-specs.js --topics
 |------------|----|\n| TASK-9B: SkillCreator IPC拡張同期 再監査（2026-02-26） | L6 |
 | UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 Runtime Skill Creator public IPC wiring（2026-03-21） | L8 |
 | TASK-SDK-02 workflow-engine-runtime-orchestration（2026-03-26） | L10 |
-| UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle hardening（2026-03-26） | L48 |
-| TASK-SDK-08 session-persistence-and-resume-contract（2026-03-26） | L94 |
-| 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | L188 |
-| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 教訓 | L280 |
-| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L340 |
-| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L445 |
+| UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle（2026-03-26） | L12 |
+| UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle hardening（2026-03-26） | L86 |
+| TASK-SDK-08 session-persistence-and-resume-contract（2026-03-26） | L133 |
+| 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | L256 |
+| TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001 教訓 | L348 |
+| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 実装教訓（2026-03-10） | L408 |
+| TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 再監査教訓（2026-03-10） | L513 |
 
 ### references/lessons-learned-conversation-db-robustness.md
 
@@ -4072,3 +4073,4 @@ node scripts/list-specs.js --topics
 | 変更履歴 | L199 |
 
 ---
+

@@ -13,8 +13,9 @@
 - Phase 11 / 12 / 13 を拡張し、walkthrough evidence、close-out 記録、blocked/no-op rationale を補強した。
 - `outputs/phase-3/skill-compliance-and-elegance-review.md` を追加し、30種の思考法による意味論監査を独立証跡として残した。
 - `outputs/phase-12/implementation-guide.md` を current canonical facts と Task03 target delta の二層構造へ書き換えた。
-- `outputs/phase-12/system-spec-update-summary.md` を exact path と Step 2 no-op 根拠付きに更新した。
-- `outputs/phase-12/phase12-task-spec-compliance-check.md`、`skill-feedback-report.md`、`unassigned-task-detection.md` を実質監査中心に書き換えた。
+- `outputs/phase-12/system-spec-update-summary.md` を exact path と Step 2 実更新根拠付きに更新した。
+- `.claude/skills/aiworkflow-requirements/` の references / indexes / logs を Task03 実装事実に同期した。
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`、`skill-feedback-report.md`、`unassigned-task-detection.md` を実質監査中心に書き換え、外部同期残件の formalize ではなく same-wave 解消へ寄せた。
 
 ## workflow sync points
 
@@ -31,12 +32,12 @@
 
 ## 4条件との対応
 
-| 条件         | 今回の反映                                                                                                |
-| ------------ | --------------------------------------------------------------------------------------------------------- |
-| 矛盾なし     | foundation snapshot と Task03 extension を分離し、ManifestLoader / ResourceLoader の ownership を整理した |
-| 漏れなし     | Phase 11 walkthrough 証跡、Phase 12 の 6 成果物、Phase 13 local close-out を補完した                      |
-| 整合性あり   | exact path 記録、artifacts 同期、validation 結果の再掲を統一した                                          |
-| 依存関係整合 | Task07 を governance、Task08 を persistence / invalidation の owner として明示した                        |
+| 条件         | 今回の反映                                                                                                       |
+| ------------ | ---------------------------------------------------------------------------------------------------------------- |
+| 矛盾なし     | foundation snapshot と Task03 extension を分離し、ManifestLoader / ResourceLoader の ownership を整理した        |
+| 漏れなし     | Phase 11 walkthrough 証跡、Phase 12 の 6 成果物、Phase 13 local close-out、system spec same-wave sync を補完した |
+| 整合性あり   | exact path 記録、artifacts 同期、validation 結果、Step 2 判定を統一した                                          |
+| 依存関係整合 | Task03 実装 fact、Task07 governance、Task08 persistence / invalidation の owner を分離して明示した               |
 
 ## validation 記録
 

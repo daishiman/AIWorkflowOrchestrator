@@ -91,6 +91,9 @@ import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
 import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
+import { SkillCreatorSourceResolver } from "../services/runtime/SkillCreatorSourceResolver";
+import { PhaseResourcePlanner } from "../services/runtime/PhaseResourcePlanner";
+import { ResolvedResourceReader } from "../services/runtime/ResolvedResourceReader";
 import { SkillFileWriter } from "../services/skill/SkillFileWriter";
 import { ResourceLoader } from "../services/skill/ResourceLoader";
 import { DEFAULT_SKILL_CREATOR_PATH } from "../services/skill/constants";
@@ -901,12 +904,18 @@ export function registerAllIpcHandlers(
     }
     const skillFileWriter = new SkillFileWriter(skillBasePath);
     const resourceLoader = new ResourceLoader(DEFAULT_SKILL_CREATOR_PATH);
+    const sourceResolver = new SkillCreatorSourceResolver();
+    const resourcePlanner = new PhaseResourcePlanner();
+    const resolvedResourceReader = new ResolvedResourceReader(resourceLoader);
     const runtimeSkillCreatorService = skillExecutor
       ? new RuntimeSkillCreatorFacade({
           skillExecutor,
           authKeyService,
           skillFileWriter,
           resourceLoader,
+          sourceResolver,
+          resourcePlanner,
+          resolvedResourceReader,
           skillFileManager, // improve() / applyImprovement() で SKILL.md 読み書きに使用
         })
       : undefined;

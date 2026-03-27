@@ -7,10 +7,21 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 
+export type SkillCreatorRootCandidateSource =
+  | "explicit"
+  | "env"
+  | "home"
+  | "repo";
+
+export interface SkillCreatorRootCandidate {
+  source: SkillCreatorRootCandidateSource;
+  path: string;
+}
+
 /**
  * デフォルトのskill-creatorホーム配置パス
  */
-const HOME_SKILL_CREATOR_PATH = path.join(
+export const HOME_SKILL_CREATOR_PATH = path.join(
   os.homedir(),
   ".aiworkflow",
   "skills",
@@ -20,7 +31,7 @@ const HOME_SKILL_CREATOR_PATH = path.join(
 /**
  * リポジトリ同梱のskill-creatorパス（CI向けフォールバック）
  */
-const REPO_SKILL_CREATOR_PATH = path.resolve(
+export const REPO_SKILL_CREATOR_PATH = path.resolve(
   process.cwd(),
   ".claude",
   "skills",
@@ -42,16 +53,59 @@ function hasSkillCreatorScripts(skillCreatorPath: string): boolean {
  * 2. ユーザーホーム配下 (~/.aiworkflow/skills/skill-creator)
  * 3. リポジトリ同梱 (.claude/skills/skill-creator)
  */
-function resolveSkillCreatorPath(): string {
+export function getSkillCreatorRootCandidates(
+  explicitPath?: string,
+): SkillCreatorRootCandidate[] {
   const envPath = process.env.AIWORKFLOW_SKILL_CREATOR_PATH;
-  const candidates = [envPath, HOME_SKILL_CREATOR_PATH, REPO_SKILL_CREATOR_PATH]
-    .filter((candidate): candidate is string => Boolean(candidate))
-    .map((candidate) => candidate.trim())
-    .filter((candidate) => candidate.length > 0);
+  const rawCandidates: Array<SkillCreatorRootCandidate | null> = [
+    explicitPath
+      ? {
+          source: "explicit",
+          path: explicitPath,
+        }
+      : null,
+    envPath
+      ? {
+          source: "env",
+          path: envPath,
+        }
+      : null,
+    {
+      source: "home",
+      path: HOME_SKILL_CREATOR_PATH,
+    },
+    {
+      source: "repo",
+      path: REPO_SKILL_CREATOR_PATH,
+    },
+  ];
+
+  const seen = new Set<string>();
+
+  return rawCandidates
+    .filter((candidate): candidate is SkillCreatorRootCandidate =>
+      Boolean(candidate),
+    )
+    .map((candidate) => ({
+      ...candidate,
+      path: path.resolve(candidate.path.trim()),
+    }))
+    .filter((candidate) => candidate.path.length > 0)
+    .filter((candidate) => {
+      if (seen.has(candidate.path)) {
+        return false;
+      }
+      seen.add(candidate.path);
+      return true;
+    });
+}
+
+function resolveSkillCreatorPath(): string {
+  const candidates = getSkillCreatorRootCandidates();
 
   for (const candidate of candidates) {
-    if (hasSkillCreatorScripts(candidate)) {
-      return candidate;
+    if (hasSkillCreatorScripts(candidate.path)) {
+      return candidate.path;
     }
   }
 
