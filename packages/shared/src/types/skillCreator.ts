@@ -354,6 +354,20 @@ export interface SkillCreatorImproveSkillRequest {
   apiKey?: string | null;
 }
 
+/**
+ * 公開 skill-creator:get-verify-detail リクエスト
+ */
+export interface SkillCreatorGetVerifyDetailRequest {
+  planId: string;
+}
+
+/**
+ * 公開 skill-creator:reverify-workflow リクエスト
+ */
+export interface SkillCreatorReverifyWorkflowRequest {
+  planId: string;
+}
+
 export type SkillCreatorPlanResult = RuntimeSkillCreatorPlanResult;
 export type SkillCreatorTerminalHandoffBundle = TerminalHandoffBundle;
 export interface SkillCreatorTerminalHandoffResult {
@@ -497,6 +511,56 @@ export interface RuntimeSkillCreatorExecuteResult {
   error?: string;
 }
 
+export type RuntimeSkillCreatorVerifyCheckSeverity =
+  | "info"
+  | "warning"
+  | "error";
+
+export interface RuntimeSkillCreatorVerifyCheck {
+  id: string;
+  layer: "layer3" | "layer4";
+  severity: RuntimeSkillCreatorVerifyCheckSeverity;
+  summary: string;
+  evidenceSummary?: string;
+}
+
+export interface RuntimeSkillCreatorVerifyDetailRoute {
+  type: "integrated_api" | "terminal_handoff";
+  permissionMode?: "default" | "acceptEdits" | "bypassPermissions";
+  launcher?: string;
+  summary: string;
+}
+
+export interface RuntimeSkillCreatorVerifyDetail {
+  planId: string;
+  currentPhase:
+    | "plan"
+    | "review"
+    | "execute"
+    | "verify"
+    | "improve"
+    | "handoff";
+  status: "pending" | "pass" | "fail";
+  message?: string;
+  nextAction?: "review" | "improve";
+  checks: RuntimeSkillCreatorVerifyCheck[];
+  evidenceCount: number;
+  resolvedSkillCreatorRoot?: string;
+  manifestPath?: string;
+  resourceDescriptorHash?: string;
+  manifestCacheKey?: string;
+  route: RuntimeSkillCreatorVerifyDetailRoute;
+  reverifyEligible: boolean;
+  disabledReason?: string;
+  delegatedGovernanceNote: string;
+  delegatedSessionNote: string;
+}
+
+export interface RuntimeSkillCreatorReverifyResult {
+  accepted: boolean;
+  disabledReason?: string;
+}
+
 /**
  * 構造化された改善提案（section/before/after/reason）
  * TASK-SC-05-IMPROVE-LLM
@@ -572,6 +636,18 @@ export type RuntimeSkillCreatorExecuteResponse =
       type: "terminal_handoff";
       bundle: TerminalHandoffBundle;
     };
+
+/**
+ * Runtime verify detail IPC の戻り値
+ */
+export type RuntimeSkillCreatorVerifyDetailResponse =
+  RuntimeSkillCreatorVerifyDetail;
+
+/**
+ * Runtime reverify IPC の戻り値
+ */
+export type RuntimeSkillCreatorReverifyResponse =
+  RuntimeSkillCreatorReverifyResult;
 
 /**
  * Runtime improve IPC の戻り値

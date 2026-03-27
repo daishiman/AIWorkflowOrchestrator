@@ -45,6 +45,12 @@ describe("SkillCreator runtime preload API", () => {
     expect(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL).toBe(
       "skill-creator:improve-skill",
     );
+    expect(IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL).toBe(
+      "skill-creator:get-verify-detail",
+    );
+    expect(IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW).toBe(
+      "skill-creator:reverify-workflow",
+    );
 
     expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.SKILL_CREATOR_PLAN);
     expect(ALLOWED_INVOKE_CHANNELS).toContain(
@@ -59,6 +65,12 @@ describe("SkillCreator runtime preload API", () => {
     expect(ALLOWED_INVOKE_CHANNELS).toContain(
       IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL,
     );
+    expect(ALLOWED_INVOKE_CHANNELS).toContain(
+      IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL,
+    );
+    expect(ALLOWED_INVOKE_CHANNELS).toContain(
+      IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW,
+    );
   });
 
   it("SkillCreatorAPI に runtime 用メソッドが公開されている", () => {
@@ -70,6 +82,8 @@ describe("SkillCreator runtime preload API", () => {
     expect(typeof api.submitUserInput).toBe("function");
     expect(typeof api.onWorkflowStateChanged).toBe("function");
     expect(typeof api.improveSkillWithFeedback).toBe("function");
+    expect(typeof api.getVerifyDetail).toBe("function");
+    expect(typeof api.reverifyWorkflow).toBe("function");
   });
 
   it("planSkill が正しいチャンネルと payload で invoke する", async () => {
@@ -216,7 +230,6 @@ describe("SkillCreator runtime preload API", () => {
     expect(result.success).toBe(false);
     expect(result.error).toBe("実行に失敗しました");
   });
-
   it("getWorkflowState が planId を送る", async () => {
     mockInvoke.mockResolvedValue({
       success: true,
@@ -269,5 +282,56 @@ describe("SkillCreator runtime preload API", () => {
       IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
       expect.any(Function),
     );
+  });
+
+  it("getVerifyDetail が planId を送る", async () => {
+    const expected = {
+      success: true,
+      data: {
+        planId: "plan-verify-1",
+        currentPhase: "verify",
+        status: "pending",
+        checks: [],
+        evidenceCount: 3,
+        route: {
+          type: "integrated_api",
+          summary: "integrated_api (default)",
+        },
+        reverifyEligible: true,
+        delegatedGovernanceNote: "Task07",
+        delegatedSessionNote: "Task08",
+      },
+    };
+    mockInvoke.mockResolvedValue(expected);
+
+    const result = await skillCreatorAPI.getVerifyDetail("plan-verify-1");
+
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL,
+      {
+        planId: "plan-verify-1",
+      },
+    );
+    expect(result).toEqual(expected);
+  });
+
+  it("reverifyWorkflow が planId を送る", async () => {
+    const expected = {
+      success: true,
+      data: {
+        accepted: true,
+      },
+    };
+    mockInvoke.mockResolvedValue(expected);
+
+    const result = await skillCreatorAPI.reverifyWorkflow("plan-verify-2");
+
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW,
+      {
+        planId: "plan-verify-2",
+      },
+    );
+    expect(result).toEqual(expected);
   });
 });

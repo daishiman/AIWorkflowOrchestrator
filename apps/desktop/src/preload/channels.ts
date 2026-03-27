@@ -329,6 +329,8 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_WORKFLOW_STATE_CHANGED: "skill-creator:workflow-state-changed",
   SKILL_CREATOR_IMPROVE_SKILL: "skill-creator:improve-skill",
   SKILL_CREATOR_APPLY_IMPROVEMENT: "skill-creator:apply-improvement",
+  SKILL_CREATOR_GET_VERIFY_DETAIL: "skill-creator:get-verify-detail",
+  SKILL_CREATOR_REVERIFY_WORKFLOW: "skill-creator:reverify-workflow",
 
   // Skill Creator extended operations (TASK-9B Phase 5)
   SKILL_CREATOR_IMPROVE: "skill-creator:improve",
@@ -624,6 +626,8 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT,
   IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL,
   IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT,
+  IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL,
+  IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW,
   // Skill Creator extended channels (TASK-9B Phase 5)
   IPC_CHANNELS.SKILL_CREATOR_IMPROVE,
   IPC_CHANNELS.SKILL_CREATOR_FORK,

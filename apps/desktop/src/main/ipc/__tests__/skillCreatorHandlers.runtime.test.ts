@@ -49,6 +49,8 @@ const mockRuntimeSkillCreatorService = {
   improve: vi.fn(),
   getWorkflowStateSnapshot: vi.fn(),
   submitUserInput: vi.fn(),
+  getVerifyDetail: vi.fn(),
+  reverifyWorkflow: vi.fn(),
 };
 
 import { BrowserWindow } from "electron";
@@ -108,7 +110,7 @@ describe("SkillCreator runtime IPC handlers", () => {
     unregisterSkillCreatorHandlers();
   });
 
-  it("runtime 用の 5 ハンドラーを登録する", () => {
+  it("runtime 用の 7 ハンドラーを登録する", () => {
     expect(getHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN)).toBeDefined();
     expect(getHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN)).toBeDefined();
     expect(
@@ -118,6 +120,12 @@ describe("SkillCreator runtime IPC handlers", () => {
       getHandler(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT),
     ).toBeDefined();
     expect(getHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL)).toBeDefined();
+    expect(
+      getHandler(IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL),
+    ).toBeDefined();
+    expect(
+      getHandler(IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW),
+    ).toBeDefined();
   });
 
   it("planSkill は trim 済み prompt と auth 引数で runtime facade を呼ぶ", async () => {
@@ -173,6 +181,62 @@ describe("SkillCreator runtime IPC handlers", () => {
     expect(result.success).toBe(false);
     expect(result.error).toContain("[path]");
     expect(result.error).not.toContain("/Users/test/project");
+  });
+
+  it("getVerifyDetail は trim 済み planId で runtime facade を呼ぶ", async () => {
+    mockRuntimeSkillCreatorService.getVerifyDetail.mockReturnValue({
+      planId: "plan-verify-1",
+      currentPhase: "verify",
+      status: "pending",
+      checks: [],
+      evidenceCount: 2,
+      route: {
+        type: "integrated_api",
+        summary: "integrated_api (default)",
+      },
+      reverifyEligible: true,
+      delegatedGovernanceNote: "Task07",
+      delegatedSessionNote: "Task08",
+    });
+
+    const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL);
+    const result = await handler!(createMockEvent(), {
+      planId: "  plan-verify-1  ",
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: expect.objectContaining({
+        planId: "plan-verify-1",
+        reverifyEligible: true,
+      }),
+    });
+    expect(mockRuntimeSkillCreatorService.getVerifyDetail).toHaveBeenCalledWith(
+      "plan-verify-1",
+    );
+  });
+
+  it("reverifyWorkflow は facade の結果をそのまま返す", async () => {
+    mockRuntimeSkillCreatorService.reverifyWorkflow.mockReturnValue({
+      accepted: false,
+      disabledReason: "実行結果がまだ存在しないため再検証できません。",
+    });
+
+    const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW);
+    const result = await handler!(createMockEvent(), {
+      planId: "plan-verify-2",
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: {
+        accepted: false,
+        disabledReason: "実行結果がまだ存在しないため再検証できません。",
+      },
+    });
+    expect(
+      mockRuntimeSkillCreatorService.reverifyWorkflow,
+    ).toHaveBeenCalledWith("plan-verify-2");
   });
 
   // TC-5: DI 配線で ResourceLoader が生成されること（間接検証）

@@ -7,6 +7,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 見出し |
 | --- |
 | 2026-03-27 - TASK-SDK-04 implementation spec sync（user interaction bridge / phase UI の current contract、follow-up 3件、spec_created task の evidence drift 教訓を canonical spec/backlog/log へ反映） |
+| 2026-03-27 - UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 same-wave sync（verify detail / reverify current facts、Phase 11 review-board fallback evidence、Phase 12 guide hardening、quick-reference/resource-map/lessons/log を `.claude` 正本へ反映） |
 | 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 implementation sync（failure lifecycle 実装完了を canonical completed/lessons/index/log へ反映し、exact vitest workaround command と no-new-unassigned 方針を same-wave 記録） |
 | 2026-03-27 - TASK-SDK-03 resource selection hardening sync（multi-root source discovery / budget degrade / provenance snapshot を canonical references / completed ledger / indexes / logs へ same-wave 反映） |
 | 2026-03-26 - TASK-SDK-07 execution-governance-and-handoff-alignment spec_created sync（Skill Creator governance bundle の canonical 前提、quick-reference/resource-map 導線、task-spec close-out evidence を `.claude` 正本へ反映） |
@@ -155,6 +156,16 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - Phase 12 の implementation guide / system-spec-update-summary / documentation-changelog / compliance check を実績ベースへ更新
   - `indexes/quick-reference.md` と `indexes/resource-map.md` に failure lifecycle 導線を追加
   - 正本 root は `.claude/skills/aiworkflow-requirements/` であり、`.agents` は mirror として扱う方針を再確認
+
+## UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 same-wave sync（2026-03-27）
+
+- タスク名: runtime skill creator verify detail / reverify surface close-out hardening
+- 種別: spec_created close-out sync
+- 主な反映:
+  - `indexes/resource-map.md` と `indexes/quick-reference.md` に verify detail / reverify surface の導線を追加
+  - `references/lessons-learned-phase12-workflow-lifecycle.md` と `lessons-learned-current.md` に placeholder-only screenshot PASS 禁止、Part 2 必須要素、Phase 2 contract matrix stale drift の教訓を追加
+  - Phase 11 review-board fallback evidence と Phase 12 implementation guide/compliance hardening を current workflow と skill guide の両方へ同期
+  - `.claude` 正本更新後に `.agents` mirror parity を再検証する前提を明文化
 
 ## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
 

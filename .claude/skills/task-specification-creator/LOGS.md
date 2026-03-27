@@ -14,6 +14,17 @@
   - completed-tasks 配下 workflow の canonical path を close-out 文書と validator コマンドへ同時反映する運用を明文化した
 
 ---
+## UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 close-out hardening（2026-03-27）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 11/12 guard refinement
+- **Result**: success
+- **Notes**:
+  - `phase-11-12-guide.md` に placeholder-only screenshot PASS 禁止、review board fallback 時の `TC-ID ↔ png ↔ coverage ↔ metadata` 必須化を追記
+  - `phase-12-documentation-guide.md` に Part 2 の型定義・使用例・エラー/edge case・設定一覧必須化と shallow compliance PASS 禁止を追記
+  - spec_created / docs-heavy task でも current workflow 配下の Phase 11 evidence を空の placeholder だけで閉じない close-out ルールを固定
+
+---
 ## TASK-SDK-07 execution-governance-and-handoff-alignment 仕様書改善（2026-03-26）
 
 - **Agent**: task-specification-creator

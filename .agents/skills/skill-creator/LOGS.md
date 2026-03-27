@@ -24,6 +24,17 @@
   - docs-heavy walkthrough と representative screenshot follow-up を分離して記録する運用を標準化した
 
 ---
+## 2026-03-27 - UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の shallow PASS 防止を template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に screenshot / compliance hardening lane を追加し、placeholder-only evidence と shallow self-PASS を再発防止パターンへ昇格
+  - `assets/phase12-system-spec-retrospective-template.md` に `TC-ID ↔ png ↔ coverage ↔ metadata ↔ fallback reason` の完結性と Part 2 必須要素の監査項目を追加
+  - spec_created close-out でも review board fallback と implementation guide Part 2 の薄い記述を false green にしない template 入口を整備
+
+---
 ## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の close-out パターンを template/pattern へ反映
 
 - **Agent**: skill-creator (update)

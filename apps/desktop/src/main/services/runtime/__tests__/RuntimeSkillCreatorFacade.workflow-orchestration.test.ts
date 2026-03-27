@@ -226,6 +226,59 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
       snapshot?.verifyResult ?? {},
     );
   });
+
+  it("getVerifyDetail() は facade から derived detail を返す", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockResolvedValue({
+      executionId: "exec-verify-1",
+      success: true,
+    });
+
+    await facade.execute(createPlanResult(), "api-key", "sk-test");
+
+    const detail = facade.getVerifyDetail("plan-100");
+
+    expect(detail).toMatchObject({
+      planId: "plan-100",
+      currentPhase: "verify",
+      status: "pending",
+      reverifyEligible: true,
+      route: {
+        type: "integrated_api",
+      },
+    });
+  });
+
+  it("reverifyWorkflow() は engine detail を pending に戻す", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockResolvedValue({
+      executionId: "exec-verify-2",
+      success: true,
+    });
+
+    await facade.execute(createPlanResult(), "api-key", "sk-test");
+    workflowEngine.recordVerifyFailure("plan-100", "verify failed", "improve");
+
+    const result = facade.reverifyWorkflow("plan-100");
+    const snapshot = facade.getWorkflowStateSnapshot("plan-100");
+
+    expect(result).toEqual({ accepted: true });
+    expect(snapshot).toMatchObject({
+      currentPhase: "verify",
+      verifyResult: {
+        status: "pending",
+      },
+    });
+  });
+
   it("execute() terminal_handoff は executor を呼ばず handoff state を保存する", async () => {
     vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
       type: "terminal_handoff",
