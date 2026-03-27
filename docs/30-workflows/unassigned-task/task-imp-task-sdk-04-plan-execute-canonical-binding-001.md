@@ -10,7 +10,7 @@ category: 実装改善
 target_feature: SkillLifecyclePanel execute flow
 priority: 高
 scale: 小規模
-status: 未実施
+status: 実装完了（未コミット）
 source_phase: TASK-SDK-04 Phase 12 再監査
 created_date: 2026-03-27
 dependencies:
@@ -27,7 +27,7 @@ spec_path: docs/30-workflows/unassigned-task/task-imp-task-sdk-04-plan-execute-c
 | 対象機能     | `SkillLifecyclePanel.handleExecutePlan()`                       |
 | 優先度       | 高                                                              |
 | 見積もり規模 | 小規模                                                          |
-| ステータス   | 未実施                                                          |
+| ステータス   | 実装完了（未コミット）                                          |
 | 発見元       | TASK-SDK-04 Phase 12 再監査                                     |
 | 発見日       | 2026-03-27                                                      |
 

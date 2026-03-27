@@ -320,6 +320,9 @@ export function SkillLifecyclePanel({
   const activeGenerationError = generationError;
 
   const [request, setRequest] = useState("");
+  const [approvedSkillSpec, setApprovedSkillSpec] = useState<string | null>(
+    null,
+  );
   const [detectedMode, setDetectedMode] = useState<SkillCreatorMode | null>(
     null,
   );
@@ -696,6 +699,7 @@ export function SkillLifecyclePanel({
             return;
           }
 
+          setApprovedSkillSpec(trimmedRequest);
           setLocalPlanResult(planResult.data);
           setCurrentPlanResult(planResult.data);
           if (planResult.data.planId) {
@@ -738,7 +742,10 @@ export function SkillLifecyclePanel({
 
     try {
       setIsGenerating(true);
-      const result = await skillCreatorApi.executePlan(planId, request.trim());
+      const result = await skillCreatorApi.executePlan(
+        planId,
+        approvedSkillSpec ?? undefined,
+      );
       if (!result.success || !result.data) {
         setGenerationError(result.error ?? "計画実行に失敗しました");
         return;
@@ -781,6 +788,7 @@ export function SkillLifecyclePanel({
 
   const handleCancelPlan = () => {
     setLocalPlanResult(null);
+    setApprovedSkillSpec(null);
     clearGenerationState();
     setActiveWorkflowId(null);
     setVerifyDetail(null);

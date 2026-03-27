@@ -705,6 +705,46 @@ describe("U-13c: workflow user input submission", () => {
 });
 
 // =====================================================================
+// U-8b: review 後の textarea 編集が execute payload を変えない (drift 防止)
+// =====================================================================
+describe("U-8b: canonical binding drift prevention", () => {
+  it("plan 作成→textarea 変更→execute で canonical spec が維持される", async () => {
+    renderPanel();
+
+    // Step 1: 初期値を入力して plan を作成する
+    const input = screen.getByTestId("skill-lifecycle-request-input");
+    fireEvent.change(input, { target: { value: "承認済みの依頼" } });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    // planSkill が plan 作成時の値で呼ばれたことを確認
+    expect(mockPlanSkill).toHaveBeenCalledWith(
+      "承認済みの依頼",
+      expect.anything(),
+      expect.anything(),
+    );
+
+    // handlePrepare 内で localPlanResult がセットされるため
+    // activePlanResult?.type === "integrated_api" の条件で「実行する」ボタンが表示される
+
+    // Step 2: textarea を別の値に変更（drift を試みる）
+    fireEvent.change(input, { target: { value: "改ざんされた依頼" } });
+
+    // Step 3: 「実行する」ボタンをクリック
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    // Step 4: executePlan には plan 作成時の canonical spec が渡される
+    expect(mockExecutePlan).toHaveBeenCalledTimes(1);
+    expect(mockExecutePlan).toHaveBeenCalledWith("plan-001", "承認済みの依頼");
+  });
+});
+
+// =====================================================================
 // U-14: executePlan が失敗レスポンスを返した場合、generationError が設定される
 // =====================================================================
 describe("U-14: executePlan failure propagates error", () => {
@@ -932,5 +972,155 @@ describe("U-20: verify detail fetch failure shows error", () => {
     expect(
       screen.getByText("verify detail はまだ利用できません。"),
     ).toBeTruthy();
+  });
+});
+
+// =====================================================================
+// U-18b: cancel 後に再 plan したとき approved snapshot が差し替わる
+// =====================================================================
+describe("U-18b: cancel then re-plan replaces approved snapshot", () => {
+  it("cancel → 再 plan で新しい canonical spec が固定される", async () => {
+    renderPanel();
+    const input = screen.getByTestId("skill-lifecycle-request-input");
+
+    // Step 1: 最初の plan
+    fireEvent.change(input, { target: { value: "初回依頼" } });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    // Step 2: cancel
+    const cancelBtn = screen.getByRole("button", { name: "キャンセル" });
+    fireEvent.click(cancelBtn);
+    expect(mockClearGenerationState).toHaveBeenCalled();
+
+    // Step 3: 新しい plan を作成
+    mockPlanSkill.mockResolvedValue({
+      success: true,
+      data: { type: "integrated_api", planId: "plan-002", estimatedSteps: 3 },
+    });
+
+    fireEvent.change(input, { target: { value: "二回目の依頼" } });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    // Step 4: execute
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    // executePlan には二回目の依頼が渡る（初回依頼ではない）
+    expect(mockExecutePlan).toHaveBeenCalledWith("plan-002", "二回目の依頼");
+  });
+});
+
+// =====================================================================
+// U-19b: 複数回の textarea 編集後も approved snapshot は不変
+// =====================================================================
+describe("U-19b: multiple textarea edits do not affect approved snapshot", () => {
+  it("plan 作成後に何度 textarea を変えても execute payload は固定", async () => {
+    renderPanel();
+    const input = screen.getByTestId("skill-lifecycle-request-input");
+
+    // plan 作成
+    fireEvent.change(input, { target: { value: "固定されるべき依頼" } });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    // 複数回 textarea を変更
+    fireEvent.change(input, { target: { value: "変更1" } });
+    fireEvent.change(input, { target: { value: "変更2" } });
+    fireEvent.change(input, { target: { value: "変更3" } });
+
+    // execute
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    expect(mockExecutePlan).toHaveBeenCalledWith(
+      "plan-001",
+      "固定されるべき依頼",
+    );
+  });
+});
+
+// =====================================================================
+// U-20b: cancel で approvedSkillSpec が null にクリアされる
+// =====================================================================
+describe("U-20b: cancel clears approved snapshot symmetrically", () => {
+  it("cancel 後に plan なしで execute しても approved spec は null", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+    mockStoreState.currentPlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+    };
+
+    renderPanel();
+
+    // cancel
+    const cancelBtn = screen.getByRole("button", { name: "キャンセル" });
+    fireEvent.click(cancelBtn);
+
+    expect(mockClearGenerationState).toHaveBeenCalledTimes(1);
+  });
+});
+
+// =====================================================================
+// U-21: execute 失敗後の approved snapshot の振る舞い
+// =====================================================================
+describe("U-21: approved snapshot behavior after execute failure", () => {
+  it("execute 失敗後も approved snapshot は保持され、再実行可能である", async () => {
+    mockExecutePlan
+      .mockResolvedValueOnce({
+        success: false,
+        error: "一時的な実行失敗",
+      })
+      .mockResolvedValueOnce({
+        success: true,
+        data: {
+          executeId: "exec-002",
+          skillName: "new-skill",
+          success: true,
+        },
+      });
+
+    renderPanel();
+    const input = screen.getByTestId("skill-lifecycle-request-input");
+
+    fireEvent.change(input, {
+      target: { value: "失敗後も保持されるべき依頼" },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    expect(mockSetGenerationError).toHaveBeenCalledWith("一時的な実行失敗");
+    expect(mockExecutePlan).toHaveBeenNthCalledWith(
+      1,
+      "plan-001",
+      "失敗後も保持されるべき依頼",
+    );
+
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    expect(mockExecutePlan).toHaveBeenNthCalledWith(
+      2,
+      "plan-001",
+      "失敗後も保持されるべき依頼",
+    );
+    expect(mockFetchSkills).toHaveBeenCalledTimes(1);
+    expect(mockSelectSkillByName).toHaveBeenCalledWith("new-skill");
   });
 });

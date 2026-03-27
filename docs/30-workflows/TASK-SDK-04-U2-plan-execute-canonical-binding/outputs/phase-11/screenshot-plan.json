@@ -1,0 +1,24 @@
+{
+  "workflow": "TASK-SDK-04-U2-plan-execute-canonical-binding",
+  "status": "not_run",
+  "evidenceType": "NON_VISUAL",
+  "reason": "Terminal-based task spec execution; Electron GUI walkthrough not available in current environment",
+  "testCases": [
+    {
+      "id": "TC-11-01",
+      "target": "SkillLifecyclePanel canonical binding drift prevention",
+      "automatedEquivalent": "U-8b"
+    },
+    {
+      "id": "TC-11-02",
+      "target": "SkillLifecyclePanel cancel and re-plan flow",
+      "automatedEquivalent": "U-18"
+    },
+    {
+      "id": "TC-11-03",
+      "target": "SkillLifecyclePanel multiple textarea edits",
+      "automatedEquivalent": "U-19"
+    }
+  ],
+  "screenshotRequired": false
+}
