@@ -370,7 +370,6 @@ describe("SkillCreatorWorkflowEngine", () => {
       }),
     ]);
   });
-
   it("submitUserInput は requestId 一致時に awaitingUserInput を解消する", () => {
     const engine = new SkillCreatorWorkflowEngine();
     const snapshot = engine.recordPlanResult(createPlanResult(), {
@@ -408,5 +407,116 @@ describe("SkillCreatorWorkflowEngine", () => {
         selectedOptionId: "ready_to_execute",
       }),
     ).toThrow("stale requestId");
+  });
+
+  it("getVerifyDetail() は Layer 3 / Layer 4 detail を導出する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    const planResult = createPlanResult();
+
+    engine.recordPlanResult(
+      planResult,
+      {
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "acceptEdits",
+      },
+      {
+        resolvedSkillCreatorRoot: "/tmp/skill-creator",
+        manifestPath: "/tmp/skill-creator/workflow.json",
+        resourceDescriptorHash: "hash-verify-1",
+      },
+    );
+    engine.recordExecuteStart(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "acceptEdits",
+    });
+    engine.recordExecuteResult("plan-001", {
+      executeId: "exec-verify-1",
+      skillName: "test-skill",
+      success: true,
+    });
+
+    const detail = engine.getVerifyDetail("plan-001");
+
+    expect(detail).toMatchObject({
+      planId: "plan-001",
+      currentPhase: "verify",
+      status: "pending",
+      evidenceCount: 6,
+      route: {
+        type: "integrated_api",
+        permissionMode: "acceptEdits",
+      },
+      resourceDescriptorHash: "hash-verify-1",
+      reverifyEligible: true,
+    });
+    expect(detail.checks).toHaveLength(4);
+  });
+
+  it("requestReverify() は pending verify を append する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    const planResult = createPlanResult();
+    const decision = {
+      type: "integrated_api" as const,
+      apiKey: "sk-test",
+      permissionMode: "default" as const,
+    };
+
+    engine.recordPlanResult(planResult, decision);
+    engine.recordExecuteStart(planResult, decision);
+    engine.recordExecuteResult("plan-001", {
+      executeId: "exec-001",
+      skillName: "test-skill",
+      success: true,
+    });
+    engine.recordVerifyFailure("plan-001", "verify failed", "improve");
+
+    const result = engine.requestReverify("plan-001");
+    const snapshot = engine.getWorkflowState("plan-001");
+
+    expect(result).toEqual({ accepted: true });
+    expect(snapshot?.currentPhase).toBe("verify");
+    expect(snapshot?.verifyResult).toMatchObject({
+      status: "pending",
+      nextAction: "review",
+    });
+    expect(
+      snapshot?.phaseArtifacts.filter(
+        (artifact) => artifact.kind === "verify_result",
+      ),
+    ).toHaveLength(3);
+  });
+
+  it("requestReverify() は terminal_handoff workflow を拒否する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+
+    engine.recordExecuteHandoff(
+      createPlanResult(),
+      {
+        type: "terminal_handoff",
+        bundle: {
+          launcher: "claude",
+          promptBundle: "spec",
+          cwd: "/tmp/runtime",
+          suggestedCommand: 'claude -p "spec"',
+          manualRetryRule: "retry",
+        },
+      },
+      {
+        launcher: "claude",
+        promptBundle: "spec",
+        cwd: "/tmp/runtime",
+        suggestedCommand: 'claude -p "spec"',
+        manualRetryRule: "retry",
+      },
+    );
+
+    const result = engine.requestReverify("plan-001");
+
+    expect(result).toMatchObject({
+      accepted: false,
+    });
+    expect(result.disabledReason).toContain("Task07 owner");
   });
 });

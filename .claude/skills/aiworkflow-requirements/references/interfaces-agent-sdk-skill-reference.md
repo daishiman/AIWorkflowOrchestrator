@@ -115,9 +115,11 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | 項目 | 契約 |
 | --- | --- |
 | 表向きの primary 導線 | `SkillManagementPanel` → `SkillLifecyclePanel` の 1 画面 |
-| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` を持つ補助 API |
+| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` / `getVerifyDetail` / `reverifyWorkflow` を持つ補助 API |
 | create 正本 | `agentSlice.createSkill()` → `window.electronAPI.skill.create()` |
 | execute 正本 | `agentSlice.executeSkill()` → `window.electronAPI.skill.execute()` |
+| verify detail | `window.electronAPI.skillCreator.getVerifyDetail(planId)` で derived detail を取得し、owner は engine に維持 |
+| re-verify | `window.electronAPI.skillCreator.reverifyWorkflow(planId)` は verify loop の再要求のみを行い、Task07/08 owner 項目は操作しない |
 | 詳細改善 | `SkillAnalysisView` / store action を再利用 |
 
 #### renderer 契約

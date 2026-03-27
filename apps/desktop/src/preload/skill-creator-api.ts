@@ -25,6 +25,8 @@ import type {
   RuntimeSkillCreatorPlanResponse,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
+  RuntimeSkillCreatorReverifyResponse,
+  RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
@@ -149,6 +151,20 @@ export interface SkillCreatorAPI {
     skillName: string,
     suggestions: RuntimeSkillCreatorImproveSuggestion[],
   ) => Promise<IpcResult<ApplyImprovementResult>>;
+
+  /**
+   * Runtime verify detail: 現在の verify surface を取得する
+   */
+  getVerifyDetail: (
+    planId: string,
+  ) => Promise<IpcResult<RuntimeSkillCreatorVerifyDetailResponse>>;
+
+  /**
+   * Runtime reverify: verify loop を再要求する
+   */
+  reverifyWorkflow: (
+    planId: string,
+  ) => Promise<IpcResult<RuntimeSkillCreatorReverifyResponse>>;
 
   /**
    * スキルを改善する
@@ -350,6 +366,20 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT, {
       skillName,
       suggestions,
+    }),
+
+  getVerifyDetail: (
+    planId: string,
+  ): Promise<IpcResult<RuntimeSkillCreatorVerifyDetailResponse>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL, {
+      planId,
+    }),
+
+  reverifyWorkflow: (
+    planId: string,
+  ): Promise<IpcResult<RuntimeSkillCreatorReverifyResponse>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW, {
+      planId,
     }),
 
   improveSkill: (

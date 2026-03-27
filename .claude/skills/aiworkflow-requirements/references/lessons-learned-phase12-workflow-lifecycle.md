@@ -20,6 +20,7 @@
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
 | 2026-03-27 | 1.8.4 | TASK-SDK-04 の Phase 12 教訓1件を追加（spec_created task に code wave が入った時の screenshot/evidence reclassification） |
+| 2026-03-27 | 1.8.4 | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の Phase 11/12 教訓3件を追加 |
 | 2026-03-26 | 1.8.3 | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の Phase 12 教訓2件を追加 |
 | 2026-03-26 | 1.8.2 | TASK-SDK-01 hardening sync の Phase 12 教訓3件を追加 |
 | 2026-03-26 | 1.8.1 | TASK-SDK-01 manifest-contract-foundation / follow-up completion の Phase 12 教訓4件へ更新 |
@@ -35,6 +36,46 @@
 | 2026-03-18 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）。合計5件 |
 | 2026-03-18 | 1.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001
+
+### 苦戦箇所1: spec_created の verify/reverify UI でも current workflow 配下の Phase 11 screenshot 契約を空 placeholder で閉じると false green になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | verify detail / reverify の UI 差分があるのに、placeholder PNG だけを current workflow に置いて PASS 扱いすると、review board fallback や source evidence の根拠が辿れず shallow close-out になる |
+| 再発条件 | docs-heavy / spec_created task で「same-day upstream evidence がある」ことを理由に、`TC-ID ↔ png ↔ screenshot-coverage.md ↔ metadata JSON` を current workflow に揃えない |
+| 解決策 | review board HTML/PNG、`screenshot-coverage.md`、`phase11-capture-metadata.json`、`manual-test-result.md` を current workflow へ集約し、fallback reason と source evidence を同時記録した |
+| 標準ルール | current workflow に screenshot 契約がある限り、placeholder-only PASS を禁止し、fallback でも evidence chain を current workflow で完結させる |
+| 関連タスク | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 |
+
+### 苦戦箇所2: implementation guide Part 2 が API シグネチャ止まりだと validator を通しても再利用価値が足りない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | verify detail / reverify の contract 説明が API シグネチャ中心だと、DTO shape、consumer mapping、disabled reason、reverify eligibility の実装根拠が読み取れない |
+| 再発条件 | Part 2 に型定義、使用例、エラーハンドリング、設定項目を入れず、「current contract」の本文を短く済ませる |
+| 解決策 | `RuntimeSkillCreatorVerifyDetail` 型、renderer 利用例、edge case、config/constants を同一ガイドへ追記した |
+| 標準ルール | Phase 12 Part 2 は API シグネチャ単体で閉じず、型・使用例・エラー/edge case・設定一覧を最小セットとして揃える |
+| 関連タスク | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 |
+
+### 苦戦箇所3: Phase 2 contract matrix が DTO 更新に追従しないと spec sync 後でも reader を誤誘導する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 2 matrix に `routeSnapshot` / `executionRoute` のような旧 field 名が残ると、Phase 12 で system spec を更新しても workflow 内 design artifact が stale になり、consumer 実装者を誤誘導する |
+| 再発条件 | shared DTO / engine / renderer の current contract を確認せず、設計時の表を close-out まで据え置く |
+| 解決策 | `route.type` / `route.summary` / `route.permissionMode` / `route.launcher` / `reverifyEligible` / `disabledReason` へ matrix を current contract に同期した |
+| 標準ルール | Step 2 の system spec sync 後は、workflow 内の contract matrix も shared type と consumer 実装に照らして current fact へ戻す |
+| 関連タスク | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. screenshot fallback を使う場合でも、review board PNG、coverage、metadata、fallback reason、source evidence を current workflow へ集約する。
+2. Part 2 は API シグネチャだけで閉じず、型・使用例・エラー/edge case・設定一覧を同一ターンで補完する。
+3. Phase 2 の contract matrix や close-out narrative に旧 DTO 名が残っていないか、shared type / renderer consumer / engine を突き合わせて再監査する。
 
 ---
 

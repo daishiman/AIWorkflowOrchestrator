@@ -236,7 +236,7 @@ shared type、IPC、renderer、workflow owner の契約を定義する。
 
 ```bash
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json \
-  --target-file docs/30-workflows/unassigned-task/task-imp-task-sdk-06-layer34-verify-expansion-001.md
+  --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-06-layer34-verify-expansion-001.md
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source \
   .agents/skills/aiworkflow-requirements/references/task-workflow-backlog.md
 rg -n "UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001|Layer 3 / Layer 4 verify" \

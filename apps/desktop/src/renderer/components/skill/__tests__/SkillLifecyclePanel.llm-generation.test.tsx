@@ -175,6 +175,8 @@ import { SkillLifecyclePanel } from "../SkillLifecyclePanel";
 const mockDetectMode = vi.fn();
 const mockPlanSkill = vi.fn();
 const mockExecutePlan = vi.fn();
+const mockGetVerifyDetail = vi.fn();
+const mockReverifyWorkflow = vi.fn();
 
 const buildTerminalHandoffBundle = (): TerminalHandoffBundle => ({
   launcher: "claude",
@@ -210,6 +212,8 @@ beforeEach(() => {
       getWorkflowState: mockGetWorkflowState,
       submitUserInput: mockSubmitUserInput,
       onWorkflowStateChanged: mockOnWorkflowStateChanged,
+      getVerifyDetail: mockGetVerifyDetail,
+      reverifyWorkflow: mockReverifyWorkflow,
     },
   };
 
@@ -235,6 +239,37 @@ beforeEach(() => {
     error: "workflow state が見つかりません",
   });
   mockOnWorkflowStateChanged.mockReturnValue(() => {});
+  mockGetVerifyDetail.mockResolvedValue({
+    success: true,
+    data: {
+      planId: "plan-001",
+      currentPhase: "verify",
+      status: "pending",
+      checks: [
+        {
+          id: "layer3-verify-status",
+          layer: "layer3",
+          severity: "warning",
+          summary: "verify summary",
+          evidenceSummary: "nextAction=review",
+        },
+      ],
+      evidenceCount: 3,
+      route: {
+        type: "integrated_api",
+        summary: "integrated_api (default)",
+      },
+      reverifyEligible: true,
+      delegatedGovernanceNote: "Task07 owner",
+      delegatedSessionNote: "Task08 owner",
+    },
+  });
+  mockReverifyWorkflow.mockResolvedValue({
+    success: true,
+    data: {
+      accepted: true,
+    },
+  });
   mockFetchSkills.mockResolvedValue(undefined);
 });
 
@@ -709,5 +744,42 @@ describe("U-15: executePlan empty data uses default error", () => {
     );
     expect(mockFetchSkills).not.toHaveBeenCalled();
     expect(mockSelectSkillByName).not.toHaveBeenCalled();
+  });
+});
+
+// =====================================================================
+// U-16: verify detail が表示される
+// =====================================================================
+describe("U-16: verify detail surface", () => {
+  it("currentPlanId があると verify detail を取得して表示する", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+
+    renderPanel();
+
+    expect(
+      await screen.findByTestId("skill-lifecycle-verify-detail"),
+    ).toBeTruthy();
+    expect(mockGetVerifyDetail).toHaveBeenCalledWith("plan-001");
+    expect(screen.getByText("integrated_api (default)")).toBeInTheDocument();
+    expect(screen.getByText("Task07 owner")).toBeInTheDocument();
+    expect(screen.getByText("Task08 owner")).toBeInTheDocument();
+  });
+});
+
+// =====================================================================
+// U-17: reverifyWorkflow が呼ばれる
+// =====================================================================
+describe("U-17: reverify button", () => {
+  it("再検証ボタン押下で reverifyWorkflow を呼ぶ", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+
+    renderPanel();
+
+    const button = await screen.findByTestId("skill-lifecycle-reverify-button");
+    await act(async () => {
+      fireEvent.click(button);
+    });
+
+    expect(mockReverifyWorkflow).toHaveBeenCalledWith("plan-001");
   });
 });

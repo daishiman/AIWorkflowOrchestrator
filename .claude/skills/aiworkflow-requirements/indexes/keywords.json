@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-27T00:24:48.531Z",
+  "generated": "2026-03-27T01:42:32.850Z",
   "totalKeywords": 2511,
   "keywords": {
     "チャット履歴": [
@@ -5142,6 +5142,7 @@
       "interfaces-agent-sdk-skill.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "security-electron-ipc-core.md",
       "security-skill-ipc-core.md",
       "security-skill-ipc.md"
@@ -6667,6 +6668,12 @@
       "ui-ux-navigation.md"
     ],
     "ライフサイクル": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "VERIFY": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "EXPANSION": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "manifest": [

@@ -3,6 +3,8 @@ import type { SkillExecutionStatus } from "@repo/shared";
 import type {
   HandoffGuidance,
   RuntimeSkillCreatorExecuteResponse,
+  RuntimeSkillCreatorReverifyResponse,
+  RuntimeSkillCreatorVerifyDetailResponse,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
   TerminalHandoffBundle,
@@ -99,6 +101,12 @@ type SkillCreatorRuntimeApi = {
   onWorkflowStateChanged?: (
     callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
   ) => () => void;
+  getVerifyDetail?: (
+    planId: string,
+  ) => Promise<IpcResult<RuntimeSkillCreatorVerifyDetailResponse>>;
+  reverifyWorkflow?: (
+    planId: string,
+  ) => Promise<IpcResult<RuntimeSkillCreatorReverifyResponse>>;
   improveSkill?: (
     skillName: string,
     options?: { autoApply?: boolean },
@@ -167,6 +175,24 @@ const severityStyles: Record<ImproveSuggestion["severity"], string> = {
   high: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
   medium: "bg-amber-500/10 text-amber-700",
   low: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
+};
+
+const verifyStatusBadgeStyles: Record<
+  RuntimeSkillCreatorVerifyDetailResponse["status"],
+  string
+> = {
+  pending: "bg-amber-500/10 text-amber-700",
+  pass: "bg-emerald-500/10 text-emerald-700",
+  fail: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
+};
+
+const verifyCheckSeverityStyles: Record<
+  RuntimeSkillCreatorVerifyDetailResponse["checks"][number]["severity"],
+  string
+> = {
+  info: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
+  warning: "bg-amber-500/10 text-amber-700",
+  error: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
 };
 
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
@@ -272,6 +298,14 @@ export function SkillLifecyclePanel({
   const [isPreparing, setIsPreparing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [isPlanningImprovement, setIsPlanningImprovement] = useState(false);
+  const [activeWorkflowId, setActiveWorkflowId] = useState<string | null>(null);
+  const [verifyDetail, setVerifyDetail] =
+    useState<RuntimeSkillCreatorVerifyDetailResponse | null>(null);
+  const [verifyDetailError, setVerifyDetailError] = useState<string | null>(
+    null,
+  );
+  const [isVerifyDetailLoading, setIsVerifyDetailLoading] = useState(false);
+  const [isReverifying, setIsReverifying] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [textAnswer, setTextAnswer] = useState("");
@@ -473,7 +507,59 @@ export function SkillLifecyclePanel({
     setSecretAnswer("");
     setConfirmAnswer(null);
   };
+  useEffect(() => {
+    if (storePlanId && storePlanId !== activeWorkflowId) {
+      setActiveWorkflowId(storePlanId);
+    }
+  }, [activeWorkflowId, storePlanId]);
 
+  const loadVerifyDetail = async (planId: string) => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.getVerifyDetail) {
+      return;
+    }
+
+    setIsVerifyDetailLoading(true);
+    setVerifyDetailError(null);
+
+    try {
+      const result = await skillCreatorApi.getVerifyDetail(planId);
+      if (!result.success || !result.data) {
+        setVerifyDetail(null);
+        setVerifyDetailError(
+          result.error ?? "verify detail の取得に失敗しました。",
+        );
+        return;
+      }
+      setVerifyDetail(result.data);
+    } catch (error) {
+      setVerifyDetail(null);
+      setVerifyDetailError(
+        error instanceof Error
+          ? error.message
+          : "verify detail の取得に失敗しました。",
+      );
+    } finally {
+      setIsVerifyDetailLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!activeWorkflowId) {
+      return;
+    }
+
+    let cancelled = false;
+    loadVerifyDetail(activeWorkflowId).catch(() => {
+      if (!cancelled) {
+        setVerifyDetail(null);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [activeWorkflowId]);
   const canOpenReviewFlow =
     Boolean(createdSkillName) &&
     !isExecuting &&
@@ -499,6 +585,9 @@ export function SkillLifecyclePanel({
 
   const handlePanelClose = () => {
     resetSkillExecutionCycle();
+    setActiveWorkflowId(null);
+    setVerifyDetail(null);
+    setVerifyDetailError(null);
     clearHandoffGuidance();
     onClose();
   };
@@ -567,6 +656,7 @@ export function SkillLifecyclePanel({
           setCurrentPlanResult(planResult.data);
           if (planResult.data.planId) {
             setCurrentPlanId(planResult.data.planId);
+            setActiveWorkflowId(planResult.data.planId);
           }
         } catch (err) {
           setGenerationError(
@@ -610,6 +700,8 @@ export function SkillLifecyclePanel({
         return;
       }
       const executeResponse = result.data;
+      setActiveWorkflowId(planId);
+      // terminal_handoff: planSkill と同様にガイダンス UI へ接続予定
       if (isExecuteTerminalHandoff(executeResponse)) {
         setHandoffGuidance(toHandoffGuidance(executeResponse.bundle));
         if (skillCreatorApi.getWorkflowState) {
@@ -619,8 +711,15 @@ export function SkillLifecyclePanel({
             setWorkflowError(null);
           }
         }
+        await loadVerifyDetail(planId);
         return;
       }
+      if (!executeResponse.success) {
+        await loadVerifyDetail(planId);
+        setGenerationError(executeResponse.error ?? "計画実行に失敗しました");
+        return;
+      }
+      await loadVerifyDetail(planId);
       await fetchSkills();
       if (executeResponse.skillName) {
         selectSkillByName(executeResponse.skillName);
@@ -639,6 +738,9 @@ export function SkillLifecyclePanel({
   const handleCancelPlan = () => {
     setLocalPlanResult(null);
     clearGenerationState();
+    setActiveWorkflowId(null);
+    setVerifyDetail(null);
+    setVerifyDetailError(null);
   };
 
   const handleCreate = async () => {
@@ -809,7 +911,48 @@ export function SkillLifecyclePanel({
     setShowDetailedAnalysis(true);
   };
 
-  const currentSurfaceError = localError ?? workflowError ?? skillError;
+  const handleReverify = async () => {
+    if (!activeWorkflowId) {
+      setLocalError("再検証対象の workflow がありません。");
+      return;
+    }
+
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.reverifyWorkflow) {
+      setLocalError("reverifyWorkflow API が利用できません。");
+      return;
+    }
+
+    setLocalError(null);
+    setIsReverifying(true);
+
+    try {
+      const result = await skillCreatorApi.reverifyWorkflow(activeWorkflowId);
+      if (!result.success || !result.data) {
+        throw new Error(result.error ?? "再検証の要求に失敗しました。");
+      }
+      if (!result.data.accepted) {
+        setLocalError(result.data.disabledReason ?? "再検証できません。");
+        return;
+      }
+      appendSessionEntry(setSessionEntries, {
+        role: "assistant",
+        title: "再検証を要求しました",
+        detail:
+          "verify detail を pending に戻しました。governance と session の owner は sibling task のままです。",
+      });
+      await loadVerifyDetail(activeWorkflowId);
+    } catch (error) {
+      setLocalError(
+        error instanceof Error ? error.message : "再検証の要求に失敗しました。",
+      );
+    } finally {
+      setIsReverifying(false);
+    }
+  };
+
+  const currentSurfaceError =
+    localError ?? workflowError ?? verifyDetailError ?? skillError;
   const shouldShowStreaming =
     Boolean(createdSkillName) &&
     (isExecuting ||
@@ -1143,6 +1286,187 @@ export function SkillLifecyclePanel({
               {activePlanResult.guidance.command}
             </code>
           ) : null}
+        </div>
+      ) : null}
+
+      {activeWorkflowId ? (
+        <div
+          className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5"
+          data-testid="skill-lifecycle-verify-detail"
+        >
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--status-primary)]">
+                Verify Detail
+              </p>
+              <h3 className="mt-1 text-base font-semibold text-[var(--text-primary)]">
+                4. Layer 3 / Layer 4 verify を確認する
+              </h3>
+              <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                workflow owner は engine に残したまま、route / provenance /
+                re-verify action を detail surface として表示します。
+              </p>
+            </div>
+            <button
+              type="button"
+              className={lifecycleButtonStyles.secondary}
+              onClick={handleReverify}
+              disabled={
+                isReverifying ||
+                isVerifyDetailLoading ||
+                !verifyDetail?.reverifyEligible
+              }
+              data-testid="skill-lifecycle-reverify-button"
+            >
+              {isReverifying ? "再検証を要求中..." : "再検証を要求する"}
+            </button>
+          </div>
+
+          {isVerifyDetailLoading ? (
+            <p className="mt-4 text-sm text-[var(--text-secondary)]">
+              verify detail を読み込み中...
+            </p>
+          ) : verifyDetail ? (
+            <>
+              <div className="mt-4 grid gap-3 md:grid-cols-4">
+                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
+                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                    Status
+                  </p>
+                  <span
+                    className={`mt-2 inline-flex rounded-full px-2 py-1 text-xs font-medium ${verifyStatusBadgeStyles[verifyDetail.status]}`}
+                  >
+                    {verifyDetail.status}
+                  </span>
+                </div>
+                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
+                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                    Phase
+                  </p>
+                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
+                    {verifyDetail.currentPhase}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
+                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                    Evidence
+                  </p>
+                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
+                    {verifyDetail.evidenceCount}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
+                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                    Route
+                  </p>
+                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
+                    {verifyDetail.route.summary}
+                  </p>
+                </div>
+              </div>
+
+              {verifyDetail.message ? (
+                <div className="mt-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3 text-sm text-[var(--text-primary)]">
+                  {verifyDetail.message}
+                </div>
+              ) : null}
+
+              <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                {verifyDetail.checks.map((check) => (
+                  <article
+                    key={check.id}
+                    className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4"
+                  >
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-semibold text-[var(--text-primary)]">
+                        {check.id}
+                      </span>
+                      <span className="rounded-full bg-[var(--bg-secondary)] px-2 py-1 text-xs font-medium text-[var(--text-secondary)]">
+                        {check.layer}
+                      </span>
+                      <span
+                        className={`rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[check.severity]}`}
+                      >
+                        {check.severity}
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
+                      {check.summary}
+                    </p>
+                    {check.evidenceSummary ? (
+                      <p className="mt-2 text-xs text-[var(--text-secondary)]">
+                        {check.evidenceSummary}
+                      </p>
+                    ) : null}
+                  </article>
+                ))}
+              </div>
+
+              <div className="mt-4 grid gap-3 lg:grid-cols-2">
+                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                    Provenance
+                  </p>
+                  <dl className="mt-3 space-y-2 text-sm text-[var(--text-primary)]">
+                    <div>
+                      <dt className="text-xs text-[var(--text-secondary)]">
+                        root
+                      </dt>
+                      <dd>
+                        {verifyDetail.resolvedSkillCreatorRoot ?? "未取得"}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-[var(--text-secondary)]">
+                        manifest
+                      </dt>
+                      <dd>{verifyDetail.manifestPath ?? "未取得"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-[var(--text-secondary)]">
+                        resource hash
+                      </dt>
+                      <dd>{verifyDetail.resourceDescriptorHash ?? "未取得"}</dd>
+                    </div>
+                    <div>
+                      <dt className="text-xs text-[var(--text-secondary)]">
+                        cache key
+                      </dt>
+                      <dd>{verifyDetail.manifestCacheKey ?? "未取得"}</dd>
+                    </div>
+                  </dl>
+                </div>
+                <div className="space-y-3">
+                  <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                      Governance Note
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
+                      {verifyDetail.delegatedGovernanceNote}
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                      Session Note
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
+                      {verifyDetail.delegatedSessionNote}
+                    </p>
+                  </div>
+                  {!verifyDetail.reverifyEligible &&
+                  verifyDetail.disabledReason ? (
+                    <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-4 text-sm text-amber-700">
+                      {verifyDetail.disabledReason}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </>
+          ) : (
+            <p className="mt-4 text-sm text-[var(--text-secondary)]">
+              verify detail はまだ利用できません。
+            </p>
+          )}
         </div>
       ) : null}
 
