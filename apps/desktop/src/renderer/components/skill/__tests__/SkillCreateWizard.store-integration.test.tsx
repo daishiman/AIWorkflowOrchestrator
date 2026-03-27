@@ -33,6 +33,7 @@ vi.mock("../../../store", () => ({
   useSetCurrentPlanResult: () => vi.fn(),
   useSetCurrentPlanId: () => vi.fn(),
   useClearGenerationState: () => vi.fn(),
+  useWorkflowSnapshot: () => null,
 }));
 
 vi.mock("../../../hooks/useStreamingProgress", () => ({
