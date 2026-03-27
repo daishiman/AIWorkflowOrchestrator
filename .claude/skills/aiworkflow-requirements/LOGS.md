@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-27 - implementation spec to skill sync（runtime policy close-out と completed workflow path migration の stale fact を是正し、system spec / skill / workflow evidence / mirror parity を同一 wave で更新） |
 | 2026-03-27 - TASK-SDK-04 implementation spec sync（user interaction bridge / phase UI の current contract、follow-up 3件、spec_created task の evidence drift 教訓を canonical spec/backlog/log へ反映） |
 | 2026-03-27 - UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 same-wave sync（verify detail / reverify current facts、Phase 11 review-board fallback evidence、Phase 12 guide hardening、quick-reference/resource-map/lessons/log を `.claude` 正本へ反映） |
 | 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 implementation sync（failure lifecycle 実装完了を canonical completed/lessons/index/log へ反映し、exact vitest workaround command と no-new-unassigned 方針を same-wave 記録） |
@@ -114,6 +115,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## implementation spec to skill sync（2026-03-27）
+
+- タスク名: Phase-12 タスク検証・システム仕様書反映・スキル更新・未タスク整理
+- 種別: cross-skill sync / stale-fact cleanup
+- 主な反映:
+  - `indexes/resource-map.md` / `indexes/quick-reference.md` の completed workflow root を `docs/30-workflows/completed-tasks/` 基準へ是正
+  - `references/task-workflow-completed.md` / `references/task-workflow.md` / `references/task-workflow-backlog.md` を更新し、TASK-SDK-03 と failure lifecycle の canonical path、parent note、重複 completed row を整理
+  - `references/lessons-learned-ipc-preload-runtime.md` に runtime policy centralization close-out の authority / reason source 教訓を追加
+  - workflow evidence 側では `spec_created` / `blocked` の扱いと verification target path の drift を是正し、Phase 12 summary の no-op 誤記を除去
+  - `.claude` 正本更新後に mirror sync と `diff -qr` で parity を再確認する前提を維持
 
 ## TASK-SDK-03 resource selection hardening sync（2026-03-27）
 

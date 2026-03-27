@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-27 | 1.15.0 | runtime policy centralization close-out 教訓1件を追加（composition root authority と handoff reason source の単一化） |
 | 2026-03-27 | 1.14.0 | TASK-SDK-04 教訓2件を追加（回答送信後 semantics の owner 不在、planId と execute payload の canonical drift） |
 | 2026-03-25 | 1.13.0 | UT-SC-02-005 教訓1件を追加（L-SC-07-005: Preload executePlan 型追従漏れ、IPC ハンドラ変更時の3層走査） |
 | 2026-03-25 | 1.12.0 | TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION 教訓4件を追加（L-SC-07-001〜004: vi.mock gaps、非破壊拡張、Symmetric Clear横展開、GenerationMode SSoT） |
@@ -38,6 +39,16 @@
 ---
 
 ## 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001
+
+## 2026-03-27 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001
+
+### 教訓1: runtime policy authority は handler ごとに複製せず composition root で共有する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `agentHandlers` / `skillHandlers` が局所 resolver や局所 auth mode 解決に寄ると、同じ runtime policy でも lane 判定と fallback reason の説明が surface ごとにずれる |
+| 解決策 | `apps/desktop/src/main/ipc/index.ts` で共有の `RuntimePolicyResolver` と `createAuthModeService(...)` を生成し、handler へ注入したうえで reason source を `decision.bundle.manualRetryRule` に統一した |
+| 標準ルール | public IPC shape が不変でも、authority owner・reason source・decision vocabulary が変わった場合は internal contract hardening として lessons / ledger / quick-reference / skill update を同一 wave で閉じる |
 
 ## 2026-03-27 TASK-SDK-04 user interaction bridge / phase UI
 

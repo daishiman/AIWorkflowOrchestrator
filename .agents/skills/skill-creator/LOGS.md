@@ -3,6 +3,17 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-27 - runtime policy close-out の authority / reason source hardening を update-process へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に、public IPC shape 不変でも composition root authority / shared auth mode service / reason source of truth の変更は Step 2 更新対象に含めるルールを追加
+  - handler test の decision vocabulary を canonical enum に揃え、summary で `integrated_api` / `terminal_handoff` と `manualRetryRule` を同時記録する運用を明文化
+  - completed workflow path migration と同 wave で skill feedback / LOGS / mirror parity を閉じる current pattern を補強
+
+---
 ## 2026-03-27 - TASK-SDK-03 の internal contract hardening 判定を Phase 12 template/pattern へ反映
 
 - **Agent**: skill-creator (update)

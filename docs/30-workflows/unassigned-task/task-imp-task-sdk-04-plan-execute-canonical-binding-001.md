@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: null
+issue_number: 1671
 task_id: TASK-SDK-04-U2
 task_name: planId と execute payload の canonical binding drift を是正する
 category: 実装改善

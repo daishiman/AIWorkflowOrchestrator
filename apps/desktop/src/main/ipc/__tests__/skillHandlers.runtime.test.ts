@@ -1,10 +1,11 @@
 /**
  * skillHandlers Runtime Integration Tests
  *
- * RuntimeResolver による integrated/handoff 分岐の検証
+ * RuntimePolicyResolver による integrated/handoff 分岐の検証
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import type { BrowserWindow as BrowserWindowType } from "electron";
+import type { IAuthModeService } from "../../services/auth/types";
 
 // === Mocks ===
 
@@ -81,19 +82,27 @@ vi.mock("../../infrastructure/security/ipc-validator.js", () => ({
   })),
 }));
 
-// RuntimeResolver mock
-const mockResolve = vi.fn();
-vi.mock("../../services/runtime/RuntimeResolver", () => ({
-  RuntimeResolver: vi.fn().mockImplementation(() => ({
-    resolve: mockResolve,
+// RuntimePolicyResolver mock
+const mockResolveWithService = vi.fn();
+vi.mock("../../services/runtime/RuntimePolicyResolver", () => ({
+  RuntimePolicyResolver: vi.fn().mockImplementation(() => ({
+    resolveWithService: mockResolveWithService,
   })),
 }));
 
 import { ipcMain } from "electron";
-import { RuntimeResolver } from "../../services/runtime/RuntimeResolver";
+import { RuntimePolicyResolver } from "../../services/runtime/RuntimePolicyResolver";
 
 const SKILL_EXECUTE_CHANNEL = "skill:execute";
-const mockRuntimeResolver = new RuntimeResolver({} as never, {} as never);
+const mockRuntimePolicyResolver = new RuntimePolicyResolver();
+const mockAuthModeService: IAuthModeService = {
+  getMode: vi.fn().mockReturnValue("subscription"),
+  setMode: vi.fn(),
+  getStatus: vi.fn(),
+  getCredential: vi.fn(),
+  onModeChange: vi.fn(),
+  validateMode: vi.fn(),
+};
 
 describe("skillHandlers runtime integration", () => {
   let handlers: Map<string, (...args: unknown[]) => Promise<unknown>>;
@@ -121,15 +130,20 @@ describe("skillHandlers runtime integration", () => {
     vi.resetModules();
   });
 
-  it("RuntimeResolver が integrated を返す → 既存の execute フローが続行", async () => {
-    mockResolve.mockResolvedValue({ type: "integrated" });
+  it("RuntimePolicyResolver が integrated_api を返す → 既存の execute フローが続行", async () => {
+    mockResolveWithService.mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
 
     const { registerSkillHandlers } = await import("../skillHandlers");
     registerSkillHandlers(
       mockMainWindow,
       mockSkillService as never,
       undefined,
-      mockRuntimeResolver,
+      mockRuntimePolicyResolver,
+      mockAuthModeService,
     );
 
     const handler = handlers.get(SKILL_EXECUTE_CHANNEL);
@@ -145,11 +159,17 @@ describe("skillHandlers runtime integration", () => {
     expect(opResult.data?.executionId).toBe("exec-1");
   });
 
-  it("RuntimeResolver が handoff を返す → HandoffGuidance 応答が返される", async () => {
-    mockResolve.mockResolvedValue({
-      type: "handoff",
-      reason:
-        "サブスクリプションモードのため、Claude Code CLI で続行してください。",
+  it("RuntimePolicyResolver が terminal_handoff を返す → HandoffGuidance 応答が返される", async () => {
+    mockResolveWithService.mockResolvedValue({
+      type: "terminal_handoff",
+      bundle: {
+        launcher: "claude",
+        promptBundle: "",
+        cwd: "/tmp/runtime",
+        suggestedCommand: 'claude -p "skill"',
+        manualRetryRule:
+          "サブスクリプションモードのため、Claude Code CLI で続行してください。",
+      },
     });
 
     const { registerSkillHandlers } = await import("../skillHandlers");
@@ -157,7 +177,8 @@ describe("skillHandlers runtime integration", () => {
       mockMainWindow,
       mockSkillService as never,
       undefined,
-      mockRuntimeResolver,
+      mockRuntimePolicyResolver,
+      mockAuthModeService,
     );
 
     const handler = handlers.get(SKILL_EXECUTE_CHANNEL);
@@ -181,15 +202,15 @@ describe("skillHandlers runtime integration", () => {
     expect(opResult.data?.guidance?.terminalCommand).toContain("claude");
   });
 
-  it("RuntimeResolver が注入されない → 既存の execute フロー（後方互換）", async () => {
-    // RuntimeResolver を注入しないケース
+  it("RuntimePolicyResolver が注入されない → 既存の execute フロー（後方互換）", async () => {
+    // RuntimePolicyResolver を注入しないケース
     const { registerSkillHandlers } = await import("../skillHandlers");
     registerSkillHandlers(mockMainWindow, mockSkillService as never);
 
     const handler = handlers.get(SKILL_EXECUTE_CHANNEL);
     expect(handler).toBeDefined();
 
-    // RuntimeResolver が resolve を返さなくても executeSkill が呼ばれる
+    // RuntimePolicyResolver が未注入でも executeSkill が呼ばれる
     const result = await handler!({}, { skillId: "skill-1" });
     const opResult = result as {
       success: boolean;

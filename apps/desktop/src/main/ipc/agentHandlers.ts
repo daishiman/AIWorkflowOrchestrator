@@ -19,10 +19,11 @@ import type {
   PermissionResponse,
   PermissionRules,
 } from "@repo/shared";
-import type { RuntimeResolver } from "../services/runtime/RuntimeResolver";
+import type { IAuthModeService } from "../services/auth/types";
 import type { EnvironmentPreviewContent } from "@repo/shared/types/agent";
 import type { EnvironmentService } from "../services/environment";
 import { TerminalHandoffBuilder } from "../services/runtime/TerminalHandoffBuilder";
+import type { IRuntimePolicyResolver } from "../services/runtime/RuntimePolicyResolver";
 
 // シングルトンのExecutionManager
 let executionManager: ExecutionManager | null = null;
@@ -35,7 +36,8 @@ let executionManager: ExecutionManager | null = null;
 export function registerAgentExecutionHandlers(
   mainWindow: BrowserWindow,
   customRules?: PermissionRules,
-  runtimeResolver?: RuntimeResolver,
+  runtimePolicyResolver?: IRuntimePolicyResolver,
+  authModeService?: IAuthModeService,
 ): void {
   // ExecutionManagerを初期化
   executionManager = new ExecutionManager();
@@ -57,15 +59,18 @@ export function registerAgentExecutionHandlers(
         throw { code: "VALIDATION_ERROR", message: "prompt must be a string" };
       }
 
-      // Runtime routing: handoff 分岐
-      if (runtimeResolver) {
-        const resolution = await runtimeResolver.resolve();
-        if (resolution.type === "handoff") {
+      // Runtime routing: central policy による handoff 分岐
+      if (runtimePolicyResolver && authModeService) {
+        const decision = await runtimePolicyResolver.resolveWithService(
+          authModeService.getMode(),
+        );
+        if (decision.type === "terminal_handoff") {
+          const reason = decision.bundle.manualRetryRule;
           const builder = new TerminalHandoffBuilder();
           const response: AgentStartResult = {
             success: false,
             handoff: true,
-            error: resolution.reason,
+            error: reason,
             guidance: builder.buildForSurface(
               {
                 surfaceType: "runtime",
@@ -74,7 +79,7 @@ export function registerAgentExecutionHandlers(
                 prompt: request.prompt,
                 workingDirectory: request.workingDirectory,
               },
-              resolution.reason,
+              reason,
             ),
           };
           return response;

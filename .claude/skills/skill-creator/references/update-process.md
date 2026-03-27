@@ -235,4 +235,6 @@ node scripts/validate_all.js .claude/skills/my-skill
 - compile gate PASS と env-blocked test は別行で記録し、`typecheck PASS + Vitest blocker` のように境界を明示する。
 - Step 2 domain spec が no-op でも、Step 1 の completed ledger / lessons / LOGS / SKILL history / source unassigned status は no-op にしない。
 - public IPC shape が不変でも、internal contract・source provenance・owner boundary・runtime helper class が current fact として増えた場合は Step 2 を no-op にしない。
+- authority injection・shared auth mode service・decision vocabulary・reason source of truth のいずれかを composition root で変更した場合も internal hardening とみなし、Step 2 / lessons / skill feedback を更新する。
+- handler / consumer テストの期待値は実体 enum と同じ語彙へ合わせ、`integrated_api` / `terminal_handoff` のような canonical vocabulary と reason source 単一化を summary に残す。
 - Phase 12 root evidence を手編集した後は `rg "\\*\\*\\* Add File:|\\*\\*\\* Begin Patch|\\*\\*\\* End Patch"` で patch marker 混入を監査し、artifact existence だけで false green にしない。
