@@ -132,6 +132,14 @@ type SkillCreatorRuntimeApi = {
     skillName: string,
     suggestions: RuntimeSkillCreatorImproveSuggestion[],
   ) => Promise<IpcResult<ApplyImprovementResult>>;
+  // TASK-SDK-07: shared disclosure channel 再利用
+  getDisclosureInfo?: () => Promise<
+    IpcResult<{
+      aiServiceName: string;
+      modelName: string;
+      externalDestinations: string[];
+    }>
+  >;
 };
 
 type SessionEntry = {
@@ -347,6 +355,12 @@ export function SkillLifecyclePanel({
   );
   const [isVerifyDetailLoading, setIsVerifyDetailLoading] = useState(false);
   const [isReverifying, setIsReverifying] = useState(false);
+  // TASK-SDK-07: disclosure info state
+  const [disclosureInfo, setDisclosureInfo] = useState<{
+    aiServiceName: string;
+    modelName: string;
+    externalDestinations: string[];
+  } | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [textAnswer, setTextAnswer] = useState("");
@@ -506,6 +520,25 @@ export function SkillLifecyclePanel({
     }
   };
 
+  // TASK-SDK-07: handoff 発生時に disclosure info を fetch する
+  const fetchDisclosureInfo = async () => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.getDisclosureInfo) return;
+    try {
+      const result = await skillCreatorApi.getDisclosureInfo();
+      if (result.success && result.data) {
+        setDisclosureInfo(result.data);
+      }
+    } catch {
+      // disclosure fetch 失敗は execution authority を Renderer へ移さない
+    }
+  };
+
+  const dismissHandoffGuidance = () => {
+    setDisclosureInfo(null);
+    clearHandoffGuidance();
+  };
+
   const handleSubmitWorkflowInput = async () => {
     if (!workflowSnapshot?.awaitingUserInput) {
       return;
@@ -635,6 +668,7 @@ export function SkillLifecyclePanel({
     setActiveWorkflowId(null);
     setVerifyDetail(null);
     setVerifyDetailError(null);
+    setDisclosureInfo(null);
     clearHandoffGuidance();
     onClose();
   };
@@ -742,6 +776,7 @@ export function SkillLifecyclePanel({
 
     try {
       setIsGenerating(true);
+      setDisclosureInfo(null);
       const result = await skillCreatorApi.executePlan(
         planId,
         approvedSkillSpec ?? undefined,
@@ -752,9 +787,10 @@ export function SkillLifecyclePanel({
       }
       const executeResponse = result.data;
       setActiveWorkflowId(planId);
-      // terminal_handoff: planSkill と同様にガイダンス UI へ接続予定
+      // TASK-SDK-07: visible handoff + disclosure summary へ接続
       if (isExecuteTerminalHandoff(executeResponse)) {
         setHandoffGuidance(toHandoffGuidance(executeResponse.bundle));
+        void fetchDisclosureInfo();
         if (skillCreatorApi.getWorkflowState) {
           const snapshotResult = await skillCreatorApi.getWorkflowState(planId);
           if (snapshotResult.success && snapshotResult.data) {
@@ -793,6 +829,7 @@ export function SkillLifecyclePanel({
     setActiveWorkflowId(null);
     setVerifyDetail(null);
     setVerifyDetailError(null);
+    setDisclosureInfo(null);
   };
 
   const handleCreate = async () => {
@@ -857,6 +894,7 @@ export function SkillLifecyclePanel({
     setLocalError(null);
     setCreatorImproveResult(null);
     setRuntimeImproveResult(null);
+    setDisclosureInfo(null);
     setShowDetailedAnalysis(false);
 
     selectSkillByName(createdSkillName);
@@ -892,6 +930,7 @@ export function SkillLifecyclePanel({
     clearSkillError();
     setLocalError(null);
     setIsPlanningImprovement(true);
+    setDisclosureInfo(null);
     beginSkillReview();
 
     try {
@@ -911,6 +950,7 @@ export function SkillLifecyclePanel({
 
         if (isRuntimeImproveTerminalHandoff(runtimeResult.data)) {
           setHandoffGuidance(runtimeResult.data.guidance);
+          void fetchDisclosureInfo();
           appendSessionEntry(setSessionEntries, {
             role: "assistant",
             title: "改善提案は handoff に切り替わりました",
@@ -1336,8 +1376,28 @@ export function SkillLifecyclePanel({
                   onCopyCommand={() => {
                     void handleCopyHandoffCommand();
                   }}
-                  onDismiss={clearHandoffGuidance}
+                  onDismiss={dismissHandoffGuidance}
                 />
+              </div>
+            ) : null}
+
+            {disclosureInfo ? (
+              <div
+                className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3"
+                data-testid="skill-lifecycle-disclosure-summary"
+              >
+                <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                  AI Disclosure
+                </p>
+                <p className="mt-2 text-sm text-[var(--text-primary)]">
+                  {disclosureInfo.aiServiceName} ({disclosureInfo.modelName})
+                </p>
+                {disclosureInfo.externalDestinations.length > 0 ? (
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                    destinations:{" "}
+                    {disclosureInfo.externalDestinations.join(", ")}
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </div>
@@ -1351,8 +1411,26 @@ export function SkillLifecyclePanel({
             onCopyCommand={() => {
               void handleCopyHandoffCommand();
             }}
-            onDismiss={clearHandoffGuidance}
+            onDismiss={dismissHandoffGuidance}
           />
+          {disclosureInfo ? (
+            <div
+              className="mt-3 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3"
+              data-testid="skill-lifecycle-disclosure-summary"
+            >
+              <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                AI Disclosure
+              </p>
+              <p className="mt-2 text-sm text-[var(--text-primary)]">
+                {disclosureInfo.aiServiceName} ({disclosureInfo.modelName})
+              </p>
+              {disclosureInfo.externalDestinations.length > 0 ? (
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                  destinations: {disclosureInfo.externalDestinations.join(", ")}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       ) : null}
 
@@ -1393,9 +1471,9 @@ export function SkillLifecyclePanel({
           <p className="mt-2 text-sm text-[var(--text-secondary)]">
             {activePlanResult.guidance.reason}
           </p>
-          {activePlanResult.guidance.command ? (
+          {activePlanResult.guidance.terminalCommand ? (
             <code className="mt-2 block rounded-lg bg-[var(--bg-primary)] px-3 py-2 text-xs text-[var(--text-primary)]">
-              {activePlanResult.guidance.command}
+              {activePlanResult.guidance.terminalCommand}
             </code>
           ) : null}
         </div>

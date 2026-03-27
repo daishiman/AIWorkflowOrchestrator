@@ -12,20 +12,20 @@
 
 ### なぜ必要か
 
-この task が必要なのは、「AI でそのまま続けるのか」「人がターミナルへ持っていくのか」「危ない操作を確認するのか」「AI を使っている事実をどう見せるのか」が別々に決まっていると、画面ごとに言い方や動きがばらばらになるからです。
+この task は、「そのまま自動で進めてよい場面」と「人が確認してから進める場面」の約束をそろえるためにあります。ここが決まっていないと、同じアプリの中でも、ある画面では勝手に進み、別の画面では止まり、説明も足りない、というばらつきが起きます。
 
-Skill Creator は計画作成、実行、改善の 3 つをまたぐので、ここで governance をまとめておかないと、ある画面では API で動き、別の画面では勝手に handoff され、また別の画面では承認や開示の説明が抜ける、というずれが起きます。
+Skill Creator は計画作成、実行、改善の 3 つをまたぐので、この約束事が特に重要です。ここで扱う「進み方のルール」（governance）をそろえておかないと、ある画面ではそのまま進み、別の画面ではターミナル引き継ぎ（handoff）になり、また別の画面では注意書きが出ない、というずれが起きます。
 
 ### 何をするか
 
 Task07 では次の 4 点をそろえます。
 
-| 項目                  | 内容                                                              |
-| --------------------- | ----------------------------------------------------------------- |
-| route priority        | `integrated_api` を正規、`terminal_handoff` を補助として固定する  |
-| handoff guidance      | shared `HandoffGuidance` を使って、人が自分で続けられる案内を返す |
-| approval / disclosure | 危険操作の確認と、AI 利用情報の説明を別々に扱う                   |
-| manual boundary       | 勝手に実行しない、隠し入力しない、認証情報を横流ししない          |
+| 項目               | 内容                                                                                     |
+| ------------------ | ---------------------------------------------------------------------------------------- |
+| 進む順番           | まずアプリ内実行（`integrated_api`）、無理なときだけ引き継ぎ（`terminal_handoff`）にする |
+| 引き継ぎの案内     | 共通の案内形式（`HandoffGuidance`）で、人が自分で続けられるようにする                    |
+| 確認と説明         | 危険操作の確認（approval）と AI 利用情報の説明（disclosure）を分ける                     |
+| 越えてはいけない線 | 勝手に実行しない、隠し入力しない、認証情報を横流ししない                                 |
 
 ### 日常の例え
 
@@ -33,10 +33,10 @@ Task07 では次の 4 点をそろえます。
 
 ### 先に覚えるポイント
 
-- API 実行ができるなら、まずはそこで処理する
-- API 実行ができないときだけ、ターミナル handoff を出す
-- handoff は「人が自分で続けるための案内」であり、自動実行ではない
-- 承認と開示は似て見えても役割が違う
+- アプリ内で進められるなら、まずはそこで処理する
+- 進められないときだけ、ターミナル引き継ぎを出す
+- 引き継ぎは「人が自分で続けるための案内」であり、自動実行ではない
+- 危険操作の確認と、AI を使っている説明は別もの
 
 ## Part 2
 
@@ -170,3 +170,38 @@ Task07 の回帰観点は次の 5 群に分ける。
 | approval coverage   | grant / expired / already_used                  |
 | disclosure coverage | fetch / fallback / summary 表示                 |
 | downstream coverage | Task05 / 06 / 08 との責務分離                   |
+
+## 現行差分メモ
+
+この workflow は `spec_created` の docs-only task として閉じているため、ここでは「完了断定」ではなく、現ブランチで確認できた関連差分を記録する。
+
+### 関連ファイル
+
+| ファイル                                                             | 変更内容                                                                       |
+| -------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `apps/desktop/src/preload/skill-creator-api.ts`                      | `respondToApproval()` / `getDisclosureInfo()` を shared channel 経由で追加     |
+| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | disclosure summary 表示、handoff 時の disclosure fetch、console-only TODO 解消 |
+
+### 関連テストファイル
+
+| ファイル                                                                     | テスト数 | 観点                                                             |
+| ---------------------------------------------------------------------------- | -------- | ---------------------------------------------------------------- |
+| `apps/desktop/src/preload/__tests__/skill-creator-api.governance.test.ts`    | 7        | shared channel 再利用、専用 channel 非存在                       |
+| `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts` | 18       | 5 観点横断（route / consumer / handoff / approval / disclosure） |
+
+### 実装時確認項目
+
+| AC   | 状態     | 証跡 / 補足                                                       |
+| ---- | -------- | ----------------------------------------------------------------- |
+| AC-1 | 確認済み | `RuntimePolicyResolver` route priority                            |
+| AC-2 | 確認済み | `isConsumerToken()` reject                                        |
+| AC-3 | 確認済み | `TerminalHandoffBuilder.buildForSurface()` + MB-1〜4              |
+| AC-4 | 一部確認 | disclosure は接続済み。approval request surface は未接続          |
+| AC-5 | 確認済み | `creatorHandlers.ts` 経由、surface に route authority なし        |
+| AC-6 | 一部未了 | route state 固定は確認済み。Phase 11 screenshot evidence は未取得 |
+
+### UI 証跡参照
+
+- Phase 11 walkthrough: `outputs/phase-11/manual-test-result.md`
+- screenshot gap inventory: `outputs/phase-11/screenshot-plan.json`
+- 未完了 evidence の formalize: `outputs/phase-12/unassigned-task-detection.md`
