@@ -15,6 +15,7 @@
 
 | タスク種別                  | 最初に読む                                                    | 必要に応じて読む                                                      |
 | --------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | 新機能追加                  | overview.md, architecture-patterns.md                         | 機能に応じたinterfaces-\*, ui-ux-\*                                   |
 | バグ修正（一般）            | error-handling.md, 関連するinterfaces-\*                      | security-\*, quality-requirements.md                                  |
 | バグ修正（Electron Menu / ズーム / ショートカット） | technology-desktop.md, architecture-overview-core.md | lessons-learned-current.md, task-workflow.md |
@@ -25,6 +26,7 @@
 | バグ修正（Skill Lifecycle 評価・採点ゲート） | workflow-skill-lifecycle-evaluation-scoring-gate.md, interfaces-agent-sdk-skill-details.md, arch-state-management-details.md | ui-ux-feature-components-reference.md, task-workflow.md, lessons-learned-current.md, `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-eval-store-dispatch-001.md`, `docs/30-workflows/completed-tasks/step-03-seq-task-04-evaluation-and-scoring-gate/unassigned-task/task-fix-score-delta-dedup-001.md` |
 | バグ修正（Skill Lifecycle routing / renderView foundation） | workflow-skill-lifecycle-routing-render-view-foundation.md, ui-ux-navigation.md, arch-state-management-core.md | task-workflow.md, lessons-learned-current.md, `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
 | バグ修正（Runtime Skill Creator verify detail / reverify surface） | api-ipc-system-core.md, interfaces-agent-sdk-skill-reference.md | api-ipc-agent-core.md, task-workflow-backlog.md, lessons-learned-phase12-workflow-lifecycle.md, `docs/30-workflows/completed-tasks/ut-imp-task-sdk-06-layer34-verify-expansion-001/` |
+| 設計仕様（Skill Creator create mainline entry / advanced route boundary） | ui-ux-navigation.md, workflow-skill-lifecycle-routing-render-view-foundation.md, arch-state-management-core.md | workflow-skill-lifecycle-created-skill-usage-journey.md, task-workflow-completed.md, lessons-learned-phase12-workflow-lifecycle.md, `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/` |
 | 設計仕様（Skill Lifecycle 作成済みスキル利用導線 / CTA制御マトリクス） | workflow-skill-lifecycle-created-skill-usage-journey.md, ui-ux-agent-execution.md, ui-ux-navigation.md, ui-ux-feature-components.md | interfaces-agent-sdk-executor.md, interfaces-agent-sdk-skill.md, arch-state-management.md, llm-workspace-chat-edit.md, task-workflow.md, lessons-learned.md |
 | 設計仕様（Skill Lifecycle 履歴・フィードバック統合） | interfaces-agent-sdk-skill.md, interfaces-agent-sdk-history.md, arch-state-management.md | workflow-skill-lifecycle-created-skill-usage-journey.md, workflow-skill-lifecycle-evaluation-scoring-gate.md, ui-history-search-view.md, ui-ux-history-panel.md, task-workflow.md, lessons-learned-current.md |
 | 設計仕様（Terminal Handoff Surface / HandoffGuidance / Manual Boundary） | ui-ux-agent-execution-core.md, llm-workspace-chat-edit.md, interfaces-agent-sdk-skill-reference-share-debug-analytics.md | lessons-learned-current.md, task-workflow-completed.md, task-workflow-backlog.md |
@@ -58,7 +60,6 @@
 | バグ修正（Workspace parent pointer / pointer docs / mirror drift / visual re-audit） | workflow-workspace-parent-reference-sweep-guard.md, task-workflow.md, lessons-learned.md | ui-ux-feature-components.md, interfaces-llm.md, interfaces-chat-history.md |
 | Workspace Chat Edit AI Runtime 実装（RuntimeResolver / handoff / integrated 分岐） | llm-workspace-chat-edit.md, interfaces-llm.md, api-ipc-agent-core.md | security-electron-ipc-core.md, lessons-learned.md, task-workflow.md |
 | RuntimePolicyResolver subscription 判定統合（3パターン分岐: integrated_api / terminal_handoff subscription / no-auth） | arch-execution-capability-contract.md, arch-electron-services-details-part2.md, api-ipc-system-core.md | lessons-learned-ipc-preload-runtime.md, task-workflow-completed.md, task-workflow-backlog.md |
-| docs-improvement（Execution Responsibility follow-up path correction / `UT-EXEC-01`） | workflow-ai-runtime-execution-responsibility-realignment.md, arch-execution-capability-contract.md, `docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001/index.md` | lessons-learned-phase12-workflow-lifecycle.md, task-workflow-completed.md, `docs/30-workflows/completed-tasks/unassigned-task/task-exec-scope-definition-path-update-001.md`, `docs/30-workflows/completed-tasks/unassigned-task/task-ut-exec-01-scope-definition-execution-capability-path.md` |
 | HealthPolicy 統一ポリシー（接続状態 health check 集約 / degraded 判定 / resolveHealthPolicy pure function） | arch-execution-capability-contract.md, interfaces-auth-core.md | lessons-learned-ipc-preload-runtime.md, task-workflow-backlog.md |
 | Skill識別子型ドリフト是正   | workflow-skill-identifier-branded-type-resolution.md          | interfaces-agent-sdk-skill.md, lessons-learned.md, task-workflow.md   |
 | ファイル変換機能            | interfaces-converter.md, architecture-file-conversion.md      | interfaces-converter-\*, api-internal-conversion.md                   |
@@ -73,9 +74,10 @@
 | 設計仕様（Skill Publishing & Version Compatibility / 互換性チェック・公開判定） | interfaces-agent-sdk-skill.md, security-skill-execution.md, workflow-skill-lifecycle-created-skill-usage-journey.md | api-ipc-agent-core.md, arch-electron-services-core.md, arch-state-management-core.md, lessons-learned-current.md, task-workflow.md |
 | Runtime Skill Creator public IPC wiring（runtime plan/execute/improve 3チャンネル統合） | api-ipc-agent-core.md, security-electron-ipc-details.md, architecture-implementation-patterns-details.md | interfaces-agent-sdk-skill-reference.md, architecture-overview-core.md, lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, task-workflow-completed-ipc-contract-preload-alignment.md |
 | Runtime Skill Creator workflow engine orchestration（state owner / verify / review return / failure lifecycle / resume envelope） | architecture-overview-core.md, arch-electron-services-details-part2.md, api-ipc-system-core.md | lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, task-workflow-completed.md |
-| Runtime Skill Creator resource selection hardening（multi-root source discovery / budget degrade / provenance snapshot） | interfaces-agent-sdk-skill-reference.md, arch-electron-services-details-part2.md, task-workflow-completed.md | lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/` |
+| Runtime Skill Creator resource selection hardening（multi-root source discovery / budget degrade / provenance snapshot） | interfaces-agent-sdk-skill-reference.md, arch-electron-services-details-part2.md, task-workflow-completed.md | lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/` |
+| Skill Creator Workflow State / Verify Detail / User Input API（getVerifyDetail / requestReverify / getWorkflowState / submitUserInput / onWorkflowStateChanged） | api-ipc-system-core.md, interfaces-agent-sdk-skill-reference.md, arch-electron-services-details-part2.md | lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, task-workflow-completed.md |
 | 設計仕様（Skill Creator execution governance bundle / route authority・approval・disclosure・manual boundary） | workflow-ai-runtime-execution-responsibility-realignment.md, ui-ux-agent-execution-core.md, api-ipc-system-core.md, interfaces-agent-sdk-skill-reference-share-debug-analytics.md, `docs/30-workflows/skill-creator-agent-sdk-lane/step-05-seq-task-07-execution-governance-and-handoff-alignment/index.md` | lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, task-workflow-completed.md, `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
-| 実装済み導線（Runtime workflow engine failure lifecycle / reject・`success:false`・`verification_review`・append history） | architecture-overview-core.md, arch-electron-services-details-part2.md, api-ipc-system-core.md, `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/index.md` | task-workflow-completed.md, lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
+| 実装済み導線（Runtime workflow engine failure lifecycle / reject・`success:false`・`verification_review`・append history） | architecture-overview-core.md, arch-electron-services-details-part2.md, api-ipc-system-core.md, `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/index.md` | task-workflow-completed.md, lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
 | 設計仕様（Slide Modifier / Manual Fallback / SlideUIStatus 状態機械） | arch-state-management-core.md, ui-ux-agent-execution-core.md, llm-workspace-chat-edit.md | lessons-learned-ipc-preload-runtime.md, task-workflow-backlog.md, task-workflow-completed.md |
 | 設計・実装（Advanced Console Safety Governance / ApprovalGate / 3層レイヤー） | security-electron-ipc-core.md, api-ipc-system-core.md, architecture-implementation-patterns-core.md | architecture-overview-core.md, lessons-learned-current.md, task-workflow-completed.md, task-workflow-backlog.md |
 
@@ -96,6 +98,7 @@
 
 | ファイル                | 読み込み条件                                                 | 主要コンテンツ                      |
 | ----------------------- | ------------------------------------------------------------ | ----------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | overview.md             | プロジェクト理解、新規参加者オンボーディング、設計原則確認時 | 目的、設計原則、スコープ、成功基準  |
 | master-design.md        | 全体像把握、クイックリファレンス参照時                       | 目次、クイックリファレンス          |
 | quality-requirements.md | TDD実践、パフォーマンス要件確認、テストカバレッジ目標確認時  | パフォーマンス要件、TDD、カバレッジ |
@@ -105,6 +108,7 @@
 
 | ファイル                                | 読み込み条件                                               | 主要コンテンツ                             |
 | --------------------------------------- | ---------------------------------------------------------- | ------------------------------------------ |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | architecture-patterns.md                | 新機能追加、パターン確認、Zustand Slice実装時              | 機能追加パターン、IPC Handler、Zustand     |
 | architecture-monorepo.md                | モノレポ構成理解、型エクスポート方法確認時                 | pnpm workspace、型エクスポート             |
 | architecture-rag.md                     | RAG機能実装、Knowledge Graph設計、検索アーキテクチャ確認時 | Knowledge Graph、DiskANN、HybridRAG        |
@@ -128,6 +132,7 @@
 
 | ファイル               | 読み込み条件                           | 主要コンテンツ              |
 | ---------------------- | -------------------------------------- | --------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | interfaces-core.md     | Repository、Result型、Logger実装時     | IRepository、Result、Logger |
 | interfaces-auth.md     | 認証・プロフィール型定義確認時         | Auth型、Workspace型         |
 | interfaces-workflow.md | ワークフロー実行インターフェース確認時 | IWorkflowExecutor           |
@@ -136,6 +141,7 @@
 
 | ファイル                            | 読み込み条件                                      | 主要コンテンツ                    |
 | ----------------------------------- | ------------------------------------------------- | --------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | interfaces-agent-sdk.md             | Agent SDK全体像把握、どのファイルを読むか判断時   | インデックス、アーキテクチャ概要  |
 | interfaces-agent-sdk-skill.md       | スキル管理UI実装、SkillImportStore実装時          | Skill Dashboard、SkillImportStore |
 | interfaces-agent-sdk-ui.md          | 実行画面UI実装、AgentSDKPage実装時                | Agent Execution UI、AgentSDKPage  |
@@ -147,6 +153,7 @@
 
 | ファイル                    | 読み込み条件                                       | 主要コンテンツ                          |
 | --------------------------- | -------------------------------------------------- | --------------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | interfaces-llm.md           | LLMチャット実装全体像把握時（インデックス）        | 概要、ドキュメント構成、設計原則        |
 | llm-ipc-types.md            | LLM IPC型定義、Request/Response型確認時            | LLMChatRequest、Response型、設定型      |
 | llm-streaming.md            | ストリーミング実装、SSEレスポンス処理時            | StreamingResponse、Parser、Hooks        |
@@ -159,6 +166,7 @@
 
 | ファイル                                  | 読み込み条件                               | 主要コンテンツ                        |
 | ----------------------------------------- | ------------------------------------------ | ------------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | interfaces-rag.md                         | RAG全体像把握、共通型確認時                | Branded Types、RAGエラー型、共通IF    |
 | interfaces-rag-search.md                  | 検索戦略全体像把握時（インデックス）       | 検索概要、ドキュメント構成            |
 | rag-search-types.md                       | 検索型定義、SearchQuery/Result型確認時     | SearchQuery、SearchResult、列挙型     |
@@ -184,6 +192,7 @@
 
 | ファイル                                | 読み込み条件                                 | 主要コンテンツ               |
 | --------------------------------------- | -------------------------------------------- | ---------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | interfaces-converter.md                 | 変換機能全体像把握時                         | IConverter、Logger、History  |
 | interfaces-converter-implementations.md | 既存コンバーター確認、新規コンバーター追加時 | HTML/CSV/JSON/Markdown等     |
 | interfaces-converter-extension.md       | BaseConverter継承、カスタム実装時            | 継承パターン、テストパターン |
@@ -192,6 +201,7 @@
 
 | ファイル                     | 読み込み条件                      | 主要コンテンツ                    |
 | ---------------------------- | --------------------------------- | --------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | api-core.md                  | API設計方針確認、認証・認可設計時 | 設計方針、認証、レート制限        |
 | api-endpoints.md             | エンドポイント実装、IPC API追加時 | REST/IPC一覧、命名規則            |
 | api-chat-history.md          | 会話履歴API実装、DTO設計時        | Use Cases、DTOs、Repository       |
@@ -208,6 +218,7 @@
 
 | ファイル                   | 読み込み条件                                          | 主要コンテンツ                      |
 | -------------------------- | ----------------------------------------------------- | ----------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | database-schema.md         | テーブル設計確認、マイグレーション作成時              | テーブル一覧、インデックス設計      |
 | database-implementation.md | 型安全クエリ実装、オフライン対応、DiskANN実装時       | Drizzle、Embedded Replicas、DiskANN |
 | database-operations.md     | Turso運用、セキュリティ設定、ローカルストレージ確認時 | 無料枠、セキュリティ、Electron      |
@@ -217,6 +228,7 @@
 
 | ファイル                      | 読み込み条件                                         | 主要コンテンツ                     |
 | ----------------------------- | ---------------------------------------------------- | ---------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | ui-ux-components.md           | コンポーネント実装、Apple HIG準拠、WCAG対応時        | 設計原則、HIG、アクセシビリティ    |
 | ui-ux-design-system.md        | Design Token確認、カラー・タイポグラフィ設定時       | Tokens、カラー、タイポグラフィ     |
 | workflow-light-theme-contrast-regression-guard.md | current build static serve / selector-based capture / light audit の再利用時 | guard workflow、SubAgent分担、苦戦箇所、5分解決カード |
@@ -254,6 +266,7 @@
 
 | ファイル                     | 読み込み条件                                     | 主要コンテンツ                    |
 | ---------------------------- | ------------------------------------------------ | --------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | security-implementation.md   | セキュリティ実装全体像把握時（インデックス）     | 構成、原則                        |
 | security-principles.md       | セキュリティ設計原則確認、認証・認可設計時       | 設計原則、認証、データ保護        |
 | security-api-electron.md     | API/IPC セキュリティ全体像把握時（インデックス） | 概要、ドキュメント構成、設定一覧  |
@@ -268,6 +281,7 @@
 
 | ファイル               | 読み込み条件                                    | 主要コンテンツ               |
 | ---------------------- | ----------------------------------------------- | ---------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | technology-core.md     | コアランタイム、フロントエンド技術確認時        | Node.js、TypeScript、React   |
 | technology-frontend.md | フロントエンド技術スタック詳細確認時            | React、Next.js、Tailwind CSS |
 | technology-desktop.md  | デスクトップ技術スタック詳細確認時              | Electron、IPC、ビルド        |
@@ -278,6 +292,7 @@
 
 | ファイル                        | 読み込み条件                                      | 主要コンテンツ                |
 | ------------------------------- | ------------------------------------------------- | ----------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | claude-code-overview.md         | Claude Code全体像把握、3層アーキテクチャ確認時    | 3層構造、用語定義             |
 | claude-code-skills-overview.md  | Skill作成開始時、コア原則確認時                   | コア原則、概要                |
 | claude-code-skills-structure.md | SKILL.md構造確認、ディレクトリ構成時              | Skill構造、SKILL.md仕様       |
@@ -293,6 +308,7 @@
 
 | ファイル                 | 読み込み条件                               | 主要コンテンツ                    |
 | ------------------------ | ------------------------------------------ | --------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | deployment.md            | デプロイ全体像把握時（インデックス）       | 戦略概要、チェックリスト          |
 | deployment-electron.md   | Electronアプリリリース、自動更新設定時     | ビルド、リリースフロー、署名      |
 | deployment-gha.md        | GitHub Actions CI/CD設定時                 | ワークフロー、キャッシュ、Secrets |
@@ -310,6 +326,7 @@
 
 | ファイル                     | 読み込み条件                               | 主要コンテンツ                              |
 | ---------------------------- | ------------------------------------------ | ------------------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | spec-guidelines.md           | 仕様書作成、命名規則確認時                 | 命名規則、記述形式                          |
 | spec-splitting-guidelines.md | 大規模ファイル分割時                       | 分割基準、カテゴリ別パターン                |
 | development-guidelines.md    | 開発ガイドライン確認、命名規則、デバッグ時 | ロギング、キャッシング、i18n                |
@@ -422,6 +439,7 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |
 | 2026-03-25 | 1.23.1     | TASK-SC-07 完了同期: Wizard LLM Generation Flow。arch-state-management-core, ui-ux-feature-components-core, lessons-learned-ipc-preload-runtime, task-workflow-completed 更新。L-SC-07-001〜004 追加 |
 | 2026-03-25 | 1.23.0     | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001: ApprovalGate/Consumer Auth Guard/3層レイヤーのクイックルックアップ追加。security-electron-ipc-core.md, api-ipc-system-core.md, architecture-implementation-patterns-core.md への導線を登録 |
 | 2026-03-20 | 1.22.0     | UT-RAG-08-002: HybridRAGFactory wiring 行に `lessons-learned-rag-embedding-runtime.md` を追加。ILLMClient 型ドリフト（L-RAG-06/P64）への導線を登録 |

@@ -23,14 +23,14 @@ primary route、secondary route、advanced route、warning summary の配置を 
 
 ## 参照資料
 
-| 資料名               | パス                                                                                                    | 説明                                  |
-| -------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| Phase 1 要件         | `phase-1-requirements.md`                                                                               | mainline requirements                 |
-| Phase 1 抽出表       | `outputs/phase-1/spec-extraction-map.md`                                                                | spec / code の論点抽出                |
-| Task03 Phase 2       | `../step-03-par-task-03-context-budget-and-resource-selection/phase-2-design.md`                        | provenance handoff                    |
-| Task03 budget matrix | `../step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-2/budget-degrade-matrix.md` | warning trigger 種別                  |
-| Task04 Phase 2       | `../step-03-par-task-04-user-interaction-bridge-and-phase-ui/phase-2-design.md`                         | interaction 入力と warning 表示の分離 |
-| Task06 index         | `../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`                                  | verify / improve 側の責務境界         |
+| 資料名               | パス                                                                                                                    | 説明                                  |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Phase 1 要件         | `phase-1-requirements.md`                                                                                               | mainline requirements                 |
+| Phase 1 抽出表       | `outputs/phase-1/spec-extraction-map.md`                                                                                | spec / code の論点抽出                |
+| Task03 Phase 2       | `../completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/phase-2-design.md`                        | provenance handoff                    |
+| Task03 budget matrix | `../completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-2/budget-degrade-matrix.md` | warning trigger 種別                  |
+| Task04 Phase 2       | `../completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/phase-2-design.md`                         | interaction 入力と warning 表示の分離 |
+| Task06 index         | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`                     | verify / improve 側の責務境界         |
 
 ### システム仕様（aiworkflow-requirements）
 

@@ -23,14 +23,14 @@
 
 ## 参照資料
 
-| 資料名                 | パス                                                                   | 説明                  |
-| ---------------------- | ---------------------------------------------------------------------- | --------------------- |
-| Phase 2 design         | `phase-2-design.md`                                                    | route / warning 配置  |
-| Phase 4 test creation  | `phase-4-test-creation.md`                                             | テスト観点            |
-| Phase 5 implementation | `phase-5-implementation.md`                                            | 実装対象との一致確認  |
-| Phase 6 test expansion | `phase-6-test-expansion.md`                                            | edge case 追補        |
-| Phase 8 refactoring    | `phase-8-refactoring.md`                                               | wording 統一          |
-| Task06 index           | `../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md` | verify / improve 境界 |
+| 資料名                 | パス                                                                                                | 説明                  |
+| ---------------------- | --------------------------------------------------------------------------------------------------- | --------------------- |
+| Phase 2 design         | `phase-2-design.md`                                                                                 | route / warning 配置  |
+| Phase 4 test creation  | `phase-4-test-creation.md`                                                                          | テスト観点            |
+| Phase 5 implementation | `phase-5-implementation.md`                                                                         | 実装対象との一致確認  |
+| Phase 6 test expansion | `phase-6-test-expansion.md`                                                                         | edge case 追補        |
+| Phase 8 refactoring    | `phase-8-refactoring.md`                                                                            | wording 統一          |
+| Task06 index           | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md` | verify / improve 境界 |
 
 ## 品質観点
 

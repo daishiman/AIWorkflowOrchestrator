@@ -198,6 +198,24 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 - リファクタリング（インターフェース不変）
 - バグ修正（仕様変更なし）
 
+#### `spec_created` UI task の Phase 12 close-out ルール
+
+`spec_created` ステータスの UI task でも Phase 12 実行時は Step 1-A〜1-C を N/A にせず same-wave sync で閉じる。
+
+| Step | `spec_created` での扱い |
+| --- | --- |
+| Step 1-A | 完了タスク記録 + LOGS.md x2 + SKILL.md x2 + topic-map を same-wave で更新 |
+| Step 1-B | 実装状況テーブルに `spec_created` を記録（`completed` ではない） |
+| Step 1-C | 関連タスクテーブルのステータスを current facts へ更新 |
+| Step 2 | 新規インターフェース追加がなければ N/A（ただし下記の再判定ルールを確認） |
+
+#### docs-only task に後からコード実装が入った場合の再判定ルール
+
+当初 docs-only / `spec_created` だった task に後から code 変更が入った場合:
+1. **Step 2 再判定**: source workflow と `outputs/phase-12/*.md` を同一ターンで current facts へ戻す
+2. **Screenshot 再判定**: `N/A` / `NON_VISUAL` だった Phase 11 evidence の reclassification を検討する
+3. **新規未タスク 0 件固定より current gap formalize を優先**: code wave で生じた gap は即座に未タスク化する
+
 ---
 
 ### Task 4: 未タスク検出（0件でも出力必須）
@@ -222,7 +240,8 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **v6.18.13** | **2026-03-27** | **UT-EXEC-01 execution-responsibility close-out guard を反映**: `references/phase-12-documentation-guide.md` と `references/spec-update-workflow.md` に、implementation anchor 追補時の target source path 実在確認、duplicate source / ID collision の `current` vs `baseline` 分離、docs-only close-out でも summary/changelog へ同値記録するルールを追加 |
+| **6.18.14** | **2026-03-27** | **Phase 12 close-out ルール hardening を反映**: (1) `spec_created` UI task でも Step 1-A〜1-C を N/A にせず same-wave sync で閉じるルール、(2) docs-only task に後から code 実装が入った場合の Step 2 / screenshot 再判定ルール、(3) Phase 12 documentation guide hardening（planned wording 残存 grep 監査、evidence reclassification）を SKILL.md に明示 |
+| **6.18.13** | **2026-03-27** | **TASK-SDK-05 create-entry-mainline-unification spec sync を guide へ反映**: `spec_created` UI task の Phase 12 でも Step 1-A〜1-C を N/A にしない same-wave sync ルール、`verification-report.md` の workflow root path drift 是正、`.claude` 正本更新後の `.agents` mirror parity 確認を close-out 完了条件へ追加 |
 | **6.18.12** | **2026-03-26** | **TASK-SDK-01 hardening sync を guide へ反映**: docs-only follow-up に後からコード変更が入った時は source workflow と `outputs/phase-12/*.md` を同一ターンで current facts へ戻すルールを `phase-12-documentation-guide.md` に追加 |
 
 ---
@@ -598,7 +617,6 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 | **v10.08.1** | **2026-03-04** | **TASK-FIX-SKILL-CENTER-METADATA-DEFENSIVE-GUARD-001 再監査の最終固定**: `complete-phase.js` を Phase 1〜12 へ順次適用して `artifacts.json` を `completed` 同期、`outputs/artifacts.json` を生成。`generate-index`（2スキル）+ `verify-all-specs`（13/13）+ `validate-phase-output`（28項目）+ `validate-phase11-screenshot-coverage`（4/4）+ `verify-unassigned-links`（88/88）を再実行し、再監査の証跡を固定 |
 | **v10.08.0** | **2026-03-04** | **TASK-FIX-SKILL-IMPORT 3連続是正の再監査を反映**: `01/02/03` workflow を再監査し、`aiworkflow-requirements` 正本6仕様書（api-ipc/interfaces/arch-state/ui-ux-feature/task-workflow/lessons）へ実装内容と苦戦箇所を同期。Phase 12 Task 5 必須の4ファイル（`LOGS.md` x2 + `SKILL.md` x2）を同一ターンで更新し、`verify-all-specs`（3workflow）/`validate-phase-output`（3workflow）/`validate-phase11-screenshot-coverage`（workflow03）/`audit --diff-from HEAD` の証跡を固定 |
 | **v10.09.12** | **2026-03-25** | **UT-SC-02-005 の close-out を反映**: execute 型更新タスクの workflow で不足していた Phase 3/6/7/8/9/10/11/12 成果物名を仕様書と一致させ、`manual-test-result.md` / `quality-report.md` / `system-spec-update-summary.md` を current facts に同期。Phase 12 は outputs 充足だけでなく古いテスト件数・out-of-scope 記述の残骸除去まで同一ターンで行うルールを変更履歴へ追加 |
-| **v10.09.14** | **2026-03-27** | **UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 完了同期を反映**: `references/phase-12-documentation-guide.md` に、Phase 12 再監査で解消済みになった follow-up を `docs/30-workflows/completed-tasks/unassigned-task/` へ完了移管し、open set から除外する運用を追加。`documentation-changelog.md` / `system-spec-update-summary.md` / backlog の open/done 記述粒度をそろえる current fact rule も追記 |
 | **v10.09.13** | **2026-03-27** | **TASK-SDK-04 implementation spec sync を反映**: `references/spec-update-workflow.md` に、`spec_created` task へ code wave が混入した場合の Step 2 再判定と Phase 11 screenshot policy 見直しを追加。`新規未タスク 0件` 固定より current gap formalize を優先する close-out ルールを補強 |
 | **v10.07.0-v10.03.0** | **2026-03-03〜2026-03-02** | **Phase 12 再監査・完了同期の標準化**: TASK-10A-D/C/B 再監査、Phase 13 PR本文連携強化、Phase 11 画面カバレッジマトリクス改善、Phase 12 準拠再確認パターン確立。詳細は `LOGS.md` を参照 |
 | **v10.02.0-v9.90.0** | **2026-03-02〜2026-02-25** | **Phase 12 完了同期と再監査ルールの整備**: `artifacts.json` / `outputs` 同期、完了ゲート化、unassigned audit scope control、quick_validate 運用標準化。詳細は `LOGS.md` を参照 |

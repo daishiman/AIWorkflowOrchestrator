@@ -23,12 +23,13 @@ Task05 の設計が「主導線を 1 本にする」目的へ収束している�
 
 ## 参照資料
 
-| 資料名                 | パス                                                                   | 説明                      |
-| ---------------------- | ---------------------------------------------------------------------- | ------------------------- |
-| Phase 1 要件           | `phase-1-requirements.md`                                              | AC-1〜AC-7                |
-| Phase 2 設計           | `phase-2-design.md`                                                    | surface / navigation 設計 |
-| Phase 2 境界マトリクス | `outputs/phase-2/mainline-boundary-matrix.md`                          | primary/secondary 設計表  |
-| Task06 index           | `../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md` | verify / improve 側の責務 |
+| 資料名                 | パス                                                                                                | 説明                                 |
+| ---------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| Phase 1 要件           | `phase-1-requirements.md`                                                                           | AC-1〜AC-7                           |
+| Phase 2 設計           | `phase-2-design.md`                                                                                 | surface / navigation 設計            |
+| Phase 2 境界マトリクス | `outputs/phase-2/mainline-boundary-matrix.md`                                                       | primary/secondary 設計表             |
+| Task06 index           | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md` | verify / improve 側の責務            |
+| elegance review        | `outputs/phase-3/skill-compliance-and-elegance-review.md`                                           | 2 skill 準拠監査と 30 思考法レビュー |
 
 ## レビュー観点
 
@@ -60,10 +61,11 @@ lane 全体の責務境界を保ったまま Task05 を独立 task として成�
 
 ## 成果物
 
-| 成果物       | パス                                    | 内容               |
-| ------------ | --------------------------------------- | ------------------ |
-| レビュー結果 | `phase-3-design-review.md`              | review gate の本文 |
-| gate record  | `outputs/phase-3/design-review-gate.md` | 判定根拠の要約     |
+| 成果物       | パス                                                      | 内容                       |
+| ------------ | --------------------------------------------------------- | -------------------------- |
+| レビュー結果 | `phase-3-design-review.md`                                | review gate の本文         |
+| gate record  | `outputs/phase-3/design-review-gate.md`                   | 判定根拠の要約             |
+| review audit | `outputs/phase-3/skill-compliance-and-elegance-review.md` | skill 準拠とエレガンス監査 |
 
 ## 完了条件
 

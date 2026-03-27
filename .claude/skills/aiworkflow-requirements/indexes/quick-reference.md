@@ -67,6 +67,19 @@
 
 ---
 
+### Skill Creator Create Mainline Entry（2026-03-27）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| Task05 の全体像 | `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/index.md` |
+| 一次導線と ViewType 契約 | `references/ui-ux-navigation.md`, `references/workflow-skill-lifecycle-routing-render-view-foundation.md` |
+| state owner / handoff 境界 | `references/arch-state-management-core.md` |
+| create 後の downstream journey | `references/workflow-skill-lifecycle-created-skill-usage-journey.md` |
+| completed ledger | `references/task-workflow-completed.md` |
+| Phase 12 教訓 | `references/lessons-learned-phase12-workflow-lifecycle.md` |
+
+---
+
 ### Skill Creator Execution Governance Bundle（2026-03-26）
 
 | 目的 | 最初に開くファイル |
@@ -168,6 +181,19 @@
 | 実装完了 root | `docs/30-workflows/completed-tasks/step-01-seq-task-01-manifest-contract-foundation/` |
 | follow-up workflow root | `docs/30-workflows/completed-tasks/task-sdk-01-phase12-compliance-sync/` |
 | follow-up 指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-01-phase12-compliance-sync-001.md` |
+
+---
+
+### Skill Creator Workflow State / User Input / Verify API（2026-03-27）
+
+| 目的 | API / 型名 | 最初に開くファイル |
+| --- | --- | --- |
+| verify detail 取得 | `getVerifyDetail(planId)` → `RuntimeSkillCreatorVerifyDetail` | `references/api-ipc-system-core.md` |
+| reverify 要求 | `requestReverify(planId)` → `RuntimeSkillCreatorReverifyResult` | `references/api-ipc-system-core.md` |
+| workflow state 取得 | `getWorkflowState(planId)` → `SkillCreatorWorkflowUiSnapshot` | `references/api-ipc-system-core.md` |
+| ユーザー入力送信 | `submitUserInput(submission)` → `SkillCreatorWorkflowUiSnapshot` | `references/api-ipc-system-core.md` |
+| workflow state 変更通知 | `onWorkflowStateChanged(callback)` → unsubscribe | `references/api-ipc-system-core.md` |
+| 教訓 | 苦戦箇所4件（artifact ID / PhaseResourcePlanner / IPC型境界 / verify evidence） | `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` |
 
 ---
 
@@ -437,6 +463,7 @@ packages/
 
 | 日付       | 変更内容                                                                                           |
 | ---------- | -------------------------------------------------------------------------------------------------- |
+| 2026-03-27 | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Skill Creator Workflow State / User Input / Verify API 即時導線追加。getVerifyDetail / requestReverify / getWorkflowState / submitUserInput / onWorkflowStateChanged の5 API 導線を登録 |
 | 2026-03-25 | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001: 即時導線セクション追加、承認・安全ガバナンス IPCチャンネル5件追加、IApprovalGate/isConsumerToken/sanitizeForApiKeys 型定義追加 |
 | 2026-03-20 | UT-RAG-08-002: `ILLMClient` 型ドリフト（P64）への参照パスを型定義クイックアクセステーブルに追加。`lessons-learned-rag-embedding-runtime.md` (L-RAG-06) へ導線を登録 |
 | 2026-03-19 | UT-TASK06-007: discovery 導線を completed canonical set に再同期し、implementation pattern detail / completed ledger / EXT-001〜005 を早見表へ反映 |

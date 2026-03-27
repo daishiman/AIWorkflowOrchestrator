@@ -42,14 +42,14 @@ secondary route と advanced route を消さずに序列化する。
 
 ## 参照資料
 
-| 資料名         | パス                                                                             | 説明                             |
-| -------------- | -------------------------------------------------------------------------------- | -------------------------------- |
-| task root      | `index.md`                                                                       | Task05 の全体像                  |
-| lane 要件草案  | `../requirements-draft.md`                                                       | 主導線一本化の要求根拠           |
-| Task03 index   | `../step-03-par-task-03-context-budget-and-resource-selection/index.md`          | provenance / degrade の upstream |
-| Task03 Phase 2 | `../step-03-par-task-03-context-budget-and-resource-selection/phase-2-design.md` | provenance handoff 境界          |
-| Task04 index   | `../step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`           | interaction bridge の upstream   |
-| executor guide | `../executor-guide.md`                                                           | lane 全体の責務分離              |
+| 資料名         | パス                                                                                             | 説明                             |
+| -------------- | ------------------------------------------------------------------------------------------------ | -------------------------------- |
+| task root      | `index.md`                                                                                       | Task05 の全体像                  |
+| lane 要件草案  | `../skill-creator-agent-sdk-lane/requirements-draft.md`                                          | 主導線一本化の要求根拠           |
+| Task03 index   | `../completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/index.md`          | provenance / degrade の upstream |
+| Task03 Phase 2 | `../completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/phase-2-design.md` | provenance handoff 境界          |
+| Task04 index   | `../completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`           | interaction bridge の upstream   |
+| executor guide | `../skill-creator-agent-sdk-lane/executor-guide.md`                                              | lane 全体の責務分離              |
 
 ### システム仕様（aiworkflow-requirements）
 

@@ -1,7 +1,7 @@
 {
   "workflow": "step-04-par-task-05-create-entry-mainline-unification",
   "taskId": "TASK-SDK-05",
-  "status": "spec_created",
+  "status": "implemented",
   "parentWorkflow": "skill-creator-agent-sdk-lane",
   "dependsOnTasks": ["TASK-SDK-03", "TASK-SDK-04"],
   "phases": [
@@ -87,7 +87,10 @@
   "artifacts": {
     "phase1": ["outputs/phase-1/spec-extraction-map.md"],
     "phase2": ["outputs/phase-2/mainline-boundary-matrix.md"],
-    "phase3": ["outputs/phase-3/design-review-gate.md"],
+    "phase3": [
+      "outputs/phase-3/design-review-gate.md",
+      "outputs/phase-3/skill-compliance-and-elegance-review.md"
+    ],
     "phase4": ["outputs/phase-4/test-matrix.md"],
     "phase11": [
       "outputs/phase-11/manual-test-checklist.md",

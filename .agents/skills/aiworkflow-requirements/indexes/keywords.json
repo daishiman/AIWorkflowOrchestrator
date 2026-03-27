@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-27T07:16:20.301Z",
-  "totalKeywords": 2514,
+  "generated": "2026-03-27T10:55:54.536Z",
+  "totalKeywords": 2522,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -285,6 +285,7 @@
       "interfaces-system-prompt.md",
       "ipc-contract-checklist.md",
       "ipc-type-resolution-guide.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -653,6 +654,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -669,6 +671,7 @@
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "quality-requirements.md",
       "rag-desktop-state.md",
       "security-electron-ipc-advanced.md",
@@ -1078,6 +1081,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -1121,6 +1125,7 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
@@ -1243,6 +1248,7 @@
       "claude-code-skills-process.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -1273,6 +1279,7 @@
     "execute": [
       "api-ipc-agent-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-skill-lifecycle-design.md"
     ],
@@ -1298,7 +1305,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -1330,6 +1337,7 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
@@ -1391,6 +1399,7 @@
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "logs-archive-legacy.md",
@@ -1434,7 +1443,7 @@
     ],
     "GUARD": [
       "api-ipc-agent-core.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
@@ -1484,6 +1493,7 @@
       "lessons-learned-safety-gate-permission-fallback.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-skill-execution.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
@@ -1763,6 +1773,7 @@
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
@@ -1986,6 +1997,7 @@
     "fallback": [
       "api-ipc-auth.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md"
     ],
     "イベントチャネル": [
@@ -2259,6 +2271,7 @@
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
@@ -2377,6 +2390,7 @@
       "architecture-implementation-patterns-core.md",
       "lessons-learned-current.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-api-electron.md",
       "security-electron-ipc-core.md"
     ],
@@ -2384,6 +2398,7 @@
       "api-ipc-system-core.md",
       "architecture-implementation-patterns-core.md",
       "lessons-learned-current.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-api-electron.md",
       "security-electron-ipc-core.md"
     ],
@@ -2391,6 +2406,7 @@
       "api-ipc-system-core.md",
       "architecture-implementation-patterns-core.md",
       "lessons-learned-current.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-api-electron.md",
       "security-electron-ipc-core.md"
     ],
@@ -2398,6 +2414,7 @@
       "api-ipc-system-core.md",
       "architecture-implementation-patterns-core.md",
       "lessons-learned-current.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-api-electron.md",
       "security-electron-ipc-core.md"
     ],
@@ -2563,6 +2580,7 @@
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
     ],
@@ -2729,6 +2747,7 @@
       "arch-state-management-core.md",
       "interfaces-auth-core.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "RESPONSIBILITY": [
@@ -2740,7 +2759,7 @@
       "arch-execution-capability-contract.md",
       "error-handling-details.md",
       "interfaces-auth-core.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
@@ -3073,7 +3092,7 @@
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management-reference-selectors.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
@@ -3108,6 +3127,7 @@
     ],
     "STATUS": [
       "arch-state-management-core.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "TYPE": [
@@ -3119,6 +3139,7 @@
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-02-permission-history-execution-timestamps.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "SPEC": [
@@ -3127,6 +3148,7 @@
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "SYNC": [
@@ -3135,6 +3157,7 @@
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "Modifier": [
@@ -3399,7 +3422,6 @@
     ],
     "CENTRALIZATION": [
       "arch-state-management-reference.md",
-      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
     ],
@@ -3855,6 +3877,7 @@
     ],
     "creator": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-console-migration-patterns.md",
@@ -3916,7 +3939,7 @@
       "architecture-implementation-patterns-reference-ipc-drift-detection.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-build-harness-guard.md",
@@ -4166,6 +4189,7 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
@@ -4409,6 +4433,7 @@
       "ipc-contract-checklist.md",
       "lessons-learned-archive-2026-03-mid.md",
       "lessons-learned-archive-2026-03.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -5792,6 +5817,7 @@
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
@@ -5831,6 +5857,7 @@
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
@@ -5876,6 +5903,7 @@
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-skill-build-harness-guard.md",
@@ -5904,6 +5932,7 @@
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
     ],
@@ -5924,7 +5953,6 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -6031,23 +6059,24 @@
     "HANDLER": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md"
     ],
     "GRACEFUL": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
     ],
     "DEGRADATION": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
     ],
@@ -6120,6 +6149,7 @@
     "REGISTRATION": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md"
@@ -6156,6 +6186,7 @@
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-viewtype-electron-ui.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "SANDBOX": [
@@ -6226,6 +6257,7 @@
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-ipc-graceful-degradation-lifecycle.md"
     ],
     "ハンドラ登録修正": [
@@ -6309,7 +6341,7 @@
     ],
     "TIMEOUT": [
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
       "security-electron-ipc-advanced.md",
@@ -6416,6 +6448,7 @@
     ],
     "lifecycle": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-chat-lifecycle-tests.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-design.md",
@@ -6440,31 +6473,59 @@
     "resume": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
-    "APIKEY": [
+    "VERIFY": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ARTIFACT": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-agent-execution-core.md"
+    ],
+    "APPEND": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "追加教訓": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "settings": [
+      "lessons-learned-auth-settings-degradation-guard.md"
+    ],
+    "degradation": [
+      "lessons-learned-auth-settings-degradation-guard.md"
+    ],
+    "guard": [
+      "lessons-learned-auth-settings-degradation-guard.md",
+      "workflow-light-theme-contrast-regression-guard.md",
+      "workflow-workspace-parent-reference-sweep-guard.md",
+      "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "APIKEY": [
+      "lessons-learned-auth-settings-degradation-guard.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "ui-ux-settings-core.md"
     ],
     "AUTHGUARD": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
       "ui-ux-settings-core.md"
     ],
     "BYPASS": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
       "ui-ux-settings-core.md"
     ],
     "実装教訓": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-rag-embedding-runtime.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md"
     ],
     "再監査教訓": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md"
     ],
     "Robustness": [
@@ -6597,9 +6658,6 @@
     "PLACEMENT": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "IMPLEMENTATION": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
     "user": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6674,18 +6732,6 @@
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "VERIFY": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "EXPANSION": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "EXEC": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "VERIFY": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "EXPANSION": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -6693,13 +6739,6 @@
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "foundation": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "ARTIFACT": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "ui-ux-agent-execution-core.md"
-    ],
-    "APPEND": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "仕様書作成": [
@@ -7085,6 +7124,7 @@
     "abort": [
       "lessons-learned-test-typesafety.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-ut-06-safety-gate.md",
@@ -7092,6 +7132,7 @@
     ],
     "skip": [
       "lessons-learned-test-typesafety.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-ut-06-safety-gate.md",
@@ -7099,6 +7140,7 @@
     ],
     "retry": [
       "lessons-learned-test-typesafety.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-ut-06-safety-gate.md",
@@ -7218,14 +7260,17 @@
     "APP": [
       "lessons-learned-viewtype-electron-ui.md",
       "logs-archive-2026-03-history-search-notification-center.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "MENU": [
       "lessons-learned-viewtype-electron-ui.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "ZOOM": [
       "lessons-learned-viewtype-electron-ui.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-lifecycle-agent-view-line-budget.md"
     ],
     "派生未タスク": [
@@ -7756,6 +7801,7 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md",
@@ -7975,6 +8021,7 @@
       "logs-archive-2026-03-history-search-notification-center.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-core.md",
       "ui-history-integration.md",
       "ui-ux-feature-components-advanced.md",
@@ -9098,6 +9145,31 @@
     ],
     "ライフサイクル統合テスト": [
       "logs-archive-2026-03-line-budget-workflow-consolidation.md"
+    ],
+    "logs": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "mid": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "governance": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "improve": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "契約ドリフト自動検出スクリプト完了": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "preload": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
+      "ui-history-integration.md"
+    ],
+    "型追従の": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "整理": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "実装の": [
       "logs-archive-2026-03-notification-history-sigterm-guard.md"
@@ -10779,9 +10851,6 @@
     "タスク依存関係一覧": [
       "ui-history-integration.md"
     ],
-    "preload": [
-      "ui-history-integration.md"
-    ],
     "setup": [
       "ui-history-integration.md"
     ],
@@ -11603,11 +11672,6 @@
     ],
     "regression": [
       "workflow-light-theme-contrast-regression-guard.md"
-    ],
-    "guard": [
-      "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-workspace-parent-reference-sweep-guard.md",
-      "workflow-workspace-preview-search-resilience-guard.md"
     ],
     "ライトモード全画面": [
       "workflow-light-theme-global-remediation.md"

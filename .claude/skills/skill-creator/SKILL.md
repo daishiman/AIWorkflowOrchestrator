@@ -92,6 +92,47 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 📖 [agents/interview-user.md](.claude/skills/skill-creator/agents/interview-user.md)
 📖 [agents/select-resources.md](.claude/skills/skill-creator/agents/select-resources.md)
 
+### Runtime ワークフロー状態遷移
+
+Renderer から IPC 経由で駆動する Runtime Skill Creator ワークフロー:
+
+```
+plan → review (awaiting user input) → execute → verify → [pass] handoff
+                                                       → [fail] improve → reverify → ...
+```
+
+| Phase | IPC チャネル | 型 |
+| --- | --- | --- |
+| plan | `skill-creator:plan` | `SkillCreatorPlanResult` |
+| review | `skill-creator:submit-user-input` | `SkillCreatorUserInputRequest` |
+| execute | `skill-creator:execute-plan` | `SkillCreatorExecutePlanResult` |
+| verify | `skill-creator:get-verify-detail` | `RuntimeSkillCreatorVerifyDetail` |
+| reverify | `skill-creator:reverify-workflow` | `RuntimeSkillCreatorReverifyResult` |
+| improve | `skill-creator:improve-skill` | `RuntimeSkillCreatorImproveResult` |
+| state query | `skill-creator:get-workflow-state` | `SkillCreatorWorkflowState` |
+| state push | `skill-creator:workflow-state-changed` | (event) |
+
+#### ユーザー入力ブリッジ（4種）
+
+| kind | 用途 | 例 |
+| --- | --- | --- |
+| `single_select` | 選択肢から1つ選択 | plan review の承認/却下 |
+| `free_text` | 自由テキスト入力 | フィードバックコメント |
+| `secret` | 秘匿入力（APIキー等） | LLM API キー |
+| `confirm` | Yes/No 確認 | reverify 実行確認 |
+
+#### Verify Detail Surface（layer3/layer4）
+
+`RuntimeSkillCreatorVerifyDetail` は layer3（構造検証）と layer4（品質検証）の check を自動生成する。
+各 check は `info` / `warning` / `error` の severity を持ち、`reverifyEligible` フラグで再検証可否を判定する。
+`disabledReason` は 4段階（`no_plan` / `already_running` / `all_checks_pass` / `cooldown`）で UI の disable 理由を通知する。
+
+#### 動的リソース選択（PhaseResourcePlanner / SkillCreatorSourceResolver）
+
+- **PhaseResourcePlanner**: max bytes ベースの context budget で `required-core` / `required-context` / `optional-quality` / `optional-deep-dive` の 4 tier にリソースを分類し、budget 超過時は下位 tier を自動カットする。
+- **SkillCreatorSourceResolver**: manifest 定義と fallback 候補（`.claude/skills/skill-creator` / `.agents/skills/skill-creator`）の競合を structure signature で解決し、`manifest` / `bundled` / `project` の source mode を確定する。
+- **SkillCreatorWorkflowSourceProvenance**: 解決結果を `resolvedSkillCreatorRoot` / `resourceDescriptorHash` / `manifestPath` / `manifestCacheKey` として plan result に埋め込む。
+
 ### Orchestrate モード
 
 実行エンジン選択: `claude` | `codex` | `gemini` | `claude-to-codex`
@@ -241,8 +282,7 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **10.37.52** | **2026-03-27** | **UT-EXEC-01 の docs-only close-out guard を反映**: `references/patterns.md` に implementation anchor 追補時の target path 実在確認と duplicate source / ID collision の baseline 判定パターンを追加し、`references/update-process.md` に docs-only close-out の current/baseline 分離 lane を追記 |
-| **10.37.52** | **2026-03-27** | **UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 完了同期を反映**: `references/update-process.md` に、close-out remediation follow-up を同一 wave で解消した場合は parent workflow の evidence を直接 current facts へ戻し、別 remediation workflow を正本化しない方針を追加。あわせて open follow-up は `docs/30-workflows/unassigned-task/`、完了移管済み follow-up は `docs/30-workflows/completed-tasks/unassigned-task/` に分離し、backlog / completed ledger / changelog の open/done 粒度をそろえるルールを追記 |
+| **10.38.0** | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映 |
 | **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善 |
 | **10.37.43** | **2026-03-26** | **TASK-SDK-01 hardening sync を template へ反映**: docs-heavy Phase 12 follow-up に code hardening が入った時の same-wave rollback-to-current ルール、carry-forward 0件同期、compile gate と env-blocked test の分離記録を `references/patterns.md` / `references/update-process.md` へ追加 |
 
@@ -252,6 +292,7 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 | Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **10.38.0** | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映 |
 | **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善 |
 | **10.37.50** | **2026-03-26** | **TASK-SDK-02 workflow-engine-runtime-orchestration を反映**: `references/patterns.md` に「public bridge と workflow state owner の分離パターン」を追加。runtime orchestration task では `Facade` を public bridge、`Engine` を state owner として固定し、`terminal_handoff` early return、`resumeTokenEnvelope` / provenance 同一 owner、禁止副作用のテスト化までを close-out 完了条件として扱うルールを標準化 |
 | **10.37.49** | **2026-03-26** | **UT-SC-02-005 の stale fact cleanup ルールを追加**: `references/update-process.md` に Phase 12 retrospective の `Phase 3.5: stale fact cleanup` を追記し、`assets/phase12-system-spec-retrospective-template.md` にテスト件数 / coverage / out-of-scope 注記 / 日付 / follow-up 件数を outputs と未タスク指示書で同値同期するルールを追加。same-wave sync の完了条件を「生成 + drift 除去」まで拡張 |
@@ -302,7 +343,6 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | ------------ | -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **10.37.12** | **2026-03-07** | **TASK-10A-F Store駆動スキルライフサイクルUI統合の仕様同期**: `arch-state-management.md` に Case B方式の状態管理設計を追加。`lessons-learned.md` に Store mock統一パターン等5件の苦戦箇所を追加。`architecture-implementation-patterns.md` に S19（直接IPC→Store移行パターン）を新設。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）                                                                                                                                                                                       |
 | **10.37.12** | **2026-03-06** | **TASK-10A-E-C の Phase 12再監査知見をパターン化**: `references/patterns.md` に「`documentation-changelog.md` の計画記述残置を排除して実更新ログへ昇格する」パターンと、「未タスク指示書を9見出しテンプレート準拠で作成し `audit --target-file` で個別検証する」パターンを追加。Phase 12 での完了誤判定と未タスクフォーマット逸脱の再発防止を標準化                                                                                                                                                                                          |
-| **10.37.14** | **2026-03-27** | **runtime policy close-out の internal hardening 判定を追補**: `references/update-process.md` に composition root authority / shared auth mode service / reason source of truth 変更を Step 2 更新対象へ含めるルールを追加し、handler test の canonical decision vocabulary（`integrated_api` / `terminal_handoff`）と `manualRetryRule` 単一化を summary に残す運用を標準化 |
 | **10.37.13** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の Phase 12 運用知見を反映**: `references/update-process.md` に targeted suite PASS / wider suite blocker / duplicate backlog check を分離する Phase 3.6 を追加。`assets/phase12-system-spec-retrospective-template.md` に blocker dedup と targeted/wider suite 記録欄を追加し、既存未タスクと重複した formalize を防ぐ運用を標準化 |
 | **10.37.12** | **2026-03-19** | **UT-TASK06-007 再監査知見を Phase 12 テンプレートへ反映**: `assets/phase12-system-spec-retrospective-template.md` に実績ベース更新ルール、画面検証要求時の `SCREENSHOT + NON_VISUAL` 昇格、苦戦箇所の `症状 / 再発条件 / 解決策 / 標準ルール` 化を追加。`assets/phase12-spec-sync-subagent-template.md` に実測値同期と画面昇格を追記し、`references/patterns-success-phase12-advanced.md` に docs-heavy/backend-heavy でも screenshot へ昇格する成功パターンを追加。`LOGS.md` を含めて skill-creator の入口から再利用しやすい形へ整理した |
 | **10.37.11** | **2026-03-06** | **domain spec 同期ブロックを新設し Phase 12 テンプレートへ接続**: `assets/phase12-domain-spec-sync-block-template.md` を新規追加し、`interfaces` / `api-ipc` / `security` / `ui-ux-feature` などの仕様書へ `実装内容（要点）` / `苦戦箇所（再利用形式）` / `同種課題の5分解決カード` を同粒度で配置する標準ブロックを定義。`phase12-system-spec-retrospective-template.md` / `phase12-spec-sync-subagent-template.md` / `references/resource-map.md` / `references/patterns.md` を更新し、domain spec 側の記述漏れを完了チェックへ組み込んだ |

@@ -24,11 +24,11 @@ secondary / advanced route を壊さずに UI 実装差分へ落とす。
 
 ## 参照資料
 
-| 資料名       | パス                                                                   | 説明                        |
-| ------------ | ---------------------------------------------------------------------- | --------------------------- |
-| Phase 2 設計 | `phase-2-design.md`                                                    | route / warning 配置        |
-| test matrix  | `outputs/phase-4/test-matrix.md`                                       | regression case             |
-| Task06 index | `../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md` | verify/improve の非対象確認 |
+| 資料名       | パス                                                                                                | 説明                        |
+| ------------ | --------------------------------------------------------------------------------------------------- | --------------------------- |
+| Phase 2 設計 | `phase-2-design.md`                                                                                 | route / warning 配置        |
+| test matrix  | `outputs/phase-4/test-matrix.md`                                                                    | regression case             |
+| Task06 index | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md` | verify/improve の非対象確認 |
 
 ### 現行コードアンカー
 

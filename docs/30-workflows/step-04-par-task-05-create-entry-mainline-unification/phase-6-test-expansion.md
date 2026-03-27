@@ -23,11 +23,11 @@ double entry、legacy route、warning edge case、Task06 並列時の衝突回�
 
 ## 参照資料
 
-| 資料名               | パス                                                                                                    | 説明                 |
-| -------------------- | ------------------------------------------------------------------------------------------------------- | -------------------- |
-| Phase 4 test matrix  | `outputs/phase-4/test-matrix.md`                                                                        | ベーステスト観点     |
-| routing foundation   | `../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`                                  | 並列 task の境界確認 |
-| Task03 budget matrix | `../step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-2/budget-degrade-matrix.md` | warning trigger      |
+| 資料名               | パス                                                                                                                    | 説明                 |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Phase 4 test matrix  | `outputs/phase-4/test-matrix.md`                                                                                        | ベーステスト観点     |
+| routing foundation   | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`                     | 並列 task の境界確認 |
+| Task03 budget matrix | `../completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-2/budget-degrade-matrix.md` | warning trigger      |
 
 ## 実行手順
 

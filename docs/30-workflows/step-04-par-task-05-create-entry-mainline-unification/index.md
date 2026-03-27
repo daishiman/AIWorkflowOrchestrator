@@ -28,12 +28,12 @@
 
 ## 依存関係
 
-| 種別        | 参照先                                                                       | 役割                                                 |
-| ----------- | ---------------------------------------------------------------------------- | ---------------------------------------------------- |
-| predecessor | `../step-03-par-task-03-context-budget-and-resource-selection/index.md`      | provenance / degrade warning の upstream 契約        |
-| predecessor | `../step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`       | interaction bridge / awaiting input の upstream 契約 |
-| parallel    | `../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`       | verify / improve / re-entry surface の並列 task      |
-| downstream  | `../step-05-seq-task-07-execution-governance-and-handoff-alignment/index.md` | disclosure / governance / handoff hardening          |
+| 種別        | 参照先                                                                                                    | 役割                                                 |
+| ----------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| predecessor | `../completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/index.md`                   | provenance / degrade warning の upstream 契約        |
+| predecessor | `../completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`                    | interaction bridge / awaiting input の upstream 契約 |
+| parallel    | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`       | verify / improve / re-entry surface の並列 task      |
+| downstream  | `../skill-creator-agent-sdk-lane/step-05-seq-task-07-execution-governance-and-handoff-alignment/index.md` | disclosure / governance / handoff hardening          |
 
 ## 現行コードアンカー
 
@@ -100,6 +100,7 @@ step-04-par-task-05-create-entry-mainline-unification/
     ├── phase-1/spec-extraction-map.md
     ├── phase-2/mainline-boundary-matrix.md
     ├── phase-3/design-review-gate.md
+    ├── phase-3/skill-compliance-and-elegance-review.md
     ├── phase-4/test-matrix.md
     ├── phase-11/
     │   ├── manual-test-checklist.md

@@ -105,10 +105,6 @@
       "outputs/phase-12/unassigned-task-detection.md",
       "outputs/phase-12/skill-feedback-report.md",
       "outputs/phase-12/phase12-task-spec-compliance-check.md"
-    ],
-    "phase13": [
-      "outputs/phase-13/local-check-result.md",
-      "outputs/phase-13/change-summary.md"
     ]
   }
 }

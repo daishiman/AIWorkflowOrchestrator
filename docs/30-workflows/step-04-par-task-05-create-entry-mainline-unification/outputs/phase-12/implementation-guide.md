@@ -150,3 +150,53 @@ mainline entry の代替としては使わない。
 - `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
 - `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`
 - `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts`
+
+### 2.8 実装wave (2026-03-27) で追加した変更
+
+#### 新規ファイル
+
+| ファイル                                             | 役割                                         |
+| ---------------------------------------------------- | -------------------------------------------- |
+| `ProvenanceWarningSummary.tsx`                       | mainline 向け warning summary コンポーネント |
+| `ProvenanceWarningSummary.test.tsx`                  | warning summary の 7 テストケース            |
+| `SkillManagementPanel.route-classification.test.tsx` | route classification の 8 テストケース       |
+
+#### 変更ファイル
+
+| ファイル                       | 変更内容                                                                                            |
+| ------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `SkillCreateWizard.tsx`        | `ProvenanceWarningSummary` 統合、`data-route-kind="destination"` 追加、`useWorkflowSnapshot` import |
+| `SkillManagementPanel.tsx`     | create/lifecycle view に `data-route-kind="secondary"` 追加                                         |
+| `SkillCenterView/index.tsx`    | header CTA / journey CTA に `data-route-kind="primary"` 追加                                        |
+| `index.ts` (skill barrel)      | `ProvenanceWarningSummary` export 追加                                                              |
+| `SkillCenterView.cta.test.tsx` | TC-CTA-25, TC-CTA-26 追加（route-kind primary 検証）                                                |
+
+#### data-route-kind マーカー体系
+
+| 値                 | 適用先                                        | 意味                           |
+| ------------------ | --------------------------------------------- | ------------------------------ |
+| `primary`          | SkillCenterView の header CTA / journey CTA   | 通常ユーザーの一次入口         |
+| `destination`      | SkillCreateWizard                             | create フローの作業場所        |
+| `secondary`        | SkillManagementPanel の create/lifecycle view | 診断・比較用の補助導線         |
+| `mainline-summary` | ProvenanceWarningSummary                      | mainline 向け warning 要約表示 |
+
+#### テスト結果
+
+- 全 98 テスト PASS（新規 17 + 既存 81 回帰ゼロ）
+- TypeScript 型チェック エラーゼロ
+
+### 2.9 Phase 11 証跡とスクリーンショット参照
+
+Task05 は UI の責務境界を固定する実装を含むが、Phase 11 では実画面キャプチャではなく walkthrough を正本とした。
+そのため、Phase 12 では screenshot evidence を次の 3 点セットで参照する。
+
+| 証跡               | パス                                           | 用途                                            |
+| ------------------ | ---------------------------------------------- | ----------------------------------------------- |
+| manual test result | `outputs/phase-11/manual-test-result.md`       | walkthrough 実施記録と実装wave 検証結果         |
+| screenshot plan    | `outputs/phase-11/screenshot-plan.json`        | `captureRequired=false` の判定根拠              |
+| placeholder image  | `outputs/phase-11/screenshots/placeholder.png` | validator / artifact inventory 整合用の補助証跡 |
+
+補足:
+
+- 今回は `captureRequired=false` のため、`placeholder.png` は UI 完成画面の証拠ではなく、Phase 11 成果物ディレクトリを欠損させないための補助ファイルである。
+- 実画面キャプチャが必要になるのは、後続 task で visual acceptance を要求する change が入った場合であり、そのときは `manual-test-checklist.md` を親 checklist として実スクリーンショットへ差し替える。

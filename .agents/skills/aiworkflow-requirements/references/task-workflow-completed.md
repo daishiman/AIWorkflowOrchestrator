@@ -5,76 +5,111 @@
 
 ## 完了タスク
 
-### タスク: TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 runtime policy centralization current code close-out（2026-03-27）
+
+### タスク: TASK-SDK-03 context-budget-and-resource-selection（2026-03-27）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | implementation / close-out |
-| 優先度 | 高 |
-| 完了日 | 2026-03-27 |
-| 対象 | `apps/desktop/src/main/ipc/index.ts`, `agentHandlers.ts`, `skillHandlers.ts`, runtime tests, current workflow outputs |
-| 成果物 | `docs/30-workflows/completed-tasks/task-imp-runtime-policy-centralization-implementation-closure-001/` |
-| 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
-| GitHub Issue | #1663 |
-
-#### 実施内容
-
-- `index.ts` で `RuntimePolicyResolver` / `createAuthModeService()` / `StubSubscriptionAuthProvider` を共通注入し、Agent / Skill consumer の authority を 1 箇所へ統合
-- `agentHandlers.ts` と `skillHandlers.ts` が `resolveWithService(authModeService.getMode())` を消費し、`terminal_handoff` 時は `bundle.manualRetryRule` を error / guidance 理由の正本に固定
-- `agentHandlers.runtime.test.ts` と `skillHandlers.runtime.test.ts` を `integrated_api` / `terminal_handoff` / backward-compatible path に更新し、既存 agent / skill baseline suite と `typecheck` も PASS
-- `docs/30-workflows/completed-tasks/task-imp-runtime-policy-centralization-implementation-closure-001/outputs/phase-1` から `phase-12` を出力し、runtime workflow / backlog / completed ledger を same-wave sync
-
-#### 検証証跡
-
-| コマンド | 結果 |
-| --- | --- |
-| `pnpm install --force` | PASS |
-| `pnpm --filter @repo/shared build` | PASS |
-| `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/agentHandlers.runtime.test.ts src/main/ipc/__tests__/skillHandlers.runtime.test.ts` | PASS |
-| `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/agentHandlers.test.ts` | PASS |
-| `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/skillHandlers.execute.test.ts src/main/ipc/__tests__/skillHandlers.contract.test.ts` | PASS |
-| `pnpm --filter @repo/desktop typecheck` | PASS |
-
-#### Phase 12 未タスク
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| `UT-CLEANUP-AI-CHECK-CONNECTION-001` | legacy health route cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
-| `UT-CLEANUP-RUNTIME-RESOLVER-001` | deprecated resolver cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
-| `UT-DESIGN-SANITIZE-PLACEMENT-001` | sanitize 配置判断の固定 | 中 | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
-
----
-### タスク: UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 TASK-SDK-04 の Phase 12/13 証跡と canonical path を最新実装へ再同期する（2026-03-27）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 |
+| タスクID | TASK-SDK-03 |
 | ステータス | **完了** |
-| タイプ | docs sync / close-out remediation |
+| タイプ | refactoring / implementation |
 | 優先度 | 高 |
 | 完了日 | 2026-03-27 |
-| 対象 | `TASK-SDK-04` 親 workflow の Phase 11/12/13 close-out evidence、canonical path、台帳同期 |
-| 成果物 | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/` |
-| 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-04-phase12-canonical-path-resync-001.md` |
-| GitHub Issue | #1662 |
+| PR | #1666 |
+| 対象 | PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / context budget 動的解決 |
+| 成果物 | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/` |
 
 #### 実施内容
 
-- 親 workflow の `system-spec-update-summary.md` / `unassigned-task-detection.md` / `verification-report.md` / `local-check-result.md` を current facts へ再同期し、旧 canonical path 参照と stale judgement を除去
-- `implementation-guide.md` / `manual-test-result.md` で walkthrough、placeholder PNG、representative screenshot 未取得の扱いを `spec_created` close-out に沿って再定義し、false green を解消
-- `task-workflow-backlog.md` の open set を `TASK-SDK-04-U1` / `TASK-SDK-04-U2` の 2 件へ整理し、本件は completed-tasks/unassigned-task へ移管
-- `TASK-SDK-04` 親 workflow は `spec_created` を維持しつつ、close-out remediation は完了済みとして ledger / docs / issue 状態を一致させた
-
-#### Phase 12 未タスク
-
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| `TASK-SDK-04-U1` | `submitUserInput()` の phase transition semantics を実装へ反映する | 高 | `docs/30-workflows/unassigned-task/task-imp-task-sdk-04-user-input-transition-semantics-001.md` |
-| `TASK-SDK-04-U2` | planId と execute payload の canonical binding drift を是正する | 高 | `docs/30-workflows/unassigned-task/task-imp-task-sdk-04-plan-execute-canonical-binding-001.md` |
+- `SkillCreatorSourceResolver`（候補解決）、`PhaseResourcePlanner`（tier 選択・予算強制）、`ResolvedResourceReader`（読み出し）を独立クラスに分離
+- manifest 解決 → リソース選択 → 予算強制の3段階パイプラインを確立
+- tier ベースの段階的リソース削減（optional-deep-dive → optional-quality → required-context）を実装
+- context budget と resource selection を動的解決へ移行
 
 ---
+
+### タスク: TASK-SDK-04 user-interaction-bridge-and-phase-ui（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-04 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| PR | #1667 |
+| 対象 | ユーザー入力ブリッジ / フェーズ UI 同期 / IPC 型外部化 |
+| 成果物 | `docs/30-workflows/step-04-par-task-04-user-interaction-bridge-and-phase-ui/` |
+
+#### 実施内容
+
+- ユーザー入力ブリッジと Phase UI の同期を実装
+- `AwaitingUserInput` → `UserInputRequest` への型リネームと packages/shared/ への外部化
+- IPC / Preload / Main 全レイヤーの同時更新
+
+---
+
+### タスク: TASK-SDK-05 create-entry-mainline-unification（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-05 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| PR | #1667, #1668 |
+| 対象 | create entry の mainline 統合 / ViewType 契約 |
+| 成果物 | `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/` |
+
+#### 実施内容
+
+- create entry の mainline 統合と ViewType 契約の確立
+- advanced route boundary の整備
+
+---
+
+### タスク: TASK-SDK-06 verify-and-improve-lifecycle-surface（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-06 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| PR | #1668 |
+| 対象 | verify detail 展開 / reverify ワークフロー / layer3-4 verify check 自動生成 |
+| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-task-sdk-06-layer34-verify-expansion-001/` |
+
+#### 実施内容
+
+- `getVerifyDetail(planId)` API の実装（artifact + provenance + route + phase の複合 evidence 管理）
+- `requestReverify(planId)` API の実装
+- disable 理由の4段階判定（not_verified / no_artifact / incomplete_provenance / route_mismatch）
+- layer3 / layer4 の verify check 自動生成
+
+---
+
+### タスク: UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 verify artifact append と workflow close-out を同期（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 |
+| ステータス | **完了** |
+| タイプ | bugfix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| PR | #1660 |
+| 対象 | `execute_result` / `verify_result` の append 戦略統一 / workflow close-out 同期 |
+
+#### 実施内容
+
+- `appendArtifact()` を導入し、`execute_result` / `verify_result` を時系列で残す append 戦略へ統一
+- verify artifact append と workflow close-out の同期
+
+---
+
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine の失敗系 state lifecycle 是正（2026-03-26）
 
 | 項目 | 値 |
@@ -218,7 +253,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-27 |
 | 対象 | `RuntimeSkillCreatorFacade` plan/improve resource loading、`SkillCreatorSourceResolver`、`PhaseResourcePlanner`、`ResolvedResourceReader`、runtime tests、Phase 1-12 outputs |
-| 成果物 | `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/` |
+| 成果物 | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/` |
 
 #### 実施内容
 
@@ -232,6 +267,32 @@
 
 - 新規未タスク 0 件
 - trust scoring / disclosure は Task07、resume compatibility / invalidation は Task08 の owner を維持するため、Task03 から独立 follow-up は新設しない
+
+---
+### タスク: TASK-SDK-05 create-entry-mainline-unification（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-05 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked / `spec_created` close-out sync 済み）** |
+| タイプ | docs-only / create-mainline-boundary |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| 対象 | Skill Creator create 一次導線、advanced route 境界、warning summary と diagnostics の分離、Phase 12 close-out evidence |
+| 成果物 | `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/` |
+
+#### 実施内容
+
+- `Skill Center -> skillCreate` を一次導線、`SkillCreateWizard` を destination surface、`SkillLifecyclePanel` / `SkillManagementPanel` を advanced / secondary route として task spec 上で固定
+- source provenance / structure mismatch / source conflict の表示を mainline summary と diagnostics に分離し、Task03 / Task04 / Task06 / Task07 との owner boundary を明示
+- Phase 12 の `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を、Step 1 same-wave sync + Step 2 no-op 根拠の実績ベースへ更新
+- `references/task-workflow-completed.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` / `lessons-learned-phase12-workflow-lifecycle.md` / LOGS / SKILL history を same-wave で同期
+- validator 実行コマンドを actual invocation に揃え、workflow root path drift を 0 件化した
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- create mainline wording finalization は Task05 実装 wave の Phase 8 / 9 で扱う既存責務とし、今回 close-out では新設しない
 
 ---
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 runtime workflow failure verify artifact append 是正（2026-03-26）
@@ -298,7 +359,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-26 |
 | 対象 | `RuntimeSkillCreatorFacade` / `SkillCreatorWorkflowEngine` failure path、runtime tests、parent workflow docs、Phase 1-12 outputs |
-| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
+| 成果物 | `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
 | 親タスク | TASK-SDK-02 |
 
 #### 実施内容
@@ -717,7 +778,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
+| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
 | `UT-CLEANUP-AI-CHECK-CONNECTION-001` | legacy health route cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
 | `UT-CLEANUP-RUNTIME-RESOLVER-001` | deprecated resolver cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
 | `UT-DESIGN-SANITIZE-PLACEMENT-001` | sanitize 配置判断の固定 | 中 | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
@@ -777,59 +838,6 @@
 1. current workflow 名を canonical workflow spec と task-workflow の両方へ同時登録する。
 2. Phase 12 では `.claude` 正本更新、workflow 成果物更新、mirror sync を同一ターンで閉じる。
 3. `計画済み` / `更新予定` / `PRマージ後` が残っていたら未完了として扱い、実績文へ置換する。
-
-### タスク: UT-EXEC-01 scope-definition execution-capability path update（2026-03-27）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-EXEC-01 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | docs-improvement / follow-up |
-| 優先度 | 高 |
-| 完了日 | 2026-03-27 |
-| 対象 | Task01 `scope-definition.md` の actual target 補正と `execution-capability.ts` アンカー追記 |
-| 成果物 | `docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001/` |
-| 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-exec-scope-definition-path-update-001.md` |
-| 重複参考 | `docs/30-workflows/completed-tasks/unassigned-task/task-ut-exec-01-scope-definition-execution-capability-path.md` |
-| GitHub Issue | #1664 |
-
-#### 実施内容
-
-- stale source path `docs/30-workflows/ai-runtime-execution-responsibility-realignment/scope-definition.md` を actual target ではないと判定し、Task01 `outputs/phase-1/scope-definition.md` を唯一の patch target に固定した
-- Task01 `scope-definition.md` の D. Implementation Anchor に `packages/shared/src/types/execution-capability.ts` を追加し、既存 2 行（`auth-mode.ts` / `RuntimePolicyResolver.ts`）は不変のまま維持した
-- `workflow-ai-runtime-execution-responsibility-realignment.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` へ close-out 導線と stale path 教訓を same-wave で同期した
-- source unassigned 2 件は新規未タスクとして再発行せず、actual target 追跡済み / duplicate reference として status を更新した
-
-#### 検証証跡
-
-| コマンド | 結果 |
-| --- | --- |
-| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（topic-map.md / keywords.json 再生成） |
-| `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js` | PASS with warnings 5（500行超ファイルの既存警告のみ） |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001 --json` | PASS（13/13, errors 0, warnings 0） |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001/outputs/phase-12/unassigned-task-detection.md` | PASS（0件） |
-| `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements` | PASS（同期後差分なし） |
-| `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator` | PASS（同期後差分なし） |
-| `diff -qr .claude/skills/skill-creator .agents/skills/skill-creator` | PASS（同期後差分なし） |
-
-#### Phase 12 未タスク
-
-- 新規未タスク 0 件
-- 既存 formalized follow-up: `docs/30-workflows/unassigned-task/task-imp-task-spec-stale-path-duplicate-source-guard-001.md`
-- `UT-EXEC-01` ID collision は duplicate source reference の整理課題として記録のみ行い、今回差分では新設しない
-
-#### 苦戦箇所
-
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| source unassigned が stale target path を保持したまま close-out へ進む | existence check をせず source task の path をそのまま信じる | actual target を `test -f` / `rg` で先に固定し、source task 側にも補正結果を書き戻した |
-| duplicate source doc が残ったまま source task だけ完了扱いにする | 同一 task ID の reference doc を参照専用へ落とさず backlog 候補として残す | main source と duplicate reference の役割を分離し、どちらも status を current fact へ更新した |
-
-#### 同種課題の簡潔解決手順
-
-1. source unassigned の target path は Phase 1 で `test -f` し、actual target file list を先に確定する。
-2. close-out では patch target だけでなく source unassigned の status / actual target / workflow root まで同一ターンで更新する。
-3. duplicate source がある場合は新規未タスク化せず、main source / reference の役割を明記して `verify-unassigned-links` を再実行する。
 
 ### タスク: TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 slide-ai-runtime-alignment（2026-03-19）
 

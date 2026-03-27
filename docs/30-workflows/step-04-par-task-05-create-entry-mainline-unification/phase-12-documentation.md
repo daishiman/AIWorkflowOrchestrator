@@ -12,8 +12,8 @@
 
 ## 目的
 
-Task05 の implementation guide、system spec 同期対象、検証履歴、未タスク有無、skill feedback を整理し、
-spec_created 状態で再利用可能な documentation wave を閉じる。
+Task05 の implementation guide、system spec 同期、検証履歴、未タスク有無、skill feedback を整理し、
+`spec_created` 状態でも same-wave sync を伴う documentation wave として閉じる。
 
 ## 実行タスク
 
@@ -34,7 +34,8 @@ spec_created 状態で再利用可能な documentation wave を閉じる。
 ### Task 12-2: システム仕様更新判定
 
 - `outputs/phase-12/system-spec-update-summary.md` に Step 1-A / 1-B / 1-C / Step 2 の current 判定を記録した。
-- 今回は `spec_created` の task spec pack 作成であり、Task05 自身の aiworkflow canonical 本文更新は N/A と明記した。
+- `.claude` 正本の completed ledger / quick-reference / resource-map / lessons / LOGS / SKILL history を更新し、`.agents` mirror と parity を取った。
+- Step 2 は public interface / API / 定数の変更がないため no-op としたが、no-op 根拠と validation を実績として残した。
 
 ### Task 12-3: ドキュメント更新履歴作成
 
@@ -84,11 +85,19 @@ spec_created 状態で再利用可能な documentation wave を閉じる。
 - `outputs/phase-12/skill-feedback-report.md`
 - `outputs/phase-12/phase12-task-spec-compliance-check.md`
 
+`implementation-guide.md` では Phase 11 証跡への参照も固定する。
+今回の Task05 では `outputs/phase-11/manual-test-result.md` と
+`outputs/phase-11/screenshot-plan.json` を参照し、
+`captureRequired=false` の根拠を明示する。
+
+Phase 3 の補助証跡として `outputs/phase-3/skill-compliance-and-elegance-review.md` を保持し、
+2 skill 準拠と 30 思考法レビューの根拠を documentation wave から逆参照できる状態にする。
+
 ### ステップ2: sync target と current evidence を分離する
 
-- aiworkflow-requirements の canonical references のうち、Task05 実装時に同期が必要なものを列挙する。
-- 今回ターンで未実施の Step 1-B / 1-C / Step 2 は N/A 理由を残す。
-- spec_created の現時点では canonical 本文更新が不要である理由を残す。
+- aiworkflow-requirements の canonical references のうち、Task05 の discoverability に直結する files を current branch で同期する。
+- Step 1-A / 1-B / 1-C は `spec_created` close-out として実更新し、Step 2 は no-op 根拠を残す。
+- `.claude` 正本更新後に `.agents` mirror と parity を確認する。
 
 ### ステップ3: validation 結果を固定する
 
@@ -102,10 +111,10 @@ spec_created 状態で再利用可能な documentation wave を閉じる。
 
 | 項目     | 判定 | 記録先                                           |
 | -------- | ---- | ------------------------------------------------ |
-| Step 1-A | N/A  | `outputs/phase-12/system-spec-update-summary.md` |
-| Step 1-B | N/A  | `outputs/phase-12/system-spec-update-summary.md` |
-| Step 1-C | N/A  | `outputs/phase-12/system-spec-update-summary.md` |
-| Step 2   | N/A  | `outputs/phase-12/system-spec-update-summary.md` |
+| Step 1-A | PASS | `outputs/phase-12/system-spec-update-summary.md` |
+| Step 1-B | PASS | `outputs/phase-12/system-spec-update-summary.md` |
+| Step 1-C | PASS | `outputs/phase-12/system-spec-update-summary.md` |
+| Step 2   | PASS | `outputs/phase-12/system-spec-update-summary.md` |
 
 ## 成果物
 
@@ -113,7 +122,7 @@ spec_created 状態で再利用可能な documentation wave を閉じる。
 | -------------------------- | -------------------------------------------------------- | ------------------------------ |
 | documentation wave 本文    | `phase-12-documentation.md`                              | Phase 12 実行の本文            |
 | implementation guide       | `outputs/phase-12/implementation-guide.md`               | 中学生向け + 技術者向けガイド  |
-| system spec update summary | `outputs/phase-12/system-spec-update-summary.md`         | 同期対象と N/A 理由            |
+| system spec update summary | `outputs/phase-12/system-spec-update-summary.md`         | 同期対象と no-op 根拠          |
 | documentation changelog    | `outputs/phase-12/documentation-changelog.md`            | 更新ファイルと validation 記録 |
 | unassigned task detection  | `outputs/phase-12/unassigned-task-detection.md`          | follow-up の有無               |
 | skill feedback report      | `outputs/phase-12/skill-feedback-report.md`              | skill 改善提案                 |
@@ -122,6 +131,6 @@ spec_created 状態で再利用可能な documentation wave を閉じる。
 ## 完了条件
 
 - [ ] Phase 12 の 6 成果物が揃っている
-- [ ] aiworkflow-requirements の同期対象と N/A 理由が整理されている
+- [ ] aiworkflow-requirements の同期対象と Step 2 no-op 根拠が整理されている
 - [ ] validation 結果が changelog / compliance / verification report に反映されている
 - [ ] **本Phase内の全タスクを100%実行完了**

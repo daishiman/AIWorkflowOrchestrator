@@ -15,6 +15,7 @@ import { SkillCreateWizard } from "../SkillCreateWizard";
 
 // Store セレクタモック（TASK-10A-F: Store action経由に統一）
 const mockCreateSkill = vi.fn();
+const mockUseWorkflowSnapshot = vi.fn(() => null);
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
@@ -30,6 +31,7 @@ vi.mock("../../../store", () => ({
   useSetCurrentPlanResult: () => vi.fn(),
   useSetCurrentPlanId: () => vi.fn(),
   useClearGenerationState: () => vi.fn(),
+  useWorkflowSnapshot: () => mockUseWorkflowSnapshot(),
 }));
 
 vi.mock("../../../hooks/useStreamingProgress", () => ({
@@ -57,6 +59,7 @@ describe("SkillCreateWizard", () => {
     vi.clearAllMocks();
     mockOnClose = vi.fn();
     mockCreateSkill.mockResolvedValue("/path/to/new-skill");
+    mockUseWorkflowSnapshot.mockReturnValue(null);
   });
 
   // ============================================================
@@ -76,6 +79,29 @@ describe("SkillCreateWizard", () => {
       const nav = screen.getByRole("navigation");
       expect(nav).toBeInTheDocument();
       expect(nav).toHaveAttribute("aria-label", "ウィザードの進捗");
+    });
+
+    it("root 要素が destination route として描画される", () => {
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      expect(screen.getByTestId("skill-create-wizard")).toHaveAttribute(
+        "data-route-kind",
+        "destination",
+      );
+    });
+
+    it("workflowSnapshot に warningNote がある場合は mainline summary を表示する", () => {
+      mockUseWorkflowSnapshot.mockReturnValue({
+        sourceProvenance: {
+          warningNote: "複数候補から選定しました",
+        },
+      });
+
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      const summary = screen.getByTestId("provenance-warning-summary");
+      expect(summary).toHaveTextContent("複数候補から選定しました");
+      expect(summary).toHaveAttribute("data-route-kind", "mainline-summary");
     });
   });
 

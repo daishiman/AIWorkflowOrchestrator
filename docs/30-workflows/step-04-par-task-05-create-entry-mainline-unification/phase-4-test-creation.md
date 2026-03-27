@@ -23,13 +23,14 @@ mainline entry、advanced route、warning summary、Task06 境界の観点を te
 
 ## 参照資料
 
-| 資料名                 | パス                                                                                                    | 説明                 |
-| ---------------------- | ------------------------------------------------------------------------------------------------------- | -------------------- |
-| Phase 1 要件           | `phase-1-requirements.md`                                                                               | AC-1〜AC-7           |
-| Phase 2 設計           | `phase-2-design.md`                                                                                     | route / warning 設計 |
-| Phase 2 境界マトリクス | `outputs/phase-2/mainline-boundary-matrix.md`                                                           | surface matrix       |
-| Phase 3 gate           | `outputs/phase-3/design-review-gate.md`                                                                 | review 結果          |
-| Task03 budget matrix   | `../step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-2/budget-degrade-matrix.md` | warning trigger 種別 |
+| 資料名                  | パス                                                                                                                    | 説明                 |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| Phase 1 要件            | `phase-1-requirements.md`                                                                                               | AC-1〜AC-7           |
+| Phase 2 設計            | `phase-2-design.md`                                                                                                     | route / warning 設計 |
+| Phase 2 境界マトリクス  | `outputs/phase-2/mainline-boundary-matrix.md`                                                                           | surface matrix       |
+| Phase 3 gate            | `outputs/phase-3/design-review-gate.md`                                                                                 | review 結果          |
+| Task03 budget matrix    | `../completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-2/budget-degrade-matrix.md` | warning trigger 種別 |
+| skill compliance review | `outputs/phase-3/skill-compliance-and-elegance-review.md`                                                               | 30思考法での不足観点 |
 
 ## 実行手順
 

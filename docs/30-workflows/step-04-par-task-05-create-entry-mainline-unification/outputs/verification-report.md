@@ -1,7 +1,7 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-26T11:10:43.956Z
-> 対象: docs/30-workflows/skill-creator-agent-sdk-lane/step-04-par-task-05-create-entry-mainline-unification
+> 検証日時: 2026-03-27T08:29:29.825Z
+> 対象: docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification
 
 ## サマリー
 

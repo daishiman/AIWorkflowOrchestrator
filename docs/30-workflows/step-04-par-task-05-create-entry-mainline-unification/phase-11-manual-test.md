@@ -33,6 +33,7 @@
 | Phase 7 coverage       | `phase-7-coverage-check.md`                                                       | coverage の読み合わせ    |
 | Phase 8 refactoring    | `phase-8-refactoring.md`                                                          | wording 統一の読み合わせ |
 | Phase 9 QA             | `phase-9-quality-assurance.md`                                                    | QA 判定の読み合わせ      |
+| Phase 3 review audit   | `outputs/phase-3/skill-compliance-and-elegance-review.md`                         | 30思考法の監査証跡       |
 | App shell              | `../../../../apps/desktop/src/renderer/App.tsx`                                   | shell route anchor       |
 | SkillCenter            | `../../../../apps/desktop/src/renderer/views/SkillCenterView/index.tsx`           | primary entry anchor     |
 | advanced panel         | `../../../../apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` | secondary route anchor   |
@@ -58,6 +59,7 @@
 
 - verify / improve / re-entry は Task06 側責務として分離されているか確認する。
 - governance / handoff hardening は Task07 側責務として分離されているか確認する。
+- 30思考法レビューが「全面破棄不要・局所再構成で十分」という判断を支えているか確認する。
 
 ## 統合テスト連携
 

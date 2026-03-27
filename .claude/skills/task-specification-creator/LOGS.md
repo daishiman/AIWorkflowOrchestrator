@@ -3,37 +3,15 @@
 ## 役割
 
 ---
-## implementation spec to skill sync（2026-03-27）
+## TASK-SDK-05 create-entry-mainline-unification spec sync（2026-03-27）
 
 - **Agent**: task-specification-creator
-- **Phase**: Phase 12 guide validation
+- **Phase**: Phase 12 close-out hardening
 - **Result**: success
 - **Notes**:
-  - completed workflow root が `docs/30-workflows/completed-tasks/` へ移った task は、`verification-report.md` の target path、`system-spec-update-summary.md` の exact path、`phase12-task-spec-compliance-check.md` の status 根拠を同一ターンで更新する運用を再確認した
-  - `spec_created` task は completed root 配下でも root status を自動で `completed` に上げず、Phase 13 `blocked` と evidence parity を優先する close-out ルールを適用した
-  - implementation close-out task では Step 2 no-op の誤判定を防ぐため、internal authority / reason source 変更を skill 更新対象として記録した
-
----
-## UT-EXEC-01 execution-responsibility close-out guard を反映（2026-03-27）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 guide refinement
-- **Result**: success
-- **Notes**:
-  - `phase-12-documentation-guide.md` に implementation anchor 追補時の target source path 実在確認ルールを追加
-  - duplicate source / ID collision は `current` と `baseline / wider governance` を分離して扱い、重複未タスクを増やさない判定を明文化
-  - `spec-update-workflow.md` に同じ guard を追加し、docs-only close-out の 1 行追記でも false green を起こさない運用へ補強した
-
----
-## UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 完了同期（2026-03-27）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 close-out sync refinement
-- **Result**: success
-- **Notes**:
-  - `phase-12-documentation-guide.md` に、Phase 12 再監査で解消済みになった follow-up を `completed-tasks/unassigned-task/` へ完了移管し、open set から除外する運用を追加
-  - `documentation-changelog.md` / `system-spec-update-summary.md` / `unassigned-task-detection.md` / backlog の open/done 記述粒度をそろえる current fact rule を明文化
-  - 親 workflow を直接是正し、remediation 用の別 workflow を正本化しない方針を close-out パターンとして固定
+  - `spec_created` UI task でも Step 1-A〜1-C を N/A にせず、completed ledger / quick-reference / resource-map / lessons / LOGS / SKILL history を same-wave で更新する close-out ルールを再確認した
+  - `outputs/verification-report.md` の workflow root path drift と validation command drift を current invocation へ戻し、evidence 文書の literal path 監査を必須化した
+  - `.claude` 正本更新後に `.agents` mirror sync と `diff -qr` parity 確認まで完了条件に含める運用を固定した
 
 ---
 ## TASK-SDK-04 implementation spec sync（2026-03-27）

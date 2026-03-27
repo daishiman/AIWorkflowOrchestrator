@@ -24,14 +24,14 @@ Task06 / Task07 へ誤った責務を渡していないことを確認する。
 
 ## 参照資料
 
-| 資料名                 | パス                                                                         | 説明                        |
-| ---------------------- | ---------------------------------------------------------------------------- | --------------------------- |
-| Phase 1 requirements   | `phase-1-requirements.md`                                                    | AC-1〜AC-7                  |
-| Phase 2 design         | `phase-2-design.md`                                                          | route / warning 設計        |
-| Phase 5 implementation | `phase-5-implementation.md`                                                  | 実装対象の最終確認          |
-| Phase 9 QA             | `phase-9-quality-assurance.md`                                               | QA 判定                     |
-| Task06 index           | `../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`       | verify / improve downstream |
-| Task07 index           | `../step-05-seq-task-07-execution-governance-and-handoff-alignment/index.md` | governance downstream       |
+| 資料名                 | パス                                                                                                      | 説明                        |
+| ---------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------- |
+| Phase 1 requirements   | `phase-1-requirements.md`                                                                                 | AC-1〜AC-7                  |
+| Phase 2 design         | `phase-2-design.md`                                                                                       | route / warning 設計        |
+| Phase 5 implementation | `phase-5-implementation.md`                                                                               | 実装対象の最終確認          |
+| Phase 9 QA             | `phase-9-quality-assurance.md`                                                                            | QA 判定                     |
+| Task06 index           | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`       | verify / improve downstream |
+| Task07 index           | `../skill-creator-agent-sdk-lane/step-05-seq-task-07-execution-governance-and-handoff-alignment/index.md` | governance downstream       |
 
 ## レビュー結果
 
