@@ -110,9 +110,22 @@
 | --- | --- |
 | 3パターン分岐ロジック | `references/arch-electron-services-details-part2.md` |
 | execution capability 契約 | `references/arch-execution-capability-contract.md` |
+| Implementation Anchor close-out | `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md`, `docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001/outputs/phase-12/system-spec-update-summary.md` |
 | IPC 契約（resolveWithService） | `references/api-ipc-system-core.md` |
 | lessons learned | `references/lessons-learned-ipc-preload-runtime.md` |
 | workflow root | `docs/30-workflows/w1b-sc-runtime-policy-closure/` |
+
+---
+
+### Execution Responsibility follow-up path correction（2026-03-27）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| `UT-EXEC-01` workflow 全体像 | `docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001/index.md` |
+| actual patch target | `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md` |
+| execution capability 契約背景 | `references/arch-execution-capability-contract.md`, `references/interfaces-auth-core.md` |
+| close-out ledger | `references/task-workflow-completed.md` |
+| stale path / duplicate source 教訓 | `references/lessons-learned-phase12-workflow-lifecycle.md` |
 
 ---
 

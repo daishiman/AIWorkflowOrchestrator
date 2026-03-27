@@ -14,6 +14,17 @@
   - implementation close-out task では Step 2 no-op の誤判定を防ぐため、internal authority / reason source 変更を skill 更新対象として記録した
 
 ---
+## UT-EXEC-01 execution-responsibility close-out guard を反映（2026-03-27）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 guide refinement
+- **Result**: success
+- **Notes**:
+  - `phase-12-documentation-guide.md` に implementation anchor 追補時の target source path 実在確認ルールを追加
+  - duplicate source / ID collision は `current` と `baseline / wider governance` を分離して扱い、重複未タスクを増やさない判定を明文化
+  - `spec-update-workflow.md` に同じ guard を追加し、docs-only close-out の 1 行追記でも false green を起こさない運用へ補強した
+
+---
 ## TASK-SDK-04 implementation spec sync（2026-03-27）
 
 - **Agent**: task-specification-creator

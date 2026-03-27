@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-27T06:39:47.557Z",
-  "totalKeywords": 2513,
+  "generated": "2026-03-27T07:16:20.301Z",
+  "totalKeywords": 2514,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6672,6 +6672,15 @@
       "ui-ux-navigation.md"
     ],
     "ライフサイクル": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "VERIFY": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "EXPANSION": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "EXEC": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "VERIFY": [

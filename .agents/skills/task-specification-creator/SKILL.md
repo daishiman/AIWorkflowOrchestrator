@@ -222,6 +222,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **v6.18.13** | **2026-03-27** | **UT-EXEC-01 execution-responsibility close-out guard を反映**: `references/phase-12-documentation-guide.md` と `references/spec-update-workflow.md` に、implementation anchor 追補時の target source path 実在確認、duplicate source / ID collision の `current` vs `baseline` 分離、docs-only close-out でも summary/changelog へ同値記録するルールを追加 |
 | **6.18.12** | **2026-03-26** | **TASK-SDK-01 hardening sync を guide へ反映**: docs-only follow-up に後からコード変更が入った時は source workflow と `outputs/phase-12/*.md` を同一ターンで current facts へ戻すルールを `phase-12-documentation-guide.md` に追加 |
 
 ---

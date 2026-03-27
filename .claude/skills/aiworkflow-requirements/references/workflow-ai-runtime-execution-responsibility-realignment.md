@@ -13,7 +13,7 @@
 
 | 区分 | canonical docs |
 | --- | --- |
-| workflow root docs | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/index.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/ui-ux-realization.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/ui-ux-diagrams.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/design-audit-matrix.md`, `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/index.md`, `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/index.md`, `docs/30-workflows/step-03-par-task-04-chat-workspace-guidance-action-wiring/index.md` |
+| workflow root docs | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/index.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/ui-ux-realization.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/ui-ux-diagrams.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/design-audit-matrix.md`, `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/index.md`, `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/index.md`, `docs/30-workflows/step-03-par-task-04-chat-workspace-guidance-action-wiring/index.md`, `docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001/index.md` |
 | workflow 正本 | `references/workflow-ai-runtime-execution-responsibility-realignment.md` |
 | predecessor | `references/workflow-ai-runtime-authmode-unification.md` |
 | auth / capability 入口 | `references/interfaces-auth.md`, `references/interfaces-auth-core.md` |
@@ -28,6 +28,7 @@
 | --- | --- | --- |
 | workflow planning / task decomposition | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/index.md`, `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/index.md`, `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/index.md` | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/design-audit-matrix.md` |
 | runtime policy centralization task 実体 | `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/index.md`, `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-2/contract-matrix.md`, `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-3/gate-decision.md` | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/tasks/step-03-par-task-03-settings-shell-access-matrix-mainline/phase-1-requirements.md`, `docs/30-workflows/step-03-par-task-04-chat-workspace-guidance-action-wiring/index.md`, `docs/30-workflows/step-03-par-task-04-chat-workspace-guidance-action-wiring/phase-1-requirements.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/tasks/step-03-par-task-05-terminal-handoff-surface-realization/phase-1-requirements.md` |
+| Task01 follow-up path correction (`UT-EXEC-01`) | `docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001/index.md`, `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md` | `docs/30-workflows/completed-tasks/unassigned-task/task-exec-scope-definition-path-update-001.md`, `docs/30-workflows/completed-tasks/unassigned-task/task-ut-exec-01-scope-definition-execution-capability-path.md`, `references/arch-execution-capability-contract.md` |
 
 | UI/UX mainline / handoff | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/ui-ux-realization.md`, `docs/30-workflows/ai-runtime-execution-responsibility-realignment/ui-ux-diagrams.md` | `ui-ux-navigation.md`, `ui-ux-settings-core.md` |
 | capability foundation | `interfaces-auth.md`, `interfaces-auth-core.md`, `arch-state-management-core.md` | `workflow-ai-runtime-authmode-unification.md` |
@@ -42,6 +43,8 @@
 2. `task-workflow.md` を completed family / backlog family の入口として扱い、child file を直接更新しても親入口を同ターンで更新する。
 3. `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` に planned wording を残さない。
 4. Phase 13 は user approval 取得まで `blocked` とし、completed にしない。
+5. docs-only close-out で `scope-definition.md` の Implementation Anchor を追補する場合も、対象 source file の実在確認と completed ledger / lessons / quick-reference への same-wave sync を省略しない。
+6. duplicate source / ID collision を見つけた場合は current diff 起因か wider governance baseline かを先に分離し、baseline なら新規未タスクを増やさず根拠だけを Phase 12 evidence へ残す。
 
 ## 実装ステータススナップショット（2026-03-27）
 
@@ -56,6 +59,8 @@
 - TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）で RuntimePolicyResolver に ISubscriptionAuthProvider.validateToken() による subscription 判定を統合済み。3パターン分岐（integrated_api / terminal_handoff subscription / terminal_handoff no-auth）が安定動作している。
 - Task07（`TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001`）は **design workflow close-out 完了**（2026-03-23）。ChatPanel review harness を task-specification-creator Phase 11 に整合。8状態定義（idle/loading/streaming/complete/error/review/guidance/terminal）、3 Lane 設計（Review Board Integration / State Machine Harness / Handoff Navigation）、GAP-01〜04 の no-op 排除設計を確定。workflow root は `implementation_ready`、completed ledger は `spec_created`、Phase 13 は user approval まで blocked。Task07 follow-up は `UT-CHATPANEL-OPEN-TERMINAL-IPC-HANDLER` / `UT-CHATPANEL-PROPS-ROLE-TYPE` / `UT-VIEWTYPE-TERMINAL-ADDITION` の 3 件。
 - Task09（`TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001`）は **design workflow close-out 完了**（2026-03-23）。Canonical Source Table（5カテゴリ）、Bridge Rule（legacy 無期限保持 + 新規追加禁止）、State Machine（spec_created→implementation_ready→completed、type 別条件分岐）、Same-Wave Sync Protocol（Step A→E 順序実行）、Follow-up Formalization 3ステップを governance 仕様として確定。workflow root は `implementation_ready`、completed ledger は `spec_created`、Phase 13 は user approval まで blocked。Task09 follow-up は `UT-WORKTREE-RSYNC-CAUTION-001` の 1 件。
+- `UT-EXEC-01` follow-up workflow（2026-03-27）で、Task01 Phase 10 MINOR-1 の actual target を `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md` に補正し、D. Implementation Anchor に `packages/shared/src/types/execution-capability.ts` を追記済み。source unassigned 2 件は actual target / duplicate reference の区別を明記した。
+- UT-EXEC-01（`task-exec-scope-definition-path-update-001`）は **Phase 12 close-out sync 完了**（2026-03-27）。Task01 `scope-definition.md` の D. Implementation Anchor に `packages/shared/src/types/execution-capability.ts` を追加し、execution capability / UI state / CTA contract の実装正本を current family へ接続した。duplicate source / ID collision は wider governance baseline と判定し、新規未タスクは 0 件。
 
 ## Follow-up Backlog
 
