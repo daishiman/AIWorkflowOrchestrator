@@ -279,7 +279,8 @@ export class RuntimeSkillCreatorFacade {
 
     // integrated_api: LLM で計画を生成
     const planId = `plan-${Date.now()}`;
-    let sourceProvenance: SkillCreatorWorkflowSourceProvenance | undefined;
+    let sourceProvenance: SkillCreatorWorkflowSourceProvenance | undefined =
+      this.buildSourceProvenance();
 
     // Graceful degradation: llmAdapter/resourceLoader 未注入時はスタブ
     if (
