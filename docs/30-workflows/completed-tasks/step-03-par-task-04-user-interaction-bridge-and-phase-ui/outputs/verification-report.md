@@ -12,7 +12,7 @@
 
 ## Notes
 
-- walkthrough は有効だが、current UI 実装の representative screenshot は `TASK-SDK-04-U3` へ formalize した。
+- walkthrough、placeholder PNG、representative screenshot 未取得の扱いは 1662 close-out 再同期で current facts 化し、canonical path drift は解消済みである。
 - execute handoff visible 化は `UT-SC-02-006` をコード実装で吸収し、`SkillLifecyclePanel` から `TerminalHandoffCard` へ接続した。
 - `validate-phase12-implementation-guide` の initial fail は implementation guide の literal 不足によるもので、今回の修正対象に含めた。
 - 2026-03-27 時点で code path も更新済み。shared contract、engine submit、IPC/preload bridge、store cache、renderer phase host を追加した。

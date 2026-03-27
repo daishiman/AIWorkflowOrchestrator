@@ -25,6 +25,17 @@
   - `spec-update-workflow.md` に同じ guard を追加し、docs-only close-out の 1 行追記でも false green を起こさない運用へ補強した
 
 ---
+## UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 完了同期（2026-03-27）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out sync refinement
+- **Result**: success
+- **Notes**:
+  - `phase-12-documentation-guide.md` に、Phase 12 再監査で解消済みになった follow-up を `completed-tasks/unassigned-task/` へ完了移管し、open set から除外する運用を追加
+  - `documentation-changelog.md` / `system-spec-update-summary.md` / `unassigned-task-detection.md` / backlog の open/done 記述粒度をそろえる current fact rule を明文化
+  - 親 workflow を直接是正し、remediation 用の別 workflow を正本化しない方針を close-out パターンとして固定
+
+---
 ## TASK-SDK-04 implementation spec sync（2026-03-27）
 
 - **Agent**: task-specification-creator

@@ -10,13 +10,15 @@ category: 改善
 target_feature: user interaction bridge / phase UI の Phase 12 close-out
 priority: 高
 scale: 小規模
-status: 未実施
+status: 完了
 source_phase: TASK-SDK-04 branch 監査（2回確認）
 created_date: 2026-03-27
+completed_date: 2026-03-27
 dependencies:
   - TASK-SDK-04
 parent_workflow: docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui
-spec_path: docs/30-workflows/unassigned-task/task-imp-task-sdk-04-phase12-canonical-path-resync-001.md
+spec_path: docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-04-phase12-canonical-path-resync-001.md
+completion_workflow: docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui
 ```
 
 | 項目         | 内容                                                          |
@@ -27,13 +29,19 @@ spec_path: docs/30-workflows/unassigned-task/task-imp-task-sdk-04-phase12-canoni
 | 対象機能     | Task04 workflow close-out / documentation evidence            |
 | 優先度       | 高                                                            |
 | 見積もり規模 | 小規模                                                        |
-| ステータス   | 未実施                                                        |
+| ステータス   | 完了（2026-03-27）                                            |
 | 発見元       | TASK-SDK-04 branch 監査（2回確認）                            |
 | 発見日       | 2026-03-27                                                    |
 
 ---
 
 ## 1. なぜこのタスクが必要か（Why）
+
+## 完了メモ
+
+- 2026-03-27: `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/outputs/phase-12/` と `outputs/phase-13/` の current fact を再同期し、旧 canonical path 参照、validator path drift、`spec_created` judgement drift を解消した。
+- backlog 正本では open set を `TASK-SDK-04-U1` / `TASK-SDK-04-U2` の 2 件へ整理し、本指示書は completed-tasks/unassigned-task 配下へ移管した。
+- 以後の正本は親 workflow の close-out 証跡と `task-workflow-completed.md` とし、本指示書は完了記録として保持する。
 
 ### 1.1 背景
 
@@ -153,20 +161,20 @@ spec_path: docs/30-workflows/unassigned-task/task-imp-task-sdk-04-phase12-canoni
 
 ### 機能要件
 
-- [ ] Phase 12/13 証跡の旧 path が除去されている
-- [ ] validator 実行対象が現 canonical path と一致している
-- [ ] `spec_created` / completed 判定の根拠が最新差分ベースで説明されている
+- [x] Phase 12/13 証跡の旧 path が除去されている
+- [x] validator 実行対象が現 canonical path と一致している
+- [x] `spec_created` / completed 判定の根拠が最新差分ベースで説明されている
 
 ### 品質要件
 
-- [ ] path drift が 0 件である
-- [ ] stale evidence と downstream follow-up が分離されている
-- [ ] 2回確認の結果が文書へ反映されている
+- [x] path drift が 0 件である
+- [x] stale evidence と downstream follow-up が分離されている
+- [x] 2回確認の結果が文書へ反映されている
 
 ### ドキュメント要件
 
-- [ ] completed-tasks 側 workflow への導線が正しい
-- [ ] 本未タスクが GitHub Issue と連動している
+- [x] completed-tasks 側 workflow への導線が正しい
+- [x] 本未タスクが GitHub Issue と連動している
 
 ---
 
@@ -223,3 +231,4 @@ node .claude/skills/task-specification-creator/scripts/validate-phase-output.js 
 
 - `esbuild` host/binary mismatch は既存未タスクで追跡されているため、本 task では再起票しない
 - Task05 / Task07 / Task08 は sibling/downstream follow-up として維持し、本 task の責務には含めない
+- 完了後の canonical path は `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-04-phase12-canonical-path-resync-001.md`

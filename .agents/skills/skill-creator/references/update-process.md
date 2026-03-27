@@ -71,6 +71,8 @@ implementation anchor を追記する docs-only close-out では target source p
                             ↓
 Phase 3.7: screenshot / compliance hardening
 placeholder-only evidence を排除し、`TC-ID ↔ png ↔ screenshot-coverage.md ↔ metadata JSON` の current workflow 完結性、implementation guide Part 2 の型/使用例/エラー/設定充足、compliance-check の実測値根拠を同時に監査
+close-out remediation follow-up を同一 wave で解消した場合は、新規 remediation workflow を増やさず source / parent workflow の evidence を直接 current facts へ戻し、未完了 open set だけを `docs/30-workflows/unassigned-task/` に残す
+完了移管した follow-up は `docs/30-workflows/completed-tasks/unassigned-task/` へ移し、documentation changelog / system spec summary / backlog / completed ledger の open/done 記述を同じ粒度にそろえる
                             ↓
 Phase 4: 検証
 verify-all-specs → validate-phase-output → verify-unassigned-links --source → audit --diff-from HEAD / --target-file → generate-index.js → validate-structure.js → quick_validate / validate_all → mirror sync → diff -qr
