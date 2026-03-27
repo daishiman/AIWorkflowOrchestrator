@@ -3,6 +3,17 @@
 ## 役割
 
 ---
+## TASK-SDK-04-U2 Phase 12 remediation sync（2026-03-28）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out remediation
+- **Result**: success
+- **Notes**:
+  - `artifacts.json` / `outputs/artifacts.json` の root status を `spec_created` へ戻し、index/status/path との drift を解消した
+  - `phase-12-documentation.md` の pending / 未チェック状態を current facts に同期し、 shallow close-out PASS を解消した
+  - system spec update を no-op 扱いしないよう整理し、aiworkflow 正本への same-wave sync を前提に close-out を修正した
+
+---
 ## TASK-SDK-05 create-entry-mainline-unification spec sync（2026-03-27）
 
 - **Agent**: task-specification-creator

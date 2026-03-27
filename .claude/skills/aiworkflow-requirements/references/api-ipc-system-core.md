@@ -104,8 +104,13 @@ Task04 では Skill Creator runtime workflow の canonical state を Renderer �
 | ID | 内容 |
 | --- | --- |
 | `TASK-SDK-04-U1` | `submitUserInput()` が回答を phase semantics へ反映するよう是正する |
-| `TASK-SDK-04-U2` | `planId` と execute payload の canonical binding drift を解消する |
 | `TASK-SDK-04-U3` | Phase 11/12/13 の evidence / path sync を current facts へ再同期する |
+
+### completed remediation
+
+| ID | 完了日 | 内容 |
+| --- | --- | --- |
+| `TASK-SDK-04-U2` | 2026-03-28 | `SkillLifecyclePanel` execute flow が `approvedSkillSpec` snapshot を参照するよう是正し、`planId` と execute payload の canonical binding drift を解消 |
 
 ---
 
