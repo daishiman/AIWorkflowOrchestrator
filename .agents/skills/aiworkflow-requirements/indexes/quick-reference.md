@@ -91,6 +91,19 @@
 
 ---
 
+### Runtime Skill Creator Verify Detail / Reverify（2026-03-27）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| public IPC 契約 | `references/api-ipc-agent-core.md` |
+| main / preload / shared current fact | `references/api-ipc-system-core.md` |
+| renderer consumer / DTO 利用面 | `references/interfaces-agent-sdk-skill-reference.md` |
+| backlog / carry-forward root | `references/task-workflow-backlog.md` |
+| workflow root | `docs/30-workflows/completed-tasks/ut-imp-task-sdk-06-layer34-verify-expansion-001/` |
+| Phase 11/12 教訓 | `references/lessons-learned-phase12-workflow-lifecycle.md` |
+
+---
+
 ### RuntimePolicyResolver subscription 判定統合（2026-03-22）
 
 | 目的 | 最初に開くファイル |

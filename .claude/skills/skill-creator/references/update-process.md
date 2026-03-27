@@ -68,6 +68,9 @@ code wave が後から入った `spec_created` task では screenshot `N/A` / St
 Phase 3.6: blocker / backlog dedup
 targeted suite PASS と wider suite blocker を分離し、既存 `docs/30-workflows/unassigned-task/` / `completed-tasks/unassigned-task/` を検索して重複 formalize を防ぐ
                             ↓
+Phase 3.7: screenshot / compliance hardening
+placeholder-only evidence を排除し、`TC-ID ↔ png ↔ screenshot-coverage.md ↔ metadata JSON` の current workflow 完結性、implementation guide Part 2 の型/使用例/エラー/設定充足、compliance-check の実測値根拠を同時に監査
+                            ↓
 Phase 4: 検証
 verify-all-specs → validate-phase-output → verify-unassigned-links --source → audit --diff-from HEAD / --target-file → generate-index.js → validate-structure.js → quick_validate / validate_all → mirror sync → diff -qr
                             ↓

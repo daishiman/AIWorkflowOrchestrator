@@ -11,7 +11,10 @@ import type {
   SkillCreatorWorkflowPhase as SharedSkillCreatorWorkflowPhase,
   SkillCreatorWorkflowSourceProvenance as SharedSkillCreatorWorkflowSourceProvenance,
   SkillCreatorWorkflowUiSnapshot,
+  RuntimeSkillCreatorReverifyResult,
   TerminalHandoffBundle,
+  RuntimeSkillCreatorVerifyCheck,
+  RuntimeSkillCreatorVerifyDetail,
 } from "@repo/shared/types";
 import type { RuntimeDecision } from "./RuntimePolicyResolver";
 
@@ -306,6 +309,34 @@ export class SkillCreatorWorkflowEngine {
     return this.snapshot(state);
   }
 
+  getVerifyDetail(planId: string): RuntimeSkillCreatorVerifyDetail {
+    return this.buildVerifyDetail(this.getRequiredWorkflow(planId));
+  }
+
+  requestReverify(planId: string): RuntimeSkillCreatorReverifyResult {
+    const state = this.getRequiredWorkflow(planId);
+    const disabledReason = this.getReverifyDisabledReason(state);
+    if (disabledReason) {
+      return {
+        accepted: false,
+        disabledReason,
+      };
+    }
+
+    state.currentPhase = "verify";
+    state.awaitingUserInput = null;
+    state.verifyResult = {
+      status: "pending",
+      message:
+        "再検証を要求しました。detail surface を更新して続行してください。",
+      nextAction: "review",
+      updatedAt: nowIso(),
+    };
+    this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
+    this.refreshResumeToken(state);
+
+    return { accepted: true };
+  }
   private ensureWorkflow(
     planId: string,
     sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
@@ -473,6 +504,107 @@ export class SkillCreatorWorkflowEngine {
       handoffBundle: state.handoffBundle ? { ...state.handoffBundle } : null,
     };
   }
+
+  private buildVerifyDetail(
+    state: SkillCreatorWorkflowState,
+  ): RuntimeSkillCreatorVerifyDetail {
+    const status = state.verifyResult?.status ?? "pending";
+    const disabledReason = this.getReverifyDisabledReason(state);
+    const route = toVerifyDetailRoute(state.routeSnapshot);
+    const checks = this.buildVerifyChecks(state, route.summary, disabledReason);
+
+    return {
+      planId: state.planId,
+      currentPhase: state.currentPhase,
+      status,
+      message: state.verifyResult?.message,
+      nextAction: state.verifyResult?.nextAction,
+      checks,
+      evidenceCount: countVerifyEvidence(state),
+      resolvedSkillCreatorRoot:
+        state.sourceProvenance?.resolvedSkillCreatorRoot,
+      manifestPath: state.sourceProvenance?.manifestPath,
+      resourceDescriptorHash: state.sourceProvenance?.resourceDescriptorHash,
+      manifestCacheKey: state.sourceProvenance?.manifestCacheKey,
+      route,
+      reverifyEligible: disabledReason == null,
+      disabledReason,
+      delegatedGovernanceNote:
+        "approval / disclosure / manual boundary は Task07 owner として参照表示に留めます。",
+      delegatedSessionNote:
+        "persistence / resume invalidation / stale session は Task08 owner として参照表示に留めます。",
+    };
+  }
+
+  private buildVerifyChecks(
+    state: SkillCreatorWorkflowState,
+    routeSummary: string,
+    disabledReason?: string,
+  ): RuntimeSkillCreatorVerifyCheck[] {
+    const status = state.verifyResult?.status ?? "pending";
+    const checks: RuntimeSkillCreatorVerifyCheck[] = [
+      {
+        id: "layer3-verify-status",
+        layer: "layer3",
+        severity: toVerifyCheckSeverity(status),
+        summary:
+          state.verifyResult?.message ??
+          "verify summary は owner を変えず engine snapshot から導出します。",
+        evidenceSummary: `nextAction=${state.verifyResult?.nextAction ?? "review"}`,
+      },
+      {
+        id: "layer3-route-snapshot",
+        layer: "layer3",
+        severity:
+          state.routeSnapshot?.type === "terminal_handoff" ? "warning" : "info",
+        summary: routeSummary,
+        evidenceSummary: `phase=${state.currentPhase}`,
+      },
+      {
+        id: "layer4-provenance",
+        layer: "layer4",
+        severity: hasAnyProvenance(state) ? "info" : "warning",
+        summary: hasAnyProvenance(state)
+          ? "source provenance / hash evidence を detail surface へ投影できます。"
+          : "source provenance は一部未取得ですが optional field として扱います。",
+        evidenceSummary: summarizeProvenance(state.sourceProvenance),
+      },
+      {
+        id: "layer4-reverify-action",
+        layer: "layer4",
+        severity: disabledReason ? "warning" : "info",
+        summary: disabledReason
+          ? `re-verify は現在無効です: ${disabledReason}`
+          : "re-verify action は verify loop を再開できます。",
+        evidenceSummary: "Task07 / Task08 owner 項目は引数へ混入させません。",
+      },
+    ];
+
+    return checks;
+  }
+
+  private getReverifyDisabledReason(
+    state: SkillCreatorWorkflowState,
+  ): string | undefined {
+    if (state.currentPhase === "execute") {
+      return "実行中は再検証できません。";
+    }
+    if (state.routeSnapshot?.type === "terminal_handoff") {
+      return "terminal_handoff の再検証導線は Task07 owner のため、この surface では再実行しません。";
+    }
+
+    const latestExecuteResult = getExecuteArtifactPayload(
+      this.getLatestArtifact(state, "execute_result"),
+    );
+    if (!latestExecuteResult) {
+      return "実行結果がまだ存在しないため再検証できません。";
+    }
+    if (!latestExecuteResult.success) {
+      return "最後の実行が成功していないため再検証できません。";
+    }
+
+    return undefined;
+  }
 }
 
 function toRouteSnapshot(decision: RuntimeDecision): SkillCreatorRouteSnapshot {
@@ -591,4 +723,103 @@ function sanitizeSubmissionPayload(
     ...submission,
     secretValue: "[REDACTED]",
   };
+}
+
+function toVerifyCheckSeverity(
+  status: SkillCreatorVerifyResult["status"],
+): RuntimeSkillCreatorVerifyCheck["severity"] {
+  if (status === "fail") {
+    return "error";
+  }
+  if (status === "pass") {
+    return "info";
+  }
+  return "warning";
+}
+
+function hasAnyProvenance(state: SkillCreatorWorkflowState): boolean {
+  return Boolean(
+    state.sourceProvenance?.resolvedSkillCreatorRoot ||
+    state.sourceProvenance?.manifestPath ||
+    state.sourceProvenance?.resourceDescriptorHash ||
+    state.sourceProvenance?.manifestCacheKey,
+  );
+}
+
+function summarizeProvenance(
+  provenance?: SkillCreatorWorkflowSourceProvenance,
+): string {
+  if (!provenance) {
+    return "source provenance unavailable";
+  }
+
+  const facts = [
+    provenance.resolvedSkillCreatorRoot
+      ? `root=${provenance.resolvedSkillCreatorRoot}`
+      : null,
+    provenance.manifestPath ? `manifest=${provenance.manifestPath}` : null,
+    provenance.resourceDescriptorHash
+      ? `hash=${provenance.resourceDescriptorHash}`
+      : null,
+    provenance.manifestCacheKey
+      ? `cacheKey=${provenance.manifestCacheKey}`
+      : null,
+  ].filter((value): value is string => value != null);
+
+  return facts.length > 0 ? facts.join(", ") : "source provenance unavailable";
+}
+
+function toVerifyDetailRoute(
+  routeSnapshot?: SkillCreatorRouteSnapshot,
+): RuntimeSkillCreatorVerifyDetail["route"] {
+  if (!routeSnapshot) {
+    return {
+      type: "integrated_api",
+      summary: "route snapshot はまだ生成されていません。",
+    };
+  }
+
+  if (routeSnapshot.type === "terminal_handoff") {
+    return {
+      type: "terminal_handoff",
+      launcher: routeSnapshot.launcher,
+      summary: `terminal_handoff via ${routeSnapshot.launcher ?? "unknown launcher"}`,
+    };
+  }
+
+  return {
+    type: "integrated_api",
+    permissionMode: routeSnapshot.permissionMode,
+    summary: `integrated_api (${routeSnapshot.permissionMode ?? "default"})`,
+  };
+}
+
+function countVerifyEvidence(state: SkillCreatorWorkflowState): number {
+  const artifactEvidenceCount = state.phaseArtifacts.filter((artifact) =>
+    ["route_snapshot", "execute_result", "verify_result"].includes(
+      artifact.kind,
+    ),
+  ).length;
+  const provenanceEvidenceCount = [
+    state.sourceProvenance?.resolvedSkillCreatorRoot,
+    state.sourceProvenance?.manifestPath,
+    state.sourceProvenance?.resourceDescriptorHash,
+    state.sourceProvenance?.manifestCacheKey,
+  ].filter(Boolean).length;
+
+  return artifactEvidenceCount + provenanceEvidenceCount;
+}
+
+function getExecuteArtifactPayload(
+  artifact?: SkillCreatorWorkflowArtifact,
+): { success?: boolean } | undefined {
+  if (
+    !artifact ||
+    artifact.payload == null ||
+    typeof artifact.payload !== "object"
+  ) {
+    return undefined;
+  }
+
+  return artifact.payload as { success?: boolean };
 }

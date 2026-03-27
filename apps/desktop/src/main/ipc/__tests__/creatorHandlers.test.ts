@@ -80,7 +80,7 @@ describe("creatorHandlers", () => {
       createMockMainWindow() as unknown as BrowserWindowType,
     );
 
-    expect(handlerMap.size).toBe(6);
+    expect(handlerMap.size).toBe(8);
 
     const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
     const result = await handler?.(createMockEvent(), { prompt: "spec" });
@@ -91,7 +91,7 @@ describe("creatorHandlers", () => {
     });
   });
 
-  it("6 つの public runtime チャンネルを登録する", () => {
+  it("8 つの public runtime チャンネルを登録する", () => {
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
@@ -109,7 +109,13 @@ describe("creatorHandlers", () => {
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT)).toBe(
       true,
     );
-    expect(handlerMap.size).toBe(6);
+    expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL)).toBe(
+      true,
+    );
+    expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW)).toBe(
+      true,
+    );
+    expect(handlerMap.size).toBe(8);
   });
 
   it("plan ハンドラが trim 済み prompt と既定 auth を渡す", async () => {
@@ -401,12 +407,12 @@ describe("creatorHandlers", () => {
     });
   });
 
-  it("unregister が 6 チャンネルを解除する", () => {
+  it("unregister が 8 チャンネルを解除する", () => {
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
     );
-    expect(handlerMap.size).toBe(6);
+    expect(handlerMap.size).toBe(8);
 
     unregisterRuntimeSkillCreatorHandlers();
 

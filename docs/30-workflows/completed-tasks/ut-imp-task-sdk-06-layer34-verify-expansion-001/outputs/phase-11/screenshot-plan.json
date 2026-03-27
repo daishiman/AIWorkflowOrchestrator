@@ -1,0 +1,33 @@
+{
+  "mode": "SCREENSHOT_FALLBACK_WITH_REVIEW_BOARD",
+  "reason": "current workflow 配下に TC-ID 対応の review board screenshot と metadata を残し、live capture 未実施理由を fallback として明記する",
+  "artifacts": [
+    {
+      "id": "TC-11-01",
+      "file": "screenshots/TC-11-01-verify-detail-review-board.png",
+      "kind": "review-board"
+    }
+  ],
+  "targets": [
+    {
+      "id": "TC-11-01",
+      "surface": "verify-detail-panel",
+      "evidence": "review-board-from-code-and-test-inspection"
+    },
+    {
+      "id": "TC-11-02",
+      "surface": "verify-detail-checks-and-provenance",
+      "evidence": "review-board-from-code-and-test-inspection"
+    },
+    {
+      "id": "TC-11-03",
+      "surface": "delegated-note-blocks",
+      "evidence": "review-board-from-code-and-test-inspection"
+    },
+    {
+      "id": "TC-11-04",
+      "surface": "reverify-button-and-disabled-reason",
+      "evidence": "review-board-from-code-and-test-inspection"
+    }
+  ]
+}

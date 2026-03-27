@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <title>TC-11-01 Verify Detail Review Board</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f4f1e8;
+        --panel: #fffdf8;
+        --ink: #1f2937;
+        --muted: #6b7280;
+        --line: #d6d3c9;
+        --accent: #0f766e;
+        --warn: #b45309;
+      }
+      body {
+        margin: 0;
+        font-family: "Helvetica Neue", "Hiragino Sans", sans-serif;
+        background: linear-gradient(180deg, #efe8d8 0%, #f8f4ec 100%);
+        color: var(--ink);
+      }
+      .wrap {
+        width: 1280px;
+        margin: 0 auto;
+        padding: 40px;
+        box-sizing: border-box;
+      }
+      .hero, .grid article, .footer {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: 0 14px 40px rgba(31, 41, 55, 0.08);
+      }
+      .hero { padding: 28px; }
+      .eyebrow {
+        font-size: 12px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--accent);
+        font-weight: 700;
+      }
+      h1 {
+        margin: 12px 0 8px;
+        font-size: 34px;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.6;
+      }
+      .metrics {
+        margin-top: 24px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+      .metric {
+        padding: 16px;
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: #fcfaf5;
+      }
+      .metric strong { display: block; font-size: 13px; color: var(--muted); }
+      .metric span { display: block; margin-top: 10px; font-size: 20px; font-weight: 700; }
+      .grid {
+        margin-top: 24px;
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 16px;
+      }
+      article { padding: 22px; }
+      h2 {
+        margin: 0 0 14px;
+        font-size: 18px;
+      }
+      ul {
+        margin: 0;
+        padding-left: 18px;
+        line-height: 1.8;
+      }
+      .badge {
+        display: inline-block;
+        margin-right: 8px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(15, 118, 110, 0.1);
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .warn {
+        background: rgba(180, 83, 9, 0.1);
+        color: var(--warn);
+      }
+      .footer {
+        margin-top: 16px;
+        padding: 18px 22px;
+        font-size: 14px;
+        color: var(--muted);
+      }
+      code { font-family: "SFMono-Regular", Menlo, monospace; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <section class="hero">
+        <div class="eyebrow">Phase 11 Review Board</div>
+        <h1>TC-11-01 Verify Detail Surface</h1>
+        <p class="sub">
+          current workflow の verify detail / reverify surface を、実装コードと RTL / runtime test の結果から集約した review board。
+          Task07 / Task08 owner 項目は note 表示に留まり、engine owner を崩していないことを確認する。
+        </p>
+        <div class="metrics">
+          <div class="metric"><strong>Status</strong><span>pending</span></div>
+          <div class="metric"><strong>Phase</strong><span>verify</span></div>
+          <div class="metric"><strong>Evidence</strong><span>checks + provenance</span></div>
+          <div class="metric"><strong>Route</strong><span>integrated_api</span></div>
+        </div>
+      </section>
+      <div class="grid">
+        <article>
+          <h2>Visual Contract</h2>
+          <ul>
+            <li><span class="badge">TC-11-01</span>status / phase / evidence / route の 4 指標が同一 card に出る</li>
+            <li><span class="badge">TC-11-02</span><code>layer3-verify-status</code> と provenance summary が同じ surface に出る</li>
+            <li><span class="badge">TC-11-03</span>governance / session note は参照表示のみで owner 操作 UI を増やさない</li>
+            <li><span class="badge">TC-11-04</span><code>reverifyWorkflow</code> button と disabled reason の両方を確認できる</li>
+          </ul>
+        </article>
+        <article>
+          <h2>Fallback Evidence</h2>
+          <ul>
+            <li><span class="badge warn">Fallback</span>live Electron / Vite preview capture は未実施</li>
+            <li>source evidence: <code>SkillLifecyclePanel.tsx</code>, <code>SkillCreatorWorkflowEngine.ts</code></li>
+            <li>tests: <code>SkillLifecyclePanel.llm-generation.test.tsx</code>, <code>SkillCreatorWorkflowEngine.test.ts</code></li>
+            <li>metadata: <code>screenshots/phase11-capture-metadata.json</code></li>
+          </ul>
+        </article>
+      </div>
+      <div class="footer">
+        review board fallback は placeholder の存在確認ではなく、current workflow へ TC-ID・coverage・metadata を残すための代表証跡。
+      </div>
+    </div>
+  </body>
+</html>
