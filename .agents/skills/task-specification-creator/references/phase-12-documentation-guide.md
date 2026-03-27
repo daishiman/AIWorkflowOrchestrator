@@ -15,8 +15,9 @@
 
 **Part 2 追補ルール**:
 - `spec_created` workflow では「実装済み」と書かず、`current contract` と `target delta` を分けて書く
-- API シグネチャ、使用例、エラーハンドリング、設定可能パラメータ/定数一覧を省略しない
+- API シグネチャだけで閉じず、型定義、使用例、エラーハンドリング、エッジケース、設定可能パラメータ/定数一覧を省略しない
 - `future sync target` の列挙だけで終わらせず、今回 wave で何を更新し、何を no-op 判定したかを対応する成果物へ残す
+- screenshot fallback を完了根拠に使う場合は、placeholder-only の証跡を PASS 扱いにせず、coverage / metadata / fallback reason / source evidence まで current workflow に揃えた実測値で書く
 
 **Part 1 テンプレート**:
 ```markdown
@@ -80,6 +81,8 @@
 - 1件以上なら formalize path を記録する
 - raw メモで終わらせず、`audit-unassigned-tasks.js --target-file` が通る full template まで昇格させる
 - repo 全体の baseline 違反が多い場合は `current` と `baseline` を分離して記録する
+- duplicate source / ID collision のような source document 側の既知ドリフトは、今回差分起因でない限り `baseline / wider governance` として扱い、重複した新規未タスクを増やさない
+- `scope-definition.md` など既存成果物へ implementation anchor を追記した時は、target source path の実在確認と `system-spec-update-summary.md` / `documentation-changelog.md` への同値記録をセットで行う
 
 ## Task 12-5: skill feedback
 
@@ -97,6 +100,7 @@
 - internal adapter の実装だけで public IPC / preload contract 更新済みとは記録しない
 - Phase 13 は user approval 未取得なら `blocked` を維持し、completed へ進めない
 - skill を更新した場合は canonical `.claude/skills/...` と mirror `.agents/skills/...` の parity も記録する
+- compliance-check は自己申告 PASS で閉じず、validator 実測値、artifact existence、mirror parity、Phase 11 evidence の実ファイル根拠を結び付けて記録する
 
 **確認コマンド（docs-only / UI task 共通で必須）**:
 

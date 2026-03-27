@@ -3,6 +3,27 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-27 - runtime policy close-out の authority / reason source hardening を update-process へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に、public IPC shape 不変でも composition root authority / shared auth mode service / reason source of truth の変更は Step 2 更新対象に含めるルールを追加
+  - handler test の decision vocabulary を canonical enum に揃え、summary で `integrated_api` / `terminal_handoff` と `manualRetryRule` を同時記録する運用を明文化
+  - completed workflow path migration と同 wave で skill feedback / LOGS / mirror parity を閉じる current pattern を補強
+
+---
+## 2026-03-27 - UT-EXEC-01 の docs-only close-out guard を pattern/update-process へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に、implementation anchor 追補時の target source path 実在確認と duplicate source / ID collision の baseline 判定をまとめた Phase 12 パターンを追加
+  - `references/update-process.md` に、docs-only close-out でも blocker/backlog dedup の前段で anchor path 確認と current/baseline 分離を行う lane を追加
+
+---
 ## 2026-03-27 - TASK-SDK-03 の internal contract hardening 判定を Phase 12 template/pattern へ反映
 
 - **Agent**: skill-creator (update)
@@ -22,6 +43,17 @@
 - **Notes**:
   - `references/update-process.md` に、`spec_created` task へ code wave が入った場合は screenshot `N/A` / Step 2 `N/A` を再判定する lane を追加
   - docs-heavy walkthrough と representative screenshot follow-up を分離して記録する運用を標準化した
+
+---
+## 2026-03-27 - UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の shallow PASS 防止を template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に screenshot / compliance hardening lane を追加し、placeholder-only evidence と shallow self-PASS を再発防止パターンへ昇格
+  - `assets/phase12-system-spec-retrospective-template.md` に `TC-ID ↔ png ↔ coverage ↔ metadata ↔ fallback reason` の完結性と Part 2 必須要素の監査項目を追加
+  - spec_created close-out でも review board fallback と implementation guide Part 2 の薄い記述を false green にしない template 入口を整備
 
 ---
 ## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の close-out パターンを template/pattern へ反映

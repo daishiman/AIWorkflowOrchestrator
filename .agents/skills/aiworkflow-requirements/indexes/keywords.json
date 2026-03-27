@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-27T00:24:48.531Z",
-  "totalKeywords": 2511,
+  "generated": "2026-03-27T07:16:20.301Z",
+  "totalKeywords": 2514,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3399,6 +3399,7 @@
     ],
     "CENTRALIZATION": [
       "arch-state-management-reference.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
     ],
@@ -5142,6 +5143,7 @@
       "interfaces-agent-sdk-skill.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "security-electron-ipc-core.md",
       "security-skill-ipc-core.md",
       "security-skill-ipc.md"
@@ -6595,6 +6597,9 @@
     "PLACEMENT": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "IMPLEMENTATION": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "user": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6669,13 +6674,25 @@
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "VERIFY": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "EXPANSION": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "EXEC": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "VERIFY": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "EXPANSION": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "manifest": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "foundation": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "VERIFY": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "ARTIFACT": [

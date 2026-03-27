@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-03-27T08:15:00+09:00",
+  "captureMethod": "review-board-fallback",
+  "failureReason": "live Electron/Vite preview capture was not executed in this turn; current workflow stores a review board screenshot derived from code and test evidence",
+  "sourceEvidence": [
+    "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+    "apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts",
+    "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx",
+    "apps/desktop/src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts"
+  ],
+  "artifacts": [
+    {
+      "testCase": "TC-11-01",
+      "file": "TC-11-01-verify-detail-review-board.png"
+    }
+  ]
+}

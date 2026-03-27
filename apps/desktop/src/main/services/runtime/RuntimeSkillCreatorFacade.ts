@@ -27,9 +27,11 @@ import type {
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
+  RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorPlanResult as SkillPlanResult,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
+  RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
   LoadedWorkflowManifest,
 } from "@repo/shared/types";
@@ -136,6 +138,13 @@ export class RuntimeSkillCreatorFacade {
     return this.workflowEngine.submitUserInput(planId, submission);
   }
 
+  getVerifyDetail(planId: string): RuntimeSkillCreatorVerifyDetailResponse {
+    return this.workflowEngine.getVerifyDetail(planId);
+  }
+
+  reverifyWorkflow(planId: string): RuntimeSkillCreatorReverifyResponse {
+    return this.workflowEngine.requestReverify(planId);
+  }
   private resolveDecision(authMode: AuthMode, apiKey: string | null) {
     if (authMode === "api-key" && (!apiKey || apiKey.trim() === "")) {
       return this.resolver.resolveWithService(authMode);

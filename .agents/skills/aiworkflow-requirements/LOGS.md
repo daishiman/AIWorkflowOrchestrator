@@ -6,7 +6,10 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-27 - implementation spec to skill sync（runtime policy close-out と completed workflow path migration の stale fact を是正し、system spec / skill / workflow evidence / mirror parity を同一 wave で更新） |
+| 2026-03-27 - UT-EXEC-01 scope-definition path close-out sync（execution-responsibility family の Implementation Anchor 追補と docs-only Phase 12 guard を canonical completed/lessons/quick-reference/log へ反映） |
 | 2026-03-27 - TASK-SDK-04 implementation spec sync（user interaction bridge / phase UI の current contract、follow-up 3件、spec_created task の evidence drift 教訓を canonical spec/backlog/log へ反映） |
+| 2026-03-27 - UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 same-wave sync（verify detail / reverify current facts、Phase 11 review-board fallback evidence、Phase 12 guide hardening、quick-reference/resource-map/lessons/log を `.claude` 正本へ反映） |
 | 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 implementation sync（failure lifecycle 実装完了を canonical completed/lessons/index/log へ反映し、exact vitest workaround command と no-new-unassigned 方針を same-wave 記録） |
 | 2026-03-27 - TASK-SDK-03 resource selection hardening sync（multi-root source discovery / budget degrade / provenance snapshot を canonical references / completed ledger / indexes / logs へ same-wave 反映） |
 | 2026-03-26 - TASK-SDK-07 execution-governance-and-handoff-alignment spec_created sync（Skill Creator governance bundle の canonical 前提、quick-reference/resource-map 導線、task-spec close-out evidence を `.claude` 正本へ反映） |
@@ -114,6 +117,17 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 - [logs-archive-index.md](references/logs-archive-index.md)
 
+## implementation spec to skill sync（2026-03-27）
+
+- タスク名: Phase-12 タスク検証・システム仕様書反映・スキル更新・未タスク整理
+- 種別: cross-skill sync / stale-fact cleanup
+- 主な反映:
+  - `indexes/resource-map.md` / `indexes/quick-reference.md` の completed workflow root を `docs/30-workflows/completed-tasks/` 基準へ是正
+  - `references/task-workflow-completed.md` / `references/task-workflow.md` / `references/task-workflow-backlog.md` を更新し、TASK-SDK-03 と failure lifecycle の canonical path、parent note、重複 completed row を整理
+  - `references/lessons-learned-ipc-preload-runtime.md` に runtime policy centralization close-out の authority / reason source 教訓を追加
+  - workflow evidence 側では `spec_created` / `blocked` の扱いと verification target path の drift を是正し、Phase 12 summary の no-op 誤記を除去
+  - `.claude` 正本更新後に mirror sync と `diff -qr` で parity を再確認する前提を維持
+
 ## TASK-SDK-03 resource selection hardening sync（2026-03-27）
 
 - タスク名: context-budget-and-resource-selection
@@ -122,8 +136,19 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - `interfaces-agent-sdk-skill-reference.md` に dynamic resource pipeline（`getSkillCreatorRootCandidates()` / `SkillCreatorSourceResolver` / `PhaseResourcePlanner` / `ResolvedResourceReader`）を current fact として追記
   - `arch-electron-services-details-part2.md` に Task03 の source discovery / budget degrade / provenance snapshot の owner 境界を追記
   - `task-workflow-completed.md` に TASK-SDK-03 完了記録を追加し、新規未タスク 0 件を固定
-  - `lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` に multi-root provenance snapshot の教訓を更新
-  - `indexes/resource-map.md` / `indexes/quick-reference.md` に Task03 導線を追加
+- `lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` に multi-root provenance snapshot の教訓を更新
+- `indexes/resource-map.md` / `indexes/quick-reference.md` に Task03 導線を追加
+
+## UT-EXEC-01 scope-definition path close-out sync（2026-03-27）
+
+- タスク名: task-exec-scope-definition-path-update-001
+- 種別: docs-improvement / Phase 12 close-out
+- 主な反映:
+  - `references/task-workflow-completed.md` に UT-EXEC-01 完了記録を追加し、Task01 `scope-definition.md` の D. Implementation Anchor へ `packages/shared/src/types/execution-capability.ts` を追記した current fact を固定
+  - `references/lessons-learned-phase12-workflow-lifecycle.md` に implementation anchor path 実在確認と duplicate source / ID collision の baseline 判定を教訓化
+  - `references/workflow-ai-runtime-execution-responsibility-realignment.md` と `indexes/quick-reference.md` に close-out 導線を追加
+  - duplicate source / ID collision は wider governance baseline として扱い、新規未タスクを増やさない方針を current workflow と system spec へ同値記録した
+  - `.claude` 正本更新後に `generate-index.js` / `validate-structure.js` / mirror sync / `diff -qr` を実行し、Phase 12 close-out parity を確認する前提を明文化
 
 ## TASK-SDK-07 execution-governance-and-handoff-alignment spec_created sync（2026-03-26）
 
@@ -155,6 +180,16 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - Phase 12 の implementation guide / system-spec-update-summary / documentation-changelog / compliance check を実績ベースへ更新
   - `indexes/quick-reference.md` と `indexes/resource-map.md` に failure lifecycle 導線を追加
   - 正本 root は `.claude/skills/aiworkflow-requirements/` であり、`.agents` は mirror として扱う方針を再確認
+
+## UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 same-wave sync（2026-03-27）
+
+- タスク名: runtime skill creator verify detail / reverify surface close-out hardening
+- 種別: spec_created close-out sync
+- 主な反映:
+  - `indexes/resource-map.md` と `indexes/quick-reference.md` に verify detail / reverify surface の導線を追加
+  - `references/lessons-learned-phase12-workflow-lifecycle.md` と `lessons-learned-current.md` に placeholder-only screenshot PASS 禁止、Part 2 必須要素、Phase 2 contract matrix stale drift の教訓を追加
+  - Phase 11 review-board fallback evidence と Phase 12 implementation guide/compliance hardening を current workflow と skill guide の両方へ同期
+  - `.claude` 正本更新後に `.agents` mirror parity を再検証する前提を明文化
 
 ## UT-SC-05-IPC-DI-WIRING 完了（2026-03-24）
 

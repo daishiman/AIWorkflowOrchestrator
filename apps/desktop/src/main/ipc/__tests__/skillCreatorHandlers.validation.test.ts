@@ -334,8 +334,8 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
       expect(result.success).toBe(false);
     });
 
-    it("IPC-EX-004: 全ハンドラ: handler存在確認（18チャンネル）", () => {
-      // 登録される18チャンネル（progressはsendなのでhandlerMapに含まれない）
+    it("IPC-EX-004: 全ハンドラ: handler存在確認（20チャンネル）", () => {
+      // 登録される20チャンネル（progressはsendなのでhandlerMapに含まれない）
       const expectedChannels = [
         "skill-creator:detect-mode",
         "skill-creator:create",
@@ -345,9 +345,11 @@ describe("SkillCreator IPC Handlers - Validation (P42 Compliance)", () => {
         "skill-creator:plan",
         "skill-creator:execute-plan",
         "skill-creator:get-workflow-state",
+        "skill-creator:get-verify-detail",
         "skill-creator:submit-user-input",
         "skill-creator:apply-improvement",
         "skill-creator:improve-skill",
+        "skill-creator:reverify-workflow",
         "skill-creator:improve",
         "skill-creator:fork",
         "skill-creator:share",

@@ -35,11 +35,11 @@ import { SkillChainStore } from "../services/skill/SkillChainStore";
 import { SkillChainExecutor } from "../services/skill/SkillChainExecutor";
 import type { SkillDocGenerator } from "../services/skill/SkillDocGenerator";
 import { DEFAULT_DOC_TEMPLATE } from "../services/skill/SkillDocGenerator";
-import type { IAuthKeyService } from "../services/auth/types";
-import type { RuntimeResolver } from "../services/runtime/RuntimeResolver";
+import type { IAuthKeyService, IAuthModeService } from "../services/auth/types";
 import { TerminalHandoffBuilder } from "../services/runtime/TerminalHandoffBuilder";
 import type { SkillChainDefinition } from "@repo/shared";
 import type { SkillExecutionResponse } from "@repo/shared/types/skill";
+import type { IRuntimePolicyResolver } from "../services/runtime/RuntimePolicyResolver";
 
 // Module-level SkillExecutor instance for abort/getExecutionStatus
 let _skillExecutorInstance: SkillExecutor | null = null;
@@ -96,7 +96,8 @@ export function registerSkillHandlers(
   mainWindow: BrowserWindow,
   skillService: SkillService,
   authKeyService?: IAuthKeyService,
-  runtimeResolver?: RuntimeResolver,
+  runtimePolicyResolver?: IRuntimePolicyResolver,
+  authModeService?: IAuthModeService,
 ): void {
   // Initialize SkillExecutor instance
   _skillExecutorInstance = new SkillExecutor(
@@ -385,10 +386,13 @@ export function registerSkillHandlers(
         };
       }
 
-      // Runtime routing: handoff 分岐
-      if (runtimeResolver) {
-        const resolution = await runtimeResolver.resolve();
-        if (resolution.type === "handoff") {
+      // Runtime routing: central policy による handoff 分岐
+      if (runtimePolicyResolver && authModeService) {
+        const decision = await runtimePolicyResolver.resolveWithService(
+          authModeService.getMode(),
+        );
+        if (decision.type === "terminal_handoff") {
+          const reason = decision.bundle.manualRetryRule;
           const builder = new TerminalHandoffBuilder();
           const guidance = builder.buildForSurface(
             {
@@ -402,12 +406,12 @@ export function registerSkillHandlers(
                   ? args.workingDirectory
                   : undefined,
             },
-            resolution.reason,
+            reason,
           );
           const handoffResponse: SkillExecutionResponse = {
             executionId: `handoff-${Date.now()}`,
             success: false,
-            error: resolution.reason,
+            error: reason,
             handoff: true,
             guidance,
           };
