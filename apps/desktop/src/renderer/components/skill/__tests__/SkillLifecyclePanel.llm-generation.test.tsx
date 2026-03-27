@@ -777,9 +777,7 @@ describe("U-16: verify detail surface", () => {
       await screen.findByTestId("skill-lifecycle-verify-detail"),
     ).toBeTruthy();
     expect(mockGetVerifyDetail).toHaveBeenCalledWith("plan-001");
-    expect(
-      screen.getByText((content) => content.includes("integrated_api")),
-    ).toBeTruthy();
+    expect(await screen.findByText(/integrated_api \(default\)/)).toBeTruthy();
     expect(screen.getByText("Task07 owner")).toBeTruthy();
     expect(screen.getByText("Task08 owner")).toBeTruthy();
   });
