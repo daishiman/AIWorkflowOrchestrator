@@ -142,6 +142,9 @@ describe("RuntimeSkillCreatorFacade dynamic plan resource selection", () => {
       ),
     );
     await writeTextFile(envRoot, "agents/discover-problem.md", "DISCOVER_ENV");
+    await writeTextFile(envRoot, "agents/design-workflow.md", "DESIGN_ENV");
+    await writeTextFile(envRoot, "agents/plan-structure.md", "PLAN_ENV");
+    await writeTextFile(envRoot, "references/overview.md", "OVERVIEW_ENV");
 
     vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
       type: "integrated_api",
@@ -205,7 +208,7 @@ describe("RuntimeSkillCreatorFacade dynamic plan resource selection", () => {
       ]),
     });
     expect(snapshot?.sourceProvenance?.degradeReasons).toContain(
-      "source_conflict",
+      "structure_mismatch",
     );
   });
 });
