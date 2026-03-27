@@ -29,7 +29,7 @@
 | Phase 11 walkthrough 証跡との整合 | `outputs/phase-11/manual-test-checklist.md` / `manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` と `outputs/verification-report.md` の note を参照した | PASS |
 | 30種の思考法の適用証跡            | `outputs/phase-3/skill-compliance-and-elegance-review.md` に論理分析系から問題解決系までの監査を残した                                                                          | PASS |
 | 計画系 / 仮置き close-out の除去  | Phase 12 / 13 の成果物を見直し、仮置き状態への依存ではなく実施済み evidence へ差し替えた                                                                                        | PASS |
-| artifacts 整合                    | `artifacts.json` と `outputs/artifacts.json` に Phase 3 / 11 / 13 の追加成果物を反映した                                                                                        | PASS |
+| artifacts 整合                    | `artifacts.json` と `outputs/artifacts.json` に Phase 3 / 11 / 13 の追加成果物を反映し、root status は `spec_created` / Phase 13 `blocked` に統一した                           | PASS |
 
 ## 検証4条件の再判定
 

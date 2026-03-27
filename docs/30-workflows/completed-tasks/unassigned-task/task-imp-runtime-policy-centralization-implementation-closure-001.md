@@ -10,20 +10,23 @@ category: 改善
 target_feature: runtime policy centralization implementation closure
 priority: 高
 scale: 中規模
-status: 未実施
+status: 完了
 source_phase: TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 12 最終再監査
 created_date: 2026-03-26
+completed_date: 2026-03-27
 dependencies:
   - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001
-spec_path: docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md
+spec_path: docs/30-workflows/completed-tasks/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md
 ```
 
 | 項目       | 値                                                                      |
 | ---------- | ----------------------------------------------------------------------- |
 | タスクID   | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001       |
 | 優先度     | 高                                                                      |
+| ステータス | 完了                                                                    |
 | 依存       | Task02 設計成果物、Task03-09 の downstream 仕様、Task01 foundation 契約 |
 | 関連タスク | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001（Phase 12 最終再監査）       |
+| 完了日     | 2026-03-27                                                              |
 
 ---
 

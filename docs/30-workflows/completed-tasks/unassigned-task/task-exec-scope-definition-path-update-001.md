@@ -10,25 +10,25 @@ category: ドキュメント整備
 target_feature: execution-responsibility-realignment / scope-definition
 priority: 高
 scale: 小規模
-status: 未着手
+status: 完了
 source_phase: TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Phase 10 MINOR-1 指摘
 created_date: 2026-03-20
 dependencies:
   - TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001
-spec_path: docs/30-workflows/unassigned-task/task-exec-scope-definition-path-update-001.md
+spec_path: docs/30-workflows/completed-tasks/unassigned-task/task-exec-scope-definition-path-update-001.md
 ```
 
-| 項目         | 値                                                                              |
-| ------------ | ------------------------------------------------------------------------------- |
-| タスクID     | UT-EXEC-01                                                                      |
-| タスク名     | scope-definition.md への execution-capability.ts パス追記                       |
-| 分類         | ドキュメント整備                                                                |
-| 対象機能     | execution-responsibility-realignment / scope-definition                         |
-| 優先度       | 高                                                                              |
-| 見積もり規模 | 小規模（1ファイル修正）                                                         |
-| ステータス   | 未着手                                                                          |
-| 発見元       | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Phase 10 MINOR-1 指摘 |
-| 発見日       | 2026-03-20                                                                      |
+| 項目         | 値                                                                                                  |
+| ------------ | --------------------------------------------------------------------------------------------------- |
+| タスクID     | UT-EXEC-01                                                                                          |
+| タスク名     | scope-definition.md への execution-capability.ts パス追記                                           |
+| 分類         | ドキュメント整備                                                                                    |
+| 対象機能     | execution-responsibility-realignment / scope-definition                                             |
+| 優先度       | 高                                                                                                  |
+| 見積もり規模 | 小規模（1ファイル修正）                                                                             |
+| ステータス   | 完了（2026-03-27, `docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001/`） |
+| 発見元       | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Phase 10 MINOR-1 指摘                     |
+| 発見日       | 2026-03-20                                                                                          |
 
 ---
 
@@ -83,9 +83,10 @@ Task01 で新規作成した `packages/shared/src/types/execution-capability.ts`
 
 ### 成果物
 
-| 成果物                       | パス                                                                                    | 内容                                                               |
-| ---------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| 更新済み scope-definition.md | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/scope-definition.md` | D. Implementation Anchor 節に `execution-capability.ts` パスを追記 |
+| 成果物                       | パス                                                                                                                                     | 内容                                                               |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| follow-up workflow           | `docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001/`                                                          | actual target correction と Phase 1-13 close-out 記録              |
+| 更新済み scope-definition.md | `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md` | D. Implementation Anchor 節に `execution-capability.ts` パスを追記 |
 
 ---
 
@@ -93,7 +94,7 @@ Task01 で新規作成した `packages/shared/src/types/execution-capability.ts`
 
 ### 前提条件
 
-- `docs/30-workflows/ai-runtime-execution-responsibility-realignment/scope-definition.md` が存在すること
+- `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md` が存在すること
 - `packages/shared/src/types/execution-capability.ts` が存在すること
 
 ### 依存タスク
@@ -113,7 +114,7 @@ Task01 で新規作成した `packages/shared/src/types/execution-capability.ts`
 
 ### Phase 1: 現状確認（所要時間: 5分）
 
-1. `scope-definition.md` を開き、D. Implementation Anchor 節の現在の記載内容を確認する
+1. actual target の `scope-definition.md` を開き、D. Implementation Anchor 節の現在の記載内容を確認する
 2. `packages/shared/src/types/execution-capability.ts` が実際に存在することを確認する
    ```bash
    ls -la packages/shared/src/types/execution-capability.ts
@@ -131,7 +132,7 @@ Task01 で新規作成した `packages/shared/src/types/execution-capability.ts`
 
 1. 追記した内容が正しいパスであることを確認する
    ```bash
-   grep "execution-capability" docs/30-workflows/ai-runtime-execution-responsibility-realignment/scope-definition.md
+   grep "execution-capability" docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md
    ```
 2. 既存エントリのフォーマットと統一されていることを目視確認する
 3. マークダウンの構文エラーがないことを確認する
@@ -140,7 +141,7 @@ Task01 で新規作成した `packages/shared/src/types/execution-capability.ts`
 
 1. 変更をステージングする
    ```bash
-   git add docs/30-workflows/ai-runtime-execution-responsibility-realignment/scope-definition.md
+   git add docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md
    ```
 2. コミットメッセージ例:
    ```
@@ -171,9 +172,9 @@ Task01 で新規作成した `packages/shared/src/types/execution-capability.ts`
 ## 6. 検証方法
 
 1. **パス存在確認**: `ls packages/shared/src/types/execution-capability.ts` でファイルが存在すること
-2. **記載確認**: `grep -c "execution-capability" docs/30-workflows/ai-runtime-execution-responsibility-realignment/scope-definition.md` の結果が 1 以上であること
-3. **既存エントリ保持確認**: `grep -c "auth-mode" docs/30-workflows/ai-runtime-execution-responsibility-realignment/scope-definition.md` の結果が変更前と同じであること
-4. **差分確認**: `git diff docs/30-workflows/ai-runtime-execution-responsibility-realignment/scope-definition.md` で追記行のみが差分として表示されること
+2. **記載確認**: `grep -c "execution-capability" docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md` の結果が 1 以上であること
+3. **既存エントリ保持確認**: `grep -c "auth-mode" docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md` の結果が変更前と同じであること
+4. **差分確認**: `git diff docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md` で追記行のみが差分として表示されること
 
 ---
 
@@ -191,11 +192,11 @@ Task01 で新規作成した `packages/shared/src/types/execution-capability.ts`
 
 ### 関連ドキュメント
 
-| ドキュメント            | パス                                                                                    |
-| ----------------------- | --------------------------------------------------------------------------------------- |
-| scope-definition.md     | `docs/30-workflows/ai-runtime-execution-responsibility-realignment/scope-definition.md` |
-| execution-capability.ts | `packages/shared/src/types/execution-capability.ts`                                     |
-| auth-mode.ts            | `packages/shared/src/types/auth-mode.ts`                                                |
+| ドキュメント            | パス                                                                                                                                     |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| scope-definition.md     | `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/outputs/phase-1/scope-definition.md` |
+| execution-capability.ts | `packages/shared/src/types/execution-capability.ts`                                                                                      |
+| auth-mode.ts            | `packages/shared/src/types/auth-mode.ts`                                                                                                 |
 
 ### 関連タスク
 
@@ -210,6 +211,11 @@ Task01 で新規作成した `packages/shared/src/types/execution-capability.ts`
 | P57        | 設計タスクにおける Phase 12 システム仕様書更新の先送りパターン | 「計画文」ではなく「実績ベース」で記録する原則。scope-definition も実ファイル作成時に同時更新すべきだった |
 | P58        | 設計タスクにおける未タスク指示書の配置省略                     | 「設計タスクだから」という理由で指示書作成を省略しない。P3/P38 の3ステップは必須                          |
 | P26        | システム仕様書更新遅延                                         | 仕様書の更新を「PRマージ後」に先送りせず、実装完了時点で更新する                                          |
+
+## 10. current status
+
+- actual target correction と patch execution は `docs/30-workflows/completed-tasks/task-exec-scope-definition-path-update-001/` で完了
+- 本指示書は close-out 後の参照用として保持し、active backlog としては扱わない
 
 ---
 

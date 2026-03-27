@@ -58,14 +58,15 @@
 
 ## Same-Wave Sync Decision
 
-| 対象                                        | 判定    | 理由                                                                             |
-| ------------------------------------------- | ------- | -------------------------------------------------------------------------------- |
-| workflow 正本                               | Updated | index / phase / outputs を同一 wave で是正した                                   |
-| `artifacts.json` / `outputs/artifacts.json` | Synced  | `spec_created` と phase 状態を一致させた                                         |
-| aiworkflow system spec 正本                 | Updated | shared / IPC / preload / renderer の current contract と follow-up 3件を同期した |
-| `task-workflow*` / `lessons-learned*`       | Updated | backlog / lessons へ `TASK-SDK-04-U1..U3` と苦戦箇所を追加した                   |
-| `LOGS.md` / `SKILL.md`                      | Updated | 3 skill の changelog と usage log を同一 wave で更新した                         |
-| `topic-map.md` / `quick-reference.md`       | Updated | generate-index 再生成で current canonical set を更新した                         |
+| 対象                                        | 判定    | 理由                                                                                                                                        |
+| ------------------------------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| workflow 正本                               | Updated | index / phase / outputs を同一 wave で是正した                                                                                              |
+| `artifacts.json` / `outputs/artifacts.json` | Synced  | `spec_created` と phase 状態を一致させた                                                                                                    |
+| aiworkflow system spec 正本                 | Updated | shared / IPC / preload / renderer の current contract と、open 2件 + completed 1件の close-out fact を同期した                              |
+| `task-workflow*` / `lessons-learned*`       | Updated | backlog / lessons へ `TASK-SDK-04-U1/U2` の open set、`UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001` の完了移管、苦戦箇所を同期した |
+| `completed-tasks/unassigned-task`           | Updated | `UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001` を完了移管し、open set を 2 件へ整理した                                             |
+| `LOGS.md` / `SKILL.md`                      | Updated | 3 skill の changelog と usage log を同一 wave で更新した                                                                                    |
+| `topic-map.md` / `quick-reference.md`       | Updated | generate-index 再生成で current canonical set を更新した                                                                                    |
 
 ## Validation
 
@@ -79,7 +80,7 @@
 
 ## Current / Baseline
 
-| 観点                  | current                                           | baseline                                                                 |
-| --------------------- | ------------------------------------------------- | ------------------------------------------------------------------------ |
-| workflow spec drift   | Step 2 / canonical path / follow-up 3件を是正済み | 是正前は old path 残存、Step 2 N/A、Phase 11 screenshot N/A 固定         |
-| unassigned violations | `TASK-SDK-04-U1..U3` を formalize 済み            | baseline は `UT-SC-02-006` 吸収のみで current gap を説明できていなかった |
+| 観点                  | current                                                                        | baseline                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------- |
+| workflow spec drift   | Step 2 / canonical path / open 2件 + completed 1件の close-out fact を是正済み | 是正前は old path 残存、Step 2 N/A、Phase 11 screenshot N/A 固定                          |
+| unassigned violations | `TASK-SDK-04-U1/U2` を open、U3 を完了移管済み                                 | baseline は `UT-SC-02-006` 吸収のみで current gap と close-out 完了を説明できていなかった |

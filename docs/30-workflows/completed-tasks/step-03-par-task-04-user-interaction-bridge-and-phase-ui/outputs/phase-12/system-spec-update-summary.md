@@ -18,7 +18,7 @@
 | -------- | ---- | ---- | ------------------------------------------- | -------------------------------------------------------------------------------------------------- |
 | Step 1-A | ✅   | PASS | Task04 workflow 本文 / outputs              | current code wave と stale evidence cleanup を反映した                                             |
 | Step 1-B | ✅   | PASS | `artifacts.json` / `outputs/artifacts.json` | `spec_created` を維持しつつ outputs と整合させた                                                   |
-| Step 1-C | ✅   | PASS | Task04 index / downstream boundary          | Task05-08 への委譲と `TASK-SDK-04-U1..U3` を同時記録した                                           |
+| Step 1-C | ✅   | PASS | Task04 index / downstream boundary          | Task05-08 への委譲と `TASK-SDK-04-U1/U2` open、U3 完了移管を current facts に同期した              |
 | Step 1-D | ✅   | PASS | workflow 4点同期                            | `index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` を current path で突合した |
 | Step 1-E | ✅   | PASS | backlog / unassigned 判断                   | `UT-SC-02-006` と別責務の 3 件を formalize した                                                    |
 | Step 1-F | 条件 | N/A  | DevOps / release docs                       | build / deploy / CI 契約は今回の変更対象外                                                         |
@@ -27,15 +27,15 @@
 
 ## Current Canonical Set
 
-| 種別               | パス                                                                                                                        | 扱い                                       |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| workflow 正本      | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`                       | 今回更新                                   |
-| phase 正本         | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/phase-*.md`                     | 今回更新                                   |
-| artifact inventory | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/artifacts.json`                 | `spec_created` を維持                      |
-| output inventory   | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/outputs/artifacts.json`         | root inventory と同値                      |
-| verification       | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/outputs/verification-report.md` | 今回更新                                   |
-| follow-up boundary | Task05 / Task06 / Task07 / Task08                                                                                           | downstream 委譲の正本                      |
-| backlog relation   | `UT-SC-02-006`, `TASK-SDK-04-U1`, `TASK-SDK-04-U2`, `TASK-SDK-04-U3`                                                        | handoff 既知 gap + 新規 3 follow-up を併記 |
+| 種別               | パス                                                                                                                        | 扱い                                               |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| workflow 正本      | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`                       | 今回更新                                           |
+| phase 正本         | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/phase-*.md`                     | 今回更新                                           |
+| artifact inventory | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/artifacts.json`                 | `spec_created` を維持                              |
+| output inventory   | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/outputs/artifacts.json`         | root inventory と同値                              |
+| verification       | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/outputs/verification-report.md` | 今回更新                                           |
+| follow-up boundary | Task05 / Task06 / Task07 / Task08                                                                                           | downstream 委譲の正本                              |
+| backlog relation   | `UT-SC-02-006`, `TASK-SDK-04-U1`, `TASK-SDK-04-U2`, `UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001`                  | handoff 既知 gap、open 2 件、完了 close-out を併記 |
 
 ## Artifact Inventory
 
@@ -61,11 +61,11 @@
 
 ## Follow-up
 
-| 区分      | 内容                                                                                  |
-| --------- | ------------------------------------------------------------------------------------- |
-| follow-up | Task05 で entry 統合時に render surface の最終整理が必要                              |
-| follow-up | Task07 で disclosure / approval copy の hardening が必要                              |
-| follow-up | Task08 で `requestId` / `resumeTokenEnvelope` の persistence semantics 整理が必要     |
-| follow-up | `TASK-SDK-04-U1`: user input 回答が phase semantics へ反映されるよう runtime を是正   |
-| follow-up | `TASK-SDK-04-U2`: plan review 後も canonical plan 内容のみで execute する binding fix |
-| follow-up | `TASK-SDK-04-U3`: Phase 11/12/13 evidence と canonical path の stale fact cleanup     |
+| 区分      | 内容                                                                                                                           |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| follow-up | Task05 で entry 統合時に render surface の最終整理が必要                                                                       |
+| follow-up | Task07 で disclosure / approval copy の hardening が必要                                                                       |
+| follow-up | Task08 で `requestId` / `resumeTokenEnvelope` の persistence semantics 整理が必要                                              |
+| follow-up | `TASK-SDK-04-U1`: user input 回答が phase semantics へ反映されるよう runtime を是正する                                        |
+| follow-up | `TASK-SDK-04-U2`: plan review 後も canonical plan 内容のみで execute する binding fix                                          |
+| completed | `UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001`: Phase 11/12/13 evidence と canonical path の stale fact cleanup を完了 |

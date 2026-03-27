@@ -13,12 +13,12 @@ Task03 の主題は token 削減だけではない。repo 同梱版、home 配�
 | タスクID   | TASK-SDK-03                                                                  |
 | タスク種別 | 設計                                                                         |
 | 優先度     | 高                                                                           |
-| ステータス | completed                                                                    |
+| ステータス | spec_created（Phase 1-12 complete / Phase 13 blocked）                       |
 | 上流ゲート | `root-workflow-pack/phase-1-requirements.md` から `phase-3-design-review.md` |
 | 依存タスク | TASK-SDK-01, TASK-SDK-02                                                     |
 | 後続タスク | TASK-SDK-04, TASK-SDK-05, TASK-SDK-06, TASK-SDK-07, TASK-SDK-08              |
 | 作成日     | 2026-03-26                                                                   |
-| 更新日     | 2026-03-26                                                                   |
+| 更新日     | 2026-03-27                                                                   |
 
 ## 受入基準
 

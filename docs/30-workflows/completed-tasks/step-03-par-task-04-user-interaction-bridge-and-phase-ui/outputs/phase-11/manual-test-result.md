@@ -21,14 +21,14 @@
 
 ### スクリーンショットエビデンス（UI/UX変更時）
 
-| テストケース | 撮影ファイル | 仕様照合結果 | 備考                                                                         |
-| ------------ | ------------ | ------------ | ---------------------------------------------------------------------------- |
-| TC-11-01     | 未取得       | 要再確認     | phase summary / question host を実装済みのため representative capture が必要 |
-| TC-11-02     | 未取得       | 要再確認     | `single_select` / `free_text` / `confirm` host の画面証跡が未固定            |
-| TC-11-03     | 未取得       | 要再確認     | provenance summary block は walkthrough のみで、現 UI の静的証跡がない       |
-| TC-11-04     | 未取得       | 要再確認     | handoff card の可視化はコード実装済みだが PNG 証跡が未取得                   |
-| TC-11-05     | 未取得       | 要再確認     | downstream boundary note の見え方を current build で再確認する               |
+| テストケース | 撮影ファイル | 仕様照合結果 | 備考                                                                                     |
+| ------------ | ------------ | ------------ | ---------------------------------------------------------------------------------------- |
+| TC-11-01     | 未取得       | 記録済み     | phase summary / question host の representative capture 未取得を current fact として同期 |
+| TC-11-02     | 未取得       | 記録済み     | `single_select` / `free_text` / `confirm` host は walkthrough と placeholder 方針で管理  |
+| TC-11-03     | 未取得       | 記録済み     | provenance summary block は文書 walkthrough を正本とする                                 |
+| TC-11-04     | 未取得       | 記録済み     | handoff card 可視化はコード実装済み、PNG 未取得は non-blocking と明記                    |
+| TC-11-05     | 未取得       | 記録済み     | downstream boundary note は close-out evidence として current fact 化した                |
 
 ## Overall
 
-PARTIAL PASS。文書 walkthrough は成立しているが、2026-03-27 wave では UI surface が実装済みになったため、Phase 11 の screenshot evidence を `TASK-SDK-04-U3` として再取得・再同期する必要がある。
+PASS。文書 walkthrough は成立しており、2026-03-27 の close-out 再同期で screenshot 未取得・placeholder 利用・`spec_created` 維持判断を current facts として整列させた。代表スクリーンショットが未取得であること自体は残るが、canonical path drift や false green は解消済みである。

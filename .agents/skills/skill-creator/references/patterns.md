@@ -6488,6 +6488,19 @@ expect(mockIpc).toHaveBeenCalledTimes(1);
 - **発見日**: 2026-03-16
 - **関連タスク**: TASK-SKILL-LIFECYCLE-07
 
+### [Phase 12] docs-only close-out の implementation anchor 追補は target path と duplicate source 判定を先に固定する
+
+- **状況**: `scope-definition.md` など既存成果物へ implementation anchor を 1 行追記する docs-only close-out では、target source path が stale でも summary/changelog だけ整って見えやすい。さらに source unassigned docs の duplicate source / ID collision を current diff と誤認すると、不要な follow-up を増やしやすい
+- **アプローチ**:
+  1. implementation anchor を追記する前に `test -f <source-path>` などで target source path の実在を確認し、current fact を root evidence と completed ledger へ同値転記する
+  2. duplicate source / ID collision は `current diff` と `wider governance baseline` に分離し、baseline なら lessons / summary に理由だけを残して新規未タスクを増やさない
+  3. `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` に、anchor 追補・baseline 判定・no-new-unassigned の同値を残す
+  4. 仕上げに `generate-index.js` → `validate-structure.js` → mirror sync → `diff -qr` を実行し、`.claude` 正本と `.agents` mirror の parity を確認する
+- **結果**: 1 行の docs-only 追補でも false green を防ぎ、duplicate source 系の backlog 過密化を抑制できる
+- **適用条件**: implementation anchor の追補、docs-only family close-out、source unassigned docs に duplicate source / ID collision が混ざる Phase 12
+- **発見日**: 2026-03-27
+- **関連タスク**: UT-EXEC-01
+
 ### [Phase 12] workspace preview/search は cross-cutting spec を追加同期する（TASK-UI-04C）
 
 - **状況**: `PreviewPanel` / `QuickFileSearch` / renderer local fallback を実装しても、`ui-ux-feature-components.md` だけでは shortcut、dialog token、error surface、resilience pattern の再利用導線が不足する

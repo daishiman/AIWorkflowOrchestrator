@@ -85,6 +85,7 @@ Task02 以降が参照すべき情報を、`Task01 成果物`、`workflow canoni
 | ファイルパス                                                      | 参照目的                                   |
 | ----------------------------------------------------------------- | ------------------------------------------ |
 | `packages/shared/src/types/auth-mode.ts`                          | AuthMode 型・AuthModeStatus DTO の実装正本 |
+| `packages/shared/src/types/execution-capability.ts`               | capability / UI state / CTA 契約の実装正本 |
 | `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts` | capability 判定ロジックの実装正本          |
 
 ## 除外範囲

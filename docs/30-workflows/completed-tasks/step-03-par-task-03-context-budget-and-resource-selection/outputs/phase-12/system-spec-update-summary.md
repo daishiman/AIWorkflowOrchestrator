@@ -14,34 +14,34 @@
 
 ### Task03 本体
 
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/index.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/phase-1-requirements.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/phase-2-design.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/phase-3-design-review.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/phase-5-implementation.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/phase-11-manual-test.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/phase-12-documentation.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/phase-13-pr-creation.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/artifacts.json`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/artifacts.json`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-1/spec-extraction-map.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-2/source-resolution-matrix.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-2/budget-degrade-matrix.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-3/design-review-gate.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-3/skill-compliance-and-elegance-review.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-11/manual-test-checklist.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-11/manual-test-result.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-11/manual-test-report.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-11/discovered-issues.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/implementation-guide.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/system-spec-update-summary.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/documentation-changelog.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/unassigned-task-detection.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/skill-feedback-report.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/phase12-task-spec-compliance-check.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-13/local-check-result.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-13/change-summary.md`
-- `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/outputs/verification-report.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/index.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/phase-1-requirements.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/phase-2-design.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/phase-3-design-review.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/phase-5-implementation.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/phase-11-manual-test.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/phase-12-documentation.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/phase-13-pr-creation.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/artifacts.json`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/artifacts.json`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-1/spec-extraction-map.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-2/source-resolution-matrix.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-2/budget-degrade-matrix.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-3/design-review-gate.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-3/skill-compliance-and-elegance-review.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-11/manual-test-checklist.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-11/manual-test-result.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-11/manual-test-report.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-11/discovered-issues.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/implementation-guide.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/system-spec-update-summary.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/documentation-changelog.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/unassigned-task-detection.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/skill-feedback-report.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-12/phase12-task-spec-compliance-check.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-13/local-check-result.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/phase-13/change-summary.md`
+- `docs/30-workflows/completed-tasks/step-03-par-task-03-context-budget-and-resource-selection/outputs/verification-report.md`
 
 ### lane / downstream への前提同期
 

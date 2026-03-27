@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: null
+issue_number: 1672
 task_id: TASK-SDK-04-U1
 task_name: submitUserInput の phase transition semantics を実装へ反映する
 category: 実装改善
