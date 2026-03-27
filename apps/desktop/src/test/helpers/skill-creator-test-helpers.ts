@@ -15,6 +15,8 @@ import type {
   RuntimeSkillCreatorImproveSuggestion,
   ApplyImprovementResult,
   HandoffGuidance,
+  SkillCreatorUserInputSubmission,
+  SkillCreatorWorkflowUiSnapshot,
 } from "@repo/shared/types";
 
 // -------------------------------------------------------
@@ -46,6 +48,8 @@ export interface MockRuntimeFacade {
   improve: ReturnType<typeof vi.fn>;
   applyImprovement: ReturnType<typeof vi.fn>;
   setLLMAdapter: ReturnType<typeof vi.fn>;
+  getWorkflowStateSnapshot: ReturnType<typeof vi.fn>;
+  submitUserInput: ReturnType<typeof vi.fn>;
 }
 
 // -------------------------------------------------------
@@ -85,12 +89,58 @@ export function createMockEvent(webContentsId = 1): IpcMainInvokeEvent {
 }
 
 export function createMockRuntimeFacade(): MockRuntimeFacade {
+  const workflowSnapshot: SkillCreatorWorkflowUiSnapshot = {
+    planId: "plan-001",
+    currentPhase: "review",
+    awaitingUserInput: null,
+    verifyResult: null,
+    resumeTokenEnvelope: {
+      version: "task-sdk-02-v1",
+      planId: "plan-001",
+      currentPhase: "review",
+      artifactCount: 0,
+      updatedAt: "2026-03-27T00:00:00.000Z",
+    },
+    handoffBundle: null,
+  };
+
   return {
     plan: vi.fn(),
     execute: vi.fn(),
     improve: vi.fn(),
     applyImprovement: vi.fn(),
     setLLMAdapter: vi.fn(),
+    getWorkflowStateSnapshot: vi
+      .fn<(planId: string) => SkillCreatorWorkflowUiSnapshot | undefined>()
+      .mockImplementation((planId) => ({
+        ...workflowSnapshot,
+        planId,
+        resumeTokenEnvelope: {
+          ...workflowSnapshot.resumeTokenEnvelope,
+          planId,
+        },
+      })),
+    submitUserInput: vi
+      .fn<
+        (
+          planId: string,
+          submission: SkillCreatorUserInputSubmission,
+        ) => SkillCreatorWorkflowUiSnapshot
+      >()
+      .mockImplementation((planId, submission) => ({
+        ...workflowSnapshot,
+        planId,
+        awaitingUserInput: null,
+        resumeTokenEnvelope: {
+          ...workflowSnapshot.resumeTokenEnvelope,
+          planId,
+        },
+        verifyResult: {
+          status:
+            submission.selectedOptionId === "needs_changes" ? "fail" : "pass",
+          updatedAt: "2026-03-27T00:00:00.000Z",
+        },
+      })),
   };
 }
 

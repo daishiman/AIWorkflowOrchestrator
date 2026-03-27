@@ -594,7 +594,11 @@ describe("U-13b: workflow snapshot summary is rendered", () => {
     expect(
       screen.getByTestId("skill-lifecycle-provenance-summary"),
     ).toBeInTheDocument();
-    expect(screen.getByText("/tmp/skill-creator")).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId("skill-lifecycle-provenance-summary")
+        .textContent?.includes("/tmp/skill-creator"),
+    ).toBe(true);
   });
 });
 

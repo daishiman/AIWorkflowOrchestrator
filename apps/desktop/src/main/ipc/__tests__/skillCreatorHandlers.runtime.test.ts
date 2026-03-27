@@ -108,7 +108,7 @@ describe("SkillCreator runtime IPC handlers", () => {
     unregisterSkillCreatorHandlers();
   });
 
-  it("runtime 用の3ハンドラーを登録する", () => {
+  it("runtime 用の 5 ハンドラーを登録する", () => {
     expect(getHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN)).toBeDefined();
     expect(getHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN)).toBeDefined();
     expect(
@@ -196,6 +196,8 @@ describe("SkillCreator runtime IPC handlers", () => {
       }),
       execute: vi.fn(),
       improve: vi.fn(),
+      getWorkflowStateSnapshot: vi.fn().mockReturnValue(undefined),
+      submitUserInput: vi.fn(),
     };
 
     registerSkillCreatorHandlers(
@@ -247,6 +249,8 @@ describe("SkillCreator runtime IPC handlers", () => {
       }),
       execute: vi.fn(),
       improve: vi.fn(),
+      getWorkflowStateSnapshot: vi.fn().mockReturnValue(undefined),
+      submitUserInput: vi.fn(),
     };
 
     registerSkillCreatorHandlers(
