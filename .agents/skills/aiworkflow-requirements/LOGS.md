@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-27 - TASK-SDK-04 implementation spec sync（user interaction bridge / phase UI の current contract、follow-up 3件、spec_created task の evidence drift 教訓を canonical spec/backlog/log へ反映） |
 | 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 implementation sync（failure lifecycle 実装完了を canonical completed/lessons/index/log へ反映し、exact vitest workaround command と no-new-unassigned 方針を same-wave 記録） |
 | 2026-03-27 - TASK-SDK-03 resource selection hardening sync（multi-root source discovery / budget degrade / provenance snapshot を canonical references / completed ledger / indexes / logs へ same-wave 反映） |
 | 2026-03-26 - TASK-SDK-07 execution-governance-and-handoff-alignment spec_created sync（Skill Creator governance bundle の canonical 前提、quick-reference/resource-map 導線、task-spec close-out evidence を `.claude` 正本へ反映） |

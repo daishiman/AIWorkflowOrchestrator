@@ -20,6 +20,10 @@ const mockSelectSkillByName = vi.fn();
 const mockClearSkillError = vi.fn();
 const mockClearStreamingMessages = vi.fn();
 const mockClearGenerationState = vi.fn();
+const mockSetWorkflowSnapshot = vi.fn();
+const mockSetWorkflowError = vi.fn();
+const mockSetHandoffGuidance = vi.fn();
+const mockClearHandoffGuidance = vi.fn();
 const mockBeginSkillReview = vi.fn();
 const mockCompleteSkillReview = vi.fn();
 const mockResetSkillExecutionCycle = vi.fn();
@@ -44,6 +48,9 @@ type MockStoreState = {
     | "reuse_ready"
     | null;
   skillError: string | null;
+  workflowSnapshot: null;
+  workflowError: string | null;
+  handoffGuidance: null;
 };
 
 let mockStoreState: MockStoreState = {
@@ -52,6 +59,9 @@ let mockStoreState: MockStoreState = {
   streamingMessages: [],
   skillExecutionStatus: null,
   skillError: null,
+  workflowSnapshot: null,
+  workflowError: null,
+  handoffGuidance: null,
 };
 
 vi.mock("../../../store", () => ({
@@ -82,6 +92,13 @@ vi.mock("../../../store", () => ({
   useSetGenerationError: () => vi.fn(),
   useSetCurrentPlanId: () => vi.fn(),
   useSetCurrentPlanResult: () => vi.fn(),
+  useWorkflowSnapshot: () => mockStoreState.workflowSnapshot,
+  useWorkflowError: () => mockStoreState.workflowError,
+  useSetWorkflowSnapshot: () => mockSetWorkflowSnapshot,
+  useSetWorkflowError: () => mockSetWorkflowError,
+  useHandoffGuidance: () => mockStoreState.handoffGuidance,
+  useSetHandoffGuidance: () => mockSetHandoffGuidance,
+  useClearHandoffGuidance: () => mockClearHandoffGuidance,
 }));
 
 vi.mock("../SkillStreamingView", () => ({
@@ -115,6 +132,9 @@ beforeEach(() => {
     streamingMessages: [],
     skillExecutionStatus: null,
     skillError: null,
+    workflowSnapshot: null,
+    workflowError: null,
+    handoffGuidance: null,
   };
 
   (

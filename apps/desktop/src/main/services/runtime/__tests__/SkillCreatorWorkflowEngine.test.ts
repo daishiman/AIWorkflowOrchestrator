@@ -162,6 +162,10 @@ describe("SkillCreatorWorkflowEngine", () => {
       launcher: "claude",
     });
     expect(snapshot.resumeTokenEnvelope.currentPhase).toBe("handoff");
+    expect(snapshot.handoffBundle).toMatchObject({
+      launcher: "claude",
+      cwd: "/tmp/runtime",
+    });
   });
 
   it("verify fail を improve next action として保持する", () => {
@@ -365,5 +369,44 @@ describe("SkillCreatorWorkflowEngine", () => {
         reason: "execution_failed",
       }),
     ]);
+  });
+
+  it("submitUserInput は requestId 一致時に awaitingUserInput を解消する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    const snapshot = engine.recordPlanResult(createPlanResult(), {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+
+    const submitted = engine.submitUserInput("plan-001", {
+      planId: "plan-001",
+      requestId: snapshot.awaitingUserInput!.requestId,
+      selectedOptionId: "ready_to_execute",
+    });
+
+    expect(submitted.awaitingUserInput).toBeNull();
+    expect(
+      submitted.phaseArtifacts.some(
+        (artifact) => artifact.kind === "user_input_submission",
+      ),
+    ).toBe(true);
+  });
+
+  it("submitUserInput は stale requestId を reject する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    engine.recordPlanResult(createPlanResult(), {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+
+    expect(() =>
+      engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId: "stale-request",
+        selectedOptionId: "ready_to_execute",
+      }),
+    ).toThrow("stale requestId");
   });
 });
