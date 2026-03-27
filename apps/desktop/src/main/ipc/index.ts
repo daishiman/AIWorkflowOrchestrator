@@ -76,6 +76,7 @@ import {
   AuthKeyService,
   createAuthKeyStorage,
   createAuthModeService,
+  StubSubscriptionAuthProvider,
 } from "../services/auth";
 import {
   getSupabaseClient,
@@ -89,7 +90,7 @@ import {
 import { registerChatEditHandlers } from "./chatEditHandlers";
 import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
-import { RuntimeResolver } from "../services/runtime/RuntimeResolver";
+import { RuntimePolicyResolver } from "../services/runtime/RuntimePolicyResolver";
 import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
 import { SkillCreatorSourceResolver } from "../services/runtime/SkillCreatorSourceResolver";
 import { PhaseResourcePlanner } from "../services/runtime/PhaseResourcePlanner";
@@ -656,22 +657,31 @@ export function registerAllIpcHandlers(
     registerNotificationHandlers(createNotificationService(), { mainWindow }),
   );
 
-  // --- 7. Agent Execution handlers (runtimeResolver injected below after auth setup) ---
+  // --- 7. Agent Execution handlers (runtime policy injected below after auth setup) ---
 
-  // --- 8. Auth Key service + RuntimeResolver + Skill 系ハンドラ ---
+  // --- 8. Auth Key service + RuntimePolicyResolver + Skill 系ハンドラ ---
   const authKeyStorage = createAuthKeyStorage();
   const authKeyService = new AuthKeyService(authKeyStorage);
 
-  // 共通 RuntimeResolver（1回だけ生成 — P5 準拠）
-  const authModeServiceForRuntime = createAuthModeService(authKeyService);
-  const runtimeResolver = new RuntimeResolver(
+  // 共通 RuntimePolicyResolver（1回だけ生成 — central policy の authority）
+  const subscriptionAuthProvider = new StubSubscriptionAuthProvider();
+  const authModeServiceForRuntime = createAuthModeService(
     authKeyService,
-    authModeServiceForRuntime,
+    subscriptionAuthProvider,
+  );
+  const runtimePolicyResolver = new RuntimePolicyResolver(
+    authKeyService,
+    subscriptionAuthProvider,
   );
 
-  // Agent Execution handlers (RuntimeResolver 注入)
+  // Agent Execution handlers (RuntimePolicyResolver 注入)
   track("registerAgentExecutionHandlers", () =>
-    registerAgentExecutionHandlers(mainWindow, undefined, runtimeResolver),
+    registerAgentExecutionHandlers(
+      mainWindow,
+      undefined,
+      runtimePolicyResolver,
+      authModeServiceForRuntime,
+    ),
   );
 
   // Skill Management handlers (SKILL-IPC-001)
@@ -700,7 +710,8 @@ export function registerAllIpcHandlers(
       mainWindow,
       skillService,
       authKeyService,
-      runtimeResolver,
+      runtimePolicyResolver,
+      authModeServiceForRuntime,
     ),
   );
 

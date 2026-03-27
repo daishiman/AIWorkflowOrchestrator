@@ -3,6 +3,17 @@
 ## 役割
 
 ---
+## implementation spec to skill sync（2026-03-27）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 guide validation
+- **Result**: success
+- **Notes**:
+  - completed workflow root が `docs/30-workflows/completed-tasks/` へ移った task は、`verification-report.md` の target path、`system-spec-update-summary.md` の exact path、`phase12-task-spec-compliance-check.md` の status 根拠を同一ターンで更新する運用を再確認した
+  - `spec_created` task は completed root 配下でも root status を自動で `completed` に上げず、Phase 13 `blocked` と evidence parity を優先する close-out ルールを適用した
+  - implementation close-out task では Step 2 no-op の誤判定を防ぐため、internal authority / reason source 変更を skill 更新対象として記録した
+
+---
 ## TASK-SDK-04 implementation spec sync（2026-03-27）
 
 - **Agent**: task-specification-creator

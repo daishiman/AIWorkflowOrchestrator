@@ -43,16 +43,16 @@
 3. `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` に planned wording を残さない。
 4. Phase 13 は user approval 取得まで `blocked` とし、completed にしない。
 
-## 実装ステータススナップショット（2026-03-22）
+## 実装ステータススナップショット（2026-03-27）
 
 - Task02（`TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001`）は **design workflow close-out 完了**。workflow root は `implementation_ready`、completed ledger は `spec_created` として扱う。
 - Task04（`TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001`）は **design workflow close-out 完了**。workflow root は `implementation_ready`、completed ledger は `spec_created`、Phase 13 は user approval まで blocked。Task04 follow-up は `UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001` / `UT-IMP-CHAT-WORKSPACE-GUIDANCE-RETRY-CONNECTION-IPC-001` / `UT-CLEANUP-CHAT-WORKSPACE-GUIDANCE-STATE-001` / `UT-DESIGN-CHAT-WORKSPACE-GUIDANCE-REASON-PRIORITY-001` の 4件。
 - Task05（`TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001`）は **design workflow close-out 完了**。workflow root は `implementation_ready`、completed ledger は `spec_created`、Phase 13 は user approval まで blocked。Task05 follow-up は `UT-EXECUTION-ENV-TERMINAL-001` 等 8 件。
 - Task06（`TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001`）は **design workflow close-out 完了**。standalone root は `docs/30-workflows/completed-tasks/step-04-seq-task-06-transcript-to-chat-provenance-linkage/`。TranscriptProvenance 型定義（5フィールド）/ 3操作フロー / provenance chip 設計確定。workflow root は `implementation_ready`、completed ledger は `spec_created`、Phase 13 は user approval まで blocked。Task06 follow-up は `UT-TRANSCRIPT-M-1` / `UT-TRANSCRIPT-M-2` の 2 件。
 - focused lane `TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001` は `RuntimePolicyResolver` / `RuntimeSkillCreatorFacade` / `creatorHandlers.ts` の direct caller capability bridge を **Phase 1-12 完了**（Phase 13 は user approval 未取得のため blocked）。`resolveCapability()` を authority とし、4状態 switch + `assertNoSilentFallback` enforcement、`execute()` の terminal handoff 分岐、`creatorHandlers.test.ts` による boundary 正規化検証を実装済み。
-- `apps/desktop` / `packages/shared` には centralization を end-to-end で閉じる Task02 起点の実装差分はまだ存在しない。
+- `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` は **Phase 1-12 完了**（2026-03-27）。`apps/desktop/src/main/ipc/index.ts` が `RuntimePolicyResolver` / `createAuthModeService()` / `StubSubscriptionAuthProvider` を共通注入し、`agentHandlers.ts` / `skillHandlers.ts` は `resolveWithService(authModeService.getMode())` を通じて `integrated_api` / `terminal_handoff` を実消費する current code に同期した。Phase 13 は user approval 未取得のため blocked。
 - downstream Task03-09 は parent workflow 上で `spec_created` / `not_started` のまま。
-- current code には `skillHandlers.ts` / `agentHandlers.ts` の旧 resolver 依存、`aiHandlers.ts` の policy bypass + `AI_CHECK_CONNECTION` legacy handler、public `skill-creator:*` surface と internal `creator:*` adapter の未統合が残っている。
+- current code の runtime policy carry-over は `aiHandlers.ts` の policy bypass + `AI_CHECK_CONNECTION` legacy handler、slide / runtime service 側の deprecated `RuntimeResolver` 参照、sanitize helper 配置判断の 3 点に絞られた。
 - TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22）で RuntimePolicyResolver に ISubscriptionAuthProvider.validateToken() による subscription 判定を統合済み。3パターン分岐（integrated_api / terminal_handoff subscription / terminal_handoff no-auth）が安定動作している。
 - Task07（`TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001`）は **design workflow close-out 完了**（2026-03-23）。ChatPanel review harness を task-specification-creator Phase 11 に整合。8状態定義（idle/loading/streaming/complete/error/review/guidance/terminal）、3 Lane 設計（Review Board Integration / State Machine Harness / Handoff Navigation）、GAP-01〜04 の no-op 排除設計を確定。workflow root は `implementation_ready`、completed ledger は `spec_created`、Phase 13 は user approval まで blocked。Task07 follow-up は `UT-CHATPANEL-OPEN-TERMINAL-IPC-HANDLER` / `UT-CHATPANEL-PROPS-ROLE-TYPE` / `UT-VIEWTYPE-TERMINAL-ADDITION` の 3 件。
 - Task09（`TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001`）は **design workflow close-out 完了**（2026-03-23）。Canonical Source Table（5カテゴリ）、Bridge Rule（legacy 無期限保持 + 新規追加禁止）、State Machine（spec_created→implementation_ready→completed、type 別条件分岐）、Same-Wave Sync Protocol（Step A→E 順序実行）、Follow-up Formalization 3ステップを governance 仕様として確定。workflow root は `implementation_ready`、completed ledger は `spec_created`、Phase 13 は user approval まで blocked。Task09 follow-up は `UT-WORKTREE-RSYNC-CAUTION-001` の 1 件。
@@ -61,12 +61,12 @@
 
 | Task | 内容 | 仕様書 |
 | --- | --- | --- |
-| TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
+| ~~TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001~~ | ~~current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる~~ | ~~完了: 2026-03-27。current workflow `docs/30-workflows/completed-tasks/task-imp-runtime-policy-centralization-implementation-closure-001/` に Phase 1-12 成果物を出力~~ |
 | UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001 | blocked guidance から terminal 起動 action を追加する | `docs/30-workflows/unassigned-task/UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001.md` |
 | UT-IMP-CHAT-WORKSPACE-GUIDANCE-RETRY-CONNECTION-IPC-001 | blocked guidance から retry connection IPC を追加する | `docs/30-workflows/unassigned-task/UT-IMP-CHAT-WORKSPACE-GUIDANCE-RETRY-CONNECTION-IPC-001.md` |
 | UT-CLEANUP-CHAT-WORKSPACE-GUIDANCE-STATE-001 | chat/workspace guidance state の重複と stale branch を整理する | `docs/30-workflows/unassigned-task/UT-CLEANUP-CHAT-WORKSPACE-GUIDANCE-STATE-001.md` |
 | UT-DESIGN-CHAT-WORKSPACE-GUIDANCE-REASON-PRIORITY-001 | guidance reason priority / fallback ルールを整理する | `docs/30-workflows/unassigned-task/UT-DESIGN-CHAT-WORKSPACE-GUIDANCE-REASON-PRIORITY-001.md` |
-| UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface を統合する | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
+| ~~UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001~~ | ~~internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface を統合する~~ | ~~完了: 2026-03-21。`task-workflow-completed-ipc-contract-preload-alignment.md` を参照~~ |
 | UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001 | `RuntimePolicyResolver.resolveFromServices()` に subscription 判定 service を統合する — **完了**（TASK-SC-02, 2026-03-22） | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
 | UT-CLEANUP-AI-CHECK-CONNECTION-001 | `llm:check-health` への移行完了後に `AI_CHECK_CONNECTION` legacy handler / channel / preload API を削除する | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
 | UT-CLEANUP-RUNTIME-RESOLVER-001 | 全 surface の policy consumer 移行完了後に deprecated `RuntimeResolver` を削除する | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |

@@ -218,8 +218,9 @@ vi.mock("../authKeyHandlers", () => ({
 }));
 vi.mock("../../services/auth", () => ({
   AuthKeyService: vi.fn().mockImplementation(() => ({})),
+  StubSubscriptionAuthProvider: vi.fn().mockImplementation(() => ({})),
   createAuthKeyStorage: vi.fn().mockReturnValue({}),
-  createAuthModeService: vi.fn().mockReturnValue({}),
+  createAuthModeService: vi.fn().mockReturnValue({ getMode: vi.fn() }),
 }));
 vi.mock("../../infrastructure", () => ({
   getSupabaseClient: mockGetSupabaseClient,
