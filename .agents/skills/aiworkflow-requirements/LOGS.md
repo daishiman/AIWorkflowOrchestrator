@@ -8,6 +8,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | --- |
 | 2026-03-27 - implementation spec to skill sync（runtime policy close-out と completed workflow path migration の stale fact を是正し、system spec / skill / workflow evidence / mirror parity を同一 wave で更新） |
 | 2026-03-27 - UT-EXEC-01 scope-definition path close-out sync（execution-responsibility family の Implementation Anchor 追補と docs-only Phase 12 guard を canonical completed/lessons/quick-reference/log へ反映） |
+| 2026-03-27 - UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 完了同期（Task04 親 workflow の close-out evidence を current facts へ再同期し、U3 を completed ledger へ移管、open set を U1/U2 の 2 件へ整理） |
 | 2026-03-27 - TASK-SDK-04 implementation spec sync（user interaction bridge / phase UI の current contract、follow-up 3件、spec_created task の evidence drift 教訓を canonical spec/backlog/log へ反映） |
 | 2026-03-27 - UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 same-wave sync（verify detail / reverify current facts、Phase 11 review-board fallback evidence、Phase 12 guide hardening、quick-reference/resource-map/lessons/log を `.claude` 正本へ反映） |
 | 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 implementation sync（failure lifecycle 実装完了を canonical completed/lessons/index/log へ反映し、exact vitest workaround command と no-new-unassigned 方針を same-wave 記録） |

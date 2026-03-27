@@ -242,6 +242,7 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | Version | Date | Changes |
 | --- | --- | --- |
 | **10.37.52** | **2026-03-27** | **UT-EXEC-01 の docs-only close-out guard を反映**: `references/patterns.md` に implementation anchor 追補時の target path 実在確認と duplicate source / ID collision の baseline 判定パターンを追加し、`references/update-process.md` に docs-only close-out の current/baseline 分離 lane を追記 |
+| **10.37.52** | **2026-03-27** | **UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 完了同期を反映**: `references/update-process.md` に、close-out remediation follow-up を同一 wave で解消した場合は parent workflow の evidence を直接 current facts へ戻し、別 remediation workflow を正本化しない方針を追加。あわせて open follow-up は `docs/30-workflows/unassigned-task/`、完了移管済み follow-up は `docs/30-workflows/completed-tasks/unassigned-task/` に分離し、backlog / completed ledger / changelog の open/done 粒度をそろえるルールを追記 |
 | **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善 |
 | **10.37.43** | **2026-03-26** | **TASK-SDK-01 hardening sync を template へ反映**: docs-heavy Phase 12 follow-up に code hardening が入った時の same-wave rollback-to-current ルール、carry-forward 0件同期、compile gate と env-blocked test の分離記録を `references/patterns.md` / `references/update-process.md` へ追加 |
 

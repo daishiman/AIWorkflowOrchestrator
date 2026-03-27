@@ -46,7 +46,35 @@
 | `UT-DESIGN-SANITIZE-PLACEMENT-001` | sanitize 配置判断の固定 | 中 | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
 
 ---
+### タスク: UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 TASK-SDK-04 の Phase 12/13 証跡と canonical path を最新実装へ再同期する（2026-03-27）
 
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 |
+| ステータス | **完了** |
+| タイプ | docs sync / close-out remediation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| 対象 | `TASK-SDK-04` 親 workflow の Phase 11/12/13 close-out evidence、canonical path、台帳同期 |
+| 成果物 | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-04-phase12-canonical-path-resync-001.md` |
+| GitHub Issue | #1662 |
+
+#### 実施内容
+
+- 親 workflow の `system-spec-update-summary.md` / `unassigned-task-detection.md` / `verification-report.md` / `local-check-result.md` を current facts へ再同期し、旧 canonical path 参照と stale judgement を除去
+- `implementation-guide.md` / `manual-test-result.md` で walkthrough、placeholder PNG、representative screenshot 未取得の扱いを `spec_created` close-out に沿って再定義し、false green を解消
+- `task-workflow-backlog.md` の open set を `TASK-SDK-04-U1` / `TASK-SDK-04-U2` の 2 件へ整理し、本件は completed-tasks/unassigned-task へ移管
+- `TASK-SDK-04` 親 workflow は `spec_created` を維持しつつ、close-out remediation は完了済みとして ledger / docs / issue 状態を一致させた
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| --- | --- | --- | --- |
+| `TASK-SDK-04-U1` | `submitUserInput()` の phase transition semantics を実装へ反映する | 高 | `docs/30-workflows/unassigned-task/task-imp-task-sdk-04-user-input-transition-semantics-001.md` |
+| `TASK-SDK-04-U2` | planId と execute payload の canonical binding drift を是正する | 高 | `docs/30-workflows/unassigned-task/task-imp-task-sdk-04-plan-execute-canonical-binding-001.md` |
+
+---
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine の失敗系 state lifecycle 是正（2026-03-26）
 
 | 項目 | 値 |

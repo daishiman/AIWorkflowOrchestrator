@@ -212,13 +212,13 @@ Task04 の回帰観点は次の5群に分ける。
 
 ### Phase 11 画面証跡
 
-2026-03-27 時点では walkthrough 文書は揃っているが、current code wave で追加された phase summary / question host / provenance summary / handoff card の representative screenshot は未取得である。したがって Task04 の Phase 11 は「文書ベースでは PASS、画面証跡は follow-up」で扱う。
+2026-03-27 の close-out 再同期で、walkthrough 文書、placeholder PNG、representative screenshot 未取得という 3 点を current facts としてそろえた。Task04 は `spec_created` を維持するため、Phase 11 は「文書 walkthrough は有効、placeholder は validator compatibility 用、representative screenshot 未取得は non-blocking な事実記録」として扱う。
 
-| 項目                      | 状態   | 補足                                                        |
-| ------------------------- | ------ | ----------------------------------------------------------- |
-| walkthrough 証跡          | あり   | `manual-test-result.md` と `phase-11-manual-test.md` で確認 |
-| representative screenshot | 未取得 | `TASK-SDK-04-U3` で formalize                               |
-| placeholder PNG           | あり   | validator compatibility 用の補助証跡                        |
+| 項目                      | 状態   | 補足                                                            |
+| ------------------------- | ------ | --------------------------------------------------------------- |
+| walkthrough 証跡          | あり   | `manual-test-result.md` と `phase-11-manual-test.md` で確認     |
+| representative screenshot | 未取得 | 1662 close-out 再同期で non-blocking な current fact として記録 |
+| placeholder PNG           | あり   | validator compatibility 用の補助証跡                            |
 
 ### Known Follow-up
 
@@ -226,4 +226,3 @@ Task04 の回帰観点は次の5群に分ける。
 | ---------------- | ------------------------------------------------------------------ | ------------------------------------------------------- |
 | `TASK-SDK-04-U1` | `submitUserInput()` が回答を phase semantics へ反映しない          | plan review / verification review の UI が no-op になる |
 | `TASK-SDK-04-U2` | execute が canonical plan ではなく current textarea 値へ再依存する | plan review 後の実行対象が drift する                   |
-| `TASK-SDK-04-U3` | Phase 11/12/13 evidence と canonical path が stale                 | close-out の再利用性と監査精度が落ちる                  |

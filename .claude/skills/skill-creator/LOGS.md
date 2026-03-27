@@ -24,6 +24,17 @@
   - `references/update-process.md` に、docs-only close-out でも blocker/backlog dedup の前段で anchor path 確認と current/baseline 分離を行う lane を追加
 
 ---
+## 2026-03-27 - UT-IMP-TASK-SDK-04-PHASE12-CANONICAL-PATH-RESYNC-001 完了同期を Phase 12 template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に、close-out remediation follow-up を同一 wave で解消した場合は parent workflow を直接 current facts へ戻し、別 remediation workflow を正本化しない方針を追加
+  - open follow-up は `docs/30-workflows/unassigned-task/`、完了移管済み follow-up は `docs/30-workflows/completed-tasks/unassigned-task/` に分離し、backlog / completed ledger / changelog の記述粒度を一致させる運用を固定
+  - Phase 12 retrospective で `open set` と `done set` を混在記述する場合は status を明示し、false green な「全件 new」表記を避ける
+
+---
 ## 2026-03-27 - TASK-SDK-03 の internal contract hardening 判定を Phase 12 template/pattern へ反映
 
 - **Agent**: skill-creator (update)
