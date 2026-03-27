@@ -73,6 +73,7 @@
 | line budget | `validate-structure.js` 後に 500 行超過を semantic split し、親 doc と index を追従更新する |
 | stale fact cleanup | 古いテスト件数 / coverage / out-of-scope 注記 / 日付 / follow-up 件数を `outputs/phase-12` と未タスク指示書で同一値へそろえる |
 | `spec_created` close-out | workflow root が `completed-tasks/` 配下でも status は `spec_created` を維持し、Part 2 は `current contract + target delta` で書く |
+| internal hardening 判定 | public response が不変でも、runtime helper class / owner boundary / source provenance / budget degrade ルールが増えたら Step 2 を `更新あり` と判定する |
 
 > ここでの「完了」は、代表スクリーンショットと実測証跡が current workflow に保存されていることを含む。
 > 旧 path / 旧 filename が残る場合は、`legacy-ordinal-family-register.md` で current semantic filename へ引き直せる状態を必須とする。

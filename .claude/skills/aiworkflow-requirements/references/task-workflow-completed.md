@@ -138,6 +138,32 @@
 - 環境 blocker は既存 `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` の管轄と重複するため、新設しない
 
 ---
+### タスク: TASK-SDK-03 context-budget-and-resource-selection（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-03 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | implementation / internal-contract-hardening |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| 対象 | `RuntimeSkillCreatorFacade` plan/improve resource loading、`SkillCreatorSourceResolver`、`PhaseResourcePlanner`、`ResolvedResourceReader`、runtime tests、Phase 1-12 outputs |
+| 成果物 | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/` |
+
+#### 実施内容
+
+- `apps/desktop/src/main/services/runtime/SkillCreatorSourceResolver.ts` を追加し、`getSkillCreatorRootCandidates()` を利用した `explicit -> env -> home -> repo` の root discovery と `structure_mismatch` 検出を実装した
+- `apps/desktop/src/main/services/runtime/PhaseResourcePlanner.ts` を追加し、resource kind / tier / budget / degrade reason を `RuntimeSkillCreatorFacade` から分離した
+- `apps/desktop/src/main/services/runtime/ResolvedResourceReader.ts` を追加し、absolute path 読込を優先しつつ legacy `ResourceLoader` fallback を compatibility layer に限定した
+- `RuntimeSkillCreatorFacade.plan()` / `improve()` を dynamic pipeline 対応に更新し、`SkillCreatorWorkflowSourceProvenance` へ `candidateRoots` / `selectedRoots` / `selectedResourceIds` / `droppedResourceIds` / `structureSignature` / `degradeReasons` を保持する current fact に揃えた
+- `apps/desktop/src/main/ipc/index.ts` の DI 配線を拡張し、resolver / planner / reader を runtime facade へ注入した
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- trust scoring / disclosure は Task07、resume compatibility / invalidation は Task08 の owner を維持するため、Task03 から独立 follow-up は新設しない
+
+---
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 runtime workflow failure verify artifact append 是正（2026-03-26）
 
 | 項目 | 値 |

@@ -35,7 +35,7 @@ Task02 実装により、workflow state owner と execute handoff baseline の c
 
 | path                                                                                                                  | handoff 内容                               |
 | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| `docs/30-workflows/skill-creator-agent-sdk-lane/step-03-par-task-03-context-budget-and-resource-selection/index.md`   | source provenance / resource root boundary |
+| `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/index.md`                                | source provenance / resource root boundary |
 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`    | `awaitingUserInput` owner                  |
 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/index.md` | `resumeTokenEnvelope` owner                |
 
