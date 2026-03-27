@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-27 | 1.8.5 | UT-EXEC-01 の docs-only close-out 教訓2件を追加（Implementation Anchor path 実在確認 / duplicate source の baseline 判定） |
 | 2026-03-27 | 1.8.4 | TASK-SDK-04 の Phase 12 教訓1件を追加（spec_created task に code wave が入った時の screenshot/evidence reclassification） |
 | 2026-03-27 | 1.8.4 | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の Phase 11/12 教訓3件を追加 |
 | 2026-03-26 | 1.8.3 | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の Phase 12 教訓2件を追加 |
@@ -78,10 +79,31 @@
 3. Phase 2 の contract matrix や close-out narrative に旧 DTO 名が残っていないか、shared type / renderer consumer / engine を突き合わせて再監査する。
 
 ---
+## 2026-03-27 TASK-SDK-04
+
+## 2026-03-27 UT-EXEC-01
+
+### 苦戦箇所1: docs-only close-out で scope-definition の Implementation Anchor を追補する時も target path 実在確認を省略しない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Markdown の 1 行追記だけに見える close-out でも、追加先の実装正本が stale path なら Phase 12 summary と completed ledger が false green になる |
+| 再発条件 | `scope-definition.md` や implementation guide の anchor 追補を「文書修正だけ」と見なし、対象の shared type / source file 実在確認を行わない |
+| 解決策 | Task01 `scope-definition.md` の D. Implementation Anchor に `packages/shared/src/types/execution-capability.ts` を追記する前に実装正本を確認し、workflow spec / completed ledger / quick-reference を同ターンで同期した |
+| 標準ルール | docs-only close-out でも implementation anchor を追加する時は target path 実在確認を行い、anchor 追補の事実を workflow spec / completed ledger / Phase 12 summary に同値転記する |
+| 関連タスク | UT-EXEC-01 |
+
+### 苦戦箇所2: duplicate source / ID collision は current diff 起因か wider governance baseline かを分離して判定する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | source unassigned docs の duplicate source や workflow ID collision を見つけると、今回差分と無関係でも新規未タスクを増やしてしまい、Phase 12 evidence と backlog が過密化する |
+| 再発条件 | `unassigned-task-detection.md` の観測結果をそのまま current violation とみなし、source document 側の既知 baseline かどうかを切り分けない |
+| 解決策 | duplicate source 整理と `UT-EXEC-01` ID collision 是正を wider governance baseline として扱い、current workflow には no-new-unassigned の理由だけを記録した |
+| 標準ルール | duplicate source / ID collision は current diff 起因か baseline かを先に判定し、baseline なら lessons と summary に理由を残して重複 formalize しない |
+| 関連タスク | UT-EXEC-01 |
 
 ## 2026-03-26 TASK-SDK-01 manifest-contract-foundation
-
-## 2026-03-27 TASK-SDK-04
 
 ### 苦戦箇所0.7: `spec_created` task に code wave が入ったら screenshot/evidence 判定を docs-heavy 前提のまま残さない
 
@@ -341,11 +363,21 @@
 | 標準ルール | Phase 12 完了条件は「実更新ファイル一覧 + validator 結果 + planned wording 0件」の3点セットで確認する |
 | 関連タスク | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 |
 
+### 苦戦箇所3: source unassigned の stale target path と duplicate source を閉じ忘れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | source unassigned が `docs/30-workflows/ai-runtime-execution-responsibility-realignment/scope-definition.md` のような非実在 path を保持したままだと、実更新完了後も次回実行者が誤ファイルへ着手する。さらに duplicate source doc が同じ task ID で残ると、未タスクが未解決に見える |
+| 再発条件 | follow-up workflow だけ completed にして、source unassigned 本文の status / actual target / workflow root を更新しない |
+| 解決策 | actual target を Task01 `outputs/phase-1/scope-definition.md` に固定し、source unassigned 2 件へ「完了」「duplicate reference」状態と current workflow root を同一ターンで書き戻した |
+| 標準ルール | stale target path を含む source unassigned は Phase 12 で status と target path を必ず更新し、duplicate source は新規未タスク化せず reference role を明記して閉じる |
+| 関連タスク | UT-EXEC-01 |
+
 ### 同種課題の簡潔解決手順（3ステップ）
 
 1. current workflow の canonical entrypoint を追加し、resource-map / task-workflow / parent index を同時更新する。
 2. `.claude` 正本を更新した同ターンで workflow 成果物を実績文へ書き換える。
-3. planned wording を grep または validator でゼロ確認してから Phase 12 を閉じる。
+3. planned wording を grep または validator でゼロ確認し、source unassigned の status / actual target / duplicate role まで更新してから Phase 12 を閉じる。
 
 ---
 

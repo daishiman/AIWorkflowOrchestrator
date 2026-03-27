@@ -1,0 +1,181 @@
+{
+  "taskId": "UT-EXEC-01",
+  "title": "scope-definition execution-capability path update",
+  "type": "docs-improvement",
+  "priority": "high",
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-1-requirements.md",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/spec-extraction-map.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-2-design.md",
+      "artifacts": [
+        "outputs/phase-2/design-summary.md",
+        "outputs/phase-2/target-path-decision.md",
+        "outputs/phase-2/validation-matrix.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "gateDecision": "PASS",
+      "file": "phase-3-design-review.md",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/review-findings.md",
+        "outputs/phase-3/gate-decision.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-4-test-creation.md",
+      "artifacts": [
+        "outputs/phase-4/test-matrix.md",
+        "outputs/phase-4/command-plan.md",
+        "outputs/phase-4/status-drift-checkcases.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-5-implementation.md",
+      "artifacts": [
+        "outputs/phase-5/file-change-plan.md",
+        "outputs/phase-5/execution-sequence.md",
+        "outputs/phase-5/update-surface-checklist.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-6-test-expansion.md",
+      "artifacts": [
+        "outputs/phase-6/regression-expansion-plan.md",
+        "outputs/phase-6/blocker-handling-cases.md",
+        "outputs/phase-6/repeatability-notes.md"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-7-coverage-check.md",
+      "artifacts": [
+        "outputs/phase-7/coverage-matrix.md",
+        "outputs/phase-7/evidence-traceability.md",
+        "outputs/phase-7/uncovered-risks.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-8-refactoring.md",
+      "artifacts": [
+        "outputs/phase-8/wording-normalization.md",
+        "outputs/phase-8/duplication-review.md",
+        "outputs/phase-8/link-cleanup.md"
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "file": "phase-9-quality-assurance.md",
+      "artifacts": [
+        "outputs/phase-9/quality-checklist.md",
+        "outputs/phase-9/risk-register.md",
+        "outputs/phase-9/spec-sync-audit.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/open-findings.md",
+        "outputs/phase-10/release-readiness.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "file": "phase-12-documentation.md",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "note": "コミットとPRはユーザー指示まで行わない",
+      "file": "phase-13-pr-creation.md",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    {
+      "id": "AC-1",
+      "description": "actual target path が Task01 outputs/phase-1/scope-definition.md に固定されている",
+      "verified": true
+    },
+    {
+      "id": "AC-2",
+      "description": "Implementation Anchor に execution-capability.ts を追加する patch shape が固定されている",
+      "verified": true
+    },
+    {
+      "id": "AC-3",
+      "description": "既存 2 行の非変更と grep / diff 検証が定義されている",
+      "verified": true
+    },
+    {
+      "id": "AC-4",
+      "description": "CLOSED issue と stale source path を誤解なく扱える",
+      "verified": true
+    }
+  ],
+  "dependencies": ["TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001"],
+  "createdAt": "2026-03-27",
+  "updatedAt": "2026-03-27"
+}

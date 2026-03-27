@@ -14,6 +14,16 @@
   - completed workflow path migration と同 wave で skill feedback / LOGS / mirror parity を閉じる current pattern を補強
 
 ---
+## 2026-03-27 - UT-EXEC-01 の docs-only close-out guard を pattern/update-process へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns.md` に、implementation anchor 追補時の target source path 実在確認と duplicate source / ID collision の baseline 判定をまとめた Phase 12 パターンを追加
+  - `references/update-process.md` に、docs-only close-out でも blocker/backlog dedup の前段で anchor path 確認と current/baseline 分離を行う lane を追加
+
+---
 ## 2026-03-27 - TASK-SDK-03 の internal contract hardening 判定を Phase 12 template/pattern へ反映
 
 - **Agent**: skill-creator (update)
