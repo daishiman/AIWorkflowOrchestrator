@@ -443,7 +443,7 @@ describe("SkillCreatorWorkflowEngine", () => {
       planId: "plan-001",
       currentPhase: "verify",
       status: "pending",
-      evidenceCount: 6,
+      evidenceCount: 7,
       route: {
         type: "integrated_api",
         permissionMode: "acceptEdits",
