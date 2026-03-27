@@ -10,4 +10,4 @@
 ## Notes
 
 - `verify-all-specs.js` の info 2 件は Phase 12 文中の bare filename 参照確認メッセージであり、PASS 判定を崩さない。
-- Phase 11 の screenshot PNG は validator compatibility 用 placeholder 1 件のみで、current UI 実装の representative capture は `TASK-SDK-04-U3` へ切り出した。
+- Phase 11 の screenshot PNG は validator compatibility 用 placeholder 1 件のみであり、representative screenshot 未取得は 1662 close-out 再同期で non-blocking な current fact として記録済みである。

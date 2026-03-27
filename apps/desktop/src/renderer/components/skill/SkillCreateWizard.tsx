@@ -33,7 +33,9 @@ import {
   useSetCurrentPlanResult,
   useSetCurrentPlanId,
   useClearGenerationState,
+  useWorkflowSnapshot,
 } from "../../store";
+import { ProvenanceWarningSummary } from "./ProvenanceWarningSummary";
 import { useStreamingProgress } from "../../hooks/useStreamingProgress";
 import { useCancelGeneration } from "../../hooks/useCancelGeneration";
 
@@ -138,6 +140,7 @@ export const SkillCreateWizard = React.forwardRef<
   const setCurrentPlanResult = useSetCurrentPlanResult();
   const setCurrentPlanId = useSetCurrentPlanId();
   const clearGenerationState = useClearGenerationState();
+  const workflowSnapshot = useWorkflowSnapshot();
 
   // TASK-SC-07: Cleanup store on unmount (P3)
   useEffect(() => {
@@ -264,9 +267,13 @@ export const SkillCreateWizard = React.forwardRef<
     <div
       ref={ref}
       data-testid="skill-create-wizard"
+      data-route-kind="destination"
       data-step={currentStep}
       className="flex flex-col gap-6 p-6"
     >
+      <ProvenanceWarningSummary
+        sourceProvenance={workflowSnapshot?.sourceProvenance ?? null}
+      />
       <StepIndicator steps={STEPS} currentStep={currentStep} />
       {currentStep === 0 && (
         <div data-testid="wizard-step-describe">

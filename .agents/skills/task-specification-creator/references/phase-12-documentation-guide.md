@@ -81,6 +81,10 @@
 - 1件以上なら formalize path を記録する
 - raw メモで終わらせず、`audit-unassigned-tasks.js --target-file` が通る full template まで昇格させる
 - repo 全体の baseline 違反が多い場合は `current` と `baseline` を分離して記録する
+- duplicate source / ID collision のような source document 側の既知ドリフトは、今回差分起因でない限り `baseline / wider governance` として扱い、重複した新規未タスクを増やさない
+- `scope-definition.md` など既存成果物へ implementation anchor を追記した時は、target source path の実在確認と `system-spec-update-summary.md` / `documentation-changelog.md` への同値記録をセットで行う
+- Phase 12 再監査で follow-up 自体を同一 wave 内に解消した場合は、open set から除外し、`docs/30-workflows/completed-tasks/unassigned-task/` へ完了移管した path を current fact として残す
+- `open` と `done` を同じ表に並べる場合は、`status` 列か等価な記法で未完了と完了移管を明示し、`documentation-changelog.md` / `system-spec-update-summary.md` / `task-workflow-backlog.md` の記述粒度をそろえる
 
 ## Task 12-5: skill feedback
 

@@ -20,7 +20,7 @@
 
 | 成果物 | パス/内容 |
 | --- | --- |
-| ワークフロー | `docs/30-workflows/runtime-skill-creator-ipc-wiring/` |
+| ワークフロー | `docs/30-workflows/completed-tasks/runtime-skill-creator-ipc-wiring/` |
 | shared contract | `packages/shared/src/types/skillCreator.ts` |
 | runtime helper test | `apps/desktop/src/main/ipc/__tests__/skillCreatorHandlers.runtime.test.ts` |
 | preload runtime test | `apps/desktop/src/preload/__tests__/skill-creator-api.runtime.test.ts` |
@@ -43,7 +43,7 @@
 | 項目 | 結果 |
 | --- | --- |
 | `pnpm exec tsc -p apps/desktop/tsconfig.json --noEmit` | PASS |
-| `verify-all-specs --workflow docs/30-workflows/runtime-skill-creator-ipc-wiring` | PASS（errors=0） |
+| `verify-all-specs --workflow docs/30-workflows/completed-tasks/runtime-skill-creator-ipc-wiring` | PASS（errors=0） |
 | `pnpm vitest run ...` | 環境要因で未完了（esbuild darwin-arm64 / darwin-x64 mismatch） |
 
 #### 同種課題の簡潔解決手順

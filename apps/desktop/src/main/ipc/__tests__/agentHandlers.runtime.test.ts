@@ -1,10 +1,11 @@
 /**
  * agentHandlers Runtime Integration Tests
  *
- * RuntimeResolver による agent:start の integrated/handoff 分岐の検証
+ * RuntimePolicyResolver による agent:start の integrated/handoff 分岐の検証
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import type { BrowserWindow as BrowserWindowType } from "electron";
+import type { IAuthModeService } from "../../services/auth/types";
 
 // === Mocks ===
 
@@ -43,11 +44,11 @@ vi.mock("../../infrastructure/security/ipc-validator.js", () => ({
   })),
 }));
 
-// RuntimeResolver mock
-const mockResolve = vi.fn();
-vi.mock("../../services/runtime/RuntimeResolver", () => ({
-  RuntimeResolver: vi.fn().mockImplementation(() => ({
-    resolve: mockResolve,
+// RuntimePolicyResolver mock
+const mockResolveWithService = vi.fn();
+vi.mock("../../services/runtime/RuntimePolicyResolver", () => ({
+  RuntimePolicyResolver: vi.fn().mockImplementation(() => ({
+    resolveWithService: mockResolveWithService,
   })),
 }));
 
@@ -61,10 +62,18 @@ const mockMainWindow = {
 } as unknown as BrowserWindowType;
 
 import { ipcMain } from "electron";
-import { RuntimeResolver } from "../../services/runtime/RuntimeResolver";
+import { RuntimePolicyResolver } from "../../services/runtime/RuntimePolicyResolver";
 
 const AGENT_START_CHANNEL = "agent:start";
-const mockRuntimeResolver = new RuntimeResolver({} as never, {} as never);
+const mockRuntimePolicyResolver = new RuntimePolicyResolver();
+const mockAuthModeService: IAuthModeService = {
+  getMode: vi.fn().mockReturnValue("subscription"),
+  setMode: vi.fn(),
+  getStatus: vi.fn(),
+  getCredential: vi.fn(),
+  onModeChange: vi.fn(),
+  validateMode: vi.fn(),
+};
 
 describe("agentHandlers runtime integration", () => {
   let handlers: Map<string, (...args: unknown[]) => Promise<unknown>>;
@@ -84,14 +93,19 @@ describe("agentHandlers runtime integration", () => {
     vi.resetModules();
   });
 
-  it("RuntimeResolver が integrated を返す → 既存の start フローが続行", async () => {
-    mockResolve.mockResolvedValue({ type: "integrated" });
+  it("RuntimePolicyResolver が integrated_api を返す → 既存の start フローが続行", async () => {
+    mockResolveWithService.mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
 
     const { registerAgentExecutionHandlers } = await import("../agentHandlers");
     registerAgentExecutionHandlers(
       mockMainWindow,
       undefined,
-      mockRuntimeResolver,
+      mockRuntimePolicyResolver,
+      mockAuthModeService,
     );
 
     const handler = handlers.get(AGENT_START_CHANNEL);
@@ -105,17 +119,24 @@ describe("agentHandlers runtime integration", () => {
     expect(mockExecutionManager.startExecution).toHaveBeenCalled();
   });
 
-  it("RuntimeResolver が handoff を返す → HandoffGuidance 応答が返される", async () => {
-    mockResolve.mockResolvedValue({
-      type: "handoff",
-      reason: "APIキーが設定されていません。",
+  it("RuntimePolicyResolver が terminal_handoff を返す → HandoffGuidance 応答が返される", async () => {
+    mockResolveWithService.mockResolvedValue({
+      type: "terminal_handoff",
+      bundle: {
+        launcher: "claude",
+        promptBundle: "",
+        cwd: "/tmp/runtime",
+        suggestedCommand: 'claude -p "Hello"',
+        manualRetryRule: "APIキーが設定されていません。",
+      },
     });
 
     const { registerAgentExecutionHandlers } = await import("../agentHandlers");
     registerAgentExecutionHandlers(
       mockMainWindow,
       undefined,
-      mockRuntimeResolver,
+      mockRuntimePolicyResolver,
+      mockAuthModeService,
     );
 
     const handler = handlers.get(AGENT_START_CHANNEL);

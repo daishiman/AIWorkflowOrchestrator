@@ -172,6 +172,7 @@ function SkillLifecycleJourneyPanel({
                   className={viewStyles.journeyCardCta}
                   onClick={action}
                   data-testid={`skill-lifecycle-cta-${job.id}`}
+                  data-route-kind="primary"
                 >
                   {job.ctaLabel}
                   <Icon name="chevron-right" size={14} />
@@ -391,6 +392,7 @@ export const SkillCenterView: React.FC = memo(() => {
                 className={viewStyles.headerCta}
                 onClick={navigateToSkillCreate}
                 data-testid="header-create-cta"
+                data-route-kind="primary"
               >
                 <Icon name="plus" size={16} />
                 <span>新規作成</span>
