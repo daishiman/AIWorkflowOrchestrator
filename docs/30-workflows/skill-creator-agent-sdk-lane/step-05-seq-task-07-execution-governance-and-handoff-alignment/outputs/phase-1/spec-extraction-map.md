@@ -4,15 +4,15 @@ Task07 は Skill Creator レーンに shared governance bundle を適用し、`i
 
 ## Source Map
 
-| source                                                                  | 取り込む事実                                                           | Task07 への反映                                |
-| ----------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------- |
-| `../requirements-draft.md`                                              | API primary / handoff secondary、manual boundary、graceful degradation | lane priority と governance bundle を固定する  |
-| `../root-workflow-pack/index.md`                                        | Task07 は governance hardening、Task08 は persistence                  | Task08 へ前提だけ渡す                          |
-| `../step-03-par-task-03-context-budget-and-resource-selection/index.md` | degrade signal と provenance は upstream で決定済み                    | Task07 では disclosure / handoff に適用する    |
-| `../step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`  | visible handoff と phase host は Task04 で前提化済み                   | Task07 は governance wording と接続だけを担う  |
-| `../step-04-par-task-05-create-entry-mainline-unification/index.md`     | mainline host は Task05 の責務                                         | governance owner を Task05 へ渡さない          |
-| `../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`  | verify / improve host は Task06 の責務                                 | governance slot だけ渡し、authority は渡さない |
-| `../../unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md`  | public IPC wiring drift が既知 gap                                     | Task07 scope で吸収する                        |
+| source                                                                                    | 取り込む事実                                                           | Task07 への反映                                |
+| ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------- |
+| `../requirements-draft.md`                                                                | API primary / handoff secondary、manual boundary、graceful degradation | lane priority と governance bundle を固定する  |
+| `../root-workflow-pack/index.md`                                                          | Task07 は governance hardening、Task08 は persistence                  | Task08 へ前提だけ渡す                          |
+| `../step-03-par-task-03-context-budget-and-resource-selection/index.md`                   | degrade signal と provenance は upstream で決定済み                    | Task07 では disclosure / handoff に適用する    |
+| `../step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`                    | visible handoff と phase host は Task04 で前提化済み                   | Task07 は governance wording と接続だけを担う  |
+| `../../completed-tasks/step-04-par-task-05-create-entry-mainline-unification/index.md`    | mainline host は Task05 の責務                                         | governance owner を Task05 へ渡さない          |
+| `../../completed-tasks/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md` | verify / improve host は Task06 の責務                                 | governance slot だけ渡し、authority は渡さない |
+| `../../unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md`                    | public IPC wiring drift が既知 gap                                     | Task07 scope で吸収する                        |
 
 ## System Spec Map
 
