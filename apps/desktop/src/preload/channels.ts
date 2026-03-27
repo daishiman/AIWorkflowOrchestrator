@@ -324,6 +324,9 @@ export const IPC_CHANNELS = {
   // Runtime Skill Creator operations
   SKILL_CREATOR_PLAN: "skill-creator:plan",
   SKILL_CREATOR_EXECUTE_PLAN: "skill-creator:execute-plan",
+  SKILL_CREATOR_GET_WORKFLOW_STATE: "skill-creator:get-workflow-state",
+  SKILL_CREATOR_SUBMIT_USER_INPUT: "skill-creator:submit-user-input",
+  SKILL_CREATOR_WORKFLOW_STATE_CHANGED: "skill-creator:workflow-state-changed",
   SKILL_CREATOR_IMPROVE_SKILL: "skill-creator:improve-skill",
   SKILL_CREATOR_APPLY_IMPROVEMENT: "skill-creator:apply-improvement",
 
@@ -617,6 +620,8 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA,
   IPC_CHANNELS.SKILL_CREATOR_PLAN,
   IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
+  IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE,
+  IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT,
   IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL,
   IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT,
   // Skill Creator extended channels (TASK-9B Phase 5)
@@ -710,6 +715,7 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.AUTH_MODE_CHANGED,
   // Skill Creator channels (TASK-9B-H)
   IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
+  IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
   // Skill debug event channel (TASK-9H)
   IPC_CHANNELS.SKILL_DEBUG_EVENT,
   // Notification event channels

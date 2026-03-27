@@ -880,6 +880,21 @@ export const useSetCurrentPlanId = () =>
 /** 現在の計画結果を設定 */
 export const useSetCurrentPlanResult = () =>
   useAppStore((state) => state.setCurrentPlanResult);
+/** workflow snapshot */
+export const useWorkflowSnapshot = () =>
+  useAppStore((state) => state.workflowSnapshot);
+/** workflow error */
+export const useWorkflowError = () =>
+  useAppStore((state) => state.workflowError);
+/** workflow snapshot を設定 */
+export const useSetWorkflowSnapshot = () =>
+  useAppStore((state) => state.setWorkflowSnapshot);
+/** workflow error を設定 */
+export const useSetWorkflowError = () =>
+  useAppStore((state) => state.setWorkflowError);
+/** workflow state をクリア */
+export const useClearWorkflowState = () =>
+  useAppStore((state) => state.clearWorkflowState);
 /** 全生成状態フィールドをリセット */
 export const useClearGenerationState = () =>
   useAppStore((state) => state.clearGenerationState);

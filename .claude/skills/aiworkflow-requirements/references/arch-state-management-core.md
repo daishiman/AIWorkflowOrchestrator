@@ -721,3 +721,34 @@ const activePlanResult = localPlanResult ?? storePlanResult;
 
 **型定義:** `GenerationMode` = wizard/index.ts（SSoT）, `SkillCreatorRuntimeApi` = SkillCreateWizard.tsx ローカル型
 | TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 | 未着手（LOW） |
+
+## Workflow Snapshot State 配置ルール（TASK-SDK-04）
+
+> 実装同期: 2026-03-27
+
+### 概要
+
+Task04 では plan result に加えて runtime workflow snapshot を Renderer が参照する必要が生じたが、新規 slice は作らず `agentSlice` に近接状態として保持する。owner は Main runtime にあり、Store は cache と error surface のみを持つ。
+
+### 追加状態
+
+| フィールド | 型 | 役割 |
+| --- | --- | --- |
+| `workflowSnapshot` | `SkillCreatorWorkflowUiSnapshot \| null` | Main owner から受け取った current snapshot cache |
+| `workflowError` | `string \| null` | snapshot 取得/購読失敗時の UI surface |
+
+### 境界ルール
+
+| 項目 | 契約 |
+| --- | --- |
+| source of truth | `SkillCreatorWorkflowEngine` が phase / awaitingUserInput / verifyResult の owner |
+| Store 役割 | cache と error 表示に限定し、phase を再計算しない |
+| Renderer local state | textarea draft や選択中 option など一時 UI 入力だけを保持する |
+| push event | `skill-creator:workflow-state-changed` を受けたら cache を置換する |
+
+### known gap
+
+| ID | 内容 |
+| --- | --- |
+| `TASK-SDK-04-U1` | `submitUserInput()` 後の phase semantics が engine owner に実装されていない |
+| `TASK-SDK-04-U2` | execute が current textarea 値へ再依存し、canonical plan binding を壊す |

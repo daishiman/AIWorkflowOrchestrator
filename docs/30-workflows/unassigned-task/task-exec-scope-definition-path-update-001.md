@@ -1,5 +1,23 @@
 # UT-EXEC-01: scope-definition.md への execution-capability.ts パス追記
 
+## メタ情報
+
+```yaml
+issue_number: 1664
+task_id: UT-EXEC-01
+task_name: scope-definition.md への execution-capability.ts パス追記
+category: ドキュメント整備
+target_feature: execution-responsibility-realignment / scope-definition
+priority: 高
+scale: 小規模
+status: 未着手
+source_phase: TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 Phase 10 MINOR-1 指摘
+created_date: 2026-03-20
+dependencies:
+  - TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001
+spec_path: docs/30-workflows/unassigned-task/task-exec-scope-definition-path-update-001.md
+```
+
 | 項目         | 値                                                                              |
 | ------------ | ------------------------------------------------------------------------------- |
 | タスクID     | UT-EXEC-01                                                                      |

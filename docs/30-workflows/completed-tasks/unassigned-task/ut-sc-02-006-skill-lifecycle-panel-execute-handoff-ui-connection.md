@@ -14,7 +14,7 @@ issue_number: 1640
 | 対象機能     | Skill Creator - execute terminal handoff renderer UI                     |
 | 優先度       | 中                                                                       |
 | 見積もり規模 | 小規模                                                                   |
-| ステータス   | 未実施                                                                   |
+| ステータス   | 完了（TASK-SDK-04 へ吸収）                                               |
 | 発見元       | Phase 12（UT-SC-02-005 レビューでの未タスク検出）                        |
 | 発見日       | 2026-03-26                                                               |
 | 依存タスク   | UT-SC-02-005, UT-GUIDANCE-BLOCK-HANDOFF-CARD-RULE-001                    |
@@ -23,6 +23,11 @@ issue_number: 1640
 ---
 
 ## 1. なぜこのタスクが必要か（Why）
+
+## 完了メモ
+
+- 2026-03-27: `docs/30-workflows/step-03-par-task-04-user-interaction-bridge-and-phase-ui/outputs/verification-report.md` と `outputs/phase-12/unassigned-task-detection.md` で、Task04 が本未タスクを吸収して `SkillLifecyclePanel` から `TerminalHandoffCard` へ接続済みであることを確認した。
+- 以後の正本は `TASK-SDK-04` 側の workflow / Phase 11-12 証跡とし、本指示書は完了記録として completed-tasks へ移動する。
 
 ### 1.1 背景
 

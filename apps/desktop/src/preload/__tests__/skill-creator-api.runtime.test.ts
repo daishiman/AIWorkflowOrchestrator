@@ -36,6 +36,12 @@ describe("SkillCreator runtime preload API", () => {
     expect(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN).toBe(
       "skill-creator:execute-plan",
     );
+    expect(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE).toBe(
+      "skill-creator:get-workflow-state",
+    );
+    expect(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT).toBe(
+      "skill-creator:submit-user-input",
+    );
     expect(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL).toBe(
       "skill-creator:improve-skill",
     );
@@ -43,6 +49,12 @@ describe("SkillCreator runtime preload API", () => {
     expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.SKILL_CREATOR_PLAN);
     expect(ALLOWED_INVOKE_CHANNELS).toContain(
       IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
+    );
+    expect(ALLOWED_INVOKE_CHANNELS).toContain(
+      IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE,
+    );
+    expect(ALLOWED_INVOKE_CHANNELS).toContain(
+      IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT,
     );
     expect(ALLOWED_INVOKE_CHANNELS).toContain(
       IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL,
@@ -54,6 +66,9 @@ describe("SkillCreator runtime preload API", () => {
 
     expect(typeof api.planSkill).toBe("function");
     expect(typeof api.executePlan).toBe("function");
+    expect(typeof api.getWorkflowState).toBe("function");
+    expect(typeof api.submitUserInput).toBe("function");
+    expect(typeof api.onWorkflowStateChanged).toBe("function");
     expect(typeof api.improveSkillWithFeedback).toBe("function");
   });
 
@@ -200,5 +215,59 @@ describe("SkillCreator runtime preload API", () => {
     expect(result).toEqual(expected);
     expect(result.success).toBe(false);
     expect(result.error).toBe("実行に失敗しました");
+  });
+
+  it("getWorkflowState が planId を送る", async () => {
+    mockInvoke.mockResolvedValue({
+      success: true,
+      data: { planId: "plan-1", currentPhase: "review" },
+    });
+
+    await skillCreatorAPI.getWorkflowState("plan-1");
+
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE,
+      { planId: "plan-1" },
+    );
+  });
+
+  it("submitUserInput が submission payload を送る", async () => {
+    mockInvoke.mockResolvedValue({
+      success: true,
+      data: { planId: "plan-1", currentPhase: "review" },
+    });
+
+    await skillCreatorAPI.submitUserInput({
+      planId: "plan-1",
+      requestId: "req-1",
+      selectedOptionId: "ready_to_execute",
+    });
+
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT,
+      {
+        planId: "plan-1",
+        requestId: "req-1",
+        selectedOptionId: "ready_to_execute",
+      },
+    );
+  });
+
+  it("onWorkflowStateChanged が listener を登録し cleanup で解除する", () => {
+    const callback = vi.fn();
+
+    const cleanup = skillCreatorAPI.onWorkflowStateChanged(callback);
+
+    expect(mockOn).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      expect.any(Function),
+    );
+
+    cleanup();
+
+    expect(mockRemoveListener).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      expect.any(Function),
+    );
   });
 });

@@ -28,6 +28,8 @@ import type {
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorPlanResult as SkillPlanResult,
+  SkillCreatorUserInputSubmission,
+  SkillCreatorWorkflowUiSnapshot,
   ApplyImprovementResult,
   LoadedWorkflowManifest,
 } from "@repo/shared/types";
@@ -121,8 +123,17 @@ export class RuntimeSkillCreatorFacade {
     this.llmAdapter = adapter;
   }
 
-  getWorkflowStateSnapshot(planId: string) {
+  getWorkflowStateSnapshot(
+    planId: string,
+  ): SkillCreatorWorkflowUiSnapshot | undefined {
     return this.workflowEngine.getWorkflowState(planId);
+  }
+
+  submitUserInput(
+    planId: string,
+    submission: SkillCreatorUserInputSubmission,
+  ): SkillCreatorWorkflowUiSnapshot {
+    return this.workflowEngine.submitUserInput(planId, submission);
   }
 
   private resolveDecision(authMode: AuthMode, apiKey: string | null) {

@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-27 | 1.14.0 | TASK-SDK-04 教訓2件を追加（回答送信後 semantics の owner 不在、planId と execute payload の canonical drift） |
 | 2026-03-25 | 1.13.0 | UT-SC-02-005 教訓1件を追加（L-SC-07-005: Preload executePlan 型追従漏れ、IPC ハンドラ変更時の3層走査） |
 | 2026-03-25 | 1.12.0 | TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION 教訓4件を追加（L-SC-07-001〜004: vi.mock gaps、非破壊拡張、Symmetric Clear横展開、GenerationMode SSoT） |
 | 2026-03-24 | 1.11.0 | TASK-SC-06-UI-RUNTIME-CONNECTION 苦戦箇所3件を追加（L-SC-06-001〜003: Hybrid State Pattern SSoT問題、executePlan引数設計ミス、PlanResult型一本化） |
@@ -37,6 +38,24 @@
 ---
 
 ## 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001
+
+## 2026-03-27 TASK-SDK-04 user interaction bridge / phase UI
+
+### 教訓1: `submitUserInput()` は transport 実装だけで閉じず、回答後の phase semantics まで engine owner に持たせる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `awaitingUserInput` を消すだけで submit を完了扱いにすると、`plan_review` / `verification_review` の UI が no-op になり、Renderer が「回答を送ったのに進まない」状態になる |
+| 解決策 | `awaitingUserInput.reason` を meaning source とし、`currentPhase` / `verifyResult.nextAction` の更新を engine owner に集約する |
+| 標準ルール | request/response 形が揃っても、review 系入力は「回答後の状態変化」まで system spec に記録する |
+
+### 教訓2: `planId` を canonical key にしたら execute payload も同じ canonical plan から読む
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | review 後の execute が current textarea 値を再送すると、画面で承認した plan と実行対象がずれる |
+| 解決策 | approved plan と draft input を state 上で分離し、execute は canonical plan snapshot のみを参照する |
+| 標準ルール | review / approve / execute の 3段階フローでは、UI draft と approved payload を別 owner に分けて扱う |
 
 ### 苦戦箇所1: エスケープテストの部分文字列マッチ
 

@@ -21,14 +21,14 @@
 
 ### スクリーンショットエビデンス（UI/UX変更時）
 
-| テストケース | 撮影ファイル | 仕様照合結果 | 備考                                                         |
-| ------------ | ------------ | ------------ | ------------------------------------------------------------ |
-| TC-11-01     | N/A          | 一致         | docs-heavy task のため markdown walkthrough を正本証跡とする |
-| TC-11-02     | N/A          | 一致         | `captureRequired=false`                                      |
-| TC-11-03     | N/A          | 一致         | source summary block を walkthrough で確認                   |
-| TC-11-04     | N/A          | 一致         | visible handoff 方針を確認                                   |
-| TC-11-05     | N/A          | 一致         | boundary note を確認                                         |
+| テストケース | 撮影ファイル | 仕様照合結果 | 備考                                                                         |
+| ------------ | ------------ | ------------ | ---------------------------------------------------------------------------- |
+| TC-11-01     | 未取得       | 要再確認     | phase summary / question host を実装済みのため representative capture が必要 |
+| TC-11-02     | 未取得       | 要再確認     | `single_select` / `free_text` / `confirm` host の画面証跡が未固定            |
+| TC-11-03     | 未取得       | 要再確認     | provenance summary block は walkthrough のみで、現 UI の静的証跡がない       |
+| TC-11-04     | 未取得       | 要再確認     | handoff card の可視化はコード実装済みだが PNG 証跡が未取得                   |
+| TC-11-05     | 未取得       | 要再確認     | downstream boundary note の見え方を current build で再確認する               |
 
 ## Overall
 
-PASS。仕様書としての説明力は十分であり、実装者が Main / Preload / Renderer の順で着手できる。
+PARTIAL PASS。文書 walkthrough は成立しているが、2026-03-27 wave では UI surface が実装済みになったため、Phase 11 の screenshot evidence を `TASK-SDK-04-U3` として再取得・再同期する必要がある。

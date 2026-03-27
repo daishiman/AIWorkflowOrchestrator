@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-27 | 1.8.4 | TASK-SDK-04 の Phase 12 教訓1件を追加（spec_created task に code wave が入った時の screenshot/evidence reclassification） |
 | 2026-03-26 | 1.8.3 | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の Phase 12 教訓2件を追加 |
 | 2026-03-26 | 1.8.2 | TASK-SDK-01 hardening sync の Phase 12 教訓3件を追加 |
 | 2026-03-26 | 1.8.1 | TASK-SDK-01 manifest-contract-foundation / follow-up completion の Phase 12 教訓4件へ更新 |
@@ -38,6 +39,18 @@
 ---
 
 ## 2026-03-26 TASK-SDK-01 manifest-contract-foundation
+
+## 2026-03-27 TASK-SDK-04
+
+### 苦戦箇所0.7: `spec_created` task に code wave が入ったら screenshot/evidence 判定を docs-heavy 前提のまま残さない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow root が `spec_created` のままでも、shared / IPC / preload / renderer 実装が後から入ると `manual-test-result.md` の screenshot `N/A` と `system-spec-update-summary.md` の Step 2 N/A が false green になる |
+| 再発条件 | docs-heavy task の Phase 11/12 記録をそのまま流用し、current code wave の UI surface と system spec 反映要否を再判定しない |
+| 解決策 | walkthrough 証跡と screenshot follow-up を分離し、Step 2 を PASS へ再判定した上で evidence drift を未タスク化した |
+| 標準ルール | `spec_created` task でも current branch に code 実装が入ったら、Phase 11 evidence policy と Step 2 判定を必ず再監査する |
+| 関連タスク | TASK-SDK-04, TASK-SDK-04-U3 |
 
 ## 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001
 

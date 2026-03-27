@@ -1,9 +1,16 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import type { SkillExecutionStatus } from "@repo/shared";
-import type { RuntimeSkillCreatorExecuteResponse } from "@repo/shared/types";
+import type {
+  HandoffGuidance,
+  RuntimeSkillCreatorExecuteResponse,
+  SkillCreatorUserInputSubmission,
+  SkillCreatorWorkflowUiSnapshot,
+  TerminalHandoffBundle,
+} from "@repo/shared/types";
 import type { PlanResult } from "../../store/slices/agentSlice";
 import {
   useBeginSkillReview,
+  useClearHandoffGuidance,
   useClearGenerationState,
   useClearSkillError,
   useClearStreamingMessages,
@@ -15,21 +22,28 @@ import {
   useFetchSkills,
   useGenerationError,
   useGenerationProgress,
+  useHandoffGuidance,
   useIsSkillExecuting,
   useIsSkillGenerating,
   useReExecuteAfterImprovement,
   useResetSkillExecutionCycle,
   useSelectedSkillName,
+  useSetHandoffGuidance,
   useSelectSkillByName,
   useSetCurrentPlanId,
   useSetCurrentPlanResult,
   useSetGenerationError,
   useSetGenerationProgress,
   useSetIsSkillGenerating,
+  useSetWorkflowError,
+  useSetWorkflowSnapshot,
   useSkillError,
   useSkillExecutionStatus,
   useStreamingMessages,
+  useWorkflowError,
+  useWorkflowSnapshot,
 } from "../../store";
+import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
 
@@ -76,6 +90,15 @@ type SkillCreatorRuntimeApi = {
     authMode?: string,
     apiKey?: string,
   ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>>;
+  getWorkflowState?: (
+    planId: string,
+  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
+  submitUserInput?: (
+    submission: SkillCreatorUserInputSubmission,
+  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
+  onWorkflowStateChanged?: (
+    callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
+  ) => () => void;
   improveSkill?: (
     skillName: string,
     options?: { autoApply?: boolean },
@@ -96,6 +119,14 @@ function isExecuteTerminalHandoff(
   { type: "terminal_handoff" }
 > {
   return "type" in response && response.type === "terminal_handoff";
+}
+
+function toHandoffGuidance(bundle: TerminalHandoffBundle): HandoffGuidance {
+  return {
+    terminalCommand: bundle.suggestedCommand,
+    contextSummary: `launcher=${bundle.launcher} cwd=${bundle.cwd}`,
+    reason: bundle.manualRetryRule,
+  };
 }
 
 const defaultExecutionPrompt =
@@ -194,11 +225,13 @@ export function SkillLifecyclePanel({
   const clearSkillError = useClearSkillError();
   const clearStreamingMessages = useClearStreamingMessages();
   const clearGenerationState = useClearGenerationState();
+  const clearHandoffGuidance = useClearHandoffGuidance();
   const selectedSkillName = useSelectedSkillName();
   const isExecuting = useIsSkillExecuting();
   const streamingMessages = useStreamingMessages();
   const skillExecutionStatus = useSkillExecutionStatus();
   const skillError = useSkillError();
+  const handoffGuidance = useHandoffGuidance();
 
   // LLM Generation state (TASK-SC-06-UI-RUNTIME-CONNECTION)
   const isGenerating = useIsSkillGenerating();
@@ -211,6 +244,11 @@ export function SkillLifecyclePanel({
   const setGenerationError = useSetGenerationError();
   const setCurrentPlanId = useSetCurrentPlanId();
   const setCurrentPlanResult = useSetCurrentPlanResult();
+  const workflowSnapshot = useWorkflowSnapshot();
+  const workflowError = useWorkflowError();
+  const setWorkflowSnapshot = useSetWorkflowSnapshot();
+  const setWorkflowError = useSetWorkflowError();
+  const setHandoffGuidance = useSetHandoffGuidance();
 
   // Local plan result state for immediate UI feedback (hybrid with store)
   const [localPlanResult, setLocalPlanResult] = useState<PlanResult | null>(
@@ -235,6 +273,10 @@ export function SkillLifecyclePanel({
   const [isCreating, setIsCreating] = useState(false);
   const [isPlanningImprovement, setIsPlanningImprovement] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const [textAnswer, setTextAnswer] = useState("");
+  const [secretAnswer, setSecretAnswer] = useState("");
+  const [confirmAnswer, setConfirmAnswer] = useState<boolean | null>(null);
   const [sessionEntries, setSessionEntries] = useState<SessionEntry[]>([
     {
       id: "lifecycle-guide",
@@ -297,6 +339,141 @@ export function SkillLifecyclePanel({
     previousStatus.current = skillExecutionStatus;
   }, [createdSkillName, skillError, skillExecutionStatus]);
 
+  useEffect(() => {
+    const requestState = workflowSnapshot?.awaitingUserInput;
+    if (!requestState) {
+      setSelectedOptionId(null);
+      setTextAnswer("");
+      setSecretAnswer("");
+      setConfirmAnswer(null);
+      return;
+    }
+
+    if (requestState.kind === "single_select") {
+      setSelectedOptionId(
+        (current) => current ?? requestState.options?.[0]?.id ?? null,
+      );
+      return;
+    }
+
+    if (requestState.kind === "confirm") {
+      setConfirmAnswer((current) => current ?? true);
+      return;
+    }
+
+    setSelectedOptionId(null);
+    setConfirmAnswer(null);
+  }, [workflowSnapshot]);
+
+  useEffect(() => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.onWorkflowStateChanged) {
+      return;
+    }
+
+    return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
+      setWorkflowSnapshot(snapshot);
+      setWorkflowError(null);
+      if (snapshot.handoffBundle) {
+        setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
+      }
+    });
+  }, [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot]);
+
+  useEffect(() => {
+    const planId =
+      storePlanId ?? activePlanResult?.planId ?? workflowSnapshot?.planId;
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!planId || !skillCreatorApi?.getWorkflowState) {
+      return;
+    }
+
+    void skillCreatorApi
+      .getWorkflowState(planId)
+      .then((result) => {
+        if (!result.success || !result.data) {
+          if (result.error) {
+            setWorkflowError(result.error);
+          }
+          return;
+        }
+        setWorkflowSnapshot(result.data);
+        setWorkflowError(null);
+        if (result.data.handoffBundle) {
+          setHandoffGuidance(toHandoffGuidance(result.data.handoffBundle));
+        }
+      })
+      .catch((error) => {
+        setWorkflowError(
+          error instanceof Error
+            ? error.message
+            : "workflow state の取得に失敗しました。",
+        );
+      });
+  }, [
+    activePlanResult?.planId,
+    setHandoffGuidance,
+    setWorkflowError,
+    setWorkflowSnapshot,
+    storePlanId,
+    workflowSnapshot?.planId,
+  ]);
+
+  const handleCopyHandoffCommand = async () => {
+    if (!handoffGuidance) {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(handoffGuidance.terminalCommand);
+    } catch {
+      // noop: card 側が copied UI を持つため、コピー失敗は surface を壊さない
+    }
+  };
+
+  const handleSubmitWorkflowInput = async () => {
+    if (!workflowSnapshot?.awaitingUserInput) {
+      return;
+    }
+
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.submitUserInput) {
+      setWorkflowError("workflow user input API が利用できません");
+      return;
+    }
+
+    const requestState = workflowSnapshot.awaitingUserInput;
+    const submission: SkillCreatorUserInputSubmission = {
+      planId: workflowSnapshot.planId,
+      requestId: requestState.requestId,
+    };
+
+    if (requestState.kind === "single_select") {
+      submission.selectedOptionId = selectedOptionId ?? undefined;
+    } else if (requestState.kind === "free_text") {
+      submission.textValue = textAnswer;
+    } else if (requestState.kind === "secret") {
+      submission.secretValue = secretAnswer;
+    } else {
+      submission.confirmed = confirmAnswer ?? undefined;
+    }
+
+    const result = await skillCreatorApi.submitUserInput(submission);
+    if (!result.success || !result.data) {
+      setWorkflowError(
+        result.error ?? "workflow user input の送信に失敗しました",
+      );
+      return;
+    }
+
+    setWorkflowSnapshot(result.data);
+    setWorkflowError(null);
+    setSelectedOptionId(null);
+    setTextAnswer("");
+    setSecretAnswer("");
+    setConfirmAnswer(null);
+  };
+
   const canOpenReviewFlow =
     Boolean(createdSkillName) &&
     !isExecuting &&
@@ -322,6 +499,7 @@ export function SkillLifecyclePanel({
 
   const handlePanelClose = () => {
     resetSkillExecutionCycle();
+    clearHandoffGuidance();
     onClose();
   };
 
@@ -432,13 +610,15 @@ export function SkillLifecyclePanel({
         return;
       }
       const executeResponse = result.data;
-      // terminal_handoff: planSkill と同様にガイダンス UI へ接続予定
-      // TODO(terminal-handoff-ui): TerminalHandoffCard コンポーネントへ bundle を渡す
       if (isExecuteTerminalHandoff(executeResponse)) {
-        console.info(
-          "[SkillLifecyclePanel] terminal_handoff received:",
-          executeResponse.bundle,
-        );
+        setHandoffGuidance(toHandoffGuidance(executeResponse.bundle));
+        if (skillCreatorApi.getWorkflowState) {
+          const snapshotResult = await skillCreatorApi.getWorkflowState(planId);
+          if (snapshotResult.success && snapshotResult.data) {
+            setWorkflowSnapshot(snapshotResult.data);
+            setWorkflowError(null);
+          }
+        }
         return;
       }
       await fetchSkills();
@@ -629,12 +809,13 @@ export function SkillLifecyclePanel({
     setShowDetailedAnalysis(true);
   };
 
-  const currentSurfaceError = localError ?? skillError;
+  const currentSurfaceError = localError ?? workflowError ?? skillError;
   const shouldShowStreaming =
     Boolean(createdSkillName) &&
     (isExecuting ||
       streamingMessages.length > 0 ||
       (skillExecutionStatus !== null && skillExecutionStatus !== "idle"));
+  const pendingRequest = workflowSnapshot?.awaitingUserInput ?? null;
 
   return (
     <div
@@ -747,6 +928,176 @@ export function SkillLifecyclePanel({
           className="rounded-xl border border-[var(--status-error)] bg-[var(--status-error)]/5 px-4 py-3 text-sm text-[var(--status-error)]"
         >
           {activeGenerationError}
+        </div>
+      ) : null}
+
+      {workflowSnapshot ? (
+        <section
+          className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]"
+          data-testid="skill-lifecycle-workflow-summary"
+        >
+          <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                  Workflow Phase
+                </p>
+                <h3 className="mt-2 text-base font-semibold text-[var(--text-primary)]">
+                  {workflowSnapshot.currentPhase}
+                </h3>
+              </div>
+              <span className="rounded-full bg-[var(--status-primary)]/10 px-3 py-1 text-xs font-medium text-[var(--status-primary)]">
+                planId: {workflowSnapshot.planId}
+              </span>
+            </div>
+
+            {pendingRequest ? (
+              <div
+                className="mt-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-4"
+                data-testid="skill-lifecycle-question-host"
+              >
+                <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                  Question Host
+                </p>
+                <h4 className="mt-2 text-sm font-semibold text-[var(--text-primary)]">
+                  {pendingRequest.title}
+                </h4>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
+                  {pendingRequest.prompt}
+                </p>
+
+                {pendingRequest.kind === "single_select" ? (
+                  <div className="mt-4 space-y-2">
+                    {pendingRequest.options?.map((option) => (
+                      <label
+                        key={option.id}
+                        className="flex cursor-pointer items-start gap-3 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3"
+                      >
+                        <input
+                          type="radio"
+                          name="workflow-single-select"
+                          checked={selectedOptionId === option.id}
+                          onChange={() => setSelectedOptionId(option.id)}
+                        />
+                        <span className="text-sm text-[var(--text-primary)]">
+                          {option.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                ) : null}
+
+                {pendingRequest.kind === "free_text" ? (
+                  <textarea
+                    value={textAnswer}
+                    onChange={(event) => setTextAnswer(event.target.value)}
+                    rows={4}
+                    placeholder={pendingRequest.placeholder}
+                    className="mt-4 w-full rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)]"
+                  />
+                ) : null}
+
+                {pendingRequest.kind === "secret" ? (
+                  <input
+                    type="password"
+                    value={secretAnswer}
+                    onChange={(event) => setSecretAnswer(event.target.value)}
+                    placeholder={pendingRequest.placeholder}
+                    className="mt-4 w-full rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)]"
+                  />
+                ) : null}
+
+                {pendingRequest.kind === "confirm" ? (
+                  <div className="mt-4 flex gap-2">
+                    <button
+                      type="button"
+                      className={lifecycleButtonStyles.primary}
+                      onClick={() => setConfirmAnswer(true)}
+                    >
+                      はい
+                    </button>
+                    <button
+                      type="button"
+                      className={lifecycleButtonStyles.secondary}
+                      onClick={() => setConfirmAnswer(false)}
+                    >
+                      いいえ
+                    </button>
+                  </div>
+                ) : null}
+
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    className={lifecycleButtonStyles.primary}
+                    onClick={() => {
+                      void handleSubmitWorkflowInput();
+                    }}
+                    data-testid="skill-lifecycle-submit-user-input"
+                  >
+                    回答を送信する
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-4 rounded-xl border border-dashed border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4 text-sm text-[var(--text-secondary)]">
+                現在 pending の質問はありません。phase owner は Main 側 workflow
+                engine のまま維持されます。
+              </div>
+            )}
+          </div>
+
+          <div className="space-y-4">
+            <div
+              className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5"
+              data-testid="skill-lifecycle-provenance-summary"
+            >
+              <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                Provenance Summary
+              </p>
+              <p className="mt-3 text-sm text-[var(--text-primary)]">
+                source root:{" "}
+                {workflowSnapshot.sourceProvenance?.resolvedSkillCreatorRoot ??
+                  "未取得"}
+              </p>
+              {workflowSnapshot.sourceProvenance?.warningNote ? (
+                <p className="mt-2 text-sm text-amber-700">
+                  {workflowSnapshot.sourceProvenance.warningNote}
+                </p>
+              ) : null}
+              <p className="mt-3 text-xs text-[var(--text-secondary)]">
+                resume phase:{" "}
+                {workflowSnapshot.resumeTokenEnvelope.currentPhase}
+              </p>
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                artifacts: {workflowSnapshot.resumeTokenEnvelope.artifactCount}
+              </p>
+            </div>
+
+            {handoffGuidance ? (
+              <div data-testid="skill-lifecycle-handoff-card">
+                <TerminalHandoffCard
+                  guidance={handoffGuidance}
+                  onCopyCommand={() => {
+                    void handleCopyHandoffCommand();
+                  }}
+                  onDismiss={clearHandoffGuidance}
+                />
+              </div>
+            ) : null}
+          </div>
+        </section>
+      ) : null}
+
+      {!workflowSnapshot && handoffGuidance ? (
+        <div data-testid="skill-lifecycle-handoff-card">
+          <TerminalHandoffCard
+            guidance={handoffGuidance}
+            onCopyCommand={() => {
+              void handleCopyHandoffCommand();
+            }}
+            onDismiss={clearHandoffGuidance}
+          />
         </div>
       ) : null}
 

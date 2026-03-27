@@ -10,6 +10,18 @@
 
 ## Part 1
 
+### 2026-03-27 実装同期
+
+今回の wave では docs だけでなく code path も Task04 に同期した。
+
+| 層             | 実装内容                                                                                                               |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| shared         | `SkillCreatorWorkflowUiSnapshot` / `SkillCreatorUserInputSubmission` など Task04 contract を追加                       |
+| Main           | `SkillCreatorWorkflowEngine.submitUserInput()` と `handoffBundle` snapshot を追加                                      |
+| IPC / Preload  | `skill-creator:get-workflow-state` / `skill-creator:submit-user-input` / `skill-creator:workflow-state-changed` を追加 |
+| Renderer Store | `workflowSnapshot` / `workflowError` cache を追加                                                                      |
+| Renderer UI    | `SkillLifecyclePanel` に phase summary / question host / provenance summary / handoff card を追加                      |
+
 ### なぜ必要か
 
 この task が必要なのは、AI が今どの段階にいて、次に何をユーザーへ聞くかを、画面が勝手に作り直さず正しく伝える必要があるからです。画面側が推測で phase や warning を再計算すると、Main 側の workflow engine が持っている正しい状態とずれ、ユーザーは違う前提で答えてしまいます。
@@ -120,7 +132,7 @@ on("skill-creator:workflow-state-changed", listener): Unsubscribe
 Renderer 側の使用例:
 
 ```ts
-const snapshot = await window.skillCreator.getWorkflowState({ planId });
+const snapshot = await window.skillCreator.getWorkflowState(planId);
 
 if (snapshot.awaitingUserInput?.kind === "single_select") {
   await window.skillCreator.submitUserInput({
@@ -138,6 +150,18 @@ Main 側の実装順は次の通りです。
 3. `creatorHandlers.ts` と `preload/channels.ts` / `skill-creator-api.ts` に bridge を追加する
 4. store slice に snapshot cache を追加する
 5. `SkillLifecyclePanel` で phase badge、question host、provenance summary、handoff card を描画する
+
+実装済みファイル:
+
+- `packages/shared/src/types/skillCreator.ts`
+- `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts`
+- `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
+- `apps/desktop/src/main/ipc/creatorHandlers.ts`
+- `apps/desktop/src/preload/channels.ts`
+- `apps/desktop/src/preload/skill-creator-api.ts`
+- `apps/desktop/src/renderer/store/slices/agentSlice.ts`
+- `apps/desktop/src/renderer/store/index.ts`
+- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
 
 ### エラーハンドリング
 
@@ -185,3 +209,21 @@ Task04 の回帰観点は次の5群に分ける。
 | question coverage   | `single_select` / `free_text` / `secret` / `confirm`                 |
 | UI block coverage   | phase badge / question host / provenance summary / handoff card      |
 | regression coverage | 既存 `planSkill` / `executePlan` / `improveSkillWithFeedback` 互換性 |
+
+### Phase 11 画面証跡
+
+2026-03-27 時点では walkthrough 文書は揃っているが、current code wave で追加された phase summary / question host / provenance summary / handoff card の representative screenshot は未取得である。したがって Task04 の Phase 11 は「文書ベースでは PASS、画面証跡は follow-up」で扱う。
+
+| 項目                      | 状態   | 補足                                                        |
+| ------------------------- | ------ | ----------------------------------------------------------- |
+| walkthrough 証跡          | あり   | `manual-test-result.md` と `phase-11-manual-test.md` で確認 |
+| representative screenshot | 未取得 | `TASK-SDK-04-U3` で formalize                               |
+| placeholder PNG           | あり   | validator compatibility 用の補助証跡                        |
+
+### Known Follow-up
+
+| ID               | 内容                                                               | 影響                                                    |
+| ---------------- | ------------------------------------------------------------------ | ------------------------------------------------------- |
+| `TASK-SDK-04-U1` | `submitUserInput()` が回答を phase semantics へ反映しない          | plan review / verification review の UI が no-op になる |
+| `TASK-SDK-04-U2` | execute が canonical plan ではなく current textarea 値へ再依存する | plan review 後の実行対象が drift する                   |
+| `TASK-SDK-04-U3` | Phase 11/12/13 evidence と canonical path が stale                 | close-out の再利用性と監査精度が落ちる                  |

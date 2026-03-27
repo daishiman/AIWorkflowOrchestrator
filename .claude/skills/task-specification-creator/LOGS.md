@@ -3,6 +3,17 @@
 ## 役割
 
 ---
+## TASK-SDK-04 implementation spec sync（2026-03-27）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 guide refinement
+- **Result**: success
+- **Notes**:
+  - `spec-update-workflow.md` に「`spec_created` task に後から code 実装が入った場合は Step 2 と screenshot 方針を再判定する」ルールを追加
+  - Phase 12 は `新規未タスク 0件` を維持することより、current gap を formalize することを優先する判断基準へ補強した
+  - completed-tasks 配下 workflow の canonical path を close-out 文書と validator コマンドへ同時反映する運用を明文化した
+
+---
 ## TASK-SDK-07 execution-governance-and-handoff-alignment 仕様書改善（2026-03-26）
 
 - **Agent**: task-specification-creator
