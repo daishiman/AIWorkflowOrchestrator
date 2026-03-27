@@ -43,7 +43,7 @@
 
 | 種別        | 参照先                                                                                                           | 役割                                       |
 | ----------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| predecessor | `docs/30-workflows/skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/`       | Layer 1 / 2 verify と deferred gap の正本  |
+| predecessor | `docs/30-workflows/step-04-par-task-06-verify-and-improve-lifecycle-surface/`                                    | Layer 1 / 2 verify と deferred gap の正本  |
 | sibling     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-05-seq-task-07-execution-governance-and-handoff-alignment/` | governance / handoff / disclosure owner    |
 | sibling     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/`    | session persistence / resume compatibility |
 | source      | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-06-layer34-verify-expansion-001.md`         | 元の問題定義、Why/What/How、完了条件       |

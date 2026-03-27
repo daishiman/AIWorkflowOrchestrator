@@ -21,13 +21,13 @@ Runtime policy、handoff guidance、approval gate、disclosure info を 1 つの
 
 ## 参照資料
 
-| 資料名         | パス                                                                      | 説明                      |
-| -------------- | ------------------------------------------------------------------------- | ------------------------- |
-| Phase 1 要件   | `phase-1-requirements.md`                                                 | governance 要件           |
-| Phase 1 抽出表 | `outputs/phase-1/spec-extraction-map.md`                                  | source / code anchor 対応 |
-| Task05 index   | `../step-04-par-task-05-create-entry-mainline-unification/index.md`       | mainline host             |
-| Task06 index   | `../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`    | verify / improve host     |
-| Task08 index   | `../step-06-seq-task-08-session-persistence-and-resume-contract/index.md` | downstream persistence    |
+| 資料名         | パス                                                                                      | 説明                      |
+| -------------- | ----------------------------------------------------------------------------------------- | ------------------------- |
+| Phase 1 要件   | `phase-1-requirements.md`                                                                 | governance 要件           |
+| Phase 1 抽出表 | `outputs/phase-1/spec-extraction-map.md`                                                  | source / code anchor 対応 |
+| Task05 index   | `../../completed-tasks/step-04-par-task-05-create-entry-mainline-unification/index.md`    | mainline host             |
+| Task06 index   | `../../completed-tasks/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md` | verify / improve host     |
+| Task08 index   | `../step-06-seq-task-08-session-persistence-and-resume-contract/index.md`                 | downstream persistence    |
 
 ### システム仕様（aiworkflow-requirements）
 

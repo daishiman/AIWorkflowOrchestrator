@@ -41,16 +41,16 @@
 
 ## タスク一覧
 
-| タスクID    | ディレクトリ                                                     | パターン | 責務                                                                          |
-| ----------- | ---------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------- |
-| TASK-SDK-01 | `step-01-seq-task-01-manifest-contract-foundation`               | seq      | manifest 契約と動的追従境界の定義                                             |
-| TASK-SDK-02 | `step-02-seq-task-02-workflow-engine-runtime-orchestration`      | seq      | workflow engine と runtime orchestration                                      |
-| TASK-SDK-03 | `step-03-par-task-03-context-budget-and-resource-selection`      | par      | selective loading / context budget                                            |
-| TASK-SDK-04 | `step-03-par-task-04-user-interaction-bridge-and-phase-ui`       | par      | user interaction bridge / phase UI 契約                                       |
-| TASK-SDK-05 | `step-04-par-task-05-create-entry-mainline-unification`          | par      | SkillLifecyclePanel / SkillCreateWizard の主導線統合                          |
-| TASK-SDK-06 | `step-04-par-task-06-verify-and-improve-lifecycle-surface`       | par      | verify / improve surface と契約                                               |
-| TASK-SDK-07 | `step-05-seq-task-07-execution-governance-and-handoff-alignment` | seq      | lane contract の適用・hardening、API / handoff / approval / disclosure の整合 |
-| TASK-SDK-08 | `step-06-seq-task-08-session-persistence-and-resume-contract`    | seq      | session persistence / resume / checkpoint の互換性契約                        |
+| タスクID    | ディレクトリ                                                                  | パターン | 責務                                                                          |
+| ----------- | ----------------------------------------------------------------------------- | -------- | ----------------------------------------------------------------------------- |
+| TASK-SDK-01 | `step-01-seq-task-01-manifest-contract-foundation`                            | seq      | manifest 契約と動的追従境界の定義                                             |
+| TASK-SDK-02 | `step-02-seq-task-02-workflow-engine-runtime-orchestration`                   | seq      | workflow engine と runtime orchestration                                      |
+| TASK-SDK-03 | `step-03-par-task-03-context-budget-and-resource-selection`                   | par      | selective loading / context budget                                            |
+| TASK-SDK-04 | `step-03-par-task-04-user-interaction-bridge-and-phase-ui`                    | par      | user interaction bridge / phase UI 契約                                       |
+| TASK-SDK-05 | `../completed-tasks/step-04-par-task-05-create-entry-mainline-unification`    | par      | SkillLifecyclePanel / SkillCreateWizard の主導線統合                          |
+| TASK-SDK-06 | `../completed-tasks/step-04-par-task-06-verify-and-improve-lifecycle-surface` | par      | verify / improve surface と契約                                               |
+| TASK-SDK-07 | `step-05-seq-task-07-execution-governance-and-handoff-alignment`              | seq      | lane contract の適用・hardening、API / handoff / approval / disclosure の整合 |
+| TASK-SDK-08 | `step-06-seq-task-08-session-persistence-and-resume-contract`                 | seq      | session persistence / resume / checkpoint の互換性契約                        |
 
 ## 推奨実行順
 

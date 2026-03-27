@@ -31,12 +31,12 @@ Layer 3 / Layer 4 verify の contract matrix、実装レーン、sibling boundar
 
 ## 参照資料
 
-| 資料名              | パス                                                                                                                                        | 説明                     |
-| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ |
-| Phase 1 要件        | `phase-1-requirements.md`                                                                                                                   | acceptance と boundary   |
-| spec extraction map | `outputs/phase-1/spec-extraction-map.md`                                                                                                    | source と current anchor |
-| Task06 matrix       | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/outputs/phase-2/verify-improve-surface-matrix.md` | Layer 1 / 2 baseline     |
-| Task06 validation   | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/outputs/phase-2/validation-matrix.md`             | baseline test pattern    |
+| 資料名              | パス                                                                                                              | 説明                     |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| Phase 1 要件        | `phase-1-requirements.md`                                                                                         | acceptance と boundary   |
+| spec extraction map | `outputs/phase-1/spec-extraction-map.md`                                                                          | source と current anchor |
+| Task06 matrix       | `../../step-04-par-task-06-verify-and-improve-lifecycle-surface/outputs/phase-2/verify-improve-surface-matrix.md` | Layer 1 / 2 baseline     |
+| Task06 validation   | `../../step-04-par-task-06-verify-and-improve-lifecycle-surface/outputs/phase-2/validation-matrix.md`             | baseline test pattern    |
 
 ### システム仕様（aiworkflow-requirements）
 

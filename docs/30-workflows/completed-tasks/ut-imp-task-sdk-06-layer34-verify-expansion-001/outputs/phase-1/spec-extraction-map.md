@@ -15,14 +15,14 @@ Layer 3 / Layer 4 verify 拡張で参照する system spec、current code anchor
 
 ## Source Map
 
-| source                                                                                                                                      | 取り込む事実                                           | 本 task への反映                     |
-| ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------ |
-| `../unassigned-task/task-imp-task-sdk-06-layer34-verify-expansion-001.md`                                                                   | Why/What/How、Phase A-C、完了条件                      | concern inventory と Phase 12 閉じ方 |
-| `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`                                         | 初回 scope は Layer 1 / 2、Layer 3 / 4 は future scope | genuine gap の正本                   |
-| `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/outputs/phase-2/verify-improve-surface-matrix.md` | Layer 1 / 2 current owner と UI host                   | Layer 3 / 4 差分の基準               |
-| `../skill-creator-agent-sdk-lane/step-05-seq-task-07-execution-governance-and-handoff-alignment/phase-1-requirements.md`                    | governance / handoff / manual boundary owner           | delegated item 固定                  |
-| `../skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/index.md`                                      | persistence / checkpoint / invalidation owner          | session semantics の非対象化         |
-| `.claude/skills/aiworkflow-requirements/references/ui-ux-agent-execution-core.md`                                                           | `HandoffGuidance` と Manual Boundary の canonical      | governance slot の参照専用化         |
+| source                                                                                                                   | 取り込む事実                                           | 本 task への反映                     |
+| ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ | ------------------------------------ |
+| `../unassigned-task/task-imp-task-sdk-06-layer34-verify-expansion-001.md`                                                | Why/What/How、Phase A-C、完了条件                      | concern inventory と Phase 12 閉じ方 |
+| `../../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`                                                | 初回 scope は Layer 1 / 2、Layer 3 / 4 は future scope | genuine gap の正本                   |
+| `../../step-04-par-task-06-verify-and-improve-lifecycle-surface/outputs/phase-2/verify-improve-surface-matrix.md`        | Layer 1 / 2 current owner と UI host                   | Layer 3 / 4 差分の基準               |
+| `../skill-creator-agent-sdk-lane/step-05-seq-task-07-execution-governance-and-handoff-alignment/phase-1-requirements.md` | governance / handoff / manual boundary owner           | delegated item 固定                  |
+| `../skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/index.md`                   | persistence / checkpoint / invalidation owner          | session semantics の非対象化         |
+| `.claude/skills/aiworkflow-requirements/references/ui-ux-agent-execution-core.md`                                        | `HandoffGuidance` と Manual Boundary の canonical      | governance slot の参照専用化         |
 
 ## Code Anchor Map
 

@@ -105,7 +105,7 @@ Layer 3 / Layer 4 verify を独立タスクとして formalize し、shared type
 
 ### 3.3 必要な知識
 
-- `docs/30-workflows/skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/`
+- `docs/30-workflows/completed-tasks/step-04-par-task-06-verify-and-improve-lifecycle-surface/`
 - `.agents/skills/aiworkflow-requirements/references/workflow-skill-lifecycle-created-skill-usage-journey.md`
 - `.agents/skills/aiworkflow-requirements/references/task-workflow-backlog.md`
 - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
@@ -259,8 +259,8 @@ rg -n "UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001|Layer 3 / Layer 4 verify"
 
 ### 関連ドキュメント
 
-- `docs/30-workflows/skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`
-- `docs/30-workflows/skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/outputs/phase-12/unassigned-task-detection.md`
+- `docs/30-workflows/completed-tasks/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`
+- `docs/30-workflows/completed-tasks/step-04-par-task-06-verify-and-improve-lifecycle-surface/outputs/phase-12/unassigned-task-detection.md`
 - `.agents/skills/aiworkflow-requirements/references/workflow-skill-lifecycle-created-skill-usage-journey.md`
 - `.agents/skills/aiworkflow-requirements/references/task-workflow-backlog.md`
 

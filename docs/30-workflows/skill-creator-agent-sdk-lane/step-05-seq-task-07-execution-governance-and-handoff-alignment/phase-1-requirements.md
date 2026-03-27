@@ -31,15 +31,15 @@ Skill Creator レーンが `integrated_api` を正規レーン、`terminal_hando
 
 ## 参照資料
 
-| 資料名       | パス                                                                      | 説明                                 |
-| ------------ | ------------------------------------------------------------------------- | ------------------------------------ |
-| 要件草案     | `../requirements-draft.md`                                                | lane 全体の governance 背景          |
-| 親 workflow  | `../root-workflow-pack/index.md`                                          | Task07 の位置づけ                    |
-| Task03 index | `../step-03-par-task-03-context-budget-and-resource-selection/index.md`   | degrade signal / provenance          |
-| Task04 index | `../step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`    | visible handoff / interaction bridge |
-| Task05 index | `../step-04-par-task-05-create-entry-mainline-unification/index.md`       | mainline UI boundary                 |
-| Task06 index | `../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`    | verify / improve boundary            |
-| Task08 index | `../step-06-seq-task-08-session-persistence-and-resume-contract/index.md` | downstream resume 契約               |
+| 資料名       | パス                                                                                      | 説明                                 |
+| ------------ | ----------------------------------------------------------------------------------------- | ------------------------------------ |
+| 要件草案     | `../requirements-draft.md`                                                                | lane 全体の governance 背景          |
+| 親 workflow  | `../root-workflow-pack/index.md`                                                          | Task07 の位置づけ                    |
+| Task03 index | `../step-03-par-task-03-context-budget-and-resource-selection/index.md`                   | degrade signal / provenance          |
+| Task04 index | `../step-03-par-task-04-user-interaction-bridge-and-phase-ui/index.md`                    | visible handoff / interaction bridge |
+| Task05 index | `../../completed-tasks/step-04-par-task-05-create-entry-mainline-unification/index.md`    | mainline UI boundary                 |
+| Task06 index | `../../completed-tasks/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md` | verify / improve boundary            |
+| Task08 index | `../step-06-seq-task-08-session-persistence-and-resume-contract/index.md`                 | downstream resume 契約               |
 
 ### システム仕様（aiworkflow-requirements）
 

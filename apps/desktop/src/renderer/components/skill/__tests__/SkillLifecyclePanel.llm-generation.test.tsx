@@ -177,6 +177,8 @@ const mockPlanSkill = vi.fn();
 const mockExecutePlan = vi.fn();
 const mockGetVerifyDetail = vi.fn();
 const mockReverifyWorkflow = vi.fn();
+const mockImproveSkillWithFeedback = vi.fn();
+const mockApplyRuntimeImprovement = vi.fn();
 
 const buildTerminalHandoffBundle = (): TerminalHandoffBundle => ({
   launcher: "claude",
@@ -212,6 +214,8 @@ beforeEach(() => {
       getWorkflowState: mockGetWorkflowState,
       submitUserInput: mockSubmitUserInput,
       onWorkflowStateChanged: mockOnWorkflowStateChanged,
+      improveSkillWithFeedback: mockImproveSkillWithFeedback,
+      applyRuntimeImprovement: mockApplyRuntimeImprovement,
       getVerifyDetail: mockGetVerifyDetail,
       reverifyWorkflow: mockReverifyWorkflow,
     },
@@ -232,6 +236,29 @@ beforeEach(() => {
       executeId: "exec-001",
       skillName: "new-skill",
       success: true,
+    },
+  });
+  mockImproveSkillWithFeedback.mockResolvedValue({
+    success: true,
+    data: {
+      improveId: "improve-001",
+      suggestions: [
+        {
+          section: "description",
+          before: "古い説明",
+          after: "新しい説明",
+          reason: "説明を明確化する",
+        },
+      ],
+    },
+  });
+  mockApplyRuntimeImprovement.mockResolvedValue({
+    success: true,
+    data: {
+      applied: 1,
+      skipped: 0,
+      skippedDetails: [],
+      errors: [],
     },
   });
   mockGetWorkflowState.mockResolvedValue({
@@ -345,7 +372,7 @@ describe("U-3: isGenerating locks execute button", () => {
     renderPanel();
 
     const executeBtn = screen.getByRole("button", { name: "実行する" });
-    expect(executeBtn).toBeDisabled();
+    expect((executeBtn as HTMLButtonElement).disabled).toBe(true);
   });
 });
 
@@ -384,14 +411,10 @@ describe("U-5: plan result display for integrated_api", () => {
 
     renderPanel();
 
-    expect(screen.getByText("生成計画")).toBeInTheDocument();
-    expect(screen.getByText(/推定ステップ数.*5/)).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "実行する" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "キャンセル" }),
-    ).toBeInTheDocument();
+    expect(screen.getByText("生成計画")).toBeTruthy();
+    expect(screen.getByText(/推定ステップ数.*5/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "実行する" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "キャンセル" })).toBeTruthy();
   });
 });
 
@@ -421,9 +444,7 @@ describe("U-6: terminal_handoff triggers handoff guidance display", () => {
       fireEvent.click(prepareBtn);
     });
 
-    expect(
-      screen.getByText(/Large task requires CLI execution/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Large task requires CLI execution/)).toBeTruthy();
   });
 });
 
@@ -436,7 +457,7 @@ describe("U-7: generationError displays error message", () => {
 
     renderPanel();
 
-    expect(screen.getByText("計画生成に失敗しました")).toBeInTheDocument();
+    expect(screen.getByText("計画生成に失敗しました")).toBeTruthy();
   });
 });
 
@@ -620,15 +641,11 @@ describe("U-13b: workflow snapshot summary is rendered", () => {
 
     renderPanel();
 
-    expect(
-      screen.getByTestId("skill-lifecycle-workflow-summary"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("skill-lifecycle-question-host"),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("skill-lifecycle-workflow-summary")).toBeTruthy();
+    expect(screen.getByTestId("skill-lifecycle-question-host")).toBeTruthy();
     expect(
       screen.getByTestId("skill-lifecycle-provenance-summary"),
-    ).toBeInTheDocument();
+    ).toBeTruthy();
     expect(
       screen
         .getByTestId("skill-lifecycle-provenance-summary")
@@ -760,9 +777,9 @@ describe("U-16: verify detail surface", () => {
       await screen.findByTestId("skill-lifecycle-verify-detail"),
     ).toBeTruthy();
     expect(mockGetVerifyDetail).toHaveBeenCalledWith("plan-001");
-    expect(screen.getByText("integrated_api (default)")).toBeInTheDocument();
-    expect(screen.getByText("Task07 owner")).toBeInTheDocument();
-    expect(screen.getByText("Task08 owner")).toBeInTheDocument();
+    expect(await screen.findByText(/integrated_api \(default\)/)).toBeTruthy();
+    expect(screen.getByText("Task07 owner")).toBeTruthy();
+    expect(screen.getByText("Task08 owner")).toBeTruthy();
   });
 });
 
@@ -781,5 +798,139 @@ describe("U-17: reverify button", () => {
     });
 
     expect(mockReverifyWorkflow).toHaveBeenCalledWith("plan-001");
+  });
+});
+
+// =====================================================================
+// U-17b: runtime improve proposal が同一 surface に表示される
+// =====================================================================
+describe("U-17b: runtime improve surface", () => {
+  it("改善提案取得で ImprovementProposalPanel を表示する", async () => {
+    mockStoreState.selectedSkillName = "test-skill";
+    mockStoreState.skillExecutionStatus = "completed";
+
+    renderPanel();
+
+    const button = screen.getByTestId("skill-lifecycle-improve-button");
+    await act(async () => {
+      fireEvent.click(button);
+    });
+
+    expect(mockImproveSkillWithFeedback).toHaveBeenCalledWith(
+      "test-skill",
+      expect.any(String),
+    );
+    expect(
+      await screen.findByTestId("skill-lifecycle-runtime-improve-result"),
+    ).toBeTruthy();
+    expect(screen.getByText("改善提案")).toBeTruthy();
+    expect(screen.getByText("説明を明確化する")).toBeTruthy();
+  });
+});
+
+// =====================================================================
+// U-18: verify detail fail ステータスの edge case
+// =====================================================================
+describe("U-18: verify detail fail status displays fail badge and message", () => {
+  it("status=fail / nextAction=improve のとき fail バッジとメッセージが表示される", async () => {
+    mockGetVerifyDetail.mockResolvedValue({
+      success: true,
+      data: {
+        planId: "plan-001",
+        currentPhase: "verify",
+        status: "fail",
+        message: "Layer 1 check failed",
+        nextAction: "improve",
+        checks: [
+          {
+            id: "layer3-structure",
+            layer: "layer3",
+            severity: "error",
+            summary: "SKILL.md missing required section",
+          },
+        ],
+        evidenceCount: 1,
+        route: {
+          type: "integrated_api",
+          summary: "integrated_api (default)",
+        },
+        reverifyEligible: true,
+        delegatedGovernanceNote: "Task07 owner",
+        delegatedSessionNote: "Task08 owner",
+      },
+    });
+    mockStoreState.currentPlanId = "plan-001";
+
+    renderPanel();
+
+    expect(
+      await screen.findByTestId("skill-lifecycle-verify-detail"),
+    ).toBeTruthy();
+    expect(screen.getByText("fail")).toBeTruthy();
+    expect(screen.getByText("Layer 1 check failed")).toBeTruthy();
+    expect(screen.getByText("SKILL.md missing required section")).toBeTruthy();
+  });
+});
+
+// =====================================================================
+// U-19: verify detail pass ステータス
+// =====================================================================
+describe("U-19: verify detail pass status displays pass badge", () => {
+  it("status=pass のとき pass バッジが表示される", async () => {
+    mockGetVerifyDetail.mockResolvedValue({
+      success: true,
+      data: {
+        planId: "plan-001",
+        currentPhase: "verify",
+        status: "pass",
+        message: "All checks passed",
+        checks: [],
+        evidenceCount: 5,
+        route: {
+          type: "integrated_api",
+          summary: "integrated_api (default)",
+        },
+        reverifyEligible: false,
+        disabledReason: "既に pass 済みです",
+        delegatedGovernanceNote: "Task07 owner",
+        delegatedSessionNote: "Task08 owner",
+      },
+    });
+    mockStoreState.currentPlanId = "plan-001";
+
+    renderPanel();
+
+    expect(
+      await screen.findByTestId("skill-lifecycle-verify-detail"),
+    ).toBeTruthy();
+    expect(screen.getByText("pass")).toBeTruthy();
+    expect(screen.getByText("All checks passed")).toBeTruthy();
+    expect(screen.getByText("既に pass 済みです")).toBeTruthy();
+    // reverifyEligible=false なので再検証ボタンは disabled
+    const reverifyBtn = screen.getByTestId("skill-lifecycle-reverify-button");
+    expect((reverifyBtn as HTMLButtonElement).disabled).toBe(true);
+  });
+});
+
+// =====================================================================
+// U-20: verify detail 取得失敗時のエラー表示
+// =====================================================================
+describe("U-20: verify detail fetch failure shows error", () => {
+  it("getVerifyDetail が失敗すると error surface に表示される", async () => {
+    mockGetVerifyDetail.mockResolvedValue({
+      success: false,
+      error: "verify detail の取得に失敗しました。",
+    });
+    mockStoreState.currentPlanId = "plan-001";
+
+    renderPanel();
+
+    // verify detail パネル自体は表示されるが、中にエラーが表示される
+    expect(
+      await screen.findByTestId("skill-lifecycle-verify-detail"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("verify detail はまだ利用できません。"),
+    ).toBeTruthy();
   });
 });
