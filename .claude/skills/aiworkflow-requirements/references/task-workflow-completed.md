@@ -5,6 +5,111 @@
 
 ## 完了タスク
 
+
+### タスク: TASK-SDK-03 context-budget-and-resource-selection（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-03 |
+| ステータス | **完了** |
+| タイプ | refactoring / implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| PR | #1666 |
+| 対象 | PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / context budget 動的解決 |
+| 成果物 | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/` |
+
+#### 実施内容
+
+- `SkillCreatorSourceResolver`（候補解決）、`PhaseResourcePlanner`（tier 選択・予算強制）、`ResolvedResourceReader`（読み出し）を独立クラスに分離
+- manifest 解決 → リソース選択 → 予算強制の3段階パイプラインを確立
+- tier ベースの段階的リソース削減（optional-deep-dive → optional-quality → required-context）を実装
+- context budget と resource selection を動的解決へ移行
+
+---
+
+### タスク: TASK-SDK-04 user-interaction-bridge-and-phase-ui（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-04 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| PR | #1667 |
+| 対象 | ユーザー入力ブリッジ / フェーズ UI 同期 / IPC 型外部化 |
+| 成果物 | `docs/30-workflows/step-04-par-task-04-user-interaction-bridge-and-phase-ui/` |
+
+#### 実施内容
+
+- ユーザー入力ブリッジと Phase UI の同期を実装
+- `AwaitingUserInput` → `UserInputRequest` への型リネームと packages/shared/ への外部化
+- IPC / Preload / Main 全レイヤーの同時更新
+
+---
+
+### タスク: TASK-SDK-05 create-entry-mainline-unification（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-05 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| PR | #1667, #1668 |
+| 対象 | create entry の mainline 統合 / ViewType 契約 |
+| 成果物 | `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/` |
+
+#### 実施内容
+
+- create entry の mainline 統合と ViewType 契約の確立
+- advanced route boundary の整備
+
+---
+
+### タスク: TASK-SDK-06 verify-and-improve-lifecycle-surface（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-06 |
+| ステータス | **完了** |
+| タイプ | implementation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| PR | #1668 |
+| 対象 | verify detail 展開 / reverify ワークフロー / layer3-4 verify check 自動生成 |
+| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-task-sdk-06-layer34-verify-expansion-001/` |
+
+#### 実施内容
+
+- `getVerifyDetail(planId)` API の実装（artifact + provenance + route + phase の複合 evidence 管理）
+- `requestReverify(planId)` API の実装
+- disable 理由の4段階判定（not_verified / no_artifact / incomplete_provenance / route_mismatch）
+- layer3 / layer4 の verify check 自動生成
+
+---
+
+### タスク: UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 verify artifact append と workflow close-out を同期（2026-03-26）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 |
+| ステータス | **完了** |
+| タイプ | bugfix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-26 |
+| PR | #1660 |
+| 対象 | `execute_result` / `verify_result` の append 戦略統一 / workflow close-out 同期 |
+
+#### 実施内容
+
+- `appendArtifact()` を導入し、`execute_result` / `verify_result` を時系列で残す append 戦略へ統一
+- verify artifact append と workflow close-out の同期
+
+---
+
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine の失敗系 state lifecycle 是正（2026-03-26）
 
 | 項目 | 値 |
@@ -162,6 +267,32 @@
 
 - 新規未タスク 0 件
 - trust scoring / disclosure は Task07、resume compatibility / invalidation は Task08 の owner を維持するため、Task03 から独立 follow-up は新設しない
+
+---
+### タスク: TASK-SDK-05 create-entry-mainline-unification（2026-03-27）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-05 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked / `spec_created` close-out sync 済み）** |
+| タイプ | docs-only / create-mainline-boundary |
+| 優先度 | 高 |
+| 完了日 | 2026-03-27 |
+| 対象 | Skill Creator create 一次導線、advanced route 境界、warning summary と diagnostics の分離、Phase 12 close-out evidence |
+| 成果物 | `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/` |
+
+#### 実施内容
+
+- `Skill Center -> skillCreate` を一次導線、`SkillCreateWizard` を destination surface、`SkillLifecyclePanel` / `SkillManagementPanel` を advanced / secondary route として task spec 上で固定
+- source provenance / structure mismatch / source conflict の表示を mainline summary と diagnostics に分離し、Task03 / Task04 / Task06 / Task07 との owner boundary を明示
+- Phase 12 の `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を、Step 1 same-wave sync + Step 2 no-op 根拠の実績ベースへ更新
+- `references/task-workflow-completed.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` / `lessons-learned-phase12-workflow-lifecycle.md` / LOGS / SKILL history を same-wave で同期
+- validator 実行コマンドを actual invocation に揃え、workflow root path drift を 0 件化した
+
+#### Phase 12 未タスク
+
+- 新規未タスク 0 件
+- create mainline wording finalization は Task05 実装 wave の Phase 8 / 9 で扱う既存責務とし、今回 close-out では新設しない
 
 ---
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 runtime workflow failure verify artifact append 是正（2026-03-26）

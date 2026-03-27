@@ -92,6 +92,47 @@ Phase 5: レビュー (quick-validate) → Phase 6: 検証 (validate-all)
 📖 [agents/interview-user.md](.claude/skills/skill-creator/agents/interview-user.md)
 📖 [agents/select-resources.md](.claude/skills/skill-creator/agents/select-resources.md)
 
+### Runtime ワークフロー状態遷移
+
+Renderer から IPC 経由で駆動する Runtime Skill Creator ワークフロー:
+
+```
+plan → review (awaiting user input) → execute → verify → [pass] handoff
+                                                       → [fail] improve → reverify → ...
+```
+
+| Phase | IPC チャネル | 型 |
+| --- | --- | --- |
+| plan | `skill-creator:plan` | `SkillCreatorPlanResult` |
+| review | `skill-creator:submit-user-input` | `SkillCreatorUserInputRequest` |
+| execute | `skill-creator:execute-plan` | `SkillCreatorExecutePlanResult` |
+| verify | `skill-creator:get-verify-detail` | `RuntimeSkillCreatorVerifyDetail` |
+| reverify | `skill-creator:reverify-workflow` | `RuntimeSkillCreatorReverifyResult` |
+| improve | `skill-creator:improve-skill` | `RuntimeSkillCreatorImproveResult` |
+| state query | `skill-creator:get-workflow-state` | `SkillCreatorWorkflowState` |
+| state push | `skill-creator:workflow-state-changed` | (event) |
+
+#### ユーザー入力ブリッジ（4種）
+
+| kind | 用途 | 例 |
+| --- | --- | --- |
+| `single_select` | 選択肢から1つ選択 | plan review の承認/却下 |
+| `free_text` | 自由テキスト入力 | フィードバックコメント |
+| `secret` | 秘匿入力（APIキー等） | LLM API キー |
+| `confirm` | Yes/No 確認 | reverify 実行確認 |
+
+#### Verify Detail Surface（layer3/layer4）
+
+`RuntimeSkillCreatorVerifyDetail` は layer3（構造検証）と layer4（品質検証）の check を自動生成する。
+各 check は `info` / `warning` / `error` の severity を持ち、`reverifyEligible` フラグで再検証可否を判定する。
+`disabledReason` は 4段階（`no_plan` / `already_running` / `all_checks_pass` / `cooldown`）で UI の disable 理由を通知する。
+
+#### 動的リソース選択（PhaseResourcePlanner / SkillCreatorSourceResolver）
+
+- **PhaseResourcePlanner**: max bytes ベースの context budget で `required-core` / `required-context` / `optional-quality` / `optional-deep-dive` の 4 tier にリソースを分類し、budget 超過時は下位 tier を自動カットする。
+- **SkillCreatorSourceResolver**: manifest 定義と fallback 候補（`.claude/skills/skill-creator` / `.agents/skills/skill-creator`）の競合を structure signature で解決し、`manifest` / `bundled` / `project` の source mode を確定する。
+- **SkillCreatorWorkflowSourceProvenance**: 解決結果を `resolvedSkillCreatorRoot` / `resourceDescriptorHash` / `manifestPath` / `manifestCacheKey` として plan result に埋め込む。
+
 ### Orchestrate モード
 
 実行エンジン選択: `claude` | `codex` | `gemini` | `claude-to-codex`
@@ -241,6 +282,7 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **10.38.0** | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映 |
 | **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善 |
 | **10.37.43** | **2026-03-26** | **TASK-SDK-01 hardening sync を template へ反映**: docs-heavy Phase 12 follow-up に code hardening が入った時の same-wave rollback-to-current ルール、carry-forward 0件同期、compile gate と env-blocked test の分離記録を `references/patterns.md` / `references/update-process.md` へ追加 |
 
@@ -250,6 +292,7 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 | Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | ----------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **10.38.0** | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映 |
 | **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善 |
 | **10.37.50** | **2026-03-26** | **TASK-SDK-02 workflow-engine-runtime-orchestration を反映**: `references/patterns.md` に「public bridge と workflow state owner の分離パターン」を追加。runtime orchestration task では `Facade` を public bridge、`Engine` を state owner として固定し、`terminal_handoff` early return、`resumeTokenEnvelope` / provenance 同一 owner、禁止副作用のテスト化までを close-out 完了条件として扱うルールを標準化 |
 | **10.37.49** | **2026-03-26** | **UT-SC-02-005 の stale fact cleanup ルールを追加**: `references/update-process.md` に Phase 12 retrospective の `Phase 3.5: stale fact cleanup` を追記し、`assets/phase12-system-spec-retrospective-template.md` にテスト件数 / coverage / out-of-scope 注記 / 日付 / follow-up 件数を outputs と未タスク指示書で同値同期するルールを追加。same-wave sync の完了条件を「生成 + drift 除去」まで拡張 |

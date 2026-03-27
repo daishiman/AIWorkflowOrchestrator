@@ -79,6 +79,36 @@
 
 ---
 
+## 2026-03-27 TASK-SDK-05
+
+### 苦戦箇所1: `spec_created` UI task の Step 1 を N/A にすると same-wave sync 不足が false green になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Task05 のように新規 interface を追加しない docs-only task でも、completed ledger / quick-reference / resource-map / LOGS / SKILL history を更新しないまま Step 1-A〜1-C を N/A 扱いすると、Phase 12 だけ PASS に見えて discoverability が壊れる |
+| 再発条件 | Step 2 no-op を理由に Step 1 まで no-op と誤読し、workflow root 側の close-out 文書だけで完了扱いする |
+| 解決策 | `task-workflow-completed.md` / `indexes/quick-reference.md` / `indexes/resource-map.md` / `lessons-learned-phase12-workflow-lifecycle.md` / LOGS / SKILL history を same-wave で更新し、Step 2 のみ no-op 根拠付き完了に戻した |
+| 標準ルール | `spec_created` task でも Step 1 は実更新必須。Step 2 が no-op でも ledger / index / lesson / skill sync は省略しない |
+| 関連タスク | TASK-SDK-05 |
+
+### 苦戦箇所2: workflow root を移設したら verification-report の対象 path も同一ターンで正規化する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | workflow 本体を `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/` へ置いても、`outputs/verification-report.md` に旧 nested path が残ると reader が誤った canonical root を辿る |
+| 再発条件 | validator の PASS 文面だけを転記し、evidence 文書中の workflow root path を再監査しない |
+| 解決策 | `verification-report.md` の target path、Phase 12 validation command、mirror sync 記録を current root に合わせて是正した |
+| 標準ルール | workflow root を移設・独立化したターンでは、verification-report / changelog / compliance-check の path literal をまとめて current root へ揃える |
+| 関連タスク | TASK-SDK-05 |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. Step 2 no-op かどうかを先に判定し、no-op でも Step 1 の ledger / index / lesson / skill sync を必ず実施する。
+2. workflow root を参照する literal path を `verification-report.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` で横断監査する。
+3. `.claude` 正本更新後に `.agents` mirror を same-wave で同期し、`topic-map.md` / `keywords.json` を再生成して discoverability を閉じる。
+
+---
+
 ## 2026-03-26 TASK-SDK-01 manifest-contract-foundation
 
 ## 2026-03-27 TASK-SDK-04

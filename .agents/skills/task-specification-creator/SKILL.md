@@ -198,6 +198,24 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 - リファクタリング（インターフェース不変）
 - バグ修正（仕様変更なし）
 
+#### `spec_created` UI task の Phase 12 close-out ルール
+
+`spec_created` ステータスの UI task でも Phase 12 実行時は Step 1-A〜1-C を N/A にせず same-wave sync で閉じる。
+
+| Step | `spec_created` での扱い |
+| --- | --- |
+| Step 1-A | 完了タスク記録 + LOGS.md x2 + SKILL.md x2 + topic-map を same-wave で更新 |
+| Step 1-B | 実装状況テーブルに `spec_created` を記録（`completed` ではない） |
+| Step 1-C | 関連タスクテーブルのステータスを current facts へ更新 |
+| Step 2 | 新規インターフェース追加がなければ N/A（ただし下記の再判定ルールを確認） |
+
+#### docs-only task に後からコード実装が入った場合の再判定ルール
+
+当初 docs-only / `spec_created` だった task に後から code 変更が入った場合:
+1. **Step 2 再判定**: source workflow と `outputs/phase-12/*.md` を同一ターンで current facts へ戻す
+2. **Screenshot 再判定**: `N/A` / `NON_VISUAL` だった Phase 11 evidence の reclassification を検討する
+3. **新規未タスク 0 件固定より current gap formalize を優先**: code wave で生じた gap は即座に未タスク化する
+
 ---
 
 ### Task 4: 未タスク検出（0件でも出力必須）
@@ -222,6 +240,8 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **6.18.14** | **2026-03-27** | **Phase 12 close-out ルール hardening を反映**: (1) `spec_created` UI task でも Step 1-A〜1-C を N/A にせず same-wave sync で閉じるルール、(2) docs-only task に後から code 実装が入った場合の Step 2 / screenshot 再判定ルール、(3) Phase 12 documentation guide hardening（planned wording 残存 grep 監査、evidence reclassification）を SKILL.md に明示 |
+| **6.18.13** | **2026-03-27** | **TASK-SDK-05 create-entry-mainline-unification spec sync を guide へ反映**: `spec_created` UI task の Phase 12 でも Step 1-A〜1-C を N/A にしない same-wave sync ルール、`verification-report.md` の workflow root path drift 是正、`.claude` 正本更新後の `.agents` mirror parity 確認を close-out 完了条件へ追加 |
 | **6.18.12** | **2026-03-26** | **TASK-SDK-01 hardening sync を guide へ反映**: docs-only follow-up に後からコード変更が入った時は source workflow と `outputs/phase-12/*.md` を同一ターンで current facts へ戻すルールを `phase-12-documentation-guide.md` に追加 |
 
 ---

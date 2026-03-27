@@ -3,6 +3,17 @@
 ## 役割
 
 ---
+## TASK-SDK-05 create-entry-mainline-unification spec sync（2026-03-27）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out hardening
+- **Result**: success
+- **Notes**:
+  - `spec_created` UI task でも Step 1-A〜1-C を N/A にせず、completed ledger / quick-reference / resource-map / lessons / LOGS / SKILL history を same-wave で更新する close-out ルールを再確認した
+  - `outputs/verification-report.md` の workflow root path drift と validation command drift を current invocation へ戻し、evidence 文書の literal path 監査を必須化した
+  - `.claude` 正本更新後に `.agents` mirror sync と `diff -qr` parity 確認まで完了条件に含める運用を固定した
+
+---
 ## TASK-SDK-04 implementation spec sync（2026-03-27）
 
 - **Agent**: task-specification-creator

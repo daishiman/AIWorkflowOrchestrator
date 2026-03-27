@@ -440,7 +440,10 @@ export function SkillManagementPanel() {
 
   if (currentView === "create") {
     return (
-      <div data-testid="skill-management-panel-create-view">
+      <div
+        data-testid="skill-management-panel-create-view"
+        data-route-kind="secondary"
+      >
         <SkillCreateWizard onClose={handleBackToList} />
       </div>
     );
@@ -448,7 +451,10 @@ export function SkillManagementPanel() {
 
   if (currentView === "lifecycle") {
     return (
-      <div data-testid="skill-management-panel-lifecycle-view">
+      <div
+        data-testid="skill-management-panel-lifecycle-view"
+        data-route-kind="secondary"
+      >
         <SkillLifecyclePanel
           onClose={handleBackToList}
           onOpenWizard={() => setCurrentView("create")}

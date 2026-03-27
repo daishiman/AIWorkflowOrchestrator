@@ -7,6 +7,7 @@ LOGS.md から退避した archive 一覧。日付別の詳細 log はここか�
 ## archive list
 | ファイル | 役割 | 代表エントリ |
 | --- | --- | --- |
+| [logs-archive-2026-03-mid-lifecycle-governance-improve.md](logs-archive-2026-03-mid-lifecycle-governance-improve.md) | archive 2026-03-mid (lifecycle / governance / improve) | TASK-FIX-CONVERSATION-IPC / TASK-SKILL-LIFECYCLE-06 / UT-06-001〜005 / TASK-SC-05-IMPROVE-LLM / UT-SC-05-APPLY-IMPROVEMENT-UI / TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE / UT-SC-02-005 |
 | [logs-archive-legacy.md](logs-archive-legacy.md) | archive legacy (pre-index migration root) | TASK-AUTH-CALLBACK-001: OAuth認証コールバックPKCE移行 / TASK-FIX-4-2-SKILL-STORE-PERSISTENCE / 変更履歴アーカイブ |
 | [logs-archive-2026-03-line-budget-reform-formalize.md](logs-archive-2026-03-line-budget-reform-formalize.md) | archive 2026-03 (line-budget reform / formalize) | 2026-03-12 - TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 system spec sync / 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize / 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補 |
 | [logs-archive-2026-03-history-search-notification-center.md](logs-archive-2026-03-history-search-notification-center.md) | archive 2026-03 (history-search / notification-center) | 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW system spec 形成をテンプレート準拠へ最適化 / 2026-03-10 - TASK-UI-06-HISTORY-SEARCH-VIEW Phase 12 再監査同期 / 2026-03-11 - TASK-UI-08-NOTIFICATION-CENTER 再監査追補 |

@@ -369,6 +369,20 @@ describe("SkillCenterView CTA と skillLifecycleJourney の統合", () => {
     expect(screen.getByText("Step 3")).toBeInTheDocument();
   });
 
+  it("TC-CTA-25: ヘッダーCTAが data-route-kind='primary' を持つ (TASK-SDK-05)", () => {
+    render(<SkillCenterView />);
+
+    const ctaButton = screen.getByTestId("header-create-cta");
+    expect(ctaButton).toHaveAttribute("data-route-kind", "primary");
+  });
+
+  it("TC-CTA-26: journey create CTA が data-route-kind='primary' を持つ (TASK-SDK-05)", () => {
+    render(<SkillCenterView />);
+
+    const createCta = screen.getByTestId("skill-lifecycle-cta-create");
+    expect(createCta).toHaveAttribute("data-route-kind", "primary");
+  });
+
   it("TC-CTA-24: CTAボタンは削除確認ダイアログが開いていても正常に動作する", () => {
     mockUseSkillCenter.mockReturnValue(
       createBaseHookValue({

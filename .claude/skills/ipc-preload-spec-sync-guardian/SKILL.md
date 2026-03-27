@@ -11,7 +11,8 @@ description: |
 
   Trigger:
   task-9D〜9J 仕様書で path drift / artifacts drift / IPC命名差分を検出した時に使う。
-  task-9d, task-9e, task-9f, task-9g, task-9h, task-9i, task-9j, ipc, preload, channels, skill-api, artifacts, spec alignment, approval:respond, approval:request, execution:get-disclosure-info, execution:get-terminal-log, execution:get-copy-command, approvalHandlers, disclosureHandlers, advancedConsoleHandlers
+  task-9d, task-9e, task-9f, task-9g, task-9h, task-9i, task-9j, ipc, preload, channels, skill-api, artifacts, spec alignment, approval:respond, approval:request, execution:get-disclosure-info, execution:get-terminal-log, execution:get-copy-command, approvalHandlers, disclosureHandlers, advancedConsoleHandlers,
+  skill-creator:get-workflow-state, skill-creator:submit-user-input, skill-creator:workflow-state-changed, skill-creator:get-verify-detail, skill-creator:request-reverify
 allowed-tools:
   - Read
   - Write
@@ -114,9 +115,27 @@ task-9D〜9J 仕様書の「旧参照パス」「artifacts不整合」「型配�
 | クイック復旧手順 | [references/quick-recovery-playbook.md](references/quick-recovery-playbook.md) | 苦戦時 |
 | 実行パターン集 | [references/patterns.md](references/patterns.md) | 改善時 |
 
+## 拡張スコープ: Skill Creator ワークフロー IPC
+
+task-9D〜9J に加えて、以下の Skill Creator ワークフロー IPC チャネルが監査スコープに含まれる。
+
+| チャネル | 方向 | 型定義 |
+| --- | --- | --- |
+| `skill-creator:get-workflow-state` | invoke | `SkillCreatorWorkflowState` |
+| `skill-creator:submit-user-input` | invoke | `SkillCreatorUserInputRequest` |
+| `skill-creator:workflow-state-changed` | event (on) | push notification |
+| `skill-creator:get-verify-detail` | invoke | `RuntimeSkillCreatorVerifyDetail` |
+| `skill-creator:reverify-workflow` | invoke | `RuntimeSkillCreatorReverifyResult` |
+
+これらのチャネルの整合確認先:
+- `apps/desktop/src/preload/channels.ts`: IPC_CHANNELS 定数に登録されているか
+- `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`: handler が登録されているか
+- `packages/shared/src/types/skillCreator.ts`: 型定義が存在するか
+
 ## 変更履歴
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| 1.2.0 | 2026-03-27 | Skill Creator ワークフロー IPC 5 チャネル（get-workflow-state / submit-user-input / workflow-state-changed / get-verify-detail / reverify-workflow）を監査スコープへ追加。Trigger キーワードに同チャネル名を登録 |
 | 1.1.0 | 2026-02-25 | 実運用版を作成。task-9D〜9J仕様同期ワークフロー、SubAgent分担、監査スクリプト連携を追加 |
 | 1.0.0 | 2026-02-25 | 初版作成 |
