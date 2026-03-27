@@ -11,6 +11,8 @@
  * runtime routing（integrated_api / terminal_handoff）を担う。
  */
 
+import fs from "fs/promises";
+import path from "path";
 import type {
   SkillExecutor,
   SkillExecutionRequest,
@@ -26,7 +28,10 @@ import type {
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorPlanResult as SkillPlanResult,
+  SkillCreatorUserInputSubmission,
+  SkillCreatorWorkflowUiSnapshot,
   ApplyImprovementResult,
+  LoadedWorkflowManifest,
 } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 import type { ILLMAdapter } from "../../adapters/llm/types";
@@ -34,19 +39,29 @@ import type { ResourceLoader } from "../skill/ResourceLoader";
 import type { SkillFileManager } from "../skill/SkillFileManager";
 import type { SkillFileWriter } from "../skill/SkillFileWriter";
 import { RuntimePolicyResolver } from "./RuntimePolicyResolver";
+import { ManifestLoader } from "./ManifestLoader";
 import {
   SkillCreatorWorkflowEngine,
   type SkillCreatorWorkflowSourceProvenance,
 } from "./SkillCreatorWorkflowEngine";
 import { TerminalHandoffBuilder } from "./TerminalHandoffBuilder";
 import {
+  PLAN_RESOURCE_REQUESTS,
   PLAN_PROMPT_CONSTANTS,
   PLAN_RESPONSE_SCHEMA_INSTRUCTION,
 } from "./planPromptConstants";
 import {
+  IMPROVE_RESOURCE_REQUESTS,
   IMPROVE_PROMPT_CONSTANTS,
   IMPROVE_RESPONSE_SCHEMA_INSTRUCTION,
 } from "./improvePromptConstants";
+import type {
+  PhaseResourcePlanningSnapshot,
+  PlannedSkillCreatorResource,
+} from "./PhaseResourcePlanner";
+import { PhaseResourcePlanner } from "./PhaseResourcePlanner";
+import { ResolvedResourceReader } from "./ResolvedResourceReader";
+import { SkillCreatorSourceResolver } from "./SkillCreatorSourceResolver";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -58,6 +73,9 @@ export interface RuntimeSkillCreatorFacadeDeps {
   resourceLoader?: ResourceLoader;
   skillFileManager?: SkillFileManager;
   skillFileWriter?: SkillFileWriter;
+  sourceResolver?: SkillCreatorSourceResolver;
+  resourcePlanner?: PhaseResourcePlanner;
+  resolvedResourceReader?: ResolvedResourceReader;
 }
 
 export class RuntimeSkillCreatorFacade {
@@ -69,6 +87,10 @@ export class RuntimeSkillCreatorFacade {
   private readonly resourceLoader?: ResourceLoader;
   private readonly skillFileManager?: SkillFileManager;
   private readonly skillFileWriter?: SkillFileWriter;
+  private readonly sourceResolver?: SkillCreatorSourceResolver;
+  private readonly resourcePlanner?: PhaseResourcePlanner;
+  private readonly resolvedResourceReader?: ResolvedResourceReader;
+  private readonly manifestLoader = new ManifestLoader();
 
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
@@ -78,6 +100,9 @@ export class RuntimeSkillCreatorFacade {
     this.resourceLoader = deps.resourceLoader;
     this.skillFileManager = deps.skillFileManager;
     this.skillFileWriter = deps.skillFileWriter;
+    this.sourceResolver = deps.sourceResolver;
+    this.resourcePlanner = deps.resourcePlanner;
+    this.resolvedResourceReader = deps.resolvedResourceReader;
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
       deps.subscriptionAuthProvider,
@@ -98,8 +123,17 @@ export class RuntimeSkillCreatorFacade {
     this.llmAdapter = adapter;
   }
 
-  getWorkflowStateSnapshot(planId: string) {
+  getWorkflowStateSnapshot(
+    planId: string,
+  ): SkillCreatorWorkflowUiSnapshot | undefined {
     return this.workflowEngine.getWorkflowState(planId);
+  }
+
+  submitUserInput(
+    planId: string,
+    submission: SkillCreatorUserInputSubmission,
+  ): SkillCreatorWorkflowUiSnapshot {
+    return this.workflowEngine.submitUserInput(planId, submission);
   }
 
   private resolveDecision(authMode: AuthMode, apiKey: string | null) {
@@ -109,9 +143,25 @@ export class RuntimeSkillCreatorFacade {
     return this.resolver.resolve(authMode, apiKey);
   }
 
-  private buildSourceProvenance():
-    | SkillCreatorWorkflowSourceProvenance
-    | undefined {
+  private buildSourceProvenance(
+    planningSnapshot?: PhaseResourcePlanningSnapshot,
+  ): SkillCreatorWorkflowSourceProvenance | undefined {
+    if (planningSnapshot) {
+      return {
+        resolvedSkillCreatorRoot: planningSnapshot.resolvedSkillCreatorRoot,
+        resourceDescriptorHash:
+          planningSnapshot.foundationSnapshot?.resourceDescriptorHash,
+        manifestPath: planningSnapshot.foundationSnapshot?.sourcePath,
+        manifestCacheKey: planningSnapshot.foundationSnapshot?.cacheKey,
+        candidateRoots: planningSnapshot.candidateRoots,
+        selectedRoots: planningSnapshot.selectedRoots,
+        selectedResourceIds: planningSnapshot.selectedResourceIds,
+        droppedResourceIds: planningSnapshot.droppedResourceIds,
+        structureSignature: planningSnapshot.structureSignature,
+        degradeReasons: planningSnapshot.degradeReasons,
+      };
+    }
+
     const resolvedSkillCreatorRoot =
       this.resourceLoader &&
       typeof this.resourceLoader.getBasePath === "function"
@@ -122,6 +172,90 @@ export class RuntimeSkillCreatorFacade {
     }
 
     return { resolvedSkillCreatorRoot };
+  }
+
+  private hasDynamicResourcePipeline(): boolean {
+    return Boolean(
+      this.sourceResolver &&
+      this.resourcePlanner &&
+      this.resolvedResourceReader,
+    );
+  }
+
+  private getExplicitSkillCreatorRoot(): string | undefined {
+    return this.resourceLoader &&
+      typeof this.resourceLoader.getBasePath === "function"
+      ? this.resourceLoader.getBasePath()
+      : undefined;
+  }
+
+  private async loadWorkflowManifest(
+    explicitRoot?: string,
+  ): Promise<LoadedWorkflowManifest | undefined> {
+    if (!explicitRoot) {
+      return undefined;
+    }
+
+    const manifestPath = path.join(explicitRoot, "workflow-manifest.json");
+    try {
+      await fs.access(manifestPath);
+      return await this.manifestLoader.loadManifest(manifestPath);
+    } catch {
+      return undefined;
+    }
+  }
+
+  private async resolveOperationResources(
+    requests: readonly import("./PhaseResourcePlanner").PhaseResourceRequest[],
+    maxBytes: number,
+    operation: import("./PhaseResourcePlanner").SkillCreatorOperation,
+  ): Promise<{
+    resources: PlannedSkillCreatorResource[];
+    sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
+  }> {
+    if (
+      !this.sourceResolver ||
+      !this.resourcePlanner ||
+      !this.resolvedResourceReader
+    ) {
+      throw new Error("Dynamic resource pipeline is not configured");
+    }
+
+    const explicitRoot = this.getExplicitSkillCreatorRoot();
+    const manifest = await this.loadWorkflowManifest(explicitRoot);
+    const resolution = await this.sourceResolver.resolve({
+      explicitRoot,
+      manifest,
+      requiredRelativePaths: requests
+        .filter((request) => request.required)
+        .map((request) => request.relativePath),
+    });
+    const planning = await this.resourcePlanner.plan({
+      operation,
+      requests,
+      resolution,
+      maxBytes,
+    });
+
+    return {
+      resources: planning.resources,
+      sourceProvenance: this.buildSourceProvenance(planning.snapshot),
+    };
+  }
+
+  private async readPlannedResources(
+    resources: PlannedSkillCreatorResource[],
+  ): Promise<Array<PlannedSkillCreatorResource & { content: string }>> {
+    if (!this.resolvedResourceReader) {
+      throw new Error("ResolvedResourceReader is not configured");
+    }
+
+    const loaded: Array<PlannedSkillCreatorResource & { content: string }> = [];
+    for (const resource of resources) {
+      const content = await this.resolvedResourceReader.readText(resource);
+      loaded.push({ ...resource, content });
+    }
+    return loaded;
   }
 
   /**
@@ -156,10 +290,14 @@ export class RuntimeSkillCreatorFacade {
 
     // integrated_api: LLM で計画を生成
     const planId = `plan-${Date.now()}`;
-    const sourceProvenance = this.buildSourceProvenance();
+    let sourceProvenance: SkillCreatorWorkflowSourceProvenance | undefined =
+      this.buildSourceProvenance();
 
     // Graceful degradation: llmAdapter/resourceLoader 未注入時はスタブ
-    if (!this.llmAdapter || !this.resourceLoader) {
+    if (
+      !this.llmAdapter ||
+      (!this.resourceLoader && !this.hasDynamicResourcePipeline())
+    ) {
       const planResult = {
         planId,
         skillSpec,
@@ -179,15 +317,40 @@ export class RuntimeSkillCreatorFacade {
       return planResult;
     }
 
-    // agent 仕様書を読み込む
-    const agentSpecs: Array<{ name: string; content: string }> = [];
-    for (const name of PLAN_PROMPT_CONSTANTS.AGENT_NAMES) {
-      const content = await this.resourceLoader.loadAgent(name);
-      agentSpecs.push({ name, content });
+    let agentSpecs: Array<{ name: string; content: string }> = [];
+    let referenceSpecs: Array<{ name: string; content: string }> = [];
+    if (this.hasDynamicResourcePipeline()) {
+      const resolved = await this.resolveOperationResources(
+        PLAN_RESOURCE_REQUESTS,
+        PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
+        "plan",
+      );
+      const loadedResources = await this.readPlannedResources(
+        resolved.resources,
+      );
+      agentSpecs = loadedResources
+        .filter((resource) => resource.kind === "agent")
+        .map((resource) => ({
+          name: resource.id,
+          content: resource.content,
+        }));
+      referenceSpecs = loadedResources
+        .filter((resource) => resource.kind === "reference")
+        .map((resource) => ({
+          name: resource.id,
+          content: resource.content,
+        }));
+      sourceProvenance = resolved.sourceProvenance;
+    } else if (this.resourceLoader) {
+      for (const name of PLAN_PROMPT_CONSTANTS.AGENT_NAMES) {
+        const content = await this.resourceLoader.loadAgent(name);
+        agentSpecs.push({ name, content });
+      }
+      sourceProvenance = this.buildSourceProvenance();
     }
 
     // LLM 呼び出し
-    const systemPrompt = buildPlanSystemPrompt(agentSpecs);
+    const systemPrompt = buildPlanSystemPrompt(agentSpecs, referenceSpecs);
     const response = await this.llmAdapter.sendChat({
       modelId: PLAN_PROMPT_CONSTANTS.DEFAULT_MODEL_ID,
       systemPrompt,
@@ -353,7 +516,10 @@ export class RuntimeSkillCreatorFacade {
     const improveId = `improve-${Date.now()}`;
 
     // Graceful degradation: llmAdapter/resourceLoader 未注入時はスタブ
-    if (!this.llmAdapter || !this.resourceLoader) {
+    if (
+      !this.llmAdapter ||
+      (!this.resourceLoader && !this.hasDynamicResourcePipeline())
+    ) {
       return {
         improveId,
         suggestions: [],
@@ -376,10 +542,34 @@ export class RuntimeSkillCreatorFacade {
         "SKILL.md",
       );
 
-      // プロンプト読み込み
-      const agentPrompt = await this.resourceLoader.loadAgent(
-        IMPROVE_PROMPT_CONSTANTS.AGENT_NAME,
-      );
+      let agentPrompt: string;
+      if (this.hasDynamicResourcePipeline()) {
+        const resolved = await this.resolveOperationResources(
+          IMPROVE_RESOURCE_REQUESTS,
+          IMPROVE_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
+          "improve",
+        );
+        const loadedResources = await this.readPlannedResources(
+          resolved.resources,
+        );
+        agentPrompt =
+          loadedResources.find((resource) => resource.id === "improve-prompt")
+            ?.content ?? "";
+        const referenceSections = loadedResources
+          .filter((resource) => resource.kind === "reference")
+          .map(
+            (resource) =>
+              `${PLAN_PROMPT_CONSTANTS.REFERENCE_SEPARATOR_START} ${resource.id} ===\n${resource.content}\n${PLAN_PROMPT_CONSTANTS.REFERENCE_SEPARATOR_END} ${resource.id} ===`,
+          )
+          .join("\n\n");
+        agentPrompt = [agentPrompt, referenceSections]
+          .filter((section) => section.trim().length > 0)
+          .join("\n\n");
+      } else {
+        agentPrompt = await this.resourceLoader!.loadAgent(
+          IMPROVE_PROMPT_CONSTANTS.AGENT_NAME,
+        );
+      }
 
       // system プロンプト = improve-prompt.md + IMPROVE_RESPONSE_SCHEMA_INSTRUCTION
       const systemPrompt = `${agentPrompt}\n\n${IMPROVE_RESPONSE_SCHEMA_INSTRUCTION}`;
@@ -478,6 +668,7 @@ interface LLMPlanResponse {
 
 export function buildPlanSystemPrompt(
   agentSpecs: Array<{ name: string; content: string }>,
+  referenceSpecs: Array<{ name: string; content: string }> = [],
 ): string {
   const agentSections = agentSpecs
     .map(
@@ -486,7 +677,22 @@ export function buildPlanSystemPrompt(
     )
     .join("\n\n");
 
-  return `${agentSections}\n\n${PLAN_RESPONSE_SCHEMA_INSTRUCTION}`;
+  const referenceSections = referenceSpecs
+    .map(
+      ({ name, content }) =>
+        `${PLAN_PROMPT_CONSTANTS.REFERENCE_SEPARATOR_START} ${name} ===\n${content}\n${PLAN_PROMPT_CONSTANTS.REFERENCE_SEPARATOR_END} ${name} ===`,
+    )
+    .join("\n\n");
+
+  const sections = [
+    agentSections,
+    referenceSections,
+    PLAN_RESPONSE_SCHEMA_INSTRUCTION,
+  ]
+    .filter((section) => section.trim().length > 0)
+    .join("\n\n");
+
+  return sections;
 }
 
 /** Markdownコードブロック（```json ... ``` や ``` ... ```）を除去する */

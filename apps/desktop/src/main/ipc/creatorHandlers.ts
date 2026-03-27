@@ -10,6 +10,8 @@ import type {
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
+  SkillCreatorUserInputSubmission,
+  SkillCreatorWorkflowUiSnapshot,
   ApplyImprovementResult,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
@@ -88,6 +90,19 @@ function validateSender(
   }
 }
 
+function emitWorkflowStateChanged(
+  mainWindow: BrowserWindow,
+  snapshot: SkillCreatorWorkflowUiSnapshot,
+): void {
+  if (mainWindow.isDestroyed()) {
+    return;
+  }
+  mainWindow.webContents.send(
+    IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+    snapshot,
+  );
+}
+
 export function registerRuntimeSkillCreatorHandlers(
   mainWindow: BrowserWindow,
   runtimeSkillCreatorService?: RuntimeSkillCreatorFacade,
@@ -113,6 +128,14 @@ export function registerRuntimeSkillCreatorHandlers(
           args.authMode ?? "api-key",
           args.apiKey ?? null,
         );
+        if ("planId" in result) {
+          const snapshot = runtimeSkillCreatorService.getWorkflowStateSnapshot(
+            result.planId,
+          );
+          if (snapshot) {
+            emitWorkflowStateChanged(mainWindow, snapshot);
+          }
+        }
         return { success: true, data: result };
       } catch (error) {
         return {
@@ -169,6 +192,12 @@ export function registerRuntimeSkillCreatorHandlers(
           args.authMode ?? "api-key",
           args.apiKey ?? null,
         );
+        const snapshot = runtimeSkillCreatorService.getWorkflowStateSnapshot(
+          args.planId.trim(),
+        );
+        if (snapshot) {
+          emitWorkflowStateChanged(mainWindow, snapshot);
+        }
         return { success: true, data: result };
       } catch (error) {
         return {
@@ -176,6 +205,77 @@ export function registerRuntimeSkillCreatorHandlers(
           error: sanitizeErrorMessage(
             error,
             "Runtime execute の実行に失敗しました",
+          ),
+        };
+      }
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { planId: string },
+    ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE,
+        mainWindow,
+      );
+
+      if (isBlank(args?.planId)) {
+        return validationError("planId が指定されていません");
+      }
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      const snapshot = runtimeSkillCreatorService.getWorkflowStateSnapshot(
+        args.planId.trim(),
+      );
+      if (!snapshot) {
+        return validationError("workflow state が見つかりません");
+      }
+
+      return { success: true, data: snapshot };
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT,
+    async (
+      event: IpcMainInvokeEvent,
+      args: SkillCreatorUserInputSubmission,
+    ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT,
+        mainWindow,
+      );
+
+      if (isBlank(args?.planId)) {
+        return validationError("planId が指定されていません");
+      }
+      if (isBlank(args?.requestId)) {
+        return validationError("requestId が指定されていません");
+      }
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        const snapshot = runtimeSkillCreatorService.submitUserInput(
+          args.planId.trim(),
+          args,
+        );
+        emitWorkflowStateChanged(mainWindow, snapshot);
+        return { success: true, data: snapshot };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(
+            error,
+            "workflow user input の送信に失敗しました",
           ),
         };
       }
@@ -276,6 +376,8 @@ export function registerRuntimeSkillCreatorHandlers(
 export function unregisterRuntimeSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT);
 }

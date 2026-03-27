@@ -363,6 +363,99 @@ export interface SkillCreatorTerminalHandoffResult {
 export type SkillCreatorExecutePlanResult = RuntimeSkillCreatorExecuteResult;
 export type SkillCreatorImproveSkillResult = RuntimeSkillCreatorImproveResult;
 
+export type SkillCreatorWorkflowPhase =
+  | "plan"
+  | "review"
+  | "execute"
+  | "verify"
+  | "improve"
+  | "handoff";
+
+export type SkillCreatorUserInputKind =
+  | "single_select"
+  | "free_text"
+  | "secret"
+  | "confirm";
+
+export type SkillCreatorAwaitingUserInputReason =
+  | "plan_review"
+  | "verification_review";
+
+export type SkillCreatorWorkflowFailureReason =
+  | "execution_error"
+  | "execution_failed"
+  | "verification_review";
+
+export interface SkillCreatorUserInputOption {
+  id: string;
+  label: string;
+  description?: string;
+}
+
+export interface SkillCreatorUserInputRequest {
+  requestId: string;
+  reason: SkillCreatorAwaitingUserInputReason;
+  title: string;
+  prompt: string;
+  kind: SkillCreatorUserInputKind;
+  options?: SkillCreatorUserInputOption[];
+  placeholder?: string;
+  allowSkip?: boolean;
+  requestedAt: string;
+}
+
+export interface SkillCreatorVerifyResult {
+  status: "pending" | "pass" | "fail";
+  reason?: SkillCreatorWorkflowFailureReason;
+  message?: string;
+  nextAction?: "review" | "improve";
+  updatedAt: string;
+}
+
+export interface SkillCreatorWorkflowSourceProvenance {
+  resolvedSkillCreatorRoot?: string;
+  resourceDescriptorHash?: string;
+  manifestPath?: string;
+  manifestCacheKey?: string;
+  warningNote?: string;
+}
+
+export interface SkillCreatorRouteSnapshot {
+  type: "integrated_api" | "terminal_handoff";
+  permissionMode?: "default" | "acceptEdits" | "bypassPermissions";
+  launcher?: string;
+}
+
+export interface SkillCreatorResumeTokenEnvelope {
+  version: "task-sdk-02-v1";
+  planId: string;
+  currentPhase: SkillCreatorWorkflowPhase;
+  artifactCount: number;
+  routeSnapshot?: SkillCreatorRouteSnapshot;
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
+  updatedAt: string;
+}
+
+export interface SkillCreatorWorkflowUiSnapshot {
+  planId: string;
+  currentPhase: SkillCreatorWorkflowPhase;
+  awaitingUserInput: SkillCreatorUserInputRequest | null;
+  verifyResult: SkillCreatorVerifyResult | null;
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
+  resumeTokenEnvelope: SkillCreatorResumeTokenEnvelope;
+  routeSnapshot?: SkillCreatorRouteSnapshot;
+  handoffBundle?: TerminalHandoffBundle | null;
+}
+
+export interface SkillCreatorUserInputSubmission {
+  planId: string;
+  requestId: string;
+  selectedOptionId?: string;
+  textValue?: string;
+  secretValue?: string;
+  confirmed?: boolean;
+}
+
 // ============================================
 // Runtime Skill Creator IPC 型定義
 // ============================================

@@ -25,6 +25,7 @@ import type {
   SkillAnalysis,
   Suggestion,
 } from "@repo/shared/types/skill-improver";
+import type { SkillCreatorWorkflowUiSnapshot } from "@repo/shared/types";
 import type { HandoffGuidance } from "../../features/workspace-chat-edit/types";
 import { preflightSkillExecutionAuth } from "../../utils/skillExecutionAuthPreflight";
 
@@ -224,6 +225,10 @@ export interface AgentState {
   currentPlanId: string | null;
   /** 現在の計画結果 */
   currentPlanResult: PlanResult | null;
+  /** workflow canonical snapshot cache */
+  workflowSnapshot: SkillCreatorWorkflowUiSnapshot | null;
+  /** workflow error */
+  workflowError: string | null;
 }
 
 /**
@@ -392,6 +397,14 @@ export interface AgentActions {
   setCurrentPlanId: (planId: string | null) => void;
   /** 現在の計画結果を設定 */
   setCurrentPlanResult: (result: PlanResult | null) => void;
+  /** workflow snapshot を設定 */
+  setWorkflowSnapshot: (
+    snapshot: SkillCreatorWorkflowUiSnapshot | null,
+  ) => void;
+  /** workflow error を設定 */
+  setWorkflowError: (error: string | null) => void;
+  /** workflow state をクリア */
+  clearWorkflowState: () => void;
   /** 全生成状態フィールドをリセット */
   clearGenerationState: () => void;
 
@@ -482,6 +495,8 @@ const initialAgentState: AgentState = {
   generationError: null,
   currentPlanId: null,
   currentPlanResult: null,
+  workflowSnapshot: null,
+  workflowError: null,
 };
 
 /**
@@ -1177,6 +1192,8 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
         skillError: null,
         streamingMessages: [],
         handoffGuidance: null,
+        workflowSnapshot: null,
+        workflowError: null,
       };
     });
   },
@@ -1213,6 +1230,16 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
 
   setCurrentPlanResult: (currentPlanResult) => set({ currentPlanResult }),
 
+  setWorkflowSnapshot: (workflowSnapshot) => set({ workflowSnapshot }),
+
+  setWorkflowError: (workflowError) => set({ workflowError }),
+
+  clearWorkflowState: () =>
+    set({
+      workflowSnapshot: null,
+      workflowError: null,
+    }),
+
   clearGenerationState: () =>
     set({
       isGenerating: false,
@@ -1220,6 +1247,8 @@ export const createAgentSlice: StateCreator<AgentSlice, [], [], AgentSlice> = (
       generationError: null,
       currentPlanId: null,
       currentPlanResult: null,
+      workflowSnapshot: null,
+      workflowError: null,
     }),
 
   // === 内部ハンドラ（IPCイベント用） ===

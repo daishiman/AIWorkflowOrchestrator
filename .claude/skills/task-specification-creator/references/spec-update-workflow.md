@@ -27,6 +27,7 @@
 | 「spec_created task なので Step 1-B は不要」 | `spec_created` の記録も Step 1 で残す |
 | 「warning だけなら Phase 12 を閉じてよい」 | pass 基準は validator ごとに明文化する |
 | 「設計タスクなので Step 2 は計画だけ書けばよい」 | `spec_created` でも system spec / lessons / backlog / LOGS の実更新が必要 |
+| 「`spec_created` task に後から code 実装が入っても Step 2 は N/A のままでよい」 | shared / IPC / preload / renderer の current fact が変わった時点で Step 2 を再判定し、Phase 11 screenshot 方針も見直す |
 | 「設計タスクの workflow root も `completed` にしてよい」 | workflow root は `implementation_ready`、completed records は `spec_created`。実装 gap は follow-up task として formalize する |
 | 「generic なファイル名へ書いておけば十分」 | 実際の責務分割に沿った primary target file list を先に確定する |
 | 「shared component を作ったので consumer surface 仕様も completed にしてよい」 | shared component の contract だけを更新し、ChatView / Workspace など mount 先の completed は consumer task 完了まで保留する |
@@ -175,6 +176,15 @@
 - artifacts の append / upsert / snapshot 方針が変わる
 
 理由: downstream task と system spec は payload 形状だけでなく state semantics に依存するため。
+
+### `spec_created` task への code wave 混入時の補足判断
+
+次の条件が 1 つでも当てはまる場合、docs-heavy / spec_created task でも Step 2 と Phase 11 evidence policy を再判定する。
+
+- shared 型が増えた
+- public IPC / preload surface が増えた
+- renderer に新しい visible block が増えた
+- `manual-test-result.md` の screenshot `N/A` が current UI 実装と矛盾した
 
 ### 判断フローチャート
 

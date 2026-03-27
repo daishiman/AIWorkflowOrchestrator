@@ -23,6 +23,8 @@ import type {
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
+  SkillCreatorUserInputSubmission,
+  SkillCreatorWorkflowUiSnapshot,
   ApplyImprovementResult,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
@@ -108,6 +110,27 @@ export interface SkillCreatorAPI {
     authMode?: AuthMode,
     apiKey?: string | null,
   ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>>;
+
+  /**
+   * workflow snapshot を取得する
+   */
+  getWorkflowState: (
+    planId: string,
+  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
+
+  /**
+   * workflow question に対する user input を送信する
+   */
+  submitUserInput: (
+    submission: SkillCreatorUserInputSubmission,
+  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
+
+  /**
+   * workflow snapshot change event を購読する
+   */
+  onWorkflowStateChanged: (
+    callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
+  ) => () => void;
 
   /**
    * Runtime improve: フィードバックに基づいてスキルを改善する
@@ -288,6 +311,24 @@ export const skillCreatorAPI: SkillCreatorAPI = {
       authMode,
       apiKey,
     }),
+
+  getWorkflowState: (
+    planId: string,
+  ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE, { planId }),
+
+  submitUserInput: (
+    submission: SkillCreatorUserInputSubmission,
+  ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT, submission),
+
+  onWorkflowStateChanged: (
+    callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
+  ): (() => void) =>
+    safeOn<SkillCreatorWorkflowUiSnapshot>(
+      IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      callback,
+    ),
 
   improveSkillWithFeedback: (
     skillName: string,

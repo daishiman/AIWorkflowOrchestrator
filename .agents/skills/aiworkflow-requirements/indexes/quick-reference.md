@@ -55,6 +55,18 @@
 
 ---
 
+### Runtime Skill Creator Resource Selection Hardening（2026-03-27）
+
+| 目的 | 最初に開くファイル |
+| --- | --- |
+| Task03 実装全体像 | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/index.md` |
+| multi-root / budget / degrade の current contract | `references/interfaces-agent-sdk-skill-reference.md` |
+| service owner と pipeline detail | `references/arch-electron-services-details-part2.md` |
+| completed ledger | `references/task-workflow-completed.md` |
+| 苦戦箇所 / provenance 教訓 | `references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md` |
+
+---
+
 ### Skill Creator Execution Governance Bundle（2026-03-26）
 
 | 目的 | 最初に開くファイル |

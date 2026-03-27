@@ -1,62 +1,42 @@
 import type {
   RuntimeSkillCreatorExecuteResult,
   RuntimeSkillCreatorPlanResult,
+  SkillCreatorAwaitingUserInputReason as SharedSkillCreatorAwaitingUserInputReason,
+  SkillCreatorRouteSnapshot as SharedSkillCreatorRouteSnapshot,
+  SkillCreatorResumeTokenEnvelope as SharedSkillCreatorResumeTokenEnvelope,
+  SkillCreatorUserInputRequest as SharedSkillCreatorUserInputRequest,
+  SkillCreatorUserInputSubmission,
+  SkillCreatorVerifyResult as SharedSkillCreatorVerifyResult,
+  SkillCreatorWorkflowFailureReason as SharedSkillCreatorWorkflowFailureReason,
+  SkillCreatorWorkflowPhase as SharedSkillCreatorWorkflowPhase,
+  SkillCreatorWorkflowSourceProvenance as SharedSkillCreatorWorkflowSourceProvenance,
+  SkillCreatorWorkflowUiSnapshot,
   TerminalHandoffBundle,
 } from "@repo/shared/types";
 import type { RuntimeDecision } from "./RuntimePolicyResolver";
 
-export type SkillCreatorWorkflowPhase =
-  | "plan"
-  | "review"
-  | "execute"
-  | "verify"
-  | "improve"
-  | "handoff";
-
+export type SkillCreatorWorkflowPhase = SharedSkillCreatorWorkflowPhase;
 export type SkillCreatorAwaitingUserInputReason =
-  | "plan_review"
-  | "verification_review";
-
+  SharedSkillCreatorAwaitingUserInputReason;
 export type SkillCreatorWorkflowFailureReason =
-  | "execution_error"
-  | "execution_failed"
-  | "verification_review";
-
-export interface SkillCreatorAwaitingUserInput {
-  reason: SkillCreatorAwaitingUserInputReason;
-  prompt: string;
-  requestedAt: string;
+  SharedSkillCreatorWorkflowFailureReason;
+export type SkillCreatorAwaitingUserInput = SharedSkillCreatorUserInputRequest;
+export type SkillCreatorVerifyResult = SharedSkillCreatorVerifyResult;
+export interface SkillCreatorWorkflowSourceProvenance extends SharedSkillCreatorWorkflowSourceProvenance {
+  candidateRoots?: string[];
+  selectedRoots?: string[];
+  selectedResourceIds?: string[];
+  droppedResourceIds?: string[];
+  structureSignature?: string;
+  degradeReasons?: string[];
 }
-
-export interface SkillCreatorVerifyResult {
-  status: "pending" | "pass" | "fail";
-  reason?: SkillCreatorWorkflowFailureReason;
-  message?: string;
-  nextAction?: "review" | "improve";
-  updatedAt: string;
-}
-
-export interface SkillCreatorWorkflowSourceProvenance {
-  resolvedSkillCreatorRoot?: string;
-  resourceDescriptorHash?: string;
-  manifestPath?: string;
-  manifestCacheKey?: string;
-}
-
-export interface SkillCreatorRouteSnapshot {
-  type: RuntimeDecision["type"];
-  permissionMode?: "default" | "acceptEdits" | "bypassPermissions";
-  launcher?: string;
-}
-
-export interface SkillCreatorResumeTokenEnvelope {
-  version: "task-sdk-02-v1";
-  planId: string;
-  currentPhase: SkillCreatorWorkflowPhase;
-  artifactCount: number;
+export type SkillCreatorRouteSnapshot = SharedSkillCreatorRouteSnapshot;
+export interface SkillCreatorResumeTokenEnvelope extends Omit<
+  SharedSkillCreatorResumeTokenEnvelope,
+  "routeSnapshot" | "sourceProvenance"
+> {
   routeSnapshot?: SkillCreatorRouteSnapshot;
   sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
-  updatedAt: string;
 }
 
 export interface SkillCreatorWorkflowArtifact {
@@ -67,12 +47,13 @@ export interface SkillCreatorWorkflowArtifact {
     | "plan_result"
     | "execute_result"
     | "handoff_bundle"
-    | "verify_result";
+    | "verify_result"
+    | "user_input_submission";
   createdAt: string;
   payload: unknown;
 }
 
-export interface SkillCreatorWorkflowStateSnapshot {
+export interface SkillCreatorWorkflowStateSnapshot extends SkillCreatorWorkflowUiSnapshot {
   planId: string;
   currentPhase: SkillCreatorWorkflowPhase;
   awaitingUserInput: SkillCreatorAwaitingUserInput | null;
@@ -81,6 +62,7 @@ export interface SkillCreatorWorkflowStateSnapshot {
   resumeTokenEnvelope: SkillCreatorResumeTokenEnvelope;
   routeSnapshot?: SkillCreatorRouteSnapshot;
   sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
+  handoffBundle?: TerminalHandoffBundle | null;
 }
 
 interface SkillCreatorWorkflowState extends Omit<
@@ -109,12 +91,9 @@ export class SkillCreatorWorkflowEngine {
     });
 
     state.currentPhase = "review";
-    state.awaitingUserInput = {
-      reason: "plan_review",
-      prompt: "生成された計画を確認し、実行するか判断してください。",
-      requestedAt: nowIso(),
-    };
+    state.awaitingUserInput = createPlanReviewRequest(planResult.planId);
     state.verifyResult = null;
+    state.handoffBundle = null;
     this.refreshResumeToken(state);
     return this.snapshot(state);
   }
@@ -141,6 +120,7 @@ export class SkillCreatorWorkflowEngine {
     state.currentPhase = "execute";
     state.awaitingUserInput = null;
     state.verifyResult = null;
+    state.handoffBundle = null;
     this.refreshResumeToken(state);
     return this.snapshot(state);
   }
@@ -172,6 +152,7 @@ export class SkillCreatorWorkflowEngine {
       nextAction: "review",
       updatedAt: nowIso(),
     };
+    state.handoffBundle = null;
     this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
     this.refreshResumeToken(state);
     return this.snapshot(state);
@@ -198,11 +179,11 @@ export class SkillCreatorWorkflowEngine {
     });
 
     state.currentPhase = "review";
-    state.awaitingUserInput = {
-      reason: "verification_review",
-      prompt: buildVerificationReviewPrompt(input.message),
-      requestedAt: updatedAt,
-    };
+    state.awaitingUserInput = createVerificationReviewRequest(
+      planId,
+      input.message,
+      updatedAt,
+    );
     state.verifyResult = {
       status: "fail",
       reason: "verification_review",
@@ -210,6 +191,7 @@ export class SkillCreatorWorkflowEngine {
       nextAction: "review",
       updatedAt,
     };
+    state.handoffBundle = null;
     this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
     this.refreshResumeToken(state);
     return this.snapshot(state);
@@ -244,6 +226,7 @@ export class SkillCreatorWorkflowEngine {
     state.currentPhase = "handoff";
     state.awaitingUserInput = null;
     state.verifyResult = null;
+    state.handoffBundle = { ...bundle };
     this.refreshResumeToken(state);
     return this.snapshot(state);
   }
@@ -262,11 +245,7 @@ export class SkillCreatorWorkflowEngine {
     state.currentPhase = nextAction === "improve" ? "improve" : "review";
     state.awaitingUserInput =
       nextAction === "review"
-        ? {
-            reason: "verification_review",
-            prompt: buildVerificationReviewPrompt(message),
-            requestedAt: updatedAt,
-          }
+        ? createVerificationReviewRequest(planId, message, updatedAt)
         : null;
     state.verifyResult = {
       status: "fail",
@@ -275,6 +254,7 @@ export class SkillCreatorWorkflowEngine {
       nextAction,
       updatedAt,
     };
+    state.handoffBundle = null;
     this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
     this.refreshResumeToken(state);
     return this.snapshot(state);
@@ -285,6 +265,45 @@ export class SkillCreatorWorkflowEngine {
   ): SkillCreatorWorkflowStateSnapshot | undefined {
     const state = this.workflows.get(planId);
     return state ? this.snapshot(state) : undefined;
+  }
+
+  submitUserInput(
+    planId: string,
+    submission: SkillCreatorUserInputSubmission,
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.getRequiredWorkflow(planId);
+    const request = state.awaitingUserInput;
+    if (!request) {
+      throw new Error("No pending user input for this workflow");
+    }
+    if (submission.planId !== planId) {
+      throw new Error("planId mismatch");
+    }
+    if (request.requestId !== submission.requestId) {
+      throw new Error("stale requestId");
+    }
+
+    validateUserInputSubmission(request, submission);
+
+    this.appendArtifact(state, state.currentPhase, "user_input_submission", {
+      requestId: submission.requestId,
+      payload: sanitizeSubmissionPayload(submission),
+    });
+
+    state.awaitingUserInput = null;
+    if (submission.textValue?.trim()) {
+      state.verifyResult = {
+        ...(state.verifyResult ?? {
+          status: "fail",
+          nextAction: "review",
+          updatedAt: nowIso(),
+        }),
+        message: submission.textValue.trim(),
+        updatedAt: nowIso(),
+      };
+    }
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
   }
 
   private ensureWorkflow(
@@ -311,6 +330,7 @@ export class SkillCreatorWorkflowEngine {
       phaseArtifacts: [],
       routeSnapshot: undefined,
       sourceProvenance,
+      handoffBundle: null,
       resumeTokenEnvelope: {
         version: "task-sdk-02-v1",
         planId,
@@ -450,6 +470,7 @@ export class SkillCreatorWorkflowEngine {
       sourceProvenance: state.sourceProvenance
         ? { ...state.sourceProvenance }
         : undefined,
+      handoffBundle: state.handoffBundle ? { ...state.handoffBundle } : null,
     };
   }
 }
@@ -474,4 +495,100 @@ function nowIso(): string {
 
 function buildVerificationReviewPrompt(message: string): string {
   return `検証結果を確認し、修正方針を判断してください: ${message}`;
+}
+
+function createPlanReviewRequest(
+  planId: string,
+  requestedAt = nowIso(),
+): SkillCreatorAwaitingUserInput {
+  return {
+    requestId: buildRequestId(planId, "plan_review", requestedAt),
+    reason: "plan_review",
+    title: "計画レビュー",
+    prompt: "生成された計画を確認し、次のアクションを選択してください。",
+    kind: "single_select",
+    options: [
+      {
+        id: "ready_to_execute",
+        label: "このまま実行する",
+      },
+      {
+        id: "needs_changes",
+        label: "内容を見直したい",
+      },
+    ],
+    allowSkip: false,
+    requestedAt,
+  };
+}
+
+function createVerificationReviewRequest(
+  planId: string,
+  message: string,
+  requestedAt = nowIso(),
+): SkillCreatorAwaitingUserInput {
+  return {
+    requestId: buildRequestId(planId, "verification_review", requestedAt),
+    reason: "verification_review",
+    title: "検証レビュー",
+    prompt: buildVerificationReviewPrompt(message),
+    kind: "free_text",
+    placeholder: "修正方針や追加で直したい点を入力してください",
+    allowSkip: false,
+    requestedAt,
+  };
+}
+
+function buildRequestId(
+  planId: string,
+  reason: SkillCreatorAwaitingUserInputReason,
+  requestedAt: string,
+): string {
+  return `${planId}:${reason}:${requestedAt}`;
+}
+
+function validateUserInputSubmission(
+  request: SkillCreatorAwaitingUserInput,
+  submission: SkillCreatorUserInputSubmission,
+): void {
+  switch (request.kind) {
+    case "single_select":
+      if (
+        !submission.selectedOptionId ||
+        !request.options?.some(
+          (option) => option.id === submission.selectedOptionId,
+        )
+      ) {
+        throw new Error("selectedOptionId is invalid");
+      }
+      return;
+    case "free_text":
+      if (!submission.textValue || submission.textValue.trim() === "") {
+        throw new Error("textValue is required");
+      }
+      return;
+    case "secret":
+      if (!submission.secretValue || submission.secretValue.trim() === "") {
+        throw new Error("secretValue is required");
+      }
+      return;
+    case "confirm":
+      if (typeof submission.confirmed !== "boolean") {
+        throw new Error("confirmed is required");
+      }
+      return;
+  }
+}
+
+function sanitizeSubmissionPayload(
+  submission: SkillCreatorUserInputSubmission,
+): SkillCreatorUserInputSubmission {
+  if (!submission.secretValue) {
+    return { ...submission };
+  }
+
+  return {
+    ...submission,
+    secretValue: "[REDACTED]",
+  };
 }

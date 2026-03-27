@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-26T14:45:18.027Z",
-  "totalKeywords": 2503,
+  "generated": "2026-03-27T00:24:48.531Z",
+  "totalKeywords": 2511,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2122,6 +2122,50 @@
     "チャット": [
       "api-ipc-system-core.md"
     ],
+    "Workflow": [
+      "api-ipc-system-core.md",
+      "arch-state-management-core.md",
+      "master-design.md"
+    ],
+    "Interaction": [
+      "api-ipc-system-core.md"
+    ],
+    "Bridge": [
+      "api-ipc-system-core.md"
+    ],
+    "SDK": [
+      "api-ipc-system-core.md",
+      "arch-state-management-core.md",
+      "interfaces-agent-sdk-executor-core.md",
+      "interfaces-agent-sdk-executor-details.md",
+      "interfaces-agent-sdk-executor-history.md",
+      "interfaces-agent-sdk-executor.md",
+      "interfaces-agent-sdk-history-core.md",
+      "interfaces-agent-sdk-history-history-doc-links-changelog.md",
+      "interfaces-agent-sdk-history-history.md",
+      "interfaces-agent-sdk-history.md",
+      "interfaces-agent-sdk-integration.md",
+      "interfaces-agent-sdk-skill-advanced.md",
+      "interfaces-agent-sdk-skill-core.md",
+      "interfaces-agent-sdk-skill-details.md",
+      "interfaces-agent-sdk-skill-history-contract-fix-changelog.md",
+      "interfaces-agent-sdk-skill-history.md",
+      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
+      "interfaces-agent-sdk-skill-reference.md",
+      "interfaces-agent-sdk-skill.md",
+      "interfaces-agent-sdk-ui.md",
+      "interfaces-agent-sdk.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
+      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
+      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
+      "logs-archive-2026-02-abort-security-loop-guard.md",
+      "logs-archive-2026-02-console-migration-patterns.md",
+      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "testing-component-patterns-details.md"
+    ],
     "Slide": [
       "api-ipc-system-core.md",
       "arch-electron-services-details-part2.md",
@@ -2664,6 +2708,7 @@
     ],
     "contract": [
       "arch-execution-capability-contract.md",
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -3153,6 +3198,9 @@
     "CONNECTION": [
       "arch-state-management-core.md",
       "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "Snapshot": [
+      "arch-state-management-core.md"
     ],
     "Zustand": [
       "arch-state-management-details.md",
@@ -4955,36 +5003,6 @@
     "References": [
       "glossary.md"
     ],
-    "SDK": [
-      "interfaces-agent-sdk-executor-core.md",
-      "interfaces-agent-sdk-executor-details.md",
-      "interfaces-agent-sdk-executor-history.md",
-      "interfaces-agent-sdk-executor.md",
-      "interfaces-agent-sdk-history-core.md",
-      "interfaces-agent-sdk-history-history-doc-links-changelog.md",
-      "interfaces-agent-sdk-history-history.md",
-      "interfaces-agent-sdk-history.md",
-      "interfaces-agent-sdk-integration.md",
-      "interfaces-agent-sdk-skill-advanced.md",
-      "interfaces-agent-sdk-skill-core.md",
-      "interfaces-agent-sdk-skill-details.md",
-      "interfaces-agent-sdk-skill-history-contract-fix-changelog.md",
-      "interfaces-agent-sdk-skill-history.md",
-      "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
-      "interfaces-agent-sdk-skill-reference.md",
-      "interfaces-agent-sdk-skill.md",
-      "interfaces-agent-sdk-ui.md",
-      "interfaces-agent-sdk.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
-      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
-      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
-      "logs-archive-2026-02-abort-security-loop-guard.md",
-      "logs-archive-2026-02-console-migration-patterns.md",
-      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
-      "testing-component-patterns-details.md"
-    ],
     "Executor": [
       "interfaces-agent-sdk-executor-core.md",
       "interfaces-agent-sdk-executor-details.md",
@@ -6381,6 +6399,7 @@
     ],
     "WORKFLOW": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
     "ENGINE": [
@@ -6576,6 +6595,19 @@
     "PLACEMENT": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "user": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "interaction": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "bridge": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "phase": [
+      "lessons-learned-ipc-preload-runtime.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md"
+    ],
     "STREAM": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6642,10 +6674,6 @@
     ],
     "foundation": [
       "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "WORKFLOW": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
     "VERIFY": [
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -6972,9 +7000,6 @@
       "lessons-learned-skill-validation-logging-deprecation.md"
     ],
     "templates": [
-      "lessons-learned-templates.md"
-    ],
-    "and": [
       "lessons-learned-templates.md"
     ],
     "checklist": [
@@ -8781,9 +8806,6 @@
     "実画面証跡": [
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
-    "phase": [
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
-    ],
     "整合": [
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
@@ -9358,9 +9380,6 @@
       "master-design.md"
     ],
     "Universal": [
-      "master-design.md"
-    ],
-    "Workflow": [
       "master-design.md"
     ],
     "Orchestrator": [

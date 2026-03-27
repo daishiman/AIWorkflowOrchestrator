@@ -73,6 +73,42 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 ---
 
+## Skill Creator Workflow Interaction Bridge（TASK-SDK-04）
+
+> 実装同期: 2026-03-27
+> ステータス: `implemented-with-followups`
+
+### 概要
+
+Task04 では Skill Creator runtime workflow の canonical state を Renderer へ橋渡しするため、public `skill-creator:*` IPC を 2 invoke + 1 push で追加した。owner は `SkillCreatorWorkflowEngine` に固定し、Renderer は snapshot host として扱う。
+
+### チャネル一覧
+
+| チャネル | 方向 | 用途 | Request | Response / Payload |
+| --- | --- | --- | --- | --- |
+| `skill-creator:get-workflow-state` | Renderer → Main | current workflow snapshot 取得 | `{ planId: string }` | `SkillCreatorWorkflowUiSnapshot` |
+| `skill-creator:submit-user-input` | Renderer → Main | user input 回答送信 | `SkillCreatorUserInputSubmission` | `SkillCreatorWorkflowUiSnapshot` |
+| `skill-creator:workflow-state-changed` | Main → Renderer | snapshot 更新 push | none | `SkillCreatorWorkflowUiSnapshot` |
+
+### current contract
+
+| 層 | ファイル | 契約 |
+| --- | --- | --- |
+| Shared | `packages/shared/src/types/skillCreator.ts` | `SkillCreatorWorkflowUiSnapshot` / `SkillCreatorUserInputSubmission` を SSoT にする |
+| Main IPC | `apps/desktop/src/main/ipc/creatorHandlers.ts` | sender validation + payload validation 後に facade へ委譲する |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開する |
+| Renderer | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | phase summary / question host / provenance summary / handoff card を snapshot 表示する |
+
+### known follow-up
+
+| ID | 内容 |
+| --- | --- |
+| `TASK-SDK-04-U1` | `submitUserInput()` が回答を phase semantics へ反映するよう是正する |
+| `TASK-SDK-04-U2` | `planId` と execute payload の canonical binding drift を解消する |
+| `TASK-SDK-04-U3` | Phase 11/12/13 の evidence / path sync を current facts へ再同期する |
+
+---
+
 ## Slide IPC API（スライド同期）
 
 > **Task 09 再監査同期**: 2026-03-19

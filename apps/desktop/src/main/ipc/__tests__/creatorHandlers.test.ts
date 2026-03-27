@@ -37,7 +37,9 @@ function createMockMainWindow() {
       id: 1,
       getType: () => "window",
       isDevToolsOpened: () => false,
+      send: vi.fn(),
     },
+    isDestroyed: () => false,
   };
 }
 
@@ -56,6 +58,9 @@ describe("creatorHandlers", () => {
     plan: vi.fn(),
     execute: vi.fn(),
     improve: vi.fn(),
+    applyImprovement: vi.fn(),
+    getWorkflowStateSnapshot: vi.fn().mockReturnValue(undefined),
+    submitUserInput: vi.fn(),
   };
 
   beforeEach(() => {
@@ -75,7 +80,7 @@ describe("creatorHandlers", () => {
       createMockMainWindow() as unknown as BrowserWindowType,
     );
 
-    expect(handlerMap.size).toBe(4);
+    expect(handlerMap.size).toBe(6);
 
     const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
     const result = await handler?.(createMockEvent(), { prompt: "spec" });
@@ -86,7 +91,7 @@ describe("creatorHandlers", () => {
     });
   });
 
-  it("4 つの public runtime チャンネルを登録する", () => {
+  it("6 つの public runtime チャンネルを登録する", () => {
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
@@ -94,11 +99,17 @@ describe("creatorHandlers", () => {
 
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_PLAN)).toBe(true);
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN)).toBe(true);
+    expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE)).toBe(
+      true,
+    );
+    expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT)).toBe(
+      true,
+    );
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL)).toBe(true);
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT)).toBe(
       true,
     );
-    expect(handlerMap.size).toBe(4);
+    expect(handlerMap.size).toBe(6);
   });
 
   it("plan ハンドラが trim 済み prompt と既定 auth を渡す", async () => {
@@ -390,12 +401,12 @@ describe("creatorHandlers", () => {
     });
   });
 
-  it("unregister が 4 チャンネルを解除する", () => {
+  it("unregister が 6 チャンネルを解除する", () => {
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
     );
-    expect(handlerMap.size).toBe(4);
+    expect(handlerMap.size).toBe(6);
 
     unregisterRuntimeSkillCreatorHandlers();
 

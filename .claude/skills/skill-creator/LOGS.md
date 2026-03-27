@@ -3,6 +3,27 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-27 - TASK-SDK-03 の internal contract hardening 判定を Phase 12 template/pattern へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に「public IPC shape が不変でも、internal contract / source provenance / owner boundary / runtime helper class が増えた場合は Step 2 を no-op にしない」を追記
+  - `references/patterns.md` に TASK-SDK-03 向けの internal hardening close-out パターンを追加し、public shape 不変と Step 2 更新ありの分離記録を標準化
+  - `assets/phase12-system-spec-retrospective-template.md` に internal hardening 判定行を追加し、Task 12-2 の誤判定をテンプレート入口で防止
+
+---
+## 2026-03-27 - TASK-SDK-04 の Phase 12 evidence reclassification を template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/update-process.md` に、`spec_created` task へ code wave が入った場合は screenshot `N/A` / Step 2 `N/A` を再判定する lane を追加
+  - docs-heavy walkthrough と representative screenshot follow-up を分離して記録する運用を標準化した
+
+---
 ## 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 の close-out パターンを template/pattern へ反映
 
 - **Agent**: skill-creator (update)

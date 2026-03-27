@@ -47,6 +47,8 @@ const mockRuntimeSkillCreatorService = {
   plan: vi.fn(),
   execute: vi.fn(),
   improve: vi.fn(),
+  getWorkflowStateSnapshot: vi.fn(),
+  submitUserInput: vi.fn(),
 };
 
 import { BrowserWindow } from "electron";
@@ -106,9 +108,15 @@ describe("SkillCreator runtime IPC handlers", () => {
     unregisterSkillCreatorHandlers();
   });
 
-  it("runtime 用の3ハンドラーを登録する", () => {
+  it("runtime 用の 5 ハンドラーを登録する", () => {
     expect(getHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN)).toBeDefined();
     expect(getHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN)).toBeDefined();
+    expect(
+      getHandler(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE),
+    ).toBeDefined();
+    expect(
+      getHandler(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT),
+    ).toBeDefined();
     expect(getHandler(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL)).toBeDefined();
   });
 
@@ -188,6 +196,8 @@ describe("SkillCreator runtime IPC handlers", () => {
       }),
       execute: vi.fn(),
       improve: vi.fn(),
+      getWorkflowStateSnapshot: vi.fn().mockReturnValue(undefined),
+      submitUserInput: vi.fn(),
     };
 
     registerSkillCreatorHandlers(
@@ -239,6 +249,8 @@ describe("SkillCreator runtime IPC handlers", () => {
       }),
       execute: vi.fn(),
       improve: vi.fn(),
+      getWorkflowStateSnapshot: vi.fn().mockReturnValue(undefined),
+      submitUserInput: vi.fn(),
     };
 
     registerSkillCreatorHandlers(
@@ -276,5 +288,69 @@ describe("SkillCreator runtime IPC handlers", () => {
       success: false,
       error: "Runtime Skill Creator は現在利用できません",
     });
+  });
+
+  it("getWorkflowState は snapshot を返す", async () => {
+    mockRuntimeSkillCreatorService.getWorkflowStateSnapshot.mockReturnValue({
+      planId: "plan-1",
+      currentPhase: "review",
+      awaitingUserInput: null,
+      verifyResult: null,
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-1",
+        currentPhase: "review",
+        artifactCount: 2,
+        updatedAt: "2026-03-27T00:00:00.000Z",
+      },
+    });
+
+    const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE);
+    const result = await handler!(createMockEvent(), { planId: "plan-1" });
+
+    expect(result.success).toBe(true);
+    expect(
+      mockRuntimeSkillCreatorService.getWorkflowStateSnapshot,
+    ).toHaveBeenCalledWith("plan-1");
+  });
+
+  it("submitUserInput は facade を呼び state changed event を送る", async () => {
+    mockRuntimeSkillCreatorService.submitUserInput.mockReturnValue({
+      planId: "plan-1",
+      currentPhase: "review",
+      awaitingUserInput: null,
+      verifyResult: null,
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-1",
+        currentPhase: "review",
+        artifactCount: 3,
+        updatedAt: "2026-03-27T00:00:00.000Z",
+      },
+    });
+
+    const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT);
+    const result = await handler!(createMockEvent(), {
+      planId: "plan-1",
+      requestId: "req-1",
+      selectedOptionId: "ready_to_execute",
+    });
+
+    expect(result.success).toBe(true);
+    expect(mockRuntimeSkillCreatorService.submitUserInput).toHaveBeenCalledWith(
+      "plan-1",
+      {
+        planId: "plan-1",
+        requestId: "req-1",
+        selectedOptionId: "ready_to_execute",
+      },
+    );
+    expect(mockMainWindow.webContents.send).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      expect.objectContaining({
+        planId: "plan-1",
+        currentPhase: "review",
+      }),
+    );
   });
 });

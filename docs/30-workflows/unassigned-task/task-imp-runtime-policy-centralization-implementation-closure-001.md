@@ -1,5 +1,23 @@
 # runtime policy centralization 実装収束タスク
 
+## メタ情報
+
+```yaml
+issue_number: 1663
+task_id: TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001
+task_name: runtime policy centralization 実装収束タスク
+category: 改善
+target_feature: runtime policy centralization implementation closure
+priority: 高
+scale: 中規模
+status: 未実施
+source_phase: TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 Phase 12 最終再監査
+created_date: 2026-03-26
+dependencies:
+  - TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001
+spec_path: docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md
+```
+
 | 項目       | 値                                                                      |
 | ---------- | ----------------------------------------------------------------------- |
 | タスクID   | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001       |

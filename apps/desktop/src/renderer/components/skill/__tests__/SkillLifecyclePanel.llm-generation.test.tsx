@@ -30,6 +30,13 @@ const mockSetGenerationProgress = vi.fn();
 const mockSetCurrentPlanId = vi.fn();
 const mockSetCurrentPlanResult = vi.fn();
 const mockClearGenerationState = vi.fn();
+const mockSetWorkflowSnapshot = vi.fn();
+const mockSetWorkflowError = vi.fn();
+const mockSetHandoffGuidance = vi.fn();
+const mockClearHandoffGuidance = vi.fn();
+const mockSubmitUserInput = vi.fn();
+const mockGetWorkflowState = vi.fn();
+const mockOnWorkflowStateChanged = vi.fn();
 
 type MockStoreState = {
   selectedSkillName: string | null;
@@ -52,6 +59,39 @@ type MockStoreState = {
     estimatedSteps?: number;
     guidance?: { reason: string; command: string };
   } | null;
+  workflowSnapshot: {
+    planId: string;
+    currentPhase: string;
+    awaitingUserInput: null | {
+      requestId: string;
+      reason: string;
+      title: string;
+      prompt: string;
+      kind: "single_select" | "free_text" | "secret" | "confirm";
+      options?: Array<{ id: string; label: string }>;
+      placeholder?: string;
+      requestedAt: string;
+    };
+    verifyResult: null;
+    resumeTokenEnvelope: {
+      version: string;
+      planId: string;
+      currentPhase: string;
+      artifactCount: number;
+      updatedAt: string;
+    };
+    sourceProvenance?: {
+      resolvedSkillCreatorRoot?: string;
+      warningNote?: string;
+    };
+    handoffBundle?: TerminalHandoffBundle | null;
+  } | null;
+  workflowError: string | null;
+  handoffGuidance: {
+    terminalCommand: string;
+    contextSummary: string;
+    reason: string;
+  } | null;
 };
 
 let mockStoreState: MockStoreState = {
@@ -65,6 +105,9 @@ let mockStoreState: MockStoreState = {
   generationError: null,
   currentPlanId: null,
   currentPlanResult: null,
+  workflowSnapshot: null,
+  workflowError: null,
+  handoffGuidance: null,
 };
 
 vi.mock("../../../store", () => ({
@@ -95,6 +138,13 @@ vi.mock("../../../store", () => ({
   useSetGenerationProgress: () => mockSetGenerationProgress,
   useSetCurrentPlanId: () => mockSetCurrentPlanId,
   useSetCurrentPlanResult: () => mockSetCurrentPlanResult,
+  useWorkflowSnapshot: () => mockStoreState.workflowSnapshot,
+  useWorkflowError: () => mockStoreState.workflowError,
+  useSetWorkflowSnapshot: () => mockSetWorkflowSnapshot,
+  useSetWorkflowError: () => mockSetWorkflowError,
+  useHandoffGuidance: () => mockStoreState.handoffGuidance,
+  useSetHandoffGuidance: () => mockSetHandoffGuidance,
+  useClearHandoffGuidance: () => mockClearHandoffGuidance,
   useClearGenerationState: () => mockClearGenerationState,
 }));
 
@@ -147,6 +197,9 @@ beforeEach(() => {
     generationError: null,
     currentPlanId: null,
     currentPlanResult: null,
+    workflowSnapshot: null,
+    workflowError: null,
+    handoffGuidance: null,
   };
 
   (window as Window & { electronAPI?: unknown }).electronAPI = {
@@ -154,6 +207,9 @@ beforeEach(() => {
       detectMode: mockDetectMode,
       planSkill: mockPlanSkill,
       executePlan: mockExecutePlan,
+      getWorkflowState: mockGetWorkflowState,
+      submitUserInput: mockSubmitUserInput,
+      onWorkflowStateChanged: mockOnWorkflowStateChanged,
     },
   };
 
@@ -174,6 +230,11 @@ beforeEach(() => {
       success: true,
     },
   });
+  mockGetWorkflowState.mockResolvedValue({
+    success: false,
+    error: "workflow state が見つかりません",
+  });
+  mockOnWorkflowStateChanged.mockReturnValue(() => {});
   mockFetchSkills.mockResolvedValue(undefined);
 });
 
@@ -486,6 +547,108 @@ describe("U-13: executePlan terminal_handoff triggers early return", () => {
     expect(mockExecutePlan).toHaveBeenCalledTimes(1);
     expect(mockFetchSkills).not.toHaveBeenCalled();
     expect(mockSelectSkillByName).not.toHaveBeenCalled();
+    expect(mockSetHandoffGuidance).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("U-13b: workflow snapshot summary is rendered", () => {
+  it("workflowSnapshot があると provenance summary と question host が表示される", () => {
+    mockStoreState.workflowSnapshot = {
+      planId: "plan-001",
+      currentPhase: "review",
+      awaitingUserInput: {
+        requestId: "req-1",
+        reason: "plan_review",
+        title: "計画レビュー",
+        prompt: "生成された計画を確認してください",
+        kind: "single_select",
+        options: [
+          { id: "ready_to_execute", label: "このまま実行する" },
+          { id: "needs_changes", label: "内容を見直したい" },
+        ],
+        requestedAt: "2026-03-27T00:00:00.000Z",
+      },
+      verifyResult: null,
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-001",
+        currentPhase: "review",
+        artifactCount: 2,
+        updatedAt: "2026-03-27T00:00:00.000Z",
+      },
+      sourceProvenance: {
+        resolvedSkillCreatorRoot: "/tmp/skill-creator",
+        warningNote: "warning-note",
+      },
+      handoffBundle: null,
+    };
+
+    renderPanel();
+
+    expect(
+      screen.getByTestId("skill-lifecycle-workflow-summary"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("skill-lifecycle-question-host"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByTestId("skill-lifecycle-provenance-summary"),
+    ).toBeInTheDocument();
+    expect(
+      screen
+        .getByTestId("skill-lifecycle-provenance-summary")
+        .textContent?.includes("/tmp/skill-creator"),
+    ).toBe(true);
+  });
+});
+
+describe("U-13c: workflow user input submission", () => {
+  it("回答送信ボタンで submitUserInput が呼ばれる", async () => {
+    mockStoreState.workflowSnapshot = {
+      planId: "plan-001",
+      currentPhase: "review",
+      awaitingUserInput: {
+        requestId: "req-1",
+        reason: "plan_review",
+        title: "計画レビュー",
+        prompt: "生成された計画を確認してください",
+        kind: "single_select",
+        options: [
+          { id: "ready_to_execute", label: "このまま実行する" },
+          { id: "needs_changes", label: "内容を見直したい" },
+        ],
+        requestedAt: "2026-03-27T00:00:00.000Z",
+      },
+      verifyResult: null,
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-001",
+        currentPhase: "review",
+        artifactCount: 2,
+        updatedAt: "2026-03-27T00:00:00.000Z",
+      },
+      handoffBundle: null,
+    };
+    mockSubmitUserInput.mockResolvedValue({
+      success: true,
+      data: {
+        ...mockStoreState.workflowSnapshot,
+        awaitingUserInput: null,
+      },
+    });
+
+    renderPanel();
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-submit-user-input"));
+    });
+
+    expect(mockSubmitUserInput).toHaveBeenCalledWith({
+      planId: "plan-001",
+      requestId: "req-1",
+      selectedOptionId: "ready_to_execute",
+    });
+    expect(mockSetWorkflowSnapshot).toHaveBeenCalled();
   });
 });
 

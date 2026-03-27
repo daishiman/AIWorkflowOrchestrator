@@ -3,6 +3,7 @@
  *
  * TASK-SC-05-IMPROVE-LLM (MINOR-2 対応)
  */
+import type { PhaseResourceRequest } from "./PhaseResourcePlanner";
 
 export const IMPROVE_PROMPT_CONSTANTS = {
   AGENT_NAME: "improve-prompt",
@@ -11,7 +12,29 @@ export const IMPROVE_PROMPT_CONSTANTS = {
   DEFAULT_MODEL_ID: "claude-sonnet-4-20250514",
   DEFAULT_MAX_TOKENS: 8192,
   DEFAULT_TEMPERATURE: 0.3,
+  DEFAULT_CONTEXT_BUDGET_BYTES: 12_288,
 } as const;
+
+export const IMPROVE_RESOURCE_REQUESTS: readonly PhaseResourceRequest[] = [
+  {
+    id: "improve-prompt",
+    kind: "agent",
+    relativePath: "agents/improve-prompt.md",
+    tier: "required-core",
+    required: true,
+    legacyCategory: "agents",
+    legacyName: "improve-prompt.md",
+  },
+  {
+    id: "feedback-loop",
+    kind: "reference",
+    relativePath: "references/feedback-loop.md",
+    tier: "optional-quality",
+    required: false,
+    legacyCategory: "references",
+    legacyName: "feedback-loop.md",
+  },
+] as const;
 
 export const IMPROVE_RESPONSE_SCHEMA_INSTRUCTION = `${IMPROVE_PROMPT_CONSTANTS.RESPONSE_FORMAT_START}
 You must respond with ONLY a valid JSON object (no markdown, no explanation).
