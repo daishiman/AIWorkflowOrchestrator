@@ -49,6 +49,28 @@
 
 ---
 
+### タスク: TASK-SDK-04-U2 plan-execute-canonical-binding（2026-03-28）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-SDK-04-U2 |
+| ステータス | **完了** |
+| タイプ | bug-fix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-28 |
+| 親タスク | TASK-SDK-04 |
+| 対象 | `SkillLifecyclePanel.tsx` の execute flow canonical binding drift 是正 |
+| 成果物 | `docs/30-workflows/TASK-SDK-04-U2-plan-execute-canonical-binding/` |
+
+#### 実施内容
+
+- `approvedSkillSpec` state を追加し、textarea draft と approved snapshot を分離
+- `handleExecutePlan` が `request.trim()` ではなく `approvedSkillSpec` を参照するよう修正
+- cancel 時の対称クリア実装
+- テスト 5件追加（U-8b, U-18, U-19, U-20, U-21）
+
+---
+
 ### タスク: TASK-SDK-05 create-entry-mainline-unification（2026-03-27）
 
 | 項目 | 値 |

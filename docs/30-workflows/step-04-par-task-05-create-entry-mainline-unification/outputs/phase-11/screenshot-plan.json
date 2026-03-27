@@ -1,5 +1,0 @@
-{
-  "captureRequired": false,
-  "reason": "Task05 は create mainline の責務境界を固定する spec task であり、この phase ではコードと仕様の walkthrough 判定を主体とする。",
-  "targets": []
-}

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-27T10:55:54.536Z",
-  "totalKeywords": 2522,
+  "generated": "2026-03-27T16:00:15.063Z",
+  "totalKeywords": 2524,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3422,6 +3422,7 @@
     ],
     "CENTRALIZATION": [
       "arch-state-management-reference.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
     ],
@@ -6658,6 +6659,9 @@
     "PLACEMENT": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "IMPLEMENTATION": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "user": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6733,6 +6737,9 @@
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "EXPANSION": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "EXEC": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "manifest": [

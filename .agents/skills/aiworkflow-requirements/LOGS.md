@@ -6,6 +6,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-28 - TASK-SDK-04-U2 canonical binding remediation sync（`api-ipc-system-core.md` / `arch-state-management-core.md` から未解消扱いを解消し、`approvedSkillSpec` snapshot による execute binding 修正と task spec close-out drift 是正を same-wave 反映） |
 | 2026-03-27 - TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 仕様書一括更新（完了タスク5件を completed ledger に追加 / 苦戦箇所4件（artifact ID 生成・PhaseResourcePlanner 多層意思決定・IPC 型境界管理・verify detail 証拠追跡）を lessons-learned に追記 / quick-reference に Workflow State/Verify Detail/User Input API 5件の即時導線を追加 / resource-map に PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を登録 / lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md を責務分割（549→304行 + 319行新設）） |
 | 2026-03-27 - TASK-SDK-05 create-entry-mainline-unification spec sync（Task05 の completed ledger / quick-reference / resource-map / lessons / log / skill history を same-wave で反映し、spec_created task の Step 1 no-op 誤判定と verification-report path drift を是正） |
 | 2026-03-27 - TASK-SDK-04 implementation spec sync（user interaction bridge / phase UI の current contract、follow-up 3件、spec_created task の evidence drift 教訓を canonical spec/backlog/log へ反映） |
