@@ -212,6 +212,13 @@ beforeEach(() => {
     handoffGuidance: null,
   };
 
+  mockSetHandoffGuidance.mockImplementation((guidance) => {
+    mockStoreState.handoffGuidance = guidance;
+  });
+  mockClearHandoffGuidance.mockImplementation(() => {
+    mockStoreState.handoffGuidance = null;
+  });
+
   (window as Window & { electronAPI?: unknown }).electronAPI = {
     skillCreator: {
       detectMode: mockDetectMode,
