@@ -1,7 +1,7 @@
 # タスク仕様書 検証レポート
 
 > 検証日時: 2026-03-26T11:12:22.677Z
-> 対象: docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract
+> 対象: docs/30-workflows/step-06-seq-task-08-session-persistence-and-resume-contract
 
 ## サマリー
 

@@ -15,6 +15,8 @@ import type {
   TerminalHandoffBundle,
   RuntimeSkillCreatorVerifyCheck,
   RuntimeSkillCreatorVerifyDetail,
+  SkillCreatorPersistedWorkflowCheckpoint,
+  SkillCreatorWorkflowArtifactEntry,
 } from "@repo/shared/types";
 import type { RuntimeDecision } from "./RuntimePolicyResolver";
 
@@ -422,6 +424,63 @@ export class SkillCreatorWorkflowEngine {
 
     return { accepted: true };
   }
+
+  /**
+   * persisted checkpoint から workflow state を復元する。
+   * TASK-SDK-08: phase boundary checkpoint からの hydrate。
+   */
+  hydrateFromCheckpoint(
+    checkpoint: SkillCreatorPersistedWorkflowCheckpoint,
+  ): SkillCreatorWorkflowStateSnapshot {
+    const ws = checkpoint.workflowStateSnapshot;
+
+    const artifacts: SkillCreatorWorkflowArtifact[] = ws.phaseArtifacts.map(
+      (entry, idx) => ({
+        id: `${checkpoint.planId}:${entry.phase}:${entry.type}:restored-${idx}`,
+        phase: entry.phase,
+        kind: entry.type as SkillCreatorWorkflowArtifact["kind"],
+        createdAt: entry.timestamp,
+        payload: entry.data,
+      }),
+    );
+
+    const state: SkillCreatorWorkflowState = {
+      planId: checkpoint.planId,
+      currentPhase: ws.currentPhase,
+      awaitingUserInput: ws.awaitingUserInput,
+      verifyResult: ws.verifyResult,
+      phaseArtifacts: artifacts,
+      resumeTokenEnvelope:
+        ws.resumeTokenEnvelope as SkillCreatorResumeTokenEnvelope,
+      routeSnapshot: checkpoint.compatibilitySnapshot.routeSnapshot,
+      sourceProvenance: checkpoint.compatibilitySnapshot.sourceProvenance as
+        | SkillCreatorWorkflowSourceProvenance
+        | undefined,
+      handoffBundle: ws.handoffBundle ?? null,
+    };
+
+    this.workflows.set(checkpoint.planId, state);
+    return this.snapshot(state);
+  }
+
+  /**
+   * 現在の workflow state を永続化用 artifact entries に変換する。
+   * TASK-SDK-08: saveCheckpoint の入力データを engine から取得する。
+   */
+  serializeArtifactsForPersistence(
+    planId: string,
+  ): SkillCreatorWorkflowArtifactEntry[] {
+    const state = this.workflows.get(planId);
+    if (!state) return [];
+
+    return state.phaseArtifacts.map((artifact) => ({
+      phase: artifact.phase,
+      type: artifact.kind,
+      timestamp: artifact.createdAt,
+      data: artifact.payload,
+    }));
+  }
+
   private ensureWorkflow(
     planId: string,
     sourceProvenance?: SkillCreatorWorkflowSourceProvenance,

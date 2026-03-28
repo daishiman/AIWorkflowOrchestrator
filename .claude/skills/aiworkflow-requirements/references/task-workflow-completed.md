@@ -409,7 +409,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-26 |
 | 対象 | workflow checkpoint / compatibility evaluator / revision lease / Phase 1-13 docs pack |
-| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/` |
+| 成果物 | `docs/30-workflows/step-06-seq-task-08-session-persistence-and-resume-contract/` |
 
 #### 実施内容
 
@@ -421,7 +421,7 @@
 #### Phase 12 未タスク
 
 - 新規未タスク 0 件
-- shared types / session storage / preload-main wiring の本実装は後続 wave へ引き継ぐ
+- public preload / renderer resume UI / migration helper は後続 wave へ引き継ぐ
 
 ---
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）

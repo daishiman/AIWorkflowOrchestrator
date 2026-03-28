@@ -171,7 +171,21 @@ export type {
   DebugResult,
   UsageStats,
 } from "./skillCreator";
-export { WORKFLOW_MANIFEST_SCHEMA_VERSION } from "./skillCreator";
+export {
+  WORKFLOW_MANIFEST_SCHEMA_VERSION,
+  SKILL_CREATOR_ENGINE_VERSION,
+} from "./skillCreator";
+export type {
+  SkillCreatorCheckpointType,
+  ResumeCompatibilityStatus,
+  ResumeIncompatibilityReason,
+  ResumeCompatibilityResult,
+  WorkflowCheckpointLease,
+  SkillCreatorCompatibilitySnapshot,
+  SkillCreatorPersistedWorkflowCheckpoint,
+  SkillCreatorWorkflowArtifactEntry,
+  WorkflowSessionStorageSchema,
+} from "./skillCreator";
 
 // ファイル選択型定義
 export type {

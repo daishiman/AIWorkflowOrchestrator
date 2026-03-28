@@ -715,3 +715,136 @@ export interface UsageStats {
   hourlyDistribution: Record<string, number>;
   errorTrends: Array<{ date: string; count: number }>;
 }
+
+// ============================================
+// Session Persistence Contract (TASK-SDK-08)
+// ============================================
+
+/**
+ * Checkpoint 種別。phase boundary 単位のみ許可。
+ * mid-stream checkpoint は scope 外。
+ */
+export type SkillCreatorCheckpointType =
+  | "review-ready"
+  | "execute-complete"
+  | "verify-fail"
+  | "handoff-ready";
+
+/**
+ * Compatibility evaluator の判定結果ステータス。
+ * - compatible: そのまま restore してよい
+ * - compatible_with_warning: restore 許可だが UI に warning を出す
+ * - incompatible: restore 不可（version/route/hash mismatch）
+ * - conflict: 現在の writer と競合（revision/lease mismatch）
+ */
+export type ResumeCompatibilityStatus =
+  | "compatible"
+  | "compatible_with_warning"
+  | "incompatible"
+  | "conflict";
+
+/**
+ * Incompatibility / conflict の理由コード
+ */
+export type ResumeIncompatibilityReason =
+  | "version_mismatch"
+  | "route_type_mismatch"
+  | "manifest_cache_key_mismatch"
+  | "resource_descriptor_hash_mismatch"
+  | "root_relocation_warning"
+  | "revision_mismatch"
+  | "active_lease_conflict"
+  | "checkpoint_not_found"
+  | "missing_workflow_payload";
+
+/**
+ * Compatibility evaluator の戻り値
+ */
+export interface ResumeCompatibilityResult {
+  status: ResumeCompatibilityStatus;
+  reasons: ResumeIncompatibilityReason[];
+  warnings: string[];
+}
+
+/**
+ * Checkpoint の lease 情報。stale write guard に使う。
+ */
+export interface WorkflowCheckpointLease {
+  ownerInstanceId: string;
+  leaseExpiresAt: number;
+  acquiredAt: number;
+}
+
+/**
+ * Compatibility snapshot。resume 可否判定に使う比較データ。
+ */
+export interface SkillCreatorCompatibilitySnapshot {
+  routeSnapshot?: SkillCreatorRouteSnapshot;
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
+  manifestCacheKey?: string;
+  resourceDescriptorHash?: string;
+  engineVersion: string;
+}
+
+/**
+ * Workflow state の永続化単位。phase boundary で生成される。
+ * generic PersistedSession とは別 contract として分離する。
+ */
+export interface SkillCreatorPersistedWorkflowCheckpoint {
+  /** checkpoint の一意 ID */
+  checkpointId: string;
+  /** 関連する planId */
+  planId: string;
+  /** checkpoint の種別 */
+  checkpointType: SkillCreatorCheckpointType;
+
+  /** workflow state snapshot */
+  workflowStateSnapshot: {
+    currentPhase: SkillCreatorWorkflowPhase;
+    awaitingUserInput: SkillCreatorUserInputRequest | null;
+    verifyResult: SkillCreatorVerifyResult | null;
+    phaseArtifacts: SkillCreatorWorkflowArtifactEntry[];
+    resumeTokenEnvelope: SkillCreatorResumeTokenEnvelope;
+    handoffBundle?: TerminalHandoffBundle | null;
+  };
+
+  /** 互換性判定用 snapshot */
+  compatibilitySnapshot: SkillCreatorCompatibilitySnapshot;
+
+  /** stale write guard */
+  revision: number;
+  lease?: WorkflowCheckpointLease;
+
+  /** metadata */
+  createdAt: number;
+  updatedAt: number;
+  invalidatedAt?: number;
+}
+
+/**
+ * phaseArtifacts の永続化用エントリ。
+ * engine 内部の SkillCreatorWorkflowArtifact をシリアライズ可能にする。
+ */
+export interface SkillCreatorWorkflowArtifactEntry {
+  phase: SkillCreatorWorkflowPhase;
+  type: string;
+  timestamp: string;
+  data: unknown;
+}
+
+/**
+ * Workflow session store のスキーマ。
+ * generic SessionStorageSchema とは別 store に配置する。
+ */
+export interface WorkflowSessionStorageSchema {
+  checkpoints: Record<string, SkillCreatorPersistedWorkflowCheckpoint>;
+  metadata: {
+    version: string;
+    lastUpdated: number;
+  };
+}
+
+/**
+ * engine version。persisted checkpoint の compatibility に使う。
+ */
+export const SKILL_CREATOR_ENGINE_VERSION = "task-sdk-08-v1" as const;

@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-27
+> 自動生成: 2026-03-28
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -905,9 +905,9 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L242 |
 | Electron IPC API設計 | L278 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L410 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L634 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L665 |
-| AIプロバイダーAPI連携 | L696 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L643 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L674 |
+| AIプロバイダーAPI連携 | L705 |
 
 ### references/api-ipc-system-details.md
 
@@ -2617,15 +2617,16 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L59 |
-| クイックリファレンス: カテゴリ別検索ガイド | L74 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L247 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L579 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L613 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L696 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L712 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L736 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L777 |
+| 分割ファイル一覧 | L60 |
+| クイックリファレンス: カテゴリ別検索ガイド | L75 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L248 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L580 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L614 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L697 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L713 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L737 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L778 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L803 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

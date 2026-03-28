@@ -1,5 +1,5 @@
 {
-  "generated": "2026-03-27T22:56:58.826Z",
+  "generated": "2026-03-28T14:54:43.259Z",
   "totalKeywords": 2524,
   "keywords": {
     "チャット履歴": [
@@ -2168,6 +2168,7 @@
       "interfaces-agent-sdk-ui.md",
       "interfaces-agent-sdk.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
@@ -2729,6 +2730,7 @@
     "contract": [
       "arch-execution-capability-contract.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -6464,18 +6466,22 @@
       "logs-archive-2026-03-line-budget-workflow-consolidation.md"
     ],
     "session": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md"
     ],
     "persistence": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md"
     ],
     "and": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-templates.md"
     ],
     "resume": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md"
     ],
     "VERIFY": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
