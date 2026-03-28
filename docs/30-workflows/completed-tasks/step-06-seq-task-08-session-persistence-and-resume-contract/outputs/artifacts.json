@@ -95,6 +95,12 @@
       "outputs/phase-3/skill-compliance-and-elegance-review.md"
     ],
     "phase4": ["outputs/phase-4/test-matrix.md"],
+    "phase5": ["outputs/phase-5/implementation-record.md"],
+    "phase6": ["outputs/phase-6/extended-test-record.md"],
+    "phase7": ["outputs/phase-7/coverage-report.md"],
+    "phase8": ["outputs/phase-8/refactoring-record.md"],
+    "phase9": ["outputs/phase-9/quality-report.md"],
+    "phase10": ["outputs/phase-10/final-review-result.md"],
     "phase11": [
       "outputs/phase-11/manual-test-checklist.md",
       "outputs/phase-11/manual-test-result.md",
