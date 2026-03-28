@@ -417,4 +417,69 @@ describe("SkillCreator runtime IPC handlers", () => {
       }),
     );
   });
+
+  // AC-6: facade snapshot が engine の内部 state と構造的に等価
+  it("submitUserInput の facade snapshot は engine snapshot をそのまま返す", async () => {
+    const engineSnapshot = {
+      planId: "plan-1",
+      currentPhase: "execute",
+      awaitingUserInput: null,
+      verifyResult: null,
+      phaseArtifacts: [],
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-1",
+        currentPhase: "execute",
+        artifactCount: 4,
+        updatedAt: "2026-03-27T00:00:00.000Z",
+      },
+    };
+    mockRuntimeSkillCreatorService.submitUserInput.mockReturnValue(
+      engineSnapshot,
+    );
+
+    const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT);
+    const result = await handler!(createMockEvent(), {
+      planId: "plan-1",
+      requestId: "req-2",
+      selectedOptionId: "ready_to_execute",
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual(engineSnapshot);
+  });
+
+  // AC-7: IPC handler が state-changed event で遷移後 snapshot を送信する
+  it("submitUserInput 後の state-changed event は遷移後の snapshot を含む", async () => {
+    const transitionedSnapshot = {
+      planId: "plan-1",
+      currentPhase: "execute",
+      awaitingUserInput: null,
+      verifyResult: null,
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-1",
+        currentPhase: "execute",
+        artifactCount: 5,
+        updatedAt: "2026-03-27T00:00:00.000Z",
+      },
+    };
+    mockRuntimeSkillCreatorService.submitUserInput.mockReturnValue(
+      transitionedSnapshot,
+    );
+
+    const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT);
+    await handler!(createMockEvent(), {
+      planId: "plan-1",
+      requestId: "req-3",
+      selectedOptionId: "ready_to_execute",
+    });
+
+    expect(mockMainWindow.webContents.send).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      expect.objectContaining({
+        currentPhase: "execute",
+      }),
+    );
+  });
 });

@@ -68,6 +68,24 @@
 | 解決策 | approved plan と draft input を state 上で分離し、execute は canonical plan snapshot のみを参照する |
 | 標準ルール | review / approve / execute の 3段階フローでは、UI draft と approved payload を別 owner に分けて扱う |
 
+## 2026-03-28 TASK-SDK-04-U1 submitUserInput phase transition semantics
+
+### 教訓1: Phase 4 テスト計画で request kind と engine 遷移ロジックの gap を早期検出する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `verification_review` request が `free_text` kind のまま設計され、engine 側は `selectedOptionId` ベースで approve/improve/reject を分岐する設計になっていた。Phase 5 実装時に kind と遷移ロジックの不整合が判明 |
+| 解決策 | engine 遷移ロジックは `selectedOptionId` を meaning source として動作するよう実装し、request kind の変更は後続タスク（UT-01: single_select kind 変更）に分離した |
+| 標準ルール | Phase 4 テスト計画時に、request kind（single_select / free_text / confirm / secret）と engine 遷移ロジックの selectedOptionId が一致するか検証項目に含める |
+
+### 教訓2: shared types の union 拡張は Phase 2 設計段階で明記する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillCreatorVerifyResult.nextAction` に `"handoff"` を追加する必要があったが、Phase 2 設計時に型拡張が明記されておらず Phase 5 実装で後追い対応になった |
+| 解決策 | `packages/shared/src/types/skillCreator.ts` の `nextAction` union に `"handoff"` を追加。`RuntimeSkillCreatorVerifyDetail` 側も同期 |
+| 標準ルール | engine state の遷移先で新しい状態値が必要な場合、shared types の union 拡張を Phase 2 設計成果物に含める。実装 Phase で初めて型を足すのは手戻りの元 |
+
 ### 苦戦箇所1: エスケープテストの部分文字列マッチ
 
 - **症状**: `\$HOME` は部分文字列として `$HOME` を含むため、`not.toContain("$HOME")` がエスケープ済み文字列に対して偽陽性を返す

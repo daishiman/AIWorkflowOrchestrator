@@ -1,0 +1,20 @@
+{
+  "captureRequired": false,
+  "mode": "NON_VISUAL",
+  "reason": "Engine internal logic only. No renderer surface changes. No new UI components, routes, or styles.",
+  "evidenceFiles": [
+    "outputs/phase-11/manual-test-checklist.md",
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/manual-test-report.md",
+    "outputs/phase-11/discovered-issues.md"
+  ],
+  "nonVisualJustification": {
+    "rendererChanges": false,
+    "newIpcChannels": false,
+    "styleChanges": false,
+    "changedFiles": [
+      "apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts",
+      "packages/shared/src/types/skillCreator.ts"
+    ]
+  }
+}

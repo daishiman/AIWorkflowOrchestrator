@@ -519,4 +519,169 @@ describe("SkillCreatorWorkflowEngine", () => {
     });
     expect(result.disabledReason).toContain("Task07 owner");
   });
+
+  // ── submitUserInput phase transition semantics (AC-1〜AC-5, NFR-3) ──
+
+  describe("submitUserInput phase transition semantics", () => {
+    const decision = {
+      type: "integrated_api" as const,
+      apiKey: "sk-test",
+      permissionMode: "default" as const,
+    };
+
+    function setupPlanReviewState(engine: SkillCreatorWorkflowEngine) {
+      return engine.recordPlanResult(createPlanResult(), decision);
+    }
+
+    function setupVerificationReviewState(engine: SkillCreatorWorkflowEngine) {
+      const planResult = createPlanResult();
+      engine.recordPlanResult(planResult, decision);
+      engine.recordExecuteStart(planResult, decision);
+      return engine.recordExecutionFailure("plan-001", {
+        executeId: "exec-001",
+        skillName: "test-skill",
+        reason: "execution_failed",
+        message: "test failure",
+      });
+    }
+
+    // AC-1
+    it("plan_review ready_to_execute → currentPhase が execute に遷移する", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupPlanReviewState(engine);
+
+      const submitted = engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId: snapshot.awaitingUserInput!.requestId,
+        selectedOptionId: "ready_to_execute",
+      });
+
+      expect(submitted.currentPhase).toBe("execute");
+    });
+
+    // AC-2
+    it("plan_review needs_changes → currentPhase が plan に戻る", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupPlanReviewState(engine);
+
+      const submitted = engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId: snapshot.awaitingUserInput!.requestId,
+        selectedOptionId: "needs_changes",
+      });
+
+      expect(submitted.currentPhase).toBe("plan");
+    });
+
+    // AC-3
+    it("verification_review approve → verifyResult.nextAction が handoff, status が pass になる", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupVerificationReviewState(engine);
+
+      const submitted = engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId: snapshot.awaitingUserInput!.requestId,
+        textValue: "Looks good, approved",
+        selectedOptionId: "approve",
+      });
+
+      expect(submitted.verifyResult).toMatchObject({
+        status: "pass",
+        nextAction: "handoff",
+      });
+    });
+
+    // AC-4
+    it("verification_review improve → verifyResult.nextAction が improve になる", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupVerificationReviewState(engine);
+
+      const submitted = engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId: snapshot.awaitingUserInput!.requestId,
+        textValue: "Please improve the error handling",
+        selectedOptionId: "improve",
+      });
+
+      expect(submitted.verifyResult).toMatchObject({
+        nextAction: "improve",
+      });
+    });
+
+    // AC-5
+    it("verification_review reject → currentPhase が plan に遷移し verifyResult.nextAction が review になる", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupVerificationReviewState(engine);
+
+      const submitted = engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId: snapshot.awaitingUserInput!.requestId,
+        textValue: "This approach is wrong, start over",
+        selectedOptionId: "reject",
+      });
+
+      expect(submitted.currentPhase).toBe("plan");
+      expect(submitted.verifyResult).toMatchObject({
+        status: "fail",
+        nextAction: "review",
+      });
+    });
+
+    // NFR-3: unknown option fallback
+    it("verification_review で未知の selectedOptionId は no-op フォールバックする", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupVerificationReviewState(engine);
+
+      const submitted = engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId: snapshot.awaitingUserInput!.requestId,
+        textValue: "some feedback",
+        selectedOptionId: "unknown_option",
+      });
+
+      expect(submitted.awaitingUserInput).toBeNull();
+      expect(submitted.currentPhase).toBe("review");
+    });
+
+    // phase_transition artifact: 遷移あり
+    it("phase 遷移発生時に phase_transition artifact が記録される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupPlanReviewState(engine);
+
+      const submitted = engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId: snapshot.awaitingUserInput!.requestId,
+        selectedOptionId: "ready_to_execute",
+      });
+
+      const transitionArtifact = submitted.phaseArtifacts.find(
+        (a) => (a.kind as string) === "phase_transition",
+      );
+      expect(transitionArtifact).toBeDefined();
+      expect(transitionArtifact?.payload).toMatchObject({
+        fromPhase: "review",
+        toPhase: "execute",
+        reason: "plan_review",
+        selectedOptionId: "ready_to_execute",
+      });
+    });
+
+    // phase_transition artifact: 遷移なし
+    it("phase 遷移なしの場合は phase_transition artifact が記録されない", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupVerificationReviewState(engine);
+
+      const submitted = engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId: snapshot.awaitingUserInput!.requestId,
+        textValue: "Approved",
+        selectedOptionId: "approve",
+      });
+
+      const transitionArtifact = submitted.phaseArtifacts.find(
+        (a) => (a.kind as string) === "phase_transition",
+      );
+      expect(transitionArtifact).toBeUndefined();
+    });
+  });
 });
