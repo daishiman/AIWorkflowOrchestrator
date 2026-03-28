@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-27T10:55:54.536Z",
-  "totalKeywords": 2522,
+  "generated": "2026-03-27T22:56:58.826Z",
+  "totalKeywords": 2524,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2653,6 +2653,7 @@
     ],
     "handoff": [
       "arch-electron-services-details-part2.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
@@ -2719,7 +2720,8 @@
       "arch-execution-capability-contract.md"
     ],
     "execution": [
-      "arch-execution-capability-contract.md"
+      "arch-execution-capability-contract.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "capability": [
       "arch-execution-capability-contract.md"
@@ -3422,6 +3424,7 @@
     ],
     "CENTRALIZATION": [
       "arch-state-management-reference.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
     ],
@@ -6468,6 +6471,7 @@
     ],
     "and": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-templates.md"
     ],
     "resume": [
@@ -6658,6 +6662,9 @@
     "PLACEMENT": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "IMPLEMENTATION": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "user": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6732,7 +6739,18 @@
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "governance": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "alignment": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md"
+    ],
     "EXPANSION": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "EXEC": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "manifest": [
@@ -8808,9 +8826,6 @@
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
     ],
-    "alignment": [
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
-    ],
     "SKILLHANDLERS": [
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -9150,9 +9165,6 @@
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "mid": [
-      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
-    ],
-    "governance": [
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "improve": [

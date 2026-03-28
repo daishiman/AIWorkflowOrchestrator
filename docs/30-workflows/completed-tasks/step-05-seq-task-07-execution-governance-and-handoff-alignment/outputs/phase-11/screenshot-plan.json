@@ -1,0 +1,41 @@
+{
+  "captureRequired": true,
+  "reason": "renderer change point を含むため、walkthrough だけでは UI/UX 証跡が不足する",
+  "cases": [
+    {
+      "id": "TC-11-01",
+      "surface": "policy-summary",
+      "status": "walkthrough_only",
+      "evidence": "manual-test-result.md",
+      "gap": "route priority の実画面 screenshot 未取得"
+    },
+    {
+      "id": "TC-11-02",
+      "surface": "guard-note",
+      "status": "walkthrough_only",
+      "evidence": "manual-test-result.md",
+      "gap": "consumer auth guard の実画面 screenshot 未取得"
+    },
+    {
+      "id": "TC-11-03",
+      "surface": "terminal-handoff-card",
+      "status": "missing_screenshot",
+      "evidence": "manual-test-result.md",
+      "gap": "SkillLifecyclePanel visible handoff の screenshot 未取得"
+    },
+    {
+      "id": "TC-11-04",
+      "surface": "disclosure-and-approval",
+      "status": "missing_screenshot",
+      "evidence": "manual-test-result.md",
+      "gap": "disclosure summary / approval surface の screenshot 未取得"
+    },
+    {
+      "id": "TC-11-05",
+      "surface": "execution-console-host",
+      "status": "missing_screenshot",
+      "evidence": "manual-test-result.md",
+      "gap": "ExecutionConsoleView host surface の screenshot 未取得"
+    }
+  ]
+}

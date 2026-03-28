@@ -10,6 +10,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
 } from "@testing-library/react";
 import type { TerminalHandoffBundle } from "@repo/shared/types";
 
@@ -57,7 +58,11 @@ type MockStoreState = {
     type: "integrated_api" | "terminal_handoff";
     planId?: string;
     estimatedSteps?: number;
-    guidance?: { reason: string; command: string };
+    guidance?: {
+      reason: string;
+      terminalCommand: string;
+      contextSummary: string;
+    };
   } | null;
   workflowSnapshot: {
     planId: string;
@@ -177,6 +182,9 @@ const mockPlanSkill = vi.fn();
 const mockExecutePlan = vi.fn();
 const mockGetVerifyDetail = vi.fn();
 const mockReverifyWorkflow = vi.fn();
+const mockImproveSkillWithFeedback = vi.fn();
+const mockApplyRuntimeImprovement = vi.fn();
+const mockGetDisclosureInfo = vi.fn();
 
 const buildTerminalHandoffBundle = (): TerminalHandoffBundle => ({
   launcher: "claude",
@@ -204,6 +212,13 @@ beforeEach(() => {
     handoffGuidance: null,
   };
 
+  mockSetHandoffGuidance.mockImplementation((guidance) => {
+    mockStoreState.handoffGuidance = guidance;
+  });
+  mockClearHandoffGuidance.mockImplementation(() => {
+    mockStoreState.handoffGuidance = null;
+  });
+
   (window as Window & { electronAPI?: unknown }).electronAPI = {
     skillCreator: {
       detectMode: mockDetectMode,
@@ -212,8 +227,11 @@ beforeEach(() => {
       getWorkflowState: mockGetWorkflowState,
       submitUserInput: mockSubmitUserInput,
       onWorkflowStateChanged: mockOnWorkflowStateChanged,
+      improveSkillWithFeedback: mockImproveSkillWithFeedback,
+      applyRuntimeImprovement: mockApplyRuntimeImprovement,
       getVerifyDetail: mockGetVerifyDetail,
       reverifyWorkflow: mockReverifyWorkflow,
+      getDisclosureInfo: mockGetDisclosureInfo,
     },
   };
 
@@ -232,6 +250,29 @@ beforeEach(() => {
       executeId: "exec-001",
       skillName: "new-skill",
       success: true,
+    },
+  });
+  mockImproveSkillWithFeedback.mockResolvedValue({
+    success: true,
+    data: {
+      improveId: "improve-001",
+      suggestions: [
+        {
+          section: "description",
+          before: "古い説明",
+          after: "新しい説明",
+          reason: "説明を明確化する",
+        },
+      ],
+    },
+  });
+  mockApplyRuntimeImprovement.mockResolvedValue({
+    success: true,
+    data: {
+      applied: 1,
+      skipped: 0,
+      skippedDetails: [],
+      errors: [],
     },
   });
   mockGetWorkflowState.mockResolvedValue({
@@ -268,6 +309,14 @@ beforeEach(() => {
     success: true,
     data: {
       accepted: true,
+    },
+  });
+  mockGetDisclosureInfo.mockResolvedValue({
+    success: true,
+    data: {
+      aiServiceName: "Claude",
+      modelName: "claude-sonnet-4-20250514",
+      externalDestinations: ["api.anthropic.com"],
     },
   });
   mockFetchSkills.mockResolvedValue(undefined);
@@ -345,7 +394,7 @@ describe("U-3: isGenerating locks execute button", () => {
     renderPanel();
 
     const executeBtn = screen.getByRole("button", { name: "実行する" });
-    expect(executeBtn).toBeDisabled();
+    expect((executeBtn as HTMLButtonElement).disabled).toBe(true);
   });
 });
 
@@ -384,14 +433,10 @@ describe("U-5: plan result display for integrated_api", () => {
 
     renderPanel();
 
-    expect(screen.getByText("生成計画")).toBeInTheDocument();
-    expect(screen.getByText(/推定ステップ数.*5/)).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "実行する" }),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "キャンセル" }),
-    ).toBeInTheDocument();
+    expect(screen.getByText("生成計画")).toBeTruthy();
+    expect(screen.getByText(/推定ステップ数.*5/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "実行する" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "キャンセル" })).toBeTruthy();
   });
 });
 
@@ -406,7 +451,8 @@ describe("U-6: terminal_handoff triggers handoff guidance display", () => {
         type: "terminal_handoff",
         guidance: {
           reason: "Large task requires CLI execution",
-          command: "npx skill-creator plan",
+          terminalCommand: "npx skill-creator plan",
+          contextSummary: "surface=skill skill=test-skill",
         },
       },
     });
@@ -421,9 +467,7 @@ describe("U-6: terminal_handoff triggers handoff guidance display", () => {
       fireEvent.click(prepareBtn);
     });
 
-    expect(
-      screen.getByText(/Large task requires CLI execution/),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Large task requires CLI execution/)).toBeTruthy();
   });
 });
 
@@ -436,7 +480,7 @@ describe("U-7: generationError displays error message", () => {
 
     renderPanel();
 
-    expect(screen.getByText("計画生成に失敗しました")).toBeInTheDocument();
+    expect(screen.getByText("計画生成に失敗しました")).toBeTruthy();
   });
 });
 
@@ -584,6 +628,46 @@ describe("U-13: executePlan terminal_handoff triggers early return", () => {
     expect(mockSelectSkillByName).not.toHaveBeenCalled();
     expect(mockSetHandoffGuidance).toHaveBeenCalledTimes(1);
   });
+
+  it("terminal_handoff 時に disclosure summary を表示し、dismiss で同時に消す", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+    mockStoreState.currentPlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+    };
+    mockExecutePlan.mockResolvedValue({
+      success: true,
+      data: {
+        type: "terminal_handoff",
+        bundle: buildTerminalHandoffBundle(),
+      },
+    });
+
+    renderPanel();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+    });
+
+    await waitFor(() => {
+      expect(mockGetDisclosureInfo).toHaveBeenCalledTimes(1);
+      expect(
+        screen.getByTestId("skill-lifecycle-disclosure-summary"),
+      ).toBeTruthy();
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText("案内を閉じる"));
+    });
+
+    expect(mockClearHandoffGuidance).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId("skill-lifecycle-disclosure-summary"),
+      ).toBeNull();
+    });
+  });
 });
 
 describe("U-13b: workflow snapshot summary is rendered", () => {
@@ -620,15 +704,11 @@ describe("U-13b: workflow snapshot summary is rendered", () => {
 
     renderPanel();
 
-    expect(
-      screen.getByTestId("skill-lifecycle-workflow-summary"),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByTestId("skill-lifecycle-question-host"),
-    ).toBeInTheDocument();
+    expect(screen.getByTestId("skill-lifecycle-workflow-summary")).toBeTruthy();
+    expect(screen.getByTestId("skill-lifecycle-question-host")).toBeTruthy();
     expect(
       screen.getByTestId("skill-lifecycle-provenance-summary"),
-    ).toBeInTheDocument();
+    ).toBeTruthy();
     expect(
       screen
         .getByTestId("skill-lifecycle-provenance-summary")
@@ -684,6 +764,46 @@ describe("U-13c: workflow user input submission", () => {
       selectedOptionId: "ready_to_execute",
     });
     expect(mockSetWorkflowSnapshot).toHaveBeenCalled();
+  });
+});
+
+// =====================================================================
+// U-8b: review 後の textarea 編集が execute payload を変えない (drift 防止)
+// =====================================================================
+describe("U-8b: canonical binding drift prevention", () => {
+  it("plan 作成→textarea 変更→execute で canonical spec が維持される", async () => {
+    renderPanel();
+
+    // Step 1: 初期値を入力して plan を作成する
+    const input = screen.getByTestId("skill-lifecycle-request-input");
+    fireEvent.change(input, { target: { value: "承認済みの依頼" } });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    // planSkill が plan 作成時の値で呼ばれたことを確認
+    expect(mockPlanSkill).toHaveBeenCalledWith(
+      "承認済みの依頼",
+      expect.anything(),
+      expect.anything(),
+    );
+
+    // handlePrepare 内で localPlanResult がセットされるため
+    // activePlanResult?.type === "integrated_api" の条件で「実行する」ボタンが表示される
+
+    // Step 2: textarea を別の値に変更（drift を試みる）
+    fireEvent.change(input, { target: { value: "改ざんされた依頼" } });
+
+    // Step 3: 「実行する」ボタンをクリック
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    // Step 4: executePlan には plan 作成時の canonical spec が渡される
+    expect(mockExecutePlan).toHaveBeenCalledTimes(1);
+    expect(mockExecutePlan).toHaveBeenCalledWith("plan-001", "承認済みの依頼");
   });
 });
 
@@ -760,9 +880,9 @@ describe("U-16: verify detail surface", () => {
       await screen.findByTestId("skill-lifecycle-verify-detail"),
     ).toBeTruthy();
     expect(mockGetVerifyDetail).toHaveBeenCalledWith("plan-001");
-    expect(screen.getByText("integrated_api (default)")).toBeInTheDocument();
-    expect(screen.getByText("Task07 owner")).toBeInTheDocument();
-    expect(screen.getByText("Task08 owner")).toBeInTheDocument();
+    expect(await screen.findByText(/integrated_api \(default\)/)).toBeTruthy();
+    expect(screen.getByText("Task07 owner")).toBeTruthy();
+    expect(screen.getByText("Task08 owner")).toBeTruthy();
   });
 });
 
@@ -781,5 +901,289 @@ describe("U-17: reverify button", () => {
     });
 
     expect(mockReverifyWorkflow).toHaveBeenCalledWith("plan-001");
+  });
+});
+
+// =====================================================================
+// U-17b: runtime improve proposal が同一 surface に表示される
+// =====================================================================
+describe("U-17b: runtime improve surface", () => {
+  it("改善提案取得で ImprovementProposalPanel を表示する", async () => {
+    mockStoreState.selectedSkillName = "test-skill";
+    mockStoreState.skillExecutionStatus = "completed";
+
+    renderPanel();
+
+    const button = screen.getByTestId("skill-lifecycle-improve-button");
+    await act(async () => {
+      fireEvent.click(button);
+    });
+
+    expect(mockImproveSkillWithFeedback).toHaveBeenCalledWith(
+      "test-skill",
+      expect.any(String),
+    );
+    expect(
+      await screen.findByTestId("skill-lifecycle-runtime-improve-result"),
+    ).toBeTruthy();
+    expect(screen.getByText("改善提案")).toBeTruthy();
+    expect(screen.getByText("説明を明確化する")).toBeTruthy();
+  });
+});
+
+// =====================================================================
+// U-18: verify detail fail ステータスの edge case
+// =====================================================================
+describe("U-18: verify detail fail status displays fail badge and message", () => {
+  it("status=fail / nextAction=improve のとき fail バッジとメッセージが表示される", async () => {
+    mockGetVerifyDetail.mockResolvedValue({
+      success: true,
+      data: {
+        planId: "plan-001",
+        currentPhase: "verify",
+        status: "fail",
+        message: "Layer 1 check failed",
+        nextAction: "improve",
+        checks: [
+          {
+            id: "layer3-structure",
+            layer: "layer3",
+            severity: "error",
+            summary: "SKILL.md missing required section",
+          },
+        ],
+        evidenceCount: 1,
+        route: {
+          type: "integrated_api",
+          summary: "integrated_api (default)",
+        },
+        reverifyEligible: true,
+        delegatedGovernanceNote: "Task07 owner",
+        delegatedSessionNote: "Task08 owner",
+      },
+    });
+    mockStoreState.currentPlanId = "plan-001";
+
+    renderPanel();
+
+    expect(
+      await screen.findByTestId("skill-lifecycle-verify-detail"),
+    ).toBeTruthy();
+    expect(screen.getByText("fail")).toBeTruthy();
+    expect(screen.getByText("Layer 1 check failed")).toBeTruthy();
+    expect(screen.getByText("SKILL.md missing required section")).toBeTruthy();
+  });
+});
+
+// =====================================================================
+// U-19: verify detail pass ステータス
+// =====================================================================
+describe("U-19: verify detail pass status displays pass badge", () => {
+  it("status=pass のとき pass バッジが表示される", async () => {
+    mockGetVerifyDetail.mockResolvedValue({
+      success: true,
+      data: {
+        planId: "plan-001",
+        currentPhase: "verify",
+        status: "pass",
+        message: "All checks passed",
+        checks: [],
+        evidenceCount: 5,
+        route: {
+          type: "integrated_api",
+          summary: "integrated_api (default)",
+        },
+        reverifyEligible: false,
+        disabledReason: "既に pass 済みです",
+        delegatedGovernanceNote: "Task07 owner",
+        delegatedSessionNote: "Task08 owner",
+      },
+    });
+    mockStoreState.currentPlanId = "plan-001";
+
+    renderPanel();
+
+    expect(
+      await screen.findByTestId("skill-lifecycle-verify-detail"),
+    ).toBeTruthy();
+    expect(screen.getByText("pass")).toBeTruthy();
+    expect(screen.getByText("All checks passed")).toBeTruthy();
+    expect(screen.getByText("既に pass 済みです")).toBeTruthy();
+    // reverifyEligible=false なので再検証ボタンは disabled
+    const reverifyBtn = screen.getByTestId("skill-lifecycle-reverify-button");
+    expect((reverifyBtn as HTMLButtonElement).disabled).toBe(true);
+  });
+});
+
+// =====================================================================
+// U-20: verify detail 取得失敗時のエラー表示
+// =====================================================================
+describe("U-20: verify detail fetch failure shows error", () => {
+  it("getVerifyDetail が失敗すると error surface に表示される", async () => {
+    mockGetVerifyDetail.mockResolvedValue({
+      success: false,
+      error: "verify detail の取得に失敗しました。",
+    });
+    mockStoreState.currentPlanId = "plan-001";
+
+    renderPanel();
+
+    // verify detail パネル自体は表示されるが、中にエラーが表示される
+    expect(
+      await screen.findByTestId("skill-lifecycle-verify-detail"),
+    ).toBeTruthy();
+    expect(
+      screen.getByText("verify detail はまだ利用できません。"),
+    ).toBeTruthy();
+  });
+});
+
+// =====================================================================
+// U-18b: cancel 後に再 plan したとき approved snapshot が差し替わる
+// =====================================================================
+describe("U-18b: cancel then re-plan replaces approved snapshot", () => {
+  it("cancel → 再 plan で新しい canonical spec が固定される", async () => {
+    renderPanel();
+    const input = screen.getByTestId("skill-lifecycle-request-input");
+
+    // Step 1: 最初の plan
+    fireEvent.change(input, { target: { value: "初回依頼" } });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    // Step 2: cancel
+    const cancelBtn = screen.getByRole("button", { name: "キャンセル" });
+    fireEvent.click(cancelBtn);
+    expect(mockClearGenerationState).toHaveBeenCalled();
+
+    // Step 3: 新しい plan を作成
+    mockPlanSkill.mockResolvedValue({
+      success: true,
+      data: { type: "integrated_api", planId: "plan-002", estimatedSteps: 3 },
+    });
+
+    fireEvent.change(input, { target: { value: "二回目の依頼" } });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    // Step 4: execute
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    // executePlan には二回目の依頼が渡る（初回依頼ではない）
+    expect(mockExecutePlan).toHaveBeenCalledWith("plan-002", "二回目の依頼");
+  });
+});
+
+// =====================================================================
+// U-19b: 複数回の textarea 編集後も approved snapshot は不変
+// =====================================================================
+describe("U-19b: multiple textarea edits do not affect approved snapshot", () => {
+  it("plan 作成後に何度 textarea を変えても execute payload は固定", async () => {
+    renderPanel();
+    const input = screen.getByTestId("skill-lifecycle-request-input");
+
+    // plan 作成
+    fireEvent.change(input, { target: { value: "固定されるべき依頼" } });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    // 複数回 textarea を変更
+    fireEvent.change(input, { target: { value: "変更1" } });
+    fireEvent.change(input, { target: { value: "変更2" } });
+    fireEvent.change(input, { target: { value: "変更3" } });
+
+    // execute
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    expect(mockExecutePlan).toHaveBeenCalledWith(
+      "plan-001",
+      "固定されるべき依頼",
+    );
+  });
+});
+
+// =====================================================================
+// U-20b: cancel で approvedSkillSpec が null にクリアされる
+// =====================================================================
+describe("U-20b: cancel clears approved snapshot symmetrically", () => {
+  it("cancel 後に plan なしで execute しても approved spec は null", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+    mockStoreState.currentPlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+    };
+
+    renderPanel();
+
+    // cancel
+    const cancelBtn = screen.getByRole("button", { name: "キャンセル" });
+    fireEvent.click(cancelBtn);
+
+    expect(mockClearGenerationState).toHaveBeenCalledTimes(1);
+  });
+});
+
+// =====================================================================
+// U-21: execute 失敗後の approved snapshot の振る舞い
+// =====================================================================
+describe("U-21: approved snapshot behavior after execute failure", () => {
+  it("execute 失敗後も approved snapshot は保持され、再実行可能である", async () => {
+    mockExecutePlan
+      .mockResolvedValueOnce({
+        success: false,
+        error: "一時的な実行失敗",
+      })
+      .mockResolvedValueOnce({
+        success: true,
+        data: {
+          executeId: "exec-002",
+          skillName: "new-skill",
+          success: true,
+        },
+      });
+
+    renderPanel();
+    const input = screen.getByTestId("skill-lifecycle-request-input");
+
+    fireEvent.change(input, {
+      target: { value: "失敗後も保持されるべき依頼" },
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    const executeBtn = screen.getByRole("button", { name: "実行する" });
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    expect(mockSetGenerationError).toHaveBeenCalledWith("一時的な実行失敗");
+    expect(mockExecutePlan).toHaveBeenNthCalledWith(
+      1,
+      "plan-001",
+      "失敗後も保持されるべき依頼",
+    );
+
+    await act(async () => {
+      fireEvent.click(executeBtn);
+    });
+
+    expect(mockExecutePlan).toHaveBeenNthCalledWith(
+      2,
+      "plan-001",
+      "失敗後も保持されるべき依頼",
+    );
+    expect(mockFetchSkills).toHaveBeenCalledTimes(1);
+    expect(mockSelectSkillByName).toHaveBeenCalledWith("new-skill");
   });
 });

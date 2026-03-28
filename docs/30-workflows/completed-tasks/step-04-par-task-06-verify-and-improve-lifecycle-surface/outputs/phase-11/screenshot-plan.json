@@ -1,0 +1,24 @@
+{
+  "workflow": "step-04-par-task-06-verify-and-improve-lifecycle-surface",
+  "captures": [
+    {
+      "id": "TC-11-01",
+      "name": "verify-detail-review-board",
+      "surface": "review_board_fallback"
+    },
+    {
+      "id": "TC-11-02",
+      "name": "verify-provenance-and-checks-review-board",
+      "surface": "review_board_fallback"
+    },
+    {
+      "id": "TC-11-04",
+      "name": "reverify-disabled-reason-review-board",
+      "surface": "review_board_fallback"
+    }
+  ],
+  "notes": {
+    "mode": "review-board-fallback",
+    "reason": "live Electron/Vite preview capture はこのターンで未実施のため、current workflow 配下に review board screenshot + coverage + metadata を集約する"
+  }
+}

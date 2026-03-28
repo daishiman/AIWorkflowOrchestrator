@@ -1,8 +1,12 @@
 import React, { startTransition, useEffect, useRef, useState } from "react";
 import type { SkillExecutionStatus } from "@repo/shared";
 import type {
+  ApplyImprovementResult,
   HandoffGuidance,
   RuntimeSkillCreatorExecuteResponse,
+  RuntimeSkillCreatorImproveErrorResponse,
+  RuntimeSkillCreatorImproveResponse,
+  RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
   SkillCreatorUserInputSubmission,
@@ -46,6 +50,7 @@ import {
   useWorkflowSnapshot,
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
+import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
 
@@ -71,6 +76,12 @@ type ImproveSuggestion = {
 type ImproveResult = {
   suggestions: ImproveSuggestion[];
   applied: boolean;
+};
+
+type RuntimeImproveResult = {
+  improveId: string;
+  suggestions: RuntimeSkillCreatorImproveSuggestion[];
+  revisedSpec?: string;
 };
 
 type IpcResult<T> = {
@@ -111,6 +122,24 @@ type SkillCreatorRuntimeApi = {
     skillName: string,
     options?: { autoApply?: boolean },
   ) => Promise<IpcResult<ImproveResult>>;
+  improveSkillWithFeedback?: (
+    skillName: string,
+    feedback: string,
+    authMode?: string,
+    apiKey?: string | null,
+  ) => Promise<IpcResult<RuntimeSkillCreatorImproveResponse>>;
+  applyRuntimeImprovement?: (
+    skillName: string,
+    suggestions: RuntimeSkillCreatorImproveSuggestion[],
+  ) => Promise<IpcResult<ApplyImprovementResult>>;
+  // TASK-SDK-07: shared disclosure channel 再利用
+  getDisclosureInfo?: () => Promise<
+    IpcResult<{
+      aiServiceName: string;
+      modelName: string;
+      externalDestinations: string[];
+    }>
+  >;
 };
 
 type SessionEntry = {
@@ -127,6 +156,21 @@ function isExecuteTerminalHandoff(
   { type: "terminal_handoff" }
 > {
   return "type" in response && response.type === "terminal_handoff";
+}
+
+function isRuntimeImproveTerminalHandoff(
+  response: RuntimeSkillCreatorImproveResponse,
+): response is Extract<
+  RuntimeSkillCreatorImproveResponse,
+  { type: "terminal_handoff" }
+> {
+  return "type" in response && response.type === "terminal_handoff";
+}
+
+function isRuntimeImproveErrorResponse(
+  response: RuntimeSkillCreatorImproveResponse,
+): response is RuntimeSkillCreatorImproveErrorResponse {
+  return "success" in response && response.success === false;
 }
 
 function toHandoffGuidance(bundle: TerminalHandoffBundle): HandoffGuidance {
@@ -284,6 +328,9 @@ export function SkillLifecyclePanel({
   const activeGenerationError = generationError;
 
   const [request, setRequest] = useState("");
+  const [approvedSkillSpec, setApprovedSkillSpec] = useState<string | null>(
+    null,
+  );
   const [detectedMode, setDetectedMode] = useState<SkillCreatorMode | null>(
     null,
   );
@@ -294,6 +341,8 @@ export function SkillLifecyclePanel({
   );
   const [creatorImproveResult, setCreatorImproveResult] =
     useState<ImproveResult | null>(null);
+  const [runtimeImproveResult, setRuntimeImproveResult] =
+    useState<RuntimeImproveResult | null>(null);
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false);
   const [isPreparing, setIsPreparing] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -306,6 +355,12 @@ export function SkillLifecyclePanel({
   );
   const [isVerifyDetailLoading, setIsVerifyDetailLoading] = useState(false);
   const [isReverifying, setIsReverifying] = useState(false);
+  // TASK-SDK-07: disclosure info state
+  const [disclosureInfo, setDisclosureInfo] = useState<{
+    aiServiceName: string;
+    modelName: string;
+    externalDestinations: string[];
+  } | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [textAnswer, setTextAnswer] = useState("");
@@ -465,6 +520,25 @@ export function SkillLifecyclePanel({
     }
   };
 
+  // TASK-SDK-07: handoff 発生時に disclosure info を fetch する
+  const fetchDisclosureInfo = async () => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.getDisclosureInfo) return;
+    try {
+      const result = await skillCreatorApi.getDisclosureInfo();
+      if (result.success && result.data) {
+        setDisclosureInfo(result.data);
+      }
+    } catch {
+      // disclosure fetch 失敗は execution authority を Renderer へ移さない
+    }
+  };
+
+  const dismissHandoffGuidance = () => {
+    setDisclosureInfo(null);
+    clearHandoffGuidance();
+  };
+
   const handleSubmitWorkflowInput = async () => {
     if (!workflowSnapshot?.awaitingUserInput) {
       return;
@@ -512,6 +586,12 @@ export function SkillLifecyclePanel({
       setActiveWorkflowId(storePlanId);
     }
   }, [activeWorkflowId, storePlanId]);
+
+  useEffect(() => {
+    if (!createdSkillName && selectedSkillName) {
+      setCreatedSkillName(selectedSkillName);
+    }
+  }, [createdSkillName, selectedSkillName]);
 
   const loadVerifyDetail = async (planId: string) => {
     const skillCreatorApi = getSkillCreatorApi();
@@ -588,6 +668,7 @@ export function SkillLifecyclePanel({
     setActiveWorkflowId(null);
     setVerifyDetail(null);
     setVerifyDetailError(null);
+    setDisclosureInfo(null);
     clearHandoffGuidance();
     onClose();
   };
@@ -652,6 +733,7 @@ export function SkillLifecyclePanel({
             return;
           }
 
+          setApprovedSkillSpec(trimmedRequest);
           setLocalPlanResult(planResult.data);
           setCurrentPlanResult(planResult.data);
           if (planResult.data.planId) {
@@ -694,16 +776,21 @@ export function SkillLifecyclePanel({
 
     try {
       setIsGenerating(true);
-      const result = await skillCreatorApi.executePlan(planId, request.trim());
+      setDisclosureInfo(null);
+      const result = await skillCreatorApi.executePlan(
+        planId,
+        approvedSkillSpec ?? undefined,
+      );
       if (!result.success || !result.data) {
         setGenerationError(result.error ?? "計画実行に失敗しました");
         return;
       }
       const executeResponse = result.data;
       setActiveWorkflowId(planId);
-      // terminal_handoff: planSkill と同様にガイダンス UI へ接続予定
+      // TASK-SDK-07: visible handoff + disclosure summary へ接続
       if (isExecuteTerminalHandoff(executeResponse)) {
         setHandoffGuidance(toHandoffGuidance(executeResponse.bundle));
+        void fetchDisclosureInfo();
         if (skillCreatorApi.getWorkflowState) {
           const snapshotResult = await skillCreatorApi.getWorkflowState(planId);
           if (snapshotResult.success && snapshotResult.data) {
@@ -737,10 +824,12 @@ export function SkillLifecyclePanel({
 
   const handleCancelPlan = () => {
     setLocalPlanResult(null);
+    setApprovedSkillSpec(null);
     clearGenerationState();
     setActiveWorkflowId(null);
     setVerifyDetail(null);
     setVerifyDetailError(null);
+    setDisclosureInfo(null);
   };
 
   const handleCreate = async () => {
@@ -804,6 +893,8 @@ export function SkillLifecyclePanel({
     clearStreamingMessages();
     setLocalError(null);
     setCreatorImproveResult(null);
+    setRuntimeImproveResult(null);
+    setDisclosureInfo(null);
     setShowDetailedAnalysis(false);
 
     selectSkillByName(createdSkillName);
@@ -839,15 +930,64 @@ export function SkillLifecyclePanel({
     clearSkillError();
     setLocalError(null);
     setIsPlanningImprovement(true);
+    setDisclosureInfo(null);
     beginSkillReview();
 
     try {
       const skillCreatorApi = getSkillCreatorApi();
+      const runtimeFeedback = executionPrompt.trim() || defaultExecutionPrompt;
+      if (skillCreatorApi?.improveSkillWithFeedback) {
+        const runtimeResult = await skillCreatorApi.improveSkillWithFeedback(
+          createdSkillName,
+          runtimeFeedback,
+        );
+
+        if (!runtimeResult.success || !runtimeResult.data) {
+          throw new Error(
+            runtimeResult.error ?? "改善提案の取得に失敗しました。",
+          );
+        }
+
+        if (isRuntimeImproveTerminalHandoff(runtimeResult.data)) {
+          setHandoffGuidance(runtimeResult.data.guidance);
+          void fetchDisclosureInfo();
+          appendSessionEntry(setSessionEntries, {
+            role: "assistant",
+            title: "改善提案は handoff に切り替わりました",
+            detail:
+              "この改善は terminal handoff 経路で扱います。ガイダンスに従って手動適用してください。",
+          });
+          return;
+        }
+
+        if (isRuntimeImproveErrorResponse(runtimeResult.data)) {
+          throw new Error(runtimeResult.data.error.message);
+        }
+
+        setCreatorImproveResult(null);
+        setRuntimeImproveResult(runtimeResult.data);
+        completeSkillReview(
+          runtimeResult.data.suggestions.length > 0
+            ? "improve_ready"
+            : "reuse_ready",
+        );
+        appendSessionEntry(setSessionEntries, {
+          role: "assistant",
+          title: "runtime 改善提案を整理しました",
+          detail:
+            runtimeResult.data.suggestions.length > 0
+              ? `${runtimeResult.data.suggestions.length} 件の適用可能な改善候補があります。`
+              : "適用可能な runtime 改善候補は見つかりませんでした。",
+        });
+        return;
+      }
+
       if (!skillCreatorApi?.improveSkill) {
         setCreatorImproveResult({
           suggestions: [],
           applied: false,
         });
+        setRuntimeImproveResult(null);
         appendSessionEntry(setSessionEntries, {
           role: "assistant",
           title: "改善 API は未接続です",
@@ -866,6 +1006,7 @@ export function SkillLifecyclePanel({
         throw new Error(result.error ?? "改善提案の取得に失敗しました。");
       }
 
+      setRuntimeImproveResult(null);
       setCreatorImproveResult(result.data);
       completeSkillReview(
         result.data.suggestions.length > 0 ? "improve_ready" : "reuse_ready",
@@ -887,6 +1028,17 @@ export function SkillLifecyclePanel({
     } finally {
       setIsPlanningImprovement(false);
     }
+  };
+
+  const handleApplyComplete = (result: ApplyImprovementResult) => {
+    appendSessionEntry(setSessionEntries, {
+      role: "assistant",
+      title: "改善提案を適用しました",
+      detail:
+        result.errors.length > 0
+          ? `適用 ${result.applied} 件、スキップ ${result.skipped} 件、エラー ${result.errors.length} 件。`
+          : `適用 ${result.applied} 件、スキップ ${result.skipped} 件。必要ならこのまま再検証できます。`,
+    });
   };
 
   const handleToggleDetailedAnalysis = () => {
@@ -1224,8 +1376,28 @@ export function SkillLifecyclePanel({
                   onCopyCommand={() => {
                     void handleCopyHandoffCommand();
                   }}
-                  onDismiss={clearHandoffGuidance}
+                  onDismiss={dismissHandoffGuidance}
                 />
+              </div>
+            ) : null}
+
+            {disclosureInfo ? (
+              <div
+                className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3"
+                data-testid="skill-lifecycle-disclosure-summary"
+              >
+                <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                  AI Disclosure
+                </p>
+                <p className="mt-2 text-sm text-[var(--text-primary)]">
+                  {disclosureInfo.aiServiceName} ({disclosureInfo.modelName})
+                </p>
+                {disclosureInfo.externalDestinations.length > 0 ? (
+                  <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                    destinations:{" "}
+                    {disclosureInfo.externalDestinations.join(", ")}
+                  </p>
+                ) : null}
               </div>
             ) : null}
           </div>
@@ -1239,8 +1411,26 @@ export function SkillLifecyclePanel({
             onCopyCommand={() => {
               void handleCopyHandoffCommand();
             }}
-            onDismiss={clearHandoffGuidance}
+            onDismiss={dismissHandoffGuidance}
           />
+          {disclosureInfo ? (
+            <div
+              className="mt-3 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3"
+              data-testid="skill-lifecycle-disclosure-summary"
+            >
+              <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+                AI Disclosure
+              </p>
+              <p className="mt-2 text-sm text-[var(--text-primary)]">
+                {disclosureInfo.aiServiceName} ({disclosureInfo.modelName})
+              </p>
+              {disclosureInfo.externalDestinations.length > 0 ? (
+                <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                  destinations: {disclosureInfo.externalDestinations.join(", ")}
+                </p>
+              ) : null}
+            </div>
+          ) : null}
         </div>
       ) : null}
 
@@ -1281,9 +1471,9 @@ export function SkillLifecyclePanel({
           <p className="mt-2 text-sm text-[var(--text-secondary)]">
             {activePlanResult.guidance.reason}
           </p>
-          {activePlanResult.guidance.command ? (
+          {activePlanResult.guidance.terminalCommand ? (
             <code className="mt-2 block rounded-lg bg-[var(--bg-primary)] px-3 py-2 text-xs text-[var(--text-primary)]">
-              {activePlanResult.guidance.command}
+              {activePlanResult.guidance.terminalCommand}
             </code>
           ) : null}
         </div>
@@ -1601,7 +1791,19 @@ export function SkillLifecyclePanel({
               </div>
             </div>
 
-            {creatorImproveResult ? (
+            {runtimeImproveResult ? (
+              <div
+                className="mt-4"
+                data-testid="skill-lifecycle-runtime-improve-result"
+              >
+                <ImprovementProposalPanel
+                  skillName={createdSkillName ?? ""}
+                  suggestions={runtimeImproveResult.suggestions}
+                  onApplyComplete={handleApplyComplete}
+                  onClose={() => setRuntimeImproveResult(null)}
+                />
+              </div>
+            ) : creatorImproveResult ? (
               <div
                 className="mt-4 space-y-3"
                 data-testid="skill-lifecycle-improve-result"
@@ -1719,7 +1921,9 @@ export function SkillLifecyclePanel({
                 <p className="mt-1 text-[var(--text-secondary)]">
                   {creatorImproveResult
                     ? `${creatorImproveResult.suggestions.length} 件の creator 改善候補を整理しました。`
-                    : "creator 提案と詳細分析を段階的に使い分けます。"}
+                    : runtimeImproveResult
+                      ? `${runtimeImproveResult.suggestions.length} 件の runtime 改善候補を適用待ちです。`
+                      : "creator 提案と詳細分析を段階的に使い分けます。"}
                 </p>
               </div>
             </div>

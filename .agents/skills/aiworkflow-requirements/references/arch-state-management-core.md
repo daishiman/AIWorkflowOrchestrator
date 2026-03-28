@@ -751,4 +751,9 @@ Task04 では plan result に加えて runtime workflow snapshot を Renderer �
 | ID | 内容 |
 | --- | --- |
 | `TASK-SDK-04-U1` | `submitUserInput()` 後の phase semantics が engine owner に実装されていない |
-| `TASK-SDK-04-U2` | execute が current textarea 値へ再依存し、canonical plan binding を壊す |
+
+### completed remediation
+
+| ID | 完了日 | 内容 |
+| --- | --- | --- |
+| `TASK-SDK-04-U2` | 2026-03-28 | Renderer local state を textarea draft と approved snapshot に分離し、execute は `approvedSkillSpec` のみを参照するよう是正 |

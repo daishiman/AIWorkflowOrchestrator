@@ -32,13 +32,13 @@ Layer 3 / Layer 4 verify で追加する concern、非対象、受入基準、si
 
 ## 参照資料
 
-| 資料名         | パス                                                                                                                                        | 説明                                 |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| 入力 task      | `../unassigned-task/task-imp-task-sdk-06-layer34-verify-expansion-001.md`                                                                   | Why/What/How と完了条件              |
-| Task06 index   | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`                                         | Layer 1 / 2 verify と non-goal       |
-| Task06 Phase 2 | `../skill-creator-agent-sdk-lane/step-04-par-task-06-verify-and-improve-lifecycle-surface/outputs/phase-2/verify-improve-surface-matrix.md` | Layer 1 / 2 surface の current fact  |
-| Task07 Phase 1 | `../skill-creator-agent-sdk-lane/step-05-seq-task-07-execution-governance-and-handoff-alignment/phase-1-requirements.md`                    | governance owner と handoff boundary |
-| Task08 index   | `../skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/index.md`                                      | session compatibility owner          |
+| 資料名         | パス                                                                                                                     | 説明                                 |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| 入力 task      | `../unassigned-task/task-imp-task-sdk-06-layer34-verify-expansion-001.md`                                                | Why/What/How と完了条件              |
+| Task06 index   | `../../step-04-par-task-06-verify-and-improve-lifecycle-surface/index.md`                                                | Layer 1 / 2 verify と non-goal       |
+| Task06 Phase 2 | `../../step-04-par-task-06-verify-and-improve-lifecycle-surface/outputs/phase-2/verify-improve-surface-matrix.md`        | Layer 1 / 2 surface の current fact  |
+| Task07 Phase 1 | `../skill-creator-agent-sdk-lane/step-05-seq-task-07-execution-governance-and-handoff-alignment/phase-1-requirements.md` | governance owner と handoff boundary |
+| Task08 index   | `../skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/index.md`                   | session compatibility owner          |
 
 ### システム仕様（aiworkflow-requirements）
 

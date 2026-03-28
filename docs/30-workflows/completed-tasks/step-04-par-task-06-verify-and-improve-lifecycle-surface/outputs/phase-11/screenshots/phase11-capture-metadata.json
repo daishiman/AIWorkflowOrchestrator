@@ -1,0 +1,26 @@
+{
+  "workflow": "step-04-par-task-06-verify-and-improve-lifecycle-surface",
+  "capturedAt": "2026-03-27",
+  "mode": "fallback-evidence",
+  "captures": [
+    {
+      "id": "MT-01",
+      "name": "verify-detail-integrated",
+      "surface": "integrated_api",
+      "status": "review_board_fallback",
+      "asset": "TC-11-01-verify-detail-review-board.png"
+    },
+    {
+      "id": "MT-03",
+      "name": "apply-result-integrated",
+      "surface": "integrated_api",
+      "status": "metadata_only"
+    },
+    {
+      "id": "MT-05",
+      "name": "handoff-guidance-side-panel",
+      "surface": "terminal_handoff",
+      "status": "metadata_only"
+    }
+  ]
+}

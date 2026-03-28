@@ -36,7 +36,7 @@ export interface PlanResult {
   type: "integrated_api" | "terminal_handoff";
   planId?: string;
   estimatedSteps?: number;
-  guidance?: { reason: string; command: string };
+  guidance?: HandoffGuidance;
 }
 
 // Re-export for backward compatibility

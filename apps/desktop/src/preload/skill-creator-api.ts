@@ -252,6 +252,22 @@ export interface SkillCreatorAPI {
   onProgress: (
     callback: (progress: SkillCreatorProgress) => void,
   ) => () => void;
+
+  // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
+
+  /**
+   * Shared approval channel 経由で承認応答を送信する (AC-4: enforcement)
+   */
+  respondToApproval: (
+    sessionId: string,
+    operationId: string,
+    action: "approve" | "reject",
+  ) => Promise<IpcResult<unknown>>;
+
+  /**
+   * Shared disclosure channel 経由で AI 利用情報を取得する (AC-4: 説明責務)
+   */
+  getDisclosureInfo: () => Promise<IpcResult<unknown>>;
 }
 
 /**
@@ -435,4 +451,20 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     callback: (progress: SkillCreatorProgress) => void,
   ): (() => void) =>
     safeOn<SkillCreatorProgress>(IPC_CHANNELS.SKILL_CREATOR_PROGRESS, callback),
+
+  // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
+
+  respondToApproval: (
+    sessionId: string,
+    operationId: string,
+    action: "approve" | "reject",
+  ): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.APPROVAL_RESPOND, {
+      sessionId,
+      operationId,
+      action,
+    }),
+
+  getDisclosureInfo: (): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO),
 };
