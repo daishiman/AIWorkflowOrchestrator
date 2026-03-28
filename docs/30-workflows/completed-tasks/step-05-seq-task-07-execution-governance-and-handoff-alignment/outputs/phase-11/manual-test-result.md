@@ -19,16 +19,16 @@
 | Main authority / Renderer consumption の分離 | PASS | なし     |
 | shared governance 再利用                     | PASS | なし     |
 
-### スクリーンショットエビデンス（docs-heavy task）
+### スクリーンショットエビデンス
 
-| テストケース | 撮影ファイル | 仕様照合結果 | 備考                                                         |
-| ------------ | ------------ | ------------ | ------------------------------------------------------------ |
-| TC-11-01     | N/A          | 一致         | docs-heavy task のため markdown walkthrough を正本証跡とする |
-| TC-11-02     | N/A          | 一致         | `captureRequired=false`                                      |
-| TC-11-03     | N/A          | 一致         | Manual Boundary の記述確認                                   |
-| TC-11-04     | N/A          | 一致         | approval / disclosure separation を確認                      |
-| TC-11-05     | N/A          | 一致         | Task08 handoff note を確認                                   |
+| テストケース | 撮影ファイル | 仕様照合結果 | 備考                                                       |
+| ------------ | ------------ | ------------ | ---------------------------------------------------------- |
+| TC-11-01     | 未取得       | 一致         | walkthrough は PASS だが、route priority の実画面証跡不足  |
+| TC-11-02     | 未取得       | 一致         | walkthrough は PASS だが、guard note の実画面証跡不足      |
+| TC-11-03     | 未取得       | 不足         | SkillLifecyclePanel visible handoff の screenshot 未取得   |
+| TC-11-04     | 未取得       | 不足         | disclosure summary / approval surface の screenshot 未取得 |
+| TC-11-05     | 未取得       | 不足         | ExecutionConsoleView host surface の screenshot 未取得     |
 
 ## Overall
 
-PASS。Task07 は shared governance を Skill Creator へ適用する task として自己完結しており、Task08 に渡す前提も十分に追跡できる。
+FAIL。walkthrough だけでは renderer change point の UI/UX 証跡が不足しており、Phase 11 は完了扱いにできない。

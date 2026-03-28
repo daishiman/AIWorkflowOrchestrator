@@ -10,6 +10,7 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
 } from "@testing-library/react";
 import type { TerminalHandoffBundle } from "@repo/shared/types";
 
@@ -57,7 +58,11 @@ type MockStoreState = {
     type: "integrated_api" | "terminal_handoff";
     planId?: string;
     estimatedSteps?: number;
-    guidance?: { reason: string; command: string };
+    guidance?: {
+      reason: string;
+      terminalCommand: string;
+      contextSummary: string;
+    };
   } | null;
   workflowSnapshot: {
     planId: string;
@@ -179,6 +184,7 @@ const mockGetVerifyDetail = vi.fn();
 const mockReverifyWorkflow = vi.fn();
 const mockImproveSkillWithFeedback = vi.fn();
 const mockApplyRuntimeImprovement = vi.fn();
+const mockGetDisclosureInfo = vi.fn();
 
 const buildTerminalHandoffBundle = (): TerminalHandoffBundle => ({
   launcher: "claude",
@@ -206,6 +212,13 @@ beforeEach(() => {
     handoffGuidance: null,
   };
 
+  mockSetHandoffGuidance.mockImplementation((guidance) => {
+    mockStoreState.handoffGuidance = guidance;
+  });
+  mockClearHandoffGuidance.mockImplementation(() => {
+    mockStoreState.handoffGuidance = null;
+  });
+
   (window as Window & { electronAPI?: unknown }).electronAPI = {
     skillCreator: {
       detectMode: mockDetectMode,
@@ -218,6 +231,7 @@ beforeEach(() => {
       applyRuntimeImprovement: mockApplyRuntimeImprovement,
       getVerifyDetail: mockGetVerifyDetail,
       reverifyWorkflow: mockReverifyWorkflow,
+      getDisclosureInfo: mockGetDisclosureInfo,
     },
   };
 
@@ -295,6 +309,14 @@ beforeEach(() => {
     success: true,
     data: {
       accepted: true,
+    },
+  });
+  mockGetDisclosureInfo.mockResolvedValue({
+    success: true,
+    data: {
+      aiServiceName: "Claude",
+      modelName: "claude-sonnet-4-20250514",
+      externalDestinations: ["api.anthropic.com"],
     },
   });
   mockFetchSkills.mockResolvedValue(undefined);
@@ -429,7 +451,8 @@ describe("U-6: terminal_handoff triggers handoff guidance display", () => {
         type: "terminal_handoff",
         guidance: {
           reason: "Large task requires CLI execution",
-          command: "npx skill-creator plan",
+          terminalCommand: "npx skill-creator plan",
+          contextSummary: "surface=skill skill=test-skill",
         },
       },
     });
@@ -604,6 +627,46 @@ describe("U-13: executePlan terminal_handoff triggers early return", () => {
     expect(mockFetchSkills).not.toHaveBeenCalled();
     expect(mockSelectSkillByName).not.toHaveBeenCalled();
     expect(mockSetHandoffGuidance).toHaveBeenCalledTimes(1);
+  });
+
+  it("terminal_handoff 時に disclosure summary を表示し、dismiss で同時に消す", async () => {
+    mockStoreState.currentPlanId = "plan-001";
+    mockStoreState.currentPlanResult = {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+    };
+    mockExecutePlan.mockResolvedValue({
+      success: true,
+      data: {
+        type: "terminal_handoff",
+        bundle: buildTerminalHandoffBundle(),
+      },
+    });
+
+    renderPanel();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+    });
+
+    await waitFor(() => {
+      expect(mockGetDisclosureInfo).toHaveBeenCalledTimes(1);
+      expect(
+        screen.getByTestId("skill-lifecycle-disclosure-summary"),
+      ).toBeTruthy();
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByLabelText("案内を閉じる"));
+    });
+
+    expect(mockClearHandoffGuidance).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId("skill-lifecycle-disclosure-summary"),
+      ).toBeNull();
+    });
   });
 });
 
