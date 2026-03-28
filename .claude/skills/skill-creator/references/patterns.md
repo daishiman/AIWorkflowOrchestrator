@@ -7631,6 +7631,31 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
   - PASS した workaround command を残さず、再検証者が同じ環境落ちを踏む
 - **発見日**: 2026-03-26
 - **関連タスク**: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001
+
+---
+
+### [Architecture] submitUserInput の phase transition semantics を engine owner に集約するパターン（TASK-SDK-04-U1）
+
+- **状況**: `submitUserInput()` が `awaitingUserInput` を消すだけで回答を phase semantics に反映しておらず、`plan_review` / `verification_review` の UI が no-op 状態になっていた
+- **アプローチ**:
+  - `awaitingUserInput.reason` を meaning source とし、`applyPhaseTransition()` で plan_review / verification_review にルーティングする
+  - plan_review: `selectedOptionId` に基づき `ready_to_execute` → execute, `needs_changes` → plan へ遷移
+  - verification_review: `approve` → handoff/pass, `improve` → improve, `reject` → plan/review へ遷移
+  - shared types `SkillCreatorVerifyResult.nextAction` に `"handoff"` を追加
+  - phase 遷移発生時は `phase_transition` artifact（fromPhase, toPhase, reason, selectedOptionId）を記録
+  - 未知の reason / selectedOptionId は no-op フォールバック（NFR-3）
+- **成功パターン**:
+  - engine state の遷移ロジックを 3 つの private メソッドに分離し、switch 文で selectedOptionId を分岐する
+  - Phase 4 テスト計画時に request kind（single_select / free_text）と engine 遷移ロジックの整合を確認する
+  - shared types の union 拡張が必要な場合は Phase 2 設計成果物に含める
+- **失敗パターン**:
+  - `awaitingUserInput` を消すだけで submit 完了扱いにし、phase state を更新しない
+  - request kind が `free_text` のまま selectedOptionId ベースの遷移を組むと、UI が選択肢を表示できない
+  - shared types の型拡張を実装 Phase で初めて追加し、手戻りを発生させる
+- **適用条件**: ユーザー入力が workflow state の phase 遷移を引き起こす場合。request/response の形が揃っていても遷移先の意味論を engine owner に持たせる必要がある
+- **発見日**: 2026-03-28
+- **関連タスク**: TASK-SDK-04-U1
+
 ---
 
 ## 詳細パターン索引

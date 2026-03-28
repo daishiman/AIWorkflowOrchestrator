@@ -51,7 +51,8 @@ export interface SkillCreatorWorkflowArtifact {
     | "execute_result"
     | "handoff_bundle"
     | "verify_result"
-    | "user_input_submission";
+    | "user_input_submission"
+    | "phase_transition";
   createdAt: string;
   payload: unknown;
 }
@@ -293,6 +294,7 @@ export class SkillCreatorWorkflowEngine {
       payload: sanitizeSubmissionPayload(submission),
     });
 
+    const beforePhase = state.currentPhase;
     state.awaitingUserInput = null;
     if (submission.textValue?.trim()) {
       state.verifyResult = {
@@ -305,8 +307,91 @@ export class SkillCreatorWorkflowEngine {
         updatedAt: nowIso(),
       };
     }
+
+    this.applyPhaseTransition(state, request.reason, submission);
+
+    const afterPhase = state.currentPhase;
+    if (beforePhase !== afterPhase) {
+      this.appendArtifact(state, afterPhase, "phase_transition", {
+        fromPhase: beforePhase,
+        toPhase: afterPhase,
+        reason: request.reason,
+        selectedOptionId: submission.selectedOptionId,
+      });
+    }
+
     this.refreshResumeToken(state);
     return this.snapshot(state);
+  }
+
+  private applyPhaseTransition(
+    state: SkillCreatorWorkflowState,
+    reason: SkillCreatorAwaitingUserInputReason,
+    submission: SkillCreatorUserInputSubmission,
+  ): void {
+    switch (reason) {
+      case "plan_review":
+        this.applyPlanReviewTransition(state, submission);
+        break;
+      case "verification_review":
+        this.applyVerificationReviewTransition(state, submission);
+        break;
+      default:
+        // NFR-3: unknown reason はフォールバック（何もしない）
+        break;
+    }
+  }
+
+  private applyPlanReviewTransition(
+    state: SkillCreatorWorkflowState,
+    submission: SkillCreatorUserInputSubmission,
+  ): void {
+    switch (submission.selectedOptionId) {
+      case "ready_to_execute":
+        state.currentPhase = "execute";
+        break;
+      case "needs_changes":
+        state.currentPhase = "plan";
+        break;
+    }
+  }
+
+  private applyVerificationReviewTransition(
+    state: SkillCreatorWorkflowState,
+    submission: SkillCreatorUserInputSubmission,
+  ): void {
+    const base = state.verifyResult ?? {
+      status: "fail" as const,
+      nextAction: "review" as const,
+      updatedAt: nowIso(),
+    };
+
+    switch (submission.selectedOptionId) {
+      case "approve":
+        state.verifyResult = {
+          ...base,
+          status: "pass",
+          nextAction: "handoff",
+          updatedAt: nowIso(),
+        };
+        break;
+      case "improve":
+        state.verifyResult = {
+          ...base,
+          nextAction: "improve",
+          updatedAt: nowIso(),
+        };
+        break;
+      case "reject":
+        state.verifyResult = {
+          ...base,
+          status: "fail",
+          nextAction: "review",
+          updatedAt: nowIso(),
+        };
+        state.currentPhase = "plan";
+        break;
+    }
   }
 
   getVerifyDetail(planId: string): RuntimeSkillCreatorVerifyDetail {

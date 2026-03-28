@@ -98,8 +98,25 @@ Renderer から IPC 経由で駆動する Runtime Skill Creator ワークフロ�
 
 ```
 plan → review (awaiting user input) → execute → verify → [pass] handoff
-                                                       → [fail] improve → reverify → ...
+                ↑ needs_changes              ↑          → [fail] improve → reverify → ...
+                └──────────────────┘         │
+                ↑ reject (verification)      │
+                └────────────────────────────┘
 ```
+
+#### submitUserInput phase transition semantics（TASK-SDK-04-U1）
+
+`submitUserInput()` は `awaitingUserInput.reason` と `selectedOptionId` に基づき phase 遷移を適用する:
+
+| reason | selectedOptionId | 遷移 |
+| --- | --- | --- |
+| `plan_review` | `ready_to_execute` | currentPhase → `execute` |
+| `plan_review` | `needs_changes` | currentPhase → `plan` |
+| `verification_review` | `approve` | verifyResult: `pass` / `handoff` |
+| `verification_review` | `improve` | verifyResult.nextAction: `improve` |
+| `verification_review` | `reject` | currentPhase → `plan`, verifyResult: `fail` / `review` |
+
+遷移発生時は `phase_transition` artifact（`fromPhase`, `toPhase`, `reason`, `selectedOptionId`）を記録する。未知の reason/option は no-op フォールバック。
 
 | Phase | IPC チャネル | 型 |
 | --- | --- | --- |
