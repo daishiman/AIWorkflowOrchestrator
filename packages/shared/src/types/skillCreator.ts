@@ -422,7 +422,7 @@ export interface SkillCreatorVerifyResult {
   status: "pending" | "pass" | "fail";
   reason?: SkillCreatorWorkflowFailureReason;
   message?: string;
-  nextAction?: "review" | "improve";
+  nextAction?: "review" | "improve" | "handoff";
   updatedAt: string;
 }
 
@@ -542,7 +542,7 @@ export interface RuntimeSkillCreatorVerifyDetail {
     | "handoff";
   status: "pending" | "pass" | "fail";
   message?: string;
-  nextAction?: "review" | "improve";
+  nextAction?: "review" | "improve" | "handoff";
   checks: RuntimeSkillCreatorVerifyCheck[];
   evidenceCount: number;
   resolvedSkillCreatorRoot?: string;
