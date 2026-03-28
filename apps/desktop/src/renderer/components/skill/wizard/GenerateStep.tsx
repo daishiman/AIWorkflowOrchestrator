@@ -206,7 +206,7 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
                   {planResult.guidance.reason}
                 </p>
                 <code className="mt-2 block rounded-lg bg-[var(--bg-primary)] px-3 py-2 text-xs text-[var(--text-primary)]">
-                  {planResult.guidance.command}
+                  {planResult.guidance.terminalCommand}
                 </code>
               </div>
             )}

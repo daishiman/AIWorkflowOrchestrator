@@ -61,8 +61,8 @@ Skill Creator レーンが `integrated_api` を正規レーン、`terminal_hando
 | `apps/desktop/src/main/services/runtime/ApprovalGate.ts`              | one-time token、TTL 300 秒、single-use を強制する                                              |
 | `apps/desktop/src/main/ipc/creatorHandlers.ts`                        | Skill Creator public surface の invoke 境界を持つ                                              |
 | `apps/desktop/src/preload/channels.ts`                                | `approval:*` / `execution:get-disclosure-info` は shared channel として存在する                |
-| `apps/desktop/src/preload/skill-creator-api.ts`                       | Skill Creator runtime API はあるが approval / disclosure wrapper は未定義                      |
-| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`  | `executePlan()` handoff は console-only TODO が残る                                            |
+| `apps/desktop/src/preload/skill-creator-api.ts`                       | `respondToApproval()` / `getDisclosureInfo()` が shared channel wrapper として追加済み         |
+| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`  | visible handoff と disclosure summary は接続済み。approval request surface は未接続            |
 
 ## Task08 へ渡す canonical 前提
 

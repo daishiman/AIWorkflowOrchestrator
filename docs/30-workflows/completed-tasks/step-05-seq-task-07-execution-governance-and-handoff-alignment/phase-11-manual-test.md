@@ -16,7 +16,7 @@ design task として、governance bundle、visible handoff、approval/disclosur
 
 - manual test checklist を作成する
 - walkthrough 結果と discovered issues を記録する
-- docs-heavy task 向け screenshot plan を整理する
+- UI 変更点に対する screenshot plan を整理し、未取得 evidence は gap として明記する
 
 ## テストケース
 
@@ -30,19 +30,19 @@ design task として、governance bundle、visible handoff、approval/disclosur
 
 ## 手動テスト方針
 
-- 本 task は設計 task のため、Phase 11 は design walkthrough を主 evidence とする
-- screenshot は `captureRequired=false` を基本とし、主要根拠は checklist / result / report に置く
-- visible handoff と shared governance 再利用を重点観点にする
+- 本 task は docs-only workflow だが、renderer change point を含むため walkthrough と UI evidence の両方を確認する
+- screenshot が未取得の項目は PASS にせず、gap と unassigned task 候補へ落とす
+- visible handoff、disclosure summary、approval surface、shared governance 再利用を重点観点にする
 
 ## 画面カバレッジマトリクス
 
-| テストケース | surface                  | 状態                 | 証跡ファイル                             | 判定 | 備考                            |
-| ------------ | ------------------------ | -------------------- | ---------------------------------------- | ---- | ------------------------------- |
-| TC-11-01     | policy summary           | route priority 確認  | `outputs/phase-11/manual-test-result.md` | PASS | docs-heavy task                 |
-| TC-11-02     | guard note               | consumer token guard | `outputs/phase-11/manual-test-result.md` | PASS | screenshot 不要                 |
-| TC-11-03     | handoff block            | Manual Boundary      | `outputs/phase-11/manual-test-result.md` | PASS | shared `HandoffGuidance` を確認 |
-| TC-11-04     | approval/disclosure note | separation 確認      | `outputs/phase-11/manual-test-result.md` | PASS | existing shared channel を確認  |
-| TC-11-05     | downstream note          | Task08 前提確認      | `outputs/phase-11/manual-test-result.md` | PASS | boundary walkthrough            |
+| テストケース | surface                  | 状態                 | 証跡ファイル                             | 判定 | 備考               |
+| ------------ | ------------------------ | -------------------- | ---------------------------------------- | ---- | ------------------ |
+| TC-11-01     | policy summary           | route priority 確認  | `outputs/phase-11/manual-test-result.md` | PASS | walkthrough で確認 |
+| TC-11-02     | guard note               | consumer token guard | `outputs/phase-11/manual-test-result.md` | PASS | walkthrough で確認 |
+| TC-11-03     | handoff block            | Manual Boundary      | `outputs/phase-11/manual-test-result.md` | FAIL | screenshot 未取得  |
+| TC-11-04     | approval/disclosure note | separation 確認      | `outputs/phase-11/manual-test-result.md` | FAIL | screenshot 未取得  |
+| TC-11-05     | downstream note          | Task08 前提確認      | `outputs/phase-11/manual-test-result.md` | FAIL | UI host 証跡未取得 |
 
 ## 参照資料
 
@@ -59,13 +59,13 @@ design task として、governance bundle、visible handoff、approval/disclosur
 
 ## 成果物
 
-| 成果物                | パス                                        | 説明                         |
-| --------------------- | ------------------------------------------- | ---------------------------- |
-| manual test checklist | `outputs/phase-11/manual-test-checklist.md` | walkthrough 観点             |
-| manual test result    | `outputs/phase-11/manual-test-result.md`    | 実施結果                     |
-| manual test report    | `outputs/phase-11/manual-test-report.md`    | 総括                         |
-| discovered issues     | `outputs/phase-11/discovered-issues.md`     | 発見事項                     |
-| screenshot plan       | `outputs/phase-11/screenshot-plan.json`     | docs-heavy task 用 inventory |
+| 成果物                | パス                                        | 説明                              |
+| --------------------- | ------------------------------------------- | --------------------------------- |
+| manual test checklist | `outputs/phase-11/manual-test-checklist.md` | walkthrough 観点                  |
+| manual test result    | `outputs/phase-11/manual-test-result.md`    | 実施結果                          |
+| manual test report    | `outputs/phase-11/manual-test-report.md`    | 総括                              |
+| discovered issues     | `outputs/phase-11/discovered-issues.md`     | 発見事項                          |
+| screenshot plan       | `outputs/phase-11/screenshot-plan.json`     | UI evidence inventory と gap 記録 |
 
 ## 統合テスト連携
 
@@ -76,5 +76,5 @@ design task として、governance bundle、visible handoff、approval/disclosur
 
 - [ ] governance bundle の walkthrough が記録されている
 - [ ] approval / disclosure / manual boundary の結論が追跡できる
-- [ ] docs-heavy task に合わせた evidence bundle が揃っている
+- [ ] walkthrough と screenshot evidence bundle が揃っている
 - [ ] **本Phase内の全タスクを100%実行完了**

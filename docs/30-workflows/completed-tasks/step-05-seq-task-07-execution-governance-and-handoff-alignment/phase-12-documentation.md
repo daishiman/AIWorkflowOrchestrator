@@ -32,26 +32,26 @@ governance bundle の正本、Skill Creator workflow、既存 unassigned task、
 
 ## 参照資料
 
-| 資料名                | パス                           | 説明                   |
-| --------------------- | ------------------------------ | ---------------------- |
-| Phase 1 要件          | `phase-1-requirements.md`      | AC-1〜AC-6             |
-| Phase 2 設計          | `phase-2-design.md`            | topology / contract    |
-| Phase 4 テスト        | `phase-4-test-creation.md`     | test matrix            |
-| Phase 5 実装          | `phase-5-implementation.md`    | 実装対象と drift 吸収  |
-| Phase 6 拡充          | `phase-6-test-expansion.md`    | edge case              |
-| Phase 7 coverage      | `phase-7-coverage-check.md`    | coverage 観点          |
-| Phase 8 refactoring   | `phase-8-refactoring.md`       | 命名と責務整理         |
-| Phase 9 QA            | `phase-9-quality-assurance.md` | 品質観点               |
-| Phase 10 最終レビュー | `phase-10-final-review.md`     | gate 判定              |
-| Phase 11 手動テスト   | `phase-11-manual-test.md`      | docs-heavy walkthrough |
+| 資料名                | パス                           | 説明                               |
+| --------------------- | ------------------------------ | ---------------------------------- |
+| Phase 1 要件          | `phase-1-requirements.md`      | AC-1〜AC-6                         |
+| Phase 2 設計          | `phase-2-design.md`            | topology / contract                |
+| Phase 4 テスト        | `phase-4-test-creation.md`     | test matrix                        |
+| Phase 5 実装          | `phase-5-implementation.md`    | 実装対象と drift 吸収              |
+| Phase 6 拡充          | `phase-6-test-expansion.md`    | edge case                          |
+| Phase 7 coverage      | `phase-7-coverage-check.md`    | coverage 観点                      |
+| Phase 8 refactoring   | `phase-8-refactoring.md`       | 命名と責務整理                     |
+| Phase 9 QA            | `phase-9-quality-assurance.md` | 品質観点                           |
+| Phase 10 最終レビュー | `phase-10-final-review.md`     | gate 判定                          |
+| Phase 11 手動テスト   | `phase-11-manual-test.md`      | walkthrough + UI evidence gap 監査 |
 
 ## 実行手順
 
 ### ステップ1: Task 12-1〜12-3 を更新する
 
-- `implementation-guide.md` に Part 1 / Part 2 を記載する
-- `system-spec-update-summary.md` に Step 1-A〜Step 2 の判定と `.claude` 正本更新を記録する
-- `documentation-changelog.md` に current wave の変更ファイルと validator 結果を記録する
+- `outputs/phase-12/implementation-guide.md` に Part 1 / Part 2 を記載する
+- `outputs/phase-12/system-spec-update-summary.md` に Step 1-A〜Step 2 の判定と `.claude` 正本更新を記録する
+- `outputs/phase-12/documentation-changelog.md` に current wave の変更ファイルと validator 結果を記録する
 
 ### ステップ2: Task 12-4〜12-6 を更新する
 
