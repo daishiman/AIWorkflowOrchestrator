@@ -302,16 +302,10 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
   // 4. Graceful degradation テスト
   // ------------------------------------------------------------------
   describe("Graceful degradation → explicit error (TASK-RT-02)", () => {
-    it("llmAdapter 未注入時は explicit error を返す", async () => {
+    it("llmAdapter 未注入時は initializing エラーを返す (TASK-RT-01)", async () => {
       const facadeWithoutLLM = new RuntimeSkillCreatorFacade({
         skillExecutor: mockSkillExecutor,
-        // llmAdapter 未指定
-        // resourceLoader 未指定
-      });
-      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
-        type: "integrated_api",
-        apiKey: "sk-test",
-        permissionMode: "default",
+        // llmAdapter 未指定 → status === "initializing"
       });
 
       const result = await facadeWithoutLLM.plan(
@@ -320,12 +314,12 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
         "sk-test",
       );
 
-      // TASK-RT-02: explicit error union
+      // TASK-RT-01: initializing ステータスチェックが resolveDecision より先に実行
       expect(result).toEqual({
         success: false,
         error: {
           code: "llm_adapter_unavailable",
-          message: "LLM アダプタが利用できません。設定を確認してください。",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
         },
       });
     });

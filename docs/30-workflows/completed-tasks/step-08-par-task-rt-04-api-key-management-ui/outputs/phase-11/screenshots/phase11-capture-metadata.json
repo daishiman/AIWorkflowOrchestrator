@@ -1,0 +1,40 @@
+{
+  "taskId": "TASK-RT-04",
+  "generatedAt": "2026-03-29T07:28:30.174Z",
+  "captureMethod": "current_build_vite_playwright",
+  "baseUrl": "http://127.0.0.1:5198",
+  "harnessPath": "/phase11-task-rt-04-skill-authkey.html",
+  "viewport": {
+    "width": 1440,
+    "height": 2200
+  },
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "scenario": "initial",
+      "file": "TC-11-01-skill-authkey-initial.png",
+      "output": "outputs/phase-11/screenshots/TC-11-01-skill-authkey-initial.png",
+      "note": "SkillLifecyclePanel 上で未設定状態と保存 CTA を確認する。",
+      "capturedAt": "2026-03-29T07:28:28.337Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-11-02",
+      "scenario": "saved",
+      "file": "TC-11-02-skill-authkey-action.png",
+      "output": "outputs/phase-11/screenshots/TC-11-02-skill-authkey-action.png",
+      "note": "保存成功後、設定済みバッジと保存済み source を確認する。",
+      "capturedAt": "2026-03-29T07:28:29.290Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-11-03",
+      "scenario": "env-fallback",
+      "file": "TC-11-03-skill-authkey-fallback.png",
+      "output": "outputs/phase-11/screenshots/TC-11-03-skill-authkey-fallback.png",
+      "note": "env-fallback 状態で設定済みバッジと環境変数 source を確認する。",
+      "capturedAt": "2026-03-29T07:28:30.096Z",
+      "captureMethod": "current_build_vite_playwright"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-29T12:37:34.097Z",
-  "totalKeywords": 2533,
+  "generated": "2026-03-29T14:59:35.493Z",
+  "totalKeywords": 2542,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -37,6 +37,7 @@
       "security-skill-ipc-core.md",
       "spec-splitting-guidelines.md",
       "task-workflow-completed-ut-06-safety-gate.md",
+      "ui-ux-feature-components-core.md",
       "ui-ux-feature-skill-stream.md",
       "ui-ux-forms.md",
       "ui-ux-settings-core.md",
@@ -1231,6 +1232,7 @@
       "security-skill-execution.md",
       "security-skill-ipc-core.md",
       "task-workflow-completed-skill-create-ui-integration.md",
+      "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-reference.md",
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
@@ -1250,6 +1252,7 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -2228,6 +2231,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
       "workflow-ai-runtime-authmode-unification.md",
       "workflow-ai-runtime-execution-responsibility-realignment.md"
@@ -2741,6 +2745,7 @@
     "shared": [
       "arch-execution-capability-contract.md",
       "directory-structure-core.md",
+      "lessons-learned-test-typesafety.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "workflow-light-theme-global-remediation.md"
     ],
@@ -2993,6 +2998,7 @@
     ],
     "Panel": [
       "arch-state-management-core.md",
+      "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
       "ui-ux-settings-core.md"
     ],
@@ -4178,6 +4184,7 @@
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
@@ -6167,7 +6174,8 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md"
     ],
     "key": [
-      "lessons-learned-auth-ipc-fallback-registration-settings.md"
+      "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "ハンドラ登録漏れ修正": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
@@ -6510,6 +6518,8 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-test-typesafety.md",
+      "ui-ux-feature-components-core.md",
       "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Event": [
@@ -6788,6 +6798,28 @@
     ],
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "authkey": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "api": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "spec-splitting-guidelines.md"
+    ],
+    "management": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ui": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
+      "logs-archive-2026-01-skill-selector-todo-scan-template.md",
+      "logs-archive-2026-01-system-spec-gap-skill-retry.md",
+      "logs-archive-2026-01-topic-map-remember-choice.md",
+      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "spec-splitting-guidelines.md",
+      "ui-ux-feature-components-core.md"
     ],
     "governance": [
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -7157,6 +7189,24 @@
       "lessons-learned-test-typesafety.md"
     ],
     "品質": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "CONS": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "sdkMessageUtils": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "helper": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "抽出": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "個別カバレッジ計測": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "個別ファイルカバレッジ計測": [
       "lessons-learned-test-typesafety.md"
     ],
     "provider": [
@@ -7899,17 +7949,6 @@
     ],
     "チャネル定義": [
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md"
-    ],
-    "ui": [
-      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
-      "logs-archive-2026-01-skill-selector-todo-scan-template.md",
-      "logs-archive-2026-01-system-spec-gap-skill-retry.md",
-      "logs-archive-2026-01-topic-map-remember-choice.md",
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "spec-splitting-guidelines.md",
-      "ui-ux-feature-components-core.md"
     ],
     "ux": [
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
@@ -10251,9 +10290,6 @@
     "architecture": [
       "spec-splitting-guidelines.md"
     ],
-    "api": [
-      "spec-splitting-guidelines.md"
-    ],
     "security": [
       "spec-splitting-guidelines.md",
       "task-workflow-completed-skill-lifecycle-security.md"
@@ -11106,6 +11142,9 @@
     "SkillStreamingView": [
       "ui-ux-feature-components-advanced.md",
       "ui-ux-feature-skill-stream.md"
+    ],
+    "Key": [
+      "ui-ux-feature-components-core.md"
     ],
     "Community": [
       "ui-ux-feature-components-core.md"

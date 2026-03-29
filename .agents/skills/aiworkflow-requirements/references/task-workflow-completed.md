@@ -5,6 +5,63 @@
 
 ## 完了タスク
 
+### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-RT-01 |
+| ステータス | **完了** |
+| タイプ | runtime bug-fix / error-propagation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-29 |
+| 対象 | `skill-creator:plan` の adapter 初期化失敗伝播 |
+| 成果物 | `docs/30-workflows/step-08-par-task-rt-01-llm-adapter-error-propagation/` |
+
+#### 実施内容
+
+- `RuntimeSkillCreatorFacade` に `llmAdapterStatus` / `llmAdapterFailureReason` surface を追加し、`plan()` の silent failure を error response へ置換
+- `packages/shared/src/types/skillCreator.ts` に `LLMAdapterStatus` / `SkillCreatorErrorCode` / `RuntimeSkillCreatorPlanErrorResponse` を追加し、`RuntimeSkillCreatorPlanResponse` を union 拡張
+- `ipc/index.ts` の fire-and-forget 初期化 catch で `setLLMAdapterFailed(reason)` を呼び、`failed` 状態を記録
+- IPC 境界の outer/inner 契約（`IpcResult.success` と `data.success`）を `skillCreatorHandlers.runtime.test.ts` で検証
+
+---
+
+### タスク: TASK-RT-04 skill-authkey-api-key-management-ui（2026-03-29）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-RT-04 |
+| ステータス | **完了** |
+| タイプ | implementation / ui |
+| 優先度 | 中 |
+| 完了日 | 2026-03-29 |
+| 対象 | `ApiKeySettingsPanel` 新規実装 / `SkillLifecyclePanel` 補助導線統合 / `ApiKeyStatus` 型追加 |
+| 成果物 | `docs/30-workflows/step-08-par-task-rt-04-api-key-management-ui/` |
+
+#### 実施内容
+
+- `apps/desktop/src/renderer/components/skill/ApiKeySettingsPanel.tsx` を新規作成（`auth-key:exists/set/delete` IPC 再利用、30 tests PASS）
+- `packages/shared/src/types/skillCreator.ts` に `ApiKeyStatus` 型を追加（`not_set / validating / configured / error`）
+- `packages/shared/src/types/index.ts` に `ApiKeyStatus` をエクスポート追加
+- `SkillLifecyclePanel.tsx` に `<ApiKeySettingsPanel />` を補助導線として組み込み
+- `SettingsView` を主導線・`SkillLifecyclePanel` を補助導線として責務境界を文書化
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 解決策 |
+| --- | --- | --- |
+| esbuild バイナリアーキ不一致（`darwin-arm64` vs `darwin-x64`） | `pnpm install` 後に optional deps が現在アーキと合わない場合 | `pnpm install --force` で optional dependency を再解決 |
+| Settings vs Lifecycle 責務境界の曖昧さ | 同一 IPC チャネルを複数 surface で再利用する場合 | 主導線/補助導線の役割を workflow index.md に明記し仕様固定 |
+
+#### 検証証跡
+
+- `ApiKeySettingsPanel.test.tsx`: 30 tests PASS
+- Phase 11 screenshots: TC-11-01〜TC-11-03（3枚）current build 撮影
+- `api-ipc-system-core.md`: Runtime lane 補助導線ルール追記完了
+- `interfaces-agent-sdk-skill-reference.md`: `ApiKeyStatus` 型追記完了
+- 未タスク3件（UT-TASK-RT-04-*）: すべて resolved
+
+---
 
 ### タスク: TASK-SDK-03 context-budget-and-resource-selection（2026-03-27）
 
@@ -750,7 +807,7 @@
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
 | `UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001` | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface の統合 | 高 | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
-| `UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001` | `RuntimePolicyResolver.resolveFromServices()` への subscription 判定 service 統合 | 中 | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
+| `UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001` | `RuntimePolicyResolver.resolveFromServices()` への subscription 判定 service 統合 | 中 | `docs/30-workflows/completed-tasks/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
 
 #### 苦戦箇所
 
@@ -800,7 +857,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
+| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
 | `UT-CLEANUP-AI-CHECK-CONNECTION-001` | legacy health route cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
 | `UT-CLEANUP-RUNTIME-RESOLVER-001` | deprecated resolver cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
 | `UT-DESIGN-SANITIZE-PLACEMENT-001` | sanitize 配置判断の固定 | 中 | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
@@ -1104,7 +1161,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow で current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow で current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | 中 | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 
 ### タスク: TASK-SKILL-LIFECYCLE-01 スキルライフサイクル一次導線・画面責務基盤（2026-03-11）
 
@@ -1351,7 +1408,7 @@
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
-| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
+| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
 
 ### タスク: TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 canonical bridge / workflow ledger governance 設計（2026-03-23）
 
@@ -1462,6 +1519,36 @@
 | UT-7 | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH |
 | UT-8 | Main→Renderer への承認要求プッシュ通知（webContents.send） | HIGH |
 | UT-9 | abort/done 時に ApprovalGate.revokeAll() でトークンクリア | MEDIUM |
+
+---
+
+### タスク: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 SkillExecutor/sdkMessageNormalizer 型ガード重複解消（2026-03-29）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | refactor |
+| 優先度 | low |
+| 完了日 | 2026-03-29 |
+| 関連Issue | #1692 |
+| 由来 | TASK-RT-06 Phase 8 調査（unassigned-task-detection.md） |
+| 成果物 | `docs/30-workflows/skill-executor-normalizer-consolidation/` |
+
+#### 実施内容
+
+- `sdkMessageUtils.ts` を新規作成し、`asSdkMessageRecord()` / `getSdkMessageType()` を共通 helper として抽出
+- `SkillExecutor.ts` の `convertToStreamMessage()` が shared helper を利用するよう更新
+- `sdkMessageNormalizer.ts` が shared helper を利用するよう更新
+- `sdkMessageUtils.test.ts` 新規作成（21件、Line/Branch/Function 100%）
+- `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings
+- vitest 再実行は esbuild platform mismatch により環境 blocked（manual-test-result.md に記録済み）
+
+#### Phase 12 未タスク
+
+| 未タスクID | 内容 | 優先度 |
+| --- | --- | --- |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 | `SkillStreamMessage` と `SkillCreatorSdkEvent` の出力型を統一 | low |
 | UT-10 | disclosureHandlers.ts 独立テスト作成 | LOW |
 
 ---

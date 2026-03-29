@@ -22,6 +22,7 @@ import type {
   TerminalHandoffBundle,
 } from "@repo/shared/types";
 import type { PlanResult } from "../../store/slices/agentSlice";
+import { ApiKeySettingsPanel } from "./ApiKeySettingsPanel";
 import {
   useBeginSkillReview,
   useClearHandoffGuidance,
@@ -1731,6 +1732,9 @@ export function SkillLifecyclePanel({
           )}
         </div>
       ) : null}
+
+      {/* API キー設定 (TASK-RT-04) */}
+      <ApiKeySettingsPanel />
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.9fr)]">
         <section className="space-y-4">

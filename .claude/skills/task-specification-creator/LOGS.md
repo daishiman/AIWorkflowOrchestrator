@@ -3,6 +3,7 @@
 ## 役割
 
 ---
+<<<<<<< HEAD
 ## 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out hardening
 
 ### 変更内容
@@ -12,6 +13,29 @@
 - esbuild mismatch により vitest 再実行不能だったため、historical acceptance evidence と grep を代替証跡として使用
 
 ---
+||||||| 6803086ac
+=======
+## 2026-03-29: coverage-standards.md v1.4.0 更新（Phase 7 グローバル閾値回避ガイドライン追加）
+
+### 変更内容
+
+- `references/coverage-standards.md` v1.4.0: 「プロジェクト全体グローバル閾値が失敗する場合の対処（Phase 7）」セクションを追加
+  - 対象ファイルを `--coverage.include` で絞り込む個別計測コマンドを追記
+  - 判定フロー（グローバル閾値失敗 → 個別計測 → PASS/FAIL）を表で明示
+  - 背景: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 の Phase 7 スキルフィードバック反映
+
+---
+## 2026-03-29: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 完了同期
+- SkillExecutor/sdkMessageNormalizer の SDK メッセージ前処理重複を sdkMessageUtils.ts に集約
+- asSdkMessageRecord() / getSdkMessageType() を共通 helper として抽出
+- lane 固有の出力型（SkillStreamMessage / SkillCreatorSdkEvent）は変更なし
+- Phase 11 NON_VISUAL 証跡を walkthrough + `screenshot-plan.json` + placeholder PNG へ是正
+- Phase 12 の compliance false positive を補正し、root / outputs `artifacts.json` を同期
+- `validate-phase-output.js --phase 12` PASS、`verify-all-specs.js` PASS（warning 28）
+- `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings、`vitest` rerun は environment blocked
+
+---
+>>>>>>> origin/main
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
 
 ### 変更内容

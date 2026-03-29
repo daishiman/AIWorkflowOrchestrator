@@ -49,7 +49,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/skill-lifecycle-routing/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
 
 ---
 
@@ -136,15 +136,15 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-FIX-SKILLANALYSIS-ARIA-LABEL-001 | SkillAnalysisView 選択適用ボタン aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillanalysis-aria-label-001.md` |
-| UT-FIX-SKILLANALYSIS-ARIA-LABEL-002 | SkillAnalysisView 全自動改善ボタン aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillanalysis-aria-label-002.md` |
-| UT-FIX-SKILLANALYSIS-ARIA-LABEL-003 | SkillAnalysisView 再試行ボタン aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillanalysis-aria-label-003.md` |
-| UT-FIX-SKILLIMPORT-ARIA-LABEL-001 | SkillImportDialog import button aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillimport-aria-label-001.md` |
-| UT-FIX-APP-CONSOLE-LOG-001 | App 初期化 console.log の削除または debug guard 化 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-app-console-log-001.md` |
-| UT-FIX-APP-INLINE-SELECTOR-001 | App.tsx の inline selector 整理 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-app-inline-selector-001.md` |
-| UT-FIX-VIEWHISTORY-ACCUMULATION-001 | viewHistory 蓄積制御の整理 | 中 | `docs/30-workflows/unassigned-task/task-ut-fix-viewhistory-accumulation-001.md` |
-| UT-FIX-AGENTVIEW-CTA-ACT-WRAP-001 | AgentView CTA test の act warning 解消 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-agentview-cta-act-wrap-001.md` |
-| UT-FIX-VERIFY-ALL-SPECS-BLOCKED-PHASE-001 | `verify-all-specs` の blocked phase 判定整合 | 中 | `docs/30-workflows/unassigned-task/task-ut-fix-verify-all-specs-blocked-phase-001.md` |
+| UT-FIX-SKILLANALYSIS-ARIA-LABEL-001 | SkillAnalysisView 選択適用ボタン aria-label 追加 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-skillanalysis-aria-label-001.md` |
+| UT-FIX-SKILLANALYSIS-ARIA-LABEL-002 | SkillAnalysisView 全自動改善ボタン aria-label 追加 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-skillanalysis-aria-label-002.md` |
+| UT-FIX-SKILLANALYSIS-ARIA-LABEL-003 | SkillAnalysisView 再試行ボタン aria-label 追加 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-skillanalysis-aria-label-003.md` |
+| UT-FIX-SKILLIMPORT-ARIA-LABEL-001 | SkillImportDialog import button aria-label 追加 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-skillimport-aria-label-001.md` |
+| UT-FIX-APP-CONSOLE-LOG-001 | App 初期化 console.log の削除または debug guard 化 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-app-console-log-001.md` |
+| UT-FIX-APP-INLINE-SELECTOR-001 | App.tsx の inline selector 整理 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-app-inline-selector-001.md` |
+| UT-FIX-VIEWHISTORY-ACCUMULATION-001 | viewHistory 蓄積制御の整理 | 中 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-viewhistory-accumulation-001.md` |
+| UT-FIX-AGENTVIEW-CTA-ACT-WRAP-001 | AgentView CTA test の act warning 解消 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-agentview-cta-act-wrap-001.md` |
+| UT-FIX-VERIFY-ALL-SPECS-BLOCKED-PHASE-001 | `verify-all-specs` の blocked phase 判定整合 | 中 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-verify-all-specs-blocked-phase-001.md` |
 
 ---
 
@@ -274,7 +274,7 @@
 
 | 未タスクID                                                   | 概要                                                                    | 優先度 | タスク仕様書                                                                                                          |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
-| UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001            | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）の必須化 | 中     | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-subagent-execution-log-guard-001.md`            |
+| UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001            | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）の必須化 | 中     | `docs/30-workflows/completed-tasks/task-imp-task10a-d-subagent-execution-log-guard-001.md`            |
 | UT-IMP-TASK10A-D-SCREENSHOT-PURPOSE-DISAMBIGUATION-GUARD-001 | Phase 11 画面証跡で状態名+検証目的を分離し、TC意図混同を防ぐ運用ガード  | 中     | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md` |
 
 ### 仕様書別SubAgent実行ログ（2026-03-04）

@@ -200,6 +200,15 @@ export interface ExternalApiConfig {
 }
 
 // ============================================
+// API キー管理型 (TASK-RT-04)
+// ============================================
+
+/**
+ * API キーの状態
+ */
+export type ApiKeyStatus = "not_set" | "validating" | "configured" | "error";
+
+// ============================================
 // 内部型（サービス内部使用）
 // ============================================
 
@@ -320,6 +329,18 @@ export interface LoadedWorkflowManifest extends WorkflowManifest {
   cacheKey: string;
   resources: NormalizedWorkflowManifestResourceDescriptor[];
 }
+
+// ============================================
+// LLM Adapter Status (TASK-RT-01)
+// ============================================
+
+/** LLMAdapter の初期化ステータス */
+export type LLMAdapterStatus = "ready" | "initializing" | "failed";
+
+/** Skill Creator のエラーコード */
+export type SkillCreatorErrorCode =
+  | "LLM_ADAPTER_FAILED"
+  | "LLM_ADAPTER_INITIALIZING";
 
 // ============================================
 // Runtime Skill Creator IPC contract
@@ -525,6 +546,8 @@ export interface RuntimeSkillCreatorPlanResult {
   scripts: Array<{ name: string; purpose: string }>;
   triggers: string[];
   anchors: string[];
+  /** LLMAdapter の現在のステータス (TASK-RT-01) */
+  adapterStatus?: LLMAdapterStatus;
 }
 
 /**
