@@ -1,13 +1,32 @@
-# Phase 6 Extended Test Record
+# Phase 6: 拡張テスト記録
 
-## 追加で担保した edge case
+## 追加テストケース (11件)
 
-- `system/init` 不在時でも fallback error event を生成して downstream 契約を空にしない
-- `permission_denials` が result 配下 / top-level どちらでも抽出可能
-- failure 時も `sdkEvents` と `sourceProvenance` を execute result / workflow artifact に残す
-- raw SDK message が object でも未知形状なら無視し、既知イベントのみ lane 契約へ落とす
+### cancellation / timeout (3件)
 
-## 備考
+- timeout stop_reason の result 正規化
+- cancelled stop_reason の result 正規化
+- 中断後のストリームで sessionId 保持
 
-- session resume 自体の UI は scope 外だが、`sessionId` を execute result に保持する前提を追加した
-- SDK raw stream の完全な schema は外部依存のため、正規化は寛容パーサで吸収する方針とした
+### permission denial variants (3件)
+
+- 複数ツールの denial を個別に記録
+- permission_denied=false で permissionDenials なし
+- denied_tool/denied_reason 欠損時のデフォルト
+
+### resumed session (3件)
+
+- context 既存 sessionId の伝播
+- 新しい init sessionId が既存を上書き
+- init なしで既存 sessionId 使用
+
+### その他 (2件)
+
+- 未知 system subtype → error
+- 100件の大量メッセージストリーム正規化
+
+## テスト総数
+
+- Phase 4: 21件
+- Phase 6: 11件
+- **合計: 32件** (全 Green)

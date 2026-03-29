@@ -1,12 +1,31 @@
-# Phase 8 Refactoring Record
+# Phase 8: リファクタリング記録
 
-## 整理内容
+## Task 1: duplicate 変換ロジックの確認
 
-- SDK 生 message 解釈を `RuntimeSkillCreatorFacade` 内の正規化関数へ集約
-- `SkillExecutor` は raw capture のみを担当し、lane 契約への意味付け責務を持たない形へ整理
-- workflow artifact には execute summary と normalized event をまとめて保存し、後続 task が raw SDK schema に依存しないようにした
+### 調査結果
 
-## 削減した重複
+SDK メッセージのパース/変換は以下の箇所に存在:
 
-- `session_id` / `stop_reason` / `permission_denials` の読み出しを helper 群へ統一
-- error/failure 時の execute summary 組み立てを result オブジェクトへ統一
+| ファイル                               | 対象レイヤー       | 目的                                  |
+| -------------------------------------- | ------------------ | ------------------------------------- |
+| `sdkMessageNormalizer.ts`              | skill-creator lane | **本タスクの正規化**                  |
+| `SkillExecutor.ts` (L913-922)          | skill execution    | SkillStreamMessage 変換（別レイヤー） |
+| `SkillStreamDisplay.tsx`               | renderer           | 表示用の type 判定（別レイヤー）      |
+| `useAgent.ts` / `useSkillExecution.ts` | renderer hooks     | Agent SDK 用（別レイヤー）            |
+
+skill-creator lane 内での重複はなし。`SkillExecutor` や renderer 側のパースは skill execution lane の責務であり、本タスクのスコープ外。
+
+### 結論: **重複変換ロジックなし**（lane 間で責務が分離されている）
+
+## Task 2: SDK 生イベント依存の除去
+
+### 実施内容
+
+- normalizer 実装から不要な `SkillCreatorSdkEventType` 型アサーション（`as SkillCreatorSdkEventType`）を7箇所除去
+- TypeScript の型推論がリテラル型を正しく推論するため、明示的なアサーションは不要
+- import からも `SkillCreatorSdkEventType` を除去
+
+### リファクタリング後のテスト結果
+
+- **全32テスト Green**
+- カバレッジに影響なし

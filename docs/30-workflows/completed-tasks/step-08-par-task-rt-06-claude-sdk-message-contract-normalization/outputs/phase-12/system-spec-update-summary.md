@@ -1,32 +1,51 @@
-# System Spec Update Summary (TASK-RT-06)
+# Phase 12 Task 2: システム仕様書更新サマリー
 
-## Step 1-A タスク完了記録
+## Step 1-A: タスク完了記録
 
-| 対象                                       | 状態     | 備考                                 |
-| ------------------------------------------ | -------- | ------------------------------------ |
-| workflow docs (`step-08-par-task-rt-06-*`) | 更新済み | Phase 11/12 成果物を補完             |
-| aiworkflow-requirements 台帳               | 要対応   | TASK-RT-06 の close-out 記録が未反映 |
-| skill-creator LOGS/SKILL history           | 要対応   | 同上                                 |
+### 完了タスク
 
-## Step 1-B 実装状況テーブル
+- **タスクID**: TASK-RT-06
+- **タスク名**: claude-sdk-message-contract-normalization
+- **ステータス**: 実装完了
+- **テスト結果**: 32/32 テスト成功、Line 99.35% / Branch 91.22% / Function 100%
 
-- RT-06 は code change を含むため `spec_created` 固定ではなく current facts を反映する必要あり
-- 状態反映は関連台帳更新と同時に実施する
+### 成果物テーブル
 
-## Step 1-C 関連タスクテーブル
+| 種別    | 成果物                    | 配置先                                                                          |
+| ------- | ------------------------- | ------------------------------------------------------------------------------- |
+| 型定義  | `SkillCreatorSdkEvent` 型 | `packages/shared/src/types/skillCreator.ts`                                     |
+| 実装    | SDKMessage normalizer     | `apps/desktop/src/main/services/runtime/sdkMessageNormalizer.ts`                |
+| テスト  | normalizer ユニットテスト | `apps/desktop/src/main/services/runtime/__tests__/sdkMessageNormalizer.test.ts` |
+| IPC     | 正規化ハンドラ            | `apps/desktop/src/main/ipc/creatorHandlers.ts`                                  |
+| Preload | 正規化 API                | `apps/desktop/src/preload/skill-creator-api.ts`                                 |
 
-- 後続依存: RT-03 / P0-05 / P0-08 / P0-09
-- 環境ブロッカー（esbuild mismatch）を未タスクへ切り出し済み
+## Step 1-B: 実装状況テーブル更新
 
-## Step 2 システム仕様更新要否
+- TASK-RT-06: `spec_created` → **`completed`**
 
-判定: **要更新（軽微）**
+## Step 1-C: 関連タスクテーブル更新
 
-理由:
+| 関連タスク | 本タスクとの関係                      | ステータス |
+| ---------- | ------------------------------------- | ---------- |
+| RT-03      | downstream（結果パネル入力契約）      | pending    |
+| P0-05      | downstream（execute result 解釈）     | pending    |
+| P0-08      | downstream（session_id 契約）         | pending    |
+| P0-09      | downstream（permission event source） | pending    |
 
-- `RuntimeSkillCreatorPlanErrorResponse` を shared barrel 公開
-- `sessionId` 昇格規約を「最初に観測した sessionId」に統一
+## Step 2: システム仕様更新
 
-反映先候補:
+**該当**: 新規インターフェース `SkillCreatorSdkEvent` / `SkillCreatorSdkEventSourceProvenance` / `SkillCreatorSdkEventType` を追加したため、仕様更新が必要。
 
-- aiworkflow-requirements の runtime / IPC 契約ドキュメント
+### 追加された型
+
+| 型名                                   | 種別       | 説明                                           |
+| -------------------------------------- | ---------- | ---------------------------------------------- |
+| `SkillCreatorSdkEventType`             | type alias | `"init" \| "assistant" \| "result" \| "error"` |
+| `SkillCreatorSdkEventSourceProvenance` | interface  | sourceRoot + manifestHash                      |
+| `SkillCreatorSdkEvent`                 | interface  | lane 正規化イベント（7フィールド）             |
+
+### 追加された IPC チャネル
+
+| チャネル                               | 方向   | Payload                                                         |
+| -------------------------------------- | ------ | --------------------------------------------------------------- |
+| `skill-creator:normalize-sdk-messages` | invoke | `{ messages: unknown[] }` → `IpcResult<SkillCreatorSdkEvent[]>` |

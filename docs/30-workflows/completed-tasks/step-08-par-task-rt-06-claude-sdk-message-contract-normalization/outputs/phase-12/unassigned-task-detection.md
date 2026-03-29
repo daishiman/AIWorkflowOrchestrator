@@ -1,23 +1,28 @@
-# Unassigned Task Detection (TASK-RT-06)
+# Phase 12 Task 4: 未タスク検出レポート
 
-## 検出件数
+## 検出結果: **1 件**
 
-- 1件
+### current（本タスク起因の残課題）
 
-## 未タスク一覧
+| #   | 発見元       | 内容                                                                                                                                           | 推奨対応                                                          |
+| --- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 1   | Phase 8 調査 | `SkillExecutor.ts` の `convertToStreamMessage()` が SDK 生メッセージを独自に変換しており、将来的に normalizer と統合することで重複を解消できる | 別タスク候補として記録（skill execution lane のリファクタリング） |
 
-### UT-RT-06-ESBUILD-ARCH-MISMATCH-001
+### baseline（スコープ外で発見された課題）
 
-| 項目   | 内容                                                     |
-| ------ | -------------------------------------------------------- |
-| 優先度 | 高                                                       |
-| 検出元 | Phase 10 / Phase 11 / Phase 12 検証                      |
-| 内容   | vitest 実行を阻害する esbuild アーキ不整合の環境修正     |
-| 影響   | RT-06 の自動テスト結果が確定できない                     |
-| 対応   | 実行環境の Node/Rosetta 整合と再インストール手順を標準化 |
+| #   | 発見元   | 内容 |
+| --- | -------- | ---- |
+| -   | 該当なし | -    |
 
-## 3ステップ確認
+## スコープ外項目の確認
 
-1. 未タスク指示書を作成: `docs/30-workflows/unassigned-task/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md`
-2. backlog 反映: 要対応（aiworkflow-requirements 台帳側）
-3. workflow 参照リンク: 本ファイルおよび final-review-result から参照
+index.md の「含まない」項目:
+
+- `.claude/skills/skill-creator/` の内容固定化 → 未タスクなし（設計的に不要）
+- `query()` 呼び出しの置き換え → 未タスクなし（スコープ外を維持）
+- permission policy 本体 → P0-09 が担当
+- session persistence UI → P0-08 が担当
+
+## コードコメント確認
+
+`sdkMessageNormalizer.ts` 内の TODO/FIXME/HACK/XXX: **0 件**

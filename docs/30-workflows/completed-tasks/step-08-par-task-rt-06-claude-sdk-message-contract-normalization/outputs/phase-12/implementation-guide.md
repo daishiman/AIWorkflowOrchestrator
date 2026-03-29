@@ -1,101 +1,124 @@
-# Implementation Guide
+# TASK-RT-06: SDK Message Contract Normalization — 実装ガイド
 
-## Part 1: 概念説明（中学生レベル）
+---
 
-### なぜ必要か
+## Part 1: やさしい解説（初学者向け）
 
-Claude SDK は実行中に色々な種類のメッセージを返す。これをそのまま画面やワークフローに流すと、
+### SDK 正規化って何？
 
-- どれが開始情報か
-- どれが結果か
-- どこで失敗したか
-  が毎回バラバラになり、後続機能（再開、承認、表示）が壊れやすくなる。
+SDK（ソフトウェア開発キット）は、外部のサービスと会話するための「通訳」のようなものです。Claude Code SDK は AI と会話するための通訳ですが、この通訳が返してくる「メッセージ」は、種類も形もバラバラです。
 
-### 何をしたか
+**日常生活の例え: 郵便局の仕分け**
 
-「生メッセージを一度そろえる翻訳係」を `RuntimeSkillCreatorFacade` に置いた。
+海外から届く手紙を想像してください。手紙にはいろいろな種類があります:
 
-日常の例え:
+- 「初めまして」の挨拶状（→ `system/init`）
+- 本文が書かれた普通の手紙（→ `assistant`）
+- 「手紙のやり取りは以上です」という終了通知（→ `result`）
+- 「配達できませんでした」というエラー通知（→ `error`）
 
-- 先生ごとに違う形式のプリントを、そのまま配ると混乱する
-- 先に「共通フォーマット」に書き直してから配ると、全員が同じ読み方で理解できる
+郵便局（normalizer）は、これらの手紙を全て「統一フォーマット」に書き直してから、受取人（UI画面）に届けます。受取人は海外の手紙のフォーマットを知らなくても、統一フォーマットを読むだけでOKです。
 
-RT-06 はこの「共通フォーマット化」を担当する。
+### なぜ正規化が必要か
 
-### 今回の効果
+SDK が返すメッセージの形が変わっても、正規化層（normalizer）だけ修正すればよく、UI やデータ保存の仕組みは変更不要になります。これが「安定した契約」の価値です。
 
-- `sessionId`、停止理由、permission denial などの重要情報を共通形式で扱える
-- 実行失敗時も error event を落とさず保持できる
-- 後続タスク（RT-03 / P0-05 / P0-08 / P0-09）が同じ契約を前提に進められる
+### 何をするか
 
-## Part 2: 技術詳細（開発者向け）
+1. **SDK 生メッセージ**を受け取る
+2. **4つの種類に分類**する（init / assistant / result / error）
+3. **重要な情報を取り出す**（セッションID、結果の種類、権限拒否情報など）
+4. **統一フォーマットに変換**して下流に渡す
 
-### 1. 型契約
+---
 
-```ts
-export interface SkillCreatorSdkEvent {
-  eventType: "init" | "assistant" | "result" | "error";
-  sequence: number;
-  rawType: string;
-  sessionId?: string;
-  resultSubtype?: string;
-  stopReason?: string;
-  permissionDenials?: SkillCreatorSdkPermissionDenial[];
-  errorMessage?: string;
+## Part 2: 技術者向け詳細
+
+### SkillCreatorSdkEvent 型定義
+
+```typescript
+// packages/shared/src/types/skillCreator.ts
+
+type SkillCreatorSdkEventType = "init" | "assistant" | "result" | "error";
+
+interface SkillCreatorSdkEventSourceProvenance {
+  sourceRoot: string; // 解決された skill-creator ルートパス
+  manifestHash?: string; // manifest ハッシュ（キャッシュ用）
+}
+
+interface SkillCreatorSdkEvent {
+  eventType: SkillCreatorSdkEventType;
+  sessionId?: string; // system/init or result から取得
+  resultSubtype?: string; // "success" | "error" など
+  text?: string; // テキストコンテンツ
+  permissionDenials?: string[]; // ["Write: File write denied", ...]
+  sourceProvenance?: SkillCreatorSdkEventSourceProvenance;
+  stopReason?: string; // "end_turn" | "error" | "timeout" | "cancelled"
 }
 ```
 
-### 2. API シグネチャ
+### normalizer API
 
-```ts
-export function normalizeSkillCreatorSdkEvents(
-  sdkMessages: unknown[],
-  sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
+```typescript
+// apps/desktop/src/main/services/runtime/sdkMessageNormalizer.ts
+
+interface NormalizerContext {
+  sourceProvenance?: SkillCreatorSdkEventSourceProvenance;
+  sessionId?: string; // resume 時の既存 sessionId
+}
+
+// 1件ずつ変換
+function normalizeSdkMessage(
+  rawMessage: unknown,
+  context: NormalizerContext,
+): SkillCreatorSdkEvent;
+
+// ストリーム全体を変換（sessionId 自動伝播）
+function normalizeSdkStream(
+  rawMessages: unknown[],
+  context: NormalizerContext,
 ): SkillCreatorSdkEvent[];
-
-export function normalizeSkillCreatorSdkMessage(
-  message: unknown,
-  sequence: number,
-  sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
-): SkillCreatorSdkEvent | null;
 ```
 
-### 3. 使用例
+### 使用例
 
-```ts
-const sdkEvents = normalizeSkillCreatorSdkEvents(response.sdkMessages ?? []);
-const sessionId = sdkEvents.find((event) =>
-  Boolean(event.sessionId),
-)?.sessionId;
+```typescript
+// Facade 経由
+const facade = new RuntimeSkillCreatorFacade(deps);
+const event = facade.normalizeSdkMessage(rawSdkMsg);
+const events = facade.normalizeSdkStream(rawMessages);
+
+// IPC 経由（renderer から）
+const result = await window.skillCreatorAPI.normalizeSdkMessages(rawMessages);
+if (result.success) {
+  console.log(result.data); // SkillCreatorSdkEvent[]
+}
 ```
 
-### 4. エラーハンドリング
+### エラーハンドリング
 
-- SDK message が0件または全件不正形式: fallback error event を1件生成
-- execute 失敗時: `execution_error` として workflow artifact に記録
-- plan degraded: `llm_adapter_unavailable` / `resource_loader_unavailable` を返す
+| ケース                      | 挙動                                                           |
+| --------------------------- | -------------------------------------------------------------- |
+| `session_id` 欠損           | `sessionId = undefined`（warning、正規化は継続）               |
+| `permission_denied = true`  | `permissionDenials` に denied_tool + denied_reason を記録      |
+| `system/init` 不在          | ストリーム内の他メッセージから sessionId を取得（result から） |
+| null / undefined 入力       | `eventType: "error"`, `text: "Invalid SDK message"`            |
+| 未知の type                 | `eventType: "error"`, `text: "Unknown SDK message type: ..."`  |
+| tool_result.is_error = true | `eventType: "error"`, `text: tool_result.content`              |
 
-### 5. エッジケース
+### 統合ポイント
 
-- `system/init` 不在
-- `result` のみ存在
-- permission denial が文字列配列で返る
-- snake_case / camelCase の混在フィールド
+| コンポーネント | ファイル                                                         | 役割                                   |
+| -------------- | ---------------------------------------------------------------- | -------------------------------------- |
+| 型定義         | `packages/shared/src/types/skillCreator.ts`                      | `SkillCreatorSdkEvent` 型              |
+| normalizer     | `apps/desktop/src/main/services/runtime/sdkMessageNormalizer.ts` | 変換ロジック                           |
+| Facade         | `RuntimeSkillCreatorFacade.ts`                                   | normalizer owner, context 構築         |
+| IPC handler    | `creatorHandlers.ts`                                             | `SKILL_CREATOR_NORMALIZE_SDK_MESSAGES` |
+| IPC channel    | `channels.ts`                                                    | チャネル定義                           |
+| preload API    | `skill-creator-api.ts`                                           | `normalizeSdkMessages()`               |
 
-### 6. 設定値・定数
+### テスト
 
-- `PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES`
-- `PLAN_PROMPT_CONSTANTS.DEFAULT_MAX_TOKENS`
-- `IMPROVE_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES`
-- `IMPROVE_PROMPT_CONSTANTS.DEFAULT_MAX_TOKENS`
-
-## 検証結果
-
-- `pnpm typecheck:shared`: PASS
-- `pnpm typecheck:desktop`: PASS
-- `pnpm vitest apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.sdk-normalization.test.ts`: FAIL（esbuild アーキ不整合）
-
-## スクリーンショット参照
-
-- 本タスクは UI 非変更のため視覚差分スクリーンショットは N/A
-- 代替証跡: `outputs/phase-11/manual-test-checklist.md`
+- ファイル: `sdkMessageNormalizer.test.ts`
+- テスト数: 32件
+- カバレッジ: Line 99.35% / Branch 91.22% / Function 100%

@@ -181,6 +181,11 @@ export {
   SKILL_CREATOR_ENGINE_VERSION,
 } from "./skillCreator";
 export type {
+  SkillCreatorSdkEventType,
+  SkillCreatorSdkEventSourceProvenance,
+  SkillCreatorSdkEvent,
+} from "./skillCreator";
+export type {
   SkillCreatorCheckpointType,
   ResumeCompatibilityStatus,
   ResumeIncompatibilityReason,
