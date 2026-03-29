@@ -13,7 +13,6 @@
 
 import fs from "fs/promises";
 import path from "path";
-import type { SkillCreatorSdkEvent } from "@repo/shared/types";
 import {
   normalizeSdkMessage,
   normalizeSdkStream,
@@ -33,6 +32,7 @@ import type {
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
+  RuntimeSkillCreatorDegradedReason,
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorPlanResult as SkillPlanResult,
   SkillCreatorUserInputSubmission,
@@ -40,6 +40,9 @@ import type {
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
   LoadedWorkflowManifest,
+  SkillCreatorSdkEvent,
+  SkillCreatorSdkPermissionDenial,
+  LLMAdapterStatus,
 } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 import type { ILLMAdapter } from "../../adapters/llm/types";
@@ -100,11 +103,18 @@ export class RuntimeSkillCreatorFacade {
   private readonly resolvedResourceReader?: ResolvedResourceReader;
   private readonly manifestLoader = new ManifestLoader();
 
+  // TASK-RT-01: LLMAdapter ステータス管理
+  private _llmAdapterStatus: LLMAdapterStatus = "initializing";
+  private _llmAdapterFailureReason: string | null = null;
+
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
     this.workflowEngine =
       deps.workflowEngine ?? new SkillCreatorWorkflowEngine();
     this.llmAdapter = deps.llmAdapter;
+    if (deps.llmAdapter) {
+      this._llmAdapterStatus = "ready";
+    }
     this.resourceLoader = deps.resourceLoader;
     this.skillFileManager = deps.skillFileManager;
     this.skillFileWriter = deps.skillFileWriter;
@@ -118,6 +128,16 @@ export class RuntimeSkillCreatorFacade {
     this.handoffBuilder = new TerminalHandoffBuilder();
   }
 
+  /** LLMAdapter の現在のステータスを取得する (TASK-RT-01) */
+  get llmAdapterStatus(): LLMAdapterStatus {
+    return this._llmAdapterStatus;
+  }
+
+  /** LLMAdapter 初期化失敗時の理由を取得する (TASK-RT-01) */
+  get llmAdapterFailureReason(): string | null {
+    return this._llmAdapterFailureReason;
+  }
+
   /**
    * LLMAdapter を遅延注入する（Setter Injection — P34 準拠）。
    * LLMAdapterFactory.getAdapter() が非同期のため、コンストラクタ時点では
@@ -129,6 +149,17 @@ export class RuntimeSkillCreatorFacade {
    */
   setLLMAdapter(adapter: ILLMAdapter): void {
     this.llmAdapter = adapter;
+    this._llmAdapterStatus = "ready";
+    this._llmAdapterFailureReason = null;
+  }
+
+  /**
+   * LLMAdapter 初期化失敗を記録する (TASK-RT-01)。
+   * fire-and-forget の catch ブロックから呼ばれ、ステータスを "failed" に遷移させる。
+   */
+  setLLMAdapterFailed(reason: string): void {
+    this._llmAdapterStatus = "failed";
+    this._llmAdapterFailureReason = reason;
   }
 
   getWorkflowStateSnapshot(
@@ -174,7 +205,7 @@ export class RuntimeSkillCreatorFacade {
   buildNormalizerContext(): NormalizerContext {
     const root = this.getExplicitSkillCreatorRoot();
     return {
-      sourceProvenance: root ? { sourceRoot: root } : undefined,
+      sourceProvenance: root ? { resolvedSkillCreatorRoot: root } : undefined,
     };
   }
 
@@ -309,6 +340,27 @@ export class RuntimeSkillCreatorFacade {
     authMode: AuthMode,
     apiKey: string | null,
   ): Promise<RuntimeSkillCreatorPlanResponse> {
+    // TASK-RT-01: アダプターステータスチェック
+    if (this._llmAdapterStatus === "failed") {
+      return {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: toActionableMessage(this._llmAdapterFailureReason),
+        },
+      };
+    }
+
+    if (this._llmAdapterStatus === "initializing") {
+      return {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
+        },
+      };
+    }
+
     const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {
@@ -335,28 +387,12 @@ export class RuntimeSkillCreatorFacade {
     let sourceProvenance: SkillCreatorWorkflowSourceProvenance | undefined =
       this.buildSourceProvenance();
 
-    // Graceful degradation: llmAdapter/resourceLoader 未注入時はスタブ
-    if (
-      !this.llmAdapter ||
-      (!this.resourceLoader && !this.hasDynamicResourcePipeline())
-    ) {
-      const planResult = {
-        planId,
-        skillSpec,
-        estimatedSteps: 3,
-        skillName: "",
-        description: "",
-        agents: [],
-        scripts: [],
-        triggers: [],
-        anchors: [],
-      };
-      this.workflowEngine.recordPlanResult(
-        planResult,
-        decision,
-        sourceProvenance,
-      );
-      return planResult;
+    // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
+    if (!this.llmAdapter) {
+      return buildDegradedError("llm_adapter_unavailable");
+    }
+    if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
+      return buildDegradedError("resource_loader_unavailable");
     }
 
     let agentSpecs: Array<{ name: string; content: string }> = [];
@@ -414,6 +450,7 @@ export class RuntimeSkillCreatorFacade {
       scripts: parsed.scripts,
       triggers: parsed.triggers,
       anchors: parsed.anchors,
+      adapterStatus: this._llmAdapterStatus,
     };
     this.workflowEngine.recordPlanResult(
       planResult,
@@ -473,28 +510,54 @@ export class RuntimeSkillCreatorFacade {
     try {
       response = await this.skillExecutor.execute(request, skillMeta);
     } catch (error) {
+      const sdkEvents = normalizeSkillCreatorSdkEvents([], sourceProvenance);
       const executeResult: SkillExecuteResult = {
         executeId: `exec-error-${Date.now()}`,
         skillName:
           planResult.skillSpec.split("\n")[0]?.substring(0, 50) ?? "unnamed",
         success: false,
         error: toExecutionErrorMessage(error),
+        sdkEvents,
+        sourceProvenance,
       };
       this.workflowEngine.recordExecutionFailure(planResult.planId, {
         executeId: executeResult.executeId,
         skillName: executeResult.skillName,
         reason: "execution_error",
         message: executeResult.error ?? "Skill execution failed.",
+        sdkEvents,
+        sourceProvenance,
       });
       return executeResult;
     }
+
+    const sdkEvents = normalizeSkillCreatorSdkEvents(
+      response.sdkMessages ?? [],
+      sourceProvenance,
+    );
+    const lastResultEvent = [...sdkEvents]
+      .reverse()
+      .find((event) => event.eventType === "result");
+    const lastErrorEvent = [...sdkEvents]
+      .reverse()
+      .find((event) => event.eventType === "error");
+    const permissionDenials = collectPermissionDenials(sdkEvents);
 
     const executeResult: SkillExecuteResult = {
       executeId: response.executionId,
       skillName:
         planResult.skillSpec.split("\n")[0]?.substring(0, 50) ?? "unnamed",
       success: response.success,
-      error: response.error?.message,
+      error:
+        response.error?.message ??
+        (response.success ? undefined : lastErrorEvent?.errorMessage),
+      sessionId: findFirstSessionId(sdkEvents),
+      resultSubtype: lastResultEvent?.resultSubtype,
+      stopReason: lastResultEvent?.stopReason,
+      permissionDenials:
+        permissionDenials.length > 0 ? permissionDenials : undefined,
+      sdkEvents,
+      sourceProvenance,
     };
     if (executeResult.success) {
       this.workflowEngine.recordExecuteResult(planResult.planId, executeResult);
@@ -506,6 +569,12 @@ export class RuntimeSkillCreatorFacade {
       skillName: executeResult.skillName,
       reason: "execution_failed",
       message: executeResult.error ?? "Skill execution failed.",
+      sessionId: executeResult.sessionId,
+      resultSubtype: executeResult.resultSubtype,
+      stopReason: executeResult.stopReason,
+      permissionDenials: executeResult.permissionDenials,
+      sdkEvents: executeResult.sdkEvents,
+      sourceProvenance,
     });
     return executeResult;
   }
@@ -557,15 +626,12 @@ export class RuntimeSkillCreatorFacade {
 
     const improveId = `improve-${Date.now()}`;
 
-    // Graceful degradation: llmAdapter/resourceLoader 未注入時はスタブ
-    if (
-      !this.llmAdapter ||
-      (!this.resourceLoader && !this.hasDynamicResourcePipeline())
-    ) {
-      return {
-        improveId,
-        suggestions: [],
-      };
+    // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
+    if (!this.llmAdapter) {
+      return buildDegradedError("llm_adapter_unavailable");
+    }
+    if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
+      return buildDegradedError("resource_loader_unavailable");
     }
 
     try {
@@ -923,6 +989,26 @@ export function parseImproveResponse(responseText: string): ImproveParseResult {
   }
 }
 
+const DEGRADED_REASON_MESSAGES: Record<
+  RuntimeSkillCreatorDegradedReason,
+  string
+> = {
+  llm_adapter_unavailable:
+    "LLM アダプタが利用できません。設定を確認してください。",
+  resource_loader_unavailable:
+    "リソースローダーが利用できません。設定を確認してください。",
+};
+
+function buildDegradedError(reason: RuntimeSkillCreatorDegradedReason): {
+  success: false;
+  error: { code: RuntimeSkillCreatorDegradedReason; message: string };
+} {
+  return {
+    success: false,
+    error: { code: reason, message: DEGRADED_REASON_MESSAGES[reason] },
+  };
+}
+
 /** improve() のエラーをIPC wrapper形式に変換する */
 function handleImproveError(
   error: unknown,
@@ -956,6 +1042,233 @@ function handleImproveError(
     success: false,
     error: { code: "LLM_ERROR", message: "Unknown error" },
   };
+}
+
+export function normalizeSkillCreatorSdkEvents(
+  sdkMessages: unknown[],
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
+): SkillCreatorSdkEvent[] {
+  const normalized = sdkMessages
+    .map((message, index) =>
+      normalizeSkillCreatorSdkMessage(message, index, sourceProvenance),
+    )
+    .filter((event): event is SkillCreatorSdkEvent => event !== null);
+
+  return normalized.length > 0
+    ? normalized
+    : [
+        {
+          eventType: "error",
+          sequence: 0,
+          rawType: "missing_sdk_events",
+          errorMessage: "SDK stream did not emit any normalizable events.",
+          sourceProvenance,
+        },
+      ];
+}
+
+export function normalizeSkillCreatorSdkMessage(
+  message: unknown,
+  sequence: number,
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
+): SkillCreatorSdkEvent | null {
+  if (!isRecord(message)) {
+    return null;
+  }
+
+  const rawType = readString(message, ["type"]) ?? "unknown";
+  const eventType = resolveSkillCreatorSdkEventType(message, rawType);
+  if (!eventType) {
+    return null;
+  }
+
+  const text = extractSkillCreatorSdkText(message);
+  const permissionDenials = extractPermissionDenials(message);
+
+  return {
+    eventType,
+    sequence,
+    rawType,
+    sessionId: extractSessionId(message),
+    messageId: readString(message, ["message", "id"]),
+    text: text || undefined,
+    resultSubtype:
+      readString(message, ["result", "subtype"]) ??
+      readString(message, ["subtype"]),
+    stopReason:
+      readString(message, ["result", "stop_reason"]) ??
+      readString(message, ["result", "stopReason"]) ??
+      readString(message, ["stop_reason"]) ??
+      readString(message, ["stopReason"]),
+    permissionDenials:
+      permissionDenials.length > 0 ? permissionDenials : undefined,
+    errorMessage:
+      readString(message, ["error", "message"]) ??
+      readString(message, ["result", "error"]),
+    sourceProvenance,
+  };
+}
+
+function resolveSkillCreatorSdkEventType(
+  message: Record<string, unknown>,
+  rawType: string,
+): SkillCreatorSdkEvent["eventType"] | null {
+  const normalizedType = rawType.toLowerCase();
+  const subtype =
+    readString(message, ["subtype"]) ??
+    readString(message, ["result", "subtype"]) ??
+    "";
+
+  if (
+    normalizedType === "system" ||
+    normalizedType === "system/init" ||
+    subtype === "init"
+  ) {
+    return "init";
+  }
+  if (normalizedType === "assistant" || normalizedType === "text") {
+    return "assistant";
+  }
+  if (normalizedType === "result") {
+    return "result";
+  }
+  if (normalizedType === "error") {
+    return "error";
+  }
+
+  return null;
+}
+
+function collectPermissionDenials(
+  events: SkillCreatorSdkEvent[],
+): SkillCreatorSdkPermissionDenial[] {
+  return events.flatMap((event) => event.permissionDenials ?? []);
+}
+
+function findFirstSessionId(
+  events: SkillCreatorSdkEvent[],
+): string | undefined {
+  return events.find((event) => Boolean(event.sessionId))?.sessionId;
+}
+
+function extractSessionId(
+  message: Record<string, unknown>,
+): string | undefined {
+  return (
+    readString(message, ["session_id"]) ??
+    readString(message, ["sessionId"]) ??
+    readString(message, ["result", "session_id"]) ??
+    readString(message, ["result", "sessionId"])
+  );
+}
+
+function extractSkillCreatorSdkText(message: Record<string, unknown>): string {
+  const direct =
+    readString(message, ["content"]) ??
+    readString(message, ["message", "content"]);
+  if (direct) {
+    return direct;
+  }
+
+  const content = readValue(message, ["message", "content"]);
+  if (typeof content === "string") {
+    return content;
+  }
+  if (!Array.isArray(content)) {
+    return "";
+  }
+
+  return content
+    .map((item) => {
+      if (typeof item === "string") {
+        return item;
+      }
+      if (!isRecord(item)) {
+        return "";
+      }
+      return (
+        readString(item, ["text"]) ??
+        readString(item, ["content"]) ??
+        readString(item, ["message"])
+      );
+    })
+    .filter((part): part is string => Boolean(part))
+    .join("\n");
+}
+
+function extractPermissionDenials(
+  message: Record<string, unknown>,
+): SkillCreatorSdkPermissionDenial[] {
+  const rawValue =
+    readValue(message, ["permission_denials"]) ??
+    readValue(message, ["permissionDenials"]) ??
+    readValue(message, ["result", "permission_denials"]) ??
+    readValue(message, ["result", "permissionDenials"]);
+
+  if (!Array.isArray(rawValue)) {
+    return [];
+  }
+
+  return rawValue
+    .map((item) => {
+      if (typeof item === "string") {
+        return { reason: item };
+      }
+      if (!isRecord(item)) {
+        return null;
+      }
+
+      const reason =
+        readString(item, ["reason"]) ??
+        readString(item, ["message"]) ??
+        readString(item, ["error"]) ??
+        "permission_denied";
+
+      return {
+        toolName:
+          readString(item, ["tool_name"]) ?? readString(item, ["toolName"]),
+        toolUseId:
+          readString(item, ["tool_use_id"]) ?? readString(item, ["toolUseId"]),
+        reason,
+      };
+    })
+    .filter((item): item is SkillCreatorSdkPermissionDenial => item !== null);
+}
+
+function readString(
+  value: Record<string, unknown>,
+  path: string[],
+): string | undefined {
+  const result = readValue(value, path);
+  return typeof result === "string" && result.trim() !== ""
+    ? result
+    : undefined;
+}
+
+function readValue(value: Record<string, unknown>, path: string[]): unknown {
+  let current: unknown = value;
+  for (const segment of path) {
+    if (!isRecord(current) || !(segment in current)) {
+      return undefined;
+    }
+    current = current[segment];
+  }
+  return current;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return value !== null && typeof value === "object";
+}
+
+/**
+ * LLMAdapter の失敗理由を actionable なユーザー向けメッセージに変換する (TASK-RT-01)
+ */
+export function toActionableMessage(reason: string | null): string {
+  if (!reason) return "LLMAdapter の初期化に失敗しました";
+  if (/api.?key|ANTHROPIC_API_KEY/i.test(reason)) {
+    return "APIキーを設定してください";
+  }
+  return reason;
 }
 
 function toExecutionErrorMessage(error: unknown): string {

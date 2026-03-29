@@ -938,10 +938,9 @@ export function registerAllIpcHandlers(
           const adapter = await LLMAdapterFactory.getAdapter("anthropic");
           runtimeSkillCreatorService.setLLMAdapter(adapter);
         } catch (error: unknown) {
-          console.warn(
-            "[IPC] LLMAdapter initialization failed, skill creator will use stub responses:",
-            error instanceof Error ? error.message : "Unknown error",
-          );
+          const reason = error instanceof Error ? error.message : String(error);
+          console.warn("[IPC] LLMAdapter initialization failed:", reason);
+          runtimeSkillCreatorService.setLLMAdapterFailed(reason);
         }
       })();
     }

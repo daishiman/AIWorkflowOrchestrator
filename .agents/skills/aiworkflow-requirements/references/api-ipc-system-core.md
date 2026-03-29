@@ -391,6 +391,15 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `source=not-set` | キー未設定、または exists 判定でエラー                                   |
 | 目的            | Renderer preflight と Main 実行時判定の乖離を防止し、UI の状態表示を安定化 |
 
+**Runtime lane 補助導線での利用ルール（TASK-RT-04）**:
+
+| 項目 | 仕様 |
+| --- | --- |
+| 対象 UI | `apps/desktop/src/renderer/components/skill/ApiKeySettingsPanel.tsx` |
+| 使用チャネル | `auth-key:exists`, `auth-key:set`, `auth-key:delete` |
+| 削除後再判定 | `auth-key:delete` 成功後に `auth-key:exists` を再実行し、`env-fallback` の場合は `configured` を維持する |
+| 境界 | `apiKey:*`（provider key）とは統合せず、`auth-key:*` の責務を維持する |
+
 ### 実装状況（auth-key ライフサイクル）
 
 | 実装項目                                                                                  | ステータス | 関連タスク                                           |
@@ -404,6 +413,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `registerAllIpcHandlers` で各 `registerXxxHandlers` を `safeRegister` で個別 try-catch 化 | completed  | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001        |
 | `registerAllIpcHandlers` が `IpcHandlerRegistrationResult` を返却（成功/失敗カウント）    | completed  | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001        |
 | `auth-key:exists` が `source`（saved/env-fallback/not-set）を返却                            | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
+| Runtime lane 補助導線 (`ApiKeySettingsPanel`) が `auth-key:*` を再利用                         | completed  | TASK-RT-04                                            |
 | `apiKey:save` / `apiKey:delete` 後に `LLMAdapterFactory.clearInstance(provider)` を実行      | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
 | `llm:set-selected-config` で Renderer 選択状態を Main 側 `ai.chat` 実行経路へ同期            | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
 
@@ -421,9 +431,18 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | Main public entrypoint | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` | skill creator 標準 surface を維持して runtime helper を登録する |
 | Main runtime helper | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `plan` / `execute-plan` / `improve-skill` / `get-verify-detail` / `reverify-workflow` handler |
 | Runtime service | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | public bridge。policy / handoff / execute を判断し、state 更新は engine へ委譲 |
-| Workflow engine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `currentPhase` / `awaitingUserInput` / `verifyResult` / artifacts / `resumeTokenEnvelope` の owner |
+| Workflow engine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `currentPhase` / `awaitingUserInput` / `verifyResult` / artifacts / `resumeTokenEnvelope` の owner。checkpoint hydrate / artifact serialization も保持 |
 | Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `planSkill()` / `executePlan()` / `improveSkillWithFeedback()` / `getVerifyDetail()` / `reverifyWorkflow()` |
-| Shared types | `packages/shared/src/types/skillCreator.ts` | request / response / handoff bundle / verify detail / reverify result |
+| Workflow session repository | `apps/desktop/src/main/services/session/SkillCreatorWorkflowSessionRepository.ts` | revision / lease guard 付き save/load/invalidate/evaluate。public IPC 未公開の internal persistence owner |
+| Compatibility evaluator | `apps/desktop/src/main/services/session/ResumeCompatibilityEvaluator.ts` | version / route / provenance / lease を比較し `compatible` / `compatible_with_warning` / `incompatible` / `conflict` を返す |
+| Workflow session storage | `apps/desktop/src/main/services/session/WorkflowSessionStorage.ts` | `skill-creator-workflow-sessions` store を管理し generic session schema と分離 |
+| Shared types | `packages/shared/src/types/skillCreator.ts` | request / response / handoff bundle / verify detail / reverify result / persisted checkpoint / compatibility snapshot / lease |
+
+### Task08 session persistence / resume contract（2026-03-28 branch current facts）
+
+- `SkillCreatorWorkflowEngine` は persisted checkpoint から `hydrateFromCheckpoint()` で workflow state を復元し、`serializeArtifactsForPersistence()` で phase artifacts を persistence payload へ変換する。
+- `SkillCreatorWorkflowSessionRepository` は existing checkpoint に対して `expectedRevision` を必須にし、stale write の silent overwrite を拒否する。
+- legacy / 破損 checkpoint は `missing_workflow_payload` として graceful reject し、`agent:resumeSession` と混同しない internal contract に留める。
 
 ### チャンネル一覧
 
@@ -434,6 +453,22 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `skill-creator:improve-skill` | runtime 改善 | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `skill-creator:get-verify-detail` | verify detail 取得 | `SkillCreatorGetVerifyDetailRequest` | `IpcResult<RuntimeSkillCreatorVerifyDetailResponse>` |
 | `skill-creator:reverify-workflow` | verify loop 再要求 | `SkillCreatorReverifyWorkflowRequest` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
+
+### TASK-RT-01 plan error propagation 契約（2026-03-29）
+
+`skill-creator:plan` は二層レスポンス契約を持つ。
+
+- outer: `IpcResult.success` は handler 実行成否（IPC transport）
+- inner: `data` は `RuntimeSkillCreatorPlanResponse`（ドメイン結果）
+
+`plan()` の adapter 未準備時は次を返す:
+
+- `IpcResult.success: true`
+- `data.success: false`
+- `data.errorCode: "LLM_ADAPTER_FAILED" | "LLM_ADAPTER_INITIALIZING"`
+- `data.adapterStatus: "failed" | "initializing"`
+
+adapter ready の通常系では `data.adapterStatus: "ready"` を返す。
 
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 

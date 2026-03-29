@@ -85,8 +85,8 @@ const UNKNOWN_MSG = {
 
 const BASE_CONTEXT: NormalizerContext = {
   sourceProvenance: {
-    sourceRoot: ".claude/skills/skill-creator",
-    manifestHash: "abc123hash",
+    resolvedSkillCreatorRoot: ".claude/skills/skill-creator",
+    resourceDescriptorHash: "abc123hash",
   },
 };
 
@@ -103,8 +103,8 @@ describe("sdkMessageNormalizer", () => {
         expect(event.eventType).toBe("init");
         expect(event.sessionId).toBe("sess-abc-123");
         expect(event.sourceProvenance).toEqual({
-          sourceRoot: ".claude/skills/skill-creator",
-          manifestHash: "abc123hash",
+          resolvedSkillCreatorRoot: ".claude/skills/skill-creator",
+          resourceDescriptorHash: "abc123hash",
         });
       });
 
@@ -175,7 +175,7 @@ describe("sdkMessageNormalizer", () => {
 
         expect(event.permissionDenials).toBeDefined();
         expect(event.permissionDenials).toHaveLength(1);
-        expect(event.permissionDenials![0]).toContain("Write");
+        expect(event.permissionDenials![0].toolName).toBe("Write");
       });
     });
 
@@ -235,8 +235,8 @@ describe("sdkMessageNormalizer", () => {
 
         for (const event of events) {
           expect(event.sourceProvenance).toEqual({
-            sourceRoot: ".claude/skills/skill-creator",
-            manifestHash: "abc123hash",
+            resolvedSkillCreatorRoot: ".claude/skills/skill-creator",
+            resourceDescriptorHash: "abc123hash",
           });
         }
       });
@@ -404,8 +404,12 @@ describe("sdkMessageNormalizer", () => {
         const e1 = normalizeSdkMessage(denial1, BASE_CONTEXT);
         const e2 = normalizeSdkMessage(denial2, BASE_CONTEXT);
 
-        expect(e1.permissionDenials).toEqual(["Write: Write access denied"]);
-        expect(e2.permissionDenials).toEqual(["Bash: Shell execution denied"]);
+        expect(e1.permissionDenials).toEqual([
+          { toolName: "Write", reason: "Write access denied" },
+        ]);
+        expect(e2.permissionDenials).toEqual([
+          { toolName: "Bash", reason: "Shell execution denied" },
+        ]);
       });
 
       it("permission_denied が false の場合は permissionDenials なし", () => {
@@ -429,7 +433,8 @@ describe("sdkMessageNormalizer", () => {
         const event = normalizeSdkMessage(partialDenial, BASE_CONTEXT);
 
         expect(event.permissionDenials).toBeDefined();
-        expect(event.permissionDenials![0]).toContain("unknown");
+        expect(event.permissionDenials![0].toolName).toBe("unknown");
+        expect(event.permissionDenials![0].reason).toBe("Permission denied");
       });
     });
 

@@ -432,11 +432,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L338 |
-| スキルチェーン 型定義（TASK-9D） | L388 |
-| スキルスケジュール 型定義（TASK-9G） | L423 |
-| スキルフォーク 型定義（TASK-9E） | L448 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L496 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L349 |
+| スキルチェーン 型定義（TASK-9D） | L399 |
+| スキルスケジュール 型定義（TASK-9G） | L434 |
+| スキルフォーク 型定義（TASK-9E） | L459 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L507 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -904,10 +904,10 @@ node scripts/list-specs.js --topics
 | Workspace File Watch IPC API（TASK-UI-04A） | L198 |
 | Conversation IPC API（会話履歴永続化） | L242 |
 | Electron IPC API設計 | L278 |
-| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L410 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L643 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L674 |
-| AIプロバイダーAPI連携 | L705 |
+| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L420 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L653 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L684 |
+| AIプロバイダーAPI連携 | L715 |
 
 ### references/api-ipc-system-details.md
 
@@ -1171,10 +1171,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L62 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L169 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L236 |
-| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L384 |
+| Skill Runtime API Key Panel（TASK-RT-04） | L63 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L87 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L194 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L261 |
+| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L409 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -2636,6 +2637,7 @@ node scripts/list-specs.js --topics
 | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L737 |
 | TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L778 |
 | TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L803 |
+| TASK-RT-06 教訓（2026-03-29） | L834 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2666,24 +2668,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-28 TASK-SDK-07 execution-governance-and-handoff-alignment | L44 |
-| 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 | L84 |
-| 2026-03-27 TASK-SDK-04 | L124 |
-| 2026-03-27 UT-EXEC-01 | L126 |
-| 2026-03-27 TASK-SDK-05 | L148 |
-| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L178 |
-| 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L190 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L292 |
-| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L332 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L376 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L416 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L456 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L505 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L558 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L586 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L629 |
-| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L680 |
-| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L749 |
+| 2026-03-29 TASK-RT-04 skill-authkey-api-key-management-ui | L45 |
+| 2026-03-28 TASK-SDK-07 execution-governance-and-handoff-alignment | L69 |
+| 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 | L109 |
+| 2026-03-27 TASK-SDK-04 | L149 |
+| 2026-03-27 UT-EXEC-01 | L151 |
+| 2026-03-27 TASK-SDK-05 | L173 |
+| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L203 |
+| 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L215 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L317 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L357 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L401 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L441 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L481 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L530 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L583 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L611 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L654 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L705 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
