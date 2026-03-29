@@ -27,6 +27,7 @@
 | Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
 | Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
 | Store-Driven Lifecycle Integration | TASK-10A-F | SkillAnalysisView, SkillCreateWizard, useSkillAnalysis | 完了 | `docs/30-workflows/store-driven-lifecycle-ui/` |
+| Skill Runtime API Key Panel | TASK-RT-04 | SkillLifecyclePanel, ApiKeySettingsPanel | 完了 | `docs/30-workflows/step-08-par-task-rt-04-api-key-management-ui/` |
 | Organisms Foundation         | TASK-UI-00-ORGANISMS | CardGrid, MasterDetailLayout, SearchFilterList | 完了 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
 | Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
@@ -56,6 +57,30 @@
 | 状態管理             | Zustand                           |
 | テストフレームワーク | Vitest + React Testing Library    |
 | Storybook            | 全コンポーネント必須              |
+
+---
+
+## Skill Runtime API Key Panel（TASK-RT-04）
+
+`SkillLifecyclePanel` 上で Claude Agent SDK 向け auth key 設定導線を補助表示する。`SettingsView` を主導線とし、本パネルは同一 `auth-key:*` 契約を再利用する補助導線として扱う。
+
+### コンポーネント責務
+
+| コンポーネント | 役割 | 契約 |
+| --- | --- | --- |
+| `SkillLifecyclePanel` | runtime lane 操作面での補助導線表示 | `ApiKeySettingsPanel` を常時表示し、既存 lifecycle 操作と並置する |
+| `ApiKeySettingsPanel` | key の保存/削除/状態表示 | `window.electronAPI.authKey.exists/set/delete` を利用する |
+
+### 状態遷移ルール
+
+| 条件 | UI状態 |
+| --- | --- |
+| 初期 `exists=false` | `not_set` |
+| 保存開始 | `validating` |
+| 保存成功 | `configured` |
+| 保存/削除失敗 | `error` |
+| 削除成功後に `exists=true`（`env-fallback` など） | `configured` を維持 |
+| 削除成功後に `exists=false` | `not_set` |
 
 ---
 

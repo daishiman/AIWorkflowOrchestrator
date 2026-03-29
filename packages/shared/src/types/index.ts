@@ -168,6 +168,7 @@ export type {
   RuntimeSkillCreatorImproveErrorResponse,
   RuntimeSkillCreatorDegradedReason,
   ApplyImprovementResult,
+  ApiKeyStatus,
   ForkOptions,
   ExportFormat,
   ScheduleConfig,
