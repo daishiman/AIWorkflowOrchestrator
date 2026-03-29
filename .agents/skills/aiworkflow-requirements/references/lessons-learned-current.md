@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-28 | 2.9.0 | TASK-SDK-08 session-persistence-and-resume-contract 教訓3件を追加（L-1: esbuild mismatch、L-2: artifact命名規約 / validator不一致、L-3: Phase 11 UI/docs-only判定不一致） |
 | 2026-03-27 | 2.8.2 | TASK-SDK-04 の教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): user input semantics / canonical execute binding、→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): spec_created task の screenshot/evidence drift） |
 | 2026-03-27 | 2.8.2 | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): placeholder-only screenshot PASS 禁止 / implementation guide Part 2 必須要素 / Phase 2 contract matrix stale drift 防止） |
 | 2026-03-26 | 2.8.1 | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の教訓2件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): Step 2 no-op 時の Step 1 台帳同期必須 / Phase 12 root evidence の patch marker 混入監査） |
@@ -796,3 +797,56 @@
 - **原因**: ディレクトリ名変更時に、Phase仕様書内の相対パス参照が自動更新されない
 - **解決策**: 移動後に `grep -r "旧パス" 新ディレクトリ/` で残存参照を検出し、一括置換する
 - **新規Pitfall候補**: P-NEW: Phase仕様書ディレクトリ移動時の「次のPhase」リンク残存
+
+---
+
+## TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28)
+
+### L-1: esbuild host/binary version mismatch でVitest起動停止
+
+| 項目 | 内容 |
+| --- | --- |
+| 症状 | `pnpm vitest run` が esbuild version mismatch エラーで即座に停止 |
+| 原因 | worktreeのnode_modulesとesbuildバイナリのバージョン不一致 |
+| 解決 | worktreeルートで `pnpm install` を再実行 |
+| 再発防止 | worktree作成後は必ず `pnpm install` を確認してから `vitest` を実行 |
+
+### L-2: artifact命名規約とvalidator期待値の不一致
+
+| 項目 | 内容 |
+| --- | --- |
+| 症状 | structure validator PASSでもphase-output validationで失敗 |
+| 原因 | task spec本文のartifact名と実際のファイル名が微妙にずれている |
+| 解決 | task root生成時にartifact命名のcanonical一覧を先に確定させる |
+| 再発防止 | Phase-12着手前に artifacts.json と phase spec のartifact名を照合すること |
+
+### L-3: Phase 11 UI task / docs-only task 判定の不一致
+
+| 項目 | 内容 |
+| --- | --- |
+| 症状 | Phase 11 でスクリーンショット要求とdocs-only判定が食い違う |
+| 原因 | spec本文とartifact名でtask分類が異なっていた |
+| 解決 | Phase 1 要件定義時に UI task か docs-only task かを明示し、全フェーズで統一 |
+| 再発防止 | Phase 12 compliance check で artifact命名とPhase 11判定の一致を確認項目に追加 |
+
+---
+
+## TASK-RT-06 教訓（2026-03-29）
+
+### 1. shared 型追加時は barrel export を同ターンで更新しないと desktop が即壊れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `RuntimeSkillCreatorPlanErrorResponse` を shared 型へ追加したが `@repo/shared/types` から再公開漏れがあり desktop typecheck が失敗 |
+| 解決策 | `packages/shared/src/types/index.ts` の export type を同一ターンで更新し、desktop 側 import を再検証 |
+| 標準ルール | shared 型の追加・改名時は「定義ファイル」と「barrel export」を必ずセットで更新（P32） |
+| 関連タスク | TASK-RT-06 |
+
+### 2. UI 非変更タスクでも Phase 11 は N/A 宣言だけで完了にしない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | スクリーンショット N/A のみで手動検証証跡が不足し、Phase 11 妥当性が監査で否認 |
+| 解決策 | `manual-test-checklist.md` と `discovered-issues.md` を必須補助成果物として追加 |
+| 標準ルール | UI 非変更タスクは「N/A 根拠 + 代替証跡（checklist/issues）」をセットで残す |
+| 関連タスク | TASK-RT-06 |

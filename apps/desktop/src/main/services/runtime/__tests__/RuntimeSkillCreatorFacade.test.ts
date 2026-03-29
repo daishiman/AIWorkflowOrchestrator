@@ -69,13 +69,12 @@ describe("RuntimeSkillCreatorFacade", () => {
       });
     });
 
-    it("integrated_api 判定時は plan 結果を返す", async () => {
+    it("integrated_api 判定時（LLM 未注入）は explicit error を返す (TASK-RT-02)", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "integrated_api",
         apiKey: "sk-test",
         permissionMode: "default",
       });
-      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_000);
       const buildSpy = vi.spyOn(
         TerminalHandoffBuilder.prototype,
         "buildForSurface",
@@ -85,19 +84,15 @@ describe("RuntimeSkillCreatorFacade", () => {
 
       expect(buildSpy).not.toHaveBeenCalled();
       expect(result).toEqual({
-        planId: "plan-1710000000000",
-        skillSpec: "line-1\nline-2",
-        estimatedSteps: 3,
-        skillName: "",
-        description: "",
-        agents: [],
-        scripts: [],
-        triggers: [],
-        anchors: [],
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLM アダプタが利用できません。設定を確認してください。",
+        },
       });
     });
 
-    it("apiKey 未指定の api-key モードでは authKeyService 経由の解決を使う", async () => {
+    it("apiKey 未指定の api-key モードでは authKeyService 経由の解決を使う (TASK-RT-02)", async () => {
       const resolveSpy = vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
       const resolveWithServiceSpy = vi
         .spyOn(RuntimePolicyResolver.prototype, "resolveWithService")
@@ -106,22 +101,18 @@ describe("RuntimeSkillCreatorFacade", () => {
           apiKey: "stored-key",
           permissionMode: "default",
         });
-      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_010);
 
       const result = await facade.plan("spec body", "api-key", null);
 
       expect(resolveSpy).not.toHaveBeenCalled();
       expect(resolveWithServiceSpy).toHaveBeenCalledWith("api-key");
+      // TASK-RT-02: llmAdapter 未注入のため explicit error
       expect(result).toEqual({
-        planId: "plan-1710000000010",
-        skillSpec: "spec body",
-        estimatedSteps: 3,
-        skillName: "",
-        description: "",
-        agents: [],
-        scripts: [],
-        triggers: [],
-        anchors: [],
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLM アダプタが利用できません。設定を確認してください。",
+        },
       });
     });
 
@@ -213,12 +204,14 @@ describe("RuntimeSkillCreatorFacade", () => {
           allowedTools: ["Read", "Edit", "Write"],
         }),
       );
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         executeId: "exec-001",
         skillName: "my-skill",
         success: true,
         error: undefined,
       });
+      expect(result).toHaveProperty("sdkEvents");
+      expect(result).toHaveProperty("sourceProvenance");
     });
 
     it("SkillExecutor のエラーを message に変換し、skillName を 50 文字に切り詰める", async () => {
@@ -248,7 +241,7 @@ describe("RuntimeSkillCreatorFacade", () => {
         "sk-test",
       );
 
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         executeId: "exec-002",
         skillName: longSkillName.substring(0, 50),
         success: false,
@@ -404,12 +397,13 @@ describe("RuntimeSkillCreatorFacade", () => {
       );
 
       expect(executeMock).toHaveBeenCalled();
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         executeId: "exec-006",
         skillName: "spec body",
         success: true,
         error: undefined,
       });
+      expect(result).toHaveProperty("sdkEvents");
     });
 
     it("apiKey 未指定の api-key モードで resolveWithService が terminal_handoff なら bundle を返す", async () => {
@@ -537,13 +531,12 @@ describe("RuntimeSkillCreatorFacade", () => {
       });
     });
 
-    it("integrated_api 判定時（graceful degradation: LLM 未注入）はスタブを返す", async () => {
+    it("integrated_api 判定時（LLM 未注入）は explicit error を返す (TASK-RT-02)", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "integrated_api",
         apiKey: "sk-test",
         permissionMode: "default",
       });
-      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_001);
 
       const result = await facade.improve(
         "skill-b",
@@ -552,10 +545,13 @@ describe("RuntimeSkillCreatorFacade", () => {
         "sk-test",
       );
 
-      // llmAdapter/resourceLoader 未注入のため graceful degradation
+      // TASK-RT-02: llmAdapter 未注入時は explicit error
       expect(result).toEqual({
-        improveId: "improve-1710000000001",
-        suggestions: [],
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLM アダプタが利用できません。設定を確認してください。",
+        },
       });
     });
   });
@@ -623,7 +619,7 @@ describe("RuntimeSkillCreatorFacade", () => {
       expect(result).toHaveProperty("skillName", "test-skill");
     });
 
-    it("TC-2: setLLMAdapter() 未呼び出し時、plan() が graceful degradation を返す", async () => {
+    it("TC-2: setLLMAdapter() 未呼び出し時、plan() が explicit error を返す (TASK-RT-02)", async () => {
       const facadeNoLLM = new RuntimeSkillCreatorFacade({
         skillExecutor: { execute: vi.fn() } as unknown as SkillExecutor,
       });
@@ -633,20 +629,15 @@ describe("RuntimeSkillCreatorFacade", () => {
         apiKey: "sk-test",
         permissionMode: "default",
       });
-      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_100);
 
       const result = await facadeNoLLM.plan("test spec", "api-key", "sk-test");
 
       expect(result).toEqual({
-        planId: "plan-1710000000100",
-        skillSpec: "test spec",
-        estimatedSteps: 3,
-        skillName: "",
-        description: "",
-        agents: [],
-        scripts: [],
-        triggers: [],
-        anchors: [],
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLM アダプタが利用できません。設定を確認してください。",
+        },
       });
     });
 
@@ -719,7 +710,7 @@ describe("RuntimeSkillCreatorFacade", () => {
       );
     });
 
-    it("TC-7: setLLMAdapter(undefined) で graceful degradation に戻る", async () => {
+    it("TC-7: setLLMAdapter(undefined) で explicit error に戻る (TASK-RT-02)", async () => {
       const mockResourceLoader = createMockResourceLoader();
       const mockLLMAdapter = createMockLLMAdapter();
       const facadeWithDI = new RuntimeSkillCreatorFacade({
@@ -733,16 +724,19 @@ describe("RuntimeSkillCreatorFacade", () => {
         apiKey: "sk-test",
         permissionMode: "default",
       });
-      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_200);
 
-      // undefined を注入すると graceful degradation に戻る
+      // undefined を注入すると explicit error になる
       facadeWithDI.setLLMAdapter(undefined as unknown as ILLMAdapter);
       const result = await facadeWithDI.plan("test spec", "api-key", "sk-test");
 
       expect(mockLLMAdapter.sendChat).not.toHaveBeenCalled();
-      expect(result).toHaveProperty("skillName", "");
-      expect(result).toHaveProperty("agents");
-      expect((result as { agents: unknown[] }).agents).toEqual([]);
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLM アダプタが利用できません。設定を確認してください。",
+        },
+      });
     });
 
     it("TC-8: plan() 実行中に setLLMAdapter() が呼ばれても当該リクエストには影響しない", async () => {

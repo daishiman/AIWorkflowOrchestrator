@@ -80,6 +80,7 @@ export interface SkillExecutionResponse {
   executionId: string;
   success: boolean;
   error?: SkillExecutionError;
+  sdkMessages?: unknown[];
 }
 
 /** 実行情報 */
@@ -466,11 +467,39 @@ interface SDKQueryOptions {
 
 interface SDKMessage {
   type?: string;
+  subtype?: string;
+  message?: {
+    id?: string;
+    role?: string;
+    content?: unknown;
+  };
   content?: string;
+  session_id?: string;
+  sessionId?: string;
+  stop_reason?: string;
+  stopReason?: string;
+  result?: {
+    subtype?: string;
+    stop_reason?: string;
+    stopReason?: string;
+    session_id?: string;
+    sessionId?: string;
+    permission_denials?: unknown;
+    permissionDenials?: unknown;
+    error?: string;
+  };
   tool_use?: {
+    id?: string;
     name: string;
     input: unknown;
   };
+  tool_result?: {
+    tool_use_id?: string;
+    is_error?: boolean;
+    content?: unknown;
+  };
+  permission_denials?: unknown;
+  permissionDenials?: unknown;
   error?: {
     message: string;
   };
@@ -576,11 +605,14 @@ export class SkillExecutor {
         abortController,
       );
 
+      const sdkMessages: unknown[] = [];
+
       // ストリーミング処理
       for await (const message of response.stream()) {
         if (abortController.signal.aborted) {
           break;
         }
+        sdkMessages.push(message);
         await this.handleStreamMessage(executionId, message);
       }
 
@@ -600,6 +632,7 @@ export class SkillExecutor {
       return {
         executionId,
         success: true,
+        sdkMessages,
       };
     } catch (error) {
       return this.handleExecutionError(executionId, error);
