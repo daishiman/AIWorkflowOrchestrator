@@ -860,8 +860,12 @@ function validateUserInputSubmission(
 ): void {
   switch (request.kind) {
     case "single_select":
+      if (!submission.selectedOptionId) {
+        throw new Error("selectedOptionId is invalid");
+      }
+      // NFR-3: verification_review は unknown option を no-op fallback として許容する
       if (
-        !submission.selectedOptionId ||
+        request.reason !== "verification_review" &&
         !request.options?.some(
           (option) => option.id === submission.selectedOptionId,
         )
