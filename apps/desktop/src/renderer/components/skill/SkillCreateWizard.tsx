@@ -18,6 +18,10 @@ import type {
   GenerationError,
   GenerationStage,
 } from "./wizard";
+import type {
+  RuntimeSkillCreatorExecuteResponse,
+  RuntimeSkillCreatorPlanResponse,
+} from "@repo/shared/types";
 import type { PlanResult } from "../../store/slices/agentSlice";
 import { useWizardStep } from "./hooks/useWizardStep";
 import {
@@ -79,7 +83,11 @@ type SkillCreatorRuntimeApi = {
     prompt: string,
     authMode?: string,
     apiKey?: string,
-  ) => Promise<{ success: boolean; data?: PlanResult; error?: string }>;
+  ) => Promise<{
+    success: boolean;
+    data?: RuntimeSkillCreatorPlanResponse;
+    error?: string;
+  }>;
   executePlan?: (
     planId: string,
     skillSpec: string,
@@ -87,10 +95,41 @@ type SkillCreatorRuntimeApi = {
     apiKey?: string,
   ) => Promise<{
     success: boolean;
-    data?: { skillName: string; skillPath: string };
+    data?: RuntimeSkillCreatorExecuteResponse;
     error?: string;
   }>;
 };
+
+function isExecuteTerminalHandoff(
+  response: RuntimeSkillCreatorExecuteResponse,
+): response is Extract<
+  RuntimeSkillCreatorExecuteResponse,
+  { type: "terminal_handoff" }
+> {
+  return "type" in response && response.type === "terminal_handoff";
+}
+
+function toPlanResult(
+  response: RuntimeSkillCreatorPlanResponse,
+): PlanResult | null {
+  if ("type" in response && response.type === "terminal_handoff") {
+    return {
+      type: "terminal_handoff",
+      guidance: response.guidance,
+    };
+  }
+  if ("success" in response && response.success === false) {
+    return null;
+  }
+  if (!("planId" in response)) {
+    return null;
+  }
+  return {
+    type: "integrated_api",
+    planId: response.planId,
+    estimatedSteps: response.estimatedSteps,
+  };
+}
 
 const getSkillCreatorApi = (): SkillCreatorRuntimeApi => {
   const api = (
@@ -149,6 +188,12 @@ export const SkillCreateWizard = React.forwardRef<
     };
   }, [clearGenerationState]);
 
+  const clearPlanExecutionState = () => {
+    setLocalPlanResult(null);
+    setCurrentPlanResult(null);
+    setCurrentPlanId(null);
+  };
+
   // Existing template generation handler
   const handleGenerate = async () => {
     goToStep(2);
@@ -186,15 +231,30 @@ export const SkillCreateWizard = React.forwardRef<
       }
       const result = await api.planSkill(description);
       if (result.success && result.data) {
-        setLocalPlanResult(result.data);
-        setCurrentPlanResult(result.data);
-        if (result.data.planId) {
-          setCurrentPlanId(result.data.planId);
+        // TASK-RT-02: plan logical error の検出
+        const data = result.data;
+        if ("success" in data && data.success === false) {
+          clearPlanExecutionState();
+          setStoreGenerationError(data.error.message);
+          return;
+        }
+        const normalizedPlan = toPlanResult(data);
+        if (!normalizedPlan) {
+          clearPlanExecutionState();
+          setStoreGenerationError("計画レスポンスの形式が不正です");
+          return;
+        }
+        setLocalPlanResult(normalizedPlan);
+        setCurrentPlanResult(normalizedPlan);
+        if (normalizedPlan.planId) {
+          setCurrentPlanId(normalizedPlan.planId);
         }
       } else {
+        clearPlanExecutionState();
         setStoreGenerationError(result.error ?? "計画生成に失敗しました");
       }
     } catch (err) {
+      clearPlanExecutionState();
       setStoreGenerationError(
         err instanceof Error ? err.message : "計画生成に失敗しました",
       );
@@ -216,7 +276,19 @@ export const SkillCreateWizard = React.forwardRef<
       }
       const result = await api.executePlan(storePlanId, description);
       if (result.success && result.data) {
-        setSkillPath(result.data.skillPath);
+        if (isExecuteTerminalHandoff(result.data)) {
+          setStoreGenerationError(
+            `ターミナル実行が必要です: ${result.data.bundle.suggestedCommand}`,
+          );
+          return;
+        }
+        if (!result.data.success) {
+          setStoreGenerationError(
+            result.data.error ?? "スキル生成に失敗しました",
+          );
+          return;
+        }
+        setSkillPath(null);
         setLocalPlanResult(null);
         clearGenerationState();
         goToStep(3);

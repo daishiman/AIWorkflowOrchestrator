@@ -909,3 +909,23 @@
 | 課題       | `selectProvider(id)` の引数型が `LLMProviderId`（union 型）だが、コールバックから渡される `id` は `string` 型。直接代入すると型エラーが発生                             |
 | 解決策     | `useCallback` ラッパーで `id as Parameters<typeof selectProvider>[0]` を使用。将来的には selectProvider の引数型を string に緩和するか、コールバック側で union 型を渡す |
 | 関連タスク | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001                                                                                                                         |
+
+---
+
+## TASK-RT-06 Phase 12 close-out 教訓（2026-03-29）
+
+### L-RT06-P12-001: Implementation Guide の Part 1/Part 2 未分離は gate fail の直因
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | implementation-guide が変更概要のみで、Part 1（中学生向け）/Part 2（技術詳細）要件を満たしていなかった |
+| 解決策 | Part 1/Part 2 を明示した2層構成に再編し、型定義・APIシグネチャ・エッジケース・定数一覧を追記 |
+| 標準ルール | Phase 12 Task 12-1 は「見出し存在」ではなく必須要素充足で判定する |
+
+### L-RT06-P12-002: 実行不能テストは「PASS扱い」せず未タスク化して条件付き判定へ分離
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | vitest が esbuild 不整合で実行不能なのに AC 全PASS表記が残り、最終レビュー判定が矛盾 |
+| 解決策 | final-review を条件付き PASS に修正し、`UT-RT-06-ESBUILD-ARCH-MISMATCH-001` を formalize |
+| 標準ルール | テスト環境 blocker は Phase 10/12 で同一IDの未タスクとして formalize し、判定を分離する |

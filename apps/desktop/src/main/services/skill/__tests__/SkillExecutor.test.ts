@@ -185,6 +185,45 @@ describe("SkillExecutor", () => {
       expect(response.error).toBeUndefined();
     });
 
+    it("should retain raw sdk messages for downstream normalization", async () => {
+      mockStreamGenerator.mockReturnValue({
+        [Symbol.asyncIterator]: async function* () {
+          yield {
+            type: "system",
+            subtype: "init",
+            session_id: "sdk-session-1",
+          };
+          yield {
+            type: "assistant",
+            message: { content: [{ type: "text", text: "hello" }] },
+          };
+          yield {
+            type: "result",
+            subtype: "success",
+            stop_reason: "end_turn",
+            session_id: "sdk-session-1",
+          };
+        },
+      });
+
+      const response = await executor.execute(mockRequest, mockSkill);
+
+      expect(response.success).toBe(true);
+      expect(response.sdkMessages).toEqual([
+        { type: "system", subtype: "init", session_id: "sdk-session-1" },
+        {
+          type: "assistant",
+          message: { content: [{ type: "text", text: "hello" }] },
+        },
+        {
+          type: "result",
+          subtype: "success",
+          stop_reason: "end_turn",
+          session_id: "sdk-session-1",
+        },
+      ]);
+    });
+
     it("should return error response on SDK failure", async () => {
       mockStreamGenerator.mockReturnValue({
         [Symbol.asyncIterator]: async function* () {

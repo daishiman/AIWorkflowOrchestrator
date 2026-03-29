@@ -552,6 +552,35 @@ describe("U-10: planSkill failure propagates error", () => {
     expect(mockPlanSkill).toHaveBeenCalledTimes(1);
     expect(mockSetGenerationError).toHaveBeenCalled();
   });
+
+  it("planSkill が logical error(data.success=false)を返したとき plan state をクリアする", async () => {
+    mockPlanSkill.mockResolvedValue({
+      success: true,
+      data: {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLM アダプタが利用できません。設定を確認してください。",
+        },
+      },
+    });
+
+    renderPanel();
+
+    const input = screen.getByTestId("skill-lifecycle-request-input");
+    fireEvent.change(input, { target: { value: "テスト入力" } });
+
+    const prepareBtn = screen.getByTestId("skill-lifecycle-prepare-button");
+    await act(async () => {
+      fireEvent.click(prepareBtn);
+    });
+
+    expect(mockSetGenerationError).toHaveBeenCalledWith(
+      "LLM アダプタが利用できません。設定を確認してください。",
+    );
+    expect(mockSetCurrentPlanResult).toHaveBeenCalledWith(null);
+    expect(mockSetCurrentPlanId).toHaveBeenCalledWith(null);
+  });
 });
 
 // =====================================================================
@@ -594,6 +623,8 @@ describe("U-12: planSkill API unavailable graceful degradation", () => {
 
     // Should not crash and should set error
     expect(mockSetGenerationError).toHaveBeenCalled();
+    expect(mockSetCurrentPlanResult).toHaveBeenCalledWith(null);
+    expect(mockSetCurrentPlanId).toHaveBeenCalledWith(null);
   });
 });
 

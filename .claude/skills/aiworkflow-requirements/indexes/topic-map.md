@@ -2636,6 +2636,7 @@ node scripts/list-specs.js --topics
 | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L737 |
 | TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L778 |
 | TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L803 |
+| TASK-RT-06 教訓（2026-03-29） | L834 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

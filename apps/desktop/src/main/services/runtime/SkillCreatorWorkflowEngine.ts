@@ -150,6 +150,12 @@ export class SkillCreatorWorkflowEngine {
       skillName: result.skillName,
       success: result.success,
       error: result.error,
+      sessionId: result.sessionId,
+      resultSubtype: result.resultSubtype,
+      stopReason: result.stopReason,
+      permissionDenials: result.permissionDenials,
+      sdkEvents: result.sdkEvents,
+      sourceProvenance: result.sourceProvenance,
     });
 
     state.currentPhase = "verify";
@@ -171,6 +177,12 @@ export class SkillCreatorWorkflowEngine {
       skillName: string;
       reason: Exclude<SkillCreatorWorkflowFailureReason, "verification_review">;
       message: string;
+      sessionId?: string;
+      resultSubtype?: string;
+      stopReason?: string;
+      permissionDenials?: RuntimeSkillCreatorExecuteResult["permissionDenials"];
+      sdkEvents?: RuntimeSkillCreatorExecuteResult["sdkEvents"];
+      sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
     },
   ): SkillCreatorWorkflowStateSnapshot {
     const state = this.getRequiredWorkflow(planId);
@@ -182,6 +194,12 @@ export class SkillCreatorWorkflowEngine {
       success: false,
       error: input.message,
       reason: input.reason,
+      sessionId: input.sessionId,
+      resultSubtype: input.resultSubtype,
+      stopReason: input.stopReason,
+      permissionDenials: input.permissionDenials,
+      sdkEvents: input.sdkEvents,
+      sourceProvenance: input.sourceProvenance,
     });
 
     state.currentPhase = "review";
@@ -808,8 +826,21 @@ function createVerificationReviewRequest(
     reason: "verification_review",
     title: "検証レビュー",
     prompt: buildVerificationReviewPrompt(message),
-    kind: "free_text",
-    placeholder: "修正方針や追加で直したい点を入力してください",
+    kind: "single_select",
+    options: [
+      {
+        id: "approve",
+        label: "承認してhandoffへ進む",
+      },
+      {
+        id: "improve",
+        label: "改善して再検証する",
+      },
+      {
+        id: "reject",
+        label: "差し戻して再計画する",
+      },
+    ],
     allowSkip: false,
     requestedAt,
   };
@@ -829,8 +860,12 @@ function validateUserInputSubmission(
 ): void {
   switch (request.kind) {
     case "single_select":
+      if (!submission.selectedOptionId) {
+        throw new Error("selectedOptionId is invalid");
+      }
+      // NFR-3: verification_review は unknown option を no-op fallback として許容する
       if (
-        !submission.selectedOptionId ||
+        request.reason !== "verification_review" &&
         !request.options?.some(
           (option) => option.id === submission.selectedOptionId,
         )

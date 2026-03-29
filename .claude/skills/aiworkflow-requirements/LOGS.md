@@ -7,7 +7,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
-| 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization 実装完了 Phase 12 sync（resource-map.md に TASK-RT-06 リソースマップ追加 / quick-reference.md に SDK Event Normalization セクション追加 / lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md に normalizer 設計・sessionId 伝播教訓追記 / workflow-task-rt-06-artifact-inventory.md 新規作成） |
+| 2026-03-29 - P0是正パック skills-creator-agent-sdk-lane 同期（artifacts.json schema 統一 100ファイル `"complete"` → `"completed"` 修正 / 新規タスク仕様書 15件全構成（index.md + phase-1〜13 + artifacts.json）: TASK-RT-01〜06（LLMAdapter/Runtime系）+ TASK-P0-01〜09（P0検証/修復系）/ p0-verify-manifest-remediation-pack.md 依存マトリクスと推奨実行順を最新化 / generate-index.js 含む validate スクリプト PASS / `.claude` 正本と `.agents` ミラー同期完了） |
+| 2026-03-28 - TASK-SDK-08 session-persistence-and-resume-contract Phase 12 close-out sync（SkillCreatorWorkflowEngine session 永続化 + resume 互換性判定を canonical spec へ反映 / WorkflowSessionStorage / ResumeCompatibilityEvaluator / SkillCreatorWorkflowSessionRepository の責務境界を interfaces-agent-sdk-executor.md・arch-execution-capability-contract.md に追記 / TASK-SDK-04-U2 canonical binding drift 是正 approvedSkillSpec snapshot 修正を同波 sync / lessons-learned-current.md に教訓3件（esbuild mismatch / artifact命名規約 / Phase 11 判定）確定） |
+| 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization close-out sync（shared barrel export漏れと Renderer plan型ドリフトを修正 / sessionId昇格規約を最初観測へ統一 / Phase 11-12成果物を補完 / typecheck(shared+desktop) PASS / vitest blocker を UT-RT-06-ESBUILD-ARCH-MISMATCH-001 として formalize） |
 | 2026-03-28 - TASK-SDK-04-U2 canonical binding remediation sync（`api-ipc-system-core.md` / `arch-state-management-core.md` から未解消扱いを解消し、`approvedSkillSpec` snapshot による execute binding 修正と task spec close-out drift 是正を same-wave 反映） |
 | 2026-03-28 - TASK-SDK-07 execution-governance-and-handoff-alignment Phase 12 close-out sync（未タスク 3 件 formalize（UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 / UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001）/ lessons-learned-phase12-workflow-lifecycle に教訓 3 件追記（shared channel 再利用 / disclosure graceful degradation / spec_created task code wave AC 追跡）/ quick-reference governance bundle 導線に実装参照 7 件追加 / task-workflow-backlog 3 件追記 / LOGS.md 2 ファイル同時更新 / generate-index.js 実行） |
 | 2026-03-27 - TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 仕様書一括更新（完了タスク5件を completed ledger に追加 / 苦戦箇所4件（artifact ID 生成・PhaseResourcePlanner 多層意思決定・IPC 型境界管理・verify detail 証拠追跡）を lessons-learned に追記 / quick-reference に Workflow State/Verify Detail/User Input API 5件の即時導線を追加 / resource-map に PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を登録 / lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md を責務分割（549→304行 + 319行新設）） |
@@ -121,28 +123,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 
 - [logs-archive-index.md](references/logs-archive-index.md)
-
-## 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization 実装完了 Phase 12 sync
-
-### 変更概要
-TASK-RT-06（SDKMessage → SkillCreatorSdkEvent 正規化契約）の Phase 12 完了に伴う仕様書同期。
-
-### 追加・更新内容
-- `resource-map.md`: TASK-RT-06タスク別リソースマップを追加
-- `quick-reference.md`: SDK Event Normalization セクションを追加
-- `lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md`: TASK-RT-06の実装知見（normalizer設計・sessionId伝播）を追記
-- `workflow-task-rt-06-artifact-inventory.md`: 新規作成（artifact inventory）
-
-### 主要成果物
-| ファイル | 変更種別 | 内容 |
-|---|---|---|
-| `packages/shared/src/types/skillCreator.ts` | 追加 | SkillCreatorSdkEvent 3型 |
-| `apps/desktop/src/main/services/runtime/sdkMessageNormalizer.ts` | 新規 | normalizer本体（32テスト）|
-| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | 更新 | normalizer統合 |
-| `apps/desktop/src/main/ipc/creatorHandlers.ts` | 更新 | IPCチャネル追加 |
-
-### 未タスク
-- SkillExecutor.convertToStreamMessage() と normalizer の統合候補（1件、unassigned-task検出済み）
 
 ## TASK-SDK-03 resource selection hardening sync（2026-03-27）
 
@@ -496,3 +476,20 @@ TASK-RT-06（SDKMessage → SkillCreatorSdkEvent 正規化契約）の Phase 12 
 AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 <!-- 2026-03-16〜2026-03-25 の詳細ログは logs-archive-2026-03-mid-lifecycle-governance-improve.md に退避 -->
+
+## TASK-RT-06 close-out sync（2026-03-29）
+
+- タスク名: TASK-RT-06 claude-sdk-message-contract-normalization
+- 種別: implementation + documentation sync
+- 主な反映:
+  - `RuntimeSkillCreatorPlanErrorResponse` / `RuntimeSkillCreatorDegradedReason` を shared barrel export へ反映
+  - `SkillLifecyclePanel` の plan response 型ドリフトを解消し、runtime response → PlanResult 変換を追加
+  - `RuntimeSkillCreatorFacade` の `sessionId` 昇格規約を「最初に観測した event」へ統一
+  - `SkillCreatorWorkflowEngine` verification review を `single_select` 契約へ是正
+  - RT-06 workflow の Phase 11/12 成果物不足を補完（checklist/issues/system-spec/changelog/unassigned/feedback/compliance）
+- 検証:
+  - `pnpm -s typecheck:shared`: PASS
+  - `pnpm -s typecheck:desktop`: PASS
+  - vitest は esbuild アーキ不整合で blocked
+- 派生未タスク:
+  - `UT-RT-06-ESBUILD-ARCH-MISMATCH-001`

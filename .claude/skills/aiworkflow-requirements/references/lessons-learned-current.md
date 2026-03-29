@@ -828,3 +828,25 @@
 | 原因 | spec本文とartifact名でtask分類が異なっていた |
 | 解決 | Phase 1 要件定義時に UI task か docs-only task かを明示し、全フェーズで統一 |
 | 再発防止 | Phase 12 compliance check で artifact命名とPhase 11判定の一致を確認項目に追加 |
+
+---
+
+## TASK-RT-06 教訓（2026-03-29）
+
+### 1. shared 型追加時は barrel export を同ターンで更新しないと desktop が即壊れる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `RuntimeSkillCreatorPlanErrorResponse` を shared 型へ追加したが `@repo/shared/types` から再公開漏れがあり desktop typecheck が失敗 |
+| 解決策 | `packages/shared/src/types/index.ts` の export type を同一ターンで更新し、desktop 側 import を再検証 |
+| 標準ルール | shared 型の追加・改名時は「定義ファイル」と「barrel export」を必ずセットで更新（P32） |
+| 関連タスク | TASK-RT-06 |
+
+### 2. UI 非変更タスクでも Phase 11 は N/A 宣言だけで完了にしない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | スクリーンショット N/A のみで手動検証証跡が不足し、Phase 11 妥当性が監査で否認 |
+| 解決策 | `manual-test-checklist.md` と `discovered-issues.md` を必須補助成果物として追加 |
+| 標準ルール | UI 非変更タスクは「N/A 根拠 + 代替証跡（checklist/issues）」をセットで残す |
+| 関連タスク | TASK-RT-06 |
