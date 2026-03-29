@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-29 | 1.8.7      | TASK-RT-04 skill-authkey-api-key-management-ui の Phase 12 教訓2件を追加（esbuild アーキ不一致対処 / shared IPC channel 再利用時の主導線/補助導線責務境界明文化） |
 | 2026-03-28 | 1.8.6      | TASK-SDK-07 execution-governance-and-handoff-alignment の Phase 12 教訓3件を追加（shared channel 再利用パターン / disclosure graceful degradation / spec_created task への code wave 注入後の AC 追跡） |
 | 2026-03-27 | 1.8.5      | UT-EXEC-01 の docs-only close-out 教訓2件を追加（Implementation Anchor path 実在確認 / duplicate source の baseline 判定）                                                                              |
 | 2026-03-27 | 1.8.4      | TASK-SDK-04 の Phase 12 教訓1件を追加（spec_created task に code wave が入った時の screenshot/evidence reclassification）                                                                               |
@@ -38,6 +39,30 @@
 | 2026-03-18 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）。合計5件 |
 | 2026-03-18 | 1.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-29 TASK-RT-04 skill-authkey-api-key-management-ui
+
+### 苦戦箇所1: esbuild バイナリアーキ不一致によるテスト起動失敗
+
+| 項目       | 内容                                                                                                                                                            |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `ApiKeySettingsPanel.test.tsx` 実行時に `@esbuild/darwin-arm64` が検出されるが環境は `darwin-x64` のため、Vitest が起動しない                                 |
+| 再発条件   | `pnpm install` 後に optional deps の platform 判定がキャッシュされたアーキを返す場合（特に CI 共有キャッシュや worktree コピー環境）                           |
+| 解決策     | `pnpm install --force` で optional dependency を現在のアーキに再解決する。`node -p "process.platform + ' ' + process.arch"` で事前確認してから実行すること |
+| 標準ルール | test 実行前に `process.arch` を確認し、ミスマッチが疑われる場合は `--force` を優先する                                                                         |
+| 関連タスク | UT-TASK-RT-04-TEST-RUNTIME-ESBUILD-ARCH-001                                                                                                                     |
+
+### 苦戦箇所2: 共有 IPC チャネル再利用時の主導線/補助導線責務境界曖昧化
+
+| 項目       | 内容                                                                                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `auth-key:*` IPC チャネルを `SettingsView`（主導線）と `SkillLifecyclePanel`（補助導線）の両方から呼ぶ設計で、task spec と実装の記述が曖昧なまま進行した                                                                          |
+| 再発条件   | 同一 IPC チャネルを複数の UI surface から再利用する場合、「どちらが主でどちらが補助か」を仕様に明記しないと drift が生じる                                                                                                        |
+| 解決策     | workflow `index.md` の AC-1 に「`SettingsView` 主導線 / `SkillLifecyclePanel` 補助導線」を明文化し、双方の契約境界（`apiKey:*` vs `auth-key:*`）も同時に記録する                                                                 |
+| 標準ルール | 同一チャネルを複数 surface が再利用する場合は、必ず主導線/補助導線の役割分担と channel namespace の境界を workflow index.md と system spec に同時記録する（UT-TASK-RT-04-SETTINGS-VS-LIFECYCLE-BOUNDARY-001 のパターンを再利用可） |
+| 関連タスク | UT-TASK-RT-04-SETTINGS-VS-LIFECYCLE-BOUNDARY-001                                                                                                                                                                                     |
 
 ---
 

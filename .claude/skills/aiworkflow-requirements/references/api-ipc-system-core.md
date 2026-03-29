@@ -391,6 +391,15 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `source=not-set` | キー未設定、または exists 判定でエラー                                   |
 | 目的            | Renderer preflight と Main 実行時判定の乖離を防止し、UI の状態表示を安定化 |
 
+**Runtime lane 補助導線での利用ルール（TASK-RT-04）**:
+
+| 項目 | 仕様 |
+| --- | --- |
+| 対象 UI | `apps/desktop/src/renderer/components/skill/ApiKeySettingsPanel.tsx` |
+| 使用チャネル | `auth-key:exists`, `auth-key:set`, `auth-key:delete` |
+| 削除後再判定 | `auth-key:delete` 成功後に `auth-key:exists` を再実行し、`env-fallback` の場合は `configured` を維持する |
+| 境界 | `apiKey:*`（provider key）とは統合せず、`auth-key:*` の責務を維持する |
+
 ### 実装状況（auth-key ライフサイクル）
 
 | 実装項目                                                                                  | ステータス | 関連タスク                                           |
@@ -404,6 +413,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `registerAllIpcHandlers` で各 `registerXxxHandlers` を `safeRegister` で個別 try-catch 化 | completed  | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001        |
 | `registerAllIpcHandlers` が `IpcHandlerRegistrationResult` を返却（成功/失敗カウント）    | completed  | TASK-FIX-IPC-HANDLER-GRACEFUL-DEGRADATION-001        |
 | `auth-key:exists` が `source`（saved/env-fallback/not-set）を返却                            | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
+| Runtime lane 補助導線 (`ApiKeySettingsPanel`) が `auth-key:*` を再利用                         | completed  | TASK-RT-04                                            |
 | `apiKey:save` / `apiKey:delete` 後に `LLMAdapterFactory.clearInstance(provider)` を実行      | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
 | `llm:set-selected-config` で Renderer 選択状態を Main 側 `ai.chat` 実行経路へ同期            | completed  | TASK-FIX-APIKEY-CHAT-TOOL-INTEGRATION-001            |
 
