@@ -1,5 +1,9 @@
 // IPC Channel definitions
 // All channel names are centralized here for type safety
+import {
+  APPROVAL_CHANNELS,
+  EXECUTION_CHANNELS,
+} from "@repo/shared/src/ipc/channels";
 
 export const IPC_CHANNELS = {
   // File operations
@@ -381,9 +385,10 @@ export const IPC_CHANNELS = {
   SKILL_EVALUATE_SAFETY: "skill:evaluate-safety",
 
   // Approval / Disclosure operations (TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001)
-  APPROVAL_RESPOND: "approval:respond",
-  APPROVAL_REQUEST: "approval:request",
-  EXECUTION_GET_DISCLOSURE_INFO: "execution:get-disclosure-info",
+  APPROVAL_RESPOND: APPROVAL_CHANNELS.APPROVAL_RESPOND,
+  APPROVAL_REQUEST: APPROVAL_CHANNELS.APPROVAL_REQUEST,
+  EXECUTION_GET_DISCLOSURE_INFO:
+    EXECUTION_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO,
   EXECUTION_GET_TERMINAL_LOG: "execution:get-terminal-log",
   EXECUTION_GET_COPY_COMMAND: "execution:get-copy-command",
 } as const;
