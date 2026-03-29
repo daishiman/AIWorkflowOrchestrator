@@ -66,6 +66,6 @@
         "outputs/phase-12/phase12-task-spec-compliance-check.md"
       ]
     },
-    "13": { "status": "blocked", "artifacts": [] }
+    "13": { "status": "completed", "artifacts": [] }
   }
 }

@@ -2,7 +2,7 @@
   "feature": "task-fix-chatview-error-silent-failure",
   "created": "2026-03-20T03:50:49.247Z",
   "lastUpdated": "2026-03-20T03:50:49.247Z",
-  "status": "blocked",
+  "status": "completed",
   "phases": {
     "1": {
       "status": "completed",
@@ -65,7 +65,7 @@
       ]
     },
     "13": {
-      "status": "blocked",
+      "status": "completed",
       "artifacts": ["phase-13-pr-creation.md"]
     }
   },

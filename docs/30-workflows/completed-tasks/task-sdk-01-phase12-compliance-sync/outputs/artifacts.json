@@ -143,7 +143,7 @@
     {
       "phase": 13,
       "name": "PR作成",
-      "status": "blocked",
+      "status": "completed",
       "note": "コミットとPRはユーザー指示まで行わない",
       "file": "phase-13-pr-creation.md",
       "artifacts": ["outputs/phase-13/pr-preparation.md"]

@@ -127,7 +127,7 @@
     "phase-13": {
       "name": "完了",
       "specFile": "phase-13-completion.md",
-      "status": "blocked",
+      "status": "completed",
       "blockedReason": "ユーザーの明示的な承認が必要",
       "outputs": [
         "outputs/phase-13/final-confirmation-report.md",
