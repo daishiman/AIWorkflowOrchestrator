@@ -2032,6 +2032,14 @@ node scripts/list-specs.js --topics
 | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001: AgentView <-> SkillAnalysis round-trip（2026-03-20） | L180 |
 | 変更履歴 | L224 |
 
+### references/workflow-task-rt-06-artifact-inventory.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L3 |
+| Current Canonical Set | L12 |
+| Follow-up 未タスク | L25 |
+| Validation Chain | L31 |
+
 ### references/workflow-workspace-parent-reference-sweep-guard.md
 
 | セクション | 行 |
@@ -2584,6 +2592,7 @@ node scripts/list-specs.js --topics
 | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle hardening（2026-03-26） | L87 |
 | TASK-SDK-08 session-persistence-and-resume-contract（2026-03-26） | L134 |
 | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 追加教訓（2026-03-27） | L257 |
+| TASK-RT-06: SDK Event Normalizer 実装知見 | L306 |
 
 ### references/lessons-learned-auth-settings-degradation-guard.md
 
@@ -2629,6 +2638,7 @@ node scripts/list-specs.js --topics
 | TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L778 |
 | TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L803 |
 | TASK-RT-06 教訓（2026-03-29） | L834 |
+| TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L856 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

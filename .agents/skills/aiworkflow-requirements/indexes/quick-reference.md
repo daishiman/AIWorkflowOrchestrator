@@ -80,6 +80,21 @@
 
 ---
 
+### Skill Creator SDK Event Normalization (TASK-RT-06)
+
+**概要:** SDKMessage → SkillCreatorSdkEvent 変換契約の安定化
+
+| 項目 | 詳細 |
+|---|---|
+| 型 | `SkillCreatorSdkEvent` (7フィールド), `SkillCreatorSdkEventType` ("init"\|"assistant"\|"result"\|"error") |
+| normalizer | `normalizeSdkMessage(msg, sessionId?)`, `normalizeSdkStream(msgs)` |
+| IPCチャネル | `skill-creator:normalize-sdk-messages` |
+| sessionId伝播 | init → 後続メッセージへ自動伝播 |
+| テスト | 32件, Line 99.35% / Branch 91.22% / Function 100% |
+| 未タスク | SkillExecutor.convertToStreamMessage()との統合候補（1件） |
+
+---
+
 ### Runtime Skill Creator Session Persistence（TASK-SDK-08 / 2026-03-28 実装済み）
 
 | 目的                                                            | 最初に開くファイル                                                                                                                                     |
@@ -480,19 +495,3 @@ packages/
 | spec-splitting-guidelines.md | ファイル分割ルール        |
 
 ---
-
-## 変更履歴
-
-| 日付       | 変更内容                                                                                                                                                                                                                                                      |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-28 | TASK-SDK-08 session-persistence-and-resume-contract: 「Runtime Skill Creator Session Persistence」即時導線セクション追加（WorkflowSessionStorage / ResumeCompatibilityEvaluator / SkillCreatorWorkflowSessionRepository 導線 9 件）、lessons-learned-current.md に教訓 3 件追加（esbuild mismatch / artifact 命名 / Phase 11 判定） |
-| 2026-03-28 | TASK-SDK-07 Phase 12 close-out sync: 未タスク 3 件 formalize（UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 / UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001）、governance bundle 導線に Preload/Renderer/テスト実装参照 7 件を追加、task-workflow-backlog 3 件追記、LOGS.md 2 ファイル + SKILL.md 2 ファイル同時更新、generate-index.js 再生成 + mirror rsync 完了 |
-| 2026-03-28 | TASK-SDK-04-U2: canonical binding drift 是正 — execute flow が `approvedSkillSpec` snapshot を参照するよう修正。`SkillLifecyclePanel.tsx` に state 分離パッチ適用 |
-| 2026-03-27 | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Skill Creator Workflow State / User Input / Verify API 即時導線追加。getVerifyDetail / requestReverify / getWorkflowState / submitUserInput / onWorkflowStateChanged の5 API 導線を登録 |
-| 2026-03-25 | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001: 即時導線セクション追加、承認・安全ガバナンス IPCチャンネル5件追加、IApprovalGate/isConsumerToken/sanitizeForApiKeys 型定義追加                                                                               |
-| 2026-03-20 | UT-RAG-08-002: `ILLMClient` 型ドリフト（P64）への参照パスを型定義クイックアクセステーブルに追加。`lessons-learned-rag-embedding-runtime.md` (L-RAG-06) へ導線を登録                                                                                           |
-| 2026-03-19 | UT-TASK06-007: discovery 導線を completed canonical set に再同期し、implementation pattern detail / completed ledger / EXT-001〜005 を早見表へ反映                                                                                                            |
-| 2026-03-18 | UT-TASK06-007: IPC契約ドリフト自動検出セクション（check-ipc-contracts.ts / R-01~R-04 / EXT-001~003）をIPCチャンネル早見表直後に追加                                                                                                                           |
-| 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加                                                                                                                                                          |
-| 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:_/skill:distribution:_ 11チャンネルを追加                                                                                                        |
-| 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加                                                                                                                                                            |

@@ -41,15 +41,15 @@
 
 ### 3-2. LLM provider modernization wave
 
-| 対象              | 状態     | 親和性 | 順番上の扱い       | コメント                                                                    |
-| ----------------- | -------- | ------ | ------------------ | --------------------------------------------------------------------------- |
-| `TASK-LLM-MOD-02` | 未完了   | 中     | supporting lane    | Anthropic health check の最新化で `APIで実行` の信頼性が上がる              |
-| `TASK-LLM-MOD-03` | 未完了   | 低〜中 | supporting lane    | Google system instruction 正式化。Skill Creator そのものの blocker ではない |
-| `TASK-LLM-MOD-04` | 未完了   | 中     | supporting lane    | provider 変更の test 追従。品質担保に必要                                   |
-| `TASK-LLM-MOD-05` | optional | 低     | optional lane      | model description は将来 Runtime Banner や selector 補助に使える            |
-| `TASK-LLM-MOD-06` | 実装済み | 中     | baseline completed | OpenAICompatibleAdapter は provider 拡張の基盤として有効                    |
-| `TASK-LLM-MOD-07` | 実装済み | 中     | baseline completed | OpenRouter 統合は provider 選択肢と availability 設計に親和する             |
-| `TASK-LLM-MOD-08` | 実装済み | 高     | baseline completed | `isAvailable` filtering は `unavailable` state 設計と強く整合する           |
+| 対象              | 状態     | 親和性 | 順番上の扱い       | コメント                                                                                                                            |
+| ----------------- | -------- | ------ | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `TASK-LLM-MOD-02` | 未完了   | 中     | supporting lane    | Anthropic health check の最新化で `APIで実行` の信頼性が上がる                                                                      |
+| `TASK-LLM-MOD-03` | 未完了   | 低〜中 | supporting lane    | Google system instruction 正式化。Skill Creator そのものの blocker ではない                                                         |
+| `TASK-LLM-MOD-04` | 完了     | 中     | supporting lane    | provider 変更の test 追従。canonical root は `docs/30-workflows/step-03-seq-task-04-test-update/`、follow-up は `UT-LLM-MOD-04-001` |
+| `TASK-LLM-MOD-05` | optional | 低     | optional lane      | model description は将来 Runtime Banner や selector 補助に使える                                                                    |
+| `TASK-LLM-MOD-06` | 実装済み | 中     | baseline completed | OpenAICompatibleAdapter は provider 拡張の基盤として有効                                                                            |
+| `TASK-LLM-MOD-07` | 実装済み | 中     | baseline completed | OpenRouter 統合は provider 選択肢と availability 設計に親和する                                                                     |
+| `TASK-LLM-MOD-08` | 実装済み | 高     | baseline completed | `isAvailable` filtering は `unavailable` state 設計と強く整合する                                                                   |
 
 ### 3-3. Governance wave
 
