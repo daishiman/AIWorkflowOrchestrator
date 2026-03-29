@@ -42,6 +42,7 @@ import type {
   LoadedWorkflowManifest,
   SkillCreatorSdkEvent,
   SkillCreatorSdkPermissionDenial,
+  LLMAdapterStatus,
 } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 import type { ILLMAdapter } from "../../adapters/llm/types";
@@ -102,11 +103,18 @@ export class RuntimeSkillCreatorFacade {
   private readonly resolvedResourceReader?: ResolvedResourceReader;
   private readonly manifestLoader = new ManifestLoader();
 
+  // TASK-RT-01: LLMAdapter ステータス管理
+  private _llmAdapterStatus: LLMAdapterStatus = "initializing";
+  private _llmAdapterFailureReason: string | null = null;
+
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
     this.workflowEngine =
       deps.workflowEngine ?? new SkillCreatorWorkflowEngine();
     this.llmAdapter = deps.llmAdapter;
+    if (deps.llmAdapter) {
+      this._llmAdapterStatus = "ready";
+    }
     this.resourceLoader = deps.resourceLoader;
     this.skillFileManager = deps.skillFileManager;
     this.skillFileWriter = deps.skillFileWriter;
@@ -120,6 +128,16 @@ export class RuntimeSkillCreatorFacade {
     this.handoffBuilder = new TerminalHandoffBuilder();
   }
 
+  /** LLMAdapter の現在のステータスを取得する (TASK-RT-01) */
+  get llmAdapterStatus(): LLMAdapterStatus {
+    return this._llmAdapterStatus;
+  }
+
+  /** LLMAdapter 初期化失敗時の理由を取得する (TASK-RT-01) */
+  get llmAdapterFailureReason(): string | null {
+    return this._llmAdapterFailureReason;
+  }
+
   /**
    * LLMAdapter を遅延注入する（Setter Injection — P34 準拠）。
    * LLMAdapterFactory.getAdapter() が非同期のため、コンストラクタ時点では
@@ -131,6 +149,17 @@ export class RuntimeSkillCreatorFacade {
    */
   setLLMAdapter(adapter: ILLMAdapter): void {
     this.llmAdapter = adapter;
+    this._llmAdapterStatus = "ready";
+    this._llmAdapterFailureReason = null;
+  }
+
+  /**
+   * LLMAdapter 初期化失敗を記録する (TASK-RT-01)。
+   * fire-and-forget の catch ブロックから呼ばれ、ステータスを "failed" に遷移させる。
+   */
+  setLLMAdapterFailed(reason: string): void {
+    this._llmAdapterStatus = "failed";
+    this._llmAdapterFailureReason = reason;
   }
 
   getWorkflowStateSnapshot(
@@ -311,6 +340,27 @@ export class RuntimeSkillCreatorFacade {
     authMode: AuthMode,
     apiKey: string | null,
   ): Promise<RuntimeSkillCreatorPlanResponse> {
+    // TASK-RT-01: アダプターステータスチェック
+    if (this._llmAdapterStatus === "failed") {
+      return {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: toActionableMessage(this._llmAdapterFailureReason),
+        },
+      };
+    }
+
+    if (this._llmAdapterStatus === "initializing") {
+      return {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
+        },
+      };
+    }
+
     const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {
@@ -400,6 +450,7 @@ export class RuntimeSkillCreatorFacade {
       scripts: parsed.scripts,
       triggers: parsed.triggers,
       anchors: parsed.anchors,
+      adapterStatus: this._llmAdapterStatus,
     };
     this.workflowEngine.recordPlanResult(
       planResult,
@@ -1207,6 +1258,17 @@ function readValue(value: Record<string, unknown>, path: string[]): unknown {
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object";
+}
+
+/**
+ * LLMAdapter の失敗理由を actionable なユーザー向けメッセージに変換する (TASK-RT-01)
+ */
+export function toActionableMessage(reason: string | null): string {
+  if (!reason) return "LLMAdapter の初期化に失敗しました";
+  if (/api.?key|ANTHROPIC_API_KEY/i.test(reason)) {
+    return "APIキーを設定してください";
+  }
+  return reason;
 }
 
 function toExecutionErrorMessage(error: unknown): string {

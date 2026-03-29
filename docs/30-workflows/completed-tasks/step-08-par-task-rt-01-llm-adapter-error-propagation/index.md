@@ -10,13 +10,24 @@ LLMAdapter の初期化は fire-and-forget パターンで実行されており�
 | ---------- | --------------------------------- |
 | タスクID   | TASK-RT-01                        |
 | タスク種別 | バグ修正 / エラーハンドリング改善 |
+| タスク分類 | Runtime bug-fix task / non-visual |
 | 優先度     | RT (Runtime)                      |
-| ステータス | spec_created                      |
+| ステータス | implemented                       |
 | 上流ゲート | なし                              |
 | 依存タスク | なし                              |
 | 後続タスク | TASK-RT-02                        |
 | 作成日     | 2026-03-29                        |
 | 更新日     | 2026-03-29                        |
+
+## canonical context
+
+- current canonical task directory: `docs/30-workflows/step-08-par-task-rt-01-llm-adapter-error-propagation/`
+- upstream source bundle: `docs/30-workflows/skill-creator-agent-sdk-lane/requirements-draft.md`
+- upstream workflow pack: `docs/30-workflows/skill-creator-agent-sdk-lane/root-workflow-pack/index.md`
+- aiworkflow current facts:
+  - `api-ipc-system-core.md` は `skill-creator:plan` の public IPC surface と shared types の SSoT を定義している
+  - `task-workflow-completed.md` は `UT-SC-03-003` の fire-and-forget + `setLLMAdapter()` 基盤を記録しており、TASK-RT-01 で `plan()` の error propagation 契約へ更新された
+  - `architecture-overview-core.md` は `RuntimeSkillCreatorFacade` を public bridge と位置付け、state owner ではないことを固定している
 
 ## 受入基準
 
@@ -51,11 +62,14 @@ LLMAdapter の初期化は fire-and-forget パターンで実行されており�
 
 ## 依存関係
 
-| 種別       | 参照先                           | 役割                            |
-| ---------- | -------------------------------- | ------------------------------- |
-| upstream   | `../requirements-draft.md`       | skill-creator 全体の要件        |
-| upstream   | `../root-workflow-pack/index.md` | lane 共通不変条件と責務分離方針 |
-| downstream | TASK-RT-02                       | UI 側のエラー表示実装           |
+| 種別       | 参照先                                                                            | 役割                                                                     |
+| ---------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| upstream   | `../skill-creator-agent-sdk-lane/requirements-draft.md`                           | skill-creator 全体の要件                                                 |
+| upstream   | `../skill-creator-agent-sdk-lane/root-workflow-pack/index.md`                     | lane 共通不変条件と責務分離方針                                          |
+| spec       | `.claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md`        | `skill-creator:plan` の IPC 契約と shared type 正本                      |
+| spec       | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`    | `UT-SC-03-003` 基盤契約。TASK-RT-01 で `plan()` error propagation へ拡張 |
+| spec       | `.claude/skills/aiworkflow-requirements/references/architecture-overview-core.md` | Facade の責務境界（public bridge / state owner 分離）                    |
+| downstream | TASK-RT-02                                                                        | UI 側のエラー表示実装                                                    |
 
 ## 現行コードアンカー
 
@@ -76,6 +90,18 @@ LLMAdapter の初期化は fire-and-forget パターンで実行されており�
 | 価値とコストの不均衡 | プロパティ追加と条件分岐のみで実装可能。fire-and-forget パターンを壊さないため既存動作への影響が最小限                    |
 | 改善優先順位         | 1. ステータス型定義 2. Facade プロパティ追加 3. plan() エラーレスポンス 4. ipc 初期化ステータス更新 5. IPC レスポンス拡張 |
 | 4条件評価            | 価値性: 高（UX 直結）/ 実現性: 高（プロパティ追加 + 条件分岐）/ 整合性: 既存型を拡張 / 運用性: 独立テスト可能             |
+
+## 30思考法監査サマリー
+
+| 系統         | 適用した思考法                                                            | 結論                                                                                                         |
+| ------------ | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| 論理分析系   | 批判的思考 / 演繹思考 / 帰納的思考 / アブダクション / 垂直思考            | silent failure が真の欠陥であり、最小差分で error propagation を追加する案が妥当                             |
+| 構造分解系   | 要素分解 / MECE / 2軸思考 / プロセス思考                                  | shared types / Facade / IPC registration / downstream UI に責務を分解し、本タスクを Facade+shared+IPC に限定 |
+| メタ・抽象系 | メタ思考 / 抽象化思考 / ダブル・ループ思考                                | 問題は API key 不在そのものではなく「失敗が見えない contract」にある                                         |
+| 発想・拡張系 | ブレインストーミング / 水平思考 / 逆説思考 / 類推思考 / if思考 / 素人思考 | retry や新規 channel 追加より、注文失敗を伝票に出すように failure を返す案が最小で分かりやすい               |
+| システム系   | システム思考 / 因果関係分析 / 因果ループ                                  | エラー隠蔽が誤認と support cost を増やすループを作るため、status 可視化で断つ                                |
+| 戦略・価値系 | トレードオン思考 / プラスサム思考 / 価値提案思考 / 戦略的思考             | 起動性能を守りながら error visibility を上げるのが価値/コスト比で最良                                        |
+| 問題解決系   | why思考 / 改善思考 / 仮説思考 / 論点思考 / KJ法                           | 論点を silent failure に絞ることで、破棄再構成ではなく最小再構成で閉じると判断                               |
 
 ## ディレクトリ構成
 
@@ -105,6 +131,7 @@ step-08-par-task-rt-01-llm-adapter-error-propagation/
     ├── phase-3/design-review-gate.md
     ├── phase-4/test-matrix.md
     ├── phase-11/manual-test-checklist.md
+    ├── phase-11/screenshot-plan.json
     ├── phase-11/manual-test-result.md
     ├── phase-11/manual-test-report.md
     ├── phase-11/discovered-issues.md
@@ -113,7 +140,8 @@ step-08-par-task-rt-01-llm-adapter-error-propagation/
     │   ├── system-spec-update-summary.md
     │   ├── documentation-changelog.md
     │   ├── unassigned-task-detection.md
-    │   └── skill-feedback-report.md
+    │   ├── skill-feedback-report.md
+    │   └── phase12-task-spec-compliance-check.md
     └── phase-13/
         ├── local-check-result.md
         └── change-summary.md
@@ -133,7 +161,7 @@ step-08-par-task-rt-01-llm-adapter-error-propagation/
 - `packages/shared/src/types/skillCreator.ts` — `LLMAdapterStatus` 型追加、レスポンス型にステータスフィールド追加
 - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` — `llmAdapterStatus` プロパティ、失敗理由保持、`plan()` エラーレスポンス
 - `apps/desktop/src/main/ipc/index.ts` (934-946行) — ステータス更新コールバック追加
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts` — ステータス・エラーレスポンスのテスト追加
+- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts` — ステータス・エラーレスポンスの専用テスト追加
 
 ### 非対象
 
@@ -150,6 +178,7 @@ step-08-par-task-rt-01-llm-adapter-error-propagation/
 - `plan()` を llmAdapter 未設定で呼ぶと、空 stub ではなく `{ success: false, error: "APIキーを設定してください" }` 相当のレスポンスが返る
 - IPC レスポンスに `adapterStatus` フィールドが含まれる
 - 既存テストが全て pass する
+- `artifacts.json` と `outputs/artifacts.json` が同期し、Phase 12 / 13 の evidence path が実在する
 
 ### 並列実行メモ
 

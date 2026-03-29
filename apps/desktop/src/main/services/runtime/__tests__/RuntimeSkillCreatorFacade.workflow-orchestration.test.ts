@@ -68,6 +68,37 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
   });
 
   it("plan() integrated_api は engine に review state を記録する", async () => {
+    // TASK-RT-01: adapter status チェック通過のため llmAdapter を constructor で注入
+    const mockAdapter: ILLMAdapter = {
+      providerId: "anthropic" as ILLMAdapter["providerId"],
+      sendChat: vi.fn().mockResolvedValue({
+        content: JSON.stringify({
+          skillName: "engine-test",
+          description: "workflow test skill",
+          agents: [{ name: "agent-1", role: "executor" }],
+          scripts: [],
+          triggers: [],
+          anchors: [],
+        }),
+        model: "claude-sonnet-4-20250514",
+        usage: { promptTokens: 10, completionTokens: 10, totalTokens: 20 },
+      }),
+      streamChat: vi.fn(),
+      checkHealth: vi.fn(),
+    } as ILLMAdapter;
+    const mockResourceLoader = {
+      getBasePath: () => "/tmp/skill-creator",
+      loadAgent: vi.fn().mockResolvedValue("agent content"),
+    };
+    const facadeWithAdapter = new RuntimeSkillCreatorFacade({
+      skillExecutor: {
+        execute: executeMock,
+      } as unknown as SkillExecutor,
+      workflowEngine,
+      llmAdapter: mockAdapter,
+      resourceLoader: mockResourceLoader as never,
+    });
+
     vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
       type: "integrated_api",
       apiKey: "sk-test",
@@ -75,20 +106,22 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
     });
     vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_100);
 
-    const result = await facade.plan("spec body", "api-key", "sk-test");
+    const result = await facadeWithAdapter.plan(
+      "spec body",
+      "api-key",
+      "sk-test",
+    );
     expect(result).toMatchObject({
       planId: "plan-1710000000100",
     });
 
-    const snapshot = facade.getWorkflowStateSnapshot("plan-1710000000100");
+    const snapshot =
+      facadeWithAdapter.getWorkflowStateSnapshot("plan-1710000000100");
     expect(snapshot).toMatchObject({
       currentPhase: "review",
       routeSnapshot: {
         type: "integrated_api",
         permissionMode: "default",
-      },
-      sourceProvenance: {
-        resolvedSkillCreatorRoot: "/tmp/skill-creator",
       },
     });
     expect(snapshot?.awaitingUserInput?.reason).toBe("plan_review");

@@ -1,5 +1,5 @@
 #!/bin/bash
-# ネイティブモジュール（better-sqlite3等）のアーキテクチャ・Node.jsバージョン検証とリビルド
+# ネイティブモジュール（better-sqlite3 / esbuild等）のアーキテクチャ・Node.jsバージョン検証とリビルド
 # ワークツリー、新規クローン、異なるマシン、Node.jsアップグレード後の問題を防ぐ
 
 set -e
@@ -49,7 +49,7 @@ else
   if [ "$NEEDS_REBUILD" = false ]; then
     echo "📋 バイナリの互換性をテスト中..."
     # better-sqlite3パッケージを直接読み込んでテスト
-    TEST_RESULT=$(node -e "try { require('better-sqlite3'); console.log('OK'); } catch(e) { console.log(e.message); }" 2>&1 || true)
+    TEST_RESULT=$(pnpm --filter @repo/desktop exec node -e "try { require('better-sqlite3'); console.log('OK'); } catch(e) { console.log(e.message); process.exit(1); }" 2>&1 || true)
 
     if echo "$TEST_RESULT" | grep -q "NODE_MODULE_VERSION"; then
       echo "⚠️  Node.js ABIバージョン不一致を検出"
@@ -98,6 +98,18 @@ if [ "$NEEDS_REBUILD" = true ]; then
       exit 1
     fi
   fi
+fi
+
+echo ""
+echo "📋 esbuild ネイティブバイナリを再構築中..."
+
+# esbuild は worktree / Rosetta 環境でバイナリ取り違えが起きやすい。
+# better-sqlite3 の判定結果に関係なく、postinstall 時に毎回再構築して current arch に寄せる。
+if pnpm rebuild esbuild; then
+  echo "✅ esbuild のリビルド完了"
+else
+  echo "⚠️  esbuild のリビルドに失敗。フルインストールを試みます..."
+  pnpm install --force
 fi
 
 echo ""

@@ -54,19 +54,19 @@
 
 ### ステップ3: IPC レスポンステストケースを定義する
 
-| テストケース | シナリオ                                  | 期待結果                                                     |
-| ------------ | ----------------------------------------- | ------------------------------------------------------------ |
-| `T-IPC-01`   | plan IPC 呼び出し（adapter ready）        | レスポンスに `adapterStatus: "ready"` を含む                 |
-| `T-IPC-02`   | plan IPC 呼び出し（adapter failed）       | レスポンスに `adapterStatus: "failed"` と error を含む       |
-| `T-IPC-03`   | plan IPC 呼び出し（adapter initializing） | レスポンスに `adapterStatus: "initializing"` と error を含む |
+| テストケース | シナリオ                                  | 期待結果                                                                                                |
+| ------------ | ----------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `T-IPC-01`   | plan IPC 呼び出し（adapter ready）        | outer は `success: true`、inner `data.adapterStatus: "ready"` を含む                                    |
+| `T-IPC-02`   | plan IPC 呼び出し（adapter failed）       | outer は `success: true`、inner `data.success: false` + `adapterStatus: "failed"` と error を含む       |
+| `T-IPC-03`   | plan IPC 呼び出し（adapter initializing） | outer は `success: true`、inner `data.success: false` + `adapterStatus: "initializing"` と error を含む |
 
 ### ステップ4: 既存テスト互換性テストケースを定義する
 
-| テストケース  | シナリオ                                            | 期待結果                                         |
-| ------------- | --------------------------------------------------- | ------------------------------------------------ |
-| `T-COMPAT-01` | 既存 `setLLMAdapter()` テストパターン               | ステータスが自動的に "ready" に遷移しテスト pass |
-| `T-COMPAT-02` | llmAdapter を設定せずに他の Facade メソッド呼び出し | 既存動作と同等（plan 以外は影響なし）            |
-| `T-COMPAT-03` | 型拡張後の既存レスポンス型互換性                    | optional フィールドのため型エラーなし            |
+| テストケース  | シナリオ                                            | 期待結果                                                                              |
+| ------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `T-COMPAT-01` | 既存 `setLLMAdapter()` テストパターン               | ステータスが自動的に "ready" に遷移しテスト pass                                      |
+| `T-COMPAT-02` | llmAdapter を設定せずに他の Facade メソッド呼び出し | 既存動作と同等（plan 以外は影響なし）                                                 |
+| `T-COMPAT-03` | 型拡張後の既存レスポンス型互換性                    | `RuntimeSkillCreatorPlanErrorResponse` union 追加後も既存呼び出しが型エラーにならない |
 
 ## 統合テスト連携
 

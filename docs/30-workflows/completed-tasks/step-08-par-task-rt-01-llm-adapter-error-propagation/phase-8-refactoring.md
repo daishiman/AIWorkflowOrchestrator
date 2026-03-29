@@ -20,13 +20,14 @@
 
 ## 参照資料
 
-| 資料名                 | パス                                        | 説明             |
-| ---------------------- | ------------------------------------------- | ---------------- |
-| Phase 2 設計           | `phase-2-design.md`                         | 元設計           |
-| Phase 5 実装           | `phase-5-implementation.md`                 | 実装対象         |
-| Phase 6 テスト拡充     | `phase-6-test-expansion.md`                 | edge case        |
-| error response catalog | `outputs/phase-2/error-response-catalog.md` | エラーコード体系 |
-| Phase 7 coverage       | `phase-7-coverage-check.md`                 | coverage 結果    |
+| 資料名                  | パス                                        | 説明                    |
+| ----------------------- | ------------------------------------------- | ----------------------- |
+| Phase 1 spec extraction | `outputs/phase-1/spec-extraction-map.md`    | 要件→現行コード→AC 対応 |
+| Phase 2 設計            | `phase-2-design.md`                         | 元設計                  |
+| Phase 5 実装            | `phase-5-implementation.md`                 | 実装対象                |
+| Phase 6 テスト拡充      | `phase-6-test-expansion.md`                 | edge case               |
+| error response catalog  | `outputs/phase-2/error-response-catalog.md` | エラーコード体系        |
+| Phase 7 coverage        | `phase-7-coverage-check.md`                 | coverage 結果           |
 
 ## 実行手順
 

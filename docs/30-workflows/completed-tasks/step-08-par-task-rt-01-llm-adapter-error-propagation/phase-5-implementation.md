@@ -14,10 +14,10 @@
 
 ## 想定変更ポイント
 
-- `packages/shared/src/types/skillCreator.ts` — `LLMAdapterStatus` 型追加、`RuntimeSkillCreatorPlanResponse` に optional フィールド追加
+- `packages/shared/src/types/skillCreator.ts` — `LLMAdapterStatus` / `SkillCreatorErrorCode` 型追加、`RuntimeSkillCreatorPlanErrorResponse` 追加、`RuntimeSkillCreatorPlanResponse` union 拡張
 - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` — ステータスプロパティ、`setLLMAdapterFailed()`、`plan()` エラー分岐
 - `apps/desktop/src/main/ipc/index.ts` (934-946行) — catch ブロックに `setLLMAdapterFailed()` 追加
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts` — テストケース追加
+- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts` — テストケース追加
 
 ## 実装しないこと
 
@@ -30,7 +30,7 @@
 ## 実行タスク
 
 - shared type に `LLMAdapterStatus` を追加する
-- `RuntimeSkillCreatorPlanResponse` にエラー関連フィールドを追加する
+- `RuntimeSkillCreatorPlanResponse` に error response union を追加する
 - Facade にステータスプロパティとメソッドを追加する
 - `plan()` にエラーレスポンス分岐を追加する
 - `ipc/index.ts` の catch ブロックにステータス更新を追加する
@@ -56,29 +56,23 @@
 export type LLMAdapterStatus = "ready" | "initializing" | "failed";
 ```
 
-### ステップ2: RuntimeSkillCreatorPlanResponse を拡張する
+### ステップ2: RuntimeSkillCreatorPlanResponse を union 拡張する
 
 ```typescript
-// Before（既存フィールドは維持）
-export interface RuntimeSkillCreatorPlanResponse {
-  success: boolean;
-  plan?: RuntimeSkillCreatorPlan;
-  // ...
+export interface RuntimeSkillCreatorPlanErrorResponse {
+  success: false;
+  error: string;
+  errorCode: SkillCreatorErrorCode;
+  adapterStatus: LLMAdapterStatus;
 }
 
-// After（optional フィールドを追加）
-export interface RuntimeSkillCreatorPlanResponse {
-  success: boolean;
-  plan?: RuntimeSkillCreatorPlan;
-  // 新規追加
-  error?: string;
-  errorCode?: string;
-  adapterStatus?: LLMAdapterStatus;
-  // ...
-}
+export type RuntimeSkillCreatorPlanResponse =
+  | RuntimeSkillCreatorPlanResult
+  | { type: "terminal_handoff"; guidance: HandoffGuidance }
+  | RuntimeSkillCreatorPlanErrorResponse;
 ```
 
-既存の正常レスポンスへの影響がないことを確認する（全て optional）。
+既存の正常レスポンスへの影響がないことを確認する（union 追加）。
 
 ### ステップ3: Facade にステータスプロパティを追加する
 
@@ -192,7 +186,7 @@ if (runtimeSkillCreatorService) {
 ## 完了条件
 
 - [ ] `LLMAdapterStatus` 型が shared types に追加されている
-- [ ] `RuntimeSkillCreatorPlanResponse` にエラー関連フィールドが追加されている
+- [ ] `RuntimeSkillCreatorPlanResponse` に error response union が追加されている
 - [ ] Facade にステータスプロパティと `setLLMAdapterFailed()` が追加されている
 - [ ] `plan()` がステータスに応じたエラーレスポンスを返す
 - [ ] `ipc/index.ts` の catch ブロックが `setLLMAdapterFailed()` を呼ぶ
