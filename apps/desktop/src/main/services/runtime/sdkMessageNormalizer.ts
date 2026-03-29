@@ -11,6 +11,7 @@ import type {
   SkillCreatorSdkPermissionDenial,
   SkillCreatorWorkflowSourceProvenance,
 } from "@repo/shared/types";
+import { asSdkMessageRecord, getSdkMessageType } from "./sdkMessageUtils";
 
 /** normalizer に渡すコンテキスト */
 export interface NormalizerContext {
@@ -31,13 +32,13 @@ export function normalizeSdkMessage(
   rawMessage: unknown,
   context: NormalizerContext,
 ): SkillCreatorSdkEvent {
-  // null / undefined / 非オブジェクト → error
-  if (rawMessage == null || typeof rawMessage !== "object") {
+  // shared helper による前処理
+  const msg = asSdkMessageRecord(rawMessage);
+  if (!msg) {
     return buildErrorEvent("Invalid SDK message: null or non-object", context);
   }
 
-  const msg = rawMessage as Record<string, unknown>;
-  const msgType = typeof msg.type === "string" ? msg.type : undefined;
+  const msgType = getSdkMessageType(msg);
 
   if (!msgType) {
     return buildErrorEvent("Invalid SDK message: missing type field", context);
