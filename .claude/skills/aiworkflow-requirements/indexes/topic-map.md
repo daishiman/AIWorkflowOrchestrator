@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-28
+> 自動生成: 2026-03-29
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -2031,6 +2031,14 @@ node scripts/list-specs.js --topics
 | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001: AgentView <-> SkillAnalysis round-trip（2026-03-20） | L180 |
 | 変更履歴 | L224 |
 
+### references/workflow-task-rt-06-artifact-inventory.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L3 |
+| Current Canonical Set | L12 |
+| Follow-up 未タスク | L25 |
+| Validation Chain | L31 |
+
 ### references/workflow-workspace-parent-reference-sweep-guard.md
 
 | セクション | 行 |
@@ -2583,6 +2591,7 @@ node scripts/list-specs.js --topics
 | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine failure lifecycle hardening（2026-03-26） | L87 |
 | TASK-SDK-08 session-persistence-and-resume-contract（2026-03-26） | L134 |
 | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 追加教訓（2026-03-27） | L257 |
+| TASK-RT-06: SDK Event Normalizer 実装知見 | L306 |
 
 ### references/lessons-learned-auth-settings-degradation-guard.md
 
@@ -2627,6 +2636,7 @@ node scripts/list-specs.js --topics
 | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L737 |
 | TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L778 |
 | TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L803 |
+| TASK-RT-06 教訓（2026-03-29） | L834 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2636,21 +2646,21 @@ node scripts/list-specs.js --topics
 | 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L41 |
 | 2026-03-27 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | L43 |
 | 2026-03-27 TASK-SDK-04 user interaction bridge / phase UI | L53 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L89 |
-| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L95 |
-| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L115 |
-| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L143 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L179 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L207 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L244 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L310 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L331 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L361 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L403 |
-| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L450 |
-| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L469 |
-| TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L485 |
-| TASK-IMP-HEALTH-POLICY-UNIFICATION-001（2026-03-25） | L516 |
+| 2026-03-28 TASK-SDK-04-U1 submitUserInput phase transition semantics | L71 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L107 |
+| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L113 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L133 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L161 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L197 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L225 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L262 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L328 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L349 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L379 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L421 |
+| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L468 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L487 |
+| TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L503 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 

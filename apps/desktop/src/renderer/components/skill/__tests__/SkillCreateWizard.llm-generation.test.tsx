@@ -112,7 +112,7 @@ describe("SkillCreateWizard LLM生成フロー", () => {
     });
     mockExecutePlan.mockResolvedValue({
       success: true,
-      data: { skillName: "test-skill", skillPath: "/path/to/test-skill" },
+      data: { executeId: "exec-001", skillName: "test-skill", success: true },
     });
     (window as Window & { electronAPI?: unknown }).electronAPI = {
       skillCreator: {
@@ -509,6 +509,54 @@ describe("SkillCreateWizard LLM生成フロー", () => {
 
       expect(mockSetGenerationError).toHaveBeenCalledWith("ネットワークエラー");
     });
+
+    it("E-6: executePlan が terminal_handoff を返すと command 付きエラーを表示する", async () => {
+      mockExecutePlan.mockResolvedValue({
+        success: true,
+        data: {
+          type: "terminal_handoff",
+          bundle: {
+            launcher: "terminal",
+            promptBundle: "bundle",
+            cwd: "/tmp",
+            suggestedCommand: "codex run --handoff",
+            manualRetryRule: "manual",
+          },
+        },
+      });
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      };
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "実行する" }),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      expect(mockSetGenerationError).toHaveBeenCalledWith(
+        "ターミナル実行が必要です: codex run --handoff",
+      );
+    });
   });
 
   // ============================================================
@@ -552,6 +600,37 @@ describe("SkillCreateWizard LLM生成フロー", () => {
       });
 
       expect(mockSetGenerationError).toHaveBeenCalledWith("ネットワークエラー");
+    });
+
+    it("E-2b: planSkill logical error(success:false in data)時に plan state をクリアする", async () => {
+      mockPlanSkill.mockResolvedValue({
+        success: true,
+        data: {
+          success: false,
+          error: {
+            code: "llm_adapter_unavailable",
+            message: "LLM アダプタが利用できません。設定を確認してください。",
+          },
+        },
+      });
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      expect(mockSetGenerationError).toHaveBeenCalledWith(
+        "LLM アダプタが利用できません。設定を確認してください。",
+      );
+      expect(mockSetCurrentPlanResult).toHaveBeenCalledWith(null);
+      expect(mockSetCurrentPlanId).toHaveBeenCalledWith(null);
     });
 
     it("E-4: planSkill 失敗後に setIsGenerating(false) が呼ばれる", async () => {

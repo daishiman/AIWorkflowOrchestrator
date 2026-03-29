@@ -131,7 +131,7 @@
 
 | 未タスクID                                                   | 概要                                                                    | 優先度 | タスク仕様書                                                                                                          |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
-| UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001            | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）の必須化 | 中     | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-subagent-execution-log-guard-001.md`            |
+| UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001            | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）の必須化 | 中     | `docs/30-workflows/completed-tasks/task-imp-task10a-d-subagent-execution-log-guard-001.md`            |
 | UT-IMP-TASK10A-D-SCREENSHOT-PURPOSE-DISAMBIGUATION-GUARD-001 | Phase 11 画面証跡で状態名+検証目的を分離し、TC意図混同を防ぐ運用ガード  | 中     | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md` |
 
 ### 仕様書別SubAgent実行ログ（2026-03-04）
@@ -200,8 +200,8 @@
 
 | 未タスクID | 内容 | 参照先 |
 | --- | --- | --- |
-| UT-SC-05-IPC-DI-WIRING | IPC/DI 配線（improve ハンドラの Main Process 登録） | `docs/30-workflows/unassigned-task/UT-SC-05-IPC-DI-WIRING.md` |
-| UT-SC-05-APPLY-IMPROVEMENT-UI | 改善提案適用 UI（Renderer 側の表示・適用フロー） | `docs/30-workflows/unassigned-task/UT-SC-05-APPLY-IMPROVEMENT-UI.md` |
+| UT-SC-05-IPC-DI-WIRING | IPC/DI 配線（improve ハンドラの Main Process 登録） | `docs/30-workflows/completed-tasks/UT-SC-05-IPC-DI-WIRING.md` |
+| UT-SC-05-APPLY-IMPROVEMENT-UI | 改善提案適用 UI（Renderer 側の表示・適用フロー） | `docs/30-workflows/completed-tasks/UT-SC-05-APPLY-IMPROVEMENT-UI.md` |
 ---
 
 ### タスク: UT-SC-05-IPC-DI-WIRING RuntimeSkillCreatorFacade IPC/DI 配線（2026-03-24完了）

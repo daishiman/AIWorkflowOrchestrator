@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
+import type { ILLMAdapter } from "../../../adapters/llm/types";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import { RuntimeSkillCreatorFacade } from "../RuntimeSkillCreatorFacade";
 import { SkillCreatorWorkflowEngine } from "../SkillCreatorWorkflowEngine";
@@ -19,21 +20,45 @@ function createPlanResult(overrides: Record<string, unknown> = {}) {
   };
 }
 
+function createMockLLMAdapter(): ILLMAdapter {
+  return {
+    providerId: "anthropic" as ILLMAdapter["providerId"],
+    sendChat: vi.fn().mockResolvedValue({
+      content: JSON.stringify({
+        skillName: "engine-test",
+        description: "workflow test skill",
+        agents: [{ name: "agent-1", role: "executor" }],
+        scripts: [],
+        triggers: [],
+        anchors: [],
+      }),
+      model: "claude-sonnet-4-20250514",
+      usage: { promptTokens: 10, completionTokens: 10, totalTokens: 20 },
+    }),
+    streamChat: vi.fn(),
+    checkHealth: vi.fn(),
+  } as ILLMAdapter;
+}
+
 describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
   let executeMock: ReturnType<typeof vi.fn>;
   let workflowEngine: SkillCreatorWorkflowEngine;
   let facade: RuntimeSkillCreatorFacade;
+  let mockLLMAdapter: ILLMAdapter;
 
   beforeEach(() => {
     executeMock = vi.fn();
     workflowEngine = new SkillCreatorWorkflowEngine();
+    mockLLMAdapter = createMockLLMAdapter();
     facade = new RuntimeSkillCreatorFacade({
       skillExecutor: {
         execute: executeMock,
       } as unknown as SkillExecutor,
       workflowEngine,
+      llmAdapter: mockLLMAdapter,
       resourceLoader: {
         getBasePath: () => "/tmp/skill-creator",
+        loadAgent: vi.fn().mockResolvedValue("agent content"),
       } as never,
     });
   });
@@ -43,6 +68,37 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
   });
 
   it("plan() integrated_api は engine に review state を記録する", async () => {
+    // TASK-RT-01: adapter status チェック通過のため llmAdapter を constructor で注入
+    const mockAdapter: ILLMAdapter = {
+      providerId: "anthropic" as ILLMAdapter["providerId"],
+      sendChat: vi.fn().mockResolvedValue({
+        content: JSON.stringify({
+          skillName: "engine-test",
+          description: "workflow test skill",
+          agents: [{ name: "agent-1", role: "executor" }],
+          scripts: [],
+          triggers: [],
+          anchors: [],
+        }),
+        model: "claude-sonnet-4-20250514",
+        usage: { promptTokens: 10, completionTokens: 10, totalTokens: 20 },
+      }),
+      streamChat: vi.fn(),
+      checkHealth: vi.fn(),
+    } as ILLMAdapter;
+    const mockResourceLoader = {
+      getBasePath: () => "/tmp/skill-creator",
+      loadAgent: vi.fn().mockResolvedValue("agent content"),
+    };
+    const facadeWithAdapter = new RuntimeSkillCreatorFacade({
+      skillExecutor: {
+        execute: executeMock,
+      } as unknown as SkillExecutor,
+      workflowEngine,
+      llmAdapter: mockAdapter,
+      resourceLoader: mockResourceLoader as never,
+    });
+
     vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
       type: "integrated_api",
       apiKey: "sk-test",
@@ -50,21 +106,22 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
     });
     vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_100);
 
-    const result = await facade.plan("spec body", "api-key", "sk-test");
+    const result = await facadeWithAdapter.plan(
+      "spec body",
+      "api-key",
+      "sk-test",
+    );
     expect(result).toMatchObject({
       planId: "plan-1710000000100",
-      skillSpec: "spec body",
     });
 
-    const snapshot = facade.getWorkflowStateSnapshot("plan-1710000000100");
+    const snapshot =
+      facadeWithAdapter.getWorkflowStateSnapshot("plan-1710000000100");
     expect(snapshot).toMatchObject({
       currentPhase: "review",
       routeSnapshot: {
         type: "integrated_api",
         permissionMode: "default",
-      },
-      sourceProvenance: {
-        resolvedSkillCreatorRoot: "/tmp/skill-creator",
       },
     });
     expect(snapshot?.awaitingUserInput?.reason).toBe("plan_review");
@@ -87,12 +144,14 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
       "sk-test",
     );
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       executeId: "exec-100",
       skillName: "engine-test",
       success: true,
       error: undefined,
     });
+    expect(result).toHaveProperty("sdkEvents");
+    expect(result).toHaveProperty("sourceProvenance");
 
     const snapshot = facade.getWorkflowStateSnapshot("plan-100");
     expect(snapshot).toMatchObject({
@@ -106,6 +165,138 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
         permissionMode: "default",
       },
     });
+  });
+
+  it("execute() は sdk message を lane 正規化イベントへ変換して返す", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockResolvedValue({
+      executionId: "exec-200",
+      success: true,
+      sdkMessages: [
+        { type: "system", subtype: "init", session_id: "sdk-session-200" },
+        {
+          type: "assistant",
+          message: {
+            content: [{ type: "text", text: "normalized assistant text" }],
+          },
+        },
+        {
+          type: "result",
+          subtype: "success",
+          stop_reason: "end_turn",
+          session_id: "sdk-session-200",
+        },
+      ],
+    });
+
+    const result = await facade.execute(
+      createPlanResult(),
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toMatchObject({
+      executeId: "exec-200",
+      success: true,
+      sessionId: "sdk-session-200",
+      resultSubtype: "success",
+      stopReason: "end_turn",
+      sourceProvenance: {
+        resolvedSkillCreatorRoot: "/tmp/skill-creator",
+      },
+    });
+    expect(result).toHaveProperty("sdkEvents");
+    if ("type" in result) {
+      throw new Error("expected integrated_api execute result");
+    }
+    expect(result.sdkEvents).toEqual([
+      expect.objectContaining({
+        eventType: "init",
+        sessionId: "sdk-session-200",
+        sourceProvenance: {
+          resolvedSkillCreatorRoot: "/tmp/skill-creator",
+        },
+      }),
+      expect.objectContaining({
+        eventType: "assistant",
+        text: "normalized assistant text",
+      }),
+      expect.objectContaining({
+        eventType: "result",
+        sessionId: "sdk-session-200",
+        resultSubtype: "success",
+        stopReason: "end_turn",
+      }),
+    ]);
+  });
+
+  it("execute() は permission denial を正規化イベントと集約結果に保持する", async () => {
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockResolvedValue({
+      executionId: "exec-201",
+      success: false,
+      error: {
+        code: "EXECUTION_FAILED",
+        message: "permission denied",
+      },
+      sdkMessages: [
+        { type: "system", subtype: "init", session_id: "sdk-session-201" },
+        {
+          type: "result",
+          subtype: "error_max_turns",
+          stop_reason: "permission_denied",
+          session_id: "sdk-session-201",
+          permission_denials: [
+            { tool_name: "Write", reason: "Approval required" },
+          ],
+        },
+      ],
+    });
+
+    const result = await facade.execute(
+      createPlanResult(),
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toMatchObject({
+      executeId: "exec-201",
+      success: false,
+      sessionId: "sdk-session-201",
+      resultSubtype: "error_max_turns",
+      stopReason: "permission_denied",
+      permissionDenials: [
+        {
+          toolName: "Write",
+          reason: "Approval required",
+        },
+      ],
+    });
+    if ("type" in result) {
+      throw new Error("expected integrated_api execute result");
+    }
+    expect(result.sdkEvents).toEqual([
+      expect.objectContaining({
+        eventType: "init",
+      }),
+      expect.objectContaining({
+        eventType: "result",
+        permissionDenials: [
+          {
+            toolName: "Write",
+            reason: "Approval required",
+          },
+        ],
+      }),
+    ]);
   });
 
   it("execute() success:false は verification_review 付きで review に戻す", async () => {
@@ -129,7 +320,7 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
       "sk-test",
     );
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       executeId: "exec-101",
       skillName: "engine-test",
       success: false,
@@ -166,7 +357,7 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
       "sk-test",
     );
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       executeId: "exec-error-1710000000200",
       skillName: "engine-test",
       success: false,
@@ -340,7 +531,7 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
       "sk-test",
     );
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       executeId: "exec-101",
       skillName: "engine-test",
       success: false,
