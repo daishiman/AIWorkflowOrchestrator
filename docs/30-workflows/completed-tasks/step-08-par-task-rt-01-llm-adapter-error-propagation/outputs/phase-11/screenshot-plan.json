@@ -1,0 +1,10 @@
+{
+  "mode": "NON_VISUAL",
+  "reason": "Runtime bug-fix task. Primary evidence is IPC response and logs, not screenshots.",
+  "screenshotsRequired": false,
+  "fallbackEvidence": [
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/manual-test-report.md",
+    "outputs/phase-11/discovered-issues.md"
+  ]
+}

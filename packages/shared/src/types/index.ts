@@ -139,6 +139,7 @@ export type {
   SkillCreatorUserInputRequest,
   SkillCreatorVerifyResult,
   SkillCreatorWorkflowSourceProvenance,
+  SkillCreatorSdkPermissionDenial,
   SkillCreatorRouteSnapshot,
   SkillCreatorResumeTokenEnvelope,
   SkillCreatorWorkflowUiSnapshot,
@@ -146,6 +147,9 @@ export type {
   SkillCreatorGetVerifyDetailRequest,
   SkillCreatorReverifyWorkflowRequest,
   TerminalHandoffBundle,
+  LLMAdapterStatus,
+  SkillCreatorErrorCode,
+  RuntimeSkillCreatorPlanErrorResponse,
   RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorExecuteResult,
@@ -162,7 +166,9 @@ export type {
   RuntimeSkillCreatorImproveResult,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveErrorResponse,
+  RuntimeSkillCreatorDegradedReason,
   ApplyImprovementResult,
+  ApiKeyStatus,
   ForkOptions,
   ExportFormat,
   ScheduleConfig,
@@ -177,7 +183,6 @@ export {
 } from "./skillCreator";
 export type {
   SkillCreatorSdkEventType,
-  SkillCreatorSdkEventSourceProvenance,
   SkillCreatorSdkEvent,
 } from "./skillCreator";
 export type {

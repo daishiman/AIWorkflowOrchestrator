@@ -80,6 +80,22 @@
 
 ---
 
+### Runtime Skill Creator Session Persistence（TASK-SDK-08 / 2026-03-28 実装済み）
+
+| 目的                                                            | 最初に開くファイル                                                                                                                                     |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Task08 の全体像（checkpoint / lease / resume 契約）             | `docs/30-workflows/step-06-seq-task-08-session-persistence-and-resume-contract/index.md`                                                               |
+| WorkflowSessionStorage（checkpoint / lease / revision 管理）   | `apps/desktop/src/main/services/session/WorkflowSessionStorage.ts`                                                                                     |
+| ResumeCompatibilityEvaluator（compatible / incompatible 判定）  | `apps/desktop/src/main/services/session/ResumeCompatibilityEvaluator.ts`                                                                               |
+| SkillCreatorWorkflowSessionRepository（保存 / ロード / 互換性） | `apps/desktop/src/main/services/session/SkillCreatorWorkflowSessionRepository.ts`                                                                      |
+| session index（SessionService 登録）                            | `apps/desktop/src/main/services/session/index.ts`                                                                                                      |
+| 型定義（WorkflowSession / ResumeCompatibilityResult）           | `packages/shared/src/types/skillCreator.ts`                                                                                                            |
+| persistence contract と resume namespace rule                   | `references/api-ipc-system-core.md`                                                                                                                    |
+| esbuild mismatch / artifact 命名 / Phase 11 判定 教訓          | `references/lessons-learned-current.md`（TASK-SDK-08 セクション）                                                                                     |
+| completed ledger                                                | `references/task-workflow-completed.md`                                                                                                                |
+
+---
+
 ### Skill Creator Execution Governance Bundle（2026-03-28 実装済み）
 
 | 目的                                                                     | 最初に開くファイル                                                                          |
@@ -469,6 +485,7 @@ packages/
 
 | 日付       | 変更内容                                                                                                                                                                                                                                                      |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-28 | TASK-SDK-08 session-persistence-and-resume-contract: 「Runtime Skill Creator Session Persistence」即時導線セクション追加（WorkflowSessionStorage / ResumeCompatibilityEvaluator / SkillCreatorWorkflowSessionRepository 導線 9 件）、lessons-learned-current.md に教訓 3 件追加（esbuild mismatch / artifact 命名 / Phase 11 判定） |
 | 2026-03-28 | TASK-SDK-07 Phase 12 close-out sync: 未タスク 3 件 formalize（UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 / UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001）、governance bundle 導線に Preload/Renderer/テスト実装参照 7 件を追加、task-workflow-backlog 3 件追記、LOGS.md 2 ファイル + SKILL.md 2 ファイル同時更新、generate-index.js 再生成 + mirror rsync 完了 |
 | 2026-03-28 | TASK-SDK-04-U2: canonical binding drift 是正 — execute flow が `approvedSkillSpec` snapshot を参照するよう修正。`SkillLifecyclePanel.tsx` に state 分離パッチ適用 |
 | 2026-03-27 | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Skill Creator Workflow State / User Input / Verify API 即時導線追加。getVerifyDetail / requestReverify / getWorkflowState / submitUserInput / onWorkflowStateChanged の5 API 導線を登録 |

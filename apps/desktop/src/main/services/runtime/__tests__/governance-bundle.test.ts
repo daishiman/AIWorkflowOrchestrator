@@ -219,6 +219,21 @@ describe("TASK-SDK-07: Governance bundle", () => {
         IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO,
       );
     });
+
+    it("shared APPROVAL_CHANNELS と desktop IPC_CHANNELS で同一チャネル名が使用されている (cross-layer parity)", async () => {
+      const { APPROVAL_CHANNELS, EXECUTION_CHANNELS } =
+        await import("../../../../../../../packages/shared/src/ipc/channels");
+      const { IPC_CHANNELS } = await import("../../../../preload/channels");
+      expect(IPC_CHANNELS.APPROVAL_RESPOND).toBe(
+        APPROVAL_CHANNELS.APPROVAL_RESPOND,
+      );
+      expect(IPC_CHANNELS.APPROVAL_REQUEST).toBe(
+        APPROVAL_CHANNELS.APPROVAL_REQUEST,
+      );
+      expect(IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO).toBe(
+        EXECUTION_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO,
+      );
+    });
   });
 
   // --- downstream boundary ---

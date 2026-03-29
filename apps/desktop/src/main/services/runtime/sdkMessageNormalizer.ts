@@ -8,13 +8,14 @@
 
 import type {
   SkillCreatorSdkEvent,
-  SkillCreatorSdkEventSourceProvenance,
+  SkillCreatorSdkPermissionDenial,
+  SkillCreatorWorkflowSourceProvenance,
 } from "@repo/shared/types";
 
 /** normalizer に渡すコンテキスト */
 export interface NormalizerContext {
   /** skill-creator source provenance */
-  sourceProvenance?: SkillCreatorSdkEventSourceProvenance;
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
   /** 前イベントから引き継いだ sessionId（stream 処理時に伝播用） */
   sessionId?: string;
 }
@@ -155,7 +156,7 @@ function normalizeAssistantMessage(
   }
 
   // permission denial の処理
-  const permissionDenials: string[] = [];
+  const permissionDenials: SkillCreatorSdkPermissionDenial[] = [];
   if (permissionDenied) {
     const deniedTool =
       typeof msg.denied_tool === "string" ? msg.denied_tool : "unknown";
@@ -163,7 +164,7 @@ function normalizeAssistantMessage(
       typeof msg.denied_reason === "string"
         ? msg.denied_reason
         : "Permission denied";
-    permissionDenials.push(`${deniedTool}: ${deniedReason}`);
+    permissionDenials.push({ toolName: deniedTool, reason: deniedReason });
   }
 
   const event: SkillCreatorSdkEvent = {

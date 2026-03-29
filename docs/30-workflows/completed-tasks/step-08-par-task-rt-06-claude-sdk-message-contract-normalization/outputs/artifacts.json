@@ -1,0 +1,15 @@
+{
+  "phase11": {
+    "manualTestResult": "outputs/phase-11/manual-test-result.md",
+    "manualTestChecklist": "outputs/phase-11/manual-test-checklist.md",
+    "discoveredIssues": "outputs/phase-11/discovered-issues.md"
+  },
+  "phase12": {
+    "implementationGuide": "outputs/phase-12/implementation-guide.md",
+    "systemSpecUpdateSummary": "outputs/phase-12/system-spec-update-summary.md",
+    "documentationChangelog": "outputs/phase-12/documentation-changelog.md",
+    "unassignedTaskDetection": "outputs/phase-12/unassigned-task-detection.md",
+    "skillFeedbackReport": "outputs/phase-12/skill-feedback-report.md",
+    "phase12ComplianceCheck": "outputs/phase-12/phase12-task-spec-compliance-check.md"
+  }
+}

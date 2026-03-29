@@ -200,6 +200,15 @@ export interface ExternalApiConfig {
 }
 
 // ============================================
+// API キー管理型 (TASK-RT-04)
+// ============================================
+
+/**
+ * API キーの状態
+ */
+export type ApiKeyStatus = "not_set" | "validating" | "configured" | "error";
+
+// ============================================
 // 内部型（サービス内部使用）
 // ============================================
 
@@ -322,6 +331,18 @@ export interface LoadedWorkflowManifest extends WorkflowManifest {
 }
 
 // ============================================
+// LLM Adapter Status (TASK-RT-01)
+// ============================================
+
+/** LLMAdapter の初期化ステータス */
+export type LLMAdapterStatus = "ready" | "initializing" | "failed";
+
+/** Skill Creator のエラーコード */
+export type SkillCreatorErrorCode =
+  | "LLM_ADAPTER_FAILED"
+  | "LLM_ADAPTER_INITIALIZING";
+
+// ============================================
 // Runtime Skill Creator IPC contract
 // ============================================
 
@@ -434,6 +455,32 @@ export interface SkillCreatorWorkflowSourceProvenance {
   warningNote?: string;
 }
 
+export type SkillCreatorSdkEventType =
+  | "init"
+  | "assistant"
+  | "result"
+  | "error";
+
+export interface SkillCreatorSdkPermissionDenial {
+  toolName?: string;
+  toolUseId?: string;
+  reason: string;
+}
+
+export interface SkillCreatorSdkEvent {
+  eventType: SkillCreatorSdkEventType;
+  sequence?: number;
+  rawType?: string;
+  sessionId?: string;
+  messageId?: string;
+  text?: string;
+  resultSubtype?: string;
+  stopReason?: string;
+  permissionDenials?: SkillCreatorSdkPermissionDenial[];
+  errorMessage?: string;
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
+}
+
 export interface SkillCreatorRouteSnapshot {
   type: "integrated_api" | "terminal_handoff";
   permissionMode?: "default" | "acceptEdits" | "bypassPermissions";
@@ -499,6 +546,8 @@ export interface RuntimeSkillCreatorPlanResult {
   scripts: Array<{ name: string; purpose: string }>;
   triggers: string[];
   anchors: string[];
+  /** LLMAdapter の現在のステータス (TASK-RT-01) */
+  adapterStatus?: LLMAdapterStatus;
 }
 
 /**
@@ -509,6 +558,12 @@ export interface RuntimeSkillCreatorExecuteResult {
   skillName: string;
   success: boolean;
   error?: string;
+  sessionId?: string;
+  resultSubtype?: string;
+  stopReason?: string;
+  permissionDenials?: SkillCreatorSdkPermissionDenial[];
+  sdkEvents?: SkillCreatorSdkEvent[];
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
 }
 
 export type RuntimeSkillCreatorVerifyCheckSeverity =
@@ -592,6 +647,25 @@ export interface ApplyImprovementResult {
 }
 
 /**
+ * Degraded reason code（llmAdapter / resourceLoader 不足時）
+ * TASK-RT-02
+ */
+export type RuntimeSkillCreatorDegradedReason =
+  | "llm_adapter_unavailable"
+  | "resource_loader_unavailable";
+
+/**
+ * plan() エラーレスポンス（logical error union、TASK-RT-02）
+ */
+export interface RuntimeSkillCreatorPlanErrorResponse {
+  success: false;
+  error: {
+    code: RuntimeSkillCreatorDegradedReason | "VALIDATION_ERROR";
+    message: string;
+  };
+}
+
+/**
  * improve() エラーレスポンス（IPC wrapper 形式、P60 対策）
  */
 export interface RuntimeSkillCreatorImproveErrorResponse {
@@ -619,9 +693,11 @@ export interface SkillGeneratedContent {
 
 /**
  * Runtime plan IPC の戻り値
+ * TASK-RT-02: error union を追加
  */
 export type RuntimeSkillCreatorPlanResponse =
   | RuntimeSkillCreatorPlanResult
+  | RuntimeSkillCreatorPlanErrorResponse
   | {
       type: "terminal_handoff";
       guidance: HandoffGuidance;
@@ -849,49 +925,5 @@ export interface WorkflowSessionStorageSchema {
  */
 export const SKILL_CREATOR_ENGINE_VERSION = "task-sdk-08-v1" as const;
 
-// ============================================
-// SDK Message 正規化イベント (TASK-RT-06)
-// ============================================
-
-/**
- * lane 正規化イベント種別。
- * SDK 生メッセージを 4 分類に正規化する。
- */
-export type SkillCreatorSdkEventType =
-  | "init"
-  | "assistant"
-  | "result"
-  | "error";
-
-/**
- * source provenance — `.claude/skills/skill-creator/` の動的解決結果。
- */
-export interface SkillCreatorSdkEventSourceProvenance {
-  /** 解決された skill-creator ルートパス */
-  sourceRoot: string;
-  /** manifest ハッシュ（キャッシュ / 再現用） */
-  manifestHash?: string;
-}
-
-/**
- * SDK 正規化イベント。
- *
- * `query()` が返す `SDKMessage` を lane 安定契約へ変換した結果。
- * UI / IPC / WorkflowEngine はこの型のみを消費する。
- */
-export interface SkillCreatorSdkEvent {
-  /** 正規化後のイベント種別 */
-  eventType: SkillCreatorSdkEventType;
-  /** セッション ID（system/init または result から取得） */
-  sessionId?: string;
-  /** result の subtype（"success" | "error" など） */
-  resultSubtype?: string;
-  /** テキストコンテンツ（assistant text / error message） */
-  text?: string;
-  /** permission denial 情報の配列 */
-  permissionDenials?: string[];
-  /** skill-creator source provenance */
-  sourceProvenance?: SkillCreatorSdkEventSourceProvenance;
-  /** 停止理由（"end_turn" | "error" | "tool_use" など） */
-  stopReason?: string;
-}
+// SkillCreatorSdkEventType, SkillCreatorSdkPermissionDenial, SkillCreatorSdkEvent は
+// 上部（line ~437）で定義済み（TASK-RT-06）
