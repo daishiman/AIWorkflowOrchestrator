@@ -3,6 +3,15 @@
 ## 役割
 
 ---
+## 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out hardening
+
+### 変更内容
+- step-03-seq-task-04-test-update workflow root に Phase 11/12/13 close-out 成果物を揃えた
+- docs-only task（P50 パターン）での Phase 12 完了条件: workflow root の current-facts 更新と artifacts.json 同期を実施
+- skill-feedback 反映: P50 task を新規実装前提で残すと validator fail と stale guidance を同時に生むパターンを記録
+- esbuild mismatch により vitest 再実行不能だったため、historical acceptance evidence と grep を代替証跡として使用
+
+---
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
 
 ### 変更内容

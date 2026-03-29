@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-29T06:39:49.419Z",
-  "totalKeywords": 2531,
+  "generated": "2026-03-29T12:37:34.097Z",
+  "totalKeywords": 2533,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3202,6 +3202,7 @@
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management.md",
       "interfaces-llm.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-test-typesafety.md",
@@ -4174,6 +4175,7 @@
       "claude-code-agents-workflow.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
@@ -6506,6 +6508,8 @@
     ],
     "RT": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Event": [
@@ -6674,6 +6678,18 @@
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "MOD": [
+      "lessons-learned-current.md",
+      "lessons-learned-test-typesafety.md"
+    ],
+    "close": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "out": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -7141,9 +7157,6 @@
       "lessons-learned-test-typesafety.md"
     ],
     "品質": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "MOD": [
       "lessons-learned-test-typesafety.md"
     ],
     "provider": [

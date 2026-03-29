@@ -302,3 +302,31 @@
 4. verify detail の evidence 管理は、evidence 軸を先に列挙し、disable 理由マトリクスを設計してから実装に入る。
 
 ---
+
+## TASK-RT-06: SDK Event Normalizer 実装知見
+
+### 背景
+Claude Code SDK の `SDKMessage` を `SkillCreatorSdkEvent` へ変換する normalizer を設計・実装。
+
+### 苦戦箇所
+
+#### 1. sessionId 伝播設計
+- **課題**: `init` メッセージの sessionId を後続の assistant/result メッセージに伝播する必要があるが、各メッセージは独立して変換されるため状態管理が必要
+- **解決**: `normalizeSdkStream()` がストリーム全体を走査し、init から sessionId を抽出して後続メッセージに注入する設計を採用
+- **教訓**: stateless な変換関数（normalizeSdkMessage）と stateful なストリーム変換（normalizeSdkStream）を分離することで、単体テストが容易になる
+
+#### 2. 型安全と `unknown` 入力の扱い
+- **課題**: IPC経由で受け取るメッセージが `unknown[]` のため、型ガードが必要
+- **解決**: normalizer 内部で type フィールドの存在確認と値検証を行い、不正な入力は errorイベントに変換
+- **教訓**: 境界層（IPC/preload）では `unknown` を受け取り、内部で段階的に型を絞り込む設計が安全
+
+#### 3. Branch カバレッジの壁（91.22%止まり）
+- **課題**: null/undefined 入力の一部ブランチをテストしきれなかった
+- **解決**: 実用上重要なパス（sessionId欠損、permission denial、未知type）を優先してテスト
+- **教訓**: 100% branch coverage より「重要なパスの完全カバー」を優先する方針が現実的
+
+### 設計パターン
+- **Facade注入**: normalizer を RuntimeSkillCreatorFacade に DI することで、テスト時のモック置き換えが容易
+- **IPC境界**: `skill-creator:normalize-sdk-messages` チャネルを新設し、renderer側からの変換リクエストを受け付ける設計
+
+---
