@@ -34,14 +34,14 @@ PASS
 
 ## AC pass/fail matrix
 
-| AC   | 内容                                            | 判定 | 根拠                                                                      |
-| ---- | ----------------------------------------------- | ---- | ------------------------------------------------------------------------- |
-| AC-1 | Facade が llmAdapterStatus プロパティを公開する | PASS | Phase 2 設計 + Phase 5 実装で getter が定義済み                           |
-| AC-2 | Facade が初期化失敗理由を保持し取得可能         | PASS | `setLLMAdapterFailed()` + `llmAdapterFailureReason` getter が定義済み     |
-| AC-3 | plan() が明示的エラーレスポンスを返す           | PASS | Phase 5 でステータスに応じたエラー分岐が定義済み                          |
-| AC-4 | actionable メッセージを含む                     | PASS | API key エラー判定 + デフォルトメッセージが定義済み                       |
-| AC-5 | IPC レスポンスに adapterStatus を含む           | PASS | `RuntimeSkillCreatorPlanResponse` に `adapterStatus` フィールドが追加済み |
-| AC-6 | 既存テストが pass する                          | PASS | fire-and-forget 維持、optional フィールド追加のみで後方互換               |
+| AC   | 内容                                            | 判定             | 根拠                                                                           |
+| ---- | ----------------------------------------------- | ---------------- | ------------------------------------------------------------------------------ |
+| AC-1 | Facade が llmAdapterStatus プロパティを公開する | PASS             | Phase 2 設計 + Phase 5 実装で getter が定義済み                                |
+| AC-2 | Facade が初期化失敗理由を保持し取得可能         | PASS             | `setLLMAdapterFailed()` + `llmAdapterFailureReason` getter が定義済み          |
+| AC-3 | plan() が明示的エラーレスポンスを返す           | PASS             | Phase 5 でステータスに応じたエラー分岐が定義済み                               |
+| AC-4 | actionable メッセージを含む                     | PASS             | API key エラー判定 + デフォルトメッセージが定義済み                            |
+| AC-5 | IPC レスポンスに adapterStatus を含む           | PASS             | IPC handler test で outer/inner レスポンス契約 (`IpcResult` + `data`) を検証   |
+| AC-6 | 既存テストが pass する                          | CONDITIONAL PASS | 実装時点の記録は PASS。現レビュー環境では `esbuild` arch mismatch で再実行不可 |
 
 ## 次 task への引き継ぎ
 

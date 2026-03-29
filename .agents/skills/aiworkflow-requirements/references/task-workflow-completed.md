@@ -5,6 +5,27 @@
 
 ## 完了タスク
 
+### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-RT-01 |
+| ステータス | **完了** |
+| タイプ | runtime bug-fix / error-propagation |
+| 優先度 | 高 |
+| 完了日 | 2026-03-29 |
+| 対象 | `skill-creator:plan` の adapter 初期化失敗伝播 |
+| 成果物 | `docs/30-workflows/step-08-par-task-rt-01-llm-adapter-error-propagation/` |
+
+#### 実施内容
+
+- `RuntimeSkillCreatorFacade` に `llmAdapterStatus` / `llmAdapterFailureReason` surface を追加し、`plan()` の silent failure を error response へ置換
+- `packages/shared/src/types/skillCreator.ts` に `LLMAdapterStatus` / `SkillCreatorErrorCode` / `RuntimeSkillCreatorPlanErrorResponse` を追加し、`RuntimeSkillCreatorPlanResponse` を union 拡張
+- `ipc/index.ts` の fire-and-forget 初期化 catch で `setLLMAdapterFailed(reason)` を呼び、`failed` 状態を記録
+- IPC 境界の outer/inner 契約（`IpcResult.success` と `data.success`）を `skillCreatorHandlers.runtime.test.ts` で検証
+
+---
+
 
 ### タスク: TASK-SDK-03 context-budget-and-resource-selection（2026-03-27）
 
@@ -750,7 +771,7 @@
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
 | `UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001` | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface の統合 | 高 | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
-| `UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001` | `RuntimePolicyResolver.resolveFromServices()` への subscription 判定 service 統合 | 中 | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
+| `UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001` | `RuntimePolicyResolver.resolveFromServices()` への subscription 判定 service 統合 | 中 | `docs/30-workflows/completed-tasks/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
 
 #### 苦戦箇所
 
@@ -800,7 +821,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | `docs/30-workflows/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
+| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
 | `UT-CLEANUP-AI-CHECK-CONNECTION-001` | legacy health route cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
 | `UT-CLEANUP-RUNTIME-RESOLVER-001` | deprecated resolver cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
 | `UT-DESIGN-SANITIZE-PLACEMENT-001` | sanitize 配置判断の固定 | 中 | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
@@ -1104,7 +1125,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow で current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | 中 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow で current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | 中 | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 
 ### タスク: TASK-SKILL-LIFECYCLE-01 スキルライフサイクル一次導線・画面責務基盤（2026-03-11）
 
@@ -1351,7 +1372,7 @@
 | タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
-| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
+| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
 
 ### タスク: TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 canonical bridge / workflow ledger governance 設計（2026-03-23）
 

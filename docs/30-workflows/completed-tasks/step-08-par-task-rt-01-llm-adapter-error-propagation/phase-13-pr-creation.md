@@ -10,7 +10,7 @@
 
 ## 目的
 
-ユーザー承認後にのみ実施する PR 作成の前提条件を明記し、spec_created 状態では blocked を維持する。
+ユーザー承認後にのみ実施する PR 作成の前提条件を明記し、承認未取得状態では blocked を維持する。
 
 ## 実行タスク
 
@@ -47,7 +47,7 @@
   - `packages/shared/src/types/skillCreator.ts` — `LLMAdapterStatus` 型追加、`RuntimeSkillCreatorPlanResponse` 拡張
   - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` — ステータスプロパティ、`setLLMAdapterFailed()`、`plan()` エラー分岐
   - `apps/desktop/src/main/ipc/index.ts` (934-946行) — catch ブロックに `setLLMAdapterFailed()` 追加
-  - `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts` — テストケース追加
+  - `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts` — テストケース追加
 - `outputs/phase-13/local-check-result.md` と `outputs/phase-13/change-summary.md` を準備する。
 
 ## 成果物
@@ -63,10 +63,10 @@
 - user approval: 未取得
 - commit: 未実施
 - PR: 未実施
-- spec status: `spec_created`
+- spec status: `implemented`
 
 ## 完了条件
 
 - [ ] ユーザー指示があるまで blocked を維持する
 - [ ] コミット / PR は実行しない
-- [ ] 本 task は spec_created のため future step として扱う
+- [ ] ユーザー承認があるまで future step として扱う

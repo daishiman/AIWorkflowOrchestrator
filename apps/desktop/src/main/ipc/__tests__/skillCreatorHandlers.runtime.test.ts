@@ -133,6 +133,7 @@ describe("SkillCreator runtime IPC handlers", () => {
       planId: "plan-1",
       skillSpec: "spec",
       estimatedSteps: 3,
+      adapterStatus: "ready",
     });
 
     const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN);
@@ -144,13 +145,73 @@ describe("SkillCreator runtime IPC handlers", () => {
 
     expect(result).toEqual({
       success: true,
-      data: { planId: "plan-1", skillSpec: "spec", estimatedSteps: 3 },
+      data: {
+        planId: "plan-1",
+        skillSpec: "spec",
+        estimatedSteps: 3,
+        adapterStatus: "ready",
+      },
     });
     expect(mockRuntimeSkillCreatorService.plan).toHaveBeenCalledWith(
       "spec",
       "subscription",
       "k",
     );
+  });
+
+  it("planSkill は outer success=true のまま inner error payload を返せる", async () => {
+    mockRuntimeSkillCreatorService.plan.mockResolvedValue({
+      success: false,
+      error: "APIキーを設定してください",
+      errorCode: "LLM_ADAPTER_FAILED",
+      adapterStatus: "failed",
+    });
+
+    const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+    const result = await handler!(createMockEvent(), {
+      prompt: "spec",
+      authMode: "api-key",
+      apiKey: null,
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: {
+        success: false,
+        error: "APIキーを設定してください",
+        errorCode: "LLM_ADAPTER_FAILED",
+        adapterStatus: "failed",
+      },
+    });
+    expect(mockRuntimeSkillCreatorService.plan).toHaveBeenCalledWith(
+      "spec",
+      "api-key",
+      null,
+    );
+  });
+
+  it("planSkill は initializing エラーも outer success=true で返す", async () => {
+    mockRuntimeSkillCreatorService.plan.mockResolvedValue({
+      success: false,
+      error: "LLMAdapter の初期化中です。しばらくお待ちください",
+      errorCode: "LLM_ADAPTER_INITIALIZING",
+      adapterStatus: "initializing",
+    });
+
+    const handler = getHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+    const result = await handler!(createMockEvent(), {
+      prompt: "spec",
+    });
+
+    expect(result).toEqual({
+      success: true,
+      data: {
+        success: false,
+        error: "LLMAdapter の初期化中です。しばらくお待ちください",
+        errorCode: "LLM_ADAPTER_INITIALIZING",
+        adapterStatus: "initializing",
+      },
+    });
   });
 
   it("executePlan は blank skillSpec を拒否する", async () => {
@@ -294,22 +355,17 @@ describe("SkillCreator runtime IPC handlers", () => {
   });
 
   // TC-6: LLMAdapterFactory.getAdapter() 失敗時の graceful degradation
-  it("TC-6: LLMAdapter 未注入の facade は plan() でスタブレスポンスを返す", async () => {
+  it("TC-6: LLMAdapter 未注入の facade は plan() で明示的エラーレスポンスを返す", async () => {
     unregisterSkillCreatorHandlers();
     handlerMap.clear();
 
     // facade without llmAdapter (simulating getAdapter failure)
     const facadeWithoutLLM = {
       plan: vi.fn().mockResolvedValue({
-        planId: "plan-stub",
-        skillSpec: "spec",
-        estimatedSteps: 3,
-        skillName: "",
-        description: "",
-        agents: [],
-        scripts: [],
-        triggers: [],
-        anchors: [],
+        success: false,
+        error: "APIキーを設定してください",
+        errorCode: "LLM_ADAPTER_FAILED",
+        adapterStatus: "failed",
       }),
       execute: vi.fn(),
       improve: vi.fn(),
@@ -330,10 +386,15 @@ describe("SkillCreator runtime IPC handlers", () => {
       apiKey: null,
     });
 
-    expect(result.success).toBe(true);
-    expect(result.data).toHaveProperty("skillName", "");
-    expect(result.data).toHaveProperty("agents");
-    expect(result.data.agents).toEqual([]);
+    expect(result).toEqual({
+      success: true,
+      data: {
+        success: false,
+        error: "APIキーを設定してください",
+        errorCode: "LLM_ADAPTER_FAILED",
+        adapterStatus: "failed",
+      },
+    });
   });
 
   it("runtime facade 未注入でも graceful degradation で応答する", async () => {

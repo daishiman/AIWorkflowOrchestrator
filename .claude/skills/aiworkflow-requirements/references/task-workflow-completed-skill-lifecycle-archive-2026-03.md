@@ -84,7 +84,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/completed-tasks/skill-lifecycle-routing/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
 
 ---
 

@@ -2,11 +2,12 @@
 
 ## メタ情報
 
-| 項目   | 値                            |
-| ------ | ----------------------------- |
-| Phase  | 1                             |
-| 機能名 | llm-adapter-error-propagation |
-| 作成日 | 2026-03-29                    |
+| 項目       | 値                                |
+| ---------- | --------------------------------- |
+| Phase      | 1                                 |
+| 機能名     | llm-adapter-error-propagation     |
+| タスク分類 | Runtime bug-fix task / non-visual |
+| 作成日     | 2026-03-29                        |
 
 ## 目的
 
@@ -22,14 +23,23 @@ LLMAdapter 初期化エラーの伝播経路、ステータス管理の責務配
 
 ## 参照資料
 
-| 資料名            | パス                                                                  | 説明                         |
-| ----------------- | --------------------------------------------------------------------- | ---------------------------- |
-| 要件草案          | `../requirements-draft.md`                                            | skill-creator 全体の要件     |
-| 親 workflow pack  | `../root-workflow-pack/index.md`                                      | lane 共通不変条件            |
-| IPC 初期化        | `apps/desktop/src/main/ipc/index.ts` (934-946行)                      | fire-and-forget 初期化の現状 |
-| Facade            | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | plan() の stub レスポンス    |
-| LLMAdapterFactory | `apps/desktop/src/main/adapters/llm/LLMAdapterFactory.ts`             | getAdapter() のエラー throw  |
-| 型定義            | `packages/shared/src/types/skillCreator.ts`                           | 現行レスポンス型             |
+| 資料名              | パス                                                                              | 説明                                          |
+| ------------------- | --------------------------------------------------------------------------------- | --------------------------------------------- |
+| 要件草案            | `../skill-creator-agent-sdk-lane/requirements-draft.md`                           | skill-creator 全体の要件                      |
+| 親 workflow pack    | `../skill-creator-agent-sdk-lane/root-workflow-pack/index.md`                     | lane 共通不変条件                             |
+| IPC 初期化          | `apps/desktop/src/main/ipc/index.ts` (934-946行)                                  | fire-and-forget 初期化の現状                  |
+| Facade              | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`             | plan() の stub レスポンス                     |
+| LLMAdapterFactory   | `apps/desktop/src/main/adapters/llm/LLMAdapterFactory.ts`                         | getAdapter() のエラー throw                   |
+| 型定義              | `packages/shared/src/types/skillCreator.ts`                                       | 現行レスポンス型                              |
+| aiworkflow IPC 契約 | `.claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md`        | `skill-creator:plan` の public response 契約  |
+| aiworkflow 完了記録 | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`    | `UT-SC-03-003` の current contract            |
+| aiworkflow 責務境界 | `.claude/skills/aiworkflow-requirements/references/architecture-overview-core.md` | Facade は public bridge、state owner ではない |
+
+## タスク分類と成果物命名
+
+- 本タスクは runtime bug-fix task であり、UI task ではない
+- Phase 11 の証跡は画面キャプチャ前提ではなく `NON_VISUAL` なログ/IPC 応答を主証跡とする
+- canonical artifact root は `step-08-par-task-rt-01-llm-adapter-error-propagation/` とし、Phase 11/12 の成果物名は `index.md` と `artifacts.json` の一覧を正本とする
 
 ### 現行コードアンカー
 
@@ -39,6 +49,14 @@ LLMAdapter 初期化エラーの伝播経路、ステータス管理の責務配
 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `plan()` が `this.llmAdapter` 未設定時に空の stub データを返す。ユーザーにはエラーが見えない |
 | `apps/desktop/src/main/adapters/llm/LLMAdapterFactory.ts`             | `getAdapter("anthropic")` が API キー未設定時に throw する                                   |
 | `packages/shared/src/types/skillCreator.ts`                           | `RuntimeSkillCreatorPlanResponse` にエラー状態を示すフィールドがない                         |
+
+## aiworkflow current contract と target delta
+
+| 観点                 | current contract                                    | target delta                                                                 |
+| -------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Facade の役割        | `RuntimeSkillCreatorFacade` は public bridge        | status / failure reason も bridge surface に閉じて追加する                   |
+| IPC public response  | `skill-creator:plan` は shared types を返す         | 新規 channel を作らず既存 response に `adapterStatus` / error 情報を拡張する |
+| graceful degradation | `UT-SC-03-003` では llmAdapter 未注入時に stub 応答 | silent failure を解消するため explicit error へ切り替える                    |
 
 ## 実行手順
 
@@ -88,6 +106,16 @@ type LLMAdapterStatus = "ready" | "initializing" | "failed";
 | AC-4 | ステップ3: actionable メッセージの要件                 |
 | AC-5 | ステップ4: IPC レスポンスの `adapterStatus` フィールド |
 | AC-6 | 全ステップ: fire-and-forget パターン維持の制約         |
+
+## 30思考法の一次監査メモ
+
+- 論理分析系: silent failure が真の欠陥であり、API key 未設定そのものは原因の一部にすぎない
+- 構造分解系: shared types / Facade / IPC registration / downstream UI を分離し、本タスク責務を限定した
+- メタ・抽象系: 問題を「失敗を隠す contract」と捉え直した
+- 発想・拡張系: retry / preload 新規API / UI 即時実装は候補に出たが責務越境なので除外した
+- システム系: エラー隠蔽が誤認と support cost を強化する因果ループを生むと整理した
+- 戦略・価値系: 起動ブロックを避けたまま観測性だけ上げる案が最小コスト最大価値と判断した
+- 問題解決系: why / 仮説 / 論点整理により「Facade status + error propagation」の一点解決へ収束した
 
 ## 統合テスト連携
 
