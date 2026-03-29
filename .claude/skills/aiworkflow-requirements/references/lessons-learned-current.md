@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                              |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-29 | 3.0.0      | TASK-P0-01 SkillCreatorVerificationEngine Layer 1/2 教訓3件を追加（L-VE-001: tmp fixture パターン / L-VE-002: Layer union 型拡張の backward compatibility / L-VE-003: SKILL.md セクション名 drift 検出の重要性）                                                                                                      |
 | 2026-03-29 | 2.11.0     | TASK-RT-02 api-key-ui-adapter-status 教訓3件を追加（→ [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md): useRef race condition 防止 / Promise.allSettled 独立エラー処理 / プロバイダー単位 isRetrying Map パターン）                                                           |
 | 2026-03-29 | 2.10.0     | UT-RT-06-CONS 教訓2件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-RT-06-CONS-001 Phase 7 グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002 最小共通helper抽出パターン）                                                                                              |
 | 2026-03-28 | 2.9.0      | TASK-SDK-08 session-persistence-and-resume-contract 教訓3件を追加（L-1: esbuild mismatch、L-2: artifact命名規約 / validator不一致、L-3: Phase 11 UI/docs-only判定不一致）                                                                                                                                             |
@@ -100,6 +101,12 @@
 
 - Object.freeze + satisfies パターン（P19 再発防止）
 - 既実装コードの abort フロー発見遅延（P50）
+
+### Runtime verify / Layer 1/2 / SkillCreatorVerificationEngine
+→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md)
+- tmpdir fixture パターン（`os.tmpdir()` + `createSkillFixture()` ヘルパー）
+- layer union 型拡張の backward compatibility（Layer 3/4 既存テストに影響ゼロ確認）
+- SKILL.md の `## 概要` / Trigger セクション名 drift が L2 検証エラーになるケース
 
 ### Phase 12 / ワークフロー / ライフサイクル設計
 
@@ -861,6 +868,7 @@
 | 解決策 | `manual-test-checklist.md` と `discovered-issues.md` を必須補助成果物として追加 |
 | 標準ルール | UI 非変更タスクは「N/A 根拠 + 代替証跡（checklist/issues）」をセットで残す |
 | 関連タスク | TASK-RT-06 |
+<<<<<<< Updated upstream
 
 ---
 
@@ -889,3 +897,37 @@
 | 解決策     | `manual-test-checklist.md` と `discovered-issues.md` を必須補助成果物として追加 |
 | 標準ルール | UI 非変更タスクは「N/A 根拠 + 代替証跡（checklist/issues）」をセットで残す      |
 | 関連タスク | TASK-RT-06                                                                      |
+
+---
+
+### 2026-03-29 TASK-P0-01 SkillCreatorVerificationEngine Layer 1/2 実装
+
+#### L-VE-001: tmp fixture パターン（テスト用スキルディレクトリの作成）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Layer 1/2 検証エンジンのテストで、実際のスキルディレクトリを操作する必要があったが、既存スキルを破壊するリスクがあった |
+| 再発条件 | ファイルシステム操作を伴うテストで本番ディレクトリを直接使用した場合 |
+| 解決策 | `os.tmpdir()` に一時ディレクトリを作成し `createSkillFixture()` ヘルパーで構造を組み立て、テスト後に `fs.rmSync({recursive:true})` でクリーンアップする |
+| 標準ルール | ファイルシステム操作テストは必ず tmpdir で隔離。実スキルへの参照は Phase 11 手動テストのみに留める |
+| 関連タスク | TASK-P0-01 |
+
+#### L-VE-002: Layer union 型拡張の backward compatibility
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `RuntimeSkillCreatorVerifyCheck.layer` union に `"layer1"` / `"layer2"` を追加する際、既存の Layer 3/4 テストが型エラーになるか懸念があった |
+| 再発条件 | shared 型の union を拡張する場合 |
+| 解決策 | TypeScript の union 拡張は backward compatible。既存の `"layer3"` / `"layer4"` リテラルはそのまま有効。339 既存テスト全通過で確認 |
+| 標準ルール | union 型拡張は additive operation として扱う。削除・rename は breaking change |
+| 関連タスク | TASK-P0-01 |
+
+#### L-VE-003: SKILL.md セクション名 drift が L2 検証エラーになるケース
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 11 手動テストで、実スキル（task-specification-creator）の SKILL.md が `## 概要` セクションを持たず L2-002 エラーが発生した |
+| 再発条件 | SKILL.md の生成テンプレートに `## 概要` / `## Trigger` セクションが含まれていない場合 |
+| 解決策 | 短期: verification engine は warning/error として検出し報告。長期: skill 生成テンプレートに必須セクションを明記する |
+| 標準ルール | `task-specification-creator` の verify-specs チェックリストに「生成される SKILL.md に `## 概要` / `## Trigger` セクションが含まれているか」を追加する |
+| 関連タスク | TASK-P0-01 / skill-feedback-report.md |

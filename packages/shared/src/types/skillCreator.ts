@@ -573,7 +573,7 @@ export type RuntimeSkillCreatorVerifyCheckSeverity =
 
 export interface RuntimeSkillCreatorVerifyCheck {
   id: string;
-  layer: "layer3" | "layer4";
+  layer: "layer1" | "layer2" | "layer3" | "layer4";
   severity: RuntimeSkillCreatorVerifyCheckSeverity;
   summary: string;
   evidenceSummary?: string;
