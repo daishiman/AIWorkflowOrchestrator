@@ -13,7 +13,6 @@
 
 import fs from "fs/promises";
 import path from "path";
-import type { SkillCreatorSdkEvent } from "@repo/shared/types";
 import {
   normalizeSdkMessage,
   normalizeSdkStream,
@@ -177,7 +176,7 @@ export class RuntimeSkillCreatorFacade {
   buildNormalizerContext(): NormalizerContext {
     const root = this.getExplicitSkillCreatorRoot();
     return {
-      sourceProvenance: root ? { sourceRoot: root } : undefined,
+      sourceProvenance: root ? { resolvedSkillCreatorRoot: root } : undefined,
     };
   }
 

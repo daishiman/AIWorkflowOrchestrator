@@ -139,9 +139,7 @@ export type {
   SkillCreatorUserInputRequest,
   SkillCreatorVerifyResult,
   SkillCreatorWorkflowSourceProvenance,
-  SkillCreatorSdkEventType,
   SkillCreatorSdkPermissionDenial,
-  SkillCreatorSdkEvent,
   SkillCreatorRouteSnapshot,
   SkillCreatorResumeTokenEnvelope,
   SkillCreatorWorkflowUiSnapshot,
@@ -182,7 +180,6 @@ export {
 } from "./skillCreator";
 export type {
   SkillCreatorSdkEventType,
-  SkillCreatorSdkEventSourceProvenance,
   SkillCreatorSdkEvent,
 } from "./skillCreator";
 export type {

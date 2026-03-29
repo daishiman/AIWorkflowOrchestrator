@@ -85,8 +85,8 @@ const UNKNOWN_MSG = {
 
 const BASE_CONTEXT: NormalizerContext = {
   sourceProvenance: {
-    sourceRoot: ".claude/skills/skill-creator",
-    manifestHash: "abc123hash",
+    resolvedSkillCreatorRoot: ".claude/skills/skill-creator",
+    resourceDescriptorHash: "abc123hash",
   },
 };
 
@@ -103,8 +103,8 @@ describe("sdkMessageNormalizer", () => {
         expect(event.eventType).toBe("init");
         expect(event.sessionId).toBe("sess-abc-123");
         expect(event.sourceProvenance).toEqual({
-          sourceRoot: ".claude/skills/skill-creator",
-          manifestHash: "abc123hash",
+          resolvedSkillCreatorRoot: ".claude/skills/skill-creator",
+          resourceDescriptorHash: "abc123hash",
         });
       });
 
@@ -175,7 +175,7 @@ describe("sdkMessageNormalizer", () => {
 
         expect(event.permissionDenials).toBeDefined();
         expect(event.permissionDenials).toHaveLength(1);
-        expect(event.permissionDenials![0]).toContain("Write");
+        expect(event.permissionDenials![0].toolName).toBe("Write");
       });
     });
 
@@ -235,8 +235,8 @@ describe("sdkMessageNormalizer", () => {
 
         for (const event of events) {
           expect(event.sourceProvenance).toEqual({
-            sourceRoot: ".claude/skills/skill-creator",
-            manifestHash: "abc123hash",
+            resolvedSkillCreatorRoot: ".claude/skills/skill-creator",
+            resourceDescriptorHash: "abc123hash",
           });
         }
       });
