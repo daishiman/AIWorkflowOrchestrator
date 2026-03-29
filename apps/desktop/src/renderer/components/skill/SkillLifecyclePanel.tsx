@@ -1,4 +1,10 @@
-import React, { startTransition, useEffect, useRef, useState } from "react";
+import React, {
+  startTransition,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { SkillExecutionStatus } from "@repo/shared";
 import type {
   ApplyImprovementResult,
@@ -7,6 +13,8 @@ import type {
   RuntimeSkillCreatorImproveErrorResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
+  RuntimeSkillCreatorPlanErrorResponse,
+  RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
   SkillCreatorUserInputSubmission,
@@ -96,7 +104,7 @@ type SkillCreatorRuntimeApi = {
     prompt: string,
     authMode?: string,
     apiKey?: string,
-  ) => Promise<IpcResult<PlanResult>>;
+  ) => Promise<IpcResult<RuntimeSkillCreatorPlanResponse>>;
   executePlan?: (
     planId: string,
     skillSpec?: unknown,
@@ -171,6 +179,47 @@ function isRuntimeImproveErrorResponse(
   response: RuntimeSkillCreatorImproveResponse,
 ): response is RuntimeSkillCreatorImproveErrorResponse {
   return "success" in response && response.success === false;
+}
+
+function isRuntimePlanErrorResponse(
+  response: unknown,
+): response is RuntimeSkillCreatorPlanErrorResponse {
+  if (!response || typeof response !== "object") {
+    return false;
+  }
+  if (!("success" in response) || response.success !== false) {
+    return false;
+  }
+  if (!("error" in response) || !response.error) {
+    return false;
+  }
+  return (
+    typeof response.error === "object" &&
+    "message" in response.error &&
+    typeof response.error.message === "string"
+  );
+}
+
+function toPlanResult(
+  response: RuntimeSkillCreatorPlanResponse,
+): PlanResult | null {
+  if ("type" in response && response.type === "terminal_handoff") {
+    return {
+      type: "terminal_handoff",
+      guidance: response.guidance,
+    };
+  }
+  if ("success" in response && response.success === false) {
+    return null;
+  }
+  if (!("planId" in response)) {
+    return null;
+  }
+  return {
+    type: "integrated_api",
+    planId: response.planId,
+    estimatedSteps: response.estimatedSteps,
+  };
 }
 
 function toHandoffGuidance(bundle: TerminalHandoffBundle): HandoffGuidance {
@@ -377,6 +426,12 @@ export function SkillLifecyclePanel({
   ]);
 
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
+
+  const clearPlanExecutionState = useCallback(() => {
+    setLocalPlanResult(null);
+    setCurrentPlanResult(null);
+    setCurrentPlanId(null);
+  }, [setCurrentPlanId, setCurrentPlanResult]);
 
   useEffect(() => {
     if (skillExecutionStatus === previousStatus.current) {
@@ -714,6 +769,7 @@ export function SkillLifecyclePanel({
       // detectMode が "plan" を返した場合、planSkill を自動呼出し
       if (result.data === "plan") {
         if (!skillCreatorApi.planSkill) {
+          clearPlanExecutionState();
           setGenerationError("planSkill API が利用できません");
           return;
         }
@@ -729,18 +785,34 @@ export function SkillLifecyclePanel({
           );
 
           if (!planResult.success || !planResult.data) {
+            clearPlanExecutionState();
             setGenerationError(planResult.error ?? "計画生成に失敗しました");
             return;
           }
 
+          // TASK-RT-02: plan logical error の検出
+          if (isRuntimePlanErrorResponse(planResult.data)) {
+            clearPlanExecutionState();
+            setGenerationError(planResult.data.error.message);
+            return;
+          }
+
+          const normalizedPlan = toPlanResult(planResult.data);
+          if (!normalizedPlan) {
+            clearPlanExecutionState();
+            setGenerationError("計画レスポンスの形式が不正です");
+            return;
+          }
+
           setApprovedSkillSpec(trimmedRequest);
-          setLocalPlanResult(planResult.data);
-          setCurrentPlanResult(planResult.data);
-          if (planResult.data.planId) {
-            setCurrentPlanId(planResult.data.planId);
-            setActiveWorkflowId(planResult.data.planId);
+          setLocalPlanResult(normalizedPlan);
+          setCurrentPlanResult(normalizedPlan);
+          if (normalizedPlan.planId) {
+            setCurrentPlanId(normalizedPlan.planId);
+            setActiveWorkflowId(normalizedPlan.planId);
           }
         } catch (err) {
+          clearPlanExecutionState();
           setGenerationError(
             err instanceof Error ? err.message : "計画生成に失敗しました",
           );

@@ -139,6 +139,7 @@ export type {
   SkillCreatorUserInputRequest,
   SkillCreatorVerifyResult,
   SkillCreatorWorkflowSourceProvenance,
+  SkillCreatorSdkPermissionDenial,
   SkillCreatorRouteSnapshot,
   SkillCreatorResumeTokenEnvelope,
   SkillCreatorWorkflowUiSnapshot,
@@ -147,6 +148,7 @@ export type {
   SkillCreatorReverifyWorkflowRequest,
   TerminalHandoffBundle,
   RuntimeSkillCreatorPlanResult,
+  RuntimeSkillCreatorPlanErrorResponse,
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorExecuteResult,
   RuntimeSkillCreatorExecuteResponse,
@@ -162,6 +164,7 @@ export type {
   RuntimeSkillCreatorImproveResult,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveErrorResponse,
+  RuntimeSkillCreatorDegradedReason,
   ApplyImprovementResult,
   ForkOptions,
   ExportFormat,
@@ -174,6 +177,10 @@ export type {
 export {
   WORKFLOW_MANIFEST_SCHEMA_VERSION,
   SKILL_CREATOR_ENGINE_VERSION,
+} from "./skillCreator";
+export type {
+  SkillCreatorSdkEventType,
+  SkillCreatorSdkEvent,
 } from "./skillCreator";
 export type {
   SkillCreatorCheckpointType,

@@ -15,6 +15,7 @@ import type {
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
+  SkillCreatorSdkEvent,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 import { IPC_CHANNELS } from "../../preload/channels";
@@ -442,6 +443,43 @@ export function registerRuntimeSkillCreatorHandlers(
       }
     },
   );
+
+  // SDK Message 正規化 (TASK-RT-06)
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_NORMALIZE_SDK_MESSAGES,
+    async (
+      event: IpcMainInvokeEvent,
+      args: { messages: unknown[] },
+    ): Promise<IpcResult<SkillCreatorSdkEvent[]>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_NORMALIZE_SDK_MESSAGES,
+        mainWindow,
+      );
+
+      if (!Array.isArray(args?.messages)) {
+        return validationError("messages が配列ではありません");
+      }
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        const events = runtimeSkillCreatorService.normalizeSdkStream(
+          args.messages,
+        );
+        return { success: true, data: events };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(
+            error,
+            "SDK メッセージ正規化に失敗しました",
+          ),
+        };
+      }
+    },
+  );
 }
 
 export function unregisterRuntimeSkillCreatorHandlers(): void {
@@ -453,4 +491,5 @@ export function unregisterRuntimeSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_APPLY_IMPROVEMENT);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_NORMALIZE_SDK_MESSAGES);
 }

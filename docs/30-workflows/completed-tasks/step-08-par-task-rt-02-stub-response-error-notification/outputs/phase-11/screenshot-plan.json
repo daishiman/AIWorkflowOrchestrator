@@ -1,0 +1,7 @@
+{
+  "mode": "representative-ui-audit",
+  "targets": [
+    "SkillCreateWizard error state",
+    "SkillLifecyclePanel degraded/error state"
+  ]
+}

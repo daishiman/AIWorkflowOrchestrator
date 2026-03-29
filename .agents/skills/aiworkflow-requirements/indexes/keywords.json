@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-27T22:56:58.826Z",
-  "totalKeywords": 2524,
+  "generated": "2026-03-29T07:21:20.235Z",
+  "totalKeywords": 2530,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2168,6 +2168,7 @@
       "interfaces-agent-sdk-ui.md",
       "interfaces-agent-sdk.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
@@ -2729,6 +2730,7 @@
     "contract": [
       "arch-execution-capability-contract.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -6464,18 +6466,22 @@
       "logs-archive-2026-03-line-budget-workflow-consolidation.md"
     ],
     "session": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md"
     ],
     "persistence": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md"
     ],
     "and": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-templates.md"
     ],
     "resume": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md"
     ],
     "VERIFY": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
@@ -6650,6 +6656,10 @@
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
+    "RT": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6677,6 +6687,15 @@
     "phase": [
       "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
+    ],
+    "submitUserInput": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "transition": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "semantics": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "STREAM": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -6779,6 +6798,12 @@
     "HARNESS": [
       "lessons-learned-phase12-workflow-lifecycle.md",
       "ui-ux-panels.md"
+    ],
+    "close": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "out": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"

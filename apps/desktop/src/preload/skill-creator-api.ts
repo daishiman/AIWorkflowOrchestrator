@@ -167,6 +167,15 @@ export interface SkillCreatorAPI {
   ) => Promise<IpcResult<RuntimeSkillCreatorReverifyResponse>>;
 
   /**
+   * SDK 生メッセージを lane 正規化イベントに変換する (TASK-RT-06)
+   * @param messages - SDK 生メッセージの配列
+   * @returns 正規化済み SkillCreatorSdkEvent の配列
+   */
+  normalizeSdkMessages: (
+    messages: unknown[],
+  ) => Promise<IpcResult<import("@repo/shared/types").SkillCreatorSdkEvent[]>>;
+
+  /**
    * スキルを改善する
    * @param skillName - スキル名
    * @param options - 改善オプション
@@ -396,6 +405,13 @@ export const skillCreatorAPI: SkillCreatorAPI = {
   ): Promise<IpcResult<RuntimeSkillCreatorReverifyResponse>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW, {
       planId,
+    }),
+
+  normalizeSdkMessages: (
+    messages: unknown[],
+  ): Promise<IpcResult<import("@repo/shared/types").SkillCreatorSdkEvent[]>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_NORMALIZE_SDK_MESSAGES, {
+      messages,
     }),
 
   improveSkill: (

@@ -46,6 +46,17 @@ describe("skillCreator contract parity", () => {
           skillName: string;
           success: boolean;
           error?: string;
+          sessionId?: string;
+          resultSubtype?: string;
+          stopReason?: string;
+          permissionDenials?: Array<{
+            toolName?: string;
+            toolUseId?: string;
+            reason: string;
+          }>;
+          sdkEvents?: Array<{
+            eventType: string;
+          }>;
         }
       | {
           type: "terminal_handoff";

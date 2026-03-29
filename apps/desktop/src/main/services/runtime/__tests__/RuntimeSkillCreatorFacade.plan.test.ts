@@ -301,8 +301,8 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
   // ------------------------------------------------------------------
   // 4. Graceful degradation テスト
   // ------------------------------------------------------------------
-  describe("Graceful degradation", () => {
-    it("llmAdapter 未注入時はスタブレスポンスを返す", async () => {
+  describe("Graceful degradation → explicit error (TASK-RT-02)", () => {
+    it("llmAdapter 未注入時は explicit error を返す", async () => {
       const facadeWithoutLLM = new RuntimeSkillCreatorFacade({
         skillExecutor: mockSkillExecutor,
         // llmAdapter 未指定
@@ -313,7 +313,6 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
         apiKey: "sk-test",
         permissionMode: "default",
       });
-      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_000);
 
       const result = await facadeWithoutLLM.plan(
         "テスト入力",
@@ -321,10 +320,41 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
         "sk-test",
       );
 
-      // スタブレスポンス（LLM フィールドは空）
-      expect(result).toHaveProperty("planId", "plan-1710000000000");
-      expect(result).toHaveProperty("skillSpec", "テスト入力");
-      expect(result).toHaveProperty("estimatedSteps", 3);
+      // TASK-RT-02: explicit error union
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLM アダプタが利用できません。設定を確認してください。",
+        },
+      });
+    });
+
+    it("resourceLoader 未注入時は resource_loader_unavailable を返す", async () => {
+      const facadeWithLLMOnly = new RuntimeSkillCreatorFacade({
+        skillExecutor: mockSkillExecutor,
+        llmAdapter: mockLLMAdapter,
+        // resourceLoader 未指定
+      });
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
+      });
+
+      const result = await facadeWithLLMOnly.plan(
+        "テスト入力",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "resource_loader_unavailable",
+          message: "リソースローダーが利用できません。設定を確認してください。",
+        },
+      });
     });
   });
 
