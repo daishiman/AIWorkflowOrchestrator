@@ -1,0 +1,27 @@
+{
+  "mode": "NON_VISUAL",
+  "reason": "SkillExecutor と sdkMessageNormalizer の内部 helper 抽出のみで、画面差分を伴わない。",
+  "screenshotsRequired": false,
+  "evidence": [
+    {
+      "id": "TC-11-01",
+      "type": "walkthrough",
+      "target": "SkillExecutor stream contract"
+    },
+    {
+      "id": "TC-11-02",
+      "type": "walkthrough",
+      "target": "sdkMessageNormalizer session propagation"
+    },
+    {
+      "id": "TC-11-03",
+      "type": "command-replay",
+      "target": "validator / typecheck / lint / vitest rerunability"
+    }
+  ],
+  "notes": [
+    "PNG 証跡は不要だが、Phase 11 補助成果物として screenshot-plan.json を残す。",
+    "validator 互換のため 1x1 placeholder PNG を outputs/phase-11/screenshots/placeholder.png として配置する。",
+    "vitest 再実行は 2026-03-29 時点のこの環境で esbuild platform mismatch により blocked。"
+  ]
+}

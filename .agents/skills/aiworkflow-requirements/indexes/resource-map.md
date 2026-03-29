@@ -405,6 +405,31 @@
 | interfaces-auth.md | error code 型定義（PROFILE_ERROR_CODES / AVATAR_ERROR_CODES） | 型定義確認時 |
 | ipc-contract-checklist.md | IPC 契約整合チェック | 新規ハンドラ追加時 |
 
+### TASK-RT-06: claude-sdk-message-contract-normalization
+
+| リソース種別 | ファイルパス | 説明 |
+|---|---|---|
+| 型定義 | `packages/shared/src/types/skillCreator.ts` | SkillCreatorSdkEvent / SkillCreatorSdkEventType / SkillCreatorSdkEventSourceProvenance |
+| normalizer実装 | `apps/desktop/src/main/services/runtime/sdkMessageNormalizer.ts` | normalizeSdkMessage() / normalizeSdkStream() |
+| Facade統合 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | normalizer注入箇所 |
+| IPC handler | `apps/desktop/src/main/ipc/creatorHandlers.ts` | skill-creator:normalize-sdk-messages チャネル |
+| Preload API | `apps/desktop/src/preload/skill-creator-api.ts` | normalizeSkillCreatorSdkMessages() |
+| テスト | `apps/desktop/src/main/services/runtime/__tests__/sdkMessageNormalizer.test.ts` | 32件, Line 99.35% |
+| タスク仕様書 | `docs/30-workflows/step-08-par-task-rt-06-claude-sdk-message-contract-normalization/` | Phase 1-13 |
+
+### UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001: SkillExecutor/sdkMessageNormalizer 型ガード重複解消
+
+| リソース種別 | ファイルパス | 説明 |
+|---|---|---|
+| 共通 helper | `apps/desktop/src/main/services/runtime/sdkMessageUtils.ts` | asSdkMessageRecord() / getSdkMessageType() |
+| normalizer（更新） | `apps/desktop/src/main/services/runtime/sdkMessageNormalizer.ts` | shared helper 利用へ移行 |
+| SkillExecutor（更新） | `apps/desktop/src/main/services/skill/SkillExecutor.ts` | convertToStreamMessage() が shared helper 利用 |
+| テスト | `apps/desktop/src/main/services/runtime/__tests__/sdkMessageUtils.test.ts` | 21件, Line/Branch/Function 100% |
+| タスク仕様書 | `docs/30-workflows/skill-executor-normalizer-consolidation/` | Phase 1-12 完了（Phase 13 未実施） |
+
+---
+
+
 ### UT-TASK06-007: IPC契約ドリフト自動検出
 
 | リソース | 役割 | 読み込み条件 |

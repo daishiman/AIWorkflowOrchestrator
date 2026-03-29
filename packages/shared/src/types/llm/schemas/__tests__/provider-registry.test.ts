@@ -59,11 +59,11 @@ describe("inferProviderId", () => {
 
   it("既知の prefix パターンが正しく解決される", () => {
     expect(inferProviderId("gpt-5.4")).toBe("openai");
-    expect(inferProviderId("o3-mini")).toBe("openai");
+    expect(inferProviderId("o3")).toBe("openai");
     expect(inferProviderId("o4-mini")).toBe("openai");
     expect(inferProviderId("claude-sonnet-4-6")).toBe("anthropic");
-    expect(inferProviderId("gemini-2.5-pro")).toBe("google");
-    expect(inferProviderId("grok-3")).toBe("xai");
+    expect(inferProviderId("gemini-3.1-pro-preview")).toBe("google");
+    expect(inferProviderId("grok-4-1-fast-non-reasoning")).toBe("xai");
   });
 
   it("未知のモデルIDに対して null を返す", () => {
@@ -123,12 +123,12 @@ describe("inferProviderId - OpenRouter 形式", () => {
   it("'provider/model' 形式が openrouter に解決される", () => {
     expect(inferProviderId("anthropic/claude-sonnet-4-6")).toBe("openrouter");
     expect(inferProviderId("openai/gpt-5.4")).toBe("openrouter");
-    expect(inferProviderId("google/gemini-2.5-pro")).toBe("openrouter");
+    expect(inferProviderId("google/gemini-3.1-pro-preview")).toBe("openrouter");
     expect(inferProviderId("meta-llama/llama-3.1-70b")).toBe("openrouter");
   });
 
   it("スラッシュを含むがプロバイダー prefix にもマッチするモデルIDはOpenRouterが優先", () => {
-    expect(inferProviderId("openai/gpt-4o")).toBe("openrouter");
+    expect(inferProviderId("openai/gpt-5.4")).toBe("openrouter");
   });
 });
 

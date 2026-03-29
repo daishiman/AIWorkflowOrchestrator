@@ -2,117 +2,77 @@
 
 ## 概要
 
-本タスクは、既存契約（`auth-key:*` / `apiKey:*`）を再利用しつつ、Runtime lane の API キー導線を最小追加で整合させるタスクである。`SettingsView`、`ApiKeysSection`、`AuthKeySection` の既存責務を壊さず、`SkillLifecyclePanel` 側に不足していた導線を補完する。
+SecureStorage への API キー設定 UI。ユーザーが Anthropic の API キーを設定する入口が存在しない。`AUTH_KEY_SET` / `EXISTS` / `VALIDATE` / `DELETE` の IPC チャネルは実装済みだが、Renderer 側に設定画面がないため、API キーの登録・管理ができない。本タスクは API キー入力・バリデーション・保存・削除を行うコンポーネントを新規作成し、SkillLifecyclePanel へ統合する。
 
 ## メタ情報
 
-| 項目       | 内容                     |
-| ---------- | ------------------------ |
-| タスクID   | TASK-RT-04               |
-| タスク種別 | spec sync / UI alignment |
-| 優先度     | RT (Runtime)             |
-| ステータス | in_progress              |
-| 作成日     | 2026-03-29               |
-| 更新日     | 2026-03-29               |
-| 上流ゲート | なし                     |
-| 依存タスク | なし                     |
-| 後続タスク | TASK-P0-05, TASK-P0-06   |
-
-## 現行コード事実
-
-| ファイル                                                                  | 現状の役割                                | TASK-RT-04 で固定する事実                                                                        |
-| ------------------------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------ |
-| `apps/desktop/src/renderer/views/SettingsView/index.tsx`                  | 設定画面の構成                            | `AuthKeySection` は `authMode === "api-key"` のときのみ表示、`ApiKeysSection` は常時表示         |
-| `apps/desktop/src/renderer/components/organisms/ApiKeysSection/index.tsx` | 4 provider API キー管理 UI                | `window.electronAPI.apiKey.list/save/validate/delete` を使用する                                 |
-| `apps/desktop/src/renderer/components/settings/AuthKeySection/index.tsx`  | Claude Agent SDK 用 Anthropic API キー UI | `window.electronAPI.authKey.exists/set/delete` を使用し、`saved/env-fallback/not-set` を表示する |
-| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`      | Runtime lane の操作面                     | `ApiKeySettingsPanel` を補助導線として表示し、auth key 設定を直接実行できる                      |
-| `apps/desktop/src/preload/types.ts`                                       | Renderer 契約の型正本                     | `AIProvider`、`ProviderStatus`、`ApiKeyValidateResponse`、`AuthKeyExistsResponse` を定義する     |
-| `apps/desktop/src/preload/authKeyApi.ts`                                  | `auth-key:*` の preload API               | Anthropic 専用 auth key 境界を提供する                                                           |
-| `apps/desktop/src/preload/channels.ts`                                    | IPC チャンネル名の正本                    | `API_KEY_*` と `AUTH_KEY_*` は別契約として共存する                                               |
-| `apps/desktop/src/main/ipc/authKeyHandlers.ts`                            | `auth-key:*` Main handler                 | `exists.source = saved/env-fallback/not-set` を返す                                              |
+| 項目       | 内容                   |
+| ---------- | ---------------------- |
+| タスクID   | TASK-RT-04             |
+| タスク種別 | バグ修正 / UI 実装     |
+| 優先度     | RT (Runtime)           |
+| ステータス | spec_created           |
+| 上流ゲート | なし                   |
+| 依存タスク | なし                   |
+| 後続タスク | TASK-P0-05, TASK-P0-06 |
+| 作成日     | 2026-03-29             |
+| 更新日     | 2026-03-29             |
 
 ## 受入基準
 
-| ID   | 基準                                                                                        |
-| ---- | ------------------------------------------------------------------------------------------- |
-| AC-1 | 仕様書が `SettingsView`（主導線）と `SkillLifecyclePanel`（補助導線）の責務境界に矛盾しない |
-| AC-2 | `apiKey:*` と `auth-key:*` の契約差を混同せず、用途別に整理できている                       |
-| AC-3 | Phase 1〜13 の各文書が `task-specification-creator` テンプレート必須節を満たす              |
-| AC-4 | Phase 11 が UI task として `テストケース` と `画面カバレッジマトリクス` を持つ              |
-| AC-5 | Phase 12 が実装差分あり task として close-out ルールを踏まえた成果物計画を持つ              |
-| AC-6 | `artifacts.json` の workflow metadata と成果物計画が現行ディレクトリに整合する              |
+| ID   | 基準                                                                |
+| ---- | ------------------------------------------------------------------- |
+| AC-1 | API キー入力・保存コンポーネント (`ApiKeySettingsPanel`) が存在する |
+| AC-2 | 入力値のバリデーション（空文字、フォーマットチェック）が機能する    |
+| AC-3 | 保存状態（未設定/設定済み/検証中/エラー）がUI上に表示される         |
+| AC-4 | 保存済みキーの削除機能が動作する                                    |
+| AC-5 | SkillLifecyclePanel に ApiKeySettingsPanel が統合されている         |
 
 ## スコープ
 
 **含む**:
 
-- API キー管理 UI task spec の現行コード同期
-- `apiKey:*` と `auth-key:*` の責務分離明文化
-- Phase 1〜13 のテンプレート準拠化
-- Phase 11/12 の UI evidence と docs-only close-out 計画の整備
+- `apps/desktop/src/renderer/components/skill/ApiKeySettingsPanel.tsx` 新規作成
+- `apps/desktop/src/preload/skill-creator-api.ts` への AUTH_KEY 系チャネル公開拡張
+- ApiKeySettingsPanel の状態管理（未設定/設定済み/検証中/エラー）
+- 入力バリデーション（空文字、`sk-ant-` プレフィックス等のフォーマット）
+- SkillLifecyclePanel への統合
+- ユニットテスト
 
 **含まない**:
 
-- 新規 provider 追加
-- SecureStorage / `api-keys` 保存基盤の再設計
-- コミット、PR 作成、push
-- 既存実装の破棄を伴うコード変更
+- SecureStorage / main 側の IPC ハンドラ実装（既存で完備）
+- 複数プロバイダ対応（Anthropic のみ対象）
+- キーのローテーション機能
+- OAuth フロー
 
 ## 依存関係
 
-| 種別      | 参照先                                                                                                 | 役割                                         |
-| --------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
-| canonical | `.agents/skills/aiworkflow-requirements/references/workflow-apikey-chat-tool-integration-alignment.md` | API キー導線全体の正本仕様                   |
-| canonical | `.agents/skills/aiworkflow-requirements/references/ui-ux-settings.md`                                  | Settings 導線の期待値                        |
-| canonical | `.agents/skills/aiworkflow-requirements/references/api-ipc-system.md`                                  | `apiKey:*` / `auth-key:*` 契約確認           |
-| canonical | `.agents/skills/aiworkflow-requirements/references/interfaces-auth.md`                                 | auth mode / auth key 境界確認                |
-| canonical | `.agents/skills/aiworkflow-requirements/references/llm-ipc-types.md`                                   | provider / model / availability の型整合確認 |
-| canonical | `.agents/skills/aiworkflow-requirements/references/security-electron-ipc.md`                           | preload / IPC セキュリティ要件               |
+| 種別       | 参照先                           | 役割                                  |
+| ---------- | -------------------------------- | ------------------------------------- |
+| upstream   | `../requirements-draft.md`       | skill-creator 全体の要件              |
+| upstream   | `../root-workflow-pack/index.md` | lane 共通不変条件と責務分離方針       |
+| downstream | TASK-P0-05                       | execute 時に API キーが必要           |
+| downstream | TASK-P0-06                       | 会話型 UI でも API キー設定導線が必要 |
 
-## 30思考法の適用結果
+## 現行コードアンカー
 
-| 思考法               | 本タスクでの結論                                                                   |
-| -------------------- | ---------------------------------------------------------------------------------- |
-| 批判的思考           | 旧仕様は「新規単一 Anthropic UI」前提で現行実装とズレていた                        |
-| 演繹思考             | 実装事実を前提にすると `SettingsView` 起点へ寄せるのが必然                         |
-| 帰納的思考           | 実コードの複数ファイルが Settings 導線中心で収束している                           |
-| アブダクション       | 旧 lane 移設時に task spec だけ古い想定が残存したと推定できる                      |
-| 垂直思考             | まず契約境界の矛盾除去を優先する                                                   |
-| 要素分解             | View、section、preload、IPC、型、evidence に分解した                               |
-| MECE                 | provider UI と auth key UI を別責務として再整理した                                |
-| 2軸思考              | 「UI surface / IPC contract」と「current fact / future work」で整理した            |
-| プロセス思考         | Phase 1〜13 の各フェーズで何を確定するかを再定義した                               |
-| メタ思考             | この task は実装依頼ではなく spec sync 依頼だと再認識した                          |
-| 抽象化思考           | 本質は API キー導線の責務境界明文化である                                          |
-| ダブル・ループ思考   | 「新規UIを作る前提」自体を疑い、前提を修正した                                     |
-| ブレインストーミング | `SkillLifecyclePanel` 維持案より `SettingsView` 正本化案が優勢だった               |
-| 水平思考             | AuthKeySection と ApiKeysSection の共存を競合ではなく役割分担と見なした            |
-| 逆説思考             | 追加実装を減らすほど仕様は正確になった                                             |
-| 類推思考             | 既存の `api-key-chat-tool-integration-alignment` 完了タスクを参照した              |
-| if思考               | 将来コード変更が必要でも current fact を崩さない計画にした                         |
-| 素人思考             | ユーザー目線では「どこで何のキーを設定するか」が最重要と整理した                   |
-| システム思考         | auth mode、auth key、provider key、chat runtime の相互作用を見た                   |
-| 因果関係分析         | 誤った UI 前提が phase 全体の参照 drift を連鎖させていた                           |
-| 因果ループ           | 仕様 drift が再利用を招き、再利用がさらに drift を強める構造を確認した             |
-| トレードオン思考     | テンプレート網羅性を上げつつ冗長説明は削った                                       |
-| プラスサム思考       | spec 精度向上で将来の実装着手もしやすくなる形にした                                |
-| 価値提案思考         | 実装者が迷わない task spec を最優先価値に置いた                                    |
-| 戦略的思考           | 変更を最小のコード差分 + docs 同期に限定し downstream 実装の事故を減らす設計にした |
-| why思考              | なぜ直すかは「実装と仕様の断絶を止めるため」である                                 |
-| 改善思考             | 欠落節を埋めるだけでなく参照正本も差し替えた                                       |
-| 仮説思考             | validator FAIL と code path drift が主因という仮説を検証した                       |
-| 論点思考             | 真の論点は UI 新規作成ではなく task 定義の現実不一致だった                         |
-| KJ法                 | 問題を「構造欠落」「参照 drift」「責務誤認」の3群に集約した                        |
+| ファイル                                                             | 現状の役割                                   | TASK-RT-04 での扱い           |
+| -------------------------------------------------------------------- | -------------------------------------------- | ----------------------------- |
+| `apps/desktop/src/main/ipc/index.ts`                                 | AUTH_KEY_SET/EXISTS/VALIDATE/DELETE ハンドラ | 変更なし（既存チャネル活用）  |
+| `apps/desktop/src/preload/skill-creator-api.ts`                      | preload API 定義                             | AUTH_KEY 系メソッド公開を追加 |
+| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | スキル作成のメインパネル                     | ApiKeySettingsPanel を統合    |
+| `packages/shared/src/types/skillCreator.ts`                          | 型定義                                       | API キー状態型を追加          |
 
 ## 要件レビュー一次結論
 
-| 観点                 | 結論                                                                                       |
-| -------------------- | ------------------------------------------------------------------------------------------ |
-| 真の論点             | API キー管理 UI の task spec が現行の Settings 導線とズレている                            |
-| 依存関係・責務境界   | `ApiKeysSection` は provider key、`AuthKeySection` は Claude Agent SDK auth key を担当する |
-| 価値とコストの不均衡 | 最小コード変更で導線不足を解消し、仕様を current fact に戻すのが最小コスト最大効果         |
-| 改善優先順位         | 1. 参照 drift 是正 2. Phase 構造準拠 3. artifacts metadata 是正 4. Phase 11/12 計画整備    |
-| 4条件評価            | 価値性: 高 / 実現性: 高 / 整合性: 修正前は低、修正後に回復 / 運用性: validator 実行可能    |
+| 観点                 | 結論                                                                                                    |
+| -------------------- | ------------------------------------------------------------------------------------------------------- |
+| 真の論点             | IPC チャネルは存在するが Renderer 側に入口がなく、ユーザーが API キーを設定できない問題                 |
+| 依存関係・責務境界   | main 側の SecureStorage/IPC は既存。preload に薄いラッパーを公開し、Renderer コンポーネントで完結させる |
+| 価値とコストの不均衡 | 新規コンポーネント1つ + preload 拡張のみ。既存 IPC を活用するためコスト低                               |
+| 改善優先順位         | 1. preload API 拡張 2. 状態型定義 3. コンポーネント実装 4. バリデーション 5. SkillLifecyclePanel 統合   |
+| 4条件評価            | 価値性: 高（UX 必須機能）/ 実現性: 高（IPC 既存）/ 整合性: 既存パターン準拠 / 運用性: 独立テスト可能    |
 
 ## ディレクトリ構成
 
@@ -138,11 +98,39 @@ step-08-par-task-rt-04-api-key-management-ui/
 
 ## 実装者向けクイックガイド
 
-- provider API キー UI の主対象は `ApiKeysSection`
-- Claude Agent SDK 認証キー UI の主対象は `AuthKeySection`
-- 主導線は `SettingsView`、`SkillLifecyclePanel` は補助導線として同一 `auth-key:*` 契約を再利用する
-- `apiKey:*` と `auth-key:*` は別契約なので統合しない
-- 将来コード変更時も `preload/types.ts` を Renderer 契約の起点にする
+### 着手条件
+
+- `apps/desktop/src/main/ipc/index.ts` の AUTH_KEY 系ハンドラを読了している
+- `apps/desktop/src/preload/skill-creator-api.ts` の既存 API パターンを読了している
+- `SkillLifecyclePanel.tsx` のコンポーネント構成を読了している
+
+### 想定変更ポイント
+
+- `apps/desktop/src/preload/skill-creator-api.ts` — AUTH_KEY_SET/EXISTS/VALIDATE/DELETE の invoke メソッド追加
+- `packages/shared/src/types/skillCreator.ts` — `ApiKeyStatus` 型追加
+- `apps/desktop/src/renderer/components/skill/ApiKeySettingsPanel.tsx` — 新規コンポーネント
+- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` — ApiKeySettingsPanel の import と配置
+- テストファイル — ApiKeySettingsPanel のユニットテスト
+
+### 非対象
+
+- SecureStorage / main 側 IPC ハンドラの変更
+- 複数プロバイダ対応
+- キーローテーション
+- OAuth フロー
+
+### 完了イメージ
+
+- SkillLifecyclePanel 内に API キー設定セクションが表示される
+- ユーザーが API キーを入力し、バリデーション後に保存できる
+- 保存状態（未設定/設定済み/検証中/エラー）が表示される
+- 保存済みキーを削除できる
+- 既存テストが全て pass する
+
+### 並列実行メモ
+
+- TASK-RT-04 は他の step-08 タスクと並列実行可能
+- preload API の拡張は他タスクとのマージ競合に注意
 
 ## Phase 一覧
 
