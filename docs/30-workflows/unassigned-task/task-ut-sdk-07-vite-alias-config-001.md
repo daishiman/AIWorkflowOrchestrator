@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 1715
 task_id: UT-SDK-07-VITE-ALIAS-CONFIG-001
 task_name: vite エイリアス設定の調査（@repo/shared 値インポートの alias 解決）
 category: DX改善

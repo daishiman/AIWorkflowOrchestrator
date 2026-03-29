@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 1714
 task_id: UT-SDK-07-EXECUTION-CHANNELS-EXPANSION-001
 task_name: EXECUTION_CHANNELS の拡充検討（desktop 独自チャネルの shared 移管判断）
 category: 仕様整合性
