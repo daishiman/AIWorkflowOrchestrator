@@ -23,6 +23,10 @@ import { SKILL_CHANNELS } from "@repo/shared/src/ipc/channels";
 import { PermissionResolver } from "./PermissionResolver";
 import { PermissionStore } from "./PermissionStore";
 import type { IAuthKeyService } from "../auth/types";
+import {
+  asSdkMessageRecord,
+  getSdkMessageType,
+} from "../runtime/sdkMessageUtils";
 
 // =================================================================
 // SkillExecutor専用の型定義
@@ -465,56 +469,6 @@ interface SDKQueryOptions {
   timeout?: number;
 }
 
-interface SDKMessage {
-  type?: string;
-  subtype?: string;
-  message?: {
-    id?: string;
-    role?: string;
-    content?: unknown;
-  };
-  content?: string;
-  session_id?: string;
-  sessionId?: string;
-  stop_reason?: string;
-  stopReason?: string;
-  result?: {
-    subtype?: string;
-    stop_reason?: string;
-    stopReason?: string;
-    session_id?: string;
-    sessionId?: string;
-    permission_denials?: unknown;
-    permissionDenials?: unknown;
-    error?: string;
-  };
-  tool_use?: {
-    id?: string;
-    name: string;
-    input: unknown;
-  };
-  tool_result?: {
-    tool_use_id?: string;
-    is_error?: boolean;
-    content?: unknown;
-  };
-  permission_denials?: unknown;
-  permissionDenials?: unknown;
-  error?: {
-    message: string;
-  };
-}
-
-/**
- * SDKメッセージが有効なメッセージかを判定する型ガード
- */
-function isValidSDKMessage(message: unknown): message is SDKMessage {
-  if (message === null || typeof message !== "object") {
-    return false;
-  }
-  return true;
-}
-
 /**
  * スキル実行エンジン
  *
@@ -933,28 +887,31 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
     executionId: string,
     message: unknown,
   ): SkillStreamMessage | null {
-    // 型ガードによる検証
-    if (!isValidSDKMessage(message)) {
+    // shared helper による前処理
+    const msg = asSdkMessageRecord(message);
+    if (!msg) {
       return null;
     }
 
-    const msg = message;
+    const msgType = getSdkMessageType(msg);
 
     let type: SkillStreamMessageType;
     let content: string;
 
-    if (msg.type === "text" && msg.content) {
+    if (msgType === "text" && typeof msg.content === "string") {
       type = "text";
-      content = msg.content;
-    } else if (msg.type === "tool_use" && msg.tool_use) {
+      content = msg.content as string;
+    } else if (msgType === "tool_use" && msg.tool_use) {
       type = "tool_use";
+      const toolUse = msg.tool_use as { name: string; input: unknown };
       content = JSON.stringify({
-        name: msg.tool_use.name,
-        input: msg.tool_use.input,
+        name: toolUse.name,
+        input: toolUse.input,
       });
-    } else if (msg.type === "error" || msg.error) {
+    } else if (msgType === "error" || msg.error) {
       type = "error";
-      content = msg.error?.message ?? "Unknown error";
+      const error = msg.error as { message: string } | undefined;
+      content = error?.message ?? "Unknown error";
     } else {
       // 未知のメッセージタイプ
       return null;

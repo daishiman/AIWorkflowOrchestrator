@@ -1,0 +1,7 @@
+{
+  "taskId": "TASK-RT-02-API-KEY-UI-ADAPTER-STATUS-INTEGRATION",
+  "featureName": "task-rt-02-api-key-ui-adapter-status",
+  "mirrorOf": "docs/30-workflows/task-rt-02-api-key-ui-adapter-status/artifacts.json",
+  "status": "partial",
+  "note": "Phase 11 evidence and canonical spec sync are still open."
+}

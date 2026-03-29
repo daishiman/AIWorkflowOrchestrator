@@ -1519,6 +1519,36 @@
 | UT-7 | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH |
 | UT-8 | Main→Renderer への承認要求プッシュ通知（webContents.send） | HIGH |
 | UT-9 | abort/done 時に ApprovalGate.revokeAll() でトークンクリア | MEDIUM |
+
+---
+
+### タスク: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 SkillExecutor/sdkMessageNormalizer 型ガード重複解消（2026-03-29）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | refactor |
+| 優先度 | low |
+| 完了日 | 2026-03-29 |
+| 関連Issue | #1692 |
+| 由来 | TASK-RT-06 Phase 8 調査（unassigned-task-detection.md） |
+| 成果物 | `docs/30-workflows/skill-executor-normalizer-consolidation/` |
+
+#### 実施内容
+
+- `sdkMessageUtils.ts` を新規作成し、`asSdkMessageRecord()` / `getSdkMessageType()` を共通 helper として抽出
+- `SkillExecutor.ts` の `convertToStreamMessage()` が shared helper を利用するよう更新
+- `sdkMessageNormalizer.ts` が shared helper を利用するよう更新
+- `sdkMessageUtils.test.ts` 新規作成（21件、Line/Branch/Function 100%）
+- `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings
+- vitest 再実行は esbuild platform mismatch により環境 blocked（manual-test-result.md に記録済み）
+
+#### Phase 12 未タスク
+
+| 未タスクID | 内容 | 優先度 |
+| --- | --- | --- |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 | `SkillStreamMessage` と `SkillCreatorSdkEvent` の出力型を統一 | low |
 | UT-10 | disclosureHandlers.ts 独立テスト作成 | LOW |
 
 ---

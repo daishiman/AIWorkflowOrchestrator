@@ -134,6 +134,21 @@ export const HISTORY_SEARCH_CHANNELS = {
 } as const;
 
 /**
+ * 承認フロー関連のIPCチャネル
+ */
+export const APPROVAL_CHANNELS = {
+  APPROVAL_RESPOND: "approval:respond",
+  APPROVAL_REQUEST: "approval:request",
+} as const;
+
+/**
+ * 実行情報開示関連のIPCチャネル
+ */
+export const EXECUTION_CHANNELS = {
+  EXECUTION_GET_DISCLOSURE_INFO: "execution:get-disclosure-info",
+} as const;
+
+/**
  * スキルチャネル型
  */
 export type SkillChannel = (typeof SKILL_CHANNELS)[keyof typeof SKILL_CHANNELS];
@@ -147,6 +162,8 @@ export const IPC_CHANNELS = {
   ...SKILL_CHANNELS,
   ...NOTIFICATION_CHANNELS,
   ...HISTORY_SEARCH_CHANNELS,
+  ...APPROVAL_CHANNELS,
+  ...EXECUTION_CHANNELS,
 } as const;
 
 /**

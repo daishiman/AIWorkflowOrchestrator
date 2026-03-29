@@ -1,0 +1,185 @@
+{
+  "taskId": "TASK-RT-02-API-KEY-UI-ADAPTER-STATUS-INTEGRATION",
+  "featureName": "task-rt-02-api-key-ui-adapter-status",
+  "createdAt": "2026-03-29",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "requirements",
+          "path": "outputs/phase-1/requirements.md",
+          "description": "機能要件・非機能要件・受入基準"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "design",
+          "path": "outputs/phase-2/design.md",
+          "description": "IPC/Store/UI トポロジー設計"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "review-result",
+          "path": "outputs/phase-3/review-result.md",
+          "description": "設計レビュー判定結果"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "test-specs",
+          "path": "outputs/phase-4/test-specs.md",
+          "description": "Red テスト仕様・テストファイル一覧"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "implementation-summary",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー（変更ファイル・テスト結果）"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "test-expansion-report",
+          "path": "outputs/phase-6/test-expansion-report.md",
+          "description": "異常系・エッジケーステスト追加レポート"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "coverage-report",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジ計測結果"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "refactoring-report",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "description": "リファクタリング変更内容と理由"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "quality-report",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質チェック結果"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "final-review-result",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー判定結果"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "manual-test-result",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト実行結果"
+        },
+        {
+          "name": "manual-test-checklist",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "検証チェックリスト"
+        },
+        {
+          "name": "screenshots",
+          "path": "outputs/phase-11/screenshots/",
+          "description": "UIエビデンス（6枚）"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "implementation-guide",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1/2）"
+        },
+        {
+          "name": "system-spec-update-summary",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様書更新サマリー"
+        },
+        {
+          "name": "documentation-changelog",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "name": "unassigned-task-detection",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "name": "skill-feedback-report",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "name": "phase12-task-spec-compliance-check",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠チェック"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "pull-request",
+          "path": "GitHub UI",
+          "description": "Pull Request"
+        }
+      ]
+    }
+  }
+}

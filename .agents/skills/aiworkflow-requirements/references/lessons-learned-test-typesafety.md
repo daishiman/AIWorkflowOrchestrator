@@ -19,8 +19,45 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-29 | 1.2.0 | UT-RT-06-CONS 教訓2件を追加（L-RT-06-CONS-001: グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002: 最小共通helper抽出パターン） |
 | 2026-03-25 | 1.1.0 | UT-LLM-MOD-01-005 の教訓3件を追加（provider registry SSoT / optional `specialMatcher` narrowing / readonly bridge の follow-up 化） |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-29 UT-RT-06-CONS（sdkMessageUtils shared helper 抽出 / Phase 7 個別カバレッジ計測）
+
+### L-RT-06-CONS-001: Phase 7 でグローバル閾値が原因の偽陰性を回避する（個別ファイルカバレッジ計測）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `pnpm test:coverage` はプロジェクト全体のカバレッジを集計するため、既存ファイルの未カバー部分が原因でグローバル閾値を下回り、新規追加ファイルが100%でも Phase 7 が失敗した |
+| 再発条件 | プロジェクト全体のカバレッジ閾値未達の状態で新規ファイルを追加する場合 |
+| 解決策 | `pnpm vitest run --coverage --coverage.include='**/targetFile.ts'` で対象ファイルを絞り込んで個別計測。`coverage-standards.md` にガイドライン追記済み |
+| 教訓 | Phase 7 の目的は「今回追加したコードのカバレッジ確認」。グローバル閾値失敗は既存負債。対象ファイル個別計測で PASS したら Phase 7 PASS とし、全体改善は別タスクへ |
+| 関連タスク | UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 |
+
+```bash
+# 個別ファイルカバレッジ計測
+pnpm vitest run --coverage --coverage.include='**/sdkMessageUtils.ts'
+```
+
+### L-RT-06-CONS-002: 最小共通 helper 抽出パターン（前処理の散在を解消）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `unknown → record` 型判定と `type` フィールド抽出が `SkillExecutor.ts` と `sdkMessageNormalizer.ts` の2箇所に分散。SDK バージョンアップ時に両方を更新する保守コストが残った |
+| 再発条件 | 複数の lane が同じ SDK message を扱い、それぞれに型ガードロジックを独自実装した場合 |
+| 解決策 | lane 固有の出力型は維持しつつ、前処理（型判定・フィールド抽出）のみを `sdkMessageUtils.ts` に shared helper として抽出。各 lane は helper を呼び出すだけにする |
+| 教訓 | 「出力型が違うから統合できない」は正しい判断だが、前処理の共通部分は分離可能。責務境界を「前処理 vs lane固有変換」で引くと最小差分で重複を解消できる |
+| 関連パターン | Single Responsibility Principle: shared helper は型判定責務のみ持つ |
+| 関連タスク | UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 |
+
+### 同種課題の解決手順
+
+1. 複数モジュールが同じ SDK/外部ライブラリの型を扱う場合は、型判定部分をまず grep で洗い出す
+2. 出力型が異なっても「前処理（型判定・フィールド抽出）」は共通化できる場合が多い
+3. `--coverage.include` で対象ファイルを絞り込んで Phase 7 の個別カバレッジを確認する
 
 ---
 

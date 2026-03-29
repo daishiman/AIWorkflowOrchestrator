@@ -127,6 +127,25 @@ describe("IPC Channels", () => {
     });
   });
 
+  describe("Approval / Execution チャネルの allowlist 分類", () => {
+    it("APPROVAL_RESPOND と EXECUTION_GET_DISCLOSURE_INFO が invoke allowlist に含まれる", () => {
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(IPC_CHANNELS.APPROVAL_RESPOND);
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(
+        IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO,
+      );
+    });
+
+    it("APPROVAL_REQUEST が on allowlist に含まれる（push notification）", () => {
+      expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.APPROVAL_REQUEST);
+    });
+
+    it("APPROVAL_REQUEST は invoke allowlist に含まれない", () => {
+      expect(ALLOWED_INVOKE_CHANNELS).not.toContain(
+        IPC_CHANNELS.APPROVAL_REQUEST,
+      );
+    });
+  });
+
   describe("セキュリティ", () => {
     it("全てのinvokeチャネルが明示的に許可されている", () => {
       const invokeChannels = [
