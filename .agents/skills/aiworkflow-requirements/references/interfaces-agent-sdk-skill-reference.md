@@ -84,6 +84,17 @@
 | `summary`       | `ExecutionSummary`| サマリー                 |
 | `estimatedTime` | `number`          | 見積もり時間（分）       |
 
+#### ApiKeyStatus（TASK-RT-04）
+
+runtime lane の API キー設定補助導線で利用する UI 状態型。canonical source は `packages/shared/src/types/skillCreator.ts`。
+
+| 値 | 説明 |
+| --- | --- |
+| `not_set` | キー未設定 |
+| `validating` | 保存中/検証中 |
+| `configured` | 利用可能なキーを確認済み（`saved` または `env-fallback`） |
+| `error` | 保存/削除時にエラーが発生 |
+
 ---
 
 ### SkillCreatorService API

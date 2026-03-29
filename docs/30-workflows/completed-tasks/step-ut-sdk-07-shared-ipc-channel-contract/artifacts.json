@@ -1,0 +1,127 @@
+{
+  "taskId": "UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001",
+  "featureName": "step-ut-sdk-07-shared-ipc-channel-contract",
+  "createdDate": "2026-03-29",
+  "lastUpdated": "2026-03-29",
+  "status": "implementation_complete",
+  "phases": {
+    "1": {
+      "status": "完了",
+      "artifacts": [
+        "outputs/phase-1/requirements-summary.md",
+        "outputs/phase-1/scope-definition.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    "2": {
+      "status": "完了",
+      "artifacts": [
+        "outputs/phase-2/design.md",
+        "outputs/phase-2/validation-matrix.md",
+        "outputs/phase-2/topology-diagram.md"
+      ]
+    },
+    "3": {
+      "status": "完了",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "4": {
+      "status": "完了",
+      "artifacts": [
+        "packages/shared/src/ipc/__tests__/channels.test.ts",
+        "apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts",
+        "outputs/phase-4/red-phase-result.md"
+      ]
+    },
+    "5": {
+      "status": "完了",
+      "artifacts": [
+        "packages/shared/src/ipc/channels.ts",
+        "apps/desktop/src/preload/channels.ts",
+        "outputs/phase-5/build-result.md",
+        "outputs/phase-5/green-phase-result.md"
+      ]
+    },
+    "6": {
+      "status": "完了",
+      "artifacts": [
+        "apps/desktop/src/preload/channels.test.ts",
+        "outputs/phase-6/test-expansion-result.md"
+      ]
+    },
+    "7": {
+      "status": "完了",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/gate-result.md"
+      ]
+    },
+    "8": {
+      "status": "完了",
+      "artifacts": [
+        "outputs/phase-8/refactoring-summary.md",
+        "outputs/phase-8/test-results-after-refactor.md"
+      ]
+    },
+    "9": {
+      "status": "完了",
+      "artifacts": [
+        "outputs/phase-9/quality-assurance-result.md",
+        "outputs/phase-9/security-check-result.md"
+      ]
+    },
+    "10": {
+      "status": "完了",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/acceptance-criteria-check.md"
+      ]
+    },
+    "11": {
+      "status": "完了",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "12": {
+      "status": "完了",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "未実施",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md"
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "contract-sync",
+    "taskId": "UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001",
+    "workflow": "step-ut-sdk-07-shared-ipc-channel-contract",
+    "issue": "#1696",
+    "dependsOnTasks": ["TASK-SDK-07"]
+  }
+}

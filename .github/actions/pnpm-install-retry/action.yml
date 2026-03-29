@@ -23,6 +23,9 @@ runs:
           if [ "$attempt" -lt "$max_attempts" ]; then
             sleep_seconds=$((attempt * 10))
             echo "pnpm install failed. retry in ${sleep_seconds}s..."
+            # On retry, switch Electron binary mirror to npmmirror to avoid GitHub Releases CDN 502
+            export ELECTRON_MIRROR="https://npmmirror.com/mirrors/electron/"
+            echo "Switched ELECTRON_MIRROR to ${ELECTRON_MIRROR}"
             sleep "$sleep_seconds"
           fi
 

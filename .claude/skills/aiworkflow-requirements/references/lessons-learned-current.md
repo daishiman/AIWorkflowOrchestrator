@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-29 | 2.10.0 | UT-RT-06-CONS 教訓2件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-RT-06-CONS-001 Phase 7 グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002 最小共通helper抽出パターン） |
 | 2026-03-28 | 2.9.0 | TASK-SDK-08 session-persistence-and-resume-contract 教訓3件を追加（L-1: esbuild mismatch、L-2: artifact命名規約 / validator不一致、L-3: Phase 11 UI/docs-only判定不一致） |
 | 2026-03-27 | 2.8.2 | TASK-SDK-04 の教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): user input semantics / canonical execute binding、→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): spec_created task の screenshot/evidence drift） |
 | 2026-03-27 | 2.8.2 | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): placeholder-only screenshot PASS 禁止 / implementation guide Part 2 必須要素 / Phase 2 contract matrix stale drift 防止） |
@@ -850,3 +851,25 @@
 | 解決策 | `manual-test-checklist.md` と `discovered-issues.md` を必須補助成果物として追加 |
 | 標準ルール | UI 非変更タスクは「N/A 根拠 + 代替証跡（checklist/issues）」をセットで残す |
 | 関連タスク | TASK-RT-06 |
+
+---
+
+## TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out）
+
+### L-LLM-MOD-04-001: P50 タスクを新規実装前提で書き続けると validator fail と stale guidance を同時に生む
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | TASK-LLM-MOD-04 は Task 01〜03 でテスト同時更新済み（コード変更 0 行）の P50 パターンだったが、タスク仕様書が新規実装前提のテンプレートのまま残り、Phase 12 で「実装 0 行なのに実装ガイドが長大」という stale guidance を生んだ |
+| 解決策 | Phase 1 で「このタスクが P50（既実装発見）か否か」を明示し、P50 の場合は Phase 4-5 テンプレートを docs-only 向けに簡略化する |
+| 標準ルール | `git log -- <target-file>` で既実装状況を Phase 1 で確認し、P50 判定時は仕様書を P50 モードへ切り替える |
+| 関連タスク | TASK-LLM-MOD-04 |
+
+### L-LLM-MOD-04-002: canonical system spec が更新済みでも workflow root が stale なら利用者は誤誘導される
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `.claude/skills/aiworkflow-requirements/LOGS.md` が 2026-03-24 完了記録済みでも、`step-03-seq-task-04-test-update/` の workflow root が Phase 11/12 成果物なしのまま残ると、参照者は「タスク未完了」と誤認する |
+| 解決策 | Phase 12 で workflow root に close-out 成果物（implementation-guide / system-spec-update-summary / unassigned-task-detection 等）を揃え、canonical spec との整合を同一 wave で確認する |
+| 標準ルール | `resource-map` / `quick-reference` は「正本は shared catalog」を読む導線として有効。workflow root の close-out を canonical spec 更新と同ターンで実施する |
+| 関連タスク | TASK-LLM-MOD-04 |

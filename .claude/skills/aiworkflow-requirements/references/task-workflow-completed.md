@@ -26,6 +26,42 @@
 
 ---
 
+### タスク: TASK-RT-04 skill-authkey-api-key-management-ui（2026-03-29）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-RT-04 |
+| ステータス | **完了** |
+| タイプ | implementation / ui |
+| 優先度 | 中 |
+| 完了日 | 2026-03-29 |
+| 対象 | `ApiKeySettingsPanel` 新規実装 / `SkillLifecyclePanel` 補助導線統合 / `ApiKeyStatus` 型追加 |
+| 成果物 | `docs/30-workflows/step-08-par-task-rt-04-api-key-management-ui/` |
+
+#### 実施内容
+
+- `apps/desktop/src/renderer/components/skill/ApiKeySettingsPanel.tsx` を新規作成（`auth-key:exists/set/delete` IPC 再利用、30 tests PASS）
+- `packages/shared/src/types/skillCreator.ts` に `ApiKeyStatus` 型を追加（`not_set / validating / configured / error`）
+- `packages/shared/src/types/index.ts` に `ApiKeyStatus` をエクスポート追加
+- `SkillLifecyclePanel.tsx` に `<ApiKeySettingsPanel />` を補助導線として組み込み
+- `SettingsView` を主導線・`SkillLifecyclePanel` を補助導線として責務境界を文書化
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 解決策 |
+| --- | --- | --- |
+| esbuild バイナリアーキ不一致（`darwin-arm64` vs `darwin-x64`） | `pnpm install` 後に optional deps が現在アーキと合わない場合 | `pnpm install --force` で optional dependency を再解決 |
+| Settings vs Lifecycle 責務境界の曖昧さ | 同一 IPC チャネルを複数 surface で再利用する場合 | 主導線/補助導線の役割を workflow index.md に明記し仕様固定 |
+
+#### 検証証跡
+
+- `ApiKeySettingsPanel.test.tsx`: 30 tests PASS
+- Phase 11 screenshots: TC-11-01〜TC-11-03（3枚）current build 撮影
+- `api-ipc-system-core.md`: Runtime lane 補助導線ルール追記完了
+- `interfaces-agent-sdk-skill-reference.md`: `ApiKeyStatus` 型追記完了
+- 未タスク3件（UT-TASK-RT-04-*）: すべて resolved
+
+---
 
 ### タスク: TASK-SDK-03 context-budget-and-resource-selection（2026-03-27）
 
@@ -1483,6 +1519,36 @@
 | UT-7 | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH |
 | UT-8 | Main→Renderer への承認要求プッシュ通知（webContents.send） | HIGH |
 | UT-9 | abort/done 時に ApprovalGate.revokeAll() でトークンクリア | MEDIUM |
+
+---
+
+### タスク: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 SkillExecutor/sdkMessageNormalizer 型ガード重複解消（2026-03-29）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | refactor |
+| 優先度 | low |
+| 完了日 | 2026-03-29 |
+| 関連Issue | #1692 |
+| 由来 | TASK-RT-06 Phase 8 調査（unassigned-task-detection.md） |
+| 成果物 | `docs/30-workflows/skill-executor-normalizer-consolidation/` |
+
+#### 実施内容
+
+- `sdkMessageUtils.ts` を新規作成し、`asSdkMessageRecord()` / `getSdkMessageType()` を共通 helper として抽出
+- `SkillExecutor.ts` の `convertToStreamMessage()` が shared helper を利用するよう更新
+- `sdkMessageNormalizer.ts` が shared helper を利用するよう更新
+- `sdkMessageUtils.test.ts` 新規作成（21件、Line/Branch/Function 100%）
+- `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings
+- vitest 再実行は esbuild platform mismatch により環境 blocked（manual-test-result.md に記録済み）
+
+#### Phase 12 未タスク
+
+| 未タスクID | 内容 | 優先度 |
+| --- | --- | --- |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 | `SkillStreamMessage` と `SkillCreatorSdkEvent` の出力型を統一 | low |
 | UT-10 | disclosureHandlers.ts 独立テスト作成 | LOW |
 
 ---
