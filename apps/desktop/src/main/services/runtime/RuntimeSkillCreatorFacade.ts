@@ -13,6 +13,12 @@
 
 import fs from "fs/promises";
 import path from "path";
+import type { SkillCreatorSdkEvent } from "@repo/shared/types";
+import {
+  normalizeSdkMessage,
+  normalizeSdkStream,
+  type NormalizerContext,
+} from "./sdkMessageNormalizer";
 import type {
   SkillExecutor,
   SkillExecutionRequest,
@@ -145,6 +151,33 @@ export class RuntimeSkillCreatorFacade {
   reverifyWorkflow(planId: string): RuntimeSkillCreatorReverifyResponse {
     return this.workflowEngine.requestReverify(planId);
   }
+
+  // ── SDK Message 正規化 (TASK-RT-06) ─────────────────
+
+  /**
+   * SDK 生メッセージ 1 件を lane 正規化イベントに変換する。
+   */
+  normalizeSdkMessage(rawMessage: unknown): SkillCreatorSdkEvent {
+    return normalizeSdkMessage(rawMessage, this.buildNormalizerContext());
+  }
+
+  /**
+   * SDK 生メッセージのストリーム全体を正規化する。
+   */
+  normalizeSdkStream(rawMessages: unknown[]): SkillCreatorSdkEvent[] {
+    return normalizeSdkStream(rawMessages, this.buildNormalizerContext());
+  }
+
+  /**
+   * 現在の Facade 状態から NormalizerContext を構築する。
+   */
+  buildNormalizerContext(): NormalizerContext {
+    const root = this.getExplicitSkillCreatorRoot();
+    return {
+      sourceProvenance: root ? { sourceRoot: root } : undefined,
+    };
+  }
+
   private resolveDecision(authMode: AuthMode, apiKey: string | null) {
     if (authMode === "api-key" && (!apiKey || apiKey.trim() === "")) {
       return this.resolver.resolveWithService(authMode);
