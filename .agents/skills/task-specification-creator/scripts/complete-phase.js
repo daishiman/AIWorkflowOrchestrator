@@ -74,6 +74,36 @@ function parseArgs(args) {
   return result;
 }
 
+// outputs/phase-N/ ディレクトリの存在と中身を検証（WARNING のみ、処理は続行）
+function validatePhaseOutputs(workflowDir, phaseNum) {
+  const outputsDir = join(workflowDir, `outputs/phase-${phaseNum}`);
+
+  if (!existsSync(outputsDir)) {
+    console.warn(
+      `⚠️  WARNING: outputs ディレクトリが見つかりません: outputs/phase-${phaseNum}/`,
+    );
+    return;
+  }
+
+  let entries;
+  try {
+    entries = readdirSync(outputsDir);
+  } catch {
+    console.warn(
+      `⚠️  WARNING: outputs/phase-${phaseNum}/ の読み取りに失敗しました`,
+    );
+    return;
+  }
+
+  if (entries.length === 0) {
+    console.warn(`⚠️  WARNING: outputs/phase-${phaseNum}/ が空です`);
+  } else {
+    console.log(
+      `✅ outputs/phase-${phaseNum}/ に成果物 ${entries.length} 件を確認`,
+    );
+  }
+}
+
 // artifacts.json を読み込みまたは初期化
 function loadArtifacts(workflowDir) {
   const artifactsPath = join(workflowDir, "artifacts.json");
@@ -239,6 +269,9 @@ function main() {
     console.log(`  - ${artifact.path}: ${artifact.description}`);
   }
   console.log("");
+
+  // outputs ディレクトリの存在を検証（WARNING のみ、処理は続行）
+  validatePhaseOutputs(args.workflow, args.phase);
 
   // artifacts.json を更新
   const artifacts = loadArtifacts(args.workflow);
