@@ -2421,3 +2421,14 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
   - `references/update-process.md` に Phase 12 retrospective の `Phase 3.5: stale fact cleanup` を追加
   - `assets/phase12-system-spec-retrospective-template.md` に stale fact cleanup 行を追加し、テスト件数 / coverage / out-of-scope 注記 / 日付 / follow-up 件数の同値同期を明文化
   - Phase 12 の same-wave sync では outputs 生成だけでなく、report と unassigned-task の記述ドリフト除去まで同一ターンで閉じる運用を標準化
+
+---
+## 2026-03-29 - TASK-RT-06 Phase 12 close-out drift 是正パターンを適用
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - RT-06 で発生した Phase 12 ドリフト（Part 1/Part 2 欠落、Phase 11 N/A 証跡不足、判定矛盾）を same-wave で修正
+  - `implementation-guide` は Part 1/Part 2 の2層必須要件で再構成し、Phase 11 は `N/A + checklist/issues` の補助証跡を必須化
+  - 環境 blocker（esbuild mismatch）は PASS 扱いせず未タスクへ formalize する運用を再確認

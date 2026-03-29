@@ -421,9 +421,18 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | Main public entrypoint | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` | skill creator 標準 surface を維持して runtime helper を登録する |
 | Main runtime helper | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `plan` / `execute-plan` / `improve-skill` / `get-verify-detail` / `reverify-workflow` handler |
 | Runtime service | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | public bridge。policy / handoff / execute を判断し、state 更新は engine へ委譲 |
-| Workflow engine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `currentPhase` / `awaitingUserInput` / `verifyResult` / artifacts / `resumeTokenEnvelope` の owner |
+| Workflow engine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `currentPhase` / `awaitingUserInput` / `verifyResult` / artifacts / `resumeTokenEnvelope` の owner。checkpoint hydrate / artifact serialization も保持 |
 | Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `planSkill()` / `executePlan()` / `improveSkillWithFeedback()` / `getVerifyDetail()` / `reverifyWorkflow()` |
-| Shared types | `packages/shared/src/types/skillCreator.ts` | request / response / handoff bundle / verify detail / reverify result |
+| Workflow session repository | `apps/desktop/src/main/services/session/SkillCreatorWorkflowSessionRepository.ts` | revision / lease guard 付き save/load/invalidate/evaluate。public IPC 未公開の internal persistence owner |
+| Compatibility evaluator | `apps/desktop/src/main/services/session/ResumeCompatibilityEvaluator.ts` | version / route / provenance / lease を比較し `compatible` / `compatible_with_warning` / `incompatible` / `conflict` を返す |
+| Workflow session storage | `apps/desktop/src/main/services/session/WorkflowSessionStorage.ts` | `skill-creator-workflow-sessions` store を管理し generic session schema と分離 |
+| Shared types | `packages/shared/src/types/skillCreator.ts` | request / response / handoff bundle / verify detail / reverify result / persisted checkpoint / compatibility snapshot / lease |
+
+### Task08 session persistence / resume contract（2026-03-28 branch current facts）
+
+- `SkillCreatorWorkflowEngine` は persisted checkpoint から `hydrateFromCheckpoint()` で workflow state を復元し、`serializeArtifactsForPersistence()` で phase artifacts を persistence payload へ変換する。
+- `SkillCreatorWorkflowSessionRepository` は existing checkpoint に対して `expectedRevision` を必須にし、stale write の silent overwrite を拒否する。
+- legacy / 破損 checkpoint は `missing_workflow_payload` として graceful reject し、`agent:resumeSession` と混同しない internal contract に留める。
 
 ### チャンネル一覧
 

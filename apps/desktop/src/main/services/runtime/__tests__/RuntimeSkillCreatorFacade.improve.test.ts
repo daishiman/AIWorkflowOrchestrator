@@ -653,9 +653,9 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
     });
   });
 
-  // E-10: llmAdapter 未注入時の graceful degradation
-  describe("E-10: llmAdapter 未注入時のスタブレスポンス", () => {
-    it("llmAdapter 未注入時はスタブレスポンスを返す", async () => {
+  // E-10: llmAdapter 未注入時の explicit error (TASK-RT-02)
+  describe("E-10: llmAdapter 未注入時の explicit error", () => {
+    it("llmAdapter 未注入時は llm_adapter_unavailable エラーを返す", async () => {
       const facadeWithoutLLM = new RuntimeSkillCreatorFacade({
         skillExecutor: mockSkillExecutor,
         skillFileManager: mockSkillFileManager,
@@ -673,15 +673,19 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
         "sk-test",
       );
 
-      const r = result as { improveId: string; suggestions: unknown[] };
-      expect(r.improveId).toMatch(/^improve-/);
-      expect(r.suggestions).toEqual([]);
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLM アダプタが利用できません。設定を確認してください。",
+        },
+      });
     });
   });
 
-  // E-11: resourceLoader 未注入時の graceful degradation
-  describe("E-11: resourceLoader 未注入時のスタブレスポンス", () => {
-    it("resourceLoader 未注入時はスタブレスポンスを返す", async () => {
+  // E-11: resourceLoader 未注入時の explicit error (TASK-RT-02)
+  describe("E-11: resourceLoader 未注入時の explicit error", () => {
+    it("resourceLoader 未注入時は resource_loader_unavailable エラーを返す", async () => {
       const facadeWithoutRL = new RuntimeSkillCreatorFacade({
         skillExecutor: mockSkillExecutor,
         llmAdapter: mockLLMAdapter,
@@ -700,8 +704,13 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
         "sk-test",
       );
 
-      const r = result as { improveId: string; suggestions: unknown[] };
-      expect(r.suggestions).toEqual([]);
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "resource_loader_unavailable",
+          message: "リソースローダーが利用できません。設定を確認してください。",
+        },
+      });
     });
   });
 
