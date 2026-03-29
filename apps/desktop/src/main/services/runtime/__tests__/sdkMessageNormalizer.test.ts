@@ -404,8 +404,12 @@ describe("sdkMessageNormalizer", () => {
         const e1 = normalizeSdkMessage(denial1, BASE_CONTEXT);
         const e2 = normalizeSdkMessage(denial2, BASE_CONTEXT);
 
-        expect(e1.permissionDenials).toEqual(["Write: Write access denied"]);
-        expect(e2.permissionDenials).toEqual(["Bash: Shell execution denied"]);
+        expect(e1.permissionDenials).toEqual([
+          { toolName: "Write", reason: "Write access denied" },
+        ]);
+        expect(e2.permissionDenials).toEqual([
+          { toolName: "Bash", reason: "Shell execution denied" },
+        ]);
       });
 
       it("permission_denied が false の場合は permissionDenials なし", () => {
@@ -429,7 +433,8 @@ describe("sdkMessageNormalizer", () => {
         const event = normalizeSdkMessage(partialDenial, BASE_CONTEXT);
 
         expect(event.permissionDenials).toBeDefined();
-        expect(event.permissionDenials![0]).toContain("unknown");
+        expect(event.permissionDenials![0].toolName).toBe("unknown");
+        expect(event.permissionDenials![0].reason).toBe("Permission denied");
       });
     });
 
