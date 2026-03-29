@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 1694
 task_id: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
 task_name: Skill Creator preload / renderer に approval:request surface を追加
 category: 実装
