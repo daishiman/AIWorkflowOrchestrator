@@ -659,6 +659,7 @@
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "llm-ipc-types.md",
       "llm-workspace-chat-edit.md",
@@ -3819,6 +3820,7 @@
     "CHANNEL": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
@@ -6532,6 +6534,22 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-safety-gate-permission-fallback.md"
     ],
+    "RT": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "workflow-task-rt-06-artifact-inventory.md"
+    ],
+    "Event": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "Normalizer": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "実装知見": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-safety-gate-permission-fallback.md"
+    ],
     "settings": [
       "lessons-learned-auth-settings-degradation-guard.md"
     ],
@@ -6861,6 +6879,19 @@
     "HARNESS": [
       "lessons-learned-phase12-workflow-lifecycle.md",
       "ui-ux-panels.md"
+    ],
+    "close": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "out": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "SHARED": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md",
+      "logs-archive-2026-02-unassigned-placement-import-interface.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
@@ -7426,12 +7457,6 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md"
-    ],
-    "SHARED": [
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "lessons-learned-workflow-quality-phase12-audit-validator.md",
-      "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "モジュール解決エラー修正": [
       "lessons-learned-workflow-quality-ci-module-resolution.md"
