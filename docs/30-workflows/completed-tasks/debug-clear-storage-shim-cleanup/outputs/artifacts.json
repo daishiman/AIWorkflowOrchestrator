@@ -3,7 +3,7 @@
   "title": "debug-clear-storage 残骸クリーンアップ",
   "type": "improvement",
   "priority": "medium",
-  "status": "blocked",
+  "status": "completed",
   "dependencies": ["TASK-FIX-APP-DEBUG-LOCALSTORAGE-CLEAR-001"],
   "issueNumber": 1115,
   "phases": [
@@ -124,7 +124,7 @@
     {
       "phase": 13,
       "name": "PR作成",
-      "status": "blocked",
+      "status": "completed",
       "file": "phase-13-pr-creation.md",
       "artifacts": []
     }

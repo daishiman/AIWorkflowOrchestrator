@@ -72,7 +72,7 @@
       ]
     },
     "phase-13": {
-      "status": "blocked",
+      "status": "completed",
       "artifacts": ["outputs/phase-13/pr-summary-draft.md"]
     }
   }

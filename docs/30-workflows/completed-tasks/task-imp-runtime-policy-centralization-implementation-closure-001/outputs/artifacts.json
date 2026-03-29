@@ -80,7 +80,7 @@
     {
       "phase": 13,
       "name": "pr-creation",
-      "status": "blocked",
+      "status": "completed",
       "file": "phase-13-pr-creation.md"
     }
   ],

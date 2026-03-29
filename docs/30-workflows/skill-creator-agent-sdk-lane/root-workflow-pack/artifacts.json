@@ -5,79 +5,79 @@
     {
       "phase": 1,
       "name": "requirements",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-1-requirements.md"
     },
     {
       "phase": 2,
       "name": "design",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-2-design.md"
     },
     {
       "phase": 3,
       "name": "design-review",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-3-design-review.md"
     },
     {
       "phase": 4,
       "name": "test-creation",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-4-test-creation.md"
     },
     {
       "phase": 5,
       "name": "implementation",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-5-implementation.md"
     },
     {
       "phase": 6,
       "name": "test-expansion",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-6-test-expansion.md"
     },
     {
       "phase": 7,
       "name": "coverage-check",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-7-coverage-check.md"
     },
     {
       "phase": 8,
       "name": "refactoring",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-8-refactoring.md"
     },
     {
       "phase": 9,
       "name": "quality-assurance",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-9-quality-assurance.md"
     },
     {
       "phase": 10,
       "name": "final-review",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-10-final-review.md"
     },
     {
       "phase": 11,
       "name": "manual-test",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-11-manual-test.md"
     },
     {
       "phase": 12,
       "name": "documentation",
-      "status": "complete",
+      "status": "completed",
       "file": "phase-12-documentation.md"
     },
     {
       "phase": 13,
       "name": "pr-creation",
-      "status": "blocked",
+      "status": "completed",
       "file": "phase-13-pr-creation.md"
     }
   ],

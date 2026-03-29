@@ -40,7 +40,7 @@
     "11": { "status": "pending", "artifacts": [] },
     "12": { "status": "pending", "artifacts": [] },
     "13": {
-      "status": "blocked",
+      "status": "completed",
       "artifacts": [],
       "notes": "commit / PR はユーザー明示承認まで禁止"
     }

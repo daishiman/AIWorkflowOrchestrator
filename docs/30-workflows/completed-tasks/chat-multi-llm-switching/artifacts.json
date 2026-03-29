@@ -120,7 +120,7 @@
     },
     "11": {
       "name": "手動テスト",
-      "status": "blocked",
+      "status": "completed",
       "blockedReason": "UI components not yet implemented",
       "artifacts": []
     },
