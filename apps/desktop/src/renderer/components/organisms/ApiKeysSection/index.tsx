@@ -6,7 +6,7 @@
  * @see docs/30-workflows/api-key-management/ui-design.md
  */
 
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import clsx from "clsx";
 import { SettingsCard } from "../SettingsCard";
 import { Button } from "../../atoms/Button";
@@ -16,11 +16,14 @@ import { Spinner } from "../../atoms/Spinner";
 import { Icon, type IconName } from "../../atoms/Icon";
 import { AIProviderIcon } from "../../atoms/AIProviderIcon";
 import { GlassPanel } from "../GlassPanel";
+import { AdapterStatusBadge } from "../../atoms/AdapterStatusBadge";
+import { RetryButton } from "../../atoms/RetryButton";
 import type {
   AIProvider,
   ProviderStatus,
   ApiKeyValidationStatus,
 } from "@repo/shared/types/api-keys";
+import type { HealthCheckResult } from "@repo/shared/types/llm/schemas";
 
 // === Types ===
 
@@ -44,6 +47,13 @@ interface ApiKeyFormState {
   isSaving: boolean;
   error: string | null;
   showPassword: boolean;
+}
+
+type AdapterUiStatus = "initializing" | "ready" | "failed";
+
+interface AdapterStatusEntry {
+  status: AdapterUiStatus;
+  failureReason?: string | null;
 }
 
 // === Constants ===
@@ -103,6 +113,13 @@ const formatValidatedAt = (isoDate: string | null): string | null => {
   }
 };
 
+const toAdapterStatusEntry = (
+  result: HealthCheckResult,
+): AdapterStatusEntry => ({
+  status: result.status === "connected" ? "ready" : "failed",
+  failureReason: result.status === "connected" ? null : result.errorMessage,
+});
+
 // === Sub Components ===
 
 interface ValidationStatusDisplayProps {
@@ -154,9 +171,12 @@ interface ApiKeyItemProps {
   displayName: string;
   status: "registered" | "not_registered";
   lastValidatedAt: string | null;
+  adapterStatus: AdapterStatusEntry | null;
+  isRetrying: boolean;
   onRegister: () => void;
   onEdit: () => void;
   onDelete: () => void;
+  onRetry: (providerId: string) => void;
   disabled?: boolean;
 }
 
@@ -165,9 +185,12 @@ const ApiKeyItem: React.FC<ApiKeyItemProps> = ({
   displayName,
   status,
   lastValidatedAt,
+  adapterStatus,
+  isRetrying,
   onRegister,
   onEdit,
   onDelete,
+  onRetry,
   disabled,
 }) => {
   const isRegistered = status === "registered";
@@ -203,6 +226,23 @@ const ApiKeyItem: React.FC<ApiKeyItemProps> = ({
         >
           {isRegistered ? "登録済み" : "未登録"}
         </Badge>
+
+        {/* Adapter Status Badge (TASK-RT-02) */}
+        {isRegistered && adapterStatus && (
+          <AdapterStatusBadge
+            status={adapterStatus.status}
+            failureReason={adapterStatus.failureReason}
+          />
+        )}
+
+        {/* Retry Button - failed 状態のみ表示 (TASK-RT-02) */}
+        {isRegistered && adapterStatus?.status === "failed" && (
+          <RetryButton
+            providerId={provider}
+            isRetrying={isRetrying}
+            onRetry={onRetry}
+          />
+        )}
 
         {isRegistered ? (
           <>
@@ -579,6 +619,7 @@ const DeleteConfirmDialog: React.FC<DeleteConfirmDialogProps> = ({
 export const ApiKeysSection: React.FC<ApiKeysSectionProps> = ({
   className,
 }) => {
+  const adapterStatusRequestIdRef = useRef(0);
   const [state, setState] = useState<ApiKeysSectionState>({
     providers: [],
     isLoading: true,
@@ -591,6 +632,90 @@ export const ApiKeysSection: React.FC<ApiKeysSectionProps> = ({
     provider: AIProvider;
     isEdit: boolean;
   } | null>(null);
+  const [adapterStatusMap, setAdapterStatusMap] = useState<
+    Partial<Record<AIProvider, AdapterStatusEntry>>
+  >({});
+  const [adapterIsRetrying, setAdapterIsRetrying] = useState<
+    Partial<Record<AIProvider, boolean>>
+  >({});
+
+  const refreshAdapterStatuses = useCallback(
+    async (providers: ProviderStatus[], targetProvider?: AIProvider) => {
+      const requestId = adapterStatusRequestIdRef.current + 1;
+      adapterStatusRequestIdRef.current = requestId;
+      const llmApi = window.electronAPI?.llm;
+      if (!llmApi?.checkHealth) return;
+
+      const registeredProviders = providers
+        .filter((provider) => provider.status === "registered")
+        .map((provider) => provider.provider)
+        .filter((provider) =>
+          targetProvider ? provider === targetProvider : true,
+        );
+
+      if (targetProvider && !registeredProviders.includes(targetProvider)) {
+        setAdapterStatusMap((prev) => {
+          const next = { ...prev };
+          delete next[targetProvider];
+          return next;
+        });
+        return;
+      }
+
+      setAdapterStatusMap((prev) => {
+        const next = targetProvider ? { ...prev } : {};
+        for (const provider of registeredProviders) {
+          next[provider] = { status: "initializing", failureReason: null };
+        }
+        return next;
+      });
+
+      await Promise.allSettled(
+        registeredProviders.map(async (provider) => {
+          try {
+            const result = await llmApi.checkHealth(provider);
+            if (adapterStatusRequestIdRef.current !== requestId) {
+              return;
+            }
+            setAdapterStatusMap((prev) => ({
+              ...prev,
+              [provider]: toAdapterStatusEntry(result),
+            }));
+          } catch (error) {
+            if (adapterStatusRequestIdRef.current !== requestId) {
+              return;
+            }
+            setAdapterStatusMap((prev) => ({
+              ...prev,
+              [provider]: {
+                status: "failed",
+                failureReason:
+                  error instanceof Error
+                    ? error.message
+                    : "接続確認に失敗しました",
+              },
+            }));
+          }
+        }),
+      );
+    },
+    [],
+  );
+
+  const handleAdapterRetry = useCallback(
+    async (providerId: string) => {
+      const provider = providerId as AIProvider;
+      setAdapterIsRetrying((prev) => ({ ...prev, [provider]: true }));
+      try {
+        await refreshAdapterStatuses(state.providers, provider);
+      } catch (error) {
+        console.warn("[ApiKeysSection] Adapter retry failed:", error);
+      } finally {
+        setAdapterIsRetrying((prev) => ({ ...prev, [provider]: false }));
+      }
+    },
+    [refreshAdapterStatuses, state.providers],
+  );
 
   const loadProviders = useCallback(async () => {
     setState((prev) => ({ ...prev, isLoading: true, error: null }));
@@ -650,6 +775,8 @@ export const ApiKeysSection: React.FC<ApiKeysSectionProps> = ({
           providers,
           isLoading: false,
         }));
+
+        void refreshAdapterStatuses(providers);
       } else {
         setState((prev) => ({
           ...prev,
@@ -658,13 +785,14 @@ export const ApiKeysSection: React.FC<ApiKeysSectionProps> = ({
         }));
       }
     } catch {
+      setAdapterStatusMap({});
       setState((prev) => ({
         ...prev,
         isLoading: false,
         error: "APIキーの取得に失敗しました",
       }));
     }
-  }, []);
+  }, [refreshAdapterStatuses]);
 
   useEffect(() => {
     loadProviders();
@@ -749,9 +877,12 @@ export const ApiKeysSection: React.FC<ApiKeysSectionProps> = ({
                 displayName={provider.displayName}
                 status={provider.status}
                 lastValidatedAt={provider.lastValidatedAt}
+                adapterStatus={adapterStatusMap[provider.provider] ?? null}
+                isRetrying={adapterIsRetrying[provider.provider] ?? false}
                 onRegister={() => handleRegister(provider.provider)}
                 onEdit={() => handleEdit(provider.provider)}
                 onDelete={() => handleDelete(provider.provider)}
+                onRetry={handleAdapterRetry}
                 disabled={state.isLoading}
               />
             ))}
