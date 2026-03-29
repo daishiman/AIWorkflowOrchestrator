@@ -1,7 +1,5 @@
 {
-  "generated": "2026-03-29T14:59:35.493Z",
-  "totalKeywords": 2542,
-  "generated": "2026-03-29T21:46:12.364Z",
+  "generated": "2026-03-29T23:03:44.255Z",
   "totalKeywords": 2545,
   "keywords": {
     "チャット履歴": [
@@ -6529,10 +6527,6 @@
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-test-typesafety.md",
-      "ui-ux-feature-components-core.md",
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
       "ui-ux-feature-components-core.md",
       "workflow-task-rt-06-artifact-inventory.md"
@@ -6878,12 +6872,6 @@
     "HARNESS": [
       "lessons-learned-phase12-workflow-lifecycle.md",
       "ui-ux-panels.md"
-    ],
-    "close": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "out": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "SHARED": [
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -7237,25 +7225,6 @@
       "lessons-learned-test-typesafety.md"
     ],
     "個別ファイルカバレッジ計測": [
-    "CONS": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "sdkMessageUtils": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "helper": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "抽出": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "個別カバレッジ計測": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "個別ファイルカバレッジ計測": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "MOD": [
       "lessons-learned-test-typesafety.md"
     ],
     "provider": [

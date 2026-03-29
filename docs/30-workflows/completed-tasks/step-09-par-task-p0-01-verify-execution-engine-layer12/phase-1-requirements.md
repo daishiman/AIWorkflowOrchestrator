@@ -52,7 +52,7 @@ verify 実行エンジン（Layer 1/2）の検証対象、チェック項目、�
 - `SKILL.md` ファイルの存在
 - `agents/` ディレクトリの存在
 - 必須ファイル構造の存在（`SKILL.md`、`agents/` 配下に少なくとも 1 ファイル）
-- 推奨ファイルの存在（`references/`、`output-schema.json` など）は warning レベル
+- 推奨ファイルの存在（`references/`、`output-schema.json`）は warning レベル
 
 ### ステップ3: Layer 2 チェック項目を定義する
 

@@ -22,6 +22,7 @@
 
 | 資料名              | パス                                     | 説明             |
 | ------------------- | ---------------------------------------- | ---------------- |
+| Phase 1 spec map    | `outputs/phase-1/spec-extraction-map.md` | Layer 1/2 要件源 |
 | Phase 2 設計        | `phase-2-design.md`                      | 元設計           |
 | Phase 5 実装        | `phase-5-implementation.md`              | 実装対象         |
 | Phase 6 テスト拡充  | `phase-6-test-expansion.md`              | edge case 命名   |

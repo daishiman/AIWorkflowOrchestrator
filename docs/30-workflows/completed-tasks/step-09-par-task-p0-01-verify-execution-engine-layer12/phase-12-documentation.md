@@ -14,13 +14,11 @@ implementation guide（Part 1 中学生レベル概念説明 + Part 2 技術詳�
 
 ## 実行タスク
 
-| Task      | 名称                       | 内容                                                                              |
-| --------- | -------------------------- | --------------------------------------------------------------------------------- |
-| Task 12-1 | implementation guide       | Part 1: 中学生レベルの概念説明、Part 2: 技術詳細の 2 部構成で実装ガイドを作成する |
-| Task 12-2 | system spec update summary | 型拡張、新規ファイル、Facade 変更の exact path 付き記録                           |
-| Task 12-3 | documentation changelog    | 更新ファイル、validation、current/baseline を記録する                             |
-| Task 12-4 | unassigned detection       | follow-up 候補の有無を 0件でも記録する                                            |
-| Task 12-5 | skill feedback report      | 2 skill への改善提案を記録する                                                    |
+- Task 12-1 implementation guide: Part 1 中学生レベル説明と Part 2 技術詳細を current facts ベースで整理する
+- Task 12-2 system spec update summary: workflow corrective update と code 実装待ち境界を exact path 付きで記録する
+- Task 12-3 documentation changelog: 更新ファイル、validation、current/baseline を記録する
+- Task 12-4 unassigned detection: follow-up 候補の有無を 0件でも記録する
+- Task 12-5 skill feedback report: 2 skill への改善提案を記録する
 
 ## 参照資料
 
@@ -65,6 +63,7 @@ implementation guide（Part 1 中学生レベル概念説明 + Part 2 技術詳�
 
 - `outputs/phase-12/system-spec-update-summary.md` に型拡張・新規ファイル・Facade 変更を exact path 付きで記録する。
 - `outputs/phase-12/documentation-changelog.md` に validation と current / baseline を記録する。
+- current facts では workflow corrective update と code 実装待ちの境界を分離して記録する。
 
 ### ステップ3: Task 12-4〜12-5 を作成する
 

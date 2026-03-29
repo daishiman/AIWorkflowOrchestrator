@@ -1,0 +1,12 @@
+{
+  "captureMethod": "non_visual",
+  "generatedAt": "2026-03-29T13:59:00.000Z",
+  "reason": "No UI surface changed. Phase 11 evidence is command/result oriented until code implementation starts.",
+  "artifacts": [
+    "outputs/phase-11/manual-test-checklist.md",
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/manual-test-report.md",
+    "outputs/phase-11/discovered-issues.md",
+    "outputs/phase-11/screenshots/non-visual-review-board.png"
+  ]
+}

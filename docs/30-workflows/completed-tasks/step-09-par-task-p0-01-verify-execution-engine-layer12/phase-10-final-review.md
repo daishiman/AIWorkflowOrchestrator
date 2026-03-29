@@ -10,7 +10,7 @@
 
 ## 目的
 
-AC-1〜AC-6 の pass/fail matrix を確認し、TASK-P0-02 への引き渡し品質を最終判定する。
+AC-1〜AC-6 の readiness matrix を確認し、TASK-P0-02 への引き渡し条件を current facts ベースで最終判定する。
 
 ## 実行タスク
 
@@ -30,18 +30,18 @@ AC-1〜AC-6 の pass/fail matrix を確認し、TASK-P0-02 への引き渡し品
 
 ## 判定
 
-PASS
+CONDITIONAL PASS
 
 ## AC pass/fail matrix
 
-| AC   | 内容                                         | 判定 | 根拠                                                                |
-| ---- | -------------------------------------------- | ---- | ------------------------------------------------------------------- |
-| AC-1 | VerificationEngine.verify() の存在           | PASS | Phase 2 設計 + Phase 5 実装で定義済み                               |
-| AC-2 | Layer 1 構造検証                             | PASS | L1-001〜L1-005 のチェック項目と test case が定義済み                |
-| AC-3 | Layer 2 コンテンツルール検証                 | PASS | L2-001〜L2-007 のチェック項目と test case が定義済み                |
-| AC-4 | RuntimeSkillCreatorVerifyCheck[] の layer1/2 | PASS | 型拡張方針が Phase 5 で定義、互換性を Phase 9 で確認                |
-| AC-5 | ユニットテスト pass/fail 網羅                | PASS | Phase 4 + Phase 6 で全チェック ID の pass/fail/edge case が定義済み |
-| AC-6 | Facade injection                             | PASS | Phase 2 設計 + Phase 5 実装 + T-FAC-01/02 テストが定義済み          |
+| AC   | 内容                                         | 判定  | 根拠                                                                           |
+| ---- | -------------------------------------------- | ----- | ------------------------------------------------------------------------------ |
+| AC-1 | VerificationEngine.verify() の存在           | READY | Phase 2 設計で public API を固定済み。実装は Phase 5 待ち                      |
+| AC-2 | Layer 1 構造検証                             | READY | L1-001〜L1-005 のチェック項目と test case 方針を定義済み                       |
+| AC-3 | Layer 2 コンテンツルール検証                 | READY | L2-001〜L2-007 のチェック項目と test case 方針を定義済み                       |
+| AC-4 | RuntimeSkillCreatorVerifyCheck[] の layer1/2 | READY | 型拡張方針を固定済み。既存 Layer 3/4 との互換性は Phase 9 で監査観点を定義済み |
+| AC-5 | ユニットテスト pass/fail 網羅                | READY | Phase 4 + Phase 6 で全チェック ID の pass/fail/edge case を要求済み            |
+| AC-6 | Facade injection                             | READY | Phase 2 設計で injection point を固定済み。breaking change 回避方針を明記済み  |
 
 ## 次 task への引き継ぎ
 
@@ -49,6 +49,12 @@ PASS
 - `recordVerifyPass()` の実装は TASK-P0-02 の責務
 - Layer 3/4 検証ロジックは既存スコープで扱い、本タスクでは触れない
 - `layer` union type 拡張は TASK-P0-02 のマージ時に conflict 注意
+
+## 条件付き判定の理由
+
+- 本 workflow は `spec_created` であり、設計・テスト計画・品質観点は揃っている。
+- ただし current facts では Phase 5 以降のコード実装、実テスト、manual walkthrough は未実施である。
+- そのため本 Phase 10 は「実装着手可能」の gate として `CONDITIONAL PASS` を採用する。
 
 ## 未決のまま残してよい事項
 
