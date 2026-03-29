@@ -43,19 +43,19 @@ describe("RetryButton", () => {
   });
 
   describe("アクセシビリティ", () => {
-    it('isRetrying=false で aria-label="アダプターを再接続" を持つ', () => {
+    it('isRetrying=false で aria-label="openai-provider-1 のアダプターを再接続" を持つ', () => {
       render(<RetryButton {...defaultProps} />);
       expect(screen.getByRole("button")).toHaveAttribute(
         "aria-label",
-        "アダプターを再接続",
+        "openai-provider-1 のアダプターを再接続",
       );
     });
 
-    it('isRetrying=true で aria-label="リトライ中..." を持つ', () => {
+    it('isRetrying=true で aria-label="openai-provider-1 の再接続を実行中" を持つ', () => {
       render(<RetryButton {...defaultProps} isRetrying={true} />);
       expect(screen.getByRole("button")).toHaveAttribute(
         "aria-label",
-        "リトライ中...",
+        "openai-provider-1 の再接続を実行中",
       );
     });
   });
