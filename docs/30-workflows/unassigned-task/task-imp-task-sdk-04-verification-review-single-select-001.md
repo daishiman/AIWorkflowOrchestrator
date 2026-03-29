@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 1693
 task_id: TASK-SDK-04-U1-F1
 task_name: verification_review request を single_select kind に変更する
 category: 実装改善

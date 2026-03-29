@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 1695
 task_id: UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001
 task_name: visible handoff / disclosure / execution host の Phase 11 screenshot 取得
 category: 品質保証

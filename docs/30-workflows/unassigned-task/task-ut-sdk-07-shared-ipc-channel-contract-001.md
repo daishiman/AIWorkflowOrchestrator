@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 1696
 task_id: UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001
 task_name: packages/shared/src/ipc/channels.ts を desktop 実装へ同期
 category: 契約整合
