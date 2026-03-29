@@ -410,12 +410,12 @@ describe("creatorHandlers", () => {
     });
   });
 
-  it("unregister が 8 チャンネルを解除する", () => {
+  it("unregister が 9 チャンネルを解除する", () => {
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
     );
-    expect(handlerMap.size).toBe(8);
+    expect(handlerMap.size).toBe(9);
 
     unregisterRuntimeSkillCreatorHandlers();
 
