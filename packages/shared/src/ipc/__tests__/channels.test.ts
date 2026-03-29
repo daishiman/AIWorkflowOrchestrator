@@ -1,0 +1,84 @@
+import { describe, it, expect } from "vitest";
+import {
+  APPROVAL_CHANNELS,
+  EXECUTION_CHANNELS,
+  CHAT_EXPORT_CHANNELS,
+  FILE_SYSTEM_CHANNELS,
+  SKILL_CHANNELS,
+  NOTIFICATION_CHANNELS,
+  HISTORY_SEARCH_CHANNELS,
+  IPC_CHANNELS,
+} from "../channels";
+
+describe("APPROVAL_CHANNELS", () => {
+  it('APPROVAL_RESPOND は "approval:respond"', () => {
+    expect(APPROVAL_CHANNELS.APPROVAL_RESPOND).toBe("approval:respond");
+  });
+
+  it('APPROVAL_REQUEST は "approval:request"', () => {
+    expect(APPROVAL_CHANNELS.APPROVAL_REQUEST).toBe("approval:request");
+  });
+
+  it("プロパティ数が 2 である", () => {
+    expect(Object.keys(APPROVAL_CHANNELS)).toHaveLength(2);
+  });
+});
+
+describe("EXECUTION_CHANNELS", () => {
+  it('EXECUTION_GET_DISCLOSURE_INFO は "execution:get-disclosure-info"', () => {
+    expect(EXECUTION_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO).toBe(
+      "execution:get-disclosure-info",
+    );
+  });
+
+  it("プロパティ数が 1 である", () => {
+    expect(Object.keys(EXECUTION_CHANNELS)).toHaveLength(1);
+  });
+});
+
+describe("channel separation", () => {
+  it("APPROVAL_RESPOND と EXECUTION_GET_DISCLOSURE_INFO は異なるチャネル名", () => {
+    expect(APPROVAL_CHANNELS.APPROVAL_RESPOND).not.toBe(
+      EXECUTION_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO,
+    );
+  });
+
+  it("APPROVAL_REQUEST と APPROVAL_RESPOND は異なるチャネル名", () => {
+    expect(APPROVAL_CHANNELS.APPROVAL_REQUEST).not.toBe(
+      APPROVAL_CHANNELS.APPROVAL_RESPOND,
+    );
+  });
+});
+
+describe("全チャネルが namespace:action 形式", () => {
+  const allChannelGroups = [
+    CHAT_EXPORT_CHANNELS,
+    FILE_SYSTEM_CHANNELS,
+    SKILL_CHANNELS,
+    NOTIFICATION_CHANNELS,
+    HISTORY_SEARCH_CHANNELS,
+    APPROVAL_CHANNELS,
+    EXECUTION_CHANNELS,
+  ];
+
+  it("各チャネル値が colon 区切りの形式", () => {
+    for (const group of allChannelGroups) {
+      for (const value of Object.values(group)) {
+        expect(value).toMatch(/^[a-zA-Z-]+:[a-zA-Z-]+(:[a-zA-Z-]+)*$/);
+      }
+    }
+  });
+});
+
+describe("IPC_CHANNELS 統合オブジェクト", () => {
+  it("APPROVAL_CHANNELS が IPC_CHANNELS に含まれる", () => {
+    expect(IPC_CHANNELS.APPROVAL_RESPOND).toBe("approval:respond");
+    expect(IPC_CHANNELS.APPROVAL_REQUEST).toBe("approval:request");
+  });
+
+  it("EXECUTION_CHANNELS が IPC_CHANNELS に含まれる", () => {
+    expect(IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO).toBe(
+      "execution:get-disclosure-info",
+    );
+  });
+});
