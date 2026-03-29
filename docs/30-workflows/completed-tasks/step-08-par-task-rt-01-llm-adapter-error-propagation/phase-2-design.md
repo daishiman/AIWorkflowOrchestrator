@@ -21,13 +21,15 @@
 
 ## 参照資料
 
-| 資料名       | パス                                                                  | 説明                             |
-| ------------ | --------------------------------------------------------------------- | -------------------------------- |
-| Phase 1 要件 | `phase-1-requirements.md`                                             | ステータス・エラーレスポンス要件 |
-| IPC 初期化   | `apps/desktop/src/main/ipc/index.ts` (934-946行)                      | fire-and-forget 初期化           |
-| Facade       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | 現行 plan() 実装                 |
-| 型定義       | `packages/shared/src/types/skillCreator.ts`                           | レスポンス型                     |
-| preload API  | `apps/desktop/src/preload/skill-creator-api.ts`                       | preload 層                       |
+| 資料名              | パス                                                                              | 説明                                                       |
+| ------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Phase 1 要件        | `phase-1-requirements.md`                                                         | ステータス・エラーレスポンス要件                           |
+| IPC 初期化          | `apps/desktop/src/main/ipc/index.ts` (934-946行)                                  | fire-and-forget 初期化                                     |
+| Facade              | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`             | 現行 plan() 実装                                           |
+| 型定義              | `packages/shared/src/types/skillCreator.ts`                                       | レスポンス型                                               |
+| preload API         | `apps/desktop/src/preload/skill-creator-api.ts`                                   | preload 層                                                 |
+| aiworkflow IPC 契約 | `.claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md`        | handler / preload / shared types の current public surface |
+| aiworkflow 責務境界 | `.claude/skills/aiworkflow-requirements/references/architecture-overview-core.md` | Facade の owner 境界                                       |
 
 ### 現行コードアンカー
 
@@ -84,6 +86,7 @@ class RuntimeSkillCreatorFacade {
 - 初期値は `"initializing"`（Facade 生成直後）
 - `setLLMAdapter()` 成功時に `"ready"` へ遷移
 - `setLLMAdapterFailed()` で `"failed"` へ遷移し、理由を保持
+- workflow state は engine owner のままにし、Facade には adapter 可観測性だけを追加する
 
 ### ステップ2: plan() のエラーレスポンス分岐を設計する
 
@@ -155,20 +158,23 @@ if (runtimeSkillCreatorService) {
 
 ```typescript
 // packages/shared/src/types/skillCreator.ts
-interface RuntimeSkillCreatorPlanResponse {
-  success: boolean;
-  // 既存フィールド...
-  plan?: RuntimeSkillCreatorPlan;
-  // 新規追加
-  error?: string;
-  errorCode?: string;
-  adapterStatus?: LLMAdapterStatus;
+interface RuntimeSkillCreatorPlanErrorResponse {
+  success: false;
+  error: string;
+  errorCode: SkillCreatorErrorCode;
+  adapterStatus: LLMAdapterStatus;
 }
+
+type RuntimeSkillCreatorPlanResponse =
+  | RuntimeSkillCreatorPlanResult
+  | { type: "terminal_handoff"; guidance: HandoffGuidance }
+  | RuntimeSkillCreatorPlanErrorResponse;
 ```
 
-- `adapterStatus` は optional フィールドとして追加（後方互換）
-- エラー時は `success: false` + `error` + `errorCode` + `adapterStatus`
-- 正常時は既存レスポンスに `adapterStatus: "ready"` を追加
+- error response union を追加しつつ、既存 successful response との後方互換を維持
+- エラー時は inner `data` に `success: false` + `error` + `errorCode` + `adapterStatus`
+- 正常時は inner `data` に `adapterStatus: "ready"` を追加
+- `skill-creator:plan` の channel 名、preload surface、IpcResult ラップ構造は変更しない
 
 ## 統合テスト連携
 

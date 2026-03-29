@@ -10,17 +10,16 @@
 
 ## 目的
 
-implementation guide（Part 1 中学生レベル概念説明 + Part 2 技術詳細）、system spec update summary、その他必須成果物を作成する。
+implementation guide（Part 1 中学生レベル概念説明 + Part 2 技術詳細）、system spec update summary、その他必須成果物を作成し、実装済み workflow の same-wave sync 条件を evidence 化する。
 
 ## 実行タスク
 
-| Task      | 名称                       | 内容                                                                              |
-| --------- | -------------------------- | --------------------------------------------------------------------------------- |
-| Task 12-1 | implementation guide       | Part 1: 中学生レベルの概念説明、Part 2: 技術詳細の 2 部構成で実装ガイドを作成する |
-| Task 12-2 | system spec update summary | 型追加、Facade 変更、IPC 変更の exact path 付き記録                               |
-| Task 12-3 | documentation changelog    | 更新ファイル、validation、current/baseline を記録する                             |
-| Task 12-4 | unassigned detection       | follow-up 候補の有無を 0件でも記録する                                            |
-| Task 12-5 | skill feedback report      | 2 skill への改善提案を記録する                                                    |
+- Task 12-1 implementation guide: Part 1 は中学生レベルの概念説明、Part 2 は技術詳細を記録する
+- Task 12-2 system spec update summary: 型追加、Facade 変更、IPC 変更の exact path を記録する
+- Task 12-3 documentation changelog: 更新ファイル、validation、current/baseline を記録する
+- Task 12-4 unassigned detection: follow-up 候補の有無を 0件でも記録する
+- Task 12-5 skill feedback report: 2 skill への改善提案を記録する
+- Task 12-6 compliance check: Phase 12 必須成果物、artifact parity、planned wording 0件を最終確認する
 
 ## 参照資料
 
@@ -61,14 +60,21 @@ implementation guide（Part 1 中学生レベル概念説明 + Part 2 技術詳�
 - `ipc/index.ts` の fire-and-forget パターン維持と catch ブロック拡張
 - `RuntimeSkillCreatorPlanResponse` の型拡張（後方互換）
 - テスト戦略（ステータス遷移、エラーレスポンス、既存テスト互換性）
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step-08-par-task-rt-01-llm-adapter-error-propagation` で要件を検証する
 
 ### ステップ2: Task 12-2〜12-3 を作成する
 
-- `outputs/phase-12/system-spec-update-summary.md` に型追加・Facade 変更・IPC 変更を exact path 付きで記録する
-  - `packages/shared/src/types/skillCreator.ts` — `LLMAdapterStatus` 型追加、レスポンス型拡張
-  - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` — ステータスプロパティ、`setLLMAdapterFailed()`、`plan()` エラー分岐
-  - `apps/desktop/src/main/ipc/index.ts` — catch ブロック拡張
+- Step 1-A: 完了タスク記録、`LOGS.md` x2、`SKILL.md` x2、`topic-map.md` の same-wave 更新要否を判定し、`documentation-changelog.md` に結果を残す
+- Step 1-B: 実装状況テーブルは `implemented` を current facts として記録し、未実装/設計中へ逆戻りしない
+- Step 1-C: 関連タスク/未タスク候補テーブルの current facts を同期する
+- Step 1-D: `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` の実行要否を判定し、`topic-map.md` 再生成結果を記録する
+- Step 2: shared type / IPC 契約変更があるため、aiworkflow-requirements 正本更新を「必要」として扱う
+- `outputs/phase-12/system-spec-update-summary.md` に system spec 正本の更新対象を exact path 付きで記録する
+  - `.agents/skills/aiworkflow-requirements/references/api-ipc-system-core.md` — `skill-creator:plan` の outer/inner 契約差分
+  - `.agents/skills/aiworkflow-requirements/references/architecture-overview-core.md` — runtime bridge の status/failure-reason surface
+  - `.agents/skills/aiworkflow-requirements/references/task-workflow-completed.md` — close-out 台帳反映
 - `outputs/phase-12/documentation-changelog.md` に validation と current / baseline を記録する
+- `outputs/phase-12/phase12-task-spec-compliance-check.md` に Step 1-A〜Step 2 の PASS/FAIL と根拠を明記する
 
 ### ステップ3: Task 12-4〜12-5 を作成する
 
@@ -81,13 +87,14 @@ implementation guide（Part 1 中学生レベル概念説明 + Part 2 技術詳�
 
 ## 成果物
 
-| 成果物                     | パス                                             | 説明                              |
-| -------------------------- | ------------------------------------------------ | --------------------------------- |
-| implementation guide       | `outputs/phase-12/implementation-guide.md`       | Part 1 概念説明 + Part 2 技術詳細 |
-| system spec update summary | `outputs/phase-12/system-spec-update-summary.md` | 変更対象 exact path 一覧          |
-| documentation changelog    | `outputs/phase-12/documentation-changelog.md`    | 変更履歴と validation             |
-| unassigned detection       | `outputs/phase-12/unassigned-task-detection.md`  | follow-up 候補                    |
-| skill feedback             | `outputs/phase-12/skill-feedback-report.md`      | skill への改善フィードバック      |
+| 成果物                     | パス                                                     | 説明                              |
+| -------------------------- | -------------------------------------------------------- | --------------------------------- |
+| implementation guide       | `outputs/phase-12/implementation-guide.md`               | Part 1 概念説明 + Part 2 技術詳細 |
+| system spec update summary | `outputs/phase-12/system-spec-update-summary.md`         | 変更対象 exact path 一覧          |
+| documentation changelog    | `outputs/phase-12/documentation-changelog.md`            | 変更履歴と validation             |
+| unassigned detection       | `outputs/phase-12/unassigned-task-detection.md`          | follow-up 候補                    |
+| skill feedback             | `outputs/phase-12/skill-feedback-report.md`              | skill への改善フィードバック      |
+| compliance check           | `outputs/phase-12/phase12-task-spec-compliance-check.md` | Step 1-A〜Step 2 の判定           |
 
 ## サブタスク管理
 
@@ -103,6 +110,7 @@ implementation guide（Part 1 中学生レベル概念説明 + Part 2 技術詳�
 - [ ] system spec update summary が exact path 付きで記録されている
 - [ ] follow-up 候補の有無が整理されている
 - [ ] Phase 12 の必須5成果物が揃っている
+- [ ] same-wave sync 判定と Step 2 要否判定が証跡化されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## タスク100%実行確認
@@ -111,3 +119,4 @@ implementation guide（Part 1 中学生レベル概念説明 + Part 2 技術詳�
 - [ ] 計画系の仮置き表現を除去済み
 - [ ] current / baseline と validation 結果を記録済み
 - [ ] Phase 11 walkthrough 結果と矛盾しない
+- [ ] Phase 12 Step 1-A〜Step 2 の compliance check を更新済み

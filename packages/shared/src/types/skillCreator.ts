@@ -322,6 +322,18 @@ export interface LoadedWorkflowManifest extends WorkflowManifest {
 }
 
 // ============================================
+// LLM Adapter Status (TASK-RT-01)
+// ============================================
+
+/** LLMAdapter の初期化ステータス */
+export type LLMAdapterStatus = "ready" | "initializing" | "failed";
+
+/** Skill Creator のエラーコード */
+export type SkillCreatorErrorCode =
+  | "LLM_ADAPTER_FAILED"
+  | "LLM_ADAPTER_INITIALIZING";
+
+// ============================================
 // Runtime Skill Creator IPC contract
 // ============================================
 
@@ -525,6 +537,8 @@ export interface RuntimeSkillCreatorPlanResult {
   scripts: Array<{ name: string; purpose: string }>;
   triggers: string[];
   anchors: string[];
+  /** LLMAdapter の現在のステータス (TASK-RT-01) */
+  adapterStatus?: LLMAdapterStatus;
 }
 
 /**
