@@ -79,9 +79,9 @@ export const PlanResultDetailPanel = memo<PlanResultDetailPanelProps>(
 
         {/* Agents */}
         <SectionHeader title="Agents" />
-        {planResult.agents.length > 0 ? (
+        {(planResult.agents?.length ?? 0) > 0 ? (
           <ul className="mt-2 space-y-1">
-            {planResult.agents.map((agent, i) => (
+            {planResult.agents?.map((agent, i) => (
               <li
                 key={`${agent.name}-${i}`}
                 className="text-sm text-[var(--text-primary)]"
@@ -102,9 +102,9 @@ export const PlanResultDetailPanel = memo<PlanResultDetailPanelProps>(
 
         {/* Scripts */}
         <SectionHeader title="Scripts" />
-        {planResult.scripts.length > 0 ? (
+        {(planResult.scripts?.length ?? 0) > 0 ? (
           <ul className="mt-2 space-y-1">
-            {planResult.scripts.map((script, i) => (
+            {planResult.scripts?.map((script, i) => (
               <li
                 key={`${script.name}-${i}`}
                 className="text-sm text-[var(--text-primary)]"
@@ -125,7 +125,7 @@ export const PlanResultDetailPanel = memo<PlanResultDetailPanelProps>(
 
         {/* Triggers */}
         <SectionHeader title="Triggers" />
-        {planResult.triggers.length > 0 ? (
+        {(planResult.triggers?.length ?? 0) > 0 ? (
           <TagList items={planResult.triggers} variant="accent" />
         ) : (
           <p className="mt-2 text-sm text-[var(--text-secondary)]">
@@ -135,7 +135,7 @@ export const PlanResultDetailPanel = memo<PlanResultDetailPanelProps>(
 
         {/* Anchors */}
         <SectionHeader title="Anchors" />
-        {planResult.anchors.length > 0 ? (
+        {(planResult.anchors?.length ?? 0) > 0 ? (
           <TagList items={planResult.anchors} variant="default" />
         ) : (
           <p className="mt-2 text-sm text-[var(--text-secondary)]">
