@@ -59,6 +59,41 @@
 
 ---
 
+### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
+
+| 項目       | 値                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-06                                                                              |
+| ステータス | **Phase 1–11 完了 / Phase 12 incomplete（Phase 11 evidence 未取得）**                   |
+| タイプ     | implementation / ui component                                                           |
+| 優先度     | 高                                                                                      |
+| 完了日     | 2026-03-30（Phase 11 まで）                                                             |
+| 対象       | スキル作成フォームを会話型インタビュー UI へ刷新                                        |
+| 成果物     | `docs/30-workflows/completed-tasks/step-09-par-task-p0-06-conversational-interview-ui/` |
+
+#### 実施内容
+
+- `ConversationalInterview.tsx`（メインコンポーネント）を新規作成し、段階的な質問フローを実装
+- `conversation-state-contract.md` で会話状態遷移設計を明文化
+- `input-widget-contract-matrix.md` で 5 種の入力 widget 型（single-select / multi-select / text / secret / confirm）を定義
+- `useInterviewState` フックで状態一元管理（undo 復元・submit 失敗時 rollback を含む）
+- `interview-widgets/` ディレクトリに 7 コンポーネントを配置
+- `SkillCreatorUserInputSubmission` に `selectedValues` 互換入力を追加し、`multi_select` 契約を Main まで閉じた（RT-05 協調）
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/ConversationalInterview*.test.ts src/renderer/components/skill/__tests__/useInterviewState.test.ts`
+- 74 tests PASS（widget 41 / state 11 / progress-bar 5 / main component 17）
+- TypeScript typecheck: PASS / ESLint: PASS
+
+#### Phase 12 未タスク
+
+| ID                            | 内容                                             | 優先度 | Issue |
+| ----------------------------- | ------------------------------------------------ | ------ | ----- |
+| UT-P0-06-PHASE11-EVIDENCE-001 | representative screenshots と手動テスト証跡取得 | High   | #1767 |
+
+---
+
 ### タスク: TASK-LLM-MOD-05 step-04-seq-task-05-schema-extension（2026-03-30）
 
 | 項目       | 値                                                                                  |
@@ -94,7 +129,6 @@
 - 未タスク1件: `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY`（Renderer UI への description 表示）
 
 ---
-
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
 | 項目       | 値                                                                        |
