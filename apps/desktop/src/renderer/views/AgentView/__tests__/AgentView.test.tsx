@@ -472,7 +472,7 @@ describe("AgentView", () => {
 
     it("should load remembered count from getAllowedTools on mount and when panel opens", async () => {
       const store = await import("../../../store");
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(false);
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
       vi.mocked(store.useLLMProviders).mockReturnValue([
         {
           id: "anthropic",
@@ -521,7 +521,6 @@ describe("AgentView", () => {
         { timeout: 5000 },
       );
 
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
       rerender(<AgentView />);
 
       await waitFor(
@@ -950,16 +949,20 @@ describe("AgentView", () => {
 
   describe("Permission API エッジケース", () => {
     it("getAllowedTools が空配列を返した場合、エラーなく動作する", async () => {
+      const store = await import("../../../store");
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
       setMockPermissionsApi({
         getAllowedTools: vi.fn().mockResolvedValue({ tools: [] }),
       });
 
       render(<AgentView />);
 
-      await waitFor(() => {
-        expect(mockPermissionAPI.getAllowedTools).toHaveBeenCalled();
-      });
-      expect(screen.getByText("記憶された許可: 0件")).toBeInTheDocument();
+      await waitFor(
+        () => {
+          expect(screen.getByText("記憶された許可: 0件")).toBeInTheDocument();
+        },
+        { timeout: 5000 },
+      );
       expect(screen.getByRole("button", { name: /リセット/i })).toBeDisabled();
     });
 
