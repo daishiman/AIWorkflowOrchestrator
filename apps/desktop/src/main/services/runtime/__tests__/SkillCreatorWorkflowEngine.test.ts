@@ -789,7 +789,7 @@ describe("SkillCreatorWorkflowEngine", () => {
           requestId,
           selectedOptionIds: [],
         }),
-      ).toThrow("selectedOptionIds must be a non-empty array");
+      ).toThrow("selectedOptionIds is required");
     });
 
     // T4-2: undefined なら fail
@@ -802,7 +802,7 @@ describe("SkillCreatorWorkflowEngine", () => {
           planId: "plan-001",
           requestId,
         }),
-      ).toThrow("selectedOptionIds must be a non-empty array");
+      ).toThrow("selectedOptionIds is required");
     });
 
     // T4-3: 未知 option id を含むと fail
@@ -816,7 +816,7 @@ describe("SkillCreatorWorkflowEngine", () => {
           requestId,
           selectedOptionIds: ["opt-a", "unknown-id"],
         }),
-      ).toThrow("selectedOptionIds contains unknown option id");
+      ).toThrow("selectedOptionIds is invalid");
     });
   });
 });

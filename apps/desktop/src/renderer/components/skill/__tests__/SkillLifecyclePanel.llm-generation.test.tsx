@@ -847,7 +847,7 @@ describe("TASK-RT-05: multi_select question host", () => {
 
     renderPanel();
 
-    const host = screen.getByTestId("skill-lifecycle-multi-select-host");
+    const host = screen.getByTestId("multi-select-checkbox");
     expect(host).toBeTruthy();
     const checkboxes = host.querySelectorAll('input[type="checkbox"]');
     expect(checkboxes).toHaveLength(3);
@@ -895,7 +895,7 @@ describe("TASK-RT-05: multi_select question host", () => {
 
     renderPanel();
 
-    const host = screen.getByTestId("skill-lifecycle-multi-select-host");
+    const host = screen.getByTestId("multi-select-checkbox");
     const checkboxes = host.querySelectorAll('input[type="checkbox"]');
 
     // 2つのチェックボックスを選択
@@ -907,17 +907,19 @@ describe("TASK-RT-05: multi_select question host", () => {
     });
 
     await act(async () => {
-      fireEvent.click(screen.getByTestId("skill-lifecycle-submit-user-input"));
+      fireEvent.click(screen.getByTestId("interview-submit"));
     });
 
-    expect(mockSubmitUserInput).toHaveBeenCalledWith({
-      planId: "plan-001",
-      requestId: "req-multi-2",
-      selectedOptionIds: ["feat-a", "feat-b"],
-    });
+    expect(mockSubmitUserInput).toHaveBeenCalledWith(
+      expect.objectContaining({
+        planId: "plan-001",
+        requestId: "req-multi-2",
+        selectedOptionIds: ["feat-a", "feat-b"],
+      }),
+    );
   });
 
-  it("multi_select 未選択時は送信ボタンが disabled で、選択後に有効化される", async () => {
+  it("multi_select 未選択時に submit するとバリデーションエラーが表示される", async () => {
     mockStoreState.workflowSnapshot = {
       planId: "plan-001",
       currentPhase: "review",
@@ -946,18 +948,23 @@ describe("TASK-RT-05: multi_select question host", () => {
 
     renderPanel();
 
-    const submitButton = screen.getByTestId(
-      "skill-lifecycle-submit-user-input",
-    );
-    expect(submitButton).toBeDisabled();
+    const submitButton = screen.getByTestId("interview-submit");
+    // ConversationalInterview では選択状態に関わらずボタンは常に enabled
+    expect(submitButton).not.toBeDisabled();
 
-    const host = screen.getByTestId("skill-lifecycle-multi-select-host");
+    // 未選択のまま送信 → バリデーションエラー
+    await act(async () => {
+      fireEvent.click(submitButton);
+    });
+    expect(screen.getByTestId("validation-error")).toBeTruthy();
+
+    // チェックボックスを選択 → state が更新される
+    const host = screen.getByTestId("multi-select-checkbox");
     const checkboxes = host.querySelectorAll('input[type="checkbox"]');
     await act(async () => {
       fireEvent.click(checkboxes[0]!);
     });
-
-    expect(submitButton).not.toBeDisabled();
+    expect(checkboxes[0]).toBeChecked();
   });
 
   it("request kind が切り替わると multi_select の state を持ち越さない", async () => {
@@ -988,7 +995,7 @@ describe("TASK-RT-05: multi_select question host", () => {
     };
 
     const rendered = renderPanel();
-    const initialHost = screen.getByTestId("skill-lifecycle-multi-select-host");
+    const initialHost = screen.getByTestId("multi-select-checkbox");
     const initialCheckboxes = initialHost.querySelectorAll(
       'input[type="checkbox"]',
     );
@@ -1036,15 +1043,12 @@ describe("TASK-RT-05: multi_select question host", () => {
       <SkillLifecyclePanel onClose={vi.fn()} skillName="test-skill" />,
     );
 
-    const resetHost = screen.getByTestId("skill-lifecycle-multi-select-host");
+    const resetHost = screen.getByTestId("multi-select-checkbox");
     const resetCheckboxes = resetHost.querySelectorAll(
       'input[type="checkbox"]',
     );
     expect(resetCheckboxes[0]).not.toBeChecked();
     expect(resetCheckboxes[1]).not.toBeChecked();
-    expect(
-      screen.getByTestId("skill-lifecycle-submit-user-input"),
-    ).toBeDisabled();
   });
 });
 
