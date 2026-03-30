@@ -9,6 +9,7 @@ import { AdvancedSettingsPanel } from "./components/organisms/AgentView/Advanced
 import { RecentExecutionList } from "./components/organisms/AgentView/RecentExecutionList";
 import { useAppStore } from "./store";
 import type { AppStore } from "./store";
+import type { AgentPermissionMode } from "./components/organisms/AgentView/types";
 import type { ExecutionSummary } from "./store/slices/agentSlice";
 import {
   toSkillId,
@@ -65,25 +66,24 @@ function applyTheme(theme: "light" | "dark"): void {
 
 function ensureElectronAPI(): void {
   const targetWindow = window as typeof window & {
-    permissionAPI?: {
-      getAllowedTools?: () => Promise<{
-        tools: Array<{ toolName: string; allowedAt: string }>;
-      }>;
-      revokeTool?: (toolName: string) => Promise<{ success: boolean }>;
-      clearAll?: () => Promise<{ success: boolean; clearedCount: number }>;
+    electronAPI?: {
+      permissions?: {
+        getMode?: () => Promise<AgentPermissionMode>;
+        getRemembered?: () => Promise<unknown[]>;
+        setMode?: () => Promise<void>;
+        clearRemembered?: () => Promise<void>;
+      };
     };
   };
 
-  targetWindow.permissionAPI = {
-    getAllowedTools: async () => ({
-      tools: [
-        { toolName: "bash", allowedAt: "2026-03-30T00:00:00+09:00" },
-        { toolName: "read", allowedAt: "2026-03-30T00:00:00+09:00" },
-        { toolName: "write", allowedAt: "2026-03-30T00:00:00+09:00" },
-      ],
-    }),
-    revokeTool: async () => ({ success: true }),
-    clearAll: async () => ({ success: true, clearedCount: 3 }),
+  targetWindow.electronAPI = {
+    ...(targetWindow.electronAPI ?? {}),
+    permissions: {
+      getMode: async () => "plan",
+      getRemembered: async () => [{}, {}, {}],
+      setMode: async () => undefined,
+      clearRemembered: async () => undefined,
+    },
   };
 }
 
