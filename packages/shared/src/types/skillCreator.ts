@@ -446,6 +446,14 @@ export interface SkillCreatorVerifyResult {
   message?: string;
   nextAction?: "review" | "improve" | "handoff";
   updatedAt: string;
+  /** 現在の improve 試行回数（閉ループ内でのカウント、0開始） */
+  improveAttemptCount?: number;
+  /** 最大 improve 試行回数 */
+  maxImproveRetry?: number;
+  /** maxRetry 到達によりループが停止したか */
+  loopExhausted?: boolean;
+  /** 失敗した verify チェックの要約 */
+  failedChecksSummary?: string;
 }
 
 export interface SkillCreatorWorkflowSourceProvenance {
@@ -685,6 +693,25 @@ export interface ApplyImprovementResult {
   skipped: number;
   skippedDetails: Array<{ section: string; reason: string }>;
   errors: string[];
+}
+
+/**
+ * verify→improve→re-verify 閉ループの最終結果
+ * TASK-P0-02
+ */
+export interface RuntimeSkillCreatorVerifyAndImproveResult {
+  /** 最終的な verify 結果 */
+  finalStatus: "pass" | "fail" | "error";
+  /** 実行した improve の回数 */
+  totalAttempts: number;
+  /** 最終的な verify チェック結果 */
+  finalChecks: RuntimeSkillCreatorVerifyCheck[];
+  /** ループが maxRetry で停止したか */
+  loopExhausted: boolean;
+  /** エラーが発生した場合のメッセージ */
+  errorMessage?: string;
+  /** ワークフロー状態スナップショット */
+  workflowSnapshot: SkillCreatorWorkflowUiSnapshot;
 }
 
 /**

@@ -43,6 +43,8 @@ import type {
   SkillCreatorSdkEvent,
   SkillCreatorSdkPermissionDenial,
   LLMAdapterStatus,
+  RuntimeSkillCreatorVerifyAndImproveResult,
+  RuntimeSkillCreatorVerifyCheck,
 } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 import type { ILLMAdapter } from "../../adapters/llm/types";
@@ -75,6 +77,7 @@ import { ResolvedResourceReader } from "./ResolvedResourceReader";
 import { SkillCreatorSourceResolver } from "./SkillCreatorSourceResolver";
 import { parseLlmResponseToContent } from "./parseLlmResponseToContent";
 import { SkillCreatorVerificationEngine } from "./SkillCreatorVerificationEngine";
+import { formatVerifyChecksAsFeedback } from "./formatVerifyChecksAsFeedback";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -90,6 +93,8 @@ export interface RuntimeSkillCreatorFacadeDeps {
   resourcePlanner?: PhaseResourcePlanner;
   resolvedResourceReader?: ResolvedResourceReader;
   verificationEngine?: SkillCreatorVerificationEngine;
+  /** verify→improve→re-verify ループの最大試行回数（デフォルト: 3） */
+  maxImproveRetry?: number;
 }
 
 export class RuntimeSkillCreatorFacade {
@@ -106,6 +111,7 @@ export class RuntimeSkillCreatorFacade {
   private readonly resolvedResourceReader?: ResolvedResourceReader;
   private readonly manifestLoader = new ManifestLoader();
   private readonly verificationEngine?: SkillCreatorVerificationEngine;
+  private readonly maxImproveRetry: number;
 
   // TASK-RT-01: LLMAdapter ステータス管理
   private _llmAdapterStatus: LLMAdapterStatus = "initializing";
@@ -126,6 +132,7 @@ export class RuntimeSkillCreatorFacade {
     this.resourcePlanner = deps.resourcePlanner;
     this.resolvedResourceReader = deps.resolvedResourceReader;
     this.verificationEngine = deps.verificationEngine;
+    this.maxImproveRetry = Math.min(Math.max(deps.maxImproveRetry ?? 3, 1), 10);
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
       deps.subscriptionAuthProvider,
@@ -195,6 +202,192 @@ export class RuntimeSkillCreatorFacade {
       return [];
     }
     return this.verificationEngine.verify(skillDir);
+  }
+
+  /**
+   * verify → improve → re-verify の自動閉ループを実行する。
+   * 前回の改善要約を次回の feedback に織り込んで、同一修正の反復を抑える。
+   *
+   * TASK-P0-02: verify→improve→re-verify 閉ループ
+   */
+  async verifyAndImproveLoop(
+    planId: string,
+    skillDir: string,
+    skillName: string,
+    authMode: string,
+    apiKey?: string,
+  ): Promise<RuntimeSkillCreatorVerifyAndImproveResult> {
+    if (!this.verificationEngine) {
+      console.warn(
+        "[RuntimeSkillCreatorFacade] verificationEngine が未設定のため、verify→improve ループをスキップします",
+      );
+    }
+
+    const maxRetry = this.maxImproveRetry;
+    let attemptCount = 0;
+    let previousImproveSummary = "";
+
+    while (true) {
+      // Step 1: verify 実行
+      let checks: RuntimeSkillCreatorVerifyCheck[];
+      try {
+        checks = await this.verifySkill(skillDir);
+      } catch (err) {
+        return {
+          finalStatus: "error",
+          totalAttempts: attemptCount,
+          finalChecks: [],
+          loopExhausted: false,
+          errorMessage: err instanceof Error ? err.message : String(err),
+          workflowSnapshot: this.workflowEngine.getWorkflowState(planId)! ?? {
+            planId,
+            currentPhase: "verify",
+            awaitingUserInput: null,
+            verifyResult: null,
+            phaseArtifacts: [],
+            resumeTokenEnvelope: {
+              version: "task-sdk-02-v1",
+              planId,
+              currentPhase: "verify",
+              artifactCount: 0,
+              updatedAt: new Date().toISOString(),
+            },
+          },
+        };
+      }
+
+      // Step 2: 全チェック PASS 判定（error がなければ PASS）
+      const allPassed = checks.every((c) => c.severity !== "error");
+
+      if (allPassed) {
+        const snapshot = this.workflowEngine.recordVerifyPass(planId, checks);
+        return {
+          finalStatus: "pass",
+          totalAttempts: attemptCount,
+          finalChecks: checks,
+          loopExhausted: false,
+          workflowSnapshot: snapshot,
+        };
+      }
+
+      // Step 3: maxRetry チェック
+      if (attemptCount >= maxRetry) {
+        const snapshot = this.workflowEngine.recordVerifyFailure(
+          planId,
+          `verify→improve ループが最大試行回数(${maxRetry})に到達しました`,
+          "review",
+        );
+        return {
+          finalStatus: "fail",
+          totalAttempts: attemptCount,
+          finalChecks: checks,
+          loopExhausted: true,
+          workflowSnapshot: snapshot,
+        };
+      }
+
+      // Step 4: improve 試行
+      const failedChecks = checks.filter((check) => check.severity !== "info");
+      this.workflowEngine.recordImproveAttempt(planId, failedChecks);
+      attemptCount++;
+
+      try {
+        const feedback = buildImproveFeedback(
+          failedChecks,
+          previousImproveSummary,
+        );
+        const improveResult = await this.improve(
+          skillName,
+          feedback,
+          authMode as AuthMode,
+          apiKey ?? null,
+        );
+
+        // エラーレスポンスチェック
+        if ("success" in improveResult && !improveResult.success) {
+          throw new Error(
+            (improveResult as { error: { message: string } }).error.message,
+          );
+        }
+
+        // terminal_handoff チェック
+        if (
+          "type" in improveResult &&
+          improveResult.type === "terminal_handoff"
+        ) {
+          const snapshot = this.workflowEngine.recordVerifyFailure(
+            planId,
+            "improve が terminal_handoff を返しました",
+            "review",
+          );
+          return {
+            finalStatus: "error",
+            totalAttempts: attemptCount,
+            finalChecks: checks,
+            loopExhausted: false,
+            errorMessage: "terminal_handoff",
+            workflowSnapshot: snapshot,
+          };
+        }
+
+        const suggestions =
+          "suggestions" in improveResult ? improveResult.suggestions : [];
+
+        if (suggestions.length === 0) {
+          const snapshot = this.workflowEngine.recordVerifyFailure(
+            planId,
+            "LLM が改善提案を生成できませんでした",
+            "review",
+          );
+          return {
+            finalStatus: "fail",
+            totalAttempts: attemptCount,
+            finalChecks: checks,
+            loopExhausted: false,
+            errorMessage: "改善提案なし",
+            workflowSnapshot: snapshot,
+          };
+        }
+
+        // Step 4.3: 改善を適用
+        const applyResult = await this.applyImprovement(skillName, suggestions);
+
+        if (applyResult.applied === 0) {
+          const snapshot = this.workflowEngine.recordVerifyFailure(
+            planId,
+            "改善提案の適用に全て失敗しました",
+            "review",
+          );
+          return {
+            finalStatus: "fail",
+            totalAttempts: attemptCount,
+            finalChecks: checks,
+            loopExhausted: false,
+            errorMessage: "改善適用失敗",
+            workflowSnapshot: snapshot,
+          };
+        }
+
+        previousImproveSummary = summarizeImproveSuggestions(suggestions);
+
+        // Step 5: re-verify へ（while ループ先頭に戻る）
+      } catch (err) {
+        const errorMsg = err instanceof Error ? err.message : String(err);
+        const snapshot = this.workflowEngine.recordVerifyFailure(
+          planId,
+          `improve 中にエラーが発生: ${errorMsg}`,
+          "review",
+        );
+        return {
+          finalStatus: "error",
+          totalAttempts: attemptCount,
+          finalChecks: checks,
+          loopExhausted: false,
+          errorMessage: errorMsg,
+          workflowSnapshot: snapshot,
+        };
+      }
+    }
   }
 
   // ── SDK Message 正規化 (TASK-RT-06) ─────────────────
@@ -1028,6 +1221,32 @@ export function parseImproveResponse(responseText: string): ImproveParseResult {
       error instanceof Error ? error.message : "Unknown parse error";
     return { success: false, error: message };
   }
+}
+
+function buildImproveFeedback(
+  checks: RuntimeSkillCreatorVerifyCheck[],
+  previousImproveSummary: string,
+): string {
+  const feedback = formatVerifyChecksAsFeedback(checks);
+  const summary = previousImproveSummary.trim();
+
+  if (feedback === "" || summary === "") {
+    return feedback;
+  }
+
+  return `${feedback}\n\n## 前回の改善要約\n${summary}`;
+}
+
+function summarizeImproveSuggestions(
+  suggestions: RuntimeSkillCreatorImproveSuggestion[],
+): string {
+  if (suggestions.length === 0) {
+    return "";
+  }
+
+  return suggestions
+    .map((suggestion) => `- ${suggestion.section}: ${suggestion.reason}`)
+    .join("\n");
 }
 
 const DEGRADED_REASON_MESSAGES: Record<

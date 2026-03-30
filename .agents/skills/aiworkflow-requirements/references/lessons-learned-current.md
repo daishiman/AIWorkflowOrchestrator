@@ -17,30 +17,31 @@
 
 ## 変更履歴
 
-| 日付 | バージョン | 変更内容 |
-|------|-----------|----------|
-| 2026-03-30 | 3.0.0 | TASK-P0-06 conversational-interview-ui 教訓4件を追加（L-P0-06-001: useCallback内state同期読み取り、L-P0-06-002: document-levelキーリスナークリーンアップ、L-P0-06-003: vitest実行ディレクトリとhappy-dom環境、L-P0-06-004: esbuildプラットフォームミスマッチ） |
+| 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                              |
+| ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-30 | 2.12.0 | TASK-P0-02 verify→improve→re-verify 閉ループ 教訓2件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-P002-001 `verifyAndImproveLoop()` の feedback memory（直前の改善要約を次回 feedback に合成）で同一修正の繰り返しを抑制するパターン / L-P002-002 `failedChecks`（error/warning）のみを LLM 改善入力とし `info` を除外することで改善の焦点を絞るパターン） |
 | 2026-03-30 | 2.12.0 | AgentView Permission API 修正 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-AGENTPERM-001 esbuild platform mismatch によるテスト環境ブロック / L-AGENTPERM-002 Permission API 契約境界の逸脱検出 / L-AGENTPERM-003 テストファイル複数分散時のモック管理） |
-| 2026-03-30 | 3.0.0 | TASK-P0-06 conversational-interview-ui 教訓4件を追加（L-P0-06-001: useCallback内state同期読み取り、L-P0-06-002: document-levelキーリスナークリーンアップ、L-P0-06-003: vitest実行ディレクトリとhappy-dom環境、L-P0-06-004: esbuildプラットフォームミスマッチ） |
-| 2026-03-30 | 2.11.0 | TASK-P0-05 execute-skill-file-writer-integration 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-P005-001 LLM応答パース見出し正規化で `*.md.md` 重複回避 / L-P005-002 worktree環境でのcanonical mirror同期はPhase 12 close-out時に明示的に実施が必要 / L-P005-003 DI未注入のskilFileWriter に対してfail-silentせずconsole.warnガード） |
-| 2026-03-30 | 2.10.0 | TASK-RT-05 multi_select UserInputKind 追加の教訓4件を追加（→ [lessons-learned-skill-create-multi-select-kind.md](lessons-learned-skill-create-multi-select-kind.md): L-RT05-001 field追加+kind分岐パターン、L-RT05-002 stale state useEffect reset、L-RT05-003 jest-dom setupFiles確認、L-RT05-004 shared contract same-wave sync） |
-| 2026-03-29 | 3.0.0 | UT-SDK-07 shared IPC channel 契約整合 教訓3件を追加（L-UT-SDK07-001: shared チャネル移管後の参照パス更新、L-UT-SDK07-002: packages/shared/src/ipc/ 追加時の exports 同時更新、L-UT-SDK07-003: preload が shared を import する構造への仕様書更新パターン） |
-| 2026-03-29 | 2.10.0 | UT-RT-06-CONS 教訓2件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-RT-06-CONS-001 Phase 7 グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002 最小共通helper抽出パターン） |
-| 2026-03-28 | 2.9.0 | TASK-SDK-08 session-persistence-and-resume-contract 教訓3件を追加（L-1: esbuild mismatch、L-2: artifact命名規約 / validator不一致、L-3: Phase 11 UI/docs-only判定不一致） |
-| 2026-03-27 | 2.8.2 | TASK-SDK-04 の教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): user input semantics / canonical execute binding、→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): spec_created task の screenshot/evidence drift） |
-| 2026-03-27 | 2.8.2 | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): placeholder-only screenshot PASS 禁止 / implementation guide Part 2 必須要素 / Phase 2 contract matrix stale drift 防止） |
-| 2026-03-26 | 2.8.1 | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の教訓2件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): Step 2 no-op 時の Step 1 台帳同期必須 / Phase 12 root evidence の patch marker 混入監査） |
-| 2026-03-25 | 2.8.0 | TASK-SC-08-E2E-VALIDATION 教訓3件を追加（L-SC-E2E-001: IPC handlerMap モックパターン、L-SC-E2E-002: TerminalHandoff セキュリティ検証、L-SC-E2E-003: Phase仕様書パス移動時の参照ドリフト） |
-| 2026-03-25 | 2.8.0 | TASK-SC-07-STREAMING-PROGRESS-UI 教訓4件を追加（L-SC-07-001: Slice名前衝突回避、L-SC-07-002: P5対策safeOn cleanup、L-SC-07-003: P47対策ErrorCards網羅性、L-SC-07-004: ローカルstate vs Zustand二重管理） |
-| 2026-03-25 | 2.7.0 | UT-SC-05-IPC-DI-WIRING 教訓2件を追加（L-IPC-DI-001: 仕様書作成時点とコード乖離、L-IPC-DI-002: オプショナルDIサイレントデグラデーション） |
-| 2026-03-25 | 2.6.1 | UT-LLM-MOD-01-005 の教訓3件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): provider registry SSoT / optional matcher narrowing / readonly bridge follow-up） |
-| 2026-03-24 | 2.5.0 | TASK-LLM-MOD-03 苦戦箇所2件を追加（L-LLM-MOD-03-001〜002: baseUrl変更のcross-file依存 / system_instruction条件付加の設計判断） |
-| 2026-03-22 | 2.2.3 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 の Phase 12 教訓4件を追加 |
-| 2026-03-21 | 2.2.1 | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加 |
-| 2026-03-21 | 2.2.0 | UT-SLIDE-UI-001 教訓3件を追加（L-SLIDE-UI-001〜003） |
-| 2026-03-21 | 2.2.2 | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓を追記 |
-| 2026-03-21 | 2.2.1 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 最終再監査教訓を追記 |
-| 2026-03-21 | 2.2.0 | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加 |
+| 2026-03-30 | 2.12.0     | TASK-P0-05 execute-skill-file-writer-integration 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-P005-001 LLM応答パース見出し正規化 / L-P005-002 worktree canonical mirror同期 / L-P005-003 DI未注入 skilFileWriter fail-silent回避）                                                                                                                                                                                                                                                                                    |
+| 2026-03-30 | 3.1.0      | TASK-RT-03 SkillCreationResultPanel 教訓4件を追加（raw result local state保持 / terminal_handoff vs integrated_api 型ガード / progressive disclosure パターン / 共通UIパーツ early 抽出）                                                                                                                             |
+| 2026-03-30 | 3.2.0      | TASK-RT-05 multi_select UserInputKind 追加の教訓4件を追加（→ [lessons-learned-skill-create-multi-select-kind.md](lessons-learned-skill-create-multi-select-kind.md): L-RT05-001 field追加+kind分岐パターン、L-RT05-002 stale state useEffect reset、L-RT05-003 jest-dom setupFiles確認、L-RT05-004 shared contract same-wave sync） |
+| 2026-03-29 | 3.0.0      | TASK-P0-01 SkillCreatorVerificationEngine Layer 1/2 教訓3件を追加（L-VE-001: tmp fixture パターン / L-VE-002: Layer union 型拡張の backward compatibility / L-VE-003: SKILL.md セクション名 drift 検出の重要性）                                                                                                      |
+| 2026-03-29 | 2.11.0     | TASK-RT-02 api-key-ui-adapter-status 教訓3件を追加（→ [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md): useRef race condition 防止 / Promise.allSettled 独立エラー処理 / プロバイダー単位 isRetrying Map パターン）                                                           |
+| 2026-03-29 | 2.10.0     | UT-RT-06-CONS 教訓2件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-RT-06-CONS-001 Phase 7 グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002 最小共通helper抽出パターン）                                                                                              |
+| 2026-03-28 | 2.9.0      | TASK-SDK-08 session-persistence-and-resume-contract 教訓3件を追加（L-1: esbuild mismatch、L-2: artifact命名規約 / validator不一致、L-3: Phase 11 UI/docs-only判定不一致）                                                                                                                                             |
+| 2026-03-27 | 2.8.2      | TASK-SDK-04 の教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): user input semantics / canonical execute binding、→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): spec_created task の screenshot/evidence drift） |
+| 2026-03-27 | 2.8.2      | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): placeholder-only screenshot PASS 禁止 / implementation guide Part 2 必須要素 / Phase 2 contract matrix stale drift 防止）                          |
+| 2026-03-26 | 2.8.1      | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の教訓2件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): Step 2 no-op 時の Step 1 台帳同期必須 / Phase 12 root evidence の patch marker 混入監査）                                                       |
+| 2026-03-25 | 2.8.0      | TASK-SC-08-E2E-VALIDATION 教訓3件を追加（L-SC-E2E-001: IPC handlerMap モックパターン、L-SC-E2E-002: TerminalHandoff セキュリティ検証、L-SC-E2E-003: Phase仕様書パス移動時の参照ドリフト）                                                                                                                             |
+| 2026-03-25 | 2.8.0      | TASK-SC-07-STREAMING-PROGRESS-UI 教訓4件を追加（L-SC-07-001: Slice名前衝突回避、L-SC-07-002: P5対策safeOn cleanup、L-SC-07-003: P47対策ErrorCards網羅性、L-SC-07-004: ローカルstate vs Zustand二重管理）                                                                                                              |
+| 2026-03-25 | 2.7.0      | UT-SC-05-IPC-DI-WIRING 教訓2件を追加（L-IPC-DI-001: 仕様書作成時点とコード乖離、L-IPC-DI-002: オプショナルDIサイレントデグラデーション）                                                                                                                                                                              |
+| 2026-03-25 | 2.6.1      | UT-LLM-MOD-01-005 の教訓3件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): provider registry SSoT / optional matcher narrowing / readonly bridge follow-up）                                                                                                                      |
+| 2026-03-24 | 2.5.0      | TASK-LLM-MOD-03 苦戦箇所2件を追加（L-LLM-MOD-03-001〜002: baseUrl変更のcross-file依存 / system_instruction条件付加の設計判断）                                                                                                                                                                                        |
+| 2026-03-22 | 2.2.3      | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 の Phase 12 教訓4件を追加                                                                                                                                                                                                                                          |
+| 2026-03-21 | 2.2.1      | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加                                                                                                                                                                                                                                                          |
+| 2026-03-21 | 2.2.0      | UT-SLIDE-UI-001 教訓3件を追加（L-SLIDE-UI-001〜003）                                                                                                                                                                                                                                                                  |
+| 2026-03-21 | 2.2.2      | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓を追記                                                                                                                                                                                                                                                  |
+| 2026-03-21 | 2.2.1      | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 最終再監査教訓を追記                                                                                                                                                                                                                                           |
+| 2026-03-21 | 2.2.0      | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加                                                                                                                                                                                                                                        |
 
 | 2026-03-23 | 2.5.0 | TASK-SC-05-IMPROVE-LLM 教訓3件を追加（→ [ipc-preload-runtime](lessons-learned-ipc-preload-runtime.md): LLM統合パターン再利用、空文字列beforeバグ、P4/P51再発） |
 | 2026-03-23 | 2.4.0 | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003: GAP ラベルドリフト / DEFERRED 判断誤り / ViewType 型不一致） |
@@ -75,6 +76,8 @@
 | [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-SKILL-LIFECYCLE-04/05/06/07, TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001, TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001, TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 |
 
 | [lessons-learned-safety-gate-permission-fallback.md](lessons-learned-safety-gate-permission-fallback.md) | SafetyGate / Permission / Fallback | UT-06-005, TASK-SKILL-LIFECYCLE-08 |
+| [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md) | UI / 非同期状態管理 / アダプター | TASK-RT-02 api-key-ui-adapter-status, TASK-RT-03 SkillCreationResultPanel |
+| [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md) | UI / 非同期状態管理 / アダプター | TASK-RT-02 api-key-ui-adapter-status |
 | [lessons-learned-skill-create-multi-select-kind.md](lessons-learned-skill-create-multi-select-kind.md) | SkillCreator / UserInputKind / multi_select | TASK-RT-05 |
 | [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | アーカイブ | 2026-03-15以前の全エントリ |
 
@@ -907,79 +910,8 @@
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | `.claude/skills/aiworkflow-requirements/LOGS.md` が 2026-03-24 完了記録済みでも、`step-03-seq-task-04-test-update/` の workflow root が Phase 11/12 成果物なしのまま残ると、参照者は「タスク未完了」と誤認する |
-| 解決策 | Phase 12 で workflow root に close-out 成果物（implementation-guide / system-spec-update-summary / unassigned-task-detection 等）を揃え、canonical spec との整合を同一 wave で確認する |
-| 標準ルール | `resource-map` / `quick-reference` は「正本は shared catalog」を読む導線として有効。workflow root の close-out を canonical spec 更新と同ターンで実施する |
-| 関連タスク | TASK-LLM-MOD-04 |
-
-### L-P0-04-003: TDD Red は「import エラー」ではなく「実行エラー」で確認する（補足）
-
-| 項目 | 内容 |
-| --- | --- |
 | 課題 | 未実装関数を import すると、同ファイル内の既存テストも巻き込んで全失敗になる。Red の確認目的が「新テストの失敗」なのに既存テストが壊れる副作用が生じる |
 | 解決策 | スケルトン関数（`throw new Error("not implemented")`）を先に定義し、import はコンパイルできる状態にする。実行時にのみ新テストが Red になるよう設計する |
 | 標準ルール | テストファースト実装では「スケルトン定義 → テスト記述 → Red 確認 → 実装 → Green 確認」の順序を守る |
 | 関連タスク | TASK-P0-04 |
 
----
-
-## TASK-P0-06 conversational-interview-ui（2026-03-30）
-
-### L-P0-06-001: useCallback内でのstateの同期的読み取りパターン
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `undo()` 関数でReact state (`messages`) を読んで戻り値として返す必要があったが、`setMessages` コールバック内で変数に代入しても、呼び出し元には `null` が返った |
-| 原因 | Reactのstateは非同期でフラッシュされるため、`setMessages` コールバック内での代入は呼び出し元の同期的な `return` には間に合わない |
-| 解決策 | `setMessages` コールバックを使わず、`useCallback` のクロージャで `messages` 変数（現在のstate値）を直接参照し、`setMessages(messages.slice(0, n))` の形式で更新。戻り値は呼び出し前に `messages` から直接取得 |
-| 適用範囲 | hookから同期的な戻り値が必要で、かつstateを変更するケース全般 |
-| 関連タスク | TASK-P0-06 |
-
-### L-P0-06-002: ConfirmButtonsのdocument-levelキーリスナーとクリーンアップ
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | モーダルやパネル内コンポーネントでグローバルなキーショートカット（Y/N）を実装する際、`document.addEventListener` を使うとコンポーネントアンマウント後もリスナーが残る |
-| 解決策 | `useEffect` の cleanup関数で `document.removeEventListener` を確実に呼ぶ。`useCallback` でハンドラをメモ化してdependency arrayに渡す |
-| テストの注意 | このパターンのテストは `fireEvent.keyDown(element, ...)` ではなく `fireEvent.keyDown(document, ...)` でdocumentを対象にする必要がある |
-| 関連タスク | TASK-P0-06 |
-
-### L-P0-06-003: vitest実行ディレクトリとhappy-dom環境の関係
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | monorepoのルートから `pnpm exec vitest run` を実行すると `document is not defined` エラーが発生し、テストが全失敗した |
-| 原因 | vitestはカレントディレクトリの `vitest.config.ts` を読む。ルートから実行すると `apps/desktop/vitest.config.ts` の `environment: "happy-dom"` が適用されない |
-| 解決策 | `cd apps/desktop` してから `pnpm exec vitest run` を実行する。または `pnpm --filter @repo/desktop exec vitest run` でフィルタを指定する |
-| 関連タスク | TASK-P0-06 |
-
-### L-P0-06-004: esbuildのプラットフォームミスマッチ
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | worktreeで `pnpm install` 後に vitest 実行時 `esbuild binary platform mismatch` エラーが発生 |
-| 原因 | `node_modules` がdarwin-arm64向けに解決されているが、実行環境はx64 |
-| 解決策 | `pnpm add -wD @esbuild/darwin-x64@0.21.5` でx64バイナリを追加インストール |
-| 関連タスク | TASK-P0-06 |
-
----
-
-## TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out）
-
-### L-LLM-MOD-04-001: P50 タスクを新規実装前提で書き続けると validator fail と stale guidance を同時に生む
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | TASK-LLM-MOD-04 は Task 01〜03 でテスト同時更新済み（コード変更 0 行）の P50 パターンだったが、タスク仕様書が新規実装前提のテンプレートのまま残り、Phase 12 で「実装 0 行なのに実装ガイドが長大」という stale guidance を生んだ |
-| 解決策 | Phase 1 で「このタスクが P50（既実装発見）か否か」を明示し、P50 の場合は Phase 4-5 テンプレートを docs-only 向けに簡略化する |
-| 標準ルール | `git log -- <target-file>` で既実装状況を Phase 1 で確認し、P50 判定時は仕様書を P50 モードへ切り替える |
-| 関連タスク | TASK-LLM-MOD-04 |
-
-### L-LLM-MOD-04-002: canonical system spec が更新済みでも workflow root が stale なら利用者は誤誘導される
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `.claude/skills/aiworkflow-requirements/LOGS.md` が 2026-03-24 完了記録済みでも、`step-03-seq-task-04-test-update/` の workflow root が Phase 11/12 成果物なしのまま残ると、参照者は「タスク未完了」と誤認する |
-| 解決策 | Phase 12 で workflow root に close-out 成果物（implementation-guide / system-spec-update-summary / unassigned-task-detection 等）を揃え、canonical spec との整合を同一 wave で確認する |
-| 標準ルール | `resource-map` / `quick-reference` は「正本は shared catalog」を読む導線として有効。workflow root の close-out を canonical spec 更新と同ターンで実施する |
-| 関連タスク | TASK-LLM-MOD-04 |
