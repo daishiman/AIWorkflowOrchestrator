@@ -100,7 +100,7 @@ step-09-par-task-rt-05-multi-select-user-input-kind/
 
 ### 想定変更ポイント
 
-- `packages/shared/src/types/skillCreator.ts` — `SkillCreatorUserInputKind` に `"multi_select"` 追加、`SkillCreatorUserInput` に `selectedValues?: string[]` 追加
+- `packages/shared/src/types/skillCreator.ts` — `SkillCreatorUserInputKind` に `"multi_select"` 追加、`SkillCreatorUserInput` に `selectedOptionIds?: string[]` を canonical として追加し、`selectedValues?: string[]` は互換入力として受理
 - `SkillCreatorWorkflowEngine.ts` — `validateUserInputSubmission` の switch/case に `multi_select` 追加
 - `SkillLifecyclePanel.tsx` — チェックボックスリスト UI 追加
 
@@ -113,7 +113,7 @@ step-09-par-task-rt-05-multi-select-user-input-kind/
 ### 完了イメージ
 
 - `multi_select` kind の入力要求が来たとき、チェックボックスリストが表示される
-- ユーザーが複数選択し submit すると、`selectedValues` 配列がバリデーションを通る
+- ユーザーが複数選択し submit すると、`selectedOptionIds` 配列がバリデーションを通る（`selectedValues` は互換入力として正規化）
 - 既存の kind は影響を受けない
 
 ### 並列実行メモ

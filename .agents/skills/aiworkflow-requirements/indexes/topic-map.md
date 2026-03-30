@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-29
+> 自動生成: 2026-03-30
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -908,6 +908,7 @@ node scripts/list-specs.js --topics
 | ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L653 |
 | Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L684 |
 | AIプロバイダーAPI連携 | L715 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L748 |
 
 ### references/api-ipc-system-details.md
 
@@ -2627,18 +2628,21 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L60 |
-| クイックリファレンス: カテゴリ別検索ガイド | L75 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L248 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L580 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L614 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L697 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L713 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L737 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L778 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L803 |
-| TASK-RT-06 教訓（2026-03-29） | L834 |
-| TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L856 |
+| 分割ファイル一覧 | L62 |
+| クイックリファレンス: カテゴリ別検索ガイド | L77 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L250 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L582 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L616 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L699 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L715 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L739 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L780 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L805 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L837 |
+| TASK-RT-06 教訓（2026-03-29） | L836 |
+| TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L858 |
+| TASK-P0-04 教訓（2026-03-30） | L890 |
+| TASK-P0-06 conversational-interview-ui（2026-03-30） | L879 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2778,9 +2782,17 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-25 UT-LLM-MOD-01-005（provider registry SSoT） | L27 |
-| 2026-03-16 UT-06-001 (tool-risk-config-implementation) | L70 |
-| 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout） | L159 |
+| 2026-03-29 UT-RT-06-CONS（sdkMessageUtils shared helper 抽出 / Phase 7 個別カバレッジ計測） | L28 |
+| 2026-03-25 UT-LLM-MOD-01-005（provider registry SSoT） | L64 |
+| 2026-03-16 UT-06-001 (tool-risk-config-implementation) | L107 |
+| 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout） | L196 |
+
+### references/lessons-learned-ui-adapter-status-retry.md
+
+| セクション | 行 |
+|------------|----|\n| 変更履歴 | L9 |
+| TASK-RT-02 / api-key-ui-adapter-status | L17 |
+| 関連リソース | L115 |
 
 ### references/lessons-learned-ui-agent-view-nav-notification-history.md
 

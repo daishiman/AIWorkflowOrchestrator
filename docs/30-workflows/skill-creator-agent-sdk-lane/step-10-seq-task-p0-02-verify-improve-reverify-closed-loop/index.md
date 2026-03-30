@@ -13,8 +13,10 @@
 | ステータス     | spec_created                                               |
 | 発見元         | p0-verify-manifest-remediation-pack 監査                   |
 | 作成日         | 2026-03-29                                                 |
-| 依存タスク     | TASK-P0-01（verify engine 本体）                           |
+| 更新日         | 2026-03-30                                                 |
+| 依存タスク     | TASK-P0-01（verify engine 本体） ✅ 完了済み               |
 | 後続タスク     | なし                                                       |
+| 関連Issue      | #1725                                                      |
 | 親ワークフロー | step-10-seq-task-p0-02-verify-improve-reverify-closed-loop |
 
 ---
@@ -82,6 +84,21 @@ WorkflowEngine は execute→verify→improve の前半経路を持つが、以�
 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`  | plan / execute / improve の public bridge。re-verify 経路が不完全 | improve→verify 遷移を追加し閉ループを成立させる                |
 | `apps/desktop/src/main/ipc/creatorHandlers.ts`                         | IPC handler。verify/improve の IPC エントリポイント               | 閉ループに対応した handler 更新                                |
 | `packages/shared/src/types/skillCreator.ts`                            | `SkillCreatorVerifyResult` 型。status `"pass"` のハンドラが未実装 | `"pass"` status に対応するハンドラを追加                       |
+
+## システム仕様参照（aiworkflow-requirements連携）
+
+各 Phase の「参照資料」セクションに以下のシステム仕様を含めること:
+
+| 参照資料                  | パス                                                                                                  | 内容                                               |
+| ------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md`           | SkillCreatorService、Facade injection パターン     |
+| Agent IPC チャネル仕様    | `.agents/skills/aiworkflow-requirements/references/api-ipc-agent-core.md`                             | agent:execute、agent:verify 等の IPC チャネル定義  |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`                         | IPC修正時の Main/Preload/型定義 同時更新チェック   |
+| スキル実行IPCセキュリティ | `.agents/skills/aiworkflow-requirements/references/security-skill-ipc-core.md`                        | パストラバーサル防止、コマンドインジェクション防止 |
+| Skill lifecycle hooks     | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-details.md`             | Skill lifecycle hooks 仕様                         |
+| テスト標準化              | `.agents/skills/aiworkflow-requirements/references/lessons-learned-skill-lifecycle-test-hardening.md` | Main Process ハンドラの単体テスト標準化            |
+
+---
 
 ## 要件レビュー一次結論
 
@@ -155,12 +172,31 @@ graph TD
 
 ## テストカバレッジ目標
 
-| カテゴリ | 対象                                                        | 目標     |
-| -------- | ----------------------------------------------------------- | -------- |
-| ユニット | `recordVerifyPass()` phase 遷移                             | 100%     |
-| ユニット | verify→improve / improve→verify 遷移                        | 100%     |
-| ユニット | `requestReverify()` eligibility と verification engine 統合 | 100%     |
-| 統合     | execute→verify(fail)→improve→verify(pass) 完全サイクル      | E2E 検出 |
+### ユニットテスト
+
+| 指標              | 最低基準 | 推奨基準 |
+| ----------------- | -------- | -------- |
+| Line Coverage     | 80%      | 90%      |
+| Branch Coverage   | 60%      | 70%      |
+| Function Coverage | 80%      | 90%      |
+
+### テスト対象と目標
+
+| カテゴリ | 対象                                                   | 目標     | テストファイル                       |
+| -------- | ------------------------------------------------------ | -------- | ------------------------------------ |
+| ユニット | `recordVerifyPass()` phase 遷移                        | 100%     | `SkillCreatorWorkflowEngine.test.ts` |
+| ユニット | verify→improve / improve→verify 遷移                   | 100%     | `SkillCreatorWorkflowEngine.test.ts` |
+| ユニット | `requestReverify()` eligibility と engine 統合         | 100%     | `SkillCreatorWorkflowEngine.test.ts` |
+| ユニット | Facade `processVerifyResult()` / `requestReVerify()`   | 100%     | `RuntimeSkillCreatorFacade.test.ts`  |
+| 統合     | execute→verify(fail)→improve→verify(pass) 完全サイクル | E2E 検出 | 統合テスト                           |
+
+### 結合テスト
+
+| 指標                             | 目標 |
+| -------------------------------- | ---- |
+| 遷移テーブル全 edge              | 100% |
+| 正常系シナリオ（完全サイクル）   | 100% |
+| 異常系シナリオ（不正遷移ガード） | 80%+ |
 
 ---
 

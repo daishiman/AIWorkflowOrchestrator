@@ -136,6 +136,10 @@
     "./types/execution-capability": {
       "types": "./dist/src/types/execution-capability.d.ts",
       "import": "./dist/src/types/execution-capability.js"
+    },
+    "./types/skillCreator": {
+      "types": "./dist/src/types/skillCreator.d.ts",
+      "import": "./dist/src/types/skillCreator.js"
     }
   },
   "typesVersions": {
@@ -235,6 +239,9 @@
       ],
       "types/execution-capability": [
         "./src/types/execution-capability.ts"
+      ],
+      "types/skillCreator": [
+        "./src/types/skillCreator.ts"
       ]
     }
   },

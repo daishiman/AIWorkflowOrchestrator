@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-29T14:53:41.674Z",
-  "totalKeywords": 2538,
+  "generated": "2026-03-30T05:01:09.843Z",
+  "totalKeywords": 2549,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -169,6 +169,7 @@
       "testing-fixtures.md",
       "testing-playwright-e2e.md",
       "ui-history-search-view.md",
+      "ui-result-panel-pattern.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution-core.md",
       "ui-ux-agent-execution.md",
@@ -292,6 +293,7 @@
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-test-typesafety.md",
+      "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-viewtype-electron-ui.md",
       "llm-ipc-types.md",
       "llm-streaming.md",
@@ -659,6 +661,7 @@
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "llm-ipc-types.md",
       "llm-workspace-chat-edit.md",
@@ -1098,6 +1101,7 @@
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
       "lessons-learned-templates.md",
+      "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "lessons-learned-viewtype-electron-ui.md",
@@ -1282,6 +1286,7 @@
     ],
     "execute": [
       "api-ipc-agent-core.md",
+      "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-advanced.md",
@@ -1824,6 +1829,7 @@
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
+      "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "lessons-learned-viewtype-electron-ui.md",
@@ -1860,6 +1866,7 @@
       "ui-history-design.md",
       "ui-history-integration.md",
       "ui-history-search-view.md",
+      "ui-result-panel-pattern.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution-core.md",
       "ui-ux-agent-execution-details.md",
@@ -2424,6 +2431,9 @@
       "security-api-electron.md",
       "security-electron-ipc-core.md"
     ],
+    "ファイル永続化統合": [
+      "api-ipc-system-core.md"
+    ],
     "エンティティ抽出サービス": [
       "api-ipc-system-details.md",
       "interfaces-rag-entity-extraction.md",
@@ -2745,6 +2755,8 @@
     "shared": [
       "arch-execution-capability-contract.md",
       "directory-structure-core.md",
+      "lessons-learned-current.md",
+      "lessons-learned-test-typesafety.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "workflow-light-theme-global-remediation.md"
     ],
@@ -2997,6 +3009,7 @@
     ],
     "Panel": [
       "arch-state-management-core.md",
+      "ui-result-panel-pattern.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
       "ui-ux-settings-core.md"
@@ -3817,6 +3830,7 @@
     "CHANNEL": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
@@ -3962,6 +3976,7 @@
       "database-implementation-core.md",
       "quality-e2e-testing.md",
       "quality-requirements-details.md",
+      "ui-result-panel-pattern.md",
       "ui-ux-atoms-patterns-details.md"
     ],
     "実行サマリー": [
@@ -4181,6 +4196,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
@@ -5349,6 +5365,7 @@
       "interfaces-chat-history-details.md",
       "ui-history-components.md",
       "ui-history-search-view.md",
+      "ui-result-panel-pattern.md",
       "ui-ux-file-selector.md",
       "ui-ux-system-prompt.md"
     ],
@@ -5440,7 +5457,8 @@
     ],
     "Result": [
       "interfaces-core.md",
-      "rag-search-vector.md"
+      "rag-search-vector.md",
+      "ui-result-panel-pattern.md"
     ],
     "IAIClient": [
       "interfaces-core.md"
@@ -5853,6 +5871,7 @@
       "lessons-learned-skill-validation-logging-deprecation.md",
       "lessons-learned-templates.md",
       "lessons-learned-test-typesafety.md",
+      "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "lessons-learned-viewtype-electron-ui.md",
@@ -5893,6 +5912,7 @@
       "lessons-learned-skill-validation-logging-deprecation.md",
       "lessons-learned-templates.md",
       "lessons-learned-test-typesafety.md",
+      "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "lessons-learned-viewtype-electron-ui.md",
@@ -6171,7 +6191,8 @@
     ],
     "key": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-ui-adapter-status-retry.md"
     ],
     "ハンドラ登録漏れ修正": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md"
@@ -6515,6 +6536,8 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-test-typesafety.md",
+      "lessons-learned-ui-adapter-status-retry.md",
       "ui-ux-feature-components-core.md",
       "workflow-task-rt-06-artifact-inventory.md"
     ],
@@ -6526,7 +6549,8 @@
     ],
     "実装知見": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-safety-gate-permission-fallback.md"
+      "lessons-learned-safety-gate-permission-fallback.md",
+      "lessons-learned-ui-adapter-status-retry.md"
     ],
     "settings": [
       "lessons-learned-auth-settings-degradation-guard.md"
@@ -6685,6 +6709,13 @@
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
+    "channel": [
+      "lessons-learned-current.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
+    ],
+    "契約整合": [
+      "lessons-learned-current.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6788,6 +6819,7 @@
     ],
     "api": [
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-ui-adapter-status-retry.md",
       "spec-splitting-guidelines.md"
     ],
     "management": [
@@ -6795,6 +6827,7 @@
     ],
     "ui": [
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-ui-adapter-status-retry.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
       "logs-archive-2026-01-skill-selector-todo-scan-template.md",
       "logs-archive-2026-01-system-spec-gap-skill-retry.md",
@@ -6857,6 +6890,13 @@
     ],
     "ARCH": [
       "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "SHARED": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md",
+      "logs-archive-2026-02-unassigned-placement-import-interface.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
@@ -7187,6 +7227,24 @@
     "品質": [
       "lessons-learned-test-typesafety.md"
     ],
+    "CONS": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "sdkMessageUtils": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "helper": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "抽出": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "個別カバレッジ計測": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "個別ファイルカバレッジ計測": [
+      "lessons-learned-test-typesafety.md"
+    ],
     "MOD": [
       "lessons-learned-test-typesafety.md"
     ],
@@ -7238,6 +7296,22 @@
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-ut-06-safety-gate.md",
       "workflow-permission-fallback-abort-skip-retry.md"
+    ],
+    "アダプター状態表示・リトライ導線": [
+      "lessons-learned-ui-adapter-status-retry.md"
+    ],
+    "adapter": [
+      "lessons-learned-ui-adapter-status-retry.md"
+    ],
+    "status": [
+      "lessons-learned-ui-adapter-status-retry.md"
+    ],
+    "関連リソース": [
+      "lessons-learned-ui-adapter-status-retry.md",
+      "master-design.md"
+    ],
+    "SkillCreationResultPanel": [
+      "lessons-learned-ui-adapter-status-retry.md"
     ],
     "ENHANCEMENT": [
       "lessons-learned-ui-agent-view-nav-notification-history.md",
@@ -7407,12 +7481,6 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md"
-    ],
-    "SHARED": [
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "lessons-learned-workflow-quality-phase12-audit-validator.md",
-      "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "モジュール解決エラー修正": [
       "lessons-learned-workflow-quality-ci-module-resolution.md"
@@ -8664,9 +8732,6 @@
     "ut": [
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
     ],
-    "channel": [
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
-    ],
     "conflict": [
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
     ],
@@ -9555,9 +9620,6 @@
       "master-design.md"
     ],
     "言語辞書": [
-      "master-design.md"
-    ],
-    "関連リソース": [
       "master-design.md"
     ],
     "プロジェクト概要": [
@@ -10955,6 +11017,15 @@
     ],
     "ライフサイクルタイムライン観測項目": [
       "ui-history-search-view.md"
+    ],
+    "パターンガイド": [
+      "ui-result-panel-pattern.md"
+    ],
+    "重要設計決定": [
+      "ui-result-panel-pattern.md"
+    ],
+    "コンポーネント設計パターン早見表": [
+      "ui-result-panel-pattern.md"
     ],
     "高度な": [
       "ui-ux-advanced.md"

@@ -744,3 +744,50 @@ TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel が使用する
 | タイムアウト   | `timeout`       | 接続タイムアウト（10秒）           |
 
 ---
+
+## Skill Creator - execute() ファイル永続化統合（TASK-P0-05）
+
+> 完了日: 2026-03-30
+
+### 概要
+
+`RuntimeSkillCreatorFacade.execute()` 内で LLM 応答テキストを `parseLlmResponseToContent()` で解析し、`SkillFileWriter.persist()` でファイルに書き出す。
+
+### 実装アンカー
+
+| 役割 | ファイル | 内容 |
+| ---- | -------- | ---- |
+| 応答パーサー | `apps/desktop/src/main/services/runtime/parseLlmResponseToContent.ts` | `assistant` / `result` イベント配列から LLM テキストを結合し、見出し行でファイル分類する |
+| execute() 統合 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | Step 3.5-3.6 に persist 連携ロジック追加。`persistResult` / `persistError` を IPC 戻り値へ付加 |
+| artifact 記録 | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `execute_result` artifact に `persistResult` / `persistError` を保持 |
+
+### 型定義（packages/shared/src/types/skillCreator.ts）
+
+```typescript
+// RuntimeSkillCreatorExecuteResult に追加
+persistResult?: { skillPath: string; files: string[] } | null;
+persistError?: string | null;
+```
+
+### parseLlmResponseToContent API
+
+```typescript
+function parseLlmResponseToContent(
+  events: SdkEvent[]
+): SkillGeneratedContent
+```
+
+- `events`: `assistant` / `result` タイプの SDK イベント配列
+- 戻り値: `{ skillMd?: string; agents: Record<string, string>; scripts: Record<string, string>; references: Record<string, string> }`
+- 見出し `## agents/foo` → `agents/foo.md` にキーとして格納（`.md` 拡張子は正規化して重複回避）
+- 見出し揺れ（末尾スラッシュ / 大文字小文字 / スペース）は許容する
+
+### エラーハンドリング
+
+| 状態 | 挙動 |
+| ---- | ---- |
+| `skillFileWriter` DI 未注入 | `console.warn` を出力し `persistResult: null` を返す |
+| `persist()` が例外 | `persistError` に sanitized message を設定し処理継続 |
+| `VALIDATION_ERROR` / `PATH_TRAVERSAL` | `persistError` に error code を含むメッセージを設定 |
+
+---
