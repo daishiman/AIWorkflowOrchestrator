@@ -829,8 +829,8 @@ export class SkillCreatorWorkflowEngine {
     if (state.routeSnapshot?.type === "terminal_handoff") {
       return "terminal_handoff の再検証導線は Task07 owner のため、この surface では再実行しません。";
     }
-    if (state.currentPhase !== "improve") {
-      return "improve フェーズ以外では再検証できません。";
+    if (state.currentPhase !== "improve" && state.currentPhase !== "verify") {
+      return "verify / improve フェーズ以外では再検証できません。";
     }
 
     const latestExecuteResult = getExecuteArtifactPayload(
