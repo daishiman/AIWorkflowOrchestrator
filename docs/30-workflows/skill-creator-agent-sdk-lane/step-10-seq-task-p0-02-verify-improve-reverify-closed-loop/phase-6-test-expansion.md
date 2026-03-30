@@ -11,6 +11,7 @@
 | 次Phase    | Phase 7: カバレッジ確認                          |
 | ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
+| 更新日     | 2026-03-30                                       |
 
 ## 目的
 
@@ -42,6 +43,25 @@
 - verification engine のチェック結果が空の場合の挙動を確認する
 - P0-01 未完了時のフォールバック動作を確認する
 
+### Task 5: エッジケーステスト
+
+以下のエッジケースを網羅的にテストする:
+
+- **verify(pass) 後の重複呼び出し**: `recordVerifyPass()` で pass 遷移した後に再度 `recordVerifyPass()` を呼ぶとエラーになることを確認する
+- **improve without prior fail のガード**: verify fail を経ずに improve フェーズに入ろうとした場合のガードが機能することを確認する
+- **improve→verify→fail→improve サイクル**: improve→verify 遷移後、再度 fail して improve に戻るサイクルが正しく動作することを確認する
+- **`requestReverify()` eligibility check 全パターン**: 以下の 4 条件それぞれで eligibility が正しく判定されることを確認する
+  1. 現在の phase が improve でない場合 → 不可
+  2. verify 結果が未記録の場合 → 不可
+  3. improve 完了条件が満たされていない場合 → 不可
+  4. 全条件を満たしている場合 → 可
+
+### テストファイル
+
+| テストファイル        | パス                                                                                  |
+| --------------------- | ------------------------------------------------------------------------------------- |
+| WorkflowEngine テスト | `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts` |
+
 ## 参照資料
 
 | 資料名         | パス                                                                   | 説明               |
@@ -50,32 +70,43 @@
 | WorkflowEngine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | テスト対象         |
 | RuntimeFacade  | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`  | 並行フロー観測対象 |
 
-## 統合���スト連携
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                  | パス                                                                                        | 内容                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService仕様との整合性確認 |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時の整合性確認                 |
+
+## 統合テスト連携
 
 - 並行フローの排他制御が実装全体で一貫することを確認する
 - handoff 状態との整合が Phase 9 の品質保証で再確認される
 
-## 成果���
+## 成果物
 
 | 成果物         | パス                                      | 説明                              |
 | -------------- | ----------------------------------------- | --------------------------------- |
-| テスト拡充記�� | `outputs/phase-6/extended-test-record.md` | 並行フロー・handoff・多周回ケース |
+| テスト拡充記録 | `outputs/phase-6/extended-test-record.md` | 並行フロー・handoff・多周回ケース |
 
 ## 完了条件
 
-- [ ] 並行フローの境界ケースが追加��れている
+- [ ] 並行フローの境界ケースが追加されている
 - [ ] handoff 中の verify サイクルがテストされている
 - [ ] 複数回 re-verify がテストされている
-- [ ] verification engine 統合の境界がテ���トされている
-- [ ] 本Phase��の全タスクを100%実行完了
+- [ ] verification engine 統合の境界がテストされている
+- [ ] エッジケーステスト（verify(pass) 重複、improve without fail ガード、サイクル、eligibility 全パターン）が追加されている
+- [ ] aiworkflow-requirements の関連仕様を確認した
+- [ ] 本Phase内の全タスクを100%実行完了
 
-## タスク100%実行確認���必須】
+## タスク100%実行確認【必須】
 
 - [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 各タスクの成果物が生成���れている
+- [ ] 各タスクの成果物が生成されている
 - [ ] artifacts.jsonが更新されている
-- [ ] Phase末端で各タスクを100%完了し、完了を��記している
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
-## ���Phase
+## 次Phase
 
 → [Phase 7: カバレッジ確認](./phase-7-coverage-check.md)

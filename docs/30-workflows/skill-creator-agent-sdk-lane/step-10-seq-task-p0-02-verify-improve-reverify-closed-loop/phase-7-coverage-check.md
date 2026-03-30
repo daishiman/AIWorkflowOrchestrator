@@ -11,6 +11,7 @@
 | 次Phase    | Phase 8: リファクタリング                        |
 | ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
+| 更新日     | 2026-03-30                                       |
 
 ## 目的
 
@@ -39,6 +40,14 @@ AC-1〜AC-6 と全遷移 edge のカバレッジを照合し、閉ループ修�
 - WorkflowEngine、Facade、IPC handler の 3 層が各層でテストされていることを確認する
 - verification engine との統合レイヤーがテストされていることを確認する
 
+### カバレッジ測定対象ファイル
+
+| ファイル                   | パス                                                                   | 測定対象                                 |
+| -------------------------- | ---------------------------------------------------------------------- | ---------------------------------------- |
+| SkillCreatorWorkflowEngine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `recordVerifyPass`, 遷移テーブル         |
+| RuntimeSkillCreatorFacade  | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`  | `processVerifyResult`, `requestReVerify` |
+| creatorHandlers            | `apps/desktop/src/main/services/runtime/creatorHandlers.ts`            | verify pass handler                      |
+
 ## 参照資料
 
 | 資料名       | パス                                       | 説明            |
@@ -47,6 +56,15 @@ AC-1〜AC-6 と全遷移 edge のカバレッジを照合し、閉ループ修�
 | 実装記録     | `outputs/phase-5/implementation-record.md` | coverage の根拠 |
 | テスト仕様書 | `outputs/phase-4/test-specifications.md`   | AC 対応の元     |
 
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                  | パス                                                                                        | 内容                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService仕様との整合性確認 |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時の整合性確認                 |
+
 ## 統合テスト連携
 
 - 完全サイクルテストを coverage の中核ケースに置く
@@ -54,9 +72,10 @@ AC-1〜AC-6 と全遷移 edge のカバレッジを照合し、閉ループ修�
 
 ## 成果物
 
-| 成果物             | パス                                 | 説明                          |
-| ------------------ | ------------------------------------ | ----------------------------- |
-| カバレッジレポート | `outputs/phase-7/coverage-report.md` | AC 対応表と遷移 edge coverage |
+| 成果物             | パス                                 | 説明                                    |
+| ------------------ | ------------------------------------ | --------------------------------------- |
+| カバレッジレポート | `outputs/phase-7/coverage-report.md` | AC 対応表と遷移 edge coverage           |
+| AC-テスト対応表    | `outputs/phase-7/ac-test-mapping.md` | AC-1〜AC-6 と具体的テストケースの対応表 |
 
 ## 完了条件
 
@@ -65,6 +84,7 @@ AC-1〜AC-6 と全遷移 edge のカバレッジを照合し、閉ループ修�
 - [ ] 不正遷移の禁止テストが確認されている
 - [ ] 3 層（Engine/Facade/IPC）の coverage が確認されている
 - [ ] Phase 8 に渡す重複削減候補が整理されている
+- [ ] aiworkflow-requirements の関連仕様を確認した
 - [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
