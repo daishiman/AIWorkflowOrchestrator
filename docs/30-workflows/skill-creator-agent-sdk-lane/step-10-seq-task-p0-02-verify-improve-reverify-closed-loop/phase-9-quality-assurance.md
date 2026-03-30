@@ -11,6 +11,7 @@
 | 次Phase    | Phase 10: 最終レビュー                           |
 | ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
+| 更新日     | 2026-03-30                                       |
 
 ## 目的
 
@@ -31,8 +32,20 @@ state machine の不変条件を検証し、閉ループの全遷移が安全で
 - Facade と Engine の責務分離が適切であることを確認する
 - IPC handler が Engine の内部状態に直接アクセスしていないことを確認する
 - 型安全性: any 型の使用がないことを確認する
+- セキュリティ: IPC handler の sender 検証（`event.senderFrame` / `webContents.id` チェック）が適切に実装されていることを確認する
 
-### Task 3: 仕様書品質チェック
+### Task 3: IPC契約ドリフト検証
+
+品質ゲートとして IPC 契約のドリフトがないことを検証する:
+
+- 以下のコマンドを実行し、IPC 契約の整合性を確認する:
+  ```bash
+  pnpm tsx apps/desktop/scripts/check-ipc-contracts.ts --report-only
+  ```
+- 新規追加した verify pass handler が IPC 契約チェックの対象に含まれていることを確認する
+- ドリフトが検出された場合は blocker として Phase 10 に報告する
+
+### Task 4: 仕様書品質チェック
 
 - phase 名、成果物名、artifacts 名称を統一する
 - Phase 11/12 の補助成果物を先に定義する
@@ -46,6 +59,15 @@ state machine の不変条件を検証し、閉ループの全遷移が安全で
 | リファクタリング記録 | `phase-8-refactoring.md`                   | 品質ゲート対象   |
 | カバレッジレポート   | `outputs/phase-7/coverage-report.md`       | AC 対応表        |
 
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                  | パス                                                                                        | 内容                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService仕様との整合性確認 |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時の整合性確認                 |
+
 ## 統合テスト連携
 
 - 不変条件のテストが Phase 4/6 で定義されていることを cross-check する
@@ -57,13 +79,16 @@ state machine の不変条件を検証し、閉ループの全遷移が安全で
 | ---------------- | ----------------------------------- | ---------------------------------- |
 | 品質保証レポート | `outputs/phase-9/quality-report.md` | 不変条件検証、実装品質、仕様書品質 |
 
-## 完了��件
+## 完了条件
 
 - [ ] state 不変条件が全て検証されている
 - [ ] 実装品質の blocker が整理されている
 - [ ] 仕様書品質の drift が解消されている
 - [ ] artifacts と実ファイル名が揃っている
 - [ ] Phase 10 に渡す gate 材料が揃っている
+- [ ] IPC契約ドリフト検証（`check-ipc-contracts.ts --report-only`）を実行し問題がないことを確認した
+- [ ] IPC handler の sender 検証が適切に実装されていることを確認した
+- [ ] aiworkflow-requirements の関連仕様を確認した
 - [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】

@@ -11,6 +11,7 @@
 | 次Phase    | Phase 5: 実装                                    |
 | ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
+| 更新日     | 2026-03-30                                       |
 
 ## 目的
 
@@ -20,6 +21,7 @@
 
 ### Task 1: recordVerifyPass() ユニットテスト
 
+- **テストファイル**: `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts`
 - verify phase で `recordVerifyPass()` を呼ぶと正しい phase に遷移する
 - verify phase 以外で `recordVerifyPass()` を呼ぶとエラーになる
 - `SkillCreatorVerifyResult` の status: "pass" が正しく処理される
@@ -30,6 +32,16 @@
 - 各遷移で phase が正しく変わることを assert する
 - verify(fail) 後の nextAction が "improve" であることを確認する
 - re-verify 後の verify(pass) で最終状態に到達することを確認する
+
+**テスト関数シグネチャ（推奨構造）**:
+
+```typescript
+describe("verify→improve→re-verify closed loop", () => {
+  it("should complete full cycle: execute→verify(fail)→improve→verify(pass)", () => {});
+  it("should transition verify→complete on pass", () => {});
+  it("should transition improve→verify for re-verify", () => {});
+});
+```
 
 ### Task 3: エッジケーステスト
 
@@ -47,6 +59,7 @@
 - verify pass 時の snapshot 形状を定義する
 - verify fail 時の snapshot 形状を定義する
 - improve 中の snapshot 形状を定義する
+- **参照**: `RuntimeSkillCreatorFacade.test.ts` の既存 snapshot テストパターンと整合させる
 
 ## 参照資料
 
@@ -55,6 +68,24 @@
 | 設計レビュー   | `phase-3-design-review.md`                                             | gate 結果          |
 | 設計成果物     | `outputs/phase-2/design-document.md`                                   | 遷移テーブルと設計 |
 | WorkflowEngine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | テスト対象         |
+
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                  | パス                                                                                        | 内容                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService、Facade injection パターンの仕様 |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時のインターフェース不整合防止チェックリスト  |
+| スキル実行IPCセキュリティ | `.agents/skills/aiworkflow-requirements/references/security-skill-ipc-core.md`              | セキュリティパターン                                 |
+
+## 多角的チェック観点
+
+| 観点               | 適用判断                                       | 確認内容                                     |
+| ------------------ | ---------------------------------------------- | -------------------------------------------- |
+| アーキテクチャ     | state machine 設計変更のため適用               | 遷移テーブル変更が既存パターンと一致すること |
+| IPC通信            | creatorHandlers.ts への handler 追加のため適用 | IPC契約チェックリスト準拠                    |
+| エラーハンドリング | verify 失敗時の improve 遷移のため適用         | graceful degradation の維持                  |
 
 ## 統合テスト連携
 
@@ -74,6 +105,7 @@
 - [ ] エッジケース（二重 verify、improve without fail）が定義されている
 - [ ] UI snapshot の期待形状が定義されている
 - [ ] AC-1〜AC-6 とテストが対応している
+- [ ] aiworkflow-requirements の関連仕様を確認した
 - [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
