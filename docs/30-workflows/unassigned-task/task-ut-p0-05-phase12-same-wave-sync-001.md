@@ -1,11 +1,5 @@
 # UT-P0-05-PHASE12-SAME-WAVE-SYNC-001
 
-## メタ情報
-
-```yaml
-issue_number: 1759
-```
-
 ## 概要
 
 TASK-P0-05 のローカル workflow 成果物は存在するが、Phase 12 で必須の canonical mirror / task-workflow same-wave sync が未完了。
