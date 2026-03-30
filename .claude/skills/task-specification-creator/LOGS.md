@@ -12,6 +12,16 @@
 - Phase 6 未テスト `E-14` / `E-15` を runtime persist integration suite へ追加し、task spec の edge case 定義とテスト実体を一致させた
 
 ---
+## 2026-03-30 - TASK-P0-02 Phase 11/12 hardening
+
+### 変更内容
+- active workflow の Phase 1-12 ステータス、root / outputs `artifacts.json`、成果物インベントリを current facts へ同期
+- `outputs/phase-1`〜`phase-3` の summary artifact を追加し、phase spec から参照していた欠落パスを解消
+- Phase 11 に `TC-ID` 一覧、checklist、result evidence table を追加し、`NON_VISUAL` でも validator が機械追跡できる形へ是正
+- Phase 12 の implementation guide を validator 準拠へ書き換え、`recordVerifyPass()` の `checks` 未使用という current fact を明記
+- `.claude` 正本 2 skill の references / `LOGS.md` を same-wave で更新し、mirror sync 前提を回復
+
+---
 ## 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out hardening
 
 ### 変更内容

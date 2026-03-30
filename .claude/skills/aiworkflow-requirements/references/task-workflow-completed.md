@@ -5,6 +5,33 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-02 verify-improve-reverify-closed-loop（2026-03-30）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-02 |
+| ステータス | **完了** |
+| タイプ | implementation / workflow state transition repair |
+| 優先度 | 最高 |
+| 完了日 | 2026-03-30 |
+| 対象 | `SkillCreatorWorkflowEngine` の verify→improve→re-verify 閉ループ |
+| 成果物 | `docs/30-workflows/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop/` |
+
+#### 実施内容
+
+- `recordVerifyPass(planId, checks)` を追加し、verify pass 時の `review` 遷移と `nextAction="handoff"` を定義した
+- `improve -> verify` 遷移を追加し、`requestReverify()` を improve-only gate に是正した
+- execute result 欠落 / execute failure / `terminal_handoff` の拒否条件をテストと close-out 成果物へ反映した
+- Phase 11 は `NON_VISUAL` 運用としつつ `TC-ID ↔ evidence` 対応を明示し、Phase 12 は implementation guide / compliance / canonical spec / `LOGS.md` を same-wave sync した
+
+#### 検証証跡
+
+- `pnpm vitest run apps/desktop/src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts`
+- `node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop --json`
+- `node .agents/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop --json`
+
+---
+
 ### タスク: TASK-P0-05 execute-skill-file-writer-integration（2026-03-30）
 
 | 項目 | 値 |
@@ -1737,4 +1764,3 @@
 #### Phase 12 未タスク
 
 なし（0件）
-

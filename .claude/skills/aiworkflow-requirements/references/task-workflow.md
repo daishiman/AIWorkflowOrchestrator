@@ -4,6 +4,7 @@
 この親仕様書は分割後の entrypoint であり、詳細仕様と履歴は child companion へ分離した。
 旧連番 suffix の completed shard は semantic filename へ移行済み。旧 filename と current filename の対応や migration 根拠が必要なときは `legacy-ordinal-family-register.md` を参照する。
 Runtime Skill Creator 系 completed workflow の canonical root は `docs/30-workflows/completed-tasks/` 配下であり、Phase 13 が `blocked` の task でも completed ledger 側導線は current root と同じ path へ同期する。
+2026-03-30 current fact: TASK-P0-02 verify→improve→re-verify 閉ループ修復は `task-workflow-completed.md` に completed record を持ち、active workflow 側の Phase 11/12 証跡と same-wave で同期する。
 
 ## 仕様書インデックス
 | ファイル | 役割 | 主な見出し |

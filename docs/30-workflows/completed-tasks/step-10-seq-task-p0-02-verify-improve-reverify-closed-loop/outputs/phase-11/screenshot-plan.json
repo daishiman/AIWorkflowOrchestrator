@@ -1,0 +1,12 @@
+{
+  "mode": "NON_VISUAL",
+  "sourceKind": "inventory_only",
+  "reason": "Main Process の phase transition 修復タスクであり、現時点では UI 変更の証跡収集を実施しない",
+  "screenshots": [
+    {
+      "id": "non-visual-proof",
+      "path": "outputs/phase-11/screenshots/non-visual-proof.png",
+      "description": "NON_VISUAL workflow placeholder evidence"
+    }
+  ]
+}

@@ -257,6 +257,26 @@ export class SkillCreatorWorkflowEngine {
     return this.snapshot(state);
   }
 
+  recordVerifyPass(
+    planId: string,
+    _checks: RuntimeSkillCreatorVerifyCheck[],
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.getRequiredWorkflow(planId);
+    this.assertTransition(state.currentPhase, "review");
+    const updatedAt = nowIso();
+    state.currentPhase = "review";
+    state.awaitingUserInput = null;
+    state.verifyResult = {
+      status: "pass",
+      nextAction: "handoff",
+      updatedAt,
+    };
+    state.handoffBundle = null;
+    this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
+  }
+
   recordVerifyFailure(
     planId: string,
     message: string,
@@ -580,7 +600,7 @@ export class SkillCreatorWorkflowEngine {
       review: ["execute", "handoff"],
       execute: ["verify"],
       verify: ["review", "improve"],
-      improve: ["execute"],
+      improve: ["execute", "verify"],
       handoff: [],
     };
 
@@ -751,11 +771,11 @@ export class SkillCreatorWorkflowEngine {
   private getReverifyDisabledReason(
     state: SkillCreatorWorkflowState,
   ): string | undefined {
-    if (state.currentPhase === "execute") {
-      return "実行中は再検証できません。";
-    }
     if (state.routeSnapshot?.type === "terminal_handoff") {
       return "terminal_handoff の再検証導線は Task07 owner のため、この surface では再実行しません。";
+    }
+    if (state.currentPhase !== "improve") {
+      return "improve フェーズ以外では再検証できません。";
     }
 
     const latestExecuteResult = getExecuteArtifactPayload(

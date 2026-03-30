@@ -108,7 +108,7 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 | 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**                       |
 | 2     | 設計             | topology、SubAgent lane、validation path を設計する                                                                                |
 | 3     | 設計レビュー     | Phase 4 へ進めるかを判定する                                                                                                       |
-| 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する** |
+| 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する**。**[Feedback P0-02]** Phase 4 完了後に全テストを実行し、全て FAIL することを確認する（fail-first 保証）。 |
 | 5     | 実装             | `.claude` 正本を更新し、mirror を同期する。**[Feedback RT-03]** 実装計画に「新規作成」「修正」ファイルパス一覧を必須記載する（見落とし防止） |
 | 6     | テスト拡充       | fail path、回帰 guard、補助 command を追加する                                                                                     |
 | 7     | カバレッジ確認   | concern と dependency edge の coverage を可視化する                                                                                |

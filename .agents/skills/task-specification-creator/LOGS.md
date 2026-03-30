@@ -12,6 +12,16 @@
 - Phase 6 未テスト `E-14` / `E-15` を runtime persist integration suite へ追加し、task spec の edge case 定義とテスト実体を一致させた
 
 ---
+## 2026-03-30 - TASK-P0-02 Phase 11/12 hardening
+
+### 変更内容
+- active workflow の Phase 1-12 ステータス、root / outputs `artifacts.json`、成果物インベントリを current facts へ同期
+- `outputs/phase-1`〜`phase-3` の summary artifact を追加し、phase spec から参照していた欠落パスを解消
+- Phase 11 に `TC-ID` 一覧、checklist、result evidence table を追加し、`NON_VISUAL` でも validator が機械追跡できる形へ是正
+- Phase 12 の implementation guide を validator 準拠へ書き換え、`recordVerifyPass()` の `checks` 未使用という current fact を明記
+- `.claude` 正本 2 skill の references / `LOGS.md` を same-wave で更新し、mirror sync 前提を回復
+
+---
 ## 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out hardening
 
 ### 変更内容
@@ -39,19 +49,6 @@
 - Phase 12 の compliance false positive を補正し、root / outputs `artifacts.json` を同期
 - `validate-phase-output.js --phase 12` PASS、`verify-all-specs.js` PASS（warning 28）
 - `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings、`vitest` rerun は environment blocked
-
----
-## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
-
-## TASK-SDK-04-U2 Phase 12 remediation sync（2026-03-28）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 close-out remediation
-- **Result**: success
-- **Notes**:
-  - `artifacts.json` / `outputs/artifacts.json` の root status を `spec_created` へ戻し、index/status/path との drift を解消した
-  - `phase-12-documentation.md` の pending / 未チェック状態を current facts に同期し、 shallow close-out PASS を解消した
-  - system spec update を no-op 扱いしないよう整理し、aiworkflow 正本への same-wave sync を前提に close-out を修正した
 
 ---
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映

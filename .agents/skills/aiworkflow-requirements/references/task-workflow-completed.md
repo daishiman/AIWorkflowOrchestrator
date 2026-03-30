@@ -5,38 +5,30 @@
 
 ## 完了タスク
 
-### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
+### タスク: TASK-P0-02 verify-improve-reverify-closed-loop（2026-03-30）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | TASK-P0-06 |
+| タスクID | TASK-P0-02 |
 | ステータス | **完了** |
-| タイプ | implementation / ui |
-| 優先度 | P0 |
+| タイプ | implementation / workflow state transition repair |
+| 優先度 | 最高 |
 | 完了日 | 2026-03-30 |
-| 対象 | スキル作成ワークフローのUI をフォームベースからチャット型会話UIに刷新 |
-| 成果物 | `docs/30-workflows/p0-verify-remediation-pack/task-p0-06-conversational-interview-ui/` |
+| 対象 | `SkillCreatorWorkflowEngine` の verify→improve→re-verify 閉ループ |
+| 成果物 | `docs/30-workflows/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop/` |
 
 #### 実施内容
 
-- **新規ファイル**: `ConversationalInterview.tsx`, `InterviewProgressBar.tsx`, `useInterviewState.ts`, `interview-widgets/` (5ウィジェット), `index.ts`
-- **変更ファイル**: `SkillLifecyclePanel.tsx`（question-hostセクション置換）, `packages/shared/types/skillCreator.ts`（`multi_select` 型追加）
-- **テスト**: 74テスト (8ファイル) ALL PASS
-- **AC充足**: AC-1〜AC-13 全13項目
+- `recordVerifyPass(planId, checks)` を追加し、verify pass 時の `review` 遷移と `nextAction="handoff"` を定義した
+- `improve -> verify` 遷移を追加し、`requestReverify()` を improve-only gate に是正した
+- execute result 欠落 / execute failure / `terminal_handoff` の拒否条件をテストと close-out 成果物へ反映した
+- Phase 11 は `NON_VISUAL` 運用としつつ `TC-ID ↔ evidence` 対応を明示し、Phase 12 は implementation guide / compliance / canonical spec / `LOGS.md` を same-wave sync した
 
-#### 検証
+#### 検証証跡
 
-- 74テスト ALL PASS（8ファイル）
-- AC-1〜AC-13 全充足
-
-#### 苦戦箇所
-
-- `useCallback` 内 state 同期読み取り（undo 戻り値）: `setMessages` コールバック内の代入は非同期フラッシュのため同期 return に間に合わない → クロージャで現在 state を直接参照する方式に変更
-- vitest 実行ディレクトリ依存: monorepo ルートから実行すると `happy-dom` 環境が適用されず `document is not defined` エラー
-
-#### Phase 12 未タスク
-
-なし
+- `pnpm vitest run apps/desktop/src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts`
+- `node .agents/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop --json`
+- `node .agents/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop --json`
 
 ---
 
@@ -66,6 +58,7 @@
 - 50 tests PASS（parser 16 / facade persist 13 / workflow engine 23 ではなく、current targeted suite 合計 50 として記録）
 
 ---
+
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
 | 項目       | 値                                                                        |
@@ -1771,4 +1764,3 @@
 #### Phase 12 未タスク
 
 なし（0件）
-

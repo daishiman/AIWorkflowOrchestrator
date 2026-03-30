@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| 1.2.0      | 2026-03-30 | verify loop close-out の same-wave sync ルール追加 |
 | 1.1.0      | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
 | 1.0.0      | -          | 初版作成                                           |
 
@@ -174,6 +175,12 @@
 | Phase 5: 品質保証         | 品質ゲート通過   | Phase 6: ドキュメント更新 |
 | Phase 5: 品質保証         | 品質ゲート未通過 | Phase 4: リファクタリング |
 | Phase 6: ドキュメント更新 | 完了             | 完了                      |
+
+### verify loop close-out current rule（2026-03-30）
+
+- `spec_created` task に後から code 実装が入った場合は、Phase 12 で `spec_created` のまま閉じず current facts に合わせて completed / domain sync 要否を再判定する
+- Phase 11 の `NON_VISUAL` 運用でも `TC-ID ↔ evidence` の対応表を必須とし、placeholder PNG だけで PASS としない
+- Phase 12 は workflow outputs だけで閉じず、`.claude` 正本、`LOGS.md`、mirror parity を same-wave で更新する
 
 ---
 
