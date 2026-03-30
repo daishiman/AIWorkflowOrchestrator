@@ -339,6 +339,7 @@ export class SkillCreatorWorkflowEngine {
         toPhase: afterPhase,
         reason: request.reason,
         selectedOptionId: submission.selectedOptionId,
+        selectedOptionIds: normalizeSelectedOptionIds(submission),
       });
     }
 
@@ -875,6 +876,21 @@ function validateUserInputSubmission(
         throw new Error("selectedOptionId is invalid");
       }
       return;
+    case "multi_select": {
+      const selectedOptionIds = normalizeSelectedOptionIds(submission);
+      if (selectedOptionIds.length === 0) {
+        throw new Error("selectedOptionIds is required");
+      }
+      if (
+        request.reason !== "verification_review" &&
+        !selectedOptionIds.every((selectedId) =>
+          request.options?.some((option) => option.id === selectedId),
+        )
+      ) {
+        throw new Error("selectedOptionIds is invalid");
+      }
+      return;
+    }
     case "free_text":
       if (!submission.textValue || submission.textValue.trim() === "") {
         throw new Error("textValue is required");
@@ -891,6 +907,12 @@ function validateUserInputSubmission(
       }
       return;
   }
+}
+
+function normalizeSelectedOptionIds(
+  submission: SkillCreatorUserInputSubmission,
+): string[] {
+  return submission.selectedOptionIds ?? submission.selectedValues ?? [];
 }
 
 function sanitizeSubmissionPayload(

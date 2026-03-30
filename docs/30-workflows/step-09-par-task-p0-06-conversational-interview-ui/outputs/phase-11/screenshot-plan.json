@@ -1,0 +1,26 @@
+{
+  "phase": 11,
+  "status": "pending",
+  "screenshots": [
+    {
+      "id": "TC-11-01",
+      "path": "outputs/phase-11/screenshots/TC-11-01-conversation-start.png",
+      "description": "会話型 UI 初期表示"
+    },
+    {
+      "id": "TC-11-02",
+      "path": "outputs/phase-11/screenshots/TC-11-02-input-kinds.png",
+      "description": "各 input kind の代表状態"
+    },
+    {
+      "id": "TC-11-03",
+      "path": "outputs/phase-11/screenshots/TC-11-03-undo-progress.png",
+      "description": "undo 復元と progress 表示"
+    },
+    {
+      "id": "TC-11-04",
+      "path": "outputs/phase-11/screenshots/TC-11-04-keyboard-focus.png",
+      "description": "キーボード操作のフォーカス状態"
+    }
+  ]
+}
