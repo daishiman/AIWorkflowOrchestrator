@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-29T14:59:35.493Z",
-  "totalKeywords": 2542,
+  "generated": "2026-03-30T03:33:51.951Z",
+  "totalKeywords": 2544,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6534,22 +6534,6 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-safety-gate-permission-fallback.md"
     ],
-    "RT": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "workflow-task-rt-06-artifact-inventory.md"
-    ],
-    "Event": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
-    ],
-    "Normalizer": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
-    ],
-    "実装知見": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-safety-gate-permission-fallback.md"
-    ],
     "settings": [
       "lessons-learned-auth-settings-degradation-guard.md"
     ],
@@ -6719,6 +6703,25 @@
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "conversational": [
+      "lessons-learned-current.md"
+    ],
+    "interview": [
+      "lessons-learned-current.md"
+    ],
+    "ui": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
+      "logs-archive-2026-01-skill-selector-todo-scan-template.md",
+      "logs-archive-2026-01-system-spec-gap-skill-retry.md",
+      "logs-archive-2026-01-topic-map-remember-choice.md",
+      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "spec-splitting-guidelines.md",
+      "ui-ux-feature-components-core.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6827,18 +6830,6 @@
     "management": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "ui": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
-      "logs-archive-2026-01-skill-selector-todo-scan-template.md",
-      "logs-archive-2026-01-system-spec-gap-skill-retry.md",
-      "logs-archive-2026-01-topic-map-remember-choice.md",
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "spec-splitting-guidelines.md",
-      "ui-ux-feature-components-core.md"
-    ],
     "governance": [
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
@@ -6879,12 +6870,6 @@
     "HARNESS": [
       "lessons-learned-phase12-workflow-lifecycle.md",
       "ui-ux-panels.md"
-    ],
-    "close": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "out": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "SHARED": [
       "lessons-learned-phase12-workflow-lifecycle.md",

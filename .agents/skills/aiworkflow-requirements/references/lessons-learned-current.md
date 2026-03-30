@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-30 | 3.0.0 | TASK-P0-06 conversational-interview-ui 教訓4件を追加（L-P0-06-001: useCallback内state同期読み取り、L-P0-06-002: document-levelキーリスナークリーンアップ、L-P0-06-003: vitest実行ディレクトリとhappy-dom環境、L-P0-06-004: esbuildプラットフォームミスマッチ） |
 | 2026-03-28 | 2.9.0 | TASK-SDK-08 session-persistence-and-resume-contract 教訓3件を追加（L-1: esbuild mismatch、L-2: artifact命名規約 / validator不一致、L-3: Phase 11 UI/docs-only判定不一致） |
 | 2026-03-27 | 2.8.2 | TASK-SDK-04 の教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): user input semantics / canonical execute binding、→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): spec_created task の screenshot/evidence drift） |
 | 2026-03-27 | 2.8.2 | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): placeholder-only screenshot PASS 禁止 / implementation guide Part 2 必須要素 / Phase 2 contract matrix stale drift 防止） |
@@ -872,3 +873,44 @@
 | 解決策 | Phase 12 で workflow root に close-out 成果物（implementation-guide / system-spec-update-summary / unassigned-task-detection 等）を揃え、canonical spec との整合を同一 wave で確認する |
 | 標準ルール | `resource-map` / `quick-reference` は「正本は shared catalog」を読む導線として有効。workflow root の close-out を canonical spec 更新と同ターンで実施する |
 | 関連タスク | TASK-LLM-MOD-04 |
+
+---
+
+## TASK-P0-06 conversational-interview-ui（2026-03-30）
+
+### L-P0-06-001: useCallback内でのstateの同期的読み取りパターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `undo()` 関数でReact state (`messages`) を読んで戻り値として返す必要があったが、`setMessages` コールバック内で変数に代入しても、呼び出し元には `null` が返った |
+| 原因 | Reactのstateは非同期でフラッシュされるため、`setMessages` コールバック内での代入は呼び出し元の同期的な `return` には間に合わない |
+| 解決策 | `setMessages` コールバックを使わず、`useCallback` のクロージャで `messages` 変数（現在のstate値）を直接参照し、`setMessages(messages.slice(0, n))` の形式で更新。戻り値は呼び出し前に `messages` から直接取得 |
+| 適用範囲 | hookから同期的な戻り値が必要で、かつstateを変更するケース全般 |
+| 関連タスク | TASK-P0-06 |
+
+### L-P0-06-002: ConfirmButtonsのdocument-levelキーリスナーとクリーンアップ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | モーダルやパネル内コンポーネントでグローバルなキーショートカット（Y/N）を実装する際、`document.addEventListener` を使うとコンポーネントアンマウント後もリスナーが残る |
+| 解決策 | `useEffect` の cleanup関数で `document.removeEventListener` を確実に呼ぶ。`useCallback` でハンドラをメモ化してdependency arrayに渡す |
+| テストの注意 | このパターンのテストは `fireEvent.keyDown(element, ...)` ではなく `fireEvent.keyDown(document, ...)` でdocumentを対象にする必要がある |
+| 関連タスク | TASK-P0-06 |
+
+### L-P0-06-003: vitest実行ディレクトリとhappy-dom環境の関係
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | monorepoのルートから `pnpm exec vitest run` を実行すると `document is not defined` エラーが発生し、テストが全失敗した |
+| 原因 | vitestはカレントディレクトリの `vitest.config.ts` を読む。ルートから実行すると `apps/desktop/vitest.config.ts` の `environment: "happy-dom"` が適用されない |
+| 解決策 | `cd apps/desktop` してから `pnpm exec vitest run` を実行する。または `pnpm --filter @repo/desktop exec vitest run` でフィルタを指定する |
+| 関連タスク | TASK-P0-06 |
+
+### L-P0-06-004: esbuildのプラットフォームミスマッチ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktreeで `pnpm install` 後に vitest 実行時 `esbuild binary platform mismatch` エラーが発生 |
+| 原因 | `node_modules` がdarwin-arm64向けに解決されているが、実行環境はx64 |
+| 解決策 | `pnpm add -wD @esbuild/darwin-x64@0.21.5` でx64バイナリを追加インストール |
+| 関連タスク | TASK-P0-06 |

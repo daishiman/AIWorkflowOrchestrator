@@ -5,6 +5,41 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-06 |
+| ステータス | **完了** |
+| タイプ | implementation / ui |
+| 優先度 | P0 |
+| 完了日 | 2026-03-30 |
+| 対象 | スキル作成ワークフローのUI をフォームベースからチャット型会話UIに刷新 |
+| 成果物 | `docs/30-workflows/p0-verify-remediation-pack/task-p0-06-conversational-interview-ui/` |
+
+#### 実施内容
+
+- **新規ファイル**: `ConversationalInterview.tsx`, `InterviewProgressBar.tsx`, `useInterviewState.ts`, `interview-widgets/` (5ウィジェット), `index.ts`
+- **変更ファイル**: `SkillLifecyclePanel.tsx`（question-hostセクション置換）, `packages/shared/types/skillCreator.ts`（`multi_select` 型追加）
+- **テスト**: 74テスト (8ファイル) ALL PASS
+- **AC充足**: AC-1〜AC-13 全13項目
+
+#### 検証
+
+- 74テスト ALL PASS（8ファイル）
+- AC-1〜AC-13 全充足
+
+#### 苦戦箇所
+
+- `useCallback` 内 state 同期読み取り（undo 戻り値）: `setMessages` コールバック内の代入は非同期フラッシュのため同期 return に間に合わない → クロージャで現在 state を直接参照する方式に変更
+- vitest 実行ディレクトリ依存: monorepo ルートから実行すると `happy-dom` 環境が適用されず `document is not defined` エラー
+
+#### Phase 12 未タスク
+
+なし
+
+---
+
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
 | 項目 | 値 |
