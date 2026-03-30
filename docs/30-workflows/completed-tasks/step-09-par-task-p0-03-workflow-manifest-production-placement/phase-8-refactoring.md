@@ -26,7 +26,7 @@ manifest の resource descriptor を最適化し、保守性と可読性を向�
 | phase-2 design         | `phase-2-design.md`                                   | 設計方針          |
 | phase-5 implementation | `phase-5-implementation.md`                           | 実装済み manifest |
 | phase-7 coverage check | `phase-7-coverage-check.md`                           | カバレッジ確認    |
-| workflow-manifest.json | `.agents/skills/skill-creator/workflow-manifest.json` | 最適化対象        |
+| workflow-manifest.json | `.claude/skills/skill-creator/workflow-manifest.json` | 最適化対象        |
 
 ## リファクタリング対象
 

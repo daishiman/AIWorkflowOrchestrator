@@ -11,23 +11,25 @@
 
 ## 目的
 
-manifest を手動で ManifestLoader に読み込ませ、自動テストでは確認しきれない問題を検出する。
+manifest を手動で ManifestLoader に読み込ませ、自動テストでは確認しきれない問題を検出する。UI スクリーンショット中心ではなく、NON_VISUAL task としてコマンド証跡と目視監査ログを残す。
 
 ## 実行タスク
 
 - manual manifest loading: workflow-manifest.json を ManifestLoader.loadManifest() で手動読み込みする
 - resource path walkthrough: 全 resource descriptor の path を手動で辿り、ファイルの存在と内容を目視確認する
 - discovered issue 記録: 自動テストでは拾えない違和感を記録する
+- NON_VISUAL evidence 記録: screenshot を必須化せず、実行コマンド、結果、判断理由を `manual-test-result.md` に残す
 
 ## 参照資料
 
-| 資料名                    | パス                                                  | 説明         |
-| ------------------------- | ----------------------------------------------------- | ------------ |
-| phase-1 requirements      | `phase-1-requirements.md`                             | AC           |
-| phase-5 implementation    | `phase-5-implementation.md`                           | 実装結果     |
-| phase-9 quality assurance | `phase-9-quality-assurance.md`                        | 品質確認結果 |
-| phase-10 final review     | `phase-10-final-review.md`                            | gate 判定    |
-| workflow-manifest.json    | `.agents/skills/skill-creator/workflow-manifest.json` | 手動検証対象 |
+| 資料名                    | パス                                                                      | 説明                  |
+| ------------------------- | ------------------------------------------------------------------------- | --------------------- |
+| phase-1 requirements      | `phase-1-requirements.md`                                                 | AC                    |
+| phase-5 implementation    | `phase-5-implementation.md`                                               | 実装結果              |
+| phase-9 quality assurance | `phase-9-quality-assurance.md`                                            | 品質確認結果          |
+| phase-10 final review     | `phase-10-final-review.md`                                                | gate 判定             |
+| workflow-manifest.json    | `.claude/skills/skill-creator/workflow-manifest.json`                     | 手動検証対象          |
+| Phase 11 template         | `.claude/skills/task-specification-creator/references/phase-templates.md` | NON_VISUAL 運用の確認 |
 
 ## 手動テスト項目
 
@@ -55,6 +57,14 @@ manifest を手動で ManifestLoader に読み込ませ、自動テストでは�
 | 全 exit hook の command が意味のある文字列  | manifest を読んで確認     |
 | phase と hook の対応関係が論理的に妥当      | manifest を読んで論理確認 |
 
+### NON_VISUAL evidence 方針
+
+| 項目       | 方針                                                                                |
+| ---------- | ----------------------------------------------------------------------------------- |
+| screenshot | 必須ではない。manifest task は NON_VISUAL として扱う                                |
+| 代替証跡   | 実行コマンド、標準出力、確認対象 path、判定理由を残す                               |
+| PASS 条件  | `manual-test-result.md` が `not_run` ではなく、実測結果または blocker reason を持つ |
+
 ## 実行手順
 
 ### ステップ1: manifest を手動で読み込む
@@ -67,15 +77,16 @@ Node.js REPL またはテストスクリプトで workflow-manifest.json を読�
 
 ### ステップ3: discovered issue を記録する
 
-自動テストでは拾えない問題（resource と phase の論理的不整合、hook command の意味的不自然さ等）を記録する。
+自動テストでは拾えない問題（resource と phase の論理的不整合、hook command の意味的不自然さ等）を記録する。NON_VISUAL task である理由、screen capture を要求しなかった理由、代替証跡も同時に残す。
 
 ## 統合テスト連携
 
-| 観点             | 実施内容                    |
-| ---------------- | --------------------------- |
-| manual loading   | manifest の手動読み込み確認 |
-| path walkthrough | 全 resource path の目視確認 |
-| human audit      | 自動テスト外の違和感抽出    |
+| 観点             | 実施内容                      |
+| ---------------- | ----------------------------- |
+| manual loading   | manifest の手動読み込み確認   |
+| path walkthrough | 全 resource path の目視確認   |
+| human audit      | 自動テスト外の違和感抽出      |
+| non-visual audit | screenshot 非依存の証跡鎖確認 |
 
 ## 多角的チェック観点
 
@@ -104,6 +115,7 @@ Node.js REPL またはテストスクリプトで workflow-manifest.json を読�
 - [ ] manifest の手動読み込みが成功している
 - [ ] 全 resource path の目視確認が完了している
 - [ ] discovered issue の有無が記録されている
+- [ ] `manual-test-result.md` が `not_run` のまま残っていない
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## タスク100%実行確認【必須】

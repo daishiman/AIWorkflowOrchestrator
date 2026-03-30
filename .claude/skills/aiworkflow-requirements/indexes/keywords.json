@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-29T14:53:41.674Z",
-  "totalKeywords": 2538,
+  "generated": "2026-03-29T15:23:39.800Z",
+  "totalKeywords": 2537,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2745,6 +2745,7 @@
     "shared": [
       "arch-execution-capability-contract.md",
       "directory-structure-core.md",
+      "lessons-learned-current.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "workflow-light-theme-global-remediation.md"
     ],
@@ -6331,7 +6332,6 @@
     ],
     "MISMATCH": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "SkillImportDialog": [
@@ -6685,6 +6685,13 @@
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
+    "channel": [
+      "lessons-learned-current.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
+    ],
+    "契約整合": [
+      "lessons-learned-current.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6850,12 +6857,6 @@
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "out": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "ESBUILD": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "ARCH": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "Extraction": [
@@ -8662,9 +8663,6 @@
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "ut": [
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
-    ],
-    "channel": [
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
     ],
     "conflict": [

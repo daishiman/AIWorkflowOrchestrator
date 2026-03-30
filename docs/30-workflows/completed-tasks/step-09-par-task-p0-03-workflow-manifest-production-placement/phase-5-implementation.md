@@ -11,12 +11,13 @@
 
 ## 目的
 
-workflow-manifest.json を作成し、`.agents/skills/skill-creator/` に配置する。Phase 2 で確定した manifest 構造に従い、ManifestLoader.loadManifest() の検証を通過するファイルを生成する。
+workflow-manifest.json を正本 `.claude/skills/skill-creator/` に作成し、mirror `.agents/skills/skill-creator/` と同期する。Phase 2 で確定した manifest 構造に従い、ManifestLoader.loadManifest() の検証を通過するファイルを生成する。
 
 ## 実行タスク
 
 - manifest JSON 作成: Phase 2 設計に基づく workflow-manifest.json を作成する
 - resource path 確認: 全 resource descriptor の path が実在ファイルを指すことを確認する
+- mirror parity 確認: `.claude` と `.agents` の manifest が一致することを確認する
 - ManifestLoader 検証実行: loadManifest() で manifest を読み込み、検証を通過することを確認する
 
 ## 参照資料
@@ -34,9 +35,10 @@ workflow-manifest.json を作成し、`.agents/skills/skill-creator/` に配置�
 
 ### 作成ファイル
 
-| ファイル                                              | 内容                   |
-| ----------------------------------------------------- | ---------------------- |
-| `.agents/skills/skill-creator/workflow-manifest.json` | 本番 manifest ファイル |
+| ファイル                                              | 内容                          |
+| ----------------------------------------------------- | ----------------------------- |
+| `.claude/skills/skill-creator/workflow-manifest.json` | 本番 manifest 正本ファイル    |
+| `.agents/skills/skill-creator/workflow-manifest.json` | 本番 manifest mirror ファイル |
 
 ### manifest 構造
 
@@ -51,9 +53,10 @@ workflow-manifest.json を作成し、`.agents/skills/skill-creator/` に配置�
 
 1. manifest JSON を作成する
 2. JSON syntax validation（`JSON.parse`）を通す
-3. skill-creator ディレクトリに配置する
+3. `.claude/skills/skill-creator/` に配置し、`.agents/skills/skill-creator/` mirror を同期する
 4. resource descriptor の全 path が実在するか `fs.existsSync()` で確認する
-5. ManifestLoader.loadManifest() で読み込み、エラーなしを確認する
+5. `diff -q` 等で canonical / mirror parity を確認する
+6. ManifestLoader.loadManifest() で読み込み、エラーなしを確認する
 
 ## 実行手順
 
@@ -63,7 +66,7 @@ Phase 2 設計の manifest 構造設計書に基づき、workflow-manifest.json 
 
 ### ステップ2: resource path を検証する
 
-全 resource descriptor の path が `.agents/skills/skill-creator/` 配下の実在ファイルを指すことを確認する。
+全 resource descriptor の path が `.claude/skills/skill-creator/` 配下の実在ファイルを指し、mirror drift がないことを確認する。
 
 ### ステップ3: ManifestLoader 検証を実行する
 
@@ -75,6 +78,7 @@ Phase 4 で定義したテストケース TC-01 から TC-07 を実行し、全 
 | -------------- | ----------------------------------------- |
 | JSON validity  | JSON.parse で構文エラーがないこと         |
 | path existence | 全 resource.path が実在すること           |
+| mirror parity  | `.claude` と `.agents` に差分がないこと   |
 | ManifestLoader | loadManifest() がエラーなしで完了すること |
 | test cases     | TC-01 から TC-07 が全て PASS すること     |
 
@@ -95,15 +99,18 @@ Phase 4 で定義したテストケース TC-01 から TC-07 を実行し、全 
 
 ## 成果物
 
-| 成果物                     | パス                                                  | 説明              |
-| -------------------------- | ----------------------------------------------------- | ----------------- |
-| workflow-manifest.json     | `.agents/skills/skill-creator/workflow-manifest.json` | 本番 manifest     |
-| implementation evidence    | `outputs/phase-5/implementation-evidence.md`          | 検証結果の記録    |
-| resource validation result | `outputs/phase-5/resource-validation-result.md`       | path 実在性の確認 |
+| 成果物                     | パス                                                  | 説明               |
+| -------------------------- | ----------------------------------------------------- | ------------------ |
+| workflow-manifest.json     | `.claude/skills/skill-creator/workflow-manifest.json` | 本番 manifest 正本 |
+| workflow-manifest mirror   | `.agents/skills/skill-creator/workflow-manifest.json` | parity 確認対象    |
+| mirror parity log          | `outputs/phase-5/mirror-parity-log.md`                | 同期結果の記録     |
+| implementation evidence    | `outputs/phase-5/implementation-evidence.md`          | 検証結果の記録     |
+| resource validation result | `outputs/phase-5/resource-validation-result.md`       | path 実在性の確認  |
 
 ## 完了条件
 
-- [ ] workflow-manifest.json が `.agents/skills/skill-creator/` に存在する
+- [ ] workflow-manifest.json が `.claude/skills/skill-creator/` に存在する
+- [ ] `.agents/skills/skill-creator/` mirror と parity が取れている
 - [ ] JSON syntax validation を通過する
 - [ ] 全 resource descriptor の path が実在ファイルを指す
 - [ ] ManifestLoader.loadManifest() がエラーなしで完了する

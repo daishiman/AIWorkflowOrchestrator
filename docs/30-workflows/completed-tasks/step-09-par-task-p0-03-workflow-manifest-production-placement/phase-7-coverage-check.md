@@ -16,7 +16,7 @@ manifest の全フィールドが受入基準とテストケースでカバー�
 ## 実行タスク
 
 - manifest フィールド coverage: manifest JSON の全フィールドが AC またはテストケースに対応しているかを確認する
-- AC coverage matrix: AC-1 から AC-6 と対応するテストケース・検証方法の対応表を作る
+- AC coverage matrix: AC-1 から AC-7 と対応するテストケース・検証方法の対応表を作る
 - uncovered risk 抽出: カバレッジ外の論点を洗い出す
 
 ## 参照資料
@@ -27,7 +27,7 @@ manifest の全フィールドが受入基準とテストケースでカバー�
 | phase-4 test creation  | `phase-4-test-creation.md`                            | テストケース      |
 | phase-5 implementation | `phase-5-implementation.md`                           | 実装済み manifest |
 | phase-6 test expansion | `phase-6-test-expansion.md`                           | 追加テスト        |
-| workflow-manifest.json | `.agents/skills/skill-creator/workflow-manifest.json` | 検証対象          |
+| workflow-manifest.json | `.claude/skills/skill-creator/workflow-manifest.json` | 検証対象          |
 
 ## カバレッジ確認内容
 
@@ -35,33 +35,35 @@ manifest の全フィールドが受入基準とテストケースでカバー�
 
 | フィールド           | AC   | テストケース | カバー状況 |
 | -------------------- | ---- | ------------ | ---------- |
-| schemaVersion        | AC-5 | TC-02        | 確認対象   |
-| workflowId           | AC-2 | TC-01        | 確認対象   |
-| phases[].id          | AC-4 | TC-04        | 確認対象   |
-| phases[].title       | AC-4 | TC-04        | 確認対象   |
-| phases[].entryHookId | AC-6 | TC-06        | 確認対象   |
-| phases[].exitHookId  | AC-6 | TC-07        | 確認対象   |
-| phases[].dependsOn   | AC-4 | EC-01        | 確認対象   |
-| phases[].resourceIds | AC-3 | TC-03        | 確認対象   |
-| resources[].id       | AC-3 | TC-03        | 確認対象   |
-| resources[].kind     | AC-3 | EC-02        | 確認対象   |
-| resources[].path     | AC-3 | TC-03        | 確認対象   |
-| resources[].phaseIds | AC-3 | TC-03        | 確認対象   |
-| entry[].id           | AC-6 | TC-05, TC-06 | 確認対象   |
-| entry[].command      | AC-6 | EC-03        | 確認対象   |
-| exit[].id            | AC-6 | TC-05, TC-07 | 確認対象   |
-| exit[].command       | AC-6 | EC-03        | 確認対象   |
+| schemaVersion        | AC-6 | TC-02        | 確認対象   |
+| workflowId           | AC-3 | TC-01        | 確認対象   |
+| phases[].id          | AC-5 | TC-04        | 確認対象   |
+| phases[].title       | AC-5 | TC-04        | 確認対象   |
+| phases[].entryHookId | AC-7 | TC-06        | 確認対象   |
+| phases[].exitHookId  | AC-7 | TC-07        | 確認対象   |
+| phases[].dependsOn   | AC-5 | EC-01        | 確認対象   |
+| phases[].resourceIds | AC-4 | TC-03        | 確認対象   |
+| resources[].id       | AC-4 | TC-03        | 確認対象   |
+| resources[].kind     | AC-4 | EC-02        | 確認対象   |
+| resources[].path     | AC-4 | TC-03        | 確認対象   |
+| resources[].phaseIds | AC-4 | TC-03        | 確認対象   |
+| entry[].id           | AC-7 | TC-05, TC-06 | 確認対象   |
+| entry[].command      | AC-7 | EC-03        | 確認対象   |
+| exit[].id            | AC-7 | TC-05, TC-07 | 確認対象   |
+| exit[].command       | AC-7 | EC-03        | 確認対象   |
+| mirror parity        | AC-2 | RC-04        | 確認対象   |
 
 ### AC coverage matrix
 
-| AC   | テストケース        | 検証方法                  |
-| ---- | ------------------- | ------------------------- |
-| AC-1 | TC-01               | ファイル存在確認          |
-| AC-2 | TC-01               | loadManifest() エラーなし |
-| AC-3 | TC-03               | resource path 実在確認    |
-| AC-4 | TC-04               | phases.length >= 5        |
-| AC-5 | TC-02               | schemaVersion === 1       |
-| AC-6 | TC-05, TC-06, TC-07 | hooks 定義と参照整合      |
+| AC   | テストケース        | 検証方法                   |
+| ---- | ------------------- | -------------------------- |
+| AC-1 | TC-01               | canonical ファイル存在確認 |
+| AC-2 | RC-04               | mirror parity 確認         |
+| AC-3 | TC-01               | loadManifest() エラーなし  |
+| AC-4 | TC-03               | resource path 実在確認     |
+| AC-5 | TC-04               | phases.length >= 5         |
+| AC-6 | TC-02               | schemaVersion === 1        |
+| AC-7 | TC-05, TC-06, TC-07 | hooks 定義と参照整合       |
 
 ## 実行手順
 
@@ -71,7 +73,7 @@ manifest の全フィールドに対応する AC またはテストケースを�
 
 ### ステップ2: AC coverage matrix を完成させる
 
-AC-1 から AC-6 の検証手段が全て定義されていることを確認する。
+AC-1 から AC-7 の検証手段が全て定義されていることを確認する。
 
 ### ステップ3: uncovered risk を記録する
 
