@@ -546,6 +546,53 @@ ui-ux-diagrams.md の「実装ギャップ一覧（GAP ID 正本）」セクシ�
 
 ---
 
+## TASK-RT-05: multi_select ユーザー入力種別追加 完了記録（2026-03-30）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RT-05 |
+| 対象workflow | `docs/30-workflows/step-09-par-task-rt-05-multi-select-user-input-kind/` |
+| ステータス | completed（Phase 1-12） |
+| テスト | Engine 26件 + Renderer 35件 PASS |
+| 画面証跡 | screenshot 未取得（esbuild platform mismatch のため） |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| 型追加 | `SkillCreatorUserInputKind` に `"multi_select"` を追加（4種 → 5種） |
+| 送信型拡張 | `SkillCreatorUserInputSubmission` に `selectedOptionIds?: string[]` を追加 |
+| Engine 検証 | `validateUserInputSubmission` に `multi_select` case を追加（空配列 reject / 不明 option id reject） |
+| Renderer state | `SkillLifecyclePanel` に `selectedOptionIds` state 追加 + request kind 切替時 reset |
+| Renderer UI | checkbox host JSX を `single_select` host 直後に配置、submit disable 条件を各 kind で分岐 |
+| spec 同期 | `skill-creator/SKILL.md` / `api-ipc-system-core.md` を same-wave で更新 |
+
+### 検証証跡
+
+| 区分 | コマンド / 証跡 | 結果 |
+| --- | --- | --- |
+| Engine tests | `cd apps/desktop && pnpm exec vitest run src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts` | PASS（26 tests） |
+| Renderer tests | `cd apps/desktop && pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx` | PASS（35 tests） |
+| TypeScript | `pnpm exec tsc --noEmit` | PASS |
+| screenshot | 未取得（esbuild platform mismatch） | — |
+
+### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 解決策 | 再利用ルール |
+| --- | --- | --- |
+| `toBeChecked` / `toBeDisabled` が Chai エラーになると誤認 | `src/test/setup.ts` に `@testing-library/jest-dom` が既にインポート済みで実際は問題なかった | jest-dom matchers 使用前に `setupFiles` を確認し、不要な代替実装を避ける |
+| request kind 切替時に `multi_select` 選択が引き継がれる | `useEffect(() => { ... }, [workflowSnapshot])` で kind 変化を監視し全 input state を一括 reset | input kind state は kind の切替ソースを `useEffect` 依存に入れ、all-reset を kind 個別ではなく一括で行う |
+| `selectedOptionId` vs `selectedOptionIds` の二重管理 | 別フィールドとして共存させ、submit 時に kind で分岐 | 既存 API との非破壊互換を優先する場合は field 追加 + kind 分岐パターンを適用する |
+| esbuild platform mismatch で worktree 内 screenshot が不安定 | TypeScript typecheck と vitest のみで検証し、screenshot は条件付き保留 | worktree での実行前にネイティブモジュールの arch 整合を確認する |
+
+### Phase 12 未タスク（0件）
+
+なし
+
+---
+
 ## UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20）
 
 | 項目 | 内容 |

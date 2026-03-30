@@ -730,4 +730,93 @@ describe("SkillCreatorWorkflowEngine", () => {
       expect(transitionArtifact).toBeUndefined();
     });
   });
+
+  // ── TASK-RT-05: multi_select validation ──
+
+  describe("multi_select validation", () => {
+    function setupMultiSelectState(engine: SkillCreatorWorkflowEngine) {
+      const snapshot = engine.recordPlanResult(createPlanResult(), {
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
+      });
+      const requestId = snapshot.awaitingUserInput!.requestId;
+      // Override awaitingUserInput to multi_select for testing validation
+      const workflows = (
+        engine as unknown as {
+          workflows: Map<string, { awaitingUserInput: unknown }>;
+        }
+      ).workflows;
+      const state = workflows.get("plan-001")!;
+      state.awaitingUserInput = {
+        requestId,
+        reason: "plan_review" as const,
+        title: "Multi Select Test",
+        prompt: "Select multiple options",
+        kind: "multi_select" as const,
+        options: [
+          { id: "opt-a", label: "Option A" },
+          { id: "opt-b", label: "Option B" },
+          { id: "opt-c", label: "Option C" },
+        ],
+        requestedAt: new Date().toISOString(),
+      };
+      return requestId;
+    }
+
+    // T4-4: 既知 option id 配列なら pass
+    it("既知 option id の配列で submit が成功する", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const requestId = setupMultiSelectState(engine);
+
+      const submitted = engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId,
+        selectedOptionIds: ["opt-a", "opt-b"],
+      });
+
+      expect(submitted.awaitingUserInput).toBeNull();
+    });
+
+    // T4-2: 空配列なら fail
+    it("selectedOptionIds が空配列なら reject する", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const requestId = setupMultiSelectState(engine);
+
+      expect(() =>
+        engine.submitUserInput("plan-001", {
+          planId: "plan-001",
+          requestId,
+          selectedOptionIds: [],
+        }),
+      ).toThrow("selectedOptionIds must be a non-empty array");
+    });
+
+    // T4-2: undefined なら fail
+    it("selectedOptionIds が undefined なら reject する", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const requestId = setupMultiSelectState(engine);
+
+      expect(() =>
+        engine.submitUserInput("plan-001", {
+          planId: "plan-001",
+          requestId,
+        }),
+      ).toThrow("selectedOptionIds must be a non-empty array");
+    });
+
+    // T4-3: 未知 option id を含むと fail
+    it("未知の option id を含むと reject する", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const requestId = setupMultiSelectState(engine);
+
+      expect(() =>
+        engine.submitUserInput("plan-001", {
+          planId: "plan-001",
+          requestId,
+          selectedOptionIds: ["opt-a", "unknown-id"],
+        }),
+      ).toThrow("selectedOptionIds contains unknown option id");
+    });
+  });
 });
