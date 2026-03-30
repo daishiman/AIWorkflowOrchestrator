@@ -7,8 +7,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-30 - TASK-P0-05 execute-skill-file-writer-integration close-out sync（`parseLlmResponseToContent` の `.md` 正規化と heading tolerance を是正し、`SkillCreatorWorkflowEngine` execute artifact に `persistResult` / `persistError` を保存 / runtime targeted vitest 50件 PASS / Phase 11 evidence と Phase 12 compliance root を補完 / `task-workflow-completed.md`・SKILL history・topic-map 再生成を same-wave で反映 / canonical sync 未完了を follow-up UT へ formalize） |
 | 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out sync（step-03-seq-task-04-test-update workflow root を整備 / Phase 11/12/13 成果物を current root に揃え / docs-only close-out wave のため Step 2 domain spec 更新は no-op / GoogleAdapter・provider-registry test の current-facts 更新 / UT-LLM-MOD-04-001 backlog 維持 / esbuild mismatch で vitest 再実行不能のため historical acceptance evidence と grep を併用 / lessons: P50 task は新規実装前提で書かない・workflow root staleness は resource-map 導線で防ぐ） |
-| 2026-03-29 - TASK-RT-01 llm-adapter-error-propagation close-out sync（`task-workflow-completed.md` に完了記録を追加し、`api-ipc-system-core.md` / `architecture-overview-core.md` へ `skill-creator:plan` outer/inner response 契約と `LLM_ADAPTER_*` / `adapterStatus` current facts を反映。workflow docs の `artifacts.json` parity・Phase 11 NON_VISUAL evidence・Phase 12 compliance 判定を実装済み状態へ同期） |
 | 2026-03-29 - P0是正パック skills-creator-agent-sdk-lane 同期（artifacts.json schema 統一 100ファイル `"complete"` → `"completed"` 修正 / 新規タスク仕様書 15件全構成（index.md + phase-1〜13 + artifacts.json）: TASK-RT-01〜06（LLMAdapter/Runtime系）+ TASK-P0-01〜09（P0検証/修復系）/ p0-verify-manifest-remediation-pack.md 依存マトリクスと推奨実行順を最新化 / generate-index.js 含む validate スクリプト PASS / `.claude` 正本と `.agents` ミラー同期完了） |
 | 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization close-out sync（shared barrel export漏れと Renderer plan型ドリフトを修正 / sessionId昇格規約を最初観測へ統一 / Phase 11-12成果物を補完 / typecheck(shared+desktop) PASS / vitest blocker を UT-RT-06-ESBUILD-ARCH-MISMATCH-001 として formalize） |
 | 2026-03-29 - TASK-RT-04 Phase 12 close-out sync（`ui-ux-feature-components-core.md` ステータスを「進行中」→「完了」に更新、`task-workflow-completed.md` に完了記録追加、`lessons-learned-phase12-workflow-lifecycle.md` に教訓2件（esbuild アーキ不一致 / 主導線補助導線境界）追記、`api-ipc-system-core.md` に runtime lane 補助導線ルール追加、`interfaces-agent-sdk-skill-reference.md` に `ApiKeyStatus` 型追記、generate-index.js 実行 + `.agents` mirror rsync 完了） |
@@ -126,16 +126,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 
 - [logs-archive-index.md](references/logs-archive-index.md)
-
-## TASK-RT-01 llm-adapter-error-propagation close-out sync（2026-03-29）
-
-- タスク名: llm-adapter-error-propagation
-- 種別: runtime bug-fix / close-out sync
-- 主な反映:
-  - `references/task-workflow-completed.md` に TASK-RT-01 完了記録を追加
-  - `references/api-ipc-system-core.md` に `skill-creator:plan` の outer/inner response 契約（`IpcResult.success` と `data.success`）を追記
-  - `references/architecture-overview-core.md` に runtime bridge の error propagation surface 説明を追記
-  - workflow 側 `artifacts.json` と `outputs/artifacts.json` の parity を回復し、Phase 11/12 証跡記述を NON_VISUAL 方針へ整合化
 
 ## TASK-SDK-03 resource selection hardening sync（2026-03-27）
 

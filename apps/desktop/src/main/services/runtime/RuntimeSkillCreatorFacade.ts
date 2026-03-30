@@ -73,6 +73,7 @@ import type {
 import { PhaseResourcePlanner } from "./PhaseResourcePlanner";
 import { ResolvedResourceReader } from "./ResolvedResourceReader";
 import { SkillCreatorSourceResolver } from "./SkillCreatorSourceResolver";
+import { parseLlmResponseToContent } from "./parseLlmResponseToContent";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -543,6 +544,31 @@ export class RuntimeSkillCreatorFacade {
       .find((event) => event.eventType === "error");
     const permissionDenials = collectPermissionDenials(sdkEvents);
 
+    // Step 3.5-3.6: LLM 応答からコンテンツ抽出 → SkillFileWriter.persist() (TASK-P0-05)
+    let persistResult: { skillPath: string; files: string[] } | null = null;
+    let persistError: string | null = null;
+
+    if (response.success) {
+      try {
+        const content = parseLlmResponseToContent(sdkEvents);
+
+        if (content && this.skillFileWriter) {
+          persistResult = await this.skillFileWriter.persist(
+            planResult.skillName,
+            content,
+            { overwrite: true },
+          );
+        } else if (content && !this.skillFileWriter) {
+          console.warn(
+            "[RuntimeSkillCreatorFacade] skillFileWriter is not injected. " +
+              "Skipping persist for generated content.",
+          );
+        }
+      } catch (err) {
+        persistError = err instanceof Error ? err.message : String(err);
+      }
+    }
+
     const executeResult: SkillExecuteResult = {
       executeId: response.executionId,
       skillName:
@@ -558,6 +584,8 @@ export class RuntimeSkillCreatorFacade {
         permissionDenials.length > 0 ? permissionDenials : undefined,
       sdkEvents,
       sourceProvenance,
+      persistResult,
+      persistError,
     };
     if (executeResult.success) {
       this.workflowEngine.recordExecuteResult(planResult.planId, executeResult);
