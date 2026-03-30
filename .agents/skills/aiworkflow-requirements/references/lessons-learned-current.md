@@ -888,18 +888,18 @@
 
 ---
 
-## TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out）
+## TASK-P0-04 教訓（2026-03-30）
 
-### L-LLM-MOD-04-001: P50 タスクを新規実装前提で書き続けると validator fail と stale guidance を同時に生む
+### L-P0-04-001: vitest 実行時の process.cwd() はプロジェクトルートではない
 
 | 項目 | 内容 |
 | --- | --- |
-| 課題 | TASK-LLM-MOD-04 は Task 01〜03 でテスト同時更新済み（コード変更 0 行）の P50 パターンだったが、タスク仕様書が新規実装前提のテンプレートのまま残り、Phase 12 で「実装 0 行なのに実装ガイドが長大」という stale guidance を生んだ |
-| 解決策 | Phase 1 で「このタスクが P50（既実装発見）か否か」を明示し、P50 の場合は Phase 4-5 テンプレートを docs-only 向けに簡略化する |
-| 標準ルール | `git log -- <target-file>` で既実装状況を Phase 1 で確認し、P50 判定時は仕様書を P50 モードへ切り替える |
-| 関連タスク | TASK-LLM-MOD-04 |
+| 課題 | `REPO_SKILL_CREATOR_PATH` は `path.resolve(process.cwd(), ".claude", ...)` でモジュールロード時に評価される。vitest では cwd が `apps/desktop/` になるため、プロジェクトルートの `.claude/` を参照できずテストが失敗する |
+| 解決策 | テスト環境では `AIWORKFLOW_SKILL_CREATOR_PATH` 環境変数を `beforeAll`/`afterAll` でセットして `getSkillCreatorRootCandidates()` を正しいパスに誘導する。本番コードの変更は不要 |
+| 標準ルール | `process.cwd()` ベースの定数はモジュールロード時に固定される点に注意。テスト内でパス依存のコードをテストする際は環境変数 DI パターンを使用する |
+| 関連タスク | TASK-P0-04 |
 
-### L-LLM-MOD-04-002: canonical system spec が更新済みでも workflow root が stale なら利用者は誤誘導される
+### L-P0-04-002: TDD Red は「import エラー」ではなく「実行エラー」で確認する
 
 | 項目 | 内容 |
 | --- | --- |
@@ -907,6 +907,15 @@
 | 解決策 | Phase 12 で workflow root に close-out 成果物（implementation-guide / system-spec-update-summary / unassigned-task-detection 等）を揃え、canonical spec との整合を同一 wave で確認する |
 | 標準ルール | `resource-map` / `quick-reference` は「正本は shared catalog」を読む導線として有効。workflow root の close-out を canonical spec 更新と同ターンで実施する |
 | 関連タスク | TASK-LLM-MOD-04 |
+
+### L-P0-04-003: TDD Red は「import エラー」ではなく「実行エラー」で確認する（補足）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 未実装関数を import すると、同ファイル内の既存テストも巻き込んで全失敗になる。Red の確認目的が「新テストの失敗」なのに既存テストが壊れる副作用が生じる |
+| 解決策 | スケルトン関数（`throw new Error("not implemented")`）を先に定義し、import はコンパイルできる状態にする。実行時にのみ新テストが Red になるよう設計する |
+| 標準ルール | テストファースト実装では「スケルトン定義 → テスト記述 → Red 確認 → 実装 → Green 確認」の順序を守る |
+| 関連タスク | TASK-P0-04 |
 
 ---
 
