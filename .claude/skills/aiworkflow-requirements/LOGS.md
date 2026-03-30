@@ -504,3 +504,15 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - vitest は esbuild アーキ不整合で blocked
 - 派生未タスク:
   - `UT-RT-06-ESBUILD-ARCH-MISMATCH-001`
+
+## UT-RT-06-ESBUILD-ARCH-MISMATCH-001 close-out sync（2026-03-29）
+
+- タスク名: UT-RT-06-ESBUILD-ARCH-MISMATCH-001 esbuild-arch-mismatch-fix
+- 種別: バグ修正（環境修正） + 仕様書同期
+- 主な変更:
+  - `task-workflow-backlog.md`: UT-RT-06-ESBUILD-ARCH-MISMATCH-001 エントリ（行626, 629）を取り消し線＋**完了: 2026-03-29** に更新
+  - `task-workflow-completed.md`: UT-RT-06-ESBUILD-ARCH-MISMATCH-001 の完了記録を追記（完了日・テスト結果・再発防止ガイドへの参照）
+  - `lessons-learned-phase12-workflow-lifecycle.md`: esbuild バイナリアーキ不一致の診断・解決・再発防止知見を追記
+- 検証:
+  - 対象テスト 27 tests PASS（RuntimeSkillCreatorFacade.sdk-normalization.test.ts）
+  - 再発防止ガイド: `docs/40-guides/esbuild-arch-mismatch-prevention.md`

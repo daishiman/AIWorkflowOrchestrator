@@ -957,6 +957,20 @@
 
 ---
 
+## UT-RT-06-ESBUILD-ARCH-MISMATCH-001 (2026-03-29)
+
+### 苦戦箇所1: esbuild バイナリアーキ不一致の診断
+- **症状**: `pnpm install` 後に vitest が起動しない。`Error: The package "esbuild-darwin-arm64" could not be found.` または類似エラー
+- **原因**: macOS 上で Rosetta 経由 x64 Node と native arm64 Node が混在する環境で、`pnpm install` 時の esbuild optional dependency 解決結果と実行時の `process.arch` がずれる
+- **解決策**: `EXPECTED_PLATFORM="darwin-$(node -p process.arch)"` を基準に診断し、`pnpm install --force` で optional dependency を再解決
+- **再発防止**: `docs/40-guides/esbuild-arch-mismatch-prevention.md` の Preflight チェックリスト（5ステップ）参照
+
+### 知見: arm64 固定ではなく process.arch 動的取得が重要
+- `arm64` を直接ハードコードすると x64 環境での誤検知が発生する
+- `node -p process.arch` で実行時アーキを動的取得することで、CI/CD 環境の差異も吸収できる
+
+---
+
 ## UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 教訓（2026-03-29）
 
 ### L-SDK07-SC-001: Vite テスト環境での @repo/shared パスエイリアス未解決

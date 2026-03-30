@@ -454,22 +454,6 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `skill-creator:get-verify-detail` | verify detail 取得 | `SkillCreatorGetVerifyDetailRequest` | `IpcResult<RuntimeSkillCreatorVerifyDetailResponse>` |
 | `skill-creator:reverify-workflow` | verify loop 再要求 | `SkillCreatorReverifyWorkflowRequest` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
 
-### TASK-RT-01 plan error propagation 契約（2026-03-29）
-
-`skill-creator:plan` は二層レスポンス契約を持つ。
-
-- outer: `IpcResult.success` は handler 実行成否（IPC transport）
-- inner: `data` は `RuntimeSkillCreatorPlanResponse`（ドメイン結果）
-
-`plan()` の adapter 未準備時は次を返す:
-
-- `IpcResult.success: true`
-- `data.success: false`
-- `data.errorCode: "LLM_ADAPTER_FAILED" | "LLM_ADAPTER_INITIALIZING"`
-- `data.adapterStatus: "failed" | "initializing"`
-
-adapter ready の通常系では `data.adapterStatus: "ready"` を返す。
-
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 
 - `SkillCreatorWorkflowEngine` が `verifyResult` / `routeSnapshot` / `sourceProvenance` から `RuntimeSkillCreatorVerifyDetail` を導出する current fact に更新。
