@@ -2514,10 +2514,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | 使い方 | L14 |
 | Current Alias Overrides（個別互換行） | L21 |
-| Family Summary | L36 |
-| Detailed Register | L55 |
-| Section Extract Register (2026-03-17) | L236 |
-| 500-Line Split Register (2026-03-16) | L247 |
+| Family Summary | L37 |
+| Detailed Register | L56 |
+| Section Extract Register (2026-03-17) | L237 |
+| 500-Line Split Register (2026-03-16) | L248 |
 
 ### references/lessons-learned-archive-2026-03-mid.md
 
@@ -2628,18 +2628,20 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L62 |
-| クイックリファレンス: カテゴリ別検索ガイド | L77 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L250 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L582 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L616 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L699 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L715 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L739 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L780 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L805 |
-| TASK-RT-06 教訓（2026-03-29） | L836 |
-| TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L858 |
+| 分割ファイル一覧 | L64 |
+| クイックリファレンス: カテゴリ別検索ガイド | L80 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L267 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L599 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L633 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L716 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L732 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L756 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L797 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L822 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L837 |
+| TASK-RT-06 教訓（2026-03-29） | L853 |
+| TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L876 |
+| TASK-P0-04 教訓（2026-03-30） | L890 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2783,6 +2785,15 @@ node scripts/list-specs.js --topics
 | 2026-03-25 UT-LLM-MOD-01-005（provider registry SSoT） | L64 |
 | 2026-03-16 UT-06-001 (tool-risk-config-implementation) | L107 |
 | 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout） | L196 |
+
+### references/lessons-learned-ui-adapter-status-retry.md
+
+| セクション | 行 |
+|------------|----|\n| 変更履歴 | L9 |
+| TASK-RT-02 / api-key-ui-adapter-status | L17 |
+| 関連リソース (TASK-RT-02) | L115 |
+| TASK-RT-03: SkillCreationResultPanel 実装知見 (2026-03-30) | L127 |
+| 関連リソース (TASK-RT-03) | L212 |
 
 ### references/lessons-learned-ui-agent-view-nav-notification-history.md
 
@@ -4111,6 +4122,15 @@ node scripts/list-specs.js --topics
 | ライフサイクルタイムライン観測項目（TASK-SKILL-LIFECYCLE-07） | L167 |
 | 関連ドキュメント | L189 |
 | 変更履歴 | L199 |
+
+### references/ui-result-panel-pattern.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L3 |
+| コンポーネント構成 | L7 |
+| 重要設計決定 | L25 |
+| コンポーネント設計パターン早見表 | L40 |
+| テスト戦略 | L48 |
 
 ---
 

@@ -19,22 +19,22 @@
 
 ## 依存関係
 
-| 依存先         | パス                                                                              | 用途                           |
-| -------------- | --------------------------------------------------------------------------------- | ------------------------------ |
-| カバレッジ基準 | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | 目標値                         |
-| P41            | `.claude/rules/06-known-pitfalls.md`                                              | v8カバレッジプロバイダの注意点 |
+| 依存先         | パス                                                                        | 用途                           |
+| -------------- | --------------------------------------------------------------------------- | ------------------------------ |
+| カバレッジ基準 | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` | 目標値                         |
+| P41            | `.claude/rules/06-known-pitfalls.md`                                        | v8カバレッジプロバイダの注意点 |
 
 ## 参照資料
 
-| 参照資料                 | パス                                                                                        | 内容                              |
-| ------------------------ | ------------------------------------------------------------------------------------------- | --------------------------------- |
-| Phase 5 実装成果物       | `apps/desktop/src/main/ipc/skillHandlers.ts`                                               | カバレッジ測定対象                |
-| Phase 5 実装成果物       | `apps/desktop/src/preload/skill-api.ts`                                                    | カバレッジ測定対象                |
-| Phase 6 テスト拡充成果物 | `apps/desktop/src/main/ipc/__tests__/skillHandlers*.test.ts`                              | 追加テストの反映範囲              |
-| Phase 6 テスト拡充成果物 | `apps/desktop/src/preload/__tests__/skill-api*.test.ts`                                   | 追加テストの反映範囲              |
-| 品質・カバレッジ基準     | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                 | 閾値定義と品質ゲート              |
-| テストパターン           | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`           | 未達時の追加テスト設計方針        |
-| P41 の既知の落とし穴対策 | `.claude/rules/06-known-pitfalls.md`                                                        | カバレッジ測定時の誤判定防止      |
+| 参照資料                 | パス                                                                              | 内容                         |
+| ------------------------ | --------------------------------------------------------------------------------- | ---------------------------- |
+| Phase 5 実装成果物       | `apps/desktop/src/main/ipc/skillHandlers.ts`                                      | カバレッジ測定対象           |
+| Phase 5 実装成果物       | `apps/desktop/src/preload/skill-api.ts`                                           | カバレッジ測定対象           |
+| Phase 6 テスト拡充成果物 | `apps/desktop/src/main/ipc/__tests__/skillHandlers*.test.ts`                      | 追加テストの反映範囲         |
+| Phase 6 テスト拡充成果物 | `apps/desktop/src/preload/__tests__/skill-api*.test.ts`                           | 追加テストの反映範囲         |
+| 品質・カバレッジ基準     | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | 閾値定義と品質ゲート         |
+| テストパターン           | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md` | 未達時の追加テスト設計方針   |
+| P41 の既知の落とし穴対策 | `.claude/rules/06-known-pitfalls.md`                                              | カバレッジ測定時の誤判定防止 |
 
 ## カバレッジ基準
 
@@ -123,10 +123,10 @@ cd apps/desktop && pnpm vitest run --coverage src/main/ipc/skillHandlers.ts src/
 
 ## SubAgent 分担
 
-| SubAgent   | 担当 |
-| ---------- | ---- |
-| SubAgent-A | タスク1（カバレッジ計測） |
-| SubAgent-B | タスク2（閾値判定）+ タスク3（未達時ギャップ分析） |
+| SubAgent   | 担当                                                       |
+| ---------- | ---------------------------------------------------------- |
+| SubAgent-A | タスク1（カバレッジ計測）                                  |
+| SubAgent-B | タスク2（閾値判定）+ タスク3（未達時ギャップ分析）         |
 | SubAgent-C | Phase進行判定（Phase 8 進行 / Phase 6 戻り）+ レポート集約 |
 
 ## 成果物

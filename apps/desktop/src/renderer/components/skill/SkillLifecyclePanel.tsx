@@ -10,11 +10,13 @@ import type {
   ApplyImprovementResult,
   HandoffGuidance,
   RuntimeSkillCreatorExecuteResponse,
+  RuntimeSkillCreatorExecuteResult,
   RuntimeSkillCreatorImproveErrorResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanErrorResponse,
   RuntimeSkillCreatorPlanResponse,
+  RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
   SkillCreatorUserInputSubmission,
@@ -23,6 +25,7 @@ import type {
 } from "@repo/shared/types";
 import type { PlanResult } from "../../store/slices/agentSlice";
 import { ApiKeySettingsPanel } from "./ApiKeySettingsPanel";
+import { ConversationalInterview } from "./ConversationalInterview";
 import {
   useBeginSkillReview,
   useClearHandoffGuidance,
@@ -59,7 +62,9 @@ import {
   useWorkflowSnapshot,
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
+import { ExecuteResultDetailPanel } from "./ExecuteResultDetailPanel";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
+import { PlanResultDetailPanel } from "./PlanResultDetailPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
 
@@ -411,6 +416,12 @@ export function SkillLifecyclePanel({
     modelName: string;
     externalDestinations: string[];
   } | null>(null);
+  // TASK-RT-03: raw plan/execute detail を local state に保持
+  const [rawPlanDetail, setRawPlanDetail] =
+    useState<RuntimeSkillCreatorPlanResult | null>(null);
+  const [rawExecuteDetail, setRawExecuteDetail] =
+    useState<RuntimeSkillCreatorExecuteResult | null>(null);
+
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [textAnswer, setTextAnswer] = useState("");
@@ -432,6 +443,8 @@ export function SkillLifecyclePanel({
     setLocalPlanResult(null);
     setCurrentPlanResult(null);
     setCurrentPlanId(null);
+    setRawPlanDetail(null);
+    setRawExecuteDetail(null);
   }, [setCurrentPlanId, setCurrentPlanResult]);
 
   useEffect(() => {
@@ -595,7 +608,7 @@ export function SkillLifecyclePanel({
     clearHandoffGuidance();
   };
 
-  const handleSubmitWorkflowInput = async () => {
+  const _handleSubmitWorkflowInput = async () => {
     if (!workflowSnapshot?.awaitingUserInput) {
       return;
     }
@@ -805,6 +818,13 @@ export function SkillLifecyclePanel({
             return;
           }
 
+          // TASK-RT-03: raw plan detail を local state に保存
+          // この時点で terminal_handoff と error response は上流のガードで除外済み
+          // normalizedPlan が取得できている = planResult.data は RuntimeSkillCreatorPlanResult
+          if ("planId" in planResult.data) {
+            setRawPlanDetail(planResult.data as RuntimeSkillCreatorPlanResult);
+          }
+
           setApprovedSkillSpec(trimmedRequest);
           setLocalPlanResult(normalizedPlan);
           setCurrentPlanResult(normalizedPlan);
@@ -874,6 +894,10 @@ export function SkillLifecyclePanel({
         await loadVerifyDetail(planId);
         return;
       }
+      // TASK-RT-03: raw execute detail を local state に保存
+      // terminal_handoff は上流ガードで除外済み → executeResponse は RuntimeSkillCreatorExecuteResult
+      setRawExecuteDetail(executeResponse);
+
       if (!executeResponse.success) {
         await loadVerifyDetail(planId);
         setGenerationError(executeResponse.error ?? "計画実行に失敗しました");
@@ -903,6 +927,8 @@ export function SkillLifecyclePanel({
     setVerifyDetail(null);
     setVerifyDetailError(null);
     setDisclosureInfo(null);
+    setRawPlanDetail(null);
+    setRawExecuteDetail(null);
   };
 
   const handleCreate = async () => {
@@ -1183,7 +1209,7 @@ export function SkillLifecyclePanel({
     (isExecuting ||
       streamingMessages.length > 0 ||
       (skillExecutionStatus !== null && skillExecutionStatus !== "idle"));
-  const pendingRequest = workflowSnapshot?.awaitingUserInput ?? null;
+  const _pendingRequest = workflowSnapshot?.awaitingUserInput ?? null;
 
   return (
     <div
@@ -1319,100 +1345,35 @@ export function SkillLifecyclePanel({
               </span>
             </div>
 
-            {pendingRequest ? (
-              <div
-                className="mt-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-4"
-                data-testid="skill-lifecycle-question-host"
-              >
-                <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                  Question Host
-                </p>
-                <h4 className="mt-2 text-sm font-semibold text-[var(--text-primary)]">
-                  {pendingRequest.title}
-                </h4>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                  {pendingRequest.prompt}
-                </p>
-
-                {pendingRequest.kind === "single_select" ? (
-                  <div className="mt-4 space-y-2">
-                    {pendingRequest.options?.map((option) => (
-                      <label
-                        key={option.id}
-                        className="flex cursor-pointer items-start gap-3 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3"
-                      >
-                        <input
-                          type="radio"
-                          name="workflow-single-select"
-                          checked={selectedOptionId === option.id}
-                          onChange={() => setSelectedOptionId(option.id)}
-                        />
-                        <span className="text-sm text-[var(--text-primary)]">
-                          {option.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                ) : null}
-
-                {pendingRequest.kind === "free_text" ? (
-                  <textarea
-                    value={textAnswer}
-                    onChange={(event) => setTextAnswer(event.target.value)}
-                    rows={4}
-                    placeholder={pendingRequest.placeholder}
-                    className="mt-4 w-full rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)]"
-                  />
-                ) : null}
-
-                {pendingRequest.kind === "secret" ? (
-                  <input
-                    type="password"
-                    value={secretAnswer}
-                    onChange={(event) => setSecretAnswer(event.target.value)}
-                    placeholder={pendingRequest.placeholder}
-                    className="mt-4 w-full rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)]"
-                  />
-                ) : null}
-
-                {pendingRequest.kind === "confirm" ? (
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      type="button"
-                      className={lifecycleButtonStyles.primary}
-                      onClick={() => setConfirmAnswer(true)}
-                    >
-                      はい
-                    </button>
-                    <button
-                      type="button"
-                      className={lifecycleButtonStyles.secondary}
-                      onClick={() => setConfirmAnswer(false)}
-                    >
-                      いいえ
-                    </button>
-                  </div>
-                ) : null}
-
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className={lifecycleButtonStyles.primary}
-                    onClick={() => {
-                      void handleSubmitWorkflowInput();
-                    }}
-                    data-testid="skill-lifecycle-submit-user-input"
-                  >
-                    回答を送信する
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="mt-4 rounded-xl border border-dashed border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4 text-sm text-[var(--text-secondary)]">
-                現在 pending の質問はありません。phase owner は Main 側 workflow
-                engine のまま維持されます。
-              </div>
-            )}
+            <div
+              className="mt-4 min-h-[320px]"
+              data-testid="skill-lifecycle-question-host"
+            >
+              <ConversationalInterview
+                workflowSnapshot={workflowSnapshot}
+                onSubmit={async (submission) => {
+                  const skillCreatorApi = getSkillCreatorApi();
+                  if (!skillCreatorApi?.submitUserInput) {
+                    setWorkflowError(
+                      "workflow user input API が利用できません",
+                    );
+                    throw new Error("workflow user input API が利用できません");
+                  }
+                  const result =
+                    await skillCreatorApi.submitUserInput(submission);
+                  if (!result.success || !result.data) {
+                    const message =
+                      result.error ??
+                      "workflow user input の送信に失敗しました";
+                    setWorkflowError(message);
+                    throw new Error(message);
+                  }
+                  setWorkflowSnapshot(result.data);
+                  setWorkflowError(null);
+                }}
+                onError={(msg) => setWorkflowError(msg)}
+              />
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -1535,6 +1496,19 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
+      {/* TASK-RT-03: Plan 結果詳細パネル — review phase で raw plan detail が存在する場合 */}
+      {rawPlanDetail &&
+      (!workflowSnapshot ||
+        workflowSnapshot.currentPhase === "review" ||
+        workflowSnapshot.awaitingUserInput?.reason === "plan_review") ? (
+        <PlanResultDetailPanel
+          planResult={rawPlanDetail}
+          onRetry={() => {
+            void handlePrepare();
+          }}
+        />
+      ) : null}
+
       {activePlanResult?.type === "terminal_handoff" &&
       activePlanResult.guidance ? (
         <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
@@ -1550,6 +1524,16 @@ export function SkillLifecyclePanel({
             </code>
           ) : null}
         </div>
+      ) : null}
+
+      {/* TASK-RT-03: Execute 結果詳細パネル — verify phase で raw execute detail が存在する場合 */}
+      {rawExecuteDetail && workflowSnapshot?.currentPhase === "verify" ? (
+        <ExecuteResultDetailPanel
+          executeResult={rawExecuteDetail}
+          onRetry={() => {
+            void handleExecutePlan();
+          }}
+        />
       ) : null}
 
       {activeWorkflowId ? (

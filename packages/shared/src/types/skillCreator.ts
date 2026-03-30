@@ -408,6 +408,7 @@ export type SkillCreatorWorkflowPhase =
 
 export type SkillCreatorUserInputKind =
   | "single_select"
+  | "multi_select"
   | "free_text"
   | "secret"
   | "confirm";
@@ -520,9 +521,45 @@ export interface SkillCreatorUserInputSubmission {
   planId: string;
   requestId: string;
   selectedOptionId?: string;
+  selectedOptionIds?: string[];
+  selectedValues?: string[];
   textValue?: string;
   secretValue?: string;
   confirmed?: boolean;
+}
+
+// ============================================
+// Conversational Interview UI 型定義 (TASK-P0-06)
+// ============================================
+
+export type InterviewProficiency = "beginner" | "engineer";
+
+export interface InterviewUserAnswer {
+  kind: SkillCreatorUserInputKind;
+  selectedOptionId?: string;
+  selectedOptionIds?: string[];
+  selectedValues?: string[];
+  textValue?: string;
+  secretValue?: string;
+  confirmed?: boolean;
+}
+
+export interface InterviewMessage {
+  id: string;
+  role: "assistant" | "user";
+  kind: SkillCreatorUserInputKind | "info";
+  content: string;
+  inputRequest?: SkillCreatorUserInputRequest;
+  userAnswer?: InterviewUserAnswer;
+  timestamp: string;
+}
+
+export interface InterviewState {
+  messages: InterviewMessage[];
+  currentStepIndex: number;
+  totalSteps: number;
+  proficiency: InterviewProficiency;
+  canUndo: boolean;
 }
 
 // ============================================

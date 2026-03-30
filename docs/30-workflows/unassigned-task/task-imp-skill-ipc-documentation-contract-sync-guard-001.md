@@ -15,17 +15,17 @@ source_phase: UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12 再監査（実
 created_date: 2026-02-27
 ```
 
-| 項目         | 内容                                                                                   |
-| ------------ | -------------------------------------------------------------------------------------- |
-| タスクID     | UT-IMP-SKILL-IPC-DOCUMENTATION-CONTRACT-SYNC-GUARD-001                                |
-| タスク名     | skill IPCドキュメント契約同期ガード                                                    |
-| 分類         | 改善                                                                                   |
-| 対象機能     | `skillHandlers.ts` / `skill-api.ts` / `ipc-documentation.md` / Phase 12成果物台帳     |
-| 優先度       | 中                                                                                     |
-| 見積もり規模 | 中規模                                                                                 |
-| ステータス   | 未実施                                                                                 |
-| 発見元       | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12 再監査（苦戦箇所・2026-02-27）     |
-| 発見日       | 2026-02-27                                                                             |
+| 項目         | 内容                                                                              |
+| ------------ | --------------------------------------------------------------------------------- |
+| タスクID     | UT-IMP-SKILL-IPC-DOCUMENTATION-CONTRACT-SYNC-GUARD-001                            |
+| タスク名     | skill IPCドキュメント契約同期ガード                                               |
+| 分類         | 改善                                                                              |
+| 対象機能     | `skillHandlers.ts` / `skill-api.ts` / `ipc-documentation.md` / Phase 12成果物台帳 |
+| 優先度       | 中                                                                                |
+| 見積もり規模 | 中規模                                                                            |
+| ステータス   | 未実施                                                                            |
+| 発見元       | UT-FIX-SKILL-IPC-RESPONSE-CONSISTENCY-001 Phase 12 再監査（苦戦箇所・2026-02-27） |
+| 発見日       | 2026-02-27                                                                        |
 
 ---
 
@@ -109,11 +109,11 @@ skill IPC契約のドキュメント同期を機械検証可能にし、Phase 12
 
 ### 3.5 実装課題と解決策（親タスクからの教訓）
 
-| 課題 | 発見経緯 | 解決策 | 教訓 |
-| --- | --- | --- | --- |
+| 課題                                  | 発見経緯                                                                               | 解決策                                                                                         | 教訓                                                                            |
+| ------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
 | `ipc-documentation.md` の契約ドリフト | 再監査で `skill:abort` / `skill:get-status` / `skill:execute` 記述が実装と不一致だった | Main (`skillHandlers.ts`) と Preload (`skill-api.ts`) の実シグネチャを一次情報として再同期した | IPC仕様更新は「文書のみ更新」ではなく「実装+文書+契約テスト」同時更新で実施する |
-| Phase 12台帳の二重管理不整合 | `artifacts.json` と `outputs/artifacts.json` の片側更新で完了判定が揺れた | 2台帳を同時更新し、`validate-phase-output` で固定化した | Phase 12完了条件は成果物作成ではなく台帳同期まで含める |
-| `current` / `baseline` 監査軸の混同 | 全体監査FAILを今回差分FAILと誤認しやすかった | `audit --diff-from HEAD` の `currentViolations.total` を合否軸に固定した | 監査値は current（今回）と baseline（既存）を分離報告する |
+| Phase 12台帳の二重管理不整合          | `artifacts.json` と `outputs/artifacts.json` の片側更新で完了判定が揺れた              | 2台帳を同時更新し、`validate-phase-output` で固定化した                                        | Phase 12完了条件は成果物作成ではなく台帳同期まで含める                          |
+| `current` / `baseline` 監査軸の混同   | 全体監査FAILを今回差分FAILと誤認しやすかった                                           | `audit --diff-from HEAD` の `currentViolations.total` を合否軸に固定した                       | 監査値は current（今回）と baseline（既存）を分離報告する                       |
 
 ---
 
@@ -230,11 +230,11 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 
 ## 7. リスクと対策
 
-| リスク | 影響度 | 発生確率 | 対策 |
-| --- | --- | --- | --- |
-| 契約同期ルールが文書だけで形骸化する | 中 | 中 | 仕様更新時に契約テスト実行を必須化する |
-| 二重台帳の片側更新が再発する | 中 | 中 | 更新手順に2ファイル同時更新と差分確認を組み込む |
-| 監査判定の解釈揺れが再発する | 中 | 低 | `currentViolations.total` を合否軸として固定記載する |
+| リスク                               | 影響度 | 発生確率 | 対策                                                 |
+| ------------------------------------ | ------ | -------- | ---------------------------------------------------- |
+| 契約同期ルールが文書だけで形骸化する | 中     | 中       | 仕様更新時に契約テスト実行を必須化する               |
+| 二重台帳の片側更新が再発する         | 中     | 中       | 更新手順に2ファイル同時更新と差分確認を組み込む      |
+| 監査判定の解釈揺れが再発する         | 中     | 低       | `currentViolations.total` を合否軸として固定記載する |
 
 ---
 

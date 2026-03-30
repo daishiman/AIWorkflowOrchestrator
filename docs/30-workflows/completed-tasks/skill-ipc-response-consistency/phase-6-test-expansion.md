@@ -19,24 +19,24 @@ Phase 4-5 で作成したテストに加え、正常系・異常系・境界値�
 
 ## 依存関係
 
-| 依存先                         | パス                                                                              | 用途           |
-| ------------------------------ | --------------------------------------------------------------------------------- | -------------- |
-| Phase 4 テストケースマトリクス | `outputs/phase-4/test-case-matrix.md`                                             | テスト設計根拠 |
-| カバレッジ基準                 | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | 目標           |
-| 既知の落とし穴                 | `.claude/rules/06-known-pitfalls.md`                                              | P39/P40/P41    |
+| 依存先                         | パス                                                                        | 用途           |
+| ------------------------------ | --------------------------------------------------------------------------- | -------------- |
+| Phase 4 テストケースマトリクス | `outputs/phase-4/test-case-matrix.md`                                       | テスト設計根拠 |
+| カバレッジ基準                 | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md` | 目標           |
+| 既知の落とし穴                 | `.claude/rules/06-known-pitfalls.md`                                        | P39/P40/P41    |
 
 ## 参照資料
 
-| 参照資料                         | パス                                                                                        | 内容                     |
-| -------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------ |
-| Phase 5 実装成果物               | `apps/desktop/src/main/ipc/skillHandlers.ts`                                               | テスト対象の実装         |
-| Phase 5 実装成果物               | `apps/desktop/src/preload/skill-api.ts`                                                    | テスト対象の実装         |
-| Phase 5 型定義成果物             | `apps/desktop/src/preload/types.ts`                                                        | 型整合テスト対象         |
-| Phase 4 テストケースマトリクス   | `outputs/phase-4/test-case-matrix.md`                                                      | 拡充対象の既存ケース     |
-| 品質・カバレッジ基準             | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                 | カバレッジ閾値           |
-| テストパターン                   | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`           | 境界値・異常系設計指針   |
-| Skill IPC セキュリティ           | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc.md`                   | P42準拠3段検証の要件     |
-| P39/P40/P41 の既知の落とし穴対策 | `.claude/rules/06-known-pitfalls.md`                                                        | テスト環境差分の注意事項 |
+| 参照資料                         | パス                                                                              | 内容                     |
+| -------------------------------- | --------------------------------------------------------------------------------- | ------------------------ |
+| Phase 5 実装成果物               | `apps/desktop/src/main/ipc/skillHandlers.ts`                                      | テスト対象の実装         |
+| Phase 5 実装成果物               | `apps/desktop/src/preload/skill-api.ts`                                           | テスト対象の実装         |
+| Phase 5 型定義成果物             | `apps/desktop/src/preload/types.ts`                                               | 型整合テスト対象         |
+| Phase 4 テストケースマトリクス   | `outputs/phase-4/test-case-matrix.md`                                             | 拡充対象の既存ケース     |
+| 品質・カバレッジ基準             | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | カバレッジ閾値           |
+| テストパターン                   | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md` | 境界値・異常系設計指針   |
+| Skill IPC セキュリティ           | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc.md`         | P42準拠3段検証の要件     |
+| P39/P40/P41 の既知の落とし穴対策 | `.claude/rules/06-known-pitfalls.md`                                              | テスト環境差分の注意事項 |
 
 ## 実行タスク
 
@@ -56,15 +56,15 @@ Phase 4-5 で作成したテストに加え、正常系・異常系・境界値�
 
 **テスト対象の正常系パターン（代表チャネル）**:
 
-| チャネル       | 正常系パターン           | 検証内容                 |
-| -------------- | ------------------------ | ------------------------ |
-| `skill:list`       | スキル一覧取得           | 配列の返却、各要素の形状 |
+| チャネル            | 正常系パターン         | 検証内容                 |
+| ------------------- | ---------------------- | ------------------------ |
+| `skill:list`        | スキル一覧取得         | 配列の返却、各要素の形状 |
 | `skill:getImported` | インポート済み一覧取得 | 配列の返却、各要素の形状 |
-| `skill:execute`    | スキル実行成功           | 実行結果の形状           |
-| `skill:import`     | スキルインポート成功     | 成功レスポンスの形状     |
-| `skill:remove`     | スキル削除成功           | 成功レスポンスの形状     |
-| `skill:get-detail` | スキル詳細取得           | 詳細オブジェクトの形状   |
-| `skill:scan`       | スキャン成功             | 返却形式の形状           |
+| `skill:execute`     | スキル実行成功         | 実行結果の形状           |
+| `skill:import`      | スキルインポート成功   | 成功レスポンスの形状     |
+| `skill:remove`      | スキル削除成功         | 成功レスポンスの形状     |
+| `skill:get-detail`  | スキル詳細取得         | 詳細オブジェクトの形状   |
+| `skill:scan`        | スキャン成功           | 返却形式の形状           |
 
 > 14チャネル全体の対象定義は `index.md` の「IPCチャネル正本（Single Source of Truth）」に従う。
 
@@ -154,19 +154,19 @@ cd apps/desktop && pnpm vitest run src/preload/__tests__/
 
 ## SubAgent 分担
 
-| SubAgent   | 担当 |
-| ---------- | ---- |
-| SubAgent-A | タスク1（正常系テスト拡充）+ タスク2（異常系テスト拡充） |
-| SubAgent-B | タスク3（境界値テスト拡充） |
+| SubAgent   | 担当                                                                       |
+| ---------- | -------------------------------------------------------------------------- |
+| SubAgent-A | タスク1（正常系テスト拡充）+ タスク2（異常系テスト拡充）                   |
+| SubAgent-B | タスク3（境界値テスト拡充）                                                |
 | SubAgent-C | タスク4（回帰テスト確認）+ `outputs/phase-6/test-expansion-report.md` 作成 |
 
 ## 成果物
 
-| 成果物                | パス                                                         | 内容       |
-| --------------------- | ------------------------------------------------------------ | ---------- |
+| 成果物                | パス                                                         | 内容         |
+| --------------------- | ------------------------------------------------------------ | ------------ |
 | テスト拡充レポート    | `outputs/phase-6/test-expansion-report.md`                   | 実行結果要約 |
-| 拡充テスト（Main）    | `apps/desktop/src/main/ipc/__tests__/skillHandlers*.test.ts` | 追加テスト |
-| 拡充テスト（Preload） | `apps/desktop/src/preload/__tests__/skill-api*.test.ts`      | 追加テスト |
+| 拡充テスト（Main）    | `apps/desktop/src/main/ipc/__tests__/skillHandlers*.test.ts` | 追加テスト   |
+| 拡充テスト（Preload） | `apps/desktop/src/preload/__tests__/skill-api*.test.ts`      | 追加テスト   |
 
 ## 統合テスト連携
 
