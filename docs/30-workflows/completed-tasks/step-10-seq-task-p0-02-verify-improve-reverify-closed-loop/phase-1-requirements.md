@@ -9,7 +9,7 @@
 | 対象機能   | TASK-P0-02 verify→improve→re-verify 閉ループ修復 |
 | 前提Phase  | -                                                |
 | 次Phase    | Phase 2: 設計                                    |
-| ステータス | pending                                          |
+| ステータス | completed                                        |
 | 作成日     | 2026-03-29                                       |
 | 更新日     | 2026-03-30                                       |
 
@@ -56,6 +56,7 @@ WorkflowEngine (`SkillCreatorWorkflowEngine.ts`) の既存 phase transitions を
 - `recordVerifyFailure()` の挙動を記録する（nextAction: `"improve"` | `"review"`）
 - `recordVerifyPass()` が不在であることを問題として固定する
 - `requestReverify()` (行421-444) の eligibility check を記録する:
+  - improve phase 以外 → re-verify 禁止
   - execute phase ongoing → re-verify 禁止
   - terminal_handoff route → re-verify 禁止
   - no execute result → re-verify 禁止
@@ -64,7 +65,7 @@ WorkflowEngine (`SkillCreatorWorkflowEngine.ts`) の既存 phase transitions を
 
 ### Task 2: 欠損遷移の特定
 
-- verify 成功時 → 次 phase（complete 等）が未定義であることを確定する
+- verify 成功時 → `recordVerifyPass()` による `status: pass` / `nextAction: handoff` 記録と review への遷移が未定義であることを確定する
 - improve 完了時 → verify（re-verify）への直接遷移が存在しないことを確定する
 - improve→execute→verify の間接経路が存在するが、verify を経由するのに execute を再実行する冗長性を記録する
 - `SkillCreatorVerifyResult` の status `"pass"` に対応するハンドラが不在であることを確定する
@@ -102,10 +103,10 @@ WorkflowEngine (`SkillCreatorWorkflowEngine.ts`) の既存 phase transitions を
 
 | 参照資料                  | パス                                                                                        | 内容                                                 |
 | ------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService、Facade injection パターンの仕様 |
-| Agent IPC チャネル仕様    | `.agents/skills/aiworkflow-requirements/references/api-ipc-agent-core.md`                   | agent:execute、agent:verify 等の IPC チャネル定義    |
-| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時のインターフェース不整合防止チェックリスト  |
-| スキル実行IPCセキュリティ | `.agents/skills/aiworkflow-requirements/references/security-skill-ipc-core.md`              | パストラバーサル防止、コマンドインジェクション防止   |
+| Skill Creator Service仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService、Facade injection パターンの仕様 |
+| Agent IPC チャネル仕様    | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent-core.md`                   | agent:execute、agent:verify 等の IPC チャネル定義    |
+| IPC契約チェックリスト     | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時のインターフェース不整合防止チェックリスト  |
+| スキル実行IPCセキュリティ | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc-core.md`              | パストラバーサル防止、コマンドインジェクション防止   |
 
 ## 統合テスト連携
 
@@ -129,20 +130,20 @@ WorkflowEngine (`SkillCreatorWorkflowEngine.ts`) の既存 phase transitions を
 
 ## 完了条件
 
-- [ ] P50チェックで対象ファイルの現在状態を確認した
-- [ ] 現状の phase 遷移が網羅的にマッピングされている
-- [ ] 欠損遷移が明確に特定されている（verify pass / improve→verify）
-- [ ] AC-1〜AC-6 が検証可能な形で定義されている
-- [ ] 含む / 含まないが明確である
-- [ ] aiworkflow-requirements の関連仕様を確認した
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] P50チェックで対象ファイルの現在状態を確認した
+- [x] 現状の phase 遷移が網羅的にマッピングされている
+- [x] 欠損遷移が明確に特定されている（verify pass / improve→verify）
+- [x] AC-1〜AC-6 が検証可能な形で定義されている
+- [x] 含む / 含まないが明確である
+- [x] aiworkflow-requirements の関連仕様を確認した
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 各タスクの成果物が生成されている
-- [ ] artifacts.jsonが更新されている
-- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 各タスクの成果物が生成されている
+- [x] artifacts.jsonが更新されている
+- [x] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次Phase
 

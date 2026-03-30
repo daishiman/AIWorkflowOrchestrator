@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-30 | 1.9.0      | TASK-P0-02 verify-improve-reverify closed-loop 教訓3件を追加（L-P002-001: recordVerifyPass() 対称設計 / L-P002-002: improve→verify 遷移と後方互換性 / L-P002-003: getReverifyDisabledReason() 多段条件ゲート順序） |
 | 2026-03-29 | 1.8.7      | TASK-RT-04 skill-authkey-api-key-management-ui の Phase 12 教訓2件を追加（esbuild アーキ不一致対処 / shared IPC channel 再利用時の主導線/補助導線責務境界明文化） |
 | 2026-03-28 | 1.8.6      | TASK-SDK-07 execution-governance-and-handoff-alignment の Phase 12 教訓3件を追加（shared channel 再利用パターン / disclosure graceful degradation / spec_created task への code wave 注入後の AC 追跡） |
 | 2026-03-27 | 1.8.5      | UT-EXEC-01 の docs-only close-out 教訓2件を追加（Implementation Anchor path 実在確認 / duplicate source の baseline 判定）                                                                              |
@@ -39,6 +40,40 @@
 | 2026-03-18 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）。合計5件 |
 | 2026-03-18 | 1.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-30 TASK-P0-02 verify-improve-reverify-closed-loop
+
+### 苦戦箇所1: recordVerifyPass() の対称設計（L-P002-001）
+
+| 項目       | 内容                                                                                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | verify pass 時の状態遷移が未実装で、`recordVerifyFailure()` のみ対応していた。fail/pass の非対称な状態機械は AC-1（closed-loop 完成）の妨げになっていた      |
+| 再発条件   | 新しい状態結果（pass/fail/skip等）を追加する際に、一方向（fail側）だけを先行実装するケース                                                                   |
+| 解決策     | `recordVerifyFailure()` と完全に対称なシグネチャ（`planId, checks`）と戻り値（`SkillCreatorWorkflowStateSnapshot`）で `recordVerifyPass()` を設計・実装した  |
+| 標準ルール | 状態機械に新しい結果種別を追加する際は、success/failure の両方向を同一の型契約で同時実装する                                                                |
+| 関連タスク | TASK-P0-02                                                                                                                                                   |
+
+### 苦戦箇所2: improve→verify 遷移の後方互換性（L-P002-002）
+
+| 項目       | 内容                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `improve` フェーズから `"verify"` への再遷移を追加する際、既存の `improve → execute` 遷移を壊さずに拡張する方法が必要だった                                              |
+| 再発条件   | 遷移テーブルが単一値（`improve: "execute"`）の場合、新しい遷移先を代入で上書きすると既存遷移が失われる                                                                   |
+| 解決策     | 遷移テーブルを配列形式（`improve: ["execute", "verify"]`）に変更し、`assertTransition()` が配列のいずれかに一致するかチェックする設計に拡張した                          |
+| 標準ルール | 遷移テーブルに複数の遷移先を追加する際は、単一値を配列型に変更し、既存のすべての遷移先を配列の要素として保持する                                                        |
+| 関連タスク | TASK-P0-02                                                                                                                                                                |
+
+### 苦戦箇所3: getReverifyDisabledReason() の多段条件ゲート順序（L-P002-003）
+
+| 項目       | 内容                                                                                                                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `getReverifyDisabledReason()` に terminal_handoff チェックと improve-only gate を追加する際、チェック順序を誤ると terminal_handoff 状態で「improve phase 以外」という誤ったエラーメッセージが表示されてしまった                |
+| 再発条件   | 複数の除外条件があり、より具体的な条件が汎用的な条件に包含される場合（terminal_handoff は「improve フェーズ以外」の特殊ケース）に、汎用条件を先にチェックするパターン                                                          |
+| 解決策     | terminal_handoff チェック → improve-only gate → execute artifact 欠落チェック の順で評価し、より具体的な除外理由を先に返すよう設計した                                                                                        |
+| 標準ルール | 条件ゲートは「より具体的な条件を先、汎用条件を後」の順で配置する。包含関係がある場合は包含される側（具体的）を先にチェックすること                                                                                            |
+| 関連タスク | TASK-P0-02                                                                                                                                                                                                                     |
 
 ---
 
