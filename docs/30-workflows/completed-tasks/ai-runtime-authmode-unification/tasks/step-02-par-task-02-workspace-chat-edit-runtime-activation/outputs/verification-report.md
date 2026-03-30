@@ -1,17 +1,7 @@
 # タスク仕様書 検証レポート
 
-<<<<<<<< HEAD:docs/30-workflows/completed-tasks/ai-runtime-authmode-unification/tasks/step-02-par-task-02-workspace-chat-edit-runtime-activation/outputs/verification-report.md
-
 > 検証日時: 2026-03-14T02:57:31.262Z
 > 対象: docs/30-workflows/completed-tasks/ai-runtime-authmode-unification/tasks/step-02-par-task-02-workspace-chat-edit-runtime-activation
-> |||||||| 797aaf397:docs/30-workflows/ai-runtime-authmode-unification/tasks/step-02-par-task-10-claude-code-terminal-surface/outputs/verification-report.md
-> 検証日時: 2026-03-13T17:18:19.295Z
-> 対象: docs/30-workflows/ai-runtime-authmode-unification/tasks/step-02-par-task-10-claude-code-terminal-surface
-> ========
-> 検証日時: 2026-03-14T04:18:33.460Z
-> 対象: docs/30-workflows/completed-tasks/step-02-par-task-02-workspace-chat-edit-runtime-activation
->
-> > > > > > > > main:docs/30-workflows/completed-tasks/step-02-par-task-02-workspace-chat-edit-runtime-activation/outputs/verification-report.md
 
 ## サマリー
 

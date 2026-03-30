@@ -133,6 +133,12 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | re-verify | `window.electronAPI.skillCreator.reverifyWorkflow(planId)` は verify loop の再要求のみを行い、Task07/08 owner 項目は操作しない |
 | 詳細改善 | `SkillAnalysisView` / store action を再利用 |
 
+#### TASK-P0-02 current fact（2026-03-30）
+
+- `SkillCreatorWorkflowEngine.recordVerifyPass(planId, checks)` により verify pass 時は `review` へ遷移し、`verifyResult.status="pass"` / `nextAction="handoff"` を記録する
+- `requestReverify(planId)` は improve phase のみ許可し、`terminal_handoff`、execute artifact 欠落、直近 execute failure を拒否する
+- `getVerifyDetail(planId)` の `checks` は persisted verification result の再生ではなく、current workflow snapshot からの derived detail として扱う
+
 #### renderer 契約
 
 | surface | 使い方 | 理由 |

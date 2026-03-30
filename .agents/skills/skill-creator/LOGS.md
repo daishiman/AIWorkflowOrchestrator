@@ -3,6 +3,19 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-30 - TASK-P0-02 verify→improve→re-verify 閉ループ実装の SKILL.md 反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `verifyAndImproveLoop()` の閉ループ仕様を SKILL.md「verify → improve → re-verify 閉ループ（TASK-P0-02）」セクションへ追記
+  - `maxImproveRetry`（デフォルト3、範囲1-10、範囲外は自動クランプ）、feedback memory（直前の改善要約を次回 feedback に合成し重複改善を抑制）、`failedChecks` 限定改善入力（`info` は除外）を文書化
+  - `RuntimeSkillCreatorVerifyAndImproveResult` 型フィールドと `RuntimeSkillCreatorFacadeDeps.maxImproveRetry` を文書化
+  - テスト実績: 70件 PASS（SkillCreatorWorkflowEngine 41件 + RuntimeSkillCreatorFacade 37件 + formatVerifyChecksAsFeedback 9件 含む、runtime全体 449 tests PASS）
+  - Phase 12 compliance check PASS、typecheck PASS、diff -qr mirror PASS
+
+---
 ## 2026-03-27 - runtime policy close-out の authority / reason source hardening を update-process へ反映
 
 - **Agent**: skill-creator (update)

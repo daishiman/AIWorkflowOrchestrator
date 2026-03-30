@@ -5,17 +5,44 @@
 
 ## 完了タスク
 
-### タスク: TASK-P0-05 execute-skill-file-writer-integration（2026-03-30）
+### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | TASK-P0-05 |
+| タスクID | TASK-P0-02 |
 | ステータス | **完了** |
-| タイプ | implementation / runtime persist integration |
+| タイプ | implementation / runtime orchestration |
 | 優先度 | 高 |
 | 完了日 | 2026-03-30 |
-| 対象 | `RuntimeSkillCreatorFacade.execute()` の LLM 応答解析 → `SkillFileWriter.persist()` 連携 |
-| 成果物 | `docs/30-workflows/step-09-par-task-p0-05-execute-skill-file-writer-integration/` |
+| 対象 | `SkillCreatorWorkflowEngine` / `RuntimeSkillCreatorFacade` の閉ループ改善 |
+| 成果物 | `docs/30-workflows/task-imp-verify-improve-revert-loop-002/` |
+
+#### 実施内容
+
+- `recordVerifyPass()` / `recordImproveAttempt()` / `getImproveAttemptCount()` を `SkillCreatorWorkflowEngine` に追加
+- `verifyAndImproveLoop()` に `maxImproveRetry` と feedback memory を追加
+- `failedChecks` のみを改善入力に使い、直前の改善要約を次回 feedback に合成
+- Phase 12 の未タスク検出を current 0件へ更新し、UT-P0-02-001 を今回フェーズへ吸収
+- `packages/shared/src/types/skillCreator.ts` と `packages/shared/src/types/index.ts` を同期
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/formatVerifyChecksAsFeedback.test.ts`
+- 70 tests PASS
+- `pnpm --filter @repo/desktop typecheck` PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/task-imp-verify-improve-revert-loop-002 --json` PASS
+
+### タスク: TASK-P0-05 execute-skill-file-writer-integration（2026-03-30）
+
+| 項目       | 値                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-05                                                                               |
+| ステータス | **完了**                                                                                 |
+| タイプ     | implementation / runtime persist integration                                             |
+| 優先度     | 高                                                                                       |
+| 完了日     | 2026-03-30                                                                               |
+| 対象       | `RuntimeSkillCreatorFacade.execute()` の LLM 応答解析 → `SkillFileWriter.persist()` 連携 |
+| 成果物     | `docs/30-workflows/step-09-par-task-p0-05-execute-skill-file-writer-integration/`        |
 
 #### 実施内容
 
@@ -32,6 +59,76 @@
 
 ---
 
+### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
+
+| 項目       | 値                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-06                                                                              |
+| ステータス | **Phase 1–11 完了 / Phase 12 incomplete（Phase 11 evidence 未取得）**                   |
+| タイプ     | implementation / ui component                                                           |
+| 優先度     | 高                                                                                      |
+| 完了日     | 2026-03-30（Phase 11 まで）                                                             |
+| 対象       | スキル作成フォームを会話型インタビュー UI へ刷新                                        |
+| 成果物     | `docs/30-workflows/completed-tasks/step-09-par-task-p0-06-conversational-interview-ui/` |
+
+#### 実施内容
+
+- `ConversationalInterview.tsx`（メインコンポーネント）を新規作成し、段階的な質問フローを実装
+- `conversation-state-contract.md` で会話状態遷移設計を明文化
+- `input-widget-contract-matrix.md` で 5 種の入力 widget 型（single-select / multi-select / text / secret / confirm）を定義
+- `useInterviewState` フックで状態一元管理（undo 復元・submit 失敗時 rollback を含む）
+- `interview-widgets/` ディレクトリに 7 コンポーネントを配置
+- `SkillCreatorUserInputSubmission` に `selectedValues` 互換入力を追加し、`multi_select` 契約を Main まで閉じた（RT-05 協調）
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/ConversationalInterview*.test.ts src/renderer/components/skill/__tests__/useInterviewState.test.ts`
+- 74 tests PASS（widget 41 / state 11 / progress-bar 5 / main component 17）
+- TypeScript typecheck: PASS / ESLint: PASS
+
+#### Phase 12 未タスク
+
+| ID                            | 内容                                             | 優先度 | Issue |
+| ----------------------------- | ------------------------------------------------ | ------ | ----- |
+| UT-P0-06-PHASE11-EVIDENCE-001 | representative screenshots と手動テスト証跡取得 | High   | #1767 |
+
+---
+
+### タスク: TASK-LLM-MOD-05 step-04-seq-task-05-schema-extension（2026-03-30）
+
+| 項目       | 値                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------- |
+| タスクID   | TASK-LLM-MOD-05                                                                     |
+| ステータス | **完了**                                                                            |
+| タイプ     | implementation / schema-extension                                                   |
+| 優先度     | 高                                                                                  |
+| 完了日     | 2026-03-30                                                                          |
+| 対象       | `provider-registry.ts` への `description` フィールド追加と `inferProviderId()` 強化 |
+| 成果物     | `docs/30-workflows/step-04-seq-task-05-schema-extension/`                           |
+
+#### 実施内容
+
+- `ProviderModelEntry` に `description?: string` フィールドを追加し、全19モデル（OpenAI 6 / Anthropic 3 / Google 3 / xAI 3 / OpenRouter 4）に説明文を設定
+- `LLMModelSchema` に `description` フィールドを Zod schema へ追加（optional）
+- `inferProviderId()` 関数を整備: `specialMatcher` 優先評価 + `modelPrefixes` による推定（`o3` / `o4` prefix → openai）
+- `handleGetProviders()` が `PROVIDER_CONFIGS` を走査する際に `description` を自動透過
+- Phase 1-13 完全ワークフローを `docs/30-workflows/step-04-seq-task-05-schema-extension/` に整備（旧 `llm-provider-model-modernization/tasks/step-04-seq-task-05-schema-extension/` から移動）
+
+#### 苦戦箇所
+
+| 苦戦箇所                            | 再発条件                                                   | 解決策                                             |
+| ----------------------------------- | ---------------------------------------------------------- | -------------------------------------------------- |
+| ワークフロー配置の再編（パス移動）  | 親プロジェクト配下のタスクを独立ワークフローへ昇格する場合 | 旧パスを削除し新パス直下に Phase 1-13 全構成を整備 |
+| `o3`/`o4` prefix の openai 推定漏れ | inferProviderId に新プレフィックスを追加する場合           | `modelPrefixes` 配列に `"o3"`, `"o4"` を明示追加   |
+
+#### 検証証跡
+
+- `provider.test.ts`: TS-001〜A-04 約20テスト PASS（description フィールドの Zod バリデーション・伝搬検証）
+- `llm.test.ts`: description 透過・新モデル対応含む計 56+ テスト PASS
+- Phase 12 成果物完備（implementation-guide.md / documentation-changelog.md / skill-feedback-report.md）
+- 未タスク1件: `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY`（Renderer UI への description 表示）
+
+---
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
 | 項目       | 値                                                                        |
@@ -1601,16 +1698,16 @@
 
 ### タスク: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 SkillExecutor/sdkMessageNormalizer 型ガード重複解消（2026-03-29）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
-| タイプ | refactor |
-| 優先度 | low |
-| 完了日 | 2026-03-29 |
-| 関連Issue | #1692 |
-| 由来 | TASK-RT-06 Phase 8 調査（unassigned-task-detection.md） |
-| 成果物 | `docs/30-workflows/skill-executor-normalizer-consolidation/` |
+| 項目       | 値                                                           |
+| ---------- | ------------------------------------------------------------ |
+| タスクID   | UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001         |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）**                |
+| タイプ     | refactor                                                     |
+| 優先度     | low                                                          |
+| 完了日     | 2026-03-29                                                   |
+| 関連Issue  | #1692                                                        |
+| 由来       | TASK-RT-06 Phase 8 調査（unassigned-task-detection.md）      |
+| 成果物     | `docs/30-workflows/skill-executor-normalizer-consolidation/` |
 
 #### 実施内容
 
@@ -1623,9 +1720,9 @@
 
 #### Phase 12 未タスク
 
-| 未タスクID | 内容 | 優先度 |
-| --- | --- | --- |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 | `SkillStreamMessage` と `SkillCreatorSdkEvent` の出力型を統一 | low |
+| 未タスクID                                      | 内容                                                          | 優先度 |
+| ----------------------------------------------- | ------------------------------------------------------------- | ------ |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 | `SkillStreamMessage` と `SkillCreatorSdkEvent` の出力型を統一 | low    |
 
 ---
 
@@ -1663,16 +1760,16 @@
 
 ### タスク: UT-RT-06-ESBUILD-ARCH-MISMATCH-001 esbuild-arch-mismatch-fix（2026-03-29）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-RT-06-ESBUILD-ARCH-MISMATCH-001 |
-| ステータス | **完了** |
-| タイプ | バグ修正（環境修正 + close-out 整流） |
-| 優先度 | 高 |
-| 完了日 | 2026-03-29 |
-| GitHub Issue | #1710 |
-| 親タスク | TASK-RT-06 Phase 12 未タスク |
-| 成果物 | `docs/30-workflows/step-ut-rt-06-esbuild-arch-mismatch-001/` |
+| 項目         | 値                                                           |
+| ------------ | ------------------------------------------------------------ |
+| タスクID     | UT-RT-06-ESBUILD-ARCH-MISMATCH-001                           |
+| ステータス   | **完了**                                                     |
+| タイプ       | バグ修正（環境修正 + close-out 整流）                        |
+| 優先度       | 高                                                           |
+| 完了日       | 2026-03-29                                                   |
+| GitHub Issue | #1710                                                        |
+| 親タスク     | TASK-RT-06 Phase 12 未タスク                                 |
+| 成果物       | `docs/30-workflows/step-ut-rt-06-esbuild-arch-mismatch-001/` |
 
 #### 実施内容
 
@@ -1727,4 +1824,3 @@
 #### Phase 12 未タスク
 
 なし（0件）
-

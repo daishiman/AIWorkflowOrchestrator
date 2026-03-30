@@ -3,6 +3,15 @@
 ## 役割
 
 ---
+## 2026-03-30 - TASK-P0-02 Phase 12 close-out sync
+
+### 変更内容
+- `phase-12-documentation.md` の Task 12-1〜12-5 と Step 1-A〜1-C を current facts へ揃え、`task-workflow.md` / `task-workflow-completed.md` / LOGS / SKILL / phase outputs の同波更新を完了
+- `verifyAndImproveLoop()` の feedback memory を Phase 12 の current fact として固定し、前回改善要約を次回 feedback に織り込む仕様をドキュメントへ反映
+- `UT-P0-02-001` を unassigned 化せず current phase に吸収し、completed ledger へ TASK-P0-02 完了記録を追加
+
+---
+
 ## 2026-03-30 - agentview-permission-api-fix Phase 12 識別: SKILL.md v6.18.16 更新
 
 ### 変更内容
@@ -18,6 +27,16 @@
 - `documentation-changelog.md` / `system-spec-update-summary.md` / `skill-feedback-report.md` の premature 完了表現を、canonical same-wave sync 未完了の state へ是正
 - follow-up `task-ut-p0-05-phase12-same-wave-sync-001.md` を formalize し、local workflow 完了と central sync 未完了を分離
 - Phase 6 未テスト `E-14` / `E-15` を runtime persist integration suite へ追加し、task spec の edge case 定義とテスト実体を一致させた
+
+---
+## 2026-03-30 - TASK-P0-02 Phase 11/12 hardening
+
+### 変更内容
+- active workflow の Phase 1-12 ステータス、root / outputs `artifacts.json`、成果物インベントリを current facts へ同期
+- `outputs/phase-1`〜`phase-3` の summary artifact を追加し、phase spec から参照していた欠落パスを解消
+- Phase 11 に `TC-ID` 一覧、checklist、result evidence table を追加し、`NON_VISUAL` でも validator が機械追跡できる形へ是正
+- Phase 12 の implementation guide を validator 準拠へ書き換え、`recordVerifyPass()` の `checks` 未使用という current fact を明記
+- `.claude` 正本 2 skill の references / `LOGS.md` を same-wave で更新し、mirror sync 前提を回復
 
 ---
 ## 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out hardening
@@ -1504,7 +1523,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果 | `spec_created` workflow の implementation guide Part 2 を `current contract + target delta` で書くこと、API/使用例/設定表の省略禁止、`completed-tasks/` 配下でも status を `completed` へ上げないことを明文化した |
 | 検証 | current workflow の `phase12-task-spec-compliance-check.md` と突合して確認 |
 
-### 2026-03-30 - TASK-P0-04 phase12 sync
+### 2026-03-31 - TASK-P0-04 phase12 sync
 
 | 項目 | 内容 |
 | --- | --- |
@@ -1512,3 +1531,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/step-10-seq-task-p0-04-manifest-loader-default-activation/`, `artifacts.json`, `outputs/artifacts.json` |
 | 結果 | Phase 11 補助成果物 `manual-test-checklist.md` / `screenshot-plan.json` を補完し、Phase 12 の compliance / changelog / system-spec summary を same-wave sync 実施済みの内容へ修正。ledger drift も解消した |
 | 検証 | RuntimeSkillCreatorFacade 関連の targeted vitest と current workflow 文書突合で確認 |
+
+### 2026-03-30 - TASK-LLM-MOD-05 schema-extension close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / spec-alignment |
+| 変更対象 | `docs/30-workflows/step-04-seq-task-05-schema-extension/`（phase-2 / phase-12 / phase-13 / outputs / unassigned-task） |
+| 結果 | Phase 12 の実装ガイド・未タスク・skill-feedback を `provider-registry.ts` 前提へ同期し、Phase 13 の PR 準備と最終確認を current facts へ是正。`TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` を削除済みとして整理 |
+| 検証 | `provider.test.ts` 41 PASS、`llm.test.ts` 59 PASS / 1 skipped、workflow 内検索で旧想定パスの残存を解消確認 |
