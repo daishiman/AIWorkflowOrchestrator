@@ -11,6 +11,7 @@
 | 次Phase    | -                                                |
 | ステータス | blocked                                          |
 | 作成日     | 2026-03-29                                       |
+| 更新日     | 2026-03-30                                       |
 
 ## 目的
 
@@ -33,6 +34,33 @@
 
 - ユーザー承認がない限り commit / push / PR を実行しない
 - TASK-P0-01 の完了状況を PR 前提条件として記録する
+
+### Task 3: PR 作成手順
+
+- `/ai:diff-to-pr` スキルを使用して PR を作成する
+- PR 本文に関連 Issue `#1725` を含める（`Closes #1725` または `Related: #1725`）
+- PR 本文のテンプレート:
+
+  ```
+  ## Summary
+  - TASK-P0-02: verify→improve→re-verify 閉ループ修復
+  - recordVerifyPass() の追加、phase 遷移テーブルの修正、improve→verify 遷移の実装
+
+  ## Related Issue
+  - #1725
+
+  ## Test plan
+  - [ ] UT: recordVerifyPass() のユニットテスト
+  - [ ] UT: improve→verify 遷移テスト
+  - [ ] 統合テスト: 完全サイクル（execute→verify→improve→verify）
+  - [ ] 手動テスト: UI snapshot の verify 状態反映
+  ```
+
+### Task 4: タスクディレクトリの完了時移動
+
+- PR マージ後、タスクディレクトリを以下に移動する:
+  - 移動元: `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop/`
+  - 移動先: `docs/30-workflows/completed-tasks/`
 
 ## 参照資料
 

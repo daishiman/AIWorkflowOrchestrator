@@ -11,6 +11,7 @@
 | 次Phase    | Phase 12: ドキュメント更新                       |
 | ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
+| 更新日     | 2026-03-30                                       |
 
 ## 目的
 
@@ -34,7 +35,17 @@
 - verify pass 状態の UI 表示を確認する（成功表示）
 - improve 中の UI 表示を確認する（進行状態）
 
-### Task 3: 非視覚証跡方針の定義
+### Task 3: AC-5 手動テスト項目（UI snapshot が verify 状態を反映）
+
+本タスクはバックエンド（Main Process）の state machine 修正が中心であるため、スクリーンショットは「推奨」レベルとする。ただし AC-5 の検証として以下を手動で確認する:
+
+- [ ] verify pending 状態の UI 表示確認
+- [ ] verify pass 状態の UI 表示確認
+- [ ] verify fail 状態の UI 表示確認
+- [ ] improve 中の UI 表示確認
+- [ ] 完全サイクル（execute→verify→improve→verify）の画面遷移確認
+
+### Task 4: 非視覚証跡方針の定義
 
 - 現時点は `NON_VISUAL` として PNG 証跡を要求しないことを記録する
 - 実装完了後に再実施すべき手順を残す
@@ -49,6 +60,14 @@
 | 最終レビュー    | `phase-10-final-review.md`                                             | 手動確認対象           |
 | WorkflowEngine  | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | 操作対象               |
 | creatorHandlers | `apps/desktop/src/main/ipc/creatorHandlers.ts`                         | IPC 経路確認           |
+
+## 適用判断
+
+| タスク種別                      | スクリーンショット | 判断基準                         |
+| ------------------------------- | ------------------ | -------------------------------- |
+| IPC/API変更 + UI snapshot 連携  | 推奨               | DevTools動作確認エビデンスとして |
+| バックエンド state machine のみ | 不要               | UT/統合テストで十分              |
+| UI コンポーネント新規/大幅変更  | 必須               | 視覚的な回帰検出に不可欠         |
 
 ## 統合テスト連携
 
