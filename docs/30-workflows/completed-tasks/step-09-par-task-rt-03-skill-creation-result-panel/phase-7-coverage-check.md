@@ -10,7 +10,7 @@
 
 ## 目的
 
-PlanResultDetailPanel / ExecuteResultDetailPanel / ErrorBanner の全表示フィールド、props パターン、SkillLifecyclePanel 統合のテストカバレッジを確認する。
+PlanResultDetailPanel / ExecuteResultDetailPanel / ErrorBanner の全表示フィールド、raw detail 保持、props パターン、SkillLifecyclePanel 統合のテストカバレッジを確認する。terminal_handoff は既存 handoff 導線に残し、詳細パネルに含めない。
 
 ## 実行タスク
 
@@ -45,15 +45,27 @@ PlanResultDetailPanel / ExecuteResultDetailPanel / ErrorBanner の全表示フ�
 | skillSpec      | T-PRP-10      | Step1-undef  | Step2-10000文字 | —             |
 | planId         | T-PRP-12      | —            | —               | —             |
 
+### ステップ1-補足: raw plan detail の coverage を集計する
+
+| 観点                      | 正常保持 test | edge case | handoff  |
+| ------------------------- | ------------- | --------- | -------- |
+| raw plan detail retention | T-PRP-13      | T-INT-07  | T-PRP-14 |
+
 ### ステップ2: ExecuteResultDetailPanel の coverage を集計する
 
-| 表示フィールド | 正常表示 test | エラー test | edge case      |
-| -------------- | ------------- | ----------- | -------------- |
-| skillName      | T-ERP-01      | T-ERP-02    | 空文字列       |
-| success badge  | T-ERP-01      | T-ERP-02    | —              |
-| error message  | —             | T-ERP-06    | Step2-500文字  |
-| retry button   | —             | T-ERP-07    | Step4-disabled |
-| executeId      | T-ERP-08      | —           | —              |
+| 表示フィールド    | 正常表示 test | エラー test | edge case      |
+| ----------------- | ------------- | ----------- | -------------- |
+| skillName         | T-ERP-01      | T-ERP-02    | 空文字列       |
+| success badge     | T-ERP-01      | T-ERP-02    | —              |
+| error message     | —             | T-ERP-06    | Step2-500文字  |
+| retry button      | —             | T-ERP-07    | Step4-disabled |
+| executeId         | T-ERP-08      | —           | —              |
+| sessionId         | T-ERP-09      | —           | —              |
+| resultSubtype     | T-ERP-09      | —           | —              |
+| stopReason        | T-ERP-09      | —           | —              |
+| permissionDenials | T-ERP-10      | —           | Step2-20件     |
+| sdkEvents         | T-ERP-10      | —           | Step2-100件    |
+| sourceProvenance  | T-ERP-10      | —           | Step3-長大path |
 
 ### ステップ3: props パターン coverage を集計する
 
@@ -65,19 +77,21 @@ PlanResultDetailPanel / ExecuteResultDetailPanel / ErrorBanner の全表示フ�
 
 ### ステップ4: SkillLifecyclePanel 統合 coverage を集計する
 
-| state 遷移            | test     | edge case      |
-| --------------------- | -------- | -------------- |
-| plan → review         | T-INT-01 | —              |
-| execute → verify      | T-INT-02 | —              |
-| plan 中（結果なし）   | T-INT-03 | —              |
-| review → execute 遷移 | T-INT-04 | Step4-連続遷移 |
-| plan エラー           | T-INT-05 | —              |
-| execute エラー        | T-INT-06 | —              |
+| state 遷移            | test                | edge case      |
+| --------------------- | ------------------- | -------------- |
+| plan → review         | T-INT-01            | —              |
+| execute → verify      | T-INT-02            | —              |
+| plan 中（結果なし）   | T-INT-03            | —              |
+| review → execute 遷移 | T-INT-04            | Step4-連続遷移 |
+| plan エラー           | T-INT-05            | —              |
+| execute エラー        | T-INT-06            | —              |
+| raw detail open/close | T-INT-07            | Step4-再 open  |
+| terminal_handoff 導線 | T-PRP-14 / T-ERP-11 | —              |
 
 ## 統合テスト連携
 
 - Phase 9 で coverage gap が品質リスクを残していないか監査する
-- Phase 10 で AC-1〜AC-6 のテスト網羅性を最終判定する
+- Phase 10 で AC-1〜AC-8 のテスト網羅性を最終判定する
 
 ## 成果物
 
@@ -91,5 +105,7 @@ PlanResultDetailPanel / ExecuteResultDetailPanel / ErrorBanner の全表示フ�
 - [ ] ExecuteResultDetailPanel の全表示フィールドに test case がある
 - [ ] 全 props パターンの coverage がある
 - [ ] SkillLifecyclePanel 統合の coverage がある
+- [ ] raw plan / execute detail の保持・破棄 coverage がある
+- [ ] terminal_handoff の既存導線維持 coverage がある
 - [ ] edge case の coverage が Phase 6 と整合している
 - [ ] **本Phase内の全タスクを100%実行完了**

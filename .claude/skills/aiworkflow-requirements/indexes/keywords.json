@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-30T01:39:55.912Z",
-  "totalKeywords": 2543,
+  "generated": "2026-03-30T03:46:14.455Z",
+  "totalKeywords": 2549,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -169,6 +169,7 @@
       "testing-fixtures.md",
       "testing-playwright-e2e.md",
       "ui-history-search-view.md",
+      "ui-result-panel-pattern.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution-core.md",
       "ui-ux-agent-execution.md",
@@ -1861,6 +1862,7 @@
       "ui-history-design.md",
       "ui-history-integration.md",
       "ui-history-search-view.md",
+      "ui-result-panel-pattern.md",
       "ui-ux-advanced.md",
       "ui-ux-agent-execution-core.md",
       "ui-ux-agent-execution-details.md",
@@ -3002,6 +3004,7 @@
     ],
     "Panel": [
       "arch-state-management-core.md",
+      "ui-result-panel-pattern.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
       "ui-ux-settings-core.md"
@@ -3968,6 +3971,7 @@
       "database-implementation-core.md",
       "quality-e2e-testing.md",
       "quality-requirements-details.md",
+      "ui-result-panel-pattern.md",
       "ui-ux-atoms-patterns-details.md"
     ],
     "実行サマリー": [
@@ -5357,6 +5361,7 @@
       "interfaces-chat-history-details.md",
       "ui-history-components.md",
       "ui-history-search-view.md",
+      "ui-result-panel-pattern.md",
       "ui-ux-file-selector.md",
       "ui-ux-system-prompt.md"
     ],
@@ -5448,7 +5453,8 @@
     ],
     "Result": [
       "interfaces-core.md",
-      "rag-search-vector.md"
+      "rag-search-vector.md",
+      "ui-result-panel-pattern.md"
     ],
     "IAIClient": [
       "interfaces-core.md"
@@ -6534,7 +6540,8 @@
     ],
     "実装知見": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-safety-gate-permission-fallback.md"
+      "lessons-learned-safety-gate-permission-fallback.md",
+      "lessons-learned-ui-adapter-status-retry.md"
     ],
     "settings": [
       "lessons-learned-auth-settings-degradation-guard.md"
@@ -7262,6 +7269,23 @@
       "task-workflow-completed-ut-06-safety-gate.md",
       "workflow-permission-fallback-abort-skip-retry.md"
     ],
+    "アダプター状態表示・リトライ導線": [
+      "lessons-learned-ui-adapter-status-retry.md"
+    ],
+    "adapter": [
+      "lessons-learned-ui-adapter-status-retry.md"
+    ],
+    "status": [
+      "lessons-learned-ui-adapter-status-retry.md"
+    ],
+    "関連リソース": [
+      "lessons-learned-ui-adapter-status-retry.md",
+      "master-design.md"
+    ],
+    "SkillCreationResultPanel": [
+      "lessons-learned-ui-adapter-status-retry.md"
+    ],
+
     "ENHANCEMENT": [
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
@@ -10978,6 +11002,15 @@
     ],
     "ライフサイクルタイムライン観測項目": [
       "ui-history-search-view.md"
+    ],
+    "パターンガイド": [
+      "ui-result-panel-pattern.md"
+    ],
+    "重要設計決定": [
+      "ui-result-panel-pattern.md"
+    ],
+    "コンポーネント設計パターン早見表": [
+      "ui-result-panel-pattern.md"
     ],
     "高度な": [
       "ui-ux-advanced.md"

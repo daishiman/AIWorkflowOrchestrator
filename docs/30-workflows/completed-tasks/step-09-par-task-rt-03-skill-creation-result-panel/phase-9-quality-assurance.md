@@ -10,7 +10,7 @@
 
 ## 目的
 
-型安全性、XSS 防止、アクセシビリティ、既存コンポーネントとの整合性、SkillLifecyclePanel 責務侵食がないことを確認する。
+型安全性、XSS 防止、アクセシビリティ、既存コンポーネントとの整合性、SkillLifecyclePanel 責務侵食がないこと、raw detail を local state に閉じ込める方針が崩れていないことを確認する。
 
 ## 実行タスク
 
@@ -34,11 +34,13 @@
 ## 品質観点
 
 - props 型が `RuntimeSkillCreatorPlanResult` / `RuntimeSkillCreatorExecuteResult` と一致する
+- `error` prop が `PanelError | null` と整合し、plan / execute の raw result と分離されている
 - HTML タグを含むデータが XSS を引き起こさない（React のデフォルトエスケープ）
 - スクリーンリーダーで各セクションが読み上げ可能
 - ダークモードでコントラスト比が十分
 - SkillLifecyclePanel に表示ロジックが漏れていない
 - 再試行ボタンの連打防止（loading 中の disabled）
+- terminal_handoff の既存導線を壊さず、detail panel の責務に混ぜない
 
 ## 実行手順
 
@@ -55,11 +57,13 @@
 - `skillName`, `description`, `error` 等のユーザー由来データが React の JSX 内でテキストノードとして表示されること（`dangerouslySetInnerHTML` を使用しない）
 - `skillSpec` の折りたたみ表示が `<pre>` / `<code>` タグ内でエスケープされること
 - agents[].role, scripts[].purpose 等がテキストとして表示されること
+- `sessionId`, `resultSubtype`, `stopReason`, `permissionDenials`, `sdkEvents`, `sourceProvenance` はリンク化せず、文字列として表示すること
 
 ### ステップ3: アクセシビリティを監査する
 
 - セクションヘッダーに適切な heading レベル（`<h3>`, `<h4>`）が使用されていること
 - リスト表示に `<ul>` / `<li>` が使用されていること
+- metadata 行が `<dl>` / `<dt>` / `<dd>` もしくは同等の読み上げ可能な構造で描画されること
 - 再試行ボタンに `aria-label` が設定されていること
 - 成功/失敗バッジに `aria-label` が設定されていること
 - 折りたたみセクションに `aria-expanded` が設定されていること
@@ -71,6 +75,7 @@
 - カードコンテナ、ヘッダー、リスト、バッジの class が統一されていること
 - ダークモード対応（`dark:` prefix）が一貫していること
 - import 文が既存のコンベンションに従っていること
+- terminal_handoff の既存カードは別系統の UI として分離されていること
 
 ### ステップ5: SkillLifecyclePanel 責務を監査する
 
@@ -78,11 +83,12 @@
 - 表示ロジック（データの整形、条件分岐）が各パネルコンポーネント内に閉じていること
 - store からのデータ取得が既存パターンに従っていること
 - 既存の SkillLifecyclePanel のレンダリングに breaking change がないこと
+- raw detail の保持/破棄が SkillLifecyclePanel の local state に閉じていること
 
 ## 統合テスト連携
 
-- Phase 10 で AC-1〜AC-6 の pass/fail matrix を確認する
-- Phase 12 に型安全性とセキュリティの根拠を記録する
+- Phase 10 で AC-1〜AC-8 の pass/fail matrix を確認する
+- Phase 12 に型安全性、セキュリティ、raw detail / terminal_handoff 分離の根拠を記録する
 
 ## 成果物
 

@@ -43,6 +43,7 @@
 ### ステップ2: 承認後の前提を確認する
 
 - build / test / typecheck / lint の結果を確認する。
+- `outputs/phase-12/phase12-task-spec-compliance-check.md` の PASS と Phase 12 必須 6 成果物の一致を確認する。
 - 変更サマリ:
   - `apps/desktop/src/renderer/components/skill/PlanResultDetailPanel.tsx` — 新規作成
   - `apps/desktop/src/renderer/components/skill/ExecuteResultDetailPanel.tsx` — 新規作成
