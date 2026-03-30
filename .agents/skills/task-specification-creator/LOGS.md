@@ -3,6 +3,15 @@
 ## 役割
 
 ---
+## 2026-03-30 - TASK-P0-05 Phase 12 close-out resync
+
+### 変更内容
+- `step-09-par-task-p0-05-execute-skill-file-writer-integration/` の Phase 11 成果物欠落を補完し、`manual-test-result.md` / `discovered-issues.md` / `phase12-task-spec-compliance-check.md` を current facts へ追加
+- `documentation-changelog.md` / `system-spec-update-summary.md` / `skill-feedback-report.md` の premature 完了表現を、canonical same-wave sync 未完了の state へ是正
+- follow-up `task-ut-p0-05-phase12-same-wave-sync-001.md` を formalize し、local workflow 完了と central sync 未完了を分離
+- Phase 6 未テスト `E-14` / `E-15` を runtime persist integration suite へ追加し、task spec の edge case 定義とテスト実体を一致させた
+
+---
 ## 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out hardening
 
 ### 変更内容
@@ -12,16 +21,24 @@
 - esbuild mismatch により vitest 再実行不能だったため、historical acceptance evidence と grep を代替証跡として使用
 
 ---
-## TASK-RT-01 close-out remediation sync（2026-03-29）
+## 2026-03-29: coverage-standards.md v1.4.0 更新（Phase 7 グローバル閾値回避ガイドライン追加）
 
-- **Agent**: task-specification-creator
-- **Phase**: Phase 11/12/13 evidence remediation
-- **Result**: success
-- **Notes**:
-  - `spec_created` 残置による status drift を是正し、`implemented` current fact と `artifacts.json` parity を回復
-  - Phase 11 の `NON_VISUAL` 証跡を `screenshot-plan.json` / `manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` の4成果物参照で固定
-  - Phase 12 の compliance check を `CONDITIONAL PASS` へ更新し、same-wave sync の残課題を明示
-  - Phase 13 の不足成果物（`outputs/phase-13/local-check-result.md`, `change-summary.md`）を補完
+### 変更内容
+
+- `references/coverage-standards.md` v1.4.0: 「プロジェクト全体グローバル閾値が失敗する場合の対処（Phase 7）」セクションを追加
+  - 対象ファイルを `--coverage.include` で絞り込む個別計測コマンドを追記
+  - 判定フロー（グローバル閾値失敗 → 個別計測 → PASS/FAIL）を表で明示
+  - 背景: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 の Phase 7 スキルフィードバック反映
+
+---
+## 2026-03-29: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 完了同期
+- SkillExecutor/sdkMessageNormalizer の SDK メッセージ前処理重複を sdkMessageUtils.ts に集約
+- asSdkMessageRecord() / getSdkMessageType() を共通 helper として抽出
+- lane 固有の出力型（SkillStreamMessage / SkillCreatorSdkEvent）は変更なし
+- Phase 11 NON_VISUAL 証跡を walkthrough + `screenshot-plan.json` + placeholder PNG へ是正
+- Phase 12 の compliance false positive を補正し、root / outputs `artifacts.json` を同期
+- `validate-phase-output.js --phase 12` PASS、`verify-all-specs.js` PASS（warning 28）
+- `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings、`vitest` rerun は environment blocked
 
 ---
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映

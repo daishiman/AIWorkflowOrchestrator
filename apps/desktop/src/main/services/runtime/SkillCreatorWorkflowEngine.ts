@@ -156,6 +156,8 @@ export class SkillCreatorWorkflowEngine {
       permissionDenials: result.permissionDenials,
       sdkEvents: result.sdkEvents,
       sourceProvenance: result.sourceProvenance,
+      persistResult: result.persistResult,
+      persistError: result.persistError,
     });
 
     state.currentPhase = "verify";
