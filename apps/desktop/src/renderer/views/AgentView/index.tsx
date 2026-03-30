@@ -74,19 +74,12 @@ export interface AgentViewProps {
 /** 共通のコンテナクラス */
 const containerClassName = "flex flex-col gap-6 p-6 h-full overflow-hidden";
 
-type PermissionApi = {
-  getMode?: () => Promise<string>;
-  getRemembered?: () => Promise<unknown[]>;
-  setMode?: (mode: AgentPermissionMode) => Promise<unknown>;
-  clearRemembered?: () => Promise<unknown>;
-};
-
-function getPermissionApi(): PermissionApi | undefined {
-  return (
-    window.electronAPI as typeof window.electronAPI & {
-      permissions?: PermissionApi;
-    }
-  ).permissions;
+function getPermissionApi(): typeof window.permissionAPI | undefined {
+  try {
+    return window.permissionAPI;
+  } catch {
+    return undefined;
+  }
 }
 
 function toViewSkill(skill: Skill | SkillMetadata | ImportedSkill): Skill {
@@ -244,6 +237,7 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
     startedAt: Date;
   } | null>(null);
   const terminalTimerRef = useRef<number | null>(null);
+  const isPermissionLoadMountedRef = useRef(true);
 
   // Fetch skills on mount - 個別セレクタで参照安定
   useEffect(() => {
@@ -254,43 +248,41 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
     fetchProviders();
   }, [fetchProviders]);
 
-  useEffect(() => {
-    let isMounted = true;
+  const loadRememberedPermissions = useCallback(async () => {
+    const api = getPermissionApi();
+    if (!api) {
+      return;
+    }
 
-    const loadPermissions = async () => {
-      const permissionsApi = getPermissionApi();
-      if (!permissionsApi) {
+    try {
+      const result = await api.getAllowedTools();
+
+      if (!isPermissionLoadMountedRef.current) {
         return;
       }
 
-      try {
-        const [mode, remembered] = await Promise.all([
-          permissionsApi.getMode?.(),
-          permissionsApi.getRemembered?.(),
-        ]);
+      setRememberedCount(result.tools.length);
+    } catch {
+      // 権限設定APIが利用できない環境では既定値のまま表示する。
+    }
+  }, []);
 
-        if (!isMounted) {
-          return;
-        }
-
-        if (typeof mode === "string") {
-          setPermissionMode(mode as AgentPermissionMode);
-        }
-
-        if (Array.isArray(remembered)) {
-          setRememberedCount(remembered.length);
-        }
-      } catch {
-        // 権限設定APIが利用できない環境では既定値のまま表示する。
-      }
-    };
-
-    void loadPermissions();
+  useEffect(() => {
+    isPermissionLoadMountedRef.current = true;
+    void loadRememberedPermissions();
 
     return () => {
-      isMounted = false;
+      isPermissionLoadMountedRef.current = false;
     };
-  }, []);
+  }, [loadRememberedPermissions]);
+
+  useEffect(() => {
+    if (!isAdvancedSettingsOpen) {
+      return;
+    }
+
+    void loadRememberedPermissions();
+  }, [isAdvancedSettingsOpen, loadRememberedPermissions]);
 
   useEffect(() => {
     if (skillExecutionStatus === "running") {
@@ -521,38 +513,29 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
   );
 
   const handlePermissionModeChange = useCallback(
-    async (mode: AgentPermissionMode) => {
+    (mode: AgentPermissionMode) => {
+      // preload に setMode IPC が未実装のため local state のみ。
+      // 永続化が必要になったら TASK-AGENT-PERM-MODE で preload/main に IPC を追加する。
       setPermissionMode(mode);
-
-      const permissionsApi = getPermissionApi();
-      if (!permissionsApi?.setMode) {
-        return;
-      }
-
-      try {
-        await permissionsApi.setMode(mode);
-      } catch (error) {
-        showToast(
-          "error",
-          error instanceof Error
-            ? `許可モードの更新に失敗しました: ${error.message}`
-            : "許可モードの更新に失敗しました",
-        );
-      }
     },
-    [showToast],
+    [],
   );
 
   const handleResetRemembered = useCallback(async () => {
-    const permissionsApi = getPermissionApi();
-    if (!permissionsApi?.clearRemembered) {
+    const api = getPermissionApi();
+    if (!api) {
       setRememberedCount(0);
       return;
     }
 
     try {
-      await permissionsApi.clearRemembered();
-      setRememberedCount(0);
+      const result = await api.clearAll();
+      if (!result.success) {
+        showToast("error", "記憶済み許可のリセットに失敗しました");
+        return;
+      }
+
+      await loadRememberedPermissions();
       showToast("success", "記憶済みの許可をリセットしました");
     } catch (error) {
       showToast(
@@ -562,7 +545,7 @@ export const AgentView: React.FC<AgentViewProps> = ({ className }) => {
           : "記憶済み許可のリセットに失敗しました",
       );
     }
-  }, [showToast]);
+  }, [loadRememberedPermissions, showToast]);
 
   // Error state
   if (error) {

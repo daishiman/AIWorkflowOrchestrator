@@ -42,22 +42,22 @@
 
 **契約プロファイル突合マトリクス**:
 
-| チャネル              | プロファイル分類 | 実装の return パターン | Preload の呼び出し方式 | 突合結果 |
-| --------------------- | ---------------- | ---------------------- | ---------------------- | -------- |
-| `skill:list`          | -                | -                      | -                      | -        |
-| `skill:getImported`   | -                | -                      | -                      | -        |
-| `skill:import`        | -                | -                      | -                      | -        |
-| `skill:remove`        | -                | -                      | -                      | -        |
-| `skill:get-detail`    | -                | -                      | -                      | -        |
-| `skill:execute`       | -                | -                      | -                      | -        |
-| `skill:abort`         | -                | -                      | -                      | -        |
-| `skill:get-status`    | -                | -                      | -                      | -        |
-| `skill:analyze`       | -                | -                      | -                      | -        |
-| `skill:improve`       | -                | -                      | -                      | -        |
-| `skill:optimize`      | -                | -                      | -                      | -        |
-| `skill:optimize:variants` | -            | -                      | -                      | -        |
-| `skill:optimize:evaluate` | -            | -                      | -                      | -        |
-| `skill:scan`          | -                | -                      | -                      | -        |
+| チャネル                  | プロファイル分類 | 実装の return パターン | Preload の呼び出し方式 | 突合結果 |
+| ------------------------- | ---------------- | ---------------------- | ---------------------- | -------- |
+| `skill:list`              | -                | -                      | -                      | -        |
+| `skill:getImported`       | -                | -                      | -                      | -        |
+| `skill:import`            | -                | -                      | -                      | -        |
+| `skill:remove`            | -                | -                      | -                      | -        |
+| `skill:get-detail`        | -                | -                      | -                      | -        |
+| `skill:execute`           | -                | -                      | -                      | -        |
+| `skill:abort`             | -                | -                      | -                      | -        |
+| `skill:get-status`        | -                | -                      | -                      | -        |
+| `skill:analyze`           | -                | -                      | -                      | -        |
+| `skill:improve`           | -                | -                      | -                      | -        |
+| `skill:optimize`          | -                | -                      | -                      | -        |
+| `skill:optimize:variants` | -                | -                      | -                      | -        |
+| `skill:optimize:evaluate` | -                | -                      | -                      | -        |
+| `skill:scan`              | -                | -                      | -                      | -        |
 
 > チャネル名の正本は `index.md` の「IPCチャネル正本（Single Source of Truth）」に従う。
 
@@ -208,11 +208,11 @@ rg -n "electronAPI\.skill\." apps/desktop/src/renderer/
 
 ## SubAgent 分担
 
-| SubAgent   | 担当 |
-| ---------- | ---- |
-| SubAgent-A | タスク1（契約完全性レビュー） |
+| SubAgent   | 担当                                                       |
+| ---------- | ---------------------------------------------------------- |
+| SubAgent-A | タスク1（契約完全性レビュー）                              |
 | SubAgent-B | タスク2（仕様整合性レビュー）+ タスク3（依存関係レビュー） |
-| SubAgent-C | タスク4（回帰リスクレビュー）+ タスク5（レビュー判定） |
+| SubAgent-C | タスク4（回帰リスクレビュー）+ タスク5（レビュー判定）     |
 
 ## 参照資料
 

@@ -5,6 +5,41 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-06 |
+| ステータス | **完了** |
+| タイプ | implementation / ui |
+| 優先度 | P0 |
+| 完了日 | 2026-03-30 |
+| 対象 | スキル作成ワークフローのUI をフォームベースからチャット型会話UIに刷新 |
+| 成果物 | `docs/30-workflows/p0-verify-remediation-pack/task-p0-06-conversational-interview-ui/` |
+
+#### 実施内容
+
+- **新規ファイル**: `ConversationalInterview.tsx`, `InterviewProgressBar.tsx`, `useInterviewState.ts`, `interview-widgets/` (5ウィジェット), `index.ts`
+- **変更ファイル**: `SkillLifecyclePanel.tsx`（question-hostセクション置換）, `packages/shared/types/skillCreator.ts`（`multi_select` 型追加）
+- **テスト**: 74テスト (8ファイル) ALL PASS
+- **AC充足**: AC-1〜AC-13 全13項目
+
+#### 検証
+
+- 74テスト ALL PASS（8ファイル）
+- AC-1〜AC-13 全充足
+
+#### 苦戦箇所
+
+- `useCallback` 内 state 同期読み取り（undo 戻り値）: `setMessages` コールバック内の代入は非同期フラッシュのため同期 return に間に合わない → クロージャで現在 state を直接参照する方式に変更
+- vitest 実行ディレクトリ依存: monorepo ルートから実行すると `happy-dom` 環境が適用されず `document is not defined` エラー
+
+#### Phase 12 未タスク
+
+なし
+
+---
+
 ### タスク: TASK-P0-05 execute-skill-file-writer-integration（2026-03-30）
 
 | 項目 | 値 |
@@ -31,18 +66,17 @@
 - 50 tests PASS（parser 16 / facade persist 13 / workflow engine 23 ではなく、current targeted suite 合計 50 として記録）
 
 ---
-
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-RT-01 |
-| ステータス | **完了** |
-| タイプ | runtime bug-fix / error-propagation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-29 |
-| 対象 | `skill-creator:plan` の adapter 初期化失敗伝播 |
-| 成果物 | `docs/30-workflows/step-08-par-task-rt-01-llm-adapter-error-propagation/` |
+| 項目       | 値                                                                        |
+| ---------- | ------------------------------------------------------------------------- |
+| タスクID   | TASK-RT-01                                                                |
+| ステータス | **完了**                                                                  |
+| タイプ     | runtime bug-fix / error-propagation                                       |
+| 優先度     | 高                                                                        |
+| 完了日     | 2026-03-29                                                                |
+| 対象       | `skill-creator:plan` の adapter 初期化失敗伝播                            |
+| 成果物     | `docs/30-workflows/step-08-par-task-rt-01-llm-adapter-error-propagation/` |
 
 #### 実施内容
 
@@ -53,17 +87,54 @@
 
 ---
 
+### タスク: TASK-RT-02 api-key-ui-adapter-status（2026-03-29）
+
+| 項目       | 値                                                            |
+| ---------- | ------------------------------------------------------------- |
+| タスクID   | TASK-RT-02                                                    |
+| ステータス | **完了**                                                      |
+| タイプ     | implementation / ui                                           |
+| 優先度     | 中                                                            |
+| 完了日     | 2026-03-29                                                    |
+| 対象       | `ApiKeysSection` に `AdapterStatusBadge` + `RetryButton` 統合 |
+| 成果物     | `docs/30-workflows/task-rt-02-api-key-ui-adapter-status/`     |
+
+#### 実施内容
+
+- `AdapterStatusBadge` atom を新規作成（`LLMAdapterStatus: ready/initializing/failed` の3状態を色付き Badge で視覚化・アクセシビリティ対応 `role="status"` / `aria-live="polite"`）
+- `RetryButton` atom を新規作成（`failed` 状態時の再接続アクション・`isRetrying` でローディング状態表示）
+- `ApiKeysSection` に `refreshAdapterStatuses()` を追加し、登録済みプロバイダーの health check を並列実行（`Promise.allSettled`）
+- `adapterStatusRequestIdRef` で request ID をトラッキングし、非同期競合状態（race condition）を防止
+- `Partial<Record<AIProvider, boolean>>` でプロバイダー単位の `isRetrying` 状態をマップ管理
+- `atoms/index.ts` に `AdapterStatusBadge` / `RetryButton` をエクスポート追加
+
+#### 苦戦箇所
+
+| 苦戦箇所                                  | 再発条件                                                                   | 解決策                                                                                       |
+| ----------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| 非同期 health check の競合状態            | 複数回 `refreshAdapterStatuses` が連続呼び出しされた場合                   | `useRef` でリクエスト ID をトラッキングし、古いリクエスト結果を無視                          |
+| `Promise.allSettled` と個別エラーの独立性 | 複数プロバイダーを並列実行しつつ個別エラーが他プロバイダーに伝播しない設計 | `allSettled` で全結果を収集、`rejected` 時は `failed` + `errorMessage` にフォールバック      |
+| プロバイダー単位の `isRetrying` 管理      | 同一セクションで複数プロバイダーが同時リトライ可能な場合                   | `Partial<Record<AIProvider, boolean>>` で Map パターン管理、他プロバイダーの状態に影響しない |
+
+#### 検証証跡
+
+- `AdapterStatusBadge.test.tsx`: 3状態表示・failureReason・アクセシビリティ PASS
+- `RetryButton.test.tsx`: レンダリング・クリック・disabled・aria-label PASS
+- GitHub Issue: #1705
+
+---
+
 ### タスク: TASK-RT-04 skill-authkey-api-key-management-ui（2026-03-29）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-RT-04 |
-| ステータス | **完了** |
-| タイプ | implementation / ui |
-| 優先度 | 中 |
-| 完了日 | 2026-03-29 |
-| 対象 | `ApiKeySettingsPanel` 新規実装 / `SkillLifecyclePanel` 補助導線統合 / `ApiKeyStatus` 型追加 |
-| 成果物 | `docs/30-workflows/step-08-par-task-rt-04-api-key-management-ui/` |
+| 項目       | 値                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-RT-04                                                                                  |
+| ステータス | **完了**                                                                                    |
+| タイプ     | implementation / ui                                                                         |
+| 優先度     | 中                                                                                          |
+| 完了日     | 2026-03-29                                                                                  |
+| 対象       | `ApiKeySettingsPanel` 新規実装 / `SkillLifecyclePanel` 補助導線統合 / `ApiKeyStatus` 型追加 |
+| 成果物     | `docs/30-workflows/step-08-par-task-rt-04-api-key-management-ui/`                           |
 
 #### 実施内容
 
@@ -75,10 +146,10 @@
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 解決策 |
-| --- | --- | --- |
-| esbuild バイナリアーキ不一致（`darwin-arm64` vs `darwin-x64`） | `pnpm install` 後に optional deps が現在アーキと合わない場合 | `pnpm install --force` で optional dependency を再解決 |
-| Settings vs Lifecycle 責務境界の曖昧さ | 同一 IPC チャネルを複数 surface で再利用する場合 | 主導線/補助導線の役割を workflow index.md に明記し仕様固定 |
+| 苦戦箇所                                                       | 再発条件                                                     | 解決策                                                     |
+| -------------------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------- |
+| esbuild バイナリアーキ不一致（`darwin-arm64` vs `darwin-x64`） | `pnpm install` 後に optional deps が現在アーキと合わない場合 | `pnpm install --force` で optional dependency を再解決     |
+| Settings vs Lifecycle 責務境界の曖昧さ                         | 同一 IPC チャネルを複数 surface で再利用する場合             | 主導線/補助導線の役割を workflow index.md に明記し仕様固定 |
 
 #### 検証証跡
 
@@ -86,22 +157,22 @@
 - Phase 11 screenshots: TC-11-01〜TC-11-03（3枚）current build 撮影
 - `api-ipc-system-core.md`: Runtime lane 補助導線ルール追記完了
 - `interfaces-agent-sdk-skill-reference.md`: `ApiKeyStatus` 型追記完了
-- 未タスク3件（UT-TASK-RT-04-*）: すべて resolved
+- 未タスク3件（UT-TASK-RT-04-\*）: すべて resolved
 
 ---
 
 ### タスク: TASK-SDK-03 context-budget-and-resource-selection（2026-03-27）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SDK-03 |
-| ステータス | **完了** |
-| タイプ | refactoring / implementation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-27 |
-| PR | #1666 |
-| 対象 | PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / context budget 動的解決 |
-| 成果物 | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/` |
+| 項目       | 値                                                                                                   |
+| ---------- | ---------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-03                                                                                          |
+| ステータス | **完了**                                                                                             |
+| タイプ     | refactoring / implementation                                                                         |
+| 優先度     | 高                                                                                                   |
+| 完了日     | 2026-03-27                                                                                           |
+| PR         | #1666                                                                                                |
+| 対象       | PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / context budget 動的解決 |
+| 成果物     | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/`                       |
 
 #### 実施内容
 
@@ -114,16 +185,16 @@
 
 ### タスク: TASK-SDK-04 user-interaction-bridge-and-phase-ui（2026-03-27）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SDK-04 |
-| ステータス | **完了** |
-| タイプ | implementation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-27 |
-| PR | #1667 |
-| 対象 | ユーザー入力ブリッジ / フェーズ UI 同期 / IPC 型外部化 |
-| 成果物 | `docs/30-workflows/step-04-par-task-04-user-interaction-bridge-and-phase-ui/` |
+| 項目       | 値                                                                            |
+| ---------- | ----------------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-04                                                                   |
+| ステータス | **完了**                                                                      |
+| タイプ     | implementation                                                                |
+| 優先度     | 高                                                                            |
+| 完了日     | 2026-03-27                                                                    |
+| PR         | #1667                                                                         |
+| 対象       | ユーザー入力ブリッジ / フェーズ UI 同期 / IPC 型外部化                        |
+| 成果物     | `docs/30-workflows/step-04-par-task-04-user-interaction-bridge-and-phase-ui/` |
 
 #### 実施内容
 
@@ -135,16 +206,16 @@
 
 ### タスク: TASK-SDK-04-U2 plan-execute-canonical-binding（2026-03-28）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SDK-04-U2 |
-| ステータス | **完了** |
-| タイプ | bug-fix |
-| 優先度 | 高 |
-| 完了日 | 2026-03-28 |
-| 親タスク | TASK-SDK-04 |
-| 対象 | `SkillLifecyclePanel.tsx` の execute flow canonical binding drift 是正 |
-| 成果物 | `docs/30-workflows/TASK-SDK-04-U2-plan-execute-canonical-binding/` |
+| 項目       | 値                                                                     |
+| ---------- | ---------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-04-U2                                                         |
+| ステータス | **完了**                                                               |
+| タイプ     | bug-fix                                                                |
+| 優先度     | 高                                                                     |
+| 完了日     | 2026-03-28                                                             |
+| 親タスク   | TASK-SDK-04                                                            |
+| 対象       | `SkillLifecyclePanel.tsx` の execute flow canonical binding drift 是正 |
+| 成果物     | `docs/30-workflows/TASK-SDK-04-U2-plan-execute-canonical-binding/`     |
 
 #### 実施内容
 
@@ -157,16 +228,16 @@
 
 ### タスク: TASK-SDK-05 create-entry-mainline-unification（2026-03-27）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SDK-05 |
-| ステータス | **完了** |
-| タイプ | implementation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-27 |
-| PR | #1667, #1668 |
-| 対象 | create entry の mainline 統合 / ViewType 契約 |
-| 成果物 | `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/` |
+| 項目       | 値                                                                         |
+| ---------- | -------------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-05                                                                |
+| ステータス | **完了**                                                                   |
+| タイプ     | implementation                                                             |
+| 優先度     | 高                                                                         |
+| 完了日     | 2026-03-27                                                                 |
+| PR         | #1667, #1668                                                               |
+| 対象       | create entry の mainline 統合 / ViewType 契約                              |
+| 成果物     | `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/` |
 
 #### 実施内容
 
@@ -177,16 +248,16 @@
 
 ### タスク: TASK-SDK-06 verify-and-improve-lifecycle-surface（2026-03-27）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SDK-06 |
-| ステータス | **完了** |
-| タイプ | implementation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-27 |
-| PR | #1668 |
-| 対象 | verify detail 展開 / reverify ワークフロー / layer3-4 verify check 自動生成 |
-| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-task-sdk-06-layer34-verify-expansion-001/` |
+| 項目       | 値                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SDK-06                                                                          |
+| ステータス | **完了**                                                                             |
+| タイプ     | implementation                                                                       |
+| 優先度     | 高                                                                                   |
+| 完了日     | 2026-03-27                                                                           |
+| PR         | #1668                                                                                |
+| 対象       | verify detail 展開 / reverify ワークフロー / layer3-4 verify check 自動生成          |
+| 成果物     | `docs/30-workflows/completed-tasks/ut-imp-task-sdk-06-layer34-verify-expansion-001/` |
 
 #### 実施内容
 
@@ -199,15 +270,15 @@
 
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 verify artifact append と workflow close-out を同期（2026-03-26）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 |
-| ステータス | **完了** |
-| タイプ | bugfix |
-| 優先度 | 高 |
-| 完了日 | 2026-03-26 |
-| PR | #1660 |
-| 対象 | `execute_result` / `verify_result` の append 戦略統一 / workflow close-out 同期 |
+| 項目       | 値                                                                              |
+| ---------- | ------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001                              |
+| ステータス | **完了**                                                                        |
+| タイプ     | bugfix                                                                          |
+| 優先度     | 高                                                                              |
+| 完了日     | 2026-03-26                                                                      |
+| PR         | #1660                                                                           |
+| 対象       | `execute_result` / `verify_result` の append 戦略統一 / workflow close-out 同期 |
 
 #### 実施内容
 
@@ -218,17 +289,17 @@
 
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Runtime workflow engine の失敗系 state lifecycle 是正（2026-03-26）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 |
-| ステータス | **完了** |
-| タイプ | implementation / bugfix |
-| 優先度 | 高 |
-| 完了日 | 2026-03-26 |
-| 対象 | `RuntimeSkillCreatorFacade.execute()` / `SkillCreatorWorkflowEngine` / runtime tests / Phase 1-12 outputs |
-| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
+| 項目             | 値                                                                                                            |
+| ---------------- | ------------------------------------------------------------------------------------------------------------- |
+| タスクID         | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001                                                          |
+| ステータス       | **完了**                                                                                                      |
+| タイプ           | implementation / bugfix                                                                                       |
+| 優先度           | 高                                                                                                            |
+| 完了日           | 2026-03-26                                                                                                    |
+| 対象             | `RuntimeSkillCreatorFacade.execute()` / `SkillCreatorWorkflowEngine` / runtime tests / Phase 1-12 outputs     |
+| 成果物           | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-engine-failure-lifecycle-001/`                     |
 | 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-fix-runtime-workflow-engine-failure-lifecycle-001.md` |
-| GitHub Issue | #1646 |
+| GitHub Issue     | #1646                                                                                                         |
 
 #### 実施内容
 
@@ -247,17 +318,17 @@
 
 ### タスク: UT-LLM-MOD-01-005 PROVIDER_CONFIGS/inferProviderId/LLMProviderIdSchema 三重管理解消（2026-03-25）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-LLM-MOD-01-005 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | implementation / refactor |
-| 優先度 | 中 |
-| 完了日 | 2026-03-25 |
-| 対象 | `provider-registry.ts` を正本にした provider / model 管理 |
-| 成果物 | `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/` |
+| 項目             | 値                                                                       |
+| ---------------- | ------------------------------------------------------------------------ |
+| タスクID         | UT-LLM-MOD-01-005                                                        |
+| ステータス       | **完了（Phase 1-12 完了 / Phase 13 blocked）**                           |
+| タイプ           | implementation / refactor                                                |
+| 優先度           | 中                                                                       |
+| 完了日           | 2026-03-25                                                               |
+| 対象             | `provider-registry.ts` を正本にした provider / model 管理                |
+| 成果物           | `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/`                   |
 | 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/UT-LLM-MOD-01-005.md` |
-| GitHub Issue | #1524 |
+| GitHub Issue     | #1524                                                                    |
 
 #### 実施内容
 
@@ -270,23 +341,24 @@
 
 #### Phase 12 未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| task-llm-adapter-factory-provider-ids-ssot | `LLMAdapterFactory` の `SUPPORTED_PROVIDER_IDS` を `provider-registry.ts` 由来に寄せる | 中 | `docs/30-workflows/unassigned-task/task-llm-adapter-factory-provider-ids-ssot.md` |
-| task-llm-handle-get-providers-readonly-models | `handleGetProviders()` の readonly models bridge を解消する | 低 | `docs/30-workflows/unassigned-task/task-llm-handle-get-providers-readonly-models.md` |
+| 未タスクID                                    | 概要                                                                                   | 優先度 | タスク仕様書                                                                         |
+| --------------------------------------------- | -------------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------ |
+| task-llm-adapter-factory-provider-ids-ssot    | `LLMAdapterFactory` の `SUPPORTED_PROVIDER_IDS` を `provider-registry.ts` 由来に寄せる | 中     | `docs/30-workflows/unassigned-task/task-llm-adapter-factory-provider-ids-ssot.md`    |
+| task-llm-handle-get-providers-readonly-models | `handleGetProviders()` の readonly models bridge を解消する                            | 低     | `docs/30-workflows/unassigned-task/task-llm-handle-get-providers-readonly-models.md` |
 
 ---
+
 ### タスク: UT-SC-02-005 Preload skill-creator-api.ts の execute 戻り値型更新（2026-03-25）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-SC-02-005 |
-| ステータス | **完了**（2026-03-25） |
-| タイプ | バグ修正 |
-| 優先度 | 中 |
-| 完了日 | 2026-03-25 |
-| 対象 | `apps/desktop/src/preload/skill-creator-api.ts`, `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` |
-| 親タスク | UT-SC-02-002 |
+| 項目       | 値                                                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SC-02-005                                                                                                          |
+| ステータス | **完了**（2026-03-25）                                                                                                |
+| タイプ     | バグ修正                                                                                                              |
+| 優先度     | 中                                                                                                                    |
+| 完了日     | 2026-03-25                                                                                                            |
+| 対象       | `apps/desktop/src/preload/skill-creator-api.ts`, `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` |
+| 親タスク   | UT-SC-02-002                                                                                                          |
 
 #### 実施内容
 
@@ -295,17 +367,18 @@
 - Preload runtime テスト・Renderer テストを更新し全 PASS を確認
 
 ---
+
 ### タスク: TASK-SDK-01 manifest-contract-foundation（2026-03-26）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SDK-01 |
-| ステータス | **完了** |
-| タイプ | implementation / contract-foundation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-26 |
-| 対象 | `packages/shared` workflow manifest contract、desktop main `ManifestLoader`、Phase 1-12 outputs |
-| 成果物 | `docs/30-workflows/step-01-seq-task-01-manifest-contract-foundation/` |
+| 項目       | 値                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-01                                                                                     |
+| ステータス | **完了**                                                                                        |
+| タイプ     | implementation / contract-foundation                                                            |
+| 優先度     | 高                                                                                              |
+| 完了日     | 2026-03-26                                                                                      |
+| 対象       | `packages/shared` workflow manifest contract、desktop main `ManifestLoader`、Phase 1-12 outputs |
+| 成果物     | `docs/30-workflows/step-01-seq-task-01-manifest-contract-foundation/`                           |
 
 #### 実施内容
 
@@ -323,17 +396,18 @@
 - 環境 blocker: Vitest は `esbuild` version mismatch で未実行。既存の native binary / worktree guard 系 tracker を再利用し、重複未タスクは新設しない
 
 ---
+
 ### タスク: TASK-SDK-02 workflow-engine-runtime-orchestration（2026-03-26）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SDK-02 |
-| ステータス | **完了** |
-| タイプ | implementation / runtime-orchestration |
-| 優先度 | 高 |
-| 完了日 | 2026-03-26 |
-| 対象 | `RuntimeSkillCreatorFacade` / `SkillCreatorWorkflowEngine` / `ResourceLoader` / runtime/shared tests / Phase 1-12 outputs |
-| 成果物 | `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
+| 項目       | 値                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-02                                                                                                               |
+| ステータス | **完了**                                                                                                                  |
+| タイプ     | implementation / runtime-orchestration                                                                                    |
+| 優先度     | 高                                                                                                                        |
+| 完了日     | 2026-03-26                                                                                                                |
+| 対象       | `RuntimeSkillCreatorFacade` / `SkillCreatorWorkflowEngine` / `ResourceLoader` / runtime/shared tests / Phase 1-12 outputs |
+| 成果物     | `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/`                                            |
 
 #### 実施内容
 
@@ -349,17 +423,18 @@
 - 環境 blocker は既存 `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` の管轄と重複するため、新設しない
 
 ---
+
 ### タスク: TASK-SDK-03 context-budget-and-resource-selection（2026-03-27）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SDK-03 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | implementation / internal-contract-hardening |
-| 優先度 | 高 |
-| 完了日 | 2026-03-27 |
-| 対象 | `RuntimeSkillCreatorFacade` plan/improve resource loading、`SkillCreatorSourceResolver`、`PhaseResourcePlanner`、`ResolvedResourceReader`、runtime tests、Phase 1-12 outputs |
-| 成果物 | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/` |
+| 項目       | 値                                                                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-03                                                                                                                                                                  |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                                                                                                               |
+| タイプ     | implementation / internal-contract-hardening                                                                                                                                 |
+| 優先度     | 高                                                                                                                                                                           |
+| 完了日     | 2026-03-27                                                                                                                                                                   |
+| 対象       | `RuntimeSkillCreatorFacade` plan/improve resource loading、`SkillCreatorSourceResolver`、`PhaseResourcePlanner`、`ResolvedResourceReader`、runtime tests、Phase 1-12 outputs |
+| 成果物     | `docs/30-workflows/step-03-par-task-03-context-budget-and-resource-selection/`                                                                                               |
 
 #### 実施内容
 
@@ -375,17 +450,18 @@
 - trust scoring / disclosure は Task07、resume compatibility / invalidation は Task08 の owner を維持するため、Task03 から独立 follow-up は新設しない
 
 ---
+
 ### タスク: TASK-SDK-05 create-entry-mainline-unification（2026-03-27）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SDK-05 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked / `spec_created` close-out sync 済み）** |
-| タイプ | docs-only / create-mainline-boundary |
-| 優先度 | 高 |
-| 完了日 | 2026-03-27 |
-| 対象 | Skill Creator create 一次導線、advanced route 境界、warning summary と diagnostics の分離、Phase 12 close-out evidence |
-| 成果物 | `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/` |
+| 項目       | 値                                                                                                                     |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-05                                                                                                            |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked / `spec_created` close-out sync 済み）**                                    |
+| タイプ     | docs-only / create-mainline-boundary                                                                                   |
+| 優先度     | 高                                                                                                                     |
+| 完了日     | 2026-03-27                                                                                                             |
+| 対象       | Skill Creator create 一次導線、advanced route 境界、warning summary と diagnostics の分離、Phase 12 close-out evidence |
+| 成果物     | `docs/30-workflows/step-04-par-task-05-create-entry-mainline-unification/`                                             |
 
 #### 実施内容
 
@@ -401,17 +477,18 @@
 - create mainline wording finalization は Task05 実装 wave の Phase 8 / 9 で扱う既存責務とし、今回 close-out では新設しない
 
 ---
+
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 runtime workflow failure verify artifact append 是正（2026-03-26）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | implementation-closure / runtime-workflow-follow-up |
-| 優先度 | 高 |
-| 完了日 | 2026-03-26 |
-| 対象 | `SkillCreatorWorkflowEngine` verify artifact strategy / runtime tests / workflow pack close-out |
-| 成果物 | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-verify-artifact-append-001/` |
+| 項目       | 値                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001                                              |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                                  |
+| タイプ     | implementation-closure / runtime-workflow-follow-up                                             |
+| 優先度     | 高                                                                                              |
+| 完了日     | 2026-03-26                                                                                      |
+| 対象       | `SkillCreatorWorkflowEngine` verify artifact strategy / runtime tests / workflow pack close-out |
+| 成果物     | `docs/30-workflows/completed-tasks/ut-imp-runtime-workflow-verify-artifact-append-001/`         |
 
 #### 実施内容
 
@@ -426,19 +503,20 @@
 - 今回差分は runtime workflow follow-up の局所是正で閉じたため、既存 backlog と重複する未タスクは新設しない
 
 ---
+
 ### タスク: UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001 task-sdk-01-phase12-compliance-sync（2026-03-26）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | docs-improvement / phase12-close-out |
-| 優先度 | 高 |
-| 完了日 | 2026-03-26 |
-| 対象 | `TASK-SDK-01` の Phase 12 監査証跡、台帳同期、parent `index.md` status parity |
-| 成果物 | `docs/30-workflows/completed-tasks/task-sdk-01-phase12-compliance-sync/` |
+| 項目             | 値                                                                                                      |
+| ---------------- | ------------------------------------------------------------------------------------------------------- |
+| タスクID         | UT-IMP-TASK-SDK-01-PHASE12-COMPLIANCE-SYNC-001                                                          |
+| ステータス       | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                                          |
+| タイプ           | docs-improvement / phase12-close-out                                                                    |
+| 優先度           | 高                                                                                                      |
+| 完了日           | 2026-03-26                                                                                              |
+| 対象             | `TASK-SDK-01` の Phase 12 監査証跡、台帳同期、parent `index.md` status parity                           |
+| 成果物           | `docs/30-workflows/completed-tasks/task-sdk-01-phase12-compliance-sync/`                                |
 | 元未タスク指示書 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task-sdk-01-phase12-compliance-sync-001.md` |
-| GitHub Issue | #1643 |
+| GitHub Issue     | #1643                                                                                                   |
 
 #### 実施内容
 
@@ -455,18 +533,19 @@
 - 環境 blocker として `Vitest + esbuild` mismatch のみ継続管理し、既存 tracker を再利用する
 
 ---
+
 ### タスク: UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 runtime workflow engine failure lifecycle（2026-03-26）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 |
-| ステータス | **完了** |
-| タイプ | implementation / failure-lifecycle-fix |
-| 優先度 | 高 |
-| 完了日 | 2026-03-26 |
-| 対象 | `RuntimeSkillCreatorFacade` / `SkillCreatorWorkflowEngine` failure path、runtime tests、parent workflow docs、Phase 1-12 outputs |
-| 成果物 | `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/` |
-| 親タスク | TASK-SDK-02 |
+| 項目       | 値                                                                                                                               |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001                                                                             |
+| ステータス | **完了**                                                                                                                         |
+| タイプ     | implementation / failure-lifecycle-fix                                                                                           |
+| 優先度     | 高                                                                                                                               |
+| 完了日     | 2026-03-26                                                                                                                       |
+| 対象       | `RuntimeSkillCreatorFacade` / `SkillCreatorWorkflowEngine` failure path、runtime tests、parent workflow docs、Phase 1-12 outputs |
+| 成果物     | `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/`                                                        |
+| 親タスク   | TASK-SDK-02                                                                                                                      |
 
 #### 実施内容
 
@@ -483,17 +562,18 @@
 - `ESBUILD_BINARY_PATH=... pnpm vitest ... --run` で targeted verification を実施済み。native binary / worktree blocker は既存 `docs/30-workflows/unassigned-task/task-fix-worktree-native-binary-guard-001.md` と重複するため新設しない
 
 ---
+
 ### タスク: TASK-SDK-08 session-persistence-and-resume-contract（2026-03-26）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SDK-08 |
-| ステータス | **設計完了** |
-| タイプ | design / session-persistence |
-| 優先度 | 高 |
-| 完了日 | 2026-03-26 |
-| 対象 | workflow checkpoint / compatibility evaluator / revision lease / Phase 1-13 docs pack |
-| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/` |
+| 項目       | 値                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-08                                                                                                   |
+| ステータス | **設計完了**                                                                                                  |
+| タイプ     | design / session-persistence                                                                                  |
+| 優先度     | 高                                                                                                            |
+| 完了日     | 2026-03-26                                                                                                    |
+| 対象       | workflow checkpoint / compatibility evaluator / revision lease / Phase 1-13 docs pack                         |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/` |
 
 #### 実施内容
 
@@ -508,17 +588,18 @@
 - shared types / session storage / preload-main wiring の本実装は後続 wave へ引き継ぐ
 
 ---
+
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 |
-| ステータス | **設計完了** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-24 |
-| 対象 | session dock、transcript、artifact-first result、manual share |
-| 成果物 | `docs/30-workflows/completed-tasks/step-02-seq-task-02-session-dock-artifact-bridge/` |
+| 項目       | 値                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001                                             |
+| ステータス | **設計完了**                                                                          |
+| タイプ     | design                                                                                |
+| 優先度     | 高                                                                                    |
+| 完了日     | 2026-03-24                                                                            |
+| 対象       | session dock、transcript、artifact-first result、manual share                         |
+| 成果物     | `docs/30-workflows/completed-tasks/step-02-seq-task-02-session-dock-artifact-bridge/` |
 
 #### 実施内容
 
@@ -530,25 +611,25 @@
 
 #### Phase 12 未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-IMP-SESSION-DOCK-TESTID-DEDUP-001 | HandoffBlock / PersistentTerminalLauncher の data-testid 衝突解消 | 低 | `docs/30-workflows/unassigned-task/UT-IMP-SESSION-DOCK-TESTID-DEDUP-001.md` |
-| UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001 | CREDENTIAL_PATTERNS に AWS/GCP/Azure キー形式追加 | 中 | `docs/30-workflows/unassigned-task/UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001.md` |
-| UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001 | transcript 展開時の Share Rail 表示位置調整 | 低 | `docs/30-workflows/unassigned-task/UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001.md` |
+| 未タスクID                                        | 概要                                                              | 優先度 | タスク仕様書                                                                             |
+| ------------------------------------------------- | ----------------------------------------------------------------- | ------ | ---------------------------------------------------------------------------------------- |
+| UT-IMP-SESSION-DOCK-TESTID-DEDUP-001              | HandoffBlock / PersistentTerminalLauncher の data-testid 衝突解消 | 低     | `docs/30-workflows/unassigned-task/UT-IMP-SESSION-DOCK-TESTID-DEDUP-001.md`              |
+| UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001 | CREDENTIAL_PATTERNS に AWS/GCP/Azure キー形式追加                 | 中     | `docs/30-workflows/unassigned-task/UT-IMP-SESSION-DOCK-CREDENTIAL-PATTERN-EXTEND-001.md` |
+| UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001         | transcript 展開時の Share Rail 表示位置調整                       | 低     | `docs/30-workflows/unassigned-task/UT-IMP-SESSION-DOCK-SHARE-RAIL-LAYOUT-001.md`         |
 
 ---
 
 ### タスク: TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 guided-execution-shell-foundation（2026-03-24）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 |
-| ステータス | **完了** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-24 |
-| 対象 | 実行コンソールの名称、route、shared launcher、mainline entry |
-| 成果物 | `docs/30-workflows/step-01-seq-task-01-guided-execution-shell-foundation/` |
+| 項目       | 値                                                                         |
+| ---------- | -------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001                             |
+| ステータス | **完了**                                                                   |
+| タイプ     | design                                                                     |
+| 優先度     | 高                                                                         |
+| 完了日     | 2026-03-24                                                                 |
+| 対象       | 実行コンソールの名称、route、shared launcher、mainline entry               |
+| 成果物     | `docs/30-workflows/step-01-seq-task-01-guided-execution-shell-foundation/` |
 
 #### 実施内容
 
@@ -560,33 +641,33 @@
 
 #### Phase 12 未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 | navContract.ts に executionConsole エントリ追加 | 高 | `docs/30-workflows/unassigned-task/ut-imp-navcontract-execution-console-entry-001.md` |
-| UT-RENAME-RUNTIME-ACCESS-TERMINAL-HELPERS-001 | runtimeAccess.ts の terminal 系ヘルパー名称変更 | 低 | `docs/30-workflows/unassigned-task/ut-rename-runtime-access-terminal-helpers-001.md` |
+| 未タスクID                                     | 概要                                            | 優先度 | タスク仕様書                                                                          |
+| ---------------------------------------------- | ----------------------------------------------- | ------ | ------------------------------------------------------------------------------------- |
+| UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 | navContract.ts に executionConsole エントリ追加 | 高     | `docs/30-workflows/unassigned-task/ut-imp-navcontract-execution-console-entry-001.md` |
+| UT-RENAME-RUNTIME-ACCESS-TERMINAL-HELPERS-001  | runtimeAccess.ts の terminal 系ヘルパー名称変更 | 低     | `docs/30-workflows/unassigned-task/ut-rename-runtime-access-terminal-helpers-001.md`  |
 
 #### 解決した既存未タスク
 
-| 未タスクID | 概要 | 解決方法 |
-| --- | --- | --- |
-| ut-viewtype-terminal-addition | ViewType に "terminal" を追加 | executionConsole ViewType 追加で解決 |
-| UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001 | Chat/Workspace guidance の open terminal 導線 | CTA wiring 統一で解決 |
+| 未タスクID                                       | 概要                                          | 解決方法                             |
+| ------------------------------------------------ | --------------------------------------------- | ------------------------------------ |
+| ut-viewtype-terminal-addition                    | ViewType に "terminal" を追加                 | executionConsole ViewType 追加で解決 |
+| UT-IMP-CHAT-WORKSPACE-GUIDANCE-OPEN-TERMINAL-001 | Chat/Workspace guidance の open terminal 導線 | CTA wiring 統一で解決                |
 
 ---
 
 ### タスク: UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 navContract executionConsole エントリ追加（2026-03-24）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001 |
-| ステータス | **完了** |
-| タイプ | implementation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-24 |
-| 対象 | navContract.ts の DockViewType / NAV_SECTIONS / NAV_SHORTCUT_TO_VIEW + Icon play-circle |
-| 成果物 | `docs/30-workflows/ut-imp-navcontract-execution-console-entry-001/` |
-| 親タスク | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 |
-| GitHub Issue | #1553 (CLOSED) |
+| 項目         | 値                                                                                      |
+| ------------ | --------------------------------------------------------------------------------------- |
+| タスクID     | UT-IMP-NAVCONTRACT-EXECUTION-CONSOLE-ENTRY-001                                          |
+| ステータス   | **完了**                                                                                |
+| タイプ       | implementation                                                                          |
+| 優先度       | 高                                                                                      |
+| 完了日       | 2026-03-24                                                                              |
+| 対象         | navContract.ts の DockViewType / NAV_SECTIONS / NAV_SHORTCUT_TO_VIEW + Icon play-circle |
+| 成果物       | `docs/30-workflows/ut-imp-navcontract-execution-console-entry-001/`                     |
+| 親タスク     | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001                                          |
+| GitHub Issue | #1553 (CLOSED)                                                                          |
 
 #### 実施内容
 
@@ -601,14 +682,14 @@
 
 ### タスク: TASK-SC-04-OUTPUT-PERSISTENCE SkillFileWriter LLM生成スキルコンテンツ永続化（2026-03-23）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SC-04-OUTPUT-PERSISTENCE |
-| 完了日 | 2026-03-23 |
-| ステータス | **完了** |
-| 優先度 | 高 |
-| 対象 | SkillFileWriter / SkillGeneratedContent / RuntimeSkillCreatorFacade.execute() |
-| 成果物 | `docs/30-workflows/w3a-sc-output-persistence/` |
+| 項目       | 値                                                                            |
+| ---------- | ----------------------------------------------------------------------------- |
+| タスクID   | TASK-SC-04-OUTPUT-PERSISTENCE                                                 |
+| 完了日     | 2026-03-23                                                                    |
+| ステータス | **完了**                                                                      |
+| 優先度     | 高                                                                            |
+| 対象       | SkillFileWriter / SkillGeneratedContent / RuntimeSkillCreatorFacade.execute() |
+| 成果物     | `docs/30-workflows/w3a-sc-output-persistence/`                                |
 
 #### 実施内容
 
@@ -621,26 +702,28 @@
 
 #### 未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-SC-04-001 | SkillFileWriter インターフェース抽出（P61 DIP準拠） | 低 | `docs/30-workflows/unassigned-task/UT-SC-04-001.md` |
+| 未タスクID   | 概要                                                | 優先度 | タスク仕様書                                        |
+| ------------ | --------------------------------------------------- | ------ | --------------------------------------------------- |
+| UT-SC-04-001 | SkillFileWriter インターフェース抽出（P61 DIP準拠） | 低     | `docs/30-workflows/unassigned-task/UT-SC-04-001.md` |
 
 ---
 
 ### タスク: UT-EXECUTION-ENV-TERMINAL-001 ExecutionEnvironment Terminal 本実装 + assertNoSilentFallback（2026-03-23）
 
 ### タスク: TASK-SC-01-IPC-WIRING-FIX P65 dead-end namespace 検証・allowlistガードレール追加（2026-03-23）
+
 ### タスク: TASK-SC-03-PLAN-LLM-PROMPT RuntimeSkillCreatorFacade.plan() LLM プロンプト統合（2026-03-23）
+
 ### タスク: UT-SC-03-003 RuntimeSkillCreatorFacade DI 配線（2026-03-24）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-SC-03-003 |
-| 親タスク | TASK-SC-03-PLAN-LLM-PROMPT |
-| ステータス | **完了** |
-| 完了日 | 2026-03-24 |
-| 対象 | RuntimeSkillCreatorFacade setLLMAdapter / ipc/index.ts DI 配線 |
-| 成果物 | `docs/30-workflows/completed-tasks/ut-sc-03-003-di-wiring/` |
+| 項目       | 値                                                             |
+| ---------- | -------------------------------------------------------------- |
+| タスクID   | UT-SC-03-003                                                   |
+| 親タスク   | TASK-SC-03-PLAN-LLM-PROMPT                                     |
+| ステータス | **完了**                                                       |
+| 完了日     | 2026-03-24                                                     |
+| 対象       | RuntimeSkillCreatorFacade setLLMAdapter / ipc/index.ts DI 配線 |
+| 成果物     | `docs/30-workflows/completed-tasks/ut-sc-03-003-di-wiring/`    |
 
 #### 実施内容
 
@@ -651,24 +734,24 @@
 
 #### 未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-SC-03-003-M01 | subscriptionAuthProvider DI 配線追加 | 低 | `docs/30-workflows/unassigned-task/UT-SC-03-003-M01-subscription-auth-provider-injection.md` |
-| UT-SC-03-003-M02 | テスト内 undefined キャスト除去 | 低 | `docs/30-workflows/unassigned-task/UT-SC-03-003-M02-test-type-cast-cleanup.md` |
+| 未タスクID       | 概要                                 | 優先度 | タスク仕様書                                                                                 |
+| ---------------- | ------------------------------------ | ------ | -------------------------------------------------------------------------------------------- |
+| UT-SC-03-003-M01 | subscriptionAuthProvider DI 配線追加 | 低     | `docs/30-workflows/unassigned-task/UT-SC-03-003-M01-subscription-auth-provider-injection.md` |
+| UT-SC-03-003-M02 | テスト内 undefined キャスト除去      | 低     | `docs/30-workflows/unassigned-task/UT-SC-03-003-M02-test-type-cast-cleanup.md`               |
 
 ---
 
 ### タスク: UT-CONV-DB-001 better-sqlite3 75件テスト SKIP 修正（2026-03-23）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-CONV-DB-001 |
-| ステータス | **実装完了** |
-| タイプ | bugfix / test-infrastructure |
-| 優先度 | 高 |
-| 完了日 | 2026-03-23 |
-| 対象 | better-sqlite3 ネイティブバイナリ / conversationRepository.test.ts |
-| 成果物 | `docs/30-workflows/completed-tasks/conv-db-001-repository-test-skip-fix/` |
+| 項目       | 値                                                                        |
+| ---------- | ------------------------------------------------------------------------- |
+| タスクID   | UT-CONV-DB-001                                                            |
+| ステータス | **実装完了**                                                              |
+| タイプ     | bugfix / test-infrastructure                                              |
+| 優先度     | 高                                                                        |
+| 完了日     | 2026-03-23                                                                |
+| 対象       | better-sqlite3 ネイティブバイナリ / conversationRepository.test.ts        |
+| 成果物     | `docs/30-workflows/completed-tasks/conv-db-001-repository-test-skip-fix/` |
 
 #### 実施内容
 
@@ -686,22 +769,22 @@
 
 ### タスク: TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 Slide Modifier Manual Fallback Alignment 設計（2026-03-23）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 |
-| ステータス | **仕様書作成完了（`spec_created` / 設計タスク / Phase 13 blocked）** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-23 |
-| 対象 | Slide Modifier / SlideUIStatus 状態機械 / Manual Fallback 整合設計 |
-| 成果物 | `docs/30-workflows/step-05-par-task-08-slide-modifier-manual-fallback-alignment/` |
+| 項目       | 値                                                                                |
+| ---------- | --------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001                             |
+| ステータス | **仕様書作成完了（`spec_created` / 設計タスク / Phase 13 blocked）**              |
+| タイプ     | design                                                                            |
+| 優先度     | 高                                                                                |
+| 完了日     | 2026-03-23                                                                        |
+| 対象       | Slide Modifier / SlideUIStatus 状態機械 / Manual Fallback 整合設計                |
+| 成果物     | `docs/30-workflows/step-05-par-task-08-slide-modifier-manual-fallback-alignment/` |
 
 #### 実施内容
 
 - SlideUIStatus（synced / running / degraded / guidance）と SlideLane（integrated / manual）の型定義を確定
 - SlideCapabilityDTO（laneType / modifier / agentClient / fallbackReason / guidance）の契約設計
 - 禁止遷移4件（integrated→manual 自動格下げ / guidance 中 modifier 呼出 / degraded 中 agentClient 呼出 / synced 時 fallbackReason 設定）の仕様明文化
-- Manual Fallback 境界ルール（MB-1〜MB-4）と slide:sync:* IPC チャネル設計
+- Manual Fallback 境界ルール（MB-1〜MB-4）と slide:sync:\* IPC チャネル設計
 - Phase 3 設計レビュー PASS / Phase 10 最終レビュー PASS
 - 未タスク 5 件（UT-SLIDE-IMPL-001 / UT-SLIDE-UI-001 / UT-SLIDE-P31-001 / UT-SLIDE-HANDOFF-DUP-001 / UT-SLIDE-TASK09-IPC-NAMESPACE-001）を検出・backlog 登録
 
@@ -713,15 +796,15 @@
 
 ### タスク: TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 Terminal Handoff Surface Realization 設計（2026-03-22）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-22 |
-| 対象 | Claude Code terminal surface / shared handoff UI 共通設計 |
-| 成果物 | `docs/30-workflows/step-03-par-task-05-terminal-handoff-surface-realization/` |
+| 項目       | 値                                                                            |
+| ---------- | ----------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-TERMINAL-HANDOFF-SURFACE-REALIZATION-001                             |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                |
+| タイプ     | design                                                                        |
+| 優先度     | 高                                                                            |
+| 完了日     | 2026-03-22                                                                    |
+| 対象       | Claude Code terminal surface / shared handoff UI 共通設計                     |
+| 成果物     | `docs/30-workflows/step-03-par-task-05-terminal-handoff-surface-realization/` |
 
 #### 実施内容
 
@@ -740,15 +823,15 @@
 
 ### タスク: TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 Transcript -> Chat Provenance Linkage 設計（2026-03-22）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001 |
+| 項目       | 値                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-TRANSCRIPT-TO-CHAT-PROVENANCE-LINKAGE-001                                             |
 | ステータス | **仕様書作成完了（`spec_created` / workflow root `implementation_ready` / Phase 13 blocked）** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-22 |
-| 対象 | Transcript -> Chat 手動3操作連携 / Provenance Chip / Metadata Contract |
-| 成果物 | `docs/30-workflows/step-04-seq-task-06-transcript-to-chat-provenance-linkage/` |
+| タイプ     | design                                                                                         |
+| 優先度     | 高                                                                                             |
+| 完了日     | 2026-03-22                                                                                     |
+| 対象       | Transcript -> Chat 手動3操作連携 / Provenance Chip / Metadata Contract                         |
+| 成果物     | `docs/30-workflows/step-04-seq-task-06-transcript-to-chat-provenance-linkage/`                 |
 
 #### 実施内容
 
@@ -767,15 +850,15 @@
 
 ### タスク: TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 Settings shell access matrix mainline design（2026-03-22）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 |
-| ステータス | **完了（Phase 1-13 設計タスク完了 / Phase 13 blocked: user approval 待ち）** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-22 |
-| 対象 | Settings Access Matrix Section / AppLayout Persistent Launcher / Public Shell Access Contract |
-| 成果物 | `docs/30-workflows/step-03-par-task-03-settings-shell-access-matrix-mainline/outputs/` |
+| 項目       | 値                                                                                            |
+| ---------- | --------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001                                            |
+| ステータス | **完了（Phase 1-13 設計タスク完了 / Phase 13 blocked: user approval 待ち）**                  |
+| タイプ     | design                                                                                        |
+| 優先度     | 高                                                                                            |
+| 完了日     | 2026-03-22                                                                                    |
+| 対象       | Settings Access Matrix Section / AppLayout Persistent Launcher / Public Shell Access Contract |
+| 成果物     | `docs/30-workflows/step-03-par-task-03-settings-shell-access-matrix-mainline/outputs/`        |
 
 #### 実施内容
 
@@ -794,15 +877,15 @@
 
 ### タスク: TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 RuntimePolicyResolver capability bridge（2026-03-21）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | implementation |
-| 優先度 | 中 |
-| 完了日 | 2026-03-21 |
-| 対象 | RuntimePolicyResolver / RuntimeSkillCreatorFacade / creatorHandlers の direct caller capability bridge |
-| 成果物 | `docs/30-workflows/completed-tasks/runtime-policy-resolver-4state/` |
+| 項目       | 値                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001                                                          |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                                         |
+| タイプ     | implementation                                                                                         |
+| 優先度     | 中                                                                                                     |
+| 完了日     | 2026-03-21                                                                                             |
+| 対象       | RuntimePolicyResolver / RuntimeSkillCreatorFacade / creatorHandlers の direct caller capability bridge |
+| 成果物     | `docs/30-workflows/completed-tasks/runtime-policy-resolver-4state/`                                    |
 
 #### 実施内容
 
@@ -817,32 +900,32 @@
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（378ファイル分類、`indexes/topic-map.md` / `indexes/keywords.json` 再生成） |
-| `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/runtime-policy-resolver-4state --regenerate` | PASS（13/13 phase files） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/runtime-policy-resolver-4state` | PASS（31項目, 0エラー, 0警告） |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/runtime-policy-resolver-4state --strict` | PASS（13/13, errors 0, warnings 0） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/runtime-policy-resolver-4state` | PASS（10/10） |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/runtime-policy-resolver-4state/outputs/phase-12/unassigned-task-detection.md` | PASS（2/2, missing 0） |
-| `pnpm --filter @repo/shared typecheck` | PASS |
-| `pnpm --filter @repo/desktop typecheck` | PASS |
-| `diff -qr .claude/skills/ .agents/skills/` | PASS（差分なし） |
+| コマンド                                                                                                                                                                                                    | 結果                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`                                                                                                                                     | PASS（378ファイル分類、`indexes/topic-map.md` / `indexes/keywords.json` 再生成） |
+| `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/runtime-policy-resolver-4state --regenerate`                                                         | PASS（13/13 phase files）                                                        |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/runtime-policy-resolver-4state`                                                                          | PASS（31項目, 0エラー, 0警告）                                                   |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/runtime-policy-resolver-4state --strict`                                                           | PASS（13/13, errors 0, warnings 0）                                              |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/runtime-policy-resolver-4state`                                               | PASS（10/10）                                                                    |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/runtime-policy-resolver-4state/outputs/phase-12/unassigned-task-detection.md` | PASS（2/2, missing 0）                                                           |
+| `pnpm --filter @repo/shared typecheck`                                                                                                                                                                      | PASS                                                                             |
+| `pnpm --filter @repo/desktop typecheck`                                                                                                                                                                     | PASS                                                                             |
+| `diff -qr .claude/skills/ .agents/skills/`                                                                                                                                                                  | PASS（差分なし）                                                                 |
 
 #### Phase 12 未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| `UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001` | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface の統合 | 高 | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md` |
-| `UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001` | `RuntimePolicyResolver.resolveFromServices()` への subscription 判定 service 統合 | 中 | `docs/30-workflows/completed-tasks/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
+| 未タスクID                                                   | 概要                                                                                                     | 優先度 | タスク仕様書                                                                                                      |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------- |
+| `UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001`                | internal `creatorHandlers.ts` capability bridge と public `skill-creator:*` IPC / preload surface の統合 | 高     | `docs/30-workflows/unassigned-task/UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001.md`                                |
+| `UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001` | `RuntimePolicyResolver.resolveFromServices()` への subscription 判定 service 統合                        | 中     | `docs/30-workflows/completed-tasks/unassigned-task/UT-IMP-RUNTIME-POLICY-SUBSCRIPTION-SERVICE-INTEGRATION-001.md` |
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| `manual-test-result.md` が `not_run` のまま completed を宣言する | non-visual task の manual evidence を後回しにする | `NON_VISUAL_FALLBACK`、blocker、代替 evidence を同時記録した |
+| 苦戦箇所                                                         | 再発条件                                                   | 対処                                                          |
+| ---------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------- |
+| `manual-test-result.md` が `not_run` のまま completed を宣言する | non-visual task の manual evidence を後回しにする          | `NON_VISUAL_FALLBACK`、blocker、代替 evidence を同時記録した  |
 | internal adapter と public preload 契約を同じ「IPC更新」とみなす | `ipcMain.handle()` 追加だけで system spec を更新済みと書く | internal/public の到達面を分離し、follow-up へ formalize した |
-| `index.md` / `phase-*.md` / `artifacts*` を別ターンで更新する | workflow 本文だけ completed にする | 4点同期を Phase 12 完了条件として固定した |
+| `index.md` / `phase-*.md` / `artifacts*` を別ターンで更新する    | workflow 本文だけ completed にする                         | 4点同期を Phase 12 完了条件として固定した                     |
 
 #### 同種課題の簡潔解決手順
 
@@ -852,15 +935,15 @@
 
 ### タスク: TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 runtime-policy-centralization（2026-03-21）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 |
+| 項目       | 値                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001                                                     |
 | ステータス | **仕様書作成完了（`spec_created` / workflow root `implementation_ready` / Phase 13 blocked）** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-21 |
-| 対象 | surface 横断 runtime policy / health route / handoff contract centralization |
-| 成果物 | `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/` |
+| タイプ     | design                                                                                         |
+| 優先度     | 高                                                                                             |
+| 完了日     | 2026-03-21                                                                                     |
+| 対象       | surface 横断 runtime policy / health route / handoff contract centralization                   |
+| 成果物     | `docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/`         |
 
 #### 実施内容
 
@@ -871,29 +954,29 @@
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（topic-map.md / keywords.json 再生成） |
-| `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js` | PASS with warnings 5（500行超ファイルの既存警告のみ） |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（13/13, errors 0, warnings 0, info 1） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization --json` | PASS（10/10） |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-12/unassigned-task-detection.md` | PASS（4/4, missing 0） |
-| `diff -qr .claude/skills/ .agents/skills/` | PASS（差分なし） |
+| コマンド                                                                                                                                                                                                                       | 結果                                                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`                                                                                                                                                        | PASS（topic-map.md / keywords.json 再生成）           |
+| `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js`                                                                                                                                                    | PASS with warnings 5（500行超ファイルの既存警告のみ） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization --json`                                             | PASS（13/13, errors 0, warnings 0, info 1）           |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization --json`                        | PASS（10/10）                                         |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/completed-tasks/step-02-seq-task-02-runtime-policy-centralization/outputs/phase-12/unassigned-task-detection.md` | PASS（4/4, missing 0）                                |
+| `diff -qr .claude/skills/ .agents/skills/`                                                                                                                                                                                     | PASS（差分なし）                                      |
 
 #### Phase 12 未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高 | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
-| `UT-CLEANUP-AI-CHECK-CONNECTION-001` | legacy health route cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md` |
-| `UT-CLEANUP-RUNTIME-RESOLVER-001` | deprecated resolver cleanup | 低 | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md` |
-| `UT-DESIGN-SANITIZE-PLACEMENT-001` | sanitize 配置判断の固定 | 中 | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md` |
+| 未タスクID                                                          | 概要                                                                                | 優先度 | タスク仕様書                                                                                                             |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001` | current code に残る centralization 未完了箇所を実装・共有契約・テストまで収束させる | 高     | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-runtime-policy-centralization-implementation-closure-001.md` |
+| `UT-CLEANUP-AI-CHECK-CONNECTION-001`                                | legacy health route cleanup                                                         | 低     | `docs/30-workflows/unassigned-task/UT-CLEANUP-AI-CHECK-CONNECTION-001.md`                                                |
+| `UT-CLEANUP-RUNTIME-RESOLVER-001`                                   | deprecated resolver cleanup                                                         | 低     | `docs/30-workflows/unassigned-task/UT-CLEANUP-RUNTIME-RESOLVER-001.md`                                                   |
+| `UT-DESIGN-SANITIZE-PLACEMENT-001`                                  | sanitize 配置判断の固定                                                             | 中     | `docs/30-workflows/unassigned-task/UT-DESIGN-SANITIZE-PLACEMENT-001.md`                                                  |
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| design close-out を feature 完了と誤読しやすい | workflow root と completed ledger の意味を分離しない | workflow root=`implementation_ready`、completed=`spec_created` を明記した |
+| 苦戦箇所                                                 | 再発条件                                             | 対処                                                                                                 |
+| -------------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| design close-out を feature 完了と誤読しやすい           | workflow root と completed ledger の意味を分離しない | workflow root=`implementation_ready`、completed=`spec_created` を明記した                            |
 | docs だけ見て final re-audit を閉じると実装 gap を見逃す | `outputs/` と台帳だけで判断し、current code を見ない | main IPC consumer / facade / shared transport / tests まで sweep し、高優先度 task を formalize した |
 
 #### 同種課題の簡潔解決手順
@@ -904,15 +987,15 @@
 
 ### タスク: TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 execution-responsibility-contract-foundation（2026-03-20）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 |
-| ステータス | **仕様書作成完了（`spec_created` / Phase 1-12 completed / Phase 13 blocked）** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-20 |
-| 対象 | execution responsibility / access capability / CTA contract foundation |
-| 成果物 | `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/` |
+| 項目       | 値                                                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001                                             |
+| ステータス | **仕様書作成完了（`spec_created` / Phase 1-12 completed / Phase 13 blocked）**                        |
+| タイプ     | design                                                                                                |
+| 優先度     | 高                                                                                                    |
+| 完了日     | 2026-03-20                                                                                            |
+| 対象       | execution responsibility / access capability / CTA contract foundation                                |
+| 成果物     | `docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation/` |
 
 #### 実施内容
 
@@ -923,21 +1006,21 @@
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` | PASS（topic-map.md / keywords.json 再生成） |
-| `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js` | PASS with warnings 5（500行超ファイルの既存警告のみ） |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation --json` | PASS（13/13, errors 0, warnings 12） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation --json` | PASS（10/10） |
-| `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements` | PASS（差分なし） |
-| `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator` | PASS（差分なし） |
+| コマンド                                                                                                                                                                                                               | 結果                                                  |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`                                                                                                                                                | PASS（topic-map.md / keywords.json 再生成）           |
+| `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js`                                                                                                                                            | PASS with warnings 5（500行超ファイルの既存警告のみ） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation --json`                      | PASS（13/13, errors 0, warnings 12）                  |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/step-01-seq-task-01-execution-responsibility-contract-foundation --json` | PASS（10/10）                                         |
+| `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`                                                                                                                               | PASS（差分なし）                                      |
+| `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                                                                                         | PASS（差分なし）                                      |
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| current workflow の canonical entrypoint が task-workflow から辿れず、旧 authmode pack だけが見つかる | workflow 名変更後も旧 parent pack だけを参照し続ける | `workflow-ai-runtime-execution-responsibility-realignment.md` を追加し、resource-map / task-workflow から到達可能にした |
-| Phase 12 実更新後も `計画済み` / `更新予定` が成果物に残る | docs-only task で実ファイル更新と成果物更新を別ターンに分ける | planned wording を不完了として扱うルールを skill 正本へ追記し、成果物を実績ベースへ書き換える |
+| 苦戦箇所                                                                                              | 再発条件                                                      | 対処                                                                                                                    |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| current workflow の canonical entrypoint が task-workflow から辿れず、旧 authmode pack だけが見つかる | workflow 名変更後も旧 parent pack だけを参照し続ける          | `workflow-ai-runtime-execution-responsibility-realignment.md` を追加し、resource-map / task-workflow から到達可能にした |
+| Phase 12 実更新後も `計画済み` / `更新予定` が成果物に残る                                            | docs-only task で実ファイル更新と成果物更新を別ターンに分ける | planned wording を不完了として扱うルールを skill 正本へ追記し、成果物を実績ベースへ書き換える                           |
 
 #### 同種課題の簡潔解決手順
 
@@ -947,15 +1030,15 @@
 
 ### タスク: TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 slide-ai-runtime-alignment（2026-03-19）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001 |
-| ステータス | **仕様書作成完了（`spec_created` / Phase 1-12 完了）** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-19 |
-| 対象 | Slide / Modifier / Legacy Agent 経路の runtime/auth-mode alignment |
-| 成果物 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/` |
+| 項目       | 値                                                                                  |
+| ---------- | ----------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001                                             |
+| ステータス | **仕様書作成完了（`spec_created` / Phase 1-12 完了）**                              |
+| タイプ     | design                                                                              |
+| 優先度     | 高                                                                                  |
+| 完了日     | 2026-03-19                                                                          |
+| 対象       | Slide / Modifier / Legacy Agent 経路の runtime/auth-mode alignment                  |
+| 成果物     | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/` |
 
 #### 実施内容
 
@@ -967,33 +1050,33 @@
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `node .../verify-all-specs.js --workflow ...step-04-par-task-09-slide-ai-runtime-alignment --json` | PASS（13/13, warnings 0） |
-| `node .../validate-phase-output.js ...step-04-par-task-09-slide-ai-runtime-alignment` | PASS |
-| `node apps/desktop/scripts/capture-slide-ai-runtime-alignment-phase11.mjs` | PASS（fallback screenshot 5件） |
-| `node .../validate-phase11-screenshot-coverage.js --workflow ...step-04-par-task-09-slide-ai-runtime-alignment` | PASS |
-| `node .../validate-phase12-implementation-guide.js --workflow ...step-04-par-task-09-slide-ai-runtime-alignment` | PASS |
-| `node .../verify-unassigned-links.js --source .../outputs/phase-12/unassigned-task-detection.md` | PASS |
-| `node .../audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（currentViolations=0） |
-| `diff -qr .claude/skills/{aiworkflow-requirements,task-specification-creator,skill-creator} .agents/skills/{aiworkflow-requirements,task-specification-creator,skill-creator}` | PASS |
+| コマンド                                                                                                                                                                       | 結果                            |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------- |
+| `node .../verify-all-specs.js --workflow ...step-04-par-task-09-slide-ai-runtime-alignment --json`                                                                             | PASS（13/13, warnings 0）       |
+| `node .../validate-phase-output.js ...step-04-par-task-09-slide-ai-runtime-alignment`                                                                                          | PASS                            |
+| `node apps/desktop/scripts/capture-slide-ai-runtime-alignment-phase11.mjs`                                                                                                     | PASS（fallback screenshot 5件） |
+| `node .../validate-phase11-screenshot-coverage.js --workflow ...step-04-par-task-09-slide-ai-runtime-alignment`                                                                | PASS                            |
+| `node .../validate-phase12-implementation-guide.js --workflow ...step-04-par-task-09-slide-ai-runtime-alignment`                                                               | PASS                            |
+| `node .../verify-unassigned-links.js --source .../outputs/phase-12/unassigned-task-detection.md`                                                                               | PASS                            |
+| `node .../audit-unassigned-tasks.js --json --diff-from HEAD`                                                                                                                   | PASS（currentViolations=0）     |
+| `diff -qr .claude/skills/{aiworkflow-requirements,task-specification-creator,skill-creator} .agents/skills/{aiworkflow-requirements,task-specification-creator,skill-creator}` | PASS                            |
 
 #### follow-up 状況（2026-03-21）
 
-| 種別 | ID | 概要 | タスク仕様書 |
-| --- | --- | --- | --- |
-| pending | `UT-SLIDE-IMPL-001` | slide runtime/auth-mode 実装収束 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md` |
-| pending | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
-| completed | `UT-SLIDE-UI-001` | SlideWorkspace UI 4領域実装 | `docs/30-workflows/completed-tasks/task-ut-slide-ui-001.md` |
-| resolved | `UT-SLIDE-P31-001` | `useSlideProject()` selector migration を current branch で吸収 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md` |
+| 種別      | ID                         | 概要                                                            | タスク仕様書                                                                                                                        |
+| --------- | -------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| pending   | `UT-SLIDE-IMPL-001`        | slide runtime/auth-mode 実装収束                                | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-impl-001.md`        |
+| pending   | `UT-SLIDE-HANDOFF-DUP-001` | `HandoffGuidance` 重複定義解消                                  | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-handoff-dup-001.md` |
+| completed | `UT-SLIDE-UI-001`          | SlideWorkspace UI 4領域実装                                     | `docs/30-workflows/completed-tasks/task-ut-slide-ui-001.md`                                                                         |
+| resolved  | `UT-SLIDE-P31-001`         | `useSlideProject()` selector migration を current branch で吸収 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-ut-slide-p31-001.md`         |
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
+| 苦戦箇所                                                                        | 再発条件                                              | 対処                                                                                                              |
+| ------------------------------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | live preview が `esbuild` mismatch で停止し、current build の直接撮影ができない | worktree の native binary と preview 実行環境が不整合 | harness + static fallback に切り替え、`phase11-capture-metadata.json` と `manual-test-result.md` に理由を固定した |
-| repo-wide `verify-unassigned-links` と task-scope link 監査が混ざる | global コマンドだけで完了判定する | `--source outputs/phase-12/unassigned-task-detection.md` を current 判定に使い、repo baseline 6 件は別管理にした |
-| `spec_created` が計画記述のまま残りやすい | docs-heavy task で `.claude` 正本更新を後回しにする | system spec / lessons / backlog / skill / mirror parity を同ターンで実更新した |
+| repo-wide `verify-unassigned-links` と task-scope link 監査が混ざる             | global コマンドだけで完了判定する                     | `--source outputs/phase-12/unassigned-task-detection.md` を current 判定に使い、repo baseline 6 件は別管理にした  |
+| `spec_created` が計画記述のまま残りやすい                                       | docs-heavy task で `.claude` 正本更新を後回しにする   | system spec / lessons / backlog / skill / mirror parity を同ターンで実更新した                                    |
 
 #### 同種課題の簡潔解決手順
 
@@ -1003,15 +1086,15 @@
 
 ### タスク: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 skill-docs-runtime-integration（2026-03-16）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 |
-| ステータス | **完了（Phase 1-12 完了）** |
-| タイプ | implementation |
-| 優先度 | 中 |
-| 完了日 | 2026-03-16 |
-| 対象 | Skill Docs 生成の AI runtime 統合（LLMDocQueryAdapter / SkillDocsCapabilityResolver / DocOperationResult 型） |
-| 成果物 | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-04-skill-docs-runtime-integration/` |
+| 項目       | 値                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-SKILL-DOCS-AI-RUNTIME-001                                                                            |
+| ステータス | **完了（Phase 1-12 完了）**                                                                                   |
+| タイプ     | implementation                                                                                                |
+| 優先度     | 中                                                                                                            |
+| 完了日     | 2026-03-16                                                                                                    |
+| 対象       | Skill Docs 生成の AI runtime 統合（LLMDocQueryAdapter / SkillDocsCapabilityResolver / DocOperationResult 型） |
+| 成果物     | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-par-task-04-skill-docs-runtime-integration/` |
 
 #### 実施内容
 
@@ -1024,30 +1107,30 @@
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `pnpm --filter @repo/desktop test` | 97テスト ALL PASS |
-| `LLMDocQueryAdapter` カバレッジ | 98.58% |
-| `SkillDocsCapabilityResolver` カバレッジ | 100% |
-| `pnpm --filter @repo/desktop typecheck` | PASS（再監査 2026-03-16） |
-| `pnpm --filter @repo/shared typecheck` | PASS（再監査 2026-03-16） |
-| `node .../verify-all-specs.js --workflow ...step-03-par-task-04-skill-docs-runtime-integration --json` | PASS（13/13, warning 0） |
-| `node .../validate-phase-output.js ...step-03-par-task-04-skill-docs-runtime-integration --phase 12 --json` | PASS（28項目） |
-| `node .../validate-phase11-screenshot-coverage.js --workflow ...step-03-par-task-04-skill-docs-runtime-integration --json` | PASS（5/5） |
-| `node .../validate-phase12-implementation-guide.js --workflow ...step-03-par-task-04-skill-docs-runtime-integration --json` | PASS（10/10） |
-| `pnpm --filter @repo/desktop exec vitest run ...` | 環境依存で再実行不可（esbuild darwin-x64/arm64 mismatch）。実装完了時の PASS 証跡を保持し、今回は typecheck + validator で再監査 |
+| コマンド                                                                                                                    | 結果                                                                                                                             |
+| --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm --filter @repo/desktop test`                                                                                          | 97テスト ALL PASS                                                                                                                |
+| `LLMDocQueryAdapter` カバレッジ                                                                                             | 98.58%                                                                                                                           |
+| `SkillDocsCapabilityResolver` カバレッジ                                                                                    | 100%                                                                                                                             |
+| `pnpm --filter @repo/desktop typecheck`                                                                                     | PASS（再監査 2026-03-16）                                                                                                        |
+| `pnpm --filter @repo/shared typecheck`                                                                                      | PASS（再監査 2026-03-16）                                                                                                        |
+| `node .../verify-all-specs.js --workflow ...step-03-par-task-04-skill-docs-runtime-integration --json`                      | PASS（13/13, warning 0）                                                                                                         |
+| `node .../validate-phase-output.js ...step-03-par-task-04-skill-docs-runtime-integration --phase 12 --json`                 | PASS（28項目）                                                                                                                   |
+| `node .../validate-phase11-screenshot-coverage.js --workflow ...step-03-par-task-04-skill-docs-runtime-integration --json`  | PASS（5/5）                                                                                                                      |
+| `node .../validate-phase12-implementation-guide.js --workflow ...step-03-par-task-04-skill-docs-runtime-integration --json` | PASS（10/10）                                                                                                                    |
+| `pnpm --filter @repo/desktop exec vitest run ...`                                                                           | 環境依存で再実行不可（esbuild darwin-x64/arm64 mismatch）。実装完了時の PASS 証跡を保持し、今回は typecheck + validator で再監査 |
 
 ### タスク: TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 task-specification-creator 大規模 Markdown 責務分離（2026-03-12）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 |
-| ステータス | **進行中（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | improvement |
-| 優先度 | 高 |
-| 完了日 | 2026-03-12 |
-| 対象 | `.claude/skills/task-specification-creator/` の 500 行超 markdown 6 concern |
-| 成果物 | `docs/30-workflows/completed-tasks/task-specification-creator-line-budget-reform/outputs/` |
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001                                 |
+| ステータス | **進行中（Phase 1-12 完了 / Phase 13 blocked）**                                           |
+| タイプ     | improvement                                                                                |
+| 優先度     | 高                                                                                         |
+| 完了日     | 2026-03-12                                                                                 |
+| 対象       | `.claude/skills/task-specification-creator/` の 500 行超 markdown 6 concern                |
+| 成果物     | `docs/30-workflows/completed-tasks/task-specification-creator-line-budget-reform/outputs/` |
 
 #### 実施内容
 
@@ -1058,25 +1141,25 @@
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator --verbose` | PASS |
-| `node .claude/skills/skill-creator/scripts/validate_all.js .claude/skills/task-specification-creator --verbose` | PASS |
-| `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-specification-creator-line-budget-reform` | Phase outputs 更新後に再実行 |
+| コマンド                                                                                                                                                                       | 結果                         |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator --verbose`                                                              | PASS                         |
+| `node .claude/skills/skill-creator/scripts/validate_all.js .claude/skills/task-specification-creator --verbose`                                                                | PASS                         |
+| `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                                                 | PASS                         |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/task-specification-creator-line-budget-reform`              | Phase outputs 更新後に再実行 |
 | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-specification-creator-line-budget-reform --json` | Phase outputs 更新後に再実行 |
 
 ### タスク: TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 ライトテーマ token 基盤是正（2026-03-11）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
-| タイプ | fix |
-| 優先度 | 高 |
-| 完了日 | 2026-03-11 |
-| 対象 | `apps/desktop/src/renderer/styles/tokens.css` の light token 契約是正（surface / text / border / accent） |
-| 成果物 | `docs/30-workflows/completed-tasks/light-theme-token-foundation/outputs/` |
+| 項目       | 値                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001                                                                 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）**                                                             |
+| タイプ     | fix                                                                                                       |
+| 優先度     | 高                                                                                                        |
+| 完了日     | 2026-03-11                                                                                                |
+| 対象       | `apps/desktop/src/renderer/styles/tokens.css` の light token 契約是正（surface / text / border / accent） |
+| 成果物     | `docs/30-workflows/completed-tasks/light-theme-token-foundation/outputs/`                                 |
 
 #### 実施内容
 
@@ -1089,15 +1172,15 @@
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| token 修正だけでは renderer 全域の hardcoded neutral class drift を止めきれない | `tokens.css` だけ直し、`text-white` / `bg-gray-*` / `border-white/*` を使う legacy class を棚卸ししない | `globals.css` に compatibility bridge を入れ、全画面の暫定整合を先に取り、その後に primitives を token へ寄せた |
-| desktop CI の 1 shard fail は全量再実行だけでは原因が埋もれる | GitHub Actions 上の shard 番号を local で再現せずに broad rerun する | `pnpm --filter @repo/desktop exec vitest run --shard=11/16` で同じ shard を再現し、Dashboard の `--accent` drift を局所化した |
-| light baseline 更新後に旧 screenshot を残すと Apple UI/UX 判断が stale になる | token / component / bridge を変えた後に screenshot を再取得しない | capture script の workflow root を completed path へ直し、5件を再撮影して `validate-phase11-screenshot-coverage` を通した |
-| Phase 5-12 成果物不足で phase status と outputs が乖離する | 実装優先で phase artifacts 生成を後回しにする | `outputs/phase-5..12` を補完し、`artifacts.json` / `outputs/artifacts.json` / `index.md` と同時同期した |
-| `phase-11-manual-test.md` の必須節不足で coverage validator の根拠が弱くなる | `テストケース` と `画面カバレッジマトリクス` を省略する | 2節を追加し、`manual-test-result.md` の `証跡` 列と 1:1 対応にそろえた |
-| `.claude` 正本と workflow docs の更新順が崩れると Step 1-A〜2 の記録が欠ける | workflow だけ更新して system spec 台帳を後回しにする | `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期した |
-| completed workflow へ移管した後の follow-up backlog 正本がぶれる | workflow 名参照だけで残課題を管理し、正式 task spec / issue 導線を固定しない | 親 task 完了後の継続 backlog は `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に揃え、`audit --target-file` で個別 `currentViolations=0` を確認した |
+| 苦戦箇所                                                                        | 再発条件                                                                                                | 対処                                                                                                                                                                                    |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| token 修正だけでは renderer 全域の hardcoded neutral class drift を止めきれない | `tokens.css` だけ直し、`text-white` / `bg-gray-*` / `border-white/*` を使う legacy class を棚卸ししない | `globals.css` に compatibility bridge を入れ、全画面の暫定整合を先に取り、その後に primitives を token へ寄せた                                                                         |
+| desktop CI の 1 shard fail は全量再実行だけでは原因が埋もれる                   | GitHub Actions 上の shard 番号を local で再現せずに broad rerun する                                    | `pnpm --filter @repo/desktop exec vitest run --shard=11/16` で同じ shard を再現し、Dashboard の `--accent` drift を局所化した                                                           |
+| light baseline 更新後に旧 screenshot を残すと Apple UI/UX 判断が stale になる   | token / component / bridge を変えた後に screenshot を再取得しない                                       | capture script の workflow root を completed path へ直し、5件を再撮影して `validate-phase11-screenshot-coverage` を通した                                                               |
+| Phase 5-12 成果物不足で phase status と outputs が乖離する                      | 実装優先で phase artifacts 生成を後回しにする                                                           | `outputs/phase-5..12` を補完し、`artifacts.json` / `outputs/artifacts.json` / `index.md` と同時同期した                                                                                 |
+| `phase-11-manual-test.md` の必須節不足で coverage validator の根拠が弱くなる    | `テストケース` と `画面カバレッジマトリクス` を省略する                                                 | 2節を追加し、`manual-test-result.md` の `証跡` 列と 1:1 対応にそろえた                                                                                                                  |
+| `.claude` 正本と workflow docs の更新順が崩れると Step 1-A〜2 の記録が欠ける    | workflow だけ更新して system spec 台帳を後回しにする                                                    | `ui-ux-design-system` / `task-workflow` / `lessons-learned` / `SKILL` / `LOGS` を同一ターンで同期した                                                                                   |
+| completed workflow へ移管した後の follow-up backlog 正本がぶれる                | workflow 名参照だけで残課題を管理し、正式 task spec / issue 導線を固定しない                            | 親 task 完了後の継続 backlog は `docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/` に揃え、`audit --target-file` で個別 `currentViolations=0` を確認した |
 
 #### 同種課題の5分解決カード
 
@@ -1109,38 +1192,38 @@
 
 #### 関連未タスク
 
-| タスクID | 概要 | 優先度 | 参照 |
-| --- | --- | --- | --- |
-| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 | shared component の hardcoded color を semantic token へ段階移行する | 高 | `docs/30-workflows/light-theme-shared-color-migration/index.md` |
-| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する | 中 | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
+| タスクID                                           | 概要                                                                   | 優先度 | 参照                                                                       |
+| -------------------------------------------------- | ---------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------- |
+| TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001    | shared component の hardcoded color を semantic token へ段階移行する   | 高     | `docs/30-workflows/light-theme-shared-color-migration/index.md`            |
+| TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 | light contrast の screenshot / audit / Phase 11 checklist を恒久化する | 中     | `docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard/` |
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `pnpm --filter @repo/desktop exec vitest run src/renderer/styles/tokens.light-theme.contract.test.ts` | PASS（4 tests） |
-| `pnpm --filter @repo/desktop exec vitest run src/renderer/components/atoms/Button/Button.test.tsx` | PASS |
-| `pnpm --filter @repo/desktop exec vitest run --shard=11/16` | PASS |
-| `pnpm --filter @repo/desktop typecheck` | PASS |
-| `pnpm --filter @repo/desktop build` | PASS |
-| `pnpm lint` | PASS（warning のみ、error 0） |
-| `node apps/desktop/scripts/capture-light-theme-token-foundation-phase11.mjs` | PASS（screenshot 5件） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/light-theme-token-foundation` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` | PASS（currentViolations=0） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard` | PASS |
+| コマンド                                                                                                                                                                                                                                                   | 結果                          |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/styles/tokens.light-theme.contract.test.ts`                                                                                                                                                      | PASS（4 tests）               |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/components/atoms/Button/Button.test.tsx`                                                                                                                                                         | PASS                          |
+| `pnpm --filter @repo/desktop exec vitest run --shard=11/16`                                                                                                                                                                                                | PASS                          |
+| `pnpm --filter @repo/desktop typecheck`                                                                                                                                                                                                                    | PASS                          |
+| `pnpm --filter @repo/desktop build`                                                                                                                                                                                                                        | PASS                          |
+| `pnpm lint`                                                                                                                                                                                                                                                | PASS（warning のみ、error 0） |
+| `node apps/desktop/scripts/capture-light-theme-token-foundation-phase11.mjs`                                                                                                                                                                               | PASS（screenshot 5件）        |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/light-theme-token-foundation`                                                                                 | PASS                          |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`                                                                                                                                                                        | PASS                          |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/completed-tasks/light-theme-token-foundation/unassigned-task/task-fix-light-theme-shared-color-migration-001.md` | PASS（currentViolations=0）   |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/completed-tasks/light-theme-contrast-regression-guard`                                                                                                  | PASS                          |
 
 ### タスク: TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 ライトテーマ shared 色移行仕様書整備（2026-03-12）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 |
-| ステータス | **仕様書作成完了（`spec_created` / Phase 1-3 completed / 実装未着手）** |
-| タイプ | fix |
-| 優先度 | 高 |
-| 完了日 | 2026-03-12 |
-| 対象 | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` の hardcoded color migration を実コード監査ベースで仕様化 |
-| 成果物 | `docs/30-workflows/light-theme-shared-color-migration/outputs/` |
+| 項目       | 値                                                                                                                                                                                            |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001                                                                                                                                               |
+| ステータス | **仕様書作成完了（`spec_created` / Phase 1-3 completed / 実装未着手）**                                                                                                                       |
+| タイプ     | fix                                                                                                                                                                                           |
+| 優先度     | 高                                                                                                                                                                                            |
+| 完了日     | 2026-03-12                                                                                                                                                                                    |
+| 対象       | `ThemeSelector` / `AuthModeSelector` / `AuthKeySection` / `AccountSection` / `ApiKeysSection` / `AuthView` / `WorkspaceSearchPanel` の hardcoded color migration を実コード監査ベースで仕様化 |
+| 成果物     | `docs/30-workflows/light-theme-shared-color-migration/outputs/`                                                                                                                               |
 
 #### 実施内容
 
@@ -1151,22 +1234,22 @@
 
 #### 仕様書別 SubAgent 分担
 
-| SubAgent | 担当仕様書 | 主担当作業 |
-| --- | --- | --- |
-| A | `workflow-light-theme-global-remediation.md` / `ui-ux-design-system.md` / `ui-ux-settings.md` | token/component 境界、actual inventory、verification-only lane の同期 |
-| B | `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `ui-ux-portal-patterns.md` / `rag-desktop-state.md` | Auth / WorkspaceSearch / dialog / state の cross-cutting 条件抽出 |
-| C | `api-ipc-auth.md` / `api-ipc-system.md` / `architecture-auth-security.md` / `security-electron-ipc.md` / `security-principles.md` | auth/api/security 契約の抽出と boundary 確認 |
-| D | `task-workflow.md` | `spec_created` 台帳化、Phase gate、検証証跡の固定 |
-| E | `lessons-learned.md` / `skill-creator` templates | 苦戦箇所、5分解決カード、再利用テンプレート化 |
+| SubAgent | 担当仕様書                                                                                                                        | 主担当作業                                                            |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| A        | `workflow-light-theme-global-remediation.md` / `ui-ux-design-system.md` / `ui-ux-settings.md`                                     | token/component 境界、actual inventory、verification-only lane の同期 |
+| B        | `ui-ux-feature-components.md` / `ui-ux-search-panel.md` / `ui-ux-portal-patterns.md` / `rag-desktop-state.md`                     | Auth / WorkspaceSearch / dialog / state の cross-cutting 条件抽出     |
+| C        | `api-ipc-auth.md` / `api-ipc-system.md` / `architecture-auth-security.md` / `security-electron-ipc.md` / `security-principles.md` | auth/api/security 契約の抽出と boundary 確認                          |
+| D        | `task-workflow.md`                                                                                                                | `spec_created` 台帳化、Phase gate、検証証跡の固定                     |
+| E        | `lessons-learned.md` / `skill-creator` templates                                                                                  | 苦戦箇所、5分解決カード、再利用テンプレート化                         |
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| 旧 unassigned-task 在庫をそのまま使うと current worktree と drift する | `SettingsView` / `DashboardView` を主対象のまま固定する | Phase 1 で current worktree の hardcoded color inventory を取り直し、wrapper は verification-only に分離した |
-| token scope と component scope を混ぜると task 境界が崩れる | token foundation の残件を component migration に混在させる | 親 workflow を token 基盤、current workflow を component migration、wrapper を verification-only として3分離した |
-| UI spec だけ読むと auth/search/security/portal/state の前提を落とす | `ui-ux-*` だけで Phase 1-2 を閉じる | `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-*` / `ui-ux-portal-patterns` まで同一ターンで抽出した |
-| Phase 1-3 前提を崩すと後続 phase の batch が揺れる | inventory correction 前に Phase 4-13 を先に詳細化する | priority batches と design review を固定してから Phase 4+ を planned へ維持した |
+| 苦戦箇所                                                               | 再発条件                                                   | 対処                                                                                                                                                     |
+| ---------------------------------------------------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 旧 unassigned-task 在庫をそのまま使うと current worktree と drift する | `SettingsView` / `DashboardView` を主対象のまま固定する    | Phase 1 で current worktree の hardcoded color inventory を取り直し、wrapper は verification-only に分離した                                             |
+| token scope と component scope を混ぜると task 境界が崩れる            | token foundation の残件を component migration に混在させる | 親 workflow を token 基盤、current workflow を component migration、wrapper を verification-only として3分離した                                         |
+| UI spec だけ読むと auth/search/security/portal/state の前提を落とす    | `ui-ux-*` だけで Phase 1-2 を閉じる                        | `rag-desktop-state` / `api-ipc-auth` / `api-ipc-system` / `architecture-auth-security` / `security-*` / `ui-ux-portal-patterns` まで同一ターンで抽出した |
+| Phase 1-3 前提を崩すと後続 phase の batch が揺れる                     | inventory correction 前に Phase 4-13 を先に詳細化する      | priority batches と design review を固定してから Phase 4+ を planned へ維持した                                                                          |
 
 #### 同種課題の5分解決カード
 
@@ -1178,29 +1261,29 @@
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/light-theme-shared-color-migration --phase 1` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/light-theme-shared-color-migration --json` | PASS |
+| コマンド                                                                                                                                                  | 結果     |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/light-theme-shared-color-migration --phase 1`          | PASS     |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/light-theme-shared-color-migration --json`       | PASS     |
 | `diff -u docs/30-workflows/light-theme-shared-color-migration/artifacts.json docs/30-workflows/light-theme-shared-color-migration/outputs/artifacts.json` | 差分なし |
 
 #### Phase 12で登録した関連未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow で current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | 中 | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
+| 未タスクID                                          | 概要                                                                                                                                    | 優先度 | タスク仕様書                                                                                 |
+| --------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------ | -------------------------------------------------------------------------------------------- |
+| UT-IMP-SPEC-CREATED-UI-WORKFLOW-ROOT-SYNC-GUARD-001 | `spec_created` UI workflow で current inventory / verification-only lane / system spec extraction / root registry sync を同時に固定する | 中     | `docs/30-workflows/unassigned-task/task-imp-spec-created-ui-workflow-root-sync-guard-001.md` |
 
 ### タスク: TASK-SKILL-LIFECYCLE-01 スキルライフサイクル一次導線・画面責務基盤（2026-03-11）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-SKILL-LIFECYCLE-01 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-11 |
-| 対象 | Skill Center を起点にした create / use / improve 一次導線、画面責務、advanced route、Task02-05 依存契約 |
-| 成果物 | `docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/` |
+| 項目       | 値                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SKILL-LIFECYCLE-01                                                                                 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）**                                                           |
+| タイプ     | design                                                                                                  |
+| 優先度     | 高                                                                                                      |
+| 完了日     | 2026-03-11                                                                                              |
+| 対象       | Skill Center を起点にした create / use / improve 一次導線、画面責務、advanced route、Task02-05 依存契約 |
+| 成果物     | `docs/30-workflows/completed-tasks/step-01-seq-task-01-lifecycle-journey-foundation/outputs/`           |
 
 #### 実施内容
 
@@ -1213,12 +1296,12 @@
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| lifecycle 仕様が複数 view に分散し、入口と責務が同時に読めない | navigation / feature / state / workflow を別々に更新する | `skillLifecycleJourney.ts` を実装アンカーにし、Skill Center を入口、各 view を destination surface として役割分担を固定した |
-| legacy `skill-center` 値が残ると view 分岐・テスト・仕様書が二重化する | store / legacy button / shortcut のどこかが旧値を返したままになる | `App.tsx` で正規化 helper を必ず通し、仕様書・テスト・UI 表示は `skillCenter` を正本に統一した |
-| representative screenshot が shell 全景だけだと責務証跡として弱い | Global nav と main content が見えても、どの surface が何を担当するかが明文化されない | `SkillCenterView` に surface ownership board を追加し、Phase 11 は `data-testid="skill-lifecycle-surface-ownership"` を待って要素 capture した |
-| Phase 12 で workflow 台帳・本文・正本仕様の同期漏れが起きやすい | outputs だけ作って `artifacts.json` / `phase-*.md` / `task-workflow.md` を後回しにする | artifacts を標準スキーマへ寄せ、Phase 本文 1-12 を completed 化し、`.claude` 正本とあわせて同ターンで閉じた |
+| 苦戦箇所                                                                                 | 再発条件                                                                                                                                                                          | 対処                                                                                                                                                                                                                                                                        |
+| ---------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| lifecycle 仕様が複数 view に分散し、入口と責務が同時に読めない                           | navigation / feature / state / workflow を別々に更新する                                                                                                                          | `skillLifecycleJourney.ts` を実装アンカーにし、Skill Center を入口、各 view を destination surface として役割分担を固定した                                                                                                                                                 |
+| legacy `skill-center` 値が残ると view 分岐・テスト・仕様書が二重化する                   | store / legacy button / shortcut のどこかが旧値を返したままになる                                                                                                                 | `App.tsx` で正規化 helper を必ず通し、仕様書・テスト・UI 表示は `skillCenter` を正本に統一した                                                                                                                                                                              |
+| representative screenshot が shell 全景だけだと責務証跡として弱い                        | Global nav と main content が見えても、どの surface が何を担当するかが明文化されない                                                                                              | `SkillCenterView` に surface ownership board を追加し、Phase 11 は `data-testid="skill-lifecycle-surface-ownership"` を待って要素 capture した                                                                                                                              |
+| Phase 12 で workflow 台帳・本文・正本仕様の同期漏れが起きやすい                          | outputs だけ作って `artifacts.json` / `phase-*.md` / `task-workflow.md` を後回しにする                                                                                            | artifacts を標準スキーマへ寄せ、Phase 本文 1-12 を completed 化し、`.claude` 正本とあわせて同ターンで閉じた                                                                                                                                                                 |
 | `unassigned-task-detection.md` を「0件」だけで終えると指定ディレクトリ全体が健全に見える | current task 由来の未タスクは 0 件だが、`docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/` 全体には legacy baseline が残っている | `currentViolations=0` と `baselineViolations=133` を分離記録し、既存 backlog `task-imp-unassigned-task-format-normalization-001.md` / `task-imp-unassigned-task-legacy-normalization-001.md` / `task-imp-phase12-unassigned-baseline-remediation-002.md` を参照先へ固定した |
 
 #### 同種課題の5分解決カード
@@ -1231,27 +1314,27 @@
 
 #### Phase 12 タスク仕様準拠の追加確認（2026-03-11 JST）
 
-| 観点 | 結果 |
-| --- | --- |
-| `verify-all-specs --workflow ... --json` | PASS（13/13 phases, error 0, warning 0, info 1） |
-| `validate-phase-output.js <workflow>` | PASS |
-| `validate-phase12-implementation-guide.js --workflow ... --json` | PASS |
-| `verify-unassigned-links.js --source .claude/.../task-workflow.md` | PASS（213 / 213, missing 0） |
-| `audit-unassigned-tasks.js --json --diff-from HEAD` | PASS（currentViolations=0, baselineViolations=133） |
-| 今回タスク由来の未タスク | 0 件 |
-| 継続管理する backlog | `task-imp-unassigned-task-format-normalization-001.md` / `task-imp-unassigned-task-legacy-normalization-001.md` / `task-imp-phase12-unassigned-baseline-remediation-002.md` |
+| 観点                                                               | 結果                                                                                                                                                                        |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `verify-all-specs --workflow ... --json`                           | PASS（13/13 phases, error 0, warning 0, info 1）                                                                                                                            |
+| `validate-phase-output.js <workflow>`                              | PASS                                                                                                                                                                        |
+| `validate-phase12-implementation-guide.js --workflow ... --json`   | PASS                                                                                                                                                                        |
+| `verify-unassigned-links.js --source .claude/.../task-workflow.md` | PASS（213 / 213, missing 0）                                                                                                                                                |
+| `audit-unassigned-tasks.js --json --diff-from HEAD`                | PASS（currentViolations=0, baselineViolations=133）                                                                                                                         |
+| 今回タスク由来の未タスク                                           | 0 件                                                                                                                                                                        |
+| 継続管理する backlog                                               | `task-imp-unassigned-task-format-normalization-001.md` / `task-imp-unassigned-task-legacy-normalization-001.md` / `task-imp-phase12-unassigned-baseline-remediation-002.md` |
 
 ### タスク: TASK-UI-06-HISTORY-SEARCH-VIEW あなたの記録タイムライン再設計（2026-03-10）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-UI-06-HISTORY-SEARCH-VIEW |
-| ステータス | **完了（Phase 1-12 出力 + 実装 + screenshot + system spec 同期）** |
-| タイプ | ui |
-| 優先度 | 中 |
-| 完了日 | 2026-03-10 |
-| 対象 | `HistorySearchView` timeline 再設計、`historySearchSlice`、`historySearchHandlers`、`EditorView` deep-open |
-| 成果物 | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/outputs/` |
+| 項目       | 値                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-06-HISTORY-SEARCH-VIEW                                                                             |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + screenshot + system spec 同期）**                                         |
+| タイプ     | ui                                                                                                         |
+| 優先度     | 中                                                                                                         |
+| 完了日     | 2026-03-10                                                                                                 |
+| 対象       | `HistorySearchView` timeline 再設計、`historySearchSlice`、`historySearchHandlers`、`EditorView` deep-open |
+| 成果物     | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/outputs/`                           |
 
 #### 実施内容
 
@@ -1263,11 +1346,11 @@
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| worktree で Rollup native optional module が欠けて test 起動前に落ちる | UI検証前に dependency preflight を省略する | `pnpm install --frozen-lockfile` を preflight に含めた |
-| screenshot script の locator が broad で strict mode violation になる | summary/detail が同じ文字列を持つ | 一意な detail text へ待機条件を絞った |
-| `.claude` 正本と `.agents` mirror の参照が混線する | workflow / outputs が mirror 側を参照する | `.claude/skills/...` を正本に固定し、systemic gap は未タスクへ分離した |
+| 苦戦箇所                                                               | 再発条件                                   | 対処                                                                   |
+| ---------------------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------- |
+| worktree で Rollup native optional module が欠けて test 起動前に落ちる | UI検証前に dependency preflight を省略する | `pnpm install --frozen-lockfile` を preflight に含めた                 |
+| screenshot script の locator が broad で strict mode violation になる  | summary/detail が同じ文字列を持つ          | 一意な detail text へ待機条件を絞った                                  |
+| `.claude` 正本と `.agents` mirror の参照が混線する                     | workflow / outputs が mirror 側を参照する  | `.claude/skills/...` を正本に固定し、systemic gap は未タスクへ分離した |
 
 #### 同種課題の5分解決カード
 
@@ -1279,33 +1362,33 @@
 
 #### Phase 12で登録した関連未タスク
 
-| タスクID | 概要 | 優先度 | 参照 |
-| --- | --- | --- | --- |
-| UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001 | `.claude` 正本と `.agents` mirror の drift を機械検知し、Phase 12 の canonical root を固定する | 中 | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/unassigned-task/task-imp-skill-root-canonical-sync-guard-001.md` |
+| タスクID                                   | 概要                                                                                           | 優先度 | 参照                                                                                                                                    |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| UT-IMP-SKILL-ROOT-CANONICAL-SYNC-GUARD-001 | `.claude` 正本と `.agents` mirror の drift を機械検知し、Phase 12 の canonical root を固定する | 中     | `docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view/unassigned-task/task-imp-skill-root-canonical-sync-guard-001.md` |
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `pnpm --filter @repo/desktop exec vitest run src/renderer/views/HistorySearchView/HistorySearchView.test.tsx src/renderer/views/HistorySearchView/hooks/useTimelineGroups.test.tsx src/renderer/views/HistorySearchView/hooks/useInfiniteScroll.test.tsx src/renderer/store/slices/historySearchSlice.test.ts src/main/ipc/__tests__/historySearchHandlers.test.ts` | PASS（26 tests） |
-| `pnpm --filter @repo/desktop typecheck` | PASS |
-| `pnpm --filter @repo/desktop run screenshot:task-058c` | PASS（6 screenshots） |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD` | currentViolations=0 |
+| コマンド                                                                                                                                                                                                                                                                                                                                                            | 結果                  |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/views/HistorySearchView/HistorySearchView.test.tsx src/renderer/views/HistorySearchView/hooks/useTimelineGroups.test.tsx src/renderer/views/HistorySearchView/hooks/useInfiniteScroll.test.tsx src/renderer/store/slices/historySearchSlice.test.ts src/main/ipc/__tests__/historySearchHandlers.test.ts` | PASS（26 tests）      |
+| `pnpm --filter @repo/desktop typecheck`                                                                                                                                                                                                                                                                                                                             | PASS                  |
+| `pnpm --filter @repo/desktop run screenshot:task-058c`                                                                                                                                                                                                                                                                                                              | PASS（6 screenshots） |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view`                                                                                                                                                                                   | PASS                  |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-058c-ui-06-history-search-view`                                                                                                                                                                                  | PASS                  |
+| `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js`                                                                                                                                                                                                                                                                                 | PASS                  |
+| `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`                                                                                                                                                                                                                                                          | currentViolations=0   |
 
 ### タスク: TASK-UI-08-NOTIFICATION-CENTER お知らせセンター再整備（2026-03-11）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-UI-08-NOTIFICATION-CENTER |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
-| タイプ | feat |
-| 優先度 | P2 |
-| 完了日 | 2026-03-11 |
-| 対象 | `NotificationCenter` の 058e 差分収束（`お知らせ`、Portal、relative time、個別削除 IPC、a11y、responsive） |
-| 成果物 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/` |
+| 項目       | 値                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-08-NOTIFICATION-CENTER                                                                             |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）**                                                              |
+| タイプ     | feat                                                                                                       |
+| 優先度     | P2                                                                                                         |
+| 完了日     | 2026-03-11                                                                                                 |
+| 対象       | `NotificationCenter` の 058e 差分収束（`お知らせ`、Portal、relative time、個別削除 IPC、a11y、responsive） |
+| 成果物     | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/outputs/`                           |
 
 #### 実施内容
 
@@ -1318,10 +1401,10 @@
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| popover が stacking context と focus 管理で不安定 | inline 描画のまま overlay を広げる | `createPortal(document.body)` と focus return を導入した |
-| 初期履歴同期と push が競合して重複する | history fetch 直後に同一ID push が届く | `setNotificationHistory()` / `ingestNotification()` の両方で dedupe した |
+| 苦戦箇所                                              | 再発条件                                    | 対処                                                                        |
+| ----------------------------------------------------- | ------------------------------------------- | --------------------------------------------------------------------------- |
+| popover が stacking context と focus 管理で不安定     | inline 描画のまま overlay を広げる          | `createPortal(document.body)` と focus return を導入した                    |
+| 初期履歴同期と push が競合して重複する                | history fetch 直後に同一ID push が届く      | `setNotificationHistory()` / `ingestNotification()` の両方で dedupe した    |
 | UI に delete を足しても Main persistence が追随しない | shared/preload/main の3境界を同時更新しない | `notification:delete` を channel / type / handler / test まで一括で追加した |
 
 #### 同種課題の5分解決カード
@@ -1338,24 +1421,24 @@
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `cd apps/desktop && pnpm test:run ...NotificationCenter scope...` | PASS（6 files / 59 tests） |
-| `cd apps/desktop && pnpm typecheck` | PASS |
+| コマンド                                                                            | 結果                                                           |
+| ----------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `cd apps/desktop && pnpm test:run ...NotificationCenter scope...`                   | PASS（6 files / 59 tests）                                     |
+| `cd apps/desktop && pnpm typecheck`                                                 | PASS                                                           |
 | `cd apps/desktop && pnpm exec vitest run --coverage ...NotificationCenter scope...` | PASS（Stmts 92.94 / Branch 81.77 / Funcs 94.44 / Lines 92.94） |
-| `node apps/desktop/scripts/capture-task-058e-notification-center-phase11.mjs` | PASS（screenshot 7件） |
+| `node apps/desktop/scripts/capture-task-058e-notification-center-phase11.mjs`       | PASS（screenshot 7件）                                         |
 
 ### タスク: TASK-UI-04B-WORKSPACE-CHAT Workspace Chat Panel（2026-03-11）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-UI-04B-WORKSPACE-CHAT |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
-| タイプ | feat |
-| 優先度 | P2 |
-| 完了日 | 2026-03-11 |
-| 対象 | `WorkspaceView` への chat panel 統合（mention / stream / conversation / file context） |
-| 成果物 | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/outputs/` |
+| 項目       | 値                                                                                     |
+| ---------- | -------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-04B-WORKSPACE-CHAT                                                             |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）**                                          |
+| タイプ     | feat                                                                                   |
+| 優先度     | P2                                                                                     |
+| 完了日     | 2026-03-11                                                                             |
+| 対象       | `WorkspaceView` への chat panel 統合（mention / stream / conversation / file context） |
+| 成果物     | `docs/30-workflows/task-059a-ui-04b-workspace-chat-panel/outputs/`                     |
 
 #### 実施内容
 
@@ -1367,11 +1450,11 @@
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| stream chunk と end が同一ティックで到着すると assistant が欠落する | state 反映前に end を処理する | ref 同期更新で chunk/end 競合を解消した |
-| screenshot harness で llm / conversation API が無いと stream状態が再現できない | 04A harness をそのまま流用する | 059a 専用 capture script で llm/conversation mock を追加した |
-| coverage が全体閾値で失敗し task-scope 判定が見えにくい | モノレポ全体 coverage をそのまま読む | task-scope 指標を phase-7 に分離して記録した |
+| 苦戦箇所                                                                       | 再発条件                             | 対処                                                         |
+| ------------------------------------------------------------------------------ | ------------------------------------ | ------------------------------------------------------------ |
+| stream chunk と end が同一ティックで到着すると assistant が欠落する            | state 反映前に end を処理する        | ref 同期更新で chunk/end 競合を解消した                      |
+| screenshot harness で llm / conversation API が無いと stream状態が再現できない | 04A harness をそのまま流用する       | 059a 専用 capture script で llm/conversation mock を追加した |
+| coverage が全体閾値で失敗し task-scope 判定が見えにくい                        | モノレポ全体 coverage をそのまま読む | task-scope 指標を phase-7 に分離して記録した                 |
 
 #### 同種課題の5分解決カード
 
@@ -1387,22 +1470,22 @@
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
+| コマンド                                                                                                                                                                                                                                  | 結果                       |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- |
 | `cd apps/desktop && pnpm exec vitest run src/renderer/views/WorkspaceView/WorkspaceView.test.tsx src/renderer/views/WorkspaceView/hooks/useWorkspaceMentionQuery.test.ts src/renderer/views/WorkspaceView/workspaceFileSelection.test.ts` | PASS（3 files / 14 tests） |
-| `cd apps/desktop && pnpm exec tsc --noEmit` | PASS |
-| `cd apps/desktop && pnpm build` | PASS |
-| `cd apps/desktop && node scripts/capture-task-059a-workspace-chat-panel-phase11.mjs` | PASS（screenshot 8件） |
+| `cd apps/desktop && pnpm exec tsc --noEmit`                                                                                                                                                                                               | PASS                       |
+| `cd apps/desktop && pnpm build`                                                                                                                                                                                                           | PASS                       |
+| `cd apps/desktop && node scripts/capture-task-059a-workspace-chat-panel-phase11.mjs`                                                                                                                                                      | PASS（screenshot 8件）     |
 
 ### タスク: TASK-UI-07-DASHBOARD-ENHANCEMENT ホーム画面リデザイン ─ 挨拶・サジェスチョン・タイムライン（2026-03-11）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-UI-07-DASHBOARD-ENHANCEMENT |
-| ステータス | **完了（Phase 1-12 出力 + 実装 + 実画面検証 + 仕様同期）** |
-| 完了日 | 2026-03-11 |
-| 対象 | `DashboardView` / `views/DashboardView/components/` / Phase 11 screenshot harness |
-| 成果物 | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/outputs/` |
+| 項目       | 値                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-07-DASHBOARD-ENHANCEMENT                                                   |
+| ステータス | **完了（Phase 1-12 出力 + 実装 + 実画面検証 + 仕様同期）**                         |
+| 完了日     | 2026-03-11                                                                         |
+| 対象       | `DashboardView` / `views/DashboardView/components/` / Phase 11 screenshot harness  |
+| 成果物     | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/outputs/` |
 
 #### 実施内容
 
@@ -1412,42 +1495,42 @@
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
-| workflow 本体が `spec_created` のまま残りやすい | `index.md` / `artifacts.json` / `phase-1..12` を分離更新する | 三層同期を Phase 12 の完了条件に含めた |
-| Phase 11 validator が `phase-11-manual-test.md` の literal 見出しに依存する | `manual-test-result.md` だけを更新して閉じる | `テストケース` と `画面カバレッジマトリクス` を専用文書へ固定した |
-| 表示名 `ホーム` と内部 `dashboard` 契約が混線する | 文言変更を `ViewType` 変更と同一視する | copy と internal ID を分離し、store / nav 契約は維持した |
-| `.claude` / `.agents` の二重 skill root で mirror 側が stale になる | user 指定rootだけ更新して完了扱いにする | canonical root 固定 + mirror sync + `diff -qr` を完了条件に追加した |
+| 苦戦箇所                                                                    | 再発条件                                                     | 対処                                                                |
+| --------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------- |
+| workflow 本体が `spec_created` のまま残りやすい                             | `index.md` / `artifacts.json` / `phase-1..12` を分離更新する | 三層同期を Phase 12 の完了条件に含めた                              |
+| Phase 11 validator が `phase-11-manual-test.md` の literal 見出しに依存する | `manual-test-result.md` だけを更新して閉じる                 | `テストケース` と `画面カバレッジマトリクス` を専用文書へ固定した   |
+| 表示名 `ホーム` と内部 `dashboard` 契約が混線する                           | 文言変更を `ViewType` 変更と同一視する                       | copy と internal ID を分離し、store / nav 契約は維持した            |
+| `.claude` / `.agents` の二重 skill root で mirror 側が stale になる         | user 指定rootだけ更新して完了扱いにする                      | canonical root 固定 + mirror sync + `diff -qr` を完了条件に追加した |
 
 #### 検証証跡
 
-| コマンド | 結果 |
-| --- | --- |
-| `pnpm --filter @repo/desktop exec vitest run src/renderer/views/DashboardView/DashboardView.test.tsx src/renderer/views/DashboardView/components/dashboardContent.test.ts` | PASS（22 tests） |
-| `pnpm --filter @repo/desktop typecheck` | PASS |
-| `pnpm --filter @repo/desktop screenshot:dashboard-home` | PASS（TC-11-01..05） |
-| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement` | PASS |
-| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement` | PASS |
-| `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements` | PASS |
+| コマンド                                                                                                                                                                            | 結果                 |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------- |
+| `pnpm --filter @repo/desktop exec vitest run src/renderer/views/DashboardView/DashboardView.test.tsx src/renderer/views/DashboardView/components/dashboardContent.test.ts`          | PASS（22 tests）     |
+| `pnpm --filter @repo/desktop typecheck`                                                                                                                                             | PASS                 |
+| `pnpm --filter @repo/desktop screenshot:dashboard-home`                                                                                                                             | PASS（TC-11-01..05） |
+| `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement`                     | PASS                 |
+| `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement` | PASS                 |
+| `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`                                                                                            | PASS                 |
 
 #### Phase 12で登録した関連未タスク
 
-| タスクID | 概要 | 参照 |
-| --- | --- | --- |
-| UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001 | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証） | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
-| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md` |
+| タスクID                                              | 概要                                                                                                                 | 参照                                                                                                          |
+| ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| UT-IMP-PHASE12-DUAL-SKILL-ROOT-MIRROR-SYNC-GUARD-001  | Phase 12 dual skill-root mirror sync ガード（canonical root 固定 + mirror sync + root間diff検証）                    | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-dual-skill-root-mirror-sync-guard-001.md` |
+| UT-IMP-AIWORKFLOW-SKILL-ENTRYPOINT-COVERAGE-GUARD-001 | aiworkflow-requirements の入口導線整流（`SKILL.md` / `quick-reference` / `resource-map` と `quick_validate` の整合） | `docs/30-workflows/unassigned-task/task-imp-aiworkflow-skill-entrypoint-coverage-guard-001.md`                |
 
 ### タスク: TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 canonical bridge / workflow ledger governance 設計（2026-03-23）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 |
-| ステータス | **仕様書作成完了（`implementation_ready` / 設計タスク / Phase 13 blocked）** |
-| タイプ | design |
-| 優先度 | 高 |
-| 完了日 | 2026-03-23 |
-| 対象 | canonical source table / bridge rule / state machine / same-wave sync protocol / follow-up formalization |
-| 成果物 | `docs/30-workflows/completed-tasks/step-06-seq-task-09-canonical-bridge-ledger-governance/` |
+| 項目       | 値                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001                                                          |
+| ステータス | **仕様書作成完了（`implementation_ready` / 設計タスク / Phase 13 blocked）**                             |
+| タイプ     | design                                                                                                   |
+| 優先度     | 高                                                                                                       |
+| 完了日     | 2026-03-23                                                                                               |
+| 対象       | canonical source table / bridge rule / state machine / same-wave sync protocol / follow-up formalization |
+| 成果物     | `docs/30-workflows/completed-tasks/step-06-seq-task-09-canonical-bridge-ledger-governance/`              |
 
 #### 実施内容
 
@@ -1468,31 +1551,31 @@
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| --- | --- | --- |
+| 苦戦箇所                                                            | 再発条件                                                     | 対処                                                                                              |
+| ------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
 | Phase 10 MINOR M-01 が unassigned-task-detection で 0件と記録された | Phase 10 MINOR を Phase 12 Task 4 で正しくカウントしない場合 | Phase 10 final-gate-decision.md の MINOR 一覧と unassigned-task-detection.md の件数を必ず照合する |
-| Step A-E が「PRマージ後」として先送りされた（P57 違反） | 設計タスク + worktree 環境で先送り判断が入る場合 | P57 準拠: 設計タスクでも Phase 12 完了時点で .claude/skills/ を実更新する |
+| Step A-E が「PRマージ後」として先送りされた（P57 違反）             | 設計タスク + worktree 環境で先送り判断が入る場合             | P57 準拠: 設計タスクでも Phase 12 完了時点で .claude/skills/ を実更新する                         |
 
 #### Phase 12で登録した関連未タスク
 
-| タスクID | 概要 | 参照 |
-| --- | --- | --- |
+| タスクID         | 概要                                       | 参照                                                                     |
+| ---------------- | ------------------------------------------ | ------------------------------------------------------------------------ |
 | (M-01 follow-up) | rsync コマンドの worktree 環境注意書き追加 | `docs/30-workflows/unassigned-task/worktree-rsync-caution-annotation.md` |
 
 ---
 
 ### タスク: TASK-IMP-HEALTH-POLICY-UNIFICATION-001 HealthPolicy 統一インターフェース（2026-03-25）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-HEALTH-POLICY-UNIFICATION-001 |
-| ステータス | **完了** |
-| タイプ | implementation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-25 |
-| 親パック | ai-runtime-execution-responsibility-realignment |
-| 対応ギャップ | Gap-3（HealthPolicy の統一不足） |
-| 成果物 | `docs/30-workflows/completed-tasks/impl-task-b-health-policy-unification/` |
+| 項目         | 値                                                                         |
+| ------------ | -------------------------------------------------------------------------- |
+| タスクID     | TASK-IMP-HEALTH-POLICY-UNIFICATION-001                                     |
+| ステータス   | **完了**                                                                   |
+| タイプ       | implementation                                                             |
+| 優先度       | 高                                                                         |
+| 完了日       | 2026-03-25                                                                 |
+| 親パック     | ai-runtime-execution-responsibility-realignment                            |
+| 対応ギャップ | Gap-3（HealthPolicy の統一不足）                                           |
+| 成果物       | `docs/30-workflows/completed-tasks/impl-task-b-health-policy-unification/` |
 
 #### 実施内容
 
@@ -1508,26 +1591,26 @@
 
 #### Phase 12 未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 | RuntimePolicyResolver の HealthPolicy 注入元実装 | 高 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md` |
-| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0） | 中 | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |
+| 未タスクID                              | 概要                                                              | 優先度 | タスク仕様書                                                                   |
+| --------------------------------------- | ----------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------ |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001  | RuntimePolicyResolver の HealthPolicy 注入元実装                  | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md`  |
+| UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0）                 | 中     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |
 
 ---
 
 ### タスク: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Advanced Console Safety Governance（2026-03-24）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | design / implementation |
-| 優先度 | 高 |
-| 完了日 | 2026-03-24 |
-| ブランチ | feature/advanced-console-safety-governance |
-| 対象 | ApprovalGate、Consumer Auth Guard、3層レイヤー、5 IPC channel |
-| 成果物 | `docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/` |
+| 項目       | 値                                                                          |
+| ---------- | --------------------------------------------------------------------------- |
+| タスクID   | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001                             |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                              |
+| タイプ     | design / implementation                                                     |
+| 優先度     | 高                                                                          |
+| 完了日     | 2026-03-24                                                                  |
+| ブランチ   | feature/advanced-console-safety-governance                                  |
+| 対象       | ApprovalGate、Consumer Auth Guard、3層レイヤー、5 IPC channel               |
+| 成果物     | `docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/` |
 
 #### 実施内容
 
@@ -1540,12 +1623,13 @@
 
 #### Phase 12 未タスク
 
-| 未タスクID | 概要 | 優先度 |
-| --- | --- | --- |
-| UT-6 | main/ipc/index.ts へ advancedConsole/approval/disclosure の3ハンドラ追加 | HIGH |
-| UT-7 | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH |
-| UT-8 | Main→Renderer への承認要求プッシュ通知（webContents.send） | HIGH |
-| UT-9 | abort/done 時に ApprovalGate.revokeAll() でトークンクリア | MEDIUM |
+| 未タスクID | 概要                                                                             | 優先度 |
+| ---------- | -------------------------------------------------------------------------------- | ------ |
+| UT-6       | main/ipc/index.ts へ advancedConsole/approval/disclosure の3ハンドラ追加         | HIGH   |
+| UT-7       | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH   |
+| UT-8       | Main→Renderer への承認要求プッシュ通知（webContents.send）                       | HIGH   |
+| UT-9       | abort/done 時に ApprovalGate.revokeAll() でトークンクリア                        | MEDIUM |
+| UT-10      | disclosureHandlers.ts 独立テスト作成                                             | LOW    |
 
 ---
 
@@ -1576,20 +1660,19 @@
 | 未タスクID | 内容 | 優先度 |
 | --- | --- | --- |
 | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 | `SkillStreamMessage` と `SkillCreatorSdkEvent` の出力型を統一 | low |
-| UT-10 | disclosureHandlers.ts 独立テスト作成 | LOW |
 
 ---
 
 ### タスク: TASK-RT-06 claude-sdk-message-contract-normalization（2026-03-29）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-RT-06 |
-| ステータス | **Phase 1-12 完了 / Phase 13 pending** |
-| タイプ | implementation |
-| 優先度 | RT |
-| 完了日 | 2026-03-29 |
-| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-08-par-task-rt-06-claude-sdk-message-contract-normalization/` |
+| 項目       | 値                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-RT-06                                                                                                         |
+| ステータス | **Phase 1-12 完了 / Phase 13 pending**                                                                             |
+| タイプ     | implementation                                                                                                     |
+| 優先度     | RT                                                                                                                 |
+| 完了日     | 2026-03-29                                                                                                         |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-08-par-task-rt-06-claude-sdk-message-contract-normalization/` |
 
 #### 実施内容
 
@@ -1606,9 +1689,9 @@
 
 #### Phase 12 未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| --- | --- | --- | --- |
-| UT-RT-06-ESBUILD-ARCH-MISMATCH-001 | esbuild アーキ不整合の環境修正 | 高 | `docs/30-workflows/unassigned-task/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md` |
+| 未タスクID                         | 概要                           | 優先度 | タスク仕様書                                                              |
+| ---------------------------------- | ------------------------------ | ------ | ------------------------------------------------------------------------- |
+| UT-RT-06-ESBUILD-ARCH-MISMATCH-001 | esbuild アーキ不整合の環境修正 | 高     | `docs/30-workflows/unassigned-task/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md` |
 
 ---
 
@@ -1641,3 +1724,51 @@
 #### 再発防止ガイド
 
 `docs/40-guides/esbuild-arch-mismatch-prevention.md` — Preflight チェックリスト（5 ステップ）および診断・復旧手順
+
+---
+
+### タスク: TASK-P0-04 manifest-loader-default-startup（2026-03-30）
+
+| 項目       | 値                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-04                                                                                                                      |
+| ステータス | **Phase 1-12 完了 / Phase 13 pending**                                                                                          |
+| タイプ     | implementation                                                                                                                  |
+| 優先度     | P0                                                                                                                              |
+| 完了日     | 2026-03-30                                                                                                                      |
+| 依存タスク | TASK-P0-03（workflow-manifest.json canonical/mirror 配置）                                                                       |
+| 後続タスク | TASK-P0-05（runtime pipeline フル統合）                                                                                          |
+| 成果物     | `docs/30-workflows/completed-tasks/task-p0-04-manifest-loader-default-startup/`                                                 |
+
+#### 実施内容
+
+- `SKILL_CREATOR_MANIFEST_PATH = "workflow-manifest.json"` 定数を `apps/desktop/src/main/services/skill/constants.ts` に追加
+- `resolveDefaultManifestPath(explicitRoot?: string): string` 関数を実装：
+  - `explicitRoot` 指定時はそのパスを優先
+  - 未指定時は `getSkillCreatorRootCandidates()` の候補（env → home → repo）から `fs.existsSync` で実在パスを探索
+  - manifest が見つからない場合は日本語エラーメッセージで throw
+- ManifestLoader 自体は変更なし（呼び出し元の追加のみ）
+
+#### 検証
+
+- `pnpm exec vitest run ManifestLoader.production-manifest.test.ts`: **25 tests PASS**
+- TypeScript typecheck: PASS
+- ESLint: PASS
+
+#### テストケース追加内訳
+
+| テストID | 内容                                            | 結果 |
+| -------- | ----------------------------------------------- | ---- |
+| TC-10    | SKILL_CREATOR_MANIFEST_PATH で canonical を読む | PASS |
+| TC-11    | resolveDefaultManifestPath() が絶対パスを返す   | PASS |
+| TC-12    | 解決パスから manifest を読み込める              | PASS |
+| TC-13    | 定数が空文字でない                              | PASS |
+| TC-14    | explicitRoot が優先される                       | PASS |
+| EC-10    | 非存在ディレクトリ指定で正しいパスを返す        | PASS |
+| EC-11    | 候補なし時にエラー throw                        | PASS |
+| EC-12    | 破損 JSON で ManifestLoader がエラー            | PASS |
+
+#### Phase 12 未タスク
+
+なし（0件）
+

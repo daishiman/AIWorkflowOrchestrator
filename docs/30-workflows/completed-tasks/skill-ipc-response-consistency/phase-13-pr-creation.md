@@ -33,39 +33,39 @@ Phase 12 までの全成果物が完成していることを確認し、マー�
 
 ## 参照資料
 
-| 参照資料        | パス                                      | 内容               |
-| --------------- | ----------------------------------------- | ------------------ |
-| PR作成ルール    | `.claude/rules/07-git-and-tooling.md`     | PR/コミットルール  |
-| CLAUDE.md       | `CLAUDE.md`                               | Git操作禁止事項    |
-| Phase 1 要件成果物 | `outputs/phase-1/requirements.md`      | 完了条件判定の根拠 |
-| Phase 2 設計成果物 | `outputs/phase-2/design-document.md`   | 設計完了判定の根拠 |
-| Phase 5 実装成果物 | `apps/desktop/src/main/ipc/skillHandlers.ts` | 実装完了判定の根拠 |
-| Phase 5 実装成果物 | `apps/desktop/src/preload/skill-api.ts` | 実装完了判定の根拠 |
-| Phase 6 テスト成果 | `outputs/phase-6/test-expansion-report.md` | テスト拡充判定の根拠 |
-| Phase 7 カバレッジ結果 | `outputs/phase-7/coverage-report.md` | カバレッジ判定の根拠 |
-| Phase 8 リファクタ結果 | `outputs/phase-8/refactoring-report.md` | リファクタ判定の根拠 |
-| Phase 9 品質結果 | `outputs/phase-9/quality-report.md`      | 品質判定の根拠     |
-| Phase 10 結果   | `outputs/phase-10/final-review-result.md` | レビュー判定結果   |
-| Phase 11 結果   | `outputs/phase-11/manual-test-result.md`  | 手動テスト結果     |
-| Phase 12 成果物 | `outputs/phase-12/`                       | ドキュメント成果物 |
+| 参照資料               | パス                                         | 内容                 |
+| ---------------------- | -------------------------------------------- | -------------------- |
+| PR作成ルール           | `.claude/rules/07-git-and-tooling.md`        | PR/コミットルール    |
+| CLAUDE.md              | `CLAUDE.md`                                  | Git操作禁止事項      |
+| Phase 1 要件成果物     | `outputs/phase-1/requirements.md`            | 完了条件判定の根拠   |
+| Phase 2 設計成果物     | `outputs/phase-2/design-document.md`         | 設計完了判定の根拠   |
+| Phase 5 実装成果物     | `apps/desktop/src/main/ipc/skillHandlers.ts` | 実装完了判定の根拠   |
+| Phase 5 実装成果物     | `apps/desktop/src/preload/skill-api.ts`      | 実装完了判定の根拠   |
+| Phase 6 テスト成果     | `outputs/phase-6/test-expansion-report.md`   | テスト拡充判定の根拠 |
+| Phase 7 カバレッジ結果 | `outputs/phase-7/coverage-report.md`         | カバレッジ判定の根拠 |
+| Phase 8 リファクタ結果 | `outputs/phase-8/refactoring-report.md`      | リファクタ判定の根拠 |
+| Phase 9 品質結果       | `outputs/phase-9/quality-report.md`          | 品質判定の根拠       |
+| Phase 10 結果          | `outputs/phase-10/final-review-result.md`    | レビュー判定結果     |
+| Phase 11 結果          | `outputs/phase-11/manual-test-result.md`     | 手動テスト結果       |
+| Phase 12 成果物        | `outputs/phase-12/`                          | ドキュメント成果物   |
 
 ### システム仕様（aiworkflow-requirements）
 
-| 参照資料              | パス                                                                                   | 内容                         |
-| --------------------- | -------------------------------------------------------------------------------------- | ---------------------------- |
-| タスク台帳・残課題管理 | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                  | 完了条件と未タスク整合確認   |
-| Skill IPC 契約仕様    | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`     | 最終契約整合の確認基準       |
-| IPC チャンネル仕様    | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                  | PR前の仕様同期確認対象       |
-| 品質基準              | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`           | 品質ゲート証跡の確認         |
+| 参照資料               | パス                                                                              | 内容                       |
+| ---------------------- | --------------------------------------------------------------------------------- | -------------------------- |
+| タスク台帳・残課題管理 | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`              | 完了条件と未タスク整合確認 |
+| Skill IPC 契約仕様     | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | 最終契約整合の確認基準     |
+| IPC チャンネル仕様     | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`              | PR前の仕様同期確認対象     |
+| 品質基準               | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | 品質ゲート証跡の確認       |
 
 ---
 
 ## 成果物
 
-| 成果物             | パス                                       | 内容            |
-| ------------------ | ------------------------------------------ | --------------- |
-| 完了チェックリスト | `outputs/phase-13/completion-checklist.md` | 全Phase完了確認 |
-| PRテンプレート     | `outputs/phase-13/pr-template.md`          | PR準備          |
+| 成果物             | パス                                                | 内容                   |
+| ------------------ | --------------------------------------------------- | ---------------------- |
+| 完了チェックリスト | `outputs/phase-13/completion-checklist.md`          | 全Phase完了確認        |
+| PRテンプレート     | `outputs/phase-13/pr-template.md`                   | PR準備                 |
 | 整合監査レポート   | `outputs/phase-13/requirements-extraction-audit.md` | 仕様抽出・整合監査結果 |
 
 ---
@@ -174,11 +174,11 @@ refactor(ipc): skill:ハンドラIPCレスポンス形式統一
 
 ## SubAgent 分担
 
-| SubAgent   | 担当 |
-| ---------- | ---- |
-| SubAgent-A | タスク1（完了条件最終確認）+ タスク2（差分確認） |
+| SubAgent   | 担当                                                         |
+| ---------- | ------------------------------------------------------------ |
+| SubAgent-A | タスク1（完了条件最終確認）+ タスク2（差分確認）             |
 | SubAgent-B | タスク3（コミットメッセージ準備）+ タスク4（PRテンプレ準備） |
-| SubAgent-C | タスク5（artifacts最終更新）+ ユーザー許可ゲート管理 |
+| SubAgent-C | タスク5（artifacts最終更新）+ ユーザー許可ゲート管理         |
 
 ## PR作成フロー
 
