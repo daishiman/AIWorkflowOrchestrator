@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 1769
 task_id: TASK-AGENT-PERM-MODE
 task_name: AgentPermissionMode 永続化と preload/main IPC 対応
 category: 改善

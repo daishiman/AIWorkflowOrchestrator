@@ -3,6 +3,7 @@
 ## メタ情報
 
 ```yaml
+issue_number: 1770
 task_id: TASK-AGENTVIEW-PHASE11-SCREENSHOT-RECAPTURE-001
 task_name: AgentView Phase 11 実画面証跡の再取得
 category: 品質保証
