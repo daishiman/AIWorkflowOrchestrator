@@ -30,13 +30,13 @@ Phase 4 で作成したテストが全て通るように、契約統一の実装
 
 | 参照資料               | パス                                                                                        | 内容                     |
 | ---------------------- | ------------------------------------------------------------------------------------------- | ------------------------ |
-| Phase 4 テスト成果物   | `apps/desktop/src/main/ipc/__tests__/skillHandlers.contract.test.ts`                       | Green化対象の契約テスト  |
-| Phase 4 テスト成果物   | `apps/desktop/src/preload/__tests__/skill-api.contract.test.ts`                            | Green化対象の契約テスト  |
-| Phase 4 テスト仕様成果 | `outputs/phase-4/test-case-matrix.md`                                                      | テストケース根拠         |
+| Phase 4 テスト成果物   | `apps/desktop/src/main/ipc/__tests__/skillHandlers.contract.test.ts`                        | Green化対象の契約テスト  |
+| Phase 4 テスト成果物   | `apps/desktop/src/preload/__tests__/skill-api.contract.test.ts`                             | Green化対象の契約テスト  |
+| Phase 4 テスト仕様成果 | `outputs/phase-4/test-case-matrix.md`                                                       | テストケース根拠         |
 | Phase 2 設計成果物     | `outputs/phase-2/design-document.md`                                                        | 契約統一の設計根拠       |
-| IPC 契約チェックリスト | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`              | 変更時の必須確認手順     |
+| IPC 契約チェックリスト | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | 変更時の必須確認手順     |
 | 実装パターン集         | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | S2/S13/P42 準拠パターン  |
-| Skill IPC セキュリティ | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc.md`                  | sender検証と入力検証要件 |
+| Skill IPC セキュリティ | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc.md`                   | sender検証と入力検証要件 |
 
 ## 実行タスク
 
@@ -160,10 +160,10 @@ pnpm typecheck
 
 ## SubAgent 分担
 
-| SubAgent   | 担当 |
-| ---------- | ---- |
-| SubAgent-A | タスク1（Main ハンドラ契約明示化） |
-| SubAgent-B | タスク2（Preload API 単一化）+ タスク3（型定義同期） |
+| SubAgent   | 担当                                                                    |
+| ---------- | ----------------------------------------------------------------------- |
+| SubAgent-A | タスク1（Main ハンドラ契約明示化）                                      |
+| SubAgent-B | タスク2（Preload API 単一化）+ タスク3（型定義同期）                    |
 | SubAgent-C | タスク4（Renderer 利用側統一）+ タスク5/6（IPC契約検証・TDD Green確認） |
 
 ## 成果物

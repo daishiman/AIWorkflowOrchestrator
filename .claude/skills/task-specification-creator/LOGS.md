@@ -3,6 +3,23 @@
 ## 役割
 
 ---
+## 2026-03-30 - TASK-P0-02 Phase 12 close-out sync
+
+### 変更内容
+- `phase-12-documentation.md` の Task 12-1〜12-5 と Step 1-A〜1-C を current facts へ揃え、`task-workflow.md` / `task-workflow-completed.md` / LOGS / SKILL / phase outputs の同波更新を完了
+- `verifyAndImproveLoop()` の feedback memory を Phase 12 の current fact として固定し、前回改善要約を次回 feedback に織り込む仕様をドキュメントへ反映
+- `UT-P0-02-001` を unassigned 化せず current phase に吸収し、completed ledger へ TASK-P0-02 完了記録を追加
+
+---
+
+## 2026-03-30 - agentview-permission-api-fix Phase 12 識別: SKILL.md v6.18.16 更新
+
+### 変更内容
+- `SKILL.md` の「Phase 12 よくある漏れ」テーブルに Feedback 4 を追加
+  - テストファイルが複数サフィックス（`*.test.tsx` / `*.coverage.test.tsx` / `*.cta.test.tsx` 等）に分散している場合、Phase 2 設計段階で全テストファイルを網羅的に列挙しモック定義の一貫性を確保するルールを明示
+- 変更履歴に v6.18.16 エントリを追加
+
+---
 ## 2026-03-30 - TASK-P0-05 Phase 12 close-out resync
 
 ### 変更内容

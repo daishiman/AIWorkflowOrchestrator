@@ -36,21 +36,21 @@ Phase 12 は漏れが最も発生しやすい Phase。必ず全項目を逐次�
 
 ## 参照資料
 
-| 参照資料               | パス                                                                                   | 内容         |
-| ---------------------- | -------------------------------------------------------------------------------------- | ------------ |
-| Phase 2 設計成果物     | `outputs/phase-2/design-document.md`                                                   | 仕様更新の設計根拠 |
-| Phase 5 実装成果物     | `apps/desktop/src/main/ipc/skillHandlers.ts`                                           | 実装実態との同期確認 |
-| Phase 5 実装成果物     | `apps/desktop/src/preload/skill-api.ts`                                                | 実装実態との同期確認 |
-| Phase 6 テスト拡充結果 | `outputs/phase-6/test-expansion-report.md`                                             | テスト観点の記録 |
-| Phase 7 カバレッジ結果 | `outputs/phase-7/coverage-report.md`                                                   | 品質指標の反映 |
-| Phase 8 リファクタ結果 | `outputs/phase-8/refactoring-report.md`                                                | コード整理内容の反映 |
-| Phase 9 品質結果       | `outputs/phase-9/quality-report.md`                                                    | 品質ゲートの証跡 |
-| Phase 10 最終レビュー結果 | `outputs/phase-10/final-review-result.md`                                           | 判定結果と残課題 |
-| Phase 11 手動テスト結果 | `outputs/phase-11/manual-test-result.md`                                              | 手動確認の証跡 |
-| 仕様更新ワークフロー   | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`         | 更新手順     |
-| Phase 11-12 ガイド     | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`            | 詳細ガイド   |
-| 実装ガイドテンプレート | `.claude/skills/task-specification-creator/assets/implementation-guide-template.md`    | テンプレート |
-| 変更履歴テンプレート   | `.claude/skills/task-specification-creator/assets/documentation-changelog-template.md` | テンプレート |
+| 参照資料                  | パス                                                                                   | 内容                 |
+| ------------------------- | -------------------------------------------------------------------------------------- | -------------------- |
+| Phase 2 設計成果物        | `outputs/phase-2/design-document.md`                                                   | 仕様更新の設計根拠   |
+| Phase 5 実装成果物        | `apps/desktop/src/main/ipc/skillHandlers.ts`                                           | 実装実態との同期確認 |
+| Phase 5 実装成果物        | `apps/desktop/src/preload/skill-api.ts`                                                | 実装実態との同期確認 |
+| Phase 6 テスト拡充結果    | `outputs/phase-6/test-expansion-report.md`                                             | テスト観点の記録     |
+| Phase 7 カバレッジ結果    | `outputs/phase-7/coverage-report.md`                                                   | 品質指標の反映       |
+| Phase 8 リファクタ結果    | `outputs/phase-8/refactoring-report.md`                                                | コード整理内容の反映 |
+| Phase 9 品質結果          | `outputs/phase-9/quality-report.md`                                                    | 品質ゲートの証跡     |
+| Phase 10 最終レビュー結果 | `outputs/phase-10/final-review-result.md`                                              | 判定結果と残課題     |
+| Phase 11 手動テスト結果   | `outputs/phase-11/manual-test-result.md`                                               | 手動確認の証跡       |
+| 仕様更新ワークフロー      | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`         | 更新手順             |
+| Phase 11-12 ガイド        | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`            | 詳細ガイド           |
+| 実装ガイドテンプレート    | `.claude/skills/task-specification-creator/assets/implementation-guide-template.md`    | テンプレート         |
+| 変更履歴テンプレート      | `.claude/skills/task-specification-creator/assets/documentation-changelog-template.md` | テンプレート         |
 
 ---
 
@@ -253,10 +253,10 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 ## SubAgent 分担
 
-| SubAgent   | 担当 |
-| ---------- | ---- |
-| SubAgent-A | Task 1（実装ガイド/IPCドキュメント作成） |
-| SubAgent-B | Task 2（システム仕様書更新 Step 1-A〜Step 3） |
+| SubAgent   | 担当                                                                |
+| ---------- | ------------------------------------------------------------------- |
+| SubAgent-A | Task 1（実装ガイド/IPCドキュメント作成）                            |
+| SubAgent-B | Task 2（システム仕様書更新 Step 1-A〜Step 3）                       |
 | SubAgent-C | Task 3-5（changelog / 未タスク検出 / フィードバック）+ 最終チェック |
 
 ## 統合テスト連携【必須】

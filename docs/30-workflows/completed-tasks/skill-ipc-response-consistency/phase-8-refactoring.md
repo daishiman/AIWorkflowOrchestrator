@@ -169,26 +169,26 @@ pnpm typecheck
 
 ## SubAgent 分担
 
-| SubAgent   | 担当 |
-| ---------- | ---- |
+| SubAgent   | 担当                                             |
+| ---------- | ------------------------------------------------ |
 | SubAgent-A | タスク1（重複ロジック整理）+ タスク2（命名改善） |
-| SubAgent-B | タスク3（Preload API コード整理） |
-| SubAgent-C | タスク4（テスト Green 維持確認）+ 成果物集約 |
+| SubAgent-B | タスク3（Preload API コード整理）                |
+| SubAgent-C | タスク4（テスト Green 維持確認）+ 成果物集約     |
 
 ## 参照資料
 
-| 参照資料       | パス                                                         | 内容                 |
-| -------------- | ------------------------------------------------------------ | -------------------- |
-| Phase 1 要件書 | `outputs/phase-1/requirements.md`                            | 契約要件の再確認     |
-| Phase 2 設計書 | `outputs/phase-2/design-document.md`                         | 契約設計の再確認     |
-| Phase 5 実装   | `apps/desktop/src/main/ipc/skillHandlers.ts`                 | リファクタリング対象 |
-| Phase 6 テスト成果物 | `apps/desktop/src/main/ipc/__tests__/skillHandlers*.test.ts` | 回帰対象の主要テスト |
-| Phase 6 テスト成果物 | `apps/desktop/src/preload/__tests__/skill-api*.test.ts`      | 回帰対象の主要テスト |
-| Phase 7 カバレッジ結果 | `outputs/phase-7/coverage-report.md`                      | 閾値達成状況の確認   |
-| Preload API    | `apps/desktop/src/preload/skill-api.ts`                      | 整理対象             |
-| Preload型定義  | `apps/desktop/src/preload/types.ts`                          | 型定義               |
-| テストファイル | `apps/desktop/src/main/ipc/__tests__/skillHandlers*.test.ts` | テストコード         |
-| Preload テスト | `apps/desktop/src/preload/__tests__/skill-api*.test.ts`      | Preload テストコード |
+| 参照資料               | パス                                                         | 内容                 |
+| ---------------------- | ------------------------------------------------------------ | -------------------- |
+| Phase 1 要件書         | `outputs/phase-1/requirements.md`                            | 契約要件の再確認     |
+| Phase 2 設計書         | `outputs/phase-2/design-document.md`                         | 契約設計の再確認     |
+| Phase 5 実装           | `apps/desktop/src/main/ipc/skillHandlers.ts`                 | リファクタリング対象 |
+| Phase 6 テスト成果物   | `apps/desktop/src/main/ipc/__tests__/skillHandlers*.test.ts` | 回帰対象の主要テスト |
+| Phase 6 テスト成果物   | `apps/desktop/src/preload/__tests__/skill-api*.test.ts`      | 回帰対象の主要テスト |
+| Phase 7 カバレッジ結果 | `outputs/phase-7/coverage-report.md`                         | 閾値達成状況の確認   |
+| Preload API            | `apps/desktop/src/preload/skill-api.ts`                      | 整理対象             |
+| Preload型定義          | `apps/desktop/src/preload/types.ts`                          | 型定義               |
+| テストファイル         | `apps/desktop/src/main/ipc/__tests__/skillHandlers*.test.ts` | テストコード         |
+| Preload テスト         | `apps/desktop/src/preload/__tests__/skill-api*.test.ts`      | Preload テストコード |
 
 ### システム仕様（aiworkflow-requirements）
 

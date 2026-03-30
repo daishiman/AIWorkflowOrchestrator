@@ -141,11 +141,12 @@ plan → review (awaiting user input) → execute → verify → [pass] handoff
 
 Renderer はこのレスポンスを受け取った場合、`plan.status === "error"` + `degradedReason` で劣化状態を UI に表示する。
 
-#### ユーザー入力ブリッジ（4種）
+#### ユーザー入力ブリッジ（5種）
 
 | kind            | 用途                  | 例                      |
 | --------------- | --------------------- | ----------------------- |
 | `single_select` | 選択肢から1つ選択     | plan review の承認/却下 |
+| `multi_select`  | 選択肢から複数選択    | interview で利用機能を複数選ぶ |
 | `free_text`     | 自由テキスト入力      | フィードバックコメント  |
 | `secret`        | 秘匿入力（APIキー等） | LLM API キー            |
 | `confirm`       | Yes/No 確認           | reverify 実行確認       |
@@ -175,6 +176,24 @@ Renderer はこのレスポンスを受け取った場合、`plan.status === "er
 - **`SkillCreatorSdkEvent`**: `query()` が返す生 `SDKMessage` を lane 安定契約へ変換した結果型。`eventType: "init" | "assistant" | "result" | "error"` で分類。UI / IPC / WorkflowEngine はこの型のみを消費する。
 - **`SkillCreatorSdkEventSourceProvenance`**: `sourceRoot` / `manifestHash` を含む source 解決結果。`SkillCreatorSdkEvent` に埋め込む。
 - **`sdkMessageNormalizer.ts`**: `apps/desktop/src/main/services/runtime/` に配置。IPC チャネル `skill-creator:normalize-sdk-messages` 経由で提供する。
+
+#### verify → improve → re-verify 閉ループ（TASK-P0-02）
+
+`verifyAndImproveLoop()` は verify → improve → re-verify のサイクルを自動的に回す閉ループパイプライン。
+
+| フェーズ | 処理 |
+| ------- | ---- |
+| verify | `skill-creator:get-verify-detail` を実行し、check 結果を取得 |
+| improve | `failedChecks`（error/warning）のみを LLM 改善入力に渡す。`info` は除外 |
+| re-verify | improve 適用後に再度 verify を実行 |
+
+**ループ制御**（`RuntimeSkillCreatorFacadeDeps.maxImproveRetry`）:
+- デフォルト 3、範囲 1-10（範囲外は自動クランプ）
+- 直前の improve 要約を次回 feedback に合成（feedback memory）し、同一修正の繰り返しを抑制
+- 全 check PASS → `finalStatus: "pass"` で正常終了
+- `maxImproveRetry` 到達 → `loopExhausted: true`、ユーザー判断を要求
+
+**結果型**: `RuntimeSkillCreatorVerifyAndImproveResult`（`finalStatus`, `totalAttempts`, `finalChecks`, `loopExhausted`, `errorMessage?`, `workflowSnapshot`）
 
 ### Orchestrate モード
 
@@ -325,6 +344,8 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 | Version      | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ------------ | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **10.40.0**  | **2026-03-30** | **TASK-P0-02 verify→improve→re-verify 閉ループを反映**: `verifyAndImproveLoop()` の閉ループ仕様（`maxImproveRetry` デフォルト3/範囲1-10の自動クランプ、feedback memory による直前改善要約の次回 feedback 合成、`failedChecks` 限定改善入力）を「verify → improve → re-verify 閉ループ（TASK-P0-02）」セクションとして追記。`RuntimeSkillCreatorVerifyAndImproveResult` 型と `RuntimeSkillCreatorFacadeDeps.maxImproveRetry` フィールドを文書化 |
+| **10.39.1**  | **2026-03-30** | **TASK-RT-05 multi_select user input kind を反映**: ユーザー入力ブリッジを 5 種へ更新し、`multi_select` と `selectedOptionIds` 契約を runtime workflow current facts に同期。Renderer question host の kind 切替時 state reset と submit disable 条件も close-out 観点へ追加 |
 | **10.39.0**  | **2026-03-29** | **TASK-RT-06 SDKMessage 正規化 + TASK-SDK-08 Session Persistence を反映**: `SkillCreatorSdkEvent`（eventType: init/assistant/result/error）/ `SkillCreatorSdkEventSourceProvenance` 型、IPC チャネル `skill-creator:normalize-sdk-messages`、`sdkMessageNormalizer.ts` の追加を Runtime ワークフロー IPC テーブルへ追記。`SkillCreatorPersistedWorkflowCheckpoint`（phase boundary checkpoint）/ `WorkflowCheckpointLease`（stale write guard）/ `ResumeCompatibilityResult` / `ResumeIncompatibilityReason` 型、`SkillCreatorWorkflowEngine.hydrateFromCheckpoint()` メソッドを Session Persistence セクションへ追記 |
 | **10.38.1**  | **2026-03-29** | **TASK-RT-01 plan エラー伝播改善を反映**: `RuntimeSkillCreatorFacade` の LLMAdapter からのエラーが `RuntimeSkillCreatorPlanErrorResponse` として propagate される仕様（`plan.status: "error"` + `degradedReason`）を「plan エラーレスポンス（TASK-RT-01）」セクションとして追加。silent failure → explicit error response への改善を文書化                                                                                                                                                                                                                                                                             |
 | **10.38.0**  | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映                                                                                                                     |
@@ -337,6 +358,7 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 | Version      | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | ------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **10.39.1**  | **2026-03-30** | **TASK-RT-05 multi_select user input kind を反映**: ユーザー入力ブリッジを 5 種へ更新し、`multi_select` と `selectedOptionIds` 契約を runtime workflow current facts に同期。Renderer question host の kind 切替時 state reset と submit disable 条件も close-out 観点へ追加 |
 | **10.39.0**  | **2026-03-29** | **TASK-RT-06 SDKMessage 正規化 + TASK-SDK-08 Session Persistence を反映**: `SkillCreatorSdkEvent`（eventType: init/assistant/result/error）/ `SkillCreatorSdkEventSourceProvenance` 型、IPC チャネル `skill-creator:normalize-sdk-messages`、`sdkMessageNormalizer.ts` の追加を Runtime ワークフロー IPC テーブルへ追記。`SkillCreatorPersistedWorkflowCheckpoint`（phase boundary checkpoint）/ `WorkflowCheckpointLease`（stale write guard）/ `ResumeCompatibilityResult` / `ResumeIncompatibilityReason` 型、`SkillCreatorWorkflowEngine.hydrateFromCheckpoint()` メソッドを Session Persistence セクションへ追記                                                                                                                                              |
 | **10.38.0**  | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映                                                                                                                                                                                                                                                                  |
 | **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善                                                                                                                                                                                                                                                                                                                                                                                                                    |

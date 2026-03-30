@@ -161,6 +161,7 @@ export type {
   RuntimeSkillCreatorVerifyDetailResponse,
   RuntimeSkillCreatorReverifyResult,
   RuntimeSkillCreatorReverifyResponse,
+  RuntimeSkillCreatorVerifyAndImproveResult,
   SkillGeneratedContent,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorImproveResult,
