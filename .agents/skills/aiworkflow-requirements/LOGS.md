@@ -7,6 +7,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out sync（step-03-seq-task-04-test-update workflow root を整備 / Phase 11/12/13 成果物を current root に揃え / docs-only close-out wave のため Step 2 domain spec 更新は no-op / GoogleAdapter・provider-registry test の current-facts 更新 / UT-LLM-MOD-04-001 backlog 維持 / esbuild mismatch で vitest 再実行不能のため historical acceptance evidence と grep を併用 / lessons: P50 task は新規実装前提で書かない・workflow root staleness は resource-map 導線で防ぐ） |
+| 2026-03-29 - UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 実装完了（packages/shared/src/ipc/channels.ts に APPROVAL_CHANNELS 2件・EXECUTION_CHANNELS 1件追加 / apps/desktop/src/preload/channels.ts が @repo/shared から import するよう変更 / governance-bundle.test.ts 観点5 cross-layer parity テスト追加 / packages/shared/src/ipc/__tests__/channels.test.ts 新規 / 全完了条件 PASS / 苦戦: Vite バンドラー @repo/shared エイリアス未解決・命名規則 camelCase vs kebab-case 事前分析・TDD Red 前の設計前提整合確認） |
 | 2026-03-29 - TASK-RT-01 llm-adapter-error-propagation close-out sync（`task-workflow-completed.md` に完了記録を追加し、`api-ipc-system-core.md` / `architecture-overview-core.md` へ `skill-creator:plan` outer/inner response 契約と `LLM_ADAPTER_*` / `adapterStatus` current facts を反映。workflow docs の `artifacts.json` parity・Phase 11 NON_VISUAL evidence・Phase 12 compliance 判定を実装済み状態へ同期） |
 | 2026-03-29 - P0是正パック skills-creator-agent-sdk-lane 同期（artifacts.json schema 統一 100ファイル `"complete"` → `"completed"` 修正 / 新規タスク仕様書 15件全構成（index.md + phase-1〜13 + artifacts.json）: TASK-RT-01〜06（LLMAdapter/Runtime系）+ TASK-P0-01〜09（P0検証/修復系）/ p0-verify-manifest-remediation-pack.md 依存マトリクスと推奨実行順を最新化 / generate-index.js 含む validate スクリプト PASS / `.claude` 正本と `.agents` ミラー同期完了） |
 | 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization close-out sync（shared barrel export漏れと Renderer plan型ドリフトを修正 / sessionId昇格規約を最初観測へ統一 / Phase 11-12成果物を補完 / typecheck(shared+desktop) PASS / vitest blocker を UT-RT-06-ESBUILD-ARCH-MISMATCH-001 として formalize） |
@@ -125,16 +127,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 
 - [logs-archive-index.md](references/logs-archive-index.md)
-
-## TASK-RT-01 llm-adapter-error-propagation close-out sync（2026-03-29）
-
-- タスク名: llm-adapter-error-propagation
-- 種別: runtime bug-fix / close-out sync
-- 主な反映:
-  - `references/task-workflow-completed.md` に TASK-RT-01 完了記録を追加
-  - `references/api-ipc-system-core.md` に `skill-creator:plan` の outer/inner response 契約（`IpcResult.success` と `data.success`）を追記
-  - `references/architecture-overview-core.md` に runtime bridge の error propagation surface 説明を追記
-  - workflow 側 `artifacts.json` と `outputs/artifacts.json` の parity を回復し、Phase 11/12 証跡記述を NON_VISUAL 方針へ整合化
 
 ## TASK-SDK-03 resource selection hardening sync（2026-03-27）
 
@@ -488,6 +480,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 <!-- 2026-03-16〜2026-03-25 の詳細ログは logs-archive-2026-03-mid-lifecycle-governance-improve.md に退避 -->
+<!-- 2026-03-26〜2026-03-28 の詳細ログは SKILL.md 変更履歴を参照 -->
 
 ## TASK-RT-06 close-out sync（2026-03-29）
 
@@ -505,3 +498,15 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - vitest は esbuild アーキ不整合で blocked
 - 派生未タスク:
   - `UT-RT-06-ESBUILD-ARCH-MISMATCH-001`
+
+## UT-RT-06-ESBUILD-ARCH-MISMATCH-001 close-out sync（2026-03-29）
+
+- タスク名: UT-RT-06-ESBUILD-ARCH-MISMATCH-001 esbuild-arch-mismatch-fix
+- 種別: バグ修正（環境修正） + 仕様書同期
+- 主な変更:
+  - `task-workflow-backlog.md`: UT-RT-06-ESBUILD-ARCH-MISMATCH-001 エントリ（行626, 629）を取り消し線＋**完了: 2026-03-29** に更新
+  - `task-workflow-completed.md`: UT-RT-06-ESBUILD-ARCH-MISMATCH-001 の完了記録を追記（完了日・テスト結果・再発防止ガイドへの参照）
+  - `lessons-learned-phase12-workflow-lifecycle.md`: esbuild バイナリアーキ不一致の診断・解決・再発防止知見を追記
+- 検証:
+  - 対象テスト 27 tests PASS（RuntimeSkillCreatorFacade.sdk-normalization.test.ts）
+  - 再発防止ガイド: `docs/40-guides/esbuild-arch-mismatch-prevention.md`

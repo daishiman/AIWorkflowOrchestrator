@@ -466,7 +466,7 @@
 | 優先度 | 高 |
 | 完了日 | 2026-03-26 |
 | 対象 | workflow checkpoint / compatibility evaluator / revision lease / Phase 1-13 docs pack |
-| 成果物 | `docs/30-workflows/step-06-seq-task-08-session-persistence-and-resume-contract/` |
+| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/` |
 
 #### 実施内容
 
@@ -478,7 +478,7 @@
 #### Phase 12 未タスク
 
 - 新規未タスク 0 件
-- public preload / renderer resume UI / migration helper は後続 wave へ引き継ぐ
+- shared types / session storage / preload-main wiring の本実装は後続 wave へ引き継ぐ
 
 ---
 ### タスク: TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 session-dock-artifact-bridge（2026-03-24）
@@ -1519,6 +1519,36 @@
 | UT-7 | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH |
 | UT-8 | Main→Renderer への承認要求プッシュ通知（webContents.send） | HIGH |
 | UT-9 | abort/done 時に ApprovalGate.revokeAll() でトークンクリア | MEDIUM |
+
+---
+
+### タスク: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 SkillExecutor/sdkMessageNormalizer 型ガード重複解消（2026-03-29）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 未実施）** |
+| タイプ | refactor |
+| 優先度 | low |
+| 完了日 | 2026-03-29 |
+| 関連Issue | #1692 |
+| 由来 | TASK-RT-06 Phase 8 調査（unassigned-task-detection.md） |
+| 成果物 | `docs/30-workflows/skill-executor-normalizer-consolidation/` |
+
+#### 実施内容
+
+- `sdkMessageUtils.ts` を新規作成し、`asSdkMessageRecord()` / `getSdkMessageType()` を共通 helper として抽出
+- `SkillExecutor.ts` の `convertToStreamMessage()` が shared helper を利用するよう更新
+- `sdkMessageNormalizer.ts` が shared helper を利用するよう更新
+- `sdkMessageUtils.test.ts` 新規作成（21件、Line/Branch/Function 100%）
+- `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings
+- vitest 再実行は esbuild platform mismatch により環境 blocked（manual-test-result.md に記録済み）
+
+#### Phase 12 未タスク
+
+| 未タスクID | 内容 | 優先度 |
+| --- | --- | --- |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 | `SkillStreamMessage` と `SkillCreatorSdkEvent` の出力型を統一 | low |
 | UT-10 | disclosureHandlers.ts 独立テスト作成 | LOW |
 
 ---
@@ -1552,3 +1582,35 @@
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
 | UT-RT-06-ESBUILD-ARCH-MISMATCH-001 | esbuild アーキ不整合の環境修正 | 高 | `docs/30-workflows/unassigned-task/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md` |
+
+---
+
+### タスク: UT-RT-06-ESBUILD-ARCH-MISMATCH-001 esbuild-arch-mismatch-fix（2026-03-29）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-RT-06-ESBUILD-ARCH-MISMATCH-001 |
+| ステータス | **完了** |
+| タイプ | バグ修正（環境修正 + close-out 整流） |
+| 優先度 | 高 |
+| 完了日 | 2026-03-29 |
+| GitHub Issue | #1710 |
+| 親タスク | TASK-RT-06 Phase 12 未タスク |
+| 成果物 | `docs/30-workflows/step-ut-rt-06-esbuild-arch-mismatch-001/` |
+
+#### 実施内容
+
+- macOS 環境での esbuild バイナリと Node.js 実行アーキテクチャ（arm64/x64）の不一致を修正
+- `EXPECTED_PLATFORM="darwin-$(node -p process.arch)"` を診断基準に統一し、`arm64` 固定ハードコードを除去
+- `pnpm install --force` による optional dependency 再解決フローを確立
+- 再発防止ガイドを `docs/40-guides/esbuild-arch-mismatch-prevention.md` に作成（Preflight チェックリスト 5 ステップ）
+- Phase 10/11/12 の条件付き PASS / DEFERRED 判定を整流し、blocker の扱いを同一未タスク ID で追跡
+
+#### テスト結果
+
+- 対象: `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.sdk-normalization.test.ts`
+- 結果: 27 tests PASS
+
+#### 再発防止ガイド
+
+`docs/40-guides/esbuild-arch-mismatch-prevention.md` — Preflight チェックリスト（5 ステップ）および診断・復旧手順

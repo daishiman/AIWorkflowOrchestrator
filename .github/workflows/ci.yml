@@ -35,6 +35,8 @@ jobs:
     name: Lint
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,6 +64,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build-shared]
     timeout-minutes: 10
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -95,6 +99,8 @@ jobs:
     name: Build Shared
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -131,6 +137,7 @@ jobs:
     timeout-minutes: 10
     env:
       NODE_OPTIONS: --max-old-space-size=4096
+      ELECTRON_SKIP_BINARY_DOWNLOAD: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -232,6 +239,8 @@ jobs:
     name: Module Sync Check
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -258,6 +267,8 @@ jobs:
     name: Security Audit
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: 1
     steps:
       - name: Checkout
         uses: actions/checkout@v4

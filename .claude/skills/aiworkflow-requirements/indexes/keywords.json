@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-29T07:45:36.195Z",
-  "totalKeywords": 2531,
+  "generated": "2026-03-29T14:53:41.674Z",
+  "totalKeywords": 2538,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6331,6 +6331,7 @@
     ],
     "MISMATCH": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "SkillImportDialog": [
@@ -6512,6 +6513,9 @@
     ],
     "RT": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-feature-components-core.md",
       "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Event": [
@@ -6779,10 +6783,6 @@
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "RT": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "ui-ux-feature-components-core.md"
-    ],
     "authkey": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -6845,6 +6845,18 @@
     "HARNESS": [
       "lessons-learned-phase12-workflow-lifecycle.md",
       "ui-ux-panels.md"
+    ],
+    "close": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "out": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ESBUILD": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ARCH": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"

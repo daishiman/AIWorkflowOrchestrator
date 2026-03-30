@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-29T07:45:36.195Z",
-  "totalKeywords": 2531,
+  "generated": "2026-03-29T14:53:41.674Z",
+  "totalKeywords": 2538,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1173,7 +1173,8 @@
       "ui-ux-settings-core.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+      "workflow-skill-lifecycle-routing-render-view-foundation.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "core": [
       "api-ipc-agent-core.md",
@@ -3366,7 +3367,8 @@
       "arch-state-management-reference-persist-hardening-test-quality.md"
     ],
     "Validation": [
-      "arch-state-management-reference-persist-hardening-test-quality.md"
+      "arch-state-management-reference-persist-hardening-test-quality.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "CONFIG": [
       "arch-state-management-reference-persist-hardening-test-quality.md",
@@ -4453,7 +4455,8 @@
       "lessons-learned-test-typesafety.md",
       "lessons-learned-viewtype-electron-ui.md",
       "logging-migration-guide.md",
-      "workflow-permission-fallback-abort-skip-retry.md"
+      "workflow-permission-fallback-abort-skip-retry.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "認証フローにおける統合": [
       "csrf-state-parameter.md"
@@ -5093,7 +5096,8 @@
       "quality-e2e-testing.md",
       "task-workflow-backlog.md",
       "ui-ux-search-panel-details.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "ライフサイクルイベントモデル": [
       "interfaces-agent-sdk-history.md"
@@ -5788,7 +5792,8 @@
     ],
     "Current": [
       "legacy-ordinal-family-register.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Alias": [
       "legacy-ordinal-family-register.md"
@@ -6326,6 +6331,7 @@
     ],
     "MISMATCH": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "SkillImportDialog": [
@@ -6505,6 +6511,23 @@
     "追加教訓": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
+    "RT": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-feature-components-core.md",
+      "workflow-task-rt-06-artifact-inventory.md"
+    ],
+    "Event": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "Normalizer": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+    ],
+    "実装知見": [
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-safety-gate-permission-fallback.md"
+    ],
     "settings": [
       "lessons-learned-auth-settings-degradation-guard.md"
     ],
@@ -6662,10 +6685,6 @@
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
-    "RT": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6764,10 +6783,6 @@
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "RT": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "ui-ux-feature-components-core.md"
-    ],
     "authkey": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -6837,6 +6852,12 @@
     "out": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "ESBUILD": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ARCH": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
     ],
@@ -6876,9 +6897,6 @@
       "task-workflow-completed-ut-06-safety-gate.md",
       "ui-ux-settings-core.md",
       "workflow-permission-fallback-abort-skip-retry.md"
-    ],
-    "実装知見": [
-      "lessons-learned-safety-gate-permission-fallback.md"
     ],
     "domain": [
       "lessons-learned-skill-build-harness-guard.md",
@@ -9090,7 +9108,8 @@
     "up": [
       "logs-archive-2026-03-line-budget-reform-formalize.md",
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
+      "workflow-ai-runtime-execution-responsibility-realignment.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "の未タスク": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
@@ -11650,7 +11669,8 @@
       "workflow-ai-runtime-execution-responsibility-realignment.md"
     ],
     "Follow": [
-      "workflow-ai-runtime-execution-responsibility-realignment.md"
+      "workflow-ai-runtime-execution-responsibility-realignment.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Backlog": [
       "workflow-ai-runtime-execution-responsibility-realignment.md"
@@ -11798,16 +11818,20 @@
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
     ],
     "Canonical": [
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Set": [
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Artifact": [
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Inventory": [
-      "workflow-skill-lifecycle-created-skill-usage-journey.md"
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "実装コードアンカー": [
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
@@ -11875,6 +11899,9 @@
     ],
     "二次": [
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "Chain": [
+      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "sweep": [
       "workflow-workspace-parent-reference-sweep-guard.md"

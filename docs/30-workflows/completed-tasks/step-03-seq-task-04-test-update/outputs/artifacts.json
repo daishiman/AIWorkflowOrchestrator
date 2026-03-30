@@ -1,0 +1,119 @@
+{
+  "feature": "task-llm-mod-04-audit-sync",
+  "created": "2026-03-29T00:00:00Z",
+  "lastUpdated": "2026-03-29T00:00:00Z",
+  "status": "completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "phase-1-requirements.md",
+        "outputs/phase-1/spec-extraction-map.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": ["phase-2-design.md", "outputs/phase-2/audit-matrix.md"]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "phase-3-design-review.md",
+        "outputs/phase-3/skill-compliance-and-elegance-review.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "phase-4-test-creation.md",
+        "outputs/phase-4/test-matrix.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "phase-5-implementation.md",
+        "outputs/phase-5/implementation-fact-confirmation.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "phase-6-test-expansion.md",
+        "outputs/phase-6/gap-analysis.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "phase-7-coverage-check.md",
+        "outputs/phase-7/coverage-evidence.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "phase-8-refactoring.md",
+        "outputs/phase-8/refactoring-checklist.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "phase-9-quality-assurance.md",
+        "outputs/phase-9/qa-validation-result.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "phase-10-final-review.md",
+        "outputs/phase-10/elegance-thinking-audit.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "phase-12-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": { "status": "blocked", "artifacts": ["phase-13-pr-creation.md"] }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskId": "TASK-LLM-MOD-04",
+    "taskName": "テスト期待値更新 再監査仕様同期",
+    "taskType": "verification",
+    "category": "ドキュメント整合",
+    "priority": "中"
+  }
+}

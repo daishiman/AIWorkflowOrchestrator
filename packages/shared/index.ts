@@ -221,6 +221,8 @@ export type {
   ScriptResult,
   TaskSpec,
   DependencyGraph,
+  RuntimeSkillCreatorVerifyCheck,
+  RuntimeSkillCreatorVerifyCheckSeverity,
 } from "./src/types/skillCreator";
 
 // Core

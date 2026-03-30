@@ -1,0 +1,228 @@
+{
+  "feature": "step-ut-rt-06-esbuild-arch-mismatch-001",
+  "taskId": "UT-RT-06-ESBUILD-ARCH-MISMATCH-001",
+  "created": "2026-03-29T00:00:00Z",
+  "lastUpdated": "2026-03-29T00:00:00Z",
+  "status": "in_progress",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements.md",
+          "type": "document"
+        }
+      ]
+    },
+    "2": {
+      "name": "設計",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "設計書",
+          "path": "outputs/phase-2/design.md",
+          "type": "document"
+        }
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "レビュー結果",
+          "path": "outputs/phase-3/design-review.md",
+          "type": "document"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テスト計画",
+          "path": "outputs/phase-4/test-plan.md",
+          "type": "document"
+        },
+        {
+          "name": "Red状態記録",
+          "path": "outputs/phase-4/red-state-log.md",
+          "type": "document"
+        }
+      ]
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "環境修正結果",
+          "path": "outputs/phase-5/implementation-result.md",
+          "type": "document"
+        },
+        {
+          "name": "テスト実行結果",
+          "path": "outputs/phase-5/test-result.md",
+          "type": "document"
+        },
+        {
+          "name": "再発防止ガイド",
+          "path": "docs/40-guides/esbuild-arch-mismatch-prevention.md",
+          "type": "document"
+        }
+      ]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "テスト拡充結果",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "リファクタリング結果",
+          "path": "outputs/phase-8/refactoring-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "type": "document"
+        },
+        {
+          "name": "発見課題一覧",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "type": "document"
+        }
+      ]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "type": "document"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "type": "document"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "type": "document"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "type": "document"
+        },
+        {
+          "name": "システム仕様更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "type": "document"
+        },
+        {
+          "name": "task-spec準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "type": "document"
+        }
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "type": "document"
+        },
+        {
+          "name": "ローカル確認結果",
+          "path": "outputs/phase-13/local-check-result.md",
+          "type": "document"
+        },
+        {
+          "name": "変更サマリー",
+          "path": "outputs/phase-13/change-summary.md",
+          "type": "document"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "fix",
+    "estimatedPhases": 13,
+    "uiChange": false,
+    "ipcChange": false,
+    "githubIssue": "#1710"
+  }
+}
