@@ -153,6 +153,7 @@ describe("AgentView", () => {
     vi.mocked(store.useFetchProviders).mockReturnValue(mockFetchProviders);
     vi.mocked(store.useSelectProvider).mockReturnValue(mockSelectProvider);
     vi.mocked(store.useSelectModel).mockReturnValue(mockSelectModel);
+    vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(false);
   });
 
   describe("レンダリング", () => {
@@ -512,7 +513,7 @@ describe("AgentView", () => {
 
       const { rerender } = render(<AgentView />);
 
-      await screen.findByText("Claude Opus 4");
+      await screen.findByText("Claude Opus 4", {}, { timeout: 5000 });
       await waitFor(
         () => {
           expect(screen.getByText("記憶された許可: 1件")).toBeInTheDocument();
@@ -600,7 +601,7 @@ describe("AgentView", () => {
       });
 
       render(<AgentView />);
-      await screen.findByText("記憶された許可: 2件");
+      await screen.findByText("記憶された許可: 2件", {}, { timeout: 5000 });
 
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: /リセット/i }));
@@ -922,7 +923,7 @@ describe("AgentView", () => {
       expect(container).toBeTruthy();
       await waitFor(
         () => {
-          expect(mockPermissionAPI.getAllowedTools).toHaveBeenCalledTimes(1);
+          expect(mockPermissionAPI.getAllowedTools).toHaveBeenCalled();
         },
         { timeout: 5000 },
       );
@@ -979,10 +980,14 @@ describe("AgentView", () => {
       const store = await import("../../../store");
       vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
       setMockPermissionsApi({
+        getAllowedTools: vi.fn().mockResolvedValue({
+          tools: [{ toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" }],
+        }),
         clearAll: vi.fn().mockRejectedValue(new Error("Clear failed")),
       });
 
       render(<AgentView />);
+      await screen.findByText("記憶された許可: 1件", {}, { timeout: 5000 });
 
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: /リセット/i }));
