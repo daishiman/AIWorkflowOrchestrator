@@ -868,7 +868,6 @@
 | 解決策 | `manual-test-checklist.md` と `discovered-issues.md` を必須補助成果物として追加 |
 | 標準ルール | UI 非変更タスクは「N/A 根拠 + 代替証跡（checklist/issues）」をセットで残す |
 | 関連タスク | TASK-RT-06 |
-<<<<<<< Updated upstream
 
 ---
 

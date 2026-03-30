@@ -904,10 +904,10 @@ node scripts/list-specs.js --topics
 | Workspace File Watch IPC API（TASK-UI-04A） | L198 |
 | Conversation IPC API（会話履歴永続化） | L242 |
 | Electron IPC API設計 | L278 |
-| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L410 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L643 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L674 |
-| AIプロバイダーAPI連携 | L705 |
+| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L420 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L653 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L684 |
+| AIプロバイダーAPI連携 | L715 |
 
 ### references/api-ipc-system-details.md
 

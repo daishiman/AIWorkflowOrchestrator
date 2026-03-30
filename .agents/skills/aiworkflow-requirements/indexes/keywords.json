@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-29T14:59:35.493Z",
-  "totalKeywords": 2542,
+  "generated": "2026-03-29T14:53:41.674Z",
+  "totalKeywords": 2538,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -659,7 +659,6 @@
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "llm-ipc-types.md",
       "llm-workspace-chat-edit.md",
@@ -2746,7 +2745,6 @@
     "shared": [
       "arch-execution-capability-contract.md",
       "directory-structure-core.md",
-      "lessons-learned-test-typesafety.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "workflow-light-theme-global-remediation.md"
     ],
@@ -3209,7 +3207,6 @@
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management.md",
       "interfaces-llm.md",
-      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-test-typesafety.md",
@@ -3820,7 +3817,6 @@
     "CHANNEL": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
@@ -4183,10 +4179,8 @@
       "claude-code-agents-workflow.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
-      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
@@ -6337,6 +6331,7 @@
     ],
     "MISMATCH": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "SkillImportDialog": [
@@ -6520,24 +6515,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-test-typesafety.md",
       "ui-ux-feature-components-core.md",
-      "workflow-task-rt-06-artifact-inventory.md"
-    ],
-    "Event": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
-    ],
-    "Normalizer": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
-    ],
-    "実装知見": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-safety-gate-permission-fallback.md"
-    ],
-    "RT": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Event": [
@@ -6707,18 +6685,6 @@
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
-    "MOD": [
-      "lessons-learned-current.md",
-      "lessons-learned-test-typesafety.md"
-    ],
-    "close": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "out": [
-      "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6886,12 +6852,11 @@
     "out": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "SHARED": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "lessons-learned-workflow-quality-phase12-audit-validator.md",
-      "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    "ESBUILD": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ARCH": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
@@ -7222,22 +7187,7 @@
     "品質": [
       "lessons-learned-test-typesafety.md"
     ],
-    "CONS": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "sdkMessageUtils": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "helper": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "抽出": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "個別カバレッジ計測": [
-      "lessons-learned-test-typesafety.md"
-    ],
-    "個別ファイルカバレッジ計測": [
+    "MOD": [
       "lessons-learned-test-typesafety.md"
     ],
     "provider": [
@@ -7457,6 +7407,12 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md"
+    ],
+    "SHARED": [
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md",
+      "logs-archive-2026-02-unassigned-placement-import-interface.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "モジュール解決エラー修正": [
       "lessons-learned-workflow-quality-ci-module-resolution.md"

@@ -3,7 +3,6 @@
 ## 役割
 
 ---
-<<<<<<< HEAD
 ## 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out hardening
 
 ### 変更内容
@@ -13,8 +12,6 @@
 - esbuild mismatch により vitest 再実行不能だったため、historical acceptance evidence と grep を代替証跡として使用
 
 ---
-||||||| 6803086ac
-=======
 ## 2026-03-29: coverage-standards.md v1.4.0 更新（Phase 7 グローバル閾値回避ガイドライン追加）
 
 ### 変更内容
@@ -35,7 +32,6 @@
 - `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings、`vitest` rerun は environment blocked
 
 ---
->>>>>>> origin/main
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
 
 ### 変更内容

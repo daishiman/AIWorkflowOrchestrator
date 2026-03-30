@@ -1631,3 +1631,35 @@
 | 未タスクID                         | 概要                           | 優先度 | タスク仕様書                                                              |
 | ---------------------------------- | ------------------------------ | ------ | ------------------------------------------------------------------------- |
 | UT-RT-06-ESBUILD-ARCH-MISMATCH-001 | esbuild アーキ不整合の環境修正 | 高     | `docs/30-workflows/unassigned-task/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md` |
+
+---
+
+### タスク: UT-RT-06-ESBUILD-ARCH-MISMATCH-001 esbuild-arch-mismatch-fix（2026-03-29）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-RT-06-ESBUILD-ARCH-MISMATCH-001 |
+| ステータス | **完了** |
+| タイプ | バグ修正（環境修正 + close-out 整流） |
+| 優先度 | 高 |
+| 完了日 | 2026-03-29 |
+| GitHub Issue | #1710 |
+| 親タスク | TASK-RT-06 Phase 12 未タスク |
+| 成果物 | `docs/30-workflows/step-ut-rt-06-esbuild-arch-mismatch-001/` |
+
+#### 実施内容
+
+- macOS 環境での esbuild バイナリと Node.js 実行アーキテクチャ（arm64/x64）の不一致を修正
+- `EXPECTED_PLATFORM="darwin-$(node -p process.arch)"` を診断基準に統一し、`arm64` 固定ハードコードを除去
+- `pnpm install --force` による optional dependency 再解決フローを確立
+- 再発防止ガイドを `docs/40-guides/esbuild-arch-mismatch-prevention.md` に作成（Preflight チェックリスト 5 ステップ）
+- Phase 10/11/12 の条件付き PASS / DEFERRED 判定を整流し、blocker の扱いを同一未タスク ID で追跡
+
+#### テスト結果
+
+- 対象: `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.sdk-normalization.test.ts`
+- 結果: 27 tests PASS
+
+#### 再発防止ガイド
+
+`docs/40-guides/esbuild-arch-mismatch-prevention.md` — Preflight チェックリスト（5 ステップ）および診断・復旧手順

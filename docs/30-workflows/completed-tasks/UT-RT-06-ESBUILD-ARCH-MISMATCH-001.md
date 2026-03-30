@@ -9,7 +9,6 @@
 | 起票日     | 2026-03-29                                             |
 | 起票元     | TASK-RT-06 Phase 10 / Phase 11 / Phase 12              |
 | 関連タスク | TASK-RT-06 (claude-sdk-message-contract-normalization) |
-| Issue番号  | #1710                                                  |
 
 ## 1. なぜこのタスクが必要か（Why）
 
