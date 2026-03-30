@@ -15,7 +15,7 @@
 ## 実行タスク
 
 - 既存の kind 一覧（single_select/free_text/secret/confirm）の仕様を確認する
-- multi_select の入力データ構造（selectedValues: string[]）を定義する
+- multi_select の入力データ構造（canonical: `selectedOptionIds: string[]`, backward compatibility: `selectedValues?: string[]`）を定義する
 - バリデーションルール（最小選択数、最大選択数）を定義する
 - UI 表示仕様（チェックボックスリスト、全選択/全解除）を定義する
 - AC-1〜AC-4 への写像を確認する

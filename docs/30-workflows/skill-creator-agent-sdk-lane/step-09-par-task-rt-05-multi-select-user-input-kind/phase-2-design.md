@@ -15,7 +15,7 @@ multi_select の型定義拡張、バリデーションロジック、UI コン�
 ## 実行タスク
 
 - `SkillCreatorUserInputKind` 型への `multi_select` 追加を設計する
-- `SkillCreatorUserInput` に `selectedValues?: string[]` フィールド追加を設計する
+- `SkillCreatorUserInput` に `selectedOptionIds?: string[]` を canonical として追加し、`selectedValues?: string[]` を互換入力として扱う設計にする
 - `validateUserInputSubmission` の multi_select 分岐を設計する
 - チェックボックスリスト UI コンポーネントを設計する
 

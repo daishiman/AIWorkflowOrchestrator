@@ -2640,6 +2640,7 @@ node scripts/list-specs.js --topics
 | TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L805 |
 | TASK-RT-06 教訓（2026-03-29） | L836 |
 | TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L858 |
+| TASK-P0-06 conversational-interview-ui（2026-03-30） | L879 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
