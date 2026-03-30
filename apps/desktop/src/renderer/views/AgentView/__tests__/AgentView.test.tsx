@@ -472,7 +472,10 @@ describe("AgentView", () => {
 
     it("should load remembered count from getAllowedTools on mount and when panel opens", async () => {
       const store = await import("../../../store");
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
+      // パネルは最初閉じた状態で開始する。
+      // マウントeffect（[]deps）と isAdvancedSettingsOpen effect（[isAdvancedSettingsOpen]deps）が
+      // 同時発火すると"1件"→"3件"の遷移がCI環境で捕捉不可能になるため、
+      // false→true のシリアル遷移でeffectを分離する。
       vi.mocked(store.useLLMProviders).mockReturnValue([
         {
           id: "anthropic",
@@ -513,16 +516,20 @@ describe("AgentView", () => {
 
       const { rerender } = render(<AgentView />);
 
-      await screen.findByText("Claude Opus 4", {}, { timeout: 5000 });
+      // マウントeffectがCall 1を完了するまで待つ（パネルは閉じているので UI検証は不可）
       await waitFor(
         () => {
-          expect(screen.getByText("記憶された許可: 1件")).toBeInTheDocument();
+          expect(getAllowedTools).toHaveBeenCalledTimes(1);
         },
         { timeout: 5000 },
       );
 
+      // パネルを開く → isAdvancedSettingsOpen effect が Call 2 を発火
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
       rerender(<AgentView />);
 
+      // パネルが表示され、Call 2 解決後に "3件" になる
+      await screen.findByText("Claude Opus 4", {}, { timeout: 5000 });
       await waitFor(
         () => {
           expect(screen.getByText("記憶された許可: 3件")).toBeInTheDocument();
@@ -585,9 +592,16 @@ describe("AgentView", () => {
 
     it("should reset remembered permissions via clearAll and show success toast", async () => {
       const store = await import("../../../store");
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
+      // false→true遷移でeffectをシリアル化:
+      // Call 1(mount): 2件, Call 2(panel open): 2件, Call 3(after reset): 0件
       const getAllowedTools = vi
         .fn()
+        .mockResolvedValueOnce({
+          tools: [
+            { toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" },
+            { toolName: "read", allowedAt: "2026-03-30T00:00:00Z" },
+          ],
+        })
         .mockResolvedValueOnce({
           tools: [
             { toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" },
@@ -599,7 +613,20 @@ describe("AgentView", () => {
         getAllowedTools,
       });
 
-      render(<AgentView />);
+      const { rerender } = render(<AgentView />);
+
+      // マウントeffect(Call 1)完了を待つ
+      await waitFor(
+        () => {
+          expect(getAllowedTools).toHaveBeenCalledTimes(1);
+        },
+        { timeout: 5000 },
+      );
+
+      // パネルを開く → isAdvancedSettingsOpen effect(Call 2)が発火
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
+      rerender(<AgentView />);
+
       await screen.findByText("記憶された許可: 2件", {}, { timeout: 5000 });
 
       await act(async () => {
