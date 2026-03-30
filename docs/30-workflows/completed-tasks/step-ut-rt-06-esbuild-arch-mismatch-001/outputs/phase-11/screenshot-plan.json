@@ -1,0 +1,12 @@
+{
+  "mode": "NON_VISUAL",
+  "sourceKind": "inventory_only",
+  "reason": "UI変更のない環境修正タスクだが validator 互換のため evidence inventory を保持する",
+  "screenshots": [
+    {
+      "id": "non-visual-proof",
+      "path": "outputs/phase-11/screenshots/non-visual-proof.png",
+      "description": "NON_VISUAL workflow placeholder evidence"
+    }
+  ]
+}

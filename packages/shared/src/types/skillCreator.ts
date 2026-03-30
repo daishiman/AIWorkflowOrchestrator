@@ -564,6 +564,10 @@ export interface RuntimeSkillCreatorExecuteResult {
   permissionDenials?: SkillCreatorSdkPermissionDenial[];
   sdkEvents?: SkillCreatorSdkEvent[];
   sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
+  /** SkillFileWriter.persist() の結果。persist 未実行またはスキップ時は null */
+  persistResult?: { skillPath: string; files: string[] } | null;
+  /** persist 失敗時のエラーメッセージ。成功またはスキップ時は null */
+  persistError?: string | null;
 }
 
 export type RuntimeSkillCreatorVerifyCheckSeverity =
@@ -573,7 +577,7 @@ export type RuntimeSkillCreatorVerifyCheckSeverity =
 
 export interface RuntimeSkillCreatorVerifyCheck {
   id: string;
-  layer: "layer3" | "layer4";
+  layer: "layer1" | "layer2" | "layer3" | "layer4";
   severity: RuntimeSkillCreatorVerifyCheckSeverity;
   summary: string;
   evidenceSummary?: string;

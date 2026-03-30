@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-29T14:59:35.493Z",
-  "totalKeywords": 2542,
+  "generated": "2026-03-30T01:39:55.912Z",
+  "totalKeywords": 2543,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1282,6 +1282,7 @@
     ],
     "execute": [
       "api-ipc-agent-core.md",
+      "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-advanced.md",
@@ -2423,6 +2424,9 @@
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-api-electron.md",
       "security-electron-ipc-core.md"
+    ],
+    "ファイル永続化統合": [
+      "api-ipc-system-core.md"
     ],
     "エンティティ抽出サービス": [
       "api-ipc-system-details.md",

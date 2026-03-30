@@ -1,0 +1,118 @@
+{
+  "feature": "step-09-par-task-p0-03-workflow-manifest-production-placement",
+  "created": "2026-03-29T08:03:33.000Z",
+  "lastUpdated": "2026-03-29T14:45:00.000Z",
+  "status": "completed",
+  "phases": {
+    "1": { "status": "completed", "artifacts": ["phase-1-requirements.md"] },
+    "2": { "status": "completed", "artifacts": ["phase-2-design.md"] },
+    "3": { "status": "completed", "artifacts": ["phase-3-design-review.md"] },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "phase-4-test-creation.md",
+        "outputs/phase-4/test-matrix.md",
+        "outputs/phase-4/test-plan.md",
+        "outputs/phase-4/failure-cases.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "phase-5-implementation.md",
+        ".claude/skills/skill-creator/workflow-manifest.json",
+        ".agents/skills/skill-creator/workflow-manifest.json",
+        "outputs/phase-5/mirror-parity-log.md",
+        "outputs/phase-5/implementation-evidence.md",
+        "outputs/phase-5/resource-validation-result.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "phase-6-test-expansion.md",
+        "outputs/phase-6/edge-case-test-plan.md",
+        "outputs/phase-6/regression-test-plan.md",
+        "outputs/phase-6/fixture-compat-report.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "phase-7-coverage-check.md",
+        "outputs/phase-7/coverage-matrix.md",
+        "outputs/phase-7/ac-coverage.md",
+        "outputs/phase-7/uncovered-risks.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "phase-8-refactoring.md",
+        "outputs/phase-8/refactoring-plan.md",
+        "outputs/phase-8/naming-convention.md",
+        "outputs/phase-8/refactoring-result.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "phase-9-quality-assurance.md",
+        "outputs/phase-9/quality-checklist.md",
+        "outputs/phase-9/cross-reference-log.md",
+        "outputs/phase-9/risk-register.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "phase-10-final-review.md",
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/open-findings.md",
+        "outputs/phase-10/ac-matrix-result.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "phase-12-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": { "status": "blocked", "artifacts": ["phase-13-pr-creation.md"] }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feat",
+    "taskId": "TASK-P0-03",
+    "workflow": "step-09-par-task-p0-03-workflow-manifest-production-placement",
+    "parentWorkflow": "docs/30-workflows",
+    "dependsOnTasks": []
+  }
+}
