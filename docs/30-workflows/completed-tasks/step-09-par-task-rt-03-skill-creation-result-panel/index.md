@@ -2,7 +2,7 @@
 
 ## 概要
 
-SkillLifecyclePanel と SkillCreateWizard は plan/execute 後の詳細結果表示パネルを持たない。`RuntimeSkillCreatorPlanResult` には skillName, description, agents[], scripts[], triggers[], anchors[] が含まれ、`RuntimeSkillCreatorExecuteResult` には success, skillName, error 等が含まれるが、これらのリッチなデータ構造は受信されるのみで表示されていない。本タスクは `PlanResultDetailPanel` と `ExecuteResultDetailPanel` コンポーネントを新規実装し、SkillLifecyclePanel のワークフローフローに統合することで、ユーザーが plan/execute の結果詳細を確認できるようにすることを目的とする。
+SkillLifecyclePanel と SkillCreateWizard は plan/execute 後の詳細結果表示パネルを持たない。`RuntimeSkillCreatorPlanResult` には skillName, description, agents[], scripts[], triggers[], anchors[] が含まれ、`RuntimeSkillCreatorExecuteResult` には success, skillName, error 等が含まれるが、これらのリッチなデータ構造は受信されるのみで表示されていない。本タスクは `PlanResultDetailPanel` と `ExecuteResultDetailPanel` コンポーネントを新規実装し、SkillLifecyclePanel のワークフローフローに統合することで、ユーザーが plan/execute の結果詳細を確認できるようにすることを目的とする。`terminal_handoff` は既存の handoff 導線を維持し、今回の detail panel は integrated_api の結果表示に閉じる。
 
 ## メタ情報
 
@@ -67,19 +67,21 @@ SkillLifecyclePanel と SkillCreateWizard は plan/execute 後の詳細結果表
 | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------- |
 | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`      | ワークフロー状態スナップショット表示。plan/execute 結果の詳細表示なし       | PlanResultDetailPanel / ExecuteResultDetailPanel を統合 |
 | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`        | planSkill() / executePlan() を呼び出すが結果詳細のレンダリングなし          | 結果パネルへのデータ橋渡し                              |
+| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`     | plan/execute の raw response を生成                                         | 結果詳細の source of truth                              |
+| `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts`    | workflow phase / artifact 管理                                              | currentPhase と phaseArtifacts の source of truth       |
 | `apps/desktop/src/renderer/components/skill/ImprovementProposalPanel.tsx` | 改善提案パネル。UI スタイルの参考                                           | デザインパターンの参考として利用                        |
 | `packages/shared/src/types/skillCreator.ts`                               | `RuntimeSkillCreatorPlanResult` / `RuntimeSkillCreatorExecuteResult` 型定義 | コンポーネントの props 型として参照                     |
 | `apps/desktop/src/renderer/stores/`                                       | state management stores                                                     | ワークフロー state の取得元                             |
 
 ## 要件レビュー一次結論
 
-| 観点                 | 結論                                                                                                                                      |
-| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| 真の論点             | plan/execute のリッチな結果データが受信されているが表示されておらず、ユーザーが作成内容を確認できない問題を UI コンポーネントで閉じること |
-| 依存関係・責務境界   | error types は TASK-RT-02 に依存。表示ロジックのみ本タスクの責務。plan/execute ロジックは変更しない                                       |
-| 価値とコストの不均衡 | 既存型データの表示のみで、新規 API 不要。Tailwind CSS + 既存パターン踏襲で低コスト                                                        |
-| 改善優先順位         | 1. PlanResultDetailPanel 2. ExecuteResultDetailPanel 3. エラー状態表示 4. SkillLifecyclePanel 統合 5. state 連動                          |
-| 4条件評価            | 価値性: P1（UX 向上）/ 実現性: 高（既存データの表示）/ 整合性: 既存型を参照 / 運用性: 独立テスト可能                                      |
+| 観点                 | 結論                                                                                                                                                               |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 真の論点             | plan/execute のリッチな結果データが受信されているが表示されておらず、ユーザーが作成内容を確認できない問題を UI コンポーネントで閉じること                          |
+| 依存関係・責務境界   | error types は TASK-RT-02 に依存。表示ロジックのみ本タスクの責務。raw result の保持は SkillLifecyclePanel の local state に閉じ、plan/execute ロジックは変更しない |
+| 価値とコストの不均衡 | 既存の raw response を UI で再利用するだけなので、新規 API は不要。共通 UI パーツを抽出すれば detail surface を増やしても複雑性は上がりにくい                      |
+| 改善優先順位         | 1. PlanResultDetailPanel 2. ExecuteResultDetailPanel 3. raw result 保持 4. エラー状態表示 5. SkillLifecyclePanel 統合 6. state 連動                                |
+| 4条件評価            | 価値性: P1（UX 向上）/ 実現性: 高（既存 raw response の再利用）/ 整合性: 既存型を参照 / 運用性: 独立テスト可能                                                     |
 
 ## ディレクトリ構成
 
@@ -117,7 +119,8 @@ step-09-par-task-rt-03-skill-creation-result-panel/
     │   ├── system-spec-update-summary.md
     │   ├── documentation-changelog.md
     │   ├── unassigned-task-detection.md
-    │   └── skill-feedback-report.md
+    │   ├── skill-feedback-report.md
+    │   └── phase12-task-spec-compliance-check.md
     └── phase-13/
         ├── local-check-result.md
         └── change-summary.md
@@ -129,6 +132,7 @@ step-09-par-task-rt-03-skill-creation-result-panel/
 
 - `packages/shared/src/types/skillCreator.ts` の `RuntimeSkillCreatorPlanResult` / `RuntimeSkillCreatorExecuteResult` 型を読了している
 - `SkillLifecyclePanel.tsx` の現行ワークフロー表示ロジックを読了している
+- `RuntimeSkillCreatorFacade.ts` と `SkillCreatorWorkflowEngine.ts` の raw response / phaseArtifacts 経路を読了している
 - `ImprovementProposalPanel.tsx` の UI パターンを参考として確認している
 - TASK-RT-02 の error types が利用可能であることに合意している
 
@@ -155,6 +159,7 @@ step-09-par-task-rt-03-skill-creation-result-panel/
 - plan/execute 失敗時にエラー状態パネルが表示される
 - SkillLifecyclePanel のワークフローフロー内で適切なタイミングでパネルが切り替わる
 - ワークフロー state の変更に応じてパネルがリアクティブに更新される
+- raw result は SkillLifecyclePanel の local state に保持され、不要になったら clear される
 
 ### 並列実行メモ
 

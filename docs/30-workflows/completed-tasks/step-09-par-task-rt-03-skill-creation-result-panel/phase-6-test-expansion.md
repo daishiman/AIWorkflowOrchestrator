@@ -37,6 +37,8 @@
 - skillSpec が undefined — 折りたたみセクションが表示されない
 - error が undefined — ErrorBanner が表示されない
 - planResult と error が同時に null — 何も表示されない
+- terminal_handoff の plan/execute response — detail panel は出さず既存 handoff 導線を維持
+- permissionDenials が undefined — metadata 行が空欄にならない
 
 ### ステップ2: 長大データ edge case を追加する
 
@@ -46,6 +48,8 @@
 - skillSpec が 10000 文字 — 折りたたみ展開時のパフォーマンス
 - error メッセージが 500 文字 — ErrorBanner のレイアウト維持
 - triggers が 30 エントリ — タグの折り返し表示
+- sdkEvents が 100 件 — 要約件数と折りたたみ表示の負荷を確認
+- permissionDenials が 20 件 — metadata 折りたたみの表示崩れを確認
 
 ### ステップ3: 特殊文字 edge case を追加する
 
@@ -54,6 +58,7 @@
 - agents[].role に改行を含む — レイアウト維持
 - error メッセージにスタックトレースを含む — 折り返し表示
 - anchors に URL を含む — テキストとして表示（リンク化しない）
+- sourceProvenance に長い path / hash を含む — provenance ブロックが崩れない
 
 ### ステップ4: 状態遷移 edge case を追加する
 
@@ -62,6 +67,7 @@
 - currentPhase が "review" → "execute" → "verify" と連続遷移 — パネルが正しく切り替わる
 - error が設定された後に planResult が設定される — error が解除されて結果が表示される
 - onRetry 実行中の loading 状態 — 再試行ボタンが disabled になる
+- panel close 後の再 open — raw detail state が clear される
 
 ## 統合テスト連携
 

@@ -10,15 +10,16 @@
 
 ## 目的
 
-plan/execute 結果表示パネルの表示対象データ、コンポーネント分割、エラー状態連携、SkillLifecyclePanel 統合方式を要件として固定する。
+plan/execute 結果表示パネルの表示対象データ、コンポーネント分割、エラー状態連携、SkillLifecyclePanel 統合方式を要件として固定する。`terminal_handoff` は既存導線を維持し、detail panel は integrated_api の結果表示に閉じる。
 
 ## 実行タスク
 
 - `RuntimeSkillCreatorPlanResult` から表示対象フィールドを抽出する
 - `RuntimeSkillCreatorExecuteResult` から表示対象フィールドを抽出する
 - エラー状態表示の要件を定義する（TASK-RT-02 連携）
+- raw plan / execute result の保持先を定義する（SkillLifecyclePanel の local state）
 - SkillLifecyclePanel への統合ポイントを特定する
-- AC-1〜AC-6 への写像を確認する
+- AC-1〜AC-8 への写像を確認する
 
 ## 参照資料
 
@@ -36,6 +37,8 @@ plan/execute 結果表示パネルの表示対象データ、コンポーネン�
 | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | `packages/shared/src/types/skillCreator.ts`                               | `RuntimeSkillCreatorPlanResult` に agents[], scripts[], triggers[], anchors[] を含む |
 | `packages/shared/src/types/skillCreator.ts`                               | `RuntimeSkillCreatorExecuteResult` に executeId, skillName, success, error? を含む   |
+| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`     | plan / execute の raw response を生成している                                        |
+| `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts`    | workflow phase と artifact を管理している                                            |
 | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`      | line 1171-1174 で skillName のみカード表示。詳細表示なし                             |
 | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`        | planSkill() / executePlan() 呼び出し後に結果詳細をレンダリングしていない             |
 | `apps/desktop/src/renderer/components/skill/ImprovementProposalPanel.tsx` | パネル UI パターンの参考（Tailwind CSS class、レイアウト構造）                       |
@@ -62,12 +65,18 @@ plan/execute 結果表示パネルの表示対象データ、コンポーネン�
 
 `RuntimeSkillCreatorExecuteResult` から以下のフィールドを表示対象として定義する:
 
-| フィールド | 型        | 表示方式                           | 必須/任意 |
-| ---------- | --------- | ---------------------------------- | --------- |
-| skillName  | `string`  | ヘッダーに表示                     | 必須      |
-| success    | `boolean` | 成功/失敗バッジ（緑/赤）           | 必須      |
-| error      | `string?` | エラーメッセージ（失敗時のみ表示） | 条件付き  |
-| executeId  | `string`  | フッターに小さく表示               | 任意      |
+| フィールド        | 型                                                                   | 表示方式                           | 必須/任意 |
+| ----------------- | -------------------------------------------------------------------- | ---------------------------------- | --------- |
+| skillName         | `string`                                                             | ヘッダーに表示                     | 必須      |
+| success           | `boolean`                                                            | 成功/失敗バッジ（緑/赤）           | 必須      |
+| error             | `string?`                                                            | エラーメッセージ（失敗時のみ表示） | 条件付き  |
+| executeId         | `string`                                                             | フッターに小さく表示               | 任意      |
+| sessionId         | `string?`                                                            | メタデータ行に表示                 | 任意      |
+| resultSubtype     | `string?`                                                            | メタデータ行に表示                 | 任意      |
+| stopReason        | `string?`                                                            | メタデータ行に表示                 | 任意      |
+| permissionDenials | `Array<{ toolName?: string; toolUseId?: string; reason: string }>`   | 折りたたみ一覧に表示               | 任意      |
+| sdkEvents         | `Array<import("@repo/shared/types").SkillCreatorSdkEvent>`           | 件数 + 折りたたみ表示              | 任意      |
+| sourceProvenance  | `import("@repo/shared/types").SkillCreatorWorkflowSourceProvenance?` | provenance セクションに表示        | 任意      |
 
 ### ステップ3: エラー状態表示の要件を定義する
 
@@ -75,6 +84,7 @@ plan/execute 結果表示パネルの表示対象データ、コンポーネン�
 - execute 失敗時: `success: false` かつ `error` フィールドが存在する場合にエラー詳細を表示
 - TASK-RT-02 の error types（stub response error notification）との連携方式を定義
 - エラー状態では「再試行」ボタンの表示を検討
+- `terminal_handoff` は既存 handoff card を使い、detail panel では扱わない
 
 ### ステップ4: SkillLifecyclePanel 統合ポイントを特定する
 
@@ -82,6 +92,7 @@ plan/execute 結果表示パネルの表示対象データ、コンポーネン�
 - execute 完了後（verify phase 前）: ExecuteResultDetailPanel を表示
 - ワークフロー state (`currentPhase`) に応じてパネルを切り替える
 - `awaitingUserInput` 状態との連携（plan_review 時に PlanResultDetailPanel を表示）
+- raw plan / execute result は SkillLifecyclePanel の local state で保持し、workflowSnapshot とは分離する
 
 ## 統合テスト連携
 
@@ -102,5 +113,5 @@ plan/execute 結果表示パネルの表示対象データ、コンポーネン�
 - [ ] ExecuteResult の表示対象フィールドが列挙されている
 - [ ] エラー状態表示の要件が TASK-RT-02 連携として定義されている
 - [ ] SkillLifecyclePanel 統合ポイントが特定されている
-- [ ] AC-1〜AC-6 への写像が確認されている
+- [ ] AC-1〜AC-8 への写像が確認されている
 - [ ] **本Phase内の全タスクを100%実行完了**

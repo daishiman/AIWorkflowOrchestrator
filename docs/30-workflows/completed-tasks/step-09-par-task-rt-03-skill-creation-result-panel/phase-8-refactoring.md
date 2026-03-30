@@ -10,7 +10,7 @@
 
 ## 目的
 
-共通 UI ユーティリティの抽出、コンポーネント間の共通パターン統一、Tailwind CSS class の整理を行う。
+共通 UI ユーティリティの抽出、execute 専用メタデータは抽象化しすぎず inline に残す方針の明確化、コンポーネント間の共通パターン統一、Tailwind CSS class の整理を行う。
 
 ## 実行タスク
 
@@ -69,16 +69,19 @@ PlanResultDetailPanel と ExecuteResultDetailPanel に共通するパターン:
 
 上記を `result-panel-parts.tsx` として同ディレクトリに配置する候補とする。
 
+execute 専用の `sessionId`, `resultSubtype`, `stopReason`, `permissionDenials`, `sdkEvents`, `sourceProvenance` は抽象化しすぎず、`ExecuteResultDetailPanel` 内で読み順を保ったまま inline 表示する。共通化しないことで抽象レイヤーを増やさない。
+
 ### ステップ2: コンポーネント間の共通パターンを統一する
 
 - カードコンテナの class 文字列を定数化する
   ```typescript
   const PANEL_CARD_CLASSES =
-    "rounded-lg border bg-white dark:bg-gray-800 p-4 shadow-sm";
+    "rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5";
   ```
 - loading 状態のスケルトンパターンを統一する
 - null 状態の early return パターンを統一する
 - error 状態の ErrorBanner 表示パターンを統一する
+- `ErrorBanner` は `PanelError` をそのまま受け取り、余計な変換を行わない
 
 ### ステップ3: Tailwind CSS class を整理する
 
@@ -86,6 +89,7 @@ PlanResultDetailPanel と ExecuteResultDetailPanel に共通するパターン:
 - ダークモード対応（`dark:` prefix）の一貫性を確認する
 - レスポンシブ対応（`sm:`, `md:` prefix）の必要性を評価する
 - ImprovementProposalPanel との class パターン乖離がないことを確認する
+- terminal_handoff の既存導線は本リファクタリングの対象外として保持する
 
 ## 統合テスト連携
 

@@ -10,11 +10,13 @@ import type {
   ApplyImprovementResult,
   HandoffGuidance,
   RuntimeSkillCreatorExecuteResponse,
+  RuntimeSkillCreatorExecuteResult,
   RuntimeSkillCreatorImproveErrorResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanErrorResponse,
   RuntimeSkillCreatorPlanResponse,
+  RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
   SkillCreatorUserInputSubmission,
@@ -60,7 +62,9 @@ import {
   useWorkflowSnapshot,
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
+import { ExecuteResultDetailPanel } from "./ExecuteResultDetailPanel";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
+import { PlanResultDetailPanel } from "./PlanResultDetailPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
 
@@ -412,6 +416,12 @@ export function SkillLifecyclePanel({
     modelName: string;
     externalDestinations: string[];
   } | null>(null);
+  // TASK-RT-03: raw plan/execute detail を local state に保持
+  const [rawPlanDetail, setRawPlanDetail] =
+    useState<RuntimeSkillCreatorPlanResult | null>(null);
+  const [rawExecuteDetail, setRawExecuteDetail] =
+    useState<RuntimeSkillCreatorExecuteResult | null>(null);
+
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [textAnswer, setTextAnswer] = useState("");
@@ -433,6 +443,8 @@ export function SkillLifecyclePanel({
     setLocalPlanResult(null);
     setCurrentPlanResult(null);
     setCurrentPlanId(null);
+    setRawPlanDetail(null);
+    setRawExecuteDetail(null);
   }, [setCurrentPlanId, setCurrentPlanResult]);
 
   useEffect(() => {
@@ -806,6 +818,13 @@ export function SkillLifecyclePanel({
             return;
           }
 
+          // TASK-RT-03: raw plan detail を local state に保存
+          // この時点で terminal_handoff と error response は上流のガードで除外済み
+          // normalizedPlan が取得できている = planResult.data は RuntimeSkillCreatorPlanResult
+          if ("planId" in planResult.data) {
+            setRawPlanDetail(planResult.data as RuntimeSkillCreatorPlanResult);
+          }
+
           setApprovedSkillSpec(trimmedRequest);
           setLocalPlanResult(normalizedPlan);
           setCurrentPlanResult(normalizedPlan);
@@ -875,6 +894,10 @@ export function SkillLifecyclePanel({
         await loadVerifyDetail(planId);
         return;
       }
+      // TASK-RT-03: raw execute detail を local state に保存
+      // terminal_handoff は上流ガードで除外済み → executeResponse は RuntimeSkillCreatorExecuteResult
+      setRawExecuteDetail(executeResponse);
+
       if (!executeResponse.success) {
         await loadVerifyDetail(planId);
         setGenerationError(executeResponse.error ?? "計画実行に失敗しました");
@@ -904,6 +927,8 @@ export function SkillLifecyclePanel({
     setVerifyDetail(null);
     setVerifyDetailError(null);
     setDisclosureInfo(null);
+    setRawPlanDetail(null);
+    setRawExecuteDetail(null);
   };
 
   const handleCreate = async () => {
@@ -1471,6 +1496,19 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
+      {/* TASK-RT-03: Plan 結果詳細パネル — review phase で raw plan detail が存在する場合 */}
+      {rawPlanDetail &&
+      (!workflowSnapshot ||
+        workflowSnapshot.currentPhase === "review" ||
+        workflowSnapshot.awaitingUserInput?.reason === "plan_review") ? (
+        <PlanResultDetailPanel
+          planResult={rawPlanDetail}
+          onRetry={() => {
+            void handlePrepare();
+          }}
+        />
+      ) : null}
+
       {activePlanResult?.type === "terminal_handoff" &&
       activePlanResult.guidance ? (
         <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
@@ -1486,6 +1524,16 @@ export function SkillLifecyclePanel({
             </code>
           ) : null}
         </div>
+      ) : null}
+
+      {/* TASK-RT-03: Execute 結果詳細パネル — verify phase で raw execute detail が存在する場合 */}
+      {rawExecuteDetail && workflowSnapshot?.currentPhase === "verify" ? (
+        <ExecuteResultDetailPanel
+          executeResult={rawExecuteDetail}
+          onRetry={() => {
+            void handleExecutePlan();
+          }}
+        />
       ) : null}
 
       {activeWorkflowId ? (
