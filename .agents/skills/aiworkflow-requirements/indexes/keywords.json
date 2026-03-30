@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-29T14:53:41.674Z",
-  "totalKeywords": 2538,
+  "generated": "2026-03-30T01:39:55.912Z",
+  "totalKeywords": 2543,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1282,6 +1282,7 @@
     ],
     "execute": [
       "api-ipc-agent-core.md",
+      "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-advanced.md",
@@ -2424,6 +2425,9 @@
       "security-api-electron.md",
       "security-electron-ipc-core.md"
     ],
+    "ファイル永続化統合": [
+      "api-ipc-system-core.md"
+    ],
     "エンティティ抽出サービス": [
       "api-ipc-system-details.md",
       "interfaces-rag-entity-extraction.md",
@@ -2745,6 +2749,7 @@
     "shared": [
       "arch-execution-capability-contract.md",
       "directory-structure-core.md",
+      "lessons-learned-test-typesafety.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "workflow-light-theme-global-remediation.md"
     ],
@@ -3207,6 +3212,7 @@
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management.md",
       "interfaces-llm.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-test-typesafety.md",
@@ -4179,8 +4185,10 @@
       "claude-code-agents-workflow.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
@@ -6331,7 +6339,6 @@
     ],
     "MISMATCH": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "SkillImportDialog": [
@@ -6515,6 +6522,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-test-typesafety.md",
       "ui-ux-feature-components-core.md",
       "workflow-task-rt-06-artifact-inventory.md"
     ],
@@ -6685,6 +6693,18 @@
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
+    "MOD": [
+      "lessons-learned-current.md",
+      "lessons-learned-test-typesafety.md"
+    ],
+    "close": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "out": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6845,18 +6865,6 @@
     "HARNESS": [
       "lessons-learned-phase12-workflow-lifecycle.md",
       "ui-ux-panels.md"
-    ],
-    "close": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "out": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "ESBUILD": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "ARCH": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
@@ -7187,7 +7195,22 @@
     "品質": [
       "lessons-learned-test-typesafety.md"
     ],
-    "MOD": [
+    "CONS": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "sdkMessageUtils": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "helper": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "抽出": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "個別カバレッジ計測": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "個別ファイルカバレッジ計測": [
       "lessons-learned-test-typesafety.md"
     ],
     "provider": [

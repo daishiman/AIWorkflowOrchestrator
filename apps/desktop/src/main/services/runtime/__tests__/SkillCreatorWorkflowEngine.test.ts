@@ -84,6 +84,52 @@ describe("SkillCreatorWorkflowEngine", () => {
       "execute_result",
       "verify_result",
     ]);
+    const executeArtifact = snapshot.phaseArtifacts.find(
+      (artifact) => artifact.kind === "execute_result",
+    );
+    expect(executeArtifact?.payload).toMatchObject({
+      executeId: "exec-001",
+      skillName: "test-skill",
+      success: true,
+    });
+  });
+
+  it("execute artifact に persistResult / persistError を保持する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    const planResult = createPlanResult();
+
+    engine.recordPlanResult(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    engine.recordExecuteStart(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+
+    const snapshot = engine.recordExecuteResult("plan-001", {
+      executeId: "exec-001",
+      skillName: "test-skill",
+      success: true,
+      persistResult: {
+        skillPath: "/tmp/test-skill",
+        files: ["SKILL.md"],
+      },
+      persistError: null,
+    });
+
+    const executeArtifact = snapshot.phaseArtifacts.find(
+      (artifact) => artifact.kind === "execute_result",
+    );
+    expect(executeArtifact?.payload).toMatchObject({
+      persistResult: {
+        skillPath: "/tmp/test-skill",
+        files: ["SKILL.md"],
+      },
+      persistError: null,
+    });
   });
 
   it("execute failure を verification_review 付きの review snapshot として保持する", () => {

@@ -5,6 +5,33 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-05 execute-skill-file-writer-integration（2026-03-30）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-05 |
+| ステータス | **完了** |
+| タイプ | implementation / runtime persist integration |
+| 優先度 | 高 |
+| 完了日 | 2026-03-30 |
+| 対象 | `RuntimeSkillCreatorFacade.execute()` の LLM 応答解析 → `SkillFileWriter.persist()` 連携 |
+| 成果物 | `docs/30-workflows/step-09-par-task-p0-05-execute-skill-file-writer-integration/` |
+
+#### 実施内容
+
+- `parseLlmResponseToContent()` を追加し、`assistant` / `result` イベントから `SkillGeneratedContent` を抽出
+- `agents/*.md` / `references/*.md` 見出しの `.md` を正規化し、Writer 側で `*.md.md` にならないよう是正
+- `RuntimeSkillCreatorFacade.execute()` で `SkillFileWriter.persist()` を呼び、`persistResult` / `persistError` を IPC 戻り値へ追加
+- `SkillCreatorWorkflowEngine` の `execute_result` artifact に `persistResult` / `persistError` を保持し、履歴・resume 系 snapshot へ反映
+- Phase 11 evidence (`manual-test-result.md`, `discovered-issues.md`) と Phase 12 compliance root を補完し、same-wave sync 未完了分は `UT-P0-05-PHASE12-SAME-WAVE-SYNC-001` として formalize
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/parseLlmResponseToContent.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.persist-integration.test.ts src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts`
+- 50 tests PASS（parser 16 / facade persist 13 / workflow engine 23 ではなく、current targeted suite 合計 50 として記録）
+
+---
+
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
 | 項目       | 値                                                                        |
