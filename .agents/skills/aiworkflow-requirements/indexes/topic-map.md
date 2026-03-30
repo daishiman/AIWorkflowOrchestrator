@@ -905,9 +905,10 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L242 |
 | Electron IPC API設計 | L278 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L420 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L669 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L700 |
-| AIプロバイダーAPI連携 | L731 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L653 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L684 |
+| AIプロバイダーAPI連携 | L715 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L748 |
 
 ### references/api-ipc-system-details.md
 
@@ -2627,18 +2628,18 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L61 |
-| クイックリファレンス: カテゴリ別検索ガイド | L76 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L249 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L581 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L615 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L698 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L714 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L738 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L779 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L804 |
-| TASK-RT-06 教訓（2026-03-29） | L835 |
-| TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L857 |
+| 分割ファイル一覧 | L62 |
+| クイックリファレンス: カテゴリ別検索ガイド | L77 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L250 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L582 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L616 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L699 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L715 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L739 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L780 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L805 |
+| TASK-RT-06 教訓（2026-03-29） | L836 |
+| TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L858 |
 | TASK-P0-06 conversational-interview-ui（2026-03-30） | L879 |
 
 ### references/lessons-learned-ipc-preload-runtime.md

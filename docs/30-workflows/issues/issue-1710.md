@@ -10,11 +10,11 @@ category: 改善
 target_feature: esbuild / vitest / Node.js arm64 環境
 priority: 高
 scale: 小規模
-status: 未実施
+status: resolved
 source_phase: TASK-RT-06 Phase 10 / Phase 11 / Phase 12
 created_date: 2026-03-29
 dependencies: []
-spec_path: docs/30-workflows/unassigned-task/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md
+spec_path: docs/30-workflows/completed-tasks/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md
 parent_workflow: docs/30-workflows/completed-tasks/step-08-par-task-rt-06-claude-sdk-message-contract-normalization/index.md
 ```
 
@@ -26,7 +26,7 @@ parent_workflow: docs/30-workflows/completed-tasks/step-08-par-task-rt-06-claude
 | 対象機能     | esbuild / vitest / Node.js arm64 環境                |
 | 優先度       | 高                                                   |
 | 見積もり規模 | 小規模                                               |
-| ステータス   | 未実施                                               |
+| ステータス   | resolved                                             |
 | 発見元       | TASK-RT-06 Phase 10 / Phase 11 / Phase 12            |
 | 発見日       | 2026-03-29                                           |
 
@@ -162,6 +162,6 @@ pnpm --filter @repo/desktop test:run -- src/main/services/runtime/__tests__/Runt
 
 ## 8. 参照情報
 
-- spec: `docs/30-workflows/unassigned-task/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md`
+- spec: `docs/30-workflows/completed-tasks/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md`
 - detection: `docs/30-workflows/completed-tasks/step-08-par-task-rt-06-claude-sdk-message-contract-normalization/outputs/phase-12/unassigned-task-detection.md`
 - 対象テスト: `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.sdk-normalization.test.ts`
