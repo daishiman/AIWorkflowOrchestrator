@@ -1,0 +1,95 @@
+{
+  "taskId": "UT-RT-06-ESBUILD-ARCH-MISMATCH-001",
+  "taskName": "esbuild-darwin-arch-mismatch-fix",
+  "featureName": "esbuild-arch-mismatch-fix",
+  "classification": "environment-fix",
+  "uiTask": false,
+  "createdDate": "2026-03-30",
+  "completedDate": "2026-03-30",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-summary.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/design-document.md",
+        "outputs/phase-2/risk-assessment.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/verification-commands.md"]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/execution-result.md",
+        "outputs/phase-5/prevention-procedure.md"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/edge-case-verification.md"]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-result.md"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": ["outputs/phase-13/pr-checklist.md"]
+    }
+  }
+}
