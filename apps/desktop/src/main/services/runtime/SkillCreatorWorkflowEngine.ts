@@ -286,6 +286,81 @@ export class SkillCreatorWorkflowEngine {
     return this.snapshot(state);
   }
 
+  /**
+   * verify 成功時の状態遷移を記録する。
+   * verifyResult.status を "pass" に設定し、nextAction を "handoff" に設定する。
+   * currentPhase は "verify" のまま維持（handoff への遷移は別のステップ）。
+   *
+   * TASK-P0-02: verify→improve→re-verify 閉ループ
+   */
+  recordVerifyPass(
+    planId: string,
+    checks: RuntimeSkillCreatorVerifyCheck[],
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.getRequiredWorkflow(planId);
+    const updatedAt = nowIso();
+    state.verifyResult = {
+      ...state.verifyResult,
+      status: "pass",
+      nextAction: "handoff",
+      updatedAt,
+    };
+    this.appendArtifact(state, "verify", "verify_result", {
+      ...state.verifyResult,
+      checks,
+    });
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
+  }
+
+  /**
+   * improve 試行の開始を記録し、試行カウントをインクリメントする。
+   * phase を "improve" に遷移させる。
+   *
+   * TASK-P0-02: verify→improve→re-verify 閉ループ
+   */
+  recordImproveAttempt(
+    planId: string,
+    failedChecks: RuntimeSkillCreatorVerifyCheck[],
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.getRequiredWorkflow(planId);
+    // 閉ループ: verify→improve は通常遷移、improve→improve は自己遷移（re-verify 後の再試行）
+    if (state.currentPhase !== "improve") {
+      this.assertTransition(state.currentPhase, "improve");
+    }
+
+    const currentCount = state.verifyResult?.improveAttemptCount ?? 0;
+    const updatedAt = nowIso();
+    state.verifyResult = {
+      ...state.verifyResult,
+      status: "fail",
+      improveAttemptCount: currentCount + 1,
+      failedChecksSummary: failedChecks
+        .filter((c) => c.severity !== "info")
+        .map((c) => `${c.id}: ${c.summary}`)
+        .join("; "),
+      updatedAt,
+    };
+    state.currentPhase = "improve";
+    this.appendArtifact(state, "verify", "verify_result", {
+      ...state.verifyResult,
+      failedChecks,
+    });
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
+  }
+
+  /**
+   * 現在の improve 試行回数を取得する。
+   *
+   * TASK-P0-02: verify→improve→re-verify 閉ループ
+   */
+  getImproveAttemptCount(planId: string): number {
+    const state = this.workflows.get(planId);
+    if (!state) return 0;
+    return state.verifyResult?.improveAttemptCount ?? 0;
+  }
+
   getWorkflowState(
     planId: string,
   ): SkillCreatorWorkflowStateSnapshot | undefined {

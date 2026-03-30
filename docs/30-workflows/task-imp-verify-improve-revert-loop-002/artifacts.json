@@ -1,0 +1,150 @@
+{
+  "feature": "task-imp-verify-improve-revert-loop-002",
+  "created": "2026-03-30",
+  "lastUpdated": "2026-03-30T05:09:50.579Z",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-30T05:09:41.599Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/phase-1-requirements.md",
+          "description": "要件定義書"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-30T05:09:49.238Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/phase-2-design.md",
+          "description": "状態遷移・型定義・メソッドシグネチャの設計書"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-30T05:09:50.576Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/phase-3-design-review.md",
+          "description": "設計レビュー結果（PASS / MINOR 2件）"
+        }
+      ]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-4-test-creation.md",
+          "description": "TDD Red phase テスト設計（21件の .skip テスト）"
+        }
+      ],
+      "dependencies": ["3"]
+    },
+    "5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-5-implementation.md",
+          "description": "TDD Green phase 実装仕様（型追加・メソッド実装・パイプライン）"
+        }
+      ],
+      "dependencies": ["4"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-6-test-expansion.md",
+          "description": "エッジケース・リグレッションテスト（18件追加）"
+        }
+      ],
+      "dependencies": ["5"]
+    },
+    "7": {
+      "name": "テストカバレッジ確認",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-7-coverage-check.md",
+          "description": "カバレッジ測定・品質ゲート確認（Line 80%+, Branch 60%+, Function 80%+）"
+        }
+      ],
+      "dependencies": ["6"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-8-refactoring.md",
+          "description": "コード品質向上（処理分割・命名・JSDoc整備）"
+        }
+      ],
+      "dependencies": ["7"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-9-quality-assurance.md",
+          "description": "全品質ゲート通過確認（typecheck / test / lint / build）"
+        }
+      ],
+      "dependencies": ["8"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-10-final-review.md",
+          "description": "受入基準最終確認・設計乖離チェック・セキュリティ確認"
+        }
+      ],
+      "dependencies": ["9"]
+    },
+    "11": {
+      "name": "手動テスト検証",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-11-manual-test.md",
+          "description": "閉ループの動作確認（5シナリオ + リグレッション確認）"
+        }
+      ],
+      "dependencies": ["10"]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-12-documentation.md",
+          "description": "5つの必須成果物（実装ガイド・仕様更新・変更ログ・未タスク検出・フィードバック）"
+        }
+      ],
+      "dependencies": ["11"]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "path": "phase-13-pr-creation.md",
+          "description": "コミット・PR作成・CI確認"
+        }
+      ],
+      "dependencies": ["12"]
+    }
+  }
+}
