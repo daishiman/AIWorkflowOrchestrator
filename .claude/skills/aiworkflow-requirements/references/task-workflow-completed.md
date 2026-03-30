@@ -5,6 +5,33 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-02 |
+| ステータス | **完了** |
+| タイプ | implementation / runtime orchestration |
+| 優先度 | 高 |
+| 完了日 | 2026-03-30 |
+| 対象 | `SkillCreatorWorkflowEngine` / `RuntimeSkillCreatorFacade` の閉ループ改善 |
+| 成果物 | `docs/30-workflows/task-imp-verify-improve-revert-loop-002/` |
+
+#### 実施内容
+
+- `recordVerifyPass()` / `recordImproveAttempt()` / `getImproveAttemptCount()` を `SkillCreatorWorkflowEngine` に追加
+- `verifyAndImproveLoop()` に `maxImproveRetry` と feedback memory を追加
+- `failedChecks` のみを改善入力に使い、直前の改善要約を次回 feedback に合成
+- Phase 12 の未タスク検出を current 0件へ更新し、UT-P0-02-001 を今回フェーズへ吸収
+- `packages/shared/src/types/skillCreator.ts` と `packages/shared/src/types/index.ts` を同期
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/formatVerifyChecksAsFeedback.test.ts`
+- 70 tests PASS
+- `pnpm --filter @repo/desktop typecheck` PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/task-imp-verify-improve-revert-loop-002 --json` PASS
+
 ### タスク: TASK-P0-05 execute-skill-file-writer-integration（2026-03-30）
 
 | 項目       | 値                                                                                       |
