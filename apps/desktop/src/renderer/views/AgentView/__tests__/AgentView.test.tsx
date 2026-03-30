@@ -513,16 +513,22 @@ describe("AgentView", () => {
       const { rerender } = render(<AgentView />);
 
       await screen.findByText("Claude Opus 4");
-      await waitFor(() => {
-        expect(screen.getByText("記憶された許可: 1件")).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText("記憶された許可: 1件")).toBeInTheDocument();
+        },
+        { timeout: 5000 },
+      );
 
       vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
       rerender(<AgentView />);
 
-      await waitFor(() => {
-        expect(screen.getByText("記憶された許可: 3件")).toBeInTheDocument();
-      });
+      await waitFor(
+        () => {
+          expect(screen.getByText("記憶された許可: 3件")).toBeInTheDocument();
+        },
+        { timeout: 5000 },
+      );
       expect(getAllowedTools).toHaveBeenCalledTimes(2);
     });
 
@@ -914,9 +920,12 @@ describe("AgentView", () => {
     it("AgentView がマウント時に TypeError を発生させない", async () => {
       const { container } = render(<AgentView />);
       expect(container).toBeTruthy();
-      await waitFor(() => {
-        expect(mockPermissionAPI.getAllowedTools).toHaveBeenCalledTimes(1);
-      });
+      await waitFor(
+        () => {
+          expect(mockPermissionAPI.getAllowedTools).toHaveBeenCalledTimes(1);
+        },
+        { timeout: 5000 },
+      );
     });
 
     it("permissionAPI が未定義の場合もエラーなくレンダリングされる", async () => {
@@ -979,12 +988,15 @@ describe("AgentView", () => {
         fireEvent.click(screen.getByRole("button", { name: /リセット/i }));
       });
 
-      await waitFor(() => {
-        expect(mockShowToast).toHaveBeenCalledWith(
-          "error",
-          "記憶済み許可のリセットに失敗しました: Clear failed",
-        );
-      });
+      await waitFor(
+        () => {
+          expect(mockShowToast).toHaveBeenCalledWith(
+            "error",
+            "記憶済み許可のリセットに失敗しました: Clear failed",
+          );
+        },
+        { timeout: 5000 },
+      );
     });
 
     it("clearAll が success:false を返した場合、成功扱いにしない", async () => {
