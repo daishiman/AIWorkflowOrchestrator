@@ -4,129 +4,19 @@
   "lastUpdated": "2026-03-29T09:00:00.000Z",
   "status": "in_progress",
   "phases": {
-    "1": {
-      "status": "pending",
-      "artifacts": [
-        "phase-1-requirements.md",
-        "outputs/phase-1/current-facts-matrix.md",
-        "outputs/phase-1/requirements-definition.md",
-        "outputs/phase-1/acceptance-criteria.md"
-      ]
-    },
-    "2": {
-      "status": "pending",
-      "artifacts": [
-        "phase-2-design.md",
-        "outputs/phase-2/architecture-design.md",
-        "outputs/phase-2/authkey-ui-state-matrix.md",
-        "outputs/phase-2/subagent-lane-plan.md"
-      ]
-    },
-    "3": {
-      "status": "pending",
-      "artifacts": [
-        "phase-3-design-review.md",
-        "outputs/phase-3/design-review-result.md",
-        "outputs/phase-3/consistency-review.md",
-        "outputs/phase-3/gate-decision.md"
-      ]
-    },
-    "4": {
-      "status": "pending",
-      "artifacts": [
-        "phase-4-test-creation.md",
-        "outputs/phase-4/test-design.md",
-        "outputs/phase-4/ui-test-cases.md",
-        "outputs/phase-4/ipc-contract-cases.md"
-      ]
-    },
-    "5": {
-      "status": "pending",
-      "artifacts": [
-        "phase-5-implementation.md",
-        "outputs/phase-5/implementation-log.md",
-        "outputs/phase-5/component-integration-summary.md",
-        "outputs/phase-5/runtime-contract-summary.md"
-      ]
-    },
-    "6": {
-      "status": "pending",
-      "artifacts": [
-        "phase-6-test-expansion.md",
-        "outputs/phase-6/error-path-cases.md",
-        "outputs/phase-6/regression-guards.md",
-        "outputs/phase-6/test-expansion-result.md"
-      ]
-    },
-    "7": {
-      "status": "pending",
-      "artifacts": [
-        "phase-7-coverage-check.md",
-        "outputs/phase-7/coverage-summary.md",
-        "outputs/phase-7/coverage-gap-plan.md",
-        "outputs/phase-7/integration-test-result.md"
-      ]
-    },
-    "8": {
-      "status": "pending",
-      "artifacts": [
-        "phase-8-refactoring.md",
-        "outputs/phase-8/refactoring-plan.md",
-        "outputs/phase-8/refactoring-result.md",
-        "outputs/phase-8/regression-log.md"
-      ]
-    },
-    "9": {
-      "status": "pending",
-      "artifacts": [
-        "phase-9-quality-assurance.md",
-        "outputs/phase-9/quality-report.md",
-        "outputs/phase-9/security-review.md",
-        "outputs/phase-9/ac-evidence.md"
-      ]
-    },
-    "10": {
-      "status": "pending",
-      "artifacts": [
-        "phase-10-final-review.md",
-        "outputs/phase-10/final-review-result.md",
-        "outputs/phase-10/gate-decision.md",
-        "outputs/phase-10/open-issues.md"
-      ]
-    },
-    "11": {
-      "status": "pending",
-      "artifacts": [
-        "phase-11-manual-test.md",
-        "outputs/phase-11/manual-test-checklist.md",
-        "outputs/phase-11/manual-test-result.md",
-        "outputs/phase-11/manual-test-report.md",
-        "outputs/phase-11/discovered-issues.md",
-        "outputs/phase-11/ui-sanity-visual-review.md",
-        "outputs/phase-11/screenshot-plan.json",
-        "outputs/phase-11/screenshot-coverage.md",
-        "outputs/phase-11/screenshots/phase11-capture-metadata.json"
-      ]
-    },
-    "12": {
-      "status": "pending",
-      "artifacts": [
-        "phase-12-documentation.md",
-        "outputs/phase-12/implementation-guide.md",
-        "outputs/phase-12/system-spec-update-summary.md",
-        "outputs/phase-12/documentation-changelog.md",
-        "outputs/phase-12/unassigned-task-detection.md",
-        "outputs/phase-12/skill-feedback-report.md",
-        "outputs/phase-12/phase12-task-spec-compliance-check.md"
-      ]
-    },
-    "13": {
-      "status": "pending",
-      "artifacts": [
-        "phase-13-pr-creation.md",
-        "outputs/phase-13/pr-readiness-checklist.md"
-      ]
-    }
+    "1": { "status": "pending", "artifacts": ["phase-1-requirements.md"] },
+    "2": { "status": "pending", "artifacts": ["phase-2-design.md"] },
+    "3": { "status": "pending", "artifacts": ["phase-3-design-review.md"] },
+    "4": { "status": "pending", "artifacts": ["phase-4-test-creation.md"] },
+    "5": { "status": "pending", "artifacts": ["phase-5-implementation.md"] },
+    "6": { "status": "pending", "artifacts": ["phase-6-test-expansion.md"] },
+    "7": { "status": "pending", "artifacts": ["phase-7-coverage-check.md"] },
+    "8": { "status": "pending", "artifacts": ["phase-8-refactoring.md"] },
+    "9": { "status": "pending", "artifacts": ["phase-9-quality-assurance.md"] },
+    "10": { "status": "pending", "artifacts": ["phase-10-final-review.md"] },
+    "11": { "status": "pending", "artifacts": ["phase-11-manual-test.md"] },
+    "12": { "status": "pending", "artifacts": ["phase-12-documentation.md"] },
+    "13": { "status": "pending", "artifacts": ["phase-13-pr-creation.md"] }
   },
   "dependencies": {
     "2": ["1"],
@@ -143,10 +33,10 @@
     "13": ["12"]
   },
   "metadata": {
-    "taskType": "spec_sync",
+    "taskType": "fix",
     "taskId": "TASK-RT-04",
-    "workflow": "step-08-par-task-rt-04-api-key-management-ui",
-    "parentWorkflow": "docs/30-workflows",
+    "workflow": "skill-creator-agent-sdk-lane-rt",
+    "parentWorkflow": "skill-creator-agent-sdk-lane",
     "dependsOnTasks": []
   }
 }

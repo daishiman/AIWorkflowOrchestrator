@@ -74,6 +74,7 @@ import { PhaseResourcePlanner } from "./PhaseResourcePlanner";
 import { ResolvedResourceReader } from "./ResolvedResourceReader";
 import { SkillCreatorSourceResolver } from "./SkillCreatorSourceResolver";
 import { parseLlmResponseToContent } from "./parseLlmResponseToContent";
+import { SkillCreatorVerificationEngine } from "./SkillCreatorVerificationEngine";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -88,6 +89,7 @@ export interface RuntimeSkillCreatorFacadeDeps {
   sourceResolver?: SkillCreatorSourceResolver;
   resourcePlanner?: PhaseResourcePlanner;
   resolvedResourceReader?: ResolvedResourceReader;
+  verificationEngine?: SkillCreatorVerificationEngine;
 }
 
 export class RuntimeSkillCreatorFacade {
@@ -103,6 +105,7 @@ export class RuntimeSkillCreatorFacade {
   private readonly resourcePlanner?: PhaseResourcePlanner;
   private readonly resolvedResourceReader?: ResolvedResourceReader;
   private readonly manifestLoader = new ManifestLoader();
+  private readonly verificationEngine?: SkillCreatorVerificationEngine;
 
   // TASK-RT-01: LLMAdapter ステータス管理
   private _llmAdapterStatus: LLMAdapterStatus = "initializing";
@@ -122,6 +125,7 @@ export class RuntimeSkillCreatorFacade {
     this.sourceResolver = deps.sourceResolver;
     this.resourcePlanner = deps.resourcePlanner;
     this.resolvedResourceReader = deps.resolvedResourceReader;
+    this.verificationEngine = deps.verificationEngine;
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
       deps.subscriptionAuthProvider,
@@ -182,6 +186,15 @@ export class RuntimeSkillCreatorFacade {
 
   reverifyWorkflow(planId: string): RuntimeSkillCreatorReverifyResponse {
     return this.workflowEngine.requestReverify(planId);
+  }
+
+  async verifySkill(
+    skillDir: string,
+  ): Promise<import("@repo/shared").RuntimeSkillCreatorVerifyCheck[]> {
+    if (!this.verificationEngine) {
+      return [];
+    }
+    return this.verificationEngine.verify(skillDir);
   }
 
   // ── SDK Message 正規化 (TASK-RT-06) ─────────────────

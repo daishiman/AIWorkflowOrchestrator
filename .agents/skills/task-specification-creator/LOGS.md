@@ -43,6 +43,19 @@
 ---
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
 
+## TASK-SDK-04-U2 Phase 12 remediation sync（2026-03-28）
+
+- **Agent**: task-specification-creator
+- **Phase**: Phase 12 close-out remediation
+- **Result**: success
+- **Notes**:
+  - `artifacts.json` / `outputs/artifacts.json` の root status を `spec_created` へ戻し、index/status/path との drift を解消した
+  - `phase-12-documentation.md` の pending / 未チェック状態を current facts に同期し、 shallow close-out PASS を解消した
+  - system spec update を no-op 扱いしないよう整理し、aiworkflow 正本への same-wave sync を前提に close-out を修正した
+
+---
+## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
+
 ### 変更内容
 - `scripts/complete-phase.js`: フェーズ完了時に outputs ディレクトリの存在を検証し、欠落時に WARNING を出力する機能を追加
   - 背景: Phase 1〜3 が completed 記録済みでも outputs がない状態が発生したため（TASK-RT-06 Phase 12 フィードバック）

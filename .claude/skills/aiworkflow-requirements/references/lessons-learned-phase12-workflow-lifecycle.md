@@ -941,16 +941,70 @@
 
 ### L-RT06-P12-001: Implementation Guide の Part 1/Part 2 未分離は gate fail の直因
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | implementation-guide が変更概要のみで、Part 1（中学生向け）/Part 2（技術詳細）要件を満たしていなかった |
-| 解決策 | Part 1/Part 2 を明示した2層構成に再編し、型定義・APIシグネチャ・エッジケース・定数一覧を追記 |
-| 標準ルール | Phase 12 Task 12-1 は「見出し存在」ではなく必須要素充足で判定する |
+| 項目       | 内容                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| 課題       | implementation-guide が変更概要のみで、Part 1（中学生向け）/Part 2（技術詳細）要件を満たしていなかった |
+| 解決策     | Part 1/Part 2 を明示した2層構成に再編し、型定義・APIシグネチャ・エッジケース・定数一覧を追記           |
+| 標準ルール | Phase 12 Task 12-1 は「見出し存在」ではなく必須要素充足で判定する                                      |
 
 ### L-RT06-P12-002: 実行不能テストは「PASS扱い」せず未タスク化して条件付き判定へ分離
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | vitest が esbuild 不整合で実行不能なのに AC 全PASS表記が残り、最終レビュー判定が矛盾 |
-| 解決策 | final-review を条件付き PASS に修正し、`UT-RT-06-ESBUILD-ARCH-MISMATCH-001` を formalize |
-| 標準ルール | テスト環境 blocker は Phase 10/12 で同一IDの未タスクとして formalize し、判定を分離する |
+| 項目       | 内容                                                                                     |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| 課題       | vitest が esbuild 不整合で実行不能なのに AC 全PASS表記が残り、最終レビュー判定が矛盾     |
+| 解決策     | final-review を条件付き PASS に修正し、`UT-RT-06-ESBUILD-ARCH-MISMATCH-001` を formalize |
+| 標準ルール | テスト環境 blocker は Phase 10/12 で同一IDの未タスクとして formalize し、判定を分離する  |
+
+---
+
+## UT-RT-06-ESBUILD-ARCH-MISMATCH-001 (2026-03-29)
+
+### 苦戦箇所1: esbuild バイナリアーキ不一致の診断
+- **症状**: `pnpm install` 後に vitest が起動しない。`Error: The package "esbuild-darwin-arm64" could not be found.` または類似エラー
+- **原因**: macOS 上で Rosetta 経由 x64 Node と native arm64 Node が混在する環境で、`pnpm install` 時の esbuild optional dependency 解決結果と実行時の `process.arch` がずれる
+- **解決策**: `EXPECTED_PLATFORM="darwin-$(node -p process.arch)"` を基準に診断し、`pnpm install --force` で optional dependency を再解決
+- **再発防止**: `docs/40-guides/esbuild-arch-mismatch-prevention.md` の Preflight チェックリスト（5ステップ）参照
+
+### 知見: arm64 固定ではなく process.arch 動的取得が重要
+- `arm64` を直接ハードコードすると x64 環境での誤検知が発生する
+- `node -p process.arch` で実行時アーキを動的取得することで、CI/CD 環境の差異も吸収できる
+
+---
+
+## UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 教訓（2026-03-29）
+
+### L-SDK07-SC-001: Vite テスト環境での @repo/shared パスエイリアス未解決
+
+| 項目       | 内容                                                                                                                                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `packages/shared/src/ipc/__tests__/channels.test.ts` で `@repo/shared` エイリアスを使用してインポートすると、Vitest（Vite バンドラー）が `@repo/shared` を解決できずテストが失敗する                                       |
+| 再発条件   | monorepo packages 配下のテストファイルで、自パッケージへの参照に workspace エイリアス（`@repo/*`）を使用する場合                                                                                                           |
+| 解決策     | テストファイル内のインポートを相対パス（`../channels` 等）に変更する。workspace エイリアスのパス解決は Vite の tsconfig paths 設定と vite-tsconfig-paths プラグインに依存するため、packages 内テストでは相対パスを優先する |
+| 標準ルール | `packages/shared` 配下のテストでは `@repo/shared` ではなく相対パスでインポートする。`apps/desktop` 側は vite-tsconfig-paths プラグインが解決するため `@repo/shared` を使用可能                                             |
+| 関連タスク | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001                                                                                                                                                                                  |
+
+### L-SDK07-SC-002: 命名規則（camelCase vs kebab-case）の事前分析が Phase 4 以降の手戻りを防ぐ
+
+| 項目       | 内容                                                                                                                                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | IPC チャネル名は `approval:respond`（kebab-case 区切りコロン）、TS 定数名は `APPROVAL_RESPOND`（UPPER_SNAKE_CASE）という既存規則があるが、Phase 1 設計時に既存パターンを網羅的に確認せずに命名すると、Phase 4 のテスト作成時に不整合が発覚する |
+| 再発条件   | 新規チャネルを追加する際に `packages/shared/src/ipc/channels.ts` の既存命名パターンを grep で確認しないまま設計を進める                                                                                                                        |
+| 解決策     | Phase 1（設計）の開始前に `grep -n "CHANNELS" packages/shared/src/ipc/channels.ts` で既存命名パターンを確認し、camelCase / UPPER_SNAKE_CASE / kebab-case の各層での規則を表として整理してから設計に着手する                                    |
+| 標準ルール | IPC チャネル追加タスクの Phase 1 では「命名規則分析」を必須ステップとして実施する                                                                                                                                                              |
+| 関連タスク | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001                                                                                                                                                                                                      |
+
+### L-SDK07-SC-003: TDD Red Phase 前に設計前提（既存チャネルとの重複・命名衝突）を整合確認する
+
+| 項目       | 内容                                                                                                                                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | TDD の Red（失敗テスト先書き）フェーズに入る前に、追加するチャネル名が既存定数と衝突していないか、preload 側の `ALLOWED_INVOKE_CHANNELS` 等の allowlist に影響しないかを確認しないと、Green フェーズで想定外の修正が発生する |
+| 再発条件   | `channels.ts` に新定数を追加した後、preload の allowlist や既存テストの期待値が暗黙的に「全チャネル数」を前提にしている場合に、Green フェーズで regression が検出される                                                      |
+| 解決策     | Phase 3（TDD Red）の前に「設計前提整合確認チェックリスト」として①既存チャネル名との衝突なし、②preload allowlist への影響範囲確認、③既存テストの期待値（チャネル総数など）への影響確認の3点を実施してから、失敗テストを書く   |
+| 標準ルール | TDD Red を開始する前に「設計前提整合確認」を Phase 3 の先行ステップとして実施し、影響範囲を文書化する                                                                                                                        |
+| 関連タスク | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001                                                                                                                                                                                    |
+
+### 同種課題の簡潔解決手順（3ステップ）
+
+1. shared パッケージ内テストでは `@repo/shared` エイリアスを使用せず相対パスでインポートする。
+2. IPC チャネル追加前に既存の `channels.ts` を grep で確認し、命名規則（文字列形式 / TS定数名）のパターンを表に整理してから設計に着手する。
+3. TDD Red Phase 前にチャネル追加による preload allowlist・既存テスト期待値への影響範囲を確認してから失敗テストを書く。
