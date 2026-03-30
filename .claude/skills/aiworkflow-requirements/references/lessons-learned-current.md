@@ -884,3 +884,26 @@
 | 解決策 | `manual-test-checklist.md` と `discovered-issues.md` を必須補助成果物として追加 |
 | 標準ルール | UI 非変更タスクは「N/A 根拠 + 代替証跡（checklist/issues）」をセットで残す |
 | 関連タスク | TASK-RT-06 |
+
+---
+
+## TASK-P0-04 教訓（2026-03-30）
+
+### L-P0-04-001: vitest 実行時の process.cwd() はプロジェクトルートではない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `REPO_SKILL_CREATOR_PATH` は `path.resolve(process.cwd(), ".claude", ...)` でモジュールロード時に評価される。vitest では cwd が `apps/desktop/` になるため、プロジェクトルートの `.claude/` を参照できずテストが失敗する |
+| 解決策 | テスト環境では `AIWORKFLOW_SKILL_CREATOR_PATH` 環境変数を `beforeAll`/`afterAll` でセットして `getSkillCreatorRootCandidates()` を正しいパスに誘導する。本番コードの変更は不要 |
+| 標準ルール | `process.cwd()` ベースの定数はモジュールロード時に固定される点に注意。テスト内でパス依存のコードをテストする際は環境変数 DI パターンを使用する |
+| 関連タスク | TASK-P0-04 |
+
+### L-P0-04-002: TDD Red は「import エラー」ではなく「実行エラー」で確認する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 未実装関数を import すると、同ファイル内の既存テストも巻き込んで全失敗になる。Red の確認目的が「新テストの失敗」なのに既存テストが壊れる副作用が生じる |
+| 解決策 | スケルトン関数（`throw new Error("not implemented")`）を先に定義し、import はコンパイルできる状態にする。実行時にのみ新テストが Red になるよう設計する |
+| 標準ルール | テストファースト実装では「スケルトン定義 → テスト記述 → Red 確認 → 実装 → Green 確認」の順序を守る |
+| 関連タスク | TASK-P0-04 |
+
