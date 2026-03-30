@@ -647,6 +647,143 @@ describe("RuntimeSkillCreatorFacade", () => {
       expect(mockVerificationEngine.verify).toHaveBeenCalledTimes(2);
     });
 
+    it("2回目の improve では前回の改善要約を feedback に含める", async () => {
+      const mockWorkflowEngine = {
+        recordVerifyPass: vi.fn().mockReturnValue({
+          currentPhase: "verify",
+          verifyResult: { status: "pass", nextAction: "handoff" },
+        }),
+        recordImproveAttempt: vi.fn().mockReturnValue({
+          currentPhase: "improve",
+          verifyResult: { status: "fail", improveAttemptCount: 1 },
+        }),
+        recordVerifyFailure: vi.fn(),
+        getWorkflowState: vi.fn(),
+        getImproveAttemptCount: vi.fn().mockReturnValue(0),
+      };
+      const failChecks = [
+        {
+          id: "L1-001",
+          layer: "layer1" as const,
+          severity: "error" as const,
+          summary: "SKILL.md missing",
+        },
+        {
+          id: "L1-002",
+          layer: "layer1" as const,
+          severity: "info" as const,
+          summary: "OK",
+        },
+      ];
+      const passChecks = [
+        {
+          id: "L1-001",
+          layer: "layer1" as const,
+          severity: "info" as const,
+          summary: "OK",
+        },
+      ];
+      const sendChat = vi
+        .fn()
+        .mockResolvedValueOnce({
+          content: JSON.stringify({
+            improvements: [
+              {
+                section: "4. 実行仕様",
+                issue: "最初の修正が必要",
+                pattern: "Clarity",
+                before: "old content",
+                after: "updated content 1",
+              },
+            ],
+          }),
+          model: "claude-sonnet-4-20250514",
+          usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+        })
+        .mockResolvedValueOnce({
+          content: JSON.stringify({
+            improvements: [
+              {
+                section: "1. 概要",
+                issue: "前回の修正を踏まえて補足",
+                pattern: "Iteration",
+                before: "old content",
+                after: "updated content 2",
+              },
+            ],
+          }),
+          model: "claude-sonnet-4-20250514",
+          usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+        });
+      const mockVerificationEngine = {
+        verify: vi
+          .fn()
+          .mockResolvedValueOnce(failChecks)
+          .mockResolvedValueOnce(failChecks)
+          .mockResolvedValueOnce(passChecks),
+      };
+      const mockLLMAdapter = {
+        providerId: "anthropic",
+        sendChat,
+        streamChat: vi.fn(),
+        checkHealth: vi.fn(),
+      };
+      const mockSkillFileManager = {
+        readFile: vi.fn().mockResolvedValue("old content"),
+        writeFile: vi.fn().mockResolvedValue(undefined),
+        getSkillDir: vi.fn().mockReturnValue("/tmp/skill"),
+      };
+      const mockResourceLoader = {
+        loadAgent: vi.fn().mockResolvedValue("improve agent prompt"),
+        getBasePath: vi.fn().mockReturnValue("/tmp/skill-creator"),
+      };
+      const facadeWithLoop = new RuntimeSkillCreatorFacade({
+        skillExecutor: { execute: vi.fn() } as unknown as SkillExecutor,
+        workflowEngine: mockWorkflowEngine as never,
+        verificationEngine: mockVerificationEngine as never,
+        llmAdapter: mockLLMAdapter as never,
+        skillFileManager: mockSkillFileManager as never,
+        resourceLoader: mockResourceLoader as never,
+      });
+
+      const result = await facadeWithLoop.verifyAndImproveLoop(
+        "plan-001",
+        "/tmp/skill",
+        "test-skill",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result.finalStatus).toBe("pass");
+      expect(result.totalAttempts).toBe(2);
+      expect(sendChat).toHaveBeenCalledTimes(2);
+
+      const firstFeedback = sendChat.mock.calls[0][0].messages[0]
+        .content as string;
+      const secondFeedback = sendChat.mock.calls[1][0].messages[0]
+        .content as string;
+
+      expect(firstFeedback).toContain("SKILL.md missing");
+      expect(firstFeedback).not.toContain("L1-002");
+      expect(secondFeedback).toContain("前回の改善要約");
+      expect(secondFeedback).toContain("4. 実行仕様");
+      expect(secondFeedback).toContain("最初の修正が必要");
+
+      expect(mockWorkflowEngine.recordImproveAttempt).toHaveBeenCalledTimes(2);
+      expect(mockWorkflowEngine.recordImproveAttempt).toHaveBeenNthCalledWith(
+        1,
+        "plan-001",
+        [
+          {
+            id: "L1-001",
+            layer: "layer1",
+            severity: "error",
+            summary: "SKILL.md missing",
+          },
+        ],
+      );
+    });
+
     it("maxImproveRetry 回失敗 → loopExhausted", async () => {
       const mockWorkflowEngine = {
         recordVerifyPass: vi.fn(),

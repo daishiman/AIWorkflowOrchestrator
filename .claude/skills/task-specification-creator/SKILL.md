@@ -247,6 +247,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| **6.18.16** | **2026-03-30** | **TASK-P0-02 verify→improve→re-verify close-out を guide へ反映**: `phase-12-documentation.md` の Task 12-1〜12-5 / Step 1-A〜1-C を実績ベースへ更新し、`task-workflow.md` / `task-workflow-completed.md` / LOGS / SKILL / phase outputs の同一ターン同期と feedback memory 吸収を phase 12 の current fact として追加 |
 | **6.18.16** | **2026-03-30** | **agentview-permission-api-fix Phase 12 識別: Phase 2 テスト影響分析の不十分を反映**: テストファイルが `*.test.tsx` / `*.coverage.test.tsx` / `*.cta.test.tsx` 等に分散している場合、Phase 2 設計段階で全テストファイルを網羅的に列挙しモック定義の一貫性を確保するルールを「Phase 12 よくある漏れ」テーブルに Feedback 4 として追加 |
 | **6.18.15** | **2026-03-30** | **TASK-P0-05 Phase 12 close-out resync を guide へ反映**: Phase 11 evidence 欠落時は `NON_VISUAL` でも `manual-test-result.md` / `discovered-issues.md` を必須補完すること、Phase 12 local outputs 充足だけで `completed` に上げず canonical same-wave sync 未完了なら `in_progress` を維持すること、edge case 定義（E-14 / E-15）は spec と targeted test を同一ターンで同期することを変更履歴に記録 |
 | **6.18.14** | **2026-03-27** | **Phase 12 close-out ルール hardening を反映**: (1) `spec_created` UI task でも Step 1-A〜1-C を N/A にせず same-wave sync で閉じるルール、(2) docs-only task に後から code 実装が入った場合の Step 2 / screenshot 再判定ルール、(3) Phase 12 documentation guide hardening（planned wording 残存 grep 監査、evidence reclassification）を SKILL.md に明示 |

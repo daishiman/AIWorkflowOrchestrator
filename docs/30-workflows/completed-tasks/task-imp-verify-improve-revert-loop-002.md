@@ -504,7 +504,7 @@ verify → improve → re-verify 閉ループに必要な要件を確定する�
 
 - [x] 全追加メソッドに JSDoc が記載されている
 - [x] 本タスク仕様書が更新されている
-- [ ] `task-workflow.md` / `task-workflow-completed.md` が更新されている
+- [x] `task-workflow.md` / `task-workflow-completed.md` が更新されている
 
 ---
 
@@ -513,6 +513,7 @@ verify → improve → re-verify 閉ループに必要な要件を確定する�
 `recordVerifyPass()`, `recordImproveAttempt()`, `getImproveAttemptCount()` を `SkillCreatorWorkflowEngine` に、`verifyAndImproveLoop()` を `RuntimeSkillCreatorFacade` に、`formatVerifyChecksAsFeedback()` をユーティリティとして追加し、verify→improve→re-verify 閉ループを実装した。
 新規24テスト + 既存リグレッション70テスト = 全94テストがパス。TypeScript 型チェック・lint もクリア。
 特記事項: `assertTransition` に `improve→improve` 自己遷移を許可する修正を追加（閉ループの re-verify 後に再度 improve が必要なケースに対応）。新規フィールドは全て optional にして後方互換性を維持。
+completed ledger には `TASK-P0-02` の完了記録を追加し、Phase 12 の `UT-P0-02-001` は今回フェーズへ吸収した。
 
 ---
 

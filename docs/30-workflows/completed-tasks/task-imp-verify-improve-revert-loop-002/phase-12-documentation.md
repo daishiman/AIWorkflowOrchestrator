@@ -316,57 +316,57 @@ git diff --name-only | grep LOGS.md
 
 ### 必須5成果物チェック
 
-- [ ] `outputs/phase-12/implementation-guide.md` が存在する
-- [ ] `outputs/phase-12/system-spec-update-summary.md` が存在する
-- [ ] `outputs/phase-12/documentation-changelog.md` が存在する
-- [ ] `outputs/phase-12/unassigned-task-detection.md` が存在する
-- [ ] `outputs/phase-12/skill-feedback-report.md` が存在する
+- [x] `outputs/phase-12/implementation-guide.md` が存在する
+- [x] `outputs/phase-12/system-spec-update-summary.md` が存在する
+- [x] `outputs/phase-12/documentation-changelog.md` が存在する
+- [x] `outputs/phase-12/unassigned-task-detection.md` が存在する
+- [x] `outputs/phase-12/skill-feedback-report.md` が存在する
 
 ### Task 12-1: 実装ガイド
 
-- [ ] Part 1 に日常の例え話が含まれている（「たとえば」が最低1回）
-- [ ] Part 1 は「なぜ必要か」→「何をするか」→「たとえば」→「今回作ったもの」の順序で記述
-- [ ] Part 2 に TypeScript 型定義が含まれている
-- [ ] Part 2 に API シグネチャと使用例が記載されている
-- [ ] Part 2 にエラーハンドリングとエッジケースの説明がある
-- [ ] Part 2 に設定パラメータの一覧がある
-- [ ] Part 2 にテスト構成が記載されている
+- [x] Part 1 に日常の例え話が含まれている（「たとえば」が最低1回）
+- [x] Part 1 は「なぜ必要か」→「何をするか」→「たとえば」→「今回作ったもの」の順序で記述
+- [x] Part 2 に TypeScript 型定義が含まれている
+- [x] Part 2 に API シグネチャと使用例が記載されている
+- [x] Part 2 にエラーハンドリングとエッジケースの説明がある
+- [x] Part 2 に設定パラメータの一覧がある
+- [x] Part 2 にテスト構成が記載されている
 
 ### Task 12-2: システム仕様書更新
 
-- [ ] Step 1: LOGS.md **2ファイル**更新（P1/P25対策）
-- [ ] Step 1: SKILL.md **2ファイル**更新
-- [ ] Step 1: topic-map.md 再生成（P2/P27対策）
-- [ ] Step 2: `RuntimeSkillCreatorVerifyAndImproveResult` の仕様反映
-- [ ] Step 2: `SkillCreatorVerifyResult` 拡張の仕様反映
-- [ ] Step 2: `RuntimeSkillCreatorFacadeDeps` 拡張の仕様反映
-- [ ] 仕様書更新は3ファイル以下/エージェントに分割
+- [x] Step 1: LOGS.md **2ファイル**更新（P1/P25対策）
+- [x] Step 1: SKILL.md **2ファイル**更新
+- [x] Step 1: topic-map.md 再生成（P2/P27対策）
+- [x] Step 2: `RuntimeSkillCreatorVerifyAndImproveResult` の仕様反映
+- [x] Step 2: `SkillCreatorVerifyResult` 拡張の仕様反映
+- [x] Step 2: `RuntimeSkillCreatorFacadeDeps` 拡張の仕様反映
+- [x] 仕様書更新は3ファイル以下/エージェントに分割
 
 ### Task 12-3: ドキュメント変更ログ
 
-- [ ] Step 1 の結果が個別に記録されている
-- [ ] Step 2 の結果が個別に記録されている
-- [ ] 全Step完了後に「Phase 12完了」を記載（P4対策）
+- [x] Step 1 の結果が個別に記録されている
+- [x] Step 2 の結果が個別に記録されている
+- [x] 全Step完了後に「Phase 12完了」を記載（P4対策）
 
 ### Task 12-4: 未タスク検出
 
-- [ ] 0件でも出力されている
-- [ ] `current` / `baseline` が分離記録されている
-- [ ] MR-01 が未タスク候補として検討されている
-- [ ] MR-02 が未タスク候補として検討されている
-- [ ] Phase 10 MINOR / Phase 11 発見事項が検出ソースに含まれている
-- [ ] 未タスク管理の3ステップ（指示書・テーブル・リンク）が完了
-- [ ] 該当する未タスクは `docs/30-workflows/unassigned-task/` 配下に仕様書作成
+- [x] 0件でも出力されている
+- [x] `current` / `baseline` が分離記録されている
+- [x] MR-01 が未タスク候補として検討されている
+- [x] MR-02 が未タスク候補として検討されている
+- [x] Phase 10 MINOR / Phase 11 発見事項が検出ソースに含まれている
+- [x] 未タスク管理の3ステップ（指示書・テーブル・リンク）が完了
+- [x] 該当する未タスクはなし（MR-01 は current phase に吸収）
 
 ### Task 12-5: スキルフィードバック
 
-- [ ] 改善点なしでも出力されている
-- [ ] `phase12-task-spec-compliance-check.md` が root evidence として作成されている
+- [x] 改善点なしでも出力されている
+- [x] `phase12-task-spec-compliance-check.md` が root evidence として作成されている
 
 ### 全体
 
-- [ ] `outputs/phase-12/` 配下に5ファイル全て存在する
-- [ ] **本Phase内の全タスクを100%実行完了**
+- [x] `outputs/phase-12/` 配下に5ファイル全て存在する
+- [x] **本Phase内の全タスクを100%実行完了**
 
 ## 漏れやすいポイント（再掲）
 

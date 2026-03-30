@@ -1,7 +1,7 @@
 {
   "feature": "task-imp-verify-improve-revert-loop-002",
   "created": "2026-03-30",
-  "lastUpdated": "2026-03-30T05:09:50.579Z",
+  "lastUpdated": "2026-03-30T07:44:16Z",
   "phases": {
     "1": {
       "status": "completed",
@@ -38,10 +38,11 @@
     },
     "4": {
       "name": "テスト作成",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-03-30T07:44:16Z",
       "artifacts": [
         {
-          "path": "phase-4-test-creation.md",
+          "path": "outputs/phase-4/phase-4-test-creation.md",
           "description": "TDD Red phase テスト設計（21件の .skip テスト）"
         }
       ],
@@ -49,10 +50,11 @@
     },
     "5": {
       "name": "実装",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-03-30T07:44:16Z",
       "artifacts": [
         {
-          "path": "phase-5-implementation.md",
+          "path": "outputs/phase-5/phase-5-implementation.md",
           "description": "TDD Green phase 実装仕様（型追加・メソッド実装・パイプライン）"
         }
       ],
@@ -60,10 +62,11 @@
     },
     "6": {
       "name": "テスト拡充",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-03-30T07:44:16Z",
       "artifacts": [
         {
-          "path": "phase-6-test-expansion.md",
+          "path": "outputs/phase-6/phase-6-test-expansion.md",
           "description": "エッジケース・リグレッションテスト（18件追加）"
         }
       ],
@@ -71,10 +74,11 @@
     },
     "7": {
       "name": "テストカバレッジ確認",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-03-30T07:44:16Z",
       "artifacts": [
         {
-          "path": "phase-7-coverage-check.md",
+          "path": "outputs/phase-7/phase-7-coverage-check.md",
           "description": "カバレッジ測定・品質ゲート確認（Line 80%+, Branch 60%+, Function 80%+）"
         }
       ],
@@ -82,10 +86,11 @@
     },
     "8": {
       "name": "リファクタリング",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-03-30T07:44:16Z",
       "artifacts": [
         {
-          "path": "phase-8-refactoring.md",
+          "path": "outputs/phase-8/phase-8-refactoring.md",
           "description": "コード品質向上（処理分割・命名・JSDoc整備）"
         }
       ],
@@ -93,10 +98,11 @@
     },
     "9": {
       "name": "品質保証",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-03-30T07:44:16Z",
       "artifacts": [
         {
-          "path": "phase-9-quality-assurance.md",
+          "path": "outputs/phase-9/phase-9-quality-assurance.md",
           "description": "全品質ゲート通過確認（typecheck / test / lint / build）"
         }
       ],
@@ -104,10 +110,11 @@
     },
     "10": {
       "name": "最終レビューゲート",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-03-30T07:44:16Z",
       "artifacts": [
         {
-          "path": "phase-10-final-review.md",
+          "path": "outputs/phase-10/phase-10-final-review.md",
           "description": "受入基準最終確認・設計乖離チェック・セキュリティ確認"
         }
       ],
@@ -115,10 +122,11 @@
     },
     "11": {
       "name": "手動テスト検証",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-03-30T07:44:16Z",
       "artifacts": [
         {
-          "path": "phase-11-manual-test.md",
+          "path": "outputs/phase-11/phase-11-manual-test.md",
           "description": "閉ループの動作確認（5シナリオ + リグレッション確認）"
         }
       ],
@@ -126,10 +134,11 @@
     },
     "12": {
       "name": "ドキュメント更新",
-      "status": "pending",
+      "status": "completed",
+      "completedAt": "2026-03-30T07:44:16Z",
       "artifacts": [
         {
-          "path": "phase-12-documentation.md",
+          "path": "outputs/phase-12/phase-12-documentation.md",
           "description": "5つの必須成果物（実装ガイド・仕様更新・変更ログ・未タスク検出・フィードバック）"
         }
       ],

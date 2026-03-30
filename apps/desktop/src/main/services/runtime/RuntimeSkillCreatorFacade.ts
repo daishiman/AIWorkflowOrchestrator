@@ -206,6 +206,7 @@ export class RuntimeSkillCreatorFacade {
 
   /**
    * verify → improve → re-verify の自動閉ループを実行する。
+   * 前回の改善要約を次回の feedback に織り込んで、同一修正の反復を抑える。
    *
    * TASK-P0-02: verify→improve→re-verify 閉ループ
    */
@@ -224,6 +225,7 @@ export class RuntimeSkillCreatorFacade {
 
     const maxRetry = this.maxImproveRetry;
     let attemptCount = 0;
+    let previousImproveSummary = "";
 
     while (true) {
       // Step 1: verify 実行
@@ -285,11 +287,15 @@ export class RuntimeSkillCreatorFacade {
       }
 
       // Step 4: improve 試行
-      this.workflowEngine.recordImproveAttempt(planId, checks);
+      const failedChecks = checks.filter((check) => check.severity !== "info");
+      this.workflowEngine.recordImproveAttempt(planId, failedChecks);
       attemptCount++;
 
       try {
-        const feedback = formatVerifyChecksAsFeedback(checks);
+        const feedback = buildImproveFeedback(
+          failedChecks,
+          previousImproveSummary,
+        );
         const improveResult = await this.improve(
           skillName,
           feedback,
@@ -361,6 +367,8 @@ export class RuntimeSkillCreatorFacade {
             workflowSnapshot: snapshot,
           };
         }
+
+        previousImproveSummary = summarizeImproveSuggestions(suggestions);
 
         // Step 5: re-verify へ（while ループ先頭に戻る）
       } catch (err) {
@@ -1213,6 +1221,32 @@ export function parseImproveResponse(responseText: string): ImproveParseResult {
       error instanceof Error ? error.message : "Unknown parse error";
     return { success: false, error: message };
   }
+}
+
+function buildImproveFeedback(
+  checks: RuntimeSkillCreatorVerifyCheck[],
+  previousImproveSummary: string,
+): string {
+  const feedback = formatVerifyChecksAsFeedback(checks);
+  const summary = previousImproveSummary.trim();
+
+  if (feedback === "" || summary === "") {
+    return feedback;
+  }
+
+  return `${feedback}\n\n## 前回の改善要約\n${summary}`;
+}
+
+function summarizeImproveSuggestions(
+  suggestions: RuntimeSkillCreatorImproveSuggestion[],
+): string {
+  if (suggestions.length === 0) {
+    return "";
+  }
+
+  return suggestions
+    .map((suggestion) => `- ${suggestion.section}: ${suggestion.reason}`)
+    .join("\n");
 }
 
 const DEGRADED_REASON_MESSAGES: Record<
