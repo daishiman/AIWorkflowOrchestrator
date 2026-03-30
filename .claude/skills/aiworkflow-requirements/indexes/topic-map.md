@@ -2627,18 +2627,18 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L63 |
-| クイックリファレンス: カテゴリ別検索ガイド | L79 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L266 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L598 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L632 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L715 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L731 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L755 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L796 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L821 |
-| TASK-RT-06 教訓（2026-03-29） | L852 |
-| TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L875 |
+| 分割ファイル一覧 | L61 |
+| クイックリファレンス: カテゴリ別検索ガイド | L76 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L249 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L581 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L615 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L698 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L714 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L738 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L779 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L804 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L835 |
+| TASK-RT-06 教訓（2026-03-29） | L866 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2778,17 +2778,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-29 UT-RT-06-CONS（sdkMessageUtils shared helper 抽出 / Phase 7 個別カバレッジ計測） | L28 |
-| 2026-03-25 UT-LLM-MOD-01-005（provider registry SSoT） | L64 |
-| 2026-03-16 UT-06-001 (tool-risk-config-implementation) | L107 |
-| 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout） | L196 |
-
-### references/lessons-learned-ui-adapter-status-retry.md
-
-| セクション | 行 |
-|------------|----|\n| 変更履歴 | L9 |
-| TASK-RT-02 / api-key-ui-adapter-status | L17 |
-| 関連リソース | L115 |
+| 2026-03-25 UT-LLM-MOD-01-005（provider registry SSoT） | L27 |
+| 2026-03-16 UT-06-001 (tool-risk-config-implementation) | L70 |
+| 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout） | L159 |
 
 ### references/lessons-learned-ui-agent-view-nav-notification-history.md
 

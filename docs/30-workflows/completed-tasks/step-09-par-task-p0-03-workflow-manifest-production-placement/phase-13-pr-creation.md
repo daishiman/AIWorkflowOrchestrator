@@ -2,22 +2,24 @@
 
 ## メタ情報
 
-| 項目     | 値                                     |
-| -------- | -------------------------------------- |
-| Phase    | 13                                     |
-| 機能名   | workflow-manifest-production-placement |
-| 作成日   | 2026-03-29                             |
-| タスクID | TASK-P0-03                             |
+| 項目       | 値                                     |
+| ---------- | -------------------------------------- |
+| Phase      | 13                                     |
+| 機能名     | workflow-manifest-production-placement |
+| 作成日     | 2026-03-29                             |
+| タスクID   | TASK-P0-03                             |
+| ステータス | blocked                                |
 
 ## 目的
 
-ユーザーが明示した時だけ PR preparation を行える状態を保持する。
+ユーザーが明示した時だけ PR preparation を行える状態を保持する。Phase 完了条件は「実行した」ことではなく、「blocked の理由と解除条件が監査可能な形で固定された」こととする。
 
 ## 実行タスク
 
 - blocked 理由記録: commit、PR、push を行わない理由を残す
 - PR input 整理: 変更対象、テスト結果、残リスクを整理する
 - 実行条件固定: ユーザー明示指示が来た時の着手条件を記録する
+- blocked status 維持: `artifacts.json` と `outputs/artifacts.json` の Phase 13 を `blocked` として同期する
 
 ## 参照資料
 
@@ -39,9 +41,10 @@
 
 ### 変更対象
 
-| ファイル                                              | 変更種別 | 内容                   |
-| ----------------------------------------------------- | -------- | ---------------------- |
-| `.agents/skills/skill-creator/workflow-manifest.json` | 新規作成 | 本番 manifest ファイル |
+| ファイル                                              | 変更種別    | 内容                       |
+| ----------------------------------------------------- | ----------- | -------------------------- |
+| `.claude/skills/skill-creator/workflow-manifest.json` | 新規作成    | 本番 manifest 正本ファイル |
+| `.agents/skills/skill-creator/workflow-manifest.json` | mirror 同期 | parity 確認対象            |
 
 ### テスト結果
 
@@ -67,15 +70,15 @@
 
 ### ステップ3: 実行条件を明記する
 
-ユーザー明示指示が来た時だけ Phase 13 を `in_progress` へ変える。
+ユーザー明示指示が来た時だけ Phase 13 を `in_progress` へ変える。user approval がない限り `completed` へは進めない。
 
 ## 統合テスト連携
 
-| 観点          | 実施内容                                 |
-| ------------- | ---------------------------------------- |
-| blocked state | status が維持されるか                    |
-| inputs        | PR input が揃っているか                  |
-| guard         | ユーザー明示指示の条件が明記されているか |
+| 観点          | 実施内容                                          |
+| ------------- | ------------------------------------------------- |
+| blocked state | `blocked` status が両 artifact 台帳で維持されるか |
+| inputs        | PR input が揃っているか                           |
+| guard         | ユーザー明示指示の条件が明記されているか          |
 
 ## 多角的チェック観点
 
@@ -90,6 +93,7 @@
 1. blocked 理由記録
 2. PR input 整理
 3. 実行条件固定
+4. artifact status 同期
 
 ## 成果物
 
@@ -102,6 +106,7 @@
 - [ ] blocked 理由が記録されている
 - [ ] PR input が整理されている
 - [ ] ユーザー明示指示が開始条件として記録されている
+- [ ] `artifacts.json` と `outputs/artifacts.json` の Phase 13 status が `blocked` で一致している
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## タスク100%実行確認【必須】

@@ -21,12 +21,12 @@ Phase 5 で作成した manifest に対して、変更された manifest の edg
 
 ## 参照資料
 
-| 資料名                 | パス                                                  | 説明              |
-| ---------------------- | ----------------------------------------------------- | ----------------- |
-| phase-4 test creation  | `phase-4-test-creation.md`                            | base テストケース |
-| phase-5 implementation | `phase-5-implementation.md`                           | 実装済み manifest |
-| workflow-manifest.json | `.agents/skills/skill-creator/workflow-manifest.json` | 本番 manifest     |
-| test plan              | `outputs/phase-4/test-plan.md`                        | テスト実行計画    |
+| 資料名                 | パス                                                  | 説明               |
+| ---------------------- | ----------------------------------------------------- | ------------------ |
+| phase-4 test creation  | `phase-4-test-creation.md`                            | base テストケース  |
+| phase-5 implementation | `phase-5-implementation.md`                           | 実装済み manifest  |
+| workflow-manifest.json | `.claude/skills/skill-creator/workflow-manifest.json` | 本番 manifest 正本 |
+| test plan              | `outputs/phase-4/test-plan.md`                        | テスト実行計画     |
 
 ## テスト拡充内容
 
@@ -42,11 +42,12 @@ Phase 5 で作成した manifest に対して、変更された manifest の edg
 
 ### regression case 一覧
 
-| ID    | regression case                      | 検出方法                                |
-| ----- | ------------------------------------ | --------------------------------------- |
-| RC-01 | resource path のファイルが削除された | fs.existsSync() で false を検出する     |
-| RC-02 | schemaVersion が変更された           | manifest.schemaVersion !== 1 を検出する |
-| RC-03 | workflowId が空文字に変更された      | validation error を検出する             |
+| ID    | regression case                          | 検出方法                                |
+| ----- | ---------------------------------------- | --------------------------------------- |
+| RC-01 | resource path のファイルが削除された     | fs.existsSync() で false を検出する     |
+| RC-02 | schemaVersion が変更された               | manifest.schemaVersion !== 1 を検出する |
+| RC-03 | workflowId が空文字に変更された          | validation error を検出する             |
+| RC-04 | `.agents` mirror が `.claude` と乖離した | parity check で差分を検出する           |
 
 ## 実行手順
 
@@ -56,7 +57,7 @@ EC-01 から EC-05 の変更パターンに対する検証テストを追加す�
 
 ### ステップ2: regression case テストを作成する
 
-RC-01 から RC-03 のパターンに対する検出テストを追加する。
+RC-01 から RC-04 のパターンに対する検出テストを追加する。
 
 ### ステップ3: fixture 互換性を確認する
 
@@ -96,7 +97,7 @@ RC-01 から RC-03 のパターンに対する検出テストを追加する。
 ## 完了条件
 
 - [ ] edge case EC-01 から EC-05 が定義されている
-- [ ] regression case RC-01 から RC-03 が定義されている
+- [ ] regression case RC-01 から RC-04 が定義されている
 - [ ] fixture 互換性の確認が記録されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 

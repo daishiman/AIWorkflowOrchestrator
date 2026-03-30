@@ -27,8 +27,9 @@ manifest の resource descriptor が skill-creator ディレクトリの実フ�
 | phase-5 implementation | `phase-5-implementation.md`                           | 実装済み manifest |
 | phase-7 coverage check | `phase-7-coverage-check.md`                           | カバレッジ        |
 | phase-8 refactoring    | `phase-8-refactoring.md`                              | 最適化結果        |
-| workflow-manifest.json | `.agents/skills/skill-creator/workflow-manifest.json` | 検証対象          |
-| skill-creator          | `.agents/skills/skill-creator/`                       | ファイル実在確認  |
+| workflow-manifest.json | `.claude/skills/skill-creator/workflow-manifest.json` | 検証対象          |
+| skill-creator 正本     | `.claude/skills/skill-creator/`                       | ファイル実在確認  |
+| skill-creator mirror   | `.agents/skills/skill-creator/`                       | parity 確認対象   |
 
 ## 品質保証チェックリスト
 
@@ -41,6 +42,7 @@ manifest の resource descriptor が skill-creator ディレクトリの実フ�
 | 全 phase.entryHookId が entry[] に存在                 | id 照合                  |
 | 全 phase.exitHookId が exit[] に存在                   | id 照合                  |
 | 全 phase.dependsOn の phase id が phases[] に存在      | id 照合                  |
+| canonical / mirror に差分がない                        | `diff -qr` で確認        |
 
 ### 品質基準
 
@@ -50,6 +52,7 @@ manifest の resource descriptor が skill-creator ディレクトリの実フ�
 | ref integrity  | 全 id 参照が解決できる                             |
 | schema compat  | schemaVersion === WORKFLOW_MANIFEST_SCHEMA_VERSION |
 | json validity  | JSON.parse でエラーなし                            |
+| mirror parity  | canonical と mirror が byte-equivalent             |
 
 ## 実行手順
 

@@ -17,7 +17,7 @@ workflow-manifest.json の具体的な構造を設計する。manifest の phase
 
 - manifest 構造設計: workflowId、phases、resources、entry/exit の全体構造を決める
 - resource descriptor マッピング: skill-creator のディレクトリ構造を resource kind と path へ変換する
-- phase 定義: requirements_gathering、plan、execute、verify、improve の 5 phase を設計する
+- phase 定義: requirements-gathering、plan、execute、verify、improve の 5 phase を設計する
 - hook 定義: 各 phase の entryHookId / exitHookId と対応する command を設計する
 
 ## 参照資料

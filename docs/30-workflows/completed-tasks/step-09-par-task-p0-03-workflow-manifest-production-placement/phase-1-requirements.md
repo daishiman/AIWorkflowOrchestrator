@@ -11,25 +11,26 @@
 
 ## 目的
 
-workflow-manifest.json の本番配置に必要な要件・制約・受入条件を固定する。ManifestLoader の検証ルールを正本とし、skill-creator ディレクトリ構造を manifest schema へマッピングする前提条件を確定する。
+workflow-manifest.json の canonical 配置に必要な要件・制約・受入条件を固定する。ManifestLoader の検証ルールを正本とし、skill-creator ディレクトリ構造を manifest schema へマッピングしつつ、`.claude` / `.agents` の root 方針を前提条件として確定する。
 
 ## 実行タスク
 
 - FR-01 マッピング: ManifestLoader の検証ルールから manifest 必須フィールドを抽出する
 - manifest schema 要件: schemaVersion、workflowId、phases、resources、entry/exit hooks の構造要件を固定する
 - skill-creator ディレクトリ棚卸し: agents/、references/、schemas/、scripts/、assets/ の実在構造を確認する
-- 受入基準の定義: AC-1 から AC-6 の判定基準を固定する
+- 受入基準の定義: AC-1 から AC-7 の判定基準を固定する
 
 ## 参照資料
 
-| 資料名             | パス                                                                                                 | 説明                        |
-| ------------------ | ---------------------------------------------------------------------------------------------------- | --------------------------- |
-| ManifestLoader     | `apps/desktop/src/main/services/runtime/ManifestLoader.ts`                                           | 検証ルールの正本            |
-| テストフィクスチャ | `apps/desktop/src/main/services/runtime/__tests__/fixtures/workflow-manifest/workflow-manifest.json` | manifest 構造のリファレンス |
-| skill-creator      | `.agents/skills/skill-creator/`                                                                      | 配置先ディレクトリ          |
-| SKILL.md           | `.agents/skills/skill-creator/SKILL.md`                                                              | skill 定義                  |
-| path 定数          | `apps/desktop/src/main/services/skill/constants.ts`                                                  | パス定数                    |
-| P0 是正パック      | `../p0-verify-manifest-remediation-pack.md`                                                          | 親タスクパック              |
+| 資料名               | パス                                                                                                 | 説明                        |
+| -------------------- | ---------------------------------------------------------------------------------------------------- | --------------------------- |
+| ManifestLoader       | `apps/desktop/src/main/services/runtime/ManifestLoader.ts`                                           | 検証ルールの正本            |
+| テストフィクスチャ   | `apps/desktop/src/main/services/runtime/__tests__/fixtures/workflow-manifest/workflow-manifest.json` | manifest 構造のリファレンス |
+| skill-creator 正本   | `.claude/skills/skill-creator/`                                                                      | 配置先ディレクトリ          |
+| skill-creator mirror | `.agents/skills/skill-creator/`                                                                      | parity 確認対象             |
+| SKILL.md             | `.claude/skills/skill-creator/SKILL.md`                                                              | skill 定義                  |
+| path 定数            | `apps/desktop/src/main/services/skill/constants.ts`                                                  | パス定数                    |
+| P0 是正パック        | `../p0-verify-manifest-remediation-pack.md`                                                          | 親タスクパック              |
 
 ## 機能要求
 
@@ -39,9 +40,10 @@ workflow-manifest.json の本番配置に必要な要件・制約・受入条件
 | FR-02 | schemaVersion は WORKFLOW_MANIFEST_SCHEMA_VERSION（= 1）と一致すること            |
 | FR-03 | workflowId は skill-creator を一意に識別する文字列であること                      |
 | FR-04 | phases[] は skill creation workflow の lifecycle（5 phase）をカバーすること       |
-| FR-05 | resources[] は skill-creator ディレクトリ内の実在ファイルを参照すること           |
-| FR-06 | resource の kind は "agent"、"reference"、"schema" のいずれかにマッピングすること |
-| FR-07 | entry/exit hooks は各 phase に対応し、ManifestLoader の hooks 検証を通過すること  |
+| FR-05 | resources[] は `.claude/skills/skill-creator/` 内の実在ファイルを参照すること     |
+| FR-06 | `.agents/skills/skill-creator/workflow-manifest.json` が canonical と同期すること |
+| FR-07 | resource の kind は "agent"、"reference"、"schema" のいずれかにマッピングすること |
+| FR-08 | entry/exit hooks は各 phase に対応し、ManifestLoader の hooks 検証を通過すること  |
 
 ## 非機能要求
 
@@ -63,11 +65,11 @@ workflow-manifest.json の本番配置に必要な要件・制約・受入条件
 
 ### ステップ1: ManifestLoader 検証ルールを抽出する
 
-ManifestLoader.ts の `loadManifest()` メソッドから、必須フィールドと検証条件を一覧化する。
+ManifestLoader.ts の `loadManifest()` メソッドから、必須フィールドと検証条件を一覧化し、mirror parity で補う論点を分離する。
 
 ### ステップ2: skill-creator ディレクトリ構造を棚卸しする
 
-agents/（38 files）、references/（56 files）、schemas/（40 files）、scripts/（31 files）、assets/（56 files）の代表的なファイルを確認し、resource descriptor の候補を決める。
+`.claude/skills/skill-creator/` を正本として agents/（38 files）、references/（56 files）、schemas/（40 files）、scripts/（31 files）、assets/（56 files）の代表的なファイルを確認し、resource descriptor の候補を決める。
 
 ### ステップ3: manifest schema 要件を固定する
 
@@ -75,15 +77,16 @@ agents/（38 files）、references/（56 files）、schemas/（40 files）、scr
 
 ### ステップ4: 受入基準を定義する
 
-AC-1 から AC-6 の判定方法と検証コマンドを固定する。
+AC-1 から AC-7 の判定方法と検証コマンドを固定する。
 
 ## 統合テスト連携
 
-| 観点                | 実施内容                                               |
-| ------------------- | ------------------------------------------------------ |
-| ManifestLoader 整合 | loadManifest() の全検証項目が FR に反映されていること  |
-| ディレクトリ実在性  | resource descriptor が参照するパスが実在すること       |
-| schema 互換性       | テストフィクスチャと同一の schema structure であること |
+| 観点                | 実施内容                                                    |
+| ------------------- | ----------------------------------------------------------- |
+| ManifestLoader 整合 | loadManifest() の全検証項目が FR に反映されていること       |
+| ディレクトリ実在性  | resource descriptor が参照するパスが実在すること            |
+| mirror parity       | `.claude` と `.agents` の同期条件が FR に反映されていること |
+| schema 互換性       | テストフィクスチャと同一の schema structure であること      |
 
 ## 多角的チェック観点
 
@@ -113,7 +116,7 @@ AC-1 から AC-6 の判定方法と検証コマンドを固定する。
 - [ ] ManifestLoader の検証ルールが一覧化されている
 - [ ] skill-creator ディレクトリ構造が棚卸しされている
 - [ ] FR / NFR / 制約が定義されている
-- [ ] 受入基準 AC-1 から AC-6 の判定方法が固定されている
+- [ ] 受入基準 AC-1 から AC-7 の判定方法が固定されている
 - [ ] **本Phase内の全タスクを100%実行完了**
 
 ## タスク100%実行確認【必須】

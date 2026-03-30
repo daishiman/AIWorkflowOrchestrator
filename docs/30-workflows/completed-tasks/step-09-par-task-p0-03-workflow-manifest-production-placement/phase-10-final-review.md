@@ -11,11 +11,11 @@
 
 ## 目的
 
-受入基準 AC-1 から AC-6 の最終確認を行い、Phase 11 手動テストへ進めるかを判定する。
+受入基準 AC-1 から AC-7 の最終確認を行い、Phase 11 手動テストへ進めるかを判定する。
 
 ## 実行タスク
 
-- AC matrix 最終確認: AC-1 から AC-6 を evidence とともに再確認する
+- AC matrix 最終確認: AC-1 から AC-7 を evidence とともに再確認する
 - open findings 整理: 未解決項目を列挙する
 - review 判定: PASS / MINOR / MAJOR を記録する
 
@@ -29,24 +29,25 @@
 | phase-9 quality assurance | `phase-9-quality-assurance.md`                        | 品質確認結果     |
 | quality checklist         | `outputs/phase-9/quality-checklist.md`                | 品質チェック結果 |
 | risk register             | `outputs/phase-9/risk-register.md`                    | 残リスク         |
-| workflow-manifest.json    | `.agents/skills/skill-creator/workflow-manifest.json` | 検証対象         |
+| workflow-manifest.json    | `.claude/skills/skill-creator/workflow-manifest.json` | 検証対象         |
 
 ## AC matrix
 
 | AC   | 判定基準                                                         | evidence                     | 結果     |
 | ---- | ---------------------------------------------------------------- | ---------------------------- | -------- |
-| AC-1 | `.agents/skills/skill-creator/workflow-manifest.json` が存在する | `fs.existsSync()` 結果       | 確認対象 |
-| AC-2 | `ManifestLoader.loadManifest()` がエラーなしで完了する           | テスト TC-01 結果            | 確認対象 |
-| AC-3 | resource descriptor が実在ファイルを参照する                     | cross-reference 結果         | 確認対象 |
-| AC-4 | phase 定義が skill creation workflow lifecycle をカバーする      | phases.length >= 5           | 確認対象 |
-| AC-5 | schemaVersion が 1 である                                        | manifest.schemaVersion === 1 | 確認対象 |
-| AC-6 | entry/exit hooks が定義され、検証を通過する                      | TC-05, TC-06, TC-07 結果     | 確認対象 |
+| AC-1 | `.claude/skills/skill-creator/workflow-manifest.json` が存在する | `fs.existsSync()` 結果       | 確認対象 |
+| AC-2 | `.agents` mirror が canonical と一致する                         | `diff -qr` 結果              | 確認対象 |
+| AC-3 | `ManifestLoader.loadManifest()` がエラーなしで完了する           | テスト TC-01 結果            | 確認対象 |
+| AC-4 | resource descriptor が実在ファイルを参照する                     | cross-reference 結果         | 確認対象 |
+| AC-5 | phase 定義が skill creation workflow lifecycle をカバーする      | phases.length >= 5           | 確認対象 |
+| AC-6 | schemaVersion が 1 である                                        | manifest.schemaVersion === 1 | 確認対象 |
+| AC-7 | entry/exit hooks が定義され、検証を通過する                      | TC-05, TC-06, TC-07 結果     | 確認対象 |
 
 ## 実行手順
 
 ### ステップ1: AC を再確認する
 
-AC ごとに evidence を確認し、全て PASS していることを検証する。
+AC ごとに evidence を確認し、全て PASS していることを検証する。特に AC-1 と AC-2 は別観点として、存在確認と parity 確認を分離する。
 
 ### ステップ2: unresolved item を整理する
 
@@ -89,7 +90,7 @@ PASS なら Phase 11 へ進む。MAJOR なら戻り先 Phase を決める。
 
 ## 完了条件
 
-- [ ] AC-1 から AC-6 の最終確認が完了している
+- [ ] AC-1 から AC-7 の最終確認が完了している
 - [ ] open findings が記録されている
 - [ ] PASS / MINOR / MAJOR の判定が記録されている
 - [ ] **本Phase内の全タスクを100%実行完了**
