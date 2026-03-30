@@ -33,25 +33,25 @@
 
 ## 参照資料
 
-| 参照資料              | パス                                      | 内容                   |
-| --------------------- | ----------------------------------------- | ---------------------- |
-| Phase 1 要件成果物    | `outputs/phase-1/requirements.md`         | 手動確認の期待値根拠   |
-| Phase 2 設計成果物    | `outputs/phase-2/design-document.md`      | 契約プロファイルの設計 |
-| Phase 5 実装          | 各実装ファイル                            | 検証対象               |
+| 参照資料               | パス                                       | 内容                   |
+| ---------------------- | ------------------------------------------ | ---------------------- |
+| Phase 1 要件成果物     | `outputs/phase-1/requirements.md`          | 手動確認の期待値根拠   |
+| Phase 2 設計成果物     | `outputs/phase-2/design-document.md`       | 契約プロファイルの設計 |
+| Phase 5 実装           | 各実装ファイル                             | 検証対象               |
 | Phase 6 テスト拡充結果 | `outputs/phase-6/test-expansion-report.md` | 境界値と異常系の観点   |
-| Phase 7 カバレッジ結果 | `outputs/phase-7/coverage-report.md`      | テスト網羅状況         |
-| Phase 8 リファクタ結果 | `outputs/phase-8/refactoring-report.md`   | 変更箇所の確認         |
-| Phase 9 品質結果      | `outputs/phase-9/quality-report.md`       | 品質ゲート結果         |
-| Phase 10 レビュー結果 | `outputs/phase-10/final-review-result.md` | レビュー指摘の確認     |
-| P28対策               | `.claude/rules/06-known-pitfalls.md`      | 手動テスト確認漏れ防止 |
+| Phase 7 カバレッジ結果 | `outputs/phase-7/coverage-report.md`       | テスト網羅状況         |
+| Phase 8 リファクタ結果 | `outputs/phase-8/refactoring-report.md`    | 変更箇所の確認         |
+| Phase 9 品質結果       | `outputs/phase-9/quality-report.md`        | 品質ゲート結果         |
+| Phase 10 レビュー結果  | `outputs/phase-10/final-review-result.md`  | レビュー指摘の確認     |
+| P28対策                | `.claude/rules/06-known-pitfalls.md`       | 手動テスト確認漏れ防止 |
 
 ### システム仕様（aiworkflow-requirements）
 
-| 参照資料              | パス                                                                                    | 内容                         |
-| --------------------- | --------------------------------------------------------------------------------------- | ---------------------------- |
-| Skill IPC 契約仕様    | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md`      | 期待するAPI契約の確認        |
-| IPC チャンネル仕様    | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`                   | 主要チャネルの手動確認対象   |
-| Skill IPC セキュリティ | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc.md`              | エラー表示と検証要件の確認   |
+| 参照資料               | パス                                                                              | 内容                       |
+| ---------------------- | --------------------------------------------------------------------------------- | -------------------------- |
+| Skill IPC 契約仕様     | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill.md` | 期待するAPI契約の確認      |
+| IPC チャンネル仕様     | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent.md`              | 主要チャネルの手動確認対象 |
+| Skill IPC セキュリティ | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc.md`         | エラー表示と検証要件の確認 |
 
 ---
 
@@ -139,11 +139,11 @@
 2. 不正な入力（空文字列等）でのエラー表示確認
 3. ネットワークエラー時のフォールバック確認
 
-| #   | 操作                               | 期待結果                               |
-| --- | ---------------------------------- | -------------------------------------- |
+| #   | 操作                               | 期待結果                                 |
+| --- | ---------------------------------- | ---------------------------------------- |
 | 1   | 存在しないスキル名でインポート試行 | エラーメッセージが期待どおりに表示される |
-| 2   | 空文字列を入力して実行             | バリデーションエラーが表示される       |
-| 3   | DevToolsでエラーレスポンス形式確認 | サニタイズされたエラーが返却されること |
+| 2   | 空文字列を入力して実行             | バリデーションエラーが表示される         |
+| 3   | DevToolsでエラーレスポンス形式確認 | サニタイズされたエラーが返却されること   |
 
 ### タスク5: 契約整合性確認
 
@@ -167,10 +167,10 @@
 
 ## SubAgent 分担
 
-| SubAgent   | 担当 |
-| ---------- | ---- |
-| SubAgent-A | タスク1（実行フロー確認）+ タスク2（削除フロー確認） |
-| SubAgent-B | タスク3（インポートフロー確認）+ タスク4（エラーケース確認） |
+| SubAgent   | 担当                                                                     |
+| ---------- | ------------------------------------------------------------------------ |
+| SubAgent-A | タスク1（実行フロー確認）+ タスク2（削除フロー確認）                     |
+| SubAgent-B | タスク3（インポートフロー確認）+ タスク4（エラーケース確認）             |
 | SubAgent-C | タスク5（契約整合性確認）+ 統合テスト連携 + `manual-test-result.md` 作成 |
 
 ## 統合テスト連携【必須】

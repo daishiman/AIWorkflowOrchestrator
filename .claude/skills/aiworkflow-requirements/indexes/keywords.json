@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-30T13:36:41.655Z",
-  "totalKeywords": 2580,
+  "generated": "2026-03-30T07:56:49.349Z",
+  "totalKeywords": 2576,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6824,22 +6824,6 @@
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "verify": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "improve": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
-    ],
-    "reverify": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "closed": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "loop": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "authkey": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -9415,6 +9399,9 @@
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "mid": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "improve": [
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "契約ドリフト自動検出スクリプト完了": [

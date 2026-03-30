@@ -20,7 +20,7 @@
 
 #### Part 1: 中学生レベルの概念説明（日常的なアナロジー）
 
-**ファイル**: `docs/30-workflows/llm-provider-model-modernization/tasks/step-04-seq-task-05-schema-extension/implementation-guide.md`
+**ファイル**: `docs/30-workflows/step-04-seq-task-05-schema-extension/outputs/phase-12/implementation-guide.md`
 
 **作成内容（Part 1）:**
 
@@ -32,12 +32,12 @@
 > でも、「このパスタって、どんな料理なの？」と思うお客さんもいますよね。
 >
 > そこで、メニューの「説明文欄（description）」を追加しました。
-> これで「最も多機能なモデル（Most capable multimodal model）」のように、
+> これで「GPT-5.4の軽量版。高速・低コスト」のように、
 > 各AIモデルの特徴を表示できるようになります。
 >
-> ただし、今回は「メニューのテンプレートに説明文欄を作っただけ」で、
-> まだ実際のメニュー表（UI画面）に表示する部分は完成していません。
-> それは次のタスクでやります。
+> 今回は「メニューのテンプレートに説明文欄を作って、全メニューに説明文を書き込んだ」段階です。
+> まだ実際のメニュー表（UI画面）に説明文を表示する部分は完成していません。
+> それは次のタスク（TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY）でやります。
 
 **作成内容（Part 2）:**
 
@@ -45,34 +45,40 @@
 
 > **変更の概要**
 >
-> `PROVIDER_CONFIGS`（`apps/desktop/src/main/handlers/llm.ts`）のモデル配列要素型に
-> `description?: string` フィールドを追加し、各モデルに説明文を設定した。
+> `PROVIDER_CONFIGS`（`packages/shared/src/types/llm/schemas/provider-registry.ts`）の
+> OpenRouter セクション（4モデル）に `description` フィールドを追加し、説明文を設定した。
 >
 > **変更点**
 >
-> 1. `PROVIDER_CONFIGS` インライン型: `description?: string` を追加（L36）
-> 2. 全13モデルエントリに `description` 値を設定（30文字以内の英語）
+> 1. `provider-registry.ts`: OpenRouter 4モデルに `description` 値を追加
 >
 > **変更不要だった部分**
 >
-> - `LLMModelSchema`（`packages/shared/src/types/llm/schemas/provider.ts:35`）:
->   `description: z.string().optional()` が既に定義済みだったため変更なし
-> - `handleGetProviders()`（`llm.ts:206-222`）:
->   `models: config.models` で直接代入しているため変更なし
+> - `LLMModelSchema`（`provider.ts:30`）: `description: z.string().optional()` が既に定義済み
+> - `ProviderModelEntry`（`provider-registry.ts:22`）: `description?: string` が既に定義済み
+> - `handleGetProviders()`（`llm.ts:90-106`）: `models: [...config.models]` で自動伝搬するため変更不要
+> - OpenAI/Anthropic/Google/xAI の15モデル: 既に description 設定済み
 >
 > **データフロー**
 >
 > ```
-> PROVIDER_CONFIGS（description値あり）
->   ↓ handleGetProviders() が config.models をそのまま返す
-> LLMProvider[] （models[n].description を含む）
->   ↓ IPC: LLM_GET_PROVIDERS
-> Renderer（model.description で参照可能）
+> PROVIDER_CONFIGS (provider-registry.ts) — description値あり
+>   ↓ @repo/shared から export
+> handleGetProviders() (llm.ts:90-106)
+>   models: [...config.models] — description をスプレッドコピーで含む
+>   ↓ LLMProvider[] として返却
+> IPC: LLM_GET_PROVIDERS
+>   ↓ contextBridge 経由
+> Renderer — model.description で参照可能
 > ```
 
 ### Task 12-2: システム仕様書更新
 
 以下のファイルを更新する（3ファイル以内/サブエージェントに分割、P43対策）:
+
+- `task-workflow-completed.md`
+- `task-workflow-backlog.md`
+- `ui-ux-llm-selector.md`
 
 #### Step 1-A: タスク完了記録
 
@@ -129,19 +135,24 @@
 
 **3ステップ完全実施（P3・P38対策）:**
 
-1. `docs/30-workflows/llm-provider-model-modernization/tasks/step-04-seq-task-05-schema-extension/unassigned-task/renderer-description-display.md` を作成する
-2. 関連する `task-workflow.md` の残課題テーブルに登録する
+1. `docs/30-workflows/step-04-seq-task-05-schema-extension/unassigned-task/renderer-description-display.md` を作成する
+2. 関連する `task-workflow-backlog.md` の残課題テーブルに登録する
 3. 関連仕様書（LLM UI仕様書）に参照リンクを追加する
 
 **注意（P58対策）**: 設計タスクまたはオプションタスクであっても、独立した指示書ファイルの作成は省略しない。
 
 **未タスク件数**: 1件（TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY）
 
-また、以下も未タスク候補として記録する:
+再評価の結果、以下の候補は未タスク化せずに削除した:
 
 | タスクID候補                                | 概要                                                               | 優先度 |
 | ------------------------------------------- | ------------------------------------------------------------------ | ------ |
 | TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP | PROVIDER_CONFIGSのインライン型をLLMModel型で統一する（型重複削減） | 低     |
+
+### Task 12-5: スキルフィードバックレポート作成
+
+- `task-specification-creator` と `aiworkflow-requirements` の改善点を記録する
+- Phase 12 の必須成果物として `outputs/phase-12/skill-feedback-report.md` を作成する
 
 ## 参照資料
 
@@ -154,12 +165,13 @@
 
 ## 成果物
 
-| 成果物                     | パス                                                                                                                                            | 備考               |
-| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
-| 実装ガイド                 | `docs/30-workflows/llm-provider-model-modernization/tasks/step-04-seq-task-05-schema-extension/implementation-guide.md`                         | Part 1 + Part 2    |
-| documentation-changelog.md | `docs/30-workflows/llm-provider-model-modernization/tasks/step-04-seq-task-05-schema-extension/documentation-changelog.md`                      | 全 Step の完了記録 |
-| 未タスク指示書             | `docs/30-workflows/llm-provider-model-modernization/tasks/step-04-seq-task-05-schema-extension/unassigned-task/renderer-description-display.md` | 1件                |
-| unassigned-task-report.md  | `docs/30-workflows/llm-provider-model-modernization/tasks/step-04-seq-task-05-schema-extension/unassigned-task-report.md`                       | 0件以上必須        |
+| 成果物                     | パス                                                                                                     | 備考               |
+| -------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------ |
+| 実装ガイド                 | `docs/30-workflows/step-04-seq-task-05-schema-extension/outputs/phase-12/implementation-guide.md`        | Part 1 + Part 2    |
+| documentation-changelog.md | `docs/30-workflows/step-04-seq-task-05-schema-extension/outputs/phase-12/documentation-changelog.md`     | 全 Step の完了記録 |
+| 未タスク指示書             | `docs/30-workflows/step-04-seq-task-05-schema-extension/unassigned-task/renderer-description-display.md` | 1件                |
+| unassigned-task-report.md  | `docs/30-workflows/step-04-seq-task-05-schema-extension/unassigned-task-report.md`                       | 0件以上必須        |
+| skill-feedback-report.md   | `docs/30-workflows/step-04-seq-task-05-schema-extension/outputs/phase-12/skill-feedback-report.md`       | 改善提案           |
 
 ## 統合テスト連携
 
@@ -190,6 +202,7 @@ Phase 12 ではテスト追加は不要。Phase 4〜9 で実装済みのテス�
 
 - [ ] `unassigned-task-report.md` を作成した（0件でも必須）
 - [ ] TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY の3ステップが完全であること（①指示書作成 → ②task-workflow登録 → ③関連仕様書リンク追加、P3対策）
+- [ ] `skill-feedback-report.md` を作成した（0件でも必須）
 - [ ] 再評価クローズした未タスクがある場合は GitHub Issue を Close した（P56対策）
 
 ## 次のPhase

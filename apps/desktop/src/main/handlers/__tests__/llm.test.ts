@@ -666,6 +666,38 @@ describe("PROVIDER_CONFIGS - モデル定義更新検証（TASK-LLM-MOD-01）", 
   });
 });
 
+describe("handleGetProviders - description 伝搬（TASK-LLM-MOD-05）", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    vi.mocked(SecureStorage.getApiKey).mockResolvedValue("sk-test");
+  });
+
+  it("TS-B-01: PROVIDER_CONFIGSのモデルに description がある場合、返却値に含まれる", async () => {
+    const providers = await handleGetProviders();
+    // openai の gpt-5.4 は description が設定されている
+    const openai = providers.find((p) => p.id === "openai");
+    expect(openai).toBeDefined();
+    const model = openai?.models.find((m) => m.id === "gpt-5.4");
+    expect(model).toBeDefined();
+    expect(model?.description).toBeDefined();
+    expect(typeof model?.description).toBe("string");
+    expect(model?.description?.length).toBeGreaterThan(0);
+  });
+
+  it("TS-B-02: 全プロバイダーの全モデルに description が設定されていること", async () => {
+    const providers = await handleGetProviders();
+    for (const provider of providers) {
+      for (const model of provider.models) {
+        expect(
+          typeof model.description === "string" &&
+            model.description.trim().length > 0,
+          `provider ${provider.id}, model ${model.id} の description が未設定または空`,
+        ).toBe(true);
+      }
+    }
+  });
+});
+
 describe("inferProviderId - 新パターン検証（TASK-LLM-MOD-01）", () => {
   beforeEach(() => {
     vi.clearAllMocks();
