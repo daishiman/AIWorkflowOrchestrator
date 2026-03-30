@@ -21,6 +21,7 @@
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-03-30 | 2.12.0     | TASK-P0-05 execute-skill-file-writer-integration 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-P005-001 LLM応答パース見出し正規化 / L-P005-002 worktree canonical mirror同期 / L-P005-003 DI未注入 skilFileWriter fail-silent回避）                                                                                                                                                                                                                                                                                    |
 | 2026-03-30 | 3.1.0      | TASK-RT-03 SkillCreationResultPanel 教訓4件を追加（raw result local state保持 / terminal_handoff vs integrated_api 型ガード / progressive disclosure パターン / 共通UIパーツ early 抽出）                                                                                                                             |
+| 2026-03-30 | 3.2.0      | TASK-RT-05 multi_select UserInputKind 追加の教訓4件を追加（→ [lessons-learned-skill-create-multi-select-kind.md](lessons-learned-skill-create-multi-select-kind.md): L-RT05-001 field追加+kind分岐パターン、L-RT05-002 stale state useEffect reset、L-RT05-003 jest-dom setupFiles確認、L-RT05-004 shared contract same-wave sync） |
 | 2026-03-29 | 3.0.0      | TASK-P0-01 SkillCreatorVerificationEngine Layer 1/2 教訓3件を追加（L-VE-001: tmp fixture パターン / L-VE-002: Layer union 型拡張の backward compatibility / L-VE-003: SKILL.md セクション名 drift 検出の重要性）                                                                                                      |
 | 2026-03-29 | 2.11.0     | TASK-RT-02 api-key-ui-adapter-status 教訓3件を追加（→ [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md): useRef race condition 防止 / Promise.allSettled 独立エラー処理 / プロバイダー単位 isRetrying Map パターン）                                                           |
 | 2026-03-29 | 2.10.0     | UT-RT-06-CONS 教訓2件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-RT-06-CONS-001 Phase 7 グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002 最小共通helper抽出パターン）                                                                                              |
@@ -74,6 +75,8 @@
 
 | [lessons-learned-safety-gate-permission-fallback.md](lessons-learned-safety-gate-permission-fallback.md) | SafetyGate / Permission / Fallback | UT-06-005, TASK-SKILL-LIFECYCLE-08 |
 | [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md) | UI / 非同期状態管理 / アダプター | TASK-RT-02 api-key-ui-adapter-status, TASK-RT-03 SkillCreationResultPanel |
+| [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md) | UI / 非同期状態管理 / アダプター | TASK-RT-02 api-key-ui-adapter-status |
+| [lessons-learned-skill-create-multi-select-kind.md](lessons-learned-skill-create-multi-select-kind.md) | SkillCreator / UserInputKind / multi_select | TASK-RT-05 |
 | [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | アーカイブ | 2026-03-15以前の全エントリ |
 
 ---

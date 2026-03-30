@@ -21,6 +21,7 @@
 |------|-----------|----------|
 | 2026-03-30 | 3.0.0 | TASK-P0-06 conversational-interview-ui 教訓4件を追加（L-P0-06-001: useCallback内state同期読み取り、L-P0-06-002: document-levelキーリスナークリーンアップ、L-P0-06-003: vitest実行ディレクトリとhappy-dom環境、L-P0-06-004: esbuildプラットフォームミスマッチ） |
 | 2026-03-30 | 2.11.0 | TASK-P0-05 execute-skill-file-writer-integration 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-P005-001 LLM応答パース見出し正規化で `*.md.md` 重複回避 / L-P005-002 worktree環境でのcanonical mirror同期はPhase 12 close-out時に明示的に実施が必要 / L-P005-003 DI未注入のskilFileWriter に対してfail-silentせずconsole.warnガード） |
+| 2026-03-30 | 2.10.0 | TASK-RT-05 multi_select UserInputKind 追加の教訓4件を追加（→ [lessons-learned-skill-create-multi-select-kind.md](lessons-learned-skill-create-multi-select-kind.md): L-RT05-001 field追加+kind分岐パターン、L-RT05-002 stale state useEffect reset、L-RT05-003 jest-dom setupFiles確認、L-RT05-004 shared contract same-wave sync） |
 | 2026-03-29 | 3.0.0 | UT-SDK-07 shared IPC channel 契約整合 教訓3件を追加（L-UT-SDK07-001: shared チャネル移管後の参照パス更新、L-UT-SDK07-002: packages/shared/src/ipc/ 追加時の exports 同時更新、L-UT-SDK07-003: preload が shared を import する構造への仕様書更新パターン） |
 | 2026-03-29 | 2.10.0 | UT-RT-06-CONS 教訓2件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-RT-06-CONS-001 Phase 7 グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002 最小共通helper抽出パターン） |
 | 2026-03-28 | 2.9.0 | TASK-SDK-08 session-persistence-and-resume-contract 教訓3件を追加（L-1: esbuild mismatch、L-2: artifact命名規約 / validator不一致、L-3: Phase 11 UI/docs-only判定不一致） |
@@ -72,6 +73,7 @@
 | [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md) | Phase 12 / ワークフロー / ライフサイクル | TASK-SKILL-LIFECYCLE-04/05/06/07, TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001, TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001, TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 |
 
 | [lessons-learned-safety-gate-permission-fallback.md](lessons-learned-safety-gate-permission-fallback.md) | SafetyGate / Permission / Fallback | UT-06-005, TASK-SKILL-LIFECYCLE-08 |
+| [lessons-learned-skill-create-multi-select-kind.md](lessons-learned-skill-create-multi-select-kind.md) | SkillCreator / UserInputKind / multi_select | TASK-RT-05 |
 | [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | アーカイブ | 2026-03-15以前の全エントリ |
 
 ---
