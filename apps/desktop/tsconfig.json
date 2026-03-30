@@ -95,6 +95,9 @@
       ],
       "@repo/shared/types/skill-improver": [
         "../../packages/shared/src/types/skill-improver.ts"
+      ],
+      "@repo/shared/types/skillCreator": [
+        "../../packages/shared/src/types/skillCreator.ts"
       ]
     }
   },

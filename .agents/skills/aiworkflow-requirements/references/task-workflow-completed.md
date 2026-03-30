@@ -5,6 +5,41 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-06 |
+| ステータス | **完了** |
+| タイプ | implementation / ui |
+| 優先度 | P0 |
+| 完了日 | 2026-03-30 |
+| 対象 | スキル作成ワークフローのUI をフォームベースからチャット型会話UIに刷新 |
+| 成果物 | `docs/30-workflows/p0-verify-remediation-pack/task-p0-06-conversational-interview-ui/` |
+
+#### 実施内容
+
+- **新規ファイル**: `ConversationalInterview.tsx`, `InterviewProgressBar.tsx`, `useInterviewState.ts`, `interview-widgets/` (5ウィジェット), `index.ts`
+- **変更ファイル**: `SkillLifecyclePanel.tsx`（question-hostセクション置換）, `packages/shared/types/skillCreator.ts`（`multi_select` 型追加）
+- **テスト**: 74テスト (8ファイル) ALL PASS
+- **AC充足**: AC-1〜AC-13 全13項目
+
+#### 検証
+
+- 74テスト ALL PASS（8ファイル）
+- AC-1〜AC-13 全充足
+
+#### 苦戦箇所
+
+- `useCallback` 内 state 同期読み取り（undo 戻り値）: `setMessages` コールバック内の代入は非同期フラッシュのため同期 return に間に合わない → クロージャで現在 state を直接参照する方式に変更
+- vitest 実行ディレクトリ依存: monorepo ルートから実行すると `happy-dom` 環境が適用されず `document is not defined` エラー
+
+#### Phase 12 未タスク
+
+なし
+
+---
+
 ### タスク: TASK-P0-05 execute-skill-file-writer-integration（2026-03-30）
 
 | 項目 | 値 |
@@ -31,7 +66,6 @@
 - 50 tests PASS（parser 16 / facade persist 13 / workflow engine 23 ではなく、current targeted suite 合計 50 として記録）
 
 ---
-
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
 | 項目       | 値                                                                        |
@@ -1690,3 +1724,51 @@
 #### 再発防止ガイド
 
 `docs/40-guides/esbuild-arch-mismatch-prevention.md` — Preflight チェックリスト（5 ステップ）および診断・復旧手順
+
+---
+
+### タスク: TASK-P0-04 manifest-loader-default-startup（2026-03-30）
+
+| 項目       | 値                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-04                                                                                                                      |
+| ステータス | **Phase 1-12 完了 / Phase 13 pending**                                                                                          |
+| タイプ     | implementation                                                                                                                  |
+| 優先度     | P0                                                                                                                              |
+| 完了日     | 2026-03-30                                                                                                                      |
+| 依存タスク | TASK-P0-03（workflow-manifest.json canonical/mirror 配置）                                                                       |
+| 後続タスク | TASK-P0-05（runtime pipeline フル統合）                                                                                          |
+| 成果物     | `docs/30-workflows/completed-tasks/task-p0-04-manifest-loader-default-startup/`                                                 |
+
+#### 実施内容
+
+- `SKILL_CREATOR_MANIFEST_PATH = "workflow-manifest.json"` 定数を `apps/desktop/src/main/services/skill/constants.ts` に追加
+- `resolveDefaultManifestPath(explicitRoot?: string): string` 関数を実装：
+  - `explicitRoot` 指定時はそのパスを優先
+  - 未指定時は `getSkillCreatorRootCandidates()` の候補（env → home → repo）から `fs.existsSync` で実在パスを探索
+  - manifest が見つからない場合は日本語エラーメッセージで throw
+- ManifestLoader 自体は変更なし（呼び出し元の追加のみ）
+
+#### 検証
+
+- `pnpm exec vitest run ManifestLoader.production-manifest.test.ts`: **25 tests PASS**
+- TypeScript typecheck: PASS
+- ESLint: PASS
+
+#### テストケース追加内訳
+
+| テストID | 内容                                            | 結果 |
+| -------- | ----------------------------------------------- | ---- |
+| TC-10    | SKILL_CREATOR_MANIFEST_PATH で canonical を読む | PASS |
+| TC-11    | resolveDefaultManifestPath() が絶対パスを返す   | PASS |
+| TC-12    | 解決パスから manifest を読み込める              | PASS |
+| TC-13    | 定数が空文字でない                              | PASS |
+| TC-14    | explicitRoot が優先される                       | PASS |
+| EC-10    | 非存在ディレクトリ指定で正しいパスを返す        | PASS |
+| EC-11    | 候補なし時にエラー throw                        | PASS |
+| EC-12    | 破損 JSON で ManifestLoader がエラー            | PASS |
+
+#### Phase 12 未タスク
+
+なし（0件）
+

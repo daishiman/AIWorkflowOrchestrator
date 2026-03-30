@@ -11,6 +11,7 @@
 | 次Phase    | Phase 6: テスト拡充                              |
 | ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
+| 更新日     | 2026-03-30                                       |
 
 ## 目的
 
@@ -25,6 +26,16 @@ WorkflowEngine に `recordVerifyPass()` を追加し、improve→verify 遷移�
 - verify phase であることを前提条件として assert する
 - verify pass 後の phase 遷移先を設定する
 
+**既存シグネチャ（対称参照）**:
+
+```typescript
+// 既存: recordVerifyFailure (line 258-285)
+recordVerifyFailure(planId: string, message: string, nextAction: "review" | "improve" = "improve"): SkillCreatorWorkflowStateSnapshot
+
+// 新規: recordVerifyPass
+recordVerifyPass(planId: string, checks: RuntimeSkillCreatorVerifyCheck[]): SkillCreatorWorkflowStateSnapshot
+```
+
 ### Task 2: phase 遷移テーブルの修正
 
 - improve→verify（re-verify）遷移を遷移テーブルに追加する
@@ -32,11 +43,29 @@ WorkflowEngine に `recordVerifyPass()` を追加し、improve→verify 遷移�
 - `requestReverify()` の eligibility check を新遷移と整合させる
 - 不正遷移のガードを維持する
 
+**遷移テーブル修正内容（before/after）**:
+
+| 遷移           | Before（現状）           | After（修正後）               |
+| -------------- | ------------------------ | ----------------------------- |
+| verify(pass)   | 遷移先なし（未実装）     | verify → complete             |
+| improve→verify | 遷移不可                 | improve → verify（re-verify） |
+| verify(fail)   | verify → improve（既存） | 変更なし                      |
+
 ### Task 3: RuntimeSkillCreatorFacade 更新
 
 - `recordVerifyPass()` を Facade 経由で呼び出せるようにする
 - improve 完了後に re-verify を要求するメソッドを追加または修正する
 - 既存の `recordVerifyFailure()` 経路との並列配置を確認する
+
+**追加メソッド設計**:
+
+```typescript
+// verify 結果を処理し、pass/fail に応じて適切な遷移を実行する
+processVerifyResult(planId: string, result: SkillCreatorVerifyResult): SkillCreatorWorkflowStateSnapshot
+
+// improve 完了後に re-verify を要求する（eligibility check 付き）
+requestReVerify(planId: string): SkillCreatorWorkflowStateSnapshot
+```
 
 ### Task 4: IPC handler 更新
 
@@ -47,7 +76,17 @@ WorkflowEngine に `recordVerifyPass()` を追加し、improve→verify 遷移�
 ### Task 5: UI snapshot 拡張
 
 - `getCreatorSnapshot` が verify の pass/fail/pending 状態を含むよう修正する
-- `SkillCreatorVerifyResult` の status を snapshot に���映する
+- `SkillCreatorVerifyResult` の status を snapshot に反映する
+
+**追加 snapshot フィールド**:
+
+```typescript
+{
+  verifyStatus: "pending" | "pass" | "fail" | null;  // 現在の verify 状態
+  verifyChecks: RuntimeSkillCreatorVerifyCheck[];     // 個別チェック結果の配列
+  lastVerifyTimestamp: string | null;                 // 最終 verify 実行日時（ISO 8601）
+}
+```
 
 ## 参照資料
 
@@ -58,7 +97,25 @@ WorkflowEngine に `recordVerifyPass()` を追加し、improve→verify 遷移�
 | WorkflowEngine     | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | 修正本体        |
 | RuntimeFacade      | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`  | Facade 修正対象 |
 | creatorHandlers    | `apps/desktop/src/main/ipc/creatorHandlers.ts`                         | IPC 修正対象    |
-| skillCreator types | `packages/shared/src/types/skillCreator.ts`                            | 型定義の参��    |
+| skillCreator types | `packages/shared/src/types/skillCreator.ts`                            | 型定義の参照    |
+
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                  | パス                                                                                        | 内容                                                 |
+| ------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService、Facade injection パターンの仕様 |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時のインターフェース不整合防止チェックリスト  |
+| スキル実行IPCセキュリティ | `.agents/skills/aiworkflow-requirements/references/security-skill-ipc-core.md`              | セキュリティパターン                                 |
+
+## 多角的チェック観点
+
+| 観点               | 適用判断                                       | 確認内容                                     |
+| ------------------ | ---------------------------------------------- | -------------------------------------------- |
+| アーキテクチャ     | state machine 設計変更のため適用               | 遷移テーブル変更が既存パターンと一致すること |
+| IPC通信            | creatorHandlers.ts への handler 追加のため適用 | IPC契約チェックリスト準拠                    |
+| エラーハンドリング | verify 失敗時の improve 遷移のため適用         | graceful degradation の維持                  |
 
 ## 統合テスト連携
 
@@ -79,6 +136,7 @@ WorkflowEngine に `recordVerifyPass()` を追加し、improve→verify 遷移�
 - [ ] IPC handler が verify pass を処理する
 - [ ] UI snapshot が verify 状態を含む
 - [ ] Phase 4 のテストが全て pass する
+- [ ] aiworkflow-requirements の関連仕様を確認した
 - [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】

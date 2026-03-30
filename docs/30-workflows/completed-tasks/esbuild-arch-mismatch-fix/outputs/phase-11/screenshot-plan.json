@@ -1,0 +1,27 @@
+{
+  "phase": 11,
+  "mode": "NON_VISUAL",
+  "evidenceType": "terminal-output",
+  "captures": [
+    {
+      "id": "arch-check",
+      "command": "node -e \"console.log(process.arch)\"",
+      "outputFile": "docs/30-workflows/esbuild-arch-mismatch-fix/outputs/phase-11/screenshots/terminal-evidence.png"
+    },
+    {
+      "id": "esbuild-check",
+      "command": "ls node_modules/@esbuild/",
+      "outputFile": "docs/30-workflows/esbuild-arch-mismatch-fix/outputs/phase-11/screenshots/terminal-evidence.png"
+    },
+    {
+      "id": "vitest-check",
+      "command": "pnpm vitest run --reporter=verbose 2>&1 | head -20",
+      "outputFile": "docs/30-workflows/esbuild-arch-mismatch-fix/outputs/phase-11/screenshots/terminal-evidence.png"
+    },
+    {
+      "id": "rt06-check",
+      "command": "pnpm --filter @repo/desktop test:run -- src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.sdk-normalization.test.ts",
+      "outputFile": "docs/30-workflows/esbuild-arch-mismatch-fix/outputs/phase-11/screenshots/terminal-evidence.png"
+    }
+  ]
+}

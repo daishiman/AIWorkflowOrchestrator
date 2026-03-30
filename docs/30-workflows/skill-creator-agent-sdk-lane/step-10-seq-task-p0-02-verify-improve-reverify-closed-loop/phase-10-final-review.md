@@ -11,6 +11,7 @@
 | 次Phase    | Phase 11: 手動テスト                             |
 | ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
+| 更新日     | 2026-03-30                                       |
 
 ## 目的
 
@@ -57,6 +58,34 @@ AC-1〜AC-6 の総合判定を行い、閉ループ修復が完全に機能す�
 | カバレッジ       | `outputs/phase-7/coverage-report.md`       | AC 対応表        |
 | 品質保証         | `phase-9-quality-assurance.md`             | gate 入力        |
 | 最終レビュー結果 | `outputs/phase-10/final-review-result.md`  | 判定出力         |
+
+## AC 対応表
+
+| AC   | 条件                                                  | 対応Phase/テスト            | 判定 |
+| ---- | ----------------------------------------------------- | --------------------------- | ---- |
+| AC-1 | recordVerifyPass() が WorkflowEngine に実装されている | Phase 5 Task 1 / UT         | TBD  |
+| AC-2 | verify→improve 遷移が正しく動作する                   | Phase 4 Task 2 / UT         | TBD  |
+| AC-3 | improve→verify (re-verify) 遷移が動作する             | Phase 4 Task 2 / UT         | TBD  |
+| AC-4 | 完全サイクルがテスト可能                              | Phase 4 Task 2 / 統合テスト | TBD  |
+| AC-5 | UI snapshot が verify 状態を反映する                  | Phase 11 / 手動テスト       | TBD  |
+| AC-6 | requestReverify() が engine 結果と統合される          | Phase 4 Task 3 / UT         | TBD  |
+
+## システム仕様（aiworkflow-requirements）
+
+本タスクに関連する正本仕様への確認事項:
+
+### IPC 契約チェックリスト
+
+- [ ] `creatorHandlers.ts` の IPC チャネル定義が `packages/shared/src/ipc/channels.ts` と整合している
+- [ ] verify/improve 関連の IPC メッセージ型が `packages/shared/src/types/skill-*.ts` に定義されている
+- [ ] `preload/skill-api.ts` に verify/improve 操作のブリッジが公開されている
+- [ ] safeInvoke のタイムアウト設定が正本仕様と一致している
+
+### Skill Creator Service 仕様
+
+- [ ] `interfaces-agent-sdk-skill-reference.md` の verify/improve 遷移仕様を確認した
+- [ ] WorkflowEngine の phase transition spec が正本仕様と一致している
+- [ ] `task-workflow-phases.md` のフェーズ遷移テーブルとの整合性を確認した
 
 ## 統合テスト連携
 

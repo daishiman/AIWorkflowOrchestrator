@@ -4,11 +4,13 @@
 
 | 項目       | 値                                                     |
 | ---------- | ------------------------------------------------------ |
-| ステータス | 未着手                                                 |
+| ステータス | completed                                              |
 | 優先度     | High                                                   |
 | 起票日     | 2026-03-29                                             |
+| 完了日     | 2026-03-30                                             |
 | 起票元     | TASK-RT-06 Phase 10 / Phase 11 / Phase 12              |
 | 関連タスク | TASK-RT-06 (claude-sdk-message-contract-normalization) |
+| Issue番号  | #1710                                                  |
 
 ## 1. なぜこのタスクが必要か（Why）
 
@@ -55,9 +57,9 @@ RT-06 対象テストが 1 回実行（non-watch モード）で完了でき、�
 
 ## 5. 完了条件チェックリスト
 
-- [ ] RT-06 対象テストが watch ではなく 1 回実行で完了できる
-- [ ] esbuild arch 不整合エラーが発生しない
-- [ ] 同様の環境で再現手順が文書化されている
+- [x] RT-06 対象テストが watch ではなく 1 回実行で完了できる
+- [x] esbuild arch 不整合エラーが発生しない
+- [x] 同様の環境で再現手順が文書化されている
 
 ## 6. 検証方法
 
@@ -73,10 +75,12 @@ pnpm --filter @repo/desktop test:run -- src/main/services/runtime/__tests__/Runt
 
 ## 8. 参照情報
 
-- `docs/30-workflows/skill-creator-agent-sdk-lane/step-08-par-task-rt-06-claude-sdk-message-contract-normalization/outputs/phase-12/unassigned-task-detection.md`
+- `docs/30-workflows/esbuild-arch-mismatch-fix/index.md`
+- `docs/30-workflows/esbuild-arch-mismatch-fix/outputs/phase-12/unassigned-task-detection.md`
+- `docs/30-workflows/esbuild-arch-mismatch-fix/outputs/phase-12/implementation-guide.md`
 - `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.sdk-normalization.test.ts`
 
 ## 9. 備考
 
-本タスクは環境修正系（High）。RT-06 の品質証跡を確定させるために優先度高で対応が必要。
-`aiworkflow-requirements` の `task-workflow-backlog.md` にも登録すること。
+本タスクは環境修正系（High）。RT-06 の品質証跡を確定させるために優先度高で対応した。
+`aiworkflow-requirements` の `task-workflow-completed.md` へ完了記録を残し、`task-workflow-backlog.md` からは移管済み。
