@@ -13,7 +13,7 @@
  * - P40: cd apps/desktop && pnpm vitest run で実行
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { act } from "@testing-library/react";
 import { AgentView } from "../index";
 
@@ -50,16 +50,23 @@ const mockSelectModel = vi.fn();
 const mockSetCurrentView = vi.fn();
 const mockSetCurrentSkillName = vi.fn();
 
-function setMockPermissionsApi() {
-  Object.defineProperty(window, "electronAPI", {
-    value: {
-      permissions: {
-        getMode: vi.fn().mockResolvedValue("default"),
-        getRemembered: vi.fn().mockResolvedValue([]),
-        setMode: vi.fn().mockResolvedValue(undefined),
-        clearRemembered: vi.fn().mockResolvedValue(undefined),
-      },
-    },
+const mockPermissionAPI = {
+  getAllowedTools: vi.fn().mockResolvedValue({ tools: [] }),
+  revokeTool: vi.fn().mockResolvedValue({ success: true }),
+  clearAll: vi.fn().mockResolvedValue({ success: true, clearedCount: 0 }),
+};
+
+function setMockPermissionsApi(
+  overrides: Partial<typeof mockPermissionAPI> = {},
+) {
+  Object.assign(mockPermissionAPI, {
+    getAllowedTools: vi.fn().mockResolvedValue({ tools: [] }),
+    revokeTool: vi.fn().mockResolvedValue({ success: true }),
+    clearAll: vi.fn().mockResolvedValue({ success: true, clearedCount: 0 }),
+    ...overrides,
+  });
+  Object.defineProperty(window, "permissionAPI", {
+    value: mockPermissionAPI,
     configurable: true,
     writable: true,
   });
@@ -298,23 +305,18 @@ describe("AgentView - カバレッジ拡充", () => {
     });
   });
 
-  describe("handleResetRemembered エラーブランチ（L558-564）", () => {
-    it("clearRemembered が失敗したとき Error インスタンスのメッセージを含むエラートーストを表示する", async () => {
+  describe("handleResetRemembered エラーブランチ", () => {
+    it("clearAll が失敗したとき Error インスタンスのメッセージを含むエラートーストを表示する", async () => {
       const store = await import("../../../store");
       vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-      Object.defineProperty(window, "electronAPI", {
-        value: {
-          permissions: {
-            getMode: vi.fn().mockResolvedValue("default"),
-            getRemembered: vi.fn().mockResolvedValue([{}, {}]),
-            setMode: vi.fn().mockResolvedValue(undefined),
-            clearRemembered: vi
-              .fn()
-              .mockRejectedValue(new Error("reset failed")),
-          },
-        },
-        configurable: true,
-        writable: true,
+      setMockPermissionsApi({
+        getAllowedTools: vi.fn().mockResolvedValue({
+          tools: [
+            { toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" },
+            { toolName: "read", allowedAt: "2026-03-30T00:00:00Z" },
+          ],
+        }),
+        clearAll: vi.fn().mockRejectedValue(new Error("reset failed")),
       });
 
       render(<AgentView />);
@@ -332,20 +334,14 @@ describe("AgentView - カバレッジ拡充", () => {
       );
     });
 
-    it("clearRemembered が非 Error で失敗したとき汎用エラートーストを表示する", async () => {
+    it("clearAll が非 Error で失敗したとき汎用エラートーストを表示する", async () => {
       const store = await import("../../../store");
       vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-      Object.defineProperty(window, "electronAPI", {
-        value: {
-          permissions: {
-            getMode: vi.fn().mockResolvedValue("default"),
-            getRemembered: vi.fn().mockResolvedValue([{}]),
-            setMode: vi.fn().mockResolvedValue(undefined),
-            clearRemembered: vi.fn().mockRejectedValue("string error"),
-          },
-        },
-        configurable: true,
-        writable: true,
+      setMockPermissionsApi({
+        getAllowedTools: vi.fn().mockResolvedValue({
+          tools: [{ toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" }],
+        }),
+        clearAll: vi.fn().mockRejectedValue("string error"),
       });
 
       render(<AgentView />);
@@ -359,6 +355,32 @@ describe("AgentView - カバレッジ拡充", () => {
         "error",
         "記憶済み許可のリセットに失敗しました",
       );
+    });
+
+    it("clearAll が success:false を返したとき rememberedCount を維持してエラートーストを表示する", async () => {
+      const store = await import("../../../store");
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
+      setMockPermissionsApi({
+        getAllowedTools: vi.fn().mockResolvedValue({
+          tools: [{ toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" }],
+        }),
+        clearAll: vi
+          .fn()
+          .mockResolvedValue({ success: false, clearedCount: 0 }),
+      });
+
+      render(<AgentView />);
+      await screen.findByText("記憶された許可: 1件");
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: /リセット/i }));
+      });
+
+      expect(mockShowToast).toHaveBeenCalledWith(
+        "error",
+        "記憶済み許可のリセットに失敗しました",
+      );
+      expect(screen.getByText("記憶された許可: 1件")).toBeInTheDocument();
     });
   });
 
@@ -490,22 +512,10 @@ describe("AgentView - カバレッジ拡充", () => {
     });
   });
 
-  describe("handlePermissionModeChange setMode 未定義ブランチ（L529-530）", () => {
-    it("permissions API に setMode がないとき早期リターンしてトーストは出ない", async () => {
+  describe("handlePermissionModeChange ローカル state 動作", () => {
+    it("許可モードセレクタの変更がローカル state のみで動作し IPC 呼び出しは発生しない", async () => {
       const store = await import("../../../store");
       vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-      Object.defineProperty(window, "electronAPI", {
-        value: {
-          permissions: {
-            getMode: vi.fn().mockResolvedValue("default"),
-            getRemembered: vi.fn().mockResolvedValue([]),
-            // setMode を意図的に省略
-            clearRemembered: vi.fn().mockResolvedValue(undefined),
-          },
-        },
-        configurable: true,
-        writable: true,
-      });
 
       render(<AgentView />);
 
@@ -515,71 +525,59 @@ describe("AgentView - カバレッジ拡充", () => {
         });
       });
 
-      // setMode がないため何もしない（トーストなし）
+      // ローカル state のみで動作するため IPC 呼び出しなし、トーストなし
+      expect(screen.getByTestId("permission-mode-selector")).toHaveValue(
+        "acceptEdits",
+      );
       expect(mockShowToast).not.toHaveBeenCalled();
     });
   });
 
-  describe("handlePermissionModeChange 非 Error catch ブランチ（L539）", () => {
-    it("setMode が非 Error で失敗したとき汎用エラートーストを表示する", async () => {
+  describe("handleResetRemembered permissionAPI 不在ブランチ", () => {
+    it("permissionAPI が undefined のとき カウントを 0 にリセットしてトーストは出ない", async () => {
       const store = await import("../../../store");
       vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-      Object.defineProperty(window, "electronAPI", {
-        value: {
-          permissions: {
-            getMode: vi.fn().mockResolvedValue("default"),
-            getRemembered: vi.fn().mockResolvedValue([]),
-            setMode: vi.fn().mockRejectedValue("string error"),
-            clearRemembered: vi.fn().mockResolvedValue(undefined),
-          },
-        },
-        configurable: true,
+
+      // permissionAPI を undefined にする
+      const original = window.permissionAPI;
+      Object.defineProperty(window, "permissionAPI", {
+        value: undefined,
         writable: true,
+        configurable: true,
       });
 
       render(<AgentView />);
-
-      await act(async () => {
-        fireEvent.change(screen.getByTestId("permission-mode-selector"), {
-          target: { value: "acceptEdits" },
-        });
-      });
-
-      expect(mockShowToast).toHaveBeenCalledWith(
-        "error",
-        "許可モードの更新に失敗しました",
-      );
-    });
-  });
-
-  describe("handleResetRemembered clearRemembered 未定義ブランチ（L549-551）", () => {
-    it("permissions API に clearRemembered がないとき カウントを 0 にリセットしてトーストは出ない", async () => {
-      const store = await import("../../../store");
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-      Object.defineProperty(window, "electronAPI", {
-        value: {
-          permissions: {
-            getMode: vi.fn().mockResolvedValue("default"),
-            getRemembered: vi.fn().mockResolvedValue([{}, {}]),
-            setMode: vi.fn().mockResolvedValue(undefined),
-            // clearRemembered を意図的に省略
-          },
-        },
-        configurable: true,
-        writable: true,
-      });
-
-      render(<AgentView />);
-      await screen.findByText("記憶された許可: 2件");
 
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: /リセット/i }));
       });
 
-      // clearRemembered がないため成功トーストは出ない
+      // API 不在のため成功トーストは出ない
       expect(mockShowToast).not.toHaveBeenCalled();
-      // カウントが 0 にリセットされる（「記憶された許可: 0件」または非表示）
-      expect(screen.queryByText("記憶された許可: 2件")).not.toBeInTheDocument();
+
+      // クリーンアップ
+      Object.defineProperty(window, "permissionAPI", {
+        value: original,
+        writable: true,
+        configurable: true,
+      });
+    });
+  });
+
+  describe("Permission count empty-state UI", () => {
+    it("空の rememberedCount を表示し、リセットボタンを disabled にする", async () => {
+      const store = await import("../../../store");
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
+      setMockPermissionsApi({
+        getAllowedTools: vi.fn().mockResolvedValue({ tools: [] }),
+      });
+
+      render(<AgentView />);
+
+      await waitFor(() => {
+        expect(screen.getByText("記憶された許可: 0件")).toBeInTheDocument();
+      });
+      expect(screen.getByRole("button", { name: /リセット/i })).toBeDisabled();
     });
   });
 

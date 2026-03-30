@@ -2628,6 +2628,33 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
+| TASK-RT-06 教訓（2026-03-29） | L869 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L838 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L807 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L782 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L741 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L717 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L701 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L618 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L584 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L252 |
+| クイックリファレンス: カテゴリ別検索ガイド | L79 |
+| 分割ファイル一覧 | L64 |
+| 分割ファイル一覧 | L62 |
+| クイックリファレンス: カテゴリ別検索ガイド | L77 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L250 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L582 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L616 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L699 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L715 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L739 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L780 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L805 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L837 |
+| TASK-RT-06 教訓（2026-03-29） | L836 |
+| TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L858 |
+| TASK-P0-04 教訓（2026-03-30） | L890 |
+| TASK-P0-06 conversational-interview-ui（2026-03-30） | L879 |
 | 分割ファイル一覧 | L62 |
 | クイックリファレンス: カテゴリ別検索ガイド | L77 |
 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L250 |

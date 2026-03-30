@@ -1,0 +1,115 @@
+{
+  "taskId": "TASK-AGENTVIEW-PERM-FIX",
+  "taskName": "agentview-permission-api-fix",
+  "createdAt": "2026-03-30",
+  "priority": "high",
+  "scale": "small",
+  "category": "bugfix",
+  "description": "AgentView コンポーネントが存在しない Permission API パス (window.electronAPI.permissions) にアクセスしているバグを修正し、正しい API パス (window.permissionAPI) を使用するようにする",
+  "affectedFiles": [
+    "apps/desktop/src/renderer/views/AgentView/index.tsx",
+    "apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx",
+    "apps/desktop/src/preload/index.ts",
+    "apps/desktop/src/preload/types.ts",
+    "apps/desktop/src/renderer/components/settings/PermissionSettings/index.tsx",
+    "docs/30-workflows/agentview-permission-api-fix/index.md",
+    "docs/30-workflows/agentview-permission-api-fix/outputs/artifacts.json"
+  ],
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/agentview-permission-api-fix/phase-1-requirements.md"
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/agentview-permission-api-fix/phase-2-design.md"
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/agentview-permission-api-fix/phase-3-design-review.md"
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx"
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["apps/desktop/src/renderer/views/AgentView/index.tsx"]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "apps/desktop/src/renderer/views/AgentView/__tests__/AgentView.test.tsx"
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-7/coverage-report.md",
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-7/integration-test.md"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/agentview-permission-api-fix/phase-8-refactoring.md"
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-9/quality-gate-report.md"
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-10/final-review-summary.md"
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-11/manual-test-result.md",
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-11/screenshot-evidence.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-12/implementation-guide.md",
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-12/system-spec-update-summary.md",
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-12/documentation-changelog.md",
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-12/unassigned-task-detection.md",
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": [
+        "docs/30-workflows/agentview-permission-api-fix/outputs/phase-13/pr-summary.md"
+      ]
+    }
+  }
+}
