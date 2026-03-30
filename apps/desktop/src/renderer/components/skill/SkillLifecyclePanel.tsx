@@ -23,6 +23,7 @@ import type {
 } from "@repo/shared/types";
 import type { PlanResult } from "../../store/slices/agentSlice";
 import { ApiKeySettingsPanel } from "./ApiKeySettingsPanel";
+import { ConversationalInterview } from "./ConversationalInterview";
 import {
   useBeginSkillReview,
   useClearHandoffGuidance,
@@ -595,7 +596,7 @@ export function SkillLifecyclePanel({
     clearHandoffGuidance();
   };
 
-  const handleSubmitWorkflowInput = async () => {
+  const _handleSubmitWorkflowInput = async () => {
     if (!workflowSnapshot?.awaitingUserInput) {
       return;
     }
@@ -1183,7 +1184,7 @@ export function SkillLifecyclePanel({
     (isExecuting ||
       streamingMessages.length > 0 ||
       (skillExecutionStatus !== null && skillExecutionStatus !== "idle"));
-  const pendingRequest = workflowSnapshot?.awaitingUserInput ?? null;
+  const _pendingRequest = workflowSnapshot?.awaitingUserInput ?? null;
 
   return (
     <div
@@ -1319,100 +1320,35 @@ export function SkillLifecyclePanel({
               </span>
             </div>
 
-            {pendingRequest ? (
-              <div
-                className="mt-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-4"
-                data-testid="skill-lifecycle-question-host"
-              >
-                <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                  Question Host
-                </p>
-                <h4 className="mt-2 text-sm font-semibold text-[var(--text-primary)]">
-                  {pendingRequest.title}
-                </h4>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                  {pendingRequest.prompt}
-                </p>
-
-                {pendingRequest.kind === "single_select" ? (
-                  <div className="mt-4 space-y-2">
-                    {pendingRequest.options?.map((option) => (
-                      <label
-                        key={option.id}
-                        className="flex cursor-pointer items-start gap-3 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3"
-                      >
-                        <input
-                          type="radio"
-                          name="workflow-single-select"
-                          checked={selectedOptionId === option.id}
-                          onChange={() => setSelectedOptionId(option.id)}
-                        />
-                        <span className="text-sm text-[var(--text-primary)]">
-                          {option.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                ) : null}
-
-                {pendingRequest.kind === "free_text" ? (
-                  <textarea
-                    value={textAnswer}
-                    onChange={(event) => setTextAnswer(event.target.value)}
-                    rows={4}
-                    placeholder={pendingRequest.placeholder}
-                    className="mt-4 w-full rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)]"
-                  />
-                ) : null}
-
-                {pendingRequest.kind === "secret" ? (
-                  <input
-                    type="password"
-                    value={secretAnswer}
-                    onChange={(event) => setSecretAnswer(event.target.value)}
-                    placeholder={pendingRequest.placeholder}
-                    className="mt-4 w-full rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)]"
-                  />
-                ) : null}
-
-                {pendingRequest.kind === "confirm" ? (
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      type="button"
-                      className={lifecycleButtonStyles.primary}
-                      onClick={() => setConfirmAnswer(true)}
-                    >
-                      はい
-                    </button>
-                    <button
-                      type="button"
-                      className={lifecycleButtonStyles.secondary}
-                      onClick={() => setConfirmAnswer(false)}
-                    >
-                      いいえ
-                    </button>
-                  </div>
-                ) : null}
-
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className={lifecycleButtonStyles.primary}
-                    onClick={() => {
-                      void handleSubmitWorkflowInput();
-                    }}
-                    data-testid="skill-lifecycle-submit-user-input"
-                  >
-                    回答を送信する
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="mt-4 rounded-xl border border-dashed border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4 text-sm text-[var(--text-secondary)]">
-                現在 pending の質問はありません。phase owner は Main 側 workflow
-                engine のまま維持されます。
-              </div>
-            )}
+            <div
+              className="mt-4 min-h-[320px]"
+              data-testid="skill-lifecycle-question-host"
+            >
+              <ConversationalInterview
+                workflowSnapshot={workflowSnapshot}
+                onSubmit={async (submission) => {
+                  const skillCreatorApi = getSkillCreatorApi();
+                  if (!skillCreatorApi?.submitUserInput) {
+                    setWorkflowError(
+                      "workflow user input API が利用できません",
+                    );
+                    throw new Error("workflow user input API が利用できません");
+                  }
+                  const result =
+                    await skillCreatorApi.submitUserInput(submission);
+                  if (!result.success || !result.data) {
+                    const message =
+                      result.error ??
+                      "workflow user input の送信に失敗しました";
+                    setWorkflowError(message);
+                    throw new Error(message);
+                  }
+                  setWorkflowSnapshot(result.data);
+                  setWorkflowError(null);
+                }}
+                onError={(msg) => setWorkflowError(msg)}
+              />
+            </div>
           </div>
 
           <div className="space-y-4">
