@@ -176,6 +176,42 @@ describe("LLMModelSchema", () => {
     });
   });
 
+  describe("TS-A: description フィールドの伝搬確認", () => {
+    it("TS-A-01: descriptionなしの最小モデルで description が undefined", () => {
+      const input = { id: "gpt-4o", name: "GPT-4o" };
+      const result = LLMModelSchema.safeParse(input);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.description).toBeUndefined();
+      }
+    });
+
+    it("TS-A-02: descriptionありのモデルで description が保持される", () => {
+      const input = {
+        id: "gpt-4o",
+        name: "GPT-4o",
+        description: "Most capable multimodal model",
+      };
+      const result = LLMModelSchema.safeParse(input);
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(result.data.description).toBe("Most capable multimodal model");
+      }
+    });
+
+    it("TS-A-03: description が空文字列の場合もバリデーションを通過する", () => {
+      const input = { id: "gpt-4o", name: "GPT-4o", description: "" };
+      const result = LLMModelSchema.safeParse(input);
+      expect(result.success).toBe(true);
+    });
+
+    it("TS-A-04: description が null の場合はバリデーションに失敗する", () => {
+      const input = { id: "gpt-4o", name: "GPT-4o", description: null };
+      const result = LLMModelSchema.safeParse(input);
+      expect(result.success).toBe(false);
+    });
+  });
+
   describe("型推論", () => {
     it("推論された型がLLMModelであること", () => {
       const input = { id: "gpt-4o", name: "GPT-4o" };

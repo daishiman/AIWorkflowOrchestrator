@@ -5,40 +5,32 @@
 
 ## 完了タスク
 
-### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
+### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | TASK-P0-06 |
+| タスクID | TASK-P0-02 |
 | ステータス | **完了** |
-| タイプ | implementation / ui |
-| 優先度 | P0 |
+| タイプ | implementation / runtime orchestration |
+| 優先度 | 高 |
 | 完了日 | 2026-03-30 |
-| 対象 | スキル作成ワークフローのUI をフォームベースからチャット型会話UIに刷新 |
-| 成果物 | `docs/30-workflows/p0-verify-remediation-pack/task-p0-06-conversational-interview-ui/` |
+| 対象 | `SkillCreatorWorkflowEngine` / `RuntimeSkillCreatorFacade` の閉ループ改善 |
+| 成果物 | `docs/30-workflows/task-imp-verify-improve-revert-loop-002/` |
 
 #### 実施内容
 
-- **新規ファイル**: `ConversationalInterview.tsx`, `InterviewProgressBar.tsx`, `useInterviewState.ts`, `interview-widgets/` (5ウィジェット), `index.ts`
-- **変更ファイル**: `SkillLifecyclePanel.tsx`（question-hostセクション置換）, `packages/shared/types/skillCreator.ts`（`multi_select` 型追加）
-- **テスト**: 74テスト (8ファイル) ALL PASS
-- **AC充足**: AC-1〜AC-13 全13項目
+- `recordVerifyPass()` / `recordImproveAttempt()` / `getImproveAttemptCount()` を `SkillCreatorWorkflowEngine` に追加
+- `verifyAndImproveLoop()` に `maxImproveRetry` と feedback memory を追加
+- `failedChecks` のみを改善入力に使い、直前の改善要約を次回 feedback に合成
+- Phase 12 の未タスク検出を current 0件へ更新し、UT-P0-02-001 を今回フェーズへ吸収
+- `packages/shared/src/types/skillCreator.ts` と `packages/shared/src/types/index.ts` を同期
 
-#### 検証
+#### 検証証跡
 
-- 74テスト ALL PASS（8ファイル）
-- AC-1〜AC-13 全充足
-
-#### 苦戦箇所
-
-- `useCallback` 内 state 同期読み取り（undo 戻り値）: `setMessages` コールバック内の代入は非同期フラッシュのため同期 return に間に合わない → クロージャで現在 state を直接参照する方式に変更
-- vitest 実行ディレクトリ依存: monorepo ルートから実行すると `happy-dom` 環境が適用されず `document is not defined` エラー
-
-#### Phase 12 未タスク
-
-なし
-
----
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/formatVerifyChecksAsFeedback.test.ts`
+- 70 tests PASS
+- `pnpm --filter @repo/desktop typecheck` PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/task-imp-verify-improve-revert-loop-002 --json` PASS
 
 ### タスク: TASK-P0-05 execute-skill-file-writer-integration（2026-03-30）
 
@@ -66,6 +58,74 @@
 - 50 tests PASS（parser 16 / facade persist 13 / workflow engine 23 ではなく、current targeted suite 合計 50 として記録）
 
 ---
+
+### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
+
+| 項目       | 値                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-06                                                                              |
+| ステータス | **Phase 1–11 完了 / Phase 12 incomplete（Phase 11 evidence 未取得）**                   |
+| タイプ     | implementation / ui component                                                           |
+| 優先度     | 高                                                                                      |
+| 完了日     | 2026-03-30（Phase 11 まで）                                                             |
+| 対象       | スキル作成フォームを会話型インタビュー UI へ刷新                                        |
+| 成果物     | `docs/30-workflows/completed-tasks/step-09-par-task-p0-06-conversational-interview-ui/` |
+
+#### 実施内容
+
+- `ConversationalInterview.tsx`（メインコンポーネント）を新規作成し、段階的な質問フローを実装
+- `conversation-state-contract.md` で会話状態遷移設計を明文化
+- `input-widget-contract-matrix.md` で 5 種の入力 widget 型（single-select / multi-select / text / secret / confirm）を定義
+- `useInterviewState` フックで状態一元管理（undo 復元・submit 失敗時 rollback を含む）
+- `interview-widgets/` ディレクトリに 7 コンポーネントを配置
+- `SkillCreatorUserInputSubmission` に `selectedValues` 互換入力を追加し、`multi_select` 契約を Main まで閉じた（RT-05 協調）
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/ConversationalInterview*.test.ts src/renderer/components/skill/__tests__/useInterviewState.test.ts`
+- 74 tests PASS（widget 41 / state 11 / progress-bar 5 / main component 17）
+- TypeScript typecheck: PASS / ESLint: PASS
+
+#### Phase 12 未タスク
+
+| ID                            | 内容                                             | 優先度 | Issue |
+| ----------------------------- | ------------------------------------------------ | ------ | ----- |
+| UT-P0-06-PHASE11-EVIDENCE-001 | representative screenshots と手動テスト証跡取得 | High   | #1767 |
+
+---
+
+### タスク: TASK-LLM-MOD-05 schema-extension description sync（2026-03-30）
+
+| 項目       | 値                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------- |
+| タスクID   | TASK-LLM-MOD-05                                                                    |
+| ステータス | **完了**                                                                           |
+| タイプ     | implementation / documentation sync                                                |
+| 優先度     | 中                                                                                 |
+| 完了日     | 2026-03-30                                                                         |
+| 対象       | `provider-registry.ts` の OpenRouter 4モデル description 追加 + Phase 12 同期     |
+| 成果物     | `docs/30-workflows/step-04-seq-task-05-schema-extension/`                         |
+
+#### 実施内容
+
+- `packages/shared/src/types/llm/schemas/provider-registry.ts` の OpenRouter 4モデルに `description` を追加
+- `packages/shared/src/types/llm/schemas/__tests__/provider.test.ts` と `apps/desktop/src/main/handlers/__tests__/llm.test.ts` に description 伝搬確認を追加
+- Phase 12 の `implementation-guide.md` / `documentation-changelog.md` / `skill-feedback-report.md` / `unassigned-task-report.md` を同期
+- `task-workflow-backlog.md` と `ui-ux-llm-selector.md` に Renderer の未タスクを登録
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared exec vitest run src/types/llm/schemas/__tests__/provider.test.ts`
+- `pnpm --filter @repo/desktop exec vitest run src/main/handlers/__tests__/llm.test.ts`
+- targeted suite: `provider.test.ts` 41 tests PASS、`llm.test.ts` 59 passed / 1 skipped
+
+#### Phase 12 未タスク
+
+- `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY` を backlog と `ui-ux-llm-selector.md` に同期
+- `TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` は再評価で削除済み
+
+---
+
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
 | 項目       | 値                                                                        |
@@ -1771,4 +1831,3 @@
 #### Phase 12 未タスク
 
 なし（0件）
-

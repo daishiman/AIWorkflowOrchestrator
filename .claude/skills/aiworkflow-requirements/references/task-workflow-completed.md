@@ -59,6 +59,73 @@
 
 ---
 
+### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
+
+| 項目       | 値                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-06                                                                              |
+| ステータス | **Phase 1–11 完了 / Phase 12 incomplete（Phase 11 evidence 未取得）**                   |
+| タイプ     | implementation / ui component                                                           |
+| 優先度     | 高                                                                                      |
+| 完了日     | 2026-03-30（Phase 11 まで）                                                             |
+| 対象       | スキル作成フォームを会話型インタビュー UI へ刷新                                        |
+| 成果物     | `docs/30-workflows/completed-tasks/step-09-par-task-p0-06-conversational-interview-ui/` |
+
+#### 実施内容
+
+- `ConversationalInterview.tsx`（メインコンポーネント）を新規作成し、段階的な質問フローを実装
+- `conversation-state-contract.md` で会話状態遷移設計を明文化
+- `input-widget-contract-matrix.md` で 5 種の入力 widget 型（single-select / multi-select / text / secret / confirm）を定義
+- `useInterviewState` フックで状態一元管理（undo 復元・submit 失敗時 rollback を含む）
+- `interview-widgets/` ディレクトリに 7 コンポーネントを配置
+- `SkillCreatorUserInputSubmission` に `selectedValues` 互換入力を追加し、`multi_select` 契約を Main まで閉じた（RT-05 協調）
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/ConversationalInterview*.test.ts src/renderer/components/skill/__tests__/useInterviewState.test.ts`
+- 74 tests PASS（widget 41 / state 11 / progress-bar 5 / main component 17）
+- TypeScript typecheck: PASS / ESLint: PASS
+
+#### Phase 12 未タスク
+
+| ID                            | 内容                                             | 優先度 | Issue |
+| ----------------------------- | ------------------------------------------------ | ------ | ----- |
+| UT-P0-06-PHASE11-EVIDENCE-001 | representative screenshots と手動テスト証跡取得 | High   | #1767 |
+
+---
+
+### タスク: TASK-LLM-MOD-05 schema-extension description sync（2026-03-30）
+
+| 項目       | 値                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------- |
+| タスクID   | TASK-LLM-MOD-05                                                                    |
+| ステータス | **完了**                                                                           |
+| タイプ     | implementation / documentation sync                                                |
+| 優先度     | 中                                                                                 |
+| 完了日     | 2026-03-30                                                                         |
+| 対象       | `provider-registry.ts` の OpenRouter 4モデル description 追加 + Phase 12 同期     |
+| 成果物     | `docs/30-workflows/step-04-seq-task-05-schema-extension/`                         |
+
+#### 実施内容
+
+- `packages/shared/src/types/llm/schemas/provider-registry.ts` の OpenRouter 4モデルに `description` を追加
+- `packages/shared/src/types/llm/schemas/__tests__/provider.test.ts` と `apps/desktop/src/main/handlers/__tests__/llm.test.ts` に description 伝搬確認を追加
+- Phase 12 の `implementation-guide.md` / `documentation-changelog.md` / `skill-feedback-report.md` / `unassigned-task-report.md` を同期
+- `task-workflow-backlog.md` と `ui-ux-llm-selector.md` に Renderer の未タスクを登録
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared exec vitest run src/types/llm/schemas/__tests__/provider.test.ts`
+- `pnpm --filter @repo/desktop exec vitest run src/main/handlers/__tests__/llm.test.ts`
+- targeted suite: `provider.test.ts` 41 tests PASS、`llm.test.ts` 59 passed / 1 skipped
+
+#### Phase 12 未タスク
+
+- `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY` を backlog と `ui-ux-llm-selector.md` に同期
+- `TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` は再評価で削除済み
+
+---
+
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
 | 項目       | 値                                                                        |
@@ -1764,4 +1831,3 @@
 #### Phase 12 未タスク
 
 なし（0件）
-

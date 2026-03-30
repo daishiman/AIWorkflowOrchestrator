@@ -225,6 +225,7 @@ current public surface は次の 5 フィールドのみ。
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| 1.4.1 | 2026-03-30 | TASK-LLM-MOD-05 を反映: `provider-registry.ts` の OpenRouter 4モデルに description を追加し、`ProviderModelEntry.description?` / `LLMModelSchema.description` の既存契約と `handleGetProviders()` の伝搬経路を再確認 |
 | 1.4.0 | 2026-03-25 | UT-LLM-MOD-01-005 を反映: `provider-registry.ts` を SSoT として明記し、5 provider / `LLMProviderSchema` current fields / `handleGetProviders()` の実装事実へ同期 |
 | 1.3.0 | 2026-03-24 | TASK-LLM-MOD-03 を反映: GoogleAdapter system_instruction / `v1beta` 反映 |
 | 1.2.0 | 2026-03-17 | `llm:check-health` catch の `disconnected` 返却を反映 |
