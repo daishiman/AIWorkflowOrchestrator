@@ -36,14 +36,11 @@ const mockSetCurrentView = vi.fn();
 const mockSetCurrentSkillName = vi.fn();
 
 function setMockPermissionsApi() {
-  Object.defineProperty(window, "electronAPI", {
+  Object.defineProperty(window, "permissionAPI", {
     value: {
-      permissions: {
-        getMode: vi.fn().mockResolvedValue("default"),
-        getRemembered: vi.fn().mockResolvedValue([]),
-        setMode: vi.fn().mockResolvedValue(undefined),
-        clearRemembered: vi.fn().mockResolvedValue(undefined),
-      },
+      getAllowedTools: vi.fn().mockResolvedValue({ tools: [] }),
+      revokeTool: vi.fn().mockResolvedValue({ success: true }),
+      clearAll: vi.fn().mockResolvedValue({ success: true, clearedCount: 0 }),
     },
     configurable: true,
     writable: true,

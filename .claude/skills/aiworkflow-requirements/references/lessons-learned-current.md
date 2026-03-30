@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-30 | 2.12.0 | AgentView Permission API 修正 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-AGENTPERM-001 esbuild platform mismatch によるテスト環境ブロック / L-AGENTPERM-002 Permission API 契約境界の逸脱検出 / L-AGENTPERM-003 テストファイル複数分散時のモック管理） |
 | 2026-03-30 | 2.11.0 | TASK-P0-05 execute-skill-file-writer-integration 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-P005-001 LLM応答パース見出し正規化で `*.md.md` 重複回避 / L-P005-002 worktree環境でのcanonical mirror同期はPhase 12 close-out時に明示的に実施が必要 / L-P005-003 DI未注入のskilFileWriter に対してfail-silentせずconsole.warnガード） |
 | 2026-03-29 | 3.0.0 | UT-SDK-07 shared IPC channel 契約整合 教訓3件を追加（L-UT-SDK07-001: shared チャネル移管後の参照パス更新、L-UT-SDK07-002: packages/shared/src/ipc/ 追加時の exports 同時更新、L-UT-SDK07-003: preload が shared を import する構造への仕様書更新パターン） |
 | 2026-03-29 | 2.10.0 | UT-RT-06-CONS 教訓2件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-RT-06-CONS-001 Phase 7 グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002 最小共通helper抽出パターン） |

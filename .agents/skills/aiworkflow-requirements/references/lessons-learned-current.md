@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-30 | 2.12.0 | AgentView Permission API 修正 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-AGENTPERM-001 esbuild platform mismatch によるテスト環境ブロック / L-AGENTPERM-002 Permission API 契約境界の逸脱検出 / L-AGENTPERM-003 テストファイル複数分散時のモック管理） |
 | 2026-03-30 | 2.11.0 | TASK-P0-05 execute-skill-file-writer-integration 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-P005-001 LLM応答パース見出し正規化で `*.md.md` 重複回避 / L-P005-002 worktree環境でのcanonical mirror同期はPhase 12 close-out時に明示的に実施が必要 / L-P005-003 DI未注入のskilFileWriter に対してfail-silentせずconsole.warnガード） |
 | 2026-03-29 | 3.0.0 | UT-SDK-07 shared IPC channel 契約整合 教訓3件を追加（L-UT-SDK07-001: shared チャネル移管後の参照パス更新、L-UT-SDK07-002: packages/shared/src/ipc/ 追加時の exports 同時更新、L-UT-SDK07-003: preload が shared を import する構造への仕様書更新パターン） |
 | 2026-03-29 | 2.10.0 | UT-RT-06-CONS 教訓2件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-RT-06-CONS-001 Phase 7 グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002 最小共通helper抽出パターン） |
@@ -884,25 +885,3 @@
 | 解決策 | `manual-test-checklist.md` と `discovered-issues.md` を必須補助成果物として追加 |
 | 標準ルール | UI 非変更タスクは「N/A 根拠 + 代替証跡（checklist/issues）」をセットで残す |
 | 関連タスク | TASK-RT-06 |
-
----
-
-## TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out）
-
-### L-LLM-MOD-04-001: P50 タスクを新規実装前提で書き続けると validator fail と stale guidance を同時に生む
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | TASK-LLM-MOD-04 は Task 01〜03 でテスト同時更新済み（コード変更 0 行）の P50 パターンだったが、タスク仕様書が新規実装前提のテンプレートのまま残り、Phase 12 で「実装 0 行なのに実装ガイドが長大」という stale guidance を生んだ |
-| 解決策 | Phase 1 で「このタスクが P50（既実装発見）か否か」を明示し、P50 の場合は Phase 4-5 テンプレートを docs-only 向けに簡略化する |
-| 標準ルール | `git log -- <target-file>` で既実装状況を Phase 1 で確認し、P50 判定時は仕様書を P50 モードへ切り替える |
-| 関連タスク | TASK-LLM-MOD-04 |
-
-### L-LLM-MOD-04-002: canonical system spec が更新済みでも workflow root が stale なら利用者は誤誘導される
-
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `.claude/skills/aiworkflow-requirements/LOGS.md` が 2026-03-24 完了記録済みでも、`step-03-seq-task-04-test-update/` の workflow root が Phase 11/12 成果物なしのまま残ると、参照者は「タスク未完了」と誤認する |
-| 解決策 | Phase 12 で workflow root に close-out 成果物（implementation-guide / system-spec-update-summary / unassigned-task-detection 等）を揃え、canonical spec との整合を同一 wave で確認する |
-| 標準ルール | `resource-map` / `quick-reference` は「正本は shared catalog」を読む導線として有効。workflow root の close-out を canonical spec 更新と同ターンで実施する |
-| 関連タスク | TASK-LLM-MOD-04 |

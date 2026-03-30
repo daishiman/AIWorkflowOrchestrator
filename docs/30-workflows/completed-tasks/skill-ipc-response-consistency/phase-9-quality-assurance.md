@@ -205,23 +205,23 @@ cd apps/desktop && pnpm vitest run src/preload/__tests__/skill-api*.test.ts --re
 
 ## SubAgent 分担
 
-| SubAgent   | 担当 |
-| ---------- | ---- |
-| SubAgent-A | タスク1（Lint）+ タスク2（TypeScript 型チェック） |
+| SubAgent   | 担当                                                 |
+| ---------- | ---------------------------------------------------- |
+| SubAgent-A | タスク1（Lint）+ タスク2（TypeScript 型チェック）    |
 | SubAgent-B | タスク3（全テスト実行）+ タスク4（セキュリティ確認） |
-| SubAgent-C | タスク5（品質ゲート判定）+ 品質レポート最終化 |
+| SubAgent-C | タスク5（品質ゲート判定）+ 品質レポート最終化        |
 
 ## 参照資料
 
-| 参照資料          | パス                                                         | 内容                   |
-| ----------------- | ------------------------------------------------------------ | ---------------------- |
+| 参照資料           | パス                                                         | 内容                   |
+| ------------------ | ------------------------------------------------------------ | ---------------------- |
 | Phase 5 実装成果物 | `apps/desktop/src/main/ipc/skillHandlers.ts`                 | 品質検証の主要対象     |
 | Phase 5 実装成果物 | `apps/desktop/src/preload/skill-api.ts`                      | 品質検証の主要対象     |
-| IPCハンドラー実装 | `apps/desktop/src/main/ipc/skillHandlers.ts`                 | Main Processハンドラー |
-| Preload API       | `apps/desktop/src/preload/skill-api.ts`                      | Preload API実装        |
-| テストファイル    | `apps/desktop/src/main/ipc/__tests__/skillHandlers*.test.ts` | テストコード           |
-| ESLint設定        | `.eslintrc.*` / `eslint.config.*`                            | Lintルール             |
-| TypeScript設定    | `tsconfig.json`                                              | 型チェック設定         |
+| IPCハンドラー実装  | `apps/desktop/src/main/ipc/skillHandlers.ts`                 | Main Processハンドラー |
+| Preload API        | `apps/desktop/src/preload/skill-api.ts`                      | Preload API実装        |
+| テストファイル     | `apps/desktop/src/main/ipc/__tests__/skillHandlers*.test.ts` | テストコード           |
+| ESLint設定         | `.eslintrc.*` / `eslint.config.*`                            | Lintルール             |
+| TypeScript設定     | `tsconfig.json`                                              | 型チェック設定         |
 
 ### システム仕様（aiworkflow-requirements）
 
