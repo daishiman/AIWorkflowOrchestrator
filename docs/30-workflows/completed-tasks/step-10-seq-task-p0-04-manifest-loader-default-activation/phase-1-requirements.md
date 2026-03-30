@@ -20,8 +20,8 @@ ManifestLoader の default activation に必要な機能要件・非機能要件
 
 ### Task 1: 現状の問題固定
 
-- `RuntimeSkillCreatorFacade.hasDynamicResourcePipeline()` (lines 186-192) が sourceResolver / resourcePlanner / resolvedResourceReader の3条件を要求している事実を記録する
-- `plan()` メソッド (lines 274-391) で `!hasDynamicResourcePipeline()` の場合に static resourceLoader または stub にフォールバックしている現状を記録する
+- 旧 `RuntimeSkillCreatorFacade` が dynamic resource pipeline の有効化を外部注入条件に依存させていた事実を記録する
+- `plan()` / `improve()` が dynamic resource pipeline 未解決時に static resourceLoader または degraded error にフォールバックする契約を記録する
 - `loadWorkflowManifest()` (lines 201-215) が explicitRoot 提供時のみ呼ばれる制限を記録する
 - ipc/index.ts (line ~920) で PhaseResourcePlanner のみ注入され、他2つが欠落している状況を記録する
 
@@ -30,7 +30,7 @@ ManifestLoader の default activation に必要な機能要件・非機能要件
 - FR-01: Facade 初期化時に sourceResolver を自動インスタンス化する
 - FR-02: Facade 初期化時に resourcePlanner を自動インスタンス化する
 - FR-03: Facade 初期化時に resolvedResourceReader を自動インスタンス化する
-- FR-04: `hasDynamicResourcePipeline()` が3コンポーネント利用可能時にデフォルト true を返す
+- FR-04: `plan()` / `improve()` が3コンポーネント自動生成下で dynamic resource pipeline をデフォルト試行する
 - FR-05: `loadWorkflowManifest()` が source resolver candidates から manifest を自動発見する
 - FR-06: manifest 未発見時に static loader fallback が動作する
 
@@ -45,7 +45,7 @@ ManifestLoader の default activation に必要な機能要件・非機能要件
 - AC-1 → FR-01: sourceResolver 自動インスタンス化
 - AC-2 → FR-02: resourcePlanner 自動インスタンス化
 - AC-3 → FR-03: resolvedResourceReader 自動インスタンス化
-- AC-4 → FR-04: hasDynamicResourcePipeline() デフォルト true
+- AC-4 → FR-04: dynamic resource pipeline の自動試行
 - AC-5 → FR-05: manifest 自動発見
 - AC-6 → FR-06: static loader fallback
 - AC-7 → NFR-01: 既存テスト通過
@@ -57,13 +57,13 @@ ManifestLoader の default activation に必要な機能要件・非機能要件
 
 ## 参照資料
 
-| 資料名                      | パス                                                                   | 説明                            |
-| --------------------------- | ---------------------------------------------------------------------- | ------------------------------- |
-| Facade 実装                 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`  | hasDynamicResourcePipeline 箇所 |
-| SourceResolver 実装         | `apps/desktop/src/main/services/runtime/SkillCreatorSourceResolver.ts` | 自動インスタンス化対象          |
-| PhaseResourcePlanner 実装   | `apps/desktop/src/main/services/runtime/PhaseResourcePlanner.ts`       | 自動インスタンス化対象          |
-| ResolvedResourceReader 実装 | `apps/desktop/src/main/services/runtime/ResolvedResourceReader.ts`     | 自動インスタンス化対象          |
-| IPC wiring                  | `apps/desktop/src/main/ipc/index.ts`                                   | 現在の注入状況                  |
+| 資料名                      | パス                                                                   | 説明                                    |
+| --------------------------- | ---------------------------------------------------------------------- | --------------------------------------- |
+| Facade 実装                 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`  | dynamic pipeline 活性化 / fallback 契約 |
+| SourceResolver 実装         | `apps/desktop/src/main/services/runtime/SkillCreatorSourceResolver.ts` | 自動インスタンス化対象                  |
+| PhaseResourcePlanner 実装   | `apps/desktop/src/main/services/runtime/PhaseResourcePlanner.ts`       | 自動インスタンス化対象                  |
+| ResolvedResourceReader 実装 | `apps/desktop/src/main/services/runtime/ResolvedResourceReader.ts`     | 自動インスタンス化対象                  |
+| IPC wiring                  | `apps/desktop/src/main/ipc/index.ts`                                   | 現在の注入状況                          |
 
 ## 統合テスト連携
 

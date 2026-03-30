@@ -112,7 +112,7 @@ setAdapterIsRetrying((prev) => ({ ...prev, [provider]: true }));
 
 ---
 
-## 関連リソース
+## 関連リソース (TASK-RT-02)
 
 | リソース                                                         | 用途         |
 | ---------------------------------------------------------------- | ------------ |
@@ -121,3 +121,101 @@ setAdapterIsRetrying((prev) => ({ ...prev, [provider]: true }));
 | `apps/desktop/src/renderer/components/organisms/ApiKeysSection/` | 統合先       |
 | `docs/30-workflows/task-rt-02-api-key-ui-adapter-status/`        | タスク仕様書 |
 | [task-workflow-completed.md](task-workflow-completed.md)         | 完了記録     |
+
+---
+
+## TASK-RT-03: SkillCreationResultPanel 実装知見 (2026-03-30)
+
+### 概要
+
+Plan/Execute 結果詳細パネルのUIコンポーネント実装タスク。
+新規コンポーネント: ErrorBanner.tsx, PlanResultDetailPanel.tsx, ExecuteResultDetailPanel.tsx, result-panel-parts.tsx
+修正: SkillLifecyclePanel.tsx（rawPlanDetail/rawExecuteDetail local state 追加）
+テスト: 53件（ErrorBanner:5件, PlanResultDetailPanel:14+件, ExecuteResultDetailPanel:11+件）
+
+### L-RT-03-001: raw result の保持場所選定
+
+**カテゴリ**: 状態管理 / React
+
+**課題**: RuntimeSkillCreatorPlanResult/ExecuteResult をどこで保持するかの判断が必要だった。
+
+**判断**: SkillLifecyclePanel の local state で保持。
+
+**再発条件**:
+- 表示専用のデータを global store に入れようとする場合
+- phase 切り替え時に自動クリアしたい状態がある場合
+
+**解決策**: `useState` で local state として管理し、`handlePrepare()` / `handleCancelPlan()` 呼び出し時にまとめてクリア。phase 遷移による自動リセットで一貫性確保。
+
+**ポイント**: 一時的なUI表示データで他コンポーネントが参照不要な場合は global store 不要。表示専用データは local state の方がライフサイクル管理が簡潔になる。
+
+---
+
+### L-RT-03-002: terminal_handoff vs integrated_api の型ガード分離
+
+**カテゴリ**: TypeScript 型設計 / UI 責務分離
+
+**課題**: `RuntimeSkillCreatorPlanResponse` が union type のため、`PlanResultDetailPanel` の表示対象を integrated_api レスポンスに限定するための型ガードを確立するまで試行錯誤した。
+
+**判断**: `PlanResultDetailPanel` は `integrated_api` レスポンスのみ対象。
+
+**実装**: `if ("planId" in planResult.data)` 型ガードで分岐。
+
+**解決策**:
+- `terminal_handoff` は既存 `TerminalHandoffCard` で表示済み（二重表示回避）
+- `error` は既存 `ErrorBanner` で表示済み
+- detail panel は「成功時の詳細確認」に責務特化
+
+**ポイント**: 複数 response タイプを持つ API の分岐処理では、`in` 演算子による discriminant key 存在チェックが TypeScript narrowing の安全な手法。
+
+---
+
+### L-RT-03-003: progressive disclosure パターン
+
+**カテゴリ**: UI/UX / パフォーマンス
+
+**課題**: `permissionDenials` / `sdkEvents` は件数が可変で多くなりうるため、常時展開するとUI過負荷になる。
+
+**判断**: 件数バッジ + 折りたたみで表示。
+
+**実装**: `useState(false)` で expanded 状態管理、件数バッジで概要を常時表示。
+
+**解決策**: `SectionHeader` に `badge={count}` と `onClick={toggle}` を渡し、折りたたみ UI を `result-panel-parts.tsx` の共通パーツとして実装。
+
+**ポイント**: 件数が可変で多くなりうるメタデータ表示全般に適用可能なパターン。数十〜数百件のリストを常時展開するとUI過負荷。
+
+---
+
+### L-RT-03-004: 共通UIパーツ early 抽出
+
+**カテゴリ**: コンポーネント設計 / DRY
+
+**課題**: `PlanResultDetailPanel` と `ExecuteResultDetailPanel` で同一 UI 構造（SectionHeader / TagList / StatusBadge / DetailFooter）が3箇所以上重複する見込みだった。
+
+**判断**: `result-panel-parts.tsx` に共通パーツを集約（DRY 原則適用）。
+
+**解決策**: 実装初期に `result-panel-parts.tsx` を作成し、`SectionHeader` / `TagList` / `StatusBadge` / `DetailFooter` の4パーツを共通化。`React.memo()` を適用してパフォーマンス最適化。
+
+**ポイント**: 2つ以上のパネルコンポーネントが同一UI構造を持つ場合は early に抽出する。後から抽出すると型定義の修正が広範囲に波及する。
+
+---
+
+### 苦戦箇所
+
+| 項目 | 内容 |
+| ---- | ---- |
+| 型ガード実装 | `RuntimeSkillCreatorPlanResponse` が union type のため、`"planId" in data` で `integrated_api` を判定する方法を確立するまで試行錯誤 |
+| テスト環境 | happy-dom では `window.ResizeObserver` が未定義のため mock が必要だった |
+
+---
+
+## 関連リソース (TASK-RT-03)
+
+| リソース                                                                                   | 用途         |
+| ------------------------------------------------------------------------------------------ | ------------ |
+| `apps/desktop/src/renderer/components/skill/ErrorBanner.tsx`                               | 実装アンカー |
+| `apps/desktop/src/renderer/components/skill/PlanResultDetailPanel.tsx`                     | 実装アンカー |
+| `apps/desktop/src/renderer/components/skill/ExecuteResultDetailPanel.tsx`                  | 実装アンカー |
+| `apps/desktop/src/renderer/components/skill/result-panel-parts.tsx`                        | 実装アンカー |
+| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                       | 修正対象     |
+| `docs/30-workflows/step-09-par-task-rt-03-skill-creation-result-panel/`                    | タスク仕様書 |

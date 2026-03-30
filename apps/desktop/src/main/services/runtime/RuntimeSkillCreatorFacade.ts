@@ -101,9 +101,9 @@ export class RuntimeSkillCreatorFacade {
   private readonly resourceLoader?: ResourceLoader;
   private readonly skillFileManager?: SkillFileManager;
   private readonly skillFileWriter?: SkillFileWriter;
-  private readonly sourceResolver?: SkillCreatorSourceResolver;
-  private readonly resourcePlanner?: PhaseResourcePlanner;
-  private readonly resolvedResourceReader?: ResolvedResourceReader;
+  private readonly sourceResolver: SkillCreatorSourceResolver;
+  private readonly resourcePlanner: PhaseResourcePlanner;
+  private readonly resolvedResourceReader: ResolvedResourceReader;
   private readonly manifestLoader = new ManifestLoader();
   private readonly verificationEngine?: SkillCreatorVerificationEngine;
 
@@ -122,9 +122,22 @@ export class RuntimeSkillCreatorFacade {
     this.resourceLoader = deps.resourceLoader;
     this.skillFileManager = deps.skillFileManager;
     this.skillFileWriter = deps.skillFileWriter;
-    this.sourceResolver = deps.sourceResolver;
-    this.resourcePlanner = deps.resourcePlanner;
-    this.resolvedResourceReader = deps.resolvedResourceReader;
+    // TASK-P0-04: 外部注入を優先し、なければ自動インスタンス化（DI override パターン）
+    this.sourceResolver =
+      deps.sourceResolver ?? new SkillCreatorSourceResolver();
+    this.resourcePlanner = deps.resourcePlanner ?? new PhaseResourcePlanner();
+    this.resolvedResourceReader =
+      deps.resolvedResourceReader ??
+      new ResolvedResourceReader(deps.resourceLoader);
+    if (
+      !deps.sourceResolver ||
+      !deps.resourcePlanner ||
+      !deps.resolvedResourceReader
+    ) {
+      console.log(
+        "[RuntimeSkillCreatorFacade] dynamic resource pipeline activated (auto-instantiated)",
+      );
+    }
     this.verificationEngine = deps.verificationEngine;
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
@@ -261,14 +274,6 @@ export class RuntimeSkillCreatorFacade {
     return { resolvedSkillCreatorRoot };
   }
 
-  private hasDynamicResourcePipeline(): boolean {
-    return Boolean(
-      this.sourceResolver &&
-      this.resourcePlanner &&
-      this.resolvedResourceReader,
-    );
-  }
-
   private getExplicitSkillCreatorRoot(): string | undefined {
     return this.resourceLoader &&
       typeof this.resourceLoader.getBasePath === "function"
@@ -279,17 +284,36 @@ export class RuntimeSkillCreatorFacade {
   private async loadWorkflowManifest(
     explicitRoot?: string,
   ): Promise<LoadedWorkflowManifest | undefined> {
-    if (!explicitRoot) {
-      return undefined;
+    if (explicitRoot) {
+      const manifestPath = path.join(explicitRoot, "workflow-manifest.json");
+      try {
+        await fs.access(manifestPath);
+        return await this.manifestLoader.loadManifest(manifestPath);
+      } catch {
+        return undefined;
+      }
     }
 
-    const manifestPath = path.join(explicitRoot, "workflow-manifest.json");
-    try {
-      await fs.access(manifestPath);
-      return await this.manifestLoader.loadManifest(manifestPath);
-    } catch {
-      return undefined;
+    // TASK-P0-04: explicitRoot がない場合は source resolver candidates から manifest を自動発見
+    const resolution = await this.sourceResolver.resolve({});
+    for (const candidate of resolution.candidateRoots) {
+      const manifestPath = path.join(
+        candidate.rootPath,
+        "workflow-manifest.json",
+      );
+      try {
+        await fs.access(manifestPath);
+        const manifest = await this.manifestLoader.loadManifest(manifestPath);
+        console.log(
+          `[RuntimeSkillCreatorFacade] manifest auto-discovered at ${manifestPath}`,
+        );
+        return manifest;
+      } catch {
+        continue;
+      }
     }
+
+    return undefined;
   }
 
   private async resolveOperationResources(
@@ -300,14 +324,7 @@ export class RuntimeSkillCreatorFacade {
     resources: PlannedSkillCreatorResource[];
     sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
   }> {
-    if (
-      !this.sourceResolver ||
-      !this.resourcePlanner ||
-      !this.resolvedResourceReader
-    ) {
-      throw new Error("Dynamic resource pipeline is not configured");
-    }
-
+    // TASK-P0-04: 3コンポーネントは常に自動インスタンス化されるため null check 不要
     const explicitRoot = this.getExplicitSkillCreatorRoot();
     const manifest = await this.loadWorkflowManifest(explicitRoot);
     const resolution = await this.sourceResolver.resolve({
@@ -333,10 +350,7 @@ export class RuntimeSkillCreatorFacade {
   private async readPlannedResources(
     resources: PlannedSkillCreatorResource[],
   ): Promise<Array<PlannedSkillCreatorResource & { content: string }>> {
-    if (!this.resolvedResourceReader) {
-      throw new Error("ResolvedResourceReader is not configured");
-    }
-
+    // TASK-P0-04: resolvedResourceReader は常に自動インスタンス化されるため null check 不要
     const loaded: Array<PlannedSkillCreatorResource & { content: string }> = [];
     for (const resource of resources) {
       const content = await this.resolvedResourceReader.readText(resource);
@@ -401,17 +415,17 @@ export class RuntimeSkillCreatorFacade {
     let sourceProvenance: SkillCreatorWorkflowSourceProvenance | undefined =
       this.buildSourceProvenance();
 
-    // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
+    // TASK-RT-02: llmAdapter 未注入時は explicit error を返す
     if (!this.llmAdapter) {
       return buildDegradedError("llm_adapter_unavailable");
-    }
-    if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
-      return buildDegradedError("resource_loader_unavailable");
     }
 
     let agentSpecs: Array<{ name: string; content: string }> = [];
     let referenceSpecs: Array<{ name: string; content: string }> = [];
-    if (this.hasDynamicResourcePipeline()) {
+    // TASK-P0-04: dynamic resource pipeline は常に試行する。
+    // リソースを取得できない場合のみ static loader fallback へ退避する。
+    let dynamicPipelineSucceeded = false;
+    try {
       const resolved = await this.resolveOperationResources(
         PLAN_RESOURCE_REQUESTS,
         PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
@@ -420,25 +434,35 @@ export class RuntimeSkillCreatorFacade {
       const loadedResources = await this.readPlannedResources(
         resolved.resources,
       );
-      agentSpecs = loadedResources
+      const dynamicAgentSpecs = loadedResources
         .filter((resource) => resource.kind === "agent")
-        .map((resource) => ({
-          name: resource.id,
-          content: resource.content,
-        }));
-      referenceSpecs = loadedResources
+        .map((resource) => ({ name: resource.id, content: resource.content }));
+      const dynamicReferenceSpecs = loadedResources
         .filter((resource) => resource.kind === "reference")
-        .map((resource) => ({
-          name: resource.id,
-          content: resource.content,
-        }));
-      sourceProvenance = resolved.sourceProvenance;
-    } else if (this.resourceLoader) {
+        .map((resource) => ({ name: resource.id, content: resource.content }));
+
+      if (dynamicAgentSpecs.length > 0 || dynamicReferenceSpecs.length > 0) {
+        agentSpecs = dynamicAgentSpecs;
+        referenceSpecs = dynamicReferenceSpecs;
+        sourceProvenance = resolved.sourceProvenance;
+        dynamicPipelineSucceeded = true;
+      }
+    } catch {
+      // dynamic pipeline でエラー（required リソース未発見等）→ static fallback へ
+    }
+    if (!dynamicPipelineSucceeded && this.resourceLoader) {
+      // dynamic pipeline でリソース未取得 + resourceLoader あり → static loader fallback
+      console.log(
+        "[RuntimeSkillCreatorFacade] dynamic pipeline found no resources, falling back to static loader",
+      );
       for (const name of PLAN_PROMPT_CONSTANTS.AGENT_NAMES) {
         const content = await this.resourceLoader.loadAgent(name);
         agentSpecs.push({ name, content });
       }
       sourceProvenance = this.buildSourceProvenance();
+    }
+    if (!dynamicPipelineSucceeded && agentSpecs.length === 0) {
+      return buildDegradedError("resource_loader_unavailable");
     }
 
     // LLM 呼び出し
@@ -667,12 +691,9 @@ export class RuntimeSkillCreatorFacade {
 
     const improveId = `improve-${Date.now()}`;
 
-    // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
+    // TASK-RT-02: llmAdapter 未注入時は explicit error を返す
     if (!this.llmAdapter) {
       return buildDegradedError("llm_adapter_unavailable");
-    }
-    if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
-      return buildDegradedError("resource_loader_unavailable");
     }
 
     try {
@@ -691,8 +712,11 @@ export class RuntimeSkillCreatorFacade {
         "SKILL.md",
       );
 
-      let agentPrompt: string;
-      if (this.hasDynamicResourcePipeline()) {
+      // TASK-P0-04: dynamic resource pipeline は常に試行する。
+      // リソースを取得できない場合のみ static loader fallback へ退避する。
+      let agentPrompt: string = "";
+      let dynamicImproveSucceeded = false;
+      try {
         const resolved = await this.resolveOperationResources(
           IMPROVE_RESOURCE_REQUESTS,
           IMPROVE_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
@@ -701,7 +725,7 @@ export class RuntimeSkillCreatorFacade {
         const loadedResources = await this.readPlannedResources(
           resolved.resources,
         );
-        agentPrompt =
+        const dynamicAgentPrompt =
           loadedResources.find((resource) => resource.id === "improve-prompt")
             ?.content ?? "";
         const referenceSections = loadedResources
@@ -711,13 +735,27 @@ export class RuntimeSkillCreatorFacade {
               `${PLAN_PROMPT_CONSTANTS.REFERENCE_SEPARATOR_START} ${resource.id} ===\n${resource.content}\n${PLAN_PROMPT_CONSTANTS.REFERENCE_SEPARATOR_END} ${resource.id} ===`,
           )
           .join("\n\n");
-        agentPrompt = [agentPrompt, referenceSections]
+        const dynamicPrompt = [dynamicAgentPrompt, referenceSections]
           .filter((section) => section.trim().length > 0)
           .join("\n\n");
-      } else {
-        agentPrompt = await this.resourceLoader!.loadAgent(
+        if (dynamicPrompt.trim().length > 0) {
+          agentPrompt = dynamicPrompt;
+          dynamicImproveSucceeded = true;
+        }
+      } catch {
+        // dynamic pipeline でエラー（required リソース未発見等）→ static fallback へ
+      }
+      if (!dynamicImproveSucceeded && this.resourceLoader) {
+        // dynamic pipeline でリソース未取得 + resourceLoader あり → static loader fallback
+        console.log(
+          "[RuntimeSkillCreatorFacade] dynamic pipeline found no resources, falling back to static loader",
+        );
+        agentPrompt = await this.resourceLoader.loadAgent(
           IMPROVE_PROMPT_CONSTANTS.AGENT_NAME,
         );
+      }
+      if (!dynamicImproveSucceeded && agentPrompt.trim().length === 0) {
+        return buildDegradedError("resource_loader_unavailable");
       }
 
       // system プロンプト = improve-prompt.md + IMPROVE_RESPONSE_SCHEMA_INSTRUCTION

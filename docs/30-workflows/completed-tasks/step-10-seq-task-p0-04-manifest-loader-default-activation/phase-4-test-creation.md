@@ -20,7 +20,7 @@ pipeline activation、fallback、manifest discovery の3観点で fail-first テ
 
 ### Task 1: pipeline activation テスト
 
-- Facade 初期化後に `hasDynamicResourcePipeline()` が true を返すことを検証する
+- Facade 初期化後に `plan()` / `improve()` が dynamic resource pipeline を自動試行することを検証する
 - sourceResolver が自動インスタンス化されていることを検証する
 - resourcePlanner が自動インスタンス化されていることを検証する
 - resolvedResourceReader が自動インスタンス化されていることを検証する

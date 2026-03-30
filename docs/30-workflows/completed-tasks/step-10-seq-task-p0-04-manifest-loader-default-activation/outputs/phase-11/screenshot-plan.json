@@ -1,0 +1,32 @@
+{
+  "workflow": "step-10-seq-task-p0-04-manifest-loader-default-activation",
+  "mode": "NON_VISUAL",
+  "screenshotRequired": false,
+  "reason": "RuntimeSkillCreatorFacade の resource pipeline 改修であり、UI 差分がないため",
+  "cases": [
+    {
+      "id": "NV-11-01",
+      "type": "log-evidence",
+      "target": "RuntimeSkillCreatorFacade constructor",
+      "evidence": "dynamic resource pipeline activated"
+    },
+    {
+      "id": "NV-11-02",
+      "type": "log-evidence",
+      "target": "loadWorkflowManifest",
+      "evidence": "manifest auto-discovered"
+    },
+    {
+      "id": "NV-11-03",
+      "type": "log-evidence",
+      "target": "plan/improve fallback",
+      "evidence": "falling back to static loader"
+    },
+    {
+      "id": "NV-11-04",
+      "type": "error-evidence",
+      "target": "plan/improve degraded path",
+      "evidence": "resource_loader_unavailable"
+    }
+  ]
+}
