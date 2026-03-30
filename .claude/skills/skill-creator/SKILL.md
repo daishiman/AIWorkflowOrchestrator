@@ -130,6 +130,17 @@ plan → review (awaiting user input) → execute → verify → [pass] handoff
 | state push  | `skill-creator:workflow-state-changed` | (event)                             |
 | SDK 正規化  | `skill-creator:normalize-sdk-messages` | `SkillCreatorSdkEvent`              |
 
+#### plan エラーレスポンス（TASK-RT-01）
+
+`RuntimeSkillCreatorFacade` の LLMAdapter からのエラーは `RuntimeSkillCreatorPlanErrorResponse` として propagate される（TASK-RT-01 で silent failure → explicit error response へ改善）。
+
+| フィールド | 型 | 説明 |
+| --- | --- | --- |
+| `status` | `"error"` | plan フェーズのエラーを示す固定値 |
+| `degradedReason` | `RuntimeSkillCreatorDegradedReason` | 劣化理由（`llm_unavailable` / `api_key_missing` / `unknown` 等） |
+
+Renderer はこのレスポンスを受け取った場合、`plan.status === "error"` + `degradedReason` で劣化状態を UI に表示する。
+
 #### ユーザー入力ブリッジ（4種）
 
 | kind            | 用途                  | 例                      |
@@ -315,8 +326,10 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | Version      | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ------------ | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **10.39.0**  | **2026-03-29** | **TASK-RT-06 SDKMessage 正規化 + TASK-SDK-08 Session Persistence を反映**: `SkillCreatorSdkEvent`（eventType: init/assistant/result/error）/ `SkillCreatorSdkEventSourceProvenance` 型、IPC チャネル `skill-creator:normalize-sdk-messages`、`sdkMessageNormalizer.ts` の追加を Runtime ワークフロー IPC テーブルへ追記。`SkillCreatorPersistedWorkflowCheckpoint`（phase boundary checkpoint）/ `WorkflowCheckpointLease`（stale write guard）/ `ResumeCompatibilityResult` / `ResumeIncompatibilityReason` 型、`SkillCreatorWorkflowEngine.hydrateFromCheckpoint()` メソッドを Session Persistence セクションへ追記 |
+| **10.38.1**  | **2026-03-29** | **TASK-RT-01 plan エラー伝播改善を反映**: `RuntimeSkillCreatorFacade` の LLMAdapter からのエラーが `RuntimeSkillCreatorPlanErrorResponse` として propagate される仕様（`plan.status: "error"` + `degradedReason`）を「plan エラーレスポンス（TASK-RT-01）」セクションとして追加。silent failure → explicit error response への改善を文書化                                                                                                                                                                                                                                                                             |
 | **10.38.0**  | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映                                                                                                                     |
 | **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善                                                                                                                                                                                                                                                                       |
+| **10.37.43** | **2026-03-26** | **TASK-SDK-01 hardening sync を template へ反映**: docs-heavy Phase 12 follow-up に code hardening が入った時の same-wave rollback-to-current ルール、carry-forward 0件同期、compile gate と env-blocked test の分離記録を `references/patterns.md` / `references/update-process.md` へ追加                                                                                                                                                                                                                                                                                                                           |
 
 ---
 

@@ -786,13 +786,18 @@ describe("U-13c: workflow user input submission", () => {
     renderPanel();
 
     await act(async () => {
-      fireEvent.click(screen.getByTestId("skill-lifecycle-submit-user-input"));
+      fireEvent.click(screen.getByTestId("chip-ready_to_execute"));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("interview-submit"));
     });
 
-    expect(mockSubmitUserInput).toHaveBeenCalledWith({
-      planId: "plan-001",
-      requestId: "req-1",
-      selectedOptionId: "ready_to_execute",
+    await waitFor(() => {
+      expect(mockSubmitUserInput).toHaveBeenCalledWith({
+        planId: "plan-001",
+        requestId: "req-1",
+        selectedOptionId: "ready_to_execute",
+      });
     });
     expect(mockSetWorkflowSnapshot).toHaveBeenCalled();
   });

@@ -19,6 +19,10 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-30 | 3.0.0 | TASK-P0-06 conversational-interview-ui 教訓4件を追加（L-P0-06-001: useCallback内state同期読み取り、L-P0-06-002: document-levelキーリスナークリーンアップ、L-P0-06-003: vitest実行ディレクトリとhappy-dom環境、L-P0-06-004: esbuildプラットフォームミスマッチ） |
+| 2026-03-30 | 2.11.0 | TASK-P0-05 execute-skill-file-writer-integration 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-P005-001 LLM応答パース見出し正規化で `*.md.md` 重複回避 / L-P005-002 worktree環境でのcanonical mirror同期はPhase 12 close-out時に明示的に実施が必要 / L-P005-003 DI未注入のskilFileWriter に対してfail-silentせずconsole.warnガード） |
+| 2026-03-29 | 3.0.0 | UT-SDK-07 shared IPC channel 契約整合 教訓3件を追加（L-UT-SDK07-001: shared チャネル移管後の参照パス更新、L-UT-SDK07-002: packages/shared/src/ipc/ 追加時の exports 同時更新、L-UT-SDK07-003: preload が shared を import する構造への仕様書更新パターン） |
+| 2026-03-29 | 2.10.0 | UT-RT-06-CONS 教訓2件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-RT-06-CONS-001 Phase 7 グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002 最小共通helper抽出パターン） |
 | 2026-03-28 | 2.9.0 | TASK-SDK-08 session-persistence-and-resume-contract 教訓3件を追加（L-1: esbuild mismatch、L-2: artifact命名規約 / validator不一致、L-3: Phase 11 UI/docs-only判定不一致） |
 | 2026-03-27 | 2.8.2 | TASK-SDK-04 の教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): user input semantics / canonical execute binding、→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): spec_created task の screenshot/evidence drift） |
 | 2026-03-27 | 2.8.2 | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): placeholder-only screenshot PASS 禁止 / implementation guide Part 2 必須要素 / Phase 2 contract matrix stale drift 防止） |
@@ -831,6 +835,37 @@
 
 ---
 
+## UT-SDK-07 shared IPC channel 契約整合（2026-03-29）
+
+### L-UT-SDK07-001: shared チャネル移管後の仕様書参照パス更新
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | APPROVAL_CHANNELS / EXECUTION_CHANNELS が `apps/desktop/src/preload/channels.ts` から `packages/shared/src/ipc/channels.ts` に移管されたが、仕様書（ipc-preload-spec-sync-guardian の SKILL.md 等）が旧パスを正本として記載したままになりやすい |
+| 解決策 | チャネル定数を shared に移管した場合は、当該チャネルを参照するすべての仕様書・スキルの「リソース参照」テーブルと「Phase 3 アクション」を同ターンで shared パスに更新する |
+| 標準ルール | `APPROVAL_CHANNELS` / `EXECUTION_CHANNELS` 等の正本が `packages/shared/src/ipc/channels.ts` であることを仕様書に記載する。`preload/channels.ts` は shared からの import 先として副次的な参照に留める |
+| 関連タスク | UT-SDK-07 |
+
+### L-UT-SDK07-002: packages/shared/src/ipc/ サブパス追加時は 3 箇所同時更新が必須
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `packages/shared/src/ipc/channels.ts` を新設した際、`package.json exports` / `package.json typesVersions` / `tsup.config.ts entry` の 3 箇所に登録しないと desktop/renderer 側で import 解決が失敗する（L-CB-01 のパターンの再現） |
+| 解決策 | shared に新しいサブパスを追加するたびに 3 箇所同時更新チェックリストを適用し、追加後に `pnpm --filter @repo/shared build` でリビルドして typecheck を確認する |
+| 標準ルール | shared 型・定数追加の 3 箇所同時更新チェックリスト（L-CB-01）を IPC channel 定数追加にも適用する |
+| 関連タスク | UT-SDK-07 |
+
+### L-UT-SDK07-003: preload が shared を import する構造への仕様書更新パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `preload/channels.ts` が共通チャネルを直接定義するのではなく `@repo/shared/src/ipc/channels` から import する構造に変わると、仕様書の「channels.ts の定義箇所」記述が陳腐化し、ipc-preload-spec-sync-guardian の監査チェック対象が正しく設定されなくなる |
+| 解決策 | shared チャネルの移管完了時に、関連スキル（ipc-preload-spec-sync-guardian 等）の Trigger キーワード・Phase 3 アクション・リソース参照を同ターンで更新する。移管後の正本は shared 側のファイルパスを明記する |
+| 標準ルール | IPC channel 定数を shared に移管する場合は「移管完了 → スキル更新」を同一 wave に含める（P57 準拠） |
+| 関連タスク | UT-SDK-07 |
+
+---
+
 ## TASK-RT-06 教訓（2026-03-29）
 
 ### 1. shared 型追加時は barrel export を同ターンで更新しないと desktop が即壊れる
@@ -872,3 +907,44 @@
 | 解決策 | Phase 12 で workflow root に close-out 成果物（implementation-guide / system-spec-update-summary / unassigned-task-detection 等）を揃え、canonical spec との整合を同一 wave で確認する |
 | 標準ルール | `resource-map` / `quick-reference` は「正本は shared catalog」を読む導線として有効。workflow root の close-out を canonical spec 更新と同ターンで実施する |
 | 関連タスク | TASK-LLM-MOD-04 |
+
+---
+
+## TASK-P0-06 conversational-interview-ui（2026-03-30）
+
+### L-P0-06-001: useCallback内でのstateの同期的読み取りパターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `undo()` 関数でReact state (`messages`) を読んで戻り値として返す必要があったが、`setMessages` コールバック内で変数に代入しても、呼び出し元には `null` が返った |
+| 原因 | Reactのstateは非同期でフラッシュされるため、`setMessages` コールバック内での代入は呼び出し元の同期的な `return` には間に合わない |
+| 解決策 | `setMessages` コールバックを使わず、`useCallback` のクロージャで `messages` 変数（現在のstate値）を直接参照し、`setMessages(messages.slice(0, n))` の形式で更新。戻り値は呼び出し前に `messages` から直接取得 |
+| 適用範囲 | hookから同期的な戻り値が必要で、かつstateを変更するケース全般 |
+| 関連タスク | TASK-P0-06 |
+
+### L-P0-06-002: ConfirmButtonsのdocument-levelキーリスナーとクリーンアップ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | モーダルやパネル内コンポーネントでグローバルなキーショートカット（Y/N）を実装する際、`document.addEventListener` を使うとコンポーネントアンマウント後もリスナーが残る |
+| 解決策 | `useEffect` の cleanup関数で `document.removeEventListener` を確実に呼ぶ。`useCallback` でハンドラをメモ化してdependency arrayに渡す |
+| テストの注意 | このパターンのテストは `fireEvent.keyDown(element, ...)` ではなく `fireEvent.keyDown(document, ...)` でdocumentを対象にする必要がある |
+| 関連タスク | TASK-P0-06 |
+
+### L-P0-06-003: vitest実行ディレクトリとhappy-dom環境の関係
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | monorepoのルートから `pnpm exec vitest run` を実行すると `document is not defined` エラーが発生し、テストが全失敗した |
+| 原因 | vitestはカレントディレクトリの `vitest.config.ts` を読む。ルートから実行すると `apps/desktop/vitest.config.ts` の `environment: "happy-dom"` が適用されない |
+| 解決策 | `cd apps/desktop` してから `pnpm exec vitest run` を実行する。または `pnpm --filter @repo/desktop exec vitest run` でフィルタを指定する |
+| 関連タスク | TASK-P0-06 |
+
+### L-P0-06-004: esbuildのプラットフォームミスマッチ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktreeで `pnpm install` 後に vitest 実行時 `esbuild binary platform mismatch` エラーが発生 |
+| 原因 | `node_modules` がdarwin-arm64向けに解決されているが、実行環境はx64 |
+| 解決策 | `pnpm add -wD @esbuild/darwin-x64@0.21.5` でx64バイナリを追加インストール |
+| 関連タスク | TASK-P0-06 |

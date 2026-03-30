@@ -11,6 +11,7 @@
 | 次Phase    | Phase 9: 品質保証                                |
 | ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
+| 更新日     | 2026-03-30                                       |
 
 ## 目的
 
@@ -36,6 +37,14 @@ phase 遷移テーブルの構造を整理し、recordVerifyPass/Failure の対�
 - disabled conditions を定数または設定として外出しできるか検討する
 - 新遷移との整合性を維持しつつ、冗長な条件分岐を削減する
 
+### リファクタリング候補
+
+以下を優先的に検討する:
+
+1. **`recordVerifyPass()` と `recordVerifyFailure()` の共通ロジック抽出**: 前提条件チェック、phase 遷移、ログ出力など共通パターンを private メソッドに抽出する
+2. **遷移テーブルバリデーションの一元化**: 遷移テーブルの整合性チェック（不正遷移検出、dead state 検出）を単一のバリデーション関数に集約する
+3. **verify 結果判定ロジックの Facade からの分離検討**: `processVerifyResult()` 内の verify 結果に基づく判定ロジックが Facade に残るべきか、Engine 層に移すべきかを検討する
+
 ## 参照資料
 
 | 資料名         | パス                                                                   | 説明             |
@@ -45,6 +54,15 @@ phase 遷移テーブルの構造を整理し、recordVerifyPass/Failure の対�
 | 実装記録       | `outputs/phase-5/implementation-record.md`                             | 整理対象の本体   |
 | カバレッジ     | `phase-7-coverage-check.md`                                            | 重複削減候補     |
 | WorkflowEngine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | 整理対象         |
+
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                  | パス                                                                                        | 内容                                  |
+| ------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------- |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService仕様との整合性確認 |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時の整合性確認                 |
 
 ## 統合テスト連携
 
@@ -64,6 +82,7 @@ phase 遷移テーブルの構造を整理し、recordVerifyPass/Failure の対�
 - [ ] requestReverify() の条件分岐が整理されている
 - [ ] 不要な分岐が増えていない
 - [ ] 最小複雑性の判断理由が記録されている
+- [ ] aiworkflow-requirements の関連仕様を確認した
 - [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】

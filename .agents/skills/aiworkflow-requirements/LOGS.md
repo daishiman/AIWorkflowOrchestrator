@@ -7,8 +7,10 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-30 - TASK-P0-06 実装完了 — conversational-interview-ui（ConversationalInterview.tsx（455行）新規作成・SkillLifecyclePanelのquestion-hostセクション置換 / 5種入力ウィジェット（SingleSelectChips, MultiSelectCheckbox, FreeTextInput, ConfirmButtons, SecretInput）新規作成 / useInterviewStateフック・InterviewProgressBarコンポーネント新規作成 / packages/shared/types/skillCreator.ts にmulti_select型追加 / 74テスト ALL PASS（8ファイル）/ AC-1〜AC-13 全充足 / lessons-learned に4件の知見を追記） |
+| 2026-03-30 - TASK-P0-05 execute-skill-file-writer-integration close-out sync（`parseLlmResponseToContent` の `.md` 正規化と heading tolerance を是正し、`SkillCreatorWorkflowEngine` execute artifact に `persistResult` / `persistError` を保存 / runtime targeted vitest 50件 PASS / Phase 11 evidence と Phase 12 compliance root を補完 / `task-workflow-completed.md`・SKILL history・topic-map 再生成を same-wave で反映 / canonical sync 未完了を follow-up UT へ formalize） |
 | 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out sync（step-03-seq-task-04-test-update workflow root を整備 / Phase 11/12/13 成果物を current root に揃え / docs-only close-out wave のため Step 2 domain spec 更新は no-op / GoogleAdapter・provider-registry test の current-facts 更新 / UT-LLM-MOD-04-001 backlog 維持 / esbuild mismatch で vitest 再実行不能のため historical acceptance evidence と grep を併用 / lessons: P50 task は新規実装前提で書かない・workflow root staleness は resource-map 導線で防ぐ） |
-| 2026-03-29 - UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 実装完了（packages/shared/src/ipc/channels.ts に APPROVAL_CHANNELS 2件・EXECUTION_CHANNELS 1件追加 / apps/desktop/src/preload/channels.ts が @repo/shared から import するよう変更 / governance-bundle.test.ts 観点5 cross-layer parity テスト追加 / packages/shared/src/ipc/__tests__/channels.test.ts 新規 / 全完了条件 PASS / 苦戦: Vite バンドラー @repo/shared エイリアス未解決・命名規則 camelCase vs kebab-case 事前分析・TDD Red 前の設計前提整合確認） |
+| 2026-03-29 - UT-SDK-07 shared IPC channel 契約整合 spec sync（APPROVAL/EXECUTION チャネルを `packages/shared/src/ipc/channels.ts` へ移管した実装を仕様書・スキルへ反映 / `ipc-preload-spec-sync-guardian` SKILL.md v1.3.0 更新（description に shared channels 層追加 / Phase 3 に UT-SDK-07 以降の shared canonical path 注記 / Trigger に shared-ipc-channel・APPROVAL_CHANNELS・EXECUTION_CHANNELS 追加 / 変更履歴 1.3.0 追記）/ `lessons-learned-current.md` v3.0.0 更新（L-UT-SDK07-001〜003: shared チャネル移管後の参照パス更新・3箇所同時更新必須・preload import 構造変更時の仕様書更新パターン）） |
 | 2026-03-29 - TASK-RT-01 llm-adapter-error-propagation close-out sync（`task-workflow-completed.md` に完了記録を追加し、`api-ipc-system-core.md` / `architecture-overview-core.md` へ `skill-creator:plan` outer/inner response 契約と `LLM_ADAPTER_*` / `adapterStatus` current facts を反映。workflow docs の `artifacts.json` parity・Phase 11 NON_VISUAL evidence・Phase 12 compliance 判定を実装済み状態へ同期） |
 | 2026-03-29 - P0是正パック skills-creator-agent-sdk-lane 同期（artifacts.json schema 統一 100ファイル `"complete"` → `"completed"` 修正 / 新規タスク仕様書 15件全構成（index.md + phase-1〜13 + artifacts.json）: TASK-RT-01〜06（LLMAdapter/Runtime系）+ TASK-P0-01〜09（P0検証/修復系）/ p0-verify-manifest-remediation-pack.md 依存マトリクスと推奨実行順を最新化 / generate-index.js 含む validate スクリプト PASS / `.claude` 正本と `.agents` ミラー同期完了） |
 | 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization close-out sync（shared barrel export漏れと Renderer plan型ドリフトを修正 / sessionId昇格規約を最初観測へ統一 / Phase 11-12成果物を補完 / typecheck(shared+desktop) PASS / vitest blocker を UT-RT-06-ESBUILD-ARCH-MISMATCH-001 として formalize） |
@@ -128,16 +130,15 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 - [logs-archive-index.md](references/logs-archive-index.md)
 
-## TASK-RT-01 llm-adapter-error-propagation close-out sync（2026-03-29）
+## [2026-03-30] TASK-P0-06 実装完了 — conversational-interview-ui
 
-- タスク名: llm-adapter-error-propagation
-- 種別: runtime bug-fix / close-out sync
-- 主な反映:
-  - `references/task-workflow-completed.md` に TASK-RT-01 完了記録を追加
-  - `references/api-ipc-system-core.md` に `skill-creator:plan` の outer/inner response 契約（`IpcResult.success` と `data.success`）を追記
-  - `references/architecture-overview-core.md` に runtime bridge の error propagation surface 説明を追記
-  - workflow 側 `artifacts.json` と `outputs/artifacts.json` の parity を回復し、Phase 11/12 証跡記述を NON_VISUAL 方針へ整合化
-
+- ConversationalInterview.tsx（455行）を新規作成、SkillLifecyclePanelのquestion-hostセクションを置換
+- 5種の入力ウィジェット（SingleSelectChips, MultiSelectCheckbox, FreeTextInput, ConfirmButtons, SecretInput）を新規作成
+- useInterviewStateフック、InterviewProgressBarコンポーネントを新規作成
+- packages/shared/types/skillCreator.ts にmulti_select型を追加
+- 74テスト ALL PASS（8ファイル）
+- AC-1〜AC-13 全充足
+- lessons-learned に4件の知見を追記
 ## TASK-SDK-03 resource selection hardening sync（2026-03-27）
 
 - タスク名: context-budget-and-resource-selection
@@ -490,7 +491,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 <!-- 2026-03-16〜2026-03-25 の詳細ログは logs-archive-2026-03-mid-lifecycle-governance-improve.md に退避 -->
-<!-- 2026-03-26〜2026-03-28 の詳細ログは SKILL.md 変更履歴を参照 -->
 
 ## TASK-RT-06 close-out sync（2026-03-29）
 

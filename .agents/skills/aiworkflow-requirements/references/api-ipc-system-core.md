@@ -454,22 +454,6 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `skill-creator:get-verify-detail` | verify detail 取得 | `SkillCreatorGetVerifyDetailRequest` | `IpcResult<RuntimeSkillCreatorVerifyDetailResponse>` |
 | `skill-creator:reverify-workflow` | verify loop 再要求 | `SkillCreatorReverifyWorkflowRequest` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
 
-### TASK-RT-01 plan error propagation 契約（2026-03-29）
-
-`skill-creator:plan` は二層レスポンス契約を持つ。
-
-- outer: `IpcResult.success` は handler 実行成否（IPC transport）
-- inner: `data` は `RuntimeSkillCreatorPlanResponse`（ドメイン結果）
-
-`plan()` の adapter 未準備時は次を返す:
-
-- `IpcResult.success: true`
-- `data.success: false`
-- `data.errorCode: "LLM_ADAPTER_FAILED" | "LLM_ADAPTER_INITIALIZING"`
-- `data.adapterStatus: "failed" | "initializing"`
-
-adapter ready の通常系では `data.adapterStatus: "ready"` を返す。
-
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 
 - `SkillCreatorWorkflowEngine` が `verifyResult` / `routeSnapshot` / `sourceProvenance` から `RuntimeSkillCreatorVerifyDetail` を導出する current fact に更新。
@@ -758,5 +742,52 @@ TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel が使用する
 | 429            | `valid`         | レートリミット（認証は成功）       |
 | 500-504        | `network_error` | サーバーエラー                     |
 | タイムアウト   | `timeout`       | 接続タイムアウト（10秒）           |
+
+---
+
+## Skill Creator - execute() ファイル永続化統合（TASK-P0-05）
+
+> 完了日: 2026-03-30
+
+### 概要
+
+`RuntimeSkillCreatorFacade.execute()` 内で LLM 応答テキストを `parseLlmResponseToContent()` で解析し、`SkillFileWriter.persist()` でファイルに書き出す。
+
+### 実装アンカー
+
+| 役割 | ファイル | 内容 |
+| ---- | -------- | ---- |
+| 応答パーサー | `apps/desktop/src/main/services/runtime/parseLlmResponseToContent.ts` | `assistant` / `result` イベント配列から LLM テキストを結合し、見出し行でファイル分類する |
+| execute() 統合 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | Step 3.5-3.6 に persist 連携ロジック追加。`persistResult` / `persistError` を IPC 戻り値へ付加 |
+| artifact 記録 | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `execute_result` artifact に `persistResult` / `persistError` を保持 |
+
+### 型定義（packages/shared/src/types/skillCreator.ts）
+
+```typescript
+// RuntimeSkillCreatorExecuteResult に追加
+persistResult?: { skillPath: string; files: string[] } | null;
+persistError?: string | null;
+```
+
+### parseLlmResponseToContent API
+
+```typescript
+function parseLlmResponseToContent(
+  events: SdkEvent[]
+): SkillGeneratedContent
+```
+
+- `events`: `assistant` / `result` タイプの SDK イベント配列
+- 戻り値: `{ skillMd?: string; agents: Record<string, string>; scripts: Record<string, string>; references: Record<string, string> }`
+- 見出し `## agents/foo` → `agents/foo.md` にキーとして格納（`.md` 拡張子は正規化して重複回避）
+- 見出し揺れ（末尾スラッシュ / 大文字小文字 / スペース）は許容する
+
+### エラーハンドリング
+
+| 状態 | 挙動 |
+| ---- | ---- |
+| `skillFileWriter` DI 未注入 | `console.warn` を出力し `persistResult: null` を返す |
+| `persist()` が例外 | `persistError` に sanitized message を設定し処理継続 |
+| `VALIDATION_ERROR` / `PATH_TRAVERSAL` | `persistError` に error code を含むメッセージを設定 |
 
 ---
