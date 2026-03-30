@@ -2,8 +2,12 @@ import fs from "fs/promises";
 import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { ManifestLoader } from "../ManifestLoader";
+import {
+  SKILL_CREATOR_MANIFEST_PATH,
+  resolveDefaultManifestPath,
+} from "../../skill/constants";
 
 /**
  * TASK-P0-03: workflow-manifest.json 本番 manifest の統合テスト
@@ -313,4 +317,145 @@ describe("TASK-P0-03: edge case & regression tests", () => {
 
     await expect(loader.loadManifest(manifestPath)).rejects.toThrow();
   });
+});
+
+/**
+ * TASK-P0-04: ManifestLoader デフォルト起動パスのテスト
+ *
+ * デフォルト起動ロジックにより、explicitRoot 未指定でも
+ * manifest が自動解決・読み込みされることを検証する。
+ */
+describe("TASK-P0-04: default manifest startup path", () => {
+  const canonicalSkillCreatorRoot = path.join(
+    projectRoot,
+    ".claude",
+    "skills",
+    "skill-creator",
+  );
+  let savedEnv: string | undefined;
+
+  beforeAll(() => {
+    savedEnv = process.env.AIWORKFLOW_SKILL_CREATOR_PATH;
+    process.env.AIWORKFLOW_SKILL_CREATOR_PATH = canonicalSkillCreatorRoot;
+  });
+
+  afterAll(() => {
+    if (savedEnv === undefined) {
+      delete process.env.AIWORKFLOW_SKILL_CREATOR_PATH;
+    } else {
+      process.env.AIWORKFLOW_SKILL_CREATOR_PATH = savedEnv;
+    }
+  });
+
+  // TC-10: デフォルト起動パス定数でファイル名が正しく解決される
+  it("SKILL_CREATOR_MANIFEST_PATH を使って canonical manifest を読み込める", async () => {
+    const loader = new ManifestLoader();
+    const defaultManifestPath = path.join(
+      projectRoot,
+      ".claude",
+      "skills",
+      "skill-creator",
+      SKILL_CREATOR_MANIFEST_PATH,
+    );
+
+    const manifest = await loader.loadManifest(defaultManifestPath);
+
+    expect(manifest).toBeDefined();
+    expect(manifest.workflowId).toBe("skill-creator");
+  });
+
+  // TC-11: resolveDefaultManifestPath() がプロジェクトルートベースで正しく解決する
+  it("resolveDefaultManifestPath() が有効な絶対パスを返す", () => {
+    const resolvedPath = resolveDefaultManifestPath();
+
+    expect(path.isAbsolute(resolvedPath)).toBe(true);
+    expect(resolvedPath).toContain(
+      path.join(".claude", "skills", "skill-creator", "workflow-manifest.json"),
+    );
+  });
+
+  // TC-12: resolveDefaultManifestPath() で解決したパスから manifest を読み込める
+  it("resolveDefaultManifestPath() で解決したパスから manifest を読み込める", async () => {
+    const loader = new ManifestLoader();
+    const resolvedPath = resolveDefaultManifestPath();
+
+    const manifest = await loader.loadManifest(resolvedPath);
+
+    expect(manifest).toBeDefined();
+    expect(manifest.workflowId).toBe("skill-creator");
+    expect(manifest.schemaVersion).toBe(1);
+  });
+
+  // TC-13: SKILL_CREATOR_MANIFEST_PATH が空文字でない
+  it("SKILL_CREATOR_MANIFEST_PATH が空文字でなく正しい値を持つ", () => {
+    expect(SKILL_CREATOR_MANIFEST_PATH).toBeTruthy();
+    expect(SKILL_CREATOR_MANIFEST_PATH.trim()).not.toBe("");
+    expect(SKILL_CREATOR_MANIFEST_PATH).toBe("workflow-manifest.json");
+  });
+
+  // TC-14: explicitRoot 指定時はそのパスが優先される
+  it("resolveDefaultManifestPath() は explicitRoot を優先する", () => {
+    const customRoot = "/custom/skill-creator";
+    const resolvedPath = resolveDefaultManifestPath(customRoot);
+
+    expect(resolvedPath).toBe(
+      path.join(customRoot, SKILL_CREATOR_MANIFEST_PATH),
+    );
+  });
+});
+
+/**
+ * TASK-P0-04: デフォルト起動エラーパス & 回帰テスト
+ */
+describe("TASK-P0-04: default startup error paths", () => {
+  // EC-10: 存在しないディレクトリを explicitRoot に指定した場合
+  it("存在しないディレクトリを explicitRoot に指定すると正しいパスを返す", () => {
+    const resolvedPath = resolveDefaultManifestPath("/nonexistent/path");
+    expect(resolvedPath).toBe(
+      path.join("/nonexistent/path", "workflow-manifest.json"),
+    );
+  });
+
+  // EC-11: 引数なしで環境変数もなく、候補にmanifestがない場合エラー
+  it("候補パスに manifest が存在しない場合エラーを throw する", () => {
+    const saved = process.env.AIWORKFLOW_SKILL_CREATOR_PATH;
+    process.env.AIWORKFLOW_SKILL_CREATOR_PATH =
+      "/tmp/nonexistent-skill-creator";
+    try {
+      // Note: REPO_SKILL_CREATOR_PATH is already evaluated at module load time (apps/desktop/.claude/...)
+      // and HOME path (~/.aiworkflow/...) likely doesn't have manifest either
+      // So if env points to nonexistent, and other candidates don't have it, should throw
+      expect(() => resolveDefaultManifestPath()).toThrow(
+        "workflow-manifest.json が見つかりません",
+      );
+    } finally {
+      if (saved === undefined) {
+        delete process.env.AIWORKFLOW_SKILL_CREATOR_PATH;
+      } else {
+        process.env.AIWORKFLOW_SKILL_CREATOR_PATH = saved;
+      }
+    }
+  });
+
+  // EC-12: resolveDefaultManifestPath で解決したパスの manifest が壊れている場合
+  it("解決したパスの manifest が破損している場合 ManifestLoader がエラーを throw する", async () => {
+    const tempDir = await fs.mkdtemp(
+      path.join(os.tmpdir(), "p0-04-error-test-"),
+    );
+    try {
+      await fs.writeFile(
+        path.join(tempDir, "workflow-manifest.json"),
+        "{ invalid json",
+      );
+      const resolvedPath = resolveDefaultManifestPath(tempDir);
+      const loader = new ManifestLoader();
+
+      await expect(loader.loadManifest(resolvedPath)).rejects.toThrow();
+    } finally {
+      await fs.rm(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  // RC-04: TASK-P0-03 の既存テスト（TC-01〜TC-09）が引き続き通ることの確認
+  // (このファイル内の既存 describe ブロックが全 Green であることで暗黙的に確認)
 });
