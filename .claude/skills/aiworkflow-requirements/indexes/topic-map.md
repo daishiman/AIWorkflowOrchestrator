@@ -2638,8 +2638,10 @@ node scripts/list-specs.js --topics
 | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L756 |
 | TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L797 |
 | TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L822 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L837 |
 | TASK-RT-06 教訓（2026-03-29） | L853 |
 | TASK-LLM-MOD-04 教訓（2026-03-29 Phase 12 close-out） | L876 |
+| TASK-P0-04 教訓（2026-03-30） | L890 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
