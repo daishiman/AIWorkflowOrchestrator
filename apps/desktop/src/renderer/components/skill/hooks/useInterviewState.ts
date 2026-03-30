@@ -1,4 +1,11 @@
 import { useState, useCallback, useMemo } from "react";
+
+function findLastIdx<T>(arr: T[], pred: (item: T) => boolean): number {
+  for (let i = arr.length - 1; i >= 0; i--) {
+    if (pred(arr[i])) return i;
+  }
+  return -1;
+}
 import type {
   SkillCreatorUserInputRequest,
   SkillCreatorUserInputSubmission,
@@ -90,7 +97,7 @@ export function useInterviewState(
 
   const rollbackLastUserMessage = useCallback(() => {
     setMessages((prev) => {
-      const lastUserIdx = prev.findLastIndex((m) => m.role === "user");
+      const lastUserIdx = findLastIdx(prev, (m) => m.role === "user");
       if (lastUserIdx === -1) {
         return prev;
       }
@@ -106,7 +113,7 @@ export function useInterviewState(
       };
     }
 
-    const lastUserIdx = messages.findLastIndex((m) => m.role === "user");
+    const lastUserIdx = findLastIdx(messages, (m) => m.role === "user");
     if (lastUserIdx === -1) {
       return {
         restoredRequest: null,
@@ -114,9 +121,10 @@ export function useInterviewState(
       };
     }
 
-    const lastAssistantIdx = messages
-      .slice(0, lastUserIdx)
-      .findLastIndex((m) => m.role === "assistant");
+    const lastAssistantIdx = findLastIdx(
+      messages.slice(0, lastUserIdx),
+      (m) => m.role === "assistant",
+    );
     if (lastAssistantIdx === -1) {
       return {
         restoredRequest: null,

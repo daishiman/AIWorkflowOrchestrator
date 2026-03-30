@@ -2,6 +2,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import type {
   SkillCreatorUserInputRequest,
   SkillCreatorUserInputSubmission,
+  SkillCreatorUserInputOption,
   SkillCreatorWorkflowUiSnapshot,
   InterviewUserAnswer,
 } from "@repo/shared/types/skillCreator";
@@ -170,7 +171,8 @@ export function ConversationalInterview({
       switch (answer.kind) {
         case "single_select": {
           const option = pendingRequest?.options?.find(
-            (o) => o.id === answer.selectedOptionId,
+            (o: SkillCreatorUserInputOption) =>
+              o.id === answer.selectedOptionId,
           );
           return option?.label ?? answer.selectedOptionId ?? "";
         }
@@ -178,9 +180,10 @@ export function ConversationalInterview({
           const labels =
             answer.selectedOptionIds
               ?.map(
-                (id) =>
-                  pendingRequest?.options?.find((o) => o.id === id)?.label ??
-                  id,
+                (id: string) =>
+                  pendingRequest?.options?.find(
+                    (o: SkillCreatorUserInputOption) => o.id === id,
+                  )?.label ?? id,
               )
               .join(", ") ?? "";
           return labels;
