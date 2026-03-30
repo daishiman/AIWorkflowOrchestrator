@@ -245,8 +245,9 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 ## 変更履歴
 
-| Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                    |
-| ----------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Version | Date | Changes |
+| --- | --- | --- |
+| **6.18.15** | **2026-03-30** | **TASK-P0-05 Phase 12 close-out resync を guide へ反映**: Phase 11 evidence 欠落時は `NON_VISUAL` でも `manual-test-result.md` / `discovered-issues.md` を必須補完すること、Phase 12 local outputs 充足だけで `completed` に上げず canonical same-wave sync 未完了なら `in_progress` を維持すること、edge case 定義（E-14 / E-15）は spec と targeted test を同一ターンで同期することを変更履歴に記録 |
 | **6.18.14** | **2026-03-27** | **Phase 12 close-out ルール hardening を反映**: (1) `spec_created` UI task でも Step 1-A〜1-C を N/A にせず same-wave sync で閉じるルール、(2) docs-only task に後から code 実装が入った場合の Step 2 / screenshot 再判定ルール、(3) Phase 12 documentation guide hardening（planned wording 残存 grep 監査、evidence reclassification）を SKILL.md に明示 |
 | **6.18.13** | **2026-03-27** | **TASK-SDK-05 create-entry-mainline-unification spec sync を guide へ反映**: `spec_created` UI task の Phase 12 でも Step 1-A〜1-C を N/A にしない same-wave sync ルール、`verification-report.md` の workflow root path drift 是正、`.claude` 正本更新後の `.agents` mirror parity 確認を close-out 完了条件へ追加                                        |
 | **6.18.12** | **2026-03-26** | **TASK-SDK-01 hardening sync を guide へ反映**: docs-only follow-up に後からコード変更が入った時は source workflow と `outputs/phase-12/*.md` を同一ターンで current facts へ戻すルールを `phase-12-documentation-guide.md` に追加                                                                                                                         |
