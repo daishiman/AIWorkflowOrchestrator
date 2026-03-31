@@ -35,6 +35,16 @@
 - task-workflow-completed-skill-lifecycle-ui.md に TASK-RT-05-TEST-RERUN close-out 注記を追加
 
 ---
+## 2026-03-31 - UT-UIUX-PLAYWRIGHT-E2E-001 Phase 12 close-out: スキルフィードバック反映
+
+### 変更内容
+- `references/phase-12-completion-checklist.md` にスクリーンショット証跡ハードゲート5点（FB-UT-UIUX-001-A）と `artifacts.json` planned wording 検査（FB-UT-UIUX-001-B）を追加
+- `references/phase-12-tasks-guide.md` の Task 3.5 に UI/UX変更タスク専用ゲートを追記
+- 漏れやすいポイント表に `FB-UT-UIUX-001-A` / `FB-UT-UIUX-001-B` 行を追加
+- `docs/30-workflows/unassigned-task/TASK-A11Y-FOCUS-TRAP-001.md` を旧形式（`## Why/What/How`）から標準フォーマット（`## 1〜9`）に変換し `audit-unassigned-tasks` currentViolations を 0 へ
+- SKILL.md v6.18.17 変更履歴を追記
+
+---
 ## 2026-03-31 - TASK-UIUX-FEEDBACK-001 spec_created sync hardening
 
 ### 変更内容

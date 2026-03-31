@@ -5,6 +5,30 @@
 
 ## 完了タスク
 
+### タスク: UT-UIUX-PLAYWRIGHT-E2E-001（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | UT-UIUX-PLAYWRIGHT-E2E-001 |
+| ステータス | **完了** |
+| タイプ | implementation / e2e ui-ux |
+| 優先度 | 中 |
+| 完了日 | 2026-03-31 |
+| 対象 | `apps/desktop/e2e/ui-ux/` / `playwright.config.ts` / workflow close-out |
+| 成果物 | `docs/30-workflows/ut-uiux-playwright-e2e-001/` |
+
+#### 実施内容
+
+- `ui-ux-layer1` / `ui-ux-layer2` project を current branch に固定
+- `TEST_TARGETS` を single source of truth とする dynamic E2E 構成を維持
+- implicit role / positive tabindex の false positive を削減
+- Phase 11 screenshot / metadata / coverage / review / artifacts 同期を current workflow 配下へ補完
+
+#### 残課題
+
+- `TASK-A11Y-FOCUS-TRAP-001`
+- Layer 2 baseline drift 3件は MEDIUM として workflow 側へ記録
+
 ### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
 
 | 項目 | 値 |

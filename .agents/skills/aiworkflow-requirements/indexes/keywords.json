@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-31T07:51:26.643Z",
-  "totalKeywords": 2576,
+  "generated": "2026-03-31T09:52:05.057Z",
+  "totalKeywords": 2602,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6263,7 +6263,6 @@
     ],
     "ELECTRON": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-viewtype-electron-ui.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
@@ -6949,22 +6948,6 @@
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "verify": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "improve": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
-    ],
-    "reverify": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "closed": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "loop": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "authkey": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -6988,10 +6971,6 @@
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "spec-splitting-guidelines.md",
       "ui-ux-feature-components-core.md"
-    ],
-    "BUILD": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "governance": [
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -9319,6 +9298,9 @@
     "CURRENT": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
+    "BUILD": [
+      "logs-archive-2026-03-history-search-notification-center.md"
+    ],
     "CAPTURE": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
@@ -9535,6 +9517,9 @@
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "mid": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "improve": [
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "契約ドリフト自動検出スクリプト完了": [

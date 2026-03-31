@@ -7,6 +7,9 @@
 import { chromium, FullConfig } from "@playwright/test";
 
 async function globalSetup(config: FullConfig) {
+  // テスト環境では ANTHROPIC_API_KEY をダミー値に設定（LLM 呼び出しはモックでスタブ化）
+  // FR-005: APIキー非依存 — 実 API を呼ばずテストを完走させるための設定
+  process.env.ANTHROPIC_API_KEY ??= "dummy-test-key-for-e2e";
   const browser = await chromium.launch();
   const context = await browser.newContext();
   const page = await context.newPage();

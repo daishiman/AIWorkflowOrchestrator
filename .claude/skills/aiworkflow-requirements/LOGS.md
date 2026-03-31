@@ -8,6 +8,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 見出し |
 | --- |
 | 2026-03-31 - TASK-RT-05-TEST-RERUN close-out（Issue #1756 完了 / UT-RT-06 esbuild 修正後に `cd apps/desktop && pnpm exec vitest run ...` で Engine 39件 + Renderer 35件 全PASS 再確認 / AC-4 既存4kind非破壊確認 / phase-9 quality-report・phase-10 final-review-result 更新 / esbuild platform mismatch + desktop cwd ルールを lessons-learned に追記） |
+| 2026-03-31 - UT-UIUX-PLAYWRIGHT-E2E-001 close-out resync（Phase 11 screenshot evidence / artifacts inventory / Playwright E2E current facts を same-wave で更新し、`TASK-A11Y-FOCUS-TRAP-001` を backlog へ formalize） |
 | 2026-03-31 - TASK-UIUX-FEEDBACK-001 false-green cleanup（Phase 11 placeholder-only evidence と phantom path `scripts/ui-ux-eval/*` を current facts から除去し、`task-workflow-phases.md` / `lessons-learned-current.md` / LOGS / SKILL を same-wave で更新。topic-map / keywords 再生成まで完了） |
 | 2026-03-31 - TASK-P0-09 governance spec 同期（`governance-hooks-factory-audit-sink.md` 新規作成 / `lessons-learned-governance-hooks-phase-policy.md` 新規作成 / topic-map に2ファイル追加 / keywords.json に9キーワード追加（GovernanceAuditSink / GovernanceHooksFactory / SkillCreatorGovernancePolicy / canUseTool / permissionMode / GovernanceUiPayload / GovernanceAuditEvent / PHASE_POLICIES）/ `.agents` mirror 同期 / interfaces-agent-sdk-skill-reference.md の Governance 拡張セクションは既記録済みを確認） |
 | 2026-03-31 - TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out sync（execute phase governance wiring を `SkillExecutor` まで接続 / `permissionMode`・hooks・`permissions.canUseTool` を query() へ伝播 / path-safe canUseTool 判定へ是正 / `skill-creator:get-governance` と `GovernanceUiPayload` を public surface へ追加 / shared types に governance 8 型を追加 / system spec 3 ファイル + completed ledger を同波更新 / follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` を formalize） |
@@ -153,6 +154,16 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## UT-UIUX-PLAYWRIGHT-E2E-001 close-out resync（2026-03-31）
+
+- タスク名: Playwright E2E テスト動的フレームワーク実装（UI/UX 3層評価）
+- 種別: implementation close-out resync
+- 主な反映:
+  - `references/testing-playwright-e2e.md` に `ui-ux-layer1` / `ui-ux-layer2`、`TEST_TARGETS`、baseline 正本パス、implicit role / positive tabindex ルールを追記
+  - `references/task-workflow-completed.md` に UT-UIUX-PLAYWRIGHT-E2E-001 完了記録を追加
+  - `references/task-workflow-backlog.md` に `TASK-A11Y-FOCUS-TRAP-001` を追加
+  - workflow root の `artifacts.json` / `outputs/artifacts.json` と Phase 11 screenshot evidence を current facts へ戻した
 
 ## TASK-P0-09 claude-sdk-permission-hooks-governance close-out resync（2026-03-31）
 
