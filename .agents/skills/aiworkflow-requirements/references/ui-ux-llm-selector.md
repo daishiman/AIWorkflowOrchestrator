@@ -53,6 +53,7 @@ Renderer 側の選択状態の正本は `llmSlice` である。
 | 未タスクID | 概要 | 参照 |
 | --- | --- | --- |
 | UT-CHATVIEW-MODEL-SELECTOR-DATA-TESTID-001 | InlineModelSelector ルート要素に data-testid 追加 | `docs/30-workflows/unassigned-task/ut-chatview-model-selector-data-testid-001.md` |
+| TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY | InlineModelSelector 等で model.description を表示 | `docs/30-workflows/step-04-seq-task-05-schema-extension/unassigned-task/renderer-description-display.md` |
 
 ## プロバイダーとモデル一覧
 

@@ -108,7 +108,7 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 | 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**                       |
 | 2     | 設計             | topology、SubAgent lane、validation path を設計する                                                                                |
 | 3     | 設計レビュー     | Phase 4 へ進めるかを判定する                                                                                                       |
-| 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する** |
+| 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する**。**[Feedback P0-02]** Phase 4 完了後に全テストを実行し、全て FAIL することを確認する（fail-first 保証）。 |
 | 5     | 実装             | `.claude` 正本を更新し、mirror を同期する。**[Feedback RT-03]** 実装計画に「新規作成」「修正」ファイルパス一覧を必須記載する（見落とし防止） |
 | 6     | テスト拡充       | fail path、回帰 guard、補助 command を追加する                                                                                     |
 | 7     | カバレッジ確認   | concern と dependency edge の coverage を可視化する                                                                                |
@@ -247,7 +247,6 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| **6.18.16** | **2026-03-30** | **agentview-permission-api-fix Phase 12 識別: Phase 2 テスト影響分析の不十分を反映**: テストファイルが `*.test.tsx` / `*.coverage.test.tsx` / `*.cta.test.tsx` 等に分散している場合、Phase 2 設計段階で全テストファイルを網羅的に列挙しモック定義の一貫性を確保するルールを「Phase 12 よくある漏れ」テーブルに Feedback 4 として追加 |
 | **6.18.15** | **2026-03-30** | **TASK-P0-05 Phase 12 close-out resync を guide へ反映**: Phase 11 evidence 欠落時は `NON_VISUAL` でも `manual-test-result.md` / `discovered-issues.md` を必須補完すること、Phase 12 local outputs 充足だけで `completed` に上げず canonical same-wave sync 未完了なら `in_progress` を維持すること、edge case 定義（E-14 / E-15）は spec と targeted test を同一ターンで同期することを変更履歴に記録 |
 | **6.18.14** | **2026-03-27** | **Phase 12 close-out ルール hardening を反映**: (1) `spec_created` UI task でも Step 1-A〜1-C を N/A にせず same-wave sync で閉じるルール、(2) docs-only task に後から code 実装が入った場合の Step 2 / screenshot 再判定ルール、(3) Phase 12 documentation guide hardening（planned wording 残存 grep 監査、evidence reclassification）を SKILL.md に明示 |
 | **6.18.13** | **2026-03-27** | **TASK-SDK-05 create-entry-mainline-unification spec sync を guide へ反映**: `spec_created` UI task の Phase 12 でも Step 1-A〜1-C を N/A にしない same-wave sync ルール、`verification-report.md` の workflow root path drift 是正、`.claude` 正本更新後の `.agents` mirror parity 確認を close-out 完了条件へ追加                                        |
@@ -286,7 +285,6 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | `task-workflow.md` の未タスクリンクが参照切れ                                                          | Step 1-E後に `verify-unassigned-links.js` を実行して `ALL_LINKS_EXIST` を確認する                                                                |
 | **[Feedback 2]** Phase 12 着手時に `outputs/artifacts.json` と phase spec の artifact 名が照合されない | Phase 12 の **最初の作業**として `outputs/artifacts.json` と各 `phase-*.md` に記載されたartifact名を1対1で突合し、不一致があれば着手前に修正する |
 | **[Feedback 3]** Phase 11 の UI task / docs-only task 判定がずれる                                     | Phase 1 で記録したタスク分類（UI task / docs-only task）を Phase 11 着手時に必ず参照する。分類が変わっていた場合は再判定を明示する               |
-| **[Feedback 4]** Phase 2 設計段階でテスト影響ファイルの列挙が不十分                                    | テストファイルが複数に分散している場合（`*.test.tsx` / `*.coverage.test.tsx` / `*.cta.test.tsx` など）、Phase 2 の設計段階で全テストファイルを網羅的に列挙すること。修正対象テストファイルの一覧を明示してモック定義の一貫性を確保すること |
 
 ### Phase 12 苦戦防止Tips
 

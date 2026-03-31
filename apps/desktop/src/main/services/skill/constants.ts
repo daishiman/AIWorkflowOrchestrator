@@ -144,38 +144,3 @@ export const TASK_DURATION_MINUTES = 5;
  * スキル名の最大文字数
  */
 export const MAX_SKILL_NAME_LENGTH = 256;
-
-/**
- * skill-creator の workflow manifest ファイル名（skill-creator ルートからの相対パス）
- * TASK-P0-04: ManifestLoader デフォルト起動
- */
-export const SKILL_CREATOR_MANIFEST_PATH = "workflow-manifest.json";
-
-/**
- * デフォルトの manifest 絶対パスを解決する。
- * explicitRoot が指定されていればそれを優先し、
- * 未指定の場合は getSkillCreatorRootCandidates() の候補から解決する。
- *
- * @param explicitRoot - 明示的な skill-creator ルートパス（省略可）
- * @returns manifest ファイルの絶対パス
- * @throws manifest が見つからない場合
- *
- * TASK-P0-04: ManifestLoader デフォルト起動
- */
-export function resolveDefaultManifestPath(explicitRoot?: string): string {
-  if (explicitRoot) {
-    return path.join(explicitRoot, SKILL_CREATOR_MANIFEST_PATH);
-  }
-
-  const candidates = getSkillCreatorRootCandidates();
-  for (const candidate of candidates) {
-    const manifestPath = path.join(candidate.path, SKILL_CREATOR_MANIFEST_PATH);
-    if (fs.existsSync(manifestPath)) {
-      return manifestPath;
-    }
-  }
-
-  throw new Error(
-    `workflow-manifest.json が見つかりません。検索パス: ${candidates.map((c) => c.path).join(", ")}`,
-  );
-}

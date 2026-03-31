@@ -593,38 +593,4 @@
 | 原因 | P44/P45 パターンの典型例。IPC ハンドラ変更時に Preload → Renderer の3層を同時に走査する習慣が欠けていた |
 | 修正内容 | Preload の `executePlan` 戻り値型を `RuntimeSkillCreatorExecuteResponse` に更新し、Renderer（`SkillLifecyclePanel.tsx`）に `terminal_handoff` 型ナロイングを追加した |
 | 関連パターン | P44（IPC インターフェース不整合）、P45（IPC 引数命名の契約ドリフト） |
-
----
-
-## 2026-03-30 AgentView Permission API 修正から得た知見
-
-### esbuild platform mismatch によるテスト環境ブロック（L-AGENTPERM-001）
-
-| 項目 | 内容 |
-| --- | --- |
-| 発生箇所 | Vitest 起動時 |
-| 症状 | `@esbuild/darwin-arm64` / `darwin-x64` バイナリ不整合でテスト実行不可 |
-| 解決策 | `pnpm install --force` で optional dependency を再解決 |
-| 予防 | 環境セットアップ時に `node -e "require('@esbuild/darwin-arm64')"` でPreflight確認 |
-| 関連パターン | esbuild mismatch（過去: UT-SC-03-004、TASK-SDK-08 等で繰り返し発生） |
-
-### Permission API 契約境界の逸脱検出（L-AGENTPERM-002）
-
-| 項目 | 内容 |
-| --- | --- |
-| 発生箇所 | AgentView が `getMode()` / `getRemembered()` を呼び出していたが preload 未公開 |
-| 検出方法 | `preload/types.ts` の PermissionAPI 型定義を正本として逆引き確認 |
-| 修正方針 | 現在の preload 契約範囲内での最小修正 + 逸脱部分を follow-up に切り出し |
-| 教訓 | Renderer が呼ぶ API は必ず preload/types.ts に存在することを先に確認する。contract drift は preload contracts から逆引きして検出する |
-| 関連パターン | P59（Preload API 未公開）、P44（IPC インターフェース不整合） |
-
-### テストファイル複数分散時のモック管理（L-AGENTPERM-003）
-
-| 項目 | 内容 |
-| --- | --- |
-| 発生箇所 | AgentView の test.tsx / coverage.test.tsx / cta.test.tsx が異なるモック定義 |
-| 根本原因 | Phase 2 設計で修正対象テストファイルを全ファイル明示していなかった |
-| 対策 | Phase 2 タスク 2-5（テスト影響分析）で修正対象ファイルを網羅的に列挙する |
-| 教訓 | テストファイルが複数に分散している場合、Phase 2 設計でファイル網羅的に分析すること |
-| 関連パターン | P39（テスト変更網羅性）
 | 再発防止 | IPC ハンドラの戻り値型変更時は必ず「IPC ハンドラ → Preload API → Renderer 消費箇所」の3層を同一ターンで走査して型追従を確認する |
