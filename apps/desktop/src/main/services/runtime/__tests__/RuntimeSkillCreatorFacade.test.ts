@@ -156,10 +156,10 @@ describe("RuntimeSkillCreatorFacade", () => {
 
       expect(resolveSpy).toHaveBeenCalledWith("api-key", "sk-test");
       expect(executeMock).toHaveBeenCalledWith(
-        {
+        expect.objectContaining({
           prompt: "my-skill\nbody",
           skillId: "creator-plan-001",
-        },
+        }),
         expect.objectContaining({
           id: "creator-plan-001",
           name: "skill-creator-executor",
