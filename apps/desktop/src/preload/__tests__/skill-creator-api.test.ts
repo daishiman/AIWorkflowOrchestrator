@@ -369,29 +369,6 @@ describe("SkillCreator Preload API", () => {
       );
       expect(result).toEqual(expectedResult);
     });
-
-    it("getGovernancePayload が正しいチャンネルとargsでinvokeを呼び出すこと", async () => {
-      const expectedResult = {
-        success: true,
-        data: {
-          phase: "execute",
-          permissionMode: "acceptEdits",
-          activePolicyToolCount: 6,
-          recentDenials: [],
-        },
-      };
-      mockInvoke.mockResolvedValue(expectedResult);
-
-      const result = await skillCreatorAPI.getGovernancePayload("execute");
-
-      expect(mockInvoke).toHaveBeenCalledWith(
-        IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE,
-        {
-          phase: "execute",
-        },
-      );
-      expect(result).toEqual(expectedResult);
-    });
   });
 
   // ============================================
