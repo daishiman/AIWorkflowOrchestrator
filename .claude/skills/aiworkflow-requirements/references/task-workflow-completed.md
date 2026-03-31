@@ -5,6 +5,56 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-09 |
+| ステータス | **完了** |
+| タイプ | implementation / runtime governance |
+| 優先度 | 高 |
+| 完了日 | 2026-03-31 |
+| 対象 | `RuntimeSkillCreatorFacade.execute()` / `SkillExecutor` / governance payload |
+| 成果物 | `docs/30-workflows/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` |
+
+#### 実施内容
+
+- execute phase の governance policy を `SkillExecutor.execute(..., governanceOptions)` へ接続し、`permissionMode` / `hooks` / `permissions.canUseTool` を SDK query() へ伝播
+- `SkillCreatorGovernancePolicy` の path 判定を `path.resolve` / `path.relative` ベースへ是正し、空 path・targetDir 未指定・path traversal を拒否
+- `skill-creator:get-governance` IPC と preload `getGovernancePayload()` を追加し、`GovernanceUiPayload` を public surface として公開
+- follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` を formalize し、全 phase coverage と renderer 可視化を分離した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/preload/__tests__/skill-creator-api.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/GovernanceHooksFactory.test.ts src/main/services/runtime/__tests__/GovernanceEdgeCases.test.ts src/main/services/runtime/__tests__/GovernanceAuditSink.test.ts src/main/services/runtime/__tests__/SkillCreatorGovernancePolicy.test.ts src/main/services/skill/__tests__/SkillExecutor.sdk-types.test.ts`
+- 130 tests PASS
+- Phase 11 visual screenshot: N/A（renderer governance UI は follow-up）
+
+### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-09 |
+| ステータス | **完了** |
+| タイプ | implementation / governance hardening |
+| 優先度 | 最高 |
+| 完了日 | 2026-03-31 |
+| 対象 | `RuntimeSkillCreatorFacade` / `SkillExecutor` / governance module / skill creator runtime IPC |
+| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` |
+
+#### 実施内容
+
+- `apps/desktop/src/main/services/runtime/governance/` に policy / hooks factory / audit sink を追加
+- `packages/shared/src/types/skillCreator.ts` と `packages/shared/src/types/index.ts` に governance 型 6 件を追加
+- `apps/desktop/src/preload/channels.ts` / `apps/desktop/src/main/ipc/creatorHandlers.ts` / `apps/desktop/src/preload/skill-creator-api.ts` に `skill-creator:get-governance-state` を追加
+- `RuntimeSkillCreatorFacade.execute()` が execute phase policy を metadata へ透過し、`SkillExecutor` が SDK `query()` へ hooks と permissionMode を実接続する current fact へ更新
+- Phase 11 を `NON_VISUAL` と確定し、Phase 12 implementation guide を Part 1 / Part 2 構成と system spec sync 付きで閉じた
+
+#### 検証証跡
+
+- `npm -s exec vitest -- run apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts apps/desktop/src/main/services/runtime/__tests__/governance/SkillCreatorGovernance.integration.test.ts apps/desktop/src/main/ipc/__tests__/creatorHandlers.test.ts apps/desktop/src/preload/__tests__/skill-creator-api.governance.test.ts`
+- targeted suite PASS
+
 ### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
 | 項目 | 値 |
@@ -1800,3 +1850,32 @@
 #### Phase 12 未タスク
 
 なし（0件）
+
+---
+
+### タスク: TASK-UIUX-FEEDBACK-001 phase11-ui-ux-feedback-loop-review（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UIUX-FEEDBACK-001 |
+| ステータス | **spec_created 維持 / canonical・mirror・system spec sync 実施** |
+| タイプ | skill improvement + workflow documentation correction |
+| 優先度 | HIGH |
+| 完了日 | 2026-03-31 |
+| 成果物 | `docs/30-workflows/task-uiux-feedback-001-phase11-enhancement/` |
+
+#### 実施内容
+
+- `.claude/skills/task-specification-creator/` に追加された `evaluate-ui-ux` script 群、prompt agent、テスト群を current fact として整理
+- `evaluate-ui-ux.js` の CLI が `--task-id` を評価コンテキストへ渡していなかった不整合を修正
+- screenshot 0 件で処理が進む false green を防ぐガードと回帰テストを追加
+- workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ是正
+- Phase 11/12 文書から completed 誤記を除去し、placeholder screenshot と `not_run` metadata を current fact として固定
+
+#### 未完了事項
+
+| 項目 | 状態 |
+| --- | --- |
+| representative screenshot 実測 | 未了 |
+| Phase 11 実行結果 | 未了 |
+| HIGH 問題の未タスク化 | 実行後に判定 |

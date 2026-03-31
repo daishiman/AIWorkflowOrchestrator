@@ -504,6 +504,11 @@ describe("SkillCreatorVerificationEngine", () => {
       expect(result.length).toBeGreaterThan(0);
       expect(result.some((c) => c.layer === "layer1")).toBe(true);
       expect(result.some((c) => c.layer === "layer2")).toBe(true);
+      const governanceState = facade.getGovernanceState();
+      expect(governanceState.phase).toBe("verify");
+      expect(governanceState.recentAuditEvents.at(-1)?.eventType).toBe(
+        "session_end",
+      );
     });
 
     it("T-FAC-02: engine not injected returns empty array", async () => {

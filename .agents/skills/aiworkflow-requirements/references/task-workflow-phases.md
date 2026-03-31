@@ -175,6 +175,14 @@
 | Phase 5: 品質保証         | 品質ゲート未通過 | Phase 4: リファクタリング |
 | Phase 6: ドキュメント更新 | 完了             | 完了                      |
 
+### verify loop close-out current rule（2026-03-30）
+
+- `spec_created` task に後から code 実装が入った場合は、Phase 12 で `spec_created` のまま閉じず current facts に合わせて completed / domain sync 要否を再判定する
+- Phase 11 の `NON_VISUAL` 運用でも `TC-ID ↔ evidence` の対応表を必須とし、placeholder PNG だけで PASS としない
+- Phase 12 は workflow outputs だけで閉じず、`.claude` 正本、`LOGS.md`、mirror parity を same-wave で更新する
+- Phase 11 3層評価を導入する場合、current fact の script path は `.claude/skills/task-specification-creator/scripts/*` を正本とする。`scripts/ui-ux-eval/*` のような design-only path を completed 実績として書かない
+- `manual-test-result.md` が未実行、かつ screenshot が placeholder-only の時は `artifacts.json` の Phase 11/12 を completed に上げない
+
 ---
 
 ## 出力テンプレート
