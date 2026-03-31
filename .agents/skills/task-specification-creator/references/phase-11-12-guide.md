@@ -58,6 +58,7 @@
 - docs-only task: navigation、archive discoverability、mirror parity を確認する。
 - UI task: 上記に加えて screenshot と Apple UI/UX 視覚検証を行う。
 - representative evidence は workflow 配下 `outputs/phase-11/` に置く。
+- 実装統合タスクで visible surface の追加がない場合は、Phase 11 を `NON_VISUAL` として設計し、`manual-test-checklist.md` / `manual-test-result.md` を正本にする。screenshot 契約を要求しないのに `UI` / `スクリーンショット` wording を残すと validator が不要な画面証跡を要求するため、仕様書本文でも non-visual 前提を明示する。
 
 ### Phase 12
 

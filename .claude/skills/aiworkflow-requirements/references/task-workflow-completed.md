@@ -1704,11 +1704,56 @@
 
 | 未タスクID | 概要                                                                             | 優先度 |
 | ---------- | -------------------------------------------------------------------------------- | ------ |
-| UT-6       | main/ipc/index.ts へ advancedConsole/approval/disclosure の3ハンドラ追加         | HIGH   |
-| UT-7       | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH   |
-| UT-8       | Main→Renderer への承認要求プッシュ通知（webContents.send）                       | HIGH   |
-| UT-9       | abort/done 時に ApprovalGate.revokeAll() でトークンクリア                        | MEDIUM |
 | UT-10      | disclosureHandlers.ts 独立テスト作成                                             | LOW    |
+| UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001 | disclosure 情報を runtime から注入 | HIGH |
+| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | Advanced Console の実ログ / copy command 連携 | HIGH |
+
+---
+
+### タスク: UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 Safety Governance Production 統合（2026-03-31）
+
+| 項目       | 値 |
+| ---------- | --- |
+| タスクID   | UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ     | implementation follow-up |
+| 優先度     | 高 |
+| 完了日     | 2026-03-31 |
+| 対象       | ApprovalGate production integration / preload execution namespace / approval push / revokeAll lifecycle |
+| 成果物     | `docs/30-workflows/completed-tasks/UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001.md`, `docs/30-workflows/safety-gov-production-integration/` |
+
+#### 実施内容
+
+- `apps/desktop/src/main/ipc/index.ts` で `DefaultApprovalGate` を生成し、approval/disclosure/advancedConsole handler 登録と `onSessionDestroyed` cleanup を接続した
+- `apps/desktop/src/preload/index.ts` / `types.ts` へ `execution` namespace と `ExecutionAPI` を追加した
+- `apps/desktop/src/renderer/hooks/useApprovalFlow.ts` / `useAdvancedConsole.ts` を `getExecutionAPI()` 経由へ統一した
+- workflow root / Phase 11 / Phase 12 成果物を current facts に更新し、canonical artifact 名を補完した
+
+#### 発見元
+
+- 親タスク: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001
+- formalize 対象: UT-6, UT-7, UT-8, UT-9
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| ---------- | ---- | ------ | ------------ |
+| UT-10 | disclosureHandlers.ts 独立テスト作成 | 低 | `docs/30-workflows/unassigned-task/UT-10-disclosureHandlers-standalone-test.md` |
+| UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 | approval request producer を production 接続 | 高 | `docs/30-workflows/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md` |
+| UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001 | disclosure 情報の runtime 注入 | 高 | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001.md` |
+| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | session log / copy command の実データ連携 | 高 | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001.md` |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| -------- | -------- | ---- |
+| workflow root / completed ledger / backlog が別々に更新されると current facts が崩れる | 実装完了後も `spec_created` の記述を残す | 実装・Phase 11/12 証跡・system spec を同じターンで閉じる |
+
+#### 同種課題の簡潔解決手順
+
+1. parent task の未完了項目を 4層境界と lifecycle で再分解する。
+2. 単独で閉じない項目群は workflow pack へ束ねる。
+3. backlog・completed・lessons・workflow root を同一ターンで同期する。
 
 ---
 

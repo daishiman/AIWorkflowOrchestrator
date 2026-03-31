@@ -7,6 +7,7 @@
  */
 
 import { useState, useCallback, useEffect } from "react";
+import { getExecutionAPI } from "../utils/executionApi";
 
 export interface UseAdvancedConsoleReturn {
   /** パネル表示状態 */
@@ -44,24 +45,12 @@ export function useAdvancedConsole(
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const electronAPI = (
-          window as {
-            electronAPI?: {
-              invoke: <T>(channel: string, payload?: unknown) => Promise<T>;
-            };
-          }
-        ).electronAPI;
-        if (!electronAPI) return;
+        const execution = getExecutionAPI();
+        if (!execution) return;
 
         const [logResult, cmdResult] = await Promise.all([
-          electronAPI.invoke<{ success: boolean; data?: string[] }>(
-            "execution:get-terminal-log",
-            sessionId,
-          ),
-          electronAPI.invoke<{ success: boolean; data?: string | null }>(
-            "execution:get-copy-command",
-            sessionId,
-          ),
+          execution.getTerminalLog(sessionId),
+          execution.getCopyCommand(sessionId),
         ]);
 
         if (cancelled) return;

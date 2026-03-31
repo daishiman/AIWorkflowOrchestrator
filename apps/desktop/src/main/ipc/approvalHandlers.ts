@@ -16,6 +16,26 @@ export interface ApprovalRespondRequest {
   action: "approve" | "reject";
 }
 
+/**
+ * Main → Renderer へ approval リクエストのプッシュ通知を送信する。
+ * mainWindow が破棄済みの場合は何もしない。
+ */
+export function pushApprovalRequest(
+  mainWindow: BrowserWindow,
+  payload: {
+    sessionId: string;
+    operationId: string;
+    operationType: string;
+    description: string;
+    destination?: string;
+  },
+): void {
+  if (mainWindow.isDestroyed() || mainWindow.webContents.isDestroyed()) {
+    return;
+  }
+  mainWindow.webContents.send(IPC_CHANNELS.APPROVAL_REQUEST, payload);
+}
+
 export function registerApprovalHandlers(
   mainWindow: BrowserWindow,
   approvalGate: IApprovalGate,
