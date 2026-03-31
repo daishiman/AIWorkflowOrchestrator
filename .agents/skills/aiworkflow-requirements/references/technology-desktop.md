@@ -17,7 +17,7 @@
 
 | 項目 | 値 |
 |-----|---|
-| 推奨バージョン | `34.x` |
+| 推奨バージョン | `39.x` |
 | 最小バージョン | `28.0.0` |
 | Chromium | 対応Electronバージョンに準拠 |
 | Node.js | 対応Electronバージョンに準拠 |
@@ -75,7 +75,7 @@
 
 | 項目 | 値 |
 |-----|---|
-| 推奨バージョン | `11.x` |
+| 推奨バージョン | `12.x` |
 | 用途 | ローカルデータベース |
 
 **選定理由:**
@@ -83,6 +83,22 @@
 - 同期API（Main Processに適合）
 - パフォーマンス
 - Electronとの互換性
+
+### @electron/rebuild
+
+| 項目 | 値 |
+|-----|---|
+| 推奨バージョン | `^4.0.3` |
+| 用途 | Electron ABI 向けネイティブモジュール再構築 |
+
+### ネイティブモジュール bootstrap 方針
+
+| 項目 | current fact |
+|-----|---|
+| 自動 bootstrap | root `postinstall` → `scripts/setup-native-modules.sh` |
+| manual recovery | `pnpm --filter @repo/desktop run rebuild:electron` |
+| build target owner | workspace shared 配下の `better-sqlite3` |
+| packaging 保険 | `afterPack` で再構築 |
 
 ### electron-store
 

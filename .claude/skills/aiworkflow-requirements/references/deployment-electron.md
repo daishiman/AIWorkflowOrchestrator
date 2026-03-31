@@ -55,6 +55,49 @@
 
 ---
 
+## 開発時のネイティブモジュール bootstrap
+
+### owner と実行順序
+
+| 項目 | current fact |
+| --- | --- |
+| install bootstrap owner | root `package.json` の `postinstall` |
+| 実行スクリプト | `bash scripts/setup-native-modules.sh` |
+| desktop 側の明示コマンド | `pnpm --filter @repo/desktop run rebuild:electron` |
+| packaging 時の保険 | `electron-builder.yml` の `afterPack` |
+
+### 開発時フロー
+
+1. `pnpm install`
+2. root `postinstall` が `scripts/setup-native-modules.sh` を実行
+3. script は `pnpm --dir apps/desktop exec electron ...` で Electron ABI / arch を取得
+4. Electron コンテキストで `better-sqlite3` が既に読めれば再利用
+5. 読めない場合のみ `electron-rebuild -f -w better-sqlite3 -m ../../packages/shared -a <arch>` を実行
+6. `esbuild` を再構築
+
+### 手動復旧が必要なケース
+
+- `pnpm install` を途中で中断した
+- アーキテクチャを切り替えた
+- `NODE_MODULE_VERSION` や binding 不整合が再発した
+
+この場合は次を実行する。
+
+```bash
+pnpm --filter @repo/desktop run rebuild:electron
+```
+
+### 配布ビルド時の native rebuild
+
+| 項目 | 値 |
+| --- | --- |
+| hook | `afterPack: scripts/rebuild-native-for-electron.mjs` |
+| 使用API | `@electron/rebuild` の `rebuild()` |
+| 対象モジュール | `better-sqlite3` |
+| エラー時 | `appOutDir` を含む文脈付きエラーで fail fast |
+
+---
+
 ## 自動更新（electron-updater）
 
 ### 設定項目

@@ -7663,7 +7663,7 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 | ドメイン | 成功パターン | 失敗パターン |
 | --- | --- | --- |
 | 認証・セッション | → [patterns-success-ipc-auth.md](patterns-success-ipc-auth.md), [patterns-success-ipc-auth-b.md](patterns-success-ipc-auth-b.md) | → [patterns-failure-misc.md](patterns-failure-misc.md) |
-| テスト | → [patterns-success-testing-security.md](patterns-success-testing-security.md), [patterns-success-skill-phase12-b.md](patterns-success-skill-phase12-b.md) | → [patterns-failure-misc.md](patterns-failure-misc.md) |
+| テスト | → [patterns-success-testing-security.md](patterns-success-testing-security.md), [patterns-success-testing-security-b.md](patterns-success-testing-security-b.md), [patterns-success-skill-phase12-b.md](patterns-success-skill-phase12-b.md) | → [patterns-failure-misc.md](patterns-failure-misc.md) |
 | Phase 12 | → [patterns-success-skill-phase12.md](patterns-success-skill-phase12.md), [patterns-success-phase12-advanced.md](patterns-success-phase12-advanced.md) | → [patterns-failure-phase12.md](patterns-failure-phase12.md) |
 | IPC・アーキテクチャ | → [patterns-success-ipc-auth.md](patterns-success-ipc-auth.md), [patterns-success-skill-phase12-b.md](patterns-success-skill-phase12-b.md) | → [patterns-failure-misc.md](patterns-failure-misc.md) |
 | DI・設計 | → [patterns-success-testing-security.md](patterns-success-testing-security.md) | - |

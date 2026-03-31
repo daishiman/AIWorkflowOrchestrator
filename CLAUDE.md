@@ -61,6 +61,12 @@ pnpm --filter @repo/web dev
 pnpm --filter @repo/desktop dev
 ```
 
+## Electron ネイティブモジュール運用
+
+- root `pnpm install` は `postinstall` で `scripts/setup-native-modules.sh` を実行し、Electron コンテキストの `better-sqlite3` / `esbuild` を検証する
+- Electron 向けの手動復旧が必要な場合は `pnpm --filter @repo/desktop run rebuild:electron` を使う
+- `pnpm install` や `rebuild:electron` の途中で中断した場合は、完了を待ってから `pnpm --filter @repo/desktop dev` を再実行する
+
 ## Claude Code Hooks
 
 このプロジェクトには以下のHooksが設定されています：
