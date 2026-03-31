@@ -11,6 +11,31 @@
 | --- | --- |
 | タスクID | TASK-P0-09 |
 | ステータス | **完了** |
+| タイプ | implementation / runtime governance |
+| 優先度 | 高 |
+| 完了日 | 2026-03-31 |
+| 対象 | `RuntimeSkillCreatorFacade.execute()` / `SkillExecutor` / governance payload |
+| 成果物 | `docs/30-workflows/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` |
+
+#### 実施内容
+
+- execute phase の governance policy を `SkillExecutor.execute(..., governanceOptions)` へ接続し、`permissionMode` / `hooks` / `permissions.canUseTool` を SDK query() へ伝播
+- `SkillCreatorGovernancePolicy` の path 判定を `path.resolve` / `path.relative` ベースへ是正し、空 path・targetDir 未指定・path traversal を拒否
+- `skill-creator:get-governance` IPC と preload `getGovernancePayload()` を追加し、`GovernanceUiPayload` を public surface として公開
+- follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` を formalize し、全 phase coverage と renderer 可視化を分離した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/preload/__tests__/skill-creator-api.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/GovernanceHooksFactory.test.ts src/main/services/runtime/__tests__/GovernanceEdgeCases.test.ts src/main/services/runtime/__tests__/GovernanceAuditSink.test.ts src/main/services/runtime/__tests__/SkillCreatorGovernancePolicy.test.ts src/main/services/skill/__tests__/SkillExecutor.sdk-types.test.ts`
+- 130 tests PASS
+- Phase 11 visual screenshot: N/A（renderer governance UI は follow-up）
+
+### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-09 |
+| ステータス | **完了** |
 | タイプ | implementation / governance hardening |
 | 優先度 | 最高 |
 | 完了日 | 2026-03-31 |

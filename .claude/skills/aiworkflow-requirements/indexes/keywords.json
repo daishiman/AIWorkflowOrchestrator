@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-31T00:11:17.396Z",
-  "totalKeywords": 2579,
+  "generated": "2026-03-31T01:24:17.446Z",
+  "totalKeywords": 2601,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -107,6 +107,7 @@
       "development-guidelines.md",
       "directory-structure.md",
       "error-handling.md",
+      "governance-hooks-factory-audit-sink.md",
       "interfaces-agent-sdk-executor-core.md",
       "interfaces-agent-sdk-executor.md",
       "interfaces-agent-sdk-history-core.md",
@@ -734,6 +735,7 @@
     "使用例": [
       "api-internal-chunk-search.md",
       "database-architecture.md",
+      "governance-hooks-factory-audit-sink.md",
       "interfaces-rag-community-detection.md",
       "interfaces-rag-community-summarization.md",
       "interfaces-rag-graphrag-query.md",
@@ -1089,6 +1091,7 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
@@ -1291,6 +1294,7 @@
       "api-ipc-agent-core.md",
       "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-skill-lifecycle-design.md"
@@ -1830,6 +1834,7 @@
       "interfaces-rag-file-selection.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-current.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -2401,7 +2406,8 @@
       "api-ipc-system-core.md"
     ],
     "Governance": [
-      "api-ipc-system-core.md"
+      "api-ipc-system-core.md",
+      "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "ADVANCED": [
       "api-ipc-system-core.md",
@@ -2903,6 +2909,7 @@
       "arch-state-management-reference.md",
       "interfaces-chat-history-details.md",
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
@@ -3777,6 +3784,7 @@
       "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
@@ -3977,6 +3985,7 @@
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md"
@@ -4204,6 +4213,7 @@
       "claude-code-agents-workflow.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-test-typesafety.md",
@@ -4464,7 +4474,8 @@
       "csrf-state-parameter.md"
     ],
     "実装仕様": [
-      "csrf-state-parameter.md"
+      "csrf-state-parameter.md",
+      "governance-hooks-factory-audit-sink.md"
     ],
     "メタ情報": [
       "csrf-state-parameter.md",
@@ -5067,6 +5078,18 @@
     ],
     "References": [
       "glossary.md"
+    ],
+    "GovernanceHooksFactory": [
+      "governance-hooks-factory-audit-sink.md"
+    ],
+    "GovernanceAuditSink": [
+      "governance-hooks-factory-audit-sink.md"
+    ],
+    "設計上の注意事項": [
+      "governance-hooks-factory-audit-sink.md"
+    ],
+    "関連仕様書": [
+      "governance-hooks-factory-audit-sink.md"
     ],
     "Executor": [
       "interfaces-agent-sdk-executor-core.md",
@@ -5685,7 +5708,8 @@
       "ipc-contract-checklist.md"
     ],
     "null": [
-      "ipc-contract-checklist.md"
+      "ipc-contract-checklist.md",
+      "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "assertion": [
       "ipc-contract-checklist.md"
@@ -6469,7 +6493,8 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "wiring": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "workflow": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
@@ -6745,6 +6770,86 @@
     "契約整合": [
       "lessons-learned-current.md"
     ],
+    "Policy": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "security-electron-ipc-core.md"
+    ],
+    "定義済み": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "接続済み": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "可視化済みの区別": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "Payload": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "vs": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "testing-component-patterns-core.md"
+    ],
+    "Visual": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "Evidence": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "の区別": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "パストラバーサル対策の実装パターン": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "byte": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "check": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "path": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
+    "resolve": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "relative": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "only": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "の警告パターン": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "follow": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
+    "up": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-runtime-execution-responsibility-realignment.md",
+      "workflow-task-rt-06-artifact-inventory.md"
+    ],
+    "タスクの": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "formalize": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "タイミング": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "関連ファイル": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -6841,6 +6946,22 @@
       "ui-ux-navigation.md"
     ],
     "ライフサイクル": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "verify": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "improve": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "reverify": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "closed": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "loop": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "authkey": [
@@ -9274,9 +9395,6 @@
     "SPECIFICATION": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
-    "formalize": [
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
-    ],
     "仕様書集約": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
@@ -9288,16 +9406,6 @@
     ],
     "追補を": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
-    ],
-    "follow": [
-      "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
-    ],
-    "up": [
-      "logs-archive-2026-03-line-budget-reform-formalize.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
-      "workflow-ai-runtime-execution-responsibility-realignment.md",
-      "workflow-task-rt-06-artifact-inventory.md"
     ],
     "の未タスク": [
       "logs-archive-2026-03-line-budget-reform-formalize.md"
@@ -9418,9 +9526,6 @@
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "mid": [
-      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
-    ],
-    "improve": [
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "契約ドリフト自動検出スクリプト完了": [
@@ -9631,10 +9736,6 @@
     ],
     "include": [
       "logs-archive-2026-03-workflow02-screenshot-guard.md"
-    ],
-    "path": [
-      "logs-archive-2026-03-workflow02-screenshot-guard.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "をシステム仕様へ同期": [
       "logs-archive-2026-03-workflow02-screenshot-guard.md"
@@ -10182,9 +10283,6 @@
       "security-electron-ipc-core.md"
     ],
     "Security": [
-      "security-electron-ipc-core.md"
-    ],
-    "Policy": [
       "security-electron-ipc-core.md"
     ],
     "CSP": [
@@ -10943,9 +11041,6 @@
       "testing-playwright-e2e.md"
     ],
     "userEvent": [
-      "testing-component-patterns-core.md"
-    ],
-    "vs": [
       "testing-component-patterns-core.md"
     ],
     "fireEvent": [

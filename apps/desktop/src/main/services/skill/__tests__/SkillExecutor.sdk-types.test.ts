@@ -22,7 +22,10 @@ import type {
   Options as SDKOptions,
   PermissionMode as SDKPermissionMode,
 } from "@anthropic-ai/claude-agent-sdk";
-import { SkillExecutor } from "../SkillExecutor";
+import {
+  SkillExecutor,
+  type SkillExecutionGovernanceOptions,
+} from "../SkillExecutor";
 
 // =================================================================
 // モック設定
@@ -267,6 +270,21 @@ describe("SkillExecutor SDK型安全テスト (TASK-9B-I)", () => {
       validModes.forEach((mode) => {
         expect(typeof mode).toBe("string");
       });
+    });
+
+    it("governance オプションが hooks / permissions とともに query() へ渡されること", async () => {
+      const governanceOptions: SkillExecutionGovernanceOptions = {
+        permissionMode: "acceptEdits",
+        hooks: { PreToolUse: vi.fn(), PostToolUse: vi.fn() },
+        permissions: { canUseTool: vi.fn() },
+      };
+
+      await executor.execute(mockRequest, mockSkill, governanceOptions);
+
+      const args = mockQuery.mock.calls[0][0] as QueryCallArgs;
+      expect(args.options?.permissionMode).toBe("acceptEdits");
+      expect(args.options?.hooks).toBe(governanceOptions.hooks);
+      expect(args.options?.permissions).toBe(governanceOptions.permissions);
     });
   });
 

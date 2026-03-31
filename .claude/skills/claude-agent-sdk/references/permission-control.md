@@ -344,6 +344,73 @@ interface AllowedToolEntry {
 
 ---
 
+## Phase-Based Policy Configuration（TASK-P0-09）
+
+SkillCreator の 4 フェーズに対応した phase 別ポリシー定義。
+`SkillCreatorGovernancePolicy.ts` の `PHASE_POLICIES` 定数として実装。
+
+### phase 別ポリシー一覧
+
+| phase   | permissionMode | allowedTools                          | disallowedTools |
+| ------- | -------------- | ------------------------------------- | --------------- |
+| plan    | `plan`         | Read, Glob, Grep, Bash                | Edit, Write     |
+| execute | `acceptEdits`  | Read, Edit, Write, Glob, Grep, Bash   | -               |
+| verify  | `plan`         | Read, Glob, Grep, Bash                | Edit, Write     |
+| improve | `acceptEdits`  | Read, Edit, Glob, Grep                | Write           |
+
+### getPolicyForPhase の使用例
+
+```typescript
+import { getPolicyForPhase } from "./SkillCreatorGovernancePolicy";
+
+const policy = getPolicyForPhase("execute");
+console.log(policy.permissionMode);    // "acceptEdits"
+console.log(policy.allowedTools);      // ["Read", "Edit", "Write", "Glob", "Grep", "Bash"]
+console.log(policy.disallowedTools);   // undefined（execute は無制限）
+
+const verifyPolicy = getPolicyForPhase("verify");
+console.log(verifyPolicy.disallowedTools); // ["Edit", "Write"]
+```
+
+### createCanUseToolCallback の使用例
+
+phase ポリシーに基づく `canUseTool` 判定コールバックを生成する。
+
+```typescript
+import { createCanUseToolCallback } from "./SkillCreatorGovernancePolicy";
+
+const canUseTool = createCanUseToolCallback("execute", "/skills/my-skill");
+
+// 許可される例
+canUseTool("Read", {});
+// => { allowed: true }
+
+canUseTool("Write", { file_path: "/skills/my-skill/SKILL.md" });
+// => { allowed: true }
+
+// 拒否される例
+canUseTool("Write", { file_path: "/etc/hosts" });
+// => { allowed: false, reason: 'Write is restricted to "/skills/my-skill" in execute phase...' }
+
+canUseTool("Edit", {});
+// => { allowed: false, reason: 'Write は execute phase では file_path/path の指定が必要です' }
+```
+
+### SkillCreatorSdkPolicy 型
+
+```typescript
+interface SkillCreatorSdkPolicy {
+  phase: SkillCreatorGovernancePhase;   // "plan" | "execute" | "verify" | "improve"
+  permissionMode: string;               // SDK の permissionMode 値
+  allowedTools: string[];               // 許可ツール名リスト
+  disallowedTools?: string[];           // 明示禁止ツール名リスト
+}
+```
+
+📖 実装参照: `apps/desktop/src/main/services/runtime/SkillCreatorGovernancePolicy.ts`
+
+---
+
 ## セキュリティチェックリスト
 
 | 項目                     | 推奨設定                               |
