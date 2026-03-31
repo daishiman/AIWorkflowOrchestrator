@@ -4,113 +4,141 @@
 
 set -e
 
-echo "🔧 ネイティブモジュールのセットアップを開始..."
+REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+DESKTOP_DIR="$REPO_ROOT/apps/desktop"
+SHARED_WORKSPACE_DIR="$REPO_ROOT/packages/shared"
 
-# 現在のアーキテクチャを取得（Node.jsから取得することでRosetta 2の影響を回避）
-NODE_ARCH=$(node -p "process.arch")
-# Node.jsのarchをfileコマンドの出力形式に変換
-if [ "$NODE_ARCH" = "arm64" ]; then
-  CURRENT_ARCH="arm64"
-elif [ "$NODE_ARCH" = "x64" ]; then
-  CURRENT_ARCH="x86_64"
-else
-  CURRENT_ARCH=$(uname -m)
-fi
-echo "📋 現在のアーキテクチャ: $CURRENT_ARCH (Node.js: $NODE_ARCH)"
+log() { echo "[native-modules] $1"; }
+desktop_exec() { pnpm --dir "$DESKTOP_DIR" exec "$@"; }
+desktop_electron_as_node_exec() {
+  ELECTRON_RUN_AS_NODE=1 pnpm --dir "$DESKTOP_DIR" exec electron "$@";
+}
 
-# 現在のNode.js ABIバージョンを取得
-CURRENT_NODE_ABI=$(node -p "process.versions.modules")
-CURRENT_NODE_VERSION=$(node -v)
-echo "📋 Node.jsバージョン: $CURRENT_NODE_VERSION (ABI: $CURRENT_NODE_ABI)"
+# --- 環境情報の収集 ---
+check_architecture() {
+  NODE_ARCH=$(node -p "process.arch")
+  if [ "$NODE_ARCH" = "arm64" ]; then
+    CURRENT_ARCH="arm64"
+  elif [ "$NODE_ARCH" = "x64" ]; then
+    CURRENT_ARCH="x86_64"
+  else
+    CURRENT_ARCH=$(uname -m)
+  fi
+  log "現在のアーキテクチャ: $CURRENT_ARCH (Node.js: $NODE_ARCH)"
+}
 
-# better-sqlite3のバイナリパスを探す
-SQLITE_BINARY=$(find node_modules -name "better_sqlite3.node" 2>/dev/null | head -1)
-NEEDS_REBUILD=false
+check_node_abi() {
+  CURRENT_NODE_ABI=$(node -p "process.versions.modules")
+  CURRENT_NODE_VERSION=$(node -v)
+  log "Node.jsバージョン: $CURRENT_NODE_VERSION (ABI: $CURRENT_NODE_ABI)"
+}
 
-if [ -z "$SQLITE_BINARY" ]; then
-  echo "⚠️  better-sqlite3バイナリが見つかりません。リビルドを実行します..."
-  NEEDS_REBUILD=true
-else
-  # バイナリのアーキテクチャを確認
-  BINARY_ARCH=$(file "$SQLITE_BINARY" | grep -oE 'arm64|x86_64' | head -1)
-  echo "📋 バイナリのアーキテクチャ: ${BINARY_ARCH:-不明}"
-
-  # アーキテクチャが一致するか確認
-  if [ "$CURRENT_ARCH" = "arm64" ] && [ "$BINARY_ARCH" != "arm64" ]; then
-    echo "⚠️  アーキテクチャ不一致を検出（期待: arm64, 実際: $BINARY_ARCH）"
-    NEEDS_REBUILD=true
-  elif [ "$CURRENT_ARCH" = "x86_64" ] && [ "$BINARY_ARCH" != "x86_64" ]; then
-    echo "⚠️  アーキテクチャ不一致を検出（期待: x86_64, 実際: $BINARY_ARCH）"
-    NEEDS_REBUILD=true
+check_sqlite_binary() {
+  SQLITE_BINARY=$(find node_modules -name "better_sqlite3.node" 2>/dev/null | head -1)
+  if [ -z "$SQLITE_BINARY" ]; then
+    log "⚠️  better-sqlite3バイナリが見つかりません"
+    return 1
   fi
 
-  # Node.js ABIバージョンをチェック
-  # バイナリが実際に動作するかテスト（最も確実な方法）
-  if [ "$NEEDS_REBUILD" = false ]; then
-    echo "📋 バイナリの互換性をテスト中..."
-    # better-sqlite3パッケージを直接読み込んでテスト
-    TEST_RESULT=$(pnpm --filter @repo/desktop exec node -e "try { require('better-sqlite3'); console.log('OK'); } catch(e) { console.log(e.message); process.exit(1); }" 2>&1 || true)
+  log "検出した better-sqlite3 バイナリ: $SQLITE_BINARY"
+  file "$SQLITE_BINARY" 2>/dev/null | sed 's/^/[native-modules] /'
+  return 0
+}
 
-    if echo "$TEST_RESULT" | grep -q "NODE_MODULE_VERSION"; then
-      echo "⚠️  Node.js ABIバージョン不一致を検出"
-      echo "   エラー: $TEST_RESULT"
-      NEEDS_REBUILD=true
-    elif echo "$TEST_RESULT" | grep -q "OK"; then
-      echo "✅ バイナリは正常に動作します"
-    else
-      # その他のエラー（モジュールが見つからない等）
-      echo "⚠️  バイナリテストで問題を検出: $TEST_RESULT"
-      NEEDS_REBUILD=true
-    fi
+verify_sqlite_with_node() {
+  log "Node.js コンテキストで better-sqlite3 を検証中..."
+  TEST_RESULT=$(desktop_exec node -e "try { require('better-sqlite3'); console.log('OK'); } catch (e) { console.error(e.message); process.exit(1); }" 2>&1 || true)
+
+  if echo "$TEST_RESULT" | grep -q "OK"; then
+    log "✅ Node.js コンテキストで better-sqlite3 を読み込めました"
+    return 0
   fi
-fi
 
-# リビルドが必要な場合
-if [ "$NEEDS_REBUILD" = true ]; then
-  echo "🔨 better-sqlite3をリビルド中..."
+  log "❌ Node.js コンテキスト検証に失敗: $TEST_RESULT"
+  return 1
+}
 
-  # pnpmのグローバルストアからも削除して、確実にリビルドされるようにする
-  echo "📋 キャッシュをクリア中..."
+verify_sqlite_with_electron() {
+  log "Electron コンテキストで better-sqlite3 を検証中..."
+  TEST_RESULT=$(desktop_electron_as_node_exec -e "try { require('better-sqlite3'); console.log('OK'); } catch (e) { console.error(e.message); process.exit(1); }" 2>&1 || true)
+
+  if echo "$TEST_RESULT" | grep -q "OK"; then
+    log "✅ Electron コンテキストで better-sqlite3 を読み込めました"
+    return 0
+  fi
+
+  log "❌ Electron コンテキスト検証に失敗: $TEST_RESULT"
+  return 1
+}
+
+rebuild_for_nodejs() {
+  log "🔨 better-sqlite3 を Node.js 向けにリビルド中..."
+  log "キャッシュをクリア中..."
   pnpm store prune 2>/dev/null || true
 
-  # リビルド実行
   if pnpm rebuild better-sqlite3; then
-    echo "✅ better-sqlite3のリビルド完了"
+    log "✅ better-sqlite3のリビルド完了"
   else
-    echo "⚠️  リビルド失敗。フルインストールを試みます..."
+    log "⚠️  リビルド失敗。フルインストールを試みます..."
     pnpm install --force
   fi
 
-  # 再度確認
-  SQLITE_BINARY=$(find node_modules -name "better_sqlite3.node" 2>/dev/null | head -1)
-  if [ -n "$SQLITE_BINARY" ]; then
-    BINARY_ARCH=$(file "$SQLITE_BINARY" | grep -oE 'arm64|x86_64' | head -1)
-    echo "📋 リビルド後のアーキテクチャ: ${BINARY_ARCH:-不明}"
+  check_sqlite_binary || true
+  verify_sqlite_with_node
+}
 
-    if [ "$CURRENT_ARCH" = "arm64" ] && [ "$BINARY_ARCH" = "arm64" ]; then
-      echo "✅ アーキテクチャが正しくなりました"
-    elif [ "$CURRENT_ARCH" = "x86_64" ] && [ "$BINARY_ARCH" = "x86_64" ]; then
-      echo "✅ アーキテクチャが正しくなりました"
-    else
-      echo "❌ エラー: リビルド後もアーキテクチャが不正です"
-      echo "   手動で以下を実行してください:"
-      echo "   pnpm store prune && pnpm install --force"
-      exit 1
+# --- Electron 向けリビルド ---
+rebuild_for_electron() {
+  log ""
+  log "Electron 向けネイティブモジュールリビルド..."
+
+  if desktop_exec electron --version >/dev/null 2>&1; then
+    ELECTRON_VERSION=$(desktop_exec electron --version | sed 's/^v//')
+    ELECTRON_ABI=$(desktop_electron_as_node_exec -p "process.versions.modules" 2>/dev/null)
+    ELECTRON_ARCH=$(desktop_electron_as_node_exec -p "process.arch" 2>/dev/null)
+    log "Electron バージョン: $ELECTRON_VERSION (ABI: $ELECTRON_ABI, arch: $ELECTRON_ARCH)"
+
+    if verify_sqlite_with_electron; then
+      log "✅ 既存の better-sqlite3 バイナリをそのまま使用します"
+      return 0
     fi
+
+    log "🔨 better-sqlite3 を Electron 向けにリビルド中..."
+    desktop_exec electron-rebuild -f -w better-sqlite3 -m "$SHARED_WORKSPACE_DIR" -a "$ELECTRON_ARCH"
+    log "✅ Electron 向けリビルド完了"
+    check_sqlite_binary || true
+    verify_sqlite_with_electron
+  else
+    log "Electron 未インストール。Node.js 向けビルドを維持します。"
+    rebuild_for_nodejs
   fi
-fi
+}
 
-echo ""
-echo "📋 esbuild ネイティブバイナリを再構築中..."
+# --- esbuild リビルド ---
+rebuild_esbuild() {
+  log ""
+  log "esbuild ネイティブバイナリを再構築中..."
 
-# esbuild は worktree / Rosetta 環境でバイナリ取り違えが起きやすい。
-# better-sqlite3 の判定結果に関係なく、postinstall 時に毎回再構築して current arch に寄せる。
-if pnpm rebuild esbuild; then
-  echo "✅ esbuild のリビルド完了"
-else
-  echo "⚠️  esbuild のリビルドに失敗。フルインストールを試みます..."
-  pnpm install --force
-fi
+  # esbuild は worktree / Rosetta 環境でバイナリ取り違えが起きやすい。
+  # better-sqlite3 の判定結果に関係なく、postinstall 時に毎回再構築して current arch に寄せる。
+  if pnpm rebuild esbuild; then
+    log "✅ esbuild のリビルド完了"
+  else
+    log "⚠️  esbuild のリビルドに失敗。フルインストールを試みます..."
+    pnpm install --force
+  fi
+}
 
-echo ""
-echo "🎉 ネイティブモジュールのセットアップ完了"
+# --- メイン処理 ---
+main() {
+  log "🔧 セットアップを開始..."
+  check_architecture
+  check_node_abi
+  check_sqlite_binary || true
+  rebuild_for_electron
+  rebuild_esbuild
+  log ""
+  log "🎉 ネイティブモジュールのセットアップ完了"
+}
+
+main

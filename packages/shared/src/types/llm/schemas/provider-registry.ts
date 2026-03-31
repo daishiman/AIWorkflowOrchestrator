@@ -178,24 +178,31 @@ export const PROVIDER_CONFIGS = [
         name: "GPT-4o (via OpenRouter)",
         contextWindow: 128000,
         isDefault: true,
+        description:
+          "OpenRouter経由のGPT-4o。APIキー統合で複数プロバイダーを一元管理",
       },
       {
         id: "anthropic/claude-3.5-sonnet",
         name: "Claude 3.5 Sonnet (via OpenRouter)",
         contextWindow: 200000,
         isDefault: false,
+        description: "OpenRouter経由のClaude 3.5 Sonnet。高性能バランスモデル",
       },
       {
         id: "google/gemini-pro-1.5",
         name: "Gemini 1.5 Pro (via OpenRouter)",
         contextWindow: 2097152,
         isDefault: false,
+        description:
+          "OpenRouter経由のGemini 1.5 Pro。2Mトークンコンテキスト対応",
       },
       {
         id: "meta-llama/llama-3.1-405b-instruct",
         name: "Llama 3.1 405B (via OpenRouter)",
         contextWindow: 131072,
         isDefault: false,
+        description:
+          "OpenRouter経由のLlama 3.1 405B。オープンソース最大規模モデル",
       },
     ],
   },

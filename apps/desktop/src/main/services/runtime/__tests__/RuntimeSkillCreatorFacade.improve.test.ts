@@ -31,6 +31,7 @@ import {
 } from "../RuntimeSkillCreatorFacade";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
+import { SkillCreatorSourceResolver } from "../SkillCreatorSourceResolver";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
 import type { ILLMAdapter } from "../../../adapters/llm/types";
 import type { SkillFileManager } from "../../skill/SkillFileManager";
@@ -154,6 +155,19 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
       apiKey: "sk-test",
       permissionMode: "default",
     });
+
+    // TASK-P0-04: dynamic pipeline が常に有効になるため、
+    // resourceLoader のみ注入のケースは static fallback を保証するために
+    // candidates を空にしてリソース未取得状態をモック
+    vi.spyOn(SkillCreatorSourceResolver.prototype, "resolve").mockResolvedValue(
+      {
+        foundationSnapshot: undefined,
+        manifestResources: new Map(),
+        candidateRoots: [],
+        rejectedRoots: [],
+        degradeReasons: [],
+      },
+    );
   });
 
   afterEach(() => {
@@ -683,9 +697,9 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
     });
   });
 
-  // E-11: resourceLoader 未注入時の explicit error (TASK-RT-02)
-  describe("E-11: resourceLoader 未注入時の explicit error", () => {
-    it("resourceLoader 未注入時は resource_loader_unavailable エラーを返す", async () => {
+  // E-11: resourceLoader 未注入かつ manifest 未発見時は degraded error
+  describe("E-11: resourceLoader 未注入時の degraded error", () => {
+    it("resourceLoader 未注入かつ manifest 未発見時は resource_loader_unavailable を返す", async () => {
       const facadeWithoutRL = new RuntimeSkillCreatorFacade({
         skillExecutor: mockSkillExecutor,
         llmAdapter: mockLLMAdapter,
@@ -696,7 +710,22 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
         apiKey: "sk-test",
         permissionMode: "default",
       });
-
+      // candidates が空になるようにモック（manifest 未発見）
+      const { SkillCreatorSourceResolver } =
+        await import("../SkillCreatorSourceResolver");
+      vi.spyOn(
+        SkillCreatorSourceResolver.prototype,
+        "resolve",
+      ).mockResolvedValue({
+        foundationSnapshot: undefined,
+        manifestResources: new Map(),
+        candidateRoots: [],
+        rejectedRoots: [],
+        degradeReasons: [],
+      });
+      (
+        mockSkillFileManager.readFile as ReturnType<typeof vi.fn>
+      ).mockResolvedValueOnce("# test-skill\n## Overview\ntest");
       const result = await facadeWithoutRL.improve(
         "test-skill",
         "改善して",
@@ -711,6 +740,7 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
           message: "リソースローダーが利用できません。設定を確認してください。",
         },
       });
+      expect(mockLLMAdapter.sendChat).not.toHaveBeenCalled();
     });
   });
 

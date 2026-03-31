@@ -161,6 +161,7 @@ export type {
   RuntimeSkillCreatorVerifyDetailResponse,
   RuntimeSkillCreatorReverifyResult,
   RuntimeSkillCreatorReverifyResponse,
+  RuntimeSkillCreatorVerifyAndImproveResult,
   SkillGeneratedContent,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorImproveResult,
@@ -176,6 +177,7 @@ export type {
   DebugStep as SkillCreatorDebugStep,
   DebugResult,
   UsageStats,
+  AgentConfig,
 } from "./skillCreator";
 export {
   WORKFLOW_MANIFEST_SCHEMA_VERSION,

@@ -1,0 +1,136 @@
+{
+  "taskId": "TASK-ELECTRON-BUILD-FIX",
+  "taskName": "electron-build-infra-fix",
+  "createdAt": "2026-03-30",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "name": "要件定義",
+      "artifacts": [
+        "docs/30-workflows/electron-build-infra-fix/phase-1-requirements.md"
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "name": "設計",
+      "artifacts": [
+        "docs/30-workflows/electron-build-infra-fix/phase-2-design.md"
+      ]
+    },
+    "phase-3": {
+      "status": "completed",
+      "name": "設計レビュー",
+      "artifacts": [
+        "docs/30-workflows/electron-build-infra-fix/phase-3-design-review.md"
+      ]
+    },
+    "phase-4": {
+      "status": "completed",
+      "name": "テスト作成",
+      "artifacts": [
+        "apps/desktop/src/__tests__/build/preload-bundle.test.ts",
+        "packages/shared/src/__tests__/build/cjs-exports.test.ts",
+        "apps/desktop/src/__tests__/build/vite-config.test.ts",
+        "apps/desktop/src/__tests__/build/native-module-rebuild.test.ts",
+        "apps/desktop/src/__tests__/build/setup-script-fallback.test.ts"
+      ]
+    },
+    "phase-5": {
+      "status": "completed",
+      "name": "実装",
+      "artifacts": [
+        "packages/shared/tsup.config.ts",
+        "packages/shared/package.json",
+        "apps/desktop/electron.vite.config.ts",
+        "apps/desktop/package.json",
+        "scripts/setup-native-modules.sh",
+        "apps/desktop/scripts/rebuild-native-for-electron.mjs",
+        "apps/desktop/electron-builder.yml",
+        "package.json"
+      ]
+    },
+    "phase-6": {
+      "status": "completed",
+      "name": "テスト拡充",
+      "artifacts": [
+        "apps/desktop/src/__tests__/build/main-bundle.test.ts",
+        "apps/desktop/src/__tests__/build/preload-bundle.test.ts",
+        "packages/shared/src/__tests__/build/cjs-exports.test.ts",
+        "apps/desktop/src/__tests__/build/native-module-rebuild.test.ts"
+      ]
+    },
+    "phase-7": {
+      "status": "completed",
+      "name": "カバレッジ確認",
+      "artifacts": [
+        "docs/30-workflows/electron-build-infra-fix/phase-7-coverage-check.md"
+      ]
+    },
+    "phase-8": {
+      "status": "completed",
+      "name": "リファクタリング",
+      "artifacts": [
+        "scripts/setup-native-modules.sh",
+        "apps/desktop/electron.vite.config.ts",
+        "apps/desktop/src/__tests__/build/test-utils.ts"
+      ]
+    },
+    "phase-9": {
+      "status": "completed",
+      "name": "品質保証",
+      "artifacts": [
+        "docs/30-workflows/electron-build-infra-fix/phase-9-quality-assurance.md"
+      ]
+    },
+    "phase-10": {
+      "status": "completed",
+      "name": "最終レビュー",
+      "artifacts": [
+        "docs/30-workflows/electron-build-infra-fix/phase-10-final-review.md"
+      ]
+    },
+    "phase-11": {
+      "status": "completed",
+      "name": "手動テスト",
+      "artifacts": [
+        "docs/30-workflows/electron-build-infra-fix/phase-11-manual-test.md",
+        "docs/30-workflows/electron-build-infra-fix/outputs/phase-11/manual-test-checklist.md",
+        "docs/30-workflows/electron-build-infra-fix/outputs/phase-11/manual-test-result.md",
+        "docs/30-workflows/electron-build-infra-fix/outputs/phase-11/screenshot-plan.json",
+        "docs/30-workflows/electron-build-infra-fix/outputs/phase-11/screenshots/phase11-runtime-evidence.png"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "name": "ドキュメント更新",
+      "artifacts": [
+        "CHANGELOG.md",
+        "CLAUDE.md",
+        "docs/30-workflows/electron-build-infra-fix/outputs/artifacts.json",
+        "docs/30-workflows/electron-build-infra-fix/outputs/phase-12/implementation-guide.md",
+        "docs/30-workflows/electron-build-infra-fix/outputs/phase-12/system-spec-update-summary.md",
+        "docs/30-workflows/electron-build-infra-fix/outputs/phase-12/documentation-changelog.md",
+        "docs/30-workflows/electron-build-infra-fix/outputs/phase-12/unassigned-task-detection.md",
+        "docs/30-workflows/electron-build-infra-fix/outputs/phase-12/skill-feedback-report.md",
+        "docs/30-workflows/electron-build-infra-fix/outputs/phase-12/phase12-task-spec-compliance-check.md",
+        ".claude/skills/aiworkflow-requirements/LOGS.md",
+        ".claude/skills/aiworkflow-requirements/SKILL.md",
+        ".claude/skills/aiworkflow-requirements/references/deployment-electron.md",
+        ".claude/skills/aiworkflow-requirements/references/technology-desktop.md",
+        ".claude/skills/aiworkflow-requirements/references/task-workflow-completed.md",
+        ".claude/skills/aiworkflow-requirements/references/task-workflow-history.md",
+        ".agents/skills/aiworkflow-requirements/LOGS.md",
+        ".agents/skills/aiworkflow-requirements/SKILL.md",
+        ".agents/skills/aiworkflow-requirements/references/deployment-electron.md",
+        ".agents/skills/aiworkflow-requirements/references/technology-desktop.md",
+        ".agents/skills/aiworkflow-requirements/references/task-workflow-completed.md",
+        ".agents/skills/aiworkflow-requirements/references/task-workflow-history.md"
+      ]
+    },
+    "phase-13": {
+      "status": "blocked",
+      "name": "PR作成",
+      "artifacts": []
+    }
+  }
+}

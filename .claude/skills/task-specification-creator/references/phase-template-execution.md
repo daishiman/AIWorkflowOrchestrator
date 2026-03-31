@@ -41,6 +41,21 @@ grep -rn "export const <ユーティリティ名>" packages/ apps/
 
 テストの期待値をレスポンス形式と一致させること。
 
+### Phase 4 必須ステップ: fail-first 確認（TDD Red フェーズ検証）【Feedback P0-02】
+
+テスト作成後、実装前に全テストが **FAIL** することを確認する。
+
+```bash
+# 新規テストのみを実行して全て FAIL することを確認
+pnpm --filter @repo/desktop exec vitest run <test-file-path>
+```
+
+- [ ] 新規作成したテストが全て FAIL することを確認した（TDD Red フェーズ達成）
+- [ ] PASS してしまったテストがある場合は、テストの期待値または対象コードを修正する
+
+**注意**: 実装前に全テストが FAIL しない場合、テストが正しく機能していない可能性がある。
+この確認をスキップすると、Phase 5 でテストが PASS しても実装の正しさを保証できない。
+
 ### Phase 4 事前確認: テスト対象ファイルの import 副作用チェック
 
 テスト対象ファイルを `import` した際にトップレベル副作用（DB接続、サーバー起動、グローバル状態変更、Electron `app.whenReady()` 等）が実行されないか確認する。
