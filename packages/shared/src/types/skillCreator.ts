@@ -993,5 +993,14 @@ export interface WorkflowSessionStorageSchema {
  */
 export const SKILL_CREATOR_ENGINE_VERSION = "task-sdk-08-v1" as const;
 
+/**
+ * エージェント構成。ManifestLoader または PhaseResourceRequests から動的解決される。
+ * TASK-P0-07: hardcoded-agent-names-dynamic-resolution
+ */
+export interface AgentConfig {
+  /** 解決されたエージェント名リスト */
+  readonly names: readonly string[];
+}
+
 // SkillCreatorSdkEventType, SkillCreatorSdkPermissionDenial, SkillCreatorSdkEvent は
 // 上部（line ~437）で定義済み（TASK-RT-06）

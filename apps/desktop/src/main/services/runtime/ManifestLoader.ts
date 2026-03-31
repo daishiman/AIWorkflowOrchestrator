@@ -2,6 +2,7 @@ import crypto from "crypto";
 import fs from "fs/promises";
 import path from "path";
 import type {
+  AgentConfig,
   LoadedWorkflowManifest,
   WorkflowManifest,
   WorkflowManifestHook,
@@ -389,6 +390,13 @@ export class ManifestLoader {
     });
 
     return loadedManifest;
+  }
+
+  extractAgentConfig(manifest: LoadedWorkflowManifest): AgentConfig {
+    const names = manifest.resources
+      .filter((r) => r.kind === "agent")
+      .map((r) => r.id);
+    return { names };
   }
 
   invalidate(manifestPath?: string): void {
