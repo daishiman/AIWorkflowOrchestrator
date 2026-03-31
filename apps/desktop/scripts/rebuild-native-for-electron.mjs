@@ -1,4 +1,7 @@
 import { rebuild } from "@electron/rebuild";
+import { createRequire } from "module";
+
+const require = createRequire(import.meta.url);
 
 /**
  * electron-builder の afterPack フック。
@@ -9,14 +12,17 @@ import { rebuild } from "@electron/rebuild";
 export default async function afterPack(context) {
   const { appOutDir, arch } = context;
 
+  // AfterPackContext は electronVersion を直接持たないため electron パッケージから取得する
+  const electronVersion = require("electron/package.json").version;
+
   console.log(
-    `[afterPack] Rebuilding native modules for Electron ${context.electronVersion} (${arch})`,
+    `[afterPack] Rebuilding native modules for Electron ${electronVersion} (${arch})`,
   );
 
   try {
     await rebuild({
       buildPath: appOutDir,
-      electronVersion: context.electronVersion,
+      electronVersion,
       arch,
       force: true,
       onlyModules: ["better-sqlite3"],
