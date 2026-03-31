@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-30
+> 自動生成: 2026-03-31
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -432,11 +432,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L349 |
-| スキルチェーン 型定義（TASK-9D） | L399 |
-| スキルスケジュール 型定義（TASK-9G） | L434 |
-| スキルフォーク 型定義（TASK-9E） | L459 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L507 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L350 |
+| スキルチェーン 型定義（TASK-9D） | L400 |
+| スキルスケジュール 型定義（TASK-9G） | L435 |
+| スキルフォーク 型定義（TASK-9E） | L460 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L508 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -905,10 +905,10 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L244 |
 | Electron IPC API設計 | L280 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L422 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L655 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L686 |
-| AIプロバイダーAPI連携 | L717 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L750 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L656 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L687 |
+| AIプロバイダーAPI連携 | L718 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L751 |
 
 ### references/api-ipc-system-details.md
 
@@ -1287,16 +1287,16 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | UI構成 | L29 |
 | 共有インラインセレクター | L40 |
-| プロバイダーとモデル一覧 | L57 |
-| 状態管理 | L71 |
-| UXフロー | L100 |
-| スタイルガイドライン | L120 |
-| アクセシビリティ | L147 |
-| エラーハンドリング | L157 |
-| テストカバレッジ | L165 |
-| 実行経路との統合 | L190 |
-| 関連タスクドキュメント | L201 |
-| 関連ドキュメント | L216 |
+| プロバイダーとモデル一覧 | L58 |
+| 状態管理 | L72 |
+| UXフロー | L101 |
+| スタイルガイドライン | L121 |
+| アクセシビリティ | L148 |
+| エラーハンドリング | L158 |
+| テストカバレッジ | L166 |
+| 実行経路との統合 | L191 |
+| 関連タスクドキュメント | L202 |
+| 関連ドキュメント | L217 |
 
 ### references/ui-ux-navigation.md
 
@@ -2583,6 +2583,11 @@ node scripts/list-specs.js --topics
 | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001: skill:import IPCチャネル名競合の予防的解消 | L252 |
 | UT-IPC-CHANNEL-NAMING-AUDIT-001: IPCチャネル命名監査の台帳同期（2026-02-25） | L356 |
 
+### references/lessons-learned-auth-ipc-skill-creator-governance-hooks.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-P0-09: Claude SDK permissionMode + canUseTool + Hooks ガバナンス実装（2026-03-31） | L6 |
+
 ### references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md
 
 | セクション | 行 |
@@ -2872,8 +2877,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L40 |
-| 関連ドキュメント | L45 |
+| 利用順序 | L41 |
+| 関連ドキュメント | L46 |
 
 ### references/llm-embedding.md
 

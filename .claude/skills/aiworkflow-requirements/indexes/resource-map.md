@@ -152,6 +152,7 @@
 | 実装済み導線（Runtime workflow engine failure lifecycle / reject・`success:false`・`verification_review`・append history） | architecture-overview-core.md, arch-electron-services-details-part2.md, api-ipc-system-core.md, `docs/30-workflows/ut-imp-runtime-workflow-engine-failure-lifecycle-001/index.md` | task-workflow-completed.md, lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md, `docs/30-workflows/step-02-seq-task-02-workflow-engine-runtime-orchestration/` |
 | 設計仕様（Slide Modifier / Manual Fallback / SlideUIStatus 状態機械） | arch-state-management-core.md, ui-ux-agent-execution-core.md, llm-workspace-chat-edit.md | lessons-learned-ipc-preload-runtime.md, task-workflow-backlog.md, task-workflow-completed.md |
 | 設計・実装（Advanced Console Safety Governance / ApprovalGate / 3層レイヤー） | security-electron-ipc-core.md, api-ipc-system-core.md, architecture-implementation-patterns-core.md | architecture-overview-core.md, lessons-learned-current.md, task-workflow-completed.md, task-workflow-backlog.md |
+| 設計・実装（Skill Creator SDK Governance / permissionMode / canUseTool / Hooks / AuditSink） | api-ipc-system-core.md, `apps/desktop/src/main/services/runtime/governance/` | lessons-learned-auth-ipc-skill-creator-governance-hooks.md, task-workflow-completed.md, `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/`, `docs/30-workflows/unassigned-task/TASK-P0-09-U1-path-scoped-governance-runtime-enforcement.md` |
 
 ---
 

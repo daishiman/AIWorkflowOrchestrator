@@ -108,21 +108,26 @@ describe("TASK-SDK-07: governance bundle - preload surface", () => {
   // --- MB-3: Skill Creator 専用 approval/disclosure channel を発明しない ---
 
   describe("shared contract 再利用の検証", () => {
-    it("skill-creator:approval のような専用チャンネルが存在しない", () => {
+    it("skill-creator:approval/disclosure のような専用チャンネルが存在しない", () => {
       const skillCreatorChannels = Object.entries(IPC_CHANNELS)
         .filter(
           ([, v]) => typeof v === "string" && v.startsWith("skill-creator:"),
         )
         .map(([, v]) => v);
 
-      const governanceLeaks = skillCreatorChannels.filter(
-        (ch) =>
-          ch.includes("approval") ||
-          ch.includes("disclosure") ||
-          ch.includes("governance"),
+      // TASK-P0-09: get-governance-state は正当な governance 状態取得チャンネル
+      // approval/disclosure の専用チャンネルでないことを検証する
+      const leakedChannels = skillCreatorChannels.filter(
+        (ch) => ch.includes("approval") || ch.includes("disclosure"),
       );
 
-      expect(governanceLeaks).toEqual([]);
+      expect(leakedChannels).toEqual([]);
+    });
+
+    it("skill-creator:get-governance-state が ALLOWED_INVOKE_CHANNELS に含まれる (TASK-P0-09)", () => {
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(
+        IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE,
+      );
     });
   });
 });
