@@ -54,14 +54,23 @@
 
 ## 推奨実行順
 
+### SDK 実装タスク（TASK-SDK-01〜08）
+
 ```text
 root Phase 1-3
   -> Task01
   -> Task02
-  -> Task03 + Task04
-  -> Task05 + Task06
+  -> Task03 + Task04 (parallel)
+  -> Task05 + Task06 (parallel)
   -> Task07
   -> Task08
+```
+
+### IPC 修正タスク（独立実行可能）
+
+```text
+TASK-FIX-AUTH-IPC-001 + TASK-FIX-IPC-TIMEOUT-001 + TASK-TRACE-SKILL-AUTH-001 (parallel)
+  -> 統合検証（E2E）
 ```
 
 `seq/par` は大まかな並列グループを示す。厳密な predecessor は次の matrix を正本とする。

@@ -23,12 +23,14 @@
 
 ## 文書ロール
 
-| 文書                          | 主な読者               | ここで固定するもの                          | ここで固定しないもの |
-| ----------------------------- | ---------------------- | ------------------------------------------- | -------------------- |
-| `requirements-draft.md`       | 企画・設計レビュー担当 | 背景、制約、設計仮説の境界                  | 実装順、PR 分割      |
-| `root-workflow-pack/index.md` | 仕様設計者、実装リード | 依存順、gate、task topology                 | 個別 task の実装詳細 |
-| `executor-guide.md`           | 実装者                 | 読順、着手判断、変更面                      | 依存順そのものの正本 |
-| `step-*/index.md`             | task 担当者            | task ごとの scope / non-scope / quick guide | 他 task の最終責務   |
+| 文書                          | 主な読者               | ここで固定するもの                         | ここで固定しないもの |
+| ----------------------------- | ---------------------- | ------------------------------------------ | -------------------- |
+| `requirements-draft.md`       | 企画・設計レビュー担当 | 背景、制約、設計仮説の境界                 | 実装順、PR 分割      |
+| `root-workflow-pack/index.md` | 仕様設計者、実装リード | 依存順、gate、task topology                | 個別 task の実装詳細 |
+| `executor-guide.md`           | 実装者                 | 読順、着手判断、変更面                     | 依存順そのものの正本 |
+| `step11-par-*/index.md`       | task 担当者            | step11 並列タスクの scope / quick guide    | 他 task の最終責務   |
+| `fix-step1-par-*/index.md`    | task 担当者            | step1 並列修正タスクの scope / quick guide | 他 task の最終責務   |
+| `fix-step2-seq-*/index.md`    | task 担当者            | step2 直列修正タスクの scope / quick guide | 他 task の最終責務   |
 
 - [requirements-draft.md](./requirements-draft.md)
   - 実装前の認識合わせ用の草案
@@ -54,6 +56,44 @@
 補足:
 
 - `TASK-SDK-08` は初回から保存機構を全面再設計する task ではなく、既存 session persistence への載せ方と invalidation 境界を固める contract-first task として扱う
+
+## IPC修正タスク一覧（Auth Login Fix）
+
+スキル生成時に発生する `auth:login` IPC タイムアウトエラーの修正タスク群。
+30種の思考法による多角的分析（2026-04-01 実施）に基づき設計。
+
+| タスクID                  | ディレクトリ                                    | ステップ | パターン | 責務                                           |
+| ------------------------- | ----------------------------------------------- | -------- | -------- | ---------------------------------------------- |
+| TASK-TRACE-SKILL-AUTH-001 | `fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 |
+| TASK-FIX-IPC-TIMEOUT-001  | `fix-step1-par-ipc-timeout-per-channel/`        | step1    | par      | IPCチャンネル別タイムアウト設定                |
+| TASK-FIX-AUTH-IPC-001     | `fix-step2-seq-auth-login-ipc-nonblocking/`     | step2    | seq      | auth:login ハンドラーの fire-and-forget 化     |
+
+### 推奨実行順（IPC修正タスク）
+
+```text
+[step1: 並列実行]
+fix-step1-par-investigate-skill-auth-trigger ─┐
+fix-step1-par-ipc-timeout-per-channel        ─┘
+              ↓ 両方完了後
+[step2: 直列実行]
+fix-step2-seq-auth-login-ipc-nonblocking
+              ↓
+          統合検証（E2E）
+```
+
+**step1 を先に実施する理由:**
+
+- `investigate` でスキル生成→auth:login の不要な呼び出し経路を特定・除去する
+- 経路除去が完了した状態で `fix-step2` の設計スコープが確定する
+- `ipc-timeout` は変更ファイルが独立しているため step1 と並列実行可能
+
+### 根本原因サマリー
+
+| 層               | 問題                                                     | タスク                    |
+| ---------------- | -------------------------------------------------------- | ------------------------- |
+| IPC ハンドラー   | auth:login が OAuth フロー全体（最大300秒）を await      | TASK-FIX-AUTH-IPC-001     |
+| IPC タイムアウト | 全チャンネル共通 5000ms で長時間処理に不適切             | TASK-FIX-IPC-TIMEOUT-001  |
+| 呼び出し経路     | スキル生成が意図せず auth:login をトリガーする経路が不明 | TASK-TRACE-SKILL-AUTH-001 |
 
 ## 読み方
 
