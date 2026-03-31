@@ -83,6 +83,18 @@
 - 変更履歴に v6.18.16 エントリを追加
 
 ---
+## 2026-03-31 - TASK-ELECTRON-BUILD-FIX Phase 12 close-out hardening
+
+### 変更内容
+
+- broken / placeholder screenshot 前提を撤去し、NON_VISUAL evidence で閉じる current facts へ是正
+- `system-spec-update-summary.md` を shallow summary から Step 1-A〜1-C / Step 2 根拠付き記録へ更新
+- `phase12-task-spec-compliance-check.md` を追加し、Task 1〜5 と Step 1-A〜1-C / Step 2 を 1 ファイルへ集約
+- `rebuild-native-for-electron.mjs` の `context.arch` enum drift を current branch で修正し、Phase 4 テストへ反映
+- `.claude` 正本更新後に aiworkflow-requirements index 再生成と `.agents` mirror parity を実施
+
+---
+
 ## 2026-03-30 - TASK-P0-05 Phase 12 close-out resync
 
 ### 変更内容

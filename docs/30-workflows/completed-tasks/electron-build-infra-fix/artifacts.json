@@ -1,0 +1,143 @@
+{
+  "taskId": "TASK-ELECTRON-BUILD-FIX",
+  "feature": "electron-build-infra-fix",
+  "created": "2026-03-31T00:00:00.000Z",
+  "lastUpdated": "2026-03-31T00:00:00+09:00",
+  "status": "phase-13-blocked",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-summary.md",
+        "outputs/phase-1/file-inventory.md",
+        "outputs/phase-1/spec-reference-notes.md"
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/problem-a-design.md",
+        "outputs/phase-2/problem-b-design.md",
+        "outputs/phase-2/implementation-plan.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/minor-tracking-table.md",
+        "outputs/phase-3/multithinking-audit.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-specification.md",
+        "outputs/phase-4/shared-test-plan.md",
+        "outputs/phase-4/desktop-test-plan.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md",
+        "outputs/phase-5/verification-result.md",
+        "outputs/phase-5/ac-achievement.md"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-6/expanded-test-result.md",
+        "outputs/phase-6/regression-guard-report.md"
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/dependency-edge-matrix.md"
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-8/refactor-summary.md",
+        "outputs/phase-8/before-after-table.md"
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-9/quality-report.md",
+        "outputs/phase-9/risk-ledger.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/gate-decision.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/screenshot-coverage.md",
+        "outputs/phase-11/phase11-review-board.md",
+        "outputs/phase-11/phase11-capture-metadata.json",
+        "outputs/phase-11/screenshots/phase11-build-infra-review-board.png"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": ["outputs/phase-13/handoff-note.md"]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "bugfix",
+    "estimatedPhases": 13,
+    "relatedIssue": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/1786",
+    "concerns": ["problem-a-esm-cjs-resolution", "problem-b-abi-mismatch"],
+    "targetFiles": [
+      "packages/shared/tsup.config.ts",
+      "packages/shared/package.json",
+      "apps/desktop/electron.vite.config.ts",
+      "apps/desktop/package.json",
+      "scripts/setup-native-modules.sh",
+      "apps/desktop/scripts/rebuild-native-for-electron.mjs",
+      "apps/desktop/scripts/rebuild-sqlite-for-electron.mjs",
+      "apps/desktop/electron-builder.yml",
+      "package.json"
+    ]
+  }
+}
