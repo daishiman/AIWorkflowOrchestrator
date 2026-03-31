@@ -345,6 +345,9 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_RESUME_SESSION: "skill-creator:resume-session",
   SKILL_CREATOR_DELETE_SESSION: "skill-creator:delete-session",
 
+  // Governance / Permission / Hooks (TASK-P0-09)
+  SKILL_CREATOR_GET_GOVERNANCE_STATE: "skill-creator:get-governance-state",
+
   // Skill Creator extended operations (TASK-9B Phase 5)
   SKILL_CREATOR_IMPROVE: "skill-creator:improve",
   SKILL_CREATOR_FORK: "skill-creator:fork",
@@ -648,6 +651,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL,
   IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION,
   IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION,
+  IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE,
   // Skill Creator extended channels (TASK-9B Phase 5)
   IPC_CHANNELS.SKILL_CREATOR_IMPROVE,
   IPC_CHANNELS.SKILL_CREATOR_FORK,

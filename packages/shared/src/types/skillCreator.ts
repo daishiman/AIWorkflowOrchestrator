@@ -1025,3 +1025,73 @@ export const SESSION_TTL_MS = 86_400_000 as const;
 
 // SkillCreatorSdkEventType, SkillCreatorSdkPermissionDenial, SkillCreatorSdkEvent は
 // 上部（line ~437）で定義済み（TASK-RT-06）
+
+// ============================================
+// Governance / Permission / Hooks (TASK-P0-09)
+// ============================================
+
+/**
+ * Governance 対象の phase。skill-creator pipeline の各段階を表す。
+ * SkillCreatorWorkflowPhase の部分集合（"plan"|"execute"|"verify"|"improve"）。
+ */
+export type SkillCreatorGovernancePhase =
+  | "plan"
+  | "execute"
+  | "verify"
+  | "improve";
+
+/**
+ * Phase ごとの SDK permission / tool policy 定義。
+ * Facade が SDK query() option を組み立てる際に参照する。
+ */
+export interface SkillCreatorSdkPolicy {
+  phase: SkillCreatorGovernancePhase;
+  permissionMode: "default" | "acceptEdits" | "bypassPermissions";
+  allowedTools: string[];
+  disallowedTools: string[];
+}
+
+/**
+ * canUseTool callback の判定結果。
+ * allowed=false の場合は reason に deny 理由を含める。
+ */
+export interface SkillCreatorToolDecision {
+  allowed: boolean;
+  reason: string;
+  phase: SkillCreatorGovernancePhase;
+  toolName: string;
+}
+
+/**
+ * Hooks が記録する監査イベントの種別。
+ */
+export type SkillCreatorHookEventType =
+  | "session_start"
+  | "pre_tool_use"
+  | "post_tool_use"
+  | "session_end";
+
+/**
+ * Governance audit event。Hooks が生成し AuditSink に記録される。
+ */
+export interface SkillCreatorGovernanceAuditEvent {
+  eventType: SkillCreatorHookEventType;
+  timestamp: string;
+  sessionId: string;
+  phase: SkillCreatorGovernancePhase;
+  toolName?: string;
+  decision?: SkillCreatorToolDecision;
+  provenance?: SkillCreatorWorkflowSourceProvenance;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * UI に公開する governance 状態の snapshot。
+ * renderer は read-only で参照する。
+ */
+export interface SkillCreatorGovernanceState {
+  phase: SkillCreatorGovernancePhase;
+  activePolicy: SkillCreatorSdkPolicy;
+  recentAuditEvents: SkillCreatorGovernanceAuditEvent[];
+  recentDenials: SkillCreatorSdkPermissionDenial[];
+}

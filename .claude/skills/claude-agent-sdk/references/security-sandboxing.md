@@ -191,6 +191,113 @@ const options: Options = {
 
 ---
 
+## Write/Edit パス制限ロジック（TASK-P0-09）
+
+SkillCreator の execute/improve フェーズで、Write/Edit を `skillTargetDir` 配下のみに制限する実装パターン。
+
+### resolvePathSafely パターン
+
+```typescript
+import path from "node:path";
+
+/**
+ * パスを安全に解決する。
+ * null byte を含む場合は null を返す（path traversal 防止）。
+ */
+function resolvePathSafely(rawPath: string): string | null {
+  if (rawPath.includes("\0")) {
+    return null;
+  }
+  return path.resolve(rawPath);
+}
+```
+
+### パス制限の判定ロジック
+
+```typescript
+const normalizedSkillTargetDir = skillTargetDir
+  ? resolvePathSafely(skillTargetDir)
+  : null;
+
+// Write/Edit のパス制限チェック
+function isInsideTargetDir(filePath: string, targetDir: string): boolean {
+  const normalizedFilePath = resolvePathSafely(filePath);
+  if (!normalizedFilePath) return false; // null byte 含むパスは拒否
+
+  const relativePath = path.relative(targetDir, normalizedFilePath);
+  // ".." で始まる → targetDir の外 → 拒否
+  // path.isAbsolute(relativePath) → 異なるドライブ（Windows）→ 拒否
+  return (
+    relativePath === "" ||
+    (!relativePath.startsWith("..") && !path.isAbsolute(relativePath))
+  );
+}
+
+// 使用例
+isInsideTargetDir("/skills/my-skill/SKILL.md", "/skills/my-skill");
+// => true（許可）
+
+isInsideTargetDir("/skills/other-skill/file.ts", "/skills/my-skill");
+// => false（拒否: path.relative が "../other-skill/file.ts" になる）
+
+isInsideTargetDir("/etc/hosts", "/skills/my-skill");
+// => false（拒否: path.relative が "../../etc/hosts" になる）
+```
+
+### セキュリティチェック一覧
+
+| チェック項目       | 処理                               | 拒否理由                                 |
+| ------------------ | ---------------------------------- | ---------------------------------------- |
+| null byte          | `rawPath.includes("\0")`           | path traversal 攻撃の防止               |
+| 空文字/未指定      | `if (!filePath)` チェック          | 対象不明なWrite/Edit の防止             |
+| skillTargetDir外   | `path.relative` + `startsWith("..")` | サンドボックス外への書き込み防止       |
+| 絶対パス           | `path.isAbsolute(relativePath)`    | Windows でのドライブ間パス traversal 防止 |
+
+### createCanUseToolCallback との統合
+
+```typescript
+// SkillCreatorGovernancePolicy.ts での実装
+export function createCanUseToolCallback(
+  phase: SkillCreatorGovernancePhase,
+  skillTargetDir?: string,
+) {
+  const normalizedSkillTargetDir = skillTargetDir
+    ? resolvePathSafely(skillTargetDir)
+    : null;
+
+  return (toolName: string, toolInput: Record<string, unknown>): CanUseToolResult => {
+    // execute/improve の Write/Edit のみパス制限を適用
+    if (
+      (phase === "execute" || phase === "improve") &&
+      (toolName === "Write" || toolName === "Edit")
+    ) {
+      if (!normalizedSkillTargetDir) {
+        return { allowed: false, reason: "skillTargetDir が必要です" };
+      }
+
+      const filePath =
+        typeof toolInput.file_path === "string" ? toolInput.file_path :
+        typeof toolInput.path === "string" ? toolInput.path : undefined;
+
+      if (!filePath) {
+        return { allowed: false, reason: "file_path/path の指定が必要です" };
+      }
+
+      // resolvePathSafely + relative でパス判定
+      if (!isInsideTargetDir(filePath, normalizedSkillTargetDir)) {
+        return { allowed: false, reason: `${toolName} is restricted to "${normalizedSkillTargetDir}"` };
+      }
+    }
+
+    return { allowed: true };
+  };
+}
+```
+
+📖 実装参照: `apps/desktop/src/main/services/runtime/SkillCreatorGovernancePolicy.ts`
+
+---
+
 ## エンタープライズ考慮事項
 
 | 課題               | 対策                                   |
