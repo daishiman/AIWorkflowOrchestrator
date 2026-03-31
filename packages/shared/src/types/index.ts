@@ -177,7 +177,6 @@ export type {
   DebugStep as SkillCreatorDebugStep,
   DebugResult,
   UsageStats,
-  AgentConfig,
 } from "./skillCreator";
 export {
   WORKFLOW_MANIFEST_SCHEMA_VERSION,
@@ -197,7 +196,12 @@ export type {
   SkillCreatorPersistedWorkflowCheckpoint,
   SkillCreatorWorkflowArtifactEntry,
   WorkflowSessionStorageSchema,
+  // Session resume IPC types (TASK-P0-08)
+  SkillCreatorSessionListItem,
+  SkillCreatorResumeSessionRequest,
+  SkillCreatorDeleteSessionRequest,
 } from "./skillCreator";
+export { SESSION_TTL_MS } from "./skillCreator";
 
 // ファイル選択型定義
 export type {

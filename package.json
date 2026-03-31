@@ -27,7 +27,7 @@
     "check": "run-p lint typecheck",
     "clean": "pnpm -r exec rm -rf dist out node_modules/.vite",
     "prepare": "husky",
-    "postinstall": "bash scripts/setup-native-modules.sh"
+    "postinstall": "bash scripts/setup-native-modules.sh || pnpm rebuild better-sqlite3 || true"
   },
   "devDependencies": {
     "@esbuild/darwin-x64": "0.21.5",

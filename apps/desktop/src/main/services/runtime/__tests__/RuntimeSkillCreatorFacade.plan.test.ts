@@ -12,7 +12,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RuntimeSkillCreatorFacade } from "../RuntimeSkillCreatorFacade";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
-import { SkillCreatorSourceResolver } from "../SkillCreatorSourceResolver";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
 import type { ILLMAdapter } from "../../../adapters/llm/types";
 
@@ -74,19 +73,6 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
       llmAdapter: mockLLMAdapter,
       resourceLoader: mockResourceLoader as never,
     });
-
-    // TASK-P0-04: dynamic pipeline が常に有効になるため、
-    // resourceLoader のみ注入のケースは static fallback を保証するために
-    // candidates を空にしてリソース未取得状態をモック
-    vi.spyOn(SkillCreatorSourceResolver.prototype, "resolve").mockResolvedValue(
-      {
-        foundationSnapshot: undefined,
-        manifestResources: new Map(),
-        candidateRoots: [],
-        rejectedRoots: [],
-        degradeReasons: [],
-      },
-    );
   });
 
   afterEach(() => {
@@ -338,7 +324,7 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
       });
     });
 
-    it("resourceLoader 未注入かつ manifest 未発見時は resource_loader_unavailable を返す", async () => {
+    it("resourceLoader 未注入時は resource_loader_unavailable を返す", async () => {
       const facadeWithLLMOnly = new RuntimeSkillCreatorFacade({
         skillExecutor: mockSkillExecutor,
         llmAdapter: mockLLMAdapter,
@@ -349,17 +335,20 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
         apiKey: "sk-test",
         permissionMode: "default",
       });
+
       const result = await facadeWithLLMOnly.plan(
         "テスト入力",
         "api-key",
         "sk-test",
       );
 
-      expect(result).toHaveProperty(
-        "error.code",
-        "resource_loader_unavailable",
-      );
-      expect(mockLLMAdapter.sendChat).not.toHaveBeenCalled();
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "resource_loader_unavailable",
+          message: "リソースローダーが利用できません。設定を確認してください。",
+        },
+      });
     });
   });
 

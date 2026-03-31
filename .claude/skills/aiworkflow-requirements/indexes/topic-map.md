@@ -1627,16 +1627,16 @@ node scripts/list-specs.js --topics
 | Electron | L14 |
 | ビルド・パッケージング | L44 |
 | Main Process技術 | L72 |
-| Renderer Process技術 | L127 |
-| IPC通信 | L153 |
-| macOS固有 | L174 |
-| セキュリティ | L198 |
-| 自動更新 | L223 |
-| 開発ツール | L243 |
-| ディレクトリ構造 | L263 |
-| 関連ドキュメント | L283 |
-| 関連未タスク | L295 |
-| 変更履歴 | L303 |
+| Renderer Process技術 | L111 |
+| IPC通信 | L137 |
+| macOS固有 | L158 |
+| セキュリティ | L182 |
+| 自動更新 | L207 |
+| 開発ツール | L227 |
+| ディレクトリ構造 | L247 |
+| 関連ドキュメント | L267 |
+| 関連未タスク | L279 |
+| 変更履歴 | L287 |
 
 ### references/technology-devops-core.md
 
@@ -2104,14 +2104,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
 | RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | L100 |
-| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L213 |
-| SkillScheduler / ScheduleStore（TASK-9G） | L272 |
-| DefaultSafetyGate サービス（UT-06-003） | L301 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L352 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L377 |
-| キャッシュ機構 | L405 |
-| 永続化 | L411 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L417 |
+| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L170 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L229 |
+| DefaultSafetyGate サービス（UT-06-003） | L258 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L309 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L334 |
+| キャッシュ機構 | L362 |
+| 永続化 | L368 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L374 |
 
 ### references/arch-electron-services-details.md
 
@@ -2307,12 +2307,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| ビルドターゲット | L10 |
 | リリースフロー | L33 |
 | リリースチェックリスト | L45 |
-| 開発時のネイティブモジュール bootstrap | L58 |
-| 自動更新（electron-updater） | L101 |
-| コードサイニング | L128 |
-| デプロイチェックリスト | L152 |
-| データベースマイグレーションのロールバック | L203 |
-| 関連ドキュメント | L229 |
+| 自動更新（electron-updater） | L58 |
+| コードサイニング | L85 |
+| デプロイチェックリスト | L109 |
+| データベースマイグレーションのロールバック | L160 |
+| 関連ドキュメント | L186 |
 
 ### references/deployment-gha.md
 
@@ -2629,19 +2628,19 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L67 |
-| クイックリファレンス: カテゴリ別検索ガイド | L85 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L258 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L590 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L624 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L707 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L723 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L747 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L788 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L813 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L844 |
-| TASK-RT-06 教訓（2026-03-29） | L875 |
-| TASK-P0-04 教訓（2026-03-30） | L897 |
+| 分割ファイル一覧 | L66 |
+| クイックリファレンス: カテゴリ別検索ガイド | L84 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L257 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L589 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L623 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L706 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L722 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L746 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L787 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L812 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L843 |
+| TASK-RT-06 教訓（2026-03-29） | L874 |
+| TASK-P0-04 教訓（2026-03-30） | L896 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

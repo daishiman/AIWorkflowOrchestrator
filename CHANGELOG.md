@@ -7,14 +7,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Fixed
-
-- Electron ビルドインフラを修正
-  - root `postinstall` で `scripts/setup-native-modules.sh` を実行し、Electron コンテキストで `better-sqlite3` を検証する方式に統一
-  - `apps/desktop` に `rebuild:electron` を追加し、workspace shared 配下の `better-sqlite3` を明示的に再構築可能にした
-  - `electron-builder` の `afterPack` で配布物向けネイティブモジュール再構築を追加
-  - `@repo/shared` の CJS 出力と preload bundle 側の取り込みを揃え、`@repo/shared` の runtime require 残留を解消
-
 ### Added
 
 - Slide output directory settings feature for presentation-slide-generator skill
