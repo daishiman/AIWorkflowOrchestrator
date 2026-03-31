@@ -1,0 +1,157 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+    - alert [ref=e2]: E2E テスト用エラーメッセージ
+    - generic [ref=e4]:
+        - navigation "Main navigation" [ref=e5]:
+            - button "ダッシュボードへ移動" [ref=e7] [cursor=pointer]:
+                - img [ref=e9]
+                - generic [ref=e15]:
+                    - generic [ref=e16]: AI Workflow
+                    - generic [ref=e17]: Navigation
+            - generic [ref=e18]:
+                - generic [ref=e19]:
+                    - group "主要機能" [ref=e20]:
+                        - paragraph [ref=e21]: 主要機能
+                        - generic [ref=e22]:
+                            - button "ダッシュボード" [ref=e24] [cursor=pointer]:
+                                - img [ref=e25]
+                                - generic [ref=e30]:
+                                    - generic [ref=e31]: ダッシュボード
+                                    - status [ref=e32]: ⌘+1
+                            - button "ワークスペース" [ref=e34] [cursor=pointer]:
+                                - img [ref=e35]
+                                - generic [ref=e40]:
+                                    - generic [ref=e41]: ワークスペース
+                                    - status [ref=e42]: ⌘+2
+                            - button "チャット" [ref=e44] [cursor=pointer]:
+                                - img [ref=e45]
+                                - generic [ref=e47]:
+                                    - generic [ref=e48]: チャット
+                                    - status [ref=e49]: ⌘+3
+                            - button "エージェント" [ref=e51] [cursor=pointer]:
+                                - img [ref=e52]
+                                - generic [ref=e55]:
+                                    - generic [ref=e56]: エージェント
+                                    - status [ref=e57]: ⌘+4
+                            - button "スキルセンター" [ref=e59] [cursor=pointer]:
+                                - img [ref=e60]
+                                - generic [ref=e62]:
+                                    - generic [ref=e63]: スキルセンター
+                                    - status [ref=e64]: ⌘+5
+                            - button "履歴検索" [ref=e66] [cursor=pointer]:
+                                - img [ref=e67]
+                                - generic [ref=e70]:
+                                    - generic [ref=e71]: 履歴検索
+                                    - status [ref=e72]: ⌘+6
+                    - separator [ref=e73]
+                    - group "補助機能" [ref=e74]:
+                        - paragraph [ref=e75]: 補助機能
+                        - generic [ref=e76]:
+                            - button "グラフ" [ref=e78] [cursor=pointer]:
+                                - img [ref=e79]
+                                - generic [ref=e84]:
+                                    - generic [ref=e85]: グラフ
+                                    - status [ref=e86]: ⌘+7
+                            - button "エディタ" [ref=e88] [cursor=pointer]:
+                                - img [ref=e89]
+                                - generic [ref=e94]:
+                                    - generic [ref=e95]: エディタ
+                                    - status [ref=e96]: ⌘+8
+                            - button "実行コンソール" [ref=e98] [cursor=pointer]:
+                                - img [ref=e99]
+                                - generic [ref=e102]:
+                                    - generic [ref=e103]: 実行コンソール
+                                    - status [ref=e104]: ⌘+9
+                - group "システム" [ref=e106]:
+                    - paragraph [ref=e107]: システム
+                    - button "設定" [ref=e110] [cursor=pointer]:
+                        - img [ref=e111]
+                        - generic [ref=e114]:
+                            - generic [ref=e115]: 設定
+                            - status [ref=e116]: ⌘+,
+            - button "ナビゲーションを折りたたむ" [ref=e118] [cursor=pointer]:
+                - generic [ref=e119]: 折りたたむ
+                - img [ref=e120]
+        - generic [ref=e122]:
+            - banner [ref=e123]:
+                - button "前のビューに戻る" [disabled] [ref=e124]:
+                    - img [ref=e125]
+                - generic [ref=e127]:
+                    - button "実行コンソールを開く" [disabled] [ref=e128]:
+                        - generic [ref=e130]:
+                            - img [ref=e131]
+                            - generic [ref=e133]: 実行コンソール
+                    - generic [ref=e134]:
+                        - button "お知らせを開く" [ref=e135] [cursor=pointer]:
+                            - img [ref=e136]
+                        - status [ref=e139]
+            - main [ref=e140]:
+                - generic [ref=e142]:
+                    - generic [ref=e144]:
+                        - generic [ref=e145]:
+                            - paragraph [ref=e146]:
+                                - img [ref=e147]
+                                - text: 今日のホーム
+                            - heading "ホーム" [level=1] [ref=e150]
+                            - paragraph [ref=e151]: こんばんは、Daishi Manjuさん
+                            - paragraph [ref=e152]: 最初の一歩を選びやすいように、おすすめの導線をまとめました。
+                        - generic [ref=e153]:
+                            - generic [ref=e154]:
+                                - paragraph [ref=e155]: Pending
+                                - paragraph [ref=e156]: "0"
+                                - paragraph [ref=e157]: いま判断や実行待ちの項目です。
+                            - generic [ref=e158]:
+                                - paragraph [ref=e159]: Timeline
+                                - paragraph [ref=e160]: "0"
+                                - paragraph [ref=e161]: 直近の動きから、文脈をすぐ取り戻せます。
+                    - region "おすすめの次のステップ" [ref=e162]:
+                        - generic [ref=e163]:
+                            - generic [ref=e164]:
+                                - heading "おすすめの次のステップ" [level=2] [ref=e165]
+                                - paragraph [ref=e166]: いまの状態から外れにくい導線だけを、3件に絞っています。
+                            - paragraph [ref=e167]: 2-3 actions
+                        - list [ref=e168]:
+                            - listitem [ref=e169]:
+                                - button "Open ツールを探す まずは使えるスキルを見つけて、最短で作業を始めます。" [ref=e170] [cursor=pointer]:
+                                    - generic [ref=e171]:
+                                        - img [ref=e173]
+                                        - generic [ref=e175]:
+                                            - text: Open
+                                            - img [ref=e176]
+                                    - generic [ref=e178]:
+                                        - paragraph [ref=e179]: ツールを探す
+                                        - paragraph [ref=e180]: まずは使えるスキルを見つけて、最短で作業を始めます。
+                            - listitem [ref=e181]:
+                                - button "Open 作業スペースを見る ファイルや資料を確認して、次の編集や整理に入ります。" [ref=e182] [cursor=pointer]:
+                                    - generic [ref=e183]:
+                                        - img [ref=e185]
+                                        - generic [ref=e190]:
+                                            - text: Open
+                                            - img [ref=e191]
+                                    - generic [ref=e193]:
+                                        - paragraph [ref=e194]: 作業スペースを見る
+                                        - paragraph [ref=e195]: ファイルや資料を確認して、次の編集や整理に入ります。
+                            - listitem [ref=e196]:
+                                - button "Open AIアシスタントを開く やりたいことを自然文で渡して、最初の提案を受けます。" [ref=e197] [cursor=pointer]:
+                                    - generic [ref=e198]:
+                                        - img [ref=e200]
+                                        - generic [ref=e203]:
+                                            - text: Open
+                                            - img [ref=e204]
+                                    - generic [ref=e206]:
+                                        - paragraph [ref=e207]: AIアシスタントを開く
+                                        - paragraph [ref=e208]: やりたいことを自然文で渡して、最初の提案を受けます。
+                    - region "最近の動き" [ref=e209]:
+                        - generic [ref=e210]:
+                            - heading "最近の動き" [level=2] [ref=e211]
+                            - paragraph [ref=e212]: まだ履歴がありません。まずはおすすめの導線から始められます。
+                        - status [ref=e213]:
+                            - generic [ref=e214]:
+                                - img [ref=e217]
+                                - paragraph [ref=e220]: 最初のアクションを選びましょう
+                                - paragraph [ref=e221]: ホームは、次の一手がすぐ分かる玄関のような場所です。
+                                - button "ツールを探す" [ref=e223] [cursor=pointer]:
+                                    - generic [ref=e224]: ツールを探す
+```

@@ -432,11 +432,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L355 |
-| スキルチェーン 型定義（TASK-9D） | L405 |
-| スキルスケジュール 型定義（TASK-9G） | L440 |
-| スキルフォーク 型定義（TASK-9E） | L465 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L513 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L350 |
+| スキルチェーン 型定義（TASK-9D） | L400 |
+| スキルスケジュール 型定義（TASK-9G） | L435 |
+| スキルフォーク 型定義（TASK-9E） | L460 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L508 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -905,10 +905,10 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L245 |
 | Electron IPC API設計 | L281 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L423 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L656 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L687 |
-| AIプロバイダーAPI連携 | L718 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L751 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L657 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L688 |
+| AIプロバイダーAPI連携 | L719 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L752 |
 
 ### references/api-ipc-system-details.md
 
@@ -1287,16 +1287,16 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L8 |
 | UI構成 | L29 |
 | 共有インラインセレクター | L40 |
-| プロバイダーとモデル一覧 | L58 |
-| 状態管理 | L72 |
-| UXフロー | L101 |
-| スタイルガイドライン | L121 |
-| アクセシビリティ | L148 |
-| エラーハンドリング | L158 |
-| テストカバレッジ | L166 |
-| 実行経路との統合 | L191 |
-| 関連タスクドキュメント | L202 |
-| 関連ドキュメント | L217 |
+| プロバイダーとモデル一覧 | L57 |
+| 状態管理 | L71 |
+| UXフロー | L100 |
+| スタイルガイドライン | L120 |
+| アクセシビリティ | L147 |
+| エラーハンドリング | L157 |
+| テストカバレッジ | L165 |
+| 実行経路との統合 | L190 |
+| 関連タスクドキュメント | L201 |
+| 関連ドキュメント | L216 |
 
 ### references/ui-ux-navigation.md
 
@@ -2651,11 +2651,11 @@ node scripts/list-specs.js --topics
 | TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L708 |
 | UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L724 |
 | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L748 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L789 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L814 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L845 |
-| TASK-RT-06 教訓（2026-03-29） | L876 |
-| TASK-P0-04 教訓（2026-03-30） | L898 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L798 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L823 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L854 |
+| TASK-RT-06 教訓（2026-03-29） | L885 |
+| TASK-P0-04 教訓（2026-03-30） | L907 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3974,8 +3974,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| フェーズ構造 | L18 |
-| 出力テンプレート | L189 |
+| フェーズ構造 | L17 |
+| 出力テンプレート | L188 |
 
 ### references/task-workflow-rules.md
 
@@ -4088,18 +4088,18 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| 概要 | L17 |
-| テスト構成 | L23 |
-| セレクター戦略 | L45 |
-| 待機戦略 | L79 |
-| ヘルパー関数パターン | L115 |
-| テストスイート構造 | L160 |
-| アクセシビリティテスト | L207 |
-| beforeEachパターン | L235 |
-| テストスキップパターン | L261 |
-| CI/CD統合 | L277 |
-| デバッグパターン | L329 |
-| 関連ドキュメント | L351 |
+| 概要 | L18 |
+| テスト構成 | L24 |
+| セレクター戦略 | L48 |
+| 待機戦略 | L82 |
+| ヘルパー関数パターン | L118 |
+| テストスイート構造 | L163 |
+| アクセシビリティテスト | L210 |
+| beforeEachパターン | L245 |
+| テストスキップパターン | L271 |
+| CI/CD統合 | L287 |
+| デバッグパターン | L339 |
+| 関連ドキュメント | L361 |
 
 ### references/ui-history-components.md
 

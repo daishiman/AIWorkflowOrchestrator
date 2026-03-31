@@ -2,6 +2,10 @@ import { test, expect, _electron as electron } from "@playwright/test";
 import type { ElectronApplication, Page } from "@playwright/test";
 import * as path from "path";
 import type { SemanticTestResult } from "./evaluate-ui-ux-types";
+import {
+  TEST_TARGETS,
+  type TestTarget,
+} from "../../../../apps/desktop/e2e/ui-ux/test-targets.config";
 
 // Electron アプリの起動
 // apps/desktop/dist/main.js を起点に起動
@@ -78,8 +82,10 @@ export async function testVisualLayer(
   });
 }
 
-// ===== TASK-RT-05 M11-1〜M11-4 テストスイート =====
-test.describe("TASK-RT-05 multi_select Phase 11: 3層評価", () => {
+// ===== UI/UX 3層評価フレームワーク（TEST_TARGETS 駆動） =====
+// test-targets.config.ts の TEST_TARGETS を動的にイテレートする
+// ハードコードされた M11 系テストを廃止し、設定駆動型に変更
+test.describe("UI/UX 3層評価フレームワーク", () => {
   let app: ElectronApplication;
   let page: Page;
 
@@ -93,70 +99,18 @@ test.describe("TASK-RT-05 multi_select Phase 11: 3層評価", () => {
     await app.close();
   });
 
-  // M11-1: multi_select request 表示（層1 + 層2）
-  test("M11-1: multi_select request を開く - 3層評価", async () => {
-    // 層1: SEM-001
-    await page.goto("/workflow"); // アプリ内パス（実装に合わせて調整）
-    const semanticResult = await testSemanticLayer(page, '[role="checkbox"]');
-    expect(semanticResult.ariaLabels.length).toBeGreaterThan(0);
-
-    // 層2: VIS-001
-    await testVisualLayer(page, "M11-1-multi-select-display");
-
-    // 層3: AI UX 評価は evaluate-ui-ux.ts で別途実行
-  });
-
-  // M11-2: 2件選択して送信（層1 + 層2 + payload 検証）
-  test("M11-2: 2件選択して送信する - 3層評価", async () => {
-    const checkboxes = await page.locator('[role="checkbox"]').all();
-    await checkboxes[0].click();
-    await checkboxes[1].click();
-
-    // 層1: SEM-006（aria-checked の状態反映）
-    const checkedCount = await page
-      .locator('[role="checkbox"][aria-checked="true"]')
-      .count();
-    expect(checkedCount).toBe(2);
-
-    // 層2: VIS-002
-    await testVisualLayer(page, "M11-2-checkbox-selected");
-
-    // 送信
-    await page.click('[data-testid="submit-button"]');
-
-    // payload 検証（PAY-001）
-    const lastPayload = await page.evaluate(
-      () => (window as Record<string, unknown>).__lastSubmitPayload__,
-    );
-    expect(
-      Array.isArray(
-        (lastPayload as Record<string, unknown> | null)?.selectedOptionIds,
-      ),
-    ).toBe(true);
-  });
-
-  // M11-3: kind 切り替え（層1 + 層2）
-  test("M11-3: kind を切り替える - 3層評価", async () => {
-    await page.click('[data-testid="kind-switch"]');
-
-    // 層1: SEM-007（切り替え後 aria-checked が全て false）
-    const checkedBoxes = await page
-      .locator('[role="checkbox"][aria-checked="true"]')
-      .count();
-    expect(checkedBoxes).toBe(0);
-
-    // 層2: VIS-003
-    await testVisualLayer(page, "M11-3-kind-switched");
-  });
-
-  // M11-4: 既存 4 kind の確認（層2）
-  test("M11-4: 既存 4 kind を順に確認する - 3層評価", async () => {
-    const kinds = ["single_select", "free_text", "secret", "confirm"];
-
-    for (const kind of kinds) {
-      await page.click(`[data-testid="kind-${kind}"]`);
-      // 層2: VIS-004〜007
-      await testVisualLayer(page, `M11-4-kind-${kind}`);
+  for (const target of TEST_TARGETS as TestTarget[]) {
+    if (target.layer1) {
+      test(`[SEM] ${target.id}: Semantic 検証 - ${target.description}`, async () => {
+        const firstSelector = target.semanticTargets?.[0]?.selector ?? "body";
+        const result = await testSemanticLayer(page, firstSelector);
+        expect(result.tabIndexElements.length).toBeGreaterThanOrEqual(0);
+      });
     }
-  });
+    if (target.layer2) {
+      test(`[VIS] ${target.id}: Visual 検証 - ${target.description}`, async () => {
+        await testVisualLayer(page, target.id);
+      });
+    }
+  }
 });

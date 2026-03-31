@@ -9,6 +9,7 @@
 
 | Version | Date       | Changes                                      |
 | ------- | ---------- | -------------------------------------------- |
+| 1.2.0   | 2026-03-31 | UT-UIUX-PLAYWRIGHT-E2E-001: `ui-ux-layer1` / `ui-ux-layer2`、`TEST_TARGETS` 駆動、baseline 正本パス `layer2-visual.spec.ts-snapshots/`、implicit role / positive tabindex ルール、Phase 11 screenshot 導線を反映 |
 | 1.1.0   | 2026-03-01 | UT-IMP-PHASE11-WORKTREE-PROTOCOL-001: Playwright設定のCI/ローカル動的切替（timeout/expect/retries/workers/reporter）を反映。`ci.yml` の `e2e-desktop` ジョブ（xvfb + chromium + artifact保存）を追記 |
 | 1.0.0   | 2026-02-02 | 初版作成（TASK-8C-D E2Eテスト実装を基に抽出） |
 
@@ -27,7 +28,9 @@ PlaywrightによるE2Eテストの実装パターンを定義する。Electron R
 | パス                           | 役割                            |
 | ------------------------------ | ------------------------------- |
 | `apps/desktop/e2e/`            | E2Eテストファイル配置           |
+| `apps/desktop/e2e/ui-ux/`      | UI/UX 3層評価テスト配置         |
 | `apps/desktop/e2e/*.spec.ts`   | Playwrightテストスイート        |
+| `apps/desktop/e2e/ui-ux/layer2-visual.spec.ts-snapshots/` | Visual baseline 正本 |
 | `apps/desktop/playwright.config.ts` | Playwright設定ファイル    |
 
 ### テストフレームワーク
@@ -214,6 +217,13 @@ test.describe("[機能名] E2E テスト", () => {
 | aria-modal             | `toHaveAttribute("aria-modal", "true")`   |
 | キーボードナビゲーション | Tab/Enter/Escapeキー操作                 |
 | フォーカストラップ     | Tab連打でダイアログ内に留まることを確認   |
+
+### UI/UX Layer 1 / Layer 2 追加ルール
+
+- `TEST_TARGETS` を single source of truth にする
+- native `button` / `textarea` / text `input` は explicit role がなくても implicit role を PASS 扱いにする
+- `tabindex="0"` を多用する roving tabindex パターンは fail 条件にしない。重複検知は positive tabindex のみに適用する
+- Phase 11 screenshot 証跡は workflow 配下 `outputs/phase-11/screenshots/` に保存する
 
 ### ダイアログ固有パターン
 

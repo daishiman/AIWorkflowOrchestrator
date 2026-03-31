@@ -83,6 +83,24 @@ describe("OnboardingWizard", () => {
     expect(handleClose).toHaveBeenCalledTimes(1);
   });
 
+  it("表示中は背景を inert 化し、閉じると復元する", () => {
+    const { unmount } = render(
+      <>
+        <div data-testid="background-shell">background</div>
+        <OnboardingWizard isOpen onClose={vi.fn()} onComplete={vi.fn()} />
+      </>,
+    );
+
+    const shell = screen.getByTestId("background-shell");
+    expect(shell.inert).toBe(true);
+    expect(shell).toHaveAttribute("aria-hidden", "true");
+
+    unmount();
+
+    expect(shell.inert).toBe(false);
+    expect(shell).not.toHaveAttribute("aria-hidden");
+  });
+
   it("initialName='User' のとき入力欄の初期値が空欄になる (generic name 正規化)", () => {
     render(
       <OnboardingWizard
