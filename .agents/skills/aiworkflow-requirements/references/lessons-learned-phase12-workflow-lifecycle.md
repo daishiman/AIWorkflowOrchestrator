@@ -1043,3 +1043,31 @@
 1. shared パッケージ内テストでは `@repo/shared` エイリアスを使用せず相対パスでインポートする。
 2. IPC チャネル追加前に既存の `channels.ts` を grep で確認し、命名規則（文字列形式 / TS定数名）のパターンを表に整理してから設計に着手する。
 3. TDD Red Phase 前にチャネル追加による preload allowlist・既存テスト期待値への影響範囲を確認してから失敗テストを書く。
+
+---
+
+## TASK-UIUX-FEEDBACK-001 Phase 12 review 教訓（2026-03-31）
+
+### L-UIUX-001: `spec_created` workflow に code draft が入っても completed に上げてはいけない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | canonical root に script 実装が存在することを理由に workflow 全体を completed 扱いし、`artifacts.json` Phase 4-12 と Phase 12 summary が false green になっていた |
+| 解決策 | code draft の存在と workflow state を分離し、`spec_created` を維持したまま current facts を記録する |
+| 標準ルール | skill 実装差分があっても Phase 11 実測 evidence と close-out 条件が揃うまでは workflow を completed にしない |
+
+### L-UIUX-002: placeholder screenshot は evidence ではなく blocker 情報
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `scaffold-placeholder.png` があるだけで screenshot coverage を満たしたように読める文書が残っていた |
+| 解決策 | `phase11-capture-metadata.json` の `status: "not_run"` を正として、placeholder を actual capture の代替に使わないと明記した |
+| 標準ルール | placeholder は「未実行の証跡」であり、「実行済みの証跡」ではない |
+
+### L-UIUX-003: CLI 引数を prompt context に渡さないと評価結果が task 非依存になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `evaluate-ui-ux.js` が `--task-id` を受け取っても `evaluateUIWithClaude()` へ渡していなかったため、常にデフォルト文脈で評価していた |
+| 解決策 | CLI 引数をそのまま `taskContext` として渡し、回帰テストを追加した |
+| 標準ルール | evaluator CLI は `argv` を parse したら prompt input まで到達していることをテストで保証する |

@@ -59,6 +59,40 @@
 
 ---
 
+### タスク: TASK-ELECTRON-BUILD-FIX electron-build-infra-fix（2026-03-30）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-ELECTRON-BUILD-FIX |
+| ステータス | **完了** |
+| タイプ | implementation / build-infra bugfix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-30 |
+| 対象 | preload bundle と better-sqlite3 Electron ABI 不整合の同時是正 |
+| 成果物 | `docs/30-workflows/electron-build-infra-fix/` |
+
+#### 実施内容
+
+- `packages/shared` を ESM + CJS デュアル出力化し、34 exports に `require` を追加
+- `apps/desktop/electron.vite.config.ts` で `@repo/shared` を main / preload の bundle 対象に変更
+- root `postinstall` を native bootstrap owner に固定し、`scripts/setup-native-modules.sh` から desktop workspace を明示して Electron ABI / arch を検証
+- `apps/desktop/package.json` に `rebuild:electron` を追加し、manual recovery として切り出し
+- `apps/desktop/scripts/rebuild-native-for-electron.mjs` と `electron-builder.yml` の `afterPack` で配布物向け再構築を追加
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared exec npx vitest run src/__tests__/build/` → 7 PASS
+- `pnpm --filter @repo/desktop exec npx vitest run src/__tests__/build/` → 23 PASS
+- `pnpm --filter @repo/shared build` / `pnpm --filter @repo/desktop build` → 成功
+- `pnpm lint` → 0 errors, 10 warnings
+- `pnpm typecheck` → 0 errors
+- `node -p "process.versions.modules"` → `127`
+- `ELECTRON_RUN_AS_NODE=1 pnpm --filter @repo/desktop exec electron -p "process.versions.modules"` → `140`
+- `ELECTRON_RUN_AS_NODE=1 pnpm --filter @repo/desktop exec electron -e "require('better-sqlite3')"` → `OK: better-sqlite3 loaded`
+- `pnpm --filter @repo/desktop dev` → `start electron app...` まで到達、起動直後エラーなし
+
+---
+
 ### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
 
 | 項目       | 値                                                                                      |
@@ -129,41 +163,6 @@
 - 未タスク1件: `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY`（Renderer UI への description 表示）
 
 ---
-
-### タスク: TASK-ELECTRON-BUILD-FIX electron-build-infra-fix（2026-03-30）
-
-| 項目       | 値                                                         |
-| ---------- | ---------------------------------------------------------- |
-| タスクID   | TASK-ELECTRON-BUILD-FIX                                    |
-| ステータス | **完了**                                                   |
-| タイプ     | implementation / build-infra bugfix                        |
-| 優先度     | 高                                                         |
-| 完了日     | 2026-03-30                                                 |
-| 対象       | preload bundle と better-sqlite3 Electron ABI 不整合の同時是正 |
-| 成果物     | `docs/30-workflows/electron-build-infra-fix/`              |
-
-#### 実施内容
-
-- `packages/shared` を ESM + CJS デュアル出力化し、34 exports に `require` を追加
-- `apps/desktop/electron.vite.config.ts` で `@repo/shared` を main / preload の bundle 対象に変更
-- root `postinstall` を native bootstrap owner に固定し、`scripts/setup-native-modules.sh` から desktop workspace を明示して Electron ABI / arch を検証
-- `apps/desktop/package.json` に `rebuild:electron` を追加し、manual recovery として切り出し
-- `apps/desktop/scripts/rebuild-native-for-electron.mjs` と `electron-builder.yml` の `afterPack` で配布物向け再構築を追加
-
-#### 検証証跡
-
-- `pnpm --filter @repo/shared exec npx vitest run src/__tests__/build/` → 7 PASS
-- `pnpm --filter @repo/desktop exec npx vitest run src/__tests__/build/` → 23 PASS
-- `pnpm --filter @repo/shared build` / `pnpm --filter @repo/desktop build` → 成功
-- `pnpm lint` → 0 errors, 10 warnings
-- `pnpm typecheck` → 0 errors
-- `node -p "process.versions.modules"` → `127`
-- `ELECTRON_RUN_AS_NODE=1 pnpm --filter @repo/desktop exec electron -p "process.versions.modules"` → `140`
-- `ELECTRON_RUN_AS_NODE=1 pnpm --filter @repo/desktop exec electron -e "require('better-sqlite3')"` → `OK: better-sqlite3 loaded`
-- `pnpm --filter @repo/desktop dev` → `start electron app...` まで到達、起動直後エラーなし
-
----
-
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
 | 項目       | 値                                                                        |
@@ -1859,3 +1858,32 @@
 #### Phase 12 未タスク
 
 なし（0件）
+
+---
+
+### タスク: TASK-UIUX-FEEDBACK-001 phase11-ui-ux-feedback-loop-review（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UIUX-FEEDBACK-001 |
+| ステータス | **spec_created 維持 / canonical・mirror・system spec sync 実施** |
+| タイプ | skill improvement + workflow documentation correction |
+| 優先度 | HIGH |
+| 完了日 | 2026-03-31 |
+| 成果物 | `docs/30-workflows/task-uiux-feedback-001-phase11-enhancement/` |
+
+#### 実施内容
+
+- `.claude/skills/task-specification-creator/` に追加された `evaluate-ui-ux` script 群、prompt agent、テスト群を current fact として整理
+- `evaluate-ui-ux.js` の CLI が `--task-id` を評価コンテキストへ渡していなかった不整合を修正
+- screenshot 0 件で処理が進む false green を防ぐガードと回帰テストを追加
+- workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ是正
+- Phase 11/12 文書から completed 誤記を除去し、placeholder screenshot と `not_run` metadata を current fact として固定
+
+#### 未完了事項
+
+| 項目 | 状態 |
+| --- | --- |
+| representative screenshot 実測 | 未了 |
+| Phase 11 実行結果 | 未了 |
+| HIGH 問題の未タスク化 | 実行後に判定 |

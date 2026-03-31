@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                              |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-31 | 3.3.1      | TASK-UIUX-FEEDBACK-001 の教訓2件を追加（Phase 11 placeholder-only evidence で completed に寄せない / phantom path `scripts/ui-ux-eval/*` を current facts と誤認しない） |
 | 2026-03-30 | 3.3.0      | TASK-P0-02 verify-improve-reverify closed-loop 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-P002-001 recordVerifyPass() 対称設計 / L-P002-002 improve→verify 遷移と後方互換性 / L-P002-003 getReverifyDisabledReason() 多段条件ゲート順序） |
 | 2026-03-30 | 2.12.0     | TASK-P0-05 execute-skill-file-writer-integration 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-P005-001 LLM応答パース見出し正規化 / L-P005-002 worktree canonical mirror同期 / L-P005-003 DI未注入 skilFileWriter fail-silent回避）                                                                                                                                                                                                                                                                                    |
 | 2026-03-30 | 3.1.0      | TASK-RT-03 SkillCreationResultPanel 教訓4件を追加（raw result local state保持 / terminal_handoff vs integrated_api 型ガード / progressive disclosure パターン / 共通UIパーツ early 抽出）                                                                                                                             |
@@ -913,4 +914,3 @@
 | 解決策 | スケルトン関数（`throw new Error("not implemented")`）を先に定義し、import はコンパイルできる状態にする。実行時にのみ新テストが Red になるよう設計する |
 | 標準ルール | テストファースト実装では「スケルトン定義 → テスト記述 → Red 確認 → 実装 → Green 確認」の順序を守る |
 | 関連タスク | TASK-P0-04 |
-

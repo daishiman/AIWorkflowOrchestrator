@@ -3,6 +3,15 @@
 ## 役割
 
 ---
+## 2026-03-31 - TASK-UIUX-FEEDBACK-001 spec_created sync hardening
+
+### 変更内容
+- Phase 11 3層評価の canonical 実装先を `.claude/skills/task-specification-creator/` に固定し、`agents/evaluate-ui-ux.md` と `scripts/evaluate-ui-ux*` family を追加
+- `references/phase-11-test-report-template.md` と `SKILL.md` を更新し、Phase 11 を manual screenshot review 単体ではなく Semantic / Visual / AI UX の3層評価として定義
+- workflow root 側の false green を是正するため、`artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ戻し、Phase 11/12 close-out から placeholder-only evidence の completed 誤判定を除去
+- `.agents/skills/task-specification-creator/` へ same-wave mirror sync を行い、canonical / mirror drift を解消
+
+---
 ## 2026-03-30 - TASK-P0-02 Phase 12 close-out sync
 
 ### 変更内容

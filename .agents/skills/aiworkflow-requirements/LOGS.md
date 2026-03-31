@@ -7,11 +7,11 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-31 - TASK-UIUX-FEEDBACK-001 false-green cleanup（Phase 11 placeholder-only evidence と phantom path `scripts/ui-ux-eval/*` を current facts から除去し、`task-workflow-phases.md` / `lessons-learned-current.md` / LOGS / SKILL を same-wave で更新。topic-map / keywords 再生成まで完了） |
 | 2026-03-30 - TASK-LLM-MOD-05 step-04-seq-task-05-schema-extension Phase 12 close-out sync（`description?` フィールドを全 19 モデルに追加 / `inferProviderId()` に `o3`/`o4` prefix 対応 / ワークフロー配置再編 / task-workflow-completed.md 完了記録追加 / TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY formalize / llm-ipc-types.md v1.5.0 更新 / 未タスク正本配置） |
 | 2026-03-30 - TASK-P0-02 verify→improve→re-verify 閉ループ close-out sync（`task-workflow.md` / `task-workflow-completed.md` に TASK-P0-02 完了記録を追加 / `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の feedback memory を current fact へ反映 / Phase 12 の `UT-P0-02-001` を current 0件へ吸収 / LOGS と SKILL を同波更新） |
 | 2026-03-30 - TASK-ELECTRON-BUILD-FIX close-out sync（root `postinstall` を native bootstrap owner に固定し、`scripts/setup-native-modules.sh` の desktop workspace 固定 / Electron ABI 検証 / 必要時のみ rebuild を current fact 化。workflow root の root/outputs artifacts 不一致、Phase 11 空欄、Phase 12 version drift を解消し、`deployment-electron.md` / `technology-desktop.md` / task-workflow completed/history / SKILL history / `.agents` mirror を same-wave で更新） |
 | 2026-03-30 agentview-permission-api-fix Phase-12 + lessons-learned 同期（task-workflow-backlog.md に TASK-AGENT-PERM-MODE / TASK-AGENTVIEW-PHASE11-SCREENSHOT-RECAPTURE-001 の登録を確認 / lessons-learned-ipc-preload-runtime.md に esbuild mismatch / Permission API 境界 / テストモック管理の3知見（L-AGENTPERM-001〜003）を追記 / lessons-learned-current.md v2.12.0 変更履歴更新） |
-| 2026-03-30 - TASK-P0-06 実装完了 — conversational-interview-ui（ConversationalInterview.tsx（455行）新規作成・SkillLifecyclePanelのquestion-hostセクション置換 / 5種入力ウィジェット（SingleSelectChips, MultiSelectCheckbox, FreeTextInput, ConfirmButtons, SecretInput）新規作成 / useInterviewStateフック・InterviewProgressBarコンポーネント新規作成 / packages/shared/types/skillCreator.ts にmulti_select型追加 / 74テスト ALL PASS（8ファイル）/ AC-1〜AC-13 全充足 / lessons-learned に4件の知見を追記） |
 | 2026-03-30 - TASK-P0-04 ManifestLoader デフォルト起動パス定数 close-out sync（`resolveDefaultManifestPath()` と `SKILL_CREATOR_MANIFEST_PATH` 定数を `constants.ts` に追加 / `getSkillCreatorRootCandidates()` 優先順: explicit arg → env var → home dir → repo root の4段階探索 / 25テスト全PASS（TC-01〜TC-14 + EC-10〜12）/ Phase 12 no-op 判定（public contract 不変）/ `lessons-learned-current.md` に L-P0-04-001〜002 を追記済み / `skill-creator` パターン集 `patterns-success-testing-security-b.md` 追加・`SKILL.md v10.37.14` 更新を same-wave で反映） |
 | 2026-03-30 - TASK-P0-05 execute-skill-file-writer-integration close-out sync（`parseLlmResponseToContent` の `.md` 正規化と heading tolerance を是正し、`SkillCreatorWorkflowEngine` execute artifact に `persistResult` / `persistError` を保存 / runtime targeted vitest 50件 PASS / Phase 11 evidence と Phase 12 compliance root を補完 / `task-workflow-completed.md`・SKILL history・topic-map 再生成を same-wave で反映 / canonical sync 未完了を follow-up UT へ formalize） |
 | 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out sync（step-03-seq-task-04-test-update workflow root を整備 / Phase 11/12/13 成果物を current root に揃え / docs-only close-out wave のため Step 2 domain spec 更新は no-op / GoogleAdapter・provider-registry test の current-facts 更新 / UT-LLM-MOD-04-001 backlog 維持 / esbuild mismatch で vitest 再実行不能のため historical acceptance evidence と grep を併用 / lessons: P50 task は新規実装前提で書かない・workflow root staleness は resource-map 導線で防ぐ） |
@@ -134,16 +134,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 - [logs-archive-index.md](references/logs-archive-index.md)
 
-## [2026-03-30] TASK-P0-06 実装完了 — conversational-interview-ui
-
-- ConversationalInterview.tsx（455行）を新規作成、SkillLifecyclePanelのquestion-hostセクションを置換
-- 5種の入力ウィジェット（SingleSelectChips, MultiSelectCheckbox, FreeTextInput, ConfirmButtons, SecretInput）を新規作成
-- useInterviewStateフック、InterviewProgressBarコンポーネントを新規作成
-- packages/shared/types/skillCreator.ts にmulti_select型を追加
-- 74テスト ALL PASS（8ファイル）
-- AC-1〜AC-13 全充足
-- lessons-learned に4件の知見を追記
-
 ## TASK-ELECTRON-BUILD-FIX close-out sync（2026-03-30）
 
 - タスク名: electron-build-infra-fix
@@ -153,7 +143,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
   - root `postinstall` / desktop `rebuild:electron` / `afterPack` の三層責務を canonical spec に記録
   - root `artifacts.json` / `outputs/artifacts.json` / `phase-11-manual-test.md` / `implementation-guide.md` の drift を是正
   - `deployment-electron.md` / `technology-desktop.md` / `task-workflow-completed.md` / `task-workflow-history.md` / `SKILL.md` / mirror を same-wave 更新
-
 
 ## TASK-SDK-03 resource selection hardening sync（2026-03-27）
 
@@ -535,3 +524,14 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - implementation guide の `improve(skillName, ...)` シグネチャ誤記を補正
 - 検証:
   - current workflow 文書と `RuntimeSkillCreatorFacade.ts` を突合して確認
+
+## TASK-UIUX-FEEDBACK-001 review sync（2026-03-31）
+
+- タスク名: TASK-UIUX-FEEDBACK-001 phase11-ui-ux-feedback-loop-review
+- 種別: workflow review + skill sync + false green correction
+- 主な反映:
+  - `task-specification-creator` の `evaluate-ui-ux` script 群を canonical / mirror で同期
+  - `evaluate-ui-ux.js` に taskContext 受け渡しと screenshot 0 件ガードを追加
+  - workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ補正
+  - Phase 11/12 文書から placeholder screenshot と `not_run` metadata の current fact を明示
+  - `task-workflow-completed.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `SKILL.md` を same-wave 更新

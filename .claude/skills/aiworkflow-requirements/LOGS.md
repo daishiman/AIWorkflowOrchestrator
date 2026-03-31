@@ -7,6 +7,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-31 - TASK-UIUX-FEEDBACK-001 false-green cleanup（Phase 11 placeholder-only evidence と phantom path `scripts/ui-ux-eval/*` を current facts から除去し、`task-workflow-phases.md` / `lessons-learned-current.md` / LOGS / SKILL を same-wave で更新。topic-map / keywords 再生成まで完了） |
 | 2026-03-30 - TASK-LLM-MOD-05 step-04-seq-task-05-schema-extension Phase 12 close-out sync（`description?` フィールドを全 19 モデルに追加 / `inferProviderId()` に `o3`/`o4` prefix 対応 / ワークフロー配置再編 / task-workflow-completed.md 完了記録追加 / TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY formalize / llm-ipc-types.md v1.5.0 更新 / 未タスク正本配置） |
 | 2026-03-30 - TASK-P0-02 verify→improve→re-verify 閉ループ close-out sync（`task-workflow.md` / `task-workflow-completed.md` に TASK-P0-02 完了記録を追加 / `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の feedback memory を current fact へ反映 / Phase 12 の `UT-P0-02-001` を current 0件へ吸収 / LOGS と SKILL を同波更新） |
 | 2026-03-30 - TASK-ELECTRON-BUILD-FIX close-out sync（root `postinstall` を native bootstrap owner に固定し、`scripts/setup-native-modules.sh` の desktop workspace 固定 / Electron ABI 検証 / 必要時のみ rebuild を current fact 化。workflow root の root/outputs artifacts 不一致、Phase 11 空欄、Phase 12 version drift を解消し、`deployment-electron.md` / `technology-desktop.md` / task-workflow completed/history / SKILL history / `.agents` mirror を same-wave で更新） |
@@ -523,3 +524,14 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - implementation guide の `improve(skillName, ...)` シグネチャ誤記を補正
 - 検証:
   - current workflow 文書と `RuntimeSkillCreatorFacade.ts` を突合して確認
+
+## TASK-UIUX-FEEDBACK-001 review sync（2026-03-31）
+
+- タスク名: TASK-UIUX-FEEDBACK-001 phase11-ui-ux-feedback-loop-review
+- 種別: workflow review + skill sync + false green correction
+- 主な反映:
+  - `task-specification-creator` の `evaluate-ui-ux` script 群を canonical / mirror で同期
+  - `evaluate-ui-ux.js` に taskContext 受け渡しと screenshot 0 件ガードを追加
+  - workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ補正
+  - Phase 11/12 文書から placeholder screenshot と `not_run` metadata の current fact を明示
+  - `task-workflow-completed.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `SKILL.md` を same-wave 更新
