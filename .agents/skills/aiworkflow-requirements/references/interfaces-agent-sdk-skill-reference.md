@@ -126,7 +126,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | 項目 | 契約 |
 | --- | --- |
 | 表向きの primary 導線 | `SkillManagementPanel` → `SkillLifecyclePanel` の 1 画面 |
-| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` / `getVerifyDetail` / `reverifyWorkflow` を持つ補助 API |
+| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` / `getVerifyDetail` / `reverifyWorkflow` / `getGovernanceState` を持つ補助 API |
 | create 正本 | `agentSlice.createSkill()` → `window.electronAPI.skill.create()` |
 | execute 正本 | `agentSlice.executeSkill()` → `window.electronAPI.skill.execute()` |
 | verify detail | `window.electronAPI.skillCreator.getVerifyDetail(planId)` で derived detail を取得し、owner は engine に維持 |
@@ -141,6 +141,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | `window.electronAPI.skillCreator.planSkill(prompt, authMode?, apiKey?)` | runtime creator plan を public IPC で要求する | skill 作成 runtime bridge を既存 namespace に保つため |
 | `window.electronAPI.skillCreator.executePlan(planId, skillSpec, authMode?, apiKey?)` | runtime plan 実行を要求する | facade / SkillExecutor の境界を preload から隠蔽するため |
 | `window.electronAPI.skillCreator.improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | runtime 改善を要求する | feedback ベース改善を `skill-creator:*` surface に集約するため |
+| `window.electronAPI.skillCreator.getGovernanceState()` | 現在の phase / active policy / denial 要約を取得する | governance 表示を shared DTO で読むため |
 | `window.electronAPI.skillCreator.improveSkill(skillName, { autoApply: false })` | 改善候補の事前整理 | creator 提案と詳細分析を分離するため |
 | `useCreateSkill()` | create 実処理 | 一覧再取得・既存権限導線を保つため |
 | `useExecuteSkill()` | execute 実処理 | preflight / permission / streaming 契約を再利用するため |

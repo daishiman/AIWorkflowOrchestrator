@@ -431,10 +431,10 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | --- | --- | --- |
 | Main registration | `apps/desktop/src/main/ipc/index.ts` | `SkillExecutor` / `authKeyService` から facade を組み立てる |
 | Main public entrypoint | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` | skill creator 標準 surface を維持して runtime helper を登録する |
-| Main runtime helper | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `plan` / `execute-plan` / `improve-skill` / `get-verify-detail` / `reverify-workflow` handler |
+| Main runtime helper | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `plan` / `execute-plan` / `improve-skill` / `get-verify-detail` / `reverify-workflow` / `get-governance-state` handler |
 | Runtime service | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | public bridge。policy / handoff / execute を判断し、state 更新は engine へ委譲 |
 | Workflow engine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `currentPhase` / `awaitingUserInput` / `verifyResult` / artifacts / `resumeTokenEnvelope` の owner。checkpoint hydrate / artifact serialization も保持 |
-| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `planSkill()` / `executePlan()` / `improveSkillWithFeedback()` / `getVerifyDetail()` / `reverifyWorkflow()` |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `planSkill()` / `executePlan()` / `improveSkillWithFeedback()` / `getVerifyDetail()` / `reverifyWorkflow()` / `getGovernanceState()` |
 | Workflow session repository | `apps/desktop/src/main/services/session/SkillCreatorWorkflowSessionRepository.ts` | revision / lease guard 付き save/load/invalidate/evaluate。public IPC 未公開の internal persistence owner |
 | Compatibility evaluator | `apps/desktop/src/main/services/session/ResumeCompatibilityEvaluator.ts` | version / route / provenance / lease を比較し `compatible` / `compatible_with_warning` / `incompatible` / `conflict` を返す |
 | Workflow session storage | `apps/desktop/src/main/services/session/WorkflowSessionStorage.ts` | `skill-creator-workflow-sessions` store を管理し generic session schema と分離 |
@@ -455,6 +455,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `skill-creator:improve-skill` | runtime 改善 | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `skill-creator:get-verify-detail` | verify detail 取得 | `SkillCreatorGetVerifyDetailRequest` | `IpcResult<RuntimeSkillCreatorVerifyDetailResponse>` |
 | `skill-creator:reverify-workflow` | verify loop 再要求 | `SkillCreatorReverifyWorkflowRequest` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
+| `skill-creator:get-governance-state` | runtime governance state 取得 | なし | `IpcResult<SkillCreatorGovernanceState>` |
 
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 

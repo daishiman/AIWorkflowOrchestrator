@@ -16,6 +16,7 @@ import type {
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
   SkillCreatorSdkEvent,
+  SkillCreatorGovernanceState,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 import { IPC_CHANNELS } from "../../preload/channels";
@@ -568,6 +569,37 @@ export function registerRuntimeSkillCreatorHandlers(
       return { success: true };
     },
   );
+
+  // Governance State 取得 (TASK-P0-09)
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE,
+    async (
+      event: IpcMainInvokeEvent,
+    ): Promise<IpcResult<SkillCreatorGovernanceState>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE,
+        mainWindow,
+      );
+
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        const state = runtimeSkillCreatorService.getGovernanceState();
+        return { success: true, data: state };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(
+            error,
+            "Governance 状態の取得に失敗しました",
+          ),
+        };
+      }
+    },
+  );
 }
 
 export function unregisterRuntimeSkillCreatorHandlers(): void {
@@ -584,4 +616,5 @@ export function unregisterRuntimeSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE);
 }

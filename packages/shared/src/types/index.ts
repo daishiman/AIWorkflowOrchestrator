@@ -187,6 +187,14 @@ export type {
   SkillCreatorSdkEvent,
 } from "./skillCreator";
 export type {
+  SkillCreatorGovernancePhase,
+  SkillCreatorSdkPolicy,
+  SkillCreatorToolDecision,
+  SkillCreatorHookEventType,
+  SkillCreatorGovernanceAuditEvent,
+  SkillCreatorGovernanceState,
+} from "./skillCreator";
+export type {
   SkillCreatorCheckpointType,
   ResumeCompatibilityStatus,
   ResumeIncompatibilityReason,

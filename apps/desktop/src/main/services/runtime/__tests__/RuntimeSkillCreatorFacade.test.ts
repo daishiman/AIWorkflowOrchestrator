@@ -165,7 +165,16 @@ describe("RuntimeSkillCreatorFacade", () => {
           name: "skill-creator-executor",
           slug: "skill-creator-executor",
           content: "my-skill\nbody",
-          allowedTools: ["Read", "Edit", "Write"],
+          allowedTools: [
+            "Read",
+            "Glob",
+            "Grep",
+            "Bash",
+            "Agent",
+            "Write",
+            "Edit",
+          ],
+          permissionMode: "acceptEdits",
         }),
       );
       expect(result).toMatchObject({

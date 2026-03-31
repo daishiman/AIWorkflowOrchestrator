@@ -5,6 +5,31 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-09 |
+| ステータス | **完了** |
+| タイプ | implementation / governance hardening |
+| 優先度 | 最高 |
+| 完了日 | 2026-03-31 |
+| 対象 | `RuntimeSkillCreatorFacade` / `SkillExecutor` / governance module / skill creator runtime IPC |
+| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` |
+
+#### 実施内容
+
+- `apps/desktop/src/main/services/runtime/governance/` に policy / hooks factory / audit sink を追加
+- `packages/shared/src/types/skillCreator.ts` と `packages/shared/src/types/index.ts` に governance 型 6 件を追加
+- `apps/desktop/src/preload/channels.ts` / `apps/desktop/src/main/ipc/creatorHandlers.ts` / `apps/desktop/src/preload/skill-creator-api.ts` に `skill-creator:get-governance-state` を追加
+- `RuntimeSkillCreatorFacade.execute()` が execute phase policy を metadata へ透過し、`SkillExecutor` が SDK `query()` へ hooks と permissionMode を実接続する current fact へ更新
+- Phase 11 を `NON_VISUAL` と確定し、Phase 12 implementation guide を Part 1 / Part 2 構成と system spec sync 付きで閉じた
+
+#### 検証証跡
+
+- `npm -s exec vitest -- run apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts apps/desktop/src/main/services/runtime/__tests__/governance/SkillCreatorGovernance.integration.test.ts apps/desktop/src/main/ipc/__tests__/creatorHandlers.test.ts apps/desktop/src/preload/__tests__/skill-creator-api.governance.test.ts`
+- targeted suite PASS
+
 ### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
 | 項目 | 値 |
