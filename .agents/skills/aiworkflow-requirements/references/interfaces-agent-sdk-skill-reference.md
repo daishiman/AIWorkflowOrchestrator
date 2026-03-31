@@ -547,6 +547,30 @@ Task03 実装で、`plan()` / `improve()` は固定 root 前提の resource 読�
 | RuntimeSkillCreatorFacade.ts | `apps/desktop/src/main/services/runtime/` | Facade 本体 |
 | creatorHandlers.ts | `apps/desktop/src/main/ipc/` | IPC ハンドラ（internal helper） |
 
+### Governance 拡張（TASK-P0-09 / 2026-03-31）
+
+`RuntimeSkillCreatorFacade.execute()` では、governance policy を `SkillExecutor.execute(..., governanceOptions)` へ伝播し、execute phase の `permissionMode` / `hooks` / `permissions.canUseTool` を SDK query() 呼び出しへ接続する。
+
+| 要素 | パス | current fact |
+| --- | --- | --- |
+| `SkillCreatorGovernancePolicy` | `apps/desktop/src/main/services/runtime/SkillCreatorGovernancePolicy.ts` | phase 別 policy 定義と path-safe `createCanUseToolCallback()` を提供 |
+| `GovernanceHooksFactory` | `apps/desktop/src/main/services/runtime/GovernanceHooksFactory.ts` | PreToolUse / PostToolUse を中心に監査 hook を生成 |
+| `GovernanceAuditSink` | `apps/desktop/src/main/services/runtime/GovernanceAuditSink.ts` | denial / summary / UI payload を蓄積・構築する |
+| `skill-creator:get-governance` | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `GovernanceUiPayload` を renderer へ返す public IPC |
+| `getGovernancePayload()` | `apps/desktop/src/preload/skill-creator-api.ts` | governance payload 取得用 preload API |
+
+#### Facade public surface
+
+| メソッド | 戻り値 | 説明 |
+| --- | --- | --- |
+| `getGovernanceUiPayload(phase)` | `GovernanceUiPayload` | denial と session summary を UI 向けに返す |
+| `getGovernanceAuditEvents()` | `readonly GovernanceAuditEvent[]` | 蓄積イベントを取得する |
+
+#### 制約
+
+- current wiring は execute phase を中心に接続している
+- plan / verify / improve の full governance enforcement と renderer 可視化は follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` で継続する
+
 ### 完了タスク
 
 | タスクID | 完了日 | ステータス | 概要 |

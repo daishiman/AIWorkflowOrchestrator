@@ -88,15 +88,16 @@ Task04 では Skill Creator runtime workflow の canonical state を Renderer �
 | --- | --- | --- | --- | --- |
 | `skill-creator:get-workflow-state` | Renderer → Main | current workflow snapshot 取得 | `{ planId: string }` | `SkillCreatorWorkflowUiSnapshot` |
 | `skill-creator:submit-user-input` | Renderer → Main | user input 回答送信 | `SkillCreatorUserInputSubmission` | `SkillCreatorWorkflowUiSnapshot` |
+| `skill-creator:get-governance` | Renderer → Main | governance payload 取得 | `{ phase: SkillCreatorGovernancePhase }` | `IpcResult<GovernanceUiPayload>` |
 | `skill-creator:workflow-state-changed` | Main → Renderer | snapshot 更新 push | none | `SkillCreatorWorkflowUiSnapshot` |
 
 ### current contract
 
 | 層 | ファイル | 契約 |
 | --- | --- | --- |
-| Shared | `packages/shared/src/types/skillCreator.ts` | `SkillCreatorWorkflowUiSnapshot` / `SkillCreatorUserInputSubmission` を SSoT にする。`SkillCreatorUserInputKind` は `single_select` / `multi_select` / `free_text` / `secret` / `confirm` の 5 種 |
-| Main IPC | `apps/desktop/src/main/ipc/creatorHandlers.ts` | sender validation + payload validation 後に facade へ委譲する |
-| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開する |
+| Shared | `packages/shared/src/types/skillCreator.ts` | `SkillCreatorWorkflowUiSnapshot` / `SkillCreatorUserInputSubmission` / `SkillCreatorGovernancePhase` / `GovernanceUiPayload` を SSoT にする。`SkillCreatorUserInputKind` は `single_select` / `multi_select` / `free_text` / `secret` / `confirm` の 5 種 |
+| Main IPC | `apps/desktop/src/main/ipc/creatorHandlers.ts` | sender validation + payload validation 後に facade へ委譲し、`skill-creator:get-governance` で runtime governance payload を返す |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開し、`getGovernancePayload()` を含む |
 | Renderer | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | phase summary / question host / provenance summary / handoff card を snapshot 表示する |
 
 `SkillCreatorUserInputSubmission` は kind ごとに使用フィールドを切り替える。`multi_select` では `selectedOptionIds: string[]` を使い、Renderer は request kind 切替時に stale selection を持ち越さないことを要件とする。

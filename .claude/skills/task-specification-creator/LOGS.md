@@ -3,6 +3,19 @@
 ## 役割
 
 ---
+## 2026-03-31 - TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out sync
+
+### 変更内容
+- Phase 別 permissionMode / allowedTools / disallowedTools / canUseTool を `SkillCreatorGovernancePolicy.ts` に定義
+- `GovernanceHooksFactory.ts` で SessionStart / PreToolUse / PostToolUse / SessionEnd の 4 hook を生成
+- `GovernanceAuditSink.ts` で監査イベント蓄積・セッションサマリー・UI payload 生成
+- `skillCreator.ts` に 8 governance 型を追加（SkillCreatorGovernancePhase, SdkPermissionMode, SkillCreatorSdkPolicy, CanUseToolResult, GovernanceAuditEventKind, GovernanceAuditEvent, GovernanceSessionSummary, GovernanceUiPayload）
+- `RuntimeSkillCreatorFacade.ts` に governance 統合（execute phase ポリシー注入、SDK governance options 伝播、getGovernanceUiPayload メソッド）
+- IPC `skill-creator:get-governance` エンドポイントと preload `getGovernancePayload` API を追加
+- テスト: governance 一式 + `SkillExecutor.sdk-types.test.ts` を更新
+- follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` を formalize
+
+---
 ## 2026-03-31 - TASK-P0-09 Phase 12 close-out sync hardening
 
 ### 変更内容
