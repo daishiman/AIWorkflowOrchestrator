@@ -42,7 +42,7 @@ export default defineConfig({
     "src/repositories/index.ts",
     "src/constants/index.ts",
   ],
-  format: ["esm"],
+  format: ["esm", "cjs"],
   dts: true,
   splitting: false,
   sourcemap: true,

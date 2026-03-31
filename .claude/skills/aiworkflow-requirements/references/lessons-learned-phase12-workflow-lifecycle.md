@@ -19,6 +19,8 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-31 | 1.8.9      | TASK-ELECTRON-BUILD-FIX の Phase 4/5 教訓3件を追加（Rosetta 2 arch 検出 / pnpm strict resolution Phase 2 設計 / 並列化効果） |
+| 2026-03-31 | 1.8.8      | TASK-ELECTRON-BUILD-FIX の Phase 11/12 教訓2件を追加（NON_VISUAL placeholder 撤去 / afterPack arch enum 正規化） |
 | 2026-03-29 | 1.8.7      | TASK-RT-04 skill-authkey-api-key-management-ui の Phase 12 教訓2件を追加（esbuild アーキ不一致対処 / shared IPC channel 再利用時の主導線/補助導線責務境界明文化） |
 | 2026-03-28 | 1.8.6      | TASK-SDK-07 execution-governance-and-handoff-alignment の Phase 12 教訓3件を追加（shared channel 再利用パターン / disclosure graceful degradation / spec_created task への code wave 注入後の AC 追跡） |
 | 2026-03-27 | 1.8.5      | UT-EXEC-01 の docs-only close-out 教訓2件を追加（Implementation Anchor path 実在確認 / duplicate source の baseline 判定）                                                                              |
@@ -63,6 +65,60 @@
 | 解決策     | workflow `index.md` の AC-1 に「`SettingsView` 主導線 / `SkillLifecyclePanel` 補助導線」を明文化し、双方の契約境界（`apiKey:*` vs `auth-key:*`）も同時に記録する                                                                 |
 | 標準ルール | 同一チャネルを複数 surface が再利用する場合は、必ず主導線/補助導線の役割分担と channel namespace の境界を workflow index.md と system spec に同時記録する（UT-TASK-RT-04-SETTINGS-VS-LIFECYCLE-BOUNDARY-001 のパターンを再利用可） |
 | 関連タスク | UT-TASK-RT-04-SETTINGS-VS-LIFECYCLE-BOUNDARY-001                                                                                                                                                                                     |
+
+---
+
+## 2026-03-31 TASK-ELECTRON-BUILD-FIX
+
+### 苦戦箇所1: NON_VISUAL task でも壊れた placeholder screenshot を残すと false green になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | UI 差分がない task に placeholder PNG だけを置いて Phase 11 を閉じると、validator 互換には見えても evidence chain が壊れる |
+| 再発条件 | `screenshot-plan.json` を validator 互換の名目で placeholder 1 枚に固定し、`manual-test-result.md` に NON_VISUAL 根拠を書かない |
+| 解決策 | placeholder binary を撤去し、`manual-test-result.md` と `screenshot-plan.json` に NON_VISUAL 理由と CLI 証跡を明記した |
+| 標準ルール | UI 差分がない task は screenshot を捏造せず、NON_VISUAL 理由・walkthrough・CLI 証跡で閉じる |
+| 関連タスク | TASK-ELECTRON-BUILD-FIX |
+
+### 苦戦箇所2: electron-builder hook の `arch` は数値 enum として来る
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `afterPack` hook で `context.arch` をそのまま `--arch` へ渡すと、`1` や `3` が CLI に流れて native rebuild が失敗しうる |
+| 再発条件 | hook 実行時コンテキストを文字列だと仮定し、設定存在確認テストだけで閉じる |
+| 解決策 | `rebuild-native-for-electron.mjs` に数値 enum -> 文字列の正規化を追加し、静的検証テストでもこの分岐を確認した |
+| 標準ルール | packaging hook では electron-builder の context 型を確認し、enum / path / platform を CLI 互換の値へ正規化する |
+| 関連タスク | TASK-ELECTRON-BUILD-FIX |
+
+### 苦戦箇所3: Rosetta 2 環境での arch 検出は Phase 4 テスト計画に含めるべきだった
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Rosetta 2 (arm64 Mac で x86_64 として動作) 環境での native binary arch 検出誤判定が Phase 11 で発覚。Phase 4 テスト計画に含まれていなかった |
+| 再発条件 | Apple Silicon Mac で x86_64 Electron を実行する場合、`process.arch` は `x64` を返すが、native module の実 arch と一致しないことがある |
+| 解決策 | `rebuild-sqlite-for-electron.mjs` で Electron バイナリの実 arch を直接読み取る実装に変更 |
+| 標準ルール | native module を扱う desktop task の Phase 4 テスト計画には「Rosetta 2 / CI / worktree」3環境での arch 検出確認を明示的に追加する |
+| 関連タスク | TASK-ELECTRON-BUILD-FIX |
+
+### 苦戦箇所4: pnpm strict resolution の影響は Phase 2 設計時に考慮すべきだった
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `setup-native-modules.sh` の `require` テストが pnpm strict resolution 環境で失敗した。Phase 5 実装中に発覚し、修正が必要になった |
+| 再発条件 | `node -e "require('better-sqlite3')"` のような単純な require テストが pnpm workspace の strict hoisting 設定下で機能しない |
+| 解決策 | 絶対パスによる require テストに変更: `node -e "require('$(pwd)/node_modules/better-sqlite3')"` |
+| 標準ルール | native module の load テストは絶対パスで実施し、pnpm hoisting に依存しない。Phase 2 設計時に「pnpm strict resolution での動作前提」を明記する |
+| 関連タスク | TASK-ELECTRON-BUILD-FIX |
+
+### 苦戦箇所5: 独立した問題は並列 SubAgent で解決する設計を Phase 2 に明示する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 問題A（@repo/shared ESM/CJS dual output）と問題B（better-sqlite3 ABI 再ビルド）は独立しているが、当初は直列で分析していた |
+| 再発条件 | 複数の独立した問題を含む bugfix task で依存グラフを描かずに直列実行する場合 |
+| 解決策 | Phase 2 設計時に問題の依存グラフを明示し、独立した問題を並列 SubAgent に割り当てた |
+| 標準ルール | bugfix task の Phase 2 では問題の依存グラフを成果物として残し、独立した問題は並列 SubAgent 割り当てを採用する |
+| 関連タスク | TASK-ELECTRON-BUILD-FIX |
 
 ---
 
@@ -1008,3 +1064,31 @@
 1. shared パッケージ内テストでは `@repo/shared` エイリアスを使用せず相対パスでインポートする。
 2. IPC チャネル追加前に既存の `channels.ts` を grep で確認し、命名規則（文字列形式 / TS定数名）のパターンを表に整理してから設計に着手する。
 3. TDD Red Phase 前にチャネル追加による preload allowlist・既存テスト期待値への影響範囲を確認してから失敗テストを書く。
+
+---
+
+## TASK-UIUX-FEEDBACK-001 Phase 12 review 教訓（2026-03-31）
+
+### L-UIUX-001: `spec_created` workflow に code draft が入っても completed に上げてはいけない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | canonical root に script 実装が存在することを理由に workflow 全体を completed 扱いし、`artifacts.json` Phase 4-12 と Phase 12 summary が false green になっていた |
+| 解決策 | code draft の存在と workflow state を分離し、`spec_created` を維持したまま current facts を記録する |
+| 標準ルール | skill 実装差分があっても Phase 11 実測 evidence と close-out 条件が揃うまでは workflow を completed にしない |
+
+### L-UIUX-002: placeholder screenshot は evidence ではなく blocker 情報
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `scaffold-placeholder.png` があるだけで screenshot coverage を満たしたように読める文書が残っていた |
+| 解決策 | `phase11-capture-metadata.json` の `status: "not_run"` を正として、placeholder を actual capture の代替に使わないと明記した |
+| 標準ルール | placeholder は「未実行の証跡」であり、「実行済みの証跡」ではない |
+
+### L-UIUX-003: CLI 引数を prompt context に渡さないと評価結果が task 非依存になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `evaluate-ui-ux.js` が `--task-id` を受け取っても `evaluateUIWithClaude()` へ渡していなかったため、常にデフォルト文脈で評価していた |
+| 解決策 | CLI 引数をそのまま `taskContext` として渡し、回帰テストを追加した |
+| 標準ルール | evaluator CLI は `argv` を parse したら prompt input まで到達していることをテストで保証する |

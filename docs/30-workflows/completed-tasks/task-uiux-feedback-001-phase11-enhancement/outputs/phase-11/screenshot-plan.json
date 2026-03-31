@@ -1,0 +1,41 @@
+{
+  "planVersion": "1.0.0",
+  "meta": {
+    "phase": 11,
+    "featureName": "phase11-ui-ux-auto-eval-feedback-loop",
+    "createdAt": "2026-03-31"
+  },
+  "testCases": [
+    {
+      "id": "M11-1",
+      "name": "multi_select request 表示",
+      "screenshots": ["M11-1-multi-select-display.png"],
+      "layers": ["semantic", "visual", "ai-ux"]
+    },
+    {
+      "id": "M11-2",
+      "name": "2件選択して送信",
+      "screenshots": ["M11-2-checkbox-selected.png"],
+      "layers": ["semantic", "visual", "ai-ux"]
+    },
+    {
+      "id": "M11-3",
+      "name": "kind 切り替え",
+      "screenshots": ["M11-3-kind-switched.png"],
+      "layers": ["semantic", "visual", "ai-ux"]
+    },
+    {
+      "id": "M11-4",
+      "name": "既存 4 kind 確認",
+      "screenshots": [
+        "M11-4-kind-single_select.png",
+        "M11-4-kind-free_text.png",
+        "M11-4-kind-secret.png",
+        "M11-4-kind-confirm.png"
+      ],
+      "layers": ["visual"]
+    }
+  ],
+  "outputDir": "outputs/phase-11/screenshots",
+  "baselineDir": "outputs/phase-11/screenshots/baselines"
+}

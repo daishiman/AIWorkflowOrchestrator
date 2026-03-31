@@ -95,6 +95,15 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 
 差分監査の合否判定は `audit-unassigned-tasks --diff-from HEAD` の `currentViolations.total` を使用し、`baselineViolations.total` は監視値として別記録する。
 
+**UI/UX変更タスク専用ゲート（⛔ FB-UT-UIUX-001-A）**: UI/UX変更タスクでは上記3点に加え、以下4点が `outputs/phase-11/` に存在することを確認する。1点でも欠ければ Phase 12 PASS 禁止。
+
+| 必須ファイル | 確認コマンド |
+| ------------ | ------------ |
+| `outputs/phase-11/screenshots/screenshot-plan.json` | `ls outputs/phase-11/screenshots/screenshot-plan.json` |
+| `outputs/phase-11/screenshots/phase11-capture-metadata.json` | `ls outputs/phase-11/screenshots/phase11-capture-metadata.json` |
+| `outputs/phase-11/screenshot-coverage.md` | `ls outputs/phase-11/screenshot-coverage.md` |
+| `outputs/phase-11/screenshots/*.png`（1件以上） | `ls outputs/phase-11/screenshots/*.png \| wc -l` > 0 |
+
 ---
 
 #### Task 4: 未タスク検出レポート作成【0件でも出力必須】

@@ -1,0 +1,4 @@
+# Visual regression baseline 画像を binary として扱う（git diff を抑制）
+# Playwright はデフォルトで spec-file-name-snapshots/ ディレクトリに保存する
+apps/desktop/e2e/ui-ux/*.spec.ts-snapshots/*.png binary
+apps/desktop/e2e/ui-ux/snapshots/*.png binary

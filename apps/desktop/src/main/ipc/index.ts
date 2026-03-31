@@ -46,6 +46,10 @@ import { registerClaudeCliHandlers } from "../claude-cli";
 import { registerSkillCreatorHandlers } from "./skillCreatorHandlers";
 import { registerSkillFileHandlers } from "./skillFileHandlers";
 import { registerSafetyGateHandlers } from "./safetyGateHandlers";
+import { registerApprovalHandlers } from "./approvalHandlers";
+import { registerDisclosureHandlers } from "./disclosureHandlers";
+import { registerAdvancedConsoleHandlers } from "./advancedConsoleHandlers";
+import { DefaultApprovalGate } from "../services/runtime/ApprovalGate";
 import { DefaultSafetyGate } from "../permissions/default-safety-gate";
 import { SkillCreatorService } from "../services/skill/SkillCreatorService";
 import {
@@ -895,6 +899,35 @@ export function registerAllIpcHandlers(
     registerSafetyGateHandlers(mainWindow, safetyGate);
   });
 
+  // Safety Governance handlers (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001)
+  const approvalGate = new DefaultApprovalGate();
+  track("registerApprovalHandlers", () =>
+    registerApprovalHandlers(mainWindow, approvalGate),
+  );
+  // TODO(DI): Replace getDisclosureInfo with actual service when available.
+  //   Current placeholder returns static metadata.
+  //   Production implementation should read from LLM provider config.
+  track("registerDisclosureHandlers", () =>
+    registerDisclosureHandlers({
+      mainWindow,
+      getDisclosureInfo: async () => ({
+        aiServiceName: "anthropic",
+        modelName: "claude-sonnet",
+        externalDestinations: [],
+      }),
+    }),
+  );
+  // TODO(DI): Replace getTerminalLog / getCopyCommand with actual session log service when available.
+  //   Current placeholders return empty data.
+  //   Production implementation should read from ClaudeCliManager session logs.
+  track("registerAdvancedConsoleHandlers", () =>
+    registerAdvancedConsoleHandlers({
+      mainWindow,
+      getTerminalLog: async (_sessionId: string) => [],
+      getCopyCommand: async (_sessionId: string) => null,
+    }),
+  );
+
   // --- 9. Auth Mode handlers ---
   track("registerAuthKeyHandlers", () =>
     registerAuthKeyHandlers(mainWindow, authKeyService),
@@ -954,7 +987,11 @@ export function registerAllIpcHandlers(
 
   // --- 11. Claude CLI handlers ---
   track("registerClaudeCliHandlers", () =>
-    registerClaudeCliHandlers(mainWindow),
+    registerClaudeCliHandlers(mainWindow, {
+      onSessionDestroyed: (sessionId: string) => {
+        approvalGate.revokeAll(sessionId);
+      },
+    }),
   );
 
   // --- 12. Chat Edit handlers ---

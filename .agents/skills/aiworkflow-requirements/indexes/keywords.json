@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-31T01:24:17.446Z",
-  "totalKeywords": 2601,
+  "generated": "2026-03-31T09:52:05.057Z",
+  "totalKeywords": 2602,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1086,6 +1086,7 @@
       "lessons-learned-auth-ipc-file-ops-skill-creator-registration.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
@@ -2186,6 +2187,7 @@
       "interfaces-agent-sdk-skill.md",
       "interfaces-agent-sdk-ui.md",
       "interfaces-agent-sdk.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -2460,6 +2462,7 @@
       "claude-code-overview.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
@@ -2905,6 +2908,7 @@
       "arch-state-management-advanced.md",
       "arch-state-management-reference.md",
       "interfaces-chat-history-details.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
@@ -5879,6 +5883,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
@@ -5921,6 +5926,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
@@ -5969,6 +5975,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current.md",
@@ -5998,6 +6005,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
@@ -6010,6 +6018,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "ui-history-integration.md"
     ],
@@ -6020,6 +6029,7 @@
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -6466,6 +6476,15 @@
     ],
     "チャネル命名監査の台帳同期": [
       "lessons-learned-auth-ipc-security-double-registration.md"
+    ],
+    "permissionMode": [
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
+    ],
+    "canUseTool": [
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
+    ],
+    "ガバナンス実装": [
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
     ],
     "拡張同期": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
@@ -6929,22 +6948,6 @@
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
-    "verify": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "improve": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
-    ],
-    "reverify": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "closed": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "loop": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
     "authkey": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -7028,6 +7031,16 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "UIUX": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "FEEDBACK": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "review": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
@@ -9279,9 +9292,6 @@
     "台帳と": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
-    "review": [
-      "logs-archive-2026-03-history-search-notification-center.md"
-    ],
     "パターン補完": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
@@ -9507,6 +9517,9 @@
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "mid": [
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "improve": [
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
     "契約ドリフト自動検出スクリプト完了": [
