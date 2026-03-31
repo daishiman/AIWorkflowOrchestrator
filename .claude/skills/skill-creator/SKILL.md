@@ -243,6 +243,7 @@ Renderer はこのレスポンスを受け取った場合、`plan.status === "er
 | **問題発見フレームワーク**   | references/problem-discovery-framework.md    |
 | **ドメインモデリング**       | references/domain-modeling-guide.md          |
 | **Clean Architecture**       | references/clean-architecture-for-skills.md  |
+| **プロンプト生成ポリシー**   | references/prompt-generation-policy.md       |
 | **スクリプト/LLM分担**       | references/script-llm-patterns.md            |
 | **クロススキル参照パターン** | references/cross-skill-reference-patterns.md |
 | **外部CLIエージェント統合**  | references/external-cli-agents-guide.md      |
@@ -259,7 +260,7 @@ Renderer はこのレスポンスを受け取った場合、`plan.status === "er
 
 | カテゴリ             | 参照先                                                                                                                                                                                                                                                                                                                                                                  |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`                                                                                                                           |
+| 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`, `references/prompt-generation-policy.md`                                                                                    |
 | ヒアリング・設計補助 | `references/interview-guide.md`, `references/goal-to-api-mapping.md`, `references/variable-template-guide.md`, `references/event-trigger-guide.md`                                                                                                                                                                                                                      |
 | 実装・統合           | `references/api-integration-patterns.md`, `references/integration-patterns.md`, `references/integration-patterns-rest.md`, `references/integration-patterns-graphql.md`, `references/integration-patterns-webhook.md`, `references/integration-patterns-ipc.md`, `references/runtime-guide.md`, `references/script-commands.md`, `references/official-docs-registry.md` |
 | 実行・運用           | `references/parallel-execution-guide.md`, `references/scheduler-guide.md`, `references/skill-chain-patterns.md`, `references/codex-best-practices.md`                                                                                                                                                                                                                   |
@@ -335,6 +336,8 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | Progressive Disclosure               | 具体例をテンプレートに書く        |
 | クロススキル参照は相対パスで         | 絶対パスやハードコードで参照      |
 | SubAgentは3ファイル以下/エージェント | 多数ファイルを1エージェントに集中 |
+| エージェントプロンプトはprompt-creatorで生成 | skill-creator内で独自フォーマットのプロンプトを書く |
+| 1プロンプト5000文字以内・単一責務 | 複数責務を1ファイルに詰め込む |
 
 > **自己参照ノート**: skill-creator自体がクロススキル参照パターンの実例。
 > `resolve-skill-dependencies.md` で設計した参照構造は、skill-creatorが他スキルの

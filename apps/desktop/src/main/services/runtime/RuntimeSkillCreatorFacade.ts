@@ -45,6 +45,11 @@ import type {
   LLMAdapterStatus,
   RuntimeSkillCreatorVerifyAndImproveResult,
   RuntimeSkillCreatorVerifyCheck,
+  SkillCreatorSessionListItem,
+} from "@repo/shared/types";
+import {
+  SKILL_CREATOR_ENGINE_VERSION,
+  SESSION_TTL_MS,
 } from "@repo/shared/types";
 import type { IAuthKeyService } from "../auth/types";
 import type { ILLMAdapter } from "../../adapters/llm/types";
@@ -78,6 +83,7 @@ import { SkillCreatorSourceResolver } from "./SkillCreatorSourceResolver";
 import { parseLlmResponseToContent } from "./parseLlmResponseToContent";
 import { SkillCreatorVerificationEngine } from "./SkillCreatorVerificationEngine";
 import { formatVerifyChecksAsFeedback } from "./formatVerifyChecksAsFeedback";
+import type { SkillCreatorWorkflowSessionRepository } from "../session";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -95,6 +101,10 @@ export interface RuntimeSkillCreatorFacadeDeps {
   verificationEngine?: SkillCreatorVerificationEngine;
   /** verify→improve→re-verify ループの最大試行回数（デフォルト: 3） */
   maxImproveRetry?: number;
+  /** セッション永続化リポジトリ (TASK-P0-08) */
+  sessionRepository?: SkillCreatorWorkflowSessionRepository;
+  /** Facade インスタンスID（セッションリース用）(TASK-P0-08) */
+  ownerInstanceId?: string;
 }
 
 export class RuntimeSkillCreatorFacade {
@@ -117,6 +127,10 @@ export class RuntimeSkillCreatorFacade {
   private _llmAdapterStatus: LLMAdapterStatus = "initializing";
   private _llmAdapterFailureReason: string | null = null;
 
+  // TASK-P0-08: セッション永続化
+  private readonly sessionRepository?: SkillCreatorWorkflowSessionRepository;
+  private readonly ownerInstanceId: string;
+
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
     this.workflowEngine =
@@ -133,6 +147,8 @@ export class RuntimeSkillCreatorFacade {
     this.resolvedResourceReader = deps.resolvedResourceReader;
     this.verificationEngine = deps.verificationEngine;
     this.maxImproveRetry = Math.min(Math.max(deps.maxImproveRetry ?? 3, 1), 10);
+    this.sessionRepository = deps.sessionRepository;
+    this.ownerInstanceId = deps.ownerInstanceId ?? `facade-${Date.now()}`;
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
       deps.subscriptionAuthProvider,
@@ -407,6 +423,92 @@ export class RuntimeSkillCreatorFacade {
   }
 
   /**
+   * セッション一覧を返す。(TASK-P0-08)
+   * sessionRepository がある場合はそれを優先使用。
+   */
+  listSessions(): SkillCreatorSessionListItem[] {
+    if (!this.sessionRepository) {
+      return this.workflowEngine.listCheckpoints();
+    }
+
+    this.sessionRepository.cleanupExpiredLeases();
+    this.sessionRepository.cleanupExpiredCheckpoints(SESSION_TTL_MS);
+
+    const now = Date.now();
+    const checkpoints = this.sessionRepository.listCheckpoints();
+
+    return checkpoints
+      .filter((cp) => now - cp.updatedAt <= SESSION_TTL_MS)
+      .map((cp) => {
+        const root = this.getExplicitSkillCreatorRoot();
+        const compatibility =
+          this.sessionRepository!.evaluateResumeCompatibility(cp.planId, {
+            currentSnapshot: {
+              engineVersion: SKILL_CREATOR_ENGINE_VERSION,
+              sourceProvenance: root
+                ? { resolvedSkillCreatorRoot: root }
+                : undefined,
+            },
+            currentInstanceId: this.ownerInstanceId,
+          });
+        return {
+          checkpointId: cp.checkpointId,
+          planId: cp.planId,
+          currentPhase: cp.workflowStateSnapshot.currentPhase,
+          checkpointType: cp.checkpointType,
+          compatibility,
+          updatedAt: cp.updatedAt,
+        };
+      });
+  }
+
+  /**
+   * セッション詳細スナップショットを返す。(TASK-P0-08)
+   */
+  getSessionDetail(
+    checkpointId: string,
+  ): SkillCreatorWorkflowUiSnapshot | undefined {
+    return this.workflowEngine.getCheckpointSnapshot(checkpointId);
+  }
+
+  /**
+   * セッションを復元する。(TASK-P0-08)
+   */
+  resumeSession(
+    checkpointId: string,
+  ): SkillCreatorWorkflowUiSnapshot | undefined {
+    if (!this.sessionRepository) {
+      return this.workflowEngine.resumeFromCheckpoint(checkpointId);
+    }
+
+    const checkpoints = this.sessionRepository.listCheckpoints();
+    const checkpoint = checkpoints.find(
+      (cp) => cp.checkpointId === checkpointId,
+    );
+    if (!checkpoint) return undefined;
+
+    return this.workflowEngine.hydrateFromCheckpoint(checkpoint);
+  }
+
+  /**
+   * セッションを削除する。(TASK-P0-08)
+   */
+  deleteSession(checkpointId: string): void {
+    if (!this.sessionRepository) {
+      this.workflowEngine.deleteCheckpoint(checkpointId);
+      return;
+    }
+
+    const checkpoints = this.sessionRepository.listCheckpoints();
+    const checkpoint = checkpoints.find(
+      (cp) => cp.checkpointId === checkpointId,
+    );
+    if (!checkpoint) return;
+
+    this.sessionRepository.deleteCheckpoint(checkpoint.planId);
+  }
+
+  /**
    * 現在の Facade 状態から NormalizerContext を構築する。
    */
   buildNormalizerContext(): NormalizerContext {
@@ -659,11 +761,45 @@ export class RuntimeSkillCreatorFacade {
       anchors: parsed.anchors,
       adapterStatus: this._llmAdapterStatus,
     };
-    this.workflowEngine.recordPlanResult(
+    const planSnapshot = this.workflowEngine.recordPlanResult(
       planResult,
       decision,
       sourceProvenance,
     );
+
+    // TASK-P0-08: review-ready checkpoint を永続化
+    if (this.sessionRepository) {
+      const artifacts =
+        this.workflowEngine.serializeArtifactsForPersistence(planId);
+      this.sessionRepository.saveCheckpoint({
+        planId,
+        checkpointType: "review-ready",
+        workflowState: {
+          currentPhase: planSnapshot.currentPhase,
+          awaitingUserInput: planSnapshot.awaitingUserInput,
+          verifyResult: planSnapshot.verifyResult,
+          phaseArtifacts: artifacts,
+          resumeTokenEnvelope:
+            planSnapshot.resumeTokenEnvelope as import("@repo/shared/types").SkillCreatorResumeTokenEnvelope,
+          handoffBundle: planSnapshot.handoffBundle,
+        },
+        compatibilitySnapshot: {
+          routeSnapshot: planSnapshot.routeSnapshot ?? {
+            type: "integrated_api",
+            permissionMode: "default",
+          },
+          sourceProvenance: sourceProvenance
+            ? {
+                resolvedSkillCreatorRoot:
+                  sourceProvenance.resolvedSkillCreatorRoot,
+              }
+            : undefined,
+          engineVersion: SKILL_CREATOR_ENGINE_VERSION,
+        },
+        ownerInstanceId: this.ownerInstanceId,
+      });
+    }
+
     return planResult;
   }
 

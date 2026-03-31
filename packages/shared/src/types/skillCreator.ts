@@ -993,5 +993,35 @@ export interface WorkflowSessionStorageSchema {
  */
 export const SKILL_CREATOR_ENGINE_VERSION = "task-sdk-08-v1" as const;
 
+/**
+ * セッション一覧に返すフラットな項目型 (TASK-P0-08)。
+ * RendererがSessionResumePromptを描画するために使用。
+ */
+export interface SkillCreatorSessionListItem {
+  checkpointId: string;
+  planId: string;
+  currentPhase: SkillCreatorWorkflowPhase;
+  checkpointType: SkillCreatorCheckpointType;
+  compatibility: ResumeCompatibilityResult;
+  updatedAt: number;
+}
+
+/**
+ * IPC: skill-creator:resume-session リクエスト (TASK-P0-08)
+ */
+export interface SkillCreatorResumeSessionRequest {
+  checkpointId: string;
+}
+
+/**
+ * IPC: skill-creator:delete-session リクエスト (TASK-P0-08)
+ */
+export interface SkillCreatorDeleteSessionRequest {
+  checkpointId: string;
+}
+
+/** セッションTTL: 24時間 (TASK-P0-08) */
+export const SESSION_TTL_MS = 86_400_000 as const;
+
 // SkillCreatorSdkEventType, SkillCreatorSdkPermissionDenial, SkillCreatorSdkEvent は
 // 上部（line ~437）で定義済み（TASK-RT-06）
