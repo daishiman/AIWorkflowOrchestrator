@@ -6,7 +6,8 @@
  * Approval Sheet の表示制御と IPC 経由の承認/拒否を管理する。
  */
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
+import { getExecutionAPI } from "../utils/executionApi";
 
 export type ApprovalOperationType = "dangerous_operation" | "external_send";
 
@@ -41,6 +42,32 @@ export function useApprovalFlow(sessionId: string): UseApprovalFlowReturn {
   );
   const [isProcessing, setIsProcessing] = useState(false);
 
+  // Main Process からの approval:request push 通知を購読
+  useEffect(() => {
+    const execution = getExecutionAPI();
+    if (!execution) return;
+
+    const unsubscribe = execution.onApprovalRequest((payload) => {
+      const p = payload as {
+        operationType: string;
+        description: string;
+        destination?: string;
+        sessionId: string;
+        operationId: string;
+      };
+      if (p.sessionId === sessionId) {
+        setCurrentRequest({
+          operationType: p.operationType as ApprovalOperationType,
+          operationId: p.operationId,
+          description: p.description,
+          destination: p.destination,
+        });
+      }
+    });
+
+    return unsubscribe;
+  }, [sessionId]);
+
   const requestApproval = useCallback((request: ApprovalRequest) => {
     setCurrentRequest(request);
   }, []);
@@ -49,15 +76,9 @@ export function useApprovalFlow(sessionId: string): UseApprovalFlowReturn {
     if (!currentRequest) return;
     setIsProcessing(true);
     try {
-      const electronAPI = (
-        window as {
-          electronAPI?: {
-            invoke: <T>(channel: string, payload?: unknown) => Promise<T>;
-          };
-        }
-      ).electronAPI;
-      if (electronAPI) {
-        await electronAPI.invoke("approval:respond", {
+      const execution = getExecutionAPI();
+      if (execution) {
+        await execution.respondApproval({
           sessionId,
           operationId: currentRequest.operationId,
           action: "approve",
@@ -71,15 +92,9 @@ export function useApprovalFlow(sessionId: string): UseApprovalFlowReturn {
 
   const reject = useCallback(() => {
     if (!currentRequest) return;
-    const electronAPI = (
-      window as {
-        electronAPI?: {
-          invoke: <T>(channel: string, payload?: unknown) => Promise<T>;
-        };
-      }
-    ).electronAPI;
-    if (electronAPI) {
-      void electronAPI.invoke("approval:respond", {
+    const execution = getExecutionAPI();
+    if (execution) {
+      void execution.respondApproval({
         sessionId,
         operationId: currentRequest.operationId,
         action: "reject",

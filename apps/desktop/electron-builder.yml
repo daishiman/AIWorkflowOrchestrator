@@ -3,6 +3,8 @@ productName: AI Workflow Orchestrator
 copyright: Copyright © 2024 AIWorkflowOrchestrator
 electronVersion: 39.2.5
 
+afterPack: scripts/rebuild-native-for-electron.mjs
+
 directories:
   buildResources: build
   output: dist

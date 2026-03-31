@@ -55,6 +55,37 @@
 - `npm -s exec vitest -- run apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts apps/desktop/src/main/services/runtime/__tests__/governance/SkillCreatorGovernance.integration.test.ts apps/desktop/src/main/ipc/__tests__/creatorHandlers.test.ts apps/desktop/src/preload/__tests__/skill-creator-api.governance.test.ts`
 - targeted suite PASS
 
+### タスク: TASK-ELECTRON-BUILD-FIX Electron ビルドインフラ修正（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-ELECTRON-BUILD-FIX |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | bugfix / desktop-build-infrastructure |
+| 優先度 | 高 |
+| 完了日 | 2026-03-31 |
+| 対象 | `packages/shared`, `apps/desktop`, `scripts/setup-native-modules.sh` |
+| 成果物 | `docs/30-workflows/electron-build-infra-fix/` |
+
+#### 実施内容
+
+- `@repo/shared` を ESM/CJS dual output に拡張し、preload 側の CJS 実行条件と整合
+- preload では `@repo/shared` を外部依存にせず bundle に含めるようにした
+- `scripts/setup-native-modules.sh` に Electron ABI 検査を追加し、`rebuild:electron` 導線へ接続
+- `apps/desktop/scripts/rebuild-sqlite-for-electron.mjs` で Electron 実バイナリの arch 検出を実装
+- `apps/desktop/scripts/rebuild-native-for-electron.mjs` と `electron-builder.yml` で afterPack リビルドを導入し、数値 arch enum を CLI 向け文字列へ正規化
+- Phase 11 を NON_VISUAL current facts に是正し、placeholder-only screenshot 運用を撤去
+
+#### Phase 13 blocked 理由
+
+- AC-7（desktop dev 起動 GUI 確認）がユーザー手動確認待ち
+- Phase 13（`/ai:diff-to-pr`）は AC-7 確認完了後に実行可能
+
+#### 発見元
+
+- GitHub Issue #1786
+- 関連タスク: UT-CONV-DB-001, UT-CONV-DB-004
+
 ### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
 | 項目 | 値 |
@@ -1704,11 +1735,56 @@
 
 | 未タスクID | 概要                                                                             | 優先度 |
 | ---------- | -------------------------------------------------------------------------------- | ------ |
-| UT-6       | main/ipc/index.ts へ advancedConsole/approval/disclosure の3ハンドラ追加         | HIGH   |
-| UT-7       | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH   |
-| UT-8       | Main→Renderer への承認要求プッシュ通知（webContents.send）                       | HIGH   |
-| UT-9       | abort/done 時に ApprovalGate.revokeAll() でトークンクリア                        | MEDIUM |
 | UT-10      | disclosureHandlers.ts 独立テスト作成                                             | LOW    |
+| UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001 | disclosure 情報を runtime から注入 | HIGH |
+| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | Advanced Console の実ログ / copy command 連携 | HIGH |
+
+---
+
+### タスク: UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 Safety Governance Production 統合（2026-03-31）
+
+| 項目       | 値 |
+| ---------- | --- |
+| タスクID   | UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ     | implementation follow-up |
+| 優先度     | 高 |
+| 完了日     | 2026-03-31 |
+| 対象       | ApprovalGate production integration / preload execution namespace / approval push / revokeAll lifecycle |
+| 成果物     | `docs/30-workflows/completed-tasks/UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001.md`, `docs/30-workflows/safety-gov-production-integration/` |
+
+#### 実施内容
+
+- `apps/desktop/src/main/ipc/index.ts` で `DefaultApprovalGate` を生成し、approval/disclosure/advancedConsole handler 登録と `onSessionDestroyed` cleanup を接続した
+- `apps/desktop/src/preload/index.ts` / `types.ts` へ `execution` namespace と `ExecutionAPI` を追加した
+- `apps/desktop/src/renderer/hooks/useApprovalFlow.ts` / `useAdvancedConsole.ts` を `getExecutionAPI()` 経由へ統一した
+- workflow root / Phase 11 / Phase 12 成果物を current facts に更新し、canonical artifact 名を補完した
+
+#### 発見元
+
+- 親タスク: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001
+- formalize 対象: UT-6, UT-7, UT-8, UT-9
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| ---------- | ---- | ------ | ------------ |
+| UT-10 | disclosureHandlers.ts 独立テスト作成 | 低 | `docs/30-workflows/unassigned-task/UT-10-disclosureHandlers-standalone-test.md` |
+| UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 | approval request producer を production 接続 | 高 | `docs/30-workflows/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md` |
+| UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001 | disclosure 情報の runtime 注入 | 高 | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001.md` |
+| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | session log / copy command の実データ連携 | 高 | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001.md` |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| -------- | -------- | ---- |
+| workflow root / completed ledger / backlog が別々に更新されると current facts が崩れる | 実装完了後も `spec_created` の記述を残す | 実装・Phase 11/12 証跡・system spec を同じターンで閉じる |
+
+#### 同種課題の簡潔解決手順
+
+1. parent task の未完了項目を 4層境界と lifecycle で再分解する。
+2. 単独で閉じない項目群は workflow pack へ束ねる。
+3. backlog・completed・lessons・workflow root を同一ターンで同期する。
 
 ---
 

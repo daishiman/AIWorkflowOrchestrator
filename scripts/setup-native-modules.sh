@@ -113,4 +113,49 @@ else
 fi
 
 echo ""
+echo "📋 Electron ABI 互換性を検査中..."
+
+# Electronバイナリのパスを探す
+ELECTRON_BIN=$(find node_modules -name "Electron.app" -o -name "electron.exe" 2>/dev/null | head -1)
+
+if [ -n "$ELECTRON_BIN" ]; then
+  # macOSの場合、実行可能ファイルのパスを構築
+  if echo "$ELECTRON_BIN" | grep -q "Electron.app"; then
+    ELECTRON_EXEC="$ELECTRON_BIN/Contents/MacOS/Electron"
+  else
+    ELECTRON_EXEC="$ELECTRON_BIN"
+  fi
+
+  if [ -x "$ELECTRON_EXEC" ]; then
+    echo "📋 Electronバイナリを検出: $ELECTRON_EXEC"
+
+    # pnpm strict resolution のため、better-sqlite3 の絶対パスで require する
+    SQLITE_MODULE=$(find node_modules -path "*/better-sqlite3/lib/database.js" 2>/dev/null | head -1 | sed 's|/lib/database.js||')
+    if [ -z "$SQLITE_MODULE" ]; then
+      echo "⏭️  better-sqlite3 モジュールが見つかりません。スキップします。"
+    else
+      SQLITE_MODULE_ABS="$(cd "$(dirname "$SQLITE_MODULE")" && pwd)/$(basename "$SQLITE_MODULE")"
+      ELECTRON_TEST_RESULT=$(ELECTRON_RUN_AS_NODE=1 "$ELECTRON_EXEC" -e "try { require('$SQLITE_MODULE_ABS'); console.log('OK'); } catch(e) { console.log(e.message); process.exit(1); }" 2>&1 || true)
+
+      if echo "$ELECTRON_TEST_RESULT" | grep -q "OK"; then
+        echo "✅ Electron ABI 互換性: OK"
+      else
+        echo "⚠️  Electron ABI でのロードに失敗: $ELECTRON_TEST_RESULT"
+        echo "🔨 Electron用にネイティブモジュールを再ビルドします..."
+        if pnpm --filter @repo/desktop run rebuild:electron 2>/dev/null; then
+          echo "✅ Electron用リビルド完了"
+        else
+          echo "⚠️  Electron用リビルドに失敗しました。手動で実行してください:"
+          echo "   pnpm --filter @repo/desktop run rebuild:electron"
+        fi
+      fi
+    fi
+  else
+    echo "⏭️  Electronバイナリが実行可能ではありません。スキップします。"
+  fi
+else
+  echo "⏭️  Electronバイナリが見つかりません（CI環境等）。Electron ABI検査をスキップします。"
+fi
+
+echo ""
 echo "🎉 ネイティブモジュールのセットアップ完了"

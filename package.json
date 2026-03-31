@@ -30,9 +30,7 @@
     "postinstall": "bash scripts/setup-native-modules.sh || pnpm rebuild better-sqlite3 || true"
   },
   "devDependencies": {
-    "@esbuild/darwin-x64": "0.21.5",
     "@eslint/js": "^9.39.1",
-    "@rollup/rollup-darwin-x64": "4.53.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
     "@typescript-eslint/eslint-plugin": "^8.18.2",

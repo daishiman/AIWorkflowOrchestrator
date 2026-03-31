@@ -1,0 +1,84 @@
+{
+  "workflowId": "UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001",
+  "workflowName": "safety-gov-production-integration",
+  "featureName": "safety-gov-production-integration",
+  "createdDate": "2026-03-31",
+  "status": "phase13_blocked",
+  "taskClassification": "implementation",
+  "phases": {
+    "1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements.md"]
+    },
+    "2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-2/design.md",
+        "outputs/phase-2/ipc-4layer-table.md"
+      ]
+    },
+    "3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/gate-decision.md"]
+    },
+    "4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-plan.md"]
+    },
+    "5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion.md"]
+    },
+    "7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"]
+    },
+    "9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review.md"]
+    },
+    "11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "13": {
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": ["outputs/phase-13/pr-url.md"]
+    }
+  }
+}

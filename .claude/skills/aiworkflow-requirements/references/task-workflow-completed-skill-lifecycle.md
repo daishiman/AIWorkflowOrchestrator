@@ -24,7 +24,7 @@
 | TASK-SKILL-LIFECYCLE-05 | ui | 作成済みスキル利用導線 |
 | TASK-SKILL-LIFECYCLE-08 | ui | スキル共有・公開・互換性統合 |
 | Task09-12 | ui | UI GAP 解消 + 状態遷移完成 |
-| TASK-RT-05 | ui | multi_select UserInputKind 追加（checkbox host + engine validation） |
+| TASK-RT-05 | ui | multi_select UserInputKind 追加（checkbox host + engine validation）。TASK-RT-05-TEST-RERUN close-out 完了（2026-03-31, Issue #1756） |
 | UT-06-003 | security | DefaultSafetyGate 具象クラス実装 |
 | UT-06-005 | security | Permission Fallback 実装 |
 | TASK-SKILL-LIFECYCLE-06 | security | 信頼・権限ガバナンス設計 |
