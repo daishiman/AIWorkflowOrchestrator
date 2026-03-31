@@ -524,12 +524,12 @@ LLM ランタイムを使用してスキルの plan / execute / improve を実�
 
 ### DI 配線（ipc/index.ts）
 
-- `ResourceLoader`: `DEFAULT_SKILL_CREATOR_PATH` でコンストラクタ注入
+- `ResourceLoader`: `DEFAULT_SKILL_CREATOR_PATH` でコンストラクタ注入（static fallback 用; optional）
 - `LLMAdapter`: fire-and-forget async で `LLMAdapterFactory.getAdapter("anthropic")` → `setLLMAdapter()` で遅延注入
 - `SkillFileWriter`: `skillBasePath` でコンストラクタ注入
-- `SkillCreatorSourceResolver`: multi-root source discovery を担当
-- `PhaseResourcePlanner`: operation ごとの resource selection / budget / degrade を担当
-- `ResolvedResourceReader`: absolute path 優先読込 + legacy `ResourceLoader` fallback を担当
+- `SkillCreatorSourceResolver`: multi-root source discovery を担当。**TASK-P0-04 以降、未注入時は自動インスタンス化（DI override）**
+- `PhaseResourcePlanner`: operation ごとの resource selection / budget / degrade を担当。**TASK-P0-04 以降、未注入時は自動インスタンス化（DI override）**
+- `ResolvedResourceReader`: absolute path 優先読込 + legacy `ResourceLoader` fallback を担当。**TASK-P0-04 以降、未注入時は自動インスタンス化（DI override）**
 
 ### dynamic resource pipeline（TASK-SDK-03 / 2026-03-27）
 
@@ -552,8 +552,41 @@ Task03 実装で、`plan()` / `improve()` は固定 root 前提の resource 読�
 | RuntimeSkillCreatorFacade.ts | `apps/desktop/src/main/services/runtime/` | Facade 本体 |
 | creatorHandlers.ts | `apps/desktop/src/main/ipc/` | IPC ハンドラ（internal helper） |
 
+### DI override / dynamic pipeline デフォルト有効化（TASK-P0-04 / 2026-03-30）
+
+TASK-P0-04 で `RuntimeSkillCreatorFacade` コンストラクタに DI override パターンを適用し、dynamic resource pipeline をデフォルトで有効にした。
+
+#### DI override パターン
+
+```typescript
+// 外部注入を優先し、なければ自動インスタンス化（TASK-P0-04）
+this.sourceResolver  = deps.sourceResolver  ?? new SkillCreatorSourceResolver();
+this.resourcePlanner = deps.resourcePlanner ?? new PhaseResourcePlanner();
+this.resolvedResourceReader =
+  deps.resolvedResourceReader ?? new ResolvedResourceReader(deps.resourceLoader);
+```
+
+3 フィールドは `readonly` 必須型として宣言されるため、TypeScript が `null` を型レベルで除外する。
+
+#### SkillCreatorSourceResolver は常に repo 候補を含む
+
+`SkillCreatorSourceResolver.prototype.resolve` は `explicitRoot` 未指定時でも `getSkillCreatorRootCandidates()` を呼び出すため、常に `repo`（`{cwd}/.claude/skills/skill-creator`）候補を含む。テスト環境では `sourceResolver` を mock するか `AIWORKFLOW_SKILL_CREATOR_PATH` 環境変数を設定しないと、実際の skill-creator ディレクトリが発見されてしまう点に注意。
+
+#### fallback chain
+
+| 優先度 | 手段 | 発動条件 |
+| --- | --- | --- |
+| 1 | dynamic pipeline | `sourceResolver` + `resourcePlanner` + `resolvedResourceReader` でリソース取得成功 |
+| 2 | static loader fallback | dynamic pipeline 失敗 && `deps.resourceLoader` が存在する |
+| 3 | `resource_loader_unavailable` エラー返却 | dynamic pipeline 失敗 && `deps.resourceLoader` が存在しない |
+
+#### hasDynamicResourcePipeline() の廃止
+
+Task03 時点では `hasDynamicResourcePipeline()` メソッドが dynamic pipeline の有効/無効を外部から判断するために存在していたが、TASK-P0-04 でデフォルト有効となったため廃止された。呼び出し箇所はテストを含めて全削除済み。
+
 ### 完了タスク
 
 | タスクID | 完了日 | ステータス | 概要 |
 | --- | --- | --- | --- |
 | UT-SC-03-003 | 2026-03-24 | 完了 | DI 配線実装。setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。29テスト全PASS |
+| TASK-P0-04 | 2026-03-30 | 完了 | DI override パターン適用 + dynamic resource pipeline デフォルト有効化 + hasDynamicResourcePipeline() 廃止 |

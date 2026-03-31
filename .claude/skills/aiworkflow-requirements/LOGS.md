@@ -500,3 +500,14 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - vitest は esbuild アーキ不整合で blocked
 - 派生未タスク:
   - `UT-RT-06-ESBUILD-ARCH-MISMATCH-001`
+
+## TASK-P0-04 phase12 sync（2026-03-30）
+
+- タスク名: TASK-P0-04 manifest-loader-default-activation
+- 種別: requirements sync / documentation correction
+- 主な反映:
+  - runtime contract を「dynamic pipeline 常時試行 + resource 不足時 degraded error」へ整合
+  - Phase 11/12 証跡不足と workflow ledger drift を修正
+  - implementation guide の `improve(skillName, ...)` シグネチャ誤記を補正
+- 検証:
+  - current workflow 文書と `RuntimeSkillCreatorFacade.ts` を突合して確認
