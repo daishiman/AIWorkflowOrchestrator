@@ -1,0 +1,7 @@
+{
+  "workflow": "docs/30-workflows/safety-gov-production-integration",
+  "phase": 11,
+  "mode": "NON_VISUAL",
+  "note": "Visible surface の追加はないため、manual-test-checklist/result を正本とし、画面 capture は要求しない。validator false positive 緩和のため plan のみ保持する。",
+  "captures": []
+}

@@ -3,6 +3,38 @@
 ## 役割
 
 ---
+## 2026-03-31 - TASK-RT-05-TEST-RERUN close-out（Issue #1756）
+
+## 2026-03-31 - UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 workflow pack elegant improvement
+
+### 変更内容
+
+- `docs/30-workflows/safety-gov-production-integration/` に真の論点、4条件初期評価、SubAgent lane 設計、30種思考法適用マトリクスを追加し、単なる phase 列挙から判断可能な execution spec へ改善
+- Phase 1 に命名規則インベントリを追加し、Phase 4 以降の test / artifact / task naming を upstream facts と接続
+- Phase 12 に same-wave sync の正本更新対象を `task-workflow-completed` / `task-workflow-backlog` / `lessons-learned` / `topic-map` / `keywords` / `SKILL.md` / mirror parity まで拡張
+- `aiworkflow-requirements` 側では UT-6〜UT-9 を単発 backlog から workflow pack `UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001` に集約し、spec_created close-out として追跡可能にした
+
+## 2026-03-31 - UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 workflow pack hardening
+
+### 変更内容
+
+- `docs/30-workflows/safety-gov-production-integration/` の Phase 3 に必須の `統合テスト連携` を追加し、Phase 4〜11 の `実行タスク` を validator 互換の箇条書きへ補強
+- `outputs/artifacts.json` を root `artifacts.json` と同期し、Phase 11 の `manual-test-checklist.md` / `manual-test-result.md` を追加して workflow root の機械検証を通過させた
+- Phase 11 が visible surface 追加なしの integration task であることを踏まえ、`phase-11-12-guide.md` に NON_VISUAL task は screenshot wording を残さないルールを追記した
+- follow-up task の canonical status を `spec_created` として扱い、完了済み実装と混同しない Phase 12 same-wave sync の運用を再確認した
+
+---
+
+## 2026-03-30 - TASK-LLM-MOD-05 Phase 12 close-out sync
+
+### 変更内容
+
+- UT-RT-06 esbuild 修正後の環境で TASK-RT-05 テスト再実行・AC-4 確認を完了
+- phase-9/quality-report.md・phase-10/final-review-result.md を PASS 状態に更新
+- lessons-learned-skill-create-multi-select-kind.md に esbuild platform mismatch 教訓を追記
+- task-workflow-completed-skill-lifecycle-ui.md に TASK-RT-05-TEST-RERUN close-out 注記を追加
+
+---
 ## 2026-03-31 - TASK-UIUX-FEEDBACK-001 spec_created sync hardening
 
 ### 変更内容

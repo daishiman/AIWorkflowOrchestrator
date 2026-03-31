@@ -55,3 +55,16 @@
 | 標準ルール | `SkillCreatorUserInputKind` のような shared contract 変更は、コード変更と canonical spec 更新を same-wave（同一 Phase 12 クローズアウト）で行う。後回しにすると次のタスクが古い仕様を参照してしまう |
 | 関連パターン | same-wave sync, canonical spec SSoT |
 | 関連タスク | TASK-RT-05 |
+
+---
+
+## L-RT05-005: worktree環境での esbuild platform mismatch 解消手順
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | worktree環境でesbuild darwin-arm64/darwin-x64 platform mismatchが発生し、Vitestが起動できなかった |
+| 再発条件 | worktree 作成後に pnpm install を実行せず、または node_modules が古いままの場合 |
+| 解決策 | pnpm install + pnpm --filter @repo/shared build で解消できる。解消しない場合は node_modules 完全削除後に pnpm install を再実行する |
+| 標準ルール | テストインフラ問題（jest-dom DOMマッチャー未拡張）はコード回帰と区別して記録すること。環境起因のブロッカーは別タスク（UT-RT-06）で解消し、再実行タスク（TASK-RT-05-TEST-RERUN）で確認するパターンを適用する |
+| 関連パターン | esbuild platform mismatch, worktree native binary |
+| 関連タスク | TASK-RT-05, TASK-RT-05-TEST-RERUN, UT-RT-06 |
