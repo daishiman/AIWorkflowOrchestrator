@@ -150,6 +150,21 @@
 - ESModulesネイティブ
 - Rollupベースの最適化ビルド
 
+### preload bundling guard（TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001）
+
+`electron.vite.config.ts` の preload bundle では、`externalizeDepsPlugin()` が workspace パッケージのサブパスを early externalize する場合がある。`@repo/shared/src/ipc/channels` のような shared IPC 定数を preload 側で値 import する際は、次の 2 点を同時に満たす。
+
+1. `externalizeDepsPlugin({ exclude: ["@repo/shared"] })` で shared package の subpath externalize を抑止する
+2. `resolve.alias["@repo/shared/src/ipc/channels"] = resolve(__dirname, "../../packages/shared/src/ipc/channels.ts")` で完全一致 alias を張る
+
+この2点を片方だけにすると、`out/preload/index.js` に `require("@repo/shared/src/ipc/channels")` が残り、`packages/shared/dist/` 非依存の前提が崩れて `window.electronAPI` 初期化失敗につながる。
+
+#### 検証基準
+
+- `pnpm --filter @repo/desktop build` が成功すること
+- `rg -c -F "@repo/shared/src/ipc/channels" apps/desktop/out/preload/index.js` が `0`
+- `rg -c -F "skill:list" apps/desktop/out/preload/index.js` が `1` 以上
+
 ### React + TypeScript
 
 | 項目 | 値 |
@@ -315,6 +330,7 @@
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3.0 | 2026-03-31 | preload bundling guard を追加（`externalizeDepsPlugin({ exclude: ["@repo/shared"] })` + `resolve.alias["@repo/shared/src/ipc/channels"]` の同時適用、`rg -c -F` による bundle evidence 基準を明記） |
 | 1.2.0 | 2026-03-16 | 関連未タスクセクション追加（UT-IMP-MAIN-PROCESS-MODULE-EXTRACTION-GUARD-001） |
 | 1.1.0 | 2026-01-26 | 仕様ガイドライン準拠: ディレクトリ構造を表形式に変換 |
 | 1.0.0 | 2026-01-26 | 初版作成 |

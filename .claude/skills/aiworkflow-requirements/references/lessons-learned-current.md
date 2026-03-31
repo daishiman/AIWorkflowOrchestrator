@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                              |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-03-31 | 3.3.2      | TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 教訓1件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-PRELOAD-ALIAS-001 `externalizeDepsPlugin` の `config` フックで external 正規表現が設定されるため `resolve.alias` 単独不可 / `exclude` + alias 組み合わせパターン） |
 | 2026-03-31 | 3.3.1      | TASK-UIUX-FEEDBACK-001 の教訓2件を追加（Phase 11 placeholder-only evidence で completed に寄せない / phantom path `scripts/ui-ux-eval/*` を current facts と誤認しない） |
 | 2026-03-30 | 3.3.0      | TASK-P0-02 verify-improve-reverify closed-loop 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-P002-001 recordVerifyPass() 対称設計 / L-P002-002 improve→verify 遷移と後方互換性 / L-P002-003 getReverifyDisabledReason() 多段条件ゲート順序） |
 | 2026-03-30 | 2.12.0     | TASK-P0-05 execute-skill-file-writer-integration 教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-P005-001 LLM応答パース見出し正規化 / L-P005-002 worktree canonical mirror同期 / L-P005-003 DI未注入 skilFileWriter fail-silent回避）                                                                                                                                                                                                                                                                                    |
@@ -879,6 +880,28 @@
 | 解決策 | shared チャネルの移管完了時に、関連スキル（ipc-preload-spec-sync-guardian 等）の Trigger キーワード・Phase 3 アクション・リソース参照を同ターンで更新する。移管後の正本は shared 側のファイルパスを明記する |
 | 標準ルール | IPC channel 定数を shared に移管する場合は「移管完了 → スキル更新」を同一 wave に含める（P57 準拠） |
 | 関連タスク | UT-SDK-07 |
+
+---
+
+## TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 build/test alias parity（2026-03-31）
+
+### L-PREALIAS-001: shared IPC channel は build 修正だけでは閉じない
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | preload build を直しても `vitest.config.ts` に同 alias がなければ shared IPC import が test runtime で失敗する |
+| 解決策 | shared IPC path を扱うタスクでは `electron.vite.config.ts` と `vitest.config.ts` の両方を同一 wave で確認する |
+| 標準ルール | shared path alias 修正は build parity と test parity をセットで扱う |
+| 関連タスク | TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 |
+
+### L-PREALIAS-002: relative import workaround は config drift の兆候
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `governance-bundle.test.ts` の 7 階層 relative import は shared 正本の問題ではなく config parity 不整合を隠す temporary workaround だった |
+| 解決策 | `packages/shared/src/...` への長い relative import を見つけたら、まず build/test config parity を点検する |
+| 標準ルール | workaround を残すより先に shared alias を両 runtime に追加できるかを検証する |
+| 関連タスク | TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 |
 
 ---
 

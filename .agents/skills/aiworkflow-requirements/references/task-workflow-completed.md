@@ -5,29 +5,34 @@
 
 ## 完了タスク
 
-### タスク: UT-UIUX-PLAYWRIGHT-E2E-001（2026-03-31）
+### タスク: TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001（2026-03-31）
 
 | 項目 | 値 |
 | --- | --- |
-| タスクID | UT-UIUX-PLAYWRIGHT-E2E-001 |
+| タスクID | TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 |
 | ステータス | **完了** |
-| タイプ | implementation / e2e ui-ux |
-| 優先度 | 中 |
+| タイプ | bug fix / build-test parity |
+| 優先度 | 高 |
 | 完了日 | 2026-03-31 |
-| 対象 | `apps/desktop/e2e/ui-ux/` / `playwright.config.ts` / workflow close-out |
-| 成果物 | `docs/30-workflows/ut-uiux-playwright-e2e-001/` |
+| 対象 | `apps/desktop/electron.vite.config.ts` / `apps/desktop/vitest.config.ts` / `governance-bundle.test.ts` |
+| 成果物 | `docs/30-workflows/task-fix-preload-vite-alias-shared-ipc-001/` |
 
 #### 実施内容
 
-- `ui-ux-layer1` / `ui-ux-layer2` project を current branch に固定
-- `TEST_TARGETS` を single source of truth とする dynamic E2E 構成を維持
-- implicit role / positive tabindex の false positive を削減
-- Phase 11 screenshot / metadata / coverage / review / artifacts 同期を current workflow 配下へ補完
+- preload build で `@repo/shared/src/ipc/channels` が external 扱いされる問題を、`externalizeDepsPlugin({ exclude: ["@repo/shared"] })` と exact alias の組み合わせで修正
+- `vitest.config.ts` にも同 alias を追加し、shared IPC channel import を test runtime でも解決可能にした
+- `governance-bundle.test.ts` の 7 階層 relative import workaround を削除し、shared alias へ復帰
+- workflow root / completed ledger / lessons / LOGS / SKILL history を same-wave で同期し、`UT-DX-VITE-ALIAS-SHARED-IMPORT-001` を completed 側へ移管
 
-#### 残課題
+#### 検証証跡
 
-- `TASK-A11Y-FOCUS-TRAP-001`
-- Layer 2 baseline drift 3件は MEDIUM として workflow 側へ記録
+- `pnpm --filter @repo/desktop build`
+- `pnpm --filter @repo/desktop typecheck`
+- `cd apps/desktop && pnpm exec vitest run src/preload/__tests__/skill-api.getDetail-update.test.ts src/main/services/runtime/__tests__/governance-bundle.test.ts`
+- targeted vitest: `2 files / 37 tests PASS`
+- `rg -c -F "skill:list" apps/desktop/out/preload/index.js` → `2`
+- `rg -q -F "@repo/shared/src/ipc/channels" apps/desktop/out/preload/index.js` → match 0件
+- `rg -q -F "@repo/shared" apps/desktop/out/preload/index.js` → match 0件
 
 ### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
 
@@ -1874,32 +1879,3 @@
 #### Phase 12 未タスク
 
 なし（0件）
-
----
-
-### タスク: TASK-UIUX-FEEDBACK-001 phase11-ui-ux-feedback-loop-review（2026-03-31）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-UIUX-FEEDBACK-001 |
-| ステータス | **spec_created 維持 / canonical・mirror・system spec sync 実施** |
-| タイプ | skill improvement + workflow documentation correction |
-| 優先度 | HIGH |
-| 完了日 | 2026-03-31 |
-| 成果物 | `docs/30-workflows/task-uiux-feedback-001-phase11-enhancement/` |
-
-#### 実施内容
-
-- `.claude/skills/task-specification-creator/` に追加された `evaluate-ui-ux` script 群、prompt agent、テスト群を current fact として整理
-- `evaluate-ui-ux.js` の CLI が `--task-id` を評価コンテキストへ渡していなかった不整合を修正
-- screenshot 0 件で処理が進む false green を防ぐガードと回帰テストを追加
-- workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ是正
-- Phase 11/12 文書から completed 誤記を除去し、placeholder screenshot と `not_run` metadata を current fact として固定
-
-#### 未完了事項
-
-| 項目 | 状態 |
-| --- | --- |
-| representative screenshot 実測 | 未了 |
-| Phase 11 実行結果 | 未了 |
-| HIGH 問題の未タスク化 | 実行後に判定 |

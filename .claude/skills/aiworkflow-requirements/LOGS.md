@@ -7,6 +7,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-31 - TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 same-wave sync（preload / vitest の shared IPC alias parity を同時是正し、`governance-bundle.test.ts` の relative import workaround を除去。completed ledger / lessons / LOGS / SKILL history を current facts へ同期し、`UT-DX-VITE-ALIAS-SHARED-IMPORT-001` を completed 側へ移管。`generate-index.js` と `.agents` mirror parity を実施） |
 | 2026-03-31 - TASK-RT-05-TEST-RERUN close-out（Issue #1756 完了 / UT-RT-06 esbuild 修正後に `cd apps/desktop && pnpm exec vitest run ...` で Engine 39件 + Renderer 35件 全PASS 再確認 / AC-4 既存4kind非破壊確認 / phase-9 quality-report・phase-10 final-review-result 更新 / esbuild platform mismatch + desktop cwd ルールを lessons-learned に追記） |
 | 2026-03-31 - UT-UIUX-PLAYWRIGHT-E2E-001 close-out resync（Phase 11 screenshot evidence / artifacts inventory / Playwright E2E current facts を same-wave で更新し、`TASK-A11Y-FOCUS-TRAP-001` を backlog へ formalize） |
 | 2026-03-31 - TASK-UIUX-FEEDBACK-001 false-green cleanup（Phase 11 placeholder-only evidence と phantom path `scripts/ui-ux-eval/*` を current facts から除去し、`task-workflow-phases.md` / `lessons-learned-current.md` / LOGS / SKILL を same-wave で更新。topic-map / keywords 再生成まで完了） |

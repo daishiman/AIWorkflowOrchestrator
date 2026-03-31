@@ -3,6 +3,16 @@
 ## 役割
 
 ---
+## 2026-03-31 - TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 Phase 12 close-out sync
+
+### 変更内容
+- preload alias bugfix workflow の `artifacts.json` と各 phase 成果物参照を canonical filename（`implementation-guide.md` など）へ統一
+- `manual-test-result.md` を NON_VISUAL walkthrough の実測値ベースへ更新し、`phase12-task-spec-compliance-check.md` を current facts で補完
+- shared path alias 系は build config と test config の parity を同時確認するルールを SKILL に反映
+- aiworkflow-requirements 側の completed ledger / lessons / LOGS / SKILL history と same-wave で閉じ、`UT-DX-VITE-ALIAS-SHARED-IMPORT-001` を completed 側へ移管
+
+---
+---
 ## 2026-03-31 - TASK-RT-05-TEST-RERUN close-out（Issue #1756）
 
 ## 2026-03-31 - UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 workflow pack elegant improvement

@@ -1,63 +1,33 @@
-# Documentation Changelog
+# Phase 12: ドキュメント更新履歴 — TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001
 
-## 2026-03-31
+## current
 
-### current（本タスク TASK-P0-09 による変更）
+| 種別          | ファイル                                                                       | 内容                                                         |
+| ------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| code          | `apps/desktop/electron.vite.config.ts`                                         | preload `exclude + alias` を追加                             |
+| code          | `apps/desktop/vitest.config.ts`                                                | shared IPC alias を追加                                      |
+| code          | `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts`   | relative import を alias 化                                  |
+| code          | `apps/desktop/src/__tests__/electron-vite.preload-alias.test.ts`               | electron-vite 設定 drift を監査する回帰テストを追加          |
+| docs          | `docs/30-workflows/task-fix-preload-vite-alias-shared-ipc-001/*`               | current facts へ再構成                                       |
+| outputs       | `outputs/phase-11/manual-test-result.md`                                       | NON_VISUAL evidence を metadata / fallback reason 付きで補強 |
+| outputs       | `outputs/phase-11/discovered-issues.md`                                        | Phase 11 必須の検出課題 0件記録を追加                        |
+| outputs       | `outputs/phase-12/*.md`                                                        | generic canonical filename と current 0件の narrative へ統一 |
+| system spec   | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md` | 完了記録を current facts へ更新                              |
+| system spec   | `.claude/skills/aiworkflow-requirements/references/task-workflow-history.md`   | same-wave sync 履歴を追加                                    |
+| system spec   | `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`   | `UT-DX...` の完了移管を反映                                  |
+| system spec   | `.claude/skills/aiworkflow-requirements/references/lessons-learned-current.md` | 再発防止教訓追加                                             |
+| skill log     | `.claude/skills/aiworkflow-requirements/LOGS.md`                               | same-wave sync 記録                                          |
+| skill log     | `.claude/skills/task-specification-creator/LOGS.md`                            | canonical outputs 是正の記録                                 |
+| skill history | `.claude/skills/aiworkflow-requirements/SKILL.md`                              | 変更履歴追記                                                 |
+| skill history | `.claude/skills/task-specification-creator/SKILL.md`                           | 変更履歴追記                                                 |
 
-#### 型定義
+## 実測
 
-| ファイル                                    | 変更内容                                                                                                                                                                                                             |
-| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `packages/shared/src/types/skillCreator.ts` | governance 関連 8 型を追加（SkillCreatorGovernancePhase, SdkPermissionMode, SkillCreatorSdkPolicy, CanUseToolResult, GovernanceAuditEventKind, GovernanceAuditEvent, GovernanceSessionSummary, GovernanceUiPayload） |
-| `packages/shared/src/types/index.ts`        | 8 型の re-export を追加                                                                                                                                                                                              |
+- `pnpm --filter @repo/desktop typecheck` PASS
+- `pnpm --filter @repo/desktop build` PASS
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/electron-vite.preload-alias.test.ts` PASS
+- targeted vitest: `2 files / 37 tests PASS`
 
-#### 新規実装モジュール
+## baseline
 
-| ファイル                                                                 | 変更内容                                                                   |
-| ------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
-| `apps/desktop/src/main/services/runtime/SkillCreatorGovernancePolicy.ts` | 新規作成。PHASE_POLICIES 定数、getPolicyForPhase、createCanUseToolCallback |
-| `apps/desktop/src/main/services/runtime/GovernanceAuditSink.ts`          | 新規作成。GovernanceAuditSink クラス、createAuditEvent ヘルパー            |
-| `apps/desktop/src/main/services/runtime/GovernanceHooksFactory.ts`       | 新規作成。createGovernanceHooks、GovernanceHooks interface                 |
-
-#### 既存モジュール変更
-
-| ファイル                                                              | 変更内容                                                                                                                                                                              |
-| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | governance integration — auditSink インスタンス保持、execute 時の SDK governance options 注入、getGovernanceUiPayload / getGovernanceAuditEvents / resolveSkillTargetDir メソッド追加 |
-| `apps/desktop/src/main/ipc/creatorHandlers.ts`                        | `skill-creator:get-governance` IPC ハンドラ追加                                                                                                                                       |
-| `apps/desktop/src/preload/skill-creator-api.ts`                       | `getGovernancePayload` API メソッド追加                                                                                                                                               |
-| `apps/desktop/src/preload/channels.ts`                                | `SKILL_CREATOR_GET_GOVERNANCE` チャネル定数追加                                                                                                                                       |
-| `apps/desktop/src/main/services/skill/SkillExecutor.ts`               | governance 実行オプション（permissionMode / hooks / permissions）を query() へ伝播                                                                                                    |
-
-#### テストファイル
-
-| ファイル                                                                                | 変更内容                                                                                                                    |
-| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorGovernancePolicy.test.ts` | 新規作成。22 テストケース（phase policy 取得、canUseTool 判定、path-safe 制御、必須 path 検証）                             |
-| `apps/desktop/src/main/services/runtime/__tests__/GovernanceAuditSink.test.ts`          | 新規作成。11 テストケース（record、phase/session filter 付き getRecentDenials、buildSessionSummary、buildUiPayload、clear） |
-| `apps/desktop/src/main/services/runtime/__tests__/GovernanceHooksFactory.test.ts`       | 新規作成。13 テストケース（hooks 生成、SessionStart/End、PreToolUse proceed/deny、PostToolUse）                             |
-| `apps/desktop/src/main/services/runtime/__tests__/GovernanceEdgeCases.test.ts`          | 新規作成。19 テストケース（未知ツール、空パス、null byte、パストラバーサル、auditSink 共有、複数 phase 切替）               |
-| `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts`    | allowedTools 期待値を governance policy に合わせて更新                                                                      |
-| `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.sdk-types.test.ts`        | governance options が query() へ渡ることを検証するケース追加                                                                |
-| `apps/desktop/src/main/services/runtime/__tests__/GovernanceEdgeCases.test.ts`          | path traversal / 空 path / skillTargetDir 未指定の current policy へ期待値更新                                              |
-| `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorGovernancePolicy.test.ts` | targetDir 必須・file_path 必須の current facts へ期待値更新                                                                 |
-
-#### system spec / workflow sync
-
-| ファイル                                                                                       | 変更内容                                                                   |
-| ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| `.claude/skills/aiworkflow-requirements/references/api-ipc-agent-core.md`                      | governance IPC 行と型定義を追記                                            |
-| `.claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md`                     | governance payload の public contract と責務境界を追記                     |
-| `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md`    | RuntimeSkillCreatorFacade governance 拡張を追記                            |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`                 | TASK-P0-09 完了記録を追加                                                  |
-| `.claude/skills/aiworkflow-requirements/indexes/topic-map.md`                                  | 追加 spec を検索可能にするため再生成                                       |
-| `docs/30-workflows/unassigned-task/UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001.md` | execute 以外の phase coverage と renderer UI を follow-up として formalize |
-
-#### 実検証
-
-- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/SkillCreatorGovernancePolicy.test.ts src/main/services/runtime/__tests__/GovernanceHooksFactory.test.ts src/main/services/runtime/__tests__/GovernanceAuditSink.test.ts src/main/services/runtime/__tests__/GovernanceEdgeCases.test.ts`
-  - PASS（5 files / 95 tests）
-
-### baseline
-
-baseline 変更なし。本タスクは新規 governance 機能の追加であり、既存仕様の変更を伴わない。
+baseline の wider governance 変更は行っていない。今回差分に閉じて更新した。
