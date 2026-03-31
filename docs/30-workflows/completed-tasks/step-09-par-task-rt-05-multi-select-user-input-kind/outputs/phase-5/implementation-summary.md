@@ -12,18 +12,22 @@
 - `validateUserInputSubmission` の switch 文に `case "multi_select"` を追加
 - 配列の非空チェックと全要素の option id 存在チェックを実装
 
-### 3. `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
+### 3. `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`
 
 - `selectedOptionIds` state (`string[]`) を追加
-- `handleSubmitWorkflowInput` に `multi_select` 分岐を追加
+- `multi_select` の toggle / validation / submit payload 組み立てを実装
 - submit 後の state reset に `setSelectedOptionIds([])` を追加
-- request kind 切替時の effect でも `selectedOptionIds` / `textAnswer` / `secretAnswer` を明示的に reset
-- kind ごとの submit disable 条件を実装し、未選択 `multi_select` の送信を UI で防止
-- checkbox host JSX を `single_select` 直後に追加（`data-testid="skill-lifecycle-multi-select-host"`）
+- request kind 切替時の reset でも `selectedOptionIds` / `textAnswer` / `secretAnswer` / `confirmAnswer` を初期化
+- checkbox host JSX と validation error 表示を実装
 - `option.description` があれば補足文として表示
+
+### 4. `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
+
+- `ConversationalInterview` を host として利用し、workflow snapshot と `submitUserInput` IPC を接続
+- multi_select の state 管理ロジックは panel 直下ではなく interview component 側に委譲
 
 ## テスト結果
 
-- Engine: 26 tests passed (4 new multi_select tests)
-- Renderer: 35 tests planned (5 new multi_select tests を含む)
-- 注記: 現ワークツリーでは `esbuild` platform mismatch により vitest 再実行は未完了
+- Engine: 39 tests passed（rerun task で確認）
+- Renderer: 35 tests passed（rerun task で確認）
+- 注記: rerun close-out（TASK-RT-05-TEST-RERUN）で `apps/desktop` 起点の Engine 39件 / Renderer 35件 PASS を確認済み

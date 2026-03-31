@@ -280,6 +280,7 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `skill-creator:improve-skill`   | Renderer → Main | runtime improve    | `{ skillName: string; feedback: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `skill-creator:get-verify-detail` | Renderer → Main | verify detail 取得 | `{ planId: string }` | `IpcResult<RuntimeSkillCreatorVerifyDetailResponse>` |
 | `skill-creator:reverify-workflow` | Renderer → Main | verify loop 再要求 | `{ planId: string }` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
+| `skill-creator:get-governance` | Renderer → Main | governance 状態取得 | `{ phase: SkillCreatorGovernancePhase }` | `IpcResult<GovernanceUiPayload>` |
 | `skill-creator:improve`         | Renderer → Main | スキル改善         | `{ skillName: string; autoApply?: boolean }`               | `IpcResult<unknown>`          |
 | `skill-creator:apply-improvement` | Renderer → Main | 改善提案適用     | `{ skillName: string; suggestions: RuntimeSkillCreatorImproveSuggestion[] }` | `IpcResult<ApplyImprovementResult>` |
 | `skill-creator:fork`            | Renderer → Main | スキルフォーク     | `{ sourceName: string; newName: string; options?: object }` | `IpcResult<string>`           |
@@ -302,6 +303,8 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `RuntimeSkillCreatorPlanResponse` | runtime plan 結果または terminal handoff |
 | `RuntimeSkillCreatorExecuteResponse` | runtime execute 結果または terminal handoff |
 | `RuntimeSkillCreatorImproveResponse` | runtime improve 結果または terminal handoff |
+| `SkillCreatorGovernancePhase` | governance 対象 phase（plan / execute / verify / improve） |
+| `GovernanceUiPayload` | denial と session summary を含む governance 表示用 payload |
 | `TerminalHandoffBundle` | Claude Code handoff bundle          |
 | `SkillCreatorProgress` | 進捗通知データ（Preload型）          |
 | `SkillCreatorAPI`      | Preload APIインターフェース          |

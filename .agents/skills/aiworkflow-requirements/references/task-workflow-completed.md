@@ -5,6 +5,90 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-09 |
+| ステータス | **完了** |
+| タイプ | implementation / runtime governance |
+| 優先度 | 高 |
+| 完了日 | 2026-03-31 |
+| 対象 | `RuntimeSkillCreatorFacade.execute()` / `SkillExecutor` / governance payload |
+| 成果物 | `docs/30-workflows/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` |
+
+#### 実施内容
+
+- execute phase の governance policy を `SkillExecutor.execute(..., governanceOptions)` へ接続し、`permissionMode` / `hooks` / `permissions.canUseTool` を SDK query() へ伝播
+- `SkillCreatorGovernancePolicy` の path 判定を `path.resolve` / `path.relative` ベースへ是正し、空 path・targetDir 未指定・path traversal を拒否
+- `skill-creator:get-governance` IPC と preload `getGovernancePayload()` を追加し、`GovernanceUiPayload` を public surface として公開
+- follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` を formalize し、全 phase coverage と renderer 可視化を分離した
+- `apps/desktop/src/main/services/runtime/governance/` に policy / hooks factory / audit sink を追加
+- `packages/shared/src/types/skillCreator.ts` と `packages/shared/src/types/index.ts` に governance 型 6 件を追加
+- `apps/desktop/src/preload/channels.ts` / `apps/desktop/src/main/ipc/creatorHandlers.ts` / `apps/desktop/src/preload/skill-creator-api.ts` に `skill-creator:get-governance-state` を追加
+- `RuntimeSkillCreatorFacade.execute()` が execute phase policy を metadata へ透過し、`SkillExecutor` が SDK `query()` へ hooks と permissionMode を実接続する current fact へ更新
+- Phase 11 を `NON_VISUAL` と確定し、Phase 12 implementation guide を Part 1 / Part 2 構成と system spec sync 付きで閉じた
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/preload/__tests__/skill-creator-api.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/GovernanceHooksFactory.test.ts src/main/services/runtime/__tests__/GovernanceEdgeCases.test.ts src/main/services/runtime/__tests__/GovernanceAuditSink.test.ts src/main/services/runtime/__tests__/SkillCreatorGovernancePolicy.test.ts src/main/services/skill/__tests__/SkillExecutor.sdk-types.test.ts`
+- 130 tests PASS
+- Phase 11 visual screenshot: N/A（renderer governance UI は follow-up）
+
+### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-02 |
+| ステータス | **完了** |
+| タイプ | implementation / runtime orchestration |
+| 優先度 | 高 |
+| 完了日 | 2026-03-30 |
+| 対象 | `SkillCreatorWorkflowEngine` / `RuntimeSkillCreatorFacade` の閉ループ改善 |
+| 成果物 | `docs/30-workflows/task-imp-verify-improve-revert-loop-002/` |
+
+#### 実施内容
+
+- `recordVerifyPass()` / `recordImproveAttempt()` / `getImproveAttemptCount()` を `SkillCreatorWorkflowEngine` に追加
+- `verifyAndImproveLoop()` に `maxImproveRetry` と feedback memory を追加
+- `failedChecks` のみを改善入力に使い、直前の改善要約を次回 feedback に合成
+- Phase 12 の未タスク検出を current 0件へ更新し、UT-P0-02-001 を今回フェーズへ吸収
+- `packages/shared/src/types/skillCreator.ts` と `packages/shared/src/types/index.ts` を同期
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/formatVerifyChecksAsFeedback.test.ts`
+- 70 tests PASS
+- `pnpm --filter @repo/desktop typecheck` PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/task-imp-verify-improve-revert-loop-002 --json` PASS
+
+### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-02 |
+| ステータス | **完了** |
+| タイプ | implementation / runtime orchestration |
+| 優先度 | 高 |
+| 完了日 | 2026-03-30 |
+| 対象 | `SkillCreatorWorkflowEngine` / `RuntimeSkillCreatorFacade` の閉ループ改善 |
+| 成果物 | `docs/30-workflows/task-imp-verify-improve-revert-loop-002/` |
+
+#### 実施内容
+
+- `recordVerifyPass()` / `recordImproveAttempt()` / `getImproveAttemptCount()` を `SkillCreatorWorkflowEngine` に追加
+- `verifyAndImproveLoop()` に `maxImproveRetry` と feedback memory を追加
+- `failedChecks` のみを改善入力に使い、直前の改善要約を次回 feedback に合成
+- Phase 12 の未タスク検出を current 0件へ更新し、UT-P0-02-001 を今回フェーズへ吸収
+- `packages/shared/src/types/skillCreator.ts` と `packages/shared/src/types/index.ts` を同期
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/formatVerifyChecksAsFeedback.test.ts`
+- 70 tests PASS
+- `pnpm --filter @repo/desktop typecheck` PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/task-imp-verify-improve-revert-loop-002 --json` PASS
+
 ### タスク: TASK-P0-05 execute-skill-file-writer-integration（2026-03-30）
 
 | 項目       | 値                                                                                       |
@@ -29,6 +113,75 @@
 
 - `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/parseLlmResponseToContent.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.persist-integration.test.ts src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts`
 - 50 tests PASS（parser 16 / facade persist 13 / workflow engine 23 ではなく、current targeted suite 合計 50 として記録）
+
+---
+
+### タスク: TASK-ELECTRON-BUILD-FIX electron-build-infra-fix（2026-03-30）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-ELECTRON-BUILD-FIX |
+| ステータス | **完了** |
+| タイプ | implementation / build-infra bugfix |
+| 優先度 | 高 |
+| 完了日 | 2026-03-30 |
+| 対象 | preload bundle と better-sqlite3 Electron ABI 不整合の同時是正 |
+| 成果物 | `docs/30-workflows/electron-build-infra-fix/` |
+
+#### 実施内容
+
+- `packages/shared` を ESM + CJS デュアル出力化し、34 exports に `require` を追加
+- `apps/desktop/electron.vite.config.ts` で `@repo/shared` を main / preload の bundle 対象に変更
+- root `postinstall` を native bootstrap owner に固定し、`scripts/setup-native-modules.sh` から desktop workspace を明示して Electron ABI / arch を検証
+- `apps/desktop/package.json` に `rebuild:electron` を追加し、manual recovery として切り出し
+- `apps/desktop/scripts/rebuild-native-for-electron.mjs` と `electron-builder.yml` の `afterPack` で配布物向け再構築を追加
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared exec npx vitest run src/__tests__/build/` → 7 PASS
+- `pnpm --filter @repo/desktop exec npx vitest run src/__tests__/build/` → 23 PASS
+- `pnpm --filter @repo/shared build` / `pnpm --filter @repo/desktop build` → 成功
+- `pnpm lint` → 0 errors, 10 warnings
+- `pnpm typecheck` → 0 errors
+- `node -p "process.versions.modules"` → `127`
+- `ELECTRON_RUN_AS_NODE=1 pnpm --filter @repo/desktop exec electron -p "process.versions.modules"` → `140`
+- `ELECTRON_RUN_AS_NODE=1 pnpm --filter @repo/desktop exec electron -e "require('better-sqlite3')"` → `OK: better-sqlite3 loaded`
+- `pnpm --filter @repo/desktop dev` → `start electron app...` まで到達、起動直後エラーなし
+
+---
+
+### タスク: TASK-P0-06 conversational-interview-ui（2026-03-30）
+
+| 項目       | 値                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-06                                                                              |
+| ステータス | **Phase 1–11 完了 / Phase 12 incomplete（Phase 11 evidence 未取得）**                   |
+| タイプ     | implementation / ui component                                                           |
+| 優先度     | 高                                                                                      |
+| 完了日     | 2026-03-30（Phase 11 まで）                                                             |
+| 対象       | スキル作成フォームを会話型インタビュー UI へ刷新                                        |
+| 成果物     | `docs/30-workflows/completed-tasks/step-09-par-task-p0-06-conversational-interview-ui/` |
+
+#### 実施内容
+
+- `ConversationalInterview.tsx`（メインコンポーネント）を新規作成し、段階的な質問フローを実装
+- `conversation-state-contract.md` で会話状態遷移設計を明文化
+- `input-widget-contract-matrix.md` で 5 種の入力 widget 型（single-select / multi-select / text / secret / confirm）を定義
+- `useInterviewState` フックで状態一元管理（undo 復元・submit 失敗時 rollback を含む）
+- `interview-widgets/` ディレクトリに 7 コンポーネントを配置
+- `SkillCreatorUserInputSubmission` に `selectedValues` 互換入力を追加し、`multi_select` 契約を Main まで閉じた（RT-05 協調）
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/ConversationalInterview*.test.ts src/renderer/components/skill/__tests__/useInterviewState.test.ts`
+- 74 tests PASS（widget 41 / state 11 / progress-bar 5 / main component 17）
+- TypeScript typecheck: PASS / ESLint: PASS
+
+#### Phase 12 未タスク
+
+| ID                            | 内容                                             | 優先度 | Issue |
+| ----------------------------- | ------------------------------------------------ | ------ | ----- |
+| UT-P0-06-PHASE11-EVIDENCE-001 | representative screenshots と手動テスト証跡取得 | High   | #1767 |
 
 ---
 
@@ -67,7 +220,6 @@
 - 未タスク1件: `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY`（Renderer UI への description 表示）
 
 ---
-
 ### タスク: TASK-RT-01 llm-adapter-error-propagation（2026-03-29）
 
 | 項目       | 値                                                                        |
@@ -1627,11 +1779,56 @@
 
 | 未タスクID | 概要                                                                             | 優先度 |
 | ---------- | -------------------------------------------------------------------------------- | ------ |
-| UT-6       | main/ipc/index.ts へ advancedConsole/approval/disclosure の3ハンドラ追加         | HIGH   |
-| UT-7       | preload/index.ts の contextBridge に advancedConsole/approval/disclosure API追加 | HIGH   |
-| UT-8       | Main→Renderer への承認要求プッシュ通知（webContents.send）                       | HIGH   |
-| UT-9       | abort/done 時に ApprovalGate.revokeAll() でトークンクリア                        | MEDIUM |
 | UT-10      | disclosureHandlers.ts 独立テスト作成                                             | LOW    |
+| UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001 | disclosure 情報を runtime から注入 | HIGH |
+| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | Advanced Console の実ログ / copy command 連携 | HIGH |
+
+---
+
+### タスク: UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 Safety Governance Production 統合（2026-03-31）
+
+| 項目       | 値 |
+| ---------- | --- |
+| タスクID   | UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ     | implementation follow-up |
+| 優先度     | 高 |
+| 完了日     | 2026-03-31 |
+| 対象       | ApprovalGate production integration / preload execution namespace / approval push / revokeAll lifecycle |
+| 成果物     | `docs/30-workflows/completed-tasks/UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001.md`, `docs/30-workflows/safety-gov-production-integration/` |
+
+#### 実施内容
+
+- `apps/desktop/src/main/ipc/index.ts` で `DefaultApprovalGate` を生成し、approval/disclosure/advancedConsole handler 登録と `onSessionDestroyed` cleanup を接続した
+- `apps/desktop/src/preload/index.ts` / `types.ts` へ `execution` namespace と `ExecutionAPI` を追加した
+- `apps/desktop/src/renderer/hooks/useApprovalFlow.ts` / `useAdvancedConsole.ts` を `getExecutionAPI()` 経由へ統一した
+- workflow root / Phase 11 / Phase 12 成果物を current facts に更新し、canonical artifact 名を補完した
+
+#### 発見元
+
+- 親タスク: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001
+- formalize 対象: UT-6, UT-7, UT-8, UT-9
+
+#### Phase 12 未タスク
+
+| 未タスクID | 概要 | 優先度 | タスク仕様書 |
+| ---------- | ---- | ------ | ------------ |
+| UT-10 | disclosureHandlers.ts 独立テスト作成 | 低 | `docs/30-workflows/unassigned-task/UT-10-disclosureHandlers-standalone-test.md` |
+| UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 | approval request producer を production 接続 | 高 | `docs/30-workflows/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md` |
+| UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001 | disclosure 情報の runtime 注入 | 高 | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001.md` |
+| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | session log / copy command の実データ連携 | 高 | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001.md` |
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 再発条件 | 対処 |
+| -------- | -------- | ---- |
+| workflow root / completed ledger / backlog が別々に更新されると current facts が崩れる | 実装完了後も `spec_created` の記述を残す | 実装・Phase 11/12 証跡・system spec を同じターンで閉じる |
+
+#### 同種課題の簡潔解決手順
+
+1. parent task の未完了項目を 4層境界と lifecycle で再分解する。
+2. 単独で閉じない項目群は workflow pack へ束ねる。
+3. backlog・completed・lessons・workflow root を同一ターンで同期する。
 
 ---
 
@@ -1773,3 +1970,32 @@
 #### Phase 12 未タスク
 
 なし（0件）
+
+---
+
+### タスク: TASK-UIUX-FEEDBACK-001 phase11-ui-ux-feedback-loop-review（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UIUX-FEEDBACK-001 |
+| ステータス | **spec_created 維持 / canonical・mirror・system spec sync 実施** |
+| タイプ | skill improvement + workflow documentation correction |
+| 優先度 | HIGH |
+| 完了日 | 2026-03-31 |
+| 成果物 | `docs/30-workflows/task-uiux-feedback-001-phase11-enhancement/` |
+
+#### 実施内容
+
+- `.claude/skills/task-specification-creator/` に追加された `evaluate-ui-ux` script 群、prompt agent、テスト群を current fact として整理
+- `evaluate-ui-ux.js` の CLI が `--task-id` を評価コンテキストへ渡していなかった不整合を修正
+- screenshot 0 件で処理が進む false green を防ぐガードと回帰テストを追加
+- workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ是正
+- Phase 11/12 文書から completed 誤記を除去し、placeholder screenshot と `not_run` metadata を current fact として固定
+
+#### 未完了事項
+
+| 項目 | 状態 |
+| --- | --- |
+| representative screenshot 実測 | 未了 |
+| Phase 11 実行結果 | 未了 |
+| HIGH 問題の未タスク化 | 実行後に判定 |

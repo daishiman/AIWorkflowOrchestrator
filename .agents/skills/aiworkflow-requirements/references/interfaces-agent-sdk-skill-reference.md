@@ -126,7 +126,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | 項目 | 契約 |
 | --- | --- |
 | 表向きの primary 導線 | `SkillManagementPanel` → `SkillLifecyclePanel` の 1 画面 |
-| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` / `getVerifyDetail` / `reverifyWorkflow` を持つ補助 API |
+| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` / `getVerifyDetail` / `reverifyWorkflow` / `getGovernanceState` を持つ補助 API |
 | create 正本 | `agentSlice.createSkill()` → `window.electronAPI.skill.create()` |
 | execute 正本 | `agentSlice.executeSkill()` → `window.electronAPI.skill.execute()` |
 | verify detail | `window.electronAPI.skillCreator.getVerifyDetail(planId)` で derived detail を取得し、owner は engine に維持 |
@@ -141,6 +141,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | `window.electronAPI.skillCreator.planSkill(prompt, authMode?, apiKey?)` | runtime creator plan を public IPC で要求する | skill 作成 runtime bridge を既存 namespace に保つため |
 | `window.electronAPI.skillCreator.executePlan(planId, skillSpec, authMode?, apiKey?)` | runtime plan 実行を要求する | facade / SkillExecutor の境界を preload から隠蔽するため |
 | `window.electronAPI.skillCreator.improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | runtime 改善を要求する | feedback ベース改善を `skill-creator:*` surface に集約するため |
+| `window.electronAPI.skillCreator.getGovernanceState()` | 現在の phase / active policy / denial 要約を取得する | governance 表示を shared DTO で読むため |
 | `window.electronAPI.skillCreator.improveSkill(skillName, { autoApply: false })` | 改善候補の事前整理 | creator 提案と詳細分析を分離するため |
 | `useCreateSkill()` | create 実処理 | 一覧再取得・既存権限導線を保つため |
 | `useExecuteSkill()` | execute 実処理 | preflight / permission / streaming 契約を再利用するため |
@@ -545,6 +546,30 @@ Task03 実装で、`plan()` / `improve()` は固定 root 前提の resource 読�
 | --- | --- | --- |
 | RuntimeSkillCreatorFacade.ts | `apps/desktop/src/main/services/runtime/` | Facade 本体 |
 | creatorHandlers.ts | `apps/desktop/src/main/ipc/` | IPC ハンドラ（internal helper） |
+
+### Governance 拡張（TASK-P0-09 / 2026-03-31）
+
+`RuntimeSkillCreatorFacade.execute()` では、governance policy を `SkillExecutor.execute(..., governanceOptions)` へ伝播し、execute phase の `permissionMode` / `hooks` / `permissions.canUseTool` を SDK query() 呼び出しへ接続する。
+
+| 要素 | パス | current fact |
+| --- | --- | --- |
+| `SkillCreatorGovernancePolicy` | `apps/desktop/src/main/services/runtime/SkillCreatorGovernancePolicy.ts` | phase 別 policy 定義と path-safe `createCanUseToolCallback()` を提供 |
+| `GovernanceHooksFactory` | `apps/desktop/src/main/services/runtime/GovernanceHooksFactory.ts` | PreToolUse / PostToolUse を中心に監査 hook を生成 |
+| `GovernanceAuditSink` | `apps/desktop/src/main/services/runtime/GovernanceAuditSink.ts` | denial / summary / UI payload を蓄積・構築する |
+| `skill-creator:get-governance` | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `GovernanceUiPayload` を renderer へ返す public IPC |
+| `getGovernancePayload()` | `apps/desktop/src/preload/skill-creator-api.ts` | governance payload 取得用 preload API |
+
+#### Facade public surface
+
+| メソッド | 戻り値 | 説明 |
+| --- | --- | --- |
+| `getGovernanceUiPayload(phase)` | `GovernanceUiPayload` | denial と session summary を UI 向けに返す |
+| `getGovernanceAuditEvents()` | `readonly GovernanceAuditEvent[]` | 蓄積イベントを取得する |
+
+#### 制約
+
+- current wiring は execute phase を中心に接続している
+- plan / verify / improve の full governance enforcement と renderer 可視化は follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` で継続する
 
 ### 完了タスク
 

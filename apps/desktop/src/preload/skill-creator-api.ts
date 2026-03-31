@@ -176,6 +176,14 @@ export interface SkillCreatorAPI {
   ) => Promise<IpcResult<import("@repo/shared/types").SkillCreatorSdkEvent[]>>;
 
   /**
+   * Governance 状態を取得する (TASK-P0-09)
+   * @returns 現在の governance phase、policy、直近 audit events、denials
+   */
+  getGovernanceState: () => Promise<
+    IpcResult<import("@repo/shared/types").SkillCreatorGovernanceState>
+  >;
+
+  /**
    * スキルを改善する
    * @param skillName - スキル名
    * @param options - 改善オプション
@@ -413,6 +421,10 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_NORMALIZE_SDK_MESSAGES, {
       messages,
     }),
+
+  getGovernanceState: (): Promise<
+    IpcResult<import("@repo/shared/types").SkillCreatorGovernanceState>
+  > => safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE),
 
   improveSkill: (
     skillName: string,

@@ -88,15 +88,16 @@ Task04 では Skill Creator runtime workflow の canonical state を Renderer �
 | --- | --- | --- | --- | --- |
 | `skill-creator:get-workflow-state` | Renderer → Main | current workflow snapshot 取得 | `{ planId: string }` | `SkillCreatorWorkflowUiSnapshot` |
 | `skill-creator:submit-user-input` | Renderer → Main | user input 回答送信 | `SkillCreatorUserInputSubmission` | `SkillCreatorWorkflowUiSnapshot` |
+| `skill-creator:get-governance` | Renderer → Main | governance payload 取得 | `{ phase: SkillCreatorGovernancePhase }` | `IpcResult<GovernanceUiPayload>` |
 | `skill-creator:workflow-state-changed` | Main → Renderer | snapshot 更新 push | none | `SkillCreatorWorkflowUiSnapshot` |
 
 ### current contract
 
 | 層 | ファイル | 契約 |
 | --- | --- | --- |
-| Shared | `packages/shared/src/types/skillCreator.ts` | `SkillCreatorWorkflowUiSnapshot` / `SkillCreatorUserInputSubmission` を SSoT にする。`SkillCreatorUserInputKind` は `single_select` / `multi_select` / `free_text` / `secret` / `confirm` の 5 種 |
-| Main IPC | `apps/desktop/src/main/ipc/creatorHandlers.ts` | sender validation + payload validation 後に facade へ委譲する |
-| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開する |
+| Shared | `packages/shared/src/types/skillCreator.ts` | `SkillCreatorWorkflowUiSnapshot` / `SkillCreatorUserInputSubmission` / `SkillCreatorGovernancePhase` / `GovernanceUiPayload` を SSoT にする。`SkillCreatorUserInputKind` は `single_select` / `multi_select` / `free_text` / `secret` / `confirm` の 5 種 |
+| Main IPC | `apps/desktop/src/main/ipc/creatorHandlers.ts` | sender validation + payload validation 後に facade へ委譲し、`skill-creator:get-governance` で runtime governance payload を返す |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開し、`getGovernancePayload()` を含む |
 | Renderer | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | phase summary / question host / provenance summary / handoff card を snapshot 表示する |
 
 `SkillCreatorUserInputSubmission` は kind ごとに使用フィールドを切り替える。`multi_select` では `selectedOptionIds: string[]` を使い、Renderer は request kind 切替時に stale selection を持ち越さないことを要件とする。
@@ -431,10 +432,10 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | --- | --- | --- |
 | Main registration | `apps/desktop/src/main/ipc/index.ts` | `SkillExecutor` / `authKeyService` から facade を組み立てる |
 | Main public entrypoint | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` | skill creator 標準 surface を維持して runtime helper を登録する |
-| Main runtime helper | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `plan` / `execute-plan` / `improve-skill` / `get-verify-detail` / `reverify-workflow` handler |
+| Main runtime helper | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `plan` / `execute-plan` / `improve-skill` / `get-verify-detail` / `reverify-workflow` / `get-governance-state` handler |
 | Runtime service | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | public bridge。policy / handoff / execute を判断し、state 更新は engine へ委譲 |
 | Workflow engine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `currentPhase` / `awaitingUserInput` / `verifyResult` / artifacts / `resumeTokenEnvelope` の owner。checkpoint hydrate / artifact serialization も保持 |
-| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `planSkill()` / `executePlan()` / `improveSkillWithFeedback()` / `getVerifyDetail()` / `reverifyWorkflow()` |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `planSkill()` / `executePlan()` / `improveSkillWithFeedback()` / `getVerifyDetail()` / `reverifyWorkflow()` / `getGovernanceState()` |
 | Workflow session repository | `apps/desktop/src/main/services/session/SkillCreatorWorkflowSessionRepository.ts` | revision / lease guard 付き save/load/invalidate/evaluate。public IPC 未公開の internal persistence owner |
 | Compatibility evaluator | `apps/desktop/src/main/services/session/ResumeCompatibilityEvaluator.ts` | version / route / provenance / lease を比較し `compatible` / `compatible_with_warning` / `incompatible` / `conflict` を返す |
 | Workflow session storage | `apps/desktop/src/main/services/session/WorkflowSessionStorage.ts` | `skill-creator-workflow-sessions` store を管理し generic session schema と分離 |
@@ -455,6 +456,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `skill-creator:improve-skill` | runtime 改善 | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `skill-creator:get-verify-detail` | verify detail 取得 | `SkillCreatorGetVerifyDetailRequest` | `IpcResult<RuntimeSkillCreatorVerifyDetailResponse>` |
 | `skill-creator:reverify-workflow` | verify loop 再要求 | `SkillCreatorReverifyWorkflowRequest` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
+| `skill-creator:get-governance-state` | runtime governance state 取得 | なし | `IpcResult<SkillCreatorGovernanceState>` |
 
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 

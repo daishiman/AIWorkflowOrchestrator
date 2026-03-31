@@ -84,6 +84,17 @@ import { parseLlmResponseToContent } from "./parseLlmResponseToContent";
 import { SkillCreatorVerificationEngine } from "./SkillCreatorVerificationEngine";
 import { formatVerifyChecksAsFeedback } from "./formatVerifyChecksAsFeedback";
 import type { SkillCreatorWorkflowSessionRepository } from "../session";
+import {
+  SkillCreatorAuditSink,
+  createHooks,
+  getPolicy,
+  canUseTool as evaluateGovernanceToolUse,
+  type SkillCreatorHooks,
+} from "./governance";
+import type {
+  SkillCreatorGovernancePhase,
+  SkillCreatorGovernanceState,
+} from "@repo/shared/types";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -122,6 +133,10 @@ export class RuntimeSkillCreatorFacade {
   private readonly manifestLoader = new ManifestLoader();
   private readonly verificationEngine?: SkillCreatorVerificationEngine;
   private readonly maxImproveRetry: number;
+
+  // TASK-P0-09: Governance / Permission / Hooks
+  private readonly auditSink = new SkillCreatorAuditSink();
+  private currentGovernancePhase: SkillCreatorGovernancePhase = "plan";
 
   // TASK-RT-01: LLMAdapter ステータス管理
   private _llmAdapterStatus: LLMAdapterStatus = "initializing";
@@ -211,13 +226,87 @@ export class RuntimeSkillCreatorFacade {
     return this.workflowEngine.requestReverify(planId);
   }
 
+  /**
+   * 現在の governance 状態を返す (TASK-P0-09)。
+   * renderer は IPC 経由で read-only 参照する。
+   */
+  getGovernanceState(): SkillCreatorGovernanceState {
+    const phase = this.currentGovernancePhase;
+    const activePolicy = getPolicy(phase);
+    const recentAuditEvents = this.auditSink.getRecentEvents(20);
+    const recentDenials = this.auditSink
+      .getDenialEvents()
+      .slice(-10)
+      .map((e) => ({
+        toolName: e.toolName,
+        toolUseId: undefined,
+        reason: e.decision?.reason ?? "unknown",
+      }));
+    return { phase, activePolicy, recentAuditEvents, recentDenials };
+  }
+
+  /**
+   * 指定 phase の hooks を生成する (TASK-P0-09)。
+   * 内部メソッド: plan/execute/verify/improve の各フローで使用。
+   */
+  private createGovernanceHooks(
+    phase: SkillCreatorGovernancePhase,
+  ): SkillCreatorHooks {
+    this.currentGovernancePhase = phase;
+    const provenance = this.buildSourceProvenance();
+    return createHooks(phase, this.auditSink, provenance);
+  }
+
   async verifySkill(
     skillDir: string,
   ): Promise<import("@repo/shared").RuntimeSkillCreatorVerifyCheck[]> {
+    const verifyId = `verify-${Date.now()}`;
+    const governanceHooks = this.createGovernanceHooks("verify");
+    governanceHooks.onSessionStart({
+      sessionId: verifyId,
+      provenance: this.buildSourceProvenance(),
+    });
+
     if (!this.verificationEngine) {
+      governanceHooks.onSessionEnd({
+        sessionId: verifyId,
+        summary: "Verify skipped: verificationEngine unavailable",
+      });
       return [];
     }
-    return this.verificationEngine.verify(skillDir);
+
+    try {
+      const checks = await this.verificationEngine.verify(skillDir);
+      governanceHooks.onSessionEnd({
+        sessionId: verifyId,
+        summary: `Verify completed: ${checks.length} checks`,
+      });
+      return checks;
+    } catch (error) {
+      governanceHooks.onSessionEnd({
+        sessionId: verifyId,
+        summary: `Verify failed: ${error instanceof Error ? error.message : String(error)}`,
+      });
+      throw error;
+    }
+  }
+
+  private createExecuteGovernanceCanUseTool() {
+    return async (
+      toolName: string,
+      _input: Record<string, unknown>,
+      options: { toolUseID: string },
+    ) => {
+      const decision = evaluateGovernanceToolUse(toolName, "execute");
+      if (decision.allowed) {
+        return { behavior: "allow" as const, toolUseID: options.toolUseID };
+      }
+      return {
+        behavior: "deny" as const,
+        message: decision.reason,
+        toolUseID: options.toolUseID,
+      };
+    };
   }
 
   /**
@@ -693,6 +782,8 @@ export class RuntimeSkillCreatorFacade {
 
     // integrated_api: LLM で計画を生成
     const planId = `plan-${Date.now()}`;
+    const governanceHooks = this.createGovernanceHooks("plan");
+    governanceHooks.onSessionStart({ sessionId: planId });
     let sourceProvenance: SkillCreatorWorkflowSourceProvenance | undefined =
       this.buildSourceProvenance();
 
@@ -800,6 +891,10 @@ export class RuntimeSkillCreatorFacade {
       });
     }
 
+    governanceHooks.onSessionEnd({
+      sessionId: planId,
+      summary: `Plan completed: ${parsed.skillName}`,
+    });
     return planResult;
   }
 
@@ -815,6 +910,11 @@ export class RuntimeSkillCreatorFacade {
   ): Promise<SkillExecuteResponse> {
     const decision = await this.resolveDecision(authMode, apiKey);
     const sourceProvenance = this.buildSourceProvenance();
+    const governanceHooks = this.createGovernanceHooks("execute");
+    governanceHooks.onSessionStart({
+      sessionId: planResult.planId,
+      provenance: sourceProvenance,
+    });
 
     if (decision.type === "terminal_handoff") {
       this.workflowEngine.recordExecuteHandoff(
@@ -831,10 +931,32 @@ export class RuntimeSkillCreatorFacade {
       decision,
       sourceProvenance,
     );
+    const executePolicy = getPolicy("execute");
 
     const request: SkillExecutionRequest = {
       prompt: planResult.skillSpec,
       skillId: `creator-${planResult.planId}`,
+      allowedTools: [...executePolicy.allowedTools],
+      permissionMode: executePolicy.permissionMode,
+      canUseTool: this.createExecuteGovernanceCanUseTool(),
+      hookObservers: {
+        onPreToolUse: (input, _toolUseId) => {
+          const decision = governanceHooks.onPreToolUse({
+            sessionId: planResult.planId,
+            toolName: input.toolName,
+          });
+          return decision.allowed
+            ? { proceed: true }
+            : { proceed: false, message: decision.reason };
+        },
+        onPostToolUse: (input, _toolUseId, success, error) =>
+          governanceHooks.onPostToolUse({
+            sessionId: planResult.planId,
+            toolName: input.toolName,
+            success,
+            error,
+          }),
+      },
     };
 
     const skillMeta = {
@@ -845,7 +967,8 @@ export class RuntimeSkillCreatorFacade {
       path: "",
       triggers: [],
       anchors: [],
-      allowedTools: ["Read", "Edit", "Write"],
+      allowedTools: [...executePolicy.allowedTools],
+      permissionMode: executePolicy.permissionMode,
       content: planResult.skillSpec,
     };
 
@@ -931,6 +1054,10 @@ export class RuntimeSkillCreatorFacade {
     };
     if (executeResult.success) {
       this.workflowEngine.recordExecuteResult(planResult.planId, executeResult);
+      governanceHooks.onSessionEnd({
+        sessionId: planResult.planId,
+        summary: `Execute succeeded: ${executeResult.skillName}`,
+      });
       return executeResult;
     }
 
@@ -945,6 +1072,10 @@ export class RuntimeSkillCreatorFacade {
       permissionDenials: executeResult.permissionDenials,
       sdkEvents: executeResult.sdkEvents,
       sourceProvenance,
+    });
+    governanceHooks.onSessionEnd({
+      sessionId: planResult.planId,
+      summary: `Execute failed: ${executeResult.error ?? "unknown"}`,
     });
     return executeResult;
   }
@@ -995,6 +1126,8 @@ export class RuntimeSkillCreatorFacade {
     }
 
     const improveId = `improve-${Date.now()}`;
+    const governanceHooks = this.createGovernanceHooks("improve");
+    governanceHooks.onSessionStart({ sessionId: improveId });
 
     // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
     if (!this.llmAdapter) {
@@ -1073,12 +1206,20 @@ export class RuntimeSkillCreatorFacade {
         };
       }
 
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: `Improve completed: ${parseResult.suggestions.length} suggestions`,
+      });
       return {
         improveId,
         suggestions: parseResult.suggestions,
         revisedSpec: parseResult.revisedSpec,
       };
     } catch (error: unknown) {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: `Improve failed: ${error instanceof Error ? error.message : "unknown"}`,
+      });
       return handleImproveError(error);
     }
   }

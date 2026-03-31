@@ -31,8 +31,20 @@ describe("EXECUTION_CHANNELS", () => {
     );
   });
 
-  it("プロパティ数が 1 である", () => {
-    expect(Object.keys(EXECUTION_CHANNELS)).toHaveLength(1);
+  it('EXECUTION_GET_TERMINAL_LOG は "execution:get-terminal-log"', () => {
+    expect(EXECUTION_CHANNELS.EXECUTION_GET_TERMINAL_LOG).toBe(
+      "execution:get-terminal-log",
+    );
+  });
+
+  it('EXECUTION_GET_COPY_COMMAND は "execution:get-copy-command"', () => {
+    expect(EXECUTION_CHANNELS.EXECUTION_GET_COPY_COMMAND).toBe(
+      "execution:get-copy-command",
+    );
+  });
+
+  it("プロパティ数が 3 である", () => {
+    expect(Object.keys(EXECUTION_CHANNELS)).toHaveLength(3);
   });
 });
 
@@ -79,6 +91,12 @@ describe("IPC_CHANNELS 統合オブジェクト", () => {
   it("EXECUTION_CHANNELS が IPC_CHANNELS に含まれる", () => {
     expect(IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO).toBe(
       "execution:get-disclosure-info",
+    );
+    expect(IPC_CHANNELS.EXECUTION_GET_TERMINAL_LOG).toBe(
+      "execution:get-terminal-log",
+    );
+    expect(IPC_CHANNELS.EXECUTION_GET_COPY_COMMAND).toBe(
+      "execution:get-copy-command",
     );
   });
 });
