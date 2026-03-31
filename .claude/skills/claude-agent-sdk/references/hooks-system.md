@@ -453,6 +453,43 @@ class SkillExecutor {
 
 ---
 
+## Governance Hooks Factory パターン（TASK-P0-09）
+
+phase 別のポリシーに基づいた Governance Hooks を生成するパターン。
+SkillCreator の plan/execute/verify/improve の各フェーズで使用する。
+
+### 使用パターン
+
+```typescript
+const { hooks, auditSink } = createGovernanceHooks({
+  phase: "execute",               // plan | execute | verify | improve
+  sessionId: planResult.planId,
+  skillTargetDir: resolvedSkillDir, // Write/Edit の書き込み先制限
+  provenance: sourceProvenance,
+  auditSink: this.governanceAuditSink,
+});
+await query(prompt, { permissionMode: "acceptEdits", hooks });
+```
+
+**4フェーズ別ポリシー** (詳細は [permission-control.md](./permission-control.md) 参照):
+
+| phase   | permissionMode | Write | Edit |
+| ------- | -------------- | ----- | ---- |
+| plan    | `plan`         | 拒否  | 拒否 |
+| execute | `acceptEdits`  | 許可  | 許可 |
+| verify  | `plan`         | 拒否  | 拒否 |
+| improve | `acceptEdits`  | 拒否  | 許可 |
+
+GovernanceAuditSink が session_start/pre_tool_use/tool_denied/post_tool_use/session_end
+を蓄積し、`buildSessionSummary()` / `buildUiPayload()` で UI サマリーを生成する。
+
+📖 実装参照:
+- `apps/desktop/src/main/services/runtime/GovernanceHooksFactory.ts`
+- `apps/desktop/src/main/services/runtime/GovernanceAuditSink.ts`
+- `apps/desktop/src/main/services/runtime/SkillCreatorGovernancePolicy.ts`
+
+---
+
 ## ベストプラクティス
 
 ### すべきこと
