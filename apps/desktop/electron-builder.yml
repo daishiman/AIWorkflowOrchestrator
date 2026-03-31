@@ -42,9 +42,6 @@ mac:
 # macOS公証（CI環境で自動実行）
 afterSign: scripts/notarize.mjs
 
-# ネイティブモジュールリビルド（本番ビルド用）
-afterPack: scripts/rebuild-native-for-electron.mjs
-
 dmg:
   contents:
     - x: 130
