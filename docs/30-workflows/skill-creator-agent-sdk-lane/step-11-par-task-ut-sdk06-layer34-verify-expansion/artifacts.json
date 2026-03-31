@@ -1,0 +1,28 @@
+{
+  "feature": "step-11-par-task-ut-sdk06-layer34-verify-expansion",
+  "created": "2026-03-31T00:00:00.000Z",
+  "lastUpdated": "2026-03-31T00:00:00.000Z",
+  "status": "spec_created",
+  "phases": {
+    "1": { "status": "pending", "artifacts": ["phase-1-requirements.md"] },
+    "2": { "status": "pending", "artifacts": ["phase-2-design.md"] },
+    "3": { "status": "pending", "artifacts": ["phase-3-design-review.md"] },
+    "4": { "status": "pending", "artifacts": ["phase-4-test-creation.md"] },
+    "5": { "status": "pending", "artifacts": ["phase-5-implementation.md"] },
+    "6": { "status": "pending", "artifacts": ["phase-6-test-expansion.md"] },
+    "7": { "status": "pending", "artifacts": ["phase-7-coverage-check.md"] },
+    "8": { "status": "pending", "artifacts": ["phase-8-refactoring.md"] },
+    "9": { "status": "pending", "artifacts": ["phase-9-quality-assurance.md"] },
+    "10": { "status": "pending", "artifacts": ["phase-10-final-review.md"] },
+    "11": { "status": "pending", "artifacts": ["phase-11-manual-test.md"] },
+    "12": { "status": "pending", "artifacts": ["phase-12-documentation.md"] },
+    "13": { "status": "blocked", "artifacts": ["phase-13-pr-creation.md"] }
+  },
+  "metadata": {
+    "taskType": "test",
+    "taskId": "UT-IMP-SDK-06",
+    "workflow": "skill-creator-agent-sdk-lane",
+    "parentWorkflow": "docs/30-workflows/skill-creator-agent-sdk-lane",
+    "dependsOnTasks": ["TASK-P0-01", "TASK-P0-02"]
+  }
+}
