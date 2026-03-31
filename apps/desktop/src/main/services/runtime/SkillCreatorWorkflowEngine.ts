@@ -655,7 +655,7 @@ export class SkillCreatorWorkflowEngine {
       review: ["execute", "handoff"],
       execute: ["verify"],
       verify: ["review", "improve"],
-      improve: ["execute", "verify"],
+      improve: ["execute"],
       handoff: [],
     };
 
@@ -826,11 +826,11 @@ export class SkillCreatorWorkflowEngine {
   private getReverifyDisabledReason(
     state: SkillCreatorWorkflowState,
   ): string | undefined {
+    if (state.currentPhase === "execute") {
+      return "実行中は再検証できません。";
+    }
     if (state.routeSnapshot?.type === "terminal_handoff") {
       return "terminal_handoff の再検証導線は Task07 owner のため、この surface では再実行しません。";
-    }
-    if (state.currentPhase !== "improve" && state.currentPhase !== "verify") {
-      return "verify / improve フェーズ以外では再検証できません。";
     }
 
     const latestExecuteResult = getExecuteArtifactPayload(

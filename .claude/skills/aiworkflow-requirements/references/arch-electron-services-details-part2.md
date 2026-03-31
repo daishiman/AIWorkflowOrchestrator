@@ -167,49 +167,6 @@ Task03 実装では、workflow manifest foundation の上に source discovery �
 
 この追加は internal hardening であり、`RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorExecuteResponse` / `RuntimeSkillCreatorImproveResponse` の public shape は変更しない。一方で `SkillCreatorWorkflowSourceProvenance` は `candidateRoots` / `selectedRoots` / `selectedResourceIds` / `droppedResourceIds` / `structureSignature` / `degradeReasons` を持つ current fact に更新された。
 
-### TASK-P0-04 DI override / dynamic pipeline デフォルト有効化（2026-03-30）
-
-Task P0-04 実装では、Task03 で導入した dynamic resource pipeline を **デフォルトで有効** にした。
-
-#### DI override パターン
-
-`RuntimeSkillCreatorFacade` コンストラクタで外部注入がなければ 3 コンポーネントを自動インスタンス化する。
-
-```typescript
-// 外部注入を優先し、なければ自動インスタンス化（TASK-P0-04）
-this.sourceResolver  = deps.sourceResolver  ?? new SkillCreatorSourceResolver();
-this.resourcePlanner = deps.resourcePlanner ?? new PhaseResourcePlanner();
-this.resolvedResourceReader =
-  deps.resolvedResourceReader ?? new ResolvedResourceReader(deps.resourceLoader);
-```
-
-フィールドは `readonly` 必須型として宣言されるため、TypeScript が `null` を型レベルで除外する。
-
-#### manifest 自動発見
-
-`plan()` / `improve()` 内で `loadWorkflowManifest(explicitRoot?: string)` を呼び出し、manifest ファイルを自動発見する。
-
-候補ディレクトリ優先順位（`getSkillCreatorRootCandidates()` と同順）:
-
-1. `explicit` — 明示的に渡されたパス
-2. `env` — `AIWORKFLOW_SKILL_CREATOR_PATH` 環境変数
-3. `home` — `~/.aiworkflow/skills/skill-creator`
-4. `repo` — `{cwd}/.claude/skills/skill-creator`
-
-`SkillCreatorSourceResolver.prototype.resolve` は `explicitRoot` 未指定時でも常に `repo` 候補を含む。
-
-#### fallback chain
-
-| 優先度 | 手段 | 遷移条件 |
-| --- | --- | --- |
-| 1 | dynamic pipeline（manifest 自動発見） | `sourceResolver` + `resourcePlanner` + `resolvedResourceReader` を使用 |
-| 2 | static loader fallback | dynamic pipeline 失敗 && `resourceLoader` が存在する |
-| 3 | `resource_loader_unavailable` エラー返却 | dynamic pipeline 失敗 && `resourceLoader` が存在しない |
-
-#### 廃止済みメソッド
-
-`hasDynamicResourcePipeline()` は Task03 時点では dynamic pipeline の有効/無効を外部から判断するために存在したが、TASK-P0-04 でデフォルト有効となったため廃止された。呼び出し箇所はテストを含めて全削除済み。
-
 ## Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
 
 > **ステータス**: `spec_created`（2026-03-19 再監査同期）

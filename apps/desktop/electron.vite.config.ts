@@ -7,14 +7,12 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode);
   const sharedTsconfig = resolve(__dirname, "tsconfig.json");
 
-  const createSharedPlugins = () => [
-    externalizeDepsPlugin({ exclude: ["@repo/shared"] }),
-    tsconfigPaths({ projects: [sharedTsconfig] }),
-  ];
-
   return {
     main: {
-      plugins: createSharedPlugins(),
+      plugins: [
+        externalizeDepsPlugin(),
+        tsconfigPaths({ projects: [sharedTsconfig] }),
+      ],
       define: {
         "process.env.VITE_SUPABASE_URL": JSON.stringify(env.VITE_SUPABASE_URL),
         "process.env.VITE_SUPABASE_ANON_KEY": JSON.stringify(
@@ -39,7 +37,10 @@ export default defineConfig(({ mode }) => {
       },
     },
     preload: {
-      plugins: createSharedPlugins(),
+      plugins: [
+        externalizeDepsPlugin(),
+        tsconfigPaths({ projects: [sharedTsconfig] }),
+      ],
       build: {
         outDir: "out/preload",
         rollupOptions: {
