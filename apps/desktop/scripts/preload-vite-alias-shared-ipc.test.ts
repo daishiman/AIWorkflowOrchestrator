@@ -1,7 +1,11 @@
 import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
-const CONFIG_PATH = new URL("../electron.vite.config.ts", import.meta.url);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+const CONFIG_PATH = resolve(__dirname, "../electron.vite.config.ts");
 
 describe("TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001", () => {
   it("preload で @repo/shared を externalize しない設定を持つ", () => {
