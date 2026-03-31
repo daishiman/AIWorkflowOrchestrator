@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-31T06:03:02.912Z",
-  "totalKeywords": 2584,
+  "generated": "2026-03-31T07:51:26.643Z",
+  "totalKeywords": 2576,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6263,6 +6263,7 @@
     ],
     "ELECTRON": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-viewtype-electron-ui.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
@@ -6987,6 +6988,10 @@
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "spec-splitting-guidelines.md",
       "ui-ux-feature-components-core.md"
+    ],
+    "BUILD": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "governance": [
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -9312,9 +9317,6 @@
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "CURRENT": [
-      "logs-archive-2026-03-history-search-notification-center.md"
-    ],
-    "BUILD": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "CAPTURE": [

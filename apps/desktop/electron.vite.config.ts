@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
     },
     preload: {
       plugins: [
-        externalizeDepsPlugin(),
+        externalizeDepsPlugin({ exclude: ["@repo/shared"] }),
         tsconfigPaths({ projects: [sharedTsconfig] }),
       ],
       build: {

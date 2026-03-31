@@ -17,7 +17,7 @@
 
 | 項目 | 値 |
 |-----|---|
-| 推奨バージョン | `34.x` |
+| 推奨バージョン | `39.x` |
 | 最小バージョン | `28.0.0` |
 | Chromium | 対応Electronバージョンに準拠 |
 | Node.js | 対応Electronバージョンに準拠 |
@@ -47,16 +47,16 @@
 
 | 項目 | 値 |
 |-----|---|
-| 推奨バージョン | `25.x` |
+| 推奨バージョン | `26.x` |
 | 設定ファイル | `electron-builder.yml` |
 
 **出力形式:**
 
 | プラットフォーム | 形式 |
 |----------------|-----|
-| macOS | DMG, PKG |
-| Windows | NSIS, MSI |
-| Linux | AppImage, deb, rpm |
+| macOS | DMG, zip |
+| Windows | NSIS, zip |
+| Linux | AppImage, deb |
 
 ### コード署名
 
@@ -75,7 +75,7 @@
 
 | 項目 | 値 |
 |-----|---|
-| 推奨バージョン | `11.x` |
+| 推奨バージョン | `12.x` |
 | 用途 | ローカルデータベース |
 
 **選定理由:**
@@ -83,6 +83,33 @@
 - 同期API（Main Processに適合）
 - パフォーマンス
 - Electronとの互換性
+
+### ネイティブモジュール再ビルド運用
+
+| 項目 | 値 |
+| --- | --- |
+| Node ABI 再整合 | `pnpm rebuild better-sqlite3 && pnpm rebuild esbuild` |
+| Electron ABI 再整合 | `pnpm --filter @repo/desktop run rebuild:electron` |
+| postinstall hook | `bash scripts/setup-native-modules.sh || pnpm rebuild better-sqlite3 || true` |
+| package afterPack | `apps/desktop/scripts/rebuild-native-for-electron.mjs` |
+
+**標準ルール:**
+
+- worktree / Rosetta / CI で native binary が drift しやすいため、Node ABI と Electron ABI を分けて検査する
+- `afterPack` hook では electron-builder の `arch` 数値 enum を `x64` / `arm64` などの CLI 文字列へ正規化してから `@electron/rebuild` に渡す
+- preload で consuming する shared package は CJS 実行条件と bundle 方針の両方を確認する
+
+**Rosetta 2 環境での arch 検出確認（Phase 4 テスト計画必須）:**
+
+| 確認観点 | コマンド / 方法 |
+| --- | --- |
+| 実行環境 arch 確認 | `node -p "process.platform + ' ' + process.arch"` |
+| Electron バイナリ arch 確認 | `file $(which electron)` または `lipo -info <electron-binary>` |
+| Rosetta 2 動作確認 | `arch -x86_64 node -p "process.arch"` → `x64` を返す場合は Rosetta 2 |
+| native module arch 確認 | `file apps/desktop/node_modules/better-sqlite3/build/Release/better_sqlite3.node` |
+
+- Apple Silicon Mac で x86_64 Electron を使う場合、`process.arch` は `x64` を返す（Rosetta 2）。native module のビルド arch と一致しないことがあるため、Electron バイナリの実 arch を直接読み取ること
+- Phase 4 テスト計画には「Rosetta 2 / CI / worktree」3環境での arch 検出確認を必須項目として含める
 
 ### electron-store
 

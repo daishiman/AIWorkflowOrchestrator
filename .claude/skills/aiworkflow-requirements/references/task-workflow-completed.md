@@ -55,6 +55,37 @@
 - `npm -s exec vitest -- run apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts apps/desktop/src/main/services/runtime/__tests__/governance/SkillCreatorGovernance.integration.test.ts apps/desktop/src/main/ipc/__tests__/creatorHandlers.test.ts apps/desktop/src/preload/__tests__/skill-creator-api.governance.test.ts`
 - targeted suite PASS
 
+### タスク: TASK-ELECTRON-BUILD-FIX Electron ビルドインフラ修正（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-ELECTRON-BUILD-FIX |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
+| タイプ | bugfix / desktop-build-infrastructure |
+| 優先度 | 高 |
+| 完了日 | 2026-03-31 |
+| 対象 | `packages/shared`, `apps/desktop`, `scripts/setup-native-modules.sh` |
+| 成果物 | `docs/30-workflows/electron-build-infra-fix/` |
+
+#### 実施内容
+
+- `@repo/shared` を ESM/CJS dual output に拡張し、preload 側の CJS 実行条件と整合
+- preload では `@repo/shared` を外部依存にせず bundle に含めるようにした
+- `scripts/setup-native-modules.sh` に Electron ABI 検査を追加し、`rebuild:electron` 導線へ接続
+- `apps/desktop/scripts/rebuild-sqlite-for-electron.mjs` で Electron 実バイナリの arch 検出を実装
+- `apps/desktop/scripts/rebuild-native-for-electron.mjs` と `electron-builder.yml` で afterPack リビルドを導入し、数値 arch enum を CLI 向け文字列へ正規化
+- Phase 11 を NON_VISUAL current facts に是正し、placeholder-only screenshot 運用を撤去
+
+#### Phase 13 blocked 理由
+
+- AC-7（desktop dev 起動 GUI 確認）がユーザー手動確認待ち
+- Phase 13（`/ai:diff-to-pr`）は AC-7 確認完了後に実行可能
+
+#### 発見元
+
+- GitHub Issue #1786
+- 関連タスク: UT-CONV-DB-001, UT-CONV-DB-004
+
 ### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
 | 項目 | 値 |
