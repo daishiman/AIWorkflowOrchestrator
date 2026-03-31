@@ -1,0 +1,19 @@
+{
+  "mode": "non_visual",
+  "reason": "UI差分のない build infra task のため、Phase 11 は walkthrough と CLI 証跡で閉じる。ただし current workflow 配下に representative review-board PNG を保存して evidence chain を閉じる",
+  "screenshots": [
+    {
+      "id": "TC-11-NONVISUAL-01",
+      "type": "review-board",
+      "path": "outputs/phase-11/screenshots/phase11-build-infra-review-board.png",
+      "source": "outputs/phase-11/phase11-review-board.md",
+      "metadata": "outputs/phase-11/phase11-capture-metadata.json",
+      "covers": [
+        "shared dual output",
+        "preload bundle verification",
+        "Electron ABI rebuild",
+        "afterPack rebuild"
+      ]
+    }
+  ]
+}
