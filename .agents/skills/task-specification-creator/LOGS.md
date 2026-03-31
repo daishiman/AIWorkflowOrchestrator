@@ -3,6 +3,23 @@
 ## 役割
 
 ---
+## 2026-03-30 - TASK-P0-02 Phase 12 close-out sync
+
+### 変更内容
+- `phase-12-documentation.md` の Task 12-1〜12-5 と Step 1-A〜1-C を current facts へ揃え、`task-workflow.md` / `task-workflow-completed.md` / LOGS / SKILL / phase outputs の同波更新を完了
+- `verifyAndImproveLoop()` の feedback memory を Phase 12 の current fact として固定し、前回改善要約を次回 feedback に織り込む仕様をドキュメントへ反映
+- `UT-P0-02-001` を unassigned 化せず current phase に吸収し、completed ledger へ TASK-P0-02 完了記録を追加
+
+---
+
+## 2026-03-30 - agentview-permission-api-fix Phase 12 識別: SKILL.md v6.18.16 更新
+
+### 変更内容
+- `SKILL.md` の「Phase 12 よくある漏れ」テーブルに Feedback 4 を追加
+  - テストファイルが複数サフィックス（`*.test.tsx` / `*.coverage.test.tsx` / `*.cta.test.tsx` 等）に分散している場合、Phase 2 設計段階で全テストファイルを網羅的に列挙しモック定義の一貫性を確保するルールを明示
+- 変更履歴に v6.18.16 エントリを追加
+
+---
 ## 2026-03-30 - TASK-P0-05 Phase 12 close-out resync
 
 ### 変更内容
@@ -10,6 +27,16 @@
 - `documentation-changelog.md` / `system-spec-update-summary.md` / `skill-feedback-report.md` の premature 完了表現を、canonical same-wave sync 未完了の state へ是正
 - follow-up `task-ut-p0-05-phase12-same-wave-sync-001.md` を formalize し、local workflow 完了と central sync 未完了を分離
 - Phase 6 未テスト `E-14` / `E-15` を runtime persist integration suite へ追加し、task spec の edge case 定義とテスト実体を一致させた
+
+---
+## 2026-03-30 - TASK-P0-02 Phase 11/12 hardening
+
+### 変更内容
+- active workflow の Phase 1-12 ステータス、root / outputs `artifacts.json`、成果物インベントリを current facts へ同期
+- `outputs/phase-1`〜`phase-3` の summary artifact を追加し、phase spec から参照していた欠落パスを解消
+- Phase 11 に `TC-ID` 一覧、checklist、result evidence table を追加し、`NON_VISUAL` でも validator が機械追跡できる形へ是正
+- Phase 12 の implementation guide を validator 準拠へ書き換え、`recordVerifyPass()` の `checks` 未使用という current fact を明記
+- `.claude` 正本 2 skill の references / `LOGS.md` を same-wave で更新し、mirror sync 前提を回復
 
 ---
 ## 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out hardening
@@ -39,19 +66,6 @@
 - Phase 12 の compliance false positive を補正し、root / outputs `artifacts.json` を同期
 - `validate-phase-output.js --phase 12` PASS、`verify-all-specs.js` PASS（warning 28）
 - `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings、`vitest` rerun は environment blocked
-
----
-## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
-
-## TASK-SDK-04-U2 Phase 12 remediation sync（2026-03-28）
-
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 close-out remediation
-- **Result**: success
-- **Notes**:
-  - `artifacts.json` / `outputs/artifacts.json` の root status を `spec_created` へ戻し、index/status/path との drift を解消した
-  - `phase-12-documentation.md` の pending / 未チェック状態を current facts に同期し、 shallow close-out PASS を解消した
-  - system spec update を no-op 扱いしないよう整理し、aiworkflow 正本への same-wave sync を前提に close-out を修正した
 
 ---
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
@@ -1508,3 +1522,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/phase-12-documentation-guide.md` |
 | 結果 | `spec_created` workflow の implementation guide Part 2 を `current contract + target delta` で書くこと、API/使用例/設定表の省略禁止、`completed-tasks/` 配下でも status を `completed` へ上げないことを明文化した |
 | 検証 | current workflow の `phase12-task-spec-compliance-check.md` と突合して確認 |
+
+### 2026-03-30 - TASK-LLM-MOD-05 schema-extension close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / spec-alignment |
+| 変更対象 | `docs/30-workflows/step-04-seq-task-05-schema-extension/`（phase-2 / phase-12 / phase-13 / outputs / unassigned-task） |
+| 結果 | Phase 12 の実装ガイド・未タスク・skill-feedback を `provider-registry.ts` 前提へ同期し、Phase 13 の PR 準備と最終確認を current facts へ是正。`TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` を削除済みとして整理 |
+| 検証 | `provider.test.ts` 41 PASS、`llm.test.ts` 59 PASS / 1 skipped、workflow 内検索で旧想定パスの残存を解消確認 |

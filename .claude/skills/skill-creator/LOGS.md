@@ -3,6 +3,19 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-03-30 - TASK-P0-02 verify→improve→re-verify 閉ループ実装の SKILL.md 反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `verifyAndImproveLoop()` の閉ループ仕様を SKILL.md「verify → improve → re-verify 閉ループ（TASK-P0-02）」セクションへ追記
+  - `maxImproveRetry`（デフォルト3、範囲1-10、範囲外は自動クランプ）、feedback memory（直前の改善要約を次回 feedback に合成し重複改善を抑制）、`failedChecks` 限定改善入力（`info` は除外）を文書化
+  - `RuntimeSkillCreatorVerifyAndImproveResult` 型フィールドと `RuntimeSkillCreatorFacadeDeps.maxImproveRetry` を文書化
+  - テスト実績: 70件 PASS（SkillCreatorWorkflowEngine 41件 + RuntimeSkillCreatorFacade 37件 + formatVerifyChecksAsFeedback 9件 含む、runtime全体 449 tests PASS）
+  - Phase 12 compliance check PASS、typecheck PASS、diff -qr mirror PASS
+
+---
 ## 2026-03-27 - runtime policy close-out の authority / reason source hardening を update-process へ反映
 
 - **Agent**: skill-creator (update)
@@ -2432,3 +2445,15 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
   - RT-06 で発生した Phase 12 ドリフト（Part 1/Part 2 欠落、Phase 11 N/A 証跡不足、判定矛盾）を same-wave で修正
   - `implementation-guide` は Part 1/Part 2 の2層必須要件で再構成し、Phase 11 は `N/A + checklist/issues` の補助証跡を必須化
   - 環境 blocker（esbuild mismatch）は PASS 扱いせず未タスクへ formalize する運用を再確認
+
+---
+
+## 2026-03-30 - TASK-P0-04 フィードバック反映（FB-01, FB-02）
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns-pitfall-testing-ui.md` に FB-01・FB-02 の2パターンを追加
+  - FB-01: `SkillCreatorSourceResolver` を使うテストでは prototype mock が必須（`REPO_SKILL_CREATOR_PATH` 常時候補混入の前提条件を Phase 4 テスト仕様書記載事項として明文化）
+  - FB-02: `Promise.resolve()` n回フラッシュパターンの脆弱性と `vi.waitFor` / 共通 `waitForCall` ヘルパーへの移行推奨を追記

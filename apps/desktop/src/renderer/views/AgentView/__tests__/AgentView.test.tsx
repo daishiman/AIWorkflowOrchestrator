@@ -35,24 +35,24 @@ const mockFetchProviders = vi.fn();
 const mockSelectProvider = vi.fn();
 const mockSelectModel = vi.fn();
 
-// window.permissionAPI のモック（preload/types.ts の PermissionAPI 契約に準拠）
-const mockPermissionAPI = {
-  getAllowedTools: vi.fn().mockResolvedValue({ tools: [] }),
-  revokeTool: vi.fn().mockResolvedValue({ success: true }),
-  clearAll: vi.fn().mockResolvedValue({ success: true, clearedCount: 0 }),
-};
-
 function setMockPermissionsApi(
-  overrides: Partial<typeof mockPermissionAPI> = {},
+  overrides: {
+    getMode?: () => Promise<string>;
+    getRemembered?: () => Promise<unknown[]>;
+    setMode?: (mode: string) => Promise<unknown>;
+    clearRemembered?: () => Promise<unknown>;
+  } = {},
 ) {
-  Object.assign(mockPermissionAPI, {
-    getAllowedTools: vi.fn().mockResolvedValue({ tools: [] }),
-    revokeTool: vi.fn().mockResolvedValue({ success: true }),
-    clearAll: vi.fn().mockResolvedValue({ success: true, clearedCount: 0 }),
-    ...overrides,
-  });
-  Object.defineProperty(window, "permissionAPI", {
-    value: mockPermissionAPI,
+  Object.defineProperty(window, "electronAPI", {
+    value: {
+      permissions: {
+        getMode: vi.fn().mockResolvedValue("default"),
+        getRemembered: vi.fn().mockResolvedValue([]),
+        setMode: vi.fn().mockResolvedValue(undefined),
+        clearRemembered: vi.fn().mockResolvedValue(undefined),
+        ...overrides,
+      },
+    },
     configurable: true,
     writable: true,
   });
@@ -153,7 +153,6 @@ describe("AgentView", () => {
     vi.mocked(store.useFetchProviders).mockReturnValue(mockFetchProviders);
     vi.mocked(store.useSelectProvider).mockReturnValue(mockSelectProvider);
     vi.mocked(store.useSelectModel).mockReturnValue(mockSelectModel);
-    vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(false);
   });
 
   describe("レンダリング", () => {
@@ -470,12 +469,9 @@ describe("AgentView", () => {
       expect(mockFetchProviders).toHaveBeenCalledTimes(1);
     });
 
-    it("should load remembered count from getAllowedTools on mount and when panel opens", async () => {
+    it("should load permission mode and remembered count when panel is open", async () => {
       const store = await import("../../../store");
-      // パネルは最初閉じた状態で開始する。
-      // マウントeffect（[]deps）と isAdvancedSettingsOpen effect（[isAdvancedSettingsOpen]deps）が
-      // 同時発火すると"1件"→"3件"の遷移がCI環境で捕捉不可能になるため、
-      // false→true のシリアル遷移でeffectを分離する。
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
       vi.mocked(store.useLLMProviders).mockReturnValue([
         {
           id: "anthropic",
@@ -500,43 +496,20 @@ describe("AgentView", () => {
           checkedAt: new Date(),
         },
       } as never);
-      const getAllowedTools = vi
-        .fn()
-        .mockResolvedValueOnce({
-          tools: [{ toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" }],
-        })
-        .mockResolvedValueOnce({
-          tools: [
-            { toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" },
-            { toolName: "read", allowedAt: "2026-03-30T00:00:00Z" },
-            { toolName: "write", allowedAt: "2026-03-30T00:00:00Z" },
-          ],
-        });
-      setMockPermissionsApi({ getAllowedTools });
+      setMockPermissionsApi({
+        getMode: vi.fn().mockResolvedValue("plan"),
+        getRemembered: vi.fn().mockResolvedValue([{}, {}, {}]),
+      });
 
-      const { rerender } = render(<AgentView />);
+      render(<AgentView />);
 
-      // マウントeffectがCall 1を完了するまで待つ（パネルは閉じているので UI検証は不可）
-      await waitFor(
-        () => {
-          expect(getAllowedTools).toHaveBeenCalledTimes(1);
-        },
-        { timeout: 5000 },
-      );
-
-      // パネルを開く → isAdvancedSettingsOpen effect が Call 2 を発火
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-      rerender(<AgentView />);
-
-      // パネルが表示され、Call 2 解決後に "3件" になる
-      await screen.findByText("Claude Opus 4", {}, { timeout: 5000 });
-      await waitFor(
-        () => {
-          expect(screen.getByText("記憶された許可: 3件")).toBeInTheDocument();
-        },
-        { timeout: 5000 },
-      );
-      expect(getAllowedTools).toHaveBeenCalledTimes(2);
+      await screen.findByText("Claude Opus 4");
+      await waitFor(() => {
+        expect(screen.getByTestId("permission-mode-selector")).toHaveValue(
+          "plan",
+        );
+        expect(screen.getByText("記憶された許可: 3件")).toBeInTheDocument();
+      });
     });
 
     it("should call selectProvider and selectModel when model card is selected", async () => {
@@ -570,9 +543,12 @@ describe("AgentView", () => {
       expect(mockSelectModel).toHaveBeenCalledWith("claude-sonnet-4");
     });
 
-    it("should change permission mode locally without IPC call", async () => {
+    it("should show error toast when permission mode update fails", async () => {
       const store = await import("../../../store");
       vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
+      setMockPermissionsApi({
+        setMode: vi.fn().mockRejectedValue(new Error("mode update failed")),
+      });
 
       render(<AgentView />);
 
@@ -582,62 +558,26 @@ describe("AgentView", () => {
         });
       });
 
-      // ローカル state のみで動作し、IPC 呼び出しは発生しない
-      expect(screen.getByTestId("permission-mode-selector")).toHaveValue(
-        "acceptEdits",
+      expect(mockShowToast).toHaveBeenCalledWith(
+        "error",
+        "許可モードの更新に失敗しました: mode update failed",
       );
-      // setMode は preload に存在しないため、Toast エラーは表示されない
-      expect(mockShowToast).not.toHaveBeenCalled();
     });
 
-    it("should reset remembered permissions via clearAll and show success toast", async () => {
+    it("should reset remembered permissions and show success toast", async () => {
       const store = await import("../../../store");
-      // false→true遷移でeffectをシリアル化:
-      // Call 1(mount): 2件, Call 2(panel open): 2件, Call 3(after reset): 0件
-      const getAllowedTools = vi
-        .fn()
-        .mockResolvedValueOnce({
-          tools: [
-            { toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" },
-            { toolName: "read", allowedAt: "2026-03-30T00:00:00Z" },
-          ],
-        })
-        .mockResolvedValueOnce({
-          tools: [
-            { toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" },
-            { toolName: "read", allowedAt: "2026-03-30T00:00:00Z" },
-          ],
-        })
-        .mockResolvedValueOnce({ tools: [] });
+      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
       setMockPermissionsApi({
-        getAllowedTools,
+        getRemembered: vi.fn().mockResolvedValue([{}, {}]),
       });
 
-      const { rerender } = render(<AgentView />);
-
-      // マウントeffect(Call 1)完了を待つ
-      await waitFor(
-        () => {
-          expect(getAllowedTools).toHaveBeenCalledTimes(1);
-        },
-        { timeout: 5000 },
-      );
-
-      // パネルを開く → isAdvancedSettingsOpen effect(Call 2)が発火
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-      rerender(<AgentView />);
-
-      await screen.findByText("記憶された許可: 2件", {}, { timeout: 5000 });
+      render(<AgentView />);
+      await screen.findByText("記憶された許可: 2件");
 
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: /リセット/i }));
       });
 
-      expect(mockPermissionAPI.clearAll).toHaveBeenCalledTimes(1);
-      await waitFor(() => {
-        expect(screen.getByText("記憶された許可: 0件")).toBeInTheDocument();
-      });
-      expect(screen.getByRole("button", { name: /リセット/i })).toBeDisabled();
       expect(mockShowToast).toHaveBeenCalledWith(
         "success",
         "記憶済みの許可をリセットしました",
@@ -940,151 +880,6 @@ describe("AgentView", () => {
         "error",
         "インポートに失敗しました",
       );
-    });
-  });
-
-  describe("Permission API 統合", () => {
-    it("AgentView がマウント時に TypeError を発生させない", async () => {
-      const { container } = render(<AgentView />);
-      expect(container).toBeTruthy();
-      await waitFor(
-        () => {
-          expect(mockPermissionAPI.getAllowedTools).toHaveBeenCalled();
-        },
-        { timeout: 5000 },
-      );
-    });
-
-    it("permissionAPI が未定義の場合もエラーなくレンダリングされる", async () => {
-      const original = window.permissionAPI;
-      Object.defineProperty(window, "permissionAPI", {
-        value: undefined,
-        writable: true,
-        configurable: true,
-      });
-
-      const { container } = render(<AgentView />);
-      expect(container).toBeTruthy();
-
-      Object.defineProperty(window, "permissionAPI", {
-        value: original,
-        writable: true,
-        configurable: true,
-      });
-    });
-  });
-
-  describe("Permission API エッジケース", () => {
-    it("getAllowedTools が空配列を返した場合、エラーなく動作する", async () => {
-      const store = await import("../../../store");
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-      setMockPermissionsApi({
-        getAllowedTools: vi.fn().mockResolvedValue({ tools: [] }),
-      });
-
-      render(<AgentView />);
-
-      await waitFor(
-        () => {
-          expect(screen.getByText("記憶された許可: 0件")).toBeInTheDocument();
-        },
-        { timeout: 5000 },
-      );
-      expect(screen.getByRole("button", { name: /リセット/i })).toBeDisabled();
-    });
-
-    it("getAllowedTools が rejected された場合、エラーハンドリングが動作する", async () => {
-      setMockPermissionsApi({
-        getAllowedTools: vi.fn().mockRejectedValue(new Error("IPC error")),
-      });
-
-      const { container } = render(<AgentView />);
-      expect(container).toBeTruthy();
-
-      await waitFor(() => {
-        expect(mockPermissionAPI.getAllowedTools).toHaveBeenCalled();
-      });
-    });
-
-    it("clearAll が rejected された場合、エラー Toast が表示される", async () => {
-      const store = await import("../../../store");
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-      setMockPermissionsApi({
-        getAllowedTools: vi.fn().mockResolvedValue({
-          tools: [{ toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" }],
-        }),
-        clearAll: vi.fn().mockRejectedValue(new Error("Clear failed")),
-      });
-
-      render(<AgentView />);
-      await screen.findByText("記憶された許可: 1件", {}, { timeout: 5000 });
-
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: /リセット/i }));
-      });
-
-      await waitFor(
-        () => {
-          expect(mockShowToast).toHaveBeenCalledWith(
-            "error",
-            "記憶済み許可のリセットに失敗しました: Clear failed",
-          );
-        },
-        { timeout: 5000 },
-      );
-    });
-
-    it("clearAll が success:false を返した場合、成功扱いにしない", async () => {
-      const store = await import("../../../store");
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-      setMockPermissionsApi({
-        getAllowedTools: vi.fn().mockResolvedValue({
-          tools: [{ toolName: "bash", allowedAt: "2026-03-30T00:00:00Z" }],
-        }),
-        clearAll: vi
-          .fn()
-          .mockResolvedValue({ success: false, clearedCount: 0 }),
-      });
-
-      render(<AgentView />);
-      await screen.findByText("記憶された許可: 1件");
-
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: /リセット/i }));
-      });
-
-      expect(mockShowToast).toHaveBeenCalledWith(
-        "error",
-        "記憶済み許可のリセットに失敗しました",
-      );
-      expect(screen.getByText("記憶された許可: 1件")).toBeInTheDocument();
-    });
-
-    it("permissionAPI が undefined の場合、リセットで rememberedCount を 0 にする", async () => {
-      const store = await import("../../../store");
-      vi.mocked(store.useIsAdvancedSettingsOpen).mockReturnValue(true);
-
-      const original = window.permissionAPI;
-      Object.defineProperty(window, "permissionAPI", {
-        value: undefined,
-        writable: true,
-        configurable: true,
-      });
-
-      render(<AgentView />);
-
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: /リセット/i }));
-      });
-
-      // API 不在でもエラーにならず、clearAll は呼び出されない
-      expect(mockPermissionAPI.clearAll).not.toHaveBeenCalled();
-
-      Object.defineProperty(window, "permissionAPI", {
-        value: original,
-        writable: true,
-        configurable: true,
-      });
     });
   });
 
