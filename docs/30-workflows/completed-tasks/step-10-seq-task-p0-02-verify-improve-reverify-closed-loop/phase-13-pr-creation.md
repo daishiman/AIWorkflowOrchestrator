@@ -24,9 +24,8 @@
 - 変更点を整理する:
   - `recordVerifyPass()` の追加
   - improve→verify 遷移の追加
-  - `requestReverify()` の improve-only gate 修正
   - phase 遷移テーブルの修正
-  - Facade の verify 結果反映の整理
+  - Facade / IPC handler の更新
   - UI snapshot の verify 状態反映
 - validator 結果を記録する
 - 残リスク（P0-01 依存、verification engine 未統合時のフォールバック）を記録する
@@ -60,9 +59,8 @@
 ### Task 4: タスクディレクトリの完了時移動
 
 - PR マージ後、タスクディレクトリを以下に移動する:
-  - 移動元: `docs/30-workflows/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop/`
-  - 移動先: `docs/30-workflows/completed-tasks/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop/`
-- 移動後は `index.md` / `artifacts.json` / `outputs/artifacts.json` / Phase 12 成果物の path 再同期を行う
+  - 移動元: `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop/`
+  - 移動先: `docs/30-workflows/completed-tasks/`
 
 ## 参照資料
 

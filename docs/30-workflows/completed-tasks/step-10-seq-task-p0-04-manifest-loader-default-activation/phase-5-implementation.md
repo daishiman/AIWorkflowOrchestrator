@@ -32,10 +32,10 @@ Facade 初期化時に3コンポーネントを自動インスタンス化し、
 - 発見成功時は manifest をロードし dynamic pipeline を活性化する
 - 未発見時は static loader fallback にフォールする
 
-### Task 3: dynamic resource pipeline 自動試行への修正
+### Task 3: hasDynamicResourcePipeline() 修正
 
-- `plan()` / `improve()` が dynamic resource pipeline を常に試行するよう修正する
-- リソース未解決時は static fallback または `resource_loader_unavailable` を返すよう整理する
+- 3コンポーネントが自動インスタンス化済みの場合にデフォルトで true を返すよう修正する
+- manifest が利用可能かどうかの条件を追加する
 
 ### Task 4: ipc/index.ts wiring 調整
 
@@ -75,7 +75,7 @@ Facade 初期化時に3コンポーネントを自動インスタンス化し、
 ## 完了条件
 
 - [ ] 3コンポーネントが自動インスタンス化される
-- [ ] `plan()` / `improve()` が dynamic resource pipeline をデフォルト試行する
+- [ ] hasDynamicResourcePipeline() がデフォルト true を返す
 - [ ] manifest 自動発見が動作する
 - [ ] static loader fallback が維持されている
 - [ ] 既存テストが通過する

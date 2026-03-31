@@ -36,19 +36,18 @@
 
 ## 参照資料
 
-| 資料名               | パス                                       | 説明           |
-| -------------------- | ------------------------------------------ | -------------- |
-| 設計書               | `outputs/phase-2/design-document.md`       | 背景要約       |
-| 実装記録             | `outputs/phase-5/implementation-record.md` | 修正内容       |
-| テスト拡充記録       | `outputs/phase-6/extended-test-record.md`  | テスト差分     |
-| カバレッジレポート   | `outputs/phase-7/coverage-report.md`       | coverage 要約  |
-| リファクタリング記録 | `outputs/phase-8/refactoring-record.md`    | 整理内容       |
-| 品質保証レポート     | `outputs/phase-9/quality-report.md`        | 品質ゲート     |
-| 最終レビュー結果     | `outputs/phase-10/final-review-result.md`  | 判定           |
-| 手動テスト結果       | `outputs/phase-11/manual-test-result.md`   | evidence 状態  |
-| 手動テスト発見事項   | `outputs/phase-11/discovered-issues.md`    | フォローアップ |
-| ドキュメント更新     | `phase-12-documentation.md`                | 直前成果物     |
-| ローカルチェック     | `outputs/phase-13/local-check-result.md`   | 実行時に更新   |
+| 資料名               | パス                                       | 説明          |
+| -------------------- | ------------------------------------------ | ------------- |
+| 設計書               | `outputs/phase-2/design-document.md`       | 背景要約      |
+| 実装記録             | `outputs/phase-5/implementation-record.md` | 修正内容      |
+| テスト拡充記録       | `outputs/phase-6/extended-test-record.md`  | テスト差分    |
+| カバレッジレポート   | `outputs/phase-7/coverage-report.md`       | coverage 要約 |
+| リファクタリング記録 | `outputs/phase-8/refactoring-record.md`    | 整理内容      |
+| 品質保証レポート     | `outputs/phase-9/quality-report.md`        | 品質ゲート    |
+| 最終レビュー結果     | `outputs/phase-10/final-review-result.md`  | 判定          |
+| 手動テスト結果       | `outputs/phase-11/manual-test-result.md`   | evidence 状態 |
+| ドキュメント更新     | `phase-12-documentation.md`                | 直前成果物    |
+| ローカルチェック     | `outputs/phase-13/local-check-result.md`   | 実行時に更新  |
 
 ## 成果物
 

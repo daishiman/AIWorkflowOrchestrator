@@ -839,10 +839,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| Agent Dashboard IPC チャネル | L6 |
 | Workspace Chat Edit IPC チャネル | L74 |
 | Skill Creator IPC チャネル | L256 |
-| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L366 |
-| スキルファイル操作 IPC チャネル（TASK-9A-B） | L400 |
-| スキル安全性評価・ファイルツリー IPC チャネル | L454 |
-| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L465 |
+| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L369 |
+| スキルファイル操作 IPC チャネル（TASK-9A-B） | L403 |
+| スキル安全性評価・ファイルツリー IPC チャネル | L457 |
+| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L468 |
 
 ### references/api-ipc-agent-details.md
 
@@ -900,15 +900,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| AI/チャット IPC チャネル | L6 |
 | Skill Creator Workflow Interaction Bridge（TASK-SDK-04） | L76 |
-| Slide IPC API（スライド同期） | L119 |
-| Workspace File Watch IPC API（TASK-UI-04A） | L200 |
-| Conversation IPC API（会話履歴永続化） | L244 |
-| Electron IPC API設計 | L280 |
-| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L422 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L655 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L686 |
-| AIプロバイダーAPI連携 | L717 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L750 |
+| Slide IPC API（スライド同期） | L120 |
+| Workspace File Watch IPC API（TASK-UI-04A） | L201 |
+| Conversation IPC API（会話履歴永続化） | L245 |
+| Electron IPC API設計 | L281 |
+| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L423 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L656 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L687 |
+| AIプロバイダーAPI連携 | L718 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L751 |
 
 ### references/api-ipc-system-details.md
 
@@ -1627,16 +1627,16 @@ node scripts/list-specs.js --topics
 | Electron | L14 |
 | ビルド・パッケージング | L44 |
 | Main Process技術 | L72 |
-| Renderer Process技術 | L127 |
-| IPC通信 | L153 |
-| macOS固有 | L174 |
-| セキュリティ | L198 |
-| 自動更新 | L223 |
-| 開発ツール | L243 |
-| ディレクトリ構造 | L263 |
-| 関連ドキュメント | L283 |
-| 関連未タスク | L295 |
-| 変更履歴 | L303 |
+| Renderer Process技術 | L111 |
+| IPC通信 | L137 |
+| macOS固有 | L158 |
+| セキュリティ | L182 |
+| 自動更新 | L207 |
+| 開発ツール | L227 |
+| ディレクトリ構造 | L247 |
+| 関連ドキュメント | L267 |
+| 関連未タスク | L279 |
+| 変更履歴 | L287 |
 
 ### references/technology-devops-core.md
 
@@ -2104,14 +2104,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
 | RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | L100 |
-| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L213 |
-| SkillScheduler / ScheduleStore（TASK-9G） | L272 |
-| DefaultSafetyGate サービス（UT-06-003） | L301 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L352 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L377 |
-| キャッシュ機構 | L405 |
-| 永続化 | L411 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L417 |
+| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L170 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L229 |
+| DefaultSafetyGate サービス（UT-06-003） | L258 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L309 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L334 |
+| キャッシュ機構 | L362 |
+| 永続化 | L368 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L374 |
 
 ### references/arch-electron-services-details.md
 
@@ -2307,12 +2307,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| ビルドターゲット | L10 |
 | リリースフロー | L33 |
 | リリースチェックリスト | L45 |
-| 開発時のネイティブモジュール bootstrap | L58 |
-| 自動更新（electron-updater） | L101 |
-| コードサイニング | L128 |
-| デプロイチェックリスト | L152 |
-| データベースマイグレーションのロールバック | L203 |
-| 関連ドキュメント | L229 |
+| 自動更新（electron-updater） | L58 |
+| コードサイニング | L85 |
+| デプロイチェックリスト | L109 |
+| データベースマイグレーションのロールバック | L160 |
+| 関連ドキュメント | L186 |
 
 ### references/deployment-gha.md
 
@@ -2485,6 +2484,16 @@ node scripts/list-specs.js --topics
 | 利用順序 | L13 |
 | 関連ドキュメント | L18 |
 
+### references/governance-hooks-factory-audit-sink.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L6 |
+| GovernanceHooksFactory | L22 |
+| GovernanceAuditSink | L76 |
+| 使用例 | L164 |
+| 設計上の注意事項 | L200 |
+| 関連仕様書 | L210 |
+
 ### references/ipc-contract-checklist.md
 
 | セクション | 行 |
@@ -2584,6 +2593,11 @@ node scripts/list-specs.js --topics
 | UT-SKILL-IMPORT-CHANNEL-CONFLICT-001: skill:import IPCチャネル名競合の予防的解消 | L252 |
 | UT-IPC-CHANNEL-NAMING-AUDIT-001: IPCチャネル命名監査の台帳同期（2026-02-25） | L356 |
 
+### references/lessons-learned-auth-ipc-skill-creator-governance-hooks.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-P0-09: Claude SDK permissionMode + canUseTool + Hooks ガバナンス実装（2026-03-31） | L6 |
+
 ### references/lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md
 
 | セクション | 行 |
@@ -2642,6 +2656,16 @@ node scripts/list-specs.js --topics
 | UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L845 |
 | TASK-RT-06 教訓（2026-03-29） | L876 |
 | TASK-P0-04 教訓（2026-03-30） | L898 |
+
+### references/lessons-learned-governance-hooks-phase-policy.md
+
+| セクション | 行 |
+|------------|----|\n| 1. 定義済み / 接続済み / 可視化済みの区別 | L8 |
+| 2. UI Payload vs. Visual Evidence の区別 | L22 |
+| 3. パストラバーサル対策の実装パターン（null byte check + path.resolve/relative） | L35 |
+| 4. execute-only wiring の警告パターン | L61 |
+| 5. follow-up タスクの formalize タイミング | L82 |
+| 関連ファイル | L92 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2873,8 +2897,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L40 |
-| 関連ドキュメント | L45 |
+| 利用順序 | L41 |
+| 関連ドキュメント | L46 |
 
 ### references/llm-embedding.md
 

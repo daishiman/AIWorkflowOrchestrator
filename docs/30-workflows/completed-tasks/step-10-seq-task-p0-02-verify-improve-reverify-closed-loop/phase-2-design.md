@@ -9,7 +9,7 @@
 | 対象機能   | TASK-P0-02 verify→improve→re-verify 閉ループ修復 |
 | 前提Phase  | Phase 1: 要件定義                                |
 | 次Phase    | Phase 3: 設計レビュー                            |
-| ステータス | completed                                        |
+| ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
 | 更新日     | 2026-03-30                                       |
 
@@ -19,9 +19,9 @@
 
 ## 実行タスク
 
-### Task 1: `recordVerifyPass()` シグネチャ設計
+### Task 1: recordVerifyPass() シグネチャ設計
 
-`recordVerifyFailure()` と対称な最小 API を設計する。
+`recordVerifyFailure()` と対称的なインターフェースで設計する:
 
 ```typescript
 // 既存: recordVerifyFailure() (WorkflowEngine.ts:258-285)
@@ -40,23 +40,34 @@ recordVerifyPass(
 
 設計ポイント:
 
-- `checks` は `SkillCreatorVerificationEngine.verify()` の戻り値をそのまま受ける
-- `verifyResult.status` は `pending` / `pass` / `fail` の 3 値のまま維持する
-- `verify pass` は新しい終端を増やさず、既存の `verify -> review` edge を再利用する
-- raw `checks` は UI snapshot に増やさず、artifact / detail surface 側へ集約する
+- `checks` 引数で VerificationEngine の結果を受け取る（P0-01 の `verify()` の戻り値と同型）
+- verify pass 後の遷移先は `"complete"` phase（新規追加）
+- 戻り値は既存の snapshot パターンに準拠する
 
 ### Task 2: phase 遷移テーブル修正設計
 
-現行遷移テーブル（`SkillCreatorWorkflowEngine.ts`）に対して最小修正を行う:
+現行遷移テーブル（WorkflowEngine.ts:579-580付近）に以下を追加:
 
 ```typescript
+// 現行
 const VALID_TRANSITIONS: Record<string, string[]> = {
   plan: ["review"],
   review: ["execute", "handoff"],
   execute: ["verify"],
-  verify: ["review", "improve"],
-  improve: ["execute", "verify"],
-  handoff: [],
+  verify: ["review", "improve"], // ← pass 時の遷移先がない
+  improve: ["execute"], // ← re-verify への直接遷移がない
+  // ...
+};
+
+// 修正後
+const VALID_TRANSITIONS: Record<string, string[]> = {
+  plan: ["review"],
+  review: ["execute", "handoff"],
+  execute: ["verify"],
+  verify: ["review", "improve", "complete"], // ← pass 時に complete へ遷移
+  improve: ["execute", "verify"], // ← re-verify 直接遷移を追加
+  complete: [], // ← terminal state
+  // ...
 };
 ```
 
@@ -67,51 +78,118 @@ stateDiagram-v2
     review --> execute
     review --> handoff
     execute --> verify
-    verify --> review : pass (recordVerifyPass)
     verify --> improve : fail (recordVerifyFailure)
+    verify --> complete : pass (recordVerifyPass) [NEW]
+    verify --> review : review requested
     improve --> execute : 既存経路
     improve --> verify : re-verify [NEW]
-    handoff --> [*]
+    complete --> [*]
 ```
-
-- 追加の終端状態や派生ステータスは追加しない
-- `verify -> review` は pass の既存 edge として維持する
-- `improve -> verify` だけを新設し、再実行を経由しない re-verify を許可する
 
 ### Task 3: verification engine 統合設計
 
-`RuntimeSkillCreatorFacade.verifySkill(skillDir)` から返る `RuntimeSkillCreatorVerifyCheck[]` を次の規則で扱う:
+P0-01 の SkillCreatorVerificationEngine からの data flow を設計する:
 
-1. `checks.length === 0`
-   - verification engine 未注入の no-op として扱う
-   - 既存 snapshot を保持し、状態遷移は発生させない
-2. `checks.some((check) => check.severity === "error")`
-   - `recordVerifyFailure(planId, message, "improve")` を呼ぶ
-3. それ以外
-   - `recordVerifyPass(planId, checks)` を呼ぶ
+```
+Facade.verifySkill(skillDir)
+  → VerificationEngine.verify(skillDir)
+  → RuntimeSkillCreatorVerifyCheck[]
+  → determineVerifyStatus(checks)
+     → "skip"               : engine 未注入（空配列）
+     → "pass"               : 全チェック pass（warning なし）
+     → "pass_with_warnings" : fail なし、warning あり
+     → "fail"               : 1件以上 fail
+```
 
-- warning は pass を阻害しない
-- `requestReverify()` は improve phase のみ許可し、review / verify からの再検証は拒否する
-- 既存の disabled conditions（terminal_handoff / no execute result / last execution failed）は維持する
+- verify ステータス判定ロジック（**方針 B + Y** を採用）:
+
+  ```typescript
+  type VerifyStatus = "skip" | "pass" | "pass_with_warnings" | "fail";
+
+  function determineVerifyStatus(
+    checks: RuntimeSkillCreatorVerifyCheck[],
+  ): VerifyStatus {
+    // engine 未注入時は空配列 → 検証スキップを明示
+    if (checks.length === 0) return "skip";
+
+    const hasFail = checks.some((c) => c.status === "fail");
+    if (hasFail) return "fail";
+
+    const hasWarning = checks.some((c) => c.severity === "warning");
+    if (hasWarning) return "pass_with_warnings";
+
+    return "pass";
+  }
+  ```
+
+- **設計根拠**:
+  - `"skip"`: graceful degradation を維持しつつ、「検証していない」ことをUI/ログで明示する。暗黙の pass を防ぐ
+  - `"pass_with_warnings"`: warning を記録しつつフローはブロックしない。UIで⚠️表示し開発者に注意を促す
+  - `"pass"` / `"fail"`: 従来通りの明確な分岐
+- `recordVerifyPass()` は `"pass"` と `"pass_with_warnings"` の両方で呼び出す。`"skip"` 時は遷移せずスキップを記録のみ
+- `requestReverify()` の eligibility check を新遷移と整合させる:
+  - improve phase からの re-verify: eligibility check を緩和し、improve phase からの直接遷移を許可する
+  - verify phase からの再 verify: 既存の disabled conditions を維持する
 
 ### Task 4: UI snapshot 変更設計
 
-`SkillCreatorWorkflowUiSnapshot` は既存 shape を維持する。
+SkillCreatorSnapshot（`getCreatorSnapshot` の戻り値）に verify 状態を追加:
 
-- `verifyChecks` は追加しない
-- `lastVerifyTimestamp` は追加しない
-- verify 状態は既存の `verifyResult` で表現する
-- 詳細結果は `RuntimeSkillCreatorVerifyDetail.checks` と verify artifact で表現する
-- `creatorHandlers.ts` の IPC 契約は既存の `skill-creator:get-verify-detail` / `skill-creator:reverify-workflow` を維持する
+```typescript
+interface SkillCreatorWorkflowStateSnapshot {
+  // 既存フィールド
+  phase: string;
+  planId: string;
+  // ...
+
+  // 新規追加
+  verifyStatus?: "pending" | "pass" | "pass_with_warnings" | "fail" | "skip";
+  verifyChecks?: RuntimeSkillCreatorVerifyCheck[];
+  lastVerifyTimestamp?: string;
+}
+```
+
+IPC 経路:
+
+- `creatorHandlers.ts` で verify 結果を snapshot に含めて renderer に通知する
+- 既存の `getCreatorSnapshot` IPC ハンドラを拡張する（新規ハンドラ追加は不要）
 
 ### Task 5: RuntimeSkillCreatorFacade 統合設計
 
-Facade は public surface を増やしすぎず、verify 結果の分岐を内部へ集約する。
+Facade に以下のメソッドを追加/修正:
 
-- `verifySkill(skillDir)` は checks を返すだけに留める
-- `recordVerifyPass()` / `recordVerifyFailure()` の呼び分けは runtime orchestration 層で行う
-- `reverifyWorkflow(planId)` は既存 bridge のまま `requestReverify(planId)` に委譲する
-- 新しい IPC channel は追加しない
+```typescript
+// 新規: verify 結果に基づく閉ループ処理
+async processVerifyResult(planId: string, skillDir: string): Promise<VerifyStatus> {
+  const checks = await this.verifySkill(skillDir);
+  const status = determineVerifyStatus(checks);
+
+  switch (status) {
+    case "skip":
+      // engine 未注入 — 遷移せずスキップを記録
+      this.workflowEngine.recordVerifySkip(planId);
+      break;
+    case "pass":
+    case "pass_with_warnings":
+      // 成功（warning 含む）— complete へ遷移
+      this.workflowEngine.recordVerifyPass(planId, checks);
+      break;
+    case "fail":
+      // 失敗 — improve へ遷移
+      const failMessages = checks.filter(c => c.status === "fail").map(c => c.message);
+      this.workflowEngine.recordVerifyFailure(planId, failMessages.join("; "), "improve");
+      break;
+  }
+  return status;
+}
+
+// 新規: improve 後の re-verify
+async requestReVerify(planId: string, skillDir: string): Promise<void> {
+  // improve phase から直接 verify phase へ遷移
+  this.workflowEngine.transitionToVerify(planId);
+  await this.processVerifyResult(planId, skillDir);
+}
+```
 
 ## 参照資料
 
@@ -130,17 +208,17 @@ Facade は public surface を増やしすぎず、verify 結果の分岐を内�
 
 | 参照資料                  | パス                                                                                        | 内容                                                                      |
 | ------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Skill Creator Service仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService、Facade injection パターン、verify/improve の詳細仕様 |
-| Agent IPC チャネル仕様    | `.claude/skills/aiworkflow-requirements/references/api-ipc-agent-core.md`                   | IPC チャネル定義。verify 結果通知の IPC 設計に参照                        |
-| IPC契約チェックリスト     | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時の Main/Preload/型定義 同時更新チェック                          |
-| スキル実行IPCセキュリティ | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc-core.md`              | IPC handler のセキュリティパターン                                        |
-| Skill lifecycle hooks     | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-details.md`   | Skill lifecycle hooks 仕様。improve/verify の hook 連携                   |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService、Facade injection パターン、verify/improve の詳細仕様 |
+| Agent IPC チャネル仕様    | `.agents/skills/aiworkflow-requirements/references/api-ipc-agent-core.md`                   | IPC チャネル定義。verify 結果通知の IPC 設計に参照                        |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時の Main/Preload/型定義 同時更新チェック                          |
+| スキル実行IPCセキュリティ | `.agents/skills/aiworkflow-requirements/references/security-skill-ipc-core.md`              | IPC handler のセキュリティパターン                                        |
+| Skill lifecycle hooks     | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-details.md`   | Skill lifecycle hooks 仕様。improve/verify の hook 連携                   |
 
 ## 統合テスト連携
 
 - 遷移テーブルの全 edge を Phase 4 のテストケースに落とす
 - UI snapshot の verify 状態が renderer テストで観測可能であることを確認する
-- verify checks の pass / fail 分岐と `reverifyWorkflow()` の統合テストを Phase 6 で追加する
+- Facade の `processVerifyResult()` と `requestReVerify()` の統合テストを Phase 6 で追加する
 
 ## 多角的チェック観点
 
@@ -159,21 +237,21 @@ Facade は public surface を増やしすぎず、verify 結果の分岐を内�
 
 ## 完了条件
 
-- [x] `recordVerifyPass(planId, checks)` のシグネチャが確定している
-- [x] phase 遷移テーブルに `improve→verify` が追加されている
-- [x] `verifyResult.status = pass` の処理方針が既存 `verify→review` edge 再利用として設計されている
-- [x] verification engine との統合 data flow が no-op / pass / fail で分岐している
-- [x] UI snapshot は既存 `verifyResult` / `getVerifyDetail()` で十分であることが確認されている
-- [x] Facade は public surface を増やさず `reverifyWorkflow()` を維持する方針である
-- [x] aiworkflow-requirements の関連仕様との整合性を確認した
-- [x] 本Phase内の全タスクを100%実行完了
+- [ ] `recordVerifyPass(planId, checks)` のシグネチャが確定している
+- [ ] phase 遷移テーブルに `verify→complete` と `improve→verify` が追加されている
+- [ ] `complete` terminal state が定義されている
+- [ ] verification engine との統合 data flow が `allPass` 判定基準を含めて設計されている
+- [ ] UI snapshot に `verifyStatus` / `verifyChecks` が追加されている
+- [ ] Facade に `processVerifyResult()` / `requestReVerify()` が設計されている
+- [ ] aiworkflow-requirements の関連仕様との整合性を確認した
+- [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
 
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] 各タスクの成果物が生成されている
-- [x] artifacts.jsonが更新されている
-- [x] Phase末端で各タスクを100%完了し、完了を明記している
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次Phase
 

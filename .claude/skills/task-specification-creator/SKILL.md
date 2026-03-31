@@ -103,21 +103,21 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 
 ### execute
 
-| Phase | 名称             | 目的                                                                                                                               |
-| ----- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**                       |
-| 2     | 設計             | topology、SubAgent lane、validation path を設計する                                                                                |
-| 3     | 設計レビュー     | Phase 4 へ進めるかを判定する                                                                                                       |
-| 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する**。**[Feedback P0-02]** Phase 4 完了後に全テストを実行し、全て FAIL することを確認する（fail-first 保証）。 |
+| Phase | 名称             | 目的                                                                                                                                         |
+| ----- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**                                 |
+| 2     | 設計             | topology、SubAgent lane、validation path を設計する                                                                                          |
+| 3     | 設計レビュー     | Phase 4 へ進めるかを判定する                                                                                                                 |
+| 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する**           |
 | 5     | 実装             | `.claude` 正本を更新し、mirror を同期する。**[Feedback RT-03]** 実装計画に「新規作成」「修正」ファイルパス一覧を必須記載する（見落とし防止） |
-| 6     | テスト拡充       | fail path、回帰 guard、補助 command を追加する                                                                                     |
-| 7     | カバレッジ確認   | concern と dependency edge の coverage を可視化する                                                                                |
-| 8     | リファクタリング | duplicate と navigation drift を削る。**[Feedback RT-03]** 変更内容を `対象/Before/After/理由` テーブル形式で記録する           |
-| 9     | 品質保証         | line budget、link、mirror parity を一括判定する                                                                                    |
-| 10    | 最終レビュー     | acceptance criteria と blocker を判定する                                                                                          |
-| 11    | 手動テスト       | 3層評価（Semantic / Visual / AI UX）を実行し、フィードバックループで HIGH 問題を `unassigned-task/` へ自動生成する                  |
-| 12    | ドキュメント更新 | implementation guide、spec sync、未タスク、feedback を完了する                                                                     |
-| 13    | PR作成           | user の明示承認後のみ実施する                                                                                                      |
+| 6     | テスト拡充       | fail path、回帰 guard、補助 command を追加する                                                                                               |
+| 7     | カバレッジ確認   | concern と dependency edge の coverage を可視化する                                                                                          |
+| 8     | リファクタリング | duplicate と navigation drift を削る。**[Feedback RT-03]** 変更内容を `対象/Before/After/理由` テーブル形式で記録する                        |
+| 9     | 品質保証         | line budget、link、mirror parity を一括判定する                                                                                              |
+| 10    | 最終レビュー     | acceptance criteria と blocker を判定する                                                                                                    |
+| 11    | 手動テスト       | 3層評価（Semantic / Visual / AI UX）を実行し、フィードバックループで HIGH 問題を `unassigned-task/` へ自動生成する                           |
+| 12    | ドキュメント更新 | implementation guide、spec sync、未タスク、feedback を完了する                                                                               |
+| 13    | PR作成           | user の明示承認後のみ実施する                                                                                                                |
 
 ## Task仕様ナビ
 
@@ -245,13 +245,14 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
+| Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                               |
+| ----------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **6.18.16** | **2026-03-31** | **TASK-UIUX-FEEDBACK-001 false-green cleanup を反映**: `spec_created` workflow の root / outputs `artifacts.json` を pending current facts へ戻し、Phase 11/12 close-out 文書の phantom path と placeholder-only completion を是正。`.agents` mirror と `aiworkflow-requirements` same-wave sync を完了 |
+| **6.18.16** | **2026-03-30** | **TASK-LLM-MOD-05 Phase 12 close-out sync を記録**: `description?` フィールドを全 19 モデルに追加した schema-extension タスクの close-out。ワークフロー再編（13 Phase ファイル → `step-04-seq-task-05-schema-extension/`）・`inferProviderId()` `o3`/`o4` prefix 対応・`TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY` 未タスク formalize。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）   |
 | **6.18.15** | **2026-03-30** | **TASK-P0-05 Phase 12 close-out resync を guide へ反映**: Phase 11 evidence 欠落時は `NON_VISUAL` でも `manual-test-result.md` / `discovered-issues.md` を必須補完すること、Phase 12 local outputs 充足だけで `completed` に上げず canonical same-wave sync 未完了なら `in_progress` を維持すること、edge case 定義（E-14 / E-15）は spec と targeted test を同一ターンで同期することを変更履歴に記録 |
-| **6.18.14** | **2026-03-27** | **Phase 12 close-out ルール hardening を反映**: (1) `spec_created` UI task でも Step 1-A〜1-C を N/A にせず same-wave sync で閉じるルール、(2) docs-only task に後から code 実装が入った場合の Step 2 / screenshot 再判定ルール、(3) Phase 12 documentation guide hardening（planned wording 残存 grep 監査、evidence reclassification）を SKILL.md に明示 |
-| **6.18.13** | **2026-03-27** | **TASK-SDK-05 create-entry-mainline-unification spec sync を guide へ反映**: `spec_created` UI task の Phase 12 でも Step 1-A〜1-C を N/A にしない same-wave sync ルール、`verification-report.md` の workflow root path drift 是正、`.claude` 正本更新後の `.agents` mirror parity 確認を close-out 完了条件へ追加                                        |
-| **6.18.12** | **2026-03-26** | **TASK-SDK-01 hardening sync を guide へ反映**: docs-only follow-up に後からコード変更が入った時は source workflow と `outputs/phase-12/*.md` を同一ターンで current facts へ戻すルールを `phase-12-documentation-guide.md` に追加                                                                                                                         |
+| **6.18.14** | **2026-03-27** | **Phase 12 close-out ルール hardening を反映**: (1) `spec_created` UI task でも Step 1-A〜1-C を N/A にせず same-wave sync で閉じるルール、(2) docs-only task に後から code 実装が入った場合の Step 2 / screenshot 再判定ルール、(3) Phase 12 documentation guide hardening（planned wording 残存 grep 監査、evidence reclassification）を SKILL.md に明示                                            |
+| **6.18.13** | **2026-03-27** | **TASK-SDK-05 create-entry-mainline-unification spec sync を guide へ反映**: `spec_created` UI task の Phase 12 でも Step 1-A〜1-C を N/A にしない same-wave sync ルール、`verification-report.md` の workflow root path drift 是正、`.claude` 正本更新後の `.agents` mirror parity 確認を close-out 完了条件へ追加                                                                                   |
+| **6.18.12** | **2026-03-26** | **TASK-SDK-01 hardening sync を guide へ反映**: docs-only follow-up に後からコード変更が入った時は source workflow と `outputs/phase-12/*.md` を同一ターンで current facts へ戻すルールを `phase-12-documentation-guide.md` に追加                                                                                                                                                                    |
 
 ---
 
@@ -469,8 +470,8 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version                  | Date                       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | ------------------------ | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **v10.09.29**            | **2026-03-31**             | **TASK-UIUX-FEEDBACK-001 spec_created sync hardening**: Phase 11 を 3層評価（Semantic / Visual / AI UX）として明文化し、`agents/evaluate-ui-ux.md` と `scripts/evaluate-ui-ux*` family を追加。あわせて false green 防止のため `spec_created` workflow では placeholder-only screenshot と local outputs 充足だけで Phase 11/12 completed 扱いしない運用を current facts へ是正 |
-| **v10.09.28**            | **2026-03-30**             | **TASK-RT-03 skill-feedback 反映**: Phase 5 実装計画に「新規作成/修正」ファイルパス一覧を必須記載ルール追加（Feedback 1-1）、Phase 8 リファクタリング記録に Before/After/理由テーブル形式を義務化（Feedback 1-2） |
+| **v10.09.29**            | **2026-03-31**             | **TASK-UIUX-FEEDBACK-001 spec_created sync hardening**: Phase 11 を 3層評価（Semantic / Visual / AI UX）として明文化し、`agents/evaluate-ui-ux.md` と `scripts/evaluate-ui-ux*` family を追加。あわせて false green 防止のため `spec_created` workflow では placeholder-only screenshot と local outputs 充足だけで Phase 11/12 completed 扱いしない運用を current facts へ是正                                                                                              |
+| **v10.09.28**            | **2026-03-30**             | **TASK-RT-03 skill-feedback 反映**: Phase 5 実装計画に「新規作成/修正」ファイルパス一覧を必須記載ルール追加（Feedback 1-1）、Phase 8 リファクタリング記録に Before/After/理由テーブル形式を義務化（Feedback 1-2）                                                                                                                                                                                                                                                             |
 | **v10.09.27**            | **2026-03-29**             | **TASK-UT-SDK-07 skill-feedback 反映**: Feedback1（Phase 1 で既存コードの命名規則 camelCase/kebab-case 等を分析・記録するステップを明示）、Feedback2（Phase 4 の TDD Red 前に Phase 1-3 で確認した命名規則との整合確認を義務化）                                                                                                                                                                                                                                              |
 | **v10.09.26**            | **2026-03-28**             | **TASK-SDK-08 skill-feedback 反映**: Feedback1（Phase 1での artifact 命名 canonical 一覧確定ルール追加）、Feedback2（Phase 12着手時の `outputs/artifacts.json` vs phase spec artifact 名 照合を初手チェックへ昇格）、Feedback3（Phase 1 で記録した UI/docs-only 分類を Phase 11 着手時に参照するルール）、pitfall 2件（NON_VISUAL時の screenshots/.gitkeep 削除、worktree作成後の pnpm install 確認）を追加。変更履歴を v10.09.22以前はアーカイブ参照へ圧縮し 478行以内に維持 |
 | **v10.09.25**            | **2026-03-26**             | **UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 完了同期**: public IPC shape が不変でも `Facade/Engine` owner 変更、`review/verify` 遷移意味変更、`success:false` / reject の failure lifecycle 変更、artifact append/upsert 方針変更があれば Step 2 必須とする判断を `spec-update-workflow.md` / `spec-update-step2-domain-sync.md` へ反映。重複未タスク防止と wider suite blocker の既存 tracker 優先も明文化                                                        |

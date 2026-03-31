@@ -9,13 +9,13 @@
 | 対象機能   | TASK-P0-02 verify→improve→re-verify 閉ループ修復 |
 | 前提Phase  | Phase 5: 実装                                    |
 | 次Phase    | Phase 7: カバレッジ確認                          |
-| ステータス | completed                                        |
+| ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
 | 更新日     | 2026-03-30                                       |
 
 ## 目的
 
-閉ループの並行フロー、handoff 中の verify サイクル、複数回 re-verify といった境界条件を補強する。
+閉ループの並行フロー、handoff 中の verify サイクル、複数回 re-verify などの境界条件を補強する。
 
 ## 実行タスク
 
@@ -28,7 +28,7 @@
 ### Task 2: handoff 中の verify サイクル
 
 - terminal_handoff route 中に verify が要求された場合の挙動を確認する
-- handoff 中および handoff 完了後の re-verify が拒否されることを確認する
+- handoff 完了後の verify 再開が正しく動作するかを確認する
 - `requestReverify()` の disabled conditions と handoff 状態の整合を確認する
 
 ### Task 3: 複数回 re-verify
@@ -52,9 +52,9 @@
 - **improve→verify→fail→improve サイクル**: improve→verify 遷移後、再度 fail して improve に戻るサイクルが正しく動作することを確認する
 - **`requestReverify()` eligibility check 全パターン**: 以下の 4 条件それぞれで eligibility が正しく判定されることを確認する
   1. 現在の phase が improve でない場合 → 不可
-  2. execute phase ongoing の場合 → 不可
-  3. terminal_handoff route の場合 → 不可
-  4. no execute result / last execution failed の場合 → 不可
+  2. verify 結果が未記録の場合 → 不可
+  3. improve 完了条件が満たされていない場合 → 不可
+  4. 全条件を満たしている場合 → 可
 
 ### テストファイル
 
@@ -76,8 +76,8 @@
 
 | 参照資料                  | パス                                                                                        | 内容                                  |
 | ------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------- |
-| Skill Creator Service仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService仕様との整合性確認 |
-| IPC契約チェックリスト     | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時の整合性確認                 |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService仕様との整合性確認 |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時の整合性確認                 |
 
 ## 統合テスト連携
 
@@ -92,20 +92,20 @@
 
 ## 完了条件
 
-- [x] 並行フローの境界ケースが追加されている
-- [x] handoff 中の verify サイクルがテストされている
-- [x] 複数回 re-verify がテストされている
-- [x] verification engine 統合の境界がテストされている
-- [x] エッジケーステスト（verify(pass) 重複、improve without fail ガード、サイクル、eligibility 全パターン）が追加されている
-- [x] aiworkflow-requirements の関連仕様を確認した
-- [x] 本Phase内の全タスクを100%実行完了
+- [ ] 並行フローの境界ケースが追加されている
+- [ ] handoff 中の verify サイクルがテストされている
+- [ ] 複数回 re-verify がテストされている
+- [ ] verification engine 統合の境界がテストされている
+- [ ] エッジケーステスト（verify(pass) 重複、improve without fail ガード、サイクル、eligibility 全パターン）が追加されている
+- [ ] aiworkflow-requirements の関連仕様を確認した
+- [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
 
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] 各タスクの成果物が生成されている
-- [x] artifacts.jsonが更新されている
-- [x] Phase末端で各タスクを100%完了し、完了を明記している
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次Phase
 

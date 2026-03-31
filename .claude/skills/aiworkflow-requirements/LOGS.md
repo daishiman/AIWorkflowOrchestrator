@@ -8,11 +8,12 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 見出し |
 | --- |
 | 2026-03-31 - TASK-UIUX-FEEDBACK-001 false-green cleanup（Phase 11 placeholder-only evidence と phantom path `scripts/ui-ux-eval/*` を current facts から除去し、`task-workflow-phases.md` / `lessons-learned-current.md` / LOGS / SKILL を same-wave で更新。topic-map / keywords 再生成まで完了） |
+| 2026-03-31 - TASK-P0-09 governance spec 同期（`governance-hooks-factory-audit-sink.md` 新規作成 / `lessons-learned-governance-hooks-phase-policy.md` 新規作成 / topic-map に2ファイル追加 / keywords.json に9キーワード追加（GovernanceAuditSink / GovernanceHooksFactory / SkillCreatorGovernancePolicy / canUseTool / permissionMode / GovernanceUiPayload / GovernanceAuditEvent / PHASE_POLICIES）/ `.agents` mirror 同期 / interfaces-agent-sdk-skill-reference.md の Governance 拡張セクションは既記録済みを確認） |
+| 2026-03-31 - TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out sync（execute phase governance wiring を `SkillExecutor` まで接続 / `permissionMode`・hooks・`permissions.canUseTool` を query() へ伝播 / path-safe canUseTool 判定へ是正 / `skill-creator:get-governance` と `GovernanceUiPayload` を public surface へ追加 / shared types に governance 8 型を追加 / system spec 3 ファイル + completed ledger を同波更新 / follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` を formalize） |
+| 2026-03-31 - TASK-P0-09 claude-sdk-permission-hooks-governance close-out resync（`getGovernanceState()` / governance IPC 追加を canonical spec に反映済みのまま、Phase 12 outputs の過大表現を是正。tool-level enforcement と verify session audit は completed、path-scoped runtime enforcement は `TASK-P0-09-U1` として formalize。LOGS x2 + generate-index + workflow index regenerate を same-wave で再実施） |
 | 2026-03-30 - TASK-LLM-MOD-05 step-04-seq-task-05-schema-extension Phase 12 close-out sync（`description?` フィールドを全 19 モデルに追加 / `inferProviderId()` に `o3`/`o4` prefix 対応 / ワークフロー配置再編 / task-workflow-completed.md 完了記録追加 / TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY formalize / llm-ipc-types.md v1.5.0 更新 / 未タスク正本配置） |
 | 2026-03-30 - TASK-P0-02 verify→improve→re-verify 閉ループ close-out sync（`task-workflow.md` / `task-workflow-completed.md` に TASK-P0-02 完了記録を追加 / `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の feedback memory を current fact へ反映 / Phase 12 の `UT-P0-02-001` を current 0件へ吸収 / LOGS と SKILL を同波更新） |
-| 2026-03-30 - TASK-ELECTRON-BUILD-FIX close-out sync（root `postinstall` を native bootstrap owner に固定し、`scripts/setup-native-modules.sh` の desktop workspace 固定 / Electron ABI 検証 / 必要時のみ rebuild を current fact 化。workflow root の root/outputs artifacts 不一致、Phase 11 空欄、Phase 12 version drift を解消し、`deployment-electron.md` / `technology-desktop.md` / task-workflow completed/history / SKILL history / `.agents` mirror を same-wave で更新） |
 | 2026-03-30 agentview-permission-api-fix Phase-12 + lessons-learned 同期（task-workflow-backlog.md に TASK-AGENT-PERM-MODE / TASK-AGENTVIEW-PHASE11-SCREENSHOT-RECAPTURE-001 の登録を確認 / lessons-learned-ipc-preload-runtime.md に esbuild mismatch / Permission API 境界 / テストモック管理の3知見（L-AGENTPERM-001〜003）を追記 / lessons-learned-current.md v2.12.0 変更履歴更新） |
-| 2026-03-30 - TASK-P0-04 ManifestLoader デフォルト起動パス定数 close-out sync（`resolveDefaultManifestPath()` と `SKILL_CREATOR_MANIFEST_PATH` 定数を `constants.ts` に追加 / `getSkillCreatorRootCandidates()` 優先順: explicit arg → env var → home dir → repo root の4段階探索 / 25テスト全PASS（TC-01〜TC-14 + EC-10〜12）/ Phase 12 no-op 判定（public contract 不変）/ `lessons-learned-current.md` に L-P0-04-001〜002 を追記済み / `skill-creator` パターン集 `patterns-success-testing-security-b.md` 追加・`SKILL.md v10.37.14` 更新を same-wave で反映） |
 | 2026-03-30 - TASK-P0-05 execute-skill-file-writer-integration close-out sync（`parseLlmResponseToContent` の `.md` 正規化と heading tolerance を是正し、`SkillCreatorWorkflowEngine` execute artifact に `persistResult` / `persistError` を保存 / runtime targeted vitest 50件 PASS / Phase 11 evidence と Phase 12 compliance root を補完 / `task-workflow-completed.md`・SKILL history・topic-map 再生成を same-wave で反映 / canonical sync 未完了を follow-up UT へ formalize） |
 | 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out sync（step-03-seq-task-04-test-update workflow root を整備 / Phase 11/12/13 成果物を current root に揃え / docs-only close-out wave のため Step 2 domain spec 更新は no-op / GoogleAdapter・provider-registry test の current-facts 更新 / UT-LLM-MOD-04-001 backlog 維持 / esbuild mismatch で vitest 再実行不能のため historical acceptance evidence と grep を併用 / lessons: P50 task は新規実装前提で書かない・workflow root staleness は resource-map 導線で防ぐ） |
 | 2026-03-29 - UT-SDK-07 shared IPC channel 契約整合 spec sync（APPROVAL/EXECUTION チャネルを `packages/shared/src/ipc/channels.ts` へ移管した実装を仕様書・スキルへ反映 / `ipc-preload-spec-sync-guardian` SKILL.md v1.3.0 更新（description に shared channels 層追加 / Phase 3 に UT-SDK-07 以降の shared canonical path 注記 / Trigger に shared-ipc-channel・APPROVAL_CHANNELS・EXECUTION_CHANNELS 追加 / 変更履歴 1.3.0 追記）/ `lessons-learned-current.md` v3.0.0 更新（L-UT-SDK07-001〜003: shared チャネル移管後の参照パス更新・3箇所同時更新必須・preload import 構造変更時の仕様書更新パターン）） |
@@ -134,15 +135,15 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 - [logs-archive-index.md](references/logs-archive-index.md)
 
-## TASK-ELECTRON-BUILD-FIX close-out sync（2026-03-30）
+## TASK-P0-09 claude-sdk-permission-hooks-governance close-out resync（2026-03-31）
 
-- タスク名: electron-build-infra-fix
-- 種別: implementation / build-infra bugfix
+- タスク名: claude-sdk-permission-hooks-governance
+- 種別: implementation close-out resync
 - 主な反映:
-  - `packages/shared` の dual output と preload bundle 方針を workflow / system spec / root docs に同期
-  - root `postinstall` / desktop `rebuild:electron` / `afterPack` の三層責務を canonical spec に記録
-  - root `artifacts.json` / `outputs/artifacts.json` / `phase-11-manual-test.md` / `implementation-guide.md` の drift を是正
-  - `deployment-electron.md` / `technology-desktop.md` / `task-workflow-completed.md` / `task-workflow-history.md` / `SKILL.md` / mirror を same-wave 更新
+  - `references/api-ipc-system-core.md` に runtime governance state IPC を保持し、`references/interfaces-agent-sdk-skill-reference.md` の `skillCreatorAPI.getGovernanceState()` 追記と整合させた
+  - `references/task-workflow-completed.md` の TASK-P0-09 完了記録を current facts ベースで維持しつつ、workflow 側では path-scoped runtime enforcement 未完を `TASK-P0-09-U1` として formalize する判断に合わせた
+  - UI 反映は renderer 実装完了ではなく main/preload/shared surface 完了として表現を是正し、過大な close-out wording を解消した
+  - `generate-index.js` と workflow index regenerate を same-wave 実行して generated indexes を再同期する前提を固定した
 
 ## TASK-SDK-03 resource selection hardening sync（2026-03-27）
 

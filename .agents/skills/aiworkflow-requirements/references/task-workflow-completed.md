@@ -5,6 +5,35 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-09 |
+| ステータス | **完了** |
+| タイプ | implementation / runtime governance |
+| 優先度 | 高 |
+| 完了日 | 2026-03-31 |
+| 対象 | `RuntimeSkillCreatorFacade.execute()` / `SkillExecutor` / governance payload |
+| 成果物 | `docs/30-workflows/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` |
+
+#### 実施内容
+
+- execute phase の governance policy を `SkillExecutor.execute(..., governanceOptions)` へ接続し、`permissionMode` / `hooks` / `permissions.canUseTool` を SDK query() へ伝播
+- `SkillCreatorGovernancePolicy` の path 判定を `path.resolve` / `path.relative` ベースへ是正し、空 path・targetDir 未指定・path traversal を拒否
+- `skill-creator:get-governance` IPC と preload `getGovernancePayload()` を追加し、`GovernanceUiPayload` を public surface として公開
+- follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` を formalize し、全 phase coverage と renderer 可視化を分離した
+- `apps/desktop/src/main/services/runtime/governance/` に policy / hooks factory / audit sink を追加
+- `packages/shared/src/types/skillCreator.ts` と `packages/shared/src/types/index.ts` に governance 型 6 件を追加
+- `apps/desktop/src/preload/channels.ts` / `apps/desktop/src/main/ipc/creatorHandlers.ts` / `apps/desktop/src/preload/skill-creator-api.ts` に `skill-creator:get-governance-state` を追加
+- `RuntimeSkillCreatorFacade.execute()` が execute phase policy を metadata へ透過し、`SkillExecutor` が SDK `query()` へ hooks と permissionMode を実接続する current fact へ更新
+- Phase 11 を `NON_VISUAL` と確定し、Phase 12 implementation guide を Part 1 / Part 2 構成と system spec sync 付きで閉じた
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/preload/__tests__/skill-creator-api.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/GovernanceHooksFactory.test.ts src/main/services/runtime/__tests__/GovernanceEdgeCases.test.ts src/main/services/runtime/__tests__/GovernanceAuditSink.test.ts src/main/services/runtime/__tests__/SkillCreatorGovernancePolicy.test.ts src/main/services/skill/__tests__/SkillExecutor.sdk-types.test.ts`
+- 130 tests PASS
+- Phase 11 visual screenshot: N/A（renderer governance UI は follow-up）
 ### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
 | 項目 | 値 |
@@ -1824,36 +1853,46 @@
 
 ---
 
-### タスク: TASK-P0-04 manifest-loader-default-activation（2026-03-30）
+### タスク: TASK-P0-04 manifest-loader-default-startup（2026-03-30）
 
-| 項目       | 値                                                                                                                                            |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-P0-04                                                                                                                                    |
-| ステータス | **Phase 1-12 完了 / Phase 13 pending**                                                                                                        |
-| タイプ     | implementation                                                                                                                                |
-| 優先度     | P0                                                                                                                                            |
-| 完了日     | 2026-03-30                                                                                                                                    |
-| 依存タスク | TASK-P0-03（workflow-manifest.json canonical/mirror 配置）                                                                                     |
-| 後続タスク | TASK-P0-05（runtime pipeline フル統合）                                                                                                        |
-| 成果物     | `docs/30-workflows/completed-tasks/step-10-seq-task-p0-04-manifest-loader-default-activation/`                                                |
+| 項目       | 値                                                                              |
+| ---------- | ------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-04                                                                      |
+| ステータス | **Phase 1-12 完了 / Phase 13 pending**                                          |
+| タイプ     | implementation                                                                  |
+| 優先度     | P0                                                                              |
+| 完了日     | 2026-03-30                                                                      |
+| 依存タスク | TASK-P0-03（workflow-manifest.json canonical/mirror 配置）                      |
+| 後続タスク | TASK-P0-05（runtime pipeline フル統合）                                         |
+| 成果物     | `docs/30-workflows/completed-tasks/task-p0-04-manifest-loader-default-startup/` |
 
 #### 実施内容
 
-- **DI override パターン**: `RuntimeSkillCreatorFacade` コンストラクタで、外部注入がなければ 3 コンポーネントを自動インスタンス化するように変更
-  - `this.sourceResolver = deps.sourceResolver ?? new SkillCreatorSourceResolver()`
-  - `this.resourcePlanner = deps.resourcePlanner ?? new PhaseResourcePlanner()`
-  - `this.resolvedResourceReader = deps.resolvedResourceReader ?? new ResolvedResourceReader(deps.resourceLoader)`
-- **dynamic resource pipeline のデフォルト有効化**: manifest ファイルを自動発見してリソースを読み込む
-  - 候補ディレクトリ: explicit → env（`AIWORKFLOW_SKILL_CREATOR_PATH`）→ home → repo
-  - `SkillCreatorSourceResolver.prototype.resolve` が常に REPO 候補を含む
-- **fallback chain の確立**: dynamic pipeline → static loader → `resource_loader_unavailable` エラー
-- **`hasDynamicResourcePipeline()` の廃止**: デフォルトで dynamic pipeline が有効になったため不要となり削除。テストを含め全呼び出し箇所を除去済み
+- `SKILL_CREATOR_MANIFEST_PATH = "workflow-manifest.json"` 定数を `apps/desktop/src/main/services/skill/constants.ts` に追加
+- `resolveDefaultManifestPath(explicitRoot?: string): string` 関数を実装：
+  - `explicitRoot` 指定時はそのパスを優先
+  - 未指定時は `getSkillCreatorRootCandidates()` の候補（env → home → repo）から `fs.existsSync` で実在パスを探索
+  - manifest が見つからない場合は日本語エラーメッセージで throw
+- ManifestLoader 自体は変更なし（呼び出し元の追加のみ）
 
 #### 検証
 
-- `pnpm exec vitest run RuntimeSkillCreatorFacade`: **テスト全 PASS**
+- `pnpm exec vitest run ManifestLoader.production-manifest.test.ts`: **25 tests PASS**
 - TypeScript typecheck: PASS
 - ESLint: PASS
+
+#### テストケース追加内訳
+
+| テストID | 内容                                            | 結果 |
+| -------- | ----------------------------------------------- | ---- |
+| TC-10    | SKILL_CREATOR_MANIFEST_PATH で canonical を読む | PASS |
+| TC-11    | resolveDefaultManifestPath() が絶対パスを返す   | PASS |
+| TC-12    | 解決パスから manifest を読み込める              | PASS |
+| TC-13    | 定数が空文字でない                              | PASS |
+| TC-14    | explicitRoot が優先される                       | PASS |
+| EC-10    | 非存在ディレクトリ指定で正しいパスを返す        | PASS |
+| EC-11    | 候補なし時にエラー throw                        | PASS |
+| EC-12    | 破損 JSON で ManifestLoader がエラー            | PASS |
 
 #### Phase 12 未タスク
 

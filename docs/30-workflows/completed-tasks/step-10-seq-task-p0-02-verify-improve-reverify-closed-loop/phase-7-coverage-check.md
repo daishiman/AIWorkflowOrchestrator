@@ -9,7 +9,7 @@
 | 対象機能   | TASK-P0-02 verify→improve→re-verify 閉ループ修復 |
 | 前提Phase  | Phase 6: テスト拡充                              |
 | 次Phase    | Phase 8: リファクタリング                        |
-| ステータス | completed                                        |
+| ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
 | 更新日     | 2026-03-30                                       |
 
@@ -27,11 +27,11 @@ AC-1〜AC-6 と全遷移 edge のカバレッジを照合し、閉ループ修�
   - AC-3: improve→verify 遷移 → ユニットテスト
   - AC-4: 完全サイクル → 統合テスト
   - AC-5: UI snapshot → snapshot テスト
-  - AC-6: reverifyWorkflow() / requestReverify() 統合 → ユニットテスト
+  - AC-6: requestReverify() 統合 → ユニットテスト
 
 ### Task 2: 遷移 edge カバレッジ
 
-- 全遷移 edge（execute→verify, verify→review, verify→improve, improve→verify, improve→execute）がテストで覆われていることを確認する
+- 全遷移 edge（execute→verify, verify→improve, verify→complete, improve→verify, improve→execute）がテストで覆われていることを確認する
 - 不正遷移の禁止がテストで覆われていることを確認する
 - disabled conditions が全てテストで覆われていることを確認する
 
@@ -42,11 +42,11 @@ AC-1〜AC-6 と全遷移 edge のカバレッジを照合し、閉ループ修�
 
 ### カバレッジ測定対象ファイル
 
-| ファイル                   | パス                                                                   | 測定対象                            |
-| -------------------------- | ---------------------------------------------------------------------- | ----------------------------------- |
-| SkillCreatorWorkflowEngine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `recordVerifyPass`, 遷移テーブル    |
-| RuntimeSkillCreatorFacade  | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`  | verify 結果分岐, `reverifyWorkflow` |
-| creatorHandlers            | `apps/desktop/src/main/ipc/creatorHandlers.ts`                         | verify detail / reverify bridge     |
+| ファイル                   | パス                                                                   | 測定対象                                 |
+| -------------------------- | ---------------------------------------------------------------------- | ---------------------------------------- |
+| SkillCreatorWorkflowEngine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `recordVerifyPass`, 遷移テーブル         |
+| RuntimeSkillCreatorFacade  | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`  | `processVerifyResult`, `requestReVerify` |
+| creatorHandlers            | `apps/desktop/src/main/services/runtime/creatorHandlers.ts`            | verify pass handler                      |
 
 ## 参照資料
 
@@ -62,8 +62,8 @@ AC-1〜AC-6 と全遷移 edge のカバレッジを照合し、閉ループ修�
 
 | 参照資料                  | パス                                                                                        | 内容                                  |
 | ------------------------- | ------------------------------------------------------------------------------------------- | ------------------------------------- |
-| Skill Creator Service仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService仕様との整合性確認 |
-| IPC契約チェックリスト     | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時の整合性確認                 |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService仕様との整合性確認 |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC修正時の整合性確認                 |
 
 ## 統合テスト連携
 
@@ -79,20 +79,20 @@ AC-1〜AC-6 と全遷移 edge のカバレッジを照合し、閉ループ修�
 
 ## 完了条件
 
-- [x] AC-1〜AC-6 の対応表がある
-- [x] 全遷移 edge の coverage が確認されている
-- [x] 不正遷移の禁止テストが確認されている
-- [x] 3 層（Engine/Facade/IPC）の coverage が確認されている
-- [x] Phase 8 に渡す重複削減候補が整理されている
-- [x] aiworkflow-requirements の関連仕様を確認した
-- [x] 本Phase内の全タスクを100%実行完了
+- [ ] AC-1〜AC-6 の対応表がある
+- [ ] 全遷移 edge の coverage が確認されている
+- [ ] 不正遷移の禁止テストが確認されている
+- [ ] 3 層（Engine/Facade/IPC）の coverage が確認されている
+- [ ] Phase 8 に渡す重複削減候補が整理されている
+- [ ] aiworkflow-requirements の関連仕様を確認した
+- [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
 
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] 各タスクの成果物が生成されている
-- [x] artifacts.jsonが更新されている
-- [x] Phase末端で各タスクを100%完了し、完了を明記している
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次Phase
 

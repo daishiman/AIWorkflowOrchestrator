@@ -17,7 +17,11 @@ import type {
   RuntimeSkillCreatorVerifyDetail,
   SkillCreatorPersistedWorkflowCheckpoint,
   SkillCreatorWorkflowArtifactEntry,
+  ResumeCompatibilityResult,
+  ResumeIncompatibilityReason,
+  SkillCreatorSessionListItem,
 } from "@repo/shared/types";
+import { SKILL_CREATOR_ENGINE_VERSION } from "@repo/shared/types";
 import type { RuntimeDecision } from "./RuntimePolicyResolver";
 
 export type SkillCreatorWorkflowPhase = SharedSkillCreatorWorkflowPhase;
@@ -80,6 +84,10 @@ interface SkillCreatorWorkflowState extends Omit<
 
 export class SkillCreatorWorkflowEngine {
   private readonly workflows = new Map<string, SkillCreatorWorkflowState>();
+  private readonly checkpoints = new Map<
+    string,
+    SkillCreatorPersistedWorkflowCheckpoint
+  >();
 
   recordPlanResult(
     planResult: RuntimeSkillCreatorPlanResult,
@@ -577,6 +585,141 @@ export class SkillCreatorWorkflowEngine {
     }));
   }
 
+  /**
+   * 有効な（TTL内・未無効化）チェックポイントの一覧を返す。(TASK-P0-08)
+   */
+  listCheckpoints(): SkillCreatorSessionListItem[] {
+    const now = Date.now();
+    const TTL_MS = 86_400_000; // 24h
+    const result: SkillCreatorSessionListItem[] = [];
+
+    for (const cp of this.checkpoints.values()) {
+      if (now - cp.updatedAt > TTL_MS) continue;
+      if (cp.invalidatedAt !== undefined) continue;
+
+      const compatibility = this.evaluateCompatibility(cp);
+      result.push({
+        checkpointId: cp.checkpointId,
+        planId: cp.planId,
+        currentPhase: cp.workflowStateSnapshot.currentPhase,
+        checkpointType: cp.checkpointType,
+        compatibility,
+        updatedAt: cp.updatedAt,
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * チェックポイントから UI スナップショットを返す。(TASK-P0-08)
+   */
+  getCheckpointSnapshot(
+    checkpointId: string,
+  ): SkillCreatorWorkflowStateSnapshot | undefined {
+    const cp = this.checkpoints.get(checkpointId);
+    if (!cp) return undefined;
+    return this.buildSnapshotFromCheckpoint(cp);
+  }
+
+  /**
+   * チェックポイントから workflow を復元する。incompatible/conflict は undefined。(TASK-P0-08)
+   */
+  resumeFromCheckpoint(
+    checkpointId: string,
+  ): SkillCreatorWorkflowStateSnapshot | undefined {
+    const cp = this.checkpoints.get(checkpointId);
+    if (!cp) return undefined;
+
+    const compatibility = this.evaluateCompatibility(cp);
+    if (
+      compatibility.status === "incompatible" ||
+      compatibility.status === "conflict"
+    ) {
+      return undefined;
+    }
+
+    return this.hydrateFromCheckpoint(cp);
+  }
+
+  /**
+   * チェックポイントを削除する。存在しない場合は何もしない。(TASK-P0-08)
+   */
+  deleteCheckpoint(checkpointId: string): void {
+    this.checkpoints.delete(checkpointId);
+  }
+
+  private evaluateCompatibility(
+    cp: SkillCreatorPersistedWorkflowCheckpoint,
+  ): ResumeCompatibilityResult {
+    // Active lease check
+    if (cp.lease && cp.lease.leaseExpiresAt > Date.now()) {
+      return {
+        status: "conflict",
+        reasons: ["active_lease_conflict" as ResumeIncompatibilityReason],
+        warnings: [],
+      };
+    }
+
+    // Engine version check
+    if (
+      cp.compatibilitySnapshot.engineVersion !== SKILL_CREATOR_ENGINE_VERSION
+    ) {
+      return {
+        status: "incompatible",
+        reasons: ["version_mismatch" as ResumeIncompatibilityReason],
+        warnings: [],
+      };
+    }
+
+    // Provenance mismatch → compatible_with_warning
+    const currentWorkflow = this.workflows.get(cp.planId);
+    if (
+      currentWorkflow?.sourceProvenance?.resolvedSkillCreatorRoot &&
+      cp.compatibilitySnapshot.sourceProvenance?.resolvedSkillCreatorRoot &&
+      currentWorkflow.sourceProvenance.resolvedSkillCreatorRoot !==
+        cp.compatibilitySnapshot.sourceProvenance.resolvedSkillCreatorRoot
+    ) {
+      return {
+        status: "compatible_with_warning",
+        reasons: [],
+        warnings: ["スキルクリエイターのルートパスが変更されています"],
+      };
+    }
+
+    return { status: "compatible", reasons: [], warnings: [] };
+  }
+
+  private buildSnapshotFromCheckpoint(
+    cp: SkillCreatorPersistedWorkflowCheckpoint,
+  ): SkillCreatorWorkflowStateSnapshot {
+    const ws = cp.workflowStateSnapshot;
+    const artifacts: SkillCreatorWorkflowArtifact[] = ws.phaseArtifacts.map(
+      (entry, idx) => ({
+        id: `${cp.planId}:${entry.phase}:${entry.type}:snapshot-${idx}`,
+        phase: entry.phase,
+        kind: entry.type as SkillCreatorWorkflowArtifact["kind"],
+        createdAt: entry.timestamp,
+        payload: entry.data,
+      }),
+    );
+
+    return {
+      planId: cp.planId,
+      currentPhase: ws.currentPhase,
+      awaitingUserInput: ws.awaitingUserInput,
+      verifyResult: ws.verifyResult,
+      phaseArtifacts: artifacts,
+      resumeTokenEnvelope:
+        ws.resumeTokenEnvelope as SkillCreatorResumeTokenEnvelope,
+      routeSnapshot: cp.compatibilitySnapshot.routeSnapshot,
+      sourceProvenance: cp.compatibilitySnapshot.sourceProvenance as
+        | SkillCreatorWorkflowSourceProvenance
+        | undefined,
+      handoffBundle: ws.handoffBundle ?? null,
+    };
+  }
+
   private ensureWorkflow(
     planId: string,
     sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
@@ -655,7 +798,7 @@ export class SkillCreatorWorkflowEngine {
       review: ["execute", "handoff"],
       execute: ["verify"],
       verify: ["review", "improve"],
-      improve: ["execute", "verify"],
+      improve: ["execute"],
       handoff: [],
     };
 
@@ -826,11 +969,11 @@ export class SkillCreatorWorkflowEngine {
   private getReverifyDisabledReason(
     state: SkillCreatorWorkflowState,
   ): string | undefined {
+    if (state.currentPhase === "execute") {
+      return "実行中は再検証できません。";
+    }
     if (state.routeSnapshot?.type === "terminal_handoff") {
       return "terminal_handoff の再検証導線は Task07 owner のため、この surface では再実行しません。";
-    }
-    if (state.currentPhase !== "improve" && state.currentPhase !== "verify") {
-      return "verify / improve フェーズ以外では再検証できません。";
     }
 
     const latestExecuteResult = getExecuteArtifactPayload(

@@ -16,6 +16,7 @@ import type {
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
   SkillCreatorSdkEvent,
+  SkillCreatorGovernanceState,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 import { IPC_CHANNELS } from "../../preload/channels";
@@ -480,6 +481,125 @@ export function registerRuntimeSkillCreatorHandlers(
       }
     },
   );
+
+  // ── Session Resume handlers (TASK-P0-08) ──
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_LIST_SESSIONS,
+    async (event: IpcMainInvokeEvent) => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_LIST_SESSIONS,
+        mainWindow,
+      );
+      if (!runtimeSkillCreatorService) {
+        return { success: false, error: RUNTIME_SKILL_CREATOR_UNAVAILABLE };
+      }
+      return { success: true, data: runtimeSkillCreatorService.listSessions() };
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL,
+    async (event: IpcMainInvokeEvent, args: { checkpointId: string }) => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL,
+        mainWindow,
+      );
+      if (!args?.checkpointId?.trim()) {
+        return { success: false, error: "checkpointId が指定されていません" };
+      }
+      if (!runtimeSkillCreatorService) {
+        return { success: false, error: RUNTIME_SKILL_CREATOR_UNAVAILABLE };
+      }
+      const detail = runtimeSkillCreatorService.getSessionDetail(
+        args.checkpointId,
+      );
+      if (!detail) {
+        return { success: false, error: "セッションが見つかりません" };
+      }
+      return { success: true, data: detail };
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION,
+    async (event: IpcMainInvokeEvent, args: { checkpointId: string }) => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION,
+        mainWindow,
+      );
+      if (!args?.checkpointId?.trim()) {
+        return { success: false, error: "checkpointId が指定されていません" };
+      }
+      if (!runtimeSkillCreatorService) {
+        return { success: false, error: RUNTIME_SKILL_CREATOR_UNAVAILABLE };
+      }
+      const snapshot = runtimeSkillCreatorService.resumeSession(
+        args.checkpointId,
+      );
+      if (!snapshot) {
+        return { success: false, error: "セッションの復元に失敗しました" };
+      }
+      mainWindow.webContents.send(
+        IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+        snapshot,
+      );
+      return { success: true, data: snapshot };
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION,
+    async (event: IpcMainInvokeEvent, args: { checkpointId: string }) => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION,
+        mainWindow,
+      );
+      if (!args?.checkpointId?.trim()) {
+        return { success: false, error: "checkpointId が指定されていません" };
+      }
+      if (!runtimeSkillCreatorService) {
+        return { success: false, error: RUNTIME_SKILL_CREATOR_UNAVAILABLE };
+      }
+      runtimeSkillCreatorService.deleteSession(args.checkpointId);
+      return { success: true };
+    },
+  );
+
+  // Governance State 取得 (TASK-P0-09)
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE,
+    async (
+      event: IpcMainInvokeEvent,
+    ): Promise<IpcResult<SkillCreatorGovernanceState>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE,
+        mainWindow,
+      );
+
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        const state = runtimeSkillCreatorService.getGovernanceState();
+        return { success: true, data: state };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(
+            error,
+            "Governance 状態の取得に失敗しました",
+          ),
+        };
+      }
+    },
+  );
 }
 
 export function unregisterRuntimeSkillCreatorHandlers(): void {
@@ -492,4 +612,9 @@ export function unregisterRuntimeSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_NORMALIZE_SDK_MESSAGES);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_LIST_SESSIONS);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE);
 }

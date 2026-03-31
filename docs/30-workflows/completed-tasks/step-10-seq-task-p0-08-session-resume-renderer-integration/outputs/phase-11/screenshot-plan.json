@@ -1,0 +1,60 @@
+{
+  "taskId": "TASK-P0-08",
+  "generatedAt": "2026-03-30T23:35:00Z",
+  "screenshots": [
+    {
+      "id": "TC-01",
+      "component": "SessionResumePrompt",
+      "state": "default",
+      "theme": "light",
+      "filename": "TC-01-default-light.png",
+      "status": "pending",
+      "note": "Electron アプリ起動環境で撮影が必要"
+    },
+    {
+      "id": "TC-02",
+      "component": "SessionResumePrompt",
+      "state": "default",
+      "theme": "dark",
+      "filename": "TC-02-default-dark.png",
+      "status": "pending",
+      "note": "Electron アプリ起動環境で撮影が必要"
+    },
+    {
+      "id": "TC-03",
+      "component": "SessionResumePrompt",
+      "state": "data",
+      "theme": "light",
+      "filename": "TC-03-data-light.png",
+      "status": "pending",
+      "note": "複数セッション表示状態"
+    },
+    {
+      "id": "TC-04",
+      "component": "SessionResumePrompt",
+      "state": "hidden",
+      "theme": "light",
+      "filename": "TC-04-hidden-light.png",
+      "status": "pending",
+      "note": "セッション 0 件時は prompt 自体が非表示"
+    },
+    {
+      "id": "TC-05",
+      "component": "SkillLifecyclePanel",
+      "state": "error",
+      "theme": "light",
+      "filename": "TC-05-error-light.png",
+      "status": "pending",
+      "note": "復元失敗時のエラーバナー"
+    },
+    {
+      "id": "TC-06",
+      "component": "SessionIndicator",
+      "state": "active",
+      "theme": "light",
+      "filename": "TC-06-active-light.png",
+      "status": "pending",
+      "note": "パルスアニメーション付き"
+    }
+  ]
+}

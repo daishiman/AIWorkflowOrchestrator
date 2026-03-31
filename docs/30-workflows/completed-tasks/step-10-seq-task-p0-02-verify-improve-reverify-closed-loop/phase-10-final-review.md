@@ -9,7 +9,7 @@
 | 対象機能   | TASK-P0-02 verify→improve→re-verify 閉ループ修復 |
 | 前提Phase  | Phase 9: 品質保証                                |
 | 次Phase    | Phase 11: 手動テスト                             |
-| ステータス | completed                                        |
+| ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
 | 更新日     | 2026-03-30                                       |
 
@@ -41,8 +41,7 @@ AC-1〜AC-6 の総合判定を行い、閉ループ修復が完全に機能す�
 ### Task 3: P0-01 統合リスク評価
 
 - TASK-P0-01 が未完了の場合の P0-02 の動作に問題がないことを確認する
-- verification engine 未注入時は no-op として扱うことを確認する
-- `task-workflow.md` / `artifacts.json` / `outputs/artifacts.json` / `documentation-changelog.md` の同期が崩れていないことを確認する
+- verification engine のフォールバック動作が定義されていることを確認する
 
 ### Task 4: gate 判定
 
@@ -64,12 +63,12 @@ AC-1〜AC-6 の総合判定を行い、閉ループ修復が完全に機能す�
 
 | AC   | 条件                                                  | 対応Phase/テスト            | 判定 |
 | ---- | ----------------------------------------------------- | --------------------------- | ---- |
-| AC-1 | recordVerifyPass() が WorkflowEngine に実装されている | Phase 5 Task 1 / UT         | PASS |
-| AC-2 | verify→improve 遷移が正しく動作する                   | Phase 4 Task 2 / UT         | PASS |
-| AC-3 | improve→verify (re-verify) 遷移が動作する             | Phase 4 Task 2 / UT         | PASS |
-| AC-4 | 完全サイクルがテスト可能                              | Phase 4 Task 2 / 統合テスト | PASS |
-| AC-5 | UI snapshot が verify 状態を反映する                  | Phase 11 / 手動テスト       | PASS |
-| AC-6 | reverifyWorkflow() が engine 結果と統合される         | Phase 4 Task 3 / UT         | PASS |
+| AC-1 | recordVerifyPass() が WorkflowEngine に実装されている | Phase 5 Task 1 / UT         | TBD  |
+| AC-2 | verify→improve 遷移が正しく動作する                   | Phase 4 Task 2 / UT         | TBD  |
+| AC-3 | improve→verify (re-verify) 遷移が動作する             | Phase 4 Task 2 / UT         | TBD  |
+| AC-4 | 完全サイクルがテスト可能                              | Phase 4 Task 2 / 統合テスト | TBD  |
+| AC-5 | UI snapshot が verify 状態を反映する                  | Phase 11 / 手動テスト       | TBD  |
+| AC-6 | requestReverify() が engine 結果と統合される          | Phase 4 Task 3 / UT         | TBD  |
 
 ## システム仕様（aiworkflow-requirements）
 
@@ -77,17 +76,16 @@ AC-1〜AC-6 の総合判定を行い、閉ループ修復が完全に機能す�
 
 ### IPC 契約チェックリスト
 
-- [x] `creatorHandlers.ts` の IPC チャネル定義が `packages/shared/src/ipc/channels.ts` と整合している
-- [x] verify/improve 関連の IPC メッセージ型が `packages/shared/src/types/skill-*.ts` に定義されている
-- [x] `preload/skill-api.ts` に verify/improve 操作のブリッジが公開されている
-- [x] safeInvoke のタイムアウト設定が正本仕様と一致している
-- [x] `task-workflow.md` と `outputs/artifacts.json` が current facts と一致している
+- [ ] `creatorHandlers.ts` の IPC チャネル定義が `packages/shared/src/ipc/channels.ts` と整合している
+- [ ] verify/improve 関連の IPC メッセージ型が `packages/shared/src/types/skill-*.ts` に定義されている
+- [ ] `preload/skill-api.ts` に verify/improve 操作のブリッジが公開されている
+- [ ] safeInvoke のタイムアウト設定が正本仕様と一致している
 
 ### Skill Creator Service 仕様
 
-- [x] `interfaces-agent-sdk-skill-reference.md` の verify/improve 遷移仕様を確認した
-- [x] WorkflowEngine の phase transition spec が正本仕様と一致している
-- [x] `task-workflow-phases.md` のフェーズ遷移テーブルとの整合性を確認した
+- [ ] `interfaces-agent-sdk-skill-reference.md` の verify/improve 遷移仕様を確認した
+- [ ] WorkflowEngine の phase transition spec が正本仕様と一致している
+- [ ] `task-workflow-phases.md` のフェーズ遷移テーブルとの整合性を確認した
 
 ## 統合テスト連携
 
@@ -102,18 +100,18 @@ AC-1〜AC-6 の総合判定を行い、閉ループ修復が完全に機能す�
 
 ## 完了条件
 
-- [x] AC-1〜AC-6 の総合判定がある
-- [x] 閉ループ完全性が最終確認されている
-- [x] P0-01 統合リスクが評価されている
-- [x] 手動テストへの entry 条件が明記されている
-- [x] 本Phase内の全タスクを100%実行完了
+- [ ] AC-1〜AC-6 の総合判定がある
+- [ ] 閉ループ完全性が最終確認されている
+- [ ] P0-01 統合リスクが評価されている
+- [ ] 手動テストへの entry 条件が明記されている
+- [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
 
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] 各タスクの成果物が生成されている
-- [x] artifacts.jsonが更新されている
-- [x] Phase末端で各タスクを100%完了し、完了を明記している
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次Phase
 

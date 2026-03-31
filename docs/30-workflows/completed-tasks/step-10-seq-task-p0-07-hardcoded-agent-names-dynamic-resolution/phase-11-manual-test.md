@@ -10,7 +10,7 @@
 
 ## 目的
 
-本タスクは runtime 内部契約の是正であり UI 変更を含まない。Phase 11 では Electron 画面確認の代わりに、manifest 実運用経路と legacy 経路の両方が current facts 通りに動くことを手動で確認し、非視覚エビデンスとして記録する。
+実際の Electron アプリ上で手動テストを実施し、ユーザー体験を確認する。
 
 ## 実行タスク
 
@@ -32,7 +32,7 @@
 
 ### ステップ2: 手動テストを実施する
 
-UI 変更なしのため、runtime 対象テストと型検証を実行し、manifest custom agent 名が plan/improve の system prompt に反映されることを確認する。
+Electron アプリを起動し、チェックリストに従ってテストを実施する。
 
 ### ステップ3: 発見された問題を記録する
 
@@ -42,8 +42,8 @@ UI 変更なしのため、runtime 対象テストと型検証を実行し、man
 
 | 成果物                | パス                                        | 説明                 |
 | --------------------- | ------------------------------------------- | -------------------- |
-| manual test checklist | `outputs/phase-11/manual-test-checklist.md` | 非視覚チェックリスト |
-| manual test result    | `outputs/phase-11/manual-test-result.md`    | 非視覚テスト結果     |
+| manual test checklist | `outputs/phase-11/manual-test-checklist.md` | テストチェックリスト |
+| manual test result    | `outputs/phase-11/manual-test-result.md`    | テスト結果           |
 | discovered issues     | `outputs/phase-11/discovered-issues.md`     | 発見された問題       |
 
 ## 完了条件

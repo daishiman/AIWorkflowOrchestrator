@@ -27,7 +27,7 @@
 ### Task 2: fallback chain 整理
 
 - fallback 判定ロジックの重複を排除する
-- dynamic resource pipeline 旧ガードと `plan()` 内の条件分岐を整理する
+- hasDynamicResourcePipeline() と plan() 内の条件分岐を整理する
 - 判定ロジックの単一責任化を進める
 
 ### Task 3: 命名整理

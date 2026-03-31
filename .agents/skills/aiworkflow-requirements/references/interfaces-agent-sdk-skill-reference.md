@@ -126,18 +126,12 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | 項目 | 契約 |
 | --- | --- |
 | 表向きの primary 導線 | `SkillManagementPanel` → `SkillLifecyclePanel` の 1 画面 |
-| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` / `getVerifyDetail` / `reverifyWorkflow` を持つ補助 API |
+| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` / `getVerifyDetail` / `reverifyWorkflow` / `getGovernanceState` を持つ補助 API |
 | create 正本 | `agentSlice.createSkill()` → `window.electronAPI.skill.create()` |
 | execute 正本 | `agentSlice.executeSkill()` → `window.electronAPI.skill.execute()` |
 | verify detail | `window.electronAPI.skillCreator.getVerifyDetail(planId)` で derived detail を取得し、owner は engine に維持 |
 | re-verify | `window.electronAPI.skillCreator.reverifyWorkflow(planId)` は verify loop の再要求のみを行い、Task07/08 owner 項目は操作しない |
 | 詳細改善 | `SkillAnalysisView` / store action を再利用 |
-
-#### TASK-P0-02 current fact（2026-03-30）
-
-- `SkillCreatorWorkflowEngine.recordVerifyPass(planId, checks)` により verify pass 時は `review` へ遷移し、`verifyResult.status="pass"` / `nextAction="handoff"` を記録する
-- `requestReverify(planId)` は improve phase のみ許可し、`terminal_handoff`、execute artifact 欠落、直近 execute failure を拒否する
-- `getVerifyDetail(planId)` の `checks` は persisted verification result の再生ではなく、current workflow snapshot からの derived detail として扱う
 
 #### renderer 契約
 
@@ -147,6 +141,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | `window.electronAPI.skillCreator.planSkill(prompt, authMode?, apiKey?)` | runtime creator plan を public IPC で要求する | skill 作成 runtime bridge を既存 namespace に保つため |
 | `window.electronAPI.skillCreator.executePlan(planId, skillSpec, authMode?, apiKey?)` | runtime plan 実行を要求する | facade / SkillExecutor の境界を preload から隠蔽するため |
 | `window.electronAPI.skillCreator.improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | runtime 改善を要求する | feedback ベース改善を `skill-creator:*` surface に集約するため |
+| `window.electronAPI.skillCreator.getGovernanceState()` | 現在の phase / active policy / denial 要約を取得する | governance 表示を shared DTO で読むため |
 | `window.electronAPI.skillCreator.improveSkill(skillName, { autoApply: false })` | 改善候補の事前整理 | creator 提案と詳細分析を分離するため |
 | `useCreateSkill()` | create 実処理 | 一覧再取得・既存権限導線を保つため |
 | `useExecuteSkill()` | execute 実処理 | preflight / permission / streaming 契約を再利用するため |
@@ -524,12 +519,12 @@ LLM ランタイムを使用してスキルの plan / execute / improve を実�
 
 ### DI 配線（ipc/index.ts）
 
-- `ResourceLoader`: `DEFAULT_SKILL_CREATOR_PATH` でコンストラクタ注入（static fallback 用; optional）
+- `ResourceLoader`: `DEFAULT_SKILL_CREATOR_PATH` でコンストラクタ注入
 - `LLMAdapter`: fire-and-forget async で `LLMAdapterFactory.getAdapter("anthropic")` → `setLLMAdapter()` で遅延注入
 - `SkillFileWriter`: `skillBasePath` でコンストラクタ注入
-- `SkillCreatorSourceResolver`: multi-root source discovery を担当。**TASK-P0-04 以降、未注入時は自動インスタンス化（DI override）**
-- `PhaseResourcePlanner`: operation ごとの resource selection / budget / degrade を担当。**TASK-P0-04 以降、未注入時は自動インスタンス化（DI override）**
-- `ResolvedResourceReader`: absolute path 優先読込 + legacy `ResourceLoader` fallback を担当。**TASK-P0-04 以降、未注入時は自動インスタンス化（DI override）**
+- `SkillCreatorSourceResolver`: multi-root source discovery を担当
+- `PhaseResourcePlanner`: operation ごとの resource selection / budget / degrade を担当
+- `ResolvedResourceReader`: absolute path 優先読込 + legacy `ResourceLoader` fallback を担当
 
 ### dynamic resource pipeline（TASK-SDK-03 / 2026-03-27）
 
@@ -552,41 +547,32 @@ Task03 実装で、`plan()` / `improve()` は固定 root 前提の resource 読�
 | RuntimeSkillCreatorFacade.ts | `apps/desktop/src/main/services/runtime/` | Facade 本体 |
 | creatorHandlers.ts | `apps/desktop/src/main/ipc/` | IPC ハンドラ（internal helper） |
 
-### DI override / dynamic pipeline デフォルト有効化（TASK-P0-04 / 2026-03-30）
+### Governance 拡張（TASK-P0-09 / 2026-03-31）
 
-TASK-P0-04 で `RuntimeSkillCreatorFacade` コンストラクタに DI override パターンを適用し、dynamic resource pipeline をデフォルトで有効にした。
+`RuntimeSkillCreatorFacade.execute()` では、governance policy を `SkillExecutor.execute(..., governanceOptions)` へ伝播し、execute phase の `permissionMode` / `hooks` / `permissions.canUseTool` を SDK query() 呼び出しへ接続する。
 
-#### DI override パターン
-
-```typescript
-// 外部注入を優先し、なければ自動インスタンス化（TASK-P0-04）
-this.sourceResolver  = deps.sourceResolver  ?? new SkillCreatorSourceResolver();
-this.resourcePlanner = deps.resourcePlanner ?? new PhaseResourcePlanner();
-this.resolvedResourceReader =
-  deps.resolvedResourceReader ?? new ResolvedResourceReader(deps.resourceLoader);
-```
-
-3 フィールドは `readonly` 必須型として宣言されるため、TypeScript が `null` を型レベルで除外する。
-
-#### SkillCreatorSourceResolver は常に repo 候補を含む
-
-`SkillCreatorSourceResolver.prototype.resolve` は `explicitRoot` 未指定時でも `getSkillCreatorRootCandidates()` を呼び出すため、常に `repo`（`{cwd}/.claude/skills/skill-creator`）候補を含む。テスト環境では `sourceResolver` を mock するか `AIWORKFLOW_SKILL_CREATOR_PATH` 環境変数を設定しないと、実際の skill-creator ディレクトリが発見されてしまう点に注意。
-
-#### fallback chain
-
-| 優先度 | 手段 | 発動条件 |
+| 要素 | パス | current fact |
 | --- | --- | --- |
-| 1 | dynamic pipeline | `sourceResolver` + `resourcePlanner` + `resolvedResourceReader` でリソース取得成功 |
-| 2 | static loader fallback | dynamic pipeline 失敗 && `deps.resourceLoader` が存在する |
-| 3 | `resource_loader_unavailable` エラー返却 | dynamic pipeline 失敗 && `deps.resourceLoader` が存在しない |
+| `SkillCreatorGovernancePolicy` | `apps/desktop/src/main/services/runtime/SkillCreatorGovernancePolicy.ts` | phase 別 policy 定義と path-safe `createCanUseToolCallback()` を提供 |
+| `GovernanceHooksFactory` | `apps/desktop/src/main/services/runtime/GovernanceHooksFactory.ts` | PreToolUse / PostToolUse を中心に監査 hook を生成 |
+| `GovernanceAuditSink` | `apps/desktop/src/main/services/runtime/GovernanceAuditSink.ts` | denial / summary / UI payload を蓄積・構築する |
+| `skill-creator:get-governance` | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `GovernanceUiPayload` を renderer へ返す public IPC |
+| `getGovernancePayload()` | `apps/desktop/src/preload/skill-creator-api.ts` | governance payload 取得用 preload API |
 
-#### hasDynamicResourcePipeline() の廃止
+#### Facade public surface
 
-Task03 時点では `hasDynamicResourcePipeline()` メソッドが dynamic pipeline の有効/無効を外部から判断するために存在していたが、TASK-P0-04 でデフォルト有効となったため廃止された。呼び出し箇所はテストを含めて全削除済み。
+| メソッド | 戻り値 | 説明 |
+| --- | --- | --- |
+| `getGovernanceUiPayload(phase)` | `GovernanceUiPayload` | denial と session summary を UI 向けに返す |
+| `getGovernanceAuditEvents()` | `readonly GovernanceAuditEvent[]` | 蓄積イベントを取得する |
+
+#### 制約
+
+- current wiring は execute phase を中心に接続している
+- plan / verify / improve の full governance enforcement と renderer 可視化は follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` で継続する
 
 ### 完了タスク
 
 | タスクID | 完了日 | ステータス | 概要 |
 | --- | --- | --- | --- |
 | UT-SC-03-003 | 2026-03-24 | 完了 | DI 配線実装。setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。29テスト全PASS |
-| TASK-P0-04 | 2026-03-30 | 完了 | DI override パターン適用 + dynamic resource pipeline デフォルト有効化 + hasDynamicResourcePipeline() 廃止 |

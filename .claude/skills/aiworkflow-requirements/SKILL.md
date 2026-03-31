@@ -145,10 +145,10 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 ### references/（ガイドライン）
 
-| ファイル                       | 内容                           |
-| ------------------------------ | ------------------------------ |
-| `spec-guidelines.md`           | 命名規則・記述ガイドライン     |
-| `spec-splitting-guidelines.md` | 大規模ファイル分割ガイドライン |
+| ファイル                       | 内容                                                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `spec-guidelines.md`           | 命名規則・記述ガイドライン                                                                                         |
+| `spec-splitting-guidelines.md` | 大規模ファイル分割ガイドライン                                                                                     |
 | `ui-result-panel-pattern.md`   | ResultPanel コンポーネント設計パターン（ErrorBanner/DetailPanel/react.memo/local state 判断基準）— TASK-RT-03 確立 |
 
 ### 連携スキル

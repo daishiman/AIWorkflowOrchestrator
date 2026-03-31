@@ -165,6 +165,21 @@ describe("RuntimeSkillCreatorFacade workflow orchestration", () => {
         permissionMode: "default",
       },
     });
+    expect(executeMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        allowedTools: expect.arrayContaining(["Read", "Edit", "Write"]),
+        permissionMode: "acceptEdits",
+        canUseTool: expect.any(Function),
+        hookObservers: expect.objectContaining({
+          onPreToolUse: expect.any(Function),
+          onPostToolUse: expect.any(Function),
+        }),
+      }),
+      expect.objectContaining({
+        allowedTools: expect.arrayContaining(["Read", "Edit", "Write"]),
+        permissionMode: "acceptEdits",
+      }),
+    );
   });
 
   it("execute() は sdk message を lane 正規化イベントへ変換して返す", async () => {

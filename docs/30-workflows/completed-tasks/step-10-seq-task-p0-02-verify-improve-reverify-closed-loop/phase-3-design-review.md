@@ -9,7 +9,7 @@
 | 対象機能   | TASK-P0-02 verify→improve→re-verify 閉ループ修復 |
 | 前提Phase  | Phase 2: 設計                                    |
 | 次Phase    | Phase 4: テスト作成                              |
-| ステータス | completed                                        |
+| ステータス | pending                                          |
 | 作成日     | 2026-03-29                                       |
 | 更新日     | 2026-03-30                                       |
 
@@ -25,28 +25,26 @@ state machine の一貫性、遷移テーブルの完全性、verification engin
 - dead state（到達不能状態）が存在しないことを確認する
 - verify(pass) と verify(fail) の分岐が対称的であることを確認する
 - improve→verify と improve→execute の選択基準が明確であることを確認する
-- pass は既存の `verify→review` edge を再利用し、追加 phase を増やさないことを確認する
+- `complete` terminal state が正しい終了条件を持つことを確認する
 
 ### Task 2: 遷移テーブル完全性検証
 
 全 phase 対の遷移可否マトリクスを作成して漏れを検出する:
 
-| from\to | plan | review | execute | verify  | improve | handoff |
-| ------- | ---- | ------ | ------- | ------- | ------- | ------- |
-| plan    | -    | ✅     | ❌      | ❌      | ❌      | ❌      |
-| review  | ❌   | -      | ✅      | ❌      | ❌      | ✅      |
-| execute | ❌   | ❌     | -       | ✅      | ❌      | ❌      |
-| verify  | ❌   | ✅     | ❌      | -       | ✅      | ❌      |
-| improve | ❌   | ❌     | ✅      | ✅(NEW) | -       | ❌      |
-| handoff | ❌   | ❌     | ❌      | ❌      | ❌      | -       |
+| from\to  | plan | review | execute | verify  | improve | complete | handoff |
+| -------- | ---- | ------ | ------- | ------- | ------- | -------- | ------- |
+| plan     | -    | ✅     | ❌      | ❌      | ❌      | ❌       | ❌      |
+| review   | ❌   | -      | ✅      | ❌      | ❌      | ❌       | ✅      |
+| execute  | ❌   | ❌     | -       | ✅      | ❌      | ❌       | ❌      |
+| verify   | ❌   | ✅     | ❌      | -       | ✅      | ✅(NEW)  | ❌      |
+| improve  | ❌   | ❌     | ✅      | ✅(NEW) | -       | ❌       | ❌      |
+| complete | ❌   | ❌     | ❌      | ❌      | ❌      | -        | ❌      |
 
 確認項目:
 
 - 不正遷移（例: plan→verify）が禁止されていることを確認する
-- verify(pass) は既存の `verify→review` edge を使い、追加の終端状態を増やさないことを確認する
 - reverify disabled conditions が新遷移と矛盾しないことを確認する:
-  - improve phase 以外 → re-verify 禁止
-  - execute phase ongoing → re-verify 禁止
+  - execute phase ongoing → re-verify 禁止（improve phase なら許可）
   - terminal_handoff route → re-verify 禁止
   - no execute result → re-verify 禁止
   - last execution failed → re-verify 禁止
@@ -54,9 +52,9 @@ state machine の一貫性、遷移テーブルの完全性、verification engin
 ### Task 3: P0-01 との統合整合性
 
 - TASK-P0-01 の `SkillCreatorVerificationEngine.verify()` の戻り値 `RuntimeSkillCreatorVerifyCheck[]` が `recordVerifyPass()` の引数と型一致することを確認する
-- `checks.length === 0` は verification engine 未注入の no-op として扱い、状態を変えないことを確認する
-- `error` が 1 件でもあれば fail、error がなければ pass という判定基準が P0-01 の Layer 1/2 チェック結果と整合することを確認する
-- Facade の graceful degradation（engine 未注入時は空配列→no-op）が意図した挙動かを判定する
+- `allPass` 判定基準（`checks.every(c => c.status === "pass" || c.severity === "warning")`）が P0-01 の Layer 1/2 チェック結果と整合することを確認する
+- Facade の graceful degradation（engine 未注入時は空配列→allPass→pass）が意図した挙動かを判定する
+  - 空配列→pass は検証をスキップすることを意味するため、許容するか要判断
 
 ### Task 4: IPC 契約整合性
 
@@ -91,14 +89,14 @@ Phase 2 で設計した IPC 変更が以下と矛盾しないことを確認す�
 
 | 参照資料                  | パス                                                                                        | 内容                         |
 | ------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------- |
-| IPC契約チェックリスト     | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC変更の整合性検証          |
-| スキル実行IPCセキュリティ | `.claude/skills/aiworkflow-requirements/references/security-skill-ipc-core.md`              | セキュリティパターン準拠確認 |
-| Skill Creator Service仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | Facade pattern との整合性    |
+| IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC変更の整合性検証          |
+| スキル実行IPCセキュリティ | `.agents/skills/aiworkflow-requirements/references/security-skill-ipc-core.md`              | セキュリティパターン準拠確認 |
+| Skill Creator Service仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | Facade pattern との整合性    |
 
 ## 統合テスト連携
 
 - Phase 4 のテスト観点が AC-1〜AC-6 を 1:1 に覆うことを確認する
-- 遷移テーブルの全 edge（新規追加の `improve→verify` を含む）がテストケースに対応することを確認する
+- 遷移テーブルの全 edge（新規追加の `verify→complete` と `improve→verify` を含む）がテストケースに対応することを確認する
 
 ## 成果物
 
@@ -108,19 +106,19 @@ Phase 2 で設計した IPC 変更が以下と矛盾しないことを確認す�
 
 ## 完了条件
 
-- [x] state machine の一貫性が確認されている（dead state なし、全 edge 到達可能）
-- [x] 遷移テーブル完全性マトリクスが作成され漏れがないことが検証されている
-- [x] P0-01 との統合に矛盾がないことが確認されている（型一致、allPass判定基準）
-- [x] IPC契約整合性が確認されている
-- [x] gate 判定（PASS/MINOR/MAJOR/CRITICAL）が明示されている
-- [x] 本Phase内の全タスクを100%実行完了
+- [ ] state machine の一貫性が確認されている（dead state なし、全 edge 到達可能）
+- [ ] 遷移テーブル完全性マトリクスが作成され漏れがないことが検証されている
+- [ ] P0-01 との統合に矛盾がないことが確認されている（型一致、allPass判定基準）
+- [ ] IPC契約整合性が確認されている
+- [ ] gate 判定（PASS/MINOR/MAJOR/CRITICAL）が明示されている
+- [ ] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
 
-- [x] 本Phase内の全タスクを100%実行完了
-- [x] 各タスクの成果物が生成されている
-- [x] artifacts.jsonが更新されている
-- [x] Phase末端で各タスクを100%完了し、完了を明記している
+- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 各タスクの成果物が生成されている
+- [ ] artifacts.jsonが更新されている
+- [ ] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次Phase
 
