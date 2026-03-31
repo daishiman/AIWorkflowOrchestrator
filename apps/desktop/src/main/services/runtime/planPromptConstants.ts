@@ -12,6 +12,11 @@ export const PLAN_PROMPT_CONSTANTS = {
   REFERENCE_SEPARATOR_END: "=== END REFERENCE:",
   RESPONSE_FORMAT_START: "=== RESPONSE FORMAT ===",
   RESPONSE_FORMAT_END: "=== END RESPONSE FORMAT ===",
+  AGENT_NAMES: [
+    "discover-problem",
+    "design-workflow",
+    "plan-structure",
+  ] as const,
   DEFAULT_MODEL_ID: "claude-sonnet-4-20250514",
   DEFAULT_MAX_TOKENS: 4096,
   DEFAULT_TEMPERATURE: 0.3,

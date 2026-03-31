@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-30T22:11:35.706Z",
-  "totalKeywords": 2579,
+  "generated": "2026-03-30T07:56:49.349Z",
+  "totalKeywords": 2576,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -30,7 +30,6 @@
       "interfaces-agent-sdk.md",
       "interfaces-chat-history-core.md",
       "interfaces-rag-file-selection.md",
-      "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "security-api-electron.md",
       "security-api.md",
@@ -3498,7 +3497,6 @@
       "arch-ui-components-advanced.md",
       "architecture-implementation-patterns-reference-agent-view-selector-migration.md",
       "architecture-implementation-patterns-reference-ipc-fallback-validation.md",
-      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
@@ -4718,12 +4716,6 @@
       "deployment-electron.md"
     ],
     "リリースチェックリスト": [
-      "deployment-electron.md"
-    ],
-    "開発時のネイティブモジュール": [
-      "deployment-electron.md"
-    ],
-    "bootstrap": [
       "deployment-electron.md"
     ],
     "自動更新": [
@@ -6829,23 +6821,6 @@
       "lessons-learned-ipc-preload-runtime.md",
       "ui-ux-navigation.md"
     ],
-    "Permission": [
-      "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-safety-gate-permission-fallback.md",
-      "lessons-learned-test-typesafety.md",
-      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
-      "logs-archive-2026-02-permission-history-execution-timestamps.md",
-      "security-skill-execution.md",
-      "security-skill-ipc-core.md",
-      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
-      "task-workflow-completed-skill-lifecycle-security.md",
-      "task-workflow-completed-ut-06-safety-gate.md",
-      "ui-ux-settings-core.md",
-      "workflow-permission-fallback-abort-skip-retry.md"
-    ],
-    "修正から得た知見": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -6959,6 +6934,19 @@
     ],
     "品質検証": [
       "lessons-learned-safety-gate-ipc-quality.md"
+    ],
+    "Permission": [
+      "lessons-learned-safety-gate-permission-fallback.md",
+      "lessons-learned-test-typesafety.md",
+      "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
+      "logs-archive-2026-02-permission-history-execution-timestamps.md",
+      "security-skill-execution.md",
+      "security-skill-ipc-core.md",
+      "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
+      "task-workflow-completed-skill-lifecycle-security.md",
+      "task-workflow-completed-ut-06-safety-gate.md",
+      "ui-ux-settings-core.md",
+      "workflow-permission-fallback-abort-skip-retry.md"
     ],
     "domain": [
       "lessons-learned-skill-build-harness-guard.md",

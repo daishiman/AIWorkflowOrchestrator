@@ -3,51 +3,41 @@
 ## 役割
 
 ---
-## 2026-03-30 - TASK-P0-02 Phase 12 close-out sync
+
+## 2026-03-30 - TASK-LLM-MOD-05 Phase 12 close-out sync
 
 ### 変更内容
-- `phase-12-documentation.md` の Task 12-1〜12-5 と Step 1-A〜1-C を current facts へ揃え、`task-workflow.md` / `task-workflow-completed.md` / LOGS / SKILL / phase outputs の同波更新を完了
-- `verifyAndImproveLoop()` の feedback memory を Phase 12 の current fact として固定し、前回改善要約を次回 feedback に織り込む仕様をドキュメントへ反映
-- `UT-P0-02-001` を unassigned 化せず current phase に吸収し、completed ledger へ TASK-P0-02 完了記録を追加
+
+- `step-04-seq-task-05-schema-extension/` ワークフロー成果物（13 Phase ファイル）を参照し、`provider-registry.ts` の `description?` 追加と `inferProviderId()` 強化を system spec へ反映
+- `task-workflow-completed.md` に TASK-LLM-MOD-05 完了記録を追加、`task-workflow-backlog.md` に `TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY` を formalize
+- 未タスク正本を `docs/30-workflows/unassigned-task/task-llm-mod-05-renderer-desc-display.md` へ配置
+- `llm-ipc-types.md` を v1.5.0 へ更新（`description?` フィールド全 19 モデル対応を記録）
+- `generate-index.js` 再生成（2576 キーワード）・`validate-structure.js` PASS・mirror rsync・`diff -qr` ゼロドリフト確認
 
 ---
 
-## 2026-03-30 - agentview-permission-api-fix Phase 12 識別: SKILL.md v6.18.16 更新
-
-### 変更内容
-- `SKILL.md` の「Phase 12 よくある漏れ」テーブルに Feedback 4 を追加
-  - テストファイルが複数サフィックス（`*.test.tsx` / `*.coverage.test.tsx` / `*.cta.test.tsx` 等）に分散している場合、Phase 2 設計段階で全テストファイルを網羅的に列挙しモック定義の一貫性を確保するルールを明示
-- 変更履歴に v6.18.16 エントリを追加
-
----
 ## 2026-03-30 - TASK-P0-05 Phase 12 close-out resync
 
 ### 変更内容
+
 - `step-09-par-task-p0-05-execute-skill-file-writer-integration/` の Phase 11 成果物欠落を補完し、`manual-test-result.md` / `discovered-issues.md` / `phase12-task-spec-compliance-check.md` を current facts へ追加
 - `documentation-changelog.md` / `system-spec-update-summary.md` / `skill-feedback-report.md` の premature 完了表現を、canonical same-wave sync 未完了の state へ是正
 - follow-up `task-ut-p0-05-phase12-same-wave-sync-001.md` を formalize し、local workflow 完了と central sync 未完了を分離
 - Phase 6 未テスト `E-14` / `E-15` を runtime persist integration suite へ追加し、task spec の edge case 定義とテスト実体を一致させた
 
 ---
-## 2026-03-30 - TASK-P0-02 Phase 11/12 hardening
 
-### 変更内容
-- active workflow の Phase 1-12 ステータス、root / outputs `artifacts.json`、成果物インベントリを current facts へ同期
-- `outputs/phase-1`〜`phase-3` の summary artifact を追加し、phase spec から参照していた欠落パスを解消
-- Phase 11 に `TC-ID` 一覧、checklist、result evidence table を追加し、`NON_VISUAL` でも validator が機械追跡できる形へ是正
-- Phase 12 の implementation guide を validator 準拠へ書き換え、`recordVerifyPass()` の `checks` 未使用という current fact を明記
-- `.claude` 正本 2 skill の references / `LOGS.md` を same-wave で更新し、mirror sync 前提を回復
-
----
 ## 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out hardening
 
 ### 変更内容
+
 - step-03-seq-task-04-test-update workflow root に Phase 11/12/13 close-out 成果物を揃えた
 - docs-only task（P50 パターン）での Phase 12 完了条件: workflow root の current-facts 更新と artifacts.json 同期を実施
 - skill-feedback 反映: P50 task を新規実装前提で残すと validator fail と stale guidance を同時に生むパターンを記録
 - esbuild mismatch により vitest 再実行不能だったため、historical acceptance evidence と grep を代替証跡として使用
 
 ---
+
 ## 2026-03-29: coverage-standards.md v1.4.0 更新（Phase 7 グローバル閾値回避ガイドライン追加）
 
 ### 変更内容
@@ -58,7 +48,9 @@
   - 背景: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 の Phase 7 スキルフィードバック反映
 
 ---
+
 ## 2026-03-29: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 完了同期
+
 - SkillExecutor/sdkMessageNormalizer の SDK メッセージ前処理重複を sdkMessageUtils.ts に集約
 - asSdkMessageRecord() / getSdkMessageType() を共通 helper として抽出
 - lane 固有の出力型（SkillStreamMessage / SkillCreatorSdkEvent）は変更なし
@@ -68,13 +60,16 @@
 - `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings、`vitest` rerun は environment blocked
 
 ---
+
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
 
 ### 変更内容
+
 - `scripts/complete-phase.js`: フェーズ完了時に outputs ディレクトリの存在を検証し、欠落時に WARNING を出力する機能を追加
   - 背景: Phase 1〜3 が completed 記録済みでも outputs がない状態が発生したため（TASK-RT-06 Phase 12 フィードバック）
 
 ---
+
 ## TASK-SDK-05 create-entry-mainline-unification spec sync（2026-03-27）
 
 - **Agent**: task-specification-creator
@@ -86,6 +81,7 @@
   - `.claude` 正本更新後に `.agents` mirror sync と `diff -qr` parity 確認まで完了条件に含める運用を固定した
 
 ---
+
 ## TASK-SDK-04 implementation spec sync（2026-03-27）
 
 - **Agent**: task-specification-creator
@@ -97,6 +93,7 @@
   - completed-tasks 配下 workflow の canonical path を close-out 文書と validator コマンドへ同時反映する運用を明文化した
 
 ---
+
 ## UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 close-out hardening（2026-03-27）
 
 - **Agent**: task-specification-creator
@@ -108,6 +105,7 @@
   - spec_created / docs-heavy task でも current workflow 配下の Phase 11 evidence を空の placeholder だけで閉じない close-out ルールを固定
 
 ---
+
 ## TASK-SDK-07 execution-governance-and-handoff-alignment 仕様書改善（2026-03-26）
 
 - **Agent**: task-specification-creator
@@ -120,6 +118,7 @@
   - Phase 12 は `.claude` 正本 2 skill 反映、planned wording 除去、mirror audit 記録まで含めて閉じた
 
 ---
+
 ## UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 完了（2026-03-26）
 
 - **Agent**: task-specification-creator
@@ -132,6 +131,7 @@
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
 
 ---
+
 ## TASK-SDK-02 workflow-engine-runtime-orchestration 完了（2026-03-26）
 
 - **Agent**: task-specification-creator
@@ -144,6 +144,7 @@
   - 環境 blocker は既存 `task-fix-worktree-native-binary-guard-001.md` と重複確認済みのため未タスク新設なし
 
 ---
+
 ## UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 完了（2026-03-26）
 
 - **Agent**: task-specification-creator
@@ -157,6 +158,7 @@
   - LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）
 
 ---
+
 ## TASK-SDK-01 hardening sync guide update（2026-03-26）
 
 - **Agent**: task-specification-creator
@@ -206,6 +208,7 @@
   - `artifacts.json` と `outputs/artifacts.json` を同値化し、verification-report のコマンド root も current workflow へ正規化
 
 ---
+
 ## TASK-SDK-01 manifest-contract-foundation 完了（2026-03-26）
 
 - **Agent**: task-specification-creator
@@ -298,6 +301,7 @@
   - 未タスク: 0件
 
 ---
+
 ## TASK-SC-06-UI-RUNTIME-CONNECTION 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -432,7 +436,6 @@
 
 ---
 
-
 ## UT-SLIDE-IMPL-001 完了（2026-03-24）
 
 - **Agent**: task-specification-creator
@@ -476,16 +479,16 @@
 
 ---
 
-
 ## UT-06-003-PRELOAD-API-IMPL 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
 - **変更内容**: `preload/skill-api.ts` に `evaluateSafety` メソッドを追加。`SkillAPI` インターフェース + `skillAPI` オブジェクトの両方に実装。`safeInvoke(IPC_CHANNELS.SKILL_EVALUATE_SAFETY, skillName)` でラップ形式透過。`SafetyGateResult` 型は `@repo/shared` から import（P23準拠）。
-- **影響ファイル**: preload/skill-api.ts, preload/__tests__/skill-api.evaluateSafety.test.ts, preload/__tests__/skill-api.test.ts, preload/__tests__/skill-api.unification.test.ts
+- **影響ファイル**: preload/skill-api.ts, preload/**tests**/skill-api.evaluateSafety.test.ts, preload/**tests**/skill-api.test.ts, preload/**tests**/skill-api.unification.test.ts
 - **テスト**: T-1〜T-6（6テスト）全PASS、既存テスト回帰なし（117テスト全PASS）
 - **Pitfall準拠**: P23/P27/P42/P60/P61 全項目PASS
 
 ---
+
 ## UT-06-002 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -559,6 +562,7 @@
 ---
 
 ## TASK-SC-01-IPC-WIRING-FIX 完了同期（2026-03-23）
+
 ## TASK-SC-03-PLAN-LLM-PROMPT 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -572,6 +576,7 @@
   - 未タスク3件（UT-LLM-MOD-01-001〜003）検出・backlog登録
 
 ---
+
 ## UT-CONV-DB-001 完了（2026-03-23）
 
 - **Agent**: task-specification-creator
@@ -701,6 +706,7 @@
   - `references/patterns-workflow-generation.md` に pending skeleton workflow の台帳同期切替条件を追記し、validator と skill guidance の期待値を一致させた
 
 ---
+
 ## chat-inline-model-selector ワークフロー仕様書作成（2026-03-21）
 
 - **Agent**: task-specification-creator
@@ -822,12 +828,14 @@
   - MINOR-2: chatSlice streaming テスト不足（→未タスク化）
 
 ### 変更内容
+
 - ChatPanel.tsx: 283行（3 placeholder → 12コンポーネント配線）
 - chatSlice.ts: 404行（8状態遷移 + chatPanelStatus）
 - useStreamingChat.ts: 179行（streaming hook 契約）
 - テストファイル5本: chat-wiring, edge-cases, settings-sync, accessibility, ChatPanel.test
 
 ### AC達成状況
+
 AC-1〜AC-10 判定完了。Phase 10 判定: PASS（MINOR 2件）
 
 ---
@@ -845,14 +853,17 @@ AC-1〜AC-10 判定完了。Phase 10 判定: PASS（MINOR 2件）
   - 未タスク: TASK-IMP-SKILLCENTER-HEADER-CTA-RESPONSIVE-001（ヘッダーCTAレスポンシブ対応、LOW）
 
 ### 変更内容
+
 - skillLifecycleJourney.ts: `ctaLabel` フィールド追加（型 + 定数値）
 - useSkillCenter.ts: ナビゲーション関数3つ + `UseSkillCenterReturn` 型拡張
 - SkillCenterView/index.tsx: ヘッダー CTA + JourneyPanel CTA + viewStyles 拡張
 
 ### AC達成状況
+
 AC-1〜AC-8 全達成。Phase 10 判定: PASS（MINOR 1件 → 未タスク化済み）
 
 ---
+
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 完了（2026-03-17）
 
 - **Agent**: task-specification-creator
@@ -866,17 +877,20 @@ AC-1〜AC-8 全達成。Phase 10 判定: PASS（MINOR 1件 → 未タスク化�
   - `phase-11-12-guide.md` に「画面到達（route）と分岐保証（unit test）の責務分離」ルールを追記
 
 ### 変更内容
+
 - store/types.ts: ViewType union に "skillAnalysis" / "skillCreate" を追加（15→17メンバー）
 - skillLifecycleJourney.ts: SkillLifecycleJobGuide に onAction?: () => void を追加
 - App.tsx: renderView() に skillAnalysis / skillCreate の 2 case を追加
 - テスト: 34テスト全PASS（types: 8, renderView: 9, journey: 11, 既存: 6）
 
 ### AC達成状況
+
 AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ---
 
 ## TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計仕様）
+
 - 完了日: 2026-03-17
 - 判定: MINOR（AC-1〜AC-4 全PASS、FAIL 0件）
 - 成果物: Phase 1-12 全55ファイル（型定義13種、サービスIF 4種、IPCチャンネル11種、テスト212件）
@@ -898,6 +912,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 欠落していた未タスクリンク 12件を復旧し、TASK-08 follow-up 未タスク4件を formalize
 
 ---
+
 ## TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION 完了（2026-03-16）
 
 - **Agent**: task-specification-creator
@@ -912,6 +927,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 未タスク1件検出: UT-COVERAGE-INDEX-TS-EXCLUSION-001
 
 ---
+
 ## 2026-03-17 - UT-06-005-A PreToolUse Hook fallback 統合完了
 
 - **Agent**: task-specification-creator
@@ -924,6 +940,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 全30テスト PASS
 
 ---
+
 ## 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了
 
 - **Agent**: task-specification-creator
@@ -936,6 +953,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - artifacts.json 同期済み、成果物格納先: docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility/
 
 ---
+
 ## 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（バッチ同期）
 
 - **Agent**: task-specification-creator
@@ -948,6 +966,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 36テスト全PASS、カバレッジ全100%
 
 ---
+
 ## 2026-03-17 - UT-06-005 abort-skip-retry-fallback 完了（バッチ同期）
 
 - **Agent**: task-specification-creator
@@ -962,6 +981,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 全1293テスト PASS（既存1270 + 新規23）
 
 ---
+
 ## TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 完了（2026-03-16）
 
 - **Agent**: task-specification-creator
@@ -974,6 +994,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `apps/desktop/src/main/__tests__/menu.test.ts`（新規）: メニュー構築のユニットテスト
 
 ---
+
 ## 2026-03-16 - UT-06-005 abort-skip-retry-fallback 完了
 
 - **Agent**: task-specification-creator
@@ -990,6 +1011,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - GitHub Issue #1250 完了
 
 ---
+
 ## 2026-03-16 - UT-06-001 tool-risk-config-implementation 完了
 
 - **Agent**: task-specification-creator
@@ -1002,6 +1024,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 後続タスク UT-06-004（PermissionDialog UI）のブロッカー解消
 
 ---
+
 ## 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 再監査追補
 
 - **Agent**: task-specification-creator
@@ -1014,6 +1037,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `isAvailable(): Promise<boolean>` と `resolve(): Promise<SkillDocsCapabilityResult>` の async 契約を phase 文書と system spec へ同期
 
 ---
+
 ## 2026-03-16 - TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 完了
 
 - **Agent**: task-specification-creator
@@ -1026,6 +1050,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - Phase 4-5 統合実行パターンの教訓を lessons-learned-current.md に記録
 
 ---
+
 ## TASK-SKILL-LIFECYCLE-06 完了（2026-03-16）
 
 - タスク名: 信頼・権限・ガバナンス統合
@@ -1036,6 +1061,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 設計タスクにおける Phase 12 のシステム仕様書更新フローを明確化（計画記録→PR時に実施する2段階方式を標準化）
 
 ---
+
 ## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 12 実績同期是正（Task 1〜5 完了整合）
 
 - **Agent**: task-specification-creator
@@ -1048,6 +1074,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `audit-unassigned-tasks --diff-from HEAD` と `--target-file` で current 違反 0 を確認し、未タスク6件の root 配置を再確認
 
 ---
+
 ## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 Phase 4-12 完了（CTA 16パターン実装 + 30テストGREEN）
 
 - **Agent**: task-specification-creator
@@ -1062,6 +1089,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `artifacts.json` の Phase 1-12 ステータスを同期し、system spec same-wave 更新を完了
 
 ---
+
 ## 2026-03-15 - TASK-SKILL-LIFECYCLE-05 再監査で Phase 11/12 必須成果物チェックを強化
 
 - **Agent**: task-specification-creator
@@ -1074,6 +1102,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit-unassigned-tasks --diff-from HEAD` を再実行し、current 違反 0 を確認
 
 ---
+
 ## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 未タスク配置是正（指定ディレクトリ再確認）
 
 - **Agent**: task-specification-creator
@@ -1085,6 +1114,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `verify-unassigned-links` と `audit-unassigned-tasks --json --diff-from HEAD --target-file` を使う配置確認手順を運用ログへ固定
 
 ---
+
 ## 2026-03-14 - TASK-SKILL-LIFECYCLE-04 完了
 
 - **Agent**: task-specification-creator
@@ -1099,6 +1129,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - テスト63件全PASS（scoring-gate.test.ts 30件、ScoreDisplay.test.tsx 26件、useSkillAnalysis-gate.test.ts 7件）
 
 ---
+
 ## 2026-03-14 - TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 実装完了
 
 - **Agent**: task-specification-creator
@@ -1110,6 +1141,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 未タスク3件（UT-CHAT-EDIT-WORKSPACE-CONSTRAINT-TEST-001 / TASK-IMP-WORKSPACE-CHAT-EDIT-SPEC-SYNC-IPC-001 / UT-FIX-PHASE11-SCREENSHOT-AUTOMATION-001）を `task-workflow-backlog.md` に登録
 
 ---
+
 ## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Phase12 再確認（target-file監査で既存未タスク是正）
 
 - **Agent**: task-specification-creator
@@ -1122,6 +1154,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `verify-unassigned-links=223/223`、`audit --diff-from HEAD current=0 / baseline=133` を outputs/system spec へ同期
 
 ---
+
 ## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Step02 再監査追補（Task02/Task10）
 
 - **Agent**: task-specification-creator
@@ -1133,6 +1166,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `electron-vite dev` が esbuild platform mismatch で失敗する条件を記録し、明示 screenshot 要求時の fallback 実行 + metadata 固定パターンを再利用ルール化
 
 ---
+
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD follow-up unassigned contract drift guard
 
 - **Agent**: task-specification-creator
@@ -1144,6 +1178,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `audit-unassigned-tasks --json --diff-from HEAD --target-file <task-file>` を、配置確認後の個別品質ゲートとして再利用可能な形で記録した
 
 ---
+
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD audit correction pattern capture
 
 - **Agent**: task-specification-creator
@@ -1156,6 +1191,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - onboarding wizard 再監査で露出した `TC-11-07` narrative drift と canonical / mirror drift を、Phase 11/12 再監査の共通失敗パターンとして skill へ還元した
 
 ---
+
 ## 2026-03-13 - TASK-UI-09-ONBOARDING-WIZARD Phase 1-12 実行完了
 
 - **Agent**: task-specification-creator
@@ -1167,6 +1203,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - Phase 11 では screenshot 6件の再撮影と Apple UI/UX 観点レビューを完了し、mobile first fold を圧迫した step indicator を `grid-cols-2 sm:grid-cols-4` へ是正した
 
 ---
+
 ## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 branch横断 Phase12 再確認の判定軸を固定
 
 - **Agent**: task-specification-creator
@@ -1178,6 +1215,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 判定マトリクスを `workflow-ai-runtime-authmode-unification.md` / `task-workflow.md` / `lessons-learned.md` へ同期し、`all PASS` 記録の適用範囲を明確化
 
 ---
+
 ## 2026-03-14 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Phase 12 ステータス同期 + 未タスク3件フォーマット是正
 
 - **Agent**: task-specification-creator
@@ -1190,6 +1228,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `verify-unassigned-links=227/227` を再確認し、Phase 12 outputs と system spec 台帳へ同期
 
 ---
+
 ## 2026-03-13 - TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001 Phase 11/12 欠落成果物補完
 
 - **Agent**: task-specification-creator
@@ -1201,6 +1240,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` / `validate-phase-output` / `verify-all-specs` を再実行して再監査 PASS を確認
 
 ---
+
 ## 2026-03-12 - TASK-SKILL-LIFECYCLE-04 Phase 11/12 再監査テンプレート是正
 
 - **Agent**: task-specification-creator
@@ -1212,6 +1252,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - Task04 の `implementation-guide.md` を Part 1/2 + `型定義 / APIシグネチャ / 使用例 / エラーハンドリング / エッジケース / 設定項目と定数一覧` へ再編し、validator と実務可読性の両立を固定した
 
 ---
+
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 12 再確認パターン追補
 
 - **Agent**: task-specification-creator
@@ -1223,6 +1264,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - Phase 12 の current workflow outputs へ `219 / 219` 再同期と未タスク配置確認を反映する前提を skill 側ガイドへ固定した
 
 ---
+
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 11 再監査追補
 
 - **Agent**: task-specification-creator
@@ -1234,6 +1276,7 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - 元 unassigned spec の `status: 未実施` を workflow 実行済みへ更新し、Phase 12 記録と task ledger の整合を回復した
 
 ---
+
 ## 2026-03-12 - UT-IMP-WORKSPACE-PARENT-REFERENCE-SWEEP-GUARD-001 Phase 1-12 実行
 
 - **Agent**: task-specification-creator
@@ -1246,7 +1289,9 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - docs/script task のため screenshot / Apple UI/UX review は N/A と明示し、手動確認は parent-child 導線と mirror sync に限定した
 
 ---
+
 ## 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク仕様書作成
+
 - 本ファイルは直近の usage log と archive 導線だけを持つ rolling log。
 - 詳細な過去履歴は [references/logs-archive-index.md](references/logs-archive-index.md) から辿る。
 - 長期の version changelog は [references/changelog-archive.md](references/changelog-archive.md) を参照する。
@@ -1255,116 +1300,117 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ### 2026-03-18 - Task09-12 スキルライフサイクル統合 UI GAP 解消 仕様書作成
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | docs-only 設計タスク（Phase 1-3 仕様書作成 + Task09 Phase 4-13 完全版） |
-| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/` Task09-12 各ワークフロー仕様書 |
-| 結果 | TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE の仕様書作成。SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加。P50既実装チェック・P32型変更先確認・GAP ID正本管理・Badge atom再利用検討を各仕様書に反映 |
-| 検証 | 各タスク Phase 1-3 設計仕様完了、artifacts.json 同期済み |
+| 項目     | 内容                                                                                                                                                                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | docs-only 設計タスク（Phase 1-3 仕様書作成 + Task09 Phase 4-13 完全版）                                                                                                                                                                                  |
+| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/` Task09-12 各ワークフロー仕様書                                                                                                                                                                    |
+| 結果     | TASK-IMP-LIFECYCLE-TERMINAL/CONSTRAINT-CHIPS/QUALITY-RUNTIME/REUSE-IMPROVE の仕様書作成。SkillLifecyclePanel ラベル日本語化、ui-ux-diagrams.md GAP ID 正本追加。P50既実装チェック・P32型変更先確認・GAP ID正本管理・Badge atom再利用検討を各仕様書に反映 |
+| 検証     | 各タスク Phase 1-3 設計仕様完了、artifacts.json 同期済み                                                                                                                                                                                                 |
 
 ---
 
 ### 2026-03-17 - TASK-SKILL-LIFECYCLE-08 仕様書作成完了
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | docs-only 設計タスク（Phase 1-13 仕様書生成） |
-| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility/` 全ファイル |
-| 結果 | スキル共有・公開・互換性統合の Phase 1-13 仕様書を作成。SkillMetadataProvider / normalizePath / VersionCompatibilityChecker など型定義・フロー設計を完了。Phase 10 PASS（MINOR 指摘対応済み）。artifacts.json 同期済み |
-| 検証 | Phase 1-13 全Phase完了、artifacts.json 同期済み、verification-report.md 作成済み |
+| 項目     | 内容                                                                                                                                                                                                                   |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | docs-only 設計タスク（Phase 1-13 仕様書生成）                                                                                                                                                                          |
+| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-06-seq-task-08-skill-publishing-version-compatibility/` 全ファイル                                                                                           |
+| 結果     | スキル共有・公開・互換性統合の Phase 1-13 仕様書を作成。SkillMetadataProvider / normalizePath / VersionCompatibilityChecker など型定義・フロー設計を完了。Phase 10 PASS（MINOR 指摘対応済み）。artifacts.json 同期済み |
+| 検証     | Phase 1-13 全Phase完了、artifacts.json 同期済み、verification-report.md 作成済み                                                                                                                                       |
 
 ### 2026-03-17 - UT-06-003 DefaultSafetyGate 具象クラス実装（バッチ同期）
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation（バッチ同期） |
-| 変更対象 | `packages/shared/src/types/safety-gate.ts`, `apps/desktop/src/main/permissions/default-safety-gate.ts`, `apps/desktop/src/main/ipc/safetyGateHandlers.ts` |
-| 結果 | SafetyGatePort 具象クラス DefaultSafetyGate を実装。5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約。IPC ハンドラ skill:evaluate-safety を追加。36テスト全PASS、カバレッジ全100% |
-| 検証 | `pnpm --filter @repo/desktop exec vitest run` 36テスト PASS、Line/Branch/Function 100% |
+| 項目     | 内容                                                                                                                                                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation（バッチ同期）                                                                                                                                                                                                 |
+| 変更対象 | `packages/shared/src/types/safety-gate.ts`, `apps/desktop/src/main/permissions/default-safety-gate.ts`, `apps/desktop/src/main/ipc/safetyGateHandlers.ts`                                                                    |
+| 結果     | SafetyGatePort 具象クラス DefaultSafetyGate を実装。5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約。IPC ハンドラ skill:evaluate-safety を追加。36テスト全PASS、カバレッジ全100% |
+| 検証     | `pnpm --filter @repo/desktop exec vitest run` 36テスト PASS、Line/Branch/Function 100%                                                                                                                                       |
 
 ### 2026-03-17 - UT-06-005 abort-skip-retry-fallback 完了（バッチ同期）
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation（バッチ同期） |
-| 変更対象 | `SkillExecutor.ts`, `PermissionStore.ts`, `permission-store.ts`, `skill.ts`, `SkillExecutor.fallback.test.ts` |
-| 結果 | SkillExecutor に processPermissionFallback / executeAbortFlow / executeSkipFlow 3メソッド追加（+187行）。PermissionStore に revokeSessionEntries 追加（+20行）。SkillPermissionResponse に skip?: boolean 追加（+3行）。新規23テスト追加で全1293テストPASS |
-| 検証 | 全1293テスト PASS（既存1270 + 新規23） |
+| 項目     | 内容                                                                                                                                                                                                                                                       |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation（バッチ同期）                                                                                                                                                                                                                               |
+| 変更対象 | `SkillExecutor.ts`, `PermissionStore.ts`, `permission-store.ts`, `skill.ts`, `SkillExecutor.fallback.test.ts`                                                                                                                                              |
+| 結果     | SkillExecutor に processPermissionFallback / executeAbortFlow / executeSkipFlow 3メソッド追加（+187行）。PermissionStore に revokeSessionEntries 追加（+20行）。SkillPermissionResponse に skip?: boolean 追加（+3行）。新規23テスト追加で全1293テストPASS |
+| 検証     | 全1293テスト PASS（既存1270 + 新規23）                                                                                                                                                                                                                     |
 
 ### 2026-03-18 - TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 完了
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation |
-| 変更対象 | WorkspaceChatPanel（streaming/file context/conversation/P62三層防御） |
-| 結果 | WorkspaceChatPanel の AI Runtime 整合を実装。streaming/file context/conversation/P62三層防御を整合させた。テスト77件（自動）+ 8件（手動）PASS。未タスク3件（MINOR-01/02/03）検出 |
-| 検証 | 77件自動テスト PASS + 8件手動テスト PASS |
+| 項目     | 内容                                                                                                                                                                             |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation                                                                                                                                                                   |
+| 変更対象 | WorkspaceChatPanel（streaming/file context/conversation/P62三層防御）                                                                                                            |
+| 結果     | WorkspaceChatPanel の AI Runtime 整合を実装。streaming/file context/conversation/P62三層防御を整合させた。テスト77件（自動）+ 8件（手動）PASS。未タスク3件（MINOR-01/02/03）検出 |
+| 検証     | 77件自動テスト PASS + 8件手動テスト PASS                                                                                                                                         |
 
 ---
 
 ### 2026-03-18 - TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 Phase 12 後工程
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | documentation / skill-improvement |
-| 変更対象 | `phase-templates.md` Phase 7/11 テンプレート、未タスク3件フォーマット強化 |
-| 結果 | phase-templates.md Phase 7/11 テンプレート改善（P53対策フォールバック追加）。未タスク3件フォーマット強化（task-specification-creator準拠に強化） |
-| 検証 | 未タスク3件 audit-unassigned-tasks PASS |
+| 項目     | 内容                                                                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | documentation / skill-improvement                                                                                                                |
+| 変更対象 | `phase-templates.md` Phase 7/11 テンプレート、未タスク3件フォーマット強化                                                                        |
+| 結果     | phase-templates.md Phase 7/11 テンプレート改善（P53対策フォールバック追加）。未タスク3件フォーマット強化（task-specification-creator準拠に強化） |
+| 検証     | 未タスク3件 audit-unassigned-tasks PASS                                                                                                          |
 
 ---
+
 ### 2026-03-16 - UT-06-003 DefaultSafetyGate 具象クラス実装
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation |
-| 変更対象 | `packages/shared/src/types/safety-gate.ts`, `apps/desktop/src/main/permissions/default-safety-gate.ts`, `apps/desktop/src/main/ipc/safetyGateHandlers.ts` |
-| 結果 | SafetyGatePort 具象クラス DefaultSafetyGate を実装。5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約。IPC ハンドラ skill:evaluate-safety を追加。36テスト全PASS、カバレッジ全100% |
-| 検証 | `pnpm --filter @repo/desktop exec vitest run` 36テスト PASS、Line/Branch/Function 100% |
+| 項目     | 内容                                                                                                                                                                                                                         |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation                                                                                                                                                                                                               |
+| 変更対象 | `packages/shared/src/types/safety-gate.ts`, `apps/desktop/src/main/permissions/default-safety-gate.ts`, `apps/desktop/src/main/ipc/safetyGateHandlers.ts`                                                                    |
+| 結果     | SafetyGatePort 具象クラス DefaultSafetyGate を実装。5つのセキュリティチェック（critical/high/no-approval/all-low/protected-path）+ グレード集約。IPC ハンドラ skill:evaluate-safety を追加。36テスト全PASS、カバレッジ全100% |
+| 検証     | `pnpm --filter @repo/desktop exec vitest run` 36テスト PASS、Line/Branch/Function 100%                                                                                                                                       |
 
 ### 2026-03-16 - TASK-SKILL-LIFECYCLE-07 ライフサイクル履歴・フィードバック統合（設計タスク）
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | docs-only設計タスク |
-| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/` 全56ファイル |
-| 結果 | SkillLifecycleEvent（5カテゴリ18イベント種別）、SkillAggregateView集約ロジック、SkillFeedback 4種別還流設計、PublishReadinessMetrics Task08公開判断メトリクス契約、Task05/08連携データ供給経路を定義。Phase 10 PASS（MINOR 2件）、仕様レベルテストケース315件、未タスク5件検出（FR-M-01, FR-M-02, Note-01, Note-03, Note-05） |
-| 検証 | Phase 1-12 全Phase完了、artifacts.json同期済み |
+| 項目     | 内容                                                                                                                                                                                                                                                                                                                          |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | docs-only設計タスク                                                                                                                                                                                                                                                                                                           |
+| 変更対象 | `docs/30-workflows/skill-lifecycle-unification/tasks/step-05-par-task-07-lifecycle-history-feedback/` 全56ファイル                                                                                                                                                                                                            |
+| 結果     | SkillLifecycleEvent（5カテゴリ18イベント種別）、SkillAggregateView集約ロジック、SkillFeedback 4種別還流設計、PublishReadinessMetrics Task08公開判断メトリクス契約、Task05/08連携データ供給経路を定義。Phase 10 PASS（MINOR 2件）、仕様レベルテストケース315件、未タスク5件検出（FR-M-01, FR-M-02, Note-01, Note-03, Note-05） |
+| 検証     | Phase 1-12 全Phase完了、artifacts.json同期済み                                                                                                                                                                                                                                                                                |
 
 ### 2026-03-13 - Phase 12 root evidence / split-aware unassigned audit
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | template / script improvement |
-| 変更対象 | `assets/phase12-task-spec-compliance-template.md`, `scripts/verify-unassigned-links.js`, `references/unassigned-task-guidelines.md`, `task-specification-creator/SKILL.md`, `task-specification-creator/LOGS.md` |
-| 結果 | `phase12-task-spec-compliance-check.md` を shallow PASS 表ではなく、4点突合・implementation guide 品質・未タスク10見出し・current/baseline 分離・system spec 同期まで確認する root evidence 形式へ引き上げた。`verify-unassigned-links` は split 親 `task-workflow.md` 指定時に sibling `task-workflow*.md` も監査できるようにした |
-| 検証 | `node scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/aiworkflow-requirements-line-budget-reform`、`node scripts/verify-unassigned-links.js --source ../aiworkflow-requirements/references/task-workflow.md`、`node scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-imp-aiworkflow-requirements-generated-index-sharding-001.md` |
+| 項目     | 内容                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | template / script improvement                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| 変更対象 | `assets/phase12-task-spec-compliance-template.md`, `scripts/verify-unassigned-links.js`, `references/unassigned-task-guidelines.md`, `task-specification-creator/SKILL.md`, `task-specification-creator/LOGS.md`                                                                                                                                                                                                                              |
+| 結果     | `phase12-task-spec-compliance-check.md` を shallow PASS 表ではなく、4点突合・implementation guide 品質・未タスク10見出し・current/baseline 分離・system spec 同期まで確認する root evidence 形式へ引き上げた。`verify-unassigned-links` は split 親 `task-workflow.md` 指定時に sibling `task-workflow*.md` も監査できるようにした                                                                                                            |
+| 検証     | `node scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/aiworkflow-requirements-line-budget-reform`、`node scripts/verify-unassigned-links.js --source ../aiworkflow-requirements/references/task-workflow.md`、`node scripts/audit-unassigned-tasks.js --json --diff-from HEAD --target-file docs/30-workflows/unassigned-task/task-imp-aiworkflow-requirements-generated-index-sharding-001.md` |
 
 ### 2026-03-13 - artifacts schema compatibility sync
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | schema / validation sync |
-| 変更対象 | `schemas/artifact-definition.json`, `references/artifact-naming-conventions.md`, `task-specification-creator/SKILL.md`, `task-specification-creator/LOGS.md` |
-| 結果 | current workflow で実際に使われている string artifact array、Phase `blocked`、`metadata.taskType=improvement` を validator 互換として明文化し、`validate-schema.js` が `aiworkflow-requirements-line-budget-reform` / `task-specification-creator-line-budget-reform` の `artifacts.json` を受理できる状態へ復帰 |
-| 検証 | `node scripts/validate-schema.js --schema schemas/artifact-definition.json --data .../aiworkflow-requirements-line-budget-reform/artifacts.json`、同コマンドで `task-specification-creator-line-budget-reform/artifacts.json` も PASS |
+| 項目     | 内容                                                                                                                                                                                                                                                                                                             |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | schema / validation sync                                                                                                                                                                                                                                                                                         |
+| 変更対象 | `schemas/artifact-definition.json`, `references/artifact-naming-conventions.md`, `task-specification-creator/SKILL.md`, `task-specification-creator/LOGS.md`                                                                                                                                                     |
+| 結果     | current workflow で実際に使われている string artifact array、Phase `blocked`、`metadata.taskType=improvement` を validator 互換として明文化し、`validate-schema.js` が `aiworkflow-requirements-line-budget-reform` / `task-specification-creator-line-budget-reform` の `artifacts.json` を受理できる状態へ復帰 |
+| 検証     | `node scripts/validate-schema.js --schema schemas/artifact-definition.json --data .../aiworkflow-requirements-line-budget-reform/artifacts.json`、同コマンドで `task-specification-creator-line-budget-reform/artifacts.json` も PASS                                                                            |
 
 ### 2026-03-13 - TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 Phase 12 再監査追補
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | feedback sync |
-| 変更対象 | `docs/30-workflows/completed-tasks/aiworkflow-requirements-line-budget-reform/outputs/phase-12/*`, `task-specification-creator/SKILL.md`, `task-specification-creator/LOGS.md` |
-| 結果 | spec_created workflow でも branch-level documentation shell を持てるが、`currentPhase` は `artifacts.json` を正とし、implementation guide / documentation changelog / cross-skill feedback を task-spec 細目まで満たす必要があることを固定 |
-| 検証 | `aiworkflow-requirements` workflow の Phase 12 guide / checklist / validation matrix と整合するよう文書差分を再設計。validator 再実行は未実施 |
+| 項目     | 内容                                                                                                                                                                                                                                       |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | feedback sync                                                                                                                                                                                                                              |
+| 変更対象 | `docs/30-workflows/completed-tasks/aiworkflow-requirements-line-budget-reform/outputs/phase-12/*`, `task-specification-creator/SKILL.md`, `task-specification-creator/LOGS.md`                                                             |
+| 結果     | spec_created workflow でも branch-level documentation shell を持てるが、`currentPhase` は `artifacts.json` を正とし、implementation guide / documentation changelog / cross-skill feedback を task-spec 細目まで満たす必要があることを固定 |
+| 検証     | `aiworkflow-requirements` workflow の Phase 12 guide / checklist / validation matrix と整合するよう文書差分を再設計。validator 再実行は未実施                                                                                              |
 
 ### 2026-03-12 - TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | documentation refactor |
+| 項目     | 内容                                                                                                                                                                                 |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | documentation refactor                                                                                                                                                               |
 | 変更対象 | `SKILL.md`, `LOGS.md`, `references/patterns*.md`, `references/phase-template*.md`, `references/spec-update*.md`, `references/phase-11*.md`, `references/phase-12*.md`, archive files |
-| 結果 | 500行超の 6 markdown concern を family file と archive へ再編し、`.claude` 正本 / `.agents` mirror 前提の検証導線を整備 |
-| 検証 | `quick_validate.js`, `validate_all.js`, `diff -qr`, `validate-phase-output.js`, `verify-all-specs.js` |
+| 結果     | 500行超の 6 markdown concern を family file と archive へ再編し、`.claude` 正本 / `.agents` mirror 前提の検証導線を整備                                                              |
+| 検証     | `quick_validate.js`, `validate_all.js`, `diff -qr`, `validate-phase-output.js`, `verify-all-specs.js`                                                                                |
 
 ### 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク仕様書作成
 
@@ -1396,24 +1442,24 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ## アーカイブ
 
-| 期間 | ファイル | 内容 |
-| --- | --- | --- |
-| 2026-03 | [references/logs-archive-2026-march.md](references/logs-archive-2026-march.md) | 2026-03-01 以降の実装・再監査・spec_created task の要約 |
-| 2026-02 | [references/logs-archive-2026-feb.md](references/logs-archive-2026-feb.md) | 2026-02-12 〜 2026-02-28 の主要更新要約 |
-| legacy | [references/logs-archive-legacy.md](references/logs-archive-legacy.md) | 初期リファクタ、Phase 12 ガード導入、旧 major version の要約 |
-| version history | [references/changelog-archive.md](references/changelog-archive.md) | 詳細 changelog |
+| 期間            | ファイル                                                                       | 内容                                                         |
+| --------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| 2026-03         | [references/logs-archive-2026-march.md](references/logs-archive-2026-march.md) | 2026-03-01 以降の実装・再監査・spec_created task の要約      |
+| 2026-02         | [references/logs-archive-2026-feb.md](references/logs-archive-2026-feb.md)     | 2026-02-12 〜 2026-02-28 の主要更新要約                      |
+| legacy          | [references/logs-archive-legacy.md](references/logs-archive-legacy.md)         | 初期リファクタ、Phase 12 ガード導入、旧 major version の要約 |
+| version history | [references/changelog-archive.md](references/changelog-archive.md)             | 詳細 changelog                                               |
 
 ## ログ追加フォーマット
 
 ```md
 ### YYYY-MM-DD - TASK-ID または変更名
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation / review / documentation / feedback |
-| 変更対象 | 主要ファイルまたは workflow |
-| 結果 | 何を固定したか |
-| 検証 | 実行した validator や command |
+| 項目     | 内容                                               |
+| -------- | -------------------------------------------------- |
+| 種別     | implementation / review / documentation / feedback |
+| 変更対象 | 主要ファイルまたは workflow                        |
+| 結果     | 何を固定したか                                     |
+| 検証     | 実行した validator や command                      |
 ```
 
 ## 運用ルール
@@ -1425,40 +1471,40 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ## 変更履歴
 
-| Version | Date | Changes |
-| --- | --- | --- |
-| **v10.09.1** | **2026-03-26** | 要件レビュー思考法を追加。task-specification-creator の SKILL.md に、システム思考・戦略/価値・問題解決の3系統レビュー、5つの一次出力、4条件評価、因果ループ/責務境界/価値コスト均衡チェックを追記 |
-| **v10.09.0** | **2026-03-12** | rolling log + archive index 構成へ再編し、line budget と履歴保全を両立させた |
-| **v10.08.60** | **2026-03-12** | light theme contrast regression guard の formalize と Phase 12 再確認を追記 |
+| Version       | Date           | Changes                                                                                                                                                                                           |
+| ------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **v10.09.1**  | **2026-03-26** | 要件レビュー思考法を追加。task-specification-creator の SKILL.md に、システム思考・戦略/価値・問題解決の3系統レビュー、5つの一次出力、4条件評価、因果ループ/責務境界/価値コスト均衡チェックを追記 |
+| **v10.09.0**  | **2026-03-12** | rolling log + archive index 構成へ再編し、line budget と履歴保全を両立させた                                                                                                                      |
+| **v10.08.60** | **2026-03-12** | light theme contrast regression guard の formalize と Phase 12 再確認を追記                                                                                                                       |
 
 ### 2026-03-20 - UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | documentation / spec-sync |
-| 変更対象 | interfaces-agent-sdk-integration.md, arch-state-management-core.md, topic-map.md |
-| 結果 | SkillExecutionStatus型に3値追加（6値→9値）、コード実装完了。Phase 1-12 完了、Phase 13 は user approval 待ち。P68（ローカル型定義の同期漏れ）を lessons-learned に追記 |
-| 検証 | 関連Issue: #1388 |
+| 項目     | 内容                                                                                                                                                                  |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | documentation / spec-sync                                                                                                                                             |
+| 変更対象 | interfaces-agent-sdk-integration.md, arch-state-management-core.md, topic-map.md                                                                                      |
+| 結果     | SkillExecutionStatus型に3値追加（6値→9値）、コード実装完了。Phase 1-12 完了、Phase 13 は user approval 待ち。P68（ローカル型定義の同期漏れ）を lessons-learned に追記 |
+| 検証     | 関連Issue: #1388                                                                                                                                                      |
 
 ---
 
 ### 2026-03-18 - UT-TASK06-007
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation |
-| 変更対象 | Phase 1-13 仕様書一式（UT-TASK06-007-ipc-contract-drift-auto-detect） |
-| 結果 | IPC契約ドリフト自動検出スクリプトのPhase 1-12完了。Phase 13はBLOCKED（PR待ち） |
-| 検証 | 全40テストケースPASS、手動テストTC-11-01~TC-11-05全PASS |
+| 項目     | 内容                                                                           |
+| -------- | ------------------------------------------------------------------------------ |
+| 種別     | implementation                                                                 |
+| 変更対象 | Phase 1-13 仕様書一式（UT-TASK06-007-ipc-contract-drift-auto-detect）          |
+| 結果     | IPC契約ドリフト自動検出スクリプトのPhase 1-12完了。Phase 13はBLOCKED（PR待ち） |
+| 検証     | 全40テストケースPASS、手動テストTC-11-01~TC-11-05全PASS                        |
 
 ### 2026-03-19 - UT-TASK06-007 再監査
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | documentation / re-audit |
-| 変更対象 | `phase-11-manual-test.md`, `phase-12-documentation.md`, `outputs/phase-12/*.md`, `docs/30-workflows/unassigned-task/ut-task06-007-ext-00*.md` |
-| 結果 | `implementation-guide.md` を validator 10/10 準拠へ補強し、未タスク5件の配置・実行手順・残余スコープを current facts に再同期した。`task-specification-creator/SKILL.md` 変更履歴も UT-TASK06-007 再監査実績へ更新した |
-| 検証 | `validate-phase12-implementation-guide` PASS、`validate-phase-output` Phase 11/12 PASS、`verify-all-specs --workflow ... --json` PASS、`verify-unassigned-links` PASS、`quick_validate` PASS（warning は legacy baseline） |
+| 項目     | 内容                                                                                                                                                                                                                       |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | documentation / re-audit                                                                                                                                                                                                   |
+| 変更対象 | `phase-11-manual-test.md`, `phase-12-documentation.md`, `outputs/phase-12/*.md`, `docs/30-workflows/unassigned-task/ut-task06-007-ext-00*.md`                                                                              |
+| 結果     | `implementation-guide.md` を validator 10/10 準拠へ補強し、未タスク5件の配置・実行手順・残余スコープを current facts に再同期した。`task-specification-creator/SKILL.md` 変更履歴も UT-TASK06-007 再監査実績へ更新した     |
+| 検証     | `validate-phase12-implementation-guide` PASS、`validate-phase-output` Phase 11/12 PASS、`verify-all-specs --workflow ... --json` PASS、`verify-unassigned-links` PASS、`quick_validate` PASS（warning は legacy baseline） |
 
 ### 2026-03-20: TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 完了
 
@@ -1470,73 +1516,55 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 
 ### 2026-03-23: TASK-SC-05-IMPROVE-LLM 完了
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation |
-| 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加 |
-| 結果 | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
-| 検証 | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI） |
+| 項目     | 内容                                                                                                                     |
+| -------- | ------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | implementation                                                                                                           |
+| 変更対象 | RuntimeSkillCreatorFacade.improve() LLM 統合、improvePromptConstants.ts 新規、shared 型追加                              |
+| 結果     | Phase 1-12 完了。improve() stub を LLM 統合に置換。21テスト追加（全92件 PASS）。Line 91.2%, Branch 78.07%, Function 100% |
+| 検証     | 未タスク 2件（UT-SC-05-IPC-DI-WIRING、UT-SC-05-APPLY-IMPROVEMENT-UI）                                                    |
 
 ### 2026-03-24: UT-SC-05-APPLY-IMPROVEMENT-UI 完了
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation |
-| 変更対象 | channels.ts, creatorHandlers.ts, skill-creator-api.ts（既存変更）+ ImprovementProposalItem/List/ApplyResult/Panel（新規4コンポーネント） |
-| 結果 | Phase 1-12 完了。改善提案の承認/適用UIを実装。IPC `skill-creator:apply-improvement` + Preload `applyRuntimeImprovement` + diff表示UIコンポーネント。62テスト全PASS |
-| 検証 | 未タスク 0件。P42/P44/P47/P48/P49/P60/P65 準拠確認済み |
+| 項目     | 内容                                                                                                                                                               |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 種別     | implementation                                                                                                                                                     |
+| 変更対象 | channels.ts, creatorHandlers.ts, skill-creator-api.ts（既存変更）+ ImprovementProposalItem/List/ApplyResult/Panel（新規4コンポーネント）                           |
+| 結果     | Phase 1-12 完了。改善提案の承認/適用UIを実装。IPC `skill-creator:apply-improvement` + Preload `applyRuntimeImprovement` + diff表示UIコンポーネント。62テスト全PASS |
+| 検証     | 未タスク 0件。P42/P44/P47/P48/P49/P60/P65 準拠確認済み                                                                                                             |
 
 ### 2026-03-24: TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | 設計・実装タスク |
-| 仕様書ディレクトリ | docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/ |
-| Phase 12 成果物 | implementation-guide.md, system-spec-update-summary.md, documentation-changelog.md, unassigned-task-detection.md, phase12-task-spec-compliance-check.md, skill-feedback-report.md |
-| 未タスク検出 | 10件（UT-1〜UT-10） |
-| 改善提案 | 3件（SF-1〜SF-3） |
+| 項目               | 内容                                                                                                                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別               | 設計・実装タスク                                                                                                                                                                  |
+| 仕様書ディレクトリ | docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/                                                                                                         |
+| Phase 12 成果物    | implementation-guide.md, system-spec-update-summary.md, documentation-changelog.md, unassigned-task-detection.md, phase12-task-spec-compliance-check.md, skill-feedback-report.md |
+| 未タスク検出       | 10件（UT-1〜UT-10）                                                                                                                                                               |
+| 改善提案           | 3件（SF-1〜SF-3）                                                                                                                                                                 |
 
 ### 2026-03-25 - UT-SC-02-005
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | implementation / documentation |
-| 変更対象 | `docs/30-workflows/completed-tasks/UT-SC-02-005-preload-execute-type-update/`, `outputs/phase-3/6/7/8/9/10/11/12`, `artifacts.json` |
-| 結果 | Phase 3/6/7/8/9/10/11/12 の必須成果物名を仕様書準拠へ補完し、`implementation-guide.md` / `system-spec-update-summary.md` / `quality-report.md` / `manual-test-result.md` を current facts に同期した。`.claude` / `.agents` の LOGS・SKILL も同一ターンで更新 |
-| 検証 | 対象4ファイル 54/54 PASS、coverage Line 89.56 / Branch 80.88 / Function 88.88、`pnpm exec tsc --noEmit` PASS、`pnpm exec eslint ...` PASS |
+| 項目     | 内容                                                                                                                                                                                                                                                          |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | implementation / documentation                                                                                                                                                                                                                                |
+| 変更対象 | `docs/30-workflows/completed-tasks/UT-SC-02-005-preload-execute-type-update/`, `outputs/phase-3/6/7/8/9/10/11/12`, `artifacts.json`                                                                                                                           |
+| 結果     | Phase 3/6/7/8/9/10/11/12 の必須成果物名を仕様書準拠へ補完し、`implementation-guide.md` / `system-spec-update-summary.md` / `quality-report.md` / `manual-test-result.md` を current facts に同期した。`.claude` / `.agents` の LOGS・SKILL も同一ターンで更新 |
+| 検証     | 対象4ファイル 54/54 PASS、coverage Line 89.56 / Branch 80.88 / Function 88.88、`pnpm exec tsc --noEmit` PASS、`pnpm exec eslint ...` PASS                                                                                                                     |
 
 ### 2026-03-26 - TASK-SDK-08 task spec elegance sync
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | documentation / spec-alignment |
-| 変更対象 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/` の Phase 4/7/8/10/11/12/13 と outputs |
-| 結果 | strict warning を出していた依存成果物参照を補完し、Phase 11 を `TC-*` / 画面カバレッジ形式へ、Phase 12 を必須5タスク準拠へ再構成した。system spec update summary も no-op から same-wave sync 記録へ是正 |
-| 検証 | `validate-phase-output.js` / `verify-all-specs.js --strict` を再実行して確認 |
+| 項目     | 内容                                                                                                                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | documentation / spec-alignment                                                                                                                                                                           |
+| 変更対象 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-06-seq-task-08-session-persistence-and-resume-contract/` の Phase 4/7/8/10/11/12/13 と outputs                                                      |
+| 結果     | strict warning を出していた依存成果物参照を補完し、Phase 11 を `TC-*` / 画面カバレッジ形式へ、Phase 12 を必須5タスク準拠へ再構成した。system spec update summary も no-op から same-wave sync 記録へ是正 |
+| 検証     | `validate-phase-output.js` / `verify-all-specs.js --strict` を再実行して確認                                                                                                                             |
 
 ### 2026-03-26 - UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001 Phase 12 stale-fact cleanup sync
 
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | documentation / phase12-guard |
-| 変更対象 | `references/phase-12-documentation-guide.md` |
-| 結果 | `spec_created` workflow の implementation guide Part 2 を `current contract + target delta` で書くこと、API/使用例/設定表の省略禁止、`completed-tasks/` 配下でも status を `completed` へ上げないことを明文化した |
-| 検証 | current workflow の `phase12-task-spec-compliance-check.md` と突合して確認 |
-
-### 2026-03-31 - TASK-P0-04 phase12 sync
-
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | documentation / ledger-sync / phase11-12 close-out |
-| 変更対象 | `docs/30-workflows/step-10-seq-task-p0-04-manifest-loader-default-activation/`, `artifacts.json`, `outputs/artifacts.json` |
-| 結果 | Phase 11 補助成果物 `manual-test-checklist.md` / `screenshot-plan.json` を補完し、Phase 12 の compliance / changelog / system-spec summary を same-wave sync 実施済みの内容へ修正。ledger drift も解消した |
-| 検証 | RuntimeSkillCreatorFacade 関連の targeted vitest と current workflow 文書突合で確認 |
-
-### 2026-03-30 - TASK-LLM-MOD-05 schema-extension close-out sync
-
-| 項目 | 内容 |
-| --- | --- |
-| 種別 | documentation / spec-alignment |
-| 変更対象 | `docs/30-workflows/step-04-seq-task-05-schema-extension/`（phase-2 / phase-12 / phase-13 / outputs / unassigned-task） |
-| 結果 | Phase 12 の実装ガイド・未タスク・skill-feedback を `provider-registry.ts` 前提へ同期し、Phase 13 の PR 準備と最終確認を current facts へ是正。`TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` を削除済みとして整理 |
-| 検証 | `provider.test.ts` 41 PASS、`llm.test.ts` 59 PASS / 1 skipped、workflow 内検索で旧想定パスの残存を解消確認 |
+| 項目     | 内容                                                                                                                                                                                                              |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 種別     | documentation / phase12-guard                                                                                                                                                                                     |
+| 変更対象 | `references/phase-12-documentation-guide.md`                                                                                                                                                                      |
+| 結果     | `spec_created` workflow の implementation guide Part 2 を `current contract + target delta` で書くこと、API/使用例/設定表の省略禁止、`completed-tasks/` 配下でも status を `completed` へ上げないことを明文化した |
+| 検証     | current workflow の `phase12-task-spec-compliance-check.md` と突合して確認                                                                                                                                        |

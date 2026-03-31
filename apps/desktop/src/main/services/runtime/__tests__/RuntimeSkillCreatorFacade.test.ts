@@ -9,7 +9,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RuntimeSkillCreatorFacade } from "../RuntimeSkillCreatorFacade";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
-import { SkillCreatorSourceResolver } from "../SkillCreatorSourceResolver";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
 import type { ILLMAdapter } from "../../../adapters/llm/types";
 
@@ -24,16 +23,6 @@ describe("RuntimeSkillCreatorFacade", () => {
         execute: executeMock,
       } as unknown as SkillExecutor,
     });
-    // TASK-P0-04: dynamic pipeline は常に有効なため、実 FS スキャンを防ぐ
-    vi.spyOn(SkillCreatorSourceResolver.prototype, "resolve").mockResolvedValue(
-      {
-        foundationSnapshot: undefined,
-        manifestResources: new Map(),
-        candidateRoots: [],
-        rejectedRoots: [],
-        degradeReasons: [],
-      },
-    );
   });
 
   afterEach(() => {
@@ -1292,9 +1281,8 @@ describe("RuntimeSkillCreatorFacade", () => {
       const planPromise = facadeWithDI.plan("test spec", "api-key", "sk-test");
 
       // microtask をフラッシュして plan() が sendChat まで到達するのを待つ
-      // TASK-P0-04: dynamic pipeline 追加で await が増加したため 10 回フラッシュ
-      // (resolveDecision + sourceResolver×2 + resourcePlanner + 3×loadAgent = ~7 await)
-      for (let i = 0; i < 10; i++) {
+      // (resolveDecision + 3 x loadAgent = 4 await)
+      for (let i = 0; i < 5; i++) {
         await Promise.resolve();
       }
 
