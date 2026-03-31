@@ -222,7 +222,7 @@ describe("TASK-SDK-07: Governance bundle", () => {
 
     it("shared APPROVAL_CHANNELS と desktop IPC_CHANNELS で同一チャネル名が使用されている (cross-layer parity)", async () => {
       const { APPROVAL_CHANNELS, EXECUTION_CHANNELS } =
-        await import("../../../../../../../packages/shared/src/ipc/channels");
+        await import("@repo/shared/src/ipc/channels");
       const { IPC_CHANNELS } = await import("../../../../preload/channels");
       expect(IPC_CHANNELS.APPROVAL_RESPOND).toBe(
         APPROVAL_CHANNELS.APPROVAL_RESPOND,

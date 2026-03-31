@@ -10,10 +10,10 @@ issue_number: 1707
 | ------------ | --------------------------------------------------------------------------------- |
 | タスクID     | UT-DX-VITE-ALIAS-SHARED-IMPORT-001                                                |
 | 由来         | TASK-UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 unassigned-task-detection |
-| ステータス   | unassigned                                                                        |
+| ステータス   | completed（TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 で吸収済み）                |
 | 優先度       | low                                                                               |
 | 分類         | DX改善                                                                            |
-| 対応時期     | 次回テスト実装タスク時                                                            |
+| 対応時期     | 2026-03-31 対応完了                                                               |
 | 作成日       | 2026-03-29                                                                        |
 | 関連ファイル | `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts`      |
 
@@ -155,11 +155,17 @@ resolve: {
 
 ## 完了条件
 
-- [ ] `governance-bundle.test.ts` L225 の7階層相対パスが `@repo/shared/src/ipc/channels` エイリアスに置き換えられていること
-- [ ] `vitest.config.ts` の `resolve.alias` が `@repo/shared/src/ipc/channels` を正しく解決できること（またはエイリアス不要な代替手段が採用されていること）
-- [ ] `pnpm --filter @repo/desktop test` が PASS すること
-- [ ] `pnpm typecheck` が PASS すること
-- [ ] 調査の結果「動的 `import()` では解決できない」と判明した場合、その制約理由と代替手段が本ドキュメントに記録されていること
+- [x] `governance-bundle.test.ts` の7階層相対パスが `@repo/shared/src/ipc/channels` エイリアスに置き換えられていること
+- [x] `vitest.config.ts` の `resolve.alias` が `@repo/shared/src/ipc/channels` を正しく解決できること
+- [x] `pnpm exec vitest run src/preload/__tests__/skill-api.getDetail-update.test.ts src/main/services/runtime/__tests__/governance-bundle.test.ts` が PASS すること
+- [x] `pnpm --filter @repo/desktop typecheck` が PASS すること
+- [x] current wave で解消済みのため、本指示書が completed area へ移管されていること
+
+## 完了メモ
+
+- `apps/desktop/vitest.config.ts` に `@repo/shared/src/ipc/channels` alias を追加
+- `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts` の dynamic import を alias 化
+- 本課題は `TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001` の Phase 1-12 で吸収済み
 
 ---
 

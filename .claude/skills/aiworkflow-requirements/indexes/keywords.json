@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-31T10:12:43.562Z",
-  "totalKeywords": 2608,
+  "generated": "2026-03-31T10:13:32.615Z",
+  "totalKeywords": 2605,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1323,6 +1323,7 @@
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -6263,7 +6264,6 @@
     ],
     "ELECTRON": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-viewtype-electron-ui.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
@@ -6357,6 +6357,8 @@
     ],
     "PRELOAD": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "task-workflow-completed-ut-06-safety-gate.md"
     ],
@@ -6771,6 +6773,36 @@
     "契約整合": [
       "lessons-learned-current.md"
     ],
+    "VITE": [
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "ALIAS": [
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "SHARED": [
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md",
+      "logs-archive-2026-02-unassigned-placement-import-interface.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "build": [
+      "lessons-learned-current.md"
+    ],
+    "test": [
+      "lessons-learned-current.md"
+    ],
+    "alias": [
+      "lessons-learned-current.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md"
+    ],
+    "parity": [
+      "lessons-learned-current.md"
+    ],
     "Policy": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "security-electron-ipc-core.md"
@@ -6973,10 +7005,6 @@
       "spec-splitting-guidelines.md",
       "ui-ux-feature-components-core.md"
     ],
-    "BUILD": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-03-history-search-notification-center.md"
-    ],
     "governance": [
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
@@ -7029,23 +7057,6 @@
     ],
     "ARCH": [
       "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "SHARED": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "lessons-learned-workflow-quality-phase12-audit-validator.md",
-      "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
-    ],
-    "UIUX": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "FEEDBACK": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "review": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
@@ -7243,24 +7254,6 @@
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "へ同期する": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "worktree": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "環境での": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "esbuild": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "platform": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "mismatch": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "解消手順": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "executeSkill": [
@@ -7962,9 +7955,6 @@
     "PATHS": [
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
-    ],
-    "alias": [
-      "lessons-learned-workflow-quality-phase12-audit-validator.md"
     ],
     "tsconfig": [
       "lessons-learned-workflow-quality-phase12-audit-validator.md"
@@ -9315,10 +9305,16 @@
     "台帳と": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
+    "review": [
+      "logs-archive-2026-03-history-search-notification-center.md"
+    ],
     "パターン補完": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "CURRENT": [
+      "logs-archive-2026-03-history-search-notification-center.md"
+    ],
+    "BUILD": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "CAPTURE": [

@@ -1,19 +1,14 @@
-# Skill Feedback Report
+# Phase 12: スキルフィードバック — TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001
 
-## テンプレート改善
+## 学び
 
-改善あり。Phase 12 テンプレートは「system spec 更新対象を記録した」ことと「実ファイル差分が存在する」ことを分けて検証するガードを追加した方がよい。今回、`topic-map` / `task-workflow-completed` 更新済みと書けてしまう一方、差分実体が伴っていない状態を見逃しやすかった。
-
-## ワークフロー改善
-
-改善あり。UI surface 未実装タスクで `GovernanceUiPayload` のような表示用契約だけを追加した場合、Phase 11 screenshot evidence を `N/A` と formalized follow-up に分岐する明示ルールが必要だった。現行ガイドだと「UI payload がある = UI 証跡あり」と誤判定しやすい。
-
-## ドキュメント改善
-
-改善あり。implementation guide と compliance check に、`permissionMode` / `hooks` / `canUseTool` が「定義済み」なのか「実行経路へ接続済み」なのかを区別して書く注記が必要だった。今回そこが曖昧で、execute-only wiring を full coverage と読める文面になっていた。
+1. shared IPC channel の build 修正だけで close すると、Vitest 側の alias drift を見落としやすい
+2. Phase 11 を NON_VISUAL にする場合でも、`manual-test-result.md` は metadata / fallback reason / source evidence まで書かないと placeholder 扱いになる
+3. Phase 12 は task-specific outputs と generic outputs を混在させず、`artifacts.json` と task spec の参照先を canonical filename に揃えるべき
+4. 同一 wave 内で follow-up を解消した場合は、unassigned を open のまま残さず completed 側へ移管して narrative も戻す必要がある
 
 ## next action
 
-- `task-specification-creator` の Phase 12 guide に「spec summary の記述と git diff 実体を照合する」チェックを追加する
-- UI payload 追加タスク向けに「renderer 実装なしなら screenshot N/A + follow-up formalize」の分岐を明文化する
-- governance / policy 系タスク向けに「定義」「接続」「可視化」を別チェック項目へ分解する
+- Phase 1 で build/test parity の確認を明示する
+- Phase 11 の NON_VISUAL テンプレートに discovered issues 0件記録を必須項目として追加する
+- Phase 12 で canonical filename と artifacts の照合を必須にする

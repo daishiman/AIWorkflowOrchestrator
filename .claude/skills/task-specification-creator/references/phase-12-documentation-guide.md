@@ -69,6 +69,7 @@
 - validator 実行結果
 - current / baseline の区別
 - artifacts 同期結果
+- build artifact の文字列監査は `rg -F` を優先し、0件判定は `rg -q` の exit code と文書上の `match 0件` を対で残す
 - human-authored な Phase 12 成果物は task root 直下ではなく `outputs/phase-12/` に置く
 - `index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の4点同期結果
 - Step 1-A で更新した `aiworkflow-requirements` / `task-specification-creator` の `SKILL.md` / `LOGS.md` を canonical path で列挙する

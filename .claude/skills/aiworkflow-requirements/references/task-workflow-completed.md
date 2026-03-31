@@ -5,6 +5,35 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 |
+| ステータス | **完了** |
+| タイプ | bug fix / build-test parity |
+| 優先度 | 高 |
+| 完了日 | 2026-03-31 |
+| 対象 | `apps/desktop/electron.vite.config.ts` / `apps/desktop/vitest.config.ts` / `governance-bundle.test.ts` |
+| 成果物 | `docs/30-workflows/task-fix-preload-vite-alias-shared-ipc-001/` |
+
+#### 実施内容
+
+- preload build で `@repo/shared/src/ipc/channels` が external 扱いされる問題を、`externalizeDepsPlugin({ exclude: ["@repo/shared"] })` と exact alias の組み合わせで修正
+- `vitest.config.ts` にも同 alias を追加し、shared IPC channel import を test runtime でも解決可能にした
+- `governance-bundle.test.ts` の 7 階層 relative import workaround を削除し、shared alias へ復帰
+- workflow root / completed ledger / lessons / LOGS / SKILL history を same-wave で同期し、`UT-DX-VITE-ALIAS-SHARED-IMPORT-001` を completed 側へ移管
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop build`
+- `pnpm --filter @repo/desktop typecheck`
+- `cd apps/desktop && pnpm exec vitest run src/preload/__tests__/skill-api.getDetail-update.test.ts src/main/services/runtime/__tests__/governance-bundle.test.ts`
+- targeted vitest: `2 files / 37 tests PASS`
+- `rg -c -F "skill:list" apps/desktop/out/preload/index.js` → `2`
+- `rg -q -F "@repo/shared/src/ipc/channels" apps/desktop/out/preload/index.js` → match 0件
+- `rg -q -F "@repo/shared" apps/desktop/out/preload/index.js` → match 0件
+
 ### タスク: UT-UIUX-PLAYWRIGHT-E2E-001（2026-03-31）
 
 | 項目 | 値 |

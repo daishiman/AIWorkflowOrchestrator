@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-03-31 | 1.16.0 | TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 教訓2件を追加（external 判定順序 / fixed-string bundle evidence） |
 | 2026-03-27 | 1.15.0 | runtime policy centralization close-out 教訓1件を追加（composition root authority と handoff reason source の単一化） |
 | 2026-03-27 | 1.14.0 | TASK-SDK-04 教訓2件を追加（回答送信後 semantics の owner 不在、planId と execute payload の canonical drift） |
 | 2026-03-25 | 1.13.0 | UT-SC-02-005 教訓1件を追加（L-SC-07-005: Preload executePlan 型追従漏れ、IPC ハンドラ変更時の3層走査） |
@@ -37,6 +38,24 @@
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
 
 ---
+
+## 2026-03-31 TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001
+
+### 教訓1: `externalizeDepsPlugin` の external 判定は `resolve.alias` より前に効く
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | preload で `@repo/shared/src/ipc/channels` に alias を追加しても、`externalizeDepsPlugin()` が先に `@repo/shared` を external 扱いしたため `out/preload/index.js` に runtime `require()` が残った |
+| 解決策 | preload 側だけ `externalizeDepsPlugin({ exclude: ["@repo/shared"] })` を使い、exact alias を `packages/shared/src/ipc/channels.ts` へ向けた |
+| 標準ルール | Electron/Vite の bundler 修正では alias の有無だけでなく external 判定順序を必ず確認する。workspace package の source import を preload bundle に含めたい場合は `exclude` と alias を 1 セットで扱う |
+
+### 教訓2: preload bundle の回帰証跡は `rg -F` の固定文字列で残す
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `grep` ベースの記録は引用符や特殊文字の揺れで evidence 文書と実コマンドの再現性が落ちやすい |
+| 解決策 | `rg -c -F "skill:list"` と `rg -q -F "@repo/shared/src/ipc/channels"` で定数一致の証跡に統一した |
+| 標準ルール | bundler 成果物の監査は fixed-string 検索を優先し、0件判定は `rg -q` の exit code と文書上の `match 0件` を対で記録する |
 
 ## 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001
 
