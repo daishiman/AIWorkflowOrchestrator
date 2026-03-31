@@ -555,7 +555,7 @@ ui-ux-diagrams.md の「実装ギャップ一覧（GAP ID 正本）」セクシ�
 | タスクID | TASK-RT-05 |
 | 対象workflow | `docs/30-workflows/step-09-par-task-rt-05-multi-select-user-input-kind/` |
 | ステータス | completed（Phase 1-12） |
-| テスト | Engine 26件 + Renderer 35件 PASS |
+| テスト | Engine 39件 + Renderer 35件 PASS（close-out current facts） |
 | 画面証跡 | screenshot 未取得（esbuild platform mismatch のため） |
 
 ### 実装内容
@@ -590,6 +590,10 @@ ui-ux-diagrams.md の「実装ギャップ一覧（GAP ID 正本）」セクシ�
 ### Phase 12 未タスク（0件）
 
 なし
+
+### TASK-RT-05-TEST-RERUN close-out（2026-03-31）
+
+UT-RT-06 esbuild platform mismatch 修正後の環境でテスト再実行を完了。`cd apps/desktop && pnpm exec vitest run ...` を正本コマンドとして Engine 39件 + Renderer 35件 全PASS、AC-4（既存4kind非破壊）確認済み。Issue #1756 close-out。
 
 ---
 

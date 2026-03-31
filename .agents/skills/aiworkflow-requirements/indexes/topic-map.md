@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-30
+> 自動生成: 2026-03-31
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -2736,6 +2736,7 @@ node scripts/list-specs.js --topics
 | L-RT05-002: input kind 切替時の stale state は useEffect + workflowSnapshot 監視で解消 | L22 |
 | L-RT05-003: jest-dom matchers 使用前に setupFiles を確認する | L35 |
 | L-RT05-004: shared contract 変更は same-wave で canonical spec へ同期する | L48 |
+| L-RT05-005: worktree環境での esbuild platform mismatch 解消手順 | L61 |
 
 ### references/lessons-learned-skill-execute-hook-migration.md
 
@@ -3911,7 +3912,7 @@ node scripts/list-specs.js --topics
 | TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L469 |
 | Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L506 |
 | TASK-RT-05: multi_select ユーザー入力種別追加 完了記録（2026-03-30） | L549 |
-| UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20） | L596 |
+| UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20） | L600 |
 
 ### references/task-workflow-completed-skill-lifecycle.md
 

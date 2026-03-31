@@ -4,6 +4,17 @@
 
 ---
 
+## 2026-03-31 - TASK-RT-05-TEST-RERUN close-out（Issue #1756）
+
+### 変更内容
+
+- UT-RT-06 esbuild 修正後の環境で TASK-RT-05 テスト再実行・AC-4 確認を完了
+- phase-9/quality-report.md・phase-10/final-review-result.md を PASS 状態に更新
+- lessons-learned-skill-create-multi-select-kind.md に esbuild platform mismatch 教訓を追記
+- task-workflow-completed-skill-lifecycle-ui.md に TASK-RT-05-TEST-RERUN close-out 注記を追加
+
+---
+
 ## 2026-03-30 - TASK-LLM-MOD-05 Phase 12 close-out sync
 
 ### 変更内容
