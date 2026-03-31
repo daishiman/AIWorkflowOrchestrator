@@ -1627,16 +1627,16 @@ node scripts/list-specs.js --topics
 | Electron | L14 |
 | ビルド・パッケージング | L44 |
 | Main Process技術 | L72 |
-| Renderer Process技術 | L111 |
-| IPC通信 | L152 |
-| macOS固有 | L173 |
-| セキュリティ | L197 |
-| 自動更新 | L222 |
-| 開発ツール | L242 |
-| ディレクトリ構造 | L262 |
-| 関連ドキュメント | L282 |
-| 関連未タスク | L294 |
-| 変更履歴 | L302 |
+| Renderer Process技術 | L118 |
+| IPC通信 | L144 |
+| macOS固有 | L165 |
+| セキュリティ | L189 |
+| 自動更新 | L214 |
+| 開発ツール | L234 |
+| ディレクトリ構造 | L254 |
+| 関連ドキュメント | L274 |
+| 関連未タスク | L286 |
+| 変更履歴 | L294 |
 
 ### references/technology-devops-core.md
 
@@ -2305,13 +2305,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| ビルドターゲット | L10 |
-| リリースフロー | L33 |
-| リリースチェックリスト | L45 |
-| 自動更新（electron-updater） | L58 |
-| コードサイニング | L85 |
-| デプロイチェックリスト | L109 |
-| データベースマイグレーションのロールバック | L160 |
-| 関連ドキュメント | L186 |
+| Native Addon 再構築（postinstall bootstrap） | L34 |
+| リリースフロー | L74 |
+| リリースチェックリスト | L86 |
+| 自動更新（electron-updater） | L99 |
+| コードサイニング | L126 |
+| デプロイチェックリスト | L150 |
+| データベースマイグレーションのロールバック | L203 |
+| 関連ドキュメント | L229 |
 
 ### references/deployment-gha.md
 
@@ -2643,20 +2644,19 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L67 |
-| クイックリファレンス: カテゴリ別検索ガイド | L85 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L258 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L590 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L624 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L707 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L723 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L747 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L788 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L813 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L844 |
-| TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 build/test alias parity（2026-03-31） | L875 |
-| TASK-RT-06 教訓（2026-03-29） | L897 |
-| TASK-P0-04 教訓（2026-03-30） | L919 |
+| 分割ファイル一覧 | L69 |
+| クイックリファレンス: カテゴリ別検索ガイド | L87 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L268 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L600 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L634 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L717 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L733 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L757 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L807 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L832 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L863 |
+| TASK-RT-06 教訓（2026-03-29） | L894 |
+| TASK-P0-04 教訓（2026-03-30） | L916 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2673,24 +2673,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-31 TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 | L42 |
-| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L60 |
-| 2026-03-27 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | L62 |
-| 2026-03-27 TASK-SDK-04 user interaction bridge / phase UI | L72 |
-| 2026-03-28 TASK-SDK-04-U1 submitUserInput phase transition semantics | L90 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L126 |
-| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L132 |
-| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L152 |
-| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L180 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L216 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L244 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L281 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L347 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L368 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L398 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L440 |
-| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L487 |
-| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L506 |
+| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L42 |
+| 2026-03-27 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | L44 |
+| 2026-03-27 TASK-SDK-04 user interaction bridge / phase UI | L54 |
+| 2026-03-28 TASK-SDK-04-U1 submitUserInput phase transition semantics | L72 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L108 |
+| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L114 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L134 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L162 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L198 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L226 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L263 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L329 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L350 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L380 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L422 |
+| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L469 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L489 |
+| TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L505 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -2762,6 +2762,7 @@ node scripts/list-specs.js --topics
 | L-RT05-002: input kind 切替時の stale state は useEffect + workflowSnapshot 監視で解消 | L22 |
 | L-RT05-003: jest-dom matchers 使用前に setupFiles を確認する | L35 |
 | L-RT05-004: shared contract 変更は same-wave で canonical spec へ同期する | L48 |
+| L-RT05-005: worktree環境での esbuild platform mismatch 解消手順 | L61 |
 
 ### references/lessons-learned-skill-execute-hook-migration.md
 
@@ -3937,7 +3938,7 @@ node scripts/list-specs.js --topics
 | TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L469 |
 | Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L506 |
 | TASK-RT-05: multi_select ユーザー入力種別追加 完了記録（2026-03-30） | L549 |
-| UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20） | L596 |
+| UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20） | L600 |
 
 ### references/task-workflow-completed-skill-lifecycle.md
 
@@ -3975,7 +3976,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
 | フェーズ構造 | L17 |
-| 出力テンプレート | L180 |
+| 出力テンプレート | L188 |
 
 ### references/task-workflow-rules.md
 

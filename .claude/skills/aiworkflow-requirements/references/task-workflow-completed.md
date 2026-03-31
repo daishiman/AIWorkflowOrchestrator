@@ -5,70 +5,41 @@
 
 ## 完了タスク
 
-### タスク: TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001（2026-03-31）
+### タスク: TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001（2026-03-31）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 |
-| ステータス | **完了** |
-| タイプ | bug fix / build-test parity |
-| 優先度 | 高 |
-| 完了日 | 2026-03-31 |
-| 対象 | `apps/desktop/electron.vite.config.ts` / `apps/desktop/vitest.config.ts` / `governance-bundle.test.ts` |
-| 成果物 | `docs/30-workflows/task-fix-preload-vite-alias-shared-ipc-001/` |
+| 項目       | 値                                                                                     |
+| ---------- | -------------------------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001                                               |
+| ステータス | **完了**                                                                               |
+| タイプ     | bugfix / native addon ABI 互換性                                                       |
+| 優先度     | 高                                                                                     |
+| 完了日     | 2026-03-31                                                                             |
+| 対象       | `apps/desktop/package.json` の `scripts` / `apps/desktop/src/__tests__/native/` テスト |
+| 成果物     | `docs/30-workflows/task-fix-better-sqlite3-electron-abi-001/`                          |
 
 #### 実施内容
 
-- preload build で `@repo/shared/src/ipc/channels` が external 扱いされる問題を、`externalizeDepsPlugin({ exclude: ["@repo/shared"] })` と exact alias の組み合わせで修正
-- `vitest.config.ts` にも同 alias を追加し、shared IPC channel import を test runtime でも解決可能にした
-- `governance-bundle.test.ts` の 7 階層 relative import workaround を削除し、shared alias へ復帰
-- workflow root / completed ledger / lessons / LOGS / SKILL history を same-wave で同期し、`UT-DX-VITE-ALIAS-SHARED-IMPORT-001` を completed 側へ移管
+- `apps/desktop/package.json` に `"postinstall": "pnpm rebuild:native"` を追加し、`pnpm install` 後に自動で Electron ABI（140）向けに `better-sqlite3` を再コンパイルするよう設定
+- `apps/desktop/src/__tests__/native/better-sqlite3-abi.test.ts` を新規作成し、smoke test 4 ケース（CRUD / 再オープン / 複数テーブル / トランザクション）を追加
+- `CHANGELOG.md` の `[Unreleased]` に Fixed エントリを追記
 
 #### 検証証跡
 
-- `pnpm --filter @repo/desktop build`
-- `pnpm --filter @repo/desktop typecheck`
-- `cd apps/desktop && pnpm exec vitest run src/preload/__tests__/skill-api.getDetail-update.test.ts src/main/services/runtime/__tests__/governance-bundle.test.ts`
-- targeted vitest: `2 files / 37 tests PASS`
-- `rg -c -F "skill:list" apps/desktop/out/preload/index.js` → `2`
-- `rg -q -F "@repo/shared/src/ipc/channels" apps/desktop/out/preload/index.js` → match 0件
-- `rg -q -F "@repo/shared" apps/desktop/out/preload/index.js` → match 0件
-
-### タスク: UT-UIUX-PLAYWRIGHT-E2E-001（2026-03-31）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | UT-UIUX-PLAYWRIGHT-E2E-001 |
-| ステータス | **完了** |
-| タイプ | implementation / e2e ui-ux |
-| 優先度 | 中 |
-| 完了日 | 2026-03-31 |
-| 対象 | `apps/desktop/e2e/ui-ux/` / `playwright.config.ts` / workflow close-out |
-| 成果物 | `docs/30-workflows/ut-uiux-playwright-e2e-001/` |
-
-#### 実施内容
-
-- `ui-ux-layer1` / `ui-ux-layer2` project を current branch に固定
-- `TEST_TARGETS` を single source of truth とする dynamic E2E 構成を維持
-- implicit role / positive tabindex の false positive を削減
-- Phase 11 screenshot / metadata / coverage / review / artifacts 同期を current workflow 配下へ補完
-
-#### 残課題
-
-- `TASK-A11Y-FOCUS-TRAP-001`
-- Layer 2 baseline drift 3件は MEDIUM として workflow 側へ記録
+- `pnpm --filter @repo/desktop test:run` で better-sqlite3 smoke test 4 件 PASS
+- Node.js ABI 127 vs Electron ABI 140 の不一致が根本原因として文書化済み
+- Phase 11 UI/UX 変更なし（NON_VISUAL）
 
 ### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-P0-09 |
-| ステータス | **完了** |
-| タイプ | implementation / runtime governance |
-| 優先度 | 高 |
-| 完了日 | 2026-03-31 |
-| 対象 | `RuntimeSkillCreatorFacade.execute()` / `SkillExecutor` / governance payload |
-| 成果物 | `docs/30-workflows/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` |
+| 項目       | 値                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-09                                                                         |
+| ステータス | **完了**                                                                           |
+| タイプ     | implementation / runtime governance                                                |
+| 優先度     | 高                                                                                 |
+| 完了日     | 2026-03-31                                                                         |
+| 対象       | `RuntimeSkillCreatorFacade.execute()` / `SkillExecutor` / governance payload       |
+| 成果物     | `docs/30-workflows/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` |
 
 #### 実施内容
 
@@ -85,15 +56,15 @@
 
 ### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-P0-09 |
-| ステータス | **完了** |
-| タイプ | implementation / governance hardening |
-| 優先度 | 最高 |
-| 完了日 | 2026-03-31 |
-| 対象 | `RuntimeSkillCreatorFacade` / `SkillExecutor` / governance module / skill creator runtime IPC |
-| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` |
+| 項目       | 値                                                                                                              |
+| ---------- | --------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-09                                                                                                      |
+| ステータス | **完了**                                                                                                        |
+| タイプ     | implementation / governance hardening                                                                           |
+| 優先度     | 最高                                                                                                            |
+| 完了日     | 2026-03-31                                                                                                      |
+| 対象       | `RuntimeSkillCreatorFacade` / `SkillExecutor` / governance module / skill creator runtime IPC                   |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` |
 
 #### 実施内容
 
@@ -108,48 +79,17 @@
 - `npm -s exec vitest -- run apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts apps/desktop/src/main/services/runtime/__tests__/governance/SkillCreatorGovernance.integration.test.ts apps/desktop/src/main/ipc/__tests__/creatorHandlers.test.ts apps/desktop/src/preload/__tests__/skill-creator-api.governance.test.ts`
 - targeted suite PASS
 
-### タスク: TASK-ELECTRON-BUILD-FIX Electron ビルドインフラ修正（2026-03-31）
-
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-ELECTRON-BUILD-FIX |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ | bugfix / desktop-build-infrastructure |
-| 優先度 | 高 |
-| 完了日 | 2026-03-31 |
-| 対象 | `packages/shared`, `apps/desktop`, `scripts/setup-native-modules.sh` |
-| 成果物 | `docs/30-workflows/electron-build-infra-fix/` |
-
-#### 実施内容
-
-- `@repo/shared` を ESM/CJS dual output に拡張し、preload 側の CJS 実行条件と整合
-- preload では `@repo/shared` を外部依存にせず bundle に含めるようにした
-- `scripts/setup-native-modules.sh` に Electron ABI 検査を追加し、`rebuild:electron` 導線へ接続
-- `apps/desktop/scripts/rebuild-sqlite-for-electron.mjs` で Electron 実バイナリの arch 検出を実装
-- `apps/desktop/scripts/rebuild-native-for-electron.mjs` と `electron-builder.yml` で afterPack リビルドを導入し、数値 arch enum を CLI 向け文字列へ正規化
-- Phase 11 を NON_VISUAL current facts に是正し、placeholder-only screenshot 運用を撤去
-
-#### Phase 13 blocked 理由
-
-- AC-7（desktop dev 起動 GUI 確認）がユーザー手動確認待ち
-- Phase 13（`/ai:diff-to-pr`）は AC-7 確認完了後に実行可能
-
-#### 発見元
-
-- GitHub Issue #1786
-- 関連タスク: UT-CONV-DB-001, UT-CONV-DB-004
-
 ### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-P0-02 |
-| ステータス | **完了** |
-| タイプ | implementation / runtime orchestration |
-| 優先度 | 高 |
-| 完了日 | 2026-03-30 |
-| 対象 | `SkillCreatorWorkflowEngine` / `RuntimeSkillCreatorFacade` の閉ループ改善 |
-| 成果物 | `docs/30-workflows/task-imp-verify-improve-revert-loop-002/` |
+| 項目       | 値                                                                        |
+| ---------- | ------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-02                                                                |
+| ステータス | **完了**                                                                  |
+| タイプ     | implementation / runtime orchestration                                    |
+| 優先度     | 高                                                                        |
+| 完了日     | 2026-03-30                                                                |
+| 対象       | `SkillCreatorWorkflowEngine` / `RuntimeSkillCreatorFacade` の閉ループ改善 |
+| 成果物     | `docs/30-workflows/task-imp-verify-improve-revert-loop-002/`              |
 
 #### 実施内容
 
@@ -1786,24 +1726,24 @@
 
 #### Phase 12 未タスク
 
-| 未タスクID | 概要                                                                             | 優先度 |
-| ---------- | -------------------------------------------------------------------------------- | ------ |
-| UT-10      | disclosureHandlers.ts 独立テスト作成                                             | LOW    |
-| UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001 | disclosure 情報を runtime から注入 | HIGH |
-| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | Advanced Console の実ログ / copy command 連携 | HIGH |
+| 未タスクID                                        | 概要                                          | 優先度 |
+| ------------------------------------------------- | --------------------------------------------- | ------ |
+| UT-10                                             | disclosureHandlers.ts 独立テスト作成          | LOW    |
+| UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001    | disclosure 情報を runtime から注入            | HIGH   |
+| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | Advanced Console の実ログ / copy command 連携 | HIGH   |
 
 ---
 
 ### タスク: UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 Safety Governance Production 統合（2026-03-31）
 
-| 項目       | 値 |
-| ---------- | --- |
-| タスクID   | UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 |
-| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）** |
-| タイプ     | implementation follow-up |
-| 優先度     | 高 |
-| 完了日     | 2026-03-31 |
-| 対象       | ApprovalGate production integration / preload execution namespace / approval push / revokeAll lifecycle |
+| 項目       | 値                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001                                                                                                |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                                                                              |
+| タイプ     | implementation follow-up                                                                                                                    |
+| 優先度     | 高                                                                                                                                          |
+| 完了日     | 2026-03-31                                                                                                                                  |
+| 対象       | ApprovalGate production integration / preload execution namespace / approval push / revokeAll lifecycle                                     |
 | 成果物     | `docs/30-workflows/completed-tasks/UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001.md`, `docs/30-workflows/safety-gov-production-integration/` |
 
 #### 実施内容
@@ -1820,17 +1760,17 @@
 
 #### Phase 12 未タスク
 
-| 未タスクID | 概要 | 優先度 | タスク仕様書 |
-| ---------- | ---- | ------ | ------------ |
-| UT-10 | disclosureHandlers.ts 独立テスト作成 | 低 | `docs/30-workflows/unassigned-task/UT-10-disclosureHandlers-standalone-test.md` |
-| UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 | approval request producer を production 接続 | 高 | `docs/30-workflows/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md` |
-| UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001 | disclosure 情報の runtime 注入 | 高 | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001.md` |
-| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | session log / copy command の実データ連携 | 高 | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001.md` |
+| 未タスクID                                        | 概要                                         | 優先度 | タスク仕様書                                                                             |
+| ------------------------------------------------- | -------------------------------------------- | ------ | ---------------------------------------------------------------------------------------- |
+| UT-10                                             | disclosureHandlers.ts 独立テスト作成         | 低     | `docs/30-workflows/unassigned-task/UT-10-disclosureHandlers-standalone-test.md`          |
+| UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001       | approval request producer を production 接続 | 高     | `docs/30-workflows/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md`       |
+| UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001    | disclosure 情報の runtime 注入               | 高     | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001.md`    |
+| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | session log / copy command の実データ連携    | 高     | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001.md` |
 
 #### 苦戦箇所
 
-| 苦戦箇所 | 再発条件 | 対処 |
-| -------- | -------- | ---- |
+| 苦戦箇所                                                                               | 再発条件                                 | 対処                                                     |
+| -------------------------------------------------------------------------------------- | ---------------------------------------- | -------------------------------------------------------- |
 | workflow root / completed ledger / backlog が別々に更新されると current facts が崩れる | 実装完了後も `spec_created` の記述を残す | 実装・Phase 11/12 証跡・system spec を同じターンで閉じる |
 
 #### 同種課題の簡潔解決手順
@@ -1984,14 +1924,14 @@
 
 ### タスク: TASK-UIUX-FEEDBACK-001 phase11-ui-ux-feedback-loop-review（2026-03-31）
 
-| 項目 | 値 |
-| --- | --- |
-| タスクID | TASK-UIUX-FEEDBACK-001 |
+| 項目       | 値                                                               |
+| ---------- | ---------------------------------------------------------------- |
+| タスクID   | TASK-UIUX-FEEDBACK-001                                           |
 | ステータス | **spec_created 維持 / canonical・mirror・system spec sync 実施** |
-| タイプ | skill improvement + workflow documentation correction |
-| 優先度 | HIGH |
-| 完了日 | 2026-03-31 |
-| 成果物 | `docs/30-workflows/task-uiux-feedback-001-phase11-enhancement/` |
+| タイプ     | skill improvement + workflow documentation correction            |
+| 優先度     | HIGH                                                             |
+| 完了日     | 2026-03-31                                                       |
+| 成果物     | `docs/30-workflows/task-uiux-feedback-001-phase11-enhancement/`  |
 
 #### 実施内容
 
@@ -2003,8 +1943,8 @@
 
 #### 未完了事項
 
-| 項目 | 状態 |
-| --- | --- |
-| representative screenshot 実測 | 未了 |
-| Phase 11 実行結果 | 未了 |
-| HIGH 問題の未タスク化 | 実行後に判定 |
+| 項目                           | 状態         |
+| ------------------------------ | ------------ |
+| representative screenshot 実測 | 未了         |
+| Phase 11 実行結果              | 未了         |
+| HIGH 問題の未タスク化          | 実行後に判定 |

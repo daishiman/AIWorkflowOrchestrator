@@ -17,16 +17,57 @@
 
 ### CI環境での制限事項（2026-01-13追加）
 
-| 環境               | macOS形式 | 備考                                       |
-| ------------------ | --------- | ------------------------------------------ |
-| ローカル開発       | DMG + ZIP | 全形式利用可能                             |
-| GitHub Actions CI  | ZIP のみ  | macos-14 runner で hdiutil 使用不可        |
-| リリースビルド     | DMG + ZIP | self-hosted runner または手動ビルドで対応  |
+| 環境              | macOS形式 | 備考                                      |
+| ----------------- | --------- | ----------------------------------------- |
+| ローカル開発      | DMG + ZIP | 全形式利用可能                            |
+| GitHub Actions CI | ZIP のみ  | macos-14 runner で hdiutil 使用不可       |
+| リリースビルド    | DMG + ZIP | self-hosted runner または手動ビルドで対応 |
 
 **技術的理由**:
+
 - GitHub Actions の macos-14 runner（Apple Silicon）は仮想化環境
 - `hdiutil create` コマンドが `Device not configured` エラーで失敗
 - 解決策: CI では ZIP のみ生成、DMG はリリース時に別途対応
+
+---
+
+## Native Addon 再構築（postinstall bootstrap）
+
+### 問題と原因
+
+`better-sqlite3` などの native addon（`.node` バイナリ）は `NODE_MODULE_VERSION`（ABI）が一致しないと `dlopen` に失敗する。`pnpm install` 直後は Node.js ABI でコンパイルされた prebuilt バイナリが入るが、Electron は独自 Node.js ランタイムを持つため ABI が異なる。
+
+| 環境                 | ABI バージョン例 |
+| -------------------- | ---------------- |
+| Node.js 22.x（pnpm） | 127              |
+| Electron 39.2.4      | 140              |
+
+### 自動 rebuild（postinstall）
+
+`apps/desktop/package.json` の `postinstall` が `pnpm install` 後に自動実行される:
+
+```json
+"rebuild:native": "pnpm rebuild better-sqlite3 && (pnpm rebuild esbuild || true)",
+"postinstall": "pnpm rebuild:native"
+```
+
+- `better-sqlite3` は必須 rebuild（失敗するとアプリが起動しない）
+- `esbuild` は best-effort（workspace 内 version 競合が起きやすいため `|| true` でエラーを無視）
+
+### 手動 recovery
+
+postinstall が何らかの理由でスキップされた場合の手動コマンド:
+
+```bash
+pnpm --filter @repo/desktop rebuild:native
+```
+
+### 将来の native addon 追加時チェックリスト
+
+- [ ] Electron ABI を要求する addon かどうか確認
+- [ ] `apps/desktop/package.json` の `rebuild:native` に対象を追加
+- [ ] `pnpm --filter @repo/desktop rebuild:native` で動作確認
+- [ ] 必要なら `scripts/setup-native-modules.sh` にも反映
 
 ---
 
@@ -146,11 +187,13 @@
 **デプロイ後の対応**
 
 成功時:
+
 - Discord/Slackで完了通知
 - リリースノート公開
 - 24時間は監視を継続
 
 失敗時:
+
 - 即座にロールバック
 - 失敗原因の分析
 - 修正後の再デプロイ計画
