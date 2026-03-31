@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-31T01:24:17.446Z",
-  "totalKeywords": 2601,
+  "generated": "2026-03-31T06:03:02.912Z",
+  "totalKeywords": 2584,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7048,6 +7048,16 @@
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
+    "UIUX": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "FEEDBACK": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "review": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-history-search-notification-center.md"
+    ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
     ],
@@ -9296,9 +9306,6 @@
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "台帳と": [
-      "logs-archive-2026-03-history-search-notification-center.md"
-    ],
-    "review": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "パターン補完": [

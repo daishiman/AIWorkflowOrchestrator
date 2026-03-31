@@ -7,6 +7,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-03-31 - TASK-UIUX-FEEDBACK-001 false-green cleanup（Phase 11 placeholder-only evidence と phantom path `scripts/ui-ux-eval/*` を current facts から除去し、`task-workflow-phases.md` / `lessons-learned-current.md` / LOGS / SKILL を same-wave で更新。topic-map / keywords 再生成まで完了） |
 | 2026-03-31 - TASK-P0-09 governance spec 同期（`governance-hooks-factory-audit-sink.md` 新規作成 / `lessons-learned-governance-hooks-phase-policy.md` 新規作成 / topic-map に2ファイル追加 / keywords.json に9キーワード追加（GovernanceAuditSink / GovernanceHooksFactory / SkillCreatorGovernancePolicy / canUseTool / permissionMode / GovernanceUiPayload / GovernanceAuditEvent / PHASE_POLICIES）/ `.agents` mirror 同期 / interfaces-agent-sdk-skill-reference.md の Governance 拡張セクションは既記録済みを確認） |
 | 2026-03-31 - TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out sync（execute phase governance wiring を `SkillExecutor` まで接続 / `permissionMode`・hooks・`permissions.canUseTool` を query() へ伝播 / path-safe canUseTool 判定へ是正 / `skill-creator:get-governance` と `GovernanceUiPayload` を public surface へ追加 / shared types に governance 8 型を追加 / system spec 3 ファイル + completed ledger を同波更新 / follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` を formalize） |
 | 2026-03-31 - TASK-P0-09 claude-sdk-permission-hooks-governance close-out resync（`getGovernanceState()` / governance IPC 追加を canonical spec に反映済みのまま、Phase 12 outputs の過大表現を是正。tool-level enforcement と verify session audit は completed、path-scoped runtime enforcement は `TASK-P0-09-U1` として formalize。LOGS x2 + generate-index + workflow index regenerate を same-wave で再実施） |
@@ -513,3 +514,25 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - vitest は esbuild アーキ不整合で blocked
 - 派生未タスク:
   - `UT-RT-06-ESBUILD-ARCH-MISMATCH-001`
+
+## TASK-P0-04 phase12 sync（2026-03-30）
+
+- タスク名: TASK-P0-04 manifest-loader-default-activation
+- 種別: requirements sync / documentation correction
+- 主な反映:
+  - runtime contract を「dynamic pipeline 常時試行 + resource 不足時 degraded error」へ整合
+  - Phase 11/12 証跡不足と workflow ledger drift を修正
+  - implementation guide の `improve(skillName, ...)` シグネチャ誤記を補正
+- 検証:
+  - current workflow 文書と `RuntimeSkillCreatorFacade.ts` を突合して確認
+
+## TASK-UIUX-FEEDBACK-001 review sync（2026-03-31）
+
+- タスク名: TASK-UIUX-FEEDBACK-001 phase11-ui-ux-feedback-loop-review
+- 種別: workflow review + skill sync + false green correction
+- 主な反映:
+  - `task-specification-creator` の `evaluate-ui-ux` script 群を canonical / mirror で同期
+  - `evaluate-ui-ux.js` に taskContext 受け渡しと screenshot 0 件ガードを追加
+  - workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ補正
+  - Phase 11/12 文書から placeholder screenshot と `not_run` metadata の current fact を明示
+  - `task-workflow-completed.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `SKILL.md` を same-wave 更新

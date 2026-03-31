@@ -2643,19 +2643,19 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L67 |
-| クイックリファレンス: カテゴリ別検索ガイド | L85 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L258 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L590 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L624 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L707 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L723 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L747 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L788 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L813 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L844 |
-| TASK-RT-06 教訓（2026-03-29） | L875 |
-| TASK-P0-04 教訓（2026-03-30） | L897 |
+| 分割ファイル一覧 | L68 |
+| クイックリファレンス: カテゴリ別検索ガイド | L86 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L259 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L591 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L625 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L708 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L724 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L748 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L789 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L814 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L845 |
+| TASK-RT-06 教訓（2026-03-29） | L876 |
+| TASK-P0-04 教訓（2026-03-30） | L898 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3974,7 +3974,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
 | フェーズ構造 | L18 |
-| 出力テンプレート | L187 |
+| 出力テンプレート | L189 |
 
 ### references/task-workflow-rules.md
 

@@ -1850,3 +1850,32 @@
 #### Phase 12 未タスク
 
 なし（0件）
+
+---
+
+### タスク: TASK-UIUX-FEEDBACK-001 phase11-ui-ux-feedback-loop-review（2026-03-31）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-UIUX-FEEDBACK-001 |
+| ステータス | **spec_created 維持 / canonical・mirror・system spec sync 実施** |
+| タイプ | skill improvement + workflow documentation correction |
+| 優先度 | HIGH |
+| 完了日 | 2026-03-31 |
+| 成果物 | `docs/30-workflows/task-uiux-feedback-001-phase11-enhancement/` |
+
+#### 実施内容
+
+- `.claude/skills/task-specification-creator/` に追加された `evaluate-ui-ux` script 群、prompt agent、テスト群を current fact として整理
+- `evaluate-ui-ux.js` の CLI が `--task-id` を評価コンテキストへ渡していなかった不整合を修正
+- screenshot 0 件で処理が進む false green を防ぐガードと回帰テストを追加
+- workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ是正
+- Phase 11/12 文書から completed 誤記を除去し、placeholder screenshot と `not_run` metadata を current fact として固定
+
+#### 未完了事項
+
+| 項目 | 状態 |
+| --- | --- |
+| representative screenshot 実測 | 未了 |
+| Phase 11 実行結果 | 未了 |
+| HIGH 問題の未タスク化 | 実行後に判定 |
