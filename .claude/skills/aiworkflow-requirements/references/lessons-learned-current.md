@@ -784,6 +784,15 @@
 | 関連パターン | P61（DIP 違反の遅発検出）、ApprovalGate Enforcement パターン |
 | 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 |
 
+### 5. production integration gap は workflow pack 単位で formalize する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | UT-6〜UT-9 のように Main / Preload / Renderer / lifecycle を跨ぐ gap を raw backlog 行のまま保持すると、依存関係と実装順序が見えにくい |
+| 解決策 | 複数レイヤーを同時に閉じる follow-up は `UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001` のような workflow pack に束ね、Phase 1〜13 と same-wave sync 条件を先に定義する |
+| 標準ルール | parent task の未タスクが 4層境界を跨ぐ場合は、原子 task を並べるより workflow pack へ昇格させる |
+| 関連タスク | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001, UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 |
+
 ---
 
 ## TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25）

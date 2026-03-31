@@ -146,6 +146,8 @@ export const APPROVAL_CHANNELS = {
  */
 export const EXECUTION_CHANNELS = {
   EXECUTION_GET_DISCLOSURE_INFO: "execution:get-disclosure-info",
+  EXECUTION_GET_TERMINAL_LOG: "execution:get-terminal-log",
+  EXECUTION_GET_COPY_COMMAND: "execution:get-copy-command",
 } as const;
 
 /**

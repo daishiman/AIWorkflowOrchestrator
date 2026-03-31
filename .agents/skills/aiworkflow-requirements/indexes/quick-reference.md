@@ -189,7 +189,24 @@
 | 3層レイヤー / handler 登録        | `references/architecture-overview-core.md`                                                                          |
 | 設計レッスン                      | `references/lessons-learned-current.md`                                                                             |
 | 未タスク（UT-6〜10）              | `references/task-workflow-backlog.md`                                                                               |
+| production 統合 workflow root     | `docs/30-workflows/safety-gov-production-integration/index.md`                                                      |
 | 実装ガイド                        | `docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/outputs/phase-12/implementation-guide.md` |
+
+---
+
+### Safety Governance Production Integration 本番配線完了（2026-03-31 実装済み）
+
+| 目的                                              | 最初に開くファイル                                                                                                              |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 本番配線タスク全体像（Phase 1-12 完了）           | `docs/30-workflows/safety-gov-production-integration/index.md`                                                                  |
+| ExecutionAPI preload namespace 型定義             | `apps/desktop/src/preload/types.ts`                                                                                             |
+| contextBridge execution 公開実装                  | `apps/desktop/src/preload/index.ts`                                                                                             |
+| DefaultApprovalGate DI / handler 登録             | `apps/desktop/src/main/ipc/index.ts`, `apps/desktop/src/main/ipc/approvalHandlers.ts`                                          |
+| APPROVAL_CHANNELS / EXECUTION_CHANNELS 定数       | `packages/shared/src/ipc/channels.ts`                                                                                           |
+| session cleanup（revokeAll on session destroy）   | `apps/desktop/src/main/ipc/approvalHandlers.ts`                                                                                 |
+| follow-up 未タスク 4件（HIGH×3 / LOW×1）         | `docs/30-workflows/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md` 等                                          |
+| completed ledger                                  | `references/task-workflow-completed.md`                                                                                         |
+| workflow pack formalize 教訓                      | `references/lessons-learned-current.md`                                                                                         |
 
 ---
 
