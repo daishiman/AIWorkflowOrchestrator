@@ -78,6 +78,7 @@ import { SkillCreatorSourceResolver } from "./SkillCreatorSourceResolver";
 import { parseLlmResponseToContent } from "./parseLlmResponseToContent";
 import { SkillCreatorVerificationEngine } from "./SkillCreatorVerificationEngine";
 import { formatVerifyChecksAsFeedback } from "./formatVerifyChecksAsFeedback";
+import { AgentNameResolver } from "./AgentNameResolver";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -648,7 +649,10 @@ export class RuntimeSkillCreatorFacade {
       console.log(
         "[RuntimeSkillCreatorFacade] dynamic pipeline found no resources, falling back to static loader",
       );
-      for (const name of PLAN_PROMPT_CONSTANTS.AGENT_NAMES) {
+      const agentConfig = new AgentNameResolver().resolveFromRequests(
+        PLAN_RESOURCE_REQUESTS,
+      );
+      for (const name of agentConfig.names) {
         const content = await this.resourceLoader.loadAgent(name);
         agentSpecs.push({ name, content });
       }
@@ -943,8 +947,11 @@ export class RuntimeSkillCreatorFacade {
         console.log(
           "[RuntimeSkillCreatorFacade] dynamic pipeline found no resources, falling back to static loader",
         );
-        agentPrompt = await this.resourceLoader.loadAgent(
-          IMPROVE_PROMPT_CONSTANTS.AGENT_NAME,
+        const improveAgentConfig = new AgentNameResolver().resolveFromRequests(
+          IMPROVE_RESOURCE_REQUESTS,
+        );
+        agentPrompt = await this.resourceLoader!.loadAgent(
+          improveAgentConfig.names[0] ?? "improve-prompt",
         );
       }
       if (!dynamicImproveSucceeded && agentPrompt.trim().length === 0) {
