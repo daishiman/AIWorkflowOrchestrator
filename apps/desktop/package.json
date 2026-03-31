@@ -37,6 +37,7 @@
     "screenshot:task-fix-llm-config-persistence": "node scripts/capture-task-fix-llm-config-persistence-phase11.mjs",
     "guard:light-theme-contrast": "node scripts/light-theme-contrast-guard.mjs",
     "rebuild:native": "pnpm rebuild better-sqlite3 && pnpm rebuild esbuild",
+    "rebuild:electron": "ELECTRON_ARCH=$(ELECTRON_RUN_AS_NODE=1 electron -p 'process.arch') && electron-rebuild -f -w better-sqlite3 -m ../../packages/shared -a \"$ELECTRON_ARCH\"",
     "package": "electron-builder --config electron-builder.yml",
     "package:mac": "electron-builder --mac --config electron-builder.yml",
     "package:win": "electron-builder --win --config electron-builder.yml"
@@ -86,6 +87,7 @@
   },
   "devDependencies": {
     "@electron/notarize": "^3.1.1",
+    "@electron/rebuild": "^4.0.3",
     "@playwright/test": "^1.57.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",

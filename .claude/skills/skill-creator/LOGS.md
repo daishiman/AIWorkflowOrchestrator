@@ -2448,6 +2448,20 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
 
 ---
 
+## 2026-03-30 - TASK-P0-04 テストパターン反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns / cross-skill-improvement
+- **Result**: ✓ 成功
+- **Notes**:
+  - `references/patterns-success-testing-security-b.md` を新規作成し、テスト環境パターン2件を追加
+  - L-P0-04-001: `process.cwd()` ベースの定数はモジュールロード時に固定される → 環境変数DIパターン（`AIWORKFLOW_SKILL_CREATOR_PATH` で `beforeAll`/`afterAll` 誘導）
+  - L-P0-04-002: TDDスケルトン定義先行（`throw new Error("not implemented")`） → Red確認（既存テスト Green / 新テスト Red を確認）→ 実装 → Green確認の順序
+  - `references/patterns.md` のテスト索引（詳細パターン索引）に `-b` ファイル参照を追加
+  - `SKILL.md` 変更履歴を `v10.37.14` に更新
+
+---
+
 ## 2026-03-30 - TASK-P0-04 フィードバック反映（FB-01, FB-02）
 
 - **Agent**: skill-creator (update)

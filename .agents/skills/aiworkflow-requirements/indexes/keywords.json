@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-30T14:04:34.247Z",
-  "totalKeywords": 2577,
+  "generated": "2026-03-30T22:11:35.706Z",
+  "totalKeywords": 2579,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -4718,6 +4718,12 @@
       "deployment-electron.md"
     ],
     "リリースチェックリスト": [
+      "deployment-electron.md"
+    ],
+    "開発時のネイティブモジュール": [
+      "deployment-electron.md"
+    ],
+    "bootstrap": [
       "deployment-electron.md"
     ],
     "自動更新": [

@@ -1627,16 +1627,16 @@ node scripts/list-specs.js --topics
 | Electron | L14 |
 | ビルド・パッケージング | L44 |
 | Main Process技術 | L72 |
-| Renderer Process技術 | L111 |
-| IPC通信 | L137 |
-| macOS固有 | L158 |
-| セキュリティ | L182 |
-| 自動更新 | L207 |
-| 開発ツール | L227 |
-| ディレクトリ構造 | L247 |
-| 関連ドキュメント | L267 |
-| 関連未タスク | L279 |
-| 変更履歴 | L287 |
+| Renderer Process技術 | L127 |
+| IPC通信 | L153 |
+| macOS固有 | L174 |
+| セキュリティ | L198 |
+| 自動更新 | L223 |
+| 開発ツール | L243 |
+| ディレクトリ構造 | L263 |
+| 関連ドキュメント | L283 |
+| 関連未タスク | L295 |
+| 変更履歴 | L303 |
 
 ### references/technology-devops-core.md
 
@@ -2307,11 +2307,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| ビルドターゲット | L10 |
 | リリースフロー | L33 |
 | リリースチェックリスト | L45 |
-| 自動更新（electron-updater） | L58 |
-| コードサイニング | L85 |
-| デプロイチェックリスト | L109 |
-| データベースマイグレーションのロールバック | L160 |
-| 関連ドキュメント | L186 |
+| 開発時のネイティブモジュール bootstrap | L58 |
+| 自動更新（electron-updater） | L101 |
+| コードサイニング | L128 |
+| デプロイチェックリスト | L152 |
+| データベースマイグレーションのロールバック | L203 |
+| 関連ドキュメント | L229 |
 
 ### references/deployment-gha.md
 
