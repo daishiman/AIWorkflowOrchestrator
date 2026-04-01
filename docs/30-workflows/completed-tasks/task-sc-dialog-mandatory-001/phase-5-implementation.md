@@ -40,7 +40,7 @@ Phase 2 の設計に従い、`.claude/skills/skill-creator/` 配下の3ファイ
 ```markdown
 ## 必須：最初の実行ステップ
 
-**このスキルを呼ばれたら、スキル名・目的・想定ユーザーが完全に明示されていない限り、最初のアクションは必ず `AskUserQuestion` である。**
+**このスキルを呼ばれたら、最初のアクションは必ず `AskUserQuestion` である。**
 
 1. インタビュー深度を確認する（quick / standard / detailed）
 2. 深度が確定したら `agents/discover-problem.md` を読み込み Phase 0-0 を開始する

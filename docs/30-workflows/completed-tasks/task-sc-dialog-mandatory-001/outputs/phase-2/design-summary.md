@@ -1,4 +1,4 @@
-# Phase 2: 設計
+# 設計サマリー
 
 ## メタ情報
 
@@ -8,39 +8,22 @@
 | 機能名 | task-sc-dialog-mandatory-001 |
 | 作成日 | 2026-04-01                   |
 
-## 目的
+## 設計方針
 
-3ファイルに対する具体的な変更内容を設計する。
 「推奨（declarative）」から「命令（imperative）」への移行が核心。LLM の有用性バイアスに抗うため、変更はすべて「命令形・ゲート形式・例外なし」で記述する。
 
-## 実行タスク
+## 変更設計
 
-- SKILL.md への「必須：最初の実行ステップ」ブロックの設計（変更内容確定）
-- discover-problem.md への実行ゲート追記の設計
-- interview-user.md の前提ファイル依存フォールバックの設計
-- 変更後の動作フロー全体の確認（既存 collaborative フローへの影響なし確認）
+### 変更1: SKILL.md への「必須：最初の実行ステップ」ブロック追加
 
-## 参照資料
+**挿入位置**: `# Skill Creator` 見出し直後（`## 設計原則` テーブルの前）
 
-| 資料名                 | パス                                                      | 説明                           |
-| ---------------------- | --------------------------------------------------------- | ------------------------------ |
-| skill-creator SKILL.md | `.claude/skills/skill-creator/SKILL.md`                   | 修正対象（変更箇所を特定）     |
-| discover-problem.md    | `.claude/skills/skill-creator/agents/discover-problem.md` | 修正対象（変更箇所を特定）     |
-| interview-user.md      | `.claude/skills/skill-creator/agents/interview-user.md`   | 修正対象（変更箇所を特定）     |
-| Phase 1 成果物         | `outputs/phase-1/requirements-definition.md`              | 変更対象ファイルのベースライン |
-
-## 実行手順
-
-### ステップ1: SKILL.md への変更設計
-
-**変更箇所**: `# Skill Creator` 見出し直後（現在の「## 設計原則」テーブルの前）
-
-**追加内容**（以下のブロックを挿入）:
+**挿入内容**:
 
 ```markdown
 ## 必須：最初の実行ステップ
 
-**このスキルを呼ばれたら、スキル名・目的・想定ユーザーが完全に明示されていない限り、最初のアクションは必ず `AskUserQuestion` である。**
+**このスキルを呼ばれたら、最初のアクションは必ず `AskUserQuestion` である。**
 
 1. インタビュー深度を確認する（quick / standard / detailed）
 2. 深度が確定したら `agents/discover-problem.md` を読み込み Phase 0-0 を開始する
@@ -59,11 +42,13 @@ create / update / improve-prompt モードも、最初に深度確認の質問�
 | 内容の簡潔さ     | 7行以内に収め、「何をすべきか」が即座にわかる                                          |
 | 例外なし宣言     | 「〇〇の場合は不要」という抜け道を与えない                                             |
 
-### ステップ2: discover-problem.md への変更設計
+---
 
-**変更箇所**: ファイル冒頭（`> **読み込み条件**...` ブロックの直後）
+### 変更2: discover-problem.md への実行ゲートブロック追加
 
-**追加内容**:
+**挿入位置**: ファイル冒頭の `> **読み込み条件**...` ブロックの直後
+
+**挿入内容**:
 
 ````markdown
 > **⚠ 実行ゲート: このファイルを読み込んだら、最初のアクションは必ず以下を実行すること。**
@@ -81,19 +66,21 @@ create / update / improve-prompt モードも、最初に深度確認の質問�
 | discover-problem.md を読む = collaborative モードに入った証拠 | このタイミングで実行ゲートを設けることで、「読んでも実行しない」状態を排除する                  |
 | `> **⚠**` 記法                                                | Markdown の引用ブロックはファイル読み込み時に視覚的に目立つ。LLM が重要な指示として処理しやすい |
 
-### ステップ3: interview-user.md の変更設計
+---
 
-**変更箇所**: セクション 5.1（入力）の `problem-definition.json` 行
+### 変更3: interview-user.md の problem-definition.json フォールバック変更
+
+**変更箇所**: セクション 5.1（入力定義）の `problem-definition.json` 行
 
 **変更前**:
 
-```markdown
+```
 | problem-definition.json | discover-problem | JSON が存在 | Phase 0-0 未完了エラー |
 ```
 
 **変更後**:
 
-```markdown
+```
 | problem-definition.json | discover-problem | JSON が存在（任意） | **AskUserQuestion で問題定義を収集して作成する**（エラー停止しない） |
 ```
 
@@ -104,9 +91,7 @@ create / update / improve-prompt モードも、最初に深度確認の質問�
 | 初回呼び出し時は必ず存在しない | 「必須ファイルが存在しない → エラー」はフローの詰まりを引き起こす                    |
 | フォールバックを明示することで | LLM が「前提条件が揃っていないから create モードに切り替えよう」と逃げる抜け道を塞ぐ |
 
-### ステップ4: 変更後の動作フロー確認
-
-変更後の期待動作フロー:
+## 変更後の動作フロー
 
 ```
 [ユーザー] /skill-creator を呼ぶ
@@ -124,37 +109,20 @@ create / update / improve-prompt モードも、最初に深度確認の質問�
 [以降は既存の collaborative フロー]
 ```
 
-**既存フローへの影響確認**:
+## 既存フローへの影響確認
 
-| フロー               | 影響 | 根拠                                                  |
-| -------------------- | ---- | ----------------------------------------------------- |
-| collaborative モード | なし | 追加ブロックは既存フローの前に配置するだけ            |
-| orchestrate モード   | なし | 深度確認後に orchestrate を開始するだけで仕様変更なし |
-| create モード        | なし | create も深度確認後に着手するだけ                     |
-| update モード        | なし | update も深度確認後に着手するだけ                     |
+| フロー                | 影響 | 根拠                                                  |
+| --------------------- | ---- | ----------------------------------------------------- |
+| collaborative モード  | なし | 追加ブロックは既存フローの前に配置するだけ            |
+| orchestrate モード    | なし | 深度確認後に orchestrate を開始するだけで仕様変更なし |
+| create モード         | なし | create も深度確認後に着手するだけ                     |
+| update モード         | なし | update も深度確認後に着手するだけ                     |
+| improve-prompt モード | なし | improve-prompt も深度確認後に着手するだけ             |
 
-## 統合テスト連携
+## 完了チェックリスト
 
-コード変更なし。設計内容の妥当性は Phase 3（設計レビュー）で確認する。
-
-## 多角的チェック観点
-
-| 観点        | 判断     | 確認内容                                                           |
-| ----------- | -------- | ------------------------------------------------------------------ |
-| 後方互換性  | **必須** | 既存の collaborative フロー Phase 0-0〜0-8 が破壊されていないか    |
-| LLM指示設計 | **必須** | 追加ブロックが命令形・ゲート形式で記述されているか                 |
-| 冗長性      | 確認     | 7行以内に収まっているか（長すぎると LLM が読み飛ばす可能性がある） |
-
-## 完了条件
-
-- [ ] SKILL.md への挿入内容が確定している（挿入位置・内容）
-- [ ] discover-problem.md への追記内容が確定している（追記位置・内容）
-- [ ] interview-user.md の変更箇所が確定している（変更前/後の diff が明示）
-- [ ] 変更後の動作フローが既存 collaborative フローと矛盾しないことを確認
-- [ ] `outputs/phase-2/design-summary.md` が作成されている
-
-## 成果物
-
-| 成果物            | 配置先           |
-| ----------------- | ---------------- |
-| design-summary.md | outputs/phase-2/ |
+- [x] SKILL.md への挿入内容が確定している（挿入位置・内容）
+- [x] discover-problem.md への追記内容が確定している（追記位置・内容）
+- [x] interview-user.md の変更箇所が確定している（変更前/後の diff が明示）
+- [x] 変更後の動作フローが既存 collaborative フローと矛盾しないことを確認
+- [x] `outputs/phase-2/design-summary.md` が作成されている
