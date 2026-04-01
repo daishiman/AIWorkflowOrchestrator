@@ -14,14 +14,23 @@
 
 スコープ・受入条件・インベントリを固定し、Phase 2 の設計に進める状態にする。P50 チェック（既実装コードの重複作成防止）を実施し、4 つの変更対象ファイルの現在状態を確認する。
 
+## 前提条件（必須）
+
+| 前提タスク             | 内容                                                                                                                        | 確認方法                                                               |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| TASK-FIX-ENV-STRIPPING | `SkillExecutor.ts:861` の `env: { ANTHROPIC_API_KEY }` が `env: { ...process.env, ANTHROPIC_API_KEY }` に修正済みであること | `grep -n "env:" apps/desktop/src/main/services/skill/SkillExecutor.ts` |
+
+**理由**: env stripping 未修正の状態では、`executeAsync` 内で呼ばれる Agent SDK `query()` が `spawn("node")` の ENOENT で全て失敗する。本タスクの実装は TASK-FIX-ENV-STRIPPING の完了後に着手すること。
+
 ## 実行タスク
 
-1. P50 チェック: `git log` と `grep` で現在の実装状態を確認し、重複実装を防ぐ
-2. 変更対象ファイルのインベントリ作成（4 ファイル）
-3. 受入条件（AC）の定義（AC-1 〜 AC-6）
-4. タスク分類の確定（UI 非変更の code 実装 task）
-5. 命名規則の確認（camelCase: TypeScript、kebab-case: IPC チャンネル名）
-6. スコープ外の確認（TASK-NOTIFICATION-SERVICE-001、TASK-FIX-IPC-TIMEOUT-001 は含まない）
+1. 前提条件チェック: TASK-FIX-ENV-STRIPPING が完了済みであることを確認する
+2. P50 チェック: `git log` と `grep` で現在の実装状態を確認し、重複実装を防ぐ
+3. 変更対象ファイルのインベントリ作成（4 ファイル）
+4. 受入条件（AC）の定義（AC-1 〜 AC-12）
+5. タスク分類の確定（UI 非変更の code 実装 task）
+6. 命名規則の確認（camelCase: TypeScript、kebab-case: IPC チャンネル名）
+7. スコープ外の確認（TASK-NOTIFICATION-SERVICE-001、TASK-FIX-IPC-TIMEOUT-001 は含まない）
 
 ## 参照資料
 
@@ -77,14 +86,20 @@ ls apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts
 
 以下の受入条件を確定し、`outputs/phase-1/spec-extraction-map.md` に記録する:
 
-| ID   | 受入条件                                                                                                            | 確認方法                         |
-| ---- | ------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| AC-1 | `ipcMain.handle('skill-creator:execute-plan')` が 100ms 以内に `{ accepted: true, planId }` を返す                  | ユニットテスト（Phase 4）        |
-| AC-2 | バックグラウンドで `RuntimeSkillCreatorFacade.executeAsync()` が Agent SDK `query()` を呼ぶ                         | ユニットテスト（Phase 4）        |
-| AC-3 | 各フェーズ遷移時に `webContents.send(SKILL_CREATOR_WORKFLOW_STATE_CHANGED, { planId, phase, progress })` が発火する | ユニットテスト（Phase 4）        |
-| AC-4 | `CHANNEL_TIMEOUTS` に `"skill-creator:execute-plan": 1_800_000` が追加される                                        | ユニットテスト（Phase 4）        |
-| AC-5 | 既存の `safeInvoke` 互換性が保たれる（breaking change なし）                                                        | 既存テスト PASS（Phase 9）       |
-| AC-6 | `SkillCreatorWorkflowEngine.onPhaseChanged` callback が型安全に定義される                                           | TypeScript 型チェック（Phase 5） |
+| ID    | 受入条件                                                                                                                                         | 確認方法                         |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------- |
+| AC-1  | `ipcMain.handle('skill-creator:execute-plan')` が 100ms 以内に `{ accepted: true, planId }` を返す                                               | ユニットテスト（Phase 4）        |
+| AC-2  | バックグラウンドで `RuntimeSkillCreatorFacade.executeAsync()` が Agent SDK `query()` を呼ぶ                                                      | ユニットテスト（Phase 4）        |
+| AC-3  | 各フェーズ遷移時に `webContents.send(SKILL_CREATOR_WORKFLOW_STATE_CHANGED, { planId, phase, progress })` が発火する                              | ユニットテスト（Phase 4）        |
+| AC-4  | `CHANNEL_TIMEOUTS` に `"skill-creator:execute-plan": 1_800_000` が追加される                                                                     | ユニットテスト（Phase 4）        |
+| AC-5  | 既存の `safeInvoke` 互換性が保たれる（breaking change なし）                                                                                     | 既存テスト PASS（Phase 9）       |
+| AC-6  | `SkillCreatorWorkflowEngine.onPhaseChanged` callback が型安全に定義される                                                                        | TypeScript 型チェック（Phase 5） |
+| AC-7  | 同一 `planId` での重複 `executeAsync` 呼び出し時、2 回目は `{ accepted: false, reason: "already_running" }` を返す（2重実行防止）                | ユニットテスト（Phase 4）        |
+| AC-8  | `skill-creator:cancel-plan` チャンネル経由でキャンセル信号を受信したとき、`executeAsync` が `AbortController` を通じて中断できる                 | ユニットテスト（Phase 4）        |
+| AC-9  | `executeAsync` が 30 秒以上 `onPhaseChanged` を発火しない場合、`SKILL_CREATOR_WORKFLOW_STATE_CHANGED` に `phase: "heartbeat_timeout"` を送信する | ユニットテスト（Phase 6）        |
+| AC-10 | `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` の `progress` フィールドが各フェーズ遷移で単調増加（0.0〜1.0）すること                                    | ユニットテスト（Phase 4）        |
+| AC-11 | `executeAsync` 開始から 25 分経過時点で `phase: "timeout_warning"` イベントを送信し、UI に警告表示できること                                     | ユニットテスト（Phase 6）        |
+| AC-12 | `executeAsync` のエラーが `sanitizeErrorMessage` でサニタイズされ、内部スタックトレースが Renderer に漏洩しないこと                              | ユニットテスト（Phase 4）        |
 
 ### ステップ 4: タスク分類の確定
 
@@ -106,11 +121,13 @@ ls apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts
 
 以下は本タスクのスコープ外であることを確認し、成果物に記録する:
 
-| スコープ外項目                           | 理由               | 別タスク                      |
-| ---------------------------------------- | ------------------ | ----------------------------- |
-| INotificationService                     | 別タスクで実装     | TASK-NOTIFICATION-SERVICE-001 |
-| before-quit guard                        | 別タスクで実装     | 別タスク                      |
-| CHANNEL_TIMEOUTS の per-channel 設定追加 | PR#1823 で完了済み | TASK-FIX-IPC-TIMEOUT-001      |
+| スコープ外項目                                   | 理由                           | 別タスク                      |
+| ------------------------------------------------ | ------------------------------ | ----------------------------- |
+| INotificationService                             | 別タスクで実装                 | TASK-NOTIFICATION-SERVICE-001 |
+| before-quit guard                                | 別タスクで実装                 | 別タスク                      |
+| CHANNEL_TIMEOUTS の per-channel 設定追加（既存） | PR#1823 で完了済み             | TASK-FIX-IPC-TIMEOUT-001      |
+| SkillExecutor.ts の env stripping 修正           | step0 タスクで実施（先行必須） | TASK-FIX-ENV-STRIPPING        |
+| SkillLifecyclePanel.tsx の setWorkflowError バグ | 別タスクで実施推奨             | （未起票）                    |
 
 ## 多角的チェック観点
 
@@ -119,18 +136,23 @@ ls apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts
 - `SkillCreatorWorkflowEngine.workflows: Map<string, SkillCreatorWorkflowState>` が複数 planId 対応済みか確認したか
 - AC-5 の「breaking change なし」が Renderer 側のコード変更なしで達成可能か確認したか
 - PR#1823（TASK-FIX-IPC-TIMEOUT-001）の内容と重複がないか確認したか
+- AC-7（2重実行防止）のための `Map<planId, AbortController>` 型の状態管理設計を Phase 2 で定義したか
+- AC-8（キャンセル）の `skill-creator:cancel-plan` IPC チャンネルが CHANNEL_TIMEOUTS に登録されているか確認したか
+- AC-9（heartbeat timeout）の 30 秒タイマーが `executeAsync` 内で適切にクリアされるか確認したか
+- TASK-FIX-ENV-STRIPPING が完了済みであることを確認してから Phase 5 実装に進んでいるか
 
 ## 成果物
 
-| 成果物             | パス                                     | 説明                                                          |
-| ------------------ | ---------------------------------------- | ------------------------------------------------------------- |
-| スペック抽出マップ | `outputs/phase-1/spec-extraction-map.md` | system spec と code anchor の対応表、AC-1〜AC-6、インベントリ |
+| 成果物             | パス                                     | 説明                                                           |
+| ------------------ | ---------------------------------------- | -------------------------------------------------------------- |
+| スペック抽出マップ | `outputs/phase-1/spec-extraction-map.md` | system spec と code anchor の対応表、AC-1〜AC-12、インベントリ |
 
 ## 完了条件
 
+- [ ] 前提条件チェック: TASK-FIX-ENV-STRIPPING の完了が確認されている
 - [ ] P50 チェックが完了し、重複実装がないことが確認されている
 - [ ] 4 つの変更対象ファイルのインベントリが `spec-extraction-map.md` に記録されている
-- [ ] AC-1 〜 AC-6 が全て `spec-extraction-map.md` に明記されている
+- [ ] AC-1 〜 AC-12 が全て `spec-extraction-map.md` に明記されている
 - [ ] タスク分類（UI 非変更 code 実装 task）が確定している
 - [ ] スコープ外項目（INotificationService、before-quit guard）が明記されている
 - [ ] `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` が活用可能なインフラとして確認されている

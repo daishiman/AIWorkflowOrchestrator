@@ -3,6 +3,15 @@
 ## 役割
 
 ---
+## 2026-04-01 - TASK-FIX-ENV-STRIPPING Phase 12 close-out sync
+
+### 変更内容
+- `fix-step0-seq-env-stripping` の Phase 11 manual-test-result を NON_VISUAL 自動テスト代替 PASS に更新
+- `skill-creator-agent-sdk-lane/index.md` の step0 完了同期と `task-workflow-completed.md` の completed record 追加を current facts へ反映
+- UT-RT-06 の completed ledger 参照切れを是正し、`verify-unassigned-links.js` の missing link を解消
+- SKILL.md v6.18.20 更新
+
+---
 ## 2026-04-01 - UT-IMP-SDK-06 Layer3/4 verify 拡張 Phase 12 close-out sync
 
 ### 変更内容

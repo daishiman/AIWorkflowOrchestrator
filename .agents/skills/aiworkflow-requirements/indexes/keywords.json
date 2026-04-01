@@ -1,5 +1,5 @@
 {
-  "generated": "2026-04-01T11:13:57.124Z",
+  "generated": "2026-04-01T13:00:56.955Z",
   "totalKeywords": 2630,
   "keywords": {
     "チャット履歴": [
@@ -2613,7 +2613,6 @@
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
@@ -3927,7 +3926,6 @@
     "creator": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
