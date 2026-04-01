@@ -383,6 +383,10 @@ export function SkillLifecyclePanel({
   const activeGenerationError = generationError;
 
   const [request, setRequest] = useState("");
+  // plan 承認時点の request snapshot を保持する。
+  // live textarea（request state）とは独立しており、
+  // handleExecutePlan は常にこの snapshot を execute payload として使用する。
+  // cancel または再生成まで不変。
   const [approvedSkillSpec, setApprovedSkillSpec] = useState<string | null>(
     null,
   );
@@ -438,6 +442,7 @@ export function SkillLifecyclePanel({
   ]);
 
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
+  const isPrepareFlowActiveRef = useRef(false);
 
   const clearPlanExecutionState = useCallback(() => {
     setLocalPlanResult(null);
@@ -751,7 +756,9 @@ export function SkillLifecyclePanel({
 
     // R-1: isGenerating ガード（二重呼出防止）
     if (isGenerating) return;
+    if (isPrepareFlowActiveRef.current) return;
 
+    isPrepareFlowActiveRef.current = true;
     clearSkillError();
     setLocalError(null);
     setIsPreparing(true);
@@ -825,6 +832,8 @@ export function SkillLifecyclePanel({
             setRawPlanDetail(planResult.data as RuntimeSkillCreatorPlanResult);
           }
 
+          // plan 承認時点の request を snapshot として固定する。
+          // この後 textarea を編集しても execute payload は変わらない。
           setApprovedSkillSpec(trimmedRequest);
           setLocalPlanResult(normalizedPlan);
           setCurrentPlanResult(normalizedPlan);
@@ -856,6 +865,7 @@ export function SkillLifecyclePanel({
         error instanceof Error ? error.message : "mode 判定に失敗しました。",
       );
     } finally {
+      isPrepareFlowActiveRef.current = false;
       setIsPreparing(false);
     }
   };
@@ -870,6 +880,8 @@ export function SkillLifecyclePanel({
     try {
       setIsGenerating(true);
       setDisclosureInfo(null);
+      // approved snapshot のみを execute payload として渡す。
+      // live textarea（request state）の値は使用しない。
       const result = await skillCreatorApi.executePlan(
         planId,
         approvedSkillSpec ?? undefined,

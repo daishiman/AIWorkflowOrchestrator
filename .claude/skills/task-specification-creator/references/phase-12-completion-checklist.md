@@ -5,6 +5,14 @@
 
 ---
 
+## 【初手チェック】Phase 12 開始前に必ず確認する項目
+
+> **⚠️ 以下を Phase 12 の最初に確認すること。台帳 drift を早い段階で検出するために昇格させた項目。**
+
+- [ ] 【初手チェック】`outputs/artifacts.json` を生成し、root `artifacts.json` との parity を確認した（drift 0件）
+
+---
+
 ## Phase 12 完了条件チェックリスト
 
 - [ ] 実装ガイド（Part 1: **中学生レベル概念説明**）が作成されている
@@ -38,7 +46,7 @@
 - [ ] 未タスク検出時、**3ステップ全完了**（①指示書作成 → ②task-workflow.md登録 → ③関連仕様書リンク）
 - [ ] 未タスク検出時、**指示書の物理ファイル存在を確認**（`ls docs/30-workflows/unassigned-task/` で作成済みファイルを検証）
 - [ ] `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` を実行し、`task-workflow.md` 内の未タスクリンク参照切れが0件であることを確認
-- [ ] `artifacts.json` と `outputs/artifacts.json` の両方を同期し、completed成果物の参照切れが0件であることを確認
+- [ ] `artifacts.json` と `outputs/artifacts.json` の両方を同期し、completed成果物の参照切れが0件であることを確認（→ parity確認は**初手チェックへ昇格済み**。本項目は参照切れ検証として引き続き実施）
 - [ ] `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/{{FEATURE_NAME}} --regenerate` を実行し、`index.md` の Phase 状態が `artifacts.json` と一致していることを確認
 - [ ] `phase-12-documentation.md` が completed でも `index.md` が未実施表示のまま残っていないことを確認
 - [ ] `artifacts.json` / `index.md` が completed でも `phase-1..11` 本文仕様書に `ステータス=pending` が残っていないことを確認
