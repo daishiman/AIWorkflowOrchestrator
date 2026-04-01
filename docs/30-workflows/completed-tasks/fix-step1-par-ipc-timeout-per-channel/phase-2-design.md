@@ -131,7 +131,7 @@ export function invokeWithTimeout<T>(
 - [ ] `getChannelTimeout` 関数のシグネチャが確定している
 - [ ] `invokeWithTimeout` の修正箇所が最小化されている
 - [ ] 変更が `ipc-utils.ts` 内で完結することが確認されている
-- [ ] Phase 3 で判断できるだけの設計粒度になっている
+- [ ] Phase 3 で判断可能な設計粒度になっている
 
 ## サブタスク管理
 
@@ -139,6 +139,10 @@ export function invokeWithTimeout<T>(
 2. `getChannelTimeout` 関数の設計
 3. `invokeWithTimeout` 修正方針の設計
 4. 変更範囲の確認
+
+## 統合テスト連携
+
+- Phase 4 のテスト作成と Phase 5 の実装へ、この設計を引き継ぐ
 
 ## タスク100%実行確認【必須】
 

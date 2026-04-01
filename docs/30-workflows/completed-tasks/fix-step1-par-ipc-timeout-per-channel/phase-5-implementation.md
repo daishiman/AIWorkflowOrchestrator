@@ -54,7 +54,7 @@ Phase 4 で定義した RED を GREEN にする。
 1. `ipc-utils.test.ts` に `describe("getChannelTimeout", ...)` ブロックを追加する
 2. T-001 〜 T-008 の `getChannelTimeout` テストを実装する
 3. T-009 〜 T-012 の `invokeWithTimeout` タイムアウト動作テストを実装する
-4. `pnpm --filter @repo/desktop vitest run` で GREEN を確認する
+4. `pnpm --filter @repo/desktop test:run` で GREEN を確認する
 
 ## 参照資料
 
@@ -112,6 +112,10 @@ export function getChannelTimeout(channel: string): number {
 2. `getChannelTimeout` 追加
 3. `invokeWithTimeout` 修正
 4. テスト実装と GREEN 確認
+
+## 統合テスト連携
+
+- Phase 6 の拡張テストと Phase 7 の coverage 確認へ、実装結果を引き継ぐ
 
 ## タスク100%実行確認【必須】
 

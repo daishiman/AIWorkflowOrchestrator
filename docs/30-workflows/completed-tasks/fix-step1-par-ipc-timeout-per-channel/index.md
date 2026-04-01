@@ -6,6 +6,9 @@
 
 OAuth ログイン（最大 300 秒）やスキル実行（最大 60 秒）といった長時間処理チャンネルに対して、個別のタイムアウト値を設定可能にし、既存の短命チャンネルへの後方互換性を維持する。
 
+- current canonical task directory: `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel`
+- parent lane: `docs/30-workflows/skill-creator-agent-sdk-lane`
+
 ## メタ情報
 
 | 項目       | 内容                                         |
@@ -37,7 +40,7 @@ OAuth ログイン（最大 300 秒）やスキル実行（最大 60 秒）と�
 | AC-001 | `getChannelTimeout(channel)` がマップに定義されたチャンネルには個別値を返す                |
 | AC-002 | `getChannelTimeout(channel)` がマップ未定義チャンネルには `IPC_TIMEOUT_MS`（5000ms）を返す |
 | AC-003 | `invokeWithTimeout` が `getChannelTimeout` を使い、チャンネル別タイムアウトで動作する      |
-| AC-004 | `auth:login` は 500ms、`skill:execute` は 60000ms など、設計書通りの値が設定されている     |
+| AC-004 | `auth:login` は 500ms、`skill:execute` は 60000ms を設定し、設計書通りの値が設定されている |
 | AC-005 | 既存テストが全て PASS する（後方互換性維持）                                               |
 | AC-006 | `getChannelTimeout` のユニットテストが全パターンを網羅している                             |
 
@@ -86,7 +89,7 @@ OAuth ログイン（最大 300 秒）やスキル実行（最大 60 秒）と�
 ## ディレクトリ構成
 
 ```text
-fix-ipc-timeout-per-channel/
+fix-step1-par-ipc-timeout-per-channel/
 ├── index.md
 ├── artifacts.json
 ├── phase-1-requirements.md

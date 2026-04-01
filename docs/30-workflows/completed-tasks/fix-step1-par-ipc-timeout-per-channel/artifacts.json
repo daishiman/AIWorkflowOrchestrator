@@ -12,10 +12,42 @@
     "6": { "status": "pending", "artifacts": ["phase-6-test-expansion.md"] },
     "7": { "status": "pending", "artifacts": ["phase-7-coverage-check.md"] },
     "8": { "status": "pending", "artifacts": ["phase-8-refactoring.md"] },
-    "9": { "status": "pending", "artifacts": ["phase-9-quality-assurance.md"] },
-    "10": { "status": "pending", "artifacts": ["phase-10-final-review.md"] },
-    "11": { "status": "pending", "artifacts": ["phase-11-manual-test.md"] },
-    "12": { "status": "pending", "artifacts": ["phase-12-documentation.md"] },
+    "9": {
+      "status": "pending",
+      "artifacts": [
+        "phase-9-quality-assurance.md",
+        "outputs/phase-9/quality-report.md"
+      ]
+    },
+    "10": {
+      "status": "pending",
+      "artifacts": [
+        "phase-10-final-review.md",
+        "outputs/phase-10/final-review-result.md"
+      ]
+    },
+    "11": {
+      "status": "pending",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/README.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "12": {
+      "status": "pending",
+      "artifacts": [
+        "phase-12-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
     "13": { "status": "pending", "artifacts": ["phase-13-pr-creation.md"] }
   },
   "dependencies": {

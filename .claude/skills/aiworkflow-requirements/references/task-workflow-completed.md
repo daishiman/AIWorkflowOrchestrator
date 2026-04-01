@@ -5,6 +5,34 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-IPC-TIMEOUT-001（2026-04-01）
+
+| 項目       | 値                                                                                                             |
+| ---------- | -------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-IPC-TIMEOUT-001                                                                                       |
+| ステータス | **完了**                                                                                                       |
+| タイプ     | implementation / preload timeout hardening                                                                     |
+| 優先度     | 中                                                                                                             |
+| 完了日     | 2026-04-01                                                                                                     |
+| 対象       | `apps/desktop/src/preload/ipc-utils.ts` / `apps/desktop/src/preload/__tests__/ipc-utils.test.ts` / Phase 12 |
+| 成果物     | `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/`                                                     |
+
+#### 実施内容
+
+- `CHANNEL_TIMEOUTS` を追加し、`getChannelTimeout(channel)` がチャンネル別の待ち時間を返すようにした
+- `invokeWithTimeout` が `getChannelTimeout(channel)` を参照し、`IPC_TIMEOUT_MS` はフォールバック値として維持した
+- `ipc-utils.test.ts` を追加し、定義済みチャンネル / 未定義チャンネル / allowlist / edge cases を網羅した
+- `docs/30-workflows/skill-creator-agent-sdk-lane/index.md` の IPC 修正タスク一覧を current canonical path に同期した
+- Phase 12 outputs を canonical root / artifacts 同期つきで閉じた
+
+#### 検証証跡
+
+- `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-9/quality-report.md`: 33 tests PASS
+- `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-10/final-review-result.md`: PASS
+- `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-11/manual-test-result.md`: auto-test fallback（NON_VISUAL）
+- `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- local vitest rerun in this review turn was blocked by esbuild host/binary mismatch (`0.21.5` / `0.25.12`)
+
 ### タスク: TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001（2026-03-31）
 
 | 項目       | 値                                                                                     |

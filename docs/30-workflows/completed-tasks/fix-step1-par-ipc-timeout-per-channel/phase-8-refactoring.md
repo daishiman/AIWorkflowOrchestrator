@@ -58,7 +58,7 @@
 
 ### ステップ3: 再実行する
 
-1. `pnpm --filter @repo/desktop vitest run` でテストが引き続き pass することを確認する
+1. `pnpm --filter @repo/desktop test:run` でテストが引き続き pass することを確認する
 2. `pnpm --filter @repo/desktop typecheck` でエラーがないことを確認する
 
 ## 成果物
@@ -78,6 +78,10 @@
 1. `CHANNEL_TIMEOUTS` コメント整備
 2. `getChannelTimeout` JSDoc 整備
 3. 再実行と確認
+
+## 統合テスト連携
+
+- Phase 9 の品質保証へ、リファクタ後の挙動を引き継ぐ
 
 ## タスク100%実行確認【必須】
 

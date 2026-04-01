@@ -35,12 +35,12 @@
 
 ## SubAgent 分担
 
-| SubAgent | 担当範囲                                                                                   | 実行形態           | 完了条件                                |
-| -------- | ------------------------------------------------------------------------------------------ | ------------------ | --------------------------------------- |
-| A        | `implementation-guide.md`                                                                  | 直列の起点         | Part 1 / Part 2 が揃う                  |
-| B        | `system-spec-update-summary.md`                                                            | A と並列可         | no-op / update の判断が明記される       |
-| C        | `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` | A/B 完了後に並列可 | validator 実測値と current facts が揃う |
-| D        | `phase12-task-spec-compliance-check.md`                                                    | C 完了後に直列     | Task 12-1〜12-5 を 100% 確認            |
+| SubAgent | 担当範囲                                                                                                                                      | 実行形態           | 完了条件                                |
+| -------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ | --------------------------------------- |
+| A        | `implementation-guide.md`                                                                                                                     | 直列の起点         | Part 1 / Part 2 が揃う                  |
+| B        | `system-spec-update-summary.md`                                                                                                               | A と並列可         | no-op / update の判断が明記される       |
+| C        | `outputs/phase-12/documentation-changelog.md` / `outputs/phase-12/unassigned-task-detection.md` / `outputs/phase-12/skill-feedback-report.md` | A/B 完了後に並列可 | validator 実測値と current facts が揃う |
+| D        | `outputs/phase-12/phase12-task-spec-compliance-check.md`                                                                                      | C 完了後に直列     | Task 12-1〜12-5 を 100% 確認            |
 
 ## 実行手順
 
@@ -49,7 +49,7 @@
 1. Part 1 で中学生レベルの概念説明を書く
 2. `たとえば` を必ず入れる
 3. `ipc-utils.ts` は全チャンネルで同じタイムアウトを使っていたが、宅配便のように荷物の大きさ（処理時間）に応じて待ち時間を変える仕組みに変えた、という例えを使う
-4. Part 2 で TypeScript 型定義・`getChannelTimeout` のシグネチャ・使用例・エラーハンドリング・エッジケース・設定可能パラメータを記載する
+4. Part 2 で TypeScript 型定義・`getChannelTimeout` のシグネチャ・使用例・エラーハンドリング・エッジケース・設定可能パラメータを記載し、`current contract` と `target delta` を分けて書く
 
 ### ステップ2: Task 12-2 system spec update summary を作成する
 
@@ -66,7 +66,7 @@
 ### ステップ4: Task 12-6 compliance check を作成する
 
 1. Task 12-1〜12-5 が全て揃っていることを確認する
-2. planned wording が残っていないことを確認する
+2. 事前予定文言が残っていないことを確認する
 3. artifacts.json と outputs/artifacts.json の整合を確認する
 
 ## implementation guide のポイント
@@ -74,6 +74,7 @@
 - Part 1 は「なぜ必要か」→「何をするか」の順に書く
 - Part 1 は `getChannelTimeout` が登場する前に「チャンネル別タイムアウトが必要な理由」を説明する
 - Part 2 は `CHANNEL_TIMEOUTS` / `getChannelTimeout` / `invokeWithTimeout` の修正を軸に説明する
+- Part 2 は `current contract` と `target delta` を分離する
 
 ## system spec update summary のポイント
 
@@ -96,7 +97,7 @@
 - [ ] 必須 6 成果物が揃っている
 - [ ] implementation guide の Part 1 / Part 2 が揃っている
 - [ ] current facts と baseline の区別が明確である
-- [ ] planned wording が 0 件である
+- [ ] 事前予定文言が 0 件である
 - [ ] **本 Phase 内の全タスクを 100% 実行完了**
 
 ## サブタスク管理

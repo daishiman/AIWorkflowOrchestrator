@@ -40,7 +40,7 @@ Phase 6 までに追加したテストの coverage を計測し、`getChannelTim
 
 ### ステップ1: coverage を取る
 
-1. `pnpm --filter @repo/desktop vitest run --coverage` を実行する
+1. `pnpm --filter @repo/desktop test:coverage` を実行する
 2. `ipc-utils.ts` の coverage レポートを確認する
 3. 分岐・行・ステートメントの未カバー箇所を記録する
 
@@ -73,6 +73,10 @@ Phase 6 までに追加したテストの coverage を計測し、`getChannelTim
 2. `getChannelTimeout` coverage 確認
 3. `invokeWithTimeout` coverage 確認
 4. 未カバー分岐のテスト追加
+
+## 統合テスト連携
+
+- Phase 8 の refactoring に向けて、未カバー分岐を潰した状態を引き継ぐ
 
 ## タスク100%実行確認【必須】
 

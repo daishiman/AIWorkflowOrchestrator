@@ -32,7 +32,7 @@ Phase 12 までの成果を PR にまとめる。ただしこのタスクは use
 
 1. 型チェック: `pnpm --filter @repo/desktop typecheck`
 2. lint: `pnpm --filter @repo/desktop lint`
-3. テスト: `pnpm --filter @repo/desktop vitest run`
+3. テスト: `pnpm --filter @repo/desktop test:run`
 4. ビルド: `pnpm --filter @repo/desktop build`
 
 ### ステップ2: 変更サマリーを作成する

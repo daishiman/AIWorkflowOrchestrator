@@ -65,7 +65,7 @@
 | タスクID                  | ディレクトリ                                    | ステップ | パターン | 責務                                           |
 | ------------------------- | ----------------------------------------------- | -------- | -------- | ---------------------------------------------- |
 | TASK-TRACE-SKILL-AUTH-001 | `fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 |
-| TASK-FIX-IPC-TIMEOUT-001  | `fix-step1-par-ipc-timeout-per-channel/`        | step1    | par      | IPCチャンネル別タイムアウト設定                |
+| TASK-FIX-IPC-TIMEOUT-001  | `../fix-step1-par-ipc-timeout-per-channel/`     | step1    | par      | IPCチャンネル別タイムアウト設定                |
 | TASK-FIX-AUTH-IPC-001     | `fix-step2-seq-auth-login-ipc-nonblocking/`     | step2    | seq      | auth:login ハンドラーの fire-and-forget 化     |
 
 ### 推奨実行順（IPC修正タスク）
@@ -73,7 +73,7 @@
 ```text
 [step1: 並列実行]
 fix-step1-par-investigate-skill-auth-trigger ─┐
-fix-step1-par-ipc-timeout-per-channel        ─┘
+../fix-step1-par-ipc-timeout-per-channel     ─┘
               ↓ 両方完了後
 [step2: 直列実行]
 fix-step2-seq-auth-login-ipc-nonblocking
