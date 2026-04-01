@@ -172,8 +172,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| デスクトップ（Electron）実装パターン | L6 |
-| パフォーマンス最適化パターン | L98 |
-| セキュリティ実装パターン | L136 |
+| パフォーマンス最適化パターン | L121 |
+| セキュリティ実装パターン | L159 |
 
 ### references/architecture-implementation-patterns-core.md
 
@@ -1468,7 +1468,7 @@ node scripts/list-specs.js --topics
 | 実装例: skillAnalyticsAPI（TASK-9J） | L128 |
 | 実装例: `skill:execute` 認証 preflight ガード（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L161 |
 | 自動更新のセキュリティ | L192 |
-| safeInvoke タイムアウト + cleanup 契約（TASK-FIX-SAFEINVOKE-TIMEOUT-001） | L203 |
+| safeInvoke / invokeWithTimeout チャンネル別 timeout + cleanup 契約（TASK-FIX-IPC-TIMEOUT-001） | L203 |
 
 ### references/security-electron-ipc-core.md
 
@@ -1495,8 +1495,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L6 |
-| 関連ドキュメント | L52 |
-| 完了タスク | L61 |
+| 関連ドキュメント | L53 |
+| 完了タスク | L62 |
 
 ### references/security-electron-ipc.md
 

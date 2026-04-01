@@ -9,7 +9,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { ALLOWED_INVOKE_CHANNELS } from "../channels";
+import { ALLOWED_INVOKE_CHANNELS, IPC_CHANNELS } from "../channels";
 
 // Mock electron module
 const { mockInvoke } = vi.hoisted(() => ({
@@ -24,6 +24,9 @@ vi.mock("electron", () => ({
 
 // Import after mocking
 import { invokeWithTimeout, IPC_TIMEOUT_MS } from "../ipc-utils";
+
+const DEFAULT_TIMEOUT_CHANNEL = IPC_CHANNELS.FILE_GET_TREE;
+const SECOND_ALLOWED_CHANNEL = IPC_CHANNELS.FILE_READ;
 
 describe("invokeWithTimeout", () => {
   beforeEach(() => {
@@ -40,7 +43,7 @@ describe("invokeWithTimeout", () => {
     // ipcRenderer.invoke を never-resolving Promise でモック
     mockInvoke.mockReturnValue(new Promise(() => {}));
 
-    const channel = ALLOWED_INVOKE_CHANNELS[0];
+    const channel = DEFAULT_TIMEOUT_CHANNEL;
     const promise = invokeWithTimeout(ALLOWED_INVOKE_CHANNELS, channel);
 
     // タイマーを IPC_TIMEOUT_MS 分進める (P13準拠)
@@ -53,7 +56,7 @@ describe("invokeWithTimeout", () => {
   it("should include channel name and timeout value in timeout error message", async () => {
     mockInvoke.mockReturnValue(new Promise(() => {}));
 
-    const channel = ALLOWED_INVOKE_CHANNELS[0];
+    const channel = DEFAULT_TIMEOUT_CHANNEL;
     const promise = invokeWithTimeout(ALLOWED_INVOKE_CHANNELS, channel);
 
     vi.advanceTimersByTime(IPC_TIMEOUT_MS);
@@ -74,7 +77,7 @@ describe("invokeWithTimeout", () => {
     const expectedResult = { data: "test-result" };
     mockInvoke.mockResolvedValue(expectedResult);
 
-    const channel = ALLOWED_INVOKE_CHANNELS[0];
+    const channel = DEFAULT_TIMEOUT_CHANNEL;
     const promise = invokeWithTimeout(ALLOWED_INVOKE_CHANNELS, channel, "arg1");
 
     const result = await promise;
@@ -94,7 +97,7 @@ describe("invokeWithTimeout", () => {
         }),
     );
 
-    const channel = ALLOWED_INVOKE_CHANNELS[0];
+    const channel = DEFAULT_TIMEOUT_CHANNEL;
     const promise = invokeWithTimeout(ALLOWED_INVOKE_CHANNELS, channel);
 
     // タイムアウト直前まで進める
@@ -121,7 +124,7 @@ describe("invokeWithTimeout", () => {
     const ipcError = new Error("Main process error");
     mockInvoke.mockRejectedValue(ipcError);
 
-    const channel = ALLOWED_INVOKE_CHANNELS[0];
+    const channel = DEFAULT_TIMEOUT_CHANNEL;
 
     await expect(
       invokeWithTimeout(ALLOWED_INVOKE_CHANNELS, channel),
@@ -131,8 +134,8 @@ describe("invokeWithTimeout", () => {
 
   // T8: 複数同時呼び出しテスト
   it("should handle multiple concurrent invocations independently", async () => {
-    const channel1 = ALLOWED_INVOKE_CHANNELS[0];
-    const channel2 = ALLOWED_INVOKE_CHANNELS[1] || ALLOWED_INVOKE_CHANNELS[0];
+    const channel1 = DEFAULT_TIMEOUT_CHANNEL;
+    const channel2 = SECOND_ALLOWED_CHANNEL;
 
     // 1つ目は never-resolve、2つ目は即座に resolve
     mockInvoke
@@ -154,7 +157,7 @@ describe("invokeWithTimeout", () => {
   // T9: タイムアウトエラーにタイムアウト値が含まれる (AC-2 補完)
   it("should include timeout value in error message", async () => {
     mockInvoke.mockReturnValue(new Promise(() => {}));
-    const channel = ALLOWED_INVOKE_CHANNELS[0];
+    const channel = DEFAULT_TIMEOUT_CHANNEL;
     const promise = invokeWithTimeout(ALLOWED_INVOKE_CHANNELS, channel);
     vi.advanceTimersByTime(IPC_TIMEOUT_MS);
     await expect(promise).rejects.toThrow(`${IPC_TIMEOUT_MS}ms`);
@@ -174,7 +177,7 @@ describe("invokeWithTimeout", () => {
       }),
     );
 
-    const channel = ALLOWED_INVOKE_CHANNELS[0];
+    const channel = DEFAULT_TIMEOUT_CHANNEL;
     const promise = invokeWithTimeout(ALLOWED_INVOKE_CHANNELS, channel);
 
     // タイムアウト発動
@@ -189,7 +192,7 @@ describe("invokeWithTimeout", () => {
   // T12: IPC が 0ms で resolve（最小境界値）
   it("should resolve immediately when IPC responds at 0ms", async () => {
     mockInvoke.mockResolvedValue({ data: "instant" });
-    const channel = ALLOWED_INVOKE_CHANNELS[0];
+    const channel = DEFAULT_TIMEOUT_CHANNEL;
     const result = await invokeWithTimeout(ALLOWED_INVOKE_CHANNELS, channel);
     expect(result).toEqual({ data: "instant" });
   });
@@ -198,7 +201,7 @@ describe("invokeWithTimeout", () => {
   it("should clear timeout timer after successful IPC response", async () => {
     mockInvoke.mockResolvedValue({ data: "ok" });
 
-    const channel = ALLOWED_INVOKE_CHANNELS[0];
+    const channel = DEFAULT_TIMEOUT_CHANNEL;
     await invokeWithTimeout(ALLOWED_INVOKE_CHANNELS, channel);
 
     expect(vi.getTimerCount()).toBe(0);
@@ -208,7 +211,7 @@ describe("invokeWithTimeout", () => {
   it("should clear timeout timer after IPC rejection", async () => {
     mockInvoke.mockRejectedValue(new Error("boom"));
 
-    const channel = ALLOWED_INVOKE_CHANNELS[0];
+    const channel = DEFAULT_TIMEOUT_CHANNEL;
     await expect(
       invokeWithTimeout(ALLOWED_INVOKE_CHANNELS, channel),
     ).rejects.toThrow("boom");
