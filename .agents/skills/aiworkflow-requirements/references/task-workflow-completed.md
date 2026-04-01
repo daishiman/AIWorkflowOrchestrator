@@ -32,6 +32,31 @@
 - `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-11/manual-test-result.md`: auto-test fallback（NON_VISUAL）
 - `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
 - local vitest rerun in this review turn was blocked by esbuild host/binary mismatch (`0.21.5` / `0.25.12`)
+### タスク: UT-IMP-SDK-06 Layer3/4 SkillCreatorVerificationEngine verify 拡張（2026-04-01）
+
+| 項目       | 値                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| タスクID   | UT-IMP-SDK-06 / UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001                                 |
+| ステータス | **完了**                                                                                         |
+| タイプ     | test / runtime verify 拡張                                                                       |
+| 優先度     | 高                                                                                               |
+| 完了日     | 2026-04-01                                                                                       |
+| 対象       | `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts`                       |
+| 成果物     | `docs/30-workflows/step11-par-ut-sdk06-layer34-verify/`                                          |
+
+#### 実施内容
+
+- `SkillCreatorVerificationEngine.validateLayer3()` を実装（L3-001〜L3-004: output-schema.json $schema/type/agents 責務長/Trigger 長チェック）
+- `SkillCreatorVerificationEngine.validateLayer4()` を実装（L4-001〜L4-003: Anchors リスト/references 参照実在/agents ファイル言及チェック）
+- `extractSectionContent()` を 2ステップ正規表現方式で実装（`m` フラグと `$` の組み合わせバグを修正）
+- `createSkillFixture` に `referenceFiles`/`skillMdReferenceLinks` を追加し、L4-002 参照整合テストを可能に
+- verify→improve→reverify 結合テスト（T-LOOP-01〜04 + EC-01〜03）を追加
+- Layer1/2 既存 27 テスト + Layer3/4 単体 28 テスト + 結合 7 テスト = 合計 60 テスト
+
+#### 検証証跡
+
+- `cd apps/desktop && npx vitest run src/main/services/runtime/__tests__/SkillCreatorVerificationEngine.test.ts`
+- 60/60 PASS（706ms）
 
 ### タスク: TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001（2026-03-31）
 

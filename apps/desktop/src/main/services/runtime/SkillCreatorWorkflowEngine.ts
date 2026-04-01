@@ -307,6 +307,7 @@ export class SkillCreatorWorkflowEngine {
   ): SkillCreatorWorkflowStateSnapshot {
     const state = this.getRequiredWorkflow(planId);
     const updatedAt = nowIso();
+    state.currentPhase = "verify";
     state.verifyResult = {
       ...state.verifyResult,
       status: "pass",

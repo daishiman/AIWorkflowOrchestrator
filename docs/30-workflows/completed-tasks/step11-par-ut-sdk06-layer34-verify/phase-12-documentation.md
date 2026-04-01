@@ -111,7 +111,7 @@ implementation guide（Part 1 中学生レベル概念説明 + Part 2 技術詳�
 
 ```bash
 pnpm --filter @repo/desktop typecheck
-pnpm --filter @repo/desktop lint
+pnpm lint
 pnpm --filter @repo/desktop vitest run
 
 node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator
@@ -119,9 +119,9 @@ node .claude/skills/skill-creator/scripts/validate_all.js .claude/skills/task-sp
 node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
 node .claude/skills/skill-creator/scripts/validate_all.js .claude/skills/aiworkflow-requirements
 
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/skill-creator-agent-sdk-lane/step-11-par-task-ut-sdk06-layer34-verify-expansion --json
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/skill-creator-agent-sdk-lane/step-11-par-task-ut-sdk06-layer34-verify-expansion
-node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/skill-creator-agent-sdk-lane/step-11-par-task-ut-sdk06-layer34-verify-expansion
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step11-par-ut-sdk06-layer34-verify --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/step11-par-ut-sdk06-layer34-verify
+node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step11-par-ut-sdk06-layer34-verify
 diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator
 diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements
 diff -qr artifacts.json outputs/artifacts.json
