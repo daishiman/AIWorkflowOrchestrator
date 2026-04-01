@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-31T09:31:42.185Z",
-  "totalKeywords": 2616,
+  "generated": "2026-04-01T01:28:44.581Z",
+  "totalKeywords": 2618,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6279,6 +6279,7 @@
     "ELECTRON": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-viewtype-electron-ui.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
@@ -6372,6 +6373,7 @@
     ],
     "PRELOAD": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "task-workflow-completed-ut-06-safety-gate.md"
     ],
@@ -6970,6 +6972,20 @@
     "ABI": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "VITE": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "ALIAS": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "SHARED": [
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md",
+      "logs-archive-2026-02-unassigned-placement-import-interface.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -6996,6 +7012,10 @@
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "spec-splitting-guidelines.md",
       "ui-ux-feature-components-core.md"
+    ],
+    "BUILD": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "governance": [
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -7049,13 +7069,6 @@
     ],
     "ARCH": [
       "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "SHARED": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "lessons-learned-workflow-quality-phase12-audit-validator.md",
-      "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "UIUX": [
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -9339,9 +9352,6 @@
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "CURRENT": [
-      "logs-archive-2026-03-history-search-notification-center.md"
-    ],
-    "BUILD": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "CAPTURE": [

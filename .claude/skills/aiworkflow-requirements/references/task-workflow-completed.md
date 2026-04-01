@@ -297,7 +297,7 @@
 | 完了日     | 2026-03-27                                                                    |
 | PR         | #1667                                                                         |
 | 対象       | ユーザー入力ブリッジ / フェーズ UI 同期 / IPC 型外部化                        |
-| 成果物     | `docs/30-workflows/step-04-par-task-04-user-interaction-bridge-and-phase-ui/` |
+| 成果物     | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/` |
 
 #### 実施内容
 
