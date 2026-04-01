@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-02 | 1.10.0     | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 教訓2件を追加（L-PROD-001: Phase 12 canonical filename 早期固定 / L-PROD-002: regression-only テスト明文化）                                                        |
 | 2026-04-01 | 1.9.0      | TASK-SC-DIALOG-MANDATORY-001 教訓3件を追加（L-SC-DIALOG-001: 宣言型→命令型転換 / L-SC-DIALOG-002: 実行ゲートパターン / L-SC-DIALOG-003: graceful degradation で problem-definition.json 欠損時エラー停止を回避） |
 | 2026-03-31 | 1.8.9      | TASK-ELECTRON-BUILD-FIX の Phase 4/5 教訓3件を追加（Rosetta 2 arch 検出 / pnpm strict resolution Phase 2 設計 / 並列化効果）                                                                                     |
 | 2026-03-31 | 1.8.8      | TASK-ELECTRON-BUILD-FIX の Phase 11/12 教訓2件を追加（NON_VISUAL placeholder 撤去 / afterPack arch enum 正規化）                                                                                                 |
@@ -66,6 +67,30 @@
 | 解決策     | workflow `index.md` の AC-1 に「`SettingsView` 主導線 / `SkillLifecyclePanel` 補助導線」を明文化し、双方の契約境界（`apiKey:*` vs `auth-key:*`）も同時に記録する                                                                   |
 | 標準ルール | 同一チャネルを複数 surface が再利用する場合は、必ず主導線/補助導線の役割分担と channel namespace の境界を workflow index.md と system spec に同時記録する（UT-TASK-RT-04-SETTINGS-VS-LIFECYCLE-BOUNDARY-001 のパターンを再利用可） |
 | 関連タスク | UT-TASK-RT-04-SETTINGS-VS-LIFECYCLE-BOUNDARY-001                                                                                                                                                                                   |
+
+---
+
+## 2026-04-02 UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001
+
+### 苦戦箇所1（L-PROD-001）: Phase 12 canonical filename は開始時に一覧固定すると迷いが減る
+
+| 項目       | 内容                                                                                                                                                |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | Phase 12 の成果物が 6 ファイルに分かれる場合、開始時に canonical filename の一覧を 1 か所に寄せていなかったため、summary と changelog の間で重複が生じた |
+| 再発条件   | Phase 12 で複数の成果物ファイルを作成する際に、ファイル名と役割の一覧を Phase 12 冒頭で決めずに進める                                               |
+| 解決策     | Phase 12 開始時に `outputs/phase-12/index.md`（または Phase 12 成果物一覧テーブル）に canonical filename を先に列挙してから各ファイルを作成する      |
+| 標準ルール | 成果物が 4 ファイル以上になる Phase 12 では、先にファイル名と責務の一覧を確定させてから内容を作成する                                               |
+| 関連タスク | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001                                                                                                         |
+
+### 苦戦箇所2（L-PROD-002）: regression-only テストは早い段階で明示的に分類する
+
+| 項目       | 内容                                                                                                                                   |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 既存テスト（`approvalHandlers.push.test.ts`, `index.integration.test.ts`）が「実装対象テスト」なのか「regression-only テスト」なのかが Phase 10/12 で曖昧なまま残った |
+| 再発条件   | 既存テストが「新機能の受け入れテスト」ではなく「既存経路の回帰確認」である場合に、その役割を明文化せずにフェーズを進める                |
+| 解決策     | Phase 4 または Phase 10 で `regression-only: true` / `new-feature-test: true` のラベルをテスト計画に明記し、Phase 12 の compliance check でも参照できるようにする |
+| 標準ルール | テストを追加・流用する際は必ず「目的（新機能検証 vs 回帰確認）」を Phase 4 テスト計画に記載し、Phase 12 は同じ文言を引用する           |
+| 関連タスク | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001                                                                                            |
 
 ---
 
