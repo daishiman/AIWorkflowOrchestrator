@@ -228,7 +228,7 @@ export function registerAuthHandlers(
       // fire-and-forget: OAuthフロー開始後に即座に success: true を返す。
       // エラー発生時は AuthFlowOrchestrator が AUTH_STATE_CHANGED で通知済みのため、
       // ここでは unhandled rejection を防ぐためのみ catch する。
-      authFlowOrchestrator!
+      void authFlowOrchestrator!
         .startOAuthFlow(provider as OAuthProvider)
         .catch((err: unknown) => {
           console.error(
