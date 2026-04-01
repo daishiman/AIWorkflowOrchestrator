@@ -329,6 +329,27 @@
 
 ---
 
+### タスク: TASK-P0-07 plan-execution-hardening — AGENT_NAMES 削除と fallback path 単一ソース化（2026-04-01）
+
+| 項目       | 値                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-P0-07                                                                                                                                       |
+| ステータス | **完了**                                                                                                                                         |
+| タイプ     | refactoring                                                                                                                                      |
+| 優先度     | 高                                                                                                                                               |
+| 完了日     | 2026-04-01                                                                                                                                       |
+| 対象       | `apps/desktop/src/main/services/runtime/planPromptConstants.ts`, `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`            |
+| 関連タスク | step-11-par-task-plan-execution-hardening の Lane A                                                                                              |
+
+#### 実施内容
+
+- `AGENT_NAMES` をハードコード定数として削除
+- fallback path で `PLAN_RESOURCE_REQUESTS.filter(r => r.kind === "agent")` から動的に agent 名を導出するよう変更
+- agent 名の単一ソース: `PLAN_RESOURCE_REQUESTS` のみ
+- 影響: No public surface change（IPC contract / shared types / API シグネチャ変更なし）
+
+---
+
 ### タスク: TASK-SDK-05 create-entry-mainline-unification（2026-03-27）
 
 | 項目       | 値                                                                         |
