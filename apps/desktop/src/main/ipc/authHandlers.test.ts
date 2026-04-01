@@ -236,8 +236,7 @@ interface IPCResponse<T> {
   };
 }
 
-// Note: authHandlers.ts does not exist yet - this is TDD Red phase
-// These tests will fail until the implementation is created
+// 回帰テスト: TASK-FIX-AUTH-IPC-001 の fire-and-forget 契約を維持する
 
 describe("authHandlers", () => {
   let handlers: Map<string, (...args: unknown[]) => Promise<unknown>>;
@@ -419,13 +418,14 @@ describe("authHandlers", () => {
       expect(mockStartOAuthFlow).toHaveBeenCalledWith("google");
     });
 
-    it("should return error on OAuth failure", async () => {
+    it("startOAuthFlow が reject しても fire-and-forget で success: true を返す", async () => {
       const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
       if (!handler) {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      // AuthFlowOrchestratorがOAuthエラーを投げるケース
+      // TASK-FIX-AUTH-IPC-001: fire-and-forget 化により、OAuth エラーは
+      // AuthFlowOrchestrator の AUTH_STATE_CHANGED で通知される
       mockStartOAuthFlow.mockRejectedValue(
         new Error("OAuth configuration error"),
       );
@@ -434,9 +434,9 @@ describe("authHandlers", () => {
         {},
         { provider: "google" },
       )) as IPCResponse<void>;
+      await Promise.resolve();
 
-      expect(result.success).toBe(false);
-      expect(result.error?.code).toBe("auth/login-failed");
+      expect(result.success).toBe(true);
     });
 
     it("should reject invalid provider", async () => {
@@ -452,6 +452,132 @@ describe("authHandlers", () => {
 
       expect(result.success).toBe(false);
       expect(result.error?.code).toBe("auth/invalid-provider");
+    });
+
+    // TASK-FIX-AUTH-IPC-001: fire-and-forget 検証テスト（TC-01〜TC-09）
+    describe("fire-and-forget behavior (TASK-FIX-AUTH-IPC-001)", () => {
+      const invokeAuthLogin = async (args: { provider: string }) => {
+        const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
+        if (!handler) throw new Error("AUTH_LOGIN handler not registered");
+        return handler({}, args) as Promise<IPCResponse<void>>;
+      };
+
+      // TC-01: 即時レスポンス
+      it("TC-01: startOAuthFlow の完了を待たず即座に { success: true } を返す", async () => {
+        // 永遠に解決しない Promise — blocking 実装ならこのテストがタイムアウトする
+        const slowOAuthFlow = new Promise<void>(() => {});
+        mockStartOAuthFlow.mockReturnValue(slowOAuthFlow);
+
+        const resultPromise = invokeAuthLogin({ provider: "github" });
+        // fire-and-forget: slowOAuthFlow が未完了でも handler が即座に { success: true } を返す
+        // await handler が残っていれば slowOAuthFlow を待ち続けてタイムアウトする
+        await expect(resultPromise).resolves.toEqual({ success: true });
+      });
+
+      // TC-02: invalid provider の即時拒否
+      it("TC-02: 無効な provider は startOAuthFlow を呼ばずに即時エラーで返す", async () => {
+        const result = await invokeAuthLogin({ provider: "invalid-provider" });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.code).toBe("auth/invalid-provider");
+        expect(mockStartOAuthFlow).not.toHaveBeenCalled();
+      });
+
+      // TC-03: startOAuthFlow の呼び出し確認
+      it("TC-03: startOAuthFlow を provider 引数付きで呼び出す", async () => {
+        mockStartOAuthFlow.mockResolvedValue(undefined);
+
+        await invokeAuthLogin({ provider: "github" });
+
+        expect(mockStartOAuthFlow).toHaveBeenCalledWith("github");
+      });
+
+      // TC-04: AUTH_STATE_CHANGED の直接送信なし
+      it("TC-04: handler は AUTH_STATE_CHANGED を直接送信しない", async () => {
+        mockStartOAuthFlow.mockResolvedValue(undefined);
+
+        await invokeAuthLogin({ provider: "github" });
+
+        expect(mockWebContentsSend).not.toHaveBeenCalledWith(
+          IPC_CHANNELS.AUTH_STATE_CHANGED,
+          expect.anything(),
+        );
+      });
+
+      // TC-05: reject でも handler は待機しない
+      it("TC-05: startOAuthFlow が reject しても handler は待機しない", async () => {
+        mockStartOAuthFlow.mockRejectedValue(
+          new Error("OAuth configuration error"),
+        );
+
+        const result = await invokeAuthLogin({ provider: "github" });
+        await Promise.resolve();
+
+        expect(result).toEqual({ success: true });
+        expect(mockWebContentsSend).not.toHaveBeenCalledWith(
+          IPC_CHANNELS.AUTH_STATE_CHANGED,
+          expect.objectContaining({
+            authenticated: false,
+            error: expect.any(String),
+          }),
+        );
+      });
+
+      // TC-06: provider マトリクス
+      it.each(["google", "github", "discord"] as const)(
+        "TC-06: provider %s に対して startOAuthFlow が呼び出される",
+        async (provider) => {
+          mockStartOAuthFlow.mockResolvedValue(undefined);
+
+          await invokeAuthLogin({ provider });
+
+          expect(mockStartOAuthFlow).toHaveBeenCalledWith(provider);
+        },
+      );
+
+      // TC-07: 並列呼び出しの独立性
+      it("TC-07: 複数の auth:login が同時に呼び出された場合、handler 応答は独立する", async () => {
+        const firstFlow = new Promise<void>(() => {});
+        const secondFlow = new Promise<void>(() => {});
+
+        mockStartOAuthFlow
+          .mockReturnValueOnce(firstFlow)
+          .mockReturnValueOnce(secondFlow);
+
+        const [result1, result2] = await Promise.all([
+          invokeAuthLogin({ provider: "github" }),
+          invokeAuthLogin({ provider: "google" }),
+        ]);
+
+        expect(result1).toEqual({ success: true });
+        expect(result2).toEqual({ success: true });
+      });
+
+      // TC-08: reject 時にログのみ残す
+      it("TC-08: OAuth エラー時に handler は待機せず、console.error のみ呼ばれる", async () => {
+        const consoleErrorSpy = vi
+          .spyOn(console, "error")
+          .mockImplementation(() => {});
+        mockStartOAuthFlow.mockRejectedValue(
+          new Error("OAuth configuration error"),
+        );
+
+        const result = await invokeAuthLogin({ provider: "github" });
+        await Promise.resolve();
+
+        expect(result).toEqual({ success: true });
+        expect(consoleErrorSpy).toHaveBeenCalled();
+        consoleErrorSpy.mockRestore();
+      });
+
+      // TC-09: invalid provider は fire-and-forget 以前に拒否
+      it("TC-09: invalid provider は startOAuthFlow を呼ばずに拒否される", async () => {
+        const result = await invokeAuthLogin({ provider: "anthropic" });
+
+        expect(result.success).toBe(false);
+        expect(result.error?.code).toBe("auth/invalid-provider");
+        expect(mockStartOAuthFlow).not.toHaveBeenCalled();
+      });
     });
   });
 
@@ -844,41 +970,42 @@ describe("authHandlers", () => {
   });
 
   describe("Error scenarios", () => {
-    it("should handle network timeout during login", async () => {
+    it("ネットワークタイムアウトが発生しても fire-and-forget で success: true を返す", async () => {
       const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
       if (!handler) {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      // AuthFlowOrchestrator.startOAuthFlowがエラーを投げるケース
+      // TASK-FIX-AUTH-IPC-001: fire-and-forget 化により、ネットワークエラーは
+      // AuthFlowOrchestrator の AUTH_STATE_CHANGED で通知される
       mockStartOAuthFlow.mockRejectedValue(new Error("Network timeout"));
 
       const result = (await handler(
         {},
         { provider: "google" },
       )) as IPCResponse<void>;
+      await Promise.resolve();
 
-      expect(result.success).toBe(false);
-      expect(result.error?.code).toBe("auth/login-failed");
+      expect(result.success).toBe(true);
     });
 
-    it("should handle user cancellation during OAuth", async () => {
+    it("ユーザーキャンセル時も fire-and-forget で success: true を返す", async () => {
       const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
       if (!handler) {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      // AuthFlowOrchestratorがキャンセルエラーを投げるケース
+      // TASK-FIX-AUTH-IPC-001: fire-and-forget 化により、キャンセルエラーは
+      // AuthFlowOrchestrator の AUTH_STATE_CHANGED で通知される
       mockStartOAuthFlow.mockRejectedValue(new Error("User cancelled"));
 
       const result = (await handler(
         {},
         { provider: "google" },
       )) as IPCResponse<void>;
+      await Promise.resolve();
 
-      // エラーとして処理される
-      expect(result.success).toBe(false);
-      expect(result.error?.code).toBe("auth/login-failed");
+      expect(result.success).toBe(true);
     });
   });
 
