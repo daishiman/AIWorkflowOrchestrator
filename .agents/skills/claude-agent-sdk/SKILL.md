@@ -93,6 +93,7 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 | Hooks実装                    | PreToolUse/PostToolUse/Permission                 | Phase 2        | hooks-system.md                                                   |
 | Hooks Factory                | createHooks, セキュリティチェック                 | Phase 2        | hooks-system.md（TASK-3-1-B）                                     |
 | Governance Hooks Factory     | Phase別 createGovernanceHooks, AuditSink連携      | Phase 2        | hooks-system.md（TASK-P0-09）, permission-control.md（TASK-P0-09）|
+| Approval Request Producer    | PreToolUse での pushApprovalRequest() 発火接続    | Phase 2        | hooks-system.md（UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001）   |
 | Permission Control設計       | 権限ルールの設計と実装                            | Phase 1, 2     | permission-control.md                                             |
 | Phase-Based Policy           | plan/execute/verify/improve 別ポリシー定義        | Phase 2        | permission-control.md（TASK-P0-09）                               |
 | Electron IPC統合             | Main-Renderer間のAgent通信                        | Phase 2        | electron-ipc.md                                                   |
@@ -367,6 +368,7 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 
 | Version | Date       | Changes                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 2.15.0  | 2026-04-02 | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001反映: Approval Request Producerパターン追加（hooks-system.md）、成果物記録追加（implementation-artifacts.md）、Task仕様ナビ追記 |
 | 2.14.0  | 2026-03-31 | TASK-P0-09ガバナンス実装反映: Governance Hooks Factoryパターン（hooks-system.md）、Phase-Based Policy表（permission-control.md）、resolvePathSafelyパターン（security-sandboxing.md）、Task仕様ナビ追記 |
 | 2.13.0  | 2026-02-12 | Progressive Disclosure最適化: 成果物テーブルをreferences/implementation-artifacts.mdに分離（513→380行）、旧API値修正（permissionMode/stream()）、query-api.mdバージョン情報更新 |
 | 2.12.0  | 2026-02-12 | TASK-9B-I教訓反映: query-api.md にTypeScriptモジュール解決パターン追加、permission-control.md の PermissionMode を SDK@0.2.30 実型に更新 |

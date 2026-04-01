@@ -17,24 +17,26 @@
 
 ## 変更履歴
 
-| 日付       | バージョン | 変更内容                                                                                                                                                                                                |
-| ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-31 | 1.8.9      | TASK-ELECTRON-BUILD-FIX の Phase 4/5 教訓3件を追加（Rosetta 2 arch 検出 / pnpm strict resolution Phase 2 設計 / 並列化効果） |
-| 2026-03-31 | 1.8.8      | TASK-ELECTRON-BUILD-FIX の Phase 11/12 教訓2件を追加（NON_VISUAL placeholder 撤去 / afterPack arch enum 正規化） |
-| 2026-03-29 | 1.8.7      | TASK-RT-04 skill-authkey-api-key-management-ui の Phase 12 教訓2件を追加（esbuild アーキ不一致対処 / shared IPC channel 再利用時の主導線/補助導線責務境界明文化） |
-| 2026-03-28 | 1.8.6      | TASK-SDK-07 execution-governance-and-handoff-alignment の Phase 12 教訓3件を追加（shared channel 再利用パターン / disclosure graceful degradation / spec_created task への code wave 注入後の AC 追跡） |
-| 2026-03-27 | 1.8.5      | UT-EXEC-01 の docs-only close-out 教訓2件を追加（Implementation Anchor path 実在確認 / duplicate source の baseline 判定）                                                                              |
-| 2026-03-27 | 1.8.4      | TASK-SDK-04 の Phase 12 教訓1件を追加（spec_created task に code wave が入った時の screenshot/evidence reclassification）                                                                               |
-| 2026-03-27 | 1.8.4      | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の Phase 11/12 教訓3件を追加                                                                                                                            |
-| 2026-03-26 | 1.8.3      | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の Phase 12 教訓2件を追加                                                                                                                            |
-| 2026-03-26 | 1.8.2      | TASK-SDK-01 hardening sync の Phase 12 教訓3件を追加                                                                                                                                                    |
-| 2026-03-26 | 1.8.1      | TASK-SDK-01 manifest-contract-foundation / follow-up completion の Phase 12 教訓4件へ更新                                                                                                               |
-| 2026-03-23 | 1.7.0      | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003）                                                                                                                       |
-| 2026-03-21 | 1.6.0      | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加                                                                                                                                            |
-| 2026-03-21 | 1.5.0      | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE の Phase 12 教訓4件を追加                                                                                                                                         |
-| 2026-03-21 | 1.5.2      | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓3件を追加                                                                                                                                 |
-| 2026-03-21 | 1.5.1      | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査の教訓1件を追加                                                                                                                                    |
-| 2026-03-21 | 1.5.0      | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加                                                                                                                          |
+| 日付       | バージョン | 変更内容                                                                                                                                                                                                         |
+| ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-02 | 1.10.0     | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 教訓2件を追加（L-PROD-001: Phase 12 canonical filename 早期固定 / L-PROD-002: regression-only テスト明文化）                                                        |
+| 2026-04-01 | 1.9.0      | TASK-SC-DIALOG-MANDATORY-001 教訓3件を追加（L-SC-DIALOG-001: 宣言型→命令型転換 / L-SC-DIALOG-002: 実行ゲートパターン / L-SC-DIALOG-003: graceful degradation で problem-definition.json 欠損時エラー停止を回避） |
+| 2026-03-31 | 1.8.9      | TASK-ELECTRON-BUILD-FIX の Phase 4/5 教訓3件を追加（Rosetta 2 arch 検出 / pnpm strict resolution Phase 2 設計 / 並列化効果）                                                                                     |
+| 2026-03-31 | 1.8.8      | TASK-ELECTRON-BUILD-FIX の Phase 11/12 教訓2件を追加（NON_VISUAL placeholder 撤去 / afterPack arch enum 正規化）                                                                                                 |
+| 2026-03-29 | 1.8.7      | TASK-RT-04 skill-authkey-api-key-management-ui の Phase 12 教訓2件を追加（esbuild アーキ不一致対処 / shared IPC channel 再利用時の主導線/補助導線責務境界明文化）                                                |
+| 2026-03-28 | 1.8.6      | TASK-SDK-07 execution-governance-and-handoff-alignment の Phase 12 教訓3件を追加（shared channel 再利用パターン / disclosure graceful degradation / spec_created task への code wave 注入後の AC 追跡）          |
+| 2026-03-27 | 1.8.5      | UT-EXEC-01 の docs-only close-out 教訓2件を追加（Implementation Anchor path 実在確認 / duplicate source の baseline 判定）                                                                                       |
+| 2026-03-27 | 1.8.4      | TASK-SDK-04 の Phase 12 教訓1件を追加（spec_created task に code wave が入った時の screenshot/evidence reclassification）                                                                                        |
+| 2026-03-27 | 1.8.4      | UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 の Phase 11/12 教訓3件を追加                                                                                                                                     |
+| 2026-03-26 | 1.8.3      | UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の Phase 12 教訓2件を追加                                                                                                                                     |
+| 2026-03-26 | 1.8.2      | TASK-SDK-01 hardening sync の Phase 12 教訓3件を追加                                                                                                                                                             |
+| 2026-03-26 | 1.8.1      | TASK-SDK-01 manifest-contract-foundation / follow-up completion の Phase 12 教訓4件へ更新                                                                                                                        |
+| 2026-03-23 | 1.7.0      | TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓3件を追加（L-CHRHA-001〜003）                                                                                                                                |
+| 2026-03-21 | 1.6.0      | TASK-FIX-LLM-CONFIG-PERSISTENCE の Phase 11/12 教訓3件を追加                                                                                                                                                     |
+| 2026-03-21 | 1.5.0      | TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE の Phase 12 教訓4件を追加                                                                                                                                                  |
+| 2026-03-21 | 1.5.2      | TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 の Phase 12 教訓3件を追加                                                                                                                                          |
+| 2026-03-21 | 1.5.1      | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 最終再監査の教訓1件を追加                                                                                                                                             |
+| 2026-03-21 | 1.5.0      | TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 の Phase 12 close-out 教訓2件を追加                                                                                                                                   |
 
 | 2026-03-20 | 1.4.0 | TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 の Phase 12 教訓2件を追加 |
 | 2026-03-18 | 1.3.0 | TASK-SKILL-LIFECYCLE-08 仕様書作成4件 + 再監査3件を lessons-learned-current.md から移動 |
@@ -48,23 +50,47 @@
 
 ### 苦戦箇所1: esbuild バイナリアーキ不一致によるテスト起動失敗
 
-| 項目       | 内容                                                                                                                                                            |
-| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 課題       | `ApiKeySettingsPanel.test.tsx` 実行時に `@esbuild/darwin-arm64` が検出されるが環境は `darwin-x64` のため、Vitest が起動しない                                 |
-| 再発条件   | `pnpm install` 後に optional deps の platform 判定がキャッシュされたアーキを返す場合（特に CI 共有キャッシュや worktree コピー環境）                           |
+| 項目       | 内容                                                                                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `ApiKeySettingsPanel.test.tsx` 実行時に `@esbuild/darwin-arm64` が検出されるが環境は `darwin-x64` のため、Vitest が起動しない                              |
+| 再発条件   | `pnpm install` 後に optional deps の platform 判定がキャッシュされたアーキを返す場合（特に CI 共有キャッシュや worktree コピー環境）                       |
 | 解決策     | `pnpm install --force` で optional dependency を現在のアーキに再解決する。`node -p "process.platform + ' ' + process.arch"` で事前確認してから実行すること |
-| 標準ルール | test 実行前に `process.arch` を確認し、ミスマッチが疑われる場合は `--force` を優先する                                                                         |
-| 関連タスク | UT-TASK-RT-04-TEST-RUNTIME-ESBUILD-ARCH-001                                                                                                                     |
+| 標準ルール | test 実行前に `process.arch` を確認し、ミスマッチが疑われる場合は `--force` を優先する                                                                     |
+| 関連タスク | UT-TASK-RT-04-TEST-RUNTIME-ESBUILD-ARCH-001                                                                                                                |
 
 ### 苦戦箇所2: 共有 IPC チャネル再利用時の主導線/補助導線責務境界曖昧化
 
-| 項目       | 内容                                                                                                                                                                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 課題       | `auth-key:*` IPC チャネルを `SettingsView`（主導線）と `SkillLifecyclePanel`（補助導線）の両方から呼ぶ設計で、task spec と実装の記述が曖昧なまま進行した                                                                          |
-| 再発条件   | 同一 IPC チャネルを複数の UI surface から再利用する場合、「どちらが主でどちらが補助か」を仕様に明記しないと drift が生じる                                                                                                        |
-| 解決策     | workflow `index.md` の AC-1 に「`SettingsView` 主導線 / `SkillLifecyclePanel` 補助導線」を明文化し、双方の契約境界（`apiKey:*` vs `auth-key:*`）も同時に記録する                                                                 |
+| 項目       | 内容                                                                                                                                                                                                                               |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `auth-key:*` IPC チャネルを `SettingsView`（主導線）と `SkillLifecyclePanel`（補助導線）の両方から呼ぶ設計で、task spec と実装の記述が曖昧なまま進行した                                                                           |
+| 再発条件   | 同一 IPC チャネルを複数の UI surface から再利用する場合、「どちらが主でどちらが補助か」を仕様に明記しないと drift が生じる                                                                                                         |
+| 解決策     | workflow `index.md` の AC-1 に「`SettingsView` 主導線 / `SkillLifecyclePanel` 補助導線」を明文化し、双方の契約境界（`apiKey:*` vs `auth-key:*`）も同時に記録する                                                                   |
 | 標準ルール | 同一チャネルを複数 surface が再利用する場合は、必ず主導線/補助導線の役割分担と channel namespace の境界を workflow index.md と system spec に同時記録する（UT-TASK-RT-04-SETTINGS-VS-LIFECYCLE-BOUNDARY-001 のパターンを再利用可） |
-| 関連タスク | UT-TASK-RT-04-SETTINGS-VS-LIFECYCLE-BOUNDARY-001                                                                                                                                                                                     |
+| 関連タスク | UT-TASK-RT-04-SETTINGS-VS-LIFECYCLE-BOUNDARY-001                                                                                                                                                                                   |
+
+---
+
+## 2026-04-02 UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001
+
+### 苦戦箇所1（L-PROD-001）: Phase 12 canonical filename は開始時に一覧固定すると迷いが減る
+
+| 項目       | 内容                                                                                                                                                |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | Phase 12 の成果物が 6 ファイルに分かれる場合、開始時に canonical filename の一覧を 1 か所に寄せていなかったため、summary と changelog の間で重複が生じた |
+| 再発条件   | Phase 12 で複数の成果物ファイルを作成する際に、ファイル名と役割の一覧を Phase 12 冒頭で決めずに進める                                               |
+| 解決策     | Phase 12 開始時に `outputs/phase-12/index.md`（または Phase 12 成果物一覧テーブル）に canonical filename を先に列挙してから各ファイルを作成する      |
+| 標準ルール | 成果物が 4 ファイル以上になる Phase 12 では、先にファイル名と責務の一覧を確定させてから内容を作成する                                               |
+| 関連タスク | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001                                                                                                         |
+
+### 苦戦箇所2（L-PROD-002）: regression-only テストは早い段階で明示的に分類する
+
+| 項目       | 内容                                                                                                                                   |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 既存テスト（`approvalHandlers.push.test.ts`, `index.integration.test.ts`）が「実装対象テスト」なのか「regression-only テスト」なのかが Phase 10/12 で曖昧なまま残った |
+| 再発条件   | 既存テストが「新機能の受け入れテスト」ではなく「既存経路の回帰確認」である場合に、その役割を明文化せずにフェーズを進める                |
+| 解決策     | Phase 4 または Phase 10 で `regression-only: true` / `new-feature-test: true` のラベルをテスト計画に明記し、Phase 12 の compliance check でも参照できるようにする |
+| 標準ルール | テストを追加・流用する際は必ず「目的（新機能検証 vs 回帰確認）」を Phase 4 テスト計画に記載し、Phase 12 は同じ文言を引用する           |
+| 関連タスク | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001                                                                                            |
 
 ---
 
@@ -72,53 +98,53 @@
 
 ### 苦戦箇所1: NON_VISUAL task でも壊れた placeholder screenshot を残すと false green になる
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | UI 差分がない task に placeholder PNG だけを置いて Phase 11 を閉じると、validator 互換には見えても evidence chain が壊れる |
-| 再発条件 | `screenshot-plan.json` を validator 互換の名目で placeholder 1 枚に固定し、`manual-test-result.md` に NON_VISUAL 根拠を書かない |
-| 解決策 | placeholder binary を撤去し、`manual-test-result.md` と `screenshot-plan.json` に NON_VISUAL 理由と CLI 証跡を明記した |
-| 標準ルール | UI 差分がない task は screenshot を捏造せず、NON_VISUAL 理由・walkthrough・CLI 証跡で閉じる |
-| 関連タスク | TASK-ELECTRON-BUILD-FIX |
+| 項目       | 内容                                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | UI 差分がない task に placeholder PNG だけを置いて Phase 11 を閉じると、validator 互換には見えても evidence chain が壊れる      |
+| 再発条件   | `screenshot-plan.json` を validator 互換の名目で placeholder 1 枚に固定し、`manual-test-result.md` に NON_VISUAL 根拠を書かない |
+| 解決策     | placeholder binary を撤去し、`manual-test-result.md` と `screenshot-plan.json` に NON_VISUAL 理由と CLI 証跡を明記した          |
+| 標準ルール | UI 差分がない task は screenshot を捏造せず、NON_VISUAL 理由・walkthrough・CLI 証跡で閉じる                                     |
+| 関連タスク | TASK-ELECTRON-BUILD-FIX                                                                                                         |
 
 ### 苦戦箇所2: electron-builder hook の `arch` は数値 enum として来る
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `afterPack` hook で `context.arch` をそのまま `--arch` へ渡すと、`1` や `3` が CLI に流れて native rebuild が失敗しうる |
-| 再発条件 | hook 実行時コンテキストを文字列だと仮定し、設定存在確認テストだけで閉じる |
-| 解決策 | `rebuild-native-for-electron.mjs` に数値 enum -> 文字列の正規化を追加し、静的検証テストでもこの分岐を確認した |
-| 標準ルール | packaging hook では electron-builder の context 型を確認し、enum / path / platform を CLI 互換の値へ正規化する |
-| 関連タスク | TASK-ELECTRON-BUILD-FIX |
+| 項目       | 内容                                                                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `afterPack` hook で `context.arch` をそのまま `--arch` へ渡すと、`1` や `3` が CLI に流れて native rebuild が失敗しうる |
+| 再発条件   | hook 実行時コンテキストを文字列だと仮定し、設定存在確認テストだけで閉じる                                               |
+| 解決策     | `rebuild-native-for-electron.mjs` に数値 enum -> 文字列の正規化を追加し、静的検証テストでもこの分岐を確認した           |
+| 標準ルール | packaging hook では electron-builder の context 型を確認し、enum / path / platform を CLI 互換の値へ正規化する          |
+| 関連タスク | TASK-ELECTRON-BUILD-FIX                                                                                                 |
 
 ### 苦戦箇所3: Rosetta 2 環境での arch 検出は Phase 4 テスト計画に含めるべきだった
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | Rosetta 2 (arm64 Mac で x86_64 として動作) 環境での native binary arch 検出誤判定が Phase 11 で発覚。Phase 4 テスト計画に含まれていなかった |
-| 再発条件 | Apple Silicon Mac で x86_64 Electron を実行する場合、`process.arch` は `x64` を返すが、native module の実 arch と一致しないことがある |
-| 解決策 | `rebuild-sqlite-for-electron.mjs` で Electron バイナリの実 arch を直接読み取る実装に変更 |
-| 標準ルール | native module を扱う desktop task の Phase 4 テスト計画には「Rosetta 2 / CI / worktree」3環境での arch 検出確認を明示的に追加する |
-| 関連タスク | TASK-ELECTRON-BUILD-FIX |
+| 項目       | 内容                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | Rosetta 2 (arm64 Mac で x86_64 として動作) 環境での native binary arch 検出誤判定が Phase 11 で発覚。Phase 4 テスト計画に含まれていなかった |
+| 再発条件   | Apple Silicon Mac で x86_64 Electron を実行する場合、`process.arch` は `x64` を返すが、native module の実 arch と一致しないことがある       |
+| 解決策     | `rebuild-sqlite-for-electron.mjs` で Electron バイナリの実 arch を直接読み取る実装に変更                                                    |
+| 標準ルール | native module を扱う desktop task の Phase 4 テスト計画には「Rosetta 2 / CI / worktree」3環境での arch 検出確認を明示的に追加する           |
+| 関連タスク | TASK-ELECTRON-BUILD-FIX                                                                                                                     |
 
 ### 苦戦箇所4: pnpm strict resolution の影響は Phase 2 設計時に考慮すべきだった
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `setup-native-modules.sh` の `require` テストが pnpm strict resolution 環境で失敗した。Phase 5 実装中に発覚し、修正が必要になった |
-| 再発条件 | `node -e "require('better-sqlite3')"` のような単純な require テストが pnpm workspace の strict hoisting 設定下で機能しない |
-| 解決策 | 絶対パスによる require テストに変更: `node -e "require('$(pwd)/node_modules/better-sqlite3')"` |
+| 項目       | 内容                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `setup-native-modules.sh` の `require` テストが pnpm strict resolution 環境で失敗した。Phase 5 実装中に発覚し、修正が必要になった             |
+| 再発条件   | `node -e "require('better-sqlite3')"` のような単純な require テストが pnpm workspace の strict hoisting 設定下で機能しない                    |
+| 解決策     | 絶対パスによる require テストに変更: `node -e "require('$(pwd)/node_modules/better-sqlite3')"`                                                |
 | 標準ルール | native module の load テストは絶対パスで実施し、pnpm hoisting に依存しない。Phase 2 設計時に「pnpm strict resolution での動作前提」を明記する |
-| 関連タスク | TASK-ELECTRON-BUILD-FIX |
+| 関連タスク | TASK-ELECTRON-BUILD-FIX                                                                                                                       |
 
 ### 苦戦箇所5: 独立した問題は並列 SubAgent で解決する設計を Phase 2 に明示する
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | 問題A（@repo/shared ESM/CJS dual output）と問題B（better-sqlite3 ABI 再ビルド）は独立しているが、当初は直列で分析していた |
-| 再発条件 | 複数の独立した問題を含む bugfix task で依存グラフを描かずに直列実行する場合 |
-| 解決策 | Phase 2 設計時に問題の依存グラフを明示し、独立した問題を並列 SubAgent に割り当てた |
-| 標準ルール | bugfix task の Phase 2 では問題の依存グラフを成果物として残し、独立した問題は並列 SubAgent 割り当てを採用する |
-| 関連タスク | TASK-ELECTRON-BUILD-FIX |
+| 項目       | 内容                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 問題A（@repo/shared ESM/CJS dual output）と問題B（better-sqlite3 ABI 再ビルド）は独立しているが、当初は直列で分析していた |
+| 再発条件   | 複数の独立した問題を含む bugfix task で依存グラフを描かずに直列実行する場合                                               |
+| 解決策     | Phase 2 設計時に問題の依存グラフを明示し、独立した問題を並列 SubAgent に割り当てた                                        |
+| 標準ルール | bugfix task の Phase 2 では問題の依存グラフを成果物として残し、独立した問題は並列 SubAgent 割り当てを採用する             |
+| 関連タスク | TASK-ELECTRON-BUILD-FIX                                                                                                   |
 
 ---
 
@@ -1016,12 +1042,14 @@
 ## UT-RT-06-ESBUILD-ARCH-MISMATCH-001 (2026-03-29)
 
 ### 苦戦箇所1: esbuild バイナリアーキ不一致の診断
+
 - **症状**: `pnpm install` 後に vitest が起動しない。`Error: The package "esbuild-darwin-arm64" could not be found.` または類似エラー
 - **原因**: macOS 上で Rosetta 経由 x64 Node と native arm64 Node が混在する環境で、`pnpm install` 時の esbuild optional dependency 解決結果と実行時の `process.arch` がずれる
 - **解決策**: `EXPECTED_PLATFORM="darwin-$(node -p process.arch)"` を基準に診断し、`pnpm install --force` で optional dependency を再解決
 - **再発防止**: `docs/40-guides/esbuild-arch-mismatch-prevention.md` の Preflight チェックリスト（5ステップ）参照
 
 ### 知見: arm64 固定ではなく process.arch 動的取得が重要
+
 - `arm64` を直接ハードコードすると x64 環境での誤検知が発生する
 - `node -p process.arch` で実行時アーキを動的取得することで、CI/CD 環境の差異も吸収できる
 
@@ -1071,24 +1099,55 @@
 
 ### L-UIUX-001: `spec_created` workflow に code draft が入っても completed に上げてはいけない
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | canonical root に script 実装が存在することを理由に workflow 全体を completed 扱いし、`artifacts.json` Phase 4-12 と Phase 12 summary が false green になっていた |
-| 解決策 | code draft の存在と workflow state を分離し、`spec_created` を維持したまま current facts を記録する |
-| 標準ルール | skill 実装差分があっても Phase 11 実測 evidence と close-out 条件が揃うまでは workflow を completed にしない |
+| 項目       | 内容                                                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | canonical root に script 実装が存在することを理由に workflow 全体を completed 扱いし、`artifacts.json` Phase 4-12 と Phase 12 summary が false green になっていた |
+| 解決策     | code draft の存在と workflow state を分離し、`spec_created` を維持したまま current facts を記録する                                                               |
+| 標準ルール | skill 実装差分があっても Phase 11 実測 evidence と close-out 条件が揃うまでは workflow を completed にしない                                                      |
 
 ### L-UIUX-002: placeholder screenshot は evidence ではなく blocker 情報
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `scaffold-placeholder.png` があるだけで screenshot coverage を満たしたように読める文書が残っていた |
-| 解決策 | `phase11-capture-metadata.json` の `status: "not_run"` を正として、placeholder を actual capture の代替に使わないと明記した |
-| 標準ルール | placeholder は「未実行の証跡」であり、「実行済みの証跡」ではない |
+| 項目       | 内容                                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `scaffold-placeholder.png` があるだけで screenshot coverage を満たしたように読める文書が残っていた                          |
+| 解決策     | `phase11-capture-metadata.json` の `status: "not_run"` を正として、placeholder を actual capture の代替に使わないと明記した |
+| 標準ルール | placeholder は「未実行の証跡」であり、「実行済みの証跡」ではない                                                            |
 
 ### L-UIUX-003: CLI 引数を prompt context に渡さないと評価結果が task 非依存になる
 
-| 項目 | 内容 |
-| --- | --- |
-| 課題 | `evaluate-ui-ux.js` が `--task-id` を受け取っても `evaluateUIWithClaude()` へ渡していなかったため、常にデフォルト文脈で評価していた |
-| 解決策 | CLI 引数をそのまま `taskContext` として渡し、回帰テストを追加した |
-| 標準ルール | evaluator CLI は `argv` を parse したら prompt input まで到達していることをテストで保証する |
+| 項目       | 内容                                                                                                                                |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `evaluate-ui-ux.js` が `--task-id` を受け取っても `evaluateUIWithClaude()` へ渡していなかったため、常にデフォルト文脈で評価していた |
+| 解決策     | CLI 引数をそのまま `taskContext` として渡し、回帰テストを追加した                                                                   |
+| 標準ルール | evaluator CLI は `argv` を parse したら prompt input まで到達していることをテストで保証する                                         |
+
+---
+
+## 2026-04-01 TASK-SC-DIALOG-MANDATORY-001 skill-creator 対話強制
+
+### L-SC-DIALOG-001: 宣言型から命令型への転換で LLM の自律スキップを防ぐ
+
+| 項目       | 内容                                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | SKILL.md が「推奨する」「省略可」という宣言型記述だったため、Claude が詳細な要件があると判断した際に AskUserQuestion をスキップしてスキル生成を開始していた        |
+| 解決策     | SKILL.md 冒頭に `## 必須：最初の実行ステップ` ブロックを命令型で追加（「最初のアクションは必ず AskUserQuestion」「ユーザーの回答なしに生成を開始してはならない」） |
+| 標準ルール | LLM に特定のアクション順序を保証させたい場合は「〜が推奨」ではなく「最初のアクションは必ず〜」という命令型を使う。宣言型は自律判断の余地を残すため不適切           |
+| 関連タスク | TASK-SC-DIALOG-MANDATORY-001                                                                                                                                       |
+
+### L-SC-DIALOG-002: 実行ゲートパターン（ファイル読み込み直後にアクション強制）
+
+| 項目       | 内容                                                                                                                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `discover-problem.md` を読み込んだ後、LLM が Phase 0-0 の質問を飛ばして次の Phase に進むケースがあった                                                                  |
+| 解決策     | ファイル冒頭の「読み込み条件」ブロック直後に「⚠ 実行ゲート」ブロックを追加し、AskUserQuestion を強制実行させた。読み込みとアクション実行を一体化させた                  |
+| 標準ルール | エージェント仕様書は「読んで終わり」にせず、読み込み直後に実行すべきアクションを強制するゲートブロックを置く。docs-only タスクでもコード変更なしに LLM 動作を制御できる |
+| 関連タスク | TASK-SC-DIALOG-MANDATORY-001                                                                                                                                            |
+
+### L-SC-DIALOG-003: graceful degradation で前提成果物欠損時のエラー停止を回避
+
+| 項目       | 内容                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `interview-user.md` が `problem-definition.json` 欠損時に「Phase 0-0 未完了エラー」で停止していたため、初回呼び出しやスキップしたユーザーがブロックされていた |
+| 解決策     | 欠損時処理を「AskUserQuestion で問題定義を収集して作成する（エラー停止しない）」に変更。前提成果物がなくても対話的に補完できるようにした                      |
+| 標準ルール | 前提成果物の欠損は fatal error ではなく「収集のトリガー」として扱う。happy path 以外からの呼び出しでも graceful に対応できる設計が望ましい                    |
+| 関連タスク | TASK-SC-DIALOG-MANDATORY-001                                                                                                                                  |

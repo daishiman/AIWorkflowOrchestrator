@@ -722,6 +722,89 @@ describe("SkillExecutor - Auth Integration", () => {
     });
   });
 
+  // Phase 4: TASK-FIX-ENV-STRIPPING — env オプション検証（TC-01〜TC-03）
+  describe("env オプション検証（TASK-FIX-ENV-STRIPPING）", () => {
+    it("callSDKQuery が query() に渡す env に PATH を保持すること（TC-01）", async () => {
+      // Arrange
+      mockAuthKeyService.getKey.mockResolvedValue(validApiKey);
+      const testPath = "/usr/local/bin:/usr/bin:/bin";
+      const originalPath = process.env.PATH;
+      process.env.PATH = testPath;
+
+      try {
+        const executor = new SkillExecutor(
+          mockMainWindow,
+          mockPermissionStore,
+          mockAuthKeyService,
+        );
+
+        // Act
+        await executor.execute(mockRequest, mockSkill);
+
+        // Assert
+        const callArgs = mockQuery.mock.calls[0][0];
+        expect(callArgs.options.env.PATH).toBe(testPath);
+        expect(callArgs.options.env.ANTHROPIC_API_KEY).toBe(validApiKey);
+      } finally {
+        if (originalPath === undefined) {
+          delete process.env.PATH;
+        } else {
+          process.env.PATH = originalPath;
+        }
+      }
+    });
+
+    it("callSDKQuery が query() に渡す env に ANTHROPIC_API_KEY が含まれること（TC-02）", async () => {
+      // Arrange
+      mockAuthKeyService.getKey.mockResolvedValue(validApiKey);
+
+      const executor = new SkillExecutor(
+        mockMainWindow,
+        mockPermissionStore,
+        mockAuthKeyService,
+      );
+
+      // Act
+      await executor.execute(mockRequest, mockSkill);
+
+      // Assert
+      const callArgs = mockQuery.mock.calls[0][0];
+      expect(callArgs.options.env.ANTHROPIC_API_KEY).toBe(validApiKey);
+    });
+
+    it("callSDKQuery が process.env.ANTHROPIC_API_KEY より AuthKeyService の apiKey を優先すること（TC-03）", async () => {
+      // Arrange — process.env に別キーを仕込んでおく
+      const processEnvKey = "process-env-key-should-be-overridden";
+      const originalEnv = process.env.ANTHROPIC_API_KEY;
+      process.env.ANTHROPIC_API_KEY = processEnvKey;
+
+      try {
+        mockAuthKeyService.getKey.mockResolvedValue(validApiKey);
+
+        const executor = new SkillExecutor(
+          mockMainWindow,
+          mockPermissionStore,
+          mockAuthKeyService,
+        );
+
+        // Act
+        await executor.execute(mockRequest, mockSkill);
+
+        // Assert — AuthKeyService のキーが優先される
+        const callArgs = mockQuery.mock.calls[0][0];
+        expect(callArgs.options.env.ANTHROPIC_API_KEY).toBe(validApiKey);
+        expect(callArgs.options.env.ANTHROPIC_API_KEY).not.toBe(processEnvKey);
+        expect(callArgs.options.env.PATH).toBeDefined();
+      } finally {
+        if (originalEnv === undefined) {
+          delete process.env.ANTHROPIC_API_KEY;
+        } else {
+          process.env.ANTHROPIC_API_KEY = originalEnv;
+        }
+      }
+    });
+  });
+
   // Phase 6: テスト拡充 - 暗号化/復号一貫性テスト
   describe("暗号化/復号一貫性", () => {
     it("setKeyとgetKeyの往復でキーが正しく取得できる", async () => {
