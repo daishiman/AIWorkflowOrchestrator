@@ -9,6 +9,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { ExecutionManager } from "../ExecutionManager";
 import type { BrowserWindow } from "electron";
 import type { AgentExecutionRequest } from "@repo/shared";
+import type { IApprovalGate } from "../../runtime/ApprovalGate";
 
 // AgentExecutor モック
 // startは終わらないPromiseを返すことで、実行がアクティブなままになる
@@ -25,6 +26,7 @@ vi.mock("../AgentExecutor", () => ({
 describe("ExecutionManager", () => {
   let manager: ExecutionManager;
   let mockWindow: BrowserWindow;
+  let mockApprovalGate: IApprovalGate;
 
   beforeEach(() => {
     manager = new ExecutionManager();
@@ -33,6 +35,12 @@ describe("ExecutionManager", () => {
         send: vi.fn(),
       },
     } as unknown as BrowserWindow;
+    mockApprovalGate = {
+      grantApproval: vi.fn(),
+      rejectApproval: vi.fn(),
+      checkApproval: vi.fn(),
+      revokeAll: vi.fn(),
+    };
   });
 
   it("should start execution and return id", async () => {
@@ -43,7 +51,11 @@ describe("ExecutionManager", () => {
       prompt: "Test",
     };
 
-    const id = await manager.startExecution(request, mockWindow);
+    const id = await manager.startExecution(
+      request,
+      mockWindow,
+      mockApprovalGate,
+    );
     expect(id).toBe("test-id");
   });
 
@@ -57,6 +69,7 @@ describe("ExecutionManager", () => {
     const id = await manager.startExecution(
       request as AgentExecutionRequest,
       mockWindow,
+      mockApprovalGate,
     );
     expect(id).toBeDefined();
     expect(typeof id).toBe("string");
@@ -76,8 +89,8 @@ describe("ExecutionManager", () => {
       prompt: "Test 2",
     };
 
-    await manager.startExecution(request1, mockWindow);
-    await manager.startExecution(request2, mockWindow);
+    await manager.startExecution(request1, mockWindow, mockApprovalGate);
+    await manager.startExecution(request2, mockWindow, mockApprovalGate);
 
     const active = manager.getActiveExecutions();
     expect(active).toContain("exec-1");
@@ -92,7 +105,7 @@ describe("ExecutionManager", () => {
       prompt: "Test",
     };
 
-    await manager.startExecution(request, mockWindow);
+    await manager.startExecution(request, mockWindow, mockApprovalGate);
     const result = manager.stopExecution("exec-to-stop");
 
     expect(result).toBe(true);
@@ -117,8 +130,8 @@ describe("ExecutionManager", () => {
       prompt: "Test 2",
     };
 
-    await manager.startExecution(request1, mockWindow);
-    await manager.startExecution(request2, mockWindow);
+    await manager.startExecution(request1, mockWindow, mockApprovalGate);
+    await manager.startExecution(request2, mockWindow, mockApprovalGate);
 
     manager.stopAllExecutions();
 
@@ -133,7 +146,7 @@ describe("ExecutionManager", () => {
       prompt: "Test",
     };
 
-    await manager.startExecution(request, mockWindow);
+    await manager.startExecution(request, mockWindow, mockApprovalGate);
 
     const result = manager.resolvePermission("exec-perm", {
       requestId: "req-1",
@@ -166,8 +179,8 @@ describe("ExecutionManager", () => {
 
       // Start both concurrently
       const [id1, id2] = await Promise.all([
-        manager.startExecution(request1, mockWindow),
-        manager.startExecution(request2, mockWindow),
+        manager.startExecution(request1, mockWindow, mockApprovalGate),
+        manager.startExecution(request2, mockWindow, mockApprovalGate),
       ]);
 
       expect(id1).toBe("concurrent-1");
@@ -182,7 +195,7 @@ describe("ExecutionManager", () => {
         prompt: "Test",
       };
 
-      await manager.startExecution(request, mockWindow);
+      await manager.startExecution(request, mockWindow, mockApprovalGate);
 
       const result1 = manager.stopExecution("double-stop");
       const result2 = manager.stopExecution("double-stop");
@@ -202,7 +215,7 @@ describe("ExecutionManager", () => {
         prompt: "Test",
       };
 
-      await manager.startExecution(request, mockWindow);
+      await manager.startExecution(request, mockWindow, mockApprovalGate);
 
       // This should not throw, just return true/false
       const result = manager.resolvePermission("perm-test", {
@@ -220,6 +233,7 @@ describe("ExecutionManager", () => {
         await manager.startExecution(
           { executionId: `max-${i}`, prompt: "Test" },
           mockWindow,
+          mockApprovalGate,
         );
       }
 
@@ -228,6 +242,7 @@ describe("ExecutionManager", () => {
         manager.startExecution(
           { executionId: "max-6", prompt: "Test" },
           mockWindow,
+          mockApprovalGate,
         ),
       ).rejects.toThrow("Maximum concurrent executions");
     });

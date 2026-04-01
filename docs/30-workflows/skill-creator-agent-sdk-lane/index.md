@@ -68,7 +68,7 @@
 | TASK-TRACE-SKILL-AUTH-001          | `../completed-tasks/fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 ✅ 完了                                                |
 | TASK-FIX-IPC-TIMEOUT-001           | `fix-step1-par-ipc-timeout-per-channel/`                           | step1    | par      | IPCチャンネル別タイムアウト設定 ✅ PR#1823 完了                                                       |
 | TASK-FIX-AUTH-IPC-001              | `../completed-tasks/fix-step2-seq-auth-login-ipc-nonblocking/`     | step2    | seq      | auth:login ハンドラーの fire-and-forget 化 ✅ Phase-12 完了 #1829                                     |
-| TASK-FIX-EXECUTE-PLAN-FF-001       | `fix-step3-seq-execute-plan-nonblocking/`                          | step3    | seq      | skill-creator:execute-plan の fire-and-forget 化 + 長時間実行管理                                     |
+| TASK-FIX-EXECUTE-PLAN-FF-001       | `../completed-tasks/fix-step3-seq-execute-plan-nonblocking/`       | step3    | seq      | skill-creator:execute-plan の fire-and-forget 化 ✅ Phase-12 完了                                     |
 | TASK-NOTIFICATION-SERVICE-001      | `fix-step4-seq-notification-service/`                              | step4    | seq      | INotificationService + macOS 完了通知 + before-quit guard                                             |
 | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 | `fix-step5-seq-lifecycle-panel-error/`                             | step5    | seq      | SkillLifecyclePanel の setWorkflowError(null) 無条件クリアバグ修正（failed フェーズでエラー消去防止） |
 
@@ -103,8 +103,16 @@ fix-step1-par-ipc-timeout-per-channel        ─┘  ✅ PR#1823 完了
 ../completed-tasks/fix-step2-seq-auth-login-ipc-nonblocking  ✅ 完了 #1829
   ※ auth:login タイムアウトは 500ms（preload/ipc-utils.ts の CHANNEL_TIMEOUTS）
               ↓
+<<<<<<< Updated upstream
 [step3: 未着手]
 fix-step3-seq-execute-plan-nonblocking
+||||||| Stash base
+[step3: 直列実行]
+fix-step3-seq-execute-plan-nonblocking
+=======
+[step3: 直列実行]
+../completed-tasks/fix-step3-seq-execute-plan-nonblocking  ✅ 完了
+>>>>>>> Stashed changes
               ↓
 [step4: 未着手]
 fix-step4-seq-notification-service

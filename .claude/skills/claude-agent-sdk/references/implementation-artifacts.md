@@ -168,3 +168,32 @@
 - **DI Pattern**: `queryFn` パラメータで SDK 呼び出しを注入可能に
 - **Backup strategy**: 改善前にバックアップを自動作成
 - **Analysis categories**: static, ai, combined 分析モード
+
+---
+
+## UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 Approval Request Producer 接続
+
+### ドキュメント
+
+| ドキュメント    | パス                                                                                                               | 説明                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| タスク仕様書    | `docs/30-workflows/completed-tasks/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md`                | Why/What/How/苦戦箇所                        |
+| 設計書          | `docs/30-workflows/completed-tasks/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001-design.md`         | 設計詳細                                     |
+| Phase 12 成果物 | `docs/30-workflows/completed-tasks/approval-request-producer/outputs/phase-12/`                                   | 6ファイル（compliance-check / system-spec / changelog / unassigned-task-detection / skill-feedback / implementation-guide） |
+
+### 実装ファイル
+
+| ファイル              | パス                                                                                           | 説明                                             |
+| --------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| HooksFactory          | `apps/desktop/src/main/services/agent/HooksFactory.ts`                                         | PreToolUse に pushApprovalRequest() producer 接続 |
+| AgentExecutor         | `apps/desktop/src/main/services/agent/AgentExecutor.ts`                                        | sessionId 伝播                                   |
+| ExecutionManager      | `apps/desktop/src/main/services/agent/ExecutionManager.ts`                                     | sessionId 管理                                   |
+| agentHandlers         | `apps/desktop/src/main/ipc/agentHandlers.ts`                                                   | IPC handler 更新                                 |
+| index                 | `apps/desktop/src/main/ipc/index.ts`                                                           | IPC 登録確認                                     |
+| HooksFactory.producer | `apps/desktop/src/main/services/agent/__tests__/HooksFactory.producer.test.ts`                 | producer 発火テスト（新規）                      |
+
+主要パターン:
+
+- **Producer Pattern**: dangerous command 検出 → `pushApprovalRequest()` 発火 → `proceed: false`
+- **Session Correlation**: `sessionId` を constructor で受け取り、`operationId` は呼び出し側で `uuidv4()` 生成
+- **Non-blocking push**: IPC 送信と `proceed: false` は独立 — push 失敗でもブロックは維持

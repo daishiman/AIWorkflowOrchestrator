@@ -5,6 +5,50 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-EXECUTE-PLAN-FF-001（2026-04-01）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-FIX-EXECUTE-PLAN-FF-001 |
+| 完了日 | 2026-04-01 |
+| ステータス | **完了** |
+| タスク種別 | implementation / runtime IPC ack + snapshot relay |
+| Phase | Phase 1-13 完了（Phase 13 blocked） |
+| 対象 | `apps/desktop/src/preload/skill-creator-api.ts`, `apps/desktop/src/main/ipc/creatorHandlers.ts`, `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`, `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts`, `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`, `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`, `packages/shared/src/types/skillCreator.ts` |
+
+#### 成果物
+
+| 成果物 | パス/内容 |
+| --- | --- |
+| ワークフロー | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/` |
+| 実装ガイド | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/outputs/phase-12/implementation-guide.md` |
+| 仕様更新サマリー | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/outputs/phase-12/system-spec-update-summary.md` |
+| 更新履歴 | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/outputs/phase-12/documentation-changelog.md` |
+| 未タスク検出 | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/outputs/phase-12/unassigned-task-detection.md` |
+| スキルフィードバック | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/outputs/phase-12/skill-feedback-report.md` |
+| 準拠チェック | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/outputs/phase-12/phase12-task-spec-compliance-check.md` |
+
+#### 変更理由
+
+- `skill-creator:execute-plan` の public response を `{ accepted: true, planId }` の ack に切り替え、preload の正本契約を `SkillCreatorExecutePlanAck` に寄せる必要があった。
+- Renderer consumer は compat path と snapshot relay を同時に受けるため、ack の導入と consumer 差分の吸収を同一 wave で記録する必要があった。
+
+#### 実装要点
+
+- `skillCreatorAPI.executePlan()` は raw ack を `IpcResult<SkillCreatorExecutePlanAck>` へ変換し、`getWorkflowState()` / `onWorkflowStateChanged()` で snapshot relay を受ける。
+- `RuntimeSkillCreatorFacade.executeAsync()` は fire-and-forget 実行 API として `skill-creator:execute-plan` から分離した。
+- `SkillCreatorExecuteAsyncPhase` は内部 progress hook としてのみ扱い、Renderer public contract には持ち込まない。
+- follow-up は `TASK-SKILL-CREATOR-EXECUTE-PLAN-CONSUMER-ALIGNMENT-001` などとして backlog 側に残す。
+
+#### 検証結果
+
+| 項目 | 結果 |
+| --- | --- |
+| `pnpm exec vitest run --config vitest.config.ts ...` | 10 files / 136 tests PASS |
+| `pnpm --filter @repo/desktop exec tsc -p tsconfig.json --noEmit` | PASS |
+| `manual-test-result.md` | NON_VISUAL |
+| `phase12-task-spec-compliance-check.md` | PASS |
+
 ### タスク: UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001 Runtime Skill Creator public IPC wiring（2026-03-21完了）
 
 | 項目 | 内容 |

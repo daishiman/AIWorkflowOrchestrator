@@ -32,6 +32,33 @@
 - `pnpm --filter @repo/desktop typecheck`: PASS
 - `pnpm exec eslint apps/desktop/src/main/services/skill/SkillExecutor.ts apps/desktop/src/main/services/skill/__tests__/SkillExecutor.auth.test.ts`: PASS
 
+---
+
+### タスク: UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001（2026-04-02）
+
+| 項目       | 値                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001                                                                |
+| ステータス | **完了**                                                                                                   |
+| タイプ     | implementation / approval request producer 接続                                                            |
+| 優先度     | 高                                                                                                         |
+| 完了日     | 2026-04-02                                                                                                 |
+| 対象       | `apps/desktop/src/main/services/agent/HooksFactory.ts` / `apps/desktop/src/main/ipc/`                     |
+| 成果物     | `docs/30-workflows/completed-tasks/approval-request-producer/`                                             |
+
+#### 実施内容
+
+- `HooksFactory.ts` の PreToolUse hook に `pushApprovalRequest()` producer を接続（dangerous Bash 検出 → Approval Sheet 自動表示）
+- `sessionId` を constructor パラメータとして受け取り、`operationId` は `uuidv4()` で発火ごとに生成
+- `HooksFactory.producer.test.ts` を新規追加し、producer 発火パスの regression を確認
+- `AgentExecutor.ts`, `ExecutionManager.ts`, `agentHandlers.ts`, `index.ts` を sessionId 伝播に対応
+
+#### 検証証跡
+
+- `docs/30-workflows/completed-tasks/approval-request-producer/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- `HooksFactory.producer.test.ts`, `HooksFactory.test.ts`, `AgentExecutor.test.ts`, `ExecutionManager.test.ts` 全 PASS
+
+---
 ### タスク: TASK-FIX-IPC-TIMEOUT-001（2026-04-01）
 
 | 項目       | 値                                                                                                             |

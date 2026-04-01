@@ -55,6 +55,21 @@
 
 ---
 
+### Runtime Skill Creator Execute-plan Fire-and-Forget（2026-04-01）
+
+| 目的                                              | 最初に開くファイル                                                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| ack + snapshot relay の current facts             | `references/api-ipc-system-core.md`                                                                    |
+| security / response contract                      | `references/security-electron-ipc-details.md`                                                         |
+| fire-and-forget の owner 分離                     | `references/architecture-overview-core.md`                                                            |
+| public IPC / renderer bridge の整合               | `references/api-ipc-agent-core.md`                                                                    |
+| completed ledger                                  | `references/task-workflow-completed-ipc-contract-preload-alignment.md`                               |
+| follow-up backlog                                 | `references/task-workflow-backlog.md`                                                                 |
+| lessons                                           | `references/lessons-learned-ipc-preload-runtime.md`                                                   |
+| workflow root                                     | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/`                                           |
+
+---
+
 ### Runtime Skill Creator Resource Selection Hardening（2026-03-27）
 
 | 目的                                              | 最初に開くファイル                                                                                     |

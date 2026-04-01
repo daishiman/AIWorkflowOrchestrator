@@ -9,6 +9,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { AgentExecutor } from "../AgentExecutor";
 import type { BrowserWindow } from "electron";
 import type { AgentExecutionRequest } from "@repo/shared";
+import type { IApprovalGate } from "../../runtime/ApprovalGate";
 
 // SDK モック
 vi.mock("@anthropic-ai/claude-agent-sdk", () => ({
@@ -20,6 +21,7 @@ import { query } from "@anthropic-ai/claude-agent-sdk";
 describe("AgentExecutor", () => {
   let mockWindow: BrowserWindow;
   let mockRequest: AgentExecutionRequest;
+  let mockApprovalGate: IApprovalGate;
 
   beforeEach(() => {
     mockWindow = {
@@ -27,6 +29,12 @@ describe("AgentExecutor", () => {
         send: vi.fn(),
       },
     } as unknown as BrowserWindow;
+    mockApprovalGate = {
+      grantApproval: vi.fn(),
+      rejectApproval: vi.fn(),
+      checkApproval: vi.fn(),
+      revokeAll: vi.fn(),
+    };
 
     mockRequest = {
       executionId: "test-exec-id",
@@ -46,7 +54,11 @@ describe("AgentExecutor", () => {
 
     (query as vi.Mock).mockReturnValue(mockStream);
 
-    const executor = new AgentExecutor(mockRequest, mockWindow);
+    const executor = new AgentExecutor(
+      mockRequest,
+      mockWindow,
+      mockApprovalGate,
+    );
     await executor.start();
 
     expect(query).toHaveBeenCalledWith(
@@ -68,7 +80,11 @@ describe("AgentExecutor", () => {
 
     (query as vi.Mock).mockReturnValue(mockStream);
 
-    const executor = new AgentExecutor(mockRequest, mockWindow);
+    const executor = new AgentExecutor(
+      mockRequest,
+      mockWindow,
+      mockApprovalGate,
+    );
     await executor.start();
 
     expect(mockWindow.webContents.send).toHaveBeenCalledWith(
@@ -87,7 +103,11 @@ describe("AgentExecutor", () => {
 
     (query as vi.Mock).mockReturnValue(mockStream);
 
-    const executor = new AgentExecutor(mockRequest, mockWindow);
+    const executor = new AgentExecutor(
+      mockRequest,
+      mockWindow,
+      mockApprovalGate,
+    );
     await executor.start();
 
     expect(mockWindow.webContents.send).toHaveBeenCalledWith(
@@ -107,7 +127,11 @@ describe("AgentExecutor", () => {
 
     (query as vi.Mock).mockReturnValue(mockStream);
 
-    const executor = new AgentExecutor(mockRequest, mockWindow);
+    const executor = new AgentExecutor(
+      mockRequest,
+      mockWindow,
+      mockApprovalGate,
+    );
     const startPromise = executor.start();
 
     executor.stop();
@@ -128,7 +152,11 @@ describe("AgentExecutor", () => {
       throw new Error("SDK Error");
     });
 
-    const executor = new AgentExecutor(mockRequest, mockWindow);
+    const executor = new AgentExecutor(
+      mockRequest,
+      mockWindow,
+      mockApprovalGate,
+    );
     await executor.start();
 
     expect(mockWindow.webContents.send).toHaveBeenCalledWith(
@@ -159,7 +187,12 @@ describe("AgentExecutor", () => {
     const mockStream = (async function* () {})();
     (query as vi.Mock).mockReturnValue(mockStream);
 
-    const executor = new AgentExecutor(mockRequest, mockWindow, customRules);
+    const executor = new AgentExecutor(
+      mockRequest,
+      mockWindow,
+      mockApprovalGate,
+      customRules,
+    );
     await executor.start();
 
     expect(query).toHaveBeenCalledWith(
@@ -183,7 +216,11 @@ describe("AgentExecutor", () => {
 
       (query as vi.Mock).mockReturnValue(mockStream);
 
-      const executor = new AgentExecutor(mockRequest, mockWindow);
+      const executor = new AgentExecutor(
+        mockRequest,
+        mockWindow,
+        mockApprovalGate,
+      );
       await executor.start();
 
       expect(mockWindow.webContents.send).toHaveBeenCalledWith(
@@ -199,7 +236,11 @@ describe("AgentExecutor", () => {
         throw new Error("Request timeout");
       });
 
-      const executor = new AgentExecutor(mockRequest, mockWindow);
+      const executor = new AgentExecutor(
+        mockRequest,
+        mockWindow,
+        mockApprovalGate,
+      );
       await executor.start();
 
       expect(mockWindow.webContents.send).toHaveBeenCalledWith(
@@ -220,7 +261,11 @@ describe("AgentExecutor", () => {
 
       (query as vi.Mock).mockReturnValue(mockStream);
 
-      const executor = new AgentExecutor(mockRequest, mockWindow);
+      const executor = new AgentExecutor(
+        mockRequest,
+        mockWindow,
+        mockApprovalGate,
+      );
       await executor.start();
 
       // Should complete successfully even with invalid messages
@@ -239,7 +284,11 @@ describe("AgentExecutor", () => {
 
       (query as vi.Mock).mockReturnValue(mockStream);
 
-      const executor = new AgentExecutor(mockRequest, mockWindow);
+      const executor = new AgentExecutor(
+        mockRequest,
+        mockWindow,
+        mockApprovalGate,
+      );
       await executor.start();
 
       expect(mockWindow.webContents.send).toHaveBeenCalledWith(
@@ -259,7 +308,11 @@ describe("AgentExecutor", () => {
       const mockStream = (async function* () {})();
       (query as vi.Mock).mockReturnValue(mockStream);
 
-      const executor = new AgentExecutor(requestWithoutDir, mockWindow);
+      const executor = new AgentExecutor(
+        requestWithoutDir,
+        mockWindow,
+        mockApprovalGate,
+      );
       await executor.start();
 
       // Should not throw
@@ -271,7 +324,11 @@ describe("AgentExecutor", () => {
 
       (query as vi.Mock).mockReturnValue(mockStream);
 
-      const executor = new AgentExecutor(mockRequest, mockWindow);
+      const executor = new AgentExecutor(
+        mockRequest,
+        mockWindow,
+        mockApprovalGate,
+      );
       await executor.start();
 
       expect(mockWindow.webContents.send).toHaveBeenCalledWith(
