@@ -70,6 +70,26 @@ TokenRefreshSchedulerによるセッション有効期限の自動延長。Main 
 
 ---
 
+## OAuth ログインフローの state ownership（TASK-FIX-AUTH-IPC-001）
+
+`auth:login` IPC は fire-and-forget パターンで動作する。state の所有者と通知責務は以下のとおり。
+
+| コンポーネント             | 責務                                                                                          |
+| -------------------------- | --------------------------------------------------------------------------------------------- |
+| `authHandlers.ts`（IPC）   | OAuth フローの**起動のみ**。`{ success: true }` を即時返却。`AUTH_STATE_CHANGED` を送信しない |
+| `AuthFlowOrchestrator`     | OAuth フロー実行・完了検出・`AUTH_STATE_CHANGED` イベント送信（成功/失敗）                    |
+| `authSlice.ts`（Renderer） | `AUTH_STATE_CHANGED` を受信して認証状態を更新                                                 |
+
+**設計制約**:
+
+- `auth:login` handler は `AUTH_STATE_CHANGED` を二重送信しない（通知責務は Orchestrator に固定）
+- `CHANNEL_TIMEOUTS["auth:login"] = 500ms` のため、handler は OAuth 完了を await しない
+- preload surface（`safeInvoke('auth:login', ...)`）の型・チャンネル名は変更なし
+
+**関連タスク**: TASK-FIX-AUTH-IPC-001（2026-04-01 完了）
+
+---
+
 ## 認証アーキテクチャ（Supabase + Electron）
 
 ### 認証基盤
@@ -133,45 +153,45 @@ TokenRefreshSchedulerによるセッション有効期限の自動延長。Main 
 
 ### IPCチャネル（認証）
 
-| チャネル                | 方向            | 用途                 |
-| ----------------------- | --------------- | -------------------- |
-| `auth:login`            | Renderer → Main | OAuth ログイン開始   |
-| `auth:logout`           | Renderer → Main | ログアウト           |
-| `auth:get-session`      | Renderer → Main | セッション取得       |
-| `auth:refresh`          | Renderer → Main | トークンリフレッシュ |
-| `auth:check-online`     | Renderer → Main | オンライン状態確認   |
-| `auth:state-changed`    | Main → Renderer | 認証状態変更通知     |
-| `profile:get`           | Renderer → Main | プロフィール取得     |
-| `profile:update`        | Renderer → Main | プロフィール更新     |
-| `profile:delete`        | Renderer → Main | プロフィール削除     |
-| `profile:get-providers` | Renderer → Main | 連携プロバイダー一覧 |
-| `profile:link-provider` | Renderer → Main | 新規プロバイダー連携 |
-| `profile:unlink-provider` | Renderer → Main | プロバイダー連携解除 |
-| `profile:update-timezone` | Renderer → Main | タイムゾーン更新   |
-| `profile:update-locale` | Renderer → Main | ロケール更新         |
-| `profile:update-notifications` | Renderer → Main | 通知設定更新 |
-| `profile:export`        | Renderer → Main | プロフィールエクスポート |
-| `profile:import`        | Renderer → Main | プロフィールインポート |
-| `avatar:upload`         | Renderer → Main | アバター画像アップロード |
-| `avatar:use-provider`   | Renderer → Main | Provider 画像採用 |
-| `avatar:remove`         | Renderer → Main | アバター削除 |
+| チャネル                       | 方向            | 用途                     |
+| ------------------------------ | --------------- | ------------------------ |
+| `auth:login`                   | Renderer → Main | OAuth ログイン開始       |
+| `auth:logout`                  | Renderer → Main | ログアウト               |
+| `auth:get-session`             | Renderer → Main | セッション取得           |
+| `auth:refresh`                 | Renderer → Main | トークンリフレッシュ     |
+| `auth:check-online`            | Renderer → Main | オンライン状態確認       |
+| `auth:state-changed`           | Main → Renderer | 認証状態変更通知         |
+| `profile:get`                  | Renderer → Main | プロフィール取得         |
+| `profile:update`               | Renderer → Main | プロフィール更新         |
+| `profile:delete`               | Renderer → Main | プロフィール削除         |
+| `profile:get-providers`        | Renderer → Main | 連携プロバイダー一覧     |
+| `profile:link-provider`        | Renderer → Main | 新規プロバイダー連携     |
+| `profile:unlink-provider`      | Renderer → Main | プロバイダー連携解除     |
+| `profile:update-timezone`      | Renderer → Main | タイムゾーン更新         |
+| `profile:update-locale`        | Renderer → Main | ロケール更新             |
+| `profile:update-notifications` | Renderer → Main | 通知設定更新             |
+| `profile:export`               | Renderer → Main | プロフィールエクスポート |
+| `profile:import`               | Renderer → Main | プロフィールインポート   |
+| `avatar:upload`                | Renderer → Main | アバター画像アップロード |
+| `avatar:use-provider`          | Renderer → Main | Provider 画像採用        |
+| `avatar:remove`                | Renderer → Main | アバター削除             |
 
 ### Supabase 未設定時の fallback ルーティング
 
-| 条件 | Main Process の動作 | Renderer への影響 |
-| ---- | ------------------- | ----------------- |
-| Supabase 設定あり | `registerAuthHandlers` / `registerProfileHandlers` / `registerAvatarHandlers` を登録 | 通常の認証・プロフィール操作が利用可能 |
+| 条件              | Main Process の動作                                                                                          | Renderer への影響                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------- |
+| Supabase 設定あり | `registerAuthHandlers` / `registerProfileHandlers` / `registerAvatarHandlers` を登録                         | 通常の認証・プロフィール操作が利用可能                              |
 | Supabase 設定なし | `registerAuthFallbackHandlers` / `registerProfileFallbackHandlers` / `registerAvatarFallbackHandlers` を登録 | `success: false` の error envelope を受け取り、画面クラッシュを防止 |
 
 この fallback ルーティングは `ipcMain.handle()` の二重登録を避けるため、`getSupabaseClient()` の if/else 分岐で排他的に扱う。
 
 #### fallback ハンドラ詳細（TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001）
 
-| ハンドラグループ | チャネル数 | error code | 実装関数 |
-| ---------------- | ---------- | ---------- | -------- |
-| Auth fallback | 5 | `AUTH_ERROR_CODES.AUTH_NOT_CONFIGURED` | `registerAuthFallbackHandlers()` |
-| Profile fallback | 11 | `PROFILE_ERROR_CODES.NOT_CONFIGURED` | `registerProfileFallbackHandlers()` |
-| Avatar fallback | 3 | `AVATAR_ERROR_CODES.NOT_CONFIGURED` | `registerAvatarFallbackHandlers()` |
+| ハンドラグループ | チャネル数 | error code                             | 実装関数                            |
+| ---------------- | ---------- | -------------------------------------- | ----------------------------------- |
+| Auth fallback    | 5          | `AUTH_ERROR_CODES.AUTH_NOT_CONFIGURED` | `registerAuthFallbackHandlers()`    |
+| Profile fallback | 11         | `PROFILE_ERROR_CODES.NOT_CONFIGURED`   | `registerProfileFallbackHandlers()` |
+| Avatar fallback  | 3          | `AVATAR_ERROR_CODES.NOT_CONFIGURED`    | `registerAvatarFallbackHandlers()`  |
 
 **共通設計原則**:
 
@@ -182,11 +202,11 @@ TokenRefreshSchedulerによるセッション有効期限の自動延長。Main 
 
 #### 苦戦箇所と再利用指針（TASK-FIX-SUPABASE-FALLBACK-PROFILE-AVATAR-001）
 
-| 苦戦箇所 | 再発条件 | 解決策 | 標準ルール |
-| --- | --- | --- | --- |
-| fallback 対象が Auth に偏り、Profile / Avatar が runtime で抜ける | `registerAllIpcHandlers()` の fallback 分岐をチャネル群単位で見ず、個別修正で終える | Auth / Profile / Avatar を同じ宣言的登録パターンへ揃え、総チャネル数 19 を integration test で固定する | Supabase 依存 handler 追加時は fallback 群をドメイン単位で同時確認する |
-| 画面契約の確認が App shell 初期化に引きずられる | ナビゲーション経路の不安定さを抱えたまま screenshot を取得する | 同一 view を直描画する harness route を用意し、本番 Store / 公開 contract を維持したまま撮影する | アーキテクチャ確認でも「contract を壊さない最短導線」を優先する |
-| transport message と UI message の責務が混ざる | Main の fallback 文言を Renderer がそのまま表示する | `error.code` を UI 分岐の正本にし、localized message は Renderer で決定する。transport `message` は fallback 文言に限定する | error envelope は transport 用、最終文言は UI 用と責務分離する |
+| 苦戦箇所                                                          | 再発条件                                                                            | 解決策                                                                                                                      | 標準ルール                                                             |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| fallback 対象が Auth に偏り、Profile / Avatar が runtime で抜ける | `registerAllIpcHandlers()` の fallback 分岐をチャネル群単位で見ず、個別修正で終える | Auth / Profile / Avatar を同じ宣言的登録パターンへ揃え、総チャネル数 19 を integration test で固定する                      | Supabase 依存 handler 追加時は fallback 群をドメイン単位で同時確認する |
+| 画面契約の確認が App shell 初期化に引きずられる                   | ナビゲーション経路の不安定さを抱えたまま screenshot を取得する                      | 同一 view を直描画する harness route を用意し、本番 Store / 公開 contract を維持したまま撮影する                            | アーキテクチャ確認でも「contract を壊さない最短導線」を優先する        |
+| transport message と UI message の責務が混ざる                    | Main の fallback 文言を Renderer がそのまま表示する                                 | `error.code` を UI 分岐の正本にし、localized message は Renderer で決定する。transport `message` は fallback 文言に限定する | error envelope は transport 用、最終文言は UI 用と責務分離する         |
 
 ### 認証UIコンポーネント
 
@@ -390,4 +410,3 @@ RAGシステムのコア機能として、SQLite FTS5による高速全文検索
 - 検索設計: `docs/30-workflows/rag-conversion-system/design-chunks-search.md`
 
 ---
-
