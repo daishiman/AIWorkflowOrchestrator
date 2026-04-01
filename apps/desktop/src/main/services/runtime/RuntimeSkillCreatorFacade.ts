@@ -820,9 +820,13 @@ export class RuntimeSkillCreatorFacade {
         }));
       sourceProvenance = resolved.sourceProvenance;
     } else if (this.resourceLoader) {
-      for (const name of PLAN_PROMPT_CONSTANTS.AGENT_NAMES) {
-        const content = await this.resourceLoader.loadAgent(name);
-        agentSpecs.push({ name, content });
+      // fallback path: PLAN_RESOURCE_REQUESTS が唯一の source of truth。
+      // kind === "agent" のエントリのみを agent 名として使用し、reference が混入しない。
+      for (const request of PLAN_RESOURCE_REQUESTS.filter(
+        (r) => r.kind === "agent",
+      )) {
+        const content = await this.resourceLoader.loadAgent(request.id);
+        agentSpecs.push({ name: request.id, content });
       }
       sourceProvenance = this.buildSourceProvenance();
     }
