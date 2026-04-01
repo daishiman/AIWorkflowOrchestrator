@@ -62,11 +62,11 @@
 スキル生成時に発生する `auth:login` IPC タイムアウトエラーの修正タスク群。
 30種の思考法による多角的分析（2026-04-01 実施）に基づき設計。
 
-| タスクID                  | ディレクトリ                                    | ステップ | パターン | 責務                                           |
-| ------------------------- | ----------------------------------------------- | -------- | -------- | ---------------------------------------------- |
-| TASK-TRACE-SKILL-AUTH-001 | `fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 |
-| TASK-FIX-IPC-TIMEOUT-001  | `fix-step1-par-ipc-timeout-per-channel/`        | step1    | par      | IPCチャンネル別タイムアウト設定                |
-| TASK-FIX-AUTH-IPC-001     | `fix-step2-seq-auth-login-ipc-nonblocking/`     | step2    | seq      | auth:login ハンドラーの fire-and-forget 化     |
+| タスクID                  | ディレクトリ                                                       | ステップ | パターン | 責務                                           |
+| ------------------------- | ------------------------------------------------------------------ | -------- | -------- | ---------------------------------------------- |
+| TASK-TRACE-SKILL-AUTH-001 | `../completed-tasks/fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 |
+| TASK-FIX-IPC-TIMEOUT-001  | `fix-step1-par-ipc-timeout-per-channel/`                           | step1    | par      | IPCチャンネル別タイムアウト設定                |
+| TASK-FIX-AUTH-IPC-001     | `fix-step2-seq-auth-login-ipc-nonblocking/`                        | step2    | seq      | auth:login ハンドラーの fire-and-forget 化     |
 
 ### 推奨実行順（IPC修正タスク）
 

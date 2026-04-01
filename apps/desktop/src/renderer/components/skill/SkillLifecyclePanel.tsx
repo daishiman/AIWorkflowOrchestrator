@@ -442,6 +442,7 @@ export function SkillLifecyclePanel({
   ]);
 
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
+  const isPrepareFlowActiveRef = useRef(false);
 
   const clearPlanExecutionState = useCallback(() => {
     setLocalPlanResult(null);
@@ -755,7 +756,9 @@ export function SkillLifecyclePanel({
 
     // R-1: isGenerating ガード（二重呼出防止）
     if (isGenerating) return;
+    if (isPrepareFlowActiveRef.current) return;
 
+    isPrepareFlowActiveRef.current = true;
     clearSkillError();
     setLocalError(null);
     setIsPreparing(true);
@@ -862,6 +865,7 @@ export function SkillLifecyclePanel({
         error instanceof Error ? error.message : "mode 判定に失敗しました。",
       );
     } finally {
+      isPrepareFlowActiveRef.current = false;
       setIsPreparing(false);
     }
   };
