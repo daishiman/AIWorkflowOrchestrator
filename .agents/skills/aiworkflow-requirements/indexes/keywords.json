@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-01T04:59:19.178Z",
-  "totalKeywords": 2626,
+  "generated": "2026-04-01T11:13:57.124Z",
+  "totalKeywords": 2630,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2613,6 +2613,7 @@
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
@@ -3926,6 +3927,7 @@
     "creator": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
@@ -6348,6 +6350,7 @@
     "timeout": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-test-typesafety.md",
+      "security-electron-ipc-advanced.md",
       "task-workflow-completed-skill-lifecycle-archive-2026-03.md",
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-ut-06-safety-gate.md",
@@ -6444,7 +6447,6 @@
     "SAFEINVOKE": [
       "lessons-learned-auth-ipc-safeinvoke-timeout.md",
       "logs-archive-2026-03-history-search-notification-center.md",
-      "security-electron-ipc-advanced.md",
       "task-workflow-completed-agent-view-line-budget.md"
     ],
     "TIMEOUT": [
@@ -7090,6 +7092,15 @@
     "review": [
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-history-search-notification-center.md"
+    ],
+    "DIALOG": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "MANDATORY": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "対話強制": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
@@ -10357,7 +10368,10 @@
     "自動更新のセキュリティ": [
       "security-electron-ipc-advanced.md"
     ],
-    "タイムアウト": [
+    "invokeWithTimeout": [
+      "security-electron-ipc-advanced.md"
+    ],
+    "チャンネル別": [
       "security-electron-ipc-advanced.md"
     ],
     "cleanup": [
