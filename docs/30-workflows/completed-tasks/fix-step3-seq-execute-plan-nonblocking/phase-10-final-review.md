@@ -12,7 +12,7 @@
 
 ## 目的
 
-Phase 1〜9 の全成果物を総合的に確認し、PR 作成（Phase 13）に向けてリリース可否を判定する。AC-1〜AC-6 が全て満たされていることを最終確認する。
+Phase 1〜9 の全成果物を総合的に確認し、Phase 13 blocked 前提でリリース可否を判定する。AC-1〜AC-6 が全て満たされていることを最終確認する。
 
 ## 実行タスク
 
@@ -36,14 +36,14 @@ Phase 1〜9 の全成果物を総合的に確認し、PR 作成（Phase 13）に
 
 ### ステップ 1: AC 充足の最終確認
 
-| AC   | 受入条件                                                       | 成果物 / 証拠                  | 判定 |
-| ---- | -------------------------------------------------------------- | ------------------------------ | ---- |
-| AC-1 | ハンドラーが 100ms 以内に `{ accepted: true, planId }` を返す  | TC-T2-01 PASS                  | TBD  |
-| AC-2 | `executeAsync()` が Agent SDK `query()` を呼ぶ                 | TC-T2-02, TC-T4-01 PASS        | TBD  |
-| AC-3 | フェーズ遷移時に `webContents.send(STATE_CHANGED, ...)` が発火 | TC-T3-02, TC-T4-01 PASS        | TBD  |
-| AC-4 | `CHANNEL_TIMEOUTS['skill-creator:execute-plan']` === 1_800_000 | TC-T1-01, TC-T1-02 PASS        | TBD  |
-| AC-5 | 既存 `safeInvoke` 互換性（breaking change なし）               | Phase 9 全テスト PASS          | TBD  |
-| AC-6 | `onPhaseChanged` が型安全に定義                                | TC-T3-04 PASS、型チェック PASS | TBD  |
+| AC   | 受入条件                                                                       | 成果物 / 証拠                                            | 判定 |
+| ---- | ------------------------------------------------------------------------------ | -------------------------------------------------------- | ---- |
+| AC-1 | ハンドラーが 100ms 以内に `{ accepted: true, planId }` を返す                  | TC-T2-01 PASS                                            | TBD  |
+| AC-2 | `executeAsync()` が Agent SDK `query()` を呼ぶ                                 | TC-T2-02, TC-T4-01 PASS                                  | TBD  |
+| AC-3 | `onWorkflowStateSnapshot` 経由で `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` が発火 | TC-T3-02, TC-T4-01/02 PASS                               | TBD  |
+| AC-4 | `CHANNEL_TIMEOUTS['skill-creator:execute-plan']` === 1_800_000                 | TC-T1-01, TC-T1-02 PASS                                  | TBD  |
+| AC-5 | `skillCreatorAPI.executePlan` の consumer 契約の再整合方針が記録されている     | Phase 9 の consumer 影響確認、Phase 12 の follow-up 記録 | TBD  |
+| AC-6 | `onPhaseChanged` が型安全に定義                                                | TC-T3-04 PASS、型チェック PASS                           | TBD  |
 
 ### ステップ 2: リリース可否チェックリスト
 
@@ -51,9 +51,9 @@ Phase 1〜9 の全成果物を総合的に確認し、PR 作成（Phase 13）に
 
 - [ ] AC-1: ハンドラーが 100ms 以内に `{ accepted: true, planId }` を返す
 - [ ] AC-2: `executeAsync` がバックグラウンドで Agent SDK `query()` を呼ぶ
-- [ ] AC-3: 各フェーズ遷移で `webContents.send(SKILL_CREATOR_WORKFLOW_STATE_CHANGED, ...)` が発火する
+- [ ] AC-3: `onWorkflowStateSnapshot` 経由で `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` が発火する
 - [ ] AC-4: `CHANNEL_TIMEOUTS` に `"skill-creator:execute-plan": 1_800_000` が登録されている
-- [ ] AC-5: 既存 `safeInvoke` 互換性が保たれている（Renderer 変更なし）
+- [ ] AC-5: `skillCreatorAPI.executePlan` の consumer 契約再整合方針が記録されている
 - [ ] AC-6: `SkillCreatorWorkflowEngine.onPhaseChanged` が型安全に定義されている
 
 #### テスト品質
@@ -89,11 +89,12 @@ Phase 1〜9 の全成果物を総合的に確認し、PR 作成（Phase 13）に
 - いずれかの AC が未充足
 - テスト失敗が残存
 - 型エラーまたは ESLint エラーが残存
+- `skillCreatorAPI.executePlan` の consumer 契約再整合方針が未記録
 
 ## 多角的チェック観点
 
 - 30 分スキル生成タスクが実際に完了まで実行できる保証があるか（`CHANNEL_TIMEOUTS` + fire-and-forget の組み合わせ）
-- Renderer 側が戻り値 `{ accepted: true, planId }` を受け取った後、`SKILL_CREATOR_WORKFLOW_STATE_CHANGED` イベントを待つ処理になっているか確認したか
+- `SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx` の consumer 契約差分が記録され、後続の再整合対象として切り出されているか確認したか
 - Phase 11 の手動テストで確認する「NON_VISUAL 理由」が準備されているか
 
 ## 成果物

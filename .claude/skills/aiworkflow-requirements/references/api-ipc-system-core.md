@@ -452,11 +452,13 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | チャンネル | 用途 | Request | Response |
 | --- | --- | --- | --- |
 | `skill-creator:plan` | runtime plan 作成 | `SkillCreatorPlanRequest` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
-| `skill-creator:execute-plan` | plan 実行 | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
+| `skill-creator:execute-plan` | plan 実行 | `SkillCreatorExecutePlanRequest` | `IpcResult<SkillCreatorExecutePlanAck>` |
 | `skill-creator:improve-skill` | runtime 改善 | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `skill-creator:get-verify-detail` | verify detail 取得 | `SkillCreatorGetVerifyDetailRequest` | `IpcResult<RuntimeSkillCreatorVerifyDetailResponse>` |
 | `skill-creator:reverify-workflow` | verify loop 再要求 | `SkillCreatorReverifyWorkflowRequest` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
 | `skill-creator:get-governance-state` | runtime governance state 取得 | なし | `IpcResult<SkillCreatorGovernanceState>` |
+
+`skill-creator:execute-plan` は `{ accepted: true, planId }` の ack を正本とし、完了状態の反映は `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay を介して行う。Renderer の compat path が旧 execute result を受ける場合は follow-up task で統一する。
 
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 

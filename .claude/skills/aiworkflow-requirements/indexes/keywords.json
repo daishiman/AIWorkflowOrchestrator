@@ -6091,6 +6091,7 @@
     ],
     "EXECUTE": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
@@ -6990,6 +6991,12 @@
     "WIZARD": [
       "lessons-learned-ipc-preload-runtime.md",
       "ui-ux-navigation.md"
+    ],
+    "PLAN": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "FF": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "BETTER": [
       "lessons-learned-ipc-preload-runtime.md"

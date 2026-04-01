@@ -35,7 +35,10 @@
     },
     "phase-6": {
       "status": "not_started",
-      "artifacts": ["outputs/phase-6/test-expansion-report.md"]
+      "artifacts": [
+        "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts",
+        "outputs/phase-6/test-expansion-report.md"
+      ]
     },
     "phase-7": {
       "status": "not_started",
@@ -64,12 +67,13 @@
         "outputs/phase-12/system-spec-update-summary.md",
         "outputs/phase-12/documentation-changelog.md",
         "outputs/phase-12/unassigned-task-detection.md",
-        "outputs/phase-12/skill-feedback-report.md"
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
       ]
     },
     "phase-13": {
-      "status": "not_started",
-      "artifacts": ["GitHub Pull Request"]
+      "status": "blocked",
+      "artifacts": ["Phase 13 blocked（ユーザー明示承認待ち）"]
     }
   }
 }

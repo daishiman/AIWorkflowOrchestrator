@@ -41,8 +41,8 @@ Phase 5 の実装コードを確認し、可読性・保守性・型安全性の
 // 確認ポイント: コメントが以下の 3 点を説明しているか
 // 1. なぜ await しないか（IPC タイムアウト回避）
 // 2. バックグラウンドで何が行われるか（Agent SDK query() の非同期実行）
-// 3. エラーはどこで通知されるか（SKILL_CREATOR_WORKFLOW_STATE_CHANGED）
-void facade.executeAsync(planId, req);
+// 3. エラーはどこで通知されるか（onWorkflowStateSnapshot → SKILL_CREATOR_WORKFLOW_STATE_CHANGED）
+void runtimeSkillCreatorService.executeAsync(planId, args);
 ```
 
 **`RuntimeSkillCreatorFacade.ts`** の `executeAsync` コメントが onPhaseChanged のワイヤリング目的を説明しているか確認する。
@@ -51,22 +51,22 @@ void facade.executeAsync(planId, req);
 
 以下の場所でエラーログの追加を検討する:
 
-| 箇所                             | 推奨 | 理由                       |
-| -------------------------------- | ---- | -------------------------- |
-| `executeAsync` の catch ブロック | 推奨 | 本番環境でのデバッグに必要 |
-| `onPhaseChanged` 呼び出し前後    | 不要 | 過剰なログは避ける         |
+| 箇所                             | 推奨     | 理由                                                     |
+| -------------------------------- | -------- | -------------------------------------------------------- |
+| `executeAsync` の catch ブロック | 追加済み | `console.error` で planId と errorMessage を保持している |
+| `onPhaseChanged` 呼び出し前後    | 不要     | 過剰なログは避ける                                       |
 
 ```typescript
-// 推奨: executeAsync の catch に logger.error を追加
+// 既存実装: executeAsync の catch で errorMessage を取り出し、snapshot がなければ onWorkflowStateSnapshot に渡す
 } catch (error) {
-  logger.error('[RuntimeSkillCreatorFacade] execute-plan failed', {
-    planId,
-    error: error instanceof Error ? error.message : String(error),
-  });
-  this.mainWindow.webContents.send(
-    SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
-    { planId, phase: 'failed', progress: 0, error: sanitizeErrorMessage(error) }
-  );
+  this.workflowEngine.triggerPhaseTransition(planId, "error", 0);
+  const errorMessage =
+    error instanceof Error ? error.message : String(error);
+  const snapshot = this.workflowEngine.getWorkflowState(planId);
+  if (!snapshot) {
+    this.onWorkflowStateSnapshot?.(planId, null, errorMessage);
+  }
+  console.error("[RuntimeSkillCreatorFacade] executeAsync failed", planId, errorMessage);
 }
 ```
 
@@ -74,21 +74,22 @@ void facade.executeAsync(planId, req);
 
 **確認ポイント**:
 
-1. `onPhaseChanged` の型パラメータが `WorkflowPhase` 型（string リテラル共用体）を正しく使っているか
-2. `ExecutePlanRequest` 型が `req` 引数に正しく適用されているか
-3. `PhaseChangedCallback` の型定義が `WorkflowPhase` と一致しているか
+1. `onPhaseChanged` の型パラメータが `SkillCreatorExecuteAsyncPhase` 型（string リテラル共用体）を正しく使っているか
+2. `SkillCreatorExecutePlanRequest` 型が `req` 引数に正しく適用されているか
+3. `PhaseChangedCallback` の型定義が `planId / phase / progress` と一致しているか
 
 ```typescript
-// 確認: PhaseChangedCallback の型が WorkflowPhase を使っているか
+// 確認: PhaseChangedCallback の型が planId / phase / progress を使っているか
 export type PhaseChangedCallback = (
-  phase: WorkflowPhase, // 'analyzing' | 'designing' | ... | 'failed'
+  planId: string,
+  phase: SkillCreatorExecuteAsyncPhase, // 'executing' | 'complete' | 'error'
   progress: number, // 0-100
 ) => void;
 ```
 
 ### ステップ 4: void キーワードの使用方針確認
 
-`void facade.executeAsync(planId, req)` のパターンが ESLint ルールに準拠しているか確認:
+`void runtimeSkillCreatorService.executeAsync(planId, args)` のパターンが ESLint ルールに準拠しているか確認:
 
 ```bash
 # ESLint の no-floating-promises チェック
@@ -101,12 +102,12 @@ pnpm --filter @repo/desktop lint src/main/ipc/creatorHandlers.ts
 
 以下はスコープ外のため変更しない:
 
-| 変更しないもの                                  | 理由                    |
-| ----------------------------------------------- | ----------------------- |
-| `CHANNEL_TIMEOUTS` の値（1_800_000）            | P0 暫定値として確定済み |
-| `SkillCreatorWorkflowEngine` の内部実行ロジック | 修正スコープ外          |
-| Renderer 側のコード                             | 本タスクのスコープ外    |
-| `safeInvoke` の実装                             | PR#1823 で確定済み      |
+| 変更しないもの                                  | 理由                                                                        |
+| ----------------------------------------------- | --------------------------------------------------------------------------- |
+| `CHANNEL_TIMEOUTS` の値（1_800_000）            | P0 暫定値として確定済み                                                     |
+| `SkillCreatorWorkflowEngine` の内部実行ロジック | 修正スコープ外                                                              |
+| Renderer 側のコード                             | 本 Phase では直接修正しないが、consumer 契約の差分は Phase 3 / 9 で確認する |
+| `safeInvoke` の実装                             | PR#1823 で確定済み                                                          |
 
 ### ステップ 6: リファクタリング後のテスト再実行
 
@@ -131,7 +132,7 @@ pnpm --filter @repo/desktop lint \
 ## 多角的チェック観点
 
 - リファクタリングでコードの振る舞いが変わっていないか（テストが Green のまま確認）
-- エラーログの追加で機密情報がログに出力されないか（`sanitizeErrorMessage` の適用確認）
+- エラーログの追加で機密情報がログに出力されないか（必要なら後続タスクで sanitizer を導入する）
 - `void` キーワードのコメントが「意図的なfire-and-forget」であることを明示しているか
 - `PhaseChangedCallback` 型が外部 Facade から import して使えるよう `export` されているか
 

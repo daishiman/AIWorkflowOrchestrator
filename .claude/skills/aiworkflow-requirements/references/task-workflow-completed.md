@@ -5,6 +5,7 @@
 
 ## 完了タスク
 
+
 ### タスク: TASK-FIX-ENV-STRIPPING（2026-04-01）
 
 | 項目       | 値                                                                                                                   |
@@ -59,6 +60,35 @@
 - `HooksFactory.producer.test.ts`, `HooksFactory.test.ts`, `AgentExecutor.test.ts`, `ExecutionManager.test.ts` 全 PASS
 
 ---
+
+### タスク: TASK-FIX-EXECUTE-PLAN-FF-001（2026-04-01）
+
+| 項目       | 値                                                                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-FIX-EXECUTE-PLAN-FF-001                                                                                                                                                                                                                                             |
+| ステータス | **完了**                                                                                                                                                                                                                                                                 |
+| タイプ     | implementation / runtime IPC fire-and-forget hardening                                                                                                                                                                                                                   |
+| 優先度     | 高                                                                                                                                                                                                                                                                       |
+| 完了日     | 2026-04-01                                                                                                                                                                                                                                                               |
+| 対象       | `apps/desktop/src/preload/ipc-utils.ts` / `apps/desktop/src/main/ipc/creatorHandlers.ts` / `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` / `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` / `packages/shared/src/types/skillCreator.ts` |
+| 成果物     | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/`                                                                                                                                                                                                              |
+
+#### 実施内容
+
+- `skill-creator:execute-plan` を `void runtimeSkillCreatorService.executeAsync(planId, args)` + 即時 `{ accepted: true, planId }` 返却へ切り替えた
+- `SkillCreatorExecuteAsyncPhase` / `PhaseChangedCallback` を `SkillCreatorWorkflowEngine` に追加し、内部 progress hook と snapshot relay を分離した
+- `skillCreatorAPI.executePlan()` を `SkillCreatorExecutePlanAck` の正本契約へ更新し、Renderer の compat path は snapshot relay と共存させた
+- `SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx` を ack / snapshot の両方に対応させ、`SKILL_CREATOR_WORKFLOW_STATE_CHANGED` の relay を維持した
+- `phase-11` / `phase-12` の task docs と canonical ledger を same-wave sync した
+
+#### 検証証跡
+
+- `pnpm exec vitest run --config vitest.config.ts src/preload/__tests__/skill-creator-api.runtime.test.ts src/preload/__tests__/ipc-utils.execute-plan-timeout.test.ts src/main/ipc/__tests__/creatorHandlers.fire-and-forget.test.ts src/main/ipc/__tests__/creatorHandlers.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.phase-events.test.ts src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx src/test/e2e/skill-creator-integration.test.ts src/test/e2e/terminal-handoff.test.ts` : 10 files / 136 tests PASS
+- `pnpm --filter @repo/desktop exec tsc -p tsconfig.json --noEmit` : PASS
+- `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/outputs/phase-11/manual-test-result.md` : NON_VISUAL
+- `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/outputs/phase-12/phase12-task-spec-compliance-check.md` : PASS
+
+
 ### タスク: TASK-FIX-IPC-TIMEOUT-001（2026-04-01）
 
 | 項目       | 値                                                                                                             |

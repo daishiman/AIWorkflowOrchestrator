@@ -17,12 +17,13 @@ export const IPC_TIMEOUT_MS = 5000;
  * 未定義チャンネルは invokeWithTimeout 内で IPC_TIMEOUT_MS にフォールバックする。
  * 新しいチャンネルを追加する場合はここにエントリを追加すること。
  */
-const CHANNEL_TIMEOUTS: Partial<Record<string, number>> = {
+export const CHANNEL_TIMEOUTS: Partial<Record<string, number>> = {
   "auth:login": 500, // fire-and-forgetなので短くてよい（OAuth起動確認のみ）
   "auth:get-session": 10000, // セッション取得: ネットワーク通信を伴う
   "auth:refresh": 10000, // トークンリフレッシュ: ネットワーク通信を伴う
   "skill-creator:plan": 30000, // スキル生成計画: AI生成処理を含む
   "skill:execute": 60000, // スキル実行: 長時間処理を含む
+  "skill-creator:execute-plan": 1_800_000, // 30分: スキル生成は最大30分かかるため（fire-and-forget応答確認用）
 };
 
 /**

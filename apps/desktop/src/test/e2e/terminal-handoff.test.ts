@@ -20,6 +20,7 @@ import {
   createTerminalHandoffGuidance,
   invokeSkillCreatorPlan,
   assertIpcSuccess,
+  assertExecutePlanAccepted,
   assertTerminalHandoff,
   assertNoSensitiveData,
   type MockBrowserWindow,
@@ -275,17 +276,8 @@ describe("Scenario B: Terminal Handoff (AC-4, NFR-1)", () => {
   // ============================================
 
   describe("Edge cases", () => {
-    it("facade returning terminal_handoff for execute is handled", async () => {
-      // Execute can also return terminal_handoff
-      const handoffResponse = {
-        type: "terminal_handoff" as const,
-        bundle: {
-          terminalCommand: 'claude -p "continue execution"',
-          contextSummary: "Execution requires CLI",
-          reason: "API limit reached",
-        },
-      };
-      mockFacade.execute.mockResolvedValue(handoffResponse);
+    it("execute-plan returns accepted ack and delegates execution asynchronously", async () => {
+      mockFacade.executeAsync.mockResolvedValue(undefined);
 
       const handler = handlerMap.get("skill-creator:execute-plan")!;
       const result = (await handler(createMockEvent(), {
@@ -295,8 +287,17 @@ describe("Scenario B: Terminal Handoff (AC-4, NFR-1)", () => {
         apiKey: "test-key",
       })) as IpcResult<unknown>;
 
-      assertIpcSuccess(result);
-      expect((result.data as { type: string }).type).toBe("terminal_handoff");
+      assertExecutePlanAccepted(result);
+      expect(result).toEqual({
+        accepted: true,
+        planId: "plan-001",
+      });
+      expect(mockFacade.executeAsync).toHaveBeenCalledWith("plan-001", {
+        planId: "plan-001",
+        skillSpec: "test spec",
+        authMode: "api-key",
+        apiKey: "test-key",
+      });
     });
 
     it("facade returning terminal_handoff for improve is handled", async () => {

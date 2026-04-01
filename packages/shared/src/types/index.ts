@@ -128,6 +128,7 @@ export type {
   SkillCreatorTerminalHandoffBundle,
   SkillCreatorTerminalHandoffResult,
   SkillCreatorExecutePlanRequest,
+  SkillCreatorExecutePlanAck,
   SkillCreatorExecutePlanResult,
   SkillCreatorImproveSkillRequest,
   SkillCreatorImproveSkillResult,
