@@ -1,0 +1,79 @@
+{
+  "taskId": "TASK-FIX-AUTH-IPC-001",
+  "featureName": "fix-step2-seq-auth-login-ipc-nonblocking",
+  "createdAt": "2026-04-01",
+  "status": "in_progress",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements.md"]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/design.md"]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["apps/desktop/src/main/ipc/authHandlers.test.ts"]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["apps/desktop/src/main/ipc/authHandlers.ts"]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["apps/desktop/src/main/ipc/authHandlers.test.ts"]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/review-result.md"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/qa-report.md"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review.md"]
+    },
+    "phase-11": { "name": "手動テスト", "status": "pending", "artifacts": [] },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "pending",
+      "artifacts": []
+    },
+    "phase-13": {
+      "name": "PR作成・CI確認",
+      "status": "pending",
+      "artifacts": []
+    }
+  },
+  "implementedFiles": [
+    "apps/desktop/src/main/ipc/authHandlers.ts",
+    "apps/desktop/src/main/ipc/authHandlers.test.ts"
+  ],
+  "testResults": {
+    "totalTests": 54,
+    "passed": 54,
+    "failed": 0,
+    "command": "CLAUDE_SKIP_HEAVY_HOOKS=1 pnpm --filter @repo/desktop exec vitest run --reporter=verbose src/main/ipc/authHandlers.test.ts"
+  }
+}

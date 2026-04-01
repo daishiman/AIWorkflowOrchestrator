@@ -205,43 +205,39 @@ export function registerAuthHandlers(
     secureStorage,
   );
 
-  // auth:login - OAuthログイン開始（PKCE + ローカルHTTPサーバー方式）
+  // auth:login - OAuthログイン開始（fire-and-forget方式）
+  // IPC タイムアウト（500ms）を回避するため、フロー開始後に即座に { success: true } を返す。
+  // OAuth の成功・失敗は AuthFlowOrchestrator が AUTH_STATE_CHANGED イベントで通知する。
   registerValidatedAuthHandler(
     IPC_CHANNELS.AUTH_LOGIN,
     async (
       _event,
       { provider }: { provider: string },
     ): Promise<IPCResponse<void>> => {
-      try {
-        // プロバイダーバリデーション
-        if (!isValidProvider(provider)) {
-          return {
-            success: false,
-            error: {
-              code: AUTH_ERROR_CODES.INVALID_PROVIDER,
-              message: `Invalid provider: ${provider}. Must be one of: google, github, discord`,
-            },
-          };
-        }
-
-        // AuthFlowOrchestratorでPKCE対応OAuthフロー開始
-        // - PKCE code_verifier/challenge生成
-        // - ローカルHTTPサーバー起動
-        // - State parameter生成（CSRF対策）
-        // - 外部ブラウザで認証
-        // - コールバック受信・トークン交換
-        await authFlowOrchestrator!.startOAuthFlow(provider as OAuthProvider);
-
-        return { success: true };
-      } catch (error) {
+      // プロバイダーバリデーション（invalid provider のみ即時エラー返却）
+      if (!isValidProvider(provider)) {
         return {
           success: false,
           error: {
-            code: AUTH_ERROR_CODES.LOGIN_FAILED,
-            message: sanitizeErrorMessage(error),
+            code: AUTH_ERROR_CODES.INVALID_PROVIDER,
+            message: `Invalid provider: ${provider}. Must be one of: google, github, discord`,
           },
         };
       }
+
+      // fire-and-forget: OAuthフロー開始後に即座に success: true を返す。
+      // エラー発生時は AuthFlowOrchestrator が AUTH_STATE_CHANGED で通知済みのため、
+      // ここでは unhandled rejection を防ぐためのみ catch する。
+      authFlowOrchestrator!
+        .startOAuthFlow(provider as OAuthProvider)
+        .catch((err: unknown) => {
+          console.error(
+            "[authHandlers] OAuth flow error (notified via AUTH_STATE_CHANGED):",
+            err instanceof Error ? err.message : err,
+          );
+        });
+
+      return { success: true };
     },
   );
 

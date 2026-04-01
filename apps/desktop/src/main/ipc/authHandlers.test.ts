@@ -419,13 +419,13 @@ describe("authHandlers", () => {
       expect(mockStartOAuthFlow).toHaveBeenCalledWith("google");
     });
 
-    it("should return error on OAuth failure", async () => {
+    it("should return success immediately even when OAuth flow eventually fails (fire-and-forget)", async () => {
       const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
       if (!handler) {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      // AuthFlowOrchestratorがOAuthエラーを投げるケース
+      // fire-and-forget: startOAuthFlow が後から reject しても即座に success: true を返す
       mockStartOAuthFlow.mockRejectedValue(
         new Error("OAuth configuration error"),
       );
@@ -435,8 +435,10 @@ describe("authHandlers", () => {
         { provider: "google" },
       )) as IPCResponse<void>;
 
-      expect(result.success).toBe(false);
-      expect(result.error?.code).toBe("auth/login-failed");
+      // fire-and-forget: フロー開始後すぐに success: true を返す
+      expect(result.success).toBe(true);
+      // startOAuthFlow は呼ばれていること
+      expect(mockStartOAuthFlow).toHaveBeenCalledWith("google");
     });
 
     it("should reject invalid provider", async () => {
@@ -452,6 +454,66 @@ describe("authHandlers", () => {
 
       expect(result.success).toBe(false);
       expect(result.error?.code).toBe("auth/invalid-provider");
+    });
+
+    it("should not await OAuth flow (fire-and-forget: startOAuthFlow never resolves)", async () => {
+      const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
+      if (!handler) {
+        throw new Error("AUTH_LOGIN handler not registered");
+      }
+
+      // startOAuthFlow が永遠に resolve しない Promise をセット
+      // fire-and-forget であれば handler はすぐ返る
+      let resolveFlow!: () => void;
+      mockStartOAuthFlow.mockReturnValue(
+        new Promise<void>((resolve) => {
+          resolveFlow = resolve;
+        }),
+      );
+
+      const resultPromise = handler({}, { provider: "google" });
+
+      // startOAuthFlow が resolve していなくてもハンドラーの Promise が解決する
+      const result = (await resultPromise) as IPCResponse<void>;
+      expect(result.success).toBe(true);
+
+      // cleanup: 宙吊りの Promise を解決して unhandled rejection を防ぐ
+      resolveFlow();
+    });
+
+    it("should send AUTH_STATE_CHANGED with error when OAuth flow rejects", async () => {
+      const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
+      if (!handler) {
+        throw new Error("AUTH_LOGIN handler not registered");
+      }
+
+      // AuthFlowOrchestrator が reject した後に AUTH_STATE_CHANGED を送信するケースをシミュレート
+      mockStartOAuthFlow.mockImplementation(async () => {
+        // 実装と同様に: エラー通知してから throw
+        mockWebContentsSend(IPC_CHANNELS.AUTH_STATE_CHANGED, {
+          authenticated: false,
+          error: "OAuth error",
+        });
+        throw new Error("OAuth error");
+      });
+
+      const result = (await handler(
+        {},
+        { provider: "google" },
+      )) as IPCResponse<void>;
+
+      // fire-and-forget: ハンドラー自体は success: true
+      expect(result.success).toBe(true);
+
+      // マイクロタスクキューをフラッシュして catch コールバックを実行
+      await Promise.resolve();
+      await Promise.resolve();
+
+      // AUTH_STATE_CHANGED が送信されていること
+      expect(mockWebContentsSend).toHaveBeenCalledWith(
+        IPC_CHANNELS.AUTH_STATE_CHANGED,
+        expect.objectContaining({ authenticated: false }),
+      );
     });
   });
 
@@ -844,13 +906,14 @@ describe("authHandlers", () => {
   });
 
   describe("Error scenarios", () => {
-    it("should handle network timeout during login", async () => {
+    it("should return success immediately on network timeout (fire-and-forget)", async () => {
       const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
       if (!handler) {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      // AuthFlowOrchestrator.startOAuthFlowがエラーを投げるケース
+      // fire-and-forget: ネットワークタイムアウトでもすぐに success: true を返す
+      // 実際のエラー通知は AuthFlowOrchestrator → AUTH_STATE_CHANGED で行われる
       mockStartOAuthFlow.mockRejectedValue(new Error("Network timeout"));
 
       const result = (await handler(
@@ -858,17 +921,18 @@ describe("authHandlers", () => {
         { provider: "google" },
       )) as IPCResponse<void>;
 
-      expect(result.success).toBe(false);
-      expect(result.error?.code).toBe("auth/login-failed");
+      expect(result.success).toBe(true);
+      expect(mockStartOAuthFlow).toHaveBeenCalledWith("google");
     });
 
-    it("should handle user cancellation during OAuth", async () => {
+    it("should return success immediately on user cancellation (fire-and-forget)", async () => {
       const handler = handlers.get(IPC_CHANNELS.AUTH_LOGIN);
       if (!handler) {
         throw new Error("AUTH_LOGIN handler not registered");
       }
 
-      // AuthFlowOrchestratorがキャンセルエラーを投げるケース
+      // fire-and-forget: ユーザーキャンセルでもすぐに success: true を返す
+      // 実際のエラー通知は AuthFlowOrchestrator → AUTH_STATE_CHANGED で行われる
       mockStartOAuthFlow.mockRejectedValue(new Error("User cancelled"));
 
       const result = (await handler(
@@ -876,9 +940,9 @@ describe("authHandlers", () => {
         { provider: "google" },
       )) as IPCResponse<void>;
 
-      // エラーとして処理される
-      expect(result.success).toBe(false);
-      expect(result.error?.code).toBe("auth/login-failed");
+      // fire-and-forget: キャンセルも含めて即座に success: true
+      expect(result.success).toBe(true);
+      expect(mockStartOAuthFlow).toHaveBeenCalledWith("google");
     });
   });
 
