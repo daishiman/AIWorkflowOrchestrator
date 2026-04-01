@@ -5,6 +5,34 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-IPC-TIMEOUT-001（2026-04-01）
+
+| 項目       | 値                                                                                                             |
+| ---------- | -------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-IPC-TIMEOUT-001                                                                                       |
+| ステータス | **完了**                                                                                                       |
+| タイプ     | implementation / preload timeout hardening                                                                     |
+| 優先度     | 中                                                                                                             |
+| 完了日     | 2026-04-01                                                                                                     |
+| 対象       | `apps/desktop/src/preload/ipc-utils.ts` / `apps/desktop/src/preload/__tests__/ipc-utils.test.ts` / Phase 12 |
+| 成果物     | `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/`                                                     |
+
+#### 実施内容
+
+- `CHANNEL_TIMEOUTS` を追加し、`getChannelTimeout(channel)` がチャンネル別の待ち時間を返すようにした
+- `invokeWithTimeout` が `getChannelTimeout(channel)` を参照し、`IPC_TIMEOUT_MS` はフォールバック値として維持した
+- `ipc-utils.test.ts` を追加し、定義済みチャンネル / 未定義チャンネル / allowlist / edge cases を網羅した
+- `docs/30-workflows/skill-creator-agent-sdk-lane/index.md` の IPC 修正タスク一覧を current canonical path に同期した
+- Phase 12 outputs を canonical root / artifacts 同期つきで閉じた
+
+#### 検証証跡
+
+- `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-9/quality-report.md`: 33 tests PASS
+- `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-10/final-review-result.md`: PASS
+- `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-11/manual-test-result.md`: auto-test fallback（NON_VISUAL）
+- `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- local vitest rerun in this review turn was blocked by esbuild host/binary mismatch (`0.21.5` / `0.25.12`)
+
 ### タスク: TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001（2026-03-31）
 
 | 項目       | 値                                                                                     |
@@ -297,7 +325,7 @@
 | 完了日     | 2026-03-27                                                                    |
 | PR         | #1667                                                                         |
 | 対象       | ユーザー入力ブリッジ / フェーズ UI 同期 / IPC 型外部化                        |
-| 成果物     | `docs/30-workflows/step-04-par-task-04-user-interaction-bridge-and-phase-ui/` |
+| 成果物     | `docs/30-workflows/completed-tasks/step-03-par-task-04-user-interaction-bridge-and-phase-ui/` |
 
 #### 実施内容
 
@@ -326,6 +354,27 @@
 - `handleExecutePlan` が `request.trim()` ではなく `approvedSkillSpec` を参照するよう修正
 - cancel 時の対称クリア実装
 - テスト 5件追加（U-8b, U-18, U-19, U-20, U-21）
+
+---
+
+### タスク: TASK-P0-07 plan-execution-hardening — AGENT_NAMES 削除と fallback path 単一ソース化（2026-04-01）
+
+| 項目       | 値                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-P0-07                                                                                                                                       |
+| ステータス | **完了**                                                                                                                                         |
+| タイプ     | refactoring                                                                                                                                      |
+| 優先度     | 高                                                                                                                                               |
+| 完了日     | 2026-04-01                                                                                                                                       |
+| 対象       | `apps/desktop/src/main/services/runtime/planPromptConstants.ts`, `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`            |
+| 関連タスク | step-11-par-task-plan-execution-hardening の Lane A                                                                                              |
+
+#### 実施内容
+
+- `AGENT_NAMES` をハードコード定数として削除
+- fallback path で `PLAN_RESOURCE_REQUESTS.filter(r => r.kind === "agent")` から動的に agent 名を導出するよう変更
+- agent 名の単一ソース: `PLAN_RESOURCE_REQUESTS` のみ
+- 影響: No public surface change（IPC contract / shared types / API シグネチャ変更なし）
 
 ---
 

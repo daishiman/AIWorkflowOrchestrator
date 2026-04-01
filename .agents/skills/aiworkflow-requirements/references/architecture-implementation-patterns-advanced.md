@@ -17,24 +17,45 @@ Preload の `safeInvoke()` が `ipcRenderer.invoke()` をそのまま返すと�
 
 ```typescript
 const IPC_TIMEOUT_MS = 5000;
+const CHANNEL_TIMEOUTS: Partial<Record<string, number>> = {
+  "auth:login": 500,
+  "auth:get-session": 10000,
+  "auth:refresh": 10000,
+  "skill-creator:plan": 30000,
+  "skill:execute": 60000,
+};
 
-function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
+function getChannelTimeout(channel: string): number {
+  return CHANNEL_TIMEOUTS[channel] ?? IPC_TIMEOUT_MS;
+}
+
+function invokeWithTimeout<T>(channel: string, ...args: unknown[]): Promise<T> {
   if (!ALLOWED_INVOKE_CHANNELS.includes(channel)) {
     return Promise.reject(new Error(`Channel ${channel} is not allowed`));
   }
 
-  return Promise.race([
-    ipcRenderer.invoke(channel, ...args),
-    new Promise<never>((_, reject) => {
-      setTimeout(() => {
-        reject(
-          new Error(
-            `IPC timeout: ${channel} did not respond within ${IPC_TIMEOUT_MS}ms`,
-          ),
-        );
-      }, IPC_TIMEOUT_MS);
-    }),
-  ]);
+  const timeout = getChannelTimeout(channel);
+
+  return new Promise<T>((resolve, reject) => {
+    const timeoutId = setTimeout(() => {
+      reject(
+        new Error(
+          `IPC timeout: ${channel} did not respond within ${timeout}ms`,
+        ),
+      );
+    }, timeout);
+
+    ipcRenderer
+      .invoke(channel, ...args)
+      .then((result) => {
+        clearTimeout(timeoutId);
+        resolve(result as T);
+      })
+      .catch((error: unknown) => {
+        clearTimeout(timeoutId);
+        reject(error);
+      });
+  });
 }
 ```
 
@@ -43,13 +64,15 @@ function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
 | 条件 | 判断 |
 | ---- | ---- |
 | Preload 共通ラッパーで多数の `invoke` を集約している | timeout を共通化する |
-| 戻り値シグネチャを変えたくない | `Promise<T>` を維持したまま `Promise.race` を使う |
+| 戻り値シグネチャを変えたくない | `Promise<T>` を維持したまま `setTimeout` / `clearTimeout` ベースで timeout を注入する |
 | Renderer 側に loading state がある | timeout エラーを catch して復旧パスを明示する |
 | まだ実装差分が存在しない | spec は pending / spec_created に留め、completed としない |
 
 #### 注意事項
 
 - timeout 追加は `safeOn` にはそのまま適用しない
+- `IPC_TIMEOUT_MS` は fallback であり、全チャンネル共通の固定値ではない
+- 長時間処理チャンネルは `CHANNEL_TIMEOUTS` に追加し、呼び出し側の timeout 分岐を増やさない
 - channel 名は whitelist 通過済み値のみ error 文言へ出す
 - テストは `advanceTimersByTime` 系を使い、永続 pending mock で再現する
 
@@ -300,4 +323,3 @@ catch (error) {
 - **未タスク**: UT-9A-B-002（IPCエラーサニタイズ共通ユーティリティ化）— isKnownSkillFileError パターンを他のIPCハンドラーに横展開
 
 ---
-

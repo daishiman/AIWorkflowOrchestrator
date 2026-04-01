@@ -12,6 +12,58 @@
 - aiworkflow-requirements 側の completed ledger / lessons / LOGS / SKILL history と same-wave で閉じ、`UT-DX-VITE-ALIAS-SHARED-IMPORT-001` を completed 側へ移管
 
 ---
+---
+## 2026-03-31 - TASK-RT-05-TEST-RERUN close-out（Issue #1756）
+
+## 2026-03-31 - UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 workflow pack elegant improvement
+
+### 変更内容
+
+- `docs/30-workflows/safety-gov-production-integration/` に真の論点、4条件初期評価、SubAgent lane 設計、30種思考法適用マトリクスを追加し、単なる phase 列挙から判断可能な execution spec へ改善
+- Phase 1 に命名規則インベントリを追加し、Phase 4 以降の test / artifact / task naming を upstream facts と接続
+- Phase 12 に same-wave sync の正本更新対象を `task-workflow-completed` / `task-workflow-backlog` / `lessons-learned` / `topic-map` / `keywords` / `SKILL.md` / mirror parity まで拡張
+- `aiworkflow-requirements` 側では UT-6〜UT-9 を単発 backlog から workflow pack `UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001` に集約し、spec_created close-out として追跡可能にした
+
+## 2026-03-31 - UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 workflow pack hardening
+
+### 変更内容
+
+- `docs/30-workflows/safety-gov-production-integration/` の Phase 3 に必須の `統合テスト連携` を追加し、Phase 4〜11 の `実行タスク` を validator 互換の箇条書きへ補強
+- `outputs/artifacts.json` を root `artifacts.json` と同期し、Phase 11 の `manual-test-checklist.md` / `manual-test-result.md` を追加して workflow root の機械検証を通過させた
+- Phase 11 が visible surface 追加なしの integration task であることを踏まえ、`phase-11-12-guide.md` に NON_VISUAL task は screenshot wording を残さないルールを追記した
+- follow-up task の canonical status を `spec_created` として扱い、完了済み実装と混同しない Phase 12 same-wave sync の運用を再確認した
+
+---
+
+## 2026-03-30 - TASK-LLM-MOD-05 Phase 12 close-out sync
+
+### 変更内容
+
+- UT-RT-06 esbuild 修正後の環境で TASK-RT-05 テスト再実行・AC-4 確認を完了
+- phase-9/quality-report.md・phase-10/final-review-result.md を PASS 状態に更新
+- lessons-learned-skill-create-multi-select-kind.md に esbuild platform mismatch 教訓を追記
+- task-workflow-completed-skill-lifecycle-ui.md に TASK-RT-05-TEST-RERUN close-out 注記を追加
+
+---
+## 2026-03-31 - UT-UIUX-PLAYWRIGHT-E2E-001 Phase 12 close-out: スキルフィードバック反映
+
+### 変更内容
+- `references/phase-12-completion-checklist.md` にスクリーンショット証跡ハードゲート5点（FB-UT-UIUX-001-A）と `artifacts.json` planned wording 検査（FB-UT-UIUX-001-B）を追加
+- `references/phase-12-tasks-guide.md` の Task 3.5 に UI/UX変更タスク専用ゲートを追記
+- 漏れやすいポイント表に `FB-UT-UIUX-001-A` / `FB-UT-UIUX-001-B` 行を追加
+- `docs/30-workflows/unassigned-task/TASK-A11Y-FOCUS-TRAP-001.md` を旧形式（`## Why/What/How`）から標準フォーマット（`## 1〜9`）に変換し `audit-unassigned-tasks` currentViolations を 0 へ
+- SKILL.md v6.18.17 変更履歴を追記
+
+---
+## 2026-03-31 - TASK-UIUX-FEEDBACK-001 spec_created sync hardening
+
+### 変更内容
+- Phase 11 3層評価の canonical 実装先を `.claude/skills/task-specification-creator/` に固定し、`agents/evaluate-ui-ux.md` と `scripts/evaluate-ui-ux*` family を追加
+- `references/phase-11-test-report-template.md` と `SKILL.md` を更新し、Phase 11 を manual screenshot review 単体ではなく Semantic / Visual / AI UX の3層評価として定義
+- workflow root 側の false green を是正するため、`artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ戻し、Phase 11/12 close-out から placeholder-only evidence の completed 誤判定を除去
+- `.agents/skills/task-specification-creator/` へ same-wave mirror sync を行い、canonical / mirror drift を解消
+
+---
 ## 2026-03-31 - TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out sync
 
 ### 変更内容
@@ -51,6 +103,18 @@
 - 変更履歴に v6.18.16 エントリを追加
 
 ---
+## 2026-03-31 - TASK-ELECTRON-BUILD-FIX Phase 12 close-out hardening
+
+### 変更内容
+
+- broken / placeholder screenshot 前提を撤去し、NON_VISUAL evidence で閉じる current facts へ是正
+- `system-spec-update-summary.md` を shallow summary から Step 1-A〜1-C / Step 2 根拠付き記録へ更新
+- `phase12-task-spec-compliance-check.md` を追加し、Task 1〜5 と Step 1-A〜1-C / Step 2 を 1 ファイルへ集約
+- `rebuild-native-for-electron.mjs` の `context.arch` enum drift を current branch で修正し、Phase 4 テストへ反映
+- `.claude` 正本更新後に aiworkflow-requirements index 再生成と `.agents` mirror parity を実施
+
+---
+
 ## 2026-03-30 - TASK-P0-05 Phase 12 close-out resync
 
 ### 変更内容

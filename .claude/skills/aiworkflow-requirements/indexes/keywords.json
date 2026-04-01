@@ -1,6 +1,6 @@
 {
-  "generated": "2026-03-31T09:31:42.185Z",
-  "totalKeywords": 2616,
+  "generated": "2026-04-01T04:59:19.178Z",
+  "totalKeywords": 2626,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1103,9 +1103,11 @@
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-lifecycle-test-hardening.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
       "lessons-learned-templates.md",
+      "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
@@ -1269,6 +1271,7 @@
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-lifecycle-test-hardening.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -1399,6 +1402,7 @@
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
+      "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
@@ -1440,6 +1444,7 @@
       "error-handling-details.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-test-typesafety.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
@@ -5917,6 +5922,7 @@
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-lifecycle-test-hardening.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -5960,6 +5966,7 @@
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-lifecycle-test-hardening.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -6001,6 +6008,7 @@
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-lifecycle-test-hardening.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -6023,6 +6031,7 @@
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-auth-settings-degradation-guard.md",
+      "lessons-learned-test-typesafety.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
     ],
@@ -6051,6 +6060,7 @@
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-lifecycle-test-hardening.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -6279,6 +6289,7 @@
     "ELECTRON": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-viewtype-electron-ui.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
@@ -6372,6 +6383,7 @@
     ],
     "PRELOAD": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "task-workflow-completed-ut-06-safety-gate.md"
     ],
@@ -6564,6 +6576,7 @@
     ],
     "hardening": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "logs-archive-2026-03-line-budget-workflow-consolidation.md"
     ],
     "session": [
@@ -6970,6 +6983,20 @@
     "ABI": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "VITE": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "ALIAS": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "SHARED": [
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md",
+      "logs-archive-2026-02-unassigned-placement-import-interface.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
     "ライフサイクル": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
@@ -6996,6 +7023,10 @@
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "spec-splitting-guidelines.md",
       "ui-ux-feature-components-core.md"
+    ],
+    "BUILD": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-history-search-notification-center.md"
     ],
     "governance": [
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -7049,13 +7080,6 @@
     ],
     "ARCH": [
       "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "SHARED": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "lessons-learned-workflow-quality-phase12-audit-validator.md",
-      "logs-archive-2026-02-unassigned-placement-import-interface.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "UIUX": [
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -7114,6 +7138,7 @@
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-lifecycle-test-hardening.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -7318,6 +7343,22 @@
     ],
     "実装知見追補": [
       "lessons-learned-skill-lifecycle-test-hardening.md"
+    ],
+    "plan": [
+      "lessons-learned-skill-plan-exec-hardening.md"
+    ],
+    "exec": [
+      "lessons-learned-skill-plan-exec-hardening.md"
+    ],
+    "Lane": [
+      "lessons-learned-skill-plan-exec-hardening.md",
+      "spec-elegance-consistency-audit.md"
+    ],
+    "分割による並列実装の効果確認": [
+      "lessons-learned-skill-plan-exec-hardening.md"
+    ],
+    "step": [
+      "lessons-learned-skill-plan-exec-hardening.md"
     ],
     "REMOVE": [
       "lessons-learned-skill-remove-contract.md",
@@ -7587,6 +7628,18 @@
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-ut-06-safety-gate.md",
       "workflow-permission-fallback-abort-skip-retry.md"
+    ],
+    "TRACE": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "スキル生成": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "login": [
+      "lessons-learned-test-typesafety.md"
+    ],
+    "リグレッション調査": [
+      "lessons-learned-test-typesafety.md"
     ],
     "アダプター状態表示・リトライ導線": [
       "lessons-learned-ui-adapter-status-retry.md"
@@ -9341,9 +9394,6 @@
     "CURRENT": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
-    "BUILD": [
-      "logs-archive-2026-03-history-search-notification-center.md"
-    ],
     "CAPTURE": [
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
@@ -10495,9 +10545,6 @@
       "spec-elegance-consistency-audit.md"
     ],
     "期待する出力": [
-      "spec-elegance-consistency-audit.md"
-    ],
-    "Lane": [
       "spec-elegance-consistency-audit.md"
     ],
     "多角的監査マトリクス": [
