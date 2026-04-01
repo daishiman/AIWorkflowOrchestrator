@@ -883,17 +883,17 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 認証 IPC チャネル | L10 |
-| プロフィール IPC チャネル | L71 |
-| アバター IPC チャネル | L87 |
-| Supabase 未設定時の fallback 契約 | L95 |
-| イベントチャネル（Main → Renderer） | L115 |
-| 型定義 | L142 |
-| 認証状態管理 | L200 |
-| IPCセキュリティ実装 | L231 |
-| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L258 |
-| 関連ドキュメント | L312 |
-| 完了タスク | L322 |
-| 変更履歴 | L388 |
+| プロフィール IPC チャネル | L90 |
+| アバター IPC チャネル | L106 |
+| Supabase 未設定時の fallback 契約 | L114 |
+| イベントチャネル（Main → Renderer） | L134 |
+| 型定義 | L161 |
+| 認証状態管理 | L219 |
+| IPCセキュリティ実装 | L250 |
+| セッション自動リフレッシュ（TASK-AUTH-SESSION-REFRESH-001） | L277 |
+| 関連ドキュメント | L331 |
+| 完了タスク | L341 |
+| 変更履歴 | L407 |
 
 ### references/api-ipc-system-core.md
 
@@ -2644,19 +2644,20 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L71 |
-| クイックリファレンス: カテゴリ別検索ガイド | L89 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L270 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L602 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L636 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L719 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L735 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L759 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L809 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L834 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L865 |
-| TASK-RT-06 教訓（2026-03-29） | L896 |
-| TASK-P0-04 教訓（2026-03-30） | L918 |
+| 分割ファイル一覧 | L74 |
+| クイックリファレンス: カテゴリ別検索ガイド | L92 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L273 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L605 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L639 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L722 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L738 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L762 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L812 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L837 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L868 |
+| TASK-RT-06 教訓（2026-03-29） | L899 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L921 |
+| TASK-P0-04 教訓（2026-03-30） | L952 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2697,24 +2698,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-29 TASK-RT-04 skill-authkey-api-key-management-ui | L47 |
-| 2026-03-31 TASK-ELECTRON-BUILD-FIX | L71 |
-| 2026-03-28 TASK-SDK-07 execution-governance-and-handoff-alignment | L125 |
-| 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 | L165 |
-| 2026-03-27 TASK-SDK-04 | L205 |
-| 2026-03-27 UT-EXEC-01 | L207 |
-| 2026-03-27 TASK-SDK-05 | L229 |
-| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L259 |
-| 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L271 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L373 |
-| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L413 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L457 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L497 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L537 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L586 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L639 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L667 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L710 |
+| 2026-03-29 TASK-RT-04 skill-authkey-api-key-management-ui | L48 |
+| 2026-03-31 TASK-ELECTRON-BUILD-FIX | L72 |
+| 2026-03-28 TASK-SDK-07 execution-governance-and-handoff-alignment | L126 |
+| 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 | L166 |
+| 2026-03-27 TASK-SDK-04 | L206 |
+| 2026-03-27 UT-EXEC-01 | L208 |
+| 2026-03-27 TASK-SDK-05 | L230 |
+| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L260 |
+| 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L272 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L374 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L414 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L458 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L498 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L538 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L587 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L640 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L668 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L711 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
