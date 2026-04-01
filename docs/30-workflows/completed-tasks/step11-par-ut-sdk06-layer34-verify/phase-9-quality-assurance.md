@@ -33,7 +33,7 @@ Layer3/4 テスト実装の型安全性・既存 Layer1/2 との整合性・AC �
 pnpm --filter @repo/desktop typecheck
 
 # lint
-pnpm --filter @repo/desktop lint
+pnpm lint
 
 # テスト（全テスト）
 pnpm --filter @repo/desktop vitest run
@@ -46,17 +46,17 @@ pnpm --filter @repo/desktop vitest run --coverage
 
 Phase 12 を閉じる前提として、task pack と 2 skill の構造検証を通す。
 
-| 検証対象                                   | コマンド                                                                                                                                                                                                       | pass 条件                   | 記録先                          |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ------------------------------- |
-| `task-specification-creator` 構造          | `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator`                                                                                                        | error 0                     | `outputs/phase-9/qa-summary.md` |
-| `task-specification-creator` 全体          | `node .claude/skills/skill-creator/scripts/validate_all.js .claude/skills/task-specification-creator`                                                                                                          | error 0                     | `outputs/phase-9/qa-summary.md` |
-| `aiworkflow-requirements` 構造             | `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements`                                                                                                           | error 0                     | `outputs/phase-9/qa-summary.md` |
-| `aiworkflow-requirements` 全体             | `node .claude/skills/skill-creator/scripts/validate_all.js .claude/skills/aiworkflow-requirements`                                                                                                             | error 0                     | `outputs/phase-9/qa-summary.md` |
-| workflow 構造                              | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/skill-creator-agent-sdk-lane/step-11-par-task-ut-sdk06-layer34-verify-expansion --json`               | error 0                     | `outputs/phase-9/qa-summary.md` |
-| workflow phase 出力                        | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/skill-creator-agent-sdk-lane/step-11-par-task-ut-sdk06-layer34-verify-expansion`                            | error 0                     | `outputs/phase-9/qa-summary.md` |
-| implementation guide                       | `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/skill-creator-agent-sdk-lane/step-11-par-task-ut-sdk06-layer34-verify-expansion` | Part 1 / Part 2 全項目 PASS | `outputs/phase-9/qa-summary.md` |
-| `task-specification-creator` mirror parity | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                                                                                 | diff 0                      | `outputs/phase-9/qa-summary.md` |
-| `aiworkflow-requirements` mirror parity    | `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`                                                                                                                       | diff 0                      | `outputs/phase-9/qa-summary.md` |
+| 検証対象                                   | コマンド                                                                                                                                                          | pass 条件                   | 記録先                          |
+| ------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- | ------------------------------- |
+| `task-specification-creator` 構造          | `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator`                                                           | error 0                     | `outputs/phase-9/qa-summary.md` |
+| `task-specification-creator` 全体          | `node .claude/skills/skill-creator/scripts/validate_all.js .claude/skills/task-specification-creator`                                                             | error 0                     | `outputs/phase-9/qa-summary.md` |
+| `aiworkflow-requirements` 構造             | `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements`                                                              | error 0                     | `outputs/phase-9/qa-summary.md` |
+| `aiworkflow-requirements` 全体             | `node .claude/skills/skill-creator/scripts/validate_all.js .claude/skills/aiworkflow-requirements`                                                                | error 0                     | `outputs/phase-9/qa-summary.md` |
+| workflow 構造                              | `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step11-par-ut-sdk06-layer34-verify --json`               | error 0                     | `outputs/phase-9/qa-summary.md` |
+| workflow phase 出力                        | `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/step11-par-ut-sdk06-layer34-verify`                            | error 0                     | `outputs/phase-9/qa-summary.md` |
+| implementation guide                       | `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step11-par-ut-sdk06-layer34-verify` | Part 1 / Part 2 全項目 PASS | `outputs/phase-9/qa-summary.md` |
+| `task-specification-creator` mirror parity | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                                    | diff 0                      | `outputs/phase-9/qa-summary.md` |
+| `aiworkflow-requirements` mirror parity    | `diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements`                                                                          | diff 0                      | `outputs/phase-9/qa-summary.md` |
 
 ### Spec QA 実行コマンド
 
@@ -65,9 +65,9 @@ node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-
 node .claude/skills/skill-creator/scripts/validate_all.js .claude/skills/task-specification-creator
 node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements
 node .claude/skills/skill-creator/scripts/validate_all.js .claude/skills/aiworkflow-requirements
-node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/skill-creator-agent-sdk-lane/step-11-par-task-ut-sdk06-layer34-verify-expansion --json
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/skill-creator-agent-sdk-lane/step-11-par-task-ut-sdk06-layer34-verify-expansion
-node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/skill-creator-agent-sdk-lane/step-11-par-task-ut-sdk06-layer34-verify-expansion
+node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step11-par-ut-sdk06-layer34-verify --json
+node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/step11-par-ut-sdk06-layer34-verify
+node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/step11-par-ut-sdk06-layer34-verify
 diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator
 diff -qr .claude/skills/aiworkflow-requirements .agents/skills/aiworkflow-requirements
 diff -qr artifacts.json outputs/artifacts.json

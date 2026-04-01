@@ -44,7 +44,7 @@ test(verification): UT-IMP-SDK-06 Layer3/4 verify 拡張テスト
 ### Test Plan（ドラフト）
 
 - `pnpm --filter @repo/desktop typecheck`
-- `pnpm --filter @repo/desktop lint`
+- `pnpm lint`
 - `pnpm --filter @repo/desktop vitest run`
 
 ## 参考コマンド（必要な場合のみ）
@@ -54,7 +54,7 @@ test(verification): UT-IMP-SDK-06 Layer3/4 verify 拡張テスト
 pnpm --filter @repo/desktop typecheck
 
 # lint
-pnpm --filter @repo/desktop lint
+pnpm lint
 
 # テスト（全テスト）
 pnpm --filter @repo/desktop vitest run
@@ -62,12 +62,12 @@ pnpm --filter @repo/desktop vitest run
 
 ## 変更サマリー（準備メモ）
 
-| 変更ファイル                                                                                         | 変更種別 | 内容                         |
-| ---------------------------------------------------------------------------------------------------- | -------- | ---------------------------- |
-| `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorVerificationEngine.test.ts`            | 更新     | Layer3/4 テストケースの追加  |
-| `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts`                           | 更新     | Layer3/4 検証ロジックの追加  |
-| `packages/shared/src/types/skillCreator.ts`                                                          | 更新     | `layer` 型拡張（必要な場合） |
-| `docs/30-workflows/skill-creator-agent-sdk-lane/step-11-par-task-ut-sdk06-layer34-verify-expansion/` | 新規     | タスク仕様書一式             |
+| 変更ファイル                                                                              | 変更種別 | 内容                         |
+| ----------------------------------------------------------------------------------------- | -------- | ---------------------------- |
+| `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorVerificationEngine.test.ts` | 更新     | Layer3/4 テストケースの追加  |
+| `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts`                | 更新     | Layer3/4 検証ロジックの追加  |
+| `packages/shared/src/types/skillCreator.ts`                                               | 更新     | `layer` 型拡張（必要な場合） |
+| `docs/30-workflows/step11-par-ut-sdk06-layer34-verify/`                                   | 新規     | タスク仕様書一式             |
 
 ## blocked 理由
 
