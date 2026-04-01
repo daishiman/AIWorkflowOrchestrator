@@ -24,6 +24,7 @@ import type { EnvironmentPreviewContent } from "@repo/shared/types/agent";
 import type { EnvironmentService } from "../services/environment";
 import { TerminalHandoffBuilder } from "../services/runtime/TerminalHandoffBuilder";
 import type { IRuntimePolicyResolver } from "../services/runtime/RuntimePolicyResolver";
+import type { IApprovalGate } from "../services/runtime/ApprovalGate";
 
 // シングルトンのExecutionManager
 let executionManager: ExecutionManager | null = null;
@@ -31,10 +32,12 @@ let executionManager: ExecutionManager | null = null;
 /**
  * エージェント実行IPCハンドラーを登録する
  * @param mainWindow メインウィンドウ
+ * @param approvalGate ApprovalGate インスタンス
  * @param customRules カスタム権限ルール（オプション）
  */
 export function registerAgentExecutionHandlers(
   mainWindow: BrowserWindow,
+  approvalGate: IApprovalGate,
   customRules?: PermissionRules,
   runtimePolicyResolver?: IRuntimePolicyResolver,
   authModeService?: IAuthModeService,
@@ -96,6 +99,7 @@ export function registerAgentExecutionHandlers(
       const executionId = await executionManager.startExecution(
         request,
         mainWindow,
+        approvalGate,
         customRules,
       );
 

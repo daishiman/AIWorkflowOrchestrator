@@ -1,30 +1,43 @@
 /**
  * HooksFactory and PermissionResolver Tests
- * Phase 4: TDD Red - All tests should fail until implementation
  *
- * Tests for Claude Agent SDK Hooks system
+ * Claude Agent SDK Hooks system の回帰テスト
+ * 危険コマンドブロック、PermissionRequest、PostToolUse の基本挙動を検証する。
  * @see docs/30-workflows/claude-code-integration/outputs/phase-2/architecture-design.md
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { HooksFactory, PermissionResolver } from "../HooksFactory";
 import type { BrowserWindow } from "electron";
+import type { IApprovalGate } from "../../runtime/ApprovalGate";
 
 describe("HooksFactory", () => {
   let mockWindow: BrowserWindow;
   let permissionResolver: PermissionResolver;
   let hooksFactory: HooksFactory;
+  let mockApprovalGate: IApprovalGate;
+  const TEST_SESSION_ID = "test-session-id";
 
   beforeEach(() => {
     mockWindow = {
+      isDestroyed: vi.fn().mockReturnValue(false),
       webContents: {
+        isDestroyed: vi.fn().mockReturnValue(false),
         send: vi.fn(),
       },
     } as unknown as BrowserWindow;
     permissionResolver = new PermissionResolver();
+    mockApprovalGate = {
+      grantApproval: vi.fn(),
+      rejectApproval: vi.fn(),
+      checkApproval: vi.fn(),
+      revokeAll: vi.fn(),
+    };
     hooksFactory = new HooksFactory(
       mockWindow,
       "test-execution-id",
       permissionResolver,
+      mockApprovalGate,
+      TEST_SESSION_ID,
     );
   });
 
