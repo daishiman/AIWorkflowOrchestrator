@@ -383,6 +383,10 @@ export function SkillLifecyclePanel({
   const activeGenerationError = generationError;
 
   const [request, setRequest] = useState("");
+  // plan 承認時点の request snapshot を保持する。
+  // live textarea（request state）とは独立しており、
+  // handleExecutePlan は常にこの snapshot を execute payload として使用する。
+  // cancel または再生成まで不変。
   const [approvedSkillSpec, setApprovedSkillSpec] = useState<string | null>(
     null,
   );
@@ -825,6 +829,8 @@ export function SkillLifecyclePanel({
             setRawPlanDetail(planResult.data as RuntimeSkillCreatorPlanResult);
           }
 
+          // plan 承認時点の request を snapshot として固定する。
+          // この後 textarea を編集しても execute payload は変わらない。
           setApprovedSkillSpec(trimmedRequest);
           setLocalPlanResult(normalizedPlan);
           setCurrentPlanResult(normalizedPlan);
@@ -870,6 +876,8 @@ export function SkillLifecyclePanel({
     try {
       setIsGenerating(true);
       setDisclosureInfo(null);
+      // approved snapshot のみを execute payload として渡す。
+      // live textarea（request state）の値は使用しない。
       const result = await skillCreatorApi.executePlan(
         planId,
         approvedSkillSpec ?? undefined,
