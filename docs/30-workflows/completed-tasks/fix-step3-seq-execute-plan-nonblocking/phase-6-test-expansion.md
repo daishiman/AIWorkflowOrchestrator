@@ -12,13 +12,13 @@
 
 ## 目的
 
-Phase 4 の基本テストに加え、エッジケース・並列実行・エラーパス・イベント完整性を検証するテストを追加する。Phase 7 のカバレッジ目標達成に向けてテストを充実させる。
+Phase 4 の基本テストに加え、エッジケース・並列実行・エラーパス・イベント完全性を検証するテストを追加する。Phase 7 のカバレッジ目標達成に向けてテストを充実させる。
 
 ## 実行タスク
 
 1. エラーパステストの追加（`executeAsync` 内例外の伝播遮断確認）
 2. 並列 planId 実行テストの追加
-3. `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` ペイロードの完整性テスト追加
+3. `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` ペイロードの完全性テスト追加
 4. フェーズ遷移 progress 値の境界値テスト追加
 5. 全テストが PASS することを確認する
 
@@ -94,28 +94,35 @@ it("TC-T2-07: 10 件の並列 invoke が全て 100ms 以内に { accepted: true 
 });
 ```
 
-### ステップ 3: STATE_CHANGED ペイロードの完整性テスト
+### ステップ 3: onPhaseChanged / snapshot bridge テスト
 
 **追加先**: `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.phase-events.test.ts`
 
 ```typescript
-// TC-T3-05: onPhaseChanged のペイロードが { phase, progress } の型を持つ
+// TC-T3-05: onPhaseChanged のペイロードが planId / phase / progress を持つ
 it("TC-T3-05: onPhaseChanged callback に渡される progress が 0〜100 の範囲である", () => {
   const engine = new SkillCreatorWorkflowEngine();
   const receivedProgress: number[] = [];
-  engine.onPhaseChanged = (_phase, progress) => {
+  const receivedPlanIds: string[] = [];
+  engine.onPhaseChanged = (planId, _phase, progress) => {
+    receivedPlanIds.push(planId);
     receivedProgress.push(progress);
     expect(progress).toBeGreaterThanOrEqual(0);
     expect(progress).toBeLessThanOrEqual(100);
   };
 
-  // 実際のフェーズ遷移シーケンスを実行
-  engine.triggerPhaseTransition("analyzing", 10);
-  engine.triggerPhaseTransition("designing", 30);
-  engine.triggerPhaseTransition("implementing", 70);
-  engine.triggerPhaseTransition("completed", 100);
+  engine.triggerPhaseTransition("plan-001", "executing", 10);
+  engine.triggerPhaseTransition("plan-001", "complete", 30);
+  engine.triggerPhaseTransition("plan-001", "error", 70);
+  engine.triggerPhaseTransition("plan-002", "executing", 100);
 
   expect(receivedProgress).toEqual([10, 30, 70, 100]);
+  expect(receivedPlanIds).toEqual([
+    "plan-001",
+    "plan-001",
+    "plan-001",
+    "plan-002",
+  ]);
 });
 
 // TC-T3-06: onPhaseChanged が後から差し替えられた場合に新しい callback が呼ばれる
@@ -125,10 +132,10 @@ it("TC-T3-06: onPhaseChanged を後から差し替えると新しい callback �
   const secondCallback = vi.fn();
 
   engine.onPhaseChanged = firstCallback;
-  engine.triggerPhaseTransition("analyzing", 10);
+  engine.triggerPhaseTransition("plan-001", "executing", 10);
 
   engine.onPhaseChanged = secondCallback;
-  engine.triggerPhaseTransition("designing", 30);
+  engine.triggerPhaseTransition("plan-001", "complete", 30);
 
   expect(firstCallback).toHaveBeenCalledTimes(1);
   expect(secondCallback).toHaveBeenCalledTimes(1);
@@ -140,32 +147,72 @@ it("TC-T3-06: onPhaseChanged を後から差し替えると新しい callback �
 **追加先**: 新規ファイル `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts`
 
 ```typescript
-// TC-T4-01: executeAsync でエラー発生時に SKILL_CREATOR_WORKFLOW_STATE_CHANGED で通知される
-it("TC-T4-01: engine.execute がエラーをスローした場合に STATE_CHANGED で phase: failed が通知される", async () => {
-  const mockEngine = {
-    onPhaseChanged: undefined,
-    execute: vi.fn().mockRejectedValue(new Error("execution failed")),
-  };
-  mockFacade.getOrCreateEngine.mockReturnValue(mockEngine);
+// TC-T4-01: executeAsync の成功時に snapshot callback を通知する
+it("TC-T4-01: executeAsync の成功時に snapshot callback を通知する", async () => {
+  const { executeMock, facade, workflowEngine } = createFacade();
+  const phaseSpy = vi.spyOn(workflowEngine, "triggerPhaseTransition");
+  const completeSpy = vi.fn();
+  facade.onWorkflowStateSnapshot = completeSpy;
 
-  await facade.executeAsync("plan-001", mockReq);
+  vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+    type: "integrated_api",
+    apiKey: "sk-test",
+    permissionMode: "default",
+  });
+  executeMock.mockResolvedValue({
+    executionId: "exec-001",
+    success: true,
+  });
 
-  expect(mockWebContents.send).toHaveBeenCalledWith(
-    SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+  await facade.executeAsync("plan-001", {
+    planId: "plan-001",
+    skillSpec: "  skill spec  ",
+    authMode: "api-key",
+    apiKey: "sk-test",
+  });
+
+  expect(executeMock).toHaveBeenCalledTimes(1);
+  expect(phaseSpy).toHaveBeenNthCalledWith(1, "plan-001", "executing", 0);
+  expect(phaseSpy).toHaveBeenNthCalledWith(2, "plan-001", "complete", 100);
+  expect(completeSpy).toHaveBeenCalledTimes(1);
+  expect(completeSpy).toHaveBeenCalledWith(
+    "plan-001",
     expect.objectContaining({
       planId: "plan-001",
-      phase: "failed",
+      currentPhase: "verify",
     }),
   );
 });
 
-// TC-T4-02: executeAsync でのエラーが Facade 外に伝播しない
-it("TC-T4-02: executeAsync がエラーを内部で catch し、外部に throw しない", async () => {
-  mockEngine.execute.mockRejectedValue(new Error("fatal error"));
+// TC-T4-02: executeAsync の失敗時に throw せず failure callback を通知する
+it("TC-T4-02: executeAsync の失敗時に throw せず failure callback を通知する", async () => {
+  const { executeMock, facade, workflowEngine } = createFacade();
+  const phaseSpy = vi.spyOn(workflowEngine, "triggerPhaseTransition");
+  const completeSpy = vi.fn();
+  facade.onWorkflowStateSnapshot = completeSpy;
+
+  vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockRejectedValue(
+    new Error("resolve failed"),
+  );
+  executeMock.mockResolvedValue({
+    executionId: "exec-002",
+    success: true,
+  });
 
   await expect(
-    facade.executeAsync("plan-001", mockReq),
+    facade.executeAsync("plan-002", {
+      planId: "plan-002",
+      skillSpec: "skill spec",
+      authMode: "api-key",
+      apiKey: "sk-test",
+    }),
   ).resolves.toBeUndefined();
+
+  expect(executeMock).not.toHaveBeenCalled();
+  expect(phaseSpy).toHaveBeenNthCalledWith(1, "plan-002", "executing", 0);
+  expect(phaseSpy).toHaveBeenNthCalledWith(2, "plan-002", "error", 0);
+  expect(completeSpy).toHaveBeenCalledTimes(1);
+  expect(completeSpy).toHaveBeenCalledWith("plan-002", null, "resolve failed");
 });
 ```
 
@@ -182,21 +229,21 @@ pnpm --filter @repo/desktop exec vitest run \
 
 ## エッジケース一覧
 
-| エッジケース                | テストID | 期待結果                                  |
-| --------------------------- | -------- | ----------------------------------------- |
-| 1 回目エラー後の 2 回目正常 | TC-T2-05 | 2 回目も `{ accepted: true }` を返す      |
-| planId の正確な受け渡し     | TC-T2-06 | `executeAsync` が正しい planId を受け取る |
-| 10 件並列 invoke            | TC-T2-07 | 全件 100ms 以内に返る                     |
-| progress 値の境界           | TC-T3-05 | 0〜100 の範囲                             |
-| callback 差し替え           | TC-T3-06 | 新しい callback が呼ばれる                |
-| executeAsync エラー通知     | TC-T4-01 | `phase: 'failed'` で STATE_CHANGED        |
-| executeAsync エラー非伝播   | TC-T4-02 | `executeAsync` が resolve する            |
+| エッジケース                | テストID | 期待結果                                         |
+| --------------------------- | -------- | ------------------------------------------------ |
+| 1 回目エラー後の 2 回目正常 | TC-T2-05 | 2 回目も `{ accepted: true }` を返す             |
+| planId の正確な受け渡し     | TC-T2-06 | `executeAsync` が正しい planId を受け取る        |
+| 10 件並列 invoke            | TC-T2-07 | 全件 100ms 以内に返る                            |
+| progress 値の境界           | TC-T3-05 | 0〜100 の範囲                                    |
+| callback 差し替え           | TC-T3-06 | 新しい callback が呼ばれる                       |
+| executeAsync 成功通知       | TC-T4-01 | `onWorkflowStateSnapshot` が snapshot を受け取る |
+| executeAsync 失敗非伝播     | TC-T4-02 | `executeAsync` が resolve し、例外を外へ出さない |
 
 ## 多角的チェック観点
 
 - TC-T2-07 の 10 件並列テストが実際の Electron 環境でも意味を持つか（Node.js シングルスレッドでも並列 ipcMain.handle の呼び出しは可能か）確認したか
-- TC-T4-01 のエラーメッセージが `sanitizeErrorMessage` でサニタイズされることを検証しているか
-- `RuntimeSkillCreatorFacade.executeAsync.test.ts` のモック設定が実際の Facade DI 構造と合致しているか確認したか
+- TC-T4-01 / TC-T4-02 のモック設定が実際の Facade DI 構造と合致しているか確認したか
+- `RuntimeSkillCreatorFacade.executeAsync.test.ts` の成功/失敗両方で `triggerPhaseTransition` の planId が一致しているか確認したか
 
 ## 成果物
 

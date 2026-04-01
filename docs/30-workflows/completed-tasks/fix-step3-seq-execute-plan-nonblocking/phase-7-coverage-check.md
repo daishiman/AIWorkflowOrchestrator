@@ -62,21 +62,21 @@ pnpm --filter @repo/desktop exec vitest run --coverage
 | ----------------------------------------------------- | ---------- | -------------- |
 | `CHANNEL_TIMEOUTS['skill-creator:execute-plan']` 存在 | TC-T1-01   | 確認対象       |
 | `executeAsync` 正常パス                               | TC-T2-02   | 確認対象       |
-| `executeAsync` エラーパス                             | TC-T4-01   | 確認対象       |
+| `executeAsync` エラーパス                             | TC-T4-02   | 確認対象       |
 | `onPhaseChanged` が定義されている場合                 | TC-T3-02   | 確認対象       |
 | `onPhaseChanged` が undefined の場合                  | TC-T3-01   | 確認対象       |
 | fire-and-forget 即時 return                           | TC-T2-01   | 確認対象       |
 
 ### ステップ 4: トレーサビリティ確認
 
-| AC                                        | 対応テストケース     | カバレッジ状態 |
-| ----------------------------------------- | -------------------- | -------------- |
-| AC-1（100ms 以内返却）                    | TC-T2-01, TC-T2-07   | 確認対象       |
-| AC-2（executeAsync が query() 呼び出し）  | TC-T2-02, TC-T4-01   | 確認対象       |
-| AC-3（フェーズ遷移で STATE_CHANGED 発火） | TC-T3-02, TC-T4-01   | 確認対象       |
-| AC-4（CHANNEL_TIMEOUTS 登録）             | TC-T1-01, TC-T1-02   | 確認対象       |
-| AC-5（breaking change なし）              | Phase 9 の既存テスト | 確認対象       |
-| AC-6（onPhaseChanged が型安全）           | TC-T3-04             | 確認対象       |
+| AC                                                                 | 対応テストケース                                             | カバレッジ状態 |
+| ------------------------------------------------------------------ | ------------------------------------------------------------ | -------------- |
+| AC-1（100ms 以内返却）                                             | TC-T2-01, TC-T2-07                                           | 確認対象       |
+| AC-2（executeAsync が query() 呼び出し）                           | TC-T2-02, TC-T4-01                                           | 確認対象       |
+| AC-3（フェーズ遷移で `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` 発火） | TC-T3-02, TC-T4-01/02                                        | 確認対象       |
+| AC-4（CHANNEL_TIMEOUTS 登録）                                      | TC-T1-01, TC-T1-02                                           | 確認対象       |
+| AC-5（Renderer consumer 契約整合）                                 | SkillCreateWizard.tsx / SkillLifecyclePanel.tsx の受け口差分 | 確認対象       |
+| AC-6（onPhaseChanged が型安全）                                    | TC-T3-04                                                     | 確認対象       |
 
 ### ステップ 5: 未達時の対応
 
@@ -90,7 +90,7 @@ pnpm --filter @repo/desktop exec vitest run --coverage
 
 - `ipc-utils.ts` の `CHANNEL_TIMEOUTS` 部分のみに着目し、他の部分の低カバレッジが目標達成を妨げていないか確認したか
 - ブランチカバレッジの「未達ブランチ」を特定する際に、実装上のデッドコードが含まれていないか確認したか
-- AC-5（breaking change なし）を Phase 9 の既存テスト実行で代替できるか確認したか
+- AC-5（Renderer consumer 契約整合）を Phase 9 の consumer 影響確認と follow-up task で代替できるか確認したか
 
 ## 成果物
 

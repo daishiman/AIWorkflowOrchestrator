@@ -17,13 +17,13 @@ import {
   createMockEvent,
   createMockRuntimeFacade,
   createSuccessPlanResult,
-  createSuccessExecuteResult,
   createImproveResult,
   createApplyImprovementResult,
   createSampleSuggestions,
   invokeSkillCreatorPlan,
   invokeSkillCreatorExecute,
   invokeSkillCreatorImprove,
+  assertExecutePlanAccepted,
   assertIpcSuccess,
   assertIpcError,
   assertNoSensitiveData,
@@ -115,25 +115,28 @@ describe("Skill Creator E2E Integration", () => {
       );
     });
 
-    it("AC-2: execute-plan generates skill files and returns skillPath", async () => {
-      const executeResult = createSuccessExecuteResult();
-      mockFacade.execute.mockResolvedValue(executeResult);
+    it("AC-2: execute-plan accepts request and starts background execution", async () => {
+      mockFacade.executeAsync.mockResolvedValue(undefined);
 
       const result = await invokeSkillCreatorExecute(
         "plan-001",
         "test skill spec",
       );
 
-      assertIpcSuccess(result);
-      expect(result.data).toEqual(executeResult);
-      expect(mockFacade.execute).toHaveBeenCalled();
+      assertExecutePlanAccepted(result);
+      expect(result).toEqual({ accepted: true, planId: "plan-001" });
+      expect(mockFacade.executeAsync).toHaveBeenCalledWith("plan-001", {
+        planId: "plan-001",
+        skillSpec: "test skill spec",
+        authMode: "api-key",
+        apiKey: "test-key",
+      });
     });
 
     it("AC-1+AC-2: full plan → execute flow succeeds end-to-end", async () => {
       const planResult = createSuccessPlanResult();
-      const executeResult = createSuccessExecuteResult();
       mockFacade.plan.mockResolvedValue(planResult);
-      mockFacade.execute.mockResolvedValue(executeResult);
+      mockFacade.executeAsync.mockResolvedValue(undefined);
 
       // Step 1: Plan
       const planResponse = await invokeSkillCreatorPlan(
@@ -146,8 +149,11 @@ describe("Skill Creator E2E Integration", () => {
         (planResponse.data as { planId: string }).planId,
         (planResponse.data as { skillSpec: string }).skillSpec,
       );
-      assertIpcSuccess(execResponse);
-      expect((execResponse.data as { success: boolean }).success).toBe(true);
+      assertExecutePlanAccepted(execResponse);
+      expect(execResponse).toEqual({
+        accepted: true,
+        planId: (planResponse.data as { planId: string }).planId,
+      });
     });
 
     it("plan validates empty prompt input", async () => {
@@ -162,6 +168,7 @@ describe("Skill Creator E2E Integration", () => {
 
       assertIpcError(result, "planId が指定されていません");
       expect(mockFacade.execute).not.toHaveBeenCalled();
+      expect(mockFacade.executeAsync).not.toHaveBeenCalled();
     });
   });
 
@@ -180,14 +187,13 @@ describe("Skill Creator E2E Integration", () => {
       expect(typeof result.error).toBe("string");
     });
 
-    it("AC-7: execute-plan returns error on LLM failure", async () => {
-      mockFacade.execute.mockRejectedValue(
-        new Error("Model inference timeout"),
-      );
+    it("AC-7: execute-plan returns accepted ack even if the async worker is isolated", async () => {
+      mockFacade.executeAsync.mockResolvedValue(undefined);
 
       const result = await invokeSkillCreatorExecute("plan-001", "spec");
 
-      assertIpcError(result);
+      assertExecutePlanAccepted(result);
+      expect(result).toEqual({ accepted: true, planId: "plan-001" });
     });
 
     it("NFR-4: app does not crash after LLM error — retry succeeds", async () => {

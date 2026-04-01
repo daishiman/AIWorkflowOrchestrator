@@ -29,6 +29,11 @@ export interface IpcResult<T> {
   error?: string;
 }
 
+export interface ExecutePlanAcceptedAck {
+  accepted: true;
+  planId: string;
+}
+
 export interface MockWebContents {
   id: number;
   getType: () => string;
@@ -45,6 +50,7 @@ export interface MockBrowserWindow {
 export interface MockRuntimeFacade {
   plan: ReturnType<typeof vi.fn>;
   execute: ReturnType<typeof vi.fn>;
+  executeAsync: ReturnType<typeof vi.fn>;
   improve: ReturnType<typeof vi.fn>;
   applyImprovement: ReturnType<typeof vi.fn>;
   setLLMAdapter: ReturnType<typeof vi.fn>;
@@ -107,6 +113,7 @@ export function createMockRuntimeFacade(): MockRuntimeFacade {
   return {
     plan: vi.fn(),
     execute: vi.fn(),
+    executeAsync: vi.fn().mockResolvedValue(undefined),
     improve: vi.fn(),
     applyImprovement: vi.fn(),
     setLLMAdapter: vi.fn(),
@@ -257,7 +264,7 @@ export async function invokeSkillCreatorExecute(
   skillSpec: string,
   authMode = "api-key",
   apiKey: string | null = "test-key",
-): Promise<IpcResult<unknown>> {
+): Promise<unknown> {
   const handler = getHandler("skill-creator:execute-plan");
   if (!handler)
     throw new Error("skill-creator:execute-plan handler not registered");
@@ -298,6 +305,15 @@ export function assertIpcSuccess(
     throw new Error(
       `Expected IPC success but got error: ${r.error ?? "unknown"}`,
     );
+  }
+}
+
+export function assertExecutePlanAccepted(
+  result: unknown,
+): asserts result is ExecutePlanAcceptedAck {
+  const r = result as ExecutePlanAcceptedAck;
+  if (!r || r.accepted !== true || typeof r.planId !== "string") {
+    throw new Error("Expected execute-plan to return accepted ack");
   }
 }
 

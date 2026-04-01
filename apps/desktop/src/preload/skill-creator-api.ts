@@ -19,7 +19,7 @@ import type {
   CreateSkillOptions,
   ExecuteTasksOptions,
   ExecutionReport,
-  RuntimeSkillCreatorExecuteResponse,
+  SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
@@ -111,7 +111,7 @@ export interface SkillCreatorAPI {
     skillSpec: string,
     authMode?: AuthMode,
     apiKey?: string | null,
-  ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>>;
+  ) => Promise<IpcResult<SkillCreatorExecutePlanAck>>;
 
   /**
    * workflow snapshot を取得する
@@ -294,6 +294,34 @@ function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
   return invokeWithTimeout<T>(ALLOWED_INVOKE_CHANNELS, channel, ...args);
 }
 
+type SkillCreatorExecutePlanTransportResponse =
+  | SkillCreatorExecutePlanAck
+  | IpcResult<never>;
+
+function isSkillCreatorExecutePlanAck(
+  value: unknown,
+): value is SkillCreatorExecutePlanAck {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    "accepted" in value &&
+    (value as { accepted: unknown }).accepted === true &&
+    "planId" in value &&
+    typeof (value as { planId: unknown }).planId === "string"
+  );
+}
+
+function isIpcErrorResponse(value: unknown): value is IpcResult<never> {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    "success" in value &&
+    (value as { success: unknown }).success === false &&
+    "error" in value &&
+    typeof (value as { error: unknown }).error === "string"
+  );
+}
+
 /**
  * safeOn - 許可されたチャンネルのみリスナーを登録
  */
@@ -353,12 +381,26 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     skillSpec: string,
     authMode?: AuthMode,
     apiKey?: string | null,
-  ): Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>> =>
-    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN, {
-      planId,
-      skillSpec,
-      authMode,
-      apiKey,
+  ): Promise<IpcResult<SkillCreatorExecutePlanAck>> =>
+    safeInvoke<SkillCreatorExecutePlanTransportResponse>(
+      IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
+      {
+        planId,
+        skillSpec,
+        authMode,
+        apiKey,
+      },
+    ).then((response) => {
+      if (isSkillCreatorExecutePlanAck(response)) {
+        return { success: true, data: response };
+      }
+      if (isIpcErrorResponse(response)) {
+        return response;
+      }
+      return {
+        success: false,
+        error: "計画実行の受理に失敗しました",
+      };
     }),
 
   getWorkflowState: (

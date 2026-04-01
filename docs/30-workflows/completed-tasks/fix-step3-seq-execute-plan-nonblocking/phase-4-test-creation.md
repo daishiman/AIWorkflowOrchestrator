@@ -55,7 +55,7 @@ describe("CHANNEL_TIMEOUTS - skill-creator:execute-plan", () => {
 });
 ```
 
-Red 確認: `CHANNEL_TIMEOUTS` に `"skill-creator:execute-plan"` が未登録のため失敗する。
+Red 確認: 実装前 baseline では `CHANNEL_TIMEOUTS` に `"skill-creator:execute-plan"` が未登録のため失敗する。現行ブランチで既に実装済みなら、この記述は TDD の設計意図として読む。
 
 ### ステップ 2: テストファイル 2 — fire-and-forget 動作検証
 
@@ -122,7 +122,7 @@ describe("creatorHandlers - skill-creator:execute-plan fire-and-forget", () => {
 });
 ```
 
-Red 確認: 現状ハンドラーが `await` でブロックするため TC-T2-01 が 100ms を超えて失敗する。
+Red 確認: 実装前 baseline ではハンドラーが `await` でブロックするため TC-T2-01 が 100ms を超えて失敗する。現行ブランチで既に fire-and-forget 化済みなら、この記述は設計意図として読む。
 
 ### ステップ 3: テストファイル 3 — onPhaseChanged 検証
 
@@ -130,7 +130,10 @@ Red 確認: 現状ハンドラーが `await` でブロックするため TC-T2-0
 
 ```typescript
 import { describe, it, expect, vi } from "vitest";
-import { SkillCreatorWorkflowEngine } from "../SkillCreatorWorkflowEngine";
+import {
+  SkillCreatorWorkflowEngine,
+  type SkillCreatorExecuteAsyncPhase,
+} from "../SkillCreatorWorkflowEngine";
 
 describe("SkillCreatorWorkflowEngine - onPhaseChanged callback", () => {
   it("TC-T3-01: onPhaseChanged が undefined の場合に例外が発生しない", () => {
@@ -138,40 +141,47 @@ describe("SkillCreatorWorkflowEngine - onPhaseChanged callback", () => {
     engine.onPhaseChanged = undefined;
 
     // フェーズ遷移を発生させる（エンジンの内部メソッド経由）
-    expect(() => engine.triggerPhaseTransition("analyzing", 10)).not.toThrow();
+    expect(() =>
+      engine.triggerPhaseTransition("plan-001", "executing", 10),
+    ).not.toThrow();
   });
 
-  it("TC-T3-02: onPhaseChanged が登録されている場合にフェーズ遷移時に呼ばれる", () => {
+  it("TC-T3-02: onPhaseChanged が登録されている場合に planId 付きで呼ばれる", () => {
     const engine = new SkillCreatorWorkflowEngine();
     const mockCallback = vi.fn();
     engine.onPhaseChanged = mockCallback;
 
-    engine.triggerPhaseTransition("analyzing", 10);
+    engine.triggerPhaseTransition("plan-001", "executing", 10);
 
-    expect(mockCallback).toHaveBeenCalledWith("analyzing", 10);
+    expect(mockCallback).toHaveBeenCalledWith("plan-001", "executing", 10);
   });
 
   it("TC-T3-03: 複数のフェーズ遷移が順番通りに callback を呼ぶ", () => {
     const engine = new SkillCreatorWorkflowEngine();
-    const calls: Array<[string, number]> = [];
-    engine.onPhaseChanged = (phase, progress) => calls.push([phase, progress]);
+    const calls: Array<[string, SkillCreatorExecuteAsyncPhase, number]> = [];
+    engine.onPhaseChanged = (planId, phase, progress) =>
+      calls.push([planId, phase, progress]);
 
-    engine.triggerPhaseTransition("analyzing", 10);
-    engine.triggerPhaseTransition("designing", 30);
-    engine.triggerPhaseTransition("implementing", 60);
+    engine.triggerPhaseTransition("plan-001", "executing", 0);
+    engine.triggerPhaseTransition("plan-001", "complete", 100);
+    engine.triggerPhaseTransition("plan-001", "error", 0);
 
     expect(calls).toEqual([
-      ["analyzing", 10],
-      ["designing", 30],
-      ["implementing", 60],
+      ["plan-001", "executing", 0],
+      ["plan-001", "complete", 100],
+      ["plan-001", "error", 0],
     ]);
   });
 
-  it("TC-T3-04: onPhaseChanged callback が型 (WorkflowPhase, number) => void を受け取る", () => {
+  it("TC-T3-04: onPhaseChanged callback が型 (planId, phase, progress) を受け取る", () => {
     const engine = new SkillCreatorWorkflowEngine();
 
     // TypeScript の型安全性を確認（コンパイル時エラーがないこと）
-    const typedCallback: (phase: string, progress: number) => void = vi.fn();
+    const typedCallback: (
+      planId: string,
+      phase: SkillCreatorExecuteAsyncPhase,
+      progress: number,
+    ) => void = vi.fn();
     engine.onPhaseChanged = typedCallback;
 
     expect(engine.onPhaseChanged).toBe(typedCallback);
@@ -179,7 +189,7 @@ describe("SkillCreatorWorkflowEngine - onPhaseChanged callback", () => {
 });
 ```
 
-Red 確認: `SkillCreatorWorkflowEngine` に `onPhaseChanged` プロパティが存在しないため全 TC が失敗する。
+Red 確認: 実装前 baseline では `SkillCreatorWorkflowEngine` に `onPhaseChanged` プロパティが存在しないため全 TC が失敗する。現行ブランチで既に実装済みなら、TDD の初期状態を示す記述として扱う。
 
 ### ステップ 4: Red 状態の確認
 

@@ -37,35 +37,35 @@ Phase 2 の設計が AC-1〜AC-6 を全て満たし、IPC 4 層が整合して�
 
 各受入条件を Phase 2 の設計と照合する:
 
-| AC   | 受入条件                                                                        | 対応する設計                                                     | 充足判定 |
-| ---- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------- | -------- |
-| AC-1 | ハンドラーが 100ms 以内に `{ accepted: true, planId }` を返す                   | `void facade.executeAsync()` + 即時 return 設計                  | 確認対象 |
-| AC-2 | `executeAsync()` が Agent SDK `query()` を呼ぶ                                  | `RuntimeSkillCreatorFacade.executeAsync` → `engine.execute(req)` | 確認対象 |
-| AC-3 | フェーズ遷移時に `webContents.send(STATE_CHANGED, { planId, phase, progress })` | `onPhaseChanged` callback + Facade でのワイヤリング              | 確認対象 |
-| AC-4 | `CHANNEL_TIMEOUTS` に `"skill-creator:execute-plan": 1_800_000`                 | Concern 1 の ipc-utils.ts 変更                                   | 確認対象 |
-| AC-5 | 既存 `safeInvoke` 互換性（breaking change なし）                                | ハンドラーシグネチャ維持、Renderer 変更なし                      | 確認対象 |
-| AC-6 | `onPhaseChanged` callback が型安全                                              | `PhaseChangedCallback` 型定義 + Optional Property                | 確認対象 |
+| AC   | 受入条件                                                                                                                                                                                 | 対応する設計                                                                    | 充足判定 |
+| ---- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | -------- |
+| AC-1 | ハンドラーが 100ms 以内に `{ accepted: true, planId }` を返す                                                                                                                            | `void runtimeSkillCreatorService.executeAsync(planId, args)` + 即時 return 設計 | 確認対象 |
+| AC-2 | `executeAsync()` が Agent SDK `query()` を呼ぶ                                                                                                                                           | `RuntimeSkillCreatorFacade.executeAsync` → `execute(req)`                       | 確認対象 |
+| AC-3 | `onWorkflowStateSnapshot` 経由で `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` の `SkillCreatorWorkflowUiSnapshot` が送られ、内部 progress hook は `SkillCreatorExecuteAsyncPhase` で観測できる | `onPhaseChanged` callback + Facade の snapshot bridge                           | 確認対象 |
+| AC-4 | `CHANNEL_TIMEOUTS` に `"skill-creator:execute-plan": 1_800_000`                                                                                                                          | Concern 1 の ipc-utils.ts 変更                                                  | 確認対象 |
+| AC-5 | `skillCreatorAPI.executePlan` の consumer 契約差分が設計で明示されている                                                                                                                 | ハンドラーシグネチャ維持、consumer 影響確認                                     | 確認対象 |
+| AC-6 | `onPhaseChanged` callback が型安全                                                                                                                                                       | `PhaseChangedCallback(planId, phase, progress)` 型定義 + Optional Property      | 確認対象 |
 
 ### ステップ 2: IPC 4 層整合性確認
 
-| 層               | 確認内容                                                                 | 結果     |
-| ---------------- | ------------------------------------------------------------------------ | -------- |
-| 定数定義         | `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` が channels.ts で定義されているか | 確認対象 |
-| CHANNEL_TIMEOUTS | `"skill-creator:execute-plan": 1_800_000` が追加されるか                 | 確認対象 |
-| ハンドラー登録   | fire-and-forget パターンが正しく登録されるか                             | 確認対象 |
-| Preload API      | 既存 invoke API が変更なく動作するか                                     | 確認対象 |
+| 層               | 確認内容                                                                                            | 結果     |
+| ---------------- | --------------------------------------------------------------------------------------------------- | -------- |
+| 定数定義         | `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` が `apps/desktop/src/preload/channels.ts` で定義されているか | 確認対象 |
+| CHANNEL_TIMEOUTS | `"skill-creator:execute-plan": 1_800_000` が追加されるか                                            | 確認対象 |
+| ハンドラー登録   | fire-and-forget + snapshot bridge パターンが正しく登録されるか                                      | 確認対象 |
+| Preload API      | `executePlan()` consumer の ack / snapshot 契約を確認                                               | 確認対象 |
 
 ### ステップ 3: 既存インフラとの互換性確認
 
 以下を確認する:
 
-- `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` チャンネルの既存ペイロード型と `{ planId, phase, progress }` が互換しているか
-- `emitWorkflowStateChanged()` 既存メソッドが新設計と競合しないか
+- `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` チャンネルの既存ペイロード型と `SkillCreatorWorkflowUiSnapshot` が互換しているか
+- `emitWorkflowStateChanged()` 既存メソッドが final snapshot のみを送る設計と競合しないか
 - `SkillCreatorWorkflowEngine.workflows: Map<string, SkillCreatorWorkflowState>` が複数 planId の並列実行に対応できるか
 
 ### ステップ 4: breaking change の確認
 
-以下の変更が Renderer 側（`apps/desktop/src/renderer/`）に影響しないことを確認する:
+以下の変更が Renderer 側の consumer に影響するかを確認し、必要なら compat shim または後続タスクへ分解する:
 
 | 変更                                                                  | Renderer への影響                         | 判定     |
 | --------------------------------------------------------------------- | ----------------------------------------- | -------- |
@@ -74,7 +74,7 @@ Phase 2 の設計が AC-1〜AC-6 を全て満たし、IPC 4 層が整合して�
 | `onPhaseChanged` callback 追加                                        | Main Process 内部のため Renderer 影響なし | 問題なし |
 | `executeAsync` メソッド追加                                           | Main Process 内部のため Renderer 影響なし | 問題なし |
 
-**注意**: ハンドラーの戻り値変更（`{ success: true }` → `{ accepted: true, planId }`）は breaking change の可能性がある。Renderer 側でこの戻り値を使用しているコードがあれば、合わせて修正するか、後方互換フィールドを追加すること。
+**注意**: ハンドラーの戻り値変更（`{ success: true }` → `{ accepted: true, planId }`）は breaking change の可能性がある。`SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx` のような consumer がある場合は、同一 wave で兼容化するか、compat shim を追加すること。
 
 ### ステップ 5: PASS/FAIL 判定
 
@@ -84,7 +84,7 @@ Phase 2 の設計が AC-1〜AC-6 を全て満たし、IPC 4 層が整合して�
 
 - AC-1〜AC-6 の全てが設計で充足されている
 - IPC 4 層の整合性が確認されている
-- breaking change がないことが確認されている（または対処方針が明確）
+- consumer 契約差分が確認され、対処方針が明確
 - MAJOR 指摘がゼロ
 
 #### FAIL 条件（Phase 2 に戻る）
@@ -96,9 +96,9 @@ Phase 2 の設計が AC-1〜AC-6 を全て満たし、IPC 4 層が整合して�
 
 ## 多角的チェック観点
 
-- ハンドラーの戻り値変更（`{ success }` → `{ accepted, planId }`）が Renderer 側の `creatorSlice.ts` 等に影響しないか確認したか
-- `void facade.executeAsync()` の fire-and-forget が ESLint の `no-floating-promises` ルールに違反しないか確認したか（`void` キーワードで回避）
-- `executeAsync` 内のエラーが `throw` せずに `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` で通知されるため、ハンドラーが例外を受け取らない設計になっているか確認したか
+- ハンドラーの戻り値変更（`{ success }` → `{ accepted, planId }`）が `SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx` 等の consumer に影響しないか確認したか
+- `void runtimeSkillCreatorService.executeAsync(planId, args)` の fire-and-forget が ESLint の `no-floating-promises` ルールに違反しないか確認したか（`void` キーワードで回避）
+- `executeAsync` 内の error hook が `throw` せずに `onWorkflowStateSnapshot` へ集約される設計になっているか確認したか
 - Phase 4 のテストが Red になることが設計から予測できるか（修正前コードに対して）
 
 ## 成果物

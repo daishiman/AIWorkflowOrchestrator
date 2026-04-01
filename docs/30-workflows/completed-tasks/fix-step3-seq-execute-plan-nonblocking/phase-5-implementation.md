@@ -49,7 +49,7 @@ const CHANNEL_TIMEOUTS: Record<string, number> = {
 };
 
 // 変更後: 1_800_000ms（30分）を追加
-const CHANNEL_TIMEOUTS: Record<string, number> = {
+export const CHANNEL_TIMEOUTS: Partial<Record<string, number>> = {
   // 既存のエントリ（変更なし）
   "skill-creator:execute-plan": 1_800_000, // 30分: スキル生成は最大30分かかるため
 };
@@ -58,6 +58,7 @@ const CHANNEL_TIMEOUTS: Record<string, number> = {
 確認事項:
 
 - `CHANNEL_TIMEOUTS` が `export` されているか確認する（テスト用）
+- `getChannelTimeout(channel)` が `CHANNEL_TIMEOUTS` を参照し、未定義チャンネルは `IPC_TIMEOUT_MS` にフォールバックすることを確認する
 - 既存のエントリ順序を変えないこと
 
 ### ステップ 2: creatorHandlers.ts の修正
@@ -80,23 +81,23 @@ ipcMain.handle("skill-creator:execute-plan", async (_event, req) => {
 ipcMain.handle("skill-creator:execute-plan", async (_event, req) => {
   const { planId } = req;
   // fire-and-forget: バックグラウンドで非同期実行
-  // エラーは executeAsync 内で SKILL_CREATOR_WORKFLOW_STATE_CHANGED に通知される
-  void facade.executeAsync(planId, req);
+  // エラーと snapshot は executeAsync → onWorkflowStateSnapshot → SKILL_CREATOR_WORKFLOW_STATE_CHANGED に通知される
+  void runtimeSkillCreatorService.executeAsync(planId, args);
   return { accepted: true, planId }; // 100ms 以内に即座に返す
 });
 ```
 
 確認事項:
 
-- `facade` が `creatorHandlers.ts` のスコープでアクセス可能か確認する
+- `runtimeSkillCreatorService` が `creatorHandlers.ts` のスコープでアクセス可能か確認する
 - `void` キーワードで ESLint の `no-floating-promises` を満たすこと
-- 戻り値の型変更（`{ success }` → `{ accepted, planId }`）が Renderer 側に影響しないか確認する
+- 戻り値の型変更（`{ success }` → `{ accepted, planId }`）が `SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx` の consumer 契約に影響しないか確認する
 
 ### ステップ 3: SkillCreatorWorkflowEngine.ts の修正
 
 ```bash
 # 現状確認
-grep -n "WorkflowPhase\|phase\|transition" apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts | head -20
+grep -n "SkillCreatorExecuteAsyncPhase\|phase\|transition" apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts | head -20
 ```
 
 **変更内容**: `onPhaseChanged` オプション callback プロパティを追加
@@ -104,7 +105,8 @@ grep -n "WorkflowPhase\|phase\|transition" apps/desktop/src/main/services/runtim
 ```typescript
 // PhaseChangedCallback 型を追加（export）
 export type PhaseChangedCallback = (
-  phase: WorkflowPhase,
+  planId: string,
+  phase: SkillCreatorExecuteAsyncPhase,
   progress: number,
 ) => void;
 
@@ -113,12 +115,13 @@ export class SkillCreatorWorkflowEngine {
   onPhaseChanged?: PhaseChangedCallback;
 
   // 既存のフェーズ遷移メソッドを修正して callback を呼ぶ
-  private transitionToPhase(newPhase: WorkflowPhase, progress: number): void {
+  triggerPhaseTransition(
+    planId: string,
+    newPhase: SkillCreatorExecuteAsyncPhase,
+    progress: number,
+  ): void {
     // 既存の状態更新処理（変更なし）
-    // ...
-
-    // callback を呼ぶ（undefined の場合は Optional Chaining でスキップ）
-    this.onPhaseChanged?.(newPhase, progress);
+    this.onPhaseChanged?.(planId, newPhase, progress); // internal hook
   }
 }
 ```
@@ -126,7 +129,7 @@ export class SkillCreatorWorkflowEngine {
 確認事項:
 
 - 既存のフェーズ遷移メソッド名を確認し、正しいメソッドに callback を追加すること
-- `WorkflowPhase` 型が既存定義から import されているか確認すること
+- `SkillCreatorExecuteAsyncPhase` 型が既存定義から import されているか確認すること
 - `this.onPhaseChanged?.()` の Optional Chaining で undefined 時に例外が発生しないこと
 
 ### ステップ 4: RuntimeSkillCreatorFacade.ts の修正
@@ -136,46 +139,67 @@ export class SkillCreatorWorkflowEngine {
 grep -n "execute\|WorkflowEngine\|mainWindow\|webContents" apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts | head -20
 ```
 
-**変更内容**: `executeAsync` メソッドを追加し、`onPhaseChanged` を `webContents.send` にワイヤリング
+**変更内容**: `executeAsync` メソッドを追加し、内部 progress hook と snapshot bridge を分離
 
 ```typescript
 // RuntimeSkillCreatorFacade.ts に追加
-import { SKILL_CREATOR_WORKFLOW_STATE_CHANGED } from '...'; // 既存 import の確認
-
-async executeAsync(planId: string, req: ExecutePlanRequest): Promise<void> {
-  const engine = this.getOrCreateEngine(planId);
-
-  // onPhaseChanged を webContents.send にワイヤリング
-  engine.onPhaseChanged = (phase: WorkflowPhase, progress: number) => {
-    this.mainWindow.webContents.send(
-      SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
-      { planId, phase, progress }
-    );
-  };
-
+async executeAsync(
+  planId: string,
+  args: {
+    planId: string;
+    skillSpec: string;
+    authMode?: AuthMode;
+    apiKey?: string | null;
+  },
+): Promise<void> {
+  // constructor で onPhaseChanged -> onWorkflowStateSnapshot の bridge を wiring 済み
   try {
-    await engine.execute(req);
-  } catch (error) {
-    // エラーを SKILL_CREATOR_WORKFLOW_STATE_CHANGED で通知（throw しない）
-    this.mainWindow.webContents.send(
-      SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+    this.workflowEngine.triggerPhaseTransition(planId, "executing", 0);
+    const executeResult = await this.execute(
       {
         planId,
-        phase: 'failed',
-        progress: 0,
-        error: sanitizeErrorMessage(error)
-      }
+        skillSpec: args.skillSpec.trim(),
+        estimatedSteps: 3,
+        skillName: "",
+        description: "",
+        agents: [],
+        scripts: [],
+        triggers: [],
+        anchors: [],
+      },
+      args.authMode ?? "api-key",
+      args.apiKey ?? null,
     );
+    const phase =
+      typeof executeResult === "object" &&
+      executeResult !== null &&
+      "success" in executeResult &&
+      executeResult.success === false
+        ? "error"
+        : "complete";
+    this.workflowEngine.triggerPhaseTransition(
+      planId,
+      phase,
+      phase === "complete" ? 100 : 0,
+    );
+  } catch (error) {
+    this.workflowEngine.triggerPhaseTransition(planId, "error", 0);
+    const errorMessage =
+      error instanceof Error ? error.message : String(error);
+    const snapshot = this.workflowEngine.getWorkflowState(planId);
+    if (!snapshot) {
+      this.onWorkflowStateSnapshot?.(planId, null, errorMessage);
+    }
+    console.error("[RuntimeSkillCreatorFacade] executeAsync failed", planId, errorMessage);
   }
 }
 ```
 
 確認事項:
 
-- `getOrCreateEngine(planId)` メソッドの名前を実際のコードで確認すること
-- `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` チャンネル定数の import パスを確認すること
-- `sanitizeErrorMessage` の import 状況を確認すること
-- `this.mainWindow` の参照方法（直接プロパティ or getter）を確認すること
+- `this.workflowEngine` と `this.onWorkflowStateSnapshot` の既存 DI/責務境界を確認すること
+- `errorMessage` のログ出力に機密情報が含まれないことを確認すること
+- `SkillCreatorWorkflowUiSnapshot` を public relay の snapshot として再利用できることを確認すること
 
 ### ステップ 5: TypeScript 型チェックとテスト実行
 
@@ -200,20 +224,20 @@ Phase 4 の全テスト（TC-T1-01, TC-T1-02, TC-T2-01〜04, TC-T3-01〜04）が
 
 ## 実装上の注意事項
 
-| 注意点                  | 内容                                                                                                        |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------- |
-| `void` キーワード       | `void facade.executeAsync(planId, req)` は ESLint ルール `@typescript-eslint/no-floating-promises` への対応 |
-| エラー隔離              | `executeAsync` 内で catch してスローしないことで、ハンドラーへのエラー伝播を防ぐ                            |
-| 戻り値の変更            | `{ success: true }` → `{ accepted: true, planId }` の breaking change 影響を事前確認すること                |
-| Optional Chaining       | `this.onPhaseChanged?.(phase, progress)` の `?.` で未設定時の TypeScript 型安全を確保                       |
-| CHANNEL_TIMEOUTS export | テストが `CHANNEL_TIMEOUTS` を import できるよう export されていることを確認                                |
+| 注意点                  | 内容                                                                                                                             |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `void` キーワード       | `void runtimeSkillCreatorService.executeAsync(planId, args)` は ESLint ルール `@typescript-eslint/no-floating-promises` への対応 |
+| エラー隔離              | `executeAsync` 内で catch してスローしないことで、ハンドラーへのエラー伝播を防ぐ                                                 |
+| 戻り値の変更            | `{ success: true }` → `{ accepted: true, planId }` の breaking change 影響を事前確認すること                                     |
+| Optional Chaining       | `this.onPhaseChanged?.(planId, phase, progress)` の `?.` で未設定時の TypeScript 型安全を確保                                    |
+| CHANNEL_TIMEOUTS export | テストが `CHANNEL_TIMEOUTS` を import できるよう export されていることを確認                                                     |
 
 ## 多角的チェック観点
 
-- `void facade.executeAsync()` の fire-and-forget が実際に ESLint エラーを発生させないか確認したか
+- `void runtimeSkillCreatorService.executeAsync(planId, args)` の fire-and-forget が実際に ESLint エラーを発生させないか確認したか
 - `executeAsync` 内でエラーが `throw` されないことで、呼び出し元の `ipcMain.handle` が例外を受け取らないことを確認したか
-- Renderer 側（`creatorSlice.ts` 等）が戻り値 `{ accepted, planId }` を正しく処理できるか確認したか
-- `onPhaseChanged?.()` が各フェーズ遷移メソッドで漏れなく呼ばれているか確認したか
+- Renderer 側（`SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx` 等）が戻り値 `{ accepted, planId }` を正しく処理できるか確認したか
+- `onPhaseChanged?.()` が内部 progress hook として only-engine で完結しているか確認したか
 
 ## 成果物
 
@@ -227,9 +251,9 @@ Phase 4 の全テスト（TC-T1-01, TC-T1-02, TC-T2-01〜04, TC-T3-01〜04）が
 ## 完了条件
 
 - [ ] `CHANNEL_TIMEOUTS` に `"skill-creator:execute-plan": 1_800_000` が追加されている
-- [ ] `creatorHandlers.ts` の execute ハンドラーが `void facade.executeAsync()` + 即時 return に変更されている
+- [ ] `creatorHandlers.ts` の execute ハンドラーが `void runtimeSkillCreatorService.executeAsync(planId, args)` + 即時 return に変更されている
 - [ ] `SkillCreatorWorkflowEngine` に `onPhaseChanged?: PhaseChangedCallback` が追加されている
-- [ ] `RuntimeSkillCreatorFacade` に `executeAsync(planId, req): Promise<void>` が追加されている
+- [ ] `RuntimeSkillCreatorFacade` に `executeAsync(planId, args): Promise<void>` が追加されている
 - [ ] `pnpm --filter @repo/desktop typecheck` が PASS している
 - [ ] Phase 4 の全テスト（TC-T1-01〜02, TC-T2-01〜04, TC-T3-01〜04）が全て PASS している（Green）
 
