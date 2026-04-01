@@ -62,13 +62,13 @@
 スキル生成時に発生する `auth:login` IPC タイムアウトエラーの修正タスク群。
 30種の思考法による多角的分析（2026-04-01 実施）に基づき設計。
 
-| タスクID                      | ディレクトリ                                                       | ステップ | パターン | 責務                                                      |
-| ----------------------------- | ------------------------------------------------------------------ | -------- | -------- | --------------------------------------------------------- |
-| TASK-TRACE-SKILL-AUTH-001     | `../completed-tasks/fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 ✅ 完了    |
-| TASK-FIX-IPC-TIMEOUT-001      | `fix-step1-par-ipc-timeout-per-channel/`                           | step1    | par      | IPCチャンネル別タイムアウト設定 ✅ PR#1823 完了           |
-| TASK-FIX-AUTH-IPC-001         | `fix-step2-seq-auth-login-ipc-nonblocking/`                        | step2    | seq      | auth:login ハンドラーの fire-and-forget 化                |
-| TASK-FIX-EXECUTE-PLAN-FF-001  | `fix-step3-seq-execute-plan-nonblocking/`                          | step3    | seq      | skill-creator:execute-plan の fire-and-forget 化          |
-| TASK-NOTIFICATION-SERVICE-001 | `fix-step4-seq-notification-service/`                              | step4    | seq      | INotificationService + macOS 完了通知 + before-quit guard |
+| タスクID                      | ディレクトリ                                                       | ステップ | パターン | 責務                                                              |
+| ----------------------------- | ------------------------------------------------------------------ | -------- | -------- | ----------------------------------------------------------------- |
+| TASK-TRACE-SKILL-AUTH-001     | `../completed-tasks/fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 ✅ 完了            |
+| TASK-FIX-IPC-TIMEOUT-001      | `fix-step1-par-ipc-timeout-per-channel/`                           | step1    | par      | IPCチャンネル別タイムアウト設定 ✅ PR#1823 完了                   |
+| TASK-FIX-AUTH-IPC-001         | `../completed-tasks/fix-step2-seq-auth-login-ipc-nonblocking/`     | step2    | seq      | auth:login ハンドラーの fire-and-forget 化 ✅ Phase-12 完了 #1829 |
+| TASK-FIX-EXECUTE-PLAN-FF-001  | `fix-step3-seq-execute-plan-nonblocking/`                          | step3    | seq      | skill-creator:execute-plan の fire-and-forget 化                  |
+| TASK-NOTIFICATION-SERVICE-001 | `fix-step4-seq-notification-service/`                              | step4    | seq      | INotificationService + macOS 完了通知 + before-quit guard         |
 
 ### 推奨実行順（IPC修正タスク）
 
@@ -78,7 +78,7 @@ fix-step1-par-investigate-skill-auth-trigger ─┐  ✅ 完了
 fix-step1-par-ipc-timeout-per-channel        ─┘  ✅ PR#1823 完了
               ↓ 両方完了後
 [step2: 直列実行]
-fix-step2-seq-auth-login-ipc-nonblocking
+../completed-tasks/fix-step2-seq-auth-login-ipc-nonblocking  ✅ 完了 #1829
               ↓
 [step3: 直列実行]
 fix-step3-seq-execute-plan-nonblocking

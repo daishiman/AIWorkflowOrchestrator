@@ -103,13 +103,13 @@
 
 ## 参照資料
 
-| 資料名                      | パス                                                                        | 説明                             |
-| --------------------------- | --------------------------------------------------------------------------- | -------------------------------- |
-| agentSlice 実装             | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                      | 調査対象                         |
-| skillExecutionAuthPreflight | `apps/desktop/src/renderer/utils/skillExecutionAuthPreflight.ts`            | 調査対象                         |
-| authSlice                   | `apps/desktop/src/renderer/store/slices/authSlice.ts`                       | login() が定義されているスライス |
-| TASK-FIX-AUTH-IPC-001       | `../skill-creator-agent-sdk-lane/fix-step2-seq-auth-login-ipc-nonblocking/` | 並列実行候補（auth handler 側）  |
-| TASK-FIX-IPC-TIMEOUT-001    | `../skill-creator-agent-sdk-lane/fix-step1-par-ipc-timeout-per-channel/`    | 並列実行候補（timeout 側）       |
+| 資料名                      | パス                                                                     | 説明                             |
+| --------------------------- | ------------------------------------------------------------------------ | -------------------------------- |
+| agentSlice 実装             | `apps/desktop/src/renderer/store/slices/agentSlice.ts`                   | 調査対象                         |
+| skillExecutionAuthPreflight | `apps/desktop/src/renderer/utils/skillExecutionAuthPreflight.ts`         | 調査対象                         |
+| authSlice                   | `apps/desktop/src/renderer/store/slices/authSlice.ts`                    | login() が定義されているスライス |
+| TASK-FIX-AUTH-IPC-001       | `../fix-step2-seq-auth-login-ipc-nonblocking/`                           | 並列実行候補（auth handler 側）  |
+| TASK-FIX-IPC-TIMEOUT-001    | `../skill-creator-agent-sdk-lane/fix-step1-par-ipc-timeout-per-channel/` | 並列実行候補（timeout 側）       |
 
 ## 実行手順
 

@@ -14,6 +14,9 @@
 
 ## 実行タスク
 
+- handler の response time を 500ms 前提で確認する
+- provider validation と fire-and-forget 起動のカバレッジを確認する
+- orchestrator 側の `AUTH_STATE_CHANGED` は既存 suite で担保する
 - `authHandlers.ts` の `auth:login` ハンドラー部分のカバレッジ確認
 - 正常パス・異常パスの両方がカバーされていることを確認
 - 未カバーのブランチがあれば Phase 6 のテスト拡充に戻る
@@ -21,23 +24,19 @@
 ## カバレッジ確認コマンド
 
 ```bash
-# authHandlers.ts 特定のカバレッジ確認
-pnpm --filter @repo/desktop exec vitest run --coverage \
-  src/main/ipc/__tests__/authHandlers.test.ts
-
-# または全体カバレッジ
-pnpm --filter @repo/desktop exec vitest run --coverage
+pnpm --filter @repo/desktop exec vitest run --coverage src/main/ipc/authHandlers.test.ts
+pnpm --filter @repo/desktop exec vitest run --coverage src/main/auth/__tests__/authFlowOrchestrator.test.ts
 ```
 
 ## カバレッジ観点チェックリスト
 
 | ブランチ                        | テストケース | カバレッジ状態 |
 | ------------------------------- | ------------ | -------------- |
-| `auth:login` ハンドラー呼び出し | TC-04        | 確認対象       |
-| `startOAuthFlow` が解決される   | TC-01, TC-02 | 確認対象       |
-| `startOAuthFlow` が reject する | TC-03, TC-08 | 確認対象       |
-| `AUTH_STATE_CHANGED` の送信     | TC-03        | 確認対象       |
-| `{ success: true }` の即時返却  | TC-01, TC-05 | 確認対象       |
+| `auth:login` ハンドラー呼び出し | TC-03        | 確認対象       |
+| `startOAuthFlow` が解決される   | TC-03        | 確認対象       |
+| `startOAuthFlow` が reject する | TC-08        | 確認対象       |
+| `provider` が無効               | TC-02, TC-09 | 確認対象       |
+| `{ success: true }` の即時返却  | TC-01, TC-07 | 確認対象       |
 
 ## カバレッジ目標
 
@@ -49,16 +48,21 @@ pnpm --filter @repo/desktop exec vitest run --coverage
 
 ## トレーサビリティ
 
-| 要件ID                              | テストケース | カバレッジ状態 |
-| ----------------------------------- | ------------ | -------------- |
-| FR-01 (5秒以内レスポンス)           | TC-01, TC-05 | 確認対象       |
-| FR-02 (AUTH_STATE_CHANGED 成功通知) | TC-02        | 確認対象       |
-| FR-03 (AUTH_STATE_CHANGED 失敗通知) | TC-03, TC-08 | 確認対象       |
-| FR-04 (startOAuthFlow 呼び出し)     | TC-04, TC-06 | 確認対象       |
-| AC-01 (タイムアウトエラーなし)      | TC-05        | 確認対象       |
-| AC-02 (5000ms 以内レスポンス)       | TC-01, TC-05 | 確認対象       |
-| AC-03 (AUTH_STATE_CHANGED 発火)     | TC-03        | 確認対象       |
-| AC-04 (失敗時 authenticated: false) | TC-03        | 確認対象       |
+| 要件ID                           | テストケース                   | カバレッジ状態 |
+| -------------------------------- | ------------------------------ | -------------- |
+| FR-01 (500ms 以内レスポンス)     | TC-01, TC-07                   | 確認対象       |
+| FR-02 (fire-and-forget 起動)     | TC-03, TC-05                   | 確認対象       |
+| FR-03 (AUTH_STATE_CHANGED 継続)  | `authFlowOrchestrator.test.ts` | 確認対象       |
+| FR-04 (handler での重複送信なし) | TC-04, TC-05                   | 確認対象       |
+| FR-05 (provider validation)      | TC-02, TC-09                   | 確認対象       |
+
+## 統合テスト連携
+
+| テスト対象                                                          | 役割                     |
+| ------------------------------------------------------------------- | ------------------------ |
+| `apps/desktop/src/main/ipc/authHandlers.test.ts`                    | handler の範囲を確認     |
+| `apps/desktop/src/main/auth/__tests__/authFlowOrchestrator.test.ts` | 成功・失敗イベントを確認 |
+| `apps/desktop/src/renderer/store/slices/authSlice.test.ts`          | listener 互換を確認      |
 
 ## 参照資料
 
