@@ -144,7 +144,28 @@ step-11-par-task-plan-execution-hardening/
 ├── phase-10-final-review.md
 ├── phase-11-manual-test.md
 ├── phase-12-documentation.md
-└── phase-13-pr-creation.md
+├── phase-13-pr-creation.md
+└── outputs/
+    ├── artifacts.json
+    ├── verification-report.md
+    ├── phase-1/requirements-summary.md
+    ├── phase-2/design-summary.md
+    ├── phase-3/design-review-result.md
+    ├── phase-4/test-plan.md
+    ├── phase-5/implementation-log.md
+    ├── phase-6/test-expansion.md
+    ├── phase-7/coverage-check.md
+    ├── phase-8/refactoring.md
+    ├── phase-9/quality-assurance.md
+    ├── phase-10/final-review.md
+    ├── phase-11/manual-test-result.md
+    └── phase-12/
+        ├── implementation-guide.md
+        ├── system-spec-update-summary.md
+        ├── documentation-changelog.md
+        ├── unassigned-task-detection.md
+        ├── skill-feedback-report.md
+        └── phase12-task-spec-compliance-check.md
 ```
 
 ## 実装者向けクイックガイド
