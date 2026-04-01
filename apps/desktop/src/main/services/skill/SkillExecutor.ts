@@ -858,7 +858,7 @@ export class SkillExecutor {
     const conversation = query({
       prompt,
       options: {
-        env: { ANTHROPIC_API_KEY: apiKey }, // TASK-FIX-16-1: 環境変数経由で認証キーを渡す
+        env: { ...process.env, ANTHROPIC_API_KEY: apiKey }, // TASK-FIX-ENV-STRIPPING: process.env を展開し PATH 等を保持
         tools: options.tools,
         permissionMode: options.permissionMode,
         abortController: options.abortController,

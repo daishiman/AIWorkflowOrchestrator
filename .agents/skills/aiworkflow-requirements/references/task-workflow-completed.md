@@ -5,6 +5,33 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-ENV-STRIPPING（2026-04-01）
+
+| 項目       | 値                                                                                                                   |
+| ---------- | -------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-ENV-STRIPPING                                                                                               |
+| ステータス | **完了**                                                                                                             |
+| タイプ     | bugfix / env propagation                                                                                             |
+| 優先度     | 高                                                                                                                   |
+| 完了日     | 2026-04-01                                                                                                           |
+| 対象       | `apps/desktop/src/main/services/skill/SkillExecutor.ts` / `apps/desktop/src/main/services/skill/__tests__/SkillExecutor.auth.test.ts` / `docs/30-workflows/fix-step0-seq-env-stripping/` |
+| 成果物     | `docs/30-workflows/fix-step0-seq-env-stripping/`                                                                     |
+
+#### 実施内容
+
+- `SkillExecutor.callSDKQuery()` の `env` を `{ ...process.env, ANTHROPIC_API_KEY: apiKey }` に変更し、`PATH` を含む inherited env を保持
+- `SkillExecutor.auth.test.ts` に `PATH` 保持 / `ANTHROPIC_API_KEY` 上書き優先 / baseline 回帰の 3 観点を追加
+- Phase 11 manual test を `NON_VISUAL` の自動テスト代替で PASS に更新
+- `skill-creator-agent-sdk-lane/index.md` の step0 実行状況を完了へ同期
+- `fix-step0-seq-env-stripping` の Phase 12 outputs と aiworkflow references を current facts へ同期
+
+#### 検証証跡
+
+- `ESBUILD_BINARY_PATH=... pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/SkillExecutor.auth.test.ts`: 27 tests PASS
+- `ESBUILD_BINARY_PATH=... pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/SkillExecutor.sdk-types.test.ts`: 13 tests PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm exec eslint apps/desktop/src/main/services/skill/SkillExecutor.ts apps/desktop/src/main/services/skill/__tests__/SkillExecutor.auth.test.ts`: PASS
+
 ### タスク: TASK-FIX-IPC-TIMEOUT-001（2026-04-01）
 
 | 項目       | 値                                                                                                             |
@@ -1913,7 +1940,7 @@
 
 | 未タスクID                         | 概要                           | 優先度 | タスク仕様書                                                              |
 | ---------------------------------- | ------------------------------ | ------ | ------------------------------------------------------------------------- |
-| UT-RT-06-ESBUILD-ARCH-MISMATCH-001 | esbuild アーキ不整合の環境修正 | 高     | `docs/30-workflows/unassigned-task/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md` |
+| UT-RT-06-ESBUILD-ARCH-MISMATCH-001 | esbuild アーキ不整合の環境修正 | 高     | `docs/30-workflows/completed-tasks/UT-RT-06-ESBUILD-ARCH-MISMATCH-001.md` |
 
 ---
 

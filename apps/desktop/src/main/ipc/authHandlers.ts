@@ -205,43 +205,36 @@ export function registerAuthHandlers(
     secureStorage,
   );
 
-  // auth:login - OAuthログイン開始（PKCE + ローカルHTTPサーバー方式）
+  // auth:login - OAuthログイン開始（fire-and-forget）
   registerValidatedAuthHandler(
     IPC_CHANNELS.AUTH_LOGIN,
     async (
       _event,
       { provider }: { provider: string },
     ): Promise<IPCResponse<void>> => {
-      try {
-        // プロバイダーバリデーション
-        if (!isValidProvider(provider)) {
-          return {
-            success: false,
-            error: {
-              code: AUTH_ERROR_CODES.INVALID_PROVIDER,
-              message: `Invalid provider: ${provider}. Must be one of: google, github, discord`,
-            },
-          };
-        }
-
-        // AuthFlowOrchestratorでPKCE対応OAuthフロー開始
-        // - PKCE code_verifier/challenge生成
-        // - ローカルHTTPサーバー起動
-        // - State parameter生成（CSRF対策）
-        // - 外部ブラウザで認証
-        // - コールバック受信・トークン交換
-        await authFlowOrchestrator!.startOAuthFlow(provider as OAuthProvider);
-
-        return { success: true };
-      } catch (error) {
+      // プロバイダーバリデーション
+      if (!isValidProvider(provider)) {
         return {
           success: false,
           error: {
-            code: AUTH_ERROR_CODES.LOGIN_FAILED,
-            message: sanitizeErrorMessage(error),
+            code: AUTH_ERROR_CODES.INVALID_PROVIDER,
+            message: `Invalid provider: ${provider}. Must be one of: google, github, discord`,
           },
         };
       }
+
+      // OAuth フローの完了通知は AuthFlowOrchestrator に任せるため、ここでは待たない
+      // 成功・失敗は既存の AUTH_STATE_CHANGED イベントで通知される
+      void authFlowOrchestrator!
+        .startOAuthFlow(provider as OAuthProvider)
+        .catch((error) => {
+          console.error(
+            "[AuthHandlers] auth:login fire-and-forget failed:",
+            sanitizeErrorMessage(error),
+          );
+        });
+
+      return { success: true };
     },
   );
 
