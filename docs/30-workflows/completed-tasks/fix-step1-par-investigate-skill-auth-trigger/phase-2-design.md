@@ -13,11 +13,33 @@
 `auth:login` の不要な呼び出し経路を特定するための調査手順・デバッグ方法・検証4条件の確認方法を設計する。
 Phase 3 のゲートでユーザー承認を得るための根拠となる設計書を作成する。
 
+## SubAgent分担
+
+| SubAgent | 責務                                         | 並列可否               |
+| -------- | -------------------------------------------- | ---------------------- |
+| A        | skill 準拠差分と branch diff の整理          | B と並列               |
+| B        | stack trace の取得位置と証跡形式の設計       | A と並列               |
+| C        | 30種の思考法を用いた解決策比較と採用案の統合 | A/B の初期結果後に直列 |
+
+## 30種の思考法の適用方針
+
+| カテゴリ     | 役割                               | この Phase での出力                            |
+| ------------ | ---------------------------------- | ---------------------------------------------- |
+| 論理分析系   | 事実と仮説を分け、誤検知を排除する | trace の読み方、直接/間接呼び出しの切り分け    |
+| 構造分解系   | 呼び出し経路を最小単位へ分解する   | call chain、責務境界、依存グラフ               |
+| メタ・抽象系 | そもそもの前提が妥当かを確認する   | patch で足りるか、reconstruct すべきかの判断軸 |
+| 発想・拡張系 | 代替の観測点と修正案を広く列挙する | debug probe 候補、修正パターン候補             |
+| システム系   | 副作用と波及を確認する             | auth / skill / IPC / UI の相互作用             |
+| 戦略・価値系 | 最小複雑性で最大の価値を得る       | 最小変更で止血する優先順位                     |
+| 問題解決系   | 根本原因と次の一手を固める         | root cause、実施順序、Phase 3 への論点         |
+
 ## 調査手順（5ステップ）
 
 ### ステップ1: authSlice.ts の login() にスタックトレース出力を追加
 
 対象ファイル: `apps/desktop/src/renderer/store/slices/authSlice.ts`
+
+`login()` thunk を最小侵襲な観測点として使う。もし trace がノイズ過多なら、同じ `auth:login` 境界を保ったまま観測位置を上げる。
 
 `login()` thunk の先頭に以下のコードを一時的に追加する:
 
@@ -34,7 +56,8 @@ console.trace("[TRACE-SKILL-AUTH-001] auth/login が呼び出されました");
 ### ステップ2: スキル生成ボタン押下
 
 Electron アプリを起動し、スキル生成ボタンを押下する。
-この操作で `auth:login` IPC が発火するはずであるため、スタックトレースがコンソールに出力される。
+この操作で `auth:login` IPC が発火するかを確認し、発火した場合のみスタックトレースをコンソールに記録する。
+発火しない場合は、その事実自体を重要な調査結果として記録する。
 
 ### ステップ3: コンソールでスタックトレースを確認
 
@@ -71,6 +94,11 @@ Electron の DevTools（Renderer プロセス側）を開き、コンソール�
 | dispatch チェーンで意図せず呼ばれる | middleware またはthunk の呼び出し条件を修正する          |
 | 意図的だが不要                      | 呼び出し箇所を削除または無効化する                       |
 
+破棄判断:
+
+- 1つの呼び出し箇所だけを直すと責務境界が崩れる場合は、patch ではなく再構成候補として Phase 3 に戻す
+- 再構成が最小複雑性と判断される場合は、Phase 5 開始前にユーザー承認を取り直す
+
 ## 検証4条件の確認方法
 
 | 条件                 | 確認方法                                                                    |
@@ -97,16 +125,18 @@ Electron の DevTools（Renderer プロセス側）を開き、コンソール�
 | 開発環境と本番環境で挙動が異なる | 開発環境（`pnpm dev`）で再現確認を行う                      |
 | タイムアウトで取得できない       | `safeInvoke` のタイムアウト値を一時的に延長する             |
 | 呼び出しが非同期で追跡困難       | `AsyncLocalStorage` またはカスタムコンテキストを利用する    |
+| patch で足りない変更を無理に押す | 再構成候補として Phase 3 / 5 へ戻し、ユーザー承認を取り直す |
 
 ## 参照資料
 
-| 資料名        | パス                                                      | 説明                     |
-| ------------- | --------------------------------------------------------- | ------------------------ |
-| 要件定義      | `phase-1-requirements.md`                                 | 調査要件                 |
-| authSlice     | `apps/desktop/src/renderer/store/slices/authSlice.ts`     | スタックトレース挿入対象 |
-| agentSlice    | `apps/desktop/src/renderer/store/slices/agentSlice.ts`    | 疑惑対象ファイル         |
-| authModeSlice | `apps/desktop/src/renderer/store/slices/authModeSlice.ts` | 疑惑対象ファイル         |
-| safeInvoke    | `apps/desktop/src/renderer/utils/safeInvoke.ts`           | IPC 呼び出しラッパー     |
+| 資料名                | パス                                                                 | 説明                       |
+| --------------------- | -------------------------------------------------------------------- | -------------------------- |
+| 要件定義              | `phase-1-requirements.md`                                            | 調査要件                   |
+| `SkillLifecyclePanel` | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | スキル生成ボタンの実装本体 |
+| authSlice             | `apps/desktop/src/renderer/store/slices/authSlice.ts`                | スタックトレース挿入対象   |
+| agentSlice            | `apps/desktop/src/renderer/store/slices/agentSlice.ts`               | 疑惑対象ファイル           |
+| authModeSlice         | `apps/desktop/src/renderer/store/slices/authModeSlice.ts`            | 疑惑対象ファイル           |
+| safeInvoke            | `apps/desktop/src/preload/index.ts`                                  | IPC 呼び出しラッパー       |
 
 ## 成果物
 
@@ -118,8 +148,11 @@ Electron の DevTools（Renderer プロセス側）を開き、コンソール�
 ## 完了条件
 
 - [ ] 調査5ステップが具体的な操作として記述されている
+- [ ] SubAgent 分担が明記されている
+- [ ] 30種の思考法の適用方針が明記されている
 - [ ] デバッグコードの挿入箇所と削除責任が明記されている
 - [ ] 検証4条件の確認方法が定義されている
 - [ ] リスクと対策が列挙されている
+- [ ] 破棄判断と再承認の条件が明記されている
 - [ ] Phase 3 のゲートでユーザー承認を得るための根拠が揃っている
 - [ ] **本Phase内の全タスクを100%実行完了**

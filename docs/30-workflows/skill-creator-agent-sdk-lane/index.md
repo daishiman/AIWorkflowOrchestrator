@@ -57,26 +57,34 @@
 
 - `TASK-SDK-08` は初回から保存機構を全面再設計する task ではなく、既存 session persistence への載せ方と invalidation 境界を固める contract-first task として扱う
 
-## IPC修正タスク一覧（Auth Login Fix）
+## IPC修正タスク一覧（Auth Login Fix + 長時間実行対応）
 
 スキル生成時に発生する `auth:login` IPC タイムアウトエラーの修正タスク群。
 30種の思考法による多角的分析（2026-04-01 実施）に基づき設計。
 
-| タスクID                  | ディレクトリ                                    | ステップ | パターン | 責務                                           |
-| ------------------------- | ----------------------------------------------- | -------- | -------- | ---------------------------------------------- |
-| TASK-TRACE-SKILL-AUTH-001 | `fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 |
-| TASK-FIX-IPC-TIMEOUT-001  | `../fix-step1-par-ipc-timeout-per-channel/`     | step1    | par      | IPCチャンネル別タイムアウト設定                |
-| TASK-FIX-AUTH-IPC-001     | `fix-step2-seq-auth-login-ipc-nonblocking/`     | step2    | seq      | auth:login ハンドラーの fire-and-forget 化     |
+| タスクID                      | ディレクトリ                                                       | ステップ | パターン | 責務                                                      |
+| ----------------------------- | ------------------------------------------------------------------ | -------- | -------- | --------------------------------------------------------- |
+| TASK-TRACE-SKILL-AUTH-001     | `../completed-tasks/fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 ✅ 完了    |
+| TASK-FIX-IPC-TIMEOUT-001      | `fix-step1-par-ipc-timeout-per-channel/`                           | step1    | par      | IPCチャンネル別タイムアウト設定 ✅ PR#1823 完了           |
+| TASK-FIX-AUTH-IPC-001         | `fix-step2-seq-auth-login-ipc-nonblocking/`                        | step2    | seq      | auth:login ハンドラーの fire-and-forget 化                |
+| TASK-FIX-EXECUTE-PLAN-FF-001  | `fix-step3-seq-execute-plan-nonblocking/`                          | step3    | seq      | skill-creator:execute-plan の fire-and-forget 化          |
+| TASK-NOTIFICATION-SERVICE-001 | `fix-step4-seq-notification-service/`                              | step4    | seq      | INotificationService + macOS 完了通知 + before-quit guard |
 
 ### 推奨実行順（IPC修正タスク）
 
 ```text
-[step1: 並列実行]
-fix-step1-par-investigate-skill-auth-trigger ─┐
-../fix-step1-par-ipc-timeout-per-channel     ─┘
+[step1: 並列実行] ✅ 完了
+fix-step1-par-investigate-skill-auth-trigger ─┐  ✅ 完了
+fix-step1-par-ipc-timeout-per-channel        ─┘  ✅ PR#1823 完了
               ↓ 両方完了後
 [step2: 直列実行]
 fix-step2-seq-auth-login-ipc-nonblocking
+              ↓
+[step3: 直列実行]
+fix-step3-seq-execute-plan-nonblocking
+              ↓
+[step4: 直列実行]
+fix-step4-seq-notification-service
               ↓
           統合検証（E2E）
 ```
@@ -87,13 +95,20 @@ fix-step2-seq-auth-login-ipc-nonblocking
 - 経路除去が完了した状態で `fix-step2` の設計スコープが確定する
 - `ipc-timeout` は変更ファイルが独立しているため step1 と並列実行可能
 
+**step3/step4 の追加理由:**
+
+- `fix-step2` で auth:login を fire-and-forget 化しても、`skill-creator:execute-plan` 自体が長時間同期処理のままではタイムアウトが再発する
+- step3 で execute-plan を非同期化し、step4 で完了通知インフラを整備することで根本解決する
+
 ### 根本原因サマリー
 
-| 層               | 問題                                                     | タスク                    |
-| ---------------- | -------------------------------------------------------- | ------------------------- |
-| IPC ハンドラー   | auth:login が OAuth フロー全体（最大300秒）を await      | TASK-FIX-AUTH-IPC-001     |
-| IPC タイムアウト | 全チャンネル共通 5000ms で長時間処理に不適切             | TASK-FIX-IPC-TIMEOUT-001  |
-| 呼び出し経路     | スキル生成が意図せず auth:login をトリガーする経路が不明 | TASK-TRACE-SKILL-AUTH-001 |
+| 層               | 問題                                                     | タスク                        |
+| ---------------- | -------------------------------------------------------- | ----------------------------- |
+| IPC ハンドラー   | auth:login が OAuth フロー全体（最大300秒）を await      | TASK-FIX-AUTH-IPC-001         |
+| IPC タイムアウト | 全チャンネル共通 5000ms で長時間処理に不適切             | TASK-FIX-IPC-TIMEOUT-001      |
+| 呼び出し経路     | スキル生成が意図せず auth:login をトリガーする経路が不明 | TASK-TRACE-SKILL-AUTH-001     |
+| 長時間実行       | execute-plan が同期ブロックで最大数分かかる              | TASK-FIX-EXECUTE-PLAN-FF-001  |
+| 完了通知         | 非同期化後の完了・エラー通知インフラが未整備             | TASK-NOTIFICATION-SERVICE-001 |
 
 ## 読み方
 
