@@ -20,6 +20,7 @@
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2026-04-01 | 3.3.4      | TASK-TRACE-SKILL-AUTH-001 教訓3件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-AUTH-TRACE-001 never-resolving mock による IPC 副作用検出 / L-AUTH-TRACE-002 data-testid 安定クエリ / L-AUTH-TRACE-003 useEffect 再レンダリング連鎖検出） |
+| 2026-04-01 | 3.3.4      | UT-IMP-SDK-06 Layer3/4 実装教訓3件を追加（L-SDK06-001: extractSectionContent 2ステップ正規表現パターン / L-SDK06-002: worktree esbuild バイナリ cp 修復 / L-SDK06-003: vitest は apps/desktop で npx vitest run 実行）                                                                                                                    |
 | 2026-03-31 | 3.3.3      | TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 教訓1件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-PRELOAD-ALIAS-001 externalizeDepsPlugin の `config` フックで external 正規表現が設定されるため `resolve.alias` 単独不可 / `exclude` + alias 組み合わせパターン）                    |
 | 2026-03-31 | 3.3.2      | TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001 教訓1件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-BETTER-SQLITE3-ABI-001 native addon ABI 不一致 / postinstall rebuild / best-effort esbuild パターン）                                                                                 |
 | 2026-03-31 | 3.3.1      | TASK-UIUX-FEEDBACK-001 の教訓2件を追加（Phase 11 placeholder-only evidence で completed に寄せない / phantom path `scripts/ui-ux-eval/*` を current facts と誤認しない）                                                                                                                                                            |
@@ -912,6 +913,37 @@
 | 解決策     | `manual-test-checklist.md` と `discovered-issues.md` を必須補助成果物として追加 |
 | 標準ルール | UI 非変更タスクは「N/A 根拠 + 代替証跡（checklist/issues）」をセットで残す      |
 | 関連タスク | TASK-RT-06                                                                      |
+
+---
+
+## UT-IMP-SDK-06 教訓（2026-04-01）
+
+### L-SDK06-001: Markdown セクション抽出の正規表現 2 ステップパターン
+
+| 項目       | 内容                                                                                                                                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `m` フラグ下で `[\s\S]*?(?=^##\s|$)` を使うと `$` が各行末にマッチし、セクション本文が最初の改行直後で切り取られる。複数行 Trigger セクションを読んで「10文字未満」と誤判定するバグが発生した                              |
+| 解決策     | 2ステップ方式（① `^## heading$` でセクション開始位置を特定 → ② slice 後に `^##\s` で次見出しを探して切り出す）に変更する                                                                                                    |
+| 標準ルール | Markdown のセクション内容を正規表現で抽出する場合は 1 パターンの `m` フラグ頼りではなく 2 ステップ方式を使う                                                                                                                 |
+| 関連タスク | UT-IMP-SDK-06                                                                                                                                                                                                                |
+
+### L-SDK06-002: worktree 環境の esbuild バイナリミスマッチは cp で修復する
+
+| 項目       | 内容                                                                                                                                                                                |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | worktree 内の `node_modules/.pnpm/esbuild@0.21.5/` のバイナリが `0.25.12` のホストバージョンと不一致。`npx vitest run` が即座に失敗する                                             |
+| 解決策     | `cp <main-repo>/node_modules/.pnpm/esbuild@0.21.5/node_modules/esbuild/bin/esbuild <worktree>/node_modules/.pnpm/esbuild@0.21.5/node_modules/esbuild/bin/esbuild` でバイナリを補完 |
+| 標準ルール | worktree 作成後に `npx vitest run` が esbuild version mismatch で落ちる場合は `pnpm install` 再実行か上記 cp を試みる                                                               |
+| 関連タスク | UT-IMP-SDK-06（L-1 再現）                                                                                                                                                           |
+
+### L-SDK06-003: vitest は `apps/desktop` ディレクトリで `npx vitest run src/...` を使う
+
+| 項目       | 内容                                                                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `pnpm --filter @repo/desktop test run apps/desktop/src/...` でプロジェクトルートから相対パスを指定すると「No test files found」になる                                    |
+| 解決策     | `cd apps/desktop && npx vitest run src/main/services/runtime/__tests__/SkillCreatorVerificationEngine.test.ts` のように対象ディレクトリに入って実行する                  |
+| 標準ルール | vitest の path 引数は vitest config の root からの相対パスなので、pnpm --filter での cross-package 実行時は `--testPathPattern` か `cd` で回避する                       |
+| 関連タスク | UT-IMP-SDK-06                                                                                                                                                            |
 
 ---
 

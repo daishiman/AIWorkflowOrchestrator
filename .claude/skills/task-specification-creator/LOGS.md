@@ -3,6 +3,14 @@
 ## 役割
 
 ---
+## 2026-04-01 - UT-IMP-SDK-06 Layer3/4 verify 拡張 Phase 12 close-out sync
+
+### 変更内容
+- Phase 1〜12 全フェーズを実施（`SkillCreatorVerificationEngine` Layer3/4 実装・60テスト PASS）
+- `phase-12-documentation-guide.md` の「Markdown セクション抽出の正規表現落とし穴」注記は skill-feedback-report にて low priority として記録（今回は更新なし）
+- SKILL.md v6.18.19 更新
+
+---
 ## 2026-03-31 - TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 Phase 12 close-out sync
 
 ### 変更内容

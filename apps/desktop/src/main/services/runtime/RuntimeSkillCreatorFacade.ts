@@ -361,8 +361,8 @@ export class RuntimeSkillCreatorFacade {
         };
       }
 
-      // Step 2: 全チェック PASS 判定（error がなければ PASS）
-      const allPassed = checks.every((c) => c.severity !== "error");
+      // Step 2: 全チェック PASS 判定（info のみで PASS）
+      const allPassed = checks.every((c) => c.severity === "info");
 
       if (allPassed) {
         const snapshot = this.workflowEngine.recordVerifyPass(planId, checks);
