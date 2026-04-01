@@ -7,6 +7,7 @@
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { RuntimeSkillCreatorFacade } from "../RuntimeSkillCreatorFacade";
+import { SkillCreatorWorkflowEngine } from "../SkillCreatorWorkflowEngine";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
@@ -533,6 +534,70 @@ describe("RuntimeSkillCreatorFacade", () => {
   // TASK-P0-02: verifyAndImproveLoop tests
   // ------------------------------------------------------------------
   describe("verifyAndImproveLoop", () => {
+    function createSeededWorkflowEngine() {
+      const workflowEngine = new SkillCreatorWorkflowEngine();
+      const planResult = {
+        planId: "plan-001",
+        skillSpec: "seed skill spec",
+        estimatedSteps: 1,
+        skillName: "test-skill",
+        description: "seed workflow for verify loop",
+        agents: [{ name: "agent-1", role: "Tester" }],
+        scripts: [],
+        triggers: [],
+        anchors: [],
+      };
+      const decision = {
+        type: "integrated_api" as const,
+        apiKey: "sk-test",
+        permissionMode: "default" as const,
+      };
+      workflowEngine.recordPlanResult(planResult, decision);
+      workflowEngine.recordExecuteStart(planResult, decision);
+      workflowEngine.recordExecuteResult("plan-001", {
+        executeId: "exec-001",
+        skillName: "test-skill",
+        success: true,
+      });
+      return workflowEngine;
+    }
+
+    function createImproveDependencies() {
+      return {
+        llmAdapter: {
+          providerId: "anthropic" as const,
+          sendChat: vi.fn().mockResolvedValue({
+            content: JSON.stringify({
+              improvements: [
+                {
+                  section: "SKILL.md",
+                  before: "missing schema",
+                  after: "schema added",
+                },
+              ],
+            }),
+            model: "claude-sonnet-4-20250514",
+            usage: {
+              promptTokens: 100,
+              completionTokens: 50,
+              totalTokens: 150,
+            },
+          }),
+          streamChat: vi.fn(),
+          checkHealth: vi.fn(),
+        } as ILLMAdapter,
+        skillFileManager: {
+          readFile: vi.fn().mockResolvedValue("missing schema"),
+          writeFile: vi.fn().mockResolvedValue(undefined),
+          getSkillDir: vi.fn().mockReturnValue("/tmp/skill"),
+        },
+        resourceLoader: {
+          loadAgent: vi.fn().mockResolvedValue("improve agent prompt"),
+          getBasePath: vi.fn().mockReturnValue("/tmp/skill-creator"),
+        },
+      };
+    }
+
     it("初回 verify で全チェック PASS → 正常終了", async () => {
       const mockWorkflowEngine = {
         recordVerifyPass: vi.fn().mockReturnValue({
@@ -568,6 +633,120 @@ describe("RuntimeSkillCreatorFacade", () => {
       expect(result.totalAttempts).toBe(0);
       expect(result.loopExhausted).toBe(false);
       expect(mockWorkflowEngine.recordVerifyPass).toHaveBeenCalled();
+    });
+
+    it("warning のみの verify でも improve に回して reverify で PASS になる", async () => {
+      const workflowEngine = createSeededWorkflowEngine();
+      const warningChecks = [
+        {
+          id: "L3-001",
+          layer: "layer3" as const,
+          severity: "warning" as const,
+          summary: "$schema missing",
+        },
+      ];
+      const passChecks = [
+        {
+          id: "L3-001",
+          layer: "layer3" as const,
+          severity: "info" as const,
+          summary: "schema present",
+        },
+      ];
+      const mockVerificationEngine = {
+        verify: vi
+          .fn()
+          .mockResolvedValueOnce(warningChecks)
+          .mockResolvedValueOnce(passChecks),
+      };
+      const dependencies = createImproveDependencies();
+      const facadeWithLoop = new RuntimeSkillCreatorFacade({
+        skillExecutor: { execute: vi.fn() } as unknown as SkillExecutor,
+        workflowEngine: workflowEngine as never,
+        verificationEngine: mockVerificationEngine as never,
+        llmAdapter: dependencies.llmAdapter as never,
+        skillFileManager: dependencies.skillFileManager as never,
+        resourceLoader: dependencies.resourceLoader as never,
+      });
+
+      const result = await facadeWithLoop.verifyAndImproveLoop(
+        "plan-001",
+        "/tmp/skill",
+        "test-skill",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result.finalStatus).toBe("pass");
+      expect(result.totalAttempts).toBe(1);
+      expect(mockVerificationEngine.verify).toHaveBeenCalledTimes(2);
+      expect(result.workflowSnapshot.currentPhase).toBe("verify");
+      expect(result.workflowSnapshot.verifyResult?.status).toBe("pass");
+      expect(result.workflowSnapshot.verifyResult?.nextAction).toBe("handoff");
+      expect(result.workflowSnapshot.verifyResult?.improveAttemptCount).toBe(1);
+      expect(
+        result.workflowSnapshot.verifyResult?.failedChecksSummary,
+      ).toContain("$schema missing");
+    });
+
+    it("warning と error が混在しても improve 側に落ちる", async () => {
+      const workflowEngine = createSeededWorkflowEngine();
+      const warningAndErrorChecks = [
+        {
+          id: "L3-001",
+          layer: "layer3" as const,
+          severity: "warning" as const,
+          summary: "$schema missing",
+        },
+        {
+          id: "L4-001",
+          layer: "layer4" as const,
+          severity: "error" as const,
+          summary: "Anchors missing",
+        },
+      ];
+      const passChecks = [
+        {
+          id: "L3-001",
+          layer: "layer3" as const,
+          severity: "info" as const,
+          summary: "schema present",
+        },
+      ];
+      const mockVerificationEngine = {
+        verify: vi
+          .fn()
+          .mockResolvedValueOnce(warningAndErrorChecks)
+          .mockResolvedValueOnce(passChecks),
+      };
+      const dependencies = createImproveDependencies();
+      const facadeWithLoop = new RuntimeSkillCreatorFacade({
+        skillExecutor: { execute: vi.fn() } as unknown as SkillExecutor,
+        workflowEngine: workflowEngine as never,
+        verificationEngine: mockVerificationEngine as never,
+        llmAdapter: dependencies.llmAdapter as never,
+        skillFileManager: dependencies.skillFileManager as never,
+        resourceLoader: dependencies.resourceLoader as never,
+      });
+
+      const result = await facadeWithLoop.verifyAndImproveLoop(
+        "plan-001",
+        "/tmp/skill",
+        "test-skill",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result.finalStatus).toBe("pass");
+      expect(result.totalAttempts).toBe(1);
+      expect(mockVerificationEngine.verify).toHaveBeenCalledTimes(2);
+      expect(
+        result.workflowSnapshot.verifyResult?.failedChecksSummary,
+      ).toContain("$schema missing");
+      expect(
+        result.workflowSnapshot.verifyResult?.failedChecksSummary,
+      ).toContain("Anchors missing");
+      expect(result.workflowSnapshot.verifyResult?.improveAttemptCount).toBe(1);
     });
 
     it("1回目 fail → improve → 2回目 PASS → 正常終了", async () => {
