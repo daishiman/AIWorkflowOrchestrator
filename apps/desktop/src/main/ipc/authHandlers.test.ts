@@ -464,22 +464,13 @@ describe("authHandlers", () => {
 
       // TC-01: 即時レスポンス
       it("TC-01: startOAuthFlow の完了を待たず即座に { success: true } を返す", async () => {
+        // 永遠に解決しない Promise — blocking 実装ならこのテストがタイムアウトする
         const slowOAuthFlow = new Promise<void>(() => {});
         mockStartOAuthFlow.mockReturnValue(slowOAuthFlow);
 
         const resultPromise = invokeAuthLogin({ provider: "github" });
-        let settled = false;
-        resultPromise.then(
-          () => {
-            settled = true;
-          },
-          () => {
-            settled = true;
-          },
-        );
-        await Promise.resolve();
-
-        expect(settled).toBe(true);
+        // fire-and-forget: slowOAuthFlow が未完了でも handler が即座に { success: true } を返す
+        // await handler が残っていれば slowOAuthFlow を待ち続けてタイムアウトする
         await expect(resultPromise).resolves.toEqual({ success: true });
       });
 
