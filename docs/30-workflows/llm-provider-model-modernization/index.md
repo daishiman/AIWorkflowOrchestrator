@@ -136,11 +136,11 @@ Phase 2: 実装（依存関係に基づく直列 + 並列）
 
 | Task | タスクID        | 名称                                       | ステップ    | ステータス |
 | ---- | --------------- | ------------------------------------------ | ----------- | ---------- |
-| 01   | TASK-LLM-MOD-01 | PROVIDER_CONFIGS + inferProviderId 更新    | step-01-seq | 未着手     |
-| 02   | TASK-LLM-MOD-02 | AnthropicAdapter ヘルスチェックモデル更新  | step-02-par | 未着手     |
-| 03   | TASK-LLM-MOD-03 | GoogleAdapter system_instruction 対応      | step-02-par | 未着手     |
+| 01   | TASK-LLM-MOD-01 | PROVIDER_CONFIGS + inferProviderId 更新    | step-01-seq | 完了       |
+| 02   | TASK-LLM-MOD-02 | AnthropicAdapter ヘルスチェックモデル更新  | step-02-par | 完了       |
+| 03   | TASK-LLM-MOD-03 | GoogleAdapter system_instruction 対応      | step-02-par | 完了       |
 | 04   | TASK-LLM-MOD-04 | テスト期待値更新                           | step-03-seq | 完了       |
-| 05   | TASK-LLM-MOD-05 | 共有型スキーマ拡張検討                     | step-04-seq | 未着手     |
+| 05   | TASK-LLM-MOD-05 | 共有型スキーマ拡張検討                     | step-04-seq | 完了       |
 | 06   | TASK-LLM-MOD-06 | OpenAICompatibleAdapter 統一アーキテクチャ | step-05-seq | 実装済み   |
 | 07   | TASK-LLM-MOD-07 | OpenRouter フルスタック統合                | step-06-par | 実装済み   |
 | 08   | TASK-LLM-MOD-08 | UI isAvailable フィルタリング              | step-06-par | 実装済み   |

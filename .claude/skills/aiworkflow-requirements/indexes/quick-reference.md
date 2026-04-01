@@ -210,16 +210,18 @@
 
 ---
 
-### LLM provider registry SSoT（2026-03-25）
+### LLM provider registry SSoT（2026-04-01 更新）
 
-| 目的                  | 最初に開くファイル                                     |
-| --------------------- | ------------------------------------------------------ |
-| provider / model 正本 | `references/llm-ipc-types.md`                          |
-| UI surface            | `references/ui-ux-llm-selector.md`                     |
-| LLM 全体インデックス  | `references/interfaces-llm.md`                         |
-| 教訓                  | `references/lessons-learned-test-typesafety.md`        |
-| completed ledger      | `references/task-workflow-completed.md`                |
-| workflow root         | `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/` |
+| 目的                          | 最初に開くファイル                                                                        |
+| ----------------------------- | ----------------------------------------------------------------------------------------- |
+| provider / model 正本 (SSOT)  | `packages/shared/src/types/llm/schemas/provider-registry.ts`                             |
+| LLM IPC 型定義                | `references/llm-ipc-types.md`                                                             |
+| UI surface                    | `references/ui-ux-llm-selector.md`                                                        |
+| LLM 全体インデックス          | `references/interfaces-llm.md`                                                            |
+| 教訓                          | `references/lessons-learned-test-typesafety.md`                                           |
+| completed ledger              | `references/task-workflow-completed.md`                                                   |
+| workflow pack root            | `docs/30-workflows/llm-provider-model-modernization/`                                     |
+| Task05 schema-extension root  | `docs/30-workflows/llm-provider-model-modernization/tasks/step-04-seq-task-05-schema-extension/` |
 
 ---
 

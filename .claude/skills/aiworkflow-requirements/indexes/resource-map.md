@@ -114,7 +114,7 @@
 | HybridRAGFactory wiring     | interfaces-rag.md, rag-search-hybrid.md, rag-query-pipeline.md | interfaces-rag-knowledge-graph-store.md, rag-search-crag.md, rag-search-graph.md, rag-services.md, task-workflow.md, lessons-learned-current.md, lessons-learned-rag-embedding-runtime.md |
 | Agent SDK統合               | interfaces-agent-sdk.md（インデックス）                       | interfaces-agent-sdk-\* 分割ファイル                                  |
 | LLM連携                     | interfaces-llm.md                                             | api-endpoints.md (AI Provider)                                        |
-| LLM provider registry SSoT 同期 | llm-ipc-types.md, interfaces-llm.md, ui-ux-llm-selector.md | lessons-learned-test-typesafety.md, task-workflow-completed.md, task-workflow-backlog.md |
+| LLM provider registry SSoT 同期 | `packages/shared/src/types/llm/schemas/provider-registry.ts`（SSOT）, llm-ipc-types.md, interfaces-llm.md, ui-ux-llm-selector.md | lessons-learned-test-typesafety.md, task-workflow-completed.md, task-workflow-backlog.md, `docs/30-workflows/llm-provider-model-modernization/` |
 | デプロイ・CI/CD             | deployment.md                                                 | deployment-\*, technology-devops.md                                   |
 | テスト実装                  | quality-requirements.md (TDD)                                 | 機能に応じたinterfaces-\*                                             |
 | コンポーネントテスト        | testing-component-patterns.md                                 | testing-fixtures.md, testing-accessibility.md                         |
