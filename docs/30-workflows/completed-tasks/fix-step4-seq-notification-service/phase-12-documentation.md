@@ -14,7 +14,8 @@
 
 `INotificationService` DI パターンの設計を将来の開発者が理解できるように記録し、
 未対応事項（Windows/Linux 通知など）を次タスクとして正式に記録する。
-Phase 12 必須の「中学生レベルの概念説明」を含む実装ガイドを作成する。
+Phase 12 必須の「中学生レベルの概念説明」を含む実装ガイドを作成し、
+タスク仕様書の準拠チェック結果を明示して更新証跡を残す。
 
 ---
 
@@ -67,7 +68,14 @@ Phase 12 必須の「中学生レベルの概念説明」を含む実装ガイ�
 
 - 変更された仕様の要約（新規 interface・class・メソッド一覧）
 - `RuntimeSkillCreatorFacadeDeps` の変更内容
-- `before-quit` ガードの追加内容
+- `beforeQuitGuard.ts` と `ipc/index.ts` による `before-quit` ガード追加内容
+- current facts と target delta を分離した記録
+- Step 1-A: 本タスクで更新したドキュメント一覧の記録
+- Step 1-B: 完了記録（`task-workflow-completed.md` または `task-workflow-backlog.md`）の更新方針
+- Step 1-C: ログ更新の必要性（該当する `LOGS.md`）の確認
+- Step 2: 仕様の正本更新先と差分の要約
+- canonical root と mirror ポリシーに基づいた保存先の明記
+- `artifacts.json` と `outputs/artifacts.json` の同期結果
 - aiworkflow-requirements の更新が必要かどうかの判断
 
 ### タスク 12-3: `documentation-changelog.md` の作成
@@ -78,6 +86,7 @@ Phase 12 必須の「中学生レベルの概念説明」を含む実装ガイ�
 
 - 新規作成したドキュメント一覧
 - 更新したドキュメント一覧（あれば）
+- validation 結果と current / baseline の差分
 - 更新日と変更概要
 
 ### タスク 12-4: `unassigned-task-detection.md` の作成（未対応事項の記録）
@@ -103,6 +112,16 @@ Phase 12 必須の「中学生レベルの概念説明」を含む実装ガイ�
 - Phase フローの改善提案（あれば）
 - `task-specification-creator` スキルへのフィードバック
 
+### タスク 12-6: `phase12-task-spec-compliance-check.md` の作成
+
+**作成先:** `outputs/phase-12/phase12-task-spec-compliance-check.md`
+
+以下を記録する:
+
+- Phase 12 成果物の存在確認（6 本）
+- Task 12-1〜12-5 の実施結果の要約
+- 仕様書整合チェックの結果（PASS/FAIL と理由）
+
 ---
 
 ## 参照資料
@@ -114,12 +133,23 @@ Phase 12 必須の「中学生レベルの概念説明」を含む実装ガイ�
 | セキュリティ仕様           | `.claude/skills/aiworkflow-requirements/references/security-electron-ipc.md`                | Electron IPC セキュリティ |
 | アーキテクチャ実装パターン | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | DI パターン               |
 
+### スキル仕様（task-specification-creator）
+
+| 参照資料                      | パス                                                                                    | 内容                               |
+| ----------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------- |
+| spec update workflow          | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`          | Step 1-A〜1-C と Step 2 の更新手順 |
+| phase 11/12 guide             | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`             | Phase 11/12 の成果物要件           |
+| phase 12 documentation guide  | `.claude/skills/task-specification-creator/references/phase-12-documentation-guide.md`  | Phase 12 記載要件                  |
+| spec update validation matrix | `.claude/skills/task-specification-creator/references/spec-update-validation-matrix.md` | 検証観点とチェック例               |
+
 ### 確認対象
 
-| ファイル       | パス                                     |
-| -------------- | ---------------------------------------- |
-| 品質レポート   | `outputs/phase-9/quality-report.md`      |
-| 手動テスト結果 | `outputs/phase-11/manual-test-result.md` |
+| ファイル                 | パス                                        |
+| ------------------------ | ------------------------------------------- |
+| 品質レポート             | `outputs/phase-9/quality-report.md`         |
+| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md` |
+| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`    |
+| 検出課題                 | `outputs/phase-11/discovered-issues.md`     |
 
 ---
 
@@ -146,6 +176,10 @@ Phase 12 必須の「中学生レベルの概念説明」を含む実装ガイ�
 
 タスク 12-5 の内容を `outputs/phase-12/skill-feedback-report.md` に記録する。
 
+### ステップ 6: `phase12-task-spec-compliance-check.md` の作成
+
+タスク 12-6 の内容を `outputs/phase-12/phase12-task-spec-compliance-check.md` に記録する。
+
 ---
 
 ## 多角的チェック観点
@@ -160,13 +194,14 @@ Phase 12 必須の「中学生レベルの概念説明」を含む実装ガイ�
 
 ## 成果物
 
-| 成果物               | パス                                             | 説明                        |
-| -------------------- | ------------------------------------------------ | --------------------------- |
-| 実装ガイド           | `outputs/phase-12/implementation-guide.md`       | 中学生レベル説明 + 設計詳細 |
-| 仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md` | 変更された仕様の要約        |
-| ドキュメント変更履歴 | `outputs/phase-12/documentation-changelog.md`    | 更新ドキュメント一覧        |
-| 未対応タスク一覧     | `outputs/phase-12/unassigned-task-detection.md`  | 次タスク候補の記録          |
-| スキルフィードバック | `outputs/phase-12/skill-feedback-report.md`      | タスク実行の教訓            |
+| 成果物               | パス                                                     | 説明                        |
+| -------------------- | -------------------------------------------------------- | --------------------------- |
+| 実装ガイド           | `outputs/phase-12/implementation-guide.md`               | 中学生レベル説明 + 設計詳細 |
+| 仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`         | 変更された仕様の要約        |
+| ドキュメント変更履歴 | `outputs/phase-12/documentation-changelog.md`            | 更新ドキュメント一覧        |
+| 未対応タスク一覧     | `outputs/phase-12/unassigned-task-detection.md`          | 次タスク候補の記録          |
+| スキルフィードバック | `outputs/phase-12/skill-feedback-report.md`              | タスク実行の教訓            |
+| 仕様準拠チェック     | `outputs/phase-12/phase12-task-spec-compliance-check.md` | Phase 12 成果物の自己監査   |
 
 ---
 
@@ -177,6 +212,7 @@ Phase 12 必須の「中学生レベルの概念説明」を含む実装ガイ�
 - [ ] `outputs/phase-12/documentation-changelog.md` が作成された
 - [ ] `outputs/phase-12/unassigned-task-detection.md` が作成された（Windows/Linux 通知・通知設定 UI を記録）
 - [ ] `outputs/phase-12/skill-feedback-report.md` が作成された
+- [ ] `outputs/phase-12/phase12-task-spec-compliance-check.md` が作成された
 - [ ] **本 Phase 内の全タスクを 100% 実行完了**
 
 ---
@@ -185,9 +221,10 @@ Phase 12 必須の「中学生レベルの概念説明」を含む実装ガイ�
 
 Phase 12 完了時に以下を明記すること:
 
-- 作成した 5 本のドキュメントの確認
+- 作成した 6 本のドキュメントの確認
 - 未対応タスクの記録内容（タスク候補名と優先度）
 - スキルフィードバックの主要な内容
+- 仕様準拠チェックの結論
 
 ---
 

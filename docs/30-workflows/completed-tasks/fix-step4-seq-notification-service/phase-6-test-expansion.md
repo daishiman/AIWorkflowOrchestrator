@@ -39,32 +39,41 @@ Phase 4 で作成した基本テスト（TC-E-01〜TC-E-03、TC-F-01〜TC-F-05�
 | 操作     | `service.notify('', '')` を呼ぶ                             |
 | 期待結果 | `Notification` が `{ title: '', body: '' }` で呼ばれること  |
 
-#### TC-F-06: 並行して複数の `executeAsync` が実行中のとき `hasRunningExecution()` が `true` を返す
+#### TC-F-06: 並行して複数の `execute` が実行中のとき `hasRunningExecution()` が `true` を返す
 
-| 項目     | 内容                                                                            |
-| -------- | ------------------------------------------------------------------------------- |
-| テスト名 | `hasRunningExecution() returns true with multiple concurrent executions`        |
-| 対象     | `RuntimeSkillCreatorFacade.hasRunningExecution()`                               |
-| 操作     | `executeAsync` を 2 回並行で開始し、両方完了前に `hasRunningExecution()` を呼ぶ |
-| 期待結果 | `true` が返ること                                                               |
+| 項目     | 内容                                                                       |
+| -------- | -------------------------------------------------------------------------- |
+| テスト名 | `hasRunningExecution() returns true with multiple concurrent executions`   |
+| 対象     | `RuntimeSkillCreatorFacade.hasRunningExecution()`                          |
+| 操作     | `execute` を 2 回並行で開始し、両方完了前に `hasRunningExecution()` を呼ぶ |
+| 期待結果 | `true` が返ること                                                          |
 
 #### TC-F-07: 1 つが完了し残り 1 つが実行中のとき `hasRunningExecution()` が `true` を返す
 
-| 項目     | 内容                                                                             |
-| -------- | -------------------------------------------------------------------------------- |
-| テスト名 | `hasRunningExecution() returns true when one of two executions completes`        |
-| 対象     | `RuntimeSkillCreatorFacade.hasRunningExecution()`                                |
-| 操作     | 2 つの `executeAsync` のうち 1 つを完了させてから `hasRunningExecution()` を呼ぶ |
-| 期待結果 | `true` が返ること                                                                |
+| 項目     | 内容                                                                        |
+| -------- | --------------------------------------------------------------------------- |
+| テスト名 | `hasRunningExecution() returns true when one of two executions completes`   |
+| 対象     | `RuntimeSkillCreatorFacade.hasRunningExecution()`                           |
+| 操作     | 2 つの `execute` のうち 1 つを完了させてから `hasRunningExecution()` を呼ぶ |
+| 期待結果 | `true` が返ること                                                           |
 
-#### TC-F-08: 全ての `executeAsync` が完了したとき `hasRunningExecution()` が `false` を返す
+#### TC-F-08: 全ての `execute` が完了したとき `hasRunningExecution()` が `false` を返す
 
-| 項目     | 内容                                                                      |
-| -------- | ------------------------------------------------------------------------- |
-| テスト名 | `hasRunningExecution() returns false after all executions complete`       |
-| 対象     | `RuntimeSkillCreatorFacade.hasRunningExecution()`                         |
-| 操作     | 2 つの `executeAsync` を両方完了させてから `hasRunningExecution()` を呼ぶ |
-| 期待結果 | `false` が返ること                                                        |
+| 項目     | 内容                                                                 |
+| -------- | -------------------------------------------------------------------- |
+| テスト名 | `hasRunningExecution() returns false after all executions complete`  |
+| 対象     | `RuntimeSkillCreatorFacade.hasRunningExecution()`                    |
+| 操作     | 2 つの `execute` を両方完了させてから `hasRunningExecution()` を呼ぶ |
+| 期待結果 | `false` が返ること                                                   |
+
+#### TC-B-03: `registerBeforeQuitGuard()` の解除関数で `before-quit` リスナーが外れる
+
+| 項目     | 内容                                                                |
+| -------- | ------------------------------------------------------------------- |
+| テスト名 | `registerBeforeQuitGuard returns cleanup that removes the listener` |
+| 対象     | `registerBeforeQuitGuard()`                                         |
+| 操作     | `registerBeforeQuitGuard()` の戻り値を呼び出す                      |
+| 期待結果 | `app.removeListener("before-quit", handler)` が呼ばれること         |
 
 ### タスク 6-2: 既存テストのリグレッション確認
 
@@ -80,7 +89,7 @@ pnpm --filter @repo/desktop test -- RuntimeSkillCreatorFacade
 
 `outputs/phase-6/test-expansion-report.md` に以下を記録する:
 
-- 追加したテストケース一覧（TC-E-04〜TC-E-05、TC-F-06〜TC-F-08）
+- 追加したテストケース一覧（TC-E-04〜TC-E-05、TC-F-06〜TC-F-08、TC-B-03）
 - 各テストケースの目的（何を検証するか）
 - リグレッション確認結果
 
@@ -138,6 +147,7 @@ pnpm vitest run
 
 - [ ] TC-E-04〜TC-E-05 が追加された
 - [ ] TC-F-06〜TC-F-08 が追加された
+- [ ] TC-B-03 が追加された
 - [ ] 全テスト（既存 + 新規）が Green であることを確認した
 - [ ] `outputs/phase-6/test-expansion-report.md` が作成された
 - [ ] **本 Phase 内の全タスクを 100% 実行完了**

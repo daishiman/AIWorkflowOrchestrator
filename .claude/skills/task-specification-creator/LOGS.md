@@ -3,12 +3,11 @@
 ## 役割
 
 ---
-## 2026-04-02 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 Phase 12 close-out sync
+## 2026-04-02 - TASK-NOTIFICATION-SERVICE-001 Phase 12 close-out sync
 
 ### 変更内容
-- `fix-step5-seq-lifecycle-panel-error` の Phase 11 を NON_VISUAL blocker evidence へ是正し、placeholder PNG を撤去
-- Phase 12 の必須成果物 `unassigned-task-detection.md` / `skill-feedback-report.md` を追加
-- `phase-11-12-guide.md` に「docs-only / NON_VISUAL で dummy PNG を置かない」ルールを追記
+- Electron `Notification` static API のモックパターンを `references/patterns-testing.md` に追加
+- `notificationService?: INotificationService` の optional DI、`activeExecutionCount` + `try/finally`、Vitest coverage コマンドの記録方針を `references/patterns-lessons-and-pitfalls.md` に追記
 - SKILL.md v6.18.21 更新
 
 ---
