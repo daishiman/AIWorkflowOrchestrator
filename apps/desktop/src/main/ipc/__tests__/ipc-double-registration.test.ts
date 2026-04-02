@@ -210,6 +210,7 @@ vi.mock("../skillHandlers.share", () => ({
 }));
 vi.mock("../../claude-cli", () => ({
   registerClaudeCliHandlers: vi.fn(),
+  getClaudeCliManager: vi.fn().mockReturnValue(null),
 }));
 vi.mock("../skillCreatorHandlers", () => ({
   registerSkillCreatorHandlers: vi.fn(),

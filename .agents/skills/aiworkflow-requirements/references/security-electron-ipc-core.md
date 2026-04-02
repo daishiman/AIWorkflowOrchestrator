@@ -536,3 +536,8 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 | `apps/desktop/src/main/ipc/advancedConsoleHandlers.ts` | `execution:get-terminal-log` / `execution:get-copy-command` handler |
 | `apps/desktop/src/main/ipc/disclosureHandlers.ts` | `execution:get-disclosure-info` handler |
 | `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts` | `isConsumerToken()` による CAG 判定・NAS 強制 |
+
+### Advanced Console Error Boundary
+
+- callback 層は session 不在を `SESSION_NOT_FOUND` で表現してよいが、外向き IPC 応答コードは `TERMINAL_LOG_ERROR` / `COPY_COMMAND_ERROR` に正規化する。
+- `sanitizeForApiKeys()` は success path だけでなく error message にも適用し、internal error text 経由で秘密情報を漏らさない。

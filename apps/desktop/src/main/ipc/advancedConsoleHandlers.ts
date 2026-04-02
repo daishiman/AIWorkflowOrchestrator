@@ -62,9 +62,10 @@ export function registerAdvancedConsoleHandlers(
       } catch (error: unknown) {
         const message =
           error instanceof Error ? error.message : "Failed to get terminal log";
+        const sanitizedMessage = sanitizeForApiKeys(message);
         return {
           success: false,
-          error: { code: "TERMINAL_LOG_ERROR", message },
+          error: { code: "TERMINAL_LOG_ERROR", message: sanitizedMessage },
         };
       }
     },
@@ -103,9 +104,10 @@ export function registerAdvancedConsoleHandlers(
       } catch (error: unknown) {
         const message =
           error instanceof Error ? error.message : "Failed to get copy command";
+        const sanitizedMessage = sanitizeForApiKeys(message);
         return {
           success: false,
-          error: { code: "COPY_COMMAND_ERROR", message },
+          error: { code: "COPY_COMMAND_ERROR", message: sanitizedMessage },
         };
       }
     },

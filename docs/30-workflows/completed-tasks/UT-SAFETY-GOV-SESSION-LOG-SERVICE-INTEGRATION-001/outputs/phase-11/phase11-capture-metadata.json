@@ -1,0 +1,8 @@
+{
+  "taskId": "UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001",
+  "phase": 11,
+  "mode": "NON_VISUAL",
+  "createdAt": "2026-04-02T00:00:00.000Z",
+  "artifacts": [],
+  "notes": "Main process IPC task; Renderer UI unchanged so no screenshots captured."
+}

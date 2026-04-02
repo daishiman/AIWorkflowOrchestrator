@@ -4,12 +4,19 @@
 
 | 項目       | 値                                                                        |
 | ---------- | ------------------------------------------------------------------------- |
-| ステータス | 未着手                                                                    |
+| ステータス | completed                                                                 |
 | 優先度     | 高                                                                        |
 | 起票日     | 2026-03-31                                                                |
+| 完了日     | 2026-04-02                                                                |
 | 起票元     | safety-gov-production-integration Phase 12 / unassigned-task-detection.md |
 | 関連タスク | UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001                              |
-| Issue番号  | #1805                                                                     |
+| Issue番号  | #1805（closed）                                                           |
+| 完了メモ   | Advanced Console の実セッションログ接続を実装済み                         |
+
+## 参照先
+
+- completed workflow: `docs/30-workflows/completed-tasks/UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001/`
+- このファイルは source spec の監査参照用に保持する
 
 ## 1. なぜこのタスクが必要か（Why）
 
@@ -61,6 +68,6 @@ Claude CLI の実セッションログサービスへ接続する。
 
 - **問題**: IPC チャンネルの配線完了後も、実データを返す実装が後回しになりやすい。
   `[]` / `null` を返すコードは型チェックを通過するため、未実装に気づきにくい
-- **解決方法（未解決）**: セッションログサービスとの DI 接続実装が必要
+- **解決方法**: `getClaudeCliManager()` を `ipc/index.ts` から参照し、`ClaudeCliManager.getSession()` の実データを `getTerminalLog()` / `getCopyCommand()` に注入して解消した
 - **教訓**: placeholder 実装は `TODO: connect to real service` コメントと共に
   専用の lint ルールでフラグを立てる運用を検討すべき

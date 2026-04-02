@@ -1,8 +1,7 @@
 /**
  * Claude CLI IPC Handler Tests
- * Phase 4: TDD Red - All tests should fail until implementation
  *
- * Tests for IPC handler registration and invocation
+ * Tests for IPC handler registration, invocation, and manager exposure
  * @see docs/30-workflows/claude-code-cli-integration/outputs/phase-2/ipc-api-specification.md
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
@@ -788,6 +787,19 @@ describe("ClaudeCliIpcHandler", { timeout: 30000 }, () => {
       expect(ipcMain.removeHandler).toHaveBeenCalledWith(
         "claude-cli:get-session",
       );
+    });
+  });
+
+  describe("ADV-19: getClaudeCliManager", () => {
+    it("registerClaudeCliHandlers 後に getClaudeCliManager() が非 null を返す", async () => {
+      const { getClaudeCliManager, unregisterClaudeCliHandlers } =
+        await import("../ipc-handler");
+
+      // beforeEach で registerClaudeCliHandlers が呼び出し済み
+      expect(getClaudeCliManager()).not.toBeNull();
+
+      unregisterClaudeCliHandlers();
+      expect(getClaudeCliManager()).toBeNull();
     });
   });
 
