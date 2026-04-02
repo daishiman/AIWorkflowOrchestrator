@@ -183,7 +183,7 @@ export const GovernanceSummaryPanel: React.FC = () => {
           </div>
           <div>
             <h3 className="text-base font-semibold text-[var(--text-primary)]">
-              Governance summary
+              Governance 状態
             </h3>
             <p className="text-sm text-[var(--text-secondary)]">
               phase / permission / recent denials
