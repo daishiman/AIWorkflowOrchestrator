@@ -1,5 +1,5 @@
 {
-  "generated": "2026-04-01T22:49:26.816Z",
+  "generated": "2026-04-01T22:51:27.423Z",
   "totalKeywords": 2632,
   "keywords": {
     "チャット履歴": [
@@ -6318,6 +6318,7 @@
     "ERROR": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -6970,7 +6971,8 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "PANEL": [
-      "lessons-learned-ipc-preload-runtime.md"
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "実装セッション": [
       "lessons-learned-ipc-preload-runtime.md"

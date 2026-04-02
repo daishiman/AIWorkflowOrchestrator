@@ -505,6 +505,19 @@ export function SkillLifecyclePanel({
     processedWorkflowOutcomePlanIdRef.current = null;
   }, [setCurrentPlanId, setCurrentPlanResult]);
 
+  const applyWorkflowSnapshot = useCallback(
+    (snapshot: SkillCreatorWorkflowUiSnapshot) => {
+      setWorkflowSnapshot(snapshot);
+      if (snapshot.currentPhase !== "handoff") {
+        setWorkflowError(null);
+      }
+      if (snapshot.handoffBundle) {
+        setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
+      }
+    },
+    [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot],
+  );
+
   useEffect(() => {
     if (skillExecutionStatus === previousStatus.current) {
       return;
@@ -588,14 +601,9 @@ export function SkillLifecyclePanel({
     }
 
     return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-      setWorkflowSnapshot(snapshot);
-      setWorkflowError(null);
-      if (snapshot.handoffBundle) {
-        setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-      }
-      void processWorkflowOutcome(snapshot);
+      applyWorkflowSnapshot(snapshot);
     });
-  }, [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot]);
+  }, [applyWorkflowSnapshot]);
 
   useEffect(() => {
     const planId =
@@ -614,11 +622,7 @@ export function SkillLifecyclePanel({
           }
           return;
         }
-        setWorkflowSnapshot(result.data);
-        setWorkflowError(null);
-        if (result.data.handoffBundle) {
-          setHandoffGuidance(toHandoffGuidance(result.data.handoffBundle));
-        }
+        applyWorkflowSnapshot(result.data);
       })
       .catch((error) => {
         setWorkflowError(
@@ -753,8 +757,7 @@ export function SkillLifecyclePanel({
       return;
     }
 
-    setWorkflowSnapshot(result.data);
-    setWorkflowError(null);
+    applyWorkflowSnapshot(result.data);
     setSelectedOptionId(null);
     setTextAnswer("");
     setSecretAnswer("");
@@ -1027,8 +1030,7 @@ export function SkillLifecyclePanel({
         if (skillCreatorApi.getWorkflowState) {
           const snapshotResult = await skillCreatorApi.getWorkflowState(planId);
           if (snapshotResult.success && snapshotResult.data) {
-            setWorkflowSnapshot(snapshotResult.data);
-            setWorkflowError(null);
+            applyWorkflowSnapshot(snapshotResult.data);
           }
         }
         await loadVerifyDetail(planId);
@@ -1511,8 +1513,7 @@ export function SkillLifecyclePanel({
                     setWorkflowError(message);
                     throw new Error(message);
                   }
-                  setWorkflowSnapshot(result.data);
-                  setWorkflowError(null);
+                  applyWorkflowSnapshot(result.data);
                 }}
                 onError={(msg) => setWorkflowError(msg)}
               />

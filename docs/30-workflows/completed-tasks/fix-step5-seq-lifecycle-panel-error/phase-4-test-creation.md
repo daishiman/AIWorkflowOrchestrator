@@ -28,6 +28,12 @@
 | ------------------ | ---------------------------------------------------------------------------- | -------------- |
 | アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
 
+## 統合テスト連携
+
+- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
+- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
+- Phase 1 の成果物 spec-extraction-map.md、Phase 2 の成果物 design-topology.md、Phase 3 の成果物 design-review-result.md を前提に、TC-EP-01〜05 を作成する。
+
 ## 実行手順
 
 ### ステップ 1: テストファイル — エラー永続化検証
@@ -72,8 +78,8 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
     vi.clearAllMocks();
   });
 
-  // AC-1: phase === 'failed' のとき setWorkflowError(null) が呼ばれないこと
-  it("TC-EP-01: phase: failed の snapshot を受け取ったとき setWorkflowError(null) が呼ばれない", () => {
+  // AC-1: currentPhase === 'handoff' のとき setWorkflowError(null) が呼ばれないこと
+  it("TC-EP-01: currentPhase: 'handoff' の snapshot を受け取ったとき setWorkflowError(null) が呼ばれない", () => {
     const triggerCallback = captureCallback();
 
     // useEffect を起動するためコンポーネントをレンダリング
@@ -81,69 +87,72 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
     // ここではコールバックロジックを直接テストする
 
     act(() => {
-      triggerCallback({ phase: "failed", handoffBundle: null });
+      triggerCallback({ currentPhase: "handoff", handoffBundle: null });
     });
 
     // setWorkflowSnapshot は呼ばれる（スナップショットの更新は行う）
     expect(mockSetWorkflowSnapshot).toHaveBeenCalledWith(
-      expect.objectContaining({ phase: "failed" }),
+      expect.objectContaining({ currentPhase: "handoff" }),
     );
     // setWorkflowError(null) は呼ばれない（エラーを保持する）
     expect(mockSetWorkflowError).not.toHaveBeenCalledWith(null);
   });
 
-  // AC-2: phase !== 'failed' のとき setWorkflowError(null) が呼ばれること（既存動作維持）
-  it("TC-EP-02: phase: running の snapshot を受け取ったとき setWorkflowError(null) が呼ばれる", () => {
+  // AC-2: currentPhase !== 'handoff' のとき setWorkflowError(null) が呼ばれること（既存動作維持）
+  it("TC-EP-02: currentPhase: 'execute' の snapshot を受け取ったとき setWorkflowError(null) が呼ばれる", () => {
     const triggerCallback = captureCallback();
 
     act(() => {
-      triggerCallback({ phase: "running", handoffBundle: null });
+      triggerCallback({ currentPhase: "execute", handoffBundle: null });
     });
 
     expect(mockSetWorkflowSnapshot).toHaveBeenCalledWith(
-      expect.objectContaining({ phase: "running" }),
+      expect.objectContaining({ currentPhase: "execute" }),
     );
     expect(mockSetWorkflowError).toHaveBeenCalledWith(null);
   });
 
-  // AC-2 追加: phase: 'completed' でも既存動作が維持されること
-  it("TC-EP-03: phase: completed の snapshot を受け取ったとき setWorkflowError(null) が呼ばれる", () => {
+  // AC-2 追加: currentPhase: 'verify' でも既存動作が維持されること
+  it("TC-EP-03: currentPhase: 'verify' の snapshot を受け取ったとき setWorkflowError(null) が呼ばれる", () => {
     const triggerCallback = captureCallback();
 
     act(() => {
-      triggerCallback({ phase: "completed", handoffBundle: null });
+      triggerCallback({ currentPhase: "verify", handoffBundle: null });
     });
 
     expect(mockSetWorkflowSnapshot).toHaveBeenCalledWith(
-      expect.objectContaining({ phase: "completed" }),
+      expect.objectContaining({ currentPhase: "verify" }),
     );
     expect(mockSetWorkflowError).toHaveBeenCalledWith(null);
   });
 
-  // AC-3: handoffBundle の処理は phase に関わらず変わらないこと
-  it("TC-EP-04: phase: failed でも handoffBundle が存在する場合は setHandoffGuidance が呼ばれる", () => {
+  // AC-3: handoffBundle の処理は currentPhase に関わらず変わらないこと
+  it("TC-EP-04: currentPhase: 'handoff' でも handoffBundle が存在する場合は setHandoffGuidance が呼ばれる", () => {
     const triggerCallback = captureCallback();
     const mockHandoffBundle = { steps: ["step1"] };
 
     act(() => {
-      triggerCallback({ phase: "failed", handoffBundle: mockHandoffBundle });
+      triggerCallback({
+        currentPhase: "handoff",
+        handoffBundle: mockHandoffBundle,
+      });
     });
 
-    // handoffBundle 処理は phase に関わらず実行される
+    // handoffBundle 処理は currentPhase に関わらず実行される
     expect(mockSetHandoffGuidance).toHaveBeenCalled();
     // setWorkflowError(null) は呼ばれない
     expect(mockSetWorkflowError).not.toHaveBeenCalledWith(null);
   });
 
-  it("TC-EP-05: phase: running で handoffBundle が null の場合は setHandoffGuidance が呼ばれない", () => {
+  it("TC-EP-05: currentPhase: 'execute' で handoffBundle が null の場合は setHandoffGuidance が呼ばれない", () => {
     const triggerCallback = captureCallback();
 
     act(() => {
-      triggerCallback({ phase: "running", handoffBundle: null });
+      triggerCallback({ currentPhase: "execute", handoffBundle: null });
     });
 
     expect(mockSetHandoffGuidance).not.toHaveBeenCalled();
-    // setWorkflowError(null) は呼ばれる（phase: running）
+    // setWorkflowError(null) は呼ばれる（currentPhase: execute）
     expect(mockSetWorkflowError).toHaveBeenCalledWith(null);
   });
 });
@@ -168,13 +177,13 @@ Phase 5 の実装後に全テストが Green になることを確認する。
 
 ### ステップ 3: テスト設計の確認
 
-| テストケース | 対応 AC | 検証内容                                                 | Red 理由                               |
-| ------------ | ------- | -------------------------------------------------------- | -------------------------------------- |
-| TC-EP-01     | AC-1    | `phase: 'failed'` → `setWorkflowError` 非呼び出し        | 現状は無条件に呼ばれる                 |
-| TC-EP-02     | AC-2    | `phase: 'running'` → `setWorkflowError(null)` 呼び出し   | 現状も呼ばれる（Green の可能性あり）   |
-| TC-EP-03     | AC-2    | `phase: 'completed'` → `setWorkflowError(null)` 呼び出し | 現状も呼ばれる（Green の可能性あり）   |
-| TC-EP-04     | AC-3    | `phase: 'failed'` でも `handoffBundle` 処理が実行        | 現状も実行される（Green の可能性あり） |
-| TC-EP-05     | AC-3    | `handoffBundle: null` → `setHandoffGuidance` 非呼び出し  | 現状も呼ばれない（Green の可能性あり） |
+| テストケース | 対応 AC | 検証内容                                                      | Red 理由                               |
+| ------------ | ------- | ------------------------------------------------------------- | -------------------------------------- |
+| TC-EP-01     | AC-1    | `currentPhase: 'handoff'` → `setWorkflowError` 非呼び出し     | 現状は無条件に呼ばれる                 |
+| TC-EP-02     | AC-2    | `currentPhase: 'execute'` → `setWorkflowError(null)` 呼び出し | 現状も呼ばれる（Green の可能性あり）   |
+| TC-EP-03     | AC-2    | `currentPhase: 'verify'` → `setWorkflowError(null)` 呼び出し  | 現状も呼ばれる（Green の可能性あり）   |
+| TC-EP-04     | AC-3    | `currentPhase: 'handoff'` でも `handoffBundle` 処理が実行     | 現状も実行される（Green の可能性あり） |
+| TC-EP-05     | AC-3    | `handoffBundle: null` → `setHandoffGuidance` 非呼び出し       | 現状も呼ばれない（Green の可能性あり） |
 
 ## 多角的チェック観点
 
@@ -192,10 +201,10 @@ Phase 5 の実装後に全テストが Green になることを確認する。
 ## 完了条件
 
 - [ ] `SkillLifecyclePanel.error-persistence.test.tsx` が作成されて Red 状態である
-- [ ] TC-EP-01（`phase: 'failed'` 時に `setWorkflowError(null)` が呼ばれない）が定義されている
-- [ ] TC-EP-02（`phase: 'running'` 時に `setWorkflowError(null)` が呼ばれる）が定義されている
-- [ ] TC-EP-03（`phase: 'completed'` 時に `setWorkflowError(null)` が呼ばれる）が定義されている
-- [ ] TC-EP-04（`phase: 'failed'` でも `handoffBundle` 処理が実行される）が定義されている
+- [ ] TC-EP-01（`currentPhase: 'handoff'` 時に `setWorkflowError(null)` が呼ばれない）が定義されている
+- [ ] TC-EP-02（`currentPhase: 'execute'` 時に `setWorkflowError(null)` が呼ばれる）が定義されている
+- [ ] TC-EP-03（`currentPhase: 'verify'` 時に `setWorkflowError(null)` が呼ばれる）が定義されている
+- [ ] TC-EP-04（`currentPhase: 'handoff'` でも `handoffBundle` 処理が実行される）が定義されている
 - [ ] TC-EP-05（`handoffBundle: null` 時に `setHandoffGuidance` が呼ばれない）が定義されている
 
 ## タスク100%実行確認【必須】

@@ -28,7 +28,7 @@
 3. 変更対象ファイルのインベントリ作成（1 ファイル）
 4. 受入条件（AC）の定義（AC-1 〜 AC-5）
 5. タスク分類の確定（UI task・Renderer 側変更を含む）
-6. `WorkflowPhaseSnapshot` の `phase` 型定義場所の確認（既存型を使う）
+6. `SkillCreatorWorkflowUiSnapshot.currentPhase` の型定義場所の確認（既存型を使う）
 7. スコープ外の確認（型定義変更・Redux store 変更・他コンポーネント変更は含まない）
 
 ## 参照資料
@@ -39,6 +39,11 @@
 | ------------------ | ------------------------------------------------------------------------------ | -------------- |
 | アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md`   | システム全体像 |
 | タスクワークフロー | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md` | 完了タスク記録 |
+
+## 統合テスト連携
+
+- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
+- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
 
 ## 実行手順
 
@@ -52,13 +57,13 @@ grep -n "setWorkflowError" apps/desktop/src/renderer/components/skill/SkillLifec
 grep -n "onWorkflowStateChanged" apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx
 
 # 修正が既に行われていないか確認
-grep -n "snapshot.phase" apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx
+grep -n "snapshot.currentPhase" apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx
 ```
 
 確認ポイント:
 
 - `setWorkflowError(null)` が `if` ブロックで囲まれていないこと（未修正の状態）
-- `snapshot.phase !== 'failed'` の条件分岐が既に存在しないこと
+- `snapshot.currentPhase !== 'handoff'` の条件分岐が既に存在しないこと
 
 ### ステップ 2: 変更対象ファイルのインベントリ確認
 
@@ -72,38 +77,38 @@ sed -n '525,550p' apps/desktop/src/renderer/components/skill/SkillLifecyclePanel
 
 各ファイルの現状を確認し、インベントリに記録する。
 
-### ステップ 3: `WorkflowPhaseSnapshot.phase` の型定義場所の確認
+### ステップ 3: `SkillCreatorWorkflowUiSnapshot.currentPhase` の型定義場所の確認
 
 ```bash
-# WorkflowPhaseSnapshot 型の定義場所を確認
-grep -rn "WorkflowPhaseSnapshot" apps/desktop/src/ --include="*.ts" --include="*.tsx"
-grep -rn "WorkflowPhaseSnapshot" packages/shared/src/ --include="*.ts"
+# SkillCreatorWorkflowUiSnapshot 型の定義場所を確認
+grep -rn "SkillCreatorWorkflowUiSnapshot" apps/desktop/src/ --include="*.ts" --include="*.tsx"
+grep -rn "SkillCreatorWorkflowUiSnapshot" packages/shared/src/ --include="*.ts"
 
-# WorkflowPhase 型の定義場所を確認
-grep -rn "WorkflowPhase" apps/desktop/src/ --include="*.ts" --include="*.tsx"
-grep -rn "WorkflowPhase" packages/shared/src/ --include="*.ts"
+# SkillCreatorWorkflowPhase 型の定義場所を確認
+grep -rn "SkillCreatorWorkflowPhase" apps/desktop/src/ --include="*.ts" --include="*.tsx"
+grep -rn "SkillCreatorWorkflowPhase" packages/shared/src/ --include="*.ts"
 
-# 'failed' リテラルが型定義に含まれているか確認
-grep -rn "'failed'" packages/shared/src/ --include="*.ts"
+# 'handoff' リテラルが型定義に含まれているか確認
+grep -rn "'handoff'" packages/shared/src/ --include="*.ts"
 ```
 
 確認ポイント:
 
-- `snapshot.phase` の型が `WorkflowPhase` または `string` であることを確認する
-- `'failed'` リテラルが既存の型定義と整合していることを確認する
+- `snapshot.currentPhase` の型が `SkillCreatorWorkflowPhase` または `string` であることを確認する
+- `'handoff'` リテラルが既存の型定義と整合していることを確認する
 - 新規型定義は不要（既存型を再利用する）
 
 ### ステップ 4: 受入条件の確定
 
 以下の受入条件を確定し、`outputs/phase-1/spec-extraction-map.md` に記録する:
 
-| ID   | 受入条件                                                                                                   | 確認方法                   |
-| ---- | ---------------------------------------------------------------------------------------------------------- | -------------------------- |
-| AC-1 | `phase === 'failed'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれないこと               | ユニットテスト（Phase 4）  |
-| AC-2 | `phase !== 'failed'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれること（既存動作維持） | ユニットテスト（Phase 4）  |
-| AC-3 | `handoffBundle` の処理は `phase` に関わらず変わらないこと                                                  | ユニットテスト（Phase 4）  |
-| AC-4 | 既存テストが全て PASS すること                                                                             | 既存テスト PASS（Phase 9） |
-| AC-5 | UI 上でスキル生成エラー発生時にエラーメッセージが表示されたままになること（消えなくなること）              | 手動テスト（Phase 11）     |
+| ID   | 受入条件                                                                                                           | 確認方法                   |
+| ---- | ------------------------------------------------------------------------------------------------------------------ | -------------------------- |
+| AC-1 | `currentPhase === 'handoff'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれないこと               | ユニットテスト（Phase 4）  |
+| AC-2 | `currentPhase !== 'handoff'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれること（既存動作維持） | ユニットテスト（Phase 4）  |
+| AC-3 | `handoffBundle` の処理は `currentPhase` に関わらず変わらないこと                                                   | ユニットテスト（Phase 4）  |
+| AC-4 | 既存テストが全て PASS すること                                                                                     | 既存テスト PASS（Phase 9） |
+| AC-5 | UI 上でスキル生成エラー発生時にエラーメッセージが表示されたままになること（消えなくなること）                      | 手動テスト（Phase 11）     |
 
 ### ステップ 5: タスク分類の確定
 
@@ -117,18 +122,18 @@ grep -rn "'failed'" packages/shared/src/ --include="*.ts"
 
 以下は本タスクのスコープ外であることを確認し、成果物に記録する:
 
-| スコープ外項目                       | 理由                                                       |
-| ------------------------------------ | ---------------------------------------------------------- |
-| `setWorkflowError` の型定義変更      | 型変更なし（呼び出しタイミングの条件追加のみ）             |
-| Redux store の変更                   | store 構造の変更なし（セッター関数の呼び出し条件のみ変更） |
-| 他コンポーネントの変更               | `SkillLifecyclePanel.tsx` 以外のコンポーネントは変更しない |
-| `WorkflowPhaseSnapshot` の型定義変更 | 既存型を再利用するため型定義の変更なし                     |
+| スコープ外項目                                | 理由                                                       |
+| --------------------------------------------- | ---------------------------------------------------------- |
+| `setWorkflowError` の型定義変更               | 型変更なし（呼び出しタイミングの条件追加のみ）             |
+| Redux store の変更                            | store 構造の変更なし（セッター関数の呼び出し条件のみ変更） |
+| 他コンポーネントの変更                        | `SkillLifecyclePanel.tsx` 以外のコンポーネントは変更しない |
+| `SkillCreatorWorkflowUiSnapshot` の型定義変更 | 既存型を再利用するため型定義の変更なし                     |
 
 ## 多角的チェック観点
 
-- `snapshot.phase` の型が `string` の場合と `WorkflowPhase` リテラルユニオン型の場合で、`!== 'failed'` の比較方法が変わるか確認したか
+- `snapshot.currentPhase` の型が `string` の場合と `SkillCreatorWorkflowPhase` リテラルユニオン型の場合で、`!== 'handoff'` の比較方法が変わるか確認したか
 - `setWorkflowError` の呼び出しが `SkillLifecyclePanel.tsx` 内で他の場所にもあるか確認したか（スコープを絞るため）
-- TASK-FIX-EXECUTE-PLAN-FF-001 が完了していなければ `phase: 'failed'` スナップショットが届かないため、前提条件を確認したか
+- TASK-FIX-EXECUTE-PLAN-FF-001 が完了していなければ `currentPhase: 'handoff'` スナップショットが届かないため、前提条件を確認したか
 
 ## 成果物
 
@@ -141,7 +146,7 @@ grep -rn "'failed'" packages/shared/src/ --include="*.ts"
 - [ ] 前提条件チェック: TASK-FIX-ENV-STRIPPING と TASK-FIX-EXECUTE-PLAN-FF-001 の完了が確認されている
 - [ ] P50 チェックが完了し、`setWorkflowError(null)` が `if` ブロックで囲まれていないこと（未修正）が確認されている
 - [ ] 1 つの変更対象ファイルのインベントリが `spec-extraction-map.md` に記録されている
-- [ ] `WorkflowPhaseSnapshot.phase` の型定義場所が確認され、`'failed'` との比較方法が明確になっている
+- [ ] `SkillCreatorWorkflowUiSnapshot.currentPhase` の型定義場所が確認され、`'handoff'` との比較方法が明確になっている
 - [ ] AC-1 〜 AC-5 が全て `spec-extraction-map.md` に明記されている
 - [ ] タスク分類（UI task・Renderer 側変更）が確定している
 - [ ] スコープ外項目（型定義変更・Redux store 変更・他コンポーネント変更）が明記されている

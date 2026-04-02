@@ -19,8 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-04-02 | 3.3.8      | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 教訓2件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-PROD-001 Phase 12 canonical filename 早期固定 / L-PROD-002 regression-only テスト明文化）                                                                                                                                            |
-| 2026-04-01 | 3.3.7      | TASK-FIX-EXECUTE-PLAN-FF-001 教訓2件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): execute-plan ack / compat path / snapshot relay の分離、Renderer consumer の終端 cleanup） |
+| 2026-04-02 | 3.3.7      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-ERR-001 `handoff` guard の共通化 / L-LIFECYCLE-ERR-002 stale `phase: 'failed'` 語彙の除去 / L-LIFECYCLE-ERR-003 NON_VISUAL task で blocker を PASS へ偽装しない） |
 | 2026-04-01 | 3.3.6      | TASK-FIX-AUTH-IPC-001 教訓2件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-AUTH-IPC-001 IPC channel timeout と fire-and-forget パターン — CHANNEL_TIMEOUTS が 500ms の場合は OAuth 完了を await せず void+catch で即時返却する / L-AUTH-IPC-002 AUTH_STATE_CHANGED 責務境界の分離 — 完了通知は orchestrator に固定し handler 側では二重送信しない） |
 | 2026-04-01 | 3.3.5      | TASK-SC-DIALOG-MANDATORY-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-SC-DIALOG-001 宣言型→命令型転換 / L-SC-DIALOG-002 実行ゲートパターン / L-SC-DIALOG-003 graceful degradation で problem-definition.json 欠損時エラー停止を回避）                                                                                     |
 | 2026-04-01 | 3.3.4      | TASK-TRACE-SKILL-AUTH-001 教訓3件を追加（→ [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-AUTH-TRACE-001 never-resolving mock による IPC 副作用検出 / L-AUTH-TRACE-002 data-testid 安定クエリ / L-AUTH-TRACE-003 useEffect 再レンダリング連鎖検出）                                                                                                                    |
@@ -109,7 +108,6 @@
 - サービススコープ制限（P60）、動的アダプタ注入（P61）
 - LLM adapter bind() パターン、CapabilityResolver、esbuild platform mismatch
 - Hybrid State Pattern（localPlanResult + store）SSoT 問題、executePlan skillSpec 引数漏れ
-- `skill-creator:execute-plan` fire-and-forget ack / snapshot relay / compat path
 
 ### テスト / 型安全 / 品質検証
 

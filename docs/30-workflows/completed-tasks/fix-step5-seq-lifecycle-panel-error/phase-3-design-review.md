@@ -30,19 +30,25 @@ Phase 2 の設計が AC-1〜AC-5 を全て満たし、既存動作を破壊し�
 | ------------------ | ---------------------------------------------------------------------------- | -------------- |
 | アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
 
+## 統合テスト連携
+
+- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
+- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
+- Phase 1 の成果物 spec-extraction-map.md と Phase 2 の成果物 design-topology.md を前提に、AC-1〜AC-5 をレビューする。
+
 ## 実行手順
 
 ### ステップ 1: AC-1〜AC-5 の設計充足確認
 
 各受入条件を Phase 2 の設計と照合する:
 
-| AC   | 受入条件                                                                                                   | 対応する設計                                                                      | 充足判定 |
-| ---- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | -------- |
-| AC-1 | `phase === 'failed'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれないこと               | `if (snapshot.phase !== 'failed')` で `setWorkflowError(null)` を囲む設計         | 確認対象 |
-| AC-2 | `phase !== 'failed'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれること（既存動作維持） | `if (snapshot.phase !== 'failed')` ブロック内で `setWorkflowError(null)` を実行   | 確認対象 |
-| AC-3 | `handoffBundle` の処理は `phase` に関わらず変わらないこと                                                  | `handoffBundle` の `if` ブロックは `phase` 判定の外に置かれている                 | 確認対象 |
-| AC-4 | 既存テストが全て PASS すること                                                                             | 変更がコールバック内の 1 行追加のみのため既存テストへの影響なし（Phase 9 で確認） | 確認対象 |
-| AC-5 | UI 上でスキル生成エラー発生時にエラーメッセージが表示されたままになること                                  | `setWorkflowError(null)` が呼ばれないことで Redux store のエラー状態が保持される  | 確認対象 |
+| AC   | 受入条件                                                                                                           | 対応する設計                                                                                                                                                        | 充足判定 |
+| ---- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| AC-1 | `currentPhase === 'handoff'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれないこと               | `applyWorkflowSnapshot(snapshot)` を設け、`onWorkflowStateChanged` / `getWorkflowState` / `submitUserInput` / execute 後再取得の全経路で `handoff` ガードを共有する | 確認対象 |
+| AC-2 | `currentPhase !== 'handoff'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれること（既存動作維持） | `applyWorkflowSnapshot(snapshot)` 内で `snapshot.currentPhase !== 'handoff'` の場合のみ `setWorkflowError(null)` を実行                                             | 確認対象 |
+| AC-3 | `handoffBundle` の処理は `currentPhase` に関わらず変わらないこと                                                   | `applyWorkflowSnapshot(snapshot)` 内で `handoffBundle` の処理を `handoff` 判定と分離する                                                                            | 確認対象 |
+| AC-4 | 既存テストが全て PASS すること                                                                                     | 追加した回帰テストで 4 経路を固定し、型検査と lint は別途確認する。`vitest` は環境ブロッカー有無を Phase 10/11 で明示する                                           | 確認対象 |
+| AC-5 | UI 上でスキル生成エラー発生時にエラーメッセージが表示されたままになること                                          | どの snapshot 取り込み経路でも `handoff` 時にエラーを消さないため、store 上のエラー状態を保持できる                                                                 | 確認対象 |
 
 ### ステップ 2: 既存動作への影響確認
 
@@ -73,7 +79,7 @@ Phase 2 の設計が AC-1〜AC-5 を全て満たし、既存動作を破壊し�
 #### PASS 条件
 
 - AC-1〜AC-5 の全てが設計で充足されている
-- `handoffBundle` 処理が `phase` 判定の影響を受けない設計になっている
+- `handoffBundle` 処理が `currentPhase` 判定の影響を受けない設計になっている
 - React hooks deps の変更がない
 - breaking change がない
 - MAJOR 指摘がゼロ
@@ -81,14 +87,14 @@ Phase 2 の設計が AC-1〜AC-5 を全て満たし、既存動作を破壊し�
 #### FAIL 条件（Phase 2 に戻る）
 
 - AC のいずれかが設計で充足されていない
-- `handoffBundle` 処理が誤って `phase` 判定の内側に含まれている
+- `handoffBundle` 処理が誤って `currentPhase` 判定の内側に含まれている
 - React hooks deps に変更が生じている
 - MAJOR な breaking change が未対処
 
 ## 多角的チェック観点
 
-- `if (snapshot.phase !== 'failed')` の条件で `handoffBundle` 処理が意図せず囲まれていないか確認したか（括弧の位置）
-- `phase: 'failed'` 以外のエラー関連フェーズ（`'heartbeat_timeout'` 等）が AC-1 の想定に含まれるべきか確認したか（Phase 6 のエッジケースとして扱うか）
+- `if (snapshot.currentPhase !== 'handoff')` の条件で `handoffBundle` 処理が意図せず囲まれていないか確認したか（括弧の位置）
+- `currentPhase: 'handoff'` 以外の `SkillCreatorWorkflowPhase` 値を既存テストで十分に代表できているか確認したか
 - 修正後に `setWorkflowError` が永久にクリアされないケース（ユーザーが手動でエラーをクリアするUIがあるか）を確認したか
 
 ## 成果物
@@ -100,7 +106,7 @@ Phase 2 の設計が AC-1〜AC-5 を全て満たし、既存動作を破壊し�
 ## 完了条件
 
 - [ ] AC-1〜AC-5 の全てが設計で充足されていることが確認されている
-- [ ] `handoffBundle` 処理が `phase` 判定の外にあることが確認されている
+- [ ] `handoffBundle` 処理が `currentPhase` 判定の外にあることが確認されている
 - [ ] React hooks deps が変更なしであることが確認されている
 - [ ] breaking change がないことが確認されている
 - [ ] PASS/FAIL 判定が `design-review-result.md` に明記されている

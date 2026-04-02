@@ -28,6 +28,12 @@
 | ------------------ | ---------------------------------------------------------------------------- | -------------- |
 | アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
 
+## 統合テスト連携
+
+- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
+- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
+- Phase 5 の修正結果を前提に、`onWorkflowStateChanged` コールバック全体の分岐をカバーする。
+
 ## 実行手順
 
 ### ステップ 1: カバレッジレポートの生成
@@ -42,20 +48,20 @@ pnpm --filter @repo/desktop exec vitest run \
 
 ### ステップ 2: カバレッジ目標の確認
 
-| 対象                                              | 目標値   | 確認ポイント                                                    |
-| ------------------------------------------------- | -------- | --------------------------------------------------------------- |
-| `onWorkflowStateChanged` コールバック（行）       | 90% 以上 | `if (snapshot.phase !== 'failed')` 分岐の両辺が実行されているか |
-| `onWorkflowStateChanged` コールバック（ブランチ） | 90% 以上 | `true`/`false` の両ブランチがカバーされているか                 |
-| `handoffBundle` の `if` 分岐                      | 100%     | `truthy`/`falsy` の両パスがカバーされているか                   |
+| 対象                                              | 目標値   | 確認ポイント                                                            |
+| ------------------------------------------------- | -------- | ----------------------------------------------------------------------- |
+| `onWorkflowStateChanged` コールバック（行）       | 90% 以上 | `if (snapshot.currentPhase !== 'handoff')` 分岐の両辺が実行されているか |
+| `onWorkflowStateChanged` コールバック（ブランチ） | 90% 以上 | `true`/`false` の両ブランチがカバーされているか                         |
+| `handoffBundle` の `if` 分岐                      | 100%     | `truthy`/`falsy` の両パスがカバーされているか                           |
 
 ### ステップ 3: ブランチカバレッジの確認ポイント
 
 本修正で追加されたブランチは以下の 2 つ:
 
-| ブランチ                                        | カバーするテストケース |
-| ----------------------------------------------- | ---------------------- |
-| `snapshot.phase !== 'failed'` が `true` の場合  | TC-EP-02, TC-EP-03     |
-| `snapshot.phase !== 'failed'` が `false` の場合 | TC-EP-01, TC-EP-04     |
+| ブランチ                                                | カバーするテストケース |
+| ------------------------------------------------------- | ---------------------- |
+| `snapshot.currentPhase !== 'handoff'` が `true` の場合  | TC-EP-02, TC-EP-03     |
+| `snapshot.currentPhase !== 'handoff'` が `false` の場合 | TC-EP-01, TC-EP-04     |
 
 既存の `handoffBundle` 分岐:
 
@@ -91,7 +97,7 @@ pnpm --filter @repo/desktop exec vitest run --coverage \
 - [ ] カバレッジレポートが生成されている
 - [ ] `onWorkflowStateChanged` コールバックの行カバレッジが 90% 以上
 - [ ] `onWorkflowStateChanged` コールバックのブランチカバレッジが 90% 以上
-- [ ] `if (snapshot.phase !== 'failed')` の `true`/`false` 両ブランチがカバーされている
+- [ ] `if (snapshot.currentPhase !== 'handoff')` の `true`/`false` 両ブランチがカバーされている
 - [ ] `handoffBundle` の `truthy`/`falsy` 両パスがカバーされている
 
 ## タスク100%実行確認【必須】
