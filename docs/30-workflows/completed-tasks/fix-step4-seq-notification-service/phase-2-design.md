@@ -64,6 +64,12 @@ import type { INotificationService } from "./INotificationService";
 
 export class ElectronNotificationService implements INotificationService {
   notify(title: string, body: string): void {
+    if (!Notification.isSupported()) {
+      console.warn(
+        "[ElectronNotificationService] Notification is not supported on this platform",
+      );
+      return;
+    }
     new Notification({ title, body }).show();
   }
 }
@@ -93,48 +99,70 @@ interface RuntimeSkillCreatorFacadeDeps {
 }
 ```
 
-**`executeAsync` の修正箇所:**
+**`execute` の修正箇所:**
 
 ```typescript
 // 完了時
-await this.deps.notificationService.notify("スキル作成完了", skillName);
+try {
+  this.deps.notificationService.notify("スキル作成完了", skillName);
+} catch {
+  // 通知失敗はスキル生成結果に影響させない
+}
 
 // 失敗時（catch ブロック内）
-await this.deps.notificationService.notify("スキル作成失敗", errorSummary);
+try {
+  this.deps.notificationService.notify("スキル作成失敗", errorSummary);
+} catch {
+  // 通知失敗はスキル生成結果に影響させない
+}
 ```
 
-注意: `notify()` は `void` を返すが、エラーが起きても `executeAsync` を中断しないこと。
+注意: `notify()` は `void` を返すが、エラーが起きても `execute` を中断しないこと。
 通知の失敗はスキル生成の結果に影響しない。ラップして `try/catch` する。
 
 ### タスク 2-4: `hasRunningExecution()` の実装設計
 
-`RuntimeSkillCreatorFacade` が既に持つ実行状態管理（`Map<string, ...>` などのコレクション）を利用する。
+`RuntimeSkillCreatorFacade` の実行状態はシンプルなカウンタで管理する。
+並行実行数が必要なだけなので、`Map`/`Set` よりも `activeExecutionCount` の方がエレガントで保守性が高い。
 
 **実装方針:**
 
 ```typescript
+private activeExecutionCount = 0;
+
+async execute(...) {
+  this.activeExecutionCount += 1;
+  try {
+    // 既存の実行フロー
+  } finally {
+    this.activeExecutionCount = Math.max(0, this.activeExecutionCount - 1);
+  }
+}
+
 hasRunningExecution(): boolean {
-  return this.runningExecutions.size > 0
+  return this.activeExecutionCount > 0;
 }
 ```
 
-`runningExecutions` は `executeAsync` 開始時に追加、完了/失敗時に削除する `Map` または `Set` とする。
-既存の実行管理変数がある場合はそれを流用し、ない場合は追加する。
-
 ### タスク 2-5: `before-quit` ガードの実装場所
 
-**実装場所: `apps/desktop/src/main/index.ts`**
+**実装場所: `apps/desktop/src/main/ipc/index.ts` + `apps/desktop/src/main/ipc/beforeQuitGuard.ts`**
 
 理由:
 
-- `app.on('before-quit', ...)` は Electron の `app` オブジェクトにアクセスできる Main Process のエントリポイントが適切
-- `RuntimeSkillCreatorFacade` のインスタンスはここで DI 注入されるため、参照を持てる
+- `RuntimeSkillCreatorFacade` の組み立ては `ipc/index.ts` に集約されている
+- `before-quit` ガードを `beforeQuitGuard.ts` に切り出すと、テストと再利用が容易になる
+- `unregisterAllIpcHandlers()` と同じライフサイクルで解除できる
 
-**実装パターン:**
+**実装パターン（ヘルパー切り出し）:**
 
 ```typescript
-app.on("before-quit", (event) => {
-  if (facade.hasRunningExecution()) {
+// beforeQuitGuard.ts
+export const registerBeforeQuitGuard = ({ app, dialog, facade }) => {
+  const handler = (event) => {
+    if (!facade.hasRunningExecution()) {
+      return;
+    }
     event.preventDefault();
     dialog
       .showMessageBox({
@@ -147,9 +175,31 @@ app.on("before-quit", (event) => {
         if (response === 0) {
           app.exit(0);
         }
+      })
+      .catch((error: unknown) => {
+        console.warn(
+          "[beforeQuitGuard] Failed to show confirmation dialog",
+          error,
+        );
       });
-  }
+  };
+
+  app.on("before-quit", handler);
+  return () => app.removeListener("before-quit", handler);
+};
+```
+
+**`ipc/index.ts` での登録イメージ:**
+
+```typescript
+const unregisterBeforeQuitGuard = registerBeforeQuitGuard({
+  app,
+  dialog,
+  facade,
 });
+
+// unregisterAllIpcHandlers() の中で解除
+unregisterBeforeQuitGuard();
 ```
 
 ### タスク 2-6: macOS Notification 権限の確認
@@ -194,11 +244,12 @@ Electron の `Notification` API は macOS では OS レベルの通知権限要�
 
 ### ステップ 4: `hasRunningExecution()` の実装設計確定
 
-`RuntimeSkillCreatorFacade.ts` の現在の実行管理変数を確認し、`size > 0` チェックの対象を特定する。
+`RuntimeSkillCreatorFacade.ts` の現在の実行管理変数を確認し、`activeExecutionCount > 0` チェックの対象を特定する。
 
 ### ステップ 5: `before-quit` ガードの実装設計確定
 
-`apps/desktop/src/main/index.ts` の構造を確認し、ガードを追加する位置（`ElectronNotificationService` インスタンス化後）を特定する。
+`apps/desktop/src/main/ipc/index.ts` と `apps/desktop/src/main/ipc/beforeQuitGuard.ts` を確認し、
+ガード登録の位置（`ElectronNotificationService` の DI 後）と解除タイミングを特定する。
 
 ---
 
@@ -208,7 +259,7 @@ Electron の `Notification` API は macOS では OS レベルの通知権限要�
 | ------------------------ | --------------------------------------------------------------------------------------------------------- |
 | DI 境界の明確さ          | `INotificationService` が `services/notification/` ディレクトリ内に閉じており、外部パッケージに露出しない |
 | テスト容易性             | `MockNotificationService` が `INotificationService` を implements することで、型安全にモック注入できる    |
-| 通知失敗の副作用         | `notify()` のエラーが `executeAsync` の完了/失敗判定に影響しないこと（個別 try/catch）                    |
+| 通知失敗の副作用         | `notify()` のエラーが `execute` の完了/失敗判定に影響しないこと（個別 try/catch）                         |
 | `before-quit` の副作用   | `event.preventDefault()` 後に `app.exit(0)` を呼ぶことで、無限ループにならないこと                        |
 | 既存 DI パターンへの準拠 | `RuntimeSkillCreatorFacadeDeps` に追加するフィールドが既存の他フィールドと命名スタイルが一致すること      |
 
@@ -227,9 +278,9 @@ Electron の `Notification` API は macOS では OS レベルの通知権限要�
 - [ ] `INotificationService` の型配置（独立ファイル、`services/notification/` ディレクトリ）が確定した
 - [ ] `INotificationService`、`ElectronNotificationService`、`MockNotificationService` の型定義が記述された
 - [ ] `RuntimeSkillCreatorFacadeDeps` への追加フィールドが設計された
-- [ ] `executeAsync` 完了/失敗時の `notify()` 呼び出し箇所が設計された
-- [ ] `hasRunningExecution()` の実装方針（`size > 0`）が確定した
-- [ ] `before-quit` ガードの実装場所（`index.ts`）と実装パターンが確定した
+- [ ] `execute` 完了/失敗時の `notify()` 呼び出し箇所が設計された
+- [ ] `hasRunningExecution()` の実装方針（`activeExecutionCount > 0`）が確定した
+- [ ] `before-quit` ガードの実装場所（`ipc/index.ts` + `beforeQuitGuard.ts`）と実装パターンが確定した
 - [ ] macOS Notification 権限の確認事項が記録された
 - [ ] `outputs/phase-2/design-topology.md` が作成された
 - [ ] **本 Phase 内の全タスクを 100% 実行完了**
@@ -243,7 +294,7 @@ Phase 2 完了時に以下を明記すること:
 - `INotificationService` の配置先確定
 - 全型定義の骨格記述完了
 - DI 注入ポイントの特定（`RuntimeSkillCreatorFacadeDeps` の変更箇所）
-- `before-quit` ガードの追加場所（`index.ts` の行番号範囲）
+- `before-quit` ガードの追加場所（`ipc/index.ts` の行番号範囲）
 
 ---
 

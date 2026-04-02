@@ -22,14 +22,17 @@
 
 以下が全て満たされた場合に PR 作成の準備が完了したとみなす:
 
-| 条件                                                              | 確認方法                                                          |
-| ----------------------------------------------------------------- | ----------------------------------------------------------------- |
-| Phase 11 手動テスト（MTC-01〜MTC-04）が全て PASS                  | `outputs/phase-11/manual-test-result.md` 確認                     |
-| Phase 12 ドキュメント更新が完了（5 本全て作成）                   | `outputs/phase-12/` ディレクトリ確認                              |
-| TC-E-01〜TC-E-05、TC-F-01〜TC-F-08、TC-B-01〜TC-B-02 が全て GREEN | `pnpm vitest run` 実行確認                                        |
-| `pnpm --filter @repo/desktop typecheck` が 0 エラー               | コマンド実行確認                                                  |
-| `pnpm --filter @repo/desktop lint` が 0 エラー                    | コマンド実行確認                                                  |
-| `notificationHandlers.ts` に変更がないこと                        | `git diff apps/desktop/src/main/ipc/notificationHandlers.ts` が空 |
+| 条件                                                              | 確認方法                                                                                    |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Phase 11 手動テスト（MTC-01〜MTC-04）が全て PASS                  | `outputs/phase-11/manual-test-result.md` 確認                                               |
+| Phase 11 チェックリストと検出課題が作成済み                       | `outputs/phase-11/manual-test-checklist.md` と `outputs/phase-11/discovered-issues.md` 確認 |
+| Phase 12 ドキュメント更新が完了（6 本全て作成）                   | `outputs/phase-12/` ディレクトリ確認                                                        |
+| Phase 12 仕様準拠チェックが完了                                   | `outputs/phase-12/phase12-task-spec-compliance-check.md` 確認                               |
+| TC-E-01〜TC-E-05、TC-F-01〜TC-F-08、TC-B-01〜TC-B-03 が全て GREEN | `pnpm vitest run` 実行確認                                                                  |
+| `pnpm --filter @repo/desktop typecheck` が 0 エラー               | コマンド実行確認                                                                            |
+| `pnpm --filter @repo/desktop lint` が 0 エラー                    | コマンド実行確認                                                                            |
+| `notificationHandlers.ts` に変更がないこと                        | `git diff apps/desktop/src/main/ipc/notificationHandlers.ts` が空                           |
+| PR 本文が準備されていること                                       | `outputs/phase-13/pr-body.md` が存在すること                                                |
 
 ---
 
@@ -56,23 +59,24 @@ feat(desktop): INotificationService DI + ElectronNotificationService + before-qu
 - `apps/desktop/src/main/services/notification/INotificationService.ts` — 通知サービスインターフェース
 - `apps/desktop/src/main/services/notification/ElectronNotificationService.ts` — macOS 通知実装（`Notification.isSupported()` ガード付き）
 - `apps/desktop/src/main/services/notification/__tests__/ElectronNotificationService.test.ts` — ユニットテスト
+- `apps/desktop/src/main/ipc/beforeQuitGuard.ts` — before-quit ガードの抽出
 
 ### 修正
 
 - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
   - `RuntimeSkillCreatorFacadeDeps` に `notificationService: INotificationService` を追加
-  - `executeAsync` 完了時に `notify('スキル作成完了', skillName)` を呼ぶ
-  - `executeAsync` 失敗時に `notify('スキル作成失敗', errorSummary)` を呼ぶ
+  - `execute` 完了時に `notify('スキル作成完了', skillName)` を呼ぶ
+  - `execute` 失敗時に `notify('スキル作成失敗', errorSummary)` を呼ぶ
   - `hasRunningExecution(): boolean` メソッドを追加
-- `apps/desktop/src/main/index.ts`
+- `apps/desktop/src/main/ipc/index.ts`
   - `ElectronNotificationService` のインスタンス化と DI 注入
-  - `app.on('before-quit', ...)` ガード追加（生成中はダイアログで確認）
+  - `beforeQuitGuard` の登録・解除
 
 ## テスト
 
 - `ElectronNotificationService.test.ts`: TC-E-01〜TC-E-05（5 件）
 - `RuntimeSkillCreatorFacade.notification.test.ts`: TC-F-01〜TC-F-08（8 件）
-- `before-quit-guard.test.ts`: TC-B-01〜TC-B-02（2 件）
+- `beforeQuitGuard.test.ts`: TC-B-01〜TC-B-03（3 件）
 
 ## 受入条件
 
@@ -140,11 +144,15 @@ gh pr create \
 
 上記の準備条件を全て確認する。
 
-### ステップ 2: ユーザー承認の取得
+### ステップ 2: PR 本文の作成
+
+`outputs/phase-13/pr-body.md` を作成し、PR 説明候補の内容を反映する。
+
+### ステップ 3: ユーザー承認の取得
 
 ユーザーに「PR を作成してよいか」を確認する。承認なしに PR を作成しない。
 
-### ステップ 3: PR の作成（承認後のみ）
+### ステップ 4: PR の作成（承認後のみ）
 
 PR タイトル・説明候補を使用して PR を作成する。
 
@@ -162,9 +170,10 @@ PR タイトル・説明候補を使用して PR を作成する。
 
 ## 成果物
 
-| 成果物              | パス                    | 説明   |
-| ------------------- | ----------------------- | ------ |
-| GitHub Pull Request | （承認後に URL を記録） | PR URL |
+| 成果物              | パス                          | 説明                    |
+| ------------------- | ----------------------------- | ----------------------- |
+| PR 本文             | `outputs/phase-13/pr-body.md` | PR 送信前に作成する本文 |
+| GitHub Pull Request | （承認後に URL を記録）       | PR URL                  |
 
 ---
 
@@ -173,6 +182,7 @@ PR タイトル・説明候補を使用して PR を作成する。
 - [ ] PR 作成は blocked であると明記されている（ユーザー承認待ち）
 - [ ] PR 準備条件が全て確認されている
 - [ ] PR タイトル・説明候補が準備されている
+- [ ] `outputs/phase-13/pr-body.md` が作成されている
 - [ ] ユーザーからの明示指示を待つことが記録されている
 - [ ] **本 Phase 内の全タスクを 100% 実行完了**
 
@@ -185,3 +195,4 @@ Phase 13 完了時に以下を明記すること:
 - PR 作成のブロック状態（ユーザー承認待ちであること）
 - PR 準備条件の確認結果（全条件が満たされているか）
 - ユーザー承認後に実行するコマンドの確認
+- PR 本文の準備状況

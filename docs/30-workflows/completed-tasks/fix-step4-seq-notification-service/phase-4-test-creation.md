@@ -13,7 +13,7 @@
 ## 目的
 
 Phase 5 の実装前に全テストを Red（失敗）状態で作成し、TDD サイクルを確立する。
-AC-1〜AC-8 のそれぞれに対応するテストケースを定義し、実装完了の判定基準を固定する。
+AC-1〜AC-9 のそれぞれに対応するテストケースを定義し、実装完了の判定基準を固定する。
 
 ---
 
@@ -37,11 +37,17 @@ AC-1〜AC-8 のそれぞれに対応するテストケースを定義し、実�
 
 ```typescript
 // テスト骨格
-it("notify() calls Notification constructor with correct title and body", () => {
-  const MockNotification = vi
-    .fn()
-    .mockImplementation(() => ({ show: vi.fn() }));
-  vi.stubGlobal("Notification", MockNotification);
+it("notify() calls Notification constructor with correct title and body", async () => {
+  const show = vi.fn();
+  const MockNotification = vi.fn().mockImplementation(() => ({ show }));
+  MockNotification.isSupported = vi.fn().mockReturnValue(true);
+
+  vi.doMock("electron", () => ({
+    Notification: MockNotification,
+  }));
+
+  const { ElectronNotificationService } =
+    await import("../ElectronNotificationService");
 
   const service = new ElectronNotificationService();
   service.notify("スキル作成完了", "my-skill");
@@ -83,10 +89,10 @@ it("notify() calls Notification constructor with correct title and body", () => 
 
 | 項目     | 内容                                                                                             |
 | -------- | ------------------------------------------------------------------------------------------------ |
-| テスト名 | `executeAsync calls notificationService.notify with completion message on success`               |
-| 対象     | `RuntimeSkillCreatorFacade.executeAsync()`                                                       |
+| テスト名 | `execute calls notificationService.notify with completion message on success`                    |
+| 対象     | `RuntimeSkillCreatorFacade.execute()`                                                            |
 | 前提条件 | `MockNotificationService` を DI 注入済み。実行が正常完了するようモック設定                       |
-| 操作     | `facade.executeAsync(skillName)` を実行し、完了を待つ                                            |
+| 操作     | `facade.execute(skillName)` を実行し、完了を待つ                                                 |
 | 期待結果 | `mockNotification.calls` に `{ title: 'スキル作成完了', body: skillName }` が 1 件追加されること |
 
 ```typescript
@@ -98,7 +104,7 @@ it("calls notify with completion message on success", async () => {
     notificationService: mockNotification,
   });
 
-  await facade.executeAsync("my-skill");
+  await facade.execute("my-skill");
 
   expect(mockNotification.calls).toHaveLength(1);
   expect(mockNotification.calls[0]).toEqual({
@@ -112,64 +118,64 @@ it("calls notify with completion message on success", async () => {
 
 | 項目     | 内容                                                                                                  |
 | -------- | ----------------------------------------------------------------------------------------------------- |
-| テスト名 | `executeAsync calls notificationService.notify with failure message on error`                         |
-| 対象     | `RuntimeSkillCreatorFacade.executeAsync()`                                                            |
+| テスト名 | `execute calls notificationService.notify with failure message on error`                              |
+| 対象     | `RuntimeSkillCreatorFacade.execute()`                                                                 |
 | 前提条件 | `MockNotificationService` を DI 注入済み。実行がエラーで終了するようモック設定                        |
-| 操作     | `facade.executeAsync(skillName)` を実行し、エラーをハンドル                                           |
+| 操作     | `facade.execute(skillName)` を実行し、エラーをハンドル                                                |
 | 期待結果 | `mockNotification.calls` に `{ title: 'スキル作成失敗', body: <errorSummary> }` が 1 件追加されること |
 
-#### TC-F-03: `notify()` がエラーを投げても `executeAsync` が完了ステータスを変えない
+#### TC-F-03: `notify()` がエラーを投げても `execute` が完了ステータスを変えない
 
 | 項目     | 内容                                                                        |
 | -------- | --------------------------------------------------------------------------- |
-| テスト名 | `executeAsync completes normally even if notificationService.notify throws` |
-| 対象     | `RuntimeSkillCreatorFacade.executeAsync()`                                  |
+| テスト名 | `execute completes normally even if notificationService.notify throws`      |
+| 対象     | `RuntimeSkillCreatorFacade.execute()`                                       |
 | 前提条件 | `notify()` が `throw new Error('notification failed')` するモックを DI 注入 |
-| 操作     | `facade.executeAsync(skillName)` を実行し、完了を待つ                       |
-| 期待結果 | `executeAsync` が正常に完了すること（例外が外に伝播しないこと）             |
+| 操作     | `facade.execute(skillName)` を実行し、完了を待つ                            |
+| 期待結果 | `execute` が正常に完了すること（例外が外に伝播しないこと）                  |
 
 #### TC-F-04: `hasRunningExecution()` が実行中に `true` を返す
 
-| 項目     | 内容                                                               |
-| -------- | ------------------------------------------------------------------ |
-| テスト名 | `hasRunningExecution() returns true while executeAsync is running` |
-| 対象     | `RuntimeSkillCreatorFacade.hasRunningExecution()`                  |
-| 前提条件 | `executeAsync` が完了前の非同期状態                                |
-| 操作     | `executeAsync` を開始した直後に `hasRunningExecution()` を呼ぶ     |
-| 期待結果 | `true` が返ること                                                  |
+| 項目     | 内容                                                          |
+| -------- | ------------------------------------------------------------- |
+| テスト名 | `hasRunningExecution() returns true while execute is running` |
+| 対象     | `RuntimeSkillCreatorFacade.hasRunningExecution()`             |
+| 前提条件 | `execute` が完了前の非同期状態                                |
+| 操作     | `execute` を開始した直後に `hasRunningExecution()` を呼ぶ     |
+| 期待結果 | `true` が返ること                                             |
 
 #### TC-F-05: `hasRunningExecution()` が完了後に `false` を返す
 
-| 項目     | 内容                                                                           |
-| -------- | ------------------------------------------------------------------------------ |
-| テスト名 | `hasRunningExecution() returns false after executeAsync completes`             |
-| 対象     | `RuntimeSkillCreatorFacade.hasRunningExecution()`                              |
-| 前提条件 | `executeAsync` が完了済み                                                      |
-| 操作     | `await facade.executeAsync(skillName)` 完了後に `hasRunningExecution()` を呼ぶ |
-| 期待結果 | `false` が返ること                                                             |
+| 項目     | 内容                                                                      |
+| -------- | ------------------------------------------------------------------------- |
+| テスト名 | `hasRunningExecution() returns false after execute completes`             |
+| 対象     | `RuntimeSkillCreatorFacade.hasRunningExecution()`                         |
+| 前提条件 | `execute` が完了済み                                                      |
+| 操作     | `await facade.execute(skillName)` 完了後に `hasRunningExecution()` を呼ぶ |
+| 期待結果 | `false` が返ること                                                        |
 
-### タスク 4-3: `before-quit-guard.test.ts` の作成
+### タスク 4-3: `beforeQuitGuard.test.ts` の作成
 
-**作成先:** `apps/desktop/src/main/__tests__/before-quit-guard.test.ts`
+**作成先:** `apps/desktop/src/main/ipc/__tests__/beforeQuitGuard.test.ts`
 
 **テストケース:**
 
 #### TC-B-01: 実行中に `before-quit` イベントが発火したとき `event.preventDefault()` が呼ばれる
 
-| 項目     | 内容                                                                       |
-| -------- | -------------------------------------------------------------------------- |
-| テスト名 | `before-quit guard calls event.preventDefault() when execution is running` |
-| 対象     | `apps/desktop/src/main/index.ts` の `app.on('before-quit', ...)` ハンドラ  |
-| 前提条件 | `facade.hasRunningExecution()` が `true` を返すモックを使用                |
-| 操作     | `before-quit` イベントを手動でシミュレートする                             |
-| 期待結果 | `event.preventDefault()` が 1 回呼ばれること                               |
+| 項目     | 内容                                                                        |
+| -------- | --------------------------------------------------------------------------- |
+| テスト名 | `before-quit guard calls event.preventDefault() when execution is running`  |
+| 対象     | `registerBeforeQuitGuard`（`apps/desktop/src/main/ipc/beforeQuitGuard.ts`） |
+| 前提条件 | `facade.hasRunningExecution()` が `true` を返すモックを使用                 |
+| 操作     | `before-quit` イベントを手動でシミュレートする                              |
+| 期待結果 | `event.preventDefault()` が 1 回呼ばれること                                |
 
 #### TC-B-02: 実行中でないとき `event.preventDefault()` が呼ばれない
 
 | 項目     | 内容                                                                                  |
 | -------- | ------------------------------------------------------------------------------------- |
 | テスト名 | `before-quit guard does not call event.preventDefault() when no execution is running` |
-| 対象     | `apps/desktop/src/main/index.ts` の `app.on('before-quit', ...)` ハンドラ             |
+| 対象     | `registerBeforeQuitGuard`（`apps/desktop/src/main/ipc/beforeQuitGuard.ts`）           |
 | 前提条件 | `facade.hasRunningExecution()` が `false` を返すモックを使用                          |
 | 操作     | `before-quit` イベントを手動でシミュレートする                                        |
 | 期待結果 | `event.preventDefault()` が呼ばれないこと                                             |
@@ -186,14 +192,14 @@ pnpm --filter @repo/desktop test -- ElectronNotificationService
 pnpm --filter @repo/desktop test -- RuntimeSkillCreatorFacade.notification
 
 # before-quit guard テストの実行
-pnpm --filter @repo/desktop test -- before-quit-guard
+pnpm --filter @repo/desktop test -- beforeQuitGuard
 
 # 全テスト実行（最終確認）
 pnpm vitest run
 ```
 
 Phase 4 終了時点では、全テストが **Red（失敗）** であることを確認する。
-対象実装ファイル（`INotificationService.ts`, `ElectronNotificationService.ts`, Facade 修正）が存在しないため必然的に失敗する。
+対象実装ファイル（`INotificationService.ts`, `ElectronNotificationService.ts`, `beforeQuitGuard.ts`, Facade 修正）が存在しないため必然的に失敗する。
 
 ---
 
@@ -254,7 +260,7 @@ import エラーまたはテスト失敗（Red）になることを確認し、�
 | ---------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------- |
 | ElectronNotificationService テスト | `apps/desktop/src/main/services/notification/__tests__/ElectronNotificationService.test.ts`       | TC-E-01〜TC-E-03 |
 | Facade 通知テスト                  | `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.notification.test.ts` | TC-F-01〜TC-F-05 |
-| before-quit guard テスト           | `apps/desktop/src/main/__tests__/before-quit-guard.test.ts`                                       | TC-B-01〜TC-B-02 |
+| before-quit guard テスト           | `apps/desktop/src/main/ipc/__tests__/beforeQuitGuard.test.ts`                                     | TC-B-01〜TC-B-02 |
 
 ---
 
@@ -262,7 +268,7 @@ import エラーまたはテスト失敗（Red）になることを確認し、�
 
 - [ ] `ElectronNotificationService.test.ts` が作成された（TC-E-01〜TC-E-03 を含む）
 - [ ] `RuntimeSkillCreatorFacade.notification.test.ts` が作成された（TC-F-01〜TC-F-05 を含む）
-- [ ] `before-quit-guard.test.ts` が作成された（TC-B-01〜TC-B-02 を含む）
+- [ ] `beforeQuitGuard.test.ts` が作成された（TC-B-01〜TC-B-02 を含む）
 - [ ] 全テストが Red（失敗）状態であることを確認した
 - [ ] AC-2, AC-3, AC-5, AC-6, AC-7, AC-8 の検証に対応するテストが網羅されている
 - [ ] **本 Phase 内の全タスクを 100% 実行完了**

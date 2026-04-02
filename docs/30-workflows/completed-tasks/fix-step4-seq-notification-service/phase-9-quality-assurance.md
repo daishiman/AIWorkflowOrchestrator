@@ -39,17 +39,17 @@ pnpm --filter @repo/desktop build
 
 ### タスク 9-2: AC-1〜AC-9 の最終充足チェック
 
-| AC   | 内容                                                                                        | 確認方法                                      | 結果    |
-| ---- | ------------------------------------------------------------------------------------------- | --------------------------------------------- | ------- |
-| AC-1 | `INotificationService.notify(title, body)` が型安全に定義される                             | `typecheck` の通過                            | PENDING |
-| AC-2 | `ElectronNotificationService` が `new Notification({ title, body }).show()` を呼ぶ          | TC-E-01 が Green                              | PENDING |
-| AC-3 | `MockNotificationService` が `calls: Array<{title, body}>` を持つ                           | TC-F-01 が Green                              | PENDING |
-| AC-4 | `RuntimeSkillCreatorFacadeDeps` に `notificationService: INotificationService` が追加される | `typecheck` の通過                            | PENDING |
-| AC-5 | 完了時に `notify('スキル作成完了', skillName)` が呼ばれる                                   | TC-F-01 が Green                              | PENDING |
-| AC-6 | 失敗時に `notify('スキル作成失敗', errorSummary)` が呼ばれる                                | TC-F-02 が Green                              | PENDING |
-| AC-7 | `before-quit` で `hasRunningExecution()` チェックが行われる                                 | TC-B-01 が Green                              | PENDING |
-| AC-8 | `hasRunningExecution()` が boolean を返す                                                   | TC-F-04, TC-F-05 が Green                     | PENDING |
-| AC-9 | `notificationHandlers.ts` との競合がない                                                    | `git diff notificationHandlers.ts` に変更なし | PENDING |
+| AC   | 内容                                                                                        | 確認方法                                                                | 結果    |
+| ---- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ------- |
+| AC-1 | `INotificationService.notify(title, body)` が型安全に定義される                             | `typecheck` の通過                                                      | PENDING |
+| AC-2 | `ElectronNotificationService` が `new Notification({ title, body }).show()` を呼ぶ          | TC-E-01 が Green                                                        | PENDING |
+| AC-3 | `MockNotificationService` が `calls: Array<{title, body}>` を持つ                           | TC-F-01 が Green                                                        | PENDING |
+| AC-4 | `RuntimeSkillCreatorFacadeDeps` に `notificationService: INotificationService` が追加される | `typecheck` の通過                                                      | PENDING |
+| AC-5 | 完了時に `notify('スキル作成完了', skillName)` が呼ばれる                                   | TC-F-01 が Green                                                        | PENDING |
+| AC-6 | 失敗時に `notify('スキル作成失敗', errorSummary)` が呼ばれる                                | TC-F-02 が Green                                                        | PENDING |
+| AC-7 | `ipc/index.ts` / `beforeQuitGuard.ts` で `hasRunningExecution()` チェックが行われる         | TC-B-01, TC-B-02 が Green                                               | PENDING |
+| AC-8 | `hasRunningExecution()` が boolean を返す                                                   | TC-F-04, TC-F-05 が Green                                               | PENDING |
+| AC-9 | `notificationHandlers.ts` との競合がない                                                    | `git diff apps/desktop/src/main/ipc/notificationHandlers.ts` に変更なし | PENDING |
 
 ### タスク 9-3: セキュリティチェック
 

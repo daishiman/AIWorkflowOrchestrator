@@ -115,6 +115,16 @@
 - **発見日**: 2026-01-26
 - **関連タスク**: TASK-3-1-D
 
+### Notification 統合の段階導入で既存テストを壊さない
+
+- **状況**: `RuntimeSkillCreatorFacade` に通知サービスと before-quit ガードを追加した
+- **教訓**:
+  1. `notificationService?: INotificationService` の optional DI にすると、既存の `RuntimeSkillCreatorFacade` テスト群を壊さずに段階導入できる
+  2. 実行中判定は boolean ではなく `activeExecutionCount` + `try/finally` にすると、並行 execute と before-quit ガードの両方に整合する
+  3. Vitest の coverage コマンドはバージョンや cwd で挙動が変わるため、`cd apps/desktop && pnpm exec vitest run ...` のように実際に通ったコマンドを current facts に残す
+- **発見日**: 2026-04-02
+- **関連タスク**: TASK-NOTIFICATION-SERVICE-001
+
 ### 未タスク配置ディレクトリの間違い（TASK-9B-I）
 
 - **状況**: Phase 12 で UT-9B-I-001 を検出し指示書を作成した

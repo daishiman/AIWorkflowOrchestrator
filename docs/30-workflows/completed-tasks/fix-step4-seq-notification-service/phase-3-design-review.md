@@ -22,17 +22,17 @@ MAJOR 指摘があれば Phase 2 へ差し戻し、PASS であれば Phase 4（�
 
 ### タスク 3-1: AC-1〜AC-9 の設計充足チェック
 
-| AC   | 内容                                                                               | 設計での対応箇所                                     | 充足判定 |
-| ---- | ---------------------------------------------------------------------------------- | ---------------------------------------------------- | -------- |
-| AC-1 | `INotificationService.notify(title, body)` が型安全に定義される                    | Phase 2 タスク 2-2: `INotificationService.ts`        | PENDING  |
-| AC-2 | `ElectronNotificationService` が `new Notification({ title, body }).show()` を呼ぶ | Phase 2 タスク 2-2: `ElectronNotificationService.ts` | PENDING  |
-| AC-3 | `MockNotificationService` が `calls: Array<{title, body}>` を持つ                  | Phase 2 タスク 2-2: MockNotificationService 型定義   | PENDING  |
-| AC-4 | `RuntimeSkillCreatorFacadeDeps` に `notificationService` が追加される              | Phase 2 タスク 2-3: DI 注入ポイント設計              | PENDING  |
-| AC-5 | 完了時に `notify('スキル作成完了', skillName)` が呼ばれる                          | Phase 2 タスク 2-3: `executeAsync` 修正箇所          | PENDING  |
-| AC-6 | 失敗時に `notify('スキル作成失敗', errorSummary)` が呼ばれる                       | Phase 2 タスク 2-3: `executeAsync` catch ブロック    | PENDING  |
-| AC-7 | `before-quit` で `hasRunningExecution()` チェックが行われる                        | Phase 2 タスク 2-5: before-quit ガード設計           | PENDING  |
-| AC-8 | `hasRunningExecution()` が boolean を返す                                          | Phase 2 タスク 2-4: `size > 0` チェック              | PENDING  |
-| AC-9 | `notificationHandlers.ts` との競合がない                                           | Phase 1 タスク 1-1: P50 チェックで確認済み           | PENDING  |
+| AC   | 内容                                                                                | 設計での対応箇所                                     | 充足判定 |
+| ---- | ----------------------------------------------------------------------------------- | ---------------------------------------------------- | -------- |
+| AC-1 | `INotificationService.notify(title, body)` が型安全に定義される                     | Phase 2 タスク 2-2: `INotificationService.ts`        | PENDING  |
+| AC-2 | `ElectronNotificationService` が `new Notification({ title, body }).show()` を呼ぶ  | Phase 2 タスク 2-2: `ElectronNotificationService.ts` | PENDING  |
+| AC-3 | `MockNotificationService` が `calls: Array<{title, body}>` を持つ                   | Phase 2 タスク 2-2: MockNotificationService 型定義   | PENDING  |
+| AC-4 | `RuntimeSkillCreatorFacadeDeps` に `notificationService` が追加される               | Phase 2 タスク 2-3: DI 注入ポイント設計              | PENDING  |
+| AC-5 | 完了時に `notify('スキル作成完了', skillName)` が呼ばれる                           | Phase 2 タスク 2-3: `execute` 修正箇所               | PENDING  |
+| AC-6 | 失敗時に `notify('スキル作成失敗', errorSummary)` が呼ばれる                        | Phase 2 タスク 2-3: `execute` catch ブロック         | PENDING  |
+| AC-7 | `ipc/index.ts` / `beforeQuitGuard.ts` で `hasRunningExecution()` チェックが行われる | Phase 2 タスク 2-5: before-quit ガード設計           | PENDING  |
+| AC-8 | `hasRunningExecution()` が boolean を返す                                           | Phase 2 タスク 2-4: `activeExecutionCount > 0`       | PENDING  |
+| AC-9 | `notificationHandlers.ts` との競合がない                                            | Phase 1 タスク 1-1: P50 チェックで確認済み           | PENDING  |
 
 ### タスク 3-2: DI 境界ルールへの準拠チェック
 
@@ -54,7 +54,7 @@ MAJOR 指摘があれば Phase 2 へ差し戻し、PASS であれば Phase 4（�
 
 ### タスク 3-4: `notify()` 失敗時の副作用チェック
 
-設計で `notify()` のエラーが `executeAsync` の完了/失敗判定に影響しないことを確認する:
+設計で `notify()` のエラーが `execute` の完了/失敗判定に影響しないことを確認する:
 
 - `notify()` 呼び出しを個別の `try/catch` でラップする設計になっているか
 - 通知の失敗がスキル生成のステータスを `failed` に変えないことが保証されているか

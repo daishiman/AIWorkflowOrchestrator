@@ -38,6 +38,7 @@ pnpm vitest run --coverage
 | `INotificationService.ts`                                | N/A（interface のみ、実行可能コードなし） | -        | -       |
 | `ElectronNotificationService.ts`                         | ステートメント 100%、ブランチ 100%        | PENDING  | PENDING |
 | `RuntimeSkillCreatorFacade.ts`（追加メソッド・修正箇所） | ステートメント 90% 以上                   | PENDING  | PENDING |
+| `beforeQuitGuard.ts`（新規）                             | ステートメント 100%、ブランチ 100%        | PENDING  | PENDING |
 
 ### タスク 7-3: 未カバー箇所の特定と対処方針
 
@@ -78,7 +79,7 @@ pnpm vitest run --coverage
 
 ### ステップ 2: 対象ファイルのカバレッジ確認
 
-`ElectronNotificationService.ts` と `RuntimeSkillCreatorFacade.ts` のカバレッジを確認する。
+`ElectronNotificationService.ts`、`RuntimeSkillCreatorFacade.ts`、`beforeQuitGuard.ts` のカバレッジを確認する。
 
 ### ステップ 3: 未カバー箇所の分析
 
@@ -97,6 +98,7 @@ pnpm vitest run --coverage
 | ブランチカバレッジ      | `Notification.isSupported()` が `false` の分岐がカバーされていること |
 | 異常系カバレッジ        | `notify()` が例外を投げるケースがカバーされていること                |
 | `hasRunningExecution()` | `true` と `false` の両ブランチがカバーされていること                 |
+| `beforeQuitGuard`       | 実行中/未実行の分岐がカバーされていること                            |
 
 ---
 

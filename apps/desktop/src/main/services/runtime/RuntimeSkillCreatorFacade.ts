@@ -13,6 +13,7 @@
 
 import fs from "fs/promises";
 import path from "path";
+import type { INotificationService } from "../notification/INotificationService";
 import {
   normalizeSdkMessage,
   normalizeSdkStream,
@@ -116,6 +117,8 @@ export interface RuntimeSkillCreatorFacadeDeps {
   sessionRepository?: SkillCreatorWorkflowSessionRepository;
   /** Facade インスタンスID（セッションリース用）(TASK-P0-08) */
   ownerInstanceId?: string;
+  /** OS ネイティブ通知サービス（TASK-NOTIFICATION-SERVICE-001） */
+  notificationService?: INotificationService;
 }
 
 export class RuntimeSkillCreatorFacade {
@@ -146,6 +149,10 @@ export class RuntimeSkillCreatorFacade {
   private readonly sessionRepository?: SkillCreatorWorkflowSessionRepository;
   private readonly ownerInstanceId: string;
 
+  // TASK-NOTIFICATION-SERVICE-001: 実行カウンタ・通知サービス
+  private activeExecutionCount: number = 0;
+  private readonly notificationService: INotificationService | undefined;
+
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
     this.workflowEngine =
@@ -170,11 +177,20 @@ export class RuntimeSkillCreatorFacade {
     this.maxImproveRetry = Math.min(Math.max(deps.maxImproveRetry ?? 3, 1), 10);
     this.sessionRepository = deps.sessionRepository;
     this.ownerInstanceId = deps.ownerInstanceId ?? `facade-${Date.now()}`;
+    this.notificationService = deps.notificationService;
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
       deps.subscriptionAuthProvider,
     );
     this.handoffBuilder = new TerminalHandoffBuilder();
+  }
+
+  /**
+   * スキル生成が実行中かどうかを返す (TASK-NOTIFICATION-SERVICE-001)
+   * AC-8: boolean を返す
+   */
+  hasRunningExecution(): boolean {
+    return this.activeExecutionCount > 0;
   }
 
   /** LLMAdapter の現在のステータスを取得する (TASK-RT-01) */
@@ -996,6 +1012,19 @@ export class RuntimeSkillCreatorFacade {
     authMode: AuthMode,
     apiKey: string | null,
   ): Promise<SkillExecuteResponse> {
+    this.activeExecutionCount += 1;
+    try {
+      return await this._executeInternal(planResult, authMode, apiKey);
+    } finally {
+      this.activeExecutionCount = Math.max(0, this.activeExecutionCount - 1);
+    }
+  }
+
+  private async _executeInternal(
+    planResult: SkillPlanResult,
+    authMode: AuthMode,
+    apiKey: string | null,
+  ): Promise<SkillExecuteResponse> {
     const decision = await this.resolveDecision(authMode, apiKey);
     const sourceProvenance = this.buildSourceProvenance();
     const governanceHooks = this.createGovernanceHooks("execute");
@@ -1082,6 +1111,14 @@ export class RuntimeSkillCreatorFacade {
         sdkEvents,
         sourceProvenance,
       });
+      // 通知の失敗はスキル生成の結果に影響しない
+      try {
+        const errorSummary =
+          error instanceof Error ? error.message : String(error);
+        this.notificationService?.notify("スキル作成失敗", errorSummary);
+      } catch {
+        // 通知の失敗はスキル生成の結果に影響しない
+      }
       return executeResult;
     }
 
@@ -1146,6 +1183,15 @@ export class RuntimeSkillCreatorFacade {
         sessionId: planResult.planId,
         summary: `Execute succeeded: ${executeResult.skillName}`,
       });
+      // 通知の失敗はスキル生成の結果に影響しない
+      try {
+        this.notificationService?.notify(
+          "スキル作成完了",
+          planResult.skillName,
+        );
+      } catch {
+        // 通知の失敗はスキル生成の結果に影響しない
+      }
       return executeResult;
     }
 
@@ -1165,6 +1211,13 @@ export class RuntimeSkillCreatorFacade {
       sessionId: planResult.planId,
       summary: `Execute failed: ${executeResult.error ?? "unknown"}`,
     });
+    // 通知の失敗はスキル生成の結果に影響しない
+    try {
+      const errorSummary = executeResult.error ?? "スキル生成に失敗しました";
+      this.notificationService?.notify("スキル作成失敗", errorSummary);
+    } catch {
+      // 通知の失敗はスキル生成の結果に影響しない
+    }
     return executeResult;
   }
 
