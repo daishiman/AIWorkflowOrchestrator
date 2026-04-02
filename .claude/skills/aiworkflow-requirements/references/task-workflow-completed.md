@@ -211,6 +211,33 @@
 - `RuntimeSkillCreatorFacade.execute()` が execute phase policy を metadata へ透過し、`SkillExecutor` が SDK `query()` へ hooks と permissionMode を実接続する current fact へ更新
 - Phase 11 を `NON_VISUAL` と確定し、Phase 12 implementation guide を Part 1 / Part 2 構成と system spec sync 付きで閉じた
 
+### タスク: UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001（2026-04-02）
+
+| 項目       | 値                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001                                                |
+| ステータス | **完了**                                                                                                |
+| タイプ     | implementation / renderer governance visibility / phase coverage close-out                              |
+| 優先度     | 高                                                                                                      |
+| 完了日     | 2026-04-02                                                                                              |
+| 対象       | `RuntimeSkillCreatorFacade` / renderer `GovernanceSummaryPanel` / Phase 11 evidence / system spec sync |
+| 成果物     | `docs/30-workflows/ut-p0-09-governance-runtime-coverage-and-ui-surface-001/`                           |
+
+#### 実施内容
+
+- `GovernanceSummaryPanel` を追加し、`AdvancedSettingsPanel` へ統合
+- `GovernanceAllPhases.test.ts` で `plan` / `execute` / `verify` / `improve` の governance wiring と denial 記録を確認
+- `GovernanceSummaryPanel.test.tsx` と `AdvancedSettingsPanel.test.tsx` で renderer 単体/統合観点を補強
+- `lessons-learned-governance-hooks-phase-policy.md` / `interfaces-agent-sdk-skill-reference.md` / completed ledger を current facts へ同期
+- Phase 11 は Electron capture 環境なしのため、`screenshot-plan.json` / `phase11-capture-metadata.json` / `manual-test-report.md` に N/A 根拠を残して close-out
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/organisms/AgentView/__tests__/GovernanceSummaryPanel.test.tsx src/renderer/components/organisms/AgentView/__tests__/AdvancedSettingsPanel.test.tsx src/main/services/runtime/__tests__/governance/GovernanceAllPhases.test.ts`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/ut-p0-09-governance-runtime-coverage-and-ui-surface-001`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/ut-p0-09-governance-runtime-coverage-and-ui-surface-001`
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/ut-p0-09-governance-runtime-coverage-and-ui-surface-001 --json`
+
 #### 検証証跡
 
 - `npm -s exec vitest -- run apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts apps/desktop/src/main/services/runtime/__tests__/governance/SkillCreatorGovernance.integration.test.ts apps/desktop/src/main/ipc/__tests__/creatorHandlers.test.ts apps/desktop/src/preload/__tests__/skill-creator-api.governance.test.ts`
