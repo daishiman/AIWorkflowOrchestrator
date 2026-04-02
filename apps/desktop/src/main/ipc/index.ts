@@ -42,7 +42,7 @@ import {
 import { registerSkillAnalyticsHandlers } from "./skillAnalyticsHandlers";
 import { registerSkillShareHandlers } from "./skillHandlers.share";
 import { registerSkillDebugHandlers } from "./skillDebugHandlers";
-import { registerClaudeCliHandlers } from "../claude-cli";
+import { registerClaudeCliHandlers, getClaudeCliManager } from "../claude-cli";
 import { registerSkillCreatorHandlers } from "./skillCreatorHandlers";
 import { registerSkillFileHandlers } from "./skillFileHandlers";
 import { registerSafetyGateHandlers } from "./safetyGateHandlers";
@@ -82,6 +82,8 @@ import {
   createAuthModeService,
   StubSubscriptionAuthProvider,
 } from "../services/auth";
+import type { IAuthModeService } from "../services/auth/types";
+import type { DisclosureInfo } from "./disclosureHandlers";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -116,6 +118,7 @@ import {
   PROFILE_ERROR_CODES,
   AVATAR_ERROR_CODES,
 } from "@repo/shared/types/auth";
+import { CLAUDE_CLI_ERROR_CODES } from "@repo/shared";
 import type { ShareError, ShareResult } from "@repo/shared";
 
 // setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
@@ -516,6 +519,20 @@ function sanitizeRegistrationErrorMessage(message: string): string {
   );
 }
 
+/** セッション未存在エラーを生成するヘルパー（SESSION_NOT_FOUND コード付与） */
+function sessionNotFoundError(sessionId: string): Error {
+  const err = new Error(`Session not found: ${sessionId}`);
+  (err as NodeJS.ErrnoException).code =
+    CLAUDE_CLI_ERROR_CODES.SESSION_NOT_FOUND;
+  return err;
+}
+
+function buildCopyCommand(scriptPath: string, args: string[]): string {
+  // SessionManager は `node <scriptPath> ...args` で起動しているため、
+  // Copy Command も同じ launch context を返す。
+  return ["node", scriptPath, ...args].join(" ");
+}
+
 function safeRegister(
   handlerName: string,
   registerFn: () => void,
@@ -678,10 +695,14 @@ export function registerAllIpcHandlers(
     subscriptionAuthProvider,
   );
 
+  // Safety Governance: ApprovalGate をここで生成し、Agent/Approval handlers で共有する
+  const approvalGate = new DefaultApprovalGate();
+
   // Agent Execution handlers (RuntimePolicyResolver 注入)
   track("registerAgentExecutionHandlers", () =>
     registerAgentExecutionHandlers(
       mainWindow,
+      approvalGate,
       undefined,
       runtimePolicyResolver,
       authModeServiceForRuntime,
@@ -900,31 +921,59 @@ export function registerAllIpcHandlers(
   });
 
   // Safety Governance handlers (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001)
-  const approvalGate = new DefaultApprovalGate();
+  // approvalGate は上の Agent Execution handlers セクションで生成済み
   track("registerApprovalHandlers", () =>
     registerApprovalHandlers(mainWindow, approvalGate),
   );
-  // TODO(DI): Replace getDisclosureInfo with actual service when available.
-  //   Current placeholder returns static metadata.
-  //   Production implementation should read from LLM provider config.
+  const DISCLOSURE_MODEL_NAME = "claude-sonnet-4-6";
+
+  function buildDisclosureInfo(
+    authModeService: IAuthModeService,
+  ): DisclosureInfo {
+    const mode = authModeService.getMode();
+    const aiServiceName =
+      mode === "subscription"
+        ? "Claude Code CLI"
+        : mode === "api-key"
+          ? "Anthropic API"
+          : "unknown";
+    return {
+      aiServiceName,
+      modelName: DISCLOSURE_MODEL_NAME,
+      externalDestinations: [],
+    };
+  }
+
   track("registerDisclosureHandlers", () =>
     registerDisclosureHandlers({
       mainWindow,
-      getDisclosureInfo: async () => ({
-        aiServiceName: "anthropic",
-        modelName: "claude-sonnet",
-        externalDestinations: [],
-      }),
+      getDisclosureInfo: async () =>
+        buildDisclosureInfo(authModeServiceForRuntime),
     }),
   );
-  // TODO(DI): Replace getTerminalLog / getCopyCommand with actual session log service when available.
-  //   Current placeholders return empty data.
-  //   Production implementation should read from ClaudeCliManager session logs.
   track("registerAdvancedConsoleHandlers", () =>
     registerAdvancedConsoleHandlers({
       mainWindow,
-      getTerminalLog: async (_sessionId: string) => [],
-      getCopyCommand: async (_sessionId: string) => null,
+      getTerminalLog: async (sessionId: string) => {
+        const mgr = getClaudeCliManager();
+        if (!mgr) return [];
+        const result = await mgr.getSession({ sessionId });
+        if (!result.success || !result.data) {
+          throw sessionNotFoundError(sessionId);
+        }
+        return result.data.output;
+      },
+      getCopyCommand: async (sessionId: string) => {
+        const mgr = getClaudeCliManager();
+        if (!mgr) return null;
+        const result = await mgr.getSession({ sessionId });
+        if (!result.success || !result.data) {
+          throw sessionNotFoundError(sessionId);
+        }
+        const { scriptPath, args } = result.data;
+        // TODO: スペースを含むパス/引数のエスケープは将来タスクで対応
+        return buildCopyCommand(scriptPath, args);
+      },
     }),
   );
 

@@ -28,6 +28,7 @@ preload alias 修正の current facts を、workflow 成果物、system spec 正
 - Step 1-A〜1-C は N/A にせず、completed ledger / backlog / lessons / LOGS / SKILL history まで同ターンで閉じる。
 - Step 2 は public contract 追加なしのため no-op だが、その理由を成果物へ明記する。
 - `UT-DX-VITE-ALIAS-SHARED-IMPORT-001` は同一 wave で解消し、open set から除外したうえで completed 側へ移管する。
+- `artifacts.json` と `outputs/artifacts.json` は同一内容で同期し、Phase 11 の `manual-test-checklist.md` を追加する。
 - build artifact の監査は `rg -F` / `rg -q` を使い、引用揺れのない evidence に統一する。
 
 ## Task 12-1: 実装ガイド作成
@@ -41,6 +42,7 @@ preload alias 修正の current facts を、workflow 成果物、system spec 正
 - `task-workflow-completed.md`、`task-workflow-history.md`、`task-workflow-backlog.md`、`lessons-learned-ipc-preload-runtime.md` を更新する。
 - `LOGS.md` 2ファイルと `SKILL.md` 2ファイルを同一ターンで更新する。
 - `generate-index.js` を実行して topic-map / resource-map / keywords を再生成する。
+- `artifacts.json` / `outputs/artifacts.json` を同値化し、Phase 11 `manual-test-checklist.md` を補完する。
 
 ## Task 12-3: ドキュメント更新履歴
 

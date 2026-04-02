@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-02 | 1.9.1      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 教訓3件を追加（L-LIFECYCLE-ERR-001: `handoff` guard の共通 helper 化 / L-LIFECYCLE-ERR-002 stale `phase: 'failed'` 語彙の除去 / L-LIFECYCLE-ERR-003 NON_VISUAL blocker を PASS へ偽装しない） |
 | 2026-04-01 | 1.9.0      | TASK-SC-DIALOG-MANDATORY-001 教訓3件を追加（L-SC-DIALOG-001: 宣言型→命令型転換 / L-SC-DIALOG-002: 実行ゲートパターン / L-SC-DIALOG-003: graceful degradation で problem-definition.json 欠損時エラー停止を回避） |
 | 2026-03-31 | 1.8.9      | TASK-ELECTRON-BUILD-FIX の Phase 4/5 教訓3件を追加（Rosetta 2 arch 検出 / pnpm strict resolution Phase 2 設計 / 並列化効果）                                                                                     |
 | 2026-03-31 | 1.8.8      | TASK-ELECTRON-BUILD-FIX の Phase 11/12 教訓2件を追加（NON_VISUAL placeholder 撤去 / afterPack arch enum 正規化）                                                                                                 |
@@ -42,6 +43,40 @@
 | 2026-03-18 | 1.2.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所3件追加（P50 既実装検出 / P4+P43 テスト数値伝達ミス / P4 Mirror Sync 早期完了記載）。合計5件 |
 | 2026-03-18 | 1.1.0 | TASK-SKILL-LIFECYCLE-02 の苦戦箇所2件（P31 Zustand 個別セレクタ / P39 happy-dom fireEvent）を追加 |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-04-02 TASK-FIX-LIFECYCLE-PANEL-ERROR-001
+
+### 苦戦箇所1: `handoff` 時の error clear を 1 経路だけ直すと別経路で再発する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `onWorkflowStateChanged` だけ `handoff` ガードしても、`getWorkflowState` / `submitUserInput` / execute 後再取得が `setWorkflowError(null)` を呼ぶと UI 上のエラーが消える |
+| 再発条件 | 同じ state 遷移を複数経路から取り込むコンポーネントで、経路ごとに個別 patch を当てる場合 |
+| 解決策 | `applyWorkflowSnapshot()` を導入し、snapshot 適用と `handoffBundle` 更新を 1 箇所へ集約した |
+| 標準ルール | workflow snapshot を複数 API から受け取る UI は、phase 判定と副作用を helper へ集約して全経路で共有する |
+| 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
+
+### 苦戦箇所2: stale vocabulary `phase: 'failed'` を backlog に残すと shared type と食い違う
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 実装正本は `currentPhase: "handoff"` なのに、close-out 台帳へ `phase: 'failed'` が残ると次の人が誤った修正を再実装する |
+| 再発条件 | workflow docs だけ直して system spec backlog / completed ledger を same-wave sync しない場合 |
+| 解決策 | backlog の旧 row を completed 扱いへ移し、implementation guide / completed ledger / lessons の語彙を `currentPhase` / `handoff` へ揃えた |
+| 標準ルール | shared type を正本とし、Phase 12 では workflow docs だけでなく backlog / completed / lessons / logs の vocabulary も同一ターンで同期する |
+| 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
+
+### 苦戦箇所3: NON_VISUAL task で blocker を PASS と書くと false green になる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | 手動実測や vitest が環境ブロッカーで止まっているのに、auto test の要約だけを書いて Phase 11/10 を PASS にすると証跡の種類が崩れる |
+| 再発条件 | NON_VISUAL task で manual-test-result に「何を実行したか」「何が止めたか」を残さず、placeholder や要約だけで閉じる場合 |
+| 解決策 | `manual-test-result.md` を BLOCKED とし、実行コマンド、esbuild mismatch、代替で確認した current facts を明記した |
+| 標準ルール | NON_VISUAL task でも blocker があれば PASS を偽装せず、コマンド、失敗理由、代替 evidence を `manual-test-result.md` に残す |
+| 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
 
 ---
 

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-01T13:00:56.955Z",
-  "totalKeywords": 2630,
+  "generated": "2026-04-01T22:51:27.423Z",
+  "totalKeywords": 2632,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -641,6 +641,7 @@
       "api-ipc-system.md",
       "arch-ipc-persistence.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
+      "architecture-auth-security-core.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-drift-detection.md",
       "error-handling-details.md",
@@ -1315,6 +1316,7 @@
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management-reference.md",
       "arch-state-management.md",
+      "architecture-auth-security-core.md",
       "error-handling-core.md",
       "error-handling-details.md",
       "interfaces-agent-sdk-executor-core.md",
@@ -1444,6 +1446,7 @@
       "error-handling-details.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-test-typesafety.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
@@ -2613,6 +2616,7 @@
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
@@ -3564,6 +3568,23 @@
       "architecture-monorepo.md",
       "architecture-rag.md"
     ],
+    "OAuth": [
+      "architecture-auth-security-core.md",
+      "error-handling-details.md",
+      "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "logs-archive-2026-02-abort-security-loop-guard.md",
+      "logs-archive-legacy.md"
+    ],
+    "ログインフローの": [
+      "architecture-auth-security-core.md"
+    ],
+    "state": [
+      "architecture-auth-security-core.md",
+      "lessons-learned-skill-create-multi-select-kind.md"
+    ],
+    "ownership": [
+      "architecture-auth-security-core.md"
+    ],
     "認証アーキテクチャ": [
       "architecture-auth-security-core.md"
     ],
@@ -3926,6 +3947,7 @@
     "creator": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
@@ -4995,12 +5017,6 @@
     ],
     "実行エラーコード": [
       "error-handling-details.md"
-    ],
-    "OAuth": [
-      "error-handling-details.md",
-      "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "logs-archive-2026-02-abort-security-loop-guard.md",
-      "logs-archive-legacy.md"
     ],
     "エラーコードマッピング": [
       "error-handling-details.md"
@@ -6302,6 +6318,7 @@
     "ERROR": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -6954,7 +6971,8 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "PANEL": [
-      "lessons-learned-ipc-preload-runtime.md"
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "実装セッション": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -7237,9 +7255,6 @@
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "stale": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "state": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "useEffect": [

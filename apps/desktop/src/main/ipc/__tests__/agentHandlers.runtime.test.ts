@@ -101,8 +101,15 @@ describe("agentHandlers runtime integration", () => {
     });
 
     const { registerAgentExecutionHandlers } = await import("../agentHandlers");
+    const mockApprovalGate = {
+      grantApproval: vi.fn(),
+      rejectApproval: vi.fn(),
+      checkApproval: vi.fn(),
+      revokeAll: vi.fn(),
+    };
     registerAgentExecutionHandlers(
       mockMainWindow,
+      mockApprovalGate,
       undefined,
       mockRuntimePolicyResolver,
       mockAuthModeService,
@@ -132,8 +139,15 @@ describe("agentHandlers runtime integration", () => {
     });
 
     const { registerAgentExecutionHandlers } = await import("../agentHandlers");
+    const mockApprovalGate2 = {
+      grantApproval: vi.fn(),
+      rejectApproval: vi.fn(),
+      checkApproval: vi.fn(),
+      revokeAll: vi.fn(),
+    };
     registerAgentExecutionHandlers(
       mockMainWindow,
+      mockApprovalGate2,
       undefined,
       mockRuntimePolicyResolver,
       mockAuthModeService,

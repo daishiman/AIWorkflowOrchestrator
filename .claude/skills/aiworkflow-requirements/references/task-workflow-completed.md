@@ -5,6 +5,32 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-LIFECYCLE-PANEL-ERROR-001（2026-04-02）
+
+| 項目       | 値                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                                                                                                 |
+| ステータス | **完了**                                                                                                                                                           |
+| タイプ     | bugfix / renderer workflow lifecycle                                                                                                                               |
+| 優先度     | 高                                                                                                                                                                 |
+| 完了日     | 2026-04-02                                                                                                                                                         |
+| 対象       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` / `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` / `docs/30-workflows/fix-step5-seq-lifecycle-panel-error/` |
+| 成果物     | `docs/30-workflows/fix-step5-seq-lifecycle-panel-error/`                                                                                                           |
+
+#### 実施内容
+
+- `SkillLifecyclePanel` に `applyWorkflowSnapshot()` を追加し、`handoff` 時の `workflowError` 保持を `onWorkflowStateChanged` / `getWorkflowState` / `submitUserInput` / execute 後再取得の全経路へ適用
+- `handoffBundle` 更新と error clear 条件を分離し、副作用なく guidance を維持
+- `SkillLifecyclePanel.error-persistence.test.tsx` に TC-EP-06〜08 を追加し、callback 単独ではなく 4 経路の回帰を固定
+- workflow docs と Phase 11/12 outputs を `currentPhase` / `handoff` vocabulary に同期し、placeholder PNG 前提を撤去
+
+#### 検証証跡
+
+- `validate-phase-output.js`: 再実行予定
+- `verify-all-specs.js`: 再実行予定
+- `validate-phase12-implementation-guide.js`: 再実行予定
+- `vitest` は `Host version "0.21.5" does not match binary version "0.25.12"` により再実行 BLOCKED
+
 ### タスク: TASK-FIX-ENV-STRIPPING（2026-04-01）
 
 | 項目       | 値                                                                                                                   |
@@ -59,6 +85,32 @@
 - `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-11/manual-test-result.md`: auto-test fallback（NON_VISUAL）
 - `docs/30-workflows/fix-step1-par-ipc-timeout-per-channel/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
 - local vitest rerun in this review turn was blocked by esbuild host/binary mismatch (`0.21.5` / `0.25.12`)
+
+### タスク: TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001（2026-03-31）
+
+| 項目       | 値                                                                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001                                                                                                                                   |
+| ステータス | **完了**                                                                                                                                                                     |
+| タイプ     | bugfix / preload build test parity                                                                                                                                           |
+| 優先度     | 高                                                                                                                                                                           |
+| 完了日     | 2026-03-31                                                                                                                                                                   |
+| 対象       | `apps/desktop/electron.vite.config.ts` / `apps/desktop/vitest.config.ts` / `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts` / `docs/30-workflows/completed-tasks/unassigned-task/UT-DX-VITE-ALIAS-SHARED-IMPORT-001.md` |
+| 成果物     | `docs/30-workflows/completed-tasks/task-fix-preload-vite-alias-shared-ipc-001/`                                                                                           |
+
+#### 実施内容
+
+- preload / vitest の shared IPC alias parity を同一 wave で是正し、bundle / test の参照経路を `@repo/shared/src/ipc/channels` に統一
+- `electron.vite.config.ts` に `externalizeDepsPlugin({ exclude: ["@repo/shared"] })` と `resolve.alias` の組み合わせを適用
+- `vitest.config.ts` の shared IPC alias を追加し、`governance-bundle.test.ts` の 7 階層相対パス workaround を除去
+- `UT-DX-VITE-ALIAS-SHARED-IMPORT-001` を completed 側へ移管し、open set から除外
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop build`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/__tests__/electron-vite.preload-alias.test.ts`: PASS
+- `pnpm exec vitest run src/preload/__tests__/skill-api.getDetail-update.test.ts src/main/services/runtime/__tests__/governance-bundle.test.ts`: PASS
 ### タスク: UT-IMP-SDK-06 Layer3/4 SkillCreatorVerificationEngine verify 拡張（2026-04-01）
 
 | 項目       | 値                                                                                               |

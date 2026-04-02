@@ -4,7 +4,7 @@
 
 Phase 12 の必須成果物（Task 1/3/4/5）の物理的存在と最低要件を検証するためのチェックリスト。
 
-## チェック項目一覧（19項目）
+## チェック項目一覧（20項目）
 
 | #   | Task ID | チェック項目                                                                 | 確認対象ファイル                                                                       | 検証方法                                                                                  |
 | --- | ------- | -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -27,6 +27,7 @@ Phase 12 の必須成果物（Task 1/3/4/5）の物理的存在と最低要件�
 | 17  | Task 4  | 未実施の未タスクが completed-only area に混在していない                         | `docs/30-workflows/completed-tasks/*.md`, `docs/30-workflows/completed-tasks/**/unassigned-task/*.md`, `docs/30-workflows/completed-tasks/unassigned-task/*.md` | direct completed spec は `未実施|未着手|進行中` を持たないこと、継続 backlog は実際の parent workflow 配下にあることを確認 |
 | 18  | Task 2/5 | user 指定の skill root が正本として更新され、mirror root との drift がない      | `.claude/skills/**` と `.agents/skills/**` などの mirror root                          | user 指定rootで validator 実行 + `diff -qr` または等価手段で mirror sync を検証 |
 | 19  | Task 2/5 | completed workflow の `phase-12-documentation.md` と `outputs/phase-12/*.md` に `仕様策定のみ` / `実行予定` などの planned wording が残っていない | `phase-12-documentation.md`, `outputs/phase-12/*.md` | `rg -n "仕様策定のみ|実行予定|保留として記録|計画|予定|TODO|will be|を予定" <workflow>/phase-12-documentation.md <workflow>/outputs/phase-12/*.md` で 0件確認 |
+| 20  | Task 2/5 | `artifacts.json` と `outputs/artifacts.json` の title / type / status / phase artifact 名が一致している | `<workflow>/artifacts.json`, `<workflow>/outputs/artifacts.json` | JSON 実体を比較し、片側だけ `spec_created` / `completed` などにずれていないことを確認 |
 
 ## 機械検証コマンド
 
@@ -104,5 +105,5 @@ git diff --name-only HEAD -- \
 - #18 canonical root + mirror sync: OK/NG/N/A
 - #19 completed workflow に planned wording 残置なし: OK/NG
 
-総合判定: PASS / FAIL (NG項目数: X/19)
+総合判定: PASS / FAIL (NG項目数: X/20)
 ```

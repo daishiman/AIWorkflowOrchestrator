@@ -152,3 +152,10 @@ Factory パターンや依存注入で複数レイヤーに同名インターフ
 
 - 非互換が検出された場合は MAJOR 判定とし、Phase 2 へ戻る
 - 同名インターフェースが複数箇所に定義されている場合は `packages/shared/` への統合を検討し、未タスクとして記録する
+
+### IPC 変更時の consumer 契約確認（IPC ハンドラー変更がある場合のみ）
+
+- [ ] `ipcMain.handle` の戻り値型を変更する場合、preload 層での type guard による差分吸収が可能か確認したか
+- [ ] Renderer consumer（コンポーネント）が現行の戻り値型を直接 consume しているか grep で確認したか
+- [ ] Fire-and-forget パターンの場合、即時 ack 型（`{ accepted: true, planId }`）を preload で `IpcResult<T>` に変換しているか確認したか
+- [ ] consumer 契約が変わる場合、完全整合を Phase 12 の follow-up 未タスクとして積むことを決定したか

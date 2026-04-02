@@ -1,0 +1,15 @@
+{
+  "tool": "playwright + vite harness",
+  "script": "apps/desktop/scripts/capture-governance-summary-phase11.mjs",
+  "harness": "apps/desktop/src/renderer/phase11-governance-summary.tsx",
+  "viewport": {
+    "width": 1440,
+    "height": 1100
+  },
+  "theme": "light",
+  "files": [
+    "outputs/phase-11/screenshots/TC-01-governance-summary-default.png",
+    "outputs/phase-11/screenshots/TC-02-governance-summary-denials.png",
+    "outputs/phase-11/screenshots/TC-03-governance-summary-error.png"
+  ]
+}

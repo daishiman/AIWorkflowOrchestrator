@@ -150,6 +150,12 @@ export class RuntimeSkillCreatorFacade {
     this.skillExecutor = deps.skillExecutor;
     this.workflowEngine =
       deps.workflowEngine ?? new SkillCreatorWorkflowEngine();
+    this.workflowEngine.onPhaseChanged = (planId) => {
+      const snapshot = this.workflowEngine.getWorkflowState(planId);
+      if (snapshot) {
+        this.onWorkflowStateSnapshot?.(planId, snapshot);
+      }
+    };
     this.llmAdapter = deps.llmAdapter;
     if (deps.llmAdapter) {
       this._llmAdapterStatus = "ready";
@@ -900,6 +906,84 @@ export class RuntimeSkillCreatorFacade {
       summary: `Plan completed: ${parsed.skillName}`,
     });
     return planResult;
+  }
+
+  /**
+   * fire-and-forget 実行中の workflow snapshot 通知コールバック。
+   * creatorHandlers.ts の registerRuntimeSkillCreatorHandlers でセットアップし、
+   * mainWindow.webContents.send(SKILL_CREATOR_WORKFLOW_STATE_CHANGED, snapshot) にワイヤリングする。
+   */
+  onWorkflowStateSnapshot?: (
+    planId: string,
+    snapshot: SkillCreatorWorkflowUiSnapshot | null,
+    error?: string,
+  ) => void;
+
+  /**
+   * Executor role の fire-and-forget 版。
+   * IPC ハンドラーから void で呼ばれ、バックグラウンドで実行される。
+   * 進捗/完了/失敗時に workflow snapshot を Renderer へ通知する。
+   * Public IPC: "skill-creator:execute-plan" (fire-and-forget)
+   *
+   * @param planId - trimされた planId
+   * @param args - IPC ハンドラーから受け取った引数オブジェクト
+   */
+  async executeAsync(
+    planId: string,
+    args: {
+      planId: string;
+      skillSpec: string;
+      authMode?: AuthMode;
+      apiKey?: string | null;
+    },
+  ): Promise<void> {
+    const planResult: SkillPlanResult = {
+      planId,
+      skillSpec: args.skillSpec.trim(),
+      estimatedSteps: 3,
+      skillName: "",
+      description: "",
+      agents: [],
+      scripts: [],
+      triggers: [],
+      anchors: [],
+    };
+
+    this.workflowEngine.triggerPhaseTransition(planId, "executing", 0);
+
+    try {
+      const executeResult = await this.execute(
+        planResult,
+        args.authMode ?? "api-key",
+        args.apiKey ?? null,
+      );
+
+      const phase =
+        typeof executeResult === "object" &&
+        executeResult !== null &&
+        "success" in executeResult &&
+        executeResult.success === false
+          ? "error"
+          : "complete";
+      this.workflowEngine.triggerPhaseTransition(
+        planId,
+        phase,
+        phase === "complete" ? 100 : 0,
+      );
+    } catch (error) {
+      this.workflowEngine.triggerPhaseTransition(planId, "error", 0);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const snapshot = this.workflowEngine.getWorkflowState(planId);
+      if (!snapshot) {
+        this.onWorkflowStateSnapshot?.(planId, null, errorMessage);
+      }
+      console.error(
+        "[RuntimeSkillCreatorFacade] executeAsync failed",
+        planId,
+        errorMessage,
+      );
+    }
   }
 
   /**

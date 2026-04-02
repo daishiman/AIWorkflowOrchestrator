@@ -57,12 +57,46 @@ describe("AdvancedSettingsPanel", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // GovernanceSummaryPanel が IPC ポーリングするため最小モックを設定
+    // success: true + 最小データで ready 状態に遷移させる
+    Object.defineProperty(window, "electronAPI", {
+      value: {
+        skillCreator: {
+          getGovernanceState: vi.fn().mockResolvedValue({
+            success: true,
+            data: {
+              phase: "plan",
+              activePolicy: {
+                phase: "plan",
+                permissionMode: "default",
+                allowedTools: [],
+                disallowedTools: [],
+              },
+              recentAuditEvents: [],
+              recentDenials: [],
+            },
+          }),
+        },
+      },
+      writable: true,
+      configurable: true,
+    });
   });
 
   it("isOpen=true でパネル表示", () => {
     render(<AdvancedSettingsPanel {...defaultProps} isOpen={true} />);
 
     expect(screen.getByTestId("advanced-settings-panel")).toBeInTheDocument();
+  });
+
+  it("GovernanceSummaryPanel が詳細設定パネル内に描画される", async () => {
+    render(<AdvancedSettingsPanel {...defaultProps} isOpen={true} />);
+    await act(async () => {
+      await Promise.resolve();
+    });
+
+    expect(screen.getByTestId("governance-panel")).toBeInTheDocument();
+    expect(screen.getByText("Governance 状態")).toBeInTheDocument();
   });
 
   it("isOpen=false でパネル非表示", () => {

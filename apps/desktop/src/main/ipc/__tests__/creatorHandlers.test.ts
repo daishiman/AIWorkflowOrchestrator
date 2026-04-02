@@ -57,6 +57,7 @@ describe("creatorHandlers", () => {
   const mockRuntimeSkillCreatorService = {
     plan: vi.fn(),
     execute: vi.fn(),
+    executeAsync: vi.fn().mockResolvedValue(undefined),
     improve: vi.fn(),
     applyImprovement: vi.fn(),
     getWorkflowStateSnapshot: vi.fn().mockReturnValue(undefined),
@@ -170,12 +171,8 @@ describe("creatorHandlers", () => {
     expect(mockRuntimeSkillCreatorService.plan).not.toHaveBeenCalled();
   });
 
-  it("execute ハンドラが planId と skillSpec を trim して委譲する", async () => {
-    mockRuntimeSkillCreatorService.execute.mockResolvedValue({
-      executeId: "exec-001",
-      skillName: "my-skill",
-      success: true,
-    });
+  it("execute ハンドラが fire-and-forget で planId を trim して executeAsync を呼ぶ", async () => {
+    mockRuntimeSkillCreatorService.executeAsync.mockResolvedValue(undefined);
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
@@ -189,29 +186,11 @@ describe("creatorHandlers", () => {
       apiKey: null,
     });
 
-    expect(mockRuntimeSkillCreatorService.execute).toHaveBeenCalledWith(
-      {
-        planId: "plan-001",
-        skillSpec: "my-skill\nbody",
-        estimatedSteps: 3,
-        skillName: "",
-        description: "",
-        agents: [],
-        scripts: [],
-        triggers: [],
-        anchors: [],
-      },
-      "subscription",
-      null,
+    expect(mockRuntimeSkillCreatorService.executeAsync).toHaveBeenCalledWith(
+      "plan-001",
+      expect.any(Object),
     );
-    expect(result).toEqual({
-      success: true,
-      data: {
-        executeId: "exec-001",
-        skillName: "my-skill",
-        success: true,
-      },
-    });
+    expect(result).toEqual({ accepted: true, planId: "plan-001" });
   });
 
   it("improve ハンドラが feedback を伴って委譲する", async () => {
@@ -295,7 +274,7 @@ describe("creatorHandlers", () => {
       success: false,
       error: "planId が指定されていません",
     });
-    expect(mockRuntimeSkillCreatorService.execute).not.toHaveBeenCalled();
+    expect(mockRuntimeSkillCreatorService.executeAsync).not.toHaveBeenCalled();
   });
 
   it("improve ハンドラは空白 skillName を拒否する", async () => {

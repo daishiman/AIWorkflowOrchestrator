@@ -19,6 +19,14 @@
 - `future sync target` の列挙だけで終わらせず、今回 wave で何を更新し、何を no-op 判定したかを対応する成果物へ残す
 - screenshot fallback を完了根拠に使う場合は、placeholder-only の証跡を PASS 扱いにせず、coverage / metadata / fallback reason / source evidence まで current workflow に揃えた実測値で書く
 
+**Part 2 必須見出し（IPC 変更がある場合）**:
+
+5. **Consumer Contract & IPC Compatibility** (IPC 変更がある場合のみ必須):
+   - IPC 戻り値スキーマの Before/After テーブル
+   - Type guard / optional field による差分吸収ルール
+   - Fire-and-forget パターン時の timeout 設定 (CHANNEL_TIMEOUTS)
+   - 完全整合が残る場合の follow-up 未タスク ID
+
 **Part 1 テンプレート**:
 ```markdown
 ### X.X [機能名]とは何か
@@ -46,6 +54,7 @@
 - canonical root / mirror policy
 - canonical filename は `system-spec-update-summary.md`
 - `artifacts.json` と `outputs/artifacts.json` の同期結果も書く
+- `artifacts.json` / `outputs/artifacts.json` の title / type / status / phase artifact 名 parity を初手で確認し、ずれたまま `PASS` にしない
 - Phase 11 が NON_VISUAL の場合でも `manual-test-checklist.md` など補助成果物の有無を記録する
 
 ### 設計タスク（docs-only）での注意
@@ -60,6 +69,7 @@
 - 新規型定義がある場合は `interfaces-*.md` への型定義配置
 - `task-workflow.md` の完了タスク記録
 - docs-only 前提で作成した follow-up に後からコード変更が入った場合は、`phase-*.md` と `outputs/phase-12/*.md` の narrative も同じターンで current facts に戻す
+- `spec_created` task に code wave が入った場合は、workflow 本文だけでなく system spec 側の current contract も同ターンで更新し、`no-op` を自己申告しない
 
 サブエージェントに委譲する場合も、「設計タスクだから更新不要」という判断を許容しない。
 

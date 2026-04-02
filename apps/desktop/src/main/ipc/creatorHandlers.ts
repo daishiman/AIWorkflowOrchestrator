@@ -6,7 +6,6 @@
 
 import { ipcMain, type BrowserWindow, type IpcMainInvokeEvent } from "electron";
 import type {
-  RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
@@ -111,6 +110,19 @@ export function registerRuntimeSkillCreatorHandlers(
   mainWindow: BrowserWindow,
   runtimeSkillCreatorService?: RuntimeSkillCreatorFacade,
 ): void {
+  // fire-and-forget 完了通知のワイヤリング:
+  // executeAsync が snapshot 更新を行った際に SKILL_CREATOR_WORKFLOW_STATE_CHANGED イベントで Renderer に通知する
+  if (runtimeSkillCreatorService) {
+    runtimeSkillCreatorService.onWorkflowStateSnapshot = (
+      _planId,
+      snapshot,
+    ) => {
+      if (snapshot) {
+        emitWorkflowStateChanged(mainWindow, snapshot);
+      }
+    };
+  }
+
   ipcMain.handle(
     IPC_CHANNELS.SKILL_CREATOR_PLAN,
     async (
@@ -163,7 +175,7 @@ export function registerRuntimeSkillCreatorHandlers(
         authMode?: AuthMode;
         apiKey?: string | null;
       },
-    ): Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>> => {
+    ): Promise<IpcResult<never> | { accepted: true; planId: string }> => {
       validateSender(
         event,
         IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
@@ -180,38 +192,11 @@ export function registerRuntimeSkillCreatorHandlers(
         return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
       }
 
-      try {
-        const result = await runtimeSkillCreatorService.execute(
-          {
-            planId: args.planId.trim(),
-            skillSpec: args.skillSpec.trim(),
-            estimatedSteps: 3,
-            skillName: "",
-            description: "",
-            agents: [],
-            scripts: [],
-            triggers: [],
-            anchors: [],
-          },
-          args.authMode ?? "api-key",
-          args.apiKey ?? null,
-        );
-        const snapshot = runtimeSkillCreatorService.getWorkflowStateSnapshot(
-          args.planId.trim(),
-        );
-        if (snapshot) {
-          emitWorkflowStateChanged(mainWindow, snapshot);
-        }
-        return { success: true, data: result };
-      } catch (error) {
-        return {
-          success: false,
-          error: sanitizeErrorMessage(
-            error,
-            "Runtime execute の実行に失敗しました",
-          ),
-        };
-      }
+      const planId = args.planId.trim();
+      // fire-and-forget: バックグラウンドで非同期実行
+      // snapshot 通知は executeAsync → onWorkflowStateSnapshot → SKILL_CREATOR_WORKFLOW_STATE_CHANGED に流れる
+      void runtimeSkillCreatorService.executeAsync(planId, args);
+      return { accepted: true, planId };
     },
   );
 
