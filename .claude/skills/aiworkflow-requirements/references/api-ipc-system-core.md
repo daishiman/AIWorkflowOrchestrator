@@ -708,6 +708,7 @@ TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel が使用する
 | --- | --- | --- |
 | Main approval handler | `apps/desktop/src/main/ipc/approvalHandlers.ts` | `approval:respond` / `approval:request` push 境界 |
 | Main advanced console handler | `apps/desktop/src/main/ipc/advancedConsoleHandlers.ts` | `execution:get-terminal-log` / `execution:get-copy-command` |
+| Main DI bridge | `apps/desktop/src/main/ipc/index.ts` | `getClaudeCliManager()` から `ClaudeCliManager` を解決し session data を callback へ接続 |
 | Main disclosure handler | `apps/desktop/src/main/ipc/disclosureHandlers.ts` | `execution:get-disclosure-info` |
 | Main approval gate service | `apps/desktop/src/main/services/runtime/ApprovalGate.ts` | ワンタイムトークン生成・検証 |
 | Main runtime policy | `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts` | Consumer Auth Guard / NAS 判定 |
@@ -715,6 +716,12 @@ TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel が使用する
 | Renderer hook | `apps/desktop/src/renderer/hooks/useApprovalFlow.ts` | 承認フロー UI 制御 |
 | Renderer hook | `apps/desktop/src/renderer/hooks/useAdvancedConsole.ts` | Advanced Console 状態管理 |
 | Renderer view | `apps/desktop/src/renderer/views/ExecutionConsoleView/index.tsx` | 3層レイヤー描画（Primary/Safety/Detail Surface） |
+
+### Current Contract Notes
+
+- `execution:get-terminal-log` は `ClaudeCliManager.getSession({ sessionId })` の `output` を返す。
+- `execution:get-copy-command` は `SessionManager.createSession()` の実起動形式に合わせて `node <scriptPath> ...args` を返す。
+- session 不在時は callback 内で `SESSION_NOT_FOUND` を生成し、外向き IPC 応答は handler 側で `TERMINAL_LOG_ERROR` / `COPY_COMMAND_ERROR` へ変換する。
 
 ---
 

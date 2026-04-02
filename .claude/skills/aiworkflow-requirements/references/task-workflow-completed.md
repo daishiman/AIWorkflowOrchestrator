@@ -1915,7 +1915,10 @@
 | ------------------------------------------------- | --------------------------------------------- | ------ |
 | UT-10                                             | disclosureHandlers.ts 独立テスト作成          | LOW    |
 | UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001    | disclosure 情報を runtime から注入            | HIGH   |
-| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | Advanced Console の実ログ / copy command 連携 | HIGH   |
+
+#### 追補（2026-04-02）
+
+- `UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001` は `apps/desktop/src/main/ipc/index.ts` で `getClaudeCliManager()` 経由の実接続を行い、Copy Command を `node <scriptPath> ...args` 形式へ補正したため backlog から解消した。
 
 ---
 
@@ -1950,7 +1953,7 @@
 | UT-10                                             | disclosureHandlers.ts 独立テスト作成         | 低     | `docs/30-workflows/unassigned-task/UT-10-disclosureHandlers-standalone-test.md`          |
 | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001       | approval request producer を production 接続 | 高     | `docs/30-workflows/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md`       |
 | UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001    | disclosure 情報の runtime 注入               | 高     | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001.md`    |
-| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | session log / copy command の実データ連携    | 高     | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001.md` |
+| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | session log / copy command の実データ連携    | 高     | `docs/30-workflows/completed-tasks/unassigned-task/UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001.md` |
 
 #### 苦戦箇所
 

@@ -54,6 +54,7 @@
 - canonical root / mirror policy
 - canonical filename は `system-spec-update-summary.md`
 - `artifacts.json` と `outputs/artifacts.json` の同期結果も書く
+- `artifacts.json` / `outputs/artifacts.json` の title / type / status / phase artifact 名 parity を初手で確認し、ずれたまま `PASS` にしない
 - Phase 11 が NON_VISUAL の場合でも `manual-test-checklist.md` など補助成果物の有無を記録する
 
 ### 設計タスク（docs-only）での注意
@@ -68,6 +69,7 @@
 - 新規型定義がある場合は `interfaces-*.md` への型定義配置
 - `task-workflow.md` の完了タスク記録
 - docs-only 前提で作成した follow-up に後からコード変更が入った場合は、`phase-*.md` と `outputs/phase-12/*.md` の narrative も同じターンで current facts に戻す
+- `spec_created` task に code wave が入った場合は、workflow 本文だけでなく system spec 側の current contract も同ターンで更新し、`no-op` を自己申告しない
 
 サブエージェントに委譲する場合も、「設計タスクだから更新不要」という判断を許容しない。
 

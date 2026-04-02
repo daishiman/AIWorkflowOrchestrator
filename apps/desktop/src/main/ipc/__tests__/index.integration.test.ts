@@ -3,12 +3,9 @@
  *
  * TASK-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 Phase 4
  *
- * TDD Red: registerAllIpcHandlers() が 3 つの safety governance ハンドラ
- * （approval, disclosure, advancedConsole）を登録すること、
- * および DefaultApprovalGate がインスタンス化されて注入されることを検証する。
- *
- * 現在の実装では registerAllIpcHandlers() にこれらの登録は含まれていないため、
- * このテストは RED（失敗）状態である。
+ * registerAllIpcHandlers() が 3 つの safety governance ハンドラ
+ * （approval, disclosure, advancedConsole）を登録し、
+ * DefaultApprovalGate と AdvancedConsole の DI が正しく注入されることを検証する。
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -126,6 +123,7 @@ vi.mock("../skillDebugHandlers", () => ({
 }));
 vi.mock("../../claude-cli", () => ({
   registerClaudeCliHandlers: vi.fn(),
+  getClaudeCliManager: vi.fn().mockReturnValue(null),
 }));
 vi.mock("../skillCreatorHandlers", () => ({
   registerSkillCreatorHandlers: vi.fn(),
@@ -293,6 +291,7 @@ import { registerApprovalHandlers } from "../approvalHandlers";
 import { registerDisclosureHandlers } from "../disclosureHandlers";
 import { registerAdvancedConsoleHandlers } from "../advancedConsoleHandlers";
 import { DefaultApprovalGate } from "../../services/runtime/ApprovalGate";
+import { getClaudeCliManager } from "../../claude-cli";
 
 describe("registerAllIpcHandlers - Safety Governance Integration", () => {
   let mockMainWindow: BrowserWindow;
@@ -356,6 +355,44 @@ describe("registerAllIpcHandlers - Safety Governance Integration", () => {
     expect(call).toBeDefined();
     const deps = call[0] as { mainWindow: BrowserWindow };
     expect(deps.mainWindow).toBe(mockMainWindow);
+  });
+
+  it("registerAdvancedConsoleHandlers の callback が manager 未初期化時に graceful fallback すること", async () => {
+    registerAllIpcHandlers(mockMainWindow);
+
+    const call = vi.mocked(registerAdvancedConsoleHandlers).mock.calls[0];
+    expect(call).toBeDefined();
+    const deps = call[0] as {
+      getTerminalLog: (sessionId: string) => Promise<string[]>;
+      getCopyCommand: (sessionId: string) => Promise<string | null>;
+    };
+
+    await expect(deps.getTerminalLog("session-1")).resolves.toEqual([]);
+    await expect(deps.getCopyCommand("session-1")).resolves.toBeNull();
+  });
+
+  it("registerAdvancedConsoleHandlers の getCopyCommand が実際の launch command を返すこと", async () => {
+    vi.mocked(getClaudeCliManager).mockReturnValue({
+      getSession: vi.fn().mockResolvedValue({
+        success: true,
+        data: {
+          scriptPath: "/path/to/skill.js",
+          args: ["--flag", "value"],
+        },
+      }),
+    } as never);
+
+    registerAllIpcHandlers(mockMainWindow);
+
+    const call = vi.mocked(registerAdvancedConsoleHandlers).mock.calls[0];
+    expect(call).toBeDefined();
+    const deps = call[0] as {
+      getCopyCommand: (sessionId: string) => Promise<string | null>;
+    };
+
+    await expect(deps.getCopyCommand("session-1")).resolves.toBe(
+      "node /path/to/skill.js --flag value",
+    );
   });
 
   it("3 つの safety governance ハンドラの登録が result.successCount に含まれること", () => {

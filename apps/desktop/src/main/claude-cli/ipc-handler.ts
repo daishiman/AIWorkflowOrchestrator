@@ -76,6 +76,14 @@ const CHANNELS = {
 let manager: ClaudeCliManager | null = null;
 
 /**
+ * Main プロセス内の他モジュールが ClaudeCliManager へアクセスするためのゲッター。
+ * registerClaudeCliHandlers() 呼び出し前は null を返す。
+ */
+export function getClaudeCliManager(): ClaudeCliManager | null {
+  return manager;
+}
+
+/**
  * Main window reference for streaming events
  */
 let mainWindow: BrowserWindow | null = null;

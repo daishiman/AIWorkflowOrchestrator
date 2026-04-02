@@ -42,7 +42,7 @@ import {
 import { registerSkillAnalyticsHandlers } from "./skillAnalyticsHandlers";
 import { registerSkillShareHandlers } from "./skillHandlers.share";
 import { registerSkillDebugHandlers } from "./skillDebugHandlers";
-import { registerClaudeCliHandlers } from "../claude-cli";
+import { registerClaudeCliHandlers, getClaudeCliManager } from "../claude-cli";
 import { registerSkillCreatorHandlers } from "./skillCreatorHandlers";
 import { registerSkillFileHandlers } from "./skillFileHandlers";
 import { registerSafetyGateHandlers } from "./safetyGateHandlers";
@@ -118,6 +118,7 @@ import {
   PROFILE_ERROR_CODES,
   AVATAR_ERROR_CODES,
 } from "@repo/shared/types/auth";
+import { CLAUDE_CLI_ERROR_CODES } from "@repo/shared";
 import type { ShareError, ShareResult } from "@repo/shared";
 
 // setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
@@ -516,6 +517,20 @@ function sanitizeRegistrationErrorMessage(message: string): string {
     /(?:[A-Za-z]:\\Users\\[^\\/\s]+|[A-Za-z]:\/Users\/[^/\s]+|\/Users\/[^/\s]+|\/home\/[^/\s]+)/g,
     "~",
   );
+}
+
+/** セッション未存在エラーを生成するヘルパー（SESSION_NOT_FOUND コード付与） */
+function sessionNotFoundError(sessionId: string): Error {
+  const err = new Error(`Session not found: ${sessionId}`);
+  (err as NodeJS.ErrnoException).code =
+    CLAUDE_CLI_ERROR_CODES.SESSION_NOT_FOUND;
+  return err;
+}
+
+function buildCopyCommand(scriptPath: string, args: string[]): string {
+  // SessionManager は `node <scriptPath> ...args` で起動しているため、
+  // Copy Command も同じ launch context を返す。
+  return ["node", scriptPath, ...args].join(" ");
 }
 
 function safeRegister(
@@ -936,14 +951,29 @@ export function registerAllIpcHandlers(
         buildDisclosureInfo(authModeServiceForRuntime),
     }),
   );
-  // TODO(DI): Replace getTerminalLog / getCopyCommand with actual session log service when available.
-  //   Current placeholders return empty data.
-  //   Production implementation should read from ClaudeCliManager session logs.
   track("registerAdvancedConsoleHandlers", () =>
     registerAdvancedConsoleHandlers({
       mainWindow,
-      getTerminalLog: async (_sessionId: string) => [],
-      getCopyCommand: async (_sessionId: string) => null,
+      getTerminalLog: async (sessionId: string) => {
+        const mgr = getClaudeCliManager();
+        if (!mgr) return [];
+        const result = await mgr.getSession({ sessionId });
+        if (!result.success || !result.data) {
+          throw sessionNotFoundError(sessionId);
+        }
+        return result.data.output;
+      },
+      getCopyCommand: async (sessionId: string) => {
+        const mgr = getClaudeCliManager();
+        if (!mgr) return null;
+        const result = await mgr.getSession({ sessionId });
+        if (!result.success || !result.data) {
+          throw sessionNotFoundError(sessionId);
+        }
+        const { scriptPath, args } = result.data;
+        // TODO: スペースを含むパス/引数のエスケープは将来タスクで対応
+        return buildCopyCommand(scriptPath, args);
+      },
     }),
   );
 

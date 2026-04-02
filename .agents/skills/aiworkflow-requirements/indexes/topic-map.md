@@ -908,8 +908,8 @@ node scripts/list-specs.js --topics
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L423 |
 | ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L657 |
 | Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L688 |
-| AIプロバイダーAPI連携 | L719 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L752 |
+| AIプロバイダーAPI連携 | L726 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L759 |
 
 ### references/api-ipc-system-details.md
 
@@ -2080,8 +2080,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
 | Claude Code CLI連携（Desktop Main Process） | L19 |
-| Claude CLI Renderer API（Preload API） | L118 |
-| 関連ドキュメント | L311 |
+| Claude CLI Renderer API（Preload API） | L124 |
+| 関連ドキュメント | L317 |
 
 ### references/arch-electron-services-advanced.md
 
