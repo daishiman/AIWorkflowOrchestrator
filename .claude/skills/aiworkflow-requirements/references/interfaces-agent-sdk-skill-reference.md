@@ -568,11 +568,12 @@ Task03 実装で、`plan()` / `improve()` は固定 root 前提の resource 読�
 
 #### 制約
 
-- current wiring は execute phase を中心に接続している
-- plan / verify / improve の full governance enforcement と renderer 可視化は follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` で継続する
+- current wiring は `plan` / `execute` / `verify` / `improve` の全フェーズで接続済み
+- renderer には `GovernanceSummaryPanel` が統合済みで、governance state を read-only 表示できる
 
 ### 完了タスク
 
 | タスクID | 完了日 | ステータス | 概要 |
 | --- | --- | --- | --- |
+| UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001 | 2026-04-02 | 完了 | 全 phase governance coverage の確認、renderer 可視化、Phase 11/12 evidence 整備 |
 | UT-SC-03-003 | 2026-03-24 | 完了 | DI 配線実装。setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。29テスト全PASS |

@@ -165,7 +165,7 @@ Task03 実装では、workflow manifest foundation の上に source discovery �
 | `ResolvedResourceReader` | selected absolute path を優先読込し、legacy `ResourceLoader` を compatibility fallback に限定 | root 選定、owner 判定 |
 | `RuntimeSkillCreatorFacade` | pipeline を呼び出して `sourceProvenance` を engine snapshot へ橋渡しする public bridge | state owner、manifest schema owner |
 
-この追加は internal hardening であり、`RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorExecuteResponse` / `RuntimeSkillCreatorImproveResponse` の public shape は変更しない。一方で `SkillCreatorWorkflowSourceProvenance` は `candidateRoots` / `selectedRoots` / `selectedResourceIds` / `droppedResourceIds` / `structureSignature` / `degradeReasons` を持つ current fact に更新された。
+この追加は internal hardening であり、`RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorImproveResponse` の public shape は変更しない。`execute()` の内部 contract には `RuntimeSkillCreatorExecuteResponse` を残すが、TASK-FIX-EXECUTE-PLAN-FF-001 以降の `skill-creator:execute-plan` public surface は `{ accepted: true, planId }` ack + snapshot relay に分離された。一方で `SkillCreatorWorkflowSourceProvenance` は `candidateRoots` / `selectedRoots` / `selectedResourceIds` / `droppedResourceIds` / `structureSignature` / `degradeReasons` を持つ current fact に更新された。
 
 ## Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
 

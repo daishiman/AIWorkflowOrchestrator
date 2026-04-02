@@ -1,0 +1,51 @@
+{
+  "taskId": "UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001",
+  "phase": 11,
+  "status": "N/A",
+  "reason": "Electron build environment not available in current execution context. Screenshots require local Electron app build and launch.",
+  "plannedScreenshots": [
+    {
+      "id": "TC-11-01",
+      "filename": "TC-11-01-default-light.png",
+      "state": "default",
+      "theme": "light",
+      "description": "GovernanceSummaryPanel in default state (light theme)"
+    },
+    {
+      "id": "TC-11-02",
+      "filename": "TC-11-02-default-dark.png",
+      "state": "default",
+      "theme": "dark",
+      "description": "GovernanceSummaryPanel in default state (dark theme)"
+    },
+    {
+      "id": "TC-11-03",
+      "filename": "TC-11-03-with-denials-light.png",
+      "state": "with-denials",
+      "theme": "light",
+      "description": "GovernanceSummaryPanel with denial history (light theme)"
+    },
+    {
+      "id": "TC-11-04",
+      "filename": "TC-11-04-with-denials-dark.png",
+      "state": "with-denials",
+      "theme": "dark",
+      "description": "GovernanceSummaryPanel with denial history (dark theme)"
+    },
+    {
+      "id": "TC-11-05",
+      "filename": "TC-11-05-session-summary.png",
+      "state": "session-summary",
+      "theme": "light",
+      "description": "GovernanceSummaryPanel showing session summary"
+    },
+    {
+      "id": "TC-11-06",
+      "filename": "TC-11-06-error-state-light.png",
+      "state": "error",
+      "theme": "light",
+      "description": "GovernanceSummaryPanel in IPC error state"
+    }
+  ],
+  "alternativeEvidence": "Unit tests (TC-R-01 to TC-R-12) cover all display states via DOM assertions with data-testid attributes."
+}
