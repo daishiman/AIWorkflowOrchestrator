@@ -600,6 +600,26 @@
 
 ---
 
+## TASK-FIX-EXECUTE-PLAN-FF-001（2026-04-01）
+
+### 教訓1: fire-and-forget の ack と compat path は同じ wave で閉じる
+
+| 項目       | 内容                                                                                                                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `skill-creator:execute-plan` を `{ accepted: true, planId }` の ack に切り替えると、preload の正本契約、Renderer consumer の compat path、snapshot relay を別々に直したくなるが、分けると contract drift が長期化する                       |
+| 解決策     | `SkillCreatorExecutePlanAck` を preload の正本として定義し、Renderer は `SkillCreatorWorkflowUiSnapshot` の relay を受ける。旧 `RuntimeSkillCreatorExecuteResponse` は compat path のみで扱い、follow-up cleanup は backlog に分離する |
+| 標準ルール | public IPC の戻り値を変更する場合は、ack の正本化・snapshot relay・compat shim の終端・follow-up backlog の 4 点を同一 wave で記録する                                                                                                                      |
+
+### 教訓2: 非同期 progress hook は internal phase と public snapshot を混ぜない
+
+| 項目       | 内容                                                                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `SkillCreatorExecuteAsyncPhase` を renderer public へ露出させると、`SkillCreatorWorkflowPhase` と役割が重なり、UI は internal progress と workflow state を同列に誤解しやすい                                                  |
+| 解決策     | `SkillCreatorExecuteAsyncPhase = "executing" \| "complete" \| "error"` は `SkillCreatorWorkflowEngine` の内部 hook に閉じ、Renderer へは `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` の snapshot だけを送る               |
+| 標準ルール | internal progress label / public snapshot / renderer state の 3 層は混在させず、type 名と通知経路を別々に定義する                                                                                                           |
+
+---
+
 ## TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001（2026-03-31）
 
 ### 苦戦箇所1（L-BETTER-SQLITE3-ABI-001）: native addon ABI 不一致 — postinstall で自動 rebuild

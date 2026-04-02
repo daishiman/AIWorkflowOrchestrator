@@ -18,14 +18,6 @@ vi.mock("electron", () => ({
 import { skillCreatorAPI } from "../skill-creator-api";
 import type { SkillCreatorAPI } from "../skill-creator-api";
 
-const terminalHandoffBundle = {
-  launcher: "claude",
-  promptBundle: "large-spec",
-  cwd: "/tmp/runtime-skill",
-  suggestedCommand: 'claude -p "large-spec"',
-  manualRetryRule: "認証設定を確認してから CLI で再実行する",
-};
-
 describe("SkillCreator runtime preload API", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -113,12 +105,8 @@ describe("SkillCreator runtime preload API", () => {
 
   it("executePlan が planId と skillSpec を送る", async () => {
     const expected = {
-      success: true,
-      data: {
-        executeId: "exec-001",
-        skillName: "skill-a",
-        success: true,
-      },
+      accepted: true as const,
+      planId: "plan-001",
     };
     mockInvoke.mockResolvedValue(expected);
 
@@ -138,7 +126,10 @@ describe("SkillCreator runtime preload API", () => {
         apiKey: "sk-test",
       },
     );
-    expect(result).toEqual(expected);
+    expect(result).toEqual({
+      success: true,
+      data: expected,
+    });
   });
 
   it("improveSkillWithFeedback が skillName と feedback を送る", async () => {
@@ -181,7 +172,7 @@ describe("SkillCreator runtime preload API", () => {
   });
 
   it("executePlan が省略引数でも正しい payload を送る", async () => {
-    mockInvoke.mockResolvedValue({ success: true, data: {} });
+    mockInvoke.mockResolvedValue({ accepted: true, planId: "plan-1" });
 
     await skillCreatorAPI.executePlan("plan-1", "spec");
 
@@ -196,15 +187,12 @@ describe("SkillCreator runtime preload API", () => {
     );
   });
 
-  it("executePlan が terminal_handoff レスポンスを返す場合も正しく受け取れる", async () => {
-    const terminalHandoffResponse = {
-      success: true,
-      data: {
-        type: "terminal_handoff" as const,
-        bundle: terminalHandoffBundle,
-      },
+  it("executePlan が accepted ack を返す場合も正しく受け取れる", async () => {
+    const acceptedResponse = {
+      accepted: true as const,
+      planId: "plan-002",
     };
-    mockInvoke.mockResolvedValue(terminalHandoffResponse);
+    mockInvoke.mockResolvedValue(acceptedResponse);
 
     const result = await skillCreatorAPI.executePlan(
       "plan-002",
@@ -213,8 +201,11 @@ describe("SkillCreator runtime preload API", () => {
       "sk-test",
     );
 
-    expect(result).toEqual(terminalHandoffResponse);
-    expect(result.data).toHaveProperty("type", "terminal_handoff");
+    expect(result).toEqual({
+      success: true,
+      data: acceptedResponse,
+    });
+    expect(result.data).toHaveProperty("accepted", true);
   });
 
   it("executePlan が失敗レスポンスを返す場合も envelope を保持する", async () => {

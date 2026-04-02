@@ -276,7 +276,7 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `skill-creator:validate`        | Renderer → Main | スキル検証         | `{ skillDir: string }`                                     | `IpcResult<boolean>`          |
 | `skill-creator:validate-schema` | Renderer → Main | スキーマ検証       | `{ schemaName: string; data: unknown }`                    | `IpcResult<boolean>`          |
 | `skill-creator:plan`            | Renderer → Main | runtime plan       | `{ prompt: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
-| `skill-creator:execute-plan`    | Renderer → Main | runtime execute    | `{ planId: string; skillSpec: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
+| `skill-creator:execute-plan`    | Renderer → Main | runtime execute    | `{ planId: string; skillSpec: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<SkillCreatorExecutePlanAck>` |
 | `skill-creator:improve-skill`   | Renderer → Main | runtime improve    | `{ skillName: string; feedback: string; authMode?: AuthMode; apiKey?: string \| null }` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `skill-creator:get-verify-detail` | Renderer → Main | verify detail 取得 | `{ planId: string }` | `IpcResult<RuntimeSkillCreatorVerifyDetailResponse>` |
 | `skill-creator:reverify-workflow` | Renderer → Main | verify loop 再要求 | `{ planId: string }` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
@@ -301,7 +301,7 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `ExecuteTasksOptions`  | タスク実行オプション                 |
 | `ExecutionReport`      | タスク実行レポート                   |
 | `RuntimeSkillCreatorPlanResponse` | runtime plan 結果または terminal handoff |
-| `RuntimeSkillCreatorExecuteResponse` | runtime execute 結果または terminal handoff |
+| `SkillCreatorExecutePlanAck` | runtime execute の受付 ack |
 | `RuntimeSkillCreatorImproveResponse` | runtime improve 結果または terminal handoff |
 | `SkillCreatorGovernancePhase` | governance 対象 phase（plan / execute / verify / improve） |
 | `GovernanceUiPayload` | denial と session summary を含む governance 表示用 payload |

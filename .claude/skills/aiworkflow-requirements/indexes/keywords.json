@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-01T13:00:56.955Z",
-  "totalKeywords": 2630,
+  "generated": "2026-04-01T23:24:40.870Z",
+  "totalKeywords": 2647,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -641,6 +641,7 @@
       "api-ipc-system.md",
       "arch-ipc-persistence.md",
       "arch-state-management-reference-permissions-import-lifecycle.md",
+      "architecture-auth-security-core.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "architecture-implementation-patterns-reference-ipc-drift-detection.md",
       "error-handling-details.md",
@@ -1297,7 +1298,6 @@
       "api-ipc-agent-core.md",
       "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
-      "lessons-learned-governance-hooks-phase-policy.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-skill-lifecycle-design.md"
@@ -1315,6 +1315,7 @@
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management-reference.md",
       "arch-state-management.md",
+      "architecture-auth-security-core.md",
       "error-handling-core.md",
       "error-handling-details.md",
       "interfaces-agent-sdk-executor-core.md",
@@ -1444,6 +1445,7 @@
       "error-handling-details.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-test-typesafety.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
@@ -2435,6 +2437,7 @@
       "api-ipc-system-core.md",
       "architecture-implementation-patterns-core.md",
       "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-api-electron.md",
       "security-electron-ipc-core.md"
@@ -2613,6 +2616,7 @@
       "interfaces-agent-sdk-skill-reference.md",
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
@@ -3564,6 +3568,23 @@
       "architecture-monorepo.md",
       "architecture-rag.md"
     ],
+    "OAuth": [
+      "architecture-auth-security-core.md",
+      "error-handling-details.md",
+      "lessons-learned-auth-ipc-fallback-registration-settings.md",
+      "logs-archive-2026-02-abort-security-loop-guard.md",
+      "logs-archive-legacy.md"
+    ],
+    "ログインフローの": [
+      "architecture-auth-security-core.md"
+    ],
+    "state": [
+      "architecture-auth-security-core.md",
+      "lessons-learned-skill-create-multi-select-kind.md"
+    ],
+    "ownership": [
+      "architecture-auth-security-core.md"
+    ],
     "認証アーキテクチャ": [
       "architecture-auth-security-core.md"
     ],
@@ -3926,6 +3947,7 @@
     "creator": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
@@ -4995,12 +5017,6 @@
     ],
     "実行エラーコード": [
       "error-handling-details.md"
-    ],
-    "OAuth": [
-      "error-handling-details.md",
-      "lessons-learned-auth-ipc-fallback-registration-settings.md",
-      "logs-archive-2026-02-abort-security-loop-guard.md",
-      "logs-archive-legacy.md"
     ],
     "エラーコードマッピング": [
       "error-handling-details.md"
@@ -6074,6 +6090,7 @@
     ],
     "EXECUTE": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
@@ -6509,7 +6526,8 @@
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
     ],
     "canUseTool": [
-      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
+      "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "ガバナンス実装": [
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
@@ -6521,8 +6539,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "wiring": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-governance-hooks-phase-policy.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "workflow": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
@@ -6848,7 +6865,12 @@
     "relative": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
-    "only": [
+    "phase": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md"
+    ],
+    "gap": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "の警告パターン": [
@@ -6874,6 +6896,41 @@
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "タイミング": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "waitFor": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "vi": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "useFakeTimers": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "非互換問題": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "テスト環境": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "引数順序の罠": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "型が同一な引数の逆転バグ": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "worktree": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-skill-create-multi-select-kind.md"
+    ],
+    "でのテスト実行と": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "esbuild": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-skill-create-multi-select-kind.md"
+    ],
+    "バージョン不一致": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "関連ファイル": [
@@ -6902,10 +6959,6 @@
     ],
     "bridge": [
       "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "phase": [
-      "lessons-learned-ipc-preload-runtime.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
     "submitUserInput": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -6974,6 +7027,12 @@
       "lessons-learned-ipc-preload-runtime.md",
       "ui-ux-navigation.md"
     ],
+    "PLAN": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "FF": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "BETTER": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -7023,6 +7082,18 @@
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "spec-splitting-guidelines.md",
       "ui-ux-feature-components-core.md"
+    ],
+    "GOV": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "PUSH": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "REQUEST": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "PRODUCER": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "BUILD": [
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -7239,9 +7310,6 @@
     "stale": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
-    "state": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
     "useEffect": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
@@ -7299,13 +7367,7 @@
     "へ同期する": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
-    "worktree": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
     "環境での": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "esbuild": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "platform": [

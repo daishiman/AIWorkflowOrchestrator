@@ -9,6 +9,7 @@ import type { SkillExecutionStatus } from "@repo/shared";
 import type {
   ApplyImprovementResult,
   HandoffGuidance,
+  SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorExecuteResult,
   RuntimeSkillCreatorImproveErrorResponse,
@@ -116,7 +117,9 @@ type SkillCreatorRuntimeApi = {
     skillSpec?: unknown,
     authMode?: string,
     apiKey?: string,
-  ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>>;
+  ) => Promise<
+    IpcResult<SkillCreatorExecutePlanAck | RuntimeSkillCreatorExecuteResponse>
+  >;
   getWorkflowState?: (
     planId: string,
   ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
@@ -170,6 +173,54 @@ function isExecuteTerminalHandoff(
   { type: "terminal_handoff" }
 > {
   return "type" in response && response.type === "terminal_handoff";
+}
+
+function isExecutePlanAck(
+  response: unknown,
+): response is SkillCreatorExecutePlanAck {
+  return (
+    !!response &&
+    typeof response === "object" &&
+    "accepted" in response &&
+    (response as { accepted: unknown }).accepted === true &&
+    "planId" in response &&
+    typeof (response as { planId: unknown }).planId === "string"
+  );
+}
+
+type WorkflowSnapshotWithArtifacts = SkillCreatorWorkflowUiSnapshot & {
+  phaseArtifacts?: Array<{
+    kind: string;
+    payload: unknown;
+  }>;
+};
+
+function extractExecuteResultFromWorkflowSnapshot(
+  snapshot: WorkflowSnapshotWithArtifacts,
+): RuntimeSkillCreatorExecuteResult | null {
+  const artifacts = snapshot.phaseArtifacts;
+  if (!Array.isArray(artifacts) || artifacts.length === 0) {
+    return null;
+  }
+
+  for (let index = artifacts.length - 1; index >= 0; index--) {
+    const artifact = artifacts[index];
+    if (artifact.kind !== "execute_result") {
+      continue;
+    }
+    const payload = artifact.payload;
+    if (
+      !!payload &&
+      typeof payload === "object" &&
+      "executeId" in payload &&
+      "skillName" in payload &&
+      "success" in payload
+    ) {
+      return payload as RuntimeSkillCreatorExecuteResult;
+    }
+  }
+
+  return null;
 }
 
 function isRuntimeImproveTerminalHandoff(
@@ -443,6 +494,7 @@ export function SkillLifecyclePanel({
 
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
   const isPrepareFlowActiveRef = useRef(false);
+  const processedWorkflowOutcomePlanIdRef = useRef<string | null>(null);
 
   const clearPlanExecutionState = useCallback(() => {
     setLocalPlanResult(null);
@@ -450,6 +502,7 @@ export function SkillLifecyclePanel({
     setCurrentPlanId(null);
     setRawPlanDetail(null);
     setRawExecuteDetail(null);
+    processedWorkflowOutcomePlanIdRef.current = null;
   }, [setCurrentPlanId, setCurrentPlanResult]);
 
   useEffect(() => {
@@ -540,6 +593,7 @@ export function SkillLifecyclePanel({
       if (snapshot.handoffBundle) {
         setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
       }
+      void processWorkflowOutcome(snapshot);
     });
   }, [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot]);
 
@@ -606,6 +660,57 @@ export function SkillLifecyclePanel({
     } catch {
       // disclosure fetch 失敗は execution authority を Renderer へ移さない
     }
+  };
+
+  const processWorkflowOutcome = async (
+    snapshot: SkillCreatorWorkflowUiSnapshot,
+  ): Promise<boolean> => {
+    if (processedWorkflowOutcomePlanIdRef.current === snapshot.planId) {
+      return true;
+    }
+
+    const extendedSnapshot = snapshot as WorkflowSnapshotWithArtifacts;
+
+    if (extendedSnapshot.handoffBundle) {
+      processedWorkflowOutcomePlanIdRef.current = snapshot.planId;
+      setHandoffGuidance(toHandoffGuidance(extendedSnapshot.handoffBundle));
+      setGenerationError(
+        `ターミナル実行が必要です: ${extendedSnapshot.handoffBundle.suggestedCommand}`,
+      );
+      void fetchDisclosureInfo();
+      return true;
+    }
+
+    const executeResult =
+      extractExecuteResultFromWorkflowSnapshot(extendedSnapshot);
+    if (!executeResult) {
+      return false;
+    }
+
+    processedWorkflowOutcomePlanIdRef.current = snapshot.planId;
+    setRawExecuteDetail(executeResult);
+
+    if (!executeResult.success) {
+      setGenerationError(executeResult.error ?? "計画実行に失敗しました");
+      return true;
+    }
+
+    try {
+      await fetchSkills();
+    } catch (error) {
+      setGenerationError(
+        error instanceof Error
+          ? error.message
+          : "スキル一覧の取得に失敗しました。",
+      );
+      return true;
+    }
+    if (executeResult.skillName) {
+      selectSkillByName(executeResult.skillName);
+    }
+    setLocalPlanResult(null);
+    clearGenerationState();
+    return true;
   };
 
   const dismissHandoffGuidance = () => {
@@ -890,10 +995,33 @@ export function SkillLifecyclePanel({
         setGenerationError(result.error ?? "計画実行に失敗しました");
         return;
       }
+      if (isExecutePlanAck(result.data)) {
+        setActiveWorkflowId(planId);
+        if (skillCreatorApi.getWorkflowState) {
+          try {
+            const snapshotResult =
+              await skillCreatorApi.getWorkflowState(planId);
+            if (snapshotResult.success && snapshotResult.data) {
+              setWorkflowSnapshot(snapshotResult.data);
+              setWorkflowError(null);
+              if (await processWorkflowOutcome(snapshotResult.data)) {
+                await loadVerifyDetail(planId);
+                return;
+              }
+            }
+          } catch {
+            // ack 受理後の snapshot 取得失敗は、後続の workflow event に委譲する
+          }
+        }
+        await loadVerifyDetail(planId);
+        return;
+      }
+
       const executeResponse = result.data;
       setActiveWorkflowId(planId);
       // TASK-SDK-07: visible handoff + disclosure summary へ接続
       if (isExecuteTerminalHandoff(executeResponse)) {
+        processedWorkflowOutcomePlanIdRef.current = planId;
         setHandoffGuidance(toHandoffGuidance(executeResponse.bundle));
         void fetchDisclosureInfo();
         if (skillCreatorApi.getWorkflowState) {
@@ -909,6 +1037,8 @@ export function SkillLifecyclePanel({
       // TASK-RT-03: raw execute detail を local state に保存
       // terminal_handoff は上流ガードで除外済み → executeResponse は RuntimeSkillCreatorExecuteResult
       setRawExecuteDetail(executeResponse);
+
+      processedWorkflowOutcomePlanIdRef.current = planId;
 
       if (!executeResponse.success) {
         await loadVerifyDetail(planId);
@@ -936,6 +1066,7 @@ export function SkillLifecyclePanel({
     setApprovedSkillSpec(null);
     clearGenerationState();
     setActiveWorkflowId(null);
+    processedWorkflowOutcomePlanIdRef.current = null;
     setVerifyDetail(null);
     setVerifyDetailError(null);
     setDisclosureInfo(null);

@@ -1,0 +1,252 @@
+{
+  "taskId": "UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001",
+  "taskName": "governance 全 phase 適用と renderer 可視化",
+  "featureName": "ut-p0-09-governance-runtime-coverage-and-ui-surface-001",
+  "phases": {
+    "phase1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "gap-analysis",
+          "path": "outputs/phase-1/gap-analysis.md",
+          "type": "document"
+        },
+        {
+          "name": "acceptance-criteria",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "ui-design",
+          "path": "outputs/phase-2/ui-design.md",
+          "type": "document"
+        },
+        {
+          "name": "governance-wiring-design",
+          "path": "outputs/phase-2/governance-wiring-design.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "gate-decision",
+          "path": "outputs/phase-3/gate-decision.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "governance-summary-panel-test",
+          "path": "apps/desktop/src/renderer/components/organisms/AgentView/__tests__/GovernanceSummaryPanel.test.tsx",
+          "type": "code"
+        },
+        {
+          "name": "governance-all-phases-test",
+          "path": "apps/desktop/src/main/services/runtime/__tests__/governance/GovernanceAllPhases.test.ts",
+          "type": "code"
+        },
+        {
+          "name": "test-red-report",
+          "path": "outputs/phase-4/test-red-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "governance-summary-panel",
+          "path": "apps/desktop/src/renderer/components/organisms/AgentView/GovernanceSummaryPanel.tsx",
+          "type": "code"
+        },
+        {
+          "name": "implementation-record",
+          "path": "outputs/phase-5/implementation-record.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "test-expansion-summary",
+          "path": "outputs/phase-6/test-expansion-summary.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "coverage-report",
+          "path": "outputs/phase-7/coverage-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "refactoring-record",
+          "path": "outputs/phase-8/refactoring-record.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "quality-report",
+          "path": "outputs/phase-9/quality-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "final-review-result",
+          "path": "outputs/phase-10/final-review-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "manual-test-checklist",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "type": "document"
+        },
+        {
+          "name": "manual-test-result",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "type": "document"
+        },
+        {
+          "name": "manual-test-report",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "type": "document"
+        },
+        {
+          "name": "screenshot-plan",
+          "path": "outputs/phase-11/screenshots/screenshot-plan.json",
+          "type": "document"
+        },
+        {
+          "name": "screenshot-coverage",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "type": "document"
+        },
+        {
+          "name": "discovered-issues",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "type": "document"
+        },
+        {
+          "name": "ui-sanity-visual-review",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "type": "document"
+        },
+        {
+          "name": "screenshots",
+          "path": "outputs/phase-11/screenshots/",
+          "type": "directory"
+        },
+        {
+          "name": "phase11-capture-metadata",
+          "path": "outputs/phase-11/screenshots/phase11-capture-metadata.json",
+          "type": "document"
+        }
+      ]
+    },
+    "phase12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "implementation-guide",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "type": "document"
+        },
+        {
+          "name": "system-spec-update-summary",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "type": "document"
+        },
+        {
+          "name": "documentation-changelog",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "type": "document"
+        },
+        {
+          "name": "unassigned-task-detection",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "type": "document"
+        },
+        {
+          "name": "skill-feedback-report",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "type": "document"
+        },
+        {
+          "name": "phase12-task-spec-compliance-check",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "pr-info",
+          "path": "outputs/phase-13/pr-info.md",
+          "type": "document"
+        }
+      ]
+    }
+  },
+  "qualityMetrics": {
+    "testCoverage": {
+      "line": 85,
+      "branch": 80,
+      "function": 90
+    },
+    "testCount": {
+      "governanceSummaryPanel": 12,
+      "governanceAllPhases": 12,
+      "total": 24
+    }
+  }
+}

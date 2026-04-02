@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-01 | 1.17.0     | TASK-FIX-AUTH-IPC-001 教訓2件を追加（L-AUTH-IPC-001: IPC channel timeout と fire-and-forget パターン / L-AUTH-IPC-002: AUTH_STATE_CHANGED 責務境界の分離）       |
 | 2026-03-31 | 1.16.0     | TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001 教訓1件を追加（L-BETTER-SQLITE3-ABI-001: native addon ABI 不一致 / postinstall rebuild / best-effort esbuild パターン） |
 | 2026-03-27 | 1.15.0     | runtime policy centralization close-out 教訓1件を追加（composition root authority と handoff reason source の単一化）                                            |
 | 2026-03-27 | 1.14.0     | TASK-SDK-04 教訓2件を追加（回答送信後 semantics の owner 不在、planId と execute payload の canonical drift）                                                    |
@@ -599,6 +600,26 @@
 
 ---
 
+## TASK-FIX-EXECUTE-PLAN-FF-001（2026-04-01）
+
+### 教訓1: fire-and-forget の ack と compat path は同じ wave で閉じる
+
+| 項目       | 内容                                                                                                                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `skill-creator:execute-plan` を `{ accepted: true, planId }` の ack に切り替えると、preload の正本契約、Renderer consumer の compat path、snapshot relay を別々に直したくなるが、分けると contract drift が長期化する                       |
+| 解決策     | `SkillCreatorExecutePlanAck` を preload の正本として定義し、Renderer は `SkillCreatorWorkflowUiSnapshot` の relay を受ける。旧 `RuntimeSkillCreatorExecuteResponse` は compat path のみで扱い、follow-up cleanup は backlog に分離する |
+| 標準ルール | public IPC の戻り値を変更する場合は、ack の正本化・snapshot relay・compat shim の終端・follow-up backlog の 4 点を同一 wave で記録する                                                                                                                      |
+
+### 教訓2: 非同期 progress hook は internal phase と public snapshot を混ぜない
+
+| 項目       | 内容                                                                                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `SkillCreatorExecuteAsyncPhase` を renderer public へ露出させると、`SkillCreatorWorkflowPhase` と役割が重なり、UI は internal progress と workflow state を同列に誤解しやすい                                                  |
+| 解決策     | `SkillCreatorExecuteAsyncPhase = "executing" \| "complete" \| "error"` は `SkillCreatorWorkflowEngine` の内部 hook に閉じ、Renderer へは `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` の snapshot だけを送る               |
+| 標準ルール | internal progress label / public snapshot / renderer state の 3 層は混在させず、type 名と通知経路を別々に定義する                                                                                                           |
+
+---
+
 ## TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001（2026-03-31）
 
 ### 苦戦箇所1（L-BETTER-SQLITE3-ABI-001）: native addon ABI 不一致 — postinstall で自動 rebuild
@@ -625,3 +646,27 @@
 | 解決策   | `externalizeDepsPlugin({ exclude: ["@repo/shared"] })` と `resolve.alias` を組み合わせる。`exclude` により `rollupOptions.external` の正規表現から `@repo/shared` が除去され、alias が正常に機能する                                                                      |
 | 安全性   | `@repo/shared` の他サブパスが preload で `import type` のみであることを確認してから `exclude` を適用すること。値インポートが存在する場合、意図しないバンドル増加が発生する                                                                                                |
 | 再発防止 | `electron.vite.config.ts` の preload セクションで workspace パッケージのサブパスをバンドルに含める場合は、`externalizeDepsPlugin({ exclude: ["パッケージ名"] })` + `resolve.alias` の組み合わせが必要。`resolve.alias` 単独では機能しないことを仕様書設計時に明記すること |
+
+---
+
+## TASK-FIX-AUTH-IPC-001（2026-04-01）
+
+### 教訓1（L-AUTH-IPC-001）: IPC channel timeout と fire-and-forget パターン
+
+| 項目          | 内容                                                                                                                                                                                                                                                     |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題          | `auth:login` ハンドラーが `await authFlowOrchestrator.startOAuthFlow(provider)` で OAuth フロー完了を待機していた。OAuth は外部ブラウザ認証を含み完了まで数秒〜数十秒かかる。`CHANNEL_TIMEOUTS["auth:login"] = 500ms` との矛盾でタイムアウトエラーが発生 |
+| 症状          | `[AuthSlice] Login error: Error: IPC timeout: auth:login did not respond within 500ms`                                                                                                                                                                   |
+| 根本原因      | handler が長時間の非同期処理完了を await することで IPC レスポンスが遅延する。channel-specific timeout がある場合は特に注意が必要                                                                                                                        |
+| 解決策        | `void authFlowOrchestrator.startOAuthFlow(provider).catch(console.error)` — fire-and-forget で即時返却する。バリデーション（invalid provider）のみ同期チェックして即時エラーを返す                                                                       |
+| 標準ルール    | `CHANNEL_TIMEOUTS` で channel-specific timeout が設定されている IPC は、handler 内で timeout を超える可能性がある await を使わない。長時間処理は別イベント（`AUTH_STATE_CHANGED` など）で完了を通知する設計にする                                        |
+| 5分解決カード | `ipc-utils.ts` の `CHANNEL_TIMEOUTS` を確認し、timeout 値を超える処理を `await` している handler があれば fire-and-forget に切り替え、完了通知を既存イベントに委譲する                                                                                   |
+
+### 教訓2（L-AUTH-IPC-002）: AUTH_STATE_CHANGED 責務境界の分離
+
+| 項目       | 内容                                                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `auth:login` handler が fire-and-forget 化した場合、OAuth 失敗時に handler が `AUTH_STATE_CHANGED` を二重送信するリスクがある                                                                                 |
+| 解決策     | `authHandlers.ts` 側では `AUTH_STATE_CHANGED` を一切送信しない。成功・失敗の通知責務は `AuthFlowOrchestrator` に固定する。handler は「起動確認（success: true）」と「起動拒否（invalid provider）」のみを担う |
+| 標準ルール | IPC handler と event emitter の責務を明確に分離する。handler は「受付」、orchestrator は「完了通知」。両方が同じイベントを送信すると Renderer 側で状態遷移の二重処理が発生する                                |
+| 関連タスク | TASK-FIX-AUTH-IPC-001 / `authHandlers.ts:auth:login` / `authFlowOrchestrator.ts:startOAuthFlow`                                                                                                               |

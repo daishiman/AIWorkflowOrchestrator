@@ -82,6 +82,8 @@ import {
   createAuthModeService,
   StubSubscriptionAuthProvider,
 } from "../services/auth";
+import type { IAuthModeService } from "../services/auth/types";
+import type { DisclosureInfo } from "./disclosureHandlers";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -678,10 +680,14 @@ export function registerAllIpcHandlers(
     subscriptionAuthProvider,
   );
 
+  // Safety Governance: ApprovalGate をここで生成し、Agent/Approval handlers で共有する
+  const approvalGate = new DefaultApprovalGate();
+
   // Agent Execution handlers (RuntimePolicyResolver 注入)
   track("registerAgentExecutionHandlers", () =>
     registerAgentExecutionHandlers(
       mainWindow,
+      approvalGate,
       undefined,
       runtimePolicyResolver,
       authModeServiceForRuntime,
@@ -900,21 +906,34 @@ export function registerAllIpcHandlers(
   });
 
   // Safety Governance handlers (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001)
-  const approvalGate = new DefaultApprovalGate();
+  // approvalGate は上の Agent Execution handlers セクションで生成済み
   track("registerApprovalHandlers", () =>
     registerApprovalHandlers(mainWindow, approvalGate),
   );
-  // TODO(DI): Replace getDisclosureInfo with actual service when available.
-  //   Current placeholder returns static metadata.
-  //   Production implementation should read from LLM provider config.
+  const DISCLOSURE_MODEL_NAME = "claude-sonnet-4-6";
+
+  function buildDisclosureInfo(
+    authModeService: IAuthModeService,
+  ): DisclosureInfo {
+    const mode = authModeService.getMode();
+    const aiServiceName =
+      mode === "subscription"
+        ? "Claude Code CLI"
+        : mode === "api-key"
+          ? "Anthropic API"
+          : "unknown";
+    return {
+      aiServiceName,
+      modelName: DISCLOSURE_MODEL_NAME,
+      externalDestinations: [],
+    };
+  }
+
   track("registerDisclosureHandlers", () =>
     registerDisclosureHandlers({
       mainWindow,
-      getDisclosureInfo: async () => ({
-        aiServiceName: "anthropic",
-        modelName: "claude-sonnet",
-        externalDestinations: [],
-      }),
+      getDisclosureInfo: async () =>
+        buildDisclosureInfo(authModeServiceForRuntime),
     }),
   );
   // TODO(DI): Replace getTerminalLog / getCopyCommand with actual session log service when available.

@@ -366,6 +366,14 @@ export interface SkillCreatorExecutePlanRequest {
 }
 
 /**
+ * 公開 skill-creator:execute-plan の受理応答
+ */
+export interface SkillCreatorExecutePlanAck {
+  accepted: true;
+  planId: string;
+}
+
+/**
  * 公開 skill-creator:improve-skill リクエスト
  */
 export interface SkillCreatorImproveSkillRequest {
