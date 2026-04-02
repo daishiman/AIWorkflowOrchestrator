@@ -19,6 +19,14 @@
 - `future sync target` の列挙だけで終わらせず、今回 wave で何を更新し、何を no-op 判定したかを対応する成果物へ残す
 - screenshot fallback を完了根拠に使う場合は、placeholder-only の証跡を PASS 扱いにせず、coverage / metadata / fallback reason / source evidence まで current workflow に揃えた実測値で書く
 
+**Part 2 必須見出し（IPC 変更がある場合）**:
+
+5. **Consumer Contract & IPC Compatibility** (IPC 変更がある場合のみ必須):
+   - IPC 戻り値スキーマの Before/After テーブル
+   - Type guard / optional field による差分吸収ルール
+   - Fire-and-forget パターン時の timeout 設定 (CHANNEL_TIMEOUTS)
+   - 完全整合が残る場合の follow-up 未タスク ID
+
 **Part 1 テンプレート**:
 ```markdown
 ### X.X [機能名]とは何か

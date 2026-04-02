@@ -26,7 +26,7 @@ runtime public invoke の契約:
 | 定数名 | チャンネル名 | request | response |
 | --- | --- | --- | --- |
 | `SKILL_CREATOR_PLAN` | `skill-creator:plan` | `SkillCreatorPlanRequest` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
-| `SKILL_CREATOR_EXECUTE_PLAN` | `skill-creator:execute-plan` | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
+| `SKILL_CREATOR_EXECUTE_PLAN` | `skill-creator:execute-plan` | `SkillCreatorExecutePlanRequest` | `IpcResult<SkillCreatorExecutePlanAck>` |
 | `SKILL_CREATOR_IMPROVE_SKILL` | `skill-creator:improve-skill` | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `SKILL_CREATOR_APPLY_IMPROVEMENT` | `skill-creator:apply-improvement` | `{ skillName: string; suggestions: RuntimeSkillCreatorImproveSuggestion[] }` | `IpcResult<ApplyImprovementResult>` |
 
@@ -61,6 +61,8 @@ runtime public invoke の契約:
 | サンドボックス分離 | contextBridge 経由の `skillCreatorAPI` | preload 実装確認 |
 | エラーサニタイズ | `sanitizeErrorMessage()` | path / token 非露出 test |
 | runtime service 不在時の動作 | graceful degradation | `creatorHandlers.test.ts` |
+
+`skill-creator:execute-plan` は `{ accepted: true, planId }` ack を正本とし、Renderer の状態更新は `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay へ分離する。
 
 **関連タスク**:
 

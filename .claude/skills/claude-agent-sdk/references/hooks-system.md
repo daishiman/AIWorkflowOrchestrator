@@ -490,6 +490,69 @@ GovernanceAuditSink が session_start/pre_tool_use/tool_denied/post_tool_use/ses
 
 ---
 
+## Approval Request Producer パターン（UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001）
+
+PreToolUse hook で dangerous command を検出した際に `pushApprovalRequest()` を呼び出し、
+Main → Preload → Renderer の通知経路で Approval Sheet を自動表示するパターン。
+
+### HooksFactory クラス構成
+
+```typescript
+import { pushApprovalRequest } from "../../ipc/approvalHandlers";
+import { v4 as uuidv4 } from "uuid";
+
+class HooksFactory {
+  constructor(
+    private mainWindow: BrowserWindow,
+    private executionId: string,
+    private permissionResolver: PermissionResolver,
+    private approvalGate: IApprovalGate,
+    private sessionId: string,  // producer が correlate するための ID
+  ) {}
+
+  createHooks() {
+    return {
+      PreToolUse: this.createPreToolUseHook(),
+      PostToolUse: this.createPostToolUseHook(),
+      PermissionRequest: this.createPermissionRequestHook(),
+    };
+  }
+
+  private createPreToolUseHook() {
+    return async (input, _toolUseId, _context) => {
+      if (input.toolName === "Bash") {
+        const command = (input.args.command as string) || "";
+        for (const pattern of DANGEROUS_PATTERNS.BASH_COMMANDS) {
+          if (command.includes(pattern)) {
+            const operationId = uuidv4();
+            // producer: approval request を発火（proceed: false と独立）
+            pushApprovalRequest(this.mainWindow, {
+              sessionId: this.sessionId,
+              operationId,
+              operationType: "dangerous_bash_command",
+              description: `Dangerous command blocked: ${pattern}`,
+            });
+            return { proceed: false, message: `Dangerous command blocked: ${pattern}` };
+          }
+        }
+      }
+      return { proceed: true };
+    };
+  }
+}
+```
+
+**ポイント**:
+
+- `pushApprovalRequest()` は `return` より前に呼ぶ（非同期待機不要、ワンウェイ通知）
+- `operationId` は `uuidv4()` で発火ごとに生成、`sessionId` は constructor から受け取る
+- IPC 送信失敗でも `proceed: false` は維持される — ブロックと通知は独立した責務
+- `PermissionRequest` hook（双方向・応答待機）とは異なり、approval push は fire-and-forget
+
+📖 実装参照: `apps/desktop/src/main/services/agent/HooksFactory.ts`
+
+---
+
 ## ベストプラクティス
 
 ### すべきこと

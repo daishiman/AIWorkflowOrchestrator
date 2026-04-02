@@ -1,0 +1,79 @@
+{
+  "taskId": "TASK-FIX-EXECUTE-PLAN-FF-001",
+  "taskName": "fix-step3-seq-execute-plan-nonblocking",
+  "created": "2026-04-01",
+  "status": "implementation_ready",
+  "phases": {
+    "phase-1": {
+      "status": "not_started",
+      "artifacts": ["outputs/phase-1/spec-extraction-map.md"]
+    },
+    "phase-2": {
+      "status": "not_started",
+      "artifacts": ["outputs/phase-2/design-topology.md"]
+    },
+    "phase-3": {
+      "status": "not_started",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "status": "not_started",
+      "artifacts": [
+        "apps/desktop/src/preload/__tests__/ipc-utils.execute-plan-timeout.test.ts",
+        "apps/desktop/src/main/ipc/__tests__/creatorHandlers.fire-and-forget.test.ts",
+        "apps/desktop/src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.phase-events.test.ts"
+      ]
+    },
+    "phase-5": {
+      "status": "not_started",
+      "artifacts": [
+        "apps/desktop/src/preload/ipc-utils.ts",
+        "apps/desktop/src/main/ipc/creatorHandlers.ts",
+        "apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts",
+        "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts"
+      ]
+    },
+    "phase-6": {
+      "status": "not_started",
+      "artifacts": [
+        "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts",
+        "outputs/phase-6/test-expansion-report.md"
+      ]
+    },
+    "phase-7": {
+      "status": "not_started",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "status": "not_started",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"]
+    },
+    "phase-9": {
+      "status": "not_started",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "status": "not_started",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "status": "not_started",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "phase-12": {
+      "status": "not_started",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "status": "blocked",
+      "artifacts": ["Phase 13 blocked（ユーザー明示承認待ち）"]
+    }
+  }
+}

@@ -678,10 +678,14 @@ export function registerAllIpcHandlers(
     subscriptionAuthProvider,
   );
 
+  // Safety Governance: ApprovalGate をここで生成し、Agent/Approval handlers で共有する
+  const approvalGate = new DefaultApprovalGate();
+
   // Agent Execution handlers (RuntimePolicyResolver 注入)
   track("registerAgentExecutionHandlers", () =>
     registerAgentExecutionHandlers(
       mainWindow,
+      approvalGate,
       undefined,
       runtimePolicyResolver,
       authModeServiceForRuntime,
@@ -900,7 +904,7 @@ export function registerAllIpcHandlers(
   });
 
   // Safety Governance handlers (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001)
-  const approvalGate = new DefaultApprovalGate();
+  // approvalGate は上の Agent Execution handlers セクションで生成済み
   track("registerApprovalHandlers", () =>
     registerApprovalHandlers(mainWindow, approvalGate),
   );

@@ -18,6 +18,7 @@ import { query } from "@anthropic-ai/claude-agent-sdk";
 import { HooksFactory, PermissionResolver } from "./HooksFactory";
 import { createPermissionOptions, mergeRules } from "./PermissionRules";
 import { IPC_CHANNELS } from "../../../preload/channels";
+import type { IApprovalGate } from "../runtime/ApprovalGate";
 
 /**
  * AgentExecutor - 単一実行の制御クラス
@@ -28,11 +29,13 @@ export class AgentExecutor {
   private abortController: AbortController;
   private permissionResolver: PermissionResolver;
   private permissionRules: PermissionRules;
+  private approvalGate: IApprovalGate;
   private startedAt: number = 0;
 
   constructor(
     request: AgentExecutionRequest,
     mainWindow: BrowserWindow,
+    approvalGate: IApprovalGate,
     customRules?: PermissionRules,
   ) {
     this.request = request;
@@ -40,6 +43,7 @@ export class AgentExecutor {
     this.abortController = new AbortController();
     this.permissionResolver = new PermissionResolver();
     this.permissionRules = mergeRules(customRules);
+    this.approvalGate = approvalGate;
   }
 
   /**
@@ -57,6 +61,8 @@ export class AgentExecutor {
         this.mainWindow,
         this.request.executionId!,
         this.permissionResolver,
+        this.approvalGate,
+        this.request.executionId!,
       );
       const hooks = hooksFactory.createHooks();
 
