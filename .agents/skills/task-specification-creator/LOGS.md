@@ -3,6 +3,15 @@
 ## 役割
 
 ---
+## 2026-04-02 - UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 skill-feedback reflection
+
+### 変更内容
+- `references/phase-12-documentation-guide.md` に artifacts parity 初手確認と code wave 混入時の false no-op 禁止ルールを追加
+- `references/phase12-checklist-definition.md` に `artifacts.json` / `outputs/artifacts.json` parity チェックを追加
+- workflow の Phase 12 skill-feedback-report に書かれた改善提案を same-wave で反映
+- SKILL.md v10.09.31 更新
+
+---
 ## 2026-04-01 - TASK-FIX-ENV-STRIPPING Phase 12 close-out sync
 
 ### 変更内容

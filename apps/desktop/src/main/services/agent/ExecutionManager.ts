@@ -14,6 +14,7 @@ import {
   type PermissionRules,
 } from "@repo/shared";
 import { AgentExecutor } from "./AgentExecutor";
+import type { IApprovalGate } from "../runtime/ApprovalGate";
 
 /**
  * ExecutionManager - 複数実行管理クラス
@@ -26,12 +27,14 @@ export class ExecutionManager {
    *
    * @param request 実行リクエスト
    * @param mainWindow BrowserWindow
+   * @param approvalGate ApprovalGate インスタンス
    * @param customRules カスタム権限ルール
    * @returns 実行ID
    */
   async startExecution(
     request: AgentExecutionRequest,
     mainWindow: BrowserWindow,
+    approvalGate: IApprovalGate,
     customRules?: PermissionRules,
   ): Promise<string> {
     // 最大同時実行数チェック
@@ -49,7 +52,12 @@ export class ExecutionManager {
     };
 
     // AgentExecutorを作成
-    const executor = new AgentExecutor(requestWithId, mainWindow, customRules);
+    const executor = new AgentExecutor(
+      requestWithId,
+      mainWindow,
+      approvalGate,
+      customRules,
+    );
 
     // Mapに登録
     this.executions.set(executionId, executor);

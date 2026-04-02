@@ -5,6 +5,7 @@
 
 ## 完了タスク
 
+
 ### タスク: TASK-FIX-ENV-STRIPPING（2026-04-01）
 
 | 項目       | 値                                                                                                                   |
@@ -31,6 +32,62 @@
 - `ESBUILD_BINARY_PATH=... pnpm --filter @repo/desktop exec vitest run src/main/services/skill/__tests__/SkillExecutor.sdk-types.test.ts`: 13 tests PASS
 - `pnpm --filter @repo/desktop typecheck`: PASS
 - `pnpm exec eslint apps/desktop/src/main/services/skill/SkillExecutor.ts apps/desktop/src/main/services/skill/__tests__/SkillExecutor.auth.test.ts`: PASS
+
+---
+
+### タスク: UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001（2026-04-02）
+
+| 項目       | 値                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001                                                                |
+| ステータス | **完了**                                                                                                   |
+| タイプ     | implementation / approval request producer 接続                                                            |
+| 優先度     | 高                                                                                                         |
+| 完了日     | 2026-04-02                                                                                                 |
+| 対象       | `apps/desktop/src/main/services/agent/HooksFactory.ts` / `apps/desktop/src/main/ipc/`                     |
+| 成果物     | `docs/30-workflows/completed-tasks/approval-request-producer/`                                             |
+
+#### 実施内容
+
+- `HooksFactory.ts` の PreToolUse hook に `pushApprovalRequest()` producer を接続（dangerous Bash 検出 → Approval Sheet 自動表示）
+- `sessionId` を constructor パラメータとして受け取り、`operationId` は `uuidv4()` で発火ごとに生成
+- `HooksFactory.producer.test.ts` を新規追加し、producer 発火パスの regression を確認
+- `AgentExecutor.ts`, `ExecutionManager.ts`, `agentHandlers.ts`, `index.ts` を sessionId 伝播に対応
+
+#### 検証証跡
+
+- `docs/30-workflows/completed-tasks/approval-request-producer/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS
+- `HooksFactory.producer.test.ts`, `HooksFactory.test.ts`, `AgentExecutor.test.ts`, `ExecutionManager.test.ts` 全 PASS
+
+---
+
+### タスク: TASK-FIX-EXECUTE-PLAN-FF-001（2026-04-01）
+
+| 項目       | 値                                                                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-FIX-EXECUTE-PLAN-FF-001                                                                                                                                                                                                                                             |
+| ステータス | **完了**                                                                                                                                                                                                                                                                 |
+| タイプ     | implementation / runtime IPC fire-and-forget hardening                                                                                                                                                                                                                   |
+| 優先度     | 高                                                                                                                                                                                                                                                                       |
+| 完了日     | 2026-04-01                                                                                                                                                                                                                                                               |
+| 対象       | `apps/desktop/src/preload/ipc-utils.ts` / `apps/desktop/src/main/ipc/creatorHandlers.ts` / `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` / `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` / `packages/shared/src/types/skillCreator.ts` |
+| 成果物     | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/`                                                                                                                                                                                                              |
+
+#### 実施内容
+
+- `skill-creator:execute-plan` を `void runtimeSkillCreatorService.executeAsync(planId, args)` + 即時 `{ accepted: true, planId }` 返却へ切り替えた
+- `SkillCreatorExecuteAsyncPhase` / `PhaseChangedCallback` を `SkillCreatorWorkflowEngine` に追加し、内部 progress hook と snapshot relay を分離した
+- `skillCreatorAPI.executePlan()` を `SkillCreatorExecutePlanAck` の正本契約へ更新し、Renderer の compat path は snapshot relay と共存させた
+- `SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx` を ack / snapshot の両方に対応させ、`SKILL_CREATOR_WORKFLOW_STATE_CHANGED` の relay を維持した
+- `phase-11` / `phase-12` の task docs と canonical ledger を same-wave sync した
+
+#### 検証証跡
+
+- `pnpm exec vitest run --config vitest.config.ts src/preload/__tests__/skill-creator-api.runtime.test.ts src/preload/__tests__/ipc-utils.execute-plan-timeout.test.ts src/main/ipc/__tests__/creatorHandlers.fire-and-forget.test.ts src/main/ipc/__tests__/creatorHandlers.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.phase-events.test.ts src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx src/test/e2e/skill-creator-integration.test.ts src/test/e2e/terminal-handoff.test.ts` : 10 files / 136 tests PASS
+- `pnpm --filter @repo/desktop exec tsc -p tsconfig.json --noEmit` : PASS
+- `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/outputs/phase-11/manual-test-result.md` : NON_VISUAL
+- `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/outputs/phase-12/phase12-task-spec-compliance-check.md` : PASS
+
 
 ### タスク: TASK-FIX-IPC-TIMEOUT-001（2026-04-01）
 
@@ -153,6 +210,33 @@
 - `apps/desktop/src/preload/channels.ts` / `apps/desktop/src/main/ipc/creatorHandlers.ts` / `apps/desktop/src/preload/skill-creator-api.ts` に `skill-creator:get-governance-state` を追加
 - `RuntimeSkillCreatorFacade.execute()` が execute phase policy を metadata へ透過し、`SkillExecutor` が SDK `query()` へ hooks と permissionMode を実接続する current fact へ更新
 - Phase 11 を `NON_VISUAL` と確定し、Phase 12 implementation guide を Part 1 / Part 2 構成と system spec sync 付きで閉じた
+
+### タスク: UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001（2026-04-02）
+
+| 項目       | 値                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001                                                |
+| ステータス | **完了**                                                                                                |
+| タイプ     | implementation / renderer governance visibility / phase coverage close-out                              |
+| 優先度     | 高                                                                                                      |
+| 完了日     | 2026-04-02                                                                                              |
+| 対象       | `RuntimeSkillCreatorFacade` / renderer `GovernanceSummaryPanel` / Phase 11 evidence / system spec sync |
+| 成果物     | `docs/30-workflows/ut-p0-09-governance-runtime-coverage-and-ui-surface-001/`                           |
+
+#### 実施内容
+
+- `GovernanceSummaryPanel` を追加し、`AdvancedSettingsPanel` へ統合
+- `GovernanceAllPhases.test.ts` で `plan` / `execute` / `verify` / `improve` の governance wiring と denial 記録を確認
+- `GovernanceSummaryPanel.test.tsx` と `AdvancedSettingsPanel.test.tsx` で renderer 単体/統合観点を補強
+- `lessons-learned-governance-hooks-phase-policy.md` / `interfaces-agent-sdk-skill-reference.md` / completed ledger を current facts へ同期
+- Phase 11 は Electron capture 環境なしのため、`screenshot-plan.json` / `phase11-capture-metadata.json` / `manual-test-report.md` に N/A 根拠を残して close-out
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/organisms/AgentView/__tests__/GovernanceSummaryPanel.test.tsx src/renderer/components/organisms/AgentView/__tests__/AdvancedSettingsPanel.test.tsx src/main/services/runtime/__tests__/governance/GovernanceAllPhases.test.ts`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/ut-p0-09-governance-runtime-coverage-and-ui-surface-001`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/ut-p0-09-governance-runtime-coverage-and-ui-surface-001`
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/ut-p0-09-governance-runtime-coverage-and-ui-surface-001 --json`
 
 #### 検証証跡
 
@@ -1831,7 +1915,10 @@
 | ------------------------------------------------- | --------------------------------------------- | ------ |
 | UT-10                                             | disclosureHandlers.ts 独立テスト作成          | LOW    |
 | UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001    | disclosure 情報を runtime から注入            | HIGH   |
-| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | Advanced Console の実ログ / copy command 連携 | HIGH   |
+
+#### 追補（2026-04-02）
+
+- `UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001` は `apps/desktop/src/main/ipc/index.ts` で `getClaudeCliManager()` 経由の実接続を行い、Copy Command を `node <scriptPath> ...args` 形式へ補正したため backlog から解消した。
 
 ---
 
@@ -1866,7 +1953,7 @@
 | UT-10                                             | disclosureHandlers.ts 独立テスト作成         | 低     | `docs/30-workflows/unassigned-task/UT-10-disclosureHandlers-standalone-test.md`          |
 | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001       | approval request producer を production 接続 | 高     | `docs/30-workflows/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md`       |
 | UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001    | disclosure 情報の runtime 注入               | 高     | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-DISCLOSURE-RUNTIME-INJECTION-001.md`    |
-| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | session log / copy command の実データ連携    | 高     | `docs/30-workflows/unassigned-task/UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001.md` |
+| UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001 | session log / copy command の実データ連携    | 高     | `docs/30-workflows/completed-tasks/unassigned-task/UT-SAFETY-GOV-SESSION-LOG-SERVICE-INTEGRATION-001.md` |
 
 #### 苦戦箇所
 

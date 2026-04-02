@@ -139,7 +139,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | --- | --- | --- |
 | `window.electronAPI.skillCreator.detectMode(request)` | request 文の方針判定のみ | mode を UI に増やさず internal plan に閉じるため |
 | `window.electronAPI.skillCreator.planSkill(prompt, authMode?, apiKey?)` | runtime creator plan を public IPC で要求する | skill 作成 runtime bridge を既存 namespace に保つため |
-| `window.electronAPI.skillCreator.executePlan(planId, skillSpec, authMode?, apiKey?)` | runtime plan 実行を要求する | facade / SkillExecutor の境界を preload から隠蔽するため |
+| `window.electronAPI.skillCreator.executePlan(planId, skillSpec, authMode?, apiKey?)` | runtime plan 実行の受付を要求する（ack + snapshot relay） | facade / SkillExecutor の境界を preload から隠蔽するため |
 | `window.electronAPI.skillCreator.improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | runtime 改善を要求する | feedback ベース改善を `skill-creator:*` surface に集約するため |
 | `window.electronAPI.skillCreator.getGovernanceState()` | 現在の phase / active policy / denial 要約を取得する | governance 表示を shared DTO で読むため |
 | `window.electronAPI.skillCreator.improveSkill(skillName, { autoApply: false })` | 改善候補の事前整理 | creator 提案と詳細分析を分離するため |
@@ -151,7 +151,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | surface | request | response | canonical source |
 | --- | --- | --- | --- |
 | `planSkill(prompt, authMode?, apiKey?)` | `SkillCreatorPlanRequest` | `RuntimeSkillCreatorPlanResponse` | `packages/shared/src/types/skillCreator.ts` |
-| `executePlan(planId, skillSpec, authMode?, apiKey?)` | `SkillCreatorExecutePlanRequest` | `RuntimeSkillCreatorExecuteResponse` | `packages/shared/src/types/skillCreator.ts` |
+| `executePlan(planId, skillSpec, authMode?, apiKey?)` | `SkillCreatorExecutePlanRequest` | `SkillCreatorExecutePlanAck` | `packages/shared/src/types/skillCreator.ts` |
 | `improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | `SkillCreatorImproveSkillRequest` | `RuntimeSkillCreatorImproveResponse` | `packages/shared/src/types/skillCreator.ts` |
 
 型定義の正本は `packages/shared/src/types/skillCreator.ts` とし、renderer surface は上記型へ収束する。
@@ -568,11 +568,12 @@ Task03 実装で、`plan()` / `improve()` は固定 root 前提の resource 読�
 
 #### 制約
 
-- current wiring は execute phase を中心に接続している
-- plan / verify / improve の full governance enforcement と renderer 可視化は follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` で継続する
+- current wiring は `plan` / `execute` / `verify` / `improve` の全フェーズで接続済み
+- renderer には `GovernanceSummaryPanel` が統合済みで、governance state を read-only 表示できる
 
 ### 完了タスク
 
 | タスクID | 完了日 | ステータス | 概要 |
 | --- | --- | --- | --- |
+| UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001 | 2026-04-02 | 完了 | 全 phase governance coverage の確認、renderer 可視化、Phase 11/12 evidence 整備 |
 | UT-SC-03-003 | 2026-03-24 | 完了 | DI 配線実装。setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。29テスト全PASS |

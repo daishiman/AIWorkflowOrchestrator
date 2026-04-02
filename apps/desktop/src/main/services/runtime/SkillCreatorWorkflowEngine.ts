@@ -82,12 +82,51 @@ interface SkillCreatorWorkflowState extends Omit<
   phaseArtifacts: SkillCreatorWorkflowArtifact[];
 }
 
+/**
+ * executeAsync の内部進捗フェーズ。
+ * Renderer 公開用の WorkflowPhase とは別の、バックグラウンド実行の進捗ラベル。
+ */
+export type SkillCreatorExecuteAsyncPhase = "executing" | "complete" | "error";
+
+/**
+ * フェーズ遷移通知コールバック型。
+ * planId を含めることで、複数の同時実行でも通知元を識別できる。
+ */
+export type PhaseChangedCallback = (
+  planId: string,
+  phase: SkillCreatorExecuteAsyncPhase,
+  progress: number,
+) => void;
+
 export class SkillCreatorWorkflowEngine {
   private readonly workflows = new Map<string, SkillCreatorWorkflowState>();
   private readonly checkpoints = new Map<
     string,
     SkillCreatorPersistedWorkflowCheckpoint
   >();
+
+  /**
+   * フェーズ遷移通知コールバック。
+   * 設定した場合、triggerPhaseTransition() 呼び出し時に発火する。
+   * planId を含めて通知するため、並列実行でも安全に扱える。
+   */
+  onPhaseChanged?: PhaseChangedCallback;
+
+  /**
+   * フェーズ遷移イベントを発火する。
+   * onPhaseChanged が設定されている場合に呼ぶ。未設定時は何もしない（Optional Chaining）。
+   *
+   * @param planId - 実行対象の planId
+   * @param phase - 実行内部フェーズ名（例: "executing", "complete", "error"）
+   * @param progress - 進捗率（0-100）
+   */
+  triggerPhaseTransition(
+    planId: string,
+    phase: SkillCreatorExecuteAsyncPhase,
+    progress: number,
+  ): void {
+    this.onPhaseChanged?.(planId, phase, progress);
+  }
 
   recordPlanResult(
     planResult: RuntimeSkillCreatorPlanResult,
