@@ -1,153 +1,281 @@
-/**
- * GovernanceSummaryPanel - Governance 状態表示コンポーネント
- * UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001
- *
- * IPC ポーリングで SkillCreatorGovernanceState を取得し、
- * denial reason / recent denials / session summary を renderer に表示する。
- * Props なし（自己完結型）。
- */
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { AlertTriangle, Loader2, ShieldCheck } from "lucide-react";
 import type { SkillCreatorGovernanceState } from "@repo/shared/types";
+import { GlassPanel } from "../GlassPanel";
 
-const POLL_INTERVAL_MS = 5_000;
-const GOVERNANCE_FALLBACK_ERROR =
-  "Governance API が利用できません。preload 連携を確認してください。";
+type GovernanceFetchResult = {
+  success: boolean;
+  data?: SkillCreatorGovernanceState;
+  error?: string;
+};
+
+type SkillCreatorGovernanceApi = {
+  getGovernanceState?: () => Promise<GovernanceFetchResult>;
+};
+
+type GovernanceStatus = "loading" | "ready" | "error";
+
+function getGovernanceApi(): SkillCreatorGovernanceApi | undefined {
+  return (
+    window as Window & {
+      electronAPI?: { skillCreator?: SkillCreatorGovernanceApi };
+    }
+  ).electronAPI?.skillCreator;
+}
+
+function toErrorMessage(error: unknown): string {
+  if (error instanceof Error && error.message.trim() !== "") {
+    return error.message;
+  }
+  return "Governance 状態の取得に失敗しました";
+}
+
+function GovernanceSkeleton(): React.ReactElement {
+  return (
+    <div
+      data-testid="governance-loading"
+      aria-busy="true"
+      className="space-y-3 animate-pulse"
+    >
+      <div className="flex items-center gap-2">
+        <Loader2 className="h-4 w-4 text-[var(--text-tertiary)]" />
+        <div className="h-5 w-44 rounded-full bg-[var(--bg-tertiary)]" />
+      </div>
+      <div className="h-4 w-64 rounded-full bg-[var(--bg-tertiary)]" />
+      <div className="grid gap-2">
+        <div className="h-12 rounded-2xl bg-[var(--bg-tertiary)]" />
+        <div className="h-12 rounded-2xl bg-[var(--bg-tertiary)]" />
+      </div>
+    </div>
+  );
+}
+
+function GovernanceError({ message }: { message: string }): React.ReactElement {
+  return (
+    <div
+      data-testid="governance-error"
+      role="alert"
+      className="flex items-start gap-3 rounded-2xl border border-[var(--status-error)]/20 bg-[var(--status-error)]/10 p-4"
+    >
+      <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-[var(--status-error)]" />
+      <div className="min-w-0">
+        <p className="text-sm font-medium text-[var(--text-primary)]">
+          governance state を取得できません
+        </p>
+        <p className="mt-1 text-sm text-[var(--text-secondary)]">{message}</p>
+      </div>
+    </div>
+  );
+}
 
 export const GovernanceSummaryPanel: React.FC = () => {
+  const [status, setStatus] = useState<GovernanceStatus>("loading");
   const [state, setState] = useState<SkillCreatorGovernanceState | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  const hasSnapshotRef = useRef(false);
+  const mountedRef = useRef(true);
+  const requestTokenRef = useRef(0);
 
   useEffect(() => {
-    const fetchState = async () => {
-      const getGovernanceState =
-        window.electronAPI?.skillCreator?.getGovernanceState;
-      if (typeof getGovernanceState !== "function") {
-        setError(GOVERNANCE_FALLBACK_ERROR);
+    mountedRef.current = true;
+
+    const loadGovernanceState = async () => {
+      const requestToken = ++requestTokenRef.current;
+      const api = getGovernanceApi();
+
+      if (!api?.getGovernanceState) {
+        if (!mountedRef.current || requestToken !== requestTokenRef.current) {
+          return;
+        }
+        if (hasSnapshotRef.current) {
+          setStatus("ready");
+          setErrorMessage(
+            "window.electronAPI.skillCreator.getGovernanceState が利用できません",
+          );
+          return;
+        }
+
+        setStatus("loading");
+        setErrorMessage("");
         return;
       }
 
+      if (!hasSnapshotRef.current) {
+        setStatus("loading");
+      }
+
       try {
-        const result = await getGovernanceState();
-        if (result.success && result.data) {
-          setState(result.data);
-          setError(null);
-        } else {
-          setError(result.error ?? "取得失敗");
+        const response = await api.getGovernanceState();
+        if (!mountedRef.current || requestToken !== requestTokenRef.current) {
+          return;
         }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "取得失敗");
+        if (!response.success || !response.data) {
+          throw new Error(
+            response.error || "Governance state の取得に失敗しました",
+          );
+        }
+
+        hasSnapshotRef.current = true;
+        setState(response.data);
+        setStatus("ready");
+        setErrorMessage("");
+      } catch (error) {
+        if (!mountedRef.current || requestToken !== requestTokenRef.current) {
+          return;
+        }
+
+        const message = toErrorMessage(error);
+        if (hasSnapshotRef.current) {
+          setStatus("ready");
+          setErrorMessage(message);
+          return;
+        }
+
+        setStatus("error");
+        setErrorMessage(message);
       }
     };
 
-    fetchState();
-    const id = setInterval(fetchState, POLL_INTERVAL_MS);
-    return () => clearInterval(id);
+    void loadGovernanceState();
+    const intervalId = window.setInterval(() => {
+      void loadGovernanceState();
+    }, 5000);
+
+    return () => {
+      mountedRef.current = false;
+      window.clearInterval(intervalId);
+    };
   }, []);
 
-  if (error) {
+  if (status === "loading" && !state) {
     return (
-      <div data-testid="governance-panel" className="mt-6 space-y-2">
-        <h4 className="text-sm font-medium text-[var(--text-secondary)]">
-          Governance 状態
-        </h4>
-        <div
-          data-testid="governance-error"
-          className="rounded-xl border border-[var(--status-error)]/20 bg-[var(--status-error)]/10 p-3 text-xs text-[var(--status-error)]"
-        >
-          取得エラー: {error}
-        </div>
-      </div>
+      <GlassPanel className="p-4">
+        <GovernanceSkeleton />
+      </GlassPanel>
+    );
+  }
+
+  if (status === "error" && !state) {
+    return (
+      <GlassPanel className="p-4">
+        <GovernanceError message={errorMessage} />
+      </GlassPanel>
     );
   }
 
   if (!state) {
     return (
-      <div data-testid="governance-panel" className="mt-6 space-y-2">
-        <h4 className="text-sm font-medium text-[var(--text-secondary)]">
-          Governance 状態
-        </h4>
-        <div
-          data-testid="governance-loading"
-          className="animate-pulse rounded-xl bg-[var(--bg-tertiary)] p-3 text-xs text-[var(--text-secondary)]"
-        >
-          読み込み中...
-        </div>
-      </div>
+      <GlassPanel className="p-4">
+        <GovernanceSkeleton />
+      </GlassPanel>
     );
   }
 
-  const denials = state.recentDenials.slice(0, 5);
+  const displayedDenials = state.recentDenials.slice(0, 5);
+  const auditEventCount = state.recentAuditEvents.length;
 
   return (
-    <div data-testid="governance-panel" className="mt-6 space-y-3">
-      <h4 className="text-sm font-medium text-[var(--text-secondary)]">
-        Governance 状態
-      </h4>
-
-      <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-tertiary)] p-3 space-y-2 text-xs">
-        <div className="flex items-center justify-between">
-          <span className="text-[var(--text-secondary)]">フェーズ</span>
-          <span
-            data-testid="governance-phase"
-            className="font-mono text-[var(--text-primary)] font-medium"
-          >
-            {state.phase}
-          </span>
+    <GlassPanel className="p-4">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--status-primary)]/10 text-[var(--status-primary)]">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
+          <div>
+            <h3 className="text-base font-semibold text-[var(--text-primary)]">
+              Governance summary
+            </h3>
+            <p className="text-sm text-[var(--text-secondary)]">
+              phase / permission / recent denials
+            </p>
+          </div>
         </div>
-
-        <div className="flex items-center justify-between">
-          <span className="text-[var(--text-secondary)]">許可モード</span>
-          <span
-            data-testid="governance-permission-mode"
-            className="font-mono text-[var(--text-primary)]"
-          >
-            {state.activePolicy.permissionMode}
-          </span>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <span className="text-[var(--text-secondary)]">
-            セッションイベント
-          </span>
-          <span
-            data-testid="governance-session-summary"
-            className="text-[var(--text-primary)]"
-          >
-            {state.recentAuditEvents.length} 件
-          </span>
+        <div className="rounded-full border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-3 py-1 text-xs font-medium text-[var(--text-secondary)]">
+          5件上限
         </div>
       </div>
 
-      <div className="space-y-1">
-        <span className="text-xs text-[var(--text-secondary)]">最近の拒否</span>
-        {denials.length === 0 ? (
+      {errorMessage && (
+        <div
+          data-testid="governance-error"
+          role="status"
+          className="mt-4 rounded-2xl border border-[var(--status-warning)]/20 bg-[var(--status-warning)]/10 px-4 py-3 text-sm text-[var(--text-secondary)]"
+        >
+          {errorMessage}
+        </div>
+      )}
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3">
+          <p className="text-xs uppercase tracking-[0.16em] text-[var(--text-tertiary)]">
+            Phase
+          </p>
+          <p
+            data-testid="governance-phase"
+            className="mt-1 text-base font-semibold text-[var(--text-primary)]"
+          >
+            {state.phase}
+          </p>
+        </div>
+        <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3">
+          <p className="text-xs uppercase tracking-[0.16em] text-[var(--text-tertiary)]">
+            Permission
+          </p>
+          <p
+            data-testid="governance-permission-mode"
+            className="mt-1 text-base font-semibold text-[var(--text-primary)]"
+          >
+            {state.activePolicy.permissionMode}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3">
+        <p
+          data-testid="governance-session-summary"
+          className="text-sm text-[var(--text-secondary)]"
+        >
+          監査イベント {auditEventCount} 件 / 直近の拒否{" "}
+          {state.recentDenials.length}件
+        </p>
+      </div>
+
+      <div className="mt-4">
+        <div className="mb-2 text-xs uppercase tracking-[0.16em] text-[var(--text-tertiary)]">
+          Recent denials
+        </div>
+        {displayedDenials.length === 0 ? (
           <div
             data-testid="governance-no-denials"
-            className="text-xs text-[var(--text-secondary)] italic"
+            className="rounded-2xl border border-dashed border-[var(--border-primary)] px-4 py-3 text-sm text-[var(--text-secondary)]"
           >
-            No recent denials
+            最近の拒否はありません
           </div>
         ) : (
-          <ul data-testid="governance-denials" className="space-y-1">
-            {denials.map((denial, idx) => (
+          <ul className="space-y-2">
+            {displayedDenials.map((denial, index) => (
               <li
-                key={`${denial.toolName ?? "unknown"}:${denial.reason ?? "no-reason"}:${idx}`}
-                className="rounded border border-[var(--status-error)]/20 bg-[var(--status-error)]/5 px-2 py-1 text-xs text-[var(--status-error)]"
+                key={`${denial.toolName ?? "unknown"}-${index}`}
+                data-testid={`governance-denial-${index}`}
+                className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3"
               >
-                <span className="font-mono font-medium">
-                  {denial.toolName ?? "unknown"}
-                </span>
-                {denial.reason && (
-                  <span className="ml-1 text-[var(--text-secondary)]">
-                    — {denial.reason}
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm font-semibold text-[var(--text-primary)]">
+                    {denial.toolName ?? "unknown"}
                   </span>
-                )}
+                  <span className="text-xs text-[var(--text-tertiary)]">
+                    denied
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">
+                  {denial.reason}
+                </p>
               </li>
             ))}
           </ul>
         )}
       </div>
-    </div>
+    </GlassPanel>
   );
 };
 

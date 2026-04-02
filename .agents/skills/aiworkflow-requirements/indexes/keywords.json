@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-01T23:24:40.870Z",
-  "totalKeywords": 2647,
+  "generated": "2026-04-01T22:59:36.870Z",
+  "totalKeywords": 2641,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2437,7 +2437,6 @@
       "api-ipc-system-core.md",
       "architecture-implementation-patterns-core.md",
       "lessons-learned-current.md",
-      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-api-electron.md",
       "security-electron-ipc-core.md"
@@ -6090,7 +6089,6 @@
     ],
     "EXECUTE": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
-      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
@@ -7027,12 +7025,6 @@
       "lessons-learned-ipc-preload-runtime.md",
       "ui-ux-navigation.md"
     ],
-    "PLAN": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "FF": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
     "BETTER": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -7082,18 +7074,6 @@
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
       "spec-splitting-guidelines.md",
       "ui-ux-feature-components-core.md"
-    ],
-    "GOV": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "PUSH": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "REQUEST": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
-    ],
-    "PRODUCER": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "BUILD": [
       "lessons-learned-phase12-workflow-lifecycle.md",
