@@ -3,6 +3,14 @@
 ## 役割
 
 ---
+## 2026-04-02 - UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001 Phase 12 再監査 hardening
+
+### 変更内容
+- `implementation-guide.md` を Part 1 / Part 2 の必須構成へ是正し、Phase 11 screenshot 参照 4 点と N/A 根拠を明記
+- `system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を shallow summary から Step 1-A〜1-D / Step 2 実績ベースへ更新
+- LOGS.md 2ファイル + SKILL.md 2ファイル + `.agents` mirror parity を same-wave 完了条件として再確認
+
+---
 ## 2026-04-01 - TASK-FIX-ENV-STRIPPING Phase 12 close-out sync
 
 ### 変更内容

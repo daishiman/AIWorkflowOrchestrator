@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-01T15:45:16.977Z",
-  "totalKeywords": 2636,
+  "generated": "2026-04-01T23:24:40.870Z",
+  "totalKeywords": 2647,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1298,7 +1298,6 @@
       "api-ipc-agent-core.md",
       "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
-      "lessons-learned-governance-hooks-phase-policy.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-skill-lifecycle-design.md"
@@ -6527,7 +6526,8 @@
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
     ],
     "canUseTool": [
-      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
+      "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "ガバナンス実装": [
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
@@ -6539,8 +6539,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "wiring": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-governance-hooks-phase-policy.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "workflow": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
@@ -6866,7 +6865,12 @@
     "relative": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
-    "only": [
+    "phase": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md"
+    ],
+    "gap": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "の警告パターン": [
@@ -6892,6 +6896,41 @@
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "タイミング": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "waitFor": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "vi": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "useFakeTimers": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "非互換問題": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "テスト環境": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "引数順序の罠": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "型が同一な引数の逆転バグ": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "worktree": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-skill-create-multi-select-kind.md"
+    ],
+    "でのテスト実行と": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "esbuild": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-skill-create-multi-select-kind.md"
+    ],
+    "バージョン不一致": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "関連ファイル": [
@@ -6920,10 +6959,6 @@
     ],
     "bridge": [
       "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "phase": [
-      "lessons-learned-ipc-preload-runtime.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
     "submitUserInput": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -7332,13 +7367,7 @@
     "へ同期する": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
-    "worktree": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
     "環境での": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "esbuild": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "platform": [
