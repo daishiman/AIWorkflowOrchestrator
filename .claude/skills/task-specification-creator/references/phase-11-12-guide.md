@@ -75,7 +75,7 @@
 - docs-heavy task で user が screenshot を要求し、current build 再撮影が環境依存で過剰または不可能でも、same-day upstream evidence を current workflow へ集約し、review board 1件を current workflow で新規 capture する代替経路を許可する。source evidence / review board / Apple review の関係は `manual-test-result.md` と `command-transcript.md` に明記する。
 - screenshot fallback を使った場合でも、`outputs/phase-11/screenshots/phase11-capture-metadata.json` 等に **capture method / failure reason / source evidence / generated-at** を残し、`manual-test-result.md` と時刻・理由を一致させる。
 - `manual-test-result.md` には、fallback 時に使った harness HTML/TSX、capture script、review board PNG、metadata JSON の**実ファイル path**を残す。
-- placeholder PNG だけを置いて Phase 11 PASS にしない。fallback を許可する場合でも、`TC-ID ↔ png`、`screenshot-coverage.md`、metadata JSON、fallback reason、source evidence の 5 点が current workflow に揃っていることを必須とする。
+- placeholder PNG だけを置いて Phase 11 PASS にしない。UI 差分がない `NON_VISUAL` task では dummy PNG を作らず、`manual-test-result.md` と `screenshot-plan.json` に blocker / 実行コマンド / 代替 evidence を記録する。visual fallback を採る場合のみ、`TC-ID ↔ png`、`screenshot-coverage.md`、metadata JSON、fallback reason、source evidence の 5 点を current workflow に揃える。
 - skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
 - `spec_created` / docs-heavy task でも、Phase 12 は「計画記録」では閉じない。`.claude/skills/` 側の system spec / LOGS / lessons learned / backlog / `artifacts.json` / `outputs/artifacts.json` を **同ターンで実更新** する。
 - persist / hydration task の Phase 11 では、actual storage key と validation entrypoint を仕様書へ明記し、`electron-store` など generic storage 名を推測で書かない。

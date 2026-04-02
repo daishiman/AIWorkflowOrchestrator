@@ -28,17 +28,23 @@ AC-1〜AC-5 の全充足確認と PR 可否判定を行い、Phase 11 の手動�
 | ------------------ | ---------------------------------------------------------------------------- | -------------- |
 | アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
 
+## 統合テスト連携
+
+- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
+- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
+- Phase 2 の成果物 design-topology.md と Phase 5 の修正結果を前提に、AC-1〜AC-5 の充足を再確認する。
+
 ## 実行手順
 
 ### ステップ 1: AC-1〜AC-5 充足確認
 
-| AC   | 受入条件                                                                                                   | 確認方法                 | 充足状態 |
-| ---- | ---------------------------------------------------------------------------------------------------------- | ------------------------ | -------- |
-| AC-1 | `phase === 'failed'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれないこと               | TC-EP-01 PASS            | 確認対象 |
-| AC-2 | `phase !== 'failed'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれること（既存動作維持） | TC-EP-02/03 PASS         | 確認対象 |
-| AC-3 | `handoffBundle` の処理は `phase` に関わらず変わらないこと                                                  | TC-EP-04/05/09 PASS      | 確認対象 |
-| AC-4 | 既存テストが全て PASS すること                                                                             | 全テスト PASS（Phase 9） | 確認対象 |
-| AC-5 | UI 上でスキル生成エラー発生時にエラーメッセージが表示されたままになること                                  | 手動テスト（Phase 11）   | 確認対象 |
+| AC   | 受入条件                                                                                                           | 確認方法                 | 充足状態 |
+| ---- | ------------------------------------------------------------------------------------------------------------------ | ------------------------ | -------- |
+| AC-1 | `currentPhase === 'handoff'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれないこと               | TC-EP-01 PASS            | 確認対象 |
+| AC-2 | `currentPhase !== 'handoff'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれること（既存動作維持） | TC-EP-02/03 PASS         | 確認対象 |
+| AC-3 | `handoffBundle` の処理は `phase` に関わらず変わらないこと                                                          | TC-EP-04/05/09 PASS      | 確認対象 |
+| AC-4 | 既存テストが全て PASS すること                                                                                     | 全テスト PASS（Phase 9） | 確認対象 |
+| AC-5 | UI 上でスキル生成エラー発生時にエラーメッセージが表示されたままになること                                          | 手動テスト（Phase 11）   | 確認対象 |
 
 ### ステップ 2: 変更量の確認
 

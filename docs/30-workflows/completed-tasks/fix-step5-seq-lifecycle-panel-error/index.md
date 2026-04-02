@@ -2,7 +2,7 @@
 
 ## ユーザーからの元の指示
 
-SkillLifecyclePanel の `onWorkflowStateChanged` コールバックが `setWorkflowError(null)` を無条件に呼ぶバグを修正し、`phase: 'failed'` 時にエラーが消去されないようにする
+SkillLifecyclePanel の `onWorkflowStateChanged` コールバックが `setWorkflowError(null)` を無条件に呼ぶバグを修正し、`currentPhase: 'handoff'` 時にエラーが消去されないようにする
 
 ## メタ情報
 
@@ -14,24 +14,24 @@ SkillLifecyclePanel の `onWorkflowStateChanged` コールバックが `setWorkf
 | 対象機能     | スキル生成UI エラー表示（Renderer 側）  |
 | 優先度       | 高                                      |
 | 見積もり規模 | 小規模（2-3 行の条件分岐追加 + テスト） |
-| ステータス   | 未実施                                  |
+| ステータス   | 完了                                    |
 | 作成日       | 2026-04-01                              |
 
 ## タスク概要
 
 ### 目的
 
-`SkillLifecyclePanel.tsx` の `onWorkflowStateChanged` コールバックが `setWorkflowError(null)` を無条件に呼び出すため、`phase: 'failed'` 状態のスナップショットを受け取った直後にエラーが消去されてしまう問題を修正する。
+`SkillLifecyclePanel.tsx` の `onWorkflowStateChanged` コールバックが `setWorkflowError(null)` を無条件に呼び出すため、`currentPhase: 'handoff'` 状態のスナップショットを受け取った直後にエラーが消去されてしまう問題を修正する。
 
 ### 背景
 
-TASK-FIX-EXECUTE-PLAN-FF-001（fix-step3）の完了により、`SKILL_CREATOR_WORKFLOW_STATE_CHANGED` イベントがバックグラウンド処理から随時配信されるようになった。その結果、`phase: 'failed'` スナップショットが届いた後にも `onWorkflowStateChanged` コールバックが呼ばれ続け、エラー状態が即座にクリアされてしまう問題が顕在化した。
+TASK-FIX-EXECUTE-PLAN-FF-001（fix-step3）の完了により、`SKILL_CREATOR_WORKFLOW_STATE_CHANGED` イベントがバックグラウンド処理から随時配信されるようになった。その結果、`currentPhase: 'handoff'` スナップショットが届いた後にも `onWorkflowStateChanged` コールバックが呼ばれ続け、エラー状態が即座にクリアされてしまう問題が顕在化した。
 
 修正箇所は `SkillLifecyclePanel.tsx:539` の 1 行を `if` ブロックで囲む小規模変更であり、インターフェース変更なし・他コンポーネント影響なし。
 
 ### 最終ゴール
 
-スキル生成が `phase: 'failed'` で終了したとき、UI 上のエラーメッセージが消えずに表示されたままになること。
+スキル生成が `currentPhase: 'handoff'` で終了したとき、UI 上のエラーメッセージが消えずに表示されたままになること。
 
 ### 成果物一覧
 
@@ -106,9 +106,9 @@ graph TD
 
 ## テストカバレッジ目標
 
-| 対象ファイル                                                       | 行カバレッジ | ブランチカバレッジ | 備考                                 |
-| ------------------------------------------------------------------ | ------------ | ------------------ | ------------------------------------ |
-| `SkillLifecyclePanel.tsx`（`onWorkflowStateChanged` コールバック） | 90% 以上     | 90% 以上           | `phase` 条件分岐・handoffBundle 処理 |
+| 対象ファイル                                                       | 行カバレッジ | ブランチカバレッジ | 備考                                          |
+| ------------------------------------------------------------------ | ------------ | ------------------ | --------------------------------------------- |
+| `SkillLifecyclePanel.tsx`（`onWorkflowStateChanged` コールバック） | 90% 以上     | 90% 以上           | `currentPhase` 条件分岐・`handoffBundle` 処理 |
 
 ## 依存関係
 

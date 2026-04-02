@@ -22,7 +22,8 @@
 
 ## 成果物
 
-| 成果物         | パス                                     |
-| -------------- | ---------------------------------------- |
-| 手動テスト結果 | `outputs/phase-11/manual-test-result.md` |
-| 検出課題一覧   | `outputs/phase-11/discovered-issues.md`  |
+| 成果物         | パス                                        |
+| -------------- | ------------------------------------------- |
+| 手動確認表     | `outputs/phase-11/manual-test-checklist.md` |
+| 手動テスト結果 | `outputs/phase-11/manual-test-result.md`    |
+| 検出課題一覧   | `outputs/phase-11/discovered-issues.md`     |

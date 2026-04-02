@@ -29,6 +29,12 @@ TypeScript 型チェック・ESLint・全テスト実行により、コードの
 | ------------------ | ---------------------------------------------------------------------------- | -------------- |
 | アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
 
+## 統合テスト連携
+
+- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
+- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
+- Phase 5 の修正結果を前提に、typecheck・lint・vitest を実行する。
+
 ## 実行手順
 
 ### ステップ 1: TypeScript 型チェック
@@ -40,9 +46,9 @@ pnpm --filter @repo/desktop typecheck
 
 **確認ポイント**:
 
-- `snapshot.phase !== 'failed'` の比較で型エラーが発生していないこと
-- `snapshot.phase` の型が `WorkflowPhase` または `string` であれば問題なし
-- 型エラーが発生する場合は、`snapshot.phase` の型定義を確認し、適切なキャストまたは型ガードを追加する
+- `snapshot.currentPhase !== 'handoff'` の比較で型エラーが発生していないこと
+- `snapshot.currentPhase` の型が `SkillCreatorWorkflowPhase` または `string` であれば問題なし
+- 型エラーが発生する場合は、`snapshot.currentPhase` の型定義を確認し、適切なキャストまたは型ガードを追加する
 
 ### ステップ 2: ESLint 実行
 
@@ -54,7 +60,7 @@ pnpm --filter @repo/desktop lint
 **確認ポイント**:
 
 - `react-hooks/exhaustive-deps` ルール: `useEffect` の依存配列が変更なし（`[setHandoffGuidance, setWorkflowError, setWorkflowSnapshot]`）であることを確認
-- `@typescript-eslint/no-unused-vars` などの一般的なルールに違反がないこと
+- `@typescript-eslint/no-unused-vars` を含む一般的なルールに違反がないこと
 
 期待される ESLint 結果:
 
@@ -77,15 +83,15 @@ pnpm --filter @repo/desktop exec vitest run
 
 | 問題                      | 対処方法                                                                     |
 | ------------------------- | ---------------------------------------------------------------------------- |
-| 型エラー                  | `snapshot.phase` の型定義を確認し、型アサーションまたは型ガードを追加        |
+| 型エラー                  | `snapshot.currentPhase` の型定義を確認し、型アサーションまたは型ガードを追加 |
 | ESLint 警告（hooks deps） | `useEffect` の依存配列を確認し、不足している依存を追加（機能変更なしで対処） |
-| テスト失敗（既存）        | 修正内容が既存動作に影響していないか確認し、必要に応じて修正を調整           |
+| テスト失敗（既存）        | 修正内容が既存動作に影響していないか確認し、必要な箇所のみ修正を調整         |
 | テスト失敗（新規）        | テストコードのモック設定に問題がないか確認し、テストを修正                   |
 
 ## 多角的チェック観点
 
-- TypeScript 型チェックで `snapshot.phase` の型が `'failed'` との比較に対応しているか確認したか
-- ESLint の `react-hooks/exhaustive-deps` で依存配列の警告が発生していないか確認したか（`snapshot.phase` をコールバック内で参照しても deps に追加不要な理由を確認したか）
+- TypeScript 型チェックで `snapshot.currentPhase` の型が `'handoff'` との比較に対応しているか確認したか
+- ESLint の `react-hooks/exhaustive-deps` で依存配列の警告が発生していないか確認したか（`snapshot.currentPhase` をコールバック内で参照しても deps に追加不要な理由を確認したか）
 - 全テスト実行で AC-4（既存テスト全 PASS）が達成されているか確認したか
 
 ## 成果物

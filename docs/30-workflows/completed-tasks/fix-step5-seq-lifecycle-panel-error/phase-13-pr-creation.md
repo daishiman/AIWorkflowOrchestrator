@@ -35,6 +35,12 @@ Phase 1〜12 の全成果物が揃い、ユーザーの明示承認を受けた�
 | ------------------ | ---------------------------------------------------------------------------- | -------------- |
 | アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
 
+## 統合テスト連携
+
+- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
+- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
+- Phase 2 の成果物 design-topology.md、Phase 5 の修正結果、Phase 6 の成果物、Phase 7 の成果物、Phase 8 の成果物、Phase 9 の成果物、Phase 10 の成果物、Phase 11 の成果物、Phase 12 の成果物を前提に PR を準備する。
+
 ## 実行手順
 
 ### ステップ 1: PR 作成前チェックリスト
@@ -67,9 +73,9 @@ git diff --stat main
 ```
 fix(desktop): TASK-FIX-LIFECYCLE-PANEL-ERROR-001 SkillLifecyclePanel エラー永続化バグ修正
 
-- onWorkflowStateChanged コールバックで setWorkflowError(null) を phase: 'failed' 以外のときのみ呼ぶよう修正
-- phase: 'failed' 受信時にエラーが即座に消去されるバグを解消
-- handoffBundle 処理は phase に関わらず変わらない（AC-3 維持）
+- onWorkflowStateChanged コールバックで setWorkflowError(null) を currentPhase: 'handoff' 以外のときのみ呼ぶよう修正
+- currentPhase: 'handoff' 受信時にエラーが即座に消去されるバグを解消
+- handoffBundle 処理は currentPhase に関わらず変わらない（AC-3 維持）
 - SkillLifecyclePanel.error-persistence.test.tsx を新規追加（TC-EP-01〜10）
 ```
 
@@ -87,27 +93,27 @@ fix(desktop): SkillLifecyclePanel エラー永続化バグ修正 (TASK-FIX-LIFEC
 ## 概要
 
 `SkillLifecyclePanel.tsx` の `onWorkflowStateChanged` コールバックが
-`setWorkflowError(null)` を無条件に呼び出すため、`phase: 'failed'` 状態で
+`setWorkflowError(null)` を無条件に呼び出すため、`currentPhase: 'handoff'` 状態で
 届いたエラーが即座に消去されていた問題を修正します。
 
 ## 根本原因
 
 `onWorkflowStateChanged` コールバックは `SKILL_CREATOR_WORKFLOW_STATE_CHANGED`
 イベントを受信するたびに呼ばれる。`setWorkflowError(null)` が無条件で実行されるため、
-`phase: 'failed'` のスナップショット受信後もエラーがクリアされてしまっていた。
+`currentPhase: 'handoff'` のスナップショット受信後もエラーがクリアされてしまっていた。
 
 ## 修正内容
 
 1 ファイルを修正（2 行追加）:
 
 - **SkillLifecyclePanel.tsx**: `setWorkflowError(null)` を
-  `if (snapshot.phase !== 'failed')` ブロックで囲む
+  `if (snapshot.currentPhase !== 'handoff')` ブロックで囲む
 
 ## 受入条件の充足
 
-- AC-1: `phase === 'failed'` 時に `setWorkflowError(null)` が呼ばれない ✅
-- AC-2: `phase !== 'failed'` 時に `setWorkflowError(null)` が呼ばれる（既存動作維持） ✅
-- AC-3: `handoffBundle` の処理は `phase` に関わらず変わらない ✅
+- AC-1: `currentPhase === 'handoff'` 時に `setWorkflowError(null)` が呼ばれない ✅
+- AC-2: `currentPhase !== 'handoff'` 時に `setWorkflowError(null)` が呼ばれる（既存動作維持） ✅
+- AC-3: `handoffBundle` の処理は `currentPhase` に関わらず変わらない ✅
 - AC-4: 既存テストが全て PASS ✅
 - AC-5: UI 上でエラーメッセージが表示されたまま残る ✅（手動テスト確認済み）
 

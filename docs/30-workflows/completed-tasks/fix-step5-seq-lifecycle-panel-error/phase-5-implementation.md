@@ -28,6 +28,11 @@
 | ------------------ | ---------------------------------------------------------------------------- | -------------- |
 | アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
 
+## 統合テスト連携
+
+- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
+- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
+
 ## 実行手順
 
 ### ステップ 1: 修正対象箇所の確認
@@ -53,7 +58,7 @@ sed -n '531,544p' \
 ```typescript
 return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
   setWorkflowSnapshot(snapshot);
-  setWorkflowError(null); // ← BUG: 'failed' フェーズでもエラーを消去する
+  setWorkflowError(null); // ← BUG: 'handoff' フェーズでもエラーを消去する
   if (snapshot.handoffBundle) {
     setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
   }
@@ -65,8 +70,8 @@ return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
 ```typescript
 return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
   setWorkflowSnapshot(snapshot);
-  if (snapshot.phase !== "failed") {
-    setWorkflowError(null); // 'failed' 以外のフェーズでのみエラーをクリア
+  if (snapshot.currentPhase !== "handoff") {
+    setWorkflowError(null); // 'handoff' 以外のフェーズでのみエラーをクリア
   }
   if (snapshot.handoffBundle) {
     setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
@@ -76,7 +81,7 @@ return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
 
 **変更サマリー**:
 
-- 変更量: `setWorkflowError(null);` の 1 行を、`if (snapshot.phase !== 'failed') { ... }` ブロックで囲む（実質 2 行追加・0 行削除）
+- 変更量: `setWorkflowError(null);` の 1 行を、`if (snapshot.currentPhase !== 'handoff') { ... }` ブロックで囲む（実質 2 行追加・0 行削除）
 - `handoffBundle` 処理の位置は変更しない
 - `useEffect` の依存配列は変更しない
 
@@ -90,10 +95,10 @@ pnpm --filter @repo/desktop exec vitest run \
 
 期待される結果:
 
-- TC-EP-01: PASS（`phase: 'failed'` 時に `setWorkflowError(null)` が呼ばれない）
-- TC-EP-02: PASS（`phase: 'running'` 時に `setWorkflowError(null)` が呼ばれる）
-- TC-EP-03: PASS（`phase: 'completed'` 時に `setWorkflowError(null)` が呼ばれる）
-- TC-EP-04: PASS（`phase: 'failed'` でも `handoffBundle` 処理が実行される）
+- TC-EP-01: PASS（`currentPhase: 'handoff'` 時に `setWorkflowError(null)` が呼ばれない）
+- TC-EP-02: PASS（`currentPhase: 'execute'` 時に `setWorkflowError(null)` が呼ばれる）
+- TC-EP-03: PASS（`currentPhase: 'verify'` 時に `setWorkflowError(null)` が呼ばれる）
+- TC-EP-04: PASS（`currentPhase: 'handoff'` でも `handoffBundle` 処理が実行される）
 - TC-EP-05: PASS（`handoffBundle: null` 時に `setHandoffGuidance` が呼ばれない）
 
 ### ステップ 4: 既存テストへの影響確認
@@ -111,9 +116,9 @@ pnpm --filter @repo/desktop exec vitest run
 
 ## 多角的チェック観点
 
-- `if (snapshot.phase !== 'failed')` の括弧の位置が正しく、`handoffBundle` 処理が `if` ブロックの外にあることを確認したか
-- `snapshot.phase` が `undefined` の場合に `!== 'failed'` が `true` と評価されるため、`setWorkflowError(null)` が呼ばれる（エラーがクリアされる）挙動を確認したか
-- TypeScript のコンパイルエラーが発生しないことを確認したか（`snapshot.phase` の型が `'failed'` との比較に対応しているか）
+- `if (snapshot.currentPhase !== 'handoff')` の括弧の位置が正しく、`handoffBundle` 処理が `if` ブロックの外にあることを確認したか
+- `snapshot.currentPhase` が `'handoff'` の場合に `setWorkflowError(null)` が呼ばれず、`handoff` 以外では呼ばれることを確認したか
+- TypeScript のコンパイルエラーが発生しないことを確認したか（`snapshot.currentPhase` の型が `'handoff'` との比較に対応しているか）
 
 ## 成果物
 
@@ -123,9 +128,9 @@ pnpm --filter @repo/desktop exec vitest run
 
 ## 完了条件
 
-- [ ] `SkillLifecyclePanel.tsx:539` 付近の `setWorkflowError(null)` が `if (snapshot.phase !== 'failed')` ブロックで囲まれている
+- [ ] `SkillLifecyclePanel.tsx:539` 付近の `setWorkflowError(null)` が `if (snapshot.currentPhase !== 'handoff')` ブロックで囲まれている
 - [ ] Phase 4 テストファイル（`error-persistence.test.tsx`）の全 TC が Green になっている
-- [ ] `handoffBundle` 処理が `if` ブロックの外（`phase` 判定の影響を受けない位置）にある
+- [ ] `handoffBundle` 処理が `if` ブロックの外（`currentPhase` 判定の影響を受けない位置）にある
 - [ ] `useEffect` の依存配列が変更されていない
 - [ ] TypeScript コンパイルエラーが発生していない
 

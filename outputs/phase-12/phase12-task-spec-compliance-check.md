@@ -11,8 +11,10 @@ PASS
 - documentation changelog: OK
 - unassigned task detection: OK（current 0 件）
 - skill feedback report: OK
+- Phase 11 manual-test-checklist: OK（NV-11-01〜07）
 - Phase 11 manual-test-result: OK（NON_VISUAL walkthrough + metadata / fallback reason / source evidence）
 - Phase 11 discovered-issues: OK（current 0 件）
+- artifacts.json / outputs/artifacts.json: OK
 - Phase 13: blocked 維持
 - task spec / artifacts / outputs canonical filename: OK
 
