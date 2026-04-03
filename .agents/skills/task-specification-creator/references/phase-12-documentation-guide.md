@@ -16,8 +16,10 @@
 **Part 2 追補ルール**:
 - `spec_created` workflow では「実装済み」と書かず、`current contract` と `target delta` を分けて書く
 - API シグネチャだけで閉じず、型定義、使用例、エラーハンドリング、エッジケース、設定可能パラメータ/定数一覧を省略しない
+- 実装先行の task では Before/After が同じでもよい。その場合は `Before = current implementation`、`After = same / no-op` と明記し、差分を捏造しない
 - `future sync target` の列挙だけで終わらせず、今回 wave で何を更新し、何を no-op 判定したかを対応する成果物へ残す
 - screenshot fallback を完了根拠に使う場合は、placeholder-only の証跡を PASS 扱いにせず、coverage / metadata / fallback reason / source evidence まで current workflow に揃えた実測値で書く
+- state-only の修正は `NON_VISUAL` を優先し、callback 系の回帰は `setupCallbackCapture()` 相当の deterministic テストで固定する
 
 **Part 2 必須見出し（IPC 変更がある場合）**:
 
@@ -56,6 +58,7 @@
 - `artifacts.json` と `outputs/artifacts.json` の同期結果も書く
 - `artifacts.json` / `outputs/artifacts.json` の title / type / status / phase artifact 名 parity を初手で確認し、ずれたまま `PASS` にしない
 - Phase 11 が NON_VISUAL の場合でも `manual-test-checklist.md` など補助成果物の有無を記録する
+- state-only の修正は NON_VISUAL と判定し、manual-test-checklist.md と自動テスト結果を残す
 
 ### 設計タスク（docs-only）での注意
 

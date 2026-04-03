@@ -1,185 +1,161 @@
-# Phase 2: 設計
+# Phase 2: 設計 - タスク仕様書
 
 ## メタ情報
 
-| 項目         | 内容                               |
-| ------------ | ---------------------------------- |
-| Phase        | 2                                  |
-| タスクID     | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
-| ステータス   | 未実施                             |
-| 担当         | 実装者                             |
-| 見積もり時間 | 0.5h                               |
+| 項目       | 内容                      |
+| ---------- | ------------------------- |
+| Phase      | 2                         |
+| Phase名    | 設計                      |
+| 前提Phase  | Phase 1                   |
+| 後続Phase  | Phase 3                   |
+| ステータス | 完了                      |
+| 作成日     | 2026-04-02                |
+| 機能名     | fix-lifecycle-panel-error |
+
+---
 
 ## 目的
 
-1 つの concern（`currentPhase` 判定追加）の変更設計を定義し、変更前後コードを比較する。`snapshot.currentPhase` の型を確認して `'handoff'` との比較が型安全に行われることを保証する。
+1 concernの変更設計を確定する。`setWorkflowError(null)` を `currentPhase: 'handoff'` 時にスキップする条件分岐の挿入位置と変更内容を明確にする。
+
+## 背景
+
+Phase 1で確認した `onWorkflowStateChanged` コールバックの現状バグを1行修正で解決するための設計を行う。変更は最小限（1行の条件追加）だが、fire-and-forget化による連続スナップショット配信シナリオを考慮した設計が必要。
+
+---
 
 ## 実行タスク
 
-1. concern 設計（1 concern: currentPhase 判定追加）
-2. `snapshot.currentPhase` の型確認（`SkillCreatorWorkflowPhase` 型の定義場所）
-3. 変更前後コード比較
-4. `handoffBundle` 処理への影響がないことの確認
-5. React hooks deps に変更がないことの確認
+### タスク1: 修正対象コードの Before/After 比較
+
+**目的**: 変更前後のコードを明確にし、変更範囲を確定する。
+
+**実行手順**:
+
+1. `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` の539行目周辺を精読する
+2. `onWorkflowStateChanged` コールバック内の `setWorkflowError(null)` 呼び出し箇所を特定する
+3. Before（現状）と After（修正案）のコード比較を `outputs/phase-2/before-after-comparison.md` に記録する
+
+**変更内容（設計）**:
+
+```typescript
+// Before（現状 - バグあり）
+const onWorkflowStateChanged = (snapshot: WorkflowSnapshot) => {
+  setWorkflowError(null); // currentPhase:'handoff' 後にも呼ばれてエラーが消える
+  // ... 他の処理
+};
+
+// After（修正案）
+const onWorkflowStateChanged = (snapshot: WorkflowSnapshot) => {
+  if (snapshot.currentPhase !== "handoff") {
+    setWorkflowError(null); // currentPhase:'handoff' 時はエラーをクリアしない
+  }
+  // ... 他の処理
+};
+```
+
+**期待される成果物**:
+
+- `outputs/phase-2/before-after-comparison.md`（Before/After 比較ドキュメント）
+
+---
+
+### タスク2: 変更が1行のみでAC充足確認
+
+**目的**: 設計が受入条件を満たすことを確認する。
+
+**実行手順**:
+
+1. AC-1: `currentPhase: 'handoff'` 時に `setWorkflowError(null)` が呼ばれないこと → `if (snapshot.currentPhase !== 'handoff')` で充足
+2. AC-2: 他フェーズ（`'execute'`, `'verify'` など）では `setWorkflowError(null)` が呼ばれること → 条件が `!== 'handoff'` なので充足
+3. AC-3: `currentPhase: 'handoff'` 後に別スナップショットが届いてもエラーが消えないこと → AC-1と同じ変更で充足
+4. AC-4: 既存テストへの影響がないことを確認（他テストを壊さない）
+5. AC-5: TypeScript型変更なし（`snapshot.currentPhase` は既存型を使用）
+
+**期待される成果物**:
+
+- AC充足確認記録（before-after-comparison.md に追記）
+
+---
+
+### タスク3: テスト設計の事前確認
+
+**目的**: Phase 4でのテスト作成に向けた設計方針を確定する。
+
+**実行手順**:
+
+1. `SkillLifecyclePanel.tsx` の既存テストファイルを確認し、モック方法を把握する
+2. `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` IPC イベントのモック戦略を設計する
+3. テストファイル命名規則（Phase 1で確認済み）に従い `SkillLifecyclePanel.error-persistence.test.tsx` とする
+4. テストシナリオを設計する:
+   - シナリオA: `currentPhase: 'handoff'` スナップショット後に別スナップショット → `workflowError` が null にならない
+   - シナリオB: `currentPhase: 'execute'` スナップショット → `workflowError` が null になる
+
+**期待される成果物**:
+
+- テスト設計方針（before-after-comparison.md に記載）
+
+---
 
 ## 参照資料
 
+| 参照資料           | パス                                                                 | 内容                                 |
+| ------------------ | -------------------------------------------------------------------- | ------------------------------------ |
+| 修正対象ファイル   | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | onWorkflowStateChanged コールバック  |
+| 受入条件           | `outputs/phase-1/acceptance-criteria.md`                             | Phase 1で定義したAC                  |
+| IPC チャンネル定義 | `packages/shared/src/ipc/channels.ts`                                | SKILL_CREATOR_WORKFLOW_STATE_CHANGED |
+
 ### システム仕様（aiworkflow-requirements）
 
-| 参照資料           | パス                                                                         | 内容           |
-| ------------------ | ---------------------------------------------------------------------------- | -------------- |
-| アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
+| 参照資料               | パス                                                                  | 内容                  |
+| ---------------------- | --------------------------------------------------------------------- | --------------------- |
+| エラーハンドリング仕様 | `.claude/skills/aiworkflow-requirements/references/error-handling.md` | エラー表示の設計方針  |
+| IPC仕様                | `.claude/skills/aiworkflow-requirements/references/api-*.md`          | IPC通信の設計パターン |
 
-## 統合テスト連携
-
-- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
-- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
-- Phase 1 の成果物 spec-extraction-map.md を前提に、変更対象は SkillLifecyclePanel.tsx 1 ファイルに限定する。
-
-## 実行手順
-
-### ステップ 1: concern 設計（1 concern: currentPhase 判定追加）
-
-本タスクの concern は 1 つのみ:
-
-#### Concern 1: `onWorkflowStateChanged` コールバック内の `currentPhase` 判定
-
-**問題の所在**:
-
-```
-SkillLifecyclePanel.tsx:539
-setWorkflowError(null);  ← 'handoff' フェーズでもエラーを消去する
-```
-
-**現状（問題あり）**:
-
-```typescript
-return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-  setWorkflowSnapshot(snapshot);
-  setWorkflowError(null); // ← BUG: 'handoff' フェーズでもエラーを消去する
-  if (snapshot.handoffBundle) {
-    setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-  }
-});
-```
-
-**修正後（正しい動作）**:
-
-```typescript
-return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-  setWorkflowSnapshot(snapshot);
-  if (snapshot.currentPhase !== "handoff") {
-    setWorkflowError(null); // 'handoff' 以外のフェーズでのみエラーをクリア
-  }
-  if (snapshot.handoffBundle) {
-    setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-  }
-});
-```
-
-**変更量**: 1 行を `if` ブロックで囲む（3 行の差分、実質 2 行追加・0 行削除）
-
-### ステップ 2: `snapshot.currentPhase` の型確認
-
-```bash
-# SkillCreatorWorkflowPhase 型の定義場所を確認
-grep -rn "SkillCreatorWorkflowPhase" packages/shared/src/ --include="*.ts"
-grep -rn "SkillCreatorWorkflowPhase" apps/desktop/src/ --include="*.ts" --include="*.tsx"
-
-# SkillCreatorWorkflowUiSnapshot の型定義を確認
-grep -rn "SkillCreatorWorkflowUiSnapshot" packages/shared/src/ --include="*.ts"
-grep -rn "SkillCreatorWorkflowUiSnapshot" apps/desktop/src/ --include="*.ts" --include="*.tsx"
-
-# 'handoff' が型定義に含まれているか確認
-grep -A 10 "SkillCreatorWorkflowPhase" packages/shared/src/types/skill-workflow.ts 2>/dev/null || \
-grep -rn "'handoff'" packages/shared/src/ --include="*.ts"
-```
-
-型確認ポイント:
-
-- `snapshot.currentPhase` が `SkillCreatorWorkflowPhase` 型（リテラルユニオン）であれば、`!== 'handoff'` が型安全に機能する
-- `snapshot.currentPhase` が `string` 型であれば、`'handoff'` リテラルとの比較も型安全（`string !== string` の比較）
-- いずれの場合も新規型定義は不要（既存型を再利用する）
-
-### ステップ 3: 変更前後のコード比較
-
-| 項目                              | 変更前                                                        | 変更後                                                    |
-| --------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------- |
-| `setWorkflowSnapshot` 呼び出し    | 無条件で呼ばれる                                              | 変更なし（無条件で呼ばれる）                              |
-| `setWorkflowError(null)` 呼び出し | 無条件で呼ばれる（バグ）                                      | `currentPhase !== 'handoff'` の場合のみ呼ばれる（修正後） |
-| `handoffBundle` 処理              | `snapshot.handoffBundle` が truthy の場合に実行               | 変更なし（`currentPhase` に関わらず実行）                 |
-| React hooks deps                  | `[setHandoffGuidance, setWorkflowError, setWorkflowSnapshot]` | 変更なし（同一）                                          |
-
-### ステップ 4: `handoffBundle` 処理への影響確認
-
-修正後のコードでは、`snapshot.currentPhase` の判定は `setWorkflowError(null)` にのみ適用され、`handoffBundle` の処理は影響を受けない。
-
-```typescript
-if (snapshot.currentPhase !== "handoff") {
-  setWorkflowError(null); // ← この if ブロックの外に handoffBundle 処理がある
-}
-if (snapshot.handoffBundle) {
-  // ← currentPhase に関わらず実行される（変更なし）
-  setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-}
-```
-
-AC-3「`handoffBundle` の処理は `currentPhase` に関わらず変わらないこと」を満たす設計。
-
-### ステップ 5: React hooks deps の確認
-
-修正によって `useEffect` の依存配列に変更が生じないことを確認する:
-
-```typescript
-useEffect(() => {
-  // ... (変更あり)
-}, [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot]);
-//  ↑ この依存配列は変更なし
-```
-
-ESLint `react-hooks/exhaustive-deps` への影響なし（依存関係の変更なし）。
-
-## アーキテクチャ設計図
-
-### フェーズ別の動作変更
-
-```
-Renderer（SkillLifecyclePanel）
-   │
-   ├── onWorkflowStateChanged callback
-   │     ├── currentPhase: 'execute'   → setWorkflowSnapshot + setWorkflowError(null)  ✅
-   │     ├── currentPhase: 'verify' → setWorkflowSnapshot + setWorkflowError(null)  ✅
-   │     ├── currentPhase: 'handoff'    → setWorkflowSnapshot のみ（エラー保持）        ✅ 修正後
-   │     │                        ↑ 修正前は setWorkflowError(null) も呼んでいた（バグ）
-   │     └── handoffBundle 処理 → currentPhase に関わらず実行                     ✅
-```
-
-## 多角的チェック観点
-
-- `snapshot.currentPhase` が `SkillCreatorWorkflowPhase` の各値であることを確認したか
-- `handoffBundle` 処理が `currentPhase` 判定の外にあることを確認したか
-- `setWorkflowError(null)` がコールバック外（他の場所）から呼ばれる箇所があるか確認したか（影響範囲の特定）
+---
 
 ## 成果物
 
-| 成果物           | パス                                 | 説明                                               |
-| ---------------- | ------------------------------------ | -------------------------------------------------- |
-| 設計トポロジー表 | `outputs/phase-2/design-topology.md` | 1 concern の設計表、変更前後コード比較、型確認結果 |
+| 成果物                       | パス                                         | 内容                                             |
+| ---------------------------- | -------------------------------------------- | ------------------------------------------------ |
+| Before/After比較ドキュメント | `outputs/phase-2/before-after-comparison.md` | 変更前後のコード比較・AC充足確認・テスト設計方針 |
+
+---
+
+## 統合テスト連携
+
+- IPC コールバック設計とモック戦略（`SKILL_CREATOR_WORKFLOW_STATE_CHANGED` のモック方法）を設計に反映する
+- 連続スナップショット配信シナリオをテスト設計に含める
+
+---
 
 ## 完了条件
 
-- [ ] 1 つの concern（`onWorkflowStateChanged` の `currentPhase` 判定）の変更設計が明記されている
-- [ ] `snapshot.currentPhase` の型定義場所が確認され、`'handoff'` との比較が型安全であることが確認されている
-- [ ] 変更前後コードが比較表として記録されている
-- [ ] `handoffBundle` 処理が `phase` に関わらず実行されることが設計で確認されている
-- [ ] React hooks deps（`useEffect` 依存配列）が変更なしであることが確認されている
+- [ ] `outputs/phase-2/before-after-comparison.md` が作成されている
+- [ ] Before（現状バグ）と After（修正後）のコードが記録されている
+- [ ] 変更が `if (snapshot.currentPhase !== 'handoff')` の1行追加のみであることを確認
+- [ ] AC-1〜AC-5が設計で充足されることを確認済み
+- [ ] テストシナリオ（シナリオA・B）が設計されている
 
-## タスク100%実行確認【必須】
+---
 
-- [ ] 全実行タスクが完了している
-- [ ] 全成果物が存在する（`outputs/phase-2/design-topology.md`）
-- [ ] 全完了条件が満たされている
+## Phase末端アクション【必須】
 
-## 次Phase
+- [ ] 本Phase内の全タスク（タスク1〜3）を100%実行完了
+- [ ] 各タスクを100%完了し、完了を明記
+- [ ] 成果物（`outputs/phase-2/before-after-comparison.md`）が生成されていることを確認
 
-Phase 3: 設計レビュー へ進む
+---
+
+## 依存関係
+
+- **前提**: Phase 1（要件定義）が完了していること
+- **後続**: Phase 3（設計レビューゲート）へ進む
+
+---
+
+## 次のPhase
+
+完了後、以下のファイルを実行してください:
+
+`docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-3-design-review.md`

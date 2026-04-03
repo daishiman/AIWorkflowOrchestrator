@@ -5,32 +5,6 @@
 
 ## 完了タスク
 
-### タスク: TASK-FIX-LIFECYCLE-PANEL-ERROR-001（2026-04-02）
-
-| 項目       | 値                                                                                                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                                                                                                 |
-| ステータス | **完了**                                                                                                                                                           |
-| タイプ     | bugfix / renderer workflow lifecycle                                                                                                                               |
-| 優先度     | 高                                                                                                                                                                 |
-| 完了日     | 2026-04-02                                                                                                                                                         |
-| 対象       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` / `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` / `docs/30-workflows/fix-step5-seq-lifecycle-panel-error/` |
-| 成果物     | `docs/30-workflows/fix-step5-seq-lifecycle-panel-error/`                                                                                                           |
-
-#### 実施内容
-
-- `SkillLifecyclePanel` に `applyWorkflowSnapshot()` を追加し、`handoff` 時の `workflowError` 保持を `onWorkflowStateChanged` / `getWorkflowState` / `submitUserInput` / execute 後再取得の全経路へ適用
-- `handoffBundle` 更新と error clear 条件を分離し、副作用なく guidance を維持
-- `SkillLifecyclePanel.error-persistence.test.tsx` に TC-EP-06〜08 を追加し、callback 単独ではなく 4 経路の回帰を固定
-- workflow docs と Phase 11/12 outputs を `currentPhase` / `handoff` vocabulary に同期し、placeholder PNG 前提を撤去
-
-#### 検証証跡
-
-- `validate-phase-output.js`: 再実行予定
-- `verify-all-specs.js`: 再実行予定
-- `validate-phase12-implementation-guide.js`: 再実行予定
-- `vitest` は `Host version "0.21.5" does not match binary version "0.25.12"` により再実行 BLOCKED
-
 ### タスク: TASK-FIX-ENV-STRIPPING（2026-04-01）
 
 | 項目       | 値                                                                                                                   |
@@ -2101,3 +2075,67 @@
 | representative screenshot 実測 | 未了         |
 | Phase 11 実行結果              | 未了         |
 | HIGH 問題の未タスク化          | 実行後に判定 |
+
+---
+
+### タスク: TASK-FIX-LIFECYCLE-PANEL-ERROR-001（2026-04-03）
+
+| 項目         | 値                                                                                       |
+| ------------ | ---------------------------------------------------------------------------------------- |
+| タスクID     | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                       |
+| ステータス   | **completed**                                                                            |
+| タイプ       | バグ修正（Renderer state エラー保持）                                                   |
+| 優先度       | 高                                                                                       |
+| 完了日       | 2026-04-03                                                                               |
+| GitHub Issue | #1844（closed but not implemented → 実装完了）                                           |
+| 成果物       | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/`                |
+
+#### 実施内容
+
+- `SkillLifecyclePanel.tsx` の `applyWorkflowSnapshot` にコメント 2 行追加
+  - `// handoff 時はエラーメッセージを保持する`
+  - `// fire-and-forget 配信では後続スナップショットでエラーが消えるバグ（Issue #1844）を防ぐ`
+- `SkillLifecyclePanel.error-persistence.test.tsx` 新規作成
+  - TC-EP-01〜TC-EP-08（8 件）、全テスト PASS
+  - `setupCallbackCapture()` パターンで IPC コールバックを確定的にテスト
+- Phase 12 same-wave sync として `task-workflow-backlog.md` / `skill-creator-agent-sdk-lane/index.md` を current facts に揃え、`generate-index.js` で `indexes/topic-map.md` / `indexes/keywords.json` を再生成
+
+#### 検証結果
+
+| 項目                  | 結果         |
+| --------------------- | ------------ |
+| テスト                | 8/8 PASS     |
+| TypeScript 型チェック | PASS（0 件） |
+| Phase 11              | NON_VISUAL   |
+
+#### 未完了事項
+
+| 項目                         | 状態               |
+| ---------------------------- | ------------------ |
+| TASK-FIX-EXECUTE-PLAN-FF-001 | 別タスク（未着手） |
+
+### タスク: UT-IMP-PHASE12-COMPLETED-TASK-REFERENCE-SYNC-GUARD-001（2026-04-03）
+
+| 項目       | 値                                                                                                                      |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-IMP-PHASE12-COMPLETED-TASK-REFERENCE-SYNC-GUARD-001                                                                  |
+| ステータス | **完了**                                                                                                                |
+| タイプ     | 改善（Phase 12 completed-tasks 移管・参照整合）                                                                        |
+| 優先度     | 中                                                                                                                      |
+| 完了日     | 2026-04-03                                                                                                              |
+| GitHub Issue | #916（closed）                                                                                                        |
+| 成果物     | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md`         |
+
+#### 実施内容
+
+- Phase 12 完了移管時の参照同期ガードを completed 側へ移動し、`status: 完了` / `completed_date` / `spec_path` を current facts に更新
+- `task-imp-phase12-spec-version-consistency-guard-001.md` と `task-imp-phase12-workflow-body-stale-guard-001.md` の関連参照を completed パスへ同期
+- `skill-creator-agent-sdk-lane/index.md` の step5 completed path と current facts を揃え、移動元の旧 path 参照を除去
+
+#### 検証結果
+
+| 項目               | 結果        |
+| ------------------ | ----------- |
+| 参照スイープ       | PASS        |
+| `git diff --check` | PASS        |
+| 旧 path 残存       | 0 件        |

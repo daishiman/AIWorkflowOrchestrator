@@ -27,6 +27,9 @@
 | 「spec_created task なので Step 1-B は不要」 | `spec_created` の記録も Step 1 で残す |
 | 「warning だけなら Phase 12 を閉じてよい」 | pass 基準は validator ごとに明文化する |
 | 「設計タスクなので Step 2 は計画だけ書けばよい」 | `spec_created` でも system spec / lessons / backlog / LOGS の実更新が必要 |
+| 「実装先行タスクなので Before/After が同じなら書かなくてよい」 | current contract と target delta を分けて残し、同一ならその理由を明記する |
+| 「state-only 修正でも screenshot を必ず要求する」 | 視覚差分がないなら `NON_VISUAL` と自動テストを優先し、スクリーンショットを捏造しない |
+| 「IPC callback の回帰は手動でしか確認できない」 | `setupCallbackCapture()` 相当で callback を確定的に replay し、`render` + `act` で検証する |
 | 「`spec_created` task に後から code 実装が入っても Step 2 は N/A のままでよい」 | shared / IPC / preload / renderer の current fact が変わった時点で Step 2 を再判定し、Phase 11 screenshot 方針も見直す |
 | 「設計タスクの workflow root も `completed` にしてよい」 | workflow root は `implementation_ready`、completed records は `spec_created`。実装 gap は follow-up task として formalize する |
 | 「generic なファイル名へ書いておけば十分」 | 実際の責務分割に沿った primary target file list を先に確定する |
@@ -176,6 +179,7 @@
 - `review` / `verify` / `resume` / `handoff` の phase 遷移意味が変わる
 - `success:false` / reject / retry の扱いが変わる
 - artifacts の append / upsert / snapshot 方針が変わる
+- 見た目が変わらない state-only 変更でも、phase semantics や error retention が変わるなら Step 2 対象とし、Phase 11 は NON_VISUAL として state assertion / automated test を evidence にする
 
 理由: downstream task と system spec は payload 形状だけでなく state semantics に依存するため。
 

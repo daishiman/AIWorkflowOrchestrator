@@ -273,7 +273,7 @@ node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js
 - `.claude/skills/aiworkflow-requirements/references/task-workflow.md`
 - `.claude/skills/aiworkflow-requirements/references/lessons-learned.md`
 - `docs/30-workflows/unassigned-task/task-imp-phase12-spec-sync-subagent-guard-001.md`
-- `docs/30-workflows/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md`
+- `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md`
 
 ---
 

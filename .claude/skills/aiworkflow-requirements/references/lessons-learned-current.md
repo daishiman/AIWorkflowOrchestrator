@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-03 | 3.3.8      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 current index sync（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-EP-001〜003 / setupCallbackCapture / NON_VISUAL state-only 判定の current facts 反映） |
 | 2026-04-02 | 3.3.7      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-ERR-001 `handoff` guard の共通化 / L-LIFECYCLE-ERR-002 stale `phase: 'failed'` 語彙の除去 / L-LIFECYCLE-ERR-003 NON_VISUAL task で blocker を PASS へ偽装しない） |
 | 2026-04-01 | 3.3.6      | TASK-FIX-AUTH-IPC-001 教訓2件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-AUTH-IPC-001 IPC channel timeout と fire-and-forget パターン — CHANNEL_TIMEOUTS が 500ms の場合は OAuth 完了を await せず void+catch で即時返却する / L-AUTH-IPC-002 AUTH_STATE_CHANGED 責務境界の分離 — 完了通知は orchestrator に固定し handler 側では二重送信しない） |
 | 2026-04-01 | 3.3.5      | TASK-SC-DIALOG-MANDATORY-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-SC-DIALOG-001 宣言型→命令型転換 / L-SC-DIALOG-002 実行ゲートパターン / L-SC-DIALOG-003 graceful degradation で problem-definition.json 欠損時エラー停止を回避）                                                                                     |
@@ -969,3 +970,17 @@
 | 解決策     | スケルトン関数（`throw new Error("not implemented")`）を先に定義し、import はコンパイルできる状態にする。実行時にのみ新テストが Red になるよう設計する |
 | 標準ルール | テストファースト実装では「スケルトン定義 → テスト記述 → Red 確認 → 実装 → Green 確認」の順序を守る                                                     |
 | 関連タスク | TASK-P0-04                                                                                                                                             |
+
+### L-LIFECYCLE-EP-001: fire-and-forget IPC では後続スナップショットによるエラークリア防止が必要（2026-04-03）
+
+| 項目       | 内容                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 標準ルール | IPC fire-and-forget パターンでは Renderer state のエラー保持を壊さないようスナップショット受信コールバックにフェーズ別ガードを設ける |
+| 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001（Issue #1844）                                                                              |
+
+### L-LIFECYCLE-EP-003: NON_VISUAL 判定 — React state 変更のみは自動テストで代替可能（2026-04-03）
+
+| 項目       | 内容                                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 標準ルール | `setXxx(null)` 等の呼び出し制御のみの修正は NON_VISUAL と判定。UI 描画変更を伴う場合のみ Phase 11 でスクリーンショットが必要 |
+| 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                                                          |

@@ -212,6 +212,19 @@ export type {
 } from "./skillCreator";
 export { SESSION_TTL_MS } from "./skillCreator";
 
+// SkillCreator SDK Session Bridge 型定義 (TASK-SDK-SC-01)
+export type {
+  SessionStatus,
+  UserInputType,
+  UserInputOption,
+  UserInputQuestion,
+  UserInputAnswer,
+  SkillCreatorSessionStartRequest,
+  SkillCreatorSessionCompleteEvent,
+  SkillCreatorSessionErrorEvent,
+  ISkillCreatorSessionState,
+} from "./skillCreatorSession";
+
 // ファイル選択型定義
 export type {
   FileExtension,

@@ -1,25 +1,29 @@
-# Unassigned Task Detection
+# 未タスク検出レポート
 
-## 判定
+## メタ情報
+
+| 項目     | 内容                               |
+| -------- | ---------------------------------- |
+| タスクID | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
+| 作成日   | 2026-04-03                         |
+| 検出総数 | 0 件                               |
+
+## 検出ソース
+
+- Phase 3 / Phase 10 のレビュー結果（MINOR 指摘）
+- 修正箇所周辺のタスク管理用コメント（FIXME 等）
+- 仕様書のスコープ外記載
+
+## 検出結果
 
 - 新規未タスク: 0 件
 
-## 確認範囲
+## 参照した既存未タスク指示書
 
-- Phase 3 設計レビュー
-- Phase 10 最終レビュー
-- Phase 11 manual-test blocker
-- `SkillLifecyclePanel.tsx` / 追加テスト
-- workflow docs / Phase 12 outputs
+- `docs/30-workflows/unassigned-task/TASK-FIX-LIFECYCLE-PANEL-ERROR-001.md`
 
-## 0件の理由
+本ファイルは「元の論点固定」の source として参照したが、本タスクは Phase 1〜12 の実行対象として消化しており、新規の follow-up を追加する必要はなかった。
 
-- `handoff` 時の error clear 漏れは current wave のコード修正と回帰テスト拡張で吸収した
-- workflow docs の vocabulary drift と same-wave sync 漏れも current wave で修正した
-- `apps/backend/` と `packages/shared/` に今回新規の follow-up 実装差分はない
+## baseline / wider governance
 
-## 既知の環境問題を新規未タスク化しない理由
-
-- `esbuild` host/binary mismatch は今回タスク固有ではなく、worktree / root dependency 解決の既知環境問題
-- current wave では blocker として明示し、false green を除去することを優先した
-- root `package.json` の `@esbuild/darwin-x64: 0.25.12` 固定と Vite/Vitest 側 `esbuild@0.21.5` の整合再設計は、別タスクとして切り出すほどの変更範囲だが、本タスクの機能差分には含めない
+- 既存の未タスクや仕様書ドリフトが repo 内に存在する場合でも、本タスク差分起因でないものは baseline として分離し、新規未タスクの重複作成は行わない。

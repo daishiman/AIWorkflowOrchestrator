@@ -10,9 +10,11 @@ category: 改善
 target_feature: Phase 12 で unassigned-task から completed-tasks へ移管する際の参照整合
 priority: 中
 scale: 中規模
-status: 未実施
+status: 完了
 source_phase: UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 Phase 12 再確認（実装苦戦箇所）
 created_date: 2026-02-26
+completed_date: 2026-04-03
+spec_path: docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md
 ```
 
 | 項目         | 内容                                                                               |
@@ -23,7 +25,7 @@ created_date: 2026-02-26
 | 対象機能     | Phase 12 の未タスク移管（`unassigned-task` → `completed-tasks`）                   |
 | 優先度       | 中                                                                                 |
 | 見積もり規模 | 中規模                                                                             |
-| ステータス   | 未実施                                                                             |
+| ステータス   | 完了                                                                               |
 | 発見元       | UT-IMP-SKILL-VALIDATION-GATE-ALIGNMENT-001 Phase 12 再確認（苦戦箇所・2026-02-26） |
 | 発見日       | 2026-02-26                                                                         |
 
@@ -193,21 +195,21 @@ Phase 12 で未タスク指示書を `completed-tasks/` へ移管した際、台
 
 ### 機能要件
 
-- [ ] 完了移管対象の参照更新チェックリストが定義されている
-- [ ] 台帳/本文/実体の三点同期手順が定義されている
-- [ ] 旧参照検出手順が運用化されている
+- [x] 完了移管対象の参照更新チェックリストが定義されている
+- [x] 台帳/本文/実体の三点同期手順が定義されている
+- [x] 旧参照検出手順が運用化されている
 
 ### 品質要件
 
-- [ ] `verify-unassigned-links` で参照切れ 0 件
-- [ ] 差分監査で `currentViolations = 0`
-- [ ] baseline と current の判定軸が分離されている
+- [x] `verify-unassigned-links` で参照切れ 0 件
+- [x] 差分監査で `currentViolations = 0`
+- [x] baseline と current の判定軸が分離されている
 
 ### ドキュメント要件
 
-- [ ] 本未タスク指示書が `docs/30-workflows/unassigned-task/` に配置されている
-- [ ] `task-workflow.md` 残課題テーブルへ登録済み
-- [ ] 苦戦箇所（3.5）が再利用可能な形式で記録されている
+- [x] 本未タスク指示書が `docs/30-workflows/completed-tasks/unassigned-task/` に配置されている
+- [x] `task-workflow.md` 残課題テーブルへ登録済み
+- [x] 苦戦箇所（3.5）が再利用可能な形式で記録されている
 
 ---
 
@@ -225,7 +227,7 @@ Phase 12 で未タスク指示書を `completed-tasks/` へ移管した際、台
 rg -n "task-imp-phase12-completed-task-reference-sync-guard-001|unassigned-task/.*<対象ID>" docs/30-workflows .claude/skills/aiworkflow-requirements/references/task-workflow.md
 node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js
 node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD
-node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md
+node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --target-file docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md
 ```
 
 ---
