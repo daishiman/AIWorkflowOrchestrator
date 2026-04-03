@@ -508,6 +508,8 @@ export function SkillLifecyclePanel({
   const applyWorkflowSnapshot = useCallback(
     (snapshot: SkillCreatorWorkflowUiSnapshot) => {
       setWorkflowSnapshot(snapshot);
+      // handoff 時はエラーメッセージを保持する
+      // fire-and-forget 配信では後続スナップショットでエラーが消えるバグ（Issue #1844）を防ぐ
       if (snapshot.currentPhase !== "handoff") {
         setWorkflowError(null);
       }

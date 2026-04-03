@@ -3,6 +3,15 @@
 ## 役割
 
 ---
+## 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 final close-out sync
+
+### 変更内容
+- `SkillLifecyclePanel.tsx` の handoff エラー保持コメント 2 行を current facts へ反映
+- `SkillLifecyclePanel.error-persistence.test.tsx` の TC-EP-01〜08 を current workflow の実行記録として同期
+- `phase-12-documentation-guide.md` / `spec-update-workflow.md` に implementation-first / NON_VISUAL / callback capture の追補を追加
+- `SKILL.md` 変更履歴と current logs を same-wave で確認
+
+---
 ## 2026-04-02 - TASK-NOTIFICATION-SERVICE-001 Phase 12 close-out sync
 
 ### 変更内容
@@ -1641,3 +1650,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/step-04-seq-task-05-schema-extension/`（phase-2 / phase-12 / phase-13 / outputs / unassigned-task） |
 | 結果 | Phase 12 の実装ガイド・未タスク・skill-feedback を `provider-registry.ts` 前提へ同期し、Phase 13 の PR 準備と最終確認を current facts へ是正。`TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` を削除済みとして整理 |
 | 検証 | `provider.test.ts` 41 PASS、`llm.test.ts` 59 PASS / 1 skipped、workflow 内検索で旧想定パスの残存を解消確認 |
+
+## TASK-FIX-LIFECYCLE-PANEL-ERROR-001 完了（2026-04-03）
+
+| 項目 | 値 |
+| --- | --- |
+| 種別 | バグ修正 / コメント追加 + テスト追加 |
+| 変更対象 | `SkillLifecyclePanel.tsx`（コメント 2 行）、`SkillLifecyclePanel.error-persistence.test.tsx`（新規 8 件） |
+| 結果 | applyWorkflowSnapshot の handoff ガード意図を明示化。TC-EP-01〜TC-EP-08 で回帰防止テストを追加 |
+| 検証 | テスト 8/8 PASS、TypeScript PASS |
