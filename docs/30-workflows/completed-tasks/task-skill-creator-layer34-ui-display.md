@@ -575,6 +575,7 @@ UT-IMP-SDK-06でLayer3/4のテストを実装する過程で、バックエン�
 
 ### 関連タスク（今後の検討候補）
 
-- Layer3/4の各check IDに対する日本語説明ラベルの追加（i18n対応）
-- severityフィルタ機能（warning以上のみ表示等）の追加
-- checks全体のsummary統計（pass率等）のダッシュボード表示
+- [task-skill-creator-layer34-ui-display-japanese-labels.md](../unassigned-task/task-skill-creator-layer34-ui-display-japanese-labels.md): Layer3/4 の各 check ID に対する日本語ラベル表示
+- [task-skill-creator-layer34-ui-display-severity-filter.md](../unassigned-task/task-skill-creator-layer34-ui-display-severity-filter.md): severity フィルタ機能（warning 以上のみ表示等）
+- [task-skill-creator-layer34-verify-layergroup-split.md](../unassigned-task/task-skill-creator-layer34-verify-layergroup-split.md): VerifyLayerGroup 分離リファクタ
+- checks 全体の summary 統計（pass率等）のダッシュボード表示は、まだ正式な spec にしていない候補

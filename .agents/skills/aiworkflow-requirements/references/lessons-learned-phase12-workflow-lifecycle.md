@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-03 | 1.9.2      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 current facts sync（L-LIFECYCLE-EP-001〜003 / setupCallbackCapture / NON_VISUAL state-only 判定を current facts へ反映）                                                   |
 | 2026-04-02 | 1.9.1      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 教訓3件を追加（L-LIFECYCLE-ERR-001: `handoff` guard の共通 helper 化 / L-LIFECYCLE-ERR-002 stale `phase: 'failed'` 語彙の除去 / L-LIFECYCLE-ERR-003 NON_VISUAL blocker を PASS へ偽装しない） |
 | 2026-04-01 | 1.9.0      | TASK-SC-DIALOG-MANDATORY-001 教訓3件を追加（L-SC-DIALOG-001: 宣言型→命令型転換 / L-SC-DIALOG-002: 実行ゲートパターン / L-SC-DIALOG-003: graceful degradation で problem-definition.json 欠損時エラー停止を回避） |
 | 2026-03-31 | 1.8.9      | TASK-ELECTRON-BUILD-FIX の Phase 4/5 教訓3件を追加（Rosetta 2 arch 検出 / pnpm strict resolution Phase 2 設計 / 並列化効果）                                                                                     |
@@ -1161,3 +1162,34 @@
 | 解決策     | 欠損時処理を「AskUserQuestion で問題定義を収集して作成する（エラー停止しない）」に変更。前提成果物がなくても対話的に補完できるようにした                      |
 | 標準ルール | 前提成果物の欠損は fatal error ではなく「収集のトリガー」として扱う。happy path 以外からの呼び出しでも graceful に対応できる設計が望ましい                    |
 | 関連タスク | TASK-SC-DIALOG-MANDATORY-001                                                                                                                                  |
+
+---
+
+## 2026-04-03 TASK-FIX-LIFECYCLE-PANEL-ERROR-001 handoff エラー保持パターン
+
+### L-LIFECYCLE-EP-001: fire-and-forget IPC では後続スナップショットによるエラークリア防止が必要
+
+| 項目       | 内容                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` が fire-and-forget で配信されると、エラー設定後の後続スナップショットで `setWorkflowError(null)` が呼ばれエラーが消える |
+| 解決策     | `currentPhase === "handoff"` 単一条件で `setWorkflowError(null)` 呼び出しをガード。コメントに Issue 番号を明記 |
+| 標準ルール | IPC fire-and-forget パターンを採用する場合、Renderer state のエラー保持を壊さないようスナップショット受信コールバックにフェーズ別ガードを設ける |
+| 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001（Issue #1844）                                                                                                             |
+
+### L-LIFECYCLE-EP-002: setupCallbackCapture パターンで IPC コールバックを確定的にテスト
+
+| 項目       | 内容                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | IPC コールバック（`onWorkflowStateChanged`）は非同期イベントのため、テストで確定的に再現するのが難しい                                                   |
+| 解決策     | `mockOnWorkflowStateChanged.mockImplementation(cb => { capturedCallback = cb; return () => {}; })` でコールバックをキャプチャし、`triggerCallback()` で任意のタイミングで呼び出す |
+| 標準ルール | IPC コールバックのテストは `setupCallbackCapture()` パターンを使う。コンポーネントの `useEffect` 登録を経由するため `render` + `act` の組み合わせが必要 |
+| 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                                                                                      |
+
+### L-LIFECYCLE-EP-003: NON_VISUAL 判定基準 — state 変更のみは自動テストで代替可能
+
+| 項目       | 内容                                                                                                                                   |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | UI コンポーネントの変更でも state 管理のみの修正はスクリーンショットが不要だが、基準が曖昧で個別判断になっていた                       |
+| 解決策     | 「React state レベルの変更のみで視覚的 UI 変化を伴わない場合は NON_VISUAL」と明示。自動テストで state 変更を完全検証できれば Phase 11 はスクリーンショット不要 |
+| 標準ルール | `setXxx(null)` / `setXxx(value)` の呼び出し制御のみの修正は NON_VISUAL と判定する。UI 描画の変更を伴う場合のみスクリーンショットが必要 |
+| 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                                                                     |

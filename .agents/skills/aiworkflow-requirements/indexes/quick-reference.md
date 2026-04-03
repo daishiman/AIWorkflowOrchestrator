@@ -26,6 +26,19 @@
 
 ---
 
+### UI Visual Baseline Drift / dark-mode screenshot stability（2026-04-03）
+
+| 目的                 | 最初に開くファイル                                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| dark-mode baseline   | `references/workflow-ui-ux-visual-baseline-drift.md`                                                                                                        |
+| workflow root        | `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/`                                                                                      |
+| screenshot evidence  | `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/manual-test-result.md`, `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/screenshots/` |
+| completed ledger     | `references/task-workflow-completed-ui-ux-visual-baseline-drift.md`                                                                                         |
+| lessons / reuse card | `references/lessons-learned-ui-ux-visual-baseline-drift.md`, `references/ui-ux-design-system.md`                                                            |
+| same-wave sync       | `references/task-workflow.md`, `indexes/resource-map.md`                                                                                                    |
+
+---
+
 ### Runtime Skill Creator Public IPC 即時導線（2026-03-21）
 
 | 目的                      | 最初に開くファイル                                                       |
