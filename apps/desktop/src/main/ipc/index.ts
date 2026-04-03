@@ -1,4 +1,11 @@
-import { BrowserWindow, nativeTheme, ipcMain, net } from "electron";
+import {
+  BrowserWindow,
+  nativeTheme,
+  ipcMain,
+  net,
+  app,
+  dialog,
+} from "electron";
 import fs from "fs/promises";
 import path from "path";
 import Store from "electron-store";
@@ -98,6 +105,8 @@ import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import { RuntimePolicyResolver } from "../services/runtime/RuntimePolicyResolver";
 import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
+import { ElectronNotificationService } from "../services/notification/ElectronNotificationService";
+import { registerBeforeQuitGuard } from "./beforeQuitGuard";
 import { SkillCreatorSourceResolver } from "../services/runtime/SkillCreatorSourceResolver";
 import { PhaseResourcePlanner } from "../services/runtime/PhaseResourcePlanner";
 import { ResolvedResourceReader } from "../services/runtime/ResolvedResourceReader";
@@ -123,6 +132,10 @@ import type { ShareError, ShareResult } from "@repo/shared";
 
 // setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
 let themeWatcherUnsubscribe: (() => void) | null = null;
+
+// before-quit guard の解除関数をモジュールスコープで保持 (TASK-NOTIFICATION-SERVICE-001)
+
+let _unregisterBeforeQuitGuardFn: (() => void) | null = null;
 
 /** ハンドラ登録失敗情報 */
 export interface HandlerRegistrationFailure {
@@ -473,6 +486,12 @@ export function unregisterAllIpcHandlers(): void {
   if (themeWatcherUnsubscribe) {
     themeWatcherUnsubscribe();
     themeWatcherUnsubscribe = null;
+  }
+
+  // before-quit guard を解除 (TASK-NOTIFICATION-SERVICE-001)
+  if (_unregisterBeforeQuitGuardFn) {
+    _unregisterBeforeQuitGuardFn();
+    _unregisterBeforeQuitGuardFn = null;
   }
 }
 
@@ -1000,6 +1019,8 @@ export function registerAllIpcHandlers(
     const sourceResolver = new SkillCreatorSourceResolver();
     const resourcePlanner = new PhaseResourcePlanner();
     const resolvedResourceReader = new ResolvedResourceReader(resourceLoader);
+    // OS ネイティブ通知サービス DI 注入 (TASK-NOTIFICATION-SERVICE-001)
+    const notificationService = new ElectronNotificationService();
     const runtimeSkillCreatorService = skillExecutor
       ? new RuntimeSkillCreatorFacade({
           skillExecutor,
@@ -1010,8 +1031,18 @@ export function registerAllIpcHandlers(
           resourcePlanner,
           resolvedResourceReader,
           skillFileManager, // improve() / applyImprovement() で SKILL.md 読み書きに使用
+          notificationService,
         })
       : undefined;
+
+    // before-quit guard 登録 (TASK-NOTIFICATION-SERVICE-001)
+    if (runtimeSkillCreatorService) {
+      _unregisterBeforeQuitGuardFn = registerBeforeQuitGuard({
+        app,
+        dialog,
+        facade: runtimeSkillCreatorService,
+      });
+    }
 
     // LLMAdapter を非同期で取得し Setter Injection（fire-and-forget — P34 準拠）
     if (runtimeSkillCreatorService) {

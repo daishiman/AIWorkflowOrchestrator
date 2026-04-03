@@ -13,7 +13,7 @@
 ## 目的
 
 Phase 4 で Red 状態のテストを Green にするための実装を行う。
-Phase 2 の設計に従い、4 本のファイルを新規作成または修正する。
+Phase 2 の設計に従い、ファイルを新規作成または修正する。
 
 ---
 
@@ -79,7 +79,7 @@ export class ElectronNotificationService implements INotificationService {
 
 **修正先:** `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
 
-**修正内容（3 箇所）:**
+**修正内容（4 箇所）:**
 
 #### 修正箇所 1: `RuntimeSkillCreatorFacadeDeps` への `notificationService` 追加
 
@@ -91,7 +91,7 @@ interface RuntimeSkillCreatorFacadeDeps {
 }
 ```
 
-#### 修正箇所 2: `executeAsync` 完了時に `notify()` を呼ぶ
+#### 修正箇所 2: `execute` 完了時に `notify()` を呼ぶ
 
 完了処理の後（`webContents.send(STATE_CHANGED, { phase: 'completed' })` の直後）に追加:
 
@@ -103,7 +103,7 @@ try {
 }
 ```
 
-#### 修正箇所 3: `executeAsync` 失敗時（catch ブロック）に `notify()` を呼ぶ
+#### 修正箇所 3: `execute` 失敗時（catch ブロック）に `notify()` を呼ぶ
 
 エラー処理の後（`webContents.send(STATE_CHANGED, { phase: 'failed', error })` の直後）に追加:
 
@@ -118,19 +118,21 @@ try {
 
 #### 修正箇所 4: `hasRunningExecution()` メソッドの追加
 
-既存の実行状態管理変数（`runningExecutions: Map<string, ...>` または相当の変数）を確認した上で:
+既存の実行管理変数がない場合は、カウンタを追加し `execute` の `try/finally` で増減する:
 
 ```typescript
+private activeExecutionCount = 0;
+
 hasRunningExecution(): boolean {
-  return this.runningExecutions.size > 0
+  return this.activeExecutionCount > 0;
 }
 ```
 
-既存の実行管理変数がない場合は、`executeAsync` 開始時に `this.runningExecutions.set(executionId, ...)` を追加し、完了/失敗時に `this.runningExecutions.delete(executionId)` を追加する。
+`execute` 開始時に `activeExecutionCount += 1`、`finally` で `activeExecutionCount -= 1` を実施する。
 
-### タスク 5-4: `apps/desktop/src/main/index.ts` の修正
+### タスク 5-4: `apps/desktop/src/main/ipc/index.ts` の修正
 
-**修正先:** `apps/desktop/src/main/index.ts`
+**修正先:** `apps/desktop/src/main/ipc/index.ts`
 
 **修正内容（2 箇所）:**
 
@@ -139,7 +141,8 @@ hasRunningExecution(): boolean {
 `RuntimeSkillCreatorFacade` のインスタンス化箇所を探し、`ElectronNotificationService` を DI 注入する:
 
 ```typescript
-import { ElectronNotificationService } from "./services/notification/ElectronNotificationService";
+import { ElectronNotificationService } from "../services/notification/ElectronNotificationService";
+import { registerBeforeQuitGuard } from "./beforeQuitGuard";
 
 // RuntimeSkillCreatorFacade のインスタンス化時
 const notificationService = new ElectronNotificationService();
@@ -147,15 +150,55 @@ const facade = new RuntimeSkillCreatorFacade({
   // 既存の deps
   notificationService,
 });
+
+const unregisterBeforeQuitGuard = registerBeforeQuitGuard({
+  app,
+  dialog,
+  facade,
+});
 ```
 
-#### 修正箇所 2: `app.on('before-quit', ...)` ガードの追加
+#### 修正箇所 2: `before-quit` ガードの登録と解除
 
-`app.on('ready', ...)` または アプリ初期化後のセクションに追加:
+`registerAllIpcHandlers()` の中で `registerBeforeQuitGuard()` を呼び出し、`unregisterAllIpcHandlers()` で解除する:
 
 ```typescript
-app.on("before-quit", (event) => {
-  if (facade.hasRunningExecution()) {
+const unregisterBeforeQuitGuard = registerBeforeQuitGuard({
+  app,
+  dialog,
+  facade,
+});
+
+// unregisterAllIpcHandlers 内
+unregisterBeforeQuitGuard();
+```
+
+### タスク 5-5: `beforeQuitGuard.ts` の新規作成
+
+**作成先:** `apps/desktop/src/main/ipc/beforeQuitGuard.ts`
+
+**実装内容:**
+
+```typescript
+import type { App, Dialog } from "electron";
+import type { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
+
+type BeforeQuitGuardDeps = {
+  app: App;
+  dialog: Dialog;
+  facade: RuntimeSkillCreatorFacade;
+};
+
+export const registerBeforeQuitGuard = ({
+  app,
+  dialog,
+  facade,
+}: BeforeQuitGuardDeps) => {
+  const handler = (event: Electron.Event) => {
+    if (!facade.hasRunningExecution()) {
+      return;
+    }
+
     event.preventDefault();
     dialog
       .showMessageBox({
@@ -168,9 +211,18 @@ app.on("before-quit", (event) => {
         if (response === 0) {
           app.exit(0);
         }
+      })
+      .catch((error: unknown) => {
+        console.warn(
+          "[beforeQuitGuard] Failed to show confirmation dialog",
+          error,
+        );
       });
-  }
-});
+  };
+
+  app.on("before-quit", handler);
+  return () => app.removeListener("before-quit", handler);
+};
 ```
 
 ---
@@ -195,7 +247,7 @@ pnpm --filter @repo/desktop test -- ElectronNotificationService
 pnpm --filter @repo/desktop test -- RuntimeSkillCreatorFacade.notification
 
 # before-quit guard テスト
-pnpm --filter @repo/desktop test -- before-quit-guard
+pnpm --filter @repo/desktop test -- beforeQuitGuard
 ```
 
 全テストが **Green（成功）** になることを確認する。
@@ -250,11 +302,15 @@ pnpm --filter @repo/desktop lint
 
 `RuntimeSkillCreatorFacade.ts` を読み込み、タスク 5-3 の 4 箇所を修正する。
 
-### ステップ 4: `index.ts` の修正
+### ステップ 4: `ipc/index.ts` の修正
 
-`apps/desktop/src/main/index.ts` を読み込み、タスク 5-4 の 2 箇所を修正する。
+`apps/desktop/src/main/ipc/index.ts` を読み込み、タスク 5-4 の 2 箇所を修正する。
 
-### ステップ 5: 型チェック・テスト・lint の実行
+### ステップ 5: `beforeQuitGuard.ts` の作成
+
+タスク 5-5 の内容を実装する。
+
+### ステップ 6: 型チェック・テスト・lint の実行
 
 上記「実装後の確認手順」を全て実行し、全て Green であることを確認する。
 
@@ -264,7 +320,7 @@ pnpm --filter @repo/desktop lint
 
 | 観点                           | 確認内容                                                                 |
 | ------------------------------ | ------------------------------------------------------------------------ |
-| 実装の完全性                   | 新規 2 本 + 修正 2 本が全て変更されていること                            |
+| 実装の完全性                   | 新規 3 本 + 修正 2 本が全て変更されていること                            |
 | 型安全性                       | `INotificationService` を import する全箇所で型が解決されていること      |
 | 通知失敗の安全性               | `notify()` 呼び出しが `try/catch` でラップされていること                 |
 | 既存コードへの影響             | `RuntimeSkillCreatorFacade` の既存テストが引き続き Green であること      |
@@ -278,8 +334,9 @@ pnpm --filter @repo/desktop lint
 | ------------------------------------- | ---------------------------------------------------------------------------- | -------- |
 | INotificationService                  | `apps/desktop/src/main/services/notification/INotificationService.ts`        | 新規作成 |
 | ElectronNotificationService           | `apps/desktop/src/main/services/notification/ElectronNotificationService.ts` | 新規作成 |
+| beforeQuitGuard                       | `apps/desktop/src/main/ipc/beforeQuitGuard.ts`                               | 新規作成 |
 | RuntimeSkillCreatorFacade（修正済み） | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`        | 修正済み |
-| index.ts（修正済み）                  | `apps/desktop/src/main/index.ts`                                             | 修正済み |
+| ipc/index.ts（修正済み）              | `apps/desktop/src/main/ipc/index.ts`                                         | 修正済み |
 
 ---
 
@@ -288,11 +345,11 @@ pnpm --filter @repo/desktop lint
 - [ ] `INotificationService.ts` が新規作成された
 - [ ] `ElectronNotificationService.ts` が新規作成された（`Notification.isSupported()` ガード付き）
 - [ ] `RuntimeSkillCreatorFacadeDeps` に `notificationService: INotificationService` が追加された
-- [ ] `executeAsync` の完了時に `notify('スキル作成完了', skillName)` が `try/catch` でラップして呼ばれる
-- [ ] `executeAsync` の失敗時に `notify('スキル作成失敗', errorSummary)` が `try/catch` でラップして呼ばれる
+- [ ] `execute` の完了時に `notify('スキル作成完了', skillName)` が `try/catch` でラップして呼ばれる
+- [ ] `execute` の失敗時に `notify('スキル作成失敗', errorSummary)` が `try/catch` でラップして呼ばれる
 - [ ] `hasRunningExecution()` メソッドが追加された
-- [ ] `index.ts` に `ElectronNotificationService` の DI 注入が追加された
-- [ ] `index.ts` に `before-quit` ガードが追加された
+- [ ] `ipc/index.ts` に `ElectronNotificationService` の DI 注入が追加された
+- [ ] `beforeQuitGuard.ts` が作成され、`ipc/index.ts` から登録されている
 - [ ] `pnpm --filter @repo/desktop typecheck` が 0 エラーで通過した
 - [ ] TC-E-01〜TC-E-03、TC-F-01〜TC-F-05、TC-B-01〜TC-B-02 が全て Green になった
 - [ ] `pnpm vitest run` で既存テストに新規失敗がないこと
@@ -305,7 +362,7 @@ pnpm --filter @repo/desktop lint
 
 Phase 5 完了時に以下を明記すること:
 
-- 作成・修正したファイル 4 本の一覧
+- 作成・修正したファイル一覧
 - typecheck / test / lint の実行結果（エラー数）
 - テスト Green 確認（TC 番号と結果の一覧）
 

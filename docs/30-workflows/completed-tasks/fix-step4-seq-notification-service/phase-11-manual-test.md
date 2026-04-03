@@ -23,6 +23,7 @@
 通知は macOS ネイティブ通知（OS 管理の UI）であり、アプリ内の Renderer Process UI には変更がない。
 
 スクリーンショットの添付は任意だが、通知ポップアップとダイアログの画面記録が推奨される。
+NON_VISUAL であっても手動テストのチェックリストと検出課題は必須成果物とする。
 
 ---
 
@@ -80,6 +81,17 @@ pnpm --filter @repo/desktop dev
 
 ## 記録フォーマット
 
+`outputs/phase-11/manual-test-checklist.md` に以下の形式で記録する:
+
+```markdown
+## 手動テストチェックリスト
+
+- [ ] MTC-01: スキル生成完了通知
+- [ ] MTC-02: スキル生成失敗通知
+- [ ] MTC-03: before-quit ガード（生成中）
+- [ ] MTC-04: before-quit ガード（生成中でない）
+```
+
 `outputs/phase-11/manual-test-result.md` に以下の形式で記録する:
 
 ```markdown
@@ -115,6 +127,14 @@ PASS / FAIL
 備考: <補足事項>
 ```
 
+`outputs/phase-11/discovered-issues.md` に以下の形式で記録する:
+
+```markdown
+## 検出課題
+
+- なし（検出課題がない場合はこの行を残す）
+```
+
 ---
 
 ## 参照資料
@@ -131,24 +151,33 @@ PASS / FAIL
 | ---------------- | ---------------------------------------------------------------------------- |
 | 最終レビュー結果 | `outputs/phase-10/final-review-result.md`                                    |
 | 実装ファイル     | `apps/desktop/src/main/services/notification/ElectronNotificationService.ts` |
+| ガード実装       | `apps/desktop/src/main/ipc/beforeQuitGuard.ts`                               |
 
 ---
 
 ## 実行手順
 
-### ステップ 1: アプリ起動
+### ステップ 1: 手動テストチェックリストの作成
+
+`outputs/phase-11/manual-test-checklist.md` を作成し、MTC-01〜MTC-04 を記載する。
+
+### ステップ 2: アプリ起動
 
 ```bash
 pnpm --filter @repo/desktop dev
 ```
 
-### ステップ 2: MTC-01〜MTC-04 の実施
+### ステップ 3: MTC-01〜MTC-04 の実施
 
 各テストケースを順番に実施し、結果を記録する。
 
-### ステップ 3: 手動テスト結果の作成
+### ステップ 4: 手動テスト結果の作成
 
 `outputs/phase-11/manual-test-result.md` に結果を記録する。
+
+### ステップ 5: 検出課題の記録
+
+`outputs/phase-11/discovered-issues.md` に検出課題を記録する。課題がない場合は「なし」と明記する。
 
 ---
 
@@ -165,9 +194,11 @@ pnpm --filter @repo/desktop dev
 
 ## 成果物
 
-| 成果物         | パス                                     | 説明                      |
-| -------------- | ---------------------------------------- | ------------------------- |
-| 手動テスト結果 | `outputs/phase-11/manual-test-result.md` | MTC-01〜MTC-04 の実施記録 |
+| 成果物                   | パス                                        | 説明                          |
+| ------------------------ | ------------------------------------------- | ----------------------------- |
+| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md` | MTC-01〜MTC-04 のチェック項目 |
+| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`    | MTC-01〜MTC-04 の実施記録     |
+| 検出課題                 | `outputs/phase-11/discovered-issues.md`     | 追加課題の有無を記録          |
 
 ---
 
@@ -175,7 +206,9 @@ pnpm --filter @repo/desktop dev
 
 - [ ] MTC-01〜MTC-04 を全て実施した
 - [ ] 全テストケースが PASS した
+- [ ] `outputs/phase-11/manual-test-checklist.md` が作成された
 - [ ] `outputs/phase-11/manual-test-result.md` に実施記録が保存された
+- [ ] `outputs/phase-11/discovered-issues.md` が作成された
 - [ ] NON_VISUAL タスクである旨がこのファイルに記載されている
 - [ ] **本 Phase 内の全タスクを 100% 実行完了**
 
@@ -185,9 +218,11 @@ pnpm --filter @repo/desktop dev
 
 Phase 11 完了時に以下を明記すること:
 
+- MTC-01〜MTC-04 のチェックリスト完了状況
 - MTC-01〜MTC-04 の判定結果（PASS / FAIL）
 - 総合判定（PASS / FAIL）
 - FAIL があった場合は原因と対処方針
+- 検出課題の有無
 
 ---
 

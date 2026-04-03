@@ -22,29 +22,29 @@ PASS であれば Phase 11（手動テスト）へ進む。MAJOR であれば指
 
 ### タスク 10-1: 最終レビュー観点の確認
 
-| 観点                               | 確認内容                                                             | 判定    |
-| ---------------------------------- | -------------------------------------------------------------------- | ------- |
-| AC 充足                            | AC-1〜AC-9 が Phase 9 で全て PASS                                    | PENDING |
-| テスト Green                       | TC-E-01〜TC-E-05、TC-F-01〜TC-F-08、TC-B-01〜TC-B-02 が全て Green    | PENDING |
-| typecheck 通過                     | `pnpm --filter @repo/desktop typecheck` が 0 エラー                  | PENDING |
-| lint 通過                          | `pnpm --filter @repo/desktop lint` が 0 エラー                       | PENDING |
-| カバレッジ目標達成                 | `ElectronNotificationService.ts` のブランチカバレッジが 100%         | PENDING |
-| リグレッションなし                 | 既存テストに新規失敗がないこと                                       | PENDING |
-| セキュリティ境界                   | `ElectronNotificationService` が Main Process 外に漏洩していないこと | PENDING |
-| `notificationHandlers.ts` 競合なし | `git diff notificationHandlers.ts` に変更がないこと                  | PENDING |
-| リスク管理完了                     | Phase 9 のリスク管理表が作成されていること                           | PENDING |
+| 観点                               | 確認内容                                                                             | 判定    |
+| ---------------------------------- | ------------------------------------------------------------------------------------ | ------- |
+| AC 充足                            | AC-1〜AC-9 が Phase 9 で全て PASS                                                    | PENDING |
+| テスト Green                       | TC-E-01〜TC-E-05、TC-F-01〜TC-F-08、TC-B-01〜TC-B-03 が全て Green                    | PENDING |
+| typecheck 通過                     | `pnpm --filter @repo/desktop typecheck` が 0 エラー                                  | PENDING |
+| lint 通過                          | `pnpm --filter @repo/desktop lint` が 0 エラー                                       | PENDING |
+| カバレッジ目標達成                 | `ElectronNotificationService.ts` と `beforeQuitGuard.ts` のブランチカバレッジが 100% | PENDING |
+| リグレッションなし                 | 既存テストに新規失敗がないこと                                                       | PENDING |
+| セキュリティ境界                   | `ElectronNotificationService` が Main Process 外に漏洩していないこと                 | PENDING |
+| `notificationHandlers.ts` 競合なし | `git diff apps/desktop/src/main/ipc/notificationHandlers.ts` に変更がないこと        | PENDING |
+| リスク管理完了                     | Phase 9 のリスク管理表が作成されていること                                           | PENDING |
 
 ### タスク 10-2: 差し戻し条件の確認
 
 以下のいずれかが発生した場合は差し戻す:
 
-| 条件                                   | 差し戻し先                  |
-| -------------------------------------- | --------------------------- |
-| AC のいずれかが FAIL                   | Phase 5（実装）             |
-| テストが失敗している                   | Phase 5 または Phase 6      |
-| typecheck / lint エラーがある          | Phase 8（リファクタリング） |
-| セキュリティ境界の侵害                 | Phase 5（実装）             |
-| `notificationHandlers.ts` に変更がある | Phase 5（実装）             |
+| 条件                                                             | 差し戻し先                  |
+| ---------------------------------------------------------------- | --------------------------- |
+| AC のいずれかが FAIL                                             | Phase 5（実装）             |
+| テストが失敗している                                             | Phase 5 または Phase 6      |
+| typecheck / lint エラーがある                                    | Phase 8（リファクタリング） |
+| セキュリティ境界の侵害                                           | Phase 5（実装）             |
+| `apps/desktop/src/main/ipc/notificationHandlers.ts` に変更がある | Phase 5（実装）             |
 
 ### タスク 10-3: ゲート判定
 
@@ -105,12 +105,12 @@ FAIL 項目があれば差し戻し条件（タスク 10-2）と照合し、差�
 
 ## 多角的チェック観点
 
-| 観点               | 確認内容                                                         |
-| ------------------ | ---------------------------------------------------------------- |
-| 網羅性             | Phase 1 で定義した AC-1〜AC-9 が全て実装で満たされていること     |
-| 安全性             | 通知失敗・`before-quit` ガードが副作用なく動作する設計であること |
-| 後方互換性         | 既存機能に影響を与えていないこと                                 |
-| 手動テスト準備完了 | Phase 11 の手動テスト手順に必要な環境が整っていること            |
+| 観点               | 確認内容                                                       |
+| ------------------ | -------------------------------------------------------------- |
+| 網羅性             | Phase 1 で定義した AC-1〜AC-9 が全て実装で満たされていること   |
+| 安全性             | 通知失敗・`beforeQuitGuard` が副作用なく動作する設計であること |
+| 後方互換性         | 既存機能に影響を与えていないこと                               |
+| 手動テスト準備完了 | Phase 11 の手動テスト手順に必要な環境が整っていること          |
 
 ---
 
