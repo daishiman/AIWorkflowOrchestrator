@@ -21,6 +21,16 @@
 - aiworkflow-requirements/LOGS.md と同波で更新
 
 ---
+## 2026-04-03 - UT-SDK-L34-UI-DISPLAY-001 タスク仕様書作成（spec_created）
+
+### 変更内容
+- Phase 1〜13 全仕様書を新規作成（`docs/30-workflows/task-ut-sdk-l34-ui-display-001/`）
+- UIタスク分類を Phase 1 で宣言（`SkillLifecyclePanel.tsx` Renderer のみ変更・IPC変更なし）
+- TDD設計: TC-01〜TC-19 の19テストケース（Layer別グルーピング・アコーディオン・severityアイコン・バッジ集計）
+- `task-workflow-backlog.md` に UT-SDK-L34-UI-DISPLAY-001 を登録（中優先度）
+- SKILL.md v6.18.22 更新
+
+---
 ## 2026-04-02 - TASK-NOTIFICATION-SERVICE-001 Phase 12 close-out sync
 
 ### 変更内容
