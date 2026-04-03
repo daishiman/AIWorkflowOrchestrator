@@ -412,6 +412,7 @@ export type SkillCreatorWorkflowPhase =
   | "execute"
   | "verify"
   | "improve"
+  | "reverify"
   | "handoff";
 
 export type SkillCreatorUserInputKind =
@@ -651,6 +652,7 @@ export interface RuntimeSkillCreatorVerifyDetail {
     | "execute"
     | "verify"
     | "improve"
+    | "reverify"
     | "handoff";
   status: "pending" | "pass" | "fail";
   message?: string;
