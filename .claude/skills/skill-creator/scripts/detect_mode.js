@@ -41,6 +41,12 @@ const MODE_KEYWORDS = {
     "プロンプト改善", "プロンプト最適化", "agents/を改善", "Task仕様書を",
     "improve prompt", "optimize prompt", "agents改善", "プロンプトを改善",
     "プロンプトの改善", "プロンプトを最適化"
+  ],
+  collaborative: [
+    "対話", "インタビュー", "会話", "一緒に", "collaborative", "interactive", "chat"
+  ],
+  orchestrate: [
+    "実行エンジン", "codex", "gemini", "エンジン選択", "orchestrate", "assign", "委譲"
   ]
 };
 

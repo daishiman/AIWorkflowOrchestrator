@@ -126,6 +126,10 @@ export default defineConfig({
         __dirname,
         "src/test/__mocks__/@anthropic-ai/claude-agent-sdk.ts",
       ),
+      "@repo/shared/ipc/channels": resolve(
+        __dirname,
+        "../../packages/shared/src/ipc/channels.ts",
+      ),
     },
   },
 });

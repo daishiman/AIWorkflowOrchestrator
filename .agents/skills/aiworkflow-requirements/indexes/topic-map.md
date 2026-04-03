@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-01
+> 自動生成: 2026-04-03
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -263,8 +263,8 @@ node scripts/list-specs.js --topics
 | セキュリティアーキテクチャ | L146 |
 | 状態管理アーキテクチャ | L180 |
 | データフローアーキテクチャ | L217 |
-| ディレクトリ構造 | L317 |
-| データ構造（型システム） | L381 |
+| ディレクトリ構造 | L319 |
+| データ構造（型システム） | L383 |
 
 ### references/architecture-overview-details.md
 
@@ -906,10 +906,10 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L245 |
 | Electron IPC API設計 | L281 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L423 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L657 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L688 |
-| AIプロバイダーAPI連携 | L719 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L752 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L659 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L690 |
+| AIプロバイダーAPI連携 | L728 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L761 |
 
 ### references/api-ipc-system-details.md
 
@@ -1487,10 +1487,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 実装例: skillCreatorAPI | L6 |
-| 実装例: skillFileAPI（TASK-9A-B） | L186 |
-| 実装例: skillShareAPI（TASK-9F） | L260 |
-| 実装例: skillChainAPI（TASK-9D） | L339 |
-| 実装例: skillScheduleAPI（TASK-9G） | L379 |
+| 実装例: skillFileAPI（TASK-9A-B） | L188 |
+| 実装例: skillShareAPI（TASK-9F） | L262 |
+| 実装例: skillChainAPI（TASK-9D） | L341 |
+| 実装例: skillScheduleAPI（TASK-9G） | L381 |
 
 ### references/security-electron-ipc-history.md
 
@@ -2080,8 +2080,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
 | Claude Code CLI連携（Desktop Main Process） | L19 |
-| Claude CLI Renderer API（Preload API） | L118 |
-| 関連ドキュメント | L311 |
+| Claude CLI Renderer API（Preload API） | L124 |
+| 関連ドキュメント | L317 |
 
 ### references/arch-electron-services-advanced.md
 
@@ -2666,9 +2666,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 1. 定義済み / 接続済み / 可視化済みの区別 | L8 |
 | 2. UI Payload vs. Visual Evidence の区別 | L22 |
 | 3. パストラバーサル対策の実装パターン（null byte check + path.resolve/relative） | L35 |
-| 4. execute-only wiring の警告パターン | L61 |
-| 5. follow-up タスクの formalize タイミング | L82 |
-| 関連ファイル | L92 |
+| 4. phase gap の警告パターン | L61 |
+| 5. follow-up タスクの formalize タイミング | L81 |
+| 6. waitFor + vi.useFakeTimers() 非互換問題（テスト環境） | L91 |
+| 7. canUseTool 引数順序の罠（型が同一な引数の逆転バグ） | L107 |
+| 8. worktree でのテスト実行と esbuild バージョン不一致 | L127 |
+| 関連ファイル | L139 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2737,6 +2740,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L6 |
 | TASK-SKILL-LIFECYCLE-08 / UT-06-005 実装知見（2026-03-17） | L16 |
 | UT-06-005-A 実装知見（2026-03-17） | L170 |
+
+### references/lessons-learned-sdk-session-bridge-vitest-worktree.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-SDK-SC-01: SDK Session Bridge 実装 | L6 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
