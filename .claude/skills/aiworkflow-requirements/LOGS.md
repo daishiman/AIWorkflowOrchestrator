@@ -8,6 +8,9 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 | 見出し                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-04-03 - TASK-SDK-SC-01 sdk-session-bridge Phase 12 close-out sync（`SkillCreatorSdkSession`（`createSdkMcpServer` + `tool` で AskUserQuestion MCP ツール登録 + `query()` 呼び出し）/ `SkillCreatorIpcBridge`（フルライフサイクル IPC ブリッジ）/ `SkillLocator`（fast-glob + mtime キャッシュ）を実装 / 型定義を `packages/shared/src/types/skillCreatorSession.ts`・IPC チャネルを `packages/shared/src/ipc/channels.ts`（SKILL_CREATOR_SESSION_CHANNELS）に追加 / 苦戦箇所4件（esbuild バイナリバージョン不一致 / vi.restoreAllMocks() が vi.fn() の mockResolvedValue を破壊 / @repo/shared/ipc/channels パス未エクスポート / TypeScript 可変状態ナローイング）を lessons-learned-sdk-session-bridge-vitest-worktree.md に記録） |
+| 2026-04-03 - UT-SDK-L34-UI-DISPLAY-001 タスク仕様書作成（Phase 1〜13全仕様書 spec_created / SkillLifecyclePanel checks をLayer別グルーピング・アコーディオン・severityアイコン表示のUI拡張 / TDD設計: TC-01〜TC-19 / task-workflow-backlog.md に登録 / unassigned-task/task-skill-creator-layer34-ui-display.md と整合確認） |
+| 2026-04-03 - TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 Phase 12 skill-feedback 反映（`task-specification-creator/SKILL.md` に Feedback BEFORE-QUIT-001〜003 を反映: Phase 11 非 visual task 代替記録テンプレート追加 / Phase 7 coverage 対象範囲明示ルール追加 / Phase 12 documentation-changelog の workflow-local と global skill sync 分離記録ルール追加。generate-index.js 再実行で indexes を 2026-04-03 時点へ更新） |
 | 2026-04-02 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 Phase 12 close-out sync（`SkillLifecyclePanel.tsx` に `applyWorkflowSnapshot()` を追加し `handoff` 時 error clear 抑止を全 snapshot 経路へ共通化 / `SkillLifecyclePanel.error-persistence.test.tsx` に TC-EP-06〜08 を追加 / backlog の旧 `phase: 'failed'` row を completed 扱いへ移管 / lessons と generated index を same-wave sync / Phase 11 は NON_VISUAL blocker evidence へ是正） |
 | 2026-04-01 - TASK-FIX-ENV-STRIPPING Phase 12 close-out sync（`SkillExecutor.ts` env merge 1-line fix / `SkillExecutor.auth.test.ts` 27 tests PASS / `SkillExecutor.sdk-types.test.ts` 13 tests PASS / `manual-test-result.md` を NON_VISUAL 自動テスト代替 PASS に更新 / `skill-creator-agent-sdk-lane/index.md` の step0 完了同期 / `task-workflow-completed.md` の completed record 追加と UT-RT-06 completed link correction / `generate-index.js` 再実行） |
 | 2026-04-01 - TASK-SC-DIALOG-MANDATORY-001 Phase 12 close-out sync（`skill-creator/SKILL.md` の description に「最初のアクションは必ず AskUserQuestion」を明記 / `discover-problem.md` に実行ゲートブロック追加 / `interview-user.md` の problem-definition.json 欠損時処理を graceful degradation（AskUserQuestion 収集）へ変更 / `lessons-learned-phase12-workflow-lifecycle.md` に L-SC-DIALOG-001〜003 追加 / `lessons-learned-current.md` v3.3.5 更新） |
@@ -562,4 +565,31 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `evaluate-ui-ux.js` に taskContext 受け渡しと screenshot 0 件ガードを追加
   - workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ補正
   - Phase 11/12 文書から placeholder screenshot と `not_run` metadata の current fact を明示
-  - `task-workflow-completed.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `SKILL.md` を same-wave 更新
+- `task-workflow-completed.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `SKILL.md` を same-wave 更新
+
+## TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 skill-feedback 反映（2026-04-03）
+
+- タスク名: TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001
+- 種別: docs sync + skill feedback
+- 主な反映:
+  - `task-specification-creator/SKILL.md` に Feedback BEFORE-QUIT-001〜003 を反映
+  - Phase 11 非 visual task の代替記録テンプレートを追加
+  - Phase 7 coverage の対象範囲明示ルールを追加
+  - Phase 12 documentation-changelog の workflow-local / global skill sync 分離ルールを追加
+  - `generate-index.js` 再実行で indexes を 2026-04-03 時点へ更新
+
+## TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync（2026-04-03）
+
+- タスク名: TASK-FIX-LIFECYCLE-PANEL-ERROR-001
+- 種別: bugfix / workflow close-out / docs sync
+- 主な反映:
+  - `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/index.md` / `phase-1〜12.md` / `artifacts.json` / `outputs/artifacts.json` を current facts へ同期
+  - `task-workflow-completed.md` / `task-workflow-backlog.md` の current path を `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/` へ是正
+  - Phase 10〜12 outputs を current close-out として固定
+  - `generate-index.js` を再実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- 検証:
+  - `pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx --reporter=verbose`: PASS（8/8）
+  - `pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx --reporter=dot`: PASS（10/10）
+  - `pnpm --filter @repo/desktop typecheck`: PASS
+  - `pnpm exec eslint apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx`: PASS（warning のみ）
+  - `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error --json`: PASS（10/10）

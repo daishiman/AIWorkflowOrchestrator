@@ -156,12 +156,30 @@ export const EXECUTION_CHANNELS = {
 export type SkillChannel = (typeof SKILL_CHANNELS)[keyof typeof SKILL_CHANNELS];
 
 /**
+ * スキルクリエイター SDK セッションブリッジ関連のIPCチャネル
+ * TASK-SDK-SC-01: SDK Session Bridge
+ */
+export const SKILL_CREATOR_SESSION_CHANNELS = {
+  /** Renderer → Main: セッション開始リクエスト */
+  START_SESSION: "skill-creator:start-session",
+  /** Main → Renderer: UserInput質問イベント */
+  QUESTION_RECEIVED: "skill-creator:question-received",
+  /** Renderer → Main: ユーザー回答送信 */
+  ANSWER: "skill-creator:answer",
+  /** Main → Renderer: セッション完了通知 */
+  SESSION_COMPLETE: "skill-creator:session-complete",
+  /** Main → Renderer: セッションエラー通知 */
+  SESSION_ERROR: "skill-creator:session-error",
+} as const;
+
+/**
  * すべてのIPCチャネル定数
  */
 export const IPC_CHANNELS = {
   ...CHAT_EXPORT_CHANNELS,
   ...FILE_SYSTEM_CHANNELS,
   ...SKILL_CHANNELS,
+  ...SKILL_CREATOR_SESSION_CHANNELS,
   ...NOTIFICATION_CHANNELS,
   ...HISTORY_SEARCH_CHANNELS,
   ...APPROVAL_CHANNELS,

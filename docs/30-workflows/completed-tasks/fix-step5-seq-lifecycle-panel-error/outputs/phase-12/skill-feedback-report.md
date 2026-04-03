@@ -1,23 +1,21 @@
-# Skill Feedback Report
+# スキルフィードバックレポート
 
-## 対象
+## メタ情報
 
-- `task-specification-creator`
-- `aiworkflow-requirements`
+| 項目       | 内容                               |
+| ---------- | ---------------------------------- |
+| タスクID   | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
+| 作成日     | 2026-04-03                         |
+| 改善提案数 | 2 件                               |
 
-## current wave で反映した改善
+## 改善提案
 
-1. `task-specification-creator`
-   - NON_VISUAL task で placeholder PNG を置かず、`manual-test-result.md` に blocker / 実行コマンド / 代替事実を残すルールへ寄せた
-   - Phase 12 の必須成果物 4 ファイルを workflow 側に揃えた
-2. `aiworkflow-requirements`
-   - `phase: 'failed'` の旧語彙を backlog から除去し、`currentPhase: "handoff"` を正本へ同期した
-   - completed ledger / lessons / logs を same-wave sync した
+1. Phase 11 が NON_VISUAL の場合、証跡の主ソース（自動テスト）と「スクリーンショットを作らない」理由を `manual-test-result.md` のメタ情報に固定で書けるよう、テンプレート側の必須項目化を検討すると漏れが減る。
+2. Phase 7 の coverage 目標が「コールバック全体 90%」のように広すぎる場合、対象ブロック（今回なら `applyWorkflowSnapshot` 付近）の line/branch の実測根拠を必須化すると、巨大ファイルでも判断が安定する。
 
-## 追加の改善提案
+## 適用状況
 
-- なし
-
-## 判定
-
-- current wave で必要な skill feedback は反映済み
+| 番号       | 内容                                                                  | 適用先                                                                          | 状態                     |
+| ---------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------------------------ |
+| Feedback 4 | Phase 11 NON_VISUAL 時 `manual-test-result.md` 証跡メタ必須化         | `task-specification-creator/SKILL.md` 「Phase 12 実行時によくある漏れ」テーブル | **適用済み** (v10.09.31) |
+| Feedback 5 | Phase 7 広域 coverage 目標時の変更ブロック line/branch 実測根拠必須化 | `task-specification-creator/SKILL.md` 「Phase 12 実行時によくある漏れ」テーブル | **適用済み** (v10.09.31) |

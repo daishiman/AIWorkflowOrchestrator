@@ -1253,6 +1253,7 @@ export interface ElectronAPI {
 
   // Skill Creator API (TASK-9B-H)
   skillCreator: import("./skill-creator-api").SkillCreatorAPI;
+  skillCreatorSession: import("./skill-creator-session-api").SkillCreatorSessionAPI;
 
   // Execution / Approval API (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001)
   execution: ExecutionAPI;
@@ -1848,6 +1849,7 @@ declare global {
     conversationAPI: import("../shared/types/conversation").ConversationAPI;
     permissionAPI: PermissionAPI;
     skillCreatorAPI: import("./skill-creator-api").SkillCreatorAPI;
+    skillCreatorSessionAPI: import("./skill-creator-session-api").SkillCreatorSessionAPI;
     skillDebugAPI: SkillDebugAPI;
   }
 }

@@ -837,8 +837,9 @@ export class SkillCreatorWorkflowEngine {
       plan: ["review"],
       review: ["execute", "handoff"],
       execute: ["verify"],
-      verify: ["review", "improve"],
+      verify: ["review", "improve", "reverify"],
       improve: ["execute"],
+      reverify: ["verify", "improve", "handoff"],
       handoff: [],
     };
 
