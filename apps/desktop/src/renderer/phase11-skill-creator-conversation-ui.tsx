@@ -13,6 +13,9 @@ type SkillCreatorSessionAPI = {
   startSession: (request: string, sessionId?: string) => Promise<void>;
   sendAnswer: (answer: UserInputAnswer) => Promise<void>;
   onQuestion: (callback: (question: UserInputQuestion) => void) => () => void;
+  onExternalApiConfigRequired: (
+    callback: (event: { apiName?: string; description?: string }) => void,
+  ) => () => void;
   onComplete: (
     callback: (event: SkillCreatorSessionCompleteEvent) => void,
   ) => () => void;
@@ -69,6 +72,11 @@ window.skillCreatorSessionAPI = {
     return () => {
       completeListeners.delete(callback);
     };
+  },
+  onExternalApiConfigRequired: (
+    _callback: (event: { apiName?: string; description?: string }) => void,
+  ) => {
+    return () => {};
   },
   onError: (callback: (event: SkillCreatorSessionErrorEvent) => void) => {
     errorListeners.add(callback);

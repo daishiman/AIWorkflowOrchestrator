@@ -90,6 +90,13 @@ See [indexes/resource-map.md](indexes/resource-map.md)（読み込み条件付�
 
 **注記**: 18-skills.md（Skill層仕様書）は `skill-creator` スキルで管理。
 
+**External API IPC参照先**（TASK-SDK-SC-03）:
+- 型定義: `packages/shared/src/types/skillCreatorExternalApi.ts`（`ExternalApiConnectionConfig`, `ExternalApiAuthType`, `ExternalApiTimeoutError`, `ExternalApiHttpError`）
+- IPCチャネル: `packages/shared/src/ipc/channels.ts`（`SKILL_CREATOR_EXTERNAL_API_CHANNELS`）
+- SDK統合: `apps/desktop/src/main/services/runtime/SkillCreatorSdkSession.ts`（`RequestExternalApiConfig` custom tool, `sanitizeExternalApiConfigForPrompt()`）
+- IPC Bridge: `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts`
+- HTTP Adapter: `apps/desktop/src/main/services/runtime/adapters/HttpExternalApiAdapter.ts`
+
 ### scripts/
 
 | スクリプト                  | 用途               | 使用例                                       |

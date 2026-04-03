@@ -910,6 +910,7 @@ node scripts/list-specs.js --topics
 | Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L690 |
 | AIプロバイダーAPI連携 | L728 |
 | Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L761 |
+| Skill Creator External API Support（TASK-SDK-SC-03） | L808 |
 
 ### references/api-ipc-system-details.md
 
@@ -1482,6 +1483,7 @@ node scripts/list-specs.js --topics
 | 実装例: slideSettingsAPI | L427 |
 | IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L476 |
 | ApprovalGate セキュリティ契約（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L491 |
+| Skill Creator External API Credential 秘匿化（TASK-SDK-SC-03） | L546 |
 
 ### references/security-electron-ipc-details.md
 
@@ -2673,6 +2675,7 @@ node scripts/list-specs.js --topics
 | TASK-RT-06 教訓（2026-03-29） | L910 |
 | UT-IMP-SDK-06 教訓（2026-04-01） | L932 |
 | TASK-P0-04 教訓（2026-03-30） | L963 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L975 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 

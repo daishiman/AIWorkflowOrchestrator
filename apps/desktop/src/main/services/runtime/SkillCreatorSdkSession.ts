@@ -27,6 +27,7 @@ import type {
 } from "@anthropic-ai/claude-agent-sdk";
 import { z } from "zod";
 import type {
+  ExternalApiConnectionConfig,
   ISkillCreatorSessionState,
   UserInputAnswer,
   UserInputQuestion,
@@ -35,6 +36,7 @@ import type {
 
 const TIMEOUT_MS = 30_000;
 const ASK_USER_SERVER_NAME = "skill-creator-user-input";
+const REQUEST_EXTERNAL_API_CONFIG_TOOL_NAME = "RequestExternalApiConfig";
 const ASK_USER_TYPES: UserInputType[] = [
   "single_select",
   "multi_select",
@@ -42,6 +44,11 @@ const ASK_USER_TYPES: UserInputType[] = [
   "secret",
   "confirm",
 ];
+
+export interface ExternalApiConfigRequiredPayload {
+  apiName?: string;
+  description?: string;
+}
 
 type CallToolResult = {
   content: Array<{
@@ -56,6 +63,12 @@ export class SkillCreatorSdkSession {
   private pendingResolve: ((answerText: string) => void) | null = null;
   private pendingReject: ((error: Error) => void) | null = null;
   private pendingAnswerPromise: Promise<string> | null = null;
+  private pendingExternalApiResolve:
+    | ((config: ExternalApiConnectionConfig) => void)
+    | null = null;
+  private pendingExternalApiReject: ((error: Error) => void) | null = null;
+  private pendingExternalApiPromise: Promise<ExternalApiConnectionConfig> | null =
+    null;
   private timeoutHandle: ReturnType<typeof setTimeout> | null = null;
   private abortController: AbortController | null = null;
   private mcpServer: ReturnType<typeof createSdkMcpServer> | null = null;
@@ -65,6 +78,9 @@ export class SkillCreatorSdkSession {
     sessionId: string,
     private readonly skillCreatorDir: string,
     private readonly onQuestion: (question: UserInputQuestion) => void,
+    private readonly onExternalApiConfigRequired: (
+      payload: ExternalApiConfigRequiredPayload,
+    ) => void,
     private readonly onComplete: (result: string) => void,
     private readonly onError: (error: string) => void,
   ) {
@@ -101,7 +117,10 @@ export class SkillCreatorSdkSession {
       this.mcpServer = createSdkMcpServer({
         name: this.askUserQuestionServerName,
         version: "1.0.0",
-        tools: [this.buildAskUserQuestionTool()],
+        tools: [
+          this.buildAskUserQuestionTool(),
+          this.buildRequestExternalApiConfigTool(),
+        ],
       });
 
       const prompt = [
@@ -109,6 +128,9 @@ export class SkillCreatorSdkSession {
         "",
         "## 現在の利用可能ファイル一覧（動的取得）",
         availableFiles.map((file) => `- ${file}`).join("\n"),
+        "",
+        "## 利用可能なセッションツール",
+        `- ${REQUEST_EXTERNAL_API_CONFIG_TOOL_NAME}: 外部APIの接続設定が必要なときにユーザーへ設定を依頼する`,
         "",
         "---",
         `ユーザーの要求: ${request}`,
@@ -184,6 +206,23 @@ export class SkillCreatorSdkSession {
   }
 
   /**
+   * 外部 API 設定を SDK セッションに注入する。
+   * pending external api request がない場合はエラーとする。
+   */
+  sendExternalApiConfig(config: ExternalApiConnectionConfig): void {
+    if (!this.pendingExternalApiResolve) {
+      throw new Error(
+        "[SkillCreatorSdkSession] No pending external API config request",
+      );
+    }
+
+    const resolve = this.pendingExternalApiResolve;
+    this.clearPendingExternalApiConfig();
+    this.updateState({ status: "running", currentQuestion: undefined });
+    resolve(config);
+  }
+
+  /**
    * セッションを中断する。
    * 現在待機中の質問があればキャンセルし、abortController も停止する。
    */
@@ -199,6 +238,7 @@ export class SkillCreatorSdkSession {
 
     if (options.silent) {
       this.clearPendingQuestion();
+      this.clearPendingExternalApiConfig();
       this.updateState({
         status: "error",
         error: message,
@@ -259,6 +299,16 @@ export class SkillCreatorSdkSession {
         await this.handleUserInputToolCall(question);
         return;
       }
+      if (
+        record.type === "tool_use" &&
+        record.name === REQUEST_EXTERNAL_API_CONFIG_TOOL_NAME
+      ) {
+        const input = this.asRecord(record.input);
+        await this.handleExternalApiConfigToolCall(
+          this.buildExternalApiConfigPayload(input),
+        );
+        return;
+      }
     }
 
     const textBlock = blocks.find(
@@ -277,6 +327,16 @@ export class SkillCreatorSdkSession {
           question: askMatch[1].trim(),
         };
         await this.handleUserInputToolCall(question);
+        return;
+      }
+
+      const apiConfigMatch = textBlock.text.match(
+        /RequestExternalApiConfig[:\s]+(.+)/s,
+      );
+      if (apiConfigMatch) {
+        await this.handleExternalApiConfigToolCall({
+          description: apiConfigMatch[1].trim(),
+        });
       }
     }
   }
@@ -427,6 +487,50 @@ export class SkillCreatorSdkSession {
   }
 
   /**
+   * RequestExternalApiConfig custom tool を構築する。
+   */
+  private buildRequestExternalApiConfigTool() {
+    return tool(
+      REQUEST_EXTERNAL_API_CONFIG_TOOL_NAME,
+      "外部 API の接続設定が必要な場合にユーザーから設定を受け取る",
+      {
+        apiName: z.string().optional(),
+        description: z.string().optional(),
+      },
+      async (input): Promise<CallToolResult> => {
+        if (this.pendingExternalApiPromise) {
+          const config = await this.pendingExternalApiPromise;
+          return {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify(
+                  this.sanitizeExternalApiConfigForPrompt(config),
+                ),
+              },
+            ],
+          };
+        }
+
+        const payload = this.buildExternalApiConfigPayload(
+          this.asRecord(input),
+        );
+        const config = await this.handleExternalApiConfigToolCall(payload);
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(
+                this.sanitizeExternalApiConfigForPrompt(config),
+              ),
+            },
+          ],
+        };
+      },
+    );
+  }
+
+  /**
    * UserInput ツールコールを処理する。
    * - ステータスを awaiting-input に遷移
    * - onQuestion コールバックを呼び出して IpcBridge に通知
@@ -443,6 +547,11 @@ export class SkillCreatorSdkSession {
 
       throw new Error(
         "[SkillCreatorSdkSession] A different question is already pending",
+      );
+    }
+    if (this.pendingExternalApiPromise) {
+      throw new Error(
+        "[SkillCreatorSdkSession] External API config is already pending",
       );
     }
 
@@ -464,6 +573,67 @@ export class SkillCreatorSdkSession {
   }
 
   /**
+   * External API 設定要求ツールコールを処理する。
+   */
+  private async handleExternalApiConfigToolCall(
+    payload: ExternalApiConfigRequiredPayload,
+  ): Promise<ExternalApiConnectionConfig> {
+    if (this.pendingExternalApiPromise) {
+      return this.pendingExternalApiPromise;
+    }
+    if (this.pendingAnswerPromise) {
+      throw new Error(
+        "[SkillCreatorSdkSession] UserInput question is already pending",
+      );
+    }
+
+    this.updateState({ status: "awaiting-input", currentQuestion: undefined });
+
+    this.pendingExternalApiPromise = new Promise<ExternalApiConnectionConfig>(
+      (resolve, reject) => {
+        this.pendingExternalApiResolve = resolve;
+        this.pendingExternalApiReject = reject;
+        this.timeoutHandle = setTimeout(() => {
+          this.handleError(
+            "[SkillCreatorSdkSession] External API config timeout after 30 seconds",
+          );
+        }, TIMEOUT_MS);
+        this.onExternalApiConfigRequired(payload);
+      },
+    );
+
+    return this.pendingExternalApiPromise;
+  }
+
+  private buildExternalApiConfigPayload(
+    input: Record<string, unknown>,
+  ): ExternalApiConfigRequiredPayload {
+    return {
+      ...(typeof input.apiName === "string" && { apiName: input.apiName }),
+      ...(typeof input.description === "string" && {
+        description: input.description,
+      }),
+    };
+  }
+
+  private sanitizeExternalApiConfigForPrompt(
+    config: ExternalApiConnectionConfig,
+  ): ExternalApiConnectionConfig {
+    return {
+      ...config,
+      credential:
+        typeof config.credential === "string" && config.credential !== ""
+          ? "[REDACTED]"
+          : undefined,
+      headers: config.headers
+        ? Object.fromEntries(
+            Object.keys(config.headers).map((key) => [key, "[REDACTED]"]),
+          )
+        : undefined,
+    };
+  }
+
+  /**
    * エラー状態に遷移し onError コールバックを呼び出す。
    */
   private handleError(message: string): void {
@@ -478,7 +648,9 @@ export class SkillCreatorSdkSession {
     this.abortController?.abort();
 
     const reject = this.pendingReject;
+    const externalReject = this.pendingExternalApiReject;
     this.clearPendingQuestion();
+    this.clearPendingExternalApiConfig();
 
     this.updateState({
       status: "error",
@@ -488,6 +660,7 @@ export class SkillCreatorSdkSession {
 
     if (!silent) {
       reject?.(new Error(message));
+      externalReject?.(new Error(message));
       this.onError(message);
     }
   }
@@ -500,10 +673,19 @@ export class SkillCreatorSdkSession {
       clearTimeout(this.timeoutHandle);
       this.timeoutHandle = null;
     }
-
     this.pendingResolve = null;
     this.pendingReject = null;
     this.pendingAnswerPromise = null;
+  }
+
+  private clearPendingExternalApiConfig(): void {
+    if (this.timeoutHandle) {
+      clearTimeout(this.timeoutHandle);
+      this.timeoutHandle = null;
+    }
+    this.pendingExternalApiResolve = null;
+    this.pendingExternalApiReject = null;
+    this.pendingExternalApiPromise = null;
   }
 
   /**

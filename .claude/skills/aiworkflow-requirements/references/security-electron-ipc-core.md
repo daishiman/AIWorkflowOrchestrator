@@ -540,4 +540,44 @@ Renderer側からMainプロセスへの安全なIPC呼び出しを実現する�
 ### Advanced Console Error Boundary
 
 - callback 層は session 不在を `SESSION_NOT_FOUND` で表現してよいが、外向き IPC 応答コードは `TERMINAL_LOG_ERROR` / `COPY_COMMAND_ERROR` に正規化する。
+
+---
+
+## Skill Creator External API Credential 秘匿化（TASK-SDK-SC-03）
+
+> 完了日: 2026-04-03
+
+### 秘匿化パターン: `sanitizeExternalApiConfigForPrompt()`
+
+SDK Session が LLM プロンプトに外部API設定を注入する際、credential を秘匿化する。
+
+| 観点 | 契約 |
+| --- | --- |
+| 秘匿対象 | `ExternalApiConnectionConfig.credential` フィールド |
+| 置換値 | `[REDACTED]` |
+| 適用タイミング | SDK プロンプトへの注入時のみ |
+| 実際のAPI呼び出し | 元の credential を使用（二重管理パターン） |
+| 実装箇所 | `apps/desktop/src/main/services/runtime/SkillCreatorSdkSession.ts` の `sanitizeExternalApiConfigForPrompt()` |
+
+### DENY パターン（External API 追加定義）
+
+| ID | パターン | 内容 |
+| --- | --- | --- |
+| DENY-10 | External API credential 非注入 | LLM プロンプトに credential 実値を含めない（`[REDACTED]` に置換） |
+| DENY-11 | External API credential ログ非出力 | ログ・エラーメッセージに credential を含めない |
+
+### バリデーション契約
+
+`SkillCreatorIpcBridge.isValidExternalApiConfig()` は `skill-creator:configure-api` の受信時に8条件バリデーションを実施する。
+
+| # | 条件 | 目的 |
+| --- | --- | --- |
+| 1 | `config` が非 null object | injection 防止 |
+| 2 | `config.name` が非空文字列 | 識別名必須 |
+| 3 | `config.url` が非空文字列 | エンドポイント必須 |
+| 4 | `config.url` が `http://` or `https://` 始まり | protocol guard |
+| 5 | `config.method` が `GET` or `POST` | HTTP method 制限 |
+| 6 | `config.authType` が `ExternalApiAuthType` 値 | 列挙値ガード |
+| 7 | `authType !== "none"` 時に `credential` 非空 | 認証情報必須性 |
+| 8 | `headers` が `Record<string, string>` 形状 | ヘッダー形状ガード |
 - `sanitizeForApiKeys()` は success path だけでなく error message にも適用し、internal error text 経由で秘密情報を漏らさない。

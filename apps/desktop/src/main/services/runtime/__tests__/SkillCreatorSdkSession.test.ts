@@ -13,7 +13,10 @@ import {
   type MockInstance,
 } from "vitest";
 import { SkillCreatorSdkSession } from "../SkillCreatorSdkSession";
-import type { UserInputQuestion } from "@repo/shared/types";
+import type {
+  ExternalApiConnectionConfig,
+  UserInputQuestion,
+} from "@repo/shared/types";
 
 vi.mock("fs", () => ({
   default: {
@@ -96,6 +99,25 @@ function makeAssistantTextMessage(text: string): unknown {
   };
 }
 
+function makeAssistantExternalApiToolUseMessage(
+  apiName = "Weather API",
+  description = "天気情報取得API",
+): unknown {
+  return {
+    type: "assistant",
+    message: {
+      content: [
+        {
+          type: "tool_use",
+          id: "tc-external-api-001",
+          name: "RequestExternalApiConfig",
+          input: { apiName, description },
+        },
+      ],
+    },
+  };
+}
+
 function makeResultMessage(result = "完了しました"): unknown {
   return {
     type: "result",
@@ -115,11 +137,16 @@ function createSession(
   onQuestion: (q: UserInputQuestion) => void = vi.fn(),
   onComplete: (r: string) => void = vi.fn(),
   onError: (e: string) => void = vi.fn(),
+  onExternalApiConfigRequired: (payload: {
+    apiName?: string;
+    description?: string;
+  }) => void = vi.fn(),
 ): SkillCreatorSdkSession {
   return new SkillCreatorSdkSession(
     "test-session-001",
     "/test/skill-creator",
     onQuestion,
+    onExternalApiConfigRequired,
     onComplete,
     onError,
   );
@@ -204,6 +231,12 @@ describe("SkillCreatorSdkSession", () => {
       expect.any(Object),
       expect.any(Function),
     );
+    expect(toolSpy).toHaveBeenCalledWith(
+      "RequestExternalApiConfig",
+      expect.any(String),
+      expect.any(Object),
+      expect.any(Function),
+    );
   });
 
   it("AskUserQuestion tool_use を受けると question を通知し、回答後に完了する", async () => {
@@ -269,12 +302,67 @@ describe("SkillCreatorSdkSession", () => {
     );
   });
 
+  it("RequestExternalApiConfig tool_use を受けると設定要求を通知し、設定受領後に完了する", async () => {
+    const onExternalApiConfigRequired = vi.fn();
+    const onComplete = vi.fn();
+    const session = createSession(
+      vi.fn(),
+      onComplete,
+      vi.fn(),
+      onExternalApiConfigRequired,
+    );
+
+    querySpy.mockReturnValue(
+      makeCompletedStream([
+        makeAssistantExternalApiToolUseMessage(
+          "Slack API",
+          "Slack通知に必要な設定を入力してください",
+        ),
+        makeResultMessage("外部API設定を受領して完了"),
+      ]),
+    );
+
+    const config: ExternalApiConnectionConfig = {
+      name: "Slack API",
+      url: "https://slack.example.com/hooks",
+      method: "POST",
+      authType: "bearer",
+      credential: "token-value",
+    };
+
+    setTimeout(() => {
+      session.sendExternalApiConfig(config);
+    }, 10);
+
+    await session.startSession("外部API対応スキルを作成してください");
+
+    expect(onExternalApiConfigRequired).toHaveBeenCalledWith({
+      apiName: "Slack API",
+      description: "Slack通知に必要な設定を入力してください",
+    });
+    expect(onComplete).toHaveBeenCalledWith("外部API設定を受領して完了");
+    expect(session.getState().status).toBe("completed");
+  });
+
   it("pending question がないときの sendAnswer() は例外にする", () => {
     const session = createSession();
 
     expect(() =>
       session.sendAnswer({ toolCallId: "tc-none", value: "回答" }),
     ).toThrow("No pending question");
+  });
+
+  it("pending external API request がないときの sendExternalApiConfig() は例外にする", () => {
+    const session = createSession();
+
+    expect(() =>
+      session.sendExternalApiConfig({
+        name: "Test API",
+        url: "https://api.example.com",
+        method: "GET",
+        authType: "none",
+      }),
+    ).toThrow("No pending external API config request");
   });
 
   it("30秒応答がないと timeout エラーになる", async () => {
