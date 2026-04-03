@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-01T22:54:35.771Z",
-  "totalKeywords": 2632,
+  "generated": "2026-04-03T05:41:36.069Z",
+  "totalKeywords": 2648,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1097,6 +1097,7 @@
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
       "lessons-learned-safety-gate-permission-fallback.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -1298,7 +1299,6 @@
       "api-ipc-agent-core.md",
       "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
-      "lessons-learned-governance-hooks-phase-policy.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-skill-lifecycle-design.md"
@@ -2171,7 +2171,8 @@
       "api-ipc-system-core.md"
     ],
     "Bridge": [
-      "api-ipc-system-core.md"
+      "api-ipc-system-core.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md"
     ],
     "SDK": [
       "api-ipc-system-core.md",
@@ -2200,6 +2201,7 @@
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
@@ -2617,6 +2619,7 @@
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
@@ -3813,6 +3816,7 @@
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
@@ -4809,7 +4813,8 @@
       "deployment-gha.md"
     ],
     "main": [
-      "deployment-gha.md"
+      "deployment-gha.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md"
     ],
     "マージ時": [
       "deployment-gha.md"
@@ -5196,6 +5201,7 @@
     ],
     "Session": [
       "interfaces-agent-sdk-integration.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "ui-ux-agent-execution-core.md"
     ],
     "Persistence": [
@@ -5931,6 +5937,7 @@
       "lessons-learned-rag-embedding-runtime.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -5975,6 +5982,7 @@
       "lessons-learned-rag-embedding-runtime.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -6090,6 +6098,7 @@
     ],
     "EXECUTE": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
@@ -6318,6 +6327,7 @@
     "ERROR": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -6525,7 +6535,8 @@
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
     ],
     "canUseTool": [
-      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
+      "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "ガバナンス実装": [
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
@@ -6537,8 +6548,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "wiring": [
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-governance-hooks-phase-policy.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "workflow": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
@@ -6864,7 +6874,12 @@
     "relative": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
-    "only": [
+    "phase": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-ipc-preload-runtime.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md"
+    ],
+    "gap": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "の警告パターン": [
@@ -6890,6 +6905,42 @@
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "タイミング": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "waitFor": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "vi": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "useFakeTimers": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "非互換問題": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "テスト環境": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "引数順序の罠": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "型が同一な引数の逆転バグ": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "worktree": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
+      "lessons-learned-skill-create-multi-select-kind.md"
+    ],
+    "でのテスト実行と": [
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "esbuild": [
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-skill-create-multi-select-kind.md"
+    ],
+    "バージョン不一致": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "関連ファイル": [
@@ -6918,10 +6969,6 @@
     ],
     "bridge": [
       "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "phase": [
-      "lessons-learned-ipc-preload-runtime.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
     "submitUserInput": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -6970,7 +7017,8 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "PANEL": [
-      "lessons-learned-ipc-preload-runtime.md"
+      "lessons-learned-ipc-preload-runtime.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "実装セッション": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -6989,6 +7037,12 @@
     "WIZARD": [
       "lessons-learned-ipc-preload-runtime.md",
       "ui-ux-navigation.md"
+    ],
+    "PLAN": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "FF": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "BETTER": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -7156,6 +7210,34 @@
       "ui-ux-settings-core.md",
       "workflow-permission-fallback-abort-skip-retry.md"
     ],
+    "Vitest": [
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
+      "lessons-learned-workflow-quality-ci-module-resolution.md",
+      "lessons-learned-workflow-quality-phase12-audit-validator.md"
+    ],
+    "Worktree": [
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md"
+    ],
+    "プロジェクトの": [
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md"
+    ],
+    "arm": [
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md"
+    ],
+    "バイナリを特定": [
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md"
+    ],
+    "内での": [
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md"
+    ],
+    "vitest": [
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
+      "lessons-learned-skill-remove-contract.md"
+    ],
+    "実行": [
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
+      "logs-archive-2026-02-skill-validation-atoms-audit.md"
+    ],
     "domain": [
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
@@ -7312,13 +7394,7 @@
     "へ同期する": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
-    "worktree": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
     "環境での": [
-      "lessons-learned-skill-create-multi-select-kind.md"
-    ],
-    "esbuild": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "platform": [
@@ -7391,9 +7467,6 @@
       "lessons-learned-skill-remove-contract.md"
     ],
     "プロジェクトルートから直接実行": [
-      "lessons-learned-skill-remove-contract.md"
-    ],
-    "vitest": [
       "lessons-learned-skill-remove-contract.md"
     ],
     "config": [
@@ -7828,10 +7901,6 @@
     ],
     "設定ファイル整合": [
       "lessons-learned-workflow-quality-ci-module-resolution.md"
-    ],
-    "Vitest": [
-      "lessons-learned-workflow-quality-ci-module-resolution.md",
-      "lessons-learned-workflow-quality-phase12-audit-validator.md"
     ],
     "未処理": [
       "lessons-learned-workflow-quality-ci-module-resolution.md"
@@ -9160,9 +9229,6 @@
       "logs-archive-2026-03-task-10a-c-final-audit.md"
     ],
     "文書整合": [
-      "logs-archive-2026-02-skill-validation-atoms-audit.md"
-    ],
-    "実行": [
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "追加監査": [

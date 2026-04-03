@@ -3,6 +3,7 @@
 import {
   APPROVAL_CHANNELS,
   EXECUTION_CHANNELS,
+  SKILL_CREATOR_SESSION_CHANNELS,
 } from "@repo/shared/src/ipc/channels";
 
 export const IPC_CHANNELS = {
@@ -324,6 +325,7 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_VALIDATE: "skill-creator:validate",
   SKILL_CREATOR_VALIDATE_SCHEMA: "skill-creator:validate-schema",
   SKILL_CREATOR_PROGRESS: "skill-creator:progress",
+  ...SKILL_CREATOR_SESSION_CHANNELS,
 
   // Runtime Skill Creator operations
   SKILL_CREATOR_PLAN: "skill-creator:plan",
@@ -652,6 +654,9 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION,
   IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION,
   IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE,
+  // Skill Creator SDK Session channels (TASK-SDK-SC-01)
+  IPC_CHANNELS.START_SESSION,
+  IPC_CHANNELS.ANSWER,
   // Skill Creator extended channels (TASK-9B Phase 5)
   IPC_CHANNELS.SKILL_CREATOR_IMPROVE,
   IPC_CHANNELS.SKILL_CREATOR_FORK,
@@ -750,4 +755,8 @@ export const ALLOWED_ON_CHANNELS: readonly string[] = [
   IPC_CHANNELS.NOTIFICATION_NEW,
   // Approval push notification (TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001)
   IPC_CHANNELS.APPROVAL_REQUEST,
+  // Skill Creator SDK Session channels (TASK-SDK-SC-01)
+  IPC_CHANNELS.QUESTION_RECEIVED,
+  IPC_CHANNELS.SESSION_COMPLETE,
+  IPC_CHANNELS.SESSION_ERROR,
 ];

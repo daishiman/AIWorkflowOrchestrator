@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-01
+> 自動生成: 2026-04-03
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -263,8 +263,8 @@ node scripts/list-specs.js --topics
 | セキュリティアーキテクチャ | L146 |
 | 状態管理アーキテクチャ | L180 |
 | データフローアーキテクチャ | L217 |
-| ディレクトリ構造 | L317 |
-| データ構造（型システム） | L381 |
+| ディレクトリ構造 | L319 |
+| データ構造（型システム） | L383 |
 
 ### references/architecture-overview-details.md
 
@@ -906,10 +906,10 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L245 |
 | Electron IPC API設計 | L281 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L423 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L657 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L688 |
-| AIプロバイダーAPI連携 | L719 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L752 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L659 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L690 |
+| AIプロバイダーAPI連携 | L728 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L761 |
 
 ### references/api-ipc-system-details.md
 
@@ -1487,10 +1487,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 実装例: skillCreatorAPI | L6 |
-| 実装例: skillFileAPI（TASK-9A-B） | L186 |
-| 実装例: skillShareAPI（TASK-9F） | L260 |
-| 実装例: skillChainAPI（TASK-9D） | L339 |
-| 実装例: skillScheduleAPI（TASK-9G） | L379 |
+| 実装例: skillFileAPI（TASK-9A-B） | L188 |
+| 実装例: skillShareAPI（TASK-9F） | L262 |
+| 実装例: skillChainAPI（TASK-9D） | L341 |
+| 実装例: skillScheduleAPI（TASK-9G） | L381 |
 
 ### references/security-electron-ipc-history.md
 
@@ -2080,8 +2080,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L10 |
 | Claude Code CLI連携（Desktop Main Process） | L19 |
-| Claude CLI Renderer API（Preload API） | L118 |
-| 関連ドキュメント | L311 |
+| Claude CLI Renderer API（Preload API） | L124 |
+| 関連ドキュメント | L317 |
 
 ### references/arch-electron-services-advanced.md
 
@@ -2645,20 +2645,20 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L74 |
-| クイックリファレンス: カテゴリ別検索ガイド | L92 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L273 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L605 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L639 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L722 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L738 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L762 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L812 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L837 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L868 |
-| TASK-RT-06 教訓（2026-03-29） | L899 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L921 |
-| TASK-P0-04 教訓（2026-03-30） | L952 |
+| 分割ファイル一覧 | L76 |
+| クイックリファレンス: カテゴリ別検索ガイド | L94 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L275 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L607 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L641 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L724 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L740 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L764 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L814 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L839 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L870 |
+| TASK-RT-06 教訓（2026-03-29） | L901 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L923 |
+| TASK-P0-04 教訓（2026-03-30） | L954 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2666,9 +2666,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 1. 定義済み / 接続済み / 可視化済みの区別 | L8 |
 | 2. UI Payload vs. Visual Evidence の区別 | L22 |
 | 3. パストラバーサル対策の実装パターン（null byte check + path.resolve/relative） | L35 |
-| 4. execute-only wiring の警告パターン | L61 |
-| 5. follow-up タスクの formalize タイミング | L82 |
-| 関連ファイル | L92 |
+| 4. phase gap の警告パターン | L61 |
+| 5. follow-up タスクの formalize タイミング | L81 |
+| 6. waitFor + vi.useFakeTimers() 非互換問題（テスト環境） | L91 |
+| 7. canUseTool 引数順序の罠（型が同一な引数の逆転バグ） | L107 |
+| 8. worktree でのテスト実行と esbuild バージョン不一致 | L127 |
+| 関連ファイル | L139 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 
@@ -2699,24 +2702,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-29 TASK-RT-04 skill-authkey-api-key-management-ui | L48 |
-| 2026-03-31 TASK-ELECTRON-BUILD-FIX | L72 |
-| 2026-03-28 TASK-SDK-07 execution-governance-and-handoff-alignment | L126 |
-| 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 | L166 |
-| 2026-03-27 TASK-SDK-04 | L206 |
-| 2026-03-27 UT-EXEC-01 | L208 |
-| 2026-03-27 TASK-SDK-05 | L230 |
-| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L260 |
-| 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L272 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L374 |
-| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L414 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L458 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L498 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L538 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L587 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L640 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L668 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L711 |
+| 2026-04-02 TASK-FIX-LIFECYCLE-PANEL-ERROR-001 | L50 |
+| 2026-03-29 TASK-RT-04 skill-authkey-api-key-management-ui | L84 |
+| 2026-03-31 TASK-ELECTRON-BUILD-FIX | L108 |
+| 2026-03-28 TASK-SDK-07 execution-governance-and-handoff-alignment | L162 |
+| 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 | L202 |
+| 2026-03-27 TASK-SDK-04 | L242 |
+| 2026-03-27 UT-EXEC-01 | L244 |
+| 2026-03-27 TASK-SDK-05 | L266 |
+| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L296 |
+| 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L308 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L410 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L450 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L494 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L534 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L574 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L623 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L676 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L704 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -2737,6 +2740,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L6 |
 | TASK-SKILL-LIFECYCLE-08 / UT-06-005 実装知見（2026-03-17） | L16 |
 | UT-06-005-A 実装知見（2026-03-17） | L170 |
+
+### references/lessons-learned-sdk-session-bridge-vitest-worktree.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-SDK-SC-01: SDK Session Bridge 実装 | L6 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -2787,6 +2795,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| TASK-P0-07: Lane分割による並列実装の効果確認 (step-11) | L6 |
+| [2026-04-03] TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 知見 | L28 |
 
 ### references/lessons-learned-skill-remove-contract.md
 

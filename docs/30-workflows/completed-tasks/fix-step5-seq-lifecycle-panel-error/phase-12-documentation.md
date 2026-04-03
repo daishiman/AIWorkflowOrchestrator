@@ -1,177 +1,221 @@
-# Phase 12: ドキュメント更新
+# Phase 12: ドキュメント更新 - タスク仕様書
 
 ## メタ情報
 
-| 項目         | 内容                               |
-| ------------ | ---------------------------------- |
-| Phase        | 12                                 |
-| タスクID     | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
-| ステータス   | 未実施                             |
-| 担当         | 実装者                             |
-| 見積もり時間 | 0.5h                               |
+| 項目       | 内容                      |
+| ---------- | ------------------------- |
+| Phase      | 12                        |
+| Phase名    | ドキュメント更新          |
+| 前提Phase  | Phase 11                  |
+| 後続Phase  | Phase 13                  |
+| ステータス | 完了                      |
+| 作成日     | 2026-04-02                |
+| 機能名     | fix-lifecycle-panel-error |
+
+---
 
 ## 目的
 
-修正内容を実装ガイドに記録し、Phase 12 の必須 5 タスクを current facts で閉じる。インターフェース変更なしのため Step 2 のドメイン仕様追加は不要だが、Step 1-A〜1-C の台帳・ログ・教訓・インデックス同期は必須とする。
+実装ガイド・システム仕様書同期・ドキュメント変更ログ・未タスク検出・スキルフィードバック・準拠確認の6ファイルを `outputs/phase-12/` に作成し、あわせて `artifacts.json` / `outputs/artifacts.json` の台帳を同期して Phase 12 を完了する。
+
+## 背景
+
+task-specification-creator SKILL.md の Phase 12 必須タスク5件を全て完了する。バグ修正タスクのため Step 2（新規インターフェース追加）は不要だが、Step 1-A〜1-C は必須実行する。
+
+---
 
 ## 実行タスク
 
-1. `implementation-guide.md` の作成（Part 1: 初学者向け、Part 2: 技術者向け）
-2. `task-workflow-completed.md` / `task-workflow-backlog.md` / `LOGS.md` / lessons / generated index の same-wave sync
-3. `documentation-changelog.md` の作成
-4. `unassigned-task-detection.md` の作成（0件でも必須）
-5. `skill-feedback-report.md` の作成（改善点なしでも必須）
+### タスク1: 実装ガイド作成（2パート構成）
+
+**目的**: Part 1（中学生レベル）と Part 2（技術者レベル）の実装ガイドを作成する。
+
+**実行手順**:
+
+1. `outputs/phase-12/implementation-guide.md` を作成する
+2. **Part 1（中学生レベル）**を記載する:
+   - 日常生活の例え話を含める（`たとえば` を最低1回明示する）
+   - 専門用語なし（使う場合は直後に説明する）
+   - 「なぜ必要か」を先に説明してから「何をするか」を説明する
+3. **Part 2（技術者レベル）**を記載する:
+   - `onWorkflowStateChanged` コールバックのBefore/After
+   - `snapshot.currentPhase` の型定義
+   - TypeScript の interface / type 定義
+   - API シグネチャと使用例
+   - エラーハンドリングとエッジケース
+   - 設定可能パラメータと定数一覧
+   - IPC変更がないため、Consumer Contract & IPC Compatibility は N/A と明記する
+4. `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error --json` を実行し、`phase12-checklist-definition.md` の要件に照らして Part 1/2 の不足がないことを確認する
+
+**期待される成果物**:
+
+- `outputs/phase-12/implementation-guide.md`
+
+---
+
+### タスク2: システム仕様書更新（Step 1-A〜1-C・Step 2判定）
+
+**目的**: タスク完了記録とシステム仕様書の更新（Step 2は不要判定）を行う。
+
+**実行手順**:
+
+**Step 1-A**: タスク完了記録
+
+1. `TASK-FIX-LIFECYCLE-PANEL-ERROR-001` の完了記録を以下に追加する:
+   - `.claude/skills/aiworkflow-requirements` の該当セクション
+   - `.claude/skills/task-specification-creator/LOGS.md`
+   - `.claude/skills/aiworkflow-requirements/LOGS.md`
+   - topic-map.md の更新（追加・削除・更新がある場合は再生成）
+   - `artifacts.json` と `outputs/artifacts.json` の title / type / status / phase artifact 名 parity を初手で確認する
+
+**Step 1-B**: 実装状況テーブル更新
+
+2. 該当タスクの実装状況を「未実装」→「完了」に更新する
+
+**Step 1-C**: 関連タスクテーブル更新
+
+3. 仕様書内の「関連タスク」テーブルのステータスを current facts へ更新する
+
+**Step 2判定**:
+
+4. 本タスクは1行のバグ修正（新規インターフェース追加なし）のため Step 2 は **不要**（N/A）と記録する
+
+**期待される成果物**:
+
+- `outputs/phase-12/system-spec-update-summary.md`
+
+---
+
+### タスク3: ドキュメント変更ログ作成
+
+**目的**: 全Step（1-A/1-B/1-C/Step 2）の結果を個別に記録する。
+
+**実行手順**:
+
+1. `outputs/phase-12/documentation-changelog.md` を作成する
+2. Step 1-A〜1-C の各結果を個別に記載する（「該当なし」も記録）
+3. `index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の4点同期結果と、`validate-phase12-implementation-guide.js` を含む validator 実行結果を記録する
+4. Step 2 の N/A 判定理由を記録する
+
+**期待される成果物**:
+
+- `outputs/phase-12/documentation-changelog.md`
+
+---
+
+### タスク4: 未タスク検出レポート作成（0件でも必須）
+
+**目的**: バグ修正から派生する未タスク候補を検出し記録する。
+
+**実行手順**:
+
+1. 以下のソースから未タスク候補を収集する:
+   - 元タスク仕様書の「スコープ外」記載（エラーメッセージUI改善、スキーマ変更 等）
+   - Phase 3/10レビュー結果のMINOR指摘
+   - コードコメント（未完了コメントの残存）
+   - repo 全体の既存 baseline 違反が多い場合は current と baseline を分離する
+2. `outputs/phase-12/unassigned-task-detection.md` を作成する（0件でも作成必須）
+3. 検出された未タスクは `docs/30-workflows/unassigned-task/` にフォーマット準拠で作成する
+
+**期待される成果物**:
+
+- `outputs/phase-12/unassigned-task-detection.md`
+
+---
+
+### タスク5: スキルフィードバックレポート作成（改善点なしでも必須）
+
+**目的**: task-specification-creator スキルへの改善フィードバックを記録する。
+
+**実行手順**:
+
+1. `outputs/phase-12/skill-feedback-report.md` を作成する（改善点なしでも作成必須）
+2. 以下の観点でフィードバックを記録する:
+   - テンプレートの漏れや曖昧さ
+   - ワークフロー改善余地
+   - ドキュメント改善候補
+   - 改善点がない場合は `なし` と理由を明記する
+
+**期待される成果物**:
+
+- `outputs/phase-12/skill-feedback-report.md`
+
+---
+
+### タスク6: タスク仕様書準拠確認
+
+**目的**: Phase 12成果物一覧と `outputs/phase-12/` 実体を1対1で突合する。
+
+**実行手順**:
+
+1. `outputs/phase-12/phase12-task-spec-compliance-check.md` を作成する
+2. `artifacts.json` / `outputs/artifacts.json` / `index.md` / `phase-*.md` / `outputs/phase-12/` を1対1で突合する
+3. 不足ファイルがないことと、台帳・本文・ミラーの parity と validator 実行結果が一致していることを確認する
+
+**期待される成果物**:
+
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`
+
+---
 
 ## 参照資料
 
-### システム仕様（aiworkflow-requirements）
+| 参照資料                       | パス                                                                                    | 内容                 |
+| ------------------------------ | --------------------------------------------------------------------------------------- | -------------------- |
+| Phase 12ガイド                 | `.claude/skills/task-specification-creator/references/phase-12-documentation-guide.md`  | Phase 12実行手順     |
+| 技術ドキュメントガイド         | `.claude/skills/task-specification-creator/references/technical-documentation-guide.md` | Part 1/2 記述要件    |
+| Phase 12チェックリスト定義     | `.claude/skills/task-specification-creator/references/phase12-checklist-definition.md`  | 実体確認要件         |
+| Phase 12完了条件チェックリスト | `.claude/skills/task-specification-creator/references/phase-12-completion-checklist.md` | 4点同期・完了要件    |
+| システム仕様更新ワークフロー   | `.claude/skills/task-specification-creator/references/spec-update-workflow.md`          | Step 1-A〜Step 2手順 |
+| 未タスクガイドライン           | `.claude/skills/task-specification-creator/references/unassigned-task-guidelines.md`    | 未タスク検出基準     |
 
-| 参照資料           | パス                                                                           | 内容           |
-| ------------------ | ------------------------------------------------------------------------------ | -------------- |
-| アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md`   | システム全体像 |
-| タスクワークフロー | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md` | 完了タスク記録 |
-
-## 統合テスト連携
-
-- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
-- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
-- Phase 2 の成果物 design-topology.md、Phase 5 の修正結果、Phase 6 の成果物、Phase 7 の成果物、Phase 8 の成果物、Phase 9 の成果物、Phase 10 の成果物、Phase 11 の成果物を前提にドキュメントを更新する。
-
-## 実行手順
-
-### ステップ 1: implementation-guide.md の作成
-
-**ファイル**: `outputs/phase-12/implementation-guide.md`
-
-#### Part 1: 初学者向け — 中学生レベルの例え話
-
-**例え話: 消えてしまうエラーメッセージ**
-
-ゲームでボスを倒そうとして失敗したとき、「失敗しました！もう一度やり直してください」というメッセージが出るとします。ところが、このメッセージを閉じる前に、ゲームが自動的に「メッセージを消す」という命令を実行してしまうと、メッセージが即座に消えてしまいます。
-
-これが今回のバグです。スキル生成（AIを使って作業ツールを作る機能）が失敗したとき、エラーメッセージが画面に表示されます。しかし、バックグラウンドで「状態が変わった」という信号が届くたびに、プログラムがエラーメッセージを自動的に消していました。
-
-修正後は、`currentPhase: 'handoff'` の信号が届いたときだけ、エラーメッセージを消す命令を実行しないようにしました。成功中・完了したときの信号が届いたときは、今まで通りエラーメッセージを消します。
-
-**ビフォー・アフター**:
-
-- 修正前: 「失敗」信号が届く → エラー表示 → 即座にエラーを消す（バグ）
-- 修正後: 「失敗」信号が届く → エラー表示 → エラーはそのまま残る（正しい動作）
-
-#### Part 2: 技術者向け
-
-**問題箇所**:
-
-```
-SkillLifecyclePanel.tsx:539
-setWorkflowError(null);  ← 'handoff' フェーズでもエラーを消去する
-```
-
-`onWorkflowStateChanged` コールバックは `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` チャンネルのイベントを受信するたびに呼び出される。`currentPhase: 'handoff'` のスナップショットを受信した後も、このコールバックが再度呼ばれると `setWorkflowError(null)` でエラーがクリアされてしまう。
-
-**修正内容**:
-
-```typescript
-// 修正前
-return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-  setWorkflowSnapshot(snapshot);
-  setWorkflowError(null); // BUG: 無条件に呼ばれる
-  if (snapshot.handoffBundle) {
-    setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-  }
-});
-
-// 修正後
-return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-  setWorkflowSnapshot(snapshot);
-  if (snapshot.currentPhase !== "handoff") {
-    setWorkflowError(null); // 'handoff' 以外のフェーズでのみエラーをクリア
-  }
-  if (snapshot.handoffBundle) {
-    setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-  }
-});
-```
-
-**技術的ポイント**:
-
-- 変更量: 最小（2 行追加・0 行削除）
-- `handoffBundle` 処理は `currentPhase` 判定の影響を受けない（独立した `if` ブロック）
-- React hooks deps（`useEffect` 依存配列）の変更なし
-- インターフェース変更なし（Props・型定義・IPC チャンネルは全て変更なし）
-
-### ステップ 2: システム仕様書の same-wave sync
-
-**ファイル**: `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`
-
-以下を同一ターンで更新する（`must` 優先度）:
-
-```markdown
-- `task-workflow-backlog.md`: 旧 row（`phase: 'failed'` / 旧 path）を completed 扱いへ更新
-- `task-workflow-completed.md`: TASK-FIX-LIFECYCLE-PANEL-ERROR-001 の completed record を追加
-- `LOGS.md` x2: close-out sync を追加
-- lessons learned: `handoff` / stale vocabulary / NON_VISUAL evidence の教訓を追加
-- generated index: `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`
-```
-
-### ステップ 3: ドキュメント更新履歴
-
-**ファイル**: `outputs/phase-12/documentation-changelog.md`
-
-Task 1〜5 の結果、Step 1-A〜1-C の更新先、テスト環境ブロッカーの有無を 1 ファイルへ要約する。
-
-### ステップ 4: 未タスク検出レポート
-
-**ファイル**: `outputs/phase-12/unassigned-task-detection.md`
-
-対象:
-
-- Phase 3 / 10 のレビュー指摘
-- Phase 11 の blocker / スコープ外課題
-- コードコメントの TODO/FIXME/HACK/XXX
-
-0件でも「確認した範囲」「0件である理由」「既知の環境問題を新規未タスク化しない理由」を明記する。
-
-### ステップ 5: スキルフィードバックレポート
-
-**ファイル**: `outputs/phase-12/skill-feedback-report.md`
-
-対象:
-
-- `task-specification-creator` 側: NON_VISUAL task に placeholder PNG を残さないルール、manual-test-result に blocker を必須記録するルール
-- `aiworkflow-requirements` 側: `handoff` を current vocabulary とする close-out sync の徹底
-
-## 多角的チェック観点
-
-- `implementation-guide.md` の Part 1（初学者向け）が技術用語なしで説明されているか確認したか
-- Step 1-A〜1-C の台帳同期が changelog で代替されていないか確認したか
-- `NON_VISUAL` task の Phase 11 証跡が placeholder ではなく blocker / 実測 / 代替事実で構成されているか確認したか
-- `unassigned-task-detection.md` と `skill-feedback-report.md` が 0件・改善済みでも出力されているか確認したか
+---
 
 ## 成果物
 
-| 成果物               | パス                                            | 説明                                             |
-| -------------------- | ----------------------------------------------- | ------------------------------------------------ |
-| 実装ガイド           | `outputs/phase-12/implementation-guide.md`      | Part 1 初学者向け例え話 + Part 2 技術詳細        |
-| ドキュメント変更履歴 | `outputs/phase-12/documentation-changelog.md`   | Task 1〜5 と Step 1-A〜1-C の更新結果            |
-| 未タスク検出         | `outputs/phase-12/unassigned-task-detection.md` | 0件でも必須。確認範囲と判断理由を記録            |
-| スキルフィードバック | `outputs/phase-12/skill-feedback-report.md`     | スキル改善点の反映有無と current wave の処理結果 |
+| 成果物                       | パス                                                     | 内容                          |
+| ---------------------------- | -------------------------------------------------------- | ----------------------------- |
+| 実装ガイド（Part 1/2）       | `outputs/phase-12/implementation-guide.md`               | 中学生レベル + 技術者レベル   |
+| システム仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`         | Step 1-A〜1-C・Step 2判定結果 |
+| ドキュメント変更ログ         | `outputs/phase-12/documentation-changelog.md`            | 全Stepの変更記録              |
+| 未タスク検出レポート         | `outputs/phase-12/unassigned-task-detection.md`          | 未タスク候補（0件でも必須）   |
+| スキルフィードバックレポート | `outputs/phase-12/skill-feedback-report.md`              | スキル改善フィードバック      |
+| タスク仕様書準拠確認         | `outputs/phase-12/phase12-task-spec-compliance-check.md` | 成果物突合結果                |
+
+---
 
 ## 完了条件
 
-- [ ] `implementation-guide.md` の Part 1（初学者向け例え話）が完成している
-- [ ] `implementation-guide.md` の Part 2（技術詳細）が完成している
-- [ ] `task-workflow-completed.md` に TASK-FIX-LIFECYCLE-PANEL-ERROR-001 の完了が記録されている
-- [ ] `task-workflow-backlog.md` の旧 row が current facts へ同期されている
-- [ ] `documentation-changelog.md` に Task 1〜5 と Step 1-A〜1-C の結果が記録されている
-- [ ] `unassigned-task-detection.md` と `skill-feedback-report.md` が存在する
+- [ ] `outputs/phase-12/` に6ファイル全てが作成されている
+- [ ] `implementation-guide.md` に Part 1（中学生レベル）と Part 2（技術者レベル）が含まれている
+- [ ] `validate-phase12-implementation-guide.js` が PASS している
+- [ ] Step 1-A〜1-C の実行結果が記録されている（N/Aも記録）
+- [ ] Step 2 が N/A 判定と理由が記録されている
+- [ ] 未タスク検出レポートが作成されている（0件でも必須）
+- [ ] スキルフィードバックレポートが作成されている（改善点なしでも必須）
+- [ ] `artifacts.json` と `outputs/artifacts.json` の title / type / status / phase artifact 名が一致している
+- [ ] `index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の4点同期が完了している
+- [ ] `outputs/phase-12/` の突合が完了している
 
-## タスク100%実行確認【必須】
+---
 
-- [ ] 全実行タスクが完了している
-- [ ] 全成果物が存在する（4 ファイル）
-- [ ] 全完了条件が満たされている
+## Phase末端アクション【必須】
 
-## 次Phase
+- [ ] 本Phase内の全タスク（タスク1〜6）を100%実行完了
+- [ ] 各タスクを100%完了し、完了を明記
+- [ ] 6ファイルが `outputs/phase-12/` に揃っていることを確認
 
-Phase 13: PR作成 へ進む（ユーザーの明示承認後のみ）
+---
+
+## 依存関係
+
+- **前提**: Phase 11（手動テスト）が完了していること
+- **後続**: Phase 13（PR作成）へ進む（ユーザー明示承認後のみ）
+
+---
+
+## 次のPhase
+
+完了後、ユーザーの明示承認を得てから以下のファイルを実行してください:
+
+`docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-13-pr-creation.md`

@@ -36,7 +36,7 @@
 | [lessons-learned-auth-ipc-skill-creator-governance-hooks.md](lessons-learned-auth-ipc-skill-creator-governance-hooks.md) | auth / ipc / skill-creator governance lessons (SDK permissionMode / canUseTool / Hooks) | TASK-P0-09: Claude SDK permissionMode + canUseTool + Hooks ガバナンス実装（2026-03-31） |
 | [lessons-learned-current-electron-menu-docs-task0912.md](lessons-learned-current-electron-menu-docs-task0912.md) | Electron Menu / Skill Docs / Task09-12 (2026-03-16〜18) | TASK-FIX-ELECTRON-APP-MENU-ZOOM-001 / TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 / P64-P65 |
 | [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | archive (2026-03-01〜2026-03-16) | current summary から分離した過去教訓の保管（2026-03-14〜16 の TASK-SKILL-LIFECYCLE-04/05/07、TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 P57〜P61 等を含む） |
-| [lessons-learned-skill-plan-exec-hardening.md](lessons-learned-skill-plan-exec-hardening.md) | skill domain lessons (plan exec hardening / Lane分割並列実装) | TASK-P0-07: Lane分割による並列実装の効果確認 (step-11)（2026-04-01） |
+| [lessons-learned-skill-plan-exec-hardening.md](lessons-learned-skill-plan-exec-hardening.md) | skill domain lessons (plan exec hardening / Lane分割並列実装 / before-quit guard) | TASK-P0-07: Lane分割による並列実装の効果確認 (step-11)（2026-04-01） / TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001: 同期→非同期移行時のライフサイクル設計チェックリスト（2026-04-03） |
 | [lessons-learned-templates.md](lessons-learned-templates.md) | templates and checklist | 目次 / 関連ドキュメント / テンプレート（新規教訓追加用） / TASK-XXX: タスク名（YYYY-MM-DD） |
 
 ## 利用順序
