@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-03T05:41:36.069Z",
-  "totalKeywords": 2648,
+  "generated": "2026-04-03T12:48:46.531Z",
+  "totalKeywords": 2655,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -205,6 +205,7 @@
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -295,6 +296,7 @@
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-viewtype-electron-ui.md",
       "llm-ipc-types.md",
       "llm-streaming.md",
@@ -317,6 +319,7 @@
       "security-skill-ipc-history.md",
       "skill-executor-type-migration.md",
       "spec-splitting-guidelines.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
       "task-workflow-history.md",
       "task-workflow-phases.md",
       "technology-backend.md",
@@ -356,6 +359,7 @@
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -443,6 +447,7 @@
       "ipc-contract-checklist.md",
       "ipc-type-resolution-guide.md",
       "lessons-learned-templates.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned.md",
       "llm-embedding.md",
       "llm-ipc-types.md",
@@ -478,6 +483,7 @@
       "security-skill-ipc-history.md",
       "security-skill-ipc.md",
       "spec-splitting-guidelines.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
       "task-workflow-history.md",
       "task-workflow-rules.md",
       "task-workflow.md",
@@ -526,6 +532,7 @@
       "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -1849,6 +1856,7 @@
       "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-viewtype-electron-ui.md",
       "llm-ipc-types.md",
       "llm-streaming.md",
@@ -1875,6 +1883,7 @@
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
       "technology-frontend.md",
       "testing-component-patterns-advanced.md",
       "testing-component-patterns-details.md",
@@ -1920,7 +1929,8 @@
       "ui-ux-settings-details.md",
       "ui-ux-settings-history.md",
       "ui-ux-settings.md",
-      "ui-ux-system-prompt.md"
+      "ui-ux-system-prompt.md",
+      "workflow-ui-ux-visual-baseline-drift.md"
     ],
     "仕様書インデックス": [
       "api-ipc-agent.md",
@@ -4019,7 +4029,8 @@
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-build-harness-guard.md",
-      "lessons-learned-skill-contrast-guard-lifecycle-followup.md"
+      "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md"
     ],
     "テスト戦略": [
       "architecture-implementation-patterns-reference-ipc-drift-detection.md",
@@ -4069,9 +4080,11 @@
     ],
     "UX": [
       "architecture-overview-core.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
       "logs-archive-2026-01-topic-map-remember-choice.md",
       "master-design.md",
       "spec-splitting-guidelines.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
       "ui-ux-advanced.md",
       "ui-ux-components-core.md",
       "ui-ux-components-details.md",
@@ -4090,7 +4103,8 @@
       "ui-ux-settings-core.md",
       "ui-ux-settings-details.md",
       "ui-ux-settings-history.md",
-      "ui-ux-settings.md"
+      "ui-ux-settings.md",
+      "workflow-ui-ux-visual-baseline-drift.md"
     ],
     "状態管理アーキテクチャ": [
       "architecture-overview-core.md"
@@ -4521,8 +4535,10 @@
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-test-typesafety.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-viewtype-electron-ui.md",
       "logging-migration-guide.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
       "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-task-rt-06-artifact-inventory.md"
     ],
@@ -5954,6 +5970,7 @@
       "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-viewtype-electron-ui.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
@@ -5999,6 +6016,7 @@
       "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
       "lessons-learned-viewtype-electron-ui.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "lessons-learned-workflow-quality-line-budget-reform.md",
@@ -7170,6 +7188,9 @@
     "対話強制": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "エラー保持パターン": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
     ],
@@ -7831,6 +7852,36 @@
     ],
     "ホーム画面リデザイン": [
       "lessons-learned-ui-skill-center-editor-dashboard.md"
+    ],
+    "visual": [
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
+      "workflow-ui-ux-visual-baseline-drift.md"
+    ],
+    "baseline": [
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
+      "workflow-ui-ux-visual-baseline-drift.md"
+    ],
+    "drift": [
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
+      "workflow-ui-ux-visual-baseline-drift.md"
+    ],
+    "dark": [
+      "lessons-learned-ui-ux-visual-baseline-drift.md"
+    ],
+    "mode": [
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
+    ],
+    "screenshot": [
+      "lessons-learned-ui-ux-visual-baseline-drift.md",
+      "logs-archive-2026-03-workflow02-screenshot-guard.md"
+    ],
+    "同種課題の簡潔解決手順": [
+      "lessons-learned-ui-ux-visual-baseline-drift.md"
     ],
     "RENDERVIEW": [
       "lessons-learned-viewtype-electron-ui.md",
@@ -8836,6 +8887,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-onboarding-wizard-alignment.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -9205,6 +9257,7 @@
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed-ui-ux-visual-baseline-drift.md",
       "task-workflow-completed-ut-06-safety-gate.md"
     ],
     "苦戦箇所と": [
@@ -9371,6 +9424,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-onboarding-wizard-alignment.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -9379,10 +9433,6 @@
     ],
     "横断導線補強": [
       "logs-archive-2026-03-auth-mode-migration-sync.md"
-    ],
-    "mode": [
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "logs-archive-2026-03-ipc-fallback-phase12-sync.md"
     ],
     "SKILLHANDLERS": [
       "logs-archive-2026-03-auth-mode-migration-sync.md"
@@ -9743,6 +9793,7 @@
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -9893,9 +9944,6 @@
     ],
     "多角的検証で検出": [
       "logs-archive-2026-03-task-10a-c-final-audit.md"
-    ],
-    "screenshot": [
-      "logs-archive-2026-03-workflow02-screenshot-guard.md"
     ],
     "Port": [
       "logs-archive-2026-03-workflow02-screenshot-guard.md"
@@ -10747,6 +10795,7 @@
       "workflow-skill-lifecycle-created-skill-usage-journey.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -10814,6 +10863,9 @@
     "実行時のコマンド・エージェント・スキル": [
       "task-workflow-active.md",
       "task-workflow-rules.md"
+    ],
+    "昇格パターン集": [
+      "task-workflow-active.md"
     ],
     "records": [
       "task-workflow-completed-abort-contract-auth-session-chat.md",
@@ -12070,6 +12122,7 @@
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -12086,6 +12139,7 @@
       "workflow-permission-fallback-abort-skip-retry.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -12096,6 +12150,7 @@
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
       "workflow-onboarding-wizard-alignment.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -12148,14 +12203,16 @@
     "今回実装した内容": [
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-light-theme-contrast-regression-guard.md",
-      "workflow-onboarding-wizard-alignment.md"
+      "workflow-onboarding-wizard-alignment.md",
+      "workflow-ui-ux-visual-baseline-drift.md"
     ],
     "苦戦箇所と再発防止": [
       "workflow-aiworkflow-requirements-line-budget-reform.md",
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
-      "workflow-onboarding-wizard-alignment.md"
+      "workflow-onboarding-wizard-alignment.md",
+      "workflow-ui-ux-visual-baseline-drift.md"
     ],
     "検証コマンド": [
       "workflow-aiworkflow-requirements-line-budget-reform.md",
@@ -12165,6 +12222,7 @@
       "workflow-onboarding-wizard-alignment.md",
       "workflow-skill-lifecycle-evaluation-scoring-gate.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md",
+      "workflow-ui-ux-visual-baseline-drift.md",
       "workflow-workspace-parent-reference-sweep-guard.md",
       "workflow-workspace-preview-search-resilience-guard.md"
     ],
@@ -12173,7 +12231,8 @@
       "workflow-apikey-chat-tool-integration-alignment.md",
       "workflow-light-theme-contrast-regression-guard.md",
       "workflow-light-theme-global-remediation.md",
-      "workflow-onboarding-wizard-alignment.md"
+      "workflow-onboarding-wizard-alignment.md",
+      "workflow-ui-ux-visual-baseline-drift.md"
     ],
     "キー連動とチャット実行経路整合ワークフロー仕様": [
       "workflow-apikey-chat-tool-integration-alignment.md"
