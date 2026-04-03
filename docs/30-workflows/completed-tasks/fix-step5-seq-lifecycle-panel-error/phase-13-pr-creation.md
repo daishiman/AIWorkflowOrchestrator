@@ -1,177 +1,179 @@
-# Phase 13: PR作成
+# Phase 13: PR作成 - タスク仕様書
 
 ## メタ情報
 
-| 項目         | 内容                               |
-| ------------ | ---------------------------------- |
-| Phase        | 13                                 |
-| タスクID     | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
-| ステータス   | 未実施                             |
-| 担当         | 実装者                             |
-| 見積もり時間 | 0.25h                              |
+| 項目       | 内容                      |
+| ---------- | ------------------------- |
+| Phase      | 13                        |
+| Phase名    | PR作成                    |
+| 前提Phase  | Phase 12                  |
+| 後続Phase  | なし（最終Phase）         |
+| ステータス | 未実施                    |
+| 作成日     | 2026-04-02                |
+| 機能名     | fix-lifecycle-panel-error |
+
+---
 
 ## 目的
 
-Phase 1〜12 の全成果物が揃い、ユーザーの明示承認を受けた後に PR を作成する。PR 作成前の必須チェックリストを定義する。
+ユーザーの明示的な承認後、Pull Requestを作成してCI/CDを確認する。
 
-## 重要事項
+## 背景
 
-- コミットしない
-- PR を作成しない
-- **ユーザーの明示承認があるまで実行しない**
+**PR作成は自動実行しない。必ずユーザーの明示的な許可を得てから実行すること。**
+
+---
 
 ## 実行タスク
 
-1. PR 作成前の必須チェックリストを確認する
-2. ユーザーの明示承認を受ける
-3. コミットメッセージを作成する
-4. PR を作成する
+### タスク1: コミット作成
 
-## 参照資料
+**目的**: 変更内容を適切なコミットメッセージでコミットする。
 
-### システム仕様（aiworkflow-requirements）
+**前提**: ユーザーの明示的な承認が必要
 
-| 参照資料           | パス                                                                         | 内容           |
-| ------------------ | ---------------------------------------------------------------------------- | -------------- |
-| アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
+**実行手順**:
 
-## 統合テスト連携
-
-- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
-- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
-- Phase 2 の成果物 design-topology.md、Phase 5 の修正結果、Phase 6 の成果物、Phase 7 の成果物、Phase 8 の成果物、Phase 9 の成果物、Phase 10 の成果物、Phase 11 の成果物、Phase 12 の成果物を前提に PR を準備する。
-
-## 実行手順
-
-### ステップ 1: PR 作成前チェックリスト
-
-#### 必須条件
-
-- [ ] Phase 10 の最終レビューが RELEASE OK になっている
-- [ ] Phase 11 の手動テスト（全 2 シナリオ）が PASS している
-- [ ] Phase 12 のドキュメント更新（2 ファイル）が完了している
-- [ ] `pnpm --filter @repo/desktop exec vitest run` が PASS している
-- [ ] `pnpm --filter @repo/desktop typecheck` が PASS している
-- [ ] `pnpm --filter @repo/desktop lint` が PASS している
-- [ ] AC-1〜AC-5 が全て充足されている
-
-#### ブランチ確認
+1. 変更ファイルを確認する
+2. 以下の形式でコミットを作成する:
 
 ```bash
-# 現在のブランチ確認
-git branch --show-current
+git add apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx
+git add apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx
+git add docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/
 
-# 変更ファイルの確認
-git status
-
-# 差分の確認
-git diff --stat main
+git commit -m "fix(desktop): TASK-FIX-LIFECYCLE-PANEL-ERROR-001 — SkillLifecyclePanel currentPhase:handoff 時エラー消去バグ修正"
 ```
 
-### ステップ 2: コミットメッセージ
+**変更ファイル一覧**:
 
-```
-fix(desktop): TASK-FIX-LIFECYCLE-PANEL-ERROR-001 SkillLifecyclePanel エラー永続化バグ修正
+| 種別 | ファイルパス                                                                                          |
+| ---- | ----------------------------------------------------------------------------------------------------- |
+| 修正 | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                                  |
+| 追加 | `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` |
+| 追加 | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/` （タスク仕様書一式）         |
 
-- onWorkflowStateChanged コールバックで setWorkflowError(null) を currentPhase: 'handoff' 以外のときのみ呼ぶよう修正
-- currentPhase: 'handoff' 受信時にエラーが即座に消去されるバグを解消
-- handoffBundle 処理は currentPhase に関わらず変わらない（AC-3 維持）
-- SkillLifecyclePanel.error-persistence.test.tsx を新規追加（TC-EP-01〜10）
-```
+**期待される成果物**:
 
-### ステップ 3: PR タイトルと説明
+- コミット作成済み
 
-**PR タイトル**:
+---
 
-```
-fix(desktop): SkillLifecyclePanel エラー永続化バグ修正 (TASK-FIX-LIFECYCLE-PANEL-ERROR-001)
-```
+### タスク2: PR作成
 
-**PR 説明テンプレート**:
+**目的**: GitHub Pull Requestを作成する。
 
-```markdown
-## 概要
+**前提**: ユーザーの明示的な承認が必要
 
-`SkillLifecyclePanel.tsx` の `onWorkflowStateChanged` コールバックが
-`setWorkflowError(null)` を無条件に呼び出すため、`currentPhase: 'handoff'` 状態で
-届いたエラーが即座に消去されていた問題を修正します。
+**実行手順**:
 
-## 根本原因
+1. ブランチをプッシュする:
 
-`onWorkflowStateChanged` コールバックは `SKILL_CREATOR_WORKFLOW_STATE_CHANGED`
-イベントを受信するたびに呼ばれる。`setWorkflowError(null)` が無条件で実行されるため、
-`currentPhase: 'handoff'` のスナップショット受信後もエラーがクリアされてしまっていた。
-
-## 修正内容
-
-1 ファイルを修正（2 行追加）:
-
-- **SkillLifecyclePanel.tsx**: `setWorkflowError(null)` を
-  `if (snapshot.currentPhase !== 'handoff')` ブロックで囲む
-
-## 受入条件の充足
-
-- AC-1: `currentPhase === 'handoff'` 時に `setWorkflowError(null)` が呼ばれない ✅
-- AC-2: `currentPhase !== 'handoff'` 時に `setWorkflowError(null)` が呼ばれる（既存動作維持） ✅
-- AC-3: `handoffBundle` の処理は `currentPhase` に関わらず変わらない ✅
-- AC-4: 既存テストが全て PASS ✅
-- AC-5: UI 上でエラーメッセージが表示されたまま残る ✅（手動テスト確認済み）
-
-## テスト
-
-- TC-EP-01〜05: 基本動作テスト（Phase 4）✅
-- TC-EP-06〜10: エッジケース・回帰テスト（Phase 6）✅
-
-## 影響範囲
-
-- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`（+2 行）
-- 新規テスト: `SkillLifecyclePanel.error-persistence.test.tsx`
-
-Props・型定義・IPC チャンネルの変更なし。他コンポーネントへの影響なし。
-
-関連タスク: TASK-FIX-LIFECYCLE-PANEL-ERROR-001
-前提タスク: TASK-FIX-ENV-STRIPPING、TASK-FIX-EXECUTE-PLAN-FF-001
+```bash
+git push -u origin docs/TASK-FIX-LIFECYCLE-PANEL-ERROR-001-specs
 ```
 
-### ステップ 4: PR 作成コマンド
+2. PRを作成する:
 
 ```bash
 gh pr create \
-  --title "fix(desktop): SkillLifecyclePanel エラー永続化バグ修正 (TASK-FIX-LIFECYCLE-PANEL-ERROR-001)" \
+  --title "fix(desktop): TASK-FIX-LIFECYCLE-PANEL-ERROR-001 — SkillLifecyclePanel currentPhase:handoff 時エラー消去バグ修正" \
   --body "$(cat <<'EOF'
 ## 概要
 
-...（上記テンプレートの内容）
+`SkillLifecyclePanel.tsx` の `onWorkflowStateChanged` コールバックで `setWorkflowError(null)` が無条件呼び出しされており、`currentPhase: 'handoff'` 後に別スナップショットが届くとエラーメッセージが消えるバグを修正します。
+
+## 変更内容
+
+- `onWorkflowStateChanged` コールバックに `if (snapshot.currentPhase !== 'handoff')` 条件を追加
+- `SkillLifecyclePanel.error-persistence.test.tsx` を新規作成（AC-1〜AC-3の検証テスト）
+
+## 関連Issue
+
+Closes #1844
+
+## テスト
+
+- [x] AC-1: `currentPhase: 'handoff'` 時に `setWorkflowError(null)` が呼ばれない
+- [x] AC-2: `currentPhase: 'handoff'` 以外では `setWorkflowError(null)` が呼ばれる
+- [x] AC-3: `currentPhase: 'handoff'` 後の連続スナップショットでエラーが消えない
+- [x] AC-4: 既存テスト全PASS
+- [x] AC-5: TypeScript型エラーなし、ESLintエラーなし
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
 EOF
 )"
 ```
 
-## 多角的チェック観点
+**期待される成果物**:
 
-- PR 作成前にユーザーの明示承認を受けていることを確認したか
-- コミットメッセージの prefix が `fix(desktop):` であることを確認したか
-- PR 本文に AC-1〜AC-5 の充足状況が記載されているか確認したか
-- `--no-verify` を使用していないことを確認したか（絶対禁止）
+- GitHub Pull Request（URL記録）
+
+---
+
+### タスク3: CI/CD確認
+
+**目的**: PRに対するCI/CDが通過することを確認する。
+
+**実行手順**:
+
+1. PRのCI/CD結果を確認する
+2. 全チェックが通過することを確認する
+3. 失敗した場合は原因を調査して修正する
+
+```bash
+gh pr checks
+```
+
+**期待される成果物**:
+
+- CI/CD全チェック通過確認
+
+---
+
+## 参照資料
+
+| 参照資料         | パス                                      | 内容                 |
+| ---------------- | ----------------------------------------- | -------------------- |
+| 最終レビュー結果 | `outputs/phase-10/final-review-result.md` | PR作成前提条件確認   |
+| Phase 12成果物   | `outputs/phase-12/`                       | ドキュメント完了確認 |
+
+---
 
 ## 成果物
 
-| 成果物              | パス   | 説明                 |
-| ------------------- | ------ | -------------------- |
-| GitHub Pull Request | PR URL | ユーザー承認後に作成 |
+| 成果物              | パス                                                      | 内容   |
+| ------------------- | --------------------------------------------------------- | ------ |
+| GitHub Pull Request | https://github.com/daishiman/AIWorkflowOrchestrator/pulls | PR URL |
+
+---
 
 ## 完了条件
 
-- [ ] PR 作成は blocked であることが明記されている（ユーザーの明示承認が必要）
-- [ ] PR 作成前の必須チェックリストが定義されている
-- [ ] PR タイトル・説明・コミットメッセージのテンプレートが定義されている
-- [ ] `--no-verify` を使用しないことが明記されている
+- [ ] **ユーザーの明示的な承認を得ていること**（最重要前提）
+- [ ] 変更ファイルがコミットされている
+- [ ] PRが作成されている
+- [ ] CI/CD全チェックが通過している
+- [ ] Issue #1844 がクローズされている（またはPR経由で自動クローズ設定済み）
 
-## タスク100%実行確認【必須】
+---
 
-- [ ] 全実行タスクが完了している
-- [ ] 全成果物が存在する（ユーザー承認後に GitHub PR を作成）
-- [ ] 全完了条件が満たされている
+## Phase末端アクション【必須】
 
-## 次Phase
+- [ ] 本Phase内の全タスク（タスク1〜3）を100%実行完了
+- [ ] 各タスクを100%完了し、完了を明記
+- [ ] PR URLを記録済み
 
-Phase 13 が最終 Phase。PR 作成後にタスク完了。
+---
+
+## 重要な注意事項
+
+> **PR作成はユーザーの明示的な承認後のみ実施すること。**
+> このPhaseを自動実行しないこと。
+
+---
+
+## 依存関係
+
+- **前提**: Phase 12（ドキュメント更新）が完了していること、かつユーザーの明示承認があること
+- **後続**: マージ準備完了（タスク完了）

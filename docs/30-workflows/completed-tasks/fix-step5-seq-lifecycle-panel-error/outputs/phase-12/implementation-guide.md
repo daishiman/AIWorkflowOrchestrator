@@ -1,157 +1,131 @@
-# TASK-FIX-LIFECYCLE-PANEL-ERROR-001: 実装ガイド
+# 実装ガイド: SkillLifecyclePanel `currentPhase: 'handoff'` 時のエラー永続化
 
-## Part 1
+## Part 1（中学生レベル）
 
 ### なぜ必要か
 
-この修正が必要だった理由は、失敗を伝えるはずのメッセージが、状態更新のたびに勝手に消えてしまっていたからです。失敗したことが見えなくなると、使う人は「何が起きたのか」を判断できません。
+アプリが「エラーが出た」と言っているのに、すぐにその表示が消えてしまうと、ユーザーは原因を見失います。特に、同じ作業の途中で別の通知が届くような状況では、エラーを消してよいタイミングと、消してはいけないタイミングが混ざります。
 
-たとえば:
+### 日常生活での例え
 
-- 宅配の不在票をポストに入れた直後に、別の人が「もう用事は終わった」と思って捨ててしまうと、本当は再配達の案内が必要なのに読めません。
-- 今回のエラー表示も同じで、まだ読む必要があるのに別の状態更新が先に片付けてしまっていました。
+たとえば、先生が「提出物にミスがある」と黒板に書いた直後に、別の連絡（次の授業の話）を始めたからといって、ミスの注意書きまで消してしまうと困ります。注意は残しておき、直すべきことが終わった段階で消すべきです。
 
-### 何をするか
+### 何をするか（この変更でできること）
 
-`SkillLifecyclePanel` が workflow の snapshot を受け取るたびに、今の phase を見て error を消すかどうかを決めます。
+| やること     | 説明                                     | 例                                  |
+| ------------ | ---------------------------------------- | ----------------------------------- |
+| エラーを残す | ある段階（handoff）ではエラーを消さない  | 次の通知が来てもエラー表示が残る    |
+| エラーを消す | それ以外の段階では従来どおりエラーを消す | execute/verify ではエラークリアする |
 
-1. `handoff` 以外なら、次の作業へ進んだと判断して error を消す
-2. `handoff` なら、まだ失敗内容を見せる必要があるので error を残す
-3. `handoffBundle` があれば、error の有無とは別に handoff guidance を更新する
+## Part 2（技術者レベル）
 
-### 日常の例え
+### 対象ファイル
 
-たとえば:
-学校の連絡板に「提出物を出し直してください」と貼り紙があるとします。先生が次の連絡を貼るたびに、その貼り紙を自動で外してしまうと、出し直しが必要な人は困ります。今回の修正は、「出し直しの案内が必要な状態では貼り紙を残し、別の通常連絡のときだけ片付ける」ようにしたイメージです。
+- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
 
-### 今回作ったもの
+### 背景（Before）
 
-| 日本語                 | 英語                    | 役割                                             |
-| ---------------------- | ----------------------- | ------------------------------------------------ |
-| 共通 snapshot 適用処理 | `applyWorkflowSnapshot` | どの経路でも同じ phase 判定で state を更新する   |
-| 手渡しフェーズ         | `handoff`               | error を残しつつ guidance を更新する終端フェーズ |
-| 手渡し情報             | `handoffBundle`         | ターミナルへ引き継ぐための案内情報               |
+`SKILL_CREATOR_WORKFLOW_STATE_CHANGED` 相当のスナップショットを受け取るたびに `setWorkflowError(null)` を無条件に呼ぶと、`currentPhase: 'handoff'` の直後に別スナップショットが届いた場合に、表示すべきエラーまでクリアされる。
 
-## Part 2
+#### Before（概略）
 
-### 型定義
+```ts
+// 受信のたびに無条件でエラーをクリアしていた
+setWorkflowSnapshot(snapshot);
+setWorkflowError(null);
+if (snapshot.handoffBundle) {
+  setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
+}
+```
 
-```typescript
-type SkillCreatorWorkflowPhase =
-  | "plan"
-  | "review"
-  | "execute"
-  | "verify"
-  | "improve"
-  | "handoff";
+### 変更内容（After）
 
+`currentPhase` が `"handoff"` のときだけ、エラークリアを行わない。
+
+#### After（概略）
+
+```ts
+setWorkflowSnapshot(snapshot);
+if (snapshot.currentPhase !== "handoff") {
+  setWorkflowError(null);
+}
+if (snapshot.handoffBundle) {
+  setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
+}
+```
+
+### TypeScript 型定義（抜粋）
+
+このタスクで新規の public interface は追加していないが、説明用にスナップショットの最小形を抜粋する。
+
+```ts
 type SkillCreatorWorkflowUiSnapshot = {
   planId: string;
-  currentPhase: SkillCreatorWorkflowPhase;
-  awaitingUserInput: SkillCreatorUserInputRequest | null;
-  verifyResult?: unknown;
-  resumeTokenEnvelope: {
-    version: string;
-    planId: string;
-    currentPhase: SkillCreatorWorkflowPhase;
-    artifactCount: number;
-    updatedAt: string;
-  };
+  currentPhase:
+    | "plan"
+    | "review"
+    | "execute"
+    | "verify"
+    | "improve"
+    | "handoff";
   handoffBundle: TerminalHandoffBundle | null;
+  awaitingUserInput: { requestId: string } | null;
+};
+
+type TerminalHandoffBundle = {
+  suggestedCommand: string;
 };
 ```
 
-```typescript
-const applyWorkflowSnapshot = (snapshot: SkillCreatorWorkflowUiSnapshot) => {
-  setWorkflowSnapshot(snapshot);
-  if (snapshot.currentPhase !== "handoff") {
-    setWorkflowError(null);
-  }
-  if (snapshot.handoffBundle) {
-    setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-  }
-};
+### API シグネチャ
+
+本件の主対象は「イベント受信時のコールバック適用」だが、テストでは `window.electronAPI.skillCreator.onWorkflowStateChanged` に渡される callback を捕捉して、擬似的にイベントを流している。
+
+APIシグネチャ（概念）:
+
+```ts
+// APIシグネチャ（概念）
+window.electronAPI.skillCreator.onWorkflowStateChanged(
+  (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
+): () => void;
 ```
 
-### 使用例
+### 使用例（テストでの利用）
 
-API シグネチャと、今回実際に修正対象にした使用箇所です。
+使用例:
 
-```typescript
-type SkillCreatorRuntimeApi = {
-  onWorkflowStateChanged?: (
-    callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
-  ) => () => void;
-  getWorkflowState?: (
-    planId: string,
-  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
-  submitUserInput?: (
-    submission: SkillCreatorUserInputSubmission,
-  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
-};
-```
-
-```typescript
-return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-  applyWorkflowSnapshot(snapshot);
-});
-
-const result = await skillCreatorApi.getWorkflowState(planId);
-if (result.success && result.data) {
-  applyWorkflowSnapshot(result.data);
-}
-
-const submitResult = await skillCreatorApi.submitUserInput(submission);
-if (submitResult.success && submitResult.data) {
-  applyWorkflowSnapshot(submitResult.data);
-}
+```ts
+// 使用例: 登録された callback をキャプチャして任意の snapshot を流す
+const { triggerCallback } = setupCallbackCapture();
+triggerCallback(buildSnapshot("handoff"));
+triggerCallback(buildSnapshot("execute"));
 ```
 
 ### エラーハンドリング
 
-- `getWorkflowState` / `submitUserInput` が `success: false` を返した場合は、既存どおり `setWorkflowError(message)` で失敗内容を保持する
-- 例外が throw された場合は、人が読める fallback message を入れる
-- `handoff` のときだけ error clear を止めるので、失敗時の message と terminal guidance を同時に持てる
-- `vitest` 再実行は環境ブロッカーのため未完了であり、Phase 10/11 では BLOCKED と明記する
+エラーハンドリング方針:
 
-### エッジケース
+- `"handoff"` では `setWorkflowError(null)` を呼ばない。エラー表示の永続化が目的。
+- `"handoff"` 以外では従来どおりエラーをクリアする（過去のエラーが残り続ける副作用を避ける）。
 
-1. `handoffBundle` があるが `currentPhase !== "handoff"` の snapshot
-   - guidance は更新する
-   - error clear は phase 判定に従う
-2. `handoff` snapshot を `onWorkflowStateChanged` 以外の経路で受け取る場合
-   - `getWorkflowState`
-   - `submitUserInput`
-   - execute 後の `getWorkflowState`
-     いずれも `applyWorkflowSnapshot()` を通す
-3. 旧語彙 `phase: 'failed'`
-   - shared type に存在しないため不採用
-   - current vocabulary は `currentPhase: "handoff"`
+### エッジケース（境界条件）
 
-### 設定項目と定数一覧
+- `currentPhase: "handoff"` のスナップショット受信後に、別フェーズ（例: `"execute"`）のスナップショットが連続して届く。
+  - `"handoff"` の受信でエラーが消えないこと（AC-1/3）。
+  - その後 `"execute"` を受け取った時点でエラーがクリアされること（AC-2）。
+- `handoffBundle` の有無。
+  - `"handoff"` で `handoffBundle` がある場合は `setHandoffGuidance` が呼ばれる（別条件として維持）。
 
-| 項目                                    | 値                              | 用途                                    |
-| --------------------------------------- | ------------------------------- | --------------------------------------- | --------- | -------- | --------- | ---------- | ---------------------- |
-| `snapshot.currentPhase`                 | `"plan"                         | "review"                                | "execute" | "verify" | "improve" | "handoff"` | error clear 条件の分岐 |
-| `snapshot.handoffBundle`                | `TerminalHandoffBundle \| null` | terminal handoff guidance の更新        |
-| `planId`                                | `string`                        | snapshot 再取得と submit 送信先の識別子 |
-| `TC-EP-01` 〜 `TC-EP-08`                | `test case IDs`                 | 4 経路 + 既存挙動維持の回帰観点         |
-| `outputs/phase-11/screenshot-plan.json` | `nonVisual: true`               | 今回は screenshot を撮らない分類証跡    |
+### 設定可能なパラメータと定数一覧
 
-### テスト構成
+設定可能なパラメータ:
 
-```text
-TC-EP-01: onWorkflowStateChanged + handoff
-TC-EP-02: onWorkflowStateChanged + execute
-TC-EP-03: onWorkflowStateChanged + verify
-TC-EP-04: onWorkflowStateChanged + handoffBundle
-TC-EP-05: onWorkflowStateChanged + handoffBundle なし
-TC-EP-06: getWorkflowState + handoff
-TC-EP-07: submitUserInput + handoff
-TC-EP-08: execute 後の getWorkflowState + handoff
-```
+- なし（UI コンポーネント内部の条件分岐のみ）
 
-補足:
+定数一覧:
 
-- `vitest` の再実行は esbuild host/binary mismatch で BLOCKED
-- そのため current wave では、コード・仕様書・台帳・lesson を先に current facts へ戻して false green を避ける
+- `"handoff"`（`SkillCreatorWorkflowUiSnapshot["currentPhase"]` のリテラル値）
+
+### Consumer Contract & IPC Compatibility
+
+- N/A（IPC の request/response 形状の変更なし。Renderer 内の state 更新条件のみ変更。）

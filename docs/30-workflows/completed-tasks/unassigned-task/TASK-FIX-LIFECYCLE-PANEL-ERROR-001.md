@@ -1,20 +1,20 @@
-# TASK-FIX-LIFECYCLE-PANEL-ERROR-001: SkillLifecyclePanel phase:failed 時エラー消去バグ修正
+# TASK-FIX-LIFECYCLE-PANEL-ERROR-001: SkillLifecyclePanel currentPhase:handoff 時エラー消去バグ修正
 
 ## メタ情報
 
 ```yaml
 issue_number: 1844
 task_id: TASK-FIX-LIFECYCLE-PANEL-ERROR-001
-task_name: SkillLifecyclePanel phase:failed 時エラー消去バグ修正
+task_name: SkillLifecyclePanel currentPhase:handoff 時エラー消去バグ修正
 category: バグ修正
 target_feature: スキル生成UI エラー表示（Renderer 側）
 priority: 高
 scale: 小規模
-status: 未実施
+status: 完了
 source_phase: TASK-NOTIFICATION-SERVICE-001 Phase 12 documentation
 created_date: 2026-04-02
 dependencies: [TASK-FIX-EXECUTE-PLAN-FF-001, TASK-NOTIFICATION-SERVICE-001]
-spec_path: docs/30-workflows/unassigned-task/TASK-FIX-LIFECYCLE-PANEL-ERROR-001.md
+spec_path: docs/30-workflows/completed-tasks/unassigned-task/TASK-FIX-LIFECYCLE-PANEL-ERROR-001.md
 ```
 
 ## メタ情報
@@ -23,12 +23,12 @@ spec_path: docs/30-workflows/unassigned-task/TASK-FIX-LIFECYCLE-PANEL-ERROR-001.
 | ------------ | --------------------------------------------------------------- |
 | issue_number | 1844                                                            |
 | タスクID     | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                              |
-| タスク名     | SkillLifecyclePanel phase:failed 時エラー消去バグ修正           |
+| タスク名     | SkillLifecyclePanel currentPhase:handoff 時エラー消去バグ修正   |
 | 分類         | バグ修正                                                        |
 | 対象機能     | スキル生成UI エラー表示（Renderer 側）                          |
 | 優先度       | 高                                                              |
 | 見積もり規模 | 小規模（1 行の条件分岐追加 + テスト追加）                       |
-| ステータス   | 未実施                                                          |
+| ステータス   | 完了                                                            |
 | 発見元       | TASK-FIX-EXECUTE-PLAN-FF-001（step3）完了後に顕在化するバグ予測 |
 | 発見日       | 2026-04-01                                                      |
 
@@ -40,11 +40,11 @@ spec_path: docs/30-workflows/unassigned-task/TASK-FIX-LIFECYCLE-PANEL-ERROR-001.
 
 `SkillLifecyclePanel.tsx` の `onWorkflowStateChanged` コールバックは、IPC 経由で届くワークフロー状態スナップショットを受け取るたびに `setWorkflowError(null)` を無条件呼び出している。
 
-TASK-FIX-EXECUTE-PLAN-FF-001（step3）の完了により、`SKILL_CREATOR_WORKFLOW_STATE_CHANGED` イベントが fire-and-forget 方式でバックグラウンドから随時配信されるようになる。その結果、`phase: 'failed'` スナップショットが届いた直後に別のスナップショットが届き、エラー状態がゼロクリアされてしまう問題が発現する。
+TASK-FIX-EXECUTE-PLAN-FF-001（step3）の完了により、`SKILL_CREATOR_WORKFLOW_STATE_CHANGED` イベントが fire-and-forget 方式でバックグラウンドから随時配信されるようになる。その結果、`currentPhase: 'handoff'` スナップショットが届いた直後に別のスナップショットが届き、エラー状態がゼロクリアされてしまう問題が発現する。
 
 ### 1.2 問題点・課題
 
-- `setWorkflowError(null)` の無条件呼び出しにより、`phase: 'failed'` 後に配信される他のスナップショットでエラーメッセージが即座に消える
+- `setWorkflowError(null)` の無条件呼び出しにより、`currentPhase: 'handoff'` 後に配信される他のスナップショットでエラーメッセージが即座に消える
 - ユーザーはエラーが発生したことを確認できないまま操作を続けてしまう
 - 修正箇所は `SkillLifecyclePanel.tsx:539` の 1 行のみだが、影響範囲の把握が複雑（fire-and-forget 移行との依存関係）
 
@@ -60,11 +60,11 @@ TASK-FIX-EXECUTE-PLAN-FF-001（step3）の完了により、`SKILL_CREATOR_WORKF
 
 ### 2.1 目的
 
-スキル生成が `phase: 'failed'` で終了したとき、UI 上のエラーメッセージが消えずに表示されたままになること。
+スキル生成が `currentPhase: 'handoff'` で終了したとき、UI 上のエラーメッセージが消えずに表示されたままになること。
 
 ### 2.2 最終ゴール
 
-1. `onWorkflowStateChanged` コールバックが `phase: 'failed'` 時に `setWorkflowError(null)` を呼ばないようにする
+1. `onWorkflowStateChanged` コールバックが `currentPhase: 'handoff'` 時に `setWorkflowError(null)` を呼ばないようにする
 2. エラー永続化のテストを追加し、回帰を防止する
 
 ### 2.3 スコープ
@@ -113,8 +113,8 @@ TASK-FIX-EXECUTE-PLAN-FF-001（step3）の完了により、`SKILL_CREATOR_WORKF
 
 ### 3.4 推奨アプローチ
 
-修正は `if (snapshot.phase !== 'failed')` で `setWorkflowError(null)` を囲む 1 行変更。
-テストは `phase: 'failed'` スナップショット後に別スナップショットが届いても `workflowError` が null にならないことを検証する。
+修正は `if (snapshot.currentPhase !== 'handoff')` で `setWorkflowError(null)` を囲む 1 行変更。
+テストは `currentPhase: 'handoff'` スナップショット後に別スナップショットが届いても `workflowError` が null にならないことを検証する。
 
 ### 3.5 実装課題と解決策（関連タスクからの教訓）
 
@@ -155,7 +155,7 @@ TASK-FIX-EXECUTE-PLAN-FF-001（step3）の完了により、`SKILL_CREATOR_WORKF
 #### 手順
 
 1. `SkillLifecyclePanel.tsx:539` 周辺コードを精読し現状バグを確認する
-2. AC-1〜AC-5 を定義する（phase:failed 時のエラー永続化条件）
+2. AC-1〜AC-5 を定義する（currentPhase:handoff 時のエラー永続化条件）
 3. P50 チェック（修正が 50 行以内であることを確認）
 
 #### 成果物
@@ -175,7 +175,7 @@ TASK-FIX-EXECUTE-PLAN-FF-001（step3）の完了により、`SKILL_CREATOR_WORKF
 #### 手順
 
 1. 変更前コード（現状）と変更後コード（修正案）を比較する
-2. `if (snapshot.phase !== 'failed')` の挿入位置を確認する
+2. `if (snapshot.currentPhase !== 'handoff')` の挿入位置を確認する
 
 #### 成果物
 
@@ -194,7 +194,7 @@ TASK-FIX-EXECUTE-PLAN-FF-001（step3）の完了により、`SKILL_CREATOR_WORKF
 #### 手順
 
 1. `SkillLifecyclePanel.error-persistence.test.tsx` を作成する
-2. `phase: 'failed'` 後に `setWorkflowError(null)` が呼ばれないことを検証するテストを追加する
+2. `currentPhase: 'handoff'` 後に `setWorkflowError(null)` が呼ばれないことを検証するテストを追加する
 3. テストが Red（失敗）であることを確認する
 
 #### 成果物
@@ -213,7 +213,7 @@ TASK-FIX-EXECUTE-PLAN-FF-001（step3）の完了により、`SKILL_CREATOR_WORKF
 
 #### 手順
 
-1. `SkillLifecyclePanel.tsx:539` を修正する（`if (snapshot.phase !== 'failed')` で囲む）
+1. `SkillLifecyclePanel.tsx:539` を修正する（`if (snapshot.currentPhase !== 'handoff')` で囲む）
 2. テストが Green になることを確認する
 
 #### 成果物

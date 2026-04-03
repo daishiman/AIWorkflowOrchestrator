@@ -1,145 +1,170 @@
-# Phase 5: 実装
+# Phase 5: 実装 - タスク仕様書
 
 ## メタ情報
 
-| 項目         | 内容                               |
-| ------------ | ---------------------------------- |
-| Phase        | 5                                  |
-| タスクID     | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
-| ステータス   | 未実施                             |
-| 担当         | 実装者                             |
-| 見積もり時間 | 0.5h                               |
+| 項目       | 内容                      |
+| ---------- | ------------------------- |
+| Phase      | 5                         |
+| Phase名    | 実装                      |
+| 前提Phase  | Phase 4                   |
+| 後続Phase  | Phase 6                   |
+| ステータス | 完了                      |
+| 作成日     | 2026-04-02                |
+| 機能名     | fix-lifecycle-panel-error |
+
+---
 
 ## 目的
 
-`SkillLifecyclePanel.tsx:539` 付近の `setWorkflowError(null)` を `if` ブロックで囲み、Phase 4 で作成したテストを Green 化する。
+Phase 4で作成したRedテストをGreenにする実装を行う。`SkillLifecyclePanel.tsx:539` に1行の条件分岐を追加する。
+
+## 背景
+
+修正は `if (snapshot.currentPhase !== 'handoff')` で `setWorkflowError(null)` を囲む1行変更のみ。変更最小性を維持しながら、AC-1〜AC-5を全て充足させる。
+
+---
 
 ## 実行タスク
 
-1. `SkillLifecyclePanel.tsx` を修正する（1 箇所）
-2. Phase 4 テストが Green になることを確認する
-3. 既存テストへの影響がないことを確認する
+### タスク1: コード実装
+
+**目的**: `setWorkflowError(null)` の無条件呼び出しを条件付き呼び出しに変更する。
+
+**実行手順**:
+
+1. `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` を開く
+2. `onWorkflowStateChanged` コールバック内の `setWorkflowError(null)` を特定する（539行目付近）
+3. `outputs/phase-2/before-after-comparison.md` を参照し、After設計通りに修正する
+4. 変更内容:
+
+```typescript
+// Before（修正前）
+setWorkflowError(null);
+
+// After（修正後）
+if (snapshot.currentPhase !== "handoff") {
+  setWorkflowError(null);
+}
+```
+
+5. 変更行数が最小限（1〜3行程度）であることを確認する
+
+**新規作成・修正ファイル一覧**:
+
+| 種別 | ファイルパス                                                         |
+| ---- | -------------------------------------------------------------------- |
+| 修正 | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` |
+
+**期待される成果物**:
+
+- 修正済み `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
+
+---
+
+### タスク2: テストGreen確認
+
+**目的**: Phase 4で作成したテストがGreenになることを確認する。
+
+**実行手順**:
+
+1. テストを実行し、Greenになることを確認する
+2. 全テストケース（AC-1〜AC-3対応分）がPASSすることを確認する
+
+```bash
+pnpm --filter @repo/desktop test -- --testPathPattern="SkillLifecyclePanel.error-persistence"
+```
+
+**期待される成果物**:
+
+- テスト実行結果（Green状態の確認）
+
+---
+
+### タスク3: 既存テストへの影響確認
+
+**目的**: 変更により既存テストが壊れていないことを確認する。
+
+**実行手順**:
+
+1. `SkillLifecyclePanel` 関連の全テストを実行する
+2. 全てGreenであることを確認する（AC-4充足）
+
+```bash
+pnpm --filter @repo/desktop test -- --testPathPattern="SkillLifecyclePanel"
+```
+
+**期待される成果物**:
+
+- 既存テスト全PASS確認
+
+---
 
 ## 参照資料
 
-### システム仕様（aiworkflow-requirements）
+| 参照資料           | パス                                                                                                  | 内容            |
+| ------------------ | ----------------------------------------------------------------------------------------------------- | --------------- |
+| 修正対象ファイル   | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                                  | 修正対象        |
+| Before/After比較   | `outputs/phase-2/before-after-comparison.md`                                                          | 実装設計        |
+| エラー永続化テスト | `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` | Red→Green確認用 |
 
-| 参照資料           | パス                                                                         | 内容           |
-| ------------------ | ---------------------------------------------------------------------------- | -------------- |
-| アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
-
-## 統合テスト連携
-
-- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
-- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
-
-## 実行手順
-
-### ステップ 1: 修正対象箇所の確認
-
-```bash
-# 修正対象の行を確認する
-grep -n "setWorkflowError(null)" \
-  apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx
-
-# 対象行の前後を確認する（531〜544 行付近）
-sed -n '531,544p' \
-  apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx
-```
-
-### ステップ 2: 修正内容
-
-**修正ファイル**: `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
-
-**修正箇所**: `onWorkflowStateChanged` コールバック内（539 行付近）
-
-**変更前**:
-
-```typescript
-return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-  setWorkflowSnapshot(snapshot);
-  setWorkflowError(null); // ← BUG: 'handoff' フェーズでもエラーを消去する
-  if (snapshot.handoffBundle) {
-    setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-  }
-});
-```
-
-**変更後**:
-
-```typescript
-return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-  setWorkflowSnapshot(snapshot);
-  if (snapshot.currentPhase !== "handoff") {
-    setWorkflowError(null); // 'handoff' 以外のフェーズでのみエラーをクリア
-  }
-  if (snapshot.handoffBundle) {
-    setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-  }
-});
-```
-
-**変更サマリー**:
-
-- 変更量: `setWorkflowError(null);` の 1 行を、`if (snapshot.currentPhase !== 'handoff') { ... }` ブロックで囲む（実質 2 行追加・0 行削除）
-- `handoffBundle` 処理の位置は変更しない
-- `useEffect` の依存配列は変更しない
-
-### ステップ 3: テストの Green 化確認
-
-```bash
-# Phase 4 テストが Green になることを確認する
-pnpm --filter @repo/desktop exec vitest run \
-  src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx
-```
-
-期待される結果:
-
-- TC-EP-01: PASS（`currentPhase: 'handoff'` 時に `setWorkflowError(null)` が呼ばれない）
-- TC-EP-02: PASS（`currentPhase: 'execute'` 時に `setWorkflowError(null)` が呼ばれる）
-- TC-EP-03: PASS（`currentPhase: 'verify'` 時に `setWorkflowError(null)` が呼ばれる）
-- TC-EP-04: PASS（`currentPhase: 'handoff'` でも `handoffBundle` 処理が実行される）
-- TC-EP-05: PASS（`handoffBundle: null` 時に `setHandoffGuidance` が呼ばれない）
-
-### ステップ 4: 既存テストへの影響確認
-
-```bash
-# SkillLifecyclePanel の既存テストを全て実行する
-pnpm --filter @repo/desktop exec vitest run \
-  src/renderer/components/skill/__tests__/
-
-# desktop パッケージ全体のテストを実行する
-pnpm --filter @repo/desktop exec vitest run
-```
-
-全テストが PASS することを確認する。
-
-## 多角的チェック観点
-
-- `if (snapshot.currentPhase !== 'handoff')` の括弧の位置が正しく、`handoffBundle` 処理が `if` ブロックの外にあることを確認したか
-- `snapshot.currentPhase` が `'handoff'` の場合に `setWorkflowError(null)` が呼ばれず、`handoff` 以外では呼ばれることを確認したか
-- TypeScript のコンパイルエラーが発生しないことを確認したか（`snapshot.currentPhase` の型が `'handoff'` との比較に対応しているか）
+---
 
 ## 成果物
 
-| 成果物                         | パス                                                                 | 説明                       |
-| ------------------------------ | -------------------------------------------------------------------- | -------------------------- |
-| `SkillLifecyclePanel.tsx` 修正 | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | バグ修正済みコンポーネント |
+| 成果物                       | パス                                                                 | 内容            |
+| ---------------------------- | -------------------------------------------------------------------- | --------------- |
+| SkillLifecyclePanel.tsx 修正 | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | 1行条件分岐追加 |
+
+---
+
+## TDD検証
+
+### TDD サイクル確認
+
+```bash
+pnpm --filter @repo/desktop test -- --testPathPattern="SkillLifecyclePanel.error-persistence"
+```
+
+**確認項目**:
+
+- [ ] テストが成功することを確認（Green状態）
+
+---
+
+## 統合テスト連携
+
+- React 状態管理の `setWorkflowError` 動作との接続実装を確認する
+- IPC コールバックの変更が正しく React 状態に反映されることを確認する
+
+---
 
 ## 完了条件
 
-- [ ] `SkillLifecyclePanel.tsx:539` 付近の `setWorkflowError(null)` が `if (snapshot.currentPhase !== 'handoff')` ブロックで囲まれている
-- [ ] Phase 4 テストファイル（`error-persistence.test.tsx`）の全 TC が Green になっている
-- [ ] `handoffBundle` 処理が `if` ブロックの外（`currentPhase` 判定の影響を受けない位置）にある
-- [ ] `useEffect` の依存配列が変更されていない
-- [ ] TypeScript コンパイルエラーが発生していない
+- [ ] `SkillLifecyclePanel.tsx` の `onWorkflowStateChanged` が修正されている
+- [ ] 変更が `if (snapshot.currentPhase !== 'handoff')` の条件追加のみ（最小変更）
+- [ ] Phase 4のテストが全てGreen（AC-1〜AC-3充足）
+- [ ] 既存の `SkillLifecyclePanel` 関連テストが全てGreen（AC-4充足）
+- [ ] TypeScript型エラーなし、ESLintエラーなし（AC-5充足）
 
-## タスク100%実行確認【必須】
+---
 
-- [ ] 全実行タスクが完了している
-- [ ] 全成果物が存在する（`SkillLifecyclePanel.tsx` の修正が完了）
-- [ ] 全完了条件が満たされている
+## Phase末端アクション【必須】
 
-## 次Phase
+- [ ] 本Phase内の全タスク（タスク1〜3）を100%実行完了
+- [ ] 各タスクを100%完了し、完了を明記
+- [ ] 修正ファイルの変更内容を記録済み
 
-Phase 6: テスト拡充 へ進む
+---
+
+## 依存関係
+
+- **前提**: Phase 4（テスト作成）が完了し、Redテストが存在すること
+- **後続**: Phase 6（テスト拡充）へ進む
+
+---
+
+## 次のPhase
+
+完了後、以下のファイルを実行してください:
+
+`docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-6-test-expansion.md`

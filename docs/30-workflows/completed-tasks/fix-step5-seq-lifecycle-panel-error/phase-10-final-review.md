@@ -1,134 +1,145 @@
-# Phase 10: 最終レビュー
+# Phase 10: 最終レビューゲート - タスク仕様書
 
 ## メタ情報
 
-| 項目         | 内容                               |
-| ------------ | ---------------------------------- |
-| Phase        | 10                                 |
-| タスクID     | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
-| ステータス   | 未実施                             |
-| 担当         | 実装者                             |
-| 見積もり時間 | 0.25h                              |
+| 項目       | 内容                      |
+| ---------- | ------------------------- |
+| Phase      | 10                        |
+| Phase名    | 最終レビューゲート        |
+| 前提Phase  | Phase 9                   |
+| 後続Phase  | Phase 11                  |
+| ステータス | 完了                      |
+| 作成日     | 2026-04-02                |
+| 機能名     | fix-lifecycle-panel-error |
+
+---
 
 ## 目的
 
-AC-1〜AC-5 の全充足確認と PR 可否判定を行い、Phase 11 の手動テストに進む準備が整っているかを確認する。
+AC-1〜AC-5の充足を最終確認し、矛盾なし・漏れなし・整合性あり・依存関係整合の4条件を含めてPR作成可否を判定する。
+
+## 背景
+
+Phase 1で定義したAC全てが充足されていることを確認する最終ゲート。MINOR指摘がある場合は未タスク化して次フェーズへ進む。
+
+---
 
 ## 実行タスク
 
-1. AC-1〜AC-5 の充足確認
-2. 変更量の確認（small であること）
-3. PR 可否判定（RELEASE OK / BLOCKED）
+### タスク1: AC充足最終確認
+
+**目的**: AC-1〜AC-5が全て充足されているかを最終確認する。
+
+**実行手順**:
+
+1. `outputs/phase-1/acceptance-criteria.md` のAC-1〜AC-5を確認する
+2. 各ACの充足状況を `outputs/phase-10/final-review-result.md` に記録する
+
+**ACチェックリスト**:
+
+| AC   | 条件                                                                       | 充足状況 | 確認方法           |
+| ---- | -------------------------------------------------------------------------- | -------- | ------------------ |
+| AC-1 | `currentPhase: 'handoff'` 時に `setWorkflowError(null)` が呼ばれない       | -        | テスト確認         |
+| AC-2 | `currentPhase: 'handoff'` 以外では `setWorkflowError(null)` が呼ばれる     | -        | テスト確認         |
+| AC-3 | `currentPhase: 'handoff'` 後に別スナップショットが届いてもエラーが消えない | -        | テスト確認         |
+| AC-4 | 既存の正常系テストが全てGREEN                                              | -        | テストスイート確認 |
+| AC-5 | TypeScript型エラーなし、ESLintエラーなし                                   | -        | Phase 9結果確認    |
+
+**期待される成果物**:
+
+- `outputs/phase-10/final-review-result.md`
+
+---
+
+### タスク2: MINOR指摘の未タスク化
+
+**目的**: MINOR判定の指摘事項がある場合は未タスク化する。
+
+**実行手順**:
+
+1. レビューで発見されたMINOR指摘を収集する
+2. 各指摘を `docs/30-workflows/unassigned-task/` に未タスクとして記録する
+3. 「機能に影響なし」は未タスク化不要の理由にしない（SKILL.mdのルール遵守）
+
+**期待される成果物**:
+
+- MINOR指摘の未タスク化（0件でも「0件」と記録）
+
+---
 
 ## 参照資料
 
-### システム仕様（aiworkflow-requirements）
+| 参照資料           | パス                                     | 内容                           |
+| ------------------ | ---------------------------------------- | ------------------------------ |
+| 受入条件           | `outputs/phase-1/acceptance-criteria.md` | AC-1〜AC-5                     |
+| 品質保証レポート   | `outputs/phase-9/quality-report.md`      | 全テスト・Lint・型チェック結果 |
+| カバレッジレポート | `outputs/phase-7/coverage-report.md`     | カバレッジ計測結果             |
 
-| 参照資料           | パス                                                                         | 内容           |
-| ------------------ | ---------------------------------------------------------------------------- | -------------- |
-| アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
-
-## 統合テスト連携
-
-- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
-- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
-- Phase 2 の成果物 design-topology.md と Phase 5 の修正結果を前提に、AC-1〜AC-5 の充足を再確認する。
-
-## 実行手順
-
-### ステップ 1: AC-1〜AC-5 充足確認
-
-| AC   | 受入条件                                                                                                           | 確認方法                 | 充足状態 |
-| ---- | ------------------------------------------------------------------------------------------------------------------ | ------------------------ | -------- |
-| AC-1 | `currentPhase === 'handoff'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれないこと               | TC-EP-01 PASS            | 確認対象 |
-| AC-2 | `currentPhase !== 'handoff'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれること（既存動作維持） | TC-EP-02/03 PASS         | 確認対象 |
-| AC-3 | `handoffBundle` の処理は `phase` に関わらず変わらないこと                                                          | TC-EP-04/05/09 PASS      | 確認対象 |
-| AC-4 | 既存テストが全て PASS すること                                                                                     | 全テスト PASS（Phase 9） | 確認対象 |
-| AC-5 | UI 上でスキル生成エラー発生時にエラーメッセージが表示されたままになること                                          | 手動テスト（Phase 11）   | 確認対象 |
-
-### ステップ 2: 変更量の確認
-
-```bash
-# 変更差分を確認する
-git diff apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx
-
-# 変更行数を確認する
-git diff --stat apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx
-```
-
-期待される変更量:
-
-- `SkillLifecyclePanel.tsx`: `+2 -0`（`if` ブロックの追加 2 行のみ）
-- テストファイル: 新規作成（`SkillLifecyclePanel.error-persistence.test.tsx`）
-
-### ステップ 3: PR 可否判定
-
-以下の条件が全て満たされている場合に RELEASE OK とする:
-
-#### RELEASE OK の条件
-
-- [ ] AC-1〜AC-4 が全て充足されている（ユニットテストで確認済み）
-- [ ] `pnpm --filter @repo/desktop typecheck` が PASS
-- [ ] `pnpm --filter @repo/desktop lint` が PASS
-- [ ] `pnpm --filter @repo/desktop exec vitest run` が全 PASS
-- [ ] `SkillLifecyclePanel.tsx` の変更量が 2-3 行以内であること
-- [ ] AC-5 は Phase 11 の手動テストで確認予定（RELEASE OK の前提条件ではない）
-
-#### BLOCKED の条件
-
-- AC-1〜AC-4 のいずれかが未充足
-- 型チェック・ESLint・テストのいずれかが FAIL
-- 予期しない副作用が検出された場合
-
-### ステップ 4: 最終レビュー結果の記録
-
-`outputs/phase-10/final-review-result.md` に以下を記録する:
-
-```markdown
-## 最終レビュー結果
-
-### AC 充足状態
-
-| AC   | 充足状態        | エビデンス                |
-| ---- | --------------- | ------------------------- |
-| AC-1 | PASS/FAIL       | TC-EP-01 テスト結果       |
-| AC-2 | PASS/FAIL       | TC-EP-02/03 テスト結果    |
-| AC-3 | PASS/FAIL       | TC-EP-04/05/09 テスト結果 |
-| AC-4 | PASS/FAIL       | 全テスト実行結果          |
-| AC-5 | Phase 11 で確認 | 手動テスト予定            |
-
-### PR 可否判定
-
-**判定**: RELEASE OK / BLOCKED
-
-**理由**: （理由を記載）
-```
-
-## 多角的チェック観点
-
-- AC-5 が「手動テストで確認予定」として RELEASE OK に含めているが、手動テスト前にユニットテストで AC-5 に近い動作確認（`setWorkflowError(null)` が呼ばれないこと）はできているか確認したか
-- 変更量が 2-3 行以内で small の見積もりと一致しているか確認したか
-- Phase 1〜9 の全成果物ファイル（`outputs/phase-N/`）が存在するか確認したか
+---
 
 ## 成果物
 
-| 成果物           | パス                                      | 説明                                             |
-| ---------------- | ----------------------------------------- | ------------------------------------------------ |
-| 最終レビュー結果 | `outputs/phase-10/final-review-result.md` | AC-1〜AC-5 充足確認表、RELEASE OK / BLOCKED 判定 |
+| 成果物           | パス                                      | 内容                         |
+| ---------------- | ----------------------------------------- | ---------------------------- |
+| 最終レビュー結果 | `outputs/phase-10/final-review-result.md` | AC充足確認・判定結果・PR可否 |
+
+---
+
+## レビューゲート判定
+
+### レビュー結果判定
+
+| 判定     | 条件                         | 次のアクション               |
+| -------- | ---------------------------- | ---------------------------- |
+| PASS     | AC-1〜AC-5全て充足・問題なし | Phase 11（手動テスト）へ進行 |
+| MINOR    | 軽微な指摘あり               | 未タスク化後、Phase 11へ進む |
+| MAJOR    | 重大な問題あり               | 影響範囲に応じて戻る         |
+| CRITICAL | 致命的な問題あり             | Phase 1へ戻りユーザー確認    |
+
+### 戻り先決定基準
+
+| 問題の種類       | 戻り先                |
+| ---------------- | --------------------- |
+| 要件の問題       | Phase 1（要件定義）   |
+| 設計の問題       | Phase 2（設計）       |
+| テスト設計の問題 | Phase 4（テスト）     |
+| 実装の問題       | Phase 5（実装）       |
+| 品質の問題       | Phase 8（リファクタ） |
+
+---
+
+## 統合テスト連携
+
+- 最終レビューでテスト結果を確認する
+
+---
 
 ## 完了条件
 
-- [ ] AC-1〜AC-4 の充足状態が `final-review-result.md` に記録されている
-- [ ] AC-5 が Phase 11 の手動テストで確認予定であることが明記されている
-- [ ] RELEASE OK / BLOCKED 判定が明記されている
-- [ ] BLOCKED の場合は理由と対処方針が記録されている
+- [ ] `outputs/phase-10/final-review-result.md` が作成されている
+- [ ] AC-1〜AC-5の充足状況が全て記録されている
+- [ ] 判定結果が PASS または MINOR（未タスク化済み）であること
+- [ ] Phase 11 進行の可否が明記されている
 
-## タスク100%実行確認【必須】
+---
 
-- [ ] 全実行タスクが完了している
-- [ ] 全成果物が存在する（`outputs/phase-10/final-review-result.md`）
-- [ ] 全完了条件が満たされている
+## Phase末端アクション【必須】
 
-## 次Phase
+- [ ] 本Phase内の全タスク（タスク1〜2）を100%実行完了
+- [ ] 各タスクを100%完了し、完了を明記
+- [ ] 最終レビュー結果ファイルが生成されていることを確認
 
-Phase 11: 手動テスト へ進む（RELEASE OK の場合のみ）
+---
+
+## 依存関係
+
+- **前提**: Phase 9（品質保証）が完了していること
+- **後続**: Phase 11（手動テスト）へ進む
+
+---
+
+## 次のPhase
+
+完了後、以下のファイルを実行してください:
+
+`docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-11-manual-test.md`
