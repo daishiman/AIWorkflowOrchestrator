@@ -1,4 +1,4 @@
-# Phase 12: task spec 準拠チェック — TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001
+# Phase 12: task spec 準拠チェック — TASK-SDK-SC-02
 
 ## 判定
 
@@ -6,21 +6,21 @@ PASS
 
 ## 確認結果
 
-- implementation guide Part 1/2: OK
-- system spec update summary: OK
-- documentation changelog: OK
-- unassigned task detection: OK（current 0 件）
-- skill feedback report: OK
-- Phase 11 manual-test-checklist: OK（NV-11-01〜07）
-- Phase 11 manual-test-result: OK（NON_VISUAL walkthrough + metadata / fallback reason / source evidence）
-- Phase 11 discovered-issues: OK（current 0 件）
-- artifacts.json / outputs/artifacts.json: OK
-- Phase 13: blocked 維持
-- task spec / artifacts / outputs canonical filename: OK
+| 確認対象             | ステータス | 詳細                                                                                                    |
+| -------------------- | ---------- | ------------------------------------------------------------------------------------------------------- |
+| ChoiceButton 仕様書  | OK         | Props API・使用例を phase-12-documentation.md Task 12-1 に記録済み                                      |
+| FreeTextInput 仕様書 | OK         | Props API・キーボード操作・使用例を Task 12-2 に記録済み                                                |
+| ConversationProgress | OK         | Props API・アクセシビリティ・使用例を Task 12-3 に記録済み                                              |
+| QuestionCard 仕様書  | OK         | Props API・タイプ別動作・使用例を Task 12-4 に記録済み                                                  |
+| Panel 仕様書         | OK         | Props API・IPC チャネル・注意事項を Task 12-5 に記録済み                                                |
+| 型参照               | OK         | `SkillCreatorUserInputRequest` / `InterviewUserAnswer` / `UserInputQuestion` / `UserInputAnswer` 全参照 |
+| IPC チャネル         | OK         | `SKILL_CREATOR_SESSION_CHANNELS` の current channel を Task 12-5 に明記                                 |
+| implementation-guide | OK         | コンポーネントツリー・型マッピング・IPC 通信フロー・品質指標を記録済み                                  |
+| Phase 11 手動テスト  | OK         | `outputs/phase-11/manual-test-report.md` — PASS 判定・視覚証跡保存済み                                  |
 
 ## 実測コマンド
 
-- `pnpm --filter @repo/desktop typecheck`
-- `pnpm --filter @repo/desktop build`
-- `pnpm --filter @repo/desktop exec vitest run src/__tests__/electron-vite.preload-alias.test.ts`
-- `pnpm exec vitest run src/preload/__tests__/skill-api.getDetail-update.test.ts src/main/services/runtime/__tests__/governance-bundle.test.ts`
+- `pnpm --filter @repo/desktop exec vitest run apps/desktop/src/renderer/components/skill-creator/__tests__/`: **57 tests PASS**
+- カバレッジ: Stmts 97.54% / Branch 86.04% / Funcs 95.83% / Lines 97.54%
+- TypeScript typecheck: PASS
+- ESLint: PASS

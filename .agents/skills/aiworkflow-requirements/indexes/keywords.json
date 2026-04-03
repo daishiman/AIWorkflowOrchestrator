@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-03T12:48:46.531Z",
-  "totalKeywords": 2655,
+  "generated": "2026-04-03T12:48:46.543Z",
+  "totalKeywords": 2658,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1408,6 +1408,7 @@
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-import-analysis-view.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -1477,6 +1478,7 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
@@ -2350,6 +2352,7 @@
     "CREATOR": [
       "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
@@ -7477,6 +7480,15 @@
       "lessons-learned-skill-plan-exec-hardening.md"
     ],
     "step": [
+      "lessons-learned-skill-plan-exec-hardening.md"
+    ],
+    "BEFORE": [
+      "lessons-learned-skill-plan-exec-hardening.md"
+    ],
+    "QUIT": [
+      "lessons-learned-skill-plan-exec-hardening.md"
+    ],
+    "知見": [
       "lessons-learned-skill-plan-exec-hardening.md"
     ],
     "REMOVE": [

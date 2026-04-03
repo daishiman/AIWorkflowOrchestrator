@@ -5,6 +5,33 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-LIFECYCLE-PANEL-ERROR-001（2026-04-02）
+
+| 項目       | 値                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                                                                                                 |
+| ステータス | **完了**                                                                                                                                                           |
+| タイプ     | bugfix / renderer workflow lifecycle                                                                                                                               |
+| 優先度     | 高                                                                                                                                                                 |
+| 完了日     | 2026-04-02                                                                                                                                                         |
+| 対象       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` / `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` / `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/` |
+| 成果物     | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/`                                                                                                           |
+
+#### 実施内容
+
+- `SkillLifecyclePanel` に `applyWorkflowSnapshot()` を追加し、`handoff` 時の `workflowError` 保持を `onWorkflowStateChanged` / `getWorkflowState` / `submitUserInput` / execute 後再取得の全経路へ適用
+- `handoffBundle` 更新と error clear 条件を分離し、副作用なく guidance を維持
+- `SkillLifecyclePanel.error-persistence.test.tsx` に TC-EP-06〜08 を追加し、callback 単独ではなく 4 経路の回帰を固定
+- workflow docs と Phase 7〜12 outputs を current facts に同期し、phase/status/table の drift を是正
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx --reporter=verbose`: PASS（8/8）
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx --reporter=dot`: PASS（10/10）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm exec eslint apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx`: PASS（warning のみ）
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error --json`: PASS（10/10）
+
 ### タスク: TASK-FIX-ENV-STRIPPING（2026-04-01）
 
 | 項目       | 値                                                                                                                   |
@@ -2078,64 +2105,48 @@
 
 ---
 
-### タスク: TASK-FIX-LIFECYCLE-PANEL-ERROR-001（2026-04-03）
+### タスク: TASK-SDK-SC-02 Conversation UI 質問受信・回答送信 UI コンポーネント（2026-04-03）
 
-| 項目         | 値                                                                                       |
-| ------------ | ---------------------------------------------------------------------------------------- |
-| タスクID     | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                       |
-| ステータス   | **completed**                                                                            |
-| タイプ       | バグ修正（Renderer state エラー保持）                                                   |
-| 優先度       | 高                                                                                       |
-| 完了日       | 2026-04-03                                                                               |
-| GitHub Issue | #1844（closed but not implemented → 実装完了）                                           |
-| 成果物       | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/`                |
-
-#### 実施内容
-
-- `SkillLifecyclePanel.tsx` の `applyWorkflowSnapshot` にコメント 2 行追加
-  - `// handoff 時はエラーメッセージを保持する`
-  - `// fire-and-forget 配信では後続スナップショットでエラーが消えるバグ（Issue #1844）を防ぐ`
-- `SkillLifecyclePanel.error-persistence.test.tsx` 新規作成
-  - TC-EP-01〜TC-EP-08（8 件）、全テスト PASS
-  - `setupCallbackCapture()` パターンで IPC コールバックを確定的にテスト
-- Phase 12 same-wave sync として `task-workflow-backlog.md` / `skill-creator-agent-sdk-lane/index.md` を current facts に揃え、`generate-index.js` で `indexes/topic-map.md` / `indexes/keywords.json` を再生成
-
-#### 検証結果
-
-| 項目                  | 結果         |
-| --------------------- | ------------ |
-| テスト                | 8/8 PASS     |
-| TypeScript 型チェック | PASS（0 件） |
-| Phase 11              | NON_VISUAL   |
-
-#### 未完了事項
-
-| 項目                         | 状態               |
-| ---------------------------- | ------------------ |
-| TASK-FIX-EXECUTE-PLAN-FF-001 | 別タスク（未着手） |
-
-### タスク: UT-IMP-PHASE12-COMPLETED-TASK-REFERENCE-SYNC-GUARD-001（2026-04-03）
-
-| 項目       | 値                                                                                                                      |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | UT-IMP-PHASE12-COMPLETED-TASK-REFERENCE-SYNC-GUARD-001                                                                  |
-| ステータス | **完了**                                                                                                                |
-| タイプ     | 改善（Phase 12 completed-tasks 移管・参照整合）                                                                        |
-| 優先度     | 中                                                                                                                      |
-| 完了日     | 2026-04-03                                                                                                              |
-| GitHub Issue | #916（closed）                                                                                                        |
-| 成果物     | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-phase12-completed-task-reference-sync-guard-001.md`         |
+| 項目       | 値                                                                    |
+| ---------- | --------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-SC-02                                                        |
+| ステータス | **Phase 1-12 完了**                                                   |
+| タイプ     | implementation                                                        |
+| 優先度     | 高                                                                    |
+| 完了日     | 2026-04-03                                                            |
+| 依存タスク | TASK-SDK-SC-01                                                        |
+| 後続タスク | なし                                                                  |
+| 成果物     | `docs/30-workflows/step-02-par-task-02-conversation-ui/`              |
 
 #### 実施内容
 
-- Phase 12 完了移管時の参照同期ガードを completed 側へ移動し、`status: 完了` / `completed_date` / `spec_path` を current facts に更新
-- `task-imp-phase12-spec-version-consistency-guard-001.md` と `task-imp-phase12-workflow-body-stale-guard-001.md` の関連参照を completed パスへ同期
-- `skill-creator-agent-sdk-lane/index.md` の step5 completed path と current facts を揃え、移動元の旧 path 参照を除去
+- Electron Renderer 側に Atomic Design 準拠の 5 コンポーネントを新規実装
+  - `ChoiceButton`（Atom）: 選択/未選択状態の単一ボタン、`aria-pressed` 対応
+  - `FreeTextInput`（Atom）: 自由入力テキストエリア、secret モード対応、Enter 送信 / Shift+Enter 改行
+  - `ConversationProgress`（Atom）: 「質問 N / 推定合計」形式の進捗表示、`role="progressbar"` 対応
+  - `QuestionCard`（Molecule）: `kind`（single_select / multi_select / free_text / secret / confirm）に応じた入力 UI 統合
+  - `SkillCreatorConversationPanel`（Organism）: IPC listen・回答送信・全コンポーネント統合、`useReducer` による状態管理
+- Session Bridge 型（`UserInputQuestion`/`UserInputAnswer`）と Workflow 型（`SkillCreatorUserInputRequest`/`InterviewUserAnswer`）のブリッジ層を Panel 内に実装
+- `multi_select` の「その他（自由入力）」は `selectedValues` 経路として扱い、ブリッジで `UserInputAnswer.value` の配列に正規化
+- `key={questionIndex}` パターンで QuestionCard の内部状態を質問切り替え時に自動リセット
 
-#### 検証結果
+#### 検証
 
-| 項目               | 結果        |
-| ------------------ | ----------- |
-| 参照スイープ       | PASS        |
-| `git diff --check` | PASS        |
-| 旧 path 残存       | 0 件        |
+- `pnpm --filter @repo/desktop exec vitest run ...skill-creator/__tests__/`: **57 tests PASS**
+- カバレッジ: Stmts 97.54% / Branch 86.04% / Funcs 95.83% / Lines 97.54%
+- TypeScript typecheck: PASS
+- ESLint: PASS
+
+#### テストケース追加内訳
+
+| テストファイル                              | テスト数 | 主な検証内容                                           |
+| ------------------------------------------- | -------- | ------------------------------------------------------ |
+| `ChoiceButton.test.tsx`                     | 9        | 表示・選択状態・freeText 破線・disabled・aria-pressed  |
+| `FreeTextInput.test.tsx`                    | 9        | 表示制御・Enter/Shift+Enter・secret・disabled・clear   |
+| `ConversationProgress.test.tsx`             | 3        | 表示形式・プログレスバー幅                             |
+| `QuestionCard.test.tsx`                     | 23       | 全 5 kind・エッジケース・XSS・多言語・multi_select 自由入力 |
+| `SkillCreatorConversationPanel.test.tsx`    | 13       | IPC リスナー・クリーンアップ・質問表示・回答送信・エラー・重複送信防止 |
+
+#### Phase 12 未タスク
+
+なし（0件）
