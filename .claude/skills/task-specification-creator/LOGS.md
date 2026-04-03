@@ -11,6 +11,16 @@
 - SKILL.md v10.09.31 更新（close-out sync + skill-feedback 反映）
 
 ---
+## 2026-04-03 - TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 Phase 12 skill-feedback 反映
+
+### 変更内容
+- SKILL.md の Phase 11 記述に Feedback BEFORE-QUIT-001（非 visual task で「実地操作不可」宣言 + 代替記録テンプレート）を追加
+- SKILL.md の Phase 7 記述に Feedback BEFORE-QUIT-002（coverage は全ファイル一律でなく「対象範囲」を明示）を追加
+- 「よくある漏れ」テーブルに Feedback BEFORE-QUIT-003（documentation-changelog で workflow-local 同期と global skill sync を別ブロックで記録）を追加
+- 変更履歴に v10.09.32 を追記
+- aiworkflow-requirements/LOGS.md と同波で更新
+
+---
 ## 2026-04-02 - TASK-NOTIFICATION-SERVICE-001 Phase 12 close-out sync
 
 ### 変更内容

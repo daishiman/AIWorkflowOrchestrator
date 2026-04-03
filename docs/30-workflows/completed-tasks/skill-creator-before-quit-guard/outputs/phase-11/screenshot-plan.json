@@ -1,0 +1,7 @@
+{
+  "taskId": "TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001",
+  "phase": 11,
+  "classification": "NON_VISUAL",
+  "screenshots": [],
+  "reason": "before-quit guard は OS 標準ダイアログを使うため、見た目検証用スクリーンショットは不要"
+}
