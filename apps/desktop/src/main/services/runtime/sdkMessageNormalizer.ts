@@ -2,8 +2,8 @@
  * SDK Message Normalizer
  * TASK-RT-06: Claude Code SDK SDKMessage → SkillCreatorSdkEvent 正規化
  *
- * `query()` が返す SDK 生メッセージを lane 安定契約 (`SkillCreatorSdkEvent`) に変換する。
- * Facade 内で使用し、IPC / renderer / WorkflowEngine が SDK 内部構造に依存しないようにする。
+ * LLMアダプター（ILLMAdapter）が返す生メッセージを lane 安定契約 (`SkillCreatorSdkEvent`) に変換する。
+ * Facade 内で使用し、IPC / renderer / WorkflowEngine が LLMアダプター内部構造に依存しないようにする。
  */
 
 import type {
@@ -24,7 +24,7 @@ export interface NormalizerContext {
 /**
  * SDK 生メッセージ 1 件を lane 正規化イベントに変換する。
  *
- * @param rawMessage - `query()` から受信した SDK 生メッセージ（型は unknown）
+ * @param rawMessage - ILLMAdapter（sendChat/streamChat）から受信した生メッセージ（型は unknown）
  * @param context - normalizer コンテキスト（provenance, 伝播 sessionId）
  * @returns 正規化済み `SkillCreatorSdkEvent`
  */

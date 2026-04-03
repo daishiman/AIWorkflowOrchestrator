@@ -39,6 +39,14 @@
 - [root-workflow-pack/index.md](./root-workflow-pack/index.md)
   - 親 workflow 全体の Phase 1-13
   - 実装タスクではなく、全体方針と gate を定義する親仕様
+- [prompt-elegance-review-pack-v2/originals/prompt-elegance-review-summary.md](./prompt-elegance-review-pack-v2/originals/prompt-elegance-review-summary.md)
+  - 思考リセットと30思考法を使ったプロンプト改善レビューの統合サマリー
+- [prompt-elegance-review-pack-v2/originals/prompt-elegance-review-improved.md](./prompt-elegance-review-pack-v2/originals/prompt-elegance-review-improved.md)
+  - 長文の改善版プロンプト
+- [prompt-elegance-review-pack-v2/originals/prompt-elegance-review-operational-pack.md](./prompt-elegance-review-pack-v2/originals/prompt-elegance-review-operational-pack.md)
+  - 実運用向け短縮版と担当別 SubAgent テンプレート
+
+> 旧版原本は [prompt-elegance-review-pack-v2/originals/index.md](./prompt-elegance-review-pack-v2/originals/index.md) に移動済み。
 
 ## 実装タスク一覧
 
