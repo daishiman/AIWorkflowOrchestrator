@@ -1,123 +1,130 @@
-# Phase 3: 設計レビュー
+# Phase 3: 設計レビューゲート - タスク仕様書
 
 ## メタ情報
 
-| 項目         | 内容                               |
-| ------------ | ---------------------------------- |
-| Phase        | 3                                  |
-| タスクID     | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
-| ステータス   | 未実施                             |
-| 担当         | 実装者                             |
-| 見積もり時間 | 0.25h                              |
+| 項目       | 内容                      |
+| ---------- | ------------------------- |
+| Phase      | 3                         |
+| Phase名    | 設計レビューゲート        |
+| 前提Phase  | Phase 2                   |
+| 後続Phase  | Phase 4                   |
+| ステータス | 完了                      |
+| 作成日     | 2026-04-02                |
+| 機能名     | fix-lifecycle-panel-error |
+
+---
 
 ## 目的
 
-Phase 2 の設計が AC-1〜AC-5 を全て満たし、既存動作を破壊しないことを確認する。PASS の場合のみ Phase 4 へ進む。MAJOR 指摘がある場合は Phase 2 に戻る。
+Phase 2の設計がAC-1〜AC-5を充足しているかを確認し、矛盾なし・漏れなし・整合性あり・依存関係整合の4条件を満たすかを判定してPhase 4（テスト作成）へ進める。
+
+## 背景
+
+1行変更の小規模バグ修正だが、fire-and-forget化との依存関係を正確に把握した上で設計が完全であることを確認する。
+
+---
 
 ## 実行タスク
 
-1. AC-1〜AC-5 が設計で満たされているか確認
-2. `handoffBundle` 処理への無影響を確認
-3. React hooks deps 変更がないことを確認
-4. breaking change がないことの確認
-5. MAJOR 指摘の有無を判定し、PASS/FAIL を決定する
+### タスク1: 設計レビュー実施
+
+**目的**: Phase 2の設計成果物を全観点でレビューする。
+
+**実行手順**:
+
+1. `outputs/phase-2/before-after-comparison.md` を読み込む
+2. 以下のレビューチェックリストを完了する
+
+**レビューチェックリスト**:
+
+| 観点       | 確認内容                                                          | 判定 |
+| ---------- | ----------------------------------------------------------------- | ---- |
+| AC充足性   | AC-1〜AC-5が設計で充足されているか                                | -    |
+| 変更最小性 | 変更が `if (snapshot.currentPhase !== 'handoff')` の1行追加のみか | -    |
+| 型安全性   | `snapshot.currentPhase` の型定義と `'handoff'` 値の整合性         | -    |
+| テスト設計 | シナリオA・Bがエラー永続化を十分に検証できるか                    | -    |
+| 依存関係   | TASK-FIX-EXECUTE-PLAN-FF-001との依存が考慮されているか            | -    |
+| 回帰リスク | 変更により他の既存機能が壊れるリスクはないか                      | -    |
+
+3. 判定結果（PASS/MINOR/MAJOR/CRITICAL）を決定する
+4. `outputs/phase-3/review-result.md` に記録する
+
+**期待される成果物**:
+
+- `outputs/phase-3/review-result.md`
+
+---
 
 ## 参照資料
 
-### システム仕様（aiworkflow-requirements）
+| 参照資料         | パス                                         | 内容                |
+| ---------------- | -------------------------------------------- | ------------------- |
+| 受入条件         | `outputs/phase-1/acceptance-criteria.md`     | Phase 1のAC定義     |
+| Before/After比較 | `outputs/phase-2/before-after-comparison.md` | Phase 2の設計成果物 |
 
-| 参照資料           | パス                                                                         | 内容           |
-| ------------------ | ---------------------------------------------------------------------------- | -------------- |
-| アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
-
-## 統合テスト連携
-
-- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
-- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
-- Phase 1 の成果物 spec-extraction-map.md と Phase 2 の成果物 design-topology.md を前提に、AC-1〜AC-5 をレビューする。
-
-## 実行手順
-
-### ステップ 1: AC-1〜AC-5 の設計充足確認
-
-各受入条件を Phase 2 の設計と照合する:
-
-| AC   | 受入条件                                                                                                           | 対応する設計                                                                                                                                                        | 充足判定 |
-| ---- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| AC-1 | `currentPhase === 'handoff'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれないこと               | `applyWorkflowSnapshot(snapshot)` を設け、`onWorkflowStateChanged` / `getWorkflowState` / `submitUserInput` / execute 後再取得の全経路で `handoff` ガードを共有する | 確認対象 |
-| AC-2 | `currentPhase !== 'handoff'` の snapshot を受け取ったとき、`setWorkflowError(null)` が呼ばれること（既存動作維持） | `applyWorkflowSnapshot(snapshot)` 内で `snapshot.currentPhase !== 'handoff'` の場合のみ `setWorkflowError(null)` を実行                                             | 確認対象 |
-| AC-3 | `handoffBundle` の処理は `currentPhase` に関わらず変わらないこと                                                   | `applyWorkflowSnapshot(snapshot)` 内で `handoffBundle` の処理を `handoff` 判定と分離する                                                                            | 確認対象 |
-| AC-4 | 既存テストが全て PASS すること                                                                                     | 追加した回帰テストで 4 経路を固定し、型検査と lint は別途確認する。`vitest` は環境ブロッカー有無を Phase 10/11 で明示する                                           | 確認対象 |
-| AC-5 | UI 上でスキル生成エラー発生時にエラーメッセージが表示されたままになること                                          | どの snapshot 取り込み経路でも `handoff` 時にエラーを消さないため、store 上のエラー状態を保持できる                                                                 | 確認対象 |
-
-### ステップ 2: 既存動作への影響確認
-
-以下の既存動作が破壊されないことを確認する:
-
-| 動作                                         | 影響                                   | 判定     |
-| -------------------------------------------- | -------------------------------------- | -------- |
-| `setWorkflowSnapshot` の呼び出し             | 無条件のまま（変更なし）               | 問題なし |
-| `setHandoffGuidance` の呼び出し              | `handoffBundle` 条件で実行（変更なし） | 問題なし |
-| `useEffect` の依存配列                       | 変更なし                               | 問題なし |
-| `onWorkflowStateChanged` の戻り値（cleanup） | 変更なし（return のまま）              | 問題なし |
-
-### ステップ 3: breaking change の確認
-
-本修正は `SkillLifecyclePanel.tsx` の内部ロジック変更であり、以下の点で breaking change なし:
-
-| 変更内容                                | 外部への影響                                                 | 判定     |
-| --------------------------------------- | ------------------------------------------------------------ | -------- |
-| `setWorkflowError(null)` の呼び出し条件 | Redux store のエラー状態がクリアされなくなる（意図した変更） | 問題なし |
-| コンポーネントの Props 変更             | なし                                                         | 問題なし |
-| IPC 通信の変更                          | なし                                                         | 問題なし |
-| 型定義の変更                            | なし（既存型を使用）                                         | 問題なし |
-
-### ステップ 4: PASS/FAIL 判定
-
-以下の判定基準に従い、`outputs/phase-3/design-review-result.md` に結果を記録する:
-
-#### PASS 条件
-
-- AC-1〜AC-5 の全てが設計で充足されている
-- `handoffBundle` 処理が `currentPhase` 判定の影響を受けない設計になっている
-- React hooks deps の変更がない
-- breaking change がない
-- MAJOR 指摘がゼロ
-
-#### FAIL 条件（Phase 2 に戻る）
-
-- AC のいずれかが設計で充足されていない
-- `handoffBundle` 処理が誤って `currentPhase` 判定の内側に含まれている
-- React hooks deps に変更が生じている
-- MAJOR な breaking change が未対処
-
-## 多角的チェック観点
-
-- `if (snapshot.currentPhase !== 'handoff')` の条件で `handoffBundle` 処理が意図せず囲まれていないか確認したか（括弧の位置）
-- `currentPhase: 'handoff'` 以外の `SkillCreatorWorkflowPhase` 値を既存テストで十分に代表できているか確認したか
-- 修正後に `setWorkflowError` が永久にクリアされないケース（ユーザーが手動でエラーをクリアするUIがあるか）を確認したか
+---
 
 ## 成果物
 
-| 成果物           | パス                                      | 説明                                |
-| ---------------- | ----------------------------------------- | ----------------------------------- |
-| 設計レビュー結果 | `outputs/phase-3/design-review-result.md` | PASS/FAIL 判定、AC 充足表、指摘事項 |
+| 成果物           | パス                               | 内容                                |
+| ---------------- | ---------------------------------- | ----------------------------------- |
+| 設計レビュー結果 | `outputs/phase-3/review-result.md` | 判定結果・指摘事項・次Phase進行可否 |
+
+---
+
+## レビューゲート判定
+
+### レビュー結果判定
+
+| 判定     | 条件                     | 次のアクション              |
+| -------- | ------------------------ | --------------------------- |
+| PASS     | 全レビュー観点で問題なし | Phase 4（テスト作成）へ進行 |
+| MINOR    | 軽微な指摘あり           | 指摘対応後、Phase 4へ進む   |
+| MAJOR    | 重大な問題あり           | Phase 2（設計）へ戻る       |
+| CRITICAL | 致命的な問題あり         | Phase 1へ戻りユーザー確認   |
+
+### 戻り先決定基準
+
+| 問題の種類 | 戻り先              |
+| ---------- | ------------------- |
+| 要件の問題 | Phase 1（要件定義） |
+| 設計の問題 | Phase 2（設計）     |
+
+---
+
+## 統合テスト連携
+
+- IPC イベント連続配信シナリオのレビューゲートを実施する
+- `currentPhase: 'handoff'` 後のスナップショット配信パターンが設計でカバーされているか確認する
+
+---
 
 ## 完了条件
 
-- [ ] AC-1〜AC-5 の全てが設計で充足されていることが確認されている
-- [ ] `handoffBundle` 処理が `currentPhase` 判定の外にあることが確認されている
-- [ ] React hooks deps が変更なしであることが確認されている
-- [ ] breaking change がないことが確認されている
-- [ ] PASS/FAIL 判定が `design-review-result.md` に明記されている
-- [ ] MAJOR 指摘がある場合は Phase 2 に戻っている
+- [ ] `outputs/phase-3/review-result.md` が作成されている
+- [ ] 全レビューチェックリスト項目の判定が記録されている
+- [ ] 判定結果が PASS または MINOR（指摘対応済み）であること
+- [ ] Phase 4 進行の可否が明記されている
 
-## タスク100%実行確認【必須】
+---
 
-- [ ] 全実行タスクが完了している
-- [ ] 全成果物が存在する（`outputs/phase-3/design-review-result.md`）
-- [ ] 全完了条件が満たされている
+## Phase末端アクション【必須】
 
-## 次Phase
+- [ ] 本Phase内の全タスク（タスク1）を100%実行完了
+- [ ] 各タスクを100%完了し、完了を明記
+- [ ] 成果物（`outputs/phase-3/review-result.md`）が生成されていることを確認
 
-Phase 4: テスト作成（TDD Red） へ進む（設計レビュー PASS の場合のみ）
+---
+
+## 依存関係
+
+- **前提**: Phase 2（設計）が完了していること
+- **後続**: Phase 4（テスト作成）へ進む
+
+---
+
+## 次のPhase
+
+完了後、以下のファイルを実行してください:
+
+`docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-4-test-creation.md`

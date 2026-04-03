@@ -150,6 +150,34 @@ plan → review (awaiting user input) → execute → verify → [pass] handoff
 
 Renderer はこのレスポンスを受け取った場合、`plan.status === "error"` + `degradedReason` で劣化状態を UI に表示する。
 
+#### AskUserQuestion MCP カスタムツール（TASK-SDK-SC-01）
+
+SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `tool` API で `AskUserQuestion` をカスタム MCP ツールとして提供する。ユーザー入力が必要なときは必ずこのツールを呼び出す。
+
+**ツール名**: `AskUserQuestion`
+
+| パラメータ    | 型                                                                 | 必須 | 説明                                               |
+| ------------- | ------------------------------------------------------------------ | ---- | -------------------------------------------------- |
+| `question`    | `string`                                                           | ✓    | ユーザーに提示する質問文                           |
+| `type`        | `"single_select" \| "multi_select" \| "free_text" \| "secret" \| "confirm"` | —    | 入力種別（省略時は `free_text`）                   |
+| `options`     | `Array<{ value?: string; label?: string; description?: string; preview?: string }>` | —    | `single_select` / `multi_select` 時の選択肢        |
+| `placeholder` | `string`                                                           | —    | `free_text` 時の入力欄ヒント文字列                 |
+
+呼び出し例:
+```json
+{
+  "question": "インタビューの深度を選んでください",
+  "type": "single_select",
+  "options": [
+    { "value": "quick",    "label": "Quick（最小限）" },
+    { "value": "standard", "label": "Standard（推奨）" },
+    { "value": "detailed", "label": "Detailed（詳細）" }
+  ]
+}
+```
+
+ツールが返す値はユーザーが入力したテキスト（`multi_select` の場合は JSON 配列文字列、`confirm` の場合は `"true"` / `"false"`）。
+
 #### ユーザー入力ブリッジ（5種）
 
 | kind            | 用途                  | 例                      |
@@ -363,17 +391,6 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | **10.38.0**  | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映                                                                                                                     |
 | **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善                                                                                                                                                                                                                                                                       |
 | **10.37.43** | **2026-03-26** | **TASK-SDK-01 hardening sync を template へ反映**: docs-heavy Phase 12 follow-up に code hardening が入った時の same-wave rollback-to-current ルール、carry-forward 0件同期、compile gate と env-blocked test の分離記録を `references/patterns.md` / `references/update-process.md` へ追加                                                                                                                                                                                                                                                                                                                           |
-
----
-
-## 変更履歴
-
-| Version      | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **10.39.1**  | **2026-03-30** | **TASK-RT-05 multi_select user input kind を反映**: ユーザー入力ブリッジを 5 種へ更新し、`multi_select` と `selectedOptionIds` 契約を runtime workflow current facts に同期。Renderer question host の kind 切替時 state reset と submit disable 条件も close-out 観点へ追加 |
-| **10.39.0**  | **2026-03-29** | **TASK-RT-06 SDKMessage 正規化 + TASK-SDK-08 Session Persistence を反映**: `SkillCreatorSdkEvent`（eventType: init/assistant/result/error）/ `SkillCreatorSdkEventSourceProvenance` 型、IPC チャネル `skill-creator:normalize-sdk-messages`、`sdkMessageNormalizer.ts` の追加を Runtime ワークフロー IPC テーブルへ追記。`SkillCreatorPersistedWorkflowCheckpoint`（phase boundary checkpoint）/ `WorkflowCheckpointLease`（stale write guard）/ `ResumeCompatibilityResult` / `ResumeIncompatibilityReason` 型、`SkillCreatorWorkflowEngine.hydrateFromCheckpoint()` メソッドを Session Persistence セクションへ追記                                                                                                                                              |
-| **10.38.0**  | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映                                                                                                                                                                                                                                                                  |
-| **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | **10.37.50** | **2026-03-26** | **TASK-SDK-02 workflow-engine-runtime-orchestration を反映**: `references/patterns.md` に「public bridge と workflow state owner の分離パターン」を追加。runtime orchestration task では `Facade` を public bridge、`Engine` を state owner として固定し、`terminal_handoff` early return、`resumeTokenEnvelope` / provenance 同一 owner、禁止副作用のテスト化までを close-out 完了条件として扱うルールを標準化                                                                                                                                                                                                                                                                                                                                                    |
 | **10.37.49** | **2026-03-26** | **UT-SC-02-005 の stale fact cleanup ルールを追加**: `references/update-process.md` に Phase 12 retrospective の `Phase 3.5: stale fact cleanup` を追記し、`assets/phase12-system-spec-retrospective-template.md` にテスト件数 / coverage / out-of-scope 注記 / 日付 / follow-up 件数を outputs と未タスク指示書で同値同期するルールを追加。same-wave sync の完了条件を「生成 + drift 除去」まで拡張                                                                                                                                                                                                                                                                                                                                                               |
 | **10.37.49** | **2026-03-26** | **TASK-SDK-01 manifest-contract-foundation の Phase 12 close-out を反映**: `references/patterns.md` に foundation / internal-contract task 向けの「no-op Step 2 判定 + blocker 重複未タスク化防止」パターンを追加。system spec 本文が既に current の場合でも completed ledger / lessons / LOGS / SKILL / mirror sync を同一ターンで閉じること、native binary / worktree / test runner blocker は既存 `unassigned-task/` を先に検索して重複 formalize を避けることを標準化                                                                                                                                                                                                                                                                                          |

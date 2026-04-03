@@ -1,89 +1,121 @@
-# Phase 6: テスト拡充
+# Phase 6: テスト拡充 - タスク仕様書
 
 ## メタ情報
 
-| 項目         | 内容                               |
-| ------------ | ---------------------------------- |
-| Phase        | 6                                  |
-| タスクID     | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
-| ステータス   | 未実施                             |
-| 担当         | 実装者                             |
-| 見積もり時間 | 0.5h                               |
+| 項目       | 内容                      |
+| ---------- | ------------------------- |
+| Phase      | 6                         |
+| Phase名    | テスト拡充                |
+| 前提Phase  | Phase 5                   |
+| 後続Phase  | Phase 7                   |
+| ステータス | 完了                      |
+| 作成日     | 2026-04-02                |
+| 機能名     | fix-lifecycle-panel-error |
+
+---
 
 ## 目的
 
-Phase 4 で定義した 5 つの代表ケースが `currentPhase !== 'handoff'` の分岐と `handoffBundle` の独立性を十分に覆っていることを確認し、不要な edge case を増やさずに回帰を固定する。
+Phase 4で作成した基本テストにエッジケースと回帰テストを追加し、`onWorkflowStateChanged` コールバックの網羅的な検証を行う。
+
+## 背景
+
+基本テスト（AC-1〜AC-3）に加え、`currentPhase` の全パターンと `handoffBundle` 処理を含むエッジケースを追加することで、回帰リスクを最小化する。
+
+---
 
 ## 実行タスク
 
-1. 既存 5 テストの coverage を再実行する
-2. `execute` / `verify` / `handoff` の代表ケースで branch coverage を確認する
-3. 追加すべき edge case がないことを記録する
+### タスク1: エッジケーステスト追加
+
+**目的**: `currentPhase` の全パターンと境界値をテストする。
+
+**実行手順**:
+
+1. 以下のエッジケースを `SkillLifecyclePanel.error-persistence.test.tsx` に追加する:
+   - `currentPhase: 'handoff'` 時に `handoffBundle` が存在する場合の挙動
+   - `currentPhase: 'completed'` では `setWorkflowError(null)` が呼ばれること
+   - `currentPhase: 'initializing'` では `setWorkflowError(null)` が呼ばれること
+   - `currentPhase: undefined` の場合の安全な処理
+   - 多数の連続スナップショット（5回以上）でもエラーが保持されること
+
+**期待される成果物**:
+
+- エッジケーステスト追加済みテストファイル
+
+---
+
+### タスク2: 回帰テスト追加
+
+**目的**: 将来の変更でバグが再発しないよう回帰ガードを追加する。
+
+**実行手順**:
+
+1. 以下の回帰シナリオを追加する:
+   - `setWorkflowError(null)` の呼び出し回数を検証（`currentPhase: 'handoff'` 時は0回）
+   - エラーメッセージの値が `currentPhase: 'handoff'` 後も維持されること
+2. テストを実行し、全てGreenであることを確認する
+
+```bash
+pnpm --filter @repo/desktop test -- --testPathPattern="SkillLifecyclePanel.error-persistence"
+```
+
+**期待される成果物**:
+
+- 回帰テスト追加済みテストファイル（全PASS）
+
+---
 
 ## 参照資料
 
-### システム仕様（aiworkflow-requirements）
+| 参照資料       | パス                                                                                                  | 内容                    |
+| -------------- | ----------------------------------------------------------------------------------------------------- | ----------------------- |
+| テストファイル | `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` | Phase 4で作成したテスト |
+| 修正ファイル   | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                                  | Phase 5で修正済み       |
+| 受入条件       | `outputs/phase-1/acceptance-criteria.md`                                                              | AC-1〜AC-5              |
 
-| 参照資料           | パス                                                                         | 内容           |
-| ------------------ | ---------------------------------------------------------------------------- | -------------- |
-| アーキテクチャ仕様 | `.claude/skills/aiworkflow-requirements/references/architecture-overview.md` | システム全体像 |
-
-## 統合テスト連携
-
-- 前 Phase の成果物を確認したうえで、`SkillLifecyclePanel.tsx` と `SkillLifecyclePanel.error-persistence.test.tsx` の入力・出力の対応を崩さない。
-- `currentPhase` 判定と `handoffBundle` 処理が独立していることを次 Phase に引き継ぐ。
-- Phase 5 の修正結果を前提に、TC-EP-06〜10 を拡張する。
-
-## 実行手順
-
-### ステップ 1: 既存テストの coverage 再実行
-
-```bash
-# 既存の 5 テストケースを含めて実行する
-pnpm --filter @repo/desktop exec vitest run \
-  src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx
-```
-
-### ステップ 2: 代表ケースの確認
-
-| テストケース | 検証内容                                                         | 根拠                                                         |
-| ------------ | ---------------------------------------------------------------- | ------------------------------------------------------------ |
-| TC-EP-01     | `currentPhase: 'handoff'` で `setWorkflowError(null)` 非呼び出し | `currentPhase !== 'handoff'` の false 分岐を確認             |
-| TC-EP-02     | `currentPhase: 'execute'` で `setWorkflowError(null)` 呼び出し   | `currentPhase !== 'handoff'` の true 分岐を確認              |
-| TC-EP-03     | `currentPhase: 'verify'` で `setWorkflowError(null)` 呼び出し    | 非 handoff の代表ケースをもう 1 つ確認                       |
-| TC-EP-04     | `currentPhase: 'handoff'` でも `handoffBundle` 処理が実行される  | `handoffBundle` が `currentPhase` から独立していることを確認 |
-| TC-EP-05     | `handoffBundle: null` で `setHandoffGuidance` が呼ばれない       | `handoffBundle` がない場合の既存動作を確認                   |
-
-### ステップ 3: 結論の記録
-
-- `SkillCreatorWorkflowPhase` は閉じた union のため、`heartbeat_timeout` や `null` / `undefined` の架空ケースを追加しない。
-- Phase 4 の 5 ケースで AC-1〜AC-3 と branch coverage は十分に表現できる。
-- 追加の edge case は不要として `outputs/phase-6/test-expansion-result.md` に記録する。
-
-## 多角的チェック観点
-
-- `SkillCreatorWorkflowPhase` の閉じた union に対して、存在しない値をテストに入れていないか確認したか
-- `handoffBundle` 処理が `currentPhase` 判定の外にあることを確認したか
-- 5 ケースで branch coverage が説明できることを確認したか
+---
 
 ## 成果物
 
-| 成果物                 | パス                                       | 説明                                          |
-| ---------------------- | ------------------------------------------ | --------------------------------------------- |
-| テスト拡充確認レポート | `outputs/phase-6/test-expansion-result.md` | 追加 edge case を不要と判断した根拠を記録する |
+| 成果物                             | パス                                                                                                  | 内容                             |
+| ---------------------------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------- |
+| 拡充済みエラー永続化テストファイル | `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` | エッジケース・回帰テスト追加済み |
+
+---
+
+## 統合テスト連携
+
+- 複数スナップショット連続配信シナリオのテストを拡充する（fire-and-forget化との整合確認）
+
+---
 
 ## 完了条件
 
-- [ ] TC-EP-01 〜 TC-EP-05 の 5 ケースで AC-1〜AC-3 が表現されている
-- [ ] `SkillCreatorWorkflowPhase` の閉じた union に対して不要な edge case を追加していない
-- [ ] 既存 5 テストケースが PASS している
+- [ ] エッジケーステスト（5パターン以上）が追加されている
+- [ ] 回帰テストが追加されている
+- [ ] 全テストがGreenであること
+- [ ] テスト追加後も既存の `SkillLifecyclePanel` 関連テストが全PASS
 
-## タスク100%実行確認【必須】
+---
 
-- [ ] 全実行タスクが完了している
-- [ ] 全成果物が存在する（既存テストファイルの 5 ケース）
-- [ ] 全完了条件が満たされている
+## Phase末端アクション【必須】
 
-## 次Phase
+- [ ] 本Phase内の全タスク（タスク1〜2）を100%実行完了
+- [ ] 各タスクを100%完了し、完了を明記
+- [ ] テストファイルの更新内容を記録済み
 
-Phase 7: カバレッジ確認 へ進む
+---
+
+## 依存関係
+
+- **前提**: Phase 5（実装）が完了し、テストがGreenであること
+- **後続**: Phase 7（カバレッジ確認）へ進む
+
+---
+
+## 次のPhase
+
+完了後、以下のファイルを実行してください:
+
+`docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-7-coverage-check.md`

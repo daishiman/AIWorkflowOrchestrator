@@ -1,6 +1,0 @@
-{
-  "phase": 11,
-  "nonVisual": true,
-  "reason": "このタスクは UI 差分ではなく状態遷移ロジックの確認が目的であり、スクリーンショットではなく blocker と実行ログを正本証跡として扱う。",
-  "screenshots": []
-}

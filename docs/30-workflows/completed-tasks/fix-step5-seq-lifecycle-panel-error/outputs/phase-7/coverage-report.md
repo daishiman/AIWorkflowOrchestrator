@@ -1,46 +1,87 @@
-# Phase 7: カバレッジレポート
+# Phase 7: カバレッジレポート（実績）
 
-## 実行コマンド
+## メタ情報
+
+| 項目     | 内容                                                                                            |
+| -------- | ----------------------------------------------------------------------------------------------- |
+| タスクID | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                              |
+| Phase    | 7                                                                                               |
+| 対象     | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`（`applyWorkflowSnapshot`） |
+| 計測日   | 2026-04-03                                                                                      |
+| 判定     | PASS（対象コールバックの行/分岐は実測でカバー）                                                 |
+
+## 計測方法
+
+実行コマンド（対象ファイルへ `coverage.include` を絞り、全体しきい値は 0 にして測定）:
 
 ```bash
-vitest run \
+pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx \
   --coverage \
-  --coverage.include="src/renderer/components/skill/SkillLifecyclePanel.tsx" \
-  src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx
+  --coverage.include=src/renderer/components/skill/SkillLifecyclePanel.tsx \
+  --coverage.reporter=lcov \
+  --coverage.reportsDirectory=coverage-lifecycle-panel-lcov \
+  --coverage.thresholds.lines=0 \
+  --coverage.thresholds.branches=0 \
+  --coverage.thresholds.functions=0 \
+  --coverage.thresholds.statements=0 \
+  --reporter=dot
 ```
 
-## 全体カバレッジ（ファイル全体）
+生成物:
 
-| 指標       | 計測値 | 備考                                                |
-| ---------- | ------ | --------------------------------------------------- |
-| Statements | 31.72% | コンポーネント全体は多数の関数・ブランチを持つ      |
-| Branches   | 16.86% | ファイル全体の分岐数が多いため低い値                |
-| Functions  | 8.57%  | テストは onWorkflowStateChanged のみ対象            |
-| Lines      | 31.72% | 1,999 行のうち対象コールバックは 537〜545 行の 8 行 |
+- `apps/desktop/coverage-lifecycle-panel/coverage-summary.json`
+- `apps/desktop/coverage-lifecycle-panel-lcov/lcov.info`
 
-## 対象コールバックのブランチカバレッジ
+## 結果サマリー（ファイル全体）
 
-`onWorkflowStateChanged` コールバック（SkillLifecyclePanel.tsx:537〜545）のブランチは以下の通り全て網羅済み:
+`SkillLifecyclePanel.tsx` は巨大なため、ファイル全体のカバレッジは以下（参考値）:
 
-| ブランチ                                        | テスト            | 状態 |
-| ----------------------------------------------- | ----------------- | ---- |
-| `snapshot.currentPhase !== 'handoff'` → `true`  | TC-EP-02/03       | ✅   |
-| `snapshot.currentPhase !== 'handoff'` → `false` | TC-EP-01/04       | ✅   |
-| `snapshot.handoffBundle` → truthy               | TC-EP-04          | ✅   |
-| `snapshot.handoffBundle` → falsy                | TC-EP-01/02/03/05 | ✅   |
+- Lines: 43.05%（722/1677）
+- Branches: 42.75%（59/138）
 
-## 閾値エラーについて
+## 結果詳細（対象コールバック: `applyWorkflowSnapshot`）
 
-全体カバレッジの閾値 (80%) を下回るエラーが v8 カバレッジで出力されているが、これは:
+対象（`SkillLifecyclePanel.tsx` の該当行）:
 
-- `SkillLifecyclePanel.tsx` が 1,999 行の大きなコンポーネントであり、今回のテストは `onWorkflowStateChanged` コールバック部分のみを対象としているため
-- Phase 7 の目的は「`onWorkflowStateChanged` コールバックの分岐カバレッジ確認」であり、ファイル全体のカバレッジ達成は対象外
+```ts
+const applyWorkflowSnapshot = useCallback(
+  (snapshot: SkillCreatorWorkflowUiSnapshot) => {
+    setWorkflowSnapshot(snapshot);
+    if (snapshot.currentPhase !== "handoff") {
+      setWorkflowError(null);
+    }
+    if (snapshot.handoffBundle) {
+      setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
+    }
+  },
+  [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot],
+);
+```
 
-**対象コールバック部分のブランチカバレッジ: 100%（4/4 ブランチ）**
+lcov の実測（`apps/desktop/coverage-lifecycle-panel-lcov/lcov.info`）:
 
-## 完了確認
+```text
+DA:509,17
+DA:510,9
+DA:511,9
+DA:512,3
+DA:513,3
+DA:514,9
+DA:515,3
+DA:516,3
+DA:517,9
+DA:518,17
+BRDA:509,77,0,9
+BRDA:511,78,0,3
+BRDA:514,79,0,3
+```
 
-- [x] `onWorkflowStateChanged` コールバックの全ブランチがカバーされている
-- [x] `if (snapshot.currentPhase !== 'handoff')` の `true`/`false` 両ブランチがカバーされている
-- [x] `handoffBundle` の `truthy`/`falsy` 両パスがカバーされている
-- [x] 全体閾値エラーはコンポーネントのスコープ外であり許容範囲と判断
+判定根拠:
+
+- 行カバレッジ: 対象行 `509-518` はすべて hit（`DA:509-518` が存在し、hit count が 0 でない）
+- ブランチ: `if (snapshot.currentPhase !== "handoff")` と `if (snapshot.handoffBundle)` の分岐が計測対象として記録されている（`BRDA:511` / `BRDA:514`）
+
+注記:
+
+- ファイル全体の割合（43.05%/42.75%）は巨大ファイルの参考値であり、判定対象は変更箇所の `applyWorkflowSnapshot`。
+- 対象 callback は `DA:509-518` と `BRDA:509/511/514` がすべて hit しており、回帰防止の観点では PASS。

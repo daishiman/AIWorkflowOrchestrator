@@ -104,6 +104,7 @@ import { registerChatEditHandlers } from "./chatEditHandlers";
 import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import { RuntimePolicyResolver } from "../services/runtime/RuntimePolicyResolver";
+import { SkillCreatorIpcBridge } from "../services/runtime/SkillCreatorIpcBridge";
 import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
 import { ElectronNotificationService } from "../services/notification/ElectronNotificationService";
 import { registerBeforeQuitGuard } from "./beforeQuitGuard";
@@ -132,6 +133,7 @@ import type { ShareError, ShareResult } from "@repo/shared";
 
 // setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
 let themeWatcherUnsubscribe: (() => void) | null = null;
+let skillCreatorIpcBridge: SkillCreatorIpcBridge | null = null;
 
 // before-quit guard の解除関数をモジュールスコープで保持 (TASK-NOTIFICATION-SERVICE-001)
 
@@ -475,6 +477,11 @@ export function unregisterAllIpcHandlers(): void {
 
   // slide handlers は内部状態 (watcher/executor/syncManager) を持つため専用解除
   unregisterSlideIpcHandlers();
+
+  if (skillCreatorIpcBridge) {
+    skillCreatorIpcBridge.unregister();
+    skillCreatorIpcBridge = null;
+  }
 
   const allChannels = Object.values(IPC_CHANNELS);
   for (const channel of allChannels) {
@@ -1063,6 +1070,12 @@ export function registerAllIpcHandlers(
       skillCreatorService,
       runtimeSkillCreatorService,
     );
+  });
+
+  track("registerSkillCreatorIpcBridge", () => {
+    skillCreatorIpcBridge?.unregister();
+    skillCreatorIpcBridge = new SkillCreatorIpcBridge(mainWindow);
+    skillCreatorIpcBridge.register();
   });
 
   // --- 11. Claude CLI handlers ---

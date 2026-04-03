@@ -14,22 +14,23 @@
 | タイプ     | bugfix / renderer workflow lifecycle                                                                                                                               |
 | 優先度     | 高                                                                                                                                                                 |
 | 完了日     | 2026-04-02                                                                                                                                                         |
-| 対象       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` / `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` / `docs/30-workflows/fix-step5-seq-lifecycle-panel-error/` |
-| 成果物     | `docs/30-workflows/fix-step5-seq-lifecycle-panel-error/`                                                                                                           |
+| 対象       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` / `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` / `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/` |
+| 成果物     | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/`                                                                                                           |
 
 #### 実施内容
 
 - `SkillLifecyclePanel` に `applyWorkflowSnapshot()` を追加し、`handoff` 時の `workflowError` 保持を `onWorkflowStateChanged` / `getWorkflowState` / `submitUserInput` / execute 後再取得の全経路へ適用
 - `handoffBundle` 更新と error clear 条件を分離し、副作用なく guidance を維持
 - `SkillLifecyclePanel.error-persistence.test.tsx` に TC-EP-06〜08 を追加し、callback 単独ではなく 4 経路の回帰を固定
-- workflow docs と Phase 11/12 outputs を `currentPhase` / `handoff` vocabulary に同期し、placeholder PNG 前提を撤去
+- workflow docs と Phase 7〜12 outputs を current facts に同期し、phase/status/table の drift を是正
 
 #### 検証証跡
 
-- `validate-phase-output.js`: 再実行予定
-- `verify-all-specs.js`: 再実行予定
-- `validate-phase12-implementation-guide.js`: 再実行予定
-- `vitest` は `Host version "0.21.5" does not match binary version "0.25.12"` により再実行 BLOCKED
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx --reporter=verbose`: PASS（8/8）
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx --reporter=dot`: PASS（10/10）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm exec eslint apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx`: PASS（warning のみ）
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error --json`: PASS（10/10）
 
 ### タスク: TASK-FIX-ENV-STRIPPING（2026-04-01）
 

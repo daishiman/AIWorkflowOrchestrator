@@ -155,6 +155,11 @@
       "import": "./dist/src/ipc/channels.js",
       "require": "./dist/src/ipc/channels.cjs"
     },
+    "./ipc/channels": {
+      "types": "./dist/src/ipc/channels.d.ts",
+      "import": "./dist/src/ipc/channels.js",
+      "require": "./dist/src/ipc/channels.cjs"
+    },
     "./types/auth-mode": {
       "types": "./dist/src/types/auth-mode.d.ts",
       "import": "./dist/src/types/auth-mode.js",
@@ -266,6 +271,9 @@
         "./src/constants/index.ts"
       ],
       "src/ipc/channels": [
+        "./src/ipc/channels.ts"
+      ],
+      "ipc/channels": [
         "./src/ipc/channels.ts"
       ],
       "types/skill-improver": [
