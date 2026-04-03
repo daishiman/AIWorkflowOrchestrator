@@ -95,6 +95,23 @@
 
 ---
 
+### Skill Creator Conversation UI（TASK-SDK-SC-02 / 2026-04-03 実装済み）
+
+| 目的                                                 | 最初に開くファイル                                                                                              |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Task02 の全体像・Phase 仕様書                        | `docs/30-workflows/step-02-par-task-02-conversation-ui/index.md`                                                |
+| 5 コンポーネント Props API・使用例                   | `docs/30-workflows/step-02-par-task-02-conversation-ui/phase-12-documentation.md`                               |
+| アーキテクチャ・型マッピング・IPC 通信フロー         | `outputs/phase-12/implementation-guide.md`                                                                      |
+| Session Bridge 型定義                                | `packages/shared/src/types/skillCreatorSession.ts`（`UserInputQuestion` / `UserInputAnswer`）                   |
+| Workflow UI 型定義                                   | `packages/shared/src/types/skillCreator.ts`（`SkillCreatorUserInputRequest` / `InterviewUserAnswer`）           |
+| IPC チャネル定義                                     | `packages/shared/src/ipc/channels.ts`（`SKILL_CREATOR_SESSION_CHANNELS`）                                      |
+| Preload API                                          | `apps/desktop/src/preload/skill-creator-session-api.ts`（`window.skillCreatorSessionAPI`）                      |
+| Organism コンポーネント（ブリッジ層）                | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorConversationPanel.tsx`                           |
+| テスト（57 件）                                      | `apps/desktop/src/renderer/components/skill-creator/__tests__/`                                                 |
+| completed ledger                                     | `references/task-workflow-completed.md`                                                                         |
+
+---
+
 ### Skill Creator SDK Event Normalization (TASK-RT-06)
 
 **概要:** SDKMessage → SkillCreatorSdkEvent 変換契約の安定化
