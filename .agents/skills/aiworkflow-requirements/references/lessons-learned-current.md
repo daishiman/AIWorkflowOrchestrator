@@ -19,6 +19,8 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-03 | 3.3.8      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 current index sync（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-EP-001〜003 / setupCallbackCapture / NON_VISUAL state-only 判定の current facts 反映） |
+| 2026-04-03 | 3.3.8      | UT-UIUX-VISUAL-BASELINE-DRIFT-001 教訓3件を追加（→ [lessons-learned-ui-ux-visual-baseline-drift.md](lessons-learned-ui-ux-visual-baseline-drift.md): L-UIUX-VISUAL-001 Playwright `colorScheme` 二重固定 / L-UIUX-VISUAL-002 `TC-ID ↔ png ↔ manual-test-result` 同期 / L-UIUX-VISUAL-003 completed workflow / ledger / lesson の same-wave 同期） |
 | 2026-04-02 | 3.3.7      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-ERR-001 `handoff` guard の共通化 / L-LIFECYCLE-ERR-002 stale `phase: 'failed'` 語彙の除去 / L-LIFECYCLE-ERR-003 NON_VISUAL task で blocker を PASS へ偽装しない） |
 | 2026-04-01 | 3.3.6      | TASK-FIX-AUTH-IPC-001 教訓2件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-AUTH-IPC-001 IPC channel timeout と fire-and-forget パターン — CHANNEL_TIMEOUTS が 500ms の場合は OAuth 完了を await せず void+catch で即時返却する / L-AUTH-IPC-002 AUTH_STATE_CHANGED 責務境界の分離 — 完了通知は orchestrator に固定し handler 側では二重送信しない） |
 | 2026-04-01 | 3.3.5      | TASK-SC-DIALOG-MANDATORY-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-SC-DIALOG-001 宣言型→命令型転換 / L-SC-DIALOG-002 実行ゲートパターン / L-SC-DIALOG-003 graceful degradation で problem-definition.json 欠損時エラー停止を回避）                                                                                     |
@@ -85,6 +87,7 @@
 | [lessons-learned-safety-gate-permission-fallback.md](lessons-learned-safety-gate-permission-fallback.md) | SafetyGate / Permission / Fallback | UT-06-005, TASK-SKILL-LIFECYCLE-08 |
 | [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md) | UI / 非同期状態管理 / アダプター | TASK-RT-02 api-key-ui-adapter-status, TASK-RT-03 SkillCreationResultPanel |
 | [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md) | UI / 非同期状態管理 / アダプター | TASK-RT-02 api-key-ui-adapter-status |
+| [lessons-learned-ui-ux-visual-baseline-drift.md](lessons-learned-ui-ux-visual-baseline-drift.md) | UI / visual regression / dark-mode screenshot | UT-UIUX-VISUAL-BASELINE-DRIFT-001 |
 | [lessons-learned-skill-create-multi-select-kind.md](lessons-learned-skill-create-multi-select-kind.md) | SkillCreator / UserInputKind / multi_select | TASK-RT-05 |
 | [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | アーカイブ | 2026-03-15以前の全エントリ |
 
@@ -126,6 +129,14 @@
 - spec-only close-out では downstream task status と code diff 0/有を併記する
 - standalone root 移設時は parent/downstream/system spec の旧 path を same-wave で閉じる
 - `implementation_ready` / `spec_created` / `blocked` の意味を分離し、Phase 13 だけ future gate に残す
+
+### UI / visual baseline drift / dark-mode screenshot
+
+→ [lessons-learned-ui-ux-visual-baseline-drift.md](lessons-learned-ui-ux-visual-baseline-drift.md)
+
+- `playwright.config.ts` と spec-level `test.use({ colorScheme: "dark" })` を同じ wave で固定する
+- `TC-ID ↔ png ↔ manual-test-result` を 1:1 で揃え、baseline snapshot 名と証跡名を混同しない
+- completed workflow / ledger / lessons / lookup を同一 wave で同期し、current と baseline を分離する
 
 ### 2026-03-25 TASK-SC-07-STREAMING-PROGRESS-UI ストリーミング進捗UI実装
 

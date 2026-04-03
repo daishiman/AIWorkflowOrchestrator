@@ -72,6 +72,10 @@ export default defineConfig(({ mode }) => {
         rollupOptions: {
           input: {
             index: resolve(__dirname, "src/renderer/index.html"),
+            "phase11-skill-creator-conversation-ui": resolve(
+              __dirname,
+              "src/renderer/phase11-skill-creator-conversation-ui.html",
+            ),
             "phase11-light-theme-contrast-guard": resolve(
               __dirname,
               "src/renderer/phase11-light-theme-contrast-guard.html",

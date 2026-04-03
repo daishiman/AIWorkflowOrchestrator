@@ -101,4 +101,51 @@ describe("registerBeforeQuitGuard", () => {
       expect.any(Function),
     );
   });
+
+  it("TC-B-04: before-quit guard calls app.exit(0) when user selects exit", async () => {
+    const mockApp = createMockApp();
+    const mockDialog = {
+      showMessageBox: vi.fn().mockResolvedValue({ response: 0 }),
+    };
+    const mockFacade = { hasRunningExecution: vi.fn().mockReturnValue(true) };
+
+    registerBeforeQuitGuard({
+      app: mockApp as never,
+      dialog: mockDialog as never,
+      facade: mockFacade as never,
+    });
+
+    const mockEvent = { preventDefault: vi.fn() };
+    mockApp.emit("before-quit", mockEvent);
+
+    await Promise.resolve();
+
+    expect(mockApp.exit).toHaveBeenCalledWith(0);
+  });
+
+  it("TC-B-05: before-quit guard logs warning when dialog rejects", async () => {
+    const mockApp = createMockApp();
+    const mockDialog = {
+      showMessageBox: vi.fn().mockRejectedValue(new Error("dialog error")),
+    };
+    const mockFacade = { hasRunningExecution: vi.fn().mockReturnValue(true) };
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    registerBeforeQuitGuard({
+      app: mockApp as never,
+      dialog: mockDialog as never,
+      facade: mockFacade as never,
+    });
+
+    const mockEvent = { preventDefault: vi.fn() };
+    mockApp.emit("before-quit", mockEvent);
+
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.stringContaining("beforeQuitGuard"),
+      expect.any(Error),
+    );
+    warnSpy.mockRestore();
+  });
 });

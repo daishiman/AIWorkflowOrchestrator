@@ -291,7 +291,7 @@ beforeEach(() => {
       status: "pending",
       checks: [
         {
-          id: "layer3-verify-status",
+          id: "L3-001",
           layer: "layer3",
           severity: "warning",
           summary: "verify summary",
@@ -1231,7 +1231,7 @@ describe("U-18: verify detail fail status displays fail badge and message", () =
         nextAction: "improve",
         checks: [
           {
-            id: "layer3-structure",
+            id: "L3-002",
             layer: "layer3",
             severity: "error",
             summary: "SKILL.md missing required section",

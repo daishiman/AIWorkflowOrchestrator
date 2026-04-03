@@ -75,6 +75,7 @@
 | `spec_created` close-out | workflow root が `completed-tasks/` 配下でも status は `spec_created` を維持し、Part 2 は `current contract + target delta` で書く |
 | internal hardening 判定 | public response が不変でも、runtime helper class / owner boundary / source provenance / budget degrade ルールが増えたら Step 2 を `更新あり` と判定する |
 | screenshot/compliance hardening | placeholder-only PNG で完了扱いにせず、`TC-ID ↔ png ↔ coverage ↔ metadata ↔ fallback reason` と implementation guide Part 2 の必須項目を実測値で閉じる |
+| dark-mode screenshot stability | `playwright.config.ts` の `use.colorScheme` と spec の `test.use({ colorScheme })` を両方固定し、片側だけの設定で baseline drift を残さない |
 
 > ここでの「完了」は、代表スクリーンショットと実測証跡が current workflow に保存されていることを含む。
 > 旧 path / 旧 filename が残る場合は、`legacy-ordinal-family-register.md` で current semantic filename へ引き直せる状態を必須とする。
@@ -409,6 +410,7 @@ UI機能実装の場合は次を推奨:
 - [ ] ユーザーが画面検証を要求した場合、`screenshot-plan.md` と `screenshots/phase11-capture-metadata.json` を workflow 配下へ保存している
 - [ ] UIタスクで preflight が失敗した場合は、再撮影を継続せず未タスク化し、代替証跡の理由を記録している
 - [ ] UIタスクでは `manual-test-result.md` / `screenshot-coverage.md` の時刻記録が実ファイル `stat` と整合する
+- [ ] dark-mode screenshot task では `playwright.config.ts` と visual spec の `colorScheme` が一致し、`TC-ID ↔ png ↔ manual-test-result` を 1:1 で管理している
 - [ ] UIタスクでは再撮影後に残留プロセス（`vite` / `capture-*`）を確認し、必要なら停止している
 
 ---

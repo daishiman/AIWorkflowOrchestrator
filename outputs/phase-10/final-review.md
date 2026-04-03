@@ -1,37 +1,40 @@
-# Phase 10: 最終レビューゲート
+# Phase 10: 最終レビュー — TASK-SDK-SC-02
 
-## 実行日時
+## 4条件検証
 
-2026-04-02
+### 1. 矛盾なし ✅
 
-## 全 AC チェック
+- 各 `kind` タイプで UI が正しく排他的に切り替わる
+- `single_select`/`multi_select` に「その他（自由入力）」が常に末尾に表示される
+- 終端状態（complete/error）で入力が無効化される
 
-| AC ID | 判定 | 根拠                                             |
-| ----- | ---- | ------------------------------------------------ |
-| AC-1  | PASS | subscription → "Claude Code CLI"（テスト GREEN） |
-| AC-2  | PASS | api-key → "Anthropic API"（テスト GREEN）        |
-| AC-3  | PASS | fallback → "unknown"（テスト GREEN）             |
-| AC-4  | PASS | DENY-5 機密情報 8 種未含有確認済み               |
-| AC-5  | PASS | 不正 sender → UNAUTHORIZED（テスト GREEN）       |
-| AC-6  | PASS | 例外 → DISCLOSURE_ERROR（テスト GREEN）          |
-| AC-7  | PASS | disclosureHandlers.test.ts 12 tests PASS         |
+### 2. 漏れなし ✅
 
-## セキュリティレビュー
+- 5タイプ全て（single_select, multi_select, free_text, secret, confirm）に対する処理分岐が存在
+- 受入基準 AC-01〜AC-13 を全てカバー
 
-- DENY-5 準拠: API key/token をレスポンスに含まない（実装・テスト両方で検証）
-- sender 検証: mainWindow.webContents と一致しない場合は UNAUTHORIZED を返す
-- 例外ハンドリング: catch ブロックで DISCLOSURE_ERROR を返し、exception が伝播しない
+### 3. 整合性あり ✅
 
-## IPC 4層整合性
+- IPC: `window.skillCreatorSessionAPI` 経由（preload APIパターン準拠）
+- 文字列リテラルの直書きなし
+- 型インポートパス: `@repo/shared/types/` に統一
 
-| 層                | ファイル                                       | 状態                       |
-| ----------------- | ---------------------------------------------- | -------------------------- |
-| 1. 定数定義       | IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO     | 変更不要                   |
-| 2. ホワイトリスト | preload/index.ts allowedChannels               | 変更不要                   |
-| 3. IPCハンドラー  | disclosureHandlers.ts                          | 変更不要（既存実装を維持） |
-| 4. Preload API    | preload/skill-creator-api.ts getDisclosureInfo | 変更不要                   |
-| DI 接続           | ipc/index.ts buildDisclosureInfo               | 実装完了                   |
+### 4. 依存関係整合あり ✅
+
+- TASK-SDK-SC-01 の成果物（`skillCreatorSession.ts`, `skillCreator.ts`, `channels.ts`）のみに依存
+- 並列実行タスクとの依存なし
+
+## 完了条件チェック
+
+- [x] 全5コンポーネントが新規作成されている
+- [x] 全5テストファイルが新規作成されている
+- [x] TypeScript コンパイルエラーが 0 件
+- [x] Vitest テストが全件 PASS（55テスト）
+- [x] Atomic Design 原則に準拠
+- [x] IPCリスナーが unmount 時にクリーンアップされる
+- [x] `single_select`/`multi_select` の選択肢末尾に「その他（自由入力）」が表示される
+- [x] `secret` タイプでパスワードマスク表示が機能する
 
 ## 判定
 
-**PASS** — 全 AC 達成、セキュリティ・IPC 整合性確認済み。Phase 11 へ進む。
+**PASS** — 全 AC 達成、品質・整合性確認済み。Phase 11 へ進む。

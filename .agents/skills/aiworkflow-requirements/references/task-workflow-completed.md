@@ -14,22 +14,23 @@
 | タイプ     | bugfix / renderer workflow lifecycle                                                                                                                               |
 | 優先度     | 高                                                                                                                                                                 |
 | 完了日     | 2026-04-02                                                                                                                                                         |
-| 対象       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` / `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` / `docs/30-workflows/fix-step5-seq-lifecycle-panel-error/` |
-| 成果物     | `docs/30-workflows/fix-step5-seq-lifecycle-panel-error/`                                                                                                           |
+| 対象       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` / `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx` / `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/` |
+| 成果物     | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/`                                                                                                           |
 
 #### 実施内容
 
 - `SkillLifecyclePanel` に `applyWorkflowSnapshot()` を追加し、`handoff` 時の `workflowError` 保持を `onWorkflowStateChanged` / `getWorkflowState` / `submitUserInput` / execute 後再取得の全経路へ適用
 - `handoffBundle` 更新と error clear 条件を分離し、副作用なく guidance を維持
 - `SkillLifecyclePanel.error-persistence.test.tsx` に TC-EP-06〜08 を追加し、callback 単独ではなく 4 経路の回帰を固定
-- workflow docs と Phase 11/12 outputs を `currentPhase` / `handoff` vocabulary に同期し、placeholder PNG 前提を撤去
+- workflow docs と Phase 7〜12 outputs を current facts に同期し、phase/status/table の drift を是正
 
 #### 検証証跡
 
-- `validate-phase-output.js`: 再実行予定
-- `verify-all-specs.js`: 再実行予定
-- `validate-phase12-implementation-guide.js`: 再実行予定
-- `vitest` は `Host version "0.21.5" does not match binary version "0.25.12"` により再実行 BLOCKED
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx --reporter=verbose`: PASS（8/8）
+- `pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx --reporter=dot`: PASS（10/10）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm exec eslint apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx`: PASS（warning のみ）
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error --json`: PASS（10/10）
 
 ### タスク: TASK-FIX-ENV-STRIPPING（2026-04-01）
 
@@ -2101,3 +2102,51 @@
 | representative screenshot 実測 | 未了         |
 | Phase 11 実行結果              | 未了         |
 | HIGH 問題の未タスク化          | 実行後に判定 |
+
+---
+
+### タスク: TASK-SDK-SC-02 Conversation UI 質問受信・回答送信 UI コンポーネント（2026-04-03）
+
+| 項目       | 値                                                                    |
+| ---------- | --------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-SC-02                                                        |
+| ステータス | **Phase 1-12 完了**                                                   |
+| タイプ     | implementation                                                        |
+| 優先度     | 高                                                                    |
+| 完了日     | 2026-04-03                                                            |
+| 依存タスク | TASK-SDK-SC-01                                                        |
+| 後続タスク | なし                                                                  |
+| 成果物     | `docs/30-workflows/step-02-par-task-02-conversation-ui/`              |
+
+#### 実施内容
+
+- Electron Renderer 側に Atomic Design 準拠の 5 コンポーネントを新規実装
+  - `ChoiceButton`（Atom）: 選択/未選択状態の単一ボタン、`aria-pressed` 対応
+  - `FreeTextInput`（Atom）: 自由入力テキストエリア、secret モード対応、Enter 送信 / Shift+Enter 改行
+  - `ConversationProgress`（Atom）: 「質問 N / 推定合計」形式の進捗表示、`role="progressbar"` 対応
+  - `QuestionCard`（Molecule）: `kind`（single_select / multi_select / free_text / secret / confirm）に応じた入力 UI 統合
+  - `SkillCreatorConversationPanel`（Organism）: IPC listen・回答送信・全コンポーネント統合、`useReducer` による状態管理
+- Session Bridge 型（`UserInputQuestion`/`UserInputAnswer`）と Workflow 型（`SkillCreatorUserInputRequest`/`InterviewUserAnswer`）のブリッジ層を Panel 内に実装
+- `multi_select` の「その他（自由入力）」は `selectedValues` 経路として扱い、ブリッジで `UserInputAnswer.value` の配列に正規化
+- `key={questionIndex}` パターンで QuestionCard の内部状態を質問切り替え時に自動リセット
+
+#### 検証
+
+- `pnpm --filter @repo/desktop exec vitest run ...skill-creator/__tests__/`: **57 tests PASS**
+- カバレッジ: Stmts 97.54% / Branch 86.04% / Funcs 95.83% / Lines 97.54%
+- TypeScript typecheck: PASS
+- ESLint: PASS
+
+#### テストケース追加内訳
+
+| テストファイル                              | テスト数 | 主な検証内容                                           |
+| ------------------------------------------- | -------- | ------------------------------------------------------ |
+| `ChoiceButton.test.tsx`                     | 9        | 表示・選択状態・freeText 破線・disabled・aria-pressed  |
+| `FreeTextInput.test.tsx`                    | 9        | 表示制御・Enter/Shift+Enter・secret・disabled・clear   |
+| `ConversationProgress.test.tsx`             | 3        | 表示形式・プログレスバー幅                             |
+| `QuestionCard.test.tsx`                     | 23       | 全 5 kind・エッジケース・XSS・多言語・multi_select 自由入力 |
+| `SkillCreatorConversationPanel.test.tsx`    | 13       | IPC リスナー・クリーンアップ・質問表示・回答送信・エラー・重複送信防止 |
+
+#### Phase 12 未タスク
+
+なし（0件）
