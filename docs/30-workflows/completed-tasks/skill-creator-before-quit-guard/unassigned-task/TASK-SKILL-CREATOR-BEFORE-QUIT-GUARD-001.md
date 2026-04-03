@@ -26,20 +26,26 @@ Electron には `app.on('before-quit', ...)` イベントがあり、アプリ�
 
 ## 推定作業内容
 
-- [ ] `SkillCreatorWorkflowEngine` または `RuntimeSkillCreatorFacade` に「実行中かどうか」を問い合わせる API を追加する
-- [ ] Electron の `app.on('before-quit', ...)` ハンドラを実装する
-- [ ] スキル生成実行中にアプリ終了が要求された場合の挙動を設計する（例: ダイアログ表示 / 強制中断 / 待機）
-- [ ] 選択した挙動を実装する
-- [ ] `before-quit` ガードが正常に動作することをテストで確認する
-- [ ] ユーザーへの通知 UI（ダイアログ等）を実装する場合はアクセシビリティを考慮する
+- [x] `SkillCreatorWorkflowEngine` または `RuntimeSkillCreatorFacade` に「実行中かどうか」を問い合わせる API を追加する
+      → `RuntimeSkillCreatorFacade.hasRunningExecution()` として実装済み（TASK-NOTIFICATION-SERVICE-001）
+- [x] Electron の `app.on('before-quit', ...)` ハンドラを実装する
+      → `apps/desktop/src/main/ipc/beforeQuitGuard.ts` として実装済み
+- [x] スキル生成実行中にアプリ終了が要求された場合の挙動を設計する
+      → 警告ダイアログ表示 + 「中断して終了」/「キャンセル」選択方式を採用
+- [x] 選択した挙動を実装する
+      → `registerBeforeQuitGuard` で実装済み
+- [x] `before-quit` ガードが正常に動作することをテストで確認する
+      → TC-B-01〜TC-B-05, TC-F-04〜TC-F-08 で検証済み
+- [x] ユーザーへの通知 UI（ダイアログ等）を実装する場合はアクセシビリティを考慮する
+      → OS 標準ダイアログを使用（アクセシビリティは OS が保証）
 
 ## 完了条件
 
-- [ ] スキル生成実行中にアプリを終了しようとした際に適切な処理（警告表示 or 待機 or 中断通知）が行われる
-- [ ] アプリが突然終了してもファイルシステムや状態が不整合にならない
-- [ ] スキル生成を実行していない場合は通常通りアプリが終了できる
-- [ ] TypeScript 型チェック PASS
-- [ ] 関連テスト全件 PASS
+- [x] スキル生成実行中にアプリを終了しようとした際に適切な処理が行われる
+- [x] アプリが突然終了してもファイルシステムや状態が不整合にならない
+- [x] スキル生成を実行していない場合は通常通りアプリが終了できる
+- [x] TypeScript 型チェック PASS
+- [x] 関連テスト全件 PASS
 
 ## 苦戦箇所（TASK-FIX-EXECUTE-PLAN-FF-001 より）
 
