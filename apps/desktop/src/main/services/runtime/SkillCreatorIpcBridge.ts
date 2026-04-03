@@ -68,7 +68,7 @@ export class SkillCreatorIpcBridge {
   register(): void {
     this.unregister();
 
-    this.window.once("closed", this.handleWindowClosed);
+    this.window.once?.("closed", this.handleWindowClosed);
 
     ipcMain.handle(
       SKILL_CREATOR_SESSION_CHANNELS.START_SESSION,
@@ -96,7 +96,8 @@ export class SkillCreatorIpcBridge {
       "[SkillCreatorIpcBridge] Session stopped during unregister",
       true,
     );
-    this.window.removeListener("closed", this.handleWindowClosed);
+    this.window.removeListener?.("closed", this.handleWindowClosed);
+    this.window.off?.("closed", this.handleWindowClosed);
     ipcMain.removeHandler(SKILL_CREATOR_SESSION_CHANNELS.START_SESSION);
     ipcMain.removeHandler(SKILL_CREATOR_SESSION_CHANNELS.ANSWER);
     this.registered = false;
