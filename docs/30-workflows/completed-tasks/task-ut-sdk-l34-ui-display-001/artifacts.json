@@ -1,0 +1,271 @@
+{
+  "taskId": "UT-SDK-L34-UI-DISPLAY-001",
+  "taskName": "SkillCreator Layer3/4検証結果のUI表示拡張",
+  "featureName": "task-ut-sdk-l34-ui-display-001",
+  "workflowRoot": "docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001",
+  "createdDate": "2026-04-03",
+  "status": "implementation_ready",
+  "taskType": "ui_task",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements.md",
+          "type": "document"
+        }
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "設計書",
+          "path": "outputs/phase-2/design.md",
+          "type": "document"
+        }
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review.md",
+          "type": "document"
+        }
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "テスト設計書",
+          "path": "outputs/phase-4/test-design.md",
+          "type": "document"
+        },
+        {
+          "name": "コンポーネントテスト（更新）",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx",
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "実装サマリー",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "type": "document"
+        },
+        {
+          "name": "SkillLifecyclePanel（更新）",
+          "path": "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+          "type": "code"
+        },
+        {
+          "name": "VerifyLayerGroup（条件付き新規）",
+          "path": "apps/desktop/src/renderer/components/skill/VerifyLayerGroup.tsx",
+          "type": "code",
+          "note": "100行超の場合のみ作成"
+        }
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "テスト拡充レポート",
+          "path": "outputs/phase-6/test-expansion-report.md",
+          "type": "document"
+        },
+        {
+          "name": "コンポーネントテスト（拡充）",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx",
+          "type": "code"
+        }
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "リファクタリングレポート",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "手動テストチェックリスト",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "type": "document"
+        },
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "type": "document"
+        },
+        {
+          "name": "手動テストレポート",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "type": "document"
+        },
+        {
+          "name": "発見課題一覧",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "type": "document"
+        },
+        {
+          "name": "UIサニティ視覚レビュー",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "type": "document"
+        },
+        {
+          "name": "スクリーンショット",
+          "path": "outputs/phase-11/screenshots/",
+          "type": "screenshots"
+        },
+        {
+          "name": "撮影計画",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "type": "document"
+        },
+        {
+          "name": "撮影メタデータ",
+          "path": "outputs/phase-11/phase11-capture-metadata.json",
+          "type": "document"
+        },
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "type": "document"
+        }
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "type": "document"
+        },
+        {
+          "name": "システム仕様更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "type": "document"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "type": "document"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "type": "document"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "type": "document"
+        },
+        {
+          "name": "準拠チェック（root evidence）",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "type": "document"
+        }
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "spec_created",
+      "artifacts": [
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "type": "document"
+        }
+      ]
+    }
+  ],
+  "qualityMetrics": {
+    "lineCoverage": "80%+",
+    "branchCoverage": "60%+",
+    "functionCoverage": "80%+",
+    "testCount": "TC-01〜TC-19（19テストケース）"
+  },
+  "dependencies": [
+    {
+      "taskId": "UT-IMP-SDK-06",
+      "status": "completed",
+      "description": "Layer3/4 verify拡張テスト実装（バックエンド）"
+    }
+  ],
+  "futureTaskCandidates": [
+    "check IDの日本語ラベルマッピング（i18n対応）",
+    "severityフィルタ機能",
+    "VerifyLayerGroup.tsxへの分離（100行超の場合）"
+  ]
+}

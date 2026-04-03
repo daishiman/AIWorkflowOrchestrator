@@ -10,6 +10,8 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
+  within,
 } from "@testing-library/react";
 
 const mockCreateSkill = vi.fn();
@@ -27,6 +29,8 @@ const mockClearHandoffGuidance = vi.fn();
 const mockBeginSkillReview = vi.fn();
 const mockCompleteSkillReview = vi.fn();
 const mockResetSkillExecutionCycle = vi.fn();
+const mockGetVerifyDetail = vi.fn();
+const mockReverifyWorkflow = vi.fn();
 
 type MockStoreState = {
   selectedSkillName: string | null;
@@ -36,6 +40,7 @@ type MockStoreState = {
     type: string;
     content: unknown;
   }>;
+  currentPlanId: string | null;
   skillExecutionStatus:
     | "idle"
     | "running"
@@ -57,6 +62,7 @@ let mockStoreState: MockStoreState = {
   selectedSkillName: null,
   isExecuting: false,
   streamingMessages: [],
+  currentPlanId: null,
   skillExecutionStatus: null,
   skillError: null,
   workflowSnapshot: null,
@@ -85,7 +91,7 @@ vi.mock("../../../store", () => ({
   useIsSkillGenerating: () => false,
   useGenerationProgress: () => null,
   useGenerationError: () => null,
-  useCurrentPlanId: () => null,
+  useCurrentPlanId: () => mockStoreState.currentPlanId,
   useCurrentPlanResult: () => null,
   useSetIsSkillGenerating: () => vi.fn(),
   useSetGenerationProgress: () => vi.fn(),
@@ -130,6 +136,7 @@ beforeEach(() => {
     selectedSkillName: null,
     isExecuting: false,
     streamingMessages: [],
+    currentPlanId: null,
     skillExecutionStatus: null,
     skillError: null,
     workflowSnapshot: null,
@@ -185,6 +192,8 @@ beforeEach(() => {
           applied: false,
         },
       }),
+      getVerifyDetail: mockGetVerifyDetail,
+      reverifyWorkflow: mockReverifyWorkflow,
     },
   };
 
@@ -509,5 +518,284 @@ describe("SkillLifecyclePanel", () => {
     });
 
     expect(mockCompleteSkillReview).toHaveBeenCalledWith("reuse_ready");
+  });
+
+  describe("verifyDetail Layer別グルーピング表示", () => {
+    const buildVerifyDetail = (
+      overrides?: Partial<{
+        checks: Array<{
+          id: string;
+          layer: "layer1" | "layer2" | "layer3" | "layer4";
+          severity: "info" | "warning" | "error";
+          summary: string;
+          evidenceSummary?: string;
+        }>;
+        status: "pending" | "pass" | "fail";
+        message?: string;
+        reverifyEligible: boolean;
+      }>,
+    ) => ({
+      planId: "plan-001",
+      currentPhase: "verify",
+      status: "pending",
+      message: "verify summary",
+      checks: [
+        {
+          id: "L1-001",
+          layer: "layer1",
+          severity: "error",
+          summary: "SKILL.md が存在しない",
+        },
+        {
+          id: "L2-001",
+          layer: "layer2",
+          severity: "warning",
+          summary: "Triggerセクションが短い",
+        },
+        {
+          id: "L3-001",
+          layer: "layer3",
+          severity: "warning",
+          summary: "$schemaフィールドが欠損",
+        },
+        {
+          id: "L4-001",
+          layer: "layer4",
+          severity: "info",
+          summary: "references/ にH1が存在する",
+        },
+      ],
+      evidenceCount: 3,
+      route: {
+        type: "integrated_api",
+        summary: "integrated_api (default)",
+      },
+      reverifyEligible: true,
+      delegatedGovernanceNote: "Task07 owner",
+      delegatedSessionNote: "Task08 owner",
+      ...overrides,
+    });
+
+    const renderWithVerifyDetail = async (detail = buildVerifyDetail()) => {
+      mockStoreState.currentPlanId = "plan-001";
+      mockGetVerifyDetail.mockResolvedValueOnce({
+        success: true,
+        data: detail,
+      });
+      render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+      await screen.findByTestId("skill-lifecycle-verify-detail");
+    };
+
+    it("TC-01: Layer別グループヘッダーが表示される", async () => {
+      await renderWithVerifyDetail();
+
+      expect(screen.getByRole("button", { name: /Layer 1/i })).toBeTruthy();
+      expect(screen.getByRole("button", { name: /Layer 2/i })).toBeTruthy();
+      expect(screen.getByRole("button", { name: /Layer 3/i })).toBeTruthy();
+      expect(screen.getByRole("button", { name: /Layer 4/i })).toBeTruthy();
+    });
+
+    it("TC-02: layer3のcheckがLayer 3グループ内に表示される", async () => {
+      await renderWithVerifyDetail();
+
+      const layer3Panel = screen.getByTestId(
+        "skill-lifecycle-verify-layer-panel-layer3",
+      );
+      expect(
+        within(layer3Panel).getByTestId("skill-lifecycle-verify-check-L3-001"),
+      ).toBeTruthy();
+      expect(
+        within(layer3Panel).getByText("$schemaフィールドが欠損"),
+      ).toBeTruthy();
+    });
+
+    it("TC-03〜05: severityアイコンが正しく表示される", async () => {
+      await renderWithVerifyDetail();
+
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L1-001"),
+      ).toHaveTextContent("✗");
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L2-001"),
+      ).toHaveTextContent("⚠");
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-001"),
+      ).toHaveTextContent("⚠");
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L4-001"),
+      ).toHaveTextContent("✓");
+    });
+
+    it("TC-06: Layerヘッダーに集計バッジが表示される", async () => {
+      await renderWithVerifyDetail(
+        buildVerifyDetail({
+          checks: [
+            {
+              id: "L3-001",
+              layer: "layer3",
+              severity: "warning",
+              summary: "warning 1",
+            },
+            {
+              id: "L3-002",
+              layer: "layer3",
+              severity: "warning",
+              summary: "warning 2",
+            },
+            {
+              id: "L3-003",
+              layer: "layer3",
+              severity: "info",
+              summary: "info 1",
+            },
+          ],
+        }),
+      );
+
+      expect(screen.getByText(/2 warning/i)).toBeTruthy();
+      expect(screen.getByText(/1 info/i)).toBeTruthy();
+    });
+
+    it("TC-07: checksが空のLayerグループは表示されない", async () => {
+      await renderWithVerifyDetail(
+        buildVerifyDetail({
+          checks: [
+            {
+              id: "L1-001",
+              layer: "layer1",
+              severity: "info",
+              summary: "Layer1 only",
+            },
+          ],
+        }),
+      );
+
+      expect(screen.getByRole("button", { name: /Layer 1/i })).toBeTruthy();
+      expect(screen.queryByRole("button", { name: /Layer 2/i })).toBeNull();
+      expect(screen.queryByRole("button", { name: /Layer 3/i })).toBeNull();
+      expect(screen.queryByRole("button", { name: /Layer 4/i })).toBeNull();
+    });
+
+    it("TC-08: Layer1/2のchecksが後方互換で正しく表示される", async () => {
+      await renderWithVerifyDetail(
+        buildVerifyDetail({
+          checks: [
+            {
+              id: "L1-002",
+              layer: "layer1",
+              severity: "error",
+              summary: "Layer1 check",
+            },
+            {
+              id: "L2-001",
+              layer: "layer2",
+              severity: "warning",
+              summary: "Layer2 check",
+            },
+          ],
+        }),
+      );
+
+      expect(screen.getByText("L1-002")).toBeTruthy();
+      expect(screen.getByText("Layer1 check")).toBeTruthy();
+      expect(screen.getByText("L2-001")).toBeTruthy();
+      expect(screen.getByText("Layer2 check")).toBeTruthy();
+    });
+
+    it("TC-09〜10: Layerヘッダークリックで開閉動作する", async () => {
+      await renderWithVerifyDetail(
+        buildVerifyDetail({
+          checks: [
+            {
+              id: "L3-001",
+              layer: "layer3",
+              severity: "warning",
+              summary: "toggle check",
+            },
+          ],
+        }),
+      );
+
+      const layerButton = screen.getByTestId(
+        "skill-lifecycle-verify-layer-toggle-layer3",
+      );
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-001"),
+      ).toHaveTextContent("toggle check");
+
+      await act(async () => {
+        fireEvent.click(layerButton);
+      });
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-001"),
+      ).toBeNull();
+
+      await act(async () => {
+        fireEvent.click(layerButton);
+      });
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-001"),
+      ).toHaveTextContent("toggle check");
+    });
+
+    it("TC-19: reverify後も開閉状態が保持される", async () => {
+      const firstDetail = buildVerifyDetail({
+        checks: [
+          {
+            id: "L3-001",
+            layer: "layer3",
+            severity: "warning",
+            summary: "reverify check",
+          },
+        ],
+      });
+      mockStoreState.currentPlanId = "plan-001";
+      mockGetVerifyDetail.mockResolvedValueOnce({
+        success: true,
+        data: firstDetail,
+      });
+      mockReverifyWorkflow.mockResolvedValueOnce({
+        success: true,
+        data: { accepted: true },
+      });
+
+      render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+      await screen.findByTestId("skill-lifecycle-verify-detail");
+
+      const layerButton = screen.getByTestId(
+        "skill-lifecycle-verify-layer-toggle-layer3",
+      );
+      await act(async () => {
+        fireEvent.click(layerButton);
+      });
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-001"),
+      ).toBeNull();
+
+      mockGetVerifyDetail.mockResolvedValueOnce({
+        success: true,
+        data: {
+          ...firstDetail,
+          checks: [
+            {
+              id: "L3-002",
+              layer: "layer3",
+              severity: "warning",
+              summary: "reverify check updated",
+            },
+          ],
+        },
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId("skill-lifecycle-reverify-button"));
+      });
+
+      await waitFor(() => expect(mockGetVerifyDetail).toHaveBeenCalledTimes(2));
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-002"),
+      ).toBeNull();
+      expect(layerButton).toHaveAttribute("aria-expanded", "false");
+    });
   });
 });

@@ -2,6 +2,7 @@ import React, {
   startTransition,
   useCallback,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -19,6 +20,8 @@ import type {
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorReverifyResponse,
+  RuntimeSkillCreatorVerifyCheck,
+  RuntimeSkillCreatorVerifyCheckSeverity,
   RuntimeSkillCreatorVerifyDetailResponse,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
@@ -337,13 +340,199 @@ const verifyStatusBadgeStyles: Record<
 };
 
 const verifyCheckSeverityStyles: Record<
-  RuntimeSkillCreatorVerifyDetailResponse["checks"][number]["severity"],
+  RuntimeSkillCreatorVerifyCheckSeverity,
   string
 > = {
   info: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
   warning: "bg-amber-500/10 text-amber-700",
   error: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
 };
+
+type VerifyLayerKey = RuntimeSkillCreatorVerifyCheck["layer"];
+
+const VERIFY_LAYER_ORDER: readonly VerifyLayerKey[] = [
+  "layer1",
+  "layer2",
+  "layer3",
+  "layer4",
+];
+
+const verifyLayerLabels: Record<VerifyLayerKey, string> = {
+  layer1: "Layer 1 — 必須ファイル構造",
+  layer2: "Layer 2 — SKILL.md セクション",
+  layer3: "Layer 3 — スキーマ・コンテンツ品質",
+  layer4: "Layer 4 — References整合性",
+};
+
+const verifyCheckSeverityIcon: Record<
+  RuntimeSkillCreatorVerifyCheckSeverity,
+  string
+> = {
+  info: "✓",
+  warning: "⚠",
+  error: "✗",
+};
+
+const VERIFY_SEVERITY_ORDER: readonly RuntimeSkillCreatorVerifyCheckSeverity[] =
+  ["error", "warning", "info"];
+
+function createDefaultExpandedLayers(): Record<VerifyLayerKey, boolean> {
+  return {
+    layer1: true,
+    layer2: true,
+    layer3: true,
+    layer4: true,
+  };
+}
+
+function isVerifyLayerKey(layer: string): layer is VerifyLayerKey {
+  return VERIFY_LAYER_ORDER.includes(layer as VerifyLayerKey);
+}
+
+function formatSeverityCountLabel(
+  severity: RuntimeSkillCreatorVerifyCheckSeverity,
+  count: number,
+): string {
+  const severityLabel = severity === "info" ? "info" : `${severity}s`;
+  return `${count} ${severityLabel}`;
+}
+
+function getVerifySeverityCounts(
+  checks: RuntimeSkillCreatorVerifyCheck[],
+): Record<RuntimeSkillCreatorVerifyCheckSeverity, number> {
+  return checks.reduce(
+    (counts, check) => {
+      counts[check.severity] += 1;
+      return counts;
+    },
+    {
+      info: 0,
+      warning: 0,
+      error: 0,
+    } as Record<RuntimeSkillCreatorVerifyCheckSeverity, number>,
+  );
+}
+
+function createVerifyChecksByLayer(): Record<
+  VerifyLayerKey,
+  RuntimeSkillCreatorVerifyCheck[]
+> {
+  return {
+    layer1: [],
+    layer2: [],
+    layer3: [],
+    layer4: [],
+  };
+}
+
+interface VerifyLayerGroupProps {
+  layer: VerifyLayerKey;
+  label: string;
+  checks: RuntimeSkillCreatorVerifyCheck[];
+  isExpanded: boolean;
+  onToggle: (layer: VerifyLayerKey) => void;
+}
+
+function VerifyLayerGroup({
+  layer,
+  label,
+  checks,
+  isExpanded,
+  onToggle,
+}: VerifyLayerGroupProps) {
+  const severityCounts = getVerifySeverityCounts(checks);
+  const panelId = `skill-lifecycle-verify-layer-${layer}-panel`;
+  const buttonId = `skill-lifecycle-verify-layer-${layer}-button`;
+
+  return (
+    <section
+      className="overflow-hidden rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)]"
+      data-testid={`skill-lifecycle-verify-layer-${layer}`}
+    >
+      <button
+        type="button"
+        id={buttonId}
+        aria-controls={panelId}
+        aria-expanded={isExpanded}
+        onClick={() => onToggle(layer)}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-[var(--bg-secondary)]"
+        data-testid={`skill-lifecycle-verify-layer-toggle-${layer}`}
+      >
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-[var(--text-primary)]">
+            {label}
+          </p>
+          <p className="mt-1 text-xs text-[var(--text-secondary)]">
+            {checks.length} 件のチェック
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {VERIFY_SEVERITY_ORDER.filter(
+            (severity) => severityCounts[severity] > 0,
+          ).map((severity) => (
+            <span
+              key={severity}
+              className={`rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[severity]}`}
+            >
+              {formatSeverityCountLabel(severity, severityCounts[severity])}
+            </span>
+          ))}
+          <span
+            aria-hidden="true"
+            className="text-xs font-medium text-[var(--text-secondary)]"
+          >
+            {isExpanded ? "▲" : "▼"}
+          </span>
+        </div>
+      </button>
+
+      {isExpanded ? (
+        <div
+          id={panelId}
+          role="region"
+          aria-labelledby={buttonId}
+          className="border-t border-[var(--border-primary)] px-4 py-4"
+          data-testid={`skill-lifecycle-verify-layer-panel-${layer}`}
+        >
+          <div className="grid gap-3 lg:grid-cols-2">
+            {checks.map((check) => (
+              <article
+                key={check.id}
+                className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-4"
+                data-testid={`skill-lifecycle-verify-check-${check.id}`}
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-semibold text-[var(--text-primary)]">
+                    {check.id}
+                  </span>
+                  <span className="rounded-full bg-[var(--bg-primary)] px-2 py-1 text-xs font-medium text-[var(--text-secondary)]">
+                    {check.layer}
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[check.severity]}`}
+                  >
+                    <span aria-hidden="true">
+                      {verifyCheckSeverityIcon[check.severity]}
+                    </span>
+                    <span>{check.severity}</span>
+                  </span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
+                  {check.summary}
+                </p>
+                {check.evidenceSummary ? (
+                  <p className="mt-2 text-xs text-[var(--text-secondary)]">
+                    {check.evidenceSummary}
+                  </p>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </section>
+  );
+}
 
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   const runtimeWindow = window as Window & {
@@ -465,6 +654,25 @@ export function SkillLifecyclePanel({
   );
   const [isVerifyDetailLoading, setIsVerifyDetailLoading] = useState(false);
   const [isReverifying, setIsReverifying] = useState(false);
+  const [expandedLayers, setExpandedLayers] = useState<
+    Record<VerifyLayerKey, boolean>
+  >(createDefaultExpandedLayers);
+  const checksByLayer = useMemo(() => {
+    const groups = createVerifyChecksByLayer();
+    for (const check of verifyDetail?.checks ?? []) {
+      if (!isVerifyLayerKey(check.layer)) {
+        continue;
+      }
+      groups[check.layer].push(check);
+    }
+    return groups;
+  }, [verifyDetail?.checks]);
+  const toggleLayer = useCallback((layer: VerifyLayerKey) => {
+    setExpandedLayers((current) => ({
+      ...current,
+      [layer]: !current[layer],
+    }));
+  }, []);
   // TASK-SDK-07: disclosure info state
   const [disclosureInfo, setDisclosureInfo] = useState<{
     aiServiceName: string;
@@ -495,6 +703,10 @@ export function SkillLifecyclePanel({
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
   const isPrepareFlowActiveRef = useRef(false);
   const processedWorkflowOutcomePlanIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    setExpandedLayers(createDefaultExpandedLayers());
+  }, [activeWorkflowId]);
 
   const clearPlanExecutionState = useCallback(() => {
     setLocalPlanResult(null);
@@ -1764,34 +1976,18 @@ export function SkillLifecyclePanel({
                 </div>
               ) : null}
 
-              <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                {verifyDetail.checks.map((check) => (
-                  <article
-                    key={check.id}
-                    className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4"
-                  >
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-semibold text-[var(--text-primary)]">
-                        {check.id}
-                      </span>
-                      <span className="rounded-full bg-[var(--bg-secondary)] px-2 py-1 text-xs font-medium text-[var(--text-secondary)]">
-                        {check.layer}
-                      </span>
-                      <span
-                        className={`rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[check.severity]}`}
-                      >
-                        {check.severity}
-                      </span>
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                      {check.summary}
-                    </p>
-                    {check.evidenceSummary ? (
-                      <p className="mt-2 text-xs text-[var(--text-secondary)]">
-                        {check.evidenceSummary}
-                      </p>
-                    ) : null}
-                  </article>
+              <div className="mt-4 space-y-3">
+                {VERIFY_LAYER_ORDER.filter(
+                  (layer) => (checksByLayer[layer]?.length ?? 0) > 0,
+                ).map((layer) => (
+                  <VerifyLayerGroup
+                    key={layer}
+                    layer={layer}
+                    label={verifyLayerLabels[layer]}
+                    checks={checksByLayer[layer]}
+                    isExpanded={expandedLayers[layer] ?? true}
+                    onToggle={toggleLayer}
+                  />
                 ))}
               </div>
 
