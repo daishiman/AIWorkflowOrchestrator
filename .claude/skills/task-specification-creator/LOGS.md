@@ -3,6 +3,14 @@
 ## 役割
 
 ---
+## 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync + skill-feedback 反映
+
+### 変更内容
+- [Feedback 4] Phase 11 NON_VISUAL 時 `manual-test-result.md` 証跡メタ必須化（証跡主ソース・スクリーンショット不要理由を明記）を「Phase 12 実行時によくある漏れ」テーブルへ追記
+- [Feedback 5] Phase 7 広域 coverage 目標時の変更ブロック line/branch 実測根拠必須化を同テーブルへ追記
+- SKILL.md v10.09.31 更新（close-out sync + skill-feedback 反映）
+
+---
 ## 2026-04-02 - TASK-NOTIFICATION-SERVICE-001 Phase 12 close-out sync
 
 ### 変更内容
@@ -1641,3 +1649,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/step-04-seq-task-05-schema-extension/`（phase-2 / phase-12 / phase-13 / outputs / unassigned-task） |
 | 結果 | Phase 12 の実装ガイド・未タスク・skill-feedback を `provider-registry.ts` 前提へ同期し、Phase 13 の PR 準備と最終確認を current facts へ是正。`TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` を削除済みとして整理 |
 | 検証 | `provider.test.ts` 41 PASS、`llm.test.ts` 59 PASS / 1 skipped、workflow 内検索で旧想定パスの残存を解消確認 |
+
+### 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / workflow close-out |
+| 変更対象 | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/index.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-1-requirements.md` 〜 `phase-12-documentation.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/artifacts.json`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/outputs/artifacts.json`, `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`, `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`, `outputs/phase-10`〜`outputs/phase-12` |
+| 結果 | Phase 10〜12 outputs を current facts に固定し、workflow 本体の status / 台帳 parity / task-workflow completed/backlog path を `fix-lifecycle-panel-error` へ同期した。Phase 11 は NON_VISUAL として自動テスト代替で完了。`generate-index.js` により topic-map / keywords も再生成した |
+| 検証 | `validate-phase12-implementation-guide.js` PASS（10/10）、`vitest` 8/8 PASS、`vitest` 10/10 PASS、`typecheck` PASS、`eslint` PASS |

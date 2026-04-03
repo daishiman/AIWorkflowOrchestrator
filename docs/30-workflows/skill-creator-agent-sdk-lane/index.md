@@ -70,19 +70,19 @@
 スキル生成時に発生する `auth:login` IPC タイムアウトエラーの修正タスク群。
 30種の思考法による多角的分析（2026-04-01 実施）に基づき設計。
 
-| タスクID                           | ディレクトリ                                                       | ステップ | パターン | 責務                                                                                                  |
-| ---------------------------------- | ------------------------------------------------------------------ | -------- | -------- | ----------------------------------------------------------------------------------------------------- |
-| TASK-FIX-ENV-STRIPPING             | `fix-step0-seq-env-stripping/`                                     | step0    | seq      | SkillExecutor.ts の env オプション修正（PATH 欠落による ENOENT 解消）                                 |
-| TASK-TRACE-SKILL-AUTH-001          | `../completed-tasks/fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 ✅ 完了                                                |
-| TASK-FIX-IPC-TIMEOUT-001           | `fix-step1-par-ipc-timeout-per-channel/`                           | step1    | par      | IPCチャンネル別タイムアウト設定 ✅ PR#1823 完了                                                       |
-| TASK-FIX-AUTH-IPC-001              | `../completed-tasks/fix-step2-seq-auth-login-ipc-nonblocking/`     | step2    | seq      | auth:login ハンドラーの fire-and-forget 化 ✅ Phase-12 完了 #1829                                     |
-| TASK-FIX-EXECUTE-PLAN-FF-001       | `fix-step3-seq-execute-plan-nonblocking/`                          | step3    | seq      | skill-creator:execute-plan の fire-and-forget 化 + 長時間実行管理                                     |
-| TASK-NOTIFICATION-SERVICE-001      | `../completed-tasks/fix-step4-seq-notification-service/`           | step4    | seq      | INotificationService + macOS 完了通知 + before-quit guard                                             |
-| TASK-FIX-LIFECYCLE-PANEL-ERROR-001 | `fix-step5-seq-lifecycle-panel-error/`                             | step5    | seq      | SkillLifecyclePanel の setWorkflowError(null) 無条件クリアバグ修正（failed フェーズでエラー消去防止） |
+| タスクID                           | ディレクトリ                                                       | ステップ | パターン | 責務                                                                                                   |
+| ---------------------------------- | ------------------------------------------------------------------ | -------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| TASK-FIX-ENV-STRIPPING             | `fix-step0-seq-env-stripping/`                                     | step0    | seq      | SkillExecutor.ts の env オプション修正（PATH 欠落による ENOENT 解消）                                  |
+| TASK-TRACE-SKILL-AUTH-001          | `../completed-tasks/fix-step1-par-investigate-skill-auth-trigger/` | step1    | par      | スキル生成→auth:login 呼び出し経路の調査・修正 ✅ 完了                                                 |
+| TASK-FIX-IPC-TIMEOUT-001           | `fix-step1-par-ipc-timeout-per-channel/`                           | step1    | par      | IPCチャンネル別タイムアウト設定 ✅ PR#1823 完了                                                        |
+| TASK-FIX-AUTH-IPC-001              | `../completed-tasks/fix-step2-seq-auth-login-ipc-nonblocking/`     | step2    | seq      | auth:login ハンドラーの fire-and-forget 化 ✅ Phase-12 完了 #1829                                      |
+| TASK-FIX-EXECUTE-PLAN-FF-001       | `fix-step3-seq-execute-plan-nonblocking/`                          | step3    | seq      | skill-creator:execute-plan の fire-and-forget 化 + 長時間実行管理                                      |
+| TASK-NOTIFICATION-SERVICE-001      | `../completed-tasks/fix-step4-seq-notification-service/`           | step4    | seq      | INotificationService + macOS 完了通知 + before-quit guard                                              |
+| TASK-FIX-LIFECYCLE-PANEL-ERROR-001 | `../completed-tasks/fix-step5-seq-lifecycle-panel-error/`          | step5    | seq      | SkillLifecyclePanel の setWorkflowError(null) 無条件クリアバグ修正（handoff フェーズでエラー消去防止） |
 
 ### 推奨実行順（IPC修正タスク）
 
-### 現在の実行状況（2026-04-02 時点）
+### 現在の実行状況（2026-04-03 時点）
 
 | ステップ | タスクID                           | ステータス         | 注意事項                                                                     |
 | -------- | ---------------------------------- | ------------------ | ---------------------------------------------------------------------------- |
@@ -92,7 +92,7 @@
 | step2    | TASK-FIX-AUTH-IPC-001              | ✅ 完了 #1829      | **⚠️ step0 は完了済み。SDK 動作の統合検証は step0 完了後の前提で進めること** |
 | step3    | TASK-FIX-EXECUTE-PLAN-FF-001       | 未着手             | step0 完了後に着手                                                           |
 | step4    | TASK-NOTIFICATION-SERVICE-001      | ✅ 完了            | step3 完了後に着手                                                           |
-| step5    | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 | 未着手             | step3 完了後に着手                                                           |
+| step5    | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 | ✅ 完了            | `handoff` 時の error clear 抑止（2026-04-03）                                |
 
 > **⚠️ step2 実行中の関係者へ**: `auth:login` の IPC タイムアウトは `CHANNEL_TIMEOUTS["auth:login"] = 500`（PR#1823）により **500ms** です（デフォルトの 5000ms ではありません）。参照ファイルは `apps/desktop/src/preload/ipc-utils.ts`（`main/ipc/` ではなく `preload/`）です。
 
@@ -117,8 +117,8 @@ fix-step3-seq-execute-plan-nonblocking
 [step4: ✅ 完了]
 ../completed-tasks/fix-step4-seq-notification-service
               ↓
-[step5: 未着手]
-fix-step5-seq-lifecycle-panel-error
+[step5: ✅ 完了]
+../fix-lifecycle-panel-error
               ↓
           統合検証（E2E）
 ```
