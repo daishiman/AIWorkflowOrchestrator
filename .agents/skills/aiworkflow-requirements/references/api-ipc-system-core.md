@@ -804,3 +804,84 @@ function parseLlmResponseToContent(
 | `VALIDATION_ERROR` / `PATH_TRAVERSAL` | `persistError` に error code を含むメッセージを設定 |
 
 ---
+
+## Skill Creator External API Support（TASK-SDK-SC-03）
+
+> 完了日: 2026-04-03
+> ステータス: `implemented`
+
+### 概要
+
+TASK-SDK-SC-03 では、Skill Creator フロー内で外部 HTTP API を呼び出すための IPC チャネル（4本）と型定義を追加した。SDK Session が `RequestExternalApiConfig` custom tool を通じて UI にAPI設定を要求し、ユーザーが `ExternalApiConfigForm` で設定を入力する双方向フローを実現する。
+
+### チャネル一覧
+
+| チャネル | 方向 | 用途 | Request / Payload | Response |
+| --- | --- | --- | --- | --- |
+| `skill-creator:configure-api` | Renderer → Main | 外部API設定送信 | `ExternalApiConnectionConfig` | `IpcResult<unknown>` |
+| `skill-creator:api-configured` | Main → Renderer | API設定完了通知 | none | push payload |
+| `skill-creator:api-test-result` | Main → Renderer | API接続テスト結果 | none | push payload |
+| `skill-creator:external-api-config-required` | Main → Renderer | SDK→UI: API設定要求 | none | `ExternalApiConfigRequiredEvent` (`{ apiName?, description? }`) |
+
+### チャネル定義正本
+
+| 定数名 | 値 | 定義元 |
+| --- | --- | --- |
+| `SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API` | `skill-creator:configure-api` | `packages/shared/src/ipc/channels.ts` |
+| `SKILL_CREATOR_EXTERNAL_API_CHANNELS.API_CONFIGURED` | `skill-creator:api-configured` | `packages/shared/src/ipc/channels.ts` |
+| `SKILL_CREATOR_EXTERNAL_API_CHANNELS.API_TEST_RESULT` | `skill-creator:api-test-result` | `packages/shared/src/ipc/channels.ts` |
+| `SKILL_CREATOR_SESSION_CHANNELS.EXTERNAL_API_CONFIG_REQUIRED` | `skill-creator:external-api-config-required` | `packages/shared/src/ipc/channels.ts` |
+
+### 型定義
+
+| 型名 | 種別 | 定義ファイル | 概要 |
+| --- | --- | --- | --- |
+| `ExternalApiAuthType` | type alias | `packages/shared/src/types/skillCreatorExternalApi.ts` | `"none" \| "api-key" \| "bearer" \| "basic"` |
+| `ExternalApiConnectionConfig` | interface | `packages/shared/src/types/skillCreatorExternalApi.ts` | API接続設定（name / url / method / authType / credential? / headers? / description?） |
+| `SkillExternalApiContext` | interface | `packages/shared/src/types/skillCreatorExternalApi.ts` | SDK Session に注入する外部APIコンテキスト（`apis: ExternalApiConnectionConfig[]`） |
+| `IExternalApiAdapter` | interface | `packages/shared/src/types/skillCreatorExternalApi.ts` | 外部HTTP APIアダプターインターフェース（get / post / setAuth） |
+| `ExternalApiTimeoutError` | class | `packages/shared/src/types/skillCreatorExternalApi.ts` | 30秒タイムアウトエラー（url プロパティ保持） |
+| `ExternalApiHttpError` | class | `packages/shared/src/types/skillCreatorExternalApi.ts` | HTTP 4xx/5xx エラー（statusCode / url プロパティ保持） |
+| `ExternalApiConfigRequiredEvent` | interface | `apps/desktop/src/preload/skill-creator-session-api.ts` | SDK→UI 通知ペイロード（`{ apiName?, description? }`） |
+
+### 実装アンカー
+
+| 層 | ファイル | 役割 |
+| --- | --- | --- |
+| Shared channels | `packages/shared/src/ipc/channels.ts` | `SKILL_CREATOR_EXTERNAL_API_CHANNELS` 定数定義 |
+| Shared types | `packages/shared/src/types/skillCreatorExternalApi.ts` | 型定義 SSoT |
+| Main IPC Bridge | `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` | `configureApi` handler / `isValidExternalApiConfig()` 8条件バリデーション |
+| Main SDK Session | `apps/desktop/src/main/services/runtime/SkillCreatorSdkSession.ts` | `RequestExternalApiConfig` custom tool / `sanitizeExternalApiConfigForPrompt()` |
+| Main HTTP Adapter | `apps/desktop/src/main/services/runtime/adapters/HttpExternalApiAdapter.ts` | `IExternalApiAdapter` 実装（30秒タイムアウト / AbortController） |
+| Preload session API | `apps/desktop/src/preload/skill-creator-session-api.ts` | `onExternalApiConfigRequired()` push listener |
+| Preload creator API | `apps/desktop/src/preload/skill-creator-api.ts` | `configureExternalApi()` invoke |
+| Renderer | `apps/desktop/src/renderer/components/skill/ExternalApiConfigForm.tsx` | API接続設定フォーム UI |
+
+### 並行フロー管理
+
+SDK Session は `pendingAnswerPromise`（質問待機）と `pendingExternalApiPromise`（API設定要求）を相互排他で管理する。
+
+| 状態 | 判定 | 挙動 |
+| --- | --- | --- |
+| 質問待機中にAPI設定要求 | `pendingAnswerPromise` が存在 | 質問待機を維持し、API設定要求は拒否 |
+| API設定待機中に質問要求 | `pendingExternalApiPromise` が存在 | API設定待機を維持し、質問要求は拒否 |
+| タイムアウト | 30秒 | 単一 `timeoutHandle` を両フローで共有し、タイムアウト時に reject |
+
+### credential 秘匿化
+
+`sanitizeExternalApiConfigForPrompt()` は SDK プロンプトに注入する値から credential を `[REDACTED]` に置換する。実際のAPI呼び出しには元の credential を使用する（二重管理パターン）。
+
+### バリデーション
+
+`isValidExternalApiConfig()` は以下の8条件でバリデーションを実施する。
+
+1. `config` が非 null object であること
+2. `config.name` が非空文字列であること
+3. `config.url` が非空文字列であること
+4. `config.url` が `http://` または `https://` で始まること
+5. `config.method` が `"GET"` または `"POST"` であること
+6. `config.authType` が `ExternalApiAuthType` のいずれかであること
+7. `config.authType` が `"none"` 以外の場合、`config.credential` が非空文字列であること
+8. `config.headers` が指定されている場合、`Record<string, string>` 形状であること
+
+---

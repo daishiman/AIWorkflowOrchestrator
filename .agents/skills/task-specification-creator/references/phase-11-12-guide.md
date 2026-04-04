@@ -8,7 +8,7 @@
 | file | 使う場面 | 内容 |
 | --- | --- | --- |
 | [phase-11-screenshot-guide.md](phase-11-screenshot-guide.md) | manual test、UI evidence、docs walkthrough | Phase 11 の execution detail |
-| [phase-12-documentation-guide.md](phase-12-documentation-guide.md) | implementation guide、spec sync、feedback | Phase 12 の 5 task |
+| [phase-12-documentation-guide.md](phase-12-documentation-guide.md) | implementation guide、spec sync、feedback | Phase 12 の 6 task |
 | [spec-update-workflow.md](spec-update-workflow.md) | Task 12-2 | Step 1 / Step 2 index |
 | [spec-update-validation-matrix.md](spec-update-validation-matrix.md) | final validation | validator と pass 基準 |
 
@@ -80,7 +80,7 @@
 - `spec_created` / docs-heavy task でも、Phase 12 は「計画記録」では閉じない。`.claude/skills/` 側の system spec / LOGS / lessons learned / backlog / `artifacts.json` / `outputs/artifacts.json` を **同ターンで実更新** する。
 - persist / hydration task の Phase 11 では、actual storage key と validation entrypoint を仕様書へ明記し、`electron-store` など generic storage 名を推測で書かない。
 - Step 2 の sync 先は generic なファイル名で推測せず、actual domain split を見て **primary target file list** を先に確定してから書き込む。
-- Task 12-1〜12-5 を順に閉じる。
+- Task 12-1〜12-6 を順に閉じる。
 - `artifacts.json`、`outputs/artifacts.json`、phase 本文、`index.md` を同一ターンで同期する。
 - `current` / `baseline` の二層判定を changelog と quality report に残す。
 

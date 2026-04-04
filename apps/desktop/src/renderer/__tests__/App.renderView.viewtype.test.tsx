@@ -116,8 +116,19 @@ vi.mock("@/renderer/components/AuthGuard", () => ({
 }));
 
 vi.mock("@/renderer/components/organisms/AppLayout", () => ({
-  AppLayout: ({ children }: { children: React.ReactNode }) =>
-    React.createElement("div", { "data-testid": "app-layout" }, children),
+  AppLayout: ({
+    children,
+    currentView,
+  }: {
+    children: React.ReactNode;
+    currentView?: string;
+    [key: string]: unknown;
+  }) =>
+    React.createElement(
+      "div",
+      { "data-testid": "app-layout", "data-current-view": currentView ?? "" },
+      children,
+    ),
 }));
 
 vi.mock("@/renderer/components/organisms/NotificationCenter", () => ({
@@ -743,5 +754,68 @@ describe("App renderView() - skillAnalysis: onNavigateBack / onNavigateToAgent �
 
     fireEvent.click(screen.getByTestId("skill-analysis-navigate-to-agent"));
     expect(mockSetCurrentView).toHaveBeenCalledWith("agent");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// skillManagement case: renderView() + dock normalization テスト
+// (TASK-SKILL-CENTER-LIFECYCLE-NAV-001 TC-02/TC-03)
+// ---------------------------------------------------------------------------
+
+describe("App renderView() - skillManagement case (TASK-SKILL-CENTER-LIFECYCLE-NAV-001)", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockCurrentSkillName = null;
+  });
+
+  afterEach(() => {
+    cleanup();
+  });
+
+  async function setupSkillManagementMock() {
+    const { useCurrentView, useAppStore } = await import("@/renderer/store");
+    (useCurrentView as ReturnType<typeof vi.fn>).mockReturnValue(
+      "skillManagement",
+    );
+    (useAppStore as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: (state: Record<string, unknown>) => unknown) => {
+        return selector({
+          initializeAuth: mockInitializeAuth,
+          isAuthenticated: false,
+          isLoading: false,
+          themeMode: "system",
+          setThemeMode: vi.fn(),
+          updateUserProfile: vi.fn(),
+          userProfile: { name: "Test User" },
+          setCurrentView: mockSetCurrentView,
+          goBack: mockGoBack,
+          viewHistory: ["skillCenter", "skillManagement"],
+          currentSkillName: null,
+          setCurrentSkillName: mockSetCurrentSkillName,
+          dynamicIsland: { status: "idle", message: "", visible: false },
+          setWindowSize: mockSetWindowSize,
+        });
+      },
+    );
+  }
+
+  it("TC-02: currentView が skillManagement のとき SkillManagementPanel が描画されること", async () => {
+    await setupSkillManagementMock();
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    // SkillManagementPanel は mockComponent("skill-management") でモック済み
+    expect(screen.getByTestId("skill-management")).toBeTruthy();
+  });
+
+  it("TC-03: skillManagement 時も AppLayout には skillCenter として currentView が渡されること（dock 正規化）", async () => {
+    await setupSkillManagementMock();
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    const appLayout = screen.getByTestId("app-layout");
+    expect(appLayout.getAttribute("data-current-view")).toBe("skillCenter");
   });
 });
