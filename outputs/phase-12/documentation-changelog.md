@@ -1,35 +1,28 @@
-# Phase 12: ドキュメント更新履歴 — TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001
+# Phase 12: ドキュメント更新履歴 — TASK-SDK-SC-02
 
 ## current
 
-| 種別          | ファイル                                                                                              | 内容                                                         |
-| ------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| code          | `apps/desktop/electron.vite.config.ts`                                                                | preload `exclude + alias` を追加                             |
-| code          | `apps/desktop/vitest.config.ts`                                                                       | shared IPC alias を追加                                      |
-| code          | `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts`                          | relative import を alias 化                                  |
-| code          | `apps/desktop/src/__tests__/electron-vite.preload-alias.test.ts`                                      | electron-vite 設定 drift を監査する回帰テストを追加          |
-| docs          | `docs/30-workflows/task-fix-preload-vite-alias-shared-ipc-001/*`                                      | current facts へ再構成                                       |
-| docs          | `docs/30-workflows/completed-tasks/task-fix-preload-vite-alias-shared-ipc-001/outputs/artifacts.json` | Phase 11/12 outputs parity を追加                            |
-| outputs       | `outputs/phase-11/manual-test-result.md`                                                              | NON_VISUAL evidence を metadata / fallback reason 付きで補強 |
-| outputs       | `outputs/phase-11/discovered-issues.md`                                                               | Phase 11 必須の検出課題 0件記録を追加                        |
-| outputs       | `outputs/phase-11/manual-test-checklist.md`                                                           | Phase 11 checklist を追加                                    |
-| outputs       | `outputs/phase-12/*.md`                                                                               | generic canonical filename と current 0件の narrative へ統一 |
-| system spec   | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`                        | 完了記録を current facts へ更新                              |
-| system spec   | `.claude/skills/aiworkflow-requirements/references/task-workflow-history.md`                          | same-wave sync 履歴を追加                                    |
-| system spec   | `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`                          | `UT-DX...` の完了移管を反映                                  |
-| system spec   | `.claude/skills/aiworkflow-requirements/references/lessons-learned-current.md`                        | 再発防止教訓追加                                             |
-| skill log     | `.claude/skills/aiworkflow-requirements/LOGS.md`                                                      | same-wave sync 記録                                          |
-| skill log     | `.claude/skills/task-specification-creator/LOGS.md`                                                   | canonical outputs 是正の記録                                 |
-| skill history | `.claude/skills/aiworkflow-requirements/SKILL.md`                                                     | 変更履歴追記                                                 |
-| skill history | `.claude/skills/task-specification-creator/SKILL.md`                                                  | 変更履歴追記                                                 |
+| 種別        | ファイル                                                                                              | 内容                                                        |
+| ----------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| component   | `apps/desktop/src/renderer/components/skill-creator/ChoiceButton.tsx`                                 | 選択/未選択状態の単一ボタン Atom コンポーネント             |
+| component   | `apps/desktop/src/renderer/components/skill-creator/FreeTextInput.tsx`                                | 自由入力テキストエリア Atom コンポーネント                  |
+| component   | `apps/desktop/src/renderer/components/skill-creator/ConversationProgress.tsx`                         | 進捗表示 Atom コンポーネント                                |
+| component   | `apps/desktop/src/renderer/components/skill-creator/QuestionCard.tsx`                                 | kind 別質問表示・入力 UI 統合 Molecule コンポーネント       |
+| component   | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorConversationPanel.tsx`                | IPC listen・回答送信・全コンポーネント統合 Organism         |
+| test        | `apps/desktop/src/renderer/components/skill-creator/__tests__/ChoiceButton.test.tsx`                  | 9 tests                                                     |
+| test        | `apps/desktop/src/renderer/components/skill-creator/__tests__/FreeTextInput.test.tsx`                 | 9 tests                                                     |
+| test        | `apps/desktop/src/renderer/components/skill-creator/__tests__/ConversationProgress.test.tsx`          | 3 tests                                                     |
+| test        | `apps/desktop/src/renderer/components/skill-creator/__tests__/QuestionCard.test.tsx`                  | 23 tests                                                    |
+| test        | `apps/desktop/src/renderer/components/skill-creator/__tests__/SkillCreatorConversationPanel.test.tsx` | 13 tests                                                    |
+| docs        | `docs/30-workflows/step-02-par-task-02-conversation-ui/phase-12-documentation.md`                     | 5 コンポーネント仕様書・Props API・使用例・仕様準拠チェック |
+| docs        | `outputs/phase-12/implementation-guide.md`                                                            | アーキテクチャ・型マッピング・IPC 通信フロー・品質指標      |
+| system spec | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`                        | 完了記録を追加                                              |
+| system spec | `.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`                                   | Conversation UI 即時導線を追加                              |
+| skill log   | `.claude/skills/aiworkflow-requirements/LOGS.md`                                                      | same-wave sync 記録                                         |
 
 ## 実測
 
-- `pnpm --filter @repo/desktop typecheck` PASS
-- `pnpm --filter @repo/desktop build` PASS
-- `pnpm --filter @repo/desktop exec vitest run src/__tests__/electron-vite.preload-alias.test.ts` PASS
-- targeted vitest: `2 files / 37 tests PASS`
-
-## baseline
-
-baseline の wider governance 変更は行っていない。今回差分に閉じて更新した。
+- `pnpm --filter @repo/desktop exec vitest run ...skill-creator/__tests__/`: **57 tests PASS**
+- カバレッジ: Stmts 97.54% / Branch 86.04% / Funcs 95.83%
+- TypeScript typecheck: PASS
+- ESLint: PASS

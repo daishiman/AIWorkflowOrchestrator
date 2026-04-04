@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-03T05:41:36.069Z",
-  "totalKeywords": 2648,
+  "generated": "2026-04-04T00:25:49.985Z",
+  "totalKeywords": 2655,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1401,6 +1401,7 @@
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-import-analysis-view.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-skill-validation-logging-deprecation.md",
@@ -1470,6 +1471,7 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
@@ -2340,6 +2342,7 @@
     "CREATOR": [
       "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-skill-plan-exec-hardening.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
@@ -6420,6 +6423,7 @@
     ],
     "task": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-01-system-spec-gap-skill-retry.md",
@@ -7170,6 +7174,22 @@
     "対話強制": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "エラー保持パターン": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ut": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
+    ],
+    "repeat": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "feedback": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "memory": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
     ],
@@ -7456,6 +7476,15 @@
       "lessons-learned-skill-plan-exec-hardening.md"
     ],
     "step": [
+      "lessons-learned-skill-plan-exec-hardening.md"
+    ],
+    "BEFORE": [
+      "lessons-learned-skill-plan-exec-hardening.md"
+    ],
+    "QUIT": [
+      "lessons-learned-skill-plan-exec-hardening.md"
+    ],
+    "知見": [
       "lessons-learned-skill-plan-exec-hardening.md"
     ],
     "REMOVE": [
@@ -9160,9 +9189,6 @@
     "atoms": [
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
-    ],
-    "ut": [
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
     ],
     "conflict": [
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"

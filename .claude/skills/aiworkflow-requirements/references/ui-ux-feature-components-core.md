@@ -82,6 +82,38 @@
 | 削除成功後に `exists=true`（`env-fallback` など） | `configured` を維持 |
 | 削除成功後に `exists=false` | `not_set` |
 
+### Severity フィルタ（UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001）
+
+`SkillLifecyclePanel` の Layer3/4 verify detail に severity ベースのフィルタを提供する。check 件数が多いスキルでも重要度の高い問題に集中できる UI 拡張。Renderer 内完結の変更で、IPC / shared type / preload の変更はない。
+
+#### フィルタ値
+
+| フィルタ値   | UI 表示ラベル | 表示対象                  | 既定 |
+| ------------ | ------------- | ------------------------- | ---- |
+| `all`        | `すべて`     | 全件表示                  | ✓    |
+| `warning+`   | `⚠ Warning+` | `warning` と `error` のみ | -    |
+| `error`      | `✗ Error`    | `error` のみ              | -    |
+
+#### 状態管理
+
+- `severityFilter` は `useState<'all' | 'warning+' | 'error'>('all')` で管理
+- `expandedLayers` state とは独立（責務分離）
+- reverify 時にリセットしない（ユーザー選択を維持）
+- `useMemo` で `checksByLayer` から filter 条件に合致する check のみを抽出
+- filter 適用後に check が 0 件の Layer は非表示
+- `warning+` / `error` 選択時のみ件数サマリを表示する
+
+#### ARIA 属性
+
+| 要素                   | 属性                               |
+| ---------------------- | ---------------------------------- |
+| セグメントコントロール | `role="group"`, `aria-label="Severity filter"` |
+| 各フィルタボタン       | `aria-pressed` によるトグル状態   |
+
+#### 件数サマリ
+
+`warning+` または `error` が選択されたときのみ、`role="status"` のライブ領域で `表示中 X / 全 Y 件` を表示する。フィルタ結果を視覚・音声の両方で即時に把握できるようにするための補助情報である。
+
 ---
 
 ## Community Visualization UI コンポーネント（CONV-08-05）

@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-03T10:10:32.245Z",
-  "totalKeywords": 2652,
+  "generated": "2026-04-04T00:25:49.985Z",
+  "totalKeywords": 2655,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -6423,6 +6423,7 @@
     ],
     "task": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-01-system-spec-gap-skill-retry.md",
@@ -7174,6 +7175,19 @@
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "エラー保持パターン": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ut": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
+    ],
+    "repeat": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "feedback": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "memory": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "Extraction": [
@@ -9175,9 +9189,6 @@
     "atoms": [
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
-    ],
-    "ut": [
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
     ],
     "conflict": [
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"

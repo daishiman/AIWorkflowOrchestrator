@@ -19,6 +19,11 @@ import type {
   UserInputQuestion,
 } from "@repo/shared/types";
 
+export interface ExternalApiConfigRequiredEvent {
+  apiName?: string;
+  description?: string;
+}
+
 function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
   return invokeWithTimeout<T>(ALLOWED_INVOKE_CHANNELS, channel, ...args);
 }
@@ -44,6 +49,9 @@ export interface SkillCreatorSessionAPI {
   startSession: (request: string, sessionId?: string) => Promise<void>;
   sendAnswer: (answer: UserInputAnswer) => Promise<void>;
   onQuestion: (callback: (question: UserInputQuestion) => void) => () => void;
+  onExternalApiConfigRequired: (
+    callback: (event: ExternalApiConfigRequiredEvent) => void,
+  ) => () => void;
   onComplete: (
     callback: (event: SkillCreatorSessionCompleteEvent) => void,
   ) => () => void;
@@ -59,6 +67,13 @@ export const skillCreatorSessionAPI: SkillCreatorSessionAPI = {
     safeInvoke<void>(IPC_CHANNELS.ANSWER, answer),
   onQuestion: (callback: (question: UserInputQuestion) => void) =>
     safeOn<UserInputQuestion>(IPC_CHANNELS.QUESTION_RECEIVED, callback),
+  onExternalApiConfigRequired: (
+    callback: (event: ExternalApiConfigRequiredEvent) => void,
+  ) =>
+    safeOn<ExternalApiConfigRequiredEvent>(
+      IPC_CHANNELS.EXTERNAL_API_CONFIG_REQUIRED,
+      callback,
+    ),
   onComplete: (callback: (event: SkillCreatorSessionCompleteEvent) => void) =>
     safeOn<SkillCreatorSessionCompleteEvent>(
       IPC_CHANNELS.SESSION_COMPLETE,

@@ -170,6 +170,21 @@ export const SKILL_CREATOR_SESSION_CHANNELS = {
   SESSION_COMPLETE: "skill-creator:session-complete",
   /** Main → Renderer: セッションエラー通知 */
   SESSION_ERROR: "skill-creator:session-error",
+  /** Main → Renderer: 外部API設定要求（ExternalApiConfigForm 表示トリガー） */
+  EXTERNAL_API_CONFIG_REQUIRED: "skill-creator:external-api-config-required",
+} as const;
+
+/**
+ * スキルクリエイター 外部API連携のIPCチャネル
+ * TASK-SDK-SC-03: External API Support
+ */
+export const SKILL_CREATOR_EXTERNAL_API_CHANNELS = {
+  /** Renderer → Main: 外部API設定を送信 */
+  CONFIGURE_API: "skill-creator:configure-api",
+  /** Main → Renderer: API設定確認応答 */
+  API_CONFIGURED: "skill-creator:api-configured",
+  /** Main → Renderer: API接続テスト結果 */
+  API_TEST_RESULT: "skill-creator:api-test-result",
 } as const;
 
 /**
@@ -180,6 +195,7 @@ export const IPC_CHANNELS = {
   ...FILE_SYSTEM_CHANNELS,
   ...SKILL_CHANNELS,
   ...SKILL_CREATOR_SESSION_CHANNELS,
+  ...SKILL_CREATOR_EXTERNAL_API_CHANNELS,
   ...NOTIFICATION_CHANNELS,
   ...HISTORY_SEARCH_CHANNELS,
   ...APPROVAL_CHANNELS,
