@@ -3,6 +3,39 @@
 ## 役割
 
 ---
+
+## 2026-04-04 - task-imp-layer12-spec-definition-004 Phase 12 close-out sync
+
+### 変更内容
+- `interfaces-skill-verify-contract.md` を新規作成し、FR-04 verify 契約の check ID 体系（19 check ID、Layer 1-4）を追記
+- Layer 命名規則（`L{N}-{NNN}`）と拡張ガイドラインを明文化
+- `SkillCreatorVerificationEngine.ts` との check ID 突き合わせ diff 0 件を確認
+- SKILL.md v6.18.23 更新
+
+---
+
+## UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 完了（2026-04-03）
+
+- タスク名: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
+- 種別: feat / renderer-only UI enhancement
+- 主な反映:
+  - SkillLifecyclePanel に severity フィルタ（all/warning+/error）を追加
+  - Renderer 内完結の変更（IPC/shared type/preload 変更なし）
+  - ui-ux-feature-components-core.md に severity filter contract を追記
+  - task-workflow-backlog.md に完了記録を反映
+
+---
+
+## 2026-04-03 - task-ut-p0-02-001-repeat-feedback-memory Phase 12 close-out sync
+
+### 変更内容
+- `ImproveFeedbackHistory` 型を `packages/shared/src/types/skillCreator.ts` に追加
+- `verifyAndImproveLoop()` の `previousImproveSummary: string` を `feedbackHistory: ImproveFeedbackHistory[]` に構造化
+- `buildImproveFeedback()` を全試行履歴参照・繰り返し失敗チェック警告付きプロンプトに更新
+- テスト 13 件追加（TC-01〜TC-06, EC-01〜EC-04, BF-01〜BF-04）、全 45 tests PASS
+- Phase 12 成果物 6 件出力（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+
+---
 ## 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync + skill-feedback 反映
 
 ### 変更内容
