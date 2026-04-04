@@ -19,6 +19,12 @@ on:
       - ".github/PULL_REQUEST_TEMPLATE/**"
       - "LICENSE"
       - ".gitignore"
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "手動実行の理由（任意）"
+        required: false
+        default: "manual trigger"
 
 # 最小権限の原則
 permissions:
