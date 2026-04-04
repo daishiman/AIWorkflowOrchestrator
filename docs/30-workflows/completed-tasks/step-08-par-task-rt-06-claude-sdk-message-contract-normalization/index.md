@@ -6,16 +6,16 @@ Claude Code SDK の `query()` は `system/init`、`assistant`、`result` など�
 
 ## メタ情報
 
-| 項目         | 内容                                      |
-| ------------ | ----------------------------------------- |
-| タスクID     | TASK-RT-06                                |
-| タスク名     | claude-sdk-message-contract-normalization |
-| 分類         | バグ修正 / SDK 契約安定化                 |
-| 対象機能     | Claude Code SDK SDKMessage 正規化         |
-| 優先度       | 高（RT: Runtime）                         |
-| 見積もり規模 | 中規模                                    |
-| ステータス   | spec_created                              |
-| 作成日       | 2026-03-29                                |
+| 項目         | 内容                                           |
+| ------------ | ---------------------------------------------- |
+| タスクID     | TASK-RT-06                                     |
+| タスク名     | claude-sdk-message-contract-normalization      |
+| 分類         | バグ修正 / SDK 契約安定化                      |
+| 対象機能     | Claude Code SDK SDKMessage 正規化              |
+| 優先度       | 高（RT: Runtime）                              |
+| 見積もり規模 | 中規模                                         |
+| ステータス   | completed（Phase 1-12 完了、Phase 13 pending） |
+| 作成日       | 2026-03-29                                     |
 
 ## タスク概要
 
@@ -156,15 +156,15 @@ graph TD
 | 1     | 要件定義           | [phase-1-requirements.md](./phase-1-requirements.md)           | completed  |
 | 2     | 設計               | [phase-2-design.md](./phase-2-design.md)                       | completed  |
 | 3     | 設計レビューゲート | [phase-3-design-review.md](./phase-3-design-review.md)         | completed  |
-| 4     | テスト作成         | [phase-4-test-creation.md](./phase-4-test-creation.md)         | pending    |
-| 5     | 実装               | [phase-5-implementation.md](./phase-5-implementation.md)       | pending    |
-| 6     | テスト拡充         | [phase-6-test-expansion.md](./phase-6-test-expansion.md)       | pending    |
-| 7     | カバレッジ確認     | [phase-7-coverage-check.md](./phase-7-coverage-check.md)       | pending    |
-| 8     | リファクタリング   | [phase-8-refactoring.md](./phase-8-refactoring.md)             | pending    |
-| 9     | 品質保証           | [phase-9-quality-assurance.md](./phase-9-quality-assurance.md) | pending    |
-| 10    | 最終レビューゲート | [phase-10-final-review.md](./phase-10-final-review.md)         | pending    |
-| 11    | 手動テスト         | [phase-11-manual-test.md](./phase-11-manual-test.md)           | pending    |
-| 12    | ドキュメント更新   | [phase-12-documentation.md](./phase-12-documentation.md)       | pending    |
+| 4     | テスト作成         | [phase-4-test-creation.md](./phase-4-test-creation.md)         | completed  |
+| 5     | 実装               | [phase-5-implementation.md](./phase-5-implementation.md)       | completed  |
+| 6     | テスト拡充         | [phase-6-test-expansion.md](./phase-6-test-expansion.md)       | completed  |
+| 7     | カバレッジ確認     | [phase-7-coverage-check.md](./phase-7-coverage-check.md)       | completed  |
+| 8     | リファクタリング   | [phase-8-refactoring.md](./phase-8-refactoring.md)             | completed  |
+| 9     | 品質保証           | [phase-9-quality-assurance.md](./phase-9-quality-assurance.md) | completed  |
+| 10    | 最終レビューゲート | [phase-10-final-review.md](./phase-10-final-review.md)         | completed  |
+| 11    | 手動テスト         | [phase-11-manual-test.md](./phase-11-manual-test.md)           | completed  |
+| 12    | ドキュメント更新   | [phase-12-documentation.md](./phase-12-documentation.md)       | completed  |
 | 13    | PR作成             | [phase-13-pr-creation.md](./phase-13-pr-creation.md)           | pending    |
 
 ## テストカバレッジ目標
