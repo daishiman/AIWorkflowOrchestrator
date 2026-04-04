@@ -62,7 +62,6 @@
       "esbuild"
     ],
     "overrides": {
-      "restore-cursor>signal-exit": "^3.0.7",
       "jsdom": "25.0.1"
     }
   },
