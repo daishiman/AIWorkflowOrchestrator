@@ -1,5 +1,9 @@
 # 未タスク指示書: task-imp-backlog-dedup-guideline-001
 
+```yaml
+issue_number: 1917
+```
+
 | 項目       | 値                                                                |
 | ---------- | ----------------------------------------------------------------- |
 | タスクID   | task-imp-backlog-dedup-guideline-001                              |
