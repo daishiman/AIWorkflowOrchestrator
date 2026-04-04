@@ -77,6 +77,9 @@ function App(): JSX.Element {
   // Reset currentView to dashboard when not authenticated
   const rawCurrentView = useCurrentView();
   const currentView = normalizeSkillLifecycleView(rawCurrentView);
+  const dockCurrentView = (
+    currentView === "skillManagement" ? "skillCenter" : currentView
+  ) as DockViewType;
   const responsiveMode = useResponsiveMode();
   const setCurrentView = useAppStore((state) => state.setCurrentView);
   const goBack = useAppStore((state) => state.goBack);
@@ -339,6 +342,10 @@ function App(): JSX.Element {
         return (
           <SkillCreateWizard onClose={() => setCurrentView("skillCenter")} />
         );
+      case "skillManagement":
+        return (
+          <SkillManagementPanel onClose={() => setCurrentView("skillCenter")} />
+        );
       case "settings":
         return (
           <SettingsView
@@ -365,6 +372,50 @@ function App(): JSX.Element {
     </div>
   );
 
+  const renderAdvancedSkillCenterView = () => {
+    switch (currentView) {
+      case "skillManagement":
+        return (
+          <SkillManagementPanel onClose={() => setCurrentView("skillCenter")} />
+        );
+      case "skillCreate":
+        return (
+          <SkillCreateWizard onClose={() => setCurrentView("skillCenter")} />
+        );
+      case "skillAnalysis": {
+        const previousView = Array.isArray(viewHistory)
+          ? viewHistory[viewHistory.length - 2]
+          : undefined;
+        const isFromAgent = previousView === "agent";
+        return (
+          <SkillAnalysisView
+            skillName={currentSkillName ?? "demo-skill"}
+            onClose={() => {
+              setCurrentView("skillCenter");
+              setCurrentSkillName(null);
+            }}
+            onNavigateBack={isFromAgent ? () => goBack() : undefined}
+            onNavigateToAgent={
+              isFromAgent ? () => setCurrentView("agent") : undefined
+            }
+          />
+        );
+      }
+      case "skill-editor":
+        return (
+          <SkillEditorView
+            skillName={currentSkillName ?? "demo-skill"}
+            onClose={() => {
+              setCurrentView("skillCenter");
+              setCurrentSkillName(null);
+            }}
+          />
+        );
+      default:
+        return <SkillCenterView />;
+    }
+  };
+
   const useGlobalNavStrip =
     import.meta.env.VITE_USE_GLOBAL_NAV_STRIP !== "false";
   const usesSidebar = responsiveMode !== "mobile";
@@ -372,7 +423,7 @@ function App(): JSX.Element {
   const renderCatchAllElement = () => {
     const viewContent = useGlobalNavStrip ? (
       <AppLayout
-        currentView={currentView as DockViewType}
+        currentView={dockCurrentView}
         onViewChange={(view) => handleViewChange(view as ViewType)}
         onGoBack={handleGoBack}
         canGoBack={canGoBack}
@@ -384,7 +435,7 @@ function App(): JSX.Element {
       <div className="h-screen w-screen overflow-hidden bg-[var(--bg-primary)] text-[var(--text-primary)] flex">
         {usesSidebar ? (
           <AppDock
-            currentView={currentView}
+            currentView={dockCurrentView}
             onViewChange={handleViewChange}
             mode="desktop"
           />
@@ -419,7 +470,7 @@ function App(): JSX.Element {
         {!usesSidebar ? (
           <div className="fixed bottom-0 left-0 right-0">
             <AppDock
-              currentView={currentView}
+              currentView={dockCurrentView}
               onViewChange={handleViewChange}
               mode="mobile"
             />
@@ -548,7 +599,9 @@ function App(): JSX.Element {
           path="/advanced/skill-management-panel"
           element={
             <AuthGuard>
-              {renderStandaloneView(<SkillManagementPanel />)}
+              {renderStandaloneView(
+                <SkillManagementPanel onClose={() => window.history.back()} />,
+              )}
             </AuthGuard>
           }
         />
@@ -568,7 +621,9 @@ function App(): JSX.Element {
         <Route
           path="/advanced/skill-center"
           element={
-            <AuthGuard>{renderStandaloneView(<SkillCenterView />)}</AuthGuard>
+            <AuthGuard>
+              {renderStandaloneView(renderAdvancedSkillCenterView())}
+            </AuthGuard>
           }
         />
         <Route

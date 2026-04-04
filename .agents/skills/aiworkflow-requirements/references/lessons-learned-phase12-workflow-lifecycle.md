@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-04 | 1.9.3      | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 教訓2件を追加（secondary surface の戻り導線は同一 surface の実画像と action trace を分けて扱う / `skillManagement` は `skillCenter` に正規化して dock を維持する） |
 | 2026-04-03 | 1.9.3      | task-ut-p0-02-001-repeat-feedback-memory 教訓2件追加（L-FEEDBACK-MEM-001: feedback memory 構造化 / L-FEEDBACK-MEM-002: module-level 非 export 関数テスト戦略）                                                                                                                             |
 | 2026-04-03 | 1.9.2      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 current facts sync（L-LIFECYCLE-EP-001〜003 / setupCallbackCapture / NON_VISUAL state-only 判定を current facts へ反映）                                                   |
 | 2026-04-02 | 1.9.1      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 教訓3件を追加（L-LIFECYCLE-ERR-001: `handoff` guard の共通 helper 化 / L-LIFECYCLE-ERR-002 stale `phase: 'failed'` 語彙の除去 / L-LIFECYCLE-ERR-003 NON_VISUAL blocker を PASS へ偽装しない） |
@@ -79,6 +80,30 @@
 | 解決策 | `manual-test-result.md` を BLOCKED とし、実行コマンド、esbuild mismatch、代替で確認した current facts を明記した |
 | 標準ルール | NON_VISUAL task でも blocker があれば PASS を偽装せず、コマンド、失敗理由、代替 evidence を `manual-test-result.md` に残す |
 | 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 |
+
+---
+
+## 2026-04-04 TASK-SKILL-CENTER-LIFECYCLE-NAV-001
+
+### 苦戦箇所1: 戻り導線の screenshot は同一 surface のため初期表示と見た目が同じになる
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `SkillManagementPanel` の「スキルセンターへ戻る」後は `SkillCenterView` に戻るため、スクリーンショット単体では初期表示と差が出ない |
+| 再発条件 | return route を別 surface と誤認し、見た目の diff だけで回帰判定してしまう場合 |
+| 解決策 | `TC-11-05` は戻り後の surface を表す代表画像として扱い、戻り操作の成立は action trace と合わせて判定した |
+| 標準ルール | same surface return の検証では、`action trace + screenshot + route` を 1 組で扱う |
+| 関連タスク | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 |
+
+### 苦戦箇所2: secondary surface を追加したら dock の canonical surface を壊しやすい
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `skillManagement` を新しい ViewType として追加すると、dock / sidebar の active state が別 surface として扱われやすい |
+| 再発条件 | secondary surface を top-level surface と同列に登録してしまう場合 |
+| 解決策 | `skillManagement` を `skillCenter` に正規化し、active state を canonical surface へ維持した |
+| 標準ルール | secondary surface は UI の到達経路としては増やしても、canonical surface は 1 つに固定する |
+| 関連タスク | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 |
 
 ---
 
