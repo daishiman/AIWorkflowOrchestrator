@@ -433,11 +433,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L350 |
-| スキルチェーン 型定義（TASK-9D） | L400 |
-| スキルスケジュール 型定義（TASK-9G） | L435 |
-| スキルフォーク 型定義（TASK-9E） | L460 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L508 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L355 |
+| スキルチェーン 型定義（TASK-9D） | L405 |
+| スキルスケジュール 型定義（TASK-9G） | L440 |
+| スキルフォーク 型定義（TASK-9E） | L465 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L513 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -917,10 +917,11 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L245 |
 | Electron IPC API設計 | L281 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L423 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L659 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L690 |
-| AIプロバイダーAPI連携 | L728 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L761 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L662 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L693 |
+| AIプロバイダーAPI連携 | L731 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L764 |
+| Skill Creator External API Support（TASK-SDK-SC-03） | L811 |
 
 ### references/api-ipc-system-details.md
 
@@ -1494,6 +1495,7 @@ node scripts/list-specs.js --topics
 | 実装例: slideSettingsAPI | L427 |
 | IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L476 |
 | ApprovalGate セキュリティ契約（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L491 |
+| Skill Creator External API Credential 秘匿化（TASK-SDK-SC-03） | L546 |
 
 ### references/security-electron-ipc-details.md
 
@@ -2117,14 +2119,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
 | RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | L100 |
-| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L170 |
-| SkillScheduler / ScheduleStore（TASK-9G） | L229 |
-| DefaultSafetyGate サービス（UT-06-003） | L258 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L309 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L334 |
-| キャッシュ機構 | L362 |
-| 永続化 | L368 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L374 |
+| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L203 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L262 |
+| DefaultSafetyGate サービス（UT-06-003） | L291 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L342 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L367 |
+| キャッシュ機構 | L395 |
+| 永続化 | L401 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L407 |
 
 ### references/arch-electron-services-details.md
 
@@ -2686,6 +2688,37 @@ node scripts/list-specs.js --topics
 | TASK-RT-06 教訓（2026-03-29） | L902 |
 | UT-IMP-SDK-06 教訓（2026-04-01） | L924 |
 | TASK-P0-04 教訓（2026-03-30） | L955 |
+||||||| Stash base
+| 分割ファイル一覧 | L76 |
+| クイックリファレンス: カテゴリ別検索ガイド | L95 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L284 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L616 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L650 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L733 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L749 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L773 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L823 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L848 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L879 |
+| TASK-RT-06 教訓（2026-03-29） | L910 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L932 |
+| TASK-P0-04 教訓（2026-03-30） | L963 |
+
+| 分割ファイル一覧 | L78 |
+| クイックリファレンス: カテゴリ別検索ガイド | L97 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L286 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L618 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L652 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L735 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L751 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L775 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L825 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L850 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L881 |
+| TASK-RT-06 教訓（2026-03-29） | L912 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L934 |
+| TASK-P0-04 教訓（2026-03-30） | L965 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L986 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 

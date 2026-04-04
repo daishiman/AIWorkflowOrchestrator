@@ -520,6 +520,42 @@
 
 ---
 
+### タスク: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 execute/improve adapter guard（2026-04-04）
+
+| 項目       | 値                                                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001                                                       |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                                        |
+| タイプ     | runtime bug-fix / adapter guard / error-propagation                                                   |
+| 優先度     | 高                                                                                                    |
+| 完了日     | 2026-04-04                                                                                            |
+| 対象       | `RuntimeSkillCreatorFacade.execute()` / `RuntimeSkillCreatorFacade.improve()` / structured error flow |
+| 成果物     | `docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/`                                      |
+
+#### 実施内容
+
+- `execute()` / `improve()` の先頭に `_llmAdapterStatus` guard を追加し、`failed` / `initializing` で早期 return するようにした
+- `packages/shared/src/types/skillCreator.ts` に `RuntimeSkillCreatorExecuteErrorResponse` を追加し、`RuntimeSkillCreatorExecuteResponse` union を拡張した
+- `SkillCreatorWorkflowEngine.recordExecuteAdapterFailure()` を追加し、execute の adapter failure を review-ready snapshot として保存するようにした
+- `SkillCreatorWorkflowEngine.recordImproveFailure()` を追加し、improve failure を `currentPhase: improve` のまま `verifyResult` に反映するようにした
+- `SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx` で structured execute error を message へ正規化し、SkillCreateWizard は `executePlan` ack 後に `getWorkflowState` を再読込して handoff / failure snapshot を表示するようにした
+- `outputs/phase-11/*` と `outputs/phase-12/*` を current facts に差し替え、NON_VISUAL evidence と Phase 12 docs を同 wave で閉じた
+- `TASK-UT-RT-01-PHASE11-NONVISUAL-WALKTHROUGH-EVIDENCE-001` を resolved carry-over として backlog から completed へ移管し、Phase 10 の MINOR follow-up 2件を backlog へ formalize した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/SkillCreateWizard.tsx src/renderer/components/skill/SkillLifecyclePanel.tsx`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.notification.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx`: PASS（4 files / 69 tests）
+
+#### Phase 12 未タスク
+
+- `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001`
+- `TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001`
+
+---
+
 ### タスク: TASK-RT-02 api-key-ui-adapter-status（2026-03-29）
 
 | 項目       | 値                                                            |
@@ -2347,3 +2383,43 @@
 #### Phase 12 未タスク
 
 なし（0件）
+
+---
+
+### タスク: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 RuntimeSkillCreatorFacade adapter guard（2026-04-04）
+
+| 項目       | 値                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001                                                                              |
+| ステータス | **完了**                                                                                                                     |
+| タイプ     | implementation                                                                                                               |
+| 優先度     | 高                                                                                                                           |
+| 完了日     | 2026-04-04                                                                                                                   |
+
+#### 実施内容
+
+- `execute()` / `improve()` 先頭に LLMAdapter ステータス3段階チェック（initializing / ready / failed）を追加
+- `RuntimeSkillCreatorExecuteErrorResponse` 型を `packages/shared` に新設し `RuntimeSkillCreatorExecuteResponse` union を拡張
+- `SkillCreatorWorkflowEngine.recordImproveFailure()` メソッドを追加
+- `SkillCreateWizard` / `SkillLifecyclePanel` の structured error 表示対応
+
+#### 検証
+
+- 69 テスト PASS
+
+---
+
+### タスク: UT-SDK-L34-UI-DISPLAY-001 SkillLifecyclePanel Layer別グルーピング（2026-04-04）
+
+| 項目       | 値                                                |
+| ---------- | ------------------------------------------------- |
+| タスクID   | UT-SDK-L34-UI-DISPLAY-001                         |
+| ステータス | **完了**                                          |
+| タイプ     | implementation                                    |
+| 優先度     | 中                                                |
+| 完了日     | 2026-04-04                                        |
+
+#### 実施内容
+
+- `SkillLifecyclePanel.tsx` で Layer3/4 チェック結果をグループ別アコーディオン・severity アイコン付き表示を実装
+- Phase 3 レビュー完了

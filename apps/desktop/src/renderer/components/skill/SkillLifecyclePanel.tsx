@@ -11,6 +11,7 @@ import type {
   ApplyImprovementResult,
   HandoffGuidance,
   SkillCreatorExecutePlanAck,
+  RuntimeSkillCreatorExecuteErrorResponse,
   RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorExecuteResult,
   RuntimeSkillCreatorImproveErrorResponse,
@@ -176,6 +177,19 @@ function isExecuteTerminalHandoff(
   { type: "terminal_handoff" }
 > {
   return "type" in response && response.type === "terminal_handoff";
+}
+
+function isExecuteErrorResponse(
+  response: RuntimeSkillCreatorExecuteResponse,
+): response is RuntimeSkillCreatorExecuteErrorResponse {
+  return (
+    "success" in response &&
+    response.success === false &&
+    typeof response.error === "object" &&
+    response.error !== null &&
+    "message" in response.error &&
+    typeof response.error.message === "string"
+  );
 }
 
 function isExecutePlanAck(
@@ -1296,6 +1310,12 @@ export function SkillLifecyclePanel({
           }
         }
         await loadVerifyDetail(planId);
+        return;
+      }
+      if (isExecuteErrorResponse(executeResponse)) {
+        processedWorkflowOutcomePlanIdRef.current = planId;
+        await loadVerifyDetail(planId);
+        setGenerationError(executeResponse.error.message);
         return;
       }
       // TASK-RT-03: raw execute detail を local state に保存

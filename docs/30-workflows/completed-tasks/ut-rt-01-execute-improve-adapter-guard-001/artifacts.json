@@ -1,0 +1,128 @@
+{
+  "taskId": "TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001",
+  "featureName": "ut-rt-01-execute-improve-adapter-guard-001",
+  "status": "completed",
+  "createdAt": "2026-04-04",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "file": "phase-01-requirements.md"
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "file": "phase-02-design.md"
+    },
+    {
+      "phase": 3,
+      "name": "設計レビュー",
+      "status": "completed",
+      "file": "phase-03-design-review.md"
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "file": "phase-04-test-creation.md"
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "file": "phase-05-implementation.md"
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "file": "phase-06-test-expansion.md"
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "file": "phase-07-coverage.md"
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "file": "phase-08-refactoring.md"
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "file": "phase-09-quality.md"
+    },
+    {
+      "phase": 10,
+      "name": "最終レビュー",
+      "status": "completed",
+      "file": "phase-10-final-review.md"
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "file": "phase-11-manual-test.md"
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "file": "phase-12-documentation.md"
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "file": "phase-13-pr.md"
+    }
+  ],
+  "modifiedFiles": [
+    "docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/index.md",
+    "docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/phase-11-manual-test.md",
+    "docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/phase-12-documentation.md",
+    "docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/artifacts.json",
+    "packages/shared/src/types/skillCreator.ts",
+    "packages/shared/src/types/index.ts",
+    "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+    "apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.notification.test.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.persist-integration.test.ts",
+    "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts",
+    "apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx",
+    "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+    "packages/shared/src/types/__tests__/skillCreator.contract-parity.test.ts",
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/manual-test-report.md",
+    "outputs/phase-11/discovered-issues.md",
+    "outputs/phase-11/ui-sanity-visual-review.md",
+    "outputs/phase-11/phase11-capture-metadata.json",
+    "outputs/phase-11/screenshot-plan.json",
+    "outputs/phase-12/implementation-guide.md",
+    "outputs/phase-12/system-spec-update-summary.md",
+    "outputs/phase-12/documentation-changelog.md",
+    "outputs/phase-12/unassigned-task-detection.md",
+    "outputs/phase-12/skill-feedback-report.md",
+    "outputs/phase-12/phase12-task-spec-compliance-check.md",
+    "outputs/artifacts.json",
+    ".claude/skills/aiworkflow-requirements/LOGS.md",
+    ".claude/skills/task-specification-creator/LOGS.md",
+    ".claude/skills/aiworkflow-requirements/references/task-workflow-completed.md",
+    ".claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md",
+    ".claude/skills/aiworkflow-requirements/references/task-workflow.md",
+    ".claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md",
+    ".claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md",
+    ".claude/skills/aiworkflow-requirements/references/arch-electron-services-details-part2.md"
+  ],
+  "githubIssue": 1703,
+  "parentTask": "TASK-RT-01"
+}

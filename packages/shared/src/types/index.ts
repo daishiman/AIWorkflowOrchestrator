@@ -183,6 +183,7 @@ export type {
   RuntimeSkillCreatorImproveResult,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveErrorResponse,
+  RuntimeSkillCreatorExecuteErrorResponse,
   RuntimeSkillCreatorDegradedReason,
   ApplyImprovementResult,
   ApiKeyStatus,

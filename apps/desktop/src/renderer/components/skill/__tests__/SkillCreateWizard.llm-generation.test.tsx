@@ -22,6 +22,7 @@ import {
   screen,
 } from "@testing-library/react";
 import { SkillCreateWizard } from "../SkillCreateWizard";
+import type { SkillCreatorWorkflowUiSnapshot } from "@repo/shared/types";
 
 // --- mock 関数定義（vi.mock 巻き上げ前に宣言）---
 const mockCreateSkill = vi.fn();
@@ -31,6 +32,30 @@ const mockSetGenerationProgress = vi.fn();
 const mockSetCurrentPlanId = vi.fn();
 const mockSetCurrentPlanResult = vi.fn();
 const mockClearGenerationState = vi.fn();
+const mockGetWorkflowState = vi.fn();
+
+function createWorkflowSnapshot(
+  overrides: Partial<SkillCreatorWorkflowUiSnapshot> = {},
+): SkillCreatorWorkflowUiSnapshot {
+  return {
+    planId: "plan-001",
+    currentPhase: "review",
+    awaitingUserInput: null,
+    verifyResult: {
+      status: "pass",
+      nextAction: "handoff",
+    },
+    resumeTokenEnvelope: {
+      version: "task-sdk-02-v1",
+      planId: "plan-001",
+      currentPhase: "review",
+      artifactCount: 1,
+      updatedAt: "2026-04-04T00:00:00.000Z",
+    },
+    handoffBundle: null,
+    ...overrides,
+  };
+}
 
 type MockStoreState = {
   isGenerating: boolean;
@@ -112,12 +137,17 @@ describe("SkillCreateWizard LLM生成フロー", () => {
     });
     mockExecutePlan.mockResolvedValue({
       success: true,
-      data: { executeId: "exec-001", skillName: "test-skill", success: true },
+      data: { accepted: true, planId: "plan-001" },
+    });
+    mockGetWorkflowState.mockResolvedValue({
+      success: true,
+      data: createWorkflowSnapshot(),
     });
     (window as Window & { electronAPI?: unknown }).electronAPI = {
       skillCreator: {
         planSkill: mockPlanSkill,
         executePlan: mockExecutePlan,
+        getWorkflowState: mockGetWorkflowState,
       },
     };
   });
@@ -279,6 +309,58 @@ describe("SkillCreateWizard LLM生成フロー", () => {
       });
 
       expect(screen.getByText("スキルが作成されました")).toBeInTheDocument();
+    });
+
+    it("W-6: executePlan ack の後に failure snapshot が返ると生成エラーを表示する", async () => {
+      mockStoreState.currentPlanId = "plan-001";
+      mockStoreState.currentPlanResult = {
+        type: "integrated_api",
+        planId: "plan-001",
+        estimatedSteps: 3,
+      };
+      mockGetWorkflowState.mockResolvedValueOnce({
+        success: true,
+        data: createWorkflowSnapshot({
+          verifyResult: {
+            status: "fail",
+            reason: "verification_review",
+            message: "LLMAdapter の初期化中です。しばらくお待ちください",
+            nextAction: "review",
+            updatedAt: "2026-04-04T00:00:00.000Z",
+          },
+        }),
+      });
+
+      render(<SkillCreateWizard onClose={vi.fn()} />);
+
+      fireEvent.click(screen.getByRole("radio", { name: /LLM/ }));
+      fireEvent.change(screen.getByRole("textbox"), {
+        target: { value: "テスト" },
+      });
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+
+      await act(async () => {
+        await Promise.resolve();
+      });
+
+      await vi.waitFor(() => {
+        expect(
+          screen.getByRole("button", { name: "実行する" }),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+      });
+
+      await vi.waitFor(() => {
+        expect(mockSetGenerationError).toHaveBeenLastCalledWith(
+          "LLMAdapter の初期化中です。しばらくお待ちください",
+        );
+      });
+      expect(
+        screen.queryByText("スキルが作成されました"),
+      ).not.toBeInTheDocument();
     });
   });
 
