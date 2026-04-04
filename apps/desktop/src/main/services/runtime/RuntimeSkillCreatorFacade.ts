@@ -823,9 +823,17 @@ export class RuntimeSkillCreatorFacade {
 
     // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
     if (!this.llmAdapter) {
+      governanceHooks.onSessionEnd({
+        sessionId: planId,
+        summary: "Plan failed: llm_adapter_unavailable",
+      });
       return buildDegradedError("llm_adapter_unavailable");
     }
     if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
+      governanceHooks.onSessionEnd({
+        sessionId: planId,
+        summary: "Plan failed: resource_loader_unavailable",
+      });
       return buildDegradedError("resource_loader_unavailable");
     }
 
@@ -1415,15 +1423,27 @@ export class RuntimeSkillCreatorFacade {
 
     // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
     if (!this.llmAdapter) {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: llm_adapter_unavailable",
+      });
       return buildDegradedError("llm_adapter_unavailable");
     }
     if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: resource_loader_unavailable",
+      });
       return buildDegradedError("resource_loader_unavailable");
     }
 
     try {
       // SKILL.md 読み込み
       if (!this.skillFileManager) {
+        governanceHooks.onSessionEnd({
+          sessionId: improveId,
+          summary: "Improve failed: skillFileManager is not available",
+        });
         return {
           success: false,
           error: {
@@ -1484,6 +1504,10 @@ export class RuntimeSkillCreatorFacade {
       // レスポンスパース
       const parseResult = parseImproveResponse(response.content);
       if (!parseResult.success) {
+        governanceHooks.onSessionEnd({
+          sessionId: improveId,
+          summary: `Improve failed: PARSE_ERROR ${parseResult.error}`,
+        });
         return {
           success: false,
           error: { code: "PARSE_ERROR", message: parseResult.error },
