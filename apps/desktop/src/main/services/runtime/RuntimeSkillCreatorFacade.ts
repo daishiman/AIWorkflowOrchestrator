@@ -47,6 +47,7 @@ import type {
   RuntimeSkillCreatorVerifyAndImproveResult,
   RuntimeSkillCreatorVerifyCheck,
   SkillCreatorSessionListItem,
+  RuntimeSkillCreatorExecuteErrorResponse,
 } from "@repo/shared/types";
 import type { ImproveFeedbackHistory } from "@repo/shared/types";
 import {
@@ -432,6 +433,7 @@ export class RuntimeSkillCreatorFacade {
         if ("success" in improveResult && !improveResult.success) {
           const errorCode = improveResult.error.code;
           const errorMessage = improveResult.error.message;
+          this.notificationService?.notify("スキル作成失敗", errorMessage);
           const snapshot = this.recordImproveFailureSnapshot(
             planId,
             `improve が ${errorCode} で失敗しました: ${errorMessage}`,
@@ -984,18 +986,29 @@ export class RuntimeSkillCreatorFacade {
         args.apiKey ?? null,
       );
 
-      const phase =
+      const isStructuredError =
         typeof executeResult === "object" &&
         executeResult !== null &&
         "success" in executeResult &&
-        executeResult.success === false
-          ? "error"
-          : "complete";
+        executeResult.success === false;
+      const phase = isStructuredError ? "error" : "complete";
       this.workflowEngine.triggerPhaseTransition(
         planId,
         phase,
         phase === "complete" ? 100 : 0,
       );
+      if (isStructuredError) {
+        const errorResponse =
+          executeResult as RuntimeSkillCreatorExecuteErrorResponse;
+        const snapshot = this.workflowEngine.getWorkflowState(planId);
+        if (!snapshot) {
+          this.onWorkflowStateSnapshot?.(
+            planId,
+            null,
+            errorResponse.error.message,
+          );
+        }
+      }
     } catch (error) {
       this.workflowEngine.triggerPhaseTransition(planId, "error", 0);
       const errorMessage =

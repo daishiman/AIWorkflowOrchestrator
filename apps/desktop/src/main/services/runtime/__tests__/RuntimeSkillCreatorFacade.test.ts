@@ -1190,6 +1190,84 @@ describe("RuntimeSkillCreatorFacade", () => {
       );
     });
 
+    it("improve() が structured error を返した場合に notificationService.notify() が呼ばれる (TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001)", async () => {
+      const notifySpy = vi.fn();
+      const mockWorkflowEngine = {
+        recordVerifyPass: vi.fn(),
+        recordImproveAttempt: vi.fn().mockReturnValue({
+          currentPhase: "improve",
+          verifyResult: { status: "fail", improveAttemptCount: 1 },
+        }),
+        recordImproveFailure: vi.fn().mockReturnValue({
+          planId: "plan-001",
+          currentPhase: "improve",
+          awaitingUserInput: null,
+          verifyResult: {
+            status: "fail",
+            nextAction: "improve",
+            message:
+              "improve が LLM_ADAPTER_NOT_READY で失敗しました: API key not configured",
+          },
+          resumeTokenEnvelope: {
+            version: "task-sdk-02-v1" as const,
+            planId: "plan-001",
+            currentPhase: "improve",
+            artifactCount: 3,
+            updatedAt: "2026-04-04T00:00:00.000Z",
+          },
+        }),
+        getWorkflowState: vi.fn(),
+        getImproveAttemptCount: vi.fn().mockReturnValue(0),
+      };
+      const failChecks = [
+        {
+          id: "L1-001",
+          layer: "layer1" as const,
+          severity: "error" as const,
+          summary: "SKILL.md missing",
+        },
+      ];
+      const mockVerificationEngine = {
+        verify: vi.fn().mockResolvedValue(failChecks),
+      };
+      const facadeWithNotify = new RuntimeSkillCreatorFacade({
+        skillExecutor: { execute: vi.fn() } as unknown as SkillExecutor,
+        workflowEngine: mockWorkflowEngine as never,
+        verificationEngine: mockVerificationEngine as never,
+        notificationService: { notify: notifySpy },
+      });
+      // LLM adapter は ready（improve() まで到達させる）
+      facadeWithNotify.setLLMAdapter({
+        providerId: "anthropic" as ILLMAdapter["providerId"],
+        sendChat: vi.fn(),
+        streamChat: vi.fn(),
+        checkHealth: vi.fn(),
+      } as unknown as ILLMAdapter);
+      // improve() が structured error を返すようにモック
+      vi.spyOn(facadeWithNotify as never, "improve").mockResolvedValue({
+        success: false,
+        error: {
+          code: "LLM_ADAPTER_NOT_READY",
+          message: "API key not configured",
+        },
+      } as never);
+
+      const result = await facadeWithNotify.verifyAndImproveLoop(
+        "plan-001",
+        "/tmp/skill",
+        "test-skill",
+        "api-key",
+      );
+
+      expect(result.finalStatus).toBe("error");
+      expect(result.errorCode).toBe("LLM_ADAPTER_NOT_READY");
+      expect(result.errorMessage).toBe("API key not configured");
+      expect(notifySpy).toHaveBeenCalledWith(
+        "スキル作成失敗",
+        "API key not configured",
+      );
+    });
+
     it("improve 結果の suggestions が空でループ停止", async () => {
       const mockWorkflowEngine = {
         recordVerifyPass: vi.fn(),

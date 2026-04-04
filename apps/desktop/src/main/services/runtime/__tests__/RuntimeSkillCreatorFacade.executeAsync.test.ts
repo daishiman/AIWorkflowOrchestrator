@@ -5,6 +5,8 @@
  * TC-T4-01: executeAsync の成功時に snapshot callback を通知する
  * TC-T4-02: executeAsync の失敗時に throw せず failure callback を通知する
  * TC-T4-03: adapter guard で execute が失敗した場合も snapshot callback を通知する
+ * TC-T4-04: execute() が structured error を返した場合に error.message を snapshot callback へ伝搬する
+ *           (TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001)
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -164,6 +166,47 @@ describe("RuntimeSkillCreatorFacade.executeAsync", () => {
           reason: "verification_review",
           message: "Connection refused",
           nextAction: "review",
+        }),
+      }),
+    );
+  });
+
+  it("TC-T4-04: execute() が structured error を返した場合に error.message を snapshot callback へ伝搬する", async () => {
+    const { executeMock, facade, workflowEngine } = createFacade();
+    const phaseSpy = vi.spyOn(workflowEngine, "triggerPhaseTransition");
+    const snapshotSpy = vi.fn();
+    facade.onWorkflowStateSnapshot = snapshotSpy;
+
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    executeMock.mockResolvedValue({
+      success: false,
+      error: {
+        code: "LLM_ADAPTER_NOT_READY",
+        message: "API key not configured",
+      },
+    });
+
+    await facade.executeAsync("plan-004", {
+      planId: "plan-004",
+      skillSpec: "skill spec",
+      authMode: "api-key",
+      apiKey: "sk-test",
+    });
+
+    expect(phaseSpy).toHaveBeenNthCalledWith(1, "plan-004", "executing", 0);
+    expect(phaseSpy).toHaveBeenNthCalledWith(2, "plan-004", "error", 0);
+    // ワークフローエンジンがスナップショットを生成するため、snapshot callback は
+    // (planId, snapshot) 形式で呼ばれる。error.message は verifyResult.message に含まれる。
+    expect(snapshotSpy).toHaveBeenCalledWith(
+      "plan-004",
+      expect.objectContaining({
+        planId: "plan-004",
+        verifyResult: expect.objectContaining({
+          message: "API key not configured",
         }),
       }),
     );
