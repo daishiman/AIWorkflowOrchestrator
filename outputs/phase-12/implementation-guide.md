@@ -344,7 +344,9 @@ structured error の `code` は `llm_adapter_unavailable` なので、ユーザ�
 
 Phase 10 最終レビューで MINOR 指摘として formalize された未タスクの Issue 番号を記録する。
 
-| タスクID                                                       | タイトル                                                     | Issue番号 |
-| -------------------------------------------------------------- | ------------------------------------------------------------ | --------- |
-| TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 | `verifyAndImproveLoop()` での improve adapter error 通知整理 | #1896     |
-| TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001         | `executeAsync()` での error message 形式統一                 | #1897     |
+| タスクID                                                       | タイトル                                                       | Issue番号 |
+| -------------------------------------------------------------- | -------------------------------------------------------------- | --------- |
+| TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 | `verifyAndImproveLoop()` での improve adapter error 通知整理   | #1896     |
+| TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001         | `executeAsync()` での error message 形式統一                   | #1897     |
+| UT-RT-06-SKILLEXECUTOR-DEPRECATED-ALIAS-MIGRATION-001          | SkillExecutor `@deprecated` 型エイリアス削除マイグレーション   | #1920     |
+| UT-RT-06-SKILL-STREAM-IPC-INTERNAL-TYPE-ALIGNMENT-001          | SkillStreamMessage/SkillExecutorStreamMessage 変換パス型安全化 | #1921     |

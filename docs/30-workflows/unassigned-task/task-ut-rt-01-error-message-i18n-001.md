@@ -1,5 +1,9 @@
 # TASK-UT-RT-01-ERROR-MESSAGE-I18N-001
 
+```yaml
+issue_number: 1893
+```
+
 ## 1. メタ情報
 
 | 項目     | 値                                   |

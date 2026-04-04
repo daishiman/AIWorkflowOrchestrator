@@ -17,6 +17,8 @@ import type {
   Skill,
   SkillPermissionResponse,
   IPermissionStore,
+  SkillExecutorStreamMessage,
+  SkillExecutorStreamMessageType,
 } from "@repo/shared";
 import { isDangerousCommand, isProtectedPath } from "@repo/shared/constants";
 import { SKILL_CHANNELS } from "@repo/shared/src/ipc/channels";
@@ -100,23 +102,17 @@ export interface ExecutionInfo {
   completedAt?: number;
 }
 
-/** ストリームメッセージタイプ */
-export type SkillStreamMessageType =
-  | "text"
-  | "tool_use"
-  | "error"
-  | "complete"
-  | "retry";
+/**
+ * ストリームメッセージタイプ（@repo/shared の SkillExecutorStreamMessageType に集約済み）
+ * @deprecated 直接 @repo/shared の SkillExecutorStreamMessageType を使用してください
+ */
+export type SkillStreamMessageType = SkillExecutorStreamMessageType;
 
-/** スキルストリームメッセージ */
-export interface SkillStreamMessage {
-  executionId: string;
-  id: string;
-  type: SkillStreamMessageType;
-  content: string;
-  timestamp: number;
-  isComplete: boolean;
-}
+/**
+ * スキルストリームメッセージ（@repo/shared の SkillExecutorStreamMessage に集約済み）
+ * @deprecated 直接 @repo/shared の SkillExecutorStreamMessage を使用してください
+ */
+export type SkillStreamMessage = SkillExecutorStreamMessage;
 
 /** スキル実行エラーコード */
 export type SkillExecutionErrorCode =

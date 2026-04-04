@@ -1,0 +1,60 @@
+{
+  "taskId": "TASK-RT-01",
+  "generatedAt": "2026-04-04T13:23:04.725Z",
+  "captureMethod": "current_build_vite_playwright",
+  "harnessPath": "/phase11-task-rt-04-skill-authkey.html",
+  "viewport": {
+    "width": 1600,
+    "height": 1200
+  },
+  "cases": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-11-01.png",
+      "theme": "light",
+      "status": "ready",
+      "failureReason": null,
+      "output": "outputs/phase-11/screenshots/TC-11-01.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-11-02.png",
+      "theme": "light",
+      "status": "failed",
+      "failureReason": "ANTHROPIC_API_KEY が設定されていません",
+      "output": "outputs/phase-11/screenshots/TC-11-02.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-11-03.png",
+      "theme": "light",
+      "status": "failed",
+      "failureReason": "network timeout",
+      "output": "outputs/phase-11/screenshots/TC-11-03.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-11-04.png",
+      "theme": "light",
+      "status": "failed",
+      "failureReason": "ANTHROPIC_API_KEY が設定されていません",
+      "output": "outputs/phase-11/screenshots/TC-11-04.png"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-11-05.png",
+      "theme": "light",
+      "status": "failed",
+      "failureReason": "ANTHROPIC_API_KEY が設定されていません",
+      "output": "outputs/phase-11/screenshots/TC-11-05.png"
+    },
+    {
+      "tcId": "TC-11-06",
+      "file": "TC-11-06.png",
+      "theme": "dark",
+      "status": "failed",
+      "failureReason": "ANTHROPIC_API_KEY が設定されていません",
+      "output": "outputs/phase-11/screenshots/TC-11-06.png"
+    }
+  ]
+}
