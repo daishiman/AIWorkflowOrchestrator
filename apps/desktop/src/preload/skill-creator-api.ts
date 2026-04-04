@@ -30,6 +30,7 @@ import type {
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
+  LLMAdapterStatusPayload,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 
@@ -123,6 +124,11 @@ export interface SkillCreatorAPI {
   ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
 
   /**
+   * Runtime adapter status: 現在の LLMAdapter 状態を取得する
+   */
+  getAdapterStatus: () => Promise<IpcResult<LLMAdapterStatusPayload>>;
+
+  /**
    * workflow question に対する user input を送信する
    */
   submitUserInput: (
@@ -141,6 +147,13 @@ export interface SkillCreatorAPI {
    */
   onWorkflowStateChanged: (
     callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
+  ) => () => void;
+
+  /**
+   * Runtime adapter status change event を購読する
+   */
+  onAdapterStatusChanged: (
+    callback: (payload: LLMAdapterStatusPayload) => void,
   ) => () => void;
 
   /**
@@ -436,6 +449,9 @@ export const skillCreatorAPI: SkillCreatorAPI = {
   ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE, { planId }),
 
+  getAdapterStatus: (): Promise<IpcResult<LLMAdapterStatusPayload>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS),
+
   submitUserInput: (
     submission: SkillCreatorUserInputSubmission,
   ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
@@ -451,6 +467,14 @@ export const skillCreatorAPI: SkillCreatorAPI = {
   ): (() => void) =>
     safeOn<SkillCreatorWorkflowUiSnapshot>(
       IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      callback,
+    ),
+
+  onAdapterStatusChanged: (
+    callback: (payload: LLMAdapterStatusPayload) => void,
+  ): (() => void) =>
+    safeOn<LLMAdapterStatusPayload>(
+      IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
       callback,
     ),
 

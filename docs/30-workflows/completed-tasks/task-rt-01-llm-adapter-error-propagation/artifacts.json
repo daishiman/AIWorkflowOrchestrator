@@ -1,0 +1,182 @@
+{
+  "taskId": "TASK-RT-01",
+  "taskName": "LLMAdapter 初期化エラーの UI 通知・状態公開",
+  "featureName": "task-rt-01-llm-adapter-error-propagation",
+  "createdAt": "2026-04-04T00:00:00Z",
+  "updatedAt": "2026-04-04T13:24:39Z",
+  "completedAt": "2026-04-04T13:24:39Z",
+  "status": "phase12_completed",
+  "githubIssue": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/1879",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specPath": "phase-01-requirements.md",
+      "outputs": [
+        "outputs/phase-1/requirements-summary.md",
+        "outputs/phase-1/current-state-inventory.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specPath": "phase-02-design.md",
+      "outputs": [
+        "outputs/phase-2/ipc-4layer-design.md",
+        "outputs/phase-2/type-compatibility-draft.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "specPath": "phase-03-design-review.md",
+      "outputs": ["outputs/phase-3/gate-decision.md"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "specPath": "phase-04-test-creation.md",
+      "outputs": ["outputs/phase-4/test-red-confirmation.md"]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "specPath": "phase-05-implementation.md",
+      "outputs": ["outputs/phase-5/test-green-confirmation.md"]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "specPath": "phase-06-test-expansion.md",
+      "outputs": ["outputs/phase-6/test-expansion-results.md"]
+    },
+    {
+      "phase": 7,
+      "name": "テストカバレッジ確認",
+      "status": "completed",
+      "specPath": "phase-07-coverage.md",
+      "outputs": [
+        "outputs/phase-7/coverage-report.md",
+        "outputs/phase-7/coverage-gap-plan.md"
+      ]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "specPath": "phase-08-refactoring.md",
+      "outputs": ["outputs/phase-8/refactoring-report.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "specPath": "phase-09-quality.md",
+      "outputs": [
+        "outputs/phase-9/quality-check-report.md",
+        "outputs/phase-9/ac-verification.md"
+      ]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "specPath": "phase-10-final-review.md",
+      "outputs": ["outputs/phase-10/gate-decision.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト検証",
+      "status": "completed",
+      "specPath": "phase-11-manual-test.md",
+      "outputs": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-report.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/ui-sanity-visual-review.md",
+        "outputs/phase-11/phase11-capture-metadata.json",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/screenshot-coverage.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/screenshots/"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specPath": "phase-12-documentation.md",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "specPath": "phase-13-pr-creation.md",
+      "outputs": []
+    }
+  ],
+  "qualityMetrics": {
+    "lineCoverage": null,
+    "branchCoverage": null,
+    "functionCoverage": null,
+    "testsTotal": 36,
+    "testsPassed": 36,
+    "coverageTargets": {
+      "line": 80,
+      "branch": 80,
+      "function": 80
+    },
+    "typeSafety": {
+      "noAnyIncrease": true,
+      "noUnknownIncrease": true
+    }
+  },
+  "dependencies": {
+    "prerequisite": ["TASK-IMP-SKILL-AGENT-RUNTIME-ROUTING-001"],
+    "blocking": [],
+    "blockedBy": [],
+    "related": ["TASK-RT-04", "TASK-RT-02"]
+  },
+  "scope": {
+    "inScope": [
+      "packages/shared/src/types/skillCreator.ts",
+      "packages/shared/src/types/index.ts",
+      "apps/desktop/src/preload/channels.ts",
+      "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+      "apps/desktop/src/main/ipc/creatorHandlers.ts",
+      "apps/desktop/src/preload/skill-creator-api.ts",
+      "apps/desktop/src/renderer/components/skill/LLMAdapterErrorBanner.tsx",
+      "apps/desktop/src/renderer/components/skill/hooks/useLLMAdapterStatus.ts",
+      "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx"
+    ],
+    "outOfScope": [
+      "APIキー設定 UI (TASK-RT-04 の責務)",
+      "SkillCreateWizard への統合",
+      "execute()/improve() のアダプタガード",
+      "LLMAdapterFactory の retry logic"
+    ]
+  },
+  "newFiles": [
+    "apps/desktop/src/renderer/components/skill/LLMAdapterErrorBanner.tsx",
+    "apps/desktop/src/renderer/components/skill/hooks/useLLMAdapterStatus.ts",
+    "apps/desktop/src/main/ipc/__tests__/creatorHandlers.adapterStatus.test.ts",
+    "apps/desktop/src/renderer/components/skill/__tests__/LLMAdapterErrorBanner.test.tsx",
+    "apps/desktop/src/renderer/components/skill/hooks/__tests__/useLLMAdapterStatus.test.ts",
+    "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.adapter-status.test.tsx"
+  ]
+}

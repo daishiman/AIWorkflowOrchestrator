@@ -31,6 +31,8 @@ import type {
 import type { PlanResult } from "../../store/slices/agentSlice";
 import { ApiKeySettingsPanel } from "./ApiKeySettingsPanel";
 import { ConversationalInterview } from "./ConversationalInterview";
+import { LLMAdapterErrorBanner } from "./LLMAdapterErrorBanner";
+import { useLLMAdapterStatus } from "./hooks/useLLMAdapterStatus";
 import {
   useBeginSkillReview,
   useClearHandoffGuidance,
@@ -625,6 +627,7 @@ export function SkillLifecyclePanel({
   const createSkill = useCreateSkill();
   const executeSkill = useExecuteSkill();
   const fetchSkills = useFetchSkills();
+  const llmAdapterStatus = useLLMAdapterStatus();
   const reExecuteAfterImprovement = useReExecuteAfterImprovement();
   const resetSkillExecutionCycle = useResetSkillExecutionCycle();
   const selectSkillByName = useSelectSkillByName();
@@ -1674,6 +1677,14 @@ export function SkillLifecyclePanel({
               一覧へ戻る
             </button>
           </div>
+        </div>
+
+        <div className="mt-4">
+          <LLMAdapterErrorBanner
+            status={llmAdapterStatus.status}
+            failureReason={llmAdapterStatus.failureReason}
+            onOpenSettings={onOpenWizard}
+          />
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-4">

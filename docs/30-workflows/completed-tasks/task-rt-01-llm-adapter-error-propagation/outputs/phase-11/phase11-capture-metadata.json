@@ -1,0 +1,76 @@
+{
+  "taskId": "TASK-RT-01",
+  "capturedAt": "2026-04-04T13:23:04.725Z",
+  "generatedAt": "2026-04-04T13:23:04.725Z",
+  "captureMethod": "current_build_vite_playwright",
+  "harnessPath": "/phase11-task-rt-04-skill-authkey.html",
+  "viewport": {
+    "width": 1600,
+    "height": 1200
+  },
+  "capturedWith": {
+    "node": "v22.21.1",
+    "pnpm": "10.9.0",
+    "browser": "Chromium"
+  },
+  "os": "macOS 25.3.0",
+  "appMode": "dev",
+  "theme": "light + dark",
+  "notes": "SkillLifecyclePanel の LLMAdapterErrorBanner 統合確認。API key 未設定／設定済みの両状態を current build から再撮影し、placeholder PNG を実画像に差し替えた。",
+  "cases": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-11-01.png",
+      "theme": "light",
+      "status": "ready",
+      "failureReason": null,
+      "note": "ready 状態ではバナーが非表示",
+      "output": "outputs/phase-11/screenshots/TC-11-01.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-11-02.png",
+      "theme": "light",
+      "status": "failed",
+      "failureReason": "ANTHROPIC_API_KEY が設定されていません",
+      "note": "API key 系 failureReason で設定案内文言を表示",
+      "output": "outputs/phase-11/screenshots/TC-11-02.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-11-03.png",
+      "theme": "light",
+      "status": "failed",
+      "failureReason": "network timeout",
+      "note": "汎用 failureReason を表示",
+      "output": "outputs/phase-11/screenshots/TC-11-03.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-11-04.png",
+      "theme": "light",
+      "status": "failed",
+      "failureReason": "ANTHROPIC_API_KEY が設定されていません",
+      "note": "設定を開く導線を押下後のオーバーレイを表示",
+      "output": "outputs/phase-11/screenshots/TC-11-04.png"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-11-05.png",
+      "theme": "light",
+      "status": "failed",
+      "failureReason": "ANTHROPIC_API_KEY が設定されていません",
+      "note": "light theme での視認性確認",
+      "output": "outputs/phase-11/screenshots/TC-11-05.png"
+    },
+    {
+      "tcId": "TC-11-06",
+      "file": "TC-11-06.png",
+      "theme": "dark",
+      "status": "failed",
+      "failureReason": "ANTHROPIC_API_KEY が設定されていません",
+      "note": "dark theme での視認性確認",
+      "output": "outputs/phase-11/screenshots/TC-11-06.png"
+    }
+  ]
+}

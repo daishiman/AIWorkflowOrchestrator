@@ -242,6 +242,23 @@ describe("RuntimeSkillCreatorFacade — adapter status (TASK-RT-01)", () => {
       expect(facade.llmAdapterStatus).toBe("failed");
       expect(facade.llmAdapterFailureReason).toBe("late failure");
     });
+
+    it("setLLMAdapter()/setLLMAdapterFailed() が onAdapterStatusChanged を通知する", () => {
+      const facade = new RuntimeSkillCreatorFacade({
+        skillExecutor: createMockSkillExecutor(),
+      });
+      const onAdapterStatusChanged = vi.fn();
+      facade.onAdapterStatusChanged = onAdapterStatusChanged;
+
+      facade.setLLMAdapter(createMockLLMAdapter());
+      expect(onAdapterStatusChanged).toHaveBeenCalledWith("ready", null);
+
+      facade.setLLMAdapterFailed("late failure");
+      expect(onAdapterStatusChanged).toHaveBeenLastCalledWith(
+        "failed",
+        "late failure",
+      );
+    });
   });
 
   // ==================================================================
