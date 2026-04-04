@@ -13,7 +13,6 @@
 
 import fs from "fs/promises";
 import path from "path";
-import type { SkillCreatorSdkEvent } from "@repo/shared/types";
 import type { INotificationService } from "../notification/INotificationService";
 import {
   normalizeSdkMessage,
