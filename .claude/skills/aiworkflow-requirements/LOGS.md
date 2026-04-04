@@ -593,3 +593,5 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `pnpm --filter @repo/desktop typecheck`: PASS
   - `pnpm exec eslint apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx`: PASS（warning のみ）
   - `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error --json`: PASS（10/10）
+
+- 2026-04-03: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 完了 — SkillLifecyclePanel に severity フィルタ（all/warning+/error）を追加

@@ -1,0 +1,56 @@
+{
+  "capturedAt": "2026-04-03T22:48:55.897Z",
+  "baseUrl": "http://localhost:5198",
+  "targetUrl": "http://localhost:5198/phase11-task-rt-04-skill-authkey.html",
+  "screenshotDir": "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260403-215615-wt-2/docs/30-workflows/task-skill-creator-layer34-ui-display-severity-filter/outputs/phase-11/screenshots",
+  "captures": [
+    {
+      "file": "TC-01-default-all-light.png",
+      "theme": "light",
+      "filter": "all",
+      "planId": "plan-mixed"
+    },
+    {
+      "file": "TC-02-default-all-dark.png",
+      "theme": "dark",
+      "filter": "all",
+      "planId": "plan-mixed"
+    },
+    {
+      "file": "TC-03-warning-plus-light.png",
+      "theme": "light",
+      "filter": "warning+",
+      "planId": "plan-mixed"
+    },
+    {
+      "file": "TC-04-warning-plus-dark.png",
+      "theme": "dark",
+      "filter": "warning+",
+      "planId": "plan-mixed"
+    },
+    {
+      "file": "TC-05-error-only-light.png",
+      "theme": "light",
+      "filter": "error",
+      "planId": "plan-mixed"
+    },
+    {
+      "file": "TC-06-error-only-dark.png",
+      "theme": "dark",
+      "filter": "error",
+      "planId": "plan-mixed"
+    },
+    {
+      "file": "TC-07-empty-layer-light.png",
+      "theme": "light",
+      "filter": "error",
+      "planId": "plan-info-only"
+    },
+    {
+      "file": "TC-08-no-checks-light.png",
+      "theme": "light",
+      "filter": "all",
+      "planId": "plan-empty"
+    }
+  ]
+}

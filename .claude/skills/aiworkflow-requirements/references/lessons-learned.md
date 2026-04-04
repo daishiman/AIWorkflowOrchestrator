@@ -38,6 +38,7 @@
 | [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | archive (2026-03-01〜2026-03-16) | current summary から分離した過去教訓の保管（2026-03-14〜16 の TASK-SKILL-LIFECYCLE-04/05/07、TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 P57〜P61 等を含む） |
 | [lessons-learned-skill-plan-exec-hardening.md](lessons-learned-skill-plan-exec-hardening.md) | skill domain lessons (plan exec hardening / Lane分割並列実装 / before-quit guard) | TASK-P0-07: Lane分割による並列実装の効果確認 (step-11)（2026-04-01） / TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001: 同期→非同期移行時のライフサイクル設計チェックリスト（2026-04-03） |
 | [lessons-learned-templates.md](lessons-learned-templates.md) | templates and checklist | 目次 / 関連ドキュメント / テンプレート（新規教訓追加用） / TASK-XXX: タスク名（YYYY-MM-DD） |
+| [lessons-learned-severity-filter-ui.md](lessons-learned-severity-filter-ui.md) | skill domain lessons (severity filter UI) | UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 Severity フィルタ UI 実装教訓（2026-04-03） |
 
 ## 利用順序
 - まずこの親仕様書で対象 child companion を選ぶ。

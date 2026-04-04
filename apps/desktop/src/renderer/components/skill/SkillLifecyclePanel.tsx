@@ -376,6 +376,27 @@ const verifyCheckSeverityIcon: Record<
 const VERIFY_SEVERITY_ORDER: readonly RuntimeSkillCreatorVerifyCheckSeverity[] =
   ["error", "warning", "info"];
 
+type SeverityFilterValue = "all" | "warning+" | "error";
+
+const SEVERITY_FILTER_OPTIONS: readonly {
+  value: SeverityFilterValue;
+  label: string;
+}[] = [
+  { value: "all", label: "すべて" },
+  { value: "warning+", label: "⚠ Warning+" },
+  { value: "error", label: "✗ Error" },
+];
+
+function shouldShowCheck(
+  severity: RuntimeSkillCreatorVerifyCheckSeverity,
+  filter: SeverityFilterValue,
+): boolean {
+  if (filter === "all") return true;
+  if (filter === "warning+")
+    return severity === "warning" || severity === "error";
+  return severity === "error";
+}
+
 function createDefaultExpandedLayers(): Record<VerifyLayerKey, boolean> {
   return {
     layer1: true,
@@ -657,6 +678,8 @@ export function SkillLifecyclePanel({
   const [expandedLayers, setExpandedLayers] = useState<
     Record<VerifyLayerKey, boolean>
   >(createDefaultExpandedLayers);
+  const [severityFilter, setSeverityFilter] =
+    useState<SeverityFilterValue>("all");
   const checksByLayer = useMemo(() => {
     const groups = createVerifyChecksByLayer();
     for (const check of verifyDetail?.checks ?? []) {
@@ -667,6 +690,23 @@ export function SkillLifecyclePanel({
     }
     return groups;
   }, [verifyDetail?.checks]);
+  const filteredChecksByLayer = useMemo(() => {
+    const result = createVerifyChecksByLayer();
+    for (const layer of VERIFY_LAYER_ORDER) {
+      result[layer] = (checksByLayer[layer] ?? []).filter((check) =>
+        shouldShowCheck(check.severity, severityFilter),
+      );
+    }
+    return result;
+  }, [checksByLayer, severityFilter]);
+  const visibleVerifyChecksCount = useMemo(() => {
+    let count = 0;
+    for (const layer of VERIFY_LAYER_ORDER) {
+      count += filteredChecksByLayer[layer]?.length ?? 0;
+    }
+    return count;
+  }, [filteredChecksByLayer]);
+  const totalVerifyChecksCount = verifyDetail?.checks?.length ?? 0;
   const toggleLayer = useCallback((layer: VerifyLayerKey) => {
     setExpandedLayers((current) => ({
       ...current,
@@ -706,6 +746,7 @@ export function SkillLifecyclePanel({
 
   useEffect(() => {
     setExpandedLayers(createDefaultExpandedLayers());
+    setSeverityFilter("all");
   }, [activeWorkflowId]);
 
   const clearPlanExecutionState = useCallback(() => {
@@ -1976,15 +2017,51 @@ export function SkillLifecyclePanel({
                 </div>
               ) : null}
 
+              {(verifyDetail.checks?.length ?? 0) > 0 && (
+                <div
+                  className="mt-4 flex items-center gap-1"
+                  role="group"
+                  aria-label="Severity filter"
+                >
+                  {SEVERITY_FILTER_OPTIONS.map((option) => (
+                    <button
+                      key={option.value}
+                      data-testid={`skill-lifecycle-severity-filter-${option.value}`}
+                      type="button"
+                      aria-pressed={severityFilter === option.value}
+                      onClick={() => setSeverityFilter(option.value)}
+                      className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                        severityFilter === option.value
+                          ? "bg-[var(--accent-primary)] text-white"
+                          : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
+                      }`}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                  {severityFilter !== "all" && totalVerifyChecksCount > 0 ? (
+                    <span
+                      role="status"
+                      aria-live="polite"
+                      data-testid="skill-lifecycle-severity-filter-summary"
+                      className="ml-3 text-xs text-[var(--text-secondary)]"
+                    >
+                      表示中 {visibleVerifyChecksCount} / 全{" "}
+                      {totalVerifyChecksCount} 件
+                    </span>
+                  ) : null}
+                </div>
+              )}
+
               <div className="mt-4 space-y-3">
                 {VERIFY_LAYER_ORDER.filter(
-                  (layer) => (checksByLayer[layer]?.length ?? 0) > 0,
+                  (layer) => (filteredChecksByLayer[layer]?.length ?? 0) > 0,
                 ).map((layer) => (
                   <VerifyLayerGroup
                     key={layer}
                     layer={layer}
                     label={verifyLayerLabels[layer]}
-                    checks={checksByLayer[layer]}
+                    checks={filteredChecksByLayer[layer]}
                     isExpanded={expandedLayers[layer] ?? true}
                     onToggle={toggleLayer}
                   />

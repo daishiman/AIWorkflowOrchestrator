@@ -3,6 +3,18 @@
 ## 役割
 
 ---
+
+## UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 完了（2026-04-03）
+
+- タスク名: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
+- 種別: feat / renderer-only UI enhancement
+- 主な反映:
+  - SkillLifecyclePanel に severity フィルタ（all/warning+/error）を追加
+  - Renderer 内完結の変更（IPC/shared type/preload 変更なし）
+  - ui-ux-feature-components-core.md に severity filter contract を追記
+  - task-workflow-backlog.md に完了記録を反映
+
+---
 ## 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync + skill-feedback 反映
 
 ### 変更内容
@@ -1678,3 +1690,5 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/index.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-1-requirements.md` 〜 `phase-12-documentation.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/artifacts.json`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/outputs/artifacts.json`, `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`, `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`, `outputs/phase-10`〜`outputs/phase-12` |
 | 結果 | Phase 10〜12 outputs を current facts に固定し、workflow 本体の status / 台帳 parity / task-workflow completed/backlog path を `fix-lifecycle-panel-error` へ同期した。Phase 11 は NON_VISUAL として自動テスト代替で完了。`generate-index.js` により topic-map / keywords も再生成した |
 | 検証 | `validate-phase12-implementation-guide.js` PASS（10/10）、`vitest` 8/8 PASS、`vitest` 10/10 PASS、`typecheck` PASS、`eslint` PASS |
+
+- 2026-04-04: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 close-out sync — lessons-learned-severity-filter-ui.md 追加、unassigned-task status を完了済みに更新

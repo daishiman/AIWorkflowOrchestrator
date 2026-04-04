@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-03
+> 自動生成: 2026-04-04
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1174,10 +1174,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
 | Skill Runtime API Key Panel（TASK-RT-04） | L63 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L87 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L194 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L261 |
-| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L409 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L119 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L226 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L293 |
+| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L441 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -2746,6 +2746,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| TASK-SDK-SC-01: SDK Session Bridge 実装 | L6 |
 
+### references/lessons-learned-severity-filter-ui.md
+
+| セクション | 行 |
+|------------|----|\n| タスク情報 | L3 |
+| 技術的教訓 | L8 |
+| 苦戦箇所 | L27 |
+| コードパターン | L39 |
+
 ### references/lessons-learned-skill-build-harness-guard.md
 
 | セクション | 行 |
@@ -2916,8 +2924,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
 
 ### references/llm-embedding.md
 
