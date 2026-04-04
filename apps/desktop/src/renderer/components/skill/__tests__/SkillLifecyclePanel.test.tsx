@@ -899,8 +899,11 @@ describe("SkillLifecyclePanel", () => {
     it("SF-03: warning+ 選択で info が非表示になる", async () => {
       await renderWithFilter();
 
+      const warningButton = await screen.findByTestId(
+        "severity-filter-warning+",
+      );
       await act(async () => {
-        fireEvent.click(screen.getByTestId("severity-filter-warning+"));
+        fireEvent.click(warningButton);
       });
 
       expect(
@@ -941,8 +944,11 @@ describe("SkillLifecyclePanel", () => {
     it("SF-05: フィルタ結果で空になった layer が非表示になる", async () => {
       await renderWithFilter();
 
+      const warningButton = await screen.findByTestId(
+        "severity-filter-warning+",
+      );
       await act(async () => {
-        fireEvent.click(screen.getByTestId("severity-filter-warning+"));
+        fireEvent.click(warningButton);
       });
 
       // layer4 は info のみなので消える
@@ -965,13 +971,14 @@ describe("SkillLifecyclePanel", () => {
     it("SF-06: フィルタボタンに件数が表示される", async () => {
       await renderWithFilter();
 
-      expect(screen.getByTestId("severity-filter-all")).toHaveTextContent("4");
-      expect(screen.getByTestId("severity-filter-warning+")).toHaveTextContent(
-        "3",
-      );
-      expect(screen.getByTestId("severity-filter-error")).toHaveTextContent(
-        "1",
-      );
+      const allButton = await screen.findByTestId("severity-filter-all");
+      expect(allButton).toHaveTextContent("4");
+      expect(
+        await screen.findByTestId("severity-filter-warning+"),
+      ).toHaveTextContent("3");
+      expect(
+        await screen.findByTestId("severity-filter-error"),
+      ).toHaveTextContent("1");
     });
 
     it("SF-07: reverify 後もフィルタ状態が維持される", async () => {

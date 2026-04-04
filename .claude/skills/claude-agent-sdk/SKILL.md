@@ -90,6 +90,7 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 | Task                         | 概要                                              | 対応する Phase | リソース                                                          |
 | ---------------------------- | ------------------------------------------------- | -------------- | ----------------------------------------------------------------- |
 | query() API基本実装          | ストリーミングメッセージ処理の基本                | Phase 1, 2     | query-api.md, agent-handler-template.ts                           |
+| Verify Engine実装            | SkillCreatorVerificationEngine Layer 1-4 チェック | Phase 5, 6     | implementation-artifacts.md, electron-ipc.md                      |
 | Hooks実装                    | PreToolUse/PostToolUse/Permission                 | Phase 2        | hooks-system.md                                                   |
 | Hooks Factory                | createHooks, セキュリティチェック                 | Phase 2        | hooks-system.md（TASK-3-1-B）                                     |
 | Governance Hooks Factory     | Phase別 createGovernanceHooks, AuditSink連携      | Phase 2        | hooks-system.md（TASK-P0-09）, permission-control.md（TASK-P0-09）|
@@ -370,6 +371,7 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 
 | Version | Date       | Changes                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 2.18.0  | 2026-04-04 | TASK-P0-01 verify 実行エンジン反映: SkillCreatorVerificationEngine Layer 1-4 verify チェック 19 件（L1-001〜L4-003）の実装完了。Task仕様ナビに Verify Engine 行追加、implementation-artifacts.md に成果物記録、electron-ipc.md に verify IPC チャネル追記 |
 | 2.17.0  | 2026-04-04 | TASK-SDK-SC-04 Skill Output Integration反映: Skill Output Integration（output-ready / overwrite-approved / open-skill IPC 3チャネル）・SkillCreatorOutputHandler・SkillRegistry・SkillCreatorResultPanel・onOutputReady() Preload API を Task仕様ナビに追記 |
 | 2.16.0  | 2026-04-03 | TASK-SDK-SC-03 External API Support反映: RequestExternalApiConfig custom toolパターン・並行フロー管理・sanitizeForPrompt秘匿化パターンを electron-ipc.md に追加。Task仕様ナビ・implementation-artifacts.md に External API IPC 成果物を追記 |
 | 2.15.0  | 2026-04-02 | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001反映: Approval Request Producerパターン追加（hooks-system.md）、成果物記録追加（implementation-artifacts.md）、Task仕様ナビ追記 |

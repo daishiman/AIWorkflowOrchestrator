@@ -229,3 +229,30 @@
 - **並行フロー管理**: `pendingQuestionResolve` と `pendingExternalApiResolve` の相互排他
 - **秘匿化**: `sanitizeExternalApiConfigForPrompt()` で credential を `***REDACTED***` に置換してからプロンプトに注入
 - **IPC Channels**: `skill-creator:configure-api`, `skill-creator:api-configured`, `skill-creator:api-test-result`, `skill-creator:external-api-config-required`
+
+---
+
+## TASK-P0-01 Verify Engine（Layer 1-4）
+
+### ドキュメント
+
+| ドキュメント | パス | 説明 |
+| --- | --- | --- |
+| タスク仕様書 | `docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12/` | verify engine Phase 1-13 仕様 |
+| verify 契約仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-skill-verify-contract.md` | check ID 体系（19 件、L1-001〜L4-003） |
+| 実装ガイド | `docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12/outputs/phase-12/implementation-guide.md` | 概念説明 + API リファレンス |
+
+### 実装ファイル
+
+| ファイル | パス | 説明 |
+| --- | --- | --- |
+| 型定義 | `packages/shared/src/types/skillCreator.ts` | `RuntimeSkillCreatorVerifyCheck` 型 |
+| Verify Engine | `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts` | Layer 1-4 verify チェック 19 件 |
+| Facade 統合 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `verifySkill()` / `verifyAndImproveLoop()` |
+| テスト | `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorVerificationEngine.test.ts` | 60 tests PASS |
+
+主要パターン:
+
+- **依存注入**: `RuntimeSkillCreatorFacade` に `verificationEngine?` を optional inject し、未注入時は空配列を返す graceful degradation
+- **Severity Routing**: `verifyAndImproveLoop()` が `severity === "info"` を pass、`warning` / `error` を improve 対象として routing
+- **IPC Channels**: `skill-creator:get-verify-detail`, `skill-creator:request-reverify` / `skill-creator:reverify-workflow`
