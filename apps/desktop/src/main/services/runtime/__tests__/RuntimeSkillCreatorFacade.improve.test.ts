@@ -673,11 +673,13 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
         "sk-test",
       );
 
+      // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001:
+      // _llmAdapterStatus === "initializing" ガードが !this.llmAdapter より先に発火する
       expect(result).toEqual({
         success: false,
         error: {
           code: "llm_adapter_unavailable",
-          message: "LLM アダプタが利用できません。設定を確認してください。",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
         },
       });
     });

@@ -132,6 +132,18 @@ describe("RuntimeSkillCreatorFacade", () => {
   });
 
   describe("execute", () => {
+    // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001:
+    // execute() に _llmAdapterStatus ガードが追加されたため、
+    // execute テストでは beforeEach で setLLMAdapter() を呼ぶ
+    beforeEach(() => {
+      facade.setLLMAdapter({
+        providerId: "anthropic",
+        sendChat: vi.fn(),
+        streamChat: vi.fn(),
+        checkHealth: vi.fn(),
+      } as unknown as ILLMAdapter);
+    });
+
     it("SkillExecutor に request と metadata を委譲し、成功結果を返す", async () => {
       const resolveSpy = vi
         .spyOn(RuntimePolicyResolver.prototype, "resolve")
@@ -463,6 +475,13 @@ describe("RuntimeSkillCreatorFacade", () => {
 
   describe("improve", () => {
     it("terminal_handoff 判定時は改善 prompt を guidance 化する", async () => {
+      // TASK-UT-RT-01: _llmAdapterStatus ガードを通過させるため
+      facade.setLLMAdapter({
+        providerId: "anthropic",
+        sendChat: vi.fn(),
+        streamChat: vi.fn(),
+        checkHealth: vi.fn(),
+      } as unknown as ILLMAdapter);
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "terminal_handoff",
         bundle: {
@@ -519,12 +538,13 @@ describe("RuntimeSkillCreatorFacade", () => {
         "sk-test",
       );
 
-      // TASK-RT-02: llmAdapter 未注入時は explicit error
+      // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001:
+      // _llmAdapterStatus === "initializing" ガードが !this.llmAdapter より先に発火する
       expect(result).toEqual({
         success: false,
         error: {
           code: "llm_adapter_unavailable",
-          message: "LLM アダプタが利用できません。設定を確認してください。",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
         },
       });
     });
@@ -979,6 +999,10 @@ describe("RuntimeSkillCreatorFacade", () => {
           currentPhase: "improve",
           verifyResult: { status: "fail" },
         }),
+        recordImproveFailure: vi.fn().mockReturnValue({
+          currentPhase: "improve",
+          verifyResult: { status: "fail", nextAction: "improve" },
+        }),
         recordVerifyFailure: vi.fn().mockReturnValue({
           currentPhase: "review",
           verifyResult: { status: "fail" },
@@ -1055,6 +1079,10 @@ describe("RuntimeSkillCreatorFacade", () => {
           currentPhase: "improve",
           verifyResult: { status: "fail" },
         }),
+        recordImproveFailure: vi.fn().mockReturnValue({
+          currentPhase: "improve",
+          verifyResult: { status: "fail", nextAction: "improve" },
+        }),
         recordVerifyFailure: vi.fn().mockReturnValue({
           currentPhase: "review",
           verifyResult: { status: "fail" },
@@ -1091,12 +1119,87 @@ describe("RuntimeSkillCreatorFacade", () => {
       expect(result.errorMessage).toBeTruthy();
     });
 
+    it("improve が adapter guard で失敗した場合は errorCode を保持する", async () => {
+      const mockWorkflowEngine = {
+        recordVerifyPass: vi.fn(),
+        recordImproveAttempt: vi.fn().mockReturnValue({
+          currentPhase: "improve",
+          verifyResult: { status: "fail", improveAttemptCount: 1 },
+        }),
+        recordImproveFailure: vi.fn().mockReturnValue({
+          planId: "plan-001",
+          currentPhase: "improve",
+          awaitingUserInput: null,
+          verifyResult: {
+            status: "fail",
+            nextAction: "improve",
+            message:
+              "improve が llm_adapter_unavailable で失敗しました: Connection refused",
+          },
+          resumeTokenEnvelope: {
+            version: "task-sdk-02-v1" as const,
+            planId: "plan-001",
+            currentPhase: "improve",
+            artifactCount: 3,
+            updatedAt: "2026-04-04T00:00:00.000Z",
+          },
+        }),
+        getWorkflowState: vi.fn(),
+        getImproveAttemptCount: vi.fn().mockReturnValue(0),
+      };
+      const failChecks = [
+        {
+          id: "L1-001",
+          layer: "layer1" as const,
+          severity: "error" as const,
+          summary: "SKILL.md missing",
+        },
+      ];
+      const mockVerificationEngine = {
+        verify: vi.fn().mockResolvedValue(failChecks),
+      };
+      const facadeWithLoop = new RuntimeSkillCreatorFacade({
+        skillExecutor: { execute: vi.fn() } as unknown as SkillExecutor,
+        workflowEngine: mockWorkflowEngine as never,
+        verificationEngine: mockVerificationEngine as never,
+      });
+      facadeWithLoop.setLLMAdapterFailed("Connection refused");
+
+      const result = await facadeWithLoop.verifyAndImproveLoop(
+        "plan-001",
+        "/tmp/skill",
+        "test-skill",
+        "api-key",
+      );
+
+      expect(result.finalStatus).toBe("error");
+      expect(result.errorCode).toBe("llm_adapter_unavailable");
+      expect(result.errorMessage).toBe("Connection refused");
+      expect(result.workflowSnapshot.currentPhase).toBe("improve");
+      expect(result.workflowSnapshot.verifyResult?.status).toBe("fail");
+      expect(result.workflowSnapshot.verifyResult?.nextAction).toBe("improve");
+      expect(result.workflowSnapshot.verifyResult?.message).toContain(
+        "llm_adapter_unavailable",
+      );
+      expect(result.workflowSnapshot.verifyResult?.message).toContain(
+        "Connection refused",
+      );
+      expect(mockWorkflowEngine.recordImproveFailure).toHaveBeenCalledWith(
+        "plan-001",
+        "improve が llm_adapter_unavailable で失敗しました: Connection refused",
+      );
+    });
+
     it("improve 結果の suggestions が空でループ停止", async () => {
       const mockWorkflowEngine = {
         recordVerifyPass: vi.fn(),
         recordImproveAttempt: vi.fn().mockReturnValue({
           currentPhase: "improve",
           verifyResult: { status: "fail" },
+        }),
+        recordImproveFailure: vi.fn().mockReturnValue({
+          currentPhase: "improve",
+          verifyResult: { status: "fail", nextAction: "improve" },
         }),
         recordVerifyFailure: vi.fn().mockReturnValue({
           currentPhase: "review",
@@ -1161,6 +1264,10 @@ describe("RuntimeSkillCreatorFacade", () => {
         recordImproveAttempt: vi.fn().mockReturnValue({
           currentPhase: "improve",
           verifyResult: { status: "fail" },
+        }),
+        recordImproveFailure: vi.fn().mockReturnValue({
+          currentPhase: "improve",
+          verifyResult: { status: "fail", nextAction: "improve" },
         }),
         recordVerifyFailure: vi.fn().mockReturnValue({
           currentPhase: "review",

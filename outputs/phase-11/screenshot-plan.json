@@ -1,25 +1,7 @@
 {
-  "taskId": "UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001",
-  "capturedAt": "2026-04-02",
-  "surface": "GovernanceSummaryPanel",
-  "scenarios": [
-    {
-      "id": "TC-01",
-      "name": "default",
-      "path": "outputs/phase-11/screenshots/TC-01-governance-summary-default.png",
-      "expected": "phase=plan, permission=default, recent denials=0"
-    },
-    {
-      "id": "TC-02",
-      "name": "denials",
-      "path": "outputs/phase-11/screenshots/TC-02-governance-summary-denials.png",
-      "expected": "recent denials が2件表示される"
-    },
-    {
-      "id": "TC-03",
-      "name": "error",
-      "path": "outputs/phase-11/screenshots/TC-03-governance-summary-error.png",
-      "expected": "取得失敗時のエラーカードが表示される"
-    }
-  ]
+  "taskId": "TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001",
+  "featureName": "ut-rt-01-execute-improve-adapter-guard-001",
+  "mode": "NON_VISUAL",
+  "screenshots": [],
+  "note": "Main process / shared type / renderer type-guard 更新のみのため撮影なし"
 }

@@ -219,6 +219,59 @@ export class SkillCreatorWorkflowEngine {
     return this.snapshot(state);
   }
 
+  /**
+   * execute() が adapter 未準備で即時失敗したときの snapshot を記録する。
+   * workflow state がまだ存在しない場合でも、plan_result / execute_result / verify_result
+   * を最低限生成して renderer の failure path が壊れないようにする。
+   */
+  recordExecuteAdapterFailure(
+    planResult: RuntimeSkillCreatorPlanResult,
+    message: string,
+    sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.ensureWorkflow(planResult.planId, sourceProvenance);
+    const skillName =
+      planResult.skillName ||
+      planResult.skillSpec.split("\n")[0]?.substring(0, 50) ||
+      "unnamed";
+    const updatedAt = nowIso();
+
+    if (!this.getLatestArtifact(state, "plan_result")) {
+      this.appendArtifact(state, "plan", "plan_result", {
+        planId: planResult.planId,
+        skillName: planResult.skillName,
+        estimatedSteps: planResult.estimatedSteps,
+      });
+    }
+
+    state.currentPhase = "review";
+    this.appendArtifact(state, "execute", "execute_result", {
+      executeId: `exec-degraded-${Date.now()}`,
+      skillName,
+      success: false,
+      error: message,
+      reason: "execution_error",
+      sourceProvenance,
+    });
+
+    state.awaitingUserInput = createVerificationReviewRequest(
+      planResult.planId,
+      message,
+      updatedAt,
+    );
+    state.verifyResult = {
+      status: "fail",
+      reason: "verification_review",
+      message,
+      nextAction: "review",
+      updatedAt,
+    };
+    state.handoffBundle = null;
+    this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
+  }
+
   recordExecutionFailure(
     planId: string,
     input: {
@@ -394,6 +447,31 @@ export class SkillCreatorWorkflowEngine {
       ...state.verifyResult,
       failedChecks,
     });
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
+  }
+
+  /**
+   * improve フェーズで失敗した内容を記録する。
+   * phase は improve のまま維持し、verifyResult の message / nextAction を更新する。
+   */
+  recordImproveFailure(
+    planId: string,
+    message: string,
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.getRequiredWorkflow(planId);
+    this.assertPhase(state.currentPhase, "improve", "improve");
+
+    const updatedAt = nowIso();
+    state.verifyResult = {
+      ...state.verifyResult,
+      status: "fail",
+      message,
+      nextAction: "improve",
+      updatedAt,
+    };
+    state.handoffBundle = null;
+    this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
     this.refreshResumeToken(state);
     return this.snapshot(state);
   }

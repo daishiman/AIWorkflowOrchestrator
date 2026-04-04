@@ -73,6 +73,18 @@
 - SKILL.md v6.18.23 更新
 
 ---
+||||||| Stash base
+
+## 2026-04-04 - TASK-UT-RT-01 execute/improve adapter guard Phase 12 close-out sync
+
+### 変更内容
+- `RuntimeSkillCreatorFacade.execute()` / `improve()` の `_llmAdapterStatus` guard を current facts として current task docs に反映
+- `RuntimeSkillCreatorExecuteErrorResponse` を shared type として仕様書へ追記し、renderer consumer の structured error 正規化を Phase 12 outputs へ同期
+- `phase-11-manual-test.md` の NON_VISUAL 判定、`manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` / `ui-sanity-visual-review.md` を current task へ置換
+- `documentation-changelog.md` / `system-spec-update-summary.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` を phase10 MINOR follow-up を含めた current facts へ更新
+- SKILL.md の変更は不要と判定し、LOGS と template/current facts の同波 sync で閉じた
+
+---
 ## 2026-04-02 - TASK-NOTIFICATION-SERVICE-001 Phase 12 close-out sync
 
 ### 変更内容

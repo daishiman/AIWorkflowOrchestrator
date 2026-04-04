@@ -1,17 +1,18 @@
-# Phase 11: UI Sanity Visual Review
+# Phase 11: Semantic Review — TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
 
 ## 対象
 
-`GovernanceSummaryPanel`
+`RuntimeSkillCreatorFacade.execute()` / `RuntimeSkillCreatorFacade.improve()` / renderer consumer error normalization
 
 ## 所見
 
-- hierarchy: 見出し、phase / permission、session summary、denials list の順序が明確
-- grouping: card ごとの責務分離が明瞭で、default / denial / error の切替も破綻していない
-- contrast: light theme で主要テキストと境界線は判読可能
-- empty state: 「最近の拒否はありません」が自然に収まっている
-- error state: 取得失敗時の alert card が十分に目立つ
+| 観点   | 判定 | 所見                                                           |
+| ------ | ---- | -------------------------------------------------------------- |
+| 一貫性 | PASS | plan / execute / improve の adapter guard パターンが揃っている |
+| 可読性 | PASS | early return と structured error union で意図が明確            |
+| 整合性 | PASS | execute ack 後に workflow snapshot を再読込し failure を拾える |
+| 冗長性 | PASS | 追加分岐は最小限で既存 flow を壊していない                     |
 
 ## 結論
 
-重大な視覚問題は検出なし。Phase 12 ではこのスクリーンショット群を implementation guide と changelog に参照させる。
+視覚変更はないため screenshot audit は不要。semantic review で重大な差異は検出されなかった。
