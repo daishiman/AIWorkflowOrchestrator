@@ -243,7 +243,7 @@ describe("creatorHandlers - adapterStatus", () => {
   });
 
   // T-IPC-12
-  it("validateIpcSender が例外をスローしたとき例外が伝播する", () => {
+  it("validateIpcSender が例外をスローしたとき例外が伝播する", async () => {
     vi.mocked(validateIpcSender).mockImplementationOnce(() => {
       throw new Error("unauthorized sender");
     });
@@ -252,6 +252,8 @@ describe("creatorHandlers - adapterStatus", () => {
     const handler = handlerMap.get(
       IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
     )!;
-    expect(() => handler(createMockEvent())).toThrow("unauthorized sender");
+    await expect(handler(createMockEvent())).rejects.toThrow(
+      "unauthorized sender",
+    );
   });
 });

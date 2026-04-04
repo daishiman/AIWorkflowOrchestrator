@@ -117,6 +117,45 @@
 
 ---
 
+## LLM Adapter Error Banner（TASK-RT-01）
+
+`SkillLifecyclePanel` の最上部に置く失敗通知 surface。Main プロセスが保持する LLMAdapter の状態を preload 経由で pull + push し、`failed` 状態のときのみエラーバナーを表示する。
+
+### コンポーネント階層
+
+| コンポーネント | 種類  | 親                    | 子要素 / 役割                                              |
+| -------------- | ----- | --------------------- | ---------------------------------------------------------- |
+| `SkillLifecyclePanel` | organism | -           | banner の配置先。`LLMAdapterErrorBanner` を最上部へ挿入 |
+| `useLLMAdapterStatus` | hook | `SkillLifecyclePanel` | `skillCreator.getAdapterStatus()` / `onAdapterStatusChanged()` を同期 |
+| `LLMAdapterErrorBanner` | molecule | `SkillLifecyclePanel` | エラー表示、任意の設定導線、`role="alert"` |
+
+### 表示ルール
+
+| 条件 | 挙動 |
+| ---- | ---- |
+| `status !== "failed"` | `null` を返して非表示 |
+| `failureReason` が `api.?key` / `ANTHROPIC_API_KEY` を含む | 「APIキーが設定されていないか、無効です。設定画面でAPIキーを確認してください。」 を表示 |
+| 上記以外の `failed` | `LLMアダプターの初期化に失敗しました: <failureReason>` を表示 |
+| `onOpenSettings` がある | 「設定を開く」ボタンを表示し、設定導線を再利用 |
+
+### アクセシビリティ
+
+| 要素 | 要件 |
+| ---- | ---- |
+| banner container | `role="alert"` |
+| warning icon | `aria-hidden="true"` |
+| action button | 通常の `button` として keyboard focus 可能 |
+| theme | light / dark でコントラストを維持 |
+
+### 実装連携
+
+- `LLMAdapterStatusPayload` は `packages/shared/src/types/skillCreator.ts` の正本を使う
+- `SkillLifecyclePanel` は banner の有無に関わらず既存の作成 / 実行 / 改善導線を維持する
+- `validate-phase11-screenshot-coverage.js` の対象 TC-11-01〜TC-11-06 で視覚回帰を固定する
+- `phase11-capture-metadata.json` と `screenshot-plan.json` は current build の撮影証跡として残す
+
+---
+
 ## Community Visualization UI コンポーネント（CONV-08-05）
 
 コミュニティ構造を可視化するUIコンポーネント群。グラフベースのコミュニティ表示、フィルタリング、検索、詳細表示などの機能を提供する。

@@ -18,6 +18,13 @@ esbuild のホスト/バイナリバージョン不一致エラーが発生し�
 
 **改善案**: `api-ipc-agent-core.md` の セキュリティ強化仕様に `validateIpcSender` のシグネチャ例を追記する。
 
+### Playwright capture の pnpm 解決
+
+スクリーンショット再生成時に Node の child_process から `pnpm` を spawn すると `ENOENT` になった。
+worktree の Node 実行環境では PATH がそのまま引き継がれないケースがあるため、capture スクリプトは absolute path か shell 起動に寄せるべきだった。
+
+**改善案**: phase-11 の撮影スクリプト例に、`/usr/local/bin/pnpm` のような絶対パスか shell 経由の起動パターンを追記する。
+
 ### 同期 throw vs async rejects
 
 T-IPC-12 で handler が同期的に throw するのに `await expect(...).rejects.toThrow()` を書いてしまい RED になった。

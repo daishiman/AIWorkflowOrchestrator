@@ -852,10 +852,11 @@ node scripts/list-specs.js --topics
 |------------|----|\n| Agent Dashboard IPC チャネル | L6 |
 | Workspace Chat Edit IPC チャネル | L74 |
 | Skill Creator IPC チャネル | L256 |
-| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L373 |
-| スキルファイル操作 IPC チャネル（TASK-9A-B） | L407 |
-| スキル安全性評価・ファイルツリー IPC チャネル | L461 |
-| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L472 |
+| SDK メッセージ出力型統合 | L343 |
+| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L387 |
+| スキルファイル操作 IPC チャネル | L421 |
+| スキル安全性評価・ファイルツリー IPC チャネル | L430 |
+| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L441 |
 
 ### references/api-ipc-agent-details.md
 
@@ -866,6 +867,11 @@ node scripts/list-specs.js --topics
 | スキルスケジュール IPC チャネル（TASK-9G） | L223 |
 | スキルデバッグ IPC チャネル（TASK-9H） | L272 |
 | スキルドキュメント生成 IPC チャネル（TASK-9I） | L321 |
+
+### references/api-ipc-agent-fileops.md
+
+| セクション | 行 |
+|------------|----|\n| スキルファイル操作 IPC チャネル（TASK-9A-B） | L6 |
 
 ### references/api-ipc-agent-history.md
 
@@ -907,6 +913,11 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L331 |
 | 完了タスク | L341 |
 | 変更履歴 | L407 |
+
+### references/api-ipc-sdk-type-contracts.md
+
+| セクション | 行 |
+|------------|----|\n| SDK メッセージ出力型統合（UT-RT-06 / UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001） | L6 |
 
 ### references/api-ipc-system-core.md
 
@@ -1187,10 +1198,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
 | Skill Runtime API Key Panel（TASK-RT-04） | L64 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L120 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L227 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L294 |
-| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L442 |
+| LLM Adapter Error Banner（TASK-RT-01） | L120 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L159 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L266 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L333 |
+| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L481 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -2698,6 +2710,7 @@ node scripts/list-specs.js --topics
 | TASK-P0-04 教訓（2026-03-30） | L959 |
 | TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L995 |
 | TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1091 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1145 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 

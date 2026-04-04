@@ -3,9 +3,9 @@
   "taskName": "LLMAdapter 初期化エラーの UI 通知・状態公開",
   "featureName": "task-rt-01-llm-adapter-error-propagation",
   "createdAt": "2026-04-04T00:00:00Z",
-  "updatedAt": "2026-04-04T00:00:00Z",
-  "completedAt": "2026-04-04T00:00:00Z",
-  "status": "completed",
+  "updatedAt": "2026-04-04T13:24:39Z",
+  "completedAt": "2026-04-04T13:24:39Z",
+  "status": "phase12_completed",
   "githubIssue": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/1879",
   "phases": [
     {
@@ -125,11 +125,9 @@
     {
       "phase": 13,
       "name": "PR作成",
-      "status": "completed",
+      "status": "blocked",
       "specPath": "phase-13-pr-creation.md",
-      "outputs": [
-        "https://github.com/daishiman/AIWorkflowOrchestrator/pull/1907"
-      ]
+      "outputs": []
     }
   ],
   "qualityMetrics": {

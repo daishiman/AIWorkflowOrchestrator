@@ -49,7 +49,15 @@ describe("useLLMAdapterStatus", () => {
 
   // T-HK-01
   it("マウント直後の初期状態は { status: 'initializing', failureReason: null }", () => {
-    const { api } = createMockApi();
+    const api = {
+      getAdapterStatus: vi.fn(
+        () =>
+          new Promise((resolve) => {
+            void resolve;
+          }),
+      ),
+      onAdapterStatusChanged: vi.fn(() => () => {}),
+    };
     vi.spyOn(window, "electronAPI", "get").mockReturnValue({
       skillCreator: api,
     } as unknown as typeof window.electronAPI);

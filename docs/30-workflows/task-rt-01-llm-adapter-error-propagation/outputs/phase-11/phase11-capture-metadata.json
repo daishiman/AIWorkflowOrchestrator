@@ -1,9 +1,0 @@
-{
-  "capturedAt": "2026-04-04T00:00:00Z",
-  "os": "macOS 25.3.0",
-  "node": "v22.x",
-  "pnpm": "9.x",
-  "appMode": "dev",
-  "theme": "light + dark",
-  "notes": "SkillLifecyclePanel の LLMAdapterErrorBanner 統合確認。API key 未設定／設定済みの両状態を手動で切り替えて確認。"
-}

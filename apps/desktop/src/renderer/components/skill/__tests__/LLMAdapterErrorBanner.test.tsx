@@ -102,6 +102,17 @@ describe("LLMAdapterErrorBanner", () => {
     expect(screen.getByText(/APIキーが設定されていないか/)).toBeInTheDocument();
   });
 
+  // T-BAN-10b
+  it("failureReason に 'ANTHROPIC_API_KEY' が含まれるとき APIキーメッセージが表示される", () => {
+    render(
+      <LLMAdapterErrorBanner
+        status="failed"
+        failureReason="ANTHROPIC_API_KEY environment variable is not set"
+      />,
+    );
+    expect(screen.getByText(/APIキーが設定されていないか/)).toBeInTheDocument();
+  });
+
   // T-BAN-11
   it("1000文字の failureReason でもレンダリングが成功する", () => {
     const longReason = "x".repeat(1000);

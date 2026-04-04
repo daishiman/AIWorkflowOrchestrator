@@ -1139,3 +1139,43 @@
 | 教訓       | adapter statusチェック→structured error returnのパターンをmethod先頭に配置することで、後続処理の前提条件を明示できる                                                                          |
 | 適用       | 新しいpublicメソッドでLLMAdapterに依存する処理を追加する場合、同パターンを適用する                                                                                                           |
 | 関連タスク | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001                                                                                                                                              |
+
+---
+
+## UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04）
+
+### L-RT06-001: 共通基底型（SdkOutputMessageBase）によるlane統一パターン
+
+| 項目       | 内容                                                                                                                              |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 実行lane（`SkillStreamMessage`）とcreator lane（`SkillCreatorSdkEvent`）が独立した型定義を持ち、共通フィールドが重複していた      |
+| 解決策     | `SdkOutputMessageBase`（`type: string; timestamp?: number`）を共通基底型として定義し、両laneの型が継承する形に統一した            |
+| 標準ルール | lane間に共通フィールドが存在する場合は基底型を `packages/shared` に定義し、各lane型が継承するパターンを採用する                    |
+| 関連タスク | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                                                                   |
+
+### L-RT06-002: @deprecated型エイリアスによる後方互換維持戦略
+
+| 項目       | 内容                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `SkillExecutor.ts` 内でローカル定義していた型を shared に移管する際、既存コードへの影響を最小化する必要があった                             |
+| 解決策     | ローカル型を `/** @deprecated Use SkillExecutorStreamMessage from @repo/shared */` エイリアスとして残し、段階的移行を可能にした             |
+| 標準ルール | shared 移管時は移管元ファイルに `@deprecated` エイリアスを一定期間残し、import の移行猶予期間を設ける                                       |
+| 関連タスク | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                                                                            |
+
+### L-RT06-003: lane別timestamp必須性の差異（実行lane:必須、creator lane:省略可）
+
+| 項目       | 内容                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 基底型に `timestamp?: number` を定義すると実行laneの必須制約が失われ、型安全性が低下する問題が生じた                                  |
+| 解決策     | 基底型では `timestamp?: number`（省略可）とし、`SkillExecutorStreamMessage` では `timestamp: number`（必須）にオーバーライドした       |
+| 標準ルール | 基底型で省略可にしたプロパティを子型で必須にする場合は、子型定義で明示的に `required` に変更することで型安全を確保する               |
+| 関連タスク | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                                                                       |
+
+### L-RT06-004: contextual sessionId伝播（init→後続イベント）
+
+| 項目       | 内容                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | creator laneのストリームでは init イベントにのみ `sessionId` が含まれ、後続イベントでは `sessionId` が欠落するため、文脈追跡が困難だった    |
+| 解決策     | ストリーム正規化ループ内で `sessionId` を contextual 変数として管理し、init 観測時に保存した値を後続イベントに自動的に伝播させた            |
+| 標準ルール | session や correlation ID が一部のイベントにしか含まれないストリームでは、最初の観測値を contextual 変数で保持し後続イベントへ注入する        |
+| 関連タスク | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                                                                             |

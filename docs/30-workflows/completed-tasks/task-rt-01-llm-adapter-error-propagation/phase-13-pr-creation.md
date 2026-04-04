@@ -178,8 +178,8 @@ feat(skill-creator): LLMAdapter 初期化エラーの UI 通知・状態公開 (
 ## タスク100%実行確認【必須】
 
 - [ ] 上記「完了条件」を全て達成した
-- [ ] `artifacts.json` の Phase 13 を `completed` に更新した
+- [ ] `artifacts.json` の Phase 13 を `blocked` に更新した
 
 ---
 
-**このタスクは完了です。** TASK-RT-01 の全 Phase が完了しました。
+**このフェーズはユーザー指示待ちです。** TASK-RT-01 は Phase 12 まで完了しており、Phase 13 は未実施のまま保留しています。

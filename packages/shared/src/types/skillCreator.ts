@@ -337,6 +337,15 @@ export interface LoadedWorkflowManifest extends WorkflowManifest {
 /** LLMAdapter の初期化ステータス */
 export type LLMAdapterStatus = "ready" | "initializing" | "failed";
 
+/**
+ * LLMAdapter の現在状態を Renderer へ渡す payload
+ * TASK-RT-01: pull / push の共通 DTO
+ */
+export interface LLMAdapterStatusPayload {
+  status: LLMAdapterStatus;
+  failureReason: string | null;
+}
+
 /** Skill Creator のエラーコード */
 export type SkillCreatorErrorCode =
   | "LLM_ADAPTER_FAILED"

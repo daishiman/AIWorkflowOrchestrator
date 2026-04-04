@@ -218,6 +218,10 @@ export class RuntimeSkillCreatorFacade {
     this.llmAdapter = adapter;
     this._llmAdapterStatus = "ready";
     this._llmAdapterFailureReason = null;
+    this.onAdapterStatusChanged?.(
+      this._llmAdapterStatus,
+      this._llmAdapterFailureReason,
+    );
   }
 
   /**
@@ -227,6 +231,10 @@ export class RuntimeSkillCreatorFacade {
   setLLMAdapterFailed(reason: string): void {
     this._llmAdapterStatus = "failed";
     this._llmAdapterFailureReason = reason;
+    this.onAdapterStatusChanged?.(
+      this._llmAdapterStatus,
+      this._llmAdapterFailureReason,
+    );
   }
 
   getWorkflowStateSnapshot(
@@ -953,6 +961,12 @@ export class RuntimeSkillCreatorFacade {
     planId: string,
     snapshot: SkillCreatorWorkflowUiSnapshot | null,
     error?: string,
+  ) => void;
+
+  /** LLMAdapter ステータス変更通知コールバック (TASK-RT-01) */
+  onAdapterStatusChanged?: (
+    status: LLMAdapterStatus,
+    failureReason: string | null,
   ) => void;
 
   /**

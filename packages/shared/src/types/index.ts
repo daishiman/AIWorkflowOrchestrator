@@ -164,6 +164,7 @@ export type {
   SkillCreatorReverifyWorkflowRequest,
   TerminalHandoffBundle,
   LLMAdapterStatus,
+  LLMAdapterStatusPayload,
   SkillCreatorErrorCode,
   RuntimeSkillCreatorPlanErrorResponse,
   RuntimeSkillCreatorPlanResult,

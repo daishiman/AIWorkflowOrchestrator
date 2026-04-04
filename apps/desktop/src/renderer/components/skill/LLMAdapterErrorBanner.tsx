@@ -7,7 +7,7 @@ export interface LLMAdapterErrorBannerProps {
 }
 
 function buildMessage(failureReason: string | null): string {
-  if (/api key/i.test(failureReason ?? "")) {
+  if (/api.?key|ANTHROPIC_API_KEY/i.test(failureReason ?? "")) {
     return "APIキーが設定されていないか、無効です。設定画面でAPIキーを確認してください。";
   }
   return `LLMアダプターの初期化に失敗しました: ${failureReason ?? "不明なエラー"}`;

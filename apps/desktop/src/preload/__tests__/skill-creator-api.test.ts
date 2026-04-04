@@ -80,6 +80,12 @@ describe("SkillCreator Preload API", () => {
       expect(IPC_CHANNELS.SKILL_CREATOR_OPEN_SKILL).toBe(
         "skill-creator:open-skill",
       );
+      expect(IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS).toBe(
+        "skill-creator:get-adapter-status",
+      );
+      expect(IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED).toBe(
+        "skill-creator:adapter-status-changed",
+      );
     });
 
     it("7つのinvokeチャンネルがホワイトリストに含まれること", () => {
@@ -104,6 +110,9 @@ describe("SkillCreator Preload API", () => {
       expect(ALLOWED_INVOKE_CHANNELS).toContain(
         IPC_CHANNELS.SKILL_CREATOR_OPEN_SKILL,
       );
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(
+        IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+      );
     });
 
     it("progressチャンネルがonホワイトリストに含まれること", () => {
@@ -123,6 +132,12 @@ describe("SkillCreator Preload API", () => {
         IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
       );
     });
+
+    it("adapter-status-changed チャンネルが on ホワイトリストに含まれること", () => {
+      expect(ALLOWED_ON_CHANNELS).toContain(
+        IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
+      );
+    });
   });
 
   // ============================================
@@ -137,10 +152,22 @@ describe("SkillCreator Preload API", () => {
       expect(typeof api.executeTasks).toBe("function");
       expect(typeof api.validateSkill).toBe("function");
       expect(typeof api.validateSchema).toBe("function");
+      expect(typeof api.planSkill).toBe("function");
+      expect(typeof api.executePlan).toBe("function");
+      expect(typeof api.getWorkflowState).toBe("function");
+      expect(typeof api.getAdapterStatus).toBe("function");
+      expect(typeof api.submitUserInput).toBe("function");
+      expect(typeof api.configureExternalApi).toBe("function");
+      expect(typeof api.onWorkflowStateChanged).toBe("function");
+      expect(typeof api.onAdapterStatusChanged).toBe("function");
+      expect(typeof api.getVerifyDetail).toBe("function");
+      expect(typeof api.reverifyWorkflow).toBe("function");
       expect(typeof api.onProgress).toBe("function");
       expect(typeof api.onOutputReady).toBe("function");
       expect(typeof api.confirmOverwrite).toBe("function");
       expect(typeof api.openSkill).toBe("function");
+      expect(typeof api.improveSkillWithFeedback).toBe("function");
+      expect(typeof api.applyRuntimeImprovement).toBe("function");
     });
   });
 
@@ -392,6 +419,31 @@ describe("SkillCreator Preload API", () => {
         },
       );
       expect(result).toEqual(expectedResult);
+    });
+
+    it("getAdapterStatus が正しいチャンネルで invoke すること", async () => {
+      const expectedResult = {
+        success: true,
+        data: { status: "failed", failureReason: "API key is invalid" },
+      };
+      mockInvoke.mockResolvedValue(expectedResult);
+
+      const result = await skillCreatorAPI.getAdapterStatus();
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+      );
+      expect(result).toEqual(expectedResult);
+    });
+
+    it("onAdapterStatusChanged が正しいチャンネルで listener を登録すること", () => {
+      const callback = vi.fn();
+      skillCreatorAPI.onAdapterStatusChanged(callback);
+
+      expect(mockOn).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
+        expect.any(Function),
+      );
     });
   });
 

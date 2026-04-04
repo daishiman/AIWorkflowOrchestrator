@@ -116,3 +116,16 @@ const adapterStatus = useLLMAdapterStatus();
 | `useLLMAdapterStatus.test.ts`                 | 9      | フック pull/push・クリーンアップ         |
 | `SkillLifecyclePanel.adapter-status.test.tsx` | 2      | 統合（バナー表示/非表示）                |
 | **合計**                                      | **36** |                                          |
+
+### Phase 11 スクリーンショット証跡
+
+| TC-ID    | 状態 / 観点                    | 証跡                                   |
+| -------- | ------------------------------ | -------------------------------------- |
+| TC-11-01 | ready（バナー非表示）          | `../phase-11/screenshots/TC-11-01.png` |
+| TC-11-02 | failed（API key 系メッセージ） | `../phase-11/screenshots/TC-11-02.png` |
+| TC-11-03 | failed（汎用 failureReason）   | `../phase-11/screenshots/TC-11-03.png` |
+| TC-11-04 | failed + 「設定を開く」導線    | `../phase-11/screenshots/TC-11-04.png` |
+| TC-11-05 | light theme 視認性             | `../phase-11/screenshots/TC-11-05.png` |
+| TC-11-06 | dark theme 視認性              | `../phase-11/screenshots/TC-11-06.png` |
+
+`outputs/phase-11/screenshots/` には current build から再取得した 1600x1200 の実画像を保存している。
