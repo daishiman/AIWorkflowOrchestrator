@@ -7,6 +7,7 @@
  */
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { BrowserWindow as BrowserWindowType } from "electron";
+import type { IApprovalGate } from "../../runtime/ApprovalGate";
 
 // Mock ExecutionManager
 const mockStartExecution = vi.fn();
@@ -62,6 +63,12 @@ const mockEvent = {
     id: 1,
   },
 };
+const mockApprovalGate: IApprovalGate = {
+  grantApproval: vi.fn(),
+  rejectApproval: vi.fn(),
+  checkApproval: vi.fn(),
+  revokeAll: vi.fn(),
+};
 
 describe("Agent SDK Integration", () => {
   let handlers: Map<string, (...args: unknown[]) => Promise<unknown>>;
@@ -84,7 +91,7 @@ describe("Agent SDK Integration", () => {
 
     const { registerAgentExecutionHandlers } =
       await import("../../../ipc/agentHandlers");
-    registerAgentExecutionHandlers(mockMainWindow);
+    registerAgentExecutionHandlers(mockMainWindow, mockApprovalGate);
   });
 
   afterEach(() => {
@@ -106,6 +113,7 @@ describe("Agent SDK Integration", () => {
       expect(mockStartExecution).toHaveBeenCalledWith(
         expect.objectContaining({ prompt: "Test execution" }),
         mockMainWindow,
+        mockApprovalGate,
         undefined,
       );
 

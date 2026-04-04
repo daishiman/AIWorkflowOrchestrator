@@ -19,8 +19,46 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-04-01 | 1.3.0 | TASK-TRACE-SKILL-AUTH-001 教訓3件を追加（L-AUTH-TRACE-001: never-resolving mock IPC副作用検出 / L-AUTH-TRACE-002: data-testid 安定クエリ / L-AUTH-TRACE-003: useEffect 再レンダリング連鎖検出） |
+| 2026-03-29 | 1.2.0 | UT-RT-06-CONS 教訓2件を追加（L-RT-06-CONS-001: グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002: 最小共通helper抽出パターン） |
 | 2026-03-25 | 1.1.0 | UT-LLM-MOD-01-005 の教訓3件を追加（provider registry SSoT / optional `specialMatcher` narrowing / readonly bridge の follow-up 化） |
 | 2026-03-17 | 1.0.0 | lessons-learned-current.md から分割作成 |
+
+---
+
+## 2026-03-29 UT-RT-06-CONS（sdkMessageUtils shared helper 抽出 / Phase 7 個別カバレッジ計測）
+
+### L-RT-06-CONS-001: Phase 7 でグローバル閾値が原因の偽陰性を回避する（個別ファイルカバレッジ計測）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `pnpm test:coverage` はプロジェクト全体のカバレッジを集計するため、既存ファイルの未カバー部分が原因でグローバル閾値を下回り、新規追加ファイルが100%でも Phase 7 が失敗した |
+| 再発条件 | プロジェクト全体のカバレッジ閾値未達の状態で新規ファイルを追加する場合 |
+| 解決策 | `pnpm vitest run --coverage --coverage.include='**/targetFile.ts'` で対象ファイルを絞り込んで個別計測。`coverage-standards.md` にガイドライン追記済み |
+| 教訓 | Phase 7 の目的は「今回追加したコードのカバレッジ確認」。グローバル閾値失敗は既存負債。対象ファイル個別計測で PASS したら Phase 7 PASS とし、全体改善は別タスクへ |
+| 関連タスク | UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 |
+
+```bash
+# 個別ファイルカバレッジ計測
+pnpm vitest run --coverage --coverage.include='**/sdkMessageUtils.ts'
+```
+
+### L-RT-06-CONS-002: 最小共通 helper 抽出パターン（前処理の散在を解消）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `unknown → record` 型判定と `type` フィールド抽出が `SkillExecutor.ts` と `sdkMessageNormalizer.ts` の2箇所に分散。SDK バージョンアップ時に両方を更新する保守コストが残った |
+| 再発条件 | 複数の lane が同じ SDK message を扱い、それぞれに型ガードロジックを独自実装した場合 |
+| 解決策 | lane 固有の出力型は維持しつつ、前処理（型判定・フィールド抽出）のみを `sdkMessageUtils.ts` に shared helper として抽出。各 lane は helper を呼び出すだけにする |
+| 教訓 | 「出力型が違うから統合できない」は正しい判断だが、前処理の共通部分は分離可能。責務境界を「前処理 vs lane固有変換」で引くと最小差分で重複を解消できる |
+| 関連パターン | Single Responsibility Principle: shared helper は型判定責務のみ持つ |
+| 関連タスク | UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 |
+
+### 同種課題の解決手順
+
+1. 複数モジュールが同じ SDK/外部ライブラリの型を扱う場合は、型判定部分をまず grep で洗い出す
+2. 出力型が異なっても「前処理（型判定・フィールド抽出）」は共通化できる場合が多い
+3. `--coverage.include` で対象ファイルを絞り込んで Phase 7 の個別カバレッジを確認する
 
 ---
 
@@ -193,3 +231,76 @@ interface ToolRiskConfigEntry {
 3. スタブ実装が必要な場合は Phase 2 に判断根拠を記録し、未タスク化を Phase 12 Task 4 に組み込む
 4. 定数定義は `grep -rn "CONST_NAME" <file>` で使用箇所を確認、未使用は即修正
 5. Set/Map を使う場合は cleanup 機構（セッション終了時の clear/delete）を設計段階で明記
+
+---
+
+## 2026-04-01 TASK-TRACE-SKILL-AUTH-001（スキル生成 auth:login リグレッション調査）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-TRACE-SKILL-AUTH-001 |
+| 目的 | スキル生成フローで `auth:login` IPC が誤って呼ばれる経路を調査・修正し、回帰テストで封じる |
+| 完了日 | 2026-04-01 |
+| ステータス | **完了（Phase 1-12）** |
+| 最終結論 | 現行コードに不要な `auth:login` 呼び出し経路は存在しなかった。デバッグコード2行除去 + 回帰テスト TC-01〜TC-08 追加で対応完了 |
+
+### L-AUTH-TRACE-001: never-resolving mock による IPC 副作用検出パターン
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `auth:login` のような IPC 呼び出しが意図しない経路から発生しているか確認する手段がなかった |
+| 再発条件 | 5000ms タイムアウト持ちの IPC が予期しない経路から呼ばれると、フローがハングする |
+| 解決策 | `mockAuthLogin.mockReturnValue(new Promise<never>(() => {}))` で never-resolving にし、その状態でフロー完了すれば呼び出しゼロを確認できる（TC-03） |
+| 教訓 | 副作用の大きい IPC は never-resolving mock で「呼ばれたら必ず詰まる」テストを作ると、呼び出し有無を時間内に確認できる。`not.toHaveBeenCalled()` の単純確認より強力 |
+| 関連タスク | TASK-TRACE-SKILL-AUTH-001 TC-03 |
+
+```typescript
+// never-resolving mock パターン（TC-03）
+const neverResolve = new Promise<never>(() => {}); // 永遠に pending
+mockAuthLogin.mockReturnValue(neverResolve);
+// → フローが規定時間内に完走 = auth:login は呼ばれていない
+expect(mockAuthLogin).not.toHaveBeenCalled();
+```
+
+### L-AUTH-TRACE-002: data-testid による多ロール要素の安定クエリ
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | `queryByRole('textbox')` が複数要素にマッチして `TestingLibraryElementError` が発生した |
+| 再発条件 | 複数の `<textarea>` / `<input>` が同一画面に存在する場合 |
+| 解決策 | 対象要素に `data-testid="skill-lifecycle-request-input"` を付与し、`getByTestId()` でクエリする |
+| 教訓 | `getByRole` は意味論的に正しいが、同一ロールが複数存在する UI では `data-testid` が安定したテスト手段になる。重要な操作ターゲットには事前に `data-testid` を付与しておくと、テストが UI 構造変化に強くなる |
+| 関連タスク | TASK-TRACE-SKILL-AUTH-001 |
+
+### L-AUTH-TRACE-003: useEffect 再レンダリング連鎖による副作用検出（TC-07 パターン）
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | コンポーネントの `rerender()` が prepare フローを二重起動する可能性を発見できなかった |
+| 再発条件 | `useEffect` 依存配列に状態が含まれ、rerender 時に値変化が起きるケース |
+| 解決策 | `act(() => rerender(<Component />))` 後に副作用モックが追加呼び出しされていないことを `toHaveBeenCalledTimes(1)` で検証する（TC-07） |
+| 教訓 | `useEffect` 依存配列の変化がフローを再起動するバグは、単純な「初回レンダリング」テストでは検出できない。rerender テストを回帰スイートに含めると、予期しない二重実行を封じられる |
+| 関連パターン | `useRef` による実行中フラグ（`isRunning` ref）で二重起動を防ぐ |
+| 関連タスク | TASK-TRACE-SKILL-AUTH-001 TC-07 |
+
+```typescript
+// TC-07 パターン: 再レンダリング後に副作用が起きないことを確認
+const { rerender } = render(<Component {...props} />);
+await act(async () => { clickPrepareButton(); }); // 初回フロー起動
+expect(mockSideEffect).toHaveBeenCalledTimes(1);
+
+await act(async () => {
+  rerender(<Component {...props} />); // 再レンダリング
+});
+expect(mockSideEffect).toHaveBeenCalledTimes(1); // 増えていないこと
+```
+
+### 同種課題の5分解決手順
+
+1. 疑わしい IPC に `console.trace("[TEMP DEBUG] [タスクID]")` を挿入しスタックを確認する
+2. never-resolving mock を設定し、フローが完走すれば呼び出しゼロと確定する（L-AUTH-TRACE-001）
+3. `queryByRole` が複数マッチで失敗する場合は `data-testid` を要素に追加して切り替える（L-AUTH-TRACE-002）
+4. rerender テスト（TC-07 パターン）でコンポーネント再描画時の副作用二重起動を防ぐ（L-AUTH-TRACE-003）
+5. TC-04 のようなテストで `[TEMP DEBUG]` 痕跡がないことを確認してから Phase クローズする

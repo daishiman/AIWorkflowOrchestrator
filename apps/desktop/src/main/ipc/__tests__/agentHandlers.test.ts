@@ -87,7 +87,13 @@ describe("agentHandlers", () => {
 
     // Register handlers
     const { registerAgentExecutionHandlers } = await import("../agentHandlers");
-    registerAgentExecutionHandlers(mockMainWindow);
+    const mockApprovalGate = {
+      grantApproval: vi.fn(),
+      rejectApproval: vi.fn(),
+      checkApproval: vi.fn(),
+      revokeAll: vi.fn(),
+    };
+    registerAgentExecutionHandlers(mockMainWindow, mockApprovalGate);
   });
 
   afterEach(() => {

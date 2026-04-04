@@ -147,6 +147,13 @@ export interface OnboardingWizardProps {
   onComplete: (payload: OnboardingCompletionPayload) => Promise<void> | void;
 }
 
+interface InertStateSnapshot {
+  element: HTMLElement;
+  wasInert: boolean;
+  inertAttribute: string | null;
+  ariaHidden: string | null;
+}
+
 function getFocusableElements(container: HTMLElement): HTMLElement[] {
   const selectors = [
     "button:not([disabled])",
@@ -267,6 +274,7 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   onClose,
   onComplete,
 }) => {
+  const overlayRef = useRef<HTMLDivElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -357,6 +365,52 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
     };
   }, [allowDismiss, currentStep, isCompleting, isOpen, onClose]);
 
+  useEffect(() => {
+    if (!isOpen || !overlayRef.current) {
+      return undefined;
+    }
+
+    const overlay = overlayRef.current;
+    const parent = overlay.parentElement;
+    if (!parent) {
+      return undefined;
+    }
+
+    const snapshots: InertStateSnapshot[] = [];
+    for (const sibling of Array.from(parent.children)) {
+      if (sibling === overlay || !(sibling instanceof HTMLElement)) {
+        continue;
+      }
+
+      snapshots.push({
+        element: sibling,
+        wasInert: sibling.inert,
+        inertAttribute: sibling.getAttribute("inert"),
+        ariaHidden: sibling.getAttribute("aria-hidden"),
+      });
+
+      sibling.inert = true;
+      sibling.setAttribute("inert", "");
+      sibling.setAttribute("aria-hidden", "true");
+    }
+
+    return () => {
+      for (const snapshot of snapshots) {
+        snapshot.element.inert = snapshot.wasInert;
+        if (snapshot.inertAttribute === null) {
+          snapshot.element.removeAttribute("inert");
+        } else {
+          snapshot.element.setAttribute("inert", snapshot.inertAttribute);
+        }
+        if (snapshot.ariaHidden === null) {
+          snapshot.element.removeAttribute("aria-hidden");
+        } else {
+          snapshot.element.setAttribute("aria-hidden", snapshot.ariaHidden);
+        }
+      }
+    };
+  }, [isOpen]);
+
   if (!isOpen) {
     return null;
   }
@@ -412,7 +466,10 @@ export const OnboardingWizard: React.FC<OnboardingWizardProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center p-3 sm:p-6">
+    <div
+      ref={overlayRef}
+      className="fixed inset-0 z-[80] flex items-center justify-center p-3 sm:p-6"
+    >
       <div className="absolute inset-0 bg-[rgba(15,23,42,0.56)] backdrop-blur-[2px]" />
       <div
         ref={dialogRef}

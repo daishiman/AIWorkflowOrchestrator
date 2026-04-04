@@ -3,6 +3,31 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-04-03 - UT-UIUX-VISUAL-BASELINE-DRIFT-001 の dark-mode baseline drift 再利用知見を SKILL / template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns-success-phase12-advanced.md` に dark-mode visual baseline drift の `theme lock / evidence lock / same-wave sync` パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` に `playwright.config.ts` と spec の `colorScheme` 二重固定、および `TC-ID ↔ png ↔ manual-test-result` 1:1 管理のチェック項目を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に UI visual baseline drift 追補プロファイルを追加し、workflow / completed ledger / lessons / lookup の同 wave 更新を標準化
+  - `SKILL.md` の Phase 12 再監査ショートカットに `theme lock → screenshot evidence → docs/spec sync` を追加し、`SCREENSHOT + outputs` 優先の順序を明示
+
+---
+## 2026-03-30 - TASK-P0-02 verify→improve→re-verify 閉ループ実装の SKILL.md 反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: save-patterns
+- **Result**: ✓ 成功
+- **Notes**:
+  - `verifyAndImproveLoop()` の閉ループ仕様を SKILL.md「verify → improve → re-verify 閉ループ（TASK-P0-02）」セクションへ追記
+  - `maxImproveRetry`（デフォルト3、範囲1-10、範囲外は自動クランプ）、feedback memory（直前の改善要約を次回 feedback に合成し重複改善を抑制）、`failedChecks` 限定改善入力（`info` は除外）を文書化
+  - `RuntimeSkillCreatorVerifyAndImproveResult` 型フィールドと `RuntimeSkillCreatorFacadeDeps.maxImproveRetry` を文書化
+  - テスト実績: 70件 PASS（SkillCreatorWorkflowEngine 41件 + RuntimeSkillCreatorFacade 37件 + formatVerifyChecksAsFeedback 9件 含む、runtime全体 449 tests PASS）
+  - Phase 12 compliance check PASS、typecheck PASS、diff -qr mirror PASS
+
+---
 ## 2026-03-27 - runtime policy close-out の authority / reason source hardening を update-process へ反映
 
 - **Agent**: skill-creator (update)
@@ -2421,3 +2446,14 @@ Phase 1〜6: 従来フロー（分析→設計→構造→生成→検証）
   - `references/update-process.md` に Phase 12 retrospective の `Phase 3.5: stale fact cleanup` を追加
   - `assets/phase12-system-spec-retrospective-template.md` に stale fact cleanup 行を追加し、テスト件数 / coverage / out-of-scope 注記 / 日付 / follow-up 件数の同値同期を明文化
   - Phase 12 の same-wave sync では outputs 生成だけでなく、report と unassigned-task の記述ドリフト除去まで同一ターンで閉じる運用を標準化
+
+---
+## 2026-03-29 - TASK-RT-06 Phase 12 close-out drift 是正パターンを適用
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - RT-06 で発生した Phase 12 ドリフト（Part 1/Part 2 欠落、Phase 11 N/A 証跡不足、判定矛盾）を same-wave で修正
+  - `implementation-guide` は Part 1/Part 2 の2層必須要件で再構成し、Phase 11 は `N/A + checklist/issues` の補助証跡を必須化
+  - 環境 blocker（esbuild mismatch）は PASS 扱いせず未タスクへ formalize する運用を再確認

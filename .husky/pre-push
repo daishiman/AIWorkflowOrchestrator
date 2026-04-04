@@ -80,7 +80,7 @@ CHANGED_FILES=$(git diff --name-only "$REMOTE_REF" HEAD 2>/dev/null)
 DOCS_ONLY=true
 for file in $CHANGED_FILES; do
     case "$file" in
-        *.md|*.txt|.claude/*|docs/*|.husky/*|*.json)
+        *.md|*.txt|.claude/*|docs/*|.husky/*|*.json|.github/*)
             # ドキュメント/設定ファイル - テストスキップ対象
             ;;
         *)

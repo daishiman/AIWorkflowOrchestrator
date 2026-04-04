@@ -1,19 +1,36 @@
-import React, { startTransition, useEffect, useRef, useState } from "react";
+import React, {
+  startTransition,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import type { SkillExecutionStatus } from "@repo/shared";
 import type {
   ApplyImprovementResult,
   HandoffGuidance,
+  SkillCreatorExecutePlanAck,
+  RuntimeSkillCreatorExecuteErrorResponse,
   RuntimeSkillCreatorExecuteResponse,
+  RuntimeSkillCreatorExecuteResult,
   RuntimeSkillCreatorImproveErrorResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
+  RuntimeSkillCreatorPlanErrorResponse,
+  RuntimeSkillCreatorPlanResponse,
+  RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorReverifyResponse,
+  RuntimeSkillCreatorVerifyCheck,
+  RuntimeSkillCreatorVerifyCheckSeverity,
   RuntimeSkillCreatorVerifyDetailResponse,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
   TerminalHandoffBundle,
 } from "@repo/shared/types";
 import type { PlanResult } from "../../store/slices/agentSlice";
+import { ApiKeySettingsPanel } from "./ApiKeySettingsPanel";
+import { ConversationalInterview } from "./ConversationalInterview";
 import {
   useBeginSkillReview,
   useClearHandoffGuidance,
@@ -50,7 +67,9 @@ import {
   useWorkflowSnapshot,
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
+import { ExecuteResultDetailPanel } from "./ExecuteResultDetailPanel";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
+import { PlanResultDetailPanel } from "./PlanResultDetailPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
 
@@ -96,13 +115,15 @@ type SkillCreatorRuntimeApi = {
     prompt: string,
     authMode?: string,
     apiKey?: string,
-  ) => Promise<IpcResult<PlanResult>>;
+  ) => Promise<IpcResult<RuntimeSkillCreatorPlanResponse>>;
   executePlan?: (
     planId: string,
     skillSpec?: unknown,
     authMode?: string,
     apiKey?: string,
-  ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>>;
+  ) => Promise<
+    IpcResult<SkillCreatorExecutePlanAck | RuntimeSkillCreatorExecuteResponse>
+  >;
   getWorkflowState?: (
     planId: string,
   ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
@@ -158,6 +179,67 @@ function isExecuteTerminalHandoff(
   return "type" in response && response.type === "terminal_handoff";
 }
 
+function isExecuteErrorResponse(
+  response: RuntimeSkillCreatorExecuteResponse,
+): response is RuntimeSkillCreatorExecuteErrorResponse {
+  return (
+    "success" in response &&
+    response.success === false &&
+    typeof response.error === "object" &&
+    response.error !== null &&
+    "message" in response.error &&
+    typeof response.error.message === "string"
+  );
+}
+
+function isExecutePlanAck(
+  response: unknown,
+): response is SkillCreatorExecutePlanAck {
+  return (
+    !!response &&
+    typeof response === "object" &&
+    "accepted" in response &&
+    (response as { accepted: unknown }).accepted === true &&
+    "planId" in response &&
+    typeof (response as { planId: unknown }).planId === "string"
+  );
+}
+
+type WorkflowSnapshotWithArtifacts = SkillCreatorWorkflowUiSnapshot & {
+  phaseArtifacts?: Array<{
+    kind: string;
+    payload: unknown;
+  }>;
+};
+
+function extractExecuteResultFromWorkflowSnapshot(
+  snapshot: WorkflowSnapshotWithArtifacts,
+): RuntimeSkillCreatorExecuteResult | null {
+  const artifacts = snapshot.phaseArtifacts;
+  if (!Array.isArray(artifacts) || artifacts.length === 0) {
+    return null;
+  }
+
+  for (let index = artifacts.length - 1; index >= 0; index--) {
+    const artifact = artifacts[index];
+    if (artifact.kind !== "execute_result") {
+      continue;
+    }
+    const payload = artifact.payload;
+    if (
+      !!payload &&
+      typeof payload === "object" &&
+      "executeId" in payload &&
+      "skillName" in payload &&
+      "success" in payload
+    ) {
+      return payload as RuntimeSkillCreatorExecuteResult;
+    }
+  }
+
+  return null;
+}
+
 function isRuntimeImproveTerminalHandoff(
   response: RuntimeSkillCreatorImproveResponse,
 ): response is Extract<
@@ -171,6 +253,47 @@ function isRuntimeImproveErrorResponse(
   response: RuntimeSkillCreatorImproveResponse,
 ): response is RuntimeSkillCreatorImproveErrorResponse {
   return "success" in response && response.success === false;
+}
+
+function isRuntimePlanErrorResponse(
+  response: unknown,
+): response is RuntimeSkillCreatorPlanErrorResponse {
+  if (!response || typeof response !== "object") {
+    return false;
+  }
+  if (!("success" in response) || response.success !== false) {
+    return false;
+  }
+  if (!("error" in response) || !response.error) {
+    return false;
+  }
+  return (
+    typeof response.error === "object" &&
+    "message" in response.error &&
+    typeof response.error.message === "string"
+  );
+}
+
+function toPlanResult(
+  response: RuntimeSkillCreatorPlanResponse,
+): PlanResult | null {
+  if ("type" in response && response.type === "terminal_handoff") {
+    return {
+      type: "terminal_handoff",
+      guidance: response.guidance,
+    };
+  }
+  if ("success" in response && response.success === false) {
+    return null;
+  }
+  if (!("planId" in response)) {
+    return null;
+  }
+  return {
+    type: "integrated_api",
+    planId: response.planId,
+    estimatedSteps: response.estimatedSteps,
+  };
 }
 
 function toHandoffGuidance(bundle: TerminalHandoffBundle): HandoffGuidance {
@@ -231,13 +354,226 @@ const verifyStatusBadgeStyles: Record<
 };
 
 const verifyCheckSeverityStyles: Record<
-  RuntimeSkillCreatorVerifyDetailResponse["checks"][number]["severity"],
+  RuntimeSkillCreatorVerifyCheckSeverity,
   string
 > = {
   info: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
   warning: "bg-amber-500/10 text-amber-700",
   error: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
 };
+
+type VerifyLayerKey = RuntimeSkillCreatorVerifyCheck["layer"];
+
+const VERIFY_LAYER_ORDER: readonly VerifyLayerKey[] = [
+  "layer1",
+  "layer2",
+  "layer3",
+  "layer4",
+];
+
+const verifyLayerLabels: Record<VerifyLayerKey, string> = {
+  layer1: "Layer 1 — 必須ファイル構造",
+  layer2: "Layer 2 — SKILL.md セクション",
+  layer3: "Layer 3 — スキーマ・コンテンツ品質",
+  layer4: "Layer 4 — References整合性",
+};
+
+const verifyCheckSeverityIcon: Record<
+  RuntimeSkillCreatorVerifyCheckSeverity,
+  string
+> = {
+  info: "✓",
+  warning: "⚠",
+  error: "✗",
+};
+
+const VERIFY_SEVERITY_ORDER: readonly RuntimeSkillCreatorVerifyCheckSeverity[] =
+  ["error", "warning", "info"];
+
+type SeverityFilterLevel = "all" | "warning+" | "error";
+
+const SEVERITY_FILTER_OPTIONS: readonly {
+  value: SeverityFilterLevel;
+  label: string;
+}[] = [
+  { value: "all", label: "すべて" },
+  { value: "warning+", label: "警告以上" },
+  { value: "error", label: "エラーのみ" },
+];
+
+const severityFilterButtonStyles = {
+  active:
+    "rounded-md bg-[var(--status-primary)] px-3 py-1.5 text-xs font-medium text-[var(--text-inverse)]",
+  inactive:
+    "rounded-md px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]",
+} as const;
+
+function filterChecksBySeverity(
+  checks: RuntimeSkillCreatorVerifyCheck[],
+  filter: SeverityFilterLevel,
+): RuntimeSkillCreatorVerifyCheck[] {
+  if (filter === "all") return checks;
+  if (filter === "warning+") return checks.filter((c) => c.severity !== "info");
+  return checks.filter((c) => c.severity === "error");
+}
+
+function createDefaultExpandedLayers(): Record<VerifyLayerKey, boolean> {
+  return {
+    layer1: true,
+    layer2: true,
+    layer3: true,
+    layer4: true,
+  };
+}
+
+function isVerifyLayerKey(layer: string): layer is VerifyLayerKey {
+  return VERIFY_LAYER_ORDER.includes(layer as VerifyLayerKey);
+}
+
+function formatSeverityCountLabel(
+  severity: RuntimeSkillCreatorVerifyCheckSeverity,
+  count: number,
+): string {
+  const severityLabel = severity === "info" ? "info" : `${severity}s`;
+  return `${count} ${severityLabel}`;
+}
+
+function getVerifySeverityCounts(
+  checks: RuntimeSkillCreatorVerifyCheck[],
+): Record<RuntimeSkillCreatorVerifyCheckSeverity, number> {
+  return checks.reduce(
+    (counts, check) => {
+      counts[check.severity] += 1;
+      return counts;
+    },
+    {
+      info: 0,
+      warning: 0,
+      error: 0,
+    } as Record<RuntimeSkillCreatorVerifyCheckSeverity, number>,
+  );
+}
+
+function createVerifyChecksByLayer(): Record<
+  VerifyLayerKey,
+  RuntimeSkillCreatorVerifyCheck[]
+> {
+  return {
+    layer1: [],
+    layer2: [],
+    layer3: [],
+    layer4: [],
+  };
+}
+
+interface VerifyLayerGroupProps {
+  layer: VerifyLayerKey;
+  label: string;
+  checks: RuntimeSkillCreatorVerifyCheck[];
+  isExpanded: boolean;
+  onToggle: (layer: VerifyLayerKey) => void;
+}
+
+function VerifyLayerGroup({
+  layer,
+  label,
+  checks,
+  isExpanded,
+  onToggle,
+}: VerifyLayerGroupProps) {
+  const severityCounts = getVerifySeverityCounts(checks);
+  const panelId = `skill-lifecycle-verify-layer-${layer}-panel`;
+  const buttonId = `skill-lifecycle-verify-layer-${layer}-button`;
+
+  return (
+    <section
+      className="overflow-hidden rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)]"
+      data-testid={`skill-lifecycle-verify-layer-${layer}`}
+    >
+      <button
+        type="button"
+        id={buttonId}
+        aria-controls={panelId}
+        aria-expanded={isExpanded}
+        onClick={() => onToggle(layer)}
+        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-[var(--bg-secondary)]"
+        data-testid={`skill-lifecycle-verify-layer-toggle-${layer}`}
+      >
+        <div className="min-w-0">
+          <p className="text-sm font-semibold text-[var(--text-primary)]">
+            {label}
+          </p>
+          <p className="mt-1 text-xs text-[var(--text-secondary)]">
+            {checks.length} 件のチェック
+          </p>
+        </div>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          {VERIFY_SEVERITY_ORDER.filter(
+            (severity) => severityCounts[severity] > 0,
+          ).map((severity) => (
+            <span
+              key={severity}
+              className={`rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[severity]}`}
+            >
+              {formatSeverityCountLabel(severity, severityCounts[severity])}
+            </span>
+          ))}
+          <span
+            aria-hidden="true"
+            className="text-xs font-medium text-[var(--text-secondary)]"
+          >
+            {isExpanded ? "▲" : "▼"}
+          </span>
+        </div>
+      </button>
+
+      {isExpanded ? (
+        <div
+          id={panelId}
+          role="region"
+          aria-labelledby={buttonId}
+          className="border-t border-[var(--border-primary)] px-4 py-4"
+          data-testid={`skill-lifecycle-verify-layer-panel-${layer}`}
+        >
+          <div className="grid gap-3 lg:grid-cols-2">
+            {checks.map((check) => (
+              <article
+                key={check.id}
+                className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-4"
+                data-testid={`skill-lifecycle-verify-check-${check.id}`}
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-sm font-semibold text-[var(--text-primary)]">
+                    {check.id}
+                  </span>
+                  <span className="rounded-full bg-[var(--bg-primary)] px-2 py-1 text-xs font-medium text-[var(--text-secondary)]">
+                    {check.layer}
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[check.severity]}`}
+                  >
+                    <span aria-hidden="true">
+                      {verifyCheckSeverityIcon[check.severity]}
+                    </span>
+                    <span>{check.severity}</span>
+                  </span>
+                </div>
+                <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
+                  {check.summary}
+                </p>
+                {check.evidenceSummary ? (
+                  <p className="mt-2 text-xs text-[var(--text-secondary)]">
+                    {check.evidenceSummary}
+                  </p>
+                ) : null}
+              </article>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </section>
+  );
+}
 
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   const runtimeWindow = window as Window & {
@@ -328,6 +664,10 @@ export function SkillLifecyclePanel({
   const activeGenerationError = generationError;
 
   const [request, setRequest] = useState("");
+  // plan 承認時点の request snapshot を保持する。
+  // live textarea（request state）とは独立しており、
+  // handleExecutePlan は常にこの snapshot を execute payload として使用する。
+  // cancel または再生成まで不変。
   const [approvedSkillSpec, setApprovedSkillSpec] = useState<string | null>(
     null,
   );
@@ -355,12 +695,57 @@ export function SkillLifecyclePanel({
   );
   const [isVerifyDetailLoading, setIsVerifyDetailLoading] = useState(false);
   const [isReverifying, setIsReverifying] = useState(false);
+  const [expandedLayers, setExpandedLayers] = useState<
+    Record<VerifyLayerKey, boolean>
+  >(createDefaultExpandedLayers);
+  const [severityFilter, setSeverityFilter] =
+    useState<SeverityFilterLevel>("all");
+  const checksByLayer = useMemo(() => {
+    const groups = createVerifyChecksByLayer();
+    for (const check of verifyDetail?.checks ?? []) {
+      if (!isVerifyLayerKey(check.layer)) {
+        continue;
+      }
+      groups[check.layer].push(check);
+    }
+    return groups;
+  }, [verifyDetail?.checks]);
+  const filteredChecksByLayer = useMemo(() => {
+    const result = createVerifyChecksByLayer();
+    for (const layer of VERIFY_LAYER_ORDER) {
+      result[layer] = filterChecksBySeverity(
+        checksByLayer[layer],
+        severityFilter,
+      );
+    }
+    return result;
+  }, [checksByLayer, severityFilter]);
+  const severityTotalCounts = useMemo(() => {
+    const allChecks = Object.values(checksByLayer).flat();
+    return {
+      all: allChecks.length,
+      "warning+": allChecks.filter((c) => c.severity !== "info").length,
+      error: allChecks.filter((c) => c.severity === "error").length,
+    };
+  }, [checksByLayer]);
+  const toggleLayer = useCallback((layer: VerifyLayerKey) => {
+    setExpandedLayers((current) => ({
+      ...current,
+      [layer]: !current[layer],
+    }));
+  }, []);
   // TASK-SDK-07: disclosure info state
   const [disclosureInfo, setDisclosureInfo] = useState<{
     aiServiceName: string;
     modelName: string;
     externalDestinations: string[];
   } | null>(null);
+  // TASK-RT-03: raw plan/execute detail を local state に保持
+  const [rawPlanDetail, setRawPlanDetail] =
+    useState<RuntimeSkillCreatorPlanResult | null>(null);
+  const [rawExecuteDetail, setRawExecuteDetail] =
+    useState<RuntimeSkillCreatorExecuteResult | null>(null);
+
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
   const [textAnswer, setTextAnswer] = useState("");
@@ -377,6 +762,37 @@ export function SkillLifecyclePanel({
   ]);
 
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
+  const isPrepareFlowActiveRef = useRef(false);
+  const processedWorkflowOutcomePlanIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    setExpandedLayers(createDefaultExpandedLayers());
+    setSeverityFilter("all");
+  }, [activeWorkflowId]);
+
+  const clearPlanExecutionState = useCallback(() => {
+    setLocalPlanResult(null);
+    setCurrentPlanResult(null);
+    setCurrentPlanId(null);
+    setRawPlanDetail(null);
+    setRawExecuteDetail(null);
+    processedWorkflowOutcomePlanIdRef.current = null;
+  }, [setCurrentPlanId, setCurrentPlanResult]);
+
+  const applyWorkflowSnapshot = useCallback(
+    (snapshot: SkillCreatorWorkflowUiSnapshot) => {
+      setWorkflowSnapshot(snapshot);
+      // handoff 時はエラーメッセージを保持する
+      // fire-and-forget 配信では後続スナップショットでエラーが消えるバグ（Issue #1844）を防ぐ
+      if (snapshot.currentPhase !== "handoff") {
+        setWorkflowError(null);
+      }
+      if (snapshot.handoffBundle) {
+        setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
+      }
+    },
+    [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot],
+  );
 
   useEffect(() => {
     if (skillExecutionStatus === previousStatus.current) {
@@ -461,13 +877,9 @@ export function SkillLifecyclePanel({
     }
 
     return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-      setWorkflowSnapshot(snapshot);
-      setWorkflowError(null);
-      if (snapshot.handoffBundle) {
-        setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-      }
+      applyWorkflowSnapshot(snapshot);
     });
-  }, [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot]);
+  }, [applyWorkflowSnapshot]);
 
   useEffect(() => {
     const planId =
@@ -486,11 +898,7 @@ export function SkillLifecyclePanel({
           }
           return;
         }
-        setWorkflowSnapshot(result.data);
-        setWorkflowError(null);
-        if (result.data.handoffBundle) {
-          setHandoffGuidance(toHandoffGuidance(result.data.handoffBundle));
-        }
+        applyWorkflowSnapshot(result.data);
       })
       .catch((error) => {
         setWorkflowError(
@@ -534,12 +942,63 @@ export function SkillLifecyclePanel({
     }
   };
 
+  const processWorkflowOutcome = async (
+    snapshot: SkillCreatorWorkflowUiSnapshot,
+  ): Promise<boolean> => {
+    if (processedWorkflowOutcomePlanIdRef.current === snapshot.planId) {
+      return true;
+    }
+
+    const extendedSnapshot = snapshot as WorkflowSnapshotWithArtifacts;
+
+    if (extendedSnapshot.handoffBundle) {
+      processedWorkflowOutcomePlanIdRef.current = snapshot.planId;
+      setHandoffGuidance(toHandoffGuidance(extendedSnapshot.handoffBundle));
+      setGenerationError(
+        `ターミナル実行が必要です: ${extendedSnapshot.handoffBundle.suggestedCommand}`,
+      );
+      void fetchDisclosureInfo();
+      return true;
+    }
+
+    const executeResult =
+      extractExecuteResultFromWorkflowSnapshot(extendedSnapshot);
+    if (!executeResult) {
+      return false;
+    }
+
+    processedWorkflowOutcomePlanIdRef.current = snapshot.planId;
+    setRawExecuteDetail(executeResult);
+
+    if (!executeResult.success) {
+      setGenerationError(executeResult.error ?? "計画実行に失敗しました");
+      return true;
+    }
+
+    try {
+      await fetchSkills();
+    } catch (error) {
+      setGenerationError(
+        error instanceof Error
+          ? error.message
+          : "スキル一覧の取得に失敗しました。",
+      );
+      return true;
+    }
+    if (executeResult.skillName) {
+      selectSkillByName(executeResult.skillName);
+    }
+    setLocalPlanResult(null);
+    clearGenerationState();
+    return true;
+  };
+
   const dismissHandoffGuidance = () => {
     setDisclosureInfo(null);
     clearHandoffGuidance();
   };
 
-  const handleSubmitWorkflowInput = async () => {
+  const _handleSubmitWorkflowInput = async () => {
     if (!workflowSnapshot?.awaitingUserInput) {
       return;
     }
@@ -574,8 +1033,7 @@ export function SkillLifecyclePanel({
       return;
     }
 
-    setWorkflowSnapshot(result.data);
-    setWorkflowError(null);
+    applyWorkflowSnapshot(result.data);
     setSelectedOptionId(null);
     setTextAnswer("");
     setSecretAnswer("");
@@ -682,7 +1140,9 @@ export function SkillLifecyclePanel({
 
     // R-1: isGenerating ガード（二重呼出防止）
     if (isGenerating) return;
+    if (isPrepareFlowActiveRef.current) return;
 
+    isPrepareFlowActiveRef.current = true;
     clearSkillError();
     setLocalError(null);
     setIsPreparing(true);
@@ -714,6 +1174,7 @@ export function SkillLifecyclePanel({
       // detectMode が "plan" を返した場合、planSkill を自動呼出し
       if (result.data === "plan") {
         if (!skillCreatorApi.planSkill) {
+          clearPlanExecutionState();
           setGenerationError("planSkill API が利用できません");
           return;
         }
@@ -729,18 +1190,43 @@ export function SkillLifecyclePanel({
           );
 
           if (!planResult.success || !planResult.data) {
+            clearPlanExecutionState();
             setGenerationError(planResult.error ?? "計画生成に失敗しました");
             return;
           }
 
+          // TASK-RT-02: plan logical error の検出
+          if (isRuntimePlanErrorResponse(planResult.data)) {
+            clearPlanExecutionState();
+            setGenerationError(planResult.data.error.message);
+            return;
+          }
+
+          const normalizedPlan = toPlanResult(planResult.data);
+          if (!normalizedPlan) {
+            clearPlanExecutionState();
+            setGenerationError("計画レスポンスの形式が不正です");
+            return;
+          }
+
+          // TASK-RT-03: raw plan detail を local state に保存
+          // この時点で terminal_handoff と error response は上流のガードで除外済み
+          // normalizedPlan が取得できている = planResult.data は RuntimeSkillCreatorPlanResult
+          if ("planId" in planResult.data) {
+            setRawPlanDetail(planResult.data as RuntimeSkillCreatorPlanResult);
+          }
+
+          // plan 承認時点の request を snapshot として固定する。
+          // この後 textarea を編集しても execute payload は変わらない。
           setApprovedSkillSpec(trimmedRequest);
-          setLocalPlanResult(planResult.data);
-          setCurrentPlanResult(planResult.data);
-          if (planResult.data.planId) {
-            setCurrentPlanId(planResult.data.planId);
-            setActiveWorkflowId(planResult.data.planId);
+          setLocalPlanResult(normalizedPlan);
+          setCurrentPlanResult(normalizedPlan);
+          if (normalizedPlan.planId) {
+            setCurrentPlanId(normalizedPlan.planId);
+            setActiveWorkflowId(normalizedPlan.planId);
           }
         } catch (err) {
+          clearPlanExecutionState();
           setGenerationError(
             err instanceof Error ? err.message : "計画生成に失敗しました",
           );
@@ -763,6 +1249,7 @@ export function SkillLifecyclePanel({
         error instanceof Error ? error.message : "mode 判定に失敗しました。",
       );
     } finally {
+      isPrepareFlowActiveRef.current = false;
       setIsPreparing(false);
     }
   };
@@ -777,6 +1264,8 @@ export function SkillLifecyclePanel({
     try {
       setIsGenerating(true);
       setDisclosureInfo(null);
+      // approved snapshot のみを execute payload として渡す。
+      // live textarea（request state）の値は使用しない。
       const result = await skillCreatorApi.executePlan(
         planId,
         approvedSkillSpec ?? undefined,
@@ -785,22 +1274,56 @@ export function SkillLifecyclePanel({
         setGenerationError(result.error ?? "計画実行に失敗しました");
         return;
       }
-      const executeResponse = result.data;
-      setActiveWorkflowId(planId);
-      // TASK-SDK-07: visible handoff + disclosure summary へ接続
-      if (isExecuteTerminalHandoff(executeResponse)) {
-        setHandoffGuidance(toHandoffGuidance(executeResponse.bundle));
-        void fetchDisclosureInfo();
+      if (isExecutePlanAck(result.data)) {
+        setActiveWorkflowId(planId);
         if (skillCreatorApi.getWorkflowState) {
-          const snapshotResult = await skillCreatorApi.getWorkflowState(planId);
-          if (snapshotResult.success && snapshotResult.data) {
-            setWorkflowSnapshot(snapshotResult.data);
-            setWorkflowError(null);
+          try {
+            const snapshotResult =
+              await skillCreatorApi.getWorkflowState(planId);
+            if (snapshotResult.success && snapshotResult.data) {
+              setWorkflowSnapshot(snapshotResult.data);
+              setWorkflowError(null);
+              if (await processWorkflowOutcome(snapshotResult.data)) {
+                await loadVerifyDetail(planId);
+                return;
+              }
+            }
+          } catch {
+            // ack 受理後の snapshot 取得失敗は、後続の workflow event に委譲する
           }
         }
         await loadVerifyDetail(planId);
         return;
       }
+
+      const executeResponse = result.data;
+      setActiveWorkflowId(planId);
+      // TASK-SDK-07: visible handoff + disclosure summary へ接続
+      if (isExecuteTerminalHandoff(executeResponse)) {
+        processedWorkflowOutcomePlanIdRef.current = planId;
+        setHandoffGuidance(toHandoffGuidance(executeResponse.bundle));
+        void fetchDisclosureInfo();
+        if (skillCreatorApi.getWorkflowState) {
+          const snapshotResult = await skillCreatorApi.getWorkflowState(planId);
+          if (snapshotResult.success && snapshotResult.data) {
+            applyWorkflowSnapshot(snapshotResult.data);
+          }
+        }
+        await loadVerifyDetail(planId);
+        return;
+      }
+      if (isExecuteErrorResponse(executeResponse)) {
+        processedWorkflowOutcomePlanIdRef.current = planId;
+        await loadVerifyDetail(planId);
+        setGenerationError(executeResponse.error.message);
+        return;
+      }
+      // TASK-RT-03: raw execute detail を local state に保存
+      // terminal_handoff は上流ガードで除外済み → executeResponse は RuntimeSkillCreatorExecuteResult
+      setRawExecuteDetail(executeResponse);
+
+      processedWorkflowOutcomePlanIdRef.current = planId;
+
       if (!executeResponse.success) {
         await loadVerifyDetail(planId);
         setGenerationError(executeResponse.error ?? "計画実行に失敗しました");
@@ -827,9 +1350,12 @@ export function SkillLifecyclePanel({
     setApprovedSkillSpec(null);
     clearGenerationState();
     setActiveWorkflowId(null);
+    processedWorkflowOutcomePlanIdRef.current = null;
     setVerifyDetail(null);
     setVerifyDetailError(null);
     setDisclosureInfo(null);
+    setRawPlanDetail(null);
+    setRawExecuteDetail(null);
   };
 
   const handleCreate = async () => {
@@ -1110,7 +1636,7 @@ export function SkillLifecyclePanel({
     (isExecuting ||
       streamingMessages.length > 0 ||
       (skillExecutionStatus !== null && skillExecutionStatus !== "idle"));
-  const pendingRequest = workflowSnapshot?.awaitingUserInput ?? null;
+  const _pendingRequest = workflowSnapshot?.awaitingUserInput ?? null;
 
   return (
     <div
@@ -1246,100 +1772,34 @@ export function SkillLifecyclePanel({
               </span>
             </div>
 
-            {pendingRequest ? (
-              <div
-                className="mt-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-4"
-                data-testid="skill-lifecycle-question-host"
-              >
-                <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                  Question Host
-                </p>
-                <h4 className="mt-2 text-sm font-semibold text-[var(--text-primary)]">
-                  {pendingRequest.title}
-                </h4>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">
-                  {pendingRequest.prompt}
-                </p>
-
-                {pendingRequest.kind === "single_select" ? (
-                  <div className="mt-4 space-y-2">
-                    {pendingRequest.options?.map((option) => (
-                      <label
-                        key={option.id}
-                        className="flex cursor-pointer items-start gap-3 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3"
-                      >
-                        <input
-                          type="radio"
-                          name="workflow-single-select"
-                          checked={selectedOptionId === option.id}
-                          onChange={() => setSelectedOptionId(option.id)}
-                        />
-                        <span className="text-sm text-[var(--text-primary)]">
-                          {option.label}
-                        </span>
-                      </label>
-                    ))}
-                  </div>
-                ) : null}
-
-                {pendingRequest.kind === "free_text" ? (
-                  <textarea
-                    value={textAnswer}
-                    onChange={(event) => setTextAnswer(event.target.value)}
-                    rows={4}
-                    placeholder={pendingRequest.placeholder}
-                    className="mt-4 w-full rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)]"
-                  />
-                ) : null}
-
-                {pendingRequest.kind === "secret" ? (
-                  <input
-                    type="password"
-                    value={secretAnswer}
-                    onChange={(event) => setSecretAnswer(event.target.value)}
-                    placeholder={pendingRequest.placeholder}
-                    className="mt-4 w-full rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)]"
-                  />
-                ) : null}
-
-                {pendingRequest.kind === "confirm" ? (
-                  <div className="mt-4 flex gap-2">
-                    <button
-                      type="button"
-                      className={lifecycleButtonStyles.primary}
-                      onClick={() => setConfirmAnswer(true)}
-                    >
-                      はい
-                    </button>
-                    <button
-                      type="button"
-                      className={lifecycleButtonStyles.secondary}
-                      onClick={() => setConfirmAnswer(false)}
-                    >
-                      いいえ
-                    </button>
-                  </div>
-                ) : null}
-
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className={lifecycleButtonStyles.primary}
-                    onClick={() => {
-                      void handleSubmitWorkflowInput();
-                    }}
-                    data-testid="skill-lifecycle-submit-user-input"
-                  >
-                    回答を送信する
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className="mt-4 rounded-xl border border-dashed border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4 text-sm text-[var(--text-secondary)]">
-                現在 pending の質問はありません。phase owner は Main 側 workflow
-                engine のまま維持されます。
-              </div>
-            )}
+            <div
+              className="mt-4 min-h-[320px]"
+              data-testid="skill-lifecycle-question-host"
+            >
+              <ConversationalInterview
+                workflowSnapshot={workflowSnapshot}
+                onSubmit={async (submission) => {
+                  const skillCreatorApi = getSkillCreatorApi();
+                  if (!skillCreatorApi?.submitUserInput) {
+                    setWorkflowError(
+                      "workflow user input API が利用できません",
+                    );
+                    throw new Error("workflow user input API が利用できません");
+                  }
+                  const result =
+                    await skillCreatorApi.submitUserInput(submission);
+                  if (!result.success || !result.data) {
+                    const message =
+                      result.error ??
+                      "workflow user input の送信に失敗しました";
+                    setWorkflowError(message);
+                    throw new Error(message);
+                  }
+                  applyWorkflowSnapshot(result.data);
+                }}
+                onError={(msg) => setWorkflowError(msg)}
+              />
+            </div>
           </div>
 
           <div className="space-y-4">
@@ -1462,6 +1922,19 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
+      {/* TASK-RT-03: Plan 結果詳細パネル — review phase で raw plan detail が存在する場合 */}
+      {rawPlanDetail &&
+      (!workflowSnapshot ||
+        workflowSnapshot.currentPhase === "review" ||
+        workflowSnapshot.awaitingUserInput?.reason === "plan_review") ? (
+        <PlanResultDetailPanel
+          planResult={rawPlanDetail}
+          onRetry={() => {
+            void handlePrepare();
+          }}
+        />
+      ) : null}
+
       {activePlanResult?.type === "terminal_handoff" &&
       activePlanResult.guidance ? (
         <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
@@ -1477,6 +1950,16 @@ export function SkillLifecyclePanel({
             </code>
           ) : null}
         </div>
+      ) : null}
+
+      {/* TASK-RT-03: Execute 結果詳細パネル — verify phase で raw execute detail が存在する場合 */}
+      {rawExecuteDetail && workflowSnapshot?.currentPhase === "verify" ? (
+        <ExecuteResultDetailPanel
+          executeResult={rawExecuteDetail}
+          onRetry={() => {
+            void handleExecutePlan();
+          }}
+        />
       ) : null}
 
       {activeWorkflowId ? (
@@ -1561,34 +2044,43 @@ export function SkillLifecyclePanel({
                 </div>
               ) : null}
 
-              <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                {verifyDetail.checks.map((check) => (
-                  <article
-                    key={check.id}
-                    className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4"
+              <div
+                className="mt-4 flex gap-1 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-primary)] p-1"
+                role="radiogroup"
+                aria-label="重要度フィルタ"
+                data-testid="severity-filter"
+              >
+                {SEVERITY_FILTER_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={severityFilter === option.value}
+                    onClick={() => setSeverityFilter(option.value)}
+                    className={
+                      severityFilter === option.value
+                        ? severityFilterButtonStyles.active
+                        : severityFilterButtonStyles.inactive
+                    }
+                    data-testid={`severity-filter-${option.value}`}
                   >
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-semibold text-[var(--text-primary)]">
-                        {check.id}
-                      </span>
-                      <span className="rounded-full bg-[var(--bg-secondary)] px-2 py-1 text-xs font-medium text-[var(--text-secondary)]">
-                        {check.layer}
-                      </span>
-                      <span
-                        className={`rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[check.severity]}`}
-                      >
-                        {check.severity}
-                      </span>
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                      {check.summary}
-                    </p>
-                    {check.evidenceSummary ? (
-                      <p className="mt-2 text-xs text-[var(--text-secondary)]">
-                        {check.evidenceSummary}
-                      </p>
-                    ) : null}
-                  </article>
+                    {option.label} ({severityTotalCounts[option.value]})
+                  </button>
+                ))}
+              </div>
+
+              <div className="mt-4 space-y-3">
+                {VERIFY_LAYER_ORDER.filter(
+                  (layer) => (filteredChecksByLayer[layer]?.length ?? 0) > 0,
+                ).map((layer) => (
+                  <VerifyLayerGroup
+                    key={layer}
+                    layer={layer}
+                    label={verifyLayerLabels[layer]}
+                    checks={filteredChecksByLayer[layer]}
+                    isExpanded={expandedLayers[layer] ?? true}
+                    onToggle={toggleLayer}
+                  />
                 ))}
               </div>
 
@@ -1659,6 +2151,9 @@ export function SkillLifecyclePanel({
           )}
         </div>
       ) : null}
+
+      {/* API キー設定 (TASK-RT-04) */}
+      <ApiKeySettingsPanel />
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(320px,0.9fr)]">
         <section className="space-y-4">

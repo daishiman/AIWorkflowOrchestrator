@@ -1,0 +1,86 @@
+{
+  "feature": "step-08-par-task-rt-02-stub-response-error-notification",
+  "created": "2026-03-29T08:03:33.000Z",
+  "lastUpdated": "2026-04-04T00:00:00.000Z",
+  "status": "implementation_complete",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": ["phase-1/spec-extraction-map.md"]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        "phase-2/error-response-design.md",
+        "phase-2/reason-code-catalog.md"
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": ["phase-3/design-review-gate.md"]
+    },
+    "4": { "status": "completed", "artifacts": ["phase-4/test-matrix.md"] },
+    "5": {
+      "status": "completed",
+      "artifacts": ["phase-5/implementation-record.md"]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["phase-6/extended-test-cases.md"]
+    },
+    "7": { "status": "completed", "artifacts": ["phase-7/coverage-report.md"] },
+    "8": {
+      "status": "completed",
+      "artifacts": ["phase-8/refactoring-record.md"]
+    },
+    "9": { "status": "completed", "artifacts": ["phase-9/quality-report.md"] },
+    "10": {
+      "status": "completed",
+      "artifacts": ["phase-10/final-review-result.md"]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "phase-11/manual-test-checklist.md",
+        "phase-11/manual-test-result.md",
+        "phase-11/manual-test-report.md",
+        "phase-11/discovered-issues.md",
+        "phase-11/phase11-capture-metadata.json",
+        "phase-11/ui-sanity-visual-review.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "phase-12/implementation-guide.md",
+        "phase-12/system-spec-update-summary.md",
+        "phase-12/documentation-changelog.md",
+        "phase-12/unassigned-task-detection.md",
+        "phase-12/skill-feedback-report.md",
+        "phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": { "status": "blocked", "artifacts": ["phase-13-pr-creation.md"] }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "fix",
+    "taskId": "TASK-RT-02",
+    "workflow": "skill-creator-agent-sdk-lane-rt",
+    "parentWorkflow": "skill-creator-agent-sdk-lane",
+    "dependsOnTasks": []
+  }
+}

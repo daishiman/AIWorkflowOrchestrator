@@ -84,6 +84,52 @@ describe("SkillCreatorWorkflowEngine", () => {
       "execute_result",
       "verify_result",
     ]);
+    const executeArtifact = snapshot.phaseArtifacts.find(
+      (artifact) => artifact.kind === "execute_result",
+    );
+    expect(executeArtifact?.payload).toMatchObject({
+      executeId: "exec-001",
+      skillName: "test-skill",
+      success: true,
+    });
+  });
+
+  it("execute artifact に persistResult / persistError を保持する", () => {
+    const engine = new SkillCreatorWorkflowEngine();
+    const planResult = createPlanResult();
+
+    engine.recordPlanResult(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    engine.recordExecuteStart(planResult, {
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+
+    const snapshot = engine.recordExecuteResult("plan-001", {
+      executeId: "exec-001",
+      skillName: "test-skill",
+      success: true,
+      persistResult: {
+        skillPath: "/tmp/test-skill",
+        files: ["SKILL.md"],
+      },
+      persistError: null,
+    });
+
+    const executeArtifact = snapshot.phaseArtifacts.find(
+      (artifact) => artifact.kind === "execute_result",
+    );
+    expect(executeArtifact?.payload).toMatchObject({
+      persistResult: {
+        skillPath: "/tmp/test-skill",
+        files: ["SKILL.md"],
+      },
+      persistError: null,
+    });
   });
 
   it("execute failure を verification_review 付きの review snapshot として保持する", () => {
@@ -666,7 +712,7 @@ describe("SkillCreatorWorkflowEngine", () => {
       });
     });
 
-    // phase_transition artifact: 遷移なし
+    // phase_transition artifact: 遷移なし（TASK-P0-02 閉ループテスト前の既存テスト）
     it("phase 遷移なしの場合は phase_transition artifact が記録されない", () => {
       const engine = new SkillCreatorWorkflowEngine();
       const snapshot = setupVerificationReviewState(engine);
@@ -682,6 +728,284 @@ describe("SkillCreatorWorkflowEngine", () => {
         (a) => (a.kind as string) === "phase_transition",
       );
       expect(transitionArtifact).toBeUndefined();
+    });
+  });
+
+  // ── TASK-P0-02: verify→improve→re-verify 閉ループ テスト ──
+
+  describe("recordVerifyPass", () => {
+    function setupVerifyPhase(engine: SkillCreatorWorkflowEngine) {
+      const planResult = createPlanResult();
+      const decision = {
+        type: "integrated_api" as const,
+        apiKey: "sk-test",
+        permissionMode: "default" as const,
+      };
+      engine.recordPlanResult(planResult, decision);
+      engine.recordExecuteStart(planResult, decision);
+      engine.recordExecuteResult("plan-001", {
+        executeId: "exec-001",
+        skillName: "test-skill",
+        success: true,
+      });
+      return engine;
+    }
+
+    it("全チェック PASS 時に verifyResult.status が 'pass' になる", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      setupVerifyPhase(engine);
+      const checks = [
+        {
+          id: "L1-001",
+          layer: "layer1" as const,
+          severity: "info" as const,
+          summary: "SKILL.md exists",
+        },
+      ];
+      const snapshot = engine.recordVerifyPass("plan-001", checks);
+      expect(snapshot.verifyResult?.status).toBe("pass");
+    });
+
+    it("nextAction が 'handoff' に設定される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      setupVerifyPhase(engine);
+      const checks = [
+        {
+          id: "L1-001",
+          layer: "layer1" as const,
+          severity: "info" as const,
+          summary: "OK",
+        },
+      ];
+      const snapshot = engine.recordVerifyPass("plan-001", checks);
+      expect(snapshot.verifyResult?.nextAction).toBe("handoff");
+    });
+
+    it("verify_result artifact が記録される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      setupVerifyPhase(engine);
+      const checks = [
+        {
+          id: "L1-001",
+          layer: "layer1" as const,
+          severity: "info" as const,
+          summary: "OK",
+        },
+      ];
+      const snapshot = engine.recordVerifyPass("plan-001", checks);
+      const verifyArtifacts = snapshot.phaseArtifacts.filter(
+        (a) => a.kind === "verify_result",
+      );
+      // recordExecuteResult creates 1, recordVerifyPass creates 1 more
+      expect(verifyArtifacts.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it("currentPhase が 'verify' のままである", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      setupVerifyPhase(engine);
+      const checks = [
+        {
+          id: "L1-001",
+          layer: "layer1" as const,
+          severity: "info" as const,
+          summary: "OK",
+        },
+      ];
+      const snapshot = engine.recordVerifyPass("plan-001", checks);
+      expect(snapshot.currentPhase).toBe("verify");
+    });
+  });
+
+  describe("recordImproveAttempt", () => {
+    function setupVerifyPhase(engine: SkillCreatorWorkflowEngine) {
+      const planResult = createPlanResult();
+      const decision = {
+        type: "integrated_api" as const,
+        apiKey: "sk-test",
+        permissionMode: "default" as const,
+      };
+      engine.recordPlanResult(planResult, decision);
+      engine.recordExecuteStart(planResult, decision);
+      engine.recordExecuteResult("plan-001", {
+        executeId: "exec-001",
+        skillName: "test-skill",
+        success: true,
+      });
+      return engine;
+    }
+
+    const failedChecks = [
+      {
+        id: "L1-001",
+        layer: "layer1" as const,
+        severity: "error" as const,
+        summary: "SKILL.md が存在しません",
+      },
+    ];
+
+    it("improveAttemptCount が 1 にインクリメントされる", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      setupVerifyPhase(engine);
+      const snapshot = engine.recordImproveAttempt("plan-001", failedChecks);
+      expect(snapshot.verifyResult?.improveAttemptCount).toBe(1);
+    });
+
+    it("2回目の呼び出しで improveAttemptCount が 2 になる（閉ループ内）", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      setupVerifyPhase(engine);
+      // 1回目 improve
+      engine.recordImproveAttempt("plan-001", failedChecks);
+      // 閉ループ内では execute を経由せず直接 recordImproveAttempt を再度呼ぶ
+      // improve phase から直接2回目の improve attempt を記録
+      const snapshot = engine.recordImproveAttempt("plan-001", failedChecks);
+      expect(snapshot.verifyResult?.improveAttemptCount).toBe(2);
+    });
+
+    it("currentPhase が 'improve' に遷移する", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      setupVerifyPhase(engine);
+      const snapshot = engine.recordImproveAttempt("plan-001", failedChecks);
+      expect(snapshot.currentPhase).toBe("improve");
+    });
+
+    it("failedChecksSummary に失敗チェックの概要が記録される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      setupVerifyPhase(engine);
+      const snapshot = engine.recordImproveAttempt("plan-001", failedChecks);
+      expect(snapshot.verifyResult?.failedChecksSummary).toBeTruthy();
+      expect(snapshot.verifyResult?.failedChecksSummary).toContain("L1-001");
+    });
+
+    it("verify_result artifact が記録される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      setupVerifyPhase(engine);
+      const beforeCount = engine
+        .getWorkflowState("plan-001")!
+        .phaseArtifacts.filter((a) => a.kind === "verify_result").length;
+      engine.recordImproveAttempt("plan-001", failedChecks);
+      const afterCount = engine
+        .getWorkflowState("plan-001")!
+        .phaseArtifacts.filter((a) => a.kind === "verify_result").length;
+      expect(afterCount).toBe(beforeCount + 1);
+    });
+
+    it("plan phase から直接 recordImproveAttempt を呼ぶとエラーになる", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      engine.recordPlanResult(createPlanResult(), {
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
+      });
+      // review phase → improve は不許可
+      expect(() =>
+        engine.recordImproveAttempt("plan-001", failedChecks),
+      ).toThrow("invalid workflow transition");
+    });
+  });
+
+  describe("getImproveAttemptCount", () => {
+    it("存在しない planId は 0 を返す", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      expect(engine.getImproveAttemptCount("nonexistent")).toBe(0);
+    });
+
+    it("improve 未実行の workflow は 0 を返す", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      engine.recordPlanResult(createPlanResult(), {
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
+      });
+      expect(engine.getImproveAttemptCount("plan-001")).toBe(0);
+    });
+  });
+
+  // ── TASK-RT-05: multi_select validation ──
+
+  describe("multi_select validation", () => {
+    function setupMultiSelectState(engine: SkillCreatorWorkflowEngine) {
+      const snapshot = engine.recordPlanResult(createPlanResult(), {
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
+      });
+      const requestId = snapshot.awaitingUserInput!.requestId;
+      // Override awaitingUserInput to multi_select for testing validation
+      const workflows = (
+        engine as unknown as {
+          workflows: Map<string, { awaitingUserInput: unknown }>;
+        }
+      ).workflows;
+      const state = workflows.get("plan-001")!;
+      state.awaitingUserInput = {
+        requestId,
+        reason: "plan_review" as const,
+        title: "Multi Select Test",
+        prompt: "Select multiple options",
+        kind: "multi_select" as const,
+        options: [
+          { id: "opt-a", label: "Option A" },
+          { id: "opt-b", label: "Option B" },
+          { id: "opt-c", label: "Option C" },
+        ],
+        requestedAt: new Date().toISOString(),
+      };
+      return requestId;
+    }
+
+    // T4-4: 既知 option id 配列なら pass
+    it("既知 option id の配列で submit が成功する", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const requestId = setupMultiSelectState(engine);
+
+      const submitted = engine.submitUserInput("plan-001", {
+        planId: "plan-001",
+        requestId,
+        selectedOptionIds: ["opt-a", "opt-b"],
+      });
+
+      expect(submitted.awaitingUserInput).toBeNull();
+    });
+
+    // T4-2: 空配列なら fail
+    it("selectedOptionIds が空配列なら reject する", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const requestId = setupMultiSelectState(engine);
+
+      expect(() =>
+        engine.submitUserInput("plan-001", {
+          planId: "plan-001",
+          requestId,
+          selectedOptionIds: [],
+        }),
+      ).toThrow("selectedOptionIds is required");
+    });
+
+    // T4-2: undefined なら fail
+    it("selectedOptionIds が undefined なら reject する", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const requestId = setupMultiSelectState(engine);
+
+      expect(() =>
+        engine.submitUserInput("plan-001", {
+          planId: "plan-001",
+          requestId,
+        }),
+      ).toThrow("selectedOptionIds is required");
+    });
+
+    // T4-3: 未知 option id を含むと fail
+    it("未知の option id を含むと reject する", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const requestId = setupMultiSelectState(engine);
+
+      expect(() =>
+        engine.submitUserInput("plan-001", {
+          planId: "plan-001",
+          requestId,
+          selectedOptionIds: ["opt-a", "unknown-id"],
+        }),
+      ).toThrow("selectedOptionIds is invalid");
     });
   });
 });

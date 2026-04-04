@@ -47,6 +47,12 @@ Main Process（Electron）内で以下の階層構造を持つ：
 | `ipc-handler.ts`      | IPCハンドラ                  |
 | `index.ts`            | エクスポート                 |
 
+### Shared State Boundary
+
+- `ClaudeCliManager` の state owner は `claude-cli/ipc-handler.ts` 内の module-scope `manager` である。
+- Main Process の他モジュールが参照してよい入口は `getClaudeCliManager()` のみとし、`apps/desktop/src/main/ipc/index.ts` から Advanced Console callback へ DI する。
+- Renderer 向けの安定契約は `advancedConsoleHandlers.ts` が返す `TERMINAL_LOG_ERROR` / `COPY_COMMAND_ERROR` であり、`SESSION_NOT_FOUND` は callback 内部で使う内部コードとして扱う。
+
 ### 型定義
 
 | 型名                 | 定義場所                                  | 説明             |

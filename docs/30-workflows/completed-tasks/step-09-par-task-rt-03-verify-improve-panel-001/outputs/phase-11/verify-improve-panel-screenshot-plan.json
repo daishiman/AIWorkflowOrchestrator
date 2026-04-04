@@ -1,0 +1,32 @@
+{
+  "taskId": "TASK-RT-03-VERIFY-IMPROVE-PANEL-001",
+  "generatedAt": "2026-04-04T00:29:24.672Z",
+  "harnessPath": "/phase11-task-rt-03-verify-improve-panel.html",
+  "viewport": {
+    "width": 1440,
+    "height": 2200
+  },
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "name": "verify-pass",
+      "file": "TC-11-01-verify-pass.png",
+      "output": "outputs/phase-11/screenshots/TC-11-01-verify-pass.png",
+      "capturedAt": "2026-04-04T00:29:24.242Z"
+    },
+    {
+      "tcId": "TC-11-02",
+      "name": "verify-fail",
+      "file": "TC-11-02-verify-fail.png",
+      "output": "outputs/phase-11/screenshots/TC-11-02-verify-fail.png",
+      "capturedAt": "2026-04-04T00:29:24.410Z"
+    },
+    {
+      "tcId": "TC-11-03",
+      "name": "improve-default",
+      "file": "TC-11-03-improve-default.png",
+      "output": "outputs/phase-11/screenshots/TC-11-03-improve-default.png",
+      "capturedAt": "2026-04-04T00:29:24.671Z"
+    }
+  ]
+}

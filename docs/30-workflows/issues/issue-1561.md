@@ -13,6 +13,8 @@ source_phase: TASK-LLM-MOD-04 Phase 10-11
 created_date: 2026-03-24
 dependencies: []
 spec_path: docs/30-workflows/unassigned-task/UT-LLM-MOD-04-001.md
+parent_workflow: docs/30-workflows/step-03-seq-task-04-test-update/index.md
+classification: existing_backlog_retained_during_audit_sync
 ```
 
 | 項目       | 内容   |
@@ -26,6 +28,12 @@ spec_path: docs/30-workflows/unassigned-task/UT-LLM-MOD-04-001.md
 ## 目的
 
 PROVIDER_CONFIGS から削除済みのレガシーモデルID（`gpt-4o`, `grok-1`）がテストファイルのモック入力に残存している。新規開発者の混乱を防ぐため、現行モデルIDに統一する。
+
+## current wave での位置づけ
+
+- `TASK-LLM-MOD-04` の docs / close-out wave では再実装しない
+- 既存 backlog として維持し、current workflow からの導線だけを補強した
+- 検出元は `outputs/phase-12/unassigned-task-detection.md` に再記録されている
 
 ## 変更内容
 
@@ -59,4 +67,5 @@ PROVIDER_CONFIGS から削除済みのレガシーモデルID（`gpt-4o`, `grok-
 
 ## 参照
 
-- 検出元: `docs/30-workflows/llm-provider-model-modernization/tasks/step-03-seq-task-04-test-update/unassigned-task-report.md`
+- 検出元: `docs/30-workflows/step-03-seq-task-04-test-update/outputs/phase-12/unassigned-task-detection.md`
+- parent workflow: `docs/30-workflows/step-03-seq-task-04-test-update/index.md`

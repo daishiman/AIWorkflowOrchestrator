@@ -2,19 +2,21 @@
  * SDK Message Normalizer
  * TASK-RT-06: Claude Code SDK SDKMessage → SkillCreatorSdkEvent 正規化
  *
- * `query()` が返す SDK 生メッセージを lane 安定契約 (`SkillCreatorSdkEvent`) に変換する。
- * Facade 内で使用し、IPC / renderer / WorkflowEngine が SDK 内部構造に依存しないようにする。
+ * LLMアダプター（ILLMAdapter）が返す生メッセージを lane 安定契約 (`SkillCreatorSdkEvent`) に変換する。
+ * Facade 内で使用し、IPC / renderer / WorkflowEngine が LLMアダプター内部構造に依存しないようにする。
  */
 
 import type {
   SkillCreatorSdkEvent,
-  SkillCreatorSdkEventSourceProvenance,
+  SkillCreatorSdkPermissionDenial,
+  SkillCreatorWorkflowSourceProvenance,
 } from "@repo/shared/types";
+import { asSdkMessageRecord, getSdkMessageType } from "./sdkMessageUtils";
 
 /** normalizer に渡すコンテキスト */
 export interface NormalizerContext {
   /** skill-creator source provenance */
-  sourceProvenance?: SkillCreatorSdkEventSourceProvenance;
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
   /** 前イベントから引き継いだ sessionId（stream 処理時に伝播用） */
   sessionId?: string;
 }
@@ -22,7 +24,7 @@ export interface NormalizerContext {
 /**
  * SDK 生メッセージ 1 件を lane 正規化イベントに変換する。
  *
- * @param rawMessage - `query()` から受信した SDK 生メッセージ（型は unknown）
+ * @param rawMessage - ILLMAdapter（sendChat/streamChat）から受信した生メッセージ（型は unknown）
  * @param context - normalizer コンテキスト（provenance, 伝播 sessionId）
  * @returns 正規化済み `SkillCreatorSdkEvent`
  */
@@ -30,13 +32,13 @@ export function normalizeSdkMessage(
   rawMessage: unknown,
   context: NormalizerContext,
 ): SkillCreatorSdkEvent {
-  // null / undefined / 非オブジェクト → error
-  if (rawMessage == null || typeof rawMessage !== "object") {
+  // shared helper による前処理
+  const msg = asSdkMessageRecord(rawMessage);
+  if (!msg) {
     return buildErrorEvent("Invalid SDK message: null or non-object", context);
   }
 
-  const msg = rawMessage as Record<string, unknown>;
-  const msgType = typeof msg.type === "string" ? msg.type : undefined;
+  const msgType = getSdkMessageType(msg);
 
   if (!msgType) {
     return buildErrorEvent("Invalid SDK message: missing type field", context);
@@ -155,7 +157,7 @@ function normalizeAssistantMessage(
   }
 
   // permission denial の処理
-  const permissionDenials: string[] = [];
+  const permissionDenials: SkillCreatorSdkPermissionDenial[] = [];
   if (permissionDenied) {
     const deniedTool =
       typeof msg.denied_tool === "string" ? msg.denied_tool : "unknown";
@@ -163,7 +165,7 @@ function normalizeAssistantMessage(
       typeof msg.denied_reason === "string"
         ? msg.denied_reason
         : "Permission denied";
-    permissionDenials.push(`${deniedTool}: ${deniedReason}`);
+    permissionDenials.push({ toolName: deniedTool, reason: deniedReason });
   }
 
   const event: SkillCreatorSdkEvent = {

@@ -50,7 +50,11 @@ export default defineConfig({
   test: {
     globals: true,
     environment: "happy-dom",
-    include: ["src/**/*.test.{ts,tsx}", "scripts/**/*.test.{ts,tsx}"],
+    include: [
+      "src/**/*.test.{ts,tsx}",
+      "scripts/**/*.test.{ts,tsx}",
+      "__tests__/**/*.test.{ts,tsx}",
+    ],
     exclude: ["node_modules/", "out/", "dist/"],
     setupFiles: ["./src/test/setup.ts"],
     pool: "forks",

@@ -1,0 +1,288 @@
+{
+  "feature": "UT-UIUX-PLAYWRIGHT-E2E-001",
+  "created": "2026-03-31T00:00:00.000Z",
+  "lastUpdated": "2026-03-31T00:00:00.000Z",
+  "status": "phase12_completed",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-1-requirements.md",
+          "description": "要件定義"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-2-design.md",
+          "description": "設計"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-3-implementation-plan.md",
+          "description": "実装計画"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-4-impl-config.md",
+          "description": "設定・共通基盤仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/implementation-summary.md",
+          "description": "Phase 4 実装サマリー"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-5-impl-layer1.md",
+          "description": "Layer 1 実装仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-5/semantic-summary.md",
+          "description": "Layer 1 実装サマリー"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-6-impl-layer2.md",
+          "description": "Layer 2 実装仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/visual-summary.md",
+          "description": "Layer 2 実装サマリー"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-7-baseline.md",
+          "description": "baseline 確認"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/baseline-summary.md",
+          "description": "baseline サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "coverage report"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-8-script-update.md",
+          "description": "script update 仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/script-update-summary.md",
+          "description": "script update summary"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-record.md",
+          "description": "refactoring record"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-9-integration.md",
+          "description": "integration 仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-9/integration-test-report.md",
+          "description": "integration report"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-10-docs.md",
+          "description": "最終レビュー仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-11-refactor.md",
+          "description": "手動テスト仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テスト詳細"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見事項"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "description": "撮影計画"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "description": "screenshot coverage"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "description": "UI sanity review"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshots/phase11-capture-metadata.json",
+          "description": "capture metadata"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-03-31T00:00:00.000Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "phase-12-closeout.md",
+          "description": "close-out 仕様"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "implementation guide"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "system spec update summary"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "documentation changelog"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "unassigned detection"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "skill feedback"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "phase 12 compliance"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/thinking-method-audit.md",
+          "description": "30思考法 + エレガント検証"
+        }
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "completedAt": null,
+      "artifacts": []
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["4"],
+    "7": ["5", "6"],
+    "8": ["4"],
+    "9": ["7", "8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feature",
+    "estimatedPhases": 13,
+    "actualPhases": 12,
+    "issueNumber": 1797,
+    "previousTaskId": "UT-UIUX-PLAYWRIGHT-E2E-COMPLETE-001",
+    "playwrightVersion": "^1.57.0",
+    "targetPackage": "@repo/desktop"
+  }
+}

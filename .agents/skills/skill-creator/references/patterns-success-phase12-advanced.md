@@ -374,3 +374,18 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **適用条件**: Phase 12 再監査、docs-heavy/backend-heavy の仕様同期、ユーザーからの明示的な画面検証要求
 - **発見日**: 2026-03-19
 - **関連タスク**: UT-TASK06-007
+
+### [Phase12] dark-mode visual baseline drift の theme lock / evidence lock / same-wave sync（UT-UIUX-VISUAL-BASELINE-DRIFT-001）
+
+- **状況**: Playwright の browser default と spec-level default がズレると、`dark-mode` baseline drift が UI 差分ではなく実行環境差分として再発する
+- **アプローチ**:
+  1. `ui-ux-layer2` の Playwright project に `use.colorScheme: "dark"` を固定する
+  2. `apps/desktop/e2e/ui-ux/layer2-visual.spec.ts` に `test.use({ colorScheme: "dark" })` を固定し、spec-level default も同値にする
+  3. Phase 11 screenshot evidence を `TC-ID` ベースで保存し、`manual-test-result.md` と 1:1 対応させる
+  4. `workflow-ui-ux-visual-baseline-drift.md` / `task-workflow-completed-ui-ux-visual-baseline-drift.md` / `lessons-learned-ui-ux-visual-baseline-drift.md` を同一 wave で同期する
+  5. `resource-map.md` / `quick-reference.md` / `LOGS.md` へ lookup 導線を戻す
+- **結果**: `ui-ux-layer2` は `10 passed`、`typecheck` は PASS、`eslint` は `0 errors / 6 warnings` で、current と baseline を分離したまま完了できた
+- **適用条件**: dark-mode screenshot / visual regression / baseline drift の再撮影が必要な Phase 12 タスク
+- **教訓**: browser theme は config だけでは足りず、spec-level evidence と docs/spec sync まで同一 wave で閉じる必要がある
+- **発見日**: 2026-04-03
+- **関連タスク**: UT-UIUX-VISUAL-BASELINE-DRIFT-001

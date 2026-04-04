@@ -2,7 +2,7 @@
  * advancedConsoleIpc テスト
  *
  * TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 4
- * テストケース: ADV-12〜ADV-15
+ * テストケース: ADV-12〜ADV-18, ADV-20〜ADV-25
  */
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
@@ -196,5 +196,182 @@ describe("advancedConsoleIpc", () => {
     };
     expect(result.success).toBe(false);
     expect(result.error.code).toBe("UNAUTHORIZED");
+  });
+
+  // ADV-16: getTerminalLog が実セッションの output を返す（API キー sanitize 確認）
+  it("ADV-16: getTerminalLog が実 SessionManager output を返す", async () => {
+    const event = {
+      sender: mockMainWindow.webContents,
+    } as unknown as IpcMainInvokeEvent;
+
+    const mockOutput = ["line 1", "line 2", "sk-ant-SECRET should be redacted"];
+    mockGetTerminalLog.mockResolvedValue(mockOutput);
+
+    const result = (await terminalLogHandler(event, "session-123")) as {
+      success: boolean;
+      data: string[];
+    };
+
+    expect(result.success).toBe(true);
+    // sanitizeForApiKeys が適用され API キーが REDACTED になること
+    expect(result.data.join("\n")).not.toContain("sk-ant-SECRET");
+    expect(result.data.some((l: string) => l.includes("[REDACTED]"))).toBe(
+      true,
+    );
+  });
+
+  // ADV-17: getCopyCommand が scriptPath + args の結合を返す
+  it("ADV-17: getCopyCommand が scriptPath + args の結合を返す", async () => {
+    const event = {
+      sender: mockMainWindow.webContents,
+    } as unknown as IpcMainInvokeEvent;
+
+    mockGetCopyCommand.mockResolvedValue("/path/to/skill.js --flag value");
+
+    const result = (await copyCommandHandler(event, "session-abc")) as {
+      success: boolean;
+      data: string | null;
+    };
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBe("/path/to/skill.js --flag value");
+  });
+
+  // ADV-18: セッション未存在時に TERMINAL_LOG_ERROR エラーコードを返し、API key を残さない
+  it("ADV-18: セッション未存在時に TERMINAL_LOG_ERROR エラーコードを返し、メッセージを sanitize する", async () => {
+    const event = {
+      sender: mockMainWindow.webContents,
+    } as unknown as IpcMainInvokeEvent;
+
+    mockGetTerminalLog.mockImplementation(async () => {
+      const err = new Error(
+        "Session not found: sk-ant-abc123def456ghi789jkl012mno345pq",
+      );
+      (err as NodeJS.ErrnoException).code = "SESSION_NOT_FOUND";
+      throw err;
+    });
+
+    const result = (await terminalLogHandler(event, "nonexistent-session")) as {
+      success: boolean;
+      error: { code: string };
+    };
+
+    expect(result.success).toBe(false);
+    expect(result.error.code).toBe("TERMINAL_LOG_ERROR");
+    expect(result.error.message).not.toContain("sk-ant-");
+    expect(result.error.message).toContain("[REDACTED]");
+  });
+
+  // ADV-25: copy-command のエラー応答も API key を残さない
+  it("ADV-25: getCopyCommand のエラー応答も sanitize する", async () => {
+    const event = {
+      sender: mockMainWindow.webContents,
+    } as unknown as IpcMainInvokeEvent;
+
+    mockGetCopyCommand.mockImplementation(async () => {
+      const err = new Error(
+        "Copy failed: sk-ant-abc123def456ghi789jkl012mno345pq",
+      );
+      (err as NodeJS.ErrnoException).code = "SESSION_NOT_FOUND";
+      throw err;
+    });
+
+    const result = (await copyCommandHandler(event, "session-abc")) as {
+      success: boolean;
+      error: { code: string; message: string };
+    };
+
+    expect(result.success).toBe(false);
+    expect(result.error.code).toBe("COPY_COMMAND_ERROR");
+    expect(result.error.message).not.toContain("sk-ant-");
+    expect(result.error.message).toContain("[REDACTED]");
+  });
+
+  // ADV-20: output が空配列のセッション（SESSION_NOT_FOUND にはならない）
+  it("ADV-20: getTerminalLog — output が空配列のセッションは [] を返す", async () => {
+    const event = {
+      sender: mockMainWindow.webContents,
+    } as unknown as IpcMainInvokeEvent;
+
+    mockGetTerminalLog.mockResolvedValue([]);
+
+    const result = (await terminalLogHandler(event, "session-empty")) as {
+      success: boolean;
+      data: string[];
+    };
+
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual([]);
+  });
+
+  // ADV-21: getCopyCommand — args なしのセッション（末尾スペースなし）
+  it("ADV-21: getCopyCommand — args なしのセッションは scriptPath のみを返す", async () => {
+    const event = {
+      sender: mockMainWindow.webContents,
+    } as unknown as IpcMainInvokeEvent;
+
+    mockGetCopyCommand.mockResolvedValue("/path/to/skill.js");
+
+    const result = (await copyCommandHandler(event, "session-noargs")) as {
+      success: boolean;
+      data: string | null;
+    };
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBe("/path/to/skill.js");
+    expect(result.data).not.toMatch(/ $/);
+  });
+
+  // ADV-22: getCopyCommand — 複数 args のセッション
+  it("ADV-22: getCopyCommand — 複数 args のセッションは結合文字列を返す", async () => {
+    const event = {
+      sender: mockMainWindow.webContents,
+    } as unknown as IpcMainInvokeEvent;
+
+    mockGetCopyCommand.mockResolvedValue(
+      "/path/to/skill.js --skill mySkill --verbose",
+    );
+
+    const result = (await copyCommandHandler(event, "session-multiargs")) as {
+      success: boolean;
+      data: string | null;
+    };
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBe("/path/to/skill.js --skill mySkill --verbose");
+  });
+
+  // ADV-23: getTerminalLog — 依存が空配列を返した場合の pass-through
+  it("ADV-23: getTerminalLog が空配列をそのまま返す", async () => {
+    const event = {
+      sender: mockMainWindow.webContents,
+    } as unknown as IpcMainInvokeEvent;
+
+    mockGetTerminalLog.mockResolvedValue([]);
+
+    const result = (await terminalLogHandler(event, "session-null-mgr")) as {
+      success: boolean;
+      data: string[];
+    };
+
+    expect(result.success).toBe(true);
+    expect(result.data).toEqual([]);
+  });
+
+  // ADV-24: getCopyCommand — 依存が null を返した場合の pass-through
+  it("ADV-24: getCopyCommand が null をそのまま返す", async () => {
+    const event = {
+      sender: mockMainWindow.webContents,
+    } as unknown as IpcMainInvokeEvent;
+
+    mockGetCopyCommand.mockResolvedValue(null);
+
+    const result = (await copyCommandHandler(event, "session-null-mgr")) as {
+      success: boolean;
+      data: string | null;
+    };
+
+    expect(result.success).toBe(true);
+    expect(result.data).toBeNull();
   });
 });

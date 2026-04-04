@@ -364,6 +364,30 @@ const electronAPI: ElectronAPI = {
       safeOn<LLMError>(IPC_CHANNELS.LLM_STREAM_ERROR, callback),
   },
 
+  // Execution / Approval API (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001)
+  execution: {
+    getDisclosureInfo: () =>
+      safeInvoke(IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO),
+    getTerminalLog: (sessionId: string) =>
+      safeInvoke(IPC_CHANNELS.EXECUTION_GET_TERMINAL_LOG, sessionId),
+    getCopyCommand: (sessionId: string) =>
+      safeInvoke(IPC_CHANNELS.EXECUTION_GET_COPY_COMMAND, sessionId),
+    respondApproval: (request: {
+      sessionId: string;
+      operationId: string;
+      action: "approve" | "reject";
+    }) => safeInvoke(IPC_CHANNELS.APPROVAL_RESPOND, request),
+    onApprovalRequest: (
+      callback: (payload: {
+        operationType: string;
+        description: string;
+        destination?: string;
+        sessionId: string;
+        operationId: string;
+      }) => void,
+    ) => safeOn(IPC_CHANNELS.APPROVAL_REQUEST, callback),
+  },
+
   // Generic invoke for IPC calls
   invoke: <T>(channel: string, payload?: unknown): Promise<T> =>
     safeInvoke<T>(channel, payload),
@@ -401,6 +425,7 @@ const electronAPI: ElectronAPI = {
 
   // Skill Creator API (TASK-9B-H)
   skillCreator: skillCreatorAPI,
+  skillCreatorSession: skillCreatorSessionAPI,
 };
 
 // Slide API for slide dependency management
@@ -567,6 +592,8 @@ import type {
 import { skillAPI } from "./skill-api";
 import { skillCreatorAPI } from "./skill-creator-api";
 import type { SkillCreatorAPI } from "./skill-creator-api";
+import { skillCreatorSessionAPI } from "./skill-creator-session-api";
+import type { SkillCreatorSessionAPI } from "./skill-creator-session-api";
 import type { PermissionAPI } from "./types";
 import { chatEditAPI } from "./chatEditApi";
 import type { ChatEditAPI } from "./chatEditApi";
@@ -610,6 +637,10 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld("conversationAPI", conversationAPI);
     contextBridge.exposeInMainWorld("permissionAPI", permissionAPI);
     contextBridge.exposeInMainWorld("skillCreatorAPI", skillCreatorAPI);
+    contextBridge.exposeInMainWorld(
+      "skillCreatorSessionAPI",
+      skillCreatorSessionAPI,
+    );
     contextBridge.exposeInMainWorld("chatEditAPI", chatEditAPI);
   } catch (error) {
     console.error("Failed to expose APIs:", error);
@@ -634,5 +665,10 @@ if (process.contextIsolated) {
     permissionAPI;
   (window as unknown as { skillCreatorAPI: SkillCreatorAPI }).skillCreatorAPI =
     skillCreatorAPI;
+  (
+    window as unknown as {
+      skillCreatorSessionAPI: SkillCreatorSessionAPI;
+    }
+  ).skillCreatorSessionAPI = skillCreatorSessionAPI;
   (window as unknown as { chatEditAPI: ChatEditAPI }).chatEditAPI = chatEditAPI;
 }

@@ -110,6 +110,21 @@ export type {
   BoundedContext,
   ExternalApiConfig,
   ScriptResult,
+} from "./skillCreator";
+
+export type {
+  ExternalApiAuthType,
+  ExternalApiConnectionConfig,
+  SkillExternalApiContext,
+  IExternalApiAdapter,
+} from "./skillCreatorExternalApi";
+
+export {
+  ExternalApiTimeoutError,
+  ExternalApiHttpError,
+} from "./skillCreatorExternalApi";
+
+export type {
   TaskSpec,
   DependencyGraph,
   // Phase 5: 新規メソッド用型定義 (TASK-9B)
@@ -128,6 +143,7 @@ export type {
   SkillCreatorTerminalHandoffBundle,
   SkillCreatorTerminalHandoffResult,
   SkillCreatorExecutePlanRequest,
+  SkillCreatorExecutePlanAck,
   SkillCreatorExecutePlanResult,
   SkillCreatorImproveSkillRequest,
   SkillCreatorImproveSkillResult,
@@ -139,6 +155,7 @@ export type {
   SkillCreatorUserInputRequest,
   SkillCreatorVerifyResult,
   SkillCreatorWorkflowSourceProvenance,
+  SkillCreatorSdkPermissionDenial,
   SkillCreatorRouteSnapshot,
   SkillCreatorResumeTokenEnvelope,
   SkillCreatorWorkflowUiSnapshot,
@@ -146,6 +163,9 @@ export type {
   SkillCreatorGetVerifyDetailRequest,
   SkillCreatorReverifyWorkflowRequest,
   TerminalHandoffBundle,
+  LLMAdapterStatus,
+  SkillCreatorErrorCode,
+  RuntimeSkillCreatorPlanErrorResponse,
   RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorExecuteResult,
@@ -157,12 +177,16 @@ export type {
   RuntimeSkillCreatorVerifyDetailResponse,
   RuntimeSkillCreatorReverifyResult,
   RuntimeSkillCreatorReverifyResponse,
+  RuntimeSkillCreatorVerifyAndImproveResult,
   SkillGeneratedContent,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorImproveResult,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveErrorResponse,
+  RuntimeSkillCreatorExecuteErrorResponse,
+  RuntimeSkillCreatorDegradedReason,
   ApplyImprovementResult,
+  ApiKeyStatus,
   ForkOptions,
   ExportFormat,
   ScheduleConfig,
@@ -179,6 +203,19 @@ export type {
   SkillCreatorSdkEventType,
   SkillCreatorSdkEventSourceProvenance,
   SkillCreatorSdkEvent,
+  ImproveFeedbackHistory,
+} from "./skillCreator";
+export type {
+  ParsedSkillOutput,
+  SkillOutputReadyPayload,
+} from "./skillCreator";
+export type {
+  SkillCreatorGovernancePhase,
+  SkillCreatorSdkPolicy,
+  SkillCreatorToolDecision,
+  SkillCreatorHookEventType,
+  SkillCreatorGovernanceAuditEvent,
+  SkillCreatorGovernanceState,
 } from "./skillCreator";
 export type {
   SkillCreatorCheckpointType,
@@ -190,7 +227,25 @@ export type {
   SkillCreatorPersistedWorkflowCheckpoint,
   SkillCreatorWorkflowArtifactEntry,
   WorkflowSessionStorageSchema,
+  // Session resume IPC types (TASK-P0-08)
+  SkillCreatorSessionListItem,
+  SkillCreatorResumeSessionRequest,
+  SkillCreatorDeleteSessionRequest,
 } from "./skillCreator";
+export { SESSION_TTL_MS } from "./skillCreator";
+
+// SkillCreator SDK Session Bridge 型定義 (TASK-SDK-SC-01)
+export type {
+  SessionStatus,
+  UserInputType,
+  UserInputOption,
+  UserInputQuestion,
+  UserInputAnswer,
+  SkillCreatorSessionStartRequest,
+  SkillCreatorSessionCompleteEvent,
+  SkillCreatorSessionErrorEvent,
+  ISkillCreatorSessionState,
+} from "./skillCreatorSession";
 
 // ファイル選択型定義
 export type {

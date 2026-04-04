@@ -26,6 +26,32 @@
 
 ---
 
+### SkillCenterView → SkillManagementPanel ナビゲーション接続（2026-04-04）
+
+| 目的                              | 最初に開くファイル                                                                                                         |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| secondary CTA 設計 / ViewType 定義 | `references/ui-ux-navigation.md`                                                                                           |
+| dock 正規化コード                 | `apps/desktop/src/renderer/App.tsx`                                                                                        |
+| コンポーネント実装                | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx`, `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` |
+| completed ledger                  | `references/task-workflow-completed.md`                                                                                    |
+| 苦戦箇所（same surface return / dock 正規化） | `references/lessons-learned-phase12-workflow-lifecycle.md`                                                      |
+| workflow root                     | `docs/30-workflows/skill-center-lifecycle-navigation/`                                                                     |
+
+---
+
+### UI Visual Baseline Drift / dark-mode screenshot stability（2026-04-03）
+
+| 目的                 | 最初に開くファイル                                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| dark-mode baseline   | `references/workflow-ui-ux-visual-baseline-drift.md`                                                                                                        |
+| workflow root        | `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/`                                                                                      |
+| screenshot evidence  | `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/manual-test-result.md`, `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/screenshots/` |
+| completed ledger     | `references/task-workflow-completed-ui-ux-visual-baseline-drift.md`                                                                                         |
+| lessons / reuse card | `references/lessons-learned-ui-ux-visual-baseline-drift.md`, `references/ui-ux-design-system.md`                                                            |
+| same-wave sync       | `references/task-workflow.md`, `indexes/resource-map.md`                                                                                                    |
+
+---
+
 ### Runtime Skill Creator Public IPC 即時導線（2026-03-21）
 
 | 目的                      | 最初に開くファイル                                                       |
@@ -55,6 +81,21 @@
 
 ---
 
+### Runtime Skill Creator Execute-plan Fire-and-Forget（2026-04-01）
+
+| 目的                                              | 最初に開くファイル                                                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| ack + snapshot relay の current facts             | `references/api-ipc-system-core.md`                                                                    |
+| security / response contract                      | `references/security-electron-ipc-details.md`                                                         |
+| fire-and-forget の owner 分離                     | `references/architecture-overview-core.md`                                                            |
+| public IPC / renderer bridge の整合               | `references/api-ipc-agent-core.md`                                                                    |
+| completed ledger                                  | `references/task-workflow-completed-ipc-contract-preload-alignment.md`                               |
+| follow-up backlog                                 | `references/task-workflow-backlog.md`                                                                 |
+| lessons                                           | `references/lessons-learned-ipc-preload-runtime.md`                                                   |
+| workflow root                                     | `docs/30-workflows/fix-step3-seq-execute-plan-nonblocking/`                                           |
+
+---
+
 ### Runtime Skill Creator Resource Selection Hardening（2026-03-27）
 
 | 目的                                              | 最初に開くファイル                                                                                     |
@@ -77,6 +118,69 @@
 | create 後の downstream journey | `references/workflow-skill-lifecycle-created-skill-usage-journey.md`                                      |
 | completed ledger               | `references/task-workflow-completed.md`                                                                   |
 | Phase 12 教訓                  | `references/lessons-learned-phase12-workflow-lifecycle.md`                                                |
+
+---
+
+### Skill Creator Conversation UI（TASK-SDK-SC-02 / 2026-04-03 実装済み）
+
+| 目的                                                 | 最初に開くファイル                                                                                              |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Task02 の全体像・Phase 仕様書                        | `docs/30-workflows/step-02-par-task-02-conversation-ui/index.md`                                                |
+| 5 コンポーネント Props API・使用例                   | `docs/30-workflows/step-02-par-task-02-conversation-ui/phase-12-documentation.md`                               |
+| アーキテクチャ・型マッピング・IPC 通信フロー         | `outputs/phase-12/implementation-guide.md`                                                                      |
+| Session Bridge 型定義                                | `packages/shared/src/types/skillCreatorSession.ts`（`UserInputQuestion` / `UserInputAnswer`）                   |
+| Workflow UI 型定義                                   | `packages/shared/src/types/skillCreator.ts`（`SkillCreatorUserInputRequest` / `InterviewUserAnswer`）           |
+| IPC チャネル定義                                     | `packages/shared/src/ipc/channels.ts`（`SKILL_CREATOR_SESSION_CHANNELS`）                                      |
+| Preload API                                          | `apps/desktop/src/preload/skill-creator-session-api.ts`（`window.skillCreatorSessionAPI`）                      |
+| Organism コンポーネント（ブリッジ層）                | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorConversationPanel.tsx`                           |
+| テスト（57 件）                                      | `apps/desktop/src/renderer/components/skill-creator/__tests__/`                                                 |
+| completed ledger                                     | `references/task-workflow-completed.md`                                                                         |
+
+---
+
+### Skill Creator External API Support（TASK-SDK-SC-03 / 2026-04-03 実装済み）
+
+| 目的                                                    | 最初に開くファイル                                                                      |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| External API IPC チャネル4本の契約                      | `references/api-ipc-system-core.md`（§Skill Creator External API Support）              |
+| 型定義（ExternalApiConnectionConfig / AuthType / Error） | `packages/shared/src/types/skillCreatorExternalApi.ts`                                   |
+| チャネル定数定義                                         | `packages/shared/src/ipc/channels.ts`（SKILL_CREATOR_EXTERNAL_API_CHANNELS）            |
+| credential 秘匿化セキュリティ契約                       | `references/security-electron-ipc-core.md`（§Credential 秘匿化）                       |
+| IpcBridge バリデーション / SdkSession custom tool       | `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` / `SkillCreatorSdkSession.ts` |
+| ExternalApiConfigForm UI                                | `apps/desktop/src/renderer/components/skill/ExternalApiConfigForm.tsx`                   |
+| 苦戦箇所5件                                             | `references/lessons-learned-current.md`（§TASK-SDK-SC-03）                              |
+| completed ledger                                        | `references/task-workflow-completed.md`                                                  |
+| workflow root                                           | `docs/30-workflows/completed-tasks/step-02-par-task-03-external-api-support/`           |
+
+---
+### Skill Creator SDK Event Normalization (TASK-RT-06)
+
+**概要:** SDKMessage → SkillCreatorSdkEvent 変換契約の安定化
+
+| 項目 | 詳細 |
+|---|---|
+| 型 | `SkillCreatorSdkEvent` (7フィールド), `SkillCreatorSdkEventType` ("init"\|"assistant"\|"result"\|"error") |
+| normalizer | `normalizeSdkMessage(msg, sessionId?)`, `normalizeSdkStream(msgs)` |
+| IPCチャネル | `skill-creator:normalize-sdk-messages` |
+| sessionId伝播 | init → 後続メッセージへ自動伝播 |
+| テスト | 32件, Line 99.35% / Branch 91.22% / Function 100% |
+| 未タスク | SkillExecutor.convertToStreamMessage()との統合候補（1件） |
+
+---
+
+### Runtime Skill Creator Session Persistence（TASK-SDK-08 / 2026-03-28 実装済み）
+
+| 目的                                                            | 最初に開くファイル                                                                                                                                     |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Task08 の全体像（checkpoint / lease / resume 契約）             | `docs/30-workflows/step-06-seq-task-08-session-persistence-and-resume-contract/index.md`                                                               |
+| WorkflowSessionStorage（checkpoint / lease / revision 管理）   | `apps/desktop/src/main/services/session/WorkflowSessionStorage.ts`                                                                                     |
+| ResumeCompatibilityEvaluator（compatible / incompatible 判定）  | `apps/desktop/src/main/services/session/ResumeCompatibilityEvaluator.ts`                                                                               |
+| SkillCreatorWorkflowSessionRepository（保存 / ロード / 互換性） | `apps/desktop/src/main/services/session/SkillCreatorWorkflowSessionRepository.ts`                                                                      |
+| session index（SessionService 登録）                            | `apps/desktop/src/main/services/session/index.ts`                                                                                                      |
+| 型定義（WorkflowSession / ResumeCompatibilityResult）           | `packages/shared/src/types/skillCreator.ts`                                                                                                            |
+| persistence contract と resume namespace rule                   | `references/api-ipc-system-core.md`                                                                                                                    |
+| esbuild mismatch / artifact 命名 / Phase 11 判定 教訓          | `references/lessons-learned-current.md`（TASK-SDK-08 セクション）                                                                                     |
+| completed ledger                                                | `references/task-workflow-completed.md`                                                                                                                |
 
 ---
 
@@ -158,20 +262,39 @@
 | 3層レイヤー / handler 登録        | `references/architecture-overview-core.md`                                                                          |
 | 設計レッスン                      | `references/lessons-learned-current.md`                                                                             |
 | 未タスク（UT-6〜10）              | `references/task-workflow-backlog.md`                                                                               |
+| production 統合 workflow root     | `docs/30-workflows/safety-gov-production-integration/index.md`                                                      |
 | 実装ガイド                        | `docs/30-workflows/step-03-seq-task-03-advanced-console-safety-governance/outputs/phase-12/implementation-guide.md` |
 
 ---
 
-### LLM provider registry SSoT（2026-03-25）
+### Safety Governance Production Integration 本番配線完了（2026-03-31 実装済み）
 
-| 目的                  | 最初に開くファイル                                     |
-| --------------------- | ------------------------------------------------------ |
-| provider / model 正本 | `references/llm-ipc-types.md`                          |
-| UI surface            | `references/ui-ux-llm-selector.md`                     |
-| LLM 全体インデックス  | `references/interfaces-llm.md`                         |
-| 教訓                  | `references/lessons-learned-test-typesafety.md`        |
-| completed ledger      | `references/task-workflow-completed.md`                |
-| workflow root         | `docs/30-workflows/completed-tasks/UT-LLM-MOD-01-005/` |
+| 目的                                              | 最初に開くファイル                                                                                                              |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 本番配線タスク全体像（Phase 1-12 完了）           | `docs/30-workflows/safety-gov-production-integration/index.md`                                                                  |
+| ExecutionAPI preload namespace 型定義             | `apps/desktop/src/preload/types.ts`                                                                                             |
+| contextBridge execution 公開実装                  | `apps/desktop/src/preload/index.ts`                                                                                             |
+| DefaultApprovalGate DI / handler 登録             | `apps/desktop/src/main/ipc/index.ts`, `apps/desktop/src/main/ipc/approvalHandlers.ts`                                          |
+| APPROVAL_CHANNELS / EXECUTION_CHANNELS 定数       | `packages/shared/src/ipc/channels.ts`                                                                                           |
+| session cleanup（revokeAll on session destroy）   | `apps/desktop/src/main/ipc/approvalHandlers.ts`                                                                                 |
+| follow-up 未タスク 4件（HIGH×3 / LOW×1）         | `docs/30-workflows/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md` 等                                          |
+| completed ledger                                  | `references/task-workflow-completed.md`                                                                                         |
+| workflow pack formalize 教訓                      | `references/lessons-learned-current.md`                                                                                         |
+
+---
+
+### LLM provider registry SSoT（2026-04-01 更新）
+
+| 目的                          | 最初に開くファイル                                                                        |
+| ----------------------------- | ----------------------------------------------------------------------------------------- |
+| provider / model 正本 (SSOT)  | `packages/shared/src/types/llm/schemas/provider-registry.ts`                             |
+| LLM IPC 型定義                | `references/llm-ipc-types.md`                                                             |
+| UI surface                    | `references/ui-ux-llm-selector.md`                                                        |
+| LLM 全体インデックス          | `references/interfaces-llm.md`                                                            |
+| 教訓                          | `references/lessons-learned-test-typesafety.md`                                           |
+| completed ledger              | `references/task-workflow-completed.md`                                                   |
+| workflow pack root            | `docs/30-workflows/llm-provider-model-modernization/`                                     |
+| Task05 schema-extension root  | `docs/30-workflows/llm-provider-model-modernization/tasks/step-04-seq-task-05-schema-extension/` |
 
 ---
 
@@ -240,6 +363,10 @@
 | 承認ゲート                  | `IApprovalGate`, `DefaultApprovalGate`                                               | security-electron-ipc-core.md                                                                                                 |
 | Consumer Auth Guard         | `isConsumerToken()` (`sess-` / `sessionKey=` prefix)                                 | security-electron-ipc-core.md                                                                                                 |
 | API Key 除去                | `sanitizeForApiKeys()`                                                               | security-electron-ipc-core.md                                                                                                 |
+| External API 認証タイプ     | `ExternalApiAuthType`                                                                | skillCreatorExternalApi.ts                                                                                                     |
+| External API 接続設定       | `ExternalApiConnectionConfig`                                                        | skillCreatorExternalApi.ts                                                                                                     |
+| External API タイムアウト   | `ExternalApiTimeoutError`                                                            | skillCreatorExternalApi.ts                                                                                                     |
+| External API HTTP エラー    | `ExternalApiHttpError`                                                               | skillCreatorExternalApi.ts                                                                                                     |
 
 ---
 
@@ -303,6 +430,15 @@
 | `execution:get-disclosure-info` | AI開示情報取得                     |
 | `execution:get-terminal-log`    | ターミナルログ取得                 |
 | `execution:get-copy-command`    | コピーコマンド取得                 |
+
+### スキルクリエイター 外部API連携（TASK-SDK-SC-03）
+
+| チャンネル                                     | 用途                         |
+| ---------------------------------------------- | ---------------------------- |
+| `skill-creator:configure-api`                  | Renderer→Main 外部API設定送信 |
+| `skill-creator:api-configured`                 | Main→Renderer API設定完了通知 |
+| `skill-creator:api-test-result`                | Main→Renderer API接続テスト結果 |
+| `skill-creator:external-api-config-required`   | Main→Renderer API設定要求    |
 
 ### チャット
 
@@ -464,18 +600,3 @@ packages/
 | spec-splitting-guidelines.md | ファイル分割ルール        |
 
 ---
-
-## 変更履歴
-
-| 日付       | 変更内容                                                                                                                                                                                                                                                      |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-03-28 | TASK-SDK-07 Phase 12 close-out sync: 未タスク 3 件 formalize（UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 / UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001）、governance bundle 導線に Preload/Renderer/テスト実装参照 7 件を追加、task-workflow-backlog 3 件追記、LOGS.md 2 ファイル + SKILL.md 2 ファイル同時更新、generate-index.js 再生成 + mirror rsync 完了 |
-| 2026-03-28 | TASK-SDK-04-U2: canonical binding drift 是正 — execute flow が `approvedSkillSpec` snapshot を参照するよう修正。`SkillLifecyclePanel.tsx` に state 分離パッチ適用 |
-| 2026-03-27 | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Skill Creator Workflow State / User Input / Verify API 即時導線追加。getVerifyDetail / requestReverify / getWorkflowState / submitUserInput / onWorkflowStateChanged の5 API 導線を登録 |
-| 2026-03-25 | TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001: 即時導線セクション追加、承認・安全ガバナンス IPCチャンネル5件追加、IApprovalGate/isConsumerToken/sanitizeForApiKeys 型定義追加                                                                               |
-| 2026-03-20 | UT-RAG-08-002: `ILLMClient` 型ドリフト（P64）への参照パスを型定義クイックアクセステーブルに追加。`lessons-learned-rag-embedding-runtime.md` (L-RAG-06) へ導線を登録                                                                                           |
-| 2026-03-19 | UT-TASK06-007: discovery 導線を completed canonical set に再同期し、implementation pattern detail / completed ledger / EXT-001〜005 を早見表へ反映                                                                                                            |
-| 2026-03-18 | UT-TASK06-007: IPC契約ドリフト自動検出セクション（check-ipc-contracts.ts / R-01~R-04 / EXT-001~003）をIPCチャンネル早見表直後に追加                                                                                                                           |
-| 2026-03-17 | `renderView` 基盤拡張（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）向けに ViewType クイック行を追加                                                                                                                                                          |
-| 2026-03-17 | TASK-SKILL-LIFECYCLE-08: SkillVisibility/PublishReadiness/CompatibilityCheckResult 型定義と skill:publishing:_/skill:distribution:_ 11チャンネルを追加                                                                                                        |
-| 2026-03-16 | 「Skill Docs Runtime Integration（TASK-IMP-SKILL-DOCS-AI-RUNTIME-001）を探すとき」セクションを追加                                                                                                                                                            |

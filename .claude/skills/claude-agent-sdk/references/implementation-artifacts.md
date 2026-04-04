@@ -168,3 +168,64 @@
 - **DI Pattern**: `queryFn` パラメータで SDK 呼び出しを注入可能に
 - **Backup strategy**: 改善前にバックアップを自動作成
 - **Analysis categories**: static, ai, combined 分析モード
+
+---
+
+## UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 Approval Request Producer 接続
+
+### ドキュメント
+
+| ドキュメント    | パス                                                                                                               | 説明                                         |
+| --------------- | ------------------------------------------------------------------------------------------------------------------ | -------------------------------------------- |
+| タスク仕様書    | `docs/30-workflows/completed-tasks/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md`                | Why/What/How/苦戦箇所                        |
+| 設計書          | `docs/30-workflows/completed-tasks/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001-design.md`         | 設計詳細                                     |
+| Phase 12 成果物 | `docs/30-workflows/completed-tasks/approval-request-producer/outputs/phase-12/`                                   | 6ファイル（compliance-check / system-spec / changelog / unassigned-task-detection / skill-feedback / implementation-guide） |
+
+### 実装ファイル
+
+| ファイル              | パス                                                                                           | 説明                                             |
+| --------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| HooksFactory          | `apps/desktop/src/main/services/agent/HooksFactory.ts`                                         | PreToolUse に pushApprovalRequest() producer 接続 |
+| AgentExecutor         | `apps/desktop/src/main/services/agent/AgentExecutor.ts`                                        | sessionId 伝播                                   |
+| ExecutionManager      | `apps/desktop/src/main/services/agent/ExecutionManager.ts`                                     | sessionId 管理                                   |
+| agentHandlers         | `apps/desktop/src/main/ipc/agentHandlers.ts`                                                   | IPC handler 更新                                 |
+| index                 | `apps/desktop/src/main/ipc/index.ts`                                                           | IPC 登録確認                                     |
+| HooksFactory.producer | `apps/desktop/src/main/services/agent/__tests__/HooksFactory.producer.test.ts`                 | producer 発火テスト（新規）                      |
+
+主要パターン:
+
+- **Producer Pattern**: dangerous command 検出 → `pushApprovalRequest()` 発火 → `proceed: false`
+- **Session Correlation**: `sessionId` を constructor で受け取り、`operationId` は呼び出し側で `uuidv4()` 生成
+- **Non-blocking push**: IPC 送信と `proceed: false` は独立 — push 失敗でもブロックは維持
+
+---
+
+## TASK-SDK-SC-03 External API Support
+
+### ドキュメント
+
+| ドキュメント | パス | 説明 |
+| --- | --- | --- |
+| タスク仕様書 | `docs/30-workflows/skill-creator-agent-sdk-lane/` | External API Support 仕様 |
+
+### 実装ファイル
+
+| ファイル | パス | 説明 |
+| --- | --- | --- |
+| 型定義 | `packages/shared/src/types/skillCreatorExternalApi.ts` | ExternalApiConnectionConfig, ExternalApiAuthType, IExternalApiAdapter, ExternalApiTimeoutError, ExternalApiHttpError |
+| IPCチャネル | `packages/shared/src/ipc/channels.ts` | SKILL_CREATOR_EXTERNAL_API_CHANNELS（configure-api / api-configured / api-test-result） |
+| IPC Bridge | `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` | configure-api ハンドラ、api-configured / api-test-result イベント送信 |
+| SDK Session | `apps/desktop/src/main/services/runtime/SkillCreatorSdkSession.ts` | RequestExternalApiConfig custom tool, sanitizeExternalApiConfigForPrompt, 並行フロー管理 |
+| HTTP Adapter | `apps/desktop/src/main/services/runtime/adapters/HttpExternalApiAdapter.ts` | IExternalApiAdapter 実装（fetch, タイムアウト30s, エラーハンドリング） |
+| Preload API | `apps/desktop/src/preload/skill-creator-api.ts` | configureApi() Preload メソッド |
+| Preload Session | `apps/desktop/src/preload/skill-creator-session-api.ts` | external-api-config-required イベント購読 |
+| テスト（Session） | `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorSdkSession.test.ts` | RequestExternalApiConfig tool_use、sendExternalApiConfig テスト |
+| テスト（Bridge） | `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorIpcBridge.test.ts` | configure-api IPC テスト |
+| テスト（Adapter） | `apps/desktop/src/main/services/runtime/adapters/__tests__/HttpExternalApiAdapter.test.ts` | タイムアウト / HTTPエラー テスト |
+
+主要パターン:
+
+- **RequestExternalApiConfig Custom Tool**: SDK Session 内で外部API設定が必要になった際、IPC 経由で Renderer に UI 表示を要求し、ユーザー入力を待機する
+- **並行フロー管理**: `pendingQuestionResolve` と `pendingExternalApiResolve` の相互排他
+- **秘匿化**: `sanitizeExternalApiConfigForPrompt()` で credential を `***REDACTED***` に置換してからプロンプトに注入
+- **IPC Channels**: `skill-creator:configure-api`, `skill-creator:api-configured`, `skill-creator:api-test-result`, `skill-creator:external-api-config-required`

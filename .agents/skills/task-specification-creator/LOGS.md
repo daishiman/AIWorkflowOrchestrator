@@ -3,15 +3,256 @@
 ## 役割
 
 ---
-## TASK-SDK-04-U2 Phase 12 remediation sync（2026-03-28）
 
-- **Agent**: task-specification-creator
-- **Phase**: Phase 12 close-out remediation
-- **Result**: success
-- **Notes**:
-  - `artifacts.json` / `outputs/artifacts.json` の root status を `spec_created` へ戻し、index/status/path との drift を解消した
-  - `phase-12-documentation.md` の pending / 未チェック状態を current facts に同期し、 shallow close-out PASS を解消した
-  - system spec update を no-op 扱いしないよう整理し、aiworkflow 正本への same-wave sync を前提に close-out を修正した
+## 2026-04-04 - task-imp-layer12-spec-definition-004 Phase 12 close-out sync
+
+### 変更内容
+- `interfaces-skill-verify-contract.md` を新規作成し、FR-04 verify 契約の check ID 体系（19 check ID、Layer 1-4）を追記
+- Layer 命名規則（`L{N}-{NNN}`）と拡張ガイドラインを明文化
+- `SkillCreatorVerificationEngine.ts` との check ID 突き合わせ diff 0 件を確認
+- SKILL.md v6.18.23 更新
+
+---
+
+## UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 完了（2026-04-03）
+
+- タスク名: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
+- 種別: feat / renderer-only UI enhancement
+- 主な反映:
+  - SkillLifecyclePanel に severity フィルタ（all/warning+/error）を追加
+  - Renderer 内完結の変更（IPC/shared type/preload 変更なし）
+  - ui-ux-feature-components-core.md に severity filter contract を追記
+  - task-workflow-backlog.md に完了記録を反映
+
+---
+
+## 2026-04-03 - task-ut-p0-02-001-repeat-feedback-memory Phase 12 close-out sync
+
+### 変更内容
+- `ImproveFeedbackHistory` 型を `packages/shared/src/types/skillCreator.ts` に追加
+- `verifyAndImproveLoop()` の `previousImproveSummary: string` を `feedbackHistory: ImproveFeedbackHistory[]` に構造化
+- `buildImproveFeedback()` を全試行履歴参照・繰り返し失敗チェック警告付きプロンプトに更新
+- テスト 13 件追加（TC-01〜TC-06, EC-01〜EC-04, BF-01〜BF-04）、全 45 tests PASS
+- Phase 12 成果物 6 件出力（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+
+---
+## 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync + skill-feedback 反映
+
+### 変更内容
+- [Feedback 4] Phase 11 NON_VISUAL 時 `manual-test-result.md` 証跡メタ必須化（証跡主ソース・スクリーンショット不要理由を明記）を「Phase 12 実行時によくある漏れ」テーブルへ追記
+- [Feedback 5] Phase 7 広域 coverage 目標時の変更ブロック line/branch 実測根拠必須化を同テーブルへ追記
+- SKILL.md v10.09.31 更新（close-out sync + skill-feedback 反映）
+
+---
+## 2026-04-03 - TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 Phase 12 skill-feedback 反映
+
+### 変更内容
+- SKILL.md の Phase 11 記述に Feedback BEFORE-QUIT-001（非 visual task で「実地操作不可」宣言 + 代替記録テンプレート）を追加
+- SKILL.md の Phase 7 記述に Feedback BEFORE-QUIT-002（coverage は全ファイル一律でなく「対象範囲」を明示）を追加
+- 「よくある漏れ」テーブルに Feedback BEFORE-QUIT-003（documentation-changelog で workflow-local 同期と global skill sync を別ブロックで記録）を追加
+- 変更履歴に v10.09.32 を追記
+- aiworkflow-requirements/LOGS.md と同波で更新
+
+---
+## 2026-04-03 - UT-SDK-L34-UI-DISPLAY-001 タスク仕様書作成（spec_created）
+
+### 変更内容
+- Phase 1〜13 全仕様書を新規作成（`docs/30-workflows/task-ut-sdk-l34-ui-display-001/`）
+- UIタスク分類を Phase 1 で宣言（`SkillLifecyclePanel.tsx` Renderer のみ変更・IPC変更なし）
+- TDD設計: TC-01〜TC-19 の19テストケース（Layer別グルーピング・アコーディオン・severityアイコン・バッジ集計）
+- `task-workflow-backlog.md` に UT-SDK-L34-UI-DISPLAY-001 を登録（中優先度）
+- SKILL.md v6.18.22 更新
+
+---
+
+## 2026-04-04 - TASK-SKILL-CENTER-LIFECYCLE-NAV-001 Phase 12 close-out sync
+
+### 変更内容
+- `SkillCenterView` secondary CTA / `SkillManagementPanel` 戻り導線の Phase 12 仕様書準拠を確認
+- `docs/30-workflows/skill-center-lifecycle-navigation/` の phase-12 outputs（implementation-guide / documentation-changelog / system-spec-update-summary / unassigned-task-detection / skill-feedback-report）完成を記録
+- SKILL.md v6.18.23 更新
+
+---
+## 2026-04-02 - TASK-NOTIFICATION-SERVICE-001 Phase 12 close-out sync
+
+### 変更内容
+- Electron `Notification` static API のモックパターンを `references/patterns-testing.md` に追加
+- `notificationService?: INotificationService` の optional DI、`activeExecutionCount` + `try/finally`、Vitest coverage コマンドの記録方針を `references/patterns-lessons-and-pitfalls.md` に追記
+- SKILL.md v6.18.21 更新
+
+---
+## 2026-04-01 - TASK-FIX-ENV-STRIPPING Phase 12 close-out sync
+
+### 変更内容
+- `fix-step0-seq-env-stripping` の Phase 11 manual-test-result を NON_VISUAL 自動テスト代替 PASS に更新
+- `skill-creator-agent-sdk-lane/index.md` の step0 完了同期と `task-workflow-completed.md` の completed record 追加を current facts へ反映
+- UT-RT-06 の completed ledger 参照切れを是正し、`verify-unassigned-links.js` の missing link を解消
+- SKILL.md v6.18.20 更新
+
+---
+## 2026-04-01 - UT-IMP-SDK-06 Layer3/4 verify 拡張 Phase 12 close-out sync
+
+### 変更内容
+- Phase 1〜12 全フェーズを実施（`SkillCreatorVerificationEngine` Layer3/4 実装・60テスト PASS）
+- `phase-12-documentation-guide.md` の「Markdown セクション抽出の正規表現落とし穴」注記は skill-feedback-report にて low priority として記録（今回は更新なし）
+- SKILL.md v6.18.19 更新
+
+---
+## 2026-03-31 - TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 Phase 12 close-out sync
+
+### 変更内容
+- preload alias bugfix workflow の `artifacts.json` と各 phase 成果物参照を canonical filename（`implementation-guide.md` など）へ統一
+- `manual-test-result.md` を NON_VISUAL walkthrough の実測値ベースへ更新し、`phase12-task-spec-compliance-check.md` を current facts で補完
+- shared path alias 系は build config と test config の parity を同時確認するルールを SKILL に反映
+- aiworkflow-requirements 側の completed ledger / lessons / LOGS / SKILL history と same-wave で閉じ、`UT-DX-VITE-ALIAS-SHARED-IMPORT-001` を completed 側へ移管
+
+---
+---
+## 2026-03-31 - TASK-RT-05-TEST-RERUN close-out（Issue #1756）
+
+## 2026-03-31 - UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 workflow pack elegant improvement
+
+### 変更内容
+
+- `docs/30-workflows/safety-gov-production-integration/` に真の論点、4条件初期評価、SubAgent lane 設計、30種思考法適用マトリクスを追加し、単なる phase 列挙から判断可能な execution spec へ改善
+- Phase 1 に命名規則インベントリを追加し、Phase 4 以降の test / artifact / task naming を upstream facts と接続
+- Phase 12 に same-wave sync の正本更新対象を `task-workflow-completed` / `task-workflow-backlog` / `lessons-learned` / `topic-map` / `keywords` / `SKILL.md` / mirror parity まで拡張
+- `aiworkflow-requirements` 側では UT-6〜UT-9 を単発 backlog から workflow pack `UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001` に集約し、spec_created close-out として追跡可能にした
+
+## 2026-03-31 - UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001 workflow pack hardening
+
+### 変更内容
+
+- `docs/30-workflows/safety-gov-production-integration/` の Phase 3 に必須の `統合テスト連携` を追加し、Phase 4〜11 の `実行タスク` を validator 互換の箇条書きへ補強
+- `outputs/artifacts.json` を root `artifacts.json` と同期し、Phase 11 の `manual-test-checklist.md` / `manual-test-result.md` を追加して workflow root の機械検証を通過させた
+- Phase 11 が visible surface 追加なしの integration task であることを踏まえ、`phase-11-12-guide.md` に NON_VISUAL task は screenshot wording を残さないルールを追記した
+- follow-up task の canonical status を `spec_created` として扱い、完了済み実装と混同しない Phase 12 same-wave sync の運用を再確認した
+
+---
+
+## 2026-03-30 - TASK-LLM-MOD-05 Phase 12 close-out sync
+
+### 変更内容
+
+- UT-RT-06 esbuild 修正後の環境で TASK-RT-05 テスト再実行・AC-4 確認を完了
+- phase-9/quality-report.md・phase-10/final-review-result.md を PASS 状態に更新
+- lessons-learned-skill-create-multi-select-kind.md に esbuild platform mismatch 教訓を追記
+- task-workflow-completed-skill-lifecycle-ui.md に TASK-RT-05-TEST-RERUN close-out 注記を追加
+
+---
+## 2026-03-31 - UT-UIUX-PLAYWRIGHT-E2E-001 Phase 12 close-out: スキルフィードバック反映
+
+### 変更内容
+- `references/phase-12-completion-checklist.md` にスクリーンショット証跡ハードゲート5点（FB-UT-UIUX-001-A）と `artifacts.json` planned wording 検査（FB-UT-UIUX-001-B）を追加
+- `references/phase-12-tasks-guide.md` の Task 3.5 に UI/UX変更タスク専用ゲートを追記
+- 漏れやすいポイント表に `FB-UT-UIUX-001-A` / `FB-UT-UIUX-001-B` 行を追加
+- `docs/30-workflows/unassigned-task/TASK-A11Y-FOCUS-TRAP-001.md` を旧形式（`## Why/What/How`）から標準フォーマット（`## 1〜9`）に変換し `audit-unassigned-tasks` currentViolations を 0 へ
+- SKILL.md v6.18.17 変更履歴を追記
+
+---
+## 2026-03-31 - TASK-UIUX-FEEDBACK-001 spec_created sync hardening
+
+### 変更内容
+- Phase 11 3層評価の canonical 実装先を `.claude/skills/task-specification-creator/` に固定し、`agents/evaluate-ui-ux.md` と `scripts/evaluate-ui-ux*` family を追加
+- `references/phase-11-test-report-template.md` と `SKILL.md` を更新し、Phase 11 を manual screenshot review 単体ではなく Semantic / Visual / AI UX の3層評価として定義
+- workflow root 側の false green を是正するため、`artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ戻し、Phase 11/12 close-out から placeholder-only evidence の completed 誤判定を除去
+- `.agents/skills/task-specification-creator/` へ same-wave mirror sync を行い、canonical / mirror drift を解消
+
+---
+## 2026-03-31 - TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out sync
+
+### 変更内容
+- Phase 別 permissionMode / allowedTools / disallowedTools / canUseTool を `SkillCreatorGovernancePolicy.ts` に定義
+- `GovernanceHooksFactory.ts` で SessionStart / PreToolUse / PostToolUse / SessionEnd の 4 hook を生成
+- `GovernanceAuditSink.ts` で監査イベント蓄積・セッションサマリー・UI payload 生成
+- `skillCreator.ts` に 8 governance 型を追加（SkillCreatorGovernancePhase, SdkPermissionMode, SkillCreatorSdkPolicy, CanUseToolResult, GovernanceAuditEventKind, GovernanceAuditEvent, GovernanceSessionSummary, GovernanceUiPayload）
+- `RuntimeSkillCreatorFacade.ts` に governance 統合（execute phase ポリシー注入、SDK governance options 伝播、getGovernanceUiPayload メソッド）
+- IPC `skill-creator:get-governance` エンドポイントと preload `getGovernancePayload` API を追加
+- テスト: governance 一式 + `SkillExecutor.sdk-types.test.ts` を更新
+- follow-up `UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001` を formalize
+
+---
+## 2026-03-31 - TASK-P0-09 Phase 12 close-out sync hardening
+
+### 変更内容
+- `step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/` の Phase 12 成果物を current facts へ再同期し、`implementation-guide.md` に Part 2 必須要件（API 使用例 / edge case / 設定一覧）を追補
+- `unassigned-task-detection.md` の 0 件判定を是正し、path-scoped runtime enforcement の gap を `TASK-P0-09-U1` として formalize
+- `phase12-task-spec-compliance-check.md` に Step 1-A の `LOGS.md` x2 / topic-map / completed ledger 根拠を追記し、shallow compliance pass を解消
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` と `node .claude/skills/task-specification-creator/scripts/generate-index.js --workflow docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance --regenerate` を same-wave 実行対象として記録
+
+---
+## 2026-03-30 - TASK-P0-02 Phase 12 close-out sync
+
+### 変更内容
+- `phase-12-documentation.md` の Task 12-1〜12-5 と Step 1-A〜1-C を current facts へ揃え、`task-workflow.md` / `task-workflow-completed.md` / LOGS / SKILL / phase outputs の同波更新を完了
+- `verifyAndImproveLoop()` の feedback memory を Phase 12 の current fact として固定し、前回改善要約を次回 feedback に織り込む仕様をドキュメントへ反映
+- `UT-P0-02-001` を unassigned 化せず current phase に吸収し、completed ledger へ TASK-P0-02 完了記録を追加
+
+---
+
+## 2026-03-30 - agentview-permission-api-fix Phase 12 識別: SKILL.md v6.18.16 更新
+
+### 変更内容
+- `SKILL.md` の「Phase 12 よくある漏れ」テーブルに Feedback 4 を追加
+  - テストファイルが複数サフィックス（`*.test.tsx` / `*.coverage.test.tsx` / `*.cta.test.tsx` 等）に分散している場合、Phase 2 設計段階で全テストファイルを網羅的に列挙しモック定義の一貫性を確保するルールを明示
+- 変更履歴に v6.18.16 エントリを追加
+
+---
+## 2026-03-31 - TASK-ELECTRON-BUILD-FIX Phase 12 close-out hardening
+
+### 変更内容
+
+- broken / placeholder screenshot 前提を撤去し、NON_VISUAL evidence で閉じる current facts へ是正
+- `system-spec-update-summary.md` を shallow summary から Step 1-A〜1-C / Step 2 根拠付き記録へ更新
+- `phase12-task-spec-compliance-check.md` を追加し、Task 1〜5 と Step 1-A〜1-C / Step 2 を 1 ファイルへ集約
+- `rebuild-native-for-electron.mjs` の `context.arch` enum drift を current branch で修正し、Phase 4 テストへ反映
+- `.claude` 正本更新後に aiworkflow-requirements index 再生成と `.agents` mirror parity を実施
+
+---
+
+## 2026-03-30 - TASK-P0-05 Phase 12 close-out resync
+
+### 変更内容
+- `step-09-par-task-p0-05-execute-skill-file-writer-integration/` の Phase 11 成果物欠落を補完し、`manual-test-result.md` / `discovered-issues.md` / `phase12-task-spec-compliance-check.md` を current facts へ追加
+- `documentation-changelog.md` / `system-spec-update-summary.md` / `skill-feedback-report.md` の premature 完了表現を、canonical same-wave sync 未完了の state へ是正
+- follow-up `task-ut-p0-05-phase12-same-wave-sync-001.md` を formalize し、local workflow 完了と central sync 未完了を分離
+- Phase 6 未テスト `E-14` / `E-15` を runtime persist integration suite へ追加し、task spec の edge case 定義とテスト実体を一致させた
+
+---
+## 2026-03-29 - TASK-LLM-MOD-04 Phase 12 close-out hardening
+
+### 変更内容
+- step-03-seq-task-04-test-update workflow root に Phase 11/12/13 close-out 成果物を揃えた
+- docs-only task（P50 パターン）での Phase 12 完了条件: workflow root の current-facts 更新と artifacts.json 同期を実施
+- skill-feedback 反映: P50 task を新規実装前提で残すと validator fail と stale guidance を同時に生むパターンを記録
+- esbuild mismatch により vitest 再実行不能だったため、historical acceptance evidence と grep を代替証跡として使用
+
+---
+## 2026-03-29: coverage-standards.md v1.4.0 更新（Phase 7 グローバル閾値回避ガイドライン追加）
+
+### 変更内容
+
+- `references/coverage-standards.md` v1.4.0: 「プロジェクト全体グローバル閾値が失敗する場合の対処（Phase 7）」セクションを追加
+  - 対象ファイルを `--coverage.include` で絞り込む個別計測コマンドを追記
+  - 判定フロー（グローバル閾値失敗 → 個別計測 → PASS/FAIL）を表で明示
+  - 背景: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 の Phase 7 スキルフィードバック反映
+
+---
+## 2026-03-29: UT-RT-06-SKILL-EXECUTOR-NORMALIZER-CONSOLIDATION-001 完了同期
+- SkillExecutor/sdkMessageNormalizer の SDK メッセージ前処理重複を sdkMessageUtils.ts に集約
+- asSdkMessageRecord() / getSdkMessageType() を共通 helper として抽出
+- lane 固有の出力型（SkillStreamMessage / SkillCreatorSdkEvent）は変更なし
+- Phase 11 NON_VISUAL 証跡を walkthrough + `screenshot-plan.json` + placeholder PNG へ是正
+- Phase 12 の compliance false positive を補正し、root / outputs `artifacts.json` を同期
+- `validate-phase-output.js --phase 12` PASS、`verify-all-specs.js` PASS（warning 28）
+- `pnpm typecheck` PASS、`pnpm lint` 0 errors / 10 warnings、`vitest` rerun は environment blocked
+
+---
+## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
+
+### 変更内容
+- `scripts/complete-phase.js`: フェーズ完了時に outputs ディレクトリの存在を検証し、欠落時に WARNING を出力する機能を追加
+  - 背景: Phase 1〜3 が completed 記録済みでも outputs がない状態が発生したため（TASK-RT-06 Phase 12 フィードバック）
 
 ---
 ## TASK-SDK-05 create-entry-mainline-unification spec sync（2026-03-27）
@@ -1461,3 +1702,30 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `references/phase-12-documentation-guide.md` |
 | 結果 | `spec_created` workflow の implementation guide Part 2 を `current contract + target delta` で書くこと、API/使用例/設定表の省略禁止、`completed-tasks/` 配下でも status を `completed` へ上げないことを明文化した |
 | 検証 | current workflow の `phase12-task-spec-compliance-check.md` と突合して確認 |
+
+### 2026-03-30 - TASK-LLM-MOD-05 schema-extension close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / spec-alignment |
+| 変更対象 | `docs/30-workflows/step-04-seq-task-05-schema-extension/`（phase-2 / phase-12 / phase-13 / outputs / unassigned-task） |
+| 結果 | Phase 12 の実装ガイド・未タスク・skill-feedback を `provider-registry.ts` 前提へ同期し、Phase 13 の PR 準備と最終確認を current facts へ是正。`TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` を削除済みとして整理 |
+| 検証 | `provider.test.ts` 41 PASS、`llm.test.ts` 59 PASS / 1 skipped、workflow 内検索で旧想定パスの残存を解消確認 |
+
+### 2026-04-04 - TASK-RT-03-VERIFY-IMPROVE-PANEL-001 close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | ui-feature / workflow close-out / docs sync |
+| 変更対象 | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/`（Phase 1-12完了）、`apps/desktop/src/renderer/components/skill/VerifyResultDetailPanel.tsx`、`apps/desktop/src/renderer/components/skill/ImproveResultDetailPanel.tsx`、`apps/desktop/src/renderer/components/skill/__tests__/VerifyResultDetailPanel.test.tsx`（25テスト）、`apps/desktop/src/renderer/components/skill/__tests__/ImproveResultDetailPanel.test.tsx`（15テスト）、`apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`、`apps/desktop/src/renderer/components/skill/result-panel-parts.tsx`（StatusBadge label override）|
+| 結果 | Verify/Improve 結果パネルを新規実装。Layer別グループ化（useMemo + LAYER_ORDER）/ seqRef stale response防止 / StatusBadge optional label / aria accessibility テストパターンを確立。aiworkflow-requirementsスキルのresource-map / lessons-learned-current / LOGS に反映 |
+| 検証 | vitest 25/25 PASS（Verify）、vitest 15/15 PASS（Improve）、typecheck PASS（0エラー）、eslint PASS、generate-index.js PASS（2655キーワード）、validate-structure.js PASS |
+
+### 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | documentation / workflow close-out |
+| 変更対象 | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/index.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-1-requirements.md` 〜 `phase-12-documentation.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/artifacts.json`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/outputs/artifacts.json`, `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`, `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`, `outputs/phase-10`〜`outputs/phase-12` |
+| 結果 | Phase 10〜12 outputs を current facts に固定し、workflow 本体の status / 台帳 parity / task-workflow completed/backlog path を `fix-lifecycle-panel-error` へ同期した。Phase 11 は NON_VISUAL として自動テスト代替で完了。`generate-index.js` により topic-map / keywords も再生成した |
+| 検証 | `validate-phase12-implementation-guide.js` PASS（10/10）、`vitest` 8/8 PASS、`vitest` 10/10 PASS、`typecheck` PASS、`eslint` PASS |

@@ -292,6 +292,8 @@ Task08 session persistence/resume contract では、この engine state を永�
 
 この構成では、`RuntimeSkillCreatorFacade` は state owner ではなく public bridge に留まり、`plan()` の review state 記録、`execute()` の `terminal_handoff` 早期 return、`integrated_api` 完了時の verify 遷移記録を engine へ委譲する。`success: false` と executor reject は verify pending に進めず review へ戻し、`verification_review` と失敗 snapshot を engine が保持する。`ManifestLoader` も route authority へ昇格しない。owner 分離と downstream handoff は Task02 workflow 仕様書を正本とする。
 
+TASK-FIX-EXECUTE-PLAN-FF-001 以降、`skill-creator:execute-plan` は `{ accepted: true, planId }` の ack を返す fire-and-forget 入口として扱い、実行完了通知は `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay に分離する。これにより `RuntimeSkillCreatorFacade` の public bridge は受付責務のみを持ち、Engine は内部 progress hook を保持する。
+
 **Pattern 3 詳細（registerSkillDebugHandlers）**:
 
 - **引数**: `mainWindow: BrowserWindow`

@@ -1017,6 +1017,35 @@ export interface HistorySearchAPI {
   getStats: () => Promise<HistorySearchStatsResponse>;
 }
 
+/** Execution / Approval API (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001) */
+export interface ExecutionAPI {
+  getDisclosureInfo: () => Promise<{
+    success: boolean;
+    data?: unknown;
+    error?: unknown;
+  }>;
+  getTerminalLog: (
+    sessionId: string,
+  ) => Promise<{ success: boolean; data?: string[]; error?: unknown }>;
+  getCopyCommand: (
+    sessionId: string,
+  ) => Promise<{ success: boolean; data?: string | null; error?: unknown }>;
+  respondApproval: (request: {
+    sessionId: string;
+    operationId: string;
+    action: "approve" | "reject";
+  }) => Promise<{ success: boolean; error?: unknown }>;
+  onApprovalRequest: (
+    callback: (payload: {
+      operationType: string;
+      description: string;
+      destination?: string;
+      sessionId: string;
+      operationId: string;
+    }) => void,
+  ) => () => void;
+}
+
 // ElectronAPI interface
 export interface ElectronAPI {
   file: {
@@ -1224,6 +1253,10 @@ export interface ElectronAPI {
 
   // Skill Creator API (TASK-9B-H)
   skillCreator: import("./skill-creator-api").SkillCreatorAPI;
+  skillCreatorSession: import("./skill-creator-session-api").SkillCreatorSessionAPI;
+
+  // Execution / Approval API (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001)
+  execution: ExecutionAPI;
 }
 
 // ===== Search operations =====
@@ -1816,6 +1849,7 @@ declare global {
     conversationAPI: import("../shared/types/conversation").ConversationAPI;
     permissionAPI: PermissionAPI;
     skillCreatorAPI: import("./skill-creator-api").SkillCreatorAPI;
+    skillCreatorSessionAPI: import("./skill-creator-session-api").SkillCreatorSessionAPI;
     skillDebugAPI: SkillDebugAPI;
   }
 }

@@ -200,6 +200,15 @@ export interface ExternalApiConfig {
 }
 
 // ============================================
+// API キー管理型 (TASK-RT-04)
+// ============================================
+
+/**
+ * API キーの状態
+ */
+export type ApiKeyStatus = "not_set" | "validating" | "configured" | "error";
+
+// ============================================
 // 内部型（サービス内部使用）
 // ============================================
 
@@ -322,6 +331,18 @@ export interface LoadedWorkflowManifest extends WorkflowManifest {
 }
 
 // ============================================
+// LLM Adapter Status (TASK-RT-01)
+// ============================================
+
+/** LLMAdapter の初期化ステータス */
+export type LLMAdapterStatus = "ready" | "initializing" | "failed";
+
+/** Skill Creator のエラーコード */
+export type SkillCreatorErrorCode =
+  | "LLM_ADAPTER_FAILED"
+  | "LLM_ADAPTER_INITIALIZING";
+
+// ============================================
 // Runtime Skill Creator IPC contract
 // ============================================
 
@@ -342,6 +363,14 @@ export interface SkillCreatorExecutePlanRequest {
   skillSpec: string;
   authMode?: AuthMode;
   apiKey?: string | null;
+}
+
+/**
+ * 公開 skill-creator:execute-plan の受理応答
+ */
+export interface SkillCreatorExecutePlanAck {
+  accepted: true;
+  planId: string;
 }
 
 /**
@@ -383,10 +412,12 @@ export type SkillCreatorWorkflowPhase =
   | "execute"
   | "verify"
   | "improve"
+  | "reverify"
   | "handoff";
 
 export type SkillCreatorUserInputKind =
   | "single_select"
+  | "multi_select"
   | "free_text"
   | "secret"
   | "confirm";
@@ -424,6 +455,14 @@ export interface SkillCreatorVerifyResult {
   message?: string;
   nextAction?: "review" | "improve" | "handoff";
   updatedAt: string;
+  /** 現在の improve 試行回数（閉ループ内でのカウント、0開始） */
+  improveAttemptCount?: number;
+  /** 最大 improve 試行回数 */
+  maxImproveRetry?: number;
+  /** maxRetry 到達によりループが停止したか */
+  loopExhausted?: boolean;
+  /** 失敗した verify チェックの要約 */
+  failedChecksSummary?: string;
 }
 
 export interface SkillCreatorWorkflowSourceProvenance {
@@ -432,6 +471,32 @@ export interface SkillCreatorWorkflowSourceProvenance {
   manifestPath?: string;
   manifestCacheKey?: string;
   warningNote?: string;
+}
+
+export type SkillCreatorSdkEventType =
+  | "init"
+  | "assistant"
+  | "result"
+  | "error";
+
+export interface SkillCreatorSdkPermissionDenial {
+  toolName?: string;
+  toolUseId?: string;
+  reason: string;
+}
+
+export interface SkillCreatorSdkEvent {
+  eventType: SkillCreatorSdkEventType;
+  sequence?: number;
+  rawType?: string;
+  sessionId?: string;
+  messageId?: string;
+  text?: string;
+  resultSubtype?: string;
+  stopReason?: string;
+  permissionDenials?: SkillCreatorSdkPermissionDenial[];
+  errorMessage?: string;
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
 }
 
 export interface SkillCreatorRouteSnapshot {
@@ -465,9 +530,45 @@ export interface SkillCreatorUserInputSubmission {
   planId: string;
   requestId: string;
   selectedOptionId?: string;
+  selectedOptionIds?: string[];
+  selectedValues?: string[];
   textValue?: string;
   secretValue?: string;
   confirmed?: boolean;
+}
+
+// ============================================
+// Conversational Interview UI 型定義 (TASK-P0-06)
+// ============================================
+
+export type InterviewProficiency = "beginner" | "engineer";
+
+export interface InterviewUserAnswer {
+  kind: SkillCreatorUserInputKind;
+  selectedOptionId?: string;
+  selectedOptionIds?: string[];
+  selectedValues?: string[];
+  textValue?: string;
+  secretValue?: string;
+  confirmed?: boolean;
+}
+
+export interface InterviewMessage {
+  id: string;
+  role: "assistant" | "user";
+  kind: SkillCreatorUserInputKind | "info";
+  content: string;
+  inputRequest?: SkillCreatorUserInputRequest;
+  userAnswer?: InterviewUserAnswer;
+  timestamp: string;
+}
+
+export interface InterviewState {
+  messages: InterviewMessage[];
+  currentStepIndex: number;
+  totalSteps: number;
+  proficiency: InterviewProficiency;
+  canUndo: boolean;
 }
 
 // ============================================
@@ -499,6 +600,8 @@ export interface RuntimeSkillCreatorPlanResult {
   scripts: Array<{ name: string; purpose: string }>;
   triggers: string[];
   anchors: string[];
+  /** LLMAdapter の現在のステータス (TASK-RT-01) */
+  adapterStatus?: LLMAdapterStatus;
 }
 
 /**
@@ -509,6 +612,16 @@ export interface RuntimeSkillCreatorExecuteResult {
   skillName: string;
   success: boolean;
   error?: string;
+  sessionId?: string;
+  resultSubtype?: string;
+  stopReason?: string;
+  permissionDenials?: SkillCreatorSdkPermissionDenial[];
+  sdkEvents?: SkillCreatorSdkEvent[];
+  sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
+  /** SkillFileWriter.persist() の結果。persist 未実行またはスキップ時は null */
+  persistResult?: { skillPath: string; files: string[] } | null;
+  /** persist 失敗時のエラーメッセージ。成功またはスキップ時は null */
+  persistError?: string | null;
 }
 
 export type RuntimeSkillCreatorVerifyCheckSeverity =
@@ -518,7 +631,7 @@ export type RuntimeSkillCreatorVerifyCheckSeverity =
 
 export interface RuntimeSkillCreatorVerifyCheck {
   id: string;
-  layer: "layer3" | "layer4";
+  layer: "layer1" | "layer2" | "layer3" | "layer4";
   severity: RuntimeSkillCreatorVerifyCheckSeverity;
   summary: string;
   evidenceSummary?: string;
@@ -539,6 +652,7 @@ export interface RuntimeSkillCreatorVerifyDetail {
     | "execute"
     | "verify"
     | "improve"
+    | "reverify"
     | "handoff";
   status: "pending" | "pass" | "fail";
   message?: string;
@@ -559,6 +673,19 @@ export interface RuntimeSkillCreatorVerifyDetail {
 export interface RuntimeSkillCreatorReverifyResult {
   accepted: boolean;
   disabledReason?: string;
+}
+
+/**
+ * verify→improve ループの 1 試行分の履歴
+ * task-ut-p0-02-001-repeat-feedback-memory
+ */
+export interface ImproveFeedbackHistory {
+  /** 試行番号（1始まり） */
+  attempt: number;
+  /** verify で失敗したチェック項目の ID リスト */
+  failedChecks: string[];
+  /** improve が生成した改善要約 */
+  improveSummary: string;
 }
 
 /**
@@ -592,11 +719,60 @@ export interface ApplyImprovementResult {
 }
 
 /**
+ * verify→improve→re-verify 閉ループの最終結果
+ * TASK-P0-02
+ */
+export interface RuntimeSkillCreatorVerifyAndImproveResult {
+  /** 最終的な verify 結果 */
+  finalStatus: "pass" | "fail" | "error";
+  /** 実行した improve の回数 */
+  totalAttempts: number;
+  /** 最終的な verify チェック結果 */
+  finalChecks: RuntimeSkillCreatorVerifyCheck[];
+  /** ループが maxRetry で停止したか */
+  loopExhausted: boolean;
+  /** improve / verify の失敗コード */
+  errorCode?: string;
+  /** エラーが発生した場合のメッセージ */
+  errorMessage?: string;
+  /** ワークフロー状態スナップショット */
+  workflowSnapshot: SkillCreatorWorkflowUiSnapshot;
+}
+
+/**
+ * Degraded reason code（llmAdapter / resourceLoader 不足時）
+ * TASK-RT-02
+ */
+export type RuntimeSkillCreatorDegradedReason =
+  | "llm_adapter_unavailable"
+  | "resource_loader_unavailable";
+
+/**
+ * plan() エラーレスポンス（logical error union、TASK-RT-02）
+ */
+export interface RuntimeSkillCreatorPlanErrorResponse {
+  success: false;
+  error: {
+    code: RuntimeSkillCreatorDegradedReason | "VALIDATION_ERROR";
+    message: string;
+  };
+}
+
+/**
  * improve() エラーレスポンス（IPC wrapper 形式、P60 対策）
  */
 export interface RuntimeSkillCreatorImproveErrorResponse {
   success: false;
   error: { code: string; message: string };
+}
+
+/**
+ * execute() エラーレスポンス（adapter ステータス未準備時）
+ * TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+ */
+export interface RuntimeSkillCreatorExecuteErrorResponse {
+  success: false;
+  error: { code: RuntimeSkillCreatorDegradedReason; message: string };
 }
 
 /**
@@ -619,9 +795,11 @@ export interface SkillGeneratedContent {
 
 /**
  * Runtime plan IPC の戻り値
+ * TASK-RT-02: error union を追加
  */
 export type RuntimeSkillCreatorPlanResponse =
   | RuntimeSkillCreatorPlanResult
+  | RuntimeSkillCreatorPlanErrorResponse
   | {
       type: "terminal_handoff";
       guidance: HandoffGuidance;
@@ -629,13 +807,12 @@ export type RuntimeSkillCreatorPlanResponse =
 
 /**
  * Runtime execute IPC の戻り値
+ * TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001: エラー union を追加
  */
 export type RuntimeSkillCreatorExecuteResponse =
   | RuntimeSkillCreatorExecuteResult
-  | {
-      type: "terminal_handoff";
-      bundle: TerminalHandoffBundle;
-    };
+  | { type: "terminal_handoff"; bundle: TerminalHandoffBundle }
+  | RuntimeSkillCreatorExecuteErrorResponse;
 
 /**
  * Runtime verify detail IPC の戻り値
@@ -894,4 +1071,134 @@ export interface SkillCreatorSdkEvent {
   sourceProvenance?: SkillCreatorSdkEventSourceProvenance;
   /** 停止理由（"end_turn" | "error" | "tool_use" など） */
   stopReason?: string;
+}
+
+/**
+ * セッション一覧に返すフラットな項目型 (TASK-P0-08)。
+ * RendererがSessionResumePromptを描画するために使用。
+ */
+export interface SkillCreatorSessionListItem {
+  checkpointId: string;
+  planId: string;
+  currentPhase: SkillCreatorWorkflowPhase;
+  checkpointType: SkillCreatorCheckpointType;
+  compatibility: ResumeCompatibilityResult;
+  updatedAt: number;
+}
+
+/**
+ * IPC: skill-creator:resume-session リクエスト (TASK-P0-08)
+ */
+export interface SkillCreatorResumeSessionRequest {
+  checkpointId: string;
+}
+
+/**
+ * IPC: skill-creator:delete-session リクエスト (TASK-P0-08)
+ */
+export interface SkillCreatorDeleteSessionRequest {
+  checkpointId: string;
+}
+
+/** セッションTTL: 24時間 (TASK-P0-08) */
+export const SESSION_TTL_MS = 86_400_000 as const;
+
+// ============================================
+// Skill Output Integration (TASK-SDK-SC-04)
+// ============================================
+
+/**
+ * SDK セッション出力から抽出されたスキル定義
+ */
+export interface ParsedSkillOutput {
+  /** スキル名（SKILL.md の name フィールドから取得） */
+  name: string;
+  /** SKILL.md の全内容 */
+  content: string;
+  /** 保存先ディレクトリ名（スキル名をスラッグ化したもの） */
+  dirName: string;
+}
+
+/**
+ * skill-creator:output-ready IPC ペイロード
+ */
+export interface SkillOutputReadyPayload {
+  /** スキル名 */
+  skillName: string;
+  /** 保存先のフルパス */
+  savedPath: string;
+  /** SKILL.md 内容（プレビュー用） */
+  content: string;
+  /** 既存スキルの上書き確認が必要か */
+  requiresOverwriteConfirm: boolean;
+}
+
+// ============================================
+// Governance / Permission / Hooks (TASK-P0-09)
+// ============================================
+
+/**
+ * Governance 対象の phase。skill-creator pipeline の各段階を表す。
+ * SkillCreatorWorkflowPhase の部分集合（"plan"|"execute"|"verify"|"improve"）。
+ */
+export type SkillCreatorGovernancePhase =
+  | "plan"
+  | "execute"
+  | "verify"
+  | "improve";
+
+/**
+ * Phase ごとの SDK permission / tool policy 定義。
+ * Facade が SDK query() option を組み立てる際に参照する。
+ */
+export interface SkillCreatorSdkPolicy {
+  phase: SkillCreatorGovernancePhase;
+  permissionMode: "default" | "acceptEdits" | "bypassPermissions";
+  allowedTools: string[];
+  disallowedTools: string[];
+}
+
+/**
+ * canUseTool callback の判定結果。
+ * allowed=false の場合は reason に deny 理由を含める。
+ */
+export interface SkillCreatorToolDecision {
+  allowed: boolean;
+  reason: string;
+  phase: SkillCreatorGovernancePhase;
+  toolName: string;
+}
+
+/**
+ * Hooks が記録する監査イベントの種別。
+ */
+export type SkillCreatorHookEventType =
+  | "session_start"
+  | "pre_tool_use"
+  | "post_tool_use"
+  | "session_end";
+
+/**
+ * Governance audit event。Hooks が生成し AuditSink に記録される。
+ */
+export interface SkillCreatorGovernanceAuditEvent {
+  eventType: SkillCreatorHookEventType;
+  timestamp: string;
+  sessionId: string;
+  phase: SkillCreatorGovernancePhase;
+  toolName?: string;
+  decision?: SkillCreatorToolDecision;
+  provenance?: SkillCreatorWorkflowSourceProvenance;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * UI に公開する governance 状態の snapshot。
+ * renderer は read-only で参照する。
+ */
+export interface SkillCreatorGovernanceState {
+  phase: SkillCreatorGovernancePhase;
+  activePolicy: SkillCreatorSdkPolicy;
+  recentAuditEvents: SkillCreatorGovernanceAuditEvent[];
+  recentDenials: SkillCreatorSdkPermissionDenial[];
 }

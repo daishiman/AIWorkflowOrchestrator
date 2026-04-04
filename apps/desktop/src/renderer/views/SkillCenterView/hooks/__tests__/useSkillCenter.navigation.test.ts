@@ -101,4 +101,21 @@ describe("useSkillCenter ナビゲーションアクション", () => {
     expect(typeof result.current.navigateToWorkspace).toBe("function");
     expect(typeof result.current.navigateToSkillAnalysis).toBe("function");
   });
+
+  it("TC-05: navigateToSkillManagement が setCurrentView('skillManagement') を呼ぶ", () => {
+    const { result } = renderHook(() => useSkillCenter());
+
+    act(() => {
+      result.current.navigateToSkillManagement();
+    });
+
+    expect(mockSetCurrentView).toHaveBeenCalledTimes(1);
+    expect(mockSetCurrentView).toHaveBeenCalledWith("skillManagement");
+  });
+
+  it("TC-06: 返り値に navigateToSkillManagement が含まれる", () => {
+    const { result } = renderHook(() => useSkillCenter());
+
+    expect(typeof result.current.navigateToSkillManagement).toBe("function");
+  });
 });

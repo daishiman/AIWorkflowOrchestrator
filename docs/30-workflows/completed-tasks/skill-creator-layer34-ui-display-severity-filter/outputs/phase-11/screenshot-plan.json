@@ -1,0 +1,41 @@
+{
+  "taskId": "UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001",
+  "generatedAt": "2026-04-04T01:30:23.832Z",
+  "captureMethod": "current_build_vite_playwright",
+  "baseUrl": "http://127.0.0.1:5199",
+  "harnessPath": "/phase11-task-skill-lifecycle-severity-filter.html",
+  "viewport": {
+    "width": 1440,
+    "height": 2200
+  },
+  "cases": [
+    {
+      "tcId": "TC-11-01",
+      "state": "default-all",
+      "theme": "light",
+      "output": "outputs/phase-11/screenshots/TC-11-01-severity-filter-all-light.png",
+      "note": "Default all state in light theme."
+    },
+    {
+      "tcId": "TC-11-02",
+      "state": "warning-plus",
+      "theme": "light",
+      "output": "outputs/phase-11/screenshots/TC-11-02-severity-filter-warning-plus-light.png",
+      "note": "warning+ state in light theme."
+    },
+    {
+      "tcId": "TC-11-03",
+      "state": "error-only",
+      "theme": "light",
+      "output": "outputs/phase-11/screenshots/TC-11-03-severity-filter-error-light.png",
+      "note": "error-only state in light theme."
+    },
+    {
+      "tcId": "TC-11-04",
+      "state": "default-all-dark",
+      "theme": "dark",
+      "output": "outputs/phase-11/screenshots/TC-11-04-severity-filter-all-dark.png",
+      "note": "Default all state in dark theme."
+    }
+  ]
+}

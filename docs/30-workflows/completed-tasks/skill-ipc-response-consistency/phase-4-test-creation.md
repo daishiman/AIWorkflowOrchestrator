@@ -28,15 +28,15 @@
 
 ## 参照資料
 
-| 参照資料                         | パス                                                                                        | 内容                     |
-| -------------------------------- | ------------------------------------------------------------------------------------------- | ------------------------ |
-| Phase 1 要件成果物               | `outputs/phase-1/requirements.md`                                                           | 受け入れ基準・境界条件   |
-| Phase 2 設計成果物               | `outputs/phase-2/design-document.md`                                                        | 契約プロファイル定義     |
-| Phase 3 レビュー成果物           | `outputs/phase-3/gate-decision.md`                                                          | レビュー判定と注意事項   |
-| テストパターン                   | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md`           | テスト設計パターン       |
-| 品質・カバレッジ基準             | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                 | 閾値と品質ゲート         |
-| IPC 契約チェックリスト           | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | 契約ドリフト検証手順     |
-| P42/P44/P45 の既知の落とし穴対策 | `.claude/rules/06-known-pitfalls.md`                                                        | 再発防止ポイント         |
+| 参照資料                         | パス                                                                              | 内容                   |
+| -------------------------------- | --------------------------------------------------------------------------------- | ---------------------- |
+| Phase 1 要件成果物               | `outputs/phase-1/requirements.md`                                                 | 受け入れ基準・境界条件 |
+| Phase 2 設計成果物               | `outputs/phase-2/design-document.md`                                              | 契約プロファイル定義   |
+| Phase 3 レビュー成果物           | `outputs/phase-3/gate-decision.md`                                                | レビュー判定と注意事項 |
+| テストパターン                   | `.claude/skills/aiworkflow-requirements/references/testing-component-patterns.md` | テスト設計パターン     |
+| 品質・カバレッジ基準             | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`       | 閾値と品質ゲート       |
+| IPC 契約チェックリスト           | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`     | 契約ドリフト検証手順   |
+| P42/P44/P45 の既知の落とし穴対策 | `.claude/rules/06-known-pitfalls.md`                                              | 再発防止ポイント       |
 
 ## 実行タスク
 
@@ -131,10 +131,10 @@ cd apps/desktop && pnpm vitest run src/preload/__tests__/skill-api.contract.test
 
 ## SubAgent 分担
 
-| SubAgent   | 担当 |
-| ---------- | ---- |
-| SubAgent-A | タスク1（テストケース設計）+ タスク2（Main 契約テスト作成） |
-| SubAgent-B | タスク3（Preload 契約テスト作成）+ タスク4（Renderer 利用側テスト作成） |
+| SubAgent   | 担当                                                                               |
+| ---------- | ---------------------------------------------------------------------------------- |
+| SubAgent-A | タスク1（テストケース設計）+ タスク2（Main 契約テスト作成）                        |
+| SubAgent-B | タスク3（Preload 契約テスト作成）+ タスク4（Renderer 利用側テスト作成）            |
 | SubAgent-C | タスク5（TDD Red確認）+ 実行結果集約（`outputs/phase-4/test-case-matrix.md` 更新） |
 
 ## 成果物

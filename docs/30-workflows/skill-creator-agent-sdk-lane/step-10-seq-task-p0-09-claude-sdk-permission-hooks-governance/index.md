@@ -1,150 +1,85 @@
-# TASK-P0-09: claude-sdk-permission-hooks-governance
-
-## 概要
-
-Claude Code SDK の `permissionMode`、`allowedTools` / `disallowedTools`、`canUseTool`、Hooks を、skill-creator lane の phase ごとに安全に適用する。前提は変えない。システムは常に最新の `.claude/skills/skill-creator/` を動的に読みに行き、そのスキルを Claude Code SDK で実行する。本タスクは、その動的実行を止めずに、安全境界、監査、tool 利用制御を定義・実装する。
+# step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance - タスク実行仕様書
 
 ## メタ情報
 
-| 項目       | 内容                               |
-| ---------- | ---------------------------------- |
-| タスクID   | TASK-P0-09                         |
-| タスク種別 | 機能追加 / ガバナンス hardening    |
-| 優先度     | P0 (Critical Path)                 |
-| ステータス | spec_created                       |
-| 上流ゲート | TASK-RT-06, TASK-P0-03, TASK-P0-04 |
-| 依存タスク | TASK-RT-06, TASK-P0-03, TASK-P0-04 |
-| 後続タスク | なし                               |
-| 作成日     | 2026-03-29                         |
-| 更新日     | 2026-03-29                         |
+| 項目       | 内容                                                          |
+| ---------- | ------------------------------------------------------------- |
+| 機能名     | step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance |
+| 作成日     | 2026-03-29                                                    |
+| ステータス | 完了                                                          |
+| 総Phase数  | 13                                                            |
 
-## 受入基準
+---
 
-| ID   | 基準                                                                                              |
-| ---- | ------------------------------------------------------------------------------------------------- |
-| AC-1 | plan / execute / verify / improve 各 phase に対する `permissionMode` と tool 境界が定義されている |
-| AC-2 | `allowedTools` / `disallowedTools` / `canUseTool` が lane 契約として実装されている                |
-| AC-3 | `SessionStart` / `PreToolUse` / `PostToolUse` / `SessionEnd` Hook により監査イベントが記録される  |
-| AC-4 | permission denial と hook 判断結果が UI / audit log に反映される                                  |
-| AC-5 | `.claude/skills/skill-creator/` の動的読込結果と provenance が hook / audit へ含まれる            |
-| AC-6 | skill-creator の固定化や hardcoded prompt への置換を行わない                                      |
+## Phase一覧
 
-## スコープ
+| Phase | 名称                 | 仕様書                                                       | ステータス |
+| ----- | -------------------- | ------------------------------------------------------------ | ---------- |
+| 1     | 要件定義             | [phase-1-requirements.md](phase-1-requirements.md)           | 完了       |
+| 2     | 設計                 | [phase-2-design.md](phase-2-design.md)                       | 完了       |
+| 3     | 設計レビューゲート   | [phase-3-design-review.md](phase-3-design-review.md)         | 完了       |
+| 4     | テスト作成           | [phase-4-test-creation.md](phase-4-test-creation.md)         | 完了       |
+| 5     | 実装                 | [phase-5-implementation.md](phase-5-implementation.md)       | 完了       |
+| 6     | テスト拡充           | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 完了       |
+| 7     | テストカバレッジ確認 | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 完了       |
+| 8     | リファクタリング     | [phase-8-refactoring.md](phase-8-refactoring.md)             | 完了       |
+| 9     | 品質保証             | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 完了       |
+| 10    | 最終レビューゲート   | [phase-10-final-review.md](phase-10-final-review.md)         | 完了       |
+| 11    | 手動テスト検証       | [phase-11-manual-test.md](phase-11-manual-test.md)           | 完了       |
+| 12    | ドキュメント更新     | [phase-12-documentation.md](phase-12-documentation.md)       | 完了       |
+| 13    | PR作成               | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 未実施     |
 
-**含む**:
+---
 
-- phase 別 `permissionMode` 設計
-- `allowedTools` / `disallowedTools` / `canUseTool` 実装
-- Hook 経由の provenance / permission / tool execution 監査
-- audit payload 型定義
-- UI 向け permission denial / governance 表示
-- ユニットテスト・統合テスト
+## 実行フロー
 
-**含まない**:
-
-- skill-creator 本文の固定化
-- `.claude/skills/skill-creator/` の静的コピー作成
-- ManifestLoader のコア読込ロジック変更
-- session resume UI 本体（TASK-P0-08）
-
-## 依存関係
-
-| 種別       | 参照先                           | 役割                              |
-| ---------- | -------------------------------- | --------------------------------- |
-| upstream   | TASK-RT-06                       | SDK message / `session_id` 正規化 |
-| upstream   | TASK-P0-03                       | 動的 skill-creator manifest 配置  |
-| upstream   | TASK-P0-04                       | dynamic pipeline 有効化           |
-| upstream   | `../root-workflow-pack/index.md` | lane 共通不変条件                 |
-| downstream | なし                             |                                   |
-
-## 現行コードアンカー
-
-| ファイル                                                              | 現状の役割                  | TASK-P0-09 での扱い                            |
-| --------------------------------------------------------------------- | --------------------------- | ---------------------------------------------- |
-| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | SDK 呼び出しの orchestrator | phase 別 permission option 注入                |
-| `apps/desktop/src/main/ipc/creatorHandlers.ts`                        | renderer bridge             | governance 状態の公開                          |
-| `apps/desktop/src/preload/skill-creator-api.ts`                       | preload API                 | audit / permission 表示用 payload 公開         |
-| `packages/shared/src/types/skillCreator.ts`                           | 共通型                      | governance / audit event 型追加                |
-| `.claude/skills/skill-creator/`                                       | 動的読込対象の正本          | provenance と resource root を監査対象へ含める |
-
-## 要件レビュー一次結論
-
-| 観点                 | 結論                                                                                        |
-| -------------------- | ------------------------------------------------------------------------------------------- |
-| 真の論点             | 動的な skill-creator 実行を維持したまま、phase ごとに tool 利用境界と監査を固定すること     |
-| 依存関係・責務境界   | skill-creator の中身は動的読込のまま。Facade が SDK option を設定し、Hooks が監査を担う     |
-| 価値とコストの不均衡 | ここを曖昧にすると plan/execute/verify/improve が安全に区別できない。コストは中、価値は高い |
-| 改善優先順位         | 1. phase 別 tool policy 2. `canUseTool` 3. Hooks 4. audit payload 5. UI 表示                |
-| 4条件評価            | 価値性: 高 / 実現性: 中 / 整合性: 高 / 運用性: 高                                           |
-
-## ディレクトリ構成
-
-```text
-step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance/
-├── index.md
-├── artifacts.json
-├── phase-1-requirements.md
-├── phase-2-design.md
-├── phase-3-design-review.md
-├── phase-4-test-creation.md
-├── phase-5-implementation.md
-├── phase-6-test-expansion.md
-├── phase-7-coverage-check.md
-├── phase-8-refactoring.md
-├── phase-9-quality-assurance.md
-├── phase-10-final-review.md
-├── phase-11-manual-test.md
-├── phase-12-documentation.md
-├── phase-13-pr-creation.md
-└── outputs/
+```
+Phase 1 → Phase 2 → Phase 3 (Gate) → Phase 4 → Phase 5 → Phase 6 → Phase 7
+                         ↓                                      ↓
+                    (MAJOR→戻り)                           (未達→戻り)
+                         ↓                                      ↓
+Phase 8 → Phase 9 → Phase 10 (Gate) → Phase 11 → Phase 12 → Phase 13 → 完了
+                         ↓
+                    (MAJOR→戻り)
 ```
 
-## 実装者向けクイックガイド
+---
 
-### 着手条件
+## Phase完了時の必須アクション
 
-- `.claude/skills/skill-creator/` を常に動的読込する前提に合意している
-- Claude Code SDK の permission / hooks 契約を読了している
-- TASK-RT-06, TASK-P0-03, TASK-P0-04 の仕様を把握している
+1. **タスク100%実行**: Phase内で指定された全タスクを完全に実行
+2. **成果物確認**: 全ての必須成果物が生成されていることを検証
+3. **artifacts.json更新**: `complete-phase.js` でPhase完了ステータスを更新
+4. **完了条件チェック**: 各タスクを完遂した旨を必ず明記
 
-### 想定変更ポイント
+```bash
+# Phase完了処理
+node .claude/skills/task-specification-creator/scripts/complete-phase.js \
+  --workflow docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance --phase {{N}} \
+  --artifacts "outputs/phase-{{N}}/{{FILE}}.md:{{DESCRIPTION}}"
+```
 
-- Facade の `query()` option 組み立て
-- permission policy module
-- hooks factory / audit sink
-- renderer 向け governance 表示
-- 共通型定義
+---
 
-### 非対象
+## 成果物
 
-- skill-creator の静的埋め込み
-- workflow 全面再設計
-- session persistence main 実装の置換
+| Phase | 主要成果物                                                                                                                                                                                                                                                                              |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | outputs/phase-1/spec-extraction-map.md, outputs/phase-1/skill-compliance-matrix.md                                                                                                                                                                                                      |
+| 2     | outputs/phase-2/governance-design.md                                                                                                                                                                                                                                                    |
+| 3     | outputs/phase-3/design-review-gate.md, outputs/phase-3/elegance-thinking-audit.md                                                                                                                                                                                                       |
+| 4     | outputs/phase-4/test-matrix.md                                                                                                                                                                                                                                                          |
+| 5     | outputs/phase-5/implementation-record.md                                                                                                                                                                                                                                                |
+| 6     | outputs/phase-6/extended-test-record.md                                                                                                                                                                                                                                                 |
+| 7     | outputs/phase-7/coverage-report.md                                                                                                                                                                                                                                                      |
+| 8     | outputs/phase-8/refactoring-record.md                                                                                                                                                                                                                                                   |
+| 9     | outputs/phase-9/quality-report.md                                                                                                                                                                                                                                                       |
+| 10    | outputs/phase-10/final-review-result.md, outputs/phase-10/gate-decision-log.md                                                                                                                                                                                                          |
+| 11    | outputs/phase-11/manual-test-result.md, outputs/phase-11/manual-test-report.md, outputs/phase-11/discovered-issues.md                                                                                                                                                                   |
+| 12    | outputs/phase-12/implementation-guide.md, outputs/phase-12/system-spec-update-summary.md, outputs/phase-12/documentation-changelog.md, outputs/phase-12/unassigned-task-detection.md, outputs/phase-12/skill-feedback-report.md, outputs/phase-12/phase12-task-spec-compliance-check.md |
+| 13    | phase-13-pr-creation.md                                                                                                                                                                                                                                                                 |
 
-### 完了イメージ
+---
 
-- plan は read-only 中心、execute は生成対象 skill dir への限定 write、verify は read/test 中心、improve は限定 edit で動く
-- Hook で provenance / tool 実行 / denial が追跡できる
-- permission denial が UI に理由つきで出る
-- 動的 skill-creator 呼出し主線はそのまま維持される
-
-### 並列実行メモ
-
-- TASK-P0-09 は TASK-RT-06 + TASK-P0-03/04 完了後に着手
-- hooks / permission は `RuntimeSkillCreatorFacade.ts` で P0-08 と競合しやすい
-
-## Phase 一覧
-
-- [phase-1-requirements.md](./phase-1-requirements.md)
-- [phase-2-design.md](./phase-2-design.md)
-- [phase-3-design-review.md](./phase-3-design-review.md)
-- [phase-4-test-creation.md](./phase-4-test-creation.md)
-- [phase-5-implementation.md](./phase-5-implementation.md)
-- [phase-6-test-expansion.md](./phase-6-test-expansion.md)
-- [phase-7-coverage-check.md](./phase-7-coverage-check.md)
-- [phase-8-refactoring.md](./phase-8-refactoring.md)
-- [phase-9-quality-assurance.md](./phase-9-quality-assurance.md)
-- [phase-10-final-review.md](./phase-10-final-review.md)
-- [phase-11-manual-test.md](./phase-11-manual-test.md)
-- [phase-12-documentation.md](./phase-12-documentation.md)
-- [phase-13-pr-creation.md](./phase-13-pr-creation.md)
+_このファイルは `generate-index.js` によって自動生成されました。_
+_最終更新: 2026-03-30T22:25:57.112Z_

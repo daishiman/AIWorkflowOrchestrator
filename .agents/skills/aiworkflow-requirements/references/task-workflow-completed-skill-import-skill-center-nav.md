@@ -78,7 +78,7 @@
 | 追加未タスク                                          | 概要                                                                                                                                  | 参照                                                                                                 |
 | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
 | ~~UT-IMP-SKILL-CENTER-PREVIEW-BUILD-GUARD-001~~       | ~~SkillCenter Phase 11再撮影の preflight ガード（失敗時の未タスク化/代替証跡記録を標準化）~~ **完了: 2026-03-04（Phase 12完了移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-skill-center-preview-build-guard-001.md` |
-| UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 | SkillCenter hotfix 対象カバレッジの include path ガード（実在パス検証 + `3 files / 30 tests` 固定）                                   | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md`       |
+| UT-IMP-SKILL-CENTER-HOTFIX-COVERAGE-INCLUDE-GUARD-001 | SkillCenter hotfix 対象カバレッジの include path ガード（実在パス検証 + `3 files / 30 tests` 固定）                                   | `docs/30-workflows/unassigned-task/task-imp-skill-center-hotfix-coverage-include-guard-001.md`       |
 
 #### 再追補: Phase 12テンプレート最適化の実装反映（2026-03-04）
 
@@ -125,11 +125,11 @@
 | 苦戦箇所     | screenshot 再取得は成功しても `Port 5174 is already in use` が混在し、失敗判定との切り分けが人依存になりやすい                                               |
 | 対処         | 実行前ポート検査（`lsof`）を証跡へ固定し、競合時の分岐（停止/再利用）を未タスク化                                                                            |
 | 関連未タスク | `UT-IMP-PHASE12-SCREENSHOT-PORT-CONFLICT-GUARD-001`                                                                                                          |
-| 参照         | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md`                                                                   |
+| 参照         | `docs/30-workflows/unassigned-task/task-imp-phase12-screenshot-port-conflict-guard-001.md`                                                                   |
 | 苦戦箇所     | `validate-phase11-screenshot-coverage` が PASS でも、`phase-11-manual-test.md` に画面カバレッジマトリクスがなく warning が残り、レビュー観点が人依存になった |
 | 対処         | 画面カバレッジマトリクスの必須化（視覚TC/非視覚TC区分 + 期待証跡）を未タスク化し、Phase 11 設計意図を固定する方針へ分離                                      |
 | 関連未タスク | `UT-IMP-PHASE11-SCREENSHOT-COVERAGE-MATRIX-GUARD-001`                                                                                                        |
-| 参照         | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md`                                                                 |
+| 参照         | `docs/30-workflows/unassigned-task/task-imp-phase11-screenshot-coverage-matrix-guard-001.md`                                                                 |
 
 #### 追補2: UT workflow 証跡正規化（2026-03-04）
 

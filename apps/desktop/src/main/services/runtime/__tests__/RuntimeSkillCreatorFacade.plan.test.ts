@@ -301,19 +301,12 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
   // ------------------------------------------------------------------
   // 4. Graceful degradation テスト
   // ------------------------------------------------------------------
-  describe("Graceful degradation", () => {
-    it("llmAdapter 未注入時はスタブレスポンスを返す", async () => {
+  describe("Graceful degradation → explicit error (TASK-RT-02)", () => {
+    it("llmAdapter 未注入時は initializing エラーを返す (TASK-RT-01)", async () => {
       const facadeWithoutLLM = new RuntimeSkillCreatorFacade({
         skillExecutor: mockSkillExecutor,
-        // llmAdapter 未指定
-        // resourceLoader 未指定
+        // llmAdapter 未指定 → status === "initializing"
       });
-      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
-        type: "integrated_api",
-        apiKey: "sk-test",
-        permissionMode: "default",
-      });
-      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_000);
 
       const result = await facadeWithoutLLM.plan(
         "テスト入力",
@@ -321,10 +314,41 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
         "sk-test",
       );
 
-      // スタブレスポンス（LLM フィールドは空）
-      expect(result).toHaveProperty("planId", "plan-1710000000000");
-      expect(result).toHaveProperty("skillSpec", "テスト入力");
-      expect(result).toHaveProperty("estimatedSteps", 3);
+      // TASK-RT-01: initializing ステータスチェックが resolveDecision より先に実行
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
+        },
+      });
+    });
+
+    it("resourceLoader 未注入時は resource_loader_unavailable を返す", async () => {
+      const facadeWithLLMOnly = new RuntimeSkillCreatorFacade({
+        skillExecutor: mockSkillExecutor,
+        llmAdapter: mockLLMAdapter,
+        // resourceLoader 未指定
+      });
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
+      });
+
+      const result = await facadeWithLLMOnly.plan(
+        "テスト入力",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "resource_loader_unavailable",
+          message: "リソースローダーが利用できません。設定を確認してください。",
+        },
+      });
     });
   });
 
@@ -428,6 +452,66 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
       const result = await facade.plan("テスト入力", "api-key", "sk-test");
       expect(result).not.toHaveProperty("type", "terminal_handoff");
       expect(result).toHaveProperty("skillName", "github-issue-classifier");
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // TASK-P0-07: agent 名導出テスト（T-P7-02, T-P7-04）
+  // ------------------------------------------------------------------
+  describe("TASK-P0-07: PLAN_RESOURCE_REQUESTS からの agent 名導出", () => {
+    it("T-P7-02: PLAN_RESOURCE_REQUESTS に reference エントリがあっても agent 名導出に混ざらない", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
+      });
+      // discover-problem, design-workflow, plan-structure のみ loadAgent が呼ばれることを確認
+      // overview（reference エントリ）は呼ばれない
+      (mockResourceLoader.loadAgent as ReturnType<typeof vi.fn>)
+        .mockResolvedValueOnce("discover-problem content")
+        .mockResolvedValueOnce("design-workflow content")
+        .mockResolvedValueOnce("plan-structure content");
+      (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+        content: validPlanResponseJson(),
+        model: "claude-sonnet-4-20250514",
+        usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+      });
+
+      await facade.plan("テスト入力", "api-key", "sk-test");
+
+      // agent エントリ 3 件のみ呼ばれ、reference（overview）は呼ばれない
+      expect(mockResourceLoader.loadAgent).toHaveBeenCalledTimes(3);
+      expect(mockResourceLoader.loadAgent).not.toHaveBeenCalledWith("overview");
+    });
+
+    it("T-P7-04: AGENT_NAMES の残留参照が runtime services にない（PLAN_RESOURCE_REQUESTS が唯一の source of truth）", async () => {
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
+      });
+      (mockResourceLoader.loadAgent as ReturnType<typeof vi.fn>)
+        .mockResolvedValueOnce("agent1")
+        .mockResolvedValueOnce("agent2")
+        .mockResolvedValueOnce("agent3");
+      (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+        content: validPlanResponseJson(),
+        model: "claude-sonnet-4-20250514",
+        usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+      });
+
+      await facade.plan("テスト入力", "api-key", "sk-test");
+
+      // PLAN_RESOURCE_REQUESTS の agent エントリの id（discover-problem / design-workflow / plan-structure）が
+      // AGENT_NAMES を介さずに loadAgent に渡されている
+      const calls = (
+        mockResourceLoader.loadAgent as ReturnType<typeof vi.fn>
+      ).mock.calls.map((call) => call[0] as string);
+      expect(calls).toEqual([
+        "discover-problem",
+        "design-workflow",
+        "plan-structure",
+      ]);
     });
   });
 

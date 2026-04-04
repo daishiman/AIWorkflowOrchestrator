@@ -14,6 +14,8 @@ import {
 } from "@repo/shared";
 import { v4 as uuidv4 } from "uuid";
 import { IPC_CHANNELS } from "../../../preload/channels";
+import type { IApprovalGate } from "../runtime/ApprovalGate";
+import { pushApprovalRequest } from "../../ipc/approvalHandlers";
 
 /**
  * Hook入力型
@@ -138,15 +140,21 @@ export class HooksFactory {
   private mainWindow: BrowserWindow;
   private executionId: string;
   private permissionResolver: PermissionResolver;
+  private approvalGate: IApprovalGate;
+  private sessionId: string;
 
   constructor(
     mainWindow: BrowserWindow,
     executionId: string,
     permissionResolver: PermissionResolver,
+    approvalGate: IApprovalGate,
+    sessionId: string,
   ) {
     this.mainWindow = mainWindow;
     this.executionId = executionId;
     this.permissionResolver = permissionResolver;
+    this.approvalGate = approvalGate;
+    this.sessionId = sessionId;
   }
 
   /**
@@ -178,6 +186,13 @@ export class HooksFactory {
 
         for (const pattern of DANGEROUS_PATTERNS.BASH_COMMANDS) {
           if (command.includes(pattern)) {
+            const operationId = uuidv4();
+            pushApprovalRequest(this.mainWindow, {
+              sessionId: this.sessionId,
+              operationId,
+              operationType: "dangerous_bash_command",
+              description: `Dangerous command blocked: ${pattern}`,
+            });
             return {
               proceed: false,
               message: `Dangerous command blocked: ${pattern}`,

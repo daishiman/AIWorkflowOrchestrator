@@ -87,17 +87,22 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 
 ## Task仕様ナビ
 
-| Task                   | 概要                                    | 対応する Phase | リソース                                |
-| ---------------------- | --------------------------------------- | -------------- | --------------------------------------- |
-| query() API基本実装    | ストリーミングメッセージ処理の基本      | Phase 1, 2     | query-api.md, agent-handler-template.ts |
-| Hooks実装              | PreToolUse/PostToolUse/Permission       | Phase 2        | hooks-system.md                         |
-| Hooks Factory          | createHooks, セキュリティチェック       | Phase 2        | hooks-system.md（TASK-3-1-B）           |
-| Permission Control設計 | 権限ルールの設計と実装                  | Phase 1, 2     | permission-control.md                   |
-| Electron IPC統合       | Main-Renderer間のAgent通信              | Phase 2        | electron-ipc.md                         |
-| エラーハンドリング     | AbortSignal、タイムアウト、リトライ     | Phase 2        | error-handling.md, hooks-system.md      |
-| リトライ機構           | Exponential Backoff, Jitter, エラー分類 | Phase 2        | error-handling.md, retry-patterns.md    |
-| MCP統合                | MCPサーバーとの連携                     | Phase 2, 3     | mcp-integration.md                      |
-| セキュリティ設計       | サンドボックス、ホスティング            | Phase 2, 3     | security-sandboxing.md                  |
+| Task                         | 概要                                              | 対応する Phase | リソース                                                          |
+| ---------------------------- | ------------------------------------------------- | -------------- | ----------------------------------------------------------------- |
+| query() API基本実装          | ストリーミングメッセージ処理の基本                | Phase 1, 2     | query-api.md, agent-handler-template.ts                           |
+| Hooks実装                    | PreToolUse/PostToolUse/Permission                 | Phase 2        | hooks-system.md                                                   |
+| Hooks Factory                | createHooks, セキュリティチェック                 | Phase 2        | hooks-system.md（TASK-3-1-B）                                     |
+| Governance Hooks Factory     | Phase別 createGovernanceHooks, AuditSink連携      | Phase 2        | hooks-system.md（TASK-P0-09）, permission-control.md（TASK-P0-09）|
+| Approval Request Producer    | PreToolUse での pushApprovalRequest() 発火接続    | Phase 2        | hooks-system.md（UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001）   |
+| Permission Control設計       | 権限ルールの設計と実装                            | Phase 1, 2     | permission-control.md                                             |
+| Phase-Based Policy           | plan/execute/verify/improve 別ポリシー定義        | Phase 2        | permission-control.md（TASK-P0-09）                               |
+| Electron IPC統合             | Main-Renderer間のAgent通信                        | Phase 2        | electron-ipc.md                                                   |
+| エラーハンドリング           | AbortSignal、タイムアウト、リトライ               | Phase 2        | error-handling.md, hooks-system.md                                |
+| リトライ機構                 | Exponential Backoff, Jitter, エラー分類           | Phase 2        | error-handling.md, retry-patterns.md                              |
+| MCP統合                      | MCPサーバーとの連携                               | Phase 2, 3     | mcp-integration.md                                                |
+| セキュリティ設計             | サンドボックス、ホスティング                      | Phase 2, 3     | security-sandboxing.md                                            |
+| パス制限・セキュリティ       | resolvePathSafely, null byte チェック, path traversal対策 | Phase 2, 3 | security-sandboxing.md（TASK-P0-09）                         |
+| External API IPC統合         | RequestExternalApiConfig custom tool, 並行フロー, 秘匿化 | Phase 2    | electron-ipc.md（TASK-SDK-SC-03）                            |
 
 ## パターン選択ガイド
 
@@ -364,6 +369,9 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 
 | Version | Date       | Changes                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 2.16.0  | 2026-04-03 | TASK-SDK-SC-03 External API Support反映: RequestExternalApiConfig custom toolパターン・並行フロー管理・sanitizeForPrompt秘匿化パターンを electron-ipc.md に追加。Task仕様ナビ・implementation-artifacts.md に External API IPC 成果物を追記 |
+| 2.15.0  | 2026-04-02 | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001反映: Approval Request Producerパターン追加（hooks-system.md）、成果物記録追加（implementation-artifacts.md）、Task仕様ナビ追記 |
+| 2.14.0  | 2026-03-31 | TASK-P0-09ガバナンス実装反映: Governance Hooks Factoryパターン（hooks-system.md）、Phase-Based Policy表（permission-control.md）、resolvePathSafelyパターン（security-sandboxing.md）、Task仕様ナビ追記 |
 | 2.13.0  | 2026-02-12 | Progressive Disclosure最適化: 成果物テーブルをreferences/implementation-artifacts.mdに分離（513→380行）、旧API値修正（permissionMode/stream()）、query-api.mdバージョン情報更新 |
 | 2.12.0  | 2026-02-12 | TASK-9B-I教訓反映: query-api.md にTypeScriptモジュール解決パターン追加、permission-control.md の PermissionMode を SDK@0.2.30 実型に更新 |
 | 2.11.0  | 2026-02-12 | TASK-9B-I-SDK-FORMAL-INTEGRATION完了（`as any` 除去、SDK実型@0.2.30に基づく型安全な callSDKQuery 実装、apiKey→env.ANTHROPIC_API_KEY、signal→abortController、conversation直接利用、278テスト全PASS） |

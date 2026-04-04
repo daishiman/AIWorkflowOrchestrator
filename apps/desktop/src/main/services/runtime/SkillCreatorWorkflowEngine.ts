@@ -17,7 +17,11 @@ import type {
   RuntimeSkillCreatorVerifyDetail,
   SkillCreatorPersistedWorkflowCheckpoint,
   SkillCreatorWorkflowArtifactEntry,
+  ResumeCompatibilityResult,
+  ResumeIncompatibilityReason,
+  SkillCreatorSessionListItem,
 } from "@repo/shared/types";
+import { SKILL_CREATOR_ENGINE_VERSION } from "@repo/shared/types";
 import type { RuntimeDecision } from "./RuntimePolicyResolver";
 
 export type SkillCreatorWorkflowPhase = SharedSkillCreatorWorkflowPhase;
@@ -78,8 +82,51 @@ interface SkillCreatorWorkflowState extends Omit<
   phaseArtifacts: SkillCreatorWorkflowArtifact[];
 }
 
+/**
+ * executeAsync の内部進捗フェーズ。
+ * Renderer 公開用の WorkflowPhase とは別の、バックグラウンド実行の進捗ラベル。
+ */
+export type SkillCreatorExecuteAsyncPhase = "executing" | "complete" | "error";
+
+/**
+ * フェーズ遷移通知コールバック型。
+ * planId を含めることで、複数の同時実行でも通知元を識別できる。
+ */
+export type PhaseChangedCallback = (
+  planId: string,
+  phase: SkillCreatorExecuteAsyncPhase,
+  progress: number,
+) => void;
+
 export class SkillCreatorWorkflowEngine {
   private readonly workflows = new Map<string, SkillCreatorWorkflowState>();
+  private readonly checkpoints = new Map<
+    string,
+    SkillCreatorPersistedWorkflowCheckpoint
+  >();
+
+  /**
+   * フェーズ遷移通知コールバック。
+   * 設定した場合、triggerPhaseTransition() 呼び出し時に発火する。
+   * planId を含めて通知するため、並列実行でも安全に扱える。
+   */
+  onPhaseChanged?: PhaseChangedCallback;
+
+  /**
+   * フェーズ遷移イベントを発火する。
+   * onPhaseChanged が設定されている場合に呼ぶ。未設定時は何もしない（Optional Chaining）。
+   *
+   * @param planId - 実行対象の planId
+   * @param phase - 実行内部フェーズ名（例: "executing", "complete", "error"）
+   * @param progress - 進捗率（0-100）
+   */
+  triggerPhaseTransition(
+    planId: string,
+    phase: SkillCreatorExecuteAsyncPhase,
+    progress: number,
+  ): void {
+    this.onPhaseChanged?.(planId, phase, progress);
+  }
 
   recordPlanResult(
     planResult: RuntimeSkillCreatorPlanResult,
@@ -150,6 +197,14 @@ export class SkillCreatorWorkflowEngine {
       skillName: result.skillName,
       success: result.success,
       error: result.error,
+      sessionId: result.sessionId,
+      resultSubtype: result.resultSubtype,
+      stopReason: result.stopReason,
+      permissionDenials: result.permissionDenials,
+      sdkEvents: result.sdkEvents,
+      sourceProvenance: result.sourceProvenance,
+      persistResult: result.persistResult,
+      persistError: result.persistError,
     });
 
     state.currentPhase = "verify";
@@ -164,6 +219,59 @@ export class SkillCreatorWorkflowEngine {
     return this.snapshot(state);
   }
 
+  /**
+   * execute() が adapter 未準備で即時失敗したときの snapshot を記録する。
+   * workflow state がまだ存在しない場合でも、plan_result / execute_result / verify_result
+   * を最低限生成して renderer の failure path が壊れないようにする。
+   */
+  recordExecuteAdapterFailure(
+    planResult: RuntimeSkillCreatorPlanResult,
+    message: string,
+    sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.ensureWorkflow(planResult.planId, sourceProvenance);
+    const skillName =
+      planResult.skillName ||
+      planResult.skillSpec.split("\n")[0]?.substring(0, 50) ||
+      "unnamed";
+    const updatedAt = nowIso();
+
+    if (!this.getLatestArtifact(state, "plan_result")) {
+      this.appendArtifact(state, "plan", "plan_result", {
+        planId: planResult.planId,
+        skillName: planResult.skillName,
+        estimatedSteps: planResult.estimatedSteps,
+      });
+    }
+
+    state.currentPhase = "review";
+    this.appendArtifact(state, "execute", "execute_result", {
+      executeId: `exec-degraded-${Date.now()}`,
+      skillName,
+      success: false,
+      error: message,
+      reason: "execution_error",
+      sourceProvenance,
+    });
+
+    state.awaitingUserInput = createVerificationReviewRequest(
+      planResult.planId,
+      message,
+      updatedAt,
+    );
+    state.verifyResult = {
+      status: "fail",
+      reason: "verification_review",
+      message,
+      nextAction: "review",
+      updatedAt,
+    };
+    state.handoffBundle = null;
+    this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
+  }
+
   recordExecutionFailure(
     planId: string,
     input: {
@@ -171,6 +279,12 @@ export class SkillCreatorWorkflowEngine {
       skillName: string;
       reason: Exclude<SkillCreatorWorkflowFailureReason, "verification_review">;
       message: string;
+      sessionId?: string;
+      resultSubtype?: string;
+      stopReason?: string;
+      permissionDenials?: RuntimeSkillCreatorExecuteResult["permissionDenials"];
+      sdkEvents?: RuntimeSkillCreatorExecuteResult["sdkEvents"];
+      sourceProvenance?: SkillCreatorWorkflowSourceProvenance;
     },
   ): SkillCreatorWorkflowStateSnapshot {
     const state = this.getRequiredWorkflow(planId);
@@ -182,6 +296,12 @@ export class SkillCreatorWorkflowEngine {
       success: false,
       error: input.message,
       reason: input.reason,
+      sessionId: input.sessionId,
+      resultSubtype: input.resultSubtype,
+      stopReason: input.stopReason,
+      permissionDenials: input.permissionDenials,
+      sdkEvents: input.sdkEvents,
+      sourceProvenance: input.sourceProvenance,
     });
 
     state.currentPhase = "review";
@@ -266,6 +386,107 @@ export class SkillCreatorWorkflowEngine {
     return this.snapshot(state);
   }
 
+  /**
+   * verify 成功時の状態遷移を記録する。
+   * verifyResult.status を "pass" に設定し、nextAction を "handoff" に設定する。
+   * currentPhase は "verify" のまま維持（handoff への遷移は別のステップ）。
+   *
+   * TASK-P0-02: verify→improve→re-verify 閉ループ
+   */
+  recordVerifyPass(
+    planId: string,
+    checks: RuntimeSkillCreatorVerifyCheck[],
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.getRequiredWorkflow(planId);
+    const updatedAt = nowIso();
+    state.currentPhase = "verify";
+    state.verifyResult = {
+      ...state.verifyResult,
+      status: "pass",
+      nextAction: "handoff",
+      updatedAt,
+    };
+    this.appendArtifact(state, "verify", "verify_result", {
+      ...state.verifyResult,
+      checks,
+    });
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
+  }
+
+  /**
+   * improve 試行の開始を記録し、試行カウントをインクリメントする。
+   * phase を "improve" に遷移させる。
+   *
+   * TASK-P0-02: verify→improve→re-verify 閉ループ
+   */
+  recordImproveAttempt(
+    planId: string,
+    failedChecks: RuntimeSkillCreatorVerifyCheck[],
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.getRequiredWorkflow(planId);
+    // 閉ループ: verify→improve は通常遷移、improve→improve は自己遷移（re-verify 後の再試行）
+    if (state.currentPhase !== "improve") {
+      this.assertTransition(state.currentPhase, "improve");
+    }
+
+    const currentCount = state.verifyResult?.improveAttemptCount ?? 0;
+    const updatedAt = nowIso();
+    state.verifyResult = {
+      ...state.verifyResult,
+      status: "fail",
+      improveAttemptCount: currentCount + 1,
+      failedChecksSummary: failedChecks
+        .filter((c) => c.severity !== "info")
+        .map((c) => `${c.id}: ${c.summary}`)
+        .join("; "),
+      updatedAt,
+    };
+    state.currentPhase = "improve";
+    this.appendArtifact(state, "verify", "verify_result", {
+      ...state.verifyResult,
+      failedChecks,
+    });
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
+  }
+
+  /**
+   * improve フェーズで失敗した内容を記録する。
+   * phase は improve のまま維持し、verifyResult の message / nextAction を更新する。
+   */
+  recordImproveFailure(
+    planId: string,
+    message: string,
+  ): SkillCreatorWorkflowStateSnapshot {
+    const state = this.getRequiredWorkflow(planId);
+    this.assertPhase(state.currentPhase, "improve", "improve");
+
+    const updatedAt = nowIso();
+    state.verifyResult = {
+      ...state.verifyResult,
+      status: "fail",
+      message,
+      nextAction: "improve",
+      updatedAt,
+    };
+    state.handoffBundle = null;
+    this.appendArtifact(state, "verify", "verify_result", state.verifyResult);
+    this.refreshResumeToken(state);
+    return this.snapshot(state);
+  }
+
+  /**
+   * 現在の improve 試行回数を取得する。
+   *
+   * TASK-P0-02: verify→improve→re-verify 閉ループ
+   */
+  getImproveAttemptCount(planId: string): number {
+    const state = this.workflows.get(planId);
+    if (!state) return 0;
+    return state.verifyResult?.improveAttemptCount ?? 0;
+  }
+
   getWorkflowState(
     planId: string,
   ): SkillCreatorWorkflowStateSnapshot | undefined {
@@ -319,6 +540,7 @@ export class SkillCreatorWorkflowEngine {
         toPhase: afterPhase,
         reason: request.reason,
         selectedOptionId: submission.selectedOptionId,
+        selectedOptionIds: normalizeSelectedOptionIds(submission),
       });
     }
 
@@ -481,6 +703,141 @@ export class SkillCreatorWorkflowEngine {
     }));
   }
 
+  /**
+   * 有効な（TTL内・未無効化）チェックポイントの一覧を返す。(TASK-P0-08)
+   */
+  listCheckpoints(): SkillCreatorSessionListItem[] {
+    const now = Date.now();
+    const TTL_MS = 86_400_000; // 24h
+    const result: SkillCreatorSessionListItem[] = [];
+
+    for (const cp of this.checkpoints.values()) {
+      if (now - cp.updatedAt > TTL_MS) continue;
+      if (cp.invalidatedAt !== undefined) continue;
+
+      const compatibility = this.evaluateCompatibility(cp);
+      result.push({
+        checkpointId: cp.checkpointId,
+        planId: cp.planId,
+        currentPhase: cp.workflowStateSnapshot.currentPhase,
+        checkpointType: cp.checkpointType,
+        compatibility,
+        updatedAt: cp.updatedAt,
+      });
+    }
+
+    return result;
+  }
+
+  /**
+   * チェックポイントから UI スナップショットを返す。(TASK-P0-08)
+   */
+  getCheckpointSnapshot(
+    checkpointId: string,
+  ): SkillCreatorWorkflowStateSnapshot | undefined {
+    const cp = this.checkpoints.get(checkpointId);
+    if (!cp) return undefined;
+    return this.buildSnapshotFromCheckpoint(cp);
+  }
+
+  /**
+   * チェックポイントから workflow を復元する。incompatible/conflict は undefined。(TASK-P0-08)
+   */
+  resumeFromCheckpoint(
+    checkpointId: string,
+  ): SkillCreatorWorkflowStateSnapshot | undefined {
+    const cp = this.checkpoints.get(checkpointId);
+    if (!cp) return undefined;
+
+    const compatibility = this.evaluateCompatibility(cp);
+    if (
+      compatibility.status === "incompatible" ||
+      compatibility.status === "conflict"
+    ) {
+      return undefined;
+    }
+
+    return this.hydrateFromCheckpoint(cp);
+  }
+
+  /**
+   * チェックポイントを削除する。存在しない場合は何もしない。(TASK-P0-08)
+   */
+  deleteCheckpoint(checkpointId: string): void {
+    this.checkpoints.delete(checkpointId);
+  }
+
+  private evaluateCompatibility(
+    cp: SkillCreatorPersistedWorkflowCheckpoint,
+  ): ResumeCompatibilityResult {
+    // Active lease check
+    if (cp.lease && cp.lease.leaseExpiresAt > Date.now()) {
+      return {
+        status: "conflict",
+        reasons: ["active_lease_conflict" as ResumeIncompatibilityReason],
+        warnings: [],
+      };
+    }
+
+    // Engine version check
+    if (
+      cp.compatibilitySnapshot.engineVersion !== SKILL_CREATOR_ENGINE_VERSION
+    ) {
+      return {
+        status: "incompatible",
+        reasons: ["version_mismatch" as ResumeIncompatibilityReason],
+        warnings: [],
+      };
+    }
+
+    // Provenance mismatch → compatible_with_warning
+    const currentWorkflow = this.workflows.get(cp.planId);
+    if (
+      currentWorkflow?.sourceProvenance?.resolvedSkillCreatorRoot &&
+      cp.compatibilitySnapshot.sourceProvenance?.resolvedSkillCreatorRoot &&
+      currentWorkflow.sourceProvenance.resolvedSkillCreatorRoot !==
+        cp.compatibilitySnapshot.sourceProvenance.resolvedSkillCreatorRoot
+    ) {
+      return {
+        status: "compatible_with_warning",
+        reasons: [],
+        warnings: ["スキルクリエイターのルートパスが変更されています"],
+      };
+    }
+
+    return { status: "compatible", reasons: [], warnings: [] };
+  }
+
+  private buildSnapshotFromCheckpoint(
+    cp: SkillCreatorPersistedWorkflowCheckpoint,
+  ): SkillCreatorWorkflowStateSnapshot {
+    const ws = cp.workflowStateSnapshot;
+    const artifacts: SkillCreatorWorkflowArtifact[] = ws.phaseArtifacts.map(
+      (entry, idx) => ({
+        id: `${cp.planId}:${entry.phase}:${entry.type}:snapshot-${idx}`,
+        phase: entry.phase,
+        kind: entry.type as SkillCreatorWorkflowArtifact["kind"],
+        createdAt: entry.timestamp,
+        payload: entry.data,
+      }),
+    );
+
+    return {
+      planId: cp.planId,
+      currentPhase: ws.currentPhase,
+      awaitingUserInput: ws.awaitingUserInput,
+      verifyResult: ws.verifyResult,
+      phaseArtifacts: artifacts,
+      resumeTokenEnvelope:
+        ws.resumeTokenEnvelope as SkillCreatorResumeTokenEnvelope,
+      routeSnapshot: cp.compatibilitySnapshot.routeSnapshot,
+      sourceProvenance: cp.compatibilitySnapshot.sourceProvenance as
+        | SkillCreatorWorkflowSourceProvenance
+        | undefined,
+      handoffBundle: ws.handoffBundle ?? null,
+    };
+  }
+
   private ensureWorkflow(
     planId: string,
     sourceProvenance?: SkillCreatorWorkflowSourceProvenance,
@@ -558,8 +915,9 @@ export class SkillCreatorWorkflowEngine {
       plan: ["review"],
       review: ["execute", "handoff"],
       execute: ["verify"],
-      verify: ["review", "improve"],
+      verify: ["review", "improve", "reverify"],
       improve: ["execute"],
+      reverify: ["verify", "improve", "handoff"],
       handoff: [],
     };
 
@@ -808,8 +1166,21 @@ function createVerificationReviewRequest(
     reason: "verification_review",
     title: "検証レビュー",
     prompt: buildVerificationReviewPrompt(message),
-    kind: "free_text",
-    placeholder: "修正方針や追加で直したい点を入力してください",
+    kind: "single_select",
+    options: [
+      {
+        id: "approve",
+        label: "承認してhandoffへ進む",
+      },
+      {
+        id: "improve",
+        label: "改善して再検証する",
+      },
+      {
+        id: "reject",
+        label: "差し戻して再計画する",
+      },
+    ],
     allowSkip: false,
     requestedAt,
   };
@@ -829,8 +1200,12 @@ function validateUserInputSubmission(
 ): void {
   switch (request.kind) {
     case "single_select":
+      if (!submission.selectedOptionId) {
+        throw new Error("selectedOptionId is invalid");
+      }
+      // NFR-3: verification_review は unknown option を no-op fallback として許容する
       if (
-        !submission.selectedOptionId ||
+        request.reason !== "verification_review" &&
         !request.options?.some(
           (option) => option.id === submission.selectedOptionId,
         )
@@ -838,6 +1213,21 @@ function validateUserInputSubmission(
         throw new Error("selectedOptionId is invalid");
       }
       return;
+    case "multi_select": {
+      const selectedOptionIds = normalizeSelectedOptionIds(submission);
+      if (selectedOptionIds.length === 0) {
+        throw new Error("selectedOptionIds is required");
+      }
+      if (
+        request.reason !== "verification_review" &&
+        !selectedOptionIds.every((selectedId) =>
+          request.options?.some((option) => option.id === selectedId),
+        )
+      ) {
+        throw new Error("selectedOptionIds is invalid");
+      }
+      return;
+    }
     case "free_text":
       if (!submission.textValue || submission.textValue.trim() === "") {
         throw new Error("textValue is required");
@@ -854,6 +1244,12 @@ function validateUserInputSubmission(
       }
       return;
   }
+}
+
+function normalizeSelectedOptionIds(
+  submission: SkillCreatorUserInputSubmission,
+): string[] {
+  return submission.selectedOptionIds ?? submission.selectedValues ?? [];
 }
 
 function sanitizeSubmissionPayload(

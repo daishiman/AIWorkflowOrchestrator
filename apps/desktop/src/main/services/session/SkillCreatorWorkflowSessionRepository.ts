@@ -233,6 +233,23 @@ export class SkillCreatorWorkflowSessionRepository {
     }
     return cleaned;
   }
+
+  /**
+   * TTL を超過したチェックポイントを削除する。(TASK-P0-08)
+   */
+  cleanupExpiredCheckpoints(ttlMs: number): number {
+    const all = this.storage.getAllCheckpoints();
+    const now = Date.now();
+    let cleaned = 0;
+
+    for (const [planId, checkpoint] of Object.entries(all)) {
+      if (now - checkpoint.updatedAt > ttlMs) {
+        this.storage.deleteCheckpoint(planId);
+        cleaned++;
+      }
+    }
+    return cleaned;
+  }
 }
 
 function hasUsableWorkflowPayload(

@@ -130,7 +130,7 @@ AuthKeyService/SubscriptionAuthProvider の例外時は terminal_handoff (no-aut
 
 > 完了日: 2026-03-23
 
-`RuntimeSkillCreatorFacade` の全3メソッドで terminal_handoff 早期リターンパターンが統一済み。Task02 では facade から workflow state owner を切り離し、`SkillCreatorWorkflowEngine` に phase/state/artifact ownership を集約した。2026-03-26 の follow-up 実装で failure lifecycle も同 owner に寄せ、reject / `success:false` / verify review の全経路を review-ready state として記録する。
+`RuntimeSkillCreatorFacade` の全3メソッドで terminal_handoff 早期リターンパターンが統一済み。Task02 では facade から workflow state owner を切り離し、`SkillCreatorWorkflowEngine` に phase/state/artifact ownership を集約した。2026-03-26 の follow-up 実装で failure lifecycle も同 owner に寄せ、reject / `success:false` / verify review の全経路を review-ready state として記録する。2026-04-04 の execute/improve guard follow-up では、`execute()` の adapter failed / initializing path に `RuntimeSkillCreatorExecuteErrorResponse` を追加し、`SkillCreatorWorkflowEngine.recordExecuteAdapterFailure()` で review-ready snapshot を即時保存する current fact へ更新した。同 wave で `verifyAndImproveLoop()` の improve failure path は `SkillCreatorWorkflowEngine.recordImproveFailure()` を経由するように統一し、Facade 側の `recordImproveFailureSnapshot()` は engine 実装差を吸収する bridge として扱う current fact へ更新した。
 
 | メソッド | terminal_handoff 分岐 | Union型 | 追加タスク |
 | --- | --- | --- | --- |
@@ -154,6 +154,39 @@ Task01 で固定した workflow manifest contract は、Task02 以降の runtime
 
 Task08 session persistence/resume contract では、上記 owner 分離を保ったまま `SkillCreatorWorkflowEngine` snapshot を checkpoint repository へ受け渡す。`resumeTokenEnvelope` は persisted payload の代替ではなく、compatibility evaluator は `routeSnapshot` / `sourceProvenance` / revision / lease を使って restore 可否を判定する。resume を public expose する場合も `agent:resumeSession` とは別の `skill-creator:*` namespace に置く。
 
+### TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001（2026-04-04）
+
+`execute()` と `improve()` の先頭に LLMAdapter ステータス確認ガードを追加し、graceful degradation を実現した。
+
+#### LLMAdapter ステータス管理
+
+| ステータス | 意味 | 動作 |
+| --- | --- | --- |
+| `initializing` | 初期値（LLMAdapter 注入前）| `execute()` / `improve()` は即時 error response を返す |
+| `ready` | `setLLMAdapter()` 呼び出し後 | 通常フローを継続 |
+| `failed` | `setLLMAdapterFailed()` 呼び出し後 | `execute()` / `improve()` は即時 error response を返す |
+
+- `failed` / `initializing` の場合、`execute()` は `RuntimeSkillCreatorExecuteErrorResponse`（`{ success: false, error: { code: "llm_adapter_unavailable", message } }`）を返す
+- `failed` / `initializing` の場合、`improve()` は `RuntimeSkillCreatorImproveResponse`（`success: false`）を返す
+- `execute()` の adapter failed / initializing path では `SkillCreatorWorkflowEngine.recordExecuteAdapterFailure()` を呼び出して review-ready snapshot を即時保存する
+
+#### SkillCreatorWorkflowEngine.recordImproveFailure()
+
+| メソッド | 引数 | 戻り値 | 説明 |
+| --- | --- | --- | --- |
+| `recordImproveFailure` | `planId: string, message: string` | `SkillCreatorWorkflowStateSnapshot` | improve フェーズで失敗した内容を記録。phase は improve のまま維持し、verifyResult の message / nextAction を更新する |
+
+`verifyAndImproveLoop()` の improve failure path は `recordImproveFailureSnapshot()` を経由し、engine の `recordImproveFailure()` が実装されている場合はそれを呼び出す（bridge パターン）。
+
+#### 型定義拡張（packages/shared/src/types/skillCreator.ts）
+
+| 型 | 定義 | 用途 |
+| --- | --- | --- |
+| `RuntimeSkillCreatorExecuteErrorResponse` | `{ success: false; error: { code: RuntimeSkillCreatorDegradedReason; message: string } }` | execute() の adapter status failure を表す structured error |
+| `RuntimeSkillCreatorExecuteResponse` | `RuntimeSkillCreatorExecuteResult \| { type: "terminal_handoff"; bundle } \| RuntimeSkillCreatorExecuteErrorResponse` | execute の全戻り値を網羅する union 型 |
+
+`RuntimeSkillCreatorExecuteErrorResponse` は `packages/shared/src/types/index.ts` からバレルエクスポート済み。renderer 側 consumer（`SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx`）は `success === false` を type guard で判定して message へ正規化する。
+
 ### Task03 dynamic source / selection hardening（2026-03-27）
 
 Task03 実装では、workflow manifest foundation の上に source discovery と resource selection の internal layer を追加した。
@@ -165,7 +198,21 @@ Task03 実装では、workflow manifest foundation の上に source discovery �
 | `ResolvedResourceReader` | selected absolute path を優先読込し、legacy `ResourceLoader` を compatibility fallback に限定 | root 選定、owner 判定 |
 | `RuntimeSkillCreatorFacade` | pipeline を呼び出して `sourceProvenance` を engine snapshot へ橋渡しする public bridge | state owner、manifest schema owner |
 
-この追加は internal hardening であり、`RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorExecuteResponse` / `RuntimeSkillCreatorImproveResponse` の public shape は変更しない。一方で `SkillCreatorWorkflowSourceProvenance` は `candidateRoots` / `selectedRoots` / `selectedResourceIds` / `droppedResourceIds` / `structureSignature` / `degradeReasons` を持つ current fact に更新された。
+この追加は internal hardening であり、`RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorImproveResponse` の public shape は変更しない。`execute()` の内部 contract には `RuntimeSkillCreatorExecuteResponse` を残すが、TASK-FIX-EXECUTE-PLAN-FF-001 以降の `skill-creator:execute-plan` public surface は `{ accepted: true, planId }` ack + snapshot relay に分離された。一方で `SkillCreatorWorkflowSourceProvenance` は `candidateRoots` / `selectedRoots` / `selectedResourceIds` / `droppedResourceIds` / `structureSignature` / `degradeReasons` を持つ current fact に更新された。
+
+### verify→improve ループの feedback memory 構造化（task-ut-p0-02-001-repeat-feedback-memory）
+
+> 完了日: 2026-04-03
+
+`verifyAndImproveLoop()` 内の feedback memory を `previousImproveSummary: string` から `feedbackHistory: ImproveFeedbackHistory[]` に構造化した。各 improve 試行後に `{ attempt, failedChecks: string[], improveSummary: string }` を配列に蓄積し、`buildImproveFeedback()` が全試行の履歴を構造化フォーマットで出力する。
+
+| 変更前 | 変更後 |
+| --- | --- |
+| `previousImproveSummary: string`（直前1回分のみ） | `feedbackHistory: ImproveFeedbackHistory[]`（全試行蓄積） |
+| `buildImproveFeedback(checks, string)` | `buildImproveFeedback(checks, ImproveFeedbackHistory[])` |
+| 「前回の改善要約」セクション | 「過去の改善試行履歴（N回試行済み）」セクション + 繰り返し失敗チェック警告 |
+
+`ImproveFeedbackHistory` 型は `packages/shared/src/types/skillCreator.ts` に定義し、`index.ts` からバレルエクスポート済み。
 
 ## Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
 

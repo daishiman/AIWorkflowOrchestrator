@@ -1,0 +1,15 @@
+{
+  "total": {
+    "lines": { "total": 1677, "covered": 722, "skipped": 0, "pct": 43.05 },
+    "statements": { "total": 1677, "covered": 722, "skipped": 0, "pct": 43.05 },
+    "functions": { "total": 38, "covered": 9, "skipped": 0, "pct": 23.68 },
+    "branches": { "total": 138, "covered": 59, "skipped": 0, "pct": 42.75 },
+    "branchesTrue": { "total": 0, "covered": 0, "skipped": 0, "pct": "Unknown" }
+  },
+  "/Users/dm/dev/dev/個人開発/AIWorkflowOrchestrator/.worktrees/task-20260402-230758-wt-2/apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx": {
+    "lines": { "total": 1677, "covered": 722, "skipped": 0, "pct": 43.05 },
+    "functions": { "total": 38, "covered": 9, "skipped": 0, "pct": 23.68 },
+    "statements": { "total": 1677, "covered": 722, "skipped": 0, "pct": 43.05 },
+    "branches": { "total": 138, "covered": 59, "skipped": 0, "pct": 42.75 }
+  }
+}

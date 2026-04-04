@@ -1,0 +1,7 @@
+{
+  "taskId": "TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001",
+  "featureName": "ut-rt-01-execute-improve-adapter-guard-001",
+  "mode": "NON_VISUAL",
+  "screenshots": [],
+  "note": "Main process / shared type / renderer type-guard 更新のみのため撮影なし"
+}

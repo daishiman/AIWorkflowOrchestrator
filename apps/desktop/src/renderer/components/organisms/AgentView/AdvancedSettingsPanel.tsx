@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import { transitions } from "./animations";
 import { interactiveStyles } from "./styles";
 import type { AgentPermissionMode, ModelCardItem } from "./types";
+import { GovernanceSummaryPanel } from "./GovernanceSummaryPanel";
 
 export interface AdvancedSettingsPanelProps {
   isOpen: boolean;
@@ -176,6 +177,8 @@ export const AdvancedSettingsPanel: React.FC<AdvancedSettingsPanelProps> = ({
             リセット
           </button>
         </div>
+
+        <GovernanceSummaryPanel />
       </div>
     </div>
   );

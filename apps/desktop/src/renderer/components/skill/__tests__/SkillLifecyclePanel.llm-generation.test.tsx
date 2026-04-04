@@ -11,8 +11,12 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
-import type { TerminalHandoffBundle } from "@repo/shared/types";
+import type {
+  SkillCreatorUserInputKind,
+  TerminalHandoffBundle,
+} from "@repo/shared/types";
 
 // --- mock 関数定義（vi.mock 巻き上げ前に宣言）---
 const mockCreateSkill = vi.fn();
@@ -72,8 +76,8 @@ type MockStoreState = {
       reason: string;
       title: string;
       prompt: string;
-      kind: "single_select" | "free_text" | "secret" | "confirm";
-      options?: Array<{ id: string; label: string }>;
+      kind: SkillCreatorUserInputKind;
+      options?: Array<{ id: string; label: string; description?: string }>;
       placeholder?: string;
       requestedAt: string;
     };
@@ -288,7 +292,7 @@ beforeEach(() => {
       status: "pending",
       checks: [
         {
-          id: "layer3-verify-status",
+          id: "L3-001",
           layer: "layer3",
           severity: "warning",
           summary: "verify summary",
@@ -552,6 +556,35 @@ describe("U-10: planSkill failure propagates error", () => {
     expect(mockPlanSkill).toHaveBeenCalledTimes(1);
     expect(mockSetGenerationError).toHaveBeenCalled();
   });
+
+  it("planSkill が logical error(data.success=false)を返したとき plan state をクリアする", async () => {
+    mockPlanSkill.mockResolvedValue({
+      success: true,
+      data: {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLM アダプタが利用できません。設定を確認してください。",
+        },
+      },
+    });
+
+    renderPanel();
+
+    const input = screen.getByTestId("skill-lifecycle-request-input");
+    fireEvent.change(input, { target: { value: "テスト入力" } });
+
+    const prepareBtn = screen.getByTestId("skill-lifecycle-prepare-button");
+    await act(async () => {
+      fireEvent.click(prepareBtn);
+    });
+
+    expect(mockSetGenerationError).toHaveBeenCalledWith(
+      "LLM アダプタが利用できません。設定を確認してください。",
+    );
+    expect(mockSetCurrentPlanResult).toHaveBeenCalledWith(null);
+    expect(mockSetCurrentPlanId).toHaveBeenCalledWith(null);
+  });
 });
 
 // =====================================================================
@@ -594,6 +627,8 @@ describe("U-12: planSkill API unavailable graceful degradation", () => {
 
     // Should not crash and should set error
     expect(mockSetGenerationError).toHaveBeenCalled();
+    expect(mockSetCurrentPlanResult).toHaveBeenCalledWith(null);
+    expect(mockSetCurrentPlanId).toHaveBeenCalledWith(null);
   });
 });
 
@@ -755,15 +790,266 @@ describe("U-13c: workflow user input submission", () => {
     renderPanel();
 
     await act(async () => {
-      fireEvent.click(screen.getByTestId("skill-lifecycle-submit-user-input"));
+      fireEvent.click(screen.getByTestId("chip-ready_to_execute"));
+    });
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("interview-submit"));
     });
 
-    expect(mockSubmitUserInput).toHaveBeenCalledWith({
-      planId: "plan-001",
-      requestId: "req-1",
-      selectedOptionId: "ready_to_execute",
+    await waitFor(() => {
+      expect(mockSubmitUserInput).toHaveBeenCalledWith({
+        planId: "plan-001",
+        requestId: "req-1",
+        selectedOptionId: "ready_to_execute",
+      });
     });
     expect(mockSetWorkflowSnapshot).toHaveBeenCalled();
+  });
+});
+
+// =====================================================================
+// TASK-RT-05: multi_select question host
+// =====================================================================
+describe("TASK-RT-05: multi_select question host", () => {
+  it("SkillCreatorUserInputKind として multi_select を受け入れる", () => {
+    const kind: SkillCreatorUserInputKind = "multi_select";
+
+    expect(kind).toBe("multi_select");
+  });
+
+  // T4-5: checkbox 群が request options を描画する
+  it("multi_select request で checkbox 群が表示される", () => {
+    mockStoreState.workflowSnapshot = {
+      planId: "plan-001",
+      currentPhase: "review",
+      awaitingUserInput: {
+        requestId: "req-multi-1",
+        reason: "plan_review",
+        title: "複数選択テスト",
+        prompt: "使用する機能を選択してください",
+        kind: "multi_select",
+        options: [
+          { id: "feat-a", label: "機能A", description: "Aの説明" },
+          { id: "feat-b", label: "機能B" },
+          { id: "feat-c", label: "機能C", description: "Cの説明" },
+        ],
+        requestedAt: "2026-03-30T00:00:00.000Z",
+      },
+      verifyResult: null,
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-001",
+        currentPhase: "review",
+        artifactCount: 1,
+        updatedAt: "2026-03-30T00:00:00.000Z",
+      },
+      handoffBundle: null,
+    };
+
+    renderPanel();
+
+    const host = screen.getByTestId("multi-select-checkbox");
+    expect(host).toBeTruthy();
+    const checkboxes = host.querySelectorAll('input[type="checkbox"]');
+    expect(checkboxes).toHaveLength(3);
+    expect(screen.getByText("機能A")).toBeTruthy();
+    expect(screen.getByText("機能B")).toBeTruthy();
+    expect(screen.getByText("機能C")).toBeTruthy();
+    expect(screen.getByText("Aの説明")).toBeTruthy();
+    expect(screen.getByText("Cの説明")).toBeTruthy();
+  });
+
+  // T4-6: toggle 後に selectedOptionIds が submit payload へ入る
+  it("checkbox 選択後に submit で selectedOptionIds が送信される", async () => {
+    mockStoreState.workflowSnapshot = {
+      planId: "plan-001",
+      currentPhase: "review",
+      awaitingUserInput: {
+        requestId: "req-multi-2",
+        reason: "plan_review",
+        title: "複数選択テスト",
+        prompt: "機能を選択してください",
+        kind: "multi_select",
+        options: [
+          { id: "feat-a", label: "機能A" },
+          { id: "feat-b", label: "機能B" },
+        ],
+        requestedAt: "2026-03-30T00:00:00.000Z",
+      },
+      verifyResult: null,
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-001",
+        currentPhase: "review",
+        artifactCount: 1,
+        updatedAt: "2026-03-30T00:00:00.000Z",
+      },
+      handoffBundle: null,
+    };
+    mockSubmitUserInput.mockResolvedValue({
+      success: true,
+      data: {
+        ...mockStoreState.workflowSnapshot,
+        awaitingUserInput: null,
+      },
+    });
+
+    renderPanel();
+
+    const host = screen.getByTestId("multi-select-checkbox");
+    const checkboxes = host.querySelectorAll('input[type="checkbox"]');
+
+    // 2つのチェックボックスを選択
+    await act(async () => {
+      fireEvent.click(checkboxes[0]!);
+    });
+    await act(async () => {
+      fireEvent.click(checkboxes[1]!);
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByTestId("interview-submit"));
+    });
+
+    expect(mockSubmitUserInput).toHaveBeenCalledWith(
+      expect.objectContaining({
+        planId: "plan-001",
+        requestId: "req-multi-2",
+        selectedOptionIds: ["feat-a", "feat-b"],
+      }),
+    );
+  });
+
+  it("multi_select 未選択時に submit するとバリデーションエラーが表示される", async () => {
+    mockStoreState.workflowSnapshot = {
+      planId: "plan-001",
+      currentPhase: "review",
+      awaitingUserInput: {
+        requestId: "req-multi-3",
+        reason: "plan_review",
+        title: "複数選択テスト",
+        prompt: "機能を選択してください",
+        kind: "multi_select",
+        options: [
+          { id: "feat-a", label: "機能A" },
+          { id: "feat-b", label: "機能B" },
+        ],
+        requestedAt: "2026-03-30T00:00:00.000Z",
+      },
+      verifyResult: null,
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-001",
+        currentPhase: "review",
+        artifactCount: 1,
+        updatedAt: "2026-03-30T00:00:00.000Z",
+      },
+      handoffBundle: null,
+    };
+
+    renderPanel();
+
+    const submitButton = screen.getByTestId("interview-submit");
+    // ConversationalInterview では選択状態に関わらずボタンは常に enabled
+    expect(submitButton).not.toBeDisabled();
+
+    // 未選択のまま送信 → バリデーションエラー
+    await act(async () => {
+      fireEvent.click(submitButton);
+    });
+    expect(screen.getByTestId("validation-error")).toBeTruthy();
+
+    // チェックボックスを選択 → state が更新される
+    const host = screen.getByTestId("multi-select-checkbox");
+    const checkboxes = host.querySelectorAll('input[type="checkbox"]');
+    await act(async () => {
+      fireEvent.click(checkboxes[0]!);
+    });
+    expect(checkboxes[0]).toBeChecked();
+  });
+
+  it("request kind が切り替わると multi_select の state を持ち越さない", async () => {
+    mockStoreState.workflowSnapshot = {
+      planId: "plan-001",
+      currentPhase: "review",
+      awaitingUserInput: {
+        requestId: "req-multi-4",
+        reason: "plan_review",
+        title: "複数選択テスト",
+        prompt: "機能を選択してください",
+        kind: "multi_select",
+        options: [
+          { id: "feat-a", label: "機能A" },
+          { id: "feat-b", label: "機能B" },
+        ],
+        requestedAt: "2026-03-30T00:00:00.000Z",
+      },
+      verifyResult: null,
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-001",
+        currentPhase: "review",
+        artifactCount: 1,
+        updatedAt: "2026-03-30T00:00:00.000Z",
+      },
+      handoffBundle: null,
+    };
+
+    const rendered = renderPanel();
+    const initialHost = screen.getByTestId("multi-select-checkbox");
+    const initialCheckboxes = initialHost.querySelectorAll(
+      'input[type="checkbox"]',
+    );
+    await act(async () => {
+      fireEvent.click(initialCheckboxes[0]!);
+    });
+
+    expect(initialCheckboxes[0]).toBeChecked();
+
+    mockStoreState.workflowSnapshot = {
+      ...mockStoreState.workflowSnapshot,
+      awaitingUserInput: {
+        requestId: "req-single-1",
+        reason: "plan_review",
+        title: "単一選択テスト",
+        prompt: "1つ選んでください",
+        kind: "single_select",
+        options: [
+          { id: "single-a", label: "単一A" },
+          { id: "single-b", label: "単一B" },
+        ],
+        requestedAt: "2026-03-30T00:01:00.000Z",
+      },
+    };
+    rendered.rerender(
+      <SkillLifecyclePanel onClose={vi.fn()} skillName="test-skill" />,
+    );
+
+    mockStoreState.workflowSnapshot = {
+      ...mockStoreState.workflowSnapshot,
+      awaitingUserInput: {
+        requestId: "req-multi-5",
+        reason: "plan_review",
+        title: "複数選択テスト 2",
+        prompt: "機能を再選択してください",
+        kind: "multi_select",
+        options: [
+          { id: "feat-a", label: "機能A" },
+          { id: "feat-b", label: "機能B" },
+        ],
+        requestedAt: "2026-03-30T00:02:00.000Z",
+      },
+    };
+    rendered.rerender(
+      <SkillLifecyclePanel onClose={vi.fn()} skillName="test-skill" />,
+    );
+
+    const resetHost = screen.getByTestId("multi-select-checkbox");
+    const resetCheckboxes = resetHost.querySelectorAll(
+      'input[type="checkbox"]',
+    );
+    expect(resetCheckboxes[0]).not.toBeChecked();
+    expect(resetCheckboxes[1]).not.toBeChecked();
   });
 });
 
@@ -926,8 +1212,9 @@ describe("U-17b: runtime improve surface", () => {
     expect(
       await screen.findByTestId("skill-lifecycle-runtime-improve-result"),
     ).toBeTruthy();
-    expect(screen.getByText("改善提案")).toBeTruthy();
-    expect(screen.getByText("説明を明確化する")).toBeTruthy();
+    const proposalPanel = screen.getByTestId("improvement-proposal-panel");
+    expect(within(proposalPanel).getByText("改善提案")).toBeTruthy();
+    expect(within(proposalPanel).getByText("説明を明確化する")).toBeTruthy();
   });
 });
 
@@ -946,7 +1233,7 @@ describe("U-18: verify detail fail status displays fail badge and message", () =
         nextAction: "improve",
         checks: [
           {
-            id: "layer3-structure",
+            id: "L3-002",
             layer: "layer3",
             severity: "error",
             summary: "SKILL.md missing required section",

@@ -1,0 +1,84 @@
+{
+  "feature": "step-11-par-task-ut-sdk06-layer34-verify-expansion",
+  "created": "2026-03-31T00:00:00.000Z",
+  "lastUpdated": "2026-04-01T00:00:00.000Z",
+  "status": "completed",
+  "phases": {
+    "1": { "status": "completed", "artifacts": ["phase-1-requirements.md"] },
+    "2": { "status": "completed", "artifacts": ["phase-2-design.md"] },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        "phase-3-design-review.md",
+        "outputs/phase-3/design-review-gate.md",
+        "outputs/phase-3/skill-compliance-and-elegance-review.md"
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "phase-4-test-creation.md",
+        "outputs/phase-4/test-matrix.md"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "phase-5-implementation.md",
+        "outputs/phase-5/implementation-sequencing.md"
+      ]
+    },
+    "6": { "status": "completed", "artifacts": ["phase-6-test-expansion.md"] },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        "phase-7-coverage-check.md",
+        "outputs/phase-7/coverage-summary.md"
+      ]
+    },
+    "8": { "status": "completed", "artifacts": ["phase-8-refactoring.md"] },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        "phase-9-quality-assurance.md",
+        "outputs/phase-9/qa-summary.md"
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        "phase-10-final-review.md",
+        "outputs/phase-10/final-review-summary.md"
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "phase-12-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": { "status": "blocked", "artifacts": ["phase-13-pr-creation.md"] }
+  },
+  "metadata": {
+    "taskType": "test",
+    "taskId": "UT-IMP-SDK-06",
+    "workflow": "skill-creator-agent-sdk-lane",
+    "parentWorkflow": "docs/30-workflows/skill-creator-agent-sdk-lane",
+    "dependsOnTasks": ["TASK-P0-01", "TASK-P0-02"]
+  }
+}

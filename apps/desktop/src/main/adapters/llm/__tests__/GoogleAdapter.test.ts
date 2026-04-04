@@ -32,7 +32,7 @@ describe("GoogleAdapter", () => {
     it("should return LLMChatResponse for valid request", async () => {
       server.use(
         http.post(
-          "https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent",
+          "https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-pro-preview:generateContent",
           () => {
             return HttpResponse.json({
               candidates: [
@@ -56,7 +56,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-pro",
+        modelId: "gemini-3.1-pro-preview",
         messages: [{ role: "user", content: "Hello" }],
       };
 
@@ -98,7 +98,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-pro",
+        modelId: "gemini-3.1-pro-preview",
         messages: [{ role: "user", content: "Hello" }],
       };
 
@@ -136,7 +136,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-pro",
+        modelId: "gemini-3.1-pro-preview",
         messages: [
           { role: "user", content: "Hello" },
           { role: "assistant", content: "Hi there!" },
@@ -181,7 +181,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-2.5-flash",
+        modelId: "gemini-3-flash-preview",
         messages: [{ role: "user", content: "Hello" }],
         systemPrompt: "You are a helpful assistant.",
       };
@@ -223,7 +223,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-2.5-flash",
+        modelId: "gemini-3-flash-preview",
         messages: [{ role: "user", content: "Hello" }],
       };
 
@@ -262,7 +262,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-2.5-flash",
+        modelId: "gemini-3-flash-preview",
         messages: [{ role: "user", content: "Test" }],
         systemPrompt: "Be concise.",
         temperature: 0.5,
@@ -307,7 +307,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-pro",
+        modelId: "gemini-3.1-pro-preview",
         messages: [{ role: "user", content: "Hello" }],
         temperature: 0.8,
         maxTokens: 1000,
@@ -348,7 +348,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-2.5-flash",
+        modelId: "gemini-3-flash-preview",
         messages: [{ role: "user", content: "Hello" }],
         systemPrompt: "   ",
       };
@@ -385,7 +385,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-2.5-flash",
+        modelId: "gemini-3-flash-preview",
         messages: [{ role: "user", content: "Hello" }],
         systemPrompt: "",
       };
@@ -412,7 +412,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-pro",
+        modelId: "gemini-3.1-pro-preview",
         messages: [{ role: "user", content: "Hello" }],
       };
 
@@ -436,7 +436,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-pro",
+        modelId: "gemini-3.1-pro-preview",
         messages: [{ role: "user", content: "Hello" }],
       };
 
@@ -466,7 +466,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-pro",
+        modelId: "gemini-3.1-pro-preview",
         messages: [{ role: "user", content: "Hello" }],
       };
 
@@ -493,7 +493,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-pro",
+        modelId: "gemini-3.1-pro-preview",
         messages: [{ role: "user", content: "Hello" }],
       };
 
@@ -533,7 +533,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-2.5-flash",
+        modelId: "gemini-3-flash-preview",
         messages: [{ role: "user", content: "Hi" }],
         systemPrompt: "You are concise.",
         stream: true,
@@ -581,7 +581,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-pro",
+        modelId: "gemini-3.1-pro-preview",
         messages: [{ role: "user", content: "Hi" }],
         stream: true,
       };
@@ -620,7 +620,7 @@ describe("GoogleAdapter", () => {
 
       const request: LLMChatRequestInput = {
         providerId: "google",
-        modelId: "gemini-2.5-flash",
+        modelId: "gemini-3-flash-preview",
         messages: [{ role: "user", content: "Hi" }],
         stream: true,
       };
@@ -641,7 +641,9 @@ describe("GoogleAdapter", () => {
         http.get(
           "https://generativelanguage.googleapis.com/v1beta/models",
           () => {
-            return HttpResponse.json({ models: [{ name: "gemini-pro" }] });
+            return HttpResponse.json({
+              models: [{ name: "gemini-3.1-pro-preview" }],
+            });
           },
         ),
       );

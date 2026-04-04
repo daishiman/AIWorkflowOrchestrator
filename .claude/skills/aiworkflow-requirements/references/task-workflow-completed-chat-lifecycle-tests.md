@@ -107,8 +107,8 @@
 
 | 未タスクID | 概要 | 参照 | ステータス |
 | --- | --- | --- | --- |
-| UT-CHATVIEW-ERROR-BANNER-I18N-001 | ChatView error banner の i18n 化 | `docs/30-workflows/unassigned-task/task-ut-chatview-error-banner-i18n-001.md` | 未実施 |
-| UT-AI-CHAT-ERROR-CODE-INVENTORY-001 | `ai.chat` error code inventory の仕様固定 | `docs/30-workflows/unassigned-task/task-ut-ai-chat-error-code-inventory-001.md` | 未実施 |
+| UT-CHATVIEW-ERROR-BANNER-I18N-001 | ChatView error banner の i18n 化 | `docs/30-workflows/completed-tasks/task-ut-chatview-error-banner-i18n-001.md` | 未実施 |
+| UT-AI-CHAT-ERROR-CODE-INVENTORY-001 | `ai.chat` error code inventory の仕様固定 | `docs/30-workflows/completed-tasks/task-ut-ai-chat-error-code-inventory-001.md` | 未実施 |
 
 ### タスク: TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 再監査記録（2026-03-17）
 

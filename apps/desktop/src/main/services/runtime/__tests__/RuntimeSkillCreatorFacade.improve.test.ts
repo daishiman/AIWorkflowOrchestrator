@@ -653,9 +653,9 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
     });
   });
 
-  // E-10: llmAdapter 未注入時の graceful degradation
-  describe("E-10: llmAdapter 未注入時のスタブレスポンス", () => {
-    it("llmAdapter 未注入時はスタブレスポンスを返す", async () => {
+  // E-10: llmAdapter 未注入時の explicit error (TASK-RT-02)
+  describe("E-10: llmAdapter 未注入時の explicit error", () => {
+    it("llmAdapter 未注入時は llm_adapter_unavailable エラーを返す", async () => {
       const facadeWithoutLLM = new RuntimeSkillCreatorFacade({
         skillExecutor: mockSkillExecutor,
         skillFileManager: mockSkillFileManager,
@@ -673,15 +673,50 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
         "sk-test",
       );
 
-      const r = result as { improveId: string; suggestions: unknown[] };
-      expect(r.improveId).toMatch(/^improve-/);
-      expect(r.suggestions).toEqual([]);
+      // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001:
+      // _llmAdapterStatus === "initializing" ガードが !this.llmAdapter より先に発火する
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
+        },
+      });
+    });
+
+    it("governance audit に session_start / session_end が記録される", async () => {
+      const facadeWithoutLLM = new RuntimeSkillCreatorFacade({
+        skillExecutor: mockSkillExecutor,
+        skillFileManager: mockSkillFileManager,
+      });
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
+      });
+
+      await facadeWithoutLLM.improve(
+        "test-skill",
+        "改善して",
+        "api-key",
+        "sk-test",
+      );
+
+      const auditSink = (
+        facadeWithoutLLM as unknown as {
+          auditSink: { getEvents: () => Array<{ eventType: string }> };
+        }
+      ).auditSink;
+      expect(auditSink.getEvents().map((event) => event.eventType)).toEqual([
+        "session_start",
+        "session_end",
+      ]);
     });
   });
 
-  // E-11: resourceLoader 未注入時の graceful degradation
-  describe("E-11: resourceLoader 未注入時のスタブレスポンス", () => {
-    it("resourceLoader 未注入時はスタブレスポンスを返す", async () => {
+  // E-11: resourceLoader 未注入時の explicit error (TASK-RT-02)
+  describe("E-11: resourceLoader 未注入時の explicit error", () => {
+    it("resourceLoader 未注入時は resource_loader_unavailable エラーを返す", async () => {
       const facadeWithoutRL = new RuntimeSkillCreatorFacade({
         skillExecutor: mockSkillExecutor,
         llmAdapter: mockLLMAdapter,
@@ -700,8 +735,23 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
         "sk-test",
       );
 
-      const r = result as { improveId: string; suggestions: unknown[] };
-      expect(r.suggestions).toEqual([]);
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "resource_loader_unavailable",
+          message: "リソースローダーが利用できません。設定を確認してください。",
+        },
+      });
+
+      const auditSink = (
+        facadeWithoutRL as unknown as {
+          auditSink: { getEvents: () => Array<{ eventType: string }> };
+        }
+      ).auditSink;
+      expect(auditSink.getEvents().map((event) => event.eventType)).toEqual([
+        "session_start",
+        "session_end",
+      ]);
     });
   });
 

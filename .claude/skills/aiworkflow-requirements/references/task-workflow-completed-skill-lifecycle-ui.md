@@ -2,7 +2,7 @@
 
 > 親仕様書: [task-workflow-completed-skill-lifecycle.md](task-workflow-completed-skill-lifecycle.md)
 > 役割: completed records - UI実装・統合系
-> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
+> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-RT-03-VERIFY-IMPROVE-PANEL-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
 
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
 
@@ -49,7 +49,7 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/skill-lifecycle-routing/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
+| UT-IMP-SKILL-LIFECYCLE-ROUTING-DIRECT-RENDERVIEW-CAPTURE-GUARD-001 | direct `currentView` 注入経路の screenshot 不安定性を guard 化 | 中 | `docs/30-workflows/unassigned-task/task-imp-skill-lifecycle-routing-direct-renderview-capture-guard-001.md` |
 
 ---
 
@@ -136,15 +136,15 @@
 
 | 未タスクID | 概要 | 優先度 | タスク仕様書 |
 | --- | --- | --- | --- |
-| UT-FIX-SKILLANALYSIS-ARIA-LABEL-001 | SkillAnalysisView 選択適用ボタン aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillanalysis-aria-label-001.md` |
-| UT-FIX-SKILLANALYSIS-ARIA-LABEL-002 | SkillAnalysisView 全自動改善ボタン aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillanalysis-aria-label-002.md` |
-| UT-FIX-SKILLANALYSIS-ARIA-LABEL-003 | SkillAnalysisView 再試行ボタン aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillanalysis-aria-label-003.md` |
-| UT-FIX-SKILLIMPORT-ARIA-LABEL-001 | SkillImportDialog import button aria-label 追加 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-skillimport-aria-label-001.md` |
-| UT-FIX-APP-CONSOLE-LOG-001 | App 初期化 console.log の削除または debug guard 化 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-app-console-log-001.md` |
-| UT-FIX-APP-INLINE-SELECTOR-001 | App.tsx の inline selector 整理 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-app-inline-selector-001.md` |
-| UT-FIX-VIEWHISTORY-ACCUMULATION-001 | viewHistory 蓄積制御の整理 | 中 | `docs/30-workflows/unassigned-task/task-ut-fix-viewhistory-accumulation-001.md` |
-| UT-FIX-AGENTVIEW-CTA-ACT-WRAP-001 | AgentView CTA test の act warning 解消 | 低 | `docs/30-workflows/unassigned-task/task-ut-fix-agentview-cta-act-wrap-001.md` |
-| UT-FIX-VERIFY-ALL-SPECS-BLOCKED-PHASE-001 | `verify-all-specs` の blocked phase 判定整合 | 中 | `docs/30-workflows/unassigned-task/task-ut-fix-verify-all-specs-blocked-phase-001.md` |
+| UT-FIX-SKILLANALYSIS-ARIA-LABEL-001 | SkillAnalysisView 選択適用ボタン aria-label 追加 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-skillanalysis-aria-label-001.md` |
+| UT-FIX-SKILLANALYSIS-ARIA-LABEL-002 | SkillAnalysisView 全自動改善ボタン aria-label 追加 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-skillanalysis-aria-label-002.md` |
+| UT-FIX-SKILLANALYSIS-ARIA-LABEL-003 | SkillAnalysisView 再試行ボタン aria-label 追加 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-skillanalysis-aria-label-003.md` |
+| UT-FIX-SKILLIMPORT-ARIA-LABEL-001 | SkillImportDialog import button aria-label 追加 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-skillimport-aria-label-001.md` |
+| UT-FIX-APP-CONSOLE-LOG-001 | App 初期化 console.log の削除または debug guard 化 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-app-console-log-001.md` |
+| UT-FIX-APP-INLINE-SELECTOR-001 | App.tsx の inline selector 整理 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-app-inline-selector-001.md` |
+| UT-FIX-VIEWHISTORY-ACCUMULATION-001 | viewHistory 蓄積制御の整理 | 中 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-viewhistory-accumulation-001.md` |
+| UT-FIX-AGENTVIEW-CTA-ACT-WRAP-001 | AgentView CTA test の act warning 解消 | 低 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-agentview-cta-act-wrap-001.md` |
+| UT-FIX-VERIFY-ALL-SPECS-BLOCKED-PHASE-001 | `verify-all-specs` の blocked phase 判定整合 | 中 | `docs/30-workflows/completed-tasks/TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001/unassigned-tasks/task-ut-fix-verify-all-specs-blocked-phase-001.md` |
 
 ---
 
@@ -274,7 +274,7 @@
 
 | 未タスクID                                                   | 概要                                                                    | 優先度 | タスク仕様書                                                                                                          |
 | ------------------------------------------------------------ | ----------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------------------------------------------------- |
-| UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001            | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）の必須化 | 中     | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-subagent-execution-log-guard-001.md`            |
+| UT-IMP-TASK10A-D-SUBAGENT-EXECUTION-LOG-GUARD-001            | Phase 12 仕様書別SubAgent実行ログ（実装内容/苦戦箇所/検証証跡）の必須化 | 中     | `docs/30-workflows/completed-tasks/task-imp-task10a-d-subagent-execution-log-guard-001.md`            |
 | UT-IMP-TASK10A-D-SCREENSHOT-PURPOSE-DISAMBIGUATION-GUARD-001 | Phase 11 画面証跡で状態名+検証目的を分離し、TC意図混同を防ぐ運用ガード  | 中     | `docs/30-workflows/completed-tasks/unassigned-task/task-imp-task10a-d-screenshot-purpose-disambiguation-guard-001.md` |
 
 ### 仕様書別SubAgent実行ログ（2026-03-04）
@@ -293,6 +293,47 @@
 3. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行し、合否は `currentViolations` で判定する。
 4. UIタスクではスクリーンショットを目視し、証跡表に「状態名 + 検証目的」を追記する。
 5. `task-workflow.md` と `lessons-learned.md` の両方に同じ再発防止ルールを転記して完了とする。
+
+---
+
+## TASK-RT-03-VERIFY-IMPROVE-PANEL-001: Verify / Improve 結果パネル実装 完了記録（2026-04-04）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RT-03-VERIFY-IMPROVE-PANEL-001 |
+| 対象workflow | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/` |
+| ステータス | completed（Phase 1-12 completed / Phase 13 blocked） |
+| テスト | `VerifyResultDetailPanel` / `ImproveResultDetailPanel` / `SkillLifecyclePanel.llm-generation` targeted suite PASS |
+| 画面証跡 | `outputs/phase-11/screenshots/TC-11-01..03` |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| Verify panel | `VerifyResultDetailPanel` を新規作成し、Layer 別 grouping / severity badge / reverify 導線を実装 |
+| Improve panel | `ImproveResultDetailPanel` を新規作成し、提案リスト / Revised Spec / read-only 表示を実装 |
+| SkillLifecyclePanel 統合 | inline verify detail を抽出し、`verifyDetailRequestSeqRef` と `isReverifyingRef` で stale response / 二重送信を抑止 |
+| 共有部品 | `result-panel-parts.tsx` の `StatusBadge` label override を verify 語彙に合わせて拡張 |
+| visual harness | `phase11-task-rt-03-verify-improve-panel.tsx` と capture script を追加し、3 状態の screenshot を取得 |
+
+### 検証証跡
+
+| 区分 | コマンド / 証跡 | 結果 |
+| --- | --- | --- |
+| unit test | `cd apps/desktop && pnpm exec vitest run src/renderer/components/skill/__tests__/VerifyResultDetailPanel.test.tsx src/renderer/components/skill/__tests__/ImproveResultDetailPanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx` | PASS |
+| typecheck | `pnpm --filter @repo/desktop typecheck` | PASS |
+| visual harness | `node apps/desktop/scripts/capture-task-rt-03-verify-improve-panel-phase11.mjs` | PASS（TC-11-01..03） |
+| system spec sync | `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js --workflow docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001 --regenerate` | PASS |
+
+### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 解決策 | 再利用ルール |
+| --- | --- | --- |
+| verify detail の stale response | request sequence guard を導入し、古いレスポンスを破棄した | async fetch を持つ detail panel は requestSeq を正本にする |
+| ImprovementProposalPanel と文言衝突 | read-only result panel に `data-testid` を追加してテストスコープを分離した | 既存操作パネルと同名 text を持つ新規 panel は locator を正本にする |
+| visual evidence の不足 | capture metadata / plan / screenshots を workflow に同梱した | UI 完了時は screenshot と metadata をセットで残す |
 
 ---
 
@@ -543,6 +584,57 @@ ui-ux-diagrams.md の「実装ギャップ一覧（GAP ID 正本）」セクシ�
 | 4 | ui-ux-diagrams.mdのCore Journey図とSkill Lifecycle Panel図で状態遷移の定義が矛盾 | Skill Lifecycle Panel図にReuseReady遷移を追加してCore Journey図と整合 | 上流文書に複数の図がある場合、全図の整合チェックをPhase 3レビュー観点に含める |
 | 5 | worktreeのesbuildアーキテクチャ不一致でスクリーンショット撮影不可（P7再発） | pnpm store prune && pnpm install --forceで解消 | worktree作成後のpnpm installでネイティブモジュール再ビルドが必要 |
 | 6 | SkillLifecyclePanelのラベル変更が仕様書外変更として混入 | Task09 phase-2-design.mdに「ラベル日本語化（LC-UX-PROHIBIT-01対応）」セクションを追記して仕様化 | プロダクションコード変更は必ず先に仕様書に記録してから実施する |
+
+---
+
+## TASK-RT-05: multi_select ユーザー入力種別追加 完了記録（2026-03-30）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RT-05 |
+| 対象workflow | `docs/30-workflows/step-09-par-task-rt-05-multi-select-user-input-kind/` |
+| ステータス | completed（Phase 1-12） |
+| テスト | Engine 39件 + Renderer 35件 PASS（close-out current facts） |
+| 画面証跡 | screenshot 未取得（esbuild platform mismatch のため） |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| 型追加 | `SkillCreatorUserInputKind` に `"multi_select"` を追加（4種 → 5種） |
+| 送信型拡張 | `SkillCreatorUserInputSubmission` に `selectedOptionIds?: string[]` を追加 |
+| Engine 検証 | `validateUserInputSubmission` に `multi_select` case を追加（空配列 reject / 不明 option id reject） |
+| Renderer state | `SkillLifecyclePanel` に `selectedOptionIds` state 追加 + request kind 切替時 reset |
+| Renderer UI | checkbox host JSX を `single_select` host 直後に配置、submit disable 条件を各 kind で分岐 |
+| spec 同期 | `skill-creator/SKILL.md` / `api-ipc-system-core.md` を same-wave で更新 |
+
+### 検証証跡
+
+| 区分 | コマンド / 証跡 | 結果 |
+| --- | --- | --- |
+| Engine tests | `cd apps/desktop && pnpm exec vitest run src/main/services/runtime/__tests__/SkillCreatorWorkflowEngine.test.ts` | PASS（26 tests） |
+| Renderer tests | `cd apps/desktop && pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx` | PASS（35 tests） |
+| TypeScript | `pnpm exec tsc --noEmit` | PASS |
+| screenshot | 未取得（esbuild platform mismatch） | — |
+
+### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 解決策 | 再利用ルール |
+| --- | --- | --- |
+| `toBeChecked` / `toBeDisabled` が Chai エラーになると誤認 | `src/test/setup.ts` に `@testing-library/jest-dom` が既にインポート済みで実際は問題なかった | jest-dom matchers 使用前に `setupFiles` を確認し、不要な代替実装を避ける |
+| request kind 切替時に `multi_select` 選択が引き継がれる | `useEffect(() => { ... }, [workflowSnapshot])` で kind 変化を監視し全 input state を一括 reset | input kind state は kind の切替ソースを `useEffect` 依存に入れ、all-reset を kind 個別ではなく一括で行う |
+| `selectedOptionId` vs `selectedOptionIds` の二重管理 | 別フィールドとして共存させ、submit 時に kind で分岐 | 既存 API との非破壊互換を優先する場合は field 追加 + kind 分岐パターンを適用する |
+| esbuild platform mismatch で worktree 内 screenshot が不安定 | TypeScript typecheck と vitest のみで検証し、screenshot は条件付き保留 | worktree での実行前にネイティブモジュールの arch 整合を確認する |
+
+### Phase 12 未タスク（0件）
+
+なし
+
+### TASK-RT-05-TEST-RERUN close-out（2026-03-31）
+
+UT-RT-06 esbuild platform mismatch 修正後の環境でテスト再実行を完了。`cd apps/desktop && pnpm exec vitest run ...` を正本コマンドとして Engine 39件 + Renderer 35件 全PASS、AC-4（既存4kind非破壊）確認済み。Issue #1756 close-out。
 
 ---
 
