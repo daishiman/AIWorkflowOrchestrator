@@ -125,9 +125,11 @@
     {
       "phase": 13,
       "name": "PR作成",
-      "status": "blocked",
+      "status": "completed",
       "specPath": "phase-13-pr-creation.md",
-      "outputs": []
+      "outputs": [
+        "https://github.com/daishiman/AIWorkflowOrchestrator/pull/1907"
+      ]
     }
   ],
   "qualityMetrics": {
