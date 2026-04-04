@@ -13,13 +13,31 @@
 | タスクID   | TASK-RT-02                                                    |
 | タスク種別 | バグ修正 / 契約整理                                           |
 | 優先度     | P1                                                            |
-| ステータス | spec_created                                                  |
+| ステータス | implementation_complete                                       |
 | 上流ゲート | `../skill-creator-agent-sdk-lane/requirements-draft.md`       |
 | 親pack     | `../skill-creator-agent-sdk-lane/root-workflow-pack/index.md` |
 | 依存タスク | なし（TASK-RT-01 と並列可）                                   |
 | 後続タスク | TASK-RT-03                                                    |
 | 作成日     | 2026-03-29                                                    |
-| 更新日     | 2026-03-29                                                    |
+| 更新日     | 2026-04-04                                                    |
+
+## 実装状況サマリー（2026-04-04時点）
+
+### 実装済み
+
+| 項目                                         | ファイル                                             | 備考                                                                |
+| -------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------- |
+| `plan()` の `buildDegradedError()` ガード    | `RuntimeSkillCreatorFacade.ts`                       | false-success を explicit error union へ置換済み                    |
+| `improve()` の `buildDegradedError()` ガード | `RuntimeSkillCreatorFacade.ts`                       | 空 suggestions 返却を explicit error response へ置換済み            |
+| `execute()` の `!this.llmAdapter` ガード     | `RuntimeSkillCreatorFacade.ts`                       | integrated_api 経路で明示的に failure を返却                        |
+| 共通 shared types 追加                       | `packages/shared/src/types/skillCreator.ts`          | `RuntimeSkillCreatorDegradedReason`, `PlanErrorResponse` 等         |
+| UI フィードバック経路                        | `SkillLifecyclePanel.tsx / SkillCreateWizard.tsx`    | plan logical error の表示を共通契約として保持し、execute 抑止を実施 |
+| 回帰テスト                                   | `RuntimeSkillCreatorFacade.stub-elimination.test.ts` | execute / plan の degraded 回帰が PASS                              |
+
+### PR 制約
+
+- commit / push / PR はユーザー明示承認まで実行しない
+- phase 13 は blocked のまま保持する
 
 ## 受入基準
 
@@ -54,14 +72,14 @@
 
 ## 実装事実アンカー
 
-| ファイル                                                              | current facts                                                                | TASK-RT-02 での扱い                      |
-| --------------------------------------------------------------------- | ---------------------------------------------------------------------------- | ---------------------------------------- |
-| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `plan()` に stub success、`improve()` に空 suggestions 返却がある            | explicit error union へ置換              |
-| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `execute()` 自体は `SkillExecutor.execute()` 委譲で degraded stub を持たない | invalid plan の実行防止へ責務限定        |
-| `packages/shared/src/types/skillCreator.ts`                           | `RuntimeSkillCreatorImproveErrorResponse` は既に存在                         | `plan()` 側にも同型 error union を追加   |
-| `apps/desktop/src/main/ipc/creatorHandlers.ts`                        | outer `IpcResult` は validation / exception を運ぶ                           | logical error は `data` union のまま返す |
-| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`  | `improve()` には error response type guard がある                            | `plan()` 側にも同等 guard を追加         |
-| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`    | create flow の plan / execute UX を持つ                                      | plan logical error の表示を揃える        |
+| ファイル                                                              | current facts                                                                | TASK-RT-02 での扱い                           |
+| --------------------------------------------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------- |
+| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `plan()` に stub success、`improve()` に空 suggestions 返却がある            | explicit error union へ置換                   |
+| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `execute()` 自体は `SkillExecutor.execute()` 委譲で degraded stub を持たない | invalid plan の実行防止へ責務限定             |
+| `packages/shared/src/types/skillCreator.ts`                           | `RuntimeSkillCreatorImproveErrorResponse` は既に存在                         | `plan()` 側にも同型 error union を追加        |
+| `apps/desktop/src/main/ipc/creatorHandlers.ts`                        | outer `IpcResult` は validation / exception を運ぶ                           | logical error は `data` union のまま返す      |
+| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`  | `improve()` には error response type guard がある                            | `plan()` 側にも同等 guard を追加              |
+| `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`    | create flow の plan / execute UX を持つ                                      | plan logical error の表示を共通契約として保持 |
 
 ## 設計要約
 
