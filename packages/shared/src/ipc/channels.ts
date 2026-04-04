@@ -188,6 +188,15 @@ export const SKILL_CREATOR_EXTERNAL_API_CHANNELS = {
 } as const;
 
 /**
+ * スキルクリエイター 出力統合のIPCチャネル
+ * TASK-SDK-SC-04: Skill Output Integration
+ */
+export const SKILL_CREATOR_OUTPUT_READY = "skill-creator:output-ready" as const;
+export const SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED =
+  "skill-creator:output-overwrite-approved" as const;
+export const SKILL_CREATOR_OPEN_SKILL = "skill-creator:open-skill" as const;
+
+/**
  * すべてのIPCチャネル定数
  */
 export const IPC_CHANNELS = {
@@ -196,6 +205,9 @@ export const IPC_CHANNELS = {
   ...SKILL_CHANNELS,
   ...SKILL_CREATOR_SESSION_CHANNELS,
   ...SKILL_CREATOR_EXTERNAL_API_CHANNELS,
+  SKILL_CREATOR_OUTPUT_READY,
+  SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+  SKILL_CREATOR_OPEN_SKILL,
   ...NOTIFICATION_CHANNELS,
   ...HISTORY_SEARCH_CHANNELS,
   ...APPROVAL_CHANNELS,

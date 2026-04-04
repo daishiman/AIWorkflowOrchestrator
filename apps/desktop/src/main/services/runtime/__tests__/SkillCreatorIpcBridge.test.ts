@@ -10,11 +10,13 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type {
   ExternalApiConnectionConfig,
+  SkillOutputReadyPayload,
   UserInputAnswer,
   UserInputQuestion,
 } from "@repo/shared/types";
 import {
   SKILL_CREATOR_EXTERNAL_API_CHANNELS,
+  SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
   SKILL_CREATOR_SESSION_CHANNELS,
 } from "@repo/shared/ipc/channels";
 
@@ -161,6 +163,10 @@ describe("SkillCreatorIpcBridge", () => {
         SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
         expect.any(Function),
       );
+      expect(mockIpcMain.handle).toHaveBeenCalledWith(
+        SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+        expect.any(Function),
+      );
     });
 
     it("should remove all handlers on unregister()", () => {
@@ -182,6 +188,9 @@ describe("SkillCreatorIpcBridge", () => {
       );
       expect(mockIpcMain.removeHandler).toHaveBeenCalledWith(
         SKILL_CREATOR_SESSION_CHANNELS.ANSWER,
+      );
+      expect(mockIpcMain.removeHandler).toHaveBeenCalledWith(
+        SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
       );
       expect(mockIpcMain.removeHandler).toHaveBeenCalledWith(
         SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
@@ -251,6 +260,92 @@ describe("SkillCreatorIpcBridge", () => {
       expect(mockWindow.webContents.send).toHaveBeenCalledWith(
         SKILL_CREATOR_SESSION_CHANNELS.SESSION_COMPLETE,
         { result: "セッション完了" },
+      );
+    });
+
+    it("should call output handler when session completes", async () => {
+      const factory = vi
+        .fn()
+        .mockImplementation(
+          (
+            _id: string,
+            _onQ: unknown,
+            _onExternalApi: unknown,
+            onComplete: (r: string) => void,
+          ) => {
+            capturedCallbacks.onComplete = onComplete;
+            return new MockSdkSession();
+          },
+        );
+      const outputHandler = {
+        handleSessionComplete: vi.fn().mockResolvedValue(undefined),
+      };
+      const bridge = new SkillCreatorIpcBridge(
+        mockWindow as never,
+        factory as never,
+        outputHandler as never,
+      );
+      bridge.register();
+
+      const handler = mockHandlers.get(
+        SKILL_CREATOR_SESSION_CHANNELS.START_SESSION,
+      );
+      await handler?.(makeInvokeEvent(), { request: "テスト" });
+
+      capturedCallbacks.onComplete?.("セッション完了");
+
+      expect(outputHandler.handleSessionComplete).toHaveBeenCalledWith(
+        "セッション完了",
+      );
+    });
+
+    it("should register overwrite approval handler when register() is called", () => {
+      const factory = vi.fn().mockImplementation(() => new MockSdkSession());
+      const outputHandler = {
+        handleSessionComplete: vi.fn().mockResolvedValue(undefined),
+        handleOverwriteApproved: vi.fn().mockResolvedValue(undefined),
+      };
+      const bridge = new SkillCreatorIpcBridge(
+        mockWindow as never,
+        factory as never,
+        outputHandler as never,
+      );
+
+      bridge.register();
+
+      expect(mockIpcMain.handle).toHaveBeenCalledWith(
+        SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+        expect.any(Function),
+      );
+    });
+
+    it("should route overwrite approval IPC to outputHandler.handleOverwriteApproved()", async () => {
+      const factory = vi.fn().mockImplementation(() => new MockSdkSession());
+      const outputHandler = {
+        handleSessionComplete: vi.fn().mockResolvedValue(undefined),
+        handleOverwriteApproved: vi.fn().mockResolvedValue(undefined),
+      };
+      const bridge = new SkillCreatorIpcBridge(
+        mockWindow as never,
+        factory as never,
+        outputHandler as never,
+      );
+      bridge.register();
+
+      const handler = mockHandlers.get(SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED);
+      const payload: SkillOutputReadyPayload = {
+        skillName: "existing-skill",
+        savedPath: "/project/.claude/skills/existing-skill/SKILL.md",
+        content: "name: existing-skill",
+        requiresOverwriteConfirm: true,
+      };
+
+      await expect(handler?.(makeInvokeEvent(), payload)).resolves.toEqual({
+        success: true,
+      });
+
+      expect(outputHandler.handleOverwriteApproved).toHaveBeenCalledWith(
+        payload,
       );
     });
 
@@ -499,6 +594,9 @@ describe("SkillCreatorIpcBridge", () => {
       expect(mockIpcMain.removeHandler).toHaveBeenCalledWith(
         SKILL_CREATOR_SESSION_CHANNELS.ANSWER,
       );
+      expect(mockIpcMain.removeHandler).toHaveBeenCalledWith(
+        SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+      );
     });
 
     it("should work correctly after unregister() and register() cycle", () => {
@@ -521,6 +619,9 @@ describe("SkillCreatorIpcBridge", () => {
       expect(
         mockHandlers.has(SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API),
       ).toBe(true);
+      expect(mockHandlers.has(SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED)).toBe(
+        true,
+      );
       expect(mockWindow.once).toHaveBeenCalledTimes(2);
     });
 

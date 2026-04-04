@@ -2,6 +2,7 @@
  * @vitest-environment happy-dom
  */
 
+import "@testing-library/jest-dom/vitest";
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
@@ -584,6 +585,9 @@ describe("SkillLifecyclePanel", () => {
       });
       render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
       await screen.findByTestId("skill-lifecycle-verify-detail");
+      await waitFor(() => {
+        expect(screen.queryByText("verify detail を読み込み中...")).toBeNull();
+      });
     };
 
     it("TC-01: Layer別グループヘッダーが表示される", async () => {

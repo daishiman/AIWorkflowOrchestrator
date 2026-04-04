@@ -103,6 +103,7 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 | セキュリティ設計             | サンドボックス、ホスティング                      | Phase 2, 3     | security-sandboxing.md                                            |
 | パス制限・セキュリティ       | resolvePathSafely, null byte チェック, path traversal対策 | Phase 2, 3 | security-sandboxing.md（TASK-P0-09）                         |
 | External API IPC統合         | RequestExternalApiConfig custom tool, 並行フロー, 秘匿化 | Phase 2    | electron-ipc.md（TASK-SDK-SC-03）                            |
+| Skill Output Integration     | output-ready / overwrite-approved / open-skill IPC, SkillCreatorOutputHandler, SkillRegistry, SkillCreatorResultPanel | Phase 2, 3 | electron-ipc.md（TASK-SDK-SC-04）                 |
 
 ## パターン選択ガイド
 
@@ -369,6 +370,7 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 
 | Version | Date       | Changes                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 2.17.0  | 2026-04-04 | TASK-SDK-SC-04 Skill Output Integration反映: Skill Output Integration（output-ready / overwrite-approved / open-skill IPC 3チャネル）・SkillCreatorOutputHandler・SkillRegistry・SkillCreatorResultPanel・onOutputReady() Preload API を Task仕様ナビに追記 |
 | 2.16.0  | 2026-04-03 | TASK-SDK-SC-03 External API Support反映: RequestExternalApiConfig custom toolパターン・並行フロー管理・sanitizeForPrompt秘匿化パターンを electron-ipc.md に追加。Task仕様ナビ・implementation-artifacts.md に External API IPC 成果物を追記 |
 | 2.15.0  | 2026-04-02 | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001反映: Approval Request Producerパターン追加（hooks-system.md）、成果物記録追加（implementation-artifacts.md）、Task仕様ナビ追記 |
 | 2.14.0  | 2026-03-31 | TASK-P0-09ガバナンス実装反映: Governance Hooks Factoryパターン（hooks-system.md）、Phase-Based Policy表（permission-control.md）、resolvePathSafelyパターン（security-sandboxing.md）、Task仕様ナビ追記 |

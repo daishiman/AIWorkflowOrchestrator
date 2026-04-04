@@ -15,6 +15,7 @@ import { ipcMain } from "electron";
 import type { BrowserWindow, IpcMainInvokeEvent } from "electron";
 import {
   SKILL_CREATOR_EXTERNAL_API_CHANNELS,
+  SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
   SKILL_CREATOR_SESSION_CHANNELS,
 } from "@repo/shared/ipc/channels";
 import type {
@@ -22,12 +23,14 @@ import type {
   SkillCreatorSessionStartRequest,
   SkillCreatorSessionCompleteEvent,
   SkillCreatorSessionErrorEvent,
+  SkillOutputReadyPayload,
   UserInputAnswer,
   UserInputQuestion,
 } from "@repo/shared/types";
 import { SkillLocator } from "./SkillLocator";
 import type { ExternalApiConfigRequiredPayload } from "./SkillCreatorSdkSession";
 import { SkillCreatorSdkSession } from "./SkillCreatorSdkSession";
+import type { SkillCreatorOutputHandler } from "./SkillCreatorOutputHandler";
 
 /** sessionFactory の型 */
 export type SessionFactory = (
@@ -74,6 +77,7 @@ export class SkillCreatorIpcBridge {
         onError,
       );
     },
+    private readonly outputHandler?: SkillCreatorOutputHandler,
   ) {}
 
   /**
@@ -106,6 +110,13 @@ export class SkillCreatorIpcBridge {
       },
     );
 
+    ipcMain.handle(
+      SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+      async (event, payload: SkillOutputReadyPayload) => {
+        return await this.onOverwriteApproved(event, payload);
+      },
+    );
+
     this.registered = true;
   }
 
@@ -123,6 +134,7 @@ export class SkillCreatorIpcBridge {
     ipcMain.removeHandler(SKILL_CREATOR_SESSION_CHANNELS.START_SESSION);
     ipcMain.removeHandler(SKILL_CREATOR_SESSION_CHANNELS.ANSWER);
     ipcMain.removeHandler(SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API);
+    ipcMain.removeHandler(SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED);
     this.registered = false;
   }
 
@@ -173,6 +185,16 @@ export class SkillCreatorIpcBridge {
       (result) => {
         this.currentSession = null;
         this.emitSessionComplete(result);
+        if (this.outputHandler) {
+          void this.outputHandler
+            .handleSessionComplete(result)
+            .catch((error) => {
+              console.error(
+                "[SkillCreatorIpcBridge] Failed to handle session output:",
+                error instanceof Error ? error.message : String(error),
+              );
+            });
+        }
       },
       (error) => {
         this.currentSession = null;
@@ -259,6 +281,49 @@ export class SkillCreatorIpcBridge {
       const message = error instanceof Error ? error.message : String(error);
       this.emitApiConfigured({ success: false, error: message });
       this.emitApiTestResult({ ok: false, error: message });
+      return {
+        success: false,
+        error: message,
+      };
+    }
+  }
+
+  /**
+   * overwrite-approved IPC を処理する。
+   */
+  private async onOverwriteApproved(
+    event: IpcMainInvokeEvent,
+    payload: SkillOutputReadyPayload,
+  ): Promise<ConfigureApiResult> {
+    this.assertSender(event);
+
+    if (!this.outputHandler) {
+      return {
+        success: false,
+        error:
+          "[SkillCreatorIpcBridge] Received overwrite approval but output handler is not configured",
+      };
+    }
+
+    if (!this.isValidSkillOutputReadyPayload(payload)) {
+      return {
+        success: false,
+        error:
+          "[SkillCreatorIpcBridge] Received overwrite approval with invalid payload",
+      };
+    }
+
+    try {
+      await this.outputHandler.handleOverwriteApproved(payload);
+      return {
+        success: true,
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error(
+        "[SkillCreatorIpcBridge] Failed to process overwrite approval:",
+        message,
+      );
       return {
         success: false,
         error: message,
@@ -416,6 +481,21 @@ export class SkillCreatorIpcBridge {
       }
     }
     return true;
+  }
+
+  private isValidSkillOutputReadyPayload(
+    payload: SkillOutputReadyPayload,
+  ): boolean {
+    return (
+      !!payload &&
+      typeof payload === "object" &&
+      typeof payload.skillName === "string" &&
+      payload.skillName.trim() !== "" &&
+      typeof payload.savedPath === "string" &&
+      payload.savedPath.trim() !== "" &&
+      typeof payload.content === "string" &&
+      typeof payload.requiresOverwriteConfirm === "boolean"
+    );
   }
 
   private assertSender(event: IpcMainInvokeEvent): void {
