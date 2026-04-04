@@ -1,0 +1,106 @@
+{
+  "feature": "step-09-par-task-rt-03-verify-improve-panel-001",
+  "created": "2026-04-03T13:45:23Z",
+  "lastUpdated": "2026-04-04T00:00:00Z",
+  "status": "spec_created",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": ["phase-1-requirements.md"]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": ["phase-2-design.md"]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": ["phase-3-design-review.md"]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        "apps/desktop/src/renderer/components/skill/__tests__/VerifyResultDetailPanel.test.tsx",
+        "apps/desktop/src/renderer/components/skill/__tests__/ImproveResultDetailPanel.test.tsx"
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        "apps/desktop/src/renderer/components/skill/VerifyResultDetailPanel.tsx",
+        "apps/desktop/src/renderer/components/skill/ImproveResultDetailPanel.tsx"
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": ["phase-6-test-expansion.md"]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage.md"]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring.md"]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-report.md"]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md",
+        "outputs/phase-11/verify-improve-panel-capture-metadata.json",
+        "outputs/phase-11/verify-improve-panel-screenshot-plan.json",
+        "outputs/phase-11/screenshots/TC-11-01-verify-pass.png",
+        "outputs/phase-11/screenshots/TC-11-02-verify-fail.png",
+        "outputs/phase-11/screenshots/TC-11-03-improve-default.png"
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/pr-creation-result.md"
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "feat",
+    "estimatedPhases": 13,
+    "taskId": "TASK-RT-03-VERIFY-IMPROVE-PANEL-001",
+    "githubIssue": 1751
+  }
+}

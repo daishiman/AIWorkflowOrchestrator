@@ -71,8 +71,10 @@ export function DetailFooter({
  */
 export function StatusBadge({
   status,
+  label: labelOverride,
 }: {
   status: "success" | "failure" | "pending";
+  label?: string;
 }): JSX.Element {
   const config: Record<
     "success" | "failure" | "pending",
@@ -92,14 +94,15 @@ export function StatusBadge({
     },
   };
 
-  const { className, label } = config[status];
+  const { className, label: defaultLabel } = config[status];
+  const displayLabel = labelOverride ?? defaultLabel;
 
   return (
     <span
       className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-medium ${className}`}
-      aria-label={label}
+      aria-label={displayLabel}
     >
-      {label}
+      {displayLabel}
     </span>
   );
 }

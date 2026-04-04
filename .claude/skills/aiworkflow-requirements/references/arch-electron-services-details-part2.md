@@ -167,6 +167,20 @@ Task03 実装では、workflow manifest foundation の上に source discovery �
 
 この追加は internal hardening であり、`RuntimeSkillCreatorPlanResponse` / `RuntimeSkillCreatorImproveResponse` の public shape は変更しない。`execute()` の内部 contract には `RuntimeSkillCreatorExecuteResponse` を残すが、TASK-FIX-EXECUTE-PLAN-FF-001 以降の `skill-creator:execute-plan` public surface は `{ accepted: true, planId }` ack + snapshot relay に分離された。一方で `SkillCreatorWorkflowSourceProvenance` は `candidateRoots` / `selectedRoots` / `selectedResourceIds` / `droppedResourceIds` / `structureSignature` / `degradeReasons` を持つ current fact に更新された。
 
+### verify→improve ループの feedback memory 構造化（task-ut-p0-02-001-repeat-feedback-memory）
+
+> 完了日: 2026-04-03
+
+`verifyAndImproveLoop()` 内の feedback memory を `previousImproveSummary: string` から `feedbackHistory: ImproveFeedbackHistory[]` に構造化した。各 improve 試行後に `{ attempt, failedChecks: string[], improveSummary: string }` を配列に蓄積し、`buildImproveFeedback()` が全試行の履歴を構造化フォーマットで出力する。
+
+| 変更前 | 変更後 |
+| --- | --- |
+| `previousImproveSummary: string`（直前1回分のみ） | `feedbackHistory: ImproveFeedbackHistory[]`（全試行蓄積） |
+| `buildImproveFeedback(checks, string)` | `buildImproveFeedback(checks, ImproveFeedbackHistory[])` |
+| 「前回の改善要約」セクション | 「過去の改善試行履歴（N回試行済み）」セクション + 繰り返し失敗チェック警告 |
+
+`ImproveFeedbackHistory` 型は `packages/shared/src/types/skillCreator.ts` に定義し、`index.ts` からバレルエクスポート済み。
+
 ## Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001）
 
 > **ステータス**: `spec_created`（2026-03-19 再監査同期）

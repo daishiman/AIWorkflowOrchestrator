@@ -87,6 +87,12 @@ git merge origin/main --no-edit
 
 # 5. 退避した変更を復元
 git stash pop 2>/dev/null || true
+
+# 6. auto-generated インデックスを再生成（P44対策: stash pop 後は必ず実行）
+if [ -f ".claude/skills/aiworkflow-requirements/scripts/generate-index.js" ]; then
+  node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+  git add .claude/skills/aiworkflow-requirements/indexes/ 2>/dev/null || true
+fi
 ```
 
 #### コンフリクト発生時の対応
@@ -95,7 +101,17 @@ git stash pop 2>/dev/null || true
 # コンフリクトファイルを確認
 git status --short | grep "^UU\|^AA\|^DD"
 
-# コンフリクトを手動解消後
+# auto-generated ファイルのコンフリクト解消（P44対策）
+# keywords.json / topic-map.md はどちらか一方を採用後に再生成
+git checkout --ours .claude/skills/aiworkflow-requirements/indexes/keywords.json 2>/dev/null || true
+git checkout --ours .claude/skills/aiworkflow-requirements/indexes/topic-map.md 2>/dev/null || true
+node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+git add .claude/skills/aiworkflow-requirements/indexes/
+
+# task-workflow-completed.md は両側の追記を保持（.gitattributes の merge=union で自動解消）
+# 残っている場合は手動でコンフリクトマーカーを除去して git add する
+
+# その他のコンフリクトを手動解消後
 git add <解消したファイル>
 git commit -m "merge: resolve conflicts with origin/main"
 ```

@@ -43,6 +43,7 @@ Phase 10 で MINOR 判定された指摘がある場合、Phase 12 で追跡結�
 | `documentation-changelog.md` | 変更ファイル、validator 結果、current/baseline |
 | `unassigned-task-detection.md` | 0件でも summary を残す |
 | `skill-feedback-report.md` | 改善点 or 改善点なし |
+| `phase12-task-spec-compliance-check.md` | Task 12-1〜12-6 の準拠チェック |
 | `phase12-task-spec-compliance-check.md` | Task 12-1〜12-5 の準拠チェック |
 
 ## 設計タスク向け補足（SF-02, SF-03対応）
@@ -124,7 +125,7 @@ Phase 12 の成果物ファイル名がテンプレートと一致している�
 
 ## 関連ガイド
 
-- [phase-12-documentation-guide.md](phase-12-documentation-guide.md) — Task 12-1〜12-5 の詳細手順
+- [phase-12-documentation-guide.md](phase-12-documentation-guide.md) — Task 12-1〜12-6 の詳細手順
 - [spec-update-workflow.md](spec-update-workflow.md) — Step 1/2 の実行フロー
 - [spec-update-validation-matrix.md](spec-update-validation-matrix.md) — 完了判定コマンド
 - [phase-11-12-guide.md](phase-11-12-guide.md) — Phase 12 完了条件チェックリスト（全項目）

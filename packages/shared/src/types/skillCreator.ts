@@ -676,6 +676,19 @@ export interface RuntimeSkillCreatorReverifyResult {
 }
 
 /**
+ * verify→improve ループの 1 試行分の履歴
+ * task-ut-p0-02-001-repeat-feedback-memory
+ */
+export interface ImproveFeedbackHistory {
+  /** 試行番号（1始まり） */
+  attempt: number;
+  /** verify で失敗したチェック項目の ID リスト */
+  failedChecks: string[];
+  /** improve が生成した改善要約 */
+  improveSummary: string;
+}
+
+/**
  * 構造化された改善提案（section/before/after/reason）
  * TASK-SC-05-IMPROVE-LLM
  */

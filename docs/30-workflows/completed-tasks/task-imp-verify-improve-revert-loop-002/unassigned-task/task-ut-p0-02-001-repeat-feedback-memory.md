@@ -10,7 +10,7 @@
 | 対象機能     | RuntimeSkillCreatorFacade.verifyAndImproveLoop()   |
 | 優先度       | 中                                                 |
 | 見積もり規模 | 小規模                                             |
-| ステータス   | 未実施                                             |
+| ステータス   | 完了                                               |
 | GitHub Issue | #1773                                              |
 | 発見元       | TASK-P0-02 Phase 3 MR-01（Phase 12 で部分吸収）    |
 | 発見日       | 2026-03-30                                         |
@@ -160,7 +160,7 @@ const feedback = buildImproveFeedback(failedChecks, history);
 
 ### Phase 4: ドキュメント更新
 
-1. `docs/30-workflows/task-imp-verify-improve-revert-loop-002/outputs/phase-12/implementation-guide.md`（Part 2）の API シグネチャ記載を更新
+1. `docs/30-workflows/improve-feedback-memory-structuring/outputs/phase-12/implementation-guide.md`（Part 2）の API シグネチャ記載を更新
 2. 型定義更新内容を記録
 
 ---
@@ -219,9 +219,9 @@ const feedback = buildImproveFeedback(failedChecks, history);
   - `verifyAndImproveLoop()` メソッド（`previousImproveSummary` 変数の現在の定義）
 - `apps/desktop/src/main/services/runtime/formatVerifyChecksAsFeedback.ts`
   - `buildImproveFeedback()` 関数の現在の実装
-- `docs/30-workflows/task-imp-verify-improve-revert-loop-002/outputs/phase-12/implementation-guide.md`
+- `docs/30-workflows/improve-feedback-memory-structuring/outputs/phase-12/implementation-guide.md`
   - Part 2: API シグネチャ記載（更新対象）
-- `docs/30-workflows/task-imp-verify-improve-revert-loop-002/outputs/phase-3/design-review.md`
+- `docs/30-workflows/improve-feedback-memory-structuring/phase-3-design-review.md`
   - MR-01 原文（苦戦箇所の記録元）
 
 ---
@@ -232,7 +232,7 @@ const feedback = buildImproveFeedback(failedChecks, history);
 
 > 同一修正の繰り返し回避 - verify→improve→re-verify ループで、改善提案が同じ内容だと無限ループになるリスク。直前の improve 要約を次回 feedback に追記することで一定程度緩和。3 回ループ時の最適化は将来改善候補。
 
-（出典: `docs/30-workflows/task-imp-verify-improve-revert-loop-002/outputs/phase-3/design-review.md` MR-01）
+（出典: `docs/30-workflows/improve-feedback-memory-structuring/phase-3-design-review.md` MR-01）
 
 ### 苦戦箇所記録
 

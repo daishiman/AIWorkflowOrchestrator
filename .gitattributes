@@ -2,3 +2,12 @@
 # Playwright はデフォルトで spec-file-name-snapshots/ ディレクトリに保存する
 apps/desktop/e2e/ui-ux/*.spec.ts-snapshots/*.png binary
 apps/desktop/e2e/ui-ux/snapshots/*.png binary
+
+# ── マージ戦略 ──────────────────────────────────────────────────────────────
+# append-only の完了タスク記録: 両ブランチの追記を自動統合（コンフリクトマーカー不要）
+.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md merge=union
+
+# auto-generated インデックスファイル: マージせず常に再生成する
+# コンフリクト発生時は以下を実行: node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+.claude/skills/aiworkflow-requirements/indexes/keywords.json merge=union
+.claude/skills/aiworkflow-requirements/indexes/topic-map.md merge=union
