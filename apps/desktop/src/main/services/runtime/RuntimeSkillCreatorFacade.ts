@@ -1381,8 +1381,16 @@ export class RuntimeSkillCreatorFacade {
     authMode: AuthMode,
     apiKey: string | null,
   ): Promise<RuntimeSkillCreatorImproveResponse> {
+    const improveId = `improve-${Date.now()}`;
+    const governanceHooks = this.createGovernanceHooks("improve");
+    governanceHooks.onSessionStart({ sessionId: improveId });
+
     // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001: アダプターステータスチェック
     if (this._llmAdapterStatus === "failed") {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: LLM adapter status is failed",
+      });
       return {
         success: false,
         error: {
@@ -1392,6 +1400,10 @@ export class RuntimeSkillCreatorFacade {
       };
     }
     if (this._llmAdapterStatus === "initializing") {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: LLM adapter is initializing",
+      });
       return {
         success: false,
         error: {
@@ -1435,10 +1447,6 @@ export class RuntimeSkillCreatorFacade {
         },
       };
     }
-
-    const improveId = `improve-${Date.now()}`;
-    const governanceHooks = this.createGovernanceHooks("improve");
-    governanceHooks.onSessionStart({ sessionId: improveId });
 
     // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
     if (!this.llmAdapter) {

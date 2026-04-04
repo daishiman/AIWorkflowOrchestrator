@@ -85,16 +85,6 @@ function mockIntegratedApiDecision() {
   });
 }
 
-// TASK-RT-02: execute guard を通過するための llmAdapter モック
-function createMockLLMAdapter(): ILLMAdapter {
-  return {
-    providerId: "anthropic" as ILLMAdapter["providerId"],
-    sendChat: vi.fn(),
-    streamChat: vi.fn(),
-    checkHealth: vi.fn(),
-  } as ILLMAdapter;
-}
-
 // ─── テストスイート ───────────────────────────────────────────────────────────
 
 describe("RuntimeSkillCreatorFacade notification", () => {
