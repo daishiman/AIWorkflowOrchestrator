@@ -448,6 +448,38 @@ class ExternalApiHttpError extends Error { statusCode: number; url: string; }
 
 ---
 
+## Verify Engine 統合パターン（TASK-P0-01）
+
+### 依存注入による Graceful Degradation
+
+```typescript
+// RuntimeSkillCreatorFacade.ts
+class RuntimeSkillCreatorFacade {
+  private verificationEngine?: SkillCreatorVerificationEngine;
+
+  async verifySkill(skillDir: string): Promise<RuntimeSkillCreatorVerifyCheck[]> {
+    if (!this.verificationEngine) return []; // graceful degradation
+    return this.verificationEngine.verify(skillDir);
+  }
+}
+```
+
+### Severity Routing パターン
+
+`verifyAndImproveLoop()` は verify 結果の severity に基づいて処理を分岐する:
+- `info` → pass（改善不要）
+- `warning` / `error` → improve 対象として LLM に渡す
+
+### Verify IPC チャネル
+
+| チャネル | 方向 | 用途 |
+| --- | --- | --- |
+| `skill-creator:get-verify-detail` | Renderer → Main | チェック詳細取得 |
+| `skill-creator:request-reverify` | Renderer → Main | 再 verify 要求 |
+| `skill-creator:reverify-workflow` | Renderer → Main | verify→improve→re-verify 閉ループ |
+
+---
+
 ## 関連リソース
 
 - **パターン選択**: See [integration-patterns.md](integration-patterns.md)

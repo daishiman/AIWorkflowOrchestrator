@@ -5,6 +5,35 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-01 verify 実行エンジン（Layer 1/2 コア + Layer 3/4 互換）の仕様整合（2026-04-04）
+
+| 項目       | 値                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-01                                                                                                                |
+| ステータス | **完了**                                                                                                                  |
+| タイプ     | feat / runtime verify engine                                                                                              |
+| 優先度     | 高                                                                                                                        |
+| 完了日     | 2026-04-04                                                                                                                |
+| 対象       | `docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12/` / `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts` / `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` / `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorVerificationEngine.test.ts` / `packages/shared/src/types/skillCreator.ts` |
+| 成果物     | `docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12/outputs/`                                      |
+
+#### 実施内容
+
+- `SkillCreatorVerificationEngine` を独立モジュールとして実装し、Layer 1〜4 の verify チェック 19 件を current contract として同期
+- `RuntimeSkillCreatorFacade.verifySkill()` は `verificationEngine` 注入時に `RuntimeSkillCreatorVerifyCheck[]` を返し、未注入時は空配列を返す graceful degradation を維持
+- `verifyAndImproveLoop()` は `severity === "info"` を pass、warning / error を improve 対象として routing する current fact に整合
+- `artifacts.json` / `outputs/artifacts.json` の parity を同期し、root evidence を PASS へ戻した
+- `phase12-task-spec-compliance-check.md` で Task 12-1〜12-6 / Step 1-A〜1-G / root parity を監査可能にした
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/SkillCreatorVerificationEngine.test.ts`: PASS（60/60）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm lint`: PASS_WITH_WARNINGS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12`: PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12`: PASS
+
 ### タスク: task-imp-layer12-spec-definition-004（2026-04-04）
 
 | 項目       | 値                                                                                                     |
@@ -91,6 +120,41 @@
 - `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-04-skill-lifecycle-light.png`
 - `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-05-skill-center-return-light.png`
 
+### タスク: TASK-SDK-SC-04 Skill Output Integration（2026-04-04）
+
+| 項目       | 値                                                                                                                                                                                                                                                                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-SC-04                                                                                                                                                                                                                                                                                                                                            |
+| ステータス | **完了**                                                                                                                                                                                                                                                                                                                                                  |
+| タイプ     | feature / skill-creator output integration                                                                                                                                                                                                                                                                                                                |
+| 優先度     | 高                                                                                                                                                                                                                                                                                                                                                        |
+| 完了日     | 2026-04-04                                                                                                                                                                                                                                                                                                                                                |
+| 対象       | `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts` / `apps/desktop/src/main/services/runtime/SkillRegistry.ts` / `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` / `apps/desktop/src/preload/skill-creator-api.ts` / `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx` / `packages/shared/src/ipc/channels.ts` |
+| 成果物     | `docs/30-workflows/completed-tasks/step-02-par-task-04-skill-output-integration/`（予定）                                                                                                                                                                                                                                                                 |
+
+#### 実施内容
+
+- `SkillCreatorOutputHandler.ts` 新規実装: `<!-- SKILL_START -->` / `<!-- SKILL_END -->` マーカー検出 → SKILL.md 抽出 → ファイル保存 → レジストリ登録 → IPC 通知のパイプラインを実装。マーカー未検出時は出力全体を SKILL.md コンテンツとして扱うフォールバック戦略を採用
+- `SkillRegistry.ts` 新規実装: インメモリスキルレジストリ（DI 対応）。同名スキル上書き時は `overwriteRequired: true` フラグで UI 確認フローを起動
+- IPC チャネル3本追加（`skill-creator:output-ready` / `skill-creator:output-overwrite-approved` / `skill-creator:open-skill`）を `packages/shared/src/ipc/channels.ts` に追加
+- `SkillCreatorIpcBridge.ts` に `outputHandler` DI パラメータを追加（options bag パターン）
+- `apps/desktop/src/preload/skill-creator-api.ts` に `onOutputReady()` リスナーを追加
+- `SkillCreatorResultPanel.tsx` 新規実装: スキル生成完了 UI（プレビュー・上書き確認ダイアログ）
+
+#### テストカバレッジ
+
+| 対象                       | カバレッジ                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| SkillCreatorOutputHandler  | Line 96.46% / Branch 91.30% / Function 100%                                     |
+| SkillRegistry              | Line 100% / Branch 100% / Function 100%                                         |
+| SkillCreatorResultPanel    | Line 100% / Branch 100% / Function 100%                                         |
+
+#### 教訓参照
+
+`references/lessons-learned-current.md`（§TASK-SDK-SC-04）: L-SC04-001〜004
+
+---
+
 ### タスク: TASK-SDK-SC-03 External API Support（2026-04-03）
 
 | 項目       | 値                                                                                                                                                                                                                       |
@@ -167,31 +231,6 @@
 - `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx`: PASS
 - `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001`: PASS
 - `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001 --json`: PASS
-||||||| Stash base
-
-### タスク: TASK-SDK-SC-03 External API Support（2026-04-03）
-
-| 項目       | 値                                                                                                                                                                                                                       |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-SDK-SC-03                                                                                                                                                                                                           |
-| ステータス | **完了**                                                                                                                                                                                                                 |
-| タイプ     | feature / skill-creator external api support                                                                                                                                                                             |
-| 優先度     | 高                                                                                                                                                                                                                       |
-| 完了日     | 2026-04-03                                                                                                                                                                                                               |
-| 対象       | `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` / `apps/desktop/src/main/services/runtime/SkillCreatorSdkSession.ts` / `packages/shared/src/types/skillCreatorExternalApi.ts` / `packages/shared/src/ipc/channels.ts` / `apps/desktop/src/renderer/components/skill/ExternalApiConfigForm.tsx` / `apps/desktop/src/main/services/runtime/adapters/HttpExternalApiAdapter.ts` |
-| 成果物     | `docs/30-workflows/completed-tasks/step-02-par-task-03-external-api-support/`                                                                                                                                            |
-
-#### 実施内容
-
-- IPC チャネル4本追加（`skill-creator:configure-api` / `skill-creator:api-configured` / `skill-creator:api-test-result` / `skill-creator:external-api-config-required`）
-- 型定義追加（`ExternalApiAuthType` / `ExternalApiConnectionConfig` / `ExternalApiTimeoutError` / `ExternalApiHttpError` / `ExternalApiConfigRequiredEvent`）
-- `SkillCreatorSdkSession` に `RequestExternalApiConfig` custom tool を追加し、SDK→UI のAPI設定要求フローを実装
-- `SkillCreatorIpcBridge` に `isValidExternalApiConfig()` 8条件バリデーションを追加
-- `sanitizeExternalApiConfigForPrompt()` による credential 秘匿化（`[REDACTED]` 置換）を実装
-- `pendingAnswerPromise` / `pendingExternalApiPromise` の相互排他管理と30秒タイムアウト機構を実装
-- `ExternalApiConfigForm.tsx` UI コンポーネントを新規作成
-- `HttpExternalApiAdapter` を追加し `IExternalApiAdapter` インターフェースを実装
-- Preload 層（`skill-creator-api.ts` / `skill-creator-session-api.ts`）で invoke / push listener を公開
 ### タスク: TASK-FIX-LIFECYCLE-PANEL-ERROR-001（2026-04-02）
 
 | 項目       | 値                                                                                                                                                                 |

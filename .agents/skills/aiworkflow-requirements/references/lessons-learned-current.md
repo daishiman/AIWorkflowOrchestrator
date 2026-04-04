@@ -25,9 +25,6 @@
 | 2026-04-03 | 3.3.8      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 current index sync（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-EP-001〜003 / setupCallbackCapture / NON_VISUAL state-only 判定の current facts 反映） |
 | 2026-04-03 | 3.3.8      | UT-UIUX-VISUAL-BASELINE-DRIFT-001 教訓3件を追加（→ [lessons-learned-ui-ux-visual-baseline-drift.md](lessons-learned-ui-ux-visual-baseline-drift.md): L-UIUX-VISUAL-001 Playwright `colorScheme` 二重固定 / L-UIUX-VISUAL-002 `TC-ID ↔ png ↔ manual-test-result` 同期 / L-UIUX-VISUAL-003 completed workflow / ledger / lesson の same-wave 同期） |
 | 2026-04-03 | 3.3.8      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 current index sync（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-EP-001〜003 / setupCallbackCapture / NON_VISUAL state-only 判定の current facts 反映） |
-||||||| Stash base
-
-| 2026-04-03 | 3.3.8      | TASK-SDK-SC-03 External API Support 教訓5件を追加（L-SC03-001 並行フロー管理 / L-SC03-002 タイムアウト管理二重化 / L-SC03-003 データ秘匿化二重管理 / L-SC03-004 IPC バリデーション複雑性 / L-SC03-005 Preload API 3層契約一貫性）
 | 2026-04-02 | 3.3.7      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-ERR-001 `handoff` guard の共通化 / L-LIFECYCLE-ERR-002 stale `phase: 'failed'` 語彙の除去 / L-LIFECYCLE-ERR-003 NON_VISUAL task で blocker を PASS へ偽装しない） |
 | 2026-04-01 | 3.3.6      | TASK-FIX-AUTH-IPC-001 教訓2件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-AUTH-IPC-001 IPC channel timeout と fire-and-forget パターン — CHANNEL_TIMEOUTS が 500ms の場合は OAuth 完了を await せず void+catch で即時返却する / L-AUTH-IPC-002 AUTH_STATE_CHANGED 責務境界の分離 — 完了通知は orchestrator に固定し handler 側では二重送信しない） |
 | 2026-04-01 | 3.3.5      | TASK-SC-DIALOG-MANDATORY-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-SC-DIALOG-001 宣言型→命令型転換 / L-SC-DIALOG-002 実行ゲートパターン / L-SC-DIALOG-003 graceful degradation で problem-definition.json 欠損時エラー停止を回避）                                                                                     |
@@ -977,60 +974,6 @@
 | 課題       | 未実装関数を import すると、同ファイル内の既存テストも巻き込んで全失敗になる。Red の確認目的が「新テストの失敗」なのに既存テストが壊れる副作用が生じる |
 | 解決策     | スケルトン関数（`throw new Error("not implemented")`）を先に定義し、import はコンパイルできる状態にする。実行時にのみ新テストが Red になるよう設計する |
 | 標準ルール | テストファースト実装では「スケルトン定義 → テスト記述 → Red 確認 → 実装 → Green 確認」の順序を守る                                                     |
-
----
-
-## TASK-SDK-SC-03 External API Support 教訓（2026-04-03）
-
-### L-SC03-001: 並行フロー管理の複雑性（pendingAnswerPromise / pendingExternalApiPromise 相互排他）
-
-| 項目       | 内容                                                                                                                                                                                                                   |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 課題       | `SkillCreatorSdkSession` が質問待機（`pendingAnswerPromise`）とAPI設定要求（`pendingExternalApiPromise`）の2つの非同期待機を管理する必要があり、一方が存在する間に他方を開始すると状態が壊れる                           |
-| 再発条件   | SDK custom tool 内で複数の非同期待機フロー（質問 / 外部リソース要求 / 承認要求等）を並行管理する場合                                                                                                                   |
-| 解決策     | 両 Promise の存在を相互にチェックし、一方が pending の場合は他方を拒否する排他パターンを適用。cleanup 時に両方を同時にリセットする                                                                                      |
-| 標準ルール | SDK Session に新しい非同期待機フローを追加する際は、既存の pending フローとの相互排他チェックを必ず設計段階で定義する                                                                                                   |
-| 関連タスク | TASK-SDK-SC-03                                                                                                                                                                                                         |
-
-### L-SC03-002: タイムアウト管理の二重化（単一 timeoutHandle を両フローで共有）
-
-| 項目       | 内容                                                                                                                                                                                  |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 課題       | 質問待機とAPI設定要求の両方が30秒タイムアウトを必要とするが、各フローに個別の timeout を持つと cleanup 時に clearTimeout 漏れが発生しやすい                                            |
-| 再発条件   | 複数の非同期フローが同一セッション内でタイムアウト管理を個別に行う場合                                                                                                               |
-| 解決策     | 単一の `timeoutHandle` を両フローで共有し、新しいフロー開始時に前回のタイムアウトをクリアしてから新しいタイムアウトを設定する設計を採用                                                |
-| 標準ルール | 同一コンテキスト内の非同期タイムアウトは共有 handle で管理し、フロー切替時に必ず `clearTimeout` を先行実行する                                                                        |
-| 関連タスク | TASK-SDK-SC-03                                                                                                                                                                        |
-
-### L-SC03-003: データ秘匿化の二重管理（sanitizeExternalApiConfigForPrompt）
-
-| 項目       | 内容                                                                                                                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 課題       | 外部API設定の credential はLLMプロンプトに `[REDACTED]` で注入するが、実際のHTTPリクエストには元の credential を使用する必要があり、同じ config オブジェクトを2つのコンテキストで使い分ける複雑性が発生 |
-| 再発条件   | 秘匿情報を含むデータを「表示用」と「実行用」で使い分ける場合                                                                                                                        |
-| 解決策     | `sanitizeExternalApiConfigForPrompt()` は元の config を変更せず、新しいオブジェクトを返す pure function として実装。元の config は SDK Session 内部でのみ保持し、外部への漏洩を防止    |
-| 標準ルール | 秘匿情報の二重管理では、sanitize 関数は必ず immutable（元オブジェクトを変更しない）とし、元データの保持範囲を明示的に限定する                                                          |
-| 関連タスク | TASK-SDK-SC-03                                                                                                                                                                        |
-
-### L-SC03-004: IPC バリデーションの複雑さ（isValidExternalApiConfig 8条件チェック）
-
-| 項目       | 内容                                                                                                                                                                                       |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 課題       | `ExternalApiConnectionConfig` は8つのバリデーション条件を持ち、条件間に依存関係がある（authType が none 以外の場合のみ credential 必須）ため、テストマトリクスが膨大になる                  |
-| 再発条件   | 条件付きフィールド（authType に応じて credential 必須/不要が変わる）を持つ IPC payload のバリデーション                                                                                    |
-| 解決策     | バリデーション関数を private メソッドとして分離し、条件分岐を明確に分離。テストは happy path + 各条件の boundary を個別にカバー                                                            |
-| 標準ルール | 条件付きバリデーションは early return パターンで各条件を独立させ、条件間の依存を明示的にコメントで記録する                                                                                  |
-| 関連タスク | TASK-SDK-SC-03                                                                                                                                                                              |
-
-### L-SC03-005: Preload API 契約拡張の3層一貫性維持（Preload / Main / Renderer）
-
-| 項目       | 内容                                                                                                                                                                                 |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 課題       | External API チャネル4本の追加で、`packages/shared/src/ipc/channels.ts`（定数定義）、`apps/desktop/src/preload/channels.ts`（allowlist import）、`apps/desktop/src/preload/skill-creator-api.ts`（invoke 公開）、`apps/desktop/src/preload/skill-creator-session-api.ts`（push listener 公開）の4ファイルを同時更新する必要があり、1ファイルの更新漏れで silent fail が発生 |
-| 再発条件   | 新規 IPC チャネル追加時に shared 定数 / preload allowlist / preload API 公開 / Main handler 登録のいずれかが欠落する場合                                                              |
-| 解決策     | チャネル追加チェックリストを定義し、4層（shared 定数 → preload import → preload API → Main handler）を同一 PR 内で完結させる                                                          |
-| 標準ルール | 新規 IPC チャネル追加時は「shared 定数 → preload channels import → preload API 関数 → Main handler 登録 → ALLOWED_*_CHANNELS 追加」の5点を同一コミットで完了する                      |
-| 関連タスク | TASK-SDK-SC-03                                                                                                                                                                        |
 | 関連タスク | TASK-P0-04                                                                                                                                             |
 
 ### L-LIFECYCLE-EP-001: fire-and-forget IPC では後続スナップショットによるエラークリア防止が必要（2026-04-03）
@@ -1140,8 +1083,53 @@
 | 解決策       | `expect(button).toHaveAttribute("aria-expanded", "false")` と `expect(button).toHaveAttribute("aria-controls", "governance-notes-content")` を組み合わせてトグル前後の状態を検証する。クリック後は `"true"` に変化することを確認する             |
 | 標準ルール   | 折りたたみ UI には `aria-expanded`（状態）+ `aria-controls`（対象 id）+ `role="region"`（内容領域）を実装し、テストではこの三点セットを検証する。`queryByText` による存在確認だけでは不十分                                                      |
 | 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
-||||||| Stash base
+<<<<<<< Updated upstream
 
+
+---
+
+## TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04）
+
+### L-SC04-001: マーカー検出フォールバック戦略（出力全体をSKILL.mdとして扱う）
+
+| 項目       | 内容                                                                                                                                                                                                                 |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | LLM が `<!-- SKILL_START -->` / `<!-- SKILL_END -->` マーカーを出力しない場合、OutputHandler がマーカー未検出として処理を中断するとスキルが生成されないままになる                                                     |
+| 再発条件   | LLM 出力フォーマットが未確定のまま OutputHandler がマーカー必須前提で実装される場合                                                                                                                                  |
+| 解決策     | マーカーが検出されない場合は出力全体を SKILL.md コンテンツとして扱うフォールバックを実装する。フォールバック発動時はログで明示し、IPC 通知には `fallbackUsed: true` フラグを含める                                     |
+| 標準ルール | LLM 出力パーサーはフォールバック戦略をマーカー検出と同等の優先度で設計し、`happy path` と `no-marker fallback` の両パスにテストを用意する                                                                             |
+| 関連タスク | TASK-SDK-SC-04                                                                                                                                                                                                       |
+
+### L-SC04-002: DI注入の二重化（sessionFactory + outputHandler）管理パターン
+
+| 項目       | 内容                                                                                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `SkillCreatorIpcBridge` が既に `sessionFactory` をDIで受け取る構造になっていたが、`outputHandler` を追加DIする際に既存コンストラクタ引数の順序・省略可能性・型定義を同時に変更する必要があり、影響範囲が広かった |
+| 再発条件   | 既存の DI コンストラクタに省略可能な新パラメータを追加する場合                                                                                                                                                |
+| 解決策     | 新しい DI パラメータはオブジェクト形式（options bag）でまとめて受け取り、省略時のデフォルトを明示する。既存の位置引数への追加は破壊的変更になるため options bag に移行する                                     |
+| 標準ルール | DI パラメータが3つ以上になる場合は `options` オブジェクトにまとめ、各フィールドにデフォルト値と JSDoc を必ず付与する                                                                                           |
+| 関連タスク | TASK-SDK-SC-04                                                                                                                                                                                                |
+
+### L-SC04-003: SkillRegistry上書き確認フロー（フラグ立て→UI確認→再実行）
+
+| 項目       | 内容                                                                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 同名スキルが既にレジストリに存在する場合、黙って上書きするとユーザーが既存スキルを失う。かといってエラーで停止すると再実行コストが高い                                                        |
+| 再発条件   | レジストリへの登録処理が同名エントリの存在チェックなしに実行される場合                                                                                                                      |
+| 解決策     | 同名検出時は `SKILL_CREATOR_OUTPUT_READY` で `overwriteRequired: true` を通知し、UI 側の確認（`SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED`）を受け取ってから登録を完了する2段階フローを採用する |
+| 標準ルール | レジストリ登録系 IPC は「登録完了通知」と「上書き確認要求」の2種類のレスポンスを設計段階で定義し、UI 側が両方のケースを処理できるよう契約に明記する                                           |
+| 関連タスク | TASK-SDK-SC-04                                                                                                                                                                                |
+
+### L-SC04-004: ファイルI/Oとレジストリ登録の責務分離（失敗時にIPC通知は継続）
+
+| 項目       | 内容                                                                                                                                                                                                            |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | ファイル保存とレジストリ登録を一体のトランザクションとして扱うと、ファイル書き込み成功後にレジストリ登録が失敗した場合にユーザーへの通知が途絶え、スキルが生成されたことさえ分からなくなる                        |
+| 再発条件   | 複数のサイドエフェクト（I/O + 状態更新 + 通知）を try-catch で一括ラップする場合                                                                                                                                |
+| 解決策     | ファイルI/O（SKILL.md 保存）とレジストリ登録を独立したステップとして実装し、各ステップの失敗を個別にハンドリングする。いずれかのステップが失敗しても IPC 通知（`SKILL_CREATOR_OUTPUT_READY`）は必ず送信する      |
+| 標準ルール | 「永続化 → 登録 → 通知」のパイプラインでは、通知ステップを最後に配置し `finally` ブロックで保護する。途中ステップの失敗は通知ペイロードの `error` フィールドで伝達し、呼び出し元での例外 propagation は行わない |
+| 関連タスク | TASK-SDK-SC-04                                                                                                                                                                                                  |
+| 関連タスク | TASK-P0-04                                                                                                                                             |
 
 ### L-RT-ADAPTER-GUARD-001: LLMAdapter 状態確認は execute/improve の先頭に集約する
 

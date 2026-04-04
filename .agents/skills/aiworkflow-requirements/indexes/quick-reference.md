@@ -153,6 +153,34 @@
 | workflow root                                           | `docs/30-workflows/completed-tasks/step-02-par-task-03-external-api-support/`           |
 
 ---
+### Skill Creator Skill Output Integration（TASK-SDK-SC-04 / 2026-04-04 実装済み）
+
+| 目的                                                          | 最初に開くファイル                                                                                                          |
+| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Skill Output IPC チャネル3本の契約                            | `references/api-ipc-system-core.md`（§Skill Creator Output Integration）                                                    |
+| 型定義（SkillOutputReadyPayload / SkillOpenPayload 等）        | `packages/shared/src/ipc/channels.ts`（`SKILL_CREATOR_OUTPUT_CHANNELS`）                                                    |
+| チャネル定数定義                                              | `packages/shared/src/ipc/channels.ts`（`SKILL_CREATOR_OUTPUT_READY` / `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` / `SKILL_CREATOR_OPEN_SKILL`） |
+| OutputHandler 実装（マーカー検出・SKILL.md抽出・ファイル保存） | `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts`                                                       |
+| SkillRegistry 実装（インメモリ・DI対応）                      | `apps/desktop/src/main/services/runtime/SkillRegistry.ts`                                                                   |
+| IpcBridge outputHandler DI 追加                               | `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts`                                                           |
+| Preload onOutputReady() リスナー                              | `apps/desktop/src/preload/skill-creator-api.ts`（`onOutputReady()`）                                                        |
+| SkillCreatorResultPanel UI（プレビュー・上書き確認）          | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx`                                            |
+| 苦戦箇所4件                                                   | `references/lessons-learned-current.md`（§TASK-SDK-SC-04）                                                                  |
+| completed ledger                                              | `references/task-workflow-completed.md`                                                                                      |
+
+---
+
+### Verify Execution Engine Layer 1/2（TASK-P0-01 / 2026-04-04 実装済み）
+
+| 目的                                              | 最初に開くファイル                                                                                     |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| verify contract 仕様                              | `references/interfaces-skill-verify-contract.md`                                                       |
+| workflow root                                     | `docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12/`                            |
+| completed ledger                                  | `references/task-workflow-completed.md`                                                                |
+| 苦戦箇所（L-VE-001〜003）                         | `references/lessons-learned-current.md`                                                                |
+| 実装ファイル                                      | `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts`                             |
+
+---
 ### Skill Creator SDK Event Normalization (TASK-RT-06)
 
 **概要:** SDKMessage → SkillCreatorSdkEvent 変換契約の安定化
@@ -439,6 +467,14 @@
 | `skill-creator:api-configured`                 | Main→Renderer API設定完了通知 |
 | `skill-creator:api-test-result`                | Main→Renderer API接続テスト結果 |
 | `skill-creator:external-api-config-required`   | Main→Renderer API設定要求    |
+
+### スキルクリエイター Skill Output統合（TASK-SDK-SC-04）
+
+| チャンネル                                      | 用途                                           |
+| ----------------------------------------------- | ---------------------------------------------- |
+| `skill-creator:output-ready`                    | Main→Renderer スキル生成完了通知（プレビュー・上書き確認フロー） |
+| `skill-creator:output-overwrite-approved`       | Renderer→Main 上書き確認承認                   |
+| `skill-creator:open-skill`                      | Main→Renderer 生成スキルを開く指示             |
 
 ### チャット
 
