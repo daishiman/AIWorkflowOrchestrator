@@ -64,6 +64,15 @@
 - SKILL.md v6.18.22 更新
 
 ---
+
+## 2026-04-04 - TASK-SKILL-CENTER-LIFECYCLE-NAV-001 Phase 12 close-out sync
+
+### 変更内容
+- `SkillCenterView` secondary CTA / `SkillManagementPanel` 戻り導線の Phase 12 仕様書準拠を確認
+- `docs/30-workflows/skill-center-lifecycle-navigation/` の phase-12 outputs（implementation-guide / documentation-changelog / system-spec-update-summary / unassigned-task-detection / skill-feedback-report）完成を記録
+- SKILL.md v6.18.23 更新
+
+---
 ## 2026-04-02 - TASK-NOTIFICATION-SERVICE-001 Phase 12 close-out sync
 
 ### 変更内容

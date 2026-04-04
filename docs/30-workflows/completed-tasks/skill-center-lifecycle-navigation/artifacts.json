@@ -1,0 +1,105 @@
+{
+  "taskId": "TASK-SKILL-CENTER-LIFECYCLE-NAV-001",
+  "taskName": "SkillCenterView → SkillManagementPanel ナビゲーション接続",
+  "branch": "feat/skill-center-lifecycle-navigation",
+  "taskType": "UI task",
+  "createdAt": "2026-04-04",
+  "status": "implementation_ready",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": ["phase-1-requirements.md"]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["phase-2-design.md"]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "gate": "PASS",
+      "artifacts": ["phase-3-design-review.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "pending",
+      "artifacts": ["phase-4-test-creation.md"]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "pending",
+      "artifacts": ["phase-5-implementation.md"],
+      "targetFiles": [
+        "apps/desktop/src/renderer/store/types.ts",
+        "apps/desktop/src/renderer/App.tsx",
+        "apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts",
+        "apps/desktop/src/renderer/views/SkillCenterView/index.tsx",
+        "apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx"
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "pending",
+      "artifacts": ["phase-6-test-expansion.md"]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "pending",
+      "artifacts": ["phase-7-coverage-check.md"]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "pending",
+      "artifacts": ["phase-8-refactoring.md"]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "pending",
+      "artifacts": ["phase-9-quality-assurance.md"]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "pending",
+      "artifacts": ["phase-10-final-review.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "screenshotRequired": true,
+      "artifacts": ["phase-11-manual-test.md"]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "phase-12-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "requiresUserApproval": true,
+      "artifacts": ["phase-13-pr-creation.md"]
+    }
+  },
+  "acceptanceCriteria": [
+    "AC-01: ⌘+5 で SkillCenterView が開く（既存動作保持）",
+    "AC-02: 「作成を始める」→ SkillCreateWizard 維持",
+    "AC-03: 「スキル管理」ボタン → SkillManagementPanel 表示",
+    "AC-04: SkillManagementPanel の onClose / 戻る → SkillCenterView",
+    "AC-05: ViewType に skillManagement 追加（skillCreate は維持）",
+    "AC-06: SkillManagementPanel 内部 lifecycle/create 切替は既存テストで保証",
+    "AC-07: /advanced/skill-create-wizard URL で SkillCreateWizard 動作",
+    "AC-08: 全テスト（12件）PASS"
+  ],
+  "unassignedTaskCandidates": [
+    "AppDock/サイドバーへの skillManagement ショートカット追加"
+  ]
+}

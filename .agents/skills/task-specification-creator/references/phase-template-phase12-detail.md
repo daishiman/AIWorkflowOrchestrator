@@ -273,5 +273,5 @@ Phase 13: PR作成
 ## 関連ガイド
 
 - [phase-template-phase12.md](phase-template-phase12.md) — 設計タスク向け補足（SF-02, SF-03対応）
-- [phase-12-documentation-guide.md](phase-12-documentation-guide.md) — Task 12-1〜12-5 の詳細手順
+- [phase-12-documentation-guide.md](phase-12-documentation-guide.md) — Task 12-1〜12-6 の詳細手順
 - [spec-update-workflow.md](spec-update-workflow.md) — Step 1/2 の実行フロー
