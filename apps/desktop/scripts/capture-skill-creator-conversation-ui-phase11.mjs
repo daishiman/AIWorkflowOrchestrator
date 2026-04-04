@@ -72,6 +72,21 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+const sampleSkillOutput = {
+  skillName: "phase11-sample-skill",
+  savedPath: "/project/.claude/skills/phase11-sample-skill/SKILL.md",
+  content: "name: phase11-sample-skill\ndescription: phase11 result panel",
+  requiresOverwriteConfirm: false,
+};
+
+const sampleOverwriteSkillOutput = {
+  skillName: "phase11-existing-skill",
+  savedPath: "/project/.claude/skills/phase11-existing-skill/SKILL.md",
+  content:
+    "name: phase11-existing-skill\ndescription: phase11 overwrite confirmation",
+  requiresOverwriteConfirm: true,
+};
+
 async function waitForServer(url, timeoutMs = 90_000) {
   const started = Date.now();
   while (Date.now() - started < timeoutMs) {
@@ -143,6 +158,15 @@ async function emitError(page, error) {
   await wait(250);
 }
 
+async function emitOutputReady(page, payload) {
+  await page.evaluate((nextPayload) => {
+    window.__PHASE11_SKILL_CREATOR_CONVERSATION_UI__?.emitOutputReady(
+      nextPayload,
+    );
+  }, payload);
+  await wait(250);
+}
+
 async function resolvePendingAnswer(page) {
   await page.evaluate(() => {
     window.__PHASE11_SKILL_CREATOR_CONVERSATION_UI__?.resolvePendingAnswer();
@@ -202,6 +226,16 @@ async function captureConfirmState(page) {
 async function captureCompleteState(page) {
   await emitComplete(page);
   await screenshotPanel(page, "TC-11-09-complete-state.png");
+}
+
+async function captureResultPanelState(page) {
+  await emitOutputReady(page, sampleSkillOutput);
+  await screenshotPanel(page, "TC-11-11-result-panel-ready.png");
+}
+
+async function captureOverwritePanelState(page) {
+  await emitOutputReady(page, sampleOverwriteSkillOutput);
+  await screenshotPanel(page, "TC-11-12-result-panel-overwrite.png");
 }
 
 async function captureErrorState(page) {
@@ -280,6 +314,18 @@ async function main() {
         file: "TC-11-09-complete-state.png",
         step: "complete",
         capture: captureCompleteState,
+      },
+      {
+        tcId: "TC-11-11",
+        file: "TC-11-11-result-panel-ready.png",
+        step: "result-panel-ready",
+        capture: captureResultPanelState,
+      },
+      {
+        tcId: "TC-11-12",
+        file: "TC-11-12-result-panel-overwrite.png",
+        step: "result-panel-overwrite",
+        capture: captureOverwritePanelState,
       },
       {
         tcId: "TC-11-10",
