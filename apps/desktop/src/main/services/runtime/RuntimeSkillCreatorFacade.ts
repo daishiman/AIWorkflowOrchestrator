@@ -48,6 +48,7 @@ import type {
   RuntimeSkillCreatorVerifyCheck,
   SkillCreatorSessionListItem,
 } from "@repo/shared/types";
+import type { ImproveFeedbackHistory } from "@repo/shared/types";
 import {
   SKILL_CREATOR_ENGINE_VERSION,
   SESSION_TTL_MS,
@@ -352,7 +353,7 @@ export class RuntimeSkillCreatorFacade {
 
     const maxRetry = this.maxImproveRetry;
     let attemptCount = 0;
-    let previousImproveSummary = "";
+    const feedbackHistory: ImproveFeedbackHistory[] = [];
 
     while (true) {
       // Step 1: verify 実行
@@ -419,10 +420,7 @@ export class RuntimeSkillCreatorFacade {
       attemptCount++;
 
       try {
-        const feedback = buildImproveFeedback(
-          failedChecks,
-          previousImproveSummary,
-        );
+        const feedback = buildImproveFeedback(failedChecks, feedbackHistory);
         const improveResult = await this.improve(
           skillName,
           feedback,
@@ -495,7 +493,11 @@ export class RuntimeSkillCreatorFacade {
           };
         }
 
-        previousImproveSummary = summarizeImproveSuggestions(suggestions);
+        feedbackHistory.push({
+          attempt: attemptCount,
+          failedChecks: failedChecks.map((c) => c.id),
+          improveSummary: summarizeImproveSuggestions(suggestions),
+        });
 
         // Step 5: re-verify へ（while ループ先頭に戻る）
       } catch (err) {
@@ -1643,16 +1645,40 @@ export function parseImproveResponse(responseText: string): ImproveParseResult {
 
 function buildImproveFeedback(
   checks: RuntimeSkillCreatorVerifyCheck[],
-  previousImproveSummary: string,
+  history: ImproveFeedbackHistory[],
 ): string {
   const feedback = formatVerifyChecksAsFeedback(checks);
-  const summary = previousImproveSummary.trim();
 
-  if (feedback === "" || summary === "") {
+  if (history.length === 0) {
     return feedback;
   }
 
-  return `${feedback}\n\n## 前回の改善要約\n${summary}`;
+  const currentFailedIds = checks.map((c) => c.id);
+  const persistentChecks = currentFailedIds.filter((id) =>
+    history.every((h) => h.failedChecks.includes(id)),
+  );
+
+  const historySection = history
+    .map(
+      (h) =>
+        `### 試行 ${h.attempt}/${history.length + 1}\n` +
+        `- 失敗チェック: ${h.failedChecks.join(", ")}\n` +
+        `- 試みた改善: ${h.improveSummary}`,
+    )
+    .join("\n\n");
+
+  const persistentWarning =
+    persistentChecks.length > 0
+      ? `\n\n**繰り返し失敗中のチェック**: ${persistentChecks.join(", ")}\n` +
+        `上記は過去の全試行で解決できていません。根本的に異なるアプローチが必要です。`
+      : "";
+
+  return (
+    `${feedback}\n\n` +
+    `## 過去の改善試行履歴（${history.length}回試行済み）\n\n` +
+    `以下は過去に試みた改善とその結果です。同じアプローチは繰り返さず、異なる戦略を提案してください。` +
+    `${persistentWarning}\n\n${historySection}`
+  );
 }
 
 function summarizeImproveSuggestions(

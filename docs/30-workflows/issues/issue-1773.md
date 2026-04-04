@@ -10,7 +10,7 @@
 | 対象機能     | RuntimeSkillCreatorFacade.verifyAndImproveLoop()   |
 | 優先度       | 中                                                 |
 | 見積もり規模 | 小規模                                             |
-| ステータス   | 未実施                                             |
+| ステータス   | 完了                                               |
 | 発見元       | TASK-P0-02 Phase 3 MR-01（Phase 12 で部分吸収）    |
 | 発見日       | 2026-03-30                                         |
 
@@ -52,4 +52,4 @@ feedback memory を構造化し、全試行の失敗履歴を次回 improve の�
 
 ---
 
-仕様書: docs/30-workflows/unassigned-task/task-ut-p0-02-001-repeat-feedback-memory.md
+仕様書: docs/30-workflows/improve-feedback-memory-structuring/index.md

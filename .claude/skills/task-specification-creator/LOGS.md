@@ -15,6 +15,17 @@
   - task-workflow-backlog.md に完了記録を反映
 
 ---
+
+## 2026-04-03 - task-ut-p0-02-001-repeat-feedback-memory Phase 12 close-out sync
+
+### 変更内容
+- `ImproveFeedbackHistory` 型を `packages/shared/src/types/skillCreator.ts` に追加
+- `verifyAndImproveLoop()` の `previousImproveSummary: string` を `feedbackHistory: ImproveFeedbackHistory[]` に構造化
+- `buildImproveFeedback()` を全試行履歴参照・繰り返し失敗チェック警告付きプロンプトに更新
+- テスト 13 件追加（TC-01〜TC-06, EC-01〜EC-04, BF-01〜BF-04）、全 45 tests PASS
+- Phase 12 成果物 6 件出力（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+
+---
 ## 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync + skill-feedback 反映
 
 ### 変更内容
