@@ -1,5 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ALLOWED_INVOKE_CHANNELS, IPC_CHANNELS } from "../channels";
+import {
+  ALLOWED_INVOKE_CHANNELS,
+  ALLOWED_ON_CHANNELS,
+  IPC_CHANNELS,
+} from "../channels";
 
 const { mockInvoke, mockOn, mockRemoveListener } = vi.hoisted(() => ({
   mockInvoke: vi.fn(),
@@ -28,6 +32,12 @@ describe("SkillCreator runtime preload API", () => {
     expect(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN).toBe(
       "skill-creator:execute-plan",
     );
+    expect(IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS).toBe(
+      "skill-creator:get-adapter-status",
+    );
+    expect(IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED).toBe(
+      "skill-creator:adapter-status-changed",
+    );
     expect(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE).toBe(
       "skill-creator:get-workflow-state",
     );
@@ -49,6 +59,9 @@ describe("SkillCreator runtime preload API", () => {
       IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
     );
     expect(ALLOWED_INVOKE_CHANNELS).toContain(
+      IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+    );
+    expect(ALLOWED_INVOKE_CHANNELS).toContain(
       IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE,
     );
     expect(ALLOWED_INVOKE_CHANNELS).toContain(
@@ -63,6 +76,9 @@ describe("SkillCreator runtime preload API", () => {
     expect(ALLOWED_INVOKE_CHANNELS).toContain(
       IPC_CHANNELS.SKILL_CREATOR_REVERIFY_WORKFLOW,
     );
+    expect(ALLOWED_ON_CHANNELS).toContain(
+      IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
+    );
   });
 
   it("SkillCreatorAPI に runtime 用メソッドが公開されている", () => {
@@ -70,9 +86,11 @@ describe("SkillCreator runtime preload API", () => {
 
     expect(typeof api.planSkill).toBe("function");
     expect(typeof api.executePlan).toBe("function");
+    expect(typeof api.getAdapterStatus).toBe("function");
     expect(typeof api.getWorkflowState).toBe("function");
     expect(typeof api.submitUserInput).toBe("function");
     expect(typeof api.onWorkflowStateChanged).toBe("function");
+    expect(typeof api.onAdapterStatusChanged).toBe("function");
     expect(typeof api.onOutputReady).toBe("function");
     expect(typeof api.improveSkillWithFeedback).toBe("function");
     expect(typeof api.getVerifyDetail).toBe("function");
@@ -222,6 +240,40 @@ describe("SkillCreator runtime preload API", () => {
     expect(result.success).toBe(false);
     expect(result.error).toBe("実行に失敗しました");
   });
+
+  it("getAdapterStatus が正しいチャンネルで invoke する", async () => {
+    const expected = {
+      success: true,
+      data: { status: "failed", failureReason: "API key is invalid" },
+    };
+    mockInvoke.mockResolvedValue(expected);
+
+    const result = await skillCreatorAPI.getAdapterStatus();
+
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+    );
+    expect(result).toEqual(expected);
+  });
+
+  it("onAdapterStatusChanged が listener を登録し cleanup で解除する", () => {
+    const callback = vi.fn();
+
+    const cleanup = skillCreatorAPI.onAdapterStatusChanged(callback);
+
+    expect(mockOn).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
+      expect.any(Function),
+    );
+
+    cleanup();
+
+    expect(mockRemoveListener).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
+      expect.any(Function),
+    );
+  });
+
   it("getWorkflowState が planId を送る", async () => {
     mockInvoke.mockResolvedValue({
       success: true,
