@@ -1056,9 +1056,6 @@ export interface SkillCreatorDeleteSessionRequest {
 /** セッションTTL: 24時間 (TASK-P0-08) */
 export const SESSION_TTL_MS = 86_400_000 as const;
 
-// SkillCreatorSdkEventType, SkillCreatorSdkPermissionDenial, SkillCreatorSdkEvent は
-// 上部（line ~437）で定義済み（TASK-RT-06）
-
 // ============================================
 // Skill Output Integration (TASK-SDK-SC-04)
 // ============================================
