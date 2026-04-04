@@ -8,14 +8,21 @@ const mockOnQuestion =
 const mockOnComplete =
   vi.fn<(callback: (event: unknown) => void) => () => void>();
 const mockOnError = vi.fn<(callback: (event: unknown) => void) => () => void>();
+const mockOnOutputReady =
+  vi.fn<(callback: (payload: unknown) => void) => () => void>();
 const mockSendAnswer = vi.fn<(answer: unknown) => Promise<void>>();
+const mockConfirmOverwrite = vi.fn<(payload: unknown) => Promise<unknown>>();
+const mockOpenSkill = vi.fn<(savedPath: string) => Promise<unknown>>();
 
 beforeEach(() => {
   vi.clearAllMocks();
   mockOnQuestion.mockReturnValue(() => {});
   mockOnComplete.mockReturnValue(() => {});
   mockOnError.mockReturnValue(() => {});
+  mockOnOutputReady.mockReturnValue(() => {});
   mockSendAnswer.mockResolvedValue(undefined);
+  mockConfirmOverwrite.mockResolvedValue({ success: true });
+  mockOpenSkill.mockResolvedValue({ success: true });
 
   Object.defineProperty(window, "skillCreatorSessionAPI", {
     value: {
@@ -24,6 +31,16 @@ beforeEach(() => {
       onError: mockOnError,
       sendAnswer: mockSendAnswer,
       startSession: vi.fn(),
+    },
+    writable: true,
+    configurable: true,
+  });
+
+  Object.defineProperty(window, "skillCreatorAPI", {
+    value: {
+      onOutputReady: mockOnOutputReady,
+      confirmOverwrite: mockConfirmOverwrite,
+      openSkill: mockOpenSkill,
     },
     writable: true,
     configurable: true,
@@ -339,5 +356,129 @@ describe("SkillCreatorConversationPanel 結合テスト", () => {
     });
 
     expect(screen.getByText("インタビューが完了しました")).toBeInTheDocument();
+  });
+
+  it("onOutputReady が登録され、アンマウント時に解除される", () => {
+    const cleanup = vi.fn();
+    mockOnOutputReady.mockReturnValue(cleanup);
+
+    const { unmount } = render(<SkillCreatorConversationPanel />);
+    expect(mockOnOutputReady).toHaveBeenCalledWith(expect.any(Function));
+
+    unmount();
+    expect(cleanup).toHaveBeenCalledTimes(1);
+  });
+
+  it("session complete 後に output-ready 受信で ResultPanel が表示される", async () => {
+    let completeCallback: ((event: unknown) => void) | undefined;
+    let outputCallback: ((payload: unknown) => void) | undefined;
+    mockOnQuestion.mockReturnValue(() => {});
+    mockOnComplete.mockImplementation((cb) => {
+      completeCallback = cb;
+      return () => {};
+    });
+    mockOnError.mockReturnValue(() => {});
+    mockOnOutputReady.mockImplementation((cb) => {
+      outputCallback = cb;
+      return () => {};
+    });
+
+    render(<SkillCreatorConversationPanel />);
+
+    await act(async () => {
+      completeCallback!({ result: "done" });
+    });
+    await act(async () => {
+      outputCallback!({
+        skillName: "result-skill",
+        savedPath: "/project/.claude/skills/result-skill/SKILL.md",
+        content: "name: result-skill\ndescription: result",
+        requiresOverwriteConfirm: false,
+      });
+    });
+
+    expect(
+      screen.getByText("スキルを生成しました: result-skill"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "スキルを開く" }),
+    ).toBeInTheDocument();
+  });
+
+  it("上書き確認付き output-ready の操作で confirmOverwrite が呼ばれる", async () => {
+    let completeCallback: ((event: unknown) => void) | undefined;
+    let outputCallback: ((payload: unknown) => void) | undefined;
+    mockOnQuestion.mockReturnValue(() => {});
+    mockOnComplete.mockImplementation((cb) => {
+      completeCallback = cb;
+      return () => {};
+    });
+    mockOnError.mockReturnValue(() => {});
+    mockOnOutputReady.mockImplementation((cb) => {
+      outputCallback = cb;
+      return () => {};
+    });
+
+    render(<SkillCreatorConversationPanel />);
+
+    await act(async () => {
+      completeCallback!({ result: "done" });
+    });
+    await act(async () => {
+      outputCallback!({
+        skillName: "existing-skill",
+        savedPath: "/project/.claude/skills/existing-skill/SKILL.md",
+        content: "name: existing-skill\ndescription: existing",
+        requiresOverwriteConfirm: true,
+      });
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "上書きして保存" }));
+    });
+
+    expect(mockConfirmOverwrite).toHaveBeenCalledWith(
+      expect.objectContaining({
+        skillName: "existing-skill",
+        requiresOverwriteConfirm: true,
+      }),
+    );
+  });
+
+  it("スキルを開くボタンで openSkill が呼ばれる", async () => {
+    let completeCallback: ((event: unknown) => void) | undefined;
+    let outputCallback: ((payload: unknown) => void) | undefined;
+    mockOnQuestion.mockReturnValue(() => {});
+    mockOnComplete.mockImplementation((cb) => {
+      completeCallback = cb;
+      return () => {};
+    });
+    mockOnError.mockReturnValue(() => {});
+    mockOnOutputReady.mockImplementation((cb) => {
+      outputCallback = cb;
+      return () => {};
+    });
+
+    render(<SkillCreatorConversationPanel />);
+
+    await act(async () => {
+      completeCallback!({ result: "done" });
+    });
+    await act(async () => {
+      outputCallback!({
+        skillName: "open-skill",
+        savedPath: "/project/.claude/skills/open-skill/SKILL.md",
+        content: "name: open-skill",
+        requiresOverwriteConfirm: false,
+      });
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "スキルを開く" }));
+    });
+
+    expect(mockOpenSkill).toHaveBeenCalledWith(
+      "/project/.claude/skills/open-skill/SKILL.md",
+    );
   });
 });
