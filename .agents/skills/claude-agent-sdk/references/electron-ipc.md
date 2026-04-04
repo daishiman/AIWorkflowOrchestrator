@@ -520,6 +520,9 @@ export class SkillExecutor {
 | `skill-creator:api-configured` | Main → Renderer | API設定確認応答 |
 | `skill-creator:api-test-result` | Main → Renderer | API接続テスト結果 |
 | `skill-creator:external-api-config-required` | Main → Renderer | 設定要求通知（フォーム表示トリガー） |
+| `skill-creator:get-verify-detail` | Renderer → Main | verify チェック詳細取得（TASK-P0-01） |
+| `skill-creator:request-reverify` | Renderer → Main | 再 verify 要求（TASK-P0-01） |
+| `skill-creator:reverify-workflow` | Renderer → Main | verify→improve→re-verify ワークフロー実行（TASK-P0-02） |
 
 ### RequestExternalApiConfig Custom Tool パターン
 

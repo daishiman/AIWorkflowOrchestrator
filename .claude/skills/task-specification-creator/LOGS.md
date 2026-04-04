@@ -11,6 +11,17 @@
 
 ---
 
+## 2026-04-04 - TASK-P0-01 verify 実行エンジン Phase 12 close-out sync
+
+### 変更内容
+- `SkillCreatorVerificationEngine` を独立モジュールとして実装し、Layer 1〜4 の verify チェック 19 件を current contract として同期
+- `RuntimeSkillCreatorFacade.verifySkill()` は `verificationEngine` 注入時に `RuntimeSkillCreatorVerifyCheck[]` を返し、未注入時は空配列を返す graceful degradation を維持
+- Phase 1-12 完了、60 tests PASS、typecheck / lint PASS
+- `interfaces-skill-verify-contract.md` に check ID 体系を反映済み
+- SKILL.md + LOGS.md 2ファイル同時更新（P1/P25/P29 対策）
+
+---
+
 ## 2026-04-04 - task-imp-layer12-spec-definition-004 Phase 12 close-out sync
 
 ### 変更内容
