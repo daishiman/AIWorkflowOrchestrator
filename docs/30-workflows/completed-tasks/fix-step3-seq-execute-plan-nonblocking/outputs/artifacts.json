@@ -1,0 +1,282 @@
+{
+  "task_id": "TASK-FIX-EP-01",
+  "formal_task_id": "TASK-FIX-EXECUTE-PLAN-FF-001",
+  "task_name": "execute-plan IPC の非同期化（fire-and-forget化）",
+  "feature_name": "fix-step3-seq-execute-plan-nonblocking",
+  "category": "バグ修正 / IPC非同期化シリーズ - step3",
+  "priority": "高",
+  "scale": "小規模",
+  "status": "phase12_completed",
+  "created_date": "2026-04-04",
+  "issue_number": 1883,
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "file": "phase-1-requirements.md",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "P50調査結果",
+          "path": "outputs/phase-1/p50-investigation-result.md",
+          "type": "document"
+        },
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements.md",
+          "type": "document"
+        },
+        {
+          "name": "スコープ定義書",
+          "path": "outputs/phase-1/scope-definition.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "file": "phase-2-design.md",
+      "status": "completed",
+      "dependsOn": ["phase-1"],
+      "artifacts": [
+        {
+          "name": "アーキテクチャ設計書",
+          "path": "outputs/phase-2/architecture-design.md",
+          "type": "document"
+        },
+        {
+          "name": "Main側詳細設計書",
+          "path": "outputs/phase-2/main-side-design.md",
+          "type": "document"
+        },
+        {
+          "name": "Renderer側詳細設計書",
+          "path": "outputs/phase-2/renderer-side-design.md",
+          "type": "document"
+        },
+        {
+          "name": "テスト設計書",
+          "path": "outputs/phase-2/test-design.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "file": "phase-3-design-review.md",
+      "status": "completed",
+      "dependsOn": ["phase-2"],
+      "artifacts": [
+        {
+          "name": "要件レビュー結果",
+          "path": "outputs/phase-3/requirements-review.md",
+          "type": "document"
+        },
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review.md",
+          "type": "document"
+        },
+        {
+          "name": "テスト網羅性レビュー",
+          "path": "outputs/phase-3/test-coverage-review.md",
+          "type": "document"
+        },
+        {
+          "name": "レビュー総合判定",
+          "path": "outputs/phase-3/review-summary.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "file": "phase-4-test-creation.md",
+      "status": "completed",
+      "dependsOn": ["phase-3"],
+      "artifacts": [
+        {
+          "name": "fire-and-forgetテスト",
+          "path": "apps/desktop/src/main/ipc/__tests__/creatorHandlers.fire-and-forget.test.ts",
+          "type": "code"
+        },
+        {
+          "name": "テスト作成レポート",
+          "path": "outputs/phase-4/test-creation-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "file": "phase-5-implementation.md",
+      "status": "completed",
+      "dependsOn": ["phase-4"],
+      "artifacts": [
+        {
+          "name": "creatorHandlers.ts（fire-and-forget化）",
+          "path": "apps/desktop/src/main/ipc/creatorHandlers.ts",
+          "type": "code"
+        },
+        {
+          "name": "RuntimeSkillCreatorFacade.ts（executeAsync追加）",
+          "path": "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+          "type": "code"
+        },
+        {
+          "name": "SkillLifecyclePanel.tsx（isExecutePlanAck分岐）",
+          "path": "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+          "type": "code"
+        },
+        {
+          "name": "実装レポート",
+          "path": "outputs/phase-5/implementation-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "file": "phase-6-test-expansion.md",
+      "status": "completed",
+      "dependsOn": ["phase-5"],
+      "artifacts": [
+        {
+          "name": "テスト拡充レポート",
+          "path": "outputs/phase-6/test-expansion-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "テストカバレッジ確認",
+      "file": "phase-7-coverage.md",
+      "status": "completed",
+      "dependsOn": ["phase-6"],
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "file": "phase-8-refactoring.md",
+      "status": "completed",
+      "dependsOn": ["phase-7"],
+      "artifacts": [
+        {
+          "name": "リファクタリングレポート",
+          "path": "outputs/phase-8/refactoring-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "file": "phase-9-quality.md",
+      "status": "completed",
+      "dependsOn": ["phase-8"],
+      "artifacts": [
+        {
+          "name": "品質レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "file": "phase-10-final-review.md",
+      "status": "completed",
+      "dependsOn": ["phase-9"],
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト検証",
+      "file": "phase-11-manual-test.md",
+      "status": "completed",
+      "dependsOn": ["phase-10"],
+      "artifacts": [
+        {
+          "name": "手動テストチェックリスト",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "type": "document"
+        },
+        {
+          "name": "自動テストエビデンス",
+          "path": "outputs/phase-11/automated-test-evidence.md",
+          "type": "document"
+        },
+        {
+          "name": "代替検証結果",
+          "path": "outputs/phase-11/alternative-verification.md",
+          "type": "document"
+        },
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "file": "phase-12-documentation.md",
+      "status": "completed",
+      "dependsOn": ["phase-11"],
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "type": "document"
+        },
+        {
+          "name": "システム仕様更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "type": "document"
+        },
+        {
+          "name": "ドキュメント変更履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "type": "document"
+        },
+        {
+          "name": "未割り当てタスク検出",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "type": "document"
+        },
+        {
+          "name": "スキルフィードバック",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "type": "document"
+        },
+        {
+          "name": "Phase 12 準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "type": "document"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "file": "phase-13-pr-creation.md",
+      "status": "pending",
+      "dependsOn": ["phase-12"],
+      "artifacts": [
+        {
+          "name": "PR作成レポート",
+          "path": "outputs/phase-13/pr-creation-report.md",
+          "type": "document"
+        }
+      ]
+    }
+  }
+}
