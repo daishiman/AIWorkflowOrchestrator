@@ -1,0 +1,33 @@
+{
+  "taskId": "TASK-RT-04",
+  "generatedAt": "2026-04-04T17:18:49+09:00",
+  "captureMethod": "current_build_vite_playwright",
+  "harnessPath": "/phase11-task-rt-04-skill-authkey.html",
+  "viewport": {
+    "width": 1440,
+    "height": 2200
+  },
+  "cases": [
+    {
+      "tcId": "TC-11-01",
+      "state": "initial",
+      "output": "outputs/phase-11/screenshots/TC-11-01-skill-authkey-initial.png"
+    },
+    {
+      "tcId": "TC-11-02",
+      "state": "saved",
+      "output": "outputs/phase-11/screenshots/TC-11-02-skill-authkey-action.png"
+    },
+    {
+      "tcId": "TC-11-03",
+      "state": "env-fallback",
+      "output": "outputs/phase-11/screenshots/TC-11-03-skill-authkey-fallback.png"
+    },
+    {
+      "tcId": "TC-11-04",
+      "state": "non-interference",
+      "output": "outputs/phase-11/screenshots/TC-11-02-skill-authkey-action.png",
+      "note": "baseline reuse"
+    }
+  ]
+}
