@@ -85,6 +85,16 @@ function mockIntegratedApiDecision() {
   });
 }
 
+// TASK-RT-02: execute guard を通過するための llmAdapter モック
+function createMockLLMAdapter(): ILLMAdapter {
+  return {
+    providerId: "anthropic" as ILLMAdapter["providerId"],
+    sendChat: vi.fn(),
+    streamChat: vi.fn(),
+    checkHealth: vi.fn(),
+  } as ILLMAdapter;
+}
+
 // ─── テストスイート ───────────────────────────────────────────────────────────
 
 describe("RuntimeSkillCreatorFacade notification", () => {
@@ -100,6 +110,7 @@ describe("RuntimeSkillCreatorFacade notification", () => {
     const facade = new RuntimeSkillCreatorFacade({
       skillExecutor: executor,
       notificationService: mockNotification,
+      llmAdapter: createMockLLMAdapter(),
     });
     // TASK-UT-RT-01: _llmAdapterStatus ガードを通過させるため
     facade.setLLMAdapter(createMockLLMAdapter());
@@ -125,6 +136,7 @@ describe("RuntimeSkillCreatorFacade notification", () => {
     const facade = new RuntimeSkillCreatorFacade({
       skillExecutor: executor,
       notificationService: mockNotification,
+      llmAdapter: createMockLLMAdapter(),
     });
     // TASK-UT-RT-01: _llmAdapterStatus ガードを通過させるため
     facade.setLLMAdapter(createMockLLMAdapter());
@@ -177,6 +189,7 @@ describe("RuntimeSkillCreatorFacade notification", () => {
     const facade = new RuntimeSkillCreatorFacade({
       skillExecutor: executor,
       notificationService: throwingNotification,
+      llmAdapter: createMockLLMAdapter(),
     });
 
     const planResult = makePlanResult();
@@ -212,6 +225,7 @@ describe("RuntimeSkillCreatorFacade notification", () => {
     const facade = new RuntimeSkillCreatorFacade({
       skillExecutor: executor,
       notificationService: mockNotification,
+      llmAdapter: createMockLLMAdapter(),
     });
 
     const planResult = makePlanResult();
@@ -271,6 +285,7 @@ describe("RuntimeSkillCreatorFacade notification", () => {
     const facade = new RuntimeSkillCreatorFacade({
       skillExecutor: executor,
       notificationService: new MockNotificationService(),
+      llmAdapter: createMockLLMAdapter(),
     });
 
     // 1 つ目の execute を完了させる
@@ -297,6 +312,7 @@ describe("RuntimeSkillCreatorFacade notification", () => {
     const facade = new RuntimeSkillCreatorFacade({
       skillExecutor: executor,
       notificationService: new MockNotificationService(),
+      llmAdapter: createMockLLMAdapter(),
     });
 
     await facade.execute(

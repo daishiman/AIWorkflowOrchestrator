@@ -2,17 +2,10 @@
 
 ## 検出結果
 
-| 候補                         | 判定         | 理由                                                                              |
-| ---------------------------- | ------------ | --------------------------------------------------------------------------------- |
-| type 定義後の実装タスク化    | 不要         | RT-02 で実装完了済み                                                              |
-| RT-03 result panel follow-up | 既存タスク   | TASK-RT-03 として定義済み                                                         |
-| i18n / copy standardization  | 未タスク候補 | reason code メッセージが日本語ハードコード。i18n 対応が必要な場合はタスク化を検討 |
+新規未タスクなし。既存 backlog の再確認のみ実施。
 
-## 未タスク候補
+## 既存 backlog 再確認
 
-### UT-RT-02-I18N-ERROR-MESSAGE-001: reason code メッセージの i18n 対応
-
-- 現状: `DEGRADED_REASON_MESSAGES` に日本語文字列がハードコード
-- 影響: 多言語対応時に修正が必要
-- 優先度: Low（現時点では日本語のみで運用）
-- 対応: `docs/30-workflows/unassigned-task/UT-RT-02-I18N-ERROR-MESSAGE-001.md` を作成済み
+- `TASK-RT-03` result panel follow-up は既存タスクとして保持
+- `UT-RT-02-I18N-ERROR-MESSAGE-001` / `UT-RT-02-01-reason-code-i18n-standardization` は同一トピックの既存 backlog として保持
+- `governanceHooks.onSessionEnd()` の audit 補修は今回の code wave で完了しており、追加の未タスク化は不要
