@@ -91,6 +91,41 @@
 - `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-04-skill-lifecycle-light.png`
 - `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-05-skill-center-return-light.png`
 
+### タスク: TASK-SDK-SC-04 Skill Output Integration（2026-04-04）
+
+| 項目       | 値                                                                                                                                                                                                                                                                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-SC-04                                                                                                                                                                                                                                                                                                                                            |
+| ステータス | **完了**                                                                                                                                                                                                                                                                                                                                                  |
+| タイプ     | feature / skill-creator output integration                                                                                                                                                                                                                                                                                                                |
+| 優先度     | 高                                                                                                                                                                                                                                                                                                                                                        |
+| 完了日     | 2026-04-04                                                                                                                                                                                                                                                                                                                                                |
+| 対象       | `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts` / `apps/desktop/src/main/services/runtime/SkillRegistry.ts` / `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` / `apps/desktop/src/preload/skill-creator-api.ts` / `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx` / `packages/shared/src/ipc/channels.ts` |
+| 成果物     | `docs/30-workflows/completed-tasks/step-02-par-task-04-skill-output-integration/`（予定）                                                                                                                                                                                                                                                                 |
+
+#### 実施内容
+
+- `SkillCreatorOutputHandler.ts` 新規実装: `<!-- SKILL_START -->` / `<!-- SKILL_END -->` マーカー検出 → SKILL.md 抽出 → ファイル保存 → レジストリ登録 → IPC 通知のパイプラインを実装。マーカー未検出時は出力全体を SKILL.md コンテンツとして扱うフォールバック戦略を採用
+- `SkillRegistry.ts` 新規実装: インメモリスキルレジストリ（DI 対応）。同名スキル上書き時は `overwriteRequired: true` フラグで UI 確認フローを起動
+- IPC チャネル3本追加（`skill-creator:output-ready` / `skill-creator:output-overwrite-approved` / `skill-creator:open-skill`）を `packages/shared/src/ipc/channels.ts` に追加
+- `SkillCreatorIpcBridge.ts` に `outputHandler` DI パラメータを追加（options bag パターン）
+- `apps/desktop/src/preload/skill-creator-api.ts` に `onOutputReady()` リスナーを追加
+- `SkillCreatorResultPanel.tsx` 新規実装: スキル生成完了 UI（プレビュー・上書き確認ダイアログ）
+
+#### テストカバレッジ
+
+| 対象                       | カバレッジ                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| SkillCreatorOutputHandler  | Line 96.46% / Branch 91.30% / Function 100%                                     |
+| SkillRegistry              | Line 100% / Branch 100% / Function 100%                                         |
+| SkillCreatorResultPanel    | Line 100% / Branch 100% / Function 100%                                         |
+
+#### 教訓参照
+
+`references/lessons-learned-current.md`（§TASK-SDK-SC-04）: L-SC04-001〜004
+
+---
+
 ### タスク: TASK-SDK-SC-03 External API Support（2026-04-03）
 
 | 項目       | 値                                                                                                                                                                                                                       |

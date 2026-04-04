@@ -5,6 +5,7 @@ import "./styles/globals.css";
 import type {
   SkillCreatorSessionCompleteEvent,
   SkillCreatorSessionErrorEvent,
+  SkillOutputReadyPayload,
   UserInputAnswer,
   UserInputQuestion,
 } from "@repo/shared/types";
@@ -24,12 +25,26 @@ type SkillCreatorSessionAPI = {
   ) => () => void;
 };
 
+type SkillCreatorOutputAPI = {
+  onOutputReady: (
+    callback: (payload: SkillOutputReadyPayload) => void,
+  ) => () => void;
+  confirmOverwrite: (
+    payload: SkillOutputReadyPayload,
+  ) => Promise<{ success: boolean; error?: string }>;
+  openSkill: (
+    savedPath: string,
+  ) => Promise<{ success: boolean; error?: string }>;
+};
+
 type HarnessController = {
   emitQuestion: (question: UserInputQuestion) => void;
   emitComplete: (result?: string) => void;
   emitError: (error: string) => void;
+  emitOutputReady: (payload: SkillOutputReadyPayload) => void;
   resolvePendingAnswer: () => void;
   lastAnswer: UserInputAnswer | null;
+  lastOutputPayload: SkillOutputReadyPayload | null;
 };
 
 declare global {
@@ -46,9 +61,13 @@ const completeListeners = new Set<
 const errorListeners = new Set<
   (event: SkillCreatorSessionErrorEvent) => void
 >();
+const outputReadyListeners = new Set<
+  (payload: SkillOutputReadyPayload) => void
+>();
 
 let pendingAnswerResolve: (() => void) | null = null;
 let lastAnswer: UserInputAnswer | null = null;
+let lastOutputPayload: SkillOutputReadyPayload | null = null;
 
 document.documentElement.setAttribute("data-theme", "light");
 document.documentElement.style.colorScheme = "light";
@@ -86,6 +105,31 @@ window.skillCreatorSessionAPI = {
   },
 };
 
+const harnessWindow = window as Omit<Window, "skillCreatorAPI"> & {
+  skillCreatorAPI?: SkillCreatorOutputAPI;
+};
+
+harnessWindow.skillCreatorAPI = {
+  onOutputReady: (callback: (payload: SkillOutputReadyPayload) => void) => {
+    outputReadyListeners.add(callback);
+    return () => {
+      outputReadyListeners.delete(callback);
+    };
+  },
+  confirmOverwrite: async (payload: SkillOutputReadyPayload) => {
+    const confirmedPayload: SkillOutputReadyPayload = {
+      ...payload,
+      requiresOverwriteConfirm: false,
+    };
+    lastOutputPayload = confirmedPayload;
+    for (const listener of outputReadyListeners) {
+      listener(confirmedPayload);
+    }
+    return { success: true };
+  },
+  openSkill: async (_savedPath: string) => ({ success: true }),
+};
+
 window.__PHASE11_SKILL_CREATOR_CONVERSATION_UI__ = {
   emitQuestion: (question: UserInputQuestion) => {
     for (const listener of questionListeners) {
@@ -104,12 +148,21 @@ window.__PHASE11_SKILL_CREATOR_CONVERSATION_UI__ = {
       listener(payload);
     }
   },
+  emitOutputReady: (payload: SkillOutputReadyPayload) => {
+    lastOutputPayload = payload;
+    for (const listener of outputReadyListeners) {
+      listener(payload);
+    }
+  },
   resolvePendingAnswer: () => {
     pendingAnswerResolve?.();
     pendingAnswerResolve = null;
   },
   get lastAnswer() {
     return lastAnswer;
+  },
+  get lastOutputPayload() {
+    return lastOutputPayload;
   },
 };
 

@@ -73,6 +73,7 @@ describe("SkillCreator runtime preload API", () => {
     expect(typeof api.getWorkflowState).toBe("function");
     expect(typeof api.submitUserInput).toBe("function");
     expect(typeof api.onWorkflowStateChanged).toBe("function");
+    expect(typeof api.onOutputReady).toBe("function");
     expect(typeof api.improveSkillWithFeedback).toBe("function");
     expect(typeof api.getVerifyDetail).toBe("function");
     expect(typeof api.reverifyWorkflow).toBe("function");
@@ -254,6 +255,22 @@ describe("SkillCreator runtime preload API", () => {
         requestId: "req-1",
         selectedOptionId: "ready_to_execute",
       },
+    );
+  });
+
+  it("onOutputReady が output-ready チャンネルに登録される", () => {
+    const callback = vi.fn();
+    const cleanup = skillCreatorAPI.onOutputReady(callback);
+
+    expect(mockOn).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_OUTPUT_READY,
+      expect.any(Function),
+    );
+
+    cleanup();
+    expect(mockRemoveListener).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_OUTPUT_READY,
+      expect.any(Function),
     );
   });
 
