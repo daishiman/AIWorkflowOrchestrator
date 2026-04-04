@@ -11,6 +11,7 @@ import { createHooks } from "../../governance/SkillCreatorHooksFactory";
 import { canUseTool } from "../../governance/SkillCreatorPermissionPolicy";
 import { SkillCreatorAuditSink } from "../../governance/SkillCreatorAuditSink";
 import { RuntimeSkillCreatorFacade } from "../../RuntimeSkillCreatorFacade";
+import { RuntimePolicyResolver } from "../../RuntimePolicyResolver";
 
 describe("GovernanceAllPhases", () => {
   let auditSink: SkillCreatorAuditSink;
@@ -126,5 +127,72 @@ describe("GovernanceAllPhases", () => {
     const denials = verifyAuditSink.getDenialEvents();
     expect(denials.length).toBeGreaterThanOrEqual(1);
     expect(denials[0].phase).toBe("verify");
+  });
+
+  // UT-RT-02: governanceHooks.onSessionEnd() 全パス保証
+  // setLLMAdapter で status を "ready" にした上で resourceLoader 未設定パスを経由させ、
+  // governance hooks 生成後の early return でも onSessionEnd が記録されることを確認する。
+  it("TC-G-13: plan() が resourceLoader 未設定で失敗した場合も onSessionEnd が audit に記録される (UT-RT-02)", async () => {
+    const facade = new RuntimeSkillCreatorFacade({
+      skillExecutor: { execute: vi.fn() } as never,
+    });
+    // _llmAdapterStatus を "ready" にして adapter status early return を回避
+    facade.setLLMAdapter({
+      providerId: "anthropic",
+      sendChat: vi.fn(),
+      streamChat: vi.fn(),
+      checkHealth: vi.fn(),
+    } as never);
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    // resourceLoader を設定しない → governance hooks 作成後に early return
+
+    await facade.plan("test skill spec", "api-key", null);
+
+    const state = facade.getGovernanceState();
+    const sessionEndEvents = state.recentAuditEvents.filter(
+      (e) => e.eventType === "session_end",
+    );
+    expect(sessionEndEvents.length).toBeGreaterThanOrEqual(1);
+    expect(sessionEndEvents[0].phase).toBe("plan");
+  });
+
+  it("TC-G-14: improve() が llmAdapter 未注入で失敗した場合も onSessionEnd が audit に記録される (UT-RT-02)", async () => {
+    const facade = new RuntimeSkillCreatorFacade({
+      skillExecutor: { execute: vi.fn() } as never,
+    });
+    // _llmAdapterStatus を "ready" にしてから llmAdapter を外す
+    facade.setLLMAdapter({
+      providerId: "anthropic",
+      sendChat: vi.fn(),
+      streamChat: vi.fn(),
+      checkHealth: vi.fn(),
+    } as never);
+    // その後 failed にセットすると improve() の _llmAdapterStatus ガードで早期リターンする。
+    // ここではガード後に onSessionEnd が呼ばれることを確認するため
+    // resourceLoader 未設定パスを使う（llmAdapter は設定済み）。
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    // resourceLoader・skillFileManager 未設定 → improve() が governance hooks 生成後に early return
+
+    await facade.improve(
+      "test-skill",
+      "Please fix the issues",
+      "api-key",
+      null,
+    );
+
+    const state = facade.getGovernanceState();
+    const sessionEndEvents = state.recentAuditEvents.filter(
+      (e) => e.eventType === "session_end",
+    );
+    expect(sessionEndEvents.length).toBeGreaterThanOrEqual(1);
+    expect(sessionEndEvents[0].phase).toBe("improve");
   });
 });

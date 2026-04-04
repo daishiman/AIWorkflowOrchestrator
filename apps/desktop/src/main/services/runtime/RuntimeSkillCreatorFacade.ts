@@ -47,6 +47,7 @@ import type {
   RuntimeSkillCreatorVerifyAndImproveResult,
   RuntimeSkillCreatorVerifyCheck,
   SkillCreatorSessionListItem,
+  RuntimeSkillCreatorExecuteErrorResponse,
 } from "@repo/shared/types";
 import type { ImproveFeedbackHistory } from "@repo/shared/types";
 import {
@@ -217,6 +218,10 @@ export class RuntimeSkillCreatorFacade {
     this.llmAdapter = adapter;
     this._llmAdapterStatus = "ready";
     this._llmAdapterFailureReason = null;
+    this.onAdapterStatusChanged?.(
+      this._llmAdapterStatus,
+      this._llmAdapterFailureReason,
+    );
   }
 
   /**
@@ -226,6 +231,10 @@ export class RuntimeSkillCreatorFacade {
   setLLMAdapterFailed(reason: string): void {
     this._llmAdapterStatus = "failed";
     this._llmAdapterFailureReason = reason;
+    this.onAdapterStatusChanged?.(
+      this._llmAdapterStatus,
+      this._llmAdapterFailureReason,
+    );
   }
 
   getWorkflowStateSnapshot(
@@ -432,6 +441,7 @@ export class RuntimeSkillCreatorFacade {
         if ("success" in improveResult && !improveResult.success) {
           const errorCode = improveResult.error.code;
           const errorMessage = improveResult.error.message;
+          this.notificationService?.notify("スキル作成失敗", errorMessage);
           const snapshot = this.recordImproveFailureSnapshot(
             planId,
             `improve が ${errorCode} で失敗しました: ${errorMessage}`,
@@ -823,14 +833,14 @@ export class RuntimeSkillCreatorFacade {
     if (!this.llmAdapter) {
       governanceHooks.onSessionEnd({
         sessionId: planId,
-        summary: "Plan failed: LLM adapter unavailable",
+        summary: "Plan failed: llm_adapter_unavailable",
       });
       return buildDegradedError("llm_adapter_unavailable");
     }
     if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
       governanceHooks.onSessionEnd({
         sessionId: planId,
-        summary: "Plan failed: Resource loader unavailable",
+        summary: "Plan failed: resource_loader_unavailable",
       });
       return buildDegradedError("resource_loader_unavailable");
     }
@@ -953,6 +963,12 @@ export class RuntimeSkillCreatorFacade {
     error?: string,
   ) => void;
 
+  /** LLMAdapter ステータス変更通知コールバック (TASK-RT-01) */
+  onAdapterStatusChanged?: (
+    status: LLMAdapterStatus,
+    failureReason: string | null,
+  ) => void;
+
   /**
    * Executor role の fire-and-forget 版。
    * IPC ハンドラーから void で呼ばれ、バックグラウンドで実行される。
@@ -992,18 +1008,29 @@ export class RuntimeSkillCreatorFacade {
         args.apiKey ?? null,
       );
 
-      const phase =
+      const isStructuredError =
         typeof executeResult === "object" &&
         executeResult !== null &&
         "success" in executeResult &&
-        executeResult.success === false
-          ? "error"
-          : "complete";
+        executeResult.success === false;
+      const phase = isStructuredError ? "error" : "complete";
       this.workflowEngine.triggerPhaseTransition(
         planId,
         phase,
         phase === "complete" ? 100 : 0,
       );
+      if (isStructuredError) {
+        const errorResponse =
+          executeResult as RuntimeSkillCreatorExecuteErrorResponse;
+        const snapshot = this.workflowEngine.getWorkflowState(planId);
+        if (!snapshot) {
+          this.onWorkflowStateSnapshot?.(
+            planId,
+            null,
+            errorResponse.error.message,
+          );
+        }
+      }
     } catch (error) {
       this.workflowEngine.triggerPhaseTransition(planId, "error", 0);
       const errorMessage =
@@ -1448,14 +1475,14 @@ export class RuntimeSkillCreatorFacade {
     if (!this.llmAdapter) {
       governanceHooks.onSessionEnd({
         sessionId: improveId,
-        summary: "Improve failed: LLM adapter unavailable",
+        summary: "Improve failed: llm_adapter_unavailable",
       });
       return buildDegradedError("llm_adapter_unavailable");
     }
     if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
       governanceHooks.onSessionEnd({
         sessionId: improveId,
-        summary: "Improve failed: Resource loader unavailable",
+        summary: "Improve failed: resource_loader_unavailable",
       });
       return buildDegradedError("resource_loader_unavailable");
     }
@@ -1463,6 +1490,10 @@ export class RuntimeSkillCreatorFacade {
     try {
       // SKILL.md 読み込み
       if (!this.skillFileManager) {
+        governanceHooks.onSessionEnd({
+          sessionId: improveId,
+          summary: "Improve failed: skillFileManager is not available",
+        });
         return {
           success: false,
           error: {
@@ -1523,6 +1554,10 @@ export class RuntimeSkillCreatorFacade {
       // レスポンスパース
       const parseResult = parseImproveResponse(response.content);
       if (!parseResult.success) {
+        governanceHooks.onSessionEnd({
+          sessionId: improveId,
+          summary: `Improve failed: PARSE_ERROR ${parseResult.error}`,
+        });
         return {
           success: false,
           error: { code: "PARSE_ERROR", message: parseResult.error },

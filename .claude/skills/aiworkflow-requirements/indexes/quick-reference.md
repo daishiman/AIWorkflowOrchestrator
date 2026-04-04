@@ -195,7 +195,20 @@
 | IPCチャネル | `skill-creator:normalize-sdk-messages` |
 | sessionId伝播 | init → 後続メッセージへ自動伝播 |
 | テスト | 32件, Line 99.35% / Branch 91.22% / Function 100% |
-| 未タスク | SkillExecutor.convertToStreamMessage()との統合候補（1件） |
+| 未タスク | ~~SkillExecutor.convertToStreamMessage()との統合候補（1件）~~ → **UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 にて完了** |
+
+### SDK 出力型統合 (UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001)
+
+**概要:** 実行 lane と skill-creator lane の出力型を `packages/shared` に集約
+
+| 項目 | 詳細 |
+|---|---|
+| 共通基底型 | `SdkOutputMessageBase` (`timestamp?: number`) |
+| 実行 lane 型 | `SkillExecutorStreamMessage extends SdkOutputMessageBase` (executionId / id / type / content / timestamp / isComplete) |
+| 実行 lane 種別 | `SkillExecutorStreamMessageType` ("text"\|"tool_use"\|"error"\|"complete"\|"retry") |
+| skill-creator lane 型 | `SkillCreatorSdkEvent extends SdkOutputMessageBase` (変更: 共通基底を継承) |
+| @deprecated | `SkillExecutor.ts` ローカル `SkillStreamMessage` / `SkillStreamMessageType` は型エイリアスとして残存 |
+| 型定義場所 | `packages/shared/src/types/skillCreator.ts` |
 
 ---
 

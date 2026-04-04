@@ -290,6 +290,8 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `skill-creator:generate-docs`   | Renderer → Main | ドキュメント生成   | `{ skillName: string; format?: string; sections?: string[] }` | `IpcResult<string>`        |
 | `skill-creator:stats`           | Renderer → Main | 使用統計取得       | `{ skillName?: string; period?: string }`                  | `IpcResult<unknown>`          |
 | `skill-creator:progress`        | Main → Renderer | 進捗通知           | -                                                          | `SkillCreatorProgress`        |
+| `skill-creator:get-adapter-status` | Renderer → Main | LLMAdapter 初期化状態取得 | なし | `IpcResult<LLMAdapterStatusPayload>` |
+| `skill-creator:adapter-status-changed` | Main → Renderer | LLMAdapter 状態変化通知 | - | `LLMAdapterStatusPayload` |
 
 ### 型定義
 
@@ -308,6 +310,7 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `TerminalHandoffBundle` | Claude Code handoff bundle          |
 | `SkillCreatorProgress` | 進捗通知データ（Preload型）          |
 | `SkillCreatorAPI`      | Preload APIインターフェース          |
+| `LLMAdapterStatusPayload` | `{ status: LLMAdapterStatus; failureReason: string \| null }` — TASK-RT-01 pull/push 共通 payload |
 
 ### SkillCreatorProgress型
 
@@ -333,6 +336,21 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | エラーサニタイズ             | 完了   | UT-9B-H-003                     |
 | パストラバーサル検証         | 完了   | UT-9B-H-003                     |
 | schemaNameホワイトリスト検証 | 完了   | UT-9B-H-003                     |
+| LLMAdapter 状態公開 2チャネル | 完了 | TASK-RT-01 |
+
+---
+
+## SDK メッセージ出力型統合
+
+詳細は [api-ipc-sdk-type-contracts.md](api-ipc-sdk-type-contracts.md) を参照。
+
+| 型 | タスク | 概要 |
+| --- | --- | --- |
+| `SdkOutputMessageBase` | UT-RT-06 | 実行lane / creator lane 共通基底型 |
+| `SkillExecutorStreamMessage` | UT-RT-06 | 実行lane出力型（timestamp必須） |
+| `SkillCreatorSdkEvent` | UT-RT-06 | creator lane出力型（timestamp省略可） |
+
+---
 
 ### セキュリティ強化仕様（UT-9B-H-003）
 
@@ -394,65 +412,20 @@ Renderer からのスキル実行要求を Main へ渡す中核チャネル。�
 
 | 対策 | 実装 | 返却仕様 |
 | --- | --- | --- |
-| Sender 検証 | `validateIpcSender(event, mainWindow)` | 不正時 `toIPCValidationError` |
+| Sender 検証 | `validateIpcSender(event, channel, { getAllowedWindows: () => [mainWindow] })` | 不正時 `toIPCValidationError` |
 | 入力検証 | P42 準拠3段（型/空文字/trim） | `VALIDATION_ERROR` |
 | エラーサニタイズ | `sanitizeErrorMessage(error)` | 内部情報は `"Internal error"` |
 
 ---
 
-## スキルファイル操作 IPC チャネル（TASK-9A-B）
+## スキルファイル操作 IPC チャネル
 
-スキルファイルの読み書き・バックアップ・復元操作をIPC経由で提供する。
-`SkillFileManager` サービスと連携し、Rendererからファイル操作を安全に実行する。
+詳細は [api-ipc-agent-fileops.md](api-ipc-agent-fileops.md) を参照。
 
-**実装ファイル**:
-
-- チャンネル定義: `apps/desktop/src/preload/channels.ts`
-- IPCハンドラー: `apps/desktop/src/main/ipc/skillFileHandlers.ts`
-- Preload API: `apps/desktop/src/preload/skill-api.ts`（`electronAPI.skill` のメソッドとして公開）
-- 型定義: `apps/desktop/src/preload/types.ts`
-
-### チャンネル一覧
-
-| チャネル              | 方向            | 用途                 | Request                                                              | Response              |
-| --------------------- | --------------- | -------------------- | -------------------------------------------------------------------- | --------------------- |
-| `skill:readFile`      | Renderer → Main | ファイル読み込み     | `{ skillName: string, relativePath: string }`                        | `IpcResult<string>`   |
-| `skill:writeFile`     | Renderer → Main | ファイル書き込み     | `{ skillName: string, relativePath: string, content: string }`       | `IpcResult<void>`     |
-| `skill:createFile`    | Renderer → Main | ファイル新規作成     | `{ skillName: string, relativePath: string, content: string }`       | `IpcResult<void>`     |
-| `skill:deleteFile`    | Renderer → Main | ファイル削除         | `{ skillName: string, relativePath: string }`                        | `IpcResult<void>`     |
-| `skill:listBackups`   | Renderer → Main | バックアップ一覧取得 | `{ skillName: string }`                                              | `IpcResult<BackupInfo[]>` |
-| `skill:restoreBackup` | Renderer → Main | バックアップ復元     | `{ skillName: string, backupPath: string }`                          | `IpcResult<void>`     |
-
-### 型定義
-
-| 型名         | 説明                                           |
-| ------------ | ---------------------------------------------- |
-| `IpcResult<T>` | IPC統一レスポンス型（`{ success: true; data: T } \| { success: false; error: string }`） |
-| `BackupInfo` | バックアップファイル情報（filename, relativePath, originalPath, type, timestamp, createdAt） |
-
-### 実装状況
-
-| 項目                   | 状態   | タスク    |
-| ---------------------- | ------ | --------- |
-| チャネル定数定義       | 完了   | TASK-9A-B |
-| ホワイトリスト追加     | 完了   | TASK-9A-B |
-| IPCハンドラー実装      | 完了   | TASK-9A-B |
-| Preload API実装        | 完了   | TASK-9A-B |
-| Sender検証（全ハンドラー）| 完了 | TASK-9A-B |
-| 引数バリデーション     | 完了   | TASK-9A-B |
-| エラーサニタイズ       | 完了   | TASK-9A-B |
-| isKnownSkillFileError  | 完了   | TASK-9A-B |
-
-### セキュリティ仕様
-
-全6 invokeハンドラーで以下のセキュリティ検証を実施する。
-
-| 対策 | 実装 | 返却仕様 |
-| ---- | ---- | -------- |
-| Sender検証 | `validateIpcSender(event, mainWindow)` | 不正時: `toIPCValidationError` で返却（例: `"Unauthorized IPC call"`） |
-| 引数バリデーション | `typeof` チェック + `.trim()` 空文字列検出 | 不正時: 各エラーメッセージ |
-| SkillFileManager内部検証 | `SkillFileManager.validatePath()` によるパストラバーサル検出 | `PathTraversalError` → サニタイズ済みメッセージ |
-| エラーサニタイズ | `isKnownSkillFileError(error)` でSkillFileManagerエラーを識別し安全なメッセージを返却 | 不明エラー: `"Internal error"` |
+| チャネル | タスク | 概要 |
+| --- | --- | --- |
+| `skill:readFile` / `skill:writeFile` / `skill:createFile` / `skill:deleteFile` | TASK-9A-B | スキルファイル CRUD |
+| `skill:listBackups` / `skill:restoreBackup` | TASK-9A-B | バックアップ一覧・復元 |
 
 ## スキル安全性評価・ファイルツリー IPC チャネル
 
