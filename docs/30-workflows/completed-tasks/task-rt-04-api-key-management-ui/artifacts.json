@@ -1,0 +1,306 @@
+{
+  "feature": "task-rt-04-api-key-management-ui",
+  "created": "2026-04-04T00:00:00+09:00",
+  "lastUpdated": "2026-04-04T17:18:49+09:00",
+  "phases": {
+    "1": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/current-state-inventory.md",
+          "description": "現状棚卸し"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "description": "受入条件一覧"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/design.md",
+          "description": "auth-key 4層設計・UI責務分離"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果 (PASS)"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-design.md",
+          "description": "テスト設計"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/ipc-contract-cases.md",
+          "description": "IPC 契約ケース"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-4/ui-test-cases.md",
+          "description": "UI テストケース"
+        },
+        {
+          "type": "test",
+          "path": "apps/desktop/src/main/ipc/__tests__/authKeyHandlers.test.ts",
+          "description": "Main IPCハンドラテスト (24 tests PASS)"
+        },
+        {
+          "type": "test",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/ApiKeySettingsPanel.test.tsx",
+          "description": "UIコンポーネントテスト (26 tests PASS)"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー"
+        },
+        {
+          "type": "source",
+          "path": "packages/shared/src/types/skillCreator.ts",
+          "description": "ApiKeyStatus 型定義 (line 209)"
+        },
+        {
+          "type": "source",
+          "path": "apps/desktop/src/main/ipc/authKeyHandlers.ts",
+          "description": "auth-key:* IPC ハンドラ"
+        },
+        {
+          "type": "source",
+          "path": "apps/desktop/src/preload/authKeyApi.ts",
+          "description": "Preload API"
+        },
+        {
+          "type": "source",
+          "path": "apps/desktop/src/renderer/components/skill/ApiKeySettingsPanel.tsx",
+          "description": "UIコンポーネント"
+        },
+        {
+          "type": "source",
+          "path": "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+          "description": "補助導線統合"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "description": "テスト拡充結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/error-path-cases.md",
+          "description": "エラーパス一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-6/regression-guards.md",
+          "description": "回帰ガード一覧"
+        },
+        {
+          "type": "test",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.auth-regression.test.tsx",
+          "description": "補助導線回帰テスト (9 tests PASS)"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-report.md",
+          "description": "カバレッジレポート (AC-1〜AC-6 全カバー)"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-record.md",
+          "description": "リファクタリング記録 (変更なし・適切な実装確認)"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質チェック結果 (PASS: lint/typecheck/test/security)"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果 (PASS: 全AC充足)"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "description": "手動テストチェックリスト"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果（current build capture / baseline reuse）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "description": "手動テストレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "description": "発見課題一覧"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "description": "UI/UX視覚レビュー"
+        },
+        {
+          "type": "config",
+          "path": "outputs/phase-11/phase11-capture-metadata.json",
+          "description": "キャプチャメタデータ (current build screenshots + baseline reuse)"
+        },
+        {
+          "type": "config",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "description": "スクリーンショット計画 (4 TC)"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-11/screenshot-coverage.md",
+          "description": "画面カバレッジレポート (4 TC)"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/TC-11-01-skill-authkey-initial.png",
+          "description": "TC-11-01 current build capture"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/TC-11-02-skill-authkey-action.png",
+          "description": "TC-11-02 current build capture"
+        },
+        {
+          "type": "image",
+          "path": "outputs/phase-11/screenshots/TC-11-03-skill-authkey-fallback.png",
+          "description": "TC-11-03 current build capture"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1/2）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント変更ログ"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出レポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12準拠チェック"
+        }
+      ]
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカル確認結果"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "変更サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR情報テンプレート（ユーザー承認待ち）"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["5", "6"],
+    "8": ["1", "5", "6", "7"],
+    "9": ["5", "6", "7", "8"],
+    "10": ["1", "2", "5", "9"],
+    "11": ["1", "2", "5", "6", "7", "8", "9", "10"],
+    "12": ["1", "2", "5", "6", "7", "8", "9", "10", "11"],
+    "13": ["1", "2", "5", "6", "7", "8", "9", "10", "11", "12"]
+  }
+}
