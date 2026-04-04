@@ -26,6 +26,14 @@
 - 適用条件: electron-vite の preload セクションで monorepo 内パッケージのサブパスをインライン化する場合。`resolve.alias` 単独では機能しない（Rollup の external チェックが `resolveId` フックより先に実行されるため）
 - 注意: `@repo/shared` の他サブパスが `import type` のみであることを事前確認すること
 
+### 4. External API IPC チャネルグループ監査
+
+- 状況: `SKILL_CREATOR_EXTERNAL_API_CHANNELS` のような定数グループが shared に定義され、preload でスプレッド取り込みされる
+- アプローチ: shared の定数グループ定義 → preload のスプレッド取り込み → Preload API の型使用 → IpcBridge のハンドラ登録を一気通貫で監査する
+- 結果: チャネル追加時の取り込み漏れ（preload でスプレッドし忘れ）を早期検出できる
+- 適用条件: `packages/shared/src/ipc/channels.ts` に新しい定数グループが追加された場合
+- 注意: `EXTERNAL_API_CONFIG_REQUIRED` は `SKILL_CREATOR_SESSION_CHANNELS` 側に定義されているため、グループ横断の整合も確認が必要
+
 ## 失敗パターン（避けるべきこと）
 
 ### 1. 正本と補助資料の混同

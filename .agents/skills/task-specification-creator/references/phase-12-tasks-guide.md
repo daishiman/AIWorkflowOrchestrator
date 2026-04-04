@@ -1,13 +1,13 @@
-# Phase 12: 5タスク詳細ガイド
+# Phase 12: 6タスク詳細ガイド
 
 > 親ファイル: [phase-11-12-guide.md](phase-11-12-guide.md)
-> 読み込み条件: Phase 12 の各タスク（Task 1〜5）を実施するとき。
+> 読み込み条件: Phase 12 の各タスク（Task 1〜6）を実施するとき。
 
 ---
 
 ## Phase 12: ドキュメント更新
 
-### 必須タスク（5タスク - 全て完了必須）
+### 必須タスク（6タスク - 全て完了必須）
 
 #### Task 1: 実装ガイド作成【必須・2パート構成】
 
@@ -148,6 +148,24 @@ Phase 12 は「成果物ファイルが存在する」だけでは完了扱い�
 **出力**: `outputs/phase-12/skill-feedback-report.md`
 
 Task 5 の基本対象は `aiworkflow-requirements` と `task-specification-creator` だが、ユーザーがスキル改善を明示した場合、または Task 5 で再利用パターンを抽出して `skill-creator` 自体を更新した場合は、`skill-creator` も同じレポートへ含める。
+
+---
+
+#### Task 6: phase12-task-spec-compliance-check【必須・最終確認】
+
+Phase 12 の Task 1〜5 と Step 1-A〜1-G / Step 2 を 1 ファイルへ集約した root evidence。
+
+**出力**: `outputs/phase-12/phase12-task-spec-compliance-check.md`
+
+**最低限必要な内容**:
+
+- Task 12-1〜12-5 の成果物存在確認
+- Task 12-1〜12-5 の実質監査
+- Step 1-A〜1-G の実更新確認
+- Step 2 の current fact / no-op / domain sync 確認
+- validator 結果、root parity、artifacts 同期、planned wording 0 件の記録
+
+Task 6 は「存在すればよい」ではなく、Phase 12 の最終判定を裏付ける root evidence として機械検証結果を残す。
 
 ---
 
