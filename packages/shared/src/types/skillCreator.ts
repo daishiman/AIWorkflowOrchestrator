@@ -473,6 +473,48 @@ export interface SkillCreatorWorkflowSourceProvenance {
   warningNote?: string;
 }
 
+// ============================================
+// SDK 出力型 共通基底・統合定義
+// UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001
+//
+// 実行 lane（SkillExecutor）と skill-creator lane（sdkMessageNormalizer）の
+// 出力型を1箇所に集約する。
+// ============================================
+
+/**
+ * SDK 出力メッセージ共通基底型
+ * SkillExecutorStreamMessage（実行 lane）と SkillCreatorSdkEvent（skill-creator lane）の共通基底。
+ */
+export interface SdkOutputMessageBase {
+  /** メッセージのタイムスタンプ（UNIXミリ秒）。lane によって必須・省略の扱いが異なる。 */
+  timestamp?: number;
+}
+
+/**
+ * 既存スキル実行 lane のストリームメッセージ種別
+ * （旧: SkillExecutor.ts ローカル SkillStreamMessageType を shared に集約）
+ */
+export type SkillExecutorStreamMessageType =
+  | "text"
+  | "tool_use"
+  | "error"
+  | "complete"
+  | "retry";
+
+/**
+ * 既存スキル実行 lane のストリームメッセージ
+ * （旧: SkillExecutor.ts ローカル SkillStreamMessage を shared に集約）
+ * SdkOutputMessageBase を継承し、実行 lane では timestamp が必須となる。
+ */
+export interface SkillExecutorStreamMessage extends SdkOutputMessageBase {
+  executionId: string;
+  id: string;
+  type: SkillExecutorStreamMessageType;
+  content: string;
+  timestamp: number;
+  isComplete: boolean;
+}
+
 export type SkillCreatorSdkEventType =
   | "init"
   | "assistant"
@@ -485,7 +527,11 @@ export interface SkillCreatorSdkPermissionDenial {
   reason: string;
 }
 
-export interface SkillCreatorSdkEvent {
+/**
+ * skill-creator lane の SDK 出力イベント
+ * SdkOutputMessageBase を継承。
+ */
+export interface SkillCreatorSdkEvent extends SdkOutputMessageBase {
   eventType: SkillCreatorSdkEventType;
   sequence?: number;
   rawType?: string;

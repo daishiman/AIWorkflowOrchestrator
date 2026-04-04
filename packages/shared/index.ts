@@ -223,6 +223,10 @@ export type {
   DependencyGraph,
   RuntimeSkillCreatorVerifyCheck,
   RuntimeSkillCreatorVerifyCheckSeverity,
+  // SDK 出力型統合基底（UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001）
+  SdkOutputMessageBase,
+  SkillExecutorStreamMessageType,
+  SkillExecutorStreamMessage,
 } from "./src/types/skillCreator";
 
 // External API Support (TASK-SDK-SC-03)
