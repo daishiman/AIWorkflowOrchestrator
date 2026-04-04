@@ -3,7 +3,7 @@
 ## 概要
 この親仕様書は分割後の entrypoint であり、詳細仕様と履歴は child companion へ分離した。
 旧連番 suffix の completed shard は semantic filename へ移行済み。旧 filename と current filename の対応や migration 根拠が必要なときは `legacy-ordinal-family-register.md` を参照する。
-Runtime Skill Creator 系 completed workflow の canonical root は `docs/30-workflows/completed-tasks/` 配下であり、Phase 13 が `blocked` の task でも completed ledger 側導線は current root と同じ path へ同期する。2026-03-30 時点で completed ledger には `TASK-P0-02` verify→improve→re-verify 閉ループ修復を追記済み。2026-04-04 時点で TASK-SDK-SC-04 Skill Output Integration（OutputHandler / SkillRegistry / ResultPanel / 3 IPC channel）の完了記録を `task-workflow-completed.md` 先頭に追記済み。また、2026-04-04 時点で `TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001` の Phase 11/12 current facts と executePlan ack 後の failure snapshot 再読込を追加済み。
+Runtime Skill Creator 系 completed workflow の canonical root は `docs/30-workflows/completed-tasks/` 配下であり、Phase 13 が `blocked` の task でも completed ledger 側導線は current root と同じ path へ同期する。2026-03-30 時点で completed ledger には `TASK-P0-02` verify→improve→re-verify 閉ループ修復を追記済み。2026-04-04 時点で `TASK-P0-01` verify 実行エンジンの完了記録と TASK-SDK-SC-04 Skill Output Integration（OutputHandler / SkillRegistry / ResultPanel / 3 IPC channel）の完了記録を `task-workflow-completed.md` 先頭に追記済み。また、2026-04-04 時点で `TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001` の Phase 11/12 current facts と executePlan ack 後の failure snapshot 再読込を追加済み。
 
 ## 仕様書インデックス
 | ファイル | 役割 | 主な見出し |

@@ -488,7 +488,7 @@ async function validateLayer2(
       ),
     );
 
-    // L2-002: 概要 section (mapped from "Trigger" in catalog — actually checks overview)
+    // L2-002: 概要 section
     const hasSummary = hasMarkdownSection(skillMdContent, "概要");
     checks.push(
       createCheck(
