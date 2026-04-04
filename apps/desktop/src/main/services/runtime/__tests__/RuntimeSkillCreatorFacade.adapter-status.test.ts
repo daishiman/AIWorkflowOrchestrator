@@ -384,6 +384,8 @@ describe("RuntimeSkillCreatorFacade — adapter status (TASK-RT-01)", () => {
         skillExecutor: createMockSkillExecutor(),
       });
       // setLLMAdapter() 未呼び出し → "initializing"
+      // TASK-RT-02: "initializing" は terminal_handoff を優先するため resolve() を通過させる。
+      // integrated_api 決定後に !llmAdapter チェックで degraded string error を返す。
 
       const result = await facade.execute(
         {
@@ -401,13 +403,12 @@ describe("RuntimeSkillCreatorFacade — adapter status (TASK-RT-01)", () => {
         "sk-test",
       );
 
-      expect(result).toEqual({
+      expect(result).toMatchObject({
         success: false,
-        error: {
-          code: "llm_adapter_unavailable",
-          message: "LLMAdapter の初期化中です。しばらくお待ちください",
-        },
       });
+      expect((result as { error?: string }).error).toContain(
+        "LLM アダプタが利用できません",
+      );
     });
 
     it("T-EX-03: API key 未設定エラーで failed → actionable メッセージ", async () => {

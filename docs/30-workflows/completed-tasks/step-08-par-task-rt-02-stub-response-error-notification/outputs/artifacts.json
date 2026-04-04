@@ -1,7 +1,7 @@
 {
   "feature": "step-08-par-task-rt-02-stub-response-error-notification",
   "created": "2026-03-29T08:03:33.000Z",
-  "lastUpdated": "2026-03-29T14:30:00.000Z",
+  "lastUpdated": "2026-04-04T00:00:00.000Z",
   "status": "implementation_complete",
   "phases": {
     "1": {
@@ -42,8 +42,11 @@
       "status": "completed",
       "artifacts": [
         "phase-11/manual-test-checklist.md",
+        "phase-11/manual-test-result.md",
         "phase-11/manual-test-report.md",
-        "phase-11/discovered-issues.md"
+        "phase-11/discovered-issues.md",
+        "phase-11/phase11-capture-metadata.json",
+        "phase-11/ui-sanity-visual-review.md"
       ]
     },
     "12": {
@@ -57,7 +60,7 @@
         "phase-12/phase12-task-spec-compliance-check.md"
       ]
     },
-    "13": { "status": "blocked", "artifacts": [] }
+    "13": { "status": "blocked", "artifacts": ["phase-13-pr-creation.md"] }
   },
   "dependencies": {
     "2": ["1"],
