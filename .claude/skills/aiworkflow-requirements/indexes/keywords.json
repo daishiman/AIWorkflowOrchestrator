@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-04T00:10:47.460Z",
-  "totalKeywords": 2659,
+  "generated": "2026-04-04T00:25:49.985Z",
+  "totalKeywords": 2655,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1779,7 +1779,6 @@
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
-      "lessons-learned-severity-filter-ui.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-remove-contract.md",
@@ -1847,7 +1846,6 @@
       "lessons-learned-current.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-severity-filter-ui.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-ui-adapter-status-retry.md",
@@ -2206,7 +2204,6 @@
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
-      "lessons-learned-severity-filter-ui.md",
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "logs-archive-2026-01-feature-structure-workspace-chat-edit.md",
@@ -3823,7 +3820,6 @@
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
-      "lessons-learned-severity-filter-ui.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
@@ -4025,7 +4021,6 @@
       "lessons-learned-current.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
-      "lessons-learned-severity-filter-ui.md",
       "lessons-learned-skill-build-harness-guard.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md"
     ],
@@ -6428,6 +6423,7 @@
     ],
     "task": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-01-system-spec-gap-skill-retry.md",
@@ -7181,6 +7177,19 @@
     "エラー保持パターン": [
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
+    "ut": [
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
+    ],
+    "repeat": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "feedback": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "memory": [
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
     "Extraction": [
       "lessons-learned-rag-embedding-runtime.md"
     ],
@@ -7248,41 +7257,6 @@
     "実行": [
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
-    ],
-    "Severity": [
-      "lessons-learned-severity-filter-ui.md"
-    ],
-    "フィルタ": [
-      "lessons-learned-severity-filter-ui.md"
-    ],
-    "DISPLAY": [
-      "lessons-learned-severity-filter-ui.md"
-    ],
-    "SEVERITY": [
-      "lessons-learned-severity-filter-ui.md"
-    ],
-    "FILTER": [
-      "lessons-learned-severity-filter-ui.md"
-    ],
-    "タスク情報": [
-      "lessons-learned-severity-filter-ui.md"
-    ],
-    "技術的教訓": [
-      "lessons-learned-severity-filter-ui.md"
-    ],
-    "苦戦箇所": [
-      "lessons-learned-severity-filter-ui.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "logs-archive-2026-03-skill-views-completed-move.md",
-      "ui-history-search-view.md",
-      "workflow-permission-fallback-abort-skip-retry.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
-    ],
-    "コードパターン": [
-      "lessons-learned-severity-filter-ui.md",
-      "logging-migration-guide.md"
     ],
     "domain": [
       "lessons-learned-skill-build-harness-guard.md",
@@ -8388,6 +8362,9 @@
     "移行手順チェックリスト": [
       "logging-migration-guide.md"
     ],
+    "コードパターン": [
+      "logging-migration-guide.md"
+    ],
     "テストモックテンプレート": [
       "logging-migration-guide.md"
     ],
@@ -9213,9 +9190,6 @@
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
-    "ut": [
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
-    ],
     "conflict": [
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
     ],
@@ -9444,6 +9418,15 @@
     ],
     "教訓同期強化": [
       "logs-archive-2026-03-auth-mode-migration-sync.md"
+    ],
+    "苦戦箇所": [
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "logs-archive-2026-03-skill-views-completed-move.md",
+      "ui-history-search-view.md",
+      "workflow-permission-fallback-abort-skip-retry.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "仕様整合": [
       "logs-archive-2026-03-auth-mode-migration-sync.md"

@@ -29,6 +29,31 @@
 - `HttpExternalApiAdapter` を追加し `IExternalApiAdapter` インターフェースを実装
 - Preload 層（`skill-creator-api.ts` / `skill-creator-session-api.ts`）で invoke / push listener を公開
 
+### タスク: task-ut-p0-02-001-repeat-feedback-memory（2026-04-03）
+
+| 項目       | 値                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | task-ut-p0-02-001-repeat-feedback-memory                                                                                                                           |
+| ステータス | **完了**                                                                                                                                                           |
+| タイプ     | 改善 / runtime skill creator feedback memory                                                                                                                       |
+| 優先度     | 中                                                                                                                                                                 |
+| 完了日     | 2026-04-03                                                                                                                                                         |
+| 対象       | `packages/shared/src/types/skillCreator.ts` / `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` / `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts` |
+| 成果物     | `docs/30-workflows/completed-tasks/improve-feedback-memory-structuring/`                                                                                                           |
+
+#### 実施内容
+
+- `ImproveFeedbackHistory` 型を `packages/shared/src/types/skillCreator.ts` に定義（attempt / failedChecks / improveSummary）
+- `verifyAndImproveLoop()` 内の `previousImproveSummary: string` を `feedbackHistory: ImproveFeedbackHistory[]` に置換し、全試行履歴を蓄積
+- `buildImproveFeedback()` を全履歴参照型に改修。persistent failure 検出と特別警告を付与
+- TC-01〜TC-06、EC-01〜EC-02、EC-04、BF-01〜BF-04 の計13テストを追加（全45テスト PASS）
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts --reporter=verbose`: PASS（45/45）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm exec eslint apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`: PASS
+- AC-1〜AC-4 全充足確認済み
 ### タスク: TASK-FIX-LIFECYCLE-PANEL-ERROR-001（2026-04-02）
 
 | 項目       | 値                                                                                                                                                                 |

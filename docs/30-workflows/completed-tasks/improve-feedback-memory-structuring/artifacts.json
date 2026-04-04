@@ -1,0 +1,222 @@
+{
+  "workflow": "improve-feedback-memory-structuring",
+  "task_id": "task-ut-p0-02-001-repeat-feedback-memory",
+  "task_name": "verify→improve ループの feedback memory 構造化改善",
+  "created_date": "2026-04-03",
+  "status": "completed",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "Phase 1 要件定義書",
+          "path": "phase-1-requirements.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "Phase 2 設計書",
+          "path": "phase-2-design.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "Phase 3 設計レビュー結果",
+          "path": "phase-3-design-review.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "テストケース設計書",
+          "path": "outputs/phase-4/test-case-design.md",
+          "status": "completed"
+        },
+        {
+          "name": "エラー永続化テストファイル（Red状態）",
+          "path": "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "ImproveFeedbackHistory 型定義",
+          "path": "packages/shared/src/types/skillCreator.ts",
+          "status": "completed"
+        },
+        {
+          "name": "verifyAndImproveLoop 改修",
+          "path": "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "エッジケース・回帰テスト追加済みテストファイル",
+          "path": "apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "リファクタリング記録",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "品質保証レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "手動テストチェックリスト",
+          "path": "outputs/phase-11/manual-test-checklist.md",
+          "status": "completed"
+        },
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "completed"
+        },
+        {
+          "name": "手動テストレポート",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "status": "completed"
+        },
+        {
+          "name": "発見課題レポート",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "completed"
+        },
+        {
+          "name": "システム仕様更新サマリ",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "status": "completed"
+        },
+        {
+          "name": "ドキュメント更新履歴",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "completed"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "status": "completed"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "completed"
+        },
+        {
+          "name": "タスク仕様準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "not_started",
+      "artifacts": [
+        {
+          "name": "PR 作成前ローカルチェック",
+          "path": "outputs/phase-13/local-check-result.md",
+          "status": "not_started"
+        },
+        {
+          "name": "変更要約",
+          "path": "outputs/phase-13/change-summary.md",
+          "status": "not_started"
+        },
+        {
+          "name": "PR 情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "status": "not_started"
+        },
+        {
+          "name": "PR 作成結果",
+          "path": "outputs/phase-13/pr-creation-result.md",
+          "status": "not_started"
+        },
+        {
+          "name": "GitHub Pull Request",
+          "path": "https://github.com/daishiman/AIWorkflowOrchestrator/pulls",
+          "status": "not_started"
+        }
+      ]
+    }
+  }
+}
