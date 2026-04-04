@@ -4,6 +4,17 @@
 
 ---
 
+## 2026-04-04 - TASK-P0-01 verify 実行エンジン Phase 12 close-out sync
+
+### 変更内容
+- `SkillCreatorVerificationEngine` を独立モジュールとして実装し、Layer 1〜4 の verify チェック 19 件を current contract として同期
+- `RuntimeSkillCreatorFacade.verifySkill()` は `verificationEngine` 注入時に `RuntimeSkillCreatorVerifyCheck[]` を返し、未注入時は空配列を返す graceful degradation を維持
+- Phase 1-12 完了、60 tests PASS、typecheck / lint PASS
+- `interfaces-skill-verify-contract.md` に check ID 体系を反映済み
+- SKILL.md + LOGS.md 2ファイル同時更新（P1/P25/P29 対策）
+
+---
+
 ## 2026-04-04 - task-imp-layer12-spec-definition-004 Phase 12 close-out sync
 
 ### 変更内容
@@ -71,6 +82,18 @@
 - `SkillCenterView` secondary CTA / `SkillManagementPanel` 戻り導線の Phase 12 仕様書準拠を確認
 - `docs/30-workflows/skill-center-lifecycle-navigation/` の phase-12 outputs（implementation-guide / documentation-changelog / system-spec-update-summary / unassigned-task-detection / skill-feedback-report）完成を記録
 - SKILL.md v6.18.23 更新
+
+---
+||||||| Stash base
+
+## 2026-04-04 - TASK-UT-RT-01 execute/improve adapter guard Phase 12 close-out sync
+
+### 変更内容
+- `RuntimeSkillCreatorFacade.execute()` / `improve()` の `_llmAdapterStatus` guard を current facts として current task docs に反映
+- `RuntimeSkillCreatorExecuteErrorResponse` を shared type として仕様書へ追記し、renderer consumer の structured error 正規化を Phase 12 outputs へ同期
+- `phase-11-manual-test.md` の NON_VISUAL 判定、`manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` / `ui-sanity-visual-review.md` を current task へ置換
+- `documentation-changelog.md` / `system-spec-update-summary.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` を phase10 MINOR follow-up を含めた current facts へ更新
+- SKILL.md の変更は不要と判定し、LOGS と template/current facts の同波 sync で閉じた
 
 ---
 ## 2026-04-02 - TASK-NOTIFICATION-SERVICE-001 Phase 12 close-out sync

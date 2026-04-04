@@ -36,6 +36,35 @@
 
 ---
 
+### タスク: TASK-P0-01 verify 実行エンジン（Layer 1/2 コア + Layer 3/4 互換）の仕様整合（2026-04-04）
+
+| 項目       | 値                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-01                                                                                                                |
+| ステータス | **完了**                                                                                                                  |
+| タイプ     | feat / runtime verify engine                                                                                              |
+| 優先度     | 高                                                                                                                        |
+| 完了日     | 2026-04-04                                                                                                                |
+| 対象       | `docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12/` / `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts` / `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` / `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorVerificationEngine.test.ts` / `packages/shared/src/types/skillCreator.ts` |
+| 成果物     | `docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12/outputs/`                                      |
+
+#### 実施内容
+
+- `SkillCreatorVerificationEngine` を独立モジュールとして実装し、Layer 1〜4 の verify チェック 19 件を current contract として同期
+- `RuntimeSkillCreatorFacade.verifySkill()` は `verificationEngine` 注入時に `RuntimeSkillCreatorVerifyCheck[]` を返し、未注入時は空配列を返す graceful degradation を維持
+- `verifyAndImproveLoop()` は `severity === "info"` を pass、warning / error を improve 対象として routing する current fact に整合
+- `artifacts.json` / `outputs/artifacts.json` の parity を同期し、root evidence を PASS へ戻した
+- `phase12-task-spec-compliance-check.md` で Task 12-1〜12-6 / Step 1-A〜1-G / root parity を監査可能にした
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/SkillCreatorVerificationEngine.test.ts`: PASS（60/60）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm lint`: PASS_WITH_WARNINGS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12`: PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12`: PASS
+
 ### タスク: task-imp-layer12-spec-definition-004（2026-04-04）
 
 | 項目       | 値                                                                                                     |
