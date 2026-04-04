@@ -36,6 +36,10 @@ export const buttonStyles = {
 
 type View = "list" | "editor" | "analysis" | "create" | "lifecycle";
 
+interface SkillManagementPanelProps {
+  onClose?: () => void;
+}
+
 interface SkillCardProps {
   skill: ImportedSkill;
   onEdit: () => void;
@@ -234,7 +238,9 @@ function AvailableSkillRow({
   );
 }
 
-export function SkillManagementPanel() {
+export function SkillManagementPanel({
+  onClose,
+}: SkillManagementPanelProps = {}) {
   const [currentView, setCurrentView] = useState<View>("list");
   const [selectedSkill, setSelectedSkill] = useState<ImportedSkill | null>(
     null,
@@ -253,6 +259,14 @@ export function SkillManagementPanel() {
   const [completedImportSkillName, setCompletedImportSkillName] = useState<
     string | null
   >(null);
+  const handleClose = useCallback(() => {
+    if (onClose) {
+      onClose();
+      return;
+    }
+
+    window.history.back();
+  }, [onClose]);
 
   const importedCardRefs = useRef(new Map<string, HTMLDivElement>());
   const availableTriggerRefs = useRef(new Map<string, HTMLButtonElement>());
@@ -485,6 +499,13 @@ export function SkillManagementPanel() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <button
+            className={buttonStyles.secondary}
+            onClick={handleClose}
+            data-testid="skill-management-back-button"
+          >
+            スキルセンターへ戻る
+          </button>
           <button
             className={`${buttonStyles.primary} min-h-[44px]`}
             onClick={() => setCurrentView("lifecycle")}

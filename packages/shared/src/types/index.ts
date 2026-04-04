@@ -201,6 +201,7 @@ export {
 export type {
   SkillCreatorSdkEventType,
   SkillCreatorSdkEvent,
+  ImproveFeedbackHistory,
 } from "./skillCreator";
 export type {
   SkillCreatorGovernancePhase,

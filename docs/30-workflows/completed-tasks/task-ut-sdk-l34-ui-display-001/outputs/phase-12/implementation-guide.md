@@ -2,10 +2,20 @@
 
 ## Part 1: 中学生向けの説明
 
-検証結果をそのまま全部並べると、「どこが大事なのか」が見えにくくなります。
+### なぜ必要か
 
-今回の変更は、成績表を教科ごとに分けるのと同じです。
-Layer 1 〜 Layer 4 に分けて見せることで、直す場所が一目で分かるようにしました。
+検証結果をそのまま全部並べると、「どこが大事なのか」が見えにくくなります。
+特に Layer 3 / 4 のチェックが増えると、直す場所を探すのに時間がかかります。
+
+### 何をするか
+
+検証結果（checks）を **Layer 1〜Layer 4 に分けて**見せ、必要なら折りたためる（accordion）表示にします。
+これにより「どの層で何が起きているか」を先に掴めます。
+
+### 日常の例え
+
+たとえば **教室**の名簿を、学年ごとに分けて整理するイメージです（例え）。
+全部を一列に並べるより、「どこを見ればいいか」がすぐ分かります。
 
 ## Part 2: 技術的詳細
 
@@ -31,6 +41,19 @@ interface RuntimeSkillCreatorVerifyCheck {
 }
 ```
 
+### APIシグネチャ
+
+verify detail の取得は、Renderer から `skillCreator.getVerifyDetail(planId)` を呼び出す。
+
+```ts
+// APIシグネチャ（概略）
+window.electronAPI.skillCreator.getVerifyDetail(planId: string): Promise<{
+  success: boolean;
+  data?: { checks: RuntimeSkillCreatorVerifyCheck[]; reverifyEligible: boolean };
+  error?: string;
+}>;
+```
+
 ### 依存データ
 
 ```tsx
@@ -52,6 +75,43 @@ const checksByLayer = useMemo(() => {
   return groups;
 }, [verifyDetail?.checks]);
 ```
+
+### 使用例
+
+```tsx
+// 使用例: Layer group -> accordion 表示
+{
+  (["layer1", "layer2", "layer3", "layer4"] as const).map((layer) => (
+    <VerifyLayerGroup
+      key={layer}
+      layer={layer}
+      label={verifyLayerLabels[layer]}
+      checks={checksByLayer[layer]}
+      isExpanded={expandedLayers[layer] ?? true}
+      onToggle={toggleLayer}
+    />
+  ));
+}
+```
+
+### エラーハンドリング
+
+- `getVerifyDetail()` が失敗した場合は `verifyDetail` を `null` にし、UI では「verify detail の取得に失敗しました。」のようなメッセージを表示する（エラーハンドリング）。
+- verify detail の取得失敗は execution authority を Renderer に移さない（表示の破綻を避ける）。
+
+### エッジケース
+
+- checks が空の場合: Layer group 自体が表示されない（空の Layer は非表示）。
+- reverify の直後: UI が再 fetch した checks を表示しつつ、折りたたみ state は維持する（エッジケース）。
+
+### 設定と定数
+
+- 定数一覧:
+  - `VERIFY_LAYER_ORDER`: Layer の表示順
+  - `verifyLayerLabels`: Layer 表示名
+  - `verifyCheckSeverityStyles`: severity 別の badge style
+  - `verifyCheckSeverityIcon`: severity 別アイコン
+  - `createDefaultExpandedLayers()`: accordion の初期展開状態
 
 ### 実装ファイル
 

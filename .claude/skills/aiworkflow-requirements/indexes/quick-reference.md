@@ -26,6 +26,19 @@
 
 ---
 
+### SkillCenterView → SkillManagementPanel ナビゲーション接続（2026-04-04）
+
+| 目的                              | 最初に開くファイル                                                                                                         |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| secondary CTA 設計 / ViewType 定義 | `references/ui-ux-navigation.md`                                                                                           |
+| dock 正規化コード                 | `apps/desktop/src/renderer/App.tsx`                                                                                        |
+| コンポーネント実装                | `apps/desktop/src/renderer/views/SkillCenterView/index.tsx`, `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` |
+| completed ledger                  | `references/task-workflow-completed.md`                                                                                    |
+| 苦戦箇所（same surface return / dock 正規化） | `references/lessons-learned-phase12-workflow-lifecycle.md`                                                      |
+| workflow root                     | `docs/30-workflows/skill-center-lifecycle-navigation/`                                                                     |
+
+---
+
 ### UI Visual Baseline Drift / dark-mode screenshot stability（2026-04-03）
 
 | 目的                 | 最初に開くファイル                                                                                                                                           |

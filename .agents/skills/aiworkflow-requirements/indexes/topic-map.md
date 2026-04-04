@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-03
+> 自動生成: 2026-04-04
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -719,6 +719,17 @@ node scripts/list-specs.js --topics
 | 設計原則 | L188 |
 | 関連ドキュメント | L411 |
 
+### references/interfaces-skill-verify-contract.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L3 |
+| Layer 命名規則 | L12 |
+| Layer 1: 構造検証（Structural Validation） | L43 |
+| Layer 2: コンテンツ検証（Content Validation） | L53 |
+| Layer 3: 詳細コンテンツ検証（Detailed Content Validation） | L65 |
+| Layer 4: 参照整合性・結合検証（Reference Integrity Validation） | L74 |
+| Layer 拡張ガイドライン | L82 |
+
 ### references/interfaces-system-prompt.md
 
 | セクション | 行 |
@@ -1196,8 +1207,8 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L6 |
-| 関連ドキュメント | L221 |
-| 変更履歴 | L260 |
+| 関連ドキュメント | L222 |
+| 変更履歴 | L261 |
 
 ### references/ui-ux-feature-components-reference-organisms-history-surfaces.md
 
@@ -1217,6 +1228,7 @@ node scripts/list-specs.js --topics
 | SkillAnalysisView UI（TASK-10A-B / completed） | L298 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L399 |
 | Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L461 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L490 |
 
 ### references/ui-ux-feature-components.md
 
@@ -2042,20 +2054,6 @@ node scripts/list-specs.js --topics
 | Follow-up 未タスク | L25 |
 | Validation Chain | L31 |
 
-### references/workflow-ui-ux-visual-baseline-drift.md
-
-| セクション | 行 |
-|------------|----|\n| 概要 | L9 |
-| 仕様書別 SubAgent 編成 | L20 |
-| 今回実装した内容 | L32 |
-| 苦戦箇所と再発防止 | L53 |
-| 同種課題の 5 分解決カード | L63 |
-| 最適なファイル形成 | L73 |
-| 検証コマンド | L87 |
-| 関連改善タスク | L99 |
-| 関連ドキュメント | L107 |
-| 変更履歴 | L119 |
-
 ### references/workflow-workspace-parent-reference-sweep-guard.md
 
 | セクション | 行 |
@@ -2659,20 +2657,35 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L76 |
+| 分割ファイル一覧 | L78 |
+| クイックリファレンス: カテゴリ別検索ガイド | L97 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L286 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L618 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L652 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L735 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L751 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L775 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L825 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L850 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L881 |
+| TASK-RT-06 教訓（2026-03-29） | L912 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L934 |
+| TASK-P0-04 教訓（2026-03-30） | L965 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L986 |
+| 分割ファイル一覧 | L77 |
 | クイックリファレンス: カテゴリ別検索ガイド | L95 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L284 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L616 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L650 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L733 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L749 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L773 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L823 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L848 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L879 |
-| TASK-RT-06 教訓（2026-03-29） | L910 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L932 |
-| TASK-P0-04 教訓（2026-03-30） | L963 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L276 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L608 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L642 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L725 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L741 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L765 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L815 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L840 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L871 |
+| TASK-RT-06 教訓（2026-03-29） | L902 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L924 |
+| TASK-P0-04 教訓（2026-03-30） | L955 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2880,15 +2893,6 @@ node scripts/list-specs.js --topics
 | TASK-UI-04A-WORKSPACE-LAYOUT 実装教訓（2026-03-10） | L282 |
 | TASK-UI-04C-WORKSPACE-PREVIEW 実装教訓（2026-03-11） | L334 |
 
-### references/lessons-learned-ui-ux-visual-baseline-drift.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L9 |
-| 教訓 | L20 |
-| 同種課題の簡潔解決手順 | L51 |
-| 関連ドキュメント | L61 |
-| 変更履歴 | L72 |
-
 ### references/lessons-learned-viewtype-electron-ui.md
 
 | セクション | 行 |
@@ -2939,8 +2943,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L43 |
-| 関連ドキュメント | L48 |
+| 利用順序 | L44 |
+| 関連ドキュメント | L49 |
+| 利用順序 | L42 |
+| 関連ドキュメント | L47 |
 
 ### references/llm-embedding.md
 
@@ -3851,7 +3857,6 @@ node scripts/list-specs.js --topics
 | 品質ゲート（概要） | L73 |
 | 出力テンプレート | L84 |
 | 実行時のコマンド・エージェント・スキル | L107 |
-| 昇格パターン集 | L131 |
 
 ### references/task-workflow-backlog.md
 
@@ -3973,27 +3978,20 @@ node scripts/list-specs.js --topics
 | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001: AgentView 改善導線 round-trip 完了記録（2026-03-20） | L95 |
 | TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L151 |
 | TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L218 |
-| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L299 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L384 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L406 |
-| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L469 |
-| Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L506 |
-| TASK-RT-05: multi_select ユーザー入力種別追加 完了記録（2026-03-30） | L549 |
-| UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20） | L600 |
+| TASK-RT-03-VERIFY-IMPROVE-PANEL-001: Verify / Improve 結果パネル実装 完了記録（2026-04-04） | L299 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L340 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L425 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L447 |
+| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L510 |
+| Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L547 |
+| TASK-RT-05: multi_select ユーザー入力種別追加 完了記録（2026-03-30） | L590 |
+| UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20） | L641 |
 
 ### references/task-workflow-completed-skill-lifecycle.md
 
 | セクション | 行 |
 |------------|----|\n| 分割ファイル一覧 | L7 |
 | タスクID 逆引き | L14 |
-
-### references/task-workflow-completed-ui-ux-visual-baseline-drift.md
-
-| セクション | 行 |
-|------------|----|\n| メタ情報 | L9 |
-| 完了記録 | L20 |
-| 関連ドキュメント | L55 |
-| 変更履歴 | L66 |
 
 ### references/task-workflow-completed-ut-06-safety-gate.md
 
@@ -4042,8 +4040,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L8 |
-| 利用順序 | L37 |
-| 関連ドキュメント | L42 |
+| 利用順序 | L35 |
+| 関連ドキュメント | L40 |
 
 ### references/testing-accessibility.md
 

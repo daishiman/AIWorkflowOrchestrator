@@ -51,7 +51,7 @@
 | --- | --- | --- |
 | [phase-11-12-guide.md](phase-11-12-guide.md) | Phase 11/12 開始時 | split guide index |
 | [phase-11-screenshot-guide.md](phase-11-screenshot-guide.md) | UI task の Phase 11 | screenshot と manual walkthrough |
-| [phase-12-documentation-guide.md](phase-12-documentation-guide.md) | Phase 12 全般 | Task 12-1〜12-5 の出力条件 |
+| [phase-12-documentation-guide.md](phase-12-documentation-guide.md) | Phase 12 全般 | Task 12-1〜12-6 の出力条件 |
 | [phase12-checklist-definition.md](phase12-checklist-definition.md) | 再監査時 | 完了定義 |
 | [technical-documentation-guide.md](technical-documentation-guide.md) | implementation guide 作成時 | 技術文書の詳細 |
 | [screenshot-verification-procedure.md](screenshot-verification-procedure.md) | Apple UI/UX 視覚検証時 | capture / review 手順 |

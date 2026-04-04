@@ -350,5 +350,33 @@
 - **発見日**: 2026-03-06
 - **関連タスク**: TASK-UI-01-E-INTEGRATION-GATE-SPEC-SYNC
 
+### [IPC/SDK] 並行フロー管理での pending Promise 競合（TASK-SDK-SC-03）
+
+- **状況**: SDK Session 内で「ユーザーへの質問待機」と「外部API設定要求待機」の2つの非同期フローが存在し、同時に pending 状態になりうる
+- **問題**: 両方の resolve コールバックが同時に存在すると、一方の応答が他方の Promise を解決してしまい、型不整合やデータ混在が発生する
+- **原因**:
+  - `pendingQuestionResolve` と `pendingExternalApiResolve` が独立したフィールドとして管理されており、相互排他の保証がなかった
+  - IPC イベントの到着順序が非決定的で、テスト時は成功するがランタイムで競合する
+- **教訓**:
+  - 複数の pending Promise を持つクラスでは、相互排他を明示的に保証する（一方がアクティブなら他方を null 化）
+  - abort / cleanup 時に全 pending を一括で reject / null 化する
+  - テストでは「両方が同時にアクティブになるケース」を必ず検証する
+- **対策**: `pendingQuestionResolve` セット時に `pendingExternalApiResolve` が null であることを assert し、逆も同様にする
+- **発見日**: 2026-04-03
+- **関連タスク**: TASK-SDK-SC-03
+
+### [IPC/SDK] 秘匿化境界の曖昧さ（TASK-SDK-SC-03）
+
+- **状況**: 外部API設定に含まれる認証情報（API キー、Bearer トークン）をSDKプロンプトに注入する際、sanitize 処理の適用箇所が不明確になった
+- **問題**: HTTP呼び出し時に必要な生の credential と、SDKに渡す sanitize 済み設定の使い分けが曖昧で、一方を修正すると他方で認証エラーになる
+- **原因**:
+  - `ExternalApiConnectionConfig` という単一の型をHTTP呼び出しとSDKコンテキストの両方で使用しており、どちらの文脈の値かが型レベルで区別できなかった
+- **教訓**:
+  - 秘匿化は「SDKに渡す直前の1箇所」に集約する（`sanitizeExternalApiConfigForPrompt()`）
+  - HTTP Adapter は生の設定を受け取り、SDKには sanitize 済みの設定のみを渡す
+  - 同じ型でも「生」と「sanitize済み」は変数名で明示的に区別する
+- **発見日**: 2026-04-03
+- **関連タスク**: TASK-SDK-SC-03
+
 ---
 

@@ -15,6 +15,7 @@ export type ViewType =
   | "skill-center" // legacy alias → normalizeSkillLifecycleView で "skillCenter" に正規化
   | "skillAnalysis"
   | "skillCreate"
+  | "skillManagement"
   // エージェント・ワークフロー
   | "agent"
   | "executionConsole"

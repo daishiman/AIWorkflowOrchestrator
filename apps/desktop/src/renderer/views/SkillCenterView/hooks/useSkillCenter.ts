@@ -134,6 +134,7 @@ export interface UseSkillCenterReturn {
 
   // ナビゲーション
   navigateToSkillCreate: () => void;
+  navigateToSkillManagement: () => void;
   navigateToWorkspace: () => void;
   navigateToSkillAnalysis: () => void;
   handleEditSkill: (skillName: string) => void;
@@ -161,6 +162,10 @@ export function useSkillCenter(): UseSkillCenterReturn {
 
   const navigateToSkillCreate = useCallback(
     () => setCurrentView("skillCreate"),
+    [setCurrentView],
+  );
+  const navigateToSkillManagement = useCallback(
+    () => setCurrentView("skillManagement"),
     [setCurrentView],
   );
   const navigateToWorkspace = useCallback(
@@ -365,6 +370,7 @@ export function useSkillCenter(): UseSkillCenterReturn {
     featuredSkills,
     importedSkillNames,
     navigateToSkillCreate,
+    navigateToSkillManagement,
     navigateToWorkspace,
     navigateToSkillAnalysis,
     handleEditSkill,
