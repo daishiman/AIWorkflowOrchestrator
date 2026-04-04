@@ -566,4 +566,33 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `evaluate-ui-ux.js` に taskContext 受け渡しと screenshot 0 件ガードを追加
   - workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ補正
   - Phase 11/12 文書から placeholder screenshot と `not_run` metadata の current fact を明示
-  - `task-workflow-completed.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `SKILL.md` を same-wave 更新
+- `task-workflow-completed.md` / `lessons-learned-phase12-workflow-lifecycle.md` / `SKILL.md` を same-wave 更新
+
+## TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 skill-feedback 反映（2026-04-03）
+
+- タスク名: TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001
+- 種別: docs sync + skill feedback
+- 主な反映:
+  - `task-specification-creator/SKILL.md` に Feedback BEFORE-QUIT-001〜003 を反映
+  - Phase 11 非 visual task の代替記録テンプレートを追加
+  - Phase 7 coverage の対象範囲明示ルールを追加
+  - Phase 12 documentation-changelog の workflow-local / global skill sync 分離ルールを追加
+  - `generate-index.js` 再実行で indexes を 2026-04-03 時点へ更新
+
+## TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync（2026-04-03）
+
+- タスク名: TASK-FIX-LIFECYCLE-PANEL-ERROR-001
+- 種別: bugfix / workflow close-out / docs sync
+- 主な反映:
+  - `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/index.md` / `phase-1〜12.md` / `artifacts.json` / `outputs/artifacts.json` を current facts へ同期
+  - `task-workflow-completed.md` / `task-workflow-backlog.md` の current path を `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/` へ是正
+  - Phase 10〜12 outputs を current close-out として固定
+  - `generate-index.js` を再実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- 検証:
+  - `pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx --reporter=verbose`: PASS（8/8）
+  - `pnpm exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx --reporter=dot`: PASS（10/10）
+  - `pnpm --filter @repo/desktop typecheck`: PASS
+  - `pnpm exec eslint apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx`: PASS（warning のみ）
+  - `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error --json`: PASS（10/10）
+
+- 2026-04-03: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 完了 — SkillLifecyclePanel に severity フィルタ（all/warning+/error）を追加

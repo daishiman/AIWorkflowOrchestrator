@@ -10,7 +10,7 @@ category: 改善
 target_feature: SkillCreator UI (renderer side) - verify detail severity filtering
 priority: 中
 scale: 小規模
-status: 未実施
+status: 完了済み
 source_phase: Phase 12
 created_date: 2026-04-03
 dependencies: [UT-SDK-L34-UI-DISPLAY-001]
@@ -26,7 +26,7 @@ dependencies: [UT-SDK-L34-UI-DISPLAY-001]
 | 対象機能     | SkillCreator UI (renderer side)                              |
 | 優先度       | 中                                                           |
 | 見積もり規模 | 小規模                                                       |
-| ステータス   | 未実施                                                       |
+| ステータス   | 完了済み                                                     |
 | 発見元       | UT-SDK-L34-UI-DISPLAY-001 の Phase 12 候補                   |
 | 発見日       | 2026-04-03                                                   |
 | 依存タスク   | UT-SDK-L34-UI-DISPLAY-001（完了後に着手）                    |
