@@ -1,4 +1,4 @@
-# Phase 11: discovered issues — TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001
+# Phase 11: discovered issues — UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
 
 ## サマリー
 
@@ -13,6 +13,7 @@ Phase 11 の NON_VISUAL walkthrough では、新規の blocker / minor issue は
 
 ## 確認メモ
 
-- preload bundle 内の `@repo/shared` runtime import は 0 件
-- `skill:list` を含む channel 定数は bundle 内に残存
-- `governance-bundle.test.ts` の 7 階層相対パス workaround は除去済み
+- severity フィルタの全テスト（SF-01〜SF-09）が PASS
+- 既存テスト（TC-01〜TC-19 相当）が全て PASS（回帰なし）
+- TypeScript typecheck 0 errors
+- ESLint 0 errors

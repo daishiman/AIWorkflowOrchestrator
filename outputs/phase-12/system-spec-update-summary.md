@@ -1,26 +1,24 @@
-# Phase 12: 仕様更新サマリー — TASK-SDK-SC-02
+# Phase 12: 仕様更新サマリー — UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
 
-## Step 1-A: same-wave 記録
+## Step 1-A: タスク完了記録
 
-- `task-workflow-completed.md` に TASK-SDK-SC-02 Conversation UI の完了記録を追加
-- `quick-reference.md` に Conversation UI 即時導線セクションを追加
-- `LOGS.md` に Phase-12 同期記録を追加
+- タスク UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 を completed に更新
+- 依存タスク UT-SDK-L34-UI-DISPLAY-001 との関係を記録
 
-## Step 1-B: コンポーネント仕様書
+## Step 1-B: 実装状況更新
 
-- `phase-12-documentation.md` に 5 コンポーネントの Props API・使用例・仕様準拠チェックを記録
-- `implementation-guide.md` にアーキテクチャ・型マッピング・IPC 通信フロー・品質指標を記録
+| 項目         | 変更前 | 変更後     |
+| ------------ | ------ | ---------- |
+| ステータス   | 実行中 | completed  |
+| 変更ファイル | -      | 2 ファイル |
 
-## Step 2: 仕様反映判定
+## Step 1-C: 関連タスクテーブル
 
-反映あり:
+| タスクID                                  | 関係     | ステータス |
+| ----------------------------------------- | -------- | ---------- |
+| UT-SDK-L34-UI-DISPLAY-001                 | 依存元   | completed  |
+| UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 | 本タスク | completed  |
 
-- **UI コンポーネント追加**: Renderer に 5 コンポーネント（ChoiceButton, FreeTextInput, ConversationProgress, QuestionCard, SkillCreatorConversationPanel）を追加
-- **型マッピング層**: Session Bridge 型 ↔ Workflow 型のブリッジを Panel コンポーネント内に実装
-- **IPC 利用**: `SKILL_CREATOR_SESSION_CHANNELS`（QUESTION_RECEIVED, ANSWER, SESSION_COMPLETE, SESSION_ERROR）を Renderer から利用
-- **Atomic Design**: Atom (3) / Molecule (1) / Organism (1) 構成
+## Step 2: 新規インターフェース
 
-反映なし:
-
-- public IPC channel の追加はない（既存チャネルの利用のみ）
-- shared 型の追加はない（既存の `UserInputQuestion` / `UserInputAnswer` / `SkillCreatorUserInputRequest` / `InterviewUserAnswer` を利用）
+`SeverityFilterLevel` 型は `SkillLifecyclePanel.tsx` 内部型のため、shared 仕様書への更新は不要。

@@ -1,28 +1,27 @@
-# Phase 12: ドキュメント更新履歴 — TASK-SDK-SC-02
+# Phase 12: ドキュメント更新履歴 — UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
 
-## current
+## 変更ファイル一覧
 
-| 種別        | ファイル                                                                                              | 内容                                                        |
-| ----------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| component   | `apps/desktop/src/renderer/components/skill-creator/ChoiceButton.tsx`                                 | 選択/未選択状態の単一ボタン Atom コンポーネント             |
-| component   | `apps/desktop/src/renderer/components/skill-creator/FreeTextInput.tsx`                                | 自由入力テキストエリア Atom コンポーネント                  |
-| component   | `apps/desktop/src/renderer/components/skill-creator/ConversationProgress.tsx`                         | 進捗表示 Atom コンポーネント                                |
-| component   | `apps/desktop/src/renderer/components/skill-creator/QuestionCard.tsx`                                 | kind 別質問表示・入力 UI 統合 Molecule コンポーネント       |
-| component   | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorConversationPanel.tsx`                | IPC listen・回答送信・全コンポーネント統合 Organism         |
-| test        | `apps/desktop/src/renderer/components/skill-creator/__tests__/ChoiceButton.test.tsx`                  | 9 tests                                                     |
-| test        | `apps/desktop/src/renderer/components/skill-creator/__tests__/FreeTextInput.test.tsx`                 | 9 tests                                                     |
-| test        | `apps/desktop/src/renderer/components/skill-creator/__tests__/ConversationProgress.test.tsx`          | 3 tests                                                     |
-| test        | `apps/desktop/src/renderer/components/skill-creator/__tests__/QuestionCard.test.tsx`                  | 23 tests                                                    |
-| test        | `apps/desktop/src/renderer/components/skill-creator/__tests__/SkillCreatorConversationPanel.test.tsx` | 13 tests                                                    |
-| docs        | `docs/30-workflows/step-02-par-task-02-conversation-ui/phase-12-documentation.md`                     | 5 コンポーネント仕様書・Props API・使用例・仕様準拠チェック |
-| docs        | `outputs/phase-12/implementation-guide.md`                                                            | アーキテクチャ・型マッピング・IPC 通信フロー・品質指標      |
-| system spec | `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`                        | 完了記録を追加                                              |
-| system spec | `.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`                                   | Conversation UI 即時導線を追加                              |
-| skill log   | `.claude/skills/aiworkflow-requirements/LOGS.md`                                                      | same-wave sync 記録                                         |
+| 種別    | ファイル                                                                            | 内容                      |
+| ------- | ----------------------------------------------------------------------------------- | ------------------------- |
+| code    | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                | severity フィルタ実装追加 |
+| test    | `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx` | SF-01〜SF-09 テスト追加   |
+| outputs | `outputs/phase-1/requirements.md`                                                   | 要件定義                  |
+| outputs | `outputs/phase-2/basic-design.md`                                                   | 基本設計                  |
+| outputs | `outputs/phase-3/detailed-design.md`                                                | 設計レビュー              |
+| outputs | `outputs/phase-4/test-design.md`                                                    | テスト設計                |
+| outputs | `outputs/phase-5/test-cases.md`                                                     | テストケース              |
+| outputs | `outputs/phase-6/implementation-summary.md`                                         | テスト拡充                |
+| outputs | `outputs/phase-7/coverage-report.md`                                                | カバレッジ確認            |
+| outputs | `outputs/phase-8/refactoring-report.md`                                             | リファクタリング報告      |
+| outputs | `outputs/phase-9/test-supplement.md`                                                | テスト補充                |
+| outputs | `outputs/phase-10/review-result.md`                                                 | 最終レビュー結果          |
+| outputs | `outputs/phase-11/manual-test-result.md`                                            | 手動テスト結果            |
+| outputs | `outputs/phase-11/manual-test-report.md`                                            | 手動テストレポート        |
+| outputs | `outputs/phase-11/discovered-issues.md`                                             | 検出課題（0件）           |
+| outputs | `outputs/phase-12/implementation-guide.md`                                          | 実装ガイド                |
 
 ## 実測
 
-- `pnpm --filter @repo/desktop exec vitest run ...skill-creator/__tests__/`: **57 tests PASS**
-- カバレッジ: Stmts 97.54% / Branch 86.04% / Funcs 95.83%
-- TypeScript typecheck: PASS
-- ESLint: PASS
+- `pnpm --dir apps/desktop test:run` → 27 tests PASS
+- `pnpm --filter @repo/desktop typecheck` → 0 errors
