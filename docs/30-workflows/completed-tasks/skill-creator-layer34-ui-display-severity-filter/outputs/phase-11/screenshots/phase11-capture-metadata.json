@@ -1,0 +1,53 @@
+{
+  "taskId": "UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001",
+  "generatedAt": "2026-04-04T01:30:23.832Z",
+  "captureMethod": "current_build_vite_playwright",
+  "baseUrl": "http://127.0.0.1:5199",
+  "harnessPath": "/phase11-task-skill-lifecycle-severity-filter.html",
+  "viewport": {
+    "width": 1440,
+    "height": 2200
+  },
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "scenario": "default-all",
+      "theme": "light",
+      "file": "TC-11-01-severity-filter-all-light.png",
+      "output": "outputs/phase-11/screenshots/TC-11-01-severity-filter-all-light.png",
+      "note": "Default all state in light theme.",
+      "capturedAt": "2026-04-04T01:30:17.657Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-11-02",
+      "scenario": "warning-plus",
+      "theme": "light",
+      "file": "TC-11-02-severity-filter-warning-plus-light.png",
+      "output": "outputs/phase-11/screenshots/TC-11-02-severity-filter-warning-plus-light.png",
+      "note": "warning+ state in light theme.",
+      "capturedAt": "2026-04-04T01:30:21.001Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-11-03",
+      "scenario": "error-only",
+      "theme": "light",
+      "file": "TC-11-03-severity-filter-error-light.png",
+      "output": "outputs/phase-11/screenshots/TC-11-03-severity-filter-error-light.png",
+      "note": "error-only state in light theme.",
+      "capturedAt": "2026-04-04T01:30:22.602Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-11-04",
+      "scenario": "default-all-dark",
+      "theme": "dark",
+      "file": "TC-11-04-severity-filter-all-dark.png",
+      "output": "outputs/phase-11/screenshots/TC-11-04-severity-filter-all-dark.png",
+      "note": "Default all state in dark theme.",
+      "capturedAt": "2026-04-04T01:30:23.791Z",
+      "captureMethod": "current_build_vite_playwright"
+    }
+  ]
+}
