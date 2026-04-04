@@ -7,6 +7,7 @@
 | Phase  | 5                                |
 | 機能名 | stub-response-error-notification |
 | 作成日 | 2026-03-29                       |
+| 更新日 | 2026-04-04（実装状況反映）       |
 
 ## 目的
 
@@ -22,34 +23,72 @@ explicit error union を shared types / facade / renderer に実装し、false-s
 
 ## 参照資料
 
-| 資料名       | パス                                                                  | 説明       |
-| ------------ | --------------------------------------------------------------------- | ---------- |
-| Phase 2 設計 | `phase-2-design.md`                                                   | 実装方針   |
-| shared types | `packages/shared/src/types/skillCreator.ts`                           | 契約追加先 |
-| Facade       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | 実装対象   |
-| renderer     | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`  | UI 変更点  |
+| 資料名       | パス                                                                                                                                      | 説明       |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| Phase 2 設計 | `phase-2-design.md`                                                                                                                       | 実装方針   |
+| shared types | `packages/shared/src/types/skillCreator.ts`                                                                                               | 契約追加先 |
+| Facade       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                                                                     | 実装対象   |
+| renderer     | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` / `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx` | UI 変更点  |
+
+## 実装状況（2026-04-04 確認済み）
+
+### 実装済み
+
+| 項目                                      | ファイル                                                                                              | 行           | 状態 |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------ | ---- |
+| `RuntimeSkillCreatorDegradedReason` 型    | `packages/shared/src/types/skillCreator.ts`                                                           | :744         | [x]  |
+| `RuntimeSkillCreatorPlanErrorResponse` 型 | `packages/shared/src/types/skillCreator.ts`                                                           | :751         | [x]  |
+| `buildDegradedError()` ヘルパー           | `RuntimeSkillCreatorFacade.ts`                                                                        | :1706        | [x]  |
+| `DEGRADED_REASON_MESSAGES` マップ         | `RuntimeSkillCreatorFacade.ts`                                                                        | :1696        | [x]  |
+| `plan()` の `!this.llmAdapter` ガード     | `RuntimeSkillCreatorFacade.ts`                                                                        | :814         | [x]  |
+| `plan()` の `!this.resourceLoader` ガード | `RuntimeSkillCreatorFacade.ts`                                                                        | :818         | [x]  |
+| `improve()` の同型ガード                  | `RuntimeSkillCreatorFacade.ts`                                                                        | :1275        | [x]  |
+| `execute()` の `!this.llmAdapter` ガード  | `RuntimeSkillCreatorFacade.ts`                                                                        | :1056        | [x]  |
+| `stub-elimination.test.ts`                | `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.stub-elimination.test.ts` | -            | [x]  |
+| `isRuntimePlanErrorResponse()` type guard | `SkillLifecyclePanel.tsx`                                                                             | :241         | [x]  |
+| UI plan エラー表示                        | `SkillLifecyclePanel.tsx` / `SkillCreateWizard.tsx`                                                   | :1187 / :254 | [x]  |
+| UI execute エラー表示                     | `SkillLifecyclePanel.tsx`                                                                             | :1309        | [x]  |
+
+### 残課題
+
+なし
 
 ## 実行手順
 
-### ステップ1: shared type を追加する
+### ステップ1: shared type を追加する（完了済み）
 
-- `RuntimeSkillCreatorDegradedReason` を追加する
-- `RuntimeSkillCreatorPlanErrorResponse` を追加する
-- `RuntimeSkillCreatorPlanResponse` を union 拡張する
-- `RuntimeSkillCreatorImproveErrorResponse` の code を degraded reason と整合させる
+- [x] `RuntimeSkillCreatorDegradedReason` を追加する
+- [x] `RuntimeSkillCreatorPlanErrorResponse` を追加する
+- [x] `RuntimeSkillCreatorPlanResponse` を union 拡張する
+- [x] `RuntimeSkillCreatorImproveErrorResponse` の code を degraded reason と整合させる
 
-### ステップ2: Facade を修正する
+### ステップ2: Facade を修正する（完了済み）
 
-- `plan()` の stub success を error union に置換する
-- `improve()` の空 suggestions を error response に置換する
-- `execute()` は shape を維持し、invalid plan 実行を UI 側で抑止する
+- [x] `plan()` の stub success を error union に置換する
+- [x] `improve()` の空 suggestions を error response に置換する
+- [x] `_executeInternal()` の `!this.llmAdapter` ガードを追加する（Facade.ts:1046 直後）
 
-### ステップ3: renderer を修正する
+### ステップ3: renderer を修正する（完了済み）
 
-- `isRuntimePlanErrorResponse()` を追加する
-- logical error 受信時に error state を表示する
-- execute 開始ボタン / 次段導線を無効化する
-- `SkillCreateWizard.tsx` でも同じ表示規則に揃える
+- [x] `isRuntimePlanErrorResponse()` を追加する
+- [x] logical error 受信時に error state を表示する
+- [x] execute 開始ボタン / 次段導線を無効化する
+- `SkillCreateWizard.tsx` も同じ表示規則に揃っているため、Phase 6 TC-12 では parity を再確認する
+
+### ステップ4: stub-elimination テスト作成（T-02 完了済み）
+
+- [x] **T-02**: 以下パスに新規テストファイルを作成する
+  - パス: `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.stub-elimination.test.ts`
+  - 既存パターン参照: `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts`
+
+**テストケース一覧:**
+
+| TC    | 条件                                       | 期待結果                                  |
+| ----- | ------------------------------------------ | ----------------------------------------- |
+| TC-10 | `llmAdapter` 未注入時に `execute()` を呼ぶ | `success: false` を返す                   |
+| TC-11 | `llmAdapter` 注入済みで `execute()` を呼ぶ | 正常処理される（回帰テスト）              |
+| TC-12 | `plan()` で `llmAdapter` 未注入            | `success: false` を返す（既存実装の回帰） |
+| TC-13 | `plan()` で `resourceLoader` 未注入        | `success: false` を返す（既存実装の回帰） |
 
 ## 統合テスト連携
 
@@ -74,8 +113,10 @@ explicit error union を shared types / facade / renderer に実装し、false-s
 
 ## 完了条件
 
-- [ ] `status/degradedReason/userMessage` 横展開案を実装していない
-- [ ] plan / improve の false-success が除去されている
-- [ ] execute 抑止が renderer に実装されている
-- [ ] IPC outer wrapper の責務が壊れていない
-- [ ] **本Phase内の全タスクを100%実行完了**
+- [x] `status/degradedReason/userMessage` 横展開案を実装していない
+- [x] plan / improve の false-success が除去されている
+- [x] execute 抑止が renderer に実装されている
+- [x] IPC outer wrapper の責務が壊れていない
+- [x] T-01: `_executeInternal()` の `!this.llmAdapter` ガードが実装されている
+- [x] T-02: `stub-elimination.test.ts` が作成・PASS している
+- [x] **本Phase内の全タスクを100%実行完了**

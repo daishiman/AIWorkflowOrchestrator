@@ -821,9 +821,17 @@ export class RuntimeSkillCreatorFacade {
 
     // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
     if (!this.llmAdapter) {
+      governanceHooks.onSessionEnd({
+        sessionId: planId,
+        summary: "Plan failed: LLM adapter unavailable",
+      });
       return buildDegradedError("llm_adapter_unavailable");
     }
     if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
+      governanceHooks.onSessionEnd({
+        sessionId: planId,
+        summary: "Plan failed: Resource loader unavailable",
+      });
       return buildDegradedError("resource_loader_unavailable");
     }
 
@@ -1109,14 +1117,10 @@ export class RuntimeSkillCreatorFacade {
     });
 
     // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001: アダプターステータスチェック
-    if (
-      this._llmAdapterStatus === "failed" ||
-      this._llmAdapterStatus === "initializing"
-    ) {
-      const errorMessage =
-        this._llmAdapterStatus === "failed"
-          ? toActionableMessage(this._llmAdapterFailureReason)
-          : "LLMAdapter の初期化中です。しばらくお待ちください";
+    // "failed" のみ early return（永続的な障害）。
+    // "initializing" は resolve() を先行させ terminal_handoff を優先する（TC-14）。
+    if (this._llmAdapterStatus === "failed") {
+      const errorMessage = toActionableMessage(this._llmAdapterFailureReason);
 
       this.workflowEngine.recordExecuteAdapterFailure(
         planResult,
@@ -1150,6 +1154,10 @@ export class RuntimeSkillCreatorFacade {
         decision.bundle,
         sourceProvenance,
       );
+      governanceHooks.onSessionEnd({
+        sessionId: planResult.planId,
+        summary: "Execute routed to terminal_handoff",
+      });
       return { type: "terminal_handoff", bundle: decision.bundle };
     }
 
@@ -1158,6 +1166,34 @@ export class RuntimeSkillCreatorFacade {
       decision,
       sourceProvenance,
     );
+
+    // TASK-RT-02: スタブ応答排除 — terminal_handoff は除外済み、ここから integrated_api のみ
+    // recordExecuteStart() でワークフロー状態を確立した後にガードする
+    if (!this.llmAdapter) {
+      const sdkEvents = normalizeSkillCreatorSdkEvents([], sourceProvenance);
+      const result: SkillExecuteResult = {
+        executeId: `degraded-${Date.now()}`,
+        skillName:
+          planResult.skillSpec.split("\n")[0]?.substring(0, 50) ?? "unnamed",
+        success: false,
+        error: DEGRADED_REASON_MESSAGES.llm_adapter_unavailable,
+        sdkEvents,
+        sourceProvenance,
+      };
+      this.workflowEngine.recordExecutionFailure(planResult.planId, {
+        executeId: result.executeId,
+        skillName: result.skillName,
+        reason: "execution_error",
+        message: result.error ?? "LLM adapter unavailable.",
+        sdkEvents,
+        sourceProvenance,
+      });
+      governanceHooks.onSessionEnd({
+        sessionId: planResult.planId,
+        summary: `Execute failed: ${result.error ?? "LLM adapter unavailable."}`,
+      });
+      return result;
+    }
     const executePolicy = getPolicy("execute");
 
     const request: SkillExecutionRequest = {
@@ -1341,8 +1377,16 @@ export class RuntimeSkillCreatorFacade {
     authMode: AuthMode,
     apiKey: string | null,
   ): Promise<RuntimeSkillCreatorImproveResponse> {
+    const improveId = `improve-${Date.now()}`;
+    const governanceHooks = this.createGovernanceHooks("improve");
+    governanceHooks.onSessionStart({ sessionId: improveId });
+
     // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001: アダプターステータスチェック
     if (this._llmAdapterStatus === "failed") {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: LLM adapter status is failed",
+      });
       return {
         success: false,
         error: {
@@ -1352,6 +1396,10 @@ export class RuntimeSkillCreatorFacade {
       };
     }
     if (this._llmAdapterStatus === "initializing") {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: LLM adapter is initializing",
+      });
       return {
         success: false,
         error: {
@@ -1396,15 +1444,19 @@ export class RuntimeSkillCreatorFacade {
       };
     }
 
-    const improveId = `improve-${Date.now()}`;
-    const governanceHooks = this.createGovernanceHooks("improve");
-    governanceHooks.onSessionStart({ sessionId: improveId });
-
     // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
     if (!this.llmAdapter) {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: LLM adapter unavailable",
+      });
       return buildDegradedError("llm_adapter_unavailable");
     }
     if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: Resource loader unavailable",
+      });
       return buildDegradedError("resource_loader_unavailable");
     }
 
