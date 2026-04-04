@@ -128,3 +128,16 @@
 
 ---
 
+## 昇格パターン集
+
+### unassigned-task → Phase 1-13 仕様書ディレクトリへの昇格パターン
+
+- **用途**: `docs/30-workflows/unassigned-task/` の簡易仕様書を完全な Phase 1-13 仕様書に昇格させる
+- **配置先**: `docs/30-workflows/completed-tasks/{{task-id}}/`
+- **手順**:
+  1. unassigned-task 仕様書の Why/What/How を Phase 1 要件定義へ変換
+  2. Phase 2-13 の仕様書を task-specification-creator テンプレートで生成
+  3. 元の unassigned-task ファイルを completed-tasks に移動
+  4. aiworkflow-requirements の同 wave 更新
+- **参考**: UT-UIUX-VISUAL-BASELINE-DRIFT-001（2026-04-03）
+

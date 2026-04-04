@@ -1682,9 +1682,10 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果 | Phase 12 の実装ガイド・未タスク・skill-feedback を `provider-registry.ts` 前提へ同期し、Phase 13 の PR 準備と最終確認を current facts へ是正。`TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` を削除済みとして整理 |
 | 検証 | `provider.test.ts` 41 PASS、`llm.test.ts` 59 PASS / 1 skipped、workflow 内検索で旧想定パスの残存を解消確認 |
 
-### 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync
+---
+## 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 完了（2026-04-03）
 
-| 項目 | 内容 |
+| 項目 | 値 |
 | --- | --- |
 | 種別 | documentation / workflow close-out |
 | 変更対象 | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/index.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-1-requirements.md` 〜 `phase-12-documentation.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/artifacts.json`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/outputs/artifacts.json`, `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`, `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`, `outputs/phase-10`〜`outputs/phase-12` |
@@ -1692,3 +1693,15 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 検証 | `validate-phase12-implementation-guide.js` PASS（10/10）、`vitest` 8/8 PASS、`vitest` 10/10 PASS、`typecheck` PASS、`eslint` PASS |
 
 - 2026-04-04: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 close-out sync — lessons-learned-severity-filter-ui.md 追加、unassigned-task status を完了済みに更新
+
+---
+## 2026-04-03: UT-UIUX-VISUAL-BASELINE-DRIFT-001 タスク仕様書作成
+
+- **タスクID**: UT-UIUX-VISUAL-BASELINE-DRIFT-001
+- **作業内容**: Issue #1811（closed）の unassigned-task 仕様書から Phase 1-13 完全仕様書ディレクトリを作成
+- **配置先**: `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/`
+- **作成ファイル**: index.md, artifacts.json, phase-1-requirements.md 〜 phase-13-pr-creation.md, outputs/
+- **特記事項**:
+  - unassigned-task → completed-tasks/ への昇格パターンを初適用
+  - Visual Regression テストの baseline drift 是正という「テスト修正型」タスクのため、Phase 4 を通常の「テスト作成」ではなく「テスト検証準備」として設計
+  - SubAgent 並列実行: 設計書（Phase 1-3）を直列、Phase 4-8 と Phase 9-13 を並列で作成

@@ -3,6 +3,18 @@
 このファイルにはスキルの使用記録が追記されます。
 
 ---
+## 2026-04-03 - UT-UIUX-VISUAL-BASELINE-DRIFT-001 の dark-mode baseline drift 再利用知見を SKILL / template へ反映
+
+- **Agent**: skill-creator (update)
+- **Phase**: cross-skill-improvement
+- **Result**: success
+- **Notes**:
+  - `references/patterns-success-phase12-advanced.md` に dark-mode visual baseline drift の `theme lock / evidence lock / same-wave sync` パターンを追加
+  - `assets/phase12-system-spec-retrospective-template.md` に `playwright.config.ts` と spec の `colorScheme` 二重固定、および `TC-ID ↔ png ↔ manual-test-result` 1:1 管理のチェック項目を追加
+  - `assets/phase12-spec-sync-subagent-template.md` に UI visual baseline drift 追補プロファイルを追加し、workflow / completed ledger / lessons / lookup の同 wave 更新を標準化
+  - `SKILL.md` の Phase 12 再監査ショートカットに `theme lock → screenshot evidence → docs/spec sync` を追加し、`SCREENSHOT + outputs` 優先の順序を明示
+
+---
 ## 2026-03-30 - TASK-P0-02 verify→improve→re-verify 閉ループ実装の SKILL.md 反映
 
 - **Agent**: skill-creator (update)

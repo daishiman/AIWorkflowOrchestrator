@@ -13,8 +13,12 @@
 
 import { ipcMain } from "electron";
 import type { BrowserWindow, IpcMainInvokeEvent } from "electron";
-import { SKILL_CREATOR_SESSION_CHANNELS } from "@repo/shared/ipc/channels";
+import {
+  SKILL_CREATOR_EXTERNAL_API_CHANNELS,
+  SKILL_CREATOR_SESSION_CHANNELS,
+} from "@repo/shared/ipc/channels";
 import type {
+  ExternalApiConnectionConfig,
   SkillCreatorSessionStartRequest,
   SkillCreatorSessionCompleteEvent,
   SkillCreatorSessionErrorEvent,
@@ -22,15 +26,24 @@ import type {
   UserInputQuestion,
 } from "@repo/shared/types";
 import { SkillLocator } from "./SkillLocator";
+import type { ExternalApiConfigRequiredPayload } from "./SkillCreatorSdkSession";
 import { SkillCreatorSdkSession } from "./SkillCreatorSdkSession";
 
 /** sessionFactory の型 */
 export type SessionFactory = (
   sessionId: string,
   onQuestion: (q: UserInputQuestion) => void,
+  onExternalApiConfigRequired: (
+    payload: ExternalApiConfigRequiredPayload,
+  ) => void,
   onComplete: (r: string) => void,
   onError: (e: string) => void,
 ) => SkillCreatorSdkSession;
+
+type ConfigureApiResult = {
+  success: boolean;
+  error?: string;
+};
 
 export class SkillCreatorIpcBridge {
   private currentSession: SkillCreatorSdkSession | null = null;
@@ -47,6 +60,7 @@ export class SkillCreatorIpcBridge {
     private readonly sessionFactory: SessionFactory = (
       sessionId,
       onQuestion,
+      onExternalApiConfigRequired,
       onComplete,
       onError,
     ) => {
@@ -55,6 +69,7 @@ export class SkillCreatorIpcBridge {
         sessionId,
         skillCreatorDir,
         onQuestion,
+        onExternalApiConfigRequired,
         onComplete,
         onError,
       );
@@ -84,6 +99,13 @@ export class SkillCreatorIpcBridge {
       },
     );
 
+    ipcMain.handle(
+      SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
+      async (event, config: ExternalApiConnectionConfig) => {
+        return await this.onConfigureApi(event, config);
+      },
+    );
+
     this.registered = true;
   }
 
@@ -100,6 +122,7 @@ export class SkillCreatorIpcBridge {
     this.window.off?.("closed", this.handleWindowClosed);
     ipcMain.removeHandler(SKILL_CREATOR_SESSION_CHANNELS.START_SESSION);
     ipcMain.removeHandler(SKILL_CREATOR_SESSION_CHANNELS.ANSWER);
+    ipcMain.removeHandler(SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API);
     this.registered = false;
   }
 
@@ -146,6 +169,7 @@ export class SkillCreatorIpcBridge {
     const session = this.sessionFactory(
       sessionId,
       (question) => this.emitQuestionReceived(question),
+      (payload) => this.emitExternalApiConfigRequired(payload),
       (result) => {
         this.currentSession = null;
         this.emitSessionComplete(result);
@@ -198,6 +222,51 @@ export class SkillCreatorIpcBridge {
   }
 
   /**
+   * configure-api IPC を処理する。
+   */
+  private async onConfigureApi(
+    event: IpcMainInvokeEvent,
+    config: ExternalApiConnectionConfig,
+  ): Promise<ConfigureApiResult> {
+    this.assertSender(event);
+
+    if (!this.currentSession) {
+      return {
+        success: false,
+        error:
+          "[SkillCreatorIpcBridge] Received external API config but no active session",
+      };
+    }
+
+    if (!this.isValidExternalApiConfig(config)) {
+      const error = "外部API設定の形式が不正です";
+      this.emitApiConfigured({ success: false, error });
+      this.emitApiTestResult({ ok: false, error });
+      return {
+        success: false,
+        error: `[SkillCreatorIpcBridge] ${error}`,
+      };
+    }
+
+    try {
+      this.currentSession.sendExternalApiConfig(config);
+      this.emitApiConfigured({ success: true });
+      this.emitApiTestResult({ ok: true });
+      return {
+        success: true,
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      this.emitApiConfigured({ success: false, error: message });
+      this.emitApiTestResult({ ok: false, error: message });
+      return {
+        success: false,
+        error: message,
+      };
+    }
+  }
+
+  /**
    * Main → Renderer: question-received イベントを送出する。
    */
   private emitQuestionReceived(question: UserInputQuestion): void {
@@ -241,6 +310,48 @@ export class SkillCreatorIpcBridge {
     );
   }
 
+  /**
+   * Main → Renderer: external-api-config-required イベントを送出する。
+   */
+  private emitExternalApiConfigRequired(
+    payload: ExternalApiConfigRequiredPayload,
+  ): void {
+    if (this.window.webContents.isDestroyed()) {
+      return;
+    }
+    this.window.webContents.send(
+      SKILL_CREATOR_SESSION_CHANNELS.EXTERNAL_API_CONFIG_REQUIRED,
+      payload,
+    );
+  }
+
+  private emitApiConfigured(payload: {
+    success: boolean;
+    error?: string;
+  }): void {
+    if (this.window.webContents.isDestroyed()) {
+      return;
+    }
+    this.window.webContents.send(
+      SKILL_CREATOR_EXTERNAL_API_CHANNELS.API_CONFIGURED,
+      payload,
+    );
+  }
+
+  private emitApiTestResult(payload: {
+    ok: boolean;
+    latencyMs?: number;
+    error?: string;
+  }): void {
+    if (this.window.webContents.isDestroyed()) {
+      return;
+    }
+    this.window.webContents.send(
+      SKILL_CREATOR_EXTERNAL_API_CHANNELS.API_TEST_RESULT,
+      payload,
+    );
+  }
+
   private hasActiveSession(): boolean {
     if (!this.currentSession) {
       return false;
@@ -257,6 +368,54 @@ export class SkillCreatorIpcBridge {
 
     this.currentSession.abort(message, { silent });
     this.currentSession = null;
+  }
+
+  private isValidExternalApiConfig(
+    config: ExternalApiConnectionConfig,
+  ): boolean {
+    if (!config || typeof config !== "object") {
+      return false;
+    }
+    if (typeof config.name !== "string" || config.name.trim() === "") {
+      return false;
+    }
+    if (typeof config.url !== "string" || config.url.trim() === "") {
+      return false;
+    }
+    if (config.method !== "GET" && config.method !== "POST") {
+      return false;
+    }
+    if (
+      config.authType !== "none" &&
+      config.authType !== "api-key" &&
+      config.authType !== "bearer" &&
+      config.authType !== "basic"
+    ) {
+      return false;
+    }
+    if (
+      config.authType !== "none" &&
+      (typeof config.credential !== "string" || config.credential.trim() === "")
+    ) {
+      return false;
+    }
+    if (
+      config.headers !== undefined &&
+      (typeof config.headers !== "object" || Array.isArray(config.headers))
+    ) {
+      return false;
+    }
+    if (config.headers) {
+      for (const [key, value] of Object.entries(config.headers)) {
+        if (typeof key !== "string" || key.trim() === "") {
+          return false;
+        }
+        if (typeof value !== "string") {
+          return false;
+        }
+      }
+    }
+    return true;
   }
 
   private assertSender(event: IpcMainInvokeEvent): void {

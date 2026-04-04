@@ -2042,6 +2042,20 @@ node scripts/list-specs.js --topics
 | Follow-up 未タスク | L25 |
 | Validation Chain | L31 |
 
+### references/workflow-ui-ux-visual-baseline-drift.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L9 |
+| 仕様書別 SubAgent 編成 | L20 |
+| 今回実装した内容 | L32 |
+| 苦戦箇所と再発防止 | L53 |
+| 同種課題の 5 分解決カード | L63 |
+| 最適なファイル形成 | L73 |
+| 検証コマンド | L87 |
+| 関連改善タスク | L99 |
+| 関連ドキュメント | L107 |
+| 変更履歴 | L119 |
+
 ### references/workflow-workspace-parent-reference-sweep-guard.md
 
 | セクション | 行 |
@@ -2646,19 +2660,19 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
 | 分割ファイル一覧 | L76 |
-| クイックリファレンス: カテゴリ別検索ガイド | L94 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L275 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L607 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L641 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L724 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L740 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L764 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L814 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L839 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L870 |
-| TASK-RT-06 教訓（2026-03-29） | L901 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L923 |
-| TASK-P0-04 教訓（2026-03-30） | L954 |
+| クイックリファレンス: カテゴリ別検索ガイド | L95 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L284 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L616 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L650 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L733 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L749 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L773 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L823 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L848 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L879 |
+| TASK-RT-06 教訓（2026-03-29） | L910 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L932 |
+| TASK-P0-04 教訓（2026-03-30） | L963 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2795,6 +2809,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| TASK-P0-07: Lane分割による並列実装の効果確認 (step-11) | L6 |
+| [2026-04-03] TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 知見 | L28 |
 
 ### references/lessons-learned-skill-remove-contract.md
 
@@ -2865,6 +2880,15 @@ node scripts/list-specs.js --topics
 | TASK-UI-04A-WORKSPACE-LAYOUT 実装教訓（2026-03-10） | L282 |
 | TASK-UI-04C-WORKSPACE-PREVIEW 実装教訓（2026-03-11） | L334 |
 
+### references/lessons-learned-ui-ux-visual-baseline-drift.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L9 |
+| 教訓 | L20 |
+| 同種課題の簡潔解決手順 | L51 |
+| 関連ドキュメント | L61 |
+| 変更履歴 | L72 |
+
 ### references/lessons-learned-viewtype-electron-ui.md
 
 | セクション | 行 |
@@ -2915,8 +2939,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
 
 ### references/llm-embedding.md
 
@@ -3827,6 +3851,7 @@ node scripts/list-specs.js --topics
 | 品質ゲート（概要） | L73 |
 | 出力テンプレート | L84 |
 | 実行時のコマンド・エージェント・スキル | L107 |
+| 昇格パターン集 | L131 |
 
 ### references/task-workflow-backlog.md
 
@@ -3962,6 +3987,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 分割ファイル一覧 | L7 |
 | タスクID 逆引き | L14 |
 
+### references/task-workflow-completed-ui-ux-visual-baseline-drift.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L9 |
+| 完了記録 | L20 |
+| 関連ドキュメント | L55 |
+| 変更履歴 | L66 |
+
 ### references/task-workflow-completed-ut-06-safety-gate.md
 
 | セクション | 行 |
@@ -4009,8 +4042,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L8 |
-| 利用順序 | L35 |
-| 関連ドキュメント | L40 |
+| 利用順序 | L37 |
+| 関連ドキュメント | L42 |
 
 ### references/testing-accessibility.md
 

@@ -26,6 +26,19 @@
 
 ---
 
+### UI Visual Baseline Drift / dark-mode screenshot stability（2026-04-03）
+
+| 目的                 | 最初に開くファイル                                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| dark-mode baseline   | `references/workflow-ui-ux-visual-baseline-drift.md`                                                                                                        |
+| workflow root        | `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/`                                                                                      |
+| screenshot evidence  | `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/manual-test-result.md`, `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/screenshots/` |
+| completed ledger     | `references/task-workflow-completed-ui-ux-visual-baseline-drift.md`                                                                                         |
+| lessons / reuse card | `references/lessons-learned-ui-ux-visual-baseline-drift.md`, `references/ui-ux-design-system.md`                                                            |
+| same-wave sync       | `references/task-workflow.md`, `indexes/resource-map.md`                                                                                                    |
+
+---
+
 ### Runtime Skill Creator Public IPC 即時導線（2026-03-21）
 
 | 目的                      | 最初に開くファイル                                                       |
@@ -95,6 +108,38 @@
 
 ---
 
+### Skill Creator Conversation UI（TASK-SDK-SC-02 / 2026-04-03 実装済み）
+
+| 目的                                                 | 最初に開くファイル                                                                                              |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Task02 の全体像・Phase 仕様書                        | `docs/30-workflows/step-02-par-task-02-conversation-ui/index.md`                                                |
+| 5 コンポーネント Props API・使用例                   | `docs/30-workflows/step-02-par-task-02-conversation-ui/phase-12-documentation.md`                               |
+| アーキテクチャ・型マッピング・IPC 通信フロー         | `outputs/phase-12/implementation-guide.md`                                                                      |
+| Session Bridge 型定義                                | `packages/shared/src/types/skillCreatorSession.ts`（`UserInputQuestion` / `UserInputAnswer`）                   |
+| Workflow UI 型定義                                   | `packages/shared/src/types/skillCreator.ts`（`SkillCreatorUserInputRequest` / `InterviewUserAnswer`）           |
+| IPC チャネル定義                                     | `packages/shared/src/ipc/channels.ts`（`SKILL_CREATOR_SESSION_CHANNELS`）                                      |
+| Preload API                                          | `apps/desktop/src/preload/skill-creator-session-api.ts`（`window.skillCreatorSessionAPI`）                      |
+| Organism コンポーネント（ブリッジ層）                | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorConversationPanel.tsx`                           |
+| テスト（57 件）                                      | `apps/desktop/src/renderer/components/skill-creator/__tests__/`                                                 |
+| completed ledger                                     | `references/task-workflow-completed.md`                                                                         |
+
+---
+
+### Skill Creator External API Support（TASK-SDK-SC-03 / 2026-04-03 実装済み）
+
+| 目的                                                    | 最初に開くファイル                                                                      |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| External API IPC チャネル4本の契約                      | `references/api-ipc-system-core.md`（§Skill Creator External API Support）              |
+| 型定義（ExternalApiConnectionConfig / AuthType / Error） | `packages/shared/src/types/skillCreatorExternalApi.ts`                                   |
+| チャネル定数定義                                         | `packages/shared/src/ipc/channels.ts`（SKILL_CREATOR_EXTERNAL_API_CHANNELS）            |
+| credential 秘匿化セキュリティ契約                       | `references/security-electron-ipc-core.md`（§Credential 秘匿化）                       |
+| IpcBridge バリデーション / SdkSession custom tool       | `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` / `SkillCreatorSdkSession.ts` |
+| ExternalApiConfigForm UI                                | `apps/desktop/src/renderer/components/skill/ExternalApiConfigForm.tsx`                   |
+| 苦戦箇所5件                                             | `references/lessons-learned-current.md`（§TASK-SDK-SC-03）                              |
+| completed ledger                                        | `references/task-workflow-completed.md`                                                  |
+| workflow root                                           | `docs/30-workflows/completed-tasks/step-02-par-task-03-external-api-support/`           |
+
+---
 ### Skill Creator SDK Event Normalization (TASK-RT-06)
 
 **概要:** SDKMessage → SkillCreatorSdkEvent 変換契約の安定化
@@ -305,6 +350,10 @@
 | 承認ゲート                  | `IApprovalGate`, `DefaultApprovalGate`                                               | security-electron-ipc-core.md                                                                                                 |
 | Consumer Auth Guard         | `isConsumerToken()` (`sess-` / `sessionKey=` prefix)                                 | security-electron-ipc-core.md                                                                                                 |
 | API Key 除去                | `sanitizeForApiKeys()`                                                               | security-electron-ipc-core.md                                                                                                 |
+| External API 認証タイプ     | `ExternalApiAuthType`                                                                | skillCreatorExternalApi.ts                                                                                                     |
+| External API 接続設定       | `ExternalApiConnectionConfig`                                                        | skillCreatorExternalApi.ts                                                                                                     |
+| External API タイムアウト   | `ExternalApiTimeoutError`                                                            | skillCreatorExternalApi.ts                                                                                                     |
+| External API HTTP エラー    | `ExternalApiHttpError`                                                               | skillCreatorExternalApi.ts                                                                                                     |
 
 ---
 
@@ -368,6 +417,15 @@
 | `execution:get-disclosure-info` | AI開示情報取得                     |
 | `execution:get-terminal-log`    | ターミナルログ取得                 |
 | `execution:get-copy-command`    | コピーコマンド取得                 |
+
+### スキルクリエイター 外部API連携（TASK-SDK-SC-03）
+
+| チャンネル                                     | 用途                         |
+| ---------------------------------------------- | ---------------------------- |
+| `skill-creator:configure-api`                  | Renderer→Main 外部API設定送信 |
+| `skill-creator:api-configured`                 | Main→Renderer API設定完了通知 |
+| `skill-creator:api-test-result`                | Main→Renderer API接続テスト結果 |
+| `skill-creator:external-api-config-required`   | Main→Renderer API設定要求    |
 
 ### チャット
 

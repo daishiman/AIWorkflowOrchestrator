@@ -1,0 +1,94 @@
+{
+  "taskId": "UT-UIUX-VISUAL-BASELINE-DRIFT-001",
+  "featureName": "ut-uiux-visual-baseline-drift-001",
+  "createdAt": "2026-04-03",
+  "issueNumber": 1811,
+  "phases": {
+    "phase-1": {
+      "status": "完了",
+      "name": "要件定義",
+      "artifacts": ["outputs/phase-1/requirements.md"]
+    },
+    "phase-2": {
+      "status": "完了",
+      "name": "設計",
+      "artifacts": ["outputs/phase-2/design.md"]
+    },
+    "phase-3": {
+      "status": "完了",
+      "name": "設計レビューゲート",
+      "artifacts": ["outputs/phase-3/review-result.md"]
+    },
+    "phase-4": {
+      "status": "完了",
+      "name": "テスト作成",
+      "artifacts": ["outputs/phase-4/diff-analysis.md"]
+    },
+    "phase-5": {
+      "status": "完了",
+      "name": "実装",
+      "artifacts": [
+        "outputs/phase-5/implementation-log.md",
+        "outputs/phase-5/decision-basis.md"
+      ]
+    },
+    "phase-6": {
+      "status": "完了",
+      "name": "テスト拡充",
+      "artifacts": ["outputs/phase-6/test-result.md"]
+    },
+    "phase-7": {
+      "status": "完了",
+      "name": "カバレッジ確認",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "status": "完了",
+      "name": "リファクタリング",
+      "artifacts": ["outputs/phase-8/refactoring-log.md"]
+    },
+    "phase-9": {
+      "status": "完了",
+      "name": "品質保証",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "status": "完了",
+      "name": "最終レビューゲート",
+      "artifacts": ["outputs/phase-10/review-result.md"]
+    },
+    "phase-11": {
+      "status": "完了",
+      "name": "手動テスト",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/screenshot-plan.json",
+        "outputs/phase-11/screenshots/TC-11-05-error-display.png",
+        "outputs/phase-11/screenshots/TC-11-06-loading-state.png",
+        "outputs/phase-11/screenshots/TC-11-07-dark-mode.png",
+        "outputs/phase-11/screenshots/error-display.png",
+        "outputs/phase-11/screenshots/loading-state.png",
+        "outputs/phase-11/screenshots/dark-mode.png"
+      ]
+    },
+    "phase-12": {
+      "status": "完了",
+      "name": "ドキュメント更新",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md",
+        "outputs/phase-12/decision-record.md"
+      ]
+    },
+    "phase-13": {
+      "status": "未実施",
+      "name": "PR作成",
+      "artifacts": ["outputs/phase-13/pr-readiness.md"]
+    }
+  }
+}

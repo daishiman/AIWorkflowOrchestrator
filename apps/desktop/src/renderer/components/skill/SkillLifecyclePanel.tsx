@@ -9,6 +9,7 @@ import React, {
 import type { SkillExecutionStatus } from "@repo/shared";
 import type {
   ApplyImprovementResult,
+  ExternalApiConnectionConfig,
   HandoffGuidance,
   SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorExecuteResponse,
@@ -67,6 +68,7 @@ import {
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
 import { ExecuteResultDetailPanel } from "./ExecuteResultDetailPanel";
+import { ExternalApiConfigForm } from "./ExternalApiConfigForm";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
 import { PlanResultDetailPanel } from "./PlanResultDetailPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
@@ -110,6 +112,9 @@ type IpcResult<T> = {
 
 type SkillCreatorRuntimeApi = {
   detectMode?: (request: string) => Promise<IpcResult<SkillCreatorMode>>;
+  configureExternalApi?: (
+    config: ExternalApiConnectionConfig,
+  ) => Promise<IpcResult<unknown>>;
   planSkill?: (
     prompt: string,
     authMode?: string,
@@ -160,6 +165,17 @@ type SkillCreatorRuntimeApi = {
       externalDestinations: string[];
     }>
   >;
+};
+
+type ExternalApiConfigRequiredPayload = {
+  apiName?: string;
+  description?: string;
+};
+
+type SkillCreatorSessionRuntimeApi = {
+  onExternalApiConfigRequired?: (
+    callback: (event: ExternalApiConfigRequiredPayload) => void,
+  ) => () => void;
 };
 
 type SessionEntry = {
@@ -568,6 +584,19 @@ function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   );
 }
 
+function getSkillCreatorSessionApi(): SkillCreatorSessionRuntimeApi | null {
+  const runtimeWindow = window as Window & {
+    electronAPI?: { skillCreatorSession?: SkillCreatorSessionRuntimeApi };
+    skillCreatorSessionAPI?: SkillCreatorSessionRuntimeApi;
+  };
+
+  return (
+    runtimeWindow.electronAPI?.skillCreatorSession ??
+    runtimeWindow.skillCreatorSessionAPI ??
+    null
+  );
+}
+
 function extractSkillNameFromPath(skillPath: string): string {
   const normalized = skillPath.trim().replace(/\\/g, "/");
   const segments = normalized.split("/").filter(Boolean);
@@ -724,6 +753,11 @@ export function SkillLifecyclePanel({
     useState<RuntimeSkillCreatorPlanResult | null>(null);
   const [rawExecuteDetail, setRawExecuteDetail] =
     useState<RuntimeSkillCreatorExecuteResult | null>(null);
+  const [externalApiConfigRequest, setExternalApiConfigRequest] =
+    useState<ExternalApiConfigRequiredPayload | null>(null);
+  const [externalApiConfigError, setExternalApiConfigError] = useState<
+    string | null
+  >(null);
 
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
@@ -859,6 +893,34 @@ export function SkillLifecyclePanel({
       applyWorkflowSnapshot(snapshot);
     });
   }, [applyWorkflowSnapshot]);
+
+  useEffect(() => {
+    const sessionApi = getSkillCreatorSessionApi();
+    if (!sessionApi?.onExternalApiConfigRequired) {
+      return;
+    }
+
+    return sessionApi.onExternalApiConfigRequired((event) => {
+      const payload: ExternalApiConfigRequiredPayload = {
+        apiName: typeof event?.apiName === "string" ? event.apiName : undefined,
+        description:
+          typeof event?.description === "string"
+            ? event.description
+            : undefined,
+      };
+
+      setExternalApiConfigError(null);
+      setExternalApiConfigRequest(payload);
+      appendSessionEntry(setSessionEntries, {
+        role: "assistant",
+        title: "外部API設定が必要です",
+        detail:
+          payload.apiName != null && payload.apiName.trim() !== ""
+            ? `${payload.apiName} の接続設定を入力してください。`
+            : "外部API接続設定を入力してください。",
+      });
+    });
+  }, []);
 
   useEffect(() => {
     const planId =
@@ -1331,6 +1393,33 @@ export function SkillLifecyclePanel({
     setRawExecuteDetail(null);
   };
 
+  const handleExternalApiConfigSubmit = useCallback(
+    async (config: ExternalApiConnectionConfig) => {
+      const skillCreatorApi = getSkillCreatorApi();
+      if (!skillCreatorApi?.configureExternalApi) {
+        const message = "configureExternalApi API が利用できません";
+        setExternalApiConfigError(message);
+        throw new Error(message);
+      }
+
+      const result = await skillCreatorApi.configureExternalApi(config);
+      if (!result.success) {
+        const message = result.error ?? "外部API設定の送信に失敗しました";
+        setExternalApiConfigError(message);
+        throw new Error(message);
+      }
+
+      setExternalApiConfigError(null);
+      setExternalApiConfigRequest(null);
+      appendSessionEntry(setSessionEntries, {
+        role: "user",
+        title: "外部API設定を送信",
+        detail: `${config.name} (${config.method} ${config.url})`,
+      });
+    },
+    [],
+  );
+
   const handleCreate = async () => {
     const trimmedRequest = request.trim();
     if (!trimmedRequest) {
@@ -1723,6 +1812,40 @@ export function SkillLifecyclePanel({
         >
           {activeGenerationError}
         </div>
+      ) : null}
+
+      {externalApiConfigRequest ? (
+        <section
+          className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5"
+          data-testid="skill-lifecycle-external-api-config"
+        >
+          <div className="mb-4">
+            <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
+              External API Config
+            </p>
+            <h3 className="mt-2 text-base font-semibold text-[var(--text-primary)]">
+              外部API接続情報を入力
+            </h3>
+          </div>
+
+          {externalApiConfigError ? (
+            <div
+              role="alert"
+              className="mb-4 rounded-xl border border-[var(--status-error)] bg-[var(--status-error)]/5 px-4 py-3 text-sm text-[var(--status-error)]"
+            >
+              {externalApiConfigError}
+            </div>
+          ) : null}
+
+          <ExternalApiConfigForm
+            eventData={externalApiConfigRequest}
+            onSubmit={handleExternalApiConfigSubmit}
+            onCancel={() => {
+              setExternalApiConfigRequest(null);
+              setExternalApiConfigError(null);
+            }}
+          />
+        </section>
       ) : null}
 
       {workflowSnapshot ? (

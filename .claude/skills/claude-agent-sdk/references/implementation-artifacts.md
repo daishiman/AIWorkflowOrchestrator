@@ -197,3 +197,35 @@
 - **Producer Pattern**: dangerous command 検出 → `pushApprovalRequest()` 発火 → `proceed: false`
 - **Session Correlation**: `sessionId` を constructor で受け取り、`operationId` は呼び出し側で `uuidv4()` 生成
 - **Non-blocking push**: IPC 送信と `proceed: false` は独立 — push 失敗でもブロックは維持
+
+---
+
+## TASK-SDK-SC-03 External API Support
+
+### ドキュメント
+
+| ドキュメント | パス | 説明 |
+| --- | --- | --- |
+| タスク仕様書 | `docs/30-workflows/skill-creator-agent-sdk-lane/` | External API Support 仕様 |
+
+### 実装ファイル
+
+| ファイル | パス | 説明 |
+| --- | --- | --- |
+| 型定義 | `packages/shared/src/types/skillCreatorExternalApi.ts` | ExternalApiConnectionConfig, ExternalApiAuthType, IExternalApiAdapter, ExternalApiTimeoutError, ExternalApiHttpError |
+| IPCチャネル | `packages/shared/src/ipc/channels.ts` | SKILL_CREATOR_EXTERNAL_API_CHANNELS（configure-api / api-configured / api-test-result） |
+| IPC Bridge | `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` | configure-api ハンドラ、api-configured / api-test-result イベント送信 |
+| SDK Session | `apps/desktop/src/main/services/runtime/SkillCreatorSdkSession.ts` | RequestExternalApiConfig custom tool, sanitizeExternalApiConfigForPrompt, 並行フロー管理 |
+| HTTP Adapter | `apps/desktop/src/main/services/runtime/adapters/HttpExternalApiAdapter.ts` | IExternalApiAdapter 実装（fetch, タイムアウト30s, エラーハンドリング） |
+| Preload API | `apps/desktop/src/preload/skill-creator-api.ts` | configureApi() Preload メソッド |
+| Preload Session | `apps/desktop/src/preload/skill-creator-session-api.ts` | external-api-config-required イベント購読 |
+| テスト（Session） | `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorSdkSession.test.ts` | RequestExternalApiConfig tool_use、sendExternalApiConfig テスト |
+| テスト（Bridge） | `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorIpcBridge.test.ts` | configure-api IPC テスト |
+| テスト（Adapter） | `apps/desktop/src/main/services/runtime/adapters/__tests__/HttpExternalApiAdapter.test.ts` | タイムアウト / HTTPエラー テスト |
+
+主要パターン:
+
+- **RequestExternalApiConfig Custom Tool**: SDK Session 内で外部API設定が必要になった際、IPC 経由で Renderer に UI 表示を要求し、ユーザー入力を待機する
+- **並行フロー管理**: `pendingQuestionResolve` と `pendingExternalApiResolve` の相互排他
+- **秘匿化**: `sanitizeExternalApiConfigForPrompt()` で credential を `***REDACTED***` に置換してからプロンプトに注入
+- **IPC Channels**: `skill-creator:configure-api`, `skill-creator:api-configured`, `skill-creator:api-test-result`, `skill-creator:external-api-config-required`

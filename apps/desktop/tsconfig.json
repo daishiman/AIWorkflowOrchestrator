@@ -101,6 +101,9 @@
       ],
       "@repo/shared/types/skillCreator": [
         "../../packages/shared/src/types/skillCreator.ts"
+      ],
+      "@repo/shared/types/skillCreatorExternalApi": [
+        "../../packages/shared/src/types/skillCreatorExternalApi.ts"
       ]
     }
   },

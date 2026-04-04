@@ -26,6 +26,19 @@
 
 ---
 
+### UI Visual Baseline Drift / dark-mode screenshot stability（2026-04-03）
+
+| 目的                 | 最初に開くファイル                                                                                                                                           |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| dark-mode baseline   | `references/workflow-ui-ux-visual-baseline-drift.md`                                                                                                        |
+| workflow root        | `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/`                                                                                      |
+| screenshot evidence  | `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/manual-test-result.md`, `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/screenshots/` |
+| completed ledger     | `references/task-workflow-completed-ui-ux-visual-baseline-drift.md`                                                                                         |
+| lessons / reuse card | `references/lessons-learned-ui-ux-visual-baseline-drift.md`, `references/ui-ux-design-system.md`                                                            |
+| same-wave sync       | `references/task-workflow.md`, `indexes/resource-map.md`                                                                                                    |
+
+---
+
 ### Runtime Skill Creator Public IPC 即時導線（2026-03-21）
 
 | 目的                      | 最初に開くファイル                                                       |
@@ -92,6 +105,23 @@
 | create 後の downstream journey | `references/workflow-skill-lifecycle-created-skill-usage-journey.md`                                      |
 | completed ledger               | `references/task-workflow-completed.md`                                                                   |
 | Phase 12 教訓                  | `references/lessons-learned-phase12-workflow-lifecycle.md`                                                |
+
+---
+
+### Skill Creator Conversation UI（TASK-SDK-SC-02 / 2026-04-03 実装済み）
+
+| 目的                                                 | 最初に開くファイル                                                                                              |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| Task02 の全体像・Phase 仕様書                        | `docs/30-workflows/step-02-par-task-02-conversation-ui/index.md`                                                |
+| 5 コンポーネント Props API・使用例                   | `docs/30-workflows/step-02-par-task-02-conversation-ui/phase-12-documentation.md`                               |
+| アーキテクチャ・型マッピング・IPC 通信フロー         | `outputs/phase-12/implementation-guide.md`                                                                      |
+| Session Bridge 型定義                                | `packages/shared/src/types/skillCreatorSession.ts`（`UserInputQuestion` / `UserInputAnswer`）                   |
+| Workflow UI 型定義                                   | `packages/shared/src/types/skillCreator.ts`（`SkillCreatorUserInputRequest` / `InterviewUserAnswer`）           |
+| IPC チャネル定義                                     | `packages/shared/src/ipc/channels.ts`（`SKILL_CREATOR_SESSION_CHANNELS`）                                      |
+| Preload API                                          | `apps/desktop/src/preload/skill-creator-session-api.ts`（`window.skillCreatorSessionAPI`）                      |
+| Organism コンポーネント（ブリッジ層）                | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorConversationPanel.tsx`                           |
+| テスト（57 件）                                      | `apps/desktop/src/renderer/components/skill-creator/__tests__/`                                                 |
+| completed ledger                                     | `references/task-workflow-completed.md`                                                                         |
 
 ---
 

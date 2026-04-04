@@ -8,8 +8,15 @@
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { UserInputAnswer, UserInputQuestion } from "@repo/shared/types";
-import { SKILL_CREATOR_SESSION_CHANNELS } from "@repo/shared/ipc/channels";
+import type {
+  ExternalApiConnectionConfig,
+  UserInputAnswer,
+  UserInputQuestion,
+} from "@repo/shared/types";
+import {
+  SKILL_CREATOR_EXTERNAL_API_CHANNELS,
+  SKILL_CREATOR_SESSION_CHANNELS,
+} from "@repo/shared/ipc/channels";
 
 // ── Electron モック ──────────────────────────────────────
 
@@ -46,6 +53,7 @@ vi.mock("electron", () => ({
 
 const mockSessionStartSession = vi.fn().mockResolvedValue(undefined);
 const mockSessionSendAnswer = vi.fn();
+const mockSessionSendExternalApiConfig = vi.fn();
 const mockSessionAbort = vi.fn();
 const mockSessionGetState = vi.fn().mockReturnValue({
   sessionId: "test-session",
@@ -57,6 +65,7 @@ const mockSessionGetState = vi.fn().mockReturnValue({
 class MockSdkSession {
   startSession = mockSessionStartSession;
   sendAnswer = mockSessionSendAnswer;
+  sendExternalApiConfig = mockSessionSendExternalApiConfig;
   abort = mockSessionAbort;
   getState = mockSessionGetState;
 }
@@ -90,6 +99,10 @@ describe("SkillCreatorIpcBridge", () => {
   let mockWindow: ReturnType<typeof createMockWindow>;
   let capturedCallbacks: {
     onQuestion?: (q: UserInputQuestion) => void;
+    onExternalApiConfigRequired?: (payload: {
+      apiName?: string;
+      description?: string;
+    }) => void;
     onComplete?: (r: string) => void;
     onError?: (e: string) => void;
   };
@@ -106,6 +119,7 @@ describe("SkillCreatorIpcBridge", () => {
     mockHandlers.clear();
 
     mockSessionStartSession.mockResolvedValue(undefined);
+    mockSessionSendExternalApiConfig.mockReset();
     mockSessionGetState.mockReturnValue({
       sessionId: "test-session",
       status: "running",
@@ -143,6 +157,10 @@ describe("SkillCreatorIpcBridge", () => {
         SKILL_CREATOR_SESSION_CHANNELS.ANSWER,
         expect.any(Function),
       );
+      expect(mockIpcMain.handle).toHaveBeenCalledWith(
+        SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
+        expect.any(Function),
+      );
     });
 
     it("should remove all handlers on unregister()", () => {
@@ -164,6 +182,9 @@ describe("SkillCreatorIpcBridge", () => {
       );
       expect(mockIpcMain.removeHandler).toHaveBeenCalledWith(
         SKILL_CREATOR_SESSION_CHANNELS.ANSWER,
+      );
+      expect(mockIpcMain.removeHandler).toHaveBeenCalledWith(
+        SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
       );
     });
 
@@ -204,7 +225,12 @@ describe("SkillCreatorIpcBridge", () => {
       const factory = vi
         .fn()
         .mockImplementation(
-          (_id: string, _onQ: unknown, onComplete: (r: string) => void) => {
+          (
+            _id: string,
+            _onQ: unknown,
+            _onExternalApi: unknown,
+            onComplete: (r: string) => void,
+          ) => {
             capturedCallbacks.onComplete = onComplete;
             return new MockSdkSession();
           },
@@ -235,6 +261,7 @@ describe("SkillCreatorIpcBridge", () => {
           (
             _id: string,
             _onQ: unknown,
+            _onExternalApi: unknown,
             _onC: unknown,
             onError: (e: string) => void,
           ) => {
@@ -258,6 +285,48 @@ describe("SkillCreatorIpcBridge", () => {
       expect(mockWindow.webContents.send).toHaveBeenCalledWith(
         SKILL_CREATOR_SESSION_CHANNELS.SESSION_ERROR,
         { error: "エラーが発生しました" },
+      );
+    });
+
+    it("should emit external-api-config-required to renderer when callback is called", async () => {
+      const factory = vi
+        .fn()
+        .mockImplementation(
+          (
+            _id: string,
+            _onQ: unknown,
+            onExternalApiConfigRequired: (payload: {
+              apiName?: string;
+              description?: string;
+            }) => void,
+          ) => {
+            capturedCallbacks.onExternalApiConfigRequired =
+              onExternalApiConfigRequired;
+            return new MockSdkSession();
+          },
+        );
+      const bridge = new SkillCreatorIpcBridge(
+        mockWindow as never,
+        factory as never,
+      );
+      bridge.register();
+
+      const handler = mockHandlers.get(
+        SKILL_CREATOR_SESSION_CHANNELS.START_SESSION,
+      );
+      await handler?.(makeInvokeEvent(), { request: "テスト" });
+
+      capturedCallbacks.onExternalApiConfigRequired?.({
+        apiName: "Weather API",
+        description: "接続設定を入力してください",
+      });
+
+      expect(mockWindow.webContents.send).toHaveBeenCalledWith(
+        SKILL_CREATOR_SESSION_CHANNELS.EXTERNAL_API_CONFIG_REQUIRED,
+        {
+          apiName: "Weather API",
+          description: "接続設定を入力してください",
+        },
       );
     });
 
@@ -313,6 +382,68 @@ describe("SkillCreatorIpcBridge", () => {
         answerHandler?.(makeInvokeEvent(9999), {
           toolCallId: "tc-001",
           value: "回答",
+        }),
+      ).rejects.toThrow("IPC sender does not match");
+    });
+
+    it("should route configure-api IPC to currentSession.sendExternalApiConfig()", async () => {
+      const factory = vi.fn().mockImplementation(() => new MockSdkSession());
+      const bridge = new SkillCreatorIpcBridge(
+        mockWindow as never,
+        factory as never,
+      );
+      bridge.register();
+
+      const startHandler = mockHandlers.get(
+        SKILL_CREATOR_SESSION_CHANNELS.START_SESSION,
+      );
+      await startHandler?.(makeInvokeEvent(), { request: "テスト" });
+
+      const configureHandler = mockHandlers.get(
+        SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
+      );
+      const config: ExternalApiConnectionConfig = {
+        name: "Slack API",
+        url: "https://api.example.com/slack",
+        method: "POST",
+        authType: "bearer",
+        credential: "token",
+      };
+
+      await expect(
+        configureHandler?.(makeInvokeEvent(), config),
+      ).resolves.toEqual({
+        success: true,
+      });
+
+      expect(mockSessionSendExternalApiConfig).toHaveBeenCalledWith(config);
+      expect(mockWindow.webContents.send).toHaveBeenCalledWith(
+        SKILL_CREATOR_EXTERNAL_API_CHANNELS.API_CONFIGURED,
+        { success: true },
+      );
+      expect(mockWindow.webContents.send).toHaveBeenCalledWith(
+        SKILL_CREATOR_EXTERNAL_API_CHANNELS.API_TEST_RESULT,
+        { ok: true },
+      );
+    });
+
+    it("should reject configure-api IPC from a non-active window", async () => {
+      const factory = vi.fn().mockImplementation(() => new MockSdkSession());
+      const bridge = new SkillCreatorIpcBridge(
+        mockWindow as never,
+        factory as never,
+      );
+      bridge.register();
+
+      const configureHandler = mockHandlers.get(
+        SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
+      );
+      await expect(
+        configureHandler?.(makeInvokeEvent(9999), {
+          name: "API",
+          url: "https://api.example.com",
+          method: "GET",
+          authType: "none",
         }),
       ).rejects.toThrow("IPC sender does not match");
     });
@@ -387,6 +518,9 @@ describe("SkillCreatorIpcBridge", () => {
       expect(mockHandlers.has(SKILL_CREATOR_SESSION_CHANNELS.ANSWER)).toBe(
         true,
       );
+      expect(
+        mockHandlers.has(SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API),
+      ).toBe(true);
       expect(mockWindow.once).toHaveBeenCalledTimes(2);
     });
 
@@ -425,6 +559,31 @@ describe("SkillCreatorIpcBridge", () => {
           value: "回答",
         }),
       ).rejects.toThrow("no active session");
+    });
+
+    it("should reject configure-api when no active session exists", async () => {
+      const factory = vi.fn().mockImplementation(() => new MockSdkSession());
+      const bridge = new SkillCreatorIpcBridge(
+        mockWindow as never,
+        factory as never,
+      );
+      bridge.register();
+
+      const configureHandler = mockHandlers.get(
+        SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
+      );
+      await expect(
+        configureHandler?.(makeInvokeEvent(), {
+          name: "API",
+          url: "https://api.example.com",
+          method: "GET",
+          authType: "none",
+        }),
+      ).resolves.toEqual({
+        success: false,
+        error:
+          "[SkillCreatorIpcBridge] Received external API config but no active session",
+      });
     });
   });
 });
