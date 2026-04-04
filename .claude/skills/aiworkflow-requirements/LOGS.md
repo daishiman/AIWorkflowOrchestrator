@@ -5,6 +5,11 @@
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
 ## 最新更新ヘッドライン
+| 見出し |
+| --- |
+| 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization 実装完了 Phase 12 sync（resource-map.md に TASK-RT-06 リソースマップ追加 / quick-reference.md に SDK Event Normalization セクション追加 / lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md に normalizer 設計・sessionId 伝播教訓追記 / workflow-task-rt-06-artifact-inventory.md 新規作成） |
+| 2026-03-28 - TASK-SDK-04-U2 canonical binding remediation sync（`api-ipc-system-core.md` / `arch-state-management-core.md` から未解消扱いを解消し、`approvedSkillSpec` snapshot による execute binding 修正と task spec close-out drift 是正を same-wave 反映） |
+| 2026-03-28 - TASK-SDK-07 execution-governance-and-handoff-alignment Phase 12 close-out sync（未タスク 3 件 formalize（UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 / UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001）/ lessons-learned-phase12-workflow-lifecycle に教訓 3 件追記（shared channel 再利用 / disclosure graceful degradation / spec_created task code wave AC 追跡）/ quick-reference governance bundle 導線に実装参照 7 件追加 / task-workflow-backlog 3 件追記 / LOGS.md 2 ファイル同時更新 / generate-index.js 実行） |
 
 | 見出し                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -174,6 +179,28 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization 実装完了 Phase 12 sync
+
+### 変更概要
+TASK-RT-06（SDKMessage → SkillCreatorSdkEvent 正規化契約）の Phase 12 完了に伴う仕様書同期。
+
+### 追加・更新内容
+- `resource-map.md`: TASK-RT-06タスク別リソースマップを追加
+- `quick-reference.md`: SDK Event Normalization セクションを追加
+- `lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md`: TASK-RT-06の実装知見（normalizer設計・sessionId伝播）を追記
+- `workflow-task-rt-06-artifact-inventory.md`: 新規作成（artifact inventory）
+
+### 主要成果物
+| ファイル | 変更種別 | 内容 |
+|---|---|---|
+| `packages/shared/src/types/skillCreator.ts` | 追加 | SkillCreatorSdkEvent 3型 |
+| `apps/desktop/src/main/services/runtime/sdkMessageNormalizer.ts` | 新規 | normalizer本体（32テスト）|
+| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | 更新 | normalizer統合 |
+| `apps/desktop/src/main/ipc/creatorHandlers.ts` | 更新 | IPCチャネル追加 |
+
+### 未タスク
+- SkillExecutor.convertToStreamMessage() と normalizer の統合候補（1件、unassigned-task検出済み）
 
 ## TASK-P0-09 claude-sdk-permission-hooks-governance close-out resync（2026-03-31）
 
