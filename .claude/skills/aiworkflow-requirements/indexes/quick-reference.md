@@ -121,6 +121,21 @@
 
 ---
 
+### Skill Creator SDK Event Normalization (TASK-RT-06)
+
+**概要:** SDKMessage → SkillCreatorSdkEvent 変換契約の安定化
+
+| 項目 | 詳細 |
+|---|---|
+| 型 | `SkillCreatorSdkEvent` (7フィールド), `SkillCreatorSdkEventType` ("init"\|"assistant"\|"result"\|"error") |
+| normalizer | `normalizeSdkMessage(msg, sessionId?)`, `normalizeSdkStream(msgs)` |
+| IPCチャネル | `skill-creator:normalize-sdk-messages` |
+| sessionId伝播 | init → 後続メッセージへ自動伝播 |
+| テスト | 32件, Line 99.35% / Branch 91.22% / Function 100% |
+| 未タスク | SkillExecutor.convertToStreamMessage()との統合候補（1件） |
+
+---
+
 ### Skill Creator Conversation UI（TASK-SDK-SC-02 / 2026-04-03 実装済み）
 
 | 目的                                                 | 最初に開くファイル                                                                                              |
