@@ -201,7 +201,6 @@ export {
 } from "./skillCreator";
 export type {
   SkillCreatorSdkEventType,
-  SkillCreatorSdkEventSourceProvenance,
   SkillCreatorSdkEvent,
   ImproveFeedbackHistory,
 } from "./skillCreator";
