@@ -15,6 +15,7 @@ import type { UseSkillCenterReturn } from "../hooks/useSkillCenter";
 
 // --- モック関数 ---
 const mockNavigateToSkillCreate = vi.fn();
+const mockNavigateToSkillManagement = vi.fn();
 const mockNavigateToWorkspace = vi.fn();
 const mockNavigateToSkillAnalysis = vi.fn();
 const mockUseSkillCenter = vi.fn<() => UseSkillCenterReturn>();
@@ -68,7 +69,9 @@ const createBaseHookValue = (
   addingSkills: new Map(),
   filteredSkills: [],
   featuredSkills: [],
+  importedSkillNames: [],
   navigateToSkillCreate: mockNavigateToSkillCreate,
+  navigateToSkillManagement: mockNavigateToSkillManagement,
   navigateToWorkspace: mockNavigateToWorkspace,
   navigateToSkillAnalysis: mockNavigateToSkillAnalysis,
   handleAddSkill: vi.fn(async () => {}),
@@ -86,6 +89,7 @@ const createBaseHookValue = (
 describe("SkillCenterView ヘッダー CTA", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockNavigateToSkillManagement.mockReset();
     mockUseSkillCenter.mockReturnValue(createBaseHookValue());
   });
 
@@ -151,9 +155,9 @@ describe("SkillCenterView ヘッダー CTA", () => {
 
     const ctaButton = screen.getByTestId("header-create-cta");
     const title = screen.getByText("ツールを探す");
-    // 同じ headerRow 内にあることを確認
-    const headerRow = ctaButton.parentElement;
-    expect(headerRow).toContainElement(title.parentElement as HTMLElement);
+    // data-testid="header-row" 内に title と CTA ボタンが共存することを確認
+    const headerRow = screen.getByTestId("header-row");
+    expect(headerRow).toContainElement(title);
     expect(headerRow).toContainElement(ctaButton);
   });
 });
@@ -398,5 +402,73 @@ describe("SkillCenterView CTA と skillLifecycleJourney の統合", () => {
     fireEvent.click(createCta);
 
     expect(mockNavigateToSkillCreate).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("SkillCenterView ヘッダー 管理 CTA（TC-04/05 対応）", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockUseSkillCenter.mockReturnValue(createBaseHookValue());
+  });
+
+  it("TC-04: 「スキル管理」ボタンが表示される", () => {
+    render(<SkillCenterView />);
+
+    const mgmtButton = screen.getByTestId("header-management-cta");
+    expect(mgmtButton).toBeInTheDocument();
+  });
+
+  it("TC-05: 「スキル管理」ボタンクリックで navigateToSkillManagement が呼ばれる", () => {
+    render(<SkillCenterView />);
+
+    const mgmtButton = screen.getByTestId("header-management-cta");
+    fireEvent.click(mgmtButton);
+
+    expect(mockNavigateToSkillManagement).toHaveBeenCalledTimes(1);
+  });
+
+  it("TC-04b: 「スキル管理」ボタンが button 要素である", () => {
+    render(<SkillCenterView />);
+
+    const mgmtButton = screen.getByTestId("header-management-cta");
+    expect(mgmtButton.tagName).toBe("BUTTON");
+    expect(mgmtButton).toHaveAttribute("type", "button");
+  });
+
+  it("TC-04c: 「スキル管理」ボタンが data-route-kind='secondary' を持つ", () => {
+    render(<SkillCenterView />);
+
+    const mgmtButton = screen.getByTestId("header-management-cta");
+    expect(mgmtButton).toHaveAttribute("data-route-kind", "secondary");
+  });
+
+  it("TC-04d: 「+新規作成」CTAクリックで skillCreate が維持される（回帰）", () => {
+    render(<SkillCenterView />);
+
+    fireEvent.click(screen.getByTestId("header-create-cta"));
+
+    expect(mockNavigateToSkillCreate).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSkillManagement).not.toHaveBeenCalled();
+  });
+
+  it("TC-04e: ローディング中は管理CTAが表示されない", () => {
+    mockUseSkillCenter.mockReturnValue(
+      createBaseHookValue({ isLoading: true }),
+    );
+
+    render(<SkillCenterView />);
+
+    expect(screen.queryByTestId("header-management-cta")).toBeNull();
+  });
+
+  it("TC-04f: 管理CTAと作成CTAが同じ header-row 内にある", () => {
+    render(<SkillCenterView />);
+
+    const mgmtButton = screen.getByTestId("header-management-cta");
+    const createButton = screen.getByTestId("header-create-cta");
+    const headerRow = screen.getByTestId("header-row");
+
+    expect(headerRow).toContainElement(mgmtButton);
+    expect(headerRow).toContainElement(createButton);
   });
 });

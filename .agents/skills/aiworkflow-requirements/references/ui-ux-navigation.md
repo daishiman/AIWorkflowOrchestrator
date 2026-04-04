@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.9.1 | 2026-04-04 | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 を反映: `SkillCenterView` に `header-management-cta` secondary CTA を追加し、`skillManagement` ViewType / dock 正規化 / 戻り導線を同期 |
 | v1.9.0 | 2026-03-24 | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 を反映: `executionConsole` ViewType 追加、`openExecutionConsole()` shared action 定義、CTA 7箇所統一設計。`ExecutionConsoleView` stub 配置。agent 代替除去方針確定 |
 | v1.8.0 | 2026-03-22 | TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 を反映: `SettingsView` に mainline access matrix、`AppLayout` と legacy `AppDock` shell header に persistent terminal launcher、blocked CTA の settings 内 recovery、`terminal.open` IPC と targeted 50 tests PASS を同期 |
 | v1.7.9 | 2026-03-20 | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001 を反映: `AgentView` 実行完了後の改善 CTA、`SkillAnalysisView` の Agent 起点限定 `戻る` / `エージェントで再実行`、Phase 11 screenshot 6件、round-trip 導線を同期 |
@@ -67,6 +68,7 @@ desktop/tablet では左サイドレール `GlobalNavStrip`、mobile では下�
 - `Agent` は実行、`Workspace` は作業継続、`Chat` は対話補助、`Skill Creator` は作成専用の supporting / destination surface として扱う。
 - legacy view 値 `skill-center` は表示責務を持たず、shell で canonical `skillCenter` に正規化したうえで描画する。
 - `SkillCenterView` ヘッダーには「+ 新規作成」CTA があり、`skillCreate` への直接導線を提供する（TASK-SKILL-LIFECYCLE-02）。
+- `SkillCenterView` ヘッダーには「スキル管理」CTA もあり、`skillManagement` への secondary 導線を提供する（TASK-SKILL-CENTER-LIFECYCLE-NAV-001）。
 - `SkillLifecycleJourneyPanel` の各ジョブカードには `ctaLabel` 由来の CTA ボタンがあり、create→`skillCreate`、use→`workspace`、improve→`skillAnalysis` へ遷移する。
 - imported `SkillDetailPanel` には secondary handoff として `エディタで開く` / `分析する` action zone を置き、detail panel から直接 `skill-editor` / `skillAnalysis` へ遷移できる（TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001）。
 
@@ -138,6 +140,7 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | `graph` | グラフ画面 |
 | `agent` | エージェント画面 |
 | `skillCenter` | スキルセンター画面（canonical） |
+| `skillManagement` | スキル管理画面（`SkillCenterView` からの secondary surface） |
 | `skill-editor` | スキル編集画面 |
 | `skillAnalysis` | スキル分析画面（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001） |
 | `skillCreate` | スキル作成画面（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001） |

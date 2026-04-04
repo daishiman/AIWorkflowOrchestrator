@@ -18,7 +18,13 @@ vi.mock("../components/atoms", () => ({
 }));
 
 vi.mock("../components/organisms/AppDock", () => ({
-  AppDock: () => <div data-testid="app-dock" />,
+  AppDock: ({ currentView, mode }: { currentView?: string; mode?: string }) => (
+    <div
+      data-testid="app-dock"
+      data-current-view={currentView ?? ""}
+      data-mode={mode ?? ""}
+    />
+  ),
 }));
 
 vi.mock("../components/organisms/AppLayout", () => ({
@@ -163,6 +169,7 @@ describe("App mainline shell", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("VITE_USE_GLOBAL_NAV_STRIP", "false");
+    window.history.pushState({}, "", "/");
     useAppStore.setState({
       currentView: "dashboard",
       viewHistory: ["dashboard"],
@@ -209,5 +216,46 @@ describe("App mainline shell", () => {
     ).toBeInTheDocument();
     expect(screen.getByTestId("notification-center")).toBeInTheDocument();
     expect(screen.getByTestId("dashboard-view-stub")).toBeInTheDocument();
+  });
+
+  it("advanced/skill-center で currentView=skillManagement のとき SkillManagementPanel を描画する", async () => {
+    useAppStore.setState({
+      currentView: "skillManagement",
+      viewHistory: ["skillCenter", "skillManagement"],
+    });
+    window.history.pushState({}, "", "/advanced/skill-center");
+
+    render(<App />);
+
+    expect(
+      await screen.findByTestId("skill-management-panel-stub"),
+    ).toBeInTheDocument();
+  });
+
+  it("mobile legacy shell では dock currentView が skillCenter に正規化される", async () => {
+    Object.defineProperty(window, "innerWidth", {
+      value: 360,
+      writable: true,
+      configurable: true,
+    });
+    Object.defineProperty(window, "innerHeight", {
+      value: 800,
+      writable: true,
+      configurable: true,
+    });
+    useAppStore.setState({
+      currentView: "skillManagement",
+      viewHistory: ["skillCenter", "skillManagement"],
+      responsiveMode: "mobile",
+      windowSize: { width: 360, height: 800 },
+    });
+
+    render(<App />);
+
+    const appDocks = await screen.findAllByTestId("app-dock");
+    const mobileDock = appDocks.find(
+      (dock) => dock.getAttribute("data-mode") === "mobile",
+    );
+    expect(mobileDock?.getAttribute("data-current-view")).toBe("skillCenter");
   });
 });

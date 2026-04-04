@@ -5,6 +5,31 @@
 
 ## 完了タスク
 
+### タスク: task-imp-layer12-spec-definition-004（2026-04-04）
+
+| 項目       | 値                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| タスクID   | task-imp-layer12-spec-definition-004                                                                   |
+| ステータス | **完了**                                                                                               |
+| タイプ     | docs（ドキュメント改善）                                                                               |
+| 優先度     | 中（P1）                                                                                               |
+| 完了日     | 2026-04-04                                                                                             |
+| 対象       | `.claude/skills/aiworkflow-requirements/references/interfaces-skill-verify-contract.md`                |
+| 成果物     | `docs/30-workflows/imp-layer12-spec-definition-004/outputs/`                                           |
+
+#### 実施内容
+
+- `interfaces-skill-verify-contract.md` を新規作成し、FR-04 verify 契約の check ID 体系（19 check ID、Layer 1-4）を正式追記
+- Layer 命名規則（`L{N}-{NNN}` 形式）と拡張ガイドラインを明文化
+- 各 check ID に検証内容・severity・判定基準・エラーメッセージを記載し、`SkillCreatorVerificationEngine.ts` との完全一致を確認
+
+#### 検証証跡
+
+- `grep -oE "L[1-4]-[0-9]{3}" SkillCreatorVerificationEngine.ts | sort -u` と仕様書の diff: 0 件（19/19 一致）
+- severity 内訳: error 10 件、warning 9 件（実装と一致）
+- check ID カバレッジ: 19/19 = 100%
+- `docs/30-workflows/imp-layer12-spec-definition-004/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS（Task 12-1〜12-6 の最終準拠確認）
+
 ### タスク: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 SkillCreator Layer3/4 verify detail severity フィルタ追加（2026-04-04）
 
 | 項目       | 値                                                                                                                                                                                                       |
@@ -33,6 +58,38 @@
 - `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx`: PASS（27/27）
 - `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/skill-creator-layer34-ui-display-severity-filter --json`: PASS
 - Step 2 no-op: `SeverityFilterLevel` は SkillLifecyclePanel 内部型のため shared 仕様書更新不要
+
+### タスク: TASK-SKILL-CENTER-LIFECYCLE-NAV-001 SkillCenterView → SkillManagementPanel ナビゲーション接続（2026-04-04）
+
+| 項目       | 値                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SKILL-CENTER-LIFECYCLE-NAV-001                                                                                                                                                                                     |
+| ステータス | **完了**                                                                                                                                                                                                                 |
+| タイプ     | UI task / navigation                                                                                                                        |
+| 優先度     | 中                                                                                                                                                                                                                       |
+| 完了日     | 2026-04-04                                                                                                                                                                                                               |
+| 対象       | `apps/desktop/src/renderer/store/types.ts` / `apps/desktop/src/renderer/App.tsx` / `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts` / `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` / `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` |
+| 成果物     | `docs/30-workflows/skill-center-lifecycle-navigation/`                                                                                                                   |
+
+#### 実施内容
+
+- `SkillCenterView` に `header-management-cta` を追加し、`skillManagement` への secondary 導線を実装
+- `ViewType` に `skillManagement` を追加し、`App.tsx` で `SkillManagementPanel` を描画するよう拡張
+- `skillManagement` を `skillCenter` に正規化して dock / sidebar の active 表示を維持
+- `SkillManagementPanel` に `skill-management-back-button` を追加し、`SkillCenterView` への戻り導線を保持
+- `SkillLifecyclePanel` は `SkillManagementPanel` 内部サブビューとして再利用
+- Phase 11 で 8 枚の実画像スクリーンショットを取得し、Phase 12 でドキュメント同期を完了
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/renderer/views/SkillCenterView/hooks/__tests__/useSkillCenter.navigation.test.ts`: PASS
+- `pnpm exec vitest run src/renderer/views/SkillCenterView/__tests__/SkillCenterView.cta.test.tsx src/renderer/__tests__/App.renderView.viewtype.test.tsx`: PASS
+- `pnpm --filter @repo/desktop exec tsc -p tsconfig.json --noEmit`: PASS
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-01-skill-center-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-02-skill-create-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-03-skill-management-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-04-skill-lifecycle-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-05-skill-center-return-light.png`
 
 ### タスク: TASK-SDK-SC-03 External API Support（2026-04-03）
 

@@ -59,6 +59,38 @@
 - `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/skill-creator-layer34-ui-display-severity-filter --json`: PASS
 - Step 2 no-op: `SeverityFilterLevel` は SkillLifecyclePanel 内部型のため shared 仕様書更新不要
 
+### タスク: TASK-SKILL-CENTER-LIFECYCLE-NAV-001 SkillCenterView → SkillManagementPanel ナビゲーション接続（2026-04-04）
+
+| 項目       | 値                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SKILL-CENTER-LIFECYCLE-NAV-001                                                                                                                                                                                     |
+| ステータス | **完了**                                                                                                                                                                                                                 |
+| タイプ     | UI task / navigation                                                                                                                        |
+| 優先度     | 中                                                                                                                                                                                                                       |
+| 完了日     | 2026-04-04                                                                                                                                                                                                               |
+| 対象       | `apps/desktop/src/renderer/store/types.ts` / `apps/desktop/src/renderer/App.tsx` / `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts` / `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` / `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` |
+| 成果物     | `docs/30-workflows/skill-center-lifecycle-navigation/`                                                                                                                   |
+
+#### 実施内容
+
+- `SkillCenterView` に `header-management-cta` を追加し、`skillManagement` への secondary 導線を実装
+- `ViewType` に `skillManagement` を追加し、`App.tsx` で `SkillManagementPanel` を描画するよう拡張
+- `skillManagement` を `skillCenter` に正規化して dock / sidebar の active 表示を維持
+- `SkillManagementPanel` に `skill-management-back-button` を追加し、`SkillCenterView` への戻り導線を保持
+- `SkillLifecyclePanel` は `SkillManagementPanel` 内部サブビューとして再利用
+- Phase 11 で 8 枚の実画像スクリーンショットを取得し、Phase 12 でドキュメント同期を完了
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/renderer/views/SkillCenterView/hooks/__tests__/useSkillCenter.navigation.test.ts`: PASS
+- `pnpm exec vitest run src/renderer/views/SkillCenterView/__tests__/SkillCenterView.cta.test.tsx src/renderer/__tests__/App.renderView.viewtype.test.tsx`: PASS
+- `pnpm --filter @repo/desktop exec tsc -p tsconfig.json --noEmit`: PASS
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-01-skill-center-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-02-skill-create-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-03-skill-management-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-04-skill-lifecycle-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-05-skill-center-return-light.png`
+
 ### タスク: TASK-SDK-SC-03 External API Support（2026-04-03）
 
 | 項目       | 値                                                                                                                                                                                                                       |

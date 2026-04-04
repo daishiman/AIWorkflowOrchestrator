@@ -484,6 +484,101 @@ export class SkillExecutor {
 
 ---
 
+## External API IPC 統合パターン（TASK-SDK-SC-03）
+
+### アーキテクチャ
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Electron App                            │
+├─────────────────────────────────────────────────────────────┤
+│  Renderer Process                                           │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │  ExternalApiConfigForm                                 │ │
+│  │  - API URL / Method / Auth 入力                        │ │
+│  │  - 接続テスト結果表示                                  │ │
+│  └───────────────────┬────────────────────────────────────┘ │
+│                      │ IPC (skill-creator:*)                │
+│  ┌───────────────────▼────────────────────────────────────┐ │
+│  │  Main Process                                          │ │
+│  │  ┌───────────────────────────────────────────────────┐ │ │
+│  │  │  SkillCreatorIpcBridge                            │ │ │
+│  │  │  → SkillCreatorSdkSession                        │ │ │
+│  │  │    - RequestExternalApiConfig custom tool         │ │ │
+│  │  │    - sanitizeExternalApiConfigForPrompt()         │ │ │
+│  │  │    - 並行フロー管理（質問待機 vs API設定要求）     │ │ │
+│  │  └───────────────────────────────────────────────────┘ │ │
+│  └────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### External API IPCチャネル
+
+| チャネル | 方向 | 用途 |
+| --- | --- | --- |
+| `skill-creator:configure-api` | Renderer → Main | 外部API設定を送信 |
+| `skill-creator:api-configured` | Main → Renderer | API設定確認応答 |
+| `skill-creator:api-test-result` | Main → Renderer | API接続テスト結果 |
+| `skill-creator:external-api-config-required` | Main → Renderer | 設定要求通知（フォーム表示トリガー） |
+
+### RequestExternalApiConfig Custom Tool パターン
+
+SDK Session 内で外部API設定が必要になった際、custom tool を使ってRendererにUI表示を要求し、ユーザー入力を待機するパターン。
+
+```typescript
+// SkillCreatorSdkSession.ts
+private buildRequestExternalApiConfigTool() {
+  return {
+    name: "RequestExternalApiConfig",
+    description: "外部API接続設定をユーザーに要求する",
+    // tool_use を受けると:
+    // 1. pendingExternalApiPromise を作成（Promise<ExternalApiConnectionConfig>）
+    // 2. IPC経由でRendererに設定フォーム表示を要求
+    // 3. Rendererから configure-api で設定が送信されるまで待機
+    // 4. 受領した設定を sanitize してSDKに返却
+  };
+}
+```
+
+### 並行フロー管理パターン
+
+質問待機（`pendingQuestionResolve`）と API設定要求（`pendingExternalApiResolve`）は相互排他。
+
+```typescript
+// 相互排他: 一方を解決してから他方を開始
+private pendingQuestionResolve: ((answer: string) => void) | null = null;
+private pendingExternalApiResolve:
+  | ((config: ExternalApiConnectionConfig) => void)
+  | null = null;
+private pendingExternalApiPromise:
+  | Promise<ExternalApiConnectionConfig>
+  | null = null;
+```
+
+**注意点**:
+- `pendingQuestionResolve` と `pendingExternalApiResolve` が同時に存在しないことを保証する
+- タイムアウト時は両方を適切にクリーンアップする
+- abort時は pending Promise を reject してリソースリークを防ぐ
+
+### 秘匿化パターン（sanitizeForPrompt）
+
+外部API設定をSDKに返す際、認証情報をマスクしてプロンプトに含める。
+
+```typescript
+private sanitizeExternalApiConfigForPrompt(
+  config: ExternalApiConnectionConfig,
+): ExternalApiConnectionConfig {
+  return {
+    ...config,
+    credential: config.credential ? "***REDACTED***" : undefined,
+  };
+}
+```
+
+**重要**: SDKに渡すプロンプト文字列には生の認証情報を含めない。HTTP呼び出し時のみ生の credential を使用する。
+
+---
+
 ## セキュリティベストプラクティス
 
 ### Main Process
