@@ -146,6 +146,8 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | `useCreateSkill()` | create 実処理 | 一覧再取得・既存権限導線を保つため |
 | `useExecuteSkill()` | execute 実処理 | preflight / permission / streaming 契約を再利用するため |
 
+`window.electronAPI.skillCreator.executePlan(...)` は ack のみを返すため、Renderer は `getWorkflowState(planId)` を再読込して `handoffBundle` / `verifyResult.status === "fail"` を UI に反映する。`SkillCreateWizard` は failure snapshot を優先して表示し、structured error が返った場合のみ `result.error.message` を直接使う current fact へ更新済み。
+
 #### runtime bridge 型アンカー
 
 | surface | request | response | canonical source |
@@ -153,8 +155,11 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | `planSkill(prompt, authMode?, apiKey?)` | `SkillCreatorPlanRequest` | `RuntimeSkillCreatorPlanResponse` | `packages/shared/src/types/skillCreator.ts` |
 | `executePlan(planId, skillSpec, authMode?, apiKey?)` | `SkillCreatorExecutePlanRequest` | `SkillCreatorExecutePlanAck` | `packages/shared/src/types/skillCreator.ts` |
 | `improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | `SkillCreatorImproveSkillRequest` | `RuntimeSkillCreatorImproveResponse` | `packages/shared/src/types/skillCreator.ts` |
+| `RuntimeSkillCreatorExecuteResponse` | `RuntimeSkillCreatorExecuteResult \| { type: "terminal_handoff"; bundle: TerminalHandoffBundle } \| RuntimeSkillCreatorExecuteErrorResponse` | `execute()` の structured error union（adapter status failure を message へ正規化） | `packages/shared/src/types/skillCreator.ts` |
 
 型定義の正本は `packages/shared/src/types/skillCreator.ts` とし、renderer surface は上記型へ収束する。
+
+`RuntimeSkillCreatorExecuteErrorResponse` は `execute()` の adapter status failure を表す internal wrapper で、renderer 側は `success === false` を type guard で判定して message のみを表示する。
 
 #### workflow manifest foundation 型アンカー
 
@@ -577,3 +582,26 @@ Task03 実装で、`plan()` / `improve()` は固定 root 前提の resource 読�
 | --- | --- | --- | --- |
 | UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001 | 2026-04-02 | 完了 | 全 phase governance coverage の確認、renderer 可視化、Phase 11/12 evidence 整備 |
 | UT-SC-03-003 | 2026-03-24 | 完了 | DI 配線実装。setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。29テスト全PASS |
+| UT-SDK-L34-UI-DISPLAY-001 | 2026-04-04 | 完了 | Layer別グルーピング表示（`SkillLifecyclePanel.tsx`）。Layer 3/4 チェック結果を `VerifyLayerGroup` コンポーネントでアコーディオン + severity アイコン付きバッジ表示。Phase 3レビュー完了。 |
+| TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 | 2026-04-04 | 完了 | `RuntimeSkillCreatorExecuteErrorResponse` 型追加。`isExecuteErrorResponse()` type guard で `success === false` を判定し `executeResponse.error.message` を `setGenerationError` へ変換。|
+
+### SkillLifecyclePanel — execute error 表示 current facts
+
+- `isExecuteErrorResponse(response)` type guard: `"success" in response && response.success === false && typeof response.error.message === "string"` で判定
+- 判定後 `setGenerationError(executeResponse.error.message)` で UI エラー表示へ変換
+- `SkillCreateWizard` も同様に `result.error.message` を直接使う（structured error が返った場合のみ）
+
+### SkillLifecyclePanel — Layer別グルーピング current facts（UT-SDK-L34-UI-DISPLAY-001）
+
+- `VerifyLayerGroup` コンポーネントを `SkillLifecyclePanel.tsx` 内に定義
+- Layer 3 / Layer 4 それぞれのチェック配列を受け取り、アコーディオン（`aria-expanded`）で開閉
+- ヘッダー部に severity 別カウントバッジ（`verifyCheckSeverityStyles`）を表示
+- `data-testid`: `skill-lifecycle-verify-layer-{layer}` / `skill-lifecycle-verify-layer-toggle-{layer}` / `skill-lifecycle-verify-layer-panel-{layer}`
+
+### 関連未タスク（UT-SDK-L34 系）
+
+| タスクID | 概要 | ステータス |
+| --- | --- | --- |
+| UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 | severity フィルタ機能の追加 | 未着手 |
+| UT-SDK-L34-VERIFY-LAYERGROUP-SPLIT-001 | Layer グループ分割検証 | 未着手 |
+| UT-SDK-L34-UI-DISPLAY-LABEL-001 | Layer グループラベル表示の改善 | 未着手 |

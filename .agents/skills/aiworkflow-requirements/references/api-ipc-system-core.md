@@ -458,7 +458,8 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `skill-creator:reverify-workflow` | verify loop 再要求 | `SkillCreatorReverifyWorkflowRequest` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
 | `skill-creator:get-governance-state` | runtime governance state 取得 | なし | `IpcResult<SkillCreatorGovernanceState>` |
 
-`skill-creator:execute-plan` は `{ accepted: true, planId }` の ack を正本とし、完了状態の反映は `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay を介して行う。Renderer の compat path が旧 execute result を受ける場合は follow-up task で統一する。
+`skill-creator:execute-plan` は `{ accepted: true, planId }` の ack を正本とし、完了状態の反映は `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay を介して行う。Renderer の compat path が旧 execute result を受ける場合は follow-up task で統一する。current fact として、ack 受理後に Renderer は `getWorkflowState` を再読込し、`handoffBundle` または `verifyResult.status === "fail"` の snapshot を UI エラーとして扱う（adapter guard failure は `recordExecuteAdapterFailure()` で review-ready snapshot を先に保存する）。この ack 後再読込は `SkillCreateWizard` の failure handling の正本であり、`executeAsync()` の message 伝搬統一は別 follow-up として切り出す。
+
 
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 
@@ -500,6 +501,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `RuntimeSkillCreatorImproveErrorResponse` 型追加 | `packages/shared/src/types/skillCreator.ts` | `success: false` + `error: { code, message }` |
 | `applyImprovement()` メソッド追加 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `before`/`after` テキスト置換による改善適用 |
 | `SkillFileManager` DI 追加 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `RuntimeSkillCreatorFacadeDeps.skillFileManager` (optional) |
+| `RuntimeSkillCreatorExecuteErrorResponse` 型追加 | `packages/shared/src/types/skillCreator.ts` | execute() の degraded response を structured error 化し、adapter 未準備時は `recordExecuteAdapterFailure()` で review-ready snapshot を記録 |
 
 ### 契約メモ
 
@@ -508,6 +510,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | authMode 省略時 | handler 側で `api-key` を既定値にする |
 | `apiKey=null` + `authMode=\"api-key\"` | `plan` / `improve` は `resolveWithService()` により保存済み key fallback を試行する |
 | runtime facade 未注入 | 3 チャンネルは登録を維持し、`success: false` + 一定 error string を返す |
+| execute() adapter degraded | `RuntimeSkillCreatorExecuteResponse` に `RuntimeSkillCreatorExecuteErrorResponse` を追加し、`failed` / `initializing` では `llm_adapter_unavailable` を返す |
 
 ### 完了タスク（TASK-SDK-02 workflow-engine-runtime-orchestration）
 

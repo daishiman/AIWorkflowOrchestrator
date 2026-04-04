@@ -19,7 +19,18 @@ import { RuntimeSkillCreatorFacade } from "../RuntimeSkillCreatorFacade";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import type { INotificationService } from "../../notification/INotificationService";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
+import type { ILLMAdapter } from "../../../adapters/llm/types";
 import type { RuntimeSkillCreatorPlanResult } from "@repo/shared/types";
+
+/** LLMAdapter のモック生成（status を "ready" にするための最小実装） */
+function createMockLLMAdapter(): ILLMAdapter {
+  return {
+    providerId: "anthropic" as ILLMAdapter["providerId"],
+    sendChat: vi.fn(),
+    streamChat: vi.fn(),
+    checkHealth: vi.fn(),
+  } as unknown as ILLMAdapter;
+}
 
 // ─── MockNotificationService ────────────────────────────────────────────────
 
@@ -90,6 +101,8 @@ describe("RuntimeSkillCreatorFacade notification", () => {
       skillExecutor: executor,
       notificationService: mockNotification,
     });
+    // TASK-UT-RT-01: _llmAdapterStatus ガードを通過させるため
+    facade.setLLMAdapter(createMockLLMAdapter());
 
     const planResult = makePlanResult();
     await facade.execute(planResult, "api-key", "sk-test");
@@ -113,6 +126,8 @@ describe("RuntimeSkillCreatorFacade notification", () => {
       skillExecutor: executor,
       notificationService: mockNotification,
     });
+    // TASK-UT-RT-01: _llmAdapterStatus ガードを通過させるため
+    facade.setLLMAdapter(createMockLLMAdapter());
 
     const planResult = makePlanResult();
     await facade.execute(planResult, "api-key", "sk-test");
@@ -121,6 +136,32 @@ describe("RuntimeSkillCreatorFacade notification", () => {
     expect(mockNotification.calls[0]).toEqual({
       title: "スキル作成失敗",
       body: expect.any(String),
+    });
+  });
+
+  it("TC-F-02b: adapter guard で execute が即時失敗した場合も失敗通知を送る", async () => {
+    const mockNotification = new MockNotificationService();
+    const executor = createMockSkillExecutor({ success: true });
+    const facade = new RuntimeSkillCreatorFacade({
+      skillExecutor: executor,
+      notificationService: mockNotification,
+    });
+    facade.setLLMAdapterFailed("Connection refused");
+
+    const planResult = makePlanResult();
+    const result = await facade.execute(planResult, "api-key", "sk-test");
+
+    expect(result).toEqual({
+      success: false,
+      error: {
+        code: "llm_adapter_unavailable",
+        message: "Connection refused",
+      },
+    });
+    expect(mockNotification.calls).toHaveLength(1);
+    expect(mockNotification.calls[0]).toEqual({
+      title: "スキル作成失敗",
+      body: "Connection refused",
     });
   });
 

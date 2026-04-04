@@ -16,7 +16,32 @@ import type {
   SkillFileWriter,
   PersistResult,
 } from "../../skill/SkillFileWriter";
+import type { ILLMAdapter } from "../../../adapters/llm/types";
 import type { RuntimeSkillCreatorPlanResult } from "@repo/shared/types";
+
+/** LLMAdapter のモック生成（status を "ready" にするための最小実装） */
+function createMockLLMAdapter(): ILLMAdapter {
+  return {
+    providerId: "anthropic" as ILLMAdapter["providerId"],
+    sendChat: vi.fn(),
+    streamChat: vi.fn(),
+    checkHealth: vi.fn(),
+  } as unknown as ILLMAdapter;
+}
+
+/**
+ * LLMAdapter を ready 状態で注入済みの Facade を生成する。
+ * TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001:
+ * _llmAdapterStatus ガードが追加されたため、execute() テストでは
+ * setLLMAdapter() が必須。
+ */
+function createFacadeReady(
+  deps: ConstructorParameters<typeof RuntimeSkillCreatorFacade>[0],
+): RuntimeSkillCreatorFacade {
+  const facade = new RuntimeSkillCreatorFacade(deps);
+  facade.setLLMAdapter(createMockLLMAdapter());
+  return facade;
+}
 
 /** SkillExecutor のモック生成 */
 function createMockSkillExecutor(options: {
@@ -107,7 +132,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         success: true,
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -132,7 +157,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         success: true,
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -159,7 +184,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         success: true,
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -185,7 +210,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
       // skillFileWriter を渡さない
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
       });
 
@@ -208,7 +233,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
           "コードブロックを含まないテキスト応答です。",
         ),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -231,7 +256,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
         error: { code: "EXECUTION_FAILED", message: "SDK execution failed" },
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -256,7 +281,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         success: true,
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -284,7 +309,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         success: true,
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -312,7 +337,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         success: true,
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -340,7 +365,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         success: true,
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -368,7 +393,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         success: true,
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -402,7 +427,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         success: true,
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
       });
@@ -428,7 +453,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
         success: true,
         sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
       });
-      const facade = new RuntimeSkillCreatorFacade({
+      const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         // skillFileWriter 未DI
       });

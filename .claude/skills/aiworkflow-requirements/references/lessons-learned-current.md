@@ -1083,6 +1083,7 @@
 | 解決策       | `expect(button).toHaveAttribute("aria-expanded", "false")` と `expect(button).toHaveAttribute("aria-controls", "governance-notes-content")` を組み合わせてトグル前後の状態を検証する。クリック後は `"true"` に変化することを確認する             |
 | 標準ルール   | 折りたたみ UI には `aria-expanded`（状態）+ `aria-controls`（対象 id）+ `role="region"`（内容領域）を実装し、テストではこの三点セットを検証する。`queryByText` による存在確認だけでは不十分                                                      |
 | 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
+<<<<<<< Updated upstream
 
 
 ---
@@ -1129,3 +1130,12 @@
 | 標準ルール | 「永続化 → 登録 → 通知」のパイプラインでは、通知ステップを最後に配置し `finally` ブロックで保護する。途中ステップの失敗は通知ペイロードの `error` フィールドで伝達し、呼び出し元での例外 propagation は行わない |
 | 関連タスク | TASK-SDK-SC-04                                                                                                                                                                                                  |
 | 関連タスク | TASK-P0-04                                                                                                                                             |
+
+### L-RT-ADAPTER-GUARD-001: LLMAdapter 状態確認は execute/improve の先頭に集約する
+
+| 項目       | 内容                                                                                                                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 背景       | `execute()` と `improve()` で LLMAdapter の failed 状態チェックが共通パターンになった                                                                                                        |
+| 教訓       | adapter statusチェック→structured error returnのパターンをmethod先頭に配置することで、後続処理の前提条件を明示できる                                                                          |
+| 適用       | 新しいpublicメソッドでLLMAdapterに依存する処理を追加する場合、同パターンを適用する                                                                                                           |
+| 関連タスク | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001                                                                                                                                              |
