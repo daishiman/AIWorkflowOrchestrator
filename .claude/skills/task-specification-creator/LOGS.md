@@ -3,6 +3,13 @@
 ## 役割
 
 ---
+## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
+
+### 変更内容
+- `scripts/complete-phase.js`: フェーズ完了時に outputs ディレクトリの存在を検証し、欠落時に WARNING を出力する機能を追加
+  - 背景: Phase 1〜3 が completed 記録済みでも outputs がない状態が発生したため（TASK-RT-06 Phase 12 フィードバック）
+
+---
 
 ## 2026-04-04 - task-imp-layer12-spec-definition-004 Phase 12 close-out sync
 
