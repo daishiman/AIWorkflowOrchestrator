@@ -1692,8 +1692,10 @@ export function SkillLifecyclePanel({
       ) : null}
 
       {/* TASK-RT-03-VERIFY-IMPROVE-PANEL-001: VerifyResultDetailPanel */}
+      {/* key=activeWorkflowId でワークフロー切り替え時に severityFilter をリセット */}
       {activeWorkflowId ? (
         <VerifyResultDetailPanel
+          key={activeWorkflowId}
           verifyDetail={verifyDetail}
           isLoading={isVerifyDetailLoading}
           error={
