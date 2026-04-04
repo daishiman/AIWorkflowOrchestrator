@@ -19,9 +19,10 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-04-03 | 3.3.8      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 current index sync（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-EP-001〜003 / setupCallbackCapture / NON_VISUAL state-only 判定の current facts 反映） |
+| 2026-04-04 | 3.4.0      | TASK-RT-03-VERIFY-IMPROVE-PANEL-001 教訓4件を追加（L-VRIP-001: Layer 別 useMemo グループ化パターン / L-VRIP-002: seqRef による stale response 破棄 / L-VRIP-003: StatusBadge optional label で後方互換維持 / L-VRIP-004: aria-expanded/aria-controls アクセシビリティテスト） |
+| 2026-04-03 | 3.3.8      | TASK-SDK-SC-03 External API Support 教訓5件を追加（L-SC03-001 並行フロー管理 / L-SC03-002 タイムアウト管理二重化 / L-SC03-003 データ秘匿化二重管理 / L-SC03-004 IPC バリデーション複雑性 / L-SC03-005 Preload API 3層契約一貫性）|
 | 2026-04-03 | 3.3.8      | UT-UIUX-VISUAL-BASELINE-DRIFT-001 教訓3件を追加（→ [lessons-learned-ui-ux-visual-baseline-drift.md](lessons-learned-ui-ux-visual-baseline-drift.md): L-UIUX-VISUAL-001 Playwright `colorScheme` 二重固定 / L-UIUX-VISUAL-002 `TC-ID ↔ png ↔ manual-test-result` 同期 / L-UIUX-VISUAL-003 completed workflow / ledger / lesson の same-wave 同期） |
-| 2026-04-03 | 3.3.8      | TASK-SDK-SC-03 External API Support 教訓5件を追加（L-SC03-001 並行フロー管理 / L-SC03-002 タイムアウト管理二重化 / L-SC03-003 データ秘匿化二重管理 / L-SC03-004 IPC バリデーション複雑性 / L-SC03-005 Preload API 3層契約一貫性）
+| 2026-04-03 | 3.3.8      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 current index sync（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-EP-001〜003 / setupCallbackCapture / NON_VISUAL state-only 判定の current facts 反映） |
 | 2026-04-02 | 3.3.7      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-ERR-001 `handoff` guard の共通化 / L-LIFECYCLE-ERR-002 stale `phase: 'failed'` 語彙の除去 / L-LIFECYCLE-ERR-003 NON_VISUAL task で blocker を PASS へ偽装しない） |
 | 2026-04-01 | 3.3.6      | TASK-FIX-AUTH-IPC-001 教訓2件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-AUTH-IPC-001 IPC channel timeout と fire-and-forget パターン — CHANNEL_TIMEOUTS が 500ms の場合は OAuth 完了を await せず void+catch で即時返却する / L-AUTH-IPC-002 AUTH_STATE_CHANGED 責務境界の分離 — 完了通知は orchestrator に固定し handler 側では二重送信しない） |
 | 2026-04-01 | 3.3.5      | TASK-SC-DIALOG-MANDATORY-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-SC-DIALOG-001 宣言型→命令型転換 / L-SC-DIALOG-002 実行ゲートパターン / L-SC-DIALOG-003 graceful degradation で problem-definition.json 欠損時エラー停止を回避）                                                                                     |
@@ -88,7 +89,6 @@
 | [lessons-learned-safety-gate-permission-fallback.md](lessons-learned-safety-gate-permission-fallback.md) | SafetyGate / Permission / Fallback | UT-06-005, TASK-SKILL-LIFECYCLE-08 |
 | [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md) | UI / 非同期状態管理 / アダプター | TASK-RT-02 api-key-ui-adapter-status, TASK-RT-03 SkillCreationResultPanel |
 | [lessons-learned-ui-adapter-status-retry.md](lessons-learned-ui-adapter-status-retry.md) | UI / 非同期状態管理 / アダプター | TASK-RT-02 api-key-ui-adapter-status |
-| [lessons-learned-ui-ux-visual-baseline-drift.md](lessons-learned-ui-ux-visual-baseline-drift.md) | UI / visual regression / dark-mode screenshot | UT-UIUX-VISUAL-BASELINE-DRIFT-001 |
 | [lessons-learned-skill-create-multi-select-kind.md](lessons-learned-skill-create-multi-select-kind.md) | SkillCreator / UserInputKind / multi_select | TASK-RT-05 |
 | [lessons-learned-archive-2026-03.md](lessons-learned-archive-2026-03.md) | アーカイブ | 2026-03-15以前の全エントリ |
 
@@ -130,14 +130,6 @@
 - spec-only close-out では downstream task status と code diff 0/有を併記する
 - standalone root 移設時は parent/downstream/system spec の旧 path を same-wave で閉じる
 - `implementation_ready` / `spec_created` / `blocked` の意味を分離し、Phase 13 だけ future gate に残す
-
-### UI / visual baseline drift / dark-mode screenshot
-
-→ [lessons-learned-ui-ux-visual-baseline-drift.md](lessons-learned-ui-ux-visual-baseline-drift.md)
-
-- `playwright.config.ts` と spec-level `test.use({ colorScheme: "dark" })` を同じ wave で固定する
-- `TC-ID ↔ png ↔ manual-test-result` を 1:1 で揃え、baseline snapshot 名と証跡名を混同しない
-- completed workflow / ledger / lessons / lookup を同一 wave で同期し、current と baseline を分離する
 
 ### 2026-03-25 TASK-SC-07-STREAMING-PROGRESS-UI ストリーミング進捗UI実装
 
@@ -980,6 +972,21 @@
 | 課題       | 未実装関数を import すると、同ファイル内の既存テストも巻き込んで全失敗になる。Red の確認目的が「新テストの失敗」なのに既存テストが壊れる副作用が生じる |
 | 解決策     | スケルトン関数（`throw new Error("not implemented")`）を先に定義し、import はコンパイルできる状態にする。実行時にのみ新テストが Red になるよう設計する |
 | 標準ルール | テストファースト実装では「スケルトン定義 → テスト記述 → Red 確認 → 実装 → Green 確認」の順序を守る                                                     |
+| 関連タスク | TASK-P0-04                                                                                                                                             |
+
+### L-LIFECYCLE-EP-001: fire-and-forget IPC では後続スナップショットによるエラークリア防止が必要（2026-04-03）
+
+| 項目       | 内容                                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| 標準ルール | IPC fire-and-forget パターンでは Renderer state のエラー保持を壊さないようスナップショット受信コールバックにフェーズ別ガードを設ける |
+| 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001（Issue #1844）                                                                              |
+
+### L-LIFECYCLE-EP-003: NON_VISUAL 判定 — React state 変更のみは自動テストで代替可能（2026-04-03）
+
+| 項目       | 内容                                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 標準ルール | `setXxx(null)` 等の呼び出し制御のみの修正は NON_VISUAL と判定。UI 描画変更を伴う場合のみ Phase 11 でスクリーンショットが必要 |
+| 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                                                          |
 
 ---
 
@@ -1034,4 +1041,43 @@
 | 解決策     | チャネル追加チェックリストを定義し、4層（shared 定数 → preload import → preload API → Main handler）を同一 PR 内で完結させる                                                          |
 | 標準ルール | 新規 IPC チャネル追加時は「shared 定数 → preload channels import → preload API 関数 → Main handler 登録 → ALLOWED_*_CHANNELS 追加」の5点を同一コミットで完了する                      |
 | 関連タスク | TASK-SDK-SC-03                                                                                                                                                                        |
-| 関連タスク | TASK-P0-04                                                                                                                                             |
+
+---
+
+### 2026-04-04 TASK-RT-03-VERIFY-IMPROVE-PANEL-001（Verify / Improve 結果パネル実装）
+
+#### L-VRIP-001: Layer 別 useMemo グループ化 — LAYER_ORDER で表示順を固定する
+
+| 項目         | 内容                                                                                                                                                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題         | verify の `checks[]` を Layer 別にグループ化する際、オブジェクトキー列挙順に依存すると Layer 順序が不定になる。0 件 Layer を非表示にする条件と表示順序を両立するロジックが複雑になりがち                                                          |
+| 解決策       | `const LAYER_ORDER: VerifyLayerKey[] = ["layer1", "layer2", "layer3", "layer4"]` を定数化し、`useMemo` 内で `LAYER_ORDER.filter(k => groups[k].length > 0)` と順序固定グループ化を分離する。0 件 Layer の非表示も filter で自然に処理できる       |
+| 標準ルール   | 表示順序が仕様に明示されているリストは定数 LAYER_ORDER / STEP_ORDER 等で固定し、オブジェクトキー列挙順には依存しない。useMemo の依存配列は `verifyDetail?.checks` の参照だけにする                                                               |
+| 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
+
+#### L-VRIP-002: seqRef パターン — 複数の非同期リクエスト中に古いレスポンスを破棄する
+
+| 項目         | 内容                                                                                                                                                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題         | reverify ボタンを連打すると複数のリクエストが並走し、古いレスポンスが後着することで表示が巻き戻る。`isReverifying` フラグだけでは二重送信は防げても stale response は防げない                                                                     |
+| 解決策       | `const verifyDetailRequestSeqRef = useRef(0)` をコンポーネントに置き、リクエスト送信時にインクリメント。レスポンス受信コールバック内で `if (seq !== verifyDetailRequestSeqRef.current) return` と照合し古いレスポンスを破棄する                  |
+| 標準ルール   | 同一ソースへの複数非同期呼び出しが発生しうる UI には seqRef パターンを適用する。`isXxxing` フラグとの併用で「送信防止（UI）」と「stale 破棄（データ）」を分離できる                                                                              |
+| 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
+
+#### L-VRIP-003: StatusBadge optional label — 後方互換を維持したまま verify 固有語彙を注入する
+
+| 項目         | 内容                                                                                                                                                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題         | Plan/Execute 向けの StatusBadge は「成功/失敗/実行中」ラベルを内部決定する設計だったが、Verify パネルでは「合格/不合格/検証中」という別語彙が必要。コンポーネントを複製せず語彙差異を吸収したい                                                  |
+| 解決策       | `StatusBadge` に `label?: string` を追加し、`const displayLabel = label ?? defaultLabel` とする。既存の呼び出し元は label 省略のまま動作し、VerifyResultDetailPanel だけが `label="合格"` 等を渡す設計。破壊的変更なし                           |
+| 標準ルール   | 共通 UI パーツに domain 固有語彙を持ち込む場合は optional props でオーバーライドし、デフォルトを既存仕様に保つ。label 注入は呼び出し側の責務とし、コンポーネント内部に domain 知識を埋め込まない                                                 |
+| 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
+
+#### L-VRIP-004: aria-expanded / aria-controls テスト — 折りたたみ UI の accessibility 検証パターン
+
+| 項目         | 内容                                                                                                                                                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題         | 折りたたみ UI（Governance Notes / Revised Spec など）のテストで `queryByText` だけ確認すると、DOM に存在するが視覚的に折りたたまれている要素を「表示されている」と誤判定する。スクリーンリーダー互換性の保証にもならない                          |
+| 解決策       | `expect(button).toHaveAttribute("aria-expanded", "false")` と `expect(button).toHaveAttribute("aria-controls", "governance-notes-content")` を組み合わせてトグル前後の状態を検証する。クリック後は `"true"` に変化することを確認する             |
+| 標準ルール   | 折りたたみ UI には `aria-expanded`（状態）+ `aria-controls`（対象 id）+ `role="region"`（内容領域）を実装し、テストではこの三点セットを検証する。`queryByText` による存在確認だけでは不十分                                                      |
+| 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |

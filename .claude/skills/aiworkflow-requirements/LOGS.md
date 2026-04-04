@@ -580,6 +580,21 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - Phase 12 documentation-changelog の workflow-local / global skill sync 分離ルールを追加
   - `generate-index.js` 再実行で indexes を 2026-04-03 時点へ更新
 
+## TASK-RT-03-VERIFY-IMPROVE-PANEL-001 close-out sync（2026-04-04）
+
+- タスク名: TASK-RT-03-VERIFY-IMPROVE-PANEL-001
+- 種別: ui-feature / workflow close-out / docs sync
+- 主な反映:
+  - `indexes/resource-map.md` に TASK-RT-03-VERIFY-IMPROVE-PANEL-001 エントリを追加
+  - `references/lessons-learned-current.md` v3.4.0: L-VRIP-001〜004（Layer別useMemo / seqRef / StatusBadge optional label / aria accessibility テスト）を追加
+  - `references/task-workflow-completed-skill-lifecycle-ui.md`: 完了記録追加（Phase 12 で実施済み）
+  - `references/ui-ux-feature-components-reference.md`: VerifyResultDetailPanel / ImproveResultDetailPanel コンポーネント登録（Phase 12 で実施済み）
+  - `references/ui-ux-feature-components-history.md`: 完了履歴追加（Phase 12 で実施済み）
+  - `generate-index.js` を再実行し、`indexes/topic-map.md` / `indexes/keywords.json` を再生成
+- 検証:
+  - `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js --workflow docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001 --regenerate`: PASS（2655キーワード）
+  - `node .claude/skills/aiworkflow-requirements/scripts/validate-structure.js`: PASS（警告5件は既存行超過ファイル、今回の追加分はなし）
+
 ## TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync（2026-04-03）
 
 - タスク名: TASK-FIX-LIFECYCLE-PANEL-ERROR-001
