@@ -110,6 +110,21 @@ export type {
   BoundedContext,
   ExternalApiConfig,
   ScriptResult,
+} from "./skillCreator";
+
+export type {
+  ExternalApiAuthType,
+  ExternalApiConnectionConfig,
+  SkillExternalApiContext,
+  IExternalApiAdapter,
+} from "./skillCreatorExternalApi";
+
+export {
+  ExternalApiTimeoutError,
+  ExternalApiHttpError,
+} from "./skillCreatorExternalApi";
+
+export type {
   TaskSpec,
   DependencyGraph,
   // Phase 5: 新規メソッド用型定義 (TASK-9B)
@@ -186,6 +201,7 @@ export {
 export type {
   SkillCreatorSdkEventType,
   SkillCreatorSdkEvent,
+  ImproveFeedbackHistory,
 } from "./skillCreator";
 export type {
   SkillCreatorGovernancePhase,

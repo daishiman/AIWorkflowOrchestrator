@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-03
+> 自動生成: 2026-04-04
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -910,6 +910,7 @@ node scripts/list-specs.js --topics
 | Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L690 |
 | AIプロバイダーAPI連携 | L728 |
 | Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L761 |
+| Skill Creator External API Support（TASK-SDK-SC-03） | L808 |
 
 ### references/api-ipc-system-details.md
 
@@ -1174,10 +1175,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
 | Skill Runtime API Key Panel（TASK-RT-04） | L63 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L87 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L194 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L261 |
-| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L409 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L119 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L226 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L293 |
+| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L441 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1482,6 +1483,7 @@ node scripts/list-specs.js --topics
 | 実装例: slideSettingsAPI | L427 |
 | IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L476 |
 | ApprovalGate セキュリティ契約（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L491 |
+| Skill Creator External API Credential 秘匿化（TASK-SDK-SC-03） | L546 |
 
 ### references/security-electron-ipc-details.md
 
@@ -2119,14 +2121,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| SkillForker（TASK-9E） | L8 |
 | RuntimeResolver（runtime routing 共通化 — UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L27 |
 | RuntimePolicyResolver（TASK-SC-02-RUNTIME-POLICY-CLOSURE） | L100 |
-| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L170 |
-| SkillScheduler / ScheduleStore（TASK-9G） | L229 |
-| DefaultSafetyGate サービス（UT-06-003） | L258 |
-| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L309 |
-| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L334 |
-| キャッシュ機構 | L362 |
-| 永続化 | L368 |
-| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L374 |
+| Slide RuntimeResolver 採用計画（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L184 |
+| SkillScheduler / ScheduleStore（TASK-9G） | L243 |
+| DefaultSafetyGate サービス（UT-06-003） | L272 |
+| SkillService と SkillExecutor の統合（TASK-FIX-7-1） | L323 |
+| Runtime routing / handoff DI 統合（UT-IMP-SKILL-AGENT-RUNTIME-ROUTING-INTEGRATION-CLOSURE-001） | L348 |
+| キャッシュ機構 | L376 |
+| 永続化 | L382 |
+| SkillImportManager 永続化実装詳細（TASK-FIX-4-2） | L388 |
 
 ### references/arch-electron-services-details.md
 
@@ -2673,6 +2675,7 @@ node scripts/list-specs.js --topics
 | TASK-RT-06 教訓（2026-03-29） | L910 |
 | UT-IMP-SDK-06 教訓（2026-04-01） | L932 |
 | TASK-P0-04 教訓（2026-03-30） | L963 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L975 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2716,24 +2719,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-04-02 TASK-FIX-LIFECYCLE-PANEL-ERROR-001 | L50 |
-| 2026-03-29 TASK-RT-04 skill-authkey-api-key-management-ui | L84 |
-| 2026-03-31 TASK-ELECTRON-BUILD-FIX | L108 |
-| 2026-03-28 TASK-SDK-07 execution-governance-and-handoff-alignment | L162 |
-| 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 | L202 |
-| 2026-03-27 TASK-SDK-04 | L242 |
-| 2026-03-27 UT-EXEC-01 | L244 |
-| 2026-03-27 TASK-SDK-05 | L266 |
-| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L296 |
-| 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L308 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L410 |
-| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L450 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L494 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L534 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L574 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L623 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L676 |
-| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L704 |
+| 2026-04-02 TASK-FIX-LIFECYCLE-PANEL-ERROR-001 | L51 |
+| 2026-03-29 TASK-RT-04 skill-authkey-api-key-management-ui | L85 |
+| 2026-03-31 TASK-ELECTRON-BUILD-FIX | L109 |
+| 2026-03-28 TASK-SDK-07 execution-governance-and-handoff-alignment | L163 |
+| 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 | L203 |
+| 2026-03-27 TASK-SDK-04 | L243 |
+| 2026-03-27 UT-EXEC-01 | L245 |
+| 2026-03-27 TASK-SDK-05 | L267 |
+| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L297 |
+| 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L309 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L411 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L451 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L495 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L535 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L575 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L624 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L677 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L705 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -2759,6 +2762,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| TASK-SDK-SC-01: SDK Session Bridge 実装 | L6 |
+
+### references/lessons-learned-severity-filter-ui.md
+
+| セクション | 行 |
+|------------|----|\n| タスク情報 | L3 |
+| 技術的教訓 | L8 |
+| 苦戦箇所 | L27 |
+| コードパターン | L39 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 

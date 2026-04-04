@@ -5,6 +5,55 @@
 
 ## 完了タスク
 
+### タスク: TASK-SDK-SC-03 External API Support（2026-04-03）
+
+| 項目       | 値                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SDK-SC-03                                                                                                                                                                                                           |
+| ステータス | **完了**                                                                                                                                                                                                                 |
+| タイプ     | feature / skill-creator external api support                                                                                                                                                                             |
+| 優先度     | 高                                                                                                                                                                                                                       |
+| 完了日     | 2026-04-03                                                                                                                                                                                                               |
+| 対象       | `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` / `apps/desktop/src/main/services/runtime/SkillCreatorSdkSession.ts` / `packages/shared/src/types/skillCreatorExternalApi.ts` / `packages/shared/src/ipc/channels.ts` / `apps/desktop/src/renderer/components/skill/ExternalApiConfigForm.tsx` / `apps/desktop/src/main/services/runtime/adapters/HttpExternalApiAdapter.ts` |
+| 成果物     | `docs/30-workflows/completed-tasks/step-02-par-task-03-external-api-support/`                                                                                                                                            |
+
+#### 実施内容
+
+- IPC チャネル4本追加（`skill-creator:configure-api` / `skill-creator:api-configured` / `skill-creator:api-test-result` / `skill-creator:external-api-config-required`）
+- 型定義追加（`ExternalApiAuthType` / `ExternalApiConnectionConfig` / `ExternalApiTimeoutError` / `ExternalApiHttpError` / `ExternalApiConfigRequiredEvent`）
+- `SkillCreatorSdkSession` に `RequestExternalApiConfig` custom tool を追加し、SDK→UI のAPI設定要求フローを実装
+- `SkillCreatorIpcBridge` に `isValidExternalApiConfig()` 8条件バリデーションを追加
+- `sanitizeExternalApiConfigForPrompt()` による credential 秘匿化（`[REDACTED]` 置換）を実装
+- `pendingAnswerPromise` / `pendingExternalApiPromise` の相互排他管理と30秒タイムアウト機構を実装
+- `ExternalApiConfigForm.tsx` UI コンポーネントを新規作成
+- `HttpExternalApiAdapter` を追加し `IExternalApiAdapter` インターフェースを実装
+- Preload 層（`skill-creator-api.ts` / `skill-creator-session-api.ts`）で invoke / push listener を公開
+
+### タスク: task-ut-p0-02-001-repeat-feedback-memory（2026-04-03）
+
+| 項目       | 値                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | task-ut-p0-02-001-repeat-feedback-memory                                                                                                                           |
+| ステータス | **完了**                                                                                                                                                           |
+| タイプ     | 改善 / runtime skill creator feedback memory                                                                                                                       |
+| 優先度     | 中                                                                                                                                                                 |
+| 完了日     | 2026-04-03                                                                                                                                                         |
+| 対象       | `packages/shared/src/types/skillCreator.ts` / `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` / `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts` |
+| 成果物     | `docs/30-workflows/completed-tasks/improve-feedback-memory-structuring/`                                                                                                           |
+
+#### 実施内容
+
+- `ImproveFeedbackHistory` 型を `packages/shared/src/types/skillCreator.ts` に定義（attempt / failedChecks / improveSummary）
+- `verifyAndImproveLoop()` 内の `previousImproveSummary: string` を `feedbackHistory: ImproveFeedbackHistory[]` に置換し、全試行履歴を蓄積
+- `buildImproveFeedback()` を全履歴参照型に改修。persistent failure 検出と特別警告を付与
+- TC-01〜TC-06、EC-01〜EC-02、EC-04、BF-01〜BF-04 の計13テストを追加（全45テスト PASS）
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts --reporter=verbose`: PASS（45/45）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm exec eslint apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`: PASS
+- AC-1〜AC-4 全充足確認済み
 ### タスク: TASK-FIX-LIFECYCLE-PANEL-ERROR-001（2026-04-02）
 
 | 項目       | 値                                                                                                                                                                 |
@@ -2102,3 +2151,51 @@
 | representative screenshot 実測 | 未了         |
 | Phase 11 実行結果              | 未了         |
 | HIGH 問題の未タスク化          | 実行後に判定 |
+
+---
+
+### タスク: TASK-SDK-SC-02 Conversation UI 質問受信・回答送信 UI コンポーネント（2026-04-03）
+
+| 項目       | 値                                                                    |
+| ---------- | --------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-SC-02                                                        |
+| ステータス | **Phase 1-12 完了**                                                   |
+| タイプ     | implementation                                                        |
+| 優先度     | 高                                                                    |
+| 完了日     | 2026-04-03                                                            |
+| 依存タスク | TASK-SDK-SC-01                                                        |
+| 後続タスク | なし                                                                  |
+| 成果物     | `docs/30-workflows/step-02-par-task-02-conversation-ui/`              |
+
+#### 実施内容
+
+- Electron Renderer 側に Atomic Design 準拠の 5 コンポーネントを新規実装
+  - `ChoiceButton`（Atom）: 選択/未選択状態の単一ボタン、`aria-pressed` 対応
+  - `FreeTextInput`（Atom）: 自由入力テキストエリア、secret モード対応、Enter 送信 / Shift+Enter 改行
+  - `ConversationProgress`（Atom）: 「質問 N / 推定合計」形式の進捗表示、`role="progressbar"` 対応
+  - `QuestionCard`（Molecule）: `kind`（single_select / multi_select / free_text / secret / confirm）に応じた入力 UI 統合
+  - `SkillCreatorConversationPanel`（Organism）: IPC listen・回答送信・全コンポーネント統合、`useReducer` による状態管理
+- Session Bridge 型（`UserInputQuestion`/`UserInputAnswer`）と Workflow 型（`SkillCreatorUserInputRequest`/`InterviewUserAnswer`）のブリッジ層を Panel 内に実装
+- `multi_select` の「その他（自由入力）」は `selectedValues` 経路として扱い、ブリッジで `UserInputAnswer.value` の配列に正規化
+- `key={questionIndex}` パターンで QuestionCard の内部状態を質問切り替え時に自動リセット
+
+#### 検証
+
+- `pnpm --filter @repo/desktop exec vitest run ...skill-creator/__tests__/`: **57 tests PASS**
+- カバレッジ: Stmts 97.54% / Branch 86.04% / Funcs 95.83% / Lines 97.54%
+- TypeScript typecheck: PASS
+- ESLint: PASS
+
+#### テストケース追加内訳
+
+| テストファイル                              | テスト数 | 主な検証内容                                           |
+| ------------------------------------------- | -------- | ------------------------------------------------------ |
+| `ChoiceButton.test.tsx`                     | 9        | 表示・選択状態・freeText 破線・disabled・aria-pressed  |
+| `FreeTextInput.test.tsx`                    | 9        | 表示制御・Enter/Shift+Enter・secret・disabled・clear   |
+| `ConversationProgress.test.tsx`             | 3        | 表示形式・プログレスバー幅                             |
+| `QuestionCard.test.tsx`                     | 23       | 全 5 kind・エッジケース・XSS・多言語・multi_select 自由入力 |
+| `SkillCreatorConversationPanel.test.tsx`    | 13       | IPC リスナー・クリーンアップ・質問表示・回答送信・エラー・重複送信防止 |
+
+#### Phase 12 未タスク
+
+なし（0件）
