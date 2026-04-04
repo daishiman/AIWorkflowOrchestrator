@@ -1,15 +1,14 @@
 {
-  "tool": "playwright + vite harness",
-  "script": "apps/desktop/scripts/capture-governance-summary-phase11.mjs",
-  "harness": "apps/desktop/src/renderer/phase11-governance-summary.tsx",
-  "viewport": {
-    "width": 1440,
-    "height": 1100
-  },
-  "theme": "light",
-  "files": [
-    "outputs/phase-11/screenshots/TC-01-governance-summary-default.png",
-    "outputs/phase-11/screenshots/TC-02-governance-summary-denials.png",
-    "outputs/phase-11/screenshots/TC-03-governance-summary-error.png"
+  "taskId": "TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001",
+  "featureName": "ut-rt-01-execute-improve-adapter-guard-001",
+  "capturedAt": "2026-04-04T00:00:00.000Z",
+  "mode": "NON_VISUAL",
+  "screenshots": [],
+  "evidence": [
+    "pnpm --filter @repo/shared typecheck",
+    "pnpm --filter @repo/desktop typecheck",
+    "pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/SkillCreateWizard.tsx src/renderer/components/skill/SkillLifecyclePanel.tsx",
+    "pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts",
+    "pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx"
   ]
 }

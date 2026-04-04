@@ -430,9 +430,21 @@ export class RuntimeSkillCreatorFacade {
 
         // エラーレスポンスチェック
         if ("success" in improveResult && !improveResult.success) {
-          throw new Error(
-            (improveResult as { error: { message: string } }).error.message,
+          const errorCode = improveResult.error.code;
+          const errorMessage = improveResult.error.message;
+          const snapshot = this.recordImproveFailureSnapshot(
+            planId,
+            `improve が ${errorCode} で失敗しました: ${errorMessage}`,
           );
+          return {
+            finalStatus: "error",
+            totalAttempts: attemptCount,
+            finalChecks: checks,
+            loopExhausted: false,
+            errorCode,
+            errorMessage,
+            workflowSnapshot: snapshot,
+          };
         }
 
         // terminal_handoff チェック
@@ -440,10 +452,9 @@ export class RuntimeSkillCreatorFacade {
           "type" in improveResult &&
           improveResult.type === "terminal_handoff"
         ) {
-          const snapshot = this.workflowEngine.recordVerifyFailure(
+          const snapshot = this.recordImproveFailureSnapshot(
             planId,
             "improve が terminal_handoff を返しました",
-            "review",
           );
           return {
             finalStatus: "error",
@@ -459,10 +470,9 @@ export class RuntimeSkillCreatorFacade {
           "suggestions" in improveResult ? improveResult.suggestions : [];
 
         if (suggestions.length === 0) {
-          const snapshot = this.workflowEngine.recordVerifyFailure(
+          const snapshot = this.recordImproveFailureSnapshot(
             planId,
             "LLM が改善提案を生成できませんでした",
-            "review",
           );
           return {
             finalStatus: "fail",
@@ -478,10 +488,9 @@ export class RuntimeSkillCreatorFacade {
         const applyResult = await this.applyImprovement(skillName, suggestions);
 
         if (applyResult.applied === 0) {
-          const snapshot = this.workflowEngine.recordVerifyFailure(
+          const snapshot = this.recordImproveFailureSnapshot(
             planId,
             "改善提案の適用に全て失敗しました",
-            "review",
           );
           return {
             finalStatus: "fail",
@@ -502,10 +511,9 @@ export class RuntimeSkillCreatorFacade {
         // Step 5: re-verify へ（while ループ先頭に戻る）
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : String(err);
-        const snapshot = this.workflowEngine.recordVerifyFailure(
+        const snapshot = this.recordImproveFailureSnapshot(
           planId,
           `improve 中にエラーが発生: ${errorMsg}`,
-          "review",
         );
         return {
           finalStatus: "error",
@@ -1004,6 +1012,72 @@ export class RuntimeSkillCreatorFacade {
     }
   }
 
+  private recordImproveFailureSnapshot(
+    planId: string,
+    message: string,
+  ): SkillCreatorWorkflowUiSnapshot {
+    const workflowEngineWithImproveFailure = this.workflowEngine as
+      | SkillCreatorWorkflowEngine
+      | (SkillCreatorWorkflowEngine & {
+          recordImproveFailure?: (
+            planId: string,
+            message: string,
+          ) => SkillCreatorWorkflowUiSnapshot;
+        });
+
+    if (
+      typeof workflowEngineWithImproveFailure.recordImproveFailure ===
+      "function"
+    ) {
+      return workflowEngineWithImproveFailure.recordImproveFailure(
+        planId,
+        message,
+      );
+    }
+
+    const existingSnapshot = this.workflowEngine.getWorkflowState(planId);
+    const updatedAt = new Date().toISOString();
+
+    if (existingSnapshot) {
+      return {
+        ...existingSnapshot,
+        currentPhase: "improve",
+        awaitingUserInput: null,
+        verifyResult: {
+          ...existingSnapshot.verifyResult,
+          status: "fail",
+          message,
+          nextAction: "improve",
+          updatedAt,
+        },
+        resumeTokenEnvelope: {
+          ...existingSnapshot.resumeTokenEnvelope,
+          currentPhase: "improve",
+          updatedAt,
+        },
+      };
+    }
+
+    return {
+      planId,
+      currentPhase: "improve",
+      awaitingUserInput: null,
+      verifyResult: {
+        status: "fail",
+        message,
+        nextAction: "improve",
+        updatedAt,
+      },
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId,
+        currentPhase: "improve",
+        artifactCount: 0,
+        updatedAt,
+      },
+    };
+  }
+
   /**
    * Executor role: 計画に基づき Skill を実行・生成する。
    * SkillExecutor に委譲する。
@@ -1027,13 +1101,47 @@ export class RuntimeSkillCreatorFacade {
     authMode: AuthMode,
     apiKey: string | null,
   ): Promise<SkillExecuteResponse> {
-    const decision = await this.resolveDecision(authMode, apiKey);
     const sourceProvenance = this.buildSourceProvenance();
     const governanceHooks = this.createGovernanceHooks("execute");
     governanceHooks.onSessionStart({
       sessionId: planResult.planId,
       provenance: sourceProvenance,
     });
+
+    // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001: アダプターステータスチェック
+    if (
+      this._llmAdapterStatus === "failed" ||
+      this._llmAdapterStatus === "initializing"
+    ) {
+      const errorMessage =
+        this._llmAdapterStatus === "failed"
+          ? toActionableMessage(this._llmAdapterFailureReason)
+          : "LLMAdapter の初期化中です。しばらくお待ちください";
+
+      this.workflowEngine.recordExecuteAdapterFailure(
+        planResult,
+        errorMessage,
+        sourceProvenance,
+      );
+      governanceHooks.onSessionEnd({
+        sessionId: planResult.planId,
+        summary: `Execute failed: ${errorMessage}`,
+      });
+      try {
+        this.notificationService?.notify("スキル作成失敗", errorMessage);
+      } catch {
+        // 通知の失敗はスキル生成の結果に影響しない
+      }
+      return {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: errorMessage,
+        },
+      };
+    }
+
+    const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {
       this.workflowEngine.recordExecuteHandoff(
@@ -1233,6 +1341,26 @@ export class RuntimeSkillCreatorFacade {
     authMode: AuthMode,
     apiKey: string | null,
   ): Promise<RuntimeSkillCreatorImproveResponse> {
+    // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001: アダプターステータスチェック
+    if (this._llmAdapterStatus === "failed") {
+      return {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: toActionableMessage(this._llmAdapterFailureReason),
+        },
+      };
+    }
+    if (this._llmAdapterStatus === "initializing") {
+      return {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
+        },
+      };
+    }
+
     const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {

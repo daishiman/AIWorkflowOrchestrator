@@ -731,6 +731,8 @@ export interface RuntimeSkillCreatorVerifyAndImproveResult {
   finalChecks: RuntimeSkillCreatorVerifyCheck[];
   /** ループが maxRetry で停止したか */
   loopExhausted: boolean;
+  /** improve / verify の失敗コード */
+  errorCode?: string;
   /** エラーが発生した場合のメッセージ */
   errorMessage?: string;
   /** ワークフロー状態スナップショット */
@@ -765,6 +767,15 @@ export interface RuntimeSkillCreatorImproveErrorResponse {
 }
 
 /**
+ * execute() エラーレスポンス（adapter ステータス未準備時）
+ * TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+ */
+export interface RuntimeSkillCreatorExecuteErrorResponse {
+  success: false;
+  error: { code: RuntimeSkillCreatorDegradedReason; message: string };
+}
+
+/**
  * LLM が生成したスキルコンテンツを保持する中間データ型。
  * RuntimeSkillCreatorExecuteResult（成功/失敗のみ）とは別に、
  * execute() 内部でキャプチャされ SkillFileWriter.persist() に渡される。
@@ -796,13 +807,12 @@ export type RuntimeSkillCreatorPlanResponse =
 
 /**
  * Runtime execute IPC の戻り値
+ * TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001: エラー union を追加
  */
 export type RuntimeSkillCreatorExecuteResponse =
   | RuntimeSkillCreatorExecuteResult
-  | {
-      type: "terminal_handoff";
-      bundle: TerminalHandoffBundle;
-    };
+  | { type: "terminal_handoff"; bundle: TerminalHandoffBundle }
+  | RuntimeSkillCreatorExecuteErrorResponse;
 
 /**
  * Runtime verify detail IPC の戻り値

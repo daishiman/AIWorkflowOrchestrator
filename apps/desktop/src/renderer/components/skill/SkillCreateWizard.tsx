@@ -20,6 +20,7 @@ import type {
 } from "./wizard";
 import type {
   SkillCreatorExecutePlanAck,
+  RuntimeSkillCreatorExecuteErrorResponse,
   RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorPlanResponse,
   SkillCreatorWorkflowUiSnapshot,
@@ -116,6 +117,19 @@ function isExecuteTerminalHandoff(
   return "type" in response && response.type === "terminal_handoff";
 }
 
+function isExecuteErrorResponse(
+  response: RuntimeSkillCreatorExecuteResponse,
+): response is RuntimeSkillCreatorExecuteErrorResponse {
+  return (
+    "success" in response &&
+    response.success === false &&
+    typeof response.error === "object" &&
+    response.error !== null &&
+    "message" in response.error &&
+    typeof response.error.message === "string"
+  );
+}
+
 function isExecutePlanAck(
   response: unknown,
 ): response is SkillCreatorExecutePlanAck {
@@ -127,6 +141,16 @@ function isExecutePlanAck(
     "planId" in response &&
     typeof (response as { planId: unknown }).planId === "string"
   );
+}
+
+function getWorkflowFailureMessage(
+  snapshot: SkillCreatorWorkflowUiSnapshot | null | undefined,
+): string | null {
+  if (!snapshot?.verifyResult || snapshot.verifyResult.status !== "fail") {
+    return null;
+  }
+
+  return snapshot.verifyResult.message ?? "スキル生成に失敗しました";
 }
 
 function toPlanResult(
@@ -309,6 +333,13 @@ export const SkillCreateWizard = React.forwardRef<
                 );
                 return;
               }
+              const failureMessage = getWorkflowFailureMessage(
+                snapshotResult.success ? snapshotResult.data : null,
+              );
+              if (failureMessage) {
+                setStoreGenerationError(failureMessage);
+                return;
+              }
             } catch {
               // ack 受理後の snapshot 取得失敗は最終遷移を妨げない
             }
@@ -323,6 +354,10 @@ export const SkillCreateWizard = React.forwardRef<
           setStoreGenerationError(
             `ターミナル実行が必要です: ${result.data.bundle.suggestedCommand}`,
           );
+          return;
+        }
+        if (isExecuteErrorResponse(result.data)) {
+          setStoreGenerationError(result.data.error.message);
           return;
         }
         if (!result.data.success) {

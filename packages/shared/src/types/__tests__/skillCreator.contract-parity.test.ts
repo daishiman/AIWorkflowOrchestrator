@@ -1,5 +1,6 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import type {
+  RuntimeSkillCreatorExecuteErrorResponse,
   RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorPlanResponse,
@@ -68,6 +69,7 @@ describe("skillCreator contract parity", () => {
             manualRetryRule: string;
           };
         }
+      | RuntimeSkillCreatorExecuteErrorResponse
     >();
   });
 });
