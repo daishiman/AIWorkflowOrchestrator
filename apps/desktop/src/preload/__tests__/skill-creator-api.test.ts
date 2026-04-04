@@ -54,7 +54,7 @@ describe("SkillCreator Preload API", () => {
   // ============================================
 
   describe("チャンネル定数", () => {
-    it("6つのSkill Creatorチャンネルが定義されていること", () => {
+    it("9つのSkill Creatorチャンネルが定義されていること", () => {
       expect(IPC_CHANNELS.SKILL_CREATOR_DETECT_MODE).toBe(
         "skill-creator:detect-mode",
       );
@@ -71,9 +71,18 @@ describe("SkillCreator Preload API", () => {
       expect(IPC_CHANNELS.SKILL_CREATOR_PROGRESS).toBe(
         "skill-creator:progress",
       );
+      expect(IPC_CHANNELS.SKILL_CREATOR_OUTPUT_READY).toBe(
+        "skill-creator:output-ready",
+      );
+      expect(IPC_CHANNELS.SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED).toBe(
+        "skill-creator:output-overwrite-approved",
+      );
+      expect(IPC_CHANNELS.SKILL_CREATOR_OPEN_SKILL).toBe(
+        "skill-creator:open-skill",
+      );
     });
 
-    it("5つのinvokeチャンネルがホワイトリストに含まれること", () => {
+    it("7つのinvokeチャンネルがホワイトリストに含まれること", () => {
       expect(ALLOWED_INVOKE_CHANNELS).toContain(
         IPC_CHANNELS.SKILL_CREATOR_DETECT_MODE,
       );
@@ -89,11 +98,23 @@ describe("SkillCreator Preload API", () => {
       expect(ALLOWED_INVOKE_CHANNELS).toContain(
         IPC_CHANNELS.SKILL_CREATOR_VALIDATE_SCHEMA,
       );
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(
+        IPC_CHANNELS.SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+      );
+      expect(ALLOWED_INVOKE_CHANNELS).toContain(
+        IPC_CHANNELS.SKILL_CREATOR_OPEN_SKILL,
+      );
     });
 
     it("progressチャンネルがonホワイトリストに含まれること", () => {
       expect(ALLOWED_ON_CHANNELS).toContain(
         IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
+      );
+    });
+
+    it("output-readyチャンネルがonホワイトリストに含まれること", () => {
+      expect(ALLOWED_ON_CHANNELS).toContain(
+        IPC_CHANNELS.SKILL_CREATOR_OUTPUT_READY,
       );
     });
 
@@ -117,6 +138,9 @@ describe("SkillCreator Preload API", () => {
       expect(typeof api.validateSkill).toBe("function");
       expect(typeof api.validateSchema).toBe("function");
       expect(typeof api.onProgress).toBe("function");
+      expect(typeof api.onOutputReady).toBe("function");
+      expect(typeof api.confirmOverwrite).toBe("function");
+      expect(typeof api.openSkill).toBe("function");
     });
   });
 
@@ -412,6 +436,94 @@ describe("SkillCreator Preload API", () => {
         IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
         expect.any(Function),
       );
+    });
+  });
+
+  // ============================================
+  // onOutputReady テスト
+  // ============================================
+
+  describe("onOutputReady", () => {
+    it("正しいチャンネルでonリスナーを登録すること", () => {
+      const callback = vi.fn();
+      skillCreatorAPI.onOutputReady(callback);
+
+      expect(mockOn).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_OUTPUT_READY,
+        expect.any(Function),
+      );
+    });
+
+    it("リスナーがpayloadを受信すること", () => {
+      const callback = vi.fn();
+      skillCreatorAPI.onOutputReady(callback);
+
+      const registeredListener = mockOn.mock.calls[0][1];
+      const payload = {
+        skillName: "test-skill",
+        savedPath: "/skills/test-skill/SKILL.md",
+        content: "name: test-skill",
+        requiresOverwriteConfirm: false,
+      };
+      registeredListener({}, payload);
+
+      expect(callback).toHaveBeenCalledWith(payload);
+    });
+
+    it("クリーンアップ関数がリスナーを解除すること", () => {
+      const callback = vi.fn();
+      const cleanup = skillCreatorAPI.onOutputReady(callback);
+
+      cleanup();
+
+      expect(mockRemoveListener).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_OUTPUT_READY,
+        expect.any(Function),
+      );
+    });
+  });
+
+  // ============================================
+  // output integration API テスト
+  // ============================================
+
+  describe("confirmOverwrite", () => {
+    it("正しいチャンネルとpayloadでinvokeを呼び出すこと", async () => {
+      const payload = {
+        skillName: "my-skill",
+        savedPath: "/skills/my-skill/SKILL.md",
+        content: "name: my-skill",
+        requiresOverwriteConfirm: true,
+      };
+      const expectedResult = { success: true, data: undefined };
+      mockInvoke.mockResolvedValue(expectedResult);
+
+      const result = await skillCreatorAPI.confirmOverwrite(payload);
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+        payload,
+      );
+      expect(result).toEqual(expectedResult);
+    });
+  });
+
+  describe("openSkill", () => {
+    it("正しいチャンネルとpayloadでinvokeを呼び出すこと", async () => {
+      const expectedResult = { success: true, data: undefined };
+      mockInvoke.mockResolvedValue(expectedResult);
+
+      const result = await skillCreatorAPI.openSkill(
+        "/skills/my-skill/SKILL.md",
+      );
+
+      expect(mockInvoke).toHaveBeenCalledWith(
+        IPC_CHANNELS.SKILL_CREATOR_OPEN_SKILL,
+        {
+          savedPath: "/skills/my-skill/SKILL.md",
+        },
+      );
+      expect(result).toEqual(expectedResult);
     });
   });
 

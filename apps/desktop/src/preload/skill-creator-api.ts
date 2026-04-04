@@ -26,6 +26,7 @@ import type {
   RuntimeSkillCreatorPlanResponse,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
+  SkillOutputReadyPayload,
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
@@ -141,6 +142,25 @@ export interface SkillCreatorAPI {
   onWorkflowStateChanged: (
     callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
   ) => () => void;
+
+  /**
+   * skill-creator:output-ready イベントを購読する
+   */
+  onOutputReady: (
+    callback: (payload: SkillOutputReadyPayload) => void,
+  ) => () => void;
+
+  /**
+   * 既存スキルの上書き保存を承認する
+   */
+  confirmOverwrite: (
+    payload: SkillOutputReadyPayload,
+  ) => Promise<IpcResult<unknown>>;
+
+  /**
+   * 保存済みスキルを開く
+   */
+  openSkill: (savedPath: string) => Promise<IpcResult<unknown>>;
 
   /**
    * Runtime improve: フィードバックに基づいてスキルを改善する
@@ -433,6 +453,22 @@ export const skillCreatorAPI: SkillCreatorAPI = {
       IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
       callback,
     ),
+
+  onOutputReady: (
+    callback: (payload: SkillOutputReadyPayload) => void,
+  ): (() => void) =>
+    safeOn<SkillOutputReadyPayload>(
+      IPC_CHANNELS.SKILL_CREATOR_OUTPUT_READY,
+      callback,
+    ),
+
+  confirmOverwrite: (
+    payload: SkillOutputReadyPayload,
+  ): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED, payload),
+
+  openSkill: (savedPath: string): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_OPEN_SKILL, { savedPath }),
 
   improveSkillWithFeedback: (
     skillName: string,

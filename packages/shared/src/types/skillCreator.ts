@@ -1050,6 +1050,36 @@ export const SESSION_TTL_MS = 86_400_000 as const;
 // 上部（line ~437）で定義済み（TASK-RT-06）
 
 // ============================================
+// Skill Output Integration (TASK-SDK-SC-04)
+// ============================================
+
+/**
+ * SDK セッション出力から抽出されたスキル定義
+ */
+export interface ParsedSkillOutput {
+  /** スキル名（SKILL.md の name フィールドから取得） */
+  name: string;
+  /** SKILL.md の全内容 */
+  content: string;
+  /** 保存先ディレクトリ名（スキル名をスラッグ化したもの） */
+  dirName: string;
+}
+
+/**
+ * skill-creator:output-ready IPC ペイロード
+ */
+export interface SkillOutputReadyPayload {
+  /** スキル名 */
+  skillName: string;
+  /** 保存先のフルパス */
+  savedPath: string;
+  /** SKILL.md 内容（プレビュー用） */
+  content: string;
+  /** 既存スキルの上書き確認が必要か */
+  requiresOverwriteConfirm: boolean;
+}
+
+// ============================================
 // Governance / Permission / Hooks (TASK-P0-09)
 // ============================================
 

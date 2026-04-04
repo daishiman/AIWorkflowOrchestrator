@@ -1,6 +1,6 @@
 {
   "taskId": "TASK-SDK-SC-02",
-  "generatedAt": "2026-04-03T11:50:08.485Z",
+  "generatedAt": "2026-04-04T02:55:22.914Z",
   "baseUrl": "http://127.0.0.1:5199",
   "harnessPath": "/phase11-skill-creator-conversation-ui.html",
   "panelSelector": "[data-testid=\"phase11-skill-creator-conversation-ui-shell\"]",
@@ -10,70 +10,84 @@
       "step": "waiting",
       "file": "TC-11-01-waiting-state.png",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-01-waiting-state.png",
-      "capturedAt": "2026-04-03T11:50:03.248Z"
+      "capturedAt": "2026-04-04T02:55:16.775Z"
     },
     {
       "tcId": "TC-11-02",
       "step": "single-select",
       "file": "TC-11-02-single-select-question.png",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-02-single-select-question.png",
-      "capturedAt": "2026-04-03T11:50:03.735Z"
+      "capturedAt": "2026-04-04T02:55:17.252Z"
     },
     {
       "tcId": "TC-11-03",
       "step": "single-select-free-text",
       "file": "TC-11-03-single-select-free-text-open.png",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-03-single-select-free-text-open.png",
-      "capturedAt": "2026-04-03T11:50:04.367Z"
+      "capturedAt": "2026-04-04T02:55:17.879Z"
     },
     {
       "tcId": "TC-11-04",
       "step": "multi-select",
       "file": "TC-11-04-multi-select-active.png",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-04-multi-select-active.png",
-      "capturedAt": "2026-04-03T11:50:04.878Z"
+      "capturedAt": "2026-04-04T02:55:18.499Z"
     },
     {
       "tcId": "TC-11-05",
       "step": "multi-select-submitting",
       "file": "TC-11-05-multi-select-submitting.png",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-05-multi-select-submitting.png",
-      "capturedAt": "2026-04-03T11:50:05.651Z"
+      "capturedAt": "2026-04-04T02:55:19.279Z"
     },
     {
       "tcId": "TC-11-06",
       "step": "free-text",
       "file": "TC-11-06-free-text-question.png",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-06-free-text-question.png",
-      "capturedAt": "2026-04-03T11:50:06.366Z"
+      "capturedAt": "2026-04-04T02:55:20.007Z"
     },
     {
       "tcId": "TC-11-07",
       "step": "secret",
       "file": "TC-11-07-secret-question.png",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-07-secret-question.png",
-      "capturedAt": "2026-04-03T11:50:06.827Z"
+      "capturedAt": "2026-04-04T02:55:20.467Z"
     },
     {
       "tcId": "TC-11-08",
       "step": "confirm",
       "file": "TC-11-08-confirm-question.png",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-08-confirm-question.png",
-      "capturedAt": "2026-04-03T11:50:07.309Z"
+      "capturedAt": "2026-04-04T02:55:20.930Z"
     },
     {
       "tcId": "TC-11-09",
       "step": "complete",
       "file": "TC-11-09-complete-state.png",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-09-complete-state.png",
-      "capturedAt": "2026-04-03T11:50:07.883Z"
+      "capturedAt": "2026-04-04T02:55:21.379Z"
+    },
+    {
+      "tcId": "TC-11-11",
+      "step": "result-panel-ready",
+      "file": "TC-11-11-result-panel-ready.png",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-11-result-panel-ready.png",
+      "capturedAt": "2026-04-04T02:55:21.835Z"
+    },
+    {
+      "tcId": "TC-11-12",
+      "step": "result-panel-overwrite",
+      "file": "TC-11-12-result-panel-overwrite.png",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-12-result-panel-overwrite.png",
+      "capturedAt": "2026-04-04T02:55:22.286Z"
     },
     {
       "tcId": "TC-11-10",
       "step": "error",
       "file": "TC-11-10-error-state.png",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-10-error-state.png",
-      "capturedAt": "2026-04-03T11:50:08.332Z"
+      "capturedAt": "2026-04-04T02:55:22.761Z"
     }
   ],
   "lastAnswer": {}

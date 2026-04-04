@@ -5,6 +5,7 @@ import {
   net,
   app,
   dialog,
+  shell,
 } from "electron";
 import fs from "fs/promises";
 import path from "path";
@@ -111,6 +112,8 @@ import { registerBeforeQuitGuard } from "./beforeQuitGuard";
 import { SkillCreatorSourceResolver } from "../services/runtime/SkillCreatorSourceResolver";
 import { PhaseResourcePlanner } from "../services/runtime/PhaseResourcePlanner";
 import { ResolvedResourceReader } from "../services/runtime/ResolvedResourceReader";
+import { SkillCreatorOutputHandler } from "../services/runtime/SkillCreatorOutputHandler";
+import { SkillRegistry } from "../services/runtime/SkillRegistry";
 import { SkillFileWriter } from "../services/skill/SkillFileWriter";
 import { ResourceLoader } from "../services/skill/ResourceLoader";
 import { DEFAULT_SKILL_CREATOR_PATH } from "../services/skill/constants";
@@ -1074,8 +1077,49 @@ export function registerAllIpcHandlers(
 
   track("registerSkillCreatorIpcBridge", () => {
     skillCreatorIpcBridge?.unregister();
-    skillCreatorIpcBridge = new SkillCreatorIpcBridge(mainWindow);
+    const skillRegistry = new SkillRegistry();
+    const outputHandler = new SkillCreatorOutputHandler(
+      process.cwd(),
+      skillRegistry,
+      mainWindow.webContents,
+    );
+    skillCreatorIpcBridge = new SkillCreatorIpcBridge(
+      mainWindow,
+      undefined,
+      outputHandler,
+    );
     skillCreatorIpcBridge.register();
+  });
+
+  track("registerSkillCreatorOpenSkillHandler", () => {
+    ipcMain.handle(
+      IPC_CHANNELS.SKILL_CREATOR_OPEN_SKILL,
+      async (_event, payload: { savedPath?: string }) => {
+        const savedPath =
+          typeof payload?.savedPath === "string"
+            ? payload.savedPath.trim()
+            : "";
+
+        if (savedPath === "") {
+          return {
+            success: false,
+            error: "[IPC] savedPath is required to open a skill",
+          };
+        }
+
+        const result = await shell.openPath(savedPath);
+        if (result !== "") {
+          return {
+            success: false,
+            error: result,
+          };
+        }
+
+        return {
+          success: true,
+        };
+      },
+    );
   });
 
   // --- 11. Claude CLI handlers ---
