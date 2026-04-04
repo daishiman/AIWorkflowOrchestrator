@@ -1,119 +1,79 @@
-# Phase 12: Implementation Guide — TASK-SDK-SC-02 Conversation UI
+# Implementation Guide: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
 
 ## 概要
 
-Electron Renderer 側に「質問受信・回答送信」UIコンポーネント群を実装した。
-`skill-creator:question-received` IPCイベントで `UserInputQuestion` を受信し、`kind`（single_select / multi_select / free_text / secret / confirm）に応じた入力UIを表示する。ユーザーの回答は `InterviewUserAnswer` として組み立て、`UserInputAnswer` に正規化して `skill-creator:answer` IPC で送信する。
+SkillCreator の Layer3/4 verify detail に severity フィルタ（`all` / `warning+` / `error only`）を追加し、ユーザーが重要度に応じて表示を絞り込めるようにした。
 
-## 参照元
+## 変更内容
 
-- `docs/30-workflows/step-02-par-task-02-conversation-ui/phase-12-documentation.md`
-- `outputs/phase-11/manual-test-report.md`
-- `outputs/phase-11/task-sdk-sc-02/screenshots/`
+### SkillLifecyclePanel.tsx
 
-## 新規作成ファイル
+#### 新規追加
 
-### コンポーネント（5ファイル）
+| 要素                            | 説明                                 |
+| ------------------------------- | ------------------------------------ |
+| `SeverityFilterLevel` 型        | `"all" \| "warning+" \| "error"`     |
+| `SEVERITY_FILTER_OPTIONS`       | フィルタ選択肢の定数配列             |
+| `severityFilterButtonStyles`    | active/inactive のスタイル定数       |
+| `filterChecksBySeverity()`      | severity に基づく check フィルタ関数 |
+| `severityFilter` state          | フィルタ状態（デフォルト `"all"`）   |
+| `filteredChecksByLayer` useMemo | フィルタ適用後の layer groups        |
+| `severityTotalCounts` useMemo   | 各フィルタレベルの該当件数           |
 
-| ファイル                            | Atomic Design | 役割                                         |
-| ----------------------------------- | ------------- | -------------------------------------------- |
-| `ChoiceButton.tsx`                  | Atom          | 選択/未選択状態の単一ボタン                  |
-| `FreeTextInput.tsx`                 | Atom          | 自由入力テキストエリア（free_text / secret） |
-| `ConversationProgress.tsx`          | Atom          | 「質問 N / 推定合計」形式の進捗表示          |
-| `QuestionCard.tsx`                  | Molecule      | kind に応じた質問表示・入力UI統合            |
-| `SkillCreatorConversationPanel.tsx` | Organism      | IPC listen・回答送信・全コンポーネント統合   |
+#### UI 変更
 
-### テスト（5ファイル）
+- verify detail セクション内（Status/Phase/Evidence/Route グリッドの下、Layer グループの上）にセグメントボタン形式のフィルタバーを追加
+- `role="radiogroup"` + `aria-checked` でアクセシビリティ対応
+- Layer グループへ渡すデータを `checksByLayer` → `filteredChecksByLayer` に変更
+- フィルタ結果で空になった layer は非表示
 
-| ファイル                                 | テスト数 |
-| ---------------------------------------- | -------- |
-| `ChoiceButton.test.tsx`                  | 9        |
-| `FreeTextInput.test.tsx`                 | 9        |
-| `ConversationProgress.test.tsx`          | 3        |
-| `QuestionCard.test.tsx`                  | 23       |
-| `SkillCreatorConversationPanel.test.tsx` | 13       |
-| **合計**                                 | **57**   |
+#### State ライフサイクル
 
-## アーキテクチャ
+- `activeWorkflowId` 変更時に `"all"` にリセット
+- reverify 時は filter state を維持（ユーザー体験の一貫性）
 
-### コンポーネントツリー
+### SkillLifecyclePanel.test.tsx
 
-```
-SkillCreatorConversationPanel (Organism)
-├── ConversationProgress (Atom)
-└── QuestionCard (Molecule)
-      ├── ChoiceButton[] (Atom)
-      └── FreeTextInput (Atom)
-```
+`describe("severity フィルタ")` ブロックに 9テスト追加:
 
-### 型マッピング
+| テストID | 内容                                       |
+| -------- | ------------------------------------------ |
+| SF-01    | デフォルトで `all` に設定                  |
+| SF-02    | `all` 選択時に全 check 表示                |
+| SF-03    | `warning+` で info 非表示                  |
+| SF-04    | `error` で warning/info 非表示             |
+| SF-05    | 空 layer の非表示                          |
+| SF-06    | 件数表示の正確性                           |
+| SF-07    | reverify 後のフィルタ状態維持              |
+| SF-08    | フィルタ切替後の accordion 操作            |
+| SF-09    | 全 info 時の error フィルタで全 layer 消失 |
 
-2つの型体系をブリッジ:
-
-- **Session Bridge 型** (`UserInputQuestion`/`UserInputAnswer`) — preload API で使用
-- **Workflow 型** (`SkillCreatorUserInputRequest`/`InterviewUserAnswer`) — UI コンポーネントで使用
-
-`SkillCreatorConversationPanel` 内の `mapQuestionToRequest()` / `mapAnswerToUserInputAnswer()` でマッピング。
-`multi_select` の自由入力は `selectedValues` を保持し、ブリッジで `UserInputAnswer.value` の配列に正規化する。
-
-### IPC 通信フロー
+## データフロー
 
 ```
-[Main] → skillCreatorSessionAPI.onQuestion() → [Panel] → QuestionCard 表示
-[Panel] ← QuestionCard.onAnswer() ← [ユーザー操作]
-[Panel] → skillCreatorSessionAPI.sendAnswer() → [Main]
-[Main] → skillCreatorSessionAPI.onComplete() / onError() → [Panel] 終端状態
+verifyDetail.checks
+  → checksByLayer (useMemo: layer grouping)  [既存]
+  → filteredChecksByLayer (useMemo: severity filter)  [新規]
+  → VerifyLayerGroup コンポーネント
 ```
 
-### 状態管理
+## テスト結果
 
-`useReducer` による状態管理:
+全27テスト PASS（既存18 + 新規9）
 
-- `QUESTION_RECEIVED`: 質問受信 → questionIndex++, currentRequest 更新
-- `ANSWER_SUBMITTING` / `ANSWER_SUBMITTED`: 送信中フラグ制御
-- `SESSION_COMPLETE` / `SESSION_ERROR`: 終端状態
+## 完了条件チェック
 
-## 質問タイプ別動作
+- [x] severity フィルタで表示対象を切り替えられる
+- [x] default の `all` 表示が現行 UI と互換
+- [x] Layer grouping と accordion の操作が壊れていない
+- [x] コンポーネントテストが全て PASS
 
-| kind            | UI                                               | 回答フィールド                         |
-| --------------- | ------------------------------------------------ | -------------------------------------- |
-| `single_select` | ChoiceButton リスト + 「その他（自由入力）」     | `selectedOptionId`                     |
-| `multi_select`  | ChoiceButton（複数選択）+ 「その他」+ 送信ボタン | `selectedOptionIds` / `selectedValues` |
-| `free_text`     | FreeTextInput (textarea)                         | `textValue`                            |
-| `secret`        | FreeTextInput (input[type="password"])           | `secretValue`                          |
-| `confirm`       | 「はい」「いいえ」ChoiceButton                   | `confirmed`                            |
+## 中学生向け概念説明
 
-## 品質指標
+### severity フィルタとは？
 
-- TypeScript エラー: 0 件
-- テスト: 57/57 PASS
-- カバレッジ: Stmts 97.54% / Branch 86.04% / Funcs 95.83% / Lines 97.54%
-- アクセシビリティ: `aria-pressed`, `role="progressbar"`, `aria-valuenow/min/max` 設定済み
+プログラムのチェック結果には「情報（info）」「注意（warning）」「エラー（error）」の3段階の重要度があります。チェック項目が増えると、本当に大事な「エラー」が大量の「情報」に埋もれて見つけにくくなります。
 
-## 依存関係
+severity フィルタは、テレビのチャンネル切り替えのようなものです。「すべて」を選べば全チャンネルが見え、「Warning+」を選べば注意とエラーだけ、「Error」を選べばエラーだけが表示されます。
 
-- **TASK-SDK-SC-01** の成果物のみに依存（`skillCreator.ts`, `skillCreatorSession.ts`, `channels.ts`）
-- step-02-par 内の他タスクとは並列実行可能（依存なし）
-
-## 使用方法
-
-```tsx
-import { SkillCreatorConversationPanel } from "./components/skill-creator/SkillCreatorConversationPanel";
-
-<SkillCreatorConversationPanel
-  onComplete={() => navigateToSkillPreview()}
-  onError={(message) => setErrorMessage(message)}
-/>;
-```
-
-## Phase 11 Screenshots
-
-Phase 11 の視覚証跡は次のパスに保存済み。
-
-- `outputs/phase-11/task-sdk-sc-02/screenshots/`
-- `outputs/phase-11/task-sdk-sc-02/phase11-capture-metadata.json`
-- `outputs/phase-11/task-sdk-sc-02/screenshot-plan.json`
-
-## 未タスク
-
-なし — 全仕様書の要件をカバー済み。
+これにより、ユーザーは「今すぐ直すべきもの」に集中できます。

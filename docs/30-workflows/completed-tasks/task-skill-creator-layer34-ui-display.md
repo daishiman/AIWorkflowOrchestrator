@@ -8,17 +8,19 @@ issue_number: 1820
 
 ## メタ情報
 
-| 項目         | 内容                                                    |
-| ------------ | ------------------------------------------------------- |
-| タスクID     | UT-SDK-L34-UI-DISPLAY-001                               |
-| タスク名     | SkillCreator Layer3/4検証結果のUI表示拡張               |
-| 分類         | 改善                                                    |
-| 対象機能     | SkillCreator UI (renderer side) - 検証結果表示          |
-| 優先度       | 中                                                      |
-| 見積もり規模 | 中規模                                                  |
-| ステータス   | 未実施                                                  |
-| 発見元       | Phase 11（UT-IMP-SDK-06 Layer3/4 verify拡張テスト実装） |
-| 発見日       | 2026-04-01                                              |
+| 項目         | 内容                                                                |
+| ------------ | ------------------------------------------------------------------- |
+| タスクID     | UT-SDK-L34-UI-DISPLAY-001                                           |
+| タスク名     | SkillCreator Layer3/4検証結果のUI表示拡張                           |
+| 分類         | 改善                                                                |
+| 対象機能     | SkillCreator UI (renderer side) - 検証結果表示                      |
+| 優先度       | 中                                                                  |
+| 見積もり規模 | 中規模                                                              |
+| ステータス   | **完了**                                                            |
+| 発見元       | Phase 11（UT-IMP-SDK-06 Layer3/4 verify拡張テスト実装）             |
+| 発見日       | 2026-04-01                                                          |
+| 完了日       | 2026-04-03                                                          |
+| 成果物       | `docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001/` |
 
 ---
 
@@ -383,7 +385,7 @@ Layer3/4の検証結果がIPC経由で正しく届き、UIに表示されるこ�
 
 #### 手順
 
-1. `docs/30-workflows/TASK-UT-SDK-L34-UI-DISPLAY-001/`ディレクトリを作成する
+1. `docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001/` に成果物が同期済みであることを確認する
 2. `outputs/phase-12/implementation-guide.md`を作成し、以下を記述する:
    - 変更したファイル一覧と変更内容の概要
    - `checksByLayer`のuseMemo実装パターン
@@ -395,7 +397,7 @@ Layer3/4の検証結果がIPC経由で正しく届き、UIに表示されるこ�
 
 #### 成果物
 
-- `docs/30-workflows/TASK-UT-SDK-L34-UI-DISPLAY-001/outputs/phase-12/implementation-guide.md`
+- `docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001/outputs/phase-12/implementation-guide.md`
 
 #### 完了条件
 
@@ -576,6 +578,6 @@ UT-IMP-SDK-06でLayer3/4のテストを実装する過程で、バックエン�
 ### 関連タスク（今後の検討候補）
 
 - [task-skill-creator-layer34-ui-display-japanese-labels.md](../unassigned-task/task-skill-creator-layer34-ui-display-japanese-labels.md): Layer3/4 の各 check ID に対する日本語ラベル表示
-- [task-skill-creator-layer34-ui-display-severity-filter.md](../unassigned-task/task-skill-creator-layer34-ui-display-severity-filter.md): severity フィルタ機能（warning 以上のみ表示等）
+- [skill-creator-layer34-ui-display-severity-filter](../skill-creator-layer34-ui-display-severity-filter/index.md): severity フィルタ機能（warning 以上のみ表示等、**進行中**）
 - [task-skill-creator-layer34-verify-layergroup-split.md](../unassigned-task/task-skill-creator-layer34-verify-layergroup-split.md): VerifyLayerGroup 分離リファクタ
 - checks 全体の summary 統計（pass率等）のダッシュボード表示は、まだ正式な spec にしていない候補

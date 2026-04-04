@@ -1,15 +1,12 @@
-# Phase 12: スキルフィードバック — TASK-SDK-SC-02
+# Phase 12: スキルフィードバック — UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
 
 ## 学び
 
-1. Session Bridge 型（`UserInputQuestion`/`UserInputAnswer`）と Workflow 型（`SkillCreatorUserInputRequest`/`InterviewUserAnswer`）の 2 系統が存在する場合、ブリッジ層のマッピング関数は Organism コンポーネント内に閉じ込めるのが安全。型変換の責務が分散すると IPC 境界でのデバッグが困難になる。
-2. `multi_select` の「その他（自由入力）」は `selectedValues` 経路として扱い、`selectedOptionIds` とは別系統にすることで、ブリッジでの正規化が明確になる。mixed（選択肢 + 自由入力）を 1 つの配列に混ぜると型安全性が崩れる。
-3. `key={questionIndex}` による React コンポーネント再マウントパターンは、前の質問の内部状態を持ち越さない簡潔な手法。ただし、アニメーション付きの場合は `key` 変更のタイミングに注意が必要。
-4. `useReducer` の Action 型を discriminated union にすると、不正な状態遷移がコンパイル時に検出できる。`ANSWER_SUBMITTED` のような中間状態が不要な場合は早期に削除して状態機械をシンプルに保つべき。
-5. Atom / Molecule / Organism の責務分離により、`ChoiceButton` / `FreeTextInput` は QuestionCard の kind に依存せず独立テスト可能。テストカバレッジの向上にも直結する。
+1. `filterChecksBySeverity` をコンポーネント外の純粋関数として定義したことで、useMemo の依存配列が最小化でき、テスト容易性も向上した
+2. `filteredChecksByLayer` を `checksByLayer` の下流に配置するデータフロー設計により、既存の Layer grouping ロジックへの変更ゼロでフィルタを実装できた
+3. `severityTotalCounts` をフィルタ前の `checksByLayer` から計算することで、件数バッジが常に「全体件数」を示す直感的な UI になった
+4. `activeWorkflowId` 変更時の `useEffect` でフィルタリセットを実装することで、reverify 維持と workflow 切替リセットの両立が自然に実現できた
 
 ## next action
 
-- Session Bridge 型と Workflow 型のブリッジパターンを他の IPC 通信箇所にも適用する
-- `multi_select` の「その他」フロー（selectedValues 経路）をインテグレーションテストで E2E 検証する
-- Atom コンポーネントの Storybook 登録（将来の Phase で対応）
+特になし（本タスクスコープで完結）。

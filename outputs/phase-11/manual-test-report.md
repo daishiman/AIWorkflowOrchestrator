@@ -1,22 +1,33 @@
-# Phase 11: 手動テストレポート — TASK-SDK-SC-02
+# Phase 11: 手動テストレポート — UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
 
-## 判定
+## テスト方式
 
-**PASS** — Phase 11 の視覚証跡を `outputs/phase-11/task-sdk-sc-02/screenshots/` に保存済み。
+UI タスクだが CLI 環境のため Electron を起動できない。Phase 11 の spec に従い NON_VISUAL として処理し、コンポーネントテスト（Vitest + Testing Library）で動作保証する。
 
-## 参照元
+## テスト実行サマリー
 
-- `docs/30-workflows/step-02-par-task-02-conversation-ui/phase-11-manual-testing.md`
-- `docs/30-workflows/step-02-par-task-02-conversation-ui/phase-12-documentation.md`
+```bash
+pnpm --dir apps/desktop test:run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx
 
-## 視覚証跡
+✓ SkillLifecyclePanel.test.tsx (27 tests) PASS
+  - 既存テスト: 18 件
+  - severity フィルタ: 9 件（SF-01〜SF-09）
+```
 
-- `outputs/phase-11/task-sdk-sc-02/phase11-capture-metadata.json`
-- `outputs/phase-11/task-sdk-sc-02/screenshot-plan.json`
-- `outputs/phase-11/task-sdk-sc-02/screenshots/`
+## 品質確認
 
-## 自動テストによる代替検証
+| 確認項目             | コマンド                                 | 結果     |
+| -------------------- | ---------------------------------------- | -------- |
+| TypeScript typecheck | `pnpm --filter @repo/desktop typecheck`  | 0 errors |
+| ESLint               | `pnpm eslint ...SkillLifecyclePanel.tsx` | 0 errors |
+| テスト実行           | vitest run (27 tests)                    | PASS     |
 
-- 58 テスト全 PASS
-- カバレッジ: Stmts 97.54% / Branch 86.04% / Funcs 95.83%
-- アクセシビリティ属性の検証済み（aria-pressed, role="progressbar" 等）
+## 視覚的確認（ユーザー向け）
+
+Electron 起動時は以下のシナリオで確認推奨:
+
+1. SkillCreator で verify detail を表示
+2. フィルタバー（すべて / 警告以上 / エラーのみ）が表示されること
+3. 各ボタンをクリックして表示が切り替わること
+4. 空になった Layer グループが非表示になること
+5. reverify 後にフィルタ状態が維持されること

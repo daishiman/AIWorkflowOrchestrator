@@ -7,6 +7,7 @@
 
 | Issue #    | 機能名                                                         | 完了日     | 関連ドキュメント                                                                                    |
 | ---------- | -------------------------------------------------------------- | ---------- | --------------------------------------------------------------------------------------------------- |
+| TASK-RT-03-VERIFY-IMPROVE-PANEL-001 | Verify / Improve 結果パネル実装（VerifyResultDetailPanel / ImproveResultDetailPanel、visual harness、phase-11 screenshot 3件） | 2026-04-04 | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/` |
 | TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001 | AuthTimeoutFallback + Settings 公開シェル | 2026-03-10 | `docs/30-workflows/completed-tasks/TASK-FIX-AUTHGUARD-TIMEOUT-SETTINGS-BYPASS-001/` |
 | TASK-UI-03 | AgentView Enhancement（Tap & Discover リデザイン、5サブコンポーネント + レイアウト/統合/Store 136テスト） | 2026-03-10 | `docs/30-workflows/completed-tasks/task-ui-03-agent-view-enhancement/` |
 | TASK-UI-08 | NotificationCenter 058e UX 再整備（`お知らせ`、Portal、relative time、個別削除 IPC、Phase 11 screenshot 7件） | 2026-03-11 | `docs/30-workflows/completed-tasks/task-058e-ui-08-notification-center/` |
@@ -338,4 +339,3 @@ TASK-UI-03 は、既存の `AgentView` をシングルカラム・3セマンテ�
 | 2026-01-27 | v1.1.1     | 構造最適化: 概要セクション追加（収録機能一覧・共通仕様テーブル）                                |
 | 2026-01-27 | v1.1.0     | Issue #494: FileAttachmentButton, FileContextList コンポーネント仕様追加                        |
 | 2026-01-26 | v1.0.0     | 仕様ガイドライン準拠: コード例を表形式・文章に変換                                              |
-

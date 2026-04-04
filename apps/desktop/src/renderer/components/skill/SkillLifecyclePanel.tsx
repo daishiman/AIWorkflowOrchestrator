@@ -9,7 +9,6 @@ import React, {
 import type { SkillExecutionStatus } from "@repo/shared";
 import type {
   ApplyImprovementResult,
-  ExternalApiConnectionConfig,
   HandoffGuidance,
   SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorExecuteResponse,
@@ -68,7 +67,6 @@ import {
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
 import { ExecuteResultDetailPanel } from "./ExecuteResultDetailPanel";
-import { ExternalApiConfigForm } from "./ExternalApiConfigForm";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
 import { PlanResultDetailPanel } from "./PlanResultDetailPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
@@ -112,9 +110,6 @@ type IpcResult<T> = {
 
 type SkillCreatorRuntimeApi = {
   detectMode?: (request: string) => Promise<IpcResult<SkillCreatorMode>>;
-  configureExternalApi?: (
-    config: ExternalApiConnectionConfig,
-  ) => Promise<IpcResult<unknown>>;
   planSkill?: (
     prompt: string,
     authMode?: string,
@@ -165,17 +160,6 @@ type SkillCreatorRuntimeApi = {
       externalDestinations: string[];
     }>
   >;
-};
-
-type ExternalApiConfigRequiredPayload = {
-  apiName?: string;
-  description?: string;
-};
-
-type SkillCreatorSessionRuntimeApi = {
-  onExternalApiConfigRequired?: (
-    callback: (event: ExternalApiConfigRequiredPayload) => void,
-  ) => () => void;
 };
 
 type SessionEntry = {
@@ -392,25 +376,31 @@ const verifyCheckSeverityIcon: Record<
 const VERIFY_SEVERITY_ORDER: readonly RuntimeSkillCreatorVerifyCheckSeverity[] =
   ["error", "warning", "info"];
 
-type SeverityFilterValue = "all" | "warning+" | "error";
+type SeverityFilterLevel = "all" | "warning+" | "error";
 
 const SEVERITY_FILTER_OPTIONS: readonly {
-  value: SeverityFilterValue;
+  value: SeverityFilterLevel;
   label: string;
 }[] = [
   { value: "all", label: "すべて" },
-  { value: "warning+", label: "⚠ Warning+" },
-  { value: "error", label: "✗ Error" },
+  { value: "warning+", label: "警告以上" },
+  { value: "error", label: "エラーのみ" },
 ];
 
-function shouldShowCheck(
-  severity: RuntimeSkillCreatorVerifyCheckSeverity,
-  filter: SeverityFilterValue,
-): boolean {
-  if (filter === "all") return true;
-  if (filter === "warning+")
-    return severity === "warning" || severity === "error";
-  return severity === "error";
+const severityFilterButtonStyles = {
+  active:
+    "rounded-md bg-[var(--status-primary)] px-3 py-1.5 text-xs font-medium text-[var(--text-inverse)]",
+  inactive:
+    "rounded-md px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]",
+} as const;
+
+function filterChecksBySeverity(
+  checks: RuntimeSkillCreatorVerifyCheck[],
+  filter: SeverityFilterLevel,
+): RuntimeSkillCreatorVerifyCheck[] {
+  if (filter === "all") return checks;
+  if (filter === "warning+") return checks.filter((c) => c.severity !== "info");
+  return checks.filter((c) => c.severity === "error");
 }
 
 function createDefaultExpandedLayers(): Record<VerifyLayerKey, boolean> {
@@ -584,19 +574,6 @@ function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   );
 }
 
-function getSkillCreatorSessionApi(): SkillCreatorSessionRuntimeApi | null {
-  const runtimeWindow = window as Window & {
-    electronAPI?: { skillCreatorSession?: SkillCreatorSessionRuntimeApi };
-    skillCreatorSessionAPI?: SkillCreatorSessionRuntimeApi;
-  };
-
-  return (
-    runtimeWindow.electronAPI?.skillCreatorSession ??
-    runtimeWindow.skillCreatorSessionAPI ??
-    null
-  );
-}
-
 function extractSkillNameFromPath(skillPath: string): string {
   const normalized = skillPath.trim().replace(/\\/g, "/");
   const segments = normalized.split("/").filter(Boolean);
@@ -708,7 +685,7 @@ export function SkillLifecyclePanel({
     Record<VerifyLayerKey, boolean>
   >(createDefaultExpandedLayers);
   const [severityFilter, setSeverityFilter] =
-    useState<SeverityFilterValue>("all");
+    useState<SeverityFilterLevel>("all");
   const checksByLayer = useMemo(() => {
     const groups = createVerifyChecksByLayer();
     for (const check of verifyDetail?.checks ?? []) {
@@ -722,20 +699,21 @@ export function SkillLifecyclePanel({
   const filteredChecksByLayer = useMemo(() => {
     const result = createVerifyChecksByLayer();
     for (const layer of VERIFY_LAYER_ORDER) {
-      result[layer] = (checksByLayer[layer] ?? []).filter((check) =>
-        shouldShowCheck(check.severity, severityFilter),
+      result[layer] = filterChecksBySeverity(
+        checksByLayer[layer],
+        severityFilter,
       );
     }
     return result;
   }, [checksByLayer, severityFilter]);
-  const visibleVerifyChecksCount = useMemo(() => {
-    let count = 0;
-    for (const layer of VERIFY_LAYER_ORDER) {
-      count += filteredChecksByLayer[layer]?.length ?? 0;
-    }
-    return count;
-  }, [filteredChecksByLayer]);
-  const totalVerifyChecksCount = verifyDetail?.checks?.length ?? 0;
+  const severityTotalCounts = useMemo(() => {
+    const allChecks = Object.values(checksByLayer).flat();
+    return {
+      all: allChecks.length,
+      "warning+": allChecks.filter((c) => c.severity !== "info").length,
+      error: allChecks.filter((c) => c.severity === "error").length,
+    };
+  }, [checksByLayer]);
   const toggleLayer = useCallback((layer: VerifyLayerKey) => {
     setExpandedLayers((current) => ({
       ...current,
@@ -753,11 +731,6 @@ export function SkillLifecyclePanel({
     useState<RuntimeSkillCreatorPlanResult | null>(null);
   const [rawExecuteDetail, setRawExecuteDetail] =
     useState<RuntimeSkillCreatorExecuteResult | null>(null);
-  const [externalApiConfigRequest, setExternalApiConfigRequest] =
-    useState<ExternalApiConfigRequiredPayload | null>(null);
-  const [externalApiConfigError, setExternalApiConfigError] = useState<
-    string | null
-  >(null);
 
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
@@ -893,34 +866,6 @@ export function SkillLifecyclePanel({
       applyWorkflowSnapshot(snapshot);
     });
   }, [applyWorkflowSnapshot]);
-
-  useEffect(() => {
-    const sessionApi = getSkillCreatorSessionApi();
-    if (!sessionApi?.onExternalApiConfigRequired) {
-      return;
-    }
-
-    return sessionApi.onExternalApiConfigRequired((event) => {
-      const payload: ExternalApiConfigRequiredPayload = {
-        apiName: typeof event?.apiName === "string" ? event.apiName : undefined,
-        description:
-          typeof event?.description === "string"
-            ? event.description
-            : undefined,
-      };
-
-      setExternalApiConfigError(null);
-      setExternalApiConfigRequest(payload);
-      appendSessionEntry(setSessionEntries, {
-        role: "assistant",
-        title: "外部API設定が必要です",
-        detail:
-          payload.apiName != null && payload.apiName.trim() !== ""
-            ? `${payload.apiName} の接続設定を入力してください。`
-            : "外部API接続設定を入力してください。",
-      });
-    });
-  }, []);
 
   useEffect(() => {
     const planId =
@@ -1393,33 +1338,6 @@ export function SkillLifecyclePanel({
     setRawExecuteDetail(null);
   };
 
-  const handleExternalApiConfigSubmit = useCallback(
-    async (config: ExternalApiConnectionConfig) => {
-      const skillCreatorApi = getSkillCreatorApi();
-      if (!skillCreatorApi?.configureExternalApi) {
-        const message = "configureExternalApi API が利用できません";
-        setExternalApiConfigError(message);
-        throw new Error(message);
-      }
-
-      const result = await skillCreatorApi.configureExternalApi(config);
-      if (!result.success) {
-        const message = result.error ?? "外部API設定の送信に失敗しました";
-        setExternalApiConfigError(message);
-        throw new Error(message);
-      }
-
-      setExternalApiConfigError(null);
-      setExternalApiConfigRequest(null);
-      appendSessionEntry(setSessionEntries, {
-        role: "user",
-        title: "外部API設定を送信",
-        detail: `${config.name} (${config.method} ${config.url})`,
-      });
-    },
-    [],
-  );
-
   const handleCreate = async () => {
     const trimmedRequest = request.trim();
     if (!trimmedRequest) {
@@ -1814,40 +1732,6 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
-      {externalApiConfigRequest ? (
-        <section
-          className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5"
-          data-testid="skill-lifecycle-external-api-config"
-        >
-          <div className="mb-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-              External API Config
-            </p>
-            <h3 className="mt-2 text-base font-semibold text-[var(--text-primary)]">
-              外部API接続情報を入力
-            </h3>
-          </div>
-
-          {externalApiConfigError ? (
-            <div
-              role="alert"
-              className="mb-4 rounded-xl border border-[var(--status-error)] bg-[var(--status-error)]/5 px-4 py-3 text-sm text-[var(--status-error)]"
-            >
-              {externalApiConfigError}
-            </div>
-          ) : null}
-
-          <ExternalApiConfigForm
-            eventData={externalApiConfigRequest}
-            onSubmit={handleExternalApiConfigSubmit}
-            onCancel={() => {
-              setExternalApiConfigRequest(null);
-              setExternalApiConfigError(null);
-            }}
-          />
-        </section>
-      ) : null}
-
       {workflowSnapshot ? (
         <section
           className="grid gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.9fr)]"
@@ -2140,41 +2024,30 @@ export function SkillLifecyclePanel({
                 </div>
               ) : null}
 
-              {(verifyDetail.checks?.length ?? 0) > 0 && (
-                <div
-                  className="mt-4 flex items-center gap-1"
-                  role="group"
-                  aria-label="Severity filter"
-                >
-                  {SEVERITY_FILTER_OPTIONS.map((option) => (
-                    <button
-                      key={option.value}
-                      data-testid={`skill-lifecycle-severity-filter-${option.value}`}
-                      type="button"
-                      aria-pressed={severityFilter === option.value}
-                      onClick={() => setSeverityFilter(option.value)}
-                      className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                        severityFilter === option.value
-                          ? "bg-[var(--accent-primary)] text-white"
-                          : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                  {severityFilter !== "all" && totalVerifyChecksCount > 0 ? (
-                    <span
-                      role="status"
-                      aria-live="polite"
-                      data-testid="skill-lifecycle-severity-filter-summary"
-                      className="ml-3 text-xs text-[var(--text-secondary)]"
-                    >
-                      表示中 {visibleVerifyChecksCount} / 全{" "}
-                      {totalVerifyChecksCount} 件
-                    </span>
-                  ) : null}
-                </div>
-              )}
+              <div
+                className="mt-4 flex gap-1 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-primary)] p-1"
+                role="radiogroup"
+                aria-label="重要度フィルタ"
+                data-testid="severity-filter"
+              >
+                {SEVERITY_FILTER_OPTIONS.map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="radio"
+                    aria-checked={severityFilter === option.value}
+                    onClick={() => setSeverityFilter(option.value)}
+                    className={
+                      severityFilter === option.value
+                        ? severityFilterButtonStyles.active
+                        : severityFilterButtonStyles.inactive
+                    }
+                    data-testid={`severity-filter-${option.value}`}
+                  >
+                    {option.label} ({severityTotalCounts[option.value]})
+                  </button>
+                ))}
+              </div>
 
               <div className="mt-4 space-y-3">
                 {VERIFY_LAYER_ORDER.filter(
