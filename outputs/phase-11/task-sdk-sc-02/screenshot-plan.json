@@ -1,6 +1,6 @@
 {
   "taskId": "TASK-SDK-SC-02",
-  "generatedAt": "2026-04-03T11:50:08.485Z",
+  "generatedAt": "2026-04-04T02:55:22.914Z",
   "baseUrl": "http://127.0.0.1:5199",
   "harnessPath": "/phase11-skill-creator-conversation-ui.html",
   "cases": [
@@ -48,6 +48,16 @@
       "tcId": "TC-11-09",
       "step": "complete",
       "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-09-complete-state.png"
+    },
+    {
+      "tcId": "TC-11-11",
+      "step": "result-panel-ready",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-11-result-panel-ready.png"
+    },
+    {
+      "tcId": "TC-11-12",
+      "step": "result-panel-overwrite",
+      "output": "outputs/phase-11/task-sdk-sc-02/screenshots/TC-11-12-result-panel-overwrite.png"
     },
     {
       "tcId": "TC-11-10",
