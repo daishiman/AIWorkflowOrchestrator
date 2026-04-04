@@ -1,0 +1,40 @@
+{
+  "workflow": "task-rt-04-api-key-management-ui",
+  "phase": 11,
+  "captureMode": "current_build_vite_playwright",
+  "capturedAt": "2026-04-04T17:18:49+09:00",
+  "captureCount": 3,
+  "evidenceState": "current build screenshots + baseline reuse",
+  "screenshots": [
+    {
+      "tcId": "TC-11-01",
+      "screen": "SkillLifecyclePanel / ApiKeySettingsPanel",
+      "file": "outputs/phase-11/screenshots/TC-11-01-skill-authkey-initial.png",
+      "kind": "current build"
+    },
+    {
+      "tcId": "TC-11-02",
+      "screen": "SkillLifecyclePanel / ApiKeySettingsPanel",
+      "file": "outputs/phase-11/screenshots/TC-11-02-skill-authkey-action.png",
+      "kind": "current build"
+    },
+    {
+      "tcId": "TC-11-03",
+      "screen": "SkillLifecyclePanel / ApiKeySettingsPanel",
+      "file": "outputs/phase-11/screenshots/TC-11-03-skill-authkey-fallback.png",
+      "kind": "current build"
+    },
+    {
+      "tcId": "TC-11-04",
+      "screen": "SkillLifecyclePanel / ApiKeySettingsPanel",
+      "file": "outputs/phase-11/screenshots/TC-11-02-skill-authkey-action.png",
+      "kind": "baseline reuse",
+      "reuseOf": "TC-11-02"
+    }
+  ],
+  "notes": [
+    "manual-test-result.md と screenshot-coverage.md は同一の 4 TC 証跡を参照する",
+    "NON_VISUAL は採用せず、実ファイルの screenshot evidence を current fact とする",
+    "TC-11-04 は TC-11-02-skill-authkey-action.png を baseline reuse として再利用"
+  ]
+}
