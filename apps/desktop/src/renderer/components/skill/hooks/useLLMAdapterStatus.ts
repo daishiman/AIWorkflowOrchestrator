@@ -1,10 +1,7 @@
-import { useState, useEffect } from "react";
-import type { LLMAdapterStatus } from "@repo/shared/types";
+import { useEffect, useState } from "react";
+import type { LLMAdapterStatusPayload } from "@repo/shared/types";
 
-export interface LLMAdapterStatusState {
-  status: LLMAdapterStatus;
-  failureReason: string | null;
-}
+export interface LLMAdapterStatusState extends LLMAdapterStatusPayload {}
 
 function getSkillCreatorApi() {
   const runtimeWindow = window as Window & {
@@ -18,13 +15,10 @@ function getSkillCreatorApi() {
     | {
         getAdapterStatus?: () => Promise<{
           success: boolean;
-          data?: { status: LLMAdapterStatus; failureReason: string | null };
+          data?: LLMAdapterStatusPayload;
         }>;
         onAdapterStatusChanged?: (
-          cb: (payload: {
-            status: LLMAdapterStatus;
-            failureReason: string | null;
-          }) => void,
+          cb: (payload: LLMAdapterStatusPayload) => void,
         ) => () => void;
       }
     | undefined;
