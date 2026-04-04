@@ -121,6 +121,9 @@
     "src/**/*.stories.tsx",
     "src/**/*.stories.ts",
     "src/**/stories/**",
-    "src/main/services/agent/AgentExecutor.ts"
+    "src/main/services/agent/AgentExecutor.ts",
+    "src/main/ipc/slackHandlers.ts",
+    "src/main/ipc/slackHandlers.test.ts",
+    "src/main/services/slack/**"
   ]
 }
