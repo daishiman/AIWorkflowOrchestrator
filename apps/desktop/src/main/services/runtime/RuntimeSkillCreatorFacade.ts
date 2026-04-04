@@ -1117,14 +1117,10 @@ export class RuntimeSkillCreatorFacade {
     });
 
     // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001: アダプターステータスチェック
-    if (
-      this._llmAdapterStatus === "failed" ||
-      this._llmAdapterStatus === "initializing"
-    ) {
-      const errorMessage =
-        this._llmAdapterStatus === "failed"
-          ? toActionableMessage(this._llmAdapterFailureReason)
-          : "LLMAdapter の初期化中です。しばらくお待ちください";
+    // "failed" のみ early return（永続的な障害）。
+    // "initializing" は resolve() を先行させ terminal_handoff を優先する（TC-14）。
+    if (this._llmAdapterStatus === "failed") {
+      const errorMessage = toActionableMessage(this._llmAdapterFailureReason);
 
       this.workflowEngine.recordExecuteAdapterFailure(
         planResult,
