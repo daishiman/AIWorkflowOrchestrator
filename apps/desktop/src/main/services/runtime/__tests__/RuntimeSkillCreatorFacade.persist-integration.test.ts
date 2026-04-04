@@ -12,6 +12,7 @@ import { RuntimeSkillCreatorFacade } from "../RuntimeSkillCreatorFacade";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import * as parserModule from "../parseLlmResponseToContent";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
+import type { ILLMAdapter } from "../../../adapters/llm/types";
 import type {
   SkillFileWriter,
   PersistResult,
@@ -135,6 +136,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       await facade.execute(makePlanResult(), "api-key", "sk-test");
@@ -160,6 +162,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       const result = await facade.execute(
@@ -187,6 +190,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       const result = await facade.execute(
@@ -212,6 +216,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       // skillFileWriter を渡さない
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       const result = await facade.execute(
@@ -236,6 +241,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       const result = await facade.execute(
@@ -259,6 +265,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       await facade.execute(makePlanResult(), "api-key", "sk-test");
@@ -284,6 +291,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       const result = await facade.execute(
@@ -312,6 +320,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       const result = await facade.execute(
@@ -340,6 +349,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       const result = await facade.execute(
@@ -368,6 +378,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       const result = await facade.execute(
@@ -396,6 +407,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       const result = await facade.execute(
@@ -430,6 +442,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
         skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
       });
 
       const result = await facade.execute(
@@ -455,6 +468,7 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       });
       const facade = createFacadeReady({
         skillExecutor: mockExecutor,
+        llmAdapter: createMockLLMAdapter(),
         // skillFileWriter 未DI
       });
 

@@ -683,6 +683,35 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
         },
       });
     });
+
+    it("governance audit に session_start / session_end が記録される", async () => {
+      const facadeWithoutLLM = new RuntimeSkillCreatorFacade({
+        skillExecutor: mockSkillExecutor,
+        skillFileManager: mockSkillFileManager,
+      });
+      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+        type: "integrated_api",
+        apiKey: "sk-test",
+        permissionMode: "default",
+      });
+
+      await facadeWithoutLLM.improve(
+        "test-skill",
+        "改善して",
+        "api-key",
+        "sk-test",
+      );
+
+      const auditSink = (
+        facadeWithoutLLM as unknown as {
+          auditSink: { getEvents: () => Array<{ eventType: string }> };
+        }
+      ).auditSink;
+      expect(auditSink.getEvents().map((event) => event.eventType)).toEqual([
+        "session_start",
+        "session_end",
+      ]);
+    });
   });
 
   // E-11: resourceLoader 未注入時の explicit error (TASK-RT-02)
@@ -713,6 +742,16 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
           message: "リソースローダーが利用できません。設定を確認してください。",
         },
       });
+
+      const auditSink = (
+        facadeWithoutRL as unknown as {
+          auditSink: { getEvents: () => Array<{ eventType: string }> };
+        }
+      ).auditSink;
+      expect(auditSink.getEvents().map((event) => event.eventType)).toEqual([
+        "session_start",
+        "session_end",
+      ]);
     });
   });
 
