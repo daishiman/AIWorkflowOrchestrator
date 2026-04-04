@@ -1,5 +1,9 @@
 # TASK-UT-RT-01-LLM-ADAPTER-RETRY-LOGIC-001
 
+```yaml
+issue_number: 1891
+```
+
 ## 1. メタ情報
 
 | 項目     | 値                                        |

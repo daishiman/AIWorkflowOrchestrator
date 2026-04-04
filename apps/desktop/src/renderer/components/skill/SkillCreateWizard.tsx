@@ -22,6 +22,7 @@ import type {
   SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorExecuteErrorResponse,
   RuntimeSkillCreatorExecuteResponse,
+  RuntimeSkillCreatorPlanErrorResponse,
   RuntimeSkillCreatorPlanResponse,
   SkillCreatorWorkflowUiSnapshot,
 } from "@repo/shared/types";
@@ -107,6 +108,25 @@ type SkillCreatorRuntimeApi = {
     error?: string;
   }>;
 };
+
+function isRuntimePlanErrorResponse(
+  response: unknown,
+): response is RuntimeSkillCreatorPlanErrorResponse {
+  if (!response || typeof response !== "object") {
+    return false;
+  }
+  if (!("success" in response) || response.success !== false) {
+    return false;
+  }
+  if (!("error" in response) || !response.error) {
+    return false;
+  }
+  return (
+    typeof response.error === "object" &&
+    "message" in response.error &&
+    typeof response.error.message === "string"
+  );
+}
 
 function isExecuteTerminalHandoff(
   response: RuntimeSkillCreatorExecuteResponse,
@@ -275,9 +295,9 @@ export const SkillCreateWizard = React.forwardRef<
       }
       const result = await api.planSkill(description);
       if (result.success && result.data) {
-        // TASK-RT-02: plan logical error の検出
+        // TASK-RT-02: plan logical error の検出（UT-RT-02-M03: SkillLifecyclePanel とパリティ統一）
         const data = result.data;
-        if ("success" in data && data.success === false) {
+        if (isRuntimePlanErrorResponse(data)) {
           clearPlanExecutionState();
           setStoreGenerationError(data.error.message);
           return;

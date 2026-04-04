@@ -35,6 +35,8 @@ const STATUS_DISPLAY = {
   in_progress: '実行中',
   completed: '完了',
   phase12_completed: 'Phase 12 完了（PR未着手）',
+  blocked: 'ユーザー指示待ち（blocked）',
+  blocked_awaiting_user_instruction: 'ユーザー指示待ち（blocked）',
   skipped: 'スキップ',
 };
 
