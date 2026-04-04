@@ -3,13 +3,13 @@
 ## 概要
 この親仕様書は分割後の entrypoint であり、詳細仕様と履歴は child companion へ分離した。
 旧連番 suffix の completed shard は semantic filename へ移行済み。旧 filename と current filename の対応や migration 根拠が必要なときは `legacy-ordinal-family-register.md` を参照する。
-Runtime Skill Creator 系 completed workflow の canonical root は `docs/30-workflows/completed-tasks/` 配下であり、Phase 13 が `blocked` の task でも completed ledger 側導線は current root と同じ path へ同期する。2026-03-30 時点で completed ledger には `TASK-P0-02` verify→improve→re-verify 閉ループ修復を追記済み。2026-04-04 時点で TASK-SDK-SC-04 Skill Output Integration（OutputHandler / SkillRegistry / ResultPanel / 3 IPC channel）の完了記録を `task-workflow-completed.md` 先頭に追記済み。
+Runtime Skill Creator 系 completed workflow の canonical root は `docs/30-workflows/completed-tasks/` 配下であり、Phase 13 が `blocked` の task でも completed ledger 側導線は current root と同じ path へ同期する。2026-03-30 時点で completed ledger には `TASK-P0-02` verify→improve→re-verify 閉ループ修復を追記済み。2026-04-04 時点で TASK-SDK-SC-04 Skill Output Integration（OutputHandler / SkillRegistry / ResultPanel / 3 IPC channel）の完了記録を `task-workflow-completed.md` 先頭に追記済み。また、2026-04-04 時点で `TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001` の Phase 11/12 current facts と executePlan ack 後の failure snapshot 再読込を追加済み。
 
 ## 仕様書インデックス
 | ファイル | 役割 | 主な見出し |
 | --- | --- | --- |
 | [task-workflow-active.md](task-workflow-active.md) | active guide | 概要 / ドキュメント構成 / フェーズ構造（概要） / 品質ゲート（概要） / 出力テンプレート / 実行時のコマンド・エージェント・スキル |
-| [task-workflow-completed.md](task-workflow-completed.md) | completed records (baseline completed ledger) | 完了タスク / TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001（spec_created, 2026-03-20） |
+| [task-workflow-completed.md](task-workflow-completed.md) | completed records (baseline completed ledger) | 完了タスク / TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001（spec_created, 2026-03-20） / TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001（Phase 1-12 完了, 2026-04-04） |
 | [task-workflow-completed-workspace-chat-lifecycle-tests.md](task-workflow-completed-workspace-chat-lifecycle-tests.md) | completed records (workspace / chat path / lifecycle tests) | 完了タスク / TASK-FIX-LLM-CONFIG-PERSISTENCE 再監査記録（2026-03-21） |
 | [task-workflow-completed.md](task-workflow-completed.md) | completed records (baseline completed ledger) | 完了タスク / TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（implementation completed, 2026-03-21） |
 | [task-workflow-completed-workspace-chat-lifecycle-tests.md](task-workflow-completed-workspace-chat-lifecycle-tests.md) | completed records (workspace / chat path / lifecycle tests) | TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR / TASK-FIX-LLM-SELECTOR-INLINE-GUIDANCE / TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE |
@@ -31,7 +31,7 @@ Runtime Skill Creator 系 completed workflow の canonical root は `docs/30-wor
 | [workflow-skill-lifecycle-routing-render-view-foundation.md](workflow-skill-lifecycle-routing-render-view-foundation.md) | workflow integration spec（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001 family） | ViewType拡張 / renderView分岐 / detail panel secondary handoff / AgentView round-trip / Phase 11 screenshot / Phase 12同期 / follow-up backlog |
 | [workflow-ui-ux-visual-baseline-drift.md](workflow-ui-ux-visual-baseline-drift.md) | workflow integration spec（UT-UIUX-VISUAL-BASELINE-DRIFT-001） | dark-mode colorScheme / Phase 11 screenshot evidence / completed ledger / same-wave sync |
 | [workflow-ai-runtime-execution-responsibility-realignment.md](workflow-ai-runtime-execution-responsibility-realignment.md) | workflow integration spec（TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001） | execution responsibility / access capability foundation / policy authority / same-wave sync |
-| [task-workflow-backlog.md](task-workflow-backlog.md) | backlog | 残課題（未タスク） / 2026-03-21 runtime policy capability bridge follow-up 2件 / 2026-03-26 TASK-SDK-01 follow-up は code hardening 吸収後に close |
+| [task-workflow-backlog.md](task-workflow-backlog.md) | backlog | 残課題（未タスク） / 2026-04-04 TASK-RT-01 follow-up 2件（verifyAndImproveLoop notification / executeAsync snapshot message format） / 2026-03-21 runtime policy capability bridge follow-up 2件 / 2026-03-26 TASK-SDK-01 follow-up は code hardening 吸収後に close |
 | [task-workflow-history.md](task-workflow-history.md) | history bundle | 関連ドキュメント / 変更履歴 |
 
 ## 利用順序
