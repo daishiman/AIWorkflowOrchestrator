@@ -5,6 +5,92 @@
 
 ## 完了タスク
 
+### タスク: task-imp-layer12-spec-definition-004（2026-04-04）
+
+| 項目       | 値                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| タスクID   | task-imp-layer12-spec-definition-004                                                                   |
+| ステータス | **完了**                                                                                               |
+| タイプ     | docs（ドキュメント改善）                                                                               |
+| 優先度     | 中（P1）                                                                                               |
+| 完了日     | 2026-04-04                                                                                             |
+| 対象       | `.claude/skills/aiworkflow-requirements/references/interfaces-skill-verify-contract.md`                |
+| 成果物     | `docs/30-workflows/imp-layer12-spec-definition-004/outputs/`                                           |
+
+#### 実施内容
+
+- `interfaces-skill-verify-contract.md` を新規作成し、FR-04 verify 契約の check ID 体系（19 check ID、Layer 1-4）を正式追記
+- Layer 命名規則（`L{N}-{NNN}` 形式）と拡張ガイドラインを明文化
+- 各 check ID に検証内容・severity・判定基準・エラーメッセージを記載し、`SkillCreatorVerificationEngine.ts` との完全一致を確認
+
+#### 検証証跡
+
+- `grep -oE "L[1-4]-[0-9]{3}" SkillCreatorVerificationEngine.ts | sort -u` と仕様書の diff: 0 件（19/19 一致）
+- severity 内訳: error 10 件、warning 9 件（実装と一致）
+- check ID カバレッジ: 19/19 = 100%
+- `docs/30-workflows/imp-layer12-spec-definition-004/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS（Task 12-1〜12-6 の最終準拠確認）
+
+### タスク: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 SkillCreator Layer3/4 verify detail severity フィルタ追加（2026-04-04）
+
+| 項目       | 値                                                                                                                                                                                                       |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001                                                                                                                                                                 |
+| ステータス | **完了**                                                                                                                                                                                                 |
+| タイプ     | implementation / renderer UI                                                                                                                                                                             |
+| 優先度     | 中                                                                                                                                                                                                       |
+| 完了日     | 2026-04-04                                                                                                                                                                                               |
+| 対象       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` / `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx` / `docs/30-workflows/skill-creator-layer34-ui-display-severity-filter/` |
+| 成果物     | `docs/30-workflows/skill-creator-layer34-ui-display-severity-filter/`                                                                                                                                    |
+
+#### 実施内容
+
+- `SeverityFilterLevel` 型（`"all" | "warning+" | "error"`）と `SEVERITY_FILTER_OPTIONS` 定数を定義
+- `filterChecksBySeverity()` をコンポーネント外の純粋関数として実装（useMemo 依存最小化・テスト容易性向上）
+- `filteredChecksByLayer` useMemo を `checksByLayer` の下流に配置し、既存 Layer grouping への変更ゼロでフィルタを実装
+- `severityTotalCounts` をフィルタ前の `checksByLayer` から計算し、件数バッジが常に全体件数を示す UI を実現
+- `activeWorkflowId` 変更時の `useEffect` でフィルタリセットを実装し、reverify 維持と workflow 切替リセットを両立
+- SF-01〜SF-09（9テストケース）を追加し、27テスト全 PASS
+- Phase 11 screenshots 4枚（light: all/warning+/error + dark: all）取得済み
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx`: PASS（27/27）
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/skill-creator-layer34-ui-display-severity-filter --json`: PASS
+- Step 2 no-op: `SeverityFilterLevel` は SkillLifecyclePanel 内部型のため shared 仕様書更新不要
+
+### タスク: TASK-SKILL-CENTER-LIFECYCLE-NAV-001 SkillCenterView → SkillManagementPanel ナビゲーション接続（2026-04-04）
+
+| 項目       | 値                                                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-SKILL-CENTER-LIFECYCLE-NAV-001                                                                                                                                                                                     |
+| ステータス | **完了**                                                                                                                                                                                                                 |
+| タイプ     | UI task / navigation                                                                                                                        |
+| 優先度     | 中                                                                                                                                                                                                                       |
+| 完了日     | 2026-04-04                                                                                                                                                                                                               |
+| 対象       | `apps/desktop/src/renderer/store/types.ts` / `apps/desktop/src/renderer/App.tsx` / `apps/desktop/src/renderer/views/SkillCenterView/hooks/useSkillCenter.ts` / `apps/desktop/src/renderer/views/SkillCenterView/index.tsx` / `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx` |
+| 成果物     | `docs/30-workflows/skill-center-lifecycle-navigation/`                                                                                                                   |
+
+#### 実施内容
+
+- `SkillCenterView` に `header-management-cta` を追加し、`skillManagement` への secondary 導線を実装
+- `ViewType` に `skillManagement` を追加し、`App.tsx` で `SkillManagementPanel` を描画するよう拡張
+- `skillManagement` を `skillCenter` に正規化して dock / sidebar の active 表示を維持
+- `SkillManagementPanel` に `skill-management-back-button` を追加し、`SkillCenterView` への戻り導線を保持
+- `SkillLifecyclePanel` は `SkillManagementPanel` 内部サブビューとして再利用
+- Phase 11 で 8 枚の実画像スクリーンショットを取得し、Phase 12 でドキュメント同期を完了
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/renderer/views/SkillCenterView/hooks/__tests__/useSkillCenter.navigation.test.ts`: PASS
+- `pnpm exec vitest run src/renderer/views/SkillCenterView/__tests__/SkillCenterView.cta.test.tsx src/renderer/__tests__/App.renderView.viewtype.test.tsx`: PASS
+- `pnpm --filter @repo/desktop exec tsc -p tsconfig.json --noEmit`: PASS
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-01-skill-center-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-02-skill-create-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-03-skill-management-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-04-skill-lifecycle-light.png`
+- `docs/30-workflows/skill-center-lifecycle-navigation/outputs/phase-11/screenshots/TC-11-05-skill-center-return-light.png`
+
 ### タスク: TASK-SDK-SC-03 External API Support（2026-04-03）
 
 | 項目       | 値                                                                                                                                                                                                                       |
@@ -29,6 +115,58 @@
 - `HttpExternalApiAdapter` を追加し `IExternalApiAdapter` インターフェースを実装
 - Preload 層（`skill-creator-api.ts` / `skill-creator-session-api.ts`）で invoke / push listener を公開
 
+### タスク: task-ut-p0-02-001-repeat-feedback-memory（2026-04-03）
+
+| 項目       | 値                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | task-ut-p0-02-001-repeat-feedback-memory                                                                                                                           |
+| ステータス | **完了**                                                                                                                                                           |
+| タイプ     | 改善 / runtime skill creator feedback memory                                                                                                                       |
+| 優先度     | 中                                                                                                                                                                 |
+| 完了日     | 2026-04-03                                                                                                                                                         |
+| 対象       | `packages/shared/src/types/skillCreator.ts` / `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` / `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts` |
+| 成果物     | `docs/30-workflows/completed-tasks/improve-feedback-memory-structuring/`                                                                                                           |
+
+#### 実施内容
+
+- `ImproveFeedbackHistory` 型を `packages/shared/src/types/skillCreator.ts` に定義（attempt / failedChecks / improveSummary）
+- `verifyAndImproveLoop()` 内の `previousImproveSummary: string` を `feedbackHistory: ImproveFeedbackHistory[]` に置換し、全試行履歴を蓄積
+- `buildImproveFeedback()` を全履歴参照型に改修。persistent failure 検出と特別警告を付与
+- TC-01〜TC-06、EC-01〜EC-02、EC-04、BF-01〜BF-04 の計13テストを追加（全45テスト PASS）
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts --reporter=verbose`: PASS（45/45）
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm exec eslint apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`: PASS
+- AC-1〜AC-4 全充足確認済み
+
+### タスク: UT-SDK-L34-UI-DISPLAY-001 SkillCreator Layer3/4検証結果のUI表示拡張（2026-04-03）
+
+| 項目       | 値                                                                                                                                                                                                                          |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SDK-L34-UI-DISPLAY-001                                                                                                                                                                                                    |
+| ステータス | **完了**                                                                                                                                                                                                                    |
+| タイプ     | implementation / renderer UI                                                                                                                                                                                                 |
+| 優先度     | 中                                                                                                                                                                                                                           |
+| 完了日     | 2026-04-03                                                                                                                                                                                                                  |
+| 対象       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` / `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx` / `docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001/` |
+| 成果物     | `docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001/`                                                                                                                                                         |
+
+#### 実施内容
+
+- `verifyDetail.checks` を Layer 1〜4 でグルーピングし、Layer ごとの accordion 表示へ変更
+- severity（info/warning/error）のアイコン表示と集計バッジを追加
+- reverify 後も折りたたみ状態を保持するよう state を整理
+- Phase 11: current build + Vite harness + Playwright で representative screenshots を取得し、coverage/metadata を同梱
+- Phase 12: implementation-guide / system-spec-update-summary / documentation-changelog を current facts へ同期
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001 --json`: PASS
 ### タスク: TASK-FIX-LIFECYCLE-PANEL-ERROR-001（2026-04-02）
 
 | 項目       | 値                                                                                                                                                                 |

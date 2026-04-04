@@ -1,0 +1,61 @@
+{
+  "capturedAt": "2026-04-03",
+  "cases": [
+    {
+      "id": "TC-01",
+      "component": "SkillLifecyclePanel",
+      "state": "filter=all デフォルト",
+      "theme": "light",
+      "filename": "TC-01-default-all-light.png"
+    },
+    {
+      "id": "TC-02",
+      "component": "SkillLifecyclePanel",
+      "state": "filter=all デフォルト",
+      "theme": "dark",
+      "filename": "TC-02-default-all-dark.png"
+    },
+    {
+      "id": "TC-03",
+      "component": "SkillLifecyclePanel",
+      "state": "filter=warning+",
+      "theme": "light",
+      "filename": "TC-03-warning-plus-light.png"
+    },
+    {
+      "id": "TC-04",
+      "component": "SkillLifecyclePanel",
+      "state": "filter=warning+",
+      "theme": "dark",
+      "filename": "TC-04-warning-plus-dark.png"
+    },
+    {
+      "id": "TC-05",
+      "component": "SkillLifecyclePanel",
+      "state": "filter=error",
+      "theme": "light",
+      "filename": "TC-05-error-only-light.png"
+    },
+    {
+      "id": "TC-06",
+      "component": "SkillLifecyclePanel",
+      "state": "filter=error",
+      "theme": "dark",
+      "filename": "TC-06-error-only-dark.png"
+    },
+    {
+      "id": "TC-07",
+      "component": "SkillLifecyclePanel",
+      "state": "0件Layer非表示",
+      "theme": "light",
+      "filename": "TC-07-empty-layer-light.png"
+    },
+    {
+      "id": "TC-08",
+      "component": "SkillLifecyclePanel",
+      "state": "check 0件",
+      "theme": "light",
+      "filename": "TC-08-no-checks-light.png"
+    }
+  ]
+}

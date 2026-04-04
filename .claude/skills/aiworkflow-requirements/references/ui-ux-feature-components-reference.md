@@ -487,4 +487,44 @@ TASK-10A-F では `SkillAnalysisView` / `SkillCreateWizard` の責務境界を�
 
 ---
 
+## Verify / Improve Result Panel UI（TASK-RT-03 / phase-11）
+
+TASK-RT-03-VERIFY-IMPROVE-PANEL-001 で、`VerifyResultDetailPanel` と `ImproveResultDetailPanel` を追加し、Phase 11 の visual harness で主要状態のスクリーンショット証跡を取得した。
+
+### 実装済みコンポーネント / Harness
+
+| 区分 | コンポーネント / Hook | 役割 | 想定配置 |
+| --- | --- | --- | --- |
+| view-like component | VerifyResultDetailPanel | Verify 結果詳細の表示、再検証導線、Governance Notes 表示 | `apps/desktop/src/renderer/components/skill/VerifyResultDetailPanel.tsx` |
+| view-like component | ImproveResultDetailPanel | Improve 結果詳細の表示、提案リスト、Revised Spec 表示 | `apps/desktop/src/renderer/components/skill/ImproveResultDetailPanel.tsx` |
+| harness | phase11-task-rt-03-verify-improve-panel | Verify pass / fail と Improve default の visual harness | `apps/desktop/src/renderer/phase11-task-rt-03-verify-improve-panel.tsx` |
+| capture script | capture-task-rt-03-verify-improve-panel-phase11 | visual harness の screenshot capture | `apps/desktop/scripts/capture-task-rt-03-verify-improve-panel-phase11.mjs` |
+
+### 進捗ステータス
+
+| 項目 | 状態 | 参照 |
+| --- | --- | --- |
+| ワークフロー仕様（Phase 1-13） | ✅ Phase 12 ドキュメント整合完了 | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/` |
+| 実装コード | ✅ 完了 | `apps/desktop/src/renderer/components/skill/` |
+| visual harness | ✅ 完了 | `apps/desktop/src/renderer/phase11-task-rt-03-verify-improve-panel.tsx` |
+| 画面検証証跡（スクリーンショット） | ✅ 取得済み | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/outputs/phase-11/screenshots/` |
+
+### 画面検証証跡
+
+| TC | 状態 | ファイル |
+| --- | --- | --- |
+| TC-11-01 | Verify pass | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/outputs/phase-11/screenshots/TC-11-01-verify-pass.png` |
+| TC-11-02 | Verify fail | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/outputs/phase-11/screenshots/TC-11-02-verify-fail.png` |
+| TC-11-03 | Improve default | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/outputs/phase-11/screenshots/TC-11-03-improve-default.png` |
+
+### 実装時の苦戦箇所（再利用用）
+
+| 苦戦箇所 | 再発条件 | 今回の対処 | 再利用ルール |
+| --- | --- | --- | --- |
+| `components/skill/index.ts` への再エクスポート前提が崩れる | 追加コンポーネントを index 経由で import するが、未 export のままにする | harness 側で直 import に切り替え、既存実装ファイルは変更しない | visual harness は既存 export 構造に依存しすぎず、必要なら direct import を使う |
+| screenshot 待機対象が DOM に存在しない | `data-testid` の付与忘れで locator が見つからない | `phase11-verify-improve-harness` を main に付与して待機を安定化 | capture script には待機対象の存在を明示する |
+| verify pass / fail の差が薄く見える | 同じカード幅・同じメッセージで差異が分かりにくい | pass / fail で nextAction、disabledReason、severity を変えた | screenshot は見た目の差が一目で分かる条件を含める |
+
+---
+
 <a id="organisms-foundation-task-ui-00-organisms"></a>

@@ -2,7 +2,7 @@
 
 > 親仕様書: [task-workflow-completed-skill-lifecycle.md](task-workflow-completed-skill-lifecycle.md)
 > 役割: completed records - UI実装・統合系
-> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
+> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-RT-03-VERIFY-IMPROVE-PANEL-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
 
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
 
@@ -293,6 +293,47 @@
 3. `verify-all-specs` / `validate-phase-output` / `verify-unassigned-links` / `audit --diff-from HEAD` を連続実行し、合否は `currentViolations` で判定する。
 4. UIタスクではスクリーンショットを目視し、証跡表に「状態名 + 検証目的」を追記する。
 5. `task-workflow.md` と `lessons-learned.md` の両方に同じ再発防止ルールを転記して完了とする。
+
+---
+
+## TASK-RT-03-VERIFY-IMPROVE-PANEL-001: Verify / Improve 結果パネル実装 完了記録（2026-04-04）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RT-03-VERIFY-IMPROVE-PANEL-001 |
+| 対象workflow | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/` |
+| ステータス | completed（Phase 1-12 completed / Phase 13 blocked） |
+| テスト | `VerifyResultDetailPanel` / `ImproveResultDetailPanel` / `SkillLifecyclePanel.llm-generation` targeted suite PASS |
+| 画面証跡 | `outputs/phase-11/screenshots/TC-11-01..03` |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| Verify panel | `VerifyResultDetailPanel` を新規作成し、Layer 別 grouping / severity badge / reverify 導線を実装 |
+| Improve panel | `ImproveResultDetailPanel` を新規作成し、提案リスト / Revised Spec / read-only 表示を実装 |
+| SkillLifecyclePanel 統合 | inline verify detail を抽出し、`verifyDetailRequestSeqRef` と `isReverifyingRef` で stale response / 二重送信を抑止 |
+| 共有部品 | `result-panel-parts.tsx` の `StatusBadge` label override を verify 語彙に合わせて拡張 |
+| visual harness | `phase11-task-rt-03-verify-improve-panel.tsx` と capture script を追加し、3 状態の screenshot を取得 |
+
+### 検証証跡
+
+| 区分 | コマンド / 証跡 | 結果 |
+| --- | --- | --- |
+| unit test | `cd apps/desktop && pnpm exec vitest run src/renderer/components/skill/__tests__/VerifyResultDetailPanel.test.tsx src/renderer/components/skill/__tests__/ImproveResultDetailPanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx` | PASS |
+| typecheck | `pnpm --filter @repo/desktop typecheck` | PASS |
+| visual harness | `node apps/desktop/scripts/capture-task-rt-03-verify-improve-panel-phase11.mjs` | PASS（TC-11-01..03） |
+| system spec sync | `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js --workflow docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001 --regenerate` | PASS |
+
+### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 解決策 | 再利用ルール |
+| --- | --- | --- |
+| verify detail の stale response | request sequence guard を導入し、古いレスポンスを破棄した | async fetch を持つ detail panel は requestSeq を正本にする |
+| ImprovementProposalPanel と文言衝突 | read-only result panel に `data-testid` を追加してテストスコープを分離した | 既存操作パネルと同名 text を持つ新規 panel は locator を正本にする |
+| visual evidence の不足 | capture metadata / plan / screenshots を workflow に同梱した | UI 完了時は screenshot と metadata をセットで残す |
 
 ---
 

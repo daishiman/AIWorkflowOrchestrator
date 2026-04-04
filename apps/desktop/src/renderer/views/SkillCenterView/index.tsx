@@ -99,6 +99,12 @@ export const viewStyles = {
     "hover:opacity-90 transition-opacity duration-200",
     "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)] focus:ring-offset-2",
   ),
+  headerCtaSecondary: clsx(
+    "inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl",
+    "border border-[var(--border-primary)] text-[var(--text-secondary)] text-sm font-medium",
+    "hover:bg-[var(--bg-secondary)] hover:text-[var(--text-primary)] transition-colors duration-200",
+    "focus:outline-none focus:ring-2 focus:ring-[var(--status-primary)] focus:ring-offset-2",
+  ),
   journeyCardCta: clsx(
     "mt-3 inline-flex items-center gap-1 px-3 py-1.5 rounded-lg",
     "text-xs font-medium text-[var(--status-primary)]",
@@ -267,6 +273,7 @@ export const SkillCenterView: React.FC = memo(() => {
     featuredSkills,
     importedSkillNames,
     navigateToSkillCreate,
+    navigateToSkillManagement,
     navigateToWorkspace,
     navigateToSkillAnalysis,
     handleEditSkill,
@@ -380,23 +387,35 @@ export const SkillCenterView: React.FC = memo(() => {
         <div className={viewStyles.content}>
           {/* ヘッダー */}
           <div className={viewStyles.header}>
-            <div className={viewStyles.headerRow}>
+            <div className={viewStyles.headerRow} data-testid="header-row">
               <div>
                 <h1 className={viewStyles.title}>ツールを探す</h1>
                 <p className={viewStyles.subtitle}>
                   AIワークフローを強化するツールを見つけましょう
                 </p>
               </div>
-              <button
-                type="button"
-                className={viewStyles.headerCta}
-                onClick={navigateToSkillCreate}
-                data-testid="header-create-cta"
-                data-route-kind="primary"
-              >
-                <Icon name="plus" size={16} />
-                <span>新規作成</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  className={viewStyles.headerCtaSecondary}
+                  onClick={navigateToSkillManagement}
+                  data-testid="header-management-cta"
+                  data-route-kind="secondary"
+                >
+                  <Icon name="settings" size={16} />
+                  <span>スキル管理</span>
+                </button>
+                <button
+                  type="button"
+                  className={viewStyles.headerCta}
+                  onClick={navigateToSkillCreate}
+                  data-testid="header-create-cta"
+                  data-route-kind="primary"
+                >
+                  <Icon name="plus" size={16} />
+                  <span>新規作成</span>
+                </button>
+              </div>
             </div>
           </div>
 
