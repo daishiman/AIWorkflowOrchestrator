@@ -1,0 +1,40 @@
+{
+  "plan": [
+    {
+      "tcId": "TC-11-01",
+      "file": "TC-11-01.png",
+      "scenario": "有効な API key でバナー非表示",
+      "theme": "light"
+    },
+    {
+      "tcId": "TC-11-02",
+      "file": "TC-11-02.png",
+      "scenario": "API key 未設定でバナー表示（API key メッセージ）",
+      "theme": "light"
+    },
+    {
+      "tcId": "TC-11-03",
+      "file": "TC-11-03.png",
+      "scenario": "汎用 failureReason 文言",
+      "theme": "light"
+    },
+    {
+      "tcId": "TC-11-04",
+      "file": "TC-11-04.png",
+      "scenario": "設定を開くボタン導線",
+      "theme": "light"
+    },
+    {
+      "tcId": "TC-11-05",
+      "file": "TC-11-05.png",
+      "scenario": "light theme 視認性確認",
+      "theme": "light"
+    },
+    {
+      "tcId": "TC-11-06",
+      "file": "TC-11-06.png",
+      "scenario": "dark theme 視認性確認",
+      "theme": "dark"
+    }
+  ]
+}

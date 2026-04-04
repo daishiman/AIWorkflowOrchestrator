@@ -290,6 +290,8 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `skill-creator:generate-docs`   | Renderer → Main | ドキュメント生成   | `{ skillName: string; format?: string; sections?: string[] }` | `IpcResult<string>`        |
 | `skill-creator:stats`           | Renderer → Main | 使用統計取得       | `{ skillName?: string; period?: string }`                  | `IpcResult<unknown>`          |
 | `skill-creator:progress`        | Main → Renderer | 進捗通知           | -                                                          | `SkillCreatorProgress`        |
+| `skill-creator:get-adapter-status` | Renderer → Main | LLMAdapter 初期化状態取得 | なし | `IpcResult<LLMAdapterStatusPayload>` |
+| `skill-creator:adapter-status-changed` | Main → Renderer | LLMAdapter 状態変化通知 | - | `LLMAdapterStatusPayload` |
 
 ### 型定義
 
@@ -308,6 +310,7 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `TerminalHandoffBundle` | Claude Code handoff bundle          |
 | `SkillCreatorProgress` | 進捗通知データ（Preload型）          |
 | `SkillCreatorAPI`      | Preload APIインターフェース          |
+| `LLMAdapterStatusPayload` | `{ status: LLMAdapterStatus; failureReason: string \| null }` — TASK-RT-01 pull/push 共通 payload |
 
 ### SkillCreatorProgress型
 
@@ -333,6 +336,7 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | エラーサニタイズ             | 完了   | UT-9B-H-003                     |
 | パストラバーサル検証         | 完了   | UT-9B-H-003                     |
 | schemaNameホワイトリスト検証 | 完了   | UT-9B-H-003                     |
+| LLMAdapter 状態公開 2チャネル | 完了 | TASK-RT-01 |
 
 ### セキュリティ強化仕様（UT-9B-H-003）
 
