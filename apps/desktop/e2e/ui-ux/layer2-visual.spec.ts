@@ -14,6 +14,9 @@ import { test, expect } from "@playwright/test";
 import { TEST_TARGETS } from "./test-targets.config";
 import { navigateToTarget } from "./helpers";
 
+// Layer 2 の dark-mode 比較を OS テーマから切り離して安定化する
+test.use({ colorScheme: "dark" });
+
 // ---------------------------------------------------------------------------
 // メインの Visual Regression テスト群（VIS-001〜007）
 // ---------------------------------------------------------------------------

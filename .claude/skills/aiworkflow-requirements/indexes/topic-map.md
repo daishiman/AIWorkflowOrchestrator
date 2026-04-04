@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-03
+> 自動生成: 2026-04-04
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -910,6 +910,7 @@ node scripts/list-specs.js --topics
 | Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L690 |
 | AIプロバイダーAPI連携 | L728 |
 | Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L761 |
+| Skill Creator External API Support（TASK-SDK-SC-03） | L808 |
 
 ### references/api-ipc-system-details.md
 
@@ -1174,10 +1175,10 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
 | Skill Runtime API Key Panel（TASK-RT-04） | L63 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L87 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L194 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L261 |
-| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L409 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L119 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L226 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L293 |
+| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L441 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1482,6 +1483,7 @@ node scripts/list-specs.js --topics
 | 実装例: slideSettingsAPI | L427 |
 | IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L476 |
 | ApprovalGate セキュリティ契約（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L491 |
+| Skill Creator External API Credential 秘匿化（TASK-SDK-SC-03） | L546 |
 
 ### references/security-electron-ipc-details.md
 
@@ -2041,6 +2043,20 @@ node scripts/list-specs.js --topics
 | Current Canonical Set | L12 |
 | Follow-up 未タスク | L25 |
 | Validation Chain | L31 |
+
+### references/workflow-ui-ux-visual-baseline-drift.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L9 |
+| 仕様書別 SubAgent 編成 | L20 |
+| 今回実装した内容 | L32 |
+| 苦戦箇所と再発防止 | L53 |
+| 同種課題の 5 分解決カード | L63 |
+| 最適なファイル形成 | L73 |
+| 検証コマンド | L87 |
+| 関連改善タスク | L99 |
+| 関連ドキュメント | L107 |
+| 変更履歴 | L119 |
 
 ### references/workflow-workspace-parent-reference-sweep-guard.md
 
@@ -2646,19 +2662,20 @@ node scripts/list-specs.js --topics
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
 | 分割ファイル一覧 | L76 |
-| クイックリファレンス: カテゴリ別検索ガイド | L94 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L275 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L607 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L641 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L724 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L740 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L764 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L814 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L839 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L870 |
-| TASK-RT-06 教訓（2026-03-29） | L901 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L923 |
-| TASK-P0-04 教訓（2026-03-30） | L954 |
+| クイックリファレンス: カテゴリ別検索ガイド | L95 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L284 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L616 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L650 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L733 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L749 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L773 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L823 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L848 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L879 |
+| TASK-RT-06 教訓（2026-03-29） | L910 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L932 |
+| TASK-P0-04 教訓（2026-03-30） | L963 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L975 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2745,6 +2762,14 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| TASK-SDK-SC-01: SDK Session Bridge 実装 | L6 |
+
+### references/lessons-learned-severity-filter-ui.md
+
+| セクション | 行 |
+|------------|----|\n| タスク情報 | L3 |
+| 技術的教訓 | L8 |
+| 苦戦箇所 | L27 |
+| コードパターン | L39 |
 
 ### references/lessons-learned-skill-build-harness-guard.md
 
@@ -2866,6 +2891,15 @@ node scripts/list-specs.js --topics
 | TASK-UI-04A-WORKSPACE-LAYOUT 実装教訓（2026-03-10） | L282 |
 | TASK-UI-04C-WORKSPACE-PREVIEW 実装教訓（2026-03-11） | L334 |
 
+### references/lessons-learned-ui-ux-visual-baseline-drift.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L9 |
+| 教訓 | L20 |
+| 同種課題の簡潔解決手順 | L51 |
+| 関連ドキュメント | L61 |
+| 変更履歴 | L72 |
+
 ### references/lessons-learned-viewtype-electron-ui.md
 
 | セクション | 行 |
@@ -2916,8 +2950,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L42 |
-| 関連ドキュメント | L47 |
+| 利用順序 | L43 |
+| 関連ドキュメント | L48 |
 
 ### references/llm-embedding.md
 
@@ -3828,6 +3862,7 @@ node scripts/list-specs.js --topics
 | 品質ゲート（概要） | L73 |
 | 出力テンプレート | L84 |
 | 実行時のコマンド・エージェント・スキル | L107 |
+| 昇格パターン集 | L131 |
 
 ### references/task-workflow-backlog.md
 
@@ -3963,6 +3998,14 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 分割ファイル一覧 | L7 |
 | タスクID 逆引き | L14 |
 
+### references/task-workflow-completed-ui-ux-visual-baseline-drift.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L9 |
+| 完了記録 | L20 |
+| 関連ドキュメント | L55 |
+| 変更履歴 | L66 |
+
 ### references/task-workflow-completed-ut-06-safety-gate.md
 
 | セクション | 行 |
@@ -4010,8 +4053,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L8 |
-| 利用順序 | L35 |
-| 関連ドキュメント | L40 |
+| 利用順序 | L37 |
+| 関連ドキュメント | L42 |
 
 ### references/testing-accessibility.md
 
