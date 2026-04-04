@@ -1,6 +1,6 @@
 # UT-06-001-CSS-RISK-VARS: CSS リスクレベル変数定義
 
-issue_number: 1274
+issue_number: 1921
 
 ## メタ情報
 
