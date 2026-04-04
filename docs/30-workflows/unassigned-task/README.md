@@ -19,9 +19,9 @@
 | 優先度   | タスク数 | 合計見積もり       |
 | -------- | -------- | ------------------ |
 | 高       | 1件      | 大規模             |
-| 中       | 2件      | 中規模×2           |
+| 中       | 3件      | 中規模×3           |
 | 低       | 4件      | 小規模×3、中規模×1 |
-| **合計** | **7件**  | -                  |
+| **合計** | **8件**  | -                  |
 
 ---
 
@@ -106,6 +106,30 @@
 - RedisEmbeddingCache実装
 - TTL（自動期限切れ）機能
 - バッチ操作（mget/mset）
+
+---
+
+### UT-RT-02-M03-WIZARD-LIFECYCLE-TEXT-PARITY-001: Wizard/Lifecycle plan error 表示文言パリティ確認
+
+| 項目         | 内容                                                                                                 |
+| ------------ | ---------------------------------------------------------------------------------------------------- |
+| ファイル     | [UT-RT-02-M03-WIZARD-LIFECYCLE-TEXT-PARITY-001.md](UT-RT-02-M03-WIZARD-LIFECYCLE-TEXT-PARITY-001.md) |
+| 分類         | 改善                                                                                                 |
+| 優先度       | 中                                                                                                   |
+| 見積もり規模 | 中規模                                                                                               |
+| 発見元       | TASK-RT-02 Phase 11: 手動テスト未検証項目 M-03                                                       |
+
+**目的**: `SkillCreateWizard.tsx` と `SkillLifecyclePanel.tsx` の plan error 表示文言・コンポーネントのパリティを確認・修正
+
+**効果**:
+
+- 同一エラーに対するユーザー体験の一貫性確保
+- 将来の i18n 対応（UT-RT-02-I18N-ERROR-MESSAGE-001）の前提整備
+
+**技術的な内容**:
+
+- `handleLlmGenerate` と `handlePrepare` 内の plan error 表示ロジック比較
+- 非意図的差異の修正とテストケース追加
 
 ---
 
