@@ -719,6 +719,17 @@ node scripts/list-specs.js --topics
 | 設計原則 | L188 |
 | 関連ドキュメント | L411 |
 
+### references/interfaces-skill-verify-contract.md
+
+| セクション | 行 |
+|------------|----|\n| 概要 | L3 |
+| Layer 命名規則 | L12 |
+| Layer 1: 構造検証（Structural Validation） | L43 |
+| Layer 2: コンテンツ検証（Content Validation） | L53 |
+| Layer 3: 詳細コンテンツ検証（Detailed Content Validation） | L65 |
+| Layer 4: 参照整合性・結合検証（Reference Integrity Validation） | L74 |
+| Layer 拡張ガイドライン | L82 |
+
 ### references/interfaces-system-prompt.md
 
 | セクション | 行 |
@@ -2661,21 +2672,21 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L76 |
-| クイックリファレンス: カテゴリ別検索ガイド | L95 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L284 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L616 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L650 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L733 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L749 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L773 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L823 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L848 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L879 |
-| TASK-RT-06 教訓（2026-03-29） | L910 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L932 |
-| TASK-P0-04 教訓（2026-03-30） | L963 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L975 |
+| 分割ファイル一覧 | L78 |
+| クイックリファレンス: カテゴリ別検索ガイド | L97 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L286 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L618 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L652 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L735 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L751 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L775 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L825 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L850 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L881 |
+| TASK-RT-06 教訓（2026-03-29） | L912 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L934 |
+| TASK-P0-04 教訓（2026-03-30） | L965 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L986 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2950,8 +2961,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L43 |
-| 関連ドキュメント | L48 |
+| 利用順序 | L44 |
+| 関連ドキュメント | L49 |
 
 ### references/llm-embedding.md
 

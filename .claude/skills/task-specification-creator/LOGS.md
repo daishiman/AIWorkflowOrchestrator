@@ -4,6 +4,16 @@
 
 ---
 
+## 2026-04-04 - task-imp-layer12-spec-definition-004 Phase 12 close-out sync
+
+### 変更内容
+- `interfaces-skill-verify-contract.md` を新規作成し、FR-04 verify 契約の check ID 体系（19 check ID、Layer 1-4）を追記
+- Layer 命名規則（`L{N}-{NNN}`）と拡張ガイドラインを明文化
+- `SkillCreatorVerificationEngine.ts` との check ID 突き合わせ diff 0 件を確認
+- SKILL.md v6.18.23 更新
+
+---
+
 ## UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 完了（2026-04-03）
 
 - タスク名: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001

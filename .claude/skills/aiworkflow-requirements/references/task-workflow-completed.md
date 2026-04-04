@@ -5,6 +5,31 @@
 
 ## 完了タスク
 
+### タスク: task-imp-layer12-spec-definition-004（2026-04-04）
+
+| 項目       | 値                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------ |
+| タスクID   | task-imp-layer12-spec-definition-004                                                                   |
+| ステータス | **完了**                                                                                               |
+| タイプ     | docs（ドキュメント改善）                                                                               |
+| 優先度     | 中（P1）                                                                                               |
+| 完了日     | 2026-04-04                                                                                             |
+| 対象       | `.claude/skills/aiworkflow-requirements/references/interfaces-skill-verify-contract.md`                |
+| 成果物     | `docs/30-workflows/imp-layer12-spec-definition-004/outputs/`                                           |
+
+#### 実施内容
+
+- `interfaces-skill-verify-contract.md` を新規作成し、FR-04 verify 契約の check ID 体系（19 check ID、Layer 1-4）を正式追記
+- Layer 命名規則（`L{N}-{NNN}` 形式）と拡張ガイドラインを明文化
+- 各 check ID に検証内容・severity・判定基準・エラーメッセージを記載し、`SkillCreatorVerificationEngine.ts` との完全一致を確認
+
+#### 検証証跡
+
+- `grep -oE "L[1-4]-[0-9]{3}" SkillCreatorVerificationEngine.ts | sort -u` と仕様書の diff: 0 件（19/19 一致）
+- severity 内訳: error 10 件、warning 9 件（実装と一致）
+- check ID カバレッジ: 19/19 = 100%
+- `docs/30-workflows/imp-layer12-spec-definition-004/outputs/phase-12/phase12-task-spec-compliance-check.md`: PASS（Task 12-1〜12-6 の最終準拠確認）
+
 ### タスク: TASK-SDK-SC-03 External API Support（2026-04-03）
 
 | 項目       | 値                                                                                                                                                                                                                       |
