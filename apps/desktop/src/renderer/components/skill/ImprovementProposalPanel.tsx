@@ -99,7 +99,10 @@ export const ImprovementProposalPanel = memo<ImprovementProposalPanelProps>(
     }, []);
 
     return (
-      <div className="flex flex-col gap-4">
+      <div
+        className="flex flex-col gap-4"
+        data-testid="improvement-proposal-panel"
+      >
         {/* パネルヘッダー */}
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold text-[var(--text-primary)]">

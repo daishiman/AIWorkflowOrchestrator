@@ -2,14 +2,12 @@ import React, {
   startTransition,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
 import type { SkillExecutionStatus } from "@repo/shared";
 import type {
   ApplyImprovementResult,
-  ExternalApiConnectionConfig,
   HandoffGuidance,
   SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorExecuteResponse,
@@ -21,8 +19,6 @@ import type {
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorReverifyResponse,
-  RuntimeSkillCreatorVerifyCheck,
-  RuntimeSkillCreatorVerifyCheckSeverity,
   RuntimeSkillCreatorVerifyDetailResponse,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
@@ -68,11 +64,12 @@ import {
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
 import { ExecuteResultDetailPanel } from "./ExecuteResultDetailPanel";
-import { ExternalApiConfigForm } from "./ExternalApiConfigForm";
+import { ImproveResultDetailPanel } from "./ImproveResultDetailPanel";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
 import { PlanResultDetailPanel } from "./PlanResultDetailPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
+import { VerifyResultDetailPanel } from "./VerifyResultDetailPanel";
 
 type SkillCreatorMode =
   | "collaborative"
@@ -112,9 +109,6 @@ type IpcResult<T> = {
 
 type SkillCreatorRuntimeApi = {
   detectMode?: (request: string) => Promise<IpcResult<SkillCreatorMode>>;
-  configureExternalApi?: (
-    config: ExternalApiConnectionConfig,
-  ) => Promise<IpcResult<unknown>>;
   planSkill?: (
     prompt: string,
     authMode?: string,
@@ -165,17 +159,6 @@ type SkillCreatorRuntimeApi = {
       externalDestinations: string[];
     }>
   >;
-};
-
-type ExternalApiConfigRequiredPayload = {
-  apiName?: string;
-  description?: string;
-};
-
-type SkillCreatorSessionRuntimeApi = {
-  onExternalApiConfigRequired?: (
-    callback: (event: ExternalApiConfigRequiredPayload) => void,
-  ) => () => void;
 };
 
 type SessionEntry = {
@@ -346,231 +329,6 @@ const severityStyles: Record<ImproveSuggestion["severity"], string> = {
   low: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
 };
 
-const verifyStatusBadgeStyles: Record<
-  RuntimeSkillCreatorVerifyDetailResponse["status"],
-  string
-> = {
-  pending: "bg-amber-500/10 text-amber-700",
-  pass: "bg-emerald-500/10 text-emerald-700",
-  fail: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
-};
-
-const verifyCheckSeverityStyles: Record<
-  RuntimeSkillCreatorVerifyCheckSeverity,
-  string
-> = {
-  info: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
-  warning: "bg-amber-500/10 text-amber-700",
-  error: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
-};
-
-type VerifyLayerKey = RuntimeSkillCreatorVerifyCheck["layer"];
-
-const VERIFY_LAYER_ORDER: readonly VerifyLayerKey[] = [
-  "layer1",
-  "layer2",
-  "layer3",
-  "layer4",
-];
-
-const verifyLayerLabels: Record<VerifyLayerKey, string> = {
-  layer1: "Layer 1 — 必須ファイル構造",
-  layer2: "Layer 2 — SKILL.md セクション",
-  layer3: "Layer 3 — スキーマ・コンテンツ品質",
-  layer4: "Layer 4 — References整合性",
-};
-
-const verifyCheckSeverityIcon: Record<
-  RuntimeSkillCreatorVerifyCheckSeverity,
-  string
-> = {
-  info: "✓",
-  warning: "⚠",
-  error: "✗",
-};
-
-const VERIFY_SEVERITY_ORDER: readonly RuntimeSkillCreatorVerifyCheckSeverity[] =
-  ["error", "warning", "info"];
-
-type SeverityFilterValue = "all" | "warning+" | "error";
-
-const SEVERITY_FILTER_OPTIONS: readonly {
-  value: SeverityFilterValue;
-  label: string;
-}[] = [
-  { value: "all", label: "すべて" },
-  { value: "warning+", label: "⚠ Warning+" },
-  { value: "error", label: "✗ Error" },
-];
-
-function shouldShowCheck(
-  severity: RuntimeSkillCreatorVerifyCheckSeverity,
-  filter: SeverityFilterValue,
-): boolean {
-  if (filter === "all") return true;
-  if (filter === "warning+")
-    return severity === "warning" || severity === "error";
-  return severity === "error";
-}
-
-function createDefaultExpandedLayers(): Record<VerifyLayerKey, boolean> {
-  return {
-    layer1: true,
-    layer2: true,
-    layer3: true,
-    layer4: true,
-  };
-}
-
-function isVerifyLayerKey(layer: string): layer is VerifyLayerKey {
-  return VERIFY_LAYER_ORDER.includes(layer as VerifyLayerKey);
-}
-
-function formatSeverityCountLabel(
-  severity: RuntimeSkillCreatorVerifyCheckSeverity,
-  count: number,
-): string {
-  const severityLabel = severity === "info" ? "info" : `${severity}s`;
-  return `${count} ${severityLabel}`;
-}
-
-function getVerifySeverityCounts(
-  checks: RuntimeSkillCreatorVerifyCheck[],
-): Record<RuntimeSkillCreatorVerifyCheckSeverity, number> {
-  return checks.reduce(
-    (counts, check) => {
-      counts[check.severity] += 1;
-      return counts;
-    },
-    {
-      info: 0,
-      warning: 0,
-      error: 0,
-    } as Record<RuntimeSkillCreatorVerifyCheckSeverity, number>,
-  );
-}
-
-function createVerifyChecksByLayer(): Record<
-  VerifyLayerKey,
-  RuntimeSkillCreatorVerifyCheck[]
-> {
-  return {
-    layer1: [],
-    layer2: [],
-    layer3: [],
-    layer4: [],
-  };
-}
-
-interface VerifyLayerGroupProps {
-  layer: VerifyLayerKey;
-  label: string;
-  checks: RuntimeSkillCreatorVerifyCheck[];
-  isExpanded: boolean;
-  onToggle: (layer: VerifyLayerKey) => void;
-}
-
-function VerifyLayerGroup({
-  layer,
-  label,
-  checks,
-  isExpanded,
-  onToggle,
-}: VerifyLayerGroupProps) {
-  const severityCounts = getVerifySeverityCounts(checks);
-  const panelId = `skill-lifecycle-verify-layer-${layer}-panel`;
-  const buttonId = `skill-lifecycle-verify-layer-${layer}-button`;
-
-  return (
-    <section
-      className="overflow-hidden rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)]"
-      data-testid={`skill-lifecycle-verify-layer-${layer}`}
-    >
-      <button
-        type="button"
-        id={buttonId}
-        aria-controls={panelId}
-        aria-expanded={isExpanded}
-        onClick={() => onToggle(layer)}
-        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-[var(--bg-secondary)]"
-        data-testid={`skill-lifecycle-verify-layer-toggle-${layer}`}
-      >
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-[var(--text-primary)]">
-            {label}
-          </p>
-          <p className="mt-1 text-xs text-[var(--text-secondary)]">
-            {checks.length} 件のチェック
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          {VERIFY_SEVERITY_ORDER.filter(
-            (severity) => severityCounts[severity] > 0,
-          ).map((severity) => (
-            <span
-              key={severity}
-              className={`rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[severity]}`}
-            >
-              {formatSeverityCountLabel(severity, severityCounts[severity])}
-            </span>
-          ))}
-          <span
-            aria-hidden="true"
-            className="text-xs font-medium text-[var(--text-secondary)]"
-          >
-            {isExpanded ? "▲" : "▼"}
-          </span>
-        </div>
-      </button>
-
-      {isExpanded ? (
-        <div
-          id={panelId}
-          role="region"
-          aria-labelledby={buttonId}
-          className="border-t border-[var(--border-primary)] px-4 py-4"
-          data-testid={`skill-lifecycle-verify-layer-panel-${layer}`}
-        >
-          <div className="grid gap-3 lg:grid-cols-2">
-            {checks.map((check) => (
-              <article
-                key={check.id}
-                className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-4"
-                data-testid={`skill-lifecycle-verify-check-${check.id}`}
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-semibold text-[var(--text-primary)]">
-                    {check.id}
-                  </span>
-                  <span className="rounded-full bg-[var(--bg-primary)] px-2 py-1 text-xs font-medium text-[var(--text-secondary)]">
-                    {check.layer}
-                  </span>
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[check.severity]}`}
-                  >
-                    <span aria-hidden="true">
-                      {verifyCheckSeverityIcon[check.severity]}
-                    </span>
-                    <span>{check.severity}</span>
-                  </span>
-                </div>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                  {check.summary}
-                </p>
-                {check.evidenceSummary ? (
-                  <p className="mt-2 text-xs text-[var(--text-secondary)]">
-                    {check.evidenceSummary}
-                  </p>
-                ) : null}
-              </article>
-            ))}
-          </div>
-        </div>
-      ) : null}
-    </section>
-  );
-}
-
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   const runtimeWindow = window as Window & {
     electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
@@ -580,19 +338,6 @@ function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   return (
     runtimeWindow.electronAPI?.skillCreator ??
     runtimeWindow.skillCreatorAPI ??
-    null
-  );
-}
-
-function getSkillCreatorSessionApi(): SkillCreatorSessionRuntimeApi | null {
-  const runtimeWindow = window as Window & {
-    electronAPI?: { skillCreatorSession?: SkillCreatorSessionRuntimeApi };
-    skillCreatorSessionAPI?: SkillCreatorSessionRuntimeApi;
-  };
-
-  return (
-    runtimeWindow.electronAPI?.skillCreatorSession ??
-    runtimeWindow.skillCreatorSessionAPI ??
     null
   );
 }
@@ -704,44 +449,6 @@ export function SkillLifecyclePanel({
   );
   const [isVerifyDetailLoading, setIsVerifyDetailLoading] = useState(false);
   const [isReverifying, setIsReverifying] = useState(false);
-  const [expandedLayers, setExpandedLayers] = useState<
-    Record<VerifyLayerKey, boolean>
-  >(createDefaultExpandedLayers);
-  const [severityFilter, setSeverityFilter] =
-    useState<SeverityFilterValue>("all");
-  const checksByLayer = useMemo(() => {
-    const groups = createVerifyChecksByLayer();
-    for (const check of verifyDetail?.checks ?? []) {
-      if (!isVerifyLayerKey(check.layer)) {
-        continue;
-      }
-      groups[check.layer].push(check);
-    }
-    return groups;
-  }, [verifyDetail?.checks]);
-  const filteredChecksByLayer = useMemo(() => {
-    const result = createVerifyChecksByLayer();
-    for (const layer of VERIFY_LAYER_ORDER) {
-      result[layer] = (checksByLayer[layer] ?? []).filter((check) =>
-        shouldShowCheck(check.severity, severityFilter),
-      );
-    }
-    return result;
-  }, [checksByLayer, severityFilter]);
-  const visibleVerifyChecksCount = useMemo(() => {
-    let count = 0;
-    for (const layer of VERIFY_LAYER_ORDER) {
-      count += filteredChecksByLayer[layer]?.length ?? 0;
-    }
-    return count;
-  }, [filteredChecksByLayer]);
-  const totalVerifyChecksCount = verifyDetail?.checks?.length ?? 0;
-  const toggleLayer = useCallback((layer: VerifyLayerKey) => {
-    setExpandedLayers((current) => ({
-      ...current,
-      [layer]: !current[layer],
-    }));
-  }, []);
   // TASK-SDK-07: disclosure info state
   const [disclosureInfo, setDisclosureInfo] = useState<{
     aiServiceName: string;
@@ -753,11 +460,6 @@ export function SkillLifecyclePanel({
     useState<RuntimeSkillCreatorPlanResult | null>(null);
   const [rawExecuteDetail, setRawExecuteDetail] =
     useState<RuntimeSkillCreatorExecuteResult | null>(null);
-  const [externalApiConfigRequest, setExternalApiConfigRequest] =
-    useState<ExternalApiConfigRequiredPayload | null>(null);
-  const [externalApiConfigError, setExternalApiConfigError] = useState<
-    string | null
-  >(null);
 
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
@@ -777,11 +479,8 @@ export function SkillLifecyclePanel({
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
   const isPrepareFlowActiveRef = useRef(false);
   const processedWorkflowOutcomePlanIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    setExpandedLayers(createDefaultExpandedLayers());
-    setSeverityFilter("all");
-  }, [activeWorkflowId]);
+  const verifyDetailRequestSeqRef = useRef(0);
+  const isReverifyingRef = useRef(false);
 
   const clearPlanExecutionState = useCallback(() => {
     setLocalPlanResult(null);
@@ -893,34 +592,6 @@ export function SkillLifecyclePanel({
       applyWorkflowSnapshot(snapshot);
     });
   }, [applyWorkflowSnapshot]);
-
-  useEffect(() => {
-    const sessionApi = getSkillCreatorSessionApi();
-    if (!sessionApi?.onExternalApiConfigRequired) {
-      return;
-    }
-
-    return sessionApi.onExternalApiConfigRequired((event) => {
-      const payload: ExternalApiConfigRequiredPayload = {
-        apiName: typeof event?.apiName === "string" ? event.apiName : undefined,
-        description:
-          typeof event?.description === "string"
-            ? event.description
-            : undefined,
-      };
-
-      setExternalApiConfigError(null);
-      setExternalApiConfigRequest(payload);
-      appendSessionEntry(setSessionEntries, {
-        role: "assistant",
-        title: "外部API設定が必要です",
-        detail:
-          payload.apiName != null && payload.apiName.trim() !== ""
-            ? `${payload.apiName} の接続設定を入力してください。`
-            : "外部API接続設定を入力してください。",
-      });
-    });
-  }, []);
 
   useEffect(() => {
     const planId =
@@ -1082,6 +753,7 @@ export function SkillLifecyclePanel({
   };
   useEffect(() => {
     if (storePlanId && storePlanId !== activeWorkflowId) {
+      verifyDetailRequestSeqRef.current += 1;
       setActiveWorkflowId(storePlanId);
     }
   }, [activeWorkflowId, storePlanId]);
@@ -1093,6 +765,7 @@ export function SkillLifecyclePanel({
   }, [createdSkillName, selectedSkillName]);
 
   const loadVerifyDetail = async (planId: string) => {
+    const requestSeq = ++verifyDetailRequestSeqRef.current;
     const skillCreatorApi = getSkillCreatorApi();
     if (!skillCreatorApi?.getVerifyDetail) {
       return;
@@ -1103,6 +776,9 @@ export function SkillLifecyclePanel({
 
     try {
       const result = await skillCreatorApi.getVerifyDetail(planId);
+      if (requestSeq !== verifyDetailRequestSeqRef.current) {
+        return;
+      }
       if (!result.success || !result.data) {
         setVerifyDetail(null);
         setVerifyDetailError(
@@ -1112,6 +788,9 @@ export function SkillLifecyclePanel({
       }
       setVerifyDetail(result.data);
     } catch (error) {
+      if (requestSeq !== verifyDetailRequestSeqRef.current) {
+        return;
+      }
       setVerifyDetail(null);
       setVerifyDetailError(
         error instanceof Error
@@ -1119,7 +798,9 @@ export function SkillLifecyclePanel({
           : "verify detail の取得に失敗しました。",
       );
     } finally {
-      setIsVerifyDetailLoading(false);
+      if (requestSeq === verifyDetailRequestSeqRef.current) {
+        setIsVerifyDetailLoading(false);
+      }
     }
   };
 
@@ -1164,6 +845,9 @@ export function SkillLifecyclePanel({
 
   const handlePanelClose = () => {
     resetSkillExecutionCycle();
+    verifyDetailRequestSeqRef.current += 1;
+    isReverifyingRef.current = false;
+    setIsReverifying(false);
     setActiveWorkflowId(null);
     setVerifyDetail(null);
     setVerifyDetailError(null);
@@ -1263,6 +947,7 @@ export function SkillLifecyclePanel({
           setLocalPlanResult(normalizedPlan);
           setCurrentPlanResult(normalizedPlan);
           if (normalizedPlan.planId) {
+            verifyDetailRequestSeqRef.current += 1;
             setCurrentPlanId(normalizedPlan.planId);
             setActiveWorkflowId(normalizedPlan.planId);
           }
@@ -1316,6 +1001,7 @@ export function SkillLifecyclePanel({
         return;
       }
       if (isExecutePlanAck(result.data)) {
+        verifyDetailRequestSeqRef.current += 1;
         setActiveWorkflowId(planId);
         if (skillCreatorApi.getWorkflowState) {
           try {
@@ -1338,6 +1024,7 @@ export function SkillLifecyclePanel({
       }
 
       const executeResponse = result.data;
+      verifyDetailRequestSeqRef.current += 1;
       setActiveWorkflowId(planId);
       // TASK-SDK-07: visible handoff + disclosure summary へ接続
       if (isExecuteTerminalHandoff(executeResponse)) {
@@ -1384,6 +1071,9 @@ export function SkillLifecyclePanel({
     setLocalPlanResult(null);
     setApprovedSkillSpec(null);
     clearGenerationState();
+    verifyDetailRequestSeqRef.current += 1;
+    isReverifyingRef.current = false;
+    setIsReverifying(false);
     setActiveWorkflowId(null);
     processedWorkflowOutcomePlanIdRef.current = null;
     setVerifyDetail(null);
@@ -1392,33 +1082,6 @@ export function SkillLifecyclePanel({
     setRawPlanDetail(null);
     setRawExecuteDetail(null);
   };
-
-  const handleExternalApiConfigSubmit = useCallback(
-    async (config: ExternalApiConnectionConfig) => {
-      const skillCreatorApi = getSkillCreatorApi();
-      if (!skillCreatorApi?.configureExternalApi) {
-        const message = "configureExternalApi API が利用できません";
-        setExternalApiConfigError(message);
-        throw new Error(message);
-      }
-
-      const result = await skillCreatorApi.configureExternalApi(config);
-      if (!result.success) {
-        const message = result.error ?? "外部API設定の送信に失敗しました";
-        setExternalApiConfigError(message);
-        throw new Error(message);
-      }
-
-      setExternalApiConfigError(null);
-      setExternalApiConfigRequest(null);
-      appendSessionEntry(setSessionEntries, {
-        role: "user",
-        title: "外部API設定を送信",
-        detail: `${config.name} (${config.method} ${config.url})`,
-      });
-    },
-    [],
-  );
 
   const handleCreate = async () => {
     const trimmedRequest = request.trim();
@@ -1656,6 +1319,9 @@ export function SkillLifecyclePanel({
       setLocalError("再検証対象の workflow がありません。");
       return;
     }
+    if (isReverifyingRef.current) {
+      return;
+    }
 
     const skillCreatorApi = getSkillCreatorApi();
     if (!skillCreatorApi?.reverifyWorkflow) {
@@ -1664,6 +1330,7 @@ export function SkillLifecyclePanel({
     }
 
     setLocalError(null);
+    isReverifyingRef.current = true;
     setIsReverifying(true);
 
     try {
@@ -1687,12 +1354,12 @@ export function SkillLifecyclePanel({
         error instanceof Error ? error.message : "再検証の要求に失敗しました。",
       );
     } finally {
+      isReverifyingRef.current = false;
       setIsReverifying(false);
     }
   };
 
-  const currentSurfaceError =
-    localError ?? workflowError ?? verifyDetailError ?? skillError;
+  const currentSurfaceError = localError ?? workflowError ?? skillError;
   const shouldShowStreaming =
     Boolean(createdSkillName) &&
     (isExecuting ||
@@ -1812,40 +1479,6 @@ export function SkillLifecyclePanel({
         >
           {activeGenerationError}
         </div>
-      ) : null}
-
-      {externalApiConfigRequest ? (
-        <section
-          className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5"
-          data-testid="skill-lifecycle-external-api-config"
-        >
-          <div className="mb-4">
-            <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-              External API Config
-            </p>
-            <h3 className="mt-2 text-base font-semibold text-[var(--text-primary)]">
-              外部API接続情報を入力
-            </h3>
-          </div>
-
-          {externalApiConfigError ? (
-            <div
-              role="alert"
-              className="mb-4 rounded-xl border border-[var(--status-error)] bg-[var(--status-error)]/5 px-4 py-3 text-sm text-[var(--status-error)]"
-            >
-              {externalApiConfigError}
-            </div>
-          ) : null}
-
-          <ExternalApiConfigForm
-            eventData={externalApiConfigRequest}
-            onSubmit={handleExternalApiConfigSubmit}
-            onCancel={() => {
-              setExternalApiConfigRequest(null);
-              setExternalApiConfigError(null);
-            }}
-          />
-        </section>
       ) : null}
 
       {workflowSnapshot ? (
@@ -2058,205 +1691,22 @@ export function SkillLifecyclePanel({
         />
       ) : null}
 
+      {/* TASK-RT-03-VERIFY-IMPROVE-PANEL-001: VerifyResultDetailPanel */}
+      {/* key=activeWorkflowId でワークフロー切り替え時に severityFilter をリセット */}
       {activeWorkflowId ? (
-        <div
-          className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5"
-          data-testid="skill-lifecycle-verify-detail"
-        >
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--status-primary)]">
-                Verify Detail
-              </p>
-              <h3 className="mt-1 text-base font-semibold text-[var(--text-primary)]">
-                4. Layer 3 / Layer 4 verify を確認する
-              </h3>
-              <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                workflow owner は engine に残したまま、route / provenance /
-                re-verify action を detail surface として表示します。
-              </p>
-            </div>
-            <button
-              type="button"
-              className={lifecycleButtonStyles.secondary}
-              onClick={handleReverify}
-              disabled={
-                isReverifying ||
-                isVerifyDetailLoading ||
-                !verifyDetail?.reverifyEligible
-              }
-              data-testid="skill-lifecycle-reverify-button"
-            >
-              {isReverifying ? "再検証を要求中..." : "再検証を要求する"}
-            </button>
-          </div>
-
-          {isVerifyDetailLoading ? (
-            <p className="mt-4 text-sm text-[var(--text-secondary)]">
-              verify detail を読み込み中...
-            </p>
-          ) : verifyDetail ? (
-            <>
-              <div className="mt-4 grid gap-3 md:grid-cols-4">
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Status
-                  </p>
-                  <span
-                    className={`mt-2 inline-flex rounded-full px-2 py-1 text-xs font-medium ${verifyStatusBadgeStyles[verifyDetail.status]}`}
-                  >
-                    {verifyDetail.status}
-                  </span>
-                </div>
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Phase
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                    {verifyDetail.currentPhase}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Evidence
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                    {verifyDetail.evidenceCount}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Route
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                    {verifyDetail.route.summary}
-                  </p>
-                </div>
-              </div>
-
-              {verifyDetail.message ? (
-                <div className="mt-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3 text-sm text-[var(--text-primary)]">
-                  {verifyDetail.message}
-                </div>
-              ) : null}
-
-              {(verifyDetail.checks?.length ?? 0) > 0 && (
-                <div
-                  className="mt-4 flex items-center gap-1"
-                  role="group"
-                  aria-label="Severity filter"
-                >
-                  {SEVERITY_FILTER_OPTIONS.map((option) => (
-                    <button
-                      key={option.value}
-                      data-testid={`skill-lifecycle-severity-filter-${option.value}`}
-                      type="button"
-                      aria-pressed={severityFilter === option.value}
-                      onClick={() => setSeverityFilter(option.value)}
-                      className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                        severityFilter === option.value
-                          ? "bg-[var(--accent-primary)] text-white"
-                          : "bg-[var(--bg-secondary)] text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
-                      }`}
-                    >
-                      {option.label}
-                    </button>
-                  ))}
-                  {severityFilter !== "all" && totalVerifyChecksCount > 0 ? (
-                    <span
-                      role="status"
-                      aria-live="polite"
-                      data-testid="skill-lifecycle-severity-filter-summary"
-                      className="ml-3 text-xs text-[var(--text-secondary)]"
-                    >
-                      表示中 {visibleVerifyChecksCount} / 全{" "}
-                      {totalVerifyChecksCount} 件
-                    </span>
-                  ) : null}
-                </div>
-              )}
-
-              <div className="mt-4 space-y-3">
-                {VERIFY_LAYER_ORDER.filter(
-                  (layer) => (filteredChecksByLayer[layer]?.length ?? 0) > 0,
-                ).map((layer) => (
-                  <VerifyLayerGroup
-                    key={layer}
-                    layer={layer}
-                    label={verifyLayerLabels[layer]}
-                    checks={filteredChecksByLayer[layer]}
-                    isExpanded={expandedLayers[layer] ?? true}
-                    onToggle={toggleLayer}
-                  />
-                ))}
-              </div>
-
-              <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Provenance
-                  </p>
-                  <dl className="mt-3 space-y-2 text-sm text-[var(--text-primary)]">
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        root
-                      </dt>
-                      <dd>
-                        {verifyDetail.resolvedSkillCreatorRoot ?? "未取得"}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        manifest
-                      </dt>
-                      <dd>{verifyDetail.manifestPath ?? "未取得"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        resource hash
-                      </dt>
-                      <dd>{verifyDetail.resourceDescriptorHash ?? "未取得"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        cache key
-                      </dt>
-                      <dd>{verifyDetail.manifestCacheKey ?? "未取得"}</dd>
-                    </div>
-                  </dl>
-                </div>
-                <div className="space-y-3">
-                  <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                      Governance Note
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                      {verifyDetail.delegatedGovernanceNote}
-                    </p>
-                  </div>
-                  <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                      Session Note
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                      {verifyDetail.delegatedSessionNote}
-                    </p>
-                  </div>
-                  {!verifyDetail.reverifyEligible &&
-                  verifyDetail.disabledReason ? (
-                    <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-4 text-sm text-amber-700">
-                      {verifyDetail.disabledReason}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </>
-          ) : (
-            <p className="mt-4 text-sm text-[var(--text-secondary)]">
-              verify detail はまだ利用できません。
-            </p>
-          )}
-        </div>
+        <VerifyResultDetailPanel
+          key={activeWorkflowId}
+          verifyDetail={verifyDetail}
+          isLoading={isVerifyDetailLoading}
+          error={
+            verifyDetailError
+              ? { message: "verify detail はまだ利用できません。" }
+              : null
+          }
+          onReverify={handleReverify}
+          isReverifying={isReverifying}
+          showRawGovernanceNotes
+        />
       ) : null}
 
       {/* API キー設定 (TASK-RT-04) */}
@@ -2395,9 +1845,13 @@ export function SkillLifecyclePanel({
 
             {runtimeImproveResult ? (
               <div
-                className="mt-4"
+                className="mt-4 space-y-4"
                 data-testid="skill-lifecycle-runtime-improve-result"
               >
+                {/* TASK-RT-03-VERIFY-IMPROVE-PANEL-001: ImproveResultDetailPanel (read-only) */}
+                <ImproveResultDetailPanel
+                  improveResult={runtimeImproveResult}
+                />
                 <ImprovementProposalPanel
                   skillName={createdSkillName ?? ""}
                   suggestions={runtimeImproveResult.suggestions}

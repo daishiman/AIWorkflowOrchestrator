@@ -11,6 +11,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import type {
   SkillCreatorUserInputKind,
@@ -1211,8 +1212,9 @@ describe("U-17b: runtime improve surface", () => {
     expect(
       await screen.findByTestId("skill-lifecycle-runtime-improve-result"),
     ).toBeTruthy();
-    expect(screen.getByText("改善提案")).toBeTruthy();
-    expect(screen.getByText("説明を明確化する")).toBeTruthy();
+    const proposalPanel = screen.getByTestId("improvement-proposal-panel");
+    expect(within(proposalPanel).getByText("改善提案")).toBeTruthy();
+    expect(within(proposalPanel).getByText("説明を明確化する")).toBeTruthy();
   });
 });
 
