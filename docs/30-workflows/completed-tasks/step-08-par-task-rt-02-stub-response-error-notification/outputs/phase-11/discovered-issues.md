@@ -6,7 +6,8 @@
 
 ## note
 
-- execute 系テスト 3 件の pre-existing failure は SkillExecutor.ts の worktree 変更に起因（RT-02 スコープ外）
+- `DOC-11-01-placeholder.png` は破損していたため current screenshots に差し替え済み
+- current screenshots は `SkillCreateWizard` / `SkillLifecyclePanel` の実画面証跡へ更新済み
 
 ## info
 

@@ -145,6 +145,13 @@ describe("RuntimeSkillCreatorFacade", () => {
     });
 
     it("SkillExecutor に request と metadata を委譲し、成功結果を返す", async () => {
+      // TASK-RT-02: llmAdapter を注入して execute guard を通過させる
+      facade.setLLMAdapter({
+        providerId: "anthropic",
+        sendChat: vi.fn(),
+        streamChat: vi.fn(),
+        checkHealth: vi.fn(),
+      } as unknown as ILLMAdapter);
       const resolveSpy = vi
         .spyOn(RuntimePolicyResolver.prototype, "resolve")
         .mockResolvedValue({
@@ -201,6 +208,13 @@ describe("RuntimeSkillCreatorFacade", () => {
     });
 
     it("SkillExecutor のエラーを message に変換し、skillName を 50 文字に切り詰める", async () => {
+      // TASK-RT-02: llmAdapter を注入して execute guard を通過させる
+      facade.setLLMAdapter({
+        providerId: "anthropic",
+        sendChat: vi.fn(),
+        streamChat: vi.fn(),
+        checkHealth: vi.fn(),
+      } as unknown as ILLMAdapter);
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "integrated_api",
         apiKey: "sk-test",
@@ -357,6 +371,13 @@ describe("RuntimeSkillCreatorFacade", () => {
     });
 
     it("apiKey 未指定の api-key モードで resolveWithService が integrated_api を返す場合は executor に委譲する", async () => {
+      // TASK-RT-02: llmAdapter を注入して execute guard を通過させる
+      facade.setLLMAdapter({
+        providerId: "anthropic",
+        sendChat: vi.fn(),
+        streamChat: vi.fn(),
+        checkHealth: vi.fn(),
+      } as unknown as ILLMAdapter);
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve");
       vi.spyOn(
         RuntimePolicyResolver.prototype,
@@ -2311,6 +2332,7 @@ describe("RuntimeSkillCreatorFacade", () => {
         apiKey: "sk-test",
         permissionMode: "default",
       });
+      vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_123);
 
       // undefined を注入すると explicit error になる
       facadeWithDI.setLLMAdapter(undefined as unknown as ILLMAdapter);
@@ -2326,6 +2348,21 @@ describe("RuntimeSkillCreatorFacade", () => {
           message: "LLM アダプタが利用できません。設定を確認してください。",
         },
       });
+
+      const auditSink = (
+        facadeWithDI as unknown as {
+          auditSink: {
+            getEventsBySession: (
+              sessionId: string,
+            ) => Array<{ eventType: string }>;
+          };
+        }
+      ).auditSink;
+      const events = auditSink.getEventsBySession("plan-1710000000123");
+      expect(events.map((event) => event.eventType)).toEqual([
+        "session_start",
+        "session_end",
+      ]);
     });
 
     it("TC-8: plan() 実行中に setLLMAdapter() が呼ばれても当該リクエストには影響しない", async () => {

@@ -24,7 +24,6 @@ function createMockLLMAdapter(): ILLMAdapter {
     checkHealth: vi.fn(),
   } as unknown as ILLMAdapter;
 }
-
 function createFacade() {
   const executeMock = vi.fn();
   const workflowEngine = new SkillCreatorWorkflowEngine();
@@ -32,6 +31,8 @@ function createFacade() {
     skillExecutor: {
       execute: executeMock,
     } as unknown as SkillExecutor,
+    // TASK-RT-02: llmAdapter を注入して execute guard を通過させる
+    llmAdapter: createMockLLMAdapter(),
     workflowEngine,
   });
   // TASK-UT-RT-01: _llmAdapterStatus ガードを通過させるため

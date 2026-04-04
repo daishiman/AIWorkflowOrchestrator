@@ -1,0 +1,41 @@
+{
+  "workflow": "step-08-par-task-rt-02-stub-response-error-notification",
+  "capturedDate": "2026-04-04",
+  "mode": "current-task-ui-audit",
+  "screenshots": [
+    {
+      "id": "TC-01",
+      "path": "outputs/phase-11/screenshots/TC-01-step1-initial-dark.png",
+      "target": "SkillCreateWizard initial state"
+    },
+    {
+      "id": "TC-02",
+      "path": "outputs/phase-11/screenshots/TC-02-step1-filled-dark.png",
+      "target": "SkillCreateWizard filled state"
+    },
+    {
+      "id": "TC-03",
+      "path": "outputs/phase-11/screenshots/TC-03-step2-configure-dark.png",
+      "target": "SkillCreateWizard configure state"
+    },
+    {
+      "id": "TC-06",
+      "path": "outputs/phase-11/screenshots/TC-06-step3-error-dark.png",
+      "target": "SkillCreateWizard error state"
+    },
+    {
+      "id": "RT-02-01",
+      "path": "outputs/phase-11/screenshots/RT-02-01-skill-create-wizard-error-dark.png",
+      "target": "SkillCreateWizard explicit error response"
+    },
+    {
+      "id": "RT-02-02",
+      "path": "outputs/phase-11/screenshots/RT-02-02-skill-lifecycle-error-state.png",
+      "target": "SkillLifecyclePanel explicit error state"
+    }
+  ],
+  "notes": [
+    "DOC-11-01-placeholder.png は破損 placeholder のため evidence 対象から除外",
+    "Phase 11 では current screenshots を task-specific evidence として扱う"
+  ]
+}
