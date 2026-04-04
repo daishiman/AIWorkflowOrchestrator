@@ -179,6 +179,11 @@
       "types": "./dist/src/types/skillCreator.d.ts",
       "import": "./dist/src/types/skillCreator.js",
       "require": "./dist/src/types/skillCreator.cjs"
+    },
+    "./types/skillCreatorExternalApi": {
+      "types": "./dist/src/types/skillCreatorExternalApi.d.ts",
+      "import": "./dist/src/types/skillCreatorExternalApi.js",
+      "require": "./dist/src/types/skillCreatorExternalApi.cjs"
     }
   },
   "typesVersions": {
@@ -284,6 +289,9 @@
       ],
       "types/skillCreator": [
         "./src/types/skillCreator.ts"
+      ],
+      "types/skillCreatorExternalApi": [
+        "./src/types/skillCreatorExternalApi.ts"
       ]
     }
   },

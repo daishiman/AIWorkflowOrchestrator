@@ -19,6 +19,7 @@ import type {
   CreateSkillOptions,
   ExecuteTasksOptions,
   ExecutionReport,
+  ExternalApiConnectionConfig,
   SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
@@ -126,6 +127,13 @@ export interface SkillCreatorAPI {
   submitUserInput: (
     submission: SkillCreatorUserInputSubmission,
   ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
+
+  /**
+   * External API 設定を current session に送信する
+   */
+  configureExternalApi: (
+    config: ExternalApiConnectionConfig,
+  ) => Promise<IpcResult<unknown>>;
 
   /**
    * workflow snapshot change event を購読する
@@ -412,6 +420,11 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     submission: SkillCreatorUserInputSubmission,
   ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT, submission),
+
+  configureExternalApi: (
+    config: ExternalApiConnectionConfig,
+  ): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.CONFIGURE_API, config),
 
   onWorkflowStateChanged: (
     callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
