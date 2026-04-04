@@ -225,6 +225,16 @@ export type {
   RuntimeSkillCreatorVerifyCheckSeverity,
 } from "./src/types/skillCreator";
 
+// External API Support (TASK-SDK-SC-03)
+export {
+  type ExternalApiAuthType,
+  type ExternalApiConnectionConfig,
+  type SkillExternalApiContext,
+  type IExternalApiAdapter,
+  ExternalApiTimeoutError,
+  ExternalApiHttpError,
+} from "./src/types/skillCreatorExternalApi";
+
 // Core
 export * from "./core";
 

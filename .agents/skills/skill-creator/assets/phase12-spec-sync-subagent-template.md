@@ -354,3 +354,47 @@ ps -ef | rg "capture-.*phase11|vite" | rg -v rg || true
 - UI 本体完了と follow-up backlog が責務分離されている
 - 既存 follow-up backlog を流用した場合、`docs/30-workflows/unassigned-task/` の本文も current contract へ再同期されている
 - `workflow-onboarding-wizard-alignment.md` が作成または更新され、統合入口が残っている
+
+## 9. 追補プロファイル: UI visual baseline drift / dark-mode screenshot
+
+### 9.1 適用条件
+
+- dark-mode / light-mode の visual regression
+- browser defaults と spec defaults の不一致が疑われる場合
+- `TC-ID ↔ png ↔ manual-test-result` の 1:1 対応が必要な場合
+- completed ledger と lessons を同一 wave で sync したい場合
+
+### 9.2 最低限更新する canonical docs
+
+1. `/.claude/skills/aiworkflow-requirements/references/workflow-ui-ux-visual-baseline-drift.md`
+2. `/.claude/skills/aiworkflow-requirements/references/task-workflow-completed-ui-ux-visual-baseline-drift.md`
+3. `/.claude/skills/aiworkflow-requirements/references/lessons-learned-ui-ux-visual-baseline-drift.md`
+4. `/.claude/skills/aiworkflow-requirements/references/task-workflow.md`
+5. `/.claude/skills/aiworkflow-requirements/references/lessons-learned.md`
+6. `/.claude/skills/aiworkflow-requirements/indexes/resource-map.md`
+7. `/.claude/skills/aiworkflow-requirements/indexes/quick-reference.md`
+8. `/.claude/skills/skill-creator/assets/phase12-system-spec-retrospective-template.md`
+9. `/.claude/skills/skill-creator/references/patterns-success-phase12-advanced.md`
+10. `/.claude/skills/skill-creator/SKILL.md`
+
+### 9.3 関心ごとの分離
+
+- browser theme 担当:
+  - `playwright.config.ts` の `colorScheme` 固定
+  - spec-level `test.use({ colorScheme })` 固定
+  - browser defaults の差分切り分け
+- screenshot evidence 担当:
+  - `TC-ID` ベースの screenshot 命名
+  - `manual-test-result.md` / `manual-test-checklist.md` / `screenshot-plan.json` の同値同期
+  - `outputs/phase-11/screenshots/` の保存確認
+- docs/spec sync 担当:
+  - workflow / completed ledger / lessons / lookup の同一 wave 更新
+  - current と baseline の分離記録
+  - mirror diff zero の確認
+
+### 9.4 完了条件
+
+- `playwright.config.ts` と visual spec の両方で `colorScheme` が固定されている
+- Phase 11 screenshot evidence が `TC-ID ↔ png ↔ manual-test-result` で揃っている
+- `task-workflow` / `lessons-learned` / lookup docs が同一 wave で更新されている
+- mirror diff と検証スクリプトが PASS している

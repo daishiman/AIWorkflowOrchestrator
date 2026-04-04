@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-03T10:10:32.245Z",
-  "totalKeywords": 2652,
+  "generated": "2026-04-04T01:18:06.141Z",
+  "totalKeywords": 2655,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3043,6 +3043,7 @@
       "ui-result-panel-pattern.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
+      "ui-ux-feature-components-reference.md",
       "ui-ux-settings-core.md"
     ],
     "Notification": [
@@ -5536,7 +5537,8 @@
     "Result": [
       "interfaces-core.md",
       "rag-search-vector.md",
-      "ui-result-panel-pattern.md"
+      "ui-result-panel-pattern.md",
+      "ui-ux-feature-components-reference.md"
     ],
     "IAIClient": [
       "interfaces-core.md"
@@ -6628,7 +6630,8 @@
     ],
     "VERIFY": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "ARTIFACT": [
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
@@ -6651,6 +6654,7 @@
       "lessons-learned-ui-adapter-status-retry.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "ui-ux-feature-components-core.md",
+      "ui-ux-feature-components-reference.md",
       "workflow-task-rt-06-artifact-inventory.md"
     ],
     "Event": [
@@ -6880,7 +6884,8 @@
     "phase": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md"
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "ui-ux-feature-components-reference.md"
     ],
     "gap": [
       "lessons-learned-governance-hooks-phase-policy.md"
@@ -7021,7 +7026,8 @@
     ],
     "PANEL": [
       "lessons-learned-ipc-preload-runtime.md",
-      "lessons-learned-phase12-workflow-lifecycle.md"
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "実装セッション": [
       "lessons-learned-ipc-preload-runtime.md"
@@ -11006,6 +11012,17 @@
     "trip": [
       "task-workflow-completed-skill-lifecycle-ui.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "Verify": [
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "ui-ux-feature-components-reference.md"
+    ],
+    "Improve": [
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "ui-ux-feature-components-reference.md"
+    ],
+    "結果パネル実装": [
+      "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "ユーザー入力種別追加": [
       "task-workflow-completed-skill-lifecycle-ui.md"

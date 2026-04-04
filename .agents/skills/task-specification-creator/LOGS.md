@@ -3,13 +3,45 @@
 ## 役割
 
 ---
-## 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 final close-out sync
+
+## UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 完了（2026-04-03）
+
+- タスク名: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
+- 種別: feat / renderer-only UI enhancement
+- 主な反映:
+  - SkillLifecyclePanel に severity フィルタ（all/warning+/error）を追加
+  - Renderer 内完結の変更（IPC/shared type/preload 変更なし）
+  - ui-ux-feature-components-core.md に severity filter contract を追記
+  - task-workflow-backlog.md に完了記録を反映
+
+---
+
+## 2026-04-03 - task-ut-p0-02-001-repeat-feedback-memory Phase 12 close-out sync
 
 ### 変更内容
-- `SkillLifecyclePanel.tsx` の handoff エラー保持コメント 2 行を current facts へ反映
-- `SkillLifecyclePanel.error-persistence.test.tsx` の TC-EP-01〜08 を current workflow の実行記録として同期
-- `phase-12-documentation-guide.md` / `spec-update-workflow.md` に implementation-first / NON_VISUAL / callback capture の追補を追加
-- `SKILL.md` 変更履歴と current logs を same-wave で確認
+- `ImproveFeedbackHistory` 型を `packages/shared/src/types/skillCreator.ts` に追加
+- `verifyAndImproveLoop()` の `previousImproveSummary: string` を `feedbackHistory: ImproveFeedbackHistory[]` に構造化
+- `buildImproveFeedback()` を全試行履歴参照・繰り返し失敗チェック警告付きプロンプトに更新
+- テスト 13 件追加（TC-01〜TC-06, EC-01〜EC-04, BF-01〜BF-04）、全 45 tests PASS
+- Phase 12 成果物 6 件出力（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+
+---
+## 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync + skill-feedback 反映
+
+### 変更内容
+- [Feedback 4] Phase 11 NON_VISUAL 時 `manual-test-result.md` 証跡メタ必須化（証跡主ソース・スクリーンショット不要理由を明記）を「Phase 12 実行時によくある漏れ」テーブルへ追記
+- [Feedback 5] Phase 7 広域 coverage 目標時の変更ブロック line/branch 実測根拠必須化を同テーブルへ追記
+- SKILL.md v10.09.31 更新（close-out sync + skill-feedback 反映）
+
+---
+## 2026-04-03 - TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 Phase 12 skill-feedback 反映
+
+### 変更内容
+- SKILL.md の Phase 11 記述に Feedback BEFORE-QUIT-001（非 visual task で「実地操作不可」宣言 + 代替記録テンプレート）を追加
+- SKILL.md の Phase 7 記述に Feedback BEFORE-QUIT-002（coverage は全ファイル一律でなく「対象範囲」を明示）を追加
+- 「よくある漏れ」テーブルに Feedback BEFORE-QUIT-003（documentation-changelog で workflow-local 同期と global skill sync を別ブロックで記録）を追加
+- 変更履歴に v10.09.32 を追記
+- aiworkflow-requirements/LOGS.md と同波で更新
 
 ---
 ## 2026-04-03 - UT-SDK-L34-UI-DISPLAY-001 タスク仕様書作成（spec_created）
@@ -1661,11 +1693,26 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果 | Phase 12 の実装ガイド・未タスク・skill-feedback を `provider-registry.ts` 前提へ同期し、Phase 13 の PR 準備と最終確認を current facts へ是正。`TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` を削除済みとして整理 |
 | 検証 | `provider.test.ts` 41 PASS、`llm.test.ts` 59 PASS / 1 skipped、workflow 内検索で旧想定パスの残存を解消確認 |
 
-## TASK-FIX-LIFECYCLE-PANEL-ERROR-001 完了（2026-04-03）
+---
+## 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 完了（2026-04-03）
 
 | 項目 | 値 |
 | --- | --- |
-| 種別 | バグ修正 / コメント追加 + テスト追加 |
-| 変更対象 | `SkillLifecyclePanel.tsx`（コメント 2 行）、`SkillLifecyclePanel.error-persistence.test.tsx`（新規 8 件） |
-| 結果 | applyWorkflowSnapshot の handoff ガード意図を明示化。TC-EP-01〜TC-EP-08 で回帰防止テストを追加 |
-| 検証 | テスト 8/8 PASS、TypeScript PASS |
+| 種別 | documentation / workflow close-out |
+| 変更対象 | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/index.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-1-requirements.md` 〜 `phase-12-documentation.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/artifacts.json`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/outputs/artifacts.json`, `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`, `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`, `outputs/phase-10`〜`outputs/phase-12` |
+| 結果 | Phase 10〜12 outputs を current facts に固定し、workflow 本体の status / 台帳 parity / task-workflow completed/backlog path を `fix-lifecycle-panel-error` へ同期した。Phase 11 は NON_VISUAL として自動テスト代替で完了。`generate-index.js` により topic-map / keywords も再生成した |
+| 検証 | `validate-phase12-implementation-guide.js` PASS（10/10）、`vitest` 8/8 PASS、`vitest` 10/10 PASS、`typecheck` PASS、`eslint` PASS |
+
+- 2026-04-04: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 close-out sync — lessons-learned-severity-filter-ui.md 追加、unassigned-task status を完了済みに更新
+
+---
+## 2026-04-03: UT-UIUX-VISUAL-BASELINE-DRIFT-001 タスク仕様書作成
+
+- **タスクID**: UT-UIUX-VISUAL-BASELINE-DRIFT-001
+- **作業内容**: Issue #1811（closed）の unassigned-task 仕様書から Phase 1-13 完全仕様書ディレクトリを作成
+- **配置先**: `docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/`
+- **作成ファイル**: index.md, artifacts.json, phase-1-requirements.md 〜 phase-13-pr-creation.md, outputs/
+- **特記事項**:
+  - unassigned-task → completed-tasks/ への昇格パターンを初適用
+  - Visual Regression テストの baseline drift 是正という「テスト修正型」タスクのため、Phase 4 を通常の「テスト作成」ではなく「テスト検証準備」として設計
+  - SubAgent 並列実行: 設計書（Phase 1-3）を直列、Phase 4-8 と Phase 9-13 を並列で作成

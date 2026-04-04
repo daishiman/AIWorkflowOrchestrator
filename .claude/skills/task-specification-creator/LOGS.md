@@ -1670,6 +1670,15 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 結果 | Phase 12 の実装ガイド・未タスク・skill-feedback を `provider-registry.ts` 前提へ同期し、Phase 13 の PR 準備と最終確認を current facts へ是正。`TASK-LLM-MOD-05-PROVIDER-CONFIGS-TYPE-DEDUP` を削除済みとして整理 |
 | 検証 | `provider.test.ts` 41 PASS、`llm.test.ts` 59 PASS / 1 skipped、workflow 内検索で旧想定パスの残存を解消確認 |
 
+### 2026-04-04 - TASK-RT-03-VERIFY-IMPROVE-PANEL-001 close-out sync
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | ui-feature / workflow close-out / docs sync |
+| 変更対象 | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/`（Phase 1-12完了）、`apps/desktop/src/renderer/components/skill/VerifyResultDetailPanel.tsx`、`apps/desktop/src/renderer/components/skill/ImproveResultDetailPanel.tsx`、`apps/desktop/src/renderer/components/skill/__tests__/VerifyResultDetailPanel.test.tsx`（25テスト）、`apps/desktop/src/renderer/components/skill/__tests__/ImproveResultDetailPanel.test.tsx`（15テスト）、`apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`、`apps/desktop/src/renderer/components/skill/result-panel-parts.tsx`（StatusBadge label override）|
+| 結果 | Verify/Improve 結果パネルを新規実装。Layer別グループ化（useMemo + LAYER_ORDER）/ seqRef stale response防止 / StatusBadge optional label / aria accessibility テストパターンを確立。aiworkflow-requirementsスキルのresource-map / lessons-learned-current / LOGS に反映 |
+| 検証 | vitest 25/25 PASS（Verify）、vitest 15/15 PASS（Improve）、typecheck PASS（0エラー）、eslint PASS、generate-index.js PASS（2655キーワード）、validate-structure.js PASS |
+
 ### 2026-04-03 - TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync
 
 | 項目 | 内容 |

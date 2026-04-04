@@ -798,4 +798,575 @@ describe("SkillLifecyclePanel", () => {
       expect(layerButton).toHaveAttribute("aria-expanded", "false");
     });
   });
+
+  describe("severity filter", () => {
+    const buildMixedSeverityDetail = (
+      overrides?: Partial<{
+        checks: Array<{
+          id: string;
+          layer: "layer1" | "layer2" | "layer3" | "layer4";
+          severity: "info" | "warning" | "error";
+          summary: string;
+        }>;
+        reverifyEligible: boolean;
+      }>,
+    ) => ({
+      planId: "plan-filter",
+      currentPhase: "verify",
+      status: "fail" as const,
+      message: "filter test",
+      checks: [
+        {
+          id: "L3-INFO-1",
+          layer: "layer3" as const,
+          severity: "info" as const,
+          summary: "info check 1",
+        },
+        {
+          id: "L3-INFO-2",
+          layer: "layer3" as const,
+          severity: "info" as const,
+          summary: "info check 2",
+        },
+        {
+          id: "L3-WARN-1",
+          layer: "layer3" as const,
+          severity: "warning" as const,
+          summary: "warning check 1",
+        },
+        {
+          id: "L3-ERR-1",
+          layer: "layer3" as const,
+          severity: "error" as const,
+          summary: "error check 1",
+        },
+        {
+          id: "L4-INFO-1",
+          layer: "layer4" as const,
+          severity: "info" as const,
+          summary: "L4 info only",
+        },
+        {
+          id: "L4-WARN-1",
+          layer: "layer4" as const,
+          severity: "warning" as const,
+          summary: "L4 warning",
+        },
+      ],
+      evidenceCount: 3,
+      route: {
+        type: "integrated_api" as const,
+        summary: "integrated_api (default)",
+      },
+      reverifyEligible: true,
+      delegatedGovernanceNote: "Task07 owner",
+      delegatedSessionNote: "Task08 owner",
+      ...overrides,
+    });
+
+    const renderWithFilter = async (detail = buildMixedSeverityDetail()) => {
+      mockStoreState.currentPlanId = "plan-filter";
+      mockGetVerifyDetail.mockResolvedValueOnce({
+        success: true,
+        data: detail,
+      });
+      const view = render(
+        <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+      );
+      await screen.findByTestId("skill-lifecycle-verify-detail");
+      return view;
+    };
+
+    it("SF-TC-01: デフォルトで全checkが表示される", async () => {
+      await renderWithFilter();
+
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-INFO-1"),
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-WARN-1"),
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-ERR-1"),
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L4-INFO-1"),
+      ).toBeTruthy();
+
+      // すべてボタンが選択状態
+      const allButton = screen.getByTestId(
+        "skill-lifecycle-severity-filter-all",
+      );
+      expect(allButton).toHaveAttribute("aria-pressed", "true");
+    });
+
+    it("SF-TC-02: warning+フィルタでinfoが非表示になる", async () => {
+      await renderWithFilter();
+
+      const warnButton = screen.getByTestId(
+        "skill-lifecycle-severity-filter-warning+",
+      );
+      await act(async () => {
+        fireEvent.click(warnButton);
+      });
+
+      // warning/error は表示
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-WARN-1"),
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-ERR-1"),
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L4-WARN-1"),
+      ).toBeTruthy();
+
+      // info は非表示
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-INFO-1"),
+      ).toBeNull();
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-INFO-2"),
+      ).toBeNull();
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L4-INFO-1"),
+      ).toBeNull();
+    });
+
+    it("SF-TC-03: errorフィルタでwarning/infoが非表示になる", async () => {
+      await renderWithFilter();
+
+      const errorButton = screen.getByTestId(
+        "skill-lifecycle-severity-filter-error",
+      );
+      await act(async () => {
+        fireEvent.click(errorButton);
+      });
+
+      // error のみ表示
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-ERR-1"),
+      ).toBeTruthy();
+
+      // warning/info は非表示
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-WARN-1"),
+      ).toBeNull();
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-INFO-1"),
+      ).toBeNull();
+    });
+
+    it("SF-TC-04: フィルタ後0件のLayerが非表示になる", async () => {
+      await renderWithFilter();
+
+      // Layer4 は info + warning のみ。error フィルタで Layer4 は消える
+      const errorButton = screen.getByTestId(
+        "skill-lifecycle-severity-filter-error",
+      );
+      await act(async () => {
+        fireEvent.click(errorButton);
+      });
+
+      // Layer4 は error なし → 非表示
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-layer-layer4"),
+      ).toBeNull();
+      // Layer3 は error あり → 表示
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-layer-layer3"),
+      ).toBeTruthy();
+    });
+
+    it("SF-TC-05: フィルタ切り替え後にaccordion状態が維持される", async () => {
+      await renderWithFilter();
+
+      // Layer3 を閉じる
+      const layerButton = screen.getByTestId(
+        "skill-lifecycle-verify-layer-toggle-layer3",
+      );
+      await act(async () => {
+        fireEvent.click(layerButton);
+      });
+      expect(layerButton).toHaveAttribute("aria-expanded", "false");
+
+      // フィルタを warning+ に切り替え
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+        );
+      });
+
+      // Layer3 はまだ閉じたまま
+      expect(layerButton).toHaveAttribute("aria-expanded", "false");
+    });
+
+    it("SF-TC-06: reverify後もfilter stateが維持される", async () => {
+      const detail = buildMixedSeverityDetail();
+      mockStoreState.currentPlanId = "plan-filter";
+      mockGetVerifyDetail.mockResolvedValueOnce({
+        success: true,
+        data: detail,
+      });
+      mockReverifyWorkflow.mockResolvedValueOnce({
+        success: true,
+        data: { accepted: true },
+      });
+
+      const view = render(
+        <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+      );
+      await screen.findByTestId("skill-lifecycle-verify-detail");
+
+      // warning+ フィルタを選択
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+        );
+      });
+
+      // reverify 実行
+      mockGetVerifyDetail.mockResolvedValueOnce({
+        success: true,
+        data: detail,
+      });
+      await act(async () => {
+        fireEvent.click(screen.getByTestId("skill-lifecycle-reverify-button"));
+      });
+      await waitFor(() => expect(mockGetVerifyDetail).toHaveBeenCalledTimes(2));
+
+      // filter は warning+ のまま
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+      ).toHaveAttribute("aria-pressed", "true");
+      // info は非表示のまま
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-INFO-1"),
+      ).toBeNull();
+
+      // activeWorkflowId が変わると filter は all に戻る
+      mockStoreState.currentPlanId = "plan-filter-2";
+      mockGetVerifyDetail.mockResolvedValueOnce({
+        success: true,
+        data: detail,
+      });
+
+      await act(async () => {
+        view.rerender(
+          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+        );
+      });
+      await waitFor(() => expect(mockGetVerifyDetail).toHaveBeenCalledTimes(3));
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-all"),
+      ).toHaveAttribute("aria-pressed", "true");
+      expect(
+        screen.queryByTestId("skill-lifecycle-severity-filter-summary"),
+      ).toBeNull();
+    });
+
+    it("SF-TC-07: 集計バッジがフィルタ後の件数を反映する", async () => {
+      await renderWithFilter();
+
+      // warning+ フィルタ適用
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+        );
+      });
+
+      // 件数サマリ
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-summary"),
+      ).toHaveTextContent("表示中 3 / 全 6 件");
+
+      // Layer3: warning 1 + error 1 = 2件
+      const layer3Section = screen.getByTestId(
+        "skill-lifecycle-verify-layer-layer3",
+      );
+      expect(within(layer3Section).getByText(/1 error/i)).toBeTruthy();
+      expect(within(layer3Section).getByText(/1 warning/i)).toBeTruthy();
+      // info バッジは非表示
+      expect(within(layer3Section).queryByText(/info/i)).toBeNull();
+    });
+
+    it("SF-TC-08: checksが0件の場合フィルタUIが表示されない", async () => {
+      await renderWithFilter(buildMixedSeverityDetail({ checks: [] }));
+
+      expect(
+        screen.queryByTestId("skill-lifecycle-severity-filter-all"),
+      ).toBeNull();
+    });
+
+    it("SF-TC-09: すべてに戻すと全件表示される", async () => {
+      await renderWithFilter();
+
+      // error フィルタ適用
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-error"),
+        );
+      });
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-INFO-1"),
+      ).toBeNull();
+
+      // すべてに戻す
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-all"),
+        );
+      });
+
+      // 全件表示
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-INFO-1"),
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-WARN-1"),
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-ERR-1"),
+      ).toBeTruthy();
+    });
+
+    // --- Phase 6: fail path テスト ---
+
+    it("TC-10: verifyDetailがnullの場合フィルタUIが表示されない", async () => {
+      mockStoreState.currentPlanId = null;
+      render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+
+      expect(
+        screen.queryByTestId("skill-lifecycle-severity-filter-all"),
+      ).toBeNull();
+    });
+
+    it("TC-11: checksが空配列の場合フィルタUIが表示されない", async () => {
+      await renderWithFilter(buildMixedSeverityDetail({ checks: [] }));
+
+      expect(
+        screen.queryByTestId("skill-lifecycle-severity-filter-all"),
+      ).toBeNull();
+      expect(
+        screen.queryByTestId("skill-lifecycle-severity-filter-warning+"),
+      ).toBeNull();
+      expect(
+        screen.queryByTestId("skill-lifecycle-severity-filter-error"),
+      ).toBeNull();
+    });
+
+    it("TC-12: 全checkがinfoのときerrorフィルタで0件表示", async () => {
+      await renderWithFilter(
+        buildMixedSeverityDetail({
+          checks: [
+            {
+              id: "L3-I-1",
+              layer: "layer3",
+              severity: "info",
+              summary: "info only 1",
+            },
+            {
+              id: "L3-I-2",
+              layer: "layer3",
+              severity: "info",
+              summary: "info only 2",
+            },
+          ],
+        }),
+      );
+
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-error"),
+        );
+      });
+
+      // 全Layer非表示
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-layer-layer3"),
+      ).toBeNull();
+    });
+
+    it("TC-13: 全checkがerrorのときallで全件表示される", async () => {
+      await renderWithFilter(
+        buildMixedSeverityDetail({
+          checks: [
+            {
+              id: "L3-E-1",
+              layer: "layer3",
+              severity: "error",
+              summary: "error 1",
+            },
+            {
+              id: "L4-E-1",
+              layer: "layer4",
+              severity: "error",
+              summary: "error 2",
+            },
+          ],
+        }),
+      );
+
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-E-1"),
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L4-E-1"),
+      ).toBeTruthy();
+    });
+
+    // --- Phase 6: 回帰ガードテスト ---
+
+    it("TC-14: filter変更後もLayer開閉が正常に動作する", async () => {
+      await renderWithFilter();
+
+      // warning+ フィルタに切り替え
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+        );
+      });
+
+      // Layer3 の toggle ボタン取得 → 閉じる
+      const layerToggle = screen.getByTestId(
+        "skill-lifecycle-verify-layer-toggle-layer3",
+      );
+      expect(layerToggle).toHaveAttribute("aria-expanded", "true");
+
+      await act(async () => {
+        fireEvent.click(layerToggle);
+      });
+      expect(layerToggle).toHaveAttribute("aria-expanded", "false");
+
+      // 再度開く
+      await act(async () => {
+        fireEvent.click(layerToggle);
+      });
+      expect(layerToggle).toHaveAttribute("aria-expanded", "true");
+    });
+
+    it("TC-15: filter変更後もseverity icon/styleが正しく表示される", async () => {
+      await renderWithFilter();
+
+      // warning+ フィルタ適用
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+        );
+      });
+
+      // error check の severity アイコン ✗ が表示される
+      const errCheck = screen.getByTestId(
+        "skill-lifecycle-verify-check-L3-ERR-1",
+      );
+      expect(errCheck).toHaveTextContent("✗");
+      expect(errCheck).toHaveTextContent("error");
+
+      // warning check の severity アイコン ⚠ が表示される
+      const warnCheck = screen.getByTestId(
+        "skill-lifecycle-verify-check-L3-WARN-1",
+      );
+      expect(warnCheck).toHaveTextContent("⚠");
+      expect(warnCheck).toHaveTextContent("warning");
+    });
+
+    it("TC-16: 複数回のフィルタ切り替えで状態が安定する", async () => {
+      await renderWithFilter();
+
+      // all → warning+ → error → all の順に切り替え
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+        );
+      });
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-INFO-1"),
+      ).toBeNull();
+
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-error"),
+        );
+      });
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-WARN-1"),
+      ).toBeNull();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-ERR-1"),
+      ).toBeTruthy();
+
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-all"),
+        );
+      });
+      // 全件復帰
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-INFO-1"),
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-WARN-1"),
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("skill-lifecycle-verify-check-L3-ERR-1"),
+      ).toBeTruthy();
+    });
+
+    // --- Phase 6: アクセシビリティテスト ---
+
+    it("TC-17: セグメントコントロールにrole=groupがある", async () => {
+      await renderWithFilter();
+
+      const group = screen.getByRole("group", { name: /severity filter/i });
+      expect(group).toBeTruthy();
+    });
+
+    it("TC-18: 選択中ボタンにaria-pressed=trueがある", async () => {
+      await renderWithFilter();
+
+      // デフォルトは all が pressed
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-all"),
+      ).toHaveAttribute("aria-pressed", "true");
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+      ).toHaveAttribute("aria-pressed", "false");
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-error"),
+      ).toHaveAttribute("aria-pressed", "false");
+
+      // warning+ に切り替え
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+        );
+      });
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-all"),
+      ).toHaveAttribute("aria-pressed", "false");
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+      ).toHaveAttribute("aria-pressed", "true");
+    });
+
+    it("TC-19: キーボード操作でフィルタ切り替えができる", async () => {
+      await renderWithFilter();
+
+      const warnButton = screen.getByTestId(
+        "skill-lifecycle-severity-filter-warning+",
+      );
+
+      // Enter キーで切り替え
+      await act(async () => {
+        fireEvent.keyDown(warnButton, { key: "Enter" });
+        fireEvent.keyUp(warnButton, { key: "Enter" });
+        fireEvent.click(warnButton);
+      });
+
+      expect(warnButton).toHaveAttribute("aria-pressed", "true");
+      expect(
+        screen.queryByTestId("skill-lifecycle-verify-check-L3-INFO-1"),
+      ).toBeNull();
+    });
+  });
 });

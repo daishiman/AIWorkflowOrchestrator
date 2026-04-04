@@ -19,6 +19,9 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-04 | 3.4.0      | TASK-RT-03-VERIFY-IMPROVE-PANEL-001 教訓4件を追加（L-VRIP-001: Layer 別 useMemo グループ化パターン / L-VRIP-002: seqRef による stale response 破棄 / L-VRIP-003: StatusBadge optional label で後方互換維持 / L-VRIP-004: aria-expanded/aria-controls アクセシビリティテスト） |
+| 2026-04-03 | 3.3.8      | TASK-SDK-SC-03 External API Support 教訓5件を追加（L-SC03-001 並行フロー管理 / L-SC03-002 タイムアウト管理二重化 / L-SC03-003 データ秘匿化二重管理 / L-SC03-004 IPC バリデーション複雑性 / L-SC03-005 Preload API 3層契約一貫性）|
+| 2026-04-03 | 3.3.8      | UT-UIUX-VISUAL-BASELINE-DRIFT-001 教訓3件を追加（→ [lessons-learned-ui-ux-visual-baseline-drift.md](lessons-learned-ui-ux-visual-baseline-drift.md): L-UIUX-VISUAL-001 Playwright `colorScheme` 二重固定 / L-UIUX-VISUAL-002 `TC-ID ↔ png ↔ manual-test-result` 同期 / L-UIUX-VISUAL-003 completed workflow / ledger / lesson の same-wave 同期） |
 | 2026-04-03 | 3.3.8      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 current index sync（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-EP-001〜003 / setupCallbackCapture / NON_VISUAL state-only 判定の current facts 反映） |
 | 2026-04-02 | 3.3.7      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-LIFECYCLE-ERR-001 `handoff` guard の共通化 / L-LIFECYCLE-ERR-002 stale `phase: 'failed'` 語彙の除去 / L-LIFECYCLE-ERR-003 NON_VISUAL task で blocker を PASS へ偽装しない） |
 | 2026-04-01 | 3.3.6      | TASK-FIX-AUTH-IPC-001 教訓2件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-AUTH-IPC-001 IPC channel timeout と fire-and-forget パターン — CHANNEL_TIMEOUTS が 500ms の場合は OAuth 完了を await せず void+catch で即時返却する / L-AUTH-IPC-002 AUTH_STATE_CHANGED 責務境界の分離 — 完了通知は orchestrator に固定し handler 側では二重送信しない） |
@@ -984,3 +987,97 @@
 | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
 | 標準ルール | `setXxx(null)` 等の呼び出し制御のみの修正は NON_VISUAL と判定。UI 描画変更を伴う場合のみ Phase 11 でスクリーンショットが必要 |
 | 関連タスク | TASK-FIX-LIFECYCLE-PANEL-ERROR-001                                                                                          |
+
+---
+
+## TASK-SDK-SC-03 External API Support 教訓（2026-04-03）
+
+### L-SC03-001: 並行フロー管理の複雑性（pendingAnswerPromise / pendingExternalApiPromise 相互排他）
+
+| 項目       | 内容                                                                                                                                                                                                                   |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `SkillCreatorSdkSession` が質問待機（`pendingAnswerPromise`）とAPI設定要求（`pendingExternalApiPromise`）の2つの非同期待機を管理する必要があり、一方が存在する間に他方を開始すると状態が壊れる                           |
+| 再発条件   | SDK custom tool 内で複数の非同期待機フロー（質問 / 外部リソース要求 / 承認要求等）を並行管理する場合                                                                                                                   |
+| 解決策     | 両 Promise の存在を相互にチェックし、一方が pending の場合は他方を拒否する排他パターンを適用。cleanup 時に両方を同時にリセットする                                                                                      |
+| 標準ルール | SDK Session に新しい非同期待機フローを追加する際は、既存の pending フローとの相互排他チェックを必ず設計段階で定義する                                                                                                   |
+| 関連タスク | TASK-SDK-SC-03                                                                                                                                                                                                         |
+
+### L-SC03-002: タイムアウト管理の二重化（単一 timeoutHandle を両フローで共有）
+
+| 項目       | 内容                                                                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 質問待機とAPI設定要求の両方が30秒タイムアウトを必要とするが、各フローに個別の timeout を持つと cleanup 時に clearTimeout 漏れが発生しやすい                                            |
+| 再発条件   | 複数の非同期フローが同一セッション内でタイムアウト管理を個別に行う場合                                                                                                               |
+| 解決策     | 単一の `timeoutHandle` を両フローで共有し、新しいフロー開始時に前回のタイムアウトをクリアしてから新しいタイムアウトを設定する設計を採用                                                |
+| 標準ルール | 同一コンテキスト内の非同期タイムアウトは共有 handle で管理し、フロー切替時に必ず `clearTimeout` を先行実行する                                                                        |
+| 関連タスク | TASK-SDK-SC-03                                                                                                                                                                        |
+
+### L-SC03-003: データ秘匿化の二重管理（sanitizeExternalApiConfigForPrompt）
+
+| 項目       | 内容                                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | 外部API設定の credential はLLMプロンプトに `[REDACTED]` で注入するが、実際のHTTPリクエストには元の credential を使用する必要があり、同じ config オブジェクトを2つのコンテキストで使い分ける複雑性が発生 |
+| 再発条件   | 秘匿情報を含むデータを「表示用」と「実行用」で使い分ける場合                                                                                                                        |
+| 解決策     | `sanitizeExternalApiConfigForPrompt()` は元の config を変更せず、新しいオブジェクトを返す pure function として実装。元の config は SDK Session 内部でのみ保持し、外部への漏洩を防止    |
+| 標準ルール | 秘匿情報の二重管理では、sanitize 関数は必ず immutable（元オブジェクトを変更しない）とし、元データの保持範囲を明示的に限定する                                                          |
+| 関連タスク | TASK-SDK-SC-03                                                                                                                                                                        |
+
+### L-SC03-004: IPC バリデーションの複雑さ（isValidExternalApiConfig 8条件チェック）
+
+| 項目       | 内容                                                                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `ExternalApiConnectionConfig` は8つのバリデーション条件を持ち、条件間に依存関係がある（authType が none 以外の場合のみ credential 必須）ため、テストマトリクスが膨大になる                  |
+| 再発条件   | 条件付きフィールド（authType に応じて credential 必須/不要が変わる）を持つ IPC payload のバリデーション                                                                                    |
+| 解決策     | バリデーション関数を private メソッドとして分離し、条件分岐を明確に分離。テストは happy path + 各条件の boundary を個別にカバー                                                            |
+| 標準ルール | 条件付きバリデーションは early return パターンで各条件を独立させ、条件間の依存を明示的にコメントで記録する                                                                                  |
+| 関連タスク | TASK-SDK-SC-03                                                                                                                                                                              |
+
+### L-SC03-005: Preload API 契約拡張の3層一貫性維持（Preload / Main / Renderer）
+
+| 項目       | 内容                                                                                                                                                                                 |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | External API チャネル4本の追加で、`packages/shared/src/ipc/channels.ts`（定数定義）、`apps/desktop/src/preload/channels.ts`（allowlist import）、`apps/desktop/src/preload/skill-creator-api.ts`（invoke 公開）、`apps/desktop/src/preload/skill-creator-session-api.ts`（push listener 公開）の4ファイルを同時更新する必要があり、1ファイルの更新漏れで silent fail が発生 |
+| 再発条件   | 新規 IPC チャネル追加時に shared 定数 / preload allowlist / preload API 公開 / Main handler 登録のいずれかが欠落する場合                                                              |
+| 解決策     | チャネル追加チェックリストを定義し、4層（shared 定数 → preload import → preload API → Main handler）を同一 PR 内で完結させる                                                          |
+| 標準ルール | 新規 IPC チャネル追加時は「shared 定数 → preload channels import → preload API 関数 → Main handler 登録 → ALLOWED_*_CHANNELS 追加」の5点を同一コミットで完了する                      |
+| 関連タスク | TASK-SDK-SC-03                                                                                                                                                                        |
+
+---
+
+### 2026-04-04 TASK-RT-03-VERIFY-IMPROVE-PANEL-001（Verify / Improve 結果パネル実装）
+
+#### L-VRIP-001: Layer 別 useMemo グループ化 — LAYER_ORDER で表示順を固定する
+
+| 項目         | 内容                                                                                                                                                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題         | verify の `checks[]` を Layer 別にグループ化する際、オブジェクトキー列挙順に依存すると Layer 順序が不定になる。0 件 Layer を非表示にする条件と表示順序を両立するロジックが複雑になりがち                                                          |
+| 解決策       | `const LAYER_ORDER: VerifyLayerKey[] = ["layer1", "layer2", "layer3", "layer4"]` を定数化し、`useMemo` 内で `LAYER_ORDER.filter(k => groups[k].length > 0)` と順序固定グループ化を分離する。0 件 Layer の非表示も filter で自然に処理できる       |
+| 標準ルール   | 表示順序が仕様に明示されているリストは定数 LAYER_ORDER / STEP_ORDER 等で固定し、オブジェクトキー列挙順には依存しない。useMemo の依存配列は `verifyDetail?.checks` の参照だけにする                                                               |
+| 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
+
+#### L-VRIP-002: seqRef パターン — 複数の非同期リクエスト中に古いレスポンスを破棄する
+
+| 項目         | 内容                                                                                                                                                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題         | reverify ボタンを連打すると複数のリクエストが並走し、古いレスポンスが後着することで表示が巻き戻る。`isReverifying` フラグだけでは二重送信は防げても stale response は防げない                                                                     |
+| 解決策       | `const verifyDetailRequestSeqRef = useRef(0)` をコンポーネントに置き、リクエスト送信時にインクリメント。レスポンス受信コールバック内で `if (seq !== verifyDetailRequestSeqRef.current) return` と照合し古いレスポンスを破棄する                  |
+| 標準ルール   | 同一ソースへの複数非同期呼び出しが発生しうる UI には seqRef パターンを適用する。`isXxxing` フラグとの併用で「送信防止（UI）」と「stale 破棄（データ）」を分離できる                                                                              |
+| 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
+
+#### L-VRIP-003: StatusBadge optional label — 後方互換を維持したまま verify 固有語彙を注入する
+
+| 項目         | 内容                                                                                                                                                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題         | Plan/Execute 向けの StatusBadge は「成功/失敗/実行中」ラベルを内部決定する設計だったが、Verify パネルでは「合格/不合格/検証中」という別語彙が必要。コンポーネントを複製せず語彙差異を吸収したい                                                  |
+| 解決策       | `StatusBadge` に `label?: string` を追加し、`const displayLabel = label ?? defaultLabel` とする。既存の呼び出し元は label 省略のまま動作し、VerifyResultDetailPanel だけが `label="合格"` 等を渡す設計。破壊的変更なし                           |
+| 標準ルール   | 共通 UI パーツに domain 固有語彙を持ち込む場合は optional props でオーバーライドし、デフォルトを既存仕様に保つ。label 注入は呼び出し側の責務とし、コンポーネント内部に domain 知識を埋め込まない                                                 |
+| 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
+
+#### L-VRIP-004: aria-expanded / aria-controls テスト — 折りたたみ UI の accessibility 検証パターン
+
+| 項目         | 内容                                                                                                                                                                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題         | 折りたたみ UI（Governance Notes / Revised Spec など）のテストで `queryByText` だけ確認すると、DOM に存在するが視覚的に折りたたまれている要素を「表示されている」と誤判定する。スクリーンリーダー互換性の保証にもならない                          |
+| 解決策       | `expect(button).toHaveAttribute("aria-expanded", "false")` と `expect(button).toHaveAttribute("aria-controls", "governance-notes-content")` を組み合わせてトグル前後の状態を検証する。クリック後は `"true"` に変化することを確認する             |
+| 標準ルール   | 折りたたみ UI には `aria-expanded`（状態）+ `aria-controls`（対象 id）+ `role="region"`（内容領域）を実装し、テストではこの三点セットを検証する。`queryByText` による存在確認だけでは不十分                                                      |
+| 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
