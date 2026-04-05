@@ -147,16 +147,33 @@ step-10-seq-task-p0-08-session-resume-renderer-integration/
 
 ## Phase 一覧
 
-- [phase-1-requirements.md](./phase-1-requirements.md)
-- [phase-2-design.md](./phase-2-design.md)
-- [phase-3-design-review.md](./phase-3-design-review.md)
-- [phase-4-test-creation.md](./phase-4-test-creation.md)
-- [phase-5-implementation.md](./phase-5-implementation.md)
-- [phase-6-test-expansion.md](./phase-6-test-expansion.md)
-- [phase-7-coverage-check.md](./phase-7-coverage-check.md)
-- [phase-8-refactoring.md](./phase-8-refactoring.md)
-- [phase-9-quality-assurance.md](./phase-9-quality-assurance.md)
-- [phase-10-final-review.md](./phase-10-final-review.md)
-- [phase-11-manual-test.md](./phase-11-manual-test.md)
-- [phase-12-documentation.md](./phase-12-documentation.md)
-- [phase-13-pr-creation.md](./phase-13-pr-creation.md)
+| Phase | 名称                 | 仕様書                                                       | ステータス   |
+| ----- | -------------------- | ------------------------------------------------------------ | ------------ |
+| 1     | 要件定義             | [phase-1-requirements.md](phase-1-requirements.md)           | spec_created |
+| 2     | 設計                 | [phase-2-design.md](phase-2-design.md)                       | spec_created |
+| 3     | 設計レビューゲート   | [phase-3-design-review.md](phase-3-design-review.md)         | spec_created |
+| 4     | テスト作成           | [phase-4-test-creation.md](phase-4-test-creation.md)         | spec_created |
+| 5     | 実装                 | [phase-5-implementation.md](phase-5-implementation.md)       | spec_created |
+| 6     | テスト拡充           | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | spec_created |
+| 7     | テストカバレッジ確認 | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | spec_created |
+| 8     | リファクタリング     | [phase-8-refactoring.md](phase-8-refactoring.md)             | spec_created |
+| 9     | 品質保証             | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | spec_created |
+| 10    | 最終レビューゲート   | [phase-10-final-review.md](phase-10-final-review.md)         | spec_created |
+| 11    | 手動テスト（VISUAL） | [phase-11-manual-test.md](phase-11-manual-test.md)           | spec_created |
+| 12    | ドキュメント更新     | [phase-12-documentation.md](phase-12-documentation.md)       | spec_created |
+| 13    | PR 作成              | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | pending      |
+
+## 成果物（このディレクトリで管理する範囲）
+
+- Phase 1: `outputs/phase-1/spec-extraction-map.md`, `outputs/phase-1/p50-check-result.md`
+- Phase 2: `outputs/phase-2/design-document.md`, `outputs/phase-2/ipc-layer-matrix.md`
+- Phase 3: `outputs/phase-3/design-review-gate.md`
+- Phase 4: `outputs/phase-4/test-matrix.md`
+- Phase 6: `outputs/phase-6/test-expansion.md`
+- Phase 7: `outputs/phase-7/coverage-report.md`
+- Phase 8: `outputs/phase-8/refactoring-log.md`
+- Phase 9: `outputs/phase-9/qa-report.md`
+- Phase 10: `outputs/phase-10/final-review-result.md`
+- Phase 11: `outputs/phase-11/manual-test-result.md`, `outputs/phase-11/screenshots/*.png`
+- Phase 12: `outputs/phase-12/implementation-guide.md` 他5成果物
+- Phase 13: `outputs/phase-13/pr-creation-record.md`

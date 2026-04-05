@@ -1,0 +1,52 @@
+{
+  "task": "TASK-P0-08",
+  "phase": 11,
+  "type": "VISUAL",
+  "screenshotDir": "outputs/phase-11/screenshots/",
+  "status": "planned",
+  "note": "spec 段階のテンプレート。Phase 11 手動テスト実施時に actualPath を記録してください。",
+  "screenshots": [
+    {
+      "id": "TC-01",
+      "filename": "tc-01-no-session.png",
+      "description": "セッションなし初期状態 — SessionResumePrompt が非表示",
+      "precondition": "未完了セッションが0件",
+      "status": "pending"
+    },
+    {
+      "id": "TC-02",
+      "filename": "tc-02-no-session-dark.png",
+      "description": "ダークテーマ・セッションなし — SessionResumePrompt が非表示",
+      "precondition": "未完了セッションが0件、ダークテーマ設定",
+      "status": "pending"
+    },
+    {
+      "id": "TC-03",
+      "filename": "tc-03-session-list.png",
+      "description": "セッション一覧表示 — SessionResumePrompt に items あり",
+      "precondition": "未完了セッションが1件以上存在",
+      "status": "pending"
+    },
+    {
+      "id": "TC-04",
+      "filename": "tc-04-after-skip.png",
+      "description": "スキップ後新規開始 — セッション削除後の遷移",
+      "precondition": "TC-03 の状態から「削除して新規開始」クリック後",
+      "status": "pending"
+    },
+    {
+      "id": "TC-05",
+      "filename": "tc-05-error-banner.png",
+      "description": "resumeSession エラー表示 — SkillLifecyclePanel のエラーバナー",
+      "precondition": "TC-03 の状態から resumeSession が失敗する操作後",
+      "status": "pending"
+    },
+    {
+      "id": "TC-06",
+      "filename": "tc-06-session-indicator.png",
+      "description": "SessionIndicator pulse 表示 — session_id + 経過時間が表示",
+      "precondition": "セッションがアクティブな状態",
+      "status": "pending"
+    }
+  ]
+}
