@@ -352,6 +352,20 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 
 ---
 
+---
+
+## SDK メッセージ出力型統合
+
+詳細は [api-ipc-sdk-type-contracts.md](api-ipc-sdk-type-contracts.md) を参照。
+
+| 型 | タスク | 概要 |
+| --- | --- | --- |
+| `SdkOutputMessageBase` | UT-RT-06 | 実行lane / creator lane 共通基底型 |
+| `SkillExecutorStreamMessage` | UT-RT-06 | 実行lane出力型（timestamp必須） |
+| `SkillCreatorSdkEvent` | UT-RT-06 | creator lane出力型（timestamp省略可） |
+
+---
+
 ### セキュリティ強化仕様（UT-9B-H-003）
 
 `skillCreatorHandlers.ts` では、全invokeハンドラーで以下の防御を実施する。

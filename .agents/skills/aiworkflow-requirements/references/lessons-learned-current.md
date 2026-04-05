@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-04 | 3.4.1      | TASK-P0-03 workflow-manifest-production-placement Phase 12 close-out sync（manifest 事前配置+テスト先行整備の有効性 / NON_VISUAL タスクの Phase 11 自動テスト代替パターン確立 / P50 チェックによる現状把握の効率化）|
 | 2026-04-04 | 3.4.0      | TASK-RT-03-VERIFY-IMPROVE-PANEL-001 教訓4件を追加（L-VRIP-001: Layer 別 useMemo グループ化パターン / L-VRIP-002: seqRef による stale response 破棄 / L-VRIP-003: StatusBadge optional label で後方互換維持 / L-VRIP-004: aria-expanded/aria-controls アクセシビリティテスト） |
 | 2026-04-03 | 3.3.8      | TASK-SDK-SC-03 External API Support 教訓5件を追加（L-SC03-001 並行フロー管理 / L-SC03-002 タイムアウト管理二重化 / L-SC03-003 データ秘匿化二重管理 / L-SC03-004 IPC バリデーション複雑性 / L-SC03-005 Preload API 3層契約一貫性）|
 | 2026-04-04 | 3.3.9      | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 current index sync（secondary CTA / return screenshot / dock canonicalization を phase12 lessons へ反映） |
@@ -1083,7 +1084,6 @@
 | 解決策       | `expect(button).toHaveAttribute("aria-expanded", "false")` と `expect(button).toHaveAttribute("aria-controls", "governance-notes-content")` を組み合わせてトグル前後の状態を検証する。クリック後は `"true"` に変化することを確認する             |
 | 標準ルール   | 折りたたみ UI には `aria-expanded`（状態）+ `aria-controls`（対象 id）+ `role="region"`（内容領域）を実装し、テストではこの三点セットを検証する。`queryByText` による存在確認だけでは不十分                                                      |
 | 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
-<<<<<<< Updated upstream
 
 
 ---

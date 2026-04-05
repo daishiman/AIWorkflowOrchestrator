@@ -1,6 +1,12 @@
 {
   "generated": "2026-04-04T13:55:41.051Z",
   "totalKeywords": 2693,
+  "generated": "2026-04-04T09:03:23.572Z",
+  "totalKeywords": 2687,
+  "generated": "2026-04-04T13:55:41.051Z",
+  "totalKeywords": 2693,
+  "generated": "2026-04-04T14:28:00.568Z",
+  "totalKeywords": 2693,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3371,6 +3377,7 @@
       "arch-state-management-details.md",
       "architecture-implementation-patterns-core.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "architecture-patterns.md",
       "claude-code-skills-resources.md",
       "testing-dialog-patterns.md",
       "testing-playwright-e2e.md",
@@ -4222,6 +4229,24 @@
       "architecture-patterns.md"
     ],
     "アーキテクチャ層の関係": [
+      "architecture-patterns.md"
+    ],
+    "Strangler": [
+      "architecture-patterns.md"
+    ],
+    "Fig": [
+      "architecture-patterns.md"
+    ],
+    "Facade": [
+      "architecture-patterns.md"
+    ],
+    "standalone": [
+      "architecture-patterns.md"
+    ],
+    "関数": [
+      "architecture-patterns.md"
+    ],
+    "責務モジュールへの段階集約": [
       "architecture-patterns.md"
     ],
     "Knowledge": [
@@ -7102,15 +7127,6 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "bridge": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "submitUserInput": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "transition": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "semantics": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "submitUserInput": [
