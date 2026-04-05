@@ -10,7 +10,7 @@
  * T-05: skill-creator:output-ready IPC が発行される
  *
  * Phase 6 追加:
- * T-07: 出力パース失敗時の安全な処理
+ * T-07: 出力パース失敗時の安全な処理 + path-safe slug
  * T-08: ディレクトリ作成エラー時の処理
  * T-09: レジストリ登録重複時の処理
  */
@@ -356,7 +356,31 @@ describe("extractSkillFromOutput - エッジケース", () => {
     expect(result?.dirName).toBe("my-test-skill");
   });
 
-  it("T-07d: handleSessionComplete でパース失敗時は何も実行しない", async () => {
+  it("T-07d: スキル名にパス区切りや '..' が含まれても安全な dirName に正規化する", () => {
+    const handler = new SkillCreatorOutputHandler(
+      "/project",
+      mockSkillRegistry,
+      mockWebContents,
+    );
+    const output =
+      "<!-- SKILL_START: ../malicious -->\nname: ../malicious\n<!-- SKILL_END: ../malicious -->";
+    const result = handler.extractSkillFromOutput(output);
+    expect(result?.dirName).toBe("malicious");
+  });
+
+  it("T-07e: null バイトを含むスキル名も安全な dirName に正規化する", () => {
+    const handler = new SkillCreatorOutputHandler(
+      "/project",
+      mockSkillRegistry,
+      mockWebContents,
+    );
+    const output =
+      "<!-- SKILL_START: skill\x00name -->\nname: skill\x00name\n<!-- SKILL_END: skill\x00name -->";
+    const result = handler.extractSkillFromOutput(output);
+    expect(result?.dirName).toBe("skill-name");
+  });
+
+  it("T-07f: handleSessionComplete でパース失敗時は何も実行しない", async () => {
     const mockRegistry = { registerFromPath: vi.fn() };
     const mockWC = { send: vi.fn() };
     const handler = new SkillCreatorOutputHandler(

@@ -20,49 +20,64 @@ Phase 5 の実装を見直し、パース戦略の統一化・ファイル I/O �
 
 #### 現状の確認
 
-`extractSkillFromOutput()` で使用しているマーカー検出ロジックが、将来的に他のハンドラーや SDK セッション処理でも必要になる可能性がある。
+`extractSkillFromOutput()` で使用しているマーカー検出ロジックは、現在は `SkillCreatorOutputHandler` の専用パイプラインとして成立している。
 
 #### リファクタリング方針
 
-| 対象               | リファクタリング内容                                                             |
-| ------------------ | -------------------------------------------------------------------------------- |
-| マーカー定数       | `SKILL_START_MARKER` / `SKILL_END_MARKER` を定数として切り出す（クラス外に定義） |
-| スラッグ化ロジック | `toSlug(name: string): string` をプライベートメソッドとして抽出する              |
-| name 抽出正規表現  | `NAME_PATTERN = /^name:\s*(.+)$/m` を定数として切り出す                          |
+| 対象               | リファクタリング内容                                                                   |
+| ------------------ | -------------------------------------------------------------------------------------- |
+| マーカー定数       | `SKILL_START_MARKER_RE` / `SKILL_END_MARKER_RE` を定数として切り出す（クラス外に定義） |
+| スラッグ化ロジック | `toSlug(name: string): string` をプライベートメソッドとして抽出する                    |
+| name 抽出正規表現  | `NAME_PATTERN = /^name:\s*(.+)$/m` を定数として切り出す                                |
 
 #### リファクタリング後のコード構造
 
 ```typescript
 // マーカー定数（クラス外に定義し、テストからも参照可能にする）
-export const SKILL_START_MARKER = "<!-- SKILL_START -->";
-export const SKILL_END_MARKER = "<!-- SKILL_END -->";
+export const SKILL_START_MARKER_RE = /<!-- SKILL_START:\s*(.+?)\s*-->/;
+export const SKILL_END_MARKER_RE = /<!-- SKILL_END:\s*(.+?)\s*-->/;
 const NAME_PATTERN = /^name:\s*(.+)$/m;
 
 export class SkillCreatorOutputHandler {
   // ...
 
   private toSlug(name: string): string {
-    return name.toLowerCase().replace(/\s+/g, "-");
+    const slug = name
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[\\/]+/g, "-")
+      .replace(/\.\.+/g, "-")
+      .replace(/\0/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    return slug || "unnamed-skill";
   }
 
   extractSkillFromOutput(sessionOutput: string): ParsedSkillOutput | null {
-    const startIdx = sessionOutput.indexOf(SKILL_START_MARKER);
-    const endIdx = sessionOutput.indexOf(SKILL_END_MARKER);
+    const startMatch = sessionOutput.match(SKILL_START_MARKER_RE);
+    const endMatch = sessionOutput.match(SKILL_END_MARKER_RE);
 
-    if (startIdx === -1 || endIdx === -1 || endIdx <= startIdx) {
-      return null;
-    }
+    const startIndex = startMatch?.index;
+    const endIndex = endMatch?.index;
+    const hasValidMarkers =
+      !!startMatch &&
+      !!endMatch &&
+      startIndex !== undefined &&
+      endIndex !== undefined &&
+      endIndex > startIndex;
 
-    const content = sessionOutput
-      .slice(startIdx + SKILL_START_MARKER.length, endIdx)
-      .trim();
+    const content = hasValidMarkers
+      ? sessionOutput.slice(startIndex + startMatch[0].length, endIndex).trim()
+      : sessionOutput.trim();
 
     const nameMatch = content.match(NAME_PATTERN);
-    if (!nameMatch) {
+    const markerName = hasValidMarkers ? startMatch?.[1]?.trim() : undefined;
+    const name = nameMatch?.[1]?.trim() ?? markerName;
+    if (!name) {
       return null;
     }
 
-    const name = nameMatch[1].trim();
     return { name, content, dirName: this.toSlug(name) };
   }
 }
@@ -126,7 +141,6 @@ async handleSessionComplete(sessionOutput: string): Promise<void> {
     await this.registerToRegistry(savedPath);
   } catch (err) {
     console.error("[SkillCreatorOutputHandler] Registry 登録失敗:", err);
-    // Registry 失敗でも IPC 通知は続行
   }
 
   this.notifyOutputReady({
@@ -164,7 +178,7 @@ pnpm --filter @repo/desktop vitest run \
 
 ## 完了条件
 
-- [ ] マーカー定数（`SKILL_START_MARKER` / `SKILL_END_MARKER`）をクラス外定数として切り出した
+- [ ] マーカー定数（`SKILL_START_MARKER_RE` / `SKILL_END_MARKER_RE`）をクラス外定数として切り出した
 - [ ] `toSlug()` をプライベートメソッドとして抽出した
 - [ ] `NAME_PATTERN` を定数として切り出した
 - [ ] `handleSessionComplete()` のエラーハンドリングを改善した（保存失敗時は通知しない）

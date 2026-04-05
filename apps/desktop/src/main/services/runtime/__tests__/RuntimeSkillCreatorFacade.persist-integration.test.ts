@@ -1,10 +1,10 @@
 /**
  * RuntimeSkillCreatorFacade execute() persist integration tests
  *
- * TASK-P0-05: SkillFileWriter.persist() 連携テスト (Phase 4)
- * AC-3: SkillFileWriter.persist() でファイル書き出し
- * AC-4: 書き出し結果が ExecuteResult に含まれる
- * AC-5: パース失敗時のエラーハンドリング
+ * TASK-P0-05: SkillFileWriter.persist() 連携テスト
+ * - F-01 ~ F-06: 基本 persist フロー
+ * - E-10 ~ E-16: persist エラーパターン
+ * - E-21 ~ E-29: パストラバーサル / ロールバック / 回帰ガード
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -17,7 +17,6 @@ import type {
   SkillFileWriter,
   PersistResult,
 } from "../../skill/SkillFileWriter";
-import type { ILLMAdapter } from "../../../adapters/llm/types";
 import type { RuntimeSkillCreatorPlanResult } from "@repo/shared/types";
 
 /** LLMAdapter のモック生成（status を "ready" にするための最小実装） */
@@ -477,6 +476,260 @@ describe("RuntimeSkillCreatorFacade execute() persist integration", () => {
       expect(warnSpy).toHaveBeenCalledWith(
         expect.stringContaining("skillFileWriter is not injected"),
       );
+      warnSpy.mockRestore();
+    });
+  });
+
+  // --- Phase 6: パストラバーサル統合テスト ---
+
+  describe("パストラバーサル統合テスト", () => {
+    it("E-21: '../malicious' skillName で persistError に PATH_TRAVERSAL が含まれる", async () => {
+      mockResolverAsIntegratedApi();
+      const error = Object.assign(
+        new Error("PATH_TRAVERSAL: Invalid skill name: ../malicious"),
+        { code: "PATH_TRAVERSAL" },
+      );
+      const mockWriter = createMockSkillFileWriter(undefined, error);
+      const mockExecutor = createMockSkillExecutor({
+        success: true,
+        sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
+      });
+      const facade = createFacadeReady({
+        skillExecutor: mockExecutor,
+        skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
+      });
+
+      const result = await facade.execute(
+        makePlanResult({ skillName: "../malicious" }),
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toHaveProperty("success", true);
+      expect(result).toHaveProperty(
+        "persistError",
+        expect.stringContaining("PATH_TRAVERSAL"),
+      );
+    });
+
+    it("E-22: 'dir/subdir' skillName で persistError に PATH_TRAVERSAL が含まれる", async () => {
+      mockResolverAsIntegratedApi();
+      const error = Object.assign(
+        new Error("PATH_TRAVERSAL: Invalid skill name: dir/subdir"),
+        { code: "PATH_TRAVERSAL" },
+      );
+      const mockWriter = createMockSkillFileWriter(undefined, error);
+      const mockExecutor = createMockSkillExecutor({
+        success: true,
+        sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
+      });
+      const facade = createFacadeReady({
+        skillExecutor: mockExecutor,
+        skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
+      });
+
+      const result = await facade.execute(
+        makePlanResult({ skillName: "dir/subdir" }),
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toHaveProperty("success", true);
+      expect(result).toHaveProperty(
+        "persistError",
+        expect.stringContaining("PATH_TRAVERSAL"),
+      );
+    });
+
+    it("E-23: null バイト含む skillName で persistError が設定される", async () => {
+      mockResolverAsIntegratedApi();
+      const error = Object.assign(
+        new Error("Invalid skill name contains null byte"),
+        { code: "PATH_TRAVERSAL" },
+      );
+      const mockWriter = createMockSkillFileWriter(undefined, error);
+      const mockExecutor = createMockSkillExecutor({
+        success: true,
+        sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
+      });
+      const facade = createFacadeReady({
+        skillExecutor: mockExecutor,
+        skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
+      });
+
+      const result = await facade.execute(
+        makePlanResult({ skillName: "skill\x00name" }),
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toHaveProperty("success", true);
+      expect(result.persistError).toBeTruthy();
+    });
+  });
+
+  // --- Phase 6: ロールバック統合テスト ---
+
+  describe("ロールバック統合テスト", () => {
+    it("E-24: 複数ファイル書き出し中の部分失敗で persistError が記録される", async () => {
+      mockResolverAsIntegratedApi();
+      const error = Object.assign(
+        new Error("WRITE_ERROR: partial write failure, rollback executed"),
+        { code: "WRITE_ERROR" },
+      );
+      const mockWriter = createMockSkillFileWriter(undefined, error);
+      const mockExecutor = createMockSkillExecutor({
+        success: true,
+        sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
+      });
+      const facade = createFacadeReady({
+        skillExecutor: mockExecutor,
+        skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
+      });
+
+      const result = await facade.execute(
+        makePlanResult(),
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toHaveProperty("success", true);
+      expect(result).toHaveProperty(
+        "persistError",
+        expect.stringContaining("WRITE_ERROR"),
+      );
+      expect(result).toHaveProperty("persistResult", null);
+    });
+
+    it("E-25: ロールバック自体が失敗した場合のエラー伝播", async () => {
+      mockResolverAsIntegratedApi();
+      const error = Object.assign(
+        new Error(
+          "WRITE_ERROR: partial write failure, rollback also failed: EACCES",
+        ),
+        { code: "WRITE_ERROR" },
+      );
+      const mockWriter = createMockSkillFileWriter(undefined, error);
+      const mockExecutor = createMockSkillExecutor({
+        success: true,
+        sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
+      });
+      const facade = createFacadeReady({
+        skillExecutor: mockExecutor,
+        skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
+      });
+
+      const result = await facade.execute(
+        makePlanResult(),
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toHaveProperty("success", true);
+      expect(result).toHaveProperty(
+        "persistError",
+        expect.stringContaining("rollback also failed"),
+      );
+    });
+  });
+
+  // --- Phase 6: 回帰ガードテスト ---
+
+  describe("回帰ガードテスト", () => {
+    it("E-26: executeResult に persistResult フィールドが常に存在する", async () => {
+      mockResolverAsIntegratedApi();
+      const mockWriter = createMockSkillFileWriter();
+      const mockExecutor = createMockSkillExecutor({
+        success: true,
+        sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
+      });
+      const facade = createFacadeReady({
+        skillExecutor: mockExecutor,
+        skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
+      });
+
+      const result = await facade.execute(
+        makePlanResult(),
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toHaveProperty("persistResult");
+    });
+
+    it("E-27: executeResult に persistError フィールドが常に存在する", async () => {
+      mockResolverAsIntegratedApi();
+      const mockWriter = createMockSkillFileWriter();
+      const mockExecutor = createMockSkillExecutor({
+        success: true,
+        sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
+      });
+      const facade = createFacadeReady({
+        skillExecutor: mockExecutor,
+        skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
+      });
+
+      const result = await facade.execute(
+        makePlanResult(),
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toHaveProperty("persistError");
+    });
+
+    it("E-28: parseLlmResponseToContent が null を返す場合 persist は未呼出", async () => {
+      mockResolverAsIntegratedApi();
+      vi.spyOn(parserModule, "parseLlmResponseToContent").mockReturnValue(null);
+      const mockWriter = createMockSkillFileWriter();
+      const mockExecutor = createMockSkillExecutor({
+        success: true,
+        sdkMessages: makeSdkMessages("no code blocks"),
+      });
+      const facade = createFacadeReady({
+        skillExecutor: mockExecutor,
+        skillFileWriter: mockWriter,
+        llmAdapter: createMockLLMAdapter(),
+      });
+
+      const result = await facade.execute(
+        makePlanResult(),
+        "api-key",
+        "sk-test",
+      );
+
+      expect(mockWriter.persist).not.toHaveBeenCalled();
+      expect(result).toHaveProperty("persistResult", null);
+    });
+
+    it("E-29: skillFileWriter 未注入時も execute 全体は正常完了する", async () => {
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+      mockResolverAsIntegratedApi();
+      const mockExecutor = createMockSkillExecutor({
+        success: true,
+        sdkMessages: makeSdkMessages(SKILL_RESPONSE_TEXT),
+      });
+      const facade = createFacadeReady({
+        skillExecutor: mockExecutor,
+        llmAdapter: createMockLLMAdapter(),
+      });
+
+      const result = await facade.execute(
+        makePlanResult(),
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toHaveProperty("success", true);
+      expect(result).toHaveProperty("persistResult", null);
+      expect(result).toHaveProperty("persistError", null);
       warnSpy.mockRestore();
     });
   });

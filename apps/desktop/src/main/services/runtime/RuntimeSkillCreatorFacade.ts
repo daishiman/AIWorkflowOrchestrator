@@ -58,7 +58,7 @@ import type { IAuthKeyService } from "../auth/types";
 import type { ILLMAdapter } from "../../adapters/llm/types";
 import type { ResourceLoader } from "../skill/ResourceLoader";
 import type { SkillFileManager } from "../skill/SkillFileManager";
-import type { SkillFileWriter } from "../skill/SkillFileWriter";
+import type { PersistResult, SkillFileWriter } from "../skill/SkillFileWriter";
 import { RuntimePolicyResolver } from "./RuntimePolicyResolver";
 import { ManifestLoader } from "./ManifestLoader";
 import {
@@ -1308,7 +1308,7 @@ export class RuntimeSkillCreatorFacade {
     const permissionDenials = collectPermissionDenials(sdkEvents);
 
     // Step 3.5-3.6: LLM 応答からコンテンツ抽出 → SkillFileWriter.persist() (TASK-P0-05)
-    let persistResult: { skillPath: string; files: string[] } | null = null;
+    let persistResult: PersistResult | null = null;
     let persistError: string | null = null;
 
     if (response.success) {

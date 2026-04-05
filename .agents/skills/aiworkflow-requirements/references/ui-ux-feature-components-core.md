@@ -28,6 +28,7 @@
 | Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
 | Store-Driven Lifecycle Integration | TASK-10A-F | SkillAnalysisView, SkillCreateWizard, useSkillAnalysis | 完了 | `docs/30-workflows/store-driven-lifecycle-ui/` |
 | Skill Runtime API Key Panel | TASK-RT-04 | SkillLifecyclePanel, ApiKeySettingsPanel | 完了 | `docs/30-workflows/step-08-par-task-rt-04-api-key-management-ui/` |
+| LLM Adapter Error Banner | TASK-RT-01 | LLMAdapterErrorBanner, useLLMAdapterStatus | 完了 | 本ファイル |
 | Organisms Foundation         | TASK-UI-00-ORGANISMS | CardGrid, MasterDetailLayout, SearchFilterList | 完了 | `docs/30-workflows/completed-tasks/task-054-ui-00-4-organisms-components/` |
 | Global Navigation Core       | TASK-UI-02       | GlobalNavStrip, MobileNavBar, MoreMenu, AppLayout, useNavShortcuts | 完了 | [ui-ux-navigation.md](./ui-ux-navigation.md) |
 | Skill Advanced Views         | TASK-UI-05B      | SkillChainBuilder, ScheduleManager, DebugPanel, AnalyticsDashboard | 完了 | `docs/30-workflows/completed-tasks/TASK-UI-05B-SKILL-ADVANCED-VIEWS/` |
@@ -113,6 +114,45 @@
 #### 件数サマリ
 
 `warning+` または `error` が選択されたときのみ、`role="status"` のライブ領域で `表示中 X / 全 Y 件` を表示する。フィルタ結果を視覚・音声の両方で即時に把握できるようにするための補助情報である。
+
+---
+
+## LLM Adapter Error Banner（TASK-RT-01）
+
+`SkillLifecyclePanel` の最上部に置く失敗通知 surface。Main プロセスが保持する LLMAdapter の状態を preload 経由で pull + push し、`failed` 状態のときのみエラーバナーを表示する。
+
+### コンポーネント階層
+
+| コンポーネント | 種類  | 親                    | 子要素 / 役割                                              |
+| -------------- | ----- | --------------------- | ---------------------------------------------------------- |
+| `SkillLifecyclePanel` | organism | -           | banner の配置先。`LLMAdapterErrorBanner` を最上部へ挿入 |
+| `useLLMAdapterStatus` | hook | `SkillLifecyclePanel` | `skillCreator.getAdapterStatus()` / `onAdapterStatusChanged()` を同期 |
+| `LLMAdapterErrorBanner` | molecule | `SkillLifecyclePanel` | エラー表示、任意の設定導線、`role="alert"` |
+
+### 表示ルール
+
+| 条件 | 挙動 |
+| ---- | ---- |
+| `status !== "failed"` | `null` を返して非表示 |
+| `failureReason` が `api.?key` / `ANTHROPIC_API_KEY` を含む | 「APIキーが設定されていないか、無効です。設定画面でAPIキーを確認してください。」 を表示 |
+| 上記以外の `failed` | `LLMアダプターの初期化に失敗しました: <failureReason>` を表示 |
+| `onOpenSettings` がある | 「設定を開く」ボタンを表示し、設定導線を再利用 |
+
+### アクセシビリティ
+
+| 要素 | 要件 |
+| ---- | ---- |
+| banner container | `role="alert"` |
+| warning icon | `aria-hidden="true"` |
+| action button | 通常の `button` として keyboard focus 可能 |
+| theme | light / dark でコントラストを維持 |
+
+### 実装連携
+
+- `LLMAdapterStatusPayload` は `packages/shared/src/types/skillCreator.ts` の正本を使う
+- `SkillLifecyclePanel` は banner の有無に関わらず既存の作成 / 実行 / 改善導線を維持する
+- `validate-phase11-screenshot-coverage.js` の対象 TC-11-01〜TC-11-06 で視覚回帰を固定する
+- `phase11-capture-metadata.json` と `screenshot-plan.json` は current build の撮影証跡として残す
 
 ---
 

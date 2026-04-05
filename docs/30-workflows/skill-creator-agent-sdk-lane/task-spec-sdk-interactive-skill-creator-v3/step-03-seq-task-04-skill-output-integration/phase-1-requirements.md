@@ -20,7 +20,7 @@ SDK セッション完了時に skill-creator が生成したスキル出力（Y
 
 ### PC-001: skill-creator SKILL.md へのマーカー追加
 
-現時点の `.claude/skills/skill-creator/SKILL.md` には `<!-- SKILL_START -->` / `<!-- SKILL_END -->` マーカーが存在しない（grep 確認済み）。  
+現時点の `.claude/skills/skill-creator/SKILL.md` には `<!-- SKILL_START: {skillName} -->` / `<!-- SKILL_END: {skillName} -->` マーカーが存在しない（grep 確認済み）。
 FR-001 のマーカーベース抽出を機能させるには、SKILL.md を更新してスキル出力時にマーカーを付与するよう指示を追記する必要がある。
 
 **追記すべき内容（SKILL.md 更新タスクとして先行実施）**:
@@ -47,7 +47,7 @@ TASK-SDK-SC-01/02/03 完了後の SDK セッション出力フローを以下の
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 出力タイミング | SDK セッションが正常終了（`session-complete` イベント）した時点でスキル出力が生成される                                                                                                                             |
 | 出力形式       | セッション出力テキスト内に `<!-- SKILL_START: {skillName} -->` ... `<!-- SKILL_END: {skillName} -->` マーカーで囲まれた SKILL.md 内容（PC-001 完了後）、またはフォールバック戦略 B によるアシスタントメッセージ全体 |
-| 保存先         | `.claude/skills/{skill-name}/SKILL.md`（`skill-name` はスキル出力内の `name` フィールドから取得）                                                                                                                   |
+| 保存先         | `.claude/skills/{dirName}/SKILL.md`（`dirName = toSlug(name)`。パス区切り等を安全化し、必要なら `unnamed-skill` にフォールバック）                                                                                  |
 | 登録先         | `SkillRegistry`（Electron Main プロセス上のスキルレジストリ）                                                                                                                                                       |
 | UI 通知        | IPC `skill-creator:output-ready` イベントで Renderer に通知・プレビュー表示                                                                                                                                         |
 
@@ -76,11 +76,16 @@ PC-001 の前提条件タスクが未完了でマーカーが存在しない場�
 **推奨実装**: 戦略 A を先行タスクとして定義し、実装時は戦略 A 完了を前提とする。  
 ただし、SKILL.md 未更新の環境での動作保証のため、戦略 B のフォールバック処理を `extractSkillFromOutput()` に組み込む。
 
-#### FR-002: `.claude/skills/{name}/SKILL.md` への自動保存
+#### FR-002: `.claude/skills/{dirName}/SKILL.md` への自動保存
 
 抽出したスキルを以下のパスに保存する。
 
-- パス: `{projectRoot}/.claude/skills/{skillName}/SKILL.md`
+- パス: `{projectRoot}/.claude/skills/{dirName}/SKILL.md`
+- `dirName` は `toSlug(name)` により決定する（`name` をそのまま使わない）
+  - 小文字化 + 空白をハイフンに変換
+  - `/` `\\` `..` `\\0` を安全化（パストラバーサル対策）
+  - 連続ハイフンを圧縮し、前後のハイフンを除去
+  - 変換後が空になる場合は `unnamed-skill` にフォールバック（例: `name: ...` など）
 - ディレクトリが存在しない場合は自動作成
 - 保存成功時: 保存先のフルパスを返す
 
@@ -120,7 +125,7 @@ PC-001 の前提条件タスクが未完了でマーカーが存在しない場�
 | ------ | --------------------------------------------------------------------------------------------------------------- |
 | AC-01  | SDK セッション出力テキストから `<!-- SKILL_START: {skillName} -->` マーカーを使ってスキル内容を正しく抽出できる |
 | AC-01B | マーカーが存在しない場合、フォールバック戦略 B（アシスタントメッセージ全体を利用）が適用される                  |
-| AC-02  | 抽出したスキルが `.claude/skills/{name}/SKILL.md` に保存される                                                  |
+| AC-02  | 抽出したスキルが `.claude/skills/{dirName}/SKILL.md` に保存される（`dirName = toSlug(name)`）                   |
 | AC-03  | 保存後に `SkillRegistry` にスキルが登録される                                                                   |
 | AC-04  | 保存・登録完了後に `skill-creator:output-ready` IPC が発行される                                                |
 | AC-05  | `SkillCreatorResultPanel` がスキル名とプレビューを正しく表示する                                                |
@@ -159,7 +164,7 @@ PC-001 の前提条件タスクが未完了でマーカーが存在しない場�
 - [ ] SDK セッション出力フローを調査し、スキル出力タイミング・形式を特定した
 - [ ] FR-001（SDK 出力からスキル抽出）を定義した
 - [ ] FR-001-B（マーカー不在時のフォールバック戦略）を定義した
-- [ ] FR-002（`.claude/skills/{name}/SKILL.md` への自動保存）を定義した
+- [ ] FR-002（`.claude/skills/{dirName}/SKILL.md` への自動保存）を定義した
 - [ ] FR-003（`SkillRegistry` への自動登録）を定義した
 - [ ] FR-004（`skill-creator:output-ready` IPC 通知）を定義した
 - [ ] FR-005（スキルプレビュー表示）を定義した

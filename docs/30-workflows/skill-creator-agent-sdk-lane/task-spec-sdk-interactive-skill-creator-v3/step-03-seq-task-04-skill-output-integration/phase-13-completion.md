@@ -14,26 +14,28 @@
 
 TASK-SDK-SC-04 の全成果物を最終確認し、コミット・PR 作成を行う。本タスクの完了により、SDK インタラクティブスキルクリエイター機能（TASK-SDK-SC-01/02/03/04）の全実装が完了する。
 
+> NOTE: このリポジトリの運用ポリシー上、コミット・PR 作成は別途指示がある場合のみ実行する。本ファイルのコマンドはテンプレートとして残す。
+
 ## 実行タスク
 
 ### Task 13-1: 全成果物の最終確認
 
 #### TASK-SDK-SC-04 コード成果物
 
-| ファイル                                                                         | 確認内容                                                             | 確認 |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ---- |
-| `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts`            | 全 5 メソッドが実装されていること                                    | -    |
-| `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx` | スキル名・プレビュー・「スキルを開く」ボタンが実装されていること     | -    |
-| `apps/desktop/src/main/services/runtime/SkillRegistry.ts`                        | `registerFromPath()` が追加されていること                            | -    |
-| `packages/shared/src/ipc/channels.ts`                                            | `SKILL_CREATOR_OUTPUT_READY` 定数が追記されていること                | -    |
-| `packages/shared/src/types/skillCreator.ts`                                      | `ParsedSkillOutput` / `SkillOutputReadyPayload` が追加されていること | -    |
+| ファイル                                                                         | 確認内容                                                                                                       | 確認 |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---- |
+| `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts`            | 公開メソッド（extract/save/register/notify/handleSessionComplete/handleOverwriteApproved）が実装されていること | -    |
+| `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx` | スキル名・プレビュー・「スキルを開く」ボタンが実装されていること                                               | -    |
+| `apps/desktop/src/main/services/runtime/SkillRegistry.ts`                        | `registerFromPath()` が追加されていること                                                                      | -    |
+| `packages/shared/src/ipc/channels.ts`                                            | `SKILL_CREATOR_OUTPUT_READY` 定数が追記されていること                                                          | -    |
+| `packages/shared/src/types/skillCreator.ts`                                      | `ParsedSkillOutput` / `SkillOutputReadyPayload` が追加されていること                                           | -    |
 
 #### TASK-SDK-SC-04 テスト成果物
 
-| ファイル                                                                                        | 確認内容                  | 確認 |
-| ----------------------------------------------------------------------------------------------- | ------------------------- | ---- |
-| `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorOutputHandler.test.ts`            | T-01〜T-09 が含まれること | -    |
-| `apps/desktop/src/renderer/components/skill-creator/__tests__/SkillCreatorResultPanel.test.tsx` | T-06 が含まれること       | -    |
+| ファイル                                                                                        | 確認内容                                                            | 確認 |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---- |
+| `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorOutputHandler.test.ts`            | `SkillCreatorOutputHandler` のテストが 22 件あること（T-01〜T-10b） | -    |
+| `apps/desktop/src/renderer/components/skill-creator/__tests__/SkillCreatorResultPanel.test.tsx` | T-06 が含まれること                                                 | -    |
 
 ### Task 13-2: 全タスク（01/02/03/04）統合の最終確認
 
@@ -59,7 +61,7 @@ pnpm --filter @repo/desktop vitest run \
 pnpm --filter @repo/shared vitest run --reporter=verbose
 ```
 
-期待する結果: T-01 から T-09 が全件 PASS。
+期待する結果: `SkillCreatorOutputHandler` テスト 22 件（T-01〜T-10b）が全件 PASS。
 
 ### Task 13-4: PR 作成前チェックリスト
 
@@ -81,11 +83,11 @@ pnpm --filter @repo/shared vitest run --reporter=verbose
 ### Task 13-5: コミットメッセージ案
 
 ```
-feat(desktop): TASK-SDK-SC-04 — SkillCreatorOutputHandler実装とスキル出力統合
+feat(desktop): TASK-SDK-SC-04 — SkillCreatorOutputHandler 実装とスキル出力統合
 
 TASK-SDK-SC-04: Skill Output Integration
 
-- SkillCreatorOutputHandler 実装（extractSkillFromOutput / saveSkill / registerToRegistry / notifyOutputReady / handleSessionComplete）
+- SkillCreatorOutputHandler 実装（extractSkillFromOutput / saveSkill / registerToRegistry / notifyOutputReady / handleSessionComplete / handleOverwriteApproved）
 - SkillCreatorResultPanel コンポーネント実装（スキル名・プレビュー・「スキルを開く」ボタン）
 - SkillRegistry.registerFromPath() 追加（パスからスキル登録・上書き）
 - channels.ts に SKILL_CREATOR_OUTPUT_READY 定数追記
@@ -133,7 +135,9 @@ gh pr create \
 
 TASK-SDK-SC-04: Skill Output Integration
 
-SDK セッション完了時に skill-creator が生成したスキル（YAML / Markdown）を捕捉し、`.claude/skills/{name}/SKILL.md` に保存・`SkillRegistry` 登録・UI でスキル生成完了を通知・プレビュー表示するパイプラインを実装します。
+SDK セッション完了時に skill-creator が生成したスキル（YAML / Markdown）を捕捉し、`.claude/skills/{dirName}/SKILL.md` に保存・`SkillRegistry` 登録・UI でスキル生成完了を通知・プレビュー表示するパイプラインを実装します。
+
+保存先ディレクトリは `dirName = toSlug(name)`（path-safe）で決定します。
 
 本 PR により TASK-SDK-SC-01/02/03/04 の全タスクが統合され、SDK インタラクティブスキルクリエイター機能が完成します。
 
@@ -171,12 +175,12 @@ EOF
 | ------------------ | ----------------------------------------------------------------------- |
 | タスクID           | TASK-SDK-SC-04                                                          |
 | 変更ファイル数     | 5 ファイル（新規 2・更新 3）                                            |
-| 新規クラス         | `SkillCreatorOutputHandler`（5 メソッド）                               |
+| 新規クラス         | `SkillCreatorOutputHandler`（公開メソッド 6 件）                        |
 | 新規コンポーネント | `SkillCreatorResultPanel`                                               |
 | 新規型定義         | `ParsedSkillOutput`・`SkillOutputReadyPayload`                          |
 | 追加メソッド       | `SkillRegistry.registerFromPath()`                                      |
 | 追加定数           | `SKILL_CREATOR_OUTPUT_READY`                                            |
-| テスト追加         | T-01 から T-09（OutputHandler・ResultPanel）                            |
+| テスト追加         | OutputHandler: 22 件（T-01〜T-10b）/ ResultPanel: 4 件                  |
 | 完了した機能       | SDK インタラクティブスキルクリエイター全機能（TASK-SDK-SC-01/02/03/04） |
 
 ## 参照資料
@@ -196,7 +200,7 @@ EOF
 
 - [ ] 全コード成果物（5 ファイル）の存在を確認した
 - [ ] 全テスト成果物（2 ファイル）の存在を確認した
-- [ ] 最終テスト実行で T-01 から T-09 が全件 PASS した
+- [ ] 最終テスト実行で OutputHandler 22 件（T-01〜T-10b）が全件 PASS した
 - [ ] PR 作成前チェックリスト（typecheck・lint・test・no-verify 確認）を全て完了した
 - [ ] コミットを作成した
 - [ ] PR を作成した

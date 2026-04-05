@@ -29,20 +29,20 @@ TASK-SDK-SC-04 の全成果物を最終確認し、全タスク（TASK-SDK-SC-01
 
 #### TASK-SDK-SC-04 コード成果物
 
-| ファイル                                                                         | 確認内容                                                             | 確認 |
-| -------------------------------------------------------------------------------- | -------------------------------------------------------------------- | ---- |
-| `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts`            | 全 5 メソッドが実装されていること                                    | -    |
-| `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx` | スキル名・プレビュー・「スキルを開く」ボタンが実装されていること     | -    |
-| `apps/desktop/src/main/services/runtime/SkillRegistry.ts`                        | `registerFromPath()` が追加されていること                            | -    |
-| `packages/shared/src/ipc/channels.ts`                                            | `SKILL_CREATOR_OUTPUT_READY` 定数が追記されていること                | -    |
-| `packages/shared/src/types/skillCreator.ts`                                      | `ParsedSkillOutput` / `SkillOutputReadyPayload` が追加されていること | -    |
+| ファイル                                                                         | 確認内容                                                                                                       | 確認 |
+| -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---- |
+| `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts`            | 公開メソッド（extract/save/register/notify/handleSessionComplete/handleOverwriteApproved）が実装されていること | -    |
+| `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx` | スキル名・プレビュー・「スキルを開く」ボタンが実装されていること                                               | -    |
+| `apps/desktop/src/main/services/runtime/SkillRegistry.ts`                        | `registerFromPath()` が追加されていること                                                                      | -    |
+| `packages/shared/src/ipc/channels.ts`                                            | `SKILL_CREATOR_OUTPUT_READY` 定数が追記されていること                                                          | -    |
+| `packages/shared/src/types/skillCreator.ts`                                      | `ParsedSkillOutput` / `SkillOutputReadyPayload` が追加されていること                                           | -    |
 
 #### TASK-SDK-SC-04 テスト成果物
 
-| ファイル                                                                                        | 確認内容                  | 確認 |
-| ----------------------------------------------------------------------------------------------- | ------------------------- | ---- |
-| `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorOutputHandler.test.ts`            | T-01〜T-09 が含まれること | -    |
-| `apps/desktop/src/renderer/components/skill-creator/__tests__/SkillCreatorResultPanel.test.tsx` | T-06 が含まれること       | -    |
+| ファイル                                                                                        | 確認内容                                                            | 確認 |
+| ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | ---- |
+| `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorOutputHandler.test.ts`            | `SkillCreatorOutputHandler` のテストが 22 件あること（T-01〜T-10b） | -    |
+| `apps/desktop/src/renderer/components/skill-creator/__tests__/SkillCreatorResultPanel.test.tsx` | T-06 が含まれること                                                 | -    |
 
 ### Task 10-3: 整合性あり — 全タスク統合フローの確認
 
@@ -61,7 +61,7 @@ SDK セッション実行（スキル生成）
   ↓
 TASK-SDK-SC-04: SkillCreatorOutputHandler.handleSessionComplete()
   ├─ extractSkillFromOutput() → ParsedSkillOutput
-  ├─ saveSkill() → .claude/skills/{name}/SKILL.md
+  ├─ saveSkill() → .claude/skills/{dirName}/SKILL.md
   ├─ registerToRegistry() → SkillRegistry
   └─ notifyOutputReady() → skill-creator:output-ready IPC
        ↓

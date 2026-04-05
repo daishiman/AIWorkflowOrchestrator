@@ -14,7 +14,7 @@
 
 ## 目的
 
-SDK セッション完了時に skill-creator が生成したスキル（YAML / Markdown）を捕捉し、`.claude/skills/{skill-name}/SKILL.md` に保存、Electron の `SkillRegistry` に登録、UI でスキル生成完了を通知・プレビュー表示するまでのパイプラインを確立する。
+SDK セッション完了時に skill-creator が生成したスキル（YAML / Markdown）を捕捉し、`.claude/skills/{dirName}/SKILL.md` に保存（`dirName = toSlug(name)`）、Electron の `SkillRegistry` に登録、UI でスキル生成完了を通知・プレビュー表示するまでのパイプラインを確立する。
 
 本タスクは TASK-SDK-SC-01/02/03 の成果物を統合する最終タスクであり、SDK インタラクティブスキルクリエイター機能の完成を意味する。
 
@@ -100,6 +100,6 @@ MT-01 から MT-03 のシナリオ手動確認（スキル生成フロー全体�
 - [ ] `SkillCreatorResultPanel` コンポーネントが実装済みである
 - [ ] `SkillRegistry.ts` に `registerFromPath()` が追加されている
 - [ ] `channels.ts` に `SKILL_CREATOR_OUTPUT_READY` 定数が追加されている
-- [ ] `.claude/skills/{name}/SKILL.md` への自動保存が動作する
+- [ ] `.claude/skills/{dirName}/SKILL.md` への自動保存が動作する（`dirName = toSlug(name)`）
 - [ ] TypeScript コンパイルエラーが 0 件である
 - [ ] 全テストが PASS している

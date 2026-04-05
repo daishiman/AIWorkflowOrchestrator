@@ -5,6 +5,9 @@
  * SDK セッション完了時に skill-creator が生成したスキル出力を捕捉し、
  * `.claude/skills/{skill-name}/SKILL.md` に保存、SkillRegistry に登録、
  * UI に skill-creator:output-ready IPC で通知するまでのパイプラインを担う。
+ *
+ * NOTE: 本クラスは SkillCreatorIpcBridge 経由の別系統パイプライン。
+ * RuntimeSkillCreatorFacade の正式経路は parseLlmResponseToContent + SkillFileWriter.persist。
  */
 
 import * as fs from "node:fs/promises";
@@ -17,6 +20,13 @@ import type {
 } from "@repo/shared/types/skillCreator";
 import type { SkillRegistry } from "./SkillRegistry";
 
+/** SKILL_START マーカー正規表現（属性付き） */
+export const SKILL_START_MARKER_RE = /<!-- SKILL_START:\s*(.+?)\s*-->/;
+/** SKILL_END マーカー正規表現（属性付き） */
+export const SKILL_END_MARKER_RE = /<!-- SKILL_END:\s*(.+?)\s*-->/;
+/** SKILL.md 内の name フィールド抽出パターン */
+const NAME_PATTERN = /^name:\s*(.+)$/m;
+
 export class SkillCreatorOutputHandler {
   constructor(
     private readonly projectRoot: string,
@@ -25,15 +35,31 @@ export class SkillCreatorOutputHandler {
   ) {}
 
   /**
+   * スキル名をディレクトリ名用スラッグに変換する。
+   * 小文字化 + 空白をハイフンに置換し、パス区切りや `..` を無効化する。
+   */
+  private toSlug(name: string): string {
+    const slug = name
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[\\/]+/g, "-")
+      .replace(/\.\.+/g, "-")
+      .replace(/\0/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    return slug || "unnamed-skill";
+  }
+
+  /**
    * SDK セッション出力テキストからスキル定義を抽出する。
    *
-   * 戦略A（正常系）: `<!-- SKILL_START: {skillName} -->` / `<!-- SKILL_END: {skillName} -->` マーカーを検出
-   * 戦略B（フォールバック）: マーカーが存在しない場合はアシスタントメッセージ全体をスキル内容として扱う
-   *   （name: フィールドが見つからない場合は null）
+   * マーカー付き出力を優先し、見つからない場合はアシスタントメッセージ全体を
+   * スキル内容として扱うフォールバックを持つ。
    */
   extractSkillFromOutput(sessionOutput: string): ParsedSkillOutput | null {
-    const startMatch = sessionOutput.match(/<!-- SKILL_START:\s*(.+?)\s*-->/);
-    const endMatch = sessionOutput.match(/<!-- SKILL_END:\s*(.+?)\s*-->/);
+    const startMatch = sessionOutput.match(SKILL_START_MARKER_RE);
+    const endMatch = sessionOutput.match(SKILL_END_MARKER_RE);
 
     const startIndex = startMatch?.index;
     const endIndex = endMatch?.index;
@@ -48,16 +74,14 @@ export class SkillCreatorOutputHandler {
       ? sessionOutput.slice(startIndex + startMatch[0].length, endIndex).trim()
       : sessionOutput.trim();
 
-    const nameMatch = content.match(/^name:\s*(.+)$/m);
+    const nameMatch = content.match(NAME_PATTERN);
     const markerName = hasValidMarkers ? startMatch?.[1]?.trim() : undefined;
     const name = nameMatch?.[1]?.trim() ?? markerName;
     if (!name) {
       return null;
     }
 
-    const dirName = name.toLowerCase().replace(/\s+/g, "-");
-
-    return { name, content, dirName };
+    return { name, content, dirName: this.toSlug(name) };
   }
 
   /**
@@ -103,7 +127,7 @@ export class SkillCreatorOutputHandler {
     const skill: ParsedSkillOutput = {
       name: payload.skillName,
       content: payload.content,
-      dirName: payload.skillName.toLowerCase().replace(/\s+/g, "-"),
+      dirName: this.toSlug(payload.skillName),
     };
 
     let savedPath: string;
@@ -156,7 +180,6 @@ export class SkillCreatorOutputHandler {
       // ファイルが存在しない場合は上書き確認不要
     }
 
-    // 上書き確認が必要な場合は通知して UI 側の確認を待つ
     if (requiresOverwriteConfirm) {
       this.notifyOutputReady({
         skillName: skill.name,
@@ -179,7 +202,6 @@ export class SkillCreatorOutputHandler {
       await this.registerToRegistry(savedPath);
     } catch (err) {
       console.error("[SkillCreatorOutputHandler] Registry 登録失敗:", err);
-      // Registry 登録失敗でも UI 通知は継続する（ファイル保存優先）
     }
 
     this.notifyOutputReady({

@@ -30,14 +30,14 @@
 
 1. あなたが「どんなスキルを作りたいか」を質問に答えながら教えます
 2. Claude（AI）がその情報をもとにスキルの内容を考えて書き出します
-3. 書き出した内容の前後に目印（`<!-- SKILL_START -->` と `<!-- SKILL_END -->`）をつけます
+3. 書き出した内容の前後に目印（`<!-- SKILL_START: スキル名 -->` と `<!-- SKILL_END: スキル名 -->`）をつけます
 4. プログラムがその目印を探して、中身を取り出します
 5. 取り出した内容を `.claude/skills/スキル名/SKILL.md` というファイルに保存します
 6. 保存したら「スキルができたよ！」という通知が画面に表示されます
 
 **マーカーとは？**
 
-`<!-- SKILL_START -->` と `<!-- SKILL_END -->` は HTML のコメント記法を使った「目印」です。人間には見えないメモのようなものですが、プログラムはこの目印を探して「ここからここまでがスキルの内容だ」と判断できます。
+`<!-- SKILL_START: スキル名 -->` と `<!-- SKILL_END: スキル名 -->` は HTML のコメント記法を使った「目印」です。人間には見えないメモのようなものですが、プログラムはこの目印を探して「ここからここまでがスキルの内容だ」と判断できます。
 
 ---
 
@@ -47,22 +47,27 @@
 
 SDK セッションが出力するスキル定義は、以下のマーカーで囲まれた SKILL.md 形式である。
 
-```
-<!-- SKILL_START -->
+```markdown
+<!-- SKILL_START: スキル名 -->
+
 name: スキル名
 description: スキルの説明（2-3行）
 
 ## 目的
+
 スキルが何をするかの説明
 
 ## トリガー
+
 スキルが発動する条件
 
 ## 使い方
+
 スキルの使い方の説明
 
 ...（SKILL.md の残りの内容）
-<!-- SKILL_END -->
+
+<!-- SKILL_END: スキル名 -->
 ```
 
 #### 必須フィールド
@@ -75,10 +80,13 @@ description: スキルの説明（2-3行）
 
 `name` フィールドの値を以下のルールで変換してディレクトリ名（`dirName`）を生成する。
 
-| 変換ルール               | 例                      |
-| ------------------------ | ----------------------- |
-| 全て小文字に変換         | `My Skill` → `my skill` |
-| 空白文字をハイフンに変換 | `my skill` → `my-skill` |
+| 変換ルール                     | 例                           |
+| ------------------------------ | ---------------------------- |
+| 全て小文字に変換               | `My Skill` → `my skill`      |
+| 空白文字をハイフンに変換       | `my skill` → `my-skill`      |
+| パス区切りと `..` を除去       | `../malicious` → `malicious` |
+| NULL バイトをハイフンに置換    | `skill\0name` → `skill-name` |
+| 連続ハイフンを圧縮し前後を除去 | `--my--skill--` → `my-skill` |
 
 例: `name: GitHub Issue Manager` → `dirName: github-issue-manager`
 
@@ -88,41 +96,45 @@ description: スキルの説明（2-3行）
 
 `SkillCreatorOutputHandler.extractSkillFromOutput()` が使用するパース戦略を説明する。
 
-```
+```text
 入力: SDK セッション出力テキスト（複数行文字列）
 
-ステップ1: SKILL_START_MARKER の位置を indexOf() で検索
-  → 見つからない場合: null を返す
+ステップ1: SKILL_START_MARKER_RE の位置を match() で検索
+  → 見つからない場合: フォールバック戦略Bへ（出力全体をスキル内容として扱う）
 
-ステップ2: SKILL_END_MARKER の位置を indexOf() で検索
-  → 見つからない場合: null を返す
-  → SKILL_END が SKILL_START より前にある場合: null を返す
+ステップ2: SKILL_END_MARKER_RE の位置を match() で検索
+  → 見つからない場合: フォールバック戦略Bへ
+  → SKILL_END が SKILL_START より前にある場合: フォールバック戦略Bへ
 
 ステップ3: 2つのマーカーの間のテキストを slice() で抽出
   → 先頭・末尾の空白を trim() で除去
 
 ステップ4: 抽出テキストから name フィールドを正規表現で検索
   → パターン: /^name:\s*(.+)$/m（行頭から始まる name: フィールド）
-  → 見つからない場合: null を返す
+  → 見つからない場合: マーカー属性名（SKILL_START の {skillName} 部分）を使用
+  → どちらも見つからない場合: null を返す
 
 ステップ5: ParsedSkillOutput を返す
   → { name, content, dirName }
 ```
 
-#### マーカーが複数存在する場合の動作
+#### フォールバック戦略B
 
-`indexOf()` は最初に一致した位置を返すため、`<!-- SKILL_START -->` が複数存在する場合は最初のマーカーペアが採用される。
+マーカーが存在しない場合、アシスタントメッセージ全体をスキル内容として扱います。
+`name:` フィールドが見つかればスキルとして処理し、見つからなければ null を返して処理をスキップします。
 
 #### エラーケースのまとめ
 
-| エラーケース                          | `extractSkillFromOutput()` の戻り値 | `handleSessionComplete()` の動作 |
-| ------------------------------------- | ----------------------------------- | -------------------------------- |
-| SKILL_START マーカーなし              | `null`                              | 処理スキップ                     |
-| SKILL_END マーカーなし                | `null`                              | 処理スキップ                     |
-| SKILL_END が SKILL_START より前にある | `null`                              | 処理スキップ                     |
-| `name` フィールドなし                 | `null`                              | 処理スキップ                     |
-| ファイル保存失敗（権限エラー等）      | -                                   | エラーログ出力、IPC 通知なし     |
-| SkillRegistry 登録失敗                | -                                   | エラーログ出力、IPC 通知は続行   |
+| エラーケース                         | `extractSkillFromOutput()` の戻り値   | `handleSessionComplete()` の動作 |
+| ------------------------------------ | ------------------------------------- | -------------------------------- |
+| SKILL_START マーカーなし + name なし | `null`                                | 処理スキップ                     |
+| SKILL_START マーカーなし + name あり | `ParsedSkillOutput`（フォールバック） | 正常処理                         |
+| SKILL_END マーカーなし               | `null`（name 見つからない場合）       | 処理スキップ                     |
+| マーカー内に `name` フィールドなし   | マーカー属性名で補完                  | 正常処理                         |
+| パス区切りや `..` を含む name        | `ParsedSkillOutput`（安全な dirName） | 正常処理                         |
+| NULL バイトを含む name               | `ParsedSkillOutput`（安全な dirName） | 正常処理                         |
+| ファイル保存失敗（権限エラー等）     | -                                     | エラーログ出力、IPC 通知なし     |
+| SkillRegistry 登録失敗               | -                                     | エラーログ出力、IPC 通知は続行   |
 
 ### Task 12-4: 技術者向けリファレンス
 
@@ -132,20 +144,92 @@ description: スキルの説明（2-3行）
 | ---------------------------------- | -------------- | -------------------------------------------------------------------------------- | ------------------------------------ |
 | `SkillCreatorOutputHandler`        | クラス         | `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts`            | スキル出力捕捉・保存・登録・IPC 通知 |
 | `SkillCreatorResultPanel`          | コンポーネント | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx` | スキル生成完了 UI・プレビュー表示    |
-| `SkillRegistry.registerFromPath()` | メソッド       | `apps/desktop/src/main/services/runtime/SkillRegistry.ts`                        | パスからスキルを登録・上書き         |
+| `SkillRegistry`                    | クラス         | `apps/desktop/src/main/services/runtime/SkillRegistry.ts`                        | インメモリスキル登録管理             |
+| `SkillRegistry.registerFromPath()` | メソッド       | 同上                                                                             | パスからスキルを登録・上書き         |
 
-#### 型定義一覧
+### メソッド一覧（SkillCreatorOutputHandler）
 
-| 型名                      | ファイルパス                                | 説明                             |
-| ------------------------- | ------------------------------------------- | -------------------------------- |
-| `ParsedSkillOutput`       | `packages/shared/src/types/skillCreator.ts` | SDK 出力から抽出されたスキル定義 |
-| `SkillOutputReadyPayload` | `packages/shared/src/types/skillCreator.ts` | IPC 通知ペイロード               |
+| メソッド                                | 説明                                                                |
+| --------------------------------------- | ------------------------------------------------------------------- |
+| `extractSkillFromOutput(sessionOutput)` | SDK 出力からスキル定義を抽出（マーカーベース + フォールバック）     |
+| `saveSkill(skill)`                      | `.claude/skills/{dirName}/SKILL.md` にファイル保存                  |
+| `registerToRegistry(skillPath)`         | SkillRegistry にパスから登録                                        |
+| `notifyOutputReady(payload)`            | IPC `skill-creator:output-ready` で Renderer に通知                 |
+| `handleSessionComplete(sessionOutput)`  | メインエントリ: extract -> 上書き確認 -> save -> register -> notify |
+| `handleOverwriteApproved(payload)`      | 上書き確認後の保存・登録再開                                        |
 
-#### IPC チャネル一覧
+### 型定義一覧
 
-| 定数名                       | 値                           | 方向            | 説明               |
-| ---------------------------- | ---------------------------- | --------------- | ------------------ |
-| `SKILL_CREATOR_OUTPUT_READY` | `skill-creator:output-ready` | Main → Renderer | スキル生成完了通知 |
+| 型名                      | ファイルパス                                              | 説明                             |
+| ------------------------- | --------------------------------------------------------- | -------------------------------- |
+| `ParsedSkillOutput`       | `packages/shared/src/types/skillCreator.ts`               | SDK 出力から抽出されたスキル定義 |
+| `SkillOutputReadyPayload` | `packages/shared/src/types/skillCreator.ts`               | IPC 通知ペイロード               |
+| `RegistrySkillEntry`      | `apps/desktop/src/main/services/runtime/SkillRegistry.ts` | Registry 内のスキルエントリ      |
+
+### IPC チャネル一覧
+
+| 定数名                       | 値                           | 方向             | 説明               |
+| ---------------------------- | ---------------------------- | ---------------- | ------------------ |
+| `SKILL_CREATOR_OUTPUT_READY` | `skill-creator:output-ready` | Main -> Renderer | スキル生成完了通知 |
+
+### エクスポート定数（SkillCreatorOutputHandler.ts）
+
+| 定数名                  | 値                                  | 説明                                  |
+| ----------------------- | ----------------------------------- | ------------------------------------- |
+| `SKILL_START_MARKER_RE` | `/<!-- SKILL_START:\s*(.+?)\s*-->/` | 属性付き SKILL_START マーカー正規表現 |
+| `SKILL_END_MARKER_RE`   | `/<!-- SKILL_END:\s*(.+?)\s*-->/`   | 属性付き SKILL_END マーカー正規表現   |
+
+---
+
+## テスト一覧
+
+### SkillCreatorOutputHandler テスト（22件）
+
+| テストID | テスト内容                                                |
+| -------- | --------------------------------------------------------- |
+| T-01     | マーカーで囲まれた内容を抽出する                          |
+| T-01b    | マーカーなしでも name があればフォールバック抽出する      |
+| T-01c    | マーカー内に name がない場合はマーカー属性名を採用する    |
+| T-02     | 正しいパスに保存する                                      |
+| T-03     | SkillRegistry.registerFromPath() が正しく呼び出される     |
+| T-04     | 既存スキル存在時に上書き確認フラグが立つ                  |
+| T-04b    | ユーザー承認後に handleOverwriteApproved() が続行する     |
+| T-04c    | handleSessionComplete() の保存失敗時は通知しない          |
+| T-04d    | handleOverwriteApproved() の保存失敗時は通知しない        |
+| T-05     | SKILL_CREATOR_OUTPUT_READY チャネルに送信する             |
+| T-07a    | SKILL_START のみで SKILL_END がない場合は null            |
+| T-07b    | マーカー間に name がない場合はマーカー属性名を採用        |
+| T-07c    | スキル名スペースを dirName ハイフン区切りにスラッグ化     |
+| T-07d    | パス区切りや `..` を含むスキル名でも安全な dirName にする |
+| T-07e    | NULL バイトを含むスキル名でも安全な dirName にする        |
+| T-07f    | パース失敗時は何も実行しない                              |
+| T-08a    | mkdir 失敗時は Error をスロー                             |
+| T-08b    | writeFile 失敗時は Error をスロー                         |
+| T-09a    | Registry 失敗でもエラーをスローせず処理続行               |
+| T-09b    | 同名スキルを上書き登録できる                              |
+| T-10a    | saveSkill 失敗時は通知せずに終了                          |
+| T-10b    | handleOverwriteApproved で saveSkill 失敗時は通知しない   |
+
+### SkillCreatorResultPanel テスト（4件）
+
+| テストID | テスト内容                                         |
+| -------- | -------------------------------------------------- |
+| T-06     | スキル名と SKILL.md 内容プレビューを表示する       |
+| T-06b    | payload が null の場合は何も表示しない             |
+| T-06c    | requiresOverwriteConfirm true で上書きボタンを表示 |
+| T-06d    | スキルを開くボタンで onOpenSkill が呼ばれる        |
+
+### SkillRegistry テスト（7件）
+
+| テスト内容                                            |
+| ----------------------------------------------------- |
+| register でエントリを追加し get で取得できる          |
+| unregister でエントリを削除できる                     |
+| getAll で全エントリを返す                             |
+| register 同名スキルは上書きされる                     |
+| registerFromPath で SKILL.md を読み込んで登録する     |
+| 同名スキルが存在する場合は上書き登録する              |
+| name: フィールドが存在しない場合は Error をスローする |
 
 ## 参照資料
 

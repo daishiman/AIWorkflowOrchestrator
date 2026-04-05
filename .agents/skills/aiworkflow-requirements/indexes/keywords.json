@@ -1,6 +1,9 @@
 {
-  "generated": "2026-04-05T03:13:20.032Z",
-  "totalKeywords": 2719,
+  "generated": "2026-04-04T13:55:41.051Z",
+  "totalKeywords": 2693,
+  "generated": "2026-04-04T14:28:00.568Z",
+  "totalKeywords": 2693,
+
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2239,6 +2242,7 @@
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
+
     "システム": [
       "api-ipc-system-core.md",
       "api-ipc-system-details.md",
@@ -12689,6 +12693,54 @@
     ],
     "resilience": [
       "workflow-workspace-preview-search-resilience-guard.md"
+    ],
+    "persist": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "persistResult": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "persistError": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "parseLlmResponseToContent": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "SkillFileWriter": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "toSlug": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "パストラバーサル": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "PATH_TRAVERSAL": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "二重パイプライン": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "Setter Injection": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "TASK-P0-05": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
+    ],
+    "rollback": [
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
     ]
   }
 }
