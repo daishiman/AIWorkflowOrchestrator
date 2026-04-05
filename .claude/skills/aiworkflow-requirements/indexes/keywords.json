@@ -1,6 +1,8 @@
 {
   "generated": "2026-04-05T03:13:20.032Z",
   "totalKeywords": 2719,
+  "generated": "2026-04-05T00:46:37.038Z",
+  "totalKeywords": 2700,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1361,6 +1363,7 @@
       "api-ipc-agent-core.md",
       "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
+      "lessons-learned-current.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "security-electron-ipc-advanced.md",
       "task-workflow-completed-skill-lifecycle-design.md"
@@ -2816,6 +2819,7 @@
       "interfaces-agent-sdk-executor-details.md",
       "interfaces-agent-sdk-integration.md",
       "interfaces-agent-sdk-skill-advanced.md",
+      "lessons-learned-current.md",
       "lessons-learned-rag-embedding-runtime.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -6986,6 +6990,13 @@
     "Output": [
       "lessons-learned-current.md"
     ],
+    "SkillFileWriter": [
+      "lessons-learned-current.md"
+    ],
+    "persist": [
+      "lessons-learned-current.md",
+      "lessons-learned-skill-share-debug-lifecycle-design.md"
+    ],
     "Policy": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "security-electron-ipc-core.md"
@@ -7848,9 +7859,6 @@
       "lessons-learned-skill-share-debug-lifecycle-design.md"
     ],
     "駆動ライフサイクル統合設計": [
-      "lessons-learned-skill-share-debug-lifecycle-design.md"
-    ],
-    "persist": [
       "lessons-learned-skill-share-debug-lifecycle-design.md"
     ],
     "ハードニングでの教訓": [

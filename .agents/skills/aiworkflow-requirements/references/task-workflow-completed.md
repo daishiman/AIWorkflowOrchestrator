@@ -5,6 +5,67 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-05 execute() → SkillFileWriter persist 統合（2026-04-05）
+
+| 項目       | 値                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-05                                                                                                                      |
+| ステータス | **実装完了（Phase-12 進行中）**                                                                                                 |
+| タイプ     | implementation / persist 統合                                                                                                   |
+| 優先度     | P0                                                                                                                              |
+| 完了日     | 2026-04-05                                                                                                                      |
+| ブランチ   | `spec/task-p0-05-execute-skill-file-writer-integration`                                                                         |
+| 成果物     | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（persist 統合）、`apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.persist-integration.test.ts`（22件）、`apps/desktop/src/main/services/runtime/__tests__/SkillCreatorOutputHandler.test.ts`（22件） |
+
+#### 実施内容
+
+- `RuntimeSkillCreatorFacade.ts` の Step 3.5-3.6 で `parseLlmResponseToContent()` → `SkillFileWriter.persist()` パイプラインを実装
+- `executeResult` に `persistResult` / `persistError` フィールドを追加
+- 二重パイプライン設計:
+  - A経路: Facade.execute() → parseLlmResponseToContent() → SkillFileWriter.persist()
+  - B経路: SkillCreatorOutputHandler.handleSessionComplete() → SkillRegistry
+- パストラバーサル対策: `toSlug()` による slug 変換 + `PATH_TRAVERSAL` エラーコードバリデーション
+- 部分書き込み時のロールバック機能（`SkillFileWriter.rollback()`）
+- LLMAdapter Setter Injection パターン（非同期 DI、P34 準拠）
+
+#### 検証
+
+- 統合テスト 22 件 PASS（`RuntimeSkillCreatorFacade.persist-integration.test.ts`）
+- OutputHandler テスト 22 件 PASS（`SkillCreatorOutputHandler.test.ts`）
+
+---
+
+### タスク: UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 SkillStreamMessage と SkillCreatorSdkEvent 出力型統合（2026-04-04）
+
+| 項目       | 値                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                                            |
+| ステータス | **完了**                                                                                                   |
+| タイプ     | implementation / 型統合                                                                                    |
+| 優先度     | 低（low）                                                                                                  |
+| 完了日     | 2026-04-04                                                                                                 |
+| ブランチ   | `feat/ut-rt-06-skill-stream-skce-type-unification`                                                         |
+| 成果物     | `packages/shared/src/types/skillExecutor.ts`、`apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` |
+
+#### 実施内容
+
+- 新規型3件を `packages/shared` に追加:
+  - `SdkOutputMessageBase` — 共通基底型（`timestamp?: number`）
+  - `SkillExecutorStreamMessage` — 実行lane出力型（timestamp 必須、`SdkOutputMessageBase` 継承）
+  - `SkillExecutorStreamMessageType` — "text" / "tool_use" / "error" / "complete" / "retry"
+- `SkillCreatorSdkEvent` を `SdkOutputMessageBase` 継承に更新（timestamp 省略可のまま維持）
+- 新規IPCチャンネル4件追加: `SKILL_CREATOR_GET_ADAPTER_STATUS` / `SKILL_CREATOR_ADAPTER_STATUS_CHANGED` / `SKILL_CREATOR_NORMALIZE_SDK_MESSAGES` / `SKILL_CREATOR_GET_GOVERNANCE_STATE`
+- `SkillExecutor.ts` 内ローカル型を `@deprecated` エイリアスに変更（後方互換維持）
+- `RuntimeSkillCreatorFacade` に遅延注入（非同期初期化）パターンを適用
+
+#### 検証証跡
+
+- テスト: 32/32 PASS、Line Coverage 99.35% / Branch 91.22% / Function 100%
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop lint`: 0 errors
+
+---
+
 ### タスク: TASK-P0-01 verify 実行エンジン（Layer 1/2 コア + Layer 3/4 互換）の仕様整合（2026-04-04）
 
 | 項目       | 値                                                                                                                        |
@@ -574,6 +635,23 @@
 - `packages/shared/src/types/skillCreator.ts` に `LLMAdapterStatus` / `SkillCreatorErrorCode` / `RuntimeSkillCreatorPlanErrorResponse` を追加し、`RuntimeSkillCreatorPlanResponse` を union 拡張
 - `ipc/index.ts` の fire-and-forget 初期化 catch で `setLLMAdapterFailed(reason)` を呼び、`failed` 状態を記録
 - IPC 境界の outer/inner 契約（`IpcResult.success` と `data.success`）を `skillCreatorHandlers.runtime.test.ts` で検証
+
+#### 2026-04-04 追補（IPC / UI close-out）
+
+- `apps/desktop/src/renderer/components/skill/LLMAdapterErrorBanner.tsx` を追加し、`SkillLifecyclePanel` 上部に `role="alert"` の失敗バナーを表示するようにした
+- `apps/desktop/src/renderer/components/skill/hooks/useLLMAdapterStatus.ts` を追加し、Main からの pull + push で `LLMAdapterStatusPayload` を同期するようにした
+- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` に banner を統合し、`onOpenWizard` から設定導線を再利用するようにした
+- Phase 11 のスクリーンショット証跡を current build から再取得し、placeholder PNG を実画像へ差し替えた
+- `api-ipc-agent-core.md` / `ui-ux-feature-components-core.md` / `implementation-guide.md` / `index.md` / `topic-map.md` / `keywords.json` を current facts に同期した
+- Phase 13 はユーザー指示待ちのため blocked を維持し、PR は作成していない
+
+#### 追補の検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/hooks/__tests__/useLLMAdapterStatus.test.ts src/renderer/components/skill/__tests__/LLMAdapterErrorBanner.test.tsx src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/ipc/__tests__/creatorHandlers.adapterStatus.test.ts src/preload/__tests__/skill-creator-api.runtime.test.ts src/preload/__tests__/skill-creator-api.test.ts`: PASS
+- `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator.contract-parity.test.ts`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/task-rt-01-llm-adapter-error-propagation`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/task-rt-01-llm-adapter-error-propagation --json`: PASS
+- `outputs/phase-11/screenshots/TC-11-01.png` 〜 `TC-11-06.png`: current build で再取得済み
 
 ---
 
@@ -2480,3 +2558,28 @@
 
 - `SkillLifecyclePanel.tsx` で Layer3/4 チェック結果をグループ別アコーディオン・severity アイコン付き表示を実装
 - Phase 3 レビュー完了
+
+---
+
+### タスク: UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 SkillStreamMessage と SkillCreatorSdkEvent の出力型統合（2026-04-04）
+
+| 項目       | 値                                                                             |
+| ---------- | ------------------------------------------------------------------------------ |
+| タスクID   | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                |
+| ステータス | **完了**                                                                       |
+| タイプ     | implementation                                                                 |
+| 優先度     | low                                                                            |
+| 完了日     | 2026-04-04                                                                     |
+
+#### 実施内容
+
+- `packages/shared/src/types/skillCreator.ts` に `SdkOutputMessageBase`（共通基底型）を追加
+- `SkillExecutorStreamMessage` / `SkillExecutorStreamMessageType` を新設（旧: `SkillExecutor.ts` ローカル `SkillStreamMessage` / `SkillStreamMessageType` を shared に集約）
+- `SkillCreatorSdkEvent` が `SdkOutputMessageBase` を継承するよう変更
+- `packages/shared/index.ts` / `packages/shared/src/types/index.ts` に新型を export 追加
+- `apps/desktop/src/main/services/skill/SkillExecutor.ts` のローカル型定義を `@deprecated` 型エイリアスに置き換え、`@repo/shared` から `SkillExecutorStreamMessage` をインポート
+
+#### 検証
+
+- `pnpm typecheck` PASS
+- `pnpm lint` 0 errors

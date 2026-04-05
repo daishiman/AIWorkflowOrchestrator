@@ -79,13 +79,14 @@ async registerFromPath(skillPath: string): Promise<void> {
     );
   }
   const skillName = nameMatch[1].trim();
-  // 既存エントリを削除して再登録
   this.unregister(skillName);
   this.register({ name: skillName, path: skillPath, content });
 }
 ```
 
-### Task 5-4: `SkillCreatorOutputHandler.ts` の新規実装
+### Task 5-4: `SkillCreatorOutputHandler.ts` の実装
+
+`SkillCreatorOutputHandler` は `SkillCreatorIpcBridge` から呼ばれる別系統パイプラインとして実装する。マーカー付き SDK 出力を抽出し、path-safe な `dirName` に変換して保存・登録・IPC 通知までを担う。
 
 ```typescript
 // apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts
@@ -93,12 +94,16 @@ async registerFromPath(skillPath: string): Promise<void> {
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import type { WebContents } from "electron";
-import { SKILL_CREATOR_OUTPUT_READY } from "@repo/shared/src/ipc/channels";
+import { SKILL_CREATOR_OUTPUT_READY } from "@repo/shared/ipc/channels";
 import type {
   ParsedSkillOutput,
   SkillOutputReadyPayload,
-} from "@repo/shared/src/types/skillCreator";
+} from "@repo/shared/types/skillCreator";
 import type { SkillRegistry } from "./SkillRegistry";
+
+export const SKILL_START_MARKER_RE = /<!-- SKILL_START:\s*(.+?)\s*-->/;
+export const SKILL_END_MARKER_RE = /<!-- SKILL_END:\s*(.+?)\s*-->/;
+const NAME_PATTERN = /^name:\s*(.+)$/m;
 
 export class SkillCreatorOutputHandler {
   constructor(
@@ -107,28 +112,44 @@ export class SkillCreatorOutputHandler {
     private readonly webContents: WebContents,
   ) {}
 
+  private toSlug(name: string): string {
+    const slug = name
+      .toLowerCase()
+      .replace(/\s+/g, "-")
+      .replace(/[\\/]+/g, "-")
+      .replace(/\.\.+/g, "-")
+      .replace(/\0/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "");
+
+    return slug || "unnamed-skill";
+  }
+
   extractSkillFromOutput(sessionOutput: string): ParsedSkillOutput | null {
-    const startMarker = "<!-- SKILL_START -->";
-    const endMarker = "<!-- SKILL_END -->";
-    const startIdx = sessionOutput.indexOf(startMarker);
-    const endIdx = sessionOutput.indexOf(endMarker);
+    const startMatch = sessionOutput.match(SKILL_START_MARKER_RE);
+    const endMatch = sessionOutput.match(SKILL_END_MARKER_RE);
 
-    if (startIdx === -1 || endIdx === -1 || endIdx <= startIdx) {
+    const startIndex = startMatch?.index;
+    const endIndex = endMatch?.index;
+    const hasValidMarkers =
+      !!startMatch &&
+      !!endMatch &&
+      startIndex !== undefined &&
+      endIndex !== undefined &&
+      endIndex > startIndex;
+
+    const content = hasValidMarkers
+      ? sessionOutput.slice(startIndex + startMatch[0].length, endIndex).trim()
+      : sessionOutput.trim();
+
+    const nameMatch = content.match(NAME_PATTERN);
+    const markerName = hasValidMarkers ? startMatch?.[1]?.trim() : undefined;
+    const name = nameMatch?.[1]?.trim() ?? markerName;
+    if (!name) {
       return null;
     }
 
-    const content = sessionOutput
-      .slice(startIdx + startMarker.length, endIdx)
-      .trim();
-
-    const nameMatch = content.match(/^name:\s*(.+)$/m);
-    if (!nameMatch) {
-      return null;
-    }
-    const name = nameMatch[1].trim();
-    const dirName = name.toLowerCase().replace(/\s+/g, "-");
-
-    return { name, content, dirName };
+    return { name, content, dirName: this.toSlug(name) };
   }
 
   async saveSkill(skill: ParsedSkillOutput): Promise<string> {
@@ -176,8 +197,6 @@ export class SkillCreatorOutputHandler {
       // ファイルが存在しない場合は上書き確認不要
     }
 
-    // 上書き確認が必要な場合は通知して処理を一時停止
-    // （UI 側でユーザー確認後に保存再開する設計）
     if (requiresOverwriteConfirm) {
       this.notifyOutputReady({
         skillName: skill.name,
@@ -194,7 +213,6 @@ export class SkillCreatorOutputHandler {
       await this.registerToRegistry(savedPath);
     } catch (err) {
       console.error("[SkillCreatorOutputHandler] Registry 登録失敗:", err);
-      // Registry 登録失敗でも UI 通知は続行する
     }
 
     this.notifyOutputReady({
@@ -207,71 +225,34 @@ export class SkillCreatorOutputHandler {
 }
 ```
 
-### Task 5-5: `SkillCreatorResultPanel.tsx` の新規実装
+### Task 5-5: `SkillCreatorResultPanel.tsx` の実装
 
-```typescript
-// apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx
+`SkillCreatorResultPanel` は `SkillOutputReadyPayload` を受け取り、スキル名と SKILL.md プレビューを表示する。
+`requiresOverwriteConfirm` が `true` の場合は上書き確認ボタンを表示する。
 
-import React from "react";
-import type { SkillOutputReadyPayload } from "@repo/shared/src/types/skillCreator";
+### Task 5-6: 実装確認
 
-interface SkillCreatorResultPanelProps {
-  payload: SkillOutputReadyPayload | null;
-  onOpenSkill: (savedPath: string) => void;
-}
-
-export const SkillCreatorResultPanel: React.FC<
-  SkillCreatorResultPanelProps
-> = ({ payload, onOpenSkill }) => {
-  if (!payload) {
-    return null;
-  }
-
-  return (
-    <div className="skill-creator-result-panel">
-      <h2>スキルを生成しました: {payload.skillName}</h2>
-      {payload.requiresOverwriteConfirm && (
-        <div className="overwrite-warning">
-          同名のスキルが既に存在します。上書きしますか？
-        </div>
-      )}
-      <p className="saved-path">{payload.savedPath}</p>
-      <pre className="skill-preview">
-        <code>{payload.content}</code>
-      </pre>
-      <button onClick={() => onOpenSkill(payload.savedPath)}>
-        スキルを開く
-      </button>
-    </div>
-  );
-};
-```
+`SkillCreatorOutputHandler.test.ts` と `SkillCreatorResultPanel.test.tsx` が T-01 から T-06 で Green になることを確認する。
 
 ## 参照資料
 
 | 資料名         | パス                                                                                                                                                              |
 | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Phase 2 設計   | `docs/30-workflows/skill-creator-agent-sdk-lane/task-spec-sdk-interactive-skill-creator-v3/step-03-seq-task-04-skill-output-integration/phase-2-design.md`        |
 | Phase 4 テスト | `docs/30-workflows/skill-creator-agent-sdk-lane/task-spec-sdk-interactive-skill-creator-v3/step-03-seq-task-04-skill-output-integration/phase-4-test-creation.md` |
 
 ## 成果物
 
-| 成果物                       | パス                                                                             | 形式       |
-| ---------------------------- | -------------------------------------------------------------------------------- | ---------- |
-| 実装書（本ファイル）         | `docs/.../phase-5-implementation.md`                                             | Markdown   |
-| SkillCreatorOutputHandler.ts | `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts`            | TypeScript |
-| SkillCreatorResultPanel.tsx  | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx` | TypeScript |
-| SkillRegistry.ts（更新）     | `apps/desktop/src/main/services/runtime/SkillRegistry.ts`                        | TypeScript |
-| channels.ts（追記）          | `packages/shared/src/ipc/channels.ts`                                            | TypeScript |
-| skillCreator.ts（型追加）    | `packages/shared/src/types/skillCreator.ts`                                      | TypeScript |
+| 成果物               | パス                                                                                                                                                               | 形式     |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
+| 実装書（本ファイル） | `docs/30-workflows/skill-creator-agent-sdk-lane/task-spec-sdk-interactive-skill-creator-v3/step-03-seq-task-04-skill-output-integration/phase-5-implementation.md` | Markdown |
 
 ## 完了条件
 
-- [ ] `SKILL_CREATOR_OUTPUT_READY` 定数を `channels.ts` に追記した
-- [ ] `ParsedSkillOutput` / `SkillOutputReadyPayload` 型を `skillCreator.ts` に追加した
-- [ ] `SkillRegistry.registerFromPath()` を実装した
-- [ ] `SkillCreatorOutputHandler` の全メソッドを実装した
-- [ ] `SkillCreatorResultPanel` コンポーネントを実装した
-- [ ] T-01 から T-06 が全件 PASS した（Green 状態）
+- [ ] `SKILL_CREATOR_OUTPUT_READY` を追加した
+- [ ] `ParsedSkillOutput` / `SkillOutputReadyPayload` を追加した
+- [ ] `SkillRegistry.registerFromPath()` を追加した
+- [ ] `SkillCreatorOutputHandler` を path-safe かつ current facts で実装した
+- [ ] `SkillCreatorResultPanel` を実装した
+- [ ] T-01 から T-06 が PASS することを確認した
 
 ## 次の Phase: Phase 6 (phase-6-test-expansion.md)

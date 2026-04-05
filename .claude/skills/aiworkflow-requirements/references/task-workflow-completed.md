@@ -5,6 +5,36 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-05 execute() → SkillFileWriter persist 統合（2026-04-05）
+
+| 項目       | 値                                                                                                                              |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-05                                                                                                                      |
+| ステータス | **実装完了（Phase-12 進行中）**                                                                                                 |
+| タイプ     | implementation / persist 統合                                                                                                   |
+| 優先度     | P0                                                                                                                              |
+| 完了日     | 2026-04-05                                                                                                                      |
+| ブランチ   | `spec/task-p0-05-execute-skill-file-writer-integration`                                                                         |
+| 成果物     | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（persist 統合）、`apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.persist-integration.test.ts`（22件）、`apps/desktop/src/main/services/runtime/__tests__/SkillCreatorOutputHandler.test.ts`（22件） |
+
+#### 実施内容
+
+- `RuntimeSkillCreatorFacade.ts` の Step 3.5-3.6 で `parseLlmResponseToContent()` → `SkillFileWriter.persist()` パイプラインを実装
+- `executeResult` に `persistResult` / `persistError` フィールドを追加
+- 二重パイプライン設計:
+  - A経路: Facade.execute() → parseLlmResponseToContent() → SkillFileWriter.persist()
+  - B経路: SkillCreatorOutputHandler.handleSessionComplete() → SkillRegistry
+- パストラバーサル対策: `toSlug()` による slug 変換 + `PATH_TRAVERSAL` エラーコードバリデーション
+- 部分書き込み時のロールバック機能（`SkillFileWriter.rollback()`）
+- LLMAdapter Setter Injection パターン（非同期 DI、P34 準拠）
+
+#### 検証
+
+- 統合テスト 22 件 PASS（`RuntimeSkillCreatorFacade.persist-integration.test.ts`）
+- OutputHandler テスト 22 件 PASS（`SkillCreatorOutputHandler.test.ts`）
+
+---
+
 ### タスク: UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 SkillStreamMessage と SkillCreatorSdkEvent 出力型統合（2026-04-04）
 
 | 項目       | 値                                                                                                         |

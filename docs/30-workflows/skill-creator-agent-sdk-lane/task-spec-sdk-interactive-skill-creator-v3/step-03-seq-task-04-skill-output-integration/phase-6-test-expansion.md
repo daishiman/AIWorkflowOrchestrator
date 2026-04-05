@@ -28,19 +28,22 @@ describe("extractSkillFromOutput - エッジケース", () => {
       mockSkillRegistry,
       mockWebContents,
     );
-    const output = "前文 <!-- SKILL_START --> name: broken-skill 後文";
+    const output =
+      "前文 <!-- SKILL_START: broken-skill --> name: broken-skill 後文";
     expect(handler.extractSkillFromOutput(output)).toBeNull();
   });
 
-  it("T-07b: マーカー間に name フィールドがない場合は null を返す", () => {
+  it("T-07b: マーカー間に name フィールドがない場合はマーカー属性名を採用する", () => {
     const handler = new SkillCreatorOutputHandler(
       "/project",
       mockSkillRegistry,
       mockWebContents,
     );
     const output =
-      "<!-- SKILL_START --> description: nameなし <!-- SKILL_END -->";
-    expect(handler.extractSkillFromOutput(output)).toBeNull();
+      "<!-- SKILL_START: broken-skill --> description: nameなし <!-- SKILL_END: broken-skill -->";
+    const result = handler.extractSkillFromOutput(output);
+    expect(result).not.toBeNull();
+    expect(result?.name).toBe("broken-skill");
   });
 
   it("T-07c: スキル名にスペースが含まれる場合は dirName をハイフン区切りにスラッグ化する", () => {
@@ -50,12 +53,36 @@ describe("extractSkillFromOutput - エッジケース", () => {
       mockWebContents,
     );
     const output =
-      "<!-- SKILL_START -->\nname: My Test Skill\n<!-- SKILL_END -->";
+      "<!-- SKILL_START: My Test Skill -->\nname: My Test Skill\n<!-- SKILL_END: My Test Skill -->";
     const result = handler.extractSkillFromOutput(output);
     expect(result?.dirName).toBe("my-test-skill");
   });
 
-  it("T-07d: handleSessionComplete でパース失敗時は何も実行しない", async () => {
+  it("T-07d: スキル名にパス区切りや '..' が含まれても安全な dirName に正規化する", () => {
+    const handler = new SkillCreatorOutputHandler(
+      "/project",
+      mockSkillRegistry,
+      mockWebContents,
+    );
+    const output =
+      "<!-- SKILL_START: ../malicious -->\nname: ../malicious\n<!-- SKILL_END: ../malicious -->";
+    const result = handler.extractSkillFromOutput(output);
+    expect(result?.dirName).toBe("malicious");
+  });
+
+  it("T-07e: null バイトを含むスキル名も安全な dirName に正規化する", () => {
+    const handler = new SkillCreatorOutputHandler(
+      "/project",
+      mockSkillRegistry,
+      mockWebContents,
+    );
+    const output =
+      "<!-- SKILL_START: skill\\x00name -->\nname: skill\\x00name\n<!-- SKILL_END: skill\\x00name -->";
+    const result = handler.extractSkillFromOutput(output);
+    expect(result?.dirName).toBe("skill-name");
+  });
+
+  it("T-07f: handleSessionComplete でパース失敗時は何も実行しない", async () => {
     const mockRegistry = { registerFromPath: vi.fn() };
     const mockWC = { send: vi.fn() };
     const handler = new SkillCreatorOutputHandler(
@@ -146,7 +173,7 @@ describe("registerToRegistry - 重複登録", () => {
     );
 
     const sessionOutput =
-      "<!-- SKILL_START -->\nname: my-skill\n<!-- SKILL_END -->";
+      "<!-- SKILL_START: my-skill -->\nname: my-skill\n<!-- SKILL_END: my-skill -->";
 
     // Registry 失敗でもエラーがスローされないこと
     await expect(

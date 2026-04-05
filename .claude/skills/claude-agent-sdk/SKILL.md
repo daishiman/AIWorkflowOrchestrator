@@ -105,6 +105,7 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 | パス制限・セキュリティ       | resolvePathSafely, null byte チェック, path traversal対策 | Phase 2, 3 | security-sandboxing.md（TASK-P0-09）                         |
 | External API IPC統合         | RequestExternalApiConfig custom tool, 並行フロー, 秘匿化 | Phase 2    | electron-ipc.md（TASK-SDK-SC-03）                            |
 | Skill Output Integration     | output-ready / overwrite-approved / open-skill IPC, SkillCreatorOutputHandler, SkillRegistry, SkillCreatorResultPanel | Phase 2, 3 | electron-ipc.md（TASK-SDK-SC-04）                 |
+| Persist統合（execute→SkillFileWriter） | execute() Step 3.5-3.6 で parseLlmResponseToContent → SkillFileWriter.persist、二重パイプライン設計（A経路/B経路） | Phase 2, 3 | implementation-artifacts.md（TASK-P0-05） |
 
 ## パターン選択ガイド
 
@@ -371,6 +372,7 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 
 | Version | Date       | Changes                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 2.19.0  | 2026-04-05 | TASK-P0-05 execute()→SkillFileWriter persist統合反映: 二重パイプライン設計（A経路: Facade→parseLlmResponseToContent→SkillFileWriter.persist / B経路: OutputHandler→SkillRegistry）、Setter Injection optional inject、persistResult/persistError型追加をTask仕様ナビ・implementation-artifacts.mdに追記 |
 | 2.18.0  | 2026-04-04 | TASK-P0-01 verify 実行エンジン反映: SkillCreatorVerificationEngine Layer 1-4 verify チェック 19 件（L1-001〜L4-003）の実装完了。Task仕様ナビに Verify Engine 行追加、implementation-artifacts.md に成果物記録、electron-ipc.md に verify IPC チャネル追記 |
 | 2.17.0  | 2026-04-04 | TASK-SDK-SC-04 Skill Output Integration反映: Skill Output Integration（output-ready / overwrite-approved / open-skill IPC 3チャネル）・SkillCreatorOutputHandler・SkillRegistry・SkillCreatorResultPanel・onOutputReady() Preload API を Task仕様ナビに追記 |
 | 2.16.0  | 2026-04-03 | TASK-SDK-SC-03 External API Support反映: RequestExternalApiConfig custom toolパターン・並行フロー管理・sanitizeForPrompt秘匿化パターンを electron-ipc.md に追加。Task仕様ナビ・implementation-artifacts.md に External API IPC 成果物を追記 |

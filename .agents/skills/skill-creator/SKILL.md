@@ -232,6 +232,23 @@ SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `too
 
 **結果型**: `RuntimeSkillCreatorVerifyAndImproveResult`（`finalStatus`, `totalAttempts`, `finalChecks`, `loopExhausted`, `errorMessage?`, `workflowSnapshot`）
 
+#### execute() → SkillFileWriter persist 統合（TASK-P0-05）
+
+`execute()` の Step 3.5-3.6 で LLM 応答からスキルコンテンツを抽出し、ファイルシステムへ永続化する。
+
+**二重パイプライン設計**:
+
+| 経路 | パイプライン | 正式度 | 説明 |
+| --- | --- | --- | --- |
+| A経路 | Facade → `parseLlmResponseToContent()` → `SkillFileWriter.persist()` | 正式経路 | execute() 内で直接コンテンツ抽出・永続化 |
+| B経路 | `SkillCreatorOutputHandler` → `SkillRegistry` | 別系統 | IPC Bridge 経由のセッション完了時パイプライン |
+
+**Setter Injection**: `SkillFileWriter` は `RuntimeSkillCreatorFacadeDeps.skillFileWriter?` で optional inject。未注入時は `console.warn` で警告し persist をスキップ（graceful degradation）。
+
+**結果型拡張**: `SkillExecuteResult` に以下のフィールドを追加:
+- `persistResult: PersistResult | null` - persist 成功時の書き込み結果
+- `persistError: string | null` - persist 中の例外メッセージ（スキル実行自体の成否とは独立）
+
 ### Orchestrate モード
 
 実行エンジン選択: `claude` | `codex` | `gemini` | `claude-to-codex`
@@ -385,7 +402,9 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 | Version      | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ------------ | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **10.41.0**  | **2026-04-05** | **TASK-P0-05 execute()→SkillFileWriter persist統合を反映**: 二重パイプライン設計（A経路: Facade→parseLlmResponseToContent→SkillFileWriter.persist / B経路: OutputHandler→SkillRegistry）の仕様、Setter Injection optional inject パターン、`SkillExecuteResult` の `persistResult` / `persistError` フィールド追加を「execute() → SkillFileWriter persist 統合（TASK-P0-05）」セクションとして追記。`references/patterns.md` にも二重パイプライン・Setter Injection パターンを追加 |
 | **10.40.1**  | **2026-04-04** | **TASK-P0-03 workflow-manifest.json 本番配置完了**: canonical（`.claude/skills/skill-creator/workflow-manifest.json`）と mirror（`.agents/skills/skill-creator/workflow-manifest.json`）に 5-phase / 7-resource / 10-hook の manifest を配置確定。ManifestLoader.production-manifest テスト全 17 ケース PASS。後続タスク P0-04/P0-07/P0-09 の基盤固定 |
+
 | **10.40.0**  | **2026-03-30** | **TASK-P0-02 verify→improve→re-verify 閉ループを反映**: `verifyAndImproveLoop()` の閉ループ仕様（`maxImproveRetry` デフォルト3/範囲1-10の自動クランプ、feedback memory による直前改善要約の次回 feedback 合成、`failedChecks` 限定改善入力）を「verify → improve → re-verify 閉ループ（TASK-P0-02）」セクションとして追記。`RuntimeSkillCreatorVerifyAndImproveResult` 型と `RuntimeSkillCreatorFacadeDeps.maxImproveRetry` フィールドを文書化 |
 | **10.39.1**  | **2026-03-30** | **TASK-RT-05 multi_select user input kind を反映**: ユーザー入力ブリッジを 5 種へ更新し、`multi_select` と `selectedOptionIds` 契約を runtime workflow current facts に同期。Renderer question host の kind 切替時 state reset と submit disable 条件も close-out 観点へ追加 |
 | **10.39.0**  | **2026-03-29** | **TASK-RT-06 SDKMessage 正規化 + TASK-SDK-08 Session Persistence を反映**: `SkillCreatorSdkEvent`（eventType: init/assistant/result/error）/ `SkillCreatorSdkEventSourceProvenance` 型、IPC チャネル `skill-creator:normalize-sdk-messages`、`sdkMessageNormalizer.ts` の追加を Runtime ワークフロー IPC テーブルへ追記。`SkillCreatorPersistedWorkflowCheckpoint`（phase boundary checkpoint）/ `WorkflowCheckpointLease`（stale write guard）/ `ResumeCompatibilityResult` / `ResumeIncompatibilityReason` 型、`SkillCreatorWorkflowEngine.hydrateFromCheckpoint()` メソッドを Session Persistence セクションへ追記 |

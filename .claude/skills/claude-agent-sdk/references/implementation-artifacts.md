@@ -256,3 +256,32 @@
 - **依存注入**: `RuntimeSkillCreatorFacade` に `verificationEngine?` を optional inject し、未注入時は空配列を返す graceful degradation
 - **Severity Routing**: `verifyAndImproveLoop()` が `severity === "info"` を pass、`warning` / `error` を improve 対象として routing
 - **IPC Channels**: `skill-creator:get-verify-detail`, `skill-creator:request-reverify` / `skill-creator:reverify-workflow`
+
+---
+
+## TASK-P0-05 execute() → SkillFileWriter persist 統合
+
+### ドキュメント
+
+| ドキュメント | パス | 説明 |
+| --- | --- | --- |
+| タスク仕様書 | `docs/30-workflows/skill-creator-agent-sdk-lane/task-spec-sdk-interactive-skill-creator-v3/step-03-seq-task-04-skill-output-integration/` | persist 統合仕様 |
+
+### 実装ファイル
+
+| ファイル | パス | 説明 |
+| --- | --- | --- |
+| Facade（Step 3.5-3.6） | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `execute()` 内で `parseLlmResponseToContent()` → `SkillFileWriter.persist()` |
+| OutputHandler（B経路） | `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts` | SDK セッション完了時の別系統パイプライン（IPC Bridge 経由） |
+| parseLlmResponseToContent | `apps/desktop/src/main/services/runtime/parseLlmResponseToContent.ts` | LLM 応答から SKILL.md コンテンツを抽出 |
+| SkillFileWriter | `apps/desktop/src/main/services/skill/SkillFileWriter.ts` | `persist(skillName, content, options)` でファイルシステムへ書き込み |
+| 型定義 | `packages/shared/src/types/skillCreator.ts` | `SkillExecuteResult` に `persistResult` / `persistError` フィールド追加 |
+| 統合テスト | `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.persist-integration.test.ts` | persist 統合テスト 44 件 |
+| OutputHandler テスト | `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorOutputHandler.test.ts` | OutputHandler 改善テスト |
+
+主要パターン:
+
+- **二重パイプライン設計**: A経路（Facade → `parseLlmResponseToContent` → `SkillFileWriter.persist()`）が正式経路。B経路（`SkillCreatorOutputHandler` → `SkillRegistry`）は IPC Bridge 経由の別系統
+- **Setter Injection**: `SkillFileWriter` は `RuntimeSkillCreatorFacadeDeps.skillFileWriter?` で optional inject。未注入時は `console.warn` で警告し persist をスキップ（graceful degradation）
+- **Governance Hooks**: `execute()` フェーズで `createGovernanceHooks("execute")` を生成し、`onPreToolUse` / `onPostToolUse` をスキル実行に接続
+- **エラー分離**: `persistResult`（成功時の書き込み結果）と `persistError`（persist 中の例外メッセージ）をスキル実行結果とは独立して `SkillExecuteResult` に格納

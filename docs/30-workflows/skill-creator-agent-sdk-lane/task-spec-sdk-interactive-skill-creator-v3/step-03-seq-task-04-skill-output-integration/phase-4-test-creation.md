@@ -29,7 +29,7 @@ TDD の Red フェーズとして、`SkillCreatorOutputHandler` / `SkillCreatorR
 // SkillCreatorOutputHandler.test.ts
 
 describe("extractSkillFromOutput", () => {
-  it("T-01: <!-- SKILL_START --> と <!-- SKILL_END --> マーカーで囲まれた内容を抽出する", () => {
+  it("T-01: <!-- SKILL_START: {skillName} --> と <!-- SKILL_END: {skillName} --> マーカーで囲まれた内容を抽出する", () => {
     const handler = new SkillCreatorOutputHandler(
       "/project",
       mockSkillRegistry,
@@ -37,10 +37,10 @@ describe("extractSkillFromOutput", () => {
     );
     const sessionOutput = `
 セッション実行中...
-<!-- SKILL_START -->
+<!-- SKILL_START: my-test-skill -->
 name: my-test-skill
 description: テスト用スキル
-<!-- SKILL_END -->
+<!-- SKILL_END: my-test-skill -->
 セッション終了
     `;
     const result = handler.extractSkillFromOutput(sessionOutput);
@@ -51,14 +51,37 @@ description: テスト用スキル
     expect(result?.dirName).toBe("my-test-skill");
   });
 
-  it("T-01b: マーカーが存在しない場合は null を返す", () => {
+  it("T-01b: マーカーが存在しない場合でも name があればフォールバック抽出する", () => {
     const handler = new SkillCreatorOutputHandler(
       "/project",
       mockSkillRegistry,
       mockWebContents,
     );
-    const result = handler.extractSkillFromOutput("マーカーなしの出力");
-    expect(result).toBeNull();
+    const sessionOutput = `
+name: fallback-skill
+description: フォールバック
+`;
+    const result = handler.extractSkillFromOutput(sessionOutput);
+    expect(result).not.toBeNull();
+    expect(result?.name).toBe("fallback-skill");
+    expect(result?.dirName).toBe("fallback-skill");
+  });
+
+  it("T-01c: マーカー内に name がない場合はマーカー属性名を採用する", () => {
+    const handler = new SkillCreatorOutputHandler(
+      "/project",
+      mockSkillRegistry,
+      mockWebContents,
+    );
+    const sessionOutput = `
+<!-- SKILL_START: marker-skill -->
+description: name なし
+<!-- SKILL_END: marker-skill -->
+`;
+    const result = handler.extractSkillFromOutput(sessionOutput);
+    expect(result).not.toBeNull();
+    expect(result?.name).toBe("marker-skill");
+    expect(result?.dirName).toBe("marker-skill");
   });
 });
 ```
@@ -139,10 +162,10 @@ describe("handleSessionComplete - overwrite confirmation", () => {
     );
 
     const sessionOutput = `
-<!-- SKILL_START -->
+<!-- SKILL_START: existing-skill -->
 name: existing-skill
 description: 既存スキル
-<!-- SKILL_END -->
+<!-- SKILL_END: existing-skill -->
     `;
 
     const notifySpy = vi.spyOn(handler, "notifyOutputReady");

@@ -859,6 +859,7 @@ node scripts/list-specs.js --topics
 | スキル安全性評価・ファイルツリー IPC チャネル | L444 |
 | スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L455 |
 
+
 ### references/api-ipc-agent-details.md
 
 | セクション | 行 |
@@ -2704,6 +2705,23 @@ node scripts/list-specs.js --topics
 | TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L996 |
 | TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1091 |
 | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1145 |
+| 分割ファイル一覧 | L82 |
+| クイックリファレンス: カテゴリ別検索ガイド | L100 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L281 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L613 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L647 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L730 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L746 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L770 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L820 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L845 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L876 |
+| TASK-RT-06 教訓（2026-03-29） | L907 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L929 |
+| TASK-P0-04 教訓（2026-03-30） | L960 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L996 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1092 |
+
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -4263,6 +4281,25 @@ node scripts/list-specs.js --topics
 | 重要設計決定 | L25 |
 | コンポーネント設計パターン早見表 | L40 |
 | テスト戦略 | L48 |
+
+---
+
+## TASK-P0-05 execute→SkillFileWriter persist 統合（2026-04-05）
+
+### 関連トピック
+
+| トピック | 関連ファイル |
+|----------|-------------|
+| persist 統合パイプライン（A経路） | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（Step 3.5-3.6） |
+| parseLlmResponseToContent | `apps/desktop/src/main/services/runtime/parseLlmResponseToContent.ts` |
+| SkillFileWriter persist / rollback | `apps/desktop/src/main/services/skill/SkillFileWriter.ts` |
+| 二重パイプライン（B経路: OutputHandler→SkillRegistry） | `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts` |
+| パストラバーサル対策（toSlug / PATH_TRAVERSAL） | `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts`（toSlug）、`apps/desktop/src/main/services/skill/SkillFileWriter.ts`（PATH_TRAVERSAL） |
+| LLMAdapter Setter Injection | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（setLlmAdapter） |
+| 統合テスト | `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.persist-integration.test.ts`（22件） |
+| OutputHandler テスト | `apps/desktop/src/main/services/runtime/__tests__/SkillCreatorOutputHandler.test.ts`（22件） |
+| 教訓 L-P005-001〜004 | `references/lessons-learned-current.md`（§TASK-P0-05） |
+| 完了記録 | `references/task-workflow-completed.md`（§TASK-P0-05） |
 
 ---
 

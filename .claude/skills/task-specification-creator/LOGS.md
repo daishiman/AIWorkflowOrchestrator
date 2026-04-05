@@ -91,7 +91,6 @@
 - SKILL.md v6.18.23 更新
 
 ---
-||||||| Stash base
 
 ## 2026-04-04 - TASK-UT-RT-01 execute/improve adapter guard Phase 12 close-out sync
 

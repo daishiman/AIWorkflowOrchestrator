@@ -645,3 +645,20 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error --json`: PASS（10/10）
 
 - 2026-04-03: UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 完了 — SkillLifecyclePanel に severity フィルタ（all/warning+/error）を追加
+
+## TASK-P0-05 execute→SkillFileWriter persist 統合 Phase 12 sync（2026-04-05）
+
+- タスク名: TASK-P0-05
+- 種別: implementation / persist 統合 / docs sync
+- 主な反映:
+  - `RuntimeSkillCreatorFacade.ts` Step 3.5-3.6 で `parseLlmResponseToContent()` → `SkillFileWriter.persist()` パイプラインを実装
+  - `executeResult` に `persistResult` / `persistError` フィールドを追加
+  - 二重パイプライン設計（A経路: Facade→persist / B経路: OutputHandler→SkillRegistry）
+  - パストラバーサル対策: `toSlug()` + `PATH_TRAVERSAL` バリデーション + ロールバック
+  - `lessons-learned-current.md` に教訓 4 件追加（L-P005-001〜004）
+  - `task-workflow-completed.md` に完了記録追加
+  - `quick-reference.md` に persist 統合パターン導線を追加
+  - `topic-map.md` / `resource-map.md` / `keywords.json` を更新
+- 検証:
+  - 統合テスト 22 件 PASS（`RuntimeSkillCreatorFacade.persist-integration.test.ts`）
+  - OutputHandler テスト 22 件 PASS（`SkillCreatorOutputHandler.test.ts`）
