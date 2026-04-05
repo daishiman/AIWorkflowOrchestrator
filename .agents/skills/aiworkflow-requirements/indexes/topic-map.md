@@ -294,8 +294,9 @@ node scripts/list-specs.js --topics
 | ドキュメント構成 | L15 |
 | パターン概要 | L28 |
 | アーキテクチャ層の関係 | L100 |
-| 変更履歴 | L135 |
-| 関連ドキュメント | L145 |
+| Strangler Fig パターン（Facade standalone 関数 → 責務モジュールへの段階集約） | L135 |
+| 変更履歴 | L164 |
+| 関連ドキュメント | L175 |
 
 ### references/architecture-rag.md
 
@@ -2673,22 +2674,22 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L81 |
-| クイックリファレンス: カテゴリ別検索ガイド | L99 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L280 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L612 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L646 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L729 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L745 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L769 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L819 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L844 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L875 |
-| TASK-RT-06 教訓（2026-03-29） | L906 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L928 |
-| TASK-P0-04 教訓（2026-03-30） | L959 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L995 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1091 |
+| 分割ファイル一覧 | L82 |
+| クイックリファレンス: カテゴリ別検索ガイド | L100 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L281 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L613 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L647 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L730 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L746 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L770 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L820 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L845 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L876 |
+| TASK-RT-06 教訓（2026-03-29） | L907 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L929 |
+| TASK-P0-04 教訓（2026-03-30） | L960 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L996 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1092 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
