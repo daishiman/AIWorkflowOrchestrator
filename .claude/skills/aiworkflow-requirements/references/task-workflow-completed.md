@@ -469,6 +469,34 @@
 - `npm -s exec vitest -- run apps/desktop/src/main/services/skill/__tests__/SkillExecutor.test.ts apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts apps/desktop/src/main/services/runtime/__tests__/governance/SkillCreatorGovernance.integration.test.ts apps/desktop/src/main/ipc/__tests__/creatorHandlers.test.ts apps/desktop/src/preload/__tests__/skill-creator-api.governance.test.ts`
 - targeted suite PASS
 
+### タスク: TASK-P0-03 workflow-manifest-production-placement（2026-04-04）
+
+| 項目       | 値                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-03                                                                                  |
+| ステータス | **完了**                                                                                    |
+| タイプ     | NON_VISUAL / manifest placement                                                             |
+| 優先度     | 高                                                                                          |
+| 完了日     | 2026-04-04                                                                                  |
+| 対象       | `workflow-manifest.json` の canonical/mirror 配置確定                                       |
+| 成果物     | `docs/30-workflows/step-09-par-task-p0-03-workflow-manifest-production-placement/`           |
+
+#### 実施内容
+
+- `.claude/skills/skill-creator/workflow-manifest.json`（canonical）と `.agents/skills/skill-creator/workflow-manifest.json`（mirror）に 5-phase / 7-resource / 10-hook の manifest を本番配置
+- `schemaVersion: 1` で manifest 構造を確定（phases: requirements-gathering / plan / execute / verify / improve）
+- 7 resources: agent 3（analyze-request / define-boundary / analyze-feedback）+ reference 2（core-principles / codex-best-practices）+ schema 2（agent-definition / boundary）
+- 10 hooks: entry 5 + exit 5（各フェーズの前後処理）
+- ManifestLoader.production-manifest テスト全 17 ケース PASS
+- 後続タスク P0-04（ManifestLoader デフォルト有効化）/ P0-07（動的エージェント名解決）/ P0-09（permission/hooks governance）の基盤固定
+- API/IPC/型定義に変更なし（manifest 配置のみ）→ システム仕様更新: 不要
+
+#### 検証証跡
+
+- ManifestLoader.production-manifest テスト 17 ケース ALL PASS
+- Phase 12 必須 5 タスク完全実施（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report）
+- `skill-creator` SKILL.md v10.40.1 に完了記録追加（canonical + mirror）
+
 ### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
 | 項目       | 値                                                                        |

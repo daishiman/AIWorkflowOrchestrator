@@ -5,16 +5,19 @@
 LOGS は archive index 方式へ再編した。最新更新は本ファイル、詳細 log は references/archive から参照する。
 
 ## 最新更新ヘッドライン
+| 見出し |
+| --- |
+| 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization 実装完了 Phase 12 sync（resource-map.md に TASK-RT-06 リソースマップ追加 / quick-reference.md に SDK Event Normalization セクション追加 / lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md に normalizer 設計・sessionId 伝播教訓追記 / workflow-task-rt-06-artifact-inventory.md 新規作成） |
+| 2026-03-28 - TASK-SDK-04-U2 canonical binding remediation sync（`api-ipc-system-core.md` / `arch-state-management-core.md` から未解消扱いを解消し、`approvedSkillSpec` snapshot による execute binding 修正と task spec close-out drift 是正を same-wave 反映） |
+| 2026-03-28 - TASK-SDK-07 execution-governance-and-handoff-alignment Phase 12 close-out sync（未タスク 3 件 formalize（UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 / UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001）/ lessons-learned-phase12-workflow-lifecycle に教訓 3 件追記（shared channel 再利用 / disclosure graceful degradation / spec_created task code wave AC 追跡）/ quick-reference governance bundle 導線に実装参照 7 件追加 / task-workflow-backlog 3 件追記 / LOGS.md 2 ファイル同時更新 / generate-index.js 実行） |
 
 | 見出し                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-04-04 - TASK-P0-03 workflow-manifest-production-placement Phase 12 close-out sync（`.claude/skills/skill-creator/workflow-manifest.json`（canonical）と `.agents/skills/skill-creator/workflow-manifest.json`（mirror）に 5-phase / 7-resource / 10-hook manifest を本番配置 / ManifestLoader.production-manifest テスト 17 ケース ALL PASS / API/IPC/型定義変更なし → システム仕様更新 no-op / `skill-creator` SKILL.md v10.40.1 更新済み / `task-workflow-completed.md` 完了記録追加 / 後続 P0-04/P0-07/P0-09 の基盤固定 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新） |
 | 2026-04-04 - task-imp-layer12-spec-definition-004 Phase 12 close-out sync（`interfaces-skill-verify-contract.md` 新規作成 / FR-04 verify 契約の check ID 体系 19 件（L1-001〜L4-003）を Layer 命名規則・severity・判定基準・エラーメッセージとともに正式追記 / Layer 拡張ガイドライン明文化 / `SkillCreatorVerificationEngine.ts` との diff 0 件確認 / `task-workflow-completed.md` 完了記録追加 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新） |
 | 2026-04-04 - UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 Phase 12 close-out sync（`SkillLifecyclePanel.tsx` に severity フィルタ（`all` / `warning+` / `error`）追加 / `SeverityFilterLevel` 型・`filterChecksBySeverity()` 純粋関数・`filteredChecksByLayer` useMemo・`severityTotalCounts`・`activeWorkflowId` 変更時リセット useEffect を実装 / テスト SF-01〜SF-09（9件）追加・27テスト全PASS / `task-workflow-backlog.md` で本タスクを completed 扱いへ移管 / `task-workflow-completed.md` に完了記録追加 / Step 2 は内部型のため domain spec 更新 no-op / generate-index.js 再実行で topic-map/keywords を更新） |
 | 2026-04-04 - task-workflow 台帳 drift 是正（UT-SDK-L34-UI-DISPLAY-001 を backlog→completed へ同期し、spec path を `docs/30-workflows/completed-tasks/task-ut-sdk-l34-ui-display-001/` に正規化 / UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 を backlog へ登録 / same-wave で generate-index.js を再実行して topic-map/keywords を更新） |
 | 2026-04-04 - TASK-SKILL-CENTER-LIFECYCLE-NAV-001 Phase 12 close-out sync（`SkillCenterView` に `header-management-cta` secondary CTA を追加し `skillManagement` ViewType を新設 / `skillManagement` → `skillCenter` dock 正規化 / `SkillManagementPanel` に `skill-management-back-button` 戻り導線を追加 / 全テスト PASS（useSkillCenter.navigation / SkillCenterView.cta / App.renderView.viewtype）/ `ui-ux-navigation.md` v1.9.1・`ui-ux-components-history.md` v2.16.7・`task-workflow-completed.md`・`lessons-learned-phase12-workflow-lifecycle.md` v1.9.3 を same-wave 同期 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新） |
-||||||| Stash base
-
-| **9.02.38** - **2026-04-04** - **TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 Phase 12 close-out sync**: RuntimeSkillCreatorFacade に LLMAdapter 3段階ステータスガードを追加（initializing/ready/failed）。`RuntimeSkillCreatorExecuteErrorResponse` 型を shared に新設し `RuntimeSkillCreatorExecuteResponse` union を拡張。`SkillCreatorWorkflowEngine.recordImproveFailure()` 実装。SkillCreateWizard / SkillLifecyclePanel の structured error 表示対応。69テスト PASS。`task-workflow-completed.md` に完了記録・`task-workflow-backlog.md` に未タスク2件追加。`arch-electron-services-details-part2.md` / `interfaces-agent-sdk-skill-reference.md` を same-wave sync |
 | 2026-04-04 - TASK-UT-RT-01 execute/improve adapter guard close-out sync（`RuntimeSkillCreatorFacade.execute()` / `improve()` に `_llmAdapterStatus` guard 追加 / `RuntimeSkillCreatorExecuteErrorResponse` を shared types へ追加 / Phase 11 NON_VISUAL walkthrough evidence を current facts 化 / `task-workflow-completed.md`・`task-workflow-backlog.md`・`task-workflow.md`・`outputs/phase-11/*`・`outputs/phase-12/*`・`outputs/artifacts.json`・`interfaces-agent-sdk-skill-reference.md`・`api-ipc-system-core.md`・`arch-electron-services-details-part2.md` を same-wave sync） |
 | 2026-04-03 - TASK-SDK-SC-02 Conversation UI Phase 12 close-out sync（Renderer に 5 コンポーネント実装（ChoiceButton / FreeTextInput / ConversationProgress / QuestionCard / SkillCreatorConversationPanel）/ Atomic Design: Atom(3) / Molecule(1) / Organism(1) / Session Bridge 型 ↔ Workflow 型ブリッジを Panel 内に実装 / `SKILL_CREATOR_SESSION_CHANNELS` を利用した IPC 通信 / 57 tests PASS / Stmts 97.54% / Branch 86.04% / Funcs 95.83% / `task-workflow-completed.md` 完了記録追加 / `quick-reference.md` に即時導線追加 / Phase-12 outputs を TASK-SDK-SC-02 用に是正）
 | 2026-04-03 - task-ut-p0-02-001-repeat-feedback-memory Phase 12 close-out sync（`ImproveFeedbackHistory` 型を `packages/shared/src/types/skillCreator.ts` に追加 / `verifyAndImproveLoop()` の `previousImproveSummary: string` を `feedbackHistory: ImproveFeedbackHistory[]` に構造化 / `buildImproveFeedback()` を全試行履歴参照・繰り返し失敗チェック警告付きプロンプトに更新 / 45 tests PASS（新規13件 + 既存32件）/ typecheck・lint PASS） |
@@ -174,6 +177,28 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization 実装完了 Phase 12 sync
+
+### 変更概要
+TASK-RT-06（SDKMessage → SkillCreatorSdkEvent 正規化契約）の Phase 12 完了に伴う仕様書同期。
+
+### 追加・更新内容
+- `resource-map.md`: TASK-RT-06タスク別リソースマップを追加
+- `quick-reference.md`: SDK Event Normalization セクションを追加
+- `lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md`: TASK-RT-06の実装知見（normalizer設計・sessionId伝播）を追記
+- `workflow-task-rt-06-artifact-inventory.md`: 新規作成（artifact inventory）
+
+### 主要成果物
+| ファイル | 変更種別 | 内容 |
+|---|---|---|
+| `packages/shared/src/types/skillCreator.ts` | 追加 | SkillCreatorSdkEvent 3型 |
+| `apps/desktop/src/main/services/runtime/sdkMessageNormalizer.ts` | 新規 | normalizer本体（32テスト）|
+| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | 更新 | normalizer統合 |
+| `apps/desktop/src/main/ipc/creatorHandlers.ts` | 更新 | IPCチャネル追加 |
+
+### 未タスク
+- SkillExecutor.convertToStreamMessage() と normalizer の統合候補（1件、unassigned-task検出済み）
 
 ## TASK-P0-09 claude-sdk-permission-hooks-governance close-out resync（2026-03-31）
 

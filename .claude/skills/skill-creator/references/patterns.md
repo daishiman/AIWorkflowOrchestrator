@@ -2624,6 +2624,23 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **発見日**: 2026-03-05
 - **関連タスク**: TASK-UI-01-A-STORE-SLICE-BASELINE
 
+### [Phase12] NON_VISUAL manifest配置タスクの効率パターン（TASK-P0-03）
+
+- **状況**: workflow-manifest.json の canonical/mirror 配置のみで、API/IPC/型定義変更がない NON_VISUAL タスク
+- **アプローチ**:
+  - P50 チェック（Phase 1）で manifest が既に正しく配置済みであることを確認し、不要な上書きを回避
+  - ManifestLoader.production-manifest テスト 17 ケースが事前整備済みのため、Phase 5（実装）とPhase 7（テスト）がほぼ即時完了
+  - Phase 11 は NON_VISUAL 自動テスト代替 PASS で品質保証を完結
+  - system-spec-update-summary で「システム仕様更新: 不要」を明示的に判断・記録
+- **結果**: Phase 1-12 を高効率で完走。テスト先行整備が最大の効率化要因
+- **教訓**:
+  - テストを先行タスクで整備しておくと、配置確認タスクは検証コストがほぼゼロになる
+  - NON_VISUAL タスクでも Phase 12 必須5タスクは全て出力が必要（0件でも出力ルール）
+  - 「更新不要」の明示判断は、将来の監査で「漏れ」と「意図的スキップ」を区別する根拠になる
+- **適用条件**: ファイル配置・設定変更のみで API/IPC/型定義に影響しない小規模タスク
+- **発見日**: 2026-04-04
+- **関連タスク**: TASK-P0-03 workflow-manifest-production-placement
+
 ### [Phase12] ユーザー要求時の `NON_VISUAL` → `SCREENSHOT` 昇格運用（TASK-INVESTIGATE）
 
 - **状況**: 契約修正中心タスクで Phase 11 を `NON_VISUAL` で進めた後、ユーザーから画面検証要求が入り証跡不足が発生する
@@ -5699,6 +5716,23 @@ describe.each(["light", "dark", "kanagawa-dragon"] as const)(
 - **適用条件**: 未タスク監査を含む Phase 12 再確認タスク全般
 - **発見日**: 2026-03-05
 - **関連タスク**: TASK-UI-01-A-STORE-SLICE-BASELINE
+
+### [Phase12] NON_VISUAL manifest配置タスクの効率パターン（TASK-P0-03）
+
+- **状況**: workflow-manifest.json の canonical/mirror 配置のみで、API/IPC/型定義変更がない NON_VISUAL タスク
+- **アプローチ**:
+  - P50 チェック（Phase 1）で manifest が既に正しく配置済みであることを確認し、不要な上書きを回避
+  - ManifestLoader.production-manifest テスト 17 ケースが事前整備済みのため、Phase 5（実装）とPhase 7（テスト）がほぼ即時完了
+  - Phase 11 は NON_VISUAL 自動テスト代替 PASS で品質保証を完結
+  - system-spec-update-summary で「システム仕様更新: 不要」を明示的に判断・記録
+- **結果**: Phase 1-12 を高効率で完走。テスト先行整備が最大の効率化要因
+- **教訓**:
+  - テストを先行タスクで整備しておくと、配置確認タスクは検証コストがほぼゼロになる
+  - NON_VISUAL タスクでも Phase 12 必須5タスクは全て出力が必要（0件でも出力ルール）
+  - 「更新不要」の明示判断は、将来の監査で「漏れ」と「意図的スキップ」を区別する根拠になる
+- **適用条件**: ファイル配置・設定変更のみで API/IPC/型定義に影響しない小規模タスク
+- **発見日**: 2026-04-04
+- **関連タスク**: TASK-P0-03 workflow-manifest-production-placement
 
 ### [Phase12] ユーザー要求時の `NON_VISUAL` → `SCREENSHOT` 昇格運用（TASK-INVESTIGATE）
 

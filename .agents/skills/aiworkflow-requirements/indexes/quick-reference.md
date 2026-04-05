@@ -121,6 +121,21 @@
 
 ---
 
+### Skill Creator SDK Event Normalization (TASK-RT-06)
+
+**概要:** SDKMessage → SkillCreatorSdkEvent 変換契約の安定化
+
+| 項目 | 詳細 |
+|---|---|
+| 型 | `SkillCreatorSdkEvent` (7フィールド), `SkillCreatorSdkEventType` ("init"\|"assistant"\|"result"\|"error") |
+| normalizer | `normalizeSdkMessage(msg, sessionId?)`, `normalizeSdkStream(msgs)` |
+| IPCチャネル | `skill-creator:normalize-sdk-messages` |
+| sessionId伝播 | init → 後続メッセージへ自動伝播 |
+| テスト | 32件, Line 99.35% / Branch 91.22% / Function 100% |
+| 未タスク | SkillExecutor.convertToStreamMessage()との統合候補（1件） |
+
+---
+
 ### Skill Creator Conversation UI（TASK-SDK-SC-02 / 2026-04-03 実装済み）
 
 | 目的                                                 | 最初に開くファイル                                                                                              |
@@ -167,18 +182,6 @@
 | SkillCreatorResultPanel UI（プレビュー・上書き確認）          | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx`                                            |
 | 苦戦箇所4件                                                   | `references/lessons-learned-current.md`（§TASK-SDK-SC-04）                                                                  |
 | completed ledger                                              | `references/task-workflow-completed.md`                                                                                      |
-
----
-
-### Verify Execution Engine Layer 1/2（TASK-P0-01 / 2026-04-04 実装済み）
-
-| 目的                                              | 最初に開くファイル                                                                                     |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| verify contract 仕様                              | `references/interfaces-skill-verify-contract.md`                                                       |
-| workflow root                                     | `docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12/`                            |
-| completed ledger                                  | `references/task-workflow-completed.md`                                                                |
-| 苦戦箇所（L-VE-001〜003）                         | `references/lessons-learned-current.md`                                                                |
-| 実装ファイル                                      | `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts`                             |
 
 ---
 ### Skill Creator SDK Event Normalization (TASK-RT-06)
