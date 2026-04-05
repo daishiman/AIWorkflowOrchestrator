@@ -1,0 +1,123 @@
+{
+  "taskId": "TASK-P0-06",
+  "phase": 11,
+  "createdAt": "2026-04-04",
+  "status": "completed",
+  "note": "ローカル検証ハーネスで 14 枚のスクリーンショットを取得済み。Electron 実機での再確認は別途必要。",
+  "captureTargets": [
+    {
+      "id": "SC-01",
+      "scenario": "S-01",
+      "description": "初期表示 - 最初の質問がアシスタントメッセージとして表示",
+      "timing": "ページロード完了後",
+      "viewport": "1280x800",
+      "filename": "s01-initial-display.png"
+    },
+    {
+      "id": "SC-02",
+      "scenario": "S-02",
+      "description": "single_select - チップ選択状態",
+      "timing": "チップクリック後、送信前",
+      "viewport": "1280x800",
+      "filename": "s02-single-select-selected.png"
+    },
+    {
+      "id": "SC-02b",
+      "scenario": "S-02",
+      "description": "single_select - 送信後の次の質問表示",
+      "timing": "送信後",
+      "viewport": "1280x800",
+      "filename": "s02-single-select-submitted.png"
+    },
+    {
+      "id": "SC-03",
+      "scenario": "S-03",
+      "description": "multi_select - 複数選択状態",
+      "timing": "2つ以上のチェックボックス選択後",
+      "viewport": "1280x800",
+      "filename": "s03-multi-select-checked.png"
+    },
+    {
+      "id": "SC-03b",
+      "scenario": "S-03",
+      "description": "multi_select - 送信後のユーザーメッセージ表示",
+      "timing": "送信後",
+      "viewport": "1280x800",
+      "filename": "s03-multi-select-submitted.png"
+    },
+    {
+      "id": "SC-04",
+      "scenario": "S-04",
+      "description": "free_text - テキスト入力中",
+      "timing": "テキスト入力中",
+      "viewport": "1280x800",
+      "filename": "s04-free-text-typing.png"
+    },
+    {
+      "id": "SC-05",
+      "scenario": "S-05",
+      "description": "secret - マスク表示のユーザーメッセージ",
+      "timing": "送信後",
+      "viewport": "1280x800",
+      "filename": "s05-secret-masked.png"
+    },
+    {
+      "id": "SC-06",
+      "scenario": "S-06",
+      "description": "confirm - はい/いいえボタン表示",
+      "timing": "confirm質問表示時",
+      "viewport": "1280x800",
+      "filename": "s06-confirm-buttons.png"
+    },
+    {
+      "id": "SC-07",
+      "scenario": "S-07",
+      "description": "undo - 戻る操作後の状態",
+      "timing": "戻るボタンクリック後",
+      "viewport": "1280x800",
+      "filename": "s07-undo-restored.png"
+    },
+    {
+      "id": "SC-08",
+      "scenario": "S-08",
+      "description": "APIキー未設定ガイダンスバナー",
+      "timing": "secret種別質問到達時（APIキー未設定状態）",
+      "viewport": "1280x800",
+      "filename": "s08-api-key-guidance-banner.png"
+    },
+    {
+      "id": "SC-09",
+      "scenario": "S-09",
+      "description": "バリデーションエラー表示",
+      "timing": "空入力で送信試行後",
+      "viewport": "1280x800",
+      "filename": "s09-validation-error.png"
+    },
+    {
+      "id": "SC-10",
+      "scenario": "S-10",
+      "description": "進捗バー更新",
+      "timing": "質問2つ回答後",
+      "viewport": "1280x800",
+      "filename": "s10-progress-bar.png"
+    },
+    {
+      "id": "SC-11a",
+      "scenario": "S-11",
+      "description": "初心者モード - プレースホルダー表示",
+      "timing": "初心者モード選択時",
+      "viewport": "1280x800",
+      "filename": "s11-beginner-mode.png"
+    },
+    {
+      "id": "SC-11b",
+      "scenario": "S-11",
+      "description": "エンジニアモード - 簡潔表示",
+      "timing": "エンジニアモード選択時",
+      "viewport": "1280x800",
+      "filename": "s11-engineer-mode.png"
+    }
+  ],
+  "outputDir": "outputs/phase-11/screenshots/",
+  "metadataFile": "outputs/phase-11/phase11-capture-metadata.json"
+}
