@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-04
+> 自動生成: 2026-04-05
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -294,8 +294,9 @@ node scripts/list-specs.js --topics
 | ドキュメント構成 | L15 |
 | パターン概要 | L28 |
 | アーキテクチャ層の関係 | L100 |
-| 変更履歴 | L135 |
-| 関連ドキュメント | L145 |
+| Strangler Fig パターン（Facade standalone 関数 → 責務モジュールへの段階集約） | L135 |
+| 変更履歴 | L164 |
+| 関連ドキュメント | L175 |
 
 ### references/architecture-rag.md
 
@@ -851,10 +852,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| Agent Dashboard IPC チャネル | L6 |
 | Workspace Chat Edit IPC チャネル | L74 |
 | Skill Creator IPC チャネル | L256 |
-| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L369 |
-| スキルファイル操作 IPC チャネル（TASK-9A-B） | L403 |
-| スキル安全性評価・ファイルツリー IPC チャネル | L457 |
-| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L468 |
+| SDK メッセージ出力型統合 | L343 |
+| SDK メッセージ出力型統合 | L357 |
+| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L401 |
+| スキルファイル操作 IPC チャネル | L435 |
+| スキル安全性評価・ファイルツリー IPC チャネル | L444 |
+| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L455 |
 
 ### references/api-ipc-agent-details.md
 
@@ -865,6 +868,11 @@ node scripts/list-specs.js --topics
 | スキルスケジュール IPC チャネル（TASK-9G） | L223 |
 | スキルデバッグ IPC チャネル（TASK-9H） | L272 |
 | スキルドキュメント生成 IPC チャネル（TASK-9I） | L321 |
+
+### references/api-ipc-agent-fileops.md
+
+| セクション | 行 |
+|------------|----|\n| スキルファイル操作 IPC チャネル（TASK-9A-B） | L6 |
 
 ### references/api-ipc-agent-history.md
 
@@ -906,6 +914,11 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L331 |
 | 完了タスク | L341 |
 | 変更履歴 | L407 |
+
+### references/api-ipc-sdk-type-contracts.md
+
+| セクション | 行 |
+|------------|----|\n| SDK メッセージ出力型統合（UT-RT-06 / UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001） | L6 |
 
 ### references/api-ipc-system-core.md
 
@@ -1185,11 +1198,12 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
-| Skill Runtime API Key Panel（TASK-RT-04） | L63 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L119 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L226 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L293 |
-| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L441 |
+| Skill Runtime API Key Panel（TASK-RT-04） | L64 |
+| LLM Adapter Error Banner（TASK-RT-01） | L120 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L159 |
+| Custom Execution Environment UI コンポーネント（AGENT-006） | L266 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L333 |
+| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L481 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -2673,22 +2687,23 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L81 |
-| クイックリファレンス: カテゴリ別検索ガイド | L99 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L280 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L612 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L646 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L729 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L745 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L769 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L819 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L844 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L875 |
-| TASK-RT-06 教訓（2026-03-29） | L906 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L928 |
-| TASK-P0-04 教訓（2026-03-30） | L959 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L995 |
+| 分割ファイル一覧 | L82 |
+| クイックリファレンス: カテゴリ別検索ガイド | L100 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L281 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L613 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L647 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L730 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L746 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L770 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L820 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L845 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L876 |
+| TASK-RT-06 教訓（2026-03-29） | L907 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L929 |
+| TASK-P0-04 教訓（2026-03-30） | L960 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L996 |
 | TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1091 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1145 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2756,6 +2771,14 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 教訓サマリー | L8 |
 | TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 実装教訓（2026-03-19） | L22 |
+
+### references/lessons-learned-rt02-stub-response-error-notification.md
+
+| セクション | 行 |
+|------------|----|\n| L-RT02-001: false-success stub を explicit error contract へ置換するパターン | L8 |
+| L-RT02-002: degraded path で governanceHooks.onSessionEnd() を呼ぶ audit 補修 | L20 |
+| L-RT02-003: renderer での union response 型ガード（IPC wrapper + logical error） | L32 |
+| L-RT02-004: shared types の union 拡張は同一 wave で renderer・テストと同期 | L44 |
 
 ### references/lessons-learned-safety-gate-ipc-quality.md
 

@@ -85,6 +85,8 @@
 | 設計仕様（Slide Modifier / Manual Fallback / SlideUIStatus 状態機械）                                                                                            | arch-state-management-core.md, ui-ux-agent-execution-core.md, llm-workspace-chat-edit.md                                                                                                                                                                                                                    | lessons-learned-ipc-preload-runtime.md, task-workflow-backlog.md, task-workflow-completed.md                                                                                                                                                                                                                                                                        |
 | 設計・実装（Advanced Console Safety Governance / ApprovalGate / 3層レイヤー）                                                                                    | security-electron-ipc-core.md, api-ipc-system-core.md, architecture-implementation-patterns-core.md                                                                                                                                                                                                         | architecture-overview-core.md, lessons-learned-current.md, task-workflow-completed.md, task-workflow-backlog.md                                                                                                                                                                                                                                                     |
 | Safety Governance Production Integration 本番配線完了（UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001）: DefaultApprovalGate DI / ExecutionAPI preload namespace / APPROVAL_CHANNELS + EXECUTION_CHANNELS / session cleanup wiring | api-ipc-system-core.md, `apps/desktop/src/main/ipc/approvalHandlers.ts`, `apps/desktop/src/preload/index.ts`, `packages/shared/src/ipc/channels.ts` | `docs/30-workflows/safety-gov-production-integration/index.md`, task-workflow-completed.md, lessons-learned-current.md, `docs/30-workflows/unassigned-task/UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001.md` |
+| SDK メッセージ出力型統合（UT-RT-06 / SdkOutputMessageBase / SkillExecutorStreamMessage / SkillCreatorSdkEvent）型契約・後方互換エイリアス | api-ipc-sdk-type-contracts.md | api-ipc-agent-core.md, `packages/shared/src/types/skillExecutor.ts`, `packages/shared/src/types/skillCreator.ts` |
+| スキルファイル操作 IPC（TASK-9A-B: skill:readFile / writeFile / createFile / deleteFile / listBackups / restoreBackup / BackupInfo 型） | api-ipc-agent-fileops.md | api-ipc-agent-core.md, `apps/desktop/src/main/ipc/skillFileHandlers.ts` |
 | タスク種別                  | 最初に読む                                                    | 必要に応じて読む                                                      |
 | --------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
 | 新機能追加                  | overview.md, architecture-patterns.md                         | 機能に応じたinterfaces-\*, ui-ux-\*                                   |
@@ -510,7 +512,29 @@
 | テスト | `apps/desktop/src/main/services/runtime/__tests__/sdkMessageUtils.test.ts` | 21件, Line/Branch/Function 100% |
 | タスク仕様書 | `docs/30-workflows/skill-executor-normalizer-consolidation/` | Phase 1-12 完了（Phase 13 未実施） |
 
+### UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001: SkillStreamMessage と SkillCreatorSdkEvent の出力型統合
+
+| リソース種別 | ファイルパス | 説明 |
+|---|---|---|
+| 型定義（更新） | `packages/shared/src/types/skillCreator.ts` | SdkOutputMessageBase（共通基底型）/ SkillExecutorStreamMessage / SkillExecutorStreamMessageType を新設。SkillCreatorSdkEvent が SdkOutputMessageBase を継承するよう変更 |
+| SkillExecutor（更新） | `apps/desktop/src/main/services/skill/SkillExecutor.ts` | ローカル SkillStreamMessage / SkillStreamMessageType を @deprecated 型エイリアスに置き換え。@repo/shared から SkillExecutorStreamMessage をインポート |
+| shared exports（更新） | `packages/shared/index.ts` / `packages/shared/src/types/index.ts` | SdkOutputMessageBase / SkillExecutorStreamMessage / SkillExecutorStreamMessageType を export に追加 |
+| タスク仕様書 | `docs/30-workflows/task-20260404-151543-wt-1/` | Phase 1-12 完了 |
+| 仕様書（型契約分離） | `api-ipc-sdk-type-contracts.md` | SdkOutputMessageBase / SkillExecutorStreamMessage / SkillCreatorSdkEvent の型契約詳細（api-ipc-agent-core.md から分離） |
+
 ---
+
+### TASK-RT-06: claude-sdk-message-contract-normalization
+
+| リソース種別 | ファイルパス | 説明 |
+|---|---|---|
+| 型定義 | `packages/shared/src/types/skillCreator.ts` | SkillCreatorSdkEvent / SkillCreatorSdkEventType / SkillCreatorSdkEventSourceProvenance |
+| normalizer実装 | `apps/desktop/src/main/services/runtime/sdkMessageNormalizer.ts` | normalizeSdkMessage() / normalizeSdkStream() |
+| Facade統合 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | normalizer注入箇所 |
+| IPC handler | `apps/desktop/src/main/ipc/creatorHandlers.ts` | skill-creator:normalize-sdk-messages チャネル |
+| Preload API | `apps/desktop/src/preload/skill-creator-api.ts` | normalizeSkillCreatorSdkMessages() |
+| テスト | `apps/desktop/src/main/services/runtime/__tests__/sdkMessageNormalizer.test.ts` | 32件, Line 99.35% |
+| タスク仕様書 | `docs/30-workflows/step-08-par-task-rt-06-claude-sdk-message-contract-normalization/` | Phase 1-13 |
 
 ### UT-TASK06-007: IPC契約ドリフト自動検出
 
@@ -547,6 +571,8 @@ node scripts/search-spec.js "safeInvoke"
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                   |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-04 | 1.27.1     | `api-ipc-agent-core.md` 500行超過解消: 「SDK メッセージ出力型統合」セクションを `api-ipc-sdk-type-contracts.md` へ、「スキルファイル操作 IPC」セクションを `api-ipc-agent-fileops.md` へ分離。クイックルックアップに両ファイルの検索行を追加。api-ipc-agent-core.md: 578→468行 |
+| 2026-04-04 | 1.27.0     | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 完了: `SdkOutputMessageBase` / `SkillExecutorStreamMessage` / `SkillExecutorStreamMessageType` を packages/shared に新設。SkillCreatorSdkEvent が SdkOutputMessageBase を継承。UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 エントリを canonical set に登録。quick-reference.md の未タスク欄を完了に更新 |
 | 2026-04-03 | 1.26.0     | TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 完了: クイックルックアップに「Before Quit Guard / 実行中スキルあり終了警告ダイアログ」行を追加。`beforeQuitGuard.ts` / `beforeQuitGuard.test.ts` / `docs/30-workflows/skill-creator-before-quit-guard/` を canonical set に登録。lessons-learned-skill-plan-exec-hardening.md に同期→非同期移行時ライフサイクルチェックリスト追加 |
 | 2026-03-30 | 1.25.0     | TASK-RT-03 SkillCreationResultPanel: クイックルックアップに Plan/Execute 結果詳細パネル行を追加。ErrorBanner / PlanResultDetailPanel / ExecuteResultDetailPanel / result-panel-parts 7ファイルを canonical set に登録。lessons-learned-ui-adapter-status-retry.md に TASK-RT-03 教訓4件を追加 |
 | 2026-03-27 | 1.24.0     | TASK-SDK-03〜06 / UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001: Workflow State / Verify Detail / User Input API 行追加。PhaseResourcePlanner / SkillCreatorSourceResolver / ResolvedResourceReader / planPromptConstants / improvePromptConstants を runtime services 配下に登録。lessons-learned 分割（auth-settings-degradation-guard 新設）を反映 |

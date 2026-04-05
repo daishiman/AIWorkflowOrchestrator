@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-04 | 3.4.1      | TASK-P0-03 workflow-manifest-production-placement Phase 12 close-out sync（manifest 事前配置+テスト先行整備の有効性 / NON_VISUAL タスクの Phase 11 自動テスト代替パターン確立 / P50 チェックによる現状把握の効率化）|
 | 2026-04-04 | 3.4.0      | TASK-RT-03-VERIFY-IMPROVE-PANEL-001 教訓4件を追加（L-VRIP-001: Layer 別 useMemo グループ化パターン / L-VRIP-002: seqRef による stale response 破棄 / L-VRIP-003: StatusBadge optional label で後方互換維持 / L-VRIP-004: aria-expanded/aria-controls アクセシビリティテスト） |
 | 2026-04-03 | 3.3.8      | TASK-SDK-SC-03 External API Support 教訓5件を追加（L-SC03-001 並行フロー管理 / L-SC03-002 タイムアウト管理二重化 / L-SC03-003 データ秘匿化二重管理 / L-SC03-004 IPC バリデーション複雑性 / L-SC03-005 Preload API 3層契約一貫性）|
 | 2026-04-04 | 3.3.9      | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 current index sync（secondary CTA / return screenshot / dock canonicalization を phase12 lessons へ反映） |
@@ -1083,7 +1084,6 @@
 | 解決策       | `expect(button).toHaveAttribute("aria-expanded", "false")` と `expect(button).toHaveAttribute("aria-controls", "governance-notes-content")` を組み合わせてトグル前後の状態を検証する。クリック後は `"true"` に変化することを確認する             |
 | 標準ルール   | 折りたたみ UI には `aria-expanded`（状態）+ `aria-controls`（対象 id）+ `role="region"`（内容領域）を実装し、テストではこの三点セットを検証する。`queryByText` による存在確認だけでは不十分                                                      |
 | 関連タスク   | TASK-RT-03-VERIFY-IMPROVE-PANEL-001                                                                                                                                                                                                               |
-<<<<<<< Updated upstream
 
 
 ---
@@ -1139,3 +1139,43 @@
 | 教訓       | adapter statusチェック→structured error returnのパターンをmethod先頭に配置することで、後続処理の前提条件を明示できる                                                                          |
 | 適用       | 新しいpublicメソッドでLLMAdapterに依存する処理を追加する場合、同パターンを適用する                                                                                                           |
 | 関連タスク | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001                                                                                                                                              |
+
+---
+
+## UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04）
+
+### L-RT06-001: 共通基底型（SdkOutputMessageBase）によるlane統一パターン
+
+| 項目       | 内容                                                                                                                              |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 実行lane（`SkillStreamMessage`）とcreator lane（`SkillCreatorSdkEvent`）が独立した型定義を持ち、共通フィールドが重複していた      |
+| 解決策     | `SdkOutputMessageBase`（`type: string; timestamp?: number`）を共通基底型として定義し、両laneの型が継承する形に統一した            |
+| 標準ルール | lane間に共通フィールドが存在する場合は基底型を `packages/shared` に定義し、各lane型が継承するパターンを採用する                    |
+| 関連タスク | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                                                                   |
+
+### L-RT06-002: @deprecated型エイリアスによる後方互換維持戦略
+
+| 項目       | 内容                                                                                                                                       |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | `SkillExecutor.ts` 内でローカル定義していた型を shared に移管する際、既存コードへの影響を最小化する必要があった                             |
+| 解決策     | ローカル型を `/** @deprecated Use SkillExecutorStreamMessage from @repo/shared */` エイリアスとして残し、段階的移行を可能にした             |
+| 標準ルール | shared 移管時は移管元ファイルに `@deprecated` エイリアスを一定期間残し、import の移行猶予期間を設ける                                       |
+| 関連タスク | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                                                                            |
+
+### L-RT06-003: lane別timestamp必須性の差異（実行lane:必須、creator lane:省略可）
+
+| 項目       | 内容                                                                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | 基底型に `timestamp?: number` を定義すると実行laneの必須制約が失われ、型安全性が低下する問題が生じた                                  |
+| 解決策     | 基底型では `timestamp?: number`（省略可）とし、`SkillExecutorStreamMessage` では `timestamp: number`（必須）にオーバーライドした       |
+| 標準ルール | 基底型で省略可にしたプロパティを子型で必須にする場合は、子型定義で明示的に `required` に変更することで型安全を確保する               |
+| 関連タスク | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                                                                       |
+
+### L-RT06-004: contextual sessionId伝播（init→後続イベント）
+
+| 項目       | 内容                                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | creator laneのストリームでは init イベントにのみ `sessionId` が含まれ、後続イベントでは `sessionId` が欠落するため、文脈追跡が困難だった    |
+| 解決策     | ストリーム正規化ループ内で `sessionId` を contextual 変数として管理し、init 観測時に保存した値を後続イベントに自動的に伝播させた            |
+| 標準ルール | session や correlation ID が一部のイベントにしか含まれないストリームでは、最初の観測値を contextual 変数で保持し後続イベントへ注入する        |
+| 関連タスク | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                                                                             |

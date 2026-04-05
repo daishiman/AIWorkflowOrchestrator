@@ -335,6 +335,27 @@ cd apps/desktop && pnpm vitest run src/renderer/components/AuthGuard/
 - **発見日**: 2026-03-15
 - **関連タスク**: TASK-SKILL-LIFECYCLE-05
 
+### [UI] 会話型インタビューUIの非同期状態管理パターン（TASK-P0-06）
+
+- **状況**: ConversationalInterview コンポーネントで、APIキー存在確認の非同期性、Plan切り替え時の状態リセット、undo時のsecret値復元、multi_select型の互換性維持が同時に求められ、useEffect依存関係とセキュリティ要件の両立が困難だった
+- **アプローチ**:
+  1. **cancelledフラグによる競合状態対策**: `window.electronAPI?.authKey?.exists()` の非同期呼び出しで、useEffect cleanup時に `cancelled = true` を設定し、stale結果の反映を防止する
+  2. **activePlanIdRefによるPlan切り替えリセット**: `useRef` で前回の `planId` を保持し、変更検知時に `interview.reset()` / `resetInputValues()` / `setResolvedApiKeyStatus("unknown")` を実行。useEffect依存配列の循環参照を回避する
+  3. **undo時のsecret値セキュリティ（NFR-07準拠）**: `kind === "secret"` の回答をundo復元する際、元の値ではなく空文字で復元する。セキュリティ上、secret値はメモリ内に不必要に保持しない
+  4. **multi_select型の相互フォールバック**: `selectedOptionIds ?? answer.selectedValues` と `selectedValues ?? answer.selectedOptionIds` の双方向フォールバックで、RT-05 canonical化との並行実装期間の互換性を維持する
+  5. **Preload API型定義は shared パッケージから import**: `ExternalApiConnectionConfig` 等の型は `packages/shared` に配置し、Preload独自型は最小限に抑える
+- **テスト戦略**:
+  - APIキー存在確認のモック: `window.electronAPI.authKey.exists` を vi.fn() で差し替え
+  - undo→rerender複合テスト: `restoredPendingRequest?.requestId !== pendingRequest.requestId` チェックの検証
+  - multi_selectチェックボックス複数選択: `fireEvent.click` でトグル操作を再現
+- **参照実装ファイル**:
+  - `apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx`
+  - `apps/desktop/src/renderer/components/skill/hooks/useInterviewState.ts`
+  - `apps/desktop/src/preload/skill-creator-session-api.ts`
+- **適用条件**: 非同期状態取得を伴うUI、Plan/セッション切り替え、undo付きフォーム、複数型バージョンの互換性維持が必要なコンポーネント
+- **発見日**: 2026-04-05
+- **関連タスク**: TASK-P0-06
+
 ### [設計] 依存タスク連携における型変換点の明示パターン（TASK-SKILL-LIFECYCLE-08）
 
 - **状況**: 設計タスクシリーズ（Task06→Task07→Task08 など）で、前タスクの出力型が後タスクの判定入力として使われる際、型の変換点が暗黙のまま設計書に残り、後続実装時に依存ドリフトが発生した

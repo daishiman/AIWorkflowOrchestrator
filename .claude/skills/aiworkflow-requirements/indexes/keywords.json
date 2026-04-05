@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-04T13:55:41.051Z",
-  "totalKeywords": 2693,
+  "generated": "2026-04-05T03:13:20.032Z",
+  "totalKeywords": 2719,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -675,6 +675,7 @@
       "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "llm-ipc-types.md",
       "llm-workspace-chat-edit.md",
@@ -1109,6 +1110,7 @@
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-build-harness-guard.md",
@@ -2198,6 +2200,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-ui-adapter-status-retry.md",
@@ -2869,6 +2872,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
     ],
@@ -2879,6 +2883,7 @@
       "arch-execution-capability-contract.md",
       "directory-structure-core.md",
       "lessons-learned-current.md",
+      "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "lessons-learned-test-typesafety.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
@@ -3371,6 +3376,7 @@
       "arch-state-management-details.md",
       "architecture-implementation-patterns-core.md",
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
+      "architecture-patterns.md",
       "claude-code-skills-resources.md",
       "testing-dialog-patterns.md",
       "testing-playwright-e2e.md",
@@ -3474,7 +3480,8 @@
       "workflow-light-theme-global-remediation.md"
     ],
     "renderer": [
-      "arch-state-management-reference-permissions-import-lifecycle.md"
+      "arch-state-management-reference-permissions-import-lifecycle.md",
+      "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "direct": [
       "arch-state-management-reference-permissions-import-lifecycle.md"
@@ -4222,6 +4229,24 @@
       "architecture-patterns.md"
     ],
     "アーキテクチャ層の関係": [
+      "architecture-patterns.md"
+    ],
+    "Strangler": [
+      "architecture-patterns.md"
+    ],
+    "Fig": [
+      "architecture-patterns.md"
+    ],
+    "Facade": [
+      "architecture-patterns.md"
+    ],
+    "standalone": [
+      "architecture-patterns.md"
+    ],
+    "関数": [
+      "architecture-patterns.md"
+    ],
+    "責務モジュールへの段階集約": [
       "architecture-patterns.md"
     ],
     "Knowledge": [
@@ -5930,7 +5955,8 @@
       "ipc-contract-checklist.md"
     ],
     "response": [
-      "ipc-contract-checklist.md"
+      "ipc-contract-checklist.md",
+      "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "event": [
       "ipc-contract-checklist.md"
@@ -6078,6 +6104,7 @@
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
@@ -6124,6 +6151,7 @@
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-ipc-quality.md",
       "lessons-learned-safety-gate-permission-fallback.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
@@ -6998,6 +7026,7 @@
     ],
     "path": [
       "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-rt02-stub-response-error-notification.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
@@ -7111,18 +7140,6 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "semantics": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "submitUserInput": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "transition": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "semantics": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "STREAM": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "CHATVIEW": [
@@ -7362,6 +7379,81 @@
     "メソッドシグネチャを比較": [
       "lessons-learned-rag-embedding-runtime.md"
     ],
+    "stub": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "error": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "notification": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "false": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "success": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "explicit": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "へ置換するパターン": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "degraded": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "governanceHooks": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "onSessionEnd": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "を呼ぶ": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "audit": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "補修": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "での": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "union": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "型ガード": [
+      "lessons-learned-rt02-stub-response-error-notification.md",
+      "rag-search-crag.md",
+      "rag-search-types.md"
+    ],
+    "wrapper": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "logical": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "types": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "拡張は同一": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
+    "wave": [
+      "lessons-learned-rt02-stub-response-error-notification.md",
+      "lessons-learned-skill-create-multi-select-kind.md",
+      "spec-elegance-consistency-audit.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
+      "workflow-ai-runtime-authmode-unification.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "・テストと同期": [
+      "lessons-learned-rt02-stub-response-error-notification.md"
+    ],
     "品質検証": [
       "lessons-learned-safety-gate-ipc-quality.md"
     ],
@@ -7573,15 +7665,6 @@
     "same": [
       "lessons-learned-skill-create-multi-select-kind.md",
       "workflow-skill-lifecycle-created-skill-usage-journey.md"
-    ],
-    "wave": [
-      "lessons-learned-skill-create-multi-select-kind.md",
-      "spec-elegance-consistency-audit.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md",
-      "workflow-ai-runtime-authmode-unification.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "canonical": [
       "lessons-learned-skill-create-multi-select-kind.md",
@@ -10480,10 +10563,6 @@
       "rag-search-hybrid.md",
       "rag-search-keyword.md",
       "rag-search-vector.md"
-    ],
-    "型ガード": [
-      "rag-search-crag.md",
-      "rag-search-types.md"
     ],
     "アクション決定ロジック": [
       "rag-search-crag.md"

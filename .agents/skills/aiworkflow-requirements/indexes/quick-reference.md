@@ -121,6 +121,21 @@
 
 ---
 
+### Skill Creator SDK Event Normalization (TASK-RT-06)
+
+**概要:** SDKMessage → SkillCreatorSdkEvent 変換契約の安定化
+
+| 項目 | 詳細 |
+|---|---|
+| 型 | `SkillCreatorSdkEvent` (7フィールド), `SkillCreatorSdkEventType` ("init"\|"assistant"\|"result"\|"error") |
+| normalizer | `normalizeSdkMessage(msg, sessionId?)`, `normalizeSdkStream(msgs)` |
+| IPCチャネル | `skill-creator:normalize-sdk-messages` |
+| sessionId伝播 | init → 後続メッセージへ自動伝播 |
+| テスト | 32件, Line 99.35% / Branch 91.22% / Function 100% |
+| 未タスク | SkillExecutor.convertToStreamMessage()との統合候補（1件） |
+
+---
+
 ### Skill Creator Conversation UI（TASK-SDK-SC-02 / 2026-04-03 実装済み）
 
 | 目的                                                 | 最初に開くファイル                                                                                              |
@@ -169,18 +184,6 @@
 | completed ledger                                              | `references/task-workflow-completed.md`                                                                                      |
 
 ---
-
-### Verify Execution Engine Layer 1/2（TASK-P0-01 / 2026-04-04 実装済み）
-
-| 目的                                              | 最初に開くファイル                                                                                     |
-| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| verify contract 仕様                              | `references/interfaces-skill-verify-contract.md`                                                       |
-| workflow root                                     | `docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12/`                            |
-| completed ledger                                  | `references/task-workflow-completed.md`                                                                |
-| 苦戦箇所（L-VE-001〜003）                         | `references/lessons-learned-current.md`                                                                |
-| 実装ファイル                                      | `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts`                             |
-
----
 ### Skill Creator SDK Event Normalization (TASK-RT-06)
 
 **概要:** SDKMessage → SkillCreatorSdkEvent 変換契約の安定化
@@ -192,7 +195,20 @@
 | IPCチャネル | `skill-creator:normalize-sdk-messages` |
 | sessionId伝播 | init → 後続メッセージへ自動伝播 |
 | テスト | 32件, Line 99.35% / Branch 91.22% / Function 100% |
-| 未タスク | SkillExecutor.convertToStreamMessage()との統合候補（1件） |
+| 未タスク | ~~SkillExecutor.convertToStreamMessage()との統合候補（1件）~~ → **UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 にて完了** |
+
+### SDK 出力型統合 (UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001)
+
+**概要:** 実行 lane と skill-creator lane の出力型を `packages/shared` に集約
+
+| 項目 | 詳細 |
+|---|---|
+| 共通基底型 | `SdkOutputMessageBase` (`timestamp?: number`) |
+| 実行 lane 型 | `SkillExecutorStreamMessage extends SdkOutputMessageBase` (executionId / id / type / content / timestamp / isComplete) |
+| 実行 lane 種別 | `SkillExecutorStreamMessageType` ("text"\|"tool_use"\|"error"\|"complete"\|"retry") |
+| skill-creator lane 型 | `SkillCreatorSdkEvent extends SdkOutputMessageBase` (変更: 共通基底を継承) |
+| @deprecated | `SkillExecutor.ts` ローカル `SkillStreamMessage` / `SkillStreamMessageType` は型エイリアスとして残存 |
+| 型定義場所 | `packages/shared/src/types/skillCreator.ts` |
 
 ---
 
