@@ -230,6 +230,33 @@
 
 ---
 
+### タスク: TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001（2026-04-06）
+
+| 項目       | 値                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001                                                           |
+| ステータス | **完了**                                                                                         |
+| タイプ     | refactoring / ui                                                                                |
+| 優先度     | 中                                                                                               |
+| 完了日     | 2026-04-06                                                                                       |
+| 対象       | `useAuthKeyManagement` 新規追加 / `AuthKeySection` への統合 / `ApiKeySettingsPanel` 委譲 / 型統一 |
+| 成果物     | `docs/30-workflows/rt-04-authkey-component-dedup/`                                               |
+| GitHub     | Issue #1903                                                                                      |
+
+#### 実施内容
+
+- `apps/desktop/src/renderer/hooks/useAuthKeyManagement.ts` を新規追加し、`auth-key:*` IPC 呼び出しを集約
+- `packages/shared/src/types/skillCreator.ts` の `ApiKeyStatus` に `check-failed` を追加し UI 状態型を統一
+- `AuthKeySection` をフック統合 + `onStatusChange` props 対応へ更新
+- `ApiKeySettingsPanel` を `AuthKeySection` への委譲ラッパーへ変更
+- テスト: `useAuthKeyManagement.test.ts` / `AuthKeySection.test.tsx` / `ApiKeySettingsPanel.test.tsx` を更新
+
+#### 未タスク
+
+- TECH-M-01 を `TASK-RT-04-APIKEYPANEL-REMOVAL-001` として backlog に登録（ApiKeySettingsPanel 廃止）
+
+---
+
 ### タスク: TASK-RT-02 api-key-ui-adapter-status（2026-03-29）
 
 | 項目       | 値                                                            |

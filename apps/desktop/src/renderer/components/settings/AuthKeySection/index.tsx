@@ -1,22 +1,31 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useAuthModeStatus } from "../../../store";
+import React, { useCallback, useState } from "react";
+import type { ApiKeyStatus } from "@repo/shared/types";
+import { useAuthKeyManagement } from "../../../hooks/useAuthKeyManagement";
 
-/**
- * AuthKey の状態を表す4状態
- * - saved: 保存済み（Main Process のセキュアストレージに格納されている）
- * - env-fallback: 環境変数 ANTHROPIC_API_KEY で代替している
- * - not-set: 未設定
- * - check-failed: 状態確認に失敗
- */
-export type AuthKeyStatus =
+// ============================================================
+// 表示キー（ApiKeyStatus + keySource → バッジ設定の導出）
+// ============================================================
+
+type DisplayKey =
   | "saved"
   | "env-fallback"
-  | "not-set"
-  | "check-failed";
+  | "not_set"
+  | "check-failed"
+  | "validating"
+  | "error"
+  | "configured";
+
+function getDisplayKey(
+  status: ApiKeyStatus,
+  keySource: "saved" | "env-fallback" | null,
+): DisplayKey {
+  if (status === "configured" && keySource) return keySource;
+  return status as DisplayKey;
+}
 
 /** 各状態に対応するバッジ設定 */
 const STATUS_CONFIG: Record<
-  AuthKeyStatus,
+  DisplayKey,
   { label: string; bgClass: string; textClass: string; borderClass: string }
 > = {
   saved: {
@@ -31,7 +40,7 @@ const STATUS_CONFIG: Record<
     textClass: "text-[#FF9500]",
     borderClass: "border-[#FF9500]/30",
   },
-  "not-set": {
+  not_set: {
     label: "未設定",
     bgClass: "bg-[#FF3B30]/10",
     textClass: "text-[#FF3B30]",
@@ -43,128 +52,78 @@ const STATUS_CONFIG: Record<
     textClass: "text-gray-500",
     borderClass: "border-gray-300",
   },
+  validating: {
+    label: "確認中...",
+    bgClass: "bg-[#007AFF]/10",
+    textClass: "text-[#007AFF]",
+    borderClass: "border-[#007AFF]/30",
+  },
+  error: {
+    label: "エラー",
+    bgClass: "bg-[#FF3B30]/10",
+    textClass: "text-[#FF3B30]",
+    borderClass: "border-[#FF3B30]/30",
+  },
+  configured: {
+    label: "設定済み",
+    bgClass: "bg-[#34C759]/10",
+    textClass: "text-[#34C759]",
+    borderClass: "border-[#34C759]/30",
+  },
 };
 
-export const AuthKeySection: React.FC = () => {
-  const authModeStatus = useAuthModeStatus();
+// ============================================================
+// Props
+// ============================================================
 
-  const [inputValue, setInputValue] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [statusMessage, setStatusMessage] = useState<string | null>(null);
-  const [statusType, setStatusType] = useState<"success" | "error" | null>(
-    null,
-  );
+interface AuthKeySectionProps {
+  onStatusChange?: (status: ApiKeyStatus) => void;
+}
+
+// ============================================================
+// コンポーネント
+// ============================================================
+
+export const AuthKeySection: React.FC<AuthKeySectionProps> = ({
+  onStatusChange,
+}) => {
+  const {
+    status,
+    keySource,
+    inputValue,
+    isSubmitting,
+    validationError,
+    apiError,
+    setInputValue,
+    handleSave: hookHandleSave,
+    handleDelete: hookHandleDelete,
+  } = useAuthKeyManagement({ onStatusChange });
+
   const [showPassword, setShowPassword] = useState(false);
-  const [authKeyStatus, setAuthKeyStatus] = useState<AuthKeyStatus>("not-set");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  /** 状態を判定して authKeyStatus を更新する */
-  const checkAuthKeyStatus = useCallback(async () => {
-    try {
-      const authKeyApi = window.electronAPI?.authKey;
-      if (!authKeyApi?.exists) {
-        setAuthKeyStatus("check-failed");
-        return;
-      }
-
-      const existsResult = await authKeyApi.exists();
-      if (!existsResult.exists) {
-        setAuthKeyStatus("not-set");
-        return;
-      }
-
-      if (existsResult.source === "saved") {
-        setAuthKeyStatus("saved");
-        return;
-      }
-
-      if (existsResult.source === "env-fallback") {
-        setAuthKeyStatus("env-fallback");
-        return;
-      }
-
-      // 旧実装互換: source が未提供の場合は hasCredentials を補助判定に使う
-      const hasCredentials = authModeStatus?.hasCredentials ?? false;
-      setAuthKeyStatus(hasCredentials ? "saved" : "env-fallback");
-    } catch {
-      setAuthKeyStatus("check-failed");
-    }
-  }, [authModeStatus?.hasCredentials]);
-
-  useEffect(() => {
-    checkAuthKeyStatus();
-  }, [checkAuthKeyStatus]);
-
-  /** APIキーを保存する */
   const handleSave = useCallback(async () => {
-    const trimmedValue = inputValue.trim();
-    if (trimmedValue === "") {
-      setStatusMessage("APIキーを入力してください");
-      setStatusType("error");
-      return;
-    }
+    setSuccessMessage(null);
+    const ok = await hookHandleSave();
+    if (ok) setSuccessMessage("APIキーを保存しました");
+  }, [hookHandleSave]);
 
-    setIsSubmitting(true);
-    setStatusMessage(null);
-    setStatusType(null);
-
-    try {
-      const authKeyApi = window.electronAPI?.authKey;
-      if (!authKeyApi?.set) {
-        setStatusMessage("APIキー設定機能が利用できません");
-        setStatusType("error");
-        return;
-      }
-
-      const result = await authKeyApi.set(trimmedValue);
-      if (result.success) {
-        setInputValue("");
-        setStatusMessage("APIキーを保存しました");
-        setStatusType("success");
-        await checkAuthKeyStatus();
-      } else {
-        setStatusMessage(result.error ?? "APIキーの保存に失敗しました");
-        setStatusType("error");
-      }
-    } catch {
-      setStatusMessage("APIキーの保存中にエラーが発生しました");
-      setStatusType("error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [inputValue, checkAuthKeyStatus]);
-
-  /** APIキーを削除する */
   const handleDelete = useCallback(async () => {
-    setIsSubmitting(true);
-    setStatusMessage(null);
-    setStatusType(null);
+    setSuccessMessage(null);
+    const ok = await hookHandleDelete();
+    if (ok) setSuccessMessage("APIキーを削除しました");
+  }, [hookHandleDelete]);
 
-    try {
-      const authKeyApi = window.electronAPI?.authKey;
-      if (!authKeyApi?.delete) {
-        setStatusMessage("APIキー削除機能が利用できません");
-        setStatusType("error");
-        return;
-      }
+  const displayKey = getDisplayKey(status, keySource);
+  const currentConfig = STATUS_CONFIG[displayKey];
 
-      const result = await authKeyApi.delete();
-      if (result.success) {
-        setStatusMessage("APIキーを削除しました");
-        setStatusType("success");
-        await checkAuthKeyStatus();
-      } else {
-        setStatusMessage(result.error ?? "APIキーの削除に失敗しました");
-        setStatusType("error");
-      }
-    } catch {
-      setStatusMessage("APIキーの削除中にエラーが発生しました");
-      setStatusType("error");
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [checkAuthKeyStatus]);
-
-  const currentConfig = STATUS_CONFIG[authKeyStatus];
+  // 表示するメッセージ（成功優先、次にAPIエラー）
+  const displayMessage = successMessage ?? validationError ?? apiError;
+  const displayType: "success" | "error" | null = successMessage
+    ? "success"
+    : validationError || apiError
+      ? "error"
+      : null;
 
   return (
     <div
@@ -181,7 +140,7 @@ export const AuthKeySection: React.FC = () => {
         <span
           className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${currentConfig.bgClass} ${currentConfig.textClass} ${currentConfig.borderClass}`}
           data-testid="auth-key-status-badge"
-          data-status={authKeyStatus}
+          data-status={displayKey}
         >
           {currentConfig.label}
         </span>
@@ -263,9 +222,9 @@ export const AuthKeySection: React.FC = () => {
             className="px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#007AFF] hover:bg-[#0066D6] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             data-testid="save-auth-key-button"
           >
-            {isSubmitting ? "保存中..." : "保存"}
+            {isSubmitting ? "処理中..." : "保存"}
           </button>
-          {authKeyStatus === "saved" && (
+          {displayKey === "saved" && (
             <button
               type="button"
               onClick={handleDelete}
@@ -273,7 +232,7 @@ export const AuthKeySection: React.FC = () => {
               className="px-4 py-2 rounded-lg text-sm font-medium text-[#FF3B30] border border-[#FF3B30] hover:bg-[#FF3B30]/10 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               data-testid="delete-auth-key-button"
             >
-              削除
+              {isSubmitting ? "処理中..." : "削除"}
             </button>
           )}
         </div>
@@ -283,10 +242,10 @@ export const AuthKeySection: React.FC = () => {
       </div>
 
       {/* ステータスメッセージ */}
-      {statusMessage && (
+      {displayMessage && displayType && (
         <div
           className={`text-sm px-3 py-2 rounded-lg ${
-            statusType === "success"
+            displayType === "success"
               ? "bg-[#34C759]/10 text-[#34C759]"
               : "bg-[#FF3B30]/10 text-[#FF3B30]"
           }`}
@@ -294,7 +253,7 @@ export const AuthKeySection: React.FC = () => {
           role="status"
           aria-live="polite"
         >
-          {statusMessage}
+          {displayMessage}
         </div>
       )}
     </div>

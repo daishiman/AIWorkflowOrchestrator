@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`TC-15: スナップショット（委譲リファクタリング後） > should match snapshot after delegation refactor 1`] = `
+<div>
+  <div
+    data-on-status-change="not-provided"
+    data-testid="mock-auth-key-section"
+  />
+</div>
+`;
