@@ -7,21 +7,15 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
-| 2026-04-06 v9.02.33 - TASK-P0-09-U1 path-scoped enforcement スキル反映（`governance-hooks-factory-audit-sink.md` に path-scoped canUseTool 判定セクション追加 / SKILL.md Trigger に `path-scoped enforcement` / `canUseTool 判定` / `extractTargetPath` / `allowedSkillRoot` / `createImproveGovernanceCanUseTool` を追加 / v9.02.33 history エントリ追加 / `topic-map.md` と `keywords.json` を更新） |
-| 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了（`executeAsync()` structured error / catch パスの `if (!snapshot)` 条件削除 / `snapshot ?? null` 適用 / `creatorHandlers.ts`・`skill-creator-api.ts`・`SkillLifecyclePanel.tsx` で errorMessage 伝搬 / `creatorHandlers.test.ts`・`SkillLifecyclePanel.error-persistence.test.tsx` 追加 / focused vitest 53 tests PASS / `pnpm typecheck` PASS / `pnpm lint` PASS） |
-| 2026-04-06 - TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 Phase 12 close-out sync（AuthKeySection/ApiKeySettingsPanel 重複解消、`useAuthKeyManagement` 追加、`ApiKeyStatus` に `check-failed` 追加、task-workflow 完了/未タスク同期、`ui-ux-settings-core.md` 契約更新、interfaces 参照更新、LOGS/SKILL 更新、topic-map/keywords 再生成） |
+| 2026-04-06 - TASK-FIX-IPC-SKILL-NAME-001 Phase 12 close-out sync（`creatorHandlers.ts` ipcMain重複登録除去（後続14→全16ハンドラ正常化）/ `SkillService.toWizardSkillName()` 正規化5ステップ実装 / `docs/00-requirements/18-skills.md` 正規化規則追記 / `docs/00-requirements/08-api-design.md` ハンドラ一意性要件追記 / `api-ipc-system-core.md` に IPC Handler Lifecycle Management セクション追加 / `lessons-learned-current.md` v3.7.0 教訓3件追加 / `task-workflow-completed.md` 完了記録追加 / UT-01〜03を unassigned-task に配置 / LOGS.md 2ファイル同時更新） |
 | 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync（Phase 11 Playwright screenshot 4枚を `outputs/phase-11/screenshots/` に保存 / implementation-guide に screenshot references 追記 / artifacts.json parity zero / LOGS.md 2ファイル + SKILL.md 2ファイル同波更新） |
-| 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映（`ui-result-panel-pattern.md` に state owner 分離判断基準テーブル追加 / SKILL.md Trigger に result-panel / SkillLifecyclePanel / SkillCreationResultPanel / orchestration wrapper 等 8 キーワード追加 / v9.02.29 記録済み・実体未反映を是正 / LOGS.md 2ファイル同時更新） |
-| 2026-04-06 - TASK-RT-03 skill-creation-result-panel Phase 12 close-out sync（`SkillCreationResultPanel` orchestration wrapper 実装 / `ExecuteResultDetailPanel` persist surface 追加 / `SkillLifecyclePanel` raw state owner 維持 + prepare reset + verify retry surface 追加 / `phase-11-manual-test.md` に画面カバレッジマトリクス追加 / `phase-11-manual-test-checklist.md` 追加 / `phase-11` screenshot 6枚取得 / `phase-12` docs 6件生成 / `task-workflow-completed.md`・`ui-result-panel-pattern.md`・`lessons-learned-ui-adapter-status-retry.md`・`resource-map.md` 更新 / `validate-phase11-screenshot-coverage` と `validate-phase12-implementation-guide` PASS） |
 | 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization 実装完了 Phase 12 sync（resource-map.md に TASK-RT-06 リソースマップ追加 / quick-reference.md に SDK Event Normalization セクション追加 / lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md に normalizer 設計・sessionId 伝播教訓追記 / workflow-task-rt-06-artifact-inventory.md 新規作成） |
 | 2026-03-28 - TASK-SDK-04-U2 canonical binding remediation sync（`api-ipc-system-core.md` / `arch-state-management-core.md` から未解消扱いを解消し、`approvedSkillSpec` snapshot による execute binding 修正と task spec close-out drift 是正を same-wave 反映） |
 | 2026-03-28 - TASK-SDK-07 execution-governance-and-handoff-alignment Phase 12 close-out sync（未タスク 3 件 formalize（UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 / UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001）/ lessons-learned-phase12-workflow-lifecycle に教訓 3 件追記（shared channel 再利用 / disclosure graceful degradation / spec_created task code wave AC 追跡）/ quick-reference governance bundle 導線に実装参照 7 件追加 / task-workflow-backlog 3 件追記 / LOGS.md 2 ファイル同時更新 / generate-index.js 実行） |
 
 | 見出し                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 2026-04-06 - TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 Phase 12 close-out sync（AuthKeySection/ApiKeySettingsPanel 重複解消、`useAuthKeyManagement` 追加、`ApiKeyStatus` に `check-failed` 追加、task-workflow 完了/未タスク同期、`ui-ux-settings-core.md` 契約更新、interfaces 参照更新、LOGS/SKILL 更新、topic-map/keywords 再生成） |
 | 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync（Phase 11 Playwright screenshot 4枚を `outputs/phase-11/screenshots/` に保存 / implementation-guide に screenshot references 追記 / artifacts.json parity zero / LOGS.md 2ファイル + SKILL.md 2ファイル同波更新） |
-| 2026-04-06 - TASK-P0-07 ハードコードされた AGENT_NAMES の動的解決 Phase 12 close-out sync（`manifestResourceResolver.ts` 新規作成（`buildPhaseResourceRequestsFromManifest()` 純粋関数）/ `RuntimeSkillCreatorFacade.ts` の `resolveOperationResources()` に `phaseId` 引数追加 / manifest ベース動的エージェント解決に移行 / フォールバック 5 パターン実装 / `AGENT_NAMES` ハードコード定数完全削除 / `interfaces-agent-sdk-skill.md` にインターフェース仕様追記 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新） |
 | 2026-04-04 - TASK-P0-03 workflow-manifest-production-placement Phase 12 close-out sync（`.claude/skills/skill-creator/workflow-manifest.json`（canonical）と `.agents/skills/skill-creator/workflow-manifest.json`（mirror）に 5-phase / 7-resource / 10-hook manifest を本番配置 / ManifestLoader.production-manifest テスト 17 ケース ALL PASS / API/IPC/型定義変更なし → システム仕様更新 no-op / `skill-creator` SKILL.md v10.40.1 更新済み / `task-workflow-completed.md` 完了記録追加 / 後続 P0-04/P0-07/P0-09 の基盤固定 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新） |
 | 2026-04-04 - task-imp-layer12-spec-definition-004 Phase 12 close-out sync（`interfaces-skill-verify-contract.md` 新規作成 / FR-04 verify 契約の check ID 体系 19 件（L1-001〜L4-003）を Layer 命名規則・severity・判定基準・エラーメッセージとともに正式追記 / Layer 拡張ガイドライン明文化 / `SkillCreatorVerificationEngine.ts` との diff 0 件確認 / `task-workflow-completed.md` 完了記録追加 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新） |
 | 2026-04-04 - UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 Phase 12 close-out sync（`SkillLifecyclePanel.tsx` に severity フィルタ（`all` / `warning+` / `error`）追加 / `SeverityFilterLevel` 型・`filterChecksBySeverity()` 純粋関数・`filteredChecksByLayer` useMemo・`severityTotalCounts`・`activeWorkflowId` 変更時リセット useEffect を実装 / テスト SF-01〜SF-09（9件）追加・27テスト全PASS / `task-workflow-backlog.md` で本タスクを completed 扱いへ移管 / `task-workflow-completed.md` に完了記録追加 / Step 2 は内部型のため domain spec 更新 no-op / generate-index.js 再実行で topic-map/keywords を更新） |
@@ -178,11 +172,6 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 2026-03-13 - TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 phase12 root evidence / split-aware audit                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | 2026-03-13 - TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 workflow spec consolidation                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | 2026-03-13 - TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 final re-audit / visual sanity                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-
-## 2026-04-06 - lessons-learned-rt-04-authkey-dedup.md 新規作成
-- TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 の知見を lessons-learned-rt-04-authkey-dedup.md に記録
-- 内容: 二重送信防止パターン（isSubmittingRef）、useAuthKeyManagement フック統合パターン、check-failed + apiError 二層設計、応用候補
-- lessons-learned.md インデックスに追加
 | 2026-03-12 - TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 system spec sync                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
@@ -684,39 +673,3 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 検証:
   - 統合テスト 22 件 PASS（`RuntimeSkillCreatorFacade.persist-integration.test.ts`）
   - OutputHandler テスト 22 件 PASS（`SkillCreatorOutputHandler.test.ts`）
-
-## TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out sync（2026-04-06）
-
-- タスク名: TASK-P0-09 claude-sdk-permission-hooks-governance
-- 種別: implementation / TDD / governance / docs sync
-- 主な反映:
-  - `runtime/governance/` サブディレクトリを新設し、`SkillCreatorPermissionPolicy.ts` / `SkillCreatorHooksFactory.ts` / `SkillCreatorAuditSink.ts` / `index.ts` を配置
-  - 命名規則を `SkillCreator` プレフィックスに統一（旧 `GovernanceHooksFactory` / `GovernanceAuditSink` から変更）
-  - TDD: TC-PP-01〜18（PermissionPolicy 31件）/ TC-HF-01〜10（HooksFactory 18件）/ TC-AS-01〜12（AuditSink 15件）/ TC-FG-01〜09（統合 12件）/ TC-G-01〜14（全フェーズ 14件）
-  - Phase 12 タスク仕様書 15ファイル（`docs/30-workflows/task-p0-09-sdk-permission-hooks-governance/`）を作成
-  - `governance-hooks-factory-audit-sink.md` を新 API（`createHooks(phase, auditSink, provenance?)`・ring buffer）に更新
-  - `task-workflow-completed.md` に完了記録（2026-04-06）を追加
-  - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
-  - TASK-P0-09-U1（path-scoped enforcement）は carry-forward として `TODO(TASK-P0-09-U1)` コメントで明示
-- 検証:
-  - vitest governance 90件全 PASS
-  - typecheck: EXIT:0 ✅
-  - lint: EXIT:0（10 warnings / 0 errors）⚠️
-  - TASK-P0-09-U1（path-scoped enforcement）は carry-forward として記録されていたが本タスクで解消
-
-### 2026-04-06 - TASK-P0-09-U1 path-scoped-governance-runtime-enforcement 完了
-
-- タスク名: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement
-- 種別: security / bug-fix / TDD
-- 主な反映:
-  - `RuntimeSkillCreatorFacade.createExecuteGovernanceCanUseTool()` に `skillRoot: string` パラメータを追加
-  - `extractTargetPath()` private helper を追加（`file_path ?? path` フォールバック）
-  - `evaluateGovernanceToolUse` に `{ targetPath, allowedSkillRoot }` context を接続
-  - `createImproveGovernanceCanUseTool(skillRoot)` を新規追加
-  - `_executeInternal()` で `getExplicitSkillCreatorRoot()` を取得して canUseTool に渡す配線を完成
-  - `SkillCreatorPermissionPolicy.ts` の `TODO(TASK-P0-09-U1)` コメントを解消
-  - テスト: TC-PATH-01〜06 + extractTargetPath 4件 = 11件追加（合計 101件 PASS）
-  - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
-- 検証:
-  - vitest governance 101件全 PASS
-  - typecheck: EXIT:0 ✅

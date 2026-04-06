@@ -2,48 +2,35 @@
 
 > 親仕様書: [task-workflow.md](task-workflow.md)
 > 役割: completed records
-> 区分: 履歴記録（history record）
 
 ## 完了タスク
 
-### タスク: UT-VERIFY-DOC-CONSOLIDATION-001 verify関連ドキュメント正本・履歴分離（2026-04-06）
+### タスク: TASK-FIX-IPC-SKILL-NAME-001 ipcMain重複登録・スキル名正規化修正（2026-04-06）
 
-| 項目       | 値                                                                                 |
-| ---------- | ---------------------------------------------------------------------------------- |
-| タスクID   | UT-VERIFY-DOC-CONSOLIDATION-001                                                    |
-| ステータス | **完了（Phase 13: worktree completed）**                                           |
-| タイプ     | documentation / doc-consolidation                                                  |
-| 優先度     | 中                                                                                 |
-| 完了日     | 2026-04-06                                                                         |
-| 対象       | verify 関連ドキュメント4ファイルの区分ラベル付与・責務分離明示                     |
-| 成果物     | `docs/30-workflows/unassigned-task/UT-VERIFY-DOC-CONSOLIDATION-001.md`             |
+| 項目             | 値                                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | TASK-FIX-IPC-SKILL-NAME-001                                                                                                    |
+| ステータス       | **完了（Phase 12 close-out）**                                                                                                  |
+| タイプ           | bug-fix / ipc / skill-name-normalization                                                                                        |
+| 優先度           | 高                                                                                                                              |
+| 完了日           | 2026-04-06                                                                                                                      |
+| 対象             | `creatorHandlers.ts` ipcMain重複登録修正 / `SkillService.toWizardSkillName()` 正規化強化                                        |
+| 成果物           | `docs/30-workflows/fix-creator-handler-duplicate-skill-name-validation/`                                                        |
 
 #### 実施内容
 
-- `task-workflow.md` のインデックステーブルに「区分」列を追加（正本 / 履歴 / 契約仕様の判別を即座に可能に）
-- `task-workflow-completed.md` 冒頭に `> 区分: 履歴記録（history record）` を追記
-- `task-workflow-active.md` 冒頭に `> 区分: 正本（current contract）` を追記
-- `interfaces-skill-verify-contract.md` 冒頭に `> 区分: 契約仕様` を追記、verify エンジン責務分離セクションを追加
+- `registerRuntimeSkillCreatorHandlers()` の `SKILL_CREATOR_GET_ADAPTER_STATUS` 2重登録を除去（後続14ハンドラの未登録が解消、全16チャネルが正常登録）
+- `toWizardSkillName()` に5ステップ正規化フロー実装（小文字化→非許容文字ハイフン化→連続ハイフン圧縮→端除去→"new-skill"フォールバック）
+- `resolveUniqueSkillName()` による衝突回避（`new-skill-2` / `new-skill-3`...）
+- `docs/00-requirements/18-skills.md` 3.2.2.1セクションに正規化規則を追記
+- `docs/00-requirements/08-api-design.md` にIPC ハンドラ一意性要件を追記
+- Phase 7 で `creatorHandlers.governanceState.test.ts` 新規12テスト追加
 
-#### 検証証跡
+#### 未タスク（Phase 12 close-out）
 
-- Phase 6: リンク整合チェック PASS（`outputs/phase-6/link-check-report.md`）
-- Phase 7: 機能要件・非機能要件カバレッジ確認 PASS（`outputs/phase-7/`）
-- Phase 8: ラベル整合・責務セクション・スタイル整合チェック PASS（`outputs/phase-8/`）
-- Phase 9: ID整合・リンク・Prettier 検証 PASS（`outputs/phase-9/`）
-- Phase 10: 最終レビュー PASS（`outputs/phase-10/final-review-result.md`）
-- Phase 11: 手動テスト PASS（`outputs/phase-11/manual-test-report.md`）
-- Phase 12: スキルフィードバック反映 PASS（`outputs/phase-12/skill-feedback-report.md`）
-
-#### 苦戦箇所（詳細は lessons-learned）
-
-| 苦戦箇所                                       | 解決策概要                                                    |
-| ---------------------------------------------- | ------------------------------------------------------------- |
-| 並行マージコンフリクト検出（`||||||| Stash base` マーカー） | PR前チェックリストにコンフリクトマーカー検索を追加            |
-| インデックステーブル全行への列追加の手間       | 20行超のテーブルは置換スクリプト化が有効                      |
-| 正本・履歴判別の属人化解消                     | 冒頭 `> 区分: XXX` ラベルの統一付与で解消                     |
-
-→ 詳細: [lessons-learned-verify-contract-consolidation.md](lessons-learned-verify-contract-consolidation.md)
+- `UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001`: SKILL_NAME_PATTERN定数一元化（Medium）
+- `UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001`: IPC登録CIスナップショット（Medium）
+- `UT-FIX-SKILL-NAME-JAPANESE-INPUT-UX-001`: 日本語入力リアルタイムプレビュー（Low）
 
 ---
 
@@ -269,72 +256,6 @@
 #### Phase 12 未タスク
 
 - `TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001`
-- `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001`
-
----
-
-### タスク: TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 executeAsync() の error message 伝搬パス統一（2026-04-06）
-
-| 項目       | 値                                                                                                                     |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001                                                                 |
-| ステータス | **完了**                                                                                                               |
-| タイプ     | runtime bug-fix / error-propagation / documentation sync                                                               |
-| 優先度     | 中                                                                                                                     |
-| 完了日     | 2026-04-06                                                                                                             |
-| 対象       | `RuntimeSkillCreatorFacade.executeAsync()` / `RuntimeSkillCreatorFacade.executeAsync.test.ts` / `outputs/phase-11/*` / `outputs/phase-12/*` |
-| 成果物     | `docs/30-workflows/task-ut-rt-01-execute-async-snapshot-error-message-001/`                                           |
-
-#### 実施内容
-
-- `executeAsync()` の structured error / catch パスで `if (!snapshot)` 条件を削除し、snapshot の有無に依存せず `onWorkflowStateSnapshot` を呼ぶようにした
-- `RuntimeSkillCreatorFacade.executeAsync.test.ts` に T-01〜T-06 を追加し、structured error / catch / regression の 10 テストを固定した
-- `creatorHandlers.ts` / `skill-creator-api.ts` / `SkillLifecyclePanel.tsx` を更新し、workflow-state changed event の errorMessage を Renderer まで通すようにした
-- `creatorHandlers.test.ts` に errorMessage 付き snapshot の state-changed event 伝搬テストを追加した
-- `SkillLifecyclePanel.error-persistence.test.tsx` に errorMessage-only event の回帰テストを追加した
-- `outputs/phase-11/manual-test-checklist.md` / `manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` を追加し、NON_VISUAL 証跡を current facts として残した
-- `outputs/phase-12/*` の 6 ファイルを作成し、implementation guide / system spec / changelog / feedback / compliance を同期した
-- `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md` の残課題行を完了扱いへ更新し、`task-workflow-completed.md` に本完了セクションを追加した
-- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して `topic-map.md` / `keywords.json` を再生成した
-
-#### 検証証跡
-
-- `pnpm typecheck`: PASS
-- `pnpm lint`: PASS（0 errors / 10 warnings）
-- `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/creatorHandlers.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/preload/__tests__/skill-creator-api.runtime.test.ts src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx`: PASS（53 tests）
-- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`: PASS
-
-#### Phase 12 補足
-
-- `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001` は未タスク候補として残している
-- Renderer 側 UI 表示確認は本タスクのスコープ外のため、別タスク候補として維持している
-
----
-
-### タスク: TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001（2026-04-06）
-
-| 項目       | 値                                                                                               |
-| ---------- | ------------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001                                                           |
-| ステータス | **完了**                                                                                         |
-| タイプ     | refactoring / ui                                                                                |
-| 優先度     | 中                                                                                               |
-| 完了日     | 2026-04-06                                                                                       |
-| 対象       | `useAuthKeyManagement` 新規追加 / `AuthKeySection` への統合 / `ApiKeySettingsPanel` 委譲 / 型統一 |
-| 成果物     | `docs/30-workflows/rt-04-authkey-component-dedup/`                                               |
-| GitHub     | Issue #1903                                                                                      |
-
-#### 実施内容
-
-- `apps/desktop/src/renderer/hooks/useAuthKeyManagement.ts` を新規追加し、`auth-key:*` IPC 呼び出しを集約
-- `packages/shared/src/types/skillCreator.ts` の `ApiKeyStatus` に `check-failed` を追加し UI 状態型を統一
-- `AuthKeySection` をフック統合 + `onStatusChange` props 対応へ更新
-- `ApiKeySettingsPanel` を `AuthKeySection` への委譲ラッパーへ変更
-- テスト: `useAuthKeyManagement.test.ts` / `AuthKeySection.test.tsx` / `ApiKeySettingsPanel.test.tsx` を更新
-
-#### 未タスク
-
-- TECH-M-01 を `TASK-RT-04-APIKEYPANEL-REMOVAL-001` として backlog に登録（ApiKeySettingsPanel 廃止）
 
 ---
 
@@ -2219,33 +2140,4 @@
 - 90 tests PASS（PermissionPolicy 31件 / HooksFactory 18件 / AuditSink 15件 / Integration 12件 / AllPhases 14件）
 - typecheck: EXIT:0 ✅
 - lint: EXIT:0（10 warnings / 0 errors）⚠️
-- Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
-
----
-
-### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-06）
-
-| 項目       | 値                                                                                                                                              |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-P0-09-U1                                                                                                                                   |
-| ステータス | **完了**                                                                                                                                        |
-| タイプ     | implementation / TDD / security                                                                                                                 |
-| 優先度     | 最高                                                                                                                                            |
-| 完了日     | 2026-04-06                                                                                                                                      |
-| 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                                                                           |
-| 成果物     | `docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/`（Phase 1-12 仕様書・テスト）                                     |
-
-#### 実施内容
-
-- `extractTargetPath(input)` private helper を追加（`file_path ?? path` fallback パターン）
-- `createExecuteGovernanceCanUseTool(skillRoot)` のシグネチャを修正し、`targetPath` / `allowedSkillRoot` context を `evaluateGovernanceToolUse` に渡す配線を接続
-- `createImproveGovernanceCanUseTool(skillRoot)` を新規追加（improve phase 対応）
-- `_executeInternal()` 呼び出しで `this.getExplicitSkillCreatorRoot() ?? ""` を渡すよう修正
-- `SkillCreatorPermissionPolicy.ts` の `TODO(TASK-P0-09-U1)` コメントを解消
-
-#### 検証証跡
-
-- TDD: TC-PATH-01〜06（path-scoped deny/allow）+ extractTargetPath 4件 = 11件追加
-- 合計 101 tests PASS（`path-scoped-enforcement.test.ts` 含む）
-- typecheck: EXIT:0 ✅
 - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）

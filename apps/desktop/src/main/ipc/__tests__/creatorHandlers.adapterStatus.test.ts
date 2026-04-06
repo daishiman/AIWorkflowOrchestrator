@@ -256,4 +256,35 @@ describe("creatorHandlers - adapterStatus", () => {
       "unauthorized sender",
     );
   });
+
+  // T-IPC-13 (Bug 1 回帰)
+  it("registerRuntimeSkillCreatorHandlers 1回実行で get-adapter-status の登録は1回のみ", async () => {
+    const { ipcMain } = await import("electron");
+    const handleMock = vi.mocked(ipcMain.handle);
+
+    registerRuntimeSkillCreatorHandlers(mainWindow, service);
+
+    const adapterStatusRegistrations = handleMock.mock.calls.filter(
+      ([channel]) => channel === IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+    );
+    expect(adapterStatusRegistrations).toHaveLength(1);
+  });
+
+  // T-IPC-14 (Bug 1 回帰)
+  it("unregister 後に再登録でき、get-adapter-status が再び1回だけ登録される", async () => {
+    const { ipcMain } = await import("electron");
+    const handleMock = vi.mocked(ipcMain.handle);
+
+    registerRuntimeSkillCreatorHandlers(mainWindow, service);
+    unregisterRuntimeSkillCreatorHandlers();
+    registerRuntimeSkillCreatorHandlers(mainWindow, service);
+
+    expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS)).toBe(
+      true,
+    );
+    const adapterStatusRegistrations = handleMock.mock.calls.filter(
+      ([channel]) => channel === IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+    );
+    expect(adapterStatusRegistrations).toHaveLength(2);
+  });
 });

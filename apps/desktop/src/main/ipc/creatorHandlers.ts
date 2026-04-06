@@ -252,41 +252,6 @@ export function registerRuntimeSkillCreatorHandlers(
   );
 
   ipcMain.handle(
-    IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
-    async (
-      event: IpcMainInvokeEvent,
-    ): Promise<IpcResult<LLMAdapterStatusPayload>> => {
-      validateSender(
-        event,
-        IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
-        mainWindow,
-      );
-
-      if (!runtimeSkillCreatorService) {
-        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
-      }
-
-      try {
-        return {
-          success: true,
-          data: toAdapterStatusPayload(
-            runtimeSkillCreatorService.llmAdapterStatus,
-            runtimeSkillCreatorService.llmAdapterFailureReason,
-          ),
-        };
-      } catch (error) {
-        return {
-          success: false,
-          error: sanitizeErrorMessage(
-            error,
-            "LLMAdapter 状態の取得に失敗しました",
-          ),
-        };
-      }
-    },
-  );
-
-  ipcMain.handle(
     IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
     async (
       event: IpcMainInvokeEvent,
