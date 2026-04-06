@@ -724,13 +724,14 @@ node scripts/list-specs.js --topics
 ### references/interfaces-skill-verify-contract.md
 
 | セクション | 行 |
-|------------|----|\n| 概要 | L3 |
-| Layer 命名規則 | L12 |
-| Layer 1: 構造検証（Structural Validation） | L43 |
-| Layer 2: コンテンツ検証（Content Validation） | L53 |
-| Layer 3: 詳細コンテンツ検証（Detailed Content Validation） | L65 |
-| Layer 4: 参照整合性・結合検証（Reference Integrity Validation） | L74 |
-| Layer 拡張ガイドライン | L82 |
+|------------|----|\n| 概要 | L5 |
+| Layer 命名規則 | L14 |
+| Layer 1: 構造検証（Structural Validation） | L45 |
+| Layer 2: コンテンツ検証（Content Validation） | L55 |
+| Layer 3: 詳細コンテンツ検証（Detailed Content Validation） | L67 |
+| Layer 4: 参照整合性・結合検証（Reference Integrity Validation） | L76 |
+| verify エンジン責務分離 | L84 |
+| Layer 拡張ガイドライン | L100 |
 
 ### references/interfaces-system-prompt.md
 
@@ -2965,6 +2966,13 @@ node scripts/list-specs.js --topics
 | 関連ドキュメント | L61 |
 | 変更履歴 | L72 |
 
+### references/lessons-learned-verify-contract-consolidation.md
+
+| セクション | 行 |
+|------------|----|\n| UT-VERIFY-DOC-CONSOLIDATION-001: verify関連ドキュメント 正本・履歴分離と責務分離の実装パターン | L6 |
+| 苦戦箇所と解決策 | L29 |
+| 知見まとめ | L129 |
+
 ### references/lessons-learned-viewtype-electron-ui.md
 
 | セクション | 行 |
@@ -3921,13 +3929,13 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-active.md
 
 | セクション | 行 |
-|------------|----|\n| 概要 | L6 |
-| ドキュメント構成 | L33 |
-| フェーズ構造（概要） | L42 |
-| 品質ゲート（概要） | L73 |
-| 出力テンプレート | L84 |
-| 実行時のコマンド・エージェント・スキル | L107 |
-| 昇格パターン集 | L131 |
+|------------|----|\n| 概要 | L7 |
+| ドキュメント構成 | L34 |
+| フェーズ構造（概要） | L43 |
+| 品質ゲート（概要） | L74 |
+| 出力テンプレート | L85 |
+| 実行時のコマンド・エージェント・スキル | L108 |
+| 昇格パターン集 | L132 |
 
 ### references/task-workflow-backlog.md
 
@@ -4090,7 +4098,7 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-completed.md
 
 | セクション | 行 |
-|------------|----|\n| 完了タスク | L6 |
+|------------|----|\n| 完了タスク | L7 |
 
 ### references/task-workflow-history.md
 
