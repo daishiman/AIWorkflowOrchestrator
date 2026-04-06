@@ -37,10 +37,7 @@ import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
 import type { ILLMAdapter } from "../../../adapters/llm/types";
 import type { SkillFileManager } from "../../skill/SkillFileManager";
-import {
-  IMPROVE_PROMPT_CONSTANTS,
-  IMPROVE_RESOURCE_REQUESTS,
-} from "../improvePromptConstants";
+import { IMPROVE_PROMPT_CONSTANTS } from "../improvePromptConstants";
 
 // --- Mock factories (P63: plan.test.ts のインポートパターンに準拠) ---
 
@@ -589,7 +586,7 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
       expect(dynamicResourceLoader.loadAgent).not.toHaveBeenCalled();
     });
 
-    it("T-P7-08b: improve フェーズが存在しない場合は IMPROVE_RESOURCE_REQUESTS にフォールバックする", async () => {
+    it("T-P7-08b: improve フェーズが存在しない場合は VALIDATION_ERROR を返して fallback しない", async () => {
       const manifest = createDynamicManifest({
         phases: [
           {
@@ -644,21 +641,19 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
         usage: { promptTokens: 200, completionTokens: 100, totalTokens: 300 },
       });
 
-      await dynamicFacade.improve(
+      const result = await dynamicFacade.improve(
         "test-skill",
         "改善してください",
         "api-key",
         "sk-test",
       );
 
-      expect(mockResourcePlannerPlan).toHaveBeenCalledTimes(1);
-      expect(mockResourcePlannerPlan.mock.calls[0][0].requests).toEqual([
-        ...IMPROVE_RESOURCE_REQUESTS,
-      ]);
-      expect(
-        mockSourceResolverResolve.mock.calls[0][0].requiredRelativePaths,
-      ).toEqual(["agents/improve-prompt.md"]);
-      expect(dynamicResourceLoader.loadAgent).not.toHaveBeenCalled();
+      expect(result).toMatchObject({
+        success: false,
+        error: { code: "VALIDATION_ERROR" },
+      });
+      expect(mockResourcePlannerPlan).not.toHaveBeenCalled();
+      expect(mockLLMAdapter.sendChat).not.toHaveBeenCalled();
     });
   });
 

@@ -138,4 +138,210 @@ describe("RuntimeSkillCreatorFacade dynamic improve resource selection", () => {
     expect(sendChatArgs.systemPrompt).toContain("IMPROVE_PROMPT_DYNAMIC");
     expect(sendChatArgs.systemPrompt).toContain("FEEDBACK_LOOP_DYNAMIC");
   });
+
+  it("manifest の custom resource ids でも improve の system prompt に反映される", async () => {
+    const explicitRoot = await createSkillRoot("task03-improve-custom-");
+    const envRoot = await createSkillRoot("task03-improve-custom-env-");
+    tempRoots.push(explicitRoot, envRoot);
+    process.env.AIWORKFLOW_SKILL_CREATOR_PATH = envRoot;
+
+    await writeTextFile(
+      explicitRoot,
+      "agents/custom-improve.md",
+      "IMPROVE_PROMPT_CUSTOM_MANIFEST",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "references/custom-feedback-loop.md",
+      "FEEDBACK_LOOP_CUSTOM_MANIFEST",
+    );
+    await writeTextFile(
+      envRoot,
+      "agents/custom-improve.md",
+      "IMPROVE_PROMPT_CUSTOM_ENV",
+    );
+    await writeTextFile(
+      envRoot,
+      "references/custom-feedback-loop.md",
+      "FEEDBACK_LOOP_CUSTOM_ENV",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "workflow-manifest.json",
+      JSON.stringify(
+        {
+          schemaVersion: 1,
+          workflowId: "task-sdk-03-custom-improve-selection",
+          phases: [
+            {
+              id: "improve",
+              title: "improve",
+              resourceIds: ["custom-improve", "custom-feedback-loop"],
+              entryHookId: "improve-entry",
+              exitHookId: "improve-exit",
+            },
+          ],
+          resources: [
+            {
+              id: "custom-improve",
+              kind: "agent",
+              path: "./agents/custom-improve.md",
+              phaseIds: ["improve"],
+            },
+            {
+              id: "custom-feedback-loop",
+              kind: "reference",
+              path: "./references/custom-feedback-loop.md",
+              phaseIds: ["improve"],
+            },
+          ],
+          entry: [{ id: "improve-entry", command: "prepare improve" }],
+          exit: [{ id: "improve-exit", command: "publish improve" }],
+        },
+        null,
+        2,
+      ),
+    );
+    (
+      mockSkillFileManager.readFile as ReturnType<typeof vi.fn>
+    ).mockResolvedValue("# Test Skill");
+    (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+      content: JSON.stringify({
+        skillName: "custom-improve-skill",
+        targetAgent: "agents/custom-improve.md",
+        analysisResults: {
+          structureScore: 4,
+          clarityScore: 4,
+          reproducibilityScore: 4,
+          efficiencyScore: 4,
+        },
+        improvements: [],
+        improvedContent: "# revised",
+      }),
+      model: "claude-sonnet-4-20250514",
+      usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+    });
+
+    const facade = new RuntimeSkillCreatorFacade({
+      skillExecutor: {
+        execute: vi.fn(),
+      } as unknown as SkillExecutor,
+      llmAdapter: mockLLMAdapter,
+      resourceLoader: new ResourceLoader(explicitRoot),
+      skillFileManager: mockSkillFileManager,
+      sourceResolver: new SkillCreatorSourceResolver(),
+      resourcePlanner: new PhaseResourcePlanner(),
+      resolvedResourceReader: new ResolvedResourceReader(
+        new ResourceLoader(explicitRoot),
+      ),
+    });
+
+    await facade.improve(
+      "custom-improve-skill",
+      "manifest-first を確認する",
+      "api-key",
+      "sk-test",
+    );
+
+    const sendChatArgs = (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>)
+      .mock.calls[0][0];
+    expect(sendChatArgs.systemPrompt).toContain(
+      "IMPROVE_PROMPT_CUSTOM_MANIFEST",
+    );
+    expect(sendChatArgs.systemPrompt).toContain(
+      "FEEDBACK_LOOP_CUSTOM_MANIFEST",
+    );
+    expect(sendChatArgs.systemPrompt).not.toContain(
+      "IMPROVE_PROMPT_CUSTOM_ENV",
+    );
+  });
+
+  it("plan/improve phase の resourceIds が空なら VALIDATION_ERROR を返して fallback しない", async () => {
+    const explicitRoot = await createSkillRoot("task03-improve-empty-");
+    tempRoots.push(explicitRoot);
+
+    await writeTextFile(
+      explicitRoot,
+      "agents/empty-improve.md",
+      "IMPROVE_PROMPT_EMPTY",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "references/empty-feedback-loop.md",
+      "FEEDBACK_LOOP_EMPTY",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "workflow-manifest.json",
+      JSON.stringify(
+        {
+          schemaVersion: 1,
+          workflowId: "task-sdk-03-empty-improve-selection",
+          phases: [
+            {
+              id: "improve",
+              title: "improve",
+              resourceIds: [],
+              entryHookId: "improve-entry",
+              exitHookId: "improve-exit",
+            },
+          ],
+          resources: [
+            {
+              id: "empty-improve",
+              kind: "agent",
+              path: "./agents/empty-improve.md",
+              phaseIds: ["improve"],
+            },
+            {
+              id: "empty-feedback-loop",
+              kind: "reference",
+              path: "./references/empty-feedback-loop.md",
+              phaseIds: ["improve"],
+            },
+          ],
+          entry: [{ id: "improve-entry", command: "prepare improve" }],
+          exit: [{ id: "improve-exit", command: "publish improve" }],
+        },
+        null,
+        2,
+      ),
+    );
+
+    (
+      mockSkillFileManager.readFile as ReturnType<typeof vi.fn>
+    ).mockResolvedValue("# Test Skill");
+
+    const facade = new RuntimeSkillCreatorFacade({
+      skillExecutor: {
+        execute: vi.fn(),
+      } as unknown as SkillExecutor,
+      llmAdapter: mockLLMAdapter,
+      resourceLoader: new ResourceLoader(explicitRoot),
+      skillFileManager: mockSkillFileManager,
+      sourceResolver: new SkillCreatorSourceResolver(),
+      resourcePlanner: new PhaseResourcePlanner(),
+      resolvedResourceReader: new ResolvedResourceReader(
+        new ResourceLoader(explicitRoot),
+      ),
+    });
+
+    const result = await facade.improve(
+      "empty-improve-skill",
+      "manifest phase の resourceIds を検証する",
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toMatchObject({
+      success: false,
+      error: {
+        code: "VALIDATION_ERROR",
+      },
+    });
+    if ("error" in result) {
+      expect(result.error.message).toContain("resourceIds");
+    }
+    expect(mockLLMAdapter.sendChat).not.toHaveBeenCalled();
+  });
 });

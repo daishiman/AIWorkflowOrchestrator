@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-06T04:13:05.460Z",
-  "totalKeywords": 2733,
+  "generated": "2026-04-06T04:52:09.406Z",
+  "totalKeywords": 2736,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2702,6 +2702,7 @@
       "interfaces-agent-sdk-skill-core.md",
       "interfaces-agent-sdk-skill-details.md",
       "interfaces-agent-sdk-ui.md",
+      "lessons-learned-current.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
@@ -7045,6 +7046,15 @@
     "persist": [
       "lessons-learned-current.md",
       "lessons-learned-skill-share-debug-lifecycle-design.md"
+    ],
+    "ハードコード": [
+      "lessons-learned-current.md"
+    ],
+    "NAMES": [
+      "lessons-learned-current.md"
+    ],
+    "の動的解決": [
+      "lessons-learned-current.md"
     ],
     "Policy": [
       "lessons-learned-governance-hooks-phase-policy.md",

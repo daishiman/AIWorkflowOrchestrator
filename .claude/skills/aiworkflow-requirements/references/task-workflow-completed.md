@@ -369,6 +369,28 @@
 
 ---
 
+### タスク: TASK-P0-07 hardcoded-agent-names-dynamic-resolution — plan/improve 動的解決と root dedupe（2026-04-06）
+
+| 項目       | 値                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-P0-07                                                                                                                                       |
+| ステータス | **完了**                                                                                                                                         |
+| タイプ     | refactoring / docs sync                                                                                                                          |
+| 優先度     | 高                                                                                                                                               |
+| 完了日     | 2026-04-06                                                                                                                                       |
+| 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`, `apps/desktop/src/main/services/runtime/SkillCreatorSourceResolver.ts`, `apps/desktop/src/main/services/runtime/planPromptConstants.ts`, `apps/desktop/src/main/services/runtime/improvePromptConstants.ts`, `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan-resource-selection.test.ts`, `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution/outputs/phase-12/*` |
+| 関連タスク | step-11-par-task-plan-execution-hardening / step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution |
+
+#### 実施内容
+
+- `plan()` / `improve()` の manifest 優先解決を current facts へ同期し、phase resource ids を source of truth として扱うよう整理
+- fallback path は `PLAN_RESOURCE_REQUESTS` / `IMPROVE_RESOURCE_REQUESTS` のみを source of truth とし、agent 名を静的文字列から切り離した
+- `SkillCreatorSourceResolver` の root dedupe を resolved root ベースに変更し、manifest / explicit / env の同一 root 重複を除去
+- `AGENT_NAMES` を削除し、plan/improve の両方で dynamic resource pipeline と static fallback の整合を維持
+- 影響: No public surface change（IPC contract / shared types / API シグネチャ変更なし）
+
+---
+
 ### タスク: TASK-SDK-05 create-entry-mainline-unification（2026-03-27）
 
 | 項目       | 値                                                                         |
