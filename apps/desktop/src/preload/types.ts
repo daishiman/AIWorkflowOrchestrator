@@ -1849,7 +1849,6 @@ declare global {
     conversationAPI: import("../shared/types/conversation").ConversationAPI;
     permissionAPI: PermissionAPI;
     skillCreatorAPI: import("./skill-creator-api").SkillCreatorAPI;
-    skillCreatorSessionAPI: import("./skill-creator-session-api").SkillCreatorSessionAPI;
     skillDebugAPI: SkillDebugAPI;
   }
 }

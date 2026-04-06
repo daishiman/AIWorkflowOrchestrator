@@ -222,6 +222,49 @@ describe("useInterviewState", () => {
     expect(result.current.canUndo).toBe(false);
   });
 
+  // UIH-EC-01: 異なるrequestIdのメッセージは別々に蓄積される（snapshot切り替えシミュレート）
+  it("UIH-EC-01: accumulates messages with different requestIds independently", () => {
+    const { result } = renderHook(() => useInterviewState());
+    const req1 = buildRequest({ requestId: "req-ec-1" });
+    const req2 = buildRequest({ requestId: "req-ec-2" });
+
+    act(() => {
+      result.current.addAssistantMessage(req1);
+      result.current.addUserMessage(
+        { kind: "single_select", selectedOptionId: "a" },
+        "A",
+      );
+      result.current.addAssistantMessage(req2);
+    });
+
+    expect(result.current.messages).toHaveLength(3);
+    expect(result.current.messages[0].inputRequest?.requestId).toBe("req-ec-1");
+    expect(result.current.messages[2].inputRequest?.requestId).toBe("req-ec-2");
+    expect(result.current.currentStepIndex).toBe(1);
+  });
+
+  // UIH-EC-02: reset後はインタビューが非アクティブ状態（messages空, canUndo=false）
+  it("UIH-EC-02: after reset, state is inactive (empty messages, canUndo false)", () => {
+    const { result } = renderHook(() => useInterviewState());
+
+    act(() => {
+      result.current.addAssistantMessage(buildRequest());
+      result.current.addUserMessage(
+        { kind: "single_select", selectedOptionId: "a" },
+        "A",
+      );
+    });
+    expect(result.current.messages).toHaveLength(2);
+
+    act(() => {
+      result.current.reset();
+    });
+
+    expect(result.current.messages).toHaveLength(0);
+    expect(result.current.canUndo).toBe(false);
+    expect(result.current.currentStepIndex).toBe(0);
+  });
+
   it("resets state", () => {
     const { result } = renderHook(() => useInterviewState());
 

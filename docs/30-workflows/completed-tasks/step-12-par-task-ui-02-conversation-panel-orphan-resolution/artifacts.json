@@ -1,0 +1,144 @@
+{
+  "feature": "step-12-par-task-ui-02-conversation-panel-orphan-resolution",
+  "created": "2026-04-06T00:00:00.000Z",
+  "lastUpdated": "2026-04-06T09:27:19.000Z",
+  "status": "spec_outputs_created",
+  "phases": {
+    "1": {
+      "status": "spec_output_created",
+      "artifacts": [
+        "phase-1-requirements.md",
+        "outputs/phase-1/spec-extraction-map.md",
+        "outputs/phase-1/component-comparison-matrix.md"
+      ],
+      "notes": "方針決定: 統合（ConversationalInterviewを正本、SkillCreatorConversationPanelを廃止）。Runtime IPCを正本採用。"
+    },
+    "2": {
+      "status": "spec_output_created",
+      "artifacts": ["phase-2-design.md", "outputs/phase-2/design-document.md"],
+      "notes": "削除対象コンポーネント・Session IPC廃止設計・IpcBridgeチャンネル移管設計を含む。"
+    },
+    "3": {
+      "status": "spec_output_created",
+      "gate": "MINOR",
+      "artifacts": [
+        "phase-3-design-review.md",
+        "outputs/phase-3/design-review-gate.md"
+      ],
+      "notes": "MINOR PASS。SkillCreatorIpcBridgeの2チャンネル（CONFIGURE_API, SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED）をcreatorHandlers.tsへ移管が前提。"
+    },
+    "4": {
+      "status": "spec_output_created",
+      "artifacts": [
+        "phase-4-test-creation.md",
+        "outputs/phase-4/test-matrix.md"
+      ],
+      "notes": "T-01〜T-20の20件テストケース。fail-first必須6件（T-03〜T-06, T-13〜T-16）。削除対象テスト5本。"
+    },
+    "5": {
+      "status": "pending_implementation",
+      "artifacts": [
+        "phase-5-implementation.md",
+        "outputs/phase-5/implementation-record.md"
+      ],
+      "notes": "PENDING。実装者向け作業指示書として作成済み。コード実装は未実施。"
+    },
+    "6": {
+      "status": "pending_implementation",
+      "artifacts": [
+        "phase-6-test-expansion.md",
+        "outputs/phase-6/test-expansion.md"
+      ],
+      "notes": "PENDING。interview-widgets 5種別追加テスト計画（W-SS/W-MC/W-FT/W-SI/W-CB）28件を含む。"
+    },
+    "7": {
+      "status": "pending_implementation",
+      "artifacts": [
+        "phase-7-coverage-check.md",
+        "outputs/phase-7/coverage-report.md"
+      ],
+      "notes": "PENDING。カバレッジ目標値テンプレート作成済み。実装後に実数値を記入。"
+    },
+    "8": {
+      "status": "pending_implementation",
+      "artifacts": [
+        "phase-8-refactoring.md",
+        "outputs/phase-8/refactoring-log.md"
+      ],
+      "notes": "PENDING。削除対象16項目チェックリスト・importパス整理・IPCコード整理の指示書作成済み。"
+    },
+    "9": {
+      "status": "pending_implementation",
+      "artifacts": [
+        "phase-9-quality-assurance.md",
+        "outputs/phase-9/qa-report.md"
+      ],
+      "notes": "PENDING。コンポーネント整合性・IPC安全性・ナビゲーション一貫性のチェックリスト作成済み。"
+    },
+    "10": {
+      "status": "pending_implementation",
+      "gate": "PENDING",
+      "artifacts": [
+        "phase-10-final-review.md",
+        "outputs/phase-10/final-review-result.md"
+      ],
+      "notes": "PENDING。ACマトリクス最終照合テンプレート・ゲート判定基準作成済み。"
+    },
+    "11": {
+      "status": "pending_implementation",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/manual-test-result.md"
+      ],
+      "notes": "PENDING。MT-01〜MT-05の5手動テストケース手順書作成済み。"
+    },
+    "12": {
+      "status": "spec_output_created",
+      "artifacts": [
+        "phase-12-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ],
+      "notes": "Phase 12 の canonical 成果物を 6 ファイルに拡張。Part1/Part2 の実装ガイドに加え、system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / compliance-check を追加。"
+    },
+    "13": {
+      "status": "blocked",
+      "artifacts": [
+        "phase-13-pr-creation.md",
+        "outputs/phase-13/pr-creation-record.md"
+      ],
+      "notes": "BLOCKED。ユーザー承認待ち。commit/push/PR未実施。TASK-UI-01完了確認が前提。PR本文素案作成済み。"
+    }
+  },
+  "dependencies": {
+    "2": ["1"],
+    "3": ["2"],
+    "4": ["3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  },
+  "metadata": {
+    "taskType": "refactor",
+    "taskId": "TASK-UI-02",
+    "workflow": "skill-creator-agent-sdk-lane-ui",
+    "parentWorkflow": "skill-creator-agent-sdk-lane",
+    "dependsOnTasks": ["TASK-UI-01"],
+    "keyDecisions": {
+      "integrationPolicy": "統合（ConversationalInterviewを正本）",
+      "ipcPolicy": "Runtime IPC正本採用・Session IPC廃止",
+      "phase3Gate": "MINOR PASS",
+      "criticalFinding": "SkillCreatorIpcBridgeのCONFIGURE_API・SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVEDチャンネル移管が必須"
+    }
+  }
+}
