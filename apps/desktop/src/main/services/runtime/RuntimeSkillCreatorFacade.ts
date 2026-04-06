@@ -328,13 +328,62 @@ export class RuntimeSkillCreatorFacade {
     }
   }
 
-  private createExecuteGovernanceCanUseTool() {
+  /**
+   * SDK canUseTool input から targetPath を抽出する共通 helper。
+   * `file_path` を優先し、なければ `path` にフォールバックする。
+   * どちらも存在しない場合は undefined（context なし扱い → tool-level 判定のみ）。
+   */
+  private extractTargetPath(
+    input: Record<string, unknown>,
+  ): string | undefined {
+    const filePath =
+      typeof input.file_path === "string" ? input.file_path : undefined;
+    const pathValue = typeof input.path === "string" ? input.path : undefined;
+    return filePath ?? pathValue;
+  }
+
+  /**
+   * execute phase の canUseTool callback を生成する (TASK-P0-09-U1)。
+   * skillRoot を受け取り、Write/Edit 呼び出し時に targetPath が
+   * allowedSkillRoot 配下かを path-scoped deny で検証する。
+   */
+  private createExecuteGovernanceCanUseTool(skillRoot: string) {
     return async (
       toolName: string,
-      _input: Record<string, unknown>,
+      input: Record<string, unknown>,
       options: { toolUseID: string },
     ) => {
-      const decision = evaluateGovernanceToolUse(toolName, "execute");
+      const targetPath = this.extractTargetPath(input);
+      const decision = evaluateGovernanceToolUse(toolName, "execute", {
+        targetPath,
+        allowedSkillRoot: skillRoot,
+      });
+      if (decision.allowed) {
+        return { behavior: "allow" as const, toolUseID: options.toolUseID };
+      }
+      return {
+        behavior: "deny" as const,
+        message: decision.reason,
+        toolUseID: options.toolUseID,
+      };
+    };
+  }
+
+  /**
+   * improve phase の canUseTool callback を生成する (TASK-P0-09-U1)。
+   * execute と同一の path-scoped deny ロジックを共通 helper で共有する。
+   */
+  private createImproveGovernanceCanUseTool(skillRoot: string) {
+    return async (
+      toolName: string,
+      input: Record<string, unknown>,
+      options: { toolUseID: string },
+    ) => {
+      const targetPath = this.extractTargetPath(input);
+      const decision = evaluateGovernanceToolUse(toolName, "improve", {
+        targetPath,
+        allowedSkillRoot: skillRoot,
+      });
       if (decision.allowed) {
         return { behavior: "allow" as const, toolUseID: options.toolUseID };
       }
@@ -1334,7 +1383,9 @@ export class RuntimeSkillCreatorFacade {
       skillId: `creator-${planResult.planId}`,
       allowedTools: [...executePolicy.allowedTools],
       permissionMode: executePolicy.permissionMode,
-      canUseTool: this.createExecuteGovernanceCanUseTool(),
+      canUseTool: this.createExecuteGovernanceCanUseTool(
+        this.getExplicitSkillCreatorRoot() ?? "",
+      ),
       hookObservers: {
         onPreToolUse: (input, _toolUseId) => {
           const decision = governanceHooks.onPreToolUse({

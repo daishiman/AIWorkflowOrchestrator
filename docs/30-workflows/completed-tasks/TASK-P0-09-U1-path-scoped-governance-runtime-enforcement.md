@@ -8,7 +8,7 @@ category: セキュリティ
 target_feature: RuntimeSkillCreatorFacade / SkillCreatorPermissionPolicy
 priority: 高
 scale: 小規模
-status: 未実施
+status: 完了
 source_phase: Phase 12
 created_date: 2026-04-06
 parent_task: TASK-P0-09
@@ -24,7 +24,7 @@ dependencies:
 | 対象機能     | RuntimeSkillCreatorFacade / SkillCreatorPermissionPolicy |
 | 優先度       | 高                                                       |
 | 見積もり規模 | 小規模                                                   |
-| ステータス   | 未実施                                                   |
+| ステータス   | 完了                                                     |
 | 発見元       | Phase 12（TASK-P0-09 unassigned-task-detection）         |
 | 発見日       | 2026-04-06                                               |
 

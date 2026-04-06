@@ -2220,3 +2220,32 @@
 - typecheck: EXIT:0 ✅
 - lint: EXIT:0（10 warnings / 0 errors）⚠️
 - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
+
+---
+
+### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-06）
+
+| 項目       | 値                                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-09-U1                                                                                                                                   |
+| ステータス | **完了**                                                                                                                                        |
+| タイプ     | implementation / TDD / security                                                                                                                 |
+| 優先度     | 最高                                                                                                                                            |
+| 完了日     | 2026-04-06                                                                                                                                      |
+| 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                                                                           |
+| 成果物     | `docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/`（Phase 1-12 仕様書・テスト）                                     |
+
+#### 実施内容
+
+- `extractTargetPath(input)` private helper を追加（`file_path ?? path` fallback パターン）
+- `createExecuteGovernanceCanUseTool(skillRoot)` のシグネチャを修正し、`targetPath` / `allowedSkillRoot` context を `evaluateGovernanceToolUse` に渡す配線を接続
+- `createImproveGovernanceCanUseTool(skillRoot)` を新規追加（improve phase 対応）
+- `_executeInternal()` 呼び出しで `this.getExplicitSkillCreatorRoot() ?? ""` を渡すよう修正
+- `SkillCreatorPermissionPolicy.ts` の `TODO(TASK-P0-09-U1)` コメントを解消
+
+#### 検証証跡
+
+- TDD: TC-PATH-01〜06（path-scoped deny/allow）+ extractTargetPath 4件 = 11件追加
+- 合計 101 tests PASS（`path-scoped-enforcement.test.ts` 含む）
+- typecheck: EXIT:0 ✅
+- Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
