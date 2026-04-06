@@ -443,7 +443,13 @@ export class RuntimeSkillCreatorFacade {
         if ("success" in improveResult && !improveResult.success) {
           const errorCode = improveResult.error.code;
           const errorMessage = improveResult.error.message;
-          this.notificationService?.notify("スキル作成失敗", errorMessage);
+          // TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001
+          // runtime guard と統一した通知呼び出し（E-2: 通知失敗がループ結果に影響しない）
+          try {
+            this.notificationService?.notify("スキル作成失敗", errorMessage);
+          } catch {
+            // 通知の失敗はループ結果に影響しない
+          }
           const snapshot = this.recordImproveFailureSnapshot(
             planId,
             `improve が ${errorCode} で失敗しました: ${errorMessage}`,

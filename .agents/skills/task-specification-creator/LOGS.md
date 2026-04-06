@@ -3,6 +3,20 @@
 ## 役割
 
 ---
+## 2026-04-06 - TASK-UT-RT-01 verifyAndImproveLoop adapter notification Phase 12 close-out validate 補強
+
+### 変更内容
+- Phase 12 成果物の「存在」ではなく「内容要件」を `validate-phase12-implementation-guide.js` のチェック（Part 1/2 の必須語）で固定し、close-out での false green を防ぐ方針を明文化した
+  - Part 1: `なぜ`/`必要` を先に書く + 日常の例え（`たとえば` を含む）
+  - Part 2: TypeScript 型、API/CLI シグネチャ、使用例、エラーハンドリング、エッジケース、設定/定数一覧
+- `phase12-task-spec-compliance-check` は自己申告 PASS を禁止し、未充足がある場合は FAIL/BLOCKED として blocker を列挙してから閉じるルールをガイド側へ追記した
+
+### 関連コマンド（Phase 12）
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/<FEATURE_NAME> --json`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<FEATURE_NAME>`
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/<FEATURE_NAME>`
+
+---
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
 
 ### 変更内容

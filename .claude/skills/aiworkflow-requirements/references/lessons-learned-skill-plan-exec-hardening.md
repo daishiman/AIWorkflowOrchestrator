@@ -45,3 +45,29 @@ app.exit(0)による即時終了（既知の制限：LLM API中断リクエス�
 - [ ] LLM API接続中の終了時の挙動定義
 
 **関連タスク**: TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001, TASK-FIX-EXECUTE-PLAN-FF-001
+
+---
+
+## [2026-04-06] TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 知見
+
+### phase 遷移責務と artifact 記録責務の分離
+
+**問題**: `improve()` が失敗したときに `currentPhase` を `"review"` へ戻すべきか、`"improve"` のまま保持するかで設計判断が必要だった。
+
+**解決策**: `currentPhase` は「ユーザーが今どのステップにいるか」の表現（phase 遷移責務）であり、`verifyResult` / `phaseArtifacts` は「何が行われたか」の記録（artifact 記録責務）として分離する。失敗時は `currentPhase` を変えず、`verifyResult.nextAction` で次アクションを示す。
+
+**ルール**: `currentPhase` を後退（`"improve"` → `"review"`）させると「まだレビュー前」という誤解を招く。失敗は `status: "fail"` + `nextAction` で表現すること。
+
+### ダックタイピングメソッドのテストモック
+
+**問題**: `recordImproveFailureSnapshot()` が `workflowEngine.recordImproveFailure?.()` の存在チェックを行うダックタイピングパターンになっており、テスト時にモックが難しかった。
+
+**解決策**: テストでは `workflowEngine` の mock に `recordImproveFailure` メソッドを明示的に追加する。フォールバックロジックのテストは別途 `recordImproveFailure` なしの mock で検証する。
+
+### 上位ループへの通知統一ルール
+
+**問題**: `execute()` / `improve()` 単体に adapter エラー通知を追加した際、`verifyAndImproveLoop()` が `improve()` を呼び出す上位ループであることの確認が漏れた。
+
+**ルール**: adapter ガードを追加した際は、同じメソッドを呼び出す上位ループも同波で通知統一チェックを行うこと。
+
+**関連タスク**: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001, TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001

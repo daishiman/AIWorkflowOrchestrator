@@ -6,6 +6,34 @@
 ## 完了タスク
 
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
+### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
+
+| 項目             | 値                                                                                     |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| タスクID         | TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001                          |
+| ステータス       | **完了（Phase 12 close-out / Phase 13 blocked）**                                      |
+| タイプ           | docs-improvement / runtime follow-up / notification                                    |
+| 優先度           | 中                                                                                     |
+| 完了日           | 2026-04-06                                                                             |
+| 対象             | `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の improve adapter error 通知        |
+| GitHub Issue     | #1896                                                                                  |
+| 成果物           | `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`    |
+| 元未タスク指示書 | `docs/30-workflows/unassigned-task/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
+
+#### 実施内容
+
+- `verifyAndImproveLoop()` の improve adapter error が `success:false` を返す場合に、`execute()` / `improve()` 単体の degraded 通知と同じ失敗通知を出す方針を close-out した
+- close-out 証跡として workflow spec（`index.md` / `phase-*.md`）、`artifacts.json` / `outputs/artifacts.json`、Phase 11 NON_VISUAL evidence、Phase 12 outputs を canonical filename で揃えた
+- `task-workflow-backlog.md` から該当 row を完了へ移管し、follow-up の残り 1件（executeAsync snapshot）だけを backlog に残した
+
+#### 検証証跡
+
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（0エラー / 0警告）
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（警告 26）
+
+---
+
+### タスク: TASK-P0-05 execute() → SkillFileWriter persist 統合（2026-04-05）
 
 | 項目 | 値 |
 | --- | --- |
@@ -147,6 +175,58 @@
 - `packages/shared/src/types/skillCreator.ts` に `LLMAdapterStatus` / `SkillCreatorErrorCode` / `RuntimeSkillCreatorPlanErrorResponse` を追加し、`RuntimeSkillCreatorPlanResponse` を union 拡張
 - `ipc/index.ts` の fire-and-forget 初期化 catch で `setLLMAdapterFailed(reason)` を呼び、`failed` 状態を記録
 - IPC 境界の outer/inner 契約（`IpcResult.success` と `data.success`）を `skillCreatorHandlers.runtime.test.ts` で検証
+
+#### 2026-04-04 追補（IPC / UI close-out）
+
+- `apps/desktop/src/renderer/components/skill/LLMAdapterErrorBanner.tsx` を追加し、`SkillLifecyclePanel` 上部に `role="alert"` の失敗バナーを表示するようにした
+- `apps/desktop/src/renderer/components/skill/hooks/useLLMAdapterStatus.ts` を追加し、Main からの pull + push で `LLMAdapterStatusPayload` を同期するようにした
+- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` に banner を統合し、`onOpenWizard` から設定導線を再利用するようにした
+- Phase 11 のスクリーンショット証跡を current build から再取得し、placeholder PNG を実画像へ差し替えた
+- `api-ipc-agent-core.md` / `ui-ux-feature-components-core.md` / `implementation-guide.md` / `index.md` / `topic-map.md` / `keywords.json` を current facts に同期した
+- Phase 13 はユーザー指示待ちのため blocked を維持し、PR は作成していない
+
+#### 追補の検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/hooks/__tests__/useLLMAdapterStatus.test.ts src/renderer/components/skill/__tests__/LLMAdapterErrorBanner.test.tsx src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/ipc/__tests__/creatorHandlers.adapterStatus.test.ts src/preload/__tests__/skill-creator-api.runtime.test.ts src/preload/__tests__/skill-creator-api.test.ts`: PASS
+- `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator.contract-parity.test.ts`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/task-rt-01-llm-adapter-error-propagation`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/task-rt-01-llm-adapter-error-propagation --json`: PASS
+- `outputs/phase-11/screenshots/TC-11-01.png` 〜 `TC-11-06.png`: current build で再取得済み
+
+---
+
+### タスク: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 execute/improve adapter guard（2026-04-04）
+
+| 項目       | 値                                                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001                                                       |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                                        |
+| タイプ     | runtime bug-fix / adapter guard / error-propagation                                                   |
+| 優先度     | 高                                                                                                    |
+| 完了日     | 2026-04-04                                                                                            |
+| 対象       | `RuntimeSkillCreatorFacade.execute()` / `RuntimeSkillCreatorFacade.improve()` / structured error flow |
+| 成果物     | `docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/`                                      |
+
+#### 実施内容
+
+- `execute()` / `improve()` の先頭に `_llmAdapterStatus` guard を追加し、`failed` / `initializing` で早期 return するようにした
+- `packages/shared/src/types/skillCreator.ts` に `RuntimeSkillCreatorExecuteErrorResponse` を追加し、`RuntimeSkillCreatorExecuteResponse` union を拡張した
+- `SkillCreatorWorkflowEngine.recordExecuteAdapterFailure()` を追加し、execute の adapter failure を review-ready snapshot として保存するようにした
+- `SkillCreatorWorkflowEngine.recordImproveFailure()` を追加し、improve failure を `currentPhase: improve` のまま `verifyResult` に反映するようにした
+- `SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx` で structured execute error を message へ正規化し、SkillCreateWizard は `executePlan` ack 後に `getWorkflowState` を再読込して handoff / failure snapshot を表示するようにした
+- `outputs/phase-11/*` と `outputs/phase-12/*` を current facts に差し替え、NON_VISUAL evidence と Phase 12 docs を同 wave で閉じた
+- `TASK-UT-RT-01-PHASE11-NONVISUAL-WALKTHROUGH-EVIDENCE-001` を resolved carry-over として backlog から completed へ移管し、Phase 10 の MINOR follow-up 2件を backlog へ formalize した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/SkillCreateWizard.tsx src/renderer/components/skill/SkillLifecyclePanel.tsx`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.notification.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx`: PASS（4 files / 69 tests）
+
+#### Phase 12 未タスク
+
+- `TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001`
 
 ---
 

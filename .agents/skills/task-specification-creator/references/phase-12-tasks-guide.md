@@ -165,6 +165,11 @@ Phase 12 の Task 1〜5 と Step 1-A〜1-G / Step 2 を 1 ファイルへ集約�
 - Step 2 の current fact / no-op / domain sync 確認
 - validator 結果、root parity、artifacts 同期、planned wording 0 件の記録
 
+**判定ルール（PASS 断言の防止）**:
+
+- 未充足が 1 つでもある場合、`PASS` を書かず `FAIL` または `BLOCKED` とし、blocker を列挙する
+- `PASS` は「成果物の実体 + validator 実測値 + same-wave sync 証跡」が揃った後にのみ許可する
+
 Task 6 は「存在すればよい」ではなく、Phase 12 の最終判定を裏付ける root evidence として機械検証結果を残す。
 
 ---

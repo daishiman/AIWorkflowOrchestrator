@@ -12,6 +12,15 @@
  * TC-F-06: 並行 execute が実行中のとき hasRunningExecution() が true を返す（Phase 6）
  * TC-F-07: 1 つが完了し残り 1 つが実行中のとき true を返す（Phase 6）
  * TC-F-08: 全 execute が完了したとき false を返す（Phase 6）
+ *
+ * TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001
+ * verifyAndImproveLoop() adapter エラー時の通知テスト
+ *
+ * T-VL-01: improve() が llm_adapter_unavailable を返した場合 notify() を呼び出す
+ * T-VL-02: improve() が adapter エラーを返した場合、戻り値の errorCode が設定される
+ * T-VL-03: notificationService が未設定でも正常終了する
+ * T-VL-04: notify() が例外を投げてもループ戻り値に影響しない
+ * T-VL-05: improve() が success（正常）の場合、通知が呼ばれない
  */
 
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -317,5 +326,240 @@ describe("RuntimeSkillCreatorFacade notification", () => {
     );
 
     expect(facade.hasRunningExecution()).toBe(false);
+  });
+});
+
+// ─── verifyAndImproveLoop() adapter エラー通知テスト (T-VL) ───────────────────
+
+describe("verifyAndImproveLoop() adapter エラー時の通知", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  /** improve() がアダプターエラーを返すようにするため: LLM アダプター未設定状態のままにする */
+  function createWorkflowEngineMock() {
+    return {
+      onPhaseChanged: undefined as unknown,
+      recordImproveAttempt: vi.fn(),
+      getWorkflowState: vi.fn().mockReturnValue(null),
+      getImproveAttemptCount: vi.fn().mockReturnValue(0),
+      recordVerifyPass: vi.fn(),
+      recordVerifyFailure: vi.fn(),
+    };
+  }
+
+  function createVerificationEngineWithWarning() {
+    return {
+      verify: vi.fn().mockResolvedValue([
+        {
+          id: "check-001",
+          layer: "layer1",
+          severity: "warning" as const,
+          summary: "$schema missing",
+        },
+      ]),
+    };
+  }
+
+  /**
+   * LLM アダプター未設定（"initializing" 状態）のファサードを生成する。
+   * この状態では improve() が llm_adapter_unavailable エラーを返す。
+   */
+  function createFacadeForVL(notificationService?: INotificationService) {
+    return new RuntimeSkillCreatorFacade({
+      skillExecutor: { execute: vi.fn() } as unknown as SkillExecutor,
+      workflowEngine: createWorkflowEngineMock() as never,
+      verificationEngine: createVerificationEngineWithWarning() as never,
+      notificationService,
+      // llmAdapter を渡さない → _llmAdapterStatus = "initializing" → improve() がエラーを返す
+    });
+  }
+
+  it("T-VL-01: improve() が llm_adapter_unavailable を返した場合 notify() を呼び出す", async () => {
+    const mockNotify = vi.fn();
+    const facade = createFacadeForVL({ notify: mockNotify });
+
+    await facade.verifyAndImproveLoop(
+      "plan-vl-01",
+      "/tmp/skill",
+      "test-skill",
+      "api-key",
+    );
+
+    expect(mockNotify).toHaveBeenCalledWith(
+      "スキル作成失敗",
+      expect.any(String),
+    );
+  });
+
+  it("T-VL-02: improve() が adapter エラーを返した場合、戻り値に errorCode が設定される", async () => {
+    const facade = createFacadeForVL();
+
+    const result = await facade.verifyAndImproveLoop(
+      "plan-vl-02",
+      "/tmp/skill",
+      "test-skill",
+      "api-key",
+    );
+
+    expect(result.finalStatus).toBe("error");
+    expect(result.errorCode).toBe("llm_adapter_unavailable");
+  });
+
+  it("T-VL-03: notificationService が未設定でもエラーなく正常終了する", async () => {
+    // notificationService を渡さない
+    const facade = createFacadeForVL(undefined);
+
+    const result = await facade.verifyAndImproveLoop(
+      "plan-vl-03",
+      "/tmp/skill",
+      "test-skill",
+      "api-key",
+    );
+
+    expect(result.finalStatus).toBe("error");
+    expect(result.errorCode).toBe("llm_adapter_unavailable");
+  });
+
+  it("T-VL-04: notify() が例外を投げてもループ戻り値に影響しない", async () => {
+    const throwingNotification: INotificationService = {
+      notify: () => {
+        throw new Error("notification service unavailable");
+      },
+    };
+    const facade = createFacadeForVL(throwingNotification);
+
+    const result = await facade.verifyAndImproveLoop(
+      "plan-vl-04",
+      "/tmp/skill",
+      "test-skill",
+      "api-key",
+    );
+
+    // 通知の例外にかかわらず、improve() の errorCode が正しく伝播すること
+    expect(result.finalStatus).toBe("error");
+    expect(result.errorCode).toBe("llm_adapter_unavailable");
+  });
+
+  it("T-VL-05: improve() が success（正常）を返した場合、通知が呼ばれない", async () => {
+    const mockNotify = vi.fn();
+    const facade = createFacadeForVL({ notify: mockNotify });
+
+    // improve() を正常系（改善提案なし）でスパイ → 通知を呼ばないパスに誘導
+    vi.spyOn(facade as any, "improve").mockResolvedValueOnce({
+      suggestions: [],
+    });
+
+    await facade.verifyAndImproveLoop(
+      "plan-vl-05",
+      "/tmp/skill",
+      "test-skill",
+      "api-key",
+    );
+
+    expect(mockNotify).not.toHaveBeenCalled();
+  });
+
+  it("T-VL-06: improve() 呼び出し自体が例外を投げた場合、通知は呼ばれない", async () => {
+    const mockNotify = vi.fn();
+    const facade = createFacadeForVL({ notify: mockNotify });
+
+    // improve() を例外を投げるようにスパイ（アダプターエラーではなく例外）
+    vi.spyOn(facade as any, "improve").mockRejectedValueOnce(
+      new Error("network timeout"),
+    );
+
+    const result = await facade.verifyAndImproveLoop(
+      "plan-vl-06",
+      "/tmp/skill",
+      "test-skill",
+      "api-key",
+    );
+
+    // improve() 例外はアダプターエラーではないので通知なし
+    expect(mockNotify).not.toHaveBeenCalled();
+    // ループは error で終了する
+    expect(result.finalStatus).toBe("error");
+  });
+
+  it("T-VL-07: improve() が terminal_handoff を返した場合、通知が呼ばれない", async () => {
+    const mockNotify = vi.fn();
+    const facade = createFacadeForVL({ notify: mockNotify });
+
+    // improve() が terminal_handoff を返すようにスパイ
+    vi.spyOn(facade as any, "improve").mockResolvedValueOnce({
+      type: "terminal_handoff",
+      guidance: { message: "Please use terminal" },
+    });
+
+    await facade.verifyAndImproveLoop(
+      "plan-vl-07",
+      "/tmp/skill",
+      "test-skill",
+      "api-key",
+    );
+
+    // terminal_handoff はアダプターエラーではないので通知なし
+    expect(mockNotify).not.toHaveBeenCalled();
+  });
+});
+
+// ─── T-REG-01: verifyAndImproveLoop() リグレッション確認 ─────────────────────
+
+describe("verifyAndImproveLoop() リグレッション確認 (T-REG)", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("T-REG-01: verify で全チェック PASS → ループ正常終了（通知なし）", async () => {
+    const mockNotify = vi.fn();
+    const mockWorkflowEngine = {
+      onPhaseChanged: undefined as unknown,
+      recordVerifyPass: vi.fn().mockReturnValue({
+        planId: "plan-reg-01",
+        currentPhase: "verify" as const,
+        awaitingUserInput: null,
+        verifyResult: { status: "pass", nextAction: "handoff" },
+        phaseArtifacts: [],
+        resumeTokenEnvelope: {
+          version: "task-sdk-02-v1",
+          planId: "plan-reg-01",
+          currentPhase: "verify" as const,
+          artifactCount: 0,
+          updatedAt: new Date().toISOString(),
+        },
+      }),
+      recordImproveAttempt: vi.fn(),
+      getWorkflowState: vi.fn().mockReturnValue(null),
+      getImproveAttemptCount: vi.fn().mockReturnValue(0),
+    };
+    const mockVerificationEngine = {
+      verify: vi.fn().mockResolvedValue([
+        {
+          id: "L1-001",
+          layer: "layer1",
+          severity: "info" as const,
+          summary: "OK",
+        },
+      ]),
+    };
+
+    const facade = new RuntimeSkillCreatorFacade({
+      skillExecutor: { execute: vi.fn() } as unknown as SkillExecutor,
+      workflowEngine: mockWorkflowEngine as never,
+      verificationEngine: mockVerificationEngine as never,
+      notificationService: { notify: mockNotify },
+    });
+
+    const result = await facade.verifyAndImproveLoop(
+      "plan-reg-01",
+      "/tmp/skill",
+      "test-skill",
+      "api-key",
+    );
+
+    expect(result.finalStatus).toBe("pass");
+    expect(result.totalAttempts).toBe(0);
+    expect(mockNotify).not.toHaveBeenCalled();
   });
 });
