@@ -96,7 +96,7 @@ describe("RuntimeSkillCreatorFacade dynamic plan resource selection", () => {
           workflowId: "task-sdk-03-plan-selection",
           phases: [
             {
-              id: "phase-plan",
+              id: "plan",
               title: "plan",
               resourceIds: [
                 "discover-problem",
@@ -113,25 +113,25 @@ describe("RuntimeSkillCreatorFacade dynamic plan resource selection", () => {
               id: "discover-problem",
               kind: "agent",
               path: "./agents/discover-problem.md",
-              phaseIds: ["phase-plan"],
+              phaseIds: ["plan"],
             },
             {
               id: "design-workflow",
               kind: "agent",
               path: "./agents/design-workflow.md",
-              phaseIds: ["phase-plan"],
+              phaseIds: ["plan"],
             },
             {
               id: "plan-structure",
               kind: "agent",
               path: "./agents/plan-structure.md",
-              phaseIds: ["phase-plan"],
+              phaseIds: ["plan"],
             },
             {
               id: "overview",
               kind: "reference",
               path: "./references/overview.md",
-              phaseIds: ["phase-plan"],
+              phaseIds: ["plan"],
             },
           ],
           entry: [{ id: "plan-entry", command: "prepare plan" }],
@@ -213,5 +213,408 @@ describe("RuntimeSkillCreatorFacade dynamic plan resource selection", () => {
     expect(Array.isArray(snapshot?.sourceProvenance?.degradeReasons)).toBe(
       true,
     );
+  });
+
+  it("manifest の custom resource ids でも plan の system prompt に反映される", async () => {
+    const explicitRoot = await createSkillRoot("task03-facade-custom-");
+    const envRoot = await createSkillRoot("task03-facade-custom-env-");
+    tempRoots.push(explicitRoot, envRoot);
+    process.env.AIWORKFLOW_SKILL_CREATOR_PATH = envRoot;
+
+    await writeTextFile(
+      explicitRoot,
+      "agents/custom-discover.md",
+      "DISCOVER_CUSTOM_MANIFEST",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "agents/custom-design.md",
+      "DESIGN_CUSTOM_MANIFEST",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "agents/custom-plan.md",
+      "PLAN_CUSTOM_MANIFEST",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "references/custom-overview.md",
+      "OVERVIEW_CUSTOM_MANIFEST",
+    );
+    await writeTextFile(
+      envRoot,
+      "agents/custom-discover.md",
+      "DISCOVER_CUSTOM_ENV",
+    );
+    await writeTextFile(
+      envRoot,
+      "agents/custom-design.md",
+      "DESIGN_CUSTOM_ENV",
+    );
+    await writeTextFile(envRoot, "agents/custom-plan.md", "PLAN_CUSTOM_ENV");
+    await writeTextFile(
+      envRoot,
+      "references/custom-overview.md",
+      "OVERVIEW_CUSTOM_ENV",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "workflow-manifest.json",
+      JSON.stringify(
+        {
+          schemaVersion: 1,
+          workflowId: "task-sdk-03-custom-plan-selection",
+          phases: [
+            {
+              id: "plan",
+              title: "plan",
+              resourceIds: [
+                "custom-discover",
+                "custom-design",
+                "custom-plan",
+                "custom-overview",
+              ],
+              entryHookId: "plan-entry",
+              exitHookId: "plan-exit",
+            },
+          ],
+          resources: [
+            {
+              id: "custom-discover",
+              kind: "agent",
+              path: "./agents/custom-discover.md",
+              phaseIds: ["plan"],
+            },
+            {
+              id: "custom-design",
+              kind: "agent",
+              path: "./agents/custom-design.md",
+              phaseIds: ["plan"],
+            },
+            {
+              id: "custom-plan",
+              kind: "agent",
+              path: "./agents/custom-plan.md",
+              phaseIds: ["plan"],
+            },
+            {
+              id: "custom-overview",
+              kind: "reference",
+              path: "./references/custom-overview.md",
+              phaseIds: ["plan"],
+            },
+          ],
+          entry: [{ id: "plan-entry", command: "prepare custom plan" }],
+          exit: [{ id: "plan-exit", command: "publish custom plan" }],
+        },
+        null,
+        2,
+      ),
+    );
+
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    vi.spyOn(Date, "now").mockReturnValue(1_710_000_001_234);
+    (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+      content: JSON.stringify({
+        skillName: "custom-dynamic-skill",
+        description: "custom dynamic description",
+        agents: [{ name: "writer", role: "write files" }],
+        scripts: [],
+        triggers: ["manual"],
+        anchors: ["custom-overview"],
+      }),
+      model: "claude-sonnet-4-20250514",
+      usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+    });
+
+    const facade = new RuntimeSkillCreatorFacade({
+      skillExecutor: {
+        execute: vi.fn(),
+      } as unknown as SkillExecutor,
+      llmAdapter: mockLLMAdapter,
+      resourceLoader: new ResourceLoader(explicitRoot),
+      sourceResolver: new SkillCreatorSourceResolver(),
+      resourcePlanner: new PhaseResourcePlanner(),
+      resolvedResourceReader: new ResolvedResourceReader(
+        new ResourceLoader(explicitRoot),
+      ),
+    });
+
+    const result = await facade.plan(
+      "custom dynamic spec",
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toMatchObject({
+      planId: "plan-1710000001234",
+      skillSpec: "custom dynamic spec",
+      skillName: "custom-dynamic-skill",
+      description: "custom dynamic description",
+    });
+
+    const sendChatArgs = (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>)
+      .mock.calls[0][0];
+    expect(sendChatArgs.systemPrompt).toContain("DISCOVER_CUSTOM_MANIFEST");
+    expect(sendChatArgs.systemPrompt).toContain("DESIGN_CUSTOM_MANIFEST");
+    expect(sendChatArgs.systemPrompt).toContain("PLAN_CUSTOM_MANIFEST");
+    expect(sendChatArgs.systemPrompt).toContain("OVERVIEW_CUSTOM_MANIFEST");
+    expect(sendChatArgs.systemPrompt).not.toContain("DISCOVER_CUSTOM_ENV");
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-1710000001234");
+    expect(snapshot?.sourceProvenance).toMatchObject({
+      resolvedSkillCreatorRoot: explicitRoot,
+      manifestPath: path.join(explicitRoot, "workflow-manifest.json"),
+      selectedResourceIds: [
+        "custom-discover",
+        "custom-design",
+        "custom-plan",
+        "custom-overview",
+      ],
+    });
+  });
+
+  it("manifest がなくても fallback で explicit root を使って plan を生成する", async () => {
+    const explicitRoot = await createSkillRoot("task03-facade-fallback-");
+    const envRoot = await createSkillRoot("task03-facade-fallback-env-");
+    tempRoots.push(explicitRoot, envRoot);
+    process.env.AIWORKFLOW_SKILL_CREATOR_PATH = envRoot;
+
+    await writeTextFile(
+      explicitRoot,
+      "agents/discover-problem.md",
+      "DISCOVER_FALLBACK",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "agents/design-workflow.md",
+      "DESIGN_FALLBACK",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "agents/plan-structure.md",
+      "PLAN_FALLBACK",
+    );
+    await writeTextFile(
+      explicitRoot,
+      "references/overview.md",
+      "OVERVIEW_FALLBACK",
+    );
+    await writeTextFile(envRoot, "agents/discover-problem.md", "DISCOVER_ENV");
+    await writeTextFile(envRoot, "agents/design-workflow.md", "DESIGN_ENV");
+    await writeTextFile(envRoot, "agents/plan-structure.md", "PLAN_ENV");
+    await writeTextFile(envRoot, "references/overview.md", "OVERVIEW_ENV");
+
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    vi.spyOn(Date, "now").mockReturnValue(1_710_000_000_987);
+    (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+      content: JSON.stringify({
+        skillName: "fallback-skill",
+        description: "fallback description",
+        agents: [{ name: "writer", role: "write files" }],
+        scripts: [],
+        triggers: ["manual"],
+        anchors: ["overview"],
+      }),
+      model: "claude-sonnet-4-20250514",
+      usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+    });
+
+    const facade = new RuntimeSkillCreatorFacade({
+      skillExecutor: {
+        execute: vi.fn(),
+      } as unknown as SkillExecutor,
+      llmAdapter: mockLLMAdapter,
+      resourceLoader: new ResourceLoader(explicitRoot),
+      sourceResolver: new SkillCreatorSourceResolver(),
+      resourcePlanner: new PhaseResourcePlanner(),
+      resolvedResourceReader: new ResolvedResourceReader(
+        new ResourceLoader(explicitRoot),
+      ),
+    });
+
+    const result = await facade.plan("fallback spec", "api-key", "sk-test");
+
+    expect(result).toMatchObject({
+      planId: "plan-1710000000987",
+      skillSpec: "fallback spec",
+      skillName: "fallback-skill",
+      description: "fallback description",
+    });
+
+    const sendChatArgs = (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>)
+      .mock.calls[0][0];
+    expect(sendChatArgs.systemPrompt).toContain("DISCOVER_FALLBACK");
+    expect(sendChatArgs.systemPrompt).toContain("DESIGN_FALLBACK");
+    expect(sendChatArgs.systemPrompt).toContain("PLAN_FALLBACK");
+    expect(sendChatArgs.systemPrompt).toContain("OVERVIEW_FALLBACK");
+    expect(sendChatArgs.systemPrompt).not.toContain("DISCOVER_ENV");
+
+    const snapshot = facade.getWorkflowStateSnapshot("plan-1710000000987");
+    expect(snapshot?.sourceProvenance?.manifestPath).toBeUndefined();
+    expect(snapshot?.sourceProvenance?.resolvedSkillCreatorRoot).toBe(
+      explicitRoot,
+    );
+  });
+
+  it("workflow-manifest.json が壊れている場合は VALIDATION_ERROR を返して fallback しない", async () => {
+    const explicitRoot = await createSkillRoot(
+      "task03-facade-invalid-manifest-",
+    );
+    tempRoots.push(explicitRoot);
+
+    await writeTextFile(
+      explicitRoot,
+      "workflow-manifest.json",
+      "{ this is not valid json",
+    );
+
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+      content: JSON.stringify({
+        skillName: "invalid-manifest-skill",
+        description: "should not reach llm",
+        agents: [],
+        scripts: [],
+        triggers: [],
+        anchors: [],
+      }),
+      model: "claude-sonnet-4-20250514",
+      usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+    });
+
+    const facade = new RuntimeSkillCreatorFacade({
+      skillExecutor: {
+        execute: vi.fn(),
+      } as unknown as SkillExecutor,
+      llmAdapter: mockLLMAdapter,
+      resourceLoader: new ResourceLoader(explicitRoot),
+      sourceResolver: new SkillCreatorSourceResolver(),
+      resourcePlanner: new PhaseResourcePlanner(),
+      resolvedResourceReader: new ResolvedResourceReader(
+        new ResourceLoader(explicitRoot),
+      ),
+    });
+
+    const result = await facade.plan(
+      "invalid manifest spec",
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toMatchObject({
+      success: false,
+      error: {
+        code: "VALIDATION_ERROR",
+      },
+    });
+    if ("error" in result) {
+      expect(result.error.message).toContain("workflow-manifest.json");
+    }
+    expect(mockLLMAdapter.sendChat).not.toHaveBeenCalled();
+  });
+
+  it("plan phase が manifest に存在しない場合は VALIDATION_ERROR を返して fallback しない", async () => {
+    const explicitRoot = await createSkillRoot(
+      "task03-facade-missing-plan-phase-",
+    );
+    tempRoots.push(explicitRoot);
+
+    await writeTextFile(
+      explicitRoot,
+      "workflow-manifest.json",
+      JSON.stringify(
+        {
+          schemaVersion: 1,
+          workflowId: "task-sdk-03-missing-plan-phase",
+          phases: [
+            {
+              id: "improve",
+              title: "improve",
+              resourceIds: ["custom-improve"],
+              entryHookId: "improve-entry",
+              exitHookId: "improve-exit",
+            },
+          ],
+          resources: [
+            {
+              id: "custom-improve",
+              kind: "agent",
+              path: "./agents/custom-improve.md",
+              phaseIds: ["improve"],
+            },
+          ],
+          entry: [{ id: "improve-entry", command: "prepare improve" }],
+          exit: [{ id: "improve-exit", command: "publish improve" }],
+        },
+        null,
+        2,
+      ),
+    );
+    await writeTextFile(
+      explicitRoot,
+      "agents/custom-improve.md",
+      "IMPROVE_ONLY_MANIFEST",
+    );
+
+    vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
+      type: "integrated_api",
+      apiKey: "sk-test",
+      permissionMode: "default",
+    });
+    (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+      content: JSON.stringify({
+        skillName: "missing-plan-phase-skill",
+        description: "should not reach llm",
+        agents: [],
+        scripts: [],
+        triggers: [],
+        anchors: [],
+      }),
+      model: "claude-sonnet-4-20250514",
+      usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+    });
+
+    const facade = new RuntimeSkillCreatorFacade({
+      skillExecutor: {
+        execute: vi.fn(),
+      } as unknown as SkillExecutor,
+      llmAdapter: mockLLMAdapter,
+      resourceLoader: new ResourceLoader(explicitRoot),
+      sourceResolver: new SkillCreatorSourceResolver(),
+      resourcePlanner: new PhaseResourcePlanner(),
+      resolvedResourceReader: new ResolvedResourceReader(
+        new ResourceLoader(explicitRoot),
+      ),
+    });
+
+    const result = await facade.plan(
+      "missing plan phase spec",
+      "api-key",
+      "sk-test",
+    );
+
+    expect(result).toMatchObject({
+      success: false,
+      error: {
+        code: "VALIDATION_ERROR",
+      },
+    });
+    if ("error" in result) {
+      expect(result.error.message).toContain('phase "plan"');
+    }
+    expect(mockLLMAdapter.sendChat).not.toHaveBeenCalled();
   });
 });

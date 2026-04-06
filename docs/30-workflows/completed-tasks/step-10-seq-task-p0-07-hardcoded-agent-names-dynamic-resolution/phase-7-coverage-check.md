@@ -17,6 +17,8 @@
 - 受入基準とテストケースのマッピング確認
 - カバレッジレポートの生成
 - 不足カバレッジの補完
+- candidate root dedupe / fallback path / manifest-less resolution の coverage 確認
+- broken manifest / missing phase / empty resourceIds の validation error coverage 確認
 
 ## 参照資料
 

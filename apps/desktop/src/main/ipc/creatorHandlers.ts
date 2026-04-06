@@ -100,15 +100,26 @@ function validateSender(
 
 function emitWorkflowStateChanged(
   mainWindow: BrowserWindow,
-  snapshot: SkillCreatorWorkflowUiSnapshot,
+  snapshot: SkillCreatorWorkflowUiSnapshot | null,
+  errorMessage?: string,
 ): void {
   if (mainWindow.isDestroyed()) {
     return;
   }
-  mainWindow.webContents.send(
-    IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
-    snapshot,
-  );
+  if (errorMessage !== undefined) {
+    mainWindow.webContents.send(
+      IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      snapshot,
+      errorMessage,
+    );
+    return;
+  }
+  if (snapshot) {
+    mainWindow.webContents.send(
+      IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      snapshot,
+    );
+  }
 }
 
 function toAdapterStatusPayload(
@@ -146,9 +157,10 @@ export function registerRuntimeSkillCreatorHandlers(
     runtimeSkillCreatorService.onWorkflowStateSnapshot = (
       _planId,
       snapshot,
+      errorMessage,
     ) => {
-      if (snapshot) {
-        emitWorkflowStateChanged(mainWindow, snapshot);
+      if (snapshot || errorMessage !== undefined) {
+        emitWorkflowStateChanged(mainWindow, snapshot, errorMessage);
       }
     };
     runtimeSkillCreatorService.onAdapterStatusChanged = (

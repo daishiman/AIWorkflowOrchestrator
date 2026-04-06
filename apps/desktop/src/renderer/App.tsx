@@ -29,6 +29,7 @@ const ExecutionConsoleView = React.lazy(
   () => import("./views/ExecutionConsoleView"),
 );
 import { SkillManagementPanel } from "./components/skill/SkillManagementPanel";
+import { SkillLifecyclePanel } from "./components/skill/SkillLifecyclePanel";
 import { SkillChainBuilder } from "./views/SkillChainBuilder";
 import { ScheduleManager } from "./views/ScheduleManager";
 import { DebugPanel } from "./views/DebugPanel";
@@ -78,7 +79,9 @@ function App(): JSX.Element {
   const rawCurrentView = useCurrentView();
   const currentView = normalizeSkillLifecycleView(rawCurrentView);
   const dockCurrentView = (
-    currentView === "skillManagement" ? "skillCenter" : currentView
+    currentView === "skillManagement" || currentView === "skillLifecycle"
+      ? "skillCenter"
+      : currentView
   ) as DockViewType;
   const responsiveMode = useResponsiveMode();
   const setCurrentView = useAppStore((state) => state.setCurrentView);
@@ -338,6 +341,13 @@ function App(): JSX.Element {
           />
         );
       }
+      case "skillLifecycle":
+        return (
+          <SkillLifecyclePanel
+            onClose={() => handleViewChange("skillCenter")}
+            onOpenWizard={() => handleViewChange("skillCreate")}
+          />
+        );
       case "skillCreate":
         return (
           <SkillCreateWizard onClose={() => setCurrentView("skillCenter")} />
@@ -374,6 +384,13 @@ function App(): JSX.Element {
 
   const renderAdvancedSkillCenterView = () => {
     switch (currentView) {
+      case "skillLifecycle":
+        return (
+          <SkillLifecyclePanel
+            onClose={() => handleViewChange("skillCenter")}
+            onOpenWizard={() => handleViewChange("skillCreate")}
+          />
+        );
       case "skillManagement":
         return (
           <SkillManagementPanel onClose={() => setCurrentView("skillCenter")} />

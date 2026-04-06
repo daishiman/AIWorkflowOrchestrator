@@ -69,6 +69,9 @@ Phase 1、Phase 2、Phase 3。
 
 - IPC ハンドラの依存先が Port/Interface であること（具象クラスを直接参照しない）
 - IPC レスポンス形式（`{ success, error }` ラッパー使用の有無）を設計時点で明示的に決定する
+- **[RT-04知見] 並行リクエスト防止機構（IPC二重送信防止）**: IPC 呼び出しを含む Hook/Component では、同一チャンネルへの並行送信を防止する機構を設計項目として明示すること。具体的には `isSubmittingRef`（`useRef<boolean>`）などの ref ガードを設計書に記載し、テストケースに「保存中は再送信不可」を含める。
+  - 根拠: TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 Phase 6 TC-24 にて `isSubmittingRef` の追加が必要になった（Phase 2 設計での漏れ）
+  - 適用条件: ユーザー操作（ボタンクリック等）から IPC を発火する Hook / Component 全般
 
 ### IPC 4層整合性チェック（デッドチャンネル防止）
 

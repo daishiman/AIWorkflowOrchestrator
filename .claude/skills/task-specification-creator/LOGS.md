@@ -15,25 +15,26 @@
 ---
 
 ## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
+## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
-- `assets/implementation-guide-template.md` の §6.3 UIコンポーネント実装パターンに `state owner / wrapper / presentation 責務分離パターン` テーブルを追加
-- `assets/documentation-changelog-template.md` に `### 周辺同期（same-wave）` セクションを追加し、Workflow-Local 同期と Global Skill Sync の区別を明示
-- `assets/documentation-changelog-template.md` の品質チェックリストに周辺同期確認 3 項目を追加（Feedback 1-2 / 1-3 対応）
-- 上記は skill-feedback-report.md の提案 1-2 / 1-3 の実装
+- `RuntimeSkillCreatorFacade.ts` の `executeAsync()` structured error / catch パスの `if (!snapshot)` 条件を削除
+- `creatorHandlers.ts` / `skill-creator-api.ts` / `SkillLifecyclePanel.tsx` で workflow-state changed event の errorMessage を Renderer まで伝搬
+- `RuntimeSkillCreatorFacade.executeAsync.test.ts` に T-01〜T-06 テスト追加（10テスト PASS）
+- `creatorHandlers.test.ts` / `skill-creator-api.runtime.test.ts` / `SkillLifecyclePanel.error-persistence.test.tsx` を含む focused vitest 53 tests PASS
+- `pnpm typecheck` / `pnpm lint` PASS
 
 ---
 
-## 2026-04-06 - TASK-RT-03 skill-creation-result-panel Phase 12 close-out sync
+## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
+
+## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
 
 ### 変更内容
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-11/` を実スクリーンショット 6 枚 + `manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` / `ui-sanity-visual-review.md` で完成
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-11/manual-test-checklist.md` を追加し、Phase 11 の manual test 見落としを補完
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-12/` に `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を追加
-- `phase-11-manual-test.md` に `画面カバレッジマトリクス` を追記し、validator warning を解消
-- `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を PASS
-- `index.md` / `artifacts.json` / `.claude/skills/aiworkflow-requirements/references/*` / `LOGS.md` 2ファイルを same-wave 更新
-- Step 2 は local-only props のため N/A で閉じた
+- `apps/desktop/scripts/capture-task-ui-01-phase11.mjs` を追加し、Playwright 4 枚の visual evidence を `docs/30-workflows/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion/outputs/phase-11/screenshots/` に保存
+- `App.tsx` / `useSkillCenter.ts` / `store/types.ts` / renderer tests を current facts へ同期し、`skillLifecycle` の `onOpenWizard` / dock normalization / ViewType union 更新を targeted vitest 35 tests PASS で確認
+- `outputs/phase-12/implementation-guide.md` に screenshot references を追記し、`system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` を same-wave sync
+- `.agents` mirror の LOGS / SKILL history も同波更新
 
 ---
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
@@ -125,18 +126,6 @@
 
 ---
 
-## 2026-04-06 - TASK-P0-07 ハードコードされた AGENT_NAMES の動的解決 Phase 12 close-out sync
-
-### 変更内容
-- `manifestResourceResolver.ts` を新規作成し、`buildPhaseResourceRequestsFromManifest()` 純粋関数を実装
-- `RuntimeSkillCreatorFacade.ts` の `resolveOperationResources()` に `phaseId` 引数を追加し、manifest ベースの動的エージェント解決に移行
-- フォールバック 5 パターン（phase 未存在、resourceIds undefined/空、全 ID 未発見、dynamic pipeline off）を実装
-- `AGENT_NAMES` ハードコード定数を完全削除し、`PLAN_RESOURCE_REQUESTS` からの動的導出に一本化
-- `interfaces-agent-sdk-skill.md` に `buildPhaseResourceRequestsFromManifest` のインターフェース仕様を追記
-- SKILL.md + LOGS.md 2ファイル同時更新（P1/P25/P29 対策）
-
----
-
 ## 2026-04-04 - TASK-UT-RT-01 execute/improve adapter guard Phase 12 close-out sync
 
 ### 変更内容
@@ -201,18 +190,6 @@
 - `outputs/artifacts.json` を root `artifacts.json` と同期し、Phase 11 の `manual-test-checklist.md` / `manual-test-result.md` を追加して workflow root の機械検証を通過させた
 - Phase 11 が visible surface 追加なしの integration task であることを踏まえ、`phase-11-12-guide.md` に NON_VISUAL task は screenshot wording を残さないルールを追記した
 - follow-up task の canonical status を `spec_created` として扱い、完了済み実装と混同しない Phase 12 same-wave sync の運用を再確認した
-
----
-
-## 2026-04-06 - TASK-P0-08 Phase 12 close-out sync
-
-### 変更内容
-
-- `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-08-session-resume-renderer-integration/outputs/phase-12/implementation-guide.md` の Part 2 を API/IPC シグネチャ・型定義・使用例まで補強し、validator PASS を確認した
-- Phase 11 screenshot evidence を `outputs/phase-11/screenshots/` へ保存し、`tc-01`〜`tc-06` の 6 枚を current fact として固定した
-- `verify-unassigned-links.js` PASS により、unassigned task の canonical link / file existence を確認した
-- `skillCreatorAPI` の session resume / cleanup surface、`task-workflow-completed.md` / `api-ipc-system-core.md` / `interfaces-agent-sdk-skill-reference.md` の same-wave 更新を反映した
-- `generate-index.js` 再生成（2576 キーワード）で topic-map / keywords の同期を維持する
 
 ---
 

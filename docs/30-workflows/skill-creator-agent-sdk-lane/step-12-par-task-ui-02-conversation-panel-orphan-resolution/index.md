@@ -16,7 +16,7 @@
 | 更新日         | 2026-04-06                                                   |
 | 依存タスク     | TASK-UI-01（ルート昇格完了後に着手）                         |
 | 後続タスク     | なし                                                         |
-| 関連Issue      | -                                                            |
+| 関連Issue      | #1939                                                        |
 | 親ワークフロー | step-12-par-task-ui-02-conversation-panel-orphan-resolution  |
 
 ---

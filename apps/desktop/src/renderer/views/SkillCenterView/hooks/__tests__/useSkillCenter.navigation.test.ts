@@ -118,4 +118,23 @@ describe("useSkillCenter ナビゲーションアクション", () => {
 
     expect(typeof result.current.navigateToSkillManagement).toBe("function");
   });
+
+  // TC-07: TASK-UI-01 — navigateToSkillLifecycle が skillLifecycle へ遷移すること (AC-1)
+  it("TC-07: navigateToSkillLifecycle が setCurrentView('skillLifecycle') を呼ぶ", () => {
+    const { result } = renderHook(() => useSkillCenter());
+
+    act(() => {
+      result.current.navigateToSkillLifecycle();
+    });
+
+    expect(mockSetCurrentView).toHaveBeenCalledTimes(1);
+    expect(mockSetCurrentView).toHaveBeenCalledWith("skillLifecycle");
+  });
+
+  // TC-08: TASK-UI-01 — 返り値に navigateToSkillLifecycle が含まれること (AC-1)
+  it("TC-08: 返り値に navigateToSkillLifecycle が含まれる", () => {
+    const { result } = renderHook(() => useSkillCenter());
+
+    expect(typeof result.current.navigateToSkillLifecycle).toBe("function");
+  });
 });

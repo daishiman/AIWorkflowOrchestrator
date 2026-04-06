@@ -99,7 +99,10 @@ import type {
   SkillCreatorGovernancePhase,
   SkillCreatorGovernanceState,
 } from "@repo/shared/types";
-import { buildPhaseResourceRequestsFromManifest } from "./manifestResourceResolver";
+import {
+  buildPhaseResourceRequestsFromManifest,
+  WorkflowManifestValidationError,
+} from "./manifestResourceResolver";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -492,7 +495,13 @@ export class RuntimeSkillCreatorFacade {
         if ("success" in improveResult && !improveResult.success) {
           const errorCode = improveResult.error.code;
           const errorMessage = improveResult.error.message;
-          this.notificationService?.notify("スキル作成失敗", errorMessage);
+          // TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001
+          // runtime guard と統一した通知呼び出し（E-2: 通知失敗がループ結果に影響しない）
+          try {
+            this.notificationService?.notify("スキル作成失敗", errorMessage);
+          } catch {
+            // 通知の失敗はループ結果に影響しない
+          }
           const snapshot = this.recordImproveFailureSnapshot(
             planId,
             `improve が ${errorCode} で失敗しました: ${errorMessage}`,
@@ -827,9 +836,20 @@ export class RuntimeSkillCreatorFacade {
     const manifestPath = path.join(explicitRoot, "workflow-manifest.json");
     try {
       await fs.access(manifestPath);
-      return await this.manifestLoader.loadManifest(manifestPath);
     } catch {
+      // ファイルが存在しない = 正常な初期状態。fallback パスへ進む。
       return undefined;
+    }
+    // ファイルが存在する場合は必ず load を試みる。
+    // parse / schema エラーは WorkflowManifestValidationError にラップして伝播させ、
+    // 呼び出し元 (plan / improve) で VALIDATION_ERROR に変換する。
+    try {
+      return await this.manifestLoader.loadManifest(manifestPath);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      throw new WorkflowManifestValidationError(
+        `workflow-manifest.json の読み込みに失敗しました: ${msg}`,
+      );
     }
   }
 
@@ -971,12 +991,27 @@ export class RuntimeSkillCreatorFacade {
     let agentSpecs: Array<{ name: string; content: string }> = [];
     let referenceSpecs: Array<{ name: string; content: string }> = [];
     if (this.hasDynamicResourcePipeline()) {
-      const resolved = await this.resolveOperationResources(
-        "plan",
-        PLAN_RESOURCE_REQUESTS,
-        PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
-        "plan",
-      );
+      let resolved;
+      try {
+        resolved = await this.resolveOperationResources(
+          "plan",
+          PLAN_RESOURCE_REQUESTS,
+          PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
+          "plan",
+        );
+      } catch (error) {
+        if (error instanceof WorkflowManifestValidationError) {
+          governanceHooks.onSessionEnd({
+            sessionId: planId,
+            summary: `Plan failed: ${error.message}`,
+          });
+          return {
+            success: false,
+            error: { code: "VALIDATION_ERROR", message: error.message },
+          };
+        }
+        throw error;
+      }
       const loadedResources = await this.readPlannedResources(
         resolved.resources,
       );
@@ -1147,22 +1182,18 @@ export class RuntimeSkillCreatorFacade {
         const errorResponse =
           executeResult as RuntimeSkillCreatorExecuteErrorResponse;
         const snapshot = this.workflowEngine.getWorkflowState(planId);
-        if (!snapshot) {
-          this.onWorkflowStateSnapshot?.(
-            planId,
-            null,
-            errorResponse.error.message,
-          );
-        }
+        this.onWorkflowStateSnapshot?.(
+          planId,
+          snapshot ?? null,
+          errorResponse.error.message,
+        );
       }
     } catch (error) {
       this.workflowEngine.triggerPhaseTransition(planId, "error", 0);
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       const snapshot = this.workflowEngine.getWorkflowState(planId);
-      if (!snapshot) {
-        this.onWorkflowStateSnapshot?.(planId, null, errorMessage);
-      }
+      this.onWorkflowStateSnapshot?.(planId, snapshot ?? null, errorMessage);
       console.error(
         "[RuntimeSkillCreatorFacade] executeAsync failed",
         planId,
@@ -1645,7 +1676,7 @@ export class RuntimeSkillCreatorFacade {
           resolved.resources,
         );
         agentPrompt =
-          loadedResources.find((resource) => resource.id === "improve-prompt")
+          loadedResources.find((resource) => resource.kind === "agent")
             ?.content ?? "";
         const referenceSections = loadedResources
           .filter((resource) => resource.kind === "reference")
@@ -1659,7 +1690,8 @@ export class RuntimeSkillCreatorFacade {
           .join("\n\n");
       } else {
         agentPrompt = await this.resourceLoader!.loadAgent(
-          IMPROVE_PROMPT_CONSTANTS.AGENT_NAME,
+          IMPROVE_RESOURCE_REQUESTS.find((r) => r.kind === "agent")?.id ??
+            "improve-prompt",
         );
       }
 
@@ -2059,6 +2091,12 @@ function buildDegradedError(reason: RuntimeSkillCreatorDegradedReason): {
 function handleImproveError(
   error: unknown,
 ): RuntimeSkillCreatorImproveResponse {
+  if (error instanceof WorkflowManifestValidationError) {
+    return {
+      success: false,
+      error: { code: "VALIDATION_ERROR", message: error.message },
+    };
+  }
   if (error instanceof Error) {
     const name = error.constructor.name;
     if (name === "SkillNotFoundError") {
