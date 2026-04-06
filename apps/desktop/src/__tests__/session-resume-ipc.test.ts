@@ -36,6 +36,7 @@ import { IPC_CHANNELS } from "../preload/channels";
 
 const mockSession: SkillCreatorSessionListItem = {
   checkpointId: "cp-001-test",
+  sessionId: "session-001-test",
   planId: "plan-test-123",
   currentPhase: "review",
   checkpointType: "review-ready",
@@ -44,6 +45,7 @@ const mockSession: SkillCreatorSessionListItem = {
     reasons: [],
     warnings: [],
   },
+  startedAt: Date.now() - 3_600_000,
   createdAt: Date.now() - 3_600_000,
   updatedAt: Date.now() - 1_800_000,
 };
@@ -89,7 +91,7 @@ describe("Session Resume IPC Integration (TASK-P0-08)", () => {
   it("TC-I-02: resumeSession(checkpointId) が成功し workflowSnapshot を返す", async () => {
     mockInvoke.mockResolvedValueOnce({
       success: true,
-      data: mockSnapshot,
+      workflowSnapshot: mockSnapshot,
     });
 
     const result = await skillCreatorAPI.resumeSession("cp-001-test");
@@ -99,12 +101,12 @@ describe("Session Resume IPC Integration (TASK-P0-08)", () => {
       { checkpointId: "cp-001-test" },
     );
     expect(result.success).toBe(true);
-    expect(result.data?.planId).toBe("plan-test-123");
+    expect(result.workflowSnapshot?.planId).toBe("plan-test-123");
   });
 
   // AC-4: deleteSession 後に listSessions でセッションが消える
   it("TC-I-03: deleteSession(checkpointId) が正しいチャンネルを呼び出す", async () => {
-    mockInvoke.mockResolvedValueOnce({ success: true });
+    mockInvoke.mockResolvedValueOnce(undefined);
 
     await skillCreatorAPI.deleteSession("cp-001-test");
 
@@ -135,12 +137,24 @@ describe("Session Resume IPC Integration (TASK-P0-08)", () => {
     mockInvoke.mockResolvedValueOnce({
       success: false,
       error: "セッションの復元に失敗しました",
+      errorReason: "incompatible",
     });
 
     const result = await skillCreatorAPI.resumeSession("cp-incompatible");
 
     expect(result.success).toBe(false);
     expect(result.error).toBeTruthy();
+  });
+
+  it("TC-I-05b: cleanupExpiredSessions() が正しいチャンネルを呼び出す", async () => {
+    mockInvoke.mockResolvedValueOnce(2);
+
+    const cleaned = await skillCreatorAPI.cleanupExpiredSessions();
+
+    expect(mockInvoke).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS,
+    );
+    expect(cleaned).toBe(2);
   });
 
   // AC-9: 4つのIPCチャンネルが全てALLOWED_INVOKE_CHANNELSに含まれる（薄いラッパー検証）
@@ -178,6 +192,7 @@ describe("Session Resume IPC Integration (TASK-P0-08)", () => {
       {
         ...mockSession,
         checkpointId: "cp-002-test",
+        sessionId: "session-002-test",
         planId: "plan-test-456",
         compatibility: {
           status: "compatible_with_warning",

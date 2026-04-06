@@ -286,6 +286,7 @@
 | api-ipc-agent.md             | Agent SDK IPC API実装時           | Agent実行、結果取得                                                                                                                                                                                                                                                                                                                                        |
 | api-ipc-auth.md              | 認証IPC API実装時                 | 認証フロー、セッション管理                                                                                                                                                                                                                                                                                                                                 |
 | api-ipc-system.md            | システムIPC API実装時             | システム設定、環境情報取得                                                                                                                                                                                                                                                                                                                                 |
+| ipc-4-layer-pattern.md       | 新規 IPC チャネル追加・既存チャネル修正・セッション復元 API 参照時 | IPC 4層パターン（channels定数→ホワイトリスト→ipcMainハンドラ→contextBridge API）、P0-06/P0-08 状態境界ガイドライン、チャネル追加チェックリスト |
 
 ### 5. データベース
 

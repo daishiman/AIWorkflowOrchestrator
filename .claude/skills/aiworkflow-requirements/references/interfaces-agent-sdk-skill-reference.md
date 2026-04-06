@@ -145,6 +145,30 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | `useCreateSkill()` | create 実処理 | 一覧再取得・既存権限導線を保つため |
 | `useExecuteSkill()` | execute 実処理 | preflight / permission / streaming 契約を再利用するため |
 
+#### session resume surface（TASK-P0-08）
+
+`SkillCreatorWorkflowEngine` の persisted checkpoint を renderer が再開・削除・期限切れ掃除できるようにする public surface。state owner は engine のまま維持し、renderer は prompt / indicator / cleanup だけを扱う。
+
+| surface | contract |
+| --- | --- |
+| `window.skillCreatorAPI.listSessions()` | `Promise<IpcResult<SkillCreatorSessionListItem[]>>` |
+| `window.skillCreatorAPI.resumeSession(checkpointId)` | `Promise<SkillCreatorSessionResumeResult>` |
+| `window.skillCreatorAPI.deleteSession(checkpointId)` | `Promise<void>` |
+| `window.skillCreatorAPI.cleanupExpiredSessions()` | `Promise<number>` |
+
+| field | contract |
+| --- | --- |
+| `sessionId` | checkpoint id の表示用 alias |
+| `startedAt` | 表示時の優先 timestamp。未設定時は `createdAt` を利用 |
+| `isActive` | active session の pulse 表示フラグ |
+
+#### session resume type anchors
+
+| surface | canonical source |
+| --- | --- |
+| `SkillCreatorSessionListItem` / `SkillCreatorSessionSummary` / `SkillCreatorSessionResumeResult` / `SkillCreatorSessionResumeErrorReason` | `packages/shared/src/types/skillCreator.ts` |
+| `SkillCreatorSessionApi` | `apps/desktop/src/preload/skill-creator-api.ts` |
+
 #### runtime bridge 型アンカー
 
 | surface | request | response | canonical source |

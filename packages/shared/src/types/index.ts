@@ -198,6 +198,9 @@ export type {
   WorkflowSessionStorageSchema,
   // Session resume IPC types (TASK-P0-08)
   SkillCreatorSessionListItem,
+  SkillCreatorSessionSummary,
+  SkillCreatorSessionResumeErrorReason,
+  SkillCreatorSessionResumeResult,
   SkillCreatorResumeSessionRequest,
   SkillCreatorDeleteSessionRequest,
 } from "./skillCreator";

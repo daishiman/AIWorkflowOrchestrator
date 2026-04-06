@@ -5,6 +5,40 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
+
+| 項目 | 値 |
+| --- | --- |
+| タスクID | TASK-P0-08 |
+| ステータス | **仕様書作成完了（`spec_created` / Phase 13 blocked）** |
+| タイプ | implementation / renderer-session-resume |
+| 優先度 | 高 |
+| 完了日 | 2026-04-06 |
+| 対象 | `SkillLifecyclePanel` / `SessionResumePrompt` / `SessionIndicator` / session persistence bridge |
+| 成果物 | `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-08-session-resume-renderer-integration/` |
+
+#### 実施内容
+
+- `SkillCreatorSessionListItem` に `sessionId?` / `startedAt?` / `isActive?` を追加し、`SkillCreatorSessionResumeResult` と `cleanupExpiredSessions()` を shared / preload / main で同期した
+- `RuntimeSkillCreatorFacade.resumeSession()` を direct result 返却へ更新し、expired checkpoint は `errorReason: "expired"` で renderer に返す current fact に揃えた
+- `SessionResumePrompt` に `削除して新規開始` を追加し、`SessionIndicator` の pulse / session id display を改善した
+- Phase 11 screenshot evidence を `outputs/phase-11/screenshots/` に保存し、`implementation-guide.md` validator PASS / `verify-unassigned-links.js` PASS を記録した
+- `api-ipc-system-core.md` / `interfaces-agent-sdk-skill-reference.md` / LOGS / SKILL / topic-map / keywords を same-wave sync した
+
+#### 検証証跡
+
+- `pnpm --dir apps/desktop screenshot:task-p0-08-session-resume` PASS（6 screenshots captured）
+- `pnpm --dir apps/desktop typecheck` PASS
+- `pnpm --dir packages/shared exec tsc --noEmit` PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-08-session-resume-renderer-integration --json` PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js` PASS
+
+#### Phase 12 未タスク
+
+- 既存 `UT-P0-08-PHASE11-SCREENSHOT-EVIDENCE-001` は open 維持
+- 新規未タスク 0 件
+- Phase 13 PR 作成はユーザーの明示承認後に実施
+
 ### タスク: TASK-P0-02 verify→improve→re-verify 閉ループ修復（2026-03-30）
 
 | 項目 | 値 |

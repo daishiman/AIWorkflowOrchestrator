@@ -201,7 +201,9 @@ describe("RuntimeSkillCreatorFacade session persistence", () => {
     expect(sessions).toHaveLength(1);
     expect(sessions[0]).toMatchObject({
       checkpointId: "cp-fresh",
+      sessionId: "cp-fresh",
       planId: "plan-resume-001",
+      startedAt: expect.any(Number),
       compatibility: {
         status: "compatible",
       },
@@ -223,6 +225,34 @@ describe("RuntimeSkillCreatorFacade session persistence", () => {
     });
   });
 
+  it("resumeSessionWithResult() は非互換時に incompatible を返す", () => {
+    const checkpoint = createCheckpoint();
+    sessionRepository.listCheckpoints.mockReturnValue([checkpoint]);
+    sessionRepository.evaluateResumeCompatibility.mockReturnValue({
+      status: "incompatible",
+      reasons: ["engine_version_mismatch"],
+      warnings: [],
+    });
+
+    const result = facade.resumeSessionWithResult(checkpoint.checkpointId);
+
+    expect(result).toEqual({ success: false, errorReason: "incompatible" });
+  });
+
+  it("resumeSessionWithResult() は期限切れセッションを削除する", () => {
+    const checkpoint = createCheckpoint({
+      updatedAt: Date.now() - SESSION_TTL_MS - 1,
+    });
+    sessionRepository.listCheckpoints.mockReturnValue([checkpoint]);
+
+    const result = facade.resumeSessionWithResult(checkpoint.checkpointId);
+
+    expect(result).toEqual({ success: false, errorReason: "expired" });
+    expect(sessionRepository.deleteCheckpoint).toHaveBeenCalledWith(
+      "plan-resume-001",
+    );
+  });
+
   it("deleteSession() は checkpointId から planId を解決して削除する", () => {
     const checkpoint = createCheckpoint();
     sessionRepository.listCheckpoints.mockReturnValue([checkpoint]);
@@ -232,5 +262,18 @@ describe("RuntimeSkillCreatorFacade session persistence", () => {
     expect(sessionRepository.deleteCheckpoint).toHaveBeenCalledWith(
       "plan-resume-001",
     );
+  });
+
+  it("cleanupExpiredSessions() は期限切れセッションを削除する", () => {
+    sessionRepository.cleanupExpiredLeases.mockReturnValue(1);
+    sessionRepository.cleanupExpiredCheckpoints.mockReturnValue(2);
+
+    const cleaned = facade.cleanupExpiredSessions();
+
+    expect(sessionRepository.cleanupExpiredLeases).toHaveBeenCalledTimes(1);
+    expect(sessionRepository.cleanupExpiredCheckpoints).toHaveBeenCalledWith(
+      SESSION_TTL_MS,
+    );
+    expect(cleaned).toBe(2);
   });
 });

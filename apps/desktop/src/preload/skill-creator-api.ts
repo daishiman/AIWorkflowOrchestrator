@@ -29,6 +29,7 @@ import type {
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
   SkillCreatorSessionListItem,
+  SkillCreatorSessionResumeResult,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 
@@ -275,7 +276,7 @@ export interface SkillCreatorAPI {
    */
   resumeSession: (
     checkpointId: string,
-  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
+  ) => Promise<SkillCreatorSessionResumeResult>;
 
   /**
    * セッション詳細スナップショットを取得する
@@ -287,7 +288,12 @@ export interface SkillCreatorAPI {
   /**
    * セッションを削除する
    */
-  deleteSession: (checkpointId: string) => Promise<IpcResult<void>>;
+  deleteSession: (checkpointId: string) => Promise<void>;
+
+  /**
+   * 期限切れセッションを一括削除する
+   */
+  cleanupExpiredSessions: () => Promise<number>;
 
   // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
 
@@ -502,7 +508,7 @@ export const skillCreatorAPI: SkillCreatorAPI = {
 
   resumeSession: (
     checkpointId: string,
-  ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
+  ): Promise<SkillCreatorSessionResumeResult> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION, { checkpointId }),
 
   getSessionDetail: (
@@ -510,8 +516,11 @@ export const skillCreatorAPI: SkillCreatorAPI = {
   ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL, { checkpointId }),
 
-  deleteSession: (checkpointId: string): Promise<IpcResult<void>> =>
+  deleteSession: (checkpointId: string): Promise<void> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION, { checkpointId }),
+
+  cleanupExpiredSessions: (): Promise<number> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS),
 
   // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
 

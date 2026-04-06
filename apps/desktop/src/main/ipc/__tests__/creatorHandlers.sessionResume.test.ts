@@ -96,7 +96,12 @@ describe("creatorHandlers - Session Resume (TASK-P0-08)", () => {
     listSessions: vi.fn().mockReturnValue(mockSessions),
     getSessionDetail: vi.fn().mockReturnValue(mockSnapshot),
     resumeSession: vi.fn().mockReturnValue(mockSnapshot),
+    resumeSessionWithResult: vi.fn().mockReturnValue({
+      success: true,
+      workflowSnapshot: mockSnapshot,
+    }),
     deleteSession: vi.fn(),
+    cleanupExpiredSessions: vi.fn().mockReturnValue(2),
   };
 
   beforeEach(() => {
@@ -200,16 +205,16 @@ describe("creatorHandlers - Session Resume (TASK-P0-08)", () => {
       });
       expect(result).toEqual({
         success: true,
-        data: mockSnapshot,
+        workflowSnapshot: mockSnapshot,
       });
-      expect(mockRuntimeSkillCreatorService.resumeSession).toHaveBeenCalledWith(
-        "cp-001",
-      );
+      expect(
+        mockRuntimeSkillCreatorService.resumeSessionWithResult,
+      ).toHaveBeenCalledWith("cp-001");
     });
 
     it("復元失敗時はエラーを返す", async () => {
-      mockRuntimeSkillCreatorService.resumeSession.mockReturnValueOnce(
-        undefined,
+      mockRuntimeSkillCreatorService.resumeSessionWithResult.mockReturnValueOnce(
+        { success: false, errorReason: "incompatible" },
       );
       const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION);
       const result = await handler?.(createMockEvent(), {
@@ -217,7 +222,8 @@ describe("creatorHandlers - Session Resume (TASK-P0-08)", () => {
       });
       expect(result).toEqual({
         success: false,
-        error: "セッションの復元に失敗しました",
+        error: "セッションが現在の環境と互換性がありません",
+        errorReason: "incompatible",
       });
     });
 
@@ -256,7 +262,7 @@ describe("creatorHandlers - Session Resume (TASK-P0-08)", () => {
       const result = await handler?.(createMockEvent(), {
         checkpointId: "cp-001",
       });
-      expect(result).toEqual({ success: true });
+      expect(result).toBeUndefined();
       expect(mockRuntimeSkillCreatorService.deleteSession).toHaveBeenCalledWith(
         "cp-001",
       );
@@ -264,18 +270,30 @@ describe("creatorHandlers - Session Resume (TASK-P0-08)", () => {
 
     it("checkpointId が空の場合はバリデーションエラー", async () => {
       const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION);
-      const result = await handler?.(createMockEvent(), {
-        checkpointId: "",
-      });
-      expect(result).toEqual({
-        success: false,
-        error: "checkpointId が指定されていません",
-      });
+      await expect(
+        handler?.(createMockEvent(), {
+          checkpointId: "",
+        }),
+      ).rejects.toThrow("checkpointId が指定されていません");
+    });
+  });
+
+  // 期限切れセッション削除
+  describe("SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS", () => {
+    it("期限切れセッションを削除できる", async () => {
+      const handler = handlerMap.get(
+        IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS,
+      );
+      const result = await handler?.(createMockEvent());
+      expect(result).toBe(2);
+      expect(
+        mockRuntimeSkillCreatorService.cleanupExpiredSessions,
+      ).toHaveBeenCalledTimes(1);
     });
   });
 
   // チャネル登録確認
-  it("セッション復元用の4チャネルが登録されている", () => {
+  it("セッション復元用の5チャネルが登録されている", () => {
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_LIST_SESSIONS)).toBe(true);
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL)).toBe(
       true,
@@ -286,5 +304,8 @@ describe("creatorHandlers - Session Resume (TASK-P0-08)", () => {
     expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION)).toBe(
       true,
     );
+    expect(
+      handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS),
+    ).toBe(true);
   });
 });

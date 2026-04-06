@@ -20,6 +20,7 @@
     "screenshot:task-10a-g": "node scripts/capture-task-10a-g-phase11-screenshots.mjs",
     "screenshot:task-058c": "node scripts/capture-task-058c-phase11-screenshots.mjs",
     "screenshot:task-059b": "node scripts/capture-task-059b-phase11-screenshots.mjs",
+    "screenshot:task-p0-08-session-resume": "node scripts/capture-task-p0-08-session-resume-renderer-integration-phase11.mjs",
     "screenshot:app-debug-localstorage-clear": "node scripts/capture-task-fix-app-debug-localstorage-clear-phase11.mjs",
     "screenshot:skill-analysis": "node scripts/capture-skill-analysis-view-screenshots.mjs",
     "screenshot:skill-create-wizard": "node scripts/capture-skill-create-wizard-screenshots.mjs",

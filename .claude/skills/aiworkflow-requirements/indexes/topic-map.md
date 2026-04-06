@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-03-30
+> 自動生成: 2026-04-06
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -432,11 +432,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L349 |
-| スキルチェーン 型定義（TASK-9D） | L399 |
-| スキルスケジュール 型定義（TASK-9G） | L434 |
-| スキルフォーク 型定義（TASK-9E） | L459 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L507 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L373 |
+| スキルチェーン 型定義（TASK-9D） | L423 |
+| スキルスケジュール 型定義（TASK-9G） | L458 |
+| スキルフォーク 型定義（TASK-9E） | L483 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L531 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -905,10 +905,10 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L244 |
 | Electron IPC API設計 | L280 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L422 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L655 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L686 |
-| AIプロバイダーAPI連携 | L717 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L750 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L688 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L719 |
+| AIプロバイダーAPI連携 | L750 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L783 |
 
 ### references/api-ipc-system-details.md
 
