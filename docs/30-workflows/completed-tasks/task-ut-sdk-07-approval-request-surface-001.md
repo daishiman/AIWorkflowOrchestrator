@@ -10,7 +10,7 @@ category: 実装
 target_feature: Skill Creator approval request UI surface
 priority: 中
 scale: 中規模
-status: 未実施
+status: 完了
 source_phase: TASK-SDK-07 Phase 12 unassigned-task-detection（2026-03-28）
 created_date: 2026-03-28
 dependencies: [TASK-SDK-07]
@@ -24,7 +24,7 @@ dependencies: [TASK-SDK-07]
 | 対象機能     | `approval:request` channel の Skill Creator 側受信 / UI 表示          |
 | 優先度       | 中                                                                    |
 | 見積もり規模 | 中規模                                                                |
-| ステータス   | 未実施                                                                |
+| ステータス   | 完了                                                                  |
 | 発見元       | TASK-SDK-07 Phase 12 AC-4 一部確認（approval request surface 未接続） |
 | 発見日       | 2026-03-28                                                            |
 
@@ -104,3 +104,11 @@ Task07 Phase 12 で AC-4 を確認した結果、disclosure 側は `getDisclosur
 - `apps/desktop/src/main/services/runtime/ApprovalGate.ts`（TTL / single-use 実装）
 - `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts`（approval lifecycle テスト）
 - `docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-12/implementation-guide.md`（AC-4）
+
+---
+
+## 完了記録
+
+2026-04-06 に本タスクの実装・テスト・スクリーンショット証跡・Phase 12/13
+ドキュメント更新まで完了した。canonical な成果物は
+`docs/30-workflows/step-12-par-task-ut-sdk-07-approval-request-surface-001/` に集約されている。

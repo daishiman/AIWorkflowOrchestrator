@@ -70,10 +70,12 @@ import {
   useWorkflowSnapshot,
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
+import { ApprovalRequestPanel } from "./ApprovalRequestPanel";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
 import { SkillCreationResultPanel } from "./SkillCreationResultPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
+import type { ApprovalRequestPayload } from "@repo/shared/types";
 
 type SkillCreatorMode =
   | "collaborative"
@@ -175,6 +177,15 @@ type SkillCreatorRuntimeApi = {
       externalDestinations: string[];
     }>
   >;
+  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval:request surface
+  onApprovalRequest?: (
+    callback: (request: ApprovalRequestPayload) => void,
+  ) => () => void;
+  respondToApproval?: (
+    sessionId: string,
+    operationId: string,
+    action: "approve" | "reject",
+  ) => Promise<IpcResult<unknown>>;
 };
 
 type SessionEntry = {
@@ -486,6 +497,10 @@ export function SkillLifecyclePanel({
     modelName: string;
     externalDestinations: string[];
   } | null>(null);
+
+  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval request state
+  const [approvalRequest, setApprovalRequest] =
+    useState<ApprovalRequestPayload | null>(null);
   // TASK-RT-03: raw plan/execute detail を local state に保持
   const [rawPlanDetail, setRawPlanDetail] =
     useState<RuntimeSkillCreatorPlanResult | null>(null);
@@ -663,6 +678,16 @@ export function SkillLifecyclePanel({
     });
   }, [applyWorkflowSnapshot]);
 
+  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval:request listener
+  useEffect(() => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.onApprovalRequest) return;
+
+    return skillCreatorApi.onApprovalRequest((request) => {
+      setApprovalRequest(request);
+    });
+  }, []);
+
   // TASK-P0-08: アプリ起動時のセッション検出（一度のみ実行）
   useEffect(() => {
     const sessionApi = getSessionResumeApi();
@@ -805,6 +830,42 @@ export function SkillLifecyclePanel({
     setDisclosureInfo(null);
     clearHandoffGuidance();
   };
+
+  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval handlers
+  const submitApprovalResponse = async (
+    sessionId: string,
+    operationId: string,
+    action: "approve" | "reject",
+  ) => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.respondToApproval) {
+      const message = "approval response API が利用できません。";
+      setLocalError(message);
+      throw new Error(message);
+    }
+
+    const result = await skillCreatorApi.respondToApproval(
+      sessionId,
+      operationId,
+      action,
+    );
+    if (!result.success) {
+      const message = result.error ?? "approval response に失敗しました。";
+      setLocalError(message);
+      throw new Error(message);
+    }
+
+    setLocalError(null);
+    setApprovalRequest(null);
+  };
+
+  const handleApprovalApprove = async (
+    sessionId: string,
+    operationId: string,
+  ) => submitApprovalResponse(sessionId, operationId, "approve");
+
+  const handleApprovalReject = async (sessionId: string, operationId: string) =>
+    submitApprovalResponse(sessionId, operationId, "reject");
 
   const _handleSubmitWorkflowInput = async () => {
     if (!workflowSnapshot?.awaitingUserInput) {
@@ -1694,6 +1755,15 @@ export function SkillLifecyclePanel({
         >
           {currentSurfaceError}
         </div>
+      ) : null}
+
+      {/* UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval request surface */}
+      {approvalRequest ? (
+        <ApprovalRequestPanel
+          request={approvalRequest}
+          onApprove={handleApprovalApprove}
+          onReject={handleApprovalReject}
+        />
       ) : null}
 
       {generationProgress ? (
