@@ -2,8 +2,50 @@
 
 > 親仕様書: [task-workflow.md](task-workflow.md)
 > 役割: completed records
+> 区分: 履歴記録（history record）
 
 ## 完了タスク
+
+### タスク: UT-VERIFY-DOC-CONSOLIDATION-001 verify関連ドキュメント正本・履歴分離（2026-04-06）
+
+| 項目       | 値                                                                                 |
+| ---------- | ---------------------------------------------------------------------------------- |
+| タスクID   | UT-VERIFY-DOC-CONSOLIDATION-001                                                    |
+| ステータス | **完了（Phase 13: worktree completed）**                                           |
+| タイプ     | documentation / doc-consolidation                                                  |
+| 優先度     | 中                                                                                 |
+| 完了日     | 2026-04-06                                                                         |
+| 対象       | verify 関連ドキュメント4ファイルの区分ラベル付与・責務分離明示                     |
+| 成果物     | `docs/30-workflows/unassigned-task/UT-VERIFY-DOC-CONSOLIDATION-001.md`             |
+
+#### 実施内容
+
+- `task-workflow.md` のインデックステーブルに「区分」列を追加（正本 / 履歴 / 契約仕様の判別を即座に可能に）
+- `task-workflow-completed.md` 冒頭に `> 区分: 履歴記録（history record）` を追記
+- `task-workflow-active.md` 冒頭に `> 区分: 正本（current contract）` を追記
+- `interfaces-skill-verify-contract.md` 冒頭に `> 区分: 契約仕様` を追記、verify エンジン責務分離セクションを追加
+
+#### 検証証跡
+
+- Phase 6: リンク整合チェック PASS（`outputs/phase-6/link-check-report.md`）
+- Phase 7: 機能要件・非機能要件カバレッジ確認 PASS（`outputs/phase-7/`）
+- Phase 8: ラベル整合・責務セクション・スタイル整合チェック PASS（`outputs/phase-8/`）
+- Phase 9: ID整合・リンク・Prettier 検証 PASS（`outputs/phase-9/`）
+- Phase 10: 最終レビュー PASS（`outputs/phase-10/final-review-result.md`）
+- Phase 11: 手動テスト PASS（`outputs/phase-11/manual-test-report.md`）
+- Phase 12: スキルフィードバック反映 PASS（`outputs/phase-12/skill-feedback-report.md`）
+
+#### 苦戦箇所（詳細は lessons-learned）
+
+| 苦戦箇所                                       | 解決策概要                                                    |
+| ---------------------------------------------- | ------------------------------------------------------------- |
+| 並行マージコンフリクト検出（`||||||| Stash base` マーカー） | PR前チェックリストにコンフリクトマーカー検索を追加            |
+| インデックステーブル全行への列追加の手間       | 20行超のテーブルは置換スクリプト化が有効                      |
+| 正本・履歴判別の属人化解消                     | 冒頭 `> 区分: XXX` ラベルの統一付与で解消                     |
+
+→ 詳細: [lessons-learned-verify-contract-consolidation.md](lessons-learned-verify-contract-consolidation.md)
+
+---
 
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
 ### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
