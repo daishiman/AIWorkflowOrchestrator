@@ -30,12 +30,14 @@ outputs/phase-12/implementation-guide.md
 - `### 今回作ったもの`
 - `## Part 2`
 - `### 型定義`
+- `### APIシグネチャ`
 - `### 使用例`
 - `### エラーハンドリング`
 - `### エッジケース`
 - `### 設定項目と定数一覧`
 - `### テスト構成`
 - Part 1 の日常例えには `たとえば:` を最低1回含める
+- Part 2 では `## 1.` のような番号付き小節を使ってよいが、`### 使用例` は Part 2 内の必須見出しとして必ず残す
 - validator は上記の見出し文字列をそのまま検索するため、見出し名を変えない
 
 ````markdown
@@ -126,6 +128,8 @@ outputs/phase-12/implementation-guide.md
 
 ## Part 2
 
+> Part 2 は番号付き小節を含んでもよい。`### 使用例` は Part 2 の中に置き、見出し名を変えない。
+
 ## 1. アーキテクチャ概要
 
 ### 1.1 ファイル構成
@@ -208,6 +212,12 @@ export const {{タイプ変数}} = [
   "{{値1}}",  // {{説明}}
   "{{値2}}",  // {{説明}}
 ] as const;
+```
+
+### APIシグネチャ
+
+```typescript
+validatePhase12ImplementationGuide("docs/30-workflows/MY-TASK-001");
 ```
 
 ---

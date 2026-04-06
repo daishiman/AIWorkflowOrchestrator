@@ -1,0 +1,88 @@
+{
+  "task_id": "UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001",
+  "task_name": "task-specification-creator テンプレートの validator 必須見出し強化",
+  "feature_name": "UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001",
+  "created_at": "2026-04-06T00:00:00Z",
+  "status": "completed",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-1/requirements-definition.md",
+        "outputs/phase-1/acceptance-criteria.md"
+      ]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/design-document.md"]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-4/test-design.md",
+        "outputs/phase-4/red-test-result.md"
+      ]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion-report.md"]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-assurance-report.md"]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review.md"]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-report.md"]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": { "status": "skipped", "artifacts": [] }
+  },
+  "deliverables": {
+    "validator": ".claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js",
+    "test": ".claude/skills/task-specification-creator/scripts/__tests__/validate-phase12-implementation-guide.test.mjs",
+    "implementation_guide": "outputs/phase-12/implementation-guide.md",
+    "system_spec_update_summary": "outputs/phase-12/system-spec-update-summary.md",
+    "documentation_changelog": "outputs/phase-12/documentation-changelog.md",
+    "unassigned_task_detection": "outputs/phase-12/unassigned-task-detection.md",
+    "skill_feedback_report": "outputs/phase-12/skill-feedback-report.md",
+    "phase12_task_spec_compliance_check": "outputs/phase-12/phase12-task-spec-compliance-check.md"
+  },
+  "target_files": [
+    ".claude/skills/task-specification-creator/assets/implementation-guide-template.md",
+    ".claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js",
+    ".claude/skills/task-specification-creator/assets/documentation-changelog-template.md",
+    ".claude/skills/task-specification-creator/scripts/__tests__/validate-phase12-implementation-guide.test.mjs"
+  ],
+  "related_issue": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/1917"
+}

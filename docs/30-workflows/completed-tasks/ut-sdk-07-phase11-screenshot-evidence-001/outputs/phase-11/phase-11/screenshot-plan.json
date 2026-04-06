@@ -1,0 +1,46 @@
+{
+  "workflow": "step-05-seq-task-07-execution-governance-and-handoff-alignment",
+  "phase": 11,
+  "task_id": "UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001",
+  "created_date": "2026-04-06",
+  "capture_ids": [
+    {
+      "id": "SCREENSHOT-TASK07-HANDOFF-01",
+      "tc_id": "TC-11-01",
+      "description": "terminal_handoff 状態の HandoffGuidance 表示",
+      "target_component": "SkillLifecyclePanel",
+      "target_state": "terminal_handoff",
+      "file_name": "terminal_handoff-handoff-guidance.png",
+      "key_elements": [
+        "TerminalHandoffCard コンポーネントが表示されている",
+        "terminal_handoff 状態であることが UI 上で分かる",
+        "HandoffGuidance メッセージが読める"
+      ]
+    },
+    {
+      "id": "SCREENSHOT-TASK07-DISCLOSURE-01",
+      "tc_id": "TC-11-02",
+      "description": "disclosure summary セクションの表示",
+      "target_component": "SkillLifecyclePanel",
+      "target_state": "disclosure_summary",
+      "file_name": "disclosure-summary-display.png",
+      "key_elements": [
+        "data-testid='skill-lifecycle-disclosure-summary' の要素が存在する",
+        "disclosure summary の内容が展開されている"
+      ]
+    },
+    {
+      "id": "SCREENSHOT-TASK07-INTEGRATED-01",
+      "tc_id": "TC-11-03",
+      "description": "integrated_api 成功後の状態（対照用）",
+      "target_component": "SkillLifecyclePanel",
+      "target_state": "integrated_api",
+      "file_name": "integrated-api-success-comparison.png",
+      "key_elements": [
+        "integrated_api パスで実行成功状態が表示されている",
+        "HandoffGuidance（TerminalHandoffCard）が表示されていない",
+        "terminal_handoff との対照が明確"
+      ]
+    }
+  ]
+}

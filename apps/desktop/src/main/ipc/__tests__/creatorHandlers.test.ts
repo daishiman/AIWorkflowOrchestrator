@@ -25,9 +25,13 @@ vi.mock("electron", () => ({
 }));
 
 import { BrowserWindow } from "electron";
-import type { SkillCreatorWorkflowUiSnapshot } from "@repo/shared/types";
+import type {
+  SkillCreatorWorkflowUiSnapshot,
+  SkillOutputReadyPayload,
+} from "@repo/shared/types";
 import { IPC_CHANNELS } from "../../../preload/channels";
 import type { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
+import type { SkillCreatorOutputHandler } from "../services/runtime/SkillCreatorOutputHandler";
 import {
   registerRuntimeSkillCreatorHandlers,
   unregisterRuntimeSkillCreatorHandlers,
@@ -84,7 +88,7 @@ describe("creatorHandlers", () => {
       createMockMainWindow() as unknown as BrowserWindowType,
     );
 
-    expect(handlerMap.size).toBe(16);
+    expect(handlerMap.size).toBe(18);
 
     const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_PLAN);
     const result = await handler?.(createMockEvent(), { prompt: "spec" });
@@ -95,7 +99,7 @@ describe("creatorHandlers", () => {
     });
   });
 
-  it("15 つの public runtime チャンネルを登録する", () => {
+  it("17 つの public runtime チャンネルを登録する", () => {
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
@@ -122,7 +126,7 @@ describe("creatorHandlers", () => {
     expect(
       handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_NORMALIZE_SDK_MESSAGES),
     ).toBe(true);
-    expect(handlerMap.size).toBe(16);
+    expect(handlerMap.size).toBe(18);
   });
 
   it("plan ハンドラが trim 済み prompt と既定 auth を渡す", async () => {
@@ -434,15 +438,84 @@ describe("creatorHandlers", () => {
     });
   });
 
-  it("unregister が 15 チャンネルを解除する", () => {
+  it("unregister が 17 チャンネルを解除する", () => {
     registerRuntimeSkillCreatorHandlers(
       createMockMainWindow() as unknown as BrowserWindowType,
       mockRuntimeSkillCreatorService as never,
     );
-    expect(handlerMap.size).toBe(16);
+    expect(handlerMap.size).toBe(18);
 
     unregisterRuntimeSkillCreatorHandlers();
 
     expect(handlerMap.size).toBe(0);
+  });
+
+  // ── T-03: CONFIGURE_API チャンネル移管確認 ──────────────────
+  it("T-03: CONFIGURE_API ハンドラーが creatorHandlers に登録されている", () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    expect(handlerMap.has(IPC_CHANNELS.CONFIGURE_API)).toBe(true);
+  });
+
+  it("T-03b: CONFIGURE_API を Runtime IPC モードで invoke すると非対応エラーを返す", async () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    const handler = handlerMap.get(IPC_CHANNELS.CONFIGURE_API);
+    const config = {
+      name: "Test API",
+      url: "https://api.example.com",
+      method: "GET" as const,
+      authType: "none" as const,
+    };
+    const result = await handler?.(createMockEvent(), config);
+
+    expect(result).toEqual(expect.objectContaining({ success: false }));
+  });
+
+  // ── T-04: IPC_CHANNELS.SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED チャンネル移管確認 ────
+  it("T-04: IPC_CHANNELS.SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED ハンドラーが creatorHandlers に登録されている", () => {
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    expect(
+      handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED),
+    ).toBe(true);
+  });
+
+  it("T-04b: OVERWRITE_APPROVED を outputHandler 付きで invoke すると handleOverwriteApproved が呼ばれる", async () => {
+    const mockOutputHandler: Partial<SkillCreatorOutputHandler> = {
+      handleOverwriteApproved: vi.fn().mockResolvedValue(undefined),
+    };
+
+    registerRuntimeSkillCreatorHandlers(
+      createMockMainWindow() as unknown as BrowserWindowType,
+      mockRuntimeSkillCreatorService as never,
+      mockOutputHandler as SkillCreatorOutputHandler,
+    );
+
+    const handler = handlerMap.get(
+      IPC_CHANNELS.SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+    );
+    const payload: SkillOutputReadyPayload = {
+      skillName: "test-skill",
+      savedPath: "/project/.claude/skills/test-skill/SKILL.md",
+      content: "name: test-skill",
+      requiresOverwriteConfirm: true,
+    };
+
+    const result = await handler?.(createMockEvent(), payload);
+
+    expect(result).toEqual({ success: true });
+    expect(mockOutputHandler.handleOverwriteApproved).toHaveBeenCalledWith(
+      payload,
+    );
   });
 });

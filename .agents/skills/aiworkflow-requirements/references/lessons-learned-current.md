@@ -19,6 +19,8 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-06 | 3.7.0 | TASK-FIX-IPC-SKILL-NAME-001 教訓3件を追加（L-IPC-DUP-001: ipcMain.handle() 重複登録は後続ハンドラを全て未登録にする / L-IPC-DUP-002: toWizardSkillName() 正規化5ステップとフォールバック設計 / L-IPC-DUP-003: スキル名バリデーション定数の分散リスク） |
+| 2026-04-06 | 3.7.0      | Phase-12 IPC 4層型同期教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-IPC-4LAYER-001 4層型 shared 集約原則 / L-IPC-4LAYER-002 errorReason 3分岐 union 型全層同期 / L-SESSION-RESUME-UI-001 Session Resume UI snapshot nullability 設計パターン） |
 | 2026-04-06 | 3.6.1      | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓4件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-IPC-VARIADIC-001 multi-arg IPC variadic化 / → [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-EXECUTE-ASYNC-001〜003 executeAsync テストパターン） |
 | 2026-04-06 | 3.6.0      | TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 教訓3件を追加（→ [lessons-learned-skill-plan-exec-hardening.md](lessons-learned-skill-plan-exec-hardening.md): phase遷移責務とartifact記録責務の分離 / ダックタイピングメソッドのテストモックパターン / 上位ループへの通知統一ルール）|
 | 2026-04-05 | 3.5.0      | TASK-P0-05 execute→SkillFileWriter persist統合: 教訓4件追加（L-P005-001 LLMAdapter Setter Injection / L-P005-002 二重パイプライン併存管理 / L-P005-003 verify→improve→re-verify再試行戦略 / L-P005-004 パストラバーサル多層防御）|
@@ -1253,3 +1255,26 @@
 | 解決策     | plan と improve で同じ `PhaseResourceRequest` モデルと `resolveOperationResources()` シグネチャを使用し、phase ごとの差異は `fallbackRequests` 引数でのみ表現した |
 | 標準ルール | 複数の operation（plan/improve/verify など）に同じルールを適用する場合は、共通ロジックを単一メソッドに集約し、operation 固有の差異のみを引数で表現する            |
 | 関連タスク | TASK-P0-07                                                                                                                                                       |
+
+---
+
+## TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06）
+
+### L-IPC-DUP-001: `ipcMain.handle()` 重複登録による後続ハンドラ全停止
+
+- **状況**: `registerRuntimeSkillCreatorHandlers()` で同一チャネル `SKILL_CREATOR_GET_ADAPTER_STATUS` が 2 回 `ipcMain.handle()` 登録されていた。
+- **影響**: 2 回目の登録時に Electron が例外を投げ、後続 14 個のハンドラが全て未登録になった。
+- **解決策**: 重複ブロック（約 35 行）を削除し、登録数を 16 に正規化。
+- **再発防止**: `unregisterRuntimeSkillCreatorHandlers()` で同数の `removeHandler()` を対称実装。CI スナップショットテスト追加を follow-up（UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001）として登録。
+
+### L-IPC-DUP-002: `toWizardSkillName()` 正規化5ステップとフォールバック設計
+
+- **状況**: スキル名の自動生成時に日本語・記号・空文字が渡されると、無効な名前（空文字・連続ハイフン等）が生成されていた。
+- **解決策**: 以下の順序で正規化: (1)先頭50文字+trim、(2)小文字化、(3)非許容文字→ハイフン、(4)連続ハイフン圧縮、(5)先頭末尾ハイフン除去、(6)空文字→"new-skill"フォールバック。
+- **ポイント**: `resolveUniqueSkillName()` と組み合わせることで `new-skill-2` / `new-skill-3` と衝突回避も実現。
+
+### L-IPC-DUP-003: スキル名バリデーション定数の分散リスク
+
+- **状況**: `SkillService.ts` と `init_skill.js` が同型の正規表現 `/^[a-z0-9]+(-[a-z0-9]+)*$/` を個別に保持。
+- **判断**: 今回の Bug Fix はスコープ最小化のため定数一元化を行わなかった。
+- **follow-up**: `UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001` として未タスク登録済み。

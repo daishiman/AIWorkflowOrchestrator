@@ -1,0 +1,97 @@
+{
+  "workflow": "fix-creator-handler-duplicate-skill-name-validation",
+  "task_id": "TASK-FIX-IPC-SKILL-NAME-001",
+  "task_name": "IPCハンドラ重複登録とスキル名バリデーション不整合の修正",
+  "created_date": "2026-04-06",
+  "status": "completed",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": ["phase-1-requirements.md"]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["phase-2-design.md"]
+    },
+    "phase-3": {
+      "name": "設計レビュー",
+      "status": "completed",
+      "artifacts": ["phase-3-design-review.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": ["phase-4-test-creation.md"]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": ["phase-5-implementation.md"]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": ["phase-6-test-expansion.md"]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        "phase-7-coverage-check.md",
+        "outputs/phase-7/coverage-result.txt"
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        "phase-8-refactoring.md",
+        "outputs/phase-8/refactoring-result.md"
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        "phase-9-quality-assurance.md",
+        "outputs/phase-9/quality-check-result.md"
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビュー",
+      "status": "completed",
+      "artifacts": [
+        "phase-10-final-review.md",
+        "outputs/phase-10/final-review.md"
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        "phase-11-manual-test.md",
+        "outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "phase-12-documentation.md",
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/task-1-implementation-guide.md",
+        "outputs/phase-12/task-2-spec-update.md",
+        "outputs/phase-12/task-3-doc-history.md",
+        "outputs/phase-12/task-4-untasked-report.md",
+        "outputs/phase-12/task-5-skill-feedback.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": ["phase-13-pr-creation.md"]
+    }
+  }
+}

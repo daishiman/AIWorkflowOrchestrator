@@ -7,6 +7,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-04-06 - TASK-UI-02 ConversationPanel孤立解消 Phase 12 close-out sync（`SkillCreatorConversationPanel` stub 化（`export {}`）/ `ConversationalInterview` 一本化 / Session IPC（`skillCreatorSessionAPI`）廃止・Runtime IPC 正本採用 / `CONFIGURE_API`・`SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` を `SkillCreatorIpcBridge` → `creatorHandlers.ts` へ移管 / `QuestionCard`・`ChoiceButton`・`ConversationProgress`・`FreeTextInput`（skill-creator 版）stub 化 / `SkillCreatorResultPanel` を `skill/` へ移動 / Interview widgets テスト追加 / `ConversationalInterview.ipc-edge.test.tsx` 新規作成（IPC edge case 6件）/ `ui-ux-navigation.md` v1.9.3 更新 / `ipc-contract-checklist.md` v1.5.0 更新 / `lessons-learned-skill-creator-ipc-handler-scope.md` 新規作成 / `lessons-learned-ipc-channel-whitelist-sync.md` 新規作成 / `resource-map.md` Skill Creator IPC ハンドラー chain 行追加 / `topic-map.md` 3ファイル追加）|
+| 2026-04-06 v9.02.34 - Phase-12 IPC/Session/UI 7タスク完了 system spec 同期（TASK-P0-08: Session Resume API IPC 4層統合 / TASK-P0-09: path-scoped canUseTool + kebab-case正規化 / TASK-P0-07: improveSkill/applyImprovement/reverifyWorkflow/getVerifyDetail / TASK-P0-01: getAdapterStatus + onAdapterStatusChanged / TASK-RT-06: normalizeSdkMessages / TASK-UI-01: navigateToSkillLifecycle直結 / TASK-RT-04: useAuthKeyManagement統合 / lessons-learned-ipc-preload-runtime.md に L-IPC-4LAYER-001〜002・L-SESSION-RESUME-UI-001 追加 / task-workflow-completed.md に TASK-P0-01・TASK-UI-01 完了記録追加） |
 | 2026-04-06 v9.02.33 - TASK-P0-09-U1 path-scoped enforcement スキル反映（`governance-hooks-factory-audit-sink.md` に path-scoped canUseTool 判定セクション追加 / SKILL.md Trigger に `path-scoped enforcement` / `canUseTool 判定` / `extractTargetPath` / `allowedSkillRoot` / `createImproveGovernanceCanUseTool` を追加 / v9.02.33 history エントリ追加 / `topic-map.md` と `keywords.json` を更新） |
 | 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了（`executeAsync()` structured error / catch パスの `if (!snapshot)` 条件削除 / `snapshot ?? null` 適用 / `creatorHandlers.ts`・`skill-creator-api.ts`・`SkillLifecyclePanel.tsx` で errorMessage 伝搬 / `creatorHandlers.test.ts`・`SkillLifecyclePanel.error-persistence.test.tsx` 追加 / focused vitest 53 tests PASS / `pnpm typecheck` PASS / `pnpm lint` PASS） |
 | 2026-04-06 - TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 Phase 12 close-out sync（AuthKeySection/ApiKeySettingsPanel 重複解消、`useAuthKeyManagement` 追加、`ApiKeyStatus` に `check-failed` 追加、task-workflow 完了/未タスク同期、`ui-ux-settings-core.md` 契約更新、interfaces 参照更新、LOGS/SKILL 更新、topic-map/keywords 再生成） |
@@ -191,6 +193,24 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## archive 入口
 
 - [logs-archive-index.md](references/logs-archive-index.md)
+
+## 2026-04-06 v9.02.34 - Phase-12 IPC/Session/UI 7タスク完了 system spec 同期
+
+### 変更内容
+- `lessons-learned-ipc-preload-runtime.md` v1.19.0: L-IPC-4LAYER-001（4層型 shared 集約原則）/ L-IPC-4LAYER-002（errorReason 3分岐 union 型全層同期）/ L-SESSION-RESUME-UI-001（snapshot nullability 設計パターン）の3教訓を追加
+- `task-workflow-completed.md`: TASK-P0-01（LLM Adapter Status: getAdapterStatus / onAdapterStatusChanged）/ TASK-UI-01（SkillLifecyclePanel 一次導線昇格: navigateToSkillLifecycle直結）の完了記録を追加
+- `LOGS.md`: v9.02.34 エントリ追加（本エントリ）
+
+### 完了タスク一覧（Phase-12 step-12-par-task-ui-03）
+| タスクID | 内容 | 記録先 |
+| --- | --- | --- |
+| TASK-P0-08 | Session Resume API IPC 4層統合（listSessions/resumeSession/getSessionDetail/deleteSession/cleanupExpiredSessions） | task-workflow-completed.md（既記録） |
+| TASK-P0-09 | Governance State path-scoped canUseTool判定 + skill名kebab-case正規化 | task-workflow-completed.md（既記録） |
+| TASK-P0-07 | Runtime Improve（improveSkill/applyImprovement/reverifyWorkflow/getVerifyDetail） | task-workflow-completed.md（既記録） |
+| TASK-P0-01 | LLM Adapter Status（getAdapterStatus + onAdapterStatusChanged） | task-workflow-completed.md（本波で追加） |
+| TASK-RT-06 | normalizeSdkMessages SDK Message正規化 IPC | task-workflow-completed.md（既記録） |
+| TASK-UI-01 | SkillLifecyclePanel 一次導線昇格（navigateToSkillLifecycle直結、~42行） | task-workflow-completed.md（本波で追加） |
+| TASK-RT-04 | AuthKeySection/ApiKeySettingsPanel重複解消・useAuthKeyManagement統合 | task-workflow-completed.md（既記録） |
 
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
 
@@ -684,39 +704,3 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 検証:
   - 統合テスト 22 件 PASS（`RuntimeSkillCreatorFacade.persist-integration.test.ts`）
   - OutputHandler テスト 22 件 PASS（`SkillCreatorOutputHandler.test.ts`）
-
-## TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out sync（2026-04-06）
-
-- タスク名: TASK-P0-09 claude-sdk-permission-hooks-governance
-- 種別: implementation / TDD / governance / docs sync
-- 主な反映:
-  - `runtime/governance/` サブディレクトリを新設し、`SkillCreatorPermissionPolicy.ts` / `SkillCreatorHooksFactory.ts` / `SkillCreatorAuditSink.ts` / `index.ts` を配置
-  - 命名規則を `SkillCreator` プレフィックスに統一（旧 `GovernanceHooksFactory` / `GovernanceAuditSink` から変更）
-  - TDD: TC-PP-01〜18（PermissionPolicy 31件）/ TC-HF-01〜10（HooksFactory 18件）/ TC-AS-01〜12（AuditSink 15件）/ TC-FG-01〜09（統合 12件）/ TC-G-01〜14（全フェーズ 14件）
-  - Phase 12 タスク仕様書 15ファイル（`docs/30-workflows/task-p0-09-sdk-permission-hooks-governance/`）を作成
-  - `governance-hooks-factory-audit-sink.md` を新 API（`createHooks(phase, auditSink, provenance?)`・ring buffer）に更新
-  - `task-workflow-completed.md` に完了記録（2026-04-06）を追加
-  - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
-  - TASK-P0-09-U1（path-scoped enforcement）は carry-forward として `TODO(TASK-P0-09-U1)` コメントで明示
-- 検証:
-  - vitest governance 90件全 PASS
-  - typecheck: EXIT:0 ✅
-  - lint: EXIT:0（10 warnings / 0 errors）⚠️
-  - TASK-P0-09-U1（path-scoped enforcement）は carry-forward として記録されていたが本タスクで解消
-
-### 2026-04-06 - TASK-P0-09-U1 path-scoped-governance-runtime-enforcement 完了
-
-- タスク名: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement
-- 種別: security / bug-fix / TDD
-- 主な反映:
-  - `RuntimeSkillCreatorFacade.createExecuteGovernanceCanUseTool()` に `skillRoot: string` パラメータを追加
-  - `extractTargetPath()` private helper を追加（`file_path ?? path` フォールバック）
-  - `evaluateGovernanceToolUse` に `{ targetPath, allowedSkillRoot }` context を接続
-  - `createImproveGovernanceCanUseTool(skillRoot)` を新規追加
-  - `_executeInternal()` で `getExplicitSkillCreatorRoot()` を取得して canUseTool に渡す配線を完成
-  - `SkillCreatorPermissionPolicy.ts` の `TODO(TASK-P0-09-U1)` コメントを解消
-  - テスト: TC-PATH-01〜06 + extractTargetPath 4件 = 11件追加（合計 101件 PASS）
-  - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
-- 検証:
-  - vitest governance 101件全 PASS
-  - typecheck: EXIT:0 ✅

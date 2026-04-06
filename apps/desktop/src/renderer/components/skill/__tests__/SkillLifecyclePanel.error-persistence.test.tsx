@@ -257,20 +257,19 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
     mockGetDisclosureInfo.mockResolvedValue({ success: false });
     mockGetVerifyDetail.mockResolvedValue({ success: false });
 
-    (window as Window & { electronAPI?: unknown }).electronAPI = {
-      skillCreator: {
-        detectMode: mockDetectMode,
-        executePlan: mockExecutePlan,
-        getWorkflowState: mockGetWorkflowState,
-        onWorkflowStateChanged: mockOnWorkflowStateChanged,
-        submitUserInput: mockSubmitUserInput,
-        getDisclosureInfo: mockGetDisclosureInfo,
-        getVerifyDetail: mockGetVerifyDetail,
-      },
+    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
+      detectMode: mockDetectMode,
+      executePlan: mockExecutePlan,
+      getWorkflowState: mockGetWorkflowState,
+      onWorkflowStateChanged: mockOnWorkflowStateChanged,
+      submitUserInput: mockSubmitUserInput,
+      getDisclosureInfo: mockGetDisclosureInfo,
+      getVerifyDetail: mockGetVerifyDetail,
     };
   });
 
   afterEach(() => {
+    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
     cleanup();
   });
 

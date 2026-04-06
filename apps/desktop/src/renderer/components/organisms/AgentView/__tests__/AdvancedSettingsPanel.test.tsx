@@ -59,24 +59,22 @@ describe("AdvancedSettingsPanel", () => {
     vi.clearAllMocks();
     // GovernanceSummaryPanel が IPC ポーリングするため最小モックを設定
     // success: true + 最小データで ready 状態に遷移させる
-    Object.defineProperty(window, "electronAPI", {
+    Object.defineProperty(window, "skillCreatorAPI", {
       value: {
-        skillCreator: {
-          getGovernanceState: vi.fn().mockResolvedValue({
-            success: true,
-            data: {
+        getGovernanceState: vi.fn().mockResolvedValue({
+          success: true,
+          data: {
+            phase: "plan",
+            activePolicy: {
               phase: "plan",
-              activePolicy: {
-                phase: "plan",
-                permissionMode: "default",
-                allowedTools: [],
-                disallowedTools: [],
-              },
-              recentAuditEvents: [],
-              recentDenials: [],
+              permissionMode: "default",
+              allowedTools: [],
+              disallowedTools: [],
             },
-          }),
-        },
+            recentAuditEvents: [],
+            recentDenials: [],
+          },
+        }),
       },
       writable: true,
       configurable: true,

@@ -227,18 +227,19 @@ describe("TC-01: SkillLifecyclePanel prepare flow does not call auth:login durin
       auth: {
         login: mockAuthLogin,
       },
-      skillCreator: {
-        detectMode: mockDetectMode,
-        planSkill: mockPlanSkill,
-        getWorkflowState: mockGetWorkflowState,
-        onWorkflowStateChanged: mockOnWorkflowStateChanged,
-        getDisclosureInfo: mockGetDisclosureInfo,
-        getVerifyDetail: mockGetVerifyDetail,
-      },
+    };
+    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
+      detectMode: mockDetectMode,
+      planSkill: mockPlanSkill,
+      getWorkflowState: mockGetWorkflowState,
+      onWorkflowStateChanged: mockOnWorkflowStateChanged,
+      getDisclosureInfo: mockGetDisclosureInfo,
+      getVerifyDetail: mockGetVerifyDetail,
     };
   });
 
   afterEach(() => {
+    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
     cleanup();
   });
 
@@ -327,18 +328,19 @@ describe("TC-03: skill generation completes without auth:login timeout", () => {
       auth: {
         login: mockAuthLogin,
       },
-      skillCreator: {
-        detectMode: mockDetectMode,
-        planSkill: mockPlanSkill,
-        getWorkflowState: mockGetWorkflowState,
-        onWorkflowStateChanged: mockOnWorkflowStateChanged,
-        getDisclosureInfo: mockGetDisclosureInfo,
-        getVerifyDetail: mockGetVerifyDetail,
-      },
+    };
+    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
+      detectMode: mockDetectMode,
+      planSkill: mockPlanSkill,
+      getWorkflowState: mockGetWorkflowState,
+      onWorkflowStateChanged: mockOnWorkflowStateChanged,
+      getDisclosureInfo: mockGetDisclosureInfo,
+      getVerifyDetail: mockGetVerifyDetail,
     };
   });
 
   afterEach(() => {
+    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
     cleanup();
   });
 
@@ -461,18 +463,19 @@ describe("TC-05: skill generation does not call auth:login when user is unauthen
 
     (window as Window & { electronAPI?: unknown }).electronAPI = {
       auth: { login: mockAuthLogin },
-      skillCreator: {
-        detectMode: mockDetectMode,
-        planSkill: mockPlanSkill,
-        getWorkflowState: mockGetWorkflowState,
-        onWorkflowStateChanged: mockOnWorkflowStateChanged,
-        getDisclosureInfo: mockGetDisclosureInfo,
-        getVerifyDetail: mockGetVerifyDetail,
-      },
+    };
+    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
+      detectMode: mockDetectMode,
+      planSkill: mockPlanSkill,
+      getWorkflowState: mockGetWorkflowState,
+      onWorkflowStateChanged: mockOnWorkflowStateChanged,
+      getDisclosureInfo: mockGetDisclosureInfo,
+      getVerifyDetail: mockGetVerifyDetail,
     };
   });
 
   afterEach(() => {
+    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
     cleanup();
   });
 
@@ -530,18 +533,19 @@ describe("TC-06: rapid skill generation clicks do not trigger multiple auth:logi
 
     (window as Window & { electronAPI?: unknown }).electronAPI = {
       auth: { login: mockAuthLogin },
-      skillCreator: {
-        detectMode: mockDetectMode,
-        planSkill: mockPlanSkill,
-        getWorkflowState: mockGetWorkflowState,
-        onWorkflowStateChanged: mockOnWorkflowStateChanged,
-        getDisclosureInfo: mockGetDisclosureInfo,
-        getVerifyDetail: mockGetVerifyDetail,
-      },
+    };
+    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
+      detectMode: mockDetectMode,
+      planSkill: mockPlanSkill,
+      getWorkflowState: mockGetWorkflowState,
+      onWorkflowStateChanged: mockOnWorkflowStateChanged,
+      getDisclosureInfo: mockGetDisclosureInfo,
+      getVerifyDetail: mockGetVerifyDetail,
     };
   });
 
   afterEach(() => {
+    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
     cleanup();
   });
 
@@ -618,18 +622,19 @@ describe("TC-07: auth:login is not triggered on component re-render during skill
 
     (window as Window & { electronAPI?: unknown }).electronAPI = {
       auth: { login: mockAuthLogin },
-      skillCreator: {
-        detectMode: mockDetectMode,
-        planSkill: mockPlanSkill,
-        getWorkflowState: mockGetWorkflowState,
-        onWorkflowStateChanged: mockOnWorkflowStateChanged,
-        getDisclosureInfo: mockGetDisclosureInfo,
-        getVerifyDetail: mockGetVerifyDetail,
-      },
+    };
+    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
+      detectMode: mockDetectMode,
+      planSkill: mockPlanSkill,
+      getWorkflowState: mockGetWorkflowState,
+      onWorkflowStateChanged: mockOnWorkflowStateChanged,
+      getDisclosureInfo: mockGetDisclosureInfo,
+      getVerifyDetail: mockGetVerifyDetail,
     };
   });
 
   afterEach(() => {
+    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
     cleanup();
   });
 

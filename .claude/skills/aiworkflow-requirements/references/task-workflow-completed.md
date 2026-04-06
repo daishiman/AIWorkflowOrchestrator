@@ -47,8 +47,145 @@
 
 ---
 
+### タスク: TASK-FIX-IPC-SKILL-NAME-001 ipcMain重複登録・スキル名正規化修正（2026-04-06）
+
+| 項目             | 値                                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | TASK-FIX-IPC-SKILL-NAME-001                                                                                                    |
+| ステータス       | **完了（Phase 12 close-out）**                                                                                                  |
+| タイプ           | bug-fix / ipc / skill-name-normalization                                                                                        |
+| 優先度           | 高                                                                                                                              |
+| 完了日           | 2026-04-06                                                                                                                      |
+| 対象             | `creatorHandlers.ts` ipcMain重複登録修正 / `SkillService.toWizardSkillName()` 正規化強化                                        |
+| 成果物           | `docs/30-workflows/fix-creator-handler-duplicate-skill-name-validation/`                                                        |
+
+#### 実施内容
+
+- `registerRuntimeSkillCreatorHandlers()` の `SKILL_CREATOR_GET_ADAPTER_STATUS` 2重登録を除去（後続14ハンドラの未登録が解消、全16チャネルが正常登録）
+- `toWizardSkillName()` に5ステップ正規化フロー実装（小文字化→非許容文字ハイフン化→連続ハイフン圧縮→端除去→"new-skill"フォールバック）
+- `resolveUniqueSkillName()` による衝突回避（`new-skill-2` / `new-skill-3`...）
+- `docs/00-requirements/18-skills.md` 3.2.2.1セクションに正規化規則を追記
+- `docs/00-requirements/08-api-design.md` にIPC ハンドラ一意性要件を追記
+- Phase 7 で `creatorHandlers.governanceState.test.ts` 新規12テスト追加
+
+#### 未タスク（Phase 12 close-out）
+
+- `UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001`: SKILL_NAME_PATTERN定数一元化（Medium）
+- `UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001`: IPC登録CIスナップショット（Medium）
+- `UT-FIX-SKILL-NAME-JAPANESE-INPUT-UX-001`: 日本語入力リアルタイムプレビュー（Low）
+
+---
+
+### タスク: UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 phase-spec-template Task/Step 分離と NON_VISUAL evidence hardening（2026-04-06）
+### タスク: UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001 task-specification-creator Phase-12 テンプレート改善（2026-04-06）
+
+## UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善
+- 完了日: 2026-04-06
+- 内容: Phase-12 validator 改善（NEXT_PART_HEADING導入、fence-safe化）、テンプレート構造化、SKILL.md v10.09.35 更新
+- 成果物: 6ファイル（implementation-guide / documentation-changelog / system-spec-update-summary / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+
+---
+
+### タスク: UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 visible handoff / disclosure / execution host の Phase 11 screenshot 取得（2026-04-06）
+
+| UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 | visible handoff / disclosure / execution host の Phase 11 screenshot 取得 | spec_created | 2026-04-06 |
+
+### タスク: TASK-P0-01 llm-adapter-status（2026-04-06）
+
+| 項目       | 値                                                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-01                                                                                                  |
+| ステータス | **完了（Phase 13: worktree completed）**                                                                    |
+| タイプ     | implementation / IPC 4層統合                                                                                |
+| 優先度     | 高                                                                                                          |
+| 完了日     | 2026-04-06                                                                                                  |
+| 対象       | LLM Adapter Status IPC エンドポイント実装                                                                   |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/`   |
+
+#### 実施内容
+
+- `getAdapterStatus`: 現在の LLM Adapter の状態（providerName / modelName / isConnected / lastChecked）を取得する IPC エンドポイントを creatorHandlers → SkillCreatorFacade → Preload API → Renderer の4層で統合
+- `onAdapterStatusChanged`: Adapter の状態変化をイベント購読する IPC チャネルを実装（preload variadic パターン適用）
+- `useLLMAdapterStatus` Hook: Renderer 側で Adapter 状態を管理する専用 Hook（ポーリング不要のイベント駆動設計）
+- `GovernanceSummaryPanel.tsx` に Adapter Status 表示を統合
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| IPC 4層型同期漏れリスク | `AdapterStatus` 型を `packages/shared/src/types/` に SSoT として定義し全層から import |
+| preload variadic 化 | `safeOn` を `[AdapterStatus, string?]` として型付けし、Renderer 側 callback で optional 第2引数を受け取る |
+
+→ 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-IPC-4LAYER-001 / L-IPC-4LAYER-002
+
+---
+
+### タスク: TASK-UI-01 lifecycle-panel-primary-route-promotion（2026-04-06）
+
+| 項目       | 値                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-01                                                                                                |
+| ステータス | **完了（Phase 13: worktree completed）**                                                                  |
+| タイプ     | implementation / UI routing                                                                               |
+| 優先度     | 高                                                                                                        |
+| 完了日     | 2026-04-06                                                                                                |
+| 対象       | SkillLifecyclePanel を一次導線（primary route）として昇格                                                 |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/` |
+
+#### 実施内容
+
+- `navigateToSkillLifecycle()` shared action を実装し、SkillCenter → SkillLifecyclePanel への直結ルーティングを確立（最小変更 ~42行）
+- `skillLifecycle` ViewType を `apps/desktop/src/renderer/` に追加（`SKILL_LIFECYCLE_PRIMARY_VIEW` 定数）
+- `SkillLifecycleJourneyPanel` / `SkillLifecycleSurfaceOwnershipPanel` コンポーネントを Atomic Design 準拠で追加
+- `journeyActions` CTA 集約による一次導線の視認性向上
+- Phase 11 Playwright screenshot 4枚（`outputs/phase-11/screenshots/`）で visual evidence を取得
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| SessionResumePrompt / SessionIndicator との遷移ロジック複雑化 | `snapshot` を `null` に型統一し `hasSession = snapshot !== null` 単一判定ポイントに集約 |
+| snapshot nullability チェックの冗長化 | `snapshot ?? null` で undefined を早期正規化し optional chaining 乱用を回避 |
+
+→ 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-SESSION-RESUME-UI-001
+→ 仕様更新: [ui-ux-navigation.md](ui-ux-navigation.md) v1.9.2
+
+---
+
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
 ### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
+
+| 項目             | 値                                                                                     |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| タスクID         | UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001                                                   |
+| ステータス       | **仕様書作成完了（`spec_created` / Phase 13 blocked）**                                |
+| タイプ           | docs-only / NON_VISUAL                                                                 |
+| 優先度           | 中                                                                                     |
+| 完了日           | 2026-04-06                                                                             |
+| 対象             | `task-specification-creator` / Phase 仕様書テンプレート                                |
+| GitHub Issue     | #1919                                                                                  |
+| 成果物           | `docs/30-workflows/ut-phase-spec-format-improvement-001/`                              |
+| 元未タスク指示書 | `docs/30-workflows/unassigned-task/ut-phase-spec-format-improvement-001.md`           |
+
+#### 実施内容
+
+- `phase-spec-template.md` に Task / Step 分離ルールと Phase 11 NON_VISUAL / Phase 12 記録分離方針を追加した
+- `unassigned-task-template.md` に苦戦箇所の必須記載欄を追加した
+- `task-workflow-backlog.md` に UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 を spec_created として登録し、`task-workflow-completed.md` / `LOGS.md` / `SKILL.md` / `index.md` / `artifacts.json` / `outputs/artifacts.json` を same-wave sync した
+- `phase-11-manual-test.md` で NON_VISUAL evidence を検証し、`manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` を current facts へ記録した
+- `phase-12-documentation.md` で implementation-guide / system-spec / documentation-changelog / unassigned-task-detection / skill-feedback-report / compliance-check を作成した
+
+#### 検証証跡
+
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/ut-phase-spec-format-improvement-001 --json`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/ut-phase-spec-format-improvement-001`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/ut-phase-spec-format-improvement-001 --json`: PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/ut-phase-spec-format-improvement-001/outputs/phase-11/manual-test-result.md`: PASS
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`: PASS
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator`: FAIL（既存の line budget / description 境界のため）
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements`: FAIL（既存の line budget / description / mirror 差分のため）
+
+---
 
 | 項目             | 値                                                                                     |
 | ---------------- | -------------------------------------------------------------------------------------- |
@@ -60,7 +197,7 @@
 | 対象             | `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の improve adapter error 通知        |
 | GitHub Issue     | #1896                                                                                  |
 | 成果物           | `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`    |
-| 元未タスク指示書 | `docs/30-workflows/unassigned-task/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
 
 #### 実施内容
 
@@ -72,8 +209,6 @@
 
 - `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（0エラー / 0警告）
 - `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（警告 26）
-
----
 
 ### タスク: TASK-P0-05 execute() → SkillFileWriter persist 統合（2026-04-05）
 

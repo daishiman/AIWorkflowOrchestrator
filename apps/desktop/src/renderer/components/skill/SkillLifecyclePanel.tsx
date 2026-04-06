@@ -116,7 +116,7 @@ type SessionResumeApi = {
   resumeSession?: (
     checkpointId: string,
   ) => Promise<SkillCreatorSessionResumeResult>;
-  deleteSession?: (checkpointId: string) => Promise<void>;
+  deleteSession?: (checkpointId: string) => Promise<IpcResult<void>>;
   cleanupExpiredSessions?: () => Promise<number>;
 };
 
@@ -359,23 +359,17 @@ const severityStyles: Record<ImproveSuggestion["severity"], string> = {
 };
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   const runtimeWindow = window as Window & {
-    electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
     skillCreatorAPI?: SkillCreatorRuntimeApi;
   };
 
-  return (
-    runtimeWindow.electronAPI?.skillCreator ??
-    runtimeWindow.skillCreatorAPI ??
-    null
-  );
+  return runtimeWindow.skillCreatorAPI ?? null;
 }
 
 function getSessionResumeApi(): SessionResumeApi | null {
   const w = window as Window & {
     skillCreatorAPI?: SessionResumeApi;
-    electronAPI?: { skillCreator?: SessionResumeApi };
   };
-  return w.skillCreatorAPI ?? w.electronAPI?.skillCreator ?? null;
+  return w.skillCreatorAPI ?? null;
 }
 
 function extractSkillNameFromPath(skillPath: string): string {
@@ -953,9 +947,15 @@ export function SkillLifecyclePanel({
         resumableSessions.map((session) => session.checkpointId);
       if (sessionApi?.deleteSession) {
         await Promise.allSettled(
-          targetIds.map((checkpointId) =>
-            sessionApi.deleteSession!(checkpointId),
-          ),
+          targetIds.map(async (checkpointId) => {
+            const result = await sessionApi.deleteSession!(checkpointId);
+            if (!result.success) {
+              console.error(
+                "[P0-08] deleteSession failed:",
+                result.error ?? "unknown error",
+              );
+            }
+          }),
         );
       }
       setShowResumePrompt(false);
@@ -1035,7 +1035,11 @@ export function SkillLifecyclePanel({
       if (!sessionApi?.deleteSession) return;
 
       try {
-        await sessionApi.deleteSession(checkpointId);
+        const result = await sessionApi.deleteSession(checkpointId);
+        if (!result.success) {
+          setLocalError(result.error ?? "セッションの削除に失敗しました。");
+          return;
+        }
         const next = resumableSessions.filter(
           (s) => s.checkpointId !== checkpointId,
         );
