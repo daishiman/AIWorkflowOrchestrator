@@ -38,6 +38,12 @@
 ## 実行タスク
 
 > 以下のタスクを順番に実行してください。
+>
+> **Task / Step 分離ルール**
+> - このセクションには plan のみを書く。
+> - `TASKS[*].steps` は実行前の手順だけを書く。実行結果、判定、取得値は書かない。
+> - current fact は `Phase実行記録` または `outputs/phase-{{PHASE_NUMBER}}/` 配下の成果物へ記録する。
+> - Phase 11 / Phase 12 の証跡は、本文と成果物を混在させずに分離する。
 
 {{#each TASKS}}
 
@@ -84,6 +90,41 @@
 ## 統合テスト連携（Phase 1〜11は必須）
 
 {{INTEGRATION_TEST_ACTIONS}}
+
+---
+
+{{#if IS_PHASE_11}}
+## Phase 11 手動テスト方針
+
+{{#if IS_NON_VISUAL}}
+
+- `manual-test-checklist.md` を必ず作成する
+- `discovered-issues.md` を必ず作成する
+- `screenshot-plan.json` は生成しない
+- primary evidence は `vitest` / `typecheck` / `lint` / テンプレート仮生成確認
+- `manual-test-result.md` には `TC-ID ↔ evidence`、NON_VISUAL である理由、代替 evidence を明記する
+- placeholder-only の証跡は PASS 扱いにしない
+
+{{else}}
+
+- `manual-test-checklist.md` を必ず作成する
+- `discovered-issues.md` を必ず作成する
+- `screenshot-plan.json` と PNG 証跡を必須とする
+- `manual-test-result.md` に `TC-ID ↔ PNG` の対応を明記する
+- placeholder-only の証跡は PASS 扱いにしない
+
+{{/if}}
+{{/if}}
+
+{{#if IS_PHASE_12}}
+## Phase 12 記録分離方針
+
+- `実行タスク` は plan、`Phase実行記録` と `outputs/phase-12/*.md` は current fact として扱う
+- `phase12-task-spec-compliance-check.md` は Task / Step / validator / artifacts.json / current-baseline の同値性を集約する root evidence として必ず作成する
+- docs-only / spec_created workflow では Step 1-B の status を `spec_created` とし、`completed` へ置き換えない
+- 仕様更新の有無は `documentation-changelog.md` と `system-spec-update-summary.md` で同じ結論にする
+- spec 変更がある場合は `topic-map.md` を同 wave で再生成する
+{{/if}}
 
 ---
 

@@ -553,12 +553,13 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 
 ### 8.13.1 IPC設計原則
 
-| 原則                   | 説明                                     |
-| ---------------------- | ---------------------------------------- |
-| contextIsolation       | Preloadスクリプトでのみ通信APIを公開     |
-| チャネルホワイトリスト | 許可されたチャネルのみ通信可能           |
-| sender検証             | withValidation()でリクエスト元を検証     |
-| 型安全性               | 全チャネルに対してTypeScript型定義を適用 |
+| 原則                   | 説明                                              |
+| ---------------------- | ------------------------------------------------- |
+| contextIsolation       | Preloadスクリプトでのみ通信APIを公開              |
+| チャネルホワイトリスト | 許可されたチャネルのみ通信可能                    |
+| sender検証             | withValidation()でリクエスト元を検証              |
+| 型安全性               | 全チャネルに対してTypeScript型定義を適用          |
+| ハンドラ一意性         | `ipcMain.handle()` は同一チャネルで重複登録しない |
 
 ### 8.13.2 APIキー管理 IPC チャネル
 
@@ -571,6 +572,8 @@ Electronデスクトップアプリでは、IPC通信でAIチャット機能とL
 | `apiKey:get`      | invoke   | `{ provider }`         | `string \| null`                | Main Only |
 
 **セキュリティ注意**: `apiKey:get` はRenderer Processに公開しない（Main Process内部使用のみ）
+
+**運用注意**: `ipcMain.handle()` は同一チャネルに2回登録すると例外をスローする。`registerXxxHandlers()` を再実行する前に `removeHandler()` で解除するか、初回初期化時のみ登録する設計にする。
 
 ### 8.13.3 認証 IPC チャネル
 

@@ -921,3 +921,38 @@ SDK Session は `pendingAnswerPromise`（質問待機）と `pendingExternalApiP
 8. `config.headers` が指定されている場合、`Record<string, string>` 形状であること
 
 ---
+
+## IPC Handler Lifecycle Management（TASK-FIX-IPC-SKILL-NAME-001 追記: 2026-04-06）
+
+### 設計原則
+
+Electron の `ipcMain.handle()` は同一チャネルに対して**1回のみ登録すること**。
+2回目の登録時に Electron が例外を投げ、**後続の全ハンドラが未登録**になる。
+
+### register / unregister 対称パターン
+
+```typescript
+// ✅ 正しいパターン: register と unregister を対称実装する
+export function registerRuntimeSkillCreatorHandlers(mainWindow: BrowserWindow, service: SkillCreatorService | null): void {
+  ipcMain.handle(IPC_CHANNELS.SKILL_CREATOR_PLAN, async (event, req) => { ... });
+  ipcMain.handle(IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS, async (event) => { ... });
+  // ... 全 N 個のチャネルを登録
+}
+
+export function unregisterRuntimeSkillCreatorHandlers(): void {
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS);
+  // ... 同 N 個を削除（対称）
+}
+```
+
+### 重複登録防止チェックリスト
+
+- [ ] 同一チャネル名で `ipcMain.handle()` が1度だけ呼ばれているか確認する
+- [ ] `unregisterXxxHandlers()` で登録数と同数の `removeHandler()` を実装する
+- [ ] アプリ再起動時に `unregister → register` の順序で呼び出す
+
+### 実装参照
+
+- `apps/desktop/src/main/ipc/creatorHandlers.ts` - `registerRuntimeSkillCreatorHandlers()` / `unregisterRuntimeSkillCreatorHandlers()`（16チャネル対称実装）
+- follow-up: `UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001`（CI スナップショットテスト）

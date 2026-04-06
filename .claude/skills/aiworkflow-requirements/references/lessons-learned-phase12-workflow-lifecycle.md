@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-06 | 1.9.4      | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓3件を追加（L-EXECUTE-ASYNC-001: vi.spyOn vs executeMock / L-EXECUTE-ASYNC-002: onWorkflowStateSnapshot 複数呼び出しテスト / L-EXECUTE-ASYNC-003: snapshot ?? null パターン） |
 | 2026-04-04 | 1.9.3      | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 教訓2件を追加（secondary surface の戻り導線は同一 surface の実画像と action trace を分けて扱う / `skillManagement` は `skillCenter` に正規化して dock を維持する） |
 | 2026-04-03 | 1.9.3      | task-ut-p0-02-001-repeat-feedback-memory 教訓2件追加（L-FEEDBACK-MEM-001: feedback memory 構造化 / L-FEEDBACK-MEM-002: module-level 非 export 関数テスト戦略）                                                                                                                             |
 | 2026-04-03 | 1.9.2      | TASK-FIX-LIFECYCLE-PANEL-ERROR-001 current facts sync（L-LIFECYCLE-EP-001〜003 / setupCallbackCapture / NON_VISUAL state-only 判定を current facts へ反映）                                                   |
@@ -1241,3 +1242,28 @@
 | 解決策     | `verifyAndImproveLoop()` の統合パスを経由し、`sendChat` mock の呼び出し引数から `buildImproveFeedback()` の出力を検証する間接テスト戦略を採用                     |
 | 標準ルール | module-level 非 export 関数は export を増やすのではなく、呼び出し元の統合テスト経由で mock 引数を検証する。テスト容易性のためだけに export を追加しない             |
 | 関連タスク | task-ut-p0-02-001-repeat-feedback-memory                                                                                                                          |
+
+---
+
+## TASK-UT-RT-01 executeAsync エラーテストパターン（2026-04-06）
+
+### L-EXECUTE-ASYNC-001: `vi.spyOn(facade, 'execute')` vs `executeMock`
+
+- **教訓**: `skillExecutor.execute` をモック (`executeMock`) しても、`execute()` メソッド内で `SkillExecuteResult` に変換されるため、`errorResponse.error.message` が undefined になる
+- **対策**: structured error パスのテストでは `vi.spyOn(facade, 'execute')` で `execute()` を直接モックし、`RuntimeSkillCreatorExecuteErrorResponse` を返すようにする
+- **適用範囲**: executeAsync のエラーパスをテストする際の標準パターン
+- **発見日**: 2026-04-06
+
+### L-EXECUTE-ASYNC-002: `onWorkflowStateSnapshot` の複数呼び出しに対応した検証
+
+- **教訓**: `workflowEngine.onPhaseChanged` と structured error パスの両方から `onWorkflowStateSnapshot` が呼ばれるため、`toHaveBeenCalledTimes(1)` は脆弱
+- **対策**: `toHaveBeenCalledWith(...)` で特定引数の呼び出しを検証する方が robust
+- **適用範囲**: onWorkflowStateSnapshot のコールバック検証テスト全般
+- **発見日**: 2026-04-06
+
+### L-EXECUTE-ASYNC-003: `snapshot ?? null` パターン
+
+- **教訓**: `getWorkflowState()` は `SkillCreatorWorkflowUiSnapshot | undefined` を返す。型安全に `null` に変換するには `?? null` を使う
+- **対策**: `|| null` ではなく `?? null` を使うことで falsy な値を誤変換しない
+- **適用範囲**: undefined から null への型安全変換パターン全般
+- **発見日**: 2026-04-06

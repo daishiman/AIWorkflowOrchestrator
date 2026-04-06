@@ -1,0 +1,30 @@
+{
+  "taskId": "TASK-UI-01",
+  "phase": 11,
+  "capturedAt": "2026-04-06T02:45:16.919Z",
+  "baseUrl": "http://127.0.0.1:5197",
+  "workflowRoot": "docs/30-workflows/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion",
+  "screenshotDir": "docs/30-workflows/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion/outputs/phase-11/screenshots",
+  "records": [
+    {
+      "id": "ss-01",
+      "file": "ss-01-skill-center-initial.png",
+      "note": "SkillCenterView の初期表示"
+    },
+    {
+      "id": "ss-04",
+      "file": "ss-04-header-create-cta.png",
+      "note": "SkillCenterView ヘッダーの +新規作成 ボタン"
+    },
+    {
+      "id": "ss-02",
+      "file": "ss-02-skill-lifecycle-panel.png",
+      "note": "一次導線から開いた SkillLifecyclePanel"
+    },
+    {
+      "id": "ss-03",
+      "file": "ss-03-app-dock-active-skill-center.png",
+      "note": "skillLifecycle 表示時に skillCenter がアクティブな AppDock"
+    }
+  ]
+}

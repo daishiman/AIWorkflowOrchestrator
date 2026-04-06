@@ -84,7 +84,7 @@
 | `summary`       | `ExecutionSummary`| サマリー                 |
 | `estimatedTime` | `number`          | 見積もり時間（分）       |
 
-#### ApiKeyStatus（TASK-RT-04）
+#### ApiKeyStatus（TASK-RT-04 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001）
 
 runtime lane の API キー設定補助導線で利用する UI 状態型。canonical source は `packages/shared/src/types/skillCreator.ts`。
 
@@ -94,6 +94,31 @@ runtime lane の API キー設定補助導線で利用する UI 状態型。cano
 | `validating` | 保存中/検証中 |
 | `configured` | 利用可能なキーを確認済み（`saved` または `env-fallback`） |
 | `error` | 保存/削除時にエラーが発生 |
+| `check-failed` | 初期確認時に IPC エラーが発生（electronAPI 未利用環境を含む） |
+
+#### useAuthKeyManagement（TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001）
+
+AuthKeySection / ApiKeySettingsPanel の共通 IPC ロジックを統合したカスタムフック。
+canonical source は `apps/desktop/src/renderer/hooks/useAuthKeyManagement.ts`。
+
+```typescript
+interface UseAuthKeyManagementReturn {
+  status: ApiKeyStatus;
+  keySource: "saved" | "env-fallback" | null;
+  inputValue: string;
+  isSubmitting: boolean;
+  validationError: string | null;
+  apiError: string | null;
+  setInputValue: (value: string) => void;
+  handleSave: () => Promise<boolean>;
+  handleDelete: () => Promise<boolean>;
+  refresh: () => Promise<boolean>;
+}
+
+interface UseAuthKeyManagementOptions {
+  onStatusChange?: (status: ApiKeyStatus) => void;
+}
+```
 
 ---
 

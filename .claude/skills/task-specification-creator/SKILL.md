@@ -108,14 +108,14 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 | 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**                                 |
 | 2     | 設計             | topology、SubAgent lane、validation path を設計する                                                                                          |
 | 3     | 設計レビュー     | Phase 4 へ進めるかを判定する                                                                                                                 |
-| 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する**           |
-| 5     | 実装             | `.claude` 正本を更新し、mirror を同期する。**[Feedback RT-03]** 実装計画に「新規作成」「修正」ファイルパス一覧を必須記載する（見落とし防止） |
+| 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する**。**[Feedback P0-09-U1]** private method のテストは `(facade as unknown as FacadePrivate)` キャストまたは public callback 経由を使う方針を Phase 4 仕様書に明記する |
+| 5     | 実装             | `.claude` 正本を更新し、mirror を同期する。**[Feedback RT-03]** 実装計画に「新規作成」「修正」ファイルパス一覧を必須記載する（見落とし防止）。**[Feedback P0-09-U1]** `improve()` フローで SDK callback が不適用な場合（`llmAdapter.sendChat()` 経由など）は「canUseTool 適用可能範囲と制約」を仕様書に明記する |
 | 6     | テスト拡充       | fail path、回帰 guard、補助 command を追加する                                                                                               |
 | 7     | カバレッジ確認   | concern と dependency edge の coverage を可視化する                                                                                          |
 | 8     | リファクタリング | duplicate と navigation drift を削る。**[Feedback RT-03]** 変更内容を `対象/Before/After/理由` テーブル形式で記録する                        |
 | 9     | 品質保証         | line budget、link、mirror parity を一括判定する                                                                                              |
 | 10    | 最終レビュー     | acceptance criteria と blocker を判定する                                                                                                    |
-| 11    | 手動テスト       | docs navigation と UI evidence を人手で確認する                                                                                              |
+| 11    | 手動テスト       | 3層評価（Semantic / Visual / AI UX）を実行し、フィードバックループで HIGH 問題を `unassigned-task/` へ自動生成する。shared path alias 系は build config と test config の parity を同時確認する |
 | 12    | ドキュメント更新 | implementation guide、spec sync、未タスク、feedback を完了する                                                                               |
 | 13    | PR作成           | user の明示承認後のみ実施する                                                                                                                |
 
@@ -247,7 +247,17 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 | Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                               |
 | ----------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **6.18.25** | **2026-04-06** | **TASK-UT-RT-01 verifyAndImproveLoop adapter notification Phase 12 close-out validate 補強**: `validate-phase12-implementation-guide.js` の Part 1/2 内容要件（例え/`たとえば`、型、シグネチャ、使用例、エラー、エッジケース、設定/定数）を close-out の必須根拠として固定し、`phase12-task-spec-compliance-check` の自己申告 PASS を禁止（未充足は FAIL/BLOCKED + blocker 列挙）するルールを guide へ追記 |
+<<<<<<< Updated upstream
+| **6.18.19** | **2026-04-06** | **TASK-P0-09-U1 skill-feedback 反映**: Phase 4 仕様書への private method テスト方針明記ルール（キャストと public callback 経由の2択）、Phase 5 仕様書への `improve()` canUseTool 適用範囲・制約明記ルール、小規模タスク outputs tier 分け検討ガイドを追加。「よくある漏れ」テーブルに Feedback P0-09-U1-1/2 を追記。|
+| **6.18.18** | **2026-04-06** | **TASK-P0-09-U1 path-scoped-governance-runtime-enforcement Phase 12 close-out**: security fix で path-scoped deny を runtime 実効化。`extractTargetPath()` helper / `createExecuteGovernanceCanUseTool(skillRoot)` / `createImproveGovernanceCanUseTool(skillRoot)` 追加。TC-PATH-01〜06 TDD 完了（101件 PASS）。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新。|
+| **6.18.17** | **2026-04-06** | **TASK-P0-08 Phase 12 close-out sync を記録**: `implementation-guide.md` の Part 2 を API/IPC シグネチャ・型定義・使用例まで補強し、Phase 11 screenshot evidence を current fact に固定。`verify-unassigned-links.js` PASS、session resume / cleanup surface の system spec 反映、`task-workflow-completed.md` / `api-ipc-system-core.md` / `interfaces-agent-sdk-skill-reference.md` の same-wave 更新を記録 |
+| **6.18.26** | **2026-04-06** | **TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了同期**: `RuntimeSkillCreatorFacade.executeAsync()` の structured error / catch パスで `if (!snapshot)` 条件を削除し、`snapshot ?? null` + error message 伝搬へ統一。さらに `creatorHandlers.ts` / `skill-creator-api.ts` / `SkillLifecyclePanel.tsx` で workflow-state changed event を errorMessage 付きで end-to-end 伝搬、`creatorHandlers.test.ts` / `SkillLifecyclePanel.error-persistence.test.tsx` を追加。Phase 11 手動テスト記録と Phase 12 ドキュメント成果物を出力し、`task-workflow-backlog.md` / `task-workflow-completed.md` / `outputs/phase-11/*` / `outputs/phase-12/*` / `artifacts.json` を同期。`pnpm typecheck` / `pnpm lint` / focused vitest（53 tests PASS）を確認。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新 |
+| **6.18.25** | **2026-04-06** | **TASK-P0-07 ハードコードされた AGENT_NAMES の動的解決 Phase 12 close-out sync**: `manifestResourceResolver.ts` 新規作成（`buildPhaseResourceRequestsFromManifest()` 純粋関数）。`RuntimeSkillCreatorFacade.ts` の `resolveOperationResources()` に `phaseId` 引数追加し manifest ベースの動的エージェント解決に移行。フォールバック 5 パターン実装。`AGENT_NAMES` ハードコード定数完全削除。`interfaces-agent-sdk-skill.md` にインターフェース仕様追記。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29 対策） |
+||||||| Stash base
+=======
+| **6.18.26** | **2026-04-06** | **UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 validator hardening sync**: `validate-phase-output.js` の Phase 11 docs-only 判定を fail-closed 化し、`index.md` / `artifacts.json` が両方 docs-only / NON_VISUAL 相当で一致した場合のみ non-visual 扱いに変更。Phase 11 evidence に `discovered-issues.md` を必須化。`phase12-task-spec-compliance-template.md` に `task-workflow-completed.md` / `task-workflow-backlog.md` の ledger parity を direct root evidence として追加し、`phase12-task-spec-compliance-check.md` へ反映。LOGS.md 更新済み |
+| **6.18.25** | **2026-04-06** | **UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 Phase 12 close-out sync**: `assets/phase-spec-template.md` に Task/Step 分離ルール・Phase 11 NON_VISUAL 分岐・Phase 12 記録分離方針を追加。`assets/phase12-task-spec-compliance-template.md` で `task-workflow-completed.md` / `task-workflow-backlog.md` を root evidence に追加し、`validate-phase-output.js` の docs-only 判定を canonical metadata / index 優先へ硬化。`assets/unassigned-task-template.md` の苦戦箇所記載欄を明確化。Phase 1-12 完了（docs-only / NON_VISUAL / spec_created）。`task-workflow-backlog.md` に UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 を spec_created として登録。LOGS.md 更新済み |
+>>>>>>> Stashed changes
 | **6.18.24** | **2026-04-04** | **TASK-P0-01 verify 実行エンジン Phase 12 close-out sync**: `SkillCreatorVerificationEngine` Layer 1-4 verify チェック 19 件の実装完了（60 tests PASS）。`interfaces-skill-verify-contract.md` に check ID 体系を反映、`task-workflow-completed.md` に完了記録追記。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29 対策） |
 | **6.18.23** | **2026-04-04** | **TASK-SKILL-CENTER-LIFECYCLE-NAV-001 Phase 12 close-out sync**: `docs/30-workflows/skill-center-lifecycle-navigation/` の Phase 12 outputs（implementation-guide / documentation-changelog / system-spec-update-summary / unassigned-task-detection / skill-feedback-report）完成を記録。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新 |
 | **6.18.23** | **2026-04-04** | **task-imp-layer12-spec-definition-004 Phase 12 close-out sync を記録**: `interfaces-skill-verify-contract.md` 新規作成（FR-04 verify 契約 check ID 体系 19 件、Layer 命名規則、拡張ガイドライン）。docs-only タスクのため code 変更なし。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29 対策） |
@@ -259,7 +269,6 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **6.18.17** | **2026-03-31** | **UT-UIUX-PLAYWRIGHT-E2E-001 Phase 12 close-out: スキルフィードバック反映** — (1) UI/UX task Phase 12 ハードゲート5点（screenshot-plan.json / metadata JSON / coverage.md / 実PNG / validate PASS）を `phase-12-completion-checklist.md` と `phase-12-tasks-guide.md` に追加（FB-UT-UIUX-001-A）。(2) `artifacts.json` の Phase 13 先送り wording を validator で弾く検査項目を `phase-12-completion-checklist.md` に追加（FB-UT-UIUX-001-B）。TASK-A11Y-FOCUS-TRAP-001 を unassigned-task フォーマット準拠に修正 |
 | **6.18.16** | **2026-03-31** | **TASK-UIUX-FEEDBACK-001 false-green cleanup を反映**: `spec_created` workflow の root / outputs `artifacts.json` を pending current facts へ戻し、Phase 11/12 close-out 文書の phantom path と placeholder-only completion を是正。`.agents` mirror と `aiworkflow-requirements` same-wave sync を完了 |
 | **6.18.17** | **2026-03-31** | **TASK-ELECTRON-BUILD-FIX close-out hardening を反映**: NON_VISUAL task で broken placeholder screenshot を残さず、`manual-test-result.md` と `screenshot-plan.json` に理由を明記すること、`system-spec-update-summary.md` を shallow summary で終わらせず Step 1-A〜1-C / Step 2 の実ファイル更新先まで記録すること、packaging hook の enum context を Phase 4 テスト計画へ含めることを変更履歴に追記 |
-| **6.18.17** | **2026-04-06** | **TASK-P0-08 Phase 12 close-out sync を記録**: `implementation-guide.md` の Part 2 を API/IPC シグネチャ・型定義・使用例まで補強し、Phase 11 screenshot evidence を current fact に固定。`verify-unassigned-links.js` PASS、session resume / cleanup surface の system spec 反映、`task-workflow-completed.md` / `api-ipc-system-core.md` / `interfaces-agent-sdk-skill-reference.md` の same-wave 更新を記録 |
 | **6.18.16** | **2026-03-30** | **TASK-LLM-MOD-05 Phase 12 close-out sync を記録**: `description?` フィールドを全 19 モデルに追加した schema-extension タスクの close-out。ワークフロー再編（13 Phase ファイル → `step-04-seq-task-05-schema-extension/`）・`inferProviderId()` `o3`/`o4` prefix 対応・`TASK-LLM-MOD-05-RENDERER-DESC-DISPLAY` 未タスク formalize。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新（P1/P25/P29対策）   |
 | **6.18.15** | **2026-03-30** | **TASK-P0-05 Phase 12 close-out resync を guide へ反映**: Phase 11 evidence 欠落時は `NON_VISUAL` でも `manual-test-result.md` / `discovered-issues.md` を必須補完すること、Phase 12 local outputs 充足だけで `completed` に上げず canonical same-wave sync 未完了なら `in_progress` を維持すること、edge case 定義（E-14 / E-15）は spec と targeted test を同一ターンで同期することを変更履歴に記録 |
 | **6.18.14** | **2026-03-27** | **Phase 12 close-out ルール hardening を反映**: (1) `spec_created` UI task でも Step 1-A〜1-C を N/A にせず same-wave sync で閉じるルール、(2) docs-only task に後から code 実装が入った場合の Step 2 / screenshot 再判定ルール、(3) Phase 12 documentation guide hardening（planned wording 残存 grep 監査、evidence reclassification）を SKILL.md に明示                                            |
@@ -299,6 +308,14 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | `task-workflow.md` の未タスクリンクが参照切れ                                                          | Step 1-E後に `verify-unassigned-links.js` を実行して `ALL_LINKS_EXIST` を確認する                                                                |
 | **[Feedback 2]** Phase 12 着手時に `outputs/artifacts.json` と phase spec の artifact 名が照合されない | Phase 12 の **最初の作業**として `outputs/artifacts.json` と各 `phase-*.md` に記載されたartifact名を1対1で突合し、不一致があれば着手前に修正する |
 | **[Feedback 3]** Phase 11 の UI task / docs-only task 判定がずれる                                     | Phase 1 で記録したタスク分類（UI task / docs-only task）を Phase 11 着手時に必ず参照する。分類が変わっていた場合は再判定を明示する               |
+| **[Feedback P0-09-U1-1]** Phase 4 仕様書に private method テスト方針が未記載                                                 | `(facade as unknown as FacadePrivate)` キャストと public callback 経由テストの2択を Phase 4 仕様書に必ず明記する                                  |
+| **[Feedback P0-09-U1-2]** `improve()` フローの canUseTool 配線先（SDK callback vs `applyImprovement()`）が仕様書から読み取れない | Phase 5 仕様書のタスク2に「canUseTool 適用可能範囲と制約」セクションを設け、`llmAdapter.sendChat()` 経由時は SDK callback 非適用と明記する        |
+| **[Feedback BEFORE-QUIT-001]** Phase 11 が非 visual task なのに実地操作を要求してしまう                      | Phase 11 では「実地操作不可」を明記し、自動テスト結果 + 既知制限リストを代替記録として残す |
+| **[Feedback BEFORE-QUIT-002]** Phase 7 coverage が全ファイル一律指定だと局所検証の意図がぼやける             | Phase 7 では coverage の対象範囲を明示し、変更したファイル/ブロック以外を対象外として書く |
+| **[Feedback BEFORE-QUIT-003]** Phase 12 の system-spec update で workflow-local と global sync が混在する | `documentation-changelog.md` で workflow-local 同期と global skill sync を別ブロックで記録する |
+| **[Feedback 4]** Phase 11 NON_VISUAL のとき manual-test-result.md の証跡メタが薄い                      | Phase 11 が NON_VISUAL の場合、`manual-test-result.md` のメタ情報に「証跡の主ソース（自動テスト名/件数）」と「スクリーンショットを作らない理由」を明記する。空メタでは reviewer が意図を読み取れない |
+| **[Feedback 5]** Phase 7 の coverage 目標が広域指定のとき変更行の保護確認が曖昧になる                   | Phase 7 のカバレッジ目標が「全体 X%」など広域指定のとき、変更した関数/ブロックの line カバレッジと branch カバレッジの実測値を証跡に残す（例: `applyWorkflowSnapshot` 付近の line 100% / branch 100%） |
+| **[Feedback 6]** ViewType を追加した際に navigation 契約・store 型・既存テストの3点更新が漏れる          | `store/types.ts`（ViewType union）/ `skillLifecycleJourney.ts`（正規化関数・定数）/ renderView テスト を same-wave で更新し、`ui-ux-navigation.md` の ViewType テーブルも同時同期する。Phase 1 設計メモに「追加 ViewType: XYZ」を明示しておくと漏れが防げる |
 
 ### Phase 12 苦戦防止Tips
 
@@ -426,11 +443,26 @@ UI/UX 実装を含む task では Phase 11 で screenshot と Apple UI/UX 視覚
 
 ### logs and archives
 
-- [LOGS.md](LOGS.md)、[references/logs-archive-index.md](references/logs-archive-index.md)
+- [LOGS.md](LOGS.md)
+- [references/logs-archive-index.md](references/logs-archive-index.md)
+- [references/logs-archive-2026-march.md](references/logs-archive-2026-march.md)
+- [references/logs-archive-2026-feb.md](references/logs-archive-2026-feb.md)
+- [references/logs-archive-legacy.md](references/logs-archive-legacy.md)
+- [references/changelog-archive.md](references/changelog-archive.md)
 
 ## システム観点チェック
 
-必要に応じて aiworkflow-requirements の `security-*` / `ui-ux-*` / `architecture-*` / `api-*` / `database-*` / `error-handling.md` / `interfaces-*` を参照する。Electron desktop task では Renderer、Main、IPC、Preload、ローカルストレージの境界を都度明記する。詳細は [references/quality-standards.md](references/quality-standards.md) を参照。
+| 観点               | aiworkflow-requirements 側の参照先 |
+| ------------------ | ---------------------------------- |
+| セキュリティ       | `security-*.md`                    |
+| UI/UX              | `ui-ux-*.md`                       |
+| アーキテクチャ     | `architecture-*.md`                |
+| API/IPC            | `api-*.md`                         |
+| データ整合性       | `database-*.md`                    |
+| エラーハンドリング | `error-handling.md`                |
+| インターフェース   | `interfaces-*.md`                  |
+
+Electron desktop task では Renderer、Main、IPC、Preload、ローカルストレージの境界を都度明記する。詳細は [references/quality-standards.md](references/quality-standards.md) を参照。
 
 ## 検証コマンド
 
@@ -454,6 +486,7 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 - SubAgent 相当の lane は 3 並列以下に抑え、validation lane は直列で締める。
 - detail を増やしたくなったら `references/` へ逃がし、`SKILL.md` は入口に保つ。
 - Phase 12 は `implementation-guide`、`system-spec-update-summary`、`documentation-changelog`、`unassigned-task-detection`、`skill-feedback-report` を必ず揃える。
+- **[Feedback P0-09-U1-3]** 小規模タスク（Phase 1〜3 で設計が自明）の outputs 必須度は規模（小/中/大）で tier 分けを検討する。ドキュメント作成コストが実装コストを上回るリスクを Phase 1 スコープ固定時に評価する。
 
 ### 避けるべきこと
 
@@ -467,6 +500,19 @@ Phase 12 では追加で `detect-unassigned-tasks.js`、`audit-unassigned-tasks.
 
 | Version                  | Date                       | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | ------------------------ | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+<<<<<<< Updated upstream
+| **v10.09.29**            | **2026-04-06**             | **TASK-P0-09-U1 skill-feedback 反映**: Phase 4 行に private method テスト方針明記ルール追加（Feedback P0-09-U1-1）、Phase 5 行に `improve()` canUseTool 適用範囲・制約明記ルール追加（Feedback P0-09-U1-2）、ベストプラクティス「すべきこと」に小規模タスク outputs tier 分け検討を追加（Feedback P0-09-U1-3）、「よくある漏れ」テーブルに 2 件追記                                                |
+||||||| Stash base
+=======
+| **v10.09.36**            | **2026-04-06**             | **UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 canonical template sync**: `phase-spec-template.md` に Task / Step 分離ルール、Phase 11 `NON_VISUAL` / `VISUAL` 方針、Phase 12 記録分離方針を追加。`phase12-task-spec-compliance-template.md` で `task-workflow-completed.md` / `task-workflow-backlog.md` を root evidence に追加し、`validate-phase-output.js` の docs-only 判定を canonical metadata / index 優先へ硬化。`unassigned-task-template.md` に「苦戦箇所」必須欄を追加し、`task-workflow-completed.md` / `task-workflow-backlog.md` / LOGS.md と同波で同期 |
+>>>>>>> Stashed changes
+| **v10.09.35**            | **2026-04-06**             | **TASK-UI-01 impl-spec-to-skill-sync**: `[Feedback 6]` ViewType 追加時の3点同波更新チェックリスト（`store/types.ts` / `skillLifecycleJourney.ts` / renderView テスト + `ui-ux-navigation.md` ViewType テーブル）をピットフォールテーブルに追加 |
+| **v10.09.34**            | **2026-04-06**             | **TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync**: Phase 11 screenshot capture script を追加して 4 枚の visual evidence を保存。Phase 12 implementation-guide に screenshot references を追記し、`system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` を same-wave 同期。targeted vitest 35 tests PASS、`.agents` mirror の LOGS / SKILL history も更新 |
+| **v10.09.33**            | **2026-04-03**             | **task-ut-p0-02-001-repeat-feedback-memory close-out sync**: Phase 2 型設計で `RuntimeSkillCreatorVerifyCheck.id` フィールドの実在確認を Phase 3 MINOR として捕捉。module-level 非 export 関数のテスト戦略（統合パス経由の検証）を Phase 4 テスト設計の参考事例として記録。`ImproveFeedbackHistory` 型の shared 配置判断（Phase 1 のスコープ外波及検証）を学習事項として追加 |
+| **v10.09.30**            | **2026-03-31**             | **TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001 skill-feedback 反映**: branch-level `outputs/` が複数タスクで衝突する場合は workflow spec / `artifacts.json` / close-out 文書を同一ターンで current output path へ揃えるルール、build artifact 監査は `rg -F` / `rg -q` を優先するルール、GUI 非変更 task の Phase 11 は `NON_VISUAL_FALLBACK` と bundle evidence を対で記録するルールを変更履歴に追記 |
+| **v10.09.32**            | **2026-04-03**             | **TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 skill-feedback 反映**: Phase 11 非 visual task の代替記録テンプレート、Phase 7 coverage 対象範囲明示ルール、Phase 12 documentation-changelog の workflow-local / global skill sync 分離ルールを current facts へ反映。`generate-index.js` 再実行で indexes を 2026-04-03 時点へ更新 |
+| **v10.09.31**            | **2026-04-03**             | **TASK-FIX-LIFECYCLE-PANEL-ERROR-001 close-out sync + skill-feedback 反映**: Phase 7〜12 outputs を `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/outputs/phase-7〜12/` へ実体化し、`phase-12-documentation.md` / `index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` の 4点同期を current facts へ固定。`validate-phase12-implementation-guide` PASS、Phase 11 NON_VISUAL、`task-workflow-completed.md` / backlog path 是正を同一ターンで記録。**[Feedback 4]** Phase 11 NON_VISUAL 時 `manual-test-result.md` 証跡メタ必須化、**[Feedback 5]** Phase 7 広域 coverage 目標時の変更ブロック line/branch 実測根拠必須化をピットフォールテーブルへ追記 |
+| **v10.09.29**            | **2026-03-31**             | **TASK-UIUX-FEEDBACK-001 spec_created sync hardening**: Phase 11 を 3層評価（Semantic / Visual / AI UX）として明文化し、`agents/evaluate-ui-ux.md` と `scripts/evaluate-ui-ux*` family を追加。あわせて false green 防止のため `spec_created` workflow では placeholder-only screenshot と local outputs 充足だけで Phase 11/12 completed 扱いしない運用を current facts へ是正                                                                                              |
 | **v10.09.28**            | **2026-03-30**             | **TASK-RT-03 skill-feedback 反映**: Phase 5 実装計画に「新規作成/修正」ファイルパス一覧を必須記載ルール追加（Feedback 1-1）、Phase 8 リファクタリング記録に Before/After/理由テーブル形式を義務化（Feedback 1-2）                                                                                                                                                                                                                                                             |
 | **v10.09.27**            | **2026-03-29**             | **TASK-UT-SDK-07 skill-feedback 反映**: Feedback1（Phase 1 で既存コードの命名規則 camelCase/kebab-case 等を分析・記録するステップを明示）、Feedback2（Phase 4 の TDD Red 前に Phase 1-3 で確認した命名規則との整合確認を義務化）                                                                                                                                                                                                                                              |
 | **v10.09.26**            | **2026-03-28**             | **TASK-SDK-08 skill-feedback 反映**: Feedback1（Phase 1での artifact 命名 canonical 一覧確定ルール追加）、Feedback2（Phase 12着手時の `outputs/artifacts.json` vs phase spec artifact 名 照合を初手チェックへ昇格）、Feedback3（Phase 1 で記録した UI/docs-only 分類を Phase 11 着手時に参照するルール）、pitfall 2件（NON_VISUAL時の screenshots/.gitkeep 削除、worktree作成後の pnpm install 確認）を追加。変更履歴を v10.09.22以前はアーカイブ参照へ圧縮し 478行以内に維持 |

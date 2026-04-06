@@ -206,7 +206,12 @@ export interface ExternalApiConfig {
 /**
  * API キーの状態
  */
-export type ApiKeyStatus = "not_set" | "validating" | "configured" | "error";
+export type ApiKeyStatus =
+  | "not_set"
+  | "validating"
+  | "configured"
+  | "error"
+  | "check-failed";
 
 // ============================================
 // 内部型（サービス内部使用）

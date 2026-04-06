@@ -15,6 +15,7 @@ import type { UseSkillCenterReturn } from "../hooks/useSkillCenter";
 
 // --- モック関数 ---
 const mockNavigateToSkillCreate = vi.fn();
+const mockNavigateToSkillLifecycle = vi.fn();
 const mockNavigateToSkillManagement = vi.fn();
 const mockNavigateToWorkspace = vi.fn();
 const mockNavigateToSkillAnalysis = vi.fn();
@@ -71,6 +72,7 @@ const createBaseHookValue = (
   featuredSkills: [],
   importedSkillNames: [],
   navigateToSkillCreate: mockNavigateToSkillCreate,
+  navigateToSkillLifecycle: mockNavigateToSkillLifecycle,
   navigateToSkillManagement: mockNavigateToSkillManagement,
   navigateToWorkspace: mockNavigateToWorkspace,
   navigateToSkillAnalysis: mockNavigateToSkillAnalysis,
@@ -192,12 +194,13 @@ describe("SkillCenterView JourneyPanel CTA", () => {
     expect(ctaButton).toHaveTextContent("改善する");
   });
 
-  it("TC-CTA-12: create CTAクリックで navigateToSkillCreate が呼ばれる", () => {
+  it("TC-CTA-12: create CTAクリックで navigateToSkillLifecycle が呼ばれる (TASK-UI-01: AC-1)", () => {
     render(<SkillCenterView />);
 
     fireEvent.click(screen.getByTestId("skill-lifecycle-cta-create"));
 
-    expect(mockNavigateToSkillCreate).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSkillLifecycle).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSkillCreate).not.toHaveBeenCalled();
   });
 
   it("TC-CTA-13: use CTAクリックで navigateToWorkspace が呼ばれる", () => {
@@ -292,23 +295,24 @@ describe("SkillCenterView CTA ctaLabel 条件分岐", () => {
     );
   });
 
-  it("TC-CTA-20: ヘッダーCTAとcreate CTAは同じナビゲーション先を呼ぶ", () => {
+  it("TC-CTA-20: ヘッダーCTAはskillCreate、create CTAはskillLifecycleへ遷移する (TASK-UI-01: AC-1/AC-2)", () => {
     render(<SkillCenterView />);
 
     fireEvent.click(screen.getByTestId("header-create-cta"));
     fireEvent.click(screen.getByTestId("skill-lifecycle-cta-create"));
 
-    expect(mockNavigateToSkillCreate).toHaveBeenCalledTimes(2);
+    expect(mockNavigateToSkillCreate).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSkillLifecycle).toHaveBeenCalledTimes(1);
   });
 
-  it("TC-CTA-21: 複数CTAを連続クリックしても各ナビゲーション関数が個別に呼ばれる", () => {
+  it("TC-CTA-21: 複数CTAを連続クリックしても各ナビゲーション関数が個別に呼ばれる (TASK-UI-01: AC-1)", () => {
     render(<SkillCenterView />);
 
     fireEvent.click(screen.getByTestId("skill-lifecycle-cta-create"));
     fireEvent.click(screen.getByTestId("skill-lifecycle-cta-use"));
     fireEvent.click(screen.getByTestId("skill-lifecycle-cta-improve"));
 
-    expect(mockNavigateToSkillCreate).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSkillLifecycle).toHaveBeenCalledTimes(1);
     expect(mockNavigateToWorkspace).toHaveBeenCalledTimes(1);
     expect(mockNavigateToSkillAnalysis).toHaveBeenCalledTimes(1);
   });
@@ -401,7 +405,7 @@ describe("SkillCenterView CTA と skillLifecycleJourney の統合", () => {
     const createCta = screen.getByTestId("skill-lifecycle-cta-create");
     fireEvent.click(createCta);
 
-    expect(mockNavigateToSkillCreate).toHaveBeenCalledTimes(1);
+    expect(mockNavigateToSkillLifecycle).toHaveBeenCalledTimes(1);
   });
 });
 
