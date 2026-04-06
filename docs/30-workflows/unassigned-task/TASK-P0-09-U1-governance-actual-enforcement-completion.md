@@ -1,6 +1,7 @@
 # TASK-P0-09-U1: governance-actual-enforcement-completion
 
 ```yaml
+issue_number: 1933
 task_id: TASK-P0-09-U1
 task_name: governance-actual-enforcement-completion
 category: 改善

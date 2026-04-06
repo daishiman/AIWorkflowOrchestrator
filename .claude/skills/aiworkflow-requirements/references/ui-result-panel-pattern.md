@@ -24,6 +24,22 @@ TASK-RT-03（SkillCreationResultPanel）実装から確立。
 
 ## 重要設計決定
 
+### SkillCreationResultPanel orchestration wrapper
+**決定**: `SkillCreationResultPanel` は plan / execute / verify の detail panel を束ねる orchestration wrapper として実装する。
+**役割**: overall status badge、空状態、パネル順序、child panel への props 受け渡しだけを担当する。
+**理由**: 詳細描画を child に閉じることで、表示責務と state owner を分離しやすくなる。
+
+### state owner 分離の判断基準
+
+| 判断基準   | global store に置く                             | 呼び出し元 local state に置く               |
+| ---------- | ----------------------------------------------- | ------------------------------------------- |
+| ライフタイム | 複数コンポーネント・複数 phase で共有が必要   | 単一コンポーネント内 / phase 遷移でリセット |
+| 永続化要否 | アプリ再起動をまたいで保持が必要                | 表示中のみ必要（揮発で良い）               |
+| 参照箇所   | 2箇所以上から同時参照                           | 1箇所のみから参照                          |
+| 例         | 認証状態、ワークフロー Phase 遷移、スキル一覧   | rawPlanDetail、rawExecuteDetail、verifyError |
+
+**ルール**: orchestration wrapper は `state owner` にならない。raw result と IPC コールバックは呼び出し元（`SkillLifecyclePanel` 等）が保持し、wrapper は `props` で受け取った値を child panel へ渡すだけにする。
+
 ### raw result の保持場所
 **決定**: global store でなく、呼び出し元コンポーネントの local state で保持
 **理由**: 表示専用のデータはglobal store不要、phase遷移で自動リセット
@@ -37,6 +53,15 @@ TASK-RT-03（SkillCreationResultPanel）実装から確立。
 **決定**: 大量メタデータ（permissionDenials等）は折りたたみ+件数バッジ
 **実装**: `useState(false)` で expanded 管理
 
+### execute persist surface
+**決定**: `ExecuteResultDetailPanel` は生成成功時の保存結果を別セクションで表示する。
+**表示内容**: `persistResult.skillPath`、`persistResult.files`、`persistError`
+**理由**: 実行成功と保存成功は別の failure mode なので、保存結果を隠さない方が追跡しやすい
+
+### verify retry surface
+**決定**: `SkillCreationResultPanel` は `verifyError` / `onRetryVerify` を受け取り、`VerifyResultDetailPanel` の error banner から verify detail 再取得を行う。
+**理由**: verify detail の取得失敗は verify 結果そのものではなく取得経路の failure mode なので、execute/persist error と同じ banner に寄せない方が原因が追いやすい
+
 ## コンポーネント設計パターン早見表
 
 | パターン     | 適用基準                                                       | 例                     |
@@ -44,6 +69,7 @@ TASK-RT-03（SkillCreationResultPanel）実装から確立。
 | React.memo   | props が安定しており再レンダリング防止が有効な場合             | ErrorBanner            |
 | local state  | コンポーネント固有の一時データで store 化が不要な場合          | rawPlanDetail          |
 | 共有部品抽出 | 2 つ以上のコンポーネントで同一の UI パターンが繰り返される場合 | result-panel-parts.tsx |
+| orchestration wrapper | detail panel を束ねて overall status を表現する場合 | SkillCreationResultPanel |
 
 ## テスト戦略
 - @testing-library/react + Vitest + happy-dom 環境

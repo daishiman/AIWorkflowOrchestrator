@@ -14,6 +14,7 @@ import type {
   SkillCreatorSdkPolicy,
   SkillCreatorToolDecision,
 } from "@repo/shared/types";
+import path from "path";
 
 /** read 系ツール */
 const READ_TOOLS = ["Read", "Glob", "Grep", "Bash", "Agent"] as const;
@@ -46,36 +47,95 @@ const IMPROVE_TOOLS = [
 const DESTRUCTIVE_TOOLS = ["NotebookEdit"] as const;
 
 /**
+ * policy 用の tool 配列を freeze して返す。
+ * 返却後の accidental mutation を防ぐため、配列自体も immutable にする。
+ */
+function freezeToolList(tools: readonly string[]): string[] {
+  return Object.freeze([...tools]) as string[];
+}
+
+/**
+ * policy object を freeze して返す。
+ * policy table の参照を外部から書き換えられないようにする。
+ */
+function freezePolicy(policy: SkillCreatorSdkPolicy): SkillCreatorSdkPolicy {
+  return Object.freeze({
+    ...policy,
+    allowedTools: freezeToolList(policy.allowedTools),
+    disallowedTools: freezeToolList(policy.disallowedTools),
+  });
+}
+
+/**
+ * コンテキスト用のパスを正規化する。
+ * 相対パスでも比較できるように、常に先頭 "/" を付けた posix 表現へ寄せる。
+ */
+function normalizeGovernancePath(input: string): string {
+  const normalized = input.replace(/\\/g, "/").trim();
+  if (normalized === "") {
+    return "";
+  }
+
+  const absoluteLike = normalized.startsWith("/")
+    ? normalized
+    : `/${normalized}`;
+
+  return path.posix.normalize(absoluteLike).replace(/\/+$/, "") || "/";
+}
+
+/**
+ * targetPath が allowedSkillRoot 配下にあるかを判定する。
+ * 単純な startsWith では sibling path の prefix 攻撃を許すため、
+ * "/" 境界を含めて比較する。
+ */
+function isPathWithinRoot(
+  targetPath: string,
+  allowedSkillRoot: string,
+): boolean {
+  const normalizedTarget = normalizeGovernancePath(targetPath);
+  const normalizedRoot = normalizeGovernancePath(allowedSkillRoot);
+
+  if (normalizedTarget === "" || normalizedRoot === "") {
+    return false;
+  }
+
+  return (
+    normalizedTarget === normalizedRoot ||
+    normalizedTarget.startsWith(`${normalizedRoot}/`)
+  );
+}
+
+/**
  * Phase ごとの policy 定義テーブル。
  * `Object.freeze` で実行時改変を防ぐ。
  */
 const POLICY_TABLE: Readonly<
   Record<SkillCreatorGovernancePhase, SkillCreatorSdkPolicy>
 > = Object.freeze({
-  plan: {
+  plan: freezePolicy({
     phase: "plan",
     permissionMode: "default",
     allowedTools: [...READ_TOOLS],
     disallowedTools: ["Write", "Edit", ...DESTRUCTIVE_TOOLS],
-  },
-  execute: {
+  }),
+  execute: freezePolicy({
     phase: "execute",
     permissionMode: "acceptEdits",
     allowedTools: [...WRITE_TOOLS],
     disallowedTools: [...DESTRUCTIVE_TOOLS],
-  },
-  verify: {
+  }),
+  verify: freezePolicy({
     phase: "verify",
     permissionMode: "default",
     allowedTools: [...TEST_TOOLS],
     disallowedTools: ["Write", "Edit", ...DESTRUCTIVE_TOOLS],
-  },
-  improve: {
+  }),
+  improve: freezePolicy({
     phase: "improve",
     permissionMode: "acceptEdits",
     allowedTools: [...IMPROVE_TOOLS],
     disallowedTools: ["Write", ...DESTRUCTIVE_TOOLS],
-  },
+  }),
 });
 
 /**
@@ -124,10 +184,8 @@ export function canUseTool(
     };
   }
 
-  // TODO(human): execute / improve phase のコンテキスト依存判定
-  // context が渡された場合、追加の判定ロジックをここに実装する。
-  // 例: execute phase で targetPath が生成対象 skill dir 外なら deny
-  // 例: improve phase で targetPath が改善対象ファイル外なら deny
+  // TODO(TASK-P0-09-U1): context はまだ Facade から渡されていない。
+  // context が供給された場合は evaluateContextPolicy で path-scoped 判定を行う。
   if (context) {
     const contextDecision = evaluateContextPolicy(toolName, phase, context);
     if (contextDecision) {
@@ -171,9 +229,7 @@ function evaluateContextPolicy(
     context.targetPath &&
     context.allowedSkillRoot
   ) {
-    const normalizedTarget = context.targetPath.replace(/\\/g, "/");
-    const normalizedRoot = context.allowedSkillRoot.replace(/\\/g, "/");
-    if (!normalizedTarget.startsWith(normalizedRoot)) {
+    if (!isPathWithinRoot(context.targetPath, context.allowedSkillRoot)) {
       return {
         allowed: false,
         reason: `Tool "${toolName}" targets "${context.targetPath}" which is outside allowed skill root "${context.allowedSkillRoot}" in phase "${phase}"`,

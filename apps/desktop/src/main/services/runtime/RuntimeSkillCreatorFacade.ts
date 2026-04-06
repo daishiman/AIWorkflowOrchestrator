@@ -47,6 +47,7 @@ import type {
   RuntimeSkillCreatorVerifyAndImproveResult,
   RuntimeSkillCreatorVerifyCheck,
   SkillCreatorSessionListItem,
+  SkillCreatorSessionResumeResult,
   RuntimeSkillCreatorExecuteErrorResponse,
 } from "@repo/shared/types";
 import type { ImproveFeedbackHistory } from "@repo/shared/types";
@@ -98,6 +99,7 @@ import type {
   SkillCreatorGovernancePhase,
   SkillCreatorGovernanceState,
 } from "@repo/shared/types";
+import { buildPhaseResourceRequestsFromManifest } from "./manifestResourceResolver";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -584,11 +586,15 @@ export class RuntimeSkillCreatorFacade {
           });
         return {
           checkpointId: cp.checkpointId,
+          sessionId: cp.checkpointId,
           planId: cp.planId,
           currentPhase: cp.workflowStateSnapshot.currentPhase,
           checkpointType: cp.checkpointType,
           compatibility,
+          startedAt: cp.createdAt,
+          createdAt: cp.createdAt,
           updatedAt: cp.updatedAt,
+          isActive: false,
         };
       });
   }
@@ -608,17 +614,66 @@ export class RuntimeSkillCreatorFacade {
   resumeSession(
     checkpointId: string,
   ): SkillCreatorWorkflowUiSnapshot | undefined {
+    const result = this.resumeSessionWithResult(checkpointId);
+    return result.success ? result.workflowSnapshot : undefined;
+  }
+
+  /**
+   * セッション復元の結果を返す。(TASK-P0-08)
+   */
+  resumeSessionWithResult(
+    checkpointId: string,
+  ): SkillCreatorSessionResumeResult {
     if (!this.sessionRepository) {
-      return this.workflowEngine.resumeFromCheckpoint(checkpointId);
+      const snapshot = this.workflowEngine.resumeFromCheckpoint(checkpointId);
+      if (!snapshot) {
+        return { success: false, errorReason: "not_found" };
+      }
+      return { success: true, workflowSnapshot: snapshot };
     }
+
+    this.sessionRepository.cleanupExpiredLeases();
 
     const checkpoints = this.sessionRepository.listCheckpoints();
     const checkpoint = checkpoints.find(
       (cp) => cp.checkpointId === checkpointId,
     );
-    if (!checkpoint) return undefined;
+    if (!checkpoint) {
+      return { success: false, errorReason: "not_found" };
+    }
 
-    return this.workflowEngine.hydrateFromCheckpoint(checkpoint);
+    if (Date.now() - checkpoint.updatedAt > SESSION_TTL_MS) {
+      this.sessionRepository.deleteCheckpoint(checkpoint.planId);
+      return { success: false, errorReason: "expired" };
+    }
+
+    const root = this.getExplicitSkillCreatorRoot();
+    const compatibility = this.sessionRepository.evaluateResumeCompatibility(
+      checkpoint.planId,
+      {
+        currentSnapshot: {
+          engineVersion: SKILL_CREATOR_ENGINE_VERSION,
+          sourceProvenance: root
+            ? { resolvedSkillCreatorRoot: root }
+            : undefined,
+        },
+        currentInstanceId: this.ownerInstanceId,
+      },
+    );
+
+    if (
+      compatibility.status === "incompatible" ||
+      compatibility.status === "conflict"
+    ) {
+      return { success: false, errorReason: "incompatible" };
+    }
+
+    const snapshot = this.workflowEngine.hydrateFromCheckpoint(checkpoint);
+    if (!snapshot) {
+      return { success: false, errorReason: "not_found" };
+    }
+
+    return { success: true, workflowSnapshot: snapshot };
   }
 
   /**
@@ -637,6 +692,17 @@ export class RuntimeSkillCreatorFacade {
     if (!checkpoint) return;
 
     this.sessionRepository.deleteCheckpoint(checkpoint.planId);
+  }
+
+  /**
+   * 期限切れセッションを削除する。(TASK-P0-08)
+   */
+  cleanupExpiredSessions(): number {
+    if (!this.sessionRepository) {
+      return this.workflowEngine.cleanupExpiredCheckpoints(SESSION_TTL_MS);
+    }
+    this.sessionRepository.cleanupExpiredLeases();
+    return this.sessionRepository.cleanupExpiredCheckpoints(SESSION_TTL_MS);
   }
 
   /**
@@ -719,7 +785,8 @@ export class RuntimeSkillCreatorFacade {
   }
 
   private async resolveOperationResources(
-    requests: readonly import("./PhaseResourcePlanner").PhaseResourceRequest[],
+    phaseId: "plan" | "improve",
+    fallbackRequests: readonly import("./PhaseResourcePlanner").PhaseResourceRequest[],
     maxBytes: number,
     operation: import("./PhaseResourcePlanner").SkillCreatorOperation,
   ): Promise<{
@@ -736,6 +803,13 @@ export class RuntimeSkillCreatorFacade {
 
     const explicitRoot = this.getExplicitSkillCreatorRoot();
     const manifest = await this.loadWorkflowManifest(explicitRoot);
+    const requests = manifest
+      ? buildPhaseResourceRequestsFromManifest(
+          manifest,
+          phaseId,
+          fallbackRequests,
+        )
+      : [...fallbackRequests];
     const resolution = await this.sourceResolver.resolve({
       explicitRoot,
       manifest,
@@ -849,6 +923,7 @@ export class RuntimeSkillCreatorFacade {
     let referenceSpecs: Array<{ name: string; content: string }> = [];
     if (this.hasDynamicResourcePipeline()) {
       const resolved = await this.resolveOperationResources(
+        "plan",
         PLAN_RESOURCE_REQUESTS,
         PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
         "plan",
@@ -1510,6 +1585,7 @@ export class RuntimeSkillCreatorFacade {
       let agentPrompt: string;
       if (this.hasDynamicResourcePipeline()) {
         const resolved = await this.resolveOperationResources(
+          "improve",
           IMPROVE_RESOURCE_REQUESTS,
           IMPROVE_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
           "improve",

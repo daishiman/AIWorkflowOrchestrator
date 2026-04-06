@@ -1,0 +1,169 @@
+{
+  "workflow": "TASK-RT-03-skill-creation-result-panel",
+  "task_id": "TASK-RT-03",
+  "task_name": "スキル生成結果の詳細表示パネル追加",
+  "github_issue": 1884,
+  "task_type": "ui_task",
+  "status": "completed",
+  "created_date": "2026-04-04",
+  "updated_date": "2026-04-06",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "spec": "phase-1-requirements.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "spec": "phase-2-design.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "spec": "phase-3-design-review.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "spec": "phase-4-test-creation.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "spec": "phase-5-implementation.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "spec": "phase-6-test-expansion.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "spec": "phase-7-coverage-check.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "spec": "phase-8-refactoring.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "spec": "phase-9-quality-assurance.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "spec": "phase-10-final-review.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "spec": "phase-11-manual-test.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "spec": "phase-12-documentation.md",
+      "status": "completed",
+      "outputs": []
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "spec": "phase-13-pr-creation.md",
+      "status": "blocked",
+      "outputs": []
+    }
+  ],
+  "deliverables": [
+    {
+      "id": "D-01",
+      "name": "SkillCreationResultPanel.tsx",
+      "type": "component",
+      "path": "apps/desktop/src/renderer/components/skill/SkillCreationResultPanel.tsx",
+      "phase": 5,
+      "status": "completed"
+    },
+    {
+      "id": "D-02",
+      "name": "SkillCreationResultPanel.test.tsx",
+      "type": "test",
+      "path": "apps/desktop/src/renderer/components/skill/SkillCreationResultPanel.test.tsx",
+      "phase": 4,
+      "status": "completed"
+    },
+    {
+      "id": "D-03",
+      "name": "SkillLifecyclePanel.tsx (修正)",
+      "type": "component_modified",
+      "path": "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+      "phase": 5,
+      "status": "completed"
+    },
+    {
+      "id": "D-04",
+      "name": "ExecuteResultDetailPanel.tsx (修正)",
+      "type": "component_modified",
+      "path": "apps/desktop/src/renderer/components/skill/ExecuteResultDetailPanel.tsx",
+      "phase": 5,
+      "status": "completed"
+    }
+  ],
+  "dependencies": [
+    {
+      "task_id": "TASK-RT-02",
+      "relation": "prerequisite",
+      "required_for_phases": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+      "description": "execute/plan がスタブ返却しないこと"
+    },
+    {
+      "task_id": "TASK-RT-06",
+      "relation": "prerequisite",
+      "required_for_phases": [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13],
+      "description": "sdkEvents / SkillCreatorSdkEvent の型が安定していること"
+    }
+  ],
+  "test_coverage_targets": {
+    "line": 80,
+    "branch": 60,
+    "function": 80
+  },
+  "acceptance_criteria": {
+    "fr": [
+      "FR-01",
+      "FR-02",
+      "FR-03",
+      "FR-04",
+      "FR-05",
+      "FR-06",
+      "FR-07",
+      "FR-08"
+    ],
+    "nfr": ["NFR-01", "NFR-02", "NFR-03", "NFR-04", "NFR-05"]
+  }
+}
