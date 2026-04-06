@@ -16,25 +16,6 @@
 ---
 
 ## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
-
-### 変更内容
-- `assets/implementation-guide-template.md` の §6.3 UIコンポーネント実装パターンに `state owner / wrapper / presentation 責務分離パターン` テーブルを追加
-- `assets/documentation-changelog-template.md` に `### 周辺同期（same-wave）` セクションを追加し、Workflow-Local 同期と Global Skill Sync の区別を明示
-- `assets/documentation-changelog-template.md` の品質チェックリストに周辺同期確認 3 項目を追加（Feedback 1-2 / 1-3 対応）
-- 上記は skill-feedback-report.md の提案 1-2 / 1-3 の実装
-
----
-
-## 2026-04-06 - TASK-RT-03 skill-creation-result-panel Phase 12 close-out sync
-
-### 変更内容
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-11/` を実スクリーンショット 6 枚 + `manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` / `ui-sanity-visual-review.md` で完成
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-11/manual-test-checklist.md` を追加し、Phase 11 の manual test 見落としを補完
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-12/` に `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を追加
-- `phase-11-manual-test.md` に `画面カバレッジマトリクス` を追記し、validator warning を解消
-- `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を PASS
-- `index.md` / `artifacts.json` / `.claude/skills/aiworkflow-requirements/references/*` / `LOGS.md` 2ファイルを same-wave 更新
-- Step 2 は local-only props のため N/A で閉じた
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
