@@ -1,6 +1,8 @@
 {
   "generated": "2026-04-06T01:28:25.900Z",
   "totalKeywords": 2585,
+  "generated": "2026-04-06T01:27:13.041Z",
+  "totalKeywords": 2721,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -5068,6 +5070,21 @@
     ],
     "References": [
       "glossary.md"
+    ],
+    "SkillCreatorHooksFactory": [
+      "governance-hooks-factory-audit-sink.md"
+    ],
+    "SkillCreatorAuditSink": [
+      "governance-hooks-factory-audit-sink.md"
+    ],
+    "SkillCreatorPermissionPolicy": [
+      "governance-hooks-factory-audit-sink.md"
+    ],
+    "設計上の注意事項": [
+      "governance-hooks-factory-audit-sink.md"
+    ],
+    "関連仕様書": [
+      "governance-hooks-factory-audit-sink.md"
     ],
     "Executor": [
       "interfaces-agent-sdk-executor-core.md",

@@ -2496,6 +2496,13 @@ node scripts/list-specs.js --topics
 | 4層 チェックリスト（新規チャネル追加時） | L216 |
 | P0-06 / P0-08 状態境界ガイドライン | L232 |
 | 関連ファイル一覧 | L277 |
+|------------|----|\n| 概要 | L6 |
+| SkillCreatorPermissionPolicy | L24 |
+| SkillCreatorHooksFactory | L65 |
+| SkillCreatorAuditSink | L113 |
+| 使用例 | L162 |
+| 設計上の注意事項 | L203 |
+| 関連仕様書 | L213 |
 
 ### references/ipc-contract-checklist.md
 
@@ -2654,6 +2661,37 @@ node scripts/list-specs.js --topics
 | UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L843 |
 | TASK-RT-06 教訓（2026-03-29） | L874 |
 | TASK-P0-04 教訓（2026-03-30） | L896 |
+| 分割ファイル一覧 | L83 |
+| クイックリファレンス: カテゴリ別検索ガイド | L101 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L282 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L614 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L648 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L731 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L747 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L771 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L821 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L846 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L877 |
+| TASK-RT-06 教訓（2026-03-29） | L908 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L930 |
+| TASK-P0-04 教訓（2026-03-30） | L961 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L997 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1092 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1146 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1186 |
+
+### references/lessons-learned-governance-hooks-phase-policy.md
+
+| セクション | 行 |
+|------------|----|\n| 1. 定義済み / 接続済み / 可視化済みの区別 | L8 |
+| 2. UI Payload vs. Visual Evidence の区別 | L22 |
+| 3. パストラバーサル対策の実装パターン（null byte check + path.resolve/relative） | L35 |
+| 4. phase gap の警告パターン | L61 |
+| 5. follow-up タスクの formalize タイミング | L81 |
+| 6. waitFor + vi.useFakeTimers() 非互換問題（テスト環境） | L91 |
+| 7. canUseTool 引数順序の罠（型が同一な引数の逆転バグ） | L107 |
+| 8. worktree でのテスト実行と esbuild バージョン不一致 | L127 |
+| 関連ファイル | L139 |
 
 ### references/lessons-learned-ipc-preload-runtime.md
 

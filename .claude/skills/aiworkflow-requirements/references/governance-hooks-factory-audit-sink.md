@@ -1,209 +1,212 @@
-# GovernanceHooksFactory / GovernanceAuditSink 実装仕様
+# SkillCreatorHooksFactory / SkillCreatorAuditSink 実装仕様
 
 > 親仕様書: [interfaces-agent-sdk-skill-reference.md](interfaces-agent-sdk-skill-reference.md)
-> タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-03-31）
+> タスク: TASK-P0-09 claude-sdk-permission-hooks-governance（2026-04-06 更新）
 
 ## 概要
 
-TASK-P0-09 で導入したガバナンス基盤の2コンポーネント実装仕様。
-`GovernanceHooksFactory` が phase 別 SDK Hooks セットを生成し、
-`GovernanceAuditSink` が監査イベントを蓄積・UI payload へ変換する。
+TASK-P0-09 で導入したガバナンス基盤の 3 コンポーネント実装仕様。
+`SkillCreatorPermissionPolicy` が phase 別 policy を定義し、
+`createHooks()` が lifecycle hooks を生成し、
+`SkillCreatorAuditSink` が監査イベントを ring buffer で蓄積する。
 
 **実装ファイル**:
 
 | ファイル | パス |
 | --- | --- |
-| `GovernanceHooksFactory.ts` | `apps/desktop/src/main/services/runtime/` |
-| `GovernanceAuditSink.ts` | `apps/desktop/src/main/services/runtime/` |
-| `SkillCreatorGovernancePolicy.ts` | `apps/desktop/src/main/services/runtime/` |
+| `SkillCreatorPermissionPolicy.ts` | `apps/desktop/src/main/services/runtime/governance/` |
+| `SkillCreatorHooksFactory.ts` | `apps/desktop/src/main/services/runtime/governance/` |
+| `SkillCreatorAuditSink.ts` | `apps/desktop/src/main/services/runtime/governance/` |
+| `index.ts` | `apps/desktop/src/main/services/runtime/governance/` |
 
 ---
 
-## GovernanceHooksFactory
+## SkillCreatorPermissionPolicy
 
 ### 概要
 
-Phase 別の SDK Hooks セットを生成するファクトリ関数。
-`createGovernanceHooks(options)` を呼び出すと `{ hooks, auditSink }` を返す。
-生成された `hooks` は SDK `query()` の hooks option に直接渡せる。
+Phase 別の tool 使用許可テーブルを定義するモジュール。
+`POLICY_TABLE` を `Object.freeze()` で保護し、外部からの accidental mutation を防ぐ。
+
+### エクスポート
+
+```typescript
+export function getPolicy(phase: SkillCreatorGovernancePhase): SkillCreatorSdkPolicy
+export function canUseTool(toolName: string, phase: SkillCreatorGovernancePhase): SkillCreatorToolDecision
+export function getAllPolicies(): Record<SkillCreatorGovernancePhase, SkillCreatorSdkPolicy>
+export function evaluateContextPolicy(context: CanUseToolContext): SkillCreatorToolDecision
+export type CanUseToolContext = { toolName: string; phase: SkillCreatorGovernancePhase; targetPath?: string; skillTargetDir?: string }
+```
+
+### Phase 別 Policy テーブル
+
+| phase | permissionMode | allowedTools | disallowedTools |
+| --- | --- | --- | --- |
+| `plan` | `"default"` | READ_TOOLS（Read/Glob/Grep/Bash/Agent） | Write/Edit + DESTRUCTIVE_TOOLS |
+| `execute` | `"acceptEdits"` | WRITE_TOOLS（+Write/Edit） | DESTRUCTIVE_TOOLS |
+| `verify` | `"default"` | TEST_TOOLS（Read/Glob/Grep/Bash/Agent） | Write/Edit + DESTRUCTIVE_TOOLS |
+| `improve` | `"acceptEdits"` | IMPROVE_TOOLS（+Edit、Write は除外） | Write + DESTRUCTIVE_TOOLS |
+
+> `DESTRUCTIVE_TOOLS = ["NotebookEdit"]` は全 phase の `disallowedTools` に含まれる。
+
+### `canUseTool()` の判定ロジック
+
+```
+canUseTool(toolName, phase)
+  1. disallowedTools に含まれる → denied（DESTRUCTIVE_TOOLS または phase 制限）
+  2. allowedTools に含まれる → allowed
+  3. いずれにも属さない → denied（デフォルト拒否）
+```
+
+> **注意**: 引数順は `(toolName, phase)` の順。両方 `string` 型のため型エラーにならない逆転バグに注意（lessons-learned #7 参照）。
+
+---
+
+## SkillCreatorHooksFactory
+
+### 概要
+
+Phase 別の lifecycle hooks を生成するファクトリ関数モジュール。
+クラスではなく `createHooks()` 関数として公開する（状態は `auditSink` に委譲）。
 
 ### エントリポイント
 
 ```typescript
-function createGovernanceHooks(options: GovernanceHooksFactoryOptions): {
-  hooks: GovernanceHooks;
-  auditSink: GovernanceAuditSink;
-}
+export function createHooks(
+  phase: SkillCreatorGovernancePhase,
+  auditSink: SkillCreatorAuditSink,
+  provenance?: SkillCreatorWorkflowSourceProvenance,
+): SkillCreatorHooks
 ```
 
-### GovernanceHooksFactoryOptions
+### SkillCreatorHooks インターフェース
 
-| フィールド | 型 | 必須 | 説明 |
-| --- | --- | --- | --- |
-| `phase` | `SkillCreatorGovernancePhase` | ✓ | 対象 phase（plan / execute / verify / improve） |
-| `sessionId` | `string` | - | セッション識別子（省略時は匿名） |
-| `skillTargetDir` | `string` | - | execute/improve 時の書き込み許可ディレクトリ |
-| `provenance` | `SkillCreatorWorkflowSourceProvenance` | - | ワークフロー起源情報 |
-| `auditSink` | `GovernanceAuditSink` | - | 外部注入 sink（省略時は新規作成） |
-
-### GovernanceHooks インターフェース
-
-| フック | 呼び出しタイミング | 戻り値 |
-| --- | --- | --- |
-| `onSessionStart(params)` | SDK セッション開始時 | `void` |
-| `onPreToolUse(params)` | ツール呼び出し前 | `{ allow: boolean; reason?: string }` |
-| `onPostToolUse(params)` | ツール呼び出し後 | `void` |
-| `onSessionEnd(params)` | SDK セッション終了時 | `void` |
-| `SessionStart(input, ...)` | SDK pascal-case 形式 | `Promise<{}>` |
-| `PreToolUse(input, ...)` | SDK pascal-case 形式 | `Promise<{ proceed: boolean; message?: string }>` |
-| `PostToolUse(input, ...)` | SDK pascal-case 形式 | `Promise<{}>` |
-| `SessionEnd(input, ...)` | SDK pascal-case 形式 | `Promise<{}>` |
-
-> camelCase hooks は内部ロジック実装用、PascalCase hooks は SDK 直結 adapter。
+```typescript
+export interface SkillCreatorHooks {
+  onSessionStart: (params: { sessionId: string; provenance?: SkillCreatorWorkflowSourceProvenance }) => void;
+  onPreToolUse:   (params: { sessionId: string; toolName: string }) => SkillCreatorToolDecision;
+  onPostToolUse:  (params: { sessionId: string; toolName: string; success: boolean; error?: string }) => void;
+  onSessionEnd:   (params: { sessionId: string; summary?: string }) => void;
+}
+```
 
 ### フック実行フロー
 
 ```
-onPreToolUse(toolName, toolInput)
-  └─ canUseTool(toolName, toolInput)  // SkillCreatorGovernancePolicy
-       ├─ allowed: true  → auditSink.record("pre_tool_use", decision="allow")
-       └─ allowed: false → auditSink.record("tool_denied", decision="deny")
-                           return { allow: false, reason }
+onSessionStart({ sessionId, provenance })
+  └─ auditSink.recordEvent({ eventType: "session_start", ... })
+
+onPreToolUse({ sessionId, toolName })
+  └─ canUseTool(toolName, phase)
+       ├─ allowed: true  → recordEvent("pre_tool_use", decision={allowed:true}) → return {allowed:true}
+       └─ allowed: false → recordEvent("pre_tool_use", decision={allowed:false,reason}) → return {allowed:false,reason}
+
+onPostToolUse({ sessionId, toolName, success, error })
+  └─ auditSink.recordEvent({ eventType: "post_tool_use", ... })
+
+onSessionEnd({ sessionId, summary })
+  └─ auditSink.recordEvent({ eventType: "session_end", ... })
 ```
 
 ---
 
-## GovernanceAuditSink
+## SkillCreatorAuditSink
 
 ### 概要
 
-監査イベントを蓄積するシングルインスタンスクラス。
-`record()` でイベントを追加し、`buildUiPayload()` で `GovernanceUiPayload` を生成する。
+監査イベントを in-memory ring buffer で蓄積するクラス。
+`maxEvents` を超えた場合は `slice(-maxEvents)` で古いイベントを自動破棄する。
+デフォルト `maxEvents = 500`。
 
 ### クラス API
 
 | メソッド | シグネチャ | 説明 |
 | --- | --- | --- |
-| `record` | `(event: GovernanceAuditEvent) => void` | イベントを追記する |
-| `getEvents` | `() => readonly GovernanceAuditEvent[]` | 全イベントを返す |
-| `getRecentDenials` | `(limit?, phase?, sessionId?) => GovernanceAuditEvent[]` | 直近の denial イベントを取得する |
-| `buildSessionSummary` | `(phase, sessionId?, provenance?) => GovernanceSessionSummary` | セッションサマリーを生成する |
-| `buildUiPayload` | `(phase, sessionId?, provenance?) => GovernanceUiPayload` | UI 向けペイロードを生成する |
-| `clear` | `() => void` | 全イベントをクリアする |
+| `record` | `(event: SkillCreatorGovernanceAuditEvent) => void` | イベントを追記し ring buffer を維持 |
+| `recordEvent` | `(params) => SkillCreatorGovernanceAuditEvent` | 構造化イベントを生成して `record()` を呼ぶ |
+| `getEvents` | `() => readonly SkillCreatorGovernanceAuditEvent[]` | 全イベントのコピーを返す（read-only） |
+| `getRecentEvents` | `(count: number) => SkillCreatorGovernanceAuditEvent[]` | 直近 N 件を返す |
+| `getEventsBySession` | `(sessionId: string) => SkillCreatorGovernanceAuditEvent[]` | sessionId でフィルタ |
+| `getDenialEvents` | `() => SkillCreatorGovernanceAuditEvent[]` | `decision.allowed === false` のイベントのみ |
+| `clear` | `() => void` | 全イベントをクリア |
+| `size` | `get size(): number` | 現在のイベント数 |
 
-### 監査イベントライフサイクル
-
-```
-SessionStart
-  └─ record("session_start")  // startTime を sessionStartTimes に記録
-
-PreToolUse
-  ├─ allow: record("pre_tool_use", decision="allow")
-  └─ deny: record("tool_denied", decision="deny", reason)
-
-PostToolUse
-  └─ record("post_tool_use", decision="allow", durationMs)
-
-SessionEnd
-  ├─ buildSessionSummary()
-  └─ record("session_end", metadata.summary)
-```
-
-### createAuditEvent ヘルパー
+### `recordEvent()` パラメータ
 
 ```typescript
-function createAuditEvent(
-  phase: SkillCreatorGovernancePhase,
-  eventKind: GovernanceAuditEventKind,
-  options?: {
-    sessionId?: string;
-    toolName?: string;
-    decision?: "allow" | "deny";
-    reason?: string;
-    durationMs?: number;
-    provenance?: SkillCreatorWorkflowSourceProvenance;
-    metadata?: Record<string, unknown>;
-  }
-): GovernanceAuditEvent
+recordEvent(params: {
+  eventType: SkillCreatorHookEventType;  // "session_start" | "pre_tool_use" | "post_tool_use" | "session_end"
+  sessionId: string;
+  phase: SkillCreatorGovernancePhase;
+  toolName?: string;
+  decision?: SkillCreatorToolDecision;
+  provenance?: SkillCreatorWorkflowSourceProvenance;
+  metadata?: Record<string, unknown>;
+}): SkillCreatorGovernanceAuditEvent
 ```
 
-### セッションサマリー生成ロジック
+`timestamp` は `new Date().toISOString()` で自動付与される。
 
-`buildSessionSummary(phase, sessionId, provenance)` の集計アルゴリズム：
+### Ring Buffer 動作
 
-1. `filterEvents(phase, sessionId)` で対象 phase / session のイベントを絞り込む
-2. `pre_tool_use` / `tool_denied` / `post_tool_use` のみを集計対象とする
-3. `decision="deny"` または `eventKind="tool_denied"` のツールを `deniedSet` に追加
-4. それ以外を `allowedSet` に追加
-5. `sessionStartTimes` から経過時間（`durationMs`）を算出
+```
+maxEvents = 500 のとき：
+  events.length <= 500 → 追記のみ（O(1)）
+  events.length > 500  → events = events.slice(-500)（古いものを破棄）
 
-| フィールド | 算出方法 |
-| --- | --- |
-| `totalToolCalls` | `pre_tool_use` + `tool_denied` のイベント数 |
-| `deniedToolCalls` | `tool_denied` のイベント数 |
-| `allowedToolNames` | `allowedSet` の配列化 |
-| `deniedToolNames` | `deniedSet` の配列化 |
-| `durationMs` | `Date.now() - sessionStartTimes[key]` |
-
-### UI Payload 構築
-
-`buildUiPayload(phase, sessionId, provenance)` は以下を組み合わせる：
-
-```typescript
-{
-  phase,
-  permissionMode: getPolicyForPhase(phase).permissionMode,
-  activePolicyToolCount: getPolicyForPhase(phase).allowedTools.length,
-  recentDenials: getRecentDenials(10, phase, sessionId),
-  sessionSummary: buildSessionSummary(phase, sessionId, provenance),
-}
+理由: CircularBuffer クラスは過剰設計。slice(-N) で十分。
 ```
 
 ---
 
 ## 使用例
 
-### execute フェーズでの Hooks 生成
+### RuntimeSkillCreatorFacade での組み合わせ
 
 ```typescript
-import { createGovernanceHooks } from "./GovernanceHooksFactory";
+import { SkillCreatorAuditSink } from "./governance/SkillCreatorAuditSink";
+import { createHooks } from "./governance/SkillCreatorHooksFactory";
 
-const { hooks, auditSink } = createGovernanceHooks({
-  phase: "execute",
-  sessionId: "session-123",
-  skillTargetDir: "/path/to/skill",
-  provenance: { /* ... */ },
-});
+// Facade 内部
+private auditSink = new SkillCreatorAuditSink();
 
-// SDK query() に渡す
-await query(prompt, { hooks, permissions: { canUseTool } });
+private createGovernanceHooks(phase: SkillCreatorGovernancePhase): SkillCreatorHooks {
+  this.currentGovernancePhase = phase;
+  return createHooks(phase, this.auditSink, this.provenance);
+}
+
+// plan() での使用例
+async plan(): Promise<...> {
+  const hooks = this.createGovernanceHooks("plan");
+  hooks.onSessionStart({ sessionId: this.sessionId });
+  // ... 実処理 ...
+  hooks.onSessionEnd({ sessionId: this.sessionId });
+}
 ```
 
-### UI Payload 取得
+### IPC getGovernanceState()
 
 ```typescript
-// IPC ハンドラ（skill-creator:get-governance）
-const facade = new RuntimeSkillCreatorFacade(/* ... */);
-const payload = facade.getGovernanceUiPayload("execute");
-// payload: GovernanceUiPayload
-```
-
-### 監査イベントの取得
-
-```typescript
-const events = facade.getGovernanceAuditEvents();
-// events: readonly GovernanceAuditEvent[]
+// RuntimeSkillCreatorFacade.getGovernanceState()
+getGovernanceState(): SkillCreatorGovernanceState {
+  return {
+    phase: this.currentGovernancePhase,
+    activePolicy: getPolicy(this.currentGovernancePhase),
+    recentAuditEvents: this.auditSink.getRecentEvents(20),
+    recentDenials: this.auditSink.getDenialEvents().slice(-10),
+  };
+}
 ```
 
 ---
 
 ## 設計上の注意事項
 
-- `auditSink` は `createGovernanceHooks` で内部生成するか、外部注入できる（テスト容易性）
-- `sessionStartTimes` のキーは `${phase}:${sessionId ?? "__anonymous__"}` の複合キー
-- `getRecentDenials` の `limit` デフォルトは 10 件（直近順）
-- execute / improve フェーズで `Write` / `Edit` を使う場合は `skillTargetDir` が必須
-- plan / verify フェーズでは `Edit` / `Write` は `disallowedTools` に含まれ、常に deny
+- `SkillCreatorAuditSink` は `auditSink` として外部注入可能（テスト容易性のため）
+- `createHooks()` はステートレス：状態は `auditSink` に委譲する
+- `canUseTool()` の引数順は `(toolName, phase)` — 順序バグに注意
+- execute / improve フェーズで context-aware な path 判定は `evaluateContextPolicy()` 経由（現状 Facade から context 未供給のため未使用、TASK-P0-09-U1 carry-forward）
+- plan / verify フェーズでは `Write` / `Edit` は常に denied（policy テーブルで固定）
 
 ---
 
@@ -212,5 +215,5 @@ const events = facade.getGovernanceAuditEvents();
 | ファイル | 用途 |
 | --- | --- |
 | [interfaces-agent-sdk-skill-reference.md](interfaces-agent-sdk-skill-reference.md) | RuntimeSkillCreatorFacade の Governance 拡張セクション |
-| [api-ipc-agent-core.md](api-ipc-agent-core.md) | `skill-creator:get-governance` IPC チャネル仕様 |
+| [api-ipc-agent-core.md](api-ipc-agent-core.md) | `skill-creator:get-governance-state` IPC チャネル仕様 |
 | [lessons-learned-governance-hooks-phase-policy.md](lessons-learned-governance-hooks-phase-policy.md) | TASK-P0-09 の苦戦箇所と教訓 |

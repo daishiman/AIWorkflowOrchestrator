@@ -68,6 +68,9 @@ export class SkillCreatorAuditSink {
    * 直近 N 件の監査イベントを返す。
    */
   getRecentEvents(count: number): SkillCreatorGovernanceAuditEvent[] {
+    if (!Number.isFinite(count) || count <= 0) {
+      return [];
+    }
     return this.events.slice(-count);
   }
 
