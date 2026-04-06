@@ -2484,6 +2484,19 @@ node scripts/list-specs.js --topics
 | 利用順序 | L13 |
 | 関連ドキュメント | L18 |
 
+### references/ipc-4-layer-pattern.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L8 |
+| 概要 | L19 |
+| Layer 1: チャネル定数 | L38 |
+| Layer 2: ホワイトリスト | L70 |
+| Layer 3: ipcMain ハンドラ | L98 |
+| Layer 4: contextBridge API | L161 |
+| 4層 チェックリスト（新規チャネル追加時） | L216 |
+| P0-06 / P0-08 状態境界ガイドライン | L232 |
+| 関連ファイル一覧 | L277 |
+
 ### references/ipc-contract-checklist.md
 
 | セクション | 行 |

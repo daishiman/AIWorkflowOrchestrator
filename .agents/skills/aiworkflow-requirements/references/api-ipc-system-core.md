@@ -462,6 +462,39 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 - runtime public surface に `skill-creator:get-verify-detail` / `skill-creator:reverify-workflow` を追加し、Task07/08 owner 項目は delegated note として返す。
 - `SkillLifecyclePanel` は verify detail card を表示し、`reverifyWorkflow()` を再検証導線として利用する。approval / disclosure / persistence は sibling task owner のまま維持。
 
+### TASK-P0-08 session resume / cleanup public surface（2026-04-06）
+
+`SkillCreatorWorkflowEngine` の persisted checkpoint を renderer から再開・削除・期限切れ掃除できるようにする session surface。state owner は engine のまま維持する。
+
+| 層 | ファイル | 役割 |
+| --- | --- | --- |
+| Main IPC | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `SKILL_CREATOR_RESUME_SESSION` / `SKILL_CREATOR_DELETE_SESSION` / `SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS` を direct response で公開 |
+| Runtime service | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | checkpoint TTL、compatibility、hydrate、expired cleanup を担当 |
+| Workflow engine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `sessionId` / `startedAt` / `isActive` を含む一覧と cleanup を担当 |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `resumeSession()` / `deleteSession()` / `cleanupExpiredSessions()` を公開 |
+| Renderer | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | session prompt / resume / delete / new-start / indicator を統合 |
+| Shared types | `packages/shared/src/types/skillCreator.ts` | `SkillCreatorSessionListItem` / `SkillCreatorSessionSummary` / `SkillCreatorSessionResumeResult` / `SkillCreatorSessionResumeErrorReason` |
+
+### current contract
+
+| 項目 | 契約 |
+| --- | --- |
+| list surface | `window.skillCreatorAPI.listSessions()` は `IpcResult<SkillCreatorSessionListItem[]>` を返す |
+| resume result | `resumeSession(checkpointId)` は `SkillCreatorSessionResumeResult` を直接返す |
+| delete | `deleteSession(checkpointId)` は `Promise<void>` を返す |
+| cleanup | `cleanupExpiredSessions()` は削除件数 `number` を返す |
+| expired handling | expired checkpoint は `errorReason: "expired"` で renderer に返り、prompt 側は新規開始へフォールバックする |
+| UI state | `SessionResumePrompt` と `SessionIndicator` が session lifecycle を反映する |
+
+### session resume channels
+
+| チャンネル | 用途 | Request | Response |
+| --- | --- | --- | --- |
+| `skill-creator:list-sessions` | session list | なし | `IpcResult<SkillCreatorSessionListItem[]>` |
+| `skill-creator:resume-session` | checkpoint resume | `{ checkpointId }` | `SkillCreatorSessionResumeResult` |
+| `skill-creator:delete-session` | checkpoint delete | `{ checkpointId }` | `void` |
+| `skill-creator:cleanup-expired-sessions` | TTL cleanup | なし | `number` |
+
 ### execute-plan failure lifecycle 契約（UT-IMP-RUNTIME-WORKFLOW-ENGINE-FAILURE-LIFECYCLE-001）
 
 | ケース | public response | engine state | 補足 |
