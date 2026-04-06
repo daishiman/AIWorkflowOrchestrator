@@ -76,8 +76,41 @@
 
 ---
 
+### タスク: UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 phase-spec-template Task/Step 分離と NON_VISUAL evidence hardening（2026-04-06）
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
 ### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
+
+| 項目             | 値                                                                                     |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| タスクID         | UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001                                                   |
+| ステータス       | **仕様書作成完了（`spec_created` / Phase 13 blocked）**                                |
+| タイプ           | docs-only / NON_VISUAL                                                                 |
+| 優先度           | 中                                                                                     |
+| 完了日           | 2026-04-06                                                                             |
+| 対象             | `task-specification-creator` / Phase 仕様書テンプレート                                |
+| GitHub Issue     | #1919                                                                                  |
+| 成果物           | `docs/30-workflows/ut-phase-spec-format-improvement-001/`                              |
+| 元未タスク指示書 | `docs/30-workflows/unassigned-task/ut-phase-spec-format-improvement-001.md`           |
+
+#### 実施内容
+
+- `phase-spec-template.md` に Task / Step 分離ルールと Phase 11 NON_VISUAL / Phase 12 記録分離方針を追加した
+- `unassigned-task-template.md` に苦戦箇所の必須記載欄を追加した
+- `task-workflow-backlog.md` に UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 を spec_created として登録し、`task-workflow-completed.md` / `LOGS.md` / `SKILL.md` / `index.md` / `artifacts.json` / `outputs/artifacts.json` を same-wave sync した
+- `phase-11-manual-test.md` で NON_VISUAL evidence を検証し、`manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` を current facts へ記録した
+- `phase-12-documentation.md` で implementation-guide / system-spec / documentation-changelog / unassigned-task-detection / skill-feedback-report / compliance-check を作成した
+
+#### 検証証跡
+
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/ut-phase-spec-format-improvement-001 --json`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/ut-phase-spec-format-improvement-001`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/ut-phase-spec-format-improvement-001 --json`: PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/ut-phase-spec-format-improvement-001/outputs/phase-11/manual-test-result.md`: PASS
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`: PASS
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator`: FAIL（既存の line budget / description 境界のため）
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements`: FAIL（既存の line budget / description / mirror 差分のため）
+
+---
 
 | 項目             | 値                                                                                     |
 | ---------------- | -------------------------------------------------------------------------------------- |
@@ -89,7 +122,7 @@
 | 対象             | `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の improve adapter error 通知        |
 | GitHub Issue     | #1896                                                                                  |
 | 成果物           | `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`    |
-| 元未タスク指示書 | `docs/30-workflows/unassigned-task/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
 
 #### 実施内容
 
@@ -101,8 +134,6 @@
 
 - `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（0エラー / 0警告）
 - `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（警告 26）
-
----
 
 ### タスク: TASK-P0-05 execute() → SkillFileWriter persist 統合（2026-04-05）
 

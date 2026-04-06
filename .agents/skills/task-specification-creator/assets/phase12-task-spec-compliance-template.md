@@ -28,7 +28,7 @@ implementation guide 品質、未タスク配置、system spec 同期、検証�
 
 | SubAgent | 関心ごと | 主担当 | 完了条件 |
 | --- | --- | --- | --- |
-| A | workflow 状態 | `phase-12-documentation.md` と `outputs/phase-12` 実体突合 | Task 12-1〜12-5 / 進捗100% / completed が一致 |
+| A | workflow 状態 | `phase-12-documentation.md` と `outputs/phase-12` 実体突合 | Task 12-1〜12-5 / 進捗100% / `task-workflow-completed.md` / `task-workflow-backlog.md` / completed が一致 |
 | B | implementation guide 品質 | Part 1 / Part 2 の必須要素確認 | `たとえば`、型、API/CLI、エッジケース、設定が揃う |
 | C | 未タスク整合 | 配置先、10見出し、監査値の確認 | `docs/30-workflows/unassigned-task/` + `currentViolations=0` |
 | D | system spec 同期 | task-workflow / lessons / logs への転記 | 実装内容・苦戦箇所・5分解決カードが同期 |
@@ -69,9 +69,12 @@ implementation guide 品質、未タスク配置、system spec 同期、検証�
 
 ### 4. system spec / outputs 同期
 
+- [ ] `task-workflow-completed.md` / `task-workflow-backlog.md` に Phase 12 close-out と `spec_created` 状態が記録されている
+- [ ] `task-workflow-completed.md` / `task-workflow-backlog.md` の ledger parity が root evidence から直接検証できる
 - [ ] `task-workflow.md` に実装内容・苦戦箇所・検証証跡・5分解決カードがある
 - [ ] `lessons-learned.md` に再発条件付き苦戦箇所と簡潔解決手順がある
 - [ ] `system-spec-update-summary.md` / `phase12-task-spec-compliance-check.md` / `unassigned-task-detection.md` の値が一致している
+- [ ] `manual-test-checklist.md` に TC-ID / evidence / 判定 の対応がある
 - [ ] スキル改善を行った場合、対象 skill の `SKILL.md` / `LOGS.md` に履歴がある
 - [ ] UI task では `phase-11-manual-test.md` の screen coverage 要件が満たされている
 
@@ -97,6 +100,12 @@ implementation guide 品質、未タスク配置、system spec 同期、検証�
 | 1-F | {{PASS/N/A}} | DevOps 更新または N/A 理由を記録 |
 | 1-G | {{PASS/FAIL}} | `quick_validate.js` / `validate_all.js` / parity を記録 |
 | Step 2 | {{PASS/N/A}} | I/F 変更ありなら反映、なしなら N/A 理由を明記 |
+
+## Ledger Parity
+
+| 対象 | 判定 | 根拠 |
+| --- | --- | --- |
+| `task-workflow-completed.md` / `task-workflow-backlog.md` | {{PASS/FAIL}} | completed / backlog の ledger を root evidence から直接照合 |
 
 ## 検証ログ
 
