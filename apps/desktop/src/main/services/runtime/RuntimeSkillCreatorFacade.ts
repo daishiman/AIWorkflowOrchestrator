@@ -99,7 +99,10 @@ import type {
   SkillCreatorGovernancePhase,
   SkillCreatorGovernanceState,
 } from "@repo/shared/types";
-import { buildPhaseResourceRequestsFromManifest } from "./manifestResourceResolver";
+import {
+  buildPhaseResourceRequestsFromManifest,
+  WorkflowManifestValidationError,
+} from "./manifestResourceResolver";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -784,9 +787,20 @@ export class RuntimeSkillCreatorFacade {
     const manifestPath = path.join(explicitRoot, "workflow-manifest.json");
     try {
       await fs.access(manifestPath);
-      return await this.manifestLoader.loadManifest(manifestPath);
     } catch {
+      // ファイルが存在しない = 正常な初期状態。fallback パスへ進む。
       return undefined;
+    }
+    // ファイルが存在する場合は必ず load を試みる。
+    // parse / schema エラーは WorkflowManifestValidationError にラップして伝播させ、
+    // 呼び出し元 (plan / improve) で VALIDATION_ERROR に変換する。
+    try {
+      return await this.manifestLoader.loadManifest(manifestPath);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      throw new WorkflowManifestValidationError(
+        `workflow-manifest.json の読み込みに失敗しました: ${msg}`,
+      );
     }
   }
 
@@ -928,12 +942,27 @@ export class RuntimeSkillCreatorFacade {
     let agentSpecs: Array<{ name: string; content: string }> = [];
     let referenceSpecs: Array<{ name: string; content: string }> = [];
     if (this.hasDynamicResourcePipeline()) {
-      const resolved = await this.resolveOperationResources(
-        "plan",
-        PLAN_RESOURCE_REQUESTS,
-        PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
-        "plan",
-      );
+      let resolved;
+      try {
+        resolved = await this.resolveOperationResources(
+          "plan",
+          PLAN_RESOURCE_REQUESTS,
+          PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
+          "plan",
+        );
+      } catch (error) {
+        if (error instanceof WorkflowManifestValidationError) {
+          governanceHooks.onSessionEnd({
+            sessionId: planId,
+            summary: `Plan failed: ${error.message}`,
+          });
+          return {
+            success: false,
+            error: { code: "VALIDATION_ERROR", message: error.message },
+          };
+        }
+        throw error;
+      }
       const loadedResources = await this.readPlannedResources(
         resolved.resources,
       );
@@ -1600,7 +1629,7 @@ export class RuntimeSkillCreatorFacade {
           resolved.resources,
         );
         agentPrompt =
-          loadedResources.find((resource) => resource.id === "improve-prompt")
+          loadedResources.find((resource) => resource.kind === "agent")
             ?.content ?? "";
         const referenceSections = loadedResources
           .filter((resource) => resource.kind === "reference")
@@ -2015,6 +2044,12 @@ function buildDegradedError(reason: RuntimeSkillCreatorDegradedReason): {
 function handleImproveError(
   error: unknown,
 ): RuntimeSkillCreatorImproveResponse {
+  if (error instanceof WorkflowManifestValidationError) {
+    return {
+      success: false,
+      error: { code: "VALIDATION_ERROR", message: error.message },
+    };
+  }
   if (error instanceof Error) {
     const name = error.constructor.name;
     if (name === "SkillNotFoundError") {
