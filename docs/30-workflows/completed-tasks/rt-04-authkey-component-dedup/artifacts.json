@@ -1,0 +1,139 @@
+{
+  "taskId": "TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001",
+  "taskName": "rt-04-authkey-component-dedup",
+  "workflowRoot": "docs/30-workflows/rt-04-authkey-component-dedup",
+  "status": "implementation_ready",
+  "createdAt": "2026-04-06",
+  "githubIssue": "https://github.com/daishiman/AIWorkflowOrchestrator/issues/1903",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "spec_created",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1"
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "spec_created",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2"
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "spec_created",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3"
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "spec_created",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4"
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "spec_created",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5"
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "spec_created",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6"
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "spec_created",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7"
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "spec_created",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8"
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "spec_created",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputDir": "outputs/phase-9"
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "spec_created",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10"
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "spec_created",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11"
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "spec_created",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12"
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "spec_created",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13"
+    }
+  ],
+  "keyArtifacts": [
+    {
+      "id": "hook",
+      "name": "useAuthKeyManagement",
+      "path": "apps/desktop/src/renderer/hooks/useAuthKeyManagement.ts",
+      "type": "implementation",
+      "status": "planned"
+    },
+    {
+      "id": "shared-type",
+      "name": "ApiKeyStatus（拡張）",
+      "path": "packages/shared/src/types/skillCreator.ts",
+      "type": "type",
+      "status": "planned"
+    },
+    {
+      "id": "auth-key-section",
+      "name": "AuthKeySection（onStatusChange追加）",
+      "path": "apps/desktop/src/renderer/components/settings/AuthKeySection/index.tsx",
+      "type": "component",
+      "status": "planned"
+    },
+    {
+      "id": "api-key-panel",
+      "name": "ApiKeySettingsPanel（委譲実装）",
+      "path": "apps/desktop/src/renderer/components/skill/ApiKeySettingsPanel.tsx",
+      "type": "component",
+      "status": "planned"
+    }
+  ],
+  "unassignedTasks": [
+    {
+      "id": "TECH-M-01",
+      "title": "ApiKeySettingsPanel の完全廃止",
+      "priority": "low",
+      "reason": "委譲実装後に呼び出し元を直接変更するフォローアップタスク"
+    }
+  ]
+}

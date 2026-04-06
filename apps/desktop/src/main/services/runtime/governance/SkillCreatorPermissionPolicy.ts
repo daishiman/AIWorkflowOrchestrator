@@ -184,8 +184,6 @@ export function canUseTool(
     };
   }
 
-  // TODO(TASK-P0-09-U1): context はまだ Facade から渡されていない。
-  // context が供給された場合は evaluateContextPolicy で path-scoped 判定を行う。
   if (context) {
     const contextDecision = evaluateContextPolicy(toolName, phase, context);
     if (contextDecision) {

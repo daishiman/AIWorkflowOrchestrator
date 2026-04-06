@@ -148,7 +148,10 @@ export interface SkillCreatorAPI {
    * workflow snapshot change event を購読する
    */
   onWorkflowStateChanged: (
-    callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
+    callback: (
+      snapshot: SkillCreatorWorkflowUiSnapshot | null,
+      errorMessage?: string,
+    ) => void,
   ) => () => void;
 
   /**
@@ -399,14 +402,17 @@ function isIpcErrorResponse(value: unknown): value is IpcResult<never> {
 /**
  * safeOn - 許可されたチャンネルのみリスナーを登録
  */
-function safeOn<T>(channel: string, callback: (data: T) => void): () => void {
+function safeOn<T, R extends unknown[] = []>(
+  channel: string,
+  callback: (data: T, ...rest: R) => void,
+): () => void {
   if (!ALLOWED_ON_CHANNELS.includes(channel)) {
     console.error(`Channel ${channel} is not allowed`);
     return () => {};
   }
 
-  const listener = (_event: IpcRendererEvent, data: T) => {
-    callback(data);
+  const listener = (_event: IpcRendererEvent, data: T, ...rest: R) => {
+    callback(data, ...rest);
   };
 
   ipcRenderer.on(channel, listener);
@@ -496,9 +502,12 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     safeInvoke(IPC_CHANNELS.CONFIGURE_API, config),
 
   onWorkflowStateChanged: (
-    callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
+    callback: (
+      snapshot: SkillCreatorWorkflowUiSnapshot | null,
+      errorMessage?: string,
+    ) => void,
   ): (() => void) =>
-    safeOn<SkillCreatorWorkflowUiSnapshot>(
+    safeOn<SkillCreatorWorkflowUiSnapshot | null, [string?]>(
       IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
       callback,
     ),

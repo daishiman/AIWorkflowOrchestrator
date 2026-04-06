@@ -142,7 +142,10 @@ type SkillCreatorRuntimeApi = {
     submission: SkillCreatorUserInputSubmission,
   ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
   onWorkflowStateChanged?: (
-    callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
+    callback: (
+      snapshot: SkillCreatorWorkflowUiSnapshot | null,
+      errorMessage?: string,
+    ) => void,
   ) => () => void;
   getVerifyDetail?: (
     planId: string,
@@ -656,8 +659,13 @@ export function SkillLifecyclePanel({
       return;
     }
 
-    return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-      applyWorkflowSnapshot(snapshot);
+    return skillCreatorApi.onWorkflowStateChanged((snapshot, errorMessage) => {
+      if (snapshot) {
+        applyWorkflowSnapshot(snapshot);
+      }
+      if (errorMessage !== undefined) {
+        setWorkflowError(errorMessage);
+      }
     });
   }, [applyWorkflowSnapshot]);
 

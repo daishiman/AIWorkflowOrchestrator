@@ -250,3 +250,37 @@
 
 - **発見日**: 2026-01-31
 - **関連タスク**: TASK-7D
+
+---
+
+## TASK-UT-RT-01 executeAsync / IPC 関連 Pitfall（2026-04-06）
+
+### Pitfall: executeAsync テストで executeMock を使う場合の注意
+
+- **状況**: `skillExecutor.execute` をモックしても structured error パスの `error.message` が undefined になる
+- **原因**: `execute()` 内でレスポンスが `SkillExecuteResult` 型に変換されるため
+- **対策**: structured error パスのテストは `vi.spyOn(facade, 'execute')` を使い、`RuntimeSkillCreatorExecuteErrorResponse` 型を直接返すこと
+- **影響**: Phase 4 のテスト設計時に考慮が必要
+- **発見日**: 2026-04-06
+
+### Pitfall: package-local lint script の不在
+
+- **状況**: `apps/desktop/package.json` には `lint` script がない
+- **原因**: モノレポ構成で lint は workspace ルートに集約されているため
+- **対策**: workspace ルートの `pnpm lint` を使うか、対象ファイルを `eslint` で直接実行する（`pnpm --filter @repo/desktop lint` は実行不可）
+- **影響**: 手動テスト手順を package 前提で書くと再現コマンドが失われる
+- **発見日**: 2026-04-06
+
+### Pitfall: vitest のファイル指定は直接実行が安定
+
+- **状況**: `pnpm --filter @repo/desktop test -- --testPathPattern "..."` が期待より広い範囲のテストを走らせることがある
+- **対策**: `pnpm --filter @repo/desktop exec vitest run <file>` のように対象ファイルを明示する
+- **影響**: focused な回帰確認の再現性が上がる
+- **発見日**: 2026-04-06
+
+### Pitfall: preload の `safeOn` は tuple 化しないと多引数を落とす
+
+- **状況**: callback 型を `(...rest: unknown[])` にしても TypeScript の型整合性と実行時の意図は一致しないことがある
+- **対策**: multi-arg event は `safeOn<T, R extends unknown[]>()` のように tuple で受け渡しの形を固定する
+- **影響**: errorMessage のような補助情報が silent drop されるのを防げる
+- **発見日**: 2026-04-06

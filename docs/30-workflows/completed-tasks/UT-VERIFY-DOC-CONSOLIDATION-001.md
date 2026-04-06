@@ -16,7 +16,8 @@ issue_number: 1916
 | 対象機能     | aiworkflow-requirements / verify ドキュメント         |
 | 優先度       | 中                                                    |
 | 見積もり規模 | 小規模                                                |
-| ステータス   | 未実施                                                |
+| ステータス   | 完了                                                  |
+| 完了日       | 2026-04-06                                            |
 | 発見元       | TASK-P0-01 Phase 12 skill-feedback-report             |
 | 発見日       | 2026-04-04                                            |
 
@@ -57,7 +58,7 @@ verify 関連ドキュメント群において、正本（current contract）と
 ### 2.2 最終ゴール
 
 1. 各ドキュメントの冒頭に「このファイルの役割」を 1 行で明記し、正本か履歴かを即座に判別可能にする
-2. `task-workflow.md` または `task-workflow-active.md` に verify エンジンの責務分離セクションを追加する
+2. `interfaces-skill-verify-contract.md` に verify エンジンの責務分離セクションを追加する
 3. `interfaces-skill-verify-contract.md` に current contract としての位置づけを明示する
 
 ### 2.3 スコープ
@@ -91,7 +92,7 @@ verify 関連ドキュメント群において、正本（current contract）と
 
 - `.claude/skills/aiworkflow-requirements/references/` 配下の対象ファイルが最新の main ブランチと同期されていること
 - `interfaces-skill-verify-contract.md` の Check ID 体系（L1-001 〜 L4-003、全 19 件）が確定していること
-- `SkillCreatorVerificationEngine.ts` の `verifySkill()` と `verifyAndImproveLoop()` の現行実装を把握していること
+- `RuntimeSkillCreatorFacade.ts` の `verifySkill()`（294行目）と `verifyAndImproveLoop()`（352行目）の現行実装を把握していること（これらは `SkillCreatorVerificationEngine.ts` ではなく Facade に実装されている）
 
 ### 3.2 依存タスク
 
@@ -103,8 +104,11 @@ verify 関連ドキュメント群において、正本（current contract）と
 ### 3.3 必要な知識
 
 - `task-workflow.md` のインデックス構造と child companion の関係
-- `SkillCreatorVerificationEngine` の API（`verifySkill()` / `verifyAndImproveLoop()`）
-- `RuntimeSkillCreatorFacade` における verificationEngine 注入パターン
+- `RuntimeSkillCreatorFacade` のパブリック API（`verifySkill()` / `verifyAndImproveLoop()`）の責務
+  - `verifySkill()`: 内部で `verificationEngine.verify(skillDir)` を呼び出し `RuntimeSkillCreatorVerifyCheck[]` を返す
+  - `verifyAndImproveLoop()`: 検証結果の severity に基づいて improve ループを制御する
+  - ※ これらのメソッドは `RuntimeSkillCreatorFacade.ts` に実装されており、`SkillCreatorVerificationEngine.ts` ではない
+- `SkillCreatorVerificationEngine.verify()` が返す Check 配列構造と Layer 定義（19 件）
 - `artifacts.json` root / outputs parity の概念
 
 ### 3.4 推奨アプローチ
@@ -123,11 +127,13 @@ verify 関連ドキュメント群において、正本（current contract）と
 
 **手順:**
 
-1. `task-workflow.md` のインデックステーブルを読み、各 child companion の現在の役割記述を確認する
-2. `task-workflow-completed.md` の冒頭部分を確認し、正本・履歴の境界が不明瞭な箇所を特定する
-3. `interfaces-skill-verify-contract.md` の概要セクションを確認し、正本としての明示有無を確認する
-4. `SkillCreatorVerificationEngine.ts` の `verifySkill()` と `verifyAndImproveLoop()` のシグネチャと責務を確認する
-5. 改善方針（ラベル形式、挿入位置、責務分離セクションの構成）を確定する
+1. `task-workflow.md` のインデックステーブルを読み、各 child companion の現在の役割記述（`> 役割:` 形式）を確認する
+2. `task-workflow-completed.md` 冒頭の `> 役割: completed records` 記述を確認し、「区分: 履歴記録」の追記が必要かを判断する
+3. `task-workflow-active.md` 冒頭の `> 役割: active guide` 記述を確認し、「区分: 正本」の追記が必要かを判断する
+4. `interfaces-skill-verify-contract.md` の概要セクションを確認し、current contract としての明示有無を確認する
+5. `RuntimeSkillCreatorFacade.ts` の `verifySkill()`（294行目）と `verifyAndImproveLoop()`（352行目）のシグネチャと責務を確認する
+   - `verifySkill()` は `verificationEngine.verify()` を内部で呼び出すラッパーである点を把握する
+6. 改善方針（ラベル形式、挿入位置、責務分離セクションの構成）を確定する
 
 **成果物:**
 
@@ -164,15 +170,19 @@ verify 関連ドキュメント群において、正本（current contract）と
 
 **手順:**
 
-1. `task-workflow-active.md` または `interfaces-skill-verify-contract.md` に「verify エンジン責務分離」セクションを追加する
-2. 以下の責務比較表を記載する:
+1. `interfaces-skill-verify-contract.md` に「verify エンジン責務分離」セクションを追加する
+2. 以下の責務比較表を記載する（実装は両者とも `RuntimeSkillCreatorFacade.ts` に存在する）:
 
-| 関数名                   | 責務                                     | 返却値                             | 呼び出し元                  |
-| ------------------------ | ---------------------------------------- | ---------------------------------- | --------------------------- |
-| `verifySkill()`          | Check 配列の返却（検証実行・結果収集）   | `RuntimeSkillCreatorVerifyCheck[]` | `RuntimeSkillCreatorFacade` |
-| `verifyAndImproveLoop()` | severity に基づく pass/fail ルーティング | ループ制御（improve 対象の選別）   | `RuntimeSkillCreatorFacade` |
+| 関数名                   | 実装ファイル                        | 責務                                                      | 返却値                                      |
+| ------------------------ | ----------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
+| `verifySkill()`          | `RuntimeSkillCreatorFacade.ts`      | `verificationEngine.verify()` を呼び出し Check 配列を返す | `RuntimeSkillCreatorVerifyCheck[]`          |
+| `verifyAndImproveLoop()` | `RuntimeSkillCreatorFacade.ts`      | 検証結果の severity に基づく improve ループ制御           | `RuntimeSkillCreatorVerifyAndImproveResult` |
+| `verify()`               | `SkillCreatorVerificationEngine.ts` | 19 件の Check を 4 Layer で実行し結果を収集する           | `RuntimeSkillCreatorVerifyCheck[]`          |
 
-3. `verifySkill()` は純粋な検証結果収集、`verifyAndImproveLoop()` は結果に基づく判断・制御フローという責務分離の原則を明記する
+3. 責務分離の原則として以下を明記する:
+   - `verifySkill()` は Facade の公開 API として外部から呼び出され、VerificationEngine の結果をガバナンスフック付きで中継する
+   - `verifyAndImproveLoop()` は severity 判定と improve ループ制御を担い、`verifySkill()` を内部で繰り返し呼び出す
+   - `verify()` は検証ロジックの本体であり、Facade からのみ呼び出される（外部公開しない）
 
 **成果物:**
 
@@ -214,7 +224,7 @@ verify 関連ドキュメント群において、正本（current contract）と
 - [ ] `task-workflow-completed.md` の冒頭に履歴記録であることが明記されている
 - [ ] `task-workflow-active.md` の冒頭に正本であることが明記されている
 - [ ] `interfaces-skill-verify-contract.md` の冒頭に契約仕様（current contract）であることが明記されている
-- [ ] `verifySkill()` と `verifyAndImproveLoop()` の責務分離が表形式で明示されている
+- [ ] `verifySkill()` / `verifyAndImproveLoop()` / `verify()` の3関数の実装ファイル・責務・返却値が表形式で明示されている
 
 ### 品質要件
 
@@ -234,20 +244,20 @@ verify 関連ドキュメント群において、正本（current contract）と
 
 ### テストケース
 
-| #   | テストケース                                       | 期待結果                                                                               |
-| --- | -------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| 1   | `task-workflow.md` のインデックステーブルを確認    | 全エントリに「区分」列が存在し値が設定されている                                       |
-| 2   | `task-workflow-completed.md` の冒頭 5 行を確認     | 「履歴記録」を示すラベルが含まれている                                                 |
-| 3   | `task-workflow-active.md` の冒頭 5 行を確認        | 「正本」を示すラベルが含まれている                                                     |
-| 4   | `interfaces-skill-verify-contract.md` の冒頭を確認 | 「契約仕様」を示すラベルが含まれている                                                 |
-| 5   | 責務分離セクションの比較表を確認                   | `verifySkill()` と `verifyAndImproveLoop()` の責務・返却値・呼び出し元が記載されている |
-| 6   | `task-workflow.md` 内のリンクを全件クリック        | 全リンクが有効なファイルを指している                                                   |
+| #   | テストケース                                       | 期待結果                                                                                             |
+| --- | -------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| 1   | `task-workflow.md` のインデックステーブルを確認    | 全エントリに「区分」列が存在し値が設定されている                                                     |
+| 2   | `task-workflow-completed.md` の冒頭 5 行を確認     | 「履歴記録」を示すラベルが含まれている                                                               |
+| 3   | `task-workflow-active.md` の冒頭 5 行を確認        | 「正本」を示すラベルが含まれている                                                                   |
+| 4   | `interfaces-skill-verify-contract.md` の冒頭を確認 | 「契約仕様」を示すラベルが含まれている                                                               |
+| 5   | 責務分離セクションの比較表を確認                   | `verifySkill()` / `verifyAndImproveLoop()` / `verify()` の実装ファイル・責務・返却値が記載されている |
+| 6   | `task-workflow.md` 内のリンクを全件クリック        | 全リンクが有効なファイルを指している                                                                 |
 
 ### 検証手順
 
 1. 対象 4 ファイルを開き、冒頭の役割ラベルが統一形式で記載されていることを目視確認する
 2. `task-workflow.md` のインデックステーブルに「区分」列があることを確認する
-3. 責務分離セクションの比較表が正確であることを `SkillCreatorVerificationEngine.ts` のコードと照合する
+3. 責務分離セクションの比較表が正確であることを `RuntimeSkillCreatorFacade.ts`（`verifySkill` 294行目, `verifyAndImproveLoop` 352行目）のコードと照合する
 4. Prettier を実行し差分が出ないことを確認する
 
 ---
@@ -267,15 +277,15 @@ verify 関連ドキュメント群において、正本（current contract）と
 
 ### 関連ドキュメント
 
-| ファイル                                                                                | 役割                          |
-| --------------------------------------------------------------------------------------- | ----------------------------- |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                    | 親仕様書・インデックス        |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow-active.md`             | アクティブガイド（正本）      |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`          | 完了記録（履歴）              |
-| `.claude/skills/aiworkflow-requirements/references/interfaces-skill-verify-contract.md` | verify 契約 Check ID 体系     |
-| `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts`              | verify エンジン実装           |
-| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                   | Facade（verify 呼び出し元）   |
-| `docs/30-workflows/step-09-par-task-p0-01-verify-execution-engine-layer12/`             | TASK-P0-01 成果物ディレクトリ |
+| ファイル                                                                                    | 役割                          |
+| ------------------------------------------------------------------------------------------- | ----------------------------- |
+| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                        | 親仕様書・インデックス        |
+| `.claude/skills/aiworkflow-requirements/references/task-workflow-active.md`                 | アクティブガイド（正本）      |
+| `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`              | 完了記録（履歴）              |
+| `.claude/skills/aiworkflow-requirements/references/interfaces-skill-verify-contract.md`     | verify 契約 Check ID 体系     |
+| `apps/desktop/src/main/services/runtime/SkillCreatorVerificationEngine.ts`                  | verify エンジン実装           |
+| `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                       | Facade（verify 呼び出し元）   |
+| `docs/30-workflows/completed-tasks/step-09-par-task-p0-01-verify-execution-engine-layer12/` | TASK-P0-01 成果物ディレクトリ |
 
 ### 参考資料
 

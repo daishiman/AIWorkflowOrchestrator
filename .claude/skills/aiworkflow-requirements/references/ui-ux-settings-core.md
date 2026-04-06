@@ -408,6 +408,10 @@ Settings 画面に `mainline access matrix` を追加し、現在利用可能な
 
 - `apps/desktop/src/renderer/views/SettingsView/index.tsx`
 - `apps/desktop/src/renderer/components/settings/AuthKeySection/index.tsx`
+- `apps/desktop/src/renderer/hooks/useAuthKeyManagement.ts`
+- `apps/desktop/src/renderer/components/skill/ApiKeySettingsPanel.tsx`
+
+現在は `useAuthKeyManagement` が AuthKeySection の状態・IPC 契約を集約し、`ApiKeySettingsPanel` は後方互換の委譲ラッパーとして `AuthKeySection` に接続する。
 
 ### 表示条件
 
@@ -418,12 +422,16 @@ Settings 画面に `mainline access matrix` を追加し、現在利用可能な
 
 ### 状態表示（`auth-key:exists` の `source` 優先）
 
+`AuthKeySection` は `ApiKeyStatus`（`not_set` / `validating` / `configured` / `error` / `check-failed`）を使い、
+`configured` の場合のみ `keySource`（`saved` / `env-fallback`）で表示バッジを切り替える。
+
 | `auth-key:exists` レスポンス | UI状態 | 表示意図 |
 | --- | --- | --- |
-| `{ exists: false, source: "not-set" }` | `not-set` | APIキー未設定を明示 |
-| `{ exists: true, source: "saved" }` | `saved` | 保存済みキーを優先表示 |
-| `{ exists: true, source: "env-fallback" }` | `env-fallback` | 環境変数 fallback 使用を表示 |
-| `source` 未提供（後方互換） | `hasCredentials` 補助判定 | 旧実装互換で状態を決定 |
+| `{ exists: false, source: "not-set" }` | `not_set` | APIキー未設定を明示 |
+| `{ exists: true, source: "saved" }` | `configured` + `keySource="saved"` | 保存済みキーを優先表示 |
+| `{ exists: true, source: "env-fallback" }` | `configured` + `keySource="env-fallback"` | 環境変数 fallback 使用を表示 |
+| `source` が想定外 | `configured` + `keySource=null` | 設定済みとして表示（表示名は「設定済み」） |
+| `electronAPI` 未提供 / `exists()` 例外 | `check-failed` | 状態確認に失敗したことを明示（ステータスメッセージ欄に `apiError` を表示する） |
 
 ### Phase 11 視覚検証
 

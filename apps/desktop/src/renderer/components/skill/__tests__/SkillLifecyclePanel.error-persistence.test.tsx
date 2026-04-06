@@ -191,27 +191,38 @@ function buildSnapshot(
 // ============================================================
 
 function setupCallbackCapture(): {
-  triggerCallback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void;
+  triggerCallback: (
+    snapshot: SkillCreatorWorkflowUiSnapshot | null,
+    errorMessage?: string,
+  ) => void;
 } {
   let capturedCallback:
-    | ((snapshot: SkillCreatorWorkflowUiSnapshot) => void)
+    | ((
+        snapshot: SkillCreatorWorkflowUiSnapshot | null,
+        errorMessage?: string,
+      ) => void)
     | undefined;
 
   mockOnWorkflowStateChanged.mockImplementation(
-    (cb: (snapshot: SkillCreatorWorkflowUiSnapshot) => void) => {
+    (
+      cb: (
+        snapshot: SkillCreatorWorkflowUiSnapshot | null,
+        errorMessage?: string,
+      ) => void,
+    ) => {
       capturedCallback = cb;
       return () => {};
     },
   );
 
   return {
-    triggerCallback: (snapshot) => {
+    triggerCallback: (snapshot, errorMessage) => {
       if (!capturedCallback) {
         throw new Error(
           "onWorkflowStateChanged callback が登録されていません。コンポーネントがレンダリングされているか確認してください。",
         );
       }
-      capturedCallback(snapshot);
+      capturedCallback(snapshot, errorMessage);
     },
   };
 }
@@ -329,6 +340,25 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
       expect.objectContaining({ currentPhase: "verify" }),
     );
     expect(mockSetWorkflowError).toHaveBeenCalledWith(null);
+  });
+
+  it("TC-EP-03b: errorMessage だけの state changed event でも workflowError が更新される", async () => {
+    const { triggerCallback } = setupCallbackCapture();
+
+    render(
+      <SkillLifecyclePanel
+        isOpen={true}
+        onClose={vi.fn()}
+        defaultTab="create"
+      />,
+    );
+
+    await act(async () => {
+      triggerCallback(null, "API key is invalid");
+    });
+
+    expect(mockSetWorkflowSnapshot).not.toHaveBeenCalled();
+    expect(mockSetWorkflowError).toHaveBeenCalledWith("API key is invalid");
   });
 
   // AC-3: handoffBundle の処理は currentPhase に関わらず変わらないこと
