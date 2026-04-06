@@ -26,6 +26,7 @@ import {
   registerRuntimeSkillCreatorHandlers,
   unregisterRuntimeSkillCreatorHandlers,
 } from "./creatorHandlers";
+import type { SkillCreatorOutputHandler } from "../services/runtime/SkillCreatorOutputHandler";
 import type {
   CreateSkillOptions,
   ExecuteTasksOptions,
@@ -128,6 +129,7 @@ export function registerSkillCreatorHandlers(
   mainWindow: BrowserWindow,
   skillCreatorService: SkillCreatorService,
   runtimeSkillCreatorService?: RuntimeSkillCreatorFacade,
+  outputHandler?: SkillCreatorOutputHandler,
 ): void {
   // skill-creator:detect-mode - リクエストからモードを判定
   ipcMain.handle(
@@ -675,7 +677,11 @@ export function registerSkillCreatorHandlers(
     },
   );
 
-  registerRuntimeSkillCreatorHandlers(mainWindow, runtimeSkillCreatorService);
+  registerRuntimeSkillCreatorHandlers(
+    mainWindow,
+    runtimeSkillCreatorService,
+    outputHandler,
+  );
 }
 
 /**

@@ -112,4 +112,33 @@ describe("SecretInput", () => {
 
     expect(screen.getByTestId("secret-input-field")).toBeDisabled();
   });
+
+  // W-SI-04: value プロパティと onChange が制御コンポーネントとして機能する
+  it("W-SI-04: reflects value prop in input field", () => {
+    render(
+      <SecretInput
+        value="test-api-key"
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+      />,
+    );
+
+    const input = screen.getByTestId("secret-input-field") as HTMLInputElement;
+    expect(input.value).toBe("test-api-key");
+  });
+
+  // W-SI-05: disabled のとき、入力と表示切替ボタンが両方無効化される
+  it("W-SI-05: disables both input field and toggle button when disabled", () => {
+    render(
+      <SecretInput
+        value="secret"
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+        disabled
+      />,
+    );
+
+    expect(screen.getByTestId("secret-input-field")).toBeDisabled();
+    expect(screen.getByTestId("secret-toggle")).toBeDisabled();
+  });
 });

@@ -1334,15 +1334,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
-| Global Navigation | L46 |
-| ChatViewナビゲーション | L348 |
-| ナビゲーションボタン仕様 | L378 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L394 |
-| テスト検証済み項目 | L408 |
-| アクセシビリティ対応事例 | L423 |
-| ナビゲーションパターンのベストプラクティス | L455 |
-| 関連ドキュメント | L467 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L476 |
+| Global Navigation | L47 |
+| ChatViewナビゲーション | L372 |
+| ナビゲーションボタン仕様 | L402 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L418 |
+| テスト検証済み項目 | L432 |
+| アクセシビリティ対応事例 | L447 |
+| ナビゲーションパターンのベストプラクティス | L479 |
+| 関連ドキュメント | L491 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L500 |
 
 ### references/ui-ux-panels.md
 
@@ -2561,12 +2561,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L9 |
 | 変更履歴 | L21 |
-| 背景 | L33 |
-| チェックリスト | L48 |
-| 契約ドリフト検出コマンド | L169 |
-| 関連ドキュメント | L199 |
-| 適用事例 | L213 |
-| 自動検出ツール（UT-TASK06-007） | L226 |
+| 背景 | L34 |
+| チェックリスト | L49 |
+| 契約ドリフト検出コマンド | L170 |
+| 関連ドキュメント | L200 |
+| 適用事例 | L214 |
+| Skill Creator IPC ハンドラー scope 分離マトリクス（TASK-UI-02） | L228 |
+| 自動検出ツール（UT-TASK06-007） | L254 |
 
 ### references/ipc-type-resolution-guide.md
 
@@ -2737,6 +2738,11 @@ node scripts/list-specs.js --topics
 | 8. worktree でのテスト実行と esbuild バージョン不一致 | L127 |
 | 関連ファイル | L139 |
 
+### references/lessons-learned-ipc-channel-whitelist-sync.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-UI-02 / UT-TASK06-007: IPC Channel whitelist 同期ガード | L6 |
+
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
@@ -2865,6 +2871,11 @@ node scripts/list-specs.js --topics
 | L-RT05-003: jest-dom matchers 使用前に setupFiles を確認する | L35 |
 | L-RT05-004: shared contract 変更は same-wave で canonical spec へ同期する | L48 |
 | L-RT05-005: worktree環境での esbuild platform mismatch 解消手順 | L61 |
+
+### references/lessons-learned-skill-creator-ipc-handler-scope.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-UI-02: Skill Creator IPC ハンドラー責務分離 | L6 |
 
 ### references/lessons-learned-skill-execute-hook-migration.md
 

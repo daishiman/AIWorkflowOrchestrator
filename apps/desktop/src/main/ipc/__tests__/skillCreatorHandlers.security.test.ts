@@ -71,6 +71,12 @@ vi.mock("../../services/skill/SkillCreatorService", () => ({
 // Import after mocking
 import { BrowserWindow } from "electron";
 import { IPC_CHANNELS } from "../../../preload/channels";
+
+// Session IPC チャンネル文字列（廃止確認用 T-05 専用）
+const SESSION_IPC = {
+  START_SESSION: "skill-creator:start-session",
+  ANSWER: "skill-creator:answer",
+} as const;
 import {
   registerSkillCreatorHandlers,
   unregisterSkillCreatorHandlers,
@@ -793,6 +799,20 @@ describe("SkillCreator IPC Security Tests (UT-9B-H-003)", () => {
       });
 
       expect(mockSkillCreatorService.executeTasks).toHaveBeenCalled();
+    });
+  });
+
+  // ============================================
+  // T-05: Session IPC チャンネル廃止確認（AC-2）
+  // ============================================
+
+  describe("T-05: Session IPC チャンネルが登録されていないこと", () => {
+    it("T-05a: START_SESSION チャンネルが handlerMap に存在しない", () => {
+      expect(handlerMap.has(SESSION_IPC.START_SESSION)).toBe(false);
+    });
+
+    it("T-05b: ANSWER チャンネルが handlerMap に存在しない", () => {
+      expect(handlerMap.has(SESSION_IPC.ANSWER)).toBe(false);
     });
   });
 });
