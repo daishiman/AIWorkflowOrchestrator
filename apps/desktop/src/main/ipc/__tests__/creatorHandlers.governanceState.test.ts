@@ -183,14 +183,16 @@ describe("creatorHandlers - deleteSession null service path (lines 643-645)", ()
     handlerMap.clear();
   });
 
-  // T-DEL-01: サービスが null のとき例外をスロー
+  // T-DEL-01: サービスが null のとき { success: false } を返す
   it("runtimeSkillCreatorService が null のとき例外をスローする", async () => {
     registerRuntimeSkillCreatorHandlers(mainWindow, undefined);
 
     const handler = handlerMap.get(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION)!;
-    await expect(
-      handler(createMockEvent(), { checkpointId: "some-id" }),
-    ).rejects.toThrow("利用できません");
+    const result = (await handler(createMockEvent(), {
+      checkpointId: "some-id",
+    })) as { success: boolean; error?: string };
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("利用できません");
   });
 });
 

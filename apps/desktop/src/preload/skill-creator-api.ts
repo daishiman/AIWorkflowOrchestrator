@@ -19,6 +19,7 @@ import type {
   CreateSkillOptions,
   ExecuteTasksOptions,
   ExecutionReport,
+  ApprovalRequestPayload as SharedApprovalRequestPayload,
   ExternalApiConnectionConfig,
   SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorImproveResponse,
@@ -44,6 +45,13 @@ interface IpcResult<T> {
   data?: T;
   error?: string;
 }
+
+/**
+ * approval:request push ペイロード型 (UT-SDK-07-APPROVAL-REQUEST-SURFACE-001)
+ *
+ * 正本は shared に置き、preload は alias として再公開する。
+ */
+export type ApprovalRequestPayload = SharedApprovalRequestPayload;
 
 /**
  * 進捗通知データ型
@@ -340,7 +348,7 @@ export interface SkillCreatorAPI {
   /**
    * セッションを削除する
    */
-  deleteSession: (checkpointId: string) => Promise<void>;
+  deleteSession: (checkpointId: string) => Promise<IpcResult<void>>;
 
   /**
    * 期限切れセッションを一括削除する
@@ -348,6 +356,16 @@ export interface SkillCreatorAPI {
   cleanupExpiredSessions: () => Promise<number>;
 
   // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
+
+  /**
+   * approval:request イベントを受信するリスナーを登録する (UT-SDK-07-APPROVAL-REQUEST-SURFACE-001)
+   * Main が pushApprovalRequest で送信したペイロードを Renderer に届ける。
+   * @param callback - approval リクエスト受信時のコールバック
+   * @returns クリーンアップ関数（removeListener 用）
+   */
+  onApprovalRequest: (
+    callback: (request: ApprovalRequestPayload) => void,
+  ) => () => void;
 
   /**
    * Shared approval channel 経由で承認応答を送信する (AC-4: enforcement)
@@ -652,13 +670,18 @@ export const skillCreatorAPI: SkillCreatorAPI = {
   ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL, { checkpointId }),
 
-  deleteSession: (checkpointId: string): Promise<void> =>
+  deleteSession: (checkpointId: string): Promise<IpcResult<void>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION, { checkpointId }),
 
   cleanupExpiredSessions: (): Promise<number> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS),
 
-  // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
+  // --- TASK-SDK-07 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 ---
+
+  onApprovalRequest: (
+    callback: (request: ApprovalRequestPayload) => void,
+  ): (() => void) =>
+    safeOn<ApprovalRequestPayload>(IPC_CHANNELS.APPROVAL_REQUEST, callback),
 
   respondToApproval: (
     sessionId: string,

@@ -2,6 +2,13 @@
 
 ## 役割
 
+||||||| Stash base
+## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync
+
+| 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync: approval:request surface の Phase 12 Task 1〜6 全完了（PASS）。`phase-12-documentation.md` ステータスを completed に更新。task-workflow-completed.md / task-workflow-backlog.md は既に同期済み |
+
+---
+
 ## 2026-04-06 - TASK-P0-09-U1 Phase 12 完了反映（skill-feedback 反映）
 
 ### 変更内容
@@ -15,25 +22,6 @@
 ---
 
 ## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
-
-### 変更内容
-- `assets/implementation-guide-template.md` の §6.3 UIコンポーネント実装パターンに `state owner / wrapper / presentation 責務分離パターン` テーブルを追加
-- `assets/documentation-changelog-template.md` に `### 周辺同期（same-wave）` セクションを追加し、Workflow-Local 同期と Global Skill Sync の区別を明示
-- `assets/documentation-changelog-template.md` の品質チェックリストに周辺同期確認 3 項目を追加（Feedback 1-2 / 1-3 対応）
-- 上記は skill-feedback-report.md の提案 1-2 / 1-3 の実装
-
----
-
-## 2026-04-06 - TASK-RT-03 skill-creation-result-panel Phase 12 close-out sync
-
-### 変更内容
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-11/` を実スクリーンショット 6 枚 + `manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` / `ui-sanity-visual-review.md` で完成
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-11/manual-test-checklist.md` を追加し、Phase 11 の manual test 見落としを補完
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-12/` に `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を追加
-- `phase-11-manual-test.md` に `画面カバレッジマトリクス` を追記し、validator warning を解消
-- `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を PASS
-- `index.md` / `artifacts.json` / `.claude/skills/aiworkflow-requirements/references/*` / `LOGS.md` 2ファイルを same-wave 更新
-- Step 2 は local-only props のため N/A で閉じた
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
@@ -45,6 +33,26 @@
 
 ---
 
+||||||| Stash base
+=======
+## 2026-04-06 - UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 validator hardening sync
+
+### 変更内容
+- `validate-phase-output.js` の Phase 11 docs-only 判定を fail-closed 化し、`index.md` と `artifacts.json` の両方が docs-only / NON_VISUAL 相当で一致した場合のみ non-visual 扱いに変更
+- Phase 11 補助成果物に `discovered-issues.md` を必須化し、docs-only でも発見課題を 0 件出力するルールを明文化
+- `phase12-task-spec-compliance-template.md` に `task-workflow-completed.md` / `task-workflow-backlog.md` の ledger parity を direct root evidence として追加
+- Phase 12 出力の `phase12-task-spec-compliance-check.md` に ledger parity 行を追加し、completed / backlog の直接照合を明示
+
+## 2026-04-06 - UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 canonical template sync
+
+### 変更内容
+- `assets/phase-spec-template.md` に Task / Step 分離ルールを追加し、plan と current fact の境界を本文レベルで明示
+- Phase 11 用の `NON_VISUAL` / `VISUAL` 方針を conditional block で整理し、screenshot 前提の混入を抑止
+- `assets/unassigned-task-template.md` に「苦戦箇所」必須欄を追加し、Phase 12 の skill-feedback へ流用しやすい粒度へ整理
+- `phase12-task-spec-compliance-template.md` の root evidence を `task-workflow-completed.md` / `task-workflow-backlog.md` まで拡張し、Phase 12 の突合対象を明示
+- `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
+
+>>>>>>> Stashed changes
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
 
 ## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映

@@ -70,10 +70,12 @@ import {
   useWorkflowSnapshot,
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
+import { ApprovalRequestPanel } from "./ApprovalRequestPanel";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
 import { SkillCreationResultPanel } from "./SkillCreationResultPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
+import type { ApprovalRequestPayload } from "@repo/shared/types";
 
 type SkillCreatorMode =
   | "collaborative"
@@ -116,7 +118,7 @@ type SessionResumeApi = {
   resumeSession?: (
     checkpointId: string,
   ) => Promise<SkillCreatorSessionResumeResult>;
-  deleteSession?: (checkpointId: string) => Promise<void>;
+  deleteSession?: (checkpointId: string) => Promise<IpcResult<void>>;
   cleanupExpiredSessions?: () => Promise<number>;
 };
 
@@ -175,6 +177,15 @@ type SkillCreatorRuntimeApi = {
       externalDestinations: string[];
     }>
   >;
+  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval:request surface
+  onApprovalRequest?: (
+    callback: (request: ApprovalRequestPayload) => void,
+  ) => () => void;
+  respondToApproval?: (
+    sessionId: string,
+    operationId: string,
+    action: "approve" | "reject",
+  ) => Promise<IpcResult<unknown>>;
 };
 
 type SessionEntry = {
@@ -359,23 +370,17 @@ const severityStyles: Record<ImproveSuggestion["severity"], string> = {
 };
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   const runtimeWindow = window as Window & {
-    electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
     skillCreatorAPI?: SkillCreatorRuntimeApi;
   };
 
-  return (
-    runtimeWindow.electronAPI?.skillCreator ??
-    runtimeWindow.skillCreatorAPI ??
-    null
-  );
+  return runtimeWindow.skillCreatorAPI ?? null;
 }
 
 function getSessionResumeApi(): SessionResumeApi | null {
   const w = window as Window & {
     skillCreatorAPI?: SessionResumeApi;
-    electronAPI?: { skillCreator?: SessionResumeApi };
   };
-  return w.skillCreatorAPI ?? w.electronAPI?.skillCreator ?? null;
+  return w.skillCreatorAPI ?? null;
 }
 
 function extractSkillNameFromPath(skillPath: string): string {
@@ -492,6 +497,10 @@ export function SkillLifecyclePanel({
     modelName: string;
     externalDestinations: string[];
   } | null>(null);
+
+  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval request state
+  const [approvalRequest, setApprovalRequest] =
+    useState<ApprovalRequestPayload | null>(null);
   // TASK-RT-03: raw plan/execute detail を local state に保持
   const [rawPlanDetail, setRawPlanDetail] =
     useState<RuntimeSkillCreatorPlanResult | null>(null);
@@ -669,6 +678,16 @@ export function SkillLifecyclePanel({
     });
   }, [applyWorkflowSnapshot]);
 
+  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval:request listener
+  useEffect(() => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.onApprovalRequest) return;
+
+    return skillCreatorApi.onApprovalRequest((request) => {
+      setApprovalRequest(request);
+    });
+  }, []);
+
   // TASK-P0-08: アプリ起動時のセッション検出（一度のみ実行）
   useEffect(() => {
     const sessionApi = getSessionResumeApi();
@@ -812,6 +831,42 @@ export function SkillLifecyclePanel({
     clearHandoffGuidance();
   };
 
+  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval handlers
+  const submitApprovalResponse = async (
+    sessionId: string,
+    operationId: string,
+    action: "approve" | "reject",
+  ) => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.respondToApproval) {
+      const message = "approval response API が利用できません。";
+      setLocalError(message);
+      throw new Error(message);
+    }
+
+    const result = await skillCreatorApi.respondToApproval(
+      sessionId,
+      operationId,
+      action,
+    );
+    if (!result.success) {
+      const message = result.error ?? "approval response に失敗しました。";
+      setLocalError(message);
+      throw new Error(message);
+    }
+
+    setLocalError(null);
+    setApprovalRequest(null);
+  };
+
+  const handleApprovalApprove = async (
+    sessionId: string,
+    operationId: string,
+  ) => submitApprovalResponse(sessionId, operationId, "approve");
+
+  const handleApprovalReject = async (sessionId: string, operationId: string) =>
+    submitApprovalResponse(sessionId, operationId, "reject");
+
   const _handleSubmitWorkflowInput = async () => {
     if (!workflowSnapshot?.awaitingUserInput) {
       return;
@@ -953,9 +1008,15 @@ export function SkillLifecyclePanel({
         resumableSessions.map((session) => session.checkpointId);
       if (sessionApi?.deleteSession) {
         await Promise.allSettled(
-          targetIds.map((checkpointId) =>
-            sessionApi.deleteSession!(checkpointId),
-          ),
+          targetIds.map(async (checkpointId) => {
+            const result = await sessionApi.deleteSession!(checkpointId);
+            if (!result.success) {
+              console.error(
+                "[P0-08] deleteSession failed:",
+                result.error ?? "unknown error",
+              );
+            }
+          }),
         );
       }
       setShowResumePrompt(false);
@@ -1035,7 +1096,11 @@ export function SkillLifecyclePanel({
       if (!sessionApi?.deleteSession) return;
 
       try {
-        await sessionApi.deleteSession(checkpointId);
+        const result = await sessionApi.deleteSession(checkpointId);
+        if (!result.success) {
+          setLocalError(result.error ?? "セッションの削除に失敗しました。");
+          return;
+        }
         const next = resumableSessions.filter(
           (s) => s.checkpointId !== checkpointId,
         );
@@ -1690,6 +1755,15 @@ export function SkillLifecyclePanel({
         >
           {currentSurfaceError}
         </div>
+      ) : null}
+
+      {/* UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval request surface */}
+      {approvalRequest ? (
+        <ApprovalRequestPanel
+          request={approvalRequest}
+          onApprove={handleApprovalApprove}
+          onReject={handleApprovalReject}
+        />
       ) : null}
 
       {generationProgress ? (

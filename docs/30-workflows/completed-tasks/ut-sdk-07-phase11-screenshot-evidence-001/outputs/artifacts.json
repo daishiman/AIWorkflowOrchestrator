@@ -1,0 +1,102 @@
+{
+  "workflow": "ut-sdk-07-phase11-screenshot-evidence-001",
+  "task_id": "UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001",
+  "created_date": "2026-04-06",
+  "status": "completed",
+  "task_type": "docs-only",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements.md"]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/design.md"]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review.md"]
+    },
+    "phase-4": {
+      "name": "テスト作成（N/A）",
+      "status": "not_applicable",
+      "reason": "docs-only タスク。コード変更なし・自動テスト不要",
+      "artifacts": []
+    },
+    "phase-5": {
+      "name": "実装（N/A）",
+      "status": "not_applicable",
+      "reason": "docs-only タスク。手動操作のみ・コード変更なし",
+      "artifacts": []
+    },
+    "phase-6": {
+      "name": "テスト拡充（N/A）",
+      "status": "not_applicable",
+      "reason": "docs-only タスク",
+      "artifacts": []
+    },
+    "phase-7": {
+      "name": "カバレッジ確認（N/A）",
+      "status": "not_applicable",
+      "reason": "docs-only タスク",
+      "artifacts": []
+    },
+    "phase-8": {
+      "name": "リファクタリング（N/A）",
+      "status": "not_applicable",
+      "reason": "docs-only タスク",
+      "artifacts": []
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-check.md"]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review.md"]
+    },
+    "phase-11": {
+      "name": "手動テスト（VISUAL）",
+      "status": "completed",
+      "visual_type": "VISUAL",
+      "artifacts": [
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/manual-test-checklist.md",
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/manual-test-report.md",
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/discovered-issues.md",
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/ui-sanity-visual-review.md",
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/screenshot-plan.json",
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/screenshot-coverage.md",
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/screenshots/terminal_handoff-handoff-guidance.png",
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/screenshots/disclosure-summary-display.png",
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/screenshots/integrated-api-success-comparison.png",
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/screenshots/phase11-capture-metadata.json",
+        "docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/manual-test-result.md"
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "blocked",
+      "artifacts": []
+    }
+  },
+  "dependencies": ["TASK-SDK-07"],
+  "source_task": "TASK-SDK-07 Phase 12 unassigned-task-detection",
+  "source_unassigned_task": "docs/30-workflows/unassigned-task/task-ut-sdk-07-phase11-screenshot-evidence-001.md"
+}

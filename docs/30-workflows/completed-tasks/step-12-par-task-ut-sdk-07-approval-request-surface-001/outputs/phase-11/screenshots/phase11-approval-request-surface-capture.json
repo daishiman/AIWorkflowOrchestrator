@@ -1,0 +1,44 @@
+[
+  {
+    "tcId": "TC-01",
+    "file": "TC-01-approval-pending-light.png",
+    "scenario": "pending-light",
+    "url": "http://127.0.0.1:5199/phase11-approval-request-surface.html?scenario=pending-light",
+    "capturedAt": "2026-04-06T12:12:46.858Z"
+  },
+  {
+    "tcId": "TC-02",
+    "file": "TC-02-approval-pending-dark.png",
+    "scenario": "pending-dark",
+    "url": "http://127.0.0.1:5199/phase11-approval-request-surface.html?scenario=pending-dark",
+    "capturedAt": "2026-04-06T12:12:47.109Z"
+  },
+  {
+    "tcId": "TC-03",
+    "file": "TC-03-approval-expired-light.png",
+    "scenario": "expired-light",
+    "url": "http://127.0.0.1:5199/phase11-approval-request-surface.html?scenario=expired-light",
+    "capturedAt": "2026-04-06T12:12:48.515Z"
+  },
+  {
+    "tcId": "TC-04",
+    "file": "TC-04-approval-expired-dark.png",
+    "scenario": "expired-dark",
+    "url": "http://127.0.0.1:5199/phase11-approval-request-surface.html?scenario=expired-dark",
+    "capturedAt": "2026-04-06T12:12:49.980Z"
+  },
+  {
+    "tcId": "TC-05",
+    "file": "TC-05-approval-approved-light.png",
+    "scenario": "approved-light",
+    "url": "http://127.0.0.1:5199/phase11-approval-request-surface.html?scenario=approved-light",
+    "capturedAt": "2026-04-06T12:12:51.157Z"
+  },
+  {
+    "tcId": "TC-06",
+    "file": "TC-06-approval-rejected-light.png",
+    "scenario": "rejected-light",
+    "url": "http://127.0.0.1:5199/phase11-approval-request-surface.html?scenario=rejected-light",
+    "capturedAt": "2026-04-06T12:12:52.368Z"
+  }
+]

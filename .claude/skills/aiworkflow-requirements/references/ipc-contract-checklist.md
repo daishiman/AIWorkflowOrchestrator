@@ -22,6 +22,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                          |
 | ---------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-06 | 1.5.0      | TASK-UI-02 ConversationPanel孤立解消: Skill Creator IPC ハンドラー scope 分離マトリクス（Session vs Runtime）追加。`CONFIGURE_API` / `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` の `creatorHandlers.ts` 移管を whitelist 登録確認事項として追記 |
 | 2026-03-08 | 1.4.0      | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001: CC-7 を7項目に拡充（CC-7-1〜CC-7-7）。Renderer側の存在確認・二重チェック・Array.isArray・type predicate・フォールバックUI・try-catch・non-null assertion禁止。検出コマンドとテストパターン参照を追加 |
 | 2026-03-07 | 1.3.0      | 06-TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 を反映。CC-7（レスポンス配列フィールドの防御検証）を追加                                                                                                                                           |
 | 2026-03-06 | 1.2.0      | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001 を反映。shared transport DTO 正本化、`IPCResponse<T>` envelope、event payload と quick-reference 同期の確認項目を追加                                                                                   |
@@ -220,6 +221,33 @@ rg -n "typeof .*string|=== \\\"\\\"" apps/desktop/src/main/ipc | rg -v "trim"
 | UT-IPC-AUTH-HANDLE-DUPLICATE-001            | `auth:*`       | 通常経路/ fallback経路で `ipcMain.handle` 登録式が重複し監査ノイズ化                               | 共通登録ヘルパー + fallback配列登録へ集約し、AUTH 5チャネル回帰テストで契約固定                                                                                                                                   |
 | TASK-FIX-AUTH-MODE-CONTRACT-ALIGNMENT-001   | `auth-mode:*`  | Main / Preload / Renderer が `get/status/validate/changed` で別shapeを持ち、error code も分裂      | `packages/shared/src/types/auth-mode.ts` を正本化し、`IPCResponse<T>` / `AuthModeStatus` / event payload を import / re-export に統一                                                                             |
 | TASK-FIX-SETTINGS-APIKEY-CONTRACT-GUARD-001 | `api-key:list` | Renderer側で `result.data!.providers` の non-null assertion 使用、配列要素の type predicate 未実装 | CC-7 を3項目→7項目に拡充。`Array.isArray` + P49準拠 type predicate + P48準拠 non-null assertion 禁止でRendererの防御を標準化                                                                                      |
+| TASK-UI-02 | `CONFIGURE_API` / `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` | `SkillCreatorIpcBridge` と `creatorHandlers.ts` の両方にハンドラーが分散し、Session IPC と Runtime IPC で同チャンネルを処理する構造が発生 | `SkillCreatorIpcBridge` の責務を `SKILL_CREATOR_SESSION_START` / `SKILL_CREATOR_SESSION_ANSWER` のみに限定。`CONFIGURE_API` / `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` を `creatorHandlers.ts` へ一元移管し、`ALLOWED_INVOKE_CHANNELS` whitelist を `preload/channels.ts` に同期 |
+
+---
+
+## Skill Creator IPC ハンドラー scope 分離マトリクス（TASK-UI-02）
+
+IPC チャンネルを Session scope と Runtime scope の2軸で管理する。
+
+| チャンネル | scope | 正本ハンドラー | 備考 |
+| --- | --- | --- | --- |
+| `SKILL_CREATOR_SESSION_START` | Session | `SkillCreatorIpcBridge` | セッション起動専任 |
+| `SKILL_CREATOR_SESSION_ANSWER` | Session | `SkillCreatorIpcBridge` | 回答受信専任 |
+| `CONFIGURE_API` | Runtime | `creatorHandlers.ts` | TASK-UI-02 で Session → Runtime へ移管 |
+| `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` | Runtime | `creatorHandlers.ts` | TASK-UI-02 で Session → Runtime へ移管 |
+| `SKILL_CREATOR_OUTPUT_READY` | Runtime event | `creatorHandlers.ts` | 既存 Runtime 管理 |
+| `SKILL_CREATOR_OPEN_SKILL` | Runtime event | `creatorHandlers.ts` | 既存 Runtime 管理 |
+
+### whitelist 登録確認（ALLOWED_INVOKE_CHANNELS）
+
+`CONFIGURE_API` / `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` が `preload/channels.ts` の `ALLOWED_INVOKE_CHANNELS` に登録されていることを確認する。
+
+```bash
+# whitelist 登録確認コマンド
+grep -n "CONFIGURE_API\|SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED" apps/desktop/src/preload/channels.ts
+```
+
+**SSoT reference**: `packages/shared/src/ipc/channels.ts` の `SKILL_CREATOR_EXTERNAL_API_CHANNELS` が正本。`preload/channels.ts` の whitelist は shared 正本と同期していること（関連未タスク: UT-TASK06-007）。
 
 ---
 
