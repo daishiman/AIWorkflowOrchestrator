@@ -12,7 +12,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { renderHook, act, render, screen } from "@testing-library/react";
 import {
   useAppStore,
   useCreateSkill,
@@ -21,6 +21,7 @@ import {
 } from "../../../store";
 import type { SkillAnalysis } from "@repo/shared/types/skill-improver";
 import type { SkillMetadata, ImportedSkill } from "@repo/shared";
+import type { SkillCreatorWorkflowUiSnapshot } from "@repo/shared/types/skillCreator";
 
 // ==========================================================================
 // モックデータ
@@ -494,6 +495,118 @@ describe("G2: Store駆動ライフサイクル統合テスト", () => {
 
       expect(useAppStore.getState().skillError).toContain("改善適用に失敗");
       expect(useAppStore.getState().isImproving).toBe(false);
+    });
+  });
+
+  // ========================================================================
+  // INT-01~04: ConversationalInterview 統合確認（Phase 6 追加）
+  // ========================================================================
+  describe("G2-INT: ConversationalInterview 統合確認", () => {
+    it("INT-01: ConversationalInterview は interview フェーズの snapshot でマウントされる", async () => {
+      const { ConversationalInterview } =
+        await import("../ConversationalInterview");
+
+      const snapshot: SkillCreatorWorkflowUiSnapshot = {
+        planId: "plan-int-1",
+        currentPhase: "review",
+        awaitingUserInput: {
+          requestId: "req-int-1",
+          reason: "plan_review",
+          title: "INT-01",
+          prompt: "統合テスト質問",
+          kind: "single_select",
+          options: [{ id: "opt-1", label: "選択肢1" }],
+          requestedAt: new Date().toISOString(),
+        },
+        verifyResult: null,
+        resumeTokenEnvelope: {
+          version: "task-sdk-02-v1",
+          planId: "plan-int-1",
+          currentPhase: "review",
+          artifactCount: 0,
+          updatedAt: new Date().toISOString(),
+        },
+      };
+
+      render(
+        <ConversationalInterview
+          workflowSnapshot={snapshot}
+          onSubmit={vi.fn().mockResolvedValue(undefined)}
+        />,
+      );
+
+      expect(
+        screen.getByTestId("conversational-interview"),
+      ).toBeInTheDocument();
+    });
+
+    it("INT-02: single_select widget が ConversationalInterview 内に表示される", async () => {
+      const { ConversationalInterview } =
+        await import("../ConversationalInterview");
+
+      const snapshot: SkillCreatorWorkflowUiSnapshot = {
+        planId: "plan-int-2",
+        currentPhase: "review",
+        awaitingUserInput: {
+          requestId: "req-int-2",
+          reason: "plan_review",
+          title: "INT-02",
+          prompt: "widget 統合確認",
+          kind: "single_select",
+          options: [
+            { id: "w-a", label: "Widget A" },
+            { id: "w-b", label: "Widget B" },
+          ],
+          requestedAt: new Date().toISOString(),
+        },
+        verifyResult: null,
+        resumeTokenEnvelope: {
+          version: "task-sdk-02-v1",
+          planId: "plan-int-2",
+          currentPhase: "review",
+          artifactCount: 0,
+          updatedAt: new Date().toISOString(),
+        },
+      };
+
+      render(
+        <ConversationalInterview
+          workflowSnapshot={snapshot}
+          onSubmit={vi.fn().mockResolvedValue(undefined)}
+        />,
+      );
+
+      expect(screen.getByTestId("single-select-chips")).toBeInTheDocument();
+      expect(screen.getByTestId("chip-w-a")).toBeInTheDocument();
+      expect(screen.getByTestId("chip-w-b")).toBeInTheDocument();
+    });
+
+    it("INT-04: SkillCreatorResultPanel は skill/ ディレクトリから正しくインポートできる", async () => {
+      const { SkillCreatorResultPanel } =
+        await import("../SkillCreatorResultPanel");
+
+      const payload = {
+        skillName: "test-skill",
+        savedPath: "/project/.claude/skills/test-skill/SKILL.md",
+        content: "name: test-skill",
+        requiresOverwriteConfirm: false,
+      };
+
+      render(
+        <SkillCreatorResultPanel
+          payload={payload}
+          onOpenSkill={vi.fn()}
+          onConfirmOverwrite={vi.fn()}
+        />,
+      );
+
+      // SkillCreatorResultPanel はclassベースのルートdivを持つ（data-testidなし）
+      expect(
+        screen.getByText("スキルを生成しました: test-skill"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "スキルを開く" }),
+      ).toBeInTheDocument();
     });
   });
 

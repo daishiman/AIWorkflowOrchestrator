@@ -102,6 +102,38 @@ describe("SingleSelectChips", () => {
     expect(onSelect).not.toHaveBeenCalled();
   });
 
+  // W-SS-01: 選択肢が3件以上あるとき、全件レンダリングされる
+  it("W-SS-01: renders all options when 3 or more are provided", () => {
+    const threeOptions: SkillCreatorUserInputOption[] = [
+      { id: "x", label: "X" },
+      { id: "y", label: "Y" },
+      { id: "z", label: "Z" },
+    ];
+    render(
+      <SingleSelectChips
+        options={threeOptions}
+        selectedId={null}
+        onSelect={vi.fn()}
+      />,
+    );
+
+    const radios = screen.getAllByRole("radio");
+    expect(radios).toHaveLength(3);
+    expect(screen.getByText("X")).toBeInTheDocument();
+    expect(screen.getByText("Y")).toBeInTheDocument();
+    expect(screen.getByText("Z")).toBeInTheDocument();
+  });
+
+  // W-SS-05: options が空配列のとき、エラーにならない
+  it("W-SS-05: renders empty container without error when options is empty", () => {
+    const { container } = render(
+      <SingleSelectChips options={[]} selectedId={null} onSelect={vi.fn()} />,
+    );
+
+    expect(screen.getByRole("radiogroup")).toBeInTheDocument();
+    expect(container.querySelectorAll('[role="radio"]')).toHaveLength(0);
+  });
+
   // TC-B04: 選択肢が1つだけの場合
   it("renders correctly with a single option (TC-B04)", () => {
     const singleOption: SkillCreatorUserInputOption[] = [
