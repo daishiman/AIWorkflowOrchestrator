@@ -1,0 +1,41 @@
+{
+  "taskId": "TASK-UI-01",
+  "phase": 11,
+  "createdAt": "2026-04-06",
+  "status": "captured",
+  "note": "Electron アプリ起動環境が必要。ルーティング変更のみのため既存コンポーネント外観に変更なし。",
+  "screenshots": [
+    {
+      "id": "ss-01",
+      "description": "SkillCenterView — 作成を始める CTA 表示",
+      "trigger": "skillCenter 表示",
+      "targetElement": "skill-lifecycle-cta-create",
+      "status": "captured",
+      "file": "outputs/phase-11/screenshots/ss-01-skill-center-initial.png"
+    },
+    {
+      "id": "ss-02",
+      "description": "SkillLifecyclePanel — 一次導線から開いた初期状態",
+      "trigger": "skill-lifecycle-cta-create クリック後",
+      "targetElement": "SkillLifecyclePanel root",
+      "status": "captured",
+      "file": "outputs/phase-11/screenshots/ss-02-skill-lifecycle-panel.png"
+    },
+    {
+      "id": "ss-03",
+      "description": "AppDock — skillLifecycle 表示中に skillCenter がアクティブ",
+      "trigger": "skillLifecycle ビュー表示中",
+      "targetElement": "AppDock nav",
+      "status": "captured",
+      "file": "outputs/phase-11/screenshots/ss-03-app-dock-active-skill-center.png"
+    },
+    {
+      "id": "ss-04",
+      "description": "SkillCenterView ヘッダー — +新規作成 ボタン（後方互換）",
+      "trigger": "skillCenter 表示",
+      "targetElement": "header-create-cta",
+      "status": "captured",
+      "file": "outputs/phase-11/screenshots/ss-04-header-create-cta.png"
+    }
+  ]
+}

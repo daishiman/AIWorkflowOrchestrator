@@ -75,6 +75,25 @@ outputs/phase-12/documentation-changelog.md
 
 - {{topic-map更新内容}}
 
+### 周辺同期（same-wave） {{STATUS_EMOJI}}
+
+#### Workflow-Local 同期（当該タスク範囲内）
+
+| ファイル | 更新内容 |
+| -------- | -------- |
+| `outputs/phase-12/*.md` | Phase 12 成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / compliance-check） |
+| `index.md` | ステータス・phase 完了状態の更新 |
+| `artifacts.json` | deliverables / phase 状態の更新 |
+
+#### Global Skill Sync（スキル正本への反映）
+
+| ファイル | 更新内容 |
+| -------- | -------- |
+| `aiworkflow-requirements/LOGS.md` | close-out sync 記録 |
+| `task-specification-creator/LOGS.md` | close-out sync 記録 |
+| `indexes/topic-map.md` + `indexes/keywords.json` | `generate-index.js` 再実行 |
+| 関連 references/ | skill-feedback-report に基づく改善反映 |
+
 ## 変更内容サマリー
 
 ### {{PRIMARY_SPEC_FILE}} (v{{OLD_VERSION}} → v{{NEW_VERSION}})
@@ -126,3 +145,6 @@ outputs/phase-12/documentation-changelog.md
 - [ ] Step 2: 更新判断の根拠が明記されているか
 - [ ] topic-map.md: 新セクション追加時に更新されているか
 - [ ] 変更内容サマリー: 全更新ファイルが列挙されているか
+- [ ] 周辺同期: Workflow-Local 同期ファイル（index.md / artifacts.json / outputs/phase-12/*.md）が列挙されているか
+- [ ] 周辺同期: Global Skill Sync（aiworkflow-requirements LOGS.md / task-specification-creator LOGS.md 2ファイル）が明示されているか
+- [ ] 周辺同期: skill-feedback-report に記載した改善提案がスキル正本に反映されているか

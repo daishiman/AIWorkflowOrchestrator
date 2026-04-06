@@ -73,6 +73,39 @@ vi.mock("../components/skill/SkillManagementPanel", () => ({
   SkillManagementPanel: () => <div data-testid="skill-management-panel-stub" />,
 }));
 
+vi.mock("../components/skill/SkillLifecyclePanel", () => ({
+  SkillLifecyclePanel: ({
+    onClose,
+    onOpenWizard,
+  }: {
+    onClose?: () => void;
+    onOpenWizard?: () => void;
+  }) => (
+    <div
+      data-testid="skill-lifecycle-panel-stub"
+      data-has-open-wizard={onOpenWizard ? "true" : "false"}
+    >
+      <button type="button" onClick={() => onClose?.()}>
+        close
+      </button>
+    </div>
+  ),
+}));
+
+vi.mock("@repo/shared/types/auth-mode", () => ({
+  AUTH_MODE_ERROR_CODES: {
+    INVALID_SENDER: "auth-mode/invalid-sender",
+    INVALID_MODE: "auth-mode/invalid-mode",
+    NO_CREDENTIALS: "auth-mode/no-credentials",
+    NO_API_KEY: "auth-mode/no-api-key",
+    NO_SUBSCRIPTION_TOKEN: "auth-mode/no-subscription-token",
+    STORAGE_FAILED: "auth-mode/storage-failed",
+    STORAGE_READ_FAILED: "auth-mode/storage-read-failed",
+    UNKNOWN_ERROR: "auth-mode/unknown-error",
+  },
+  DEFAULT_AUTH_MODE: "subscription",
+}));
+
 vi.mock("../views/SkillChainBuilder", () => ({
   SkillChainBuilder: () => <div data-testid="skill-chain-builder-stub" />,
 }));
@@ -232,6 +265,38 @@ describe("App mainline shell", () => {
     ).toBeInTheDocument();
   });
 
+  it("advanced/skill-center で currentView=skillLifecycle のとき SkillLifecyclePanel を描画する", async () => {
+    useAppStore.setState({
+      currentView: "skillLifecycle",
+      viewHistory: ["skillCenter", "skillLifecycle"],
+    });
+    window.history.pushState({}, "", "/advanced/skill-center");
+
+    render(<App />);
+
+    expect(
+      await screen.findByTestId("skill-lifecycle-panel-stub"),
+    ).toBeInTheDocument();
+  });
+
+  it("legacy shell で currentView=skillLifecycle のとき dock currentView が skillCenter に正規化される", async () => {
+    useAppStore.setState({
+      currentView: "skillLifecycle",
+      viewHistory: ["skillCenter", "skillLifecycle"],
+    });
+
+    render(<App />);
+
+    const appDocks = await screen.findAllByTestId("app-dock");
+    const desktopDock = appDocks.find(
+      (dock) => dock.getAttribute("data-mode") === "desktop",
+    );
+    expect(desktopDock?.getAttribute("data-current-view")).toBe("skillCenter");
+    expect(
+      await screen.findByTestId("skill-lifecycle-panel-stub"),
+    ).toBeInTheDocument();
+  });
+
   it("mobile legacy shell では dock currentView が skillCenter に正規化される", async () => {
     Object.defineProperty(window, "innerWidth", {
       value: 360,
@@ -244,8 +309,8 @@ describe("App mainline shell", () => {
       configurable: true,
     });
     useAppStore.setState({
-      currentView: "skillManagement",
-      viewHistory: ["skillCenter", "skillManagement"],
+      currentView: "skillLifecycle",
+      viewHistory: ["skillCenter", "skillLifecycle"],
       responsiveMode: "mobile",
       windowSize: { width: 360, height: 800 },
     });

@@ -124,14 +124,14 @@ setAdapterIsRetrying((prev) => ({ ...prev, [provider]: true }));
 
 ---
 
-## TASK-RT-03: SkillCreationResultPanel 実装知見 (2026-03-30)
+## TASK-RT-03: SkillCreationResultPanel 実装知見 (2026-04-06)
 
 ### 概要
 
-Plan/Execute 結果詳細パネルのUIコンポーネント実装タスク。
-新規コンポーネント: ErrorBanner.tsx, PlanResultDetailPanel.tsx, ExecuteResultDetailPanel.tsx, result-panel-parts.tsx
-修正: SkillLifecyclePanel.tsx（rawPlanDetail/rawExecuteDetail local state 追加）
-テスト: 53件（ErrorBanner:5件, PlanResultDetailPanel:14+件, ExecuteResultDetailPanel:11+件）
+Plan / Execute / Verify 結果を束ねる UI orchestration wrapper 実装タスク。
+新規コンポーネント: SkillCreationResultPanel.tsx, ErrorBanner.tsx, PlanResultDetailPanel.tsx, ExecuteResultDetailPanel.tsx, result-panel-parts.tsx
+修正: SkillLifecyclePanel.tsx（rawPlanDetail/rawExecuteDetail local state 追加、verifyDetail の owner 維持、prepare reset で旧 result surface 破棄、verify fetch retry 導線追加）、ExecuteResultDetailPanel.tsx（persistResult.skillPath/files/persistError 表示）
+テスト: targeted suite PASS（SkillCreationResultPanel / ExecuteResultDetailPanel / SkillLifecyclePanel）
 
 ### L-RT-03-001: raw result の保持場所選定
 
@@ -198,6 +198,70 @@ Plan/Execute 結果詳細パネルのUIコンポーネント実装タスク。
 
 **ポイント**: 2つ以上のパネルコンポーネントが同一UI構造を持つ場合は early に抽出する。後から抽出すると型定義の修正が広範囲に波及する。
 
+### L-RT-03-005: orchestration wrapper は parent state owner と分離する
+
+**カテゴリ**: コンポーネント設計 / 責務分離
+
+**課題**: wrapper に detail 表示だけでなく raw result の所有権まで持たせると、reverify や phase 遷移時の状態クリアが分散しやすい。
+
+**判断**: `SkillCreationResultPanel` は表示専用の wrapper にして、`SkillLifecyclePanel` を rawPlanDetail / rawExecuteDetail / verifyDetail の owner とする。
+
+**再発条件**:
+- wrapper 側で state を持ち始める場合
+- detail panel の再利用性より、親子の state owner 境界が曖昧になる場合
+
+**解決策**: parent は state owner、wrapper は composition only、detail panel は presentation only に閉じる。
+
+**ポイント**: UI wrapper を増やす時は「誰が state を持つか」を先に固定しないと、後から clear 条件が追いにくい。
+
+### L-RT-03-006: execute の保存結果 surface は failure mode を分けて見せる
+
+**カテゴリ**: UI/UX / エラー追跡
+
+**課題**: execute が成功しても保存失敗が起きるケースでは、実行結果と保存結果を同じ見た目で処理すると原因追跡が難しい。
+
+**判断**: `ExecuteResultDetailPanel` に `Persist Result` と `Persist Error` を別セクションで表示する。
+
+**再発条件**:
+- 成功/失敗の 2 値だけで表示を設計しようとする場合
+- persist の結果を execute の success flag に吸収しようとする場合
+
+**解決策**: success flag とは独立に persist surface を持ち、`skillPath` / `files` / `persistError` を別枠で出す。
+
+**ポイント**: 「実行できた」ことと「保存できた」ことは同義ではない。後続の障害調査では、両方を切り分けて見せる方が強い。
+
+### L-RT-03-007: verify fetch failure は wrapper 内の retry surface に閉じる
+
+**カテゴリ**: エラーハンドリング / UI 責務分離
+
+**課題**: verify detail の取得失敗を親の global error banner に流すと、結果 surface と操作エラーが混ざってしまう。
+
+**判断**: `SkillCreationResultPanel` が `verifyError` を受け取り、`VerifyResultDetailPanel` の error banner と retry ボタンで閉じる。
+
+**再発条件**:
+- detail panel の error と親 surface の error を同じ banner に寄せたくなる場合
+- retry action を reverify action と混同する場合
+
+**解決策**: error banner の retry は fetch retry に限定し、reverify は verify owner 側の action として残す。
+
+**ポイント**: 取得失敗と再検証要求は failure mode が違う。UI でも操作導線を分ける方が、原因と回復手順が見えやすい。
+
+### L-RT-03-008: new prepare 開始時は in-flight verify request を無効化する
+
+**カテゴリ**: 非同期制御 / ライフサイクル管理
+
+**課題**: 旧 request が遅れて返ってくると、新しい prepare の結果 surface を上書きしてしまう。
+
+**判断**: prepare 開始時に `clearPlanExecutionState()` で verify request の世代を進め、古い request を破棄する。
+
+**再発条件**:
+- 複数の非同期 load が同一 state を更新する場合
+- phase 遷移時に前フェーズの result を残したままにする場合
+
+**解決策**: request sequence を持ち、世代が古い response は state 更新しない。
+
+**ポイント**: UI の再試行や再生成は「前のリクエストを無効にする」こととセットで設計すると、見た目の残像が消しやすい。
+
 ---
 
 ### 苦戦箇所
@@ -213,9 +277,10 @@ Plan/Execute 結果詳細パネルのUIコンポーネント実装タスク。
 
 | リソース                                                                                   | 用途         |
 | ------------------------------------------------------------------------------------------ | ------------ |
+| `apps/desktop/src/renderer/components/skill/SkillCreationResultPanel.tsx`                  | 実装アンカー |
 | `apps/desktop/src/renderer/components/skill/ErrorBanner.tsx`                               | 実装アンカー |
 | `apps/desktop/src/renderer/components/skill/PlanResultDetailPanel.tsx`                     | 実装アンカー |
 | `apps/desktop/src/renderer/components/skill/ExecuteResultDetailPanel.tsx`                  | 実装アンカー |
-| `apps/desktop/src/renderer/components/skill/result-panel-parts.tsx`                        | 実装アンカー |
-| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                       | 修正対象     |
-| `docs/30-workflows/step-09-par-task-rt-03-skill-creation-result-panel/`                    | タスク仕様書 |
+| `apps/desktop/src/renderer/components/skill/result-panel-parts.tsx`                         | 実装アンカー |
+| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                        | 修正対象     |
+| `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/`                                 | タスク仕様書 |

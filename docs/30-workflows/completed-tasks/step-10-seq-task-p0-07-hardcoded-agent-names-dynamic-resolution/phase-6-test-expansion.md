@@ -17,6 +17,9 @@ Phase 5 の実装に対して、エッジケース・境界値・タイミング
 - エッジケーステストの追加
 - 境界値テストの追加
 - 既存テストとの統合確認
+- `SkillCreatorSourceResolver` の同一 root dedupe と fallback 優先順位の検証
+- manifest 未存在時の explicit root fallback と、required file 欠落時の lower priority fallback の検証
+- broken manifest / missing phase の `VALIDATION_ERROR` と、空の `resourceIds` の validation error の検証
 
 ## 参照資料
 

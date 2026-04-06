@@ -14,22 +14,27 @@ describe("SessionIndicator", () => {
 
   const defaultProps = {
     planId: "plan-abc-12345678",
+    sessionId: "session-abc-12345678",
     currentPhase: "execute" as const,
     startedAt: new Date("2026-03-30T11:30:00Z").getTime(), // 30分前
   };
 
   // AC-4: アクティブセッション ID 表示
-  it("planId の先頭8文字が表示される", () => {
+  it("sessionId の先頭8文字が表示される", () => {
     render(<SessionIndicator {...defaultProps} />);
 
-    expect(screen.getByText(/plan-abc/)).toBeInTheDocument();
+    const idDisplay = screen.getByTestId("session-id-display");
+    expect(idDisplay).toBeInTheDocument();
+    expect(idDisplay).toHaveTextContent("session-");
   });
 
   // AC-4: 経過時間表示
   it("経過時間が表示される", () => {
     render(<SessionIndicator {...defaultProps} />);
 
-    expect(screen.getByText(/30分/)).toBeInTheDocument();
+    expect(screen.getByTestId("session-elapsed-time")).toHaveTextContent(
+      /30分/,
+    );
   });
 
   // AC-4: 現在フェーズの表示
@@ -48,7 +53,9 @@ describe("SessionIndicator", () => {
       />,
     );
 
-    expect(screen.getByText(/1時間45分/)).toBeInTheDocument();
+    expect(screen.getByTestId("session-elapsed-time")).toHaveTextContent(
+      /1時間45分/,
+    );
   });
 
   // data-testid
@@ -71,8 +78,14 @@ describe("SessionIndicator", () => {
   it("パルスインジケーターが表示される", () => {
     render(<SessionIndicator {...defaultProps} />);
 
-    const indicator = screen.getByTestId("session-indicator");
-    const pulse = indicator.querySelector(".animate-pulse");
-    expect(pulse).toBeInTheDocument();
+    expect(screen.getByTestId("session-indicator-pulse")).toBeInTheDocument();
+  });
+
+  it("isActive=false のとき pulse が表示されない", () => {
+    render(<SessionIndicator {...defaultProps} isActive={false} />);
+
+    expect(
+      screen.queryByTestId("session-indicator-pulse"),
+    ).not.toBeInTheDocument();
   });
 });

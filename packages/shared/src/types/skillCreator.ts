@@ -1087,11 +1087,51 @@ export const SKILL_CREATOR_ENGINE_VERSION = "task-sdk-08-v1" as const;
  */
 export interface SkillCreatorSessionListItem {
   checkpointId: string;
+  /** sessionId の別名。checkpointId と同値を想定する。 */
+  sessionId?: string;
   planId: string;
   currentPhase: SkillCreatorWorkflowPhase;
   checkpointType: SkillCreatorCheckpointType;
   compatibility: ResumeCompatibilityResult;
+  startedAt?: number;
+  createdAt: number;
   updatedAt: number;
+  isActive?: boolean;
+}
+
+/**
+ * セッション一覧・UI向けのサマリー型 (TASK-P0-08)
+ */
+export interface SkillCreatorSessionSummary {
+  sessionId: string;
+  planId: string;
+  currentPhase: SkillCreatorWorkflowPhase;
+  checkpointType: SkillCreatorCheckpointType;
+  compatibility: ResumeCompatibilityResult;
+  startedAt?: number;
+  createdAt: number;
+  updatedAt: number;
+  isActive?: boolean;
+  /** 互換: checkpointId を併記できる */
+  checkpointId?: string;
+}
+
+/**
+ * resumeSession の失敗理由 (TASK-P0-08)
+ */
+export type SkillCreatorSessionResumeErrorReason =
+  | "incompatible"
+  | "expired"
+  | "not_found";
+
+/**
+ * セッション復元結果 (TASK-P0-08)
+ */
+export interface SkillCreatorSessionResumeResult {
+  success: boolean;
+  workflowSnapshot?: SkillCreatorWorkflowUiSnapshot;
+  error?: string;
+  errorReason?: SkillCreatorSessionResumeErrorReason;
 }
 
 /**

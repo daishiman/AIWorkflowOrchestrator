@@ -138,4 +138,71 @@ describe("SkillCreatorSourceResolver", () => {
       rootPath: manifestRoot,
     });
   });
+
+  it("manifest と explicit/env が同一 root の場合は 1 件に dedupe される", async () => {
+    const explicitRoot = await createSkillRoot("task03-manifest-explicit-");
+    tempRoots.push(explicitRoot);
+    process.env.AIWORKFLOW_SKILL_CREATOR_PATH = explicitRoot;
+
+    const manifest: LoadedWorkflowManifest = {
+      schemaVersion: 1,
+      workflowId: "task-sdk-03-dedupe",
+      phases: [],
+      resources: [
+        {
+          id: "discover-problem",
+          kind: "agent",
+          path: "./agents/discover-problem.md",
+          absolutePath: path.join(explicitRoot, "agents/discover-problem.md"),
+        },
+      ],
+      entry: [],
+      exit: [],
+      sourcePath: path.join(explicitRoot, "workflow-manifest.json"),
+      manifestDir: explicitRoot,
+      manifestMtimeMs: 1234,
+      manifestContentHash: "manifest-hash",
+      resourceDescriptorHash: "resource-hash",
+      cacheKey: "cache-key",
+    };
+
+    const resolver = new SkillCreatorSourceResolver();
+    const result = await resolver.resolve({
+      explicitRoot,
+      manifest,
+      requiredRelativePaths: ["agents/discover-problem.md"],
+    });
+
+    const sameRootCandidates = result.candidateRoots.filter(
+      (candidate) => candidate.rootPath === explicitRoot,
+    );
+    expect(sameRootCandidates).toHaveLength(1);
+    expect(sameRootCandidates[0]).toMatchObject({
+      source: "manifest",
+      rootPath: explicitRoot,
+      missingRequiredPaths: [],
+    });
+  });
+
+  it("explicit と env が同一 root の場合は explicit が優先される", async () => {
+    const explicitRoot = await createSkillRoot("task03-explicit-env-");
+    tempRoots.push(explicitRoot);
+    process.env.AIWORKFLOW_SKILL_CREATOR_PATH = explicitRoot;
+
+    const resolver = new SkillCreatorSourceResolver();
+    const result = await resolver.resolve({
+      explicitRoot,
+      requiredRelativePaths: ["agents/discover-problem.md"],
+    });
+
+    const sameRootCandidates = result.candidateRoots.filter(
+      (candidate) => candidate.rootPath === explicitRoot,
+    );
+    expect(sameRootCandidates).toHaveLength(1);
+    expect(sameRootCandidates[0]).toMatchObject({
+      source: "explicit",
+      rootPath: explicitRoot,
+      missingRequiredPaths: [],
+    });
+  });
 });

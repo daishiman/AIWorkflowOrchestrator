@@ -46,7 +46,7 @@ describe("getThemeColorScheme関数", () => {
   });
 });
 
-describe("ViewType 型 - skillAnalysis / skillCreate 追加（TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001）", () => {
+describe("ViewType 型 - skillAnalysis / skillCreate / skillManagement / skillLifecycle 追加（TASK-UI-01）", () => {
   it("TC-VT-01: skillAnalysis が ViewType union に含まれること", () => {
     const validViewTypes: ViewType[] = ["skillAnalysis"];
     expect(validViewTypes).toContain("skillAnalysis");
@@ -74,12 +74,14 @@ describe("ViewType 型 - skillAnalysis / skillCreate 追加（TASK-IMP-VIEWTYPE-
       "analyticsDashboard",
       "skill-editor",
       "skill-center",
+      "skillManagement",
+      "skillLifecycle",
       "executionConsole",
     ];
-    expect(existingViewTypes).toHaveLength(16);
+    expect(existingViewTypes).toHaveLength(18);
   });
 
-  it("TC-VT-04: ViewType union が合計 18 member を持つこと", () => {
+  it("TC-VT-04: ViewType union が合計 20 member を持つこと", () => {
     const allViewTypes: ViewType[] = [
       "dashboard",
       "workspace",
@@ -98,8 +100,10 @@ describe("ViewType 型 - skillAnalysis / skillCreate 追加（TASK-IMP-VIEWTYPE-
       "skill-center",
       "skillAnalysis",
       "skillCreate",
+      "skillManagement",
+      "skillLifecycle",
       "executionConsole",
     ];
-    expect(allViewTypes).toHaveLength(18);
+    expect(allViewTypes).toHaveLength(20);
   });
 });

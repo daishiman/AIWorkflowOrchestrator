@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-06T00:07:21.453Z",
-  "totalKeywords": 2722,
+  "generated": "2026-04-06T03:27:25.671Z",
+  "totalKeywords": 2720,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -5432,12 +5432,6 @@
       "interfaces-workflow.md",
       "rag-search-graph.md",
       "rag-search-vector.md"
-    ],
-    "buildPhaseResourceRequestsFromManifest": [
-      "interfaces-agent-sdk-skill.md"
-    ],
-    "純粋関数": [
-      "interfaces-agent-sdk-skill.md"
     ],
     "Execution": [
       "interfaces-agent-sdk-ui.md",
