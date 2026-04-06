@@ -76,13 +76,31 @@
 - 全 task で `DEFAULT_SKILL_CREATOR_PATH` 相当の単一 root を唯一の正本とみなさない
 - manifest / explicit path / env / home / repo bundle の複数候補と、解決後の source provenance を意識する
 
+## ⚠️ 着手前の必須確認（2026-04-01 追記）
+
+### step0 は全タスクの前提
+
+`TASK-FIX-ENV-STRIPPING`（`fix-step0-seq-env-stripping/`）が未完了の場合、Agent SDK の `query()` が全て ENOENT で失敗する。コード修正は並行可能だが、**統合検証（手動テスト・E2E）は step0 完了後に実施すること**。
+
+### step2 実行中の関係者への重要事実
+
+`TASK-FIX-AUTH-IPC-001`（fix-step2）は別タスクで実行中。以下の事実を参照すること：
+
+| 事実                      | 正しい値                                                                | 誤りやすい値                                               |
+| ------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `auth:login` タイムアウト | **500ms**（`CHANNEL_TIMEOUTS["auth:login"] = 500`、PR#1823 で設定済み） | ~~5000ms~~（デフォルト値、auth:login には適用されない）    |
+| `ipc-utils.ts` のパス     | **`apps/desktop/src/preload/ipc-utils.ts`**                             | ~~`apps/desktop/src/main/ipc/ipc-utils.ts`~~（存在しない） |
+
 ## 実装前に確認すべき既存コード
 
+- `apps/desktop/src/main/services/skill/SkillExecutor.ts`（**step0 修正対象**: env オプション:861）
+- `apps/desktop/src/main/ipc/authHandlers.ts`（step2 修正対象: auth:login ハンドラー）
+- `apps/desktop/src/preload/ipc-utils.ts`（CHANNEL_TIMEOUTS 定義: auth:login=500ms, execute-plan 未登録）
 - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
 - `apps/desktop/src/main/ipc/creatorHandlers.ts`
 - `apps/desktop/src/preload/skill-creator-api.ts`
 - `apps/desktop/src/preload/channels.ts`
-- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
+- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`（step5 修正対象: setWorkflowError 無条件クリア:539）
 - `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
 - `apps/desktop/src/renderer/components/skill/ImprovementProposalPanel.tsx`
 - `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts`
