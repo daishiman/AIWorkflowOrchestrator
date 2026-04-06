@@ -1,5 +1,13 @@
 {
-  "mode": "non_visual",
-  "reason": "verify-execution-engine-layer12 is a runtime service workflow with no renderer delta in current spec_created state",
-  "captures": []
+  "taskType": "NON_VISUAL",
+  "requiresScreenshots": false,
+  "reason": "Backend verification only; no UI changes",
+  "screenshots": [],
+  "evidenceSources": [
+    "pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/SkillCreatorVerificationEngine.test.ts",
+    "pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts -t \"verificationEngine 未DI 時に全 PASS 扱いになる\"",
+    "pnpm --filter @repo/desktop typecheck",
+    "pnpm --filter @repo/shared typecheck",
+    "pnpm lint"
+  ]
 }

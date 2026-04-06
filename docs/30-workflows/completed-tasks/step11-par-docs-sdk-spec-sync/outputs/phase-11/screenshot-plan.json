@@ -1,0 +1,11 @@
+{
+  "captureRequired": false,
+  "mode": "docs-only",
+  "reason": "This workflow updates documentation, canonical paths, and spec sync outputs only; no visible UI surface is in scope.",
+  "artifacts": [
+    "outputs/phase-11/manual-test-checklist.md",
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/screenshot-plan.json",
+    "outputs/phase-11/screenshots/placeholder.png"
+  ]
+}

@@ -200,18 +200,20 @@
 
 ---
 
-## safeInvoke タイムアウト + cleanup 契約（TASK-FIX-SAFEINVOKE-TIMEOUT-001）
+## safeInvoke / invokeWithTimeout チャンネル別 timeout + cleanup 契約（TASK-FIX-IPC-TIMEOUT-001）
 
-Preload 共通 helper `invokeWithTimeout()` は、Renderer から Main への `invoke` 呼び出しが応答不能になった場合でも Promise を永続 pending にしないためのフェイルセーフ契約である。
+Preload 共通 helper `invokeWithTimeout()` は、Renderer から Main への `invoke` 呼び出しが応答不能になった場合でも Promise を永続 pending にしないためのフェイルセーフ契約である。`CHANNEL_TIMEOUTS` によるチャンネル別 timeout と `IPC_TIMEOUT_MS` fallback を併用する。
 
 | 観点 | 契約 |
 | --- | --- |
 | 対象実装 | `apps/desktop/src/preload/ipc-utils.ts` |
-| timeout 定数 | `IPC_TIMEOUT_MS = 5000` |
+| timeout 定数 | `IPC_TIMEOUT_MS = 5000`（fallback） |
+| channel override | `CHANNEL_TIMEOUTS` に `auth:login=500`, `auth:get-session=10000`, `auth:refresh=10000`, `skill-creator:plan=30000`, `skill:execute=60000` を定義 |
+| timeout resolver | `getChannelTimeout(channel)` が `CHANNEL_TIMEOUTS[channel] ?? IPC_TIMEOUT_MS` を返す |
 | fail-fast | `allowedChannels.includes(channel)` に失敗したチャンネルは `ipcRenderer.invoke()` 前に即時 reject |
-| timeout error | `IPC timeout: {channel} did not respond within 5000ms` |
+| timeout error | `IPC timeout: {channel} did not respond within {resolvedTimeout}ms` |
 | cleanup | 正常 resolve / reject の双方で `clearTimeout(timeoutId)` を実行し、短命 timer を残留させない |
-| 後方互換 | `safeInvoke<T>(channel, ...args): Promise<T>` の公開シグネチャは不変 |
+| 後方互換 | `safeInvoke<T>(channel, ...args): Promise<T>` の公開シグネチャは不変。`getChannelTimeout` 追加後も呼び出し側変更は不要 |
 | rollout 監査 | `preload/index.ts` だけでなく `skill-api.ts` / `skill-creator-api.ts` など channel 境界ごとに file 単位で適用漏れを確認する |
 
 ### セキュリティ意図
@@ -231,4 +233,3 @@ Preload 共通 helper `invokeWithTimeout()` は、Renderer から Main への `i
 | UI影響確認 | timeout fallback / settings shell の screenshot 4件を current workflow 配下で取得済み |
 
 ---
-

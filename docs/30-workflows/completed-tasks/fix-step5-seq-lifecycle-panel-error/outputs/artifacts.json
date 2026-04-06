@@ -1,0 +1,177 @@
+{
+  "workflow": "fix-lifecycle-panel-error",
+  "task_id": "TASK-FIX-LIFECYCLE-PANEL-ERROR-001",
+  "task_name": "SkillLifecyclePanel currentPhase:handoff 時エラー消去バグ修正",
+  "created_date": "2026-04-02",
+  "status": "implemented",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "受入条件チェックリスト",
+          "path": "outputs/phase-1/acceptance-criteria.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "Before/After コード比較ドキュメント",
+          "path": "outputs/phase-2/before-after-comparison.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/review-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "エラー永続化テストファイル（Red状態）",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "SkillLifecyclePanel.tsx 修正（1行変更）",
+          "path": "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "エッジケース・回帰テスト追加済みテストファイル",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "リファクタリング記録",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "品質保証レポート",
+          "path": "outputs/phase-9/quality-report.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "手動テスト結果（NON_VISUAL）",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        {
+          "name": "実装ガイド（Part 1/2）",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "status": "completed"
+        },
+        {
+          "name": "システム仕様更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "status": "completed"
+        },
+        {
+          "name": "未タスク検出レポート",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "status": "completed"
+        },
+        {
+          "name": "スキルフィードバックレポート",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "status": "completed"
+        },
+        {
+          "name": "ドキュメント変更ログ",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "status": "completed"
+        },
+        {
+          "name": "タスク仕様書準拠確認",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "status": "completed"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "pending",
+      "artifacts": [
+        {
+          "name": "GitHub Pull Request",
+          "path": "https://github.com/daishiman/AIWorkflowOrchestrator/pulls",
+          "status": "pending"
+        }
+      ]
+    }
+  }
+}

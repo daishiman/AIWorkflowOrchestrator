@@ -19,17 +19,20 @@ import type {
   CreateSkillOptions,
   ExecuteTasksOptions,
   ExecutionReport,
-  RuntimeSkillCreatorExecuteResponse,
+  ExternalApiConnectionConfig,
+  SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
+  SkillOutputReadyPayload,
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
   SkillCreatorSessionListItem,
   SkillCreatorSessionResumeResult,
+  LLMAdapterStatusPayload,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 
@@ -113,7 +116,7 @@ export interface SkillCreatorAPI {
     skillSpec: string,
     authMode?: AuthMode,
     apiKey?: string | null,
-  ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>>;
+  ) => Promise<IpcResult<SkillCreatorExecutePlanAck>>;
 
   /**
    * workflow snapshot を取得する
@@ -123,6 +126,11 @@ export interface SkillCreatorAPI {
   ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
 
   /**
+   * Runtime adapter status: 現在の LLMAdapter 状態を取得する
+   */
+  getAdapterStatus: () => Promise<IpcResult<LLMAdapterStatusPayload>>;
+
+  /**
    * workflow question に対する user input を送信する
    */
   submitUserInput: (
@@ -130,11 +138,44 @@ export interface SkillCreatorAPI {
   ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
 
   /**
+   * External API 設定を current session に送信する
+   */
+  configureExternalApi: (
+    config: ExternalApiConnectionConfig,
+  ) => Promise<IpcResult<unknown>>;
+
+  /**
    * workflow snapshot change event を購読する
    */
   onWorkflowStateChanged: (
     callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
   ) => () => void;
+
+  /**
+   * Runtime adapter status change event を購読する
+   */
+  onAdapterStatusChanged: (
+    callback: (payload: LLMAdapterStatusPayload) => void,
+  ) => () => void;
+
+  /**
+   * skill-creator:output-ready イベントを購読する
+   */
+  onOutputReady: (
+    callback: (payload: SkillOutputReadyPayload) => void,
+  ) => () => void;
+
+  /**
+   * 既存スキルの上書き保存を承認する
+   */
+  confirmOverwrite: (
+    payload: SkillOutputReadyPayload,
+  ) => Promise<IpcResult<unknown>>;
+
+  /**
+   * 保存済みスキルを開く
+   */
+  openSkill: (savedPath: string) => Promise<IpcResult<unknown>>;
 
   /**
    * Runtime improve: フィードバックに基づいてスキルを改善する
@@ -176,6 +217,14 @@ export interface SkillCreatorAPI {
   normalizeSdkMessages: (
     messages: unknown[],
   ) => Promise<IpcResult<import("@repo/shared/types").SkillCreatorSdkEvent[]>>;
+
+  /**
+   * Governance 状態を取得する (TASK-P0-09)
+   * @returns 現在の governance phase、policy、直近 audit events、denials
+   */
+  getGovernanceState: () => Promise<
+    IpcResult<import("@repo/shared/types").SkillCreatorGovernanceState>
+  >;
 
   /**
    * スキルを改善する
@@ -319,6 +368,34 @@ function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
   return invokeWithTimeout<T>(ALLOWED_INVOKE_CHANNELS, channel, ...args);
 }
 
+type SkillCreatorExecutePlanTransportResponse =
+  | SkillCreatorExecutePlanAck
+  | IpcResult<never>;
+
+function isSkillCreatorExecutePlanAck(
+  value: unknown,
+): value is SkillCreatorExecutePlanAck {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    "accepted" in value &&
+    (value as { accepted: unknown }).accepted === true &&
+    "planId" in value &&
+    typeof (value as { planId: unknown }).planId === "string"
+  );
+}
+
+function isIpcErrorResponse(value: unknown): value is IpcResult<never> {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    "success" in value &&
+    (value as { success: unknown }).success === false &&
+    "error" in value &&
+    typeof (value as { error: unknown }).error === "string"
+  );
+}
+
 /**
  * safeOn - 許可されたチャンネルのみリスナーを登録
  */
@@ -378,12 +455,26 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     skillSpec: string,
     authMode?: AuthMode,
     apiKey?: string | null,
-  ): Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>> =>
-    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN, {
-      planId,
-      skillSpec,
-      authMode,
-      apiKey,
+  ): Promise<IpcResult<SkillCreatorExecutePlanAck>> =>
+    safeInvoke<SkillCreatorExecutePlanTransportResponse>(
+      IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
+      {
+        planId,
+        skillSpec,
+        authMode,
+        apiKey,
+      },
+    ).then((response) => {
+      if (isSkillCreatorExecutePlanAck(response)) {
+        return { success: true, data: response };
+      }
+      if (isIpcErrorResponse(response)) {
+        return response;
+      }
+      return {
+        success: false,
+        error: "計画実行の受理に失敗しました",
+      };
     }),
 
   getWorkflowState: (
@@ -391,10 +482,18 @@ export const skillCreatorAPI: SkillCreatorAPI = {
   ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE, { planId }),
 
+  getAdapterStatus: (): Promise<IpcResult<LLMAdapterStatusPayload>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS),
+
   submitUserInput: (
     submission: SkillCreatorUserInputSubmission,
   ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT, submission),
+
+  configureExternalApi: (
+    config: ExternalApiConnectionConfig,
+  ): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.CONFIGURE_API, config),
 
   onWorkflowStateChanged: (
     callback: (snapshot: SkillCreatorWorkflowUiSnapshot) => void,
@@ -403,6 +502,30 @@ export const skillCreatorAPI: SkillCreatorAPI = {
       IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
       callback,
     ),
+
+  onAdapterStatusChanged: (
+    callback: (payload: LLMAdapterStatusPayload) => void,
+  ): (() => void) =>
+    safeOn<LLMAdapterStatusPayload>(
+      IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
+      callback,
+    ),
+
+  onOutputReady: (
+    callback: (payload: SkillOutputReadyPayload) => void,
+  ): (() => void) =>
+    safeOn<SkillOutputReadyPayload>(
+      IPC_CHANNELS.SKILL_CREATOR_OUTPUT_READY,
+      callback,
+    ),
+
+  confirmOverwrite: (
+    payload: SkillOutputReadyPayload,
+  ): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED, payload),
+
+  openSkill: (savedPath: string): Promise<IpcResult<unknown>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_OPEN_SKILL, { savedPath }),
 
   improveSkillWithFeedback: (
     skillName: string,
@@ -446,6 +569,10 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_NORMALIZE_SDK_MESSAGES, {
       messages,
     }),
+
+  getGovernanceState: (): Promise<
+    IpcResult<import("@repo/shared/types").SkillCreatorGovernanceState>
+  > => safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE),
 
   improveSkill: (
     skillName: string,

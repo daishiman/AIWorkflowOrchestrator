@@ -4,6 +4,66 @@
 
 ---
 
+## 2026-04-02: UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 Approval Request Producer 反映
+
+| 項目         | 内容                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| タスクID     | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001（approval-request-producer）                         |
+| Agent        | claude-agent-sdk                                                                                  |
+| 操作         | スキル更新（references 2ファイル + SKILL.md）                                                     |
+| 対象ファイル | SKILL.md, hooks-system.md, implementation-artifacts.md, LOGS.md                                  |
+| 結果         | success                                                                                           |
+| 備考         | HooksFactory PreToolUse に pushApprovalRequest() producer を接続するパターンをスキルに反映        |
+
+### 更新内容
+
+| ファイル                  | 追加/更新内容                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------- |
+| hooks-system.md           | Approval Request Producer パターンセクション追加（HooksFactory クラス構成、ポイント3点）          |
+| implementation-artifacts.md | UT-IMP-SAFETY-GOV-PUSH-REQUEST-PRODUCER-001 セクション追加（ドキュメント・実装ファイル一覧）   |
+| SKILL.md                  | Task仕様ナビに Approval Request Producer 行追加、変更履歴 v2.15.0 追加                           |
+
+### 主要パターン
+
+| パターン名                  | 説明                                                                          |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| Producer Pattern            | dangerous command 検出 → pushApprovalRequest() 発火 → proceed: false          |
+| Non-blocking push           | IPC 送信と proceed: false は独立 — push 失敗でもブロックは維持                |
+| Session Correlation         | sessionId は constructor で受け取り、operationId は uuidv4() で生成           |
+
+---
+
+## 2026-03-31: TASK-P0-09ガバナンス実装反映
+
+| 項目         | 内容                                                                                              |
+| ------------ | ------------------------------------------------------------------------------------------------- |
+| タスクID     | TASK-P0-09（claude-sdk-permission-hooks-governance）                                              |
+| Agent        | claude-agent-sdk                                                                                  |
+| 操作         | スキル更新（references 3ファイル + SKILL.md）                                                      |
+| 対象ファイル | SKILL.md, hooks-system.md, permission-control.md, security-sandboxing.md, LOGS.md                |
+| 結果         | success                                                                                           |
+| 備考         | GovernanceHooksFactory, PHASE_POLICIES, resolvePathSafely パターンをスキルに反映                  |
+
+### 更新内容
+
+| ファイル                  | 追加/更新内容                                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------------------------- |
+| hooks-system.md           | Governance Hooks Factory パターンセクション追加（createGovernanceHooks, 4フェーズ例, AuditSink連携）|
+| permission-control.md     | Phase-Based Policy Configuration セクション追加（PHASE_POLICIES表, getPolicyForPhase/createCanUseToolCallback例）|
+| security-sandboxing.md    | Write/Edit パス制限ロジックセクション追加（resolvePathSafely, null byte チェック, path traversal対策）|
+| SKILL.md                  | Task仕様ナビに Governance Hooks Factory / Phase-Based Policy / パス制限 の3行追加、変更履歴 v2.14.0 追加 |
+
+### 主要パターン
+
+| パターン名                  | 説明                                                                          |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| GovernanceHooksFactory      | createGovernanceHooks() で phase 別 hooks + auditSink をワンコールで生成      |
+| PHASE_POLICIES              | plan/execute/verify/improve の permissionMode + allowedTools を定数で管理     |
+| resolvePathSafely           | null byte チェック + path.resolve で安全なパス正規化                          |
+| AuditSink                   | GovernanceAuditSink が全ツール操作イベントを蓄積、UI 向けサマリーを生成       |
+
+---
+
 ## 2026-02-12: v2.13.0 Progressive Disclosure最適化
 
 | 項目         | 内容                                                                                              |

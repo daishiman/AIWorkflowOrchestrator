@@ -1,0 +1,124 @@
+{
+  "task_id": "TASK-SC-DIALOG-MANDATORY-001",
+  "artifacts": [
+    {
+      "id": "requirements",
+      "filename": "requirements-definition.md",
+      "output_path": "outputs/phase-1/requirements-definition.md",
+      "phase": 1,
+      "status": "pending"
+    },
+    {
+      "id": "design",
+      "filename": "design-summary.md",
+      "output_path": "outputs/phase-2/design-summary.md",
+      "phase": 2,
+      "status": "pending"
+    },
+    {
+      "id": "design-review",
+      "filename": "design-review-result.md",
+      "output_path": "outputs/phase-3/design-review-result.md",
+      "phase": 3,
+      "status": "pending"
+    },
+    {
+      "id": "test-plan",
+      "filename": "test-plan.md",
+      "output_path": "outputs/phase-4/test-plan.md",
+      "phase": 4,
+      "status": "pending"
+    },
+    {
+      "id": "impl-record",
+      "filename": "implementation-record.md",
+      "output_path": "outputs/phase-5/implementation-record.md",
+      "phase": 5,
+      "status": "pending"
+    },
+    {
+      "id": "test-expansion",
+      "filename": "test-expansion-record.md",
+      "output_path": "outputs/phase-6/test-expansion-record.md",
+      "phase": 6,
+      "status": "pending"
+    },
+    {
+      "id": "coverage",
+      "filename": "coverage-check.md",
+      "output_path": "outputs/phase-7/coverage-check.md",
+      "phase": 7,
+      "status": "pending"
+    },
+    {
+      "id": "refactoring",
+      "filename": "refactoring-summary.md",
+      "output_path": "outputs/phase-8/refactoring-summary.md",
+      "phase": 8,
+      "status": "pending"
+    },
+    {
+      "id": "qa-report",
+      "filename": "quality-report.md",
+      "output_path": "outputs/phase-9/quality-report.md",
+      "phase": 9,
+      "status": "pending"
+    },
+    {
+      "id": "final-review",
+      "filename": "final-review-result.md",
+      "output_path": "outputs/phase-10/final-review-result.md",
+      "phase": 10,
+      "status": "pending"
+    },
+    {
+      "id": "manual-test",
+      "filename": "manual-test-result.md",
+      "output_path": "outputs/phase-11/manual-test-result.md",
+      "phase": 11,
+      "status": "pending"
+    },
+    {
+      "id": "impl-guide",
+      "filename": "implementation-guide.md",
+      "output_path": "outputs/phase-12/implementation-guide.md",
+      "phase": 12,
+      "status": "pending"
+    },
+    {
+      "id": "spec-update",
+      "filename": "system-spec-update-summary.md",
+      "output_path": "outputs/phase-12/system-spec-update-summary.md",
+      "phase": 12,
+      "status": "pending"
+    },
+    {
+      "id": "doc-changelog",
+      "filename": "documentation-changelog.md",
+      "output_path": "outputs/phase-12/documentation-changelog.md",
+      "phase": 12,
+      "status": "pending"
+    },
+    {
+      "id": "unassigned",
+      "filename": "unassigned-task-detection.md",
+      "output_path": "outputs/phase-12/unassigned-task-detection.md",
+      "phase": 12,
+      "status": "pending"
+    },
+    {
+      "id": "feedback",
+      "filename": "skill-feedback-report.md",
+      "output_path": "outputs/phase-12/skill-feedback-report.md",
+      "phase": 12,
+      "status": "pending"
+    },
+    {
+      "id": "compliance",
+      "filename": "phase12-task-spec-compliance-check.md",
+      "output_path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+      "phase": 12,
+      "status": "pending"
+    }
+  ]
+}

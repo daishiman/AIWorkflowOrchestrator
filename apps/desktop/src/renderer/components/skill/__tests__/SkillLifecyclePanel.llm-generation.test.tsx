@@ -11,6 +11,7 @@ import {
   render,
   screen,
   waitFor,
+  within,
 } from "@testing-library/react";
 import type {
   SkillCreatorUserInputKind,
@@ -291,7 +292,7 @@ beforeEach(() => {
       status: "pending",
       checks: [
         {
-          id: "layer3-verify-status",
+          id: "L3-001",
           layer: "layer3",
           severity: "warning",
           summary: "verify summary",
@@ -581,8 +582,7 @@ describe("U-10: planSkill failure propagates error", () => {
     expect(mockSetGenerationError).toHaveBeenCalledWith(
       "LLM アダプタが利用できません。設定を確認してください。",
     );
-    expect(mockSetCurrentPlanResult).toHaveBeenCalledWith(null);
-    expect(mockSetCurrentPlanId).toHaveBeenCalledWith(null);
+    expect(mockClearGenerationState).toHaveBeenCalled();
   });
 });
 
@@ -626,8 +626,7 @@ describe("U-12: planSkill API unavailable graceful degradation", () => {
 
     // Should not crash and should set error
     expect(mockSetGenerationError).toHaveBeenCalled();
-    expect(mockSetCurrentPlanResult).toHaveBeenCalledWith(null);
-    expect(mockSetCurrentPlanId).toHaveBeenCalledWith(null);
+    expect(mockClearGenerationState).toHaveBeenCalled();
   });
 });
 
@@ -1166,8 +1165,7 @@ describe("U-16: verify detail surface", () => {
     ).toBeTruthy();
     expect(mockGetVerifyDetail).toHaveBeenCalledWith("plan-001");
     expect(await screen.findByText(/integrated_api \(default\)/)).toBeTruthy();
-    expect(screen.getByText("Task07 owner")).toBeTruthy();
-    expect(screen.getByText("Task08 owner")).toBeTruthy();
+    expect(screen.getByText("verify summary")).toBeTruthy();
   });
 });
 
@@ -1211,8 +1209,9 @@ describe("U-17b: runtime improve surface", () => {
     expect(
       await screen.findByTestId("skill-lifecycle-runtime-improve-result"),
     ).toBeTruthy();
-    expect(screen.getByText("改善提案")).toBeTruthy();
-    expect(screen.getByText("説明を明確化する")).toBeTruthy();
+    const proposalPanel = screen.getByTestId("improvement-proposal-panel");
+    expect(within(proposalPanel).getByText("改善提案")).toBeTruthy();
+    expect(within(proposalPanel).getByText("説明を明確化する")).toBeTruthy();
   });
 });
 
@@ -1231,7 +1230,7 @@ describe("U-18: verify detail fail status displays fail badge and message", () =
         nextAction: "improve",
         checks: [
           {
-            id: "layer3-structure",
+            id: "L3-002",
             layer: "layer3",
             severity: "error",
             summary: "SKILL.md missing required section",
@@ -1304,22 +1303,80 @@ describe("U-19: verify detail pass status displays pass badge", () => {
 // U-20: verify detail 取得失敗時のエラー表示
 // =====================================================================
 describe("U-20: verify detail fetch failure shows error", () => {
-  it("getVerifyDetail が失敗すると error surface に表示される", async () => {
-    mockGetVerifyDetail.mockResolvedValue({
+  it("getVerifyDetail が失敗すると wrapper 内で error banner が表示され、再試行で再取得できる", async () => {
+    mockGetVerifyDetail.mockResolvedValueOnce({
+      success: true,
+      data: {
+        planId: "plan-001",
+        currentPhase: "verify",
+        status: "pending",
+        message: "verify detail を読み込み中",
+        checks: [],
+        evidenceCount: 3,
+        route: {
+          type: "integrated_api",
+          summary: "integrated_api (default)",
+        },
+        reverifyEligible: true,
+        delegatedGovernanceNote: "Task07 owner",
+        delegatedSessionNote: "Task08 owner",
+      },
+    });
+    mockGetVerifyDetail.mockResolvedValueOnce({
       success: false,
       error: "verify detail の取得に失敗しました。",
     });
-    mockStoreState.currentPlanId = "plan-001";
+    mockGetVerifyDetail.mockResolvedValueOnce({
+      success: true,
+      data: {
+        planId: "plan-001",
+        currentPhase: "verify",
+        status: "pass",
+        message: "retry succeeded",
+        checks: [],
+        evidenceCount: 5,
+        route: {
+          type: "integrated_api",
+          summary: "integrated_api (default)",
+        },
+        reverifyEligible: false,
+        disabledReason: "既に pass 済みです",
+        delegatedGovernanceNote: "Task07 owner",
+        delegatedSessionNote: "Task08 owner",
+      },
+    });
 
     renderPanel();
 
-    // verify detail パネル自体は表示されるが、中にエラーが表示される
+    await act(async () => {
+      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
+        target: { value: "verify detail を確認する" },
+      });
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+    });
+
+    expect(await screen.findByTestId("error-banner")).toBeTruthy();
     expect(
-      await screen.findByTestId("skill-lifecycle-verify-detail"),
-    ).toBeTruthy();
+      screen.getByTestId("skill-creation-result-overall-status"),
+    ).toHaveTextContent("検証失敗");
+    expect(screen.queryByTestId("skill-lifecycle-error")).toBeNull();
     expect(
-      screen.getByText("verify detail はまだ利用できません。"),
+      screen.getByText("verify detail の取得に失敗しました。"),
     ).toBeTruthy();
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "再試行" }));
+    });
+
+    await waitFor(() => expect(mockGetVerifyDetail).toHaveBeenCalledTimes(3));
+    expect(await screen.findByText("retry succeeded")).toBeTruthy();
+    expect(
+      screen.getByTestId("skill-creation-result-overall-status"),
+    ).toHaveTextContent("完了");
   });
 });
 

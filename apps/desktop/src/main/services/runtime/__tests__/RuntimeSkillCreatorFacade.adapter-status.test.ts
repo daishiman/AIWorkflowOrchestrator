@@ -242,6 +242,23 @@ describe("RuntimeSkillCreatorFacade — adapter status (TASK-RT-01)", () => {
       expect(facade.llmAdapterStatus).toBe("failed");
       expect(facade.llmAdapterFailureReason).toBe("late failure");
     });
+
+    it("setLLMAdapter()/setLLMAdapterFailed() が onAdapterStatusChanged を通知する", () => {
+      const facade = new RuntimeSkillCreatorFacade({
+        skillExecutor: createMockSkillExecutor(),
+      });
+      const onAdapterStatusChanged = vi.fn();
+      facade.onAdapterStatusChanged = onAdapterStatusChanged;
+
+      facade.setLLMAdapter(createMockLLMAdapter());
+      expect(onAdapterStatusChanged).toHaveBeenCalledWith("ready", null);
+
+      facade.setLLMAdapterFailed("late failure");
+      expect(onAdapterStatusChanged).toHaveBeenLastCalledWith(
+        "failed",
+        "late failure",
+      );
+    });
   });
 
   // ==================================================================
@@ -344,6 +361,178 @@ describe("RuntimeSkillCreatorFacade — adapter status (TASK-RT-01)", () => {
   });
 
   // ==================================================================
+  // T-EX: execute() エラーレスポンステスト
+  // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+  // ==================================================================
+  describe("execute() エラーレスポンス", () => {
+    it("T-EX-01: status === 'failed' で execute() はエラーレスポンスを返す", async () => {
+      const facade = new RuntimeSkillCreatorFacade({
+        skillExecutor: createMockSkillExecutor(),
+      });
+      facade.setLLMAdapterFailed("Connection refused");
+
+      const result = await facade.execute(
+        {
+          planId: "plan-1",
+          skillSpec: "test spec",
+          estimatedSteps: 1,
+          skillName: "test",
+          description: "test",
+          agents: [],
+          scripts: [],
+          triggers: [],
+          anchors: [],
+        },
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "Connection refused",
+        },
+      });
+    });
+
+    it("T-EX-02: status === 'initializing' で execute() はエラーレスポンスを返す", async () => {
+      const facade = new RuntimeSkillCreatorFacade({
+        skillExecutor: createMockSkillExecutor(),
+      });
+      // setLLMAdapter() 未呼び出し → "initializing"
+      // TASK-RT-02: "initializing" は terminal_handoff を優先するため resolve() を通過させる。
+      // integrated_api 決定後に !llmAdapter チェックで degraded string error を返す。
+
+      const result = await facade.execute(
+        {
+          planId: "plan-1",
+          skillSpec: "test spec",
+          estimatedSteps: 1,
+          skillName: "test",
+          description: "test",
+          agents: [],
+          scripts: [],
+          triggers: [],
+          anchors: [],
+        },
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toMatchObject({
+        success: false,
+      });
+      expect((result as { error?: string }).error).toContain(
+        "LLM アダプタが利用できません",
+      );
+    });
+
+    it("T-EX-03: API key 未設定エラーで failed → actionable メッセージ", async () => {
+      const facade = new RuntimeSkillCreatorFacade({
+        skillExecutor: createMockSkillExecutor(),
+      });
+      facade.setLLMAdapterFailed(
+        "ANTHROPIC_API_KEY environment variable is not set",
+      );
+
+      const result = await facade.execute(
+        {
+          planId: "plan-1",
+          skillSpec: "test spec",
+          estimatedSteps: 1,
+          skillName: "test",
+          description: "test",
+          agents: [],
+          scripts: [],
+          triggers: [],
+          anchors: [],
+        },
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toHaveProperty("success", false);
+      expect(result).toHaveProperty(
+        "error.message",
+        "APIキーを設定してください",
+      );
+    });
+  });
+
+  // ==================================================================
+  // T-IM: improve() エラーレスポンステスト
+  // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+  // ==================================================================
+  describe("improve() エラーレスポンス (adapter status)", () => {
+    it("T-IM-01: status === 'failed' で improve() はエラーレスポンスを返す", async () => {
+      const facade = new RuntimeSkillCreatorFacade({
+        skillExecutor: createMockSkillExecutor(),
+      });
+      facade.setLLMAdapterFailed("Connection refused");
+
+      const result = await facade.improve(
+        "skill-a",
+        "need improvement",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "Connection refused",
+        },
+      });
+    });
+
+    it("T-IM-02: status === 'initializing' で improve() はエラーレスポンスを返す", async () => {
+      const facade = new RuntimeSkillCreatorFacade({
+        skillExecutor: createMockSkillExecutor(),
+      });
+      // setLLMAdapter() 未呼び出し → "initializing"
+
+      const result = await facade.improve(
+        "skill-a",
+        "need improvement",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toEqual({
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
+        },
+      });
+    });
+
+    it("T-IM-03: API key 未設定エラーで failed → actionable メッセージ", async () => {
+      const facade = new RuntimeSkillCreatorFacade({
+        skillExecutor: createMockSkillExecutor(),
+      });
+      facade.setLLMAdapterFailed(
+        "ANTHROPIC_API_KEY environment variable is not set",
+      );
+
+      const result = await facade.improve(
+        "skill-a",
+        "need improvement",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(result).toHaveProperty("success", false);
+      expect(result).toHaveProperty(
+        "error.message",
+        "APIキーを設定してください",
+      );
+    });
+  });
+
+  // ==================================================================
   // T-COMPAT: 既存テスト互換性
   // ==================================================================
   describe("既存テスト互換性", () => {
@@ -356,18 +545,12 @@ describe("RuntimeSkillCreatorFacade — adapter status (TASK-RT-01)", () => {
       expect(facade.llmAdapterStatus).toBe("ready");
     });
 
-    it("T-COMPAT-02: llmAdapter 設定なしで improve() は explicit error を返す (TASK-RT-02)", async () => {
+    it("T-COMPAT-02: llmAdapter 設定なしで improve() は initializing エラーを返す (TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001)", async () => {
       const facade = new RuntimeSkillCreatorFacade({
         skillExecutor: createMockSkillExecutor(),
       });
 
-      vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
-        type: "integrated_api",
-        apiKey: "sk-test",
-        permissionMode: "default",
-      });
-
-      // TASK-RT-02: llmAdapter 未注入時は explicit error
+      // llmAdapter 未設定 → _llmAdapterStatus === "initializing" → アダプターステータスチェックが先に発火する
       const result = await facade.improve(
         "skill-b",
         "need better validation",
@@ -379,7 +562,7 @@ describe("RuntimeSkillCreatorFacade — adapter status (TASK-RT-01)", () => {
         success: false,
         error: {
           code: "llm_adapter_unavailable",
-          message: "LLM アダプタが利用できません。設定を確認してください。",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
         },
       });
     });

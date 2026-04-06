@@ -17,6 +17,8 @@ import type {
   Skill,
   SkillPermissionResponse,
   IPermissionStore,
+  SkillExecutorStreamMessage,
+  SkillExecutorStreamMessageType,
 } from "@repo/shared";
 import { isDangerousCommand, isProtectedPath } from "@repo/shared/constants";
 import { SKILL_CHANNELS } from "@repo/shared/src/ipc/channels";
@@ -75,6 +77,10 @@ export interface SkillExecutionRequest {
   skillId: string;
   timeout?: number;
   sessionId?: string;
+  permissionMode?: SDKQueryOptions["permissionMode"];
+  allowedTools?: string[];
+  canUseTool?: SDKCanUseTool;
+  hookObservers?: SkillExecutionHookObservers;
   /** リトライ設定（部分指定可能、未指定フィールドはデフォルト値） */
   retryConfig?: Partial<RetryConfig>;
 }
@@ -96,23 +102,17 @@ export interface ExecutionInfo {
   completedAt?: number;
 }
 
-/** ストリームメッセージタイプ */
-export type SkillStreamMessageType =
-  | "text"
-  | "tool_use"
-  | "error"
-  | "complete"
-  | "retry";
+/**
+ * ストリームメッセージタイプ（@repo/shared の SkillExecutorStreamMessageType に集約済み）
+ * @deprecated 直接 @repo/shared の SkillExecutorStreamMessageType を使用してください
+ */
+export type SkillStreamMessageType = SkillExecutorStreamMessageType;
 
-/** スキルストリームメッセージ */
-export interface SkillStreamMessage {
-  executionId: string;
-  id: string;
-  type: SkillStreamMessageType;
-  content: string;
-  timestamp: number;
-  isComplete: boolean;
-}
+/**
+ * スキルストリームメッセージ（@repo/shared の SkillExecutorStreamMessage に集約済み）
+ * @deprecated 直接 @repo/shared の SkillExecutorStreamMessage を使用してください
+ */
+export type SkillStreamMessage = SkillExecutorStreamMessage;
 
 /** スキル実行エラーコード */
 export type SkillExecutionErrorCode =
@@ -146,6 +146,8 @@ export interface ExecutionContext {
 /** SkillMetadata - Skillを拡張した実行用メタデータ */
 export interface SkillMetadata extends Omit<Skill, "lastModified"> {
   // Skill型から継承: id, name, slug, description, path, triggers, anchors, allowedTools, etc.
+  permissionMode?: SDKQueryOptions["permissionMode"];
+  hooks?: SDKQueryOptions["hooks"];
 }
 
 // =================================================================
@@ -174,6 +176,30 @@ interface PostToolUseInput {
 
 /** PreToolUse結果 */
 type PreToolUseResult = { proceed: true } | { proceed: false; message: string };
+
+type SDKCanUseToolResponse =
+  | { behavior: "allow"; toolUseID: string }
+  | { behavior: "deny"; toolUseID: string; message: string }
+  | { behavior: "ask"; toolUseID: string; message?: string };
+
+type SDKCanUseTool = (
+  toolName: string,
+  input: Record<string, unknown>,
+  options: { signal: AbortSignal; toolUseID: string },
+) => Promise<SDKCanUseToolResponse>;
+
+export interface SkillExecutionHookObservers {
+  onPreToolUse?: (
+    input: PreToolUseInput,
+    toolUseId: string,
+  ) => Promise<PreToolUseResult | void> | PreToolUseResult | void;
+  onPostToolUse?: (
+    input: PostToolUseInput,
+    toolUseId: string,
+    success: boolean,
+    error?: string,
+  ) => Promise<void> | void;
+}
 
 /** ツール使用通知の内容 */
 interface ToolUseContent {
@@ -467,7 +493,47 @@ interface SDKQueryOptions {
     | "dontAsk";
   abortController?: AbortController;
   timeout?: number;
+  canUseTool?: SDKCanUseTool;
+  hooks?: {
+    PreToolUse?: (
+      input: PreToolUseInput,
+      toolUseId: string,
+      context: { signal: AbortSignal },
+    ) => Promise<PreToolUseResult>;
+    PostToolUse?: (
+      input: PostToolUseInput,
+      toolUseId: string,
+      context: { signal: AbortSignal },
+    ) => Promise<Record<string, never>>;
+    PostToolUseFailure?: (
+      input: PostToolUseInput & { error?: string },
+      toolUseId: string,
+      context: { signal: AbortSignal },
+    ) => Promise<Record<string, never>>;
+    SessionStart?: (
+      input: { sessionId: string },
+      toolUseId: string | undefined,
+      context: { signal: AbortSignal },
+    ) => Promise<Record<string, never>>;
+    SessionEnd?: (
+      input: { sessionId: string; reason?: string },
+      toolUseId: string | undefined,
+      context: { signal: AbortSignal },
+    ) => Promise<Record<string, never>>;
+  };
 }
+
+type SDKQueryFunction = (params: {
+  prompt: string;
+  options: {
+    env: Record<string, string>;
+    tools?: readonly string[];
+    permissionMode?: SDKQueryOptions["permissionMode"];
+    abortController?: AbortController;
+    hooks?: Record<string, unknown>;
+    canUseTool?: SDKCanUseTool;
+  };
+}) => AsyncIterable<unknown>;
 
 /**
  * スキル実行エンジン
@@ -700,10 +766,15 @@ export class SkillExecutor {
       try {
         const fullPrompt = await this.buildPrompt(request.prompt, skill);
         const response = await this.callSDKQuery(fullPrompt, {
-          tools: skill.allowedTools || [...DEFAULT_TOOLS],
-          permissionMode: "default",
+          tools: request.allowedTools ??
+            skill.allowedTools ?? [...DEFAULT_TOOLS],
+          permissionMode:
+            request.permissionMode ?? skill.permissionMode ?? "default",
           abortController,
           timeout: request.timeout ?? this.defaultTimeout,
+          canUseTool: request.canUseTool,
+          hooks:
+            skill.hooks ?? this.createHooks(executionId, request.hookObservers),
         });
         return response;
       } catch (error) {
@@ -774,16 +845,21 @@ export class SkillExecutor {
     const apiKey = await this.getApiKey();
 
     // Dynamic import for SDK（SDK実型により型安全）
-    const { query } = await import("@anthropic-ai/claude-agent-sdk");
+    const { query } =
+      (await import("@anthropic-ai/claude-agent-sdk")) as unknown as {
+        query: SDKQueryFunction;
+      };
 
     // TASK-9B-I: SDK query() を型安全に呼び出す（as any 不要）
     const conversation = query({
       prompt,
       options: {
-        env: { ANTHROPIC_API_KEY: apiKey }, // TASK-FIX-16-1: 環境変数経由で認証キーを渡す
+        env: { ...process.env, ANTHROPIC_API_KEY: apiKey }, // TASK-FIX-ENV-STRIPPING: process.env を展開し PATH 等を保持
         tools: options.tools,
         permissionMode: options.permissionMode,
         abortController: options.abortController,
+        hooks: this.toSdkHookMatchers(options.hooks),
+        canUseTool: options.canUseTool,
       },
     });
 
@@ -791,6 +867,152 @@ export class SkillExecutor {
     return {
       stream: () => conversation,
     };
+  }
+
+  private toSdkHookMatchers(
+    hooks?: SDKQueryOptions["hooks"],
+  ): Record<string, unknown> | undefined {
+    if (!hooks) {
+      return undefined;
+    }
+
+    const sdkHooks: Record<string, unknown> = {};
+
+    if (hooks.PreToolUse) {
+      sdkHooks.PreToolUse = [
+        {
+          hooks: [
+            async (
+              input: {
+                tool_name?: string;
+                tool_input?: unknown;
+                tool_use_id?: string;
+              },
+              toolUseId: string | undefined,
+              context: { signal: AbortSignal },
+            ) => {
+              const result = await hooks.PreToolUse!(
+                {
+                  toolName: input.tool_name ?? "unknown",
+                  args:
+                    input.tool_input &&
+                    typeof input.tool_input === "object" &&
+                    !Array.isArray(input.tool_input)
+                      ? (input.tool_input as Record<string, unknown>)
+                      : {},
+                },
+                toolUseId ?? input.tool_use_id ?? "",
+                context,
+              );
+
+              if (result.proceed) {
+                return { proceed: true };
+              }
+
+              return { proceed: false, message: result.message };
+            },
+          ],
+        },
+      ];
+    }
+
+    if (hooks.PostToolUse) {
+      sdkHooks.PostToolUse = [
+        {
+          hooks: [
+            async (
+              input: {
+                tool_name?: string;
+                tool_response?: unknown;
+                tool_use_id?: string;
+              },
+              toolUseId: string | undefined,
+              context: { signal: AbortSignal },
+            ) =>
+              hooks.PostToolUse!(
+                {
+                  toolName: input.tool_name ?? "unknown",
+                  result: input.tool_response,
+                },
+                toolUseId ?? input.tool_use_id ?? "",
+                context,
+              ),
+          ],
+        },
+      ];
+    }
+
+    if (hooks.PostToolUseFailure) {
+      sdkHooks.PostToolUseFailure = [
+        {
+          hooks: [
+            async (
+              input: {
+                tool_name?: string;
+                tool_response?: unknown;
+                tool_use_id?: string;
+                stderr?: string;
+                error?: string;
+              },
+              toolUseId: string | undefined,
+              context: { signal: AbortSignal },
+            ) =>
+              hooks.PostToolUseFailure!(
+                {
+                  toolName: input.tool_name ?? "unknown",
+                  result: input.tool_response,
+                  error: input.error ?? input.stderr,
+                },
+                toolUseId ?? input.tool_use_id ?? "",
+                context,
+              ),
+          ],
+        },
+      ];
+    }
+
+    if (hooks.SessionStart) {
+      sdkHooks.SessionStart = [
+        {
+          hooks: [
+            async (
+              input: { session_id?: string },
+              toolUseId: string | undefined,
+              context: { signal: AbortSignal },
+            ) =>
+              hooks.SessionStart!(
+                { sessionId: input.session_id ?? "unknown" },
+                toolUseId,
+                context,
+              ),
+          ],
+        },
+      ];
+    }
+
+    if (hooks.SessionEnd) {
+      sdkHooks.SessionEnd = [
+        {
+          hooks: [
+            async (
+              input: { session_id?: string; reason?: string },
+              toolUseId: string | undefined,
+              context: { signal: AbortSignal },
+            ) =>
+              hooks.SessionEnd!(
+                {
+                  sessionId: input.session_id ?? "unknown",
+                  reason: input.reason,
+                },
+                toolUseId,
+                context,
+              ),
+          ],
+        },
+      ];
+    }
+
+    return Object.keys(sdkHooks).length > 0 ? sdkHooks : undefined;
   }
 
   /**
@@ -1117,7 +1339,10 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
    * @param executionId - 実行ID
    * @returns PreToolUse / PostToolUse Hooks オブジェクト
    */
-  createHooks(executionId: string) {
+  createHooks(
+    executionId: string,
+    hookObservers?: SkillExecutionHookObservers,
+  ) {
     return {
       /**
        * PreToolUse Hook - ツール実行前のセキュリティチェックと通知
@@ -1131,6 +1356,14 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
         toolUseId: string,
         _context: { signal: AbortSignal },
       ): Promise<PreToolUseResult> => {
+        const observerDecision = await hookObservers?.onPreToolUse?.(
+          input,
+          toolUseId,
+        );
+        if (observerDecision) {
+          return observerDecision;
+        }
+
         // FR-001: 危険コマンドチェック
         if (input.toolName === "Bash") {
           const command = (input.args.command as string) || "";
@@ -1203,6 +1436,8 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
         toolUseId: string,
         _context: { signal: AbortSignal },
       ): Promise<Record<string, never>> => {
+        await hookObservers?.onPostToolUse?.(input, toolUseId, true);
+
         // FR-004: ツール結果を通知
         this.sendHooksStream({
           executionId,
@@ -1226,6 +1461,20 @@ ${skill.allowedTools?.join(", ") || DEFAULT_TOOLS.join(", ")}`;
           timestamp: Date.now(),
         });
 
+        return {};
+      },
+
+      PostToolUseFailure: async (
+        input: PostToolUseInput & { error?: string },
+        toolUseId: string,
+        _context: { signal: AbortSignal },
+      ): Promise<Record<string, never>> => {
+        await hookObservers?.onPostToolUse?.(
+          { toolName: input.toolName, result: input.result },
+          toolUseId,
+          false,
+          input.error,
+        );
         return {};
       },
     };

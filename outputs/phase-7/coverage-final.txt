@@ -1,0 +1,25 @@
+# Phase 7: カバレッジ確認（最終）
+
+## 実行日時
+2026-04-02
+
+## カバレッジ計測コマンド
+pnpm --filter @repo/desktop exec vitest run --coverage --coverage.include="src/main/ipc/disclosureHandlers.ts" src/main/ipc/__tests__/disclosureHandlers.test.ts
+
+## 計測結果
+
+| ファイル                | % Stmts | % Branch | % Funcs | % Lines | Uncovered |
+|------------------------|---------|----------|---------|---------|-----------|
+| disclosureHandlers.ts  | 97.29   | 85.71    | 100     | 97.29   | L55       |
+
+## 目標値照合
+
+| 指標     | 目標値 | 実測値 | 判定 |
+|----------|--------|--------|------|
+| Line     | 80%+   | 97.29% | PASS |
+| Branch   | 60%+   | 85.71% | PASS |
+| Function | 80%+   | 100%   | PASS |
+
+## 補足
+- Uncovered L55: `isDestroyed` の戻り値が true の場合（BrowserWindow が破棄済み）のパスは、sender 検証よりも前段で実装されていないため未カバー（既存の disclosureHandlers.ts の実装上、L55 は sender チェック後の処理に相当）。
+- 全指標で目標値を大幅に超過しており、Phase 8 へ進む。

@@ -51,9 +51,39 @@
 | TASK-SDK-07 | `step-05-seq-task-07-execution-governance-and-handoff-alignment`              | seq      | lane contract の適用・hardening、API / handoff / approval / disclosure の整合 |
 | TASK-SDK-08 | `step-06-seq-task-08-session-persistence-and-resume-contract`                 | seq      | session persistence / resume / checkpoint の互換性契約                        |
 
+### P0 是正タスク
+
+| タスクID   | ディレクトリ                                                      | パターン | 責務                                     |
+| ---------- | ----------------------------------------------------------------- | -------- | ---------------------------------------- |
+| TASK-P0-02 | `step-10-seq-task-p0-02-verify-improve-reverify-closed-loop`      | seq      | verify→improve→re-verify 閉ループ修復    |
+| TASK-P0-04 | `step-10-seq-task-p0-04-manifest-loader-default-activation`       | seq      | ManifestLoader のデフォルト有効化        |
+| TASK-P0-07 | `step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution` | seq      | ハードコードエージェント名の動的解決     |
+| TASK-P0-08 | `step-10-seq-task-p0-08-session-resume-renderer-integration`      | seq      | セッション復元のレンダラー統合           |
+| TASK-P0-09 | `step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance`   | seq      | Claude SDK permission hooks / governance |
+
+### UI 統合タスク
+
+| タスクID   | ディレクトリ                                                     | パターン | 責務                                     |
+| ---------- | ---------------------------------------------------------------- | -------- | ---------------------------------------- |
+| TASK-UI-01 | `step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion` | seq      | SkillLifecyclePanel の一次導線昇格       |
+| TASK-UI-02 | `step-12-par-task-ui-02-conversation-panel-orphan-resolution`    | par      | SkillCreatorConversationPanel の孤立解消 |
+| TASK-UI-03 | `step-12-par-task-ui-03-ipc-session-runtime-unification`         | par      | IPC session/runtime 二重経路統合         |
+| TASK-UI-04 | `step-13-seq-task-ui-04-spec-status-drift-correction`            | seq      | 仕様書ステータス乖離修正                 |
+
 補足:
 
 - `TASK-SDK-08` は初回から保存機構を全面再設計する task ではなく、既存 session persistence への載せ方と invalidation 境界を固める contract-first task として扱う
+- `TASK-UI-02` と `TASK-UI-03` は並列実行可能（step-12-par）。ただし両方とも `TASK-UI-01` 完了が前提
+- `TASK-UI-04` は他の全 UI タスク完了後に実行（step-13-seq）。ステータス乖離修正は最終段階で行う
+
+## UI 統合タスク推奨実行順
+
+```text
+P0 是正タスク完了後:
+  -> TASK-UI-01 (seq: 一次導線昇格)
+  -> TASK-UI-02 + TASK-UI-03 (par: 孤立解消 + IPC統合)
+  -> TASK-UI-04 (seq: ステータス乖離修正)
+```
 
 ## 読み方
 

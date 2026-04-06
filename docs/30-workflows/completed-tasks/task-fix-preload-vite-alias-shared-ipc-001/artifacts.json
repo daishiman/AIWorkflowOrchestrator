@@ -1,0 +1,69 @@
+{
+  "taskId": "TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001",
+  "createdAt": "2026-03-31T00:00:00Z",
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "outputs": ["outputs/phase-1/requirements-definition.md"]
+    },
+    "phase-2": {
+      "status": "completed",
+      "outputs": ["outputs/phase-2/architecture-design.md"]
+    },
+    "phase-3": {
+      "status": "completed",
+      "outputs": ["outputs/phase-3/gate-decision.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "outputs": ["outputs/phase-4/test-specification.md"]
+    },
+    "phase-5": {
+      "status": "completed",
+      "outputs": ["outputs/phase-5/implementation-summary.md"]
+    },
+    "phase-6": {
+      "status": "completed",
+      "outputs": ["outputs/phase-6/regression-test-result.md"]
+    },
+    "phase-7": {
+      "status": "completed",
+      "outputs": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "status": "completed",
+      "outputs": ["outputs/phase-8/refactoring-plan.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "outputs": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "status": "completed",
+      "outputs": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    "phase-12": {
+      "status": "completed",
+      "outputs": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "status": "blocked",
+      "outputs": ["outputs/phase-13/pr-readiness.md"]
+    }
+  }
+}

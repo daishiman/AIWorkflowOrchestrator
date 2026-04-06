@@ -38,9 +38,20 @@ export default defineConfig(({ mode }) => {
     },
     preload: {
       plugins: [
-        externalizeDepsPlugin(),
+        externalizeDepsPlugin({ exclude: ["@repo/shared"] }),
         tsconfigPaths({ projects: [sharedTsconfig] }),
       ],
+      resolve: {
+        // externalizeDepsPlugin の external チェックは resolveId より前に走るため、
+        // resolve.alias だけでは @repo/shared の外部化を防げない。
+        // exclude + alias の組み合わせで Rollup にソースをインライン化させる。
+        alias: {
+          "@repo/shared/src/ipc/channels": resolve(
+            __dirname,
+            "../../packages/shared/src/ipc/channels.ts",
+          ),
+        },
+      },
       build: {
         outDir: "out/preload",
         rollupOptions: {
@@ -61,6 +72,10 @@ export default defineConfig(({ mode }) => {
         rollupOptions: {
           input: {
             index: resolve(__dirname, "src/renderer/index.html"),
+            "phase11-skill-creator-conversation-ui": resolve(
+              __dirname,
+              "src/renderer/phase11-skill-creator-conversation-ui.html",
+            ),
             "phase11-light-theme-contrast-guard": resolve(
               __dirname,
               "src/renderer/phase11-light-theme-contrast-guard.html",

@@ -146,6 +146,8 @@ export const APPROVAL_CHANNELS = {
  */
 export const EXECUTION_CHANNELS = {
   EXECUTION_GET_DISCLOSURE_INFO: "execution:get-disclosure-info",
+  EXECUTION_GET_TERMINAL_LOG: "execution:get-terminal-log",
+  EXECUTION_GET_COPY_COMMAND: "execution:get-copy-command",
 } as const;
 
 /**
@@ -154,12 +156,58 @@ export const EXECUTION_CHANNELS = {
 export type SkillChannel = (typeof SKILL_CHANNELS)[keyof typeof SKILL_CHANNELS];
 
 /**
+ * スキルクリエイター SDK セッションブリッジ関連のIPCチャネル
+ * TASK-SDK-SC-01: SDK Session Bridge
+ */
+export const SKILL_CREATOR_SESSION_CHANNELS = {
+  /** Renderer → Main: セッション開始リクエスト */
+  START_SESSION: "skill-creator:start-session",
+  /** Main → Renderer: UserInput質問イベント */
+  QUESTION_RECEIVED: "skill-creator:question-received",
+  /** Renderer → Main: ユーザー回答送信 */
+  ANSWER: "skill-creator:answer",
+  /** Main → Renderer: セッション完了通知 */
+  SESSION_COMPLETE: "skill-creator:session-complete",
+  /** Main → Renderer: セッションエラー通知 */
+  SESSION_ERROR: "skill-creator:session-error",
+  /** Main → Renderer: 外部API設定要求（ExternalApiConfigForm 表示トリガー） */
+  EXTERNAL_API_CONFIG_REQUIRED: "skill-creator:external-api-config-required",
+} as const;
+
+/**
+ * スキルクリエイター 外部API連携のIPCチャネル
+ * TASK-SDK-SC-03: External API Support
+ */
+export const SKILL_CREATOR_EXTERNAL_API_CHANNELS = {
+  /** Renderer → Main: 外部API設定を送信 */
+  CONFIGURE_API: "skill-creator:configure-api",
+  /** Main → Renderer: API設定確認応答 */
+  API_CONFIGURED: "skill-creator:api-configured",
+  /** Main → Renderer: API接続テスト結果 */
+  API_TEST_RESULT: "skill-creator:api-test-result",
+} as const;
+
+/**
+ * スキルクリエイター 出力統合のIPCチャネル
+ * TASK-SDK-SC-04: Skill Output Integration
+ */
+export const SKILL_CREATOR_OUTPUT_READY = "skill-creator:output-ready" as const;
+export const SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED =
+  "skill-creator:output-overwrite-approved" as const;
+export const SKILL_CREATOR_OPEN_SKILL = "skill-creator:open-skill" as const;
+
+/**
  * すべてのIPCチャネル定数
  */
 export const IPC_CHANNELS = {
   ...CHAT_EXPORT_CHANNELS,
   ...FILE_SYSTEM_CHANNELS,
   ...SKILL_CHANNELS,
+  ...SKILL_CREATOR_SESSION_CHANNELS,
+  ...SKILL_CREATOR_EXTERNAL_API_CHANNELS,
+  SKILL_CREATOR_OUTPUT_READY,
+  SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+  SKILL_CREATOR_OPEN_SKILL,
   ...NOTIFICATION_CHANNELS,
   ...HISTORY_SEARCH_CHANNELS,
   ...APPROVAL_CHANNELS,

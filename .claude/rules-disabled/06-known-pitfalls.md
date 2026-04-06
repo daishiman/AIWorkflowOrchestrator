@@ -62,6 +62,35 @@
   3. 中断後は `git diff --stat -- .claude/skills/` で実際の変更ファイルを確認
 - **関連タスク**: TASK-9A-B
 
+### P44: git stash pop 後のコンフリクト（auto-generated ファイルと append-only ファイル）
+
+- **教訓**: `diff-to-pr` ワークフローで `git stash push → git merge origin/main → git stash pop` を実行すると、以下の3ファイルでコンフリクトが発生しやすい
+  - `indexes/keywords.json`, `indexes/topic-map.md`（auto-generated: 両ブランチで再生成）
+  - `references/task-workflow-completed.md`（append-only: 両ブランチが末尾に追記）
+- **根本原因**:
+  - 前2つ: `generate-index.js` の実行タイミングがブランチ間でずれる
+  - 後1つ: mainとワークブランチが同時に異なるタスクの完了記録を追記する
+- **解決策**（`.gitattributes` で対策済み 2026-04-04）:
+  1. `task-workflow-completed.md` → `merge=union`（両側の追記を自動統合）
+  2. `keywords.json`, `topic-map.md` → `merge=union`（衝突回避後に `generate-index.js` で再生成）
+  3. コンフリクトが残った場合: `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行
+- **手動解消手順**（万一 `.gitattributes` が効かない場合）:
+  ```bash
+  # task-workflow-completed.md: 両側の内容を保持（stash側を先頭に）
+  python3 -c "
+  import re
+  with open('...task-workflow-completed.md') as f: c = f.read()
+  resolved = re.sub(
+    r'<<<<<<< Updated upstream\n(.*?)\|\|\|\|\|\|\| Stash base\n.*?=======\n(.*?)>>>>>>> Stashed changes\n',
+    lambda m: m.group(2) + m.group(1), c, flags=re.DOTALL)
+  open('...task-workflow-completed.md','w').write(resolved)
+  "
+  # index ファイルはどちらか一方を採用後に再生成
+  node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
+  git add .claude/skills/aiworkflow-requirements/indexes/ .claude/skills/aiworkflow-requirements/references/task-workflow-completed.md
+  ```
+- **関連タスク**: task-imp-layer12-spec-definition-004
+
 ## Electron / ランタイム
 
 ### P5: リスナー二重登録（Renderer / Main 両プロセス）

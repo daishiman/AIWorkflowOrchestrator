@@ -13,6 +13,7 @@
 
 import fs from "fs/promises";
 import path from "path";
+import type { INotificationService } from "../notification/INotificationService";
 import {
   normalizeSdkMessage,
   normalizeSdkStream,
@@ -47,7 +48,9 @@ import type {
   RuntimeSkillCreatorVerifyCheck,
   SkillCreatorSessionListItem,
   SkillCreatorSessionResumeResult,
+  RuntimeSkillCreatorExecuteErrorResponse,
 } from "@repo/shared/types";
+import type { ImproveFeedbackHistory } from "@repo/shared/types";
 import {
   SKILL_CREATOR_ENGINE_VERSION,
   SESSION_TTL_MS,
@@ -56,7 +59,7 @@ import type { IAuthKeyService } from "../auth/types";
 import type { ILLMAdapter } from "../../adapters/llm/types";
 import type { ResourceLoader } from "../skill/ResourceLoader";
 import type { SkillFileManager } from "../skill/SkillFileManager";
-import type { SkillFileWriter } from "../skill/SkillFileWriter";
+import type { PersistResult, SkillFileWriter } from "../skill/SkillFileWriter";
 import { RuntimePolicyResolver } from "./RuntimePolicyResolver";
 import { ManifestLoader } from "./ManifestLoader";
 import {
@@ -85,6 +88,18 @@ import { parseLlmResponseToContent } from "./parseLlmResponseToContent";
 import { SkillCreatorVerificationEngine } from "./SkillCreatorVerificationEngine";
 import { formatVerifyChecksAsFeedback } from "./formatVerifyChecksAsFeedback";
 import type { SkillCreatorWorkflowSessionRepository } from "../session";
+import {
+  SkillCreatorAuditSink,
+  createHooks,
+  getPolicy,
+  canUseTool as evaluateGovernanceToolUse,
+  type SkillCreatorHooks,
+} from "./governance";
+import type {
+  SkillCreatorGovernancePhase,
+  SkillCreatorGovernanceState,
+} from "@repo/shared/types";
+import { buildPhaseResourceRequestsFromManifest } from "./manifestResourceResolver";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -106,6 +121,8 @@ export interface RuntimeSkillCreatorFacadeDeps {
   sessionRepository?: SkillCreatorWorkflowSessionRepository;
   /** Facade インスタンスID（セッションリース用）(TASK-P0-08) */
   ownerInstanceId?: string;
+  /** OS ネイティブ通知サービス（TASK-NOTIFICATION-SERVICE-001） */
+  notificationService?: INotificationService;
 }
 
 export class RuntimeSkillCreatorFacade {
@@ -124,6 +141,10 @@ export class RuntimeSkillCreatorFacade {
   private readonly verificationEngine?: SkillCreatorVerificationEngine;
   private readonly maxImproveRetry: number;
 
+  // TASK-P0-09: Governance / Permission / Hooks
+  private readonly auditSink = new SkillCreatorAuditSink();
+  private currentGovernancePhase: SkillCreatorGovernancePhase = "plan";
+
   // TASK-RT-01: LLMAdapter ステータス管理
   private _llmAdapterStatus: LLMAdapterStatus = "initializing";
   private _llmAdapterFailureReason: string | null = null;
@@ -132,10 +153,20 @@ export class RuntimeSkillCreatorFacade {
   private readonly sessionRepository?: SkillCreatorWorkflowSessionRepository;
   private readonly ownerInstanceId: string;
 
+  // TASK-NOTIFICATION-SERVICE-001: 実行カウンタ・通知サービス
+  private activeExecutionCount: number = 0;
+  private readonly notificationService: INotificationService | undefined;
+
   constructor(deps: RuntimeSkillCreatorFacadeDeps) {
     this.skillExecutor = deps.skillExecutor;
     this.workflowEngine =
       deps.workflowEngine ?? new SkillCreatorWorkflowEngine();
+    this.workflowEngine.onPhaseChanged = (planId) => {
+      const snapshot = this.workflowEngine.getWorkflowState(planId);
+      if (snapshot) {
+        this.onWorkflowStateSnapshot?.(planId, snapshot);
+      }
+    };
     this.llmAdapter = deps.llmAdapter;
     if (deps.llmAdapter) {
       this._llmAdapterStatus = "ready";
@@ -150,11 +181,20 @@ export class RuntimeSkillCreatorFacade {
     this.maxImproveRetry = Math.min(Math.max(deps.maxImproveRetry ?? 3, 1), 10);
     this.sessionRepository = deps.sessionRepository;
     this.ownerInstanceId = deps.ownerInstanceId ?? `facade-${Date.now()}`;
+    this.notificationService = deps.notificationService;
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
       deps.subscriptionAuthProvider,
     );
     this.handoffBuilder = new TerminalHandoffBuilder();
+  }
+
+  /**
+   * スキル生成が実行中かどうかを返す (TASK-NOTIFICATION-SERVICE-001)
+   * AC-8: boolean を返す
+   */
+  hasRunningExecution(): boolean {
+    return this.activeExecutionCount > 0;
   }
 
   /** LLMAdapter の現在のステータスを取得する (TASK-RT-01) */
@@ -180,6 +220,10 @@ export class RuntimeSkillCreatorFacade {
     this.llmAdapter = adapter;
     this._llmAdapterStatus = "ready";
     this._llmAdapterFailureReason = null;
+    this.onAdapterStatusChanged?.(
+      this._llmAdapterStatus,
+      this._llmAdapterFailureReason,
+    );
   }
 
   /**
@@ -189,6 +233,10 @@ export class RuntimeSkillCreatorFacade {
   setLLMAdapterFailed(reason: string): void {
     this._llmAdapterStatus = "failed";
     this._llmAdapterFailureReason = reason;
+    this.onAdapterStatusChanged?.(
+      this._llmAdapterStatus,
+      this._llmAdapterFailureReason,
+    );
   }
 
   getWorkflowStateSnapshot(
@@ -212,13 +260,87 @@ export class RuntimeSkillCreatorFacade {
     return this.workflowEngine.requestReverify(planId);
   }
 
+  /**
+   * 現在の governance 状態を返す (TASK-P0-09)。
+   * renderer は IPC 経由で read-only 参照する。
+   */
+  getGovernanceState(): SkillCreatorGovernanceState {
+    const phase = this.currentGovernancePhase;
+    const activePolicy = getPolicy(phase);
+    const recentAuditEvents = this.auditSink.getRecentEvents(20);
+    const recentDenials = this.auditSink
+      .getDenialEvents()
+      .slice(-10)
+      .map((e) => ({
+        toolName: e.toolName,
+        toolUseId: undefined,
+        reason: e.decision?.reason ?? "unknown",
+      }));
+    return { phase, activePolicy, recentAuditEvents, recentDenials };
+  }
+
+  /**
+   * 指定 phase の hooks を生成する (TASK-P0-09)。
+   * 内部メソッド: plan/execute/verify/improve の各フローで使用。
+   */
+  private createGovernanceHooks(
+    phase: SkillCreatorGovernancePhase,
+  ): SkillCreatorHooks {
+    this.currentGovernancePhase = phase;
+    const provenance = this.buildSourceProvenance();
+    return createHooks(phase, this.auditSink, provenance);
+  }
+
   async verifySkill(
     skillDir: string,
   ): Promise<import("@repo/shared").RuntimeSkillCreatorVerifyCheck[]> {
+    const verifyId = `verify-${Date.now()}`;
+    const governanceHooks = this.createGovernanceHooks("verify");
+    governanceHooks.onSessionStart({
+      sessionId: verifyId,
+      provenance: this.buildSourceProvenance(),
+    });
+
     if (!this.verificationEngine) {
+      governanceHooks.onSessionEnd({
+        sessionId: verifyId,
+        summary: "Verify skipped: verificationEngine unavailable",
+      });
       return [];
     }
-    return this.verificationEngine.verify(skillDir);
+
+    try {
+      const checks = await this.verificationEngine.verify(skillDir);
+      governanceHooks.onSessionEnd({
+        sessionId: verifyId,
+        summary: `Verify completed: ${checks.length} checks`,
+      });
+      return checks;
+    } catch (error) {
+      governanceHooks.onSessionEnd({
+        sessionId: verifyId,
+        summary: `Verify failed: ${error instanceof Error ? error.message : String(error)}`,
+      });
+      throw error;
+    }
+  }
+
+  private createExecuteGovernanceCanUseTool() {
+    return async (
+      toolName: string,
+      _input: Record<string, unknown>,
+      options: { toolUseID: string },
+    ) => {
+      const decision = evaluateGovernanceToolUse(toolName, "execute");
+      if (decision.allowed) {
+        return { behavior: "allow" as const, toolUseID: options.toolUseID };
+      }
+      return {
+        behavior: "deny" as const,
+        message: decision.reason,
+        toolUseID: options.toolUseID,
+      };
+    };
   }
 
   /**
@@ -242,7 +364,7 @@ export class RuntimeSkillCreatorFacade {
 
     const maxRetry = this.maxImproveRetry;
     let attemptCount = 0;
-    let previousImproveSummary = "";
+    const feedbackHistory: ImproveFeedbackHistory[] = [];
 
     while (true) {
       // Step 1: verify 実行
@@ -273,8 +395,8 @@ export class RuntimeSkillCreatorFacade {
         };
       }
 
-      // Step 2: 全チェック PASS 判定（error がなければ PASS）
-      const allPassed = checks.every((c) => c.severity !== "error");
+      // Step 2: 全チェック PASS 判定（info のみで PASS）
+      const allPassed = checks.every((c) => c.severity === "info");
 
       if (allPassed) {
         const snapshot = this.workflowEngine.recordVerifyPass(planId, checks);
@@ -309,10 +431,7 @@ export class RuntimeSkillCreatorFacade {
       attemptCount++;
 
       try {
-        const feedback = buildImproveFeedback(
-          failedChecks,
-          previousImproveSummary,
-        );
+        const feedback = buildImproveFeedback(failedChecks, feedbackHistory);
         const improveResult = await this.improve(
           skillName,
           feedback,
@@ -322,9 +441,22 @@ export class RuntimeSkillCreatorFacade {
 
         // エラーレスポンスチェック
         if ("success" in improveResult && !improveResult.success) {
-          throw new Error(
-            (improveResult as { error: { message: string } }).error.message,
+          const errorCode = improveResult.error.code;
+          const errorMessage = improveResult.error.message;
+          this.notificationService?.notify("スキル作成失敗", errorMessage);
+          const snapshot = this.recordImproveFailureSnapshot(
+            planId,
+            `improve が ${errorCode} で失敗しました: ${errorMessage}`,
           );
+          return {
+            finalStatus: "error",
+            totalAttempts: attemptCount,
+            finalChecks: checks,
+            loopExhausted: false,
+            errorCode,
+            errorMessage,
+            workflowSnapshot: snapshot,
+          };
         }
 
         // terminal_handoff チェック
@@ -332,10 +464,9 @@ export class RuntimeSkillCreatorFacade {
           "type" in improveResult &&
           improveResult.type === "terminal_handoff"
         ) {
-          const snapshot = this.workflowEngine.recordVerifyFailure(
+          const snapshot = this.recordImproveFailureSnapshot(
             planId,
             "improve が terminal_handoff を返しました",
-            "review",
           );
           return {
             finalStatus: "error",
@@ -351,10 +482,9 @@ export class RuntimeSkillCreatorFacade {
           "suggestions" in improveResult ? improveResult.suggestions : [];
 
         if (suggestions.length === 0) {
-          const snapshot = this.workflowEngine.recordVerifyFailure(
+          const snapshot = this.recordImproveFailureSnapshot(
             planId,
             "LLM が改善提案を生成できませんでした",
-            "review",
           );
           return {
             finalStatus: "fail",
@@ -370,10 +500,9 @@ export class RuntimeSkillCreatorFacade {
         const applyResult = await this.applyImprovement(skillName, suggestions);
 
         if (applyResult.applied === 0) {
-          const snapshot = this.workflowEngine.recordVerifyFailure(
+          const snapshot = this.recordImproveFailureSnapshot(
             planId,
             "改善提案の適用に全て失敗しました",
-            "review",
           );
           return {
             finalStatus: "fail",
@@ -385,15 +514,18 @@ export class RuntimeSkillCreatorFacade {
           };
         }
 
-        previousImproveSummary = summarizeImproveSuggestions(suggestions);
+        feedbackHistory.push({
+          attempt: attemptCount,
+          failedChecks: failedChecks.map((c) => c.id),
+          improveSummary: summarizeImproveSuggestions(suggestions),
+        });
 
         // Step 5: re-verify へ（while ループ先頭に戻る）
       } catch (err) {
         const errorMsg = err instanceof Error ? err.message : String(err);
-        const snapshot = this.workflowEngine.recordVerifyFailure(
+        const snapshot = this.recordImproveFailureSnapshot(
           planId,
           `improve 中にエラーが発生: ${errorMsg}`,
-          "review",
         );
         return {
           finalStatus: "error",
@@ -653,7 +785,8 @@ export class RuntimeSkillCreatorFacade {
   }
 
   private async resolveOperationResources(
-    requests: readonly import("./PhaseResourcePlanner").PhaseResourceRequest[],
+    phaseId: "plan" | "improve",
+    fallbackRequests: readonly import("./PhaseResourcePlanner").PhaseResourceRequest[],
     maxBytes: number,
     operation: import("./PhaseResourcePlanner").SkillCreatorOperation,
   ): Promise<{
@@ -670,6 +803,13 @@ export class RuntimeSkillCreatorFacade {
 
     const explicitRoot = this.getExplicitSkillCreatorRoot();
     const manifest = await this.loadWorkflowManifest(explicitRoot);
+    const requests = manifest
+      ? buildPhaseResourceRequestsFromManifest(
+          manifest,
+          phaseId,
+          fallbackRequests,
+        )
+      : [...fallbackRequests];
     const resolution = await this.sourceResolver.resolve({
       explicitRoot,
       manifest,
@@ -758,14 +898,24 @@ export class RuntimeSkillCreatorFacade {
 
     // integrated_api: LLM で計画を生成
     const planId = `plan-${Date.now()}`;
+    const governanceHooks = this.createGovernanceHooks("plan");
+    governanceHooks.onSessionStart({ sessionId: planId });
     let sourceProvenance: SkillCreatorWorkflowSourceProvenance | undefined =
       this.buildSourceProvenance();
 
     // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
     if (!this.llmAdapter) {
+      governanceHooks.onSessionEnd({
+        sessionId: planId,
+        summary: "Plan failed: llm_adapter_unavailable",
+      });
       return buildDegradedError("llm_adapter_unavailable");
     }
     if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
+      governanceHooks.onSessionEnd({
+        sessionId: planId,
+        summary: "Plan failed: resource_loader_unavailable",
+      });
       return buildDegradedError("resource_loader_unavailable");
     }
 
@@ -773,6 +923,7 @@ export class RuntimeSkillCreatorFacade {
     let referenceSpecs: Array<{ name: string; content: string }> = [];
     if (this.hasDynamicResourcePipeline()) {
       const resolved = await this.resolveOperationResources(
+        "plan",
         PLAN_RESOURCE_REQUESTS,
         PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
         "plan",
@@ -794,9 +945,13 @@ export class RuntimeSkillCreatorFacade {
         }));
       sourceProvenance = resolved.sourceProvenance;
     } else if (this.resourceLoader) {
-      for (const name of PLAN_PROMPT_CONSTANTS.AGENT_NAMES) {
-        const content = await this.resourceLoader.loadAgent(name);
-        agentSpecs.push({ name, content });
+      // fallback path: PLAN_RESOURCE_REQUESTS が唯一の source of truth。
+      // kind === "agent" のエントリのみを agent 名として使用し、reference が混入しない。
+      for (const request of PLAN_RESOURCE_REQUESTS.filter(
+        (r) => r.kind === "agent",
+      )) {
+        const content = await this.resourceLoader.loadAgent(request.id);
+        agentSpecs.push({ name: request.id, content });
       }
       sourceProvenance = this.buildSourceProvenance();
     }
@@ -865,7 +1020,172 @@ export class RuntimeSkillCreatorFacade {
       });
     }
 
+    governanceHooks.onSessionEnd({
+      sessionId: planId,
+      summary: `Plan completed: ${parsed.skillName}`,
+    });
     return planResult;
+  }
+
+  /**
+   * fire-and-forget 実行中の workflow snapshot 通知コールバック。
+   * creatorHandlers.ts の registerRuntimeSkillCreatorHandlers でセットアップし、
+   * mainWindow.webContents.send(SKILL_CREATOR_WORKFLOW_STATE_CHANGED, snapshot) にワイヤリングする。
+   */
+  onWorkflowStateSnapshot?: (
+    planId: string,
+    snapshot: SkillCreatorWorkflowUiSnapshot | null,
+    error?: string,
+  ) => void;
+
+  /** LLMAdapter ステータス変更通知コールバック (TASK-RT-01) */
+  onAdapterStatusChanged?: (
+    status: LLMAdapterStatus,
+    failureReason: string | null,
+  ) => void;
+
+  /**
+   * Executor role の fire-and-forget 版。
+   * IPC ハンドラーから void で呼ばれ、バックグラウンドで実行される。
+   * 進捗/完了/失敗時に workflow snapshot を Renderer へ通知する。
+   * Public IPC: "skill-creator:execute-plan" (fire-and-forget)
+   *
+   * @param planId - trimされた planId
+   * @param args - IPC ハンドラーから受け取った引数オブジェクト
+   */
+  async executeAsync(
+    planId: string,
+    args: {
+      planId: string;
+      skillSpec: string;
+      authMode?: AuthMode;
+      apiKey?: string | null;
+    },
+  ): Promise<void> {
+    const planResult: SkillPlanResult = {
+      planId,
+      skillSpec: args.skillSpec.trim(),
+      estimatedSteps: 3,
+      skillName: "",
+      description: "",
+      agents: [],
+      scripts: [],
+      triggers: [],
+      anchors: [],
+    };
+
+    this.workflowEngine.triggerPhaseTransition(planId, "executing", 0);
+
+    try {
+      const executeResult = await this.execute(
+        planResult,
+        args.authMode ?? "api-key",
+        args.apiKey ?? null,
+      );
+
+      const isStructuredError =
+        typeof executeResult === "object" &&
+        executeResult !== null &&
+        "success" in executeResult &&
+        executeResult.success === false;
+      const phase = isStructuredError ? "error" : "complete";
+      this.workflowEngine.triggerPhaseTransition(
+        planId,
+        phase,
+        phase === "complete" ? 100 : 0,
+      );
+      if (isStructuredError) {
+        const errorResponse =
+          executeResult as RuntimeSkillCreatorExecuteErrorResponse;
+        const snapshot = this.workflowEngine.getWorkflowState(planId);
+        if (!snapshot) {
+          this.onWorkflowStateSnapshot?.(
+            planId,
+            null,
+            errorResponse.error.message,
+          );
+        }
+      }
+    } catch (error) {
+      this.workflowEngine.triggerPhaseTransition(planId, "error", 0);
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      const snapshot = this.workflowEngine.getWorkflowState(planId);
+      if (!snapshot) {
+        this.onWorkflowStateSnapshot?.(planId, null, errorMessage);
+      }
+      console.error(
+        "[RuntimeSkillCreatorFacade] executeAsync failed",
+        planId,
+        errorMessage,
+      );
+    }
+  }
+
+  private recordImproveFailureSnapshot(
+    planId: string,
+    message: string,
+  ): SkillCreatorWorkflowUiSnapshot {
+    const workflowEngineWithImproveFailure = this.workflowEngine as
+      | SkillCreatorWorkflowEngine
+      | (SkillCreatorWorkflowEngine & {
+          recordImproveFailure?: (
+            planId: string,
+            message: string,
+          ) => SkillCreatorWorkflowUiSnapshot;
+        });
+
+    if (
+      typeof workflowEngineWithImproveFailure.recordImproveFailure ===
+      "function"
+    ) {
+      return workflowEngineWithImproveFailure.recordImproveFailure(
+        planId,
+        message,
+      );
+    }
+
+    const existingSnapshot = this.workflowEngine.getWorkflowState(planId);
+    const updatedAt = new Date().toISOString();
+
+    if (existingSnapshot) {
+      return {
+        ...existingSnapshot,
+        currentPhase: "improve",
+        awaitingUserInput: null,
+        verifyResult: {
+          ...existingSnapshot.verifyResult,
+          status: "fail",
+          message,
+          nextAction: "improve",
+          updatedAt,
+        },
+        resumeTokenEnvelope: {
+          ...existingSnapshot.resumeTokenEnvelope,
+          currentPhase: "improve",
+          updatedAt,
+        },
+      };
+    }
+
+    return {
+      planId,
+      currentPhase: "improve",
+      awaitingUserInput: null,
+      verifyResult: {
+        status: "fail",
+        message,
+        nextAction: "improve",
+        updatedAt,
+      },
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId,
+        currentPhase: "improve",
+        artifactCount: 0,
+        updatedAt,
+      },
+    };
   }
 
   /**
@@ -878,8 +1198,56 @@ export class RuntimeSkillCreatorFacade {
     authMode: AuthMode,
     apiKey: string | null,
   ): Promise<SkillExecuteResponse> {
-    const decision = await this.resolveDecision(authMode, apiKey);
+    this.activeExecutionCount += 1;
+    try {
+      return await this._executeInternal(planResult, authMode, apiKey);
+    } finally {
+      this.activeExecutionCount = Math.max(0, this.activeExecutionCount - 1);
+    }
+  }
+
+  private async _executeInternal(
+    planResult: SkillPlanResult,
+    authMode: AuthMode,
+    apiKey: string | null,
+  ): Promise<SkillExecuteResponse> {
     const sourceProvenance = this.buildSourceProvenance();
+    const governanceHooks = this.createGovernanceHooks("execute");
+    governanceHooks.onSessionStart({
+      sessionId: planResult.planId,
+      provenance: sourceProvenance,
+    });
+
+    // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001: アダプターステータスチェック
+    // "failed" のみ early return（永続的な障害）。
+    // "initializing" は resolve() を先行させ terminal_handoff を優先する（TC-14）。
+    if (this._llmAdapterStatus === "failed") {
+      const errorMessage = toActionableMessage(this._llmAdapterFailureReason);
+
+      this.workflowEngine.recordExecuteAdapterFailure(
+        planResult,
+        errorMessage,
+        sourceProvenance,
+      );
+      governanceHooks.onSessionEnd({
+        sessionId: planResult.planId,
+        summary: `Execute failed: ${errorMessage}`,
+      });
+      try {
+        this.notificationService?.notify("スキル作成失敗", errorMessage);
+      } catch {
+        // 通知の失敗はスキル生成の結果に影響しない
+      }
+      return {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: errorMessage,
+        },
+      };
+    }
+
+    const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {
       this.workflowEngine.recordExecuteHandoff(
@@ -888,6 +1256,10 @@ export class RuntimeSkillCreatorFacade {
         decision.bundle,
         sourceProvenance,
       );
+      governanceHooks.onSessionEnd({
+        sessionId: planResult.planId,
+        summary: "Execute routed to terminal_handoff",
+      });
       return { type: "terminal_handoff", bundle: decision.bundle };
     }
 
@@ -897,9 +1269,59 @@ export class RuntimeSkillCreatorFacade {
       sourceProvenance,
     );
 
+    // TASK-RT-02: スタブ応答排除 — terminal_handoff は除外済み、ここから integrated_api のみ
+    // recordExecuteStart() でワークフロー状態を確立した後にガードする
+    if (!this.llmAdapter) {
+      const sdkEvents = normalizeSkillCreatorSdkEvents([], sourceProvenance);
+      const result: SkillExecuteResult = {
+        executeId: `degraded-${Date.now()}`,
+        skillName:
+          planResult.skillSpec.split("\n")[0]?.substring(0, 50) ?? "unnamed",
+        success: false,
+        error: DEGRADED_REASON_MESSAGES.llm_adapter_unavailable,
+        sdkEvents,
+        sourceProvenance,
+      };
+      this.workflowEngine.recordExecutionFailure(planResult.planId, {
+        executeId: result.executeId,
+        skillName: result.skillName,
+        reason: "execution_error",
+        message: result.error ?? "LLM adapter unavailable.",
+        sdkEvents,
+        sourceProvenance,
+      });
+      governanceHooks.onSessionEnd({
+        sessionId: planResult.planId,
+        summary: `Execute failed: ${result.error ?? "LLM adapter unavailable."}`,
+      });
+      return result;
+    }
+    const executePolicy = getPolicy("execute");
+
     const request: SkillExecutionRequest = {
       prompt: planResult.skillSpec,
       skillId: `creator-${planResult.planId}`,
+      allowedTools: [...executePolicy.allowedTools],
+      permissionMode: executePolicy.permissionMode,
+      canUseTool: this.createExecuteGovernanceCanUseTool(),
+      hookObservers: {
+        onPreToolUse: (input, _toolUseId) => {
+          const decision = governanceHooks.onPreToolUse({
+            sessionId: planResult.planId,
+            toolName: input.toolName,
+          });
+          return decision.allowed
+            ? { proceed: true }
+            : { proceed: false, message: decision.reason };
+        },
+        onPostToolUse: (input, _toolUseId, success, error) =>
+          governanceHooks.onPostToolUse({
+            sessionId: planResult.planId,
+            toolName: input.toolName,
+            success,
+            error,
+          }),
+      },
     };
 
     const skillMeta = {
@@ -910,7 +1332,8 @@ export class RuntimeSkillCreatorFacade {
       path: "",
       triggers: [],
       anchors: [],
-      allowedTools: ["Read", "Edit", "Write"],
+      allowedTools: [...executePolicy.allowedTools],
+      permissionMode: executePolicy.permissionMode,
       content: planResult.skillSpec,
     };
 
@@ -936,6 +1359,14 @@ export class RuntimeSkillCreatorFacade {
         sdkEvents,
         sourceProvenance,
       });
+      // 通知の失敗はスキル生成の結果に影響しない
+      try {
+        const errorSummary =
+          error instanceof Error ? error.message : String(error);
+        this.notificationService?.notify("スキル作成失敗", errorSummary);
+      } catch {
+        // 通知の失敗はスキル生成の結果に影響しない
+      }
       return executeResult;
     }
 
@@ -952,7 +1383,7 @@ export class RuntimeSkillCreatorFacade {
     const permissionDenials = collectPermissionDenials(sdkEvents);
 
     // Step 3.5-3.6: LLM 応答からコンテンツ抽出 → SkillFileWriter.persist() (TASK-P0-05)
-    let persistResult: { skillPath: string; files: string[] } | null = null;
+    let persistResult: PersistResult | null = null;
     let persistError: string | null = null;
 
     if (response.success) {
@@ -996,6 +1427,19 @@ export class RuntimeSkillCreatorFacade {
     };
     if (executeResult.success) {
       this.workflowEngine.recordExecuteResult(planResult.planId, executeResult);
+      governanceHooks.onSessionEnd({
+        sessionId: planResult.planId,
+        summary: `Execute succeeded: ${executeResult.skillName}`,
+      });
+      // 通知の失敗はスキル生成の結果に影響しない
+      try {
+        this.notificationService?.notify(
+          "スキル作成完了",
+          planResult.skillName,
+        );
+      } catch {
+        // 通知の失敗はスキル生成の結果に影響しない
+      }
       return executeResult;
     }
 
@@ -1011,6 +1455,17 @@ export class RuntimeSkillCreatorFacade {
       sdkEvents: executeResult.sdkEvents,
       sourceProvenance,
     });
+    governanceHooks.onSessionEnd({
+      sessionId: planResult.planId,
+      summary: `Execute failed: ${executeResult.error ?? "unknown"}`,
+    });
+    // 通知の失敗はスキル生成の結果に影響しない
+    try {
+      const errorSummary = executeResult.error ?? "スキル生成に失敗しました";
+      this.notificationService?.notify("スキル作成失敗", errorSummary);
+    } catch {
+      // 通知の失敗はスキル生成の結果に影響しない
+    }
     return executeResult;
   }
 
@@ -1024,6 +1479,38 @@ export class RuntimeSkillCreatorFacade {
     authMode: AuthMode,
     apiKey: string | null,
   ): Promise<RuntimeSkillCreatorImproveResponse> {
+    const improveId = `improve-${Date.now()}`;
+    const governanceHooks = this.createGovernanceHooks("improve");
+    governanceHooks.onSessionStart({ sessionId: improveId });
+
+    // TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001: アダプターステータスチェック
+    if (this._llmAdapterStatus === "failed") {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: LLM adapter status is failed",
+      });
+      return {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: toActionableMessage(this._llmAdapterFailureReason),
+        },
+      };
+    }
+    if (this._llmAdapterStatus === "initializing") {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: LLM adapter is initializing",
+      });
+      return {
+        success: false,
+        error: {
+          code: "llm_adapter_unavailable",
+          message: "LLMAdapter の初期化中です。しばらくお待ちください",
+        },
+      };
+    }
+
     const decision = await this.resolveDecision(authMode, apiKey);
 
     if (decision.type === "terminal_handoff") {
@@ -1059,19 +1546,29 @@ export class RuntimeSkillCreatorFacade {
       };
     }
 
-    const improveId = `improve-${Date.now()}`;
-
     // TASK-RT-02: llmAdapter/resourceLoader 未注入時は explicit error を返す
     if (!this.llmAdapter) {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: llm_adapter_unavailable",
+      });
       return buildDegradedError("llm_adapter_unavailable");
     }
     if (!this.resourceLoader && !this.hasDynamicResourcePipeline()) {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: "Improve failed: resource_loader_unavailable",
+      });
       return buildDegradedError("resource_loader_unavailable");
     }
 
     try {
       // SKILL.md 読み込み
       if (!this.skillFileManager) {
+        governanceHooks.onSessionEnd({
+          sessionId: improveId,
+          summary: "Improve failed: skillFileManager is not available",
+        });
         return {
           success: false,
           error: {
@@ -1088,6 +1585,7 @@ export class RuntimeSkillCreatorFacade {
       let agentPrompt: string;
       if (this.hasDynamicResourcePipeline()) {
         const resolved = await this.resolveOperationResources(
+          "improve",
           IMPROVE_RESOURCE_REQUESTS,
           IMPROVE_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
           "improve",
@@ -1132,18 +1630,30 @@ export class RuntimeSkillCreatorFacade {
       // レスポンスパース
       const parseResult = parseImproveResponse(response.content);
       if (!parseResult.success) {
+        governanceHooks.onSessionEnd({
+          sessionId: improveId,
+          summary: `Improve failed: PARSE_ERROR ${parseResult.error}`,
+        });
         return {
           success: false,
           error: { code: "PARSE_ERROR", message: parseResult.error },
         };
       }
 
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: `Improve completed: ${parseResult.suggestions.length} suggestions`,
+      });
       return {
         improveId,
         suggestions: parseResult.suggestions,
         revisedSpec: parseResult.revisedSpec,
       };
     } catch (error: unknown) {
+      governanceHooks.onSessionEnd({
+        sessionId: improveId,
+        summary: `Improve failed: ${error instanceof Error ? error.message : "unknown"}`,
+      });
       return handleImproveError(error);
     }
   }
@@ -1426,16 +1936,40 @@ export function parseImproveResponse(responseText: string): ImproveParseResult {
 
 function buildImproveFeedback(
   checks: RuntimeSkillCreatorVerifyCheck[],
-  previousImproveSummary: string,
+  history: ImproveFeedbackHistory[],
 ): string {
   const feedback = formatVerifyChecksAsFeedback(checks);
-  const summary = previousImproveSummary.trim();
 
-  if (feedback === "" || summary === "") {
+  if (history.length === 0) {
     return feedback;
   }
 
-  return `${feedback}\n\n## 前回の改善要約\n${summary}`;
+  const currentFailedIds = checks.map((c) => c.id);
+  const persistentChecks = currentFailedIds.filter((id) =>
+    history.every((h) => h.failedChecks.includes(id)),
+  );
+
+  const historySection = history
+    .map(
+      (h) =>
+        `### 試行 ${h.attempt}/${history.length + 1}\n` +
+        `- 失敗チェック: ${h.failedChecks.join(", ")}\n` +
+        `- 試みた改善: ${h.improveSummary}`,
+    )
+    .join("\n\n");
+
+  const persistentWarning =
+    persistentChecks.length > 0
+      ? `\n\n**繰り返し失敗中のチェック**: ${persistentChecks.join(", ")}\n` +
+        `上記は過去の全試行で解決できていません。根本的に異なるアプローチが必要です。`
+      : "";
+
+  return (
+    `${feedback}\n\n` +
+    `## 過去の改善試行履歴（${history.length}回試行済み）\n\n` +
+    `以下は過去に試みた改善とその結果です。同じアプローチは繰り返さず、異なる戦略を提案してください。` +
+    `${persistentWarning}\n\n${historySection}`
+  );
 }
 
 function summarizeImproveSuggestions(

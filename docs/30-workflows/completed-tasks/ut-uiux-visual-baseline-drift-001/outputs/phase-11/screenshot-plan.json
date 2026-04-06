@@ -1,0 +1,21 @@
+{
+  "project": "ui-ux-layer2",
+  "capturedAt": "2026-04-03",
+  "screenshots": [
+    {
+      "name": "error-display",
+      "source": "apps/desktop/e2e/ui-ux/layer2-visual.spec.ts-snapshots/error-display-baseline-ui-ux-layer2-darwin.png",
+      "output": "docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/screenshots/error-display.png"
+    },
+    {
+      "name": "loading-state",
+      "source": "apps/desktop/e2e/ui-ux/layer2-visual.spec.ts-snapshots/loading-state-baseline-ui-ux-layer2-darwin.png",
+      "output": "docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/screenshots/loading-state.png"
+    },
+    {
+      "name": "dark-mode",
+      "source": "apps/desktop/e2e/ui-ux/layer2-visual.spec.ts-snapshots/dark-mode-baseline-ui-ux-layer2-darwin.png",
+      "output": "docs/30-workflows/completed-tasks/ut-uiux-visual-baseline-drift-001/outputs/phase-11/screenshots/dark-mode.png"
+    }
+  ]
+}

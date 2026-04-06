@@ -88,15 +88,16 @@ Task04 では Skill Creator runtime workflow の canonical state を Renderer �
 | --- | --- | --- | --- | --- |
 | `skill-creator:get-workflow-state` | Renderer → Main | current workflow snapshot 取得 | `{ planId: string }` | `SkillCreatorWorkflowUiSnapshot` |
 | `skill-creator:submit-user-input` | Renderer → Main | user input 回答送信 | `SkillCreatorUserInputSubmission` | `SkillCreatorWorkflowUiSnapshot` |
+| `skill-creator:get-governance` | Renderer → Main | governance payload 取得 | `{ phase: SkillCreatorGovernancePhase }` | `IpcResult<GovernanceUiPayload>` |
 | `skill-creator:workflow-state-changed` | Main → Renderer | snapshot 更新 push | none | `SkillCreatorWorkflowUiSnapshot` |
 
 ### current contract
 
 | 層 | ファイル | 契約 |
 | --- | --- | --- |
-| Shared | `packages/shared/src/types/skillCreator.ts` | `SkillCreatorWorkflowUiSnapshot` / `SkillCreatorUserInputSubmission` を SSoT にする。`SkillCreatorUserInputKind` は `single_select` / `multi_select` / `free_text` / `secret` / `confirm` の 5 種 |
-| Main IPC | `apps/desktop/src/main/ipc/creatorHandlers.ts` | sender validation + payload validation 後に facade へ委譲する |
-| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開する |
+| Shared | `packages/shared/src/types/skillCreator.ts` | `SkillCreatorWorkflowUiSnapshot` / `SkillCreatorUserInputSubmission` / `SkillCreatorGovernancePhase` / `GovernanceUiPayload` を SSoT にする。`SkillCreatorUserInputKind` は `single_select` / `multi_select` / `free_text` / `secret` / `confirm` の 5 種 |
+| Main IPC | `apps/desktop/src/main/ipc/creatorHandlers.ts` | sender validation + payload validation 後に facade へ委譲し、`skill-creator:get-governance` で runtime governance payload を返す |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開し、`getGovernancePayload()` を含む |
 | Renderer | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | phase summary / question host / provenance summary / handoff card を snapshot 表示する |
 
 `SkillCreatorUserInputSubmission` は kind ごとに使用フィールドを切り替える。`multi_select` では `selectedOptionIds: string[]` を使い、Renderer は request kind 切替時に stale selection を持ち越さないことを要件とする。
@@ -431,10 +432,10 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | --- | --- | --- |
 | Main registration | `apps/desktop/src/main/ipc/index.ts` | `SkillExecutor` / `authKeyService` から facade を組み立てる |
 | Main public entrypoint | `apps/desktop/src/main/ipc/skillCreatorHandlers.ts` | skill creator 標準 surface を維持して runtime helper を登録する |
-| Main runtime helper | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `plan` / `execute-plan` / `improve-skill` / `get-verify-detail` / `reverify-workflow` handler |
+| Main runtime helper | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `plan` / `execute-plan` / `improve-skill` / `get-verify-detail` / `reverify-workflow` / `get-governance-state` handler |
 | Runtime service | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | public bridge。policy / handoff / execute を判断し、state 更新は engine へ委譲 |
 | Workflow engine | `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts` | `currentPhase` / `awaitingUserInput` / `verifyResult` / artifacts / `resumeTokenEnvelope` の owner。checkpoint hydrate / artifact serialization も保持 |
-| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `planSkill()` / `executePlan()` / `improveSkillWithFeedback()` / `getVerifyDetail()` / `reverifyWorkflow()` |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `planSkill()` / `executePlan()` / `improveSkillWithFeedback()` / `getVerifyDetail()` / `reverifyWorkflow()` / `getGovernanceState()` |
 | Workflow session repository | `apps/desktop/src/main/services/session/SkillCreatorWorkflowSessionRepository.ts` | revision / lease guard 付き save/load/invalidate/evaluate。public IPC 未公開の internal persistence owner |
 | Compatibility evaluator | `apps/desktop/src/main/services/session/ResumeCompatibilityEvaluator.ts` | version / route / provenance / lease を比較し `compatible` / `compatible_with_warning` / `incompatible` / `conflict` を返す |
 | Workflow session storage | `apps/desktop/src/main/services/session/WorkflowSessionStorage.ts` | `skill-creator-workflow-sessions` store を管理し generic session schema と分離 |
@@ -451,10 +452,14 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | チャンネル | 用途 | Request | Response |
 | --- | --- | --- | --- |
 | `skill-creator:plan` | runtime plan 作成 | `SkillCreatorPlanRequest` | `IpcResult<RuntimeSkillCreatorPlanResponse>` |
-| `skill-creator:execute-plan` | plan 実行 | `SkillCreatorExecutePlanRequest` | `IpcResult<RuntimeSkillCreatorExecuteResponse>` |
+| `skill-creator:execute-plan` | plan 実行 | `SkillCreatorExecutePlanRequest` | `IpcResult<SkillCreatorExecutePlanAck>` |
 | `skill-creator:improve-skill` | runtime 改善 | `SkillCreatorImproveSkillRequest` | `IpcResult<RuntimeSkillCreatorImproveResponse>` |
 | `skill-creator:get-verify-detail` | verify detail 取得 | `SkillCreatorGetVerifyDetailRequest` | `IpcResult<RuntimeSkillCreatorVerifyDetailResponse>` |
 | `skill-creator:reverify-workflow` | verify loop 再要求 | `SkillCreatorReverifyWorkflowRequest` | `IpcResult<RuntimeSkillCreatorReverifyResponse>` |
+| `skill-creator:get-governance-state` | runtime governance state 取得 | なし | `IpcResult<SkillCreatorGovernanceState>` |
+
+`skill-creator:execute-plan` は `{ accepted: true, planId }` の ack を正本とし、完了状態の反映は `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` snapshot relay を介して行う。Renderer の compat path が旧 execute result を受ける場合は follow-up task で統一する。current fact として、ack 受理後に Renderer は `getWorkflowState` を再読込し、`handoffBundle` または `verifyResult.status === "fail"` の snapshot を UI エラーとして扱う（adapter guard failure は `recordExecuteAdapterFailure()` で review-ready snapshot を先に保存する）。この ack 後再読込は `SkillCreateWizard` の failure handling の正本であり、`executeAsync()` の message 伝搬統一は別 follow-up として切り出す。
+
 
 ### UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001（2026-03-27）
 
@@ -529,6 +534,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | `RuntimeSkillCreatorImproveErrorResponse` 型追加 | `packages/shared/src/types/skillCreator.ts` | `success: false` + `error: { code, message }` |
 | `applyImprovement()` メソッド追加 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `before`/`after` テキスト置換による改善適用 |
 | `SkillFileManager` DI 追加 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts` | `RuntimeSkillCreatorFacadeDeps.skillFileManager` (optional) |
+| `RuntimeSkillCreatorExecuteErrorResponse` 型追加 | `packages/shared/src/types/skillCreator.ts` | execute() の degraded response を structured error 化し、adapter 未準備時は `recordExecuteAdapterFailure()` で review-ready snapshot を記録 |
 
 ### 契約メモ
 
@@ -537,6 +543,7 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 | authMode 省略時 | handler 側で `api-key` を既定値にする |
 | `apiKey=null` + `authMode=\"api-key\"` | `plan` / `improve` は `resolveWithService()` により保存済み key fallback を試行する |
 | runtime facade 未注入 | 3 チャンネルは登録を維持し、`success: false` + 一定 error string を返す |
+| execute() adapter degraded | `RuntimeSkillCreatorExecuteResponse` に `RuntimeSkillCreatorExecuteErrorResponse` を追加し、`failed` / `initializing` では `llm_adapter_unavailable` を返す |
 
 ### 完了タスク（TASK-SDK-02 workflow-engine-runtime-orchestration）
 
@@ -737,6 +744,7 @@ TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel が使用する
 | --- | --- | --- |
 | Main approval handler | `apps/desktop/src/main/ipc/approvalHandlers.ts` | `approval:respond` / `approval:request` push 境界 |
 | Main advanced console handler | `apps/desktop/src/main/ipc/advancedConsoleHandlers.ts` | `execution:get-terminal-log` / `execution:get-copy-command` |
+| Main DI bridge | `apps/desktop/src/main/ipc/index.ts` | `getClaudeCliManager()` から `ClaudeCliManager` を解決し session data を callback へ接続 |
 | Main disclosure handler | `apps/desktop/src/main/ipc/disclosureHandlers.ts` | `execution:get-disclosure-info` |
 | Main approval gate service | `apps/desktop/src/main/services/runtime/ApprovalGate.ts` | ワンタイムトークン生成・検証 |
 | Main runtime policy | `apps/desktop/src/main/services/runtime/RuntimePolicyResolver.ts` | Consumer Auth Guard / NAS 判定 |
@@ -744,6 +752,12 @@ TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 で設計された ChatPanel が使用する
 | Renderer hook | `apps/desktop/src/renderer/hooks/useApprovalFlow.ts` | 承認フロー UI 制御 |
 | Renderer hook | `apps/desktop/src/renderer/hooks/useAdvancedConsole.ts` | Advanced Console 状態管理 |
 | Renderer view | `apps/desktop/src/renderer/views/ExecutionConsoleView/index.tsx` | 3層レイヤー描画（Primary/Safety/Detail Surface） |
+
+### Current Contract Notes
+
+- `execution:get-terminal-log` は `ClaudeCliManager.getSession({ sessionId })` の `output` を返す。
+- `execution:get-copy-command` は `SessionManager.createSession()` の実起動形式に合わせて `node <scriptPath> ...args` を返す。
+- session 不在時は callback 内で `SESSION_NOT_FOUND` を生成し、外向き IPC 応答は handler 側で `TERMINAL_LOG_ERROR` / `COPY_COMMAND_ERROR` へ変換する。
 
 ---
 
@@ -824,5 +838,86 @@ function parseLlmResponseToContent(
 | `skillFileWriter` DI 未注入 | `console.warn` を出力し `persistResult: null` を返す |
 | `persist()` が例外 | `persistError` に sanitized message を設定し処理継続 |
 | `VALIDATION_ERROR` / `PATH_TRAVERSAL` | `persistError` に error code を含むメッセージを設定 |
+
+---
+
+## Skill Creator External API Support（TASK-SDK-SC-03）
+
+> 完了日: 2026-04-03
+> ステータス: `implemented`
+
+### 概要
+
+TASK-SDK-SC-03 では、Skill Creator フロー内で外部 HTTP API を呼び出すための IPC チャネル（4本）と型定義を追加した。SDK Session が `RequestExternalApiConfig` custom tool を通じて UI にAPI設定を要求し、ユーザーが `ExternalApiConfigForm` で設定を入力する双方向フローを実現する。
+
+### チャネル一覧
+
+| チャネル | 方向 | 用途 | Request / Payload | Response |
+| --- | --- | --- | --- | --- |
+| `skill-creator:configure-api` | Renderer → Main | 外部API設定送信 | `ExternalApiConnectionConfig` | `IpcResult<unknown>` |
+| `skill-creator:api-configured` | Main → Renderer | API設定完了通知 | none | push payload |
+| `skill-creator:api-test-result` | Main → Renderer | API接続テスト結果 | none | push payload |
+| `skill-creator:external-api-config-required` | Main → Renderer | SDK→UI: API設定要求 | none | `ExternalApiConfigRequiredEvent` (`{ apiName?, description? }`) |
+
+### チャネル定義正本
+
+| 定数名 | 値 | 定義元 |
+| --- | --- | --- |
+| `SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API` | `skill-creator:configure-api` | `packages/shared/src/ipc/channels.ts` |
+| `SKILL_CREATOR_EXTERNAL_API_CHANNELS.API_CONFIGURED` | `skill-creator:api-configured` | `packages/shared/src/ipc/channels.ts` |
+| `SKILL_CREATOR_EXTERNAL_API_CHANNELS.API_TEST_RESULT` | `skill-creator:api-test-result` | `packages/shared/src/ipc/channels.ts` |
+| `SKILL_CREATOR_SESSION_CHANNELS.EXTERNAL_API_CONFIG_REQUIRED` | `skill-creator:external-api-config-required` | `packages/shared/src/ipc/channels.ts` |
+
+### 型定義
+
+| 型名 | 種別 | 定義ファイル | 概要 |
+| --- | --- | --- | --- |
+| `ExternalApiAuthType` | type alias | `packages/shared/src/types/skillCreatorExternalApi.ts` | `"none" \| "api-key" \| "bearer" \| "basic"` |
+| `ExternalApiConnectionConfig` | interface | `packages/shared/src/types/skillCreatorExternalApi.ts` | API接続設定（name / url / method / authType / credential? / headers? / description?） |
+| `SkillExternalApiContext` | interface | `packages/shared/src/types/skillCreatorExternalApi.ts` | SDK Session に注入する外部APIコンテキスト（`apis: ExternalApiConnectionConfig[]`） |
+| `IExternalApiAdapter` | interface | `packages/shared/src/types/skillCreatorExternalApi.ts` | 外部HTTP APIアダプターインターフェース（get / post / setAuth） |
+| `ExternalApiTimeoutError` | class | `packages/shared/src/types/skillCreatorExternalApi.ts` | 30秒タイムアウトエラー（url プロパティ保持） |
+| `ExternalApiHttpError` | class | `packages/shared/src/types/skillCreatorExternalApi.ts` | HTTP 4xx/5xx エラー（statusCode / url プロパティ保持） |
+| `ExternalApiConfigRequiredEvent` | interface | `apps/desktop/src/preload/skill-creator-session-api.ts` | SDK→UI 通知ペイロード（`{ apiName?, description? }`） |
+
+### 実装アンカー
+
+| 層 | ファイル | 役割 |
+| --- | --- | --- |
+| Shared channels | `packages/shared/src/ipc/channels.ts` | `SKILL_CREATOR_EXTERNAL_API_CHANNELS` 定数定義 |
+| Shared types | `packages/shared/src/types/skillCreatorExternalApi.ts` | 型定義 SSoT |
+| Main IPC Bridge | `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` | `configureApi` handler / `isValidExternalApiConfig()` 8条件バリデーション |
+| Main SDK Session | `apps/desktop/src/main/services/runtime/SkillCreatorSdkSession.ts` | `RequestExternalApiConfig` custom tool / `sanitizeExternalApiConfigForPrompt()` |
+| Main HTTP Adapter | `apps/desktop/src/main/services/runtime/adapters/HttpExternalApiAdapter.ts` | `IExternalApiAdapter` 実装（30秒タイムアウト / AbortController） |
+| Preload session API | `apps/desktop/src/preload/skill-creator-session-api.ts` | `onExternalApiConfigRequired()` push listener |
+| Preload creator API | `apps/desktop/src/preload/skill-creator-api.ts` | `configureExternalApi()` invoke |
+| Renderer | `apps/desktop/src/renderer/components/skill/ExternalApiConfigForm.tsx` | API接続設定フォーム UI |
+
+### 並行フロー管理
+
+SDK Session は `pendingAnswerPromise`（質問待機）と `pendingExternalApiPromise`（API設定要求）を相互排他で管理する。
+
+| 状態 | 判定 | 挙動 |
+| --- | --- | --- |
+| 質問待機中にAPI設定要求 | `pendingAnswerPromise` が存在 | 質問待機を維持し、API設定要求は拒否 |
+| API設定待機中に質問要求 | `pendingExternalApiPromise` が存在 | API設定待機を維持し、質問要求は拒否 |
+| タイムアウト | 30秒 | 単一 `timeoutHandle` を両フローで共有し、タイムアウト時に reject |
+
+### credential 秘匿化
+
+`sanitizeExternalApiConfigForPrompt()` は SDK プロンプトに注入する値から credential を `[REDACTED]` に置換する。実際のAPI呼び出しには元の credential を使用する（二重管理パターン）。
+
+### バリデーション
+
+`isValidExternalApiConfig()` は以下の8条件でバリデーションを実施する。
+
+1. `config` が非 null object であること
+2. `config.name` が非空文字列であること
+3. `config.url` が非空文字列であること
+4. `config.url` が `http://` または `https://` で始まること
+5. `config.method` が `"GET"` または `"POST"` であること
+6. `config.authType` が `ExternalApiAuthType` のいずれかであること
+7. `config.authType` が `"none"` 以外の場合、`config.credential` が非空文字列であること
+8. `config.headers` が指定されている場合、`Record<string, string>` 形状であること
 
 ---

@@ -1,0 +1,19 @@
+{
+  "feature": "electron-build-infra-fix",
+  "generatedAt": "2026-03-31T00:00:00+09:00",
+  "captureMethod": "quicklook-markdown-review-board",
+  "classification": "NON_VISUAL_BUILD_INFRA",
+  "sourceEvidence": [
+    "outputs/phase-11/phase11-review-board.md",
+    "outputs/phase-11/manual-test-result.md",
+    "outputs/phase-11/screenshot-coverage.md"
+  ],
+  "artifacts": [
+    "outputs/phase-11/screenshots/phase11-build-infra-review-board.png"
+  ],
+  "failureReason": null,
+  "notes": [
+    "UI差分がないため representative review-board PNG を採用",
+    "実 PNG を current workflow 配下に保存し placeholder 依存を解消"
+  ]
+}

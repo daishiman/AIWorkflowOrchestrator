@@ -6,10 +6,11 @@
 
 import { ipcMain, type BrowserWindow, type IpcMainInvokeEvent } from "electron";
 import type {
-  RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorImproveSuggestion,
   RuntimeSkillCreatorPlanResponse,
+  LLMAdapterStatus,
+  LLMAdapterStatusPayload,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
   RuntimeSkillCreatorReverifyResponse,
@@ -17,6 +18,7 @@ import type {
   ApplyImprovementResult,
   SkillCreatorSdkEvent,
   SkillCreatorSessionResumeResult,
+  SkillCreatorGovernanceState,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 import { IPC_CHANNELS } from "../../preload/channels";
@@ -35,6 +37,8 @@ interface IpcResult<T> {
 
 const RUNTIME_SKILL_CREATOR_UNAVAILABLE =
   "Runtime Skill Creator は現在利用できません";
+
+let registeredRuntimeSkillCreatorService: RuntimeSkillCreatorFacade | undefined;
 
 function validationError(message: string): IpcResult<never> {
   return { success: false, error: message };
@@ -107,10 +111,57 @@ function emitWorkflowStateChanged(
   );
 }
 
+function toAdapterStatusPayload(
+  status: LLMAdapterStatus,
+  failureReason: string | null,
+): LLMAdapterStatusPayload {
+  return {
+    status,
+    failureReason: status === "failed" ? failureReason : null,
+  };
+}
+
+function emitAdapterStatusChanged(
+  mainWindow: BrowserWindow,
+  payload: LLMAdapterStatusPayload,
+): void {
+  if (mainWindow.isDestroyed()) {
+    return;
+  }
+  mainWindow.webContents.send(
+    IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
+    payload,
+  );
+}
+
 export function registerRuntimeSkillCreatorHandlers(
   mainWindow: BrowserWindow,
   runtimeSkillCreatorService?: RuntimeSkillCreatorFacade,
 ): void {
+  registeredRuntimeSkillCreatorService = runtimeSkillCreatorService;
+
+  // fire-and-forget 完了通知のワイヤリング:
+  // executeAsync が snapshot 更新を行った際に SKILL_CREATOR_WORKFLOW_STATE_CHANGED イベントで Renderer に通知する
+  if (runtimeSkillCreatorService) {
+    runtimeSkillCreatorService.onWorkflowStateSnapshot = (
+      _planId,
+      snapshot,
+    ) => {
+      if (snapshot) {
+        emitWorkflowStateChanged(mainWindow, snapshot);
+      }
+    };
+    runtimeSkillCreatorService.onAdapterStatusChanged = (
+      status,
+      failureReason,
+    ) => {
+      emitAdapterStatusChanged(
+        mainWindow,
+        toAdapterStatusPayload(status, failureReason),
+      );
+    };
+  }
+
   ipcMain.handle(
     IPC_CHANNELS.SKILL_CREATOR_PLAN,
     async (
@@ -154,6 +205,76 @@ export function registerRuntimeSkillCreatorHandlers(
   );
 
   ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+    async (
+      event: IpcMainInvokeEvent,
+    ): Promise<IpcResult<LLMAdapterStatusPayload>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+        mainWindow,
+      );
+
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        return {
+          success: true,
+          data: toAdapterStatusPayload(
+            runtimeSkillCreatorService.llmAdapterStatus,
+            runtimeSkillCreatorService.llmAdapterFailureReason,
+          ),
+        };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(
+            error,
+            "LLMAdapter 状態の取得に失敗しました",
+          ),
+        };
+      }
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+    async (
+      event: IpcMainInvokeEvent,
+    ): Promise<IpcResult<LLMAdapterStatusPayload>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
+        mainWindow,
+      );
+
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        return {
+          success: true,
+          data: toAdapterStatusPayload(
+            runtimeSkillCreatorService.llmAdapterStatus,
+            runtimeSkillCreatorService.llmAdapterFailureReason,
+          ),
+        };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(
+            error,
+            "LLMAdapter 状態の取得に失敗しました",
+          ),
+        };
+      }
+    },
+  );
+
+  ipcMain.handle(
     IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
     async (
       event: IpcMainInvokeEvent,
@@ -163,7 +284,7 @@ export function registerRuntimeSkillCreatorHandlers(
         authMode?: AuthMode;
         apiKey?: string | null;
       },
-    ): Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>> => {
+    ): Promise<IpcResult<never> | { accepted: true; planId: string }> => {
       validateSender(
         event,
         IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN,
@@ -180,38 +301,11 @@ export function registerRuntimeSkillCreatorHandlers(
         return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
       }
 
-      try {
-        const result = await runtimeSkillCreatorService.execute(
-          {
-            planId: args.planId.trim(),
-            skillSpec: args.skillSpec.trim(),
-            estimatedSteps: 3,
-            skillName: "",
-            description: "",
-            agents: [],
-            scripts: [],
-            triggers: [],
-            anchors: [],
-          },
-          args.authMode ?? "api-key",
-          args.apiKey ?? null,
-        );
-        const snapshot = runtimeSkillCreatorService.getWorkflowStateSnapshot(
-          args.planId.trim(),
-        );
-        if (snapshot) {
-          emitWorkflowStateChanged(mainWindow, snapshot);
-        }
-        return { success: true, data: result };
-      } catch (error) {
-        return {
-          success: false,
-          error: sanitizeErrorMessage(
-            error,
-            "Runtime execute の実行に失敗しました",
-          ),
-        };
-      }
+      const planId = args.planId.trim();
+      // fire-and-forget: バックグラウンドで非同期実行
+      // snapshot 通知は executeAsync → onWorkflowStateSnapshot → SKILL_CREATOR_WORKFLOW_STATE_CHANGED に流れる
+      void runtimeSkillCreatorService.executeAsync(planId, args);
+      return { accepted: true, planId };
     },
   );
 
@@ -603,10 +697,48 @@ export function registerRuntimeSkillCreatorHandlers(
       return runtimeSkillCreatorService.cleanupExpiredSessions();
     },
   );
+
+  // Governance State 取得 (TASK-P0-09)
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE,
+    async (
+      event: IpcMainInvokeEvent,
+    ): Promise<IpcResult<SkillCreatorGovernanceState>> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE,
+        mainWindow,
+      );
+
+      if (!runtimeSkillCreatorService) {
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+      }
+
+      try {
+        const state = runtimeSkillCreatorService.getGovernanceState();
+        return { success: true, data: state };
+      } catch (error) {
+        return {
+          success: false,
+          error: sanitizeErrorMessage(
+            error,
+            "Governance 状態の取得に失敗しました",
+          ),
+        };
+      }
+    },
+  );
 }
 
 export function unregisterRuntimeSkillCreatorHandlers(): void {
+  if (registeredRuntimeSkillCreatorService) {
+    registeredRuntimeSkillCreatorService.onWorkflowStateSnapshot = undefined;
+    registeredRuntimeSkillCreatorService.onAdapterStatusChanged = undefined;
+    registeredRuntimeSkillCreatorService = undefined;
+  }
+
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_PLAN);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_WORKFLOW_STATE);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_SUBMIT_USER_INPUT);
@@ -620,4 +752,5 @@ export function unregisterRuntimeSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE);
 }

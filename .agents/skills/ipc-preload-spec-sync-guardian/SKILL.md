@@ -15,7 +15,12 @@ description: |
   task-9D〜9J 仕様書で path drift / artifacts drift / IPC命名差分を検出した時に使う。
   task-9d, task-9e, task-9f, task-9g, task-9h, task-9i, task-9j, ipc, preload, channels, skill-api, artifacts, spec alignment, approval:respond, approval:request, execution:get-disclosure-info, execution:get-terminal-log, execution:get-copy-command, approvalHandlers, disclosureHandlers, advancedConsoleHandlers,
   skill-creator:get-workflow-state, skill-creator:submit-user-input, skill-creator:workflow-state-changed, skill-creator:get-verify-detail, skill-creator:request-reverify,
-  UT-SDK-07, shared-ipc-channel, packages/shared/src/ipc/channels, APPROVAL_CHANNELS, EXECUTION_CHANNELS, shared channel migration
+  skill-creator:configure-api, skill-creator:api-configured, skill-creator:api-test-result, skill-creator:external-api-config-required,
+  SKILL_CREATOR_EXTERNAL_API_CHANNELS, ExternalApiConnectionConfig, skillCreatorExternalApi,
+  skill-creator:output-ready, skill-creator:output-overwrite-approved, skill-creator:open-skill,
+  SKILL_CREATOR_OUTPUT_READY, SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED, SKILL_CREATOR_OPEN_SKILL,
+  SkillCreatorOutputHandler, SkillRegistry, SkillCreatorResultPanel, onOutputReady,
+  UT-SDK-07, shared-ipc-channel, packages/shared/src/ipc/channels, APPROVAL_CHANNELS, EXECUTION_CHANNELS, SKILL_CREATOR_EXTERNAL_API_CHANNELS, shared channel migration
 allowed-tools:
   - Read
   - Write
@@ -139,10 +144,49 @@ task-9D〜9J に加えて、以下の Skill Creator ワークフロー IPC チ�
 - `apps/desktop/src/main/ipc/skillCreatorHandlers.ts`: handler が登録されているか
 - `packages/shared/src/types/skillCreator.ts`: 型定義が存在するか
 
+## 拡張スコープ: Skill Creator 外部API IPC
+
+TASK-SDK-SC-03 で追加された External API Support のIPCチャネル。
+
+| チャネル | 方向 | 型定義 | 定数グループ |
+| --- | --- | --- | --- |
+| `skill-creator:configure-api` | Renderer → Main (invoke) | `ExternalApiConnectionConfig` | `SKILL_CREATOR_EXTERNAL_API_CHANNELS` |
+| `skill-creator:api-configured` | Main → Renderer (event) | 確認応答 | `SKILL_CREATOR_EXTERNAL_API_CHANNELS` |
+| `skill-creator:api-test-result` | Main → Renderer (event) | テスト結果 | `SKILL_CREATOR_EXTERNAL_API_CHANNELS` |
+| `skill-creator:external-api-config-required` | Main → Renderer (event) | 設定要求通知 | `SKILL_CREATOR_SESSION_CHANNELS` |
+
+これらのチャネルの整合確認先:
+- `packages/shared/src/ipc/channels.ts`: `SKILL_CREATOR_EXTERNAL_API_CHANNELS` 定数に登録されているか
+- `apps/desktop/src/preload/channels.ts`: `SKILL_CREATOR_EXTERNAL_API_CHANNELS` がスプレッドで取り込まれているか
+- `apps/desktop/src/preload/skill-creator-api.ts`: Preload APIで `ExternalApiConnectionConfig` 型が使用されているか
+- `apps/desktop/src/preload/skill-creator-session-api.ts`: `EXTERNAL_API_CONFIG_REQUIRED` イベント購読が実装されているか
+- `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts`: handler が登録されているか
+- `packages/shared/src/types/skillCreatorExternalApi.ts`: 型定義（`ExternalApiConnectionConfig`, `ExternalApiAuthType`, `ExternalApiTimeoutError`, `ExternalApiHttpError`, `IExternalApiAdapter`）が存在するか
+
+## 拡張スコープ: Skill Creator 出力統合 IPC
+
+TASK-SDK-SC-04 で追加された Skill Output Integration のIPCチャネル。
+
+| チャネル | 方向 | 定数 |
+| --- | --- | --- |
+| `skill-creator:output-ready` | Main → Renderer (event) | `SKILL_CREATOR_OUTPUT_READY` |
+| `skill-creator:output-overwrite-approved` | Renderer → Main (invoke) | `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` |
+| `skill-creator:open-skill` | Renderer → Main (invoke) | `SKILL_CREATOR_OPEN_SKILL` |
+
+これらのチャネルの整合確認先:
+- `apps/desktop/src/preload/channels.ts`: `SKILL_CREATOR_OUTPUT_READY` / `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` / `SKILL_CREATOR_OPEN_SKILL` が `IPC_CHANNELS` に登録されているか
+- `apps/desktop/src/preload/skill-creator-api.ts`: `onOutputReady()` が Preload APIに実装されているか
+- `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts`: 各 handler が登録されているか
+- `apps/desktop/src/main/services/runtime/SkillCreatorOutputHandler.ts`: 出力ハンドラが実装されているか（TASK-SDK-SC-04 新規）
+- `apps/desktop/src/main/services/runtime/SkillRegistry.ts`: スキル登録サービスが実装されているか（TASK-SDK-SC-04 新規）
+- `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx`: 結果表示パネルが実装されているか（TASK-SDK-SC-04 新規）
+
 ## 変更履歴
 
 | Version | Date | Changes |
 | --- | --- | --- |
+| 1.5.0 | 2026-04-04 | TASK-SDK-SC-04 対応: Skill Output Integration IPC 3チャネル（output-ready / output-overwrite-approved / open-skill）を監査スコープへ追加。`SkillCreatorOutputHandler` / `SkillRegistry` / `SkillCreatorResultPanel` を整合確認先に追加。Trigger に Output Integration 関連キーワードを登録 |
+| 1.4.0 | 2026-04-03 | TASK-SDK-SC-03 対応: External API IPC 4チャネル（configure-api / api-configured / api-test-result / external-api-config-required）を監査スコープへ追加。`SKILL_CREATOR_EXTERNAL_API_CHANNELS` 定数グループと `packages/shared/src/types/skillCreatorExternalApi.ts` 型定義を整合確認先に追加。Trigger に External API 関連キーワードを登録 |
 | 1.3.0 | 2026-03-29 | UT-SDK-07 対応: `packages/shared/src/ipc/channels.ts` を監査スコープへ追加。APPROVAL/EXECUTION チャネルの正本が shared に移管された事実を description・Phase 3・Trigger に反映。Trigger に `UT-SDK-07 / shared-ipc-channel / APPROVAL_CHANNELS / EXECUTION_CHANNELS / shared channel migration` を追加 |
 | 1.2.0 | 2026-03-27 | Skill Creator ワークフロー IPC 5 チャネル（get-workflow-state / submit-user-input / workflow-state-changed / get-verify-detail / reverify-workflow）を監査スコープへ追加。Trigger キーワードに同チャネル名を登録 |
 | 1.1.0 | 2026-02-25 | 実運用版を作成。task-9D〜9J仕様同期ワークフロー、SubAgent分担、監査スクリプト連携を追加 |

@@ -7,139 +7,183 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
     "./core": {
       "types": "./dist/core/index.d.ts",
-      "import": "./dist/core/index.js"
+      "import": "./dist/core/index.js",
+      "require": "./dist/core/index.cjs"
     },
     "./infrastructure": {
       "types": "./dist/infrastructure/index.d.ts",
-      "import": "./dist/infrastructure/index.js"
+      "import": "./dist/infrastructure/index.js",
+      "require": "./dist/infrastructure/index.cjs"
     },
     "./infrastructure/auth": {
       "types": "./dist/infrastructure/auth/index.d.ts",
-      "import": "./dist/infrastructure/auth/index.js"
+      "import": "./dist/infrastructure/auth/index.js",
+      "require": "./dist/infrastructure/auth/index.cjs"
     },
     "./infrastructure/database": {
       "types": "./dist/infrastructure/database/index.d.ts",
-      "import": "./dist/infrastructure/database/index.js"
+      "import": "./dist/infrastructure/database/index.js",
+      "require": "./dist/infrastructure/database/index.cjs"
     },
     "./types": {
       "types": "./dist/src/types/index.d.ts",
-      "import": "./dist/src/types/index.js"
+      "import": "./dist/src/types/index.js",
+      "require": "./dist/src/types/index.cjs"
     },
     "./types/auth": {
       "types": "./dist/types/auth.d.ts",
-      "import": "./dist/types/auth.js"
+      "import": "./dist/types/auth.js",
+      "require": "./dist/types/auth.cjs"
     },
     "./types/api-keys": {
       "types": "./dist/types/api-keys.d.ts",
-      "import": "./dist/types/api-keys.js"
+      "import": "./dist/types/api-keys.js",
+      "require": "./dist/types/api-keys.cjs"
     },
     "./infrastructure/ai/apiKeyValidator": {
       "types": "./dist/infrastructure/ai/apiKeyValidator.d.ts",
-      "import": "./dist/infrastructure/ai/apiKeyValidator.js"
+      "import": "./dist/infrastructure/ai/apiKeyValidator.js",
+      "require": "./dist/infrastructure/ai/apiKeyValidator.cjs"
     },
     "./schemas": {
       "types": "./dist/schemas/index.d.ts",
-      "import": "./dist/schemas/index.js"
+      "import": "./dist/schemas/index.js",
+      "require": "./dist/schemas/index.cjs"
     },
     "./schemas/auth": {
       "types": "./dist/schemas/auth.d.ts",
-      "import": "./dist/schemas/auth.js"
+      "import": "./dist/schemas/auth.js",
+      "require": "./dist/schemas/auth.cjs"
     },
     "./types/replace": {
       "types": "./dist/src/types/replace.d.ts",
-      "import": "./dist/src/types/replace.js"
+      "import": "./dist/src/types/replace.js",
+      "require": "./dist/src/types/replace.cjs"
     },
     "./types/rag": {
       "types": "./dist/src/types/rag/index.d.ts",
-      "import": "./dist/src/types/rag/index.js"
+      "import": "./dist/src/types/rag/index.js",
+      "require": "./dist/src/types/rag/index.cjs"
     },
     "./agent": {
       "types": "./dist/src/agent/index.d.ts",
-      "import": "./dist/src/agent/index.js"
+      "import": "./dist/src/agent/index.js",
+      "require": "./dist/src/agent/index.cjs"
     },
     "./types/llm/schemas": {
       "types": "./dist/src/types/llm/schemas/index.d.ts",
-      "import": "./dist/src/types/llm/schemas/index.js"
+      "import": "./dist/src/types/llm/schemas/index.js",
+      "require": "./dist/src/types/llm/schemas/index.cjs"
     },
     "./types/llm": {
       "types": "./dist/src/types/llm/schemas/index.d.ts",
-      "import": "./dist/src/types/llm/schemas/index.js"
+      "import": "./dist/src/types/llm/schemas/index.js",
+      "require": "./dist/src/types/llm/schemas/index.cjs"
     },
     "./types/skill": {
       "types": "./dist/src/types/skill.d.ts",
-      "import": "./dist/src/types/skill.js"
+      "import": "./dist/src/types/skill.js",
+      "require": "./dist/src/types/skill.cjs"
     },
     "./types/skill-chain": {
       "types": "./dist/src/types/skill-chain.d.ts",
-      "import": "./dist/src/types/skill-chain.js"
+      "import": "./dist/src/types/skill-chain.js",
+      "require": "./dist/src/types/skill-chain.cjs"
     },
     "./types/skill-analytics": {
       "types": "./dist/src/types/skill-analytics.d.ts",
-      "import": "./dist/src/types/skill-analytics.js"
+      "import": "./dist/src/types/skill-analytics.js",
+      "require": "./dist/src/types/skill-analytics.cjs"
     },
     "./types/skill-debug": {
       "types": "./dist/src/types/skill-debug.d.ts",
-      "import": "./dist/src/types/skill-debug.js"
+      "import": "./dist/src/types/skill-debug.js",
+      "require": "./dist/src/types/skill-debug.cjs"
     },
     "./types/skill-schedule": {
       "types": "./dist/src/types/skill-schedule.d.ts",
-      "import": "./dist/src/types/skill-schedule.js"
+      "import": "./dist/src/types/skill-schedule.js",
+      "require": "./dist/src/types/skill-schedule.cjs"
     },
     "./services/history/types": {
       "types": "./dist/src/services/history/types.d.ts",
-      "import": "./dist/src/services/history/types.js"
+      "import": "./dist/src/services/history/types.js",
+      "require": "./dist/src/services/history/types.cjs"
     },
     "./services/history/history-service": {
       "types": "./dist/src/services/history/history-service.d.ts",
-      "import": "./dist/src/services/history/history-service.js"
+      "import": "./dist/src/services/history/history-service.js",
+      "require": "./dist/src/services/history/history-service.cjs"
     },
     "./types/rag/result": {
       "types": "./dist/src/types/rag/result.d.ts",
-      "import": "./dist/src/types/rag/result.js"
+      "import": "./dist/src/types/rag/result.js",
+      "require": "./dist/src/types/rag/result.cjs"
     },
     "./services/logging/types": {
       "types": "./dist/src/services/logging/types.d.ts",
-      "import": "./dist/src/services/logging/types.js"
+      "import": "./dist/src/services/logging/types.js",
+      "require": "./dist/src/services/logging/types.cjs"
     },
     "./services/logging/conversion-logger": {
       "types": "./dist/src/services/logging/conversion-logger.d.ts",
-      "import": "./dist/src/services/logging/conversion-logger.js"
+      "import": "./dist/src/services/logging/conversion-logger.js",
+      "require": "./dist/src/services/logging/conversion-logger.cjs"
     },
     "./types/agent": {
       "types": "./dist/src/types/agent.d.ts",
-      "import": "./dist/src/types/agent.js"
+      "import": "./dist/src/types/agent.js",
+      "require": "./dist/src/types/agent.cjs"
     },
     "./repositories": {
       "types": "./dist/src/repositories/index.d.ts",
-      "import": "./dist/src/repositories/index.js"
+      "import": "./dist/src/repositories/index.js",
+      "require": "./dist/src/repositories/index.cjs"
     },
     "./constants": {
       "types": "./dist/src/constants/index.d.ts",
-      "import": "./dist/src/constants/index.js"
+      "import": "./dist/src/constants/index.js",
+      "require": "./dist/src/constants/index.cjs"
     },
     "./src/ipc/channels": {
       "types": "./dist/src/ipc/channels.d.ts",
-      "import": "./dist/src/ipc/channels.js"
+      "import": "./dist/src/ipc/channels.js",
+      "require": "./dist/src/ipc/channels.cjs"
+    },
+    "./ipc/channels": {
+      "types": "./dist/src/ipc/channels.d.ts",
+      "import": "./dist/src/ipc/channels.js",
+      "require": "./dist/src/ipc/channels.cjs"
     },
     "./types/auth-mode": {
       "types": "./dist/src/types/auth-mode.d.ts",
-      "import": "./dist/src/types/auth-mode.js"
+      "import": "./dist/src/types/auth-mode.js",
+      "require": "./dist/src/types/auth-mode.cjs"
     },
     "./types/skill-improver": {
       "types": "./dist/src/types/skill-improver.d.ts",
-      "import": "./dist/src/types/skill-improver.js"
+      "import": "./dist/src/types/skill-improver.js",
+      "require": "./dist/src/types/skill-improver.cjs"
     },
     "./types/execution-capability": {
       "types": "./dist/src/types/execution-capability.d.ts",
-      "import": "./dist/src/types/execution-capability.js"
+      "import": "./dist/src/types/execution-capability.js",
+      "require": "./dist/src/types/execution-capability.cjs"
     },
     "./types/skillCreator": {
       "types": "./dist/src/types/skillCreator.d.ts",
-      "import": "./dist/src/types/skillCreator.js"
+      "import": "./dist/src/types/skillCreator.js",
+      "require": "./dist/src/types/skillCreator.cjs"
+    },
+    "./types/skillCreatorExternalApi": {
+      "types": "./dist/src/types/skillCreatorExternalApi.d.ts",
+      "import": "./dist/src/types/skillCreatorExternalApi.js",
+      "require": "./dist/src/types/skillCreatorExternalApi.cjs"
     }
   },
   "typesVersions": {
@@ -234,6 +278,9 @@
       "src/ipc/channels": [
         "./src/ipc/channels.ts"
       ],
+      "ipc/channels": [
+        "./src/ipc/channels.ts"
+      ],
       "types/skill-improver": [
         "./src/types/skill-improver.ts"
       ],
@@ -242,6 +289,9 @@
       ],
       "types/skillCreator": [
         "./src/types/skillCreator.ts"
+      ],
+      "types/skillCreatorExternalApi": [
+        "./src/types/skillCreatorExternalApi.ts"
       ]
     }
   },

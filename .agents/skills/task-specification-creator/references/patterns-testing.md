@@ -39,6 +39,23 @@
 - **発見日**: 2026-02-02
 - **関連タスク**: TASK-8A
 
+### Electron静的APIモックパターン（Notification 等）
+
+- **状況**: `Notification.isSupported()` のような Electron の静的 API を持つモジュールを Vitest で安全に差し替えたい場合
+- **パターン**:
+  - `beforeEach(() => vi.resetModules())` でモジュールキャッシュを毎テスト初期化する
+  - `vi.doMock("electron", () => ({ Notification: MockNotification }))` のように、必要な export だけをモックする
+  - `vi.doMock()` の後に `await import("../ElectronNotificationService")` のように対象モジュールを動的 import する
+- **検証の分離**:
+  - `Notification` コンストラクタへの引数は `expect(MockNotification).toHaveBeenCalledWith({ title, body })` で確認する
+  - `show()` は `expect(show).toHaveBeenCalledTimes(1)` のようにインスタンス側で別確認する
+  - `Notification.isSupported()` が `false` の分岐では、`show()` だけでなくコンストラクタ呼び出しが発生しないことも確認対象に含める
+- **効果**:
+  - Electron の静的 API を含むモジュールでも、テスト間の状態漏洩や初期化順序の揺れを避けられる
+  - 「生成されたか」と「表示されたか」を分けて検証でき、モック実装の退化を見逃しにくい
+- **発見日**: 2026-04-02
+- **関連タスク**: TASK-NOTIFICATION-SERVICE-001
+
 ### Graceful SDK Fallback パターン
 
 - **状況**: 外部SDK（Claude Agent SDK等）への接続が失敗した場合でもアプリケーションがクラッシュしない必要がある場合

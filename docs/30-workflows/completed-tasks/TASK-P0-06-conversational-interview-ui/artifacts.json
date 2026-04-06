@@ -1,0 +1,299 @@
+{
+  "task_id": "TASK-P0-06",
+  "task_name": "会話型インタビュー UI",
+  "feature_name": "TASK-P0-06-conversational-interview-ui",
+  "issue_number": 1889,
+  "created_date": "2026-04-04",
+  "status": "Phase 1-12 完了",
+  "phases": {
+    "phase-1": {
+      "name": "要件定義",
+      "status": "未実施",
+      "spec_file": "phase-1-requirements.md",
+      "outputs_dir": "outputs/phase-1/",
+      "artifacts": [
+        {
+          "name": "要件定義書",
+          "path": "outputs/phase-1/requirements.md",
+          "type": "document",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-2": {
+      "name": "設計",
+      "status": "未実施",
+      "spec_file": "phase-2-design.md",
+      "outputs_dir": "outputs/phase-2/",
+      "artifacts": [
+        {
+          "name": "設計書",
+          "path": "outputs/phase-2/design.md",
+          "type": "document",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-3": {
+      "name": "設計レビューゲート",
+      "status": "未実施",
+      "spec_file": "phase-3-design-review.md",
+      "outputs_dir": "outputs/phase-3/",
+      "artifacts": [
+        {
+          "name": "設計レビュー結果",
+          "path": "outputs/phase-3/design-review.md",
+          "type": "document",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-4": {
+      "name": "テスト作成",
+      "status": "未実施",
+      "spec_file": "phase-4-test-creation.md",
+      "outputs_dir": "outputs/phase-4/",
+      "artifacts": [
+        {
+          "name": "テスト仕様書",
+          "path": "outputs/phase-4/test-scenarios.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "ConversationalInterview.test.tsx 更新",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.test.tsx",
+          "type": "test",
+          "status": "未作成"
+        },
+        {
+          "name": "useInterviewState.test.ts 更新",
+          "path": "apps/desktop/src/renderer/components/skill/__tests__/useInterviewState.test.ts",
+          "type": "test",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-5": {
+      "name": "実装",
+      "status": "未実施",
+      "spec_file": "phase-5-implementation.md",
+      "outputs_dir": "outputs/phase-5/",
+      "artifacts": [
+        {
+          "name": "useInterviewState.ts 拡張",
+          "path": "apps/desktop/src/renderer/components/skill/hooks/useInterviewState.ts",
+          "type": "source",
+          "status": "未作成"
+        },
+        {
+          "name": "ConversationalInterview.tsx 拡張",
+          "path": "apps/desktop/src/renderer/components/skill/ConversationalInterview.tsx",
+          "type": "source",
+          "status": "未作成"
+        },
+        {
+          "name": "SkillCreatorConversationPanel.tsx 拡張",
+          "path": "apps/desktop/src/renderer/components/skill-creator/SkillCreatorConversationPanel.tsx",
+          "type": "source",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-6": {
+      "name": "テスト拡充",
+      "status": "未実施",
+      "spec_file": "phase-6-test-expansion.md",
+      "outputs_dir": "outputs/phase-6/",
+      "artifacts": [
+        {
+          "name": "テスト拡充結果",
+          "path": "outputs/phase-6/test-expansion-result.md",
+          "type": "document",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-7": {
+      "name": "カバレッジ確認",
+      "status": "未実施",
+      "spec_file": "phase-7-coverage-check.md",
+      "outputs_dir": "outputs/phase-7/",
+      "artifacts": [
+        {
+          "name": "カバレッジレポート",
+          "path": "outputs/phase-7/coverage-report.md",
+          "type": "document",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-8": {
+      "name": "リファクタリング",
+      "status": "未実施",
+      "spec_file": "phase-8-refactoring.md",
+      "outputs_dir": "outputs/phase-8/",
+      "artifacts": [
+        {
+          "name": "リファクタリング結果",
+          "path": "outputs/phase-8/refactoring-result.md",
+          "type": "document",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-9": {
+      "name": "品質保証",
+      "status": "未実施",
+      "spec_file": "phase-9-quality-assurance.md",
+      "outputs_dir": "outputs/phase-9/",
+      "artifacts": [
+        {
+          "name": "品質保証レポート",
+          "path": "outputs/phase-9/quality-assurance-report.md",
+          "type": "document",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-10": {
+      "name": "最終レビューゲート",
+      "status": "未実施",
+      "spec_file": "phase-10-final-review.md",
+      "outputs_dir": "outputs/phase-10/",
+      "artifacts": [
+        {
+          "name": "最終レビュー結果",
+          "path": "outputs/phase-10/final-review-result.md",
+          "type": "document",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-11": {
+      "name": "手動テスト",
+      "status": "未実施",
+      "spec_file": "phase-11-manual-test.md",
+      "outputs_dir": "outputs/phase-11/",
+      "artifacts": [
+        {
+          "name": "手動テスト結果",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "手動テストレポート",
+          "path": "outputs/phase-11/manual-test-report.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "スクリーンショット計画",
+          "path": "outputs/phase-11/screenshot-plan.json",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "発見課題一覧",
+          "path": "outputs/phase-11/discovered-issues.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "UI視覚レビュー",
+          "path": "outputs/phase-11/ui-sanity-visual-review.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "キャプチャメタデータ",
+          "path": "outputs/phase-11/phase11-capture-metadata.json",
+          "type": "metadata",
+          "status": "未作成"
+        },
+        {
+          "name": "スクリーンショット群",
+          "path": "outputs/phase-11/screenshots/",
+          "type": "directory",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-12": {
+      "name": "ドキュメント更新",
+      "status": "未実施",
+      "spec_file": "phase-12-documentation.md",
+      "outputs_dir": "outputs/phase-12/",
+      "artifacts": [
+        {
+          "name": "実装ガイド",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "システム仕様更新サマリー",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "ドキュメント変更ログ",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "未タスク検出結果",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "スキルフィードバック",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "仕様準拠チェック",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "type": "document",
+          "status": "未作成"
+        }
+      ]
+    },
+    "phase-13": {
+      "name": "PR作成",
+      "status": "未実施",
+      "spec_file": "phase-13-pr-creation.md",
+      "outputs_dir": "outputs/phase-13/",
+      "artifacts": [
+        {
+          "name": "ローカルチェック結果",
+          "path": "outputs/phase-13/local-check-result.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "変更サマリー",
+          "path": "outputs/phase-13/change-summary.md",
+          "type": "document",
+          "status": "未作成"
+        },
+        {
+          "name": "PR情報",
+          "path": "outputs/phase-13/pr-info.md",
+          "type": "document",
+          "status": "未作成"
+        }
+      ]
+    }
+  },
+  "artifact_naming": {
+    "convention": "kebab-case",
+    "prefix": "TASK-P0-06",
+    "feature": "conversational-interview-ui"
+  }
+}

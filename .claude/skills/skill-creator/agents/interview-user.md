@@ -209,7 +209,7 @@ quickモードでスキップされたPhaseには以下のデフォルト値を�
 | データ名               | 提供元            | 検証ルール          | 欠損時処理       |
 | ---------------------- | ----------------- | ------------------- | ---------------- |
 | ユーザー初期要求       | 外部              | テキストが存在      | 要求の入力を促す |
-| problem-definition.json | discover-problem | JSON が存在         | Phase 0-0 未完了エラー |
+| problem-definition.json | discover-problem | JSON が存在（任意） | AskUserQuestion で問題定義を収集して作成する（エラー停止しない） |
 | domain-model.json      | model-domain      | JSON が存在         | Phase 0.5 未完了エラー |
 
 ### 5.2 出力

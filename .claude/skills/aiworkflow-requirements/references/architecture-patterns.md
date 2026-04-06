@@ -132,13 +132,43 @@ IPC Handlers が Renderer からのリクエストを受け取り、適切な Se
 
 ---
 
+## Strangler Fig パターン（Facade standalone 関数 → 責務モジュールへの段階集約）
+
+### 概要
+
+旧実装を一度に削除するのではなく、先に新実装を parallel に追加し、参照先を切り替えてから旧実装を安全に削除するパターン。Martin Fowler の Strangler Fig Application に由来。
+
+### 実績: TASK-RT-06（2026-04-04）
+
+| 操作 | Before | After |
+|---|---|---|
+| `sdkMessageNormalizer.ts` | 228行（normalizeSdkMessage 系） | 470行（+normalizeSkillCreatorSdkMessage/Events） |
+| `RuntimeSkillCreatorFacade.ts` | スタンドアロン 9関数（215行） | 削除（import は normalizer へ） |
+| テストファイル | import 元: `../RuntimeSkillCreatorFacade` | import 元: `../sdkMessageNormalizer` |
+
+**結果**: テストは import 先を変えるだけで全て Green を維持。Facade 側は削除のみで regression リスクゼロ。
+
+### 適用条件
+
+- 旧実装と新実装が同じ型シグネチャを持てる場合
+- モジュール境界をまたぐ場合（ファイル間）でも有効
+- テストが import 元に明示的に依存している場合、import 先変更で移行完了できる
+
+### 関連パターン
+
+- backward-compatible export: 旧 API と新 API を一時共存させる手法
+- Facade 責務分離: Facade は「所有権・コンテキスト構築」に集中し、変換ロジックは専用モジュールへ委譲
+
+---
+
 ## 変更履歴
 
-| Version | Date       | Changes                                              |
-| ------- | ---------- | ---------------------------------------------------- |
-| 2.1.0   | 2026-01-26 | アーキテクチャ図をコードブロックから表形式・文章に変換 |
-| 2.0.0   | 2026-01-26 | 6ファイルに分割（1296行→インデックス+詳細ファイル）   |
-| 1.0.0   | 2026-01-25 | 初版作成                                             |
+| Version | Date       | Changes                                                         |
+| ------- | ---------- | --------------------------------------------------------------- |
+| 2.2.0   | 2026-04-04 | Strangler Fig パターンを追加（TASK-RT-06 実績）                 |
+| 2.1.0   | 2026-01-26 | アーキテクチャ図をコードブロックから表形式・文章に変換          |
+| 2.0.0   | 2026-01-26 | 6ファイルに分割（1296行→インデックス+詳細ファイル）              |
+| 1.0.0   | 2026-01-25 | 初版作成                                                        |
 
 ---
 

@@ -1,4 +1,12 @@
-import { BrowserWindow, nativeTheme, ipcMain, net } from "electron";
+import {
+  BrowserWindow,
+  nativeTheme,
+  ipcMain,
+  net,
+  app,
+  dialog,
+  shell,
+} from "electron";
 import fs from "fs/promises";
 import path from "path";
 import Store from "electron-store";
@@ -42,10 +50,14 @@ import {
 import { registerSkillAnalyticsHandlers } from "./skillAnalyticsHandlers";
 import { registerSkillShareHandlers } from "./skillHandlers.share";
 import { registerSkillDebugHandlers } from "./skillDebugHandlers";
-import { registerClaudeCliHandlers } from "../claude-cli";
+import { registerClaudeCliHandlers, getClaudeCliManager } from "../claude-cli";
 import { registerSkillCreatorHandlers } from "./skillCreatorHandlers";
 import { registerSkillFileHandlers } from "./skillFileHandlers";
 import { registerSafetyGateHandlers } from "./safetyGateHandlers";
+import { registerApprovalHandlers } from "./approvalHandlers";
+import { registerDisclosureHandlers } from "./disclosureHandlers";
+import { registerAdvancedConsoleHandlers } from "./advancedConsoleHandlers";
+import { DefaultApprovalGate } from "../services/runtime/ApprovalGate";
 import { DefaultSafetyGate } from "../permissions/default-safety-gate";
 import { SkillCreatorService } from "../services/skill/SkillCreatorService";
 import {
@@ -78,6 +90,8 @@ import {
   createAuthModeService,
   StubSubscriptionAuthProvider,
 } from "../services/auth";
+import type { IAuthModeService } from "../services/auth/types";
+import type { DisclosureInfo } from "./disclosureHandlers";
 import {
   getSupabaseClient,
   createSecureStorage,
@@ -91,10 +105,15 @@ import { registerChatEditHandlers } from "./chatEditHandlers";
 import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import { RuntimePolicyResolver } from "../services/runtime/RuntimePolicyResolver";
+import { SkillCreatorIpcBridge } from "../services/runtime/SkillCreatorIpcBridge";
 import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
+import { ElectronNotificationService } from "../services/notification/ElectronNotificationService";
+import { registerBeforeQuitGuard } from "./beforeQuitGuard";
 import { SkillCreatorSourceResolver } from "../services/runtime/SkillCreatorSourceResolver";
 import { PhaseResourcePlanner } from "../services/runtime/PhaseResourcePlanner";
 import { ResolvedResourceReader } from "../services/runtime/ResolvedResourceReader";
+import { SkillCreatorOutputHandler } from "../services/runtime/SkillCreatorOutputHandler";
+import { SkillRegistry } from "../services/runtime/SkillRegistry";
 import { SkillFileWriter } from "../services/skill/SkillFileWriter";
 import { ResourceLoader } from "../services/skill/ResourceLoader";
 import { DEFAULT_SKILL_CREATOR_PATH } from "../services/skill/constants";
@@ -112,10 +131,16 @@ import {
   PROFILE_ERROR_CODES,
   AVATAR_ERROR_CODES,
 } from "@repo/shared/types/auth";
+import { CLAUDE_CLI_ERROR_CODES } from "@repo/shared";
 import type { ShareError, ShareResult } from "@repo/shared";
 
 // setupThemeWatcher の unsubscribe 関数をモジュールスコープで保持
 let themeWatcherUnsubscribe: (() => void) | null = null;
+let skillCreatorIpcBridge: SkillCreatorIpcBridge | null = null;
+
+// before-quit guard の解除関数をモジュールスコープで保持 (TASK-NOTIFICATION-SERVICE-001)
+
+let _unregisterBeforeQuitGuardFn: (() => void) | null = null;
 
 /** ハンドラ登録失敗情報 */
 export interface HandlerRegistrationFailure {
@@ -456,6 +481,11 @@ export function unregisterAllIpcHandlers(): void {
   // slide handlers は内部状態 (watcher/executor/syncManager) を持つため専用解除
   unregisterSlideIpcHandlers();
 
+  if (skillCreatorIpcBridge) {
+    skillCreatorIpcBridge.unregister();
+    skillCreatorIpcBridge = null;
+  }
+
   const allChannels = Object.values(IPC_CHANNELS);
   for (const channel of allChannels) {
     ipcMain.removeHandler(channel);
@@ -466,6 +496,12 @@ export function unregisterAllIpcHandlers(): void {
   if (themeWatcherUnsubscribe) {
     themeWatcherUnsubscribe();
     themeWatcherUnsubscribe = null;
+  }
+
+  // before-quit guard を解除 (TASK-NOTIFICATION-SERVICE-001)
+  if (_unregisterBeforeQuitGuardFn) {
+    _unregisterBeforeQuitGuardFn();
+    _unregisterBeforeQuitGuardFn = null;
   }
 }
 
@@ -510,6 +546,20 @@ function sanitizeRegistrationErrorMessage(message: string): string {
     /(?:[A-Za-z]:\\Users\\[^\\/\s]+|[A-Za-z]:\/Users\/[^/\s]+|\/Users\/[^/\s]+|\/home\/[^/\s]+)/g,
     "~",
   );
+}
+
+/** セッション未存在エラーを生成するヘルパー（SESSION_NOT_FOUND コード付与） */
+function sessionNotFoundError(sessionId: string): Error {
+  const err = new Error(`Session not found: ${sessionId}`);
+  (err as NodeJS.ErrnoException).code =
+    CLAUDE_CLI_ERROR_CODES.SESSION_NOT_FOUND;
+  return err;
+}
+
+function buildCopyCommand(scriptPath: string, args: string[]): string {
+  // SessionManager は `node <scriptPath> ...args` で起動しているため、
+  // Copy Command も同じ launch context を返す。
+  return ["node", scriptPath, ...args].join(" ");
 }
 
 function safeRegister(
@@ -674,10 +724,14 @@ export function registerAllIpcHandlers(
     subscriptionAuthProvider,
   );
 
+  // Safety Governance: ApprovalGate をここで生成し、Agent/Approval handlers で共有する
+  const approvalGate = new DefaultApprovalGate();
+
   // Agent Execution handlers (RuntimePolicyResolver 注入)
   track("registerAgentExecutionHandlers", () =>
     registerAgentExecutionHandlers(
       mainWindow,
+      approvalGate,
       undefined,
       runtimePolicyResolver,
       authModeServiceForRuntime,
@@ -895,6 +949,63 @@ export function registerAllIpcHandlers(
     registerSafetyGateHandlers(mainWindow, safetyGate);
   });
 
+  // Safety Governance handlers (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001)
+  // approvalGate は上の Agent Execution handlers セクションで生成済み
+  track("registerApprovalHandlers", () =>
+    registerApprovalHandlers(mainWindow, approvalGate),
+  );
+  const DISCLOSURE_MODEL_NAME = "claude-sonnet-4-6";
+
+  function buildDisclosureInfo(
+    authModeService: IAuthModeService,
+  ): DisclosureInfo {
+    const mode = authModeService.getMode();
+    const aiServiceName =
+      mode === "subscription"
+        ? "Claude Code CLI"
+        : mode === "api-key"
+          ? "Anthropic API"
+          : "unknown";
+    return {
+      aiServiceName,
+      modelName: DISCLOSURE_MODEL_NAME,
+      externalDestinations: [],
+    };
+  }
+
+  track("registerDisclosureHandlers", () =>
+    registerDisclosureHandlers({
+      mainWindow,
+      getDisclosureInfo: async () =>
+        buildDisclosureInfo(authModeServiceForRuntime),
+    }),
+  );
+  track("registerAdvancedConsoleHandlers", () =>
+    registerAdvancedConsoleHandlers({
+      mainWindow,
+      getTerminalLog: async (sessionId: string) => {
+        const mgr = getClaudeCliManager();
+        if (!mgr) return [];
+        const result = await mgr.getSession({ sessionId });
+        if (!result.success || !result.data) {
+          throw sessionNotFoundError(sessionId);
+        }
+        return result.data.output;
+      },
+      getCopyCommand: async (sessionId: string) => {
+        const mgr = getClaudeCliManager();
+        if (!mgr) return null;
+        const result = await mgr.getSession({ sessionId });
+        if (!result.success || !result.data) {
+          throw sessionNotFoundError(sessionId);
+        }
+        const { scriptPath, args } = result.data;
+        // TODO: スペースを含むパス/引数のエスケープは将来タスクで対応
+        return buildCopyCommand(scriptPath, args);
+      },
+    }),
+  );
+
   // --- 9. Auth Mode handlers ---
   track("registerAuthKeyHandlers", () =>
     registerAuthKeyHandlers(mainWindow, authKeyService),
@@ -918,6 +1029,8 @@ export function registerAllIpcHandlers(
     const sourceResolver = new SkillCreatorSourceResolver();
     const resourcePlanner = new PhaseResourcePlanner();
     const resolvedResourceReader = new ResolvedResourceReader(resourceLoader);
+    // OS ネイティブ通知サービス DI 注入 (TASK-NOTIFICATION-SERVICE-001)
+    const notificationService = new ElectronNotificationService();
     const runtimeSkillCreatorService = skillExecutor
       ? new RuntimeSkillCreatorFacade({
           skillExecutor,
@@ -928,8 +1041,18 @@ export function registerAllIpcHandlers(
           resourcePlanner,
           resolvedResourceReader,
           skillFileManager, // improve() / applyImprovement() で SKILL.md 読み書きに使用
+          notificationService,
         })
       : undefined;
+
+    // before-quit guard 登録 (TASK-NOTIFICATION-SERVICE-001)
+    if (runtimeSkillCreatorService) {
+      _unregisterBeforeQuitGuardFn = registerBeforeQuitGuard({
+        app,
+        dialog,
+        facade: runtimeSkillCreatorService,
+      });
+    }
 
     // LLMAdapter を非同期で取得し Setter Injection（fire-and-forget — P34 準拠）
     if (runtimeSkillCreatorService) {
@@ -952,9 +1075,60 @@ export function registerAllIpcHandlers(
     );
   });
 
+  track("registerSkillCreatorIpcBridge", () => {
+    skillCreatorIpcBridge?.unregister();
+    const skillRegistry = new SkillRegistry();
+    const outputHandler = new SkillCreatorOutputHandler(
+      process.cwd(),
+      skillRegistry,
+      mainWindow.webContents,
+    );
+    skillCreatorIpcBridge = new SkillCreatorIpcBridge(
+      mainWindow,
+      undefined,
+      outputHandler,
+    );
+    skillCreatorIpcBridge.register();
+  });
+
+  track("registerSkillCreatorOpenSkillHandler", () => {
+    ipcMain.handle(
+      IPC_CHANNELS.SKILL_CREATOR_OPEN_SKILL,
+      async (_event, payload: { savedPath?: string }) => {
+        const savedPath =
+          typeof payload?.savedPath === "string"
+            ? payload.savedPath.trim()
+            : "";
+
+        if (savedPath === "") {
+          return {
+            success: false,
+            error: "[IPC] savedPath is required to open a skill",
+          };
+        }
+
+        const result = await shell.openPath(savedPath);
+        if (result !== "") {
+          return {
+            success: false,
+            error: result,
+          };
+        }
+
+        return {
+          success: true,
+        };
+      },
+    );
+  });
+
   // --- 11. Claude CLI handlers ---
   track("registerClaudeCliHandlers", () =>
-    registerClaudeCliHandlers(mainWindow),
+    registerClaudeCliHandlers(mainWindow, {
+      onSessionDestroyed: (sessionId: string) => {
+        approvalGate.revokeAll(sessionId);
+      },
+    }),
   );
 
   // --- 12. Chat Edit handlers ---

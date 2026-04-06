@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-03-31T00:00:00.000Z",
+  "captureMethod": "playwright-current-run-and-baseline-copy",
+  "sourceEvidence": [
+    "apps/desktop/e2e/ui-ux/layer2-visual.spec.ts-snapshots/chat-main-baseline-ui-ux-layer2-darwin.png",
+    "apps/desktop/e2e/ui-ux/layer2-visual.spec.ts-snapshots/skill-list-baseline-ui-ux-layer2-darwin.png",
+    "apps/desktop/e2e/ui-ux/layer2-visual.spec.ts-snapshots/settings-general-baseline-ui-ux-layer2-darwin.png",
+    "apps/desktop/e2e/ui-ux/layer2-visual.spec.ts-snapshots/sidebar-navigation-baseline-ui-ux-layer2-darwin.png",
+    "apps/desktop/test-results/ui-ux-layer2-visual--VIS-L-b7951--error-display-エラー表示コンポーネント-ui-ux-layer2/error-display-baseline-actual.png",
+    "apps/desktop/test-results/ui-ux-layer2-visual--VIS-L-f8354-ests-loading-state-ローディング状態-ui-ux-layer2/loading-state-baseline-actual.png",
+    "apps/desktop/test-results/ui-ux-layer2-visual--VIS-L-5121a--dark-mode-ダークモード（テーマ切り替え後）-ui-ux-layer2/dark-mode-baseline-actual.png"
+  ],
+  "notes": [
+    "PASS 画面は baseline screenshot を current workflow 配下へ再集約した",
+    "FAIL 画面は actual screenshot と diff を current workflow 配下へ保存した"
+  ]
+}

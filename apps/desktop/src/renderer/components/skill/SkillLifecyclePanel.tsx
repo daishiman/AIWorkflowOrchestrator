@@ -9,6 +9,8 @@ import type { SkillExecutionStatus } from "@repo/shared";
 import type {
   ApplyImprovementResult,
   HandoffGuidance,
+  SkillCreatorExecutePlanAck,
+  RuntimeSkillCreatorExecuteErrorResponse,
   RuntimeSkillCreatorExecuteResponse,
   RuntimeSkillCreatorExecuteResult,
   RuntimeSkillCreatorImproveErrorResponse,
@@ -30,6 +32,8 @@ import { ApiKeySettingsPanel } from "./ApiKeySettingsPanel";
 import { ConversationalInterview } from "./ConversationalInterview";
 import { SessionIndicator } from "./SessionIndicator";
 import { SessionResumePrompt } from "./SessionResumePrompt";
+import { LLMAdapterErrorBanner } from "./LLMAdapterErrorBanner";
+import { useLLMAdapterStatus } from "./hooks/useLLMAdapterStatus";
 import {
   useBeginSkillReview,
   useClearHandoffGuidance,
@@ -66,9 +70,8 @@ import {
   useWorkflowSnapshot,
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
-import { ExecuteResultDetailPanel } from "./ExecuteResultDetailPanel";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
-import { PlanResultDetailPanel } from "./PlanResultDetailPanel";
+import { SkillCreationResultPanel } from "./SkillCreationResultPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
 
@@ -129,7 +132,9 @@ type SkillCreatorRuntimeApi = {
     skillSpec?: unknown,
     authMode?: string,
     apiKey?: string,
-  ) => Promise<IpcResult<RuntimeSkillCreatorExecuteResponse>>;
+  ) => Promise<
+    IpcResult<SkillCreatorExecutePlanAck | RuntimeSkillCreatorExecuteResponse>
+  >;
   getWorkflowState?: (
     planId: string,
   ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
@@ -183,6 +188,67 @@ function isExecuteTerminalHandoff(
   { type: "terminal_handoff" }
 > {
   return "type" in response && response.type === "terminal_handoff";
+}
+
+function isExecuteErrorResponse(
+  response: RuntimeSkillCreatorExecuteResponse,
+): response is RuntimeSkillCreatorExecuteErrorResponse {
+  return (
+    "success" in response &&
+    response.success === false &&
+    typeof response.error === "object" &&
+    response.error !== null &&
+    "message" in response.error &&
+    typeof response.error.message === "string"
+  );
+}
+
+function isExecutePlanAck(
+  response: unknown,
+): response is SkillCreatorExecutePlanAck {
+  return (
+    !!response &&
+    typeof response === "object" &&
+    "accepted" in response &&
+    (response as { accepted: unknown }).accepted === true &&
+    "planId" in response &&
+    typeof (response as { planId: unknown }).planId === "string"
+  );
+}
+
+type WorkflowSnapshotWithArtifacts = SkillCreatorWorkflowUiSnapshot & {
+  phaseArtifacts?: Array<{
+    kind: string;
+    payload: unknown;
+  }>;
+};
+
+function extractExecuteResultFromWorkflowSnapshot(
+  snapshot: WorkflowSnapshotWithArtifacts,
+): RuntimeSkillCreatorExecuteResult | null {
+  const artifacts = snapshot.phaseArtifacts;
+  if (!Array.isArray(artifacts) || artifacts.length === 0) {
+    return null;
+  }
+
+  for (let index = artifacts.length - 1; index >= 0; index--) {
+    const artifact = artifacts[index];
+    if (artifact.kind !== "execute_result") {
+      continue;
+    }
+    const payload = artifact.payload;
+    if (
+      !!payload &&
+      typeof payload === "object" &&
+      "executeId" in payload &&
+      "skillName" in payload &&
+      "success" in payload
+    ) {
+      return payload as RuntimeSkillCreatorExecuteResult;
+    }
+  }
+
+  return null;
 }
 
 function isRuntimeImproveTerminalHandoff(
@@ -288,25 +354,6 @@ const severityStyles: Record<ImproveSuggestion["severity"], string> = {
   medium: "bg-amber-500/10 text-amber-700",
   low: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
 };
-
-const verifyStatusBadgeStyles: Record<
-  RuntimeSkillCreatorVerifyDetailResponse["status"],
-  string
-> = {
-  pending: "bg-amber-500/10 text-amber-700",
-  pass: "bg-emerald-500/10 text-emerald-700",
-  fail: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
-};
-
-const verifyCheckSeverityStyles: Record<
-  RuntimeSkillCreatorVerifyDetailResponse["checks"][number]["severity"],
-  string
-> = {
-  info: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
-  warning: "bg-amber-500/10 text-amber-700",
-  error: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
-};
-
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   const runtimeWindow = window as Window & {
     electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
@@ -365,6 +412,7 @@ export function SkillLifecyclePanel({
   const createSkill = useCreateSkill();
   const executeSkill = useExecuteSkill();
   const fetchSkills = useFetchSkills();
+  const llmAdapterStatus = useLLMAdapterStatus();
   const reExecuteAfterImprovement = useReExecuteAfterImprovement();
   const resetSkillExecutionCycle = useResetSkillExecutionCycle();
   const selectSkillByName = useSelectSkillByName();
@@ -404,6 +452,10 @@ export function SkillLifecyclePanel({
   const activeGenerationError = generationError;
 
   const [request, setRequest] = useState("");
+  // plan 承認時点の request snapshot を保持する。
+  // live textarea（request state）とは独立しており、
+  // handleExecutePlan は常にこの snapshot を execute payload として使用する。
+  // cancel または再生成まで不変。
   const [approvedSkillSpec, setApprovedSkillSpec] = useState<string | null>(
     null,
   );
@@ -471,14 +523,56 @@ export function SkillLifecyclePanel({
   ]);
 
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
+  const isPrepareFlowActiveRef = useRef(false);
+  const processedWorkflowOutcomePlanIdRef = useRef<string | null>(null);
+  const verifyDetailRequestSeqRef = useRef(0);
 
   const clearPlanExecutionState = useCallback(() => {
+    verifyDetailRequestSeqRef.current += 1;
+    clearGenerationState();
+    setApprovedSkillSpec(null);
+    setDetectedMode(null);
+    setActiveWorkflowId(null);
     setLocalPlanResult(null);
-    setCurrentPlanResult(null);
-    setCurrentPlanId(null);
     setRawPlanDetail(null);
     setRawExecuteDetail(null);
-  }, [setCurrentPlanId, setCurrentPlanResult]);
+    setVerifyDetail(null);
+    setVerifyDetailError(null);
+    setIsVerifyDetailLoading(false);
+    setIsReverifying(false);
+    setDisclosureInfo(null);
+    clearHandoffGuidance();
+    processedWorkflowOutcomePlanIdRef.current = null;
+  }, [
+    clearGenerationState,
+    clearHandoffGuidance,
+    setApprovedSkillSpec,
+    setDetectedMode,
+    setDisclosureInfo,
+    setIsReverifying,
+    setIsVerifyDetailLoading,
+    setRawExecuteDetail,
+    setRawPlanDetail,
+    setActiveWorkflowId,
+    setLocalPlanResult,
+    setVerifyDetail,
+    setVerifyDetailError,
+  ]);
+
+  const applyWorkflowSnapshot = useCallback(
+    (snapshot: SkillCreatorWorkflowUiSnapshot) => {
+      setWorkflowSnapshot(snapshot);
+      // handoff 時はエラーメッセージを保持する
+      // fire-and-forget 配信では後続スナップショットでエラーが消えるバグ（Issue #1844）を防ぐ
+      if (snapshot.currentPhase !== "handoff") {
+        setWorkflowError(null);
+      }
+      if (snapshot.handoffBundle) {
+        setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
+      }
+    },
+    [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot],
+  );
 
   useEffect(() => {
     if (skillExecutionStatus === previousStatus.current) {
@@ -563,13 +657,9 @@ export function SkillLifecyclePanel({
     }
 
     return skillCreatorApi.onWorkflowStateChanged((snapshot) => {
-      setWorkflowSnapshot(snapshot);
-      setWorkflowError(null);
-      if (snapshot.handoffBundle) {
-        setHandoffGuidance(toHandoffGuidance(snapshot.handoffBundle));
-      }
+      applyWorkflowSnapshot(snapshot);
     });
-  }, [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot]);
+  }, [applyWorkflowSnapshot]);
 
   // TASK-P0-08: アプリ起動時のセッション検出（一度のみ実行）
   useEffect(() => {
@@ -614,11 +704,7 @@ export function SkillLifecyclePanel({
           }
           return;
         }
-        setWorkflowSnapshot(result.data);
-        setWorkflowError(null);
-        if (result.data.handoffBundle) {
-          setHandoffGuidance(toHandoffGuidance(result.data.handoffBundle));
-        }
+        applyWorkflowSnapshot(result.data);
       })
       .catch((error) => {
         setWorkflowError(
@@ -662,6 +748,57 @@ export function SkillLifecyclePanel({
     }
   };
 
+  const processWorkflowOutcome = async (
+    snapshot: SkillCreatorWorkflowUiSnapshot,
+  ): Promise<boolean> => {
+    if (processedWorkflowOutcomePlanIdRef.current === snapshot.planId) {
+      return true;
+    }
+
+    const extendedSnapshot = snapshot as WorkflowSnapshotWithArtifacts;
+
+    if (extendedSnapshot.handoffBundle) {
+      processedWorkflowOutcomePlanIdRef.current = snapshot.planId;
+      setHandoffGuidance(toHandoffGuidance(extendedSnapshot.handoffBundle));
+      setGenerationError(
+        `ターミナル実行が必要です: ${extendedSnapshot.handoffBundle.suggestedCommand}`,
+      );
+      void fetchDisclosureInfo();
+      return true;
+    }
+
+    const executeResult =
+      extractExecuteResultFromWorkflowSnapshot(extendedSnapshot);
+    if (!executeResult) {
+      return false;
+    }
+
+    processedWorkflowOutcomePlanIdRef.current = snapshot.planId;
+    setRawExecuteDetail(executeResult);
+
+    if (!executeResult.success) {
+      setGenerationError(executeResult.error ?? "計画実行に失敗しました");
+      return true;
+    }
+
+    try {
+      await fetchSkills();
+    } catch (error) {
+      setGenerationError(
+        error instanceof Error
+          ? error.message
+          : "スキル一覧の取得に失敗しました。",
+      );
+      return true;
+    }
+    if (executeResult.skillName) {
+      selectSkillByName(executeResult.skillName);
+    }
+    setLocalPlanResult(null);
+    clearGenerationState();
+    return true;
+  };
+
   const dismissHandoffGuidance = () => {
     setDisclosureInfo(null);
     clearHandoffGuidance();
@@ -702,8 +839,7 @@ export function SkillLifecyclePanel({
       return;
     }
 
-    setWorkflowSnapshot(result.data);
-    setWorkflowError(null);
+    applyWorkflowSnapshot(result.data);
     setSelectedOptionId(null);
     setTextAnswer("");
     setSecretAnswer("");
@@ -727,11 +863,15 @@ export function SkillLifecyclePanel({
       return;
     }
 
+    const requestSeq = ++verifyDetailRequestSeqRef.current;
     setIsVerifyDetailLoading(true);
     setVerifyDetailError(null);
 
     try {
       const result = await skillCreatorApi.getVerifyDetail(planId);
+      if (requestSeq !== verifyDetailRequestSeqRef.current) {
+        return;
+      }
       if (!result.success || !result.data) {
         setVerifyDetail(null);
         setVerifyDetailError(
@@ -741,6 +881,9 @@ export function SkillLifecyclePanel({
       }
       setVerifyDetail(result.data);
     } catch (error) {
+      if (requestSeq !== verifyDetailRequestSeqRef.current) {
+        return;
+      }
       setVerifyDetail(null);
       setVerifyDetailError(
         error instanceof Error
@@ -748,7 +891,9 @@ export function SkillLifecyclePanel({
           : "verify detail の取得に失敗しました。",
       );
     } finally {
-      setIsVerifyDetailLoading(false);
+      if (requestSeq === verifyDetailRequestSeqRef.current) {
+        setIsVerifyDetailLoading(false);
+      }
     }
   };
 
@@ -899,12 +1044,8 @@ export function SkillLifecyclePanel({
   );
 
   const handlePanelClose = () => {
+    clearPlanExecutionState();
     resetSkillExecutionCycle();
-    setActiveWorkflowId(null);
-    setVerifyDetail(null);
-    setVerifyDetailError(null);
-    setDisclosureInfo(null);
-    clearHandoffGuidance();
     onClose();
   };
 
@@ -917,10 +1058,13 @@ export function SkillLifecyclePanel({
 
     // R-1: isGenerating ガード（二重呼出防止）
     if (isGenerating) return;
+    if (isPrepareFlowActiveRef.current) return;
 
+    isPrepareFlowActiveRef.current = true;
     clearSkillError();
     setLocalError(null);
     setIsPreparing(true);
+    clearPlanExecutionState();
 
     appendSessionEntry(setSessionEntries, {
       role: "user",
@@ -991,6 +1135,8 @@ export function SkillLifecyclePanel({
             setRawPlanDetail(planResult.data as RuntimeSkillCreatorPlanResult);
           }
 
+          // plan 承認時点の request を snapshot として固定する。
+          // この後 textarea を編集しても execute payload は変わらない。
           setApprovedSkillSpec(trimmedRequest);
           setLocalPlanResult(normalizedPlan);
           setCurrentPlanResult(normalizedPlan);
@@ -1022,6 +1168,7 @@ export function SkillLifecyclePanel({
         error instanceof Error ? error.message : "mode 判定に失敗しました。",
       );
     } finally {
+      isPrepareFlowActiveRef.current = false;
       setIsPreparing(false);
     }
   };
@@ -1036,6 +1183,8 @@ export function SkillLifecyclePanel({
     try {
       setIsGenerating(true);
       setDisclosureInfo(null);
+      // approved snapshot のみを execute payload として渡す。
+      // live textarea（request state）の値は使用しない。
       const result = await skillCreatorApi.executePlan(
         planId,
         approvedSkillSpec ?? undefined,
@@ -1044,25 +1193,55 @@ export function SkillLifecyclePanel({
         setGenerationError(result.error ?? "計画実行に失敗しました");
         return;
       }
-      const executeResponse = result.data;
-      setActiveWorkflowId(planId);
-      // TASK-SDK-07: visible handoff + disclosure summary へ接続
-      if (isExecuteTerminalHandoff(executeResponse)) {
-        setHandoffGuidance(toHandoffGuidance(executeResponse.bundle));
-        void fetchDisclosureInfo();
+      if (isExecutePlanAck(result.data)) {
+        setActiveWorkflowId(planId);
         if (skillCreatorApi.getWorkflowState) {
-          const snapshotResult = await skillCreatorApi.getWorkflowState(planId);
-          if (snapshotResult.success && snapshotResult.data) {
-            setWorkflowSnapshot(snapshotResult.data);
-            setWorkflowError(null);
+          try {
+            const snapshotResult =
+              await skillCreatorApi.getWorkflowState(planId);
+            if (snapshotResult.success && snapshotResult.data) {
+              setWorkflowSnapshot(snapshotResult.data);
+              setWorkflowError(null);
+              if (await processWorkflowOutcome(snapshotResult.data)) {
+                await loadVerifyDetail(planId);
+                return;
+              }
+            }
+          } catch {
+            // ack 受理後の snapshot 取得失敗は、後続の workflow event に委譲する
           }
         }
         await loadVerifyDetail(planId);
         return;
       }
+
+      const executeResponse = result.data;
+      setActiveWorkflowId(planId);
+      // TASK-SDK-07: visible handoff + disclosure summary へ接続
+      if (isExecuteTerminalHandoff(executeResponse)) {
+        processedWorkflowOutcomePlanIdRef.current = planId;
+        setHandoffGuidance(toHandoffGuidance(executeResponse.bundle));
+        void fetchDisclosureInfo();
+        if (skillCreatorApi.getWorkflowState) {
+          const snapshotResult = await skillCreatorApi.getWorkflowState(planId);
+          if (snapshotResult.success && snapshotResult.data) {
+            applyWorkflowSnapshot(snapshotResult.data);
+          }
+        }
+        await loadVerifyDetail(planId);
+        return;
+      }
+      if (isExecuteErrorResponse(executeResponse)) {
+        processedWorkflowOutcomePlanIdRef.current = planId;
+        await loadVerifyDetail(planId);
+        setGenerationError(executeResponse.error.message);
+        return;
+      }
       // TASK-RT-03: raw execute detail を local state に保存
       // terminal_handoff は上流ガードで除外済み → executeResponse は RuntimeSkillCreatorExecuteResult
       setRawExecuteDetail(executeResponse);
+
+      processedWorkflowOutcomePlanIdRef.current = planId;
 
       if (!executeResponse.success) {
         await loadVerifyDetail(planId);
@@ -1086,15 +1265,8 @@ export function SkillLifecyclePanel({
   };
 
   const handleCancelPlan = () => {
+    clearPlanExecutionState();
     setLocalPlanResult(null);
-    setApprovedSkillSpec(null);
-    clearGenerationState();
-    setActiveWorkflowId(null);
-    setVerifyDetail(null);
-    setVerifyDetailError(null);
-    setDisclosureInfo(null);
-    setRawPlanDetail(null);
-    setRawExecuteDetail(null);
   };
 
   const handleCreate = async () => {
@@ -1368,8 +1540,16 @@ export function SkillLifecyclePanel({
     }
   };
 
-  const currentSurfaceError =
-    localError ?? workflowError ?? verifyDetailError ?? skillError;
+  const handleRetryVerifyDetail = async () => {
+    if (!activeWorkflowId) {
+      setLocalError("再取得対象の workflow がありません。");
+      return;
+    }
+
+    await loadVerifyDetail(activeWorkflowId);
+  };
+
+  const currentSurfaceError = localError ?? workflowError ?? skillError;
   const shouldShowStreaming =
     Boolean(createdSkillName) &&
     (isExecuting ||
@@ -1413,6 +1593,14 @@ export function SkillLifecyclePanel({
               一覧へ戻る
             </button>
           </div>
+        </div>
+
+        <div className="mt-4">
+          <LLMAdapterErrorBanner
+            status={llmAdapterStatus.status}
+            failureReason={llmAdapterStatus.failureReason}
+            onOpenSettings={onOpenWizard}
+          />
         </div>
 
         <div className="mt-4 grid gap-3 md:grid-cols-4">
@@ -1558,8 +1746,7 @@ export function SkillLifecyclePanel({
                     setWorkflowError(message);
                     throw new Error(message);
                   }
-                  setWorkflowSnapshot(result.data);
-                  setWorkflowError(null);
+                  applyWorkflowSnapshot(result.data);
                 }}
                 onError={(msg) => setWorkflowError(msg)}
               />
@@ -1686,19 +1873,6 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
-      {/* TASK-RT-03: Plan 結果詳細パネル — review phase で raw plan detail が存在する場合 */}
-      {rawPlanDetail &&
-      (!workflowSnapshot ||
-        workflowSnapshot.currentPhase === "review" ||
-        workflowSnapshot.awaitingUserInput?.reason === "plan_review") ? (
-        <PlanResultDetailPanel
-          planResult={rawPlanDetail}
-          onRetry={() => {
-            void handlePrepare();
-          }}
-        />
-      ) : null}
-
       {activePlanResult?.type === "terminal_handoff" &&
       activePlanResult.guidance ? (
         <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
@@ -1716,195 +1890,21 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
-      {/* TASK-RT-03: Execute 結果詳細パネル — verify phase で raw execute detail が存在する場合 */}
-      {rawExecuteDetail && workflowSnapshot?.currentPhase === "verify" ? (
-        <ExecuteResultDetailPanel
+      {rawPlanDetail ||
+      rawExecuteDetail ||
+      verifyDetail ||
+      verifyDetailError ||
+      isVerifyDetailLoading ? (
+        <SkillCreationResultPanel
+          planResult={rawPlanDetail}
           executeResult={rawExecuteDetail}
-          onRetry={() => {
-            void handleExecutePlan();
-          }}
+          verifyDetail={verifyDetail}
+          verifyError={verifyDetailError}
+          onReverify={handleReverify}
+          onRetryVerify={handleRetryVerifyDetail}
+          isReverifying={isReverifying}
+          isVerifyDetailLoading={isVerifyDetailLoading}
         />
-      ) : null}
-
-      {activeWorkflowId ? (
-        <div
-          className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5"
-          data-testid="skill-lifecycle-verify-detail"
-        >
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--status-primary)]">
-                Verify Detail
-              </p>
-              <h3 className="mt-1 text-base font-semibold text-[var(--text-primary)]">
-                4. Layer 3 / Layer 4 verify を確認する
-              </h3>
-              <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                workflow owner は engine に残したまま、route / provenance /
-                re-verify action を detail surface として表示します。
-              </p>
-            </div>
-            <button
-              type="button"
-              className={lifecycleButtonStyles.secondary}
-              onClick={handleReverify}
-              disabled={
-                isReverifying ||
-                isVerifyDetailLoading ||
-                !verifyDetail?.reverifyEligible
-              }
-              data-testid="skill-lifecycle-reverify-button"
-            >
-              {isReverifying ? "再検証を要求中..." : "再検証を要求する"}
-            </button>
-          </div>
-
-          {isVerifyDetailLoading ? (
-            <p className="mt-4 text-sm text-[var(--text-secondary)]">
-              verify detail を読み込み中...
-            </p>
-          ) : verifyDetail ? (
-            <>
-              <div className="mt-4 grid gap-3 md:grid-cols-4">
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Status
-                  </p>
-                  <span
-                    className={`mt-2 inline-flex rounded-full px-2 py-1 text-xs font-medium ${verifyStatusBadgeStyles[verifyDetail.status]}`}
-                  >
-                    {verifyDetail.status}
-                  </span>
-                </div>
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Phase
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                    {verifyDetail.currentPhase}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Evidence
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                    {verifyDetail.evidenceCount}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Route
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                    {verifyDetail.route.summary}
-                  </p>
-                </div>
-              </div>
-
-              {verifyDetail.message ? (
-                <div className="mt-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3 text-sm text-[var(--text-primary)]">
-                  {verifyDetail.message}
-                </div>
-              ) : null}
-
-              <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                {verifyDetail.checks.map((check) => (
-                  <article
-                    key={check.id}
-                    className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4"
-                  >
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-semibold text-[var(--text-primary)]">
-                        {check.id}
-                      </span>
-                      <span className="rounded-full bg-[var(--bg-secondary)] px-2 py-1 text-xs font-medium text-[var(--text-secondary)]">
-                        {check.layer}
-                      </span>
-                      <span
-                        className={`rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[check.severity]}`}
-                      >
-                        {check.severity}
-                      </span>
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                      {check.summary}
-                    </p>
-                    {check.evidenceSummary ? (
-                      <p className="mt-2 text-xs text-[var(--text-secondary)]">
-                        {check.evidenceSummary}
-                      </p>
-                    ) : null}
-                  </article>
-                ))}
-              </div>
-
-              <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Provenance
-                  </p>
-                  <dl className="mt-3 space-y-2 text-sm text-[var(--text-primary)]">
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        root
-                      </dt>
-                      <dd>
-                        {verifyDetail.resolvedSkillCreatorRoot ?? "未取得"}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        manifest
-                      </dt>
-                      <dd>{verifyDetail.manifestPath ?? "未取得"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        resource hash
-                      </dt>
-                      <dd>{verifyDetail.resourceDescriptorHash ?? "未取得"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        cache key
-                      </dt>
-                      <dd>{verifyDetail.manifestCacheKey ?? "未取得"}</dd>
-                    </div>
-                  </dl>
-                </div>
-                <div className="space-y-3">
-                  <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                      Governance Note
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                      {verifyDetail.delegatedGovernanceNote}
-                    </p>
-                  </div>
-                  <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                      Session Note
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                      {verifyDetail.delegatedSessionNote}
-                    </p>
-                  </div>
-                  {!verifyDetail.reverifyEligible &&
-                  verifyDetail.disabledReason ? (
-                    <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-4 text-sm text-amber-700">
-                      {verifyDetail.disabledReason}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </>
-          ) : (
-            <p className="mt-4 text-sm text-[var(--text-secondary)]">
-              verify detail はまだ利用できません。
-            </p>
-          )}
-        </div>
       ) : null}
 
       {/* API キー設定 (TASK-RT-04) */}

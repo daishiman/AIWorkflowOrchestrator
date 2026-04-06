@@ -1,5 +1,9 @@
 # TASK-UT-RT-01-PHASE11-NONVISUAL-WALKTHROUGH-EVIDENCE-001
 
+```yaml
+issue_number: 1890
+```
+
 ## 1. メタ情報
 
 | 項目     | 値                                                       |

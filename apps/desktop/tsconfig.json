@@ -93,11 +93,17 @@
       "@repo/shared/src/ipc/channels": [
         "../../packages/shared/src/ipc/channels.ts"
       ],
+      "@repo/shared/ipc/channels": [
+        "../../packages/shared/src/ipc/channels.ts"
+      ],
       "@repo/shared/types/skill-improver": [
         "../../packages/shared/src/types/skill-improver.ts"
       ],
       "@repo/shared/types/skillCreator": [
         "../../packages/shared/src/types/skillCreator.ts"
+      ],
+      "@repo/shared/types/skillCreatorExternalApi": [
+        "../../packages/shared/src/types/skillCreatorExternalApi.ts"
       ]
     }
   },
@@ -115,6 +121,9 @@
     "src/**/*.stories.tsx",
     "src/**/*.stories.ts",
     "src/**/stories/**",
-    "src/main/services/agent/AgentExecutor.ts"
+    "src/main/services/agent/AgentExecutor.ts",
+    "src/main/ipc/slackHandlers.ts",
+    "src/main/ipc/slackHandlers.test.ts",
+    "src/main/services/slack/**"
   ]
 }

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- `electron.vite.config.ts` の preload セクションで `@repo/shared/src/ipc/channels` が `externalizeDepsPlugin` によって外部化され `window.electronAPI` が `undefined` になる問題を修正。
+  `externalizeDepsPlugin({ exclude: ["@repo/shared"] })` と `resolve.alias` の組み合わせにより、`packages/shared/src/ipc/channels.ts` の内容が preload バンドルにインライン化されるようになった（TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001）。
+
+- `better-sqlite3` の Electron ABI 不一致（Node.js ABI 127 vs Electron ABI 140）による起動時の `ERR_DLOPEN_FAILED` を修正。
+  `apps/desktop/package.json` に `"postinstall": "pnpm rebuild:native"` を追加し、`pnpm install` 後に自動で native addon を Electron ABI 向けに再コンパイルするようにした。
+
 ### Added
 
 - Slide output directory settings feature for presentation-slide-generator skill

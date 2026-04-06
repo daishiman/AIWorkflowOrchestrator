@@ -29,6 +29,7 @@ const phaseLabels: Record<SkillCreatorWorkflowPhase, string> = {
   execute: "実行",
   verify: "検証",
   improve: "改善",
+  reverify: "再検証",
   handoff: "引き渡し",
 };
 

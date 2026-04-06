@@ -8,7 +8,7 @@
 | file | 使う場面 | 内容 |
 | --- | --- | --- |
 | [phase-11-screenshot-guide.md](phase-11-screenshot-guide.md) | manual test、UI evidence、docs walkthrough | Phase 11 の execution detail |
-| [phase-12-documentation-guide.md](phase-12-documentation-guide.md) | implementation guide、spec sync、feedback | Phase 12 の 5 task |
+| [phase-12-documentation-guide.md](phase-12-documentation-guide.md) | implementation guide、spec sync、feedback | Phase 12 の 6 task |
 | [spec-update-workflow.md](spec-update-workflow.md) | Task 12-2 | Step 1 / Step 2 index |
 | [spec-update-validation-matrix.md](spec-update-validation-matrix.md) | final validation | validator と pass 基準 |
 
@@ -58,6 +58,7 @@
 - docs-only task: navigation、archive discoverability、mirror parity を確認する。
 - UI task: 上記に加えて screenshot と Apple UI/UX 視覚検証を行う。
 - representative evidence は workflow 配下 `outputs/phase-11/` に置く。
+- 実装統合タスクで visible surface の追加がない場合は、Phase 11 を `NON_VISUAL` として設計し、`manual-test-checklist.md` / `manual-test-result.md` を正本にする。screenshot 契約を要求しないのに `UI` / `スクリーンショット` wording を残すと validator が不要な画面証跡を要求するため、仕様書本文でも non-visual 前提を明示する。
 
 ### Phase 12
 
@@ -74,12 +75,12 @@
 - docs-heavy task で user が screenshot を要求し、current build 再撮影が環境依存で過剰または不可能でも、same-day upstream evidence を current workflow へ集約し、review board 1件を current workflow で新規 capture する代替経路を許可する。source evidence / review board / Apple review の関係は `manual-test-result.md` と `command-transcript.md` に明記する。
 - screenshot fallback を使った場合でも、`outputs/phase-11/screenshots/phase11-capture-metadata.json` 等に **capture method / failure reason / source evidence / generated-at** を残し、`manual-test-result.md` と時刻・理由を一致させる。
 - `manual-test-result.md` には、fallback 時に使った harness HTML/TSX、capture script、review board PNG、metadata JSON の**実ファイル path**を残す。
-- placeholder PNG だけを置いて Phase 11 PASS にしない。fallback を許可する場合でも、`TC-ID ↔ png`、`screenshot-coverage.md`、metadata JSON、fallback reason、source evidence の 5 点が current workflow に揃っていることを必須とする。
+- placeholder PNG だけを置いて Phase 11 PASS にしない。UI 差分がない `NON_VISUAL` task では dummy PNG を作らず、`manual-test-result.md` と `screenshot-plan.json` に blocker / 実行コマンド / 代替 evidence を記録する。visual fallback を採る場合のみ、`TC-ID ↔ png`、`screenshot-coverage.md`、metadata JSON、fallback reason、source evidence の 5 点を current workflow に揃える。
 - skill root が複数ある repository では、user が指定した root を正本として扱い、Phase 12 完了前に mirror root との drift を `diff -qr` 等で確認する。
 - `spec_created` / docs-heavy task でも、Phase 12 は「計画記録」では閉じない。`.claude/skills/` 側の system spec / LOGS / lessons learned / backlog / `artifacts.json` / `outputs/artifacts.json` を **同ターンで実更新** する。
 - persist / hydration task の Phase 11 では、actual storage key と validation entrypoint を仕様書へ明記し、`electron-store` など generic storage 名を推測で書かない。
 - Step 2 の sync 先は generic なファイル名で推測せず、actual domain split を見て **primary target file list** を先に確定してから書き込む。
-- Task 12-1〜12-5 を順に閉じる。
+- Task 12-1〜12-6 を順に閉じる。
 - `artifacts.json`、`outputs/artifacts.json`、phase 本文、`index.md` を同一ターンで同期する。
 - `current` / `baseline` の二層判定を changelog と quality report に残す。
 

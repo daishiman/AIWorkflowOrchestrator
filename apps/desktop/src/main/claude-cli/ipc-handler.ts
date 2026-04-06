@@ -76,6 +76,14 @@ const CHANNELS = {
 let manager: ClaudeCliManager | null = null;
 
 /**
+ * Main プロセス内の他モジュールが ClaudeCliManager へアクセスするためのゲッター。
+ * registerClaudeCliHandlers() 呼び出し前は null を返す。
+ */
+export function getClaudeCliManager(): ClaudeCliManager | null {
+  return manager;
+}
+
+/**
  * Main window reference for streaming events
  */
 let mainWindow: BrowserWindow | null = null;
@@ -177,7 +185,15 @@ function getManager(): ClaudeCliManager {
 /**
  * Register Claude CLI IPC handlers
  */
-export function registerClaudeCliHandlers(browserWindow: BrowserWindow): void {
+export interface ClaudeCliHandlerOptions {
+  /** セッション破棄時に呼ばれるコールバック（approval token クリーンアップ等） */
+  onSessionDestroyed?: (sessionId: string) => void;
+}
+
+export function registerClaudeCliHandlers(
+  browserWindow: BrowserWindow,
+  options?: ClaudeCliHandlerOptions,
+): void {
   mainWindow = browserWindow;
 
   // Initialize manager
@@ -186,7 +202,7 @@ export function registerClaudeCliHandlers(browserWindow: BrowserWindow): void {
   });
 
   // Set up event forwarding to renderer
-  setupEventForwarding();
+  setupEventForwarding(options?.onSessionDestroyed);
 
   // Register handlers
   ipcMain.handle(
@@ -266,7 +282,9 @@ export function registerClaudeCliHandlers(browserWindow: BrowserWindow): void {
 /**
  * Set up event forwarding from manager to renderer
  */
-function setupEventForwarding(): void {
+function setupEventForwarding(
+  onSessionDestroyed?: (sessionId: string) => void,
+): void {
   if (!manager || !mainWindow) {
     return;
   }
@@ -309,10 +327,15 @@ function setupEventForwarding(): void {
     },
   );
 
-  // Forward session destroyed events
+  // Forward session destroyed events + cleanup
   manager.on(
     "sessionDestroyed",
     (event: { id: string; status: string; completedAt: number }) => {
+      // セッション終了時のクリーンアップ（approval token 無効化等）
+      if (onSessionDestroyed) {
+        onSessionDestroyed(event.id);
+      }
+
       if (mainWindow && !mainWindow.isDestroyed()) {
         mainWindow.webContents.send(CHANNELS.SESSION_STATUS, {
           sessionId: event.id,

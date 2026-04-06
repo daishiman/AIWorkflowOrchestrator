@@ -2,6 +2,7 @@
 name: skill-creator
 description: |
   スキルを作成・更新・プロンプト改善するためのメタスキル。
+  **最初のアクションは必ず AskUserQuestion**（インタビュー深度確認）。
   **collaborative**モードでユーザーと対話しながら共創し、
   抽象的なアイデアから具体的な実装まで柔軟に対応する。
   **orchestrate**モードでタスクの実行エンジン（Claude Code / Codex / 連携）を選択。
@@ -33,6 +34,14 @@ allowed-tools:
 # Skill Creator
 
 スキルを作成・更新・プロンプト改善するためのメタスキル。
+
+## 必須：最初の実行ステップ
+**このスキルを呼ばれたら、最初のアクションは必ず `AskUserQuestion` である。**
+1. インタビュー深度を確認する（quick / standard / detailed）
+2. 深度が確定したら `agents/discover-problem.md` を読み込み Phase 0-0 を開始する
+3. `problem-definition.json` が存在しない場合は AskUserQuestion で問題定義を収集する
+
+ユーザーの回答なしに生成を開始してはならない。create / update / improve-prompt モードも、最初に深度確認の質問を行ってから着手する。
 
 ## 設計原則
 
@@ -141,6 +150,34 @@ plan → review (awaiting user input) → execute → verify → [pass] handoff
 
 Renderer はこのレスポンスを受け取った場合、`plan.status === "error"` + `degradedReason` で劣化状態を UI に表示する。
 
+#### AskUserQuestion MCP カスタムツール（TASK-SDK-SC-01）
+
+SDK セッション（`SkillCreatorSdkSession`）は `createSdkMcpServer` + `tool` API で `AskUserQuestion` をカスタム MCP ツールとして提供する。ユーザー入力が必要なときは必ずこのツールを呼び出す。
+
+**ツール名**: `AskUserQuestion`
+
+| パラメータ    | 型                                                                 | 必須 | 説明                                               |
+| ------------- | ------------------------------------------------------------------ | ---- | -------------------------------------------------- |
+| `question`    | `string`                                                           | ✓    | ユーザーに提示する質問文                           |
+| `type`        | `"single_select" \| "multi_select" \| "free_text" \| "secret" \| "confirm"` | —    | 入力種別（省略時は `free_text`）                   |
+| `options`     | `Array<{ value?: string; label?: string; description?: string; preview?: string }>` | —    | `single_select` / `multi_select` 時の選択肢        |
+| `placeholder` | `string`                                                           | —    | `free_text` 時の入力欄ヒント文字列                 |
+
+呼び出し例:
+```json
+{
+  "question": "インタビューの深度を選んでください",
+  "type": "single_select",
+  "options": [
+    { "value": "quick",    "label": "Quick（最小限）" },
+    { "value": "standard", "label": "Standard（推奨）" },
+    { "value": "detailed", "label": "Detailed（詳細）" }
+  ]
+}
+```
+
+ツールが返す値はユーザーが入力したテキスト（`multi_select` の場合は JSON 配列文字列、`confirm` の場合は `"true"` / `"false"`）。
+
 #### ユーザー入力ブリッジ（5種）
 
 | kind            | 用途                  | 例                      |
@@ -195,6 +232,23 @@ Renderer はこのレスポンスを受け取った場合、`plan.status === "er
 
 **結果型**: `RuntimeSkillCreatorVerifyAndImproveResult`（`finalStatus`, `totalAttempts`, `finalChecks`, `loopExhausted`, `errorMessage?`, `workflowSnapshot`）
 
+#### execute() → SkillFileWriter persist 統合（TASK-P0-05）
+
+`execute()` の Step 3.5-3.6 で LLM 応答からスキルコンテンツを抽出し、ファイルシステムへ永続化する。
+
+**二重パイプライン設計**:
+
+| 経路 | パイプライン | 正式度 | 説明 |
+| --- | --- | --- | --- |
+| A経路 | Facade → `parseLlmResponseToContent()` → `SkillFileWriter.persist()` | 正式経路 | execute() 内で直接コンテンツ抽出・永続化 |
+| B経路 | `SkillCreatorOutputHandler` → `SkillRegistry` | 別系統 | IPC Bridge 経由のセッション完了時パイプライン |
+
+**Setter Injection**: `SkillFileWriter` は `RuntimeSkillCreatorFacadeDeps.skillFileWriter?` で optional inject。未注入時は `console.warn` で警告し persist をスキップ（graceful degradation）。
+
+**結果型拡張**: `SkillExecuteResult` に以下のフィールドを追加:
+- `persistResult: PersistResult | null` - persist 成功時の書き込み結果
+- `persistError: string | null` - persist 中の例外メッセージ（スキル実行自体の成否とは独立）
+
 ### Orchestrate モード
 
 実行エンジン選択: `claude` | `codex` | `gemini` | `claude-to-codex`
@@ -243,6 +297,7 @@ Renderer はこのレスポンスを受け取った場合、`plan.status === "er
 | **問題発見フレームワーク**   | references/problem-discovery-framework.md    |
 | **ドメインモデリング**       | references/domain-modeling-guide.md          |
 | **Clean Architecture**       | references/clean-architecture-for-skills.md  |
+| **プロンプト生成ポリシー**   | references/prompt-generation-policy.md       |
 | **スクリプト/LLM分担**       | references/script-llm-patterns.md            |
 | **クロススキル参照パターン** | references/cross-skill-reference-patterns.md |
 | **外部CLIエージェント統合**  | references/external-cli-agents-guide.md      |
@@ -251,7 +306,7 @@ Renderer はこのレスポンスを受け取った場合、`plan.status === "er
 | オーケストレーション         | references/orchestration-guide.md            |
 | 実行モード選択               | references/execution-mode-guide.md           |
 | ドキュメント生成             | references/api-docs-standards.md             |
-| Phase 12 再監査              | references/update-process.md                 |
+| Phase 12 再監査              | references/update-process.md, `references/output-patterns.md`, `references/patterns-success-ipc-auth.md`, `references/patterns-success-ipc-auth-b.md`, `references/patterns-success-skill-phase12.md`, `references/patterns-success-skill-phase12-b.md`, `references/patterns-success-testing-security.md`, `references/patterns-failure-misc.md`, `references/patterns-failure-phase12.md`, `references/patterns-pitfall-phase12.md`, `references/patterns-pitfall-testing-ui.md` |
 | 自己改善サイクル             | references/self-improvement-cycle.md         |
 | ライブラリ管理               | references/library-management.md             |
 
@@ -259,7 +314,7 @@ Renderer はこのレスポンスを受け取った場合、`plan.status === "er
 
 | カテゴリ             | 参照先                                                                                                                                                                                                                                                                                                                                                                  |
 | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`                                                                                                                           |
+| 基礎設計             | `references/abstraction-levels.md`, `references/core-principles.md`, `references/creation-process.md`, `references/update-process.md`, `references/skill-structure.md`, `references/naming-conventions.md`, `references/quality-standards.md`, `references/prompt-generation-policy.md`                                                                                    |
 | ヒアリング・設計補助 | `references/interview-guide.md`, `references/goal-to-api-mapping.md`, `references/variable-template-guide.md`, `references/event-trigger-guide.md`                                                                                                                                                                                                                      |
 | 実装・統合           | `references/api-integration-patterns.md`, `references/integration-patterns.md`, `references/integration-patterns-rest.md`, `references/integration-patterns-graphql.md`, `references/integration-patterns-webhook.md`, `references/integration-patterns-ipc.md`, `references/runtime-guide.md`, `references/script-commands.md`, `references/official-docs-registry.md` |
 | 実行・運用           | `references/parallel-execution-guide.md`, `references/scheduler-guide.md`, `references/skill-chain-patterns.md`, `references/codex-best-practices.md`                                                                                                                                                                                                                   |
@@ -312,6 +367,7 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 - [assets/phase12-system-spec-retrospective-template.md](assets/phase12-system-spec-retrospective-template.md) と `assets/phase12-spec-sync-subagent-template.md` を同じターンで使い、system spec / lessons / backlog / skill update を分離して進める。
 - `verify-unassigned-links --source <workflow>/outputs/phase-12/unassigned-task-detection.md`、`audit --diff-from HEAD`、`quick_validate.js` / `validate_all.js`、`diff -qr` をまとめて閉じる。
 - NON_VISUAL / docs-heavy / env blocker task では、screen evidence の代替根拠、blocker の絶対パス、既存未タスクとの重複確認結果を同じターンで記録する。
+- UI 再撮影がある場合は `theme lock → screenshot evidence → docs/spec sync` の順で閉じ、`NON_VISUAL` のまま止めず `SCREENSHOT + outputs` を優先する。
 
 ### P43対策: SubAgent ファイル分割基準
 
@@ -335,6 +391,8 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | Progressive Disclosure               | 具体例をテンプレートに書く        |
 | クロススキル参照は相対パスで         | 絶対パスやハードコードで参照      |
 | SubAgentは3ファイル以下/エージェント | 多数ファイルを1エージェントに集中 |
+| エージェントプロンプトはprompt-creatorで生成 | skill-creator内で独自フォーマットのプロンプトを書く |
+| 1プロンプト5000文字以内・単一責務 | 複数責務を1ファイルに詰め込む |
 
 > **自己参照ノート**: skill-creator自体がクロススキル参照パターンの実例。
 > `resolve-skill-dependencies.md` で設計した参照構造は、skill-creatorが他スキルの
@@ -344,6 +402,9 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 
 | Version      | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | ------------ | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **10.41.0**  | **2026-04-05** | **TASK-P0-05 execute()→SkillFileWriter persist統合を反映**: 二重パイプライン設計（A経路: Facade→parseLlmResponseToContent→SkillFileWriter.persist / B経路: OutputHandler→SkillRegistry）の仕様、Setter Injection optional inject パターン、`SkillExecuteResult` の `persistResult` / `persistError` フィールド追加を「execute() → SkillFileWriter persist 統合（TASK-P0-05）」セクションとして追記。`references/patterns.md` にも二重パイプライン・Setter Injection パターンを追加 |
+| **10.40.1**  | **2026-04-04** | **TASK-P0-03 workflow-manifest.json 本番配置完了**: canonical（`.claude/skills/skill-creator/workflow-manifest.json`）と mirror（`.agents/skills/skill-creator/workflow-manifest.json`）に 5-phase / 7-resource / 10-hook の manifest を配置確定。ManifestLoader.production-manifest テスト全 17 ケース PASS。後続タスク P0-04/P0-07/P0-09 の基盤固定 |
+
 | **10.40.0**  | **2026-03-30** | **TASK-P0-02 verify→improve→re-verify 閉ループを反映**: `verifyAndImproveLoop()` の閉ループ仕様（`maxImproveRetry` デフォルト3/範囲1-10の自動クランプ、feedback memory による直前改善要約の次回 feedback 合成、`failedChecks` 限定改善入力）を「verify → improve → re-verify 閉ループ（TASK-P0-02）」セクションとして追記。`RuntimeSkillCreatorVerifyAndImproveResult` 型と `RuntimeSkillCreatorFacadeDeps.maxImproveRetry` フィールドを文書化 |
 | **10.39.1**  | **2026-03-30** | **TASK-RT-05 multi_select user input kind を反映**: ユーザー入力ブリッジを 5 種へ更新し、`multi_select` と `selectedOptionIds` 契約を runtime workflow current facts に同期。Renderer question host の kind 切替時 state reset と submit disable 条件も close-out 観点へ追加 |
 | **10.39.0**  | **2026-03-29** | **TASK-RT-06 SDKMessage 正規化 + TASK-SDK-08 Session Persistence を反映**: `SkillCreatorSdkEvent`（eventType: init/assistant/result/error）/ `SkillCreatorSdkEventSourceProvenance` 型、IPC チャネル `skill-creator:normalize-sdk-messages`、`sdkMessageNormalizer.ts` の追加を Runtime ワークフロー IPC テーブルへ追記。`SkillCreatorPersistedWorkflowCheckpoint`（phase boundary checkpoint）/ `WorkflowCheckpointLease`（stale write guard）/ `ResumeCompatibilityResult` / `ResumeIncompatibilityReason` 型、`SkillCreatorWorkflowEngine.hydrateFromCheckpoint()` メソッドを Session Persistence セクションへ追記 |
@@ -351,17 +412,6 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | **10.38.0**  | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映                                                                                                                     |
 | **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善                                                                                                                                                                                                                                                                       |
 | **10.37.43** | **2026-03-26** | **TASK-SDK-01 hardening sync を template へ反映**: docs-heavy Phase 12 follow-up に code hardening が入った時の same-wave rollback-to-current ルール、carry-forward 0件同期、compile gate と env-blocked test の分離記録を `references/patterns.md` / `references/update-process.md` へ追加                                                                                                                                                                                                                                                                                                                           |
-
----
-
-## 変更履歴
-
-| Version      | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
-| ------------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **10.39.1**  | **2026-03-30** | **TASK-RT-05 multi_select user input kind を反映**: ユーザー入力ブリッジを 5 種へ更新し、`multi_select` と `selectedOptionIds` 契約を runtime workflow current facts に同期。Renderer question host の kind 切替時 state reset と submit disable 条件も close-out 観点へ追加 |
-| **10.39.0**  | **2026-03-29** | **TASK-RT-06 SDKMessage 正規化 + TASK-SDK-08 Session Persistence を反映**: `SkillCreatorSdkEvent`（eventType: init/assistant/result/error）/ `SkillCreatorSdkEventSourceProvenance` 型、IPC チャネル `skill-creator:normalize-sdk-messages`、`sdkMessageNormalizer.ts` の追加を Runtime ワークフロー IPC テーブルへ追記。`SkillCreatorPersistedWorkflowCheckpoint`（phase boundary checkpoint）/ `WorkflowCheckpointLease`（stale write guard）/ `ResumeCompatibilityResult` / `ResumeIncompatibilityReason` 型、`SkillCreatorWorkflowEngine.hydrateFromCheckpoint()` メソッドを Session Persistence セクションへ追記                                                                                                                                              |
-| **10.38.0**  | **2026-03-27** | **Runtime ワークフロー状態遷移・動的リソース選択・verify/reverify を SKILL.md へ反映**: PhaseResourcePlanner（max bytes 4-tier budget）、SkillCreatorSourceResolver（manifest vs fallback 競合解決）、verify detail surface（layer3/layer4 自動生成）、reverify 閉ループ、ユーザー入力ブリッジ 4 種（single_select/free_text/secret/confirm）、disabledReason 4 段階判定、IPC 5 チャネル（get-workflow-state/submit-user-input/workflow-state-changed/get-verify-detail/reverify-workflow）を反映                                                                                                                                                                                                                                                                  |
-| **10.37.51** | **2026-03-26** | **UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 の close-out drift 対策を反映**: `references/update-process.md` に「Step 2 no-op でも Step 1 台帳同期を省略しない」「Phase 12 root evidence の patch marker 混入を grep 監査する」運用を追加し、source unassigned status と completed workflow root を同一ターンで閉じるテンプレートへ改善                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | **10.37.50** | **2026-03-26** | **TASK-SDK-02 workflow-engine-runtime-orchestration を反映**: `references/patterns.md` に「public bridge と workflow state owner の分離パターン」を追加。runtime orchestration task では `Facade` を public bridge、`Engine` を state owner として固定し、`terminal_handoff` early return、`resumeTokenEnvelope` / provenance 同一 owner、禁止副作用のテスト化までを close-out 完了条件として扱うルールを標準化                                                                                                                                                                                                                                                                                                                                                    |
 | **10.37.49** | **2026-03-26** | **UT-SC-02-005 の stale fact cleanup ルールを追加**: `references/update-process.md` に Phase 12 retrospective の `Phase 3.5: stale fact cleanup` を追記し、`assets/phase12-system-spec-retrospective-template.md` にテスト件数 / coverage / out-of-scope 注記 / 日付 / follow-up 件数を outputs と未タスク指示書で同値同期するルールを追加。same-wave sync の完了条件を「生成 + drift 除去」まで拡張                                                                                                                                                                                                                                                                                                                                                               |
 | **10.37.49** | **2026-03-26** | **TASK-SDK-01 manifest-contract-foundation の Phase 12 close-out を反映**: `references/patterns.md` に foundation / internal-contract task 向けの「no-op Step 2 判定 + blocker 重複未タスク化防止」パターンを追加。system spec 本文が既に current の場合でも completed ledger / lessons / LOGS / SKILL / mirror sync を同一ターンで閉じること、native binary / worktree / test runner blocker は既存 `unassigned-task/` を先に検索して重複 formalize を避けることを標準化                                                                                                                                                                                                                                                                                          |
@@ -486,45 +536,3 @@ Phase 2（設計）並列実行可能なSubAgent分担例:
 | **10.11.0** | **2026-02-20** | **TASK-FIX-TS-SHARED-MODULE-RESOLUTION-001 Phase 12再監査パターン反映**: references/patterns.md に成功パターン「Phase 12 実行仕様書ステータス同期」を追加。成果物生成済みでも `phase-12-documentation.md` 本体のステータス/チェックリスト未同期が残る失敗を再発防止対象として明文化 |
 | **10.10.0** | **2026-02-19** | **TASK-FIX-10-1 仕様最適化パターン追加**: references/patterns.md に Phase 12 成功パターン「仕様更新三点セット（quality/task-workflow/lessons-learned）」を追加。クイックナビゲーションのPhase 12ドメインを更新し、再利用性の高い仕様反映手順を明文化 |
 | **10.9.1** | **2026-02-19** | **TASK-FIX-10-1-VITEST-ERROR-HANDLING 教訓反映**: references/patterns.md のテストドメインを更新。成功パターン「Vitest未処理Promise拒否の可視化運用」と失敗パターン「dangerouslyIgnoreUnhandledErrors 常時有効化」を追加し、クイックナビゲーションへ反映 |
-| **10.9.0** | **2026-02-19** | **TASK-9A-B再監査パターン追加**: references/patterns.md に「[Phase12] 実装-仕様ドリフト再監査（数値・パス・文言）」を追加。テスト件数の実測値基準化、旧パス（`skill-file-api.ts`）横断修正、未タスクraw件数と確定件数の分離記録を標準化 |
-| **10.9.0** | **2026-02-19** | **TASK-9A-C Phase 12再監査パターン追補**: references/patterns.md に成功パターン「仕様書作成タスクの `spec_created` 状態判定」を追加。失敗パターン「仕様書作成タスクの completed 誤判定」を追加し、Phase 12クイックナビゲーションに反映 |
-| **10.8.0** | **2026-02-14** | **UT-FIX-IPC-RESPONSE-UNWRAP-001 教訓反映**: references/patterns.md に「Phase 12 仕様書参照パスの実在チェック」パターンを追加（`test -f` による更新対象仕様書の事前検証、非実在参照の即時是正、index再生成のセット運用） |
-| **10.7.0** | **2026-02-14** | **TASK-FIX-14-1 Phase 12再監査パターン追加**: references/patterns.mdに成功パターン「実装差分ベース文書化（ファイル名誤記防止）」を追加。失敗パターン「実装ガイドへの誤ファイル名混入（TASK-FIX-14-1）」を追加。クイックナビゲーションのPhase 12行を更新 |
-| **10.6.1** | **2026-02-14** | **UT-FIX-IPC-HANDLER-DOUBLE-REG-001 パターン追補**: references/patterns.md のクイックナビに「IPCハンドラライフサイクル管理（unregister→register）」を追加。新規パターン「[IPC] IPCハンドラライフサイクル管理パターン（UT-FIX-IPC-HANDLER-DOUBLE-REG-001）」を追記し、IPC_CHANNELS全走査前提確認・IPC外リスナー解除（themeWatcher）・順序固定（unregister→createWindow→register）・`ipcMain.handle()`/`ipcMain.on()`挙動差を明文化 |
-| **10.6.0** | **2026-02-14** | **LLM System Promptテンプレート追加**: assets/system-prompt-template.md新規作成（LLM外部呼び出し用System Promptフォーマット: あなたの役割/目的/背景/成功基準/用語定義/手順/出力フォーマット/制約条件の8セクション構造、Handlebars変数対応、セクション設計ガイドライン、使用例付き）。references/output-patterns.mdに§5.3「LLM System Promptパターン」セクション追加・assets/との連携ツリー更新。references/resource-map.mdにsystem-prompt-template.mdエントリ追加。agents/select-resources.mdに§4.1.4.1「LLM System Prompt生成→追加アセット」選択条件追加 |
-| **10.5.0** | **2026-02-13** | **ラウンド3リファクタリング（修正）**: script-types-catalog.md全24テンプレート参照修正（存在しないassets/*.js/_.py/_.sh→実在のassets/type-\_.md+base-*.{js,py,sh}形式）、interview-user.mdにPhaseラベル追加（Phase 0-1〜0-8）、resource-map.mdのinterview-user.mdエントリにPhase情報追加、phase-completion-checklist.mdのPhase 5/6に「担当スクリプト」セクション追加、SKILL.md v10.4.0 changelogファイル数修正（17→16）、scripts/ DRY違反修正（19スクリプト: getArg/resolvePath/EXIT\_*定数をutils.jsからimportに統一 — generate*agent/generate_script/generate_skill_md/generate_dynamic_code/detect_runtime/collect_feedback/validate_all/validate_plan/validate_workflow/apply_updates/apply_self_improvement/analyze_prompt/update_skill_list/assign_codex/check_prerequisites/init_skill + execute_chain/execute_parallel/validate_orchestrationのbare exit code統一）、generate_script.jsテンプレート本体のEXIT\*\*→EXIT_CODES.*統一、validate_all.jsのnormalizeLink()ローカル重複定義をutils.jsからのimportに統一、delegate-to-codex.md §5.5残留integrate-results参照修正 |
-| **10.4.0** | **2026-02-13** | **ラウンド2リファクタリング（27件修正）**: phase-completion-checklist.md完全書き換え（task-specification-creator用→skill-creator用Phase 0-0〜6対応）、creation-process.mdにCollaborativeモード追加、SKILL.md重複バージョン統合（v9.4.0/v9.3.0/v9.1.0各2行→1行）、全エージェントへのPhaseラベル追加（16ファイル: discover-problem/model-domain/extract-purpose/define-boundary/design-workflow/design-scheduler/design-conditional-flow/design-event-trigger/design-orchestration/design-custom-script/plan-structure/generate-code/generate-api-docs/generate-setup-guide/select-resources/analyze-feedback）、データフロー修正（resolve-skill-dependencies.md受領先Phase 2→3、後続処理Phase 2→3、delegate-to-codex.md受領先integrate-results→呼び出し元ワークフロー、design-multi-skill.md受領先Phase 2→各サブスキルPhase 1+インラインスキーマにfailureRecovery/status追加） |
-| **10.3.0** | **2026-02-13** | **ラウンド1リファクタリング（20件修正）**: design-multi-skill.md 後続処理フロー修正（Phase 2,3欠落・resolve位置修正）、delegate-to-external-cli.mdインライン例修正（output型・error型・executedAt・status enum）、interview-user.md入出力インターフェース拡充・チェックリスト補完・ビジネスルール例外明示・Phase番号体系拡張、analyze-request.mdにPhase 1ラベル・上流入力・受領先追加、resolve-skill-dependencies.md/delegate-to-external-cli.mdにPhase番号追加、select-resources.md Phase 2.5記述修正・type-aggregator.md追加、extract-purpose.mdスキーマ参照統一、interview-result.json MoSCoW記述修正、multi-skill-graph.json failedSkills required追加 |
-| **10.2.0** | **2026-02-13** | **interviewDepth機能追加**: インタビュー開始時にquick/standard/detailedの3段階深度選択を追加。quickモードで3-4問の最小限質問＋自動推定、detailedモードで10-15問の網羅的ヒアリング。interview-user.mdにPhase実行マトリクス・デフォルト値テーブル・深度別スキップ条件追加。interview-result.jsonスキーマにinterviewDepthフィールド追加 |
-| **10.1.0** | **2026-02-13** | **4レビューエージェントの全指摘事項を修正。スキーマ新規作成(external-cli-result.json, multi-skill-graph.json)、ワークフロー図更新、相対パス修正、失敗リカバリ追加** |
-| **10.0.1** | **2026-02-13** | **v10.0.0レビュー修正18件**: E1-E3(緊急3件: select-resources.mdステップ追加、シェルインジェクション修正、multi-skill-graph.jsonスキーマ作成)、H1-H5(高5件: 責務境界明確化、静的/ランタイム分離、enum不一致修正、スキップ条件追加、Script First原則適用)、M1-M6(中6件: 正規化マッピング、creationOrder優先順位、ユーザー承認ステップ、examples拡充、Mesh DAG明確化、relativePath削除)、L1-L3(低3件: 自己参照ノート、MCP検討、パターン記録) |
-| **10.0.0** | **2026-02-13** | **クロススキル依存関係・外部CLIエージェント・マルチスキル対応**: interview-result.jsonスキーマ拡張（skillDependencies/externalCliAgents/multiSkillPlan）、interview-user.mdにPhase 0-3.5（クロススキル参照）・Phase 0-5.5（外部CLI）追加、新規エージェント3件（resolve-skill-dependencies/delegate-to-external-cli/design-multi-skill）、新規リファレンス2件（cross-skill-reference-patterns/external-cli-agents-guide）、新規スキーマ1件（skill-dependency-graph.json）、select-resources.mdに選択マトリクス4.1.7-4.1.8追加、execution-mode-guideにGemini CLI追加、resource-map.md更新 |
-| **9.4.0** | **2026-02-13** | **UT-9B-H-003セキュリティ教訓反映 + TASK-FIX-11-1教訓反映**: patterns.mdにTDDセキュリティテスト分類体系・YAGNI共通化判断記録の成功パターン2件、正規表現Prettier干渉の失敗パターン1件追加。Phase 12の未タスク2段階判定（raw→精査）を成功パターンとして追加し、失敗パターン「未タスクraw検出の誤読」を追加。lessons-learned.md・architecture-implementation-patterns.md更新。クイックナビゲーションにセキュリティドメイン追加 |
-| **9.3.0** | **2026-02-12** | **TASK-9B-Iパターン追加 + Phase 12未タスク参照整合の再発防止 + UT-9B-H-003 Phase 12再監査反映**: patterns.mdにSDK統合ドメイン新設（成功パターン1件: TypeScriptモジュール解決による型安全統合、失敗パターン2件: カスタムdeclare moduleとSDK実型共存、未タスク配置ディレクトリ混同）。「未タスク参照リンクの実在チェック」パターン追加。phase-completion-checklist.md のPhase 12完了条件に `verify-unassigned-links.js` 実行を追加。Phase 12成果物名を `documentation-changelog.md` に統一。完了済み未タスク指示書の移管と参照パス同期を追加 |
-| **9.2.0** | **2026-02-12** | **TASK-9B-Hスキル改善: patterns.mdにIPC機能開発ワークフロー6段階パターン追加（チャンネル定数→ハンドラー→Preload→統合→型定義→登録）。クイックナビゲーション更新** |
-| **9.1.0** | **2026-02-12** | **TASK-9B-H-SKILL-CREATOR-IPC完了記録 + UT-STORE-HOOKS-TEST-REFACTOR-001パターン追加**: SkillCreatorService IPC通信基盤の構築完了（6チャンネル定義、ハンドラー実装、Preload API統合、85テスト全PASS、3層セキュリティモデル適用）。patterns.mdにStore Hook renderHookテストパターン追加、テストカテゴリ分類(CAT-01〜CAT-05)、Phase 12苦戦箇所テンプレート改善 |
-| **9.0.0** | **2026-02-11** | **TASK-FIX-7-1パターン追加: patterns.mdにSetter Injection（遅延初期化DI）、型変換パターン（Skill→SkillMetadata）、DIテストモック大規模修正パターン追加。06-known-pitfalls.md#P32-P33追加。aiworkflow-requirements/lessons-learned.md新規作成** |
-| **8.10.0** | **2026-02-10** | **TASK-FIX-15-1パターン追加: patterns.mdに統合テストでの依存サービスモック漏れ防止パターン（P25）と入力バリデーション統一パターン（whitespace対策、P26）を追加** |
-| **8.9.0** | **2026-02-09** | **TASK-FIX-17-1パターン追加: patterns.mdにmockReturnValue vs mockReturnValueOnceテスト間リーク防止パターン追加。06-known-pitfalls.md#P23追加。aiworkflow-requirements/patterns.mdにも同パターン追加** |
-| **8.8.0** | **2026-02-06** | **TASK-AUTH-CALLBACK-001パターン追加: patterns.mdにSupabase OAuth flowType設定、PKCE内部管理委任、ローカルHTTPサーバーコールバック受信の3成功パターン追加。失敗パターン5件（カスタムstate競合、Site URL未設定、Implicit Flow混同、code_verifier不足）追加。06-known-pitfalls.mdにP15-P18追加** |
-| **8.7.0** | **2026-02-06** | **TASK-FIX-5-1最適化: patterns.mdの3パターンにクロスリファレンス追加（architecture-implementation-patterns.md, 06-known-pitfalls.md連携）** |
-| **8.6.1** | **2026-02-06** | **TASK-FIX-5-1パターン追加: patterns.mdにIPC Bridge API統一時のテストモック設計、セッション間仕様書編集永続化検証、Phase 1依存仕様書マトリクスの3パターン追加** |
-| **8.6.0** | **2026-02-06** | **TASK-AUTH-SESSION-REFRESH-001パターン追加: patterns.mdにSupabase SDK競合防止、setTimeout vs setInterval選択、vi.useFakeTimers+flushPromisesテスト、Callback DIテスタブル設計の4パターン追加。06-known-pitfalls.mdにP12(SDK競合)・P13(タイマーテスト無限ループ)追加** |
-| **8.5.0** | **2026-02-05** | **TASK-FIX-GOOGLE-LOGIN-001パターン追加: patterns.mdにOAuthコールバックエラーパラメータ抽出、Zustandリスナー二重登録防止、IPC経由エラー情報伝達設計の3パターン追加** |
-| **8.4.0** | **2026-02-05** | **TASK-FIX-4-1-IPC-CONSOLIDATIONパターン追加**: patterns.mdにIPCチャンネル統合パターン追加（ハードコード文字列発見、重複定義整理、ホワイトリスト更新漏れ検証）、aiworkflow-requirements連携更新 |
-| **8.3.0** | **2026-02-04** | **AUTH-UI-001パターン追加: patterns.mdに既実装済み修正の発見、テスト環境問題切り分け、React Portal z-index解決、Supabase認証状態変更後即時UI更新の4パターン追加** |
-| **8.2.0** | **2026-02-02** | **E2Eテストパターン追加: patterns.mdにARIA属性ベースセレクタ、ヘルパー関数分離、安定性対策3層パターン追加（TASK-8C-B由来）** |
-| 8.1.0 | 2026-01-30 | 構造リファクタリング: schemas追加（problem-definition.json, domain-model.json）、integration-patterns.md分割（1,171→70行+4サブファイル）、.tmpクリーンアップ、resource-map.md更新 |
-| 8.0.0 | 2026-01-30 | Problem First + DDD/Clean Architecture統合: 問題発見Phase(0-0)・ドメインモデリングPhase(0.5)追加、discover-problem.md・model-domain.md新規エージェント、problem-discovery-framework.md・domain-modeling-guide.md・clean-architecture-for-skills.md新規リファレンス、Anchors更新（Clean Architecture追加・DDD拡張） |
-| 7.2.0 | 2026-01-30 | 統合パターン集・Phase完了チェックリスト追加: integration-patterns.md, phase-completion-checklist.md新規作成、resource-map.md更新（成果物明確化セクション追加、統合契約パターンリンク） |
-| 7.1.2 | 2026-01-28 | ハードコード数値を削除: 動的に変わるリソース数等の具体的数値を排除 |
-| 7.1.1 | 2026-01-28 | script-llm-patterns.mdリファクタリング: 責務分離明確化、関連リソース整理 |
-| 7.1.0 | 2026-01-28 | スクリプト/LLMパターンガイド追加: script-llm-patterns.md |
-| 7.0.1 | 2026-01-24 | 整合性修正: custom-script-design.json追加、壊れた参照修正 |
-| 7.0.0 | 2026-01-24 | リファクタリング: SKILL.md 481→130行（73%削減）、詳細をreferencesに委譲 |
-| 6.2.0 | 2026-01-24 | API推薦機能追加: recommend-integrations.md, goal-to-api-mapping.md |
-| 6.1.0 | 2026-01-24 | 自動リソース選択機能追加: select-resources.md |
-| 6.0.0 | 2026-01-24 | オーケストレーション・ドキュメント生成機能追加 |
-| 5.7.0 | 2026-01-21 | Part 5をresource-map.mdに分離 |
-| 5.6.0 | 2026-01-21 | Self-Contained Skills: PNPM依存関係管理 |
-| 5.0.0 | 2026-01-15 | Collaborative First追加、抽象度レベル対応 |

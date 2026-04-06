@@ -1,0 +1,21 @@
+{
+  "taskId": "TASK-P0-06",
+  "generatedAt": "2026-04-04T22:41:03.929Z",
+  "targetUrl": "http://127.0.0.1:5203/phase11-task-rt-04-skill-authkey.html",
+  "screenshots": [
+    "s01-initial-display.png",
+    "s02-single-select-selected.png",
+    "s02b-single-select-submitted.png",
+    "s03-multi-select-checked.png",
+    "s03b-multi-select-submitted.png",
+    "s11a-beginner-mode.png",
+    "s04-free-text-typing.png",
+    "s11b-engineer-mode.png",
+    "s09-validation-error.png",
+    "s08-api-key-guidance-banner.png",
+    "s10-progress-bar.png",
+    "s05-secret-masked.png",
+    "s06-confirm-buttons.png",
+    "s07-undo-restored.png"
+  ]
+}

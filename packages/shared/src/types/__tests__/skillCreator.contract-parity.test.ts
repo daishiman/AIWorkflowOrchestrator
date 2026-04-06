@@ -1,6 +1,8 @@
 import { describe, expect, expectTypeOf, it } from "vitest";
 import type {
+  RuntimeSkillCreatorExecuteErrorResponse,
   RuntimeSkillCreatorExecuteResponse,
+  LLMAdapterStatusPayload,
   RuntimeSkillCreatorImproveResponse,
   RuntimeSkillCreatorPlanResponse,
 } from "../skillCreator";
@@ -68,6 +70,17 @@ describe("skillCreator contract parity", () => {
             manualRetryRule: string;
           };
         }
+      | RuntimeSkillCreatorExecuteErrorResponse
     >();
+  });
+
+  it("LLMAdapterStatusPayload は status/failureReason の契約を満たす", () => {
+    const payload: LLMAdapterStatusPayload = {
+      status: "failed",
+      failureReason: "ANTHROPIC_API_KEY environment variable is not set",
+    };
+
+    expect(payload.status).toBe("failed");
+    expect(payload.failureReason).toContain("ANTHROPIC_API_KEY");
   });
 });

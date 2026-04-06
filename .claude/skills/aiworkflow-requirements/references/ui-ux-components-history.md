@@ -34,6 +34,7 @@
 | TASK-10A-C | SkillCreateWizard（4ステップUI + `useWizardStep` + `skill:create` 連携）実装 | 2026-03-02 |
 | TASK-UI-05B | SkillAdvancedViews（SkillChainBuilder / ScheduleManager / DebugPanel / AnalyticsDashboard）実装（4ビュー + 共通IPC Hooks + テスト） | 2026-03-02 |
 | TASK-10A-D | SkillManagementPanel ビュー統合（SkillAnalysisView/SkillCreateWizard統合 + ChatPanel導線） | 2026-03-03 |
+| TASK-SKILL-CENTER-LIFECYCLE-NAV-001 | SkillCenterView secondary CTA / SkillManagementPanel 戻り導線接続 | 2026-04-04 |
 | TASK-UI-03 | AgentView Enhancement（SkillChip / ExecuteButton / FloatingExecutionBar / AdvancedSettingsPanel / RecentExecutionList、136テスト） | 2026-03-10 |
 | TASK-UI-08 | NotificationCenter（Bell utility action / Portal / relative time / delete reveal / screenshot 7件） | 2026-03-11 |
 
@@ -58,6 +59,7 @@
 | Version | Date       | Changes                                                                              |
 | ------- | ---------- | ------------------------------------------------------------------------------------ |
 | 2.16.6  | 2026-03-11 | TASK-UI-04C 完了反映: `TASK-UI-04C 実装完了記録` を追加し、`PreviewPanel` / `QuickFileSearch` / renderer timeout+retry / current build screenshot 11件 / Apple UI/UX review を UI カタログ正本へ同期 |
+| 2.16.7  | 2026-04-04 | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 完了反映: `SkillCenterView` secondary CTA / `SkillManagementPanel` 戻り導線 / `SkillLifecyclePanel` 到達証跡 8件を current facts へ同期 |
 | 2.16.5  | 2026-03-11 | TASK-UI-07 追補: `TASK-UI-07 実装内容と苦戦箇所サマリー` を追加し、ホーム画面リデザインの実装内容、画面証跡、内部契約境界、dual-root mirror sync を UI カタログ正本へ固定 |
 | 2.16.4  | 2026-03-11 | TASK-UI-07 完了反映: `DashboardView` をホーム画面として完了タスクへ追加し、GreetingHeader / DashboardSuggestionSection / RecentTimeline と Phase 11 screenshot harness を実装済み構成として記録 |
 | 2.16.3  | 2026-03-11 | TASK-UI-08 再監査反映: Organisms / 主要UI / 完了タスクへ `NotificationCenter` を追加し、Bell utility action・Portal・delete reveal・Phase 11 screenshot 7件を TASK-UI-08 完了記録として同期 |
@@ -138,4 +140,3 @@
 - [TASK-10A-C ワークフロー仕様](../../../../docs/30-workflows/completed-tasks/skill-create-wizard/index.md)
 - [TASK-10A-C 手動検証結果](../../../../docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/manual-test-result.md)
 - [TASK-10A-C 画面検証スクリーンショット](../../../../docs/30-workflows/completed-tasks/skill-create-wizard/outputs/phase-11/screenshots/)
-

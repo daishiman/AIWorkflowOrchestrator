@@ -38,6 +38,22 @@ export default defineConfig({
     {
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
+      testIgnore: "**/ui-ux/**",
+    },
+    {
+      name: "ui-ux-layer1",
+      testMatch: "**/e2e/ui-ux/layer1-semantic.spec.ts",
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "ui-ux-layer2",
+      testMatch: "**/e2e/ui-ux/layer2-visual.spec.ts",
+      use: {
+        ...devices["Desktop Chrome"],
+        // Layer 2 の dark-mode 比較を OS テーマから切り離して安定化する
+        colorScheme: "dark",
+      },
+      fullyParallel: false,
     },
   ],
 

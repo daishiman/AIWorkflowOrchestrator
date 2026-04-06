@@ -1,5 +1,9 @@
 # TASK-RT-02-API-KEY-UI-ADAPTER-STATUS-INTEGRATION
 
+```yaml
+issue_number: 1894
+```
+
 ## 1. メタ情報
 
 | 項目     | 値                                               |

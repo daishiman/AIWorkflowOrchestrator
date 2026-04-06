@@ -345,6 +345,73 @@ function sanitizeRegistrationErrorMessage(message: string): string {
 2. 複数ハンドラの成功/失敗を集約する必要があるか？ → あり: track() クロージャ
 3. エラーメッセージにファイルパスが含まれるか？ → あり: sanitize 必須
 
+## 外部API統合パターン（TASK-SDK-SC-03）
+
+SDK Session 内で外部HTTPAPIを呼び出す機能を統合する際のパターン。IPC + SDK custom tool + 秘匿化 + バリデーションの4層で構成される。
+
+### 全体フロー
+
+```
+1. SDK Session が外部API設定を必要と判断
+2. RequestExternalApiConfig custom tool を発行
+3. IPC 経由で Renderer に設定フォーム表示を要求（external-api-config-required）
+4. ユーザーが URL / Method / Auth / Credential を入力
+5. Renderer が configure-api IPC で設定を送信
+6. Main Process が設定を受領し、sanitize してから SDK に返却
+7. SDK が sanitize 済み設定をコンテキストとして利用
+8. 実際のHTTP呼び出しは HttpExternalApiAdapter が生の credential で実行
+```
+
+### IPC チャネル設計
+
+| チャネル | 方向 | 用途 |
+|---|---|---|
+| `skill-creator:configure-api` | Renderer → Main | 外部API設定を送信 |
+| `skill-creator:api-configured` | Main → Renderer | API設定確認応答 |
+| `skill-creator:api-test-result` | Main → Renderer | API接続テスト結果 |
+| `skill-creator:external-api-config-required` | Main → Renderer | 設定要求通知 |
+
+### 型定義（shared パッケージ）
+
+```typescript
+// packages/shared/src/types/skillCreatorExternalApi.ts
+interface ExternalApiConnectionConfig {
+  name: string;
+  url: string;
+  method: "GET" | "POST";
+  authType: ExternalApiAuthType; // "none" | "api-key" | "bearer" | "basic"
+  credential?: string;
+  headers?: Record<string, string>;
+  description?: string;
+}
+```
+
+### 秘匿化パターン
+
+```typescript
+// SDKプロンプトに含める際は credential をマスクする
+sanitizeExternalApiConfigForPrompt(config) {
+  return { ...config, credential: config.credential ? "***REDACTED***" : undefined };
+}
+```
+
+### エラーハンドリング
+
+```typescript
+// 30秒タイムアウト
+class ExternalApiTimeoutError extends Error { url: string; }
+// HTTP 4xx/5xx
+class ExternalApiHttpError extends Error { statusCode: number; url: string; }
+```
+
+### 設計時の判断基準
+
+1. 認証情報はどのレイヤーで保持するか → Main Process のみ。Renderer / SDK プロンプトには渡さない
+2. 並行フロー（質問待機 vs API設定要求）は相互排他にする必要があるか → ある。同時に2つの pending Promise を持たない
+3. タイムアウトはどこで制御するか → HttpExternalApiAdapter の fetch レベルで 30 秒固定
+
+---
+
 ## 検証チェックリスト
 
 ```markdown
@@ -378,6 +445,38 @@ function sanitizeRegistrationErrorMessage(message: string): string {
 - [ ] 不要なシリアライズを避けている
 - [ ] リスナーのクリーンアップが実装されている
 ```
+
+---
+
+## Verify Engine 統合パターン（TASK-P0-01）
+
+### 依存注入による Graceful Degradation
+
+```typescript
+// RuntimeSkillCreatorFacade.ts
+class RuntimeSkillCreatorFacade {
+  private verificationEngine?: SkillCreatorVerificationEngine;
+
+  async verifySkill(skillDir: string): Promise<RuntimeSkillCreatorVerifyCheck[]> {
+    if (!this.verificationEngine) return []; // graceful degradation
+    return this.verificationEngine.verify(skillDir);
+  }
+}
+```
+
+### Severity Routing パターン
+
+`verifyAndImproveLoop()` は verify 結果の severity に基づいて処理を分岐する:
+- `info` → pass（改善不要）
+- `warning` / `error` → improve 対象として LLM に渡す
+
+### Verify IPC チャネル
+
+| チャネル | 方向 | 用途 |
+| --- | --- | --- |
+| `skill-creator:get-verify-detail` | Renderer → Main | チェック詳細取得 |
+| `skill-creator:request-reverify` | Renderer → Main | 再 verify 要求 |
+| `skill-creator:reverify-workflow` | Renderer → Main | verify→improve→re-verify 閉ループ |
 
 ---
 

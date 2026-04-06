@@ -2,7 +2,49 @@
 
 > 親仕様書: [task-workflow-completed-skill-lifecycle.md](task-workflow-completed-skill-lifecycle.md)
 > 役割: completed records - UI実装・統合系
-> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
+> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-RT-03, TASK-RT-03-VERIFY-IMPROVE-PANEL-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
+
+## TASK-RT-03: SkillCreationResultPanel orchestration wrapper 完了記録（2026-04-06）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RT-03 |
+| 対象workflow | `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/` |
+| ステータス | completed（Phase 1-12 completed / Phase 13 blocked） |
+| テスト | `SkillCreationResultPanel` / `ExecuteResultDetailPanel` / `SkillLifecyclePanel` targeted suite PASS |
+| 画面証跡 | `outputs/phase-11/screenshots/ss-01..06` |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| orchestration wrapper | `SkillCreationResultPanel` を新規追加し、plan / execute / verify の detail panel を束ねる wrapper として実装 |
+| persist surface | `ExecuteResultDetailPanel` に `persistResult.skillPath` / `persistResult.files` / `persistError` を追加し、保存失敗を追跡可能にした |
+| state owner | `SkillLifecyclePanel` は rawPlanDetail / rawExecuteDetail / verifyDetail の owner を維持し、wrapper は presentation only に閉じた |
+| verify / reverify | `VerifyResultDetailPanel` の loading / pending / fail / pass を `SkillCreationResultPanel` から統合表示し、`reverify` 導線を親から注入 |
+| verify retry surface | `verifyError` / `onRetryVerify` を追加し、fetch failure を wrapper 内の retry surface として分離した |
+| prepare reset | 新しい prepare 開始時に `clearPlanExecutionState()` で旧 execute / verify result surface を無効化し、in-flight verify request を stale 化した |
+| visual harness | Phase 11 harness と capture script を用意し、6 状態の screenshot を取得した |
+
+### 検証証跡
+
+| 区分 | コマンド / 証跡 | 結果 |
+| --- | --- | --- |
+| unit test | `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/SkillCreationResultPanel.test.tsx src/renderer/components/skill/__tests__/ExecuteResultDetailPanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx` | PASS |
+| typecheck | `pnpm --filter @repo/desktop typecheck` | PASS |
+| screenshot | `node apps/desktop/scripts/capture-task-rt-03-skill-creation-result-panel-phase11.mjs` | PASS（6 screenshots） |
+| implementation guide | `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/TASK-RT-03-skill-creation-result-panel` | PASS |
+| screenshot coverage | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/TASK-RT-03-skill-creation-result-panel` | PASS（expected 6 / covered 6） |
+
+### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 解決策 | 再利用ルール |
+| --- | --- | --- |
+| wrapper と親 state owner の境界 | raw result は `SkillLifecyclePanel` に残し、wrapper は表示専用にした | orchestration wrapper を増やす時は state owner を最初に固定する |
+| execute の保存結果 surface | `persistResult` と `persistError` を別セクションで表示した | 実行成功と保存成功は別 failure mode として切り分ける |
+| verify detail の表示遷移 | loading / pending / fail / pass を overall status に反映した | loading と empty state の判定を同じ条件にしない |
 
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
 
@@ -296,6 +338,47 @@
 
 ---
 
+## TASK-RT-03-VERIFY-IMPROVE-PANEL-001: Verify / Improve 結果パネル実装 完了記録（2026-04-04）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RT-03-VERIFY-IMPROVE-PANEL-001 |
+| 対象workflow | `docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001/` |
+| ステータス | completed（Phase 1-12 completed / Phase 13 blocked） |
+| テスト | `VerifyResultDetailPanel` / `ImproveResultDetailPanel` / `SkillLifecyclePanel.llm-generation` targeted suite PASS |
+| 画面証跡 | `outputs/phase-11/screenshots/TC-11-01..03` |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| Verify panel | `VerifyResultDetailPanel` を新規作成し、Layer 別 grouping / severity badge / reverify 導線を実装 |
+| Improve panel | `ImproveResultDetailPanel` を新規作成し、提案リスト / Revised Spec / read-only 表示を実装 |
+| SkillLifecyclePanel 統合 | inline verify detail を抽出し、`verifyDetailRequestSeqRef` と `isReverifyingRef` で stale response / 二重送信を抑止 |
+| 共有部品 | `result-panel-parts.tsx` の `StatusBadge` label override を verify 語彙に合わせて拡張 |
+| visual harness | `phase11-task-rt-03-verify-improve-panel.tsx` と capture script を追加し、3 状態の screenshot を取得 |
+
+### 検証証跡
+
+| 区分 | コマンド / 証跡 | 結果 |
+| --- | --- | --- |
+| unit test | `cd apps/desktop && pnpm exec vitest run src/renderer/components/skill/__tests__/VerifyResultDetailPanel.test.tsx src/renderer/components/skill/__tests__/ImproveResultDetailPanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.llm-generation.test.tsx` | PASS |
+| typecheck | `pnpm --filter @repo/desktop typecheck` | PASS |
+| visual harness | `node apps/desktop/scripts/capture-task-rt-03-verify-improve-panel-phase11.mjs` | PASS（TC-11-01..03） |
+| system spec sync | `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js --workflow docs/30-workflows/step-09-par-task-rt-03-verify-improve-panel-001 --regenerate` | PASS |
+
+### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 解決策 | 再利用ルール |
+| --- | --- | --- |
+| verify detail の stale response | request sequence guard を導入し、古いレスポンスを破棄した | async fetch を持つ detail panel は requestSeq を正本にする |
+| ImprovementProposalPanel と文言衝突 | read-only result panel に `data-testid` を追加してテストスコープを分離した | 既存操作パネルと同名 text を持つ新規 panel は locator を正本にする |
+| visual evidence の不足 | capture metadata / plan / screenshots を workflow に同梱した | UI 完了時は screenshot と metadata をセットで残す |
+
+---
+
 ## TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14）
 
 ### タスク概要
@@ -555,7 +638,7 @@ ui-ux-diagrams.md の「実装ギャップ一覧（GAP ID 正本）」セクシ�
 | タスクID | TASK-RT-05 |
 | 対象workflow | `docs/30-workflows/step-09-par-task-rt-05-multi-select-user-input-kind/` |
 | ステータス | completed（Phase 1-12） |
-| テスト | Engine 26件 + Renderer 35件 PASS |
+| テスト | Engine 39件 + Renderer 35件 PASS（close-out current facts） |
 | 画面証跡 | screenshot 未取得（esbuild platform mismatch のため） |
 
 ### 実装内容
@@ -590,6 +673,10 @@ ui-ux-diagrams.md の「実装ギャップ一覧（GAP ID 正本）」セクシ�
 ### Phase 12 未タスク（0件）
 
 なし
+
+### TASK-RT-05-TEST-RERUN close-out（2026-03-31）
+
+UT-RT-06 esbuild platform mismatch 修正後の環境でテスト再実行を完了。`cd apps/desktop && pnpm exec vitest run ...` を正本コマンドとして Engine 39件 + Renderer 35件 全PASS、AC-4（既存4kind非破壊）確認済み。Issue #1756 close-out。
 
 ---
 

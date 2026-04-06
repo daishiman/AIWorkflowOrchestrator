@@ -19,8 +19,12 @@ import type {
   GenerationStage,
 } from "./wizard";
 import type {
+  SkillCreatorExecutePlanAck,
+  RuntimeSkillCreatorExecuteErrorResponse,
   RuntimeSkillCreatorExecuteResponse,
+  RuntimeSkillCreatorPlanErrorResponse,
   RuntimeSkillCreatorPlanResponse,
+  SkillCreatorWorkflowUiSnapshot,
 } from "@repo/shared/types";
 import type { PlanResult } from "../../store/slices/agentSlice";
 import { useWizardStep } from "./hooks/useWizardStep";
@@ -95,10 +99,34 @@ type SkillCreatorRuntimeApi = {
     apiKey?: string,
   ) => Promise<{
     success: boolean;
-    data?: RuntimeSkillCreatorExecuteResponse;
+    data?: SkillCreatorExecutePlanAck | RuntimeSkillCreatorExecuteResponse;
+    error?: string;
+  }>;
+  getWorkflowState?: (planId: string) => Promise<{
+    success: boolean;
+    data?: SkillCreatorWorkflowUiSnapshot;
     error?: string;
   }>;
 };
+
+function isRuntimePlanErrorResponse(
+  response: unknown,
+): response is RuntimeSkillCreatorPlanErrorResponse {
+  if (!response || typeof response !== "object") {
+    return false;
+  }
+  if (!("success" in response) || response.success !== false) {
+    return false;
+  }
+  if (!("error" in response) || !response.error) {
+    return false;
+  }
+  return (
+    typeof response.error === "object" &&
+    "message" in response.error &&
+    typeof response.error.message === "string"
+  );
+}
 
 function isExecuteTerminalHandoff(
   response: RuntimeSkillCreatorExecuteResponse,
@@ -107,6 +135,42 @@ function isExecuteTerminalHandoff(
   { type: "terminal_handoff" }
 > {
   return "type" in response && response.type === "terminal_handoff";
+}
+
+function isExecuteErrorResponse(
+  response: RuntimeSkillCreatorExecuteResponse,
+): response is RuntimeSkillCreatorExecuteErrorResponse {
+  return (
+    "success" in response &&
+    response.success === false &&
+    typeof response.error === "object" &&
+    response.error !== null &&
+    "message" in response.error &&
+    typeof response.error.message === "string"
+  );
+}
+
+function isExecutePlanAck(
+  response: unknown,
+): response is SkillCreatorExecutePlanAck {
+  return (
+    !!response &&
+    typeof response === "object" &&
+    "accepted" in response &&
+    (response as { accepted: unknown }).accepted === true &&
+    "planId" in response &&
+    typeof (response as { planId: unknown }).planId === "string"
+  );
+}
+
+function getWorkflowFailureMessage(
+  snapshot: SkillCreatorWorkflowUiSnapshot | null | undefined,
+): string | null {
+  if (!snapshot?.verifyResult || snapshot.verifyResult.status !== "fail") {
+    return null;
+  }
+
+  return snapshot.verifyResult.message ?? "スキル生成に失敗しました";
 }
 
 function toPlanResult(
@@ -231,9 +295,9 @@ export const SkillCreateWizard = React.forwardRef<
       }
       const result = await api.planSkill(description);
       if (result.success && result.data) {
-        // TASK-RT-02: plan logical error の検出
+        // TASK-RT-02: plan logical error の検出（UT-RT-02-M03: SkillLifecyclePanel とパリティ統一）
         const data = result.data;
-        if ("success" in data && data.success === false) {
+        if (isRuntimePlanErrorResponse(data)) {
           clearPlanExecutionState();
           setStoreGenerationError(data.error.message);
           return;
@@ -276,10 +340,44 @@ export const SkillCreateWizard = React.forwardRef<
       }
       const result = await api.executePlan(storePlanId, description);
       if (result.success && result.data) {
+        if (isExecutePlanAck(result.data)) {
+          if (api.getWorkflowState) {
+            try {
+              const snapshotResult = await api.getWorkflowState(storePlanId);
+              if (
+                snapshotResult.success &&
+                snapshotResult.data?.handoffBundle
+              ) {
+                setStoreGenerationError(
+                  `ターミナル実行が必要です: ${snapshotResult.data.handoffBundle.suggestedCommand}`,
+                );
+                return;
+              }
+              const failureMessage = getWorkflowFailureMessage(
+                snapshotResult.success ? snapshotResult.data : null,
+              );
+              if (failureMessage) {
+                setStoreGenerationError(failureMessage);
+                return;
+              }
+            } catch {
+              // ack 受理後の snapshot 取得失敗は最終遷移を妨げない
+            }
+          }
+          setSkillPath(null);
+          setLocalPlanResult(null);
+          clearGenerationState();
+          goToStep(3);
+          return;
+        }
         if (isExecuteTerminalHandoff(result.data)) {
           setStoreGenerationError(
             `ターミナル実行が必要です: ${result.data.bundle.suggestedCommand}`,
           );
+          return;
+        }
+        if (isExecuteErrorResponse(result.data)) {
+          setStoreGenerationError(result.data.error.message);
           return;
         }
         if (!result.data.success) {
