@@ -21,7 +21,10 @@ import type {
   ResumeIncompatibilityReason,
   SkillCreatorSessionListItem,
 } from "@repo/shared/types";
-import { SKILL_CREATOR_ENGINE_VERSION } from "@repo/shared/types";
+import {
+  SKILL_CREATOR_ENGINE_VERSION,
+  SESSION_TTL_MS,
+} from "@repo/shared/types";
 import type { RuntimeDecision } from "./RuntimePolicyResolver";
 
 export type SkillCreatorWorkflowPhase = SharedSkillCreatorWorkflowPhase;
@@ -708,21 +711,24 @@ export class SkillCreatorWorkflowEngine {
    */
   listCheckpoints(): SkillCreatorSessionListItem[] {
     const now = Date.now();
-    const TTL_MS = 86_400_000; // 24h
     const result: SkillCreatorSessionListItem[] = [];
 
     for (const cp of this.checkpoints.values()) {
-      if (now - cp.updatedAt > TTL_MS) continue;
+      if (now - cp.updatedAt > SESSION_TTL_MS) continue;
       if (cp.invalidatedAt !== undefined) continue;
 
       const compatibility = this.evaluateCompatibility(cp);
       result.push({
         checkpointId: cp.checkpointId,
+        sessionId: cp.checkpointId,
         planId: cp.planId,
         currentPhase: cp.workflowStateSnapshot.currentPhase,
         checkpointType: cp.checkpointType,
         compatibility,
+        startedAt: cp.createdAt,
+        createdAt: cp.createdAt,
         updatedAt: cp.updatedAt,
+        isActive: false,
       });
     }
 
@@ -748,6 +754,9 @@ export class SkillCreatorWorkflowEngine {
   ): SkillCreatorWorkflowStateSnapshot | undefined {
     const cp = this.checkpoints.get(checkpointId);
     if (!cp) return undefined;
+    if (Date.now() - cp.updatedAt > SESSION_TTL_MS) {
+      return undefined;
+    }
 
     const compatibility = this.evaluateCompatibility(cp);
     if (
@@ -765,6 +774,22 @@ export class SkillCreatorWorkflowEngine {
    */
   deleteCheckpoint(checkpointId: string): void {
     this.checkpoints.delete(checkpointId);
+  }
+
+  /**
+   * TTL を超過した checkpoint を削除する。(TASK-P0-08)
+   */
+  cleanupExpiredCheckpoints(ttlMs: number = SESSION_TTL_MS): number {
+    const now = Date.now();
+    let cleaned = 0;
+
+    for (const [checkpointId, checkpoint] of this.checkpoints.entries()) {
+      if (now - checkpoint.updatedAt <= ttlMs) continue;
+      this.checkpoints.delete(checkpointId);
+      cleaned++;
+    }
+
+    return cleaned;
   }
 
   private evaluateCompatibility(

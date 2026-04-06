@@ -20,6 +20,7 @@ export interface SessionResumePromptProps {
   onResume: (checkpointId: string) => void;
   onSkip: () => void;
   onDelete: (checkpointId: string) => void;
+  onStartNew?: () => void;
 }
 
 const phaseLabels: Record<SkillCreatorWorkflowPhase, string> = {
@@ -78,7 +79,7 @@ function compatibilityBadge(status: ResumeCompatibilityStatus): {
 }
 
 export const SessionResumePrompt = memo<SessionResumePromptProps>(
-  ({ sessions, isLoading, onResume, onSkip, onDelete }) => {
+  ({ sessions, isLoading, onResume, onSkip, onDelete, onStartNew }) => {
     const handleResume = useCallback(
       (checkpointId: string) => () => onResume(checkpointId),
       [onResume],
@@ -91,6 +92,10 @@ export const SessionResumePrompt = memo<SessionResumePromptProps>(
       },
       [onDelete],
     );
+
+    const handleStartNew = useCallback(() => {
+      onStartNew?.();
+    }, [onStartNew]);
 
     if (isLoading) {
       return (
@@ -120,28 +125,42 @@ export const SessionResumePrompt = memo<SessionResumePromptProps>(
           <h3 className="text-sm font-medium text-[var(--text-primary)]">
             前回のセッションを復元しますか？
           </h3>
-          <button
-            type="button"
-            onClick={onSkip}
-            className="rounded-md px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
-            data-testid="session-resume-skip"
-          >
-            スキップ
-          </button>
+          <div className="flex items-center gap-2">
+            {onStartNew && (
+              <button
+                type="button"
+                onClick={handleStartNew}
+                className="rounded-md border border-[var(--border-primary)] px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
+                data-testid="session-start-new-btn"
+              >
+                削除して新規開始
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={onSkip}
+              className="rounded-md px-2 py-1 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
+              data-testid="session-skip-btn"
+            >
+              スキップ
+            </button>
+          </div>
         </div>
 
-        <ul className="space-y-2" role="list">
+        <ul className="space-y-2" role="list" data-testid="session-list">
           {sessions.map((session) => {
             const badge = compatibilityBadge(session.compatibility.status);
             const canResume =
               session.compatibility.status === "compatible" ||
               session.compatibility.status === "compatible_with_warning";
+            const sessionId = session.sessionId ?? session.checkpointId;
+            const startedAt = session.startedAt ?? session.createdAt;
 
             return (
               <li
-                key={session.checkpointId}
+                key={sessionId}
                 className="flex items-center justify-between gap-3 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-primary)] px-3 py-2"
-                data-testid={`session-item-${session.checkpointId}`}
+                data-testid={`session-item-${sessionId}`}
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
@@ -156,10 +175,8 @@ export const SessionResumePrompt = memo<SessionResumePromptProps>(
                     </span>
                   </div>
                   <p className="mt-0.5 text-xs text-[var(--text-secondary)]">
-                    {formatElapsedTime(session.updatedAt)} ·{" "}
-                    <span className="font-mono">
-                      {session.planId.slice(0, 8)}
-                    </span>
+                    {formatElapsedTime(startedAt)} ·{" "}
+                    <span className="font-mono">{sessionId.slice(0, 8)}</span>
                   </p>
                   {session.compatibility.warnings.length > 0 && (
                     <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
@@ -173,7 +190,7 @@ export const SessionResumePrompt = memo<SessionResumePromptProps>(
                       type="button"
                       onClick={handleResume(session.checkpointId)}
                       className="rounded-md bg-[var(--status-primary)] px-3 py-1.5 text-xs font-medium text-[var(--text-inverse)] hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-                      data-testid={`session-resume-btn-${session.checkpointId}`}
+                      data-testid={`session-resume-btn-${sessionId}`}
                     >
                       復元
                     </button>
@@ -182,8 +199,8 @@ export const SessionResumePrompt = memo<SessionResumePromptProps>(
                     type="button"
                     onClick={handleDelete(session.checkpointId)}
                     className="rounded-md border border-[var(--border-primary)] px-2 py-1.5 text-xs text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]"
-                    aria-label={`セッション ${session.checkpointId.slice(0, 8)} を削除`}
-                    data-testid={`session-delete-btn-${session.checkpointId}`}
+                    aria-label={`セッション ${sessionId.slice(0, 8)} を削除`}
+                    data-testid={`session-delete-btn-${sessionId}`}
                   >
                     削除
                   </button>

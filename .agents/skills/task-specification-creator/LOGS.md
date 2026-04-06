@@ -171,6 +171,18 @@
 
 ---
 
+## 2026-04-06 - TASK-P0-08 Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-08-session-resume-renderer-integration/outputs/phase-12/implementation-guide.md` の Part 2 を API/IPC シグネチャ・型定義・使用例まで補強し、validator PASS を確認した
+- Phase 11 screenshot evidence を `outputs/phase-11/screenshots/` へ保存し、`tc-01`〜`tc-06` の 6 枚を current fact として固定した
+- `verify-unassigned-links.js` PASS により、unassigned task の canonical link / file existence を確認した
+- `skillCreatorAPI` の session resume / cleanup surface、`task-workflow-completed.md` / `api-ipc-system-core.md` / `interfaces-agent-sdk-skill-reference.md` の same-wave 更新を反映した
+- `generate-index.js` 再生成（2576 キーワード）で topic-map / keywords の同期を維持する
+
+---
+
 ## 2026-03-30 - TASK-LLM-MOD-05 Phase 12 close-out sync
 
 ### 変更内容
