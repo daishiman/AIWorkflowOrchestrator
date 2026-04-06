@@ -14,6 +14,7 @@ import type {
 import { ErrorBanner, type PanelError } from "./ErrorBanner";
 import {
   PANEL_CARD_CLASSES,
+  SectionHeader,
   StatusBadge,
   DetailFooter,
 } from "./result-panel-parts";
@@ -37,6 +38,26 @@ function MetadataRow({
     <div>
       <dt className="text-xs text-[var(--text-secondary)]">{label}</dt>
       <dd className="text-sm text-[var(--text-primary)]">{value}</dd>
+    </div>
+  );
+}
+
+function CodeRow({
+  label,
+  value,
+}: {
+  label: string;
+  value: string | undefined | null;
+}) {
+  if (!value) return null;
+  return (
+    <div>
+      <dt className="text-xs text-[var(--text-secondary)]">{label}</dt>
+      <dd className="mt-1">
+        <code className="block break-all rounded-lg bg-[var(--bg-primary)] px-3 py-2 text-xs text-[var(--text-primary)]">
+          {value}
+        </code>
+      </dd>
     </div>
   );
 }
@@ -178,6 +199,11 @@ export const ExecuteResultDetailPanel = memo<ExecuteResultDetailPanelProps>(
       return null;
     }
 
+    const persistResult = executeResult.persistResult ?? null;
+    const persistError = executeResult.persistError ?? null;
+    const shouldShowPersistSection =
+      Boolean(persistResult) || Boolean(persistError);
+
     const hasMetadata =
       executeResult.sessionId ||
       executeResult.resultSubtype ||
@@ -230,6 +256,50 @@ export const ExecuteResultDetailPanel = memo<ExecuteResultDetailPanelProps>(
             </div>
           )}
         </div>
+
+        {/* Persist（保存先/生成ファイル） */}
+        {shouldShowPersistSection ? (
+          <div data-testid="execute-result-persist-result">
+            <SectionHeader title="保存結果" />
+            {persistResult ? (
+              <div className="mt-2">
+                <dl className="space-y-3">
+                  <CodeRow label="Skill Path" value={persistResult.skillPath} />
+                </dl>
+                {(persistResult.files?.length ?? 0) > 0 ? (
+                  <div className="mt-3">
+                    <p className="text-xs text-[var(--text-secondary)]">
+                      生成ファイル ({persistResult.files.length})
+                    </p>
+                    <ul className="mt-2 max-h-48 space-y-1 overflow-auto rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
+                      {persistResult.files.map((filePath, i) => (
+                        <li key={`${filePath}-${i}`}>
+                          <code className="block break-all text-xs text-[var(--text-primary)]">
+                            {filePath}
+                          </code>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+
+            {persistError ? (
+              <div
+                className="mt-3 rounded-xl border border-[var(--status-error)]/30 bg-[var(--status-error)]/5 px-4 py-3"
+                data-testid="execute-result-persist-error"
+              >
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--status-error)]">
+                  Persist Error
+                </p>
+                <p className="mt-1 break-words text-sm text-[var(--status-error)]">
+                  {persistError}
+                </p>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
 
         {/* Metadata */}
         {hasMetadata ? (

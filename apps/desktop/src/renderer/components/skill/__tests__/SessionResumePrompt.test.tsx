@@ -7,9 +7,11 @@ import {
 
 const compatibleSession: SessionListItem = {
   checkpointId: "cp-001-abc",
+  sessionId: "session-001-abc",
   planId: "plan-abc-123",
   checkpointType: "review-ready",
   currentPhase: "review",
+  startedAt: Date.now() - 3_600_000,
   createdAt: Date.now() - 3_600_000, // 1時間前
   updatedAt: Date.now() - 1_800_000, // 30分前
   compatibility: {
@@ -21,9 +23,11 @@ const compatibleSession: SessionListItem = {
 
 const warningSession: SessionListItem = {
   checkpointId: "cp-002-def",
+  sessionId: "session-002-def",
   planId: "plan-def-456",
   checkpointType: "execute-complete",
   currentPhase: "verify",
+  startedAt: Date.now() - 7_200_000,
   createdAt: Date.now() - 7_200_000,
   updatedAt: Date.now() - 3_600_000,
   compatibility: {
@@ -35,9 +39,11 @@ const warningSession: SessionListItem = {
 
 const incompatibleSession: SessionListItem = {
   checkpointId: "cp-003-ghi",
+  sessionId: "session-003-ghi",
   planId: "plan-ghi-789",
   checkpointType: "verify-fail",
   currentPhase: "verify",
+  startedAt: Date.now() - 86_400_000,
   createdAt: Date.now() - 86_400_000,
   updatedAt: Date.now() - 86_400_000,
   compatibility: {
@@ -89,7 +95,7 @@ describe("SessionResumePrompt", () => {
     render(<SessionResumePrompt {...defaultProps} onResume={onResume} />);
 
     const resumeBtn = screen.getByTestId(
-      `session-resume-btn-${compatibleSession.checkpointId}`,
+      `session-resume-btn-${compatibleSession.sessionId}`,
     );
     fireEvent.click(resumeBtn);
     expect(onResume).toHaveBeenCalledWith(compatibleSession.checkpointId);
@@ -100,8 +106,16 @@ describe("SessionResumePrompt", () => {
     const onSkip = vi.fn();
     render(<SessionResumePrompt {...defaultProps} onSkip={onSkip} />);
 
-    fireEvent.click(screen.getByTestId("session-resume-skip"));
+    fireEvent.click(screen.getByTestId("session-skip-btn"));
     expect(onSkip).toHaveBeenCalledTimes(1);
+  });
+
+  it("新規開始ボタンをクリックすると onStartNew が呼ばれる", () => {
+    const onStartNew = vi.fn();
+    render(<SessionResumePrompt {...defaultProps} onStartNew={onStartNew} />);
+
+    fireEvent.click(screen.getByTestId("session-start-new-btn"));
+    expect(onStartNew).toHaveBeenCalledTimes(1);
   });
 
   // AC-7: compatible_with_warning は復元可能（警告付き）
@@ -111,7 +125,7 @@ describe("SessionResumePrompt", () => {
     );
 
     expect(
-      screen.getByTestId(`session-resume-btn-${warningSession.checkpointId}`),
+      screen.getByTestId(`session-resume-btn-${warningSession.sessionId}`),
     ).toBeInTheDocument();
     expect(screen.getByText("警告あり")).toBeInTheDocument();
     expect(
@@ -130,7 +144,7 @@ describe("SessionResumePrompt", () => {
 
     expect(
       screen.queryByTestId(
-        `session-resume-btn-${incompatibleSession.checkpointId}`,
+        `session-resume-btn-${incompatibleSession.sessionId}`,
       ),
     ).not.toBeInTheDocument();
     expect(screen.getByText("非互換")).toBeInTheDocument();
@@ -142,9 +156,7 @@ describe("SessionResumePrompt", () => {
     render(<SessionResumePrompt {...defaultProps} onDelete={onDelete} />);
 
     fireEvent.click(
-      screen.getByTestId(
-        `session-delete-btn-${compatibleSession.checkpointId}`,
-      ),
+      screen.getByTestId(`session-delete-btn-${compatibleSession.sessionId}`),
     );
     expect(onDelete).toHaveBeenCalledWith(compatibleSession.checkpointId);
   });
@@ -159,15 +171,16 @@ describe("SessionResumePrompt", () => {
     );
 
     expect(screen.getAllByRole("listitem")).toHaveLength(3);
+    expect(screen.getByTestId("session-list")).toBeInTheDocument();
   });
 
   // セッション情報の表示内容
-  it("セッション情報（フェーズ、種別、planId先頭8文字）が表示される", () => {
+  it("セッション情報（フェーズ、種別、sessionId先頭8文字）が表示される", () => {
     render(<SessionResumePrompt {...defaultProps} />);
 
     expect(screen.getByText(/レビュー/)).toBeInTheDocument();
     expect(screen.getByText(/レビュー準備完了/)).toBeInTheDocument();
-    expect(screen.getByText("plan-abc")).toBeInTheDocument();
+    expect(screen.getByText("session-")).toBeInTheDocument();
   });
 
   // アクセシビリティ

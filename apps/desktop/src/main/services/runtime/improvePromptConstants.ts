@@ -6,7 +6,6 @@
 import type { PhaseResourceRequest } from "./PhaseResourcePlanner";
 
 export const IMPROVE_PROMPT_CONSTANTS = {
-  AGENT_NAME: "improve-prompt",
   RESPONSE_FORMAT_START: "=== IMPROVE RESPONSE FORMAT ===",
   RESPONSE_FORMAT_END: "=== END IMPROVE RESPONSE FORMAT ===",
   DEFAULT_MODEL_ID: "claude-sonnet-4-20250514",

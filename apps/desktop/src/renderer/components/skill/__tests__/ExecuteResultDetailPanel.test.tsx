@@ -191,6 +191,46 @@ describe("ExecuteResultDetailPanel", () => {
     expect(screen.getByText("cache-key-456")).toBeInTheDocument();
   });
 
+  // T-ERP-12: persistResult.skillPath / files
+  it("persistResult.skillPath と files が表示される", () => {
+    renderPanel({
+      executeResult: createMockExecuteResult({
+        persistResult: {
+          skillPath: ".claude/skills/test-skill",
+          files: [
+            ".claude/skills/test-skill/SKILL.md",
+            ".claude/skills/test-skill/agents/main.md",
+          ],
+        },
+        persistError: null,
+      }),
+    });
+
+    expect(screen.getByText(".claude/skills/test-skill")).toBeInTheDocument();
+    expect(
+      screen.getByText(".claude/skills/test-skill/SKILL.md"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(".claude/skills/test-skill/agents/main.md"),
+    ).toBeInTheDocument();
+  });
+
+  // T-ERP-13: persistError
+  it("persistError が表示される", () => {
+    renderPanel({
+      executeResult: createMockExecuteResult({
+        success: false,
+        persistResult: null,
+        persistError: "ファイルの保存に失敗しました",
+      }),
+    });
+
+    expect(screen.getByText("Persist Error")).toBeInTheDocument();
+    expect(
+      screen.getByText("ファイルの保存に失敗しました"),
+    ).toBeInTheDocument();
+  });
+
   // T-ERP-11: terminal_handoff → ExecuteResultDetailPanel は表示しない
   it("executeResult が null の場合はパネルが表示されない（handoff パターン）", () => {
     const { container } = renderPanel({ executeResult: null });
