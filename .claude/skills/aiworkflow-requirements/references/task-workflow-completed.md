@@ -33,6 +33,37 @@
 - `pnpm --filter @repo/desktop exec vitest run src/preload/__tests__/skill-creator-api.approval.test.ts src/renderer/components/skill/__tests__/ApprovalRequestPanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx`: PASS（25 tests）
 - `pnpm --filter @repo/desktop screenshot:ut-sdk-07-approval-request-surface`: PASS（6 screenshots captured）
 
+### タスク: TASK-SDK-04-U1-F1 verification_review request を single_select kind に変更（2026-04-06）
+
+| 項目 | 値 |
+|---|---|
+| タスクID | TASK-SDK-04-U1-F1 |
+| ステータス | **完了（Phase 12 close-out）** |
+| タイプ | テスト整合・kind変更 |
+| 優先度 | 中 |
+| 完了日 | 2026-04-06 |
+| 対象 | `SkillCreatorWorkflowEngine.createVerificationReviewRequest()` kind: free_text → single_select |
+| 成果物 | `docs/30-workflows/task-sdk-04-u1-f1-verification-review-single-select/` |
+
+#### 実施内容
+
+- 実装確認: `createVerificationReviewRequest()` の `kind: "single_select"` は TASK-SDK-04-U1 実装波で先行完了済み
+- テスト修正: verification_review 関連テスト 5 箇所から `textValue` フィールドを削除
+- 新規テスト追加: TC-NEW-1〜3（kind確認・options確認・不正ID拒否）
+- 拡張テスト追加: TC-ADD-1〜5（境界値・呼び出し元回帰）
+- 全 47 テスト PASS、typecheck PASS、lint PASS
+
+#### 検証証跡
+
+- Phase 4: テスト仕様書 + Red記録
+- Phase 5: 実装サマリー（47 tests PASS）
+- Phase 6: 拡張テスト（境界値 + 呼び出し元回帰）
+- Phase 7: カバレッジ（対象関数 100%）
+- Phase 9: 品質レポート（typecheck / lint / IPC drift なし）
+- Phase 11: NON_VISUAL 確認
+
+---
+
 ### タスク: UT-VERIFY-DOC-CONSOLIDATION-001 verify関連ドキュメント正本・履歴分離（2026-04-06）
 
 | 項目       | 値                                                                                 |

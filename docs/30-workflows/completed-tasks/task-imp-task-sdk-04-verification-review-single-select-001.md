@@ -10,7 +10,7 @@ category: 実装改善
 target_feature: SkillCreatorWorkflowEngine verification review UX
 priority: 中
 scale: 小規模
-status: 未実施
+status: completed
 source_phase: TASK-SDK-04-U1 Phase 12 実装波
 created_date: 2026-03-28
 dependencies:
@@ -27,7 +27,7 @@ spec_path: docs/30-workflows/unassigned-task/task-imp-task-sdk-04-verification-r
 | 対象機能     | `SkillCreatorWorkflowEngine.createVerificationReviewRequest()` |
 | 優先度       | 中                                                             |
 | 見積もり規模 | 小規模                                                         |
-| ステータス   | 未実施                                                         |
+| ステータス   | 完了                                                           |
 | 発見元       | TASK-SDK-04-U1 Phase 12 実装波                                 |
 | 発見日       | 2026-03-28                                                     |
 
@@ -98,7 +98,7 @@ TASK-SDK-04-U1 で `submitUserInput()` に reason 別の phase transition semant
 ### 3.3 推奨アプローチ
 
 1. `createVerificationReviewRequest()` を `single_select` kind に変更
-2. options に `[{id: "approve", label: "承認する"}, {id: "improve", label: "改善を要求する"}, {id: "reject", label: "却下して再計画する"}]` を追加
+2. options に `[{id: "approve", label: "承認してhandoffへ進む"}, {id: "improve", label: "改善して再検証する"}, {id: "reject", label: "差し戻して再計画する"}]` を追加
 3. 既存テストで `textValue` を使っていた箇所を `selectedOptionId` に変更
 4. free_text だった既存テストケースの更新
 
