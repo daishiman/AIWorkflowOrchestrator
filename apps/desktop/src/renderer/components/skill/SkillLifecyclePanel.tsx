@@ -2,7 +2,6 @@ import React, {
   startTransition,
   useCallback,
   useEffect,
-  useMemo,
   useRef,
   useState,
 } from "react";
@@ -21,8 +20,6 @@ import type {
   RuntimeSkillCreatorPlanResponse,
   RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorReverifyResponse,
-  RuntimeSkillCreatorVerifyCheck,
-  RuntimeSkillCreatorVerifyCheckSeverity,
   RuntimeSkillCreatorVerifyDetailResponse,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
@@ -69,9 +66,8 @@ import {
   useWorkflowSnapshot,
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
-import { ExecuteResultDetailPanel } from "./ExecuteResultDetailPanel";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
-import { PlanResultDetailPanel } from "./PlanResultDetailPanel";
+import { SkillCreationResultPanel } from "./SkillCreationResultPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
 
@@ -345,238 +341,6 @@ const severityStyles: Record<ImproveSuggestion["severity"], string> = {
   medium: "bg-amber-500/10 text-amber-700",
   low: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
 };
-
-const verifyStatusBadgeStyles: Record<
-  RuntimeSkillCreatorVerifyDetailResponse["status"],
-  string
-> = {
-  pending: "bg-amber-500/10 text-amber-700",
-  pass: "bg-emerald-500/10 text-emerald-700",
-  fail: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
-};
-
-const verifyCheckSeverityStyles: Record<
-  RuntimeSkillCreatorVerifyCheckSeverity,
-  string
-> = {
-  info: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
-  warning: "bg-amber-500/10 text-amber-700",
-  error: "bg-[var(--status-error)]/10 text-[var(--status-error)]",
-};
-
-type VerifyLayerKey = RuntimeSkillCreatorVerifyCheck["layer"];
-
-const VERIFY_LAYER_ORDER: readonly VerifyLayerKey[] = [
-  "layer1",
-  "layer2",
-  "layer3",
-  "layer4",
-];
-
-const verifyLayerLabels: Record<VerifyLayerKey, string> = {
-  layer1: "Layer 1 — 必須ファイル構造",
-  layer2: "Layer 2 — SKILL.md セクション",
-  layer3: "Layer 3 — スキーマ・コンテンツ品質",
-  layer4: "Layer 4 — References整合性",
-};
-
-const verifyCheckSeverityIcon: Record<
-  RuntimeSkillCreatorVerifyCheckSeverity,
-  string
-> = {
-  info: "✓",
-  warning: "⚠",
-  error: "✗",
-};
-
-const VERIFY_SEVERITY_ORDER: readonly RuntimeSkillCreatorVerifyCheckSeverity[] =
-  ["error", "warning", "info"];
-
-type SeverityFilterLevel = "all" | "warning+" | "error";
-
-const SEVERITY_FILTER_OPTIONS: readonly {
-  value: SeverityFilterLevel;
-  label: string;
-}[] = [
-  { value: "all", label: "すべて" },
-  { value: "warning+", label: "警告以上" },
-  { value: "error", label: "エラーのみ" },
-];
-
-const severityFilterButtonStyles = {
-  active:
-    "rounded-md bg-[var(--status-primary)] px-3 py-1.5 text-xs font-medium text-[var(--text-inverse)]",
-  inactive:
-    "rounded-md px-3 py-1.5 text-xs font-medium text-[var(--text-secondary)] hover:bg-[var(--bg-tertiary)]",
-} as const;
-
-function filterChecksBySeverity(
-  checks: RuntimeSkillCreatorVerifyCheck[],
-  filter: SeverityFilterLevel,
-): RuntimeSkillCreatorVerifyCheck[] {
-  if (filter === "all") return checks;
-  if (filter === "warning+") return checks.filter((c) => c.severity !== "info");
-  return checks.filter((c) => c.severity === "error");
-}
-
-function createDefaultExpandedLayers(): Record<VerifyLayerKey, boolean> {
-  return {
-    layer1: true,
-    layer2: true,
-    layer3: true,
-    layer4: true,
-  };
-}
-
-function isVerifyLayerKey(layer: string): layer is VerifyLayerKey {
-  return VERIFY_LAYER_ORDER.includes(layer as VerifyLayerKey);
-}
-
-function formatSeverityCountLabel(
-  severity: RuntimeSkillCreatorVerifyCheckSeverity,
-  count: number,
-): string {
-  const severityLabel = severity === "info" ? "info" : `${severity}s`;
-  return `${count} ${severityLabel}`;
-}
-
-function getVerifySeverityCounts(
-  checks: RuntimeSkillCreatorVerifyCheck[],
-): Record<RuntimeSkillCreatorVerifyCheckSeverity, number> {
-  return checks.reduce(
-    (counts, check) => {
-      counts[check.severity] += 1;
-      return counts;
-    },
-    {
-      info: 0,
-      warning: 0,
-      error: 0,
-    } as Record<RuntimeSkillCreatorVerifyCheckSeverity, number>,
-  );
-}
-
-function createVerifyChecksByLayer(): Record<
-  VerifyLayerKey,
-  RuntimeSkillCreatorVerifyCheck[]
-> {
-  return {
-    layer1: [],
-    layer2: [],
-    layer3: [],
-    layer4: [],
-  };
-}
-
-interface VerifyLayerGroupProps {
-  layer: VerifyLayerKey;
-  label: string;
-  checks: RuntimeSkillCreatorVerifyCheck[];
-  isExpanded: boolean;
-  onToggle: (layer: VerifyLayerKey) => void;
-}
-
-function VerifyLayerGroup({
-  layer,
-  label,
-  checks,
-  isExpanded,
-  onToggle,
-}: VerifyLayerGroupProps) {
-  const severityCounts = getVerifySeverityCounts(checks);
-  const panelId = `skill-lifecycle-verify-layer-${layer}-panel`;
-  const buttonId = `skill-lifecycle-verify-layer-${layer}-button`;
-
-  return (
-    <section
-      className="overflow-hidden rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)]"
-      data-testid={`skill-lifecycle-verify-layer-${layer}`}
-    >
-      <button
-        type="button"
-        id={buttonId}
-        aria-controls={panelId}
-        aria-expanded={isExpanded}
-        onClick={() => onToggle(layer)}
-        className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-[var(--bg-secondary)]"
-        data-testid={`skill-lifecycle-verify-layer-toggle-${layer}`}
-      >
-        <div className="min-w-0">
-          <p className="text-sm font-semibold text-[var(--text-primary)]">
-            {label}
-          </p>
-          <p className="mt-1 text-xs text-[var(--text-secondary)]">
-            {checks.length} 件のチェック
-          </p>
-        </div>
-        <div className="flex flex-wrap items-center justify-end gap-2">
-          {VERIFY_SEVERITY_ORDER.filter(
-            (severity) => severityCounts[severity] > 0,
-          ).map((severity) => (
-            <span
-              key={severity}
-              className={`rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[severity]}`}
-            >
-              {formatSeverityCountLabel(severity, severityCounts[severity])}
-            </span>
-          ))}
-          <span
-            aria-hidden="true"
-            className="text-xs font-medium text-[var(--text-secondary)]"
-          >
-            {isExpanded ? "▲" : "▼"}
-          </span>
-        </div>
-      </button>
-
-      {isExpanded ? (
-        <div
-          id={panelId}
-          role="region"
-          aria-labelledby={buttonId}
-          className="border-t border-[var(--border-primary)] px-4 py-4"
-          data-testid={`skill-lifecycle-verify-layer-panel-${layer}`}
-        >
-          <div className="grid gap-3 lg:grid-cols-2">
-            {checks.map((check) => (
-              <article
-                key={check.id}
-                className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-4"
-                data-testid={`skill-lifecycle-verify-check-${check.id}`}
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-sm font-semibold text-[var(--text-primary)]">
-                    {check.id}
-                  </span>
-                  <span className="rounded-full bg-[var(--bg-primary)] px-2 py-1 text-xs font-medium text-[var(--text-secondary)]">
-                    {check.layer}
-                  </span>
-                  <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium ${verifyCheckSeverityStyles[check.severity]}`}
-                  >
-                    <span aria-hidden="true">
-                      {verifyCheckSeverityIcon[check.severity]}
-                    </span>
-                    <span>{check.severity}</span>
-                  </span>
-                </div>
-                <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                  {check.summary}
-                </p>
-                {check.evidenceSummary ? (
-                  <p className="mt-2 text-xs text-[var(--text-secondary)]">
-                    {check.evidenceSummary}
-                  </p>
-                ) : null}
-              </article>
-            ))}
-          </div>
-        </div>
-      ) : null}
-    </section>
-  );
-}
-
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   const runtimeWindow = window as Window & {
     electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
@@ -698,45 +462,6 @@ export function SkillLifecyclePanel({
   );
   const [isVerifyDetailLoading, setIsVerifyDetailLoading] = useState(false);
   const [isReverifying, setIsReverifying] = useState(false);
-  const [expandedLayers, setExpandedLayers] = useState<
-    Record<VerifyLayerKey, boolean>
-  >(createDefaultExpandedLayers);
-  const [severityFilter, setSeverityFilter] =
-    useState<SeverityFilterLevel>("all");
-  const checksByLayer = useMemo(() => {
-    const groups = createVerifyChecksByLayer();
-    for (const check of verifyDetail?.checks ?? []) {
-      if (!isVerifyLayerKey(check.layer)) {
-        continue;
-      }
-      groups[check.layer].push(check);
-    }
-    return groups;
-  }, [verifyDetail?.checks]);
-  const filteredChecksByLayer = useMemo(() => {
-    const result = createVerifyChecksByLayer();
-    for (const layer of VERIFY_LAYER_ORDER) {
-      result[layer] = filterChecksBySeverity(
-        checksByLayer[layer],
-        severityFilter,
-      );
-    }
-    return result;
-  }, [checksByLayer, severityFilter]);
-  const severityTotalCounts = useMemo(() => {
-    const allChecks = Object.values(checksByLayer).flat();
-    return {
-      all: allChecks.length,
-      "warning+": allChecks.filter((c) => c.severity !== "info").length,
-      error: allChecks.filter((c) => c.severity === "error").length,
-    };
-  }, [checksByLayer]);
-  const toggleLayer = useCallback((layer: VerifyLayerKey) => {
-    setExpandedLayers((current) => ({
-      ...current,
-      [layer]: !current[layer],
-    }));
-  }, []);
   // TASK-SDK-07: disclosure info state
   const [disclosureInfo, setDisclosureInfo] = useState<{
     aiServiceName: string;
@@ -767,20 +492,39 @@ export function SkillLifecyclePanel({
   const previousStatus = useRef<SkillExecutionStatusValue>(null);
   const isPrepareFlowActiveRef = useRef(false);
   const processedWorkflowOutcomePlanIdRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    setExpandedLayers(createDefaultExpandedLayers());
-    setSeverityFilter("all");
-  }, [activeWorkflowId]);
+  const verifyDetailRequestSeqRef = useRef(0);
 
   const clearPlanExecutionState = useCallback(() => {
+    verifyDetailRequestSeqRef.current += 1;
+    clearGenerationState();
+    setApprovedSkillSpec(null);
+    setDetectedMode(null);
+    setActiveWorkflowId(null);
     setLocalPlanResult(null);
-    setCurrentPlanResult(null);
-    setCurrentPlanId(null);
     setRawPlanDetail(null);
     setRawExecuteDetail(null);
+    setVerifyDetail(null);
+    setVerifyDetailError(null);
+    setIsVerifyDetailLoading(false);
+    setIsReverifying(false);
+    setDisclosureInfo(null);
+    clearHandoffGuidance();
     processedWorkflowOutcomePlanIdRef.current = null;
-  }, [setCurrentPlanId, setCurrentPlanResult]);
+  }, [
+    clearGenerationState,
+    clearHandoffGuidance,
+    setApprovedSkillSpec,
+    setDetectedMode,
+    setDisclosureInfo,
+    setIsReverifying,
+    setIsVerifyDetailLoading,
+    setRawExecuteDetail,
+    setRawPlanDetail,
+    setActiveWorkflowId,
+    setLocalPlanResult,
+    setVerifyDetail,
+    setVerifyDetailError,
+  ]);
 
   const applyWorkflowSnapshot = useCallback(
     (snapshot: SkillCreatorWorkflowUiSnapshot) => {
@@ -1060,11 +804,15 @@ export function SkillLifecyclePanel({
       return;
     }
 
+    const requestSeq = ++verifyDetailRequestSeqRef.current;
     setIsVerifyDetailLoading(true);
     setVerifyDetailError(null);
 
     try {
       const result = await skillCreatorApi.getVerifyDetail(planId);
+      if (requestSeq !== verifyDetailRequestSeqRef.current) {
+        return;
+      }
       if (!result.success || !result.data) {
         setVerifyDetail(null);
         setVerifyDetailError(
@@ -1074,6 +822,9 @@ export function SkillLifecyclePanel({
       }
       setVerifyDetail(result.data);
     } catch (error) {
+      if (requestSeq !== verifyDetailRequestSeqRef.current) {
+        return;
+      }
       setVerifyDetail(null);
       setVerifyDetailError(
         error instanceof Error
@@ -1081,7 +832,9 @@ export function SkillLifecyclePanel({
           : "verify detail の取得に失敗しました。",
       );
     } finally {
-      setIsVerifyDetailLoading(false);
+      if (requestSeq === verifyDetailRequestSeqRef.current) {
+        setIsVerifyDetailLoading(false);
+      }
     }
   };
 
@@ -1125,12 +878,8 @@ export function SkillLifecyclePanel({
         : "スキルを実行する";
 
   const handlePanelClose = () => {
+    clearPlanExecutionState();
     resetSkillExecutionCycle();
-    setActiveWorkflowId(null);
-    setVerifyDetail(null);
-    setVerifyDetailError(null);
-    setDisclosureInfo(null);
-    clearHandoffGuidance();
     onClose();
   };
 
@@ -1149,6 +898,7 @@ export function SkillLifecyclePanel({
     clearSkillError();
     setLocalError(null);
     setIsPreparing(true);
+    clearPlanExecutionState();
 
     appendSessionEntry(setSessionEntries, {
       role: "user",
@@ -1349,16 +1099,8 @@ export function SkillLifecyclePanel({
   };
 
   const handleCancelPlan = () => {
+    clearPlanExecutionState();
     setLocalPlanResult(null);
-    setApprovedSkillSpec(null);
-    clearGenerationState();
-    setActiveWorkflowId(null);
-    processedWorkflowOutcomePlanIdRef.current = null;
-    setVerifyDetail(null);
-    setVerifyDetailError(null);
-    setDisclosureInfo(null);
-    setRawPlanDetail(null);
-    setRawExecuteDetail(null);
   };
 
   const handleCreate = async () => {
@@ -1632,8 +1374,16 @@ export function SkillLifecyclePanel({
     }
   };
 
-  const currentSurfaceError =
-    localError ?? workflowError ?? verifyDetailError ?? skillError;
+  const handleRetryVerifyDetail = async () => {
+    if (!activeWorkflowId) {
+      setLocalError("再取得対象の workflow がありません。");
+      return;
+    }
+
+    await loadVerifyDetail(activeWorkflowId);
+  };
+
+  const currentSurfaceError = localError ?? workflowError ?? skillError;
   const shouldShowStreaming =
     Boolean(createdSkillName) &&
     (isExecuting ||
@@ -1933,19 +1683,6 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
-      {/* TASK-RT-03: Plan 結果詳細パネル — review phase で raw plan detail が存在する場合 */}
-      {rawPlanDetail &&
-      (!workflowSnapshot ||
-        workflowSnapshot.currentPhase === "review" ||
-        workflowSnapshot.awaitingUserInput?.reason === "plan_review") ? (
-        <PlanResultDetailPanel
-          planResult={rawPlanDetail}
-          onRetry={() => {
-            void handlePrepare();
-          }}
-        />
-      ) : null}
-
       {activePlanResult?.type === "terminal_handoff" &&
       activePlanResult.guidance ? (
         <div className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5">
@@ -1963,204 +1700,21 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
-      {/* TASK-RT-03: Execute 結果詳細パネル — verify phase で raw execute detail が存在する場合 */}
-      {rawExecuteDetail && workflowSnapshot?.currentPhase === "verify" ? (
-        <ExecuteResultDetailPanel
+      {rawPlanDetail ||
+      rawExecuteDetail ||
+      verifyDetail ||
+      verifyDetailError ||
+      isVerifyDetailLoading ? (
+        <SkillCreationResultPanel
+          planResult={rawPlanDetail}
           executeResult={rawExecuteDetail}
-          onRetry={() => {
-            void handleExecutePlan();
-          }}
+          verifyDetail={verifyDetail}
+          verifyError={verifyDetailError}
+          onReverify={handleReverify}
+          onRetryVerify={handleRetryVerifyDetail}
+          isReverifying={isReverifying}
+          isVerifyDetailLoading={isVerifyDetailLoading}
         />
-      ) : null}
-
-      {activeWorkflowId ? (
-        <div
-          className="rounded-2xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-5"
-          data-testid="skill-lifecycle-verify-detail"
-        >
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--status-primary)]">
-                Verify Detail
-              </p>
-              <h3 className="mt-1 text-base font-semibold text-[var(--text-primary)]">
-                4. Layer 3 / Layer 4 verify を確認する
-              </h3>
-              <p className="mt-1 text-sm text-[var(--text-secondary)]">
-                workflow owner は engine に残したまま、route / provenance /
-                re-verify action を detail surface として表示します。
-              </p>
-            </div>
-            <button
-              type="button"
-              className={lifecycleButtonStyles.secondary}
-              onClick={handleReverify}
-              disabled={
-                isReverifying ||
-                isVerifyDetailLoading ||
-                !verifyDetail?.reverifyEligible
-              }
-              data-testid="skill-lifecycle-reverify-button"
-            >
-              {isReverifying ? "再検証を要求中..." : "再検証を要求する"}
-            </button>
-          </div>
-
-          {isVerifyDetailLoading ? (
-            <p className="mt-4 text-sm text-[var(--text-secondary)]">
-              verify detail を読み込み中...
-            </p>
-          ) : verifyDetail ? (
-            <>
-              <div className="mt-4 grid gap-3 md:grid-cols-4">
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Status
-                  </p>
-                  <span
-                    className={`mt-2 inline-flex rounded-full px-2 py-1 text-xs font-medium ${verifyStatusBadgeStyles[verifyDetail.status]}`}
-                  >
-                    {verifyDetail.status}
-                  </span>
-                </div>
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Phase
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                    {verifyDetail.currentPhase}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Evidence
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                    {verifyDetail.evidenceCount}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] p-3">
-                  <p className="text-xs uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Route
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-[var(--text-primary)]">
-                    {verifyDetail.route.summary}
-                  </p>
-                </div>
-              </div>
-
-              {verifyDetail.message ? (
-                <div className="mt-4 rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3 text-sm text-[var(--text-primary)]">
-                  {verifyDetail.message}
-                </div>
-              ) : null}
-
-              <div
-                className="mt-4 flex gap-1 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-primary)] p-1"
-                role="radiogroup"
-                aria-label="重要度フィルタ"
-                data-testid="severity-filter"
-              >
-                {SEVERITY_FILTER_OPTIONS.map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    role="radio"
-                    aria-checked={severityFilter === option.value}
-                    onClick={() => setSeverityFilter(option.value)}
-                    className={
-                      severityFilter === option.value
-                        ? severityFilterButtonStyles.active
-                        : severityFilterButtonStyles.inactive
-                    }
-                    data-testid={`severity-filter-${option.value}`}
-                  >
-                    {option.label} ({severityTotalCounts[option.value]})
-                  </button>
-                ))}
-              </div>
-
-              <div className="mt-4 space-y-3">
-                {VERIFY_LAYER_ORDER.filter(
-                  (layer) => (filteredChecksByLayer[layer]?.length ?? 0) > 0,
-                ).map((layer) => (
-                  <VerifyLayerGroup
-                    key={layer}
-                    layer={layer}
-                    label={verifyLayerLabels[layer]}
-                    checks={filteredChecksByLayer[layer]}
-                    isExpanded={expandedLayers[layer] ?? true}
-                    onToggle={toggleLayer}
-                  />
-                ))}
-              </div>
-
-              <div className="mt-4 grid gap-3 lg:grid-cols-2">
-                <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                    Provenance
-                  </p>
-                  <dl className="mt-3 space-y-2 text-sm text-[var(--text-primary)]">
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        root
-                      </dt>
-                      <dd>
-                        {verifyDetail.resolvedSkillCreatorRoot ?? "未取得"}
-                      </dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        manifest
-                      </dt>
-                      <dd>{verifyDetail.manifestPath ?? "未取得"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        resource hash
-                      </dt>
-                      <dd>{verifyDetail.resourceDescriptorHash ?? "未取得"}</dd>
-                    </div>
-                    <div>
-                      <dt className="text-xs text-[var(--text-secondary)]">
-                        cache key
-                      </dt>
-                      <dd>{verifyDetail.manifestCacheKey ?? "未取得"}</dd>
-                    </div>
-                  </dl>
-                </div>
-                <div className="space-y-3">
-                  <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                      Governance Note
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                      {verifyDetail.delegatedGovernanceNote}
-                    </p>
-                  </div>
-                  <div className="rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-4">
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--text-secondary)]">
-                      Session Note
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-[var(--text-primary)]">
-                      {verifyDetail.delegatedSessionNote}
-                    </p>
-                  </div>
-                  {!verifyDetail.reverifyEligible &&
-                  verifyDetail.disabledReason ? (
-                    <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-4 text-sm text-amber-700">
-                      {verifyDetail.disabledReason}
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </>
-          ) : (
-            <p className="mt-4 text-sm text-[var(--text-secondary)]">
-              verify detail はまだ利用できません。
-            </p>
-          )}
-        </div>
       ) : null}
 
       {/* API キー設定 (TASK-RT-04) */}

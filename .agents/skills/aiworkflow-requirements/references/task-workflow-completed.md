@@ -5,6 +5,36 @@
 
 ## 完了タスク
 
+### タスク: TASK-RT-03 skill-creation-result-panel Phase 12 close-out sync（2026-04-06）
+
+| 項目       | 値                                                                                                                                                               |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-RT-03                                                                                                                                                       |
+| ステータス | **実装完了（Phase 1-12 completed / Phase 13 blocked）**                                                                                                          |
+| タイプ     | implementation / UI orchestration wrapper                                                                                                                         |
+| 優先度     | 中                                                                                                                                                               |
+| 完了日     | 2026-04-06                                                                                                                                                       |
+| ブランチ   | `HEAD (a84d7dfe3)`                                                                                                                                               |
+| 成果物     | `apps/desktop/src/renderer/components/skill/SkillCreationResultPanel.tsx` / `ExecuteResultDetailPanel.tsx` / `SkillLifecyclePanel.tsx` / `outputs/phase-11/*` / `outputs/phase-12/*` |
+
+#### 実施内容
+
+- `SkillCreationResultPanel` を新規追加し、plan / execute / verify の detail panel を束ねる orchestration wrapper として実装
+- `ExecuteResultDetailPanel` に `persistResult.skillPath` / `persistResult.files` / `persistError` の保存結果 surface を追加
+- `SkillLifecyclePanel` は rawPlanDetail / rawExecuteDetail の local state owner と reverify owner を維持し、wrapper は表示専用に閉じた
+- `SkillCreationResultPanel` に `verifyError` / `onRetryVerify` を追加し、verify fetch failure を wrapper 内の retry surface として分離した
+- `SkillLifecyclePanel` の prepare 開始時は `clearPlanExecutionState()` で旧 execute / verify result surface を無効化し、in-flight verify request の残像を防いだ
+- `phase-11-manual-test.md` に 6 シナリオの画面カバレッジマトリクスを追加し、Playwright capture で 6 枚の screenshot を取得
+- `phase-12-documentation.md` の 5 タスクを current facts へ落とし込み、Step 2 は local-only props のため N/A と判定
+
+#### 検証
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/SkillCreationResultPanel.test.tsx src/renderer/components/skill/__tests__/ExecuteResultDetailPanel.test.tsx`: PASS（37 tests）
+- `node apps/desktop/scripts/capture-task-rt-03-skill-creation-result-panel-phase11.mjs`: PASS（6 screenshots）
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/TASK-RT-03-skill-creation-result-panel`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/TASK-RT-03-skill-creation-result-panel`: PASS（expected 6 / covered 6）
+
 ### タスク: TASK-P0-07 ハードコードされた AGENT_NAMES の動的解決 — manifestResourceResolver.ts + RuntimeSkillCreatorFacade.ts phaseId 拡張（2026-04-06）
 
 | 項目       | 値                                                                                                                                                         |

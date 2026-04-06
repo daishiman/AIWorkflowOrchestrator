@@ -1,4 +1,6 @@
 {
+  "generated": "2026-04-06T00:32:44.774Z",
+  "totalKeywords": 2720,
   "generated": "2026-04-06T00:17:29.537Z",
   "totalKeywords": 2722,
   "keywords": {
@@ -4426,7 +4428,8 @@
     ],
     "orchestration": [
       "claude-code-agents-workflow.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "ハンドオフプロトコル": [
       "claude-code-agents-workflow.md"
@@ -7445,7 +7448,8 @@
       "rag-search-types.md"
     ],
     "wrapper": [
-      "lessons-learned-rt02-stub-response-error-notification.md"
+      "lessons-learned-rt02-stub-response-error-notification.md",
+      "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "logical": [
       "lessons-learned-rt02-stub-response-error-notification.md"
@@ -8057,7 +8061,8 @@
       "master-design.md"
     ],
     "SkillCreationResultPanel": [
-      "lessons-learned-ui-adapter-status-retry.md"
+      "lessons-learned-ui-adapter-status-retry.md",
+      "task-workflow-completed-skill-lifecycle-ui.md"
     ],
     "ENHANCEMENT": [
       "lessons-learned-ui-agent-view-nav-notification-history.md",
