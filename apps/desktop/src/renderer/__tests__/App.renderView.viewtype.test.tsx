@@ -1,11 +1,12 @@
 /**
- * @file App.tsx renderView() - skillAnalysis / skillCreate case 検証
+ * @file App.tsx renderView() - skillAnalysis / skillCreate / skillLifecycle case 検証
  * @description TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001
  *
- * renderView() に追加した 2 case が正しいコンポーネントを返すことを検証する。
+ * renderView() に追加した 3 case が正しいコンポーネントを返すことを検証する。
  * - TC-RV-01: skillAnalysis case が SkillAnalysisView を描画すること (AC-2)
  * - TC-RV-01b: skillAnalysis で currentSkillName が null のとき demo-skill をフォールバックとして渡すこと
  * - TC-RV-02: skillCreate case が SkillCreateWizard を描画すること (AC-3)
+ * - TC-RV-02b/02c/02d: skillLifecycle case が SkillLifecyclePanel を描画し、onClose / onOpenWizard が接続されること
  * - TC-RV-03: 既存の case（dashboard / skillCenter 等）が引き続き正しく描画されること (AC-5)
  *
  * @see .claude/rules/06-known-pitfalls.md#P39 (happy-dom: fireEvent使用)
@@ -225,7 +226,7 @@ vi.mock("@/renderer/pages/AgentSDKPage", () => ({
   AgentSDKPage: mockComponent("agent-sdk-page"),
 }));
 
-// --- SkillAnalysisView / SkillCreateWizard モック（検証対象） ---
+// --- SkillAnalysisView / SkillCreateWizard / SkillLifecyclePanel モック（検証対象） ---
 vi.mock("@/renderer/components/skill", () => ({
   SkillAnalysisView: ({
     skillName,
@@ -284,12 +285,73 @@ vi.mock("@/renderer/components/skill", () => ({
         "close",
       ),
     ),
+  SkillLifecyclePanel: ({
+    onClose,
+    onOpenWizard,
+  }: {
+    onClose: () => void;
+    onOpenWizard?: () => void;
+  }) =>
+    React.createElement(
+      "div",
+      {
+        "data-testid": "skill-lifecycle-panel",
+        "data-has-open-wizard": onOpenWizard ? "true" : "false",
+      },
+      React.createElement(
+        "button",
+        { "data-testid": "skill-lifecycle-close", onClick: onClose },
+        "close",
+      ),
+      onOpenWizard
+        ? React.createElement(
+            "button",
+            {
+              "data-testid": "skill-lifecycle-open-wizard",
+              onClick: onOpenWizard,
+            },
+            "open-wizard",
+          )
+        : null,
+    ),
+}));
+
+vi.mock("@/renderer/components/skill/SkillLifecyclePanel", () => ({
+  SkillLifecyclePanel: ({
+    onClose,
+    onOpenWizard,
+  }: {
+    onClose: () => void;
+    onOpenWizard?: () => void;
+  }) =>
+    React.createElement(
+      "div",
+      {
+        "data-testid": "skill-lifecycle-panel",
+        "data-has-open-wizard": onOpenWizard ? "true" : "false",
+      },
+      React.createElement(
+        "button",
+        { "data-testid": "skill-lifecycle-close", onClick: onClose },
+        "close",
+      ),
+      onOpenWizard
+        ? React.createElement(
+            "button",
+            {
+              "data-testid": "skill-lifecycle-open-wizard",
+              onClick: onOpenWizard,
+            },
+            "open-wizard",
+          )
+        : null,
+    ),
 }));
 
 vi.mock("@/renderer/i18n/config", () => ({}));
 
 // --- テスト本体 ---
-describe("App renderView() - skillAnalysis / skillCreate case (TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001)", () => {
+describe("App renderView() - skillAnalysis / skillCreate / skillLifecycle case (TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001)", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockCurrentSkillName = null;
@@ -402,6 +464,112 @@ describe("App renderView() - skillAnalysis / skillCreate case (TASK-IMP-VIEWTYPE
     render(React.createElement(App));
 
     expect(screen.getByTestId("skill-create-wizard")).toBeTruthy();
+  });
+
+  it("TC-RV-02b: currentView が skillLifecycle のとき SkillLifecyclePanel が描画されること", async () => {
+    mockCurrentView = "skillLifecycle";
+
+    const { useCurrentView, useAppStore } = await import("@/renderer/store");
+    (useCurrentView as ReturnType<typeof vi.fn>).mockReturnValue(
+      "skillLifecycle",
+    );
+    (useAppStore as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: (state: Record<string, unknown>) => unknown) => {
+        return selector({
+          initializeAuth: mockInitializeAuth,
+          isAuthenticated: false,
+          isLoading: false,
+          themeMode: "system",
+          setThemeMode: vi.fn(),
+          updateUserProfile: vi.fn(),
+          userProfile: { name: "Test User" },
+          setCurrentView: mockSetCurrentView,
+          goBack: mockGoBack,
+          viewHistory: ["skillCenter", "skillLifecycle"],
+          currentSkillName: null,
+          setCurrentSkillName: mockSetCurrentSkillName,
+          dynamicIsland: { status: "idle", message: "", visible: false },
+          setWindowSize: mockSetWindowSize,
+        });
+      },
+    );
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    const lifecycleView = screen.getByTestId("skill-lifecycle-panel");
+    expect(lifecycleView).toBeTruthy();
+    expect(lifecycleView.getAttribute("data-has-open-wizard")).toBe("true");
+  });
+
+  it("TC-RV-02c: skillLifecycle の onClose で skillCenter に遷移すること", async () => {
+    mockCurrentView = "skillLifecycle";
+
+    const { useCurrentView, useAppStore } = await import("@/renderer/store");
+    (useCurrentView as ReturnType<typeof vi.fn>).mockReturnValue(
+      "skillLifecycle",
+    );
+    (useAppStore as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: (state: Record<string, unknown>) => unknown) => {
+        return selector({
+          initializeAuth: mockInitializeAuth,
+          isAuthenticated: false,
+          isLoading: false,
+          themeMode: "system",
+          setThemeMode: vi.fn(),
+          updateUserProfile: vi.fn(),
+          userProfile: { name: "Test User" },
+          setCurrentView: mockSetCurrentView,
+          goBack: mockGoBack,
+          viewHistory: ["skillCenter", "skillLifecycle"],
+          currentSkillName: null,
+          setCurrentSkillName: mockSetCurrentSkillName,
+          dynamicIsland: { status: "idle", message: "", visible: false },
+          setWindowSize: mockSetWindowSize,
+        });
+      },
+    );
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    fireEvent.click(screen.getByTestId("skill-lifecycle-close"));
+    expect(mockSetCurrentView).toHaveBeenCalledWith("skillCenter");
+  });
+
+  it("TC-RV-02d: skillLifecycle の onOpenWizard で skillCreate に遷移すること", async () => {
+    mockCurrentView = "skillLifecycle";
+
+    const { useCurrentView, useAppStore } = await import("@/renderer/store");
+    (useCurrentView as ReturnType<typeof vi.fn>).mockReturnValue(
+      "skillLifecycle",
+    );
+    (useAppStore as ReturnType<typeof vi.fn>).mockImplementation(
+      (selector: (state: Record<string, unknown>) => unknown) => {
+        return selector({
+          initializeAuth: mockInitializeAuth,
+          isAuthenticated: false,
+          isLoading: false,
+          themeMode: "system",
+          setThemeMode: vi.fn(),
+          updateUserProfile: vi.fn(),
+          userProfile: { name: "Test User" },
+          setCurrentView: mockSetCurrentView,
+          goBack: mockGoBack,
+          viewHistory: ["skillCenter", "skillLifecycle"],
+          currentSkillName: null,
+          setCurrentSkillName: mockSetCurrentSkillName,
+          dynamicIsland: { status: "idle", message: "", visible: false },
+          setWindowSize: mockSetWindowSize,
+        });
+      },
+    );
+
+    const App = (await import("@/renderer/App")).default;
+    render(React.createElement(App));
+
+    fireEvent.click(screen.getByTestId("skill-lifecycle-open-wizard"));
+    expect(mockSetCurrentView).toHaveBeenCalledWith("skillCreate");
   });
 
   it("TC-RV-03: currentView が dashboard のとき DashboardView が引き続き描画されること (AC-5)", async () => {

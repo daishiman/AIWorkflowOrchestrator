@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-06 | 1.18.0     | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓1件を追加（L-IPC-VARIADIC-001: multi-arg IPC event は preload で variadic 化する） |
 | 2026-04-01 | 1.17.0     | TASK-FIX-AUTH-IPC-001 教訓2件を追加（L-AUTH-IPC-001: IPC channel timeout と fire-and-forget パターン / L-AUTH-IPC-002: AUTH_STATE_CHANGED 責務境界の分離）       |
 | 2026-03-31 | 1.16.0     | TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001 教訓1件を追加（L-BETTER-SQLITE3-ABI-001: native addon ABI 不一致 / postinstall rebuild / best-effort esbuild パターン） |
 | 2026-03-27 | 1.15.0     | runtime policy centralization close-out 教訓1件を追加（composition root authority と handoff reason source の単一化）                                            |
@@ -670,3 +671,23 @@
 | 解決策     | `authHandlers.ts` 側では `AUTH_STATE_CHANGED` を一切送信しない。成功・失敗の通知責務は `AuthFlowOrchestrator` に固定する。handler は「起動確認（success: true）」と「起動拒否（invalid provider）」のみを担う |
 | 標準ルール | IPC handler と event emitter の責務を明確に分離する。handler は「受付」、orchestrator は「完了通知」。両方が同じイベントを送信すると Renderer 側で状態遷移の二重処理が発生する                                |
 | 関連タスク | TASK-FIX-AUTH-IPC-001 / `authHandlers.ts:auth:login` / `authFlowOrchestrator.ts:startOAuthFlow`                                                                                                               |
+
+---
+
+## TASK-UT-RT-01 executeAsync エラー伝搬パス（2026-04-06）
+
+### L-IPC-VARIADIC-001: IPC の第3引数は preload で明示的に通す
+
+- **教訓**: Main 側で `webContents.send(channel, snapshot, errorMessage)` としても、preload の `safeOn` が 1 引数固定だと errorMessage は Renderer に届かない
+- **対策**: multi-arg event は preload bridge を variadic 化し、Renderer 側 callback でも optional errorMessage を受け取る
+- **コード例**:
+  ```typescript
+  // preload 側
+  safeOn<[SkillCreatorWorkflowUiSnapshot | null, string?]>(
+    ipcRenderer,
+    SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+    (snapshot, errorMessage) => callback(snapshot, errorMessage),
+  );
+  ```
+- **適用範囲**: snapshot 以外のメタ情報（errorMessage など）を同一 IPC イベントで流したい場合の標準パターン
+- **発見日**: 2026-04-06

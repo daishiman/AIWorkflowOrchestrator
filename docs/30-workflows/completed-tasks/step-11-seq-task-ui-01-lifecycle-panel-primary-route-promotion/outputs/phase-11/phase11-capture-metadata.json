@@ -1,0 +1,56 @@
+{
+  "taskId": "TASK-UI-01",
+  "phase": 11,
+  "captureDate": "2026-04-06",
+  "status": "completed",
+  "verificationMethod": "playwright screenshot capture + targeted vitest",
+  "environment": {
+    "platform": "darwin",
+    "appType": "Electron",
+    "requiresRuntime": true
+  },
+  "baseUrl": "http://127.0.0.1:5197",
+  "screenshotDir": "outputs/phase-11/screenshots",
+  "capturedScreenshots": [
+    {
+      "id": "ss-01",
+      "file": "outputs/phase-11/screenshots/ss-01-skill-center-initial.png",
+      "note": "SkillCenterView の初期表示"
+    },
+    {
+      "id": "ss-04",
+      "file": "outputs/phase-11/screenshots/ss-04-header-create-cta.png",
+      "note": "SkillCenterView ヘッダーの +新規作成 ボタン"
+    },
+    {
+      "id": "ss-02",
+      "file": "outputs/phase-11/screenshots/ss-02-skill-lifecycle-panel.png",
+      "note": "一次導線から開いた SkillLifecyclePanel"
+    },
+    {
+      "id": "ss-03",
+      "file": "outputs/phase-11/screenshots/ss-03-app-dock-active-skill-center.png",
+      "note": "skillLifecycle 表示時に skillCenter がアクティブな AppDock"
+    }
+  ],
+  "unitTestResults": {
+    "totalTests": 93,
+    "passed": 93,
+    "failed": 0,
+    "files": [
+      "skillLifecycleJourney.test.ts",
+      "useSkillCenter.navigation.test.ts",
+      "SkillCenterView.cta.test.tsx",
+      "SkillCenterView.test.tsx",
+      "navContract.test.ts"
+    ]
+  },
+  "acVerification": {
+    "AC-1": "pass",
+    "AC-2": "pass",
+    "AC-3": "pass",
+    "AC-4": "pass",
+    "AC-5": "pass",
+    "AC-6": "pass"
+  }
+}

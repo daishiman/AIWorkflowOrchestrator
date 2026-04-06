@@ -1,25 +1,17 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent, act } from "@testing-library/react";
+/**
+ * @vitest-environment happy-dom
+ */
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  cleanup,
+  waitFor,
+} from "@testing-library/react";
+import * as hookModule from "../../../hooks/useAuthKeyManagement";
 import { AuthKeySection } from "./index";
-
-// --- mock: store ---
-const mockAuthModeStatusValue: {
-  hasCredentials: boolean;
-  isValid: boolean;
-  mode: string;
-  message: string;
-  lastCheckedAt: number;
-} | null = {
-  hasCredentials: false,
-  isValid: false,
-  mode: "api-key",
-  message: "",
-  lastCheckedAt: Date.now(),
-};
-
-vi.mock("../../../store", () => ({
-  useAuthModeStatus: vi.fn(() => mockAuthModeStatusValue),
-}));
 
 // --- mock: window.electronAPI.authKey ---
 const mockAuthKeyApi = {
@@ -37,12 +29,6 @@ beforeEach(() => {
   mockAuthKeyApi.validate.mockResolvedValue({ valid: true });
   mockAuthKeyApi.delete.mockResolvedValue({ success: true });
 
-  // Reset mockAuthModeStatusValue
-  if (mockAuthModeStatusValue) {
-    mockAuthModeStatusValue.hasCredentials = false;
-    mockAuthModeStatusValue.isValid = false;
-  }
-
   Object.defineProperty(window, "electronAPI", {
     value: { authKey: mockAuthKeyApi },
     writable: true,
@@ -50,9 +36,13 @@ beforeEach(() => {
   });
 });
 
+afterEach(() => {
+  cleanup();
+});
+
 describe("AuthKeySection", () => {
   describe("レンダリング", () => {
-    it("api-key モードで正しくレンダリングされる", async () => {
+    it("正しくレンダリングされる", async () => {
       await act(async () => {
         render(<AuthKeySection />);
       });
@@ -68,9 +58,6 @@ describe("AuthKeySection", () => {
 
   describe("ステータスバッジ", () => {
     it("保存済み状態で緑バッジが表示される", async () => {
-      if (mockAuthModeStatusValue) {
-        mockAuthModeStatusValue.hasCredentials = true;
-      }
       mockAuthKeyApi.exists.mockResolvedValue({
         exists: true,
         source: "saved",
@@ -86,9 +73,6 @@ describe("AuthKeySection", () => {
     });
 
     it("環境変数fallback状態で黄バッジが表示される", async () => {
-      if (mockAuthModeStatusValue) {
-        mockAuthModeStatusValue.hasCredentials = false;
-      }
       mockAuthKeyApi.exists.mockResolvedValue({
         exists: true,
         source: "env-fallback",
@@ -103,30 +87,9 @@ describe("AuthKeySection", () => {
       expect(badge).toHaveAttribute("data-status", "env-fallback");
     });
 
-    it("source が優先され、hasCredentials=true でも env-fallback を表示する", async () => {
-      if (mockAuthModeStatusValue) {
-        mockAuthModeStatusValue.hasCredentials = true;
-      }
-      mockAuthKeyApi.exists.mockResolvedValue({
-        exists: true,
-        source: "env-fallback",
-      });
-
-      await act(async () => {
-        render(<AuthKeySection />);
-      });
-
-      const badge = screen.getByTestId("auth-key-status-badge");
-      expect(badge).toHaveAttribute("data-status", "env-fallback");
-    });
-
     it("未設定状態で赤バッジが表示される", async () => {
-      if (mockAuthModeStatusValue) {
-        mockAuthModeStatusValue.hasCredentials = false;
-      }
       mockAuthKeyApi.exists.mockResolvedValue({
         exists: false,
-        source: "not-set",
       });
 
       await act(async () => {
@@ -135,7 +98,7 @@ describe("AuthKeySection", () => {
 
       const badge = screen.getByTestId("auth-key-status-badge");
       expect(badge).toHaveTextContent("未設定");
-      expect(badge).toHaveAttribute("data-status", "not-set");
+      expect(badge).toHaveAttribute("data-status", "not_set");
     });
 
     it("確認失敗状態で灰バッジが表示される", async () => {
@@ -148,6 +111,12 @@ describe("AuthKeySection", () => {
       const badge = screen.getByTestId("auth-key-status-badge");
       expect(badge).toHaveTextContent("確認失敗");
       expect(badge).toHaveAttribute("data-status", "check-failed");
+
+      await waitFor(() => {
+        expect(screen.getByTestId("auth-key-status-message")).toHaveTextContent(
+          "ステータスの確認に失敗しました",
+        );
+      });
     });
   });
 
@@ -156,7 +125,6 @@ describe("AuthKeySection", () => {
       mockAuthKeyApi.set.mockResolvedValue({ success: true });
       mockAuthKeyApi.exists.mockResolvedValue({
         exists: false,
-        source: "not-set",
       });
 
       await act(async () => {
@@ -166,41 +134,39 @@ describe("AuthKeySection", () => {
       const input = screen.getByLabelText("Anthropic APIキー入力");
       const saveButton = screen.getByTestId("save-auth-key-button");
 
-      // 入力
       await act(async () => {
-        fireEvent.change(input, { target: { value: "sk-ant-test-key-123" } });
+        fireEvent.change(input, {
+          target: { value: "sk-ant-test-key-123" },
+        });
       });
 
-      // 保存
       await act(async () => {
         fireEvent.click(saveButton);
       });
 
       expect(mockAuthKeyApi.set).toHaveBeenCalledWith("sk-ant-test-key-123");
-      expect(screen.getByTestId("auth-key-status-message")).toHaveTextContent(
-        "APIキーを保存しました",
-      );
-      // 入力値がクリアされている
+      await waitFor(() => {
+        expect(screen.getByTestId("auth-key-status-message")).toHaveTextContent(
+          "APIキーを保存しました",
+        );
+      });
       expect(input).toHaveValue("");
     });
 
-    it("空のキーを保存しようとした場合にバリデーションエラーが表示される", async () => {
+    it("空のキーを保存しようとした場合に保存ボタンが disabled になる", async () => {
       await act(async () => {
         render(<AuthKeySection />);
       });
 
       const input = screen.getByLabelText("Anthropic APIキー入力");
 
-      // スペースのみ入力（P42対策: .trim() バリデーション）
       await act(async () => {
         fireEvent.change(input, { target: { value: "   " } });
       });
 
-      // 保存ボタンはdisabledになる（trim後空文字列）
       const saveButton = screen.getByTestId("save-auth-key-button");
       expect(saveButton).toBeDisabled();
 
-      // 空文字列の場合
       await act(async () => {
         fireEvent.change(input, { target: { value: "" } });
       });
@@ -221,6 +187,27 @@ describe("AuthKeySection", () => {
 
       const input = screen.getByLabelText("Anthropic APIキー入力");
       await act(async () => {
+        fireEvent.change(input, { target: { value: "sk-invalid-key" } });
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId("save-auth-key-button"));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId("auth-key-status-message")).toHaveTextContent(
+          "Invalid API key format",
+        );
+      });
+    });
+
+    it("バリデーション失敗時にエラーメッセージが表示される", async () => {
+      await act(async () => {
+        render(<AuthKeySection />);
+      });
+
+      const input = screen.getByLabelText("Anthropic APIキー入力");
+      await act(async () => {
         fireEvent.change(input, { target: { value: "invalid-key" } });
       });
 
@@ -228,48 +215,71 @@ describe("AuthKeySection", () => {
         fireEvent.click(screen.getByTestId("save-auth-key-button"));
       });
 
-      expect(screen.getByTestId("auth-key-status-message")).toHaveTextContent(
-        "Invalid API key format",
-      );
+      await waitFor(() => {
+        expect(screen.getByTestId("auth-key-status-message")).toHaveTextContent(
+          "APIキーの形式が正しくありません",
+        );
+      });
+      expect(mockAuthKeyApi.set).not.toHaveBeenCalled();
     });
   });
 
   describe("APIキー削除フロー", () => {
     it("APIキー削除フローが動作する", async () => {
-      if (mockAuthModeStatusValue) {
-        mockAuthModeStatusValue.hasCredentials = true;
-      }
-      mockAuthKeyApi.exists.mockResolvedValue({
-        exists: true,
-        source: "saved",
-      });
+      mockAuthKeyApi.exists
+        .mockResolvedValueOnce({ exists: true, source: "saved" })
+        .mockResolvedValueOnce({ exists: false });
       mockAuthKeyApi.delete.mockResolvedValue({ success: true });
 
       await act(async () => {
         render(<AuthKeySection />);
       });
 
-      // saved 状態なので削除ボタンが表示される
-      const deleteButton = screen.getByTestId("delete-auth-key-button");
-      expect(deleteButton).toBeInTheDocument();
-
-      // 削除後のexistsはfalseを返す
-      mockAuthKeyApi.exists.mockResolvedValue({
-        exists: false,
-        source: "not-set",
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("delete-auth-key-button"),
+        ).toBeInTheDocument();
       });
-      if (mockAuthModeStatusValue) {
-        mockAuthModeStatusValue.hasCredentials = false;
-      }
+
+      const deleteButton = screen.getByTestId("delete-auth-key-button");
 
       await act(async () => {
         fireEvent.click(deleteButton);
       });
 
       expect(mockAuthKeyApi.delete).toHaveBeenCalled();
-      expect(screen.getByTestId("auth-key-status-message")).toHaveTextContent(
-        "APIキーを削除しました",
-      );
+      await waitFor(() => {
+        expect(screen.getByTestId("auth-key-status-message")).toHaveTextContent(
+          "APIキーを削除しました",
+        );
+      });
+    });
+
+    it("削除後の再確認失敗時にエラーメッセージが表示される", async () => {
+      mockAuthKeyApi.exists
+        .mockResolvedValueOnce({ exists: true, source: "saved" })
+        .mockRejectedValueOnce(new Error("refresh failed"));
+      mockAuthKeyApi.delete.mockResolvedValue({ success: true });
+
+      await act(async () => {
+        render(<AuthKeySection />);
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("delete-auth-key-button"),
+        ).toBeInTheDocument();
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId("delete-auth-key-button"));
+      });
+
+      await waitFor(() => {
+        expect(screen.getByTestId("auth-key-status-message")).toHaveTextContent(
+          "ステータスの再確認に失敗しました",
+        );
+      });
     });
   });
 
@@ -282,16 +292,13 @@ describe("AuthKeySection", () => {
       const input = screen.getByLabelText("Anthropic APIキー入力");
       const toggleButton = screen.getByTestId("toggle-password-visibility");
 
-      // 初期状態: password
       expect(input).toHaveAttribute("type", "password");
 
-      // トグル: text
       await act(async () => {
         fireEvent.click(toggleButton);
       });
       expect(input).toHaveAttribute("type", "text");
 
-      // トグル: password
       await act(async () => {
         fireEvent.click(toggleButton);
       });
@@ -305,19 +312,13 @@ describe("AuthKeySection", () => {
         render(<AuthKeySection />);
       });
 
-      // group role
       const section = screen.getByRole("group", { name: "APIキー管理" });
       expect(section).toBeInTheDocument();
 
-      // input aria-label
       expect(
         screen.getByLabelText("Anthropic APIキー入力"),
       ).toBeInTheDocument();
-
-      // toggle button aria-label
       expect(screen.getByLabelText("パスワードを表示")).toBeInTheDocument();
-
-      // description
       expect(
         screen.getByText("APIキーはセキュアストレージに暗号化して保存されます"),
       ).toBeInTheDocument();
@@ -347,6 +348,70 @@ describe("AuthKeySection", () => {
 
       const badge = screen.getByTestId("auth-key-status-badge");
       expect(badge).toHaveAttribute("data-status", "check-failed");
+
+      await waitFor(() => {
+        expect(screen.getByTestId("auth-key-status-message")).toHaveTextContent(
+          "ステータスの確認に失敗しました",
+        );
+      });
+    });
+  });
+
+  // ============================================================
+  // TC-06〜TC-10: フック統合・props 検証テスト
+  // ============================================================
+
+  describe("TC-06: onStatusChange props 受け取りテスト", () => {
+    it("should accept onStatusChange prop without error", async () => {
+      await act(async () => {
+        render(<AuthKeySection onStatusChange={vi.fn()} />);
+      });
+
+      expect(screen.getByTestId("auth-key-section")).toBeInTheDocument();
+    });
+  });
+
+  describe("TC-07: フック使用テスト", () => {
+    it("should use useAuthKeyManagement hook for state management", async () => {
+      const spy = vi.spyOn(hookModule, "useAuthKeyManagement");
+
+      await act(async () => {
+        render(<AuthKeySection />);
+      });
+
+      expect(spy).toHaveBeenCalledTimes(1);
+      spy.mockRestore();
+    });
+  });
+
+  describe("TC-08: パスワード表示切替ボタンの存在確認", () => {
+    it("should render password toggle button", async () => {
+      await act(async () => {
+        render(<AuthKeySection />);
+      });
+
+      expect(
+        screen.getByTestId("toggle-password-visibility"),
+      ).toBeInTheDocument();
+    });
+  });
+
+  describe("TC-10: configured 状態での削除ボタン表示", () => {
+    it("should show delete button when status is configured with keySource=saved", async () => {
+      mockAuthKeyApi.exists.mockResolvedValue({
+        exists: true,
+        source: "saved",
+      });
+
+      await act(async () => {
+        render(<AuthKeySection />);
+      });
+
+      await waitFor(() => {
+        expect(
+          screen.getByTestId("delete-auth-key-button"),
+        ).toBeInTheDocument();
+      });
     });
   });
 });

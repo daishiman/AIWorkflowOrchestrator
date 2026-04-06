@@ -6,6 +6,34 @@
 ## 完了タスク
 
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
+### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
+
+| 項目             | 値                                                                                     |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| タスクID         | TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001                          |
+| ステータス       | **完了（Phase 12 close-out / Phase 13 blocked）**                                      |
+| タイプ           | docs-improvement / runtime follow-up / notification                                    |
+| 優先度           | 中                                                                                     |
+| 完了日           | 2026-04-06                                                                             |
+| 対象             | `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の improve adapter error 通知        |
+| GitHub Issue     | #1896                                                                                  |
+| 成果物           | `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`    |
+| 元未タスク指示書 | `docs/30-workflows/unassigned-task/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
+
+#### 実施内容
+
+- `verifyAndImproveLoop()` の improve adapter error が `success:false` を返す場合に、`execute()` / `improve()` 単体の degraded 通知と同じ失敗通知を出す方針を close-out した
+- close-out 証跡として workflow spec（`index.md` / `phase-*.md`）、`artifacts.json` / `outputs/artifacts.json`、Phase 11 NON_VISUAL evidence、Phase 12 outputs を canonical filename で揃えた
+- `task-workflow-backlog.md` から該当 row を完了へ移管し、follow-up の残り 1件（executeAsync snapshot）だけを backlog に残した
+
+#### 検証証跡
+
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（0エラー / 0警告）
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（警告 26）
+
+---
+
+### タスク: TASK-P0-05 execute() → SkillFileWriter persist 統合（2026-04-05）
 
 | 項目 | 値 |
 | --- | --- |
@@ -148,6 +176,124 @@
 - `ipc/index.ts` の fire-and-forget 初期化 catch で `setLLMAdapterFailed(reason)` を呼び、`failed` 状態を記録
 - IPC 境界の outer/inner 契約（`IpcResult.success` と `data.success`）を `skillCreatorHandlers.runtime.test.ts` で検証
 
+#### 2026-04-04 追補（IPC / UI close-out）
+
+- `apps/desktop/src/renderer/components/skill/LLMAdapterErrorBanner.tsx` を追加し、`SkillLifecyclePanel` 上部に `role="alert"` の失敗バナーを表示するようにした
+- `apps/desktop/src/renderer/components/skill/hooks/useLLMAdapterStatus.ts` を追加し、Main からの pull + push で `LLMAdapterStatusPayload` を同期するようにした
+- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` に banner を統合し、`onOpenWizard` から設定導線を再利用するようにした
+- Phase 11 のスクリーンショット証跡を current build から再取得し、placeholder PNG を実画像へ差し替えた
+- `api-ipc-agent-core.md` / `ui-ux-feature-components-core.md` / `implementation-guide.md` / `index.md` / `topic-map.md` / `keywords.json` を current facts に同期した
+- Phase 13 はユーザー指示待ちのため blocked を維持し、PR は作成していない
+
+#### 追補の検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/hooks/__tests__/useLLMAdapterStatus.test.ts src/renderer/components/skill/__tests__/LLMAdapterErrorBanner.test.tsx src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/ipc/__tests__/creatorHandlers.adapterStatus.test.ts src/preload/__tests__/skill-creator-api.runtime.test.ts src/preload/__tests__/skill-creator-api.test.ts`: PASS
+- `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator.contract-parity.test.ts`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/task-rt-01-llm-adapter-error-propagation`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/task-rt-01-llm-adapter-error-propagation --json`: PASS
+- `outputs/phase-11/screenshots/TC-11-01.png` 〜 `TC-11-06.png`: current build で再取得済み
+
+---
+
+### タスク: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 execute/improve adapter guard（2026-04-04）
+
+| 項目       | 値                                                                                                    |
+| ---------- | ----------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001                                                       |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                                        |
+| タイプ     | runtime bug-fix / adapter guard / error-propagation                                                   |
+| 優先度     | 高                                                                                                    |
+| 完了日     | 2026-04-04                                                                                            |
+| 対象       | `RuntimeSkillCreatorFacade.execute()` / `RuntimeSkillCreatorFacade.improve()` / structured error flow |
+| 成果物     | `docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/`                                      |
+
+#### 実施内容
+
+- `execute()` / `improve()` の先頭に `_llmAdapterStatus` guard を追加し、`failed` / `initializing` で早期 return するようにした
+- `packages/shared/src/types/skillCreator.ts` に `RuntimeSkillCreatorExecuteErrorResponse` を追加し、`RuntimeSkillCreatorExecuteResponse` union を拡張した
+- `SkillCreatorWorkflowEngine.recordExecuteAdapterFailure()` を追加し、execute の adapter failure を review-ready snapshot として保存するようにした
+- `SkillCreatorWorkflowEngine.recordImproveFailure()` を追加し、improve failure を `currentPhase: improve` のまま `verifyResult` に反映するようにした
+- `SkillCreateWizard.tsx` / `SkillLifecyclePanel.tsx` で structured execute error を message へ正規化し、SkillCreateWizard は `executePlan` ack 後に `getWorkflowState` を再読込して handoff / failure snapshot を表示するようにした
+- `outputs/phase-11/*` と `outputs/phase-12/*` を current facts に差し替え、NON_VISUAL evidence と Phase 12 docs を同 wave で閉じた
+- `TASK-UT-RT-01-PHASE11-NONVISUAL-WALKTHROUGH-EVIDENCE-001` を resolved carry-over として backlog から completed へ移管し、Phase 10 の MINOR follow-up 2件を backlog へ formalize した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/SkillCreateWizard.tsx src/renderer/components/skill/SkillLifecyclePanel.tsx`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.notification.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx`: PASS（4 files / 69 tests）
+
+#### Phase 12 未タスク
+
+- `TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001`
+- `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001`
+
+---
+
+### タスク: TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 executeAsync() の error message 伝搬パス統一（2026-04-06）
+
+| 項目       | 値                                                                                                                     |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001                                                                 |
+| ステータス | **完了**                                                                                                               |
+| タイプ     | runtime bug-fix / error-propagation / documentation sync                                                               |
+| 優先度     | 中                                                                                                                     |
+| 完了日     | 2026-04-06                                                                                                             |
+| 対象       | `RuntimeSkillCreatorFacade.executeAsync()` / `RuntimeSkillCreatorFacade.executeAsync.test.ts` / `outputs/phase-11/*` / `outputs/phase-12/*` |
+| 成果物     | `docs/30-workflows/task-ut-rt-01-execute-async-snapshot-error-message-001/`                                           |
+
+#### 実施内容
+
+- `executeAsync()` の structured error / catch パスで `if (!snapshot)` 条件を削除し、snapshot の有無に依存せず `onWorkflowStateSnapshot` を呼ぶようにした
+- `RuntimeSkillCreatorFacade.executeAsync.test.ts` に T-01〜T-06 を追加し、structured error / catch / regression の 10 テストを固定した
+- `creatorHandlers.ts` / `skill-creator-api.ts` / `SkillLifecyclePanel.tsx` を更新し、workflow-state changed event の errorMessage を Renderer まで通すようにした
+- `creatorHandlers.test.ts` に errorMessage 付き snapshot の state-changed event 伝搬テストを追加した
+- `SkillLifecyclePanel.error-persistence.test.tsx` に errorMessage-only event の回帰テストを追加した
+- `outputs/phase-11/manual-test-checklist.md` / `manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` を追加し、NON_VISUAL 証跡を current facts として残した
+- `outputs/phase-12/*` の 6 ファイルを作成し、implementation guide / system spec / changelog / feedback / compliance を同期した
+- `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md` の残課題行を完了扱いへ更新し、`task-workflow-completed.md` に本完了セクションを追加した
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して `topic-map.md` / `keywords.json` を再生成した
+
+#### 検証証跡
+
+- `pnpm typecheck`: PASS
+- `pnpm lint`: PASS（0 errors / 10 warnings）
+- `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/creatorHandlers.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/preload/__tests__/skill-creator-api.runtime.test.ts src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx`: PASS（53 tests）
+- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`: PASS
+
+#### Phase 12 補足
+
+- `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001` は未タスク候補として残している
+- Renderer 側 UI 表示確認は本タスクのスコープ外のため、別タスク候補として維持している
+
+---
+
+### タスク: TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001（2026-04-06）
+
+| 項目       | 値                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001                                                           |
+| ステータス | **完了**                                                                                         |
+| タイプ     | refactoring / ui                                                                                |
+| 優先度     | 中                                                                                               |
+| 完了日     | 2026-04-06                                                                                       |
+| 対象       | `useAuthKeyManagement` 新規追加 / `AuthKeySection` への統合 / `ApiKeySettingsPanel` 委譲 / 型統一 |
+| 成果物     | `docs/30-workflows/rt-04-authkey-component-dedup/`                                               |
+| GitHub     | Issue #1903                                                                                      |
+
+#### 実施内容
+
+- `apps/desktop/src/renderer/hooks/useAuthKeyManagement.ts` を新規追加し、`auth-key:*` IPC 呼び出しを集約
+- `packages/shared/src/types/skillCreator.ts` の `ApiKeyStatus` に `check-failed` を追加し UI 状態型を統一
+- `AuthKeySection` をフック統合 + `onStatusChange` props 対応へ更新
+- `ApiKeySettingsPanel` を `AuthKeySection` への委譲ラッパーへ変更
+- テスト: `useAuthKeyManagement.test.ts` / `AuthKeySection.test.tsx` / `ApiKeySettingsPanel.test.tsx` を更新
+
+#### 未タスク
+
+- TECH-M-01 を `TASK-RT-04-APIKEYPANEL-REMOVAL-001` として backlog に登録（ApiKeySettingsPanel 廃止）
+
 ---
 
 ### タスク: TASK-RT-02 api-key-ui-adapter-status（2026-03-29）
@@ -286,6 +432,28 @@
 - `handleExecutePlan` が `request.trim()` ではなく `approvedSkillSpec` を参照するよう修正
 - cancel 時の対称クリア実装
 - テスト 5件追加（U-8b, U-18, U-19, U-20, U-21）
+
+---
+
+### タスク: TASK-P0-07 hardcoded-agent-names-dynamic-resolution — plan/improve 動的解決と root dedupe（2026-04-06）
+
+| 項目       | 値                                                                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| タスクID   | TASK-P0-07                                                                                                                                       |
+| ステータス | **完了**                                                                                                                                         |
+| タイプ     | refactoring / docs sync                                                                                                                          |
+| 優先度     | 高                                                                                                                                               |
+| 完了日     | 2026-04-06                                                                                                                                       |
+| 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`, `apps/desktop/src/main/services/runtime/SkillCreatorSourceResolver.ts`, `apps/desktop/src/main/services/runtime/planPromptConstants.ts`, `apps/desktop/src/main/services/runtime/improvePromptConstants.ts`, `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan-resource-selection.test.ts`, `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution/outputs/phase-12/*` |
+| 関連タスク | step-11-par-task-plan-execution-hardening / step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution |
+
+#### 実施内容
+
+- `plan()` / `improve()` の manifest 優先解決を current facts へ同期し、phase resource ids を source of truth として扱うよう整理
+- fallback path は `PLAN_RESOURCE_REQUESTS` / `IMPROVE_RESOURCE_REQUESTS` のみを source of truth とし、agent 名を静的文字列から切り離した
+- `SkillCreatorSourceResolver` の root dedupe を resolved root ベースに変更し、manifest / explicit / env の同一 root 重複を除去
+- `AGENT_NAMES` を削除し、plan/improve の両方で dynamic resource pipeline と static fallback の整合を維持
+- 影響: No public surface change（IPC contract / shared types / API シグネチャ変更なし）
 
 ---
 
@@ -1834,3 +2002,179 @@
 #### Phase 12 未タスク
 
 なし（0件）
+
+---
+
+### タスク: TASK-UIUX-FEEDBACK-001 phase11-ui-ux-feedback-loop-review（2026-03-31）
+
+| 項目       | 値                                                               |
+| ---------- | ---------------------------------------------------------------- |
+| タスクID   | TASK-UIUX-FEEDBACK-001                                           |
+| ステータス | **spec_created 維持 / canonical・mirror・system spec sync 実施** |
+| タイプ     | skill improvement + workflow documentation correction            |
+| 優先度     | HIGH                                                             |
+| 完了日     | 2026-03-31                                                       |
+| 成果物     | `docs/30-workflows/task-uiux-feedback-001-phase11-enhancement/`  |
+
+#### 実施内容
+
+- `.claude/skills/task-specification-creator/` に追加された `evaluate-ui-ux` script 群、prompt agent、テスト群を current fact として整理
+- `evaluate-ui-ux.js` の CLI が `--task-id` を評価コンテキストへ渡していなかった不整合を修正
+- screenshot 0 件で処理が進む false green を防ぐガードと回帰テストを追加
+- workflow `artifacts.json` / `outputs/artifacts.json` を `spec_created` 現在地へ是正
+- Phase 11/12 文書から completed 誤記を除去し、placeholder screenshot と `not_run` metadata を current fact として固定
+
+#### 未完了事項
+
+| 項目                           | 状態         |
+| ------------------------------ | ------------ |
+| representative screenshot 実測 | 未了         |
+| Phase 11 実行結果              | 未了         |
+| HIGH 問題の未タスク化          | 実行後に判定 |
+
+---
+
+### タスク: TASK-SDK-SC-02 Conversation UI 質問受信・回答送信 UI コンポーネント（2026-04-03）
+
+| 項目       | 値                                                                    |
+| ---------- | --------------------------------------------------------------------- |
+| タスクID   | TASK-SDK-SC-02                                                        |
+| ステータス | **Phase 1-12 完了**                                                   |
+| タイプ     | implementation                                                        |
+| 優先度     | 高                                                                    |
+| 完了日     | 2026-04-03                                                            |
+| 依存タスク | TASK-SDK-SC-01                                                        |
+| 後続タスク | なし                                                                  |
+| 成果物     | `docs/30-workflows/step-02-par-task-02-conversation-ui/`              |
+
+#### 実施内容
+
+- Electron Renderer 側に Atomic Design 準拠の 5 コンポーネントを新規実装
+  - `ChoiceButton`（Atom）: 選択/未選択状態の単一ボタン、`aria-pressed` 対応
+  - `FreeTextInput`（Atom）: 自由入力テキストエリア、secret モード対応、Enter 送信 / Shift+Enter 改行
+  - `ConversationProgress`（Atom）: 「質問 N / 推定合計」形式の進捗表示、`role="progressbar"` 対応
+  - `QuestionCard`（Molecule）: `kind`（single_select / multi_select / free_text / secret / confirm）に応じた入力 UI 統合
+  - `SkillCreatorConversationPanel`（Organism）: IPC listen・回答送信・全コンポーネント統合、`useReducer` による状態管理
+- Session Bridge 型（`UserInputQuestion`/`UserInputAnswer`）と Workflow 型（`SkillCreatorUserInputRequest`/`InterviewUserAnswer`）のブリッジ層を Panel 内に実装
+- `multi_select` の「その他（自由入力）」は `selectedValues` 経路として扱い、ブリッジで `UserInputAnswer.value` の配列に正規化
+- `key={questionIndex}` パターンで QuestionCard の内部状態を質問切り替え時に自動リセット
+
+#### 検証
+
+- `pnpm --filter @repo/desktop exec vitest run ...skill-creator/__tests__/`: **57 tests PASS**
+- カバレッジ: Stmts 97.54% / Branch 86.04% / Funcs 95.83% / Lines 97.54%
+- TypeScript typecheck: PASS
+- ESLint: PASS
+
+#### テストケース追加内訳
+
+| テストファイル                              | テスト数 | 主な検証内容                                           |
+| ------------------------------------------- | -------- | ------------------------------------------------------ |
+| `ChoiceButton.test.tsx`                     | 9        | 表示・選択状態・freeText 破線・disabled・aria-pressed  |
+| `FreeTextInput.test.tsx`                    | 9        | 表示制御・Enter/Shift+Enter・secret・disabled・clear   |
+| `ConversationProgress.test.tsx`             | 3        | 表示形式・プログレスバー幅                             |
+| `QuestionCard.test.tsx`                     | 23       | 全 5 kind・エッジケース・XSS・多言語・multi_select 自由入力 |
+| `SkillCreatorConversationPanel.test.tsx`    | 13       | IPC リスナー・クリーンアップ・質問表示・回答送信・エラー・重複送信防止 |
+
+#### Phase 12 未タスク
+
+なし（0件）
+
+---
+
+### タスク: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 RuntimeSkillCreatorFacade adapter guard（2026-04-04）
+
+| 項目       | 値                                                                                                                           |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001                                                                              |
+| ステータス | **完了**                                                                                                                     |
+| タイプ     | implementation                                                                                                               |
+| 優先度     | 高                                                                                                                           |
+| 完了日     | 2026-04-04                                                                                                                   |
+
+#### 実施内容
+
+- `execute()` / `improve()` 先頭に LLMAdapter ステータス3段階チェック（initializing / ready / failed）を追加
+- `RuntimeSkillCreatorExecuteErrorResponse` 型を `packages/shared` に新設し `RuntimeSkillCreatorExecuteResponse` union を拡張
+- `SkillCreatorWorkflowEngine.recordImproveFailure()` メソッドを追加
+- `SkillCreateWizard` / `SkillLifecyclePanel` の structured error 表示対応
+
+#### 検証
+
+- 69 テスト PASS
+
+---
+
+### タスク: UT-SDK-L34-UI-DISPLAY-001 SkillLifecyclePanel Layer別グルーピング（2026-04-04）
+
+| 項目       | 値                                                |
+| ---------- | ------------------------------------------------- |
+| タスクID   | UT-SDK-L34-UI-DISPLAY-001                         |
+| ステータス | **完了**                                          |
+| タイプ     | implementation                                    |
+| 優先度     | 中                                                |
+| 完了日     | 2026-04-04                                        |
+
+#### 実施内容
+
+- `SkillLifecyclePanel.tsx` で Layer3/4 チェック結果をグループ別アコーディオン・severity アイコン付き表示を実装
+- Phase 3 レビュー完了
+
+---
+
+### タスク: UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 SkillStreamMessage と SkillCreatorSdkEvent の出力型統合（2026-04-04）
+
+| 項目       | 値                                                                             |
+| ---------- | ------------------------------------------------------------------------------ |
+| タスクID   | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                |
+| ステータス | **完了**                                                                       |
+| タイプ     | implementation                                                                 |
+| 優先度     | low                                                                            |
+| 完了日     | 2026-04-04                                                                     |
+
+#### 実施内容
+
+- `packages/shared/src/types/skillCreator.ts` に `SdkOutputMessageBase`（共通基底型）を追加
+- `SkillExecutorStreamMessage` / `SkillExecutorStreamMessageType` を新設（旧: `SkillExecutor.ts` ローカル `SkillStreamMessage` / `SkillStreamMessageType` を shared に集約）
+- `SkillCreatorSdkEvent` が `SdkOutputMessageBase` を継承するよう変更
+- `packages/shared/index.ts` / `packages/shared/src/types/index.ts` に新型を export 追加
+- `apps/desktop/src/main/services/skill/SkillExecutor.ts` のローカル型定義を `@deprecated` 型エイリアスに置き換え、`@repo/shared` から `SkillExecutorStreamMessage` をインポート
+
+#### 検証
+
+- `pnpm typecheck` PASS
+- `pnpm lint` 0 errors
+
+---
+
+### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out（2026-04-06）
+
+| 項目       | 値                                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-09                                                                                                                                      |
+| ステータス | **完了**                                                                                                                                        |
+| タイプ     | implementation / TDD / governance                                                                                                               |
+| 優先度     | 最高                                                                                                                                            |
+| 完了日     | 2026-04-06                                                                                                                                      |
+| 対象       | `runtime/governance/` サブディレクトリ（`SkillCreatorPermissionPolicy` / `SkillCreatorHooksFactory` / `SkillCreatorAuditSink` / `index.ts`）     |
+| 成果物     | `docs/30-workflows/task-p0-09-sdk-permission-hooks-governance/`（Phase 1-13 仕様書 15ファイル）                                                 |
+
+#### 実施内容
+
+- `runtime/governance/` サブディレクトリを新設し、全 governance ファイルを集約
+- 命名規則を `SkillCreator` プレフィックスに統一（旧: `GovernanceHooksFactory` / `GovernanceAuditSink` → 新: `SkillCreatorHooksFactory` / `SkillCreatorAuditSink`）
+- TDD: Phase 4（Red）→ Phase 5（Green）→ Phase 6（fail-path / edge case / 回帰ガード）→ Phase 7（カバレッジ確認）
+- `SkillCreatorPermissionPolicy`: plan/execute/verify/improve の policy テーブルを `Object.freeze()` で保護、`canUseTool(toolName, phase)` を実装
+- `SkillCreatorHooksFactory`: `createHooks(phase, auditSink, provenance?)` でライフサイクルフックを生成
+- `SkillCreatorAuditSink`: in-memory ring buffer（maxEvents: 500、`slice(-N)` 方式）で監査イベントを蓄積
+- `RuntimeSkillCreatorFacade`: plan/execute/verify/improve 各フェーズで governance hooks を接続、`getGovernanceState()` で状態公開
+- `governance-hooks-factory-audit-sink.md` を新 API に更新し、canonical spec と実装の一致を確認
+- TASK-P0-09-U1（path-scoped enforcement）は `TODO(TASK-P0-09-U1)` コメントで carry-forward として明示
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop test -- --grep "governance|SkillCreatorPermission|SkillCreatorHooks|SkillCreatorAudit" --run`
+- 90 tests PASS（PermissionPolicy 31件 / HooksFactory 18件 / AuditSink 15件 / Integration 12件 / AllPhases 14件）
+- typecheck: EXIT:0 ✅
+- lint: EXIT:0（10 warnings / 0 errors）⚠️
+- Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）

@@ -3,6 +3,7 @@ import type {
   BrowserWindow as BrowserWindowType,
   IpcMainInvokeEvent,
 } from "electron";
+import type { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
 
 const handlerMap = new Map<string, (...args: unknown[]) => unknown>();
 
@@ -24,7 +25,9 @@ vi.mock("electron", () => ({
 }));
 
 import { BrowserWindow } from "electron";
+import type { SkillCreatorWorkflowUiSnapshot } from "@repo/shared/types";
 import { IPC_CHANNELS } from "../../../preload/channels";
+import type { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
 import {
   registerRuntimeSkillCreatorHandlers,
   unregisterRuntimeSkillCreatorHandlers,
@@ -191,6 +194,48 @@ describe("creatorHandlers", () => {
       expect.any(Object),
     );
     expect(result).toEqual({ accepted: true, planId: "plan-001" });
+  });
+
+  it("runtime facade の errorMessage 付き snapshot を state-changed event として送る", () => {
+    const mainWindow = createMockMainWindow() as unknown as BrowserWindowType;
+    registerRuntimeSkillCreatorHandlers(
+      mainWindow,
+      mockRuntimeSkillCreatorService as never,
+    );
+
+    const runtimeService =
+      mockRuntimeSkillCreatorService as RuntimeSkillCreatorFacade & {
+        onWorkflowStateSnapshot?: (
+          planId: string,
+          snapshot: SkillCreatorWorkflowUiSnapshot | null,
+          errorMessage?: string,
+        ) => void;
+      };
+    const snapshot = {
+      planId: "plan-error",
+      currentPhase: "review",
+      awaitingUserInput: null,
+      verifyResult: null,
+      resumeTokenEnvelope: {
+        version: "task-sdk-02-v1",
+        planId: "plan-error",
+        currentPhase: "review",
+        artifactCount: 2,
+        updatedAt: "2026-04-06T00:00:00.000Z",
+      },
+    } as SkillCreatorWorkflowUiSnapshot;
+
+    runtimeService.onWorkflowStateSnapshot?.(
+      "plan-error",
+      snapshot,
+      "API key is invalid",
+    );
+
+    expect(mainWindow.webContents.send).toHaveBeenCalledWith(
+      IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      snapshot,
+      "API key is invalid",
+    );
   });
 
   it("improve ハンドラが feedback を伴って委譲する", async () => {

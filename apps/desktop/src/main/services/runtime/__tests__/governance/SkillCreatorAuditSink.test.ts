@@ -197,4 +197,67 @@ describe("SkillCreatorAuditSink", () => {
       expect(sink.getEvents()).toHaveLength(0);
     });
   });
+
+  // Phase 6: テスト拡充 (TC-AS-E01〜E03, TC-RG-01)
+  describe("Phase 6: edge case 拡充", () => {
+    it("TC-AS-E01: maxEvents=1 で 2 件目を追加すると最初のイベントが消える", () => {
+      const tinyAuditSink = new SkillCreatorAuditSink(1);
+      tinyAuditSink.recordEvent({
+        eventType: "session_start",
+        sessionId: "s1",
+        phase: "plan",
+      });
+      tinyAuditSink.recordEvent({
+        eventType: "session_end",
+        sessionId: "s1",
+        phase: "plan",
+      });
+      expect(tinyAuditSink.size).toBe(1);
+      expect(tinyAuditSink.getEvents()[0].eventType).toBe("session_end");
+    });
+
+    it("TC-AS-E02: 存在しない sessionId で空配列を返す", () => {
+      sink.recordEvent({
+        eventType: "session_start",
+        sessionId: "s1",
+        phase: "plan",
+      });
+      const events = sink.getEventsBySession("non-existent");
+      expect(events).toHaveLength(0);
+    });
+
+    it("TC-AS-E03: decision がない session_start イベントは getDenialEvents から除外される", () => {
+      sink.recordEvent({
+        eventType: "session_start",
+        sessionId: "s1",
+        phase: "plan",
+        // decision なし
+      });
+      sink.recordEvent({
+        eventType: "pre_tool_use",
+        sessionId: "s1",
+        phase: "plan",
+        toolName: "Write",
+        decision: {
+          allowed: false,
+          reason: "disallowed",
+          phase: "plan",
+          toolName: "Write",
+        },
+      });
+      const denials = sink.getDenialEvents();
+      expect(denials).toHaveLength(1);
+      expect(denials[0].eventType).toBe("pre_tool_use");
+    });
+
+    it("TC-RG-01: count=0 の getRecentEvents は空配列を返す", () => {
+      sink.recordEvent({
+        eventType: "session_start",
+        sessionId: "s1",
+        phase: "plan",
+      });
+      const events = sink.getRecentEvents(0);
+      expect(events).toHaveLength(0);
+    });
+  });
 });

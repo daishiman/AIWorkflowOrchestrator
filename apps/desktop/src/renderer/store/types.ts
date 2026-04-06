@@ -16,6 +16,7 @@ export type ViewType =
   | "skillAnalysis"
   | "skillCreate"
   | "skillManagement"
+  | "skillLifecycle" // TASK-UI-01: SkillLifecyclePanel 一次導線
   // エージェント・ワークフロー
   | "agent"
   | "executionConsole"

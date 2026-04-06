@@ -273,6 +273,7 @@ export const SkillCenterView: React.FC = memo(() => {
     featuredSkills,
     importedSkillNames,
     navigateToSkillCreate,
+    navigateToSkillLifecycle,
     navigateToSkillManagement,
     navigateToWorkspace,
     navigateToSkillAnalysis,
@@ -290,11 +291,11 @@ export const SkillCenterView: React.FC = memo(() => {
 
   const journeyActions = useMemo(
     () => ({
-      create: navigateToSkillCreate,
+      create: navigateToSkillLifecycle,
       use: navigateToWorkspace,
       improve: navigateToSkillAnalysis,
     }),
-    [navigateToSkillCreate, navigateToWorkspace, navigateToSkillAnalysis],
+    [navigateToSkillLifecycle, navigateToWorkspace, navigateToSkillAnalysis],
   );
 
   const importedSkillNameSet = useMemo(
