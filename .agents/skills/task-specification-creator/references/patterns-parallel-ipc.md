@@ -495,3 +495,38 @@
 - **発見日**: 2026-03-16
 - **関連タスク**: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001
 - **関連パターン**: P1（LOGS.md 2ファイル更新漏れ）、P43（Phase 12 サブエージェントの rate limit 中断）
+
+---
+
+## IPC テスト `vi.hoisted()` モックパターン（TASK-P0-08 2026-04-06）
+
+- **状況**: IPC チャンネルをインポートする Main Process ハンドラのテストで、`vi.mock()` より先に `ipcMain` のモックを宣言する必要がある
+- **問題**: Vitest では `vi.mock()` がホイスト（hoist）されるため、モジュール初期化時に呼ばれる副作用より後にモックを定義すると `ReferenceError` または `TypeError` が発生する
+- **パターン**: `vi.hoisted()` で変数を事前定義し、`vi.mock()` のファクトリ関数内で参照する
+- **実装例**:
+  ```typescript
+  const { mockHandle, mockIpcMain } = vi.hoisted(() => {
+    const mockHandle = vi.fn();
+    const mockIpcMain = { handle: mockHandle };
+    return { mockHandle, mockIpcMain };
+  });
+
+  vi.mock('electron', () => ({
+    ipcMain: mockIpcMain,
+    app: { getPath: vi.fn().mockReturnValue('/tmp') },
+  }));
+
+  describe('sessionResumeHandlers', () => {
+    it('should register handler', () => {
+      expect(mockHandle).toHaveBeenCalledWith(
+        'skill-creator:list-sessions',
+        expect.any(Function)
+      );
+    });
+  });
+  ```
+- **適用条件**: Main Process IPC ハンドラ（`ipcMain.handle` を使用するファイル）のユニットテスト全般
+- **教訓**: IPC ハンドラテストは `vi.hoisted()` + `vi.mock()` のセットが必須パターン。Phase 4 のテスト設計時にテンプレートへ最初から含めることで Phase 5 の手戻りを削減できる
+- **発見日**: 2026-04-06
+- **関連タスク**: TASK-P0-08（`creatorHandlers.sessionResume.test.ts` での適用実績）
+- **関連Pitfall**: P42（3段バリデーション）、P43（rate limit）

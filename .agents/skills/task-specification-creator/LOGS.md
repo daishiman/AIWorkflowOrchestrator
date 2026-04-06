@@ -92,6 +92,18 @@
 
 ---
 
+## 2026-04-06 - TASK-P0-07 ハードコードされた AGENT_NAMES の動的解決 Phase 12 close-out sync
+
+### 変更内容
+- `manifestResourceResolver.ts` を新規作成し、`buildPhaseResourceRequestsFromManifest()` 純粋関数を実装
+- `RuntimeSkillCreatorFacade.ts` の `resolveOperationResources()` に `phaseId` 引数を追加し、manifest ベースの動的エージェント解決に移行
+- フォールバック 5 パターン（phase 未存在、resourceIds undefined/空、全 ID 未発見、dynamic pipeline off）を実装
+- `AGENT_NAMES` ハードコード定数を完全削除し、`PLAN_RESOURCE_REQUESTS` からの動的導出に一本化
+- `interfaces-agent-sdk-skill.md` に `buildPhaseResourceRequestsFromManifest` のインターフェース仕様を追記
+- SKILL.md + LOGS.md 2ファイル同時更新（P1/P25/P29 対策）
+
+---
+
 ## 2026-04-04 - TASK-UT-RT-01 execute/improve adapter guard Phase 12 close-out sync
 
 ### 変更内容
@@ -156,6 +168,18 @@
 - `outputs/artifacts.json` を root `artifacts.json` と同期し、Phase 11 の `manual-test-checklist.md` / `manual-test-result.md` を追加して workflow root の機械検証を通過させた
 - Phase 11 が visible surface 追加なしの integration task であることを踏まえ、`phase-11-12-guide.md` に NON_VISUAL task は screenshot wording を残さないルールを追記した
 - follow-up task の canonical status を `spec_created` として扱い、完了済み実装と混同しない Phase 12 same-wave sync の運用を再確認した
+
+---
+
+## 2026-04-06 - TASK-P0-08 Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-08-session-resume-renderer-integration/outputs/phase-12/implementation-guide.md` の Part 2 を API/IPC シグネチャ・型定義・使用例まで補強し、validator PASS を確認した
+- Phase 11 screenshot evidence を `outputs/phase-11/screenshots/` へ保存し、`tc-01`〜`tc-06` の 6 枚を current fact として固定した
+- `verify-unassigned-links.js` PASS により、unassigned task の canonical link / file existence を確認した
+- `skillCreatorAPI` の session resume / cleanup surface、`task-workflow-completed.md` / `api-ipc-system-core.md` / `interfaces-agent-sdk-skill-reference.md` の same-wave 更新を反映した
+- `generate-index.js` 再生成（2576 キーワード）で topic-map / keywords の同期を維持する
 
 ---
 

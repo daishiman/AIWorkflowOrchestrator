@@ -30,6 +30,8 @@ import type {
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
+  SkillCreatorSessionListItem,
+  SkillCreatorSessionResumeResult,
   LLMAdapterStatusPayload,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
@@ -310,6 +312,37 @@ export interface SkillCreatorAPI {
   onProgress: (
     callback: (progress: SkillCreatorProgress) => void,
   ) => () => void;
+
+  // --- TASK-P0-08: Session Resume API ---
+
+  /**
+   * 未完了セッション一覧を取得する
+   */
+  listSessions: () => Promise<IpcResult<SkillCreatorSessionListItem[]>>;
+
+  /**
+   * セッションを復元して workflow snapshot を返す
+   */
+  resumeSession: (
+    checkpointId: string,
+  ) => Promise<SkillCreatorSessionResumeResult>;
+
+  /**
+   * セッション詳細スナップショットを取得する
+   */
+  getSessionDetail: (
+    checkpointId: string,
+  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
+
+  /**
+   * セッションを削除する
+   */
+  deleteSession: (checkpointId: string) => Promise<void>;
+
+  /**
+   * 期限切れセッションを一括削除する
+   */
+  cleanupExpiredSessions: () => Promise<number>;
 
   // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
 
@@ -594,6 +627,27 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     callback: (progress: SkillCreatorProgress) => void,
   ): (() => void) =>
     safeOn<SkillCreatorProgress>(IPC_CHANNELS.SKILL_CREATOR_PROGRESS, callback),
+
+  // --- TASK-P0-08: Session Resume API ---
+
+  listSessions: (): Promise<IpcResult<SkillCreatorSessionListItem[]>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_LIST_SESSIONS),
+
+  resumeSession: (
+    checkpointId: string,
+  ): Promise<SkillCreatorSessionResumeResult> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION, { checkpointId }),
+
+  getSessionDetail: (
+    checkpointId: string,
+  ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL, { checkpointId }),
+
+  deleteSession: (checkpointId: string): Promise<void> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION, { checkpointId }),
+
+  cleanupExpiredSessions: (): Promise<number> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS),
 
   // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
 

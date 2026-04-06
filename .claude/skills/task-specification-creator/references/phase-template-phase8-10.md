@@ -108,6 +108,24 @@ Phase 9: 品質保証
 | ------------ | ----------------------------------- | ------------ |
 | 品質レポート | `outputs/phase-9/quality-report.md` | 品質検証結果 |
 
+## テスト実行コマンド（vitest v2）
+
+> **注意**: `--testPathPattern` は vitest v2 で廃止済み。positional args を使用すること。
+
+```bash
+# 特定ファイルを指定（推奨）
+pnpm --filter @repo/desktop exec vitest run src/path/to/target.test.ts
+
+# ファイル名キーワードで絞り込む
+pnpm --filter @repo/desktop exec vitest run --reporter=verbose TargetComponent
+
+# 全テスト実行（non-watch）
+pnpm --filter @repo/desktop exec vitest run
+
+# 廃止（vitest v2 では無効）
+# vitest run --testPathPattern="xxx"
+```
+
 ## 完了条件
 
 - [ ] 全品質ゲートをクリア

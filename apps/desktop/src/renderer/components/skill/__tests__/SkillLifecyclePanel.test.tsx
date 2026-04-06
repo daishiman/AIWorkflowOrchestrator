@@ -16,6 +16,9 @@ import {
 } from "@testing-library/react";
 
 const mockCreateSkill = vi.fn();
+const mockDetectMode = vi.fn();
+const mockPlanSkill = vi.fn();
+const mockExecutePlan = vi.fn();
 const mockExecuteSkill = vi.fn();
 const mockFetchSkills = vi.fn();
 const mockReExecuteAfterImprovement = vi.fn();
@@ -154,6 +157,43 @@ beforeEach(() => {
             data?: string;
             error?: string;
           }>;
+          planSkill?: (
+            prompt: string,
+            authMode?: string,
+            apiKey?: string,
+          ) => Promise<{
+            success: boolean;
+            data?:
+              | {
+                  type: "integrated_api" | "terminal_handoff";
+                  planId?: string;
+                  estimatedSteps?: number;
+                  guidance?: {
+                    reason: string;
+                    terminalCommand: string;
+                    contextSummary: string;
+                  };
+                }
+              | undefined;
+            error?: string;
+          }>;
+          executePlan?: (
+            planId: string,
+            skillSpec?: unknown,
+            authMode?: string,
+            apiKey?: string,
+          ) => Promise<{
+            success: boolean;
+            data?:
+              | {
+                  executeId: string;
+                  skillName?: string;
+                  success: boolean;
+                  error?: string;
+                }
+              | undefined;
+            error?: string;
+          }>;
           improveSkill?: (
             skillName: string,
             options?: { autoApply?: boolean },
@@ -175,10 +215,9 @@ beforeEach(() => {
     }
   ).electronAPI = {
     skillCreator: {
-      detectMode: vi.fn().mockResolvedValue({
-        success: true,
-        data: "collaborative",
-      }),
+      detectMode: mockDetectMode,
+      planSkill: mockPlanSkill,
+      executePlan: mockExecutePlan,
       improveSkill: vi.fn().mockResolvedValue({
         success: true,
         data: {
@@ -198,7 +237,27 @@ beforeEach(() => {
     },
   };
 
+  mockDetectMode.mockResolvedValue({
+    success: true,
+    data: "collaborative",
+  });
   mockCreateSkill.mockResolvedValue("/skills/lifecycle-skill");
+  mockPlanSkill.mockResolvedValue({
+    success: true,
+    data: {
+      type: "integrated_api",
+      planId: "plan-001",
+      estimatedSteps: 5,
+    },
+  });
+  mockExecutePlan.mockResolvedValue({
+    success: true,
+    data: {
+      executeId: "exec-001",
+      skillName: "lifecycle-skill",
+      success: true,
+    },
+  });
   mockExecuteSkill.mockResolvedValue(undefined);
   mockReExecuteAfterImprovement.mockResolvedValue(undefined);
 });
@@ -279,6 +338,81 @@ describe("SkillLifecyclePanel", () => {
     expect(mockClearStreamingMessages).toHaveBeenCalledTimes(1);
     expect(mockSelectSkillByName).toHaveBeenLastCalledWith("lifecycle-skill");
     expect(mockExecuteSkill).toHaveBeenCalledWith("サンプル入力を処理して");
+  });
+
+  it("新しい prepare 開始時に旧 execute / verify result surface をクリアする", async () => {
+    mockDetectMode.mockResolvedValueOnce({
+      success: true,
+      data: "plan",
+    });
+    mockGetVerifyDetail.mockResolvedValueOnce({
+      success: true,
+      data: {
+        planId: "plan-001",
+        currentPhase: "verify",
+        status: "pending",
+        message: "verify processing",
+        checks: [],
+        evidenceCount: 3,
+        route: {
+          type: "integrated_api",
+          summary: "integrated_api (default)",
+        },
+        reverifyEligible: true,
+        delegatedGovernanceNote: "Task07 owner",
+        delegatedSessionNote: "Task08 owner",
+      },
+    });
+    mockGetVerifyDetail.mockResolvedValueOnce({
+      success: true,
+      data: {
+        planId: "plan-001",
+        currentPhase: "verify",
+        status: "pass",
+        message: "first verify ok",
+        checks: [],
+        evidenceCount: 4,
+        route: {
+          type: "integrated_api",
+          summary: "integrated_api (default)",
+        },
+        reverifyEligible: false,
+        disabledReason: "既に pass 済みです",
+        delegatedGovernanceNote: "Task07 owner",
+        delegatedSessionNote: "Task08 owner",
+      },
+    });
+
+    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+
+    await act(async () => {
+      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
+        target: { value: "最初の依頼" },
+      });
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "実行する" }));
+    });
+
+    expect(await screen.findByText("first verify ok")).toBeTruthy();
+    expect(
+      screen.getByTestId("skill-creation-result-panel"),
+    ).toBeInTheDocument();
+
+    mockDetectMode.mockRejectedValueOnce(new Error("second detect fail"));
+
+    await act(async () => {
+      fireEvent.change(screen.getByTestId("skill-lifecycle-request-input"), {
+        target: { value: "次の依頼" },
+      });
+      fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("skill-creation-result-panel")).toBeNull();
+    });
   });
 
   it("生成失敗時はエラーを表示して作成済み状態へ進まない", async () => {
@@ -872,11 +1006,13 @@ describe("SkillLifecyclePanel", () => {
     it("SF-01: デフォルトで severity フィルタが all に設定されている", async () => {
       await renderWithFilter();
 
-      const filterBar = screen.getByTestId("severity-filter");
+      const filterBar = screen.getByRole("group", { name: "Severity filter" });
       expect(filterBar).toBeTruthy();
 
-      const allButton = screen.getByTestId("severity-filter-all");
-      expect(allButton).toHaveAttribute("aria-checked", "true");
+      const allButton = screen.getByTestId(
+        "skill-lifecycle-severity-filter-all",
+      );
+      expect(allButton).toHaveAttribute("aria-pressed", "true");
     });
 
     it("SF-02: all 選択時に全 check が表示される", async () => {
@@ -900,7 +1036,7 @@ describe("SkillLifecyclePanel", () => {
       await renderWithFilter();
 
       const warningButton = await screen.findByTestId(
-        "severity-filter-warning+",
+        "skill-lifecycle-severity-filter-warning+",
       );
       await act(async () => {
         fireEvent.click(warningButton);
@@ -924,7 +1060,9 @@ describe("SkillLifecyclePanel", () => {
       await renderWithFilter();
 
       await act(async () => {
-        fireEvent.click(screen.getByTestId("severity-filter-error"));
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-error"),
+        );
       });
 
       expect(
@@ -945,7 +1083,7 @@ describe("SkillLifecyclePanel", () => {
       await renderWithFilter();
 
       const warningButton = await screen.findByTestId(
-        "severity-filter-warning+",
+        "skill-lifecycle-severity-filter-warning+",
       );
       await act(async () => {
         fireEvent.click(warningButton);
@@ -958,7 +1096,9 @@ describe("SkillLifecyclePanel", () => {
       expect(screen.queryByRole("button", { name: /Layer 4/i })).toBeNull();
 
       await act(async () => {
-        fireEvent.click(screen.getByTestId("severity-filter-error"));
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-error"),
+        );
       });
 
       // error は layer1 のみ
@@ -968,17 +1108,21 @@ describe("SkillLifecyclePanel", () => {
       expect(screen.queryByRole("button", { name: /Layer 4/i })).toBeNull();
     });
 
-    it("SF-06: フィルタボタンに件数が表示される", async () => {
+    it("SF-06: warning+ 選択時に表示件数サマリが表示される", async () => {
       await renderWithFilter();
 
-      const allButton = await screen.findByTestId("severity-filter-all");
-      expect(allButton).toHaveTextContent("4");
+      await act(async () => {
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+        );
+      });
+
       expect(
-        await screen.findByTestId("severity-filter-warning+"),
-      ).toHaveTextContent("3");
+        screen.getByTestId("skill-lifecycle-severity-filter-summary"),
+      ).toHaveTextContent("表示中 3 / 全 4 件");
       expect(
-        await screen.findByTestId("severity-filter-error"),
-      ).toHaveTextContent("1");
+        await screen.findByTestId("skill-lifecycle-severity-filter-error"),
+      ).toHaveTextContent("✗ Error");
     });
 
     it("SF-07: reverify 後もフィルタ状態が維持される", async () => {
@@ -998,12 +1142,13 @@ describe("SkillLifecyclePanel", () => {
 
       // warning+ に切り替え
       await act(async () => {
-        fireEvent.click(screen.getByTestId("severity-filter-warning+"));
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+        );
       });
-      expect(screen.getByTestId("severity-filter-warning+")).toHaveAttribute(
-        "aria-checked",
-        "true",
-      );
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+      ).toHaveAttribute("aria-pressed", "true");
 
       // reverify
       mockGetVerifyDetail.mockResolvedValueOnce({
@@ -1034,10 +1179,9 @@ describe("SkillLifecyclePanel", () => {
       await waitFor(() => expect(mockGetVerifyDetail).toHaveBeenCalledTimes(2));
 
       // warning+ が維持されている
-      expect(screen.getByTestId("severity-filter-warning+")).toHaveAttribute(
-        "aria-checked",
-        "true",
-      );
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+      ).toHaveAttribute("aria-pressed", "true");
       // warning+ なので info は非表示
       expect(
         screen.queryByTestId("skill-lifecycle-verify-check-L4-002"),
@@ -1052,7 +1196,9 @@ describe("SkillLifecyclePanel", () => {
       await renderWithFilter();
 
       await act(async () => {
-        fireEvent.click(screen.getByTestId("severity-filter-warning+"));
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-warning+"),
+        );
       });
 
       // layer1 の accordion を閉じる
@@ -1096,14 +1242,16 @@ describe("SkillLifecyclePanel", () => {
       );
 
       await act(async () => {
-        fireEvent.click(screen.getByTestId("severity-filter-error"));
+        fireEvent.click(
+          screen.getByTestId("skill-lifecycle-severity-filter-error"),
+        );
       });
 
       expect(screen.queryByRole("button", { name: /Layer 1/i })).toBeNull();
       expect(screen.queryByRole("button", { name: /Layer 3/i })).toBeNull();
-      expect(screen.getByTestId("severity-filter-error")).toHaveTextContent(
-        "0",
-      );
+      expect(
+        screen.getByTestId("skill-lifecycle-severity-filter-summary"),
+      ).toHaveTextContent("表示中 0 / 全 2 件");
     });
   });
 });

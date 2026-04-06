@@ -17,6 +17,7 @@ import type {
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
   SkillCreatorSdkEvent,
+  SkillCreatorSessionResumeResult,
   SkillCreatorGovernanceState,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
@@ -618,7 +619,10 @@ export function registerRuntimeSkillCreatorHandlers(
 
   ipcMain.handle(
     IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION,
-    async (event: IpcMainInvokeEvent, args: { checkpointId: string }) => {
+    async (
+      event: IpcMainInvokeEvent,
+      args: { checkpointId: string },
+    ): Promise<SkillCreatorSessionResumeResult> => {
       validateSender(
         event,
         IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION,
@@ -628,19 +632,35 @@ export function registerRuntimeSkillCreatorHandlers(
         return { success: false, error: "checkpointId が指定されていません" };
       }
       if (!runtimeSkillCreatorService) {
-        return { success: false, error: RUNTIME_SKILL_CREATOR_UNAVAILABLE };
+        return {
+          success: false,
+          error: RUNTIME_SKILL_CREATOR_UNAVAILABLE,
+          errorReason: "not_found",
+        };
       }
-      const snapshot = runtimeSkillCreatorService.resumeSession(
+      const resumeResult = runtimeSkillCreatorService.resumeSessionWithResult(
         args.checkpointId,
       );
-      if (!snapshot) {
-        return { success: false, error: "セッションの復元に失敗しました" };
+      if (!resumeResult.success || !resumeResult.workflowSnapshot) {
+        const reason = resumeResult.errorReason;
+        return {
+          success: false,
+          error:
+            reason === "expired"
+              ? "セッションの有効期限が切れています"
+              : reason === "incompatible"
+                ? "セッションが現在の環境と互換性がありません"
+                : reason === "not_found"
+                  ? "セッションが見つかりません"
+                  : "セッションの復元に失敗しました",
+          errorReason: reason ?? "not_found",
+        };
       }
       mainWindow.webContents.send(
         IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
-        snapshot,
+        resumeResult.workflowSnapshot,
       );
-      return { success: true, data: snapshot };
+      return resumeResult;
     },
   );
 
@@ -653,13 +673,28 @@ export function registerRuntimeSkillCreatorHandlers(
         mainWindow,
       );
       if (!args?.checkpointId?.trim()) {
-        return { success: false, error: "checkpointId が指定されていません" };
+        throw new Error("checkpointId が指定されていません");
       }
       if (!runtimeSkillCreatorService) {
-        return { success: false, error: RUNTIME_SKILL_CREATOR_UNAVAILABLE };
+        throw new Error(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
       }
       runtimeSkillCreatorService.deleteSession(args.checkpointId);
-      return { success: true };
+      return;
+    },
+  );
+
+  ipcMain.handle(
+    IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS,
+    async (event: IpcMainInvokeEvent): Promise<number> => {
+      validateSender(
+        event,
+        IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS,
+        mainWindow,
+      );
+      if (!runtimeSkillCreatorService) {
+        return 0;
+      }
+      return runtimeSkillCreatorService.cleanupExpiredSessions();
     },
   );
 
@@ -716,5 +751,6 @@ export function unregisterRuntimeSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION);
+  ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE);
 }

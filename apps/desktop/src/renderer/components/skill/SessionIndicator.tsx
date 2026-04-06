@@ -9,8 +9,10 @@ import type { SkillCreatorWorkflowPhase } from "@repo/shared/types";
 
 export interface SessionIndicatorProps {
   planId: string;
+  sessionId?: string;
   currentPhase: SkillCreatorWorkflowPhase;
   startedAt: number;
+  isActive?: boolean;
 }
 
 const phaseLabels: Record<SkillCreatorWorkflowPhase, string> = {
@@ -36,8 +38,9 @@ function formatDuration(startMs: number, nowMs: number): string {
 }
 
 export const SessionIndicator = memo<SessionIndicatorProps>(
-  ({ planId, currentPhase, startedAt }) => {
+  ({ planId, sessionId, currentPhase, startedAt, isActive = true }) => {
     const [now, setNow] = useState(Date.now);
+    const displayId = (sessionId ?? planId).slice(0, 8);
 
     useEffect(() => {
       const timer = setInterval(() => setNow(Date.now()), 60_000);
@@ -51,16 +54,23 @@ export const SessionIndicator = memo<SessionIndicatorProps>(
         role="status"
         aria-label="アクティブセッション"
       >
-        <span
-          className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-emerald-500"
-          aria-hidden="true"
-        />
+        {isActive ? (
+          <span
+            className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-emerald-500"
+            aria-hidden="true"
+            data-testid="session-indicator-pulse"
+          />
+        ) : null}
         <span className="text-xs text-[var(--text-secondary)]">
-          <span className="font-mono">{planId.slice(0, 8)}</span>
+          <span className="font-mono" data-testid="session-id-display">
+            {displayId}
+          </span>
           {" · "}
           {phaseLabels[currentPhase]}
           {" · "}
-          {formatDuration(startedAt, now)}
+          <span data-testid="session-elapsed-time">
+            {formatDuration(startedAt, now)}
+          </span>
         </span>
       </div>
     );
