@@ -1,6 +1,6 @@
 # タスク仕様書 検証レポート
 
-> 検証日時: 2026-03-05T12:15:42.636Z
+> 検証日時: 2026-04-06T09:25:12.144Z
 > 対象: docs/30-workflows/completed-tasks/01-TASK-FIX-AUTH-KEY-HANDLER-REGISTRATION-001
 
 ## サマリー
