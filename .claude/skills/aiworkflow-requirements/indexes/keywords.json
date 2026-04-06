@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-06T10:13:43.309Z",
-  "totalKeywords": 2773,
+  "generated": "2026-04-06T11:16:12.143Z",
+  "totalKeywords": 2776,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1016,6 +1016,7 @@
       "interfaces-auth-core.md",
       "interfaces-chat-history-core.md",
       "interfaces-chat-history-details.md",
+      "lessons-learned-current.md",
       "patterns-advanced.md",
       "patterns-core.md",
       "patterns-details.md",
@@ -1026,6 +1027,7 @@
       "security-electron-ipc-core.md",
       "security-electron-ipc-details.md",
       "security-skill-ipc-core.md",
+      "task-workflow-completed.md",
       "technology-devops-core.md",
       "technology-devops-details.md",
       "testing-component-patterns-advanced.md",
@@ -1185,6 +1187,7 @@
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed.md",
       "technology-devops-details.md",
       "technology-devops.md",
       "testing-component-patterns-advanced.md",
@@ -1897,6 +1900,7 @@
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed-ut-06-safety-gate.md",
+      "task-workflow-completed.md",
       "technology-devops.md"
     ],
     "スキルファイルツリー取得": [
@@ -3325,7 +3329,8 @@
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
-      "task-workflow-completed-skill-lifecycle-ui.md"
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed.md"
     ],
     "SYNC": [
       "arch-state-management-core.md",
@@ -4083,13 +4088,15 @@
     "creator": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-console-migration-patterns.md",
       "logs-archive-2026-02-permission-history-execution-timestamps.md",
-      "quality-e2e-testing.md"
+      "quality-e2e-testing.md",
+      "task-workflow-completed.md"
     ],
     "共有型インポート標準パターン": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md"
@@ -4112,7 +4119,8 @@
     ],
     "IMPROVEMENT": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
-      "lessons-learned-current.md"
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
     ],
     "AUTO": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
@@ -4400,6 +4408,7 @@
       "claude-code-agents-workflow.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -4431,6 +4440,7 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "phase-12-documentation-retrospective.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed.md",
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
@@ -6699,6 +6709,7 @@
     ],
     "task": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md",
+      "lessons-learned-current.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
@@ -6706,7 +6717,8 @@
       "logs-archive-2026-02-console-migration-patterns.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md"
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "task-workflow-completed.md"
     ],
     "仕様差分の統合是正": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md"
@@ -7023,6 +7035,13 @@
       "task-workflow-completed-skill-lifecycle.md"
     ],
     "カテゴリ別検索ガイド": [
+      "lessons-learned-current.md"
+    ],
+    "validator": [
+      "lessons-learned-current.md",
+      "logs-archive-2026-03-notification-history-sigterm-guard.md"
+    ],
+    "改善で判明した教訓": [
       "lessons-learned-current.md"
     ],
     "GUIDANCE": [
@@ -10321,9 +10340,6 @@
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md"
     ],
-    "validator": [
-      "logs-archive-2026-03-notification-history-sigterm-guard.md"
-    ],
     "fail": [
       "logs-archive-2026-03-notification-history-sigterm-guard.md"
     ],
@@ -11550,6 +11566,12 @@
     ],
     "追加完了記録": [
       "task-workflow-completed-ut-06-safety-gate.md"
+    ],
+    "TEMPLATE": [
+      "task-workflow-completed.md"
+    ],
+    "テンプレート改善": [
+      "task-workflow-completed.md"
     ],
     "タスクワークフロー": [
       "task-workflow-phases.md",

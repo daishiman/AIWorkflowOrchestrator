@@ -3,7 +3,7 @@
 ## メタ情報
 
 ```yaml
-issue_number: 1905
+issue_number: 1960
 ```
 
 ## メタ情報
