@@ -450,7 +450,8 @@ node scripts/list-specs.js --topics
 | ライフサイクル履歴型定義（TASK-SKILL-LIFECYCLE-07） | L31 |
 | 公開・互換性型定義（TASK-SKILL-LIFECYCLE-08） | L56 |
 | IPermissionStoreV2 インターフェース（UT-06-002） | L210 |
-| 関連ドキュメント | L225 |
+| buildPhaseResourceRequestsFromManifest 純粋関数（TASK-P0-07） | L226 |
+| 関連ドキュメント | L286 |
 
 ### references/interfaces-agent-sdk-ui.md
 

@@ -98,6 +98,7 @@ import type {
   SkillCreatorGovernancePhase,
   SkillCreatorGovernanceState,
 } from "@repo/shared/types";
+import { buildPhaseResourceRequestsFromManifest } from "./manifestResourceResolver";
 
 /** RuntimeSkillCreatorFacade の依存 */
 export interface RuntimeSkillCreatorFacadeDeps {
@@ -719,7 +720,8 @@ export class RuntimeSkillCreatorFacade {
   }
 
   private async resolveOperationResources(
-    requests: readonly import("./PhaseResourcePlanner").PhaseResourceRequest[],
+    phaseId: "plan" | "improve",
+    fallbackRequests: readonly import("./PhaseResourcePlanner").PhaseResourceRequest[],
     maxBytes: number,
     operation: import("./PhaseResourcePlanner").SkillCreatorOperation,
   ): Promise<{
@@ -736,6 +738,13 @@ export class RuntimeSkillCreatorFacade {
 
     const explicitRoot = this.getExplicitSkillCreatorRoot();
     const manifest = await this.loadWorkflowManifest(explicitRoot);
+    const requests = manifest
+      ? buildPhaseResourceRequestsFromManifest(
+          manifest,
+          phaseId,
+          fallbackRequests,
+        )
+      : [...fallbackRequests];
     const resolution = await this.sourceResolver.resolve({
       explicitRoot,
       manifest,
@@ -849,6 +858,7 @@ export class RuntimeSkillCreatorFacade {
     let referenceSpecs: Array<{ name: string; content: string }> = [];
     if (this.hasDynamicResourcePipeline()) {
       const resolved = await this.resolveOperationResources(
+        "plan",
         PLAN_RESOURCE_REQUESTS,
         PLAN_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
         "plan",
@@ -1510,6 +1520,7 @@ export class RuntimeSkillCreatorFacade {
       let agentPrompt: string;
       if (this.hasDynamicResourcePipeline()) {
         const resolved = await this.resolveOperationResources(
+          "improve",
           IMPROVE_RESOURCE_REQUESTS,
           IMPROVE_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
           "improve",

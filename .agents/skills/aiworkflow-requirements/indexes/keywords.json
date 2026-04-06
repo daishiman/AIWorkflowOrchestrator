@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-06T00:32:44.774Z",
-  "totalKeywords": 2720,
+  "generated": "2026-04-06T00:07:21.453Z",
+  "totalKeywords": 2722,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -4426,8 +4426,7 @@
     ],
     "orchestration": [
       "claude-code-agents-workflow.md",
-      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
-      "task-workflow-completed-skill-lifecycle-ui.md"
+      "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md"
     ],
     "ハンドオフプロトコル": [
       "claude-code-agents-workflow.md"
@@ -5433,6 +5432,12 @@
       "interfaces-workflow.md",
       "rag-search-graph.md",
       "rag-search-vector.md"
+    ],
+    "buildPhaseResourceRequestsFromManifest": [
+      "interfaces-agent-sdk-skill.md"
+    ],
+    "純粋関数": [
+      "interfaces-agent-sdk-skill.md"
     ],
     "Execution": [
       "interfaces-agent-sdk-ui.md",
@@ -7440,8 +7445,7 @@
       "rag-search-types.md"
     ],
     "wrapper": [
-      "lessons-learned-rt02-stub-response-error-notification.md",
-      "task-workflow-completed-skill-lifecycle-ui.md"
+      "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "logical": [
       "lessons-learned-rt02-stub-response-error-notification.md"
@@ -8053,8 +8057,7 @@
       "master-design.md"
     ],
     "SkillCreationResultPanel": [
-      "lessons-learned-ui-adapter-status-retry.md",
-      "task-workflow-completed-skill-lifecycle-ui.md"
+      "lessons-learned-ui-adapter-status-retry.md"
     ],
     "ENHANCEMENT": [
       "lessons-learned-ui-agent-view-nav-notification-history.md",
