@@ -35,12 +35,18 @@ describe("ImprovementProposal 統合テスト", () => {
       createMockSuggestion({ section: "## 入力形式" }),
     ];
 
-    Object.defineProperty(window, "electronAPI", {
+    Object.defineProperty(window, "skillCreatorAPI", {
       value: {
-        skillCreator: {
-          applyRuntimeImprovement: mockApplyRuntimeImprovement,
-        },
+        applyRuntimeImprovement: mockApplyRuntimeImprovement,
       },
+      writable: true,
+      configurable: true,
+    });
+  });
+
+  afterEach(() => {
+    Object.defineProperty(window, "skillCreatorAPI", {
+      value: undefined,
       writable: true,
       configurable: true,
     });
