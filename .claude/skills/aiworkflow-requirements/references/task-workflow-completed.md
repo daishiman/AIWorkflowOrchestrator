@@ -5,6 +5,52 @@
 
 ## 完了タスク
 
+### タスク: TASK-P0-07 ハードコードされた AGENT_NAMES の動的解決 — manifestResourceResolver.ts + RuntimeSkillCreatorFacade.ts phaseId 拡張（2026-04-06）
+
+| 項目       | 値                                                                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-07                                                                                                                                                 |
+| ステータス | **完了**                                                                                                                                                   |
+| タイプ     | refactoring / dynamic resource resolution                                                                                                                  |
+| 優先度     | P0                                                                                                                                                         |
+| 完了日     | 2026-04-06                                                                                                                                                 |
+| 対象       | `apps/desktop/src/main/services/runtime/manifestResourceResolver.ts`（新規）、`apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（変更）、`apps/desktop/src/main/services/runtime/__tests__/manifestResourceResolver.test.ts`（新規）、`apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts`（変更）、`apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts`（変更） |
+| 成果物     | `docs/30-workflows/TASK-P0-07-hardcoded-agent-names-dynamic-resolution/`                                                                                   |
+
+#### 実施内容
+
+- `manifestResourceResolver.ts` を新規作成し、`buildPhaseResourceRequestsFromManifest()` 純粋関数を実装
+- `RuntimeSkillCreatorFacade.ts` の `resolveOperationResources()` に `phaseId` 引数を追加し、`workflow-manifest.json` ベースの動的エージェント解決に移行
+- フォールバック 5 パターン:
+  1. manifest に phase が存在しない場合 → fallback 配列を返す
+  2. phase の resourceIds が undefined の場合 → fallback 配列を返す
+  3. phase の resourceIds が空配列の場合 → fallback 配列を返す
+  4. 全 resourceId が resources[] に未発見の場合 → fallback 配列を返す
+  5. dynamic pipeline off の場合 → 静的 `PLAN_RESOURCE_REQUESTS` / `IMPROVE_RESOURCE_REQUESTS` を使用
+- `AGENT_NAMES` ハードコード定数を完全削除し、manifest 優先 + 静的フォールバックの二層構成に整理
+- `interfaces-agent-sdk-skill.md` に `buildPhaseResourceRequestsFromManifest` のインターフェース仕様を追記
+- `RuntimeSkillCreatorFacade.plan.test.ts` / `RuntimeSkillCreatorFacade.improve.test.ts` に dynamic pipeline smoke test を追加し、plan/improve の phaseId 伝播と resource request 解決を検証
+
+#### 新規インターフェース
+
+```typescript
+function buildPhaseResourceRequestsFromManifest(
+  manifest: LoadedWorkflowManifest,
+  phaseId: string,
+  fallback: readonly PhaseResourceRequest[],
+): PhaseResourceRequest[];
+```
+
+#### 検証証跡
+
+- `apps/desktop/src/main/services/runtime/__tests__/manifestResourceResolver.test.ts`: PASS
+- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts`: PASS
+- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts`: PASS
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop lint`: PASS
+
+---
+
 ### タスク: TASK-P0-05 execute() → SkillFileWriter persist 統合（2026-04-05）
 
 | 項目       | 値                                                                                                                              |

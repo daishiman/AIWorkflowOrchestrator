@@ -222,6 +222,67 @@ V1 の PermissionStore を V2 へ拡張。AllowedToolEntryV2（expiresAt / skill
 
 ---
 
+
+## buildPhaseResourceRequestsFromManifest 純粋関数（TASK-P0-07）
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-P0-07 |
+| ステータス | completed（2026-04-06） |
+| 配置先 | `apps/desktop/src/main/services/runtime/manifestResourceResolver.ts` |
+| 呼び出し元 | `RuntimeSkillCreatorFacade.resolveOperationResources()` |
+
+### シグネチャ
+
+```typescript
+function buildPhaseResourceRequestsFromManifest(
+  manifest: LoadedWorkflowManifest,
+  phaseId: string,
+  fallback: readonly PhaseResourceRequest[],
+): PhaseResourceRequest[];
+```
+
+### 入出力
+
+| パラメータ | 型 | 説明 |
+| --- | --- | --- |
+| `manifest` | `LoadedWorkflowManifest` | `ManifestLoader` から取得した validated manifest |
+| `phaseId` | `string` | 解決対象の phase 識別子（例: `"plan"`, `"improve"`） |
+| `fallback` | `readonly PhaseResourceRequest[]` | manifest 解決失敗時に返す静的フォールバック配列 |
+| 戻り値 | `PhaseResourceRequest[]` | manifest から組み立てた resource request 配列 |
+
+### フォールバック 5 パターン
+
+| # | 条件 | 動作 |
+| --- | --- | --- |
+| 1 | `manifest.phases` に `phaseId` が存在しない | `console.warn` + `[...fallback]` を返す |
+| 2 | phase の `resourceIds` が `undefined` | `console.warn` + `[...fallback]` を返す |
+| 3 | phase の `resourceIds` が空配列 | `console.warn` + `[...fallback]` を返す |
+| 4 | 全 `resourceId` が `manifest.resources[]` に未発見 | `console.warn` + `[...fallback]` を返す |
+| 5 | dynamic pipeline off（呼び出し元で判定） | `resolveOperationResources()` が直接 static requests を使用 |
+
+### リソースマッピングルール
+
+```typescript
+// manifest resource → PhaseResourceRequest 変換
+{
+  id: resource.id,
+  kind: resource.kind,
+  relativePath: resource.path.replace(/^\.\// , ""),
+  tier: resource.kind === "agent" ? "required-core" : "optional-quality",
+  required: resource.kind === "agent",
+}
+```
+
+### 参照リンク
+
+- 実装: `apps/desktop/src/main/services/runtime/manifestResourceResolver.ts`
+- テスト: `apps/desktop/src/main/services/runtime/__tests__/manifestResourceResolver.test.ts`
+- 呼び出し元: `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`resolveOperationResources()`）
+- manifest 定義: `.claude/skills/skill-creator/workflow-manifest.json`
+
+---
+
 ## 関連ドキュメント
 - `indexes/quick-reference.md`
 - `indexes/resource-map.md`
