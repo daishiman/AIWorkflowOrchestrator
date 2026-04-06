@@ -739,3 +739,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 検証:
   - 統合テスト 22 件 PASS（`RuntimeSkillCreatorFacade.persist-integration.test.ts`）
   - OutputHandler テスト 22 件 PASS（`SkillCreatorOutputHandler.test.ts`）
+
+### 2026-04-06 - UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 spec_created
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only / screenshot evidence / spec_created |
+| 変更対象 | `docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/`（evidence bundle 11ファイル新規作成）、`docs/30-workflows/ut-sdk-07-phase11-screenshot-evidence-001/outputs/`（Phase 1-3 / 9-12 成果物作成）、`docs/30-workflows/unassigned-task/task-ut-sdk-07-phase11-screenshot-evidence-001.md`（status: spec_created）、`task-workflow-completed.md`（spec_created 追記） |
+| 結果 | TASK-SDK-07 Phase 11 の未取得 screenshot evidence（HandoffGuidance / disclosure summary / integrated_api 対照）を補完。Phase 11 evidence chain が完成した |
+| 検証 | Phase 11: 3件 screenshot（TC-11-01〜TC-11-03 PASS）、カバレッジ 100%、発見事項 0件 |

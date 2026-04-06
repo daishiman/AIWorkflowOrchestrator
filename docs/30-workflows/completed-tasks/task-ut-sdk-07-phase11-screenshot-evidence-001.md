@@ -10,7 +10,7 @@ category: 品質保証
 target_feature: Skill Creator governance bundle UI evidence
 priority: 中
 scale: 小規模
-status: 未実施
+status: spec_created
 source_phase: TASK-SDK-07 Phase 12 unassigned-task-detection（2026-03-28）
 created_date: 2026-03-28
 dependencies: [TASK-SDK-07]
@@ -24,7 +24,7 @@ dependencies: [TASK-SDK-07]
 | 対象機能     | SkillLifecyclePanel の terminal_handoff + disclosure summary UI           |
 | 優先度       | 中                                                                        |
 | 見積もり規模 | 小規模                                                                    |
-| ステータス   | 未実施                                                                    |
+| ステータス   | spec_created                                                              |
 | 発見元       | TASK-SDK-07 Phase 12 unassigned-task-detection                            |
 | 発見日       | 2026-03-28                                                                |
 
