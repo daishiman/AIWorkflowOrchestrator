@@ -1133,22 +1133,18 @@ export class RuntimeSkillCreatorFacade {
         const errorResponse =
           executeResult as RuntimeSkillCreatorExecuteErrorResponse;
         const snapshot = this.workflowEngine.getWorkflowState(planId);
-        if (!snapshot) {
-          this.onWorkflowStateSnapshot?.(
-            planId,
-            null,
-            errorResponse.error.message,
-          );
-        }
+        this.onWorkflowStateSnapshot?.(
+          planId,
+          snapshot ?? null,
+          errorResponse.error.message,
+        );
       }
     } catch (error) {
       this.workflowEngine.triggerPhaseTransition(planId, "error", 0);
       const errorMessage =
         error instanceof Error ? error.message : String(error);
       const snapshot = this.workflowEngine.getWorkflowState(planId);
-      if (!snapshot) {
-        this.onWorkflowStateSnapshot?.(planId, null, errorMessage);
-      }
+      this.onWorkflowStateSnapshot?.(planId, snapshot ?? null, errorMessage);
       console.error(
         "[RuntimeSkillCreatorFacade] executeAsync failed",
         planId,
