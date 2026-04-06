@@ -2,6 +2,14 @@
 
 ## 役割
 
+## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
+
+### 変更内容
+- `apps/desktop/scripts/capture-task-ui-01-phase11.mjs` を追加し、Playwright 4 枚の visual evidence を `docs/30-workflows/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion/outputs/phase-11/screenshots/` に保存
+- `App.tsx` / `useSkillCenter.ts` / `store/types.ts` / renderer tests を current facts へ同期し、`skillLifecycle` の `onOpenWizard` / dock normalization / ViewType union 更新を targeted vitest 35 tests PASS で確認
+- `outputs/phase-12/implementation-guide.md` に screenshot references を追記し、`system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` を same-wave sync
+- `.agents` mirror の LOGS / SKILL history も同波更新
+
 ---
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
 

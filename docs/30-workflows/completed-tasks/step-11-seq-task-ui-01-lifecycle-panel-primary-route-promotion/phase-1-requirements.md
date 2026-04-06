@@ -56,6 +56,12 @@ SkillLifecyclePanel の一次導線昇格に必要な機能要件・非機能要
 - 含む: ルート定義追加、normalizeSkillLifecycleView() 更新、ナビゲーション定義更新、既存導線維持
 - 含まない: SkillCreateWizard 廃止、LifecyclePanel 内部変更、新UIコンポーネント作成、バックエンド変更
 
+### Task 7: skill 準拠基準の固定
+
+- `task-specification-creator` の Phase 12 必須 6 成果物と blocked PR boundary を確認する
+- `aiworkflow-requirements` の canonical root、same-wave sync、current / baseline 分離を確認する
+- Phase 3 の 30思考法レビューと Phase 12 の close-out をつなぐ評価軸を固定する
+
 ## 参照資料
 
 | 資料名                     | パス                                                                                        | 説明                                      |
@@ -66,8 +72,13 @@ SkillLifecyclePanel の一次導線昇格に必要な機能要件・非機能要
 | skillLifecycleJourney      | `apps/desktop/src/renderer/navigation/skillLifecycleJourney.ts`                             | ナビゲーション定義                        |
 | SkillManagementPanel       | `apps/desktop/src/renderer/components/skill/SkillManagementPanel.tsx`                       | 現在の LifecyclePanel エントリポイント    |
 | ViewType 定義              | `packages/shared/src/types/skillCreator.ts`                                                 | ViewType 定義                             |
-| ナビゲーション契約         | `.agents/skills/aiworkflow-requirements/references/ui-ux-navigation.md`                     | UI/UX ナビゲーション仕様                  |
-| Skill Creator サービス仕様 | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | サービスインターフェース仕様              |
+| task-specification-creator | `.claude/skills/task-specification-creator/SKILL.md`                                        | Phase 12 の必須構造と close-out 基準      |
+| aiworkflow-requirements    | `.claude/skills/aiworkflow-requirements/SKILL.md`                                           | 正本仕様、台帳同期、同一 wave ルール      |
+| ナビゲーション契約         | `.claude/skills/aiworkflow-requirements/references/ui-ux-navigation.md`                     | UI/UX ナビゲーション仕様                  |
+| Skill Creator サービス仕様 | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | サービスインターフェース仕様              |
+| エレガンス監査             | `.claude/skills/aiworkflow-requirements/references/spec-elegance-consistency-audit.md`      | 4条件と最小複雑性の監査                   |
+| Phase 12 ガイド            | `.claude/skills/task-specification-creator/references/phase-11-12-guide.md`                 | Phase 12 の必須 6 成果物                  |
+| Phase 12 チェックリスト    | `.claude/skills/task-specification-creator/references/phase12-checklist-definition.md`      | 実体確認と validator 基準                 |
 
 ## 実行手順
 

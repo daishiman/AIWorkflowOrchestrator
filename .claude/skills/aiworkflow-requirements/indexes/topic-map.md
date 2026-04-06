@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-05
+> 自動生成: 2026-04-06
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1331,15 +1331,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
-| Global Navigation | L45 |
-| ChatViewナビゲーション | L346 |
-| ナビゲーションボタン仕様 | L376 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L392 |
-| テスト検証済み項目 | L406 |
-| アクセシビリティ対応事例 | L421 |
-| ナビゲーションパターンのベストプラクティス | L453 |
-| 関連ドキュメント | L465 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L474 |
+| Global Navigation | L46 |
+| ChatViewナビゲーション | L348 |
+| ナビゲーションボタン仕様 | L378 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L394 |
+| テスト検証済み項目 | L408 |
+| アクセシビリティ対応事例 | L423 |
+| ナビゲーションパターンのベストプラクティス | L455 |
+| 関連ドキュメント | L467 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L476 |
 
 ### references/ui-ux-panels.md
 
@@ -2687,23 +2687,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L82 |
-| クイックリファレンス: カテゴリ別検索ガイド | L100 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L281 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L613 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L647 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L730 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L746 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L770 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L820 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L845 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L876 |
-| TASK-RT-06 教訓（2026-03-29） | L907 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L929 |
-| TASK-P0-04 教訓（2026-03-30） | L960 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L996 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1091 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1145 |
 | 分割ファイル一覧 | L83 |
 | クイックリファレンス: カテゴリ別検索ガイド | L101 |
 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L282 |
@@ -2719,9 +2702,9 @@ node scripts/list-specs.js --topics
 | UT-IMP-SDK-06 教訓（2026-04-01） | L930 |
 | TASK-P0-04 教訓（2026-03-30） | L961 |
 | TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L997 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1093 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1147 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1187 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1092 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1146 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1186 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
