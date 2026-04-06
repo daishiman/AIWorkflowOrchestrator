@@ -1,0 +1,12 @@
+RUN  v2.1.9 /apps/desktop
+
+ ✓ src/main/services/runtime/__tests__/governance/SkillCreatorHooksFactory.test.ts (18 tests) 69ms
+ ✓ src/main/services/runtime/__tests__/governance/GovernanceAllPhases.test.ts (14 tests) 25ms
+ ✓ src/main/services/runtime/__tests__/governance/SkillCreatorPermissionPolicy.test.ts (31 tests) 76ms
+ ✓ src/main/services/runtime/__tests__/governance/SkillCreatorAuditSink.test.ts (15 tests) 316ms
+ ✓ src/main/services/runtime/__tests__/governance/SkillCreatorGovernance.integration.test.ts (12 tests) 181ms
+
+ Test Files  5 passed (5)
+      Tests  90 passed (90)
+   Start at  2026-04-06T09:04:36
+   Duration  38.29s (transform 2.55s, setup 8.72s, collect 3.45s, tests 666ms, environment 9.25s, prepare 2.47s)

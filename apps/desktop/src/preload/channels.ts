@@ -356,6 +356,8 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_GET_SESSION_DETAIL: "skill-creator:get-session-detail",
   SKILL_CREATOR_RESUME_SESSION: "skill-creator:resume-session",
   SKILL_CREATOR_DELETE_SESSION: "skill-creator:delete-session",
+  SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS:
+    "skill-creator:cleanup-expired-sessions",
 
   // Governance / Permission / Hooks (TASK-P0-09)
   SKILL_CREATOR_GET_GOVERNANCE_STATE: "skill-creator:get-governance-state",
@@ -664,6 +666,7 @@ export const ALLOWED_INVOKE_CHANNELS: readonly string[] = [
   IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL,
   IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION,
   IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION,
+  IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS,
   IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE,
   // Skill Creator SDK Session channels (TASK-SDK-SC-01)
   IPC_CHANNELS.START_SESSION,

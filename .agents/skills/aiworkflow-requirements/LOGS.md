@@ -13,6 +13,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 
 | 見出し                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 2026-04-06 - TASK-UT-RT-01 verifyAndImproveLoop adapter error notification Phase 12 close-out sync（`task-workflow-backlog.md` から完了移管 / `task-workflow-completed.md` に completed record 追加 / follow-up残り1件へ更新 / workflow evidence `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/` へ集約） |
+| 2026-04-06 - TASK-P0-09 Phase 12 close-out sync（`governance/` サブディレクトリ新設・`SkillCreator` プレフィックスに命名統一（`SkillCreatorPermissionPolicy` / `SkillCreatorHooksFactory` / `SkillCreatorAuditSink`）/ TDD 90件全 PASS（TC-PP 31件 / TC-HF 18件 / TC-AS 15件 / TC-FG 12件 / TC-G 14件）/ Phase 12 タスク仕様書 15ファイル作成（`docs/30-workflows/task-p0-09-sdk-permission-hooks-governance/`）/ `governance-hooks-factory-audit-sink.md` を新 API（`createHooks(phase, auditSink, provenance?)`・ring buffer）に更新 / `task-workflow-completed.md` 完了記録追加 / typecheck EXIT:0 / lint 0 errors） |
 | 2026-04-04 - TASK-P0-03 workflow-manifest-production-placement Phase 12 close-out sync（`.claude/skills/skill-creator/workflow-manifest.json`（canonical）と `.agents/skills/skill-creator/workflow-manifest.json`（mirror）に 5-phase / 7-resource / 10-hook manifest を本番配置 / ManifestLoader.production-manifest テスト 17 ケース ALL PASS / API/IPC/型定義変更なし → システム仕様更新 no-op / `skill-creator` SKILL.md v10.40.1 更新済み / `task-workflow-completed.md` 完了記録追加 / 後続 P0-04/P0-07/P0-09 の基盤固定 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新） |
 | 2026-04-04 - task-imp-layer12-spec-definition-004 Phase 12 close-out sync（`interfaces-skill-verify-contract.md` 新規作成 / FR-04 verify 契約の check ID 体系 19 件（L1-001〜L4-003）を Layer 命名規則・severity・判定基準・エラーメッセージとともに正式追記 / Layer 拡張ガイドライン明文化 / `SkillCreatorVerificationEngine.ts` との diff 0 件確認 / `task-workflow-completed.md` 完了記録追加 / LOGS.md 2ファイル + SKILL.md 2ファイル同時更新） |
 | 2026-04-04 - UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 Phase 12 close-out sync（`SkillLifecyclePanel.tsx` に severity フィルタ（`all` / `warning+` / `error`）追加 / `SeverityFilterLevel` 型・`filterChecksBySeverity()` 純粋関数・`filteredChecksByLayer` useMemo・`severityTotalCounts`・`activeWorkflowId` 変更時リセット useEffect を実装 / テスト SF-01〜SF-09（9件）追加・27テスト全PASS / `task-workflow-backlog.md` で本タスクを completed 扱いへ移管 / `task-workflow-completed.md` に完了記録追加 / Step 2 は内部型のため domain spec 更新 no-op / generate-index.js 再実行で topic-map/keywords を更新） |
@@ -173,6 +175,25 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 | 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 Phase 12 再確認追補                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 仕様書集約（再利用導線最適化）                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+
+## 2026-04-06 - TASK-UT-RT-01 verifyAndImproveLoop adapter error notification Phase 12 close-out sync
+
+### 変更概要
+
+`TASK-RT-01` の Phase 10 MINOR follow-up（`verifyAndImproveLoop()` の improve adapter error 通知統一）を close-out し、台帳（backlog/completed）と workflow evidence を same-wave で同期した。
+
+### 同期内容（aiworkflow-requirements）
+
+- `references/task-workflow-backlog.md`: `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001` を完了へ移管（取り消し線 + 完了日 + workflow root 参照）
+- `references/task-workflow-completed.md`: completed record を追加し、旧 `Phase 12 未タスク` 列挙から同タスクを除去
+- `references/task-workflow.md`: backlog の follow-up 件数（2件→1件）と completed record 追記の current fact を同期
+- `scripts/generate-index.js`: `indexes/topic-map.md` / `indexes/keywords.json` を再生成して検索導線を更新
+
+### 根拠（workflow evidence）
+
+- workflow root: `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（0エラー / 0警告）
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（警告 26）
 
 ## archive 入口
 
@@ -662,3 +683,21 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 - 検証:
   - 統合テスト 22 件 PASS（`RuntimeSkillCreatorFacade.persist-integration.test.ts`）
   - OutputHandler テスト 22 件 PASS（`SkillCreatorOutputHandler.test.ts`）
+
+## TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out sync（2026-04-06）
+
+- タスク名: TASK-P0-09 claude-sdk-permission-hooks-governance
+- 種別: implementation / TDD / governance / docs sync
+- 主な反映:
+  - `runtime/governance/` サブディレクトリを新設し、`SkillCreatorPermissionPolicy.ts` / `SkillCreatorHooksFactory.ts` / `SkillCreatorAuditSink.ts` / `index.ts` を配置
+  - 命名規則を `SkillCreator` プレフィックスに統一（旧 `GovernanceHooksFactory` / `GovernanceAuditSink` から変更）
+  - TDD: TC-PP-01〜18（PermissionPolicy 31件）/ TC-HF-01〜10（HooksFactory 18件）/ TC-AS-01〜12（AuditSink 15件）/ TC-FG-01〜09（統合 12件）/ TC-G-01〜14（全フェーズ 14件）
+  - Phase 12 タスク仕様書 15ファイル（`docs/30-workflows/task-p0-09-sdk-permission-hooks-governance/`）を作成
+  - `governance-hooks-factory-audit-sink.md` を新 API（`createHooks(phase, auditSink, provenance?)`・ring buffer）に更新
+  - `task-workflow-completed.md` に完了記録（2026-04-06）を追加
+  - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
+  - TASK-P0-09-U1（path-scoped enforcement）は carry-forward として `TODO(TASK-P0-09-U1)` コメントで明示
+- 検証:
+  - vitest governance 90件全 PASS
+  - typecheck: EXIT:0 ✅
+  - lint: EXIT:0（10 warnings / 0 errors）⚠️

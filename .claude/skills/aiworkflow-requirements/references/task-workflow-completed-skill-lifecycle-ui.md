@@ -2,7 +2,49 @@
 
 > 親仕様書: [task-workflow-completed-skill-lifecycle.md](task-workflow-completed-skill-lifecycle.md)
 > 役割: completed records - UI実装・統合系
-> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-RT-03-VERIFY-IMPROVE-PANEL-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
+> 対象タスク: TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001, TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001, TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001, TASK-RT-03, TASK-RT-03-VERIFY-IMPROVE-PANEL-001, TASK-10A-C, TASK-10A-D, TASK-SKILL-LIFECYCLE-04, TASK-SKILL-LIFECYCLE-05, TASK-SKILL-LIFECYCLE-08, Task09-12
+
+## TASK-RT-03: SkillCreationResultPanel orchestration wrapper 完了記録（2026-04-06）
+
+### タスク概要
+
+| 項目 | 内容 |
+| --- | --- |
+| タスクID | TASK-RT-03 |
+| 対象workflow | `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/` |
+| ステータス | completed（Phase 1-12 completed / Phase 13 blocked） |
+| テスト | `SkillCreationResultPanel` / `ExecuteResultDetailPanel` / `SkillLifecyclePanel` targeted suite PASS |
+| 画面証跡 | `outputs/phase-11/screenshots/ss-01..06` |
+
+### 実装内容
+
+| 観点 | 内容 |
+| --- | --- |
+| orchestration wrapper | `SkillCreationResultPanel` を新規追加し、plan / execute / verify の detail panel を束ねる wrapper として実装 |
+| persist surface | `ExecuteResultDetailPanel` に `persistResult.skillPath` / `persistResult.files` / `persistError` を追加し、保存失敗を追跡可能にした |
+| state owner | `SkillLifecyclePanel` は rawPlanDetail / rawExecuteDetail / verifyDetail の owner を維持し、wrapper は presentation only に閉じた |
+| verify / reverify | `VerifyResultDetailPanel` の loading / pending / fail / pass を `SkillCreationResultPanel` から統合表示し、`reverify` 導線を親から注入 |
+| verify retry surface | `verifyError` / `onRetryVerify` を追加し、fetch failure を wrapper 内の retry surface として分離した |
+| prepare reset | 新しい prepare 開始時に `clearPlanExecutionState()` で旧 execute / verify result surface を無効化し、in-flight verify request を stale 化した |
+| visual harness | Phase 11 harness と capture script を用意し、6 状態の screenshot を取得した |
+
+### 検証証跡
+
+| 区分 | コマンド / 証跡 | 結果 |
+| --- | --- | --- |
+| unit test | `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/SkillCreationResultPanel.test.tsx src/renderer/components/skill/__tests__/ExecuteResultDetailPanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx` | PASS |
+| typecheck | `pnpm --filter @repo/desktop typecheck` | PASS |
+| screenshot | `node apps/desktop/scripts/capture-task-rt-03-skill-creation-result-panel-phase11.mjs` | PASS（6 screenshots） |
+| implementation guide | `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/TASK-RT-03-skill-creation-result-panel` | PASS |
+| screenshot coverage | `node .claude/skills/task-specification-creator/scripts/validate-phase11-screenshot-coverage.js --workflow docs/30-workflows/TASK-RT-03-skill-creation-result-panel` | PASS（expected 6 / covered 6） |
+
+### 苦戦箇所と再発防止
+
+| 苦戦箇所 | 解決策 | 再利用ルール |
+| --- | --- | --- |
+| wrapper と親 state owner の境界 | raw result は `SkillLifecyclePanel` に残し、wrapper は表示専用にした | orchestration wrapper を増やす時は state owner を最初に固定する |
+| execute の保存結果 surface | `persistResult` と `persistError` を別セクションで表示した | 実行成功と保存成功は別 failure mode として切り分ける |
+| verify detail の表示遷移 | loading / pending / fail / pass を overall status に反映した | loading と empty state の判定を同じ条件にしない |
 
 ## TASK-IMP-VIEWTYPE-RENDERVIEW-FOUNDATION-001: ViewType/renderView 基盤拡張 完了記録（2026-03-17）
 
