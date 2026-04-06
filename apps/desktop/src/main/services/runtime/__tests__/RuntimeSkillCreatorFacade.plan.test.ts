@@ -17,10 +17,7 @@ import { ManifestLoader } from "../ManifestLoader";
 import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
 import type { ILLMAdapter } from "../../../adapters/llm/types";
-import {
-  PLAN_PROMPT_CONSTANTS,
-  PLAN_RESOURCE_REQUESTS,
-} from "../planPromptConstants";
+import { PLAN_PROMPT_CONSTANTS } from "../planPromptConstants";
 
 // --- Mock factories ---
 
@@ -697,7 +694,7 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
         }),
       },
     ])(
-      "T-P7-06/T-P7-07: $caseName の場合は PLAN_RESOURCE_REQUESTS にフォールバックする",
+      "T-P7-06/T-P7-07: $caseName の場合は VALIDATION_ERROR を返して fallback しない",
       async ({ manifest }) => {
         vi.spyOn(ManifestLoader.prototype, "loadManifest").mockResolvedValue(
           manifest,
@@ -732,33 +729,18 @@ describe("RuntimeSkillCreatorFacade.plan() LLM Integration", () => {
           } as never,
         });
 
-        (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue(
-          {
-            content: validPlanResponseJson(),
-            model: "claude-sonnet-4-20250514",
-            usage: {
-              promptTokens: 100,
-              completionTokens: 50,
-              totalTokens: 150,
-            },
-          },
+        const result = await dynamicFacade.plan(
+          "テスト入力",
+          "api-key",
+          "sk-test",
         );
 
-        await dynamicFacade.plan("テスト入力", "api-key", "sk-test");
-
-        expect(resourcePlannerPlan).toHaveBeenCalledTimes(1);
-        expect(resourcePlannerPlan.mock.calls[0][0].operation).toBe("plan");
-        expect(resourcePlannerPlan.mock.calls[0][0].requests).toEqual([
-          ...PLAN_RESOURCE_REQUESTS,
-        ]);
-        expect(
-          mockSourceResolverResolve.mock.calls[0][0].requiredRelativePaths,
-        ).toEqual([
-          "agents/discover-problem.md",
-          "agents/design-workflow.md",
-          "agents/plan-structure.md",
-        ]);
-        expect(dynamicResourceLoader.loadAgent).not.toHaveBeenCalled();
+        expect(result).toMatchObject({
+          success: false,
+          error: { code: "VALIDATION_ERROR" },
+        });
+        expect(resourcePlannerPlan).not.toHaveBeenCalled();
+        expect(mockLLMAdapter.sendChat).not.toHaveBeenCalled();
       },
     );
   });

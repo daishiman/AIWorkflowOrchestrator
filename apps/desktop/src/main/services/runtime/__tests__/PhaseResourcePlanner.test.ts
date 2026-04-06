@@ -215,4 +215,46 @@ describe("PhaseResourcePlanner", () => {
       }),
     ).rejects.toThrow("required_resource_missing:verify:verify-rules");
   });
+
+  it("上位候補が required file を欠く場合は下位候補へ fallback する", async () => {
+    const explicitRoot = await createSkillRoot(
+      "task03-plan-fallback-explicit-",
+    );
+    const envRoot = await createSkillRoot("task03-plan-fallback-env-");
+    tempRoots.push(explicitRoot, envRoot);
+    process.env.AIWORKFLOW_SKILL_CREATOR_PATH = envRoot;
+
+    await writeTextFile(
+      envRoot,
+      "agents/discover-problem.md",
+      "env fallback agent prompt",
+    );
+
+    const resolver = new SkillCreatorSourceResolver();
+    const resolution = await resolver.resolve({
+      explicitRoot,
+      requiredRelativePaths: ["agents/discover-problem.md"],
+    });
+    const planner = new PhaseResourcePlanner();
+    const result = await planner.plan({
+      operation: "plan",
+      resolution,
+      maxBytes: 10_000,
+      requests: [
+        {
+          id: "discover-problem",
+          kind: "agent",
+          relativePath: "agents/discover-problem.md",
+          tier: "required-core",
+          required: true,
+        },
+      ],
+    });
+
+    expect(result.degradeReasons).toContain("structure_mismatch");
+    expect(result.resources[0]).toMatchObject({
+      selectedRoot: envRoot,
+      sourceMode: "env",
+    });
+  });
 });

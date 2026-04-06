@@ -1,7 +1,10 @@
 import { afterEach, describe, it, expect, vi, beforeEach } from "vitest";
 import type { LoadedWorkflowManifest } from "@repo/shared/types";
 import type { PhaseResourceRequest } from "../PhaseResourcePlanner";
-import { buildPhaseResourceRequestsFromManifest } from "../manifestResourceResolver";
+import {
+  buildPhaseResourceRequestsFromManifest,
+  WorkflowManifestValidationError,
+} from "../manifestResourceResolver";
 import { PLAN_RESOURCE_REQUESTS } from "../planPromptConstants";
 import { IMPROVE_RESOURCE_REQUESTS } from "../improvePromptConstants";
 
@@ -208,26 +211,22 @@ describe("buildPhaseResourceRequestsFromManifest", () => {
   });
 
   // ----------------------------------------------------------------
-  // T-P7-10a: manifest に対象 phaseId が存在しない場合のフォールバック
+  // T-P7-10a: manifest に対象 phaseId が存在しない場合は ValidationError
   // ----------------------------------------------------------------
-  it("T-P7-10a: manifest に対象 phaseId が存在しない場合、fallback を返す", () => {
+  it("T-P7-10a: manifest に対象 phaseId が存在しない場合、WorkflowManifestValidationError をスローする", () => {
     const manifest = createMockManifest({
       phases: [],
     });
 
-    const result = buildPhaseResourceRequestsFromManifest(
-      manifest,
-      "plan",
-      STATIC_FALLBACK,
-    );
-
-    expect(result).toEqual([...STATIC_FALLBACK]);
+    expect(() =>
+      buildPhaseResourceRequestsFromManifest(manifest, "plan", STATIC_FALLBACK),
+    ).toThrow(WorkflowManifestValidationError);
   });
 
   // ----------------------------------------------------------------
-  // T-P7-10b: resourceIds が undefined の場合のフォールバック
+  // T-P7-10b: resourceIds が undefined の場合は ValidationError
   // ----------------------------------------------------------------
-  it("T-P7-10b: resourceIds が undefined の場合、fallback を返す", () => {
+  it("T-P7-10b: resourceIds が undefined の場合、WorkflowManifestValidationError をスローする", () => {
     const manifest = createMockManifest({
       phases: [
         {
@@ -240,19 +239,15 @@ describe("buildPhaseResourceRequestsFromManifest", () => {
       ],
     });
 
-    const result = buildPhaseResourceRequestsFromManifest(
-      manifest,
-      "plan",
-      STATIC_FALLBACK,
-    );
-
-    expect(result).toEqual([...STATIC_FALLBACK]);
+    expect(() =>
+      buildPhaseResourceRequestsFromManifest(manifest, "plan", STATIC_FALLBACK),
+    ).toThrow(WorkflowManifestValidationError);
   });
 
   // ----------------------------------------------------------------
-  // T-P7-10c: resourceIds が空配列の場合のフォールバック
+  // T-P7-10c: resourceIds が空配列の場合は ValidationError
   // ----------------------------------------------------------------
-  it("T-P7-10c: resourceIds が空配列の場合、fallback を返す", () => {
+  it("T-P7-10c: resourceIds が空配列の場合、WorkflowManifestValidationError をスローする", () => {
     const manifest = createMockManifest({
       phases: [
         {
@@ -265,19 +260,15 @@ describe("buildPhaseResourceRequestsFromManifest", () => {
       ],
     });
 
-    const result = buildPhaseResourceRequestsFromManifest(
-      manifest,
-      "plan",
-      STATIC_FALLBACK,
-    );
-
-    expect(result).toEqual([...STATIC_FALLBACK]);
+    expect(() =>
+      buildPhaseResourceRequestsFromManifest(manifest, "plan", STATIC_FALLBACK),
+    ).toThrow(WorkflowManifestValidationError);
   });
 
   // ----------------------------------------------------------------
-  // T-P7-10d: 全 ID が resources に見つからない場合のフォールバック
+  // T-P7-10d: 全 ID が resources に見つからない場合は ValidationError
   // ----------------------------------------------------------------
-  it("T-P7-10d: 全 ID が manifest.resources に見つからない場合、fallback を返す", () => {
+  it("T-P7-10d: 全 ID が manifest.resources に見つからない場合、WorkflowManifestValidationError をスローする", () => {
     const manifest = createMockManifest({
       phases: [
         {
@@ -291,30 +282,23 @@ describe("buildPhaseResourceRequestsFromManifest", () => {
       resources: [],
     });
 
-    const result = buildPhaseResourceRequestsFromManifest(
-      manifest,
-      "plan",
-      STATIC_FALLBACK,
-    );
-
-    expect(result).toEqual([...STATIC_FALLBACK]);
+    expect(() =>
+      buildPhaseResourceRequestsFromManifest(manifest, "plan", STATIC_FALLBACK),
+    ).toThrow(WorkflowManifestValidationError);
   });
 
   // ----------------------------------------------------------------
-  // T-P7-10e: フォールバック発動時のログ出力確認
+  // T-P7-10e: ValidationError のメッセージに phaseId が含まれる
   // ----------------------------------------------------------------
-  it("T-P7-10e: フォールバック発動時に console.warn が呼ばれる", () => {
+  it("T-P7-10e: WorkflowManifestValidationError のメッセージに phaseId が含まれる", () => {
     const manifest = createMockManifest({
       phases: [],
     });
 
-    buildPhaseResourceRequestsFromManifest(manifest, "plan", STATIC_FALLBACK);
-
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("[manifestResourceResolver]"),
-    );
-    expect(warnSpy).toHaveBeenCalledWith(
-      expect.stringContaining("falling back to static resource requests"),
+    expect(() =>
+      buildPhaseResourceRequestsFromManifest(manifest, "plan", STATIC_FALLBACK),
+    ).toThrow(
+      expect.objectContaining({ message: expect.stringContaining("plan") }),
     );
   });
 
@@ -535,10 +519,10 @@ describe("buildPhaseResourceRequestsFromManifest", () => {
   });
 
   // ----------------------------------------------------------------
-  // T-P7-14: 複数フォールバック条件の組み合わせ
+  // T-P7-14: 複数フェーズがある場合の ValidationError 境界
   // ----------------------------------------------------------------
-  describe("複数フォールバック条件の組み合わせ", () => {
-    it("T-P7-14: manifest に複数フェーズがあり、対象フェーズのみ未定義の場合", () => {
+  describe("複数フェーズがある場合の ValidationError 境界", () => {
+    it("T-P7-14: manifest に複数フェーズがあり、対象フェーズのみ未定義の場合、plan は ValidationError・improve は manifest 由来", () => {
       const manifest = createMockManifest({
         phases: [
           // plan は存在しない — improve のみ定義
@@ -552,25 +536,26 @@ describe("buildPhaseResourceRequestsFromManifest", () => {
         ],
       });
 
-      const planResult = buildPhaseResourceRequestsFromManifest(
-        manifest,
-        "plan",
-        PLAN_RESOURCE_REQUESTS,
-      );
+      // plan は ValidationError
+      expect(() =>
+        buildPhaseResourceRequestsFromManifest(
+          manifest,
+          "plan",
+          PLAN_RESOURCE_REQUESTS,
+        ),
+      ).toThrow(WorkflowManifestValidationError);
+
+      // improve は manifest 由来
       const improveResult = buildPhaseResourceRequestsFromManifest(
         manifest,
         "improve",
         IMPROVE_RESOURCE_REQUESTS,
       );
-
-      // plan はフォールバック
-      expect(planResult).toEqual([...PLAN_RESOURCE_REQUESTS]);
-      // improve は manifest 由来
       expect(improveResult).not.toEqual([...IMPROVE_RESOURCE_REQUESTS]);
       expect(improveResult[0]!.id).toBe("improve-prompt");
     });
 
-    it("T-P7-14b: resourceIds の全 ID が未発見で結果が空 → フォールバック", () => {
+    it("T-P7-14b: resourceIds の全 ID が未発見で結果が空 → ValidationError", () => {
       const manifest = createMockManifest({
         phases: [
           {
@@ -591,27 +576,27 @@ describe("buildPhaseResourceRequestsFromManifest", () => {
         ],
       });
 
-      const result = buildPhaseResourceRequestsFromManifest(
-        manifest,
-        "plan",
-        PLAN_RESOURCE_REQUESTS,
-      );
-
-      expect(result).toEqual([...PLAN_RESOURCE_REQUESTS]);
+      expect(() =>
+        buildPhaseResourceRequestsFromManifest(
+          manifest,
+          "plan",
+          PLAN_RESOURCE_REQUESTS,
+        ),
+      ).toThrow(WorkflowManifestValidationError);
     });
 
-    it("T-P7-14c: manifest の phases が空配列の場合、フォールバックする", () => {
+    it("T-P7-14c: manifest の phases が空配列の場合、ValidationError をスローする", () => {
       const manifest = createMockManifest({
         phases: [],
       });
 
-      const result = buildPhaseResourceRequestsFromManifest(
-        manifest,
-        "plan",
-        PLAN_RESOURCE_REQUESTS,
-      );
-
-      expect(result).toEqual([...PLAN_RESOURCE_REQUESTS]);
+      expect(() =>
+        buildPhaseResourceRequestsFromManifest(
+          manifest,
+          "plan",
+          PLAN_RESOURCE_REQUESTS,
+        ),
+      ).toThrow(WorkflowManifestValidationError);
     });
   });
 });

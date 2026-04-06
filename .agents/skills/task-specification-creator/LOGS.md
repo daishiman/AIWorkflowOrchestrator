@@ -2,6 +2,28 @@
 
 ## 役割
 
+## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
+
+### 変更内容
+- `apps/desktop/scripts/capture-task-ui-01-phase11.mjs` を追加し、Playwright 4 枚の visual evidence を `docs/30-workflows/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion/outputs/phase-11/screenshots/` に保存
+- `App.tsx` / `useSkillCenter.ts` / `store/types.ts` / renderer tests を current facts へ同期し、`skillLifecycle` の `onOpenWizard` / dock normalization / ViewType union 更新を targeted vitest 35 tests PASS で確認
+- `outputs/phase-12/implementation-guide.md` に screenshot references を追記し、`system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `phase12-task-spec-compliance-check.md` を same-wave sync
+- `.agents` mirror の LOGS / SKILL history も同波更新
+
+---
+## 2026-04-06 - TASK-UT-RT-01 verifyAndImproveLoop adapter notification Phase 12 close-out validate 補強
+
+### 変更内容
+- Phase 12 成果物の「存在」ではなく「内容要件」を `validate-phase12-implementation-guide.js` のチェック（Part 1/2 の必須語）で固定し、close-out での false green を防ぐ方針を明文化した
+  - Part 1: `なぜ`/`必要` を先に書く + 日常の例え（`たとえば` を含む）
+  - Part 2: TypeScript 型、API/CLI シグネチャ、使用例、エラーハンドリング、エッジケース、設定/定数一覧
+- `phase12-task-spec-compliance-check` は自己申告 PASS を禁止し、未充足がある場合は FAIL/BLOCKED として blocker を列挙してから閉じるルールをガイド側へ追記した
+
+### 関連コマンド（Phase 12）
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/<FEATURE_NAME> --json`
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/<FEATURE_NAME>`
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/<FEATURE_NAME>`
+
 ---
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
 
@@ -168,6 +190,18 @@
 - `outputs/artifacts.json` を root `artifacts.json` と同期し、Phase 11 の `manual-test-checklist.md` / `manual-test-result.md` を追加して workflow root の機械検証を通過させた
 - Phase 11 が visible surface 追加なしの integration task であることを踏まえ、`phase-11-12-guide.md` に NON_VISUAL task は screenshot wording を残さないルールを追記した
 - follow-up task の canonical status を `spec_created` として扱い、完了済み実装と混同しない Phase 12 same-wave sync の運用を再確認した
+
+---
+
+## 2026-04-06 - TASK-P0-08 Phase 12 close-out sync
+
+### 変更内容
+
+- `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-08-session-resume-renderer-integration/outputs/phase-12/implementation-guide.md` の Part 2 を API/IPC シグネチャ・型定義・使用例まで補強し、validator PASS を確認した
+- Phase 11 screenshot evidence を `outputs/phase-11/screenshots/` へ保存し、`tc-01`〜`tc-06` の 6 枚を current fact として固定した
+- `verify-unassigned-links.js` PASS により、unassigned task の canonical link / file existence を確認した
+- `skillCreatorAPI` の session resume / cleanup surface、`task-workflow-completed.md` / `api-ipc-system-core.md` / `interfaces-agent-sdk-skill-reference.md` の same-wave 更新を反映した
+- `generate-index.js` 再生成（2576 キーワード）で topic-map / keywords の同期を維持する
 
 ---
 

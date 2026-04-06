@@ -228,4 +228,17 @@ describe("navContract", () => {
       expect(new Set(shortcutViews).size).toBe(10);
     });
   });
+
+  // TASK-UI-01 Phase 6: skillLifecycle は DockViewType に含まれないことを確認
+  describe("TASK-UI-01: skillLifecycle と DockViewType の境界 (AC-5)", () => {
+    it("skillLifecycle は NAV_SHORTCUT_TO_VIEW に含まれない", () => {
+      const shortcutViews = Object.values(NAV_SHORTCUT_TO_VIEW);
+      expect(shortcutViews).not.toContain("skillLifecycle");
+    });
+
+    it("skillLifecycle は APP_DOCK_NAV_ITEMS の id に含まれない", () => {
+      const navIds = APP_DOCK_NAV_ITEMS.map((item) => item.id);
+      expect(navIds).not.toContain("skillLifecycle");
+    });
+  });
 });

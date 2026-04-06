@@ -232,4 +232,24 @@ describe("SkillCreatorHooksFactory", () => {
       expect(writeDecision.allowed).toBe(false);
     });
   });
+
+  // Phase 6: TC-RG-02
+  describe("Phase 6: 回帰ガードテスト", () => {
+    it("TC-RG-02: createHooks は呼び出しごとに新しいオブジェクトを返す", () => {
+      const hooks1 = createHooks("plan", auditSink);
+      const hooks2 = createHooks("plan", auditSink);
+      expect(hooks1).not.toBe(hooks2);
+    });
+
+    it("TC-HF-10: 全 phase で createHooks が 4 メソッドを持つオブジェクトを返す", () => {
+      const phases = ["plan", "execute", "verify", "improve"] as const;
+      for (const phase of phases) {
+        const hooks = createHooks(phase, auditSink);
+        expect(hooks.onSessionStart).toBeTypeOf("function");
+        expect(hooks.onPreToolUse).toBeTypeOf("function");
+        expect(hooks.onPostToolUse).toBeTypeOf("function");
+        expect(hooks.onSessionEnd).toBeTypeOf("function");
+      }
+    });
+  });
 });

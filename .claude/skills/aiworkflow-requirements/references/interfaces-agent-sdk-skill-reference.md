@@ -84,7 +84,7 @@
 | `summary`       | `ExecutionSummary`| サマリー                 |
 | `estimatedTime` | `number`          | 見積もり時間（分）       |
 
-#### ApiKeyStatus（TASK-RT-04）
+#### ApiKeyStatus（TASK-RT-04 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001）
 
 runtime lane の API キー設定補助導線で利用する UI 状態型。canonical source は `packages/shared/src/types/skillCreator.ts`。
 
@@ -94,6 +94,31 @@ runtime lane の API キー設定補助導線で利用する UI 状態型。cano
 | `validating` | 保存中/検証中 |
 | `configured` | 利用可能なキーを確認済み（`saved` または `env-fallback`） |
 | `error` | 保存/削除時にエラーが発生 |
+| `check-failed` | 初期確認時に IPC エラーが発生（electronAPI 未利用環境を含む） |
+
+#### useAuthKeyManagement（TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001）
+
+AuthKeySection / ApiKeySettingsPanel の共通 IPC ロジックを統合したカスタムフック。
+canonical source は `apps/desktop/src/renderer/hooks/useAuthKeyManagement.ts`。
+
+```typescript
+interface UseAuthKeyManagementReturn {
+  status: ApiKeyStatus;
+  keySource: "saved" | "env-fallback" | null;
+  inputValue: string;
+  isSubmitting: boolean;
+  validationError: string | null;
+  apiError: string | null;
+  setInputValue: (value: string) => void;
+  handleSave: () => Promise<boolean>;
+  handleDelete: () => Promise<boolean>;
+  refresh: () => Promise<boolean>;
+}
+
+interface UseAuthKeyManagementOptions {
+  onStatusChange?: (status: ApiKeyStatus) => void;
+}
+```
 
 ---
 
@@ -126,7 +151,7 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | 項目 | 契約 |
 | --- | --- |
 | 表向きの primary 導線 | `SkillManagementPanel` → `SkillLifecyclePanel` の 1 画面 |
-| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` / `getVerifyDetail` / `reverifyWorkflow` / `getGovernanceState` を持つ補助 API |
+| `skillCreatorAPI` の役割 | 既存 `detectMode` / `improveSkill` に加え、runtime creator bridge として `planSkill` / `executePlan` / `improveSkillWithFeedback` / `getVerifyDetail` / `reverifyWorkflow` を持つ補助 API |
 | create 正本 | `agentSlice.createSkill()` → `window.electronAPI.skill.create()` |
 | execute 正本 | `agentSlice.executeSkill()` → `window.electronAPI.skill.execute()` |
 | verify detail | `window.electronAPI.skillCreator.getVerifyDetail(planId)` で derived detail を取得し、owner は engine に維持 |
@@ -139,27 +164,45 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | --- | --- | --- |
 | `window.electronAPI.skillCreator.detectMode(request)` | request 文の方針判定のみ | mode を UI に増やさず internal plan に閉じるため |
 | `window.electronAPI.skillCreator.planSkill(prompt, authMode?, apiKey?)` | runtime creator plan を public IPC で要求する | skill 作成 runtime bridge を既存 namespace に保つため |
-| `window.electronAPI.skillCreator.executePlan(planId, skillSpec, authMode?, apiKey?)` | runtime plan 実行の受付を要求する（ack + snapshot relay） | facade / SkillExecutor の境界を preload から隠蔽するため |
+| `window.electronAPI.skillCreator.executePlan(planId, skillSpec, authMode?, apiKey?)` | runtime plan 実行を要求する | facade / SkillExecutor の境界を preload から隠蔽するため |
 | `window.electronAPI.skillCreator.improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | runtime 改善を要求する | feedback ベース改善を `skill-creator:*` surface に集約するため |
-| `window.electronAPI.skillCreator.getGovernanceState()` | 現在の phase / active policy / denial 要約を取得する | governance 表示を shared DTO で読むため |
 | `window.electronAPI.skillCreator.improveSkill(skillName, { autoApply: false })` | 改善候補の事前整理 | creator 提案と詳細分析を分離するため |
 | `useCreateSkill()` | create 実処理 | 一覧再取得・既存権限導線を保つため |
 | `useExecuteSkill()` | execute 実処理 | preflight / permission / streaming 契約を再利用するため |
 
-`window.electronAPI.skillCreator.executePlan(...)` は ack のみを返すため、Renderer は `getWorkflowState(planId)` を再読込して `handoffBundle` / `verifyResult.status === "fail"` を UI に反映する。`SkillCreateWizard` は failure snapshot を優先して表示し、structured error が返った場合のみ `result.error.message` を直接使う current fact へ更新済み。
+#### session resume surface（TASK-P0-08）
+
+`SkillCreatorWorkflowEngine` の persisted checkpoint を renderer が再開・削除・期限切れ掃除できるようにする public surface。state owner は engine のまま維持し、renderer は prompt / indicator / cleanup だけを扱う。
+
+| surface | contract |
+| --- | --- |
+| `window.skillCreatorAPI.listSessions()` | `Promise<IpcResult<SkillCreatorSessionListItem[]>>` |
+| `window.skillCreatorAPI.resumeSession(checkpointId)` | `Promise<SkillCreatorSessionResumeResult>` |
+| `window.skillCreatorAPI.deleteSession(checkpointId)` | `Promise<void>` |
+| `window.skillCreatorAPI.cleanupExpiredSessions()` | `Promise<number>` |
+
+| field | contract |
+| --- | --- |
+| `sessionId` | checkpoint id の表示用 alias |
+| `startedAt` | 表示時の優先 timestamp。未設定時は `createdAt` を利用 |
+| `isActive` | active session の pulse 表示フラグ |
+
+#### session resume type anchors
+
+| surface | canonical source |
+| --- | --- |
+| `SkillCreatorSessionListItem` / `SkillCreatorSessionSummary` / `SkillCreatorSessionResumeResult` / `SkillCreatorSessionResumeErrorReason` | `packages/shared/src/types/skillCreator.ts` |
+| `SkillCreatorSessionApi` | `apps/desktop/src/preload/skill-creator-api.ts` |
 
 #### runtime bridge 型アンカー
 
 | surface | request | response | canonical source |
 | --- | --- | --- | --- |
 | `planSkill(prompt, authMode?, apiKey?)` | `SkillCreatorPlanRequest` | `RuntimeSkillCreatorPlanResponse` | `packages/shared/src/types/skillCreator.ts` |
-| `executePlan(planId, skillSpec, authMode?, apiKey?)` | `SkillCreatorExecutePlanRequest` | `SkillCreatorExecutePlanAck` | `packages/shared/src/types/skillCreator.ts` |
+| `executePlan(planId, skillSpec, authMode?, apiKey?)` | `SkillCreatorExecutePlanRequest` | `RuntimeSkillCreatorExecuteResponse` | `packages/shared/src/types/skillCreator.ts` |
 | `improveSkillWithFeedback(skillName, feedback, authMode?, apiKey?)` | `SkillCreatorImproveSkillRequest` | `RuntimeSkillCreatorImproveResponse` | `packages/shared/src/types/skillCreator.ts` |
-| `RuntimeSkillCreatorExecuteResponse` | `RuntimeSkillCreatorExecuteResult \| { type: "terminal_handoff"; bundle: TerminalHandoffBundle } \| RuntimeSkillCreatorExecuteErrorResponse` | `execute()` の structured error union（adapter status failure を message へ正規化） | `packages/shared/src/types/skillCreator.ts` |
 
 型定義の正本は `packages/shared/src/types/skillCreator.ts` とし、renderer surface は上記型へ収束する。
-
-`RuntimeSkillCreatorExecuteErrorResponse` は `execute()` の adapter status failure を表す internal wrapper で、renderer 側は `success === false` を type guard で判定して message のみを表示する。
 
 #### workflow manifest foundation 型アンカー
 
@@ -552,56 +595,8 @@ Task03 実装で、`plan()` / `improve()` は固定 root 前提の resource 読�
 | RuntimeSkillCreatorFacade.ts | `apps/desktop/src/main/services/runtime/` | Facade 本体 |
 | creatorHandlers.ts | `apps/desktop/src/main/ipc/` | IPC ハンドラ（internal helper） |
 
-### Governance 拡張（TASK-P0-09 / 2026-03-31）
-
-`RuntimeSkillCreatorFacade.execute()` では、governance policy を `SkillExecutor.execute(..., governanceOptions)` へ伝播し、execute phase の `permissionMode` / `hooks` / `permissions.canUseTool` を SDK query() 呼び出しへ接続する。
-
-| 要素 | パス | current fact |
-| --- | --- | --- |
-| `SkillCreatorGovernancePolicy` | `apps/desktop/src/main/services/runtime/SkillCreatorGovernancePolicy.ts` | phase 別 policy 定義と path-safe `createCanUseToolCallback()` を提供 |
-| `GovernanceHooksFactory` | `apps/desktop/src/main/services/runtime/GovernanceHooksFactory.ts` | PreToolUse / PostToolUse を中心に監査 hook を生成 |
-| `GovernanceAuditSink` | `apps/desktop/src/main/services/runtime/GovernanceAuditSink.ts` | denial / summary / UI payload を蓄積・構築する |
-| `skill-creator:get-governance` | `apps/desktop/src/main/ipc/creatorHandlers.ts` | `GovernanceUiPayload` を renderer へ返す public IPC |
-| `getGovernancePayload()` | `apps/desktop/src/preload/skill-creator-api.ts` | governance payload 取得用 preload API |
-
-#### Facade public surface
-
-| メソッド | 戻り値 | 説明 |
-| --- | --- | --- |
-| `getGovernanceUiPayload(phase)` | `GovernanceUiPayload` | denial と session summary を UI 向けに返す |
-| `getGovernanceAuditEvents()` | `readonly GovernanceAuditEvent[]` | 蓄積イベントを取得する |
-
-#### 制約
-
-- current wiring は `plan` / `execute` / `verify` / `improve` の全フェーズで接続済み
-- renderer には `GovernanceSummaryPanel` が統合済みで、governance state を read-only 表示できる
-
 ### 完了タスク
 
 | タスクID | 完了日 | ステータス | 概要 |
 | --- | --- | --- | --- |
-| UT-P0-09-GOVERNANCE-RUNTIME-COVERAGE-AND-UI-SURFACE-001 | 2026-04-02 | 完了 | 全 phase governance coverage の確認、renderer 可視化、Phase 11/12 evidence 整備 |
 | UT-SC-03-003 | 2026-03-24 | 完了 | DI 配線実装。setLLMAdapter Setter Injection + ResourceLoader コンストラクタ注入 + fire-and-forget async LLMAdapter。29テスト全PASS |
-| UT-SDK-L34-UI-DISPLAY-001 | 2026-04-04 | 完了 | Layer別グルーピング表示（`SkillLifecyclePanel.tsx`）。Layer 3/4 チェック結果を `VerifyLayerGroup` コンポーネントでアコーディオン + severity アイコン付きバッジ表示。Phase 3レビュー完了。 |
-| TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 | 2026-04-04 | 完了 | `RuntimeSkillCreatorExecuteErrorResponse` 型追加。`isExecuteErrorResponse()` type guard で `success === false` を判定し `executeResponse.error.message` を `setGenerationError` へ変換。|
-
-### SkillLifecyclePanel — execute error 表示 current facts
-
-- `isExecuteErrorResponse(response)` type guard: `"success" in response && response.success === false && typeof response.error.message === "string"` で判定
-- 判定後 `setGenerationError(executeResponse.error.message)` で UI エラー表示へ変換
-- `SkillCreateWizard` も同様に `result.error.message` を直接使う（structured error が返った場合のみ）
-
-### SkillLifecyclePanel — Layer別グルーピング current facts（UT-SDK-L34-UI-DISPLAY-001）
-
-- `VerifyLayerGroup` コンポーネントを `SkillLifecyclePanel.tsx` 内に定義
-- Layer 3 / Layer 4 それぞれのチェック配列を受け取り、アコーディオン（`aria-expanded`）で開閉
-- ヘッダー部に severity 別カウントバッジ（`verifyCheckSeverityStyles`）を表示
-- `data-testid`: `skill-lifecycle-verify-layer-{layer}` / `skill-lifecycle-verify-layer-toggle-{layer}` / `skill-lifecycle-verify-layer-panel-{layer}`
-
-### 関連未タスク（UT-SDK-L34 系）
-
-| タスクID | 概要 | ステータス |
-| --- | --- | --- |
-| UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001 | severity フィルタ機能の追加 | 未着手 |
-| UT-SDK-L34-VERIFY-LAYERGROUP-SPLIT-001 | Layer グループ分割検証 | 未着手 |
-| UT-SDK-L34-UI-DISPLAY-LABEL-001 | Layer グループラベル表示の改善 | 未着手 |

@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.9.2 | 2026-04-06 | TASK-UI-01 を反映: `skillLifecycle` ViewType 追加（`SKILL_LIFECYCLE_PRIMARY_VIEW`）、`SkillLifecycleJourneyPanel` / `SkillLifecycleSurfaceOwnershipPanel` コンポーネント追加、`navigateToSkillLifecycle()` shared action 追加、`journeyActions` CTA 集約、35 tests PASS |
 | v1.9.1 | 2026-04-04 | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 を反映: `SkillCenterView` に `header-management-cta` secondary CTA を追加し、`skillManagement` ViewType / dock 正規化 / 戻り導線を同期 |
 | v1.9.0 | 2026-03-24 | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 を反映: `executionConsole` ViewType 追加、`openExecutionConsole()` shared action 定義、CTA 7箇所統一設計。`ExecutionConsoleView` stub 配置。agent 代替除去方針確定 |
 | v1.8.0 | 2026-03-22 | TASK-IMP-SETTINGS-SHELL-ACCESS-MATRIX-MAINLINE-001 を反映: `SettingsView` に mainline access matrix、`AppLayout` と legacy `AppDock` shell header に persistent terminal launcher、blocked CTA の settings 内 recovery、`terminal.open` IPC と targeted 50 tests PASS を同期 |
@@ -147,6 +148,7 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | `historySearch` | 履歴検索画面 |
 | `skill-center` | 互換エイリアス（legacy導線） |
 | `executionConsole` | 実行コンソール画面（TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001） |
+| `skillLifecycle` | スキルライフサイクル一次導線画面（TASK-UI-01 / `SKILL_LIFECYCLE_PRIMARY_VIEW`） |
 | `settings` | 設定画面（AuthGuard 外 + 未認証 reset 対象外） |
 
 ### `workspace` ViewType のレイアウト契約（TASK-UI-04A）

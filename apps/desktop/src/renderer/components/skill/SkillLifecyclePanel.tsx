@@ -21,6 +21,8 @@ import type {
   RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
+  SkillCreatorSessionListItem,
+  SkillCreatorSessionResumeResult,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
   TerminalHandoffBundle,
@@ -28,6 +30,8 @@ import type {
 import type { PlanResult } from "../../store/slices/agentSlice";
 import { ApiKeySettingsPanel } from "./ApiKeySettingsPanel";
 import { ConversationalInterview } from "./ConversationalInterview";
+import { SessionIndicator } from "./SessionIndicator";
+import { SessionResumePrompt } from "./SessionResumePrompt";
 import { LLMAdapterErrorBanner } from "./LLMAdapterErrorBanner";
 import { useLLMAdapterStatus } from "./hooks/useLLMAdapterStatus";
 import {
@@ -105,6 +109,15 @@ type IpcResult<T> = {
   success: boolean;
   data?: T;
   error?: string;
+};
+
+type SessionResumeApi = {
+  listSessions?: () => Promise<IpcResult<SkillCreatorSessionListItem[]>>;
+  resumeSession?: (
+    checkpointId: string,
+  ) => Promise<SkillCreatorSessionResumeResult>;
+  deleteSession?: (checkpointId: string) => Promise<void>;
+  cleanupExpiredSessions?: () => Promise<number>;
 };
 
 type SkillCreatorRuntimeApi = {
@@ -354,6 +367,14 @@ function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   );
 }
 
+function getSessionResumeApi(): SessionResumeApi | null {
+  const w = window as Window & {
+    skillCreatorAPI?: SessionResumeApi;
+    electronAPI?: { skillCreator?: SessionResumeApi };
+  };
+  return w.skillCreatorAPI ?? w.electronAPI?.skillCreator ?? null;
+}
+
 function extractSkillNameFromPath(skillPath: string): string {
   const normalized = skillPath.trim().replace(/\\/g, "/");
   const segments = normalized.split("/").filter(Boolean);
@@ -473,6 +494,18 @@ export function SkillLifecyclePanel({
     useState<RuntimeSkillCreatorPlanResult | null>(null);
   const [rawExecuteDetail, setRawExecuteDetail] =
     useState<RuntimeSkillCreatorExecuteResult | null>(null);
+
+  // TASK-P0-08: session resume state
+  const [resumableSessions, setResumableSessions] = useState<
+    SkillCreatorSessionListItem[]
+  >([]);
+  const [isLoadingSessions, setIsLoadingSessions] = useState(false);
+  const [showResumePrompt, setShowResumePrompt] = useState(false);
+  const [activeSessionInfo, setActiveSessionInfo] = useState<{
+    planId: string;
+    sessionId?: string;
+    startedAt: number;
+  } | null>(null);
 
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
@@ -627,6 +660,32 @@ export function SkillLifecyclePanel({
       applyWorkflowSnapshot(snapshot);
     });
   }, [applyWorkflowSnapshot]);
+
+  // TASK-P0-08: アプリ起動時のセッション検出（一度のみ実行）
+  useEffect(() => {
+    const sessionApi = getSessionResumeApi();
+    if (!sessionApi) return;
+    const listSessions = sessionApi.listSessions;
+    if (!listSessions) return;
+    const run = async () => {
+      setIsLoadingSessions(true);
+      try {
+        if (sessionApi.cleanupExpiredSessions) {
+          await sessionApi.cleanupExpiredSessions();
+        }
+        const result = await listSessions();
+        if (result.success && result.data && result.data.length > 0) {
+          setResumableSessions(result.data);
+          setShowResumePrompt(true);
+        }
+      } catch (e) {
+        console.error("[P0-08] listSessions failed:", e);
+      } finally {
+        setIsLoadingSessions(false);
+      }
+    };
+    void run();
+  }, []);
 
   useEffect(() => {
     const planId =
@@ -876,6 +935,113 @@ export function SkillLifecyclePanel({
       : isExecuting
         ? "実行中..."
         : "スキルを実行する";
+
+  // TASK-P0-08: session resume handlers
+  const handleSessionStartNew = useCallback(
+    async (checkpointIds?: string[]) => {
+      const sessionApi = getSessionResumeApi();
+      const targetIds =
+        checkpointIds ??
+        resumableSessions.map((session) => session.checkpointId);
+      if (sessionApi?.deleteSession) {
+        await Promise.allSettled(
+          targetIds.map((checkpointId) =>
+            sessionApi.deleteSession!(checkpointId),
+          ),
+        );
+      }
+      setShowResumePrompt(false);
+      setResumableSessions([]);
+      setLocalError(null);
+      onOpenWizard?.();
+    },
+    [onOpenWizard, resumableSessions],
+  );
+
+  const handleSessionResume = useCallback(
+    async (checkpointId: string) => {
+      const sessionApi = getSessionResumeApi();
+      if (!sessionApi?.resumeSession) return;
+
+      try {
+        const result = await sessionApi.resumeSession(checkpointId);
+        if (result.success && result.workflowSnapshot) {
+          setWorkflowSnapshot(result.workflowSnapshot);
+          setWorkflowError(null);
+          setLocalError(null);
+          const session = resumableSessions.find(
+            (s) => s.checkpointId === checkpointId,
+          );
+          if (session) {
+            setActiveSessionInfo({
+              planId: session.planId,
+              sessionId: session.sessionId ?? session.checkpointId,
+              startedAt: session.startedAt ?? session.createdAt,
+            });
+            if (result.workflowSnapshot.planId) {
+              setCurrentPlanId(result.workflowSnapshot.planId);
+            }
+          }
+          setShowResumePrompt(false);
+          setResumableSessions([]);
+          return;
+        }
+
+        if (result.errorReason === "expired") {
+          await handleSessionStartNew([checkpointId]);
+          return;
+        }
+
+        const message =
+          result.error ??
+          (result.errorReason === "incompatible"
+            ? "セッションが現在の環境と互換性がありません。"
+            : result.errorReason === "not_found"
+              ? "セッションが見つかりません。"
+              : "セッションの復元に失敗しました。");
+        setLocalError(message);
+      } catch (e) {
+        setLocalError(
+          e instanceof Error ? e.message : "セッションの復元に失敗しました。",
+        );
+      }
+    },
+    [
+      handleSessionStartNew,
+      resumableSessions,
+      setCurrentPlanId,
+      setWorkflowError,
+      setWorkflowSnapshot,
+    ],
+  );
+
+  const handleSessionSkip = useCallback(() => {
+    setShowResumePrompt(false);
+    setResumableSessions([]);
+    setLocalError(null);
+  }, []);
+
+  const handleSessionDelete = useCallback(
+    async (checkpointId: string) => {
+      const sessionApi = getSessionResumeApi();
+      if (!sessionApi?.deleteSession) return;
+
+      try {
+        await sessionApi.deleteSession(checkpointId);
+        const next = resumableSessions.filter(
+          (s) => s.checkpointId !== checkpointId,
+        );
+        if (next.length === 0) {
+          await handleSessionStartNew([]);
+          return;
+        }
+        setResumableSessions(next);
+      } catch (e) {
+        console.error("[P0-08] deleteSession failed:", e);
+      }
+    },
+    [handleSessionStartNew, resumableSessions],
+  );
 
   const handlePanelClose = () => {
     clearPlanExecutionState();
@@ -1483,6 +1649,30 @@ export function SkillLifecyclePanel({
           </div>
         </div>
       </div>
+
+      {/* TASK-P0-08: セッション復元プロンプト */}
+      {(showResumePrompt || isLoadingSessions) && (
+        <SessionResumePrompt
+          sessions={resumableSessions}
+          isLoading={isLoadingSessions}
+          onResume={handleSessionResume}
+          onSkip={handleSessionSkip}
+          onDelete={handleSessionDelete}
+          onStartNew={handleSessionStartNew}
+        />
+      )}
+
+      {/* TASK-P0-08: アクティブセッションインジケーター */}
+      {activeSessionInfo && workflowSnapshot?.planId && (
+        <div className="flex justify-end">
+          <SessionIndicator
+            planId={activeSessionInfo.planId}
+            sessionId={activeSessionInfo.sessionId}
+            currentPhase={workflowSnapshot.currentPhase}
+            startedAt={activeSessionInfo.startedAt}
+          />
+        </div>
+      )}
 
       {currentSurfaceError ? (
         <div

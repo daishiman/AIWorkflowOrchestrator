@@ -44,6 +44,9 @@ export interface SkillLifecycleDependencyContract {
 
 export const SKILL_LIFECYCLE_ENTRY_VIEW = "skillCenter" as const;
 
+// TASK-UI-01: SkillLifecyclePanel を一次導線として直接アクセスするビュー
+export const SKILL_LIFECYCLE_PRIMARY_VIEW = "skillLifecycle" as const;
+
 export const SKILL_LIFECYCLE_JOB_GUIDES: readonly SkillLifecycleJobGuide[] = [
   {
     id: "create",
@@ -112,7 +115,8 @@ export const SKILL_LIFECYCLE_SURFACE_RESPONSIBILITIES: readonly SkillLifecycleSu
     {
       id: "skillCreator",
       label: "Skill Creator",
-      primaryResponsibility: "新規スキルの作成工程を担う。",
+      primaryResponsibility:
+        "新規スキルの作成工程を担う。SkillLifecyclePanel が一次導線（skillLifecycle ビュー）。",
       forbiddenResponsibility: "探索・実行・改善結果の一覧責務を持たない。",
       handoff: "作成完了後は Workspace / Agent へ戻す。",
     },

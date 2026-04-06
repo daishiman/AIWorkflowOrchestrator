@@ -116,10 +116,10 @@ export class SkillCreatorSourceResolver {
 
     for (const candidate of candidateDefs) {
       const resolvedRoot = path.resolve(candidate.rootPath);
-      if (seenRoots.has(`${candidate.source}:${resolvedRoot}`)) {
+      if (seenRoots.has(resolvedRoot)) {
         continue;
       }
-      seenRoots.add(`${candidate.source}:${resolvedRoot}`);
+      seenRoots.add(resolvedRoot);
 
       const availableEntries: string[] = [];
       for (const entry of STANDARD_STRUCTURE_ENTRIES) {

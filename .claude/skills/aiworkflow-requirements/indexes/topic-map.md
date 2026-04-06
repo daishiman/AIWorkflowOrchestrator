@@ -434,11 +434,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L355 |
-| スキルチェーン 型定義（TASK-9D） | L405 |
-| スキルスケジュール 型定義（TASK-9G） | L440 |
-| スキルフォーク 型定義（TASK-9E） | L465 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L513 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L398 |
+| スキルチェーン 型定義（TASK-9D） | L448 |
+| スキルスケジュール 型定義（TASK-9G） | L483 |
+| スキルフォーク 型定義（TASK-9E） | L508 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L556 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -931,11 +931,11 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L245 |
 | Electron IPC API設計 | L281 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L423 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L662 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L693 |
-| AIプロバイダーAPI連携 | L731 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L764 |
-| Skill Creator External API Support（TASK-SDK-SC-03） | L811 |
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L695 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L726 |
+| AIプロバイダーAPI連携 | L764 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L797 |
+| Skill Creator External API Support（TASK-SDK-SC-03） | L844 |
 
 ### references/api-ipc-system-details.md
 
@@ -1332,15 +1332,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
-| Global Navigation | L45 |
-| ChatViewナビゲーション | L346 |
-| ナビゲーションボタン仕様 | L376 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L392 |
-| テスト検証済み項目 | L406 |
-| アクセシビリティ対応事例 | L421 |
-| ナビゲーションパターンのベストプラクティス | L453 |
-| 関連ドキュメント | L465 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L474 |
+| Global Navigation | L46 |
+| ChatViewナビゲーション | L348 |
+| ナビゲーションボタン仕様 | L378 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L394 |
+| テスト検証済み項目 | L408 |
+| アクセシビリティ対応事例 | L423 |
+| ナビゲーションパターンのベストプラクティス | L455 |
+| 関連ドキュメント | L467 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L476 |
 
 ### references/ui-ux-panels.md
 
@@ -2533,11 +2533,25 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
-| GovernanceHooksFactory | L22 |
-| GovernanceAuditSink | L76 |
-| 使用例 | L164 |
-| 設計上の注意事項 | L200 |
-| 関連仕様書 | L210 |
+| SkillCreatorPermissionPolicy | L24 |
+| SkillCreatorHooksFactory | L65 |
+| SkillCreatorAuditSink | L113 |
+| 使用例 | L162 |
+| 設計上の注意事項 | L203 |
+| 関連仕様書 | L213 |
+
+### references/ipc-4-layer-pattern.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L8 |
+| 概要 | L19 |
+| Layer 1: チャネル定数 | L38 |
+| Layer 2: ホワイトリスト | L70 |
+| Layer 3: ipcMain ハンドラ | L98 |
+| Layer 4: contextBridge API | L161 |
+| 4層 チェックリスト（新規チャネル追加時） | L216 |
+| P0-06 / P0-08 状態境界ガイドライン | L232 |
+| 関連ファイル一覧 | L277 |
 
 ### references/ipc-contract-checklist.md
 
@@ -2688,24 +2702,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L83 |
-| クイックリファレンス: カテゴリ別検索ガイド | L101 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L282 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L614 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L648 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L731 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L747 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L771 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L821 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L846 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L877 |
-| TASK-RT-06 教訓（2026-03-29） | L908 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L930 |
-| TASK-P0-04 教訓（2026-03-30） | L961 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L997 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1092 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1146 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1186 |
+| 分割ファイル一覧 | L84 |
+| クイックリファレンス: カテゴリ別検索ガイド | L102 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L283 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L615 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L649 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L732 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L748 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L772 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L822 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L847 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L878 |
+| TASK-RT-06 教訓（2026-03-29） | L909 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L931 |
+| TASK-P0-04 教訓（2026-03-30） | L962 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L998 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1093 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1147 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1187 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2773,6 +2787,18 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 教訓サマリー | L8 |
 | TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 実装教訓（2026-03-19） | L22 |
+
+### references/lessons-learned-rt-04-authkey-dedup.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001: AuthKey コンポーネント重複解消（2026-04-06） | L9 |
+| L-RT04-001: 二重送信防止パターン（isSubmittingRef） | L23 |
+| L-RT04-002: useAuthKeyManagement フック統合パターン | L35 |
+| L-RT04-003: check-failed + apiError の二層設計 | L50 |
+| L-RT04-004: ApiKeyStatus への check-failed 追加 — 型拡張の同一 wave 更新 | L63 |
+| L-RT04-005: ApiKeySettingsPanel 委譲パターン — 廃止より先に委譲 | L74 |
+| 応用候補 | L85 |
+| esbuild バイナリ問題（参照のみ） | L96 |
 
 ### references/lessons-learned-rt02-stub-response-error-notification.md
 
@@ -2859,6 +2885,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| TASK-P0-07: Lane分割による並列実装の効果確認 (step-11) | L6 |
 | [2026-04-03] TASK-SKILL-CREATOR-BEFORE-QUIT-GUARD-001 知見 | L28 |
+| [2026-04-06] TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 知見 | L51 |
 
 ### references/lessons-learned-skill-remove-contract.md
 
@@ -2988,8 +3015,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L44 |
-| 関連ドキュメント | L49 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L50 |
 
 ### references/llm-embedding.md
 

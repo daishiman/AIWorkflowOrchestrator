@@ -16,7 +16,7 @@
 | 更新日         | 2026-04-06                                                      |
 | 依存タスク     | TASK-UI-01, TASK-UI-02, TASK-UI-03                              |
 | 後続タスク     | なし                                                            |
-| 関連Issue      | -                                                               |
+| 関連Issue      | #1941                                                           |
 | 親ワークフロー | step-13-seq-task-ui-04-spec-status-drift-correction             |
 
 ---

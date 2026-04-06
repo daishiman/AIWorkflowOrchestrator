@@ -172,7 +172,7 @@ describe("SkillCreatorPermissionPolicy", () => {
 
       it("execute phase で skill root 外の Write は denied", () => {
         const result = canUseTool("Write", "execute", {
-          targetPath: "/other/file.ts",
+          targetPath: "/skills/my-skill-evil/file.ts",
           allowedSkillRoot: "/skills/my-skill",
         });
         expect(result.allowed).toBe(false);
@@ -200,6 +200,14 @@ describe("SkillCreatorPermissionPolicy", () => {
         expect(result.allowed).toBe(false);
         expect(result.reason).toContain("disallowed");
       });
+
+      it("TC-PP-E05: context に targetPath がない場合は基本判定のみ（execute phase で Write → allowed）", () => {
+        const result = canUseTool("Write", "execute", {
+          allowedSkillRoot: "/skills/my-skill",
+          // targetPath なし
+        });
+        expect(result.allowed).toBe(true);
+      });
     });
   });
 
@@ -216,6 +224,44 @@ describe("SkillCreatorPermissionPolicy", () => {
     it("返却オブジェクトは frozen", () => {
       const policies = getAllPolicies();
       expect(Object.isFrozen(policies)).toBe(true);
+      expect(Object.isFrozen(policies.plan)).toBe(true);
+      expect(Object.isFrozen(policies.plan.allowedTools)).toBe(true);
+      expect(Object.isFrozen(policies.plan.disallowedTools)).toBe(true);
+      expect(Object.isFrozen(policies.execute)).toBe(true);
+      expect(Object.isFrozen(policies.execute.allowedTools)).toBe(true);
+      expect(Object.isFrozen(policies.execute.disallowedTools)).toBe(true);
+      expect(Object.isFrozen(policies.verify)).toBe(true);
+      expect(Object.isFrozen(policies.verify.allowedTools)).toBe(true);
+      expect(Object.isFrozen(policies.verify.disallowedTools)).toBe(true);
+      expect(Object.isFrozen(policies.improve)).toBe(true);
+      expect(Object.isFrozen(policies.improve.allowedTools)).toBe(true);
+      expect(Object.isFrozen(policies.improve.disallowedTools)).toBe(true);
+    });
+
+    it("policy table / policy / nested arrays は immutable（mutation が throw する）", () => {
+      const policies = getAllPolicies();
+
+      // nested array mutation
+      expect(() => {
+        policies.plan.allowedTools.push("SomeTool");
+      }).toThrow(TypeError);
+      expect(() => {
+        policies.plan.disallowedTools.push("SomeTool");
+      }).toThrow(TypeError);
+
+      // policy object mutation
+      expect(() => {
+        // TS 的には書き換え可能に見えるが、実行時には freeze 済みで TypeError
+        (
+          policies.plan as unknown as { permissionMode: string }
+        ).permissionMode = "bypassPermissions";
+      }).toThrow(TypeError);
+
+      // policy table mutation
+      expect(() => {
+        (policies as unknown as Record<string, unknown>).plan =
+          policies.execute;
+      }).toThrow(TypeError);
     });
   });
 });
