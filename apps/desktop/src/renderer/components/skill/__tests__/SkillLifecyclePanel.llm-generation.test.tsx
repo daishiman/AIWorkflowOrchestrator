@@ -223,20 +223,18 @@ beforeEach(() => {
     mockStoreState.handoffGuidance = null;
   });
 
-  (window as Window & { electronAPI?: unknown }).electronAPI = {
-    skillCreator: {
-      detectMode: mockDetectMode,
-      planSkill: mockPlanSkill,
-      executePlan: mockExecutePlan,
-      getWorkflowState: mockGetWorkflowState,
-      submitUserInput: mockSubmitUserInput,
-      onWorkflowStateChanged: mockOnWorkflowStateChanged,
-      improveSkillWithFeedback: mockImproveSkillWithFeedback,
-      applyRuntimeImprovement: mockApplyRuntimeImprovement,
-      getVerifyDetail: mockGetVerifyDetail,
-      reverifyWorkflow: mockReverifyWorkflow,
-      getDisclosureInfo: mockGetDisclosureInfo,
-    },
+  (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
+    detectMode: mockDetectMode,
+    planSkill: mockPlanSkill,
+    executePlan: mockExecutePlan,
+    getWorkflowState: mockGetWorkflowState,
+    submitUserInput: mockSubmitUserInput,
+    onWorkflowStateChanged: mockOnWorkflowStateChanged,
+    improveSkillWithFeedback: mockImproveSkillWithFeedback,
+    applyRuntimeImprovement: mockApplyRuntimeImprovement,
+    getVerifyDetail: mockGetVerifyDetail,
+    reverifyWorkflow: mockReverifyWorkflow,
+    getDisclosureInfo: mockGetDisclosureInfo,
   };
 
   mockDetectMode.mockResolvedValue({ success: true, data: "plan" });
@@ -328,6 +326,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
 });
 
 const renderPanel = () =>
@@ -607,11 +606,9 @@ describe("U-11: empty input validation", () => {
 // =====================================================================
 describe("U-12: planSkill API unavailable graceful degradation", () => {
   it("planSkill が undefined のとき generationError が設定されアプリがクラッシュしない", async () => {
-    (window as Window & { electronAPI?: unknown }).electronAPI = {
-      skillCreator: {
-        detectMode: mockDetectMode,
-        // planSkill intentionally omitted
-      },
+    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
+      detectMode: mockDetectMode,
+      // planSkill intentionally omitted
     };
 
     renderPanel();

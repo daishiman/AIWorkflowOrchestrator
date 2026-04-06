@@ -44,11 +44,9 @@ describe("ImprovementProposalPanel", () => {
       createMockSuggestion({ section: "## 制約事項" }),
     ];
 
-    Object.defineProperty(window, "electronAPI", {
+    Object.defineProperty(window, "skillCreatorAPI", {
       value: {
-        skillCreator: {
-          applyRuntimeImprovement: mockApplyRuntimeImprovement,
-        },
+        applyRuntimeImprovement: mockApplyRuntimeImprovement,
       },
       writable: true,
       configurable: true,

@@ -106,6 +106,7 @@ node .claude/skills/claude-agent-sdk/scripts/fetch-latest-info.mjs --category np
 | External API IPC統合         | RequestExternalApiConfig custom tool, 並行フロー, 秘匿化 | Phase 2    | electron-ipc.md（TASK-SDK-SC-03）                            |
 | Skill Output Integration     | output-ready / overwrite-approved / open-skill IPC, SkillCreatorOutputHandler, SkillRegistry, SkillCreatorResultPanel | Phase 2, 3 | electron-ipc.md（TASK-SDK-SC-04）                 |
 | Persist統合（execute→SkillFileWriter） | execute() Step 3.5-3.6 で parseLlmResponseToContent → SkillFileWriter.persist、二重パイプライン設計（A経路/B経路） | Phase 2, 3 | implementation-artifacts.md（TASK-P0-05） |
+| Session Resume（checkpoint-based recovery） | IPC 4層統合パターン（main/ipc → service/facade → preload → renderer/hook）でセッション復元。listSessions / getSessionDetail / resumeSessionWithResult / deleteSession / cleanupExpiredSessions の5チャネル | Phase 2, 3 | electron-ipc.md（TASK-P0-08） |
 
 ## パターン選択ガイド
 
@@ -372,6 +373,7 @@ node .claude/skills/claude-agent-sdk/scripts/validate-agent-setup.mjs --help
 
 | Version | Date       | Changes                                                                                                                         |
 | ------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| 2.20.0  | 2026-04-06 | Phase-12 Session Resume反映: IPC 4層統合パターン（main/ipc → service/facade → preload → renderer/hook）によるcheckpoint-based session recovery（TASK-P0-08）をTask仕様ナビに追記。listSessions / getSessionDetail / resumeSessionWithResult / deleteSession / cleanupExpiredSessions 5チャネルをelectron-ipc.md参照として記録 |
 | 2.19.0  | 2026-04-05 | TASK-P0-05 execute()→SkillFileWriter persist統合反映: 二重パイプライン設計（A経路: Facade→parseLlmResponseToContent→SkillFileWriter.persist / B経路: OutputHandler→SkillRegistry）、Setter Injection optional inject、persistResult/persistError型追加をTask仕様ナビ・implementation-artifacts.mdに追記 |
 | 2.18.0  | 2026-04-04 | TASK-P0-01 verify 実行エンジン反映: SkillCreatorVerificationEngine Layer 1-4 verify チェック 19 件（L1-001〜L4-003）の実装完了。Task仕様ナビに Verify Engine 行追加、implementation-artifacts.md に成果物記録、electron-ipc.md に verify IPC チャネル追記 |
 | 2.17.0  | 2026-04-04 | TASK-SDK-SC-04 Skill Output Integration反映: Skill Output Integration（output-ready / overwrite-approved / open-skill IPC 3チャネル）・SkillCreatorOutputHandler・SkillRegistry・SkillCreatorResultPanel・onOutputReady() Preload API を Task仕様ナビに追記 |

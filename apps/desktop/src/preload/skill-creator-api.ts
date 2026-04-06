@@ -340,7 +340,7 @@ export interface SkillCreatorAPI {
   /**
    * セッションを削除する
    */
-  deleteSession: (checkpointId: string) => Promise<void>;
+  deleteSession: (checkpointId: string) => Promise<IpcResult<void>>;
 
   /**
    * 期限切れセッションを一括削除する
@@ -652,7 +652,7 @@ export const skillCreatorAPI: SkillCreatorAPI = {
   ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL, { checkpointId }),
 
-  deleteSession: (checkpointId: string): Promise<void> =>
+  deleteSession: (checkpointId: string): Promise<IpcResult<void>> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION, { checkpointId }),
 
   cleanupExpiredSessions: (): Promise<number> =>

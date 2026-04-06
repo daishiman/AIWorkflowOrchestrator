@@ -39,7 +39,7 @@ grep -rn "pathTraversal\|sanitize\|sender" apps/desktop/src/**/*.test.ts
 - **テスト対象**: `creatorHandlers.ts`
 - 統合/整理後の全チャネルが正しくルーティングされることを検証する
 - Session 系チャネルと Runtime 系チャネルの呼び分けが正しいことを検証する
-- 未登録チャネルへのアクセスが適切に拒否されることを検証する
+- 未登録チャネルへのアクセスがホワイトリストで拒否されることを検証する
 
 **テスト関数シグネチャ（推奨構造）**:
 
@@ -48,13 +48,16 @@ describe("creatorHandlers IPC routing", () => {
   describe("session IPC channels", () => {
     it("should route startSession to session handler", () => {});
     it("should route sendAnswer to session handler", () => {});
-    it("should route listSessions to session handler", () => {});
     // ... 全 session チャネル
   });
 
   describe("runtime IPC channels", () => {
     it("should route planSkill to runtime handler", () => {});
     it("should route executePlan to runtime handler", () => {});
+    it("should route listSessions to runtime handler", () => {});
+    it("should route getSessionDetail to runtime handler", () => {});
+    it("should route resumeSession to runtime handler", () => {});
+    it("should route deleteSession to runtime handler", () => {});
     // ... 全 runtime チャネル
   });
 
@@ -102,13 +105,15 @@ describe("IPC security uniformity", () => {
 
 ## 参照資料
 
-| 資料名          | パス                                           | 説明           |
-| --------------- | ---------------------------------------------- | -------------- |
-| 設計レビュー    | `outputs/phase-3/design-review-gate.md`        | gate 結果      |
-| 設計成果物      | `outputs/phase-2/design-document.md`           | 統合方針と設計 |
-| 統合戦略書      | `outputs/phase-2/ipc-unification-strategy.md`  | 方針選択の根拠 |
-| creatorHandlers | `apps/desktop/src/main/ipc/creatorHandlers.ts` | テスト対象     |
-| channels.ts     | `apps/desktop/src/preload/channels.ts`         | テスト対象     |
+| 資料名                  | パス                                           | 説明           |
+| ----------------------- | ---------------------------------------------- | -------------- |
+| 設計レビュー            | `outputs/phase-3/design-review-gate.md`        | gate 結果      |
+| 設計成果物              | `outputs/phase-2/design-document.md`           | 統合方針と設計 |
+| 統合戦略書              | `outputs/phase-2/ipc-unification-strategy.md`  | 方針選択の根拠 |
+| creatorHandlers         | `apps/desktop/src/main/ipc/creatorHandlers.ts` | テスト対象     |
+| channels.ts             | `apps/desktop/src/preload/channels.ts`         | テスト対象     |
+| IPCチャネルインベントリ | `outputs/phase-1/ipc-channel-inventory.md`     | Phase 1 成果物 |
+| 仕様抽出マップ          | `outputs/phase-1/spec-extraction-map.md`       | Phase 1 成果物 |
 
 ### システム仕様（aiworkflow-requirements）
 

@@ -46,8 +46,8 @@ function setupMockApi(
   impl: () => Promise<{ success: boolean; data?: SkillCreatorGovernanceState }>,
 ) {
   const mockFn = vi.fn(impl);
-  Object.defineProperty(window, "electronAPI", {
-    value: { skillCreator: { getGovernanceState: mockFn } },
+  Object.defineProperty(window, "skillCreatorAPI", {
+    value: { getGovernanceState: mockFn },
     writable: true,
     configurable: true,
   });
@@ -61,7 +61,7 @@ describe("GovernanceSummaryPanel", () => {
 
   afterEach(() => {
     vi.useRealTimers();
-    Reflect.deleteProperty(window, "electronAPI");
+    Reflect.deleteProperty(window, "skillCreatorAPI");
   });
 
   // TC-R-01: phase が正しく表示される
@@ -217,14 +217,10 @@ describe("GovernanceSummaryPanel", () => {
 
   // --- Phase 6 拡充テスト ---
 
-  // TC-R-11: window.electronAPI.skillCreator が存在しない場合はローディングのまま
-  it("TC-R-11: window.electronAPI.skillCreator が未定義の場合はローディング表示", () => {
-    // electronAPI が存在しない状態を作る
-    Object.defineProperty(window, "electronAPI", {
-      value: {},
-      writable: true,
-      configurable: true,
-    });
+  // TC-R-11: window.skillCreatorAPI が存在しない場合はローディングのまま
+  it("TC-R-11: window.skillCreatorAPI が未定義の場合はローディング表示", () => {
+    // skillCreatorAPI が存在しない状態を作る
+    Reflect.deleteProperty(window, "skillCreatorAPI");
 
     render(<GovernanceSummaryPanel />);
 

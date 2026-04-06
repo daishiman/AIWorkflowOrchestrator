@@ -90,6 +90,68 @@
 
 | UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 | visible handoff / disclosure / execution host の Phase 11 screenshot 取得 | spec_created | 2026-04-06 |
 
+### タスク: TASK-P0-01 llm-adapter-status（2026-04-06）
+
+| 項目       | 値                                                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-01                                                                                                  |
+| ステータス | **完了（Phase 13: worktree completed）**                                                                    |
+| タイプ     | implementation / IPC 4層統合                                                                                |
+| 優先度     | 高                                                                                                          |
+| 完了日     | 2026-04-06                                                                                                  |
+| 対象       | LLM Adapter Status IPC エンドポイント実装                                                                   |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/`   |
+
+#### 実施内容
+
+- `getAdapterStatus`: 現在の LLM Adapter の状態（providerName / modelName / isConnected / lastChecked）を取得する IPC エンドポイントを creatorHandlers → SkillCreatorFacade → Preload API → Renderer の4層で統合
+- `onAdapterStatusChanged`: Adapter の状態変化をイベント購読する IPC チャネルを実装（preload variadic パターン適用）
+- `useLLMAdapterStatus` Hook: Renderer 側で Adapter 状態を管理する専用 Hook（ポーリング不要のイベント駆動設計）
+- `GovernanceSummaryPanel.tsx` に Adapter Status 表示を統合
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| IPC 4層型同期漏れリスク | `AdapterStatus` 型を `packages/shared/src/types/` に SSoT として定義し全層から import |
+| preload variadic 化 | `safeOn` を `[AdapterStatus, string?]` として型付けし、Renderer 側 callback で optional 第2引数を受け取る |
+
+→ 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-IPC-4LAYER-001 / L-IPC-4LAYER-002
+
+---
+
+### タスク: TASK-UI-01 lifecycle-panel-primary-route-promotion（2026-04-06）
+
+| 項目       | 値                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-01                                                                                                |
+| ステータス | **完了（Phase 13: worktree completed）**                                                                  |
+| タイプ     | implementation / UI routing                                                                               |
+| 優先度     | 高                                                                                                        |
+| 完了日     | 2026-04-06                                                                                                |
+| 対象       | SkillLifecyclePanel を一次導線（primary route）として昇格                                                 |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/` |
+
+#### 実施内容
+
+- `navigateToSkillLifecycle()` shared action を実装し、SkillCenter → SkillLifecyclePanel への直結ルーティングを確立（最小変更 ~42行）
+- `skillLifecycle` ViewType を `apps/desktop/src/renderer/` に追加（`SKILL_LIFECYCLE_PRIMARY_VIEW` 定数）
+- `SkillLifecycleJourneyPanel` / `SkillLifecycleSurfaceOwnershipPanel` コンポーネントを Atomic Design 準拠で追加
+- `journeyActions` CTA 集約による一次導線の視認性向上
+- Phase 11 Playwright screenshot 4枚（`outputs/phase-11/screenshots/`）で visual evidence を取得
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| SessionResumePrompt / SessionIndicator との遷移ロジック複雑化 | `snapshot` を `null` に型統一し `hasSession = snapshot !== null` 単一判定ポイントに集約 |
+| snapshot nullability チェックの冗長化 | `snapshot ?? null` で undefined を早期正規化し optional chaining 乱用を回避 |
+
+→ 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-SESSION-RESUME-UI-001
+→ 仕様更新: [ui-ux-navigation.md](ui-ux-navigation.md) v1.9.2
+
+---
+
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
 ### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
 

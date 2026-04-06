@@ -150,91 +150,87 @@ beforeEach(() => {
 
   (
     window as Window & {
-      electronAPI?: {
-        skillCreator?: {
-          detectMode?: (request: string) => Promise<{
-            success: boolean;
-            data?: string;
-            error?: string;
-          }>;
-          planSkill?: (
-            prompt: string,
-            authMode?: string,
-            apiKey?: string,
-          ) => Promise<{
-            success: boolean;
-            data?:
-              | {
-                  type: "integrated_api" | "terminal_handoff";
-                  planId?: string;
-                  estimatedSteps?: number;
-                  guidance?: {
-                    reason: string;
-                    terminalCommand: string;
-                    contextSummary: string;
-                  };
-                }
-              | undefined;
-            error?: string;
-          }>;
-          executePlan?: (
-            planId: string,
-            skillSpec?: unknown,
-            authMode?: string,
-            apiKey?: string,
-          ) => Promise<{
-            success: boolean;
-            data?:
-              | {
-                  executeId: string;
-                  skillName?: string;
-                  success: boolean;
-                  error?: string;
-                }
-              | undefined;
-            error?: string;
-          }>;
-          improveSkill?: (
-            skillName: string,
-            options?: { autoApply?: boolean },
-          ) => Promise<{
-            success: boolean;
-            data?: {
-              suggestions: Array<{
-                category: string;
-                description: string;
-                severity: "low" | "medium" | "high";
-                autoFixable: boolean;
-              }>;
-              applied: boolean;
-            };
-            error?: string;
-          }>;
-        };
+      skillCreatorAPI?: {
+        detectMode?: (request: string) => Promise<{
+          success: boolean;
+          data?: string;
+          error?: string;
+        }>;
+        planSkill?: (
+          prompt: string,
+          authMode?: string,
+          apiKey?: string,
+        ) => Promise<{
+          success: boolean;
+          data?:
+            | {
+                type: "integrated_api" | "terminal_handoff";
+                planId?: string;
+                estimatedSteps?: number;
+                guidance?: {
+                  reason: string;
+                  terminalCommand: string;
+                  contextSummary: string;
+                };
+              }
+            | undefined;
+          error?: string;
+        }>;
+        executePlan?: (
+          planId: string,
+          skillSpec?: unknown,
+          authMode?: string,
+          apiKey?: string,
+        ) => Promise<{
+          success: boolean;
+          data?:
+            | {
+                executeId: string;
+                skillName?: string;
+                success: boolean;
+                error?: string;
+              }
+            | undefined;
+          error?: string;
+        }>;
+        improveSkill?: (
+          skillName: string,
+          options?: { autoApply?: boolean },
+        ) => Promise<{
+          success: boolean;
+          data?: {
+            suggestions: Array<{
+              category: string;
+              description: string;
+              severity: "low" | "medium" | "high";
+              autoFixable: boolean;
+            }>;
+            applied: boolean;
+          };
+          error?: string;
+        }>;
       };
     }
-  ).electronAPI = {
-    skillCreator: {
-      detectMode: mockDetectMode,
-      planSkill: mockPlanSkill,
-      executePlan: mockExecutePlan,
-      improveSkill: vi.fn().mockResolvedValue({
-        success: true,
-        data: {
-          suggestions: [
-            {
-              category: "structure",
-              description: "ファイル責務を整理する",
-              severity: "medium",
-              autoFixable: true,
-            },
-          ],
-          applied: false,
-        },
-      }),
-      getVerifyDetail: mockGetVerifyDetail,
-      reverifyWorkflow: mockReverifyWorkflow,
-    },
+  ).skillCreatorAPI = {
+    detectMode: mockDetectMode,
+    planSkill: mockPlanSkill,
+    executePlan: mockExecutePlan,
+    improveSkill: vi.fn().mockResolvedValue({
+      success: true,
+      data: {
+        suggestions: [
+          {
+            category: "structure",
+            description: "ファイル責務を整理する",
+            severity: "medium",
+            autoFixable: true,
+          },
+        ],
+        applied: false,
+      },
+    }),
+    getVerifyDetail: mockGetVerifyDetail,
+    reverifyWorkflow: mockReverifyWorkflow,
   };
 
   mockDetectMode.mockResolvedValue({
@@ -264,9 +260,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
-  delete (
-    window as Window & { electronAPI?: unknown; skillCreatorAPI?: unknown }
-  ).electronAPI;
+  delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
 });
 
 describe("SkillLifecyclePanel", () => {
@@ -280,7 +274,7 @@ describe("SkillLifecyclePanel", () => {
       fireEvent.click(screen.getByTestId("skill-lifecycle-prepare-button"));
     });
 
-    expect(window.electronAPI?.skillCreator?.detectMode).toHaveBeenCalledWith(
+    expect(window.skillCreatorAPI?.detectMode).toHaveBeenCalledWith(
       "レビューを自動化するスキルを作りたい",
     );
     expect(screen.getByTestId("skill-lifecycle-mode-label")).toHaveTextContent(
@@ -481,7 +475,7 @@ describe("SkillLifecyclePanel", () => {
     });
 
     expect(mockBeginSkillReview).toHaveBeenCalledTimes(1);
-    expect(window.electronAPI?.skillCreator?.improveSkill).toHaveBeenCalledWith(
+    expect(window.skillCreatorAPI?.improveSkill).toHaveBeenCalledWith(
       "lifecycle-skill",
       { autoApply: false },
     );
@@ -502,23 +496,19 @@ describe("SkillLifecyclePanel", () => {
   it("improve API が未接続でも詳細分析へフォールバックできる", async () => {
     (
       window as Window & {
-        electronAPI?: {
-          skillCreator?: {
-            detectMode?: (request: string) => Promise<{
-              success: boolean;
-              data?: string;
-              error?: string;
-            }>;
-          };
+        skillCreatorAPI?: {
+          detectMode?: (request: string) => Promise<{
+            success: boolean;
+            data?: string;
+            error?: string;
+          }>;
         };
       }
-    ).electronAPI = {
-      skillCreator: {
-        detectMode: vi.fn().mockResolvedValue({
-          success: true,
-          data: "collaborative",
-        }),
-      },
+    ).skillCreatorAPI = {
+      detectMode: vi.fn().mockResolvedValue({
+        success: true,
+        data: "collaborative",
+      }),
     };
 
     const view = render(
@@ -599,37 +589,33 @@ describe("SkillLifecyclePanel", () => {
   it("改善候補が0件なら reuse_ready を確定する", async () => {
     (
       window as Window & {
-        electronAPI?: {
-          skillCreator?: {
-            detectMode?: (request: string) => Promise<{
-              success: boolean;
-              data?: string;
-              error?: string;
-            }>;
-            improveSkill?: () => Promise<{
-              success: boolean;
-              data?: {
-                suggestions: [];
-                applied: boolean;
-              };
-            }>;
-          };
+        skillCreatorAPI?: {
+          detectMode?: (request: string) => Promise<{
+            success: boolean;
+            data?: string;
+            error?: string;
+          }>;
+          improveSkill?: () => Promise<{
+            success: boolean;
+            data?: {
+              suggestions: [];
+              applied: boolean;
+            };
+          }>;
         };
       }
-    ).electronAPI = {
-      skillCreator: {
-        detectMode: vi.fn().mockResolvedValue({
-          success: true,
-          data: "collaborative",
-        }),
-        improveSkill: vi.fn().mockResolvedValue({
-          success: true,
-          data: {
-            suggestions: [],
-            applied: false,
-          },
-        }),
-      },
+    ).skillCreatorAPI = {
+      detectMode: vi.fn().mockResolvedValue({
+        success: true,
+        data: "collaborative",
+      }),
+      improveSkill: vi.fn().mockResolvedValue({
+        success: true,
+        data: {
+          suggestions: [],
+          applied: false,
+        },
+      }),
     };
 
     const view = render(
