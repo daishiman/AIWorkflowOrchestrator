@@ -100,15 +100,26 @@ function validateSender(
 
 function emitWorkflowStateChanged(
   mainWindow: BrowserWindow,
-  snapshot: SkillCreatorWorkflowUiSnapshot,
+  snapshot: SkillCreatorWorkflowUiSnapshot | null,
+  errorMessage?: string,
 ): void {
   if (mainWindow.isDestroyed()) {
     return;
   }
-  mainWindow.webContents.send(
-    IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
-    snapshot,
-  );
+  if (errorMessage !== undefined) {
+    mainWindow.webContents.send(
+      IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      snapshot,
+      errorMessage,
+    );
+    return;
+  }
+  if (snapshot) {
+    mainWindow.webContents.send(
+      IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      snapshot,
+    );
+  }
 }
 
 function toAdapterStatusPayload(
@@ -146,9 +157,10 @@ export function registerRuntimeSkillCreatorHandlers(
     runtimeSkillCreatorService.onWorkflowStateSnapshot = (
       _planId,
       snapshot,
+      errorMessage,
     ) => {
-      if (snapshot) {
-        emitWorkflowStateChanged(mainWindow, snapshot);
+      if (snapshot || errorMessage !== undefined) {
+        emitWorkflowStateChanged(mainWindow, snapshot, errorMessage);
       }
     };
     runtimeSkillCreatorService.onAdapterStatusChanged = (
@@ -198,41 +210,6 @@ export function registerRuntimeSkillCreatorHandlers(
           error: sanitizeErrorMessage(
             error,
             "Runtime plan の実行に失敗しました",
-          ),
-        };
-      }
-    },
-  );
-
-  ipcMain.handle(
-    IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
-    async (
-      event: IpcMainInvokeEvent,
-    ): Promise<IpcResult<LLMAdapterStatusPayload>> => {
-      validateSender(
-        event,
-        IPC_CHANNELS.SKILL_CREATOR_GET_ADAPTER_STATUS,
-        mainWindow,
-      );
-
-      if (!runtimeSkillCreatorService) {
-        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
-      }
-
-      try {
-        return {
-          success: true,
-          data: toAdapterStatusPayload(
-            runtimeSkillCreatorService.llmAdapterStatus,
-            runtimeSkillCreatorService.llmAdapterFailureReason,
-          ),
-        };
-      } catch (error) {
-        return {
-          success: false,
-          error: sanitizeErrorMessage(
-            error,
-            "LLMAdapter 状態の取得に失敗しました",
           ),
         };
       }

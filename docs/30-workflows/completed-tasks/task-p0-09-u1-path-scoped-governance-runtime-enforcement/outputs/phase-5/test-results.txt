@@ -1,0 +1,21 @@
+Phase 5: 実装（Green） - テスト結果
+
+実行日時: 2026-04-06
+コマンド: cd apps/desktop && npx vitest run src/main/services/runtime/__tests__/governance/
+
+結果:
+  Test Files  6 passed (6)
+  Tests  94 passed (94)  ← 実装直後（TC-PATH-01〜05 PASS, extractTargetPath 4件は Phase 6 で追加）
+  Start at  14:27:29
+  Duration  9.42s
+
+TC-PATH-01〜05 全PASS（Green状態達成）
+既存 90 件テスト PASS 継続確認
+
+実装変更:
+- extractTargetPath() helper 追加（RuntimeSkillCreatorFacade.ts）
+- createExecuteGovernanceCanUseTool(skillRoot: string) 修正（context 接続）
+- createImproveGovernanceCanUseTool(skillRoot: string) 新規追加
+- _executeInternal() の canUseTool 呼び出しに skillRoot を受け渡し
+
+TypeScript 型チェック: PASS（型エラーなし）

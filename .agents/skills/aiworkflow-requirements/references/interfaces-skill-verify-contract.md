@@ -1,5 +1,7 @@
 # FR-04 verify 契約 — Check ID 体系
 
+> 区分: 契約仕様（current contract / Check ID 体系）
+
 ## 概要
 
 `SkillCreatorVerificationEngine` は、スキル定義の品質を保証する検証エンジンである。スキルディレクトリの構造・コンテンツ・参照整合性を 4 Layer で段階的に検証し、各検証項目に一意の Check ID を割り当てる。
@@ -78,6 +80,22 @@ L{N}-{NNN}
 | L4-001 | SKILL.md の Anchors セクションにリスト項目が存在するか確認 | `error` | リスト項目が 1 件以上存在する | `SKILL.md Anchors section has no list items` |
 | L4-002 | SKILL.md で言及された references/ ファイルが存在するか確認 | `warning` | 全ファイルが存在する | `Some referenced files in references/ are missing or escape references/: {files}` |
 | L4-003 | agent ファイル名が SKILL.md で言及されているか確認 | `warning` | テキスト内で言及されている | `Agent file {file} is not mentioned in SKILL.md` |
+
+## verify エンジン責務分離
+
+verify エンジンは 3 つの関数で構成され、それぞれが明確に異なる責務を持つ。
+
+| 関数名                   | 実装ファイル                        | 責務                                                      | 返却値                                      |
+| ------------------------ | ----------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
+| `verifySkill()`          | `RuntimeSkillCreatorFacade.ts`      | `verificationEngine.verify()` を呼び出し Check 配列を返す | `RuntimeSkillCreatorVerifyCheck[]`          |
+| `verifyAndImproveLoop()` | `RuntimeSkillCreatorFacade.ts`      | 検証結果の severity に基づく improve ループ制御           | `RuntimeSkillCreatorVerifyAndImproveResult` |
+| `verify()`               | `SkillCreatorVerificationEngine.ts` | 19 件の Check を 4 Layer で実行し結果を収集する           | `RuntimeSkillCreatorVerifyCheck[]`          |
+
+### 責務分離の原則
+
+- **`verifySkill()`** — Facade の公開 API として外部から呼び出される。内部で `verificationEngine.verify(skillDir)` を呼び出し、`onSessionStart` / `onSessionEnd` ガバナンスフックを通じて監査ログを記録しながら Check 配列を中継する。
+- **`verifyAndImproveLoop()`** — severity 判定と improve ループ制御を担う。`verifySkill()` を内部で繰り返し呼び出し、前回の改善要約を次回の feedback に織り込んで同一修正の反復を抑制する。
+- **`verify()`** — 検証ロジックの本体。`RuntimeSkillCreatorFacade.ts` の `verifySkill()` からのみ呼び出される（外部公開しない）。19 件の Check を Layer 1 → 2 → 3 → 4 の順に実行する。
 
 ## Layer 拡張ガイドライン
 

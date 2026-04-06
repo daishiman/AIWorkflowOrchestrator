@@ -5,6 +5,35 @@
 
 ## 完了タスク
 
+### タスク: TASK-FIX-IPC-SKILL-NAME-001 ipcMain重複登録・スキル名正規化修正（2026-04-06）
+
+| 項目             | 値                                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | TASK-FIX-IPC-SKILL-NAME-001                                                                                                    |
+| ステータス       | **完了（Phase 12 close-out）**                                                                                                  |
+| タイプ           | bug-fix / ipc / skill-name-normalization                                                                                        |
+| 優先度           | 高                                                                                                                              |
+| 完了日           | 2026-04-06                                                                                                                      |
+| 対象             | `creatorHandlers.ts` ipcMain重複登録修正 / `SkillService.toWizardSkillName()` 正規化強化                                        |
+| 成果物           | `docs/30-workflows/fix-creator-handler-duplicate-skill-name-validation/`                                                        |
+
+#### 実施内容
+
+- `registerRuntimeSkillCreatorHandlers()` の `SKILL_CREATOR_GET_ADAPTER_STATUS` 2重登録を除去（後続14ハンドラの未登録が解消、全16チャネルが正常登録）
+- `toWizardSkillName()` に5ステップ正規化フロー実装（小文字化→非許容文字ハイフン化→連続ハイフン圧縮→端除去→"new-skill"フォールバック）
+- `resolveUniqueSkillName()` による衝突回避（`new-skill-2` / `new-skill-3`...）
+- `docs/00-requirements/18-skills.md` 3.2.2.1セクションに正規化規則を追記
+- `docs/00-requirements/08-api-design.md` にIPC ハンドラ一意性要件を追記
+- Phase 7 で `creatorHandlers.governanceState.test.ts` 新規12テスト追加
+
+#### 未タスク（Phase 12 close-out）
+
+- `UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001`: SKILL_NAME_PATTERN定数一元化（Medium）
+- `UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001`: IPC登録CIスナップショット（Medium）
+- `UT-FIX-SKILL-NAME-JAPANESE-INPUT-UX-001`: 日本語入力リアルタイムプレビュー（Low）
+
+---
+
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
 ### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
 

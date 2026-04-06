@@ -267,6 +267,17 @@ const withRelations = await db.query.{{テーブル}}.findFirst({
 | {{ファイル名}}     | {{数}}   | {{範囲}}     |
 | **合計**           | **{{合計}}** |          |
 
+#### private method のテスト方針（該当時のみ）
+
+> [Feedback P0-09-U1-1] TDD Phase 4 で private method をテストする場合は以下2択を明記する。
+
+| 方針                        | コード例                                                       | 採用基準                                      |
+| --------------------------- | -------------------------------------------------------------- | --------------------------------------------- |
+| キャスト経由                | `(facade as unknown as FacadePrivate).methodName()`            | 単体テストで直接検証したい場合                |
+| public callback / public API 経由 | `await facade.execute(); // 内部で private が呼ばれる` | public contract を通じて振る舞いを検証する場合 |
+
+採用方針を Phase 4 仕様書に1行で明記すること（例: 「本タスクは public callback 経由を採用する」）。
+
 ---
 
 ## 6. 使用上の注意
@@ -314,6 +325,18 @@ const withRelations = await db.query.{{テーブル}}.findFirst({
 | ------ | ---------------------- | --------------------------- |
 | 1      | 特定キーが文字列      | 直接表示（ユーザーフレンドリー） |
 | 2      | フォールバック        | `JSON.stringify`（開発者向け）  |
+
+#### state owner / wrapper / presentation 責務分離パターン
+
+複数の detail panel を束ねる orchestration wrapper を導入するとき、責務を3層に分離する。
+
+| 層           | 責務                                                     | 例                         |
+| ------------ | -------------------------------------------------------- | -------------------------- |
+| state owner  | raw result・IPC コールバック・phase 遷移を保持          | `SkillLifecyclePanel`      |
+| wrapper      | child panel の組み合わせ・overall status・空状態を担当  | `SkillCreationResultPanel` |
+| presentation | props だけで描画する pure component                      | `ExecuteResultDetailPanel` |
+
+**判断基準**: wrapper が state を持ち始めたら state owner との責務混在を疑う。verify retry や persist error のような別 failure mode は wrapper 内の独立 surface として分離する。
 
 #### アクセシビリティ対応
 

@@ -7,6 +7,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-04-06 - TASK-FIX-IPC-SKILL-NAME-001 Phase 12 close-out sync（`creatorHandlers.ts` ipcMain重複登録除去（後続14→全16ハンドラ正常化）/ `SkillService.toWizardSkillName()` 正規化5ステップ実装 / `docs/00-requirements/18-skills.md` 正規化規則追記 / `docs/00-requirements/08-api-design.md` ハンドラ一意性要件追記 / `api-ipc-system-core.md` に IPC Handler Lifecycle Management セクション追加 / `lessons-learned-current.md` v3.7.0 教訓3件追加 / `task-workflow-completed.md` 完了記録追加 / UT-01〜03を unassigned-task に配置 / LOGS.md 2ファイル同時更新） |
 | 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync（Phase 11 Playwright screenshot 4枚を `outputs/phase-11/screenshots/` に保存 / implementation-guide に screenshot references 追記 / artifacts.json parity zero / LOGS.md 2ファイル + SKILL.md 2ファイル同波更新） |
 | 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization 実装完了 Phase 12 sync（resource-map.md に TASK-RT-06 リソースマップ追加 / quick-reference.md に SDK Event Normalization セクション追加 / lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md に normalizer 設計・sessionId 伝播教訓追記 / workflow-task-rt-06-artifact-inventory.md 新規作成） |
 | 2026-03-28 - TASK-SDK-04-U2 canonical binding remediation sync（`api-ipc-system-core.md` / `arch-state-management-core.md` から未解消扱いを解消し、`approvedSkillSpec` snapshot による execute binding 修正と task spec close-out drift 是正を same-wave 反映） |

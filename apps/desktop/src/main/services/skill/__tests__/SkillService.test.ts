@@ -8,6 +8,33 @@
  */
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
+const {
+  mockFsAccess,
+  mockFsMkdir,
+  mockFsWriteFile,
+  mockSkillCreatorCreateSkill,
+} = vi.hoisted(() => ({
+  mockFsAccess: vi.fn(),
+  mockFsMkdir: vi.fn(),
+  mockFsWriteFile: vi.fn(),
+  mockSkillCreatorCreateSkill: vi.fn(),
+}));
+
+vi.mock("fs/promises", () => ({
+  default: {
+    access: mockFsAccess,
+    mkdir: mockFsMkdir,
+    writeFile: mockFsWriteFile,
+  },
+}));
+
+vi.mock("../SkillCreatorService", () => ({
+  SkillCreatorService: class MockSkillCreatorService {
+    createSkill = mockSkillCreatorCreateSkill;
+    constructor(_skillsDir?: string, _workflowsDir?: string) {}
+  },
+}));
+
 // Types from design
 interface Skill {
   id: string;
@@ -99,6 +126,10 @@ describe("SkillService", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
+    mockFsAccess.mockReset();
+    mockFsMkdir.mockReset();
+    mockFsWriteFile.mockReset();
+    mockSkillCreatorCreateSkill.mockReset();
 
     // Create mocks
     mockScanner = {
@@ -133,6 +164,13 @@ describe("SkillService", () => {
       getImportedSkillIds: vi.fn().mockReturnValue([]),
       isImported: vi.fn().mockReturnValue(false),
     };
+
+    mockFsAccess.mockRejectedValue(new Error("ENOENT"));
+    mockFsMkdir.mockResolvedValue(undefined);
+    mockFsWriteFile.mockResolvedValue(undefined);
+    mockSkillCreatorCreateSkill.mockImplementation(
+      async (options: { name: string }) => `/test/skills/${options.name}`,
+    );
 
     // Try to import SkillService (will fail in Red phase)
     try {
@@ -575,6 +613,113 @@ describe("SkillService", () => {
 
       // When & Then: 空キャッシュでclearCacheを呼び出してもエラーにならない
       expect(() => service.clearCache()).not.toThrow();
+    });
+  });
+
+  // ===========================================================================
+  // toWizardSkillName regression tests
+  // ===========================================================================
+
+  describe("toWizardSkillName regression", () => {
+    const getToWizardSkillName = () => {
+      if (!service) {
+        throw new Error("SkillService not initialized - Red phase");
+      }
+      return (
+        service as unknown as {
+          toWizardSkillName(input: string): string;
+        }
+      ).toWizardSkillName.bind(service);
+    };
+
+    it("SS-TWSN-01: 日本語入力はフォールバック可能な形式へ正規化される", () => {
+      const toWizardSkillName = getToWizardSkillName();
+      const result = toWizardSkillName("マイスキル");
+      expect(result).toBe("new-skill");
+      expect(result).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+    });
+
+    it("SS-TWSN-02: 大文字は小文字化される", () => {
+      const toWizardSkillName = getToWizardSkillName();
+      expect(toWizardSkillName("My Skill")).toBe("my-skill");
+    });
+
+    it("SS-TWSN-03: アンダースコアはハイフンに変換される", () => {
+      const toWizardSkillName = getToWizardSkillName();
+      expect(toWizardSkillName("my_skill")).toBe("my-skill");
+    });
+
+    it("SS-TWSN-04: 既存の英小文字ハイフンは維持される", () => {
+      const toWizardSkillName = getToWizardSkillName();
+      expect(toWizardSkillName("test-skill")).toBe("test-skill");
+    });
+
+    it("SS-TWSN-05: 空文字は new-skill にフォールバックする", () => {
+      const toWizardSkillName = getToWizardSkillName();
+      expect(toWizardSkillName("")).toBe("new-skill");
+    });
+
+    it("SS-TWSN-06: 先頭ハイフンは除去される", () => {
+      const toWizardSkillName = getToWizardSkillName();
+      expect(toWizardSkillName("-skill")).toBe("skill");
+    });
+
+    it("SS-TWSN-07: 末尾ハイフンは除去される", () => {
+      const toWizardSkillName = getToWizardSkillName();
+      expect(toWizardSkillName("skill-")).toBe("skill");
+    });
+
+    it("SS-TWSN-08: 52文字の入力は50文字にスライスされる", () => {
+      const toWizardSkillName = getToWizardSkillName();
+      const result = toWizardSkillName("a".repeat(52));
+      expect(result).toBe("a".repeat(50));
+      expect(result.length).toBe(50);
+    });
+
+    it("SS-TWSN-09: 数字のみの入力はそのまま通る", () => {
+      const toWizardSkillName = getToWizardSkillName();
+      expect(toWizardSkillName("123")).toBe("123");
+    });
+
+    it('SS-TWSN-10: 特殊文字のみは "new-skill" にフォールバックする', () => {
+      const toWizardSkillName = getToWizardSkillName();
+      expect(toWizardSkillName("!!!")).toBe("new-skill");
+    });
+
+    it("SS-TWSN-11: 混在入力は kebab-case に正規化される", () => {
+      const toWizardSkillName = getToWizardSkillName();
+      expect(toWizardSkillName("My_テスト-Skill123")).toBe("my-skill123");
+    });
+  });
+
+  describe("createSkillFromWizard collision resolution", () => {
+    it("SS-CSW-01: new-skill が存在する場合は new-skill-2 を選ぶ", async () => {
+      if (!service) {
+        throw new Error("SkillService not initialized - Red phase");
+      }
+
+      mockFsAccess.mockImplementation(async (candidatePath: string) => {
+        if (candidatePath.endsWith("/new-skill")) {
+          return undefined;
+        }
+        throw new Error("ENOENT");
+      });
+
+      const result = await service.createSkillFromWizard("マイスキル", {
+        generateTasks: false,
+        addAgents: false,
+        addReferences: false,
+      });
+
+      expect(mockSkillCreatorCreateSkill).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: "new-skill-2",
+          description: "マイスキル",
+          mode: "create",
+          generateTasks: false,
+        }),
+      );
+      expect(result.path).toBe("/test/skills/new-skill-2");
     });
   });
 });
