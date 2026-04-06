@@ -142,6 +142,7 @@ step-10-seq-task-p0-08-session-resume-renderer-integration/
 ### 並列実行メモ
 
 - TASK-P0-08 は他タスクと独立して着手可能（TASK-SDK-08 はマージ済み）
+- Phase 12 は SubAgent で分割可能。Task 1 / Task 2 を先行ブロックに置き、Task 3 / Task 4 / Task 5 は Task 1/2 の current contract が固まり次第並列化する
 - `SkillLifecyclePanel.tsx` の編集は TASK-RT-03 / TASK-P0-06 と競合する可能性あり
 - `ipc/index.ts` の編集は TASK-RT-01 と競合する可能性あり
 
@@ -174,6 +175,6 @@ step-10-seq-task-p0-08-session-resume-renderer-integration/
 - Phase 8: `outputs/phase-8/refactoring-log.md`
 - Phase 9: `outputs/phase-9/qa-report.md`
 - Phase 10: `outputs/phase-10/final-review-result.md`
-- Phase 11: `outputs/phase-11/manual-test-result.md`, `outputs/phase-11/screenshots/*.png`
-- Phase 12: `outputs/phase-12/implementation-guide.md` 他5成果物
-- Phase 13: `outputs/phase-13/pr-creation-record.md`
+- Phase 11: `outputs/phase-11/manual-test-checklist.md`, `outputs/phase-11/manual-test-result.md`, `outputs/phase-11/discovered-issues.md`, `outputs/phase-11/screenshots/*.png`
+- Phase 12: `outputs/phase-12/implementation-guide.md`, `outputs/phase-12/system-spec-update-summary.md`, `outputs/phase-12/documentation-changelog.md`, `outputs/phase-12/unassigned-task-detection.md`, `outputs/phase-12/skill-feedback-report.md`, `outputs/phase-12/phase12-task-spec-compliance-check.md`
+- Phase 13: `outputs/phase-13/local-check-result.md`, `outputs/phase-13/pr-creation-record.md`
