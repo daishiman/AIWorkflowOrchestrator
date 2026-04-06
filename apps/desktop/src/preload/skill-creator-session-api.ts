@@ -1,17 +1,9 @@
 /**
- * Skill Creator Session API - Preload から Renderer に公開する session API
- *
- * TASK-SDK-SC-01: SDK Session Bridge
+ * TASK-UI-02: Session IPC 廃止済み。
+ * Runtime IPC（creatorHandlers.ts）が正本。このファイルは型互換のためのスタブ。
+ * ElectronAPI の skillCreatorSession プロパティ型を満たすために残存。
  */
 
-import { ipcRenderer } from "electron";
-import type { IpcRendererEvent } from "electron";
-import {
-  IPC_CHANNELS,
-  ALLOWED_INVOKE_CHANNELS,
-  ALLOWED_ON_CHANNELS,
-} from "./channels";
-import { invokeWithTimeout } from "./ipc-utils";
 import type {
   SkillCreatorSessionCompleteEvent,
   SkillCreatorSessionErrorEvent,
@@ -22,27 +14,6 @@ import type {
 export interface ExternalApiConfigRequiredEvent {
   apiName?: string;
   description?: string;
-}
-
-function safeInvoke<T>(channel: string, ...args: unknown[]): Promise<T> {
-  return invokeWithTimeout<T>(ALLOWED_INVOKE_CHANNELS, channel, ...args);
-}
-
-function safeOn<T>(channel: string, callback: (data: T) => void): () => void {
-  if (!ALLOWED_ON_CHANNELS.includes(channel)) {
-    console.error(`Channel ${channel} is not allowed`);
-    return () => {};
-  }
-
-  const listener = (_event: IpcRendererEvent, data: T) => {
-    callback(data);
-  };
-
-  ipcRenderer.on(channel, listener);
-
-  return () => {
-    ipcRenderer.removeListener(channel, listener);
-  };
 }
 
 export interface SkillCreatorSessionAPI {
@@ -60,25 +31,12 @@ export interface SkillCreatorSessionAPI {
   ) => () => void;
 }
 
+// TASK-UI-02: 全メソッドがno-op。Session IPC は廃止済み。
 export const skillCreatorSessionAPI: SkillCreatorSessionAPI = {
-  startSession: (request: string, sessionId?: string) =>
-    safeInvoke<void>(IPC_CHANNELS.START_SESSION, { request, sessionId }),
-  sendAnswer: (answer: UserInputAnswer) =>
-    safeInvoke<void>(IPC_CHANNELS.ANSWER, answer),
-  onQuestion: (callback: (question: UserInputQuestion) => void) =>
-    safeOn<UserInputQuestion>(IPC_CHANNELS.QUESTION_RECEIVED, callback),
-  onExternalApiConfigRequired: (
-    callback: (event: ExternalApiConfigRequiredEvent) => void,
-  ) =>
-    safeOn<ExternalApiConfigRequiredEvent>(
-      IPC_CHANNELS.EXTERNAL_API_CONFIG_REQUIRED,
-      callback,
-    ),
-  onComplete: (callback: (event: SkillCreatorSessionCompleteEvent) => void) =>
-    safeOn<SkillCreatorSessionCompleteEvent>(
-      IPC_CHANNELS.SESSION_COMPLETE,
-      callback,
-    ),
-  onError: (callback: (event: SkillCreatorSessionErrorEvent) => void) =>
-    safeOn<SkillCreatorSessionErrorEvent>(IPC_CHANNELS.SESSION_ERROR, callback),
+  startSession: () => Promise.resolve(),
+  sendAnswer: () => Promise.resolve(),
+  onQuestion: () => () => {},
+  onExternalApiConfigRequired: () => () => {},
+  onComplete: () => () => {},
+  onError: () => () => {},
 };

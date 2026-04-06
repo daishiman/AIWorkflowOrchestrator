@@ -33,6 +33,11 @@ outputs/phase-12/documentation-changelog.md
 | 更新日     | {{UPDATED_DATE}}       |
 | Phase      | 12                     |
 | ステータス | {{STATUS}}             |
+| 変更者     | {{AUTHOR}}             |
+| 関連 Issue / PR | {{ISSUE_PR_LINK}} |
+| validator 実行結果 | {{VALIDATOR_RESULT}} |
+| current / baseline | {{CURRENT_BASELINE}} |
+| artifacts 同期結果 | {{ARTIFACTS_SYNC_RESULT}} |
 
 ## 更新対象ファイル一覧
 
@@ -121,7 +126,11 @@ outputs/phase-12/documentation-changelog.md
    - LOGS.md（2ファイル）も含める
    - topic-map.md の更新も含める
 
-3. **Step 1-C の確認コマンドを記録する**
+3. **メタ情報テーブルの必須フィールドを必ず埋める**
+   - `変更者` / `関連 Issue / PR` / `validator 実行結果` / `current / baseline` / `artifacts 同期結果`
+   - 空欄やプレースホルダの残置を禁止する
+
+4. **Step 1-C の確認コマンドを記録する**
    - `grep -rn "TASK_ID" references/` の実行結果を記載
    - 関連テーブルの有無を明確にする
 
@@ -142,6 +151,7 @@ outputs/phase-12/documentation-changelog.md
 - [ ] Step 1-A: LOGS.md（task-specification-creator）が更新されているか
 - [ ] Step 1-B: 実装状況テーブルの確認結果が記録されているか
 - [ ] Step 1-C: `grep -rn` で関連テーブルを機械的に検索したか
+- [ ] メタ情報テーブルの 5 必須フィールドが全て記録されているか
 - [ ] Step 2: 更新判断の根拠が明記されているか
 - [ ] topic-map.md: 新セクション追加時に更新されているか
 - [ ] 変更内容サマリー: 全更新ファイルが列挙されているか

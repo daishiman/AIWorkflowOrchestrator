@@ -164,18 +164,19 @@ class PhaseValidator {
     const phase11Content = readFileSync(phase11Path, "utf-8");
     const phase11OutputDir = join(this.workflowDir, "outputs", "phase-11");
     const screenshotDir = join(phase11OutputDir, "screenshots");
-    const expectsVisualEvidence =
-      existsSync(screenshotDir) ||
-      /(screen\s*shot|スクリーンショット|画面証跡|UI|View|CTA)/i.test(
-        phase11Content,
-      );
+    const isDocsOnlyPhase11 = this.detectDocsOnlyPhase11(phase11Content);
+    const expectsVisualEvidence = !isDocsOnlyPhase11;
 
     if (!existsSync(phase11OutputDir)) {
       this.warnings.push("outputs/phase-11 ディレクトリが存在しません");
       return;
     }
 
-    const phase11RequiredFiles = ["manual-test-checklist.md", "manual-test-result.md"];
+    const phase11RequiredFiles = [
+      "manual-test-checklist.md",
+      "manual-test-result.md",
+      "discovered-issues.md",
+    ];
     if (expectsVisualEvidence) {
       phase11RequiredFiles.push("screenshot-plan.json");
     }
@@ -184,16 +185,19 @@ class PhaseValidator {
       (file) => !existsSync(join(phase11OutputDir, file)),
     );
     if (missingFiles.length > 0) {
-      this.warnings.push(
-        `Phase 11 補助成果物が不足しています: ${missingFiles.join(", ")}`,
-      );
+      const message = `Phase 11 補助成果物が不足しています: ${missingFiles.join(", ")}`;
+      if (expectsVisualEvidence) {
+        this.errors.push(message);
+      } else {
+        this.errors.push(message);
+      }
     } else {
       this.passes.push(
         `Phase 11: 補助成果物が揃っています (${phase11RequiredFiles.join(", ")})`,
       );
     }
 
-    if (existsSync(screenshotDir)) {
+    if (expectsVisualEvidence && existsSync(screenshotDir)) {
       const pngFiles = readdirSync(screenshotDir).filter((file) =>
         /\.png$/i.test(file),
       );
@@ -207,7 +211,7 @@ class PhaseValidator {
         );
       }
     } else if (expectsVisualEvidence) {
-      this.warnings.push(
+      this.errors.push(
         "Phase 11 は画面証跡を要求していますが outputs/phase-11/screenshots がありません",
       );
     }
@@ -250,6 +254,69 @@ class PhaseValidator {
     if (filesToScan.length > 0 && foundCount === 0) {
       this.passes.push("Phase 12: planned wording / PR後追い文言なし");
     }
+  }
+
+  detectDocsOnlyPhase11(phase11Content) {
+    const classifyTaskType = (value) => {
+      const text = String(value ?? "").trim();
+      if (!text) return null;
+      if (/(docs-only|docs|non[_-]?visual)/i.test(text)) {
+        return true;
+      }
+      if (/(visual|ui)/i.test(text) && !/(docs-only|docs|non[_-]?visual)/i.test(text)) {
+        return false;
+      }
+      return null;
+    };
+
+    const indexPath = join(this.workflowDir, "index.md");
+    let indexSignal = null;
+    if (existsSync(indexPath)) {
+      const indexContent = readFileSync(indexPath, "utf-8");
+      const taskTypeMatch = indexContent.match(/^\|\s*タスク種別\s*\|\s*([^|]+)\|/m);
+      if (taskTypeMatch) {
+        indexSignal = classifyTaskType(taskTypeMatch[1]);
+      }
+    }
+
+    const artifactsPath = join(this.workflowDir, "artifacts.json");
+    let artifactsSignal = null;
+    if (existsSync(artifactsPath)) {
+      try {
+        const artifacts = JSON.parse(readFileSync(artifactsPath, "utf-8"));
+        artifactsSignal = classifyTaskType(artifacts?.metadata?.taskType);
+      } catch {
+        this.warnings.push(
+          "Phase 11 docs-only 判定で artifacts.json の解析に失敗したため、screenshot 要件を維持します",
+        );
+      }
+    }
+
+    if (indexSignal === true && artifactsSignal === true) {
+      return true;
+    }
+
+    if (indexSignal === false || artifactsSignal === false) {
+      this.warnings.push(
+        "Phase 11 docs-only 判定は index.md / artifacts.json の両方で docs-only 相当を確認できなかったため screenshot 要件を維持します",
+      );
+      return false;
+    }
+
+    if (indexSignal === true || artifactsSignal === true) {
+      this.warnings.push(
+        "Phase 11 docs-only 判定は index.md / artifacts.json の両方で一致しなかったため fail-closed しました",
+      );
+      return false;
+    }
+
+    if (/(docs-only|NON_VISUAL|spec_created)/i.test(phase11Content)) {
+      this.warnings.push(
+        "Phase 11 本文に docs-only 記述がありますが、index.md / artifacts.json と両方で確認できないため screenshot 要件を外しません",
+      );
+    }
+
+    return false;
   }
 
   validateOptionalPhase0() {

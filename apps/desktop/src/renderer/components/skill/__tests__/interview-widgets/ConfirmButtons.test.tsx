@@ -54,6 +54,33 @@ describe("ConfirmButtons", () => {
     expect(onConfirm).toHaveBeenCalledWith(false);
   });
 
+  // W-CB-04: disabled のとき両ボタンのdisabled属性がtrueになる
+  it("W-CB-04: both buttons have disabled attribute when disabled prop is set", () => {
+    render(<ConfirmButtons onConfirm={vi.fn()} selected={null} disabled />);
+
+    expect(screen.getByTestId("confirm-yes")).toBeDisabled();
+    expect(screen.getByTestId("confirm-no")).toBeDisabled();
+  });
+
+  // W-CB-05: Enter/Space でボタンを操作できる（ネイティブボタン動作 = click）
+  it("W-CB-05: calls onConfirm(true) when Yes button is activated via click (Enter/Space equivalent)", () => {
+    const onConfirm = vi.fn();
+    render(<ConfirmButtons onConfirm={onConfirm} selected={null} />);
+
+    fireEvent.click(screen.getByTestId("confirm-yes"));
+    expect(onConfirm).toHaveBeenCalledWith(true);
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
+  it("W-CB-05b: calls onConfirm(false) when No button is activated via click (Enter/Space equivalent)", () => {
+    const onConfirm = vi.fn();
+    render(<ConfirmButtons onConfirm={onConfirm} selected={null} />);
+
+    fireEvent.click(screen.getByTestId("confirm-no"));
+    expect(onConfirm).toHaveBeenCalledWith(false);
+    expect(onConfirm).toHaveBeenCalledTimes(1);
+  });
+
   it("ignores Y/N keys when disabled", () => {
     const onConfirm = vi.fn();
     render(<ConfirmButtons onConfirm={onConfirm} selected={null} disabled />);
