@@ -76,6 +76,28 @@ grep -n "^[^/]*\(app\.\|server\.\|connect\|initialize\|ipcMain\.\|BrowserWindow\
 
 先行実施した場合は Phase 8 で「Phase 5 で実施済み」と明記し、重複作業を防止する。
 
+### Phase 4: private method テスト方針の明記【必須】
+
+> [Feedback P0-09-U1-1] TDD Red 前に、private method をどのようにテストするかを Phase 4 仕様書に1行で明記する。
+
+| 方針                        | 記述例                                                           | 採用基準                        |
+| --------------------------- | ---------------------------------------------------------------- | ------------------------------- |
+| キャスト経由                | `(facade as unknown as FacadePrivate).method()`                  | 直接単体検証が必要な場合        |
+| public API 経由（推奨）     | public contract を通じて内部の振る舞いを間接的に検証            | 実装隠蔽を守りたい場合          |
+
+Phase 4 仕様書のタスク説明に「本タスクでは public callback 経由を採用する」等を1行添えること。
+
+### Phase 5: canUseTool 適用範囲と制約の明記【SDK Hook 系タスク】
+
+> [Feedback P0-09-U1-2] SDK callback（`canUseTool`）を接続するタスクでは、`improve()` フローへの適用可否を Phase 5 仕様書に明記する。
+
+| フロー         | 経路                          | SDK callback 適用 | 記述例                                                      |
+| -------------- | ----------------------------- | ----------------- | ----------------------------------------------------------- |
+| `execute()` 系 | SDK `query()` 経由            | 適用される        | 「execute フローは SDK callback で toolUse を制限する」     |
+| `improve()` 系 | `llmAdapter.sendChat()` 経由  | 適用されない      | 「improve フローは sendChat 経由のため SDK callback 非適用」|
+
+Phase 5 仕様書のタスク2以降に「canUseTool 適用可能範囲と制約」セクションを設け、上記を1〜3行で明記すること。
+
 ## Phase 7-10
 
 | Phase | 重点 |

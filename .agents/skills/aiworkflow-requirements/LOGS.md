@@ -7,6 +7,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-04-06 v9.02.33 - TASK-P0-09-U1 path-scoped enforcement スキル反映（`governance-hooks-factory-audit-sink.md` に path-scoped canUseTool 判定セクション追加 / SKILL.md Trigger に `path-scoped enforcement` / `canUseTool 判定` / `extractTargetPath` / `allowedSkillRoot` / `createImproveGovernanceCanUseTool` を追加 / v9.02.33 history エントリ追加 / `topic-map.md` と `keywords.json` を更新） |
 | 2026-03-29 - TASK-RT-06 claude-sdk-message-contract-normalization 実装完了 Phase 12 sync（resource-map.md に TASK-RT-06 リソースマップ追加 / quick-reference.md に SDK Event Normalization セクション追加 / lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md に normalizer 設計・sessionId 伝播教訓追記 / workflow-task-rt-06-artifact-inventory.md 新規作成） |
 | 2026-03-28 - TASK-SDK-04-U2 canonical binding remediation sync（`api-ipc-system-core.md` / `arch-state-management-core.md` から未解消扱いを解消し、`approvedSkillSpec` snapshot による execute binding 修正と task spec close-out drift 是正を same-wave 反映） |
 | 2026-03-28 - TASK-SDK-07 execution-governance-and-handoff-alignment Phase 12 close-out sync（未タスク 3 件 formalize（UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 / UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001）/ lessons-learned-phase12-workflow-lifecycle に教訓 3 件追記（shared channel 再利用 / disclosure graceful degradation / spec_created task code wave AC 追跡）/ quick-reference governance bundle 導線に実装参照 7 件追加 / task-workflow-backlog 3 件追記 / LOGS.md 2 ファイル同時更新 / generate-index.js 実行） |
@@ -681,3 +682,21 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
   - vitest governance 90件全 PASS
   - typecheck: EXIT:0 ✅
   - lint: EXIT:0（10 warnings / 0 errors）⚠️
+  - TASK-P0-09-U1（path-scoped enforcement）は carry-forward として記録されていたが本タスクで解消
+
+### 2026-04-06 - TASK-P0-09-U1 path-scoped-governance-runtime-enforcement 完了
+
+- タスク名: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement
+- 種別: security / bug-fix / TDD
+- 主な反映:
+  - `RuntimeSkillCreatorFacade.createExecuteGovernanceCanUseTool()` に `skillRoot: string` パラメータを追加
+  - `extractTargetPath()` private helper を追加（`file_path ?? path` フォールバック）
+  - `evaluateGovernanceToolUse` に `{ targetPath, allowedSkillRoot }` context を接続
+  - `createImproveGovernanceCanUseTool(skillRoot)` を新規追加
+  - `_executeInternal()` で `getExplicitSkillCreatorRoot()` を取得して canUseTool に渡す配線を完成
+  - `SkillCreatorPermissionPolicy.ts` の `TODO(TASK-P0-09-U1)` コメントを解消
+  - テスト: TC-PATH-01〜06 + extractTargetPath 4件 = 11件追加（合計 101件 PASS）
+  - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
+- 検証:
+  - vitest governance 101件全 PASS
+  - typecheck: EXIT:0 ✅

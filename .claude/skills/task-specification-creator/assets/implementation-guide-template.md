@@ -267,6 +267,17 @@ const withRelations = await db.query.{{テーブル}}.findFirst({
 | {{ファイル名}}     | {{数}}   | {{範囲}}     |
 | **合計**           | **{{合計}}** |          |
 
+#### private method のテスト方針（該当時のみ）
+
+> [Feedback P0-09-U1-1] TDD Phase 4 で private method をテストする場合は以下2択を明記する。
+
+| 方針                        | コード例                                                       | 採用基準                                      |
+| --------------------------- | -------------------------------------------------------------- | --------------------------------------------- |
+| キャスト経由                | `(facade as unknown as FacadePrivate).methodName()`            | 単体テストで直接検証したい場合                |
+| public callback / public API 経由 | `await facade.execute(); // 内部で private が呼ばれる` | public contract を通じて振る舞いを検証する場合 |
+
+採用方針を Phase 4 仕様書に1行で明記すること（例: 「本タスクは public callback 経由を採用する」）。
+
 ---
 
 ## 6. 使用上の注意

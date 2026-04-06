@@ -1,0 +1,21 @@
+Phase 6: テスト拡充 - テスト結果
+
+実行日時: 2026-04-06
+コマンド: cd apps/desktop && npx vitest run src/main/services/runtime/__tests__/governance/
+
+結果:
+  Test Files  6 passed (6)
+  Tests  101 passed (101)
+  Start at  14:29:24
+  Duration  9.04s
+
+追加テスト:
+  TC-PATH-04: input.path キーのみの場合も targetPath として抽出し deny される → PASS
+  TC-PATH-06: skillRoot が空文字列の場合は tool-level 判定のみ（context なし扱い） → PASS
+  improve phase で skill root 内への Edit は allow される → PASS
+  extractTargetPath: file_path を優先して返す → PASS
+  extractTargetPath: file_path がない場合は path にフォールバック → PASS
+  extractTargetPath: どちらもない場合は undefined を返す → PASS
+  extractTargetPath: file_path が string 以外の場合は無視する → PASS
+
+合計 101 件 PASS（既存 90 + 新規 11 件）

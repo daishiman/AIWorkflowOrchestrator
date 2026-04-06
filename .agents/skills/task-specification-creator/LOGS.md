@@ -2,6 +2,39 @@
 
 ## 役割
 
+## 2026-04-06 - TASK-P0-09-U1 Phase 12 完了反映（skill-feedback 反映）
+
+### 変更内容
+- path-scoped governance runtime enforcement の Phase 12 close-out に基づき、skill-feedback-report.md のテンプレート改善案を SKILL.md に反映
+- SKILL.md v6.18.19 / v10.09.29 更新（2変更履歴テーブルに同時追記）
+- `execute` フェーズ表の Phase 4 行に `[Feedback P0-09-U1-1]` private method テスト方針明記ルールを追加
+- `execute` フェーズ表の Phase 5 行に `[Feedback P0-09-U1-2]` `improve()` canUseTool 適用範囲・制約明記ルールを追加
+- 「Phase 12 実行時によくある漏れ」テーブルに Feedback P0-09-U1-1/2 の 2 件を追記
+- 「ベストプラクティス/すべきこと」に `[Feedback P0-09-U1-3]` 小規模タスク outputs tier 分け検討ガイドを追加
+
+---
+
+## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
+
+### 変更内容
+- `assets/implementation-guide-template.md` の §6.3 UIコンポーネント実装パターンに `state owner / wrapper / presentation 責務分離パターン` テーブルを追加
+- `assets/documentation-changelog-template.md` に `### 周辺同期（same-wave）` セクションを追加し、Workflow-Local 同期と Global Skill Sync の区別を明示
+- `assets/documentation-changelog-template.md` の品質チェックリストに周辺同期確認 3 項目を追加（Feedback 1-2 / 1-3 対応）
+- 上記は skill-feedback-report.md の提案 1-2 / 1-3 の実装
+
+---
+
+## 2026-04-06 - TASK-RT-03 skill-creation-result-panel Phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-11/` を実スクリーンショット 6 枚 + `manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` / `ui-sanity-visual-review.md` で完成
+- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-11/manual-test-checklist.md` を追加し、Phase 11 の manual test 見落としを補完
+- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-12/` に `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を追加
+- `phase-11-manual-test.md` に `画面カバレッジマトリクス` を追記し、validator warning を解消
+- `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を PASS
+- `index.md` / `artifacts.json` / `.claude/skills/aiworkflow-requirements/references/*` / `LOGS.md` 2ファイルを same-wave 更新
+- Step 2 は local-only props のため N/A で閉じた
+
 ---
 ## 2026-03-29 - TASK-RT-06 スキルフィードバック反映
 
@@ -1782,3 +1815,12 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/index.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/phase-1-requirements.md` 〜 `phase-12-documentation.md`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/artifacts.json`, `docs/30-workflows/completed-tasks/fix-step5-seq-lifecycle-panel-error/outputs/artifacts.json`, `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`, `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`, `outputs/phase-10`〜`outputs/phase-12` |
 | 結果 | Phase 10〜12 outputs を current facts に固定し、workflow 本体の status / 台帳 parity / task-workflow completed/backlog path を `fix-lifecycle-panel-error` へ同期した。Phase 11 は NON_VISUAL として自動テスト代替で完了。`generate-index.js` により topic-map / keywords も再生成した |
 | 検証 | `validate-phase12-implementation-guide.js` PASS（10/10）、`vitest` 8/8 PASS、`vitest` 10/10 PASS、`typecheck` PASS、`eslint` PASS |
+
+### 2026-04-06 - TASK-P0-09-U1 path-scoped-governance-runtime-enforcement 完了
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | security / bug-fix / TDD / Phase 12 close-out |
+| 変更対象 | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`（`extractTargetPath` / `createExecuteGovernanceCanUseTool` 修正 / `createImproveGovernanceCanUseTool` 追加）、`apps/desktop/src/main/services/runtime/__tests__/governance/path-scoped-enforcement.test.ts`（新規: 11件）、`docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/outputs/`（Phase 1-12 outputs）|
+| 結果 | execute phase の path-scoped deny を runtime で実効化。`getExplicitSkillCreatorRoot()` → `createExecuteGovernanceCanUseTool(skillRoot)` → `evaluateGovernanceToolUse(context)` の配線を完成。`TODO(TASK-P0-09-U1)` コメントを解消。Phase 11 は NON_VISUAL として自動テスト代替で完了。 |
+| 検証 | vitest 101/101 PASS、typecheck PASS（EXIT:0）|
