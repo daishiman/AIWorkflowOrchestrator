@@ -138,6 +138,12 @@ Session IPC と Runtime IPC の間で:
 | IPC契約チェックリスト     | `.agents/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`  | IPC修正時の Main/Preload/型定義 同時更新チェック   |
 | スキル実行IPCセキュリティ | `.agents/skills/aiworkflow-requirements/references/security-skill-ipc-core.md` | パストラバーサル防止、コマンドインジェクション防止 |
 
+## 統合テスト連携
+
+- Phase 2 で決めた IPC 方針は Phase 4 のテストマトリクスへそのまま反映する
+- Phase 3 の gate 判定は Phase 12 の実装ガイドと Phase 13 の PR 文面に再利用する
+- Phase 11 の手動テストは NON_VISUAL 方針のまま、Phase 12 の補助成果物へ渡す
+
 ## 多角的チェック観点
 
 | 観点           | 適用判断                                   | 確認内容                                         |

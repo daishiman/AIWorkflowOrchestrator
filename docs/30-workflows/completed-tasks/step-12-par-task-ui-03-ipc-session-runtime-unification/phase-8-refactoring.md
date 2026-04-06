@@ -57,6 +57,7 @@
 
 | 資料名             | パス                                            | 説明           |
 | ------------------ | ----------------------------------------------- | -------------- |
+| テスト拡充仕様     | `outputs/phase-6/test-expansion.md`             | 退行防止条件   |
 | カバレッジレポート | `outputs/phase-7/coverage-report.md`            | 重複削減候補   |
 | 実装記録           | `outputs/phase-5/implementation-record.md`      | 整理対象の本体 |
 | 設計成果物         | `outputs/phase-2/design-document.md`            | 命名規則の参照 |

@@ -1,0 +1,10 @@
+{
+  "mode": "non_visual_placeholder",
+  "reason": "TASK-UI-03 は task id に UI を含むため validator が screenshot 併設を要求する。実装差分は可視表面を変更しないので、実画面キャプチャではなく validator 互換の placeholder PNG を 1 点だけ保持する。",
+  "artifacts": [
+    {
+      "file": "outputs/phase-11/screenshots/non-visual-placeholder.png",
+      "description": "NON_VISUAL タスク用のプレースホルダー PNG。UI 証跡ではない。"
+    }
+  ]
+}

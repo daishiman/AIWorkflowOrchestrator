@@ -1253,6 +1253,8 @@ export interface ElectronAPI {
 
   // Skill Creator API (TASK-9B-H)
   skillCreator: import("./skill-creator-api").SkillCreatorAPI;
+
+  // Skill Creator Session API (TASK-UI-02: Session IPC廃止済みno-opスタブ、型互換維持)
   skillCreatorSession: import("./skill-creator-session-api").SkillCreatorSessionAPI;
 
   // Execution / Approval API (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001)

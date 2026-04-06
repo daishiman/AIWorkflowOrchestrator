@@ -34,12 +34,12 @@ Skill Creator の IPC 通信に存在する二重経路（Session IPC / Runtime 
 
 1. **Session IPC** (`window.skillCreatorSessionAPI`):
    - 使用元: `SkillCreatorConversationPanel`
-   - チャネル: `startSession`, `sendAnswer`, `onQuestion`, `listSessions`, `getSessionDetail`, `resumeSession`, `deleteSession`
+   - チャネル: `startSession`, `sendAnswer`, `onQuestion`, `onExternalApiConfigRequired`, `onComplete`, `onError`
    - パターン: 質問/回答型の会話フロー
 
 2. **Runtime IPC** (`window.electronAPI.skillCreator`):
    - 使用元: `SkillLifecyclePanel` / `ConversationalInterview`
-   - チャネル: `planSkill`, `executePlan`, `submitUserInput`, `getWorkflowState`, `onWorkflowStateChanged`
+   - チャネル: `planSkill`, `executePlan`, `submitUserInput`, `getWorkflowState`, `onWorkflowStateChanged`, `listSessions`, `getSessionDetail`, `resumeSession`, `deleteSession`
    - パターン: ワークフロー状態スナップショット型
 
 これらの二重経路は以下の問題を引き起こしている:
@@ -126,23 +126,23 @@ Skill Creator の IPC 通信に存在する二重経路（Session IPC / Runtime 
 
 ## 成果物一覧
 
-| Phase | 名称             | 成果物                                        |
-| ----- | ---------------- | --------------------------------------------- |
-| 1     | 要件定義         | `outputs/phase-1/spec-extraction-map.md`      |
-|       |                  | `outputs/phase-1/ipc-channel-inventory.md`    |
-| 2     | 設計             | `outputs/phase-2/design-document.md`          |
-|       |                  | `outputs/phase-2/ipc-unification-strategy.md` |
-| 3     | 設計レビュー     | `outputs/phase-3/design-review-gate.md`       |
-| 4     | テスト作成       | `outputs/phase-4/test-matrix.md`              |
-| 5     | 実装             | `outputs/phase-5/implementation-record.md`    |
-| 6     | テスト拡充       | `outputs/phase-6/test-expansion.md`           |
-| 7     | カバレッジ確認   | `outputs/phase-7/coverage-report.md`          |
-| 8     | リファクタリング | `outputs/phase-8/refactoring-log.md`          |
-| 9     | 品質保証         | `outputs/phase-9/qa-report.md`                |
-| 10    | 最終レビュー     | `outputs/phase-10/final-review-result.md`     |
-| 11    | 手動テスト       | `outputs/phase-11/manual-test-result.md`      |
-| 12    | ドキュメント更新 | `outputs/phase-12/implementation-guide.md`    |
-| 13    | PR作成           | `outputs/phase-13/pr-creation-record.md`      |
+| Phase | 名称             | 成果物                                                                                                                                                                                                                                                                                                        |
+| ----- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | 要件定義         | `outputs/phase-1/spec-extraction-map.md`                                                                                                                                                                                                                                                                      |
+|       |                  | `outputs/phase-1/ipc-channel-inventory.md`                                                                                                                                                                                                                                                                    |
+| 2     | 設計             | `outputs/phase-2/design-document.md`                                                                                                                                                                                                                                                                          |
+|       |                  | `outputs/phase-2/ipc-unification-strategy.md`                                                                                                                                                                                                                                                                 |
+| 3     | 設計レビュー     | `outputs/phase-3/design-review-gate.md`                                                                                                                                                                                                                                                                       |
+| 4     | テスト作成       | `outputs/phase-4/test-matrix.md`                                                                                                                                                                                                                                                                              |
+| 5     | 実装             | `outputs/phase-5/implementation-record.md`                                                                                                                                                                                                                                                                    |
+| 6     | テスト拡充       | `outputs/phase-6/test-expansion.md`                                                                                                                                                                                                                                                                           |
+| 7     | カバレッジ確認   | `outputs/phase-7/coverage-report.md`                                                                                                                                                                                                                                                                          |
+| 8     | リファクタリング | `outputs/phase-8/refactoring-log.md`                                                                                                                                                                                                                                                                          |
+| 9     | 品質保証         | `outputs/phase-9/qa-report.md`                                                                                                                                                                                                                                                                                |
+| 10    | 最終レビュー     | `outputs/phase-10/final-review-result.md`                                                                                                                                                                                                                                                                     |
+| 11    | 手動テスト       | `outputs/phase-11/manual-test-checklist.md`<br>`outputs/phase-11/manual-test-result.md`<br>`outputs/phase-11/screenshot-plan.json`                                                                                                                                                                            |
+| 12    | ドキュメント更新 | `outputs/phase-12/implementation-guide.md`<br>`outputs/phase-12/system-spec-update-summary.md`<br>`outputs/phase-12/documentation-changelog.md`<br>`outputs/phase-12/unassigned-task-detection.md`<br>`outputs/phase-12/skill-feedback-report.md`<br>`outputs/phase-12/phase12-task-spec-compliance-check.md` |
+| 13    | PR作成           | `outputs/phase-13/pr-creation-record.md`                                                                                                                                                                                                                                                                      |
 
 ---
 
@@ -221,7 +221,7 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js \
 ## 出力ファイル構成
 
 ```
-docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/
+docs/30-workflows/step-12-par-task-ui-03-ipc-session-runtime-unification/
 ├── index.md
 ├── artifacts.json
 ├── phase-1-requirements.md
@@ -239,6 +239,8 @@ docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-sessio
 ├── phase-13-pr-creation.md
 └── outputs/
     ├── .gitkeep
+    ├── artifacts.json
     ├── phase-1/ ~ phase-13/
-    └── phase-11/screenshots/
+    ├── phase-11/manual-test-checklist.md
+    └── phase-11/screenshot-plan.json
 ```

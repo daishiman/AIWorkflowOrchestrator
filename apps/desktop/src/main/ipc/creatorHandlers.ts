@@ -689,20 +689,23 @@ export function registerRuntimeSkillCreatorHandlers(
 
   ipcMain.handle(
     IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION,
-    async (event: IpcMainInvokeEvent, args: { checkpointId: string }) => {
+    async (
+      event: IpcMainInvokeEvent,
+      args: { checkpointId: string },
+    ): Promise<IpcResult<void>> => {
       validateSender(
         event,
         IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION,
         mainWindow,
       );
       if (!args?.checkpointId?.trim()) {
-        throw new Error("checkpointId が指定されていません");
+        return validationError("checkpointId が指定されていません");
       }
       if (!runtimeSkillCreatorService) {
-        throw new Error(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
       }
       runtimeSkillCreatorService.deleteSession(args.checkpointId);
-      return;
+      return { success: true };
     },
   );
 

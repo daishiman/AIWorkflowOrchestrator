@@ -9,7 +9,7 @@ category: IPC アーキテクチャ統合
 target_feature: Skill Creator IPC 通信層
 priority: high（P0）
 scale: 中規模
-status: spec_created
+status: phase12_completed
 source: skill-creator-agent-sdk-lane UI 統合監査
 created_date: 2026-04-06
 step: 12-par（TASK-UI-01完了後、TASK-UI-02と並行実施可能）
@@ -27,7 +27,7 @@ parallel_tasks:
 | 対象機能       | Skill Creator IPC 通信層                             |
 | 優先度         | high（P0）                                           |
 | 見積もり規模   | 中規模                                               |
-| ステータス     | spec_created（未実施）                               |
+| ステータス     | phase12_completed（Phase 1-12 完了 / 2026-04-06）    |
 | 発見元         | skill-creator-agent-sdk-lane UI 統合監査             |
 | 発見日         | 2026-04-06                                           |
 | Step           | 12-par（TASK-UI-01完了後、TASK-UI-02と並行実施可能） |

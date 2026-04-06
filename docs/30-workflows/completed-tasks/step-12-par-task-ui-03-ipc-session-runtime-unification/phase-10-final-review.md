@@ -59,13 +59,16 @@ AC-1〜AC-7 が test / code / doc の 3 面で閉じているか確認する:
 
 ## 参照資料
 
-| 資料名             | パス                                          | 説明         |
-| ------------------ | --------------------------------------------- | ------------ |
-| 設計成果物         | `outputs/phase-2/design-document.md`          | 統合方針     |
-| 統合戦略書         | `outputs/phase-2/ipc-unification-strategy.md` | 方針選択根拠 |
-| 実装記録           | `outputs/phase-5/implementation-record.md`    | 実装内容     |
-| カバレッジレポート | `outputs/phase-7/coverage-report.md`          | AC 対応表    |
-| QA レポート        | `outputs/phase-9/qa-report.md`                | gate 入力    |
+| 資料名                  | パス                                          | 説明           |
+| ----------------------- | --------------------------------------------- | -------------- |
+| 設計成果物              | `outputs/phase-2/design-document.md`          | 統合方針       |
+| 統合戦略書              | `outputs/phase-2/ipc-unification-strategy.md` | 方針選択根拠   |
+| 実装記録                | `outputs/phase-5/implementation-record.md`    | 実装内容       |
+| カバレッジレポート      | `outputs/phase-7/coverage-report.md`          | AC 対応表      |
+| QA レポート             | `outputs/phase-9/qa-report.md`                | gate 入力      |
+| IPCチャネルインベントリ | `outputs/phase-1/ipc-channel-inventory.md`    | Phase 1 成果物 |
+| 仕様抽出マップ          | `outputs/phase-1/spec-extraction-map.md`      | Phase 1 成果物 |
+| リファクタリングログ    | `outputs/phase-8/refactoring-log.md`          | Phase 8 成果物 |
 
 ## AC 対応表
 
