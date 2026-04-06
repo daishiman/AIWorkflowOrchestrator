@@ -724,13 +724,14 @@ node scripts/list-specs.js --topics
 ### references/interfaces-skill-verify-contract.md
 
 | セクション | 行 |
-|------------|----|\n| 概要 | L3 |
-| Layer 命名規則 | L12 |
-| Layer 1: 構造検証（Structural Validation） | L43 |
-| Layer 2: コンテンツ検証（Content Validation） | L53 |
-| Layer 3: 詳細コンテンツ検証（Detailed Content Validation） | L65 |
-| Layer 4: 参照整合性・結合検証（Reference Integrity Validation） | L74 |
-| Layer 拡張ガイドライン | L82 |
+|------------|----|\n| 概要 | L5 |
+| Layer 命名規則 | L14 |
+| Layer 1: 構造検証（Structural Validation） | L45 |
+| Layer 2: コンテンツ検証（Content Validation） | L55 |
+| Layer 3: 詳細コンテンツ検証（Detailed Content Validation） | L67 |
+| Layer 4: 参照整合性・結合検証（Reference Integrity Validation） | L76 |
+| verify エンジン責務分離 | L84 |
+| Layer 拡張ガイドライン | L100 |
 
 ### references/interfaces-system-prompt.md
 
@@ -936,6 +937,7 @@ node scripts/list-specs.js --topics
 | AIプロバイダーAPI連携 | L764 |
 | Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L797 |
 | Skill Creator External API Support（TASK-SDK-SC-03） | L844 |
+| IPC Handler Lifecycle Management（TASK-FIX-IPC-SKILL-NAME-001 追記: 2026-04-06） | L925 |
 
 ### references/api-ipc-system-details.md
 
@@ -2538,7 +2540,8 @@ node scripts/list-specs.js --topics
 | SkillCreatorAuditSink | L113 |
 | 使用例 | L162 |
 | 設計上の注意事項 | L203 |
-| 関連仕様書 | L213 |
+| path-scoped canUseTool 判定（TASK-P0-09-U1 実装済み） | L213 |
+| 関連仕様書 | L233 |
 
 ### references/ipc-4-layer-pattern.md
 
@@ -2702,24 +2705,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L85 |
-| クイックリファレンス: カテゴリ別検索ガイド | L103 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L284 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L616 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L650 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L733 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L749 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L773 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L823 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L848 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L879 |
-| TASK-RT-06 教訓（2026-03-29） | L910 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L932 |
-| TASK-P0-04 教訓（2026-03-30） | L963 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L999 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1094 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1148 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1188 |
+| 分割ファイル一覧 | L90 |
+| クイックリファレンス: カテゴリ別検索ガイド | L108 |
+| [2026-04-06] task-specification-creator Phase-12 validator 改善で判明した教訓 | L147 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L315 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L647 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L681 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L764 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L780 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L804 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L854 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L879 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L910 |
+| TASK-RT-06 教訓（2026-03-29） | L941 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L963 |
+| TASK-P0-04 教訓（2026-03-30） | L994 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L1030 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1125 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1179 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2964,6 +2967,13 @@ node scripts/list-specs.js --topics
 | 同種課題の簡潔解決手順 | L51 |
 | 関連ドキュメント | L61 |
 | 変更履歴 | L72 |
+
+### references/lessons-learned-verify-contract-consolidation.md
+
+| セクション | 行 |
+|------------|----|\n| UT-VERIFY-DOC-CONSOLIDATION-001: verify関連ドキュメント 正本・履歴分離と責務分離の実装パターン | L6 |
+| 苦戦箇所と解決策 | L29 |
+| 知見まとめ | L129 |
 
 ### references/lessons-learned-viewtype-electron-ui.md
 
@@ -3921,13 +3931,13 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-active.md
 
 | セクション | 行 |
-|------------|----|\n| 概要 | L6 |
-| ドキュメント構成 | L33 |
-| フェーズ構造（概要） | L42 |
-| 品質ゲート（概要） | L73 |
-| 出力テンプレート | L84 |
-| 実行時のコマンド・エージェント・スキル | L107 |
-| 昇格パターン集 | L131 |
+|------------|----|\n| 概要 | L7 |
+| ドキュメント構成 | L34 |
+| フェーズ構造（概要） | L43 |
+| 品質ゲート（概要） | L74 |
+| 出力テンプレート | L85 |
+| 実行時のコマンド・エージェント・スキル | L108 |
+| 昇格パターン集 | L132 |
 
 ### references/task-workflow-backlog.md
 
@@ -4090,7 +4100,8 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-completed.md
 
 | セクション | 行 |
-|------------|----|\n| 完了タスク | L6 |
+|------------|----|\n| 完了タスク | L7 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L82 |
 
 ### references/task-workflow-history.md
 

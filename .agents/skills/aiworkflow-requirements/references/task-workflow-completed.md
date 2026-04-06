@@ -5,8 +5,74 @@
 
 ## 完了タスク
 
+<<<<<<< Updated upstream
+### タスク: TASK-FIX-IPC-SKILL-NAME-001 ipcMain重複登録・スキル名正規化修正（2026-04-06）
+
+| 項目             | 値                                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | TASK-FIX-IPC-SKILL-NAME-001                                                                                                    |
+| ステータス       | **完了（Phase 12 close-out）**                                                                                                  |
+| タイプ           | bug-fix / ipc / skill-name-normalization                                                                                        |
+| 優先度           | 高                                                                                                                              |
+| 完了日           | 2026-04-06                                                                                                                      |
+| 対象             | `creatorHandlers.ts` ipcMain重複登録修正 / `SkillService.toWizardSkillName()` 正規化強化                                        |
+| 成果物           | `docs/30-workflows/fix-creator-handler-duplicate-skill-name-validation/`                                                        |
+
+#### 実施内容
+
+- `registerRuntimeSkillCreatorHandlers()` の `SKILL_CREATOR_GET_ADAPTER_STATUS` 2重登録を除去（後続14ハンドラの未登録が解消、全16チャネルが正常登録）
+- `toWizardSkillName()` に5ステップ正規化フロー実装（小文字化→非許容文字ハイフン化→連続ハイフン圧縮→端除去→"new-skill"フォールバック）
+- `resolveUniqueSkillName()` による衝突回避（`new-skill-2` / `new-skill-3`...）
+- `docs/00-requirements/18-skills.md` 3.2.2.1セクションに正規化規則を追記
+- `docs/00-requirements/08-api-design.md` にIPC ハンドラ一意性要件を追記
+- Phase 7 で `creatorHandlers.governanceState.test.ts` 新規12テスト追加
+
+#### 未タスク（Phase 12 close-out）
+
+- `UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001`: SKILL_NAME_PATTERN定数一元化（Medium）
+- `UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001`: IPC登録CIスナップショット（Medium）
+- `UT-FIX-SKILL-NAME-JAPANESE-INPUT-UX-001`: 日本語入力リアルタイムプレビュー（Low）
+
+---
+
+||||||| Stash base
+=======
+### タスク: UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 phase-spec-template Task/Step 分離と NON_VISUAL evidence hardening（2026-04-06）
+>>>>>>> Stashed changes
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
 ### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
+
+| 項目             | 値                                                                                     |
+| ---------------- | -------------------------------------------------------------------------------------- |
+| タスクID         | UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001                                                   |
+| ステータス       | **仕様書作成完了（`spec_created` / Phase 13 blocked）**                                |
+| タイプ           | docs-only / NON_VISUAL                                                                 |
+| 優先度           | 中                                                                                     |
+| 完了日           | 2026-04-06                                                                             |
+| 対象             | `task-specification-creator` / Phase 仕様書テンプレート                                |
+| GitHub Issue     | #1919                                                                                  |
+| 成果物           | `docs/30-workflows/ut-phase-spec-format-improvement-001/`                              |
+| 元未タスク指示書 | `docs/30-workflows/unassigned-task/ut-phase-spec-format-improvement-001.md`           |
+
+#### 実施内容
+
+- `phase-spec-template.md` に Task / Step 分離ルールと Phase 11 NON_VISUAL / Phase 12 記録分離方針を追加した
+- `unassigned-task-template.md` に苦戦箇所の必須記載欄を追加した
+- `task-workflow-backlog.md` に UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 を spec_created として登録し、`task-workflow-completed.md` / `LOGS.md` / `SKILL.md` / `index.md` / `artifacts.json` / `outputs/artifacts.json` を same-wave sync した
+- `phase-11-manual-test.md` で NON_VISUAL evidence を検証し、`manual-test-result.md` / `manual-test-checklist.md` / `discovered-issues.md` を current facts へ記録した
+- `phase-12-documentation.md` で implementation-guide / system-spec / documentation-changelog / unassigned-task-detection / skill-feedback-report / compliance-check を作成した
+
+#### 検証証跡
+
+- `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/ut-phase-spec-format-improvement-001 --json`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/ut-phase-spec-format-improvement-001`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/ut-phase-spec-format-improvement-001 --json`: PASS
+- `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source docs/30-workflows/ut-phase-spec-format-improvement-001/outputs/phase-11/manual-test-result.md`: PASS
+- `node .claude/skills/task-specification-creator/scripts/audit-unassigned-tasks.js --json --diff-from HEAD`: PASS
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/task-specification-creator`: FAIL（既存の line budget / description 境界のため）
+- `node .claude/skills/skill-creator/scripts/quick_validate.js .claude/skills/aiworkflow-requirements`: FAIL（既存の line budget / description / mirror 差分のため）
+
+---
 
 | 項目             | 値                                                                                     |
 | ---------------- | -------------------------------------------------------------------------------------- |
@@ -18,7 +84,7 @@
 | 対象             | `RuntimeSkillCreatorFacade.verifyAndImproveLoop()` の improve adapter error 通知        |
 | GitHub Issue     | #1896                                                                                  |
 | 成果物           | `docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001/`    |
-| 元未タスク指示書 | `docs/30-workflows/unassigned-task/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001.md` |
 
 #### 実施内容
 
@@ -30,8 +96,6 @@
 
 - `node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（0エラー / 0警告）
 - `node .claude/skills/task-specification-creator/scripts/verify-all-specs.js --workflow docs/30-workflows/task-ut-rt-01-verify-and-improve-loop-adapter-notification-001`: PASS（警告 26）
-
----
 
 ### タスク: TASK-P0-05 execute() → SkillFileWriter persist 統合（2026-04-05）
 
@@ -227,45 +291,6 @@
 #### Phase 12 未タスク
 
 - `TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001`
-- `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001`
-
----
-
-### タスク: TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 executeAsync() の error message 伝搬パス統一（2026-04-06）
-
-| 項目       | 値                                                                                                                     |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001                                                                 |
-| ステータス | **完了**                                                                                                               |
-| タイプ     | runtime bug-fix / error-propagation / documentation sync                                                               |
-| 優先度     | 中                                                                                                                     |
-| 完了日     | 2026-04-06                                                                                                             |
-| 対象       | `RuntimeSkillCreatorFacade.executeAsync()` / `RuntimeSkillCreatorFacade.executeAsync.test.ts` / `outputs/phase-11/*` / `outputs/phase-12/*` |
-| 成果物     | `docs/30-workflows/task-ut-rt-01-execute-async-snapshot-error-message-001/`                                           |
-
-#### 実施内容
-
-- `executeAsync()` の structured error / catch パスで `if (!snapshot)` 条件を削除し、snapshot の有無に依存せず `onWorkflowStateSnapshot` を呼ぶようにした
-- `RuntimeSkillCreatorFacade.executeAsync.test.ts` に T-01〜T-06 を追加し、structured error / catch / regression の 10 テストを固定した
-- `creatorHandlers.ts` / `skill-creator-api.ts` / `SkillLifecyclePanel.tsx` を更新し、workflow-state changed event の errorMessage を Renderer まで通すようにした
-- `creatorHandlers.test.ts` に errorMessage 付き snapshot の state-changed event 伝搬テストを追加した
-- `SkillLifecyclePanel.error-persistence.test.tsx` に errorMessage-only event の回帰テストを追加した
-- `outputs/phase-11/manual-test-checklist.md` / `manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` を追加し、NON_VISUAL 証跡を current facts として残した
-- `outputs/phase-12/*` の 6 ファイルを作成し、implementation guide / system spec / changelog / feedback / compliance を同期した
-- `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md` の残課題行を完了扱いへ更新し、`task-workflow-completed.md` に本完了セクションを追加した
-- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js` を実行して `topic-map.md` / `keywords.json` を再生成した
-
-#### 検証証跡
-
-- `pnpm typecheck`: PASS
-- `pnpm lint`: PASS（0 errors / 10 warnings）
-- `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/creatorHandlers.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/preload/__tests__/skill-creator-api.runtime.test.ts src/renderer/components/skill/__tests__/SkillLifecyclePanel.error-persistence.test.tsx`: PASS（53 tests）
-- `node .claude/skills/aiworkflow-requirements/scripts/generate-index.js`: PASS
-
-#### Phase 12 補足
-
-- `TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001` は未タスク候補として残している
-- Renderer 側 UI 表示確認は本タスクのスコープ外のため、別タスク候補として維持している
 
 ---
 

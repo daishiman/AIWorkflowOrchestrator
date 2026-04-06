@@ -16,7 +16,7 @@ issue_number: 1919
 | 対象機能     | task-specification-creator / Phase 仕様書テンプレート                    |
 | 優先度       | 中                                                                       |
 | 見積もり規模 | 小規模                                                                   |
-| ステータス   | 未実施                                                                   |
+| ステータス   | completed                                                                |
 | 発見元       | TASK-P0-01 Phase 12 skill-feedback-report                                |
 | 発見日       | 2026-04-04                                                               |
 

@@ -724,13 +724,14 @@ node scripts/list-specs.js --topics
 ### references/interfaces-skill-verify-contract.md
 
 | セクション | 行 |
-|------------|----|\n| 概要 | L3 |
-| Layer 命名規則 | L12 |
-| Layer 1: 構造検証（Structural Validation） | L43 |
-| Layer 2: コンテンツ検証（Content Validation） | L53 |
-| Layer 3: 詳細コンテンツ検証（Detailed Content Validation） | L65 |
-| Layer 4: 参照整合性・結合検証（Reference Integrity Validation） | L74 |
-| Layer 拡張ガイドライン | L82 |
+|------------|----|\n| 概要 | L5 |
+| Layer 命名規則 | L14 |
+| Layer 1: 構造検証（Structural Validation） | L45 |
+| Layer 2: コンテンツ検証（Content Validation） | L55 |
+| Layer 3: 詳細コンテンツ検証（Detailed Content Validation） | L67 |
+| Layer 4: 参照整合性・結合検証（Reference Integrity Validation） | L76 |
+| verify エンジン責務分離 | L84 |
+| Layer 拡張ガイドライン | L100 |
 
 ### references/interfaces-system-prompt.md
 
@@ -931,11 +932,26 @@ node scripts/list-specs.js --topics
 | Conversation IPC API（会話履歴永続化） | L245 |
 | Electron IPC API設計 | L281 |
 | Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L423 |
+<<<<<<< Updated upstream
 | ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L695 |
 | Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L726 |
 | AIプロバイダーAPI連携 | L764 |
 | Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L797 |
 | Skill Creator External API Support（TASK-SDK-SC-03） | L844 |
+| IPC Handler Lifecycle Management（TASK-FIX-IPC-SKILL-NAME-001 追記: 2026-04-06） | L925 |
+||||||| Stash base
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L662 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L693 |
+| AIプロバイダーAPI連携 | L731 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L764 |
+| Skill Creator External API Support（TASK-SDK-SC-03） | L811 |
+=======
+| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L695 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L726 |
+| AIプロバイダーAPI連携 | L764 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L797 |
+| Skill Creator External API Support（TASK-SDK-SC-03） | L844 |
+>>>>>>> Stashed changes
 
 ### references/api-ipc-system-details.md
 
@@ -2533,6 +2549,34 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
+<<<<<<< Updated upstream
+| SkillCreatorPermissionPolicy | L24 |
+| SkillCreatorHooksFactory | L65 |
+| SkillCreatorAuditSink | L113 |
+| 使用例 | L162 |
+| 設計上の注意事項 | L203 |
+| path-scoped canUseTool 判定（TASK-P0-09-U1 実装済み） | L213 |
+| 関連仕様書 | L233 |
+
+### references/ipc-4-layer-pattern.md
+
+| セクション | 行 |
+|------------|----|\n| メタ情報 | L8 |
+| 概要 | L19 |
+| Layer 1: チャネル定数 | L38 |
+| Layer 2: ホワイトリスト | L70 |
+| Layer 3: ipcMain ハンドラ | L98 |
+| Layer 4: contextBridge API | L161 |
+| 4層 チェックリスト（新規チャネル追加時） | L216 |
+| P0-06 / P0-08 状態境界ガイドライン | L232 |
+| 関連ファイル一覧 | L277 |
+||||||| Stash base
+| GovernanceHooksFactory | L22 |
+| GovernanceAuditSink | L76 |
+| 使用例 | L164 |
+| 設計上の注意事項 | L200 |
+| 関連仕様書 | L210 |
+=======
 | SkillCreatorPermissionPolicy | L24 |
 | SkillCreatorHooksFactory | L65 |
 | SkillCreatorAuditSink | L113 |
@@ -2552,6 +2596,7 @@ node scripts/list-specs.js --topics
 | 4層 チェックリスト（新規チャネル追加時） | L216 |
 | P0-06 / P0-08 状態境界ガイドライン | L232 |
 | 関連ファイル一覧 | L277 |
+>>>>>>> Stashed changes
 
 ### references/ipc-contract-checklist.md
 
@@ -2702,6 +2747,7 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
+<<<<<<< Updated upstream
 | 分割ファイル一覧 | L85 |
 | クイックリファレンス: カテゴリ別検索ガイド | L103 |
 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L284 |
@@ -2720,6 +2766,45 @@ node scripts/list-specs.js --topics
 | TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1094 |
 | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1148 |
 | TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1188 |
+||||||| Stash base
+| 分割ファイル一覧 | L83 |
+| クイックリファレンス: カテゴリ別検索ガイド | L101 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L282 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L614 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L648 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L731 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L747 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L771 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L821 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L846 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L877 |
+| TASK-RT-06 教訓（2026-03-29） | L908 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L930 |
+| TASK-P0-04 教訓（2026-03-30） | L961 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L997 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1092 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1146 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1186 |
+=======
+| 分割ファイル一覧 | L84 |
+| クイックリファレンス: カテゴリ別検索ガイド | L102 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L283 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L615 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L649 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L732 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L748 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L772 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L822 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L847 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L878 |
+| TASK-RT-06 教訓（2026-03-29） | L909 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L931 |
+| TASK-P0-04 教訓（2026-03-30） | L962 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L998 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1093 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1147 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1187 |
+>>>>>>> Stashed changes
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2964,6 +3049,13 @@ node scripts/list-specs.js --topics
 | 同種課題の簡潔解決手順 | L51 |
 | 関連ドキュメント | L61 |
 | 変更履歴 | L72 |
+
+### references/lessons-learned-verify-contract-consolidation.md
+
+| セクション | 行 |
+|------------|----|\n| UT-VERIFY-DOC-CONSOLIDATION-001: verify関連ドキュメント 正本・履歴分離と責務分離の実装パターン | L6 |
+| 苦戦箇所と解決策 | L29 |
+| 知見まとめ | L129 |
 
 ### references/lessons-learned-viewtype-electron-ui.md
 
@@ -3921,13 +4013,13 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-active.md
 
 | セクション | 行 |
-|------------|----|\n| 概要 | L6 |
-| ドキュメント構成 | L33 |
-| フェーズ構造（概要） | L42 |
-| 品質ゲート（概要） | L73 |
-| 出力テンプレート | L84 |
-| 実行時のコマンド・エージェント・スキル | L107 |
-| 昇格パターン集 | L131 |
+|------------|----|\n| 概要 | L7 |
+| ドキュメント構成 | L34 |
+| フェーズ構造（概要） | L43 |
+| 品質ゲート（概要） | L74 |
+| 出力テンプレート | L85 |
+| 実行時のコマンド・エージェント・スキル | L108 |
+| 昇格パターン集 | L132 |
 
 ### references/task-workflow-backlog.md
 
@@ -4090,7 +4182,7 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-completed.md
 
 | セクション | 行 |
-|------------|----|\n| 完了タスク | L6 |
+|------------|----|\n| 完了タスク | L7 |
 
 ### references/task-workflow-history.md
 

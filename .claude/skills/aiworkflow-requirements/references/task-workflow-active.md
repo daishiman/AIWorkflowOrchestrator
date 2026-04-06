@@ -2,6 +2,7 @@
 
 > 親仕様書: [task-workflow.md](task-workflow.md)
 > 役割: active guide
+> 区分: 正本（current contract）
 
 ## 概要
 
