@@ -1331,15 +1331,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
-| Global Navigation | L45 |
-| ChatViewナビゲーション | L346 |
-| ナビゲーションボタン仕様 | L376 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L392 |
-| テスト検証済み項目 | L406 |
-| アクセシビリティ対応事例 | L421 |
-| ナビゲーションパターンのベストプラクティス | L453 |
-| 関連ドキュメント | L465 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L474 |
+| Global Navigation | L46 |
+| ChatViewナビゲーション | L348 |
+| ナビゲーションボタン仕様 | L378 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L394 |
+| テスト検証済み項目 | L408 |
+| アクセシビリティ対応事例 | L423 |
+| ナビゲーションパターンのベストプラクティス | L455 |
+| 関連ドキュメント | L467 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L476 |
 
 ### references/ui-ux-panels.md
 

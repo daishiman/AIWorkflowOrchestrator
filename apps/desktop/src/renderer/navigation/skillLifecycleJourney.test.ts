@@ -4,6 +4,7 @@ import {
   SKILL_LIFECYCLE_DEPENDENCY_CONTRACTS,
   SKILL_LIFECYCLE_ENTRY_VIEW,
   SKILL_LIFECYCLE_JOB_GUIDES,
+  SKILL_LIFECYCLE_PRIMARY_VIEW,
   getSkillLifecycleSurfaceResponsibility,
   isSupportingAdvancedLifecycleRoute,
   normalizeSkillLifecycleView,
@@ -214,5 +215,18 @@ describe("skillLifecycleJourney", () => {
       ctaLabel: "カスタムCTA",
     };
     expect(guideWithCtaLabel.ctaLabel).toBe("カスタムCTA");
+  });
+
+  // TC-SL-16: TASK-UI-01 — 一次導線定数の検証 (AC-4)
+  it("TC-SL-16: SKILL_LIFECYCLE_PRIMARY_VIEW が 'skillLifecycle' であること (AC-4)", () => {
+    expect(SKILL_LIFECYCLE_PRIMARY_VIEW).toBe("skillLifecycle");
+  });
+
+  // TC-SL-17: TASK-UI-01 — normalizer が skillLifecycle をそのまま通過させること (AC-3)
+  it("TC-SL-17: normalizeSkillLifecycleView が 'skillLifecycle' をそのまま返すこと (AC-3)", () => {
+    const result = normalizeSkillLifecycleView(
+      "skillLifecycle" as import("../store/types").ViewType,
+    );
+    expect(result).toBe("skillLifecycle");
   });
 });
