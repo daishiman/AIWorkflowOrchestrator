@@ -1265,3 +1265,19 @@ export interface SkillCreatorGovernanceState {
   recentAuditEvents: SkillCreatorGovernanceAuditEvent[];
   recentDenials: SkillCreatorSdkPermissionDenial[];
 }
+
+/**
+ * approval:request IPC push payload.
+ *
+ * Main が Renderer に対して承認 UI を表示させるために push するデータ。
+ * 正本は shared に置き、main/preload/renderer 間の drift を防ぐ。
+ *
+ * UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
+ */
+export interface ApprovalRequestPayload {
+  sessionId: string;
+  operationId: string;
+  operationType: string;
+  description: string;
+  destination?: string;
+}

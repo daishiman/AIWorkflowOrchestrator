@@ -1278,3 +1278,9 @@
 - **状況**: `SkillService.ts` と `init_skill.js` が同型の正規表現 `/^[a-z0-9]+(-[a-z0-9]+)*$/` を個別に保持。
 - **判断**: 今回の Bug Fix はスコープ最小化のため定数一元化を行わなかった。
 - **follow-up**: `UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001` として未タスク登録済み。
+||||||| Stash base
+## UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06）
+### L-APPROVAL-SURFACE-001: onApprovalRequest cleanup の useEffect 登録パターン
+- **苦戦箇所**: cleanup 関数を返すリスナー登録は useEffect の return 値として必ず設定しないと、アンマウント後に approval event が届き続ける
+- **解決**: `useEffect(() => { const cleanup = api.onApprovalRequest(...); return cleanup; }, [api])` パターンで登録
+- **適用**: Renderer 側の onEvent listener を持つコンポーネント全般

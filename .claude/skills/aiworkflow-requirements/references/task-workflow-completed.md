@@ -6,6 +6,33 @@
 
 ## 完了タスク
 
+### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Skill Creator preload / renderer に approval:request surface を追加（2026-04-06）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001                                                     |
+| ステータス | **完了**                                                                                   |
+| タイプ     | implementation / approval-request-surface / documentation                                  |
+| 優先度     | 中                                                                                         |
+| 完了日     | 2026-04-06                                                                                 |
+| 対象       | Skill Creator preload / renderer に `approval:request` surface を追加                      |
+| 成果物     | `docs/30-workflows/step-12-par-task-ut-sdk-07-approval-request-surface-001/`              |
+| 元未タスク | `docs/30-workflows/unassigned-task/task-ut-sdk-07-approval-request-surface-001.md`         |
+
+#### 実施内容
+
+- `ApprovalRequestPayload` を `packages/shared/src/types/skillCreator.ts` の canonical export にし、preload / renderer / main で再利用した
+- `SkillLifecyclePanel` に `onApprovalRequest` リスナーと approval response error handling を統合した
+- `ApprovalRequestPanel` の pending / expired / resolving / failure revert をテストし、approve/reject の接続を確認した
+- Phase 11 の visual evidence を Playwright ハーネスで 6 枚撮影し、`outputs/phase-11/screenshots/` に保存した
+- Phase 12 / 13 のドキュメント、台帳、実装ガイドを current facts に同期した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/preload/__tests__/skill-creator-api.approval.test.ts src/renderer/components/skill/__tests__/ApprovalRequestPanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx`: PASS（25 tests）
+- `pnpm --filter @repo/desktop screenshot:ut-sdk-07-approval-request-surface`: PASS（6 screenshots captured）
+
 ### タスク: UT-VERIFY-DOC-CONSOLIDATION-001 verify関連ドキュメント正本・履歴分離（2026-04-06）
 
 | 項目       | 値                                                                                 |

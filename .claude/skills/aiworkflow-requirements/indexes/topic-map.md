@@ -434,11 +434,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L398 |
-| スキルチェーン 型定義（TASK-9D） | L448 |
-| スキルスケジュール 型定義（TASK-9G） | L483 |
-| スキルフォーク 型定義（TASK-9E） | L508 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L556 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L420 |
+| スキルチェーン 型定義（TASK-9D） | L470 |
+| スキルスケジュール 型定義（TASK-9G） | L505 |
+| スキルフォーク 型定義（TASK-9E） | L530 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L578 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -854,12 +854,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| Agent Dashboard IPC チャネル | L6 |
 | Workspace Chat Edit IPC チャネル | L74 |
 | Skill Creator IPC チャネル | L256 |
-| SDK メッセージ出力型統合 | L343 |
-| SDK メッセージ出力型統合 | L357 |
-| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L401 |
-| スキルファイル操作 IPC チャネル | L435 |
-| スキル安全性評価・ファイルツリー IPC チャネル | L444 |
-| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L455 |
+| SDK メッセージ出力型統合 | L344 |
+| SDK メッセージ出力型統合 | L358 |
+| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L402 |
+| スキルファイル操作 IPC チャネル | L436 |
+| スキル安全性評価・ファイルツリー IPC チャネル | L445 |
+| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L456 |
 
 ### references/api-ipc-agent-details.md
 
@@ -4112,7 +4112,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L7 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L82 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L109 |
 
 ### references/task-workflow-history.md
 

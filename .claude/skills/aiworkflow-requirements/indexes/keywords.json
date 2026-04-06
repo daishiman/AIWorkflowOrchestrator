@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-06T13:58:53.892Z",
-  "totalKeywords": 2790,
+  "generated": "2026-04-06T22:13:19.637Z",
+  "totalKeywords": 2792,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7153,6 +7153,16 @@
     "の動的解決": [
       "lessons-learned-current.md"
     ],
+    "APPROVAL": [
+      "lessons-learned-current.md"
+    ],
+    "REQUEST": [
+      "lessons-learned-current.md"
+    ],
+    "SURFACE": [
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "Policy": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "security-electron-ipc-core.md"
@@ -7376,9 +7386,6 @@
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "CODE": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
-    "SURFACE": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "PANEL": [

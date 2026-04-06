@@ -2,7 +2,13 @@
 
 ## 役割
 
-<<<<<<< Updated upstream
+||||||| Stash base
+## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync
+
+| 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync: approval:request surface の Phase 12 Task 1〜6 全完了（PASS）。`phase-12-documentation.md` ステータスを completed に更新。task-workflow-completed.md / task-workflow-backlog.md は既に同期済み |
+
+---
+
 ## 2026-04-06 - TASK-P0-09-U1 Phase 12 完了反映（skill-feedback 反映）
 
 ### 変更内容
