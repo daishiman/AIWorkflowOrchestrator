@@ -24,17 +24,23 @@
  * - E-15: buildImproveUserPrompt 単体テスト
  */
 
+import fs from "fs/promises";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import type { LoadedWorkflowManifest } from "@repo/shared/types";
 import {
   RuntimeSkillCreatorFacade,
   buildImproveUserPrompt,
 } from "../RuntimeSkillCreatorFacade";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
+import { ManifestLoader } from "../ManifestLoader";
 import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
 import type { ILLMAdapter } from "../../../adapters/llm/types";
 import type { SkillFileManager } from "../../skill/SkillFileManager";
-import { IMPROVE_PROMPT_CONSTANTS } from "../improvePromptConstants";
+import {
+  IMPROVE_PROMPT_CONSTANTS,
+  IMPROVE_RESOURCE_REQUESTS,
+} from "../improvePromptConstants";
 
 // --- Mock factories (P63: plan.test.ts のインポートパターンに準拠) ---
 
@@ -52,6 +58,7 @@ function createMockLLMAdapter(
 
 function createMockResourceLoader() {
   return {
+    getBasePath: () => "/tmp/skill-creator",
     loadAgent: vi.fn(),
   };
 }
@@ -126,6 +133,74 @@ function multipleImprovementsJson() {
     ],
     improvedContent: "# 改善後全文",
   });
+}
+
+function createDynamicManifest(
+  overrides: Partial<LoadedWorkflowManifest> = {},
+): LoadedWorkflowManifest {
+  return {
+    schemaVersion: 1 as const,
+    workflowId: "skill-creator",
+    sourcePath: "/tmp/skill-creator/workflow-manifest.json",
+    manifestDir: "/tmp/skill-creator",
+    manifestMtimeMs: 1,
+    resourceDescriptorHash: "manifest-hash",
+    cacheKey: "manifest-cache-key",
+    phases: [
+      {
+        id: "plan",
+        title: "Plan Phase",
+        resourceIds: ["plan-agent"],
+        entryHookId: "plan-entry",
+        exitHookId: "plan-exit",
+      },
+      {
+        id: "improve",
+        title: "Improve Phase",
+        resourceIds: ["improve-agent", "improve-reference"],
+        entryHookId: "improve-entry",
+        exitHookId: "improve-exit",
+      },
+    ],
+    resources: [
+      {
+        id: "plan-agent",
+        kind: "agent",
+        path: "./agents/plan-agent.md",
+        absolutePath: "/tmp/skill-creator/agents/plan-agent.md",
+      },
+      {
+        id: "improve-agent",
+        kind: "agent",
+        path: "./agents/improve-agent.md",
+        absolutePath: "/tmp/skill-creator/agents/improve-agent.md",
+      },
+      {
+        id: "improve-reference",
+        kind: "reference",
+        path: "./references/improve-reference.md",
+        absolutePath: "/tmp/skill-creator/references/improve-reference.md",
+      },
+    ],
+    entry: [],
+    exit: [],
+    ...overrides,
+  };
+}
+
+function createEmptyPlanningResult() {
+  return {
+    resources: [],
+    droppedResources: [],
+    degradeReasons: [],
+    snapshot: {
+      candidateRoots: [],
+      selectedResourceIds: [],
+      droppedResourceIds: [],
+      selectedRoots: [],
+      degradeReasons: [],
+    },
+  };
 }
 
 describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
@@ -426,6 +501,164 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
       expect(result.skippedDetails[0].section).toBe("1. 概要");
       // writeFile は呼ばれない（変更なし）
       expect(mockSkillFileManager.writeFile).not.toHaveBeenCalled();
+    });
+  });
+
+  // ------------------------------------------------------------------
+  // TASK-P0-07: manifest 動的解決
+  // ------------------------------------------------------------------
+  describe("TASK-P0-07: manifest 動的解決", () => {
+    it("T-P7-08: improve() の dynamic pipeline で manifest 由来の resourceIds が resourcePlanner に渡る", async () => {
+      const manifest = createDynamicManifest();
+      vi.spyOn(ManifestLoader.prototype, "loadManifest").mockResolvedValue(
+        manifest,
+      );
+      vi.spyOn(fs, "access").mockResolvedValue(undefined);
+      const mockSourceResolverResolve = vi.fn().mockResolvedValue({
+        candidateRoots: [],
+        manifestResources: new Map(),
+        rejectedRoots: [],
+        degradeReasons: [],
+      });
+      const mockResourcePlannerPlan = vi
+        .fn()
+        .mockResolvedValue(createEmptyPlanningResult());
+      const dynamicResourceLoader = {
+        getBasePath: () => "/tmp/skill-creator",
+        loadAgent: vi.fn(),
+      };
+
+      const dynamicFacade = new RuntimeSkillCreatorFacade({
+        skillExecutor: mockSkillExecutor,
+        llmAdapter: mockLLMAdapter,
+        resourceLoader: dynamicResourceLoader as never,
+        skillFileManager: mockSkillFileManager,
+        sourceResolver: {
+          resolve: mockSourceResolverResolve,
+        } as never,
+        resourcePlanner: {
+          plan: mockResourcePlannerPlan,
+        } as never,
+        resolvedResourceReader: {
+          readText: vi.fn(),
+        } as never,
+      });
+
+      (
+        mockSkillFileManager.readFile as ReturnType<typeof vi.fn>
+      ).mockResolvedValue("# Test Skill\n\n## 概要\nテスト用スキル");
+      (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+        content: validImproveResponseJson(),
+        model: "claude-sonnet-4-20250514",
+        usage: { promptTokens: 200, completionTokens: 100, totalTokens: 300 },
+      });
+
+      await dynamicFacade.improve(
+        "test-skill",
+        "改善してください",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(mockResourcePlannerPlan).toHaveBeenCalledTimes(1);
+      expect(mockResourcePlannerPlan.mock.calls[0][0].operation).toBe(
+        "improve",
+      );
+      expect(mockResourcePlannerPlan.mock.calls[0][0].maxBytes).toBe(
+        IMPROVE_PROMPT_CONSTANTS.DEFAULT_CONTEXT_BUDGET_BYTES,
+      );
+      expect(mockResourcePlannerPlan.mock.calls[0][0].requests).toEqual([
+        {
+          id: "improve-agent",
+          kind: "agent",
+          relativePath: "agents/improve-agent.md",
+          tier: "required-core",
+          required: true,
+        },
+        {
+          id: "improve-reference",
+          kind: "reference",
+          relativePath: "references/improve-reference.md",
+          tier: "optional-quality",
+          required: false,
+        },
+      ]);
+      expect(
+        mockSourceResolverResolve.mock.calls[0][0].requiredRelativePaths,
+      ).toEqual(["agents/improve-agent.md"]);
+      expect(dynamicResourceLoader.loadAgent).not.toHaveBeenCalled();
+    });
+
+    it("T-P7-08b: improve フェーズが存在しない場合は IMPROVE_RESOURCE_REQUESTS にフォールバックする", async () => {
+      const manifest = createDynamicManifest({
+        phases: [
+          {
+            id: "plan",
+            title: "Plan Phase",
+            resourceIds: ["plan-agent"],
+            entryHookId: "plan-entry",
+            exitHookId: "plan-exit",
+          },
+        ],
+      });
+      vi.spyOn(ManifestLoader.prototype, "loadManifest").mockResolvedValue(
+        manifest,
+      );
+      vi.spyOn(fs, "access").mockResolvedValue(undefined);
+      const mockSourceResolverResolve = vi.fn().mockResolvedValue({
+        candidateRoots: [],
+        manifestResources: new Map(),
+        rejectedRoots: [],
+        degradeReasons: [],
+      });
+      const mockResourcePlannerPlan = vi
+        .fn()
+        .mockResolvedValue(createEmptyPlanningResult());
+      const dynamicResourceLoader = {
+        getBasePath: () => "/tmp/skill-creator",
+        loadAgent: vi.fn(),
+      };
+
+      const dynamicFacade = new RuntimeSkillCreatorFacade({
+        skillExecutor: mockSkillExecutor,
+        llmAdapter: mockLLMAdapter,
+        resourceLoader: dynamicResourceLoader as never,
+        skillFileManager: mockSkillFileManager,
+        sourceResolver: {
+          resolve: mockSourceResolverResolve,
+        } as never,
+        resourcePlanner: {
+          plan: mockResourcePlannerPlan,
+        } as never,
+        resolvedResourceReader: {
+          readText: vi.fn(),
+        } as never,
+      });
+
+      (
+        mockSkillFileManager.readFile as ReturnType<typeof vi.fn>
+      ).mockResolvedValue("# Test Skill\n\n## 概要\nテスト用スキル");
+      (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+        content: validImproveResponseJson(),
+        model: "claude-sonnet-4-20250514",
+        usage: { promptTokens: 200, completionTokens: 100, totalTokens: 300 },
+      });
+
+      await dynamicFacade.improve(
+        "test-skill",
+        "改善してください",
+        "api-key",
+        "sk-test",
+      );
+
+      expect(mockResourcePlannerPlan).toHaveBeenCalledTimes(1);
+      expect(mockResourcePlannerPlan.mock.calls[0][0].requests).toEqual([
+        ...IMPROVE_RESOURCE_REQUESTS,
+      ]);
+      expect(
+        mockSourceResolverResolve.mock.calls[0][0].requiredRelativePaths,
+      ).toEqual(["agents/improve-prompt.md"]);
+      expect(dynamicResourceLoader.loadAgent).not.toHaveBeenCalled();
     });
   });
 

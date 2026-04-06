@@ -92,6 +92,18 @@
 
 ---
 
+## 2026-04-06 - TASK-P0-07 ハードコードされた AGENT_NAMES の動的解決 Phase 12 close-out sync
+
+### 変更内容
+- `manifestResourceResolver.ts` を新規作成し、`buildPhaseResourceRequestsFromManifest()` 純粋関数を実装
+- `RuntimeSkillCreatorFacade.ts` の `resolveOperationResources()` に `phaseId` 引数を追加し、manifest ベースの動的エージェント解決に移行
+- フォールバック 5 パターン（phase 未存在、resourceIds undefined/空、全 ID 未発見、dynamic pipeline off）を実装
+- `AGENT_NAMES` ハードコード定数を完全削除し、`PLAN_RESOURCE_REQUESTS` からの動的導出に一本化
+- `interfaces-agent-sdk-skill.md` に `buildPhaseResourceRequestsFromManifest` のインターフェース仕様を追記
+- SKILL.md + LOGS.md 2ファイル同時更新（P1/P25/P29 対策）
+
+---
+
 ## 2026-04-04 - TASK-UT-RT-01 execute/improve adapter guard Phase 12 close-out sync
 
 ### 変更内容
