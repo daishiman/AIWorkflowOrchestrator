@@ -1,0 +1,1 @@
+N/A: docs-only / NON_VISUAL workflow のため lint は実行対象外。
