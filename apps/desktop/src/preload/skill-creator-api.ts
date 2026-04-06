@@ -28,6 +28,7 @@ import type {
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
+  SkillCreatorSessionListItem,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 
@@ -262,6 +263,32 @@ export interface SkillCreatorAPI {
     callback: (progress: SkillCreatorProgress) => void,
   ) => () => void;
 
+  // --- TASK-P0-08: Session Resume API ---
+
+  /**
+   * 未完了セッション一覧を取得する
+   */
+  listSessions: () => Promise<IpcResult<SkillCreatorSessionListItem[]>>;
+
+  /**
+   * セッションを復元して workflow snapshot を返す
+   */
+  resumeSession: (
+    checkpointId: string,
+  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
+
+  /**
+   * セッション詳細スナップショットを取得する
+   */
+  getSessionDetail: (
+    checkpointId: string,
+  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
+
+  /**
+   * セッションを削除する
+   */
+  deleteSession: (checkpointId: string) => Promise<IpcResult<void>>;
+
   // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
 
   /**
@@ -467,6 +494,24 @@ export const skillCreatorAPI: SkillCreatorAPI = {
     callback: (progress: SkillCreatorProgress) => void,
   ): (() => void) =>
     safeOn<SkillCreatorProgress>(IPC_CHANNELS.SKILL_CREATOR_PROGRESS, callback),
+
+  // --- TASK-P0-08: Session Resume API ---
+
+  listSessions: (): Promise<IpcResult<SkillCreatorSessionListItem[]>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_LIST_SESSIONS),
+
+  resumeSession: (
+    checkpointId: string,
+  ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_RESUME_SESSION, { checkpointId }),
+
+  getSessionDetail: (
+    checkpointId: string,
+  ): Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_GET_SESSION_DETAIL, { checkpointId }),
+
+  deleteSession: (checkpointId: string): Promise<IpcResult<void>> =>
+    safeInvoke(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION, { checkpointId }),
 
   // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
 

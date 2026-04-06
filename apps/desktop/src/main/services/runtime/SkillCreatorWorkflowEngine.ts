@@ -604,6 +604,7 @@ export class SkillCreatorWorkflowEngine {
         currentPhase: cp.workflowStateSnapshot.currentPhase,
         checkpointType: cp.checkpointType,
         compatibility,
+        createdAt: cp.createdAt,
         updatedAt: cp.updatedAt,
       });
     }

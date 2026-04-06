@@ -1003,6 +1003,7 @@ export interface SkillCreatorSessionListItem {
   currentPhase: SkillCreatorWorkflowPhase;
   checkpointType: SkillCreatorCheckpointType;
   compatibility: ResumeCompatibilityResult;
+  createdAt: number;
   updatedAt: number;
 }
 

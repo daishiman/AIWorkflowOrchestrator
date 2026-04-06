@@ -19,6 +19,7 @@ import type {
   RuntimeSkillCreatorPlanResult,
   RuntimeSkillCreatorReverifyResponse,
   RuntimeSkillCreatorVerifyDetailResponse,
+  SkillCreatorSessionListItem,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
   TerminalHandoffBundle,
@@ -26,6 +27,8 @@ import type {
 import type { PlanResult } from "../../store/slices/agentSlice";
 import { ApiKeySettingsPanel } from "./ApiKeySettingsPanel";
 import { ConversationalInterview } from "./ConversationalInterview";
+import { SessionIndicator } from "./SessionIndicator";
+import { SessionResumePrompt } from "./SessionResumePrompt";
 import {
   useBeginSkillReview,
   useClearHandoffGuidance,
@@ -102,6 +105,14 @@ type IpcResult<T> = {
   success: boolean;
   data?: T;
   error?: string;
+};
+
+type SessionResumeApi = {
+  listSessions?: () => Promise<IpcResult<SkillCreatorSessionListItem[]>>;
+  resumeSession?: (
+    checkpointId: string,
+  ) => Promise<IpcResult<SkillCreatorWorkflowUiSnapshot>>;
+  deleteSession?: (checkpointId: string) => Promise<IpcResult<void>>;
 };
 
 type SkillCreatorRuntimeApi = {
@@ -307,6 +318,14 @@ function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   );
 }
 
+function getSessionResumeApi(): SessionResumeApi | null {
+  const w = window as Window & {
+    skillCreatorAPI?: SessionResumeApi;
+    electronAPI?: { skillCreator?: SessionResumeApi };
+  };
+  return w.skillCreatorAPI ?? w.electronAPI?.skillCreator ?? null;
+}
+
 function extractSkillNameFromPath(skillPath: string): string {
   const normalized = skillPath.trim().replace(/\\/g, "/");
   const segments = normalized.split("/").filter(Boolean);
@@ -421,6 +440,17 @@ export function SkillLifecyclePanel({
     useState<RuntimeSkillCreatorPlanResult | null>(null);
   const [rawExecuteDetail, setRawExecuteDetail] =
     useState<RuntimeSkillCreatorExecuteResult | null>(null);
+
+  // TASK-P0-08: session resume state
+  const [resumableSessions, setResumableSessions] = useState<
+    SkillCreatorSessionListItem[]
+  >([]);
+  const [isLoadingSessions, setIsLoadingSessions] = useState(false);
+  const [showResumePrompt, setShowResumePrompt] = useState(false);
+  const [activeSessionInfo, setActiveSessionInfo] = useState<{
+    planId: string;
+    startedAt: number;
+  } | null>(null);
 
   const [localError, setLocalError] = useState<string | null>(null);
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
@@ -537,6 +567,28 @@ export function SkillLifecyclePanel({
       }
     });
   }, [setHandoffGuidance, setWorkflowError, setWorkflowSnapshot]);
+
+  // TASK-P0-08: アプリ起動時のセッション検出（一度のみ実行）
+  useEffect(() => {
+    const sessionApi = getSessionResumeApi();
+    if (!sessionApi?.listSessions) return;
+
+    setIsLoadingSessions(true);
+    sessionApi
+      .listSessions()
+      .then((result) => {
+        if (result.success && result.data && result.data.length > 0) {
+          setResumableSessions(result.data);
+          setShowResumePrompt(true);
+        }
+      })
+      .catch((e) => {
+        console.error("[P0-08] listSessions failed:", e);
+      })
+      .finally(() => {
+        setIsLoadingSessions(false);
+      });
+  }, []);
 
   useEffect(() => {
     const planId =
@@ -731,6 +783,67 @@ export function SkillLifecyclePanel({
       : isExecuting
         ? "実行中..."
         : "スキルを実行する";
+
+  // TASK-P0-08: session resume handlers
+  const handleSessionResume = useCallback(
+    async (checkpointId: string) => {
+      const sessionApi = getSessionResumeApi();
+      if (!sessionApi?.resumeSession) return;
+
+      try {
+        const result = await sessionApi.resumeSession(checkpointId);
+        if (result.success && result.data) {
+          setWorkflowSnapshot(result.data);
+          setWorkflowError(null);
+          const session = resumableSessions.find(
+            (s) => s.checkpointId === checkpointId,
+          );
+          if (session) {
+            setActiveSessionInfo({
+              planId: session.planId,
+              startedAt: session.createdAt,
+            });
+            if (result.data.planId) {
+              setCurrentPlanId(result.data.planId);
+            }
+          }
+          setShowResumePrompt(false);
+          setResumableSessions([]);
+        } else {
+          setLocalError(result.error ?? "セッションの復元に失敗しました。");
+        }
+      } catch (e) {
+        setLocalError(
+          e instanceof Error ? e.message : "セッションの復元に失敗しました。",
+        );
+      }
+    },
+    [
+      resumableSessions,
+      setCurrentPlanId,
+      setWorkflowError,
+      setWorkflowSnapshot,
+    ],
+  );
+
+  const handleSessionSkip = useCallback(() => {
+    setShowResumePrompt(false);
+    setResumableSessions([]);
+  }, []);
+
+  const handleSessionDelete = useCallback(async (checkpointId: string) => {
+    const sessionApi = getSessionResumeApi();
+    if (!sessionApi?.deleteSession) return;
+
+    try {
+      await sessionApi.deleteSession(checkpointId);
+      setResumableSessions((prev) =>
+        prev.filter((s) => s.checkpointId !== checkpointId),
+      );
+    } catch (e) {
+      console.error("[P0-08] deleteSession failed:", e);
+    }
+  }, []);
 
   const handlePanelClose = () => {
     resetSkillExecutionCycle();
@@ -1295,6 +1408,28 @@ export function SkillLifecyclePanel({
           </div>
         </div>
       </div>
+
+      {/* TASK-P0-08: セッション復元プロンプト */}
+      {(showResumePrompt || isLoadingSessions) && (
+        <SessionResumePrompt
+          sessions={resumableSessions}
+          isLoading={isLoadingSessions}
+          onResume={handleSessionResume}
+          onSkip={handleSessionSkip}
+          onDelete={handleSessionDelete}
+        />
+      )}
+
+      {/* TASK-P0-08: アクティブセッションインジケーター */}
+      {activeSessionInfo && workflowSnapshot?.planId && (
+        <div className="flex justify-end">
+          <SessionIndicator
+            planId={activeSessionInfo.planId}
+            currentPhase={workflowSnapshot.currentPhase}
+            startedAt={activeSessionInfo.startedAt}
+          />
+        </div>
+      )}
 
       {currentSurfaceError ? (
         <div
