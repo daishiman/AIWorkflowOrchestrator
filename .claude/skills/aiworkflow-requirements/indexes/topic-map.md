@@ -434,11 +434,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L373 |
-| スキルチェーン 型定義（TASK-9D） | L423 |
-| スキルスケジュール 型定義（TASK-9G） | L458 |
-| スキルフォーク 型定義（TASK-9E） | L483 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L531 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L398 |
+| スキルチェーン 型定義（TASK-9D） | L448 |
+| スキルスケジュール 型定義（TASK-9G） | L483 |
+| スキルフォーク 型定義（TASK-9E） | L508 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L556 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -2702,24 +2702,6 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L83 |
-| クイックリファレンス: カテゴリ別検索ガイド | L101 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L282 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L614 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L648 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L731 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L747 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L771 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L821 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L846 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L877 |
-| TASK-RT-06 教訓（2026-03-29） | L908 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L930 |
-| TASK-P0-04 教訓（2026-03-30） | L961 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L997 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1092 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1146 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1186 |
 | 分割ファイル一覧 | L84 |
 | クイックリファレンス: カテゴリ別検索ガイド | L102 |
 | TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L283 |
@@ -2805,6 +2787,18 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 教訓サマリー | L8 |
 | TASK-IMP-RAG-EMBEDDING-EXTRACTION-AI-RUNTIME-001 実装教訓（2026-03-19） | L22 |
+
+### references/lessons-learned-rt-04-authkey-dedup.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001: AuthKey コンポーネント重複解消（2026-04-06） | L9 |
+| L-RT04-001: 二重送信防止パターン（isSubmittingRef） | L23 |
+| L-RT04-002: useAuthKeyManagement フック統合パターン | L35 |
+| L-RT04-003: check-failed + apiError の二層設計 | L50 |
+| L-RT04-004: ApiKeyStatus への check-failed 追加 — 型拡張の同一 wave 更新 | L63 |
+| L-RT04-005: ApiKeySettingsPanel 委譲パターン — 廃止より先に委譲 | L74 |
+| 応用候補 | L85 |
+| esbuild バイナリ問題（参照のみ） | L96 |
 
 ### references/lessons-learned-rt02-stub-response-error-notification.md
 
@@ -3021,8 +3015,8 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L3 |
 | 仕様書インデックス | L7 |
-| 利用順序 | L44 |
-| 関連ドキュメント | L49 |
+| 利用順序 | L45 |
+| 関連ドキュメント | L50 |
 
 ### references/llm-embedding.md
 
