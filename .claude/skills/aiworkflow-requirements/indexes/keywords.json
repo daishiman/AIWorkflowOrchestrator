@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-06T08:22:58.602Z",
-  "totalKeywords": 2767,
+  "generated": "2026-04-06T12:11:35.495Z",
+  "totalKeywords": 2775,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1026,6 +1026,7 @@
       "security-electron-ipc-core.md",
       "security-electron-ipc-details.md",
       "security-skill-ipc-core.md",
+      "task-workflow-completed.md",
       "technology-devops-core.md",
       "technology-devops-details.md",
       "testing-component-patterns-advanced.md",
@@ -1087,6 +1088,7 @@
       "claude-code-agents-workflow.md",
       "error-handling-core.md",
       "error-handling-details.md",
+      "governance-hooks-factory-audit-sink.md",
       "interfaces-agent-sdk-executor-core.md",
       "interfaces-agent-sdk-executor-details.md",
       "interfaces-agent-sdk-history.md",
@@ -1184,6 +1186,7 @@
       "task-workflow-completed-skill-lifecycle-design.md",
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed.md",
       "technology-devops-details.md",
       "technology-devops.md",
       "testing-component-patterns-advanced.md",
@@ -1381,6 +1384,7 @@
     ],
     "FIX": [
       "api-ipc-agent-core.md",
+      "api-ipc-system-core.md",
       "arch-electron-services-details-part2.md",
       "arch-state-management-reference-persist-hardening-test-quality.md",
       "arch-state-management-reference.md",
@@ -1397,6 +1401,7 @@
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-conversation-db-robustness.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
@@ -1894,6 +1899,7 @@
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
       "task-workflow-completed-ut-06-safety-gate.md",
+      "task-workflow-completed.md",
       "technology-devops.md"
     ],
     "スキルファイルツリー取得": [
@@ -2580,6 +2586,30 @@
       "task-workflow-completed-skill-create-ui-integration.md",
       "task-workflow-completed-skill-lifecycle-design.md"
     ],
+    "Handler": [
+      "api-ipc-system-core.md",
+      "arch-ipc-persistence.md",
+      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
+      "security-skill-ipc-core.md"
+    ],
+    "Lifecycle": [
+      "api-ipc-system-core.md",
+      "claude-code-agents-workflow.md",
+      "security-skill-execution.md",
+      "workflow-skill-lifecycle-created-skill-usage-journey.md",
+      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "Management": [
+      "api-ipc-system-core.md"
+    ],
+    "NAME": [
+      "api-ipc-system-core.md",
+      "lessons-learned-current.md"
+    ],
+    "追記": [
+      "api-ipc-system-core.md"
+    ],
     "エンティティ抽出サービス": [
       "api-ipc-system-details.md",
       "interfaces-rag-entity-extraction.md",
@@ -2978,11 +3008,6 @@
     "・永続化パターン": [
       "arch-ipc-persistence.md"
     ],
-    "Handler": [
-      "arch-ipc-persistence.md",
-      "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
-      "security-skill-ipc-core.md"
-    ],
     "Registration": [
       "arch-ipc-persistence.md"
     ],
@@ -3303,7 +3328,8 @@
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
-      "task-workflow-completed-skill-lifecycle-ui.md"
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed.md"
     ],
     "SYNC": [
       "arch-state-management-core.md",
@@ -4067,7 +4093,8 @@
       "logs-archive-2026-02-completed-move-preload-sync.md",
       "logs-archive-2026-02-console-migration-patterns.md",
       "logs-archive-2026-02-permission-history-execution-timestamps.md",
-      "quality-e2e-testing.md"
+      "quality-e2e-testing.md",
+      "task-workflow-completed.md"
     ],
     "共有型インポート標準パターン": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md"
@@ -4090,7 +4117,8 @@
     ],
     "IMPROVEMENT": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
-      "lessons-learned-current.md"
+      "lessons-learned-current.md",
+      "task-workflow-completed.md"
     ],
     "AUTO": [
       "architecture-implementation-patterns-reference-ipc-contract-audits.md",
@@ -4409,6 +4437,7 @@
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "phase-12-documentation-retrospective.md",
       "task-workflow-completed-agent-view-line-budget.md",
+      "task-workflow-completed.md",
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
@@ -4423,13 +4452,6 @@
     ],
     "エージェント間協調": [
       "claude-code-agents-workflow.md"
-    ],
-    "Lifecycle": [
-      "claude-code-agents-workflow.md",
-      "security-skill-execution.md",
-      "workflow-skill-lifecycle-created-skill-usage-journey.md",
-      "workflow-skill-lifecycle-evaluation-scoring-gate.md",
-      "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
     "向け": [
       "claude-code-agents-workflow.md",
@@ -5268,6 +5290,27 @@
       "governance-hooks-factory-audit-sink.md"
     ],
     "設計上の注意事項": [
+      "governance-hooks-factory-audit-sink.md"
+    ],
+    "path": [
+      "governance-hooks-factory-audit-sink.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-rt02-stub-response-error-notification.md",
+      "logs-archive-2026-03-workflow02-screenshot-guard.md",
+      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
+    ],
+    "scoped": [
+      "governance-hooks-factory-audit-sink.md"
+    ],
+    "canUseTool": [
+      "governance-hooks-factory-audit-sink.md",
+      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
+      "lessons-learned-governance-hooks-phase-policy.md"
+    ],
+    "判定": [
+      "governance-hooks-factory-audit-sink.md"
+    ],
+    "実装済み": [
       "governance-hooks-factory-audit-sink.md"
     ],
     "関連仕様書": [
@@ -6670,7 +6713,8 @@
       "logs-archive-2026-02-console-migration-patterns.md",
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-02-skill-validation-atoms-audit.md"
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "task-workflow-completed.md"
     ],
     "仕様差分の統合是正": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md"
@@ -6771,10 +6815,6 @@
     ],
     "permissionMode": [
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
-    ],
-    "canUseTool": [
-      "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
-      "lessons-learned-governance-hooks-phase-policy.md"
     ],
     "ガバナンス実装": [
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md"
@@ -7112,12 +7152,6 @@
     "check": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-rt-04-authkey-dedup.md"
-    ],
-    "path": [
-      "lessons-learned-governance-hooks-phase-policy.md",
-      "lessons-learned-rt02-stub-response-error-notification.md",
-      "logs-archive-2026-03-workflow02-screenshot-guard.md",
-      "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "resolve": [
       "lessons-learned-governance-hooks-phase-policy.md"
@@ -11524,6 +11558,12 @@
     ],
     "追加完了記録": [
       "task-workflow-completed-ut-06-safety-gate.md"
+    ],
+    "TEMPLATE": [
+      "task-workflow-completed.md"
+    ],
+    "テンプレート改善": [
+      "task-workflow-completed.md"
     ],
     "タスクワークフロー": [
       "task-workflow-phases.md",

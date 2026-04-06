@@ -205,8 +205,28 @@ getGovernanceState(): SkillCreatorGovernanceState {
 - `SkillCreatorAuditSink` は `auditSink` として外部注入可能（テスト容易性のため）
 - `createHooks()` はステートレス：状態は `auditSink` に委譲する
 - `canUseTool()` の引数順は `(toolName, phase)` — 順序バグに注意
-- execute / improve フェーズで context-aware な path 判定は `evaluateContextPolicy()` 経由（現状 Facade から context 未供給のため未使用、TASK-P0-09-U1 carry-forward）
+- execute / improve フェーズで context-aware な path 判定は `evaluateContextPolicy()` 経由（TASK-P0-09-U1 で解消済み）
 - plan / verify フェーズでは `Write` / `Edit` は常に denied（policy テーブルで固定）
+
+---
+
+## path-scoped canUseTool 判定（TASK-P0-09-U1 実装済み）
+
+### extractTargetPath(input)
+
+- `input.file_path` → `input.path` の順に fallback
+- どちらもなければ `undefined`（tool-level 判定のみ・後方互換）
+
+### skillRoot パラメータ化
+
+- `createExecuteGovernanceCanUseTool(skillRoot: string)`
+- `createImproveGovernanceCanUseTool(skillRoot: string)`
+- `evaluateGovernanceToolUse` に `{ targetPath, allowedSkillRoot }` context を渡す
+
+### パストラバーサル対策
+
+- `targetPath` が `allowedSkillRoot` の外部を指す場合は deny
+- `undefined` targetPath は tool-level 判定のみ（deny しない）
 
 ---
 

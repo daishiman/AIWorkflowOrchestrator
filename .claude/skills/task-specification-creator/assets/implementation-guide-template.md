@@ -30,12 +30,14 @@ outputs/phase-12/implementation-guide.md
 - `### 今回作ったもの`
 - `## Part 2`
 - `### 型定義`
+- `### APIシグネチャ`
 - `### 使用例`
 - `### エラーハンドリング`
 - `### エッジケース`
 - `### 設定項目と定数一覧`
 - `### テスト構成`
 - Part 1 の日常例えには `たとえば:` を最低1回含める
+- Part 2 では `## 1.` のような番号付き小節を使ってよいが、`### 使用例` は Part 2 内の必須見出しとして必ず残す
 - validator は上記の見出し文字列をそのまま検索するため、見出し名を変えない
 
 ````markdown
@@ -126,6 +128,8 @@ outputs/phase-12/implementation-guide.md
 
 ## Part 2
 
+> Part 2 は番号付き小節を含んでもよい。`### 使用例` は Part 2 の中に置き、見出し名を変えない。
+
 ## 1. アーキテクチャ概要
 
 ### 1.1 ファイル構成
@@ -210,6 +214,12 @@ export const {{タイプ変数}} = [
 ] as const;
 ```
 
+### APIシグネチャ
+
+```typescript
+validatePhase12ImplementationGuide("docs/30-workflows/MY-TASK-001");
+```
+
 ---
 
 ### 使用例
@@ -266,6 +276,17 @@ const withRelations = await db.query.{{テーブル}}.findFirst({
 | ------------------ | -------- | ------------ |
 | {{ファイル名}}     | {{数}}   | {{範囲}}     |
 | **合計**           | **{{合計}}** |          |
+
+#### private method のテスト方針（該当時のみ）
+
+> [Feedback P0-09-U1-1] TDD Phase 4 で private method をテストする場合は以下2択を明記する。
+
+| 方針                        | コード例                                                       | 採用基準                                      |
+| --------------------------- | -------------------------------------------------------------- | --------------------------------------------- |
+| キャスト経由                | `(facade as unknown as FacadePrivate).methodName()`            | 単体テストで直接検証したい場合                |
+| public callback / public API 経由 | `await facade.execute(); // 内部で private が呼ばれる` | public contract を通じて振る舞いを検証する場合 |
+
+採用方針を Phase 4 仕様書に1行で明記すること（例: 「本タスクは public callback 経由を採用する」）。
 
 ---
 

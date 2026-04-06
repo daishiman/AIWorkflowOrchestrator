@@ -937,6 +937,7 @@ node scripts/list-specs.js --topics
 | AIプロバイダーAPI連携 | L764 |
 | Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L797 |
 | Skill Creator External API Support（TASK-SDK-SC-03） | L844 |
+| IPC Handler Lifecycle Management（TASK-FIX-IPC-SKILL-NAME-001 追記: 2026-04-06） | L925 |
 
 ### references/api-ipc-system-details.md
 
@@ -2539,7 +2540,8 @@ node scripts/list-specs.js --topics
 | SkillCreatorAuditSink | L113 |
 | 使用例 | L162 |
 | 設計上の注意事項 | L203 |
-| 関連仕様書 | L213 |
+| path-scoped canUseTool 判定（TASK-P0-09-U1 実装済み） | L213 |
+| 関連仕様書 | L233 |
 
 ### references/ipc-4-layer-pattern.md
 
@@ -4099,6 +4101,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L7 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L82 |
 
 ### references/task-workflow-history.md
 

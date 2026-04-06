@@ -652,11 +652,11 @@ pnpm --filter @repo/desktop test -- --grep "governance"
 
 ### 関連サブタスク・仕様書
 
-| ドキュメント                                           | パス                                                                                            |
-| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------- |
-| サブタスク: governance-actual-enforcement-completion   | `docs/30-workflows/unassigned-task/TASK-P0-09-U1-governance-actual-enforcement-completion.md`   |
-| サブタスク: path-scoped-governance-runtime-enforcement | `docs/30-workflows/unassigned-task/TASK-P0-09-U1-path-scoped-governance-runtime-enforcement.md` |
-| 関連 UT: PHASE11-SCREENSHOT-EVIDENCE                   | `docs/30-workflows/unassigned-task/UT-P0-09-PHASE11-SCREENSHOT-EVIDENCE-001.md`                 |
+| ドキュメント                                                   | パス                                                                                          |
+| -------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| サブタスク: governance-actual-enforcement-completion           | `docs/30-workflows/unassigned-task/TASK-P0-09-U1-governance-actual-enforcement-completion.md` |
+| サブタスク: path-scoped-governance-runtime-enforcement（完了） | `docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/index.md`         |
+| 関連 UT: PHASE11-SCREENSHOT-EVIDENCE                           | `docs/30-workflows/unassigned-task/UT-P0-09-PHASE11-SCREENSHOT-EVIDENCE-001.md`               |
 
 ### 苦戦箇所と知見
 

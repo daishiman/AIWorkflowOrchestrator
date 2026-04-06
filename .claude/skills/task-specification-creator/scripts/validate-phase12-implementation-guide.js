@@ -5,6 +5,7 @@ import path from "node:path";
 
 const PART1_HEADING = /^##\s+Part 1\b.*$/im;
 const PART2_HEADING = /^##\s+Part 2\b.*$/im;
+const NEXT_PART_HEADING = /^##\s+Part\s+\d+\b/;
 
 function parseArgs(argv) {
   const args = {
@@ -41,13 +42,31 @@ function extractSection(content, headingPattern) {
     return "";
   }
 
-  const rest = content.slice(match.index);
-  const nextHeadingOffset = rest.slice(match[0].length).search(/\n##\s+/);
-  if (nextHeadingOffset < 0) {
-    return rest.trim();
+  const section = content.slice(match.index + match[0].length);
+  const nextPartIndex = findNextPartHeadingIndex(section);
+  if (nextPartIndex < 0) {
+    return section.trim();
   }
 
-  return rest.slice(0, match[0].length + nextHeadingOffset).trim();
+  return section.slice(0, nextPartIndex).trim();
+}
+
+function findNextPartHeadingIndex(section) {
+  const lines = section.split("\n");
+  let inFence = false;
+  let offset = 0;
+
+  for (const line of lines) {
+    if (/^\s*(?:```|~~~)/.test(line)) {
+      inFence = !inFence;
+    } else if (!inFence && NEXT_PART_HEADING.test(line)) {
+      return offset;
+    }
+
+    offset += line.length + 1;
+  }
+
+  return -1;
 }
 
 function hasTypescriptBlock(section) {
@@ -55,9 +74,50 @@ function hasTypescriptBlock(section) {
   return codeBlocks.some((block) => /\b(?:interface|type)\b/.test(block));
 }
 
+function hasHeading(section, heading) {
+  const escapedHeading = heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(`^###\\s+${escapedHeading}.*$`, "m").test(section);
+}
+
+function findNextHeadingIndex(section) {
+  const lines = section.split("\n");
+  let inFence = false;
+  let offset = 0;
+
+  for (const line of lines) {
+    if (/^\s*(?:```|~~~)/.test(line)) {
+      inFence = !inFence;
+    } else if (!inFence && /^#{2,3}\s+/.test(line)) {
+      return offset;
+    }
+
+    offset += line.length + 1;
+  }
+
+  return -1;
+}
+
+function extractSubsection(section, heading) {
+  const escapedHeading = heading.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const headingPattern = new RegExp(`^###\\s+${escapedHeading}.*$`, "m");
+  const match = headingPattern.exec(section);
+  if (!match || match.index < 0) {
+    return "";
+  }
+
+  const tail = section.slice(match.index + match[0].length);
+  const nextHeadingIndex = findNextHeadingIndex(tail);
+  if (nextHeadingIndex < 0) {
+    return tail.trim();
+  }
+
+  return tail.slice(0, nextHeadingIndex).trim();
+}
+
 function hasApiSignature(section) {
   return (
-    /APIシグネチャ|CLIシグネチャ|シグネチャ/i.test(section) ||
+    hasHeading(section, "APIシグネチャ") ||
+    hasHeading(section, "CLIシグネチャ") ||
     /window\.electronAPI\.skill\.[a-zA-Z]+\(/.test(section) ||
     /useSkillAnalysis\s*[:=]\s*\(/.test(section) ||
     /validate[A-Za-z0-9]+\s*\(/.test(section)
@@ -65,9 +125,10 @@ function hasApiSignature(section) {
 }
 
 function hasUsageExample(section) {
+  const usageSection = extractSubsection(section, "使用例");
   return (
-    /使用例|利用例/i.test(section) &&
-    /```(?:bash|ts|tsx|typescript)\n[\s\S]*?```/i.test(section)
+    usageSection.length > 0 &&
+    /```(?:bash|ts|tsx|typescript)\n[\s\S]*?```/i.test(usageSection)
   );
 }
 
@@ -81,16 +142,24 @@ function hasAnalogy(section) {
   return /例え|たとえば|イメージ|名簿|棚卸し|本棚|教室/.test(section);
 }
 
+function hasCreatedThings(section) {
+  return hasHeading(section, "今回作ったもの");
+}
+
 function hasErrorHandling(section) {
-  return /エラーハンドリング|エラー処理|例外/.test(section);
+  return hasHeading(section, "エラーハンドリング");
 }
 
 function hasEdgeCases(section) {
-  return /エッジケース|境界条件/.test(section);
+  return hasHeading(section, "エッジケース");
 }
 
 function hasSettingsOrConstants(section) {
-  return /設定可能なパラメータ|設定と定数|設定項目|定数一覧|パラメータ一覧/.test(section);
+  return hasHeading(section, "設定項目と定数一覧");
+}
+
+function hasTestStructure(section) {
+  return hasHeading(section, "テスト構成");
 }
 
 function buildChecks(content) {
@@ -117,6 +186,11 @@ function buildChecks(content) {
       id: "part1_analogy",
       label: "Part 1 に日常の例えがある",
       ok: part1.length > 0 && hasAnalogy(part1),
+    },
+    {
+      id: "part1_created_things",
+      label: "Part 1 に今回作ったものがある",
+      ok: part1.length > 0 && hasCreatedThings(part1),
     },
     {
       id: "part2_typescript",
@@ -147,6 +221,11 @@ function buildChecks(content) {
       id: "part2_settings_constants",
       label: "Part 2 に設定項目または定数一覧がある",
       ok: part2.length > 0 && hasSettingsOrConstants(part2),
+    },
+    {
+      id: "part2_test_structure",
+      label: "Part 2 にテスト構成がある",
+      ok: part2.length > 0 && hasTestStructure(part2),
     },
   ];
 }

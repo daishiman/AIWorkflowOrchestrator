@@ -314,13 +314,29 @@ export class SkillService {
     return this.skillCreatorService;
   }
 
+  /**
+   * ウィザード入力をスキル名として使用できる文字列に正規化する。
+   *
+   * 出力は `.agents/skills/<name>/` ディレクトリ名および `init_skill.js` の
+   * バリデーション規則 `/^[a-z0-9]+(-[a-z0-9]+)*$/` に適合する形式。
+   *
+   * 変換順序:
+   * 1. 先頭 50 文字で切り詰める
+   * 2. 前後の空白を除去する
+   * 3. 全て小文字化する（大文字 A-Z → 小文字 a-z）
+   * 4. `/[^a-z0-9-]/g` — アンダースコア・日本語・記号等の非許容文字を `-` へ置換
+   * 5. `/-+/g` — 連続ハイフンを単一ハイフンに圧縮する
+   * 6. `/^-+|-+$/g` — 先頭・末尾のハイフンを除去する
+   * 7. 変換後が空文字の場合は `"new-skill"` を返す（日本語のみ入力等）
+   */
   private toWizardSkillName(description: string): string {
     const normalized = description
       .slice(0, 50)
       .trim()
-      .replace(/[^a-zA-Z0-9\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF_-]/g, "-")
+      .toLowerCase()
+      .replace(/[^a-z0-9-]/g, "-")
       .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
+      .replace(/^-+|-+$/g, "");
 
     return normalized || "new-skill";
   }
