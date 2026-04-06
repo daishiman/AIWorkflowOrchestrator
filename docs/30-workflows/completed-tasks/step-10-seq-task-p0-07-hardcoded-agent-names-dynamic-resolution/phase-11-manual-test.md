@@ -17,6 +17,7 @@
 - 手動テストチェックリストの作成
 - 手動テストの実施
 - 発見された問題の記録
+- 非視覚案件として screenshot 不要の根拠を記録する
 
 ## 参照資料
 
@@ -40,15 +41,18 @@ Electron アプリを起動し、チェックリストに従ってテストを�
 
 ## 成果物
 
-| 成果物                | パス                                        | 説明                 |
-| --------------------- | ------------------------------------------- | -------------------- |
-| manual test checklist | `outputs/phase-11/manual-test-checklist.md` | テストチェックリスト |
-| manual test result    | `outputs/phase-11/manual-test-result.md`    | テスト結果           |
-| discovered issues     | `outputs/phase-11/discovered-issues.md`     | 発見された問題       |
+| 成果物                | パス                                          | 説明                 |
+| --------------------- | --------------------------------------------- | -------------------- |
+| manual test checklist | `outputs/phase-11/manual-test-checklist.md`   | テストチェックリスト |
+| manual test report    | `outputs/phase-11/manual-test-report.md`      | 実施概要サマリー     |
+| manual test result    | `outputs/phase-11/manual-test-result.md`      | テスト結果           |
+| discovered issues     | `outputs/phase-11/discovered-issues.md`       | 発見された問題       |
+| ui sanity review      | `outputs/phase-11/ui-sanity-visual-review.md` | 非視覚レビュー       |
 
 ## 完了条件
 
 - [ ] 手動テストチェックリストが作成されている
 - [ ] 手動テストが実施されている
+- [ ] screenshot 不要の理由が明記されている
 - [ ] 発見された問題が記録されている
 - [ ] **本Phase内の全タスクを100%実行完了**

@@ -17,6 +17,7 @@
 | 依存タスク     | TASK-UI-01（ルート昇格が先行完了すること）             |
 | 後続タスク     | なし                                                   |
 | 並行可能タスク | TASK-UI-02                                             |
+| 関連Issue      | #1940                                                  |
 | 親ワークフロー | step-12-par-task-ui-03-ipc-session-runtime-unification |
 
 ---

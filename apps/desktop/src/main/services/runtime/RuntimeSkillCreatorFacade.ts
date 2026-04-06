@@ -1614,7 +1614,8 @@ export class RuntimeSkillCreatorFacade {
           .join("\n\n");
       } else {
         agentPrompt = await this.resourceLoader!.loadAgent(
-          IMPROVE_PROMPT_CONSTANTS.AGENT_NAME,
+          IMPROVE_RESOURCE_REQUESTS.find((r) => r.kind === "agent")?.id ??
+            "improve-prompt",
         );
       }
 

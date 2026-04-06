@@ -13,6 +13,7 @@
 | ステータス     | spec_created                                                                                |
 | 依存タスク     | なし                                                                                        |
 | 後続タスク     | TASK-UI-02, TASK-UI-03                                                                      |
+| 関連Issue      | #1938                                                                                       |
 | 作成日         | 2026-04-06                                                                                  |
 | 親ワークフロー | skill-creator-agent-sdk-lane/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion |
 

@@ -1221,3 +1221,34 @@
 | 解決策     | `SkillCreatorOutputHandler.toSlug()` でスキル名を安全な slug に変換し、`SkillFileWriter.persist()` で `PATH_TRAVERSAL` エラーコードによるバリデーションを実施、さらにロールバック機能で部分書き込み時の一貫性を保証する多層防御を実装した |
 | 標準ルール | ファイルパス生成時は (1) slug 変換、(2) パスバリデーション（PATH_TRAVERSAL 検出）、(3) 部分書き込みロールバックの 3 層で防御する                                    |
 | 関連タスク | TASK-P0-05                                                                                                                                                       |
+
+---
+
+## TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06）
+
+### L-P007-001: manifest 不在 vs 破損の validation boundary
+
+| 項目       | 内容                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | manifest ファイルが存在しない場合と、manifest が破損している・phase が不在・resourceIds が空の場合を同じ fallback で処理すると、silent regression が発生した      |
+| 解決策     | manifest **不在**のみ static fallback（`PLAN_RESOURCE_REQUESTS`/`IMPROVE_RESOURCE_REQUESTS`）を使用し、**破損・phase 不在・resourceIds 空**は `VALIDATION_ERROR` を返す boundary を明確化した |
+| 標準ルール | fallback と error の境界は「ファイルが存在しない＝正常な初期状態」vs「ファイルが不正＝設定ミス」で引く。silent fallback は設定ミスを隠蔽するため error に変える  |
+| 関連タスク | TASK-P0-07                                                                                                                                                       |
+
+### L-P007-002: resolver/planner/facade の責務分離
+
+| 項目       | 内容                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `RuntimeSkillCreatorFacade.resolveOperationResources()` が root 収集・dedupe・resource 計画の全責務を持っていた                                                   |
+| 解決策     | root 収集と dedupe は `SkillCreatorSourceResolver` に、resource 計画は `PhaseResourcePlanner` に分離し、Facade は消費者として両者を組み合わせる設計とした          |
+| 標準ルール | 動的解決パイプラインは「収集・整理・計画・実行」の各ステップを独立クラスに分離する。Facade は組み合わせのみを担い、アルゴリズムは各クラスに閉じ込める              |
+| 関連タスク | TASK-P0-07                                                                                                                                                       |
+
+### L-P007-003: plan/improve 両方に同じルールを適用する一貫性
+
+| 項目       | 内容                                                                                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | plan の manifest 優先解決を実装した際、improve 側への同等の対応を後回しにしたため、2 ルートの動作が非対称になるリスクがあった                                     |
+| 解決策     | plan と improve で同じ `PhaseResourceRequest` モデルと `resolveOperationResources()` シグネチャを使用し、phase ごとの差異は `fallbackRequests` 引数でのみ表現した |
+| 標準ルール | 複数の operation（plan/improve/verify など）に同じルールを適用する場合は、共通ロジックを単一メソッドに集約し、operation 固有の差異のみを引数で表現する            |
+| 関連タスク | TASK-P0-07                                                                                                                                                       |
