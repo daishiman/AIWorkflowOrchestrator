@@ -380,21 +380,6 @@ export interface SkillCreatorAPI {
    * Shared disclosure channel 経由で AI 利用情報を取得する (AC-4: 説明責務)
    */
   getDisclosureInfo: () => Promise<IpcResult<unknown>>;
-
-  /**
-   * approval:request push を購読する (TASK-SDK-07: onApprovalRequest surface 追加)
-   * @param callback - 承認要求受信時のコールバック関数
-   * @returns アンサブスクライブ関数
-   */
-  onApprovalRequest: (
-    callback: (payload: {
-      operationType: string;
-      description: string;
-      destination?: string;
-      sessionId: string;
-      operationId: string;
-    }) => void,
-  ) => () => void;
 }
 
 /**
@@ -711,22 +696,4 @@ export const skillCreatorAPI: SkillCreatorAPI = {
 
   getDisclosureInfo: (): Promise<IpcResult<unknown>> =>
     safeInvoke(IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO),
-
-  // TASK-SDK-07: approval:request push 購読
-  onApprovalRequest: (
-    callback: (payload: {
-      operationType: string;
-      description: string;
-      destination?: string;
-      sessionId: string;
-      operationId: string;
-    }) => void,
-  ): (() => void) =>
-    safeOn<{
-      operationType: string;
-      description: string;
-      destination?: string;
-      sessionId: string;
-      operationId: string;
-    }>(IPC_CHANNELS.APPROVAL_REQUEST, callback),
 };
