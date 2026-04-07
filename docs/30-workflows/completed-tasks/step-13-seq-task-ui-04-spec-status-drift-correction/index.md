@@ -7,13 +7,14 @@
 | タスクID       | TASK-UI-04                                                      |
 | タスク名       | 仕様書ステータス乖離修正                                        |
 | 分類           | メンテナンス / 品質管理                                         |
+| タスク種別     | docs-only                                                       |
 | 対象機能       | タスク仕様書群の artifacts.json / index.md ステータスフィールド |
 | 優先度         | P0（最高）                                                      |
 | 見積もり規模   | 中規模                                                          |
-| ステータス     | spec_created                                                    |
+| ステータス     | phase12_completed（Phase 13 未実施）                            |
 | 発見元         | 実装状態監査（P0タスク群の実装完了後レビュー）                  |
 | 作成日         | 2026-04-06                                                      |
-| 更新日         | 2026-04-06                                                      |
+| 更新日         | 2026-04-07                                                      |
 | 依存タスク     | TASK-UI-01, TASK-UI-02, TASK-UI-03                              |
 | 後続タスク     | なし                                                            |
 | 関連Issue      | #1941                                                           |
@@ -25,7 +26,7 @@
 
 ### 目的
 
-タスク仕様書の artifacts.json および index.md に記載された status フィールドが、実際のコード実装状態と乖離している問題を是正する。7〜8 件のタスク仕様書で `spec_created` / `未着手` と記載されているにもかかわらず、対応するコードは完全に実装・マージ済みであり、開発者が残作業を正確に判断できない状態にある。
+タスク仕様書の artifacts.json および index.md に記載された status フィールドが、実際のコード実装状態と乖離している問題を是正する。8 件のタスク仕様書で `spec_created` / `未着手` と記載されているにもかかわらず、対応するコードは完全に実装・マージ済みであり、開発者が残作業を正確に判断できない状態にある。
 
 ### 背景
 
@@ -83,14 +84,14 @@ P0 タスク群（TASK-P0-01 〜 TASK-P0-09）の実装が進行する中で、�
 
 ## 現行コードアンカー
 
-| ファイル / ディレクトリ                                            | 現状の役割                     | TASK-UI-04 での扱い                  |
-| ------------------------------------------------------------------ | ------------------------------ | ------------------------------------ |
-| `docs/30-workflows/skill-creator-agent-sdk-lane/`                  | 全タスク仕様書ディレクトリの親 | 各タスク仕様書の status を監査・更新 |
-| `apps/desktop/src/main/services/runtime/`                          | runtime 実装ファイル群         | 実装状態の確認対象（読取のみ）       |
-| `apps/desktop/src/renderer/components/skill/`                      | UI コンポーネントファイル群    | 実装状態の確認対象（読取のみ）       |
-| `apps/desktop/src/main/ipc/creatorHandlers.ts`                     | IPC ハンドラ                   | 実装状態の確認対象（読取のみ）       |
-| `docs/30-workflows/skill-creator-agent-sdk-lane/executor-guide.md` | 実行ガイド                     | ステータス更新対象                   |
-| `docs/30-workflows/skill-creator-agent-sdk-lane/index.md`          | lane 親 index                  | タスク一覧のステータス更新対象       |
+| ファイル / ディレクトリ                                            | 現状の役割                  | TASK-UI-04 での扱い                  |
+| ------------------------------------------------------------------ | --------------------------- | ------------------------------------ |
+| `docs/30-workflows/completed-tasks/`                               | 移動済みタスク仕様書の実体  | 各タスク仕様書の status を監査・更新 |
+| `apps/desktop/src/main/services/runtime/`                          | runtime 実装ファイル群      | 実装状態の確認対象（読取のみ）       |
+| `apps/desktop/src/renderer/components/skill/`                      | UI コンポーネントファイル群 | 実装状態の確認対象（読取のみ）       |
+| `apps/desktop/src/main/ipc/creatorHandlers.ts`                     | IPC ハンドラ                | 実装状態の確認対象（読取のみ）       |
+| `docs/30-workflows/skill-creator-agent-sdk-lane/executor-guide.md` | 実行ガイド                  | ステータス更新対象                   |
+| `docs/30-workflows/skill-creator-agent-sdk-lane/index.md`          | lane 親 index               | タスク一覧のステータス更新対象       |
 
 ## システム仕様参照（aiworkflow-requirements連携）
 
@@ -98,8 +99,8 @@ P0 タスク群（TASK-P0-01 〜 TASK-P0-09）の実装が進行する中で、�
 
 | 参照資料                       | パス                                                                                        | 内容                                      |
 | ------------------------------ | ------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| Skill Creator Service仕様      | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService の公開 API と状態遷移 |
-| タスクワークフローフェーズ仕様 | `.agents/skills/aiworkflow-requirements/references/task-workflow-phases.md`                 | Phase 1-13 のフェーズ遷移テーブル         |
+| Skill Creator Service仕様      | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService の公開 API と状態遷移 |
+| タスクワークフローフェーズ仕様 | `.claude/skills/aiworkflow-requirements/references/task-workflow-phases.md`                 | Phase 1-13 のフェーズ遷移テーブル         |
 
 ---
 
@@ -117,22 +118,22 @@ P0 タスク群（TASK-P0-01 〜 TASK-P0-09）の実装が進行する中で、�
 
 ## 成果物一覧
 
-| Phase | 名称             | 成果物                                      |
-| ----- | ---------------- | ------------------------------------------- |
-| 1     | 要件定義         | `outputs/phase-1/spec-extraction-map.md`    |
-|       |                  | `outputs/phase-1/status-drift-inventory.md` |
-| 2     | 設計             | `outputs/phase-2/correction-plan.md`        |
-| 3     | 設計レビュー     | `outputs/phase-3/design-review-gate.md`     |
-| 4     | テスト作成       | `outputs/phase-4/test-matrix.md`            |
-| 5     | 実装             | `outputs/phase-5/implementation-record.md`  |
-| 6     | テスト拡充       | `outputs/phase-6/test-expansion.md`         |
-| 7     | カバレッジ確認   | `outputs/phase-7/coverage-report.md`        |
-| 8     | リファクタリング | `outputs/phase-8/refactoring-log.md`        |
-| 9     | 品質保証         | `outputs/phase-9/qa-report.md`              |
-| 10    | 最終レビュー     | `outputs/phase-10/final-review-result.md`   |
-| 11    | 手動テスト       | `outputs/phase-11/manual-test-result.md`    |
-| 12    | ドキュメント更新 | `outputs/phase-12/implementation-guide.md`  |
-| 13    | PR作成           | `outputs/phase-13/pr-creation-record.md`    |
+| Phase | 名称             | 成果物                                                                                                                                                                                                                                                                                                        |
+| ----- | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | 要件定義         | `outputs/phase-1/spec-extraction-map.md`                                                                                                                                                                                                                                                                      |
+|       |                  | `outputs/phase-1/status-drift-inventory.md`                                                                                                                                                                                                                                                                   |
+| 2     | 設計             | `outputs/phase-2/correction-plan.md`                                                                                                                                                                                                                                                                          |
+| 3     | 設計レビュー     | `outputs/phase-3/design-review-gate.md`                                                                                                                                                                                                                                                                       |
+| 4     | テスト作成       | `outputs/phase-4/test-matrix.md`                                                                                                                                                                                                                                                                              |
+| 5     | 実装             | `outputs/phase-5/implementation-record.md`                                                                                                                                                                                                                                                                    |
+| 6     | テスト拡充       | `outputs/phase-6/test-expansion.md`                                                                                                                                                                                                                                                                           |
+| 7     | カバレッジ確認   | `outputs/phase-7/coverage-report.md`                                                                                                                                                                                                                                                                          |
+| 8     | リファクタリング | `outputs/phase-8/refactoring-log.md`                                                                                                                                                                                                                                                                          |
+| 9     | 品質保証         | `outputs/phase-9/qa-report.md`                                                                                                                                                                                                                                                                                |
+| 10    | 最終レビュー     | `outputs/phase-10/final-review-result.md`                                                                                                                                                                                                                                                                     |
+| 11    | 手動テスト       | `outputs/phase-11/manual-test-checklist.md`<br>`outputs/phase-11/manual-test-result.md`<br>`outputs/phase-11/discovered-issues.md`                                                                                                                                                                            |
+| 12    | ドキュメント更新 | `outputs/phase-12/implementation-guide.md`<br>`outputs/phase-12/system-spec-update-summary.md`<br>`outputs/phase-12/documentation-changelog.md`<br>`outputs/phase-12/unassigned-task-detection.md`<br>`outputs/phase-12/skill-feedback-report.md`<br>`outputs/phase-12/phase12-task-spec-compliance-check.md` |
+| 13    | PR作成           | `outputs/phase-13/pr-creation-record.md`                                                                                                                                                                                                                                                                      |
 
 ---
 
@@ -189,7 +190,7 @@ node .claude/skills/task-specification-creator/scripts/complete-phase.js \
 ## 出力ファイル構成
 
 ```
-docs/30-workflows/skill-creator-agent-sdk-lane/step-13-seq-task-ui-04-spec-status-drift-correction/
+docs/30-workflows/step-13-seq-task-ui-04-spec-status-drift-correction/
 ├── index.md
 ├── artifacts.json
 ├── phase-1-requirements.md
@@ -229,9 +230,16 @@ docs/30-workflows/skill-creator-agent-sdk-lane/step-13-seq-task-ui-04-spec-statu
     ├── phase-10/
     │   └── final-review-result.md
     ├── phase-11/
-    │   └── manual-test-result.md
+    │   ├── manual-test-checklist.md
+    │   ├── manual-test-result.md
+    │   └── discovered-issues.md
     ├── phase-12/
-    │   └── implementation-guide.md
+    │   ├── implementation-guide.md
+    │   ├── system-spec-update-summary.md
+    │   ├── documentation-changelog.md
+    │   ├── unassigned-task-detection.md
+    │   ├── skill-feedback-report.md
+    │   └── phase12-task-spec-compliance-check.md
     └── phase-13/
         └── pr-creation-record.md
 ```

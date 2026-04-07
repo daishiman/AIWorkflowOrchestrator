@@ -10,7 +10,7 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | Phase 9: 品質保証                   |
 | 次Phase    | Phase 11: 手動テスト                |
-| ステータス | pending                             |
+| ステータス | completed                           |
 | 作成日     | 2026-04-06                          |
 
 ## 目的
@@ -18,6 +18,8 @@
 AC-1〜AC-5 の総合判定を行い、全タスク仕様書のステータス乖離が完全に是正されたことを最終確認して手動テストへ進める。
 
 ## 実行タスク
+
+- 詳細は以下の Task 1〜4 に従って実行する。
 
 ### Task 1: AC マトリクス最終照合
 
@@ -66,12 +68,21 @@ Phase 1 で特定した全タスクについて、修正後に乖離がゼロで
 
 ## 参照資料
 
-| 資料名             | パス                                        | 説明           |
-| ------------------ | ------------------------------------------- | -------------- |
-| 品質保証レポート   | `outputs/phase-9/qa-report.md`              | ゲート入力     |
-| カバレッジレポート | `outputs/phase-7/coverage-report.md`        | AC 対応表      |
-| 実装記録           | `outputs/phase-5/implementation-record.md`  | 修正内容の参照 |
-| 乖離インベントリ   | `outputs/phase-1/status-drift-inventory.md` | 元の調査結果   |
+| 資料名               | パス                                        | 説明           |
+| -------------------- | ------------------------------------------- | -------------- |
+| 品質保証レポート     | `outputs/phase-9/qa-report.md`              | ゲート入力     |
+| カバレッジレポート   | `outputs/phase-7/coverage-report.md`        | AC 対応表      |
+| 実装記録             | `outputs/phase-5/implementation-record.md`  | 修正内容の参照 |
+| 乖離インベントリ     | `outputs/phase-1/status-drift-inventory.md` | 元の調査結果   |
+| ステータス抽出マップ | `outputs/phase-1/spec-extraction-map.md`    | Phase 1 成果物 |
+| 修正計画             | `outputs/phase-2/correction-plan.md`        | Phase 2 成果物 |
+| リファクタリングログ | `outputs/phase-8/refactoring-log.md`        | Phase 8 成果物 |
+
+## 統合テスト連携
+
+- `artifacts.json` / `outputs/artifacts.json` / `index.md` の status 整合を維持する。
+- Phase 11 の `manual-test-result.md` へ確認結果を引き継ぐ。
+- Phase 12 の `implementation-guide.md` と `documentation-changelog.md` に更新理由と差分を反映する。
 
 ## 成果物
 

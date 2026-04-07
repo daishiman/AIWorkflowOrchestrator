@@ -13,7 +13,7 @@ Claude Agent SDK V2 Preview のセッション永続化・復元機能（TASK-SD
 | タスクID   | TASK-P0-08                                                             |
 | タスク種別 | 機能追加                                                               |
 | 優先度     | P0 (High)                                                              |
-| ステータス | spec_created                                                           |
+| ステータス | completed                                                              |
 | 上流ゲート | なし                                                                   |
 | 依存タスク | TASK-RT-06（SDK message contract）, TASK-SDK-08 は別レーンでマージ済み |
 | 後続タスク | なし                                                                   |

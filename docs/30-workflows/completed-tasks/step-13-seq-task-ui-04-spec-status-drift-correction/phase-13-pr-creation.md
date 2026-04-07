@@ -30,6 +30,7 @@
 - 残作業記録の追加内容
 - executor-guide.md の更新内容
 - 親 index.md の更新内容
+- Phase 12 の成果物（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
 
 ### Task 2: PR 実行条件の確認
 
@@ -52,6 +53,7 @@
   - index.md x N files (status metadata updates)
   - executor-guide.md (status table updates)
   - lane index.md (task list updates)
+  - outputs/phase-12/* (documentation pack)
 
   ## Test plan
   - [ ] 全 artifacts.json status が実装状態と一致
@@ -64,20 +66,27 @@
 
 PR マージ後、本タスク自体のディレクトリを以下に移動する:
 
-- 移動元: `docs/30-workflows/skill-creator-agent-sdk-lane/step-13-seq-task-ui-04-spec-status-drift-correction/`
+- 移動元: `docs/30-workflows/step-13-seq-task-ui-04-spec-status-drift-correction/`
 - 移動先: `docs/30-workflows/completed-tasks/`
 
 ## 参照資料
 
-| 資料名               | パス                                       | 説明          |
-| -------------------- | ------------------------------------------ | ------------- |
-| 実装記録             | `outputs/phase-5/implementation-record.md` | 修正内容      |
-| カバレッジレポート   | `outputs/phase-7/coverage-report.md`       | coverage 要約 |
-| リファクタリング記録 | `outputs/phase-8/refactoring-log.md`       | 整理内容      |
-| 品質保証レポート     | `outputs/phase-9/qa-report.md`             | 品質ゲート    |
-| 最終レビュー結果     | `outputs/phase-10/final-review-result.md`  | 判定          |
-| 手動テスト結果       | `outputs/phase-11/manual-test-result.md`   | evidence      |
-| 実装ガイド           | `outputs/phase-12/implementation-guide.md` | 直前成果物    |
+| 資料名               | パス                                                     | 説明                       |
+| -------------------- | -------------------------------------------------------- | -------------------------- |
+| 実装記録             | `outputs/phase-5/implementation-record.md`               | 修正内容                   |
+| カバレッジレポート   | `outputs/phase-7/coverage-report.md`                     | coverage 要約              |
+| リファクタリング記録 | `outputs/phase-8/refactoring-log.md`                     | 整理内容                   |
+| 品質保証レポート     | `outputs/phase-9/qa-report.md`                           | 品質ゲート                 |
+| 最終レビュー結果     | `outputs/phase-10/final-review-result.md`                | 判定                       |
+| 手動テスト結果       | `outputs/phase-11/manual-test-result.md`                 | evidence                   |
+| 修正計画             | `outputs/phase-2/correction-plan.md`                     | 上流設計                   |
+| テスト拡充記録       | `outputs/phase-6/test-expansion.md`                      | 検証の参照                 |
+| 実装ガイド           | `outputs/phase-12/implementation-guide.md`               | 直前成果物                 |
+| 仕様更新サマリー     | `outputs/phase-12/system-spec-update-summary.md`         | root / parity / no-op 判定 |
+| 更新履歴             | `outputs/phase-12/documentation-changelog.md`            | 更新差分と validator       |
+| 未タスク検出         | `outputs/phase-12/unassigned-task-detection.md`          | follow-up 有無             |
+| スキルフィードバック | `outputs/phase-12/skill-feedback-report.md`              | 改善提案                   |
+| 準拠チェック         | `outputs/phase-12/phase12-task-spec-compliance-check.md` | 最終監査                   |
 
 ## 成果物
 

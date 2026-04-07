@@ -10,10 +10,10 @@
 | 対象機能       | SkillCreatorWorkflowEngine phase transition                |
 | 優先度         | P0（最高）                                                 |
 | 見積もり規模   | 中規模                                                     |
-| ステータス     | spec_created                                               |
+| ステータス     | completed                                                  |
 | 発見元         | p0-verify-manifest-remediation-pack 監査                   |
 | 作成日         | 2026-03-29                                                 |
-| 更新日         | 2026-03-30                                                 |
+| 更新日         | 2026-04-07                                                 |
 | 依存タスク     | TASK-P0-01（verify engine 本体） ✅ 完了済み               |
 | 後続タスク     | なし                                                       |
 | 関連Issue      | #1725                                                      |

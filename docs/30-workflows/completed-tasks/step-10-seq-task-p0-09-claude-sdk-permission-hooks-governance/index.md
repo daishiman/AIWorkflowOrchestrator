@@ -11,7 +11,7 @@ Claude Code SDK の `permissionMode`、`allowedTools` / `disallowedTools`、`can
 | タスクID   | TASK-P0-09                         |
 | タスク種別 | 機能追加 / ガバナンス hardening    |
 | 優先度     | P0 (Critical Path)                 |
-| ステータス | spec_created                       |
+| ステータス | completed                          |
 | 上流ゲート | TASK-RT-06, TASK-P0-03, TASK-P0-04 |
 | 依存タスク | TASK-RT-06, TASK-P0-03, TASK-P0-04 |
 | 後続タスク | なし                               |

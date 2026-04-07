@@ -10,7 +10,7 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | Phase 6: テスト拡充                 |
 | 次Phase    | Phase 8: リファクタリング           |
-| ステータス | pending                             |
+| ステータス | completed                           |
 | 作成日     | 2026-04-06                          |
 
 ## 目的
@@ -18,6 +18,8 @@
 全タスクの状態整合性を横断的に確認し、修正漏れがないことを保証する。
 
 ## 実行タスク
+
+- 詳細は以下の Task 1〜3 に従って実行する。
 
 ### Task 1: 全タスク横断カバレッジマトリクス
 
@@ -66,6 +68,12 @@ done
 | 乖離インベントリ | `outputs/phase-1/status-drift-inventory.md` | 元の調査結果 |
 | 実装記録         | `outputs/phase-5/implementation-record.md`  | 修正内容     |
 | テスト拡充記録   | `outputs/phase-6/test-expansion.md`         | 検証結果     |
+
+## 統合テスト連携
+
+- `artifacts.json` / `outputs/artifacts.json` / `index.md` の status 整合を維持する。
+- Phase 11 の `manual-test-result.md` へ確認結果を引き継ぐ。
+- Phase 12 の `implementation-guide.md` と `documentation-changelog.md` に更新理由と差分を反映する。
 
 ## 成果物
 
