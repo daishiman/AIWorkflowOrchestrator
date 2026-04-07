@@ -63,12 +63,13 @@ pnpm --filter @repo/desktop dev
 
 ### Step 5: 「次へ」ボタンの活性化確認
 
-| 確認項目           | 手順                             | 期待結果                                         |
-| ------------------ | -------------------------------- | ------------------------------------------------ |
-| 初期状態（無効）   | Step 0 を表示する                | 「次へ」ボタンがグレーアウトしてクリックできない |
-| 9文字入力（無効）  | 目的に9文字入力する              | 「次へ」ボタンが無効のまま                       |
-| 10文字入力（有効） | 目的に10文字入力する             | 「次へ」ボタンが青色になり、クリック可能になる   |
-| Step 遷移          | 有効状態で「次へ」をクリックする | Step 1（ConversationRoundStep）へ遷移する        |
+| 確認項目           | 手順                                         | 期待結果                                         |
+| ------------------ | -------------------------------------------- | ------------------------------------------------ |
+| 初期状態（無効）   | Step 0 を表示する                            | 「次へ」ボタンがグレーアウトしてクリックできない |
+| 9文字入力（無効）  | 目的に9文字入力する                          | 「次へ」ボタンが無効のまま                       |
+| 10文字入力（無効） | 目的に10文字入力する（カテゴリ未選択のまま） | 「次へ」ボタンが無効のまま                       |
+| 10文字入力（有効） | 目的に10文字入力し、カテゴリを1つ選択する    | 「次へ」ボタンが青色になり、クリック可能になる   |
+| Step 遷移          | 有効状態で「次へ」をクリックする             | Step 1（ConversationRoundStep）へ遷移する        |
 
 ### Step 6: external-integration 選択時の動作確認
 
@@ -85,6 +86,21 @@ pnpm --filter @repo/desktop dev
 | カテゴリタグの Enter/Space | カテゴリタグにフォーカスし Enter または Space を押す | タグが選択され、同じタグを押し直しても解除されない                    |
 | 「次へ」の Enter           | 「次へ」ボタンにフォーカスし Enter を押す（有効時）  | onNext が呼ばれ Step 1 へ遷移する                                     |
 
+### Step 8: スクリーンショット証跡の保存
+
+`apps/desktop/scripts/capture-skill-create-wizard-screenshots.mjs` で取得した画像を `outputs/phase-11/screenshots/` に保存する。
+
+| ファイル                                                           | 内容                           |
+| ------------------------------------------------------------------ | ------------------------------ |
+| `outputs/phase-11/screenshots/TC-01-step0-initial-dark.png`        | Step 0 初期表示（Dark）        |
+| `outputs/phase-11/screenshots/TC-02-step0-filled-dark.png`         | Step 0 入力後（Dark）          |
+| `outputs/phase-11/screenshots/TC-03-step1-configure-dark.png`      | Step 1 設定（Dark）            |
+| `outputs/phase-11/screenshots/TC-04-step2-generating-dark.png`     | Step 2 生成中（Dark）          |
+| `outputs/phase-11/screenshots/TC-05-step3-complete-dark.png`       | Step 3 完了（Dark）            |
+| `outputs/phase-11/screenshots/TC-06-step2-error-dark.png`          | Step 2 エラー（Dark）          |
+| `outputs/phase-11/screenshots/TC-07-step0-initial-light.png`       | Step 0 初期表示（Light）       |
+| `outputs/phase-11/screenshots/TC-08-step0-initial-mobile-dark.png` | Step 0 初期表示（Mobile Dark） |
+
 ## 成果物
 
 - 手動テスト実施記録（各項目の合否）
@@ -98,3 +114,4 @@ pnpm --filter @repo/desktop dev
 - [ ] 「次へ」ボタンの活性化が正確に動作する
 - [ ] `external-integration` 選択時に Step 1 の Q5 が必須になる
 - [ ] キーボードのみで全操作が完了できる
+- [ ] `outputs/phase-11/screenshots/` にスクリーンショット証跡が保存されている

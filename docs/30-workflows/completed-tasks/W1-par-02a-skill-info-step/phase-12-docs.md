@@ -55,7 +55,7 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
  * - スキル名（任意）、目的・背景（必須・10文字以上）、カテゴリタグ（必須・5種の単一選択）を入力する。
  * - カテゴリは `SkillCategory` の 5 値のいずれかを常に保持し、`null` に戻らない。
  * - カテゴリに `external-integration` を選択した場合、Step 1 の Q5 が必須になる。
- * - 「次へ」ボタンは目的が 10 文字以上入力されたときに活性化する。
+ * - 「次へ」ボタンは目的が 10 文字以上入力され、カテゴリが選択済みのときに活性化する。
  *
  * @example
  * <SkillInfoStep
@@ -95,7 +95,10 @@ import type {
 
 ### Step 3: ウィザードコンポーネント一覧の更新方針を記録する
 
-`wizard/index.ts` のエクスポート再構成は W2-seq-03b が担当するため、この Phase 12 では実ファイルを変更しない。ここでは `DescribeStep` を置き換える新コンポーネントが導入される方針だけを記録する。
+`wizard/index.ts` の exports を current facts に合わせて同期する。
+
+- `SkillInfoStep` を export する
+- `DescribeStep` は export しない（`DescribeStep.tsx` / `DescribeStep.test.tsx` は削除済み）
 
 ### Step 4: 変更履歴の記録
 
@@ -104,10 +107,11 @@ import type {
 **変更サマリー（2026-04-07）**:
 
 - 追加: `SkillInfoStep.tsx` — スキルウィザード Step 0 コンポーネント
-- 削除: `DescribeStep.tsx`（`GenerationMode` ラジオボタン含む）
-- 削除: `GenerationMode` 型のエクスポート
+- 削除: `DescribeStep.tsx` / `DescribeStep.test.tsx`
+- 変更: `GenerationMode` の standalone 定義を撤去し、`GenerateStep.tsx` の export を正本化
 - 参照: `packages/shared/src/types/skillCreator.ts` の `SkillInfoFormData` / `SkillCategory`
 - コメント: `SkillInfoStepProps` の各フィールドに説明を追加
+- 証跡: `outputs/phase-11/screenshots/` に Step 0 のスクリーンショットを保存
 
 ### Step 5: システム仕様更新サマリーの作成
 
@@ -125,8 +129,9 @@ import type {
 
 以下の仕様書が最新状態であることを確認する:
 
-- `docs/30-workflows/skill-wizard-redesign-lane/W1-par-02a-skill-info-step/index.md`
+- `docs/30-workflows/W1-par-02a-skill-info-step/index.md`
 - ウィザード全体設計書（存在する場合）
+- `outputs/phase-11/screenshots/` を参照する `implementation-guide.md`
 
 ## 成果物
 
@@ -153,7 +158,8 @@ import type {
 - [ ] `SkillInfoStepProps` の各フィールドにコメントが付与されている
 - [ ] `SkillInfoFormData` / `SkillCategory` は shared 正本に定義されている
 - [ ] `wizard/index.ts` の更新方針が W2 へ引き継がれている
-- [ ] `DescribeStep` / `GenerationMode` のエクスポートが削除されている
+- [ ] `DescribeStep` のエクスポートが削除されている
+- [ ] `outputs/phase-11/screenshots/` の参照が `implementation-guide.md` に含まれている
 - [ ] 変更履歴が記録されている
 - [ ] Phase 12 仕様準拠チェックが PASS である
 - [ ] `phase12-task-spec-compliance-check.md` が作成されている

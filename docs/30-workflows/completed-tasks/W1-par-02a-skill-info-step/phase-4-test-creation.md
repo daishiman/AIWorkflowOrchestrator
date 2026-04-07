@@ -41,8 +41,7 @@ apps/desktop/src/renderer/components/skill/wizard/__tests__/SkillInfoStep.test.t
 ### Step 2: テストコード作成
 
 ```typescript
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, it, expect, vi } from "vitest";
 import { SkillInfoStep } from "../SkillInfoStep";
 import type { SkillInfoFormData } from "@repo/shared/types/skillCreator";
@@ -50,7 +49,7 @@ import type { SkillInfoFormData } from "@repo/shared/types/skillCreator";
 const defaultFormData: SkillInfoFormData = {
   skillName: "",
   purpose: "",
-  category: "automation",
+  category: null,
 };
 
 describe("SkillInfoStep", () => {
@@ -127,10 +126,25 @@ describe("SkillInfoStep", () => {
       expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
     });
 
-    it("目的が10文字以上のとき「次へ」ボタンは有効", () => {
+    it("目的が10文字でもカテゴリ未選択なら「次へ」ボタンは無効", () => {
       render(
         <SkillInfoStep
           formData={{ ...defaultFormData, purpose: "1234567890" }}
+          onFormDataChange={vi.fn()}
+          onNext={vi.fn()}
+        />
+      );
+      expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
+    });
+
+    it("目的が10文字以上のとき「次へ」ボタンは有効", () => {
+      render(
+        <SkillInfoStep
+          formData={{
+            ...defaultFormData,
+            purpose: "1234567890",
+            category: "automation",
+          }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
         />
@@ -140,8 +154,7 @@ describe("SkillInfoStep", () => {
   });
 
   describe("バリデーション", () => {
-    it("目的フィールドからフォーカスが外れたとき、10文字未満ならエラーが表示される", async () => {
-      const user = userEvent.setup();
+    it("目的フィールドからフォーカスが外れたとき、10文字未満ならエラーが表示される", () => {
       render(
         <SkillInfoStep
           formData={defaultFormData}
@@ -150,15 +163,18 @@ describe("SkillInfoStep", () => {
         />
       );
       const textarea = screen.getByLabelText(/目的・背景/);
-      await user.click(textarea);
-      await user.tab();
+      fireEvent.blur(textarea);
       expect(screen.getByText(/10文字以上/)).toBeInTheDocument();
     });
 
-    it("目的が10文字以上のときエラーは表示されない", async () => {
+    it("目的が10文字以上のときエラーは表示されない", () => {
       render(
         <SkillInfoStep
-          formData={{ ...defaultFormData, purpose: "1234567890" }}
+          formData={{
+            ...defaultFormData,
+            purpose: "1234567890",
+            category: "automation",
+          }}
           onFormDataChange={vi.fn()}
           onNext={vi.fn()}
         />
@@ -168,8 +184,7 @@ describe("SkillInfoStep", () => {
   });
 
   describe("カテゴリタグ選択", () => {
-    it("カテゴリタグを別のカテゴリに切り替えると onFormDataChange が呼ばれる", async () => {
-      const user = userEvent.setup();
+    it("カテゴリタグを別のカテゴリに切り替えると onFormDataChange が呼ばれる", () => {
       const onFormDataChange = vi.fn();
       render(
         <SkillInfoStep
@@ -178,14 +193,13 @@ describe("SkillInfoStep", () => {
           onNext={vi.fn()}
         />
       );
-      await user.click(screen.getByRole("button", { name: "外部連携" }));
+      fireEvent.click(screen.getByRole("button", { name: "外部連携" }));
       expect(onFormDataChange).toHaveBeenCalledWith(
         expect.objectContaining({ category: "external-integration" })
       );
     });
 
-    it("選択中のカテゴリを再クリックしても onFormDataChange は呼ばれない", async () => {
-      const user = userEvent.setup();
+    it("選択中のカテゴリを再クリックしても onFormDataChange は呼ばれない", () => {
       const onFormDataChange = vi.fn();
       render(
         <SkillInfoStep
@@ -194,7 +208,7 @@ describe("SkillInfoStep", () => {
           onNext={vi.fn()}
         />
       );
-      await user.click(screen.getByRole("button", { name: "自動化" }));
+      fireEvent.click(screen.getByRole("button", { name: "自動化" }));
       expect(onFormDataChange).not.toHaveBeenCalled();
     });
 
@@ -214,17 +228,20 @@ describe("SkillInfoStep", () => {
   });
 
   describe("onNext コールバック", () => {
-    it("「次へ」ボタンクリック時に onNext が呼ばれる", async () => {
-      const user = userEvent.setup();
+    it("「次へ」ボタンクリック時に onNext が呼ばれる", () => {
       const onNext = vi.fn();
       render(
         <SkillInfoStep
-          formData={{ ...defaultFormData, purpose: "10文字以上の目的入力テスト" }}
+          formData={{
+            ...defaultFormData,
+            purpose: "10文字以上の目的入力テスト",
+            category: "automation",
+          }}
           onFormDataChange={vi.fn()}
           onNext={onNext}
         />
       );
-      await user.click(screen.getByRole("button", { name: "次へ" }));
+      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
       expect(onNext).toHaveBeenCalledTimes(1);
     });
   });

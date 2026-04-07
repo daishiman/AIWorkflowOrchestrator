@@ -9,7 +9,7 @@
 
 ## 目的
 
-スキルウィザードの Step 0 として機能する `SkillInfoStep` コンポーネントの要件を明確化し、実装に必要な仕様を確定する。既存の `DescribeStep.tsx` が担っていた役割を整理し、新しい設計方針に沿った要件を定義する。
+スキルウィザードの Step 0 として機能する `SkillInfoStep` コンポーネントの要件を明確化し、実装に必要な仕様を確定する。既存の `DescribeStep.tsx` が担っていた役割を整理し、新しい設計方針に沿った要件を定義する。Step 0 は「目的 10 文字以上」かつ「カテゴリ選択済み」で初めて次へ進める。
 
 ## 実行タスク
 
@@ -27,7 +27,7 @@
 | 既存 DescribeStep          | `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx` | 削除対象の現行実装   |
 | 共有型定義                 | `packages/shared/src/types/skillCreator.ts`                          | 型定義参照           |
 | ウィザード親コンポーネント | `apps/desktop/src/renderer/components/skill/wizard/`                 | ウィザード全体構成   |
-| W0-seq-01仕様書            | `docs/30-workflows/skill-wizard-redesign-lane/W0-seq-01-*/`          | 依存タスクの完了仕様 |
+| W0-seq-01仕様書            | `docs/30-workflows/completed-tasks/W0-seq-01-types-skill-info-form/` | 依存タスクの完了仕様 |
 
 ## 実行手順
 
@@ -56,11 +56,11 @@ W0-seq-01 で `packages/shared/src/types/skillCreator.ts` に追加された `Sk
 
 ### Step 4: バリデーションルール確定
 
-| フィールド  | ルール              | エラーメッセージ                             |
-| ----------- | ------------------- | -------------------------------------------- |
-| `purpose`   | 必須・最低10文字    | 「目的・背景は10文字以上で入力してください」 |
-| `category`  | 必須・SkillCategory | —                                            |
-| `skillName` | 任意                | —                                            |
+| フィールド  | ルール                                      | エラーメッセージ                             |
+| ----------- | ------------------------------------------- | -------------------------------------------- |
+| `purpose`   | 必須・最低10文字                            | 「目的・背景は10文字以上で入力してください」 |
+| `category`  | 必須・SkillCategory（初期状態は `null` 可） | —                                            |
+| `skillName` | 任意                                        | —                                            |
 
 ### Step 5: カテゴリ表示仕様確定
 
@@ -76,6 +76,7 @@ W0-seq-01 で `packages/shared/src/types/skillCreator.ts` に追加された `Sk
 
 - `category === "external-integration"` の場合、Step 1 の Q5 が必須となる
 - `SkillInfoFormData` を `ConversationRoundStep` に Props として渡すことで伝達する
+- Step 0 の「次へ」ボタンは `purpose.trim().length >= 10` かつ `category !== null` でのみ活性化する
 
 ## 成果物
 

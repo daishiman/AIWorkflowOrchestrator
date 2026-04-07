@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-07T05:37:00.975Z",
-  "totalKeywords": 2818,
+  "generated": "2026-04-07T14:55:11.166Z",
+  "totalKeywords": 2821,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -1050,6 +1050,7 @@
       "security-skill-execution-permission.md",
       "security-skill-ipc-core.md",
       "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md",
       "technology-devops-core.md",
       "technology-devops-details.md",
       "testing-component-patterns-advanced.md",
@@ -1227,6 +1228,7 @@
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-skill-lifecycle-ui.md",
+      "task-workflow-completed.md",
       "technology-devops-details.md",
       "technology-devops.md",
       "testing-component-patterns-advanced.md",
@@ -1982,6 +1984,7 @@
       "task-workflow-completed-skill-lifecycle-security.md",
       "task-workflow-completed-skill-lifecycle-ui-verify.md",
       "task-workflow-completed-ut-06-safety-gate.md",
+      "task-workflow-completed.md",
       "technology-devops.md"
     ],
     "スキルファイルツリー取得": [
@@ -2410,7 +2413,8 @@
     "Workflow": [
       "api-ipc-system-core.md",
       "arch-state-management-skill-creator.md",
-      "master-design.md"
+      "master-design.md",
+      "task-workflow-phases.md"
     ],
     "Interaction": [
       "api-ipc-system-core.md"
@@ -3734,7 +3738,8 @@
       "logs-archive-2026-02-console-migration-patterns.md",
       "logs-archive-2026-02-permission-history-execution-timestamps.md",
       "quality-e2e-testing.md",
-      "task-workflow-completed-recent-2026-04b.md"
+      "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
     ],
     "SkillExecutionStatus": [
       "arch-state-management-skill-creator.md",
@@ -3756,7 +3761,8 @@
       "logs-archive-2026-02-validator-task-9f-task-9b.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "task-workflow-completed-recent-2026-04b.md",
-      "task-workflow-completed-skill-lifecycle-ui-verify.md"
+      "task-workflow-completed-skill-lifecycle-ui-verify.md",
+      "task-workflow-completed.md"
     ],
     "SYNC": [
       "arch-state-management-skill-creator.md",
@@ -4377,7 +4383,8 @@
     "IMPROVEMENT": [
       "architecture-implementation-patterns-reference-ipc-naming.md",
       "lessons-learned-current-2026-03-late.md",
-      "task-workflow-completed-recent-2026-04b.md"
+      "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
     ],
     "契約ドリフト自動検出パターン": [
       "architecture-implementation-patterns-reference-ipc-naming.md"
@@ -4663,6 +4670,8 @@
       "phase-12-documentation-retrospective.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md",
+      "task-workflow-phases.md",
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
@@ -5091,6 +5100,7 @@
     "CI": [
       "deployment-core.md",
       "deployment-gha.md",
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-workflow-quality-ci-module-resolution.md",
       "logs-archive-2026-01-skill-selector-todo-scan-template.md",
@@ -6831,6 +6841,7 @@
     "REGISTRATION": [
       "lessons-learned-auth-ipc-fallback-registration-settings.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
+      "lessons-learned-ipc-preload-runtime-2026-04.md",
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
       "logs-archive-2026-03-notification-history-sigterm-guard.md",
       "logs-archive-2026-03-skill-views-completed-move.md",
@@ -6985,7 +6996,8 @@
       "logs-archive-2026-02-env-infra-ipc-auth-ui.md",
       "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md",
-      "task-workflow-completed-recent-2026-04b.md"
+      "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
     ],
     "仕様差分の統合是正": [
       "lessons-learned-auth-ipc-phase12-type-gaps-preload-alignment.md"
@@ -7688,6 +7700,12 @@
     "エラー伝搬パス": [
       "lessons-learned-ipc-preload-runtime-2026-04.md"
     ],
+    "COMPLETENESS": [
+      "lessons-learned-ipc-preload-runtime-2026-04.md"
+    ],
+    "ハンドラ重複登録サイレントフェイル": [
+      "lessons-learned-ipc-preload-runtime-2026-04.md"
+    ],
     "ライフサイクル": [
       "lessons-learned-phase12-lifecycle-early-b.md",
       "lessons-learned-phase12-lifecycle-early.md",
@@ -7707,7 +7725,8 @@
       "lessons-learned-phase12-lifecycle-early-b.md"
     ],
     "out": [
-      "lessons-learned-phase12-lifecycle-early-b.md"
+      "lessons-learned-phase12-lifecycle-early-b.md",
+      "task-workflow-phases.md"
     ],
     "ESBUILD": [
       "lessons-learned-phase12-lifecycle-early-b.md"
@@ -7893,6 +7912,7 @@
       "lessons-learned-skill-create-multi-select-kind.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "task-workflow-phases.md",
       "technology-devops-details.md",
       "testing-component-patterns-advanced.md",
       "ui-ux-settings-details.md"
@@ -11748,10 +11768,12 @@
       "task-workflow-completed-chat-lifecycle-tests.md"
     ],
     "TEMPLATE": [
-      "task-workflow-completed-recent-2026-04b.md"
+      "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
     ],
     "テンプレート改善": [
-      "task-workflow-completed-recent-2026-04b.md"
+      "task-workflow-completed-recent-2026-04b.md",
+      "task-workflow-completed.md"
     ],
     "create": [
       "task-workflow-completed-skill-create-ui-integration.md"
@@ -11934,6 +11956,9 @@
       "task-workflow-rules.md"
     ],
     "フェーズ定義": [
+      "task-workflow-phases.md"
+    ],
+    "Close": [
       "task-workflow-phases.md"
     ],
     "ルール・選定基準": [

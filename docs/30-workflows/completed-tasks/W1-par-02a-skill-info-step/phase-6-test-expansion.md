@@ -37,7 +37,11 @@ describe("目的フィールドの境界値", () => {
   it("目的がちょうど10文字のとき「次へ」ボタンは有効", () => {
     render(
       <SkillInfoStep
-        formData={{ ...defaultFormData, purpose: "あいうえおかきくけこ" }}
+        formData={{
+          ...defaultFormData,
+          purpose: "あいうえおかきくけこ",
+          category: "automation",
+        }}
         onFormDataChange={vi.fn()}
         onNext={vi.fn()}
       />
@@ -48,7 +52,11 @@ describe("目的フィールドの境界値", () => {
   it("目的が空白のみ10文字のとき「次へ」ボタンは無効", () => {
     render(
       <SkillInfoStep
-        formData={{ ...defaultFormData, purpose: "          " }}
+        formData={{
+          ...defaultFormData,
+          purpose: "          ",
+          category: "automation",
+        }}
         onFormDataChange={vi.fn()}
         onNext={vi.fn()}
       />
@@ -99,7 +107,6 @@ describe("エッジケース", () => {
   });
 
   it("スキル名変更時に onFormDataChange が呼ばれる", async () => {
-    const user = userEvent.setup();
     const onFormDataChange = vi.fn();
     render(
       <SkillInfoStep
@@ -108,7 +115,9 @@ describe("エッジケース", () => {
         onNext={vi.fn()}
       />
     );
-    await user.type(screen.getByLabelText(/スキル名/), "テスト");
+    fireEvent.change(screen.getByLabelText(/スキル名/), {
+      target: { value: "テスト" },
+    });
     expect(onFormDataChange).toHaveBeenLastCalledWith(
       expect.objectContaining({ skillName: "テスト" })
     );
@@ -149,7 +158,7 @@ describe("アクセシビリティ", () => {
   it("未選択カテゴリタグの aria-pressed が false になる", () => {
     render(
       <SkillInfoStep
-        formData={{ ...defaultFormData, category: "automation" }}
+        formData={defaultFormData}
         onFormDataChange={vi.fn()}
         onNext={vi.fn()}
       />
@@ -165,8 +174,7 @@ describe("アクセシビリティ", () => {
 
 ```typescript
 describe("external-integration カテゴリの伝達", () => {
-  it("external-integration を選択すると formData.category が更新される", async () => {
-    const user = userEvent.setup();
+  it("external-integration を選択すると formData.category が更新される", () => {
     const onFormDataChange = vi.fn();
     render(
       <SkillInfoStep
@@ -175,7 +183,7 @@ describe("external-integration カテゴリの伝達", () => {
         onNext={vi.fn()}
       />
     );
-    await user.click(screen.getByRole("button", { name: "外部連携" }));
+    fireEvent.click(screen.getByRole("button", { name: "外部連携" }));
     expect(onFormDataChange).toHaveBeenCalledWith(
       expect.objectContaining({ category: "external-integration" })
     );

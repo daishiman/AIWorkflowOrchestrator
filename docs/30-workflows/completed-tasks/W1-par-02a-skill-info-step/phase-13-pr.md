@@ -74,7 +74,7 @@ gh pr create \
   --body "$(cat <<'EOF'
 ## 概要
 
-スキルウィザードの Step 0 を `DescribeStep` から `SkillInfoStep` へ刷新する。
+スキルウィザードの Step 0 を `DescribeStep` から `SkillInfoStep` へ刷新し、目的・カテゴリ条件とスクリーンショット証跡を整備する。
 
 ## 変更内容
 

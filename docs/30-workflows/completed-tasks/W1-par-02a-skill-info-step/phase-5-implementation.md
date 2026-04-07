@@ -16,7 +16,7 @@
 - [ ] `SkillInfoFormData` / `SkillCategory` を shared 正本から参照する
 - [ ] `SkillInfoStep.tsx` を新規作成する
 - [ ] `DescribeStep.tsx` を削除する
-- [ ] `GenerationMode` 型の参照箇所を修正する
+- [ ] `DescribeStep` 由来の `GenerationMode` 定義を `GenerateStep.tsx` に集約する
 - [ ] `DescribeStep` の import 箇所を `SkillInfoStep` に置き換える
 - [ ] テストを実行して GREEN を確認する
 
@@ -73,7 +73,8 @@ export function SkillInfoStep({
 }: SkillInfoStepProps) {
   const [purposeTouched, setPurposeTouched] = useState(false);
 
-  const isNextEnabled = formData.purpose.trim().length >= 10;
+  const isNextEnabled =
+    formData.purpose.trim().length >= 10 && formData.category !== null;
   const showPurposeError =
     purposeTouched && formData.purpose.trim().length < 10;
 
@@ -194,7 +195,7 @@ rm apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx
 
 ### Step 4: 参照箇所の修正
 
-`DescribeStep` と `GenerationMode` の参照箇所を全て `SkillInfoStep` / `SkillInfoFormData` に置き換える。
+`DescribeStep` と旧 `GenerationMode` 定義の参照箇所を整理し、Step 0 は `SkillInfoStep` / `SkillInfoFormData` に置き換える。
 
 ```bash
 # 影響箇所の確認
@@ -220,7 +221,7 @@ pnpm --filter @repo/desktop vitest run src/renderer/components/skill/wizard/__te
 
 ### 修正
 
-- `DescribeStep` / `GenerationMode` を参照していた全ファイル（import 置き換え）
+- `DescribeStep` / 旧 `GenerationMode` 定義を参照していた全ファイル（import 置き換え）
 
 ### 削除
 
