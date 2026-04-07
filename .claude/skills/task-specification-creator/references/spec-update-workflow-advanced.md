@@ -270,5 +270,77 @@ node .claude/skills/aiworkflow-requirements/scripts/generate-index.js
 
 | Date | Changes |
 | ---- | ------- |
+| 2026-04-07 | よくある誤判断テーブル・入口ファイル誤判断パターンを spec-update-workflow.md から移動 |
 | 2026-03-18 | 925行のmonolithから詳細手順を分離。親ファイルはインデックス+判断基準に縮小 |
 | 2026-03-12 | Step 1 / Step 2 / validation の 3 ファイルへ責務分離 |
+
+---
+
+## よくある誤判断
+
+| 誤判断 | 正しい扱い |
+| --- | --- |
+| 「実装ガイドを書いたので Step 1 は完了」 | 実装ガイドは Task 12-1。Step 1 は別物 |
+| 「`.agents` を更新したから spec sync も終わった」 | 正本は `.claude`。mirror は代替不可 |
+| 「spec_created task なので Step 1-B は不要」 | `spec_created` の記録も Step 1 で残す |
+| 「warning だけなら Phase 12 を閉じてよい」 | pass 基準は validator ごとに明文化する |
+| 「設計タスクなので Step 2 は計画だけ書けばよい」 | `spec_created` でも system spec / lessons / backlog / LOGS の実更新が必要 |
+| 「実装先行タスクなので Before/After が同じなら書かなくてよい」 | current contract と target delta を分けて残し、同一ならその理由を明記する |
+| 「state-only 修正でも screenshot を必ず要求する」 | 視覚差分がないなら `NON_VISUAL` と自動テストを優先し、スクリーンショットを捏造しない |
+| 「IPC callback の回帰は手動でしか確認できない」 | `setupCallbackCapture()` 相当で callback を確定的に replay し、`render` + `act` で検証する |
+| 「`spec_created` task に後から code 実装が入っても Step 2 は N/A のままでよい」 | shared / IPC / preload / renderer の current fact が変わった時点で Step 2 を再判定し、Phase 11 screenshot 方針も見直す |
+| 「設計タスクの workflow root も `completed` にしてよい」 | workflow root は `implementation_ready`、completed records は `spec_created`。実装 gap は follow-up task として formalize する |
+| 「generic なファイル名へ書いておけば十分」 | 実際の責務分割に沿った primary target file list を先に確定する |
+| 「shared component を作ったので consumer surface 仕様も completed にしてよい」 | shared component の contract だけを更新し、ChatView / Workspace など mount 先の completed は consumer task 完了まで保留する |
+| 「既存型を再利用しているので更新不要」 | **Step 1-B必須**。実装状況テーブルの更新は必須 |
+| 「実装未着手の仕様書タスクも completed にすべき」 | **`spec_created` を適用**。仕様書作成のみ完了したタスクは `spec_created` を使用する |
+| 「内部実装のみなので更新不要」 | **Step 1-A必須**。タスク完了記録は常に必須 |
+| 「Renderer側で定義済みなので更新不要」 | **Step 2必要**。Main Process側のインターフェース追加は仕様追加に該当 |
+| 「型は別タスクで追加済みなので更新不要」 | **Step 2必要**。新規クラス/コンポーネントは独自の仕様セクションが必要 |
+| 「関連タスクテーブルは確認不要」 | **Step 1-C必須**。Grepで全箇所を確認が必要 |
+| 「未タスク指示書のunassigned-task/配置は見送り」 | **作成が必要**。ガイドラインの「条件」要件を確認し、検出件数が1件以上の場合は原則作成する |
+| 「実行タスクは表だけ記載すれば十分」 | **表+箇条書きの両方必須**。`phase-12-documentation.md` は実行タスクの表と `- Task 12-X:` 箇条書きを両方残すこと |
+| 「未完了の未タスクを completed-tasks/unassigned-task に置いてよい」 | **配置先判定を必須記録**。未完了は `docs/30-workflows/unassigned-task/`、完了移管済みのみ `docs/30-workflows/completed-tasks/unassigned-task/` |
+| 「workflow 個別配下の `unassigned-task/` を作ってよい」 | **global canonical path を使う**。未タスク指示書は `docs/30-workflows/unassigned-task/` を正本とする |
+| 「task-workflow.md の未タスクリンクは後で直す」 | **Step 1-Eで即時整合**。`verify-unassigned-links.js` で機械検証する |
+| 「task-specification-creator/LOGS.mdは後で更新」 | **Step 1-A必須**。両方のLOGS.md を同時に更新すること |
+| 「worktree環境なのでStep 1-Aはマージ後でよい」 | **Step 1-A必須**。worktreeでも仕様書更新は実施可能 |
+| 「`outputs/phase-12` が揃っていれば `phase-12-documentation.md` は未更新でもよい」 | **更新必須**。Task 1〜5 の結果を `phase-12-documentation.md` へ同期する |
+| 「Phase 12 成果物を task root 直下へ置いてもよい」 | **`outputs/phase-12/` へ配置必須** |
+| 「`artifacts.json` か `outputs/artifacts.json` の片方だけ更新すればよい」 | **両方同期必須** |
+| 「`index.md` が completed なら `phase-*.md` と `artifacts*` は見なくてよい」 | **4点同期必須**。`index.md` / `phase-*.md` / `artifacts.json` / `outputs/artifacts.json` がずれると false positive |
+| 「`artifacts.json` が completed なら `index.md` は見なくてよい」 | **`generate-index.js --workflow ... --regenerate` で再生成必須** |
+| 「`artifacts.json` / `index.md` が completed なら `phase-1..11` 本文は pending のままでよい」 | **本文仕様書も同期必須** |
+| 「`.agents/skills/...` を更新したので system spec 更新は完了」 | **`.claude/skills/...` が正本。mirror は代替不可** |
+| 「mirror sync 完了は summary 記述だけでよい」 | **`diff -qr <canonical> <mirror>` の実行結果が必須** |
+| 「foundation / internal-contract task は system spec 本文が既に current なら Phase 12 で触らなくてよい」 | **Step 1 と no-op 根拠記録は必須** |
+| 「test runner blocker を見つけたら毎回新規未タスクを作る」 | **既存未タスクとの重複確認を先行** |
+| 「user が正本 root を明示していても既定の root ルールを優先してよい」 | **user 指定rootを canonical root として扱う** |
+| 「`origin/main...HEAD` が 0 件なら current worktree も未実装だ」 | **`origin/main...HEAD` と `git diff HEAD` を分離記録** |
+| 「Phase 9の成果物名は `phase-9-quality.md` でも問題ない」 | **`phase-9-quality-assurance.md` に統一** |
+| 「`documentation-changelog.md` だけあれば Phase 12 は完了扱いにできる」 | **必須5成果物を揃える** |
+| 「Phase 12 成果物に `計画済み` / `更新予定` / `PRマージ後` が残っていても completed にできる」 | **planned wording が1件でも残れば未完了** |
+| 「`manual-test-result.md` が `not_run` でも Phase 11/12 は completed にできる」 | **manual evidence 更新が必須** |
+| 「Phase 13 ファイルを作ったので status は completed にしてよい」 | **user 承認がない限り `blocked` のまま** |
+| 「`ipc-documentation.md` は概要説明だけでよい」 | **実装契約一致が必須** |
+| 「internal adapter を追加したので public IPC / preload も更新済みと書いてよい」 | **到達面の確認が必須** |
+| 「`audit-unassigned-tasks` のFAILは今回差分の失敗」 | **baseline/currentを分離** |
+| 「仕様書参照パスは後で直す」 | **Step 1-B前に実在確認**。`test -f <path>` で事前に実在確認する |
+| 「workflow ディレクトリがあるので `../task-xxx.md` はなくてもよい」 | **ブリッジ仕様または参照修正が必須** |
+| 「task-00 参照切れは後続タスクで直す」 | **Phase 12内で即時修正** |
+| 「current workflow だけ直せば親タスク/統合indexは後回しでよい」 | **親導線も同一ターンで正規化** |
+| 「implementation anchor の markdown 追記だけなので source path 実在確認は不要」 | **target path 実在確認が必須** |
+| 「duplicate source / ID collision を見つけたら毎回新規未タスクを作る」 | **current diff 起因か baseline かを先に分離** |
+| 「standalone task へ移設したので current workflow だけ差し替えれば十分」 | **downstream consumer まで同一 wave で更新** |
+| 「ディレクトリを移設したので workflow 本文はそのままでよい」 | **workflow 本文の canonical path と検証レポートも再生成する** |
+| 「current workflow に code diff がないので Phase 11 screenshot は不要」 | **統合UI再確認なら Phase 11 実施** |
+| 「docs-heavy screenshot 再監査は current build 再撮影しか認めない」 | **representative review board も許可** |
+| 「visual TC と dismiss/keyboard 確認に同じ `TC-ID` を使ってよい」 | **`TC-*` と `NV-*`/automated を分離** |
+| 「related unassigned row を completed 実績へ移した後も `verify-unassigned-links` の total は据え置きでよい」 | **exact count 再取得が必須** |
+| 「IPC拡張済みでも旧チャンネル数のままでよい」 | **Step 2で仕様更新必須** |
+| 「topic-map.mdは変更なし」 | **再生成が必要**。仕様書にセクション追加・削除・更新・行数変更があった場合、`generate-index.js`で行番号を再同期すること |
+| 「arch-state-management.mdの関連タスクは確認済み」 | **Grep必須**。仕様書のSliceセクション内「関連タスク」テーブルは見落としやすい |
+| 「Slice統合は内部リファクタリングなので更新不要」 | **Step 2必要**。Slice統合（例: skillSlice→agentSlice）はarch-state-management.mdの更新が必須 |
+| 「スキル改善なし」と判断 | **フィードバック必須**。Phase 12で必ずスキル改善検討を実施し、改善点がなくても「改善点なし」としてskill-feedback-report.mdを作成すること |
+| 「aiworkflow/task-spec だけ直せば十分」 | **`skill-creator` も条件付きで更新** |
+| 「テストリファクタリングなので仕様更新不要」 | **Step 2必要な場合あり**。テスト戦略変更はStep 2対象 |
