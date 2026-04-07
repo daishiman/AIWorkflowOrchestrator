@@ -49,7 +49,7 @@ import type {
   SkillCreatorSessionListItem,
   SkillCreatorSessionResumeResult,
 } from "@repo/shared/types";
-import type { ImproveFeedbackHistory } from "@repo/shared/types";
+import type { ImproveFeedbackHistory, HealthPolicy } from "@repo/shared/types";
 import {
   SKILL_CREATOR_ENGINE_VERSION,
   SESSION_TTL_MS,
@@ -125,6 +125,8 @@ export interface RuntimeSkillCreatorFacadeDeps {
   ownerInstanceId?: string;
   /** OS ネイティブ通知サービス（TASK-NOTIFICATION-SERVICE-001） */
   notificationService?: INotificationService;
+  /** 起動時に注入する HealthPolicy（UT-HEALTH-POLICY-RUNTIME-INJECTION-001） */
+  healthPolicy?: HealthPolicy;
 }
 
 // ── Module-local helpers for executeAsync() exhaustive switch (UT-RT-02) ──
@@ -250,6 +252,7 @@ export class RuntimeSkillCreatorFacade {
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
       deps.subscriptionAuthProvider,
+      deps.healthPolicy,
     );
     this.handoffBuilder = new TerminalHandoffBuilder();
   }

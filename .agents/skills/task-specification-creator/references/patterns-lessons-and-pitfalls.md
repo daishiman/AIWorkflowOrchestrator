@@ -284,3 +284,21 @@
 - **対策**: multi-arg event は `safeOn<T, R extends unknown[]>()` のように tuple で受け渡しの形を固定する
 - **影響**: errorMessage のような補助情報が silent drop されるのを防げる
 - **発見日**: 2026-04-06
+
+### Pitfall: エラーコールバックを `if (!snapshot)` 等の条件でガードするとエラーが隠れる
+
+- **状況**: fire-and-forget ラッパー内でエラーコールバックを呼ぶ際、「snapshot がない場合のみ通知する」という条件でガードすると、snapshot が取得できた場合でもエラーが Renderer に届かない
+- **問題**: `onWorkflowStateSnapshot` のような callback を `if (!snapshot) { callback(null, error) }` パターンで呼ぶと、snapshot がある通常ケースでエラーが無通知のまま silent failure になる
+- **対策**: `callback(snapshot ?? null, error)` パターンで常にエラーを渡す。条件分岐でエラー通知をガードしない
+- **コード例**:
+  ```typescript
+  // NG: snapshot がある場合エラーが隠れる
+  if (!snapshot) {
+    onWorkflowStateSnapshot(null, error.message);
+  }
+
+  // OK: snapshot の有無にかかわらずエラーを伝搬する
+  onWorkflowStateSnapshot(snapshot ?? null, error.message);
+  ```
+- **影響**: Renderer 側でエラー理由が表示されない silent failure を防げる
+- **発見日**: 2026-04-07（TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001）

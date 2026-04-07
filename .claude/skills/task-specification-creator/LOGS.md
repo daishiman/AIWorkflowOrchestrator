@@ -91,6 +91,16 @@ UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継�
 
 ---
 
+## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
+
+### 変更内容
+- `ui-result-panel-pattern.md` に state owner 分離判断基準テーブルを追加
+- `task-specification-creator/SKILL.md` Trigger に `result-panel` / `SkillLifecyclePanel` / `SkillCreationResultPanel` / `orchestration wrapper` 等を追加
+- `v10.09.28` で記録済みだった skill-feedback の current facts ずれを是正
+- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新
+
+---
+
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
@@ -120,6 +130,9 @@ UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継�
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
 
 ---
+## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
+---
+
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
 
 ### 変更内容
