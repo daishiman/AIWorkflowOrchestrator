@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-06T12:32:30.923Z",
-  "totalKeywords": 2789,
+  "generated": "2026-04-07T03:46:39.938Z",
+  "totalKeywords": 2791,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7153,6 +7153,9 @@
     "の動的解決": [
       "lessons-learned-current.md"
     ],
+    "仕様書ステータス乖離修正": [
+      "lessons-learned-current.md"
+    ],
     "Policy": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "security-electron-ipc-core.md"
@@ -7433,6 +7436,9 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "層型同期": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "executeAsync": [
       "lessons-learned-ipc-preload-runtime.md",

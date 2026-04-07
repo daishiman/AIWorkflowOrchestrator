@@ -53,13 +53,13 @@
 
 ### P0 是正タスク
 
-| タスクID   | ディレクトリ                                                      | パターン | 責務                                     |
-| ---------- | ----------------------------------------------------------------- | -------- | ---------------------------------------- |
-| TASK-P0-02 | `step-10-seq-task-p0-02-verify-improve-reverify-closed-loop`      | seq      | verify→improve→re-verify 閉ループ修復    |
-| TASK-P0-04 | `step-10-seq-task-p0-04-manifest-loader-default-activation`       | seq      | ManifestLoader のデフォルト有効化        |
-| TASK-P0-07 | `step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution` | seq      | ハードコードエージェント名の動的解決     |
-| TASK-P0-08 | `step-10-seq-task-p0-08-session-resume-renderer-integration`      | seq      | セッション復元のレンダラー統合           |
-| TASK-P0-09 | `step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance`   | seq      | Claude SDK permission hooks / governance |
+| タスクID   | ディレクトリ                                                                         | パターン | 責務                                                  |
+| ---------- | ------------------------------------------------------------------------------------ | -------- | ----------------------------------------------------- |
+| TASK-P0-02 | `../completed-tasks/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop`      | seq      | verify→improve→re-verify 閉ループ修復 ✅ completed    |
+| TASK-P0-04 | `../completed-tasks/step-10-seq-task-p0-04-manifest-loader-default-activation`       | seq      | ManifestLoader のデフォルト有効化 ✅ completed        |
+| TASK-P0-07 | `../completed-tasks/step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution` | seq      | ハードコードエージェント名の動的解決 ✅ completed     |
+| TASK-P0-08 | `../completed-tasks/step-10-seq-task-p0-08-session-resume-renderer-integration`      | seq      | セッション復元のレンダラー統合 ✅ completed           |
+| TASK-P0-09 | `../completed-tasks/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance`   | seq      | Claude SDK permission hooks / governance ✅ completed |
 
 ### UI 統合タスク
 

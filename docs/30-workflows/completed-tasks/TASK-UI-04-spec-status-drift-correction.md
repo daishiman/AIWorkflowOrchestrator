@@ -10,7 +10,7 @@ category: メンテナンス（品質管理系）
 target_feature: タスク仕様書群の artifacts.json / index.md ステータスフィールド
 priority: P0（最高）
 scale: 中規模
-status: spec_created
+status: phase12_completed
 source: 実装状態監査（P0タスク群の実装完了後レビュー）
 created_date: 2026-04-06
 step: 13（TASK-UI-01/02/03後に直列実行）
