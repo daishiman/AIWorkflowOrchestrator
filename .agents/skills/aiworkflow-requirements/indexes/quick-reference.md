@@ -442,6 +442,8 @@
 | External API 接続設定       | `ExternalApiConnectionConfig`                                                        | skillCreatorExternalApi.ts                                                                                                     |
 | External API タイムアウト   | `ExternalApiTimeoutError`                                                            | skillCreatorExternalApi.ts                                                                                                     |
 | External API HTTP エラー    | `ExternalApiHttpError`                                                               | skillCreatorExternalApi.ts                                                                                                     |
+| canUseTool governance 判定 | `SkillCreatorPermissionPolicy.canUseTool(tool, input, ctx)`（path-scoped判定）       | governance-hooks-factory-audit-sink.md（L213）                                                                                 |
+| 承認リクエスト受信          | `onApprovalRequest(callback)` → `ApprovalRequestPayload`                             | interfaces-agent-sdk-skill-reference.md（L197）, api-ipc-agent-core.md                                                        |
 
 ---
 
@@ -477,7 +479,7 @@
 | ---------------------- | -------------- |
 | `skill:list-available` | スキルスキャン |
 | `skill:list-imported`  | インポート済み |
-| `skill:execute`        | スキル実行     |
+| `skill:execute`        | スキル実行（preload整合済み / TASK-UI-03 Phase 12 close-out） |
 | `skill:permission`     | 権限確認       |
 
 ### スキル公開・配布
@@ -522,6 +524,17 @@
 | `skill-creator:output-ready`                    | Main→Renderer スキル生成完了通知（プレビュー・上書き確認フロー） |
 | `skill-creator:output-overwrite-approved`       | Renderer→Main 上書き確認承認                   |
 | `skill-creator:open-skill`                      | Main→Renderer 生成スキルを開く指示             |
+
+### スキルクリエイター Session Resume（TASK-P0-08）
+
+| チャンネル                                        | 用途                                               |
+| ------------------------------------------------- | -------------------------------------------------- |
+| `skill-creator:list-sessions`                     | Renderer→Main セッション一覧取得                   |
+| `skill-creator:resume-session`                    | Renderer→Main checkpoint resume（preload整合済み） |
+| `skill-creator:delete-session`                    | Renderer→Main checkpoint 削除                      |
+| `skill-creator:cleanup-expired-sessions`          | Renderer→Main TTL切れセッション掃除                |
+
+**詳細**: `api-ipc-system-skill-creator.md` §session resume channels（L75）
 
 ### チャット
 
