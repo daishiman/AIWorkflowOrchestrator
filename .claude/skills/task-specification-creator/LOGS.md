@@ -2,6 +2,31 @@
 
 ## 役割
 
+## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（impl-spec-to-skill-sync）
+
+### 変更内容
+- `aiworkflow-requirements/SKILL.md` frontmatter に Wizard 型キーワード 11 件を追加（v9.02.46 是正）
+- `ui-ux-feature-components-reference.md` の CompleteStep コンポーネント説明を W1-par-02c 再設計後仕様へ更新
+- `.agents/skills/` mirror を canonical と同波で同期
+- `aiworkflow-requirements/LOGS.md` に v9.02.46 ヘッドライン追加
+
+### 背景
+v9.02.45 close-out で `SKILL.md 2ファイル` 同波更新としたが、frontmatter Trigger への Wizard 型キーワード追加が漏れていた。
+impl-spec-to-skill-sync プロンプトの監査フェーズで検出し是正した。
+
+## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/phase-12-docs.md` の出力先を current root に修正
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-12/` に canonical 6 成果物を作成
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/index.md` に `Phase 12 完了 / Phase 13 blocked` の完了記録を追加
+- `docs/30-workflows/skill-wizard-redesign-lane/index.md` に Wave 0 完了記録を追加
+- `task-workflow-completed.md` / `interfaces-agent-sdk-skill-reference.md` / `aiworkflow-requirements/LOGS.md` / `task-specification-creator/LOGS.md` を same-wave 同期
+
+### 背景
+W0 は shared type の canonical path と Phase 12 の outputs path が drift しやすい。  
+Phase 12 close-out では、task-spec 観点でも `artifacts.json` / `outputs/artifacts.json` / index / logs の同波同期を残す必要がある。
+
 ## v10.09.37 — 2026-04-07
 
 ### 変更内容
@@ -14,7 +39,6 @@
 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 の skill-feedback-report.md（Feedback 1〜4）
 
 ---
-
 ## 2026-04-07 - TASK-UI-04 仕様書ステータス乖離修正 Phase 12 close-out sync（skill-feedback 反映）
 
 ## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync

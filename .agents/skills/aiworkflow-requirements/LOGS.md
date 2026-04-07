@@ -7,6 +7,8 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（aiworkflow-requirements SKILL.md frontmatter に Wizard 型キーワード 11 件追加 / `ui-ux-feature-components-reference.md` の CompleteStep 説明を再設計後仕様へ更新 / mirror 同期） |
+| 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Phase 12 close-out sync（`packages/shared/src/types/skillCreator.ts` に shared contracts 7 型を追加 / `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts` を新規作成 / `docs/30-workflows/W0-seq-01-types-skill-info-form/phase-12-docs.md` の出力先を current root に修正 / `task-workflow-completed.md` に W0 完了記録追加 / `interfaces-agent-sdk-skill-reference.md` に Skill Wizard Shared Contracts セクション追加 / `artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同期 / LOGS.md 2ファイル更新） |
 | 2026-04-07 - TASK-UI-03-REMAINING IPC renderer移行完了 Phase 12 close-out sync（`window.skillCreatorAPI` canonical 化 / `ImprovementProposalPanel` 統合実装 / `GovernanceSummaryPanel` IPC 経路移行 / `useStreamingProgress` IPC cleanup / variadic IPC 対応（L-IPC-VARIADIC-001）/ `lessons-learned-ipc-preload-runtime.md` に L-IPC-SKILLCREATOR-CANONICAL-001 追加 / `task-workflow-completed.md` に TASK-UI-03-REMAINING 完了記録追加 / LOGS.md 2ファイル・SKILL.md 更新 / Phase 12 close-out 6成果物 PASS） |
 | 2026-04-07 - TASK-UI-04 仕様書ステータス乖離修正 Phase 12 close-out sync（P0タスク群8件の artifacts.json / index.md status を `completed` に正規化 / skill-creator-agent-sdk-lane/index.md の P0 リンク5件を `../completed-tasks/` に修正 / executor-guide.md に P0 全9タスク完了状態テーブル追加 / task-workflow-completed.md に TASK-UI-04 完了記録追加 / lessons-learned-current.md に L-UI04-001〜003 教訓追加 / task-specification-creator/SKILL.md の「よくある漏れ」テーブルに [Feedback TASK-UI-04] 行追加） |
 | 2026-04-06 - TASK-FIX-IPC-SKILL-NAME-001 Phase 12 close-out sync（`creatorHandlers.ts` ipcMain重複登録除去（後続14→全16ハンドラ正常化）/ `SkillService.toWizardSkillName()` 正規化5ステップ実装 / `docs/00-requirements/18-skills.md` 正規化規則追記 / `docs/00-requirements/08-api-design.md` ハンドラ一意性要件追記 / `api-ipc-system-core.md` に IPC Handler Lifecycle Management セクション追加 / `lessons-learned-current.md` v3.7.0 教訓3件追加 / `task-workflow-completed.md` 完了記録追加 / UT-01〜03を unassigned-task に配置 / LOGS.md 2ファイル同時更新） |
@@ -25,6 +27,19 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 - TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 の知見を lessons-learned-rt-04-authkey-dedup.md に記録
 - 内容: 二重送信防止パターン（isSubmittingRef）、useAuthKeyManagement フック統合パターン、check-failed + apiError 二層設計、応用候補
 - lessons-learned.md インデックスに追加
+
+## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Phase 12 close-out sync
+
+### 変更内容
+- `packages/shared/src/types/skillCreator.ts` に Skill Wizard Shared Contracts 7 型を追加
+- `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts` を新規作成し、型契約を TDD で固定
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/phase-12-docs.md` の出力先を current root に是正
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/artifacts.json` / `outputs/artifacts.json` を `phase13_blocked` で同期
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/index.md` と `docs/30-workflows/skill-wizard-redesign-lane/index.md` に完了記録を追加
+- `interfaces-agent-sdk-skill-reference.md` に canonical shared contract セクションを追加
+
+### 背景
+W0 は後続 Wave 1/2/3 の共通依存であり、`SkillCategory` の既存衝突を避けて subpath export に閉じる必要があるため、completed ledger と system spec を同波で更新した。
 
 | 2026-03-12 - TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 system spec sync                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | 2026-03-12 - TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001 未タスク formalize                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
