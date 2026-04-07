@@ -45,6 +45,14 @@ interface IpcResult<T> {
   error?: string;
 }
 
+type ApprovalRequestPayload = {
+  operationType: string;
+  description: string;
+  destination?: string;
+  sessionId: string;
+  operationId: string;
+};
+
 /**
  * 進捗通知データ型
  */
@@ -362,6 +370,14 @@ export interface SkillCreatorAPI {
    * Shared disclosure channel 経由で AI 利用情報を取得する (AC-4: 説明責務)
    */
   getDisclosureInfo: () => Promise<IpcResult<unknown>>;
+
+  // --- TASK-SDK-07: approval:request surface 追加 ---
+  /**
+   * approval:request channel 経由で承認リクエストを受信する (AC-1: push 購読)
+   */
+  onApprovalRequest: (
+    callback: (payload: ApprovalRequestPayload) => void,
+  ) => () => void;
 }
 
 /**
@@ -673,4 +689,10 @@ export const skillCreatorAPI: SkillCreatorAPI = {
 
   getDisclosureInfo: (): Promise<IpcResult<unknown>> =>
     safeInvoke(IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO),
+
+  // --- TASK-SDK-07: approval:request surface 追加 ---
+  onApprovalRequest: (
+    callback: (payload: ApprovalRequestPayload) => void,
+  ): (() => void) =>
+    safeOn<ApprovalRequestPayload>(IPC_CHANNELS.APPROVAL_REQUEST, callback),
 };

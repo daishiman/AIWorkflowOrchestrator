@@ -2,7 +2,17 @@
 
 ## 役割
 
-<<<<<<< Updated upstream
+## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync
+
+### 変更内容
+- `onApprovalRequest()` Preload API（AC-1 push 購読）/ `SkillLifecyclePanel` 承認リクエスト表示 UI・lifecycle reset 完了
+- テスト 17 件 PASS（skill-creator-api.approval.test.ts 10件 + SkillLifecyclePanel.approval.test.tsx 8件）
+- `ipc-preload-spec-sync-guardian` SKILL.md v1.6.0 更新（approval:request 監査スコープ追加）
+- `task-specification-creator` SKILL.md ピットフォールテーブルに `[Feedback UT-SDK-07-AR-001]` として `pnpm --filter @repo/desktop exec vitest run <pattern>` コマンドパターンを追加
+- SKILL.md v6.18.27 / v10.09.37 更新（2変更履歴テーブルに同時追記）
+
+---
+
 ## 2026-04-06 - TASK-P0-09-U1 Phase 12 完了反映（skill-feedback 反映）
 
 ### 変更内容
@@ -27,8 +37,6 @@
 
 ---
 
-||||||| Stash base
-=======
 ## 2026-04-06 - UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 validator hardening sync
 
 ### 変更内容
@@ -46,7 +54,6 @@
 - `phase12-task-spec-compliance-template.md` の root evidence を `task-workflow-completed.md` / `task-workflow-backlog.md` まで拡張し、Phase 12 の突合対象を明示
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
 
->>>>>>> Stashed changes
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
 
 ## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
