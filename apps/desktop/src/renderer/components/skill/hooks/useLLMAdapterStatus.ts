@@ -9,7 +9,7 @@ function getSkillCreatorApi() {
     skillCreatorAPI?: unknown;
   };
   const bridge =
-    runtimeWindow.electronAPI?.skillCreator ?? runtimeWindow.skillCreatorAPI;
+    runtimeWindow.skillCreatorAPI ?? runtimeWindow.electronAPI?.skillCreator;
 
   return bridge as
     | {

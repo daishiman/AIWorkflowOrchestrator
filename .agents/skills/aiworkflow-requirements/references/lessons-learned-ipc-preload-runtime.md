@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-07 | 1.19.0     | TASK-UI-03-REMAINING 教訓1件を追加（L-IPC-SKILLCREATOR-CANONICAL-001: canonical API と compat shim を分離して管理する）                       |
 | 2026-04-06 | 1.18.0     | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓1件を追加（L-IPC-VARIADIC-001: multi-arg IPC event は preload で variadic 化する） |
 | 2026-04-01 | 1.17.0     | TASK-FIX-AUTH-IPC-001 教訓2件を追加（L-AUTH-IPC-001: IPC channel timeout と fire-and-forget パターン / L-AUTH-IPC-002: AUTH_STATE_CHANGED 責務境界の分離）       |
 | 2026-03-31 | 1.16.0     | TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001 教訓1件を追加（L-BETTER-SQLITE3-ABI-001: native addon ABI 不一致 / postinstall rebuild / best-effort esbuild パターン） |
@@ -691,3 +692,19 @@
   ```
 - **適用範囲**: snapshot 以外のメタ情報（errorMessage など）を同一 IPC イベントで流したい場合の標準パターン
 - **発見日**: 2026-04-06
+
+---
+
+## TASK-UI-03-REMAINING IPC renderer 移行完了（2026-04-07）
+
+### L-IPC-SKILLCREATOR-CANONICAL-001: canonical API と compat shim を分離して管理する
+
+| 項目          | 内容                                                                                                                                                                                                                                          |
+| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題          | renderer が `window.electronAPI.skillCreator` と `window.skillCreatorAPI` の 2 経路を混在利用していた。どちらが動作しているか不明で、バグ発生時の調査が困難になる                                                                             |
+| 解決策        | renderer は `window.skillCreatorAPI` のみ参照する。preload 側の `window.electronAPI.skillCreator` は後方互換シム（compat shim）として残し、将来の一括削除トリガーとして明示的に管理する                                                       |
+| 標準ルール    | 新しい IPC API は必ず専用の named API（例: `window.skillCreatorAPI`）として公開し、`contextBridge.exposeInMainWorld` で `electronAPI` に混在させない。旧 API への参照移行が完了したら、削除スケジュールを `unassigned-task-detection.md` に記録する |
+| 残存理由      | `window.electronAPI.skillCreator` 互換シムは既存コードとの後方互換性維持のため preload に残存。renderer から直接参照しない方針に固定されたため、破壊的変更は避けた。`repo-wide grep` で参照がゼロになったタイミングが削除トリガー              |
+| 5分解決カード | renderer から `window.electronAPI.skillCreator.X()` を使用しているコードを発見したら `window.skillCreatorAPI.X()` に書き換える。型は `apps/desktop/src/preload/skill-creator-api.ts` の interface を参照する                                   |
+| 関連タスク    | TASK-UI-03-REMAINING / `ImprovementProposalPanel.tsx:applyRuntimeImprovement` / `GovernanceSummaryPanel.tsx:getGovernanceState`                                                                                                               |
+| 発見日        | 2026-04-07                                                                                                                                                                                                                                    |

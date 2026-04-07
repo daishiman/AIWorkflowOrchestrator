@@ -112,7 +112,7 @@ vi.mock("../../../hooks/useCancelGeneration", () => ({
   }),
 }));
 
-// --- window.electronAPI モック ---
+// --- window.skillCreatorAPI モック ---
 const mockPlanSkill = vi.fn();
 const mockExecutePlan = vi.fn();
 
@@ -143,18 +143,20 @@ describe("SkillCreateWizard LLM生成フロー", () => {
       success: true,
       data: createWorkflowSnapshot(),
     });
-    (window as Window & { electronAPI?: unknown }).electronAPI = {
-      skillCreator: {
+    Object.defineProperty(window, "skillCreatorAPI", {
+      value: {
         planSkill: mockPlanSkill,
         executePlan: mockExecutePlan,
         getWorkflowState: mockGetWorkflowState,
       },
-    };
+      writable: true,
+      configurable: true,
+    });
   });
 
   afterEach(() => {
     cleanup();
-    delete (window as Window & { electronAPI?: unknown }).electronAPI;
+    Reflect.deleteProperty(window, "skillCreatorAPI");
   });
 
   // ============================================================
@@ -740,11 +742,14 @@ describe("SkillCreateWizard LLM生成フロー", () => {
   // ============================================================
   describe("API未接続フォールバック", () => {
     it("F-2: planSkill が undefined のとき setGenerationError が呼ばれてクラッシュしない", async () => {
-      (window as Window & { electronAPI?: unknown }).electronAPI = {
-        skillCreator: {
+      Object.defineProperty(window, "skillCreatorAPI", {
+        value: {
           executePlan: mockExecutePlan,
+          getWorkflowState: mockGetWorkflowState,
         },
-      };
+        writable: true,
+        configurable: true,
+      });
 
       render(<SkillCreateWizard onClose={vi.fn()} />);
 

@@ -2296,6 +2296,38 @@
 
 ---
 
+### タスク: TASK-UI-03-REMAINING IPC renderer移行完了（2026-04-07）
+
+| 項目       | 値                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-03-REMAINING                                                                                                                                    |
+| ステータス | **完了**                                                                                                                                                |
+| タイプ     | refactor / IPC-preload-migration / NON_VISUAL                                                                                                          |
+| 優先度     | P0                                                                                                                                                      |
+| 完了日     | 2026-04-07                                                                                                                                              |
+| 対象       | `apps/desktop/src/renderer/components/skill/ImprovementProposalPanel.tsx`、`apps/desktop/src/renderer/components/organisms/AgentView/GovernanceSummaryPanel.tsx` |
+| 成果物     | `docs/30-workflows/task-ui-03-ipc-renderer-migration/`（Phase 1-13 仕様書・Phase 12 6成果物）                                                          |
+| 関連Issue  | #1940                                                                                                                                                   |
+
+#### 実施内容
+
+- `ImprovementProposalPanel.tsx`: `window.electronAPI.skillCreator.applyRuntimeImprovement` → `window.skillCreatorAPI.applyRuntimeImprovement` へ移行
+- `GovernanceSummaryPanel.tsx`: `window.electronAPI.skillCreator.getGovernanceState` → `window.skillCreatorAPI.getGovernanceState` へ移行
+- `useStreamingProgress.ts`: `SKILL_CREATOR_PROGRESS` IPC リスナーに useEffect cleanup を追加（メモリリーク防止）
+- IPC canonical API として `window.skillCreatorAPI` を正本化。`window.electronAPI.skillCreator` は preload 互換シムとして残存
+- variadic IPC イベント対応（L-IPC-VARIADIC-001）：snapshot + errorMessage の同一イベント配信を実現
+- Phase 12: 実装ガイド（中学生レベル説明含む）・仕様更新サマリ・変更履歴・未タスク検出・スキルフィードバック・準拠確認 の 6 成果物を生成
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS（EXIT:0）
+- `pnpm --filter @repo/desktop lint`: PASS
+- 関連テスト（GovernanceSummaryPanel.test.tsx / ImprovementProposalPanel.test.tsx / SkillCreateWizard.test.tsx）: PASS
+- Phase 11: NON_VISUAL（renderer は API 参照先のみ移行、自動テスト代替 PASS）
+- `artifacts.json` と `outputs/artifacts.json` parity: 完全一致
+
+---
+
 ### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-06）
 
 | 項目       | 値                                                                                                                                              |

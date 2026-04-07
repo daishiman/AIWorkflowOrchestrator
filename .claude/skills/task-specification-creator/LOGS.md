@@ -2,7 +2,20 @@
 
 ## 役割
 
-<<<<<<< Updated upstream
+## 2026-04-07 - TASK-UI-03-REMAINING Phase 12 close-out / skill-feedback sync
+
+### 変更内容
+- TASK-UI-03-REMAINING（IPC renderer 移行完了）の Phase 12 close-out に基づき、skill-feedback-report.md の改善提案を SKILL.md に反映
+- Phase 12 skill-feedback-report の提案5件を同期:
+  - `NON_VISUAL` meta row 明示化（Phase 11 判定の曖昧性解消）
+  - Task 12-6 見出しテンプレートの 1 行固定化（必須タスク漏れ削減）
+  - `outputs/artifacts.json` parity 初手確認導線追加
+  - IPC canonical / compat shim の分離記録パターン明記
+  - Phase 11 evidence mode の Phase 12 への引き継ぎ書き方を確立
+- マージコンフリクト（`<<<<<<< Updated upstream` / `>>>>>>> Stashed changes`）を解消
+
+---
+
 ## 2026-04-06 - TASK-P0-09-U1 Phase 12 完了反映（skill-feedback 反映）
 
 ### 変更内容
@@ -27,8 +40,6 @@
 
 ---
 
-||||||| Stash base
-=======
 ## 2026-04-06 - UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 validator hardening sync
 
 ### 変更内容
@@ -46,7 +57,7 @@
 - `phase12-task-spec-compliance-template.md` の root evidence を `task-workflow-completed.md` / `task-workflow-backlog.md` まで拡張し、Phase 12 の突合対象を明示
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
 
->>>>>>> Stashed changes
+---
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
 
 ## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映

@@ -364,8 +364,8 @@ function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   };
 
   return (
-    runtimeWindow.electronAPI?.skillCreator ??
     runtimeWindow.skillCreatorAPI ??
+    runtimeWindow.electronAPI?.skillCreator ??
     null
   );
 }

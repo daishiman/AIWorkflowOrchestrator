@@ -18,9 +18,9 @@ type GovernanceStatus = "loading" | "ready" | "error";
 function getGovernanceApi(): SkillCreatorGovernanceApi | undefined {
   return (
     window as Window & {
-      electronAPI?: { skillCreator?: SkillCreatorGovernanceApi };
+      skillCreatorAPI?: SkillCreatorGovernanceApi;
     }
-  ).electronAPI?.skillCreator;
+  ).skillCreatorAPI;
 }
 
 function toErrorMessage(error: unknown): string {
@@ -90,7 +90,7 @@ export const GovernanceSummaryPanel: React.FC = () => {
         if (hasSnapshotRef.current) {
           setStatus("ready");
           setErrorMessage(
-            "window.electronAPI.skillCreator.getGovernanceState が利用できません",
+            "window.skillCreatorAPI.getGovernanceState が利用できません",
           );
           return;
         }

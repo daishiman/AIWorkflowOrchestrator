@@ -196,11 +196,12 @@ function toPlanResult(
 }
 
 const getSkillCreatorApi = (): SkillCreatorRuntimeApi => {
-  const api = (
-    window as Window & {
-      electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
-    }
-  ).electronAPI?.skillCreator;
+  const runtimeWindow = window as Window & {
+    skillCreatorAPI?: SkillCreatorRuntimeApi;
+    electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
+  };
+  const api =
+    runtimeWindow.skillCreatorAPI ?? runtimeWindow.electronAPI?.skillCreator;
   return api ?? {};
 };
 

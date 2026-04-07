@@ -58,6 +58,29 @@ const ACTIVE_STAGES: StreamingGenerationStage[] = [
   "validating",
 ];
 
+type StreamingProgressApi = {
+  onProgress?: (
+    callback: (progress: {
+      phase: string;
+      percentage: number;
+      message: string;
+    }) => void,
+  ) => () => void;
+};
+
+function getSkillCreatorApi(): StreamingProgressApi | null {
+  const runtimeWindow = window as Window & {
+    skillCreatorAPI?: StreamingProgressApi;
+    electronAPI?: { skillCreator?: StreamingProgressApi };
+  };
+
+  return (
+    runtimeWindow.skillCreatorAPI ??
+    runtimeWindow.electronAPI?.skillCreator ??
+    null
+  );
+}
+
 export function useStreamingProgress(): UseStreamingProgressReturn {
   const stage = useStreamingStage();
   const percent = useStreamingPercent();
@@ -70,7 +93,7 @@ export function useStreamingProgress(): UseStreamingProgressReturn {
   const resetProgress = useResetStreamingProgress();
 
   useEffect(() => {
-    const api = window.electronAPI?.skillCreator;
+    const api = getSkillCreatorApi();
     if (!api?.onProgress) return;
 
     // P5 対策: safeOn が返すクリーンアップ関数を保持

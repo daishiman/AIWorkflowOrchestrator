@@ -8,7 +8,7 @@
  * P39 準拠: fireEvent のみ（hook テストのため不要）
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useStreamingProgress } from "../useStreamingProgress";
 import { useAppStore } from "../../store";
@@ -30,11 +30,15 @@ beforeEach(() => {
   // P9: ストアリセット
   useAppStore.getState().resetStreamingProgress();
 
-  Object.defineProperty(window, "electronAPI", {
-    value: { skillCreator: mockSkillCreatorAPI },
+  Object.defineProperty(window, "skillCreatorAPI", {
+    value: mockSkillCreatorAPI,
     writable: true,
     configurable: true,
   });
+});
+
+afterEach(() => {
+  Reflect.deleteProperty(window, "skillCreatorAPI");
 });
 
 describe("useStreamingProgress", () => {
