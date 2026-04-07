@@ -87,7 +87,7 @@ export const GovernanceSummaryPanel: React.FC = () => {
         if (hasSnapshotRef.current) {
           setStatus("ready");
           setErrorMessage(
-            "skillCreatorAPI.getGovernanceState が利用できません",
+            "window.skillCreatorAPI.getGovernanceState が利用できません",
           );
           return;
         }

@@ -33,6 +33,37 @@
 - `pnpm --filter @repo/desktop exec vitest run src/preload/__tests__/skill-creator-api.approval.test.ts src/renderer/components/skill/__tests__/ApprovalRequestPanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx`: PASS（25 tests）
 - `pnpm --filter @repo/desktop screenshot:ut-sdk-07-approval-request-surface`: PASS（6 screenshots captured）
 
+### タスク: TASK-SDK-04-U1-F1 verification_review request を single_select kind に変更（2026-04-06）
+
+| 項目 | 値 |
+|---|---|
+| タスクID | TASK-SDK-04-U1-F1 |
+| ステータス | **完了（Phase 12 close-out）** |
+| タイプ | テスト整合・kind変更 |
+| 優先度 | 中 |
+| 完了日 | 2026-04-06 |
+| 対象 | `SkillCreatorWorkflowEngine.createVerificationReviewRequest()` kind: free_text → single_select |
+| 成果物 | `docs/30-workflows/task-sdk-04-u1-f1-verification-review-single-select/` |
+
+#### 実施内容
+
+- 実装確認: `createVerificationReviewRequest()` の `kind: "single_select"` は TASK-SDK-04-U1 実装波で先行完了済み
+- テスト修正: verification_review 関連テスト 5 箇所から `textValue` フィールドを削除
+- 新規テスト追加: TC-NEW-1〜3（kind確認・options確認・不正ID拒否）
+- 拡張テスト追加: TC-ADD-1〜5（境界値・呼び出し元回帰）
+- 全 47 テスト PASS、typecheck PASS、lint PASS
+
+#### 検証証跡
+
+- Phase 4: テスト仕様書 + Red記録
+- Phase 5: 実装サマリー（47 tests PASS）
+- Phase 6: 拡張テスト（境界値 + 呼び出し元回帰）
+- Phase 7: カバレッジ（対象関数 100%）
+- Phase 9: 品質レポート（typecheck / lint / IPC drift なし）
+- Phase 11: NON_VISUAL 確認
+
+---
+
 ### タスク: UT-VERIFY-DOC-CONSOLIDATION-001 verify関連ドキュメント正本・履歴分離（2026-04-06）
 
 | 項目       | 値                                                                                 |
@@ -43,7 +74,7 @@
 | 優先度     | 中                                                                                 |
 | 完了日     | 2026-04-06                                                                         |
 | 対象       | verify 関連ドキュメント4ファイルの区分ラベル付与・責務分離明示                     |
-| 成果物     | `docs/30-workflows/unassigned-task/UT-VERIFY-DOC-CONSOLIDATION-001.md`             |
+| 成果物     | `docs/30-workflows/completed-tasks/UT-VERIFY-DOC-CONSOLIDATION-001.md`               |
 
 #### 実施内容
 
@@ -110,6 +141,35 @@
 - 完了日: 2026-04-06
 - 内容: Phase-12 validator 改善（NEXT_PART_HEADING導入、fence-safe化）、テンプレート構造化、SKILL.md v10.09.35 更新
 - 成果物: 6ファイル（implementation-guide / documentation-changelog / system-spec-update-summary / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+
+---
+
+### タスク: UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 packages/shared/src/ipc/channels.ts を desktop 実装へ同期（2026-04-06）
+
+| 項目             | 値                                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001                                                                                      |
+| ステータス       | **完了（Phase 12 close-out）**                                                                                                  |
+| タイプ           | refactor / ipc / shared-normalization / NON_VISUAL                                                                             |
+| 優先度           | 高                                                                                                                              |
+| 完了日           | 2026-04-06                                                                                                                      |
+| 対象             | `packages/shared/src/ipc/channels.ts` / `apps/desktop/src/preload/channels.ts` / `governance-bundle.test.ts`                   |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-sdk-07-shared-ipc-channel-contract-001.md`                                          |
+
+#### 実施内容
+
+- `SKILL_CREATOR_RUNTIME_CHANNELS` を `packages/shared/src/ipc/channels.ts` に正本化し、3チャネル（`SKILL_CREATOR_PROGRESS` / `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` / `SKILL_CREATOR_ADAPTER_STATUS_CHANGED`）を shared の SSoT として定義
+- `apps/desktop/src/preload/channels.ts` が `@repo/shared/src/ipc/channels` から `SKILL_CREATOR_RUNTIME_CHANNELS` をインポートするよう変更（直書き廃止）
+- `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts` に Cross-layer parity テストを追加（将来の shared-preload ドリフトを自動検出）
+- `packages/shared/vitest.config.ts` の coverage 対象から `src/ipc/channels.ts` の除外を解除
+
+#### 苦戦箇所（詳細は lessons-learned-phase12-workflow-lifecycle.md）
+
+| 苦戦箇所                                            | 解決策概要                                                                          |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| shared パッケージ内テストで `@repo/shared` エイリアスが解決できない | テストファイル内インポートを相対パスに変更（`../channels` 等）                     |
+| IPC チャネル命名規則の既存パターン未把握            | Phase 1 開始前に `grep -n "CHANNELS" channels.ts` で命名規則を表として整理         |
+| TDD Red Phase 前の設計前提整合未確認               | allowlist / 既存テスト期待値への影響範囲を Phase 3 先行ステップで文書化            |
 
 ---
 
@@ -192,7 +252,7 @@
 | 対象             | `task-specification-creator` / Phase 仕様書テンプレート                                |
 | GitHub Issue     | #1919                                                                                  |
 | 成果物           | `docs/30-workflows/ut-phase-spec-format-improvement-001/`                              |
-| 元未タスク指示書 | `docs/30-workflows/unassigned-task/ut-phase-spec-format-improvement-001.md`           |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/ut-phase-spec-format-improvement-001.md`         |
 
 #### 実施内容
 
@@ -2385,6 +2445,38 @@
 
 ---
 
+### タスク: TASK-UI-03-REMAINING IPC renderer移行完了（2026-04-07）
+
+| 項目       | 値                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-03-REMAINING                                                                                                                                    |
+| ステータス | **完了**                                                                                                                                                |
+| タイプ     | refactor / IPC-preload-migration / NON_VISUAL                                                                                                          |
+| 優先度     | P0                                                                                                                                                      |
+| 完了日     | 2026-04-07                                                                                                                                              |
+| 対象       | `apps/desktop/src/renderer/components/skill/ImprovementProposalPanel.tsx`、`apps/desktop/src/renderer/components/organisms/AgentView/GovernanceSummaryPanel.tsx` |
+| 成果物     | `docs/30-workflows/task-ui-03-ipc-renderer-migration/`（Phase 1-13 仕様書・Phase 12 6成果物）                                                          |
+| 関連Issue  | #1940                                                                                                                                                   |
+
+#### 実施内容
+
+- `ImprovementProposalPanel.tsx`: `window.electronAPI.skillCreator.applyRuntimeImprovement` → `window.skillCreatorAPI.applyRuntimeImprovement` へ移行
+- `GovernanceSummaryPanel.tsx`: `window.electronAPI.skillCreator.getGovernanceState` → `window.skillCreatorAPI.getGovernanceState` へ移行
+- `useStreamingProgress.ts`: `SKILL_CREATOR_PROGRESS` IPC リスナーに useEffect cleanup を追加（メモリリーク防止）
+- IPC canonical API として `window.skillCreatorAPI` を正本化。`window.electronAPI.skillCreator` は preload 互換シムとして残存
+- variadic IPC イベント対応（L-IPC-VARIADIC-001）：snapshot + errorMessage の同一イベント配信を実現
+- Phase 12: 実装ガイド（中学生レベル説明含む）・仕様更新サマリ・変更履歴・未タスク検出・スキルフィードバック・準拠確認 の 6 成果物を生成
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS（EXIT:0）
+- `pnpm --filter @repo/desktop lint`: PASS
+- 関連テスト（GovernanceSummaryPanel.test.tsx / ImprovementProposalPanel.test.tsx / SkillCreateWizard.test.tsx）: PASS
+- Phase 11: NON_VISUAL（renderer は API 参照先のみ移行、自動テスト代替 PASS）
+- `artifacts.json` と `outputs/artifacts.json` parity: 完全一致
+
+---
+
 ### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-06）
 
 | 項目       | 値                                                                                                                                              |
@@ -2411,3 +2503,103 @@
 - 合計 101 tests PASS（`path-scoped-enforcement.test.ts` 含む）
 - typecheck: EXIT:0 ✅
 - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
+
+---
+
+### タスク: TASK-UI-04 仕様書ステータス乖離修正（Spec Status Drift Correction）（2026-04-07）
+
+| 項目       | 値                                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-04                                                                                                                                      |
+| ステータス | **完了（Phase 12 close-out）**                                                                                                                  |
+| タイプ     | maintenance / docs-only / 品質管理                                                                                                              |
+| 優先度     | P0（最高）                                                                                                                                      |
+| 完了日     | 2026-04-07                                                                                                                                      |
+| 対象       | タスク仕様書群の artifacts.json / index.md ステータスフィールド（8件のタスク仕様書のステータス乖離修正）                                        |
+| 成果物     | `docs/30-workflows/completed-tasks/step-13-seq-task-ui-04-spec-status-drift-correction/`                                                        |
+| 関連Issue  | #1941                                                                                                                                           |
+| 依存タスク | TASK-UI-01, TASK-UI-02, TASK-UI-03                                                                                                              |
+
+#### 実施内容
+
+- TASK-P0-01 〜 TASK-P0-09 の 8 件タスク仕様書において、artifacts.json / index.md の status フィールドが実装完了状態と乖離していた問題を是正
+- 各タスクの artifacts.json の status を `spec_created` / `in_progress` → `phase12_completed` に更新
+- 各タスクの index.md のステータスフィールドを実装状態と一致するよう更新
+- completed-tasks/ ディレクトリへの未移動タスク仕様書の移動（TASK-UI-04 自身を含む）
+- skill-creator-agent-sdk-lane の executor-guide.md / index.md のステータス整合を確認・更新
+
+#### 検証証跡
+
+- Phase 1: ステータス抽出マップ・乖離インベントリ作成 PASS（`outputs/phase-1/`）
+- Phase 2: 修正計画作成 PASS（`outputs/phase-2/correction-plan.md`）
+- Phase 3: 設計レビューゲート PASS（`outputs/phase-3/design-review-gate.md`）
+- Phase 4-9: テストマトリクス・実装記録・QA レポート PASS（`outputs/phase-4/` 〜 `outputs/phase-9/`）
+- Phase 10: 最終レビュー PASS（`outputs/phase-10/final-review-result.md`）
+- Phase 11: 手動テスト PASS（`outputs/phase-11/manual-test-result.md`）、NON_VISUAL（docs-only タスク）
+- Phase 12: スキルフィードバック・未タスク検出・準拠チェック PASS（`outputs/phase-12/`）
+
+---
+
+### タスク: TASK-UI-04 仕様書ステータス乖離修正（2026-04-07）
+
+| 項目       | 値                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-04                                                                                                                |
+| ステータス | **phase12_completed**（Phase 13 未実施）                                                                                  |
+| タイプ     | docs-only / メンテナンス / 品質管理                                                                                       |
+| 優先度     | P0                                                                                                                        |
+| 完了日     | 2026-04-07                                                                                                                |
+| 対象       | P0 是正タスク群（TASK-P0-01〜TASK-P0-09）の artifacts.json / index.md ステータスフィールド                               |
+| 成果物     | `docs/30-workflows/step-13-seq-task-ui-04-spec-status-drift-correction/`（Phase 1-12 仕様書 + 6 Phase 12 outputs）       |
+
+#### 実施内容
+
+- **乖離検出**: P0 タスク群 8 件でコード実装完了済みにもかかわらず仕様書ステータスが `spec_created` / `in_progress` のまま放置されていることを確認
+- **artifacts.json 正規化**: 8 タスク全ての `artifacts.json` status を標準値 `completed` に統一（非標準値 `phase_12_completed` も是正）
+- **index.md 更新**: 8 タスクの `index.md` ステータスフィールドを実装状態と一致させる
+- **skill-creator-agent-sdk-lane リンク修正**: `index.md` の P0 タスクリンク 5 件を旧相対パスから `../completed-tasks/` prefix に修正、✅ completed 追記
+- **executor-guide.md 更新**: P0 全 9 タスクの完了状態テーブルを新規追加（タスクID / ステータス / 実装内容 / 仕様書パス）
+- **Phase 12 成果物**: `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` の 6 ファイルを作成
+
+#### skill-feedback-report 提案（2件）
+
+1. **task-specification-creator 向け**: `complete-phase.js` 実行を Phase 完了チェックリストの「必須項目」に昇格させる（現在は任意実行であり、今回の乖離の主因）
+2. **aiworkflow-requirements 向け**: executor-guide.md に「タスク完了時のアクション」セクションを追加（artifacts.json 更新 / executor-guide 状態テーブル更新 を必須記載）
+
+#### 検証証跡
+
+- 対象: 17 ファイル更新（docs-only / コード変更なし）
+- `verify-unassigned-links`: ALL_LINKS_EXIST 確認
+- `audit --diff-from HEAD`: current=0 確認
+- Phase 11: 手動テスト（docs-only タスクのため UI 確認なし）
+
+---
+
+### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001（2026-04-06）
+
+| 項目       | 値                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001                                                                                                                  |
+| ステータス | **完了**                                                                                                                                                |
+| タイプ     | ui-task / IPC surface 追加                                                                                                                              |
+| 優先度     | 高                                                                                                                                                      |
+| 完了日     | 2026-04-06                                                                                                                                              |
+| 発生元     | TASK-SDK-07 Phase 12 再監査 / Issue #1683                                                                                                               |
+| 対象       | `apps/desktop/src/preload/skill-creator-api.ts`、`apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                                   |
+| 成果物     | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/`（Phase 1-12 仕様書・テスト）                                                               |
+
+#### 実施内容
+
+- `SkillCreatorAPI` interface に `onApprovalRequest(callback: (request: ApprovalRequest) => void): () => void` を追加
+- `safeOn(APPROVAL_CHANNELS.APPROVAL_REQUEST, callback)` パターンで実装（`onDisclosureInfo` と同パターン）
+- `SkillLifecyclePanel.tsx` に `pendingApproval` state・`ApprovalSheet` 条件レンダリング・`handleApprove`/`handleReject`・useEffect cleanup を追加
+- TC-APPR-01〜18 テスト 19 件追加、全件 PASS
+
+#### 検証証跡
+
+- vitest 19/19 PASS（TC-APPR-01〜18 + fixture setup）
+- `pnpm typecheck` EXIT:0 ✅
+- `pnpm lint` EXIT:0（errors 0）✅
+- IPC 契約対称性確認済み（APPROVAL_CHANNELS.APPROVAL_REQUEST）
+- Phase 11: Visual 4件 CAPTURE_BLOCKED（worktree 環境制約）、NonVisual 3件 PASS(unit)
+- CAPTURE_BLOCKED 未タスク: `docs/30-workflows/unassigned-task/ut-sdk-07-approval-request-surface-001-phase11-screenshot.md`

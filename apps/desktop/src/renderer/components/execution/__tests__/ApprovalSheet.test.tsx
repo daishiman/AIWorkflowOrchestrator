@@ -6,7 +6,7 @@
  * ApprovalSheet テスト
  *
  * TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 Phase 4
- * テストケース: APR-01〜APR-09, APR-17〜APR-18
+ * テストケース: APR-01〜APR-09, APR-17〜APR-19
  *
  * 注意: happy-dom 環境では userEvent を使用しない。fireEvent + act() を使用する (P39)
  */
@@ -102,6 +102,28 @@ describe("ApprovalSheet", () => {
   it("APR-18: initial focus is on reject button (safe default)", () => {
     const { getByTestId } = render(<ApprovalSheet {...defaultProps} />);
     expect(document.activeElement).toBe(getByTestId("approval-reject"));
+  });
+
+  // APR-19: 応答中はボタンが無効化される
+  it("APR-19: isResponding=true でボタンが無効化される", () => {
+    const onShowDetails = vi.fn();
+    const { getByTestId } = render(
+      <ApprovalSheet
+        {...defaultProps}
+        onShowDetails={onShowDetails}
+        isResponding={true}
+      />,
+    );
+
+    expect(getByTestId("approval-details")).toBeDisabled();
+    expect(getByTestId("approval-reject")).toBeDisabled();
+    expect(getByTestId("approval-approve")).toBeDisabled();
+    expect(getByTestId("approval-sheet")).toHaveTextContent("応答を送信中...");
+
+    act(() => {
+      fireEvent.keyDown(getByTestId("approval-sheet"), { key: "Escape" });
+    });
+    expect(defaultProps.onReject).not.toHaveBeenCalled();
   });
 
   // DSC-R4: Approval Sheet 内 disclosure が dismiss 不可

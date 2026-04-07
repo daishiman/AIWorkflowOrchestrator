@@ -2,13 +2,44 @@
 
 ## 役割
 
-||||||| Stash base
-## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync
+## 2026-04-07 - TASK-UI-04 仕様書ステータス乖離修正 Phase 12 close-out sync（skill-feedback 反映）
 
-| 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync: approval:request surface の Phase 12 Task 1〜6 全完了（PASS）。`phase-12-documentation.md` ステータスを completed に更新。task-workflow-completed.md / task-workflow-backlog.md は既に同期済み |
+### 変更内容
+- `aiworkflow-requirements/references/task-workflow-completed.md` に TASK-UI-04 完了記録を追加
+- `aiworkflow-requirements/references/lessons-learned-current.md` に L-UI04-001〜003 教訓3件を追加（artifacts.json status 更新必須 / completed-tasks 移動後即時 index.md 更新 / docs-only でも Phase 12 成果物 6 件省略禁止）
+- `aiworkflow-requirements/LOGS.md` に TASK-UI-04 エントリを追加
+- `task-specification-creator/SKILL.md` の「よくある漏れ」テーブルに `[Feedback TASK-UI-04]` 行を追加（`artifacts.json` status 放置ピットフォール・有効値明示）
+- `aiworkflow-requirements/SKILL.md` 変更履歴テーブルに v9.02.44 エントリを追加
 
 ---
 
+## 2026-04-07 - TASK-UI-03-REMAINING Phase 12 close-out / skill-feedback sync
+
+### 変更内容
+- TASK-UI-03-REMAINING（IPC renderer 移行完了）の Phase 12 close-out に基づき、skill-feedback-report.md の改善提案を SKILL.md に反映
+- Phase 12 skill-feedback-report の提案5件を同期:
+  - `NON_VISUAL` meta row 明示化（Phase 11 判定の曖昧性解消）
+  - Task 12-6 見出しテンプレートの 1 行固定化（必須タスク漏れ削減）
+  - `outputs/artifacts.json` parity 初手確認導線追加
+  - IPC canonical / compat shim の分離記録パターン明記
+  - Phase 11 evidence mode の Phase 12 への引き継ぎ書き方を確立
+
+---
+
+## 2026-04-06 - UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 スキル更新 sync
+
+### 変更内容
+- `aiworkflow-requirements/SKILL.md` の description（2行目）末尾に `SKILL_CREATOR_RUNTIME_CHANNELS` / `shared-ipc-channel SSoT` / `packages/shared/src/ipc/channels` / `cross-layer parity` / `governance-bundle.test` を追加
+- `ipc-preload-spec-sync-guardian/SKILL.md` の Trigger と変更履歴（v1.6.0）を更新
+- `aiworkflow-requirements/LOGS.md` と本ファイルに変更記録を追加
+
+### 背景
+UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継ぎ事項を反映：
+- `SKILL_CREATOR_RUNTIME_CHANNELS` を `packages/shared/src/ipc/channels.ts` に SSoT 正本化
+- `apps/desktop/src/preload/channels.ts` が shared からimportするよう変更（直書き廃止）
+- Cross-layer parity テストを `governance-bundle.test.ts` に追加
+
+---
 ## 2026-04-06 - TASK-P0-09-U1 Phase 12 完了反映（skill-feedback 反映）
 
 ### 変更内容
@@ -21,7 +52,6 @@
 
 ---
 
-## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
@@ -33,8 +63,6 @@
 
 ---
 
-||||||| Stash base
-=======
 ## 2026-04-06 - UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 validator hardening sync
 
 ### 変更内容
@@ -52,10 +80,8 @@
 - `phase12-task-spec-compliance-template.md` の root evidence を `task-workflow-completed.md` / `task-workflow-backlog.md` まで拡張し、Phase 12 の突合対象を明示
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
 
->>>>>>> Stashed changes
+---
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
-
-## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
 
 ### 変更内容
 - `apps/desktop/scripts/capture-task-ui-01-phase11.mjs` を追加し、Playwright 4 枚の visual evidence を `docs/30-workflows/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion/outputs/phase-11/screenshots/` に保存

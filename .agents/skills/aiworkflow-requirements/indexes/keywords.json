@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-06T12:32:30.923Z",
-  "totalKeywords": 2789,
+  "generated": "2026-04-07T05:43:49.365Z",
+  "totalKeywords": 2792,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3540,6 +3540,7 @@
     ],
     "renderer": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "direct": [
@@ -7434,11 +7435,20 @@
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
+    "層型同期": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "executeAsync": [
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "エラー伝搬パス": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "REMAINING": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "移行完了": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "ライフサイクル": [

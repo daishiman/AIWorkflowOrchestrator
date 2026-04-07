@@ -97,8 +97,8 @@ Task04 では Skill Creator runtime workflow の canonical state を Renderer �
 | --- | --- | --- |
 | Shared | `packages/shared/src/types/skillCreator.ts` | `SkillCreatorWorkflowUiSnapshot` / `SkillCreatorUserInputSubmission` / `SkillCreatorGovernancePhase` / `GovernanceUiPayload` を SSoT にする。`SkillCreatorUserInputKind` は `single_select` / `multi_select` / `free_text` / `secret` / `confirm` の 5 種 |
 | Main IPC | `apps/desktop/src/main/ipc/creatorHandlers.ts` | sender validation + payload validation 後に facade へ委譲し、`skill-creator:get-governance` で runtime governance payload を返す |
-| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開し、`getGovernancePayload()` を含む |
-| Renderer | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | phase summary / question host / provenance summary / handoff card を snapshot 表示する |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開し、`getGovernancePayload()` に加えて `onApprovalRequest()` を含む |
+| Renderer | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | phase summary / question host / provenance summary / handoff card / approval sheet を snapshot 表示する |
 
 `SkillCreatorUserInputSubmission` は kind ごとに使用フィールドを切り替える。`multi_select` では `selectedOptionIds: string[]` を使い、Renderer は request kind 切替時に stale selection を持ち越さないことを要件とする。
 
@@ -466,6 +466,19 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 - `SkillCreatorWorkflowEngine` が `verifyResult` / `routeSnapshot` / `sourceProvenance` から `RuntimeSkillCreatorVerifyDetail` を導出する current fact に更新。
 - runtime public surface に `skill-creator:get-verify-detail` / `skill-creator:reverify-workflow` を追加し、Task07/08 owner 項目は delegated note として返す。
 - `SkillLifecyclePanel` は verify detail card を表示し、`reverifyWorkflow()` を再検証導線として利用する。approval / disclosure / persistence は sibling task owner のまま維持。
+
+### UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001: SKILL_CREATOR_RUNTIME_CHANNELS shared 正本化（2026-04-06）
+
+`SKILL_CREATOR_RUNTIME_CHANNELS` を `packages/shared/src/ipc/channels.ts` に正本化し、`apps/desktop/src/preload/channels.ts` は shared からインポートするよう変更した。
+
+| 項目 | 内容 |
+| --- | --- |
+| 正本 | `packages/shared/src/ipc/channels.ts` の `SKILL_CREATOR_RUNTIME_CHANNELS` |
+| 変更前 | `apps/desktop/src/preload/channels.ts` に `SKILL_CREATOR_PROGRESS` / `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` / `SKILL_CREATOR_ADAPTER_STATUS_CHANGED` を直書き |
+| 変更後 | `preload/channels.ts` が `@repo/shared/src/ipc/channels` から `SKILL_CREATOR_RUNTIME_CHANNELS` をインポートし、`...SKILL_CREATOR_RUNTIME_CHANNELS` でスプレッド展開 |
+| Cross-layer parity テスト | `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts` に shared-preload parity テストを追加。将来のドリフトを自動検出する |
+| SSoT 原則 | IPC channel 定数は `packages/shared/src/ipc/channels.ts` を唯一の正本とする。`preload` は shared に依存し、shared は desktop に依存しない（循環依存防止） |
+| coverage 修正 | `packages/shared/vitest.config.ts` の coverage 対象から `src/ipc/channels.ts` の除外を解除 |
 
 ### TASK-P0-08 session resume / cleanup public surface（2026-04-06）
 

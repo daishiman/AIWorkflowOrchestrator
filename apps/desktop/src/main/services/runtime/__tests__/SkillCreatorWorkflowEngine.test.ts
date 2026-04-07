@@ -627,7 +627,6 @@ describe("SkillCreatorWorkflowEngine", () => {
       const submitted = engine.submitUserInput("plan-001", {
         planId: "plan-001",
         requestId: snapshot.awaitingUserInput!.requestId,
-        textValue: "Looks good, approved",
         selectedOptionId: "approve",
       });
 
@@ -645,7 +644,6 @@ describe("SkillCreatorWorkflowEngine", () => {
       const submitted = engine.submitUserInput("plan-001", {
         planId: "plan-001",
         requestId: snapshot.awaitingUserInput!.requestId,
-        textValue: "Please improve the error handling",
         selectedOptionId: "improve",
       });
 
@@ -662,7 +660,6 @@ describe("SkillCreatorWorkflowEngine", () => {
       const submitted = engine.submitUserInput("plan-001", {
         planId: "plan-001",
         requestId: snapshot.awaitingUserInput!.requestId,
-        textValue: "This approach is wrong, start over",
         selectedOptionId: "reject",
       });
 
@@ -681,7 +678,6 @@ describe("SkillCreatorWorkflowEngine", () => {
       const submitted = engine.submitUserInput("plan-001", {
         planId: "plan-001",
         requestId: snapshot.awaitingUserInput!.requestId,
-        textValue: "some feedback",
         selectedOptionId: "unknown_option",
       });
 
@@ -720,7 +716,6 @@ describe("SkillCreatorWorkflowEngine", () => {
       const submitted = engine.submitUserInput("plan-001", {
         planId: "plan-001",
         requestId: snapshot.awaitingUserInput!.requestId,
-        textValue: "Approved",
         selectedOptionId: "approve",
       });
 
@@ -728,6 +723,126 @@ describe("SkillCreatorWorkflowEngine", () => {
         (a) => (a.kind as string) === "phase_transition",
       );
       expect(transitionArtifact).toBeUndefined();
+    });
+
+    // TC-NEW-1: createVerificationReviewRequest が kind: "single_select" を返す
+    it("verification_review awaitingUserInput の kind が single_select である", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupVerificationReviewState(engine);
+
+      expect(snapshot.awaitingUserInput?.kind).toBe("single_select");
+    });
+
+    // TC-NEW-2: createVerificationReviewRequest の options に3選択肢が含まれる
+    it("verification_review awaitingUserInput の options に approve/improve/reject が含まれる", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupVerificationReviewState(engine);
+
+      expect(snapshot.awaitingUserInput?.options).toHaveLength(3);
+      expect(snapshot.awaitingUserInput?.options?.map((o) => o.id)).toEqual([
+        "approve",
+        "improve",
+        "reject",
+      ]);
+    });
+
+    // TC-NEW-3: validateUserInputSubmission が空の selectedOptionId を拒否する
+    it("verification_review で selectedOptionId が未指定の場合は拒否される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupVerificationReviewState(engine);
+
+      expect(() =>
+        engine.submitUserInput("plan-001", {
+          planId: "plan-001",
+          requestId: snapshot.awaitingUserInput!.requestId,
+        }),
+      ).toThrow("selectedOptionId is invalid");
+    });
+
+    // TC-ADD-1: selectedOptionId が空文字の場合はバリデーションエラー
+    it("verification_review で selectedOptionId が空文字の場合は拒否される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupVerificationReviewState(engine);
+
+      expect(() =>
+        engine.submitUserInput("plan-001", {
+          planId: "plan-001",
+          requestId: snapshot.awaitingUserInput!.requestId,
+          selectedOptionId: "",
+        }),
+      ).toThrow("selectedOptionId is invalid");
+    });
+
+    // TC-ADD-2: selectedOptionId が undefined の場合はバリデーションエラー（recordVerifyFailure 経由）
+    it("recordVerifyFailure 経由の verification_review で selectedOptionId が未指定の場合は拒否される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const planResult = createPlanResult();
+      engine.recordPlanResult(planResult, decision);
+      engine.recordExecuteStart(planResult, decision);
+      engine.recordExecuteResult("plan-001", {
+        executeId: "exec-001",
+        skillName: "test-skill",
+        success: true,
+      });
+      const snapshot = engine.recordVerifyFailure(
+        "plan-001",
+        "verification requires review",
+        "review",
+      );
+
+      expect(() =>
+        engine.submitUserInput("plan-001", {
+          planId: "plan-001",
+          requestId: snapshot.awaitingUserInput!.requestId,
+        }),
+      ).toThrow("selectedOptionId is invalid");
+    });
+
+    // TC-ADD-3: plan_review で未知の selectedOptionId はバリデーションエラー
+    it("plan_review で selectedOptionId が未知の文字列の場合は拒否される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupPlanReviewState(engine);
+
+      expect(() =>
+        engine.submitUserInput("plan-001", {
+          planId: "plan-001",
+          requestId: snapshot.awaitingUserInput!.requestId,
+          selectedOptionId: "unknown_option",
+        }),
+      ).toThrow("selectedOptionId is invalid");
+    });
+
+    // TC-ADD-4: recordExecutionFailure 経由で verification_review request が生成される
+    it("recordExecutionFailure 経由で kind: single_select の verification_review request が生成される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const snapshot = setupVerificationReviewState(engine);
+
+      expect(snapshot.awaitingUserInput?.reason).toBe("verification_review");
+      expect(snapshot.awaitingUserInput?.kind).toBe("single_select");
+      expect(snapshot.awaitingUserInput?.options).toHaveLength(3);
+    });
+
+    // TC-ADD-5: recordVerifyFailure 経由で verification_review request が生成される
+    it("recordVerifyFailure 経由で kind: single_select の verification_review request が生成される", () => {
+      const engine = new SkillCreatorWorkflowEngine();
+      const planResult = createPlanResult();
+      engine.recordPlanResult(planResult, decision);
+      engine.recordExecuteStart(planResult, decision);
+      engine.recordExecuteResult("plan-001", {
+        executeId: "exec-001",
+        skillName: "test-skill",
+        success: true,
+      });
+
+      const snapshot = engine.recordVerifyFailure(
+        "plan-001",
+        "verification requires review",
+        "review",
+      );
+
+      expect(snapshot.awaitingUserInput?.reason).toBe("verification_review");
+      expect(snapshot.awaitingUserInput?.kind).toBe("single_select");
+      expect(snapshot.awaitingUserInput?.options).toHaveLength(3);
     });
   });
 

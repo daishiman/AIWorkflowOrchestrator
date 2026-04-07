@@ -1,0 +1,104 @@
+{
+  "taskId": "UT-SDK-07-APPROVAL-REQUEST-SURFACE-001",
+  "taskName": "ut-sdk-07-approval-request-surface-001",
+  "createdDate": "2026-04-06",
+  "status": "completed",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/"]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/"]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/"]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "completed",
+      "artifacts": [
+        "apps/desktop/src/preload/__tests__/skill-creator-api.approval.test.ts",
+        "outputs/phase-4/"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "completed",
+      "artifacts": [
+        "apps/desktop/src/preload/skill-creator-api.ts",
+        "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+        "outputs/phase-5/"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "completed",
+      "artifacts": [
+        "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx",
+        "outputs/phase-6/"
+      ]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-summary.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/qa-result.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-evidence.md"]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    { "phase": 13, "name": "PR作成", "status": "blocked", "artifacts": [] }
+  ],
+  "targetFiles": [
+    "apps/desktop/src/preload/skill-creator-api.ts",
+    "apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx",
+    "apps/desktop/src/preload/__tests__/skill-creator-api.approval.test.ts",
+    "apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx"
+  ]
+}
