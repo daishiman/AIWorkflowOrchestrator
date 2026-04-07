@@ -64,7 +64,8 @@ interface SkillInfoStepProps {
 
 ```typescript
 // 「次へ」ボタン活性化条件
-const isNextEnabled = formData.purpose.trim().length >= 10;
+const isNextEnabled =
+  formData.purpose.trim().length >= 10 && formData.category !== null;
 
 // エラー表示条件（Touched-state 方式）
 const [purposeTouched, setPurposeTouched] = useState(false);

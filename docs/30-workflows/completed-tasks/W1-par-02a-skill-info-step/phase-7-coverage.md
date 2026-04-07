@@ -61,8 +61,7 @@ pnpm --filter @repo/desktop vitest run \
 
 ```typescript
 describe("カバレッジ補完テスト", () => {
-  it("目的フィールドを入力してから削除するとエラーが表示される", async () => {
-    const user = userEvent.setup();
+  it("目的フィールドを入力してから削除するとエラーが表示される", () => {
     const onFormDataChange = vi.fn();
     render(
       <SkillInfoStep
@@ -72,14 +71,12 @@ describe("カバレッジ補完テスト", () => {
       />
     );
     const textarea = screen.getByLabelText(/目的・背景/);
-    await user.click(textarea);
-    await user.tab();
+    fireEvent.blur(textarea);
     // purposeTouched=true になったのでエラーが出るはず
     expect(screen.getByText(/10文字以上/)).toBeInTheDocument();
   });
 
-  it("全5カテゴリを順番に選択できる", async () => {
-    const user = userEvent.setup();
+  it("全5カテゴリを順番に選択できる", () => {
     const categories = ["自動化", "外部連携", "データ分析", "コードサポート", "その他"];
     for (const label of categories) {
       const onFormDataChange = vi.fn();
@@ -90,7 +87,7 @@ describe("カバレッジ補完テスト", () => {
           onNext={vi.fn()}
         />
       );
-      await user.click(screen.getByRole("button", { name: label }));
+      fireEvent.click(screen.getByRole("button", { name: label }));
       expect(onFormDataChange).toHaveBeenCalled();
     }
   });

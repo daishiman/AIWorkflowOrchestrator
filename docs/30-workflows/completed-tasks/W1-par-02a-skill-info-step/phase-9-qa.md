@@ -65,12 +65,16 @@ Prettier フォーマット差分が 0 件であることを確認する。
 ### Step 5: 削除ファイルの残存参照確認
 
 ```bash
-grep -r "DescribeStep\|GenerationMode" \
-  apps/ packages/ \
+grep -r "DescribeStep" \
+  apps/desktop/src/renderer/components/skill/ \
+  --include="*.ts" --include="*.tsx"
+
+grep -r "export type GenerationMode\|type GenerationMode =" \
+  apps/desktop/src/renderer/components/skill/wizard/ \
   --include="*.ts" --include="*.tsx"
 ```
 
-出力が 0 件であることを確認する（参照が全て解消されていること）。
+前者は 0 件であること、後者は `GenerateStep.tsx` にのみ定義が残っていることを確認する。
 
 ### Step 6: ウィザード統合確認
 
@@ -85,15 +89,16 @@ grep -r "DescribeStep\|GenerationMode" \
 
 ### Step 7: QA チェックリスト
 
-| 項目                     | 結果 |
-| ------------------------ | ---- |
-| 全テスト GREEN           | -    |
-| TypeScript エラー 0 件   | -    |
-| ESLint エラー 0 件       | -    |
-| Prettier 差分 0 件       | -    |
-| DescribeStep 参照 0 件   | -    |
-| GenerationMode 参照 0 件 | -    |
-| ウィザード統合動作確認   | -    |
+| 項目                                                | 結果 |
+| --------------------------------------------------- | ---- |
+| 全テスト GREEN                                      | -    |
+| TypeScript エラー 0 件                              | -    |
+| ESLint エラー 0 件                                  | -    |
+| Prettier 差分 0 件                                  | -    |
+| DescribeStep 参照 0 件                              | -    |
+| `GenerationMode` の standalone 定義 0 件            | -    |
+| `GenerationMode` の正本が `GenerateStep.tsx` にある | -    |
+| ウィザード統合動作確認                              | -    |
 
 ## 成果物
 
@@ -106,5 +111,6 @@ grep -r "DescribeStep\|GenerationMode" \
 - [ ] TypeScript 型チェックがエラー 0 件
 - [ ] ESLint チェックがエラー 0 件
 - [ ] Prettier フォーマットチェックが差分 0 件
-- [ ] `DescribeStep` / `GenerationMode` の残存参照が 0 件
+- [ ] `DescribeStep` の残存参照が 0 件
+- [ ] `GenerationMode` の standalone 定義が削除され、`GenerateStep.tsx` に集約されている
 - [ ] ウィザード全体の統合動作が確認されている

@@ -20,8 +20,9 @@
 
 ### 削除対象
 
-- `DescribeStep.tsx`（GenerationModeラジオボタン含む）
-- `GenerationMode` 型のエクスポート
+- `DescribeStep.tsx` の UI 実装（GenerationMode ラジオボタン含む旧 Step 0 相当）
+- `wizard/index.ts` からの `DescribeStep` エクスポート
+- `GenerationMode` 型の standalone な定義場所（`GenerateStep.tsx` に集約して正本化）
 
 ## UIコンポーネント仕様
 
@@ -43,7 +44,7 @@
 
 - カテゴリ = `external-integration` 選択時: Step 1の Q5 が必須になることを伝達
 - カテゴリは `SkillCategory` の5値のいずれかを保持し、初期状態は `null` を許容するが、再クリックで `null` に戻さない
-- 「次へ」ボタン: 目的入力（10文字以上）後に活性化
+- 「次へ」ボタン: 目的入力（10文字以上）かつカテゴリ選択済みで活性化
 
 ## コンポーネントProps
 

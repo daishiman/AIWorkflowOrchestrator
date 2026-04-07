@@ -61,7 +61,8 @@ function useSkillInfoForm(
   onFormDataChange: (data: SkillInfoFormData) => void,
 ) {
   const [purposeTouched, setPurposeTouched] = useState(false);
-  const isNextEnabled = formData.purpose.trim().length >= 10;
+  const isNextEnabled =
+    formData.purpose.trim().length >= 10 && formData.category !== null;
   const showPurposeError =
     purposeTouched && formData.purpose.trim().length < 10;
   // ...

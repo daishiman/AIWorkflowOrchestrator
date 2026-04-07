@@ -25,7 +25,7 @@
 | Skill Detail Action Buttons | TASK-IMP-SKILLDETAIL-ACTION-BUTTONS-001 | SkillDetailPanel, useSkillCenter, SkillEditorView, SkillAnalysisView | 完了 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons/` |
 | Skill Editor View            | TASK-UI-05A      | SkillEditorView, FileTreePanel, EditorPanel | spec_created（統合未完了） | `docs/30-workflows/skill-editor-view/` |
 | Skill Analysis View          | TASK-10A-B       | SkillAnalysisView, ScoreDisplay, SuggestionList, RiskPanel | 完了 | `docs/30-workflows/completed-tasks/skill-analysis-view/` |
-| Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, Describe/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
+| Skill Create Wizard          | TASK-10A-C       | SkillCreateWizard, StepIndicator, SkillInfo/Configure/Generate/Complete | 完了 | `docs/30-workflows/completed-tasks/skill-create-wizard/` |
 | Store-Driven Lifecycle Integration | TASK-10A-F | SkillAnalysisView, SkillCreateWizard, useSkillAnalysis | 完了 | `docs/30-workflows/store-driven-lifecycle-ui/` |
 | Skill Runtime API Key Panel | TASK-RT-04 | SkillLifecyclePanel, ApiKeySettingsPanel | 完了 | `docs/30-workflows/step-08-par-task-rt-04-api-key-management-ui/` |
 | LLM Adapter Error Banner | TASK-RT-01 | LLMAdapterErrorBanner, useLLMAdapterStatus | 完了 | 本ファイル |
@@ -38,7 +38,8 @@
 | Dashboard Home Enhancement | TASK-UI-07 | DashboardView, GreetingHeader, DashboardSuggestionSection, RecentTimeline | 完了 | `docs/30-workflows/completed-tasks/task-058d-ui-07-dashboard-enhancement/` |
 | ChatPanel Real AI Chat Wiring | TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 | RuntimeBanner, ChatMessageList, ComposerArea, ErrorGuidance, HandoffBlock | spec_created | `docs/30-workflows/ai-runtime-authmode-unification/tasks/step-03-seq-task-05-chatpanel-real-chat-wiring/` |
 | UI→Runtime Connection (plan/execute) | TASK-SC-06-UI-RUNTIME-CONNECTION | SkillLifecyclePanel, agentSlice, store/index.ts | 完了 | `docs/30-workflows/w4b-2-sc-ui-runtime-connection/` |
-| Wizard LLM Generation Flow | TASK-SC-07 | SkillCreateWizard, DescribeStep, GenerateStep | 完了 | `docs/30-workflows/completed-tasks/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/` |
+| Wizard LLM Generation Flow | TASK-SC-07 | SkillCreateWizard, SkillInfoStep, GenerateStep | 完了 | `docs/30-workflows/completed-tasks/TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION/` |
+| Skill Create Wizard — SkillInfoStep（Redesign W1）| UT-SKILL-WIZARD-W1-par-02a | SkillInfoStep | 完了 | `docs/30-workflows/W1-par-02a-skill-info-step/` |
 
 #### 未タスク（TASK-SC-06 後続）
 

@@ -1,4 +1,5 @@
 # 完了タスク記録 — 2026-04-04〜2026-04-06（後半）
+
 > 親ファイル: [task-workflow-completed.md](task-workflow-completed.md)
 
 ### タスク: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 execute/improve adapter guard（2026-04-04）
@@ -11,7 +12,7 @@
 | 優先度     | 高                                                                                                    |
 | 完了日     | 2026-04-04                                                                                            |
 | 対象       | `RuntimeSkillCreatorFacade.execute()` / `RuntimeSkillCreatorFacade.improve()` / structured error flow |
-| 成果物     | `docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/`                                      |
+| 成果物     | `docs/30-workflows/ut-rt-01-execute-improve-adapter-guard-001/`                                       |
 
 #### 実施内容
 
@@ -39,15 +40,15 @@
 
 ### タスク: TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 executeAsync() の error message 伝搬パス統一（2026-04-06）
 
-| 項目       | 値                                                                                                                     |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001                                                                 |
-| ステータス | **完了**                                                                                                               |
-| タイプ     | runtime bug-fix / error-propagation / documentation sync                                                               |
-| 優先度     | 中                                                                                                                     |
-| 完了日     | 2026-04-06                                                                                                             |
+| 項目       | 値                                                                                                                                          |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001                                                                                      |
+| ステータス | **完了**                                                                                                                                    |
+| タイプ     | runtime bug-fix / error-propagation / documentation sync                                                                                    |
+| 優先度     | 中                                                                                                                                          |
+| 完了日     | 2026-04-06                                                                                                                                  |
 | 対象       | `RuntimeSkillCreatorFacade.executeAsync()` / `RuntimeSkillCreatorFacade.executeAsync.test.ts` / `outputs/phase-11/*` / `outputs/phase-12/*` |
-| 成果物     | `docs/30-workflows/task-ut-rt-01-execute-async-snapshot-error-message-001/`                                           |
+| 成果物     | `docs/30-workflows/task-ut-rt-01-execute-async-snapshot-error-message-001/`                                                                 |
 
 #### 実施内容
 
@@ -77,16 +78,16 @@
 
 ### タスク: TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001（2026-04-06）
 
-| 項目       | 値                                                                                               |
-| ---------- | ------------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001                                                           |
-| ステータス | **完了**                                                                                         |
-| タイプ     | refactoring / ui                                                                                |
-| 優先度     | 中                                                                                               |
-| 完了日     | 2026-04-06                                                                                       |
+| 項目       | 値                                                                                                |
+| ---------- | ------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001                                                            |
+| ステータス | **完了**                                                                                          |
+| タイプ     | refactoring / ui                                                                                  |
+| 優先度     | 中                                                                                                |
+| 完了日     | 2026-04-06                                                                                        |
 | 対象       | `useAuthKeyManagement` 新規追加 / `AuthKeySection` への統合 / `ApiKeySettingsPanel` 委譲 / 型統一 |
-| 成果物     | `docs/30-workflows/rt-04-authkey-component-dedup/`                                               |
-| GitHub     | Issue #1903                                                                                      |
+| 成果物     | `docs/30-workflows/rt-04-authkey-component-dedup/`                                                |
+| GitHub     | Issue #1903                                                                                       |
 
 #### 実施内容
 
@@ -243,15 +244,15 @@
 
 ### タスク: TASK-P0-07 hardcoded-agent-names-dynamic-resolution — plan/improve 動的解決と root dedupe（2026-04-06）
 
-| 項目       | 値                                                                                                                                               |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| タスクID   | TASK-P0-07                                                                                                                                       |
-| ステータス | **完了**                                                                                                                                         |
-| タイプ     | refactoring / docs sync                                                                                                                          |
-| 優先度     | 高                                                                                                                                               |
-| 完了日     | 2026-04-06                                                                                                                                       |
+| 項目       | 値                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-07                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| ステータス | **完了**                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| タイプ     | refactoring / docs sync                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| 優先度     | 高                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| 完了日     | 2026-04-06                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            |
 | 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`, `apps/desktop/src/main/services/runtime/SkillCreatorSourceResolver.ts`, `apps/desktop/src/main/services/runtime/planPromptConstants.ts`, `apps/desktop/src/main/services/runtime/improvePromptConstants.ts`, `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan-resource-selection.test.ts`, `docs/30-workflows/skill-creator-agent-sdk-lane/step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution/outputs/phase-12/*` |
-| 関連タスク | step-11-par-task-plan-execution-hardening / step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution |
+| 関連タスク | step-11-par-task-plan-execution-hardening / step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution                                                                                                                                                                                                                                                                                                                                                                                                                           |
 
 #### 実施内容
 
@@ -283,6 +284,75 @@
 
 ---
 
+### タスク: UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001 IPC ハンドラ登録完全性スナップショットテスト（2026-04-07）
+
+| 項目       | 値                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------- |
+| タスクID   | UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001                                              |
+| ステータス | **完了（Phase 1-12 完了 / Phase 13 blocked）**                                           |
+| タイプ     | bug-fix / CI 強化 / snapshot test                                                        |
+| 優先度     | 高                                                                                       |
+| 完了日     | 2026-04-07                                                                               |
+| 対象       | `registerRuntimeSkillCreatorHandlers()` — 18 チャネル（public runtime 16 + auxiliary 2） |
+| 成果物     | `docs/30-workflows/completed-tasks/UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001/`         |
+| 発見元     | TASK-FIX-IPC-SKILL-NAME-001 Phase 12 close-out (2026-04-06)                              |
+
+#### 実施内容
+
+- `apps/desktop/src/main/ipc/__tests__/ipcHandlerRegistrationSnapshot.test.ts` を新規作成
+  - TC-01: 登録チャネル名がスナップショットと一致する（決定論的ソート済み配列）
+  - TC-02: 重複チャネルが存在しない（`Set.size === Array.length`）
+  - TC-03: 登録チャネル総数が 18（public runtime 16 + auxiliary 2）
+  - TC-04: 重複登録が注入された場合に検出できる（ネガティブテスト）
+  - TC-05: 想定外チャネル追加でスナップショット差分が生じる（ネガティブテスト）
+- `vi.hoisted` + `vi.mock("electron")` で `ipcMain.handle` をモック化し、全 handle() 呼び出し引数を spy で記録
+- `__snapshots__/ipcHandlerRegistrationSnapshot.test.ts.snap` を自動生成・コミット
+- `docs/30-workflows/completed-tasks/UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001.md` に仕様書移動（unassigned-task → completed-tasks）
+
+#### 背景
+
+TASK-FIX-IPC-SKILL-NAME-001 修正作業中に `registerRuntimeSkillCreatorHandlers()` 内で `ipcMain.handle()` が同一チャネルに 2 回実行され、後続 14 チャネルが未登録になっていた重複バグを発見。ElectronJS の `ipcMain.handle()` はサイレント無視するためランタイムエラーが出ず、長期間コードレビューのみに依存していた。スナップショット CI テストで再発防止。
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec eslint src/main/ipc/__tests__/ipcHandlerRegistrationSnapshot.test.ts`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/main/ipc/__tests__/ipcHandlerRegistrationSnapshot`: PASS（5 tests）
+
+#### Phase 12 未タスク
+
+- `UT-IPC-EXECUTION-CHANNELS-PARITY-001`: Renderer 側チャネル一覧との突合（別タスク）
+
+---
+
+### タスク: UT-SKILL-WIZARD-W1-par-02a SkillInfoStep コンポーネント実装（Step 0）（2026-04-07）
+
+| 項目       | 値                                                                   |
+| ---------- | -------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W1-par-02a                                           |
+| ステータス | **完了**                                                             |
+| タイプ     | UI implementation / wizard redesign                                  |
+| 優先度     | 高                                                                   |
+| 完了日     | 2026-04-07                                                           |
+| 対象       | `SkillInfoStep.tsx`（新規）/ `DescribeStep.tsx`（削除）              |
+| 成果物     | `docs/30-workflows/W1-par-02a-skill-info-step/`                      |
+
+#### 実施内容
+
+- `SkillInfoStep.tsx` を新規作成。スキル名（任意）・目的・背景（必須・10文字以上）・カテゴリ（5種単選択・必須）を入力する Step 0 フォームコンポーネント。
+- `DescribeStep.tsx` / `DescribeStep.test.tsx` を削除（旧 Step 0 実装）。
+- `wizard/index.ts` のエクスポートを再構成: `DescribeStep` → `SkillInfoStep`。
+- `GenerateStep.tsx` の `GenerationMode` standalone 定義を撤去し、export を正本化。
+- `SkillCreateWizard.tsx` の Step 0 を `DescribeStep` から `SkillInfoStep` へ置き換え。
+- 共有型 `SkillInfoFormData` / `SkillCategory` は `@repo/shared/types/skillCreator` の正本参照（W0-seq-01 で定義済み）。
+
+#### 検証証跡
+
+- SkillInfoStep 単体テスト 26 件 PASS
+- Phase 11 スクリーンショット 8 件（TC-01〜TC-08）保存
+- Phase 12 成果物 6件 PASS（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+- 未タスク: 0件（W2 への引き継ぎは W1-par-02b / W2-seq-03b のスコープ）
+
 ### タスク: TASK-SDK-06 verify-and-improve-lifecycle-surface（2026-03-27）
 
 | 項目       | 値                                                                                   |
@@ -303,16 +373,15 @@
 - disable 理由の4段階判定（not_verified / no_artifact / incomplete_provenance / route_mismatch）
 - layer3 / layer4 の verify check 自動生成
 
-
 ### タスク: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 RuntimeSkillCreatorFacade adapter guard（2026-04-04）
 
-| 項目       | 値                                                                                                                           |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001                                                                              |
-| ステータス | **完了**                                                                                                                     |
-| タイプ     | implementation                                                                                                               |
-| 優先度     | 高                                                                                                                           |
-| 完了日     | 2026-04-04                                                                                                                   |
+| 項目       | 値                                              |
+| ---------- | ----------------------------------------------- |
+| タスクID   | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 |
+| ステータス | **完了**                                        |
+| タイプ     | implementation                                  |
+| 優先度     | 高                                              |
+| 完了日     | 2026-04-04                                      |
 
 #### 実施内容
 
@@ -329,13 +398,13 @@
 
 ### タスク: UT-SDK-L34-UI-DISPLAY-001 SkillLifecyclePanel Layer別グルーピング（2026-04-04）
 
-| 項目       | 値                                                |
-| ---------- | ------------------------------------------------- |
-| タスクID   | UT-SDK-L34-UI-DISPLAY-001                         |
-| ステータス | **完了**                                          |
-| タイプ     | implementation                                    |
-| 優先度     | 中                                                |
-| 完了日     | 2026-04-04                                        |
+| 項目       | 値                        |
+| ---------- | ------------------------- |
+| タスクID   | UT-SDK-L34-UI-DISPLAY-001 |
+| ステータス | **完了**                  |
+| タイプ     | implementation            |
+| 優先度     | 中                        |
+| 完了日     | 2026-04-04                |
 
 #### 実施内容
 
@@ -346,13 +415,13 @@
 
 ### タスク: UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 SkillStreamMessage と SkillCreatorSdkEvent の出力型統合（2026-04-04）
 
-| 項目       | 値                                                                             |
-| ---------- | ------------------------------------------------------------------------------ |
-| タスクID   | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001                                |
-| ステータス | **完了**                                                                       |
-| タイプ     | implementation                                                                 |
-| 優先度     | low                                                                            |
-| 完了日     | 2026-04-04                                                                     |
+| 項目       | 値                                              |
+| ---------- | ----------------------------------------------- |
+| タスクID   | UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION-001 |
+| ステータス | **完了**                                        |
+| タイプ     | implementation                                  |
+| 優先度     | low                                             |
+| 完了日     | 2026-04-04                                      |
 
 #### 実施内容
 
@@ -371,15 +440,15 @@
 
 ### タスク: TASK-P0-09 claude-sdk-permission-hooks-governance Phase 12 close-out（2026-04-06）
 
-| 項目       | 値                                                                                                                                              |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-P0-09                                                                                                                                      |
-| ステータス | **完了**                                                                                                                                        |
-| タイプ     | implementation / TDD / governance                                                                                                               |
-| 優先度     | 最高                                                                                                                                            |
-| 完了日     | 2026-04-06                                                                                                                                      |
-| 対象       | `runtime/governance/` サブディレクトリ（`SkillCreatorPermissionPolicy` / `SkillCreatorHooksFactory` / `SkillCreatorAuditSink` / `index.ts`）     |
-| 成果物     | `docs/30-workflows/task-p0-09-sdk-permission-hooks-governance/`（Phase 1-13 仕様書 15ファイル）                                                 |
+| 項目       | 値                                                                                                                                           |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-09                                                                                                                                   |
+| ステータス | **完了**                                                                                                                                     |
+| タイプ     | implementation / TDD / governance                                                                                                            |
+| 優先度     | 最高                                                                                                                                         |
+| 完了日     | 2026-04-06                                                                                                                                   |
+| 対象       | `runtime/governance/` サブディレクトリ（`SkillCreatorPermissionPolicy` / `SkillCreatorHooksFactory` / `SkillCreatorAuditSink` / `index.ts`） |
+| 成果物     | `docs/30-workflows/task-p0-09-sdk-permission-hooks-governance/`（Phase 1-13 仕様書 15ファイル）                                              |
 
 #### 実施内容
 
@@ -405,15 +474,15 @@
 
 ### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-06）
 
-| 項目       | 値                                                                                                                                              |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-P0-09-U1                                                                                                                                   |
-| ステータス | **完了**                                                                                                                                        |
-| タイプ     | implementation / TDD / security                                                                                                                 |
-| 優先度     | 最高                                                                                                                                            |
-| 完了日     | 2026-04-06                                                                                                                                      |
-| 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                                                                           |
-| 成果物     | `docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/`（Phase 1-12 仕様書・テスト）                                     |
+| 項目       | 値                                                                                                         |
+| ---------- | ---------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-09-U1                                                                                              |
+| ステータス | **完了**                                                                                                   |
+| タイプ     | implementation / TDD / security                                                                            |
+| 優先度     | 最高                                                                                                       |
+| 完了日     | 2026-04-06                                                                                                 |
+| 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                                      |
+| 成果物     | `docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/`（Phase 1-12 仕様書・テスト） |
 
 #### 実施内容
 

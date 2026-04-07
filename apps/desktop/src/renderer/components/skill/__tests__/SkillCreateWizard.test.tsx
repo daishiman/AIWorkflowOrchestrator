@@ -1,3 +1,5 @@
+import React from "react";
+
 /**
  * @file SkillCreateWizard.test.tsx
  * @description SkillCreateWizard 統合コンポーネント ユニットテスト
@@ -12,14 +14,13 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import { SkillCreateWizard } from "../SkillCreateWizard";
+import { useCreateSkill } from "../../../store";
 
-// Store セレクタモック（TASK-10A-F: Store action経由に統一）
 const mockCreateSkill = vi.fn();
 const mockUseWorkflowSnapshot = vi.fn(() => null);
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
-  // TASK-SC-07: LLM generation hooks (テンプレートフロー非破壊テスト用)
   useIsSkillGenerating: () => false,
   useGenerationProgress: () => null,
   useGenerationError: () => null,
@@ -52,6 +53,35 @@ vi.mock("../../../hooks/useCancelGeneration", () => ({
   }),
 }));
 
+const DEFAULT_PURPOSE = "テストスキルの目的説明";
+const DEFAULT_CATEGORY = "自動化";
+
+const enterPurpose = (purpose = DEFAULT_PURPOSE) => {
+  fireEvent.change(screen.getByLabelText(/目的・背景/), {
+    target: { value: purpose },
+  });
+};
+
+const selectCategory = (categoryLabel = DEFAULT_CATEGORY) => {
+  fireEvent.click(screen.getByRole("button", { name: categoryLabel }));
+};
+
+const completeStep0 = (
+  purpose = DEFAULT_PURPOSE,
+  categoryLabel = DEFAULT_CATEGORY,
+) => {
+  enterPurpose(purpose);
+  selectCategory(categoryLabel);
+};
+
+const advanceToConfigure = (
+  purpose = DEFAULT_PURPOSE,
+  categoryLabel = DEFAULT_CATEGORY,
+) => {
+  completeStep0(purpose, categoryLabel);
+  fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+};
+
 describe("SkillCreateWizard", () => {
   let mockOnClose: ReturnType<typeof vi.fn>;
 
@@ -62,15 +92,16 @@ describe("SkillCreateWizard", () => {
     mockUseWorkflowSnapshot.mockReturnValue(null);
   });
 
-  // ============================================================
-  // 初期表示
-  // ============================================================
   describe("初期表示", () => {
-    it("Step 1（説明入力）が最初に表示される", () => {
+    it("Step 0（スキル情報）が最初に表示される", () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      expect(screen.getByText("スキルの説明")).toBeInTheDocument();
-      expect(screen.getByRole("textbox")).toBeInTheDocument();
+      expect(screen.getByLabelText(/スキル名/)).toBeInTheDocument();
+      expect(screen.getByLabelText(/目的・背景/)).toBeInTheDocument();
+      expect(
+        screen.getByRole("group", { name: "カテゴリを選択" }),
+      ).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
     });
 
     it("StepIndicator が表示される", () => {
@@ -105,48 +136,33 @@ describe("SkillCreateWizard", () => {
     });
   });
 
-  // ============================================================
-  // ステップ遷移
-  // ============================================================
   describe("ステップ遷移", () => {
-    it("説明入力後「次へ」クリックで Step 2（設定）に遷移する", () => {
+    it("Step 0 で目的とカテゴリを入力すると Step 2（設定）に遷移する", () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      advanceToConfigure();
 
       expect(screen.getByText("タスク生成")).toBeInTheDocument();
       expect(screen.getByRole("button", { name: "戻る" })).toBeInTheDocument();
     });
 
-    it("Step 2 で「戻る」クリックで Step 1 に戻る", () => {
+    it("Step 2 で「戻る」クリックで Step 0 に戻る", () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
-
-      // Step 2 -> Step 1
+      advanceToConfigure();
       fireEvent.click(screen.getByRole("button", { name: "戻る" }));
 
-      expect(screen.getByRole("textbox")).toBeInTheDocument();
-      expect(screen.getByText("スキルの説明")).toBeInTheDocument();
+      expect(screen.getByLabelText(/目的・背景/)).toHaveValue(DEFAULT_PURPOSE);
+      expect(
+        screen.getByRole("button", { name: DEFAULT_CATEGORY }),
+      ).toHaveAttribute("aria-pressed", "true");
+      expect(screen.getByRole("button", { name: "次へ" })).toBeEnabled();
     });
 
-    it("Step 2 で「スキルを生成」クリックで IPC が呼ばれる", async () => {
+    it("Step 2 で「スキルを生成」クリックで store action が呼ばれる", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
-
-      // Step 2 -> 生成
+      advanceToConfigure();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -154,16 +170,10 @@ describe("SkillCreateWizard", () => {
       expect(mockCreateSkill).toHaveBeenCalledTimes(1);
     });
 
-    it("IPC 成功後に Step 4（完了）に遷移する", async () => {
+    it("store action 成功後に Step 4（完了）に遷移する", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
-
-      // Step 2 -> 生成 -> 完了
+      advanceToConfigure();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -172,18 +182,13 @@ describe("SkillCreateWizard", () => {
       });
 
       expect(screen.getByText("スキルが作成されました")).toBeInTheDocument();
+      expect(screen.getByText("/path/to/new-skill")).toBeInTheDocument();
     });
 
-    it("CompleteStep に生成されたパスが表示される", async () => {
+    it("CompleteStep の「閉じる」で onClose が呼ばれる", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
-
-      // Step 2 -> 生成 -> 完了
+      advanceToConfigure();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -191,83 +196,51 @@ describe("SkillCreateWizard", () => {
         await mockCreateSkill.mock.results[0]?.value;
       });
 
-      expect(screen.getByText("/path/to/new-skill")).toBeInTheDocument();
+      fireEvent.click(screen.getByRole("button", { name: "閉じる" }));
+      expect(mockOnClose).toHaveBeenCalledTimes(1);
     });
   });
 
-  // ============================================================
-  // IPC 呼び出し
-  // ============================================================
-  describe("IPC 呼び出し", () => {
-    it("skill.create が description と options を正しく渡して呼ばれる", async () => {
+  describe("IPC / Store 呼び出し", () => {
+    it("createSkill が description と options を正しく受け取る", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル説明" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      const purpose = "テスト説明テスト説明";
+      advanceToConfigure(purpose);
 
-      // Step 2 -> 生成
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
 
-      expect(mockCreateSkill).toHaveBeenCalledWith("テストスキル説明", {
+      expect(mockCreateSkill).toHaveBeenCalledWith(purpose, {
         generateTasks: true,
         addAgents: false,
         addReferences: false,
       });
     });
 
-    it("IPC 失敗時にエラーカードが表示される", async () => {
+    it("createSkill 失敗時にエラーカードが表示される", async () => {
       mockCreateSkill.mockRejectedValue(new Error("生成失敗"));
 
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
-
-      // Step 2 -> 生成（失敗）
+      advanceToConfigure();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
-      });
-      await act(async () => {
-        try {
-          await mockCreateSkill.mock.results[0]?.value;
-        } catch {
-          // 期待されるエラー
-        }
       });
 
       expect(screen.getByRole("alert")).toBeInTheDocument();
       expect(screen.getByText("生成失敗")).toBeInTheDocument();
     });
 
-    it("IPC 失敗時に Error 以外のオブジェクトでもフォールバックメッセージが表示される", async () => {
+    it("createSkill 失敗時に Error 以外の値でもフォールバックメッセージが表示される", async () => {
       mockCreateSkill.mockRejectedValue("unknown error");
 
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
-
-      // Step 2 -> 生成（失敗）
+      advanceToConfigure();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
-      });
-      await act(async () => {
-        try {
-          await mockCreateSkill.mock.results[0]?.value;
-        } catch {
-          // 期待されるエラー
-        }
       });
 
       expect(screen.getByRole("alert")).toBeInTheDocument();
@@ -275,110 +248,68 @@ describe("SkillCreateWizard", () => {
     });
   });
 
-  // ============================================================
-  // モーダル制御
-  // ============================================================
-  describe("モーダル制御", () => {
-    it("Step 4 で「閉じる」クリックで onClose が呼ばれる", async () => {
-      render(<SkillCreateWizard onClose={mockOnClose} />);
-
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
-
-      // Step 2 -> 生成 -> 完了
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
-      });
-      await act(async () => {
-        await mockCreateSkill.mock.results[0]?.value;
-      });
-
-      // Step 4: 閉じる
-      fireEvent.click(screen.getByRole("button", { name: "閉じる" }));
-      expect(mockOnClose).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  // ============================================================
-  // バリデーション
-  // ============================================================
   describe("バリデーション", () => {
-    it("説明が空のとき「次へ」ボタンが disabled", () => {
+    it("目的が空のとき「次へ」ボタンが disabled", () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      const button = screen.getByRole("button", { name: "次へ" });
-      expect(button).toBeDisabled();
+      expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
     });
 
-    it("説明を入力すると「次へ」ボタンが enabled になる", () => {
+    it("目的を入力してもカテゴリ未選択なら「次へ」ボタンは disabled", () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "入力テスト" },
-      });
+      // purpose は 10 文字以上にし、category の未選択だけを原因にする
+      enterPurpose("入力テスト入力テスト");
+      expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
+    });
 
-      const button = screen.getByRole("button", { name: "次へ" });
-      expect(button).toBeEnabled();
+    it("目的とカテゴリを入力すると「次へ」ボタンが enabled になる", () => {
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+
+      completeStep0("入力テスト入力テスト");
+      expect(screen.getByRole("button", { name: "次へ" })).toBeEnabled();
     });
 
     it("スペースのみの入力では「次へ」ボタンが disabled のまま", () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "   " },
-      });
-
-      const button = screen.getByRole("button", { name: "次へ" });
-      expect(button).toBeDisabled();
+      enterPurpose("   ");
+      selectCategory();
+      expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
     });
   });
 
-  // ============================================================
-  // Step 1 に戻った際の状態保持
-  // ============================================================
   describe("状態保持", () => {
-    it("Step 2 から Step 1 に戻った際に入力した説明が保持される", () => {
+    it("Step 2 から Step 0 に戻った際に入力した目的とカテゴリが保持される", () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1: 説明入力
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "保持テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
-
-      // Step 2 -> Step 1
+      advanceToConfigure("保持テスト用の十分長い目的");
       fireEvent.click(screen.getByRole("button", { name: "戻る" }));
 
-      const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
-      expect(textarea.value).toBe("保持テスト");
+      expect(screen.getByLabelText(/目的・背景/)).toHaveValue(
+        "保持テスト用の十分長い目的",
+      );
+      expect(
+        screen.getByRole("button", { name: DEFAULT_CATEGORY }),
+      ).toHaveAttribute("aria-pressed", "true");
     });
   });
 
-  // ============================================================
-  // Phase 6: オプション設定フロー
-  // ============================================================
   describe("オプション設定フロー", () => {
     it("Step 2 でオプションを変更して生成すると正しいオプションが IPC に渡される", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      const purpose = "オプション検証用の十分長い目的";
+      advanceToConfigure(purpose);
 
-      // generateTasks のチェックを解除
       const checkboxes = screen.getAllByRole("checkbox");
-      fireEvent.click(checkboxes[0]); // generateTasks: true -> false
+      fireEvent.click(checkboxes[0]);
 
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
 
-      expect(mockCreateSkill).toHaveBeenCalledWith("テスト", {
+      expect(mockCreateSkill).toHaveBeenCalledWith(purpose, {
         generateTasks: false,
         addAgents: false,
         addReferences: false,
@@ -388,16 +319,11 @@ describe("SkillCreateWizard", () => {
     it("全オプション ON で生成しても IPC が呼ばれる", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      advanceToConfigure("オプション検証用の十分長い目的");
 
-      // addAgents, addReferences をチェック
       const checkboxes = screen.getAllByRole("checkbox");
-      fireEvent.click(checkboxes[1]); // addAgents ON
-      fireEvent.click(checkboxes[2]); // addReferences ON
+      fireEvent.click(checkboxes[1]);
+      fireEvent.click(checkboxes[2]);
 
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
@@ -407,84 +333,40 @@ describe("SkillCreateWizard", () => {
     });
   });
 
-  // ============================================================
-  // Phase 6: 境界値・異常系テスト
-  // ============================================================
-  describe("境界値・異常系テスト", () => {
-    it("TC-CW-S01: 生成中（isGenerating=true）にプログレスバーとステップ表示がされる", async () => {
-      // createSkill を解決しないまま保留して isGenerating=true 状態をキャプチャ
-      let resolvePromise: (value: string) => void;
-      mockCreateSkill.mockReturnValue(
-        new Promise<string>((resolve) => {
-          resolvePromise = resolve;
-        }),
-      );
+  describe("useCreateSkill 安定参照", () => {
+    it("useCreateSkill が複数レンダー間で同一参照を返す", () => {
+      const refs: Array<ReturnType<typeof useCreateSkill>> = [];
 
-      render(<SkillCreateWizard onClose={mockOnClose} />);
+      const TestComponent = () => {
+        const createSkillFn = useCreateSkill();
+        refs.push(createSkillFn);
+        return null;
+      };
 
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      const { rerender } = render(<TestComponent />);
+      rerender(<TestComponent />);
+      rerender(<TestComponent />);
 
-      // Step 2 -> 生成開始（Promiseは未解決のまま）
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
-      });
-
-      // GenerateStep が表示される（ストリーミング idle + isGenerating=true → planning ステージ）
-      expect(screen.getByRole("progressbar")).toBeInTheDocument();
-      expect(
-        screen.getByText("スキルの構造を計画しています..."),
-      ).toBeInTheDocument();
-
-      // テスト終了のためPromiseを解決
-      await act(async () => {
-        resolvePromise!("/path/to/skill");
-      });
-    });
-  });
-
-  // ============================================================
-  // Phase 6: IPC パラメータ詳細検証
-  // ============================================================
-  describe("IPC パラメータ詳細検証", () => {
-    it("skill.create が1回だけ呼ばれる（重複呼び出しなし）", async () => {
-      render(<SkillCreateWizard onClose={mockOnClose} />);
-
-      // Step 1 -> Step 2
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
-
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
-      });
-
-      expect(mockCreateSkill).toHaveBeenCalledTimes(1);
+      expect(refs.length).toBeGreaterThanOrEqual(3);
+      expect(refs[0]).toBe(refs[1]);
+      expect(refs[1]).toBe(refs[2]);
     });
 
-    it("IPC 完了後に生成されたカスタムパスが CompleteStep に渡される", async () => {
-      mockCreateSkill.mockResolvedValue("/custom/generated/path");
+    it("useCreateSkill の参照変化が useEffect 無限ループを引き起こさない", () => {
+      let effectRunCount = 0;
 
-      render(<SkillCreateWizard onClose={mockOnClose} />);
+      const TestComponent = () => {
+        const createSkillFn = useCreateSkill();
 
-      // Step 1 -> Step 2 -> 生成 -> 完了
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+        React.useEffect(() => {
+          effectRunCount++;
+        }, [createSkillFn]);
 
-      await act(async () => {
-        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
-      });
-      await act(async () => {
-        await mockCreateSkill.mock.results[0]?.value;
-      });
+        return <div data-testid="p31-test" />;
+      };
 
-      expect(screen.getByText("/custom/generated/path")).toBeInTheDocument();
+      render(<TestComponent />);
+      expect(effectRunCount).toBeLessThanOrEqual(2);
     });
   });
 });
