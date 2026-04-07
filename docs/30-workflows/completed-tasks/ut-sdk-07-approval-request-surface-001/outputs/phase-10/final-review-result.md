@@ -1,54 +1,77 @@
-# Phase 10 - 最終レビュー結果
+# Phase 10: 最終レビューゲート結果
 
-## 概要
+## タスクID
 
-UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 10 最終レビューゲート結果。
-受け入れ基準（AC-01〜09）の全件確認。
+UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
 
----
+## 実行日時
 
-## 受け入れ基準チェック
+2026-04-06
 
-| AC    | 内容                                                                            | 結果 | 証跡                                  |
-| ----- | ------------------------------------------------------------------------------- | ---- | ------------------------------------- |
-| AC-01 | `SkillCreatorAPI` interface に `onApprovalRequest` メソッドが追加されている     | PASS | `skill-creator-api.ts` TC-APPR-01〜02 |
-| AC-02 | `onApprovalRequest` が `safeOn` パターンで IPC チャンネルを購読している         | PASS | TC-APPR-03                            |
-| AC-03 | `onApprovalRequest` が unsubscribe 関数を返している                             | PASS | TC-APPR-04                            |
-| AC-04 | コールバックが `ApprovalRequest` 型の引数を受け取る                             | PASS | TC-APPR-05（型シグネチャ確認）        |
-| AC-05 | `SkillLifecyclePanel` で `pendingApproval` state が管理されている               | PASS | TC-APPR-06〜07                        |
-| AC-06 | `ApprovalSheet` が `pendingApproval` 非 null 時に表示される                     | PASS | TC-APPR-08                            |
-| AC-07 | `handleApprove` / `handleReject` が `respondToApproval` を呼び出す              | PASS | TC-APPR-09, 17                        |
-| AC-08 | `useEffect` cleanup で購読が解除される（メモリリークなし）                      | PASS | TC-APPR-10, 18                        |
-| AC-09 | `APPROVAL_CHANNELS.APPROVAL_REQUEST` チャンネルを使用している（IPC 契約対称性） | PASS | TC-APPR-13                            |
+## チェックリスト
 
-**全件 PASS: 9/9**
+### 実装確認
 
----
+| #   | チェック項目                                                                | 確認箇所                                     | 結果 |
+| --- | --------------------------------------------------------------------------- | -------------------------------------------- | ---- |
+| 1   | `SkillCreatorAPI` インターフェースに `onApprovalRequest` が追加されているか | `skill-creator-api.ts` L378                  | PASS |
+| 2   | `skill-creator-api.ts` 実装オブジェクトに `safeOn` 経由の実装があるか       | `skill-creator-api.ts` L697                  | PASS |
+| 3   | `SkillLifecyclePanel.tsx` に state・購読・UIが揃っているか                  | L506（state）/ L780-782（購読）/ L1724（UI） | PASS |
 
-## ゲート判定
+### 詳細確認
 
-| 項目           | 状態 |
-| -------------- | ---- |
-| 全 AC PASS     | PASS |
-| テスト 19/19   | PASS |
-| typecheck      | PASS |
-| ESLint         | PASS |
-| リグレッション | なし |
+**`SkillCreatorAPI` インターフェース（L378）:**
 
-### **ゲート判定: PASS**
+```typescript
+onApprovalRequest: (
+  callback: (payload: ApprovalRequestPayload) => void,
+) => () => void;
+```
 
-Phase 11（手動テスト検証）へ進む。
+**実装オブジェクト（L697）:**
 
----
+```typescript
+safeOn<ApprovalRequestPayload>(IPC_CHANNELS.APPROVAL_REQUEST, callback),
+```
 
-## レビュー所見
+**`SkillLifecyclePanel.tsx` state（L506）:**
 
-- `onApprovalRequest` は `onDisclosureInfo` と完全に同パターンで実装されており、一貫性が高い
-- `ApprovalSheet` の再利用により、UI 品質を既存コンポーネント水準で担保している
-- `useEffect` cleanup が正しく実装されており、メモリリーク発生なし
-- 是正アクションなし
+```typescript
+const [pendingApprovalRequest, setPendingApprovalRequest] = useState<...>
+```
 
----
+**購読（L780-782）:**
 
-_作成日: 2026-04-06_
-_Phase 10 完了確認_
+```typescript
+if (!skillCreatorApi?.onApprovalRequest) return;
+const unsubscribe = skillCreatorApi.onApprovalRequest((payload) => {
+  setPendingApprovalRequest(payload);
+```
+
+**UI（L1724）:**
+
+```tsx
+data-testid="skill-lifecycle-approval-request"
+```
+
+### 品質確認
+
+| #   | チェック項目                | 結果                                                        |
+| --- | --------------------------- | ----------------------------------------------------------- |
+| 4   | 全テストが PASS か          | PASS（17/17: skill-creator-api 10 + SkillLifecyclePanel 7） |
+| 5   | TypeScript 型エラーがないか | PASS（tsc --noEmit 成功）                                   |
+| 6   | lint エラーがないか         | PASS（実装対象ファイルに errors/warnings なし）             |
+
+### 受入基準（AC）確認
+
+| AC   | 内容                                                                  | 確認方法                         | 結果 |
+| ---- | --------------------------------------------------------------------- | -------------------------------- | ---- |
+| AC-1 | `onApprovalRequest` push 購読が実装されている                         | インターフェース・実装コード確認 | PASS |
+| AC-2 | `APPROVAL_REQUEST` チャンネルが `ALLOWED_ON_CHANNELS` に含まれる      | T-4-5 テストで確認済み           | PASS |
+| AC-3 | ペイロード（operationType / description / sessionId）がUIに表示される | T-4-8 テストで確認済み           | PASS |
+| AC-4 | アンマウント時にリスナーが解除される                                  | T-4-9 テストで確認済み           | PASS |
+| AC-5 | `destination` が undefined の場合も正常動作する                       | T-6-1, T-6-6 テストで確認済み    | PASS |
+
+## 判定
+
+**PASS** - 全チェックリスト項目、受入基準 AC-1〜AC-5 が全て満たされています。

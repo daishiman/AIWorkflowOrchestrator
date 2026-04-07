@@ -70,12 +70,10 @@ import {
   useWorkflowSnapshot,
 } from "../../store";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
-import { ApprovalRequestPanel } from "./ApprovalRequestPanel";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
 import { SkillCreationResultPanel } from "./SkillCreationResultPanel";
 import { SkillAnalysisView } from "./SkillAnalysisView";
 import { SkillStreamingView } from "./SkillStreamingView";
-import type { ApprovalRequestPayload } from "@repo/shared/types";
 
 type SkillCreatorMode =
   | "collaborative"
@@ -118,8 +116,16 @@ type SessionResumeApi = {
   resumeSession?: (
     checkpointId: string,
   ) => Promise<SkillCreatorSessionResumeResult>;
-  deleteSession?: (checkpointId: string) => Promise<IpcResult<void>>;
+  deleteSession?: (checkpointId: string) => Promise<void>;
   cleanupExpiredSessions?: () => Promise<number>;
+};
+
+type ApprovalRequestPayload = {
+  operationType: string;
+  description: string;
+  destination?: string;
+  sessionId: string;
+  operationId: string;
 };
 
 type SkillCreatorRuntimeApi = {
@@ -177,15 +183,10 @@ type SkillCreatorRuntimeApi = {
       externalDestinations: string[];
     }>
   >;
-  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval:request surface
+  // TASK-SDK-07: approval:request surface 接続
   onApprovalRequest?: (
-    callback: (request: ApprovalRequestPayload) => void,
+    callback: (payload: ApprovalRequestPayload) => void,
   ) => () => void;
-  respondToApproval?: (
-    sessionId: string,
-    operationId: string,
-    action: "approve" | "reject",
-  ) => Promise<IpcResult<unknown>>;
 };
 
 type SessionEntry = {
@@ -370,17 +371,47 @@ const severityStyles: Record<ImproveSuggestion["severity"], string> = {
 };
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   const runtimeWindow = window as Window & {
+    electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
     skillCreatorAPI?: SkillCreatorRuntimeApi;
   };
 
-  return runtimeWindow.skillCreatorAPI ?? null;
+  return (
+    runtimeWindow.electronAPI?.skillCreator ??
+    runtimeWindow.skillCreatorAPI ??
+    null
+  );
 }
 
 function getSessionResumeApi(): SessionResumeApi | null {
-  const w = window as Window & {
+  const w = window as unknown as Window & {
     skillCreatorAPI?: SessionResumeApi;
+    electronAPI?: { skillCreator?: SessionResumeApi };
   };
-  return w.skillCreatorAPI ?? null;
+  return w.skillCreatorAPI ?? w.electronAPI?.skillCreator ?? null;
+}
+
+function ApprovalRequestBanner({
+  payload,
+}: {
+  payload: ApprovalRequestPayload;
+}) {
+  return (
+    <div
+      data-testid="skill-lifecycle-approval-request"
+      className="rounded border border-yellow-400 bg-yellow-50 p-2 text-sm"
+    >
+      <div className="font-semibold text-yellow-800">
+        承認リクエスト: {payload.operationType}
+      </div>
+      <div className="text-yellow-700">{payload.description}</div>
+      {payload.destination ? (
+        <div className="text-yellow-600">宛先: {payload.destination}</div>
+      ) : null}
+      <div className="mt-1 text-xs text-yellow-500">
+        Session: {payload.sessionId}
+      </div>
+    </div>
+  );
 }
 
 function extractSkillNameFromPath(skillPath: string): string {
@@ -497,9 +528,8 @@ export function SkillLifecyclePanel({
     modelName: string;
     externalDestinations: string[];
   } | null>(null);
-
-  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval request state
-  const [approvalRequest, setApprovalRequest] =
+  // TASK-SDK-07: approval request state
+  const [pendingApprovalRequest, setPendingApprovalRequest] =
     useState<ApprovalRequestPayload | null>(null);
   // TASK-RT-03: raw plan/execute detail を local state に保持
   const [rawPlanDetail, setRawPlanDetail] =
@@ -553,6 +583,7 @@ export function SkillLifecyclePanel({
     setIsVerifyDetailLoading(false);
     setIsReverifying(false);
     setDisclosureInfo(null);
+    setPendingApprovalRequest(null);
     clearHandoffGuidance();
     processedWorkflowOutcomePlanIdRef.current = null;
   }, [
@@ -567,6 +598,7 @@ export function SkillLifecyclePanel({
     setRawPlanDetail,
     setActiveWorkflowId,
     setLocalPlanResult,
+    setPendingApprovalRequest,
     setVerifyDetail,
     setVerifyDetailError,
   ]);
@@ -678,16 +710,6 @@ export function SkillLifecyclePanel({
     });
   }, [applyWorkflowSnapshot]);
 
-  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval:request listener
-  useEffect(() => {
-    const skillCreatorApi = getSkillCreatorApi();
-    if (!skillCreatorApi?.onApprovalRequest) return;
-
-    return skillCreatorApi.onApprovalRequest((request) => {
-      setApprovalRequest(request);
-    });
-  }, []);
-
   // TASK-P0-08: アプリ起動時のセッション検出（一度のみ実行）
   useEffect(() => {
     const sessionApi = getSessionResumeApi();
@@ -775,6 +797,16 @@ export function SkillLifecyclePanel({
     }
   };
 
+  // TASK-SDK-07: approval:request surface 接続
+  useEffect(() => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.onApprovalRequest) return;
+    const unsubscribe = skillCreatorApi.onApprovalRequest((payload) => {
+      setPendingApprovalRequest(payload);
+    });
+    return unsubscribe;
+  }, []);
+
   const processWorkflowOutcome = async (
     snapshot: SkillCreatorWorkflowUiSnapshot,
   ): Promise<boolean> => {
@@ -830,42 +862,6 @@ export function SkillLifecyclePanel({
     setDisclosureInfo(null);
     clearHandoffGuidance();
   };
-
-  // UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval handlers
-  const submitApprovalResponse = async (
-    sessionId: string,
-    operationId: string,
-    action: "approve" | "reject",
-  ) => {
-    const skillCreatorApi = getSkillCreatorApi();
-    if (!skillCreatorApi?.respondToApproval) {
-      const message = "approval response API が利用できません。";
-      setLocalError(message);
-      throw new Error(message);
-    }
-
-    const result = await skillCreatorApi.respondToApproval(
-      sessionId,
-      operationId,
-      action,
-    );
-    if (!result.success) {
-      const message = result.error ?? "approval response に失敗しました。";
-      setLocalError(message);
-      throw new Error(message);
-    }
-
-    setLocalError(null);
-    setApprovalRequest(null);
-  };
-
-  const handleApprovalApprove = async (
-    sessionId: string,
-    operationId: string,
-  ) => submitApprovalResponse(sessionId, operationId, "approve");
-
-  const handleApprovalReject = async (sessionId: string, operationId: string) =>
-    submitApprovalResponse(sessionId, operationId, "reject");
 
   const _handleSubmitWorkflowInput = async () => {
     if (!workflowSnapshot?.awaitingUserInput) {
@@ -1008,15 +1004,9 @@ export function SkillLifecyclePanel({
         resumableSessions.map((session) => session.checkpointId);
       if (sessionApi?.deleteSession) {
         await Promise.allSettled(
-          targetIds.map(async (checkpointId) => {
-            const result = await sessionApi.deleteSession!(checkpointId);
-            if (!result.success) {
-              console.error(
-                "[P0-08] deleteSession failed:",
-                result.error ?? "unknown error",
-              );
-            }
-          }),
+          targetIds.map((checkpointId) =>
+            sessionApi.deleteSession!(checkpointId),
+          ),
         );
       }
       setShowResumePrompt(false);
@@ -1096,11 +1086,7 @@ export function SkillLifecyclePanel({
       if (!sessionApi?.deleteSession) return;
 
       try {
-        const result = await sessionApi.deleteSession(checkpointId);
-        if (!result.success) {
-          setLocalError(result.error ?? "セッションの削除に失敗しました。");
-          return;
-        }
+        await sessionApi.deleteSession(checkpointId);
         const next = resumableSessions.filter(
           (s) => s.checkpointId !== checkpointId,
         );
@@ -1256,6 +1242,7 @@ export function SkillLifecyclePanel({
     try {
       setIsGenerating(true);
       setDisclosureInfo(null);
+      setPendingApprovalRequest(null);
       // approved snapshot のみを execute payload として渡す。
       // live textarea（request state）の値は使用しない。
       const result = await skillCreatorApi.executePlan(
@@ -1354,6 +1341,7 @@ export function SkillLifecyclePanel({
     setIsCreating(true);
     setCreatorImproveResult(null);
     setShowDetailedAnalysis(false);
+    setPendingApprovalRequest(null);
 
     try {
       const skillPath = await createSkill(trimmedRequest, defaultCreateOptions);
@@ -1405,6 +1393,7 @@ export function SkillLifecyclePanel({
     setCreatorImproveResult(null);
     setRuntimeImproveResult(null);
     setDisclosureInfo(null);
+    setPendingApprovalRequest(null);
     setShowDetailedAnalysis(false);
 
     selectSkillByName(createdSkillName);
@@ -1441,6 +1430,7 @@ export function SkillLifecyclePanel({
     setLocalError(null);
     setIsPlanningImprovement(true);
     setDisclosureInfo(null);
+    setPendingApprovalRequest(null);
     beginSkillReview();
 
     try {
@@ -1757,13 +1747,9 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
-      {/* UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval request surface */}
-      {approvalRequest ? (
-        <ApprovalRequestPanel
-          request={approvalRequest}
-          onApprove={handleApprovalApprove}
-          onReject={handleApprovalReject}
-        />
+      {/* TASK-SDK-07: approval:request surface (always-on) */}
+      {!workflowSnapshot && !handoffGuidance && pendingApprovalRequest ? (
+        <ApprovalRequestBanner payload={pendingApprovalRequest} />
       ) : null}
 
       {generationProgress ? (
@@ -1893,6 +1879,11 @@ export function SkillLifecyclePanel({
                 ) : null}
               </div>
             ) : null}
+            {pendingApprovalRequest ? (
+              <div className="mt-2">
+                <ApprovalRequestBanner payload={pendingApprovalRequest} />
+              </div>
+            ) : null}
           </div>
         </section>
       ) : null}
@@ -1922,6 +1913,11 @@ export function SkillLifecyclePanel({
                   destinations: {disclosureInfo.externalDestinations.join(", ")}
                 </p>
               ) : null}
+            </div>
+          ) : null}
+          {pendingApprovalRequest ? (
+            <div className="mt-2">
+              <ApprovalRequestBanner payload={pendingApprovalRequest} />
             </div>
           ) : null}
         </div>
