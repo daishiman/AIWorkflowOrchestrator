@@ -37,6 +37,34 @@
 - `pnpm --filter @repo/shared exec vitest run src/types/__tests__/skillCreator-wizard.test.ts`: PASS
 - `pnpm exec eslint packages/shared/src/types/skillCreator.ts packages/shared/src/types/__tests__/skillCreator-wizard.test.ts`: PASS
 
+### タスク: UT-RT-02-EXHAUSTIVE-CHECK-001 RuntimeSkillCreatorExecuteResponse union exhaustive check 導入（2026-04-07）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-RT-02-EXHAUSTIVE-CHECK-001                                                                       |
+| ステータス | **完了**                                                                                            |
+| タイプ     | refactoring / exhaustive-check / typescript                                                         |
+| 優先度     | 中                                                                                                  |
+| 完了日     | 2026-04-07                                                                                          |
+| 対象       | `RuntimeSkillCreatorFacade.executeAsync()` の switch + assertNever 化                               |
+| 成果物     | `docs/30-workflows/ut-rt-02-exhaustive-check/`                                                      |
+| 元未タスク | `docs/30-workflows/unassigned-task/task-runtime-execute-response-exhaustive-check.md`                 |
+
+#### 実施内容
+
+- `classifyExecuteResult()` module-local 正規化 helper + `assertNever()` を `RuntimeSkillCreatorFacade.ts` に追加した
+- `executeAsync()` の `isStructuredError` if-else パターンを switch + assertNever に変換した
+- `success === false`（厳格等価）で振る舞いを旧コードと完全に一致させた（T-03 回帰防止）
+- TC-08（unknown variant smoke test）と it.todo TC-09 をテストファイルに追加した
+- 11 tests PASS / 1 todo / pnpm typecheck エラー 0 件
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts` → 11 PASS / 1 todo
+- `pnpm --filter @repo/desktop typecheck` → エラー 0 件
+
+---
+
 ### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Skill Creator preload / renderer に approval:request surface を追加（2026-04-06）
 
 ## 完了タスク（2026-03後半）

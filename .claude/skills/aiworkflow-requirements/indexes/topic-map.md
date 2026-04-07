@@ -2826,6 +2826,24 @@ node scripts/list-specs.js --topics
 | 分割ファイル一覧 | L88 |
 | クイックリファレンス: カテゴリ別検索ガイド | L106 |
 | 分割ファイル一覧 | L110 |
+| 分割ファイル一覧 | L89 |
+| クイックリファレンス: カテゴリ別検索ガイド | L107 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L288 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L620 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L654 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L737 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L753 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L777 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L827 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L852 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L883 |
+| TASK-RT-06 教訓（2026-03-29） | L914 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L936 |
+| TASK-P0-04 教訓（2026-03-30） | L967 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L1003 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1098 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1152 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1192 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
