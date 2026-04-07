@@ -467,6 +467,19 @@ Claude Agent SDK で使用する Anthropic API Key の管理 IPC チャネル。
 - runtime public surface に `skill-creator:get-verify-detail` / `skill-creator:reverify-workflow` を追加し、Task07/08 owner 項目は delegated note として返す。
 - `SkillLifecyclePanel` は verify detail card を表示し、`reverifyWorkflow()` を再検証導線として利用する。approval / disclosure / persistence は sibling task owner のまま維持。
 
+### UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001: SKILL_CREATOR_RUNTIME_CHANNELS shared 正本化（2026-04-06）
+
+`SKILL_CREATOR_RUNTIME_CHANNELS` を `packages/shared/src/ipc/channels.ts` に正本化し、`apps/desktop/src/preload/channels.ts` は shared からインポートするよう変更した。
+
+| 項目 | 内容 |
+| --- | --- |
+| 正本 | `packages/shared/src/ipc/channels.ts` の `SKILL_CREATOR_RUNTIME_CHANNELS` |
+| 変更前 | `apps/desktop/src/preload/channels.ts` に `SKILL_CREATOR_PROGRESS` / `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` / `SKILL_CREATOR_ADAPTER_STATUS_CHANGED` を直書き |
+| 変更後 | `preload/channels.ts` が `@repo/shared/src/ipc/channels` から `SKILL_CREATOR_RUNTIME_CHANNELS` をインポートし、`...SKILL_CREATOR_RUNTIME_CHANNELS` でスプレッド展開 |
+| Cross-layer parity テスト | `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts` に shared-preload parity テストを追加。将来のドリフトを自動検出する |
+| SSoT 原則 | IPC channel 定数は `packages/shared/src/ipc/channels.ts` を唯一の正本とする。`preload` は shared に依存し、shared は desktop に依存しない（循環依存防止） |
+| coverage 修正 | `packages/shared/vitest.config.ts` の coverage 対象から `src/ipc/channels.ts` の除外を解除 |
+
 ### TASK-P0-08 session resume / cleanup public surface（2026-04-06）
 
 `SkillCreatorWorkflowEngine` の persisted checkpoint を renderer から再開・削除・期限切れ掃除できるようにする session surface。state owner は engine のまま維持する。

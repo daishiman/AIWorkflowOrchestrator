@@ -2,14 +2,18 @@
 
 ## 役割
 
-## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync
+## 2026-04-06 - UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 スキル更新 sync
 
 ### 変更内容
-- `onApprovalRequest()` Preload API（AC-1 push 購読）/ `SkillLifecyclePanel` 承認リクエスト表示 UI・lifecycle reset 完了
-- テスト 17 件 PASS（skill-creator-api.approval.test.ts 10件 + SkillLifecyclePanel.approval.test.tsx 8件）
-- `ipc-preload-spec-sync-guardian` SKILL.md v1.6.0 更新（approval:request 監査スコープ追加）
-- `task-specification-creator` SKILL.md ピットフォールテーブルに `[Feedback UT-SDK-07-AR-001]` として `pnpm --filter @repo/desktop exec vitest run <pattern>` コマンドパターンを追加
-- SKILL.md v6.18.27 / v10.09.37 更新（2変更履歴テーブルに同時追記）
+- `aiworkflow-requirements/SKILL.md` の description（2行目）末尾に `SKILL_CREATOR_RUNTIME_CHANNELS` / `shared-ipc-channel SSoT` / `packages/shared/src/ipc/channels` / `cross-layer parity` / `governance-bundle.test` を追加
+- `ipc-preload-spec-sync-guardian/SKILL.md` の Trigger と変更履歴（v1.6.0）を更新
+- `aiworkflow-requirements/LOGS.md` と本ファイルに変更記録を追加
+
+### 背景
+UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継ぎ事項を反映：
+- `SKILL_CREATOR_RUNTIME_CHANNELS` を `packages/shared/src/ipc/channels.ts` に SSoT 正本化
+- `apps/desktop/src/preload/channels.ts` が shared からimportするよう変更（直書き廃止）
+- Cross-layer parity テストを `governance-bundle.test.ts` に追加
 
 ---
 
@@ -25,7 +29,6 @@
 
 ---
 
-## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
@@ -55,8 +58,6 @@
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
 
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
-
-## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
 
 ### 変更内容
 - `apps/desktop/scripts/capture-task-ui-01-phase11.mjs` を追加し、Playwright 4 枚の visual evidence を `docs/30-workflows/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion/outputs/phase-11/screenshots/` に保存

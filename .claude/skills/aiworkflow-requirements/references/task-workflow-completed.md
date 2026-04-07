@@ -144,6 +144,35 @@
 
 ---
 
+### タスク: UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 packages/shared/src/ipc/channels.ts を desktop 実装へ同期（2026-04-06）
+
+| 項目             | 値                                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001                                                                                      |
+| ステータス       | **完了（Phase 12 close-out）**                                                                                                  |
+| タイプ           | refactor / ipc / shared-normalization / NON_VISUAL                                                                             |
+| 優先度           | 高                                                                                                                              |
+| 完了日           | 2026-04-06                                                                                                                      |
+| 対象             | `packages/shared/src/ipc/channels.ts` / `apps/desktop/src/preload/channels.ts` / `governance-bundle.test.ts`                   |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-sdk-07-shared-ipc-channel-contract-001.md`                                          |
+
+#### 実施内容
+
+- `SKILL_CREATOR_RUNTIME_CHANNELS` を `packages/shared/src/ipc/channels.ts` に正本化し、3チャネル（`SKILL_CREATOR_PROGRESS` / `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` / `SKILL_CREATOR_ADAPTER_STATUS_CHANGED`）を shared の SSoT として定義
+- `apps/desktop/src/preload/channels.ts` が `@repo/shared/src/ipc/channels` から `SKILL_CREATOR_RUNTIME_CHANNELS` をインポートするよう変更（直書き廃止）
+- `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts` に Cross-layer parity テストを追加（将来の shared-preload ドリフトを自動検出）
+- `packages/shared/vitest.config.ts` の coverage 対象から `src/ipc/channels.ts` の除外を解除
+
+#### 苦戦箇所（詳細は lessons-learned-phase12-workflow-lifecycle.md）
+
+| 苦戦箇所                                            | 解決策概要                                                                          |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| shared パッケージ内テストで `@repo/shared` エイリアスが解決できない | テストファイル内インポートを相対パスに変更（`../channels` 等）                     |
+| IPC チャネル命名規則の既存パターン未把握            | Phase 1 開始前に `grep -n "CHANNELS" channels.ts` で命名規則を表として整理         |
+| TDD Red Phase 前の設計前提整合未確認               | allowlist / 既存テスト期待値への影響範囲を Phase 3 先行ステップで文書化            |
+
+---
+
 ### タスク: UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 visible handoff / disclosure / execution host の Phase 11 screenshot 取得（2026-04-06）
 
 | UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 | visible handoff / disclosure / execution host の Phase 11 screenshot 取得 | spec_created | 2026-04-06 |
