@@ -116,8 +116,16 @@ type SessionResumeApi = {
   resumeSession?: (
     checkpointId: string,
   ) => Promise<SkillCreatorSessionResumeResult>;
-  deleteSession?: (checkpointId: string) => Promise<IpcResult<void>>;
+  deleteSession?: (checkpointId: string) => Promise<void>;
   cleanupExpiredSessions?: () => Promise<number>;
+};
+
+type ApprovalRequestPayload = {
+  operationType: string;
+  description: string;
+  destination?: string;
+  sessionId: string;
+  operationId: string;
 };
 
 type SkillCreatorRuntimeApi = {
@@ -175,6 +183,10 @@ type SkillCreatorRuntimeApi = {
       externalDestinations: string[];
     }>
   >;
+  // TASK-SDK-07: approval:request surface 接続
+  onApprovalRequest?: (
+    callback: (payload: ApprovalRequestPayload) => void,
+  ) => () => void;
 };
 
 type SessionEntry = {
@@ -359,17 +371,47 @@ const severityStyles: Record<ImproveSuggestion["severity"], string> = {
 };
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   const runtimeWindow = window as Window & {
+    electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
     skillCreatorAPI?: SkillCreatorRuntimeApi;
   };
 
-  return runtimeWindow.skillCreatorAPI ?? null;
+  return (
+    runtimeWindow.skillCreatorAPI ??
+    runtimeWindow.electronAPI?.skillCreator ??
+    null
+  );
 }
 
 function getSessionResumeApi(): SessionResumeApi | null {
-  const w = window as Window & {
+  const w = window as unknown as Window & {
     skillCreatorAPI?: SessionResumeApi;
+    electronAPI?: { skillCreator?: SessionResumeApi };
   };
-  return w.skillCreatorAPI ?? null;
+  return w.skillCreatorAPI ?? w.electronAPI?.skillCreator ?? null;
+}
+
+function ApprovalRequestBanner({
+  payload,
+}: {
+  payload: ApprovalRequestPayload;
+}) {
+  return (
+    <div
+      data-testid="skill-lifecycle-approval-request"
+      className="rounded border border-yellow-400 bg-yellow-50 p-2 text-sm"
+    >
+      <div className="font-semibold text-yellow-800">
+        承認リクエスト: {payload.operationType}
+      </div>
+      <div className="text-yellow-700">{payload.description}</div>
+      {payload.destination ? (
+        <div className="text-yellow-600">宛先: {payload.destination}</div>
+      ) : null}
+      <div className="mt-1 text-xs text-yellow-500">
+        Session: {payload.sessionId}
+      </div>
+    </div>
+  );
 }
 
 function extractSkillNameFromPath(skillPath: string): string {
@@ -486,6 +528,9 @@ export function SkillLifecyclePanel({
     modelName: string;
     externalDestinations: string[];
   } | null>(null);
+  // TASK-SDK-07: approval request state
+  const [pendingApprovalRequest, setPendingApprovalRequest] =
+    useState<ApprovalRequestPayload | null>(null);
   // TASK-RT-03: raw plan/execute detail を local state に保持
   const [rawPlanDetail, setRawPlanDetail] =
     useState<RuntimeSkillCreatorPlanResult | null>(null);
@@ -538,6 +583,7 @@ export function SkillLifecyclePanel({
     setIsVerifyDetailLoading(false);
     setIsReverifying(false);
     setDisclosureInfo(null);
+    setPendingApprovalRequest(null);
     clearHandoffGuidance();
     processedWorkflowOutcomePlanIdRef.current = null;
   }, [
@@ -552,6 +598,7 @@ export function SkillLifecyclePanel({
     setRawPlanDetail,
     setActiveWorkflowId,
     setLocalPlanResult,
+    setPendingApprovalRequest,
     setVerifyDetail,
     setVerifyDetailError,
   ]);
@@ -750,6 +797,16 @@ export function SkillLifecyclePanel({
     }
   };
 
+  // TASK-SDK-07: approval:request surface 接続
+  useEffect(() => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.onApprovalRequest) return;
+    const unsubscribe = skillCreatorApi.onApprovalRequest((payload) => {
+      setPendingApprovalRequest(payload);
+    });
+    return unsubscribe;
+  }, []);
+
   const processWorkflowOutcome = async (
     snapshot: SkillCreatorWorkflowUiSnapshot,
   ): Promise<boolean> => {
@@ -947,15 +1004,9 @@ export function SkillLifecyclePanel({
         resumableSessions.map((session) => session.checkpointId);
       if (sessionApi?.deleteSession) {
         await Promise.allSettled(
-          targetIds.map(async (checkpointId) => {
-            const result = await sessionApi.deleteSession!(checkpointId);
-            if (!result.success) {
-              console.error(
-                "[P0-08] deleteSession failed:",
-                result.error ?? "unknown error",
-              );
-            }
-          }),
+          targetIds.map((checkpointId) =>
+            sessionApi.deleteSession!(checkpointId),
+          ),
         );
       }
       setShowResumePrompt(false);
@@ -1035,11 +1086,7 @@ export function SkillLifecyclePanel({
       if (!sessionApi?.deleteSession) return;
 
       try {
-        const result = await sessionApi.deleteSession(checkpointId);
-        if (!result.success) {
-          setLocalError(result.error ?? "セッションの削除に失敗しました。");
-          return;
-        }
+        await sessionApi.deleteSession(checkpointId);
         const next = resumableSessions.filter(
           (s) => s.checkpointId !== checkpointId,
         );
@@ -1195,6 +1242,7 @@ export function SkillLifecyclePanel({
     try {
       setIsGenerating(true);
       setDisclosureInfo(null);
+      setPendingApprovalRequest(null);
       // approved snapshot のみを execute payload として渡す。
       // live textarea（request state）の値は使用しない。
       const result = await skillCreatorApi.executePlan(
@@ -1293,6 +1341,7 @@ export function SkillLifecyclePanel({
     setIsCreating(true);
     setCreatorImproveResult(null);
     setShowDetailedAnalysis(false);
+    setPendingApprovalRequest(null);
 
     try {
       const skillPath = await createSkill(trimmedRequest, defaultCreateOptions);
@@ -1344,6 +1393,7 @@ export function SkillLifecyclePanel({
     setCreatorImproveResult(null);
     setRuntimeImproveResult(null);
     setDisclosureInfo(null);
+    setPendingApprovalRequest(null);
     setShowDetailedAnalysis(false);
 
     selectSkillByName(createdSkillName);
@@ -1380,6 +1430,7 @@ export function SkillLifecyclePanel({
     setLocalError(null);
     setIsPlanningImprovement(true);
     setDisclosureInfo(null);
+    setPendingApprovalRequest(null);
     beginSkillReview();
 
     try {
@@ -1696,6 +1747,11 @@ export function SkillLifecyclePanel({
         </div>
       ) : null}
 
+      {/* TASK-SDK-07: approval:request surface (always-on) */}
+      {!workflowSnapshot && !handoffGuidance && pendingApprovalRequest ? (
+        <ApprovalRequestBanner payload={pendingApprovalRequest} />
+      ) : null}
+
       {generationProgress ? (
         <div
           aria-live="polite"
@@ -1823,6 +1879,11 @@ export function SkillLifecyclePanel({
                 ) : null}
               </div>
             ) : null}
+            {pendingApprovalRequest ? (
+              <div className="mt-2">
+                <ApprovalRequestBanner payload={pendingApprovalRequest} />
+              </div>
+            ) : null}
           </div>
         </section>
       ) : null}
@@ -1852,6 +1913,11 @@ export function SkillLifecyclePanel({
                   destinations: {disclosureInfo.externalDestinations.join(", ")}
                 </p>
               ) : null}
+            </div>
+          ) : null}
+          {pendingApprovalRequest ? (
+            <div className="mt-2">
+              <ApprovalRequestBanner payload={pendingApprovalRequest} />
             </div>
           ) : null}
         </div>

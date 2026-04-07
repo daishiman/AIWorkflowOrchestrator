@@ -16,7 +16,7 @@
 | 優先度     | 中                                                                                 |
 | 完了日     | 2026-04-06                                                                         |
 | 対象       | verify 関連ドキュメント4ファイルの区分ラベル付与・責務分離明示                     |
-| 成果物     | `docs/30-workflows/completed-tasks/UT-VERIFY-DOC-CONSOLIDATION-001.md`               |
+| 成果物     | `docs/30-workflows/unassigned-task/UT-VERIFY-DOC-CONSOLIDATION-001.md`             |
 
 #### 実施内容
 
@@ -86,71 +86,38 @@
 
 ---
 
+### タスク: UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 packages/shared/src/ipc/channels.ts を desktop 実装へ同期（2026-04-06）
+
+| 項目             | 値                                                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID         | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001                                                                                      |
+| ステータス       | **完了（Phase 12 close-out）**                                                                                                  |
+| タイプ           | refactor / ipc / shared-normalization / NON_VISUAL                                                                             |
+| 優先度           | 高                                                                                                                              |
+| 完了日           | 2026-04-06                                                                                                                      |
+| 対象             | `packages/shared/src/ipc/channels.ts` / `apps/desktop/src/preload/channels.ts` / `governance-bundle.test.ts`                   |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/task-ut-sdk-07-shared-ipc-channel-contract-001.md`                                          |
+
+#### 実施内容
+
+- `SKILL_CREATOR_RUNTIME_CHANNELS` を `packages/shared/src/ipc/channels.ts` に正本化し、3チャネル（`SKILL_CREATOR_PROGRESS` / `SKILL_CREATOR_WORKFLOW_STATE_CHANGED` / `SKILL_CREATOR_ADAPTER_STATUS_CHANGED`）を shared の SSoT として定義
+- `apps/desktop/src/preload/channels.ts` が `@repo/shared/src/ipc/channels` から `SKILL_CREATOR_RUNTIME_CHANNELS` をインポートするよう変更（直書き廃止）
+- `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts` に Cross-layer parity テストを追加（将来の shared-preload ドリフトを自動検出）
+- `packages/shared/vitest.config.ts` の coverage 対象から `src/ipc/channels.ts` の除外を解除
+
+#### 苦戦箇所（詳細は lessons-learned-phase12-workflow-lifecycle.md）
+
+| 苦戦箇所                                            | 解決策概要                                                                          |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| shared パッケージ内テストで `@repo/shared` エイリアスが解決できない | テストファイル内インポートを相対パスに変更（`../channels` 等）                     |
+| IPC チャネル命名規則の既存パターン未把握            | Phase 1 開始前に `grep -n "CHANNELS" channels.ts` で命名規則を表として整理         |
+| TDD Red Phase 前の設計前提整合未確認               | allowlist / 既存テスト期待値への影響範囲を Phase 3 先行ステップで文書化            |
+
+---
+
 ### タスク: UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 visible handoff / disclosure / execution host の Phase 11 screenshot 取得（2026-04-06）
 
 | UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 | visible handoff / disclosure / execution host の Phase 11 screenshot 取得 | spec_created | 2026-04-06 |
-
-### タスク: TASK-P0-01 llm-adapter-status（2026-04-06）
-
-| 項目       | 値                                                                                                          |
-| ---------- | ----------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-P0-01                                                                                                  |
-| ステータス | **完了（Phase 13: worktree completed）**                                                                    |
-| タイプ     | implementation / IPC 4層統合                                                                                |
-| 優先度     | 高                                                                                                          |
-| 完了日     | 2026-04-06                                                                                                  |
-| 対象       | LLM Adapter Status IPC エンドポイント実装                                                                   |
-| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/`   |
-
-#### 実施内容
-
-- `getAdapterStatus`: 現在の LLM Adapter の状態（providerName / modelName / isConnected / lastChecked）を取得する IPC エンドポイントを creatorHandlers → SkillCreatorFacade → Preload API → Renderer の4層で統合
-- `onAdapterStatusChanged`: Adapter の状態変化をイベント購読する IPC チャネルを実装（preload variadic パターン適用）
-- `useLLMAdapterStatus` Hook: Renderer 側で Adapter 状態を管理する専用 Hook（ポーリング不要のイベント駆動設計）
-- `GovernanceSummaryPanel.tsx` に Adapter Status 表示を統合
-
-#### 苦戦箇所
-
-| 苦戦箇所 | 解決策概要 |
-| --- | --- |
-| IPC 4層型同期漏れリスク | `AdapterStatus` 型を `packages/shared/src/types/` に SSoT として定義し全層から import |
-| preload variadic 化 | `safeOn` を `[AdapterStatus, string?]` として型付けし、Renderer 側 callback で optional 第2引数を受け取る |
-
-→ 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-IPC-4LAYER-001 / L-IPC-4LAYER-002
-
----
-
-### タスク: TASK-UI-01 lifecycle-panel-primary-route-promotion（2026-04-06）
-
-| 項目       | 値                                                                                                        |
-| ---------- | --------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UI-01                                                                                                |
-| ステータス | **完了（Phase 13: worktree completed）**                                                                  |
-| タイプ     | implementation / UI routing                                                                               |
-| 優先度     | 高                                                                                                        |
-| 完了日     | 2026-04-06                                                                                                |
-| 対象       | SkillLifecyclePanel を一次導線（primary route）として昇格                                                 |
-| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/` |
-
-#### 実施内容
-
-- `navigateToSkillLifecycle()` shared action を実装し、SkillCenter → SkillLifecyclePanel への直結ルーティングを確立（最小変更 ~42行）
-- `skillLifecycle` ViewType を `apps/desktop/src/renderer/` に追加（`SKILL_LIFECYCLE_PRIMARY_VIEW` 定数）
-- `SkillLifecycleJourneyPanel` / `SkillLifecycleSurfaceOwnershipPanel` コンポーネントを Atomic Design 準拠で追加
-- `journeyActions` CTA 集約による一次導線の視認性向上
-- Phase 11 Playwright screenshot 4枚（`outputs/phase-11/screenshots/`）で visual evidence を取得
-
-#### 苦戦箇所
-
-| 苦戦箇所 | 解決策概要 |
-| --- | --- |
-| SessionResumePrompt / SessionIndicator との遷移ロジック複雑化 | `snapshot` を `null` に型統一し `hasSession = snapshot !== null` 単一判定ポイントに集約 |
-| snapshot nullability チェックの冗長化 | `snapshot ?? null` で undefined を早期正規化し optional chaining 乱用を回避 |
-
-→ 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-SESSION-RESUME-UI-001
-→ 仕様更新: [ui-ux-navigation.md](ui-ux-navigation.md) v1.9.2
-
----
 
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
 ### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
@@ -165,7 +132,7 @@
 | 対象             | `task-specification-creator` / Phase 仕様書テンプレート                                |
 | GitHub Issue     | #1919                                                                                  |
 | 成果物           | `docs/30-workflows/ut-phase-spec-format-improvement-001/`                              |
-| 元未タスク指示書 | `docs/30-workflows/completed-tasks/ut-phase-spec-format-improvement-001.md`         |
+| 元未タスク指示書 | `docs/30-workflows/unassigned-task/ut-phase-spec-format-improvement-001.md`           |
 
 #### 実施内容
 
@@ -2358,6 +2325,38 @@
 
 ---
 
+### タスク: TASK-UI-03-REMAINING IPC renderer移行完了（2026-04-07）
+
+| 項目       | 値                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-03-REMAINING                                                                                                                                    |
+| ステータス | **完了**                                                                                                                                                |
+| タイプ     | refactor / IPC-preload-migration / NON_VISUAL                                                                                                          |
+| 優先度     | P0                                                                                                                                                      |
+| 完了日     | 2026-04-07                                                                                                                                              |
+| 対象       | `apps/desktop/src/renderer/components/skill/ImprovementProposalPanel.tsx`、`apps/desktop/src/renderer/components/organisms/AgentView/GovernanceSummaryPanel.tsx` |
+| 成果物     | `docs/30-workflows/task-ui-03-ipc-renderer-migration/`（Phase 1-13 仕様書・Phase 12 6成果物）                                                          |
+| 関連Issue  | #1940                                                                                                                                                   |
+
+#### 実施内容
+
+- `ImprovementProposalPanel.tsx`: `window.electronAPI.skillCreator.applyRuntimeImprovement` → `window.skillCreatorAPI.applyRuntimeImprovement` へ移行
+- `GovernanceSummaryPanel.tsx`: `window.electronAPI.skillCreator.getGovernanceState` → `window.skillCreatorAPI.getGovernanceState` へ移行
+- `useStreamingProgress.ts`: `SKILL_CREATOR_PROGRESS` IPC リスナーに useEffect cleanup を追加（メモリリーク防止）
+- IPC canonical API として `window.skillCreatorAPI` を正本化。`window.electronAPI.skillCreator` は preload 互換シムとして残存
+- variadic IPC イベント対応（L-IPC-VARIADIC-001）：snapshot + errorMessage の同一イベント配信を実現
+- Phase 12: 実装ガイド（中学生レベル説明含む）・仕様更新サマリ・変更履歴・未タスク検出・スキルフィードバック・準拠確認 の 6 成果物を生成
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS（EXIT:0）
+- `pnpm --filter @repo/desktop lint`: PASS
+- 関連テスト（GovernanceSummaryPanel.test.tsx / ImprovementProposalPanel.test.tsx / SkillCreateWizard.test.tsx）: PASS
+- Phase 11: NON_VISUAL（renderer は API 参照先のみ移行、自動テスト代替 PASS）
+- `artifacts.json` と `outputs/artifacts.json` parity: 完全一致
+
+---
+
 ### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-06）
 
 | 項目       | 値                                                                                                                                              |
@@ -2384,72 +2383,3 @@
 - 合計 101 tests PASS（`path-scoped-enforcement.test.ts` 含む）
 - typecheck: EXIT:0 ✅
 - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
-
----
-
-### タスク: TASK-UI-04 仕様書ステータス乖離修正（Spec Status Drift Correction）（2026-04-07）
-
-| 項目       | 値                                                                                                                                              |
-| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UI-04                                                                                                                                      |
-| ステータス | **完了（Phase 12 close-out）**                                                                                                                  |
-| タイプ     | maintenance / docs-only / 品質管理                                                                                                              |
-| 優先度     | P0（最高）                                                                                                                                      |
-| 完了日     | 2026-04-07                                                                                                                                      |
-| 対象       | タスク仕様書群の artifacts.json / index.md ステータスフィールド（8件のタスク仕様書のステータス乖離修正）                                        |
-| 成果物     | `docs/30-workflows/completed-tasks/step-13-seq-task-ui-04-spec-status-drift-correction/`                                                        |
-| 関連Issue  | #1941                                                                                                                                           |
-| 依存タスク | TASK-UI-01, TASK-UI-02, TASK-UI-03                                                                                                              |
-
-#### 実施内容
-
-- TASK-P0-01 〜 TASK-P0-09 の 8 件タスク仕様書において、artifacts.json / index.md の status フィールドが実装完了状態と乖離していた問題を是正
-- 各タスクの artifacts.json の status を `spec_created` / `in_progress` → `phase12_completed` に更新
-- 各タスクの index.md のステータスフィールドを実装状態と一致するよう更新
-- completed-tasks/ ディレクトリへの未移動タスク仕様書の移動（TASK-UI-04 自身を含む）
-- skill-creator-agent-sdk-lane の executor-guide.md / index.md のステータス整合を確認・更新
-
-#### 検証証跡
-
-- Phase 1: ステータス抽出マップ・乖離インベントリ作成 PASS（`outputs/phase-1/`）
-- Phase 2: 修正計画作成 PASS（`outputs/phase-2/correction-plan.md`）
-- Phase 3: 設計レビューゲート PASS（`outputs/phase-3/design-review-gate.md`）
-- Phase 4-9: テストマトリクス・実装記録・QA レポート PASS（`outputs/phase-4/` 〜 `outputs/phase-9/`）
-- Phase 10: 最終レビュー PASS（`outputs/phase-10/final-review-result.md`）
-- Phase 11: 手動テスト PASS（`outputs/phase-11/manual-test-result.md`）、NON_VISUAL（docs-only タスク）
-- Phase 12: スキルフィードバック・未タスク検出・準拠チェック PASS（`outputs/phase-12/`）
-
----
-
-### タスク: TASK-UI-04 仕様書ステータス乖離修正（2026-04-07）
-
-| 項目       | 値                                                                                                                        |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
-| タスクID   | TASK-UI-04                                                                                                                |
-| ステータス | **phase12_completed**（Phase 13 未実施）                                                                                  |
-| タイプ     | docs-only / メンテナンス / 品質管理                                                                                       |
-| 優先度     | P0                                                                                                                        |
-| 完了日     | 2026-04-07                                                                                                                |
-| 対象       | P0 是正タスク群（TASK-P0-01〜TASK-P0-09）の artifacts.json / index.md ステータスフィールド                               |
-| 成果物     | `docs/30-workflows/step-13-seq-task-ui-04-spec-status-drift-correction/`（Phase 1-12 仕様書 + 6 Phase 12 outputs）       |
-
-#### 実施内容
-
-- **乖離検出**: P0 タスク群 8 件でコード実装完了済みにもかかわらず仕様書ステータスが `spec_created` / `in_progress` のまま放置されていることを確認
-- **artifacts.json 正規化**: 8 タスク全ての `artifacts.json` status を標準値 `completed` に統一（非標準値 `phase_12_completed` も是正）
-- **index.md 更新**: 8 タスクの `index.md` ステータスフィールドを実装状態と一致させる
-- **skill-creator-agent-sdk-lane リンク修正**: `index.md` の P0 タスクリンク 5 件を旧相対パスから `../completed-tasks/` prefix に修正、✅ completed 追記
-- **executor-guide.md 更新**: P0 全 9 タスクの完了状態テーブルを新規追加（タスクID / ステータス / 実装内容 / 仕様書パス）
-- **Phase 12 成果物**: `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` の 6 ファイルを作成
-
-#### skill-feedback-report 提案（2件）
-
-1. **task-specification-creator 向け**: `complete-phase.js` 実行を Phase 完了チェックリストの「必須項目」に昇格させる（現在は任意実行であり、今回の乖離の主因）
-2. **aiworkflow-requirements 向け**: executor-guide.md に「タスク完了時のアクション」セクションを追加（artifacts.json 更新 / executor-guide 状態テーブル更新 を必須記載）
-
-#### 検証証跡
-
-- 対象: 17 ファイル更新（docs-only / コード変更なし）
-- `verify-unassigned-links`: ALL_LINKS_EXIST 確認
-- `audit --diff-from HEAD`: current=0 確認
-- Phase 11: 手動テスト（docs-only タスクのため UI 確認なし）

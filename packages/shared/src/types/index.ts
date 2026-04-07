@@ -219,6 +219,7 @@ export type {
   SkillCreatorHookEventType,
   SkillCreatorGovernanceAuditEvent,
   SkillCreatorGovernanceState,
+  ApprovalRequestPayload,
 } from "./skillCreator";
 export type {
   SkillCreatorCheckpointType,

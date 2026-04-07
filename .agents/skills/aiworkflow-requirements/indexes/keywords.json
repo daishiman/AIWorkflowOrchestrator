@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-07T03:46:39.938Z",
-  "totalKeywords": 2791,
+  "generated": "2026-04-07T05:43:49.365Z",
+  "totalKeywords": 2792,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3540,6 +3540,7 @@
     ],
     "renderer": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "direct": [
@@ -7153,9 +7154,6 @@
     "の動的解決": [
       "lessons-learned-current.md"
     ],
-    "仕様書ステータス乖離修正": [
-      "lessons-learned-current.md"
-    ],
     "Policy": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "security-electron-ipc-core.md"
@@ -7445,6 +7443,12 @@
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "エラー伝搬パス": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "REMAINING": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "移行完了": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "ライフサイクル": [

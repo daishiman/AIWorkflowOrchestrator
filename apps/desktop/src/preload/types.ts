@@ -37,6 +37,7 @@ import type {
   HealthCheckResult,
   LLMError,
 } from "@repo/shared/types/llm/schemas";
+import type { ApprovalRequestPayload } from "@repo/shared/types";
 import type {
   AuthModeChangedEvent,
   AuthModeGetResponse,
@@ -1036,13 +1037,7 @@ export interface ExecutionAPI {
     action: "approve" | "reject";
   }) => Promise<{ success: boolean; error?: unknown }>;
   onApprovalRequest: (
-    callback: (payload: {
-      operationType: string;
-      description: string;
-      destination?: string;
-      sessionId: string;
-      operationId: string;
-    }) => void,
+    callback: (payload: ApprovalRequestPayload) => void,
   ) => () => void;
 }
 

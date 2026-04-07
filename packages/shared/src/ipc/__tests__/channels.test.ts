@@ -7,6 +7,7 @@ import {
   SKILL_CHANNELS,
   NOTIFICATION_CHANNELS,
   HISTORY_SEARCH_CHANNELS,
+  SKILL_CREATOR_RUNTIME_CHANNELS,
   IPC_CHANNELS,
 } from "../channels";
 
@@ -48,6 +49,30 @@ describe("EXECUTION_CHANNELS", () => {
   });
 });
 
+describe("SKILL_CREATOR_RUNTIME_CHANNELS", () => {
+  it('SKILL_CREATOR_PROGRESS は "skill-creator:progress"', () => {
+    expect(SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_PROGRESS).toBe(
+      "skill-creator:progress",
+    );
+  });
+
+  it('SKILL_CREATOR_WORKFLOW_STATE_CHANGED は "skill-creator:workflow-state-changed"', () => {
+    expect(
+      SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+    ).toBe("skill-creator:workflow-state-changed");
+  });
+
+  it('SKILL_CREATOR_ADAPTER_STATUS_CHANGED は "skill-creator:adapter-status-changed"', () => {
+    expect(
+      SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
+    ).toBe("skill-creator:adapter-status-changed");
+  });
+
+  it("プロパティ数が 3 である", () => {
+    expect(Object.keys(SKILL_CREATOR_RUNTIME_CHANNELS)).toHaveLength(3);
+  });
+});
+
 describe("channel separation", () => {
   it("APPROVAL_RESPOND と EXECUTION_GET_DISCLOSURE_INFO は異なるチャネル名", () => {
     expect(APPROVAL_CHANNELS.APPROVAL_RESPOND).not.toBe(
@@ -69,6 +94,7 @@ describe("全チャネルが namespace:action 形式", () => {
     SKILL_CHANNELS,
     NOTIFICATION_CHANNELS,
     HISTORY_SEARCH_CHANNELS,
+    SKILL_CREATOR_RUNTIME_CHANNELS,
     APPROVAL_CHANNELS,
     EXECUTION_CHANNELS,
   ];
@@ -97,6 +123,18 @@ describe("IPC_CHANNELS 統合オブジェクト", () => {
     );
     expect(IPC_CHANNELS.EXECUTION_GET_COPY_COMMAND).toBe(
       "execution:get-copy-command",
+    );
+  });
+
+  it("SKILL_CREATOR_RUNTIME_CHANNELS が IPC_CHANNELS に含まれる", () => {
+    expect(IPC_CHANNELS.SKILL_CREATOR_PROGRESS).toBe(
+      SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_PROGRESS,
+    );
+    expect(IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED).toBe(
+      SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+    );
+    expect(IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED).toBe(
+      SKILL_CREATOR_RUNTIME_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
     );
   });
 });

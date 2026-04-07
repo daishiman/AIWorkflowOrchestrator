@@ -80,6 +80,10 @@ export default defineConfig(({ mode }) => {
               __dirname,
               "src/renderer/phase11-execution-status-type-spec-sync.html",
             ),
+            "phase11-approval-request-surface": resolve(
+              __dirname,
+              "src/renderer/phase11-approval-request-surface.html",
+            ),
           },
         },
       },
