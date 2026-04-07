@@ -2,6 +2,20 @@
 
 ## 役割
 
+## 2026-04-07 - W0-seq-02 smart-default-reasoning-service Phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/implementation-guide.md` の Part 2 / test command / type export 表記を current facts へ同期
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/system-spec-update-summary.md` に `SkillInfoFormData` / `SmartDefaultResult` root export を追加
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-result.md` を 33 tests PASS へ更新
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を current facts へ同期
+- `packages/shared/src/types/index.ts` / `packages/shared/index.ts` / `packages/shared/vitest.config.ts` を同期
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同期
+- `aiworkflow-requirements` の LOGS.md / SKILL.md と lane index、`task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed.md` を同波更新
+
+### 背景
+Phase 12 のドキュメントは実装証跡と同じ wave で揃える必要があり、特に public type export parity と Phase 11 manual-test の件数ズレを残さないことを優先した。
+
 ## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（impl-spec-to-skill-sync）
 
 ### 変更内容
@@ -103,6 +117,16 @@ UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継�
 
 ---
 
+## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
+
+### 変更内容
+- `ui-result-panel-pattern.md` に state owner 分離判断基準テーブルを追加
+- `task-specification-creator/SKILL.md` Trigger に `result-panel` / `SkillLifecyclePanel` / `SkillCreationResultPanel` / `orchestration wrapper` 等を追加
+- `v10.09.28` で記録済みだった skill-feedback の current facts ずれを是正
+- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新
+
+---
+
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
@@ -132,6 +156,9 @@ UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継�
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
 
 ---
+## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
+---
+
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
 
 ### 変更内容

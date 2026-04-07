@@ -7,6 +7,7 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-04-07 - W0-seq-02 smart-default-reasoning-service Phase 12 close-out sync（`packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` 追加 / `packages/shared/src/services/skillCreator/index.ts` と `packages/shared/index.ts` の export 更新 / `packages/shared/src/types/index.ts` で `SkillInfoFormData`・`SmartDefaultResult` を公開 / `packages/shared/vitest.config.ts` に `@repo/shared` alias 追加 / `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同期 / `task-workflow.md`・`task-workflow-backlog.md`・`task-workflow-completed.md`・`skill-wizard-redesign-lane/index.md`・`LOGS.md`・`SKILL.md` を同波更新 / `manual-test-result.md` を 33 tests PASS に更新） |
 | 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（aiworkflow-requirements SKILL.md frontmatter に Wizard 型キーワード 11 件追加 / `ui-ux-feature-components-reference.md` の CompleteStep 説明を再設計後仕様へ更新 / mirror 同期） |
 | 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Phase 12 close-out sync（`packages/shared/src/types/skillCreator.ts` に shared contracts 7 型を追加 / `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts` を新規作成 / `docs/30-workflows/W0-seq-01-types-skill-info-form/phase-12-docs.md` の出力先を current root に修正 / `task-workflow-completed.md` に W0 完了記録追加 / `interfaces-agent-sdk-skill-reference.md` に Skill Wizard Shared Contracts セクション追加 / `artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同期 / LOGS.md 2ファイル更新） |
 | 2026-04-07 - UT-SKILL-WIZARD-W1-par-02a spec sync（`DescribeStep` 残存参照を `SkillInfoStep` に更新 / `arch-state-management-skill-creator.md` の generationMode 記述を current facts へ是正） |
@@ -98,6 +99,19 @@ UT-HEALTH-POLICY-RUNTIME-INJECTION-001 の実装と検証が完了したため�
 - `TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001` の知見を `lessons-learned-rt-04-authkey-dedup.md` に記録
 - 内容: 二重送信防止パターン（`isSubmittingRef`）、`useAuthKeyManagement` フック統合パターン、`check-failed` + `apiError` 二層設計、応用候補
 - `lessons-learned.md` インデックスに追加
+
+## 2026-04-07 - W0-seq-02 smart-default-reasoning-service Phase 12 close-out sync
+
+### 変更内容
+- `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` に `inferSmartDefaults` を追加
+- `packages/shared/src/services/skillCreator/index.ts` と `packages/shared/index.ts` の export を更新
+- `packages/shared/src/types/index.ts` で `SkillInfoFormData` / `SmartDefaultResult` を root export に追加
+- `packages/shared/vitest.config.ts` に `@repo/shared` alias を追加
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/artifacts.json` / `outputs/artifacts.json` を `phase13_blocked` で同期
+- `docs/30-workflows/skill-wizard-redesign-lane/index.md` と `task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed.md` / `task-specification-creator` の LOGS / SKILL を同波更新
+
+### 背景
+`inferSmartDefaults` は shared の新規 public API であり、実装・型 export・workflow ledger を同じ wave で閉じる必要があった。
 
 ## archive 入口
 

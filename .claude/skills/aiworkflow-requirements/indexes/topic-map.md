@@ -4103,7 +4103,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 残課題（未タスク） | L6 |
-| 続き | L325 |
+| 続き | L327 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4314,9 +4314,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 最近の完了タスク（2026-04） | L7 |
-| 完了タスク（2026-03後半） | L70 |
-| 完了タスク（機能別アーカイブ） | L78 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L187 |
+| 完了タスク（2026-03後半） | L100 |
+| 完了タスク（機能別アーカイブ） | L108 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
 
 ### references/task-workflow-history.md
 
