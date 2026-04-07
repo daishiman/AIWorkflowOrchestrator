@@ -7409,6 +7409,90 @@
     "カテゴリ別検索ガイド": [
       "lessons-learned-current.md"
     ],
+    "GUIDANCE": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "ACTION": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "lessons-learned-viewtype-electron-ui.md",
+      "task-workflow-completed-skill-lifecycle-ui.md",
+      "workflow-skill-lifecycle-routing-render-view-foundation.md"
+    ],
+    "契約ドリフト自動検出スクリプト": [
+      "lessons-learned-current.md"
+    ],
+    "CAPABILITY": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md"
+    ],
+    "BRIDGE": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "ui-ux-agent-execution-core.md"
+    ],
+    "CANONICAL": [
+      "lessons-learned-current.md"
+    ],
+    "LEDGER": [
+      "lessons-learned-current.md"
+    ],
+    "契約テスト教訓": [
+      "lessons-learned-current.md"
+    ],
+    "改善提案": [
+      "lessons-learned-current.md"
+    ],
+    "承認": [
+      "lessons-learned-current.md"
+    ],
+    "適用": [
+      "lessons-learned-current.md",
+      "logs-archive-2026-02-completed-move-preload-sync.md"
+    ],
+    "からの教訓": [
+      "lessons-learned-current.md"
+    ],
+    "VALIDATION": [
+      "lessons-learned-current.md",
+      "lessons-learned-skill-validation-logging-deprecation.md",
+      "lessons-learned-workflow-quality-line-budget-reform.md",
+      "logs-archive-2026-02-completed-move-preload-sync.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
+      "logs-archive-2026-02-skill-validation-atoms-audit.md",
+      "logs-archive-2026-02-validator-task-9f-task-9b.md",
+      "task-workflow-completed-skill-create-ui-integration.md"
+    ],
+    "channel": [
+      "lessons-learned-current.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md"
+    ],
+    "契約整合": [
+      "lessons-learned-current.md"
+    ],
+    "Output": [
+      "lessons-learned-current.md"
+    ],
+    "SkillFileWriter": [
+      "lessons-learned-current.md"
+    ],
+    "persist": [
+      "lessons-learned-current.md",
+      "lessons-learned-skill-share-debug-lifecycle-design.md"
+    ],
+    "ハードコード": [
+      "lessons-learned-current.md"
+    ],
+    "NAMES": [
+      "lessons-learned-current.md"
+    ],
+    "の動的解決": [
+      "lessons-learned-current.md"
+    ],
+    "仕様書ステータス乖離修正": [
+      "lessons-learned-current.md"
+    ],
     "Policy": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "security-electron-ipc-core.md"
