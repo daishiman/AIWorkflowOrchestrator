@@ -97,8 +97,8 @@ Task04 では Skill Creator runtime workflow の canonical state を Renderer �
 | --- | --- | --- |
 | Shared | `packages/shared/src/types/skillCreator.ts` | `SkillCreatorWorkflowUiSnapshot` / `SkillCreatorUserInputSubmission` / `SkillCreatorGovernancePhase` / `GovernanceUiPayload` を SSoT にする。`SkillCreatorUserInputKind` は `single_select` / `multi_select` / `free_text` / `secret` / `confirm` の 5 種 |
 | Main IPC | `apps/desktop/src/main/ipc/creatorHandlers.ts` | sender validation + payload validation 後に facade へ委譲し、`skill-creator:get-governance` で runtime governance payload を返す |
-| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開し、`getGovernancePayload()` を含む |
-| Renderer | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | phase summary / question host / provenance summary / handoff card を snapshot 表示する |
+| Preload | `apps/desktop/src/preload/skill-creator-api.ts` | `safeInvoke` / `safeOn` で public surface を公開し、`getGovernancePayload()` に加えて `onApprovalRequest()` を含む |
+| Renderer | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | phase summary / question host / provenance summary / handoff card / approval sheet を snapshot 表示する |
 
 `SkillCreatorUserInputSubmission` は kind ごとに使用フィールドを切り替える。`multi_select` では `selectedOptionIds: string[]` を使い、Renderer は request kind 切替時に stale selection を持ち越さないことを要件とする。
 

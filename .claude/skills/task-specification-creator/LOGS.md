@@ -2,7 +2,16 @@
 
 ## 役割
 
-<<<<<<< Updated upstream
+## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 11/12 close-out（onApprovalRequest IPC surface追加 / ApprovalSheet再利用 / 19テストPASS / Phase 11 CAPTURE_BLOCKED記録 / unassigned-task formalize / LOGS.md 2ファイル + SKILL.md 2ファイル更新）
+
+### 変更内容
+- Phase 6-10 欠落成果物を遡及作成（expanded-test-cases.md / regression-test-result.md 等 11 ファイル）
+- Phase 11 手動テスト実施: Visual 4件 CAPTURE_BLOCKED（worktree 環境制約）、NonVisual 3件 PASS(unit)
+- Phase 11 CAPTURE_BLOCKED を unassigned-task として formalize
+- Phase 12 成果物 6 ファイル作成（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+
+---
+
 ## 2026-04-06 - TASK-P0-09-U1 Phase 12 完了反映（skill-feedback 反映）
 
 ### 変更内容
@@ -27,8 +36,6 @@
 
 ---
 
-||||||| Stash base
-=======
 ## 2026-04-06 - UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 validator hardening sync
 
 ### 変更内容
@@ -45,8 +52,6 @@
 - `assets/unassigned-task-template.md` に「苦戦箇所」必須欄を追加し、Phase 12 の skill-feedback へ流用しやすい粒度へ整理
 - `phase12-task-spec-compliance-template.md` の root evidence を `task-workflow-completed.md` / `task-workflow-backlog.md` まで拡張し、Phase 12 の突合対象を明示
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
-
->>>>>>> Stashed changes
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
 
 ## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映

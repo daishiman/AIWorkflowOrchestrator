@@ -10,7 +10,7 @@ category: 実装
 target_feature: Skill Creator approval request UI surface
 priority: 中
 scale: 中規模
-status: 未実施
+status: 完了
 source_phase: TASK-SDK-07 Phase 12 unassigned-task-detection（2026-03-28）
 created_date: 2026-03-28
 dependencies: [TASK-SDK-07]
@@ -24,7 +24,7 @@ dependencies: [TASK-SDK-07]
 | 対象機能     | `approval:request` channel の Skill Creator 側受信 / UI 表示          |
 | 優先度       | 中                                                                    |
 | 見積もり規模 | 中規模                                                                |
-| ステータス   | 未実施                                                                |
+| ステータス   | 完了                                                                  |
 | 発見元       | TASK-SDK-07 Phase 12 AC-4 一部確認（approval request surface 未接続） |
 | 発見日       | 2026-03-28                                                            |
 

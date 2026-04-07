@@ -69,6 +69,7 @@ import {
   useWorkflowError,
   useWorkflowSnapshot,
 } from "../../store";
+import { ApprovalSheet } from "../execution/ApprovalSheet";
 import { TerminalHandoffCard } from "../organisms/TerminalHandoffCard";
 import { ImprovementProposalPanel } from "./ImprovementProposalPanel";
 import { SkillCreationResultPanel } from "./SkillCreationResultPanel";
@@ -175,6 +176,22 @@ type SkillCreatorRuntimeApi = {
       externalDestinations: string[];
     }>
   >;
+  // TASK-SDK-07: approval:request push 購読
+  onApprovalRequest?: (
+    callback: (payload: {
+      operationType: string;
+      description: string;
+      destination?: string;
+      sessionId: string;
+      operationId: string;
+    }) => void,
+  ) => () => void;
+  // TASK-SDK-07: 承認応答送信
+  respondToApproval?: (
+    sessionId: string,
+    operationId: string,
+    action: "approve" | "reject",
+  ) => Promise<IpcResult<unknown>>;
 };
 
 type SessionEntry = {
@@ -357,6 +374,22 @@ const severityStyles: Record<ImproveSuggestion["severity"], string> = {
   medium: "bg-amber-500/10 text-amber-700",
   low: "bg-[var(--status-primary)]/10 text-[var(--status-primary)]",
 };
+// TASK-SDK-07: approval request payload shape (local alias)
+type ApprovalRequestPayload = {
+  operationType: string;
+  description: string;
+  destination?: string;
+  sessionId: string;
+  operationId: string;
+};
+
+function normalizeApprovalOperationType(
+  raw: string,
+): "dangerous_operation" | "external_send" {
+  if (raw === "external_send") return "external_send";
+  return "dangerous_operation";
+}
+
 function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
   const runtimeWindow = window as Window & {
     electronAPI?: { skillCreator?: SkillCreatorRuntimeApi };
@@ -492,6 +525,11 @@ export function SkillLifecyclePanel({
     modelName: string;
     externalDestinations: string[];
   } | null>(null);
+  // TASK-SDK-07: approval request pending state
+  const [pendingApproval, setPendingApproval] =
+    useState<ApprovalRequestPayload | null>(null);
+  const [isApprovalResponding, setIsApprovalResponding] = useState(false);
+  const approvalResponseInFlightRef = useRef(false);
   // TASK-RT-03: raw plan/execute detail を local state に保持
   const [rawPlanDetail, setRawPlanDetail] =
     useState<RuntimeSkillCreatorPlanResult | null>(null);
@@ -668,6 +706,22 @@ export function SkillLifecyclePanel({
       }
     });
   }, [applyWorkflowSnapshot]);
+
+  // TASK-SDK-07: approval:request push 購読
+  useEffect(() => {
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.onApprovalRequest) {
+      return;
+    }
+
+    const unsubscribe = skillCreatorApi.onApprovalRequest((payload) => {
+      setLocalError(null);
+      approvalResponseInFlightRef.current = false;
+      setIsApprovalResponding(false);
+      setPendingApproval(payload);
+    });
+    return unsubscribe;
+  }, []);
 
   // TASK-P0-08: アプリ起動時のセッション検出（一度のみ実行）
   useEffect(() => {
@@ -1050,6 +1104,52 @@ export function SkillLifecyclePanel({
     },
     [handleSessionStartNew, resumableSessions],
   );
+
+  // TASK-SDK-07: approval approve/reject ハンドラ
+  const handleApprovalResponse = async (
+    action: "approve" | "reject",
+  ): Promise<void> => {
+    if (!pendingApproval) return;
+    if (approvalResponseInFlightRef.current) return;
+
+    const skillCreatorApi = getSkillCreatorApi();
+    if (!skillCreatorApi?.respondToApproval) {
+      setLocalError("approval response API が利用できません");
+      return;
+    }
+
+    approvalResponseInFlightRef.current = true;
+    setIsApprovalResponding(true);
+
+    try {
+      const result = await skillCreatorApi.respondToApproval(
+        pendingApproval.sessionId,
+        pendingApproval.operationId,
+        action,
+      );
+
+      if (!result || !result.success) {
+        setLocalError(result?.error ?? "approval response に失敗しました");
+        return;
+      }
+
+      setLocalError(null);
+      setPendingApproval(null);
+    } catch (error) {
+      setLocalError(
+        error instanceof Error
+          ? error.message
+          : "approval response に失敗しました",
+      );
+    } finally {
+      approvalResponseInFlightRef.current = false;
+      setIsApprovalResponding(false);
+    }
+  };
+
+  const handleApprove = async () => handleApprovalResponse("approve");
+
+  const handleReject = async () => handleApprovalResponse("reject");
 
   const handlePanelClose = () => {
     clearPlanExecutionState();
@@ -1681,6 +1781,22 @@ export function SkillLifecyclePanel({
           />
         </div>
       )}
+
+      {/* TASK-SDK-07: approval request UI */}
+      {pendingApproval ? (
+        <ApprovalSheet
+          operationType={normalizeApprovalOperationType(
+            pendingApproval.operationType,
+          )}
+          description={pendingApproval.description}
+          destination={pendingApproval.destination}
+          aiServiceName={disclosureInfo?.aiServiceName ?? "AI"}
+          externalDestinations={disclosureInfo?.externalDestinations ?? []}
+          onApprove={handleApprove}
+          onReject={handleReject}
+          isResponding={isApprovalResponding}
+        />
+      ) : null}
 
       {currentSurfaceError ? (
         <div

@@ -2,7 +2,16 @@
 
 ## 役割
 
-<<<<<<< Updated upstream
+## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 11/12 close-out（onApprovalRequest IPC surface追加 / ApprovalSheet再利用 / 19テストPASS / Phase 11 CAPTURE_BLOCKED記録 / unassigned-task formalize / LOGS.md 2ファイル + SKILL.md 2ファイル更新）
+
+### 変更内容
+- Phase 6-10 欠落成果物を遡及作成（expanded-test-cases.md / regression-test-result.md 等 11 ファイル）
+- Phase 11 手動テスト実施: Visual 4件 CAPTURE_BLOCKED（worktree 環境制約）、NonVisual 3件 PASS(unit)
+- Phase 11 CAPTURE_BLOCKED を unassigned-task として formalize
+- Phase 12 成果物 6 ファイル作成（implementation-guide / system-spec-update-summary / documentation-changelog / unassigned-task-detection / skill-feedback-report / phase12-task-spec-compliance-check）
+
+---
+
 ## 2026-04-06 - TASK-P0-09-U1 Phase 12 完了反映（skill-feedback 反映）
 
 ### 変更内容
@@ -16,25 +25,6 @@
 ---
 
 ## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
-
-### 変更内容
-- `assets/implementation-guide-template.md` の §6.3 UIコンポーネント実装パターンに `state owner / wrapper / presentation 責務分離パターン` テーブルを追加
-- `assets/documentation-changelog-template.md` に `### 周辺同期（same-wave）` セクションを追加し、Workflow-Local 同期と Global Skill Sync の区別を明示
-- `assets/documentation-changelog-template.md` の品質チェックリストに周辺同期確認 3 項目を追加（Feedback 1-2 / 1-3 対応）
-- 上記は skill-feedback-report.md の提案 1-2 / 1-3 の実装
-
----
-
-## 2026-04-06 - TASK-RT-03 skill-creation-result-panel Phase 12 close-out sync
-
-### 変更内容
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-11/` を実スクリーンショット 6 枚 + `manual-test-result.md` / `manual-test-report.md` / `discovered-issues.md` / `ui-sanity-visual-review.md` で完成
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-11/manual-test-checklist.md` を追加し、Phase 11 の manual test 見落としを補完
-- `docs/30-workflows/TASK-RT-03-skill-creation-result-panel/outputs/phase-12/` に `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` を追加
-- `phase-11-manual-test.md` に `画面カバレッジマトリクス` を追記し、validator warning を解消
-- `validate-phase11-screenshot-coverage` / `validate-phase12-implementation-guide` を PASS
-- `index.md` / `artifacts.json` / `.claude/skills/aiworkflow-requirements/references/*` / `LOGS.md` 2ファイルを same-wave 更新
-- Step 2 は local-only props のため N/A で閉じた
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
@@ -46,8 +36,6 @@
 
 ---
 
-||||||| Stash base
-=======
 ## 2026-04-06 - UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 validator hardening sync
 
 ### 変更内容
@@ -64,8 +52,6 @@
 - `assets/unassigned-task-template.md` に「苦戦箇所」必須欄を追加し、Phase 12 の skill-feedback へ流用しやすい粒度へ整理
 - `phase12-task-spec-compliance-template.md` の root evidence を `task-workflow-completed.md` / `task-workflow-backlog.md` まで拡張し、Phase 12 の突合対象を明示
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
-
->>>>>>> Stashed changes
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
 
 ## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
