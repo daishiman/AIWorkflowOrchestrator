@@ -2,7 +2,25 @@
 
 ## 役割
 
-||||||| Stash base
+## 2026-04-06 - TASK-SDK-04-U1-F1 impl-spec-to-skill-sync
+
+### 変更内容
+- `[Feedback SDK-04-U1-F1]` ピットフォールを「よくある漏れ」テーブルに追加（先行実装時のTC-NEW/TC-ADD追加方針）
+- `task-specification-creator/SKILL.md` v10.09.37 変更履歴更新
+- `aiworkflow-requirements/lessons-learned-current.md` v3.8.0 に L-PRE-001 追加
+
+---
+
+## 2026-04-06 - TASK-SDK-04-U1-F1 Phase 12 close-out sync
+
+### 変更内容
+- verification_review request を single_select kind に変更するタスクの Phase 1-12 完了
+- `SkillCreatorWorkflowEngine.test.ts` の textValue 削除（5箇所）+ TC-NEW-1〜3 + TC-ADD-1〜5 追加
+- 47 tests PASS / typecheck PASS / lint PASS
+- Pitfall 候補: 「親タスク実装波での先行完了確認を Phase 1 P50チェックで検出する」パターンを記録
+
+---
+
 ## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync
 
 | 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync: approval:request surface の Phase 12 Task 1〜6 全完了（PASS）。`phase-12-documentation.md` ステータスを completed に更新。task-workflow-completed.md / task-workflow-backlog.md は既に同期済み |
