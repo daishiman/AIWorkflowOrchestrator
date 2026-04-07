@@ -94,6 +94,22 @@
 - `packages/shared/src/types/agent.ts`
 - `packages/shared/src/types/skillCreator.ts`
 
+## P0 是正タスク 完了状態（2026-04-07 更新）
+
+全 P0 是正タスクは実装完了・`completed-tasks/` に移動済み。
+
+| タスクID   | ステータス   | 実装内容                                     | 仕様書パス                                                                           |
+| ---------- | ------------ | -------------------------------------------- | ------------------------------------------------------------------------------------ |
+| TASK-P0-01 | ✅ completed | SkillCreatorVerificationEngine 実装完了      | `../completed-tasks/step-09-par-task-p0-01-verify-execution-engine-layer12`          |
+| TASK-P0-02 | ✅ completed | recordVerifyPass / requestReverify 実装完了  | `../completed-tasks/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop`      |
+| TASK-P0-03 | ✅ completed | workflow-manifest.json production 配置完了   | `../completed-tasks/step-09-par-task-p0-03-workflow-manifest-production-placement`   |
+| TASK-P0-04 | ✅ completed | hasDynamicResourcePipeline 実装完了          | `../completed-tasks/step-10-seq-task-p0-04-manifest-loader-default-activation`       |
+| TASK-P0-05 | ✅ completed | \_executeInternal + SkillFileWriter 統合完了 | `../completed-tasks/step-09-par-task-p0-05-execute-skill-file-writer-integration`    |
+| TASK-P0-06 | ✅ completed | ConversationalInterview.tsx 実装完了         | `../completed-tasks/step-09-par-task-p0-06-conversational-interview-ui`              |
+| TASK-P0-07 | ✅ completed | 動的エージェント名解決実装完了               | `../completed-tasks/step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution` |
+| TASK-P0-08 | ✅ completed | SessionResumePrompt + IPC handlers 実装完了  | `../completed-tasks/step-10-seq-task-p0-08-session-resume-renderer-integration`      |
+| TASK-P0-09 | ✅ completed | governance/ ディレクトリ実装完了             | `../completed-tasks/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance`   |
+
 ## 公式照合の最低ライン
 
 仕様の判断で迷ったら、少なくとも次を再確認する。

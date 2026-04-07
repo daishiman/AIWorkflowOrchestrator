@@ -10,7 +10,7 @@
 | 対象機能       | RuntimeSkillCreatorFacade dynamic resource pipeline                                    |
 | 優先度         | 高                                                                                     |
 | 見積もり規模   | 中規模                                                                                 |
-| ステータス     | spec_created                                                                           |
+| ステータス     | completed                                                                              |
 | 依存タスク     | TASK-P0-03                                                                             |
 | 後続タスク     | なし                                                                                   |
 | 作成日         | 2026-03-29                                                                             |

@@ -272,7 +272,8 @@
 | preload governance test（7テスト）                                       | `apps/desktop/src/preload/__tests__/skill-creator-api.governance.test.ts`                   |
 | governance bundle 統合テスト（18テスト）                                 | `apps/desktop/src/main/services/runtime/__tests__/governance-bundle.test.ts`                |
 | Phase 12 教訓（shared channel 再利用 / disclosure graceful degradation） | `references/lessons-learned-phase12-workflow-lifecycle.md`                                  |
-| 未タスク backlog（3件）                                                  | `references/task-workflow-backlog.md`（UT-SDK-07-\* 3件）                                   |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 完了（2026-04-06）               | `onApprovalRequest()` Preload API / `SkillLifecyclePanel` 承認リクエスト表示 UI・lifecycle reset。テスト 17 件 PASS |
+| 未タスク backlog（2件残）                                                | `references/task-workflow-backlog.md`（UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 / UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001） |
 
 ---
 
@@ -441,6 +442,8 @@
 | External API 接続設定       | `ExternalApiConnectionConfig`                                                        | skillCreatorExternalApi.ts                                                                                                     |
 | External API タイムアウト   | `ExternalApiTimeoutError`                                                            | skillCreatorExternalApi.ts                                                                                                     |
 | External API HTTP エラー    | `ExternalApiHttpError`                                                               | skillCreatorExternalApi.ts                                                                                                     |
+| canUseTool governance 判定 | `SkillCreatorPermissionPolicy.canUseTool(tool, input, ctx)`（path-scoped判定）       | governance-hooks-factory-audit-sink.md（L213）                                                                                 |
+| 承認リクエスト受信          | `onApprovalRequest(callback)` → `ApprovalRequestPayload`                             | interfaces-agent-sdk-skill-reference.md（L197）, api-ipc-agent-core.md                                                        |
 
 ---
 
@@ -476,7 +479,7 @@
 | ---------------------- | -------------- |
 | `skill:list-available` | スキルスキャン |
 | `skill:list-imported`  | インポート済み |
-| `skill:execute`        | スキル実行     |
+| `skill:execute`        | スキル実行（preload整合済み / TASK-UI-03 Phase 12 close-out） |
 | `skill:permission`     | 権限確認       |
 
 ### スキル公開・配布
@@ -521,6 +524,17 @@
 | `skill-creator:output-ready`                    | Main→Renderer スキル生成完了通知（プレビュー・上書き確認フロー） |
 | `skill-creator:output-overwrite-approved`       | Renderer→Main 上書き確認承認                   |
 | `skill-creator:open-skill`                      | Main→Renderer 生成スキルを開く指示             |
+
+### スキルクリエイター Session Resume（TASK-P0-08）
+
+| チャンネル                                        | 用途                                               |
+| ------------------------------------------------- | -------------------------------------------------- |
+| `skill-creator:list-sessions`                     | Renderer→Main セッション一覧取得                   |
+| `skill-creator:resume-session`                    | Renderer→Main checkpoint resume（preload整合済み） |
+| `skill-creator:delete-session`                    | Renderer→Main checkpoint 削除                      |
+| `skill-creator:cleanup-expired-sessions`          | Renderer→Main TTL切れセッション掃除                |
+
+**詳細**: `api-ipc-system-skill-creator.md` §session resume channels（L75）
 
 ### チャット
 
@@ -682,3 +696,17 @@ packages/
 | spec-splitting-guidelines.md | ファイル分割ルール        |
 
 ---
+
+### Approval Request Surface (UT-SDK-07)
+| 観点 | 参照先 |
+| --- | --- |
+| IPC surface (onApprovalRequest) | `references/api-ipc-system-core.md` → `onApprovalRequest` セクション |
+| ApprovalRequestPayload shared type | `references/interfaces-agent-sdk-skill-reference.md` |
+| UI コンポーネント (ApprovalRequestPanel) | `references/arch-ui-components.md` |
+
+### Path-Scoped Governance Enforcement (TASK-P0-09-U1)
+| 観点 | 参照先 |
+| --- | --- |
+| canUseTool path-scoped 判定 | `references/arch-state-management-core.md` → governance セクション |
+| extractTargetPath / allowedSkillRoot | `references/api-ipc-system-core.md` |
+| SafetyGovernance Production Integration | `references/arch-state-management-core.md` |

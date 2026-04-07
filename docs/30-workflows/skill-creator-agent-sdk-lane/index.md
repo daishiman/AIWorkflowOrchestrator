@@ -51,24 +51,27 @@
 | TASK-SDK-07 | `step-05-seq-task-07-execution-governance-and-handoff-alignment`              | seq      | lane contract の適用・hardening、API / handoff / approval / disclosure の整合 |
 | TASK-SDK-08 | `step-06-seq-task-08-session-persistence-and-resume-contract`                 | seq      | session persistence / resume / checkpoint の互換性契約                        |
 
-### P0 是正タスク
+### P0 是正タスク（完了済み）
 
-| タスクID   | ディレクトリ                                                      | パターン | 責務                                     |
-| ---------- | ----------------------------------------------------------------- | -------- | ---------------------------------------- |
-| TASK-P0-02 | `step-10-seq-task-p0-02-verify-improve-reverify-closed-loop`      | seq      | verify→improve→re-verify 閉ループ修復    |
-| TASK-P0-04 | `step-10-seq-task-p0-04-manifest-loader-default-activation`       | seq      | ManifestLoader のデフォルト有効化        |
-| TASK-P0-07 | `step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution` | seq      | ハードコードエージェント名の動的解決     |
-| TASK-P0-08 | `step-10-seq-task-p0-08-session-resume-renderer-integration`      | seq      | セッション復元のレンダラー統合           |
-| TASK-P0-09 | `step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance`   | seq      | Claude SDK permission hooks / governance |
+| タスクID   | ディレクトリ                                                                         | パターン | ステータス | 責務                                                  |
+| ---------- | ------------------------------------------------------------------------------------ | -------- | ---------- | ----------------------------------------------------- |
+| TASK-P0-01 | `../completed-tasks/step-09-par-task-p0-01-verify-execution-engine-layer12`          | par      | completed  | verify engine layer1/2 実装                           |
+| TASK-P0-02 | `../completed-tasks/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop`      | seq      | completed  | verify→improve→re-verify 閉ループ修復 ✅ completed    |
+| TASK-P0-04 | `../completed-tasks/step-10-seq-task-p0-04-manifest-loader-default-activation`       | seq      | completed  | ManifestLoader のデフォルト有効化 ✅ completed        |
+| TASK-P0-05 | `../completed-tasks/step-09-par-task-p0-05-execute-skill-file-writer-integration`    | par      | completed  | execute→SkillFileWriter 統合                          |
+| TASK-P0-06 | `../completed-tasks/step-09-par-task-p0-06-conversational-interview-ui`              | par      | completed  | 会話型インタビュー UI                                 |
+| TASK-P0-07 | `../completed-tasks/step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution` | seq      | completed  | ハードコードエージェント名の動的解決 ✅ completed     |
+| TASK-P0-08 | `../completed-tasks/step-10-seq-task-p0-08-session-resume-renderer-integration`      | seq      | completed  | セッション復元のレンダラー統合 ✅ completed           |
+| TASK-P0-09 | `../completed-tasks/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance`   | seq      | completed  | Claude SDK permission hooks / governance ✅ completed |
 
-### UI 統合タスク
+### UI 統合タスク（完了済み）
 
-| タスクID   | ディレクトリ                                                     | パターン | 責務                                     |
-| ---------- | ---------------------------------------------------------------- | -------- | ---------------------------------------- |
-| TASK-UI-01 | `step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion` | seq      | SkillLifecyclePanel の一次導線昇格       |
-| TASK-UI-02 | `step-12-par-task-ui-02-conversation-panel-orphan-resolution`    | par      | SkillCreatorConversationPanel の孤立解消 |
-| TASK-UI-03 | `step-12-par-task-ui-03-ipc-session-runtime-unification`         | par      | IPC session/runtime 二重経路統合         |
-| TASK-UI-04 | `step-13-seq-task-ui-04-spec-status-drift-correction`            | seq      | 仕様書ステータス乖離修正                 |
+| タスクID   | ディレクトリ                                                                        | パターン | ステータス | 責務                                     |
+| ---------- | ----------------------------------------------------------------------------------- | -------- | ---------- | ---------------------------------------- |
+| TASK-UI-01 | `../completed-tasks/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion` | seq      | completed  | SkillLifecyclePanel の一次導線昇格       |
+| TASK-UI-02 | `../completed-tasks/step-12-par-task-ui-02-conversation-panel-orphan-resolution`    | par      | completed  | SkillCreatorConversationPanel の孤立解消 |
+| TASK-UI-03 | `../completed-tasks/step-12-par-task-ui-03-ipc-session-runtime-unification`         | par      | completed  | IPC session/runtime 二重経路統合         |
+| TASK-UI-04 | `../completed-tasks/step-13-seq-task-ui-04-spec-status-drift-correction`            | seq      | completed  | 仕様書ステータス乖離修正                 |
 
 補足:
 

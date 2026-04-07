@@ -2,31 +2,83 @@
 
 ## 役割
 
-## 2026-04-06 - TASK-SDK-04-U1-F1 impl-spec-to-skill-sync
+## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（impl-spec-to-skill-sync）
 
 ### 変更内容
-- `[Feedback SDK-04-U1-F1]` ピットフォールを「よくある漏れ」テーブルに追加（先行実装時のTC-NEW/TC-ADD追加方針）
-- `task-specification-creator/SKILL.md` v10.09.37 変更履歴更新
-- `aiworkflow-requirements/lessons-learned-current.md` v3.8.0 に L-PRE-001 追加
+- `aiworkflow-requirements/SKILL.md` frontmatter に Wizard 型キーワード 11 件を追加（v9.02.46 是正）
+- `ui-ux-feature-components-reference.md` の CompleteStep コンポーネント説明を W1-par-02c 再設計後仕様へ更新
+- `.agents/skills/` mirror を canonical と同波で同期
+- `aiworkflow-requirements/LOGS.md` に v9.02.46 ヘッドライン追加
 
----
+### 背景
+v9.02.45 close-out で `SKILL.md 2ファイル` 同波更新としたが、frontmatter Trigger への Wizard 型キーワード追加が漏れていた。
+impl-spec-to-skill-sync プロンプトの監査フェーズで検出し是正した。
 
-## 2026-04-06 - TASK-SDK-04-U1-F1 Phase 12 close-out sync
+## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Phase 12 close-out sync
 
 ### 変更内容
-- verification_review request を single_select kind に変更するタスクの Phase 1-12 完了
-- `SkillCreatorWorkflowEngine.test.ts` の textValue 削除（5箇所）+ TC-NEW-1〜3 + TC-ADD-1〜5 追加
-- 47 tests PASS / typecheck PASS / lint PASS
-- Pitfall 候補: 「親タスク実装波での先行完了確認を Phase 1 P50チェックで検出する」パターンを記録
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/phase-12-docs.md` の出力先を current root に修正
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-12/` に canonical 6 成果物を作成
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/index.md` に `Phase 12 完了 / Phase 13 blocked` の完了記録を追加
+- `docs/30-workflows/skill-wizard-redesign-lane/index.md` に Wave 0 完了記録を追加
+- `task-workflow-completed.md` / `interfaces-agent-sdk-skill-reference.md` / `aiworkflow-requirements/LOGS.md` / `task-specification-creator/LOGS.md` を same-wave 同期
+
+### 背景
+W0 は shared type の canonical path と Phase 12 の outputs path が drift しやすい。  
+Phase 12 close-out では、task-spec 観点でも `artifacts.json` / `outputs/artifacts.json` / index / logs の同波同期を残す必要がある。
+
+## v10.09.37 — 2026-04-07
+
+### 変更内容
+- Feedback 1: Phase 2 設計ゲートに「既存コンポーネント再利用可否チェック」追加
+- Feedback 2: Phase 1 要件定義に「IPC surface Preload API 必須」追加
+- Feedback 3: Phase 11 に CAPTURE_BLOCKED 対応プロトコル追加
+- Feedback 4: Phase 1 に「既存 API 命名規則確認」チェック追加
+
+### 反映元
+- UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 の skill-feedback-report.md（Feedback 1〜4）
 
 ---
+## 2026-04-07 - TASK-UI-04 仕様書ステータス乖離修正 Phase 12 close-out sync（skill-feedback 反映）
 
 ## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync
 
-| 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync: approval:request surface の Phase 12 Task 1〜6 全完了（PASS）。`phase-12-documentation.md` ステータスを completed に更新。task-workflow-completed.md / task-workflow-backlog.md は既に同期済み |
+### 変更内容
+- `aiworkflow-requirements/references/task-workflow-completed.md` に TASK-UI-04 完了記録を追加
+- `aiworkflow-requirements/references/lessons-learned-current.md` に L-UI04-001〜003 教訓3件を追加（artifacts.json status 更新必須 / completed-tasks 移動後即時 index.md 更新 / docs-only でも Phase 12 成果物 6 件省略禁止）
+- `aiworkflow-requirements/LOGS.md` に TASK-UI-04 エントリを追加
+- `task-specification-creator/SKILL.md` の「よくある漏れ」テーブルに `[Feedback TASK-UI-04]` 行を追加（`artifacts.json` status 放置ピットフォール・有効値明示）
+- `aiworkflow-requirements/SKILL.md` 変更履歴テーブルに v9.02.44 エントリを追加
 
 ---
 
+## 2026-04-07 - TASK-UI-03-REMAINING Phase 12 close-out / skill-feedback sync
+
+### 変更内容
+- TASK-UI-03-REMAINING（IPC renderer 移行完了）の Phase 12 close-out に基づき、skill-feedback-report.md の改善提案を SKILL.md に反映
+- Phase 12 skill-feedback-report の提案5件を同期:
+  - `NON_VISUAL` meta row 明示化（Phase 11 判定の曖昧性解消）
+  - Task 12-6 見出しテンプレートの 1 行固定化（必須タスク漏れ削減）
+  - `outputs/artifacts.json` parity 初手確認導線追加
+  - IPC canonical / compat shim の分離記録パターン明記
+  - Phase 11 evidence mode の Phase 12 への引き継ぎ書き方を確立
+
+---
+
+## 2026-04-06 - UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 スキル更新 sync
+
+### 変更内容
+- `aiworkflow-requirements/SKILL.md` の description（2行目）末尾に `SKILL_CREATOR_RUNTIME_CHANNELS` / `shared-ipc-channel SSoT` / `packages/shared/src/ipc/channels` / `cross-layer parity` / `governance-bundle.test` を追加
+- `ipc-preload-spec-sync-guardian/SKILL.md` の Trigger と変更履歴（v1.6.0）を更新
+- `aiworkflow-requirements/LOGS.md` と本ファイルに変更記録を追加
+
+### 背景
+UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継ぎ事項を反映：
+- `SKILL_CREATOR_RUNTIME_CHANNELS` を `packages/shared/src/ipc/channels.ts` に SSoT 正本化
+- `apps/desktop/src/preload/channels.ts` が shared からimportするよう変更（直書き廃止）
+- Cross-layer parity テストを `governance-bundle.test.ts` に追加
+
+---
 ## 2026-04-06 - TASK-P0-09-U1 Phase 12 完了反映（skill-feedback 反映）
 
 ### 変更内容
@@ -39,7 +91,6 @@
 
 ---
 
-## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
@@ -51,8 +102,6 @@
 
 ---
 
-||||||| Stash base
-=======
 ## 2026-04-06 - UT-PHASE-SPEC-FORMAT-IMPROVEMENT-001 validator hardening sync
 
 ### 変更内容
@@ -70,10 +119,8 @@
 - `phase12-task-spec-compliance-template.md` の root evidence を `task-workflow-completed.md` / `task-workflow-backlog.md` まで拡張し、Phase 12 の突合対象を明示
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
 
->>>>>>> Stashed changes
+---
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
-
-## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
 
 ### 変更内容
 - `apps/desktop/scripts/capture-task-ui-01-phase11.mjs` を追加し、Playwright 4 枚の visual evidence を `docs/30-workflows/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion/outputs/phase-11/screenshots/` に保存

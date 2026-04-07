@@ -12,6 +12,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
 import { DefaultApprovalGate } from "../ApprovalGate";
+import { IPC_CHANNELS as SHARED_IPC_CHANNELS } from "../../../../../../../packages/shared/src/ipc/channels";
 import type { ISubscriptionAuthProvider } from "@repo/shared/types/auth-mode";
 import type { IAuthKeyService } from "../../auth/types";
 
@@ -221,17 +222,32 @@ describe("TASK-SDK-07: Governance bundle", () => {
     });
 
     it("shared APPROVAL_CHANNELS と desktop IPC_CHANNELS で同一チャネル名が使用されている (cross-layer parity)", async () => {
-      const { APPROVAL_CHANNELS, EXECUTION_CHANNELS } =
-        await import("@repo/shared/src/ipc/channels");
       const { IPC_CHANNELS } = await import("../../../../preload/channels");
       expect(IPC_CHANNELS.APPROVAL_RESPOND).toBe(
-        APPROVAL_CHANNELS.APPROVAL_RESPOND,
+        SHARED_IPC_CHANNELS.APPROVAL_RESPOND,
       );
       expect(IPC_CHANNELS.APPROVAL_REQUEST).toBe(
-        APPROVAL_CHANNELS.APPROVAL_REQUEST,
+        SHARED_IPC_CHANNELS.APPROVAL_REQUEST,
       );
       expect(IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO).toBe(
-        EXECUTION_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO,
+        SHARED_IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO,
+      );
+    });
+  });
+
+  // --- 観点 5b: skill creator runtime channel parity ---
+  describe("skill creator runtime channel parity", () => {
+    it("shared の runtime channel 正本と preload の IPC_CHANNELS が一致する", async () => {
+      const { IPC_CHANNELS } = await import("../../../../preload/channels");
+
+      expect(IPC_CHANNELS.SKILL_CREATOR_PROGRESS).toBe(
+        SHARED_IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
+      );
+      expect(IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED).toBe(
+        SHARED_IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      );
+      expect(IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED).toBe(
+        SHARED_IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
       );
     });
   });

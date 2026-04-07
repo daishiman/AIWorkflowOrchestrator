@@ -30,3 +30,28 @@
 5. public IPC shape が不変でも、state owner・review/verify 遷移・failure lifecycle が変わったなら Step 2 を実施する。
 
 上の 4 つがすべて No なら Step 2 は「更新なし」として閉じる。
+
+---
+
+## Runtime orchestration / failure lifecycle の補足判断
+
+次の変更は public IPC の request/response 形状が変わらなくても Step 2 を実施する。
+
+- `Facade` / `Engine` / `Store` の state owner が変わる
+- `review` / `verify` / `resume` / `handoff` の phase 遷移意味が変わる
+- `success:false` / reject / retry の扱いが変わる
+- artifacts の append / upsert / snapshot 方針が変わる
+- 見た目が変わらない state-only 変更でも、phase semantics や error retention が変わるなら Step 2 対象とし、Phase 11 は NON_VISUAL として state assertion / automated test を evidence にする
+
+理由: downstream task と system spec は payload 形状だけでなく state semantics に依存するため。
+
+---
+
+## `spec_created` task への code wave 混入時の補足判断
+
+次の条件が 1 つでも当てはまる場合、docs-heavy / spec_created task でも Step 2 と Phase 11 evidence policy を再判定する。
+
+- shared 型が増えた
+- public IPC / preload surface が増えた
+- renderer に新しい visible block が増えた
+- `manual-test-result.md` の screenshot `N/A` が current UI 実装と矛盾した

@@ -1,27 +1,17 @@
-# 実装サマリー - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
+# Phase 5: 実装サマリー
 
-## 作成日: 2026-04-06
+## タスク5-1: `skill-creator-api.ts` 変更
 
-## Phase: 5
+**ファイルパス**: `apps/desktop/src/preload/skill-creator-api.ts`
 
----
+### 追加内容
 
-## 実装結果
+#### インターフェース (`SkillCreatorAPI` 型) への追加
 
-TC-APPR-01〜10 が全件 Green（11テスト PASS）。
-`pnpm typecheck` PASS、`pnpm eslint` エラーなし。
-
----
-
-## 変更ファイル
-
-### `apps/desktop/src/preload/skill-creator-api.ts`
-
-1. `SkillCreatorAPI` interface に `onApprovalRequest` メソッドを追加（line 366〜383付近）
-2. `skillCreatorAPI` オブジェクトに `onApprovalRequest` 実装を追加（末尾）
+`getDisclosureInfo` の直後に `onApprovalRequest` を追加:
 
 ```typescript
-// interface に追加
+// --- TASK-SDK-07: approval:request surface 追加 ---
 onApprovalRequest: (
   callback: (payload: {
     operationType: string;
@@ -31,28 +21,61 @@ onApprovalRequest: (
     operationId: string;
   }) => void,
 ) => () => void;
-
-// 実装に追加
-onApprovalRequest: (callback) =>
-  safeOn<{ operationType, description, destination?, sessionId, operationId }>(
-    IPC_CHANNELS.APPROVAL_REQUEST,
-    callback,
-  ),
 ```
 
-### `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
+#### 実装オブジェクト (`skillCreatorAPI`) への追加
 
-1. `ApprovalSheet` import 追加
-2. `ApprovalRequestPayload` local type alias 追加
-3. `normalizeApprovalOperationType` 関数追加（string → union）
-4. `SkillCreatorRuntimeApi` に `onApprovalRequest?` / `respondToApproval?` 追加
-5. `pendingApproval` state 追加（`ApprovalRequestPayload | null`）
-6. `useEffect` で `onApprovalRequest` 購読・cleanup 追加
-7. `handleApprove` / `handleReject` ハンドラ追加
-8. JSX に `ApprovalSheet` 条件レンダリング追加
+`getDisclosureInfo` 実装の直後に追加:
+
+```typescript
+onApprovalRequest: (callback) => safeOn<{...}>(IPC_CHANNELS.APPROVAL_REQUEST, callback),
+```
+
+`safeOn` を使用して `APPROVAL_REQUEST` チャンネルを購読し、アンサブスクライブ関数を返す実装。
 
 ---
 
-## canUseTool 適用範囲
+## タスク5-2: `SkillLifecyclePanel.tsx` 変更
 
-本タスクは直接ファイル編集であり、LLM Adapter 経由の `improve()` フローは適用しない。
+**ファイルパス**: `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
+
+### 追加箇所 1: `SkillCreatorRuntimeApi` 型拡張
+
+`getDisclosureInfo?` の直後に `onApprovalRequest?` を追加:
+
+```typescript
+onApprovalRequest?: (callback: (payload: {...}) => void) => () => void;
+```
+
+### 追加箇所 2: state 追加
+
+`disclosureInfo` state の直後に `pendingApprovalRequest` state を追加:
+
+```typescript
+const [pendingApprovalRequest, setPendingApprovalRequest] = useState<{...} | null>(null);
+```
+
+### 追加箇所 3: useEffect 追加
+
+`fetchDisclosureInfo` 関数定義の後、`processWorkflowOutcome` の前に useEffect を追加:
+
+```typescript
+useEffect(() => {
+  const skillCreatorApi = getSkillCreatorApi();
+  if (!skillCreatorApi?.onApprovalRequest) return;
+  const unsubscribe = skillCreatorApi.onApprovalRequest((payload) => {
+    setPendingApprovalRequest(payload);
+  });
+  return unsubscribe;
+}, []);
+```
+
+### 追加箇所 4: UI 追加（3箇所）
+
+以下の3箇所に `data-testid="skill-lifecycle-approval-request"` の UI を挿入:
+
+1. トップレベル（常時表示 - `currentSurfaceError` 直後）
+2. `workflowSnapshot` 内の disclosure summary 直後
+3. `!workflowSnapshot && handoffGuidance` ブロック内の disclosure summary 直後
+
+トップレベルの配置により、`workflowSnapshot` や `handoffGuidance` の有無に関わらず approval request が常に表示される。

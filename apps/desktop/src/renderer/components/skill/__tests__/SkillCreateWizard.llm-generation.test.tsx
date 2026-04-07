@@ -143,16 +143,20 @@ describe("SkillCreateWizard LLM生成フロー", () => {
       success: true,
       data: createWorkflowSnapshot(),
     });
-    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
-      planSkill: mockPlanSkill,
-      executePlan: mockExecutePlan,
-      getWorkflowState: mockGetWorkflowState,
-    };
+    Object.defineProperty(window, "skillCreatorAPI", {
+      value: {
+        planSkill: mockPlanSkill,
+        executePlan: mockExecutePlan,
+        getWorkflowState: mockGetWorkflowState,
+      },
+      writable: true,
+      configurable: true,
+    });
   });
 
   afterEach(() => {
     cleanup();
-    delete (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI;
+    Reflect.deleteProperty(window, "skillCreatorAPI");
   });
 
   // ============================================================
@@ -738,9 +742,14 @@ describe("SkillCreateWizard LLM生成フロー", () => {
   // ============================================================
   describe("API未接続フォールバック", () => {
     it("F-2: planSkill が undefined のとき setGenerationError が呼ばれてクラッシュしない", async () => {
-      (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI = {
-        executePlan: mockExecutePlan,
-      };
+      Object.defineProperty(window, "skillCreatorAPI", {
+        value: {
+          executePlan: mockExecutePlan,
+          getWorkflowState: mockGetWorkflowState,
+        },
+        writable: true,
+        configurable: true,
+      });
 
       render(<SkillCreateWizard onClose={vi.fn()} />);
 

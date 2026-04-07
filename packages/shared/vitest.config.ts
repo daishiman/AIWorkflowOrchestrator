@@ -57,9 +57,6 @@ export default defineConfig({
         "src/db/schema/**",
         "infrastructure/database/schema/**",
 
-        // IPC定義（定数定義のみ）
-        "src/ipc/channels.ts",
-
         // 未実装/外部依存ファイル
         "infrastructure/auth/supabase-client.ts",
         "infrastructure/database/client.ts",
