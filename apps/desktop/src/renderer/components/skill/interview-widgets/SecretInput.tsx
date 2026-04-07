@@ -50,8 +50,9 @@ export function SecretInput({
         />
         <button
           type="button"
+          disabled={disabled}
           onClick={() => setVisible((prev) => !prev)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)]"
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-secondary)] hover:text-[var(--text-primary)] disabled:cursor-not-allowed disabled:opacity-50"
           aria-label={visible ? "入力を隠す" : "入力を表示"}
           data-testid="secret-toggle"
         >

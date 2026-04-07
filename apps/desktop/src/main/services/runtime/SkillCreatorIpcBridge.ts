@@ -9,21 +9,19 @@
  * - sessionFactory DI でテスト時にモック注入可能
  * - SDK / IPC 通信の責務を明確に分離
  * - register() 前に内部で unregister() を実行して二重登録を防止
+ *
+ * TASK-UI-02: CONFIGURE_API / SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED ハンドラーは
+ * creatorHandlers.ts へ移管済み。このクラスは Session IPC (START_SESSION / ANSWER) のみ担う。
+ * ※ Session IPC 自体も廃止予定（index.ts からのインスタンス化を削除済み）。
  */
 
 import { ipcMain } from "electron";
 import type { BrowserWindow, IpcMainInvokeEvent } from "electron";
-import {
-  SKILL_CREATOR_EXTERNAL_API_CHANNELS,
-  SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
-  SKILL_CREATOR_SESSION_CHANNELS,
-} from "@repo/shared/ipc/channels";
+import { SKILL_CREATOR_SESSION_CHANNELS } from "@repo/shared/ipc/channels";
 import type {
-  ExternalApiConnectionConfig,
   SkillCreatorSessionStartRequest,
   SkillCreatorSessionCompleteEvent,
   SkillCreatorSessionErrorEvent,
-  SkillOutputReadyPayload,
   UserInputAnswer,
   UserInputQuestion,
 } from "@repo/shared/types";
@@ -42,11 +40,6 @@ export type SessionFactory = (
   onComplete: (r: string) => void,
   onError: (e: string) => void,
 ) => SkillCreatorSdkSession;
-
-type ConfigureApiResult = {
-  success: boolean;
-  error?: string;
-};
 
 export class SkillCreatorIpcBridge {
   private currentSession: SkillCreatorSdkSession | null = null;
@@ -103,20 +96,6 @@ export class SkillCreatorIpcBridge {
       },
     );
 
-    ipcMain.handle(
-      SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
-      async (event, config: ExternalApiConnectionConfig) => {
-        return await this.onConfigureApi(event, config);
-      },
-    );
-
-    ipcMain.handle(
-      SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
-      async (event, payload: SkillOutputReadyPayload) => {
-        return await this.onOverwriteApproved(event, payload);
-      },
-    );
-
     this.registered = true;
   }
 
@@ -133,8 +112,6 @@ export class SkillCreatorIpcBridge {
     this.window.off?.("closed", this.handleWindowClosed);
     ipcMain.removeHandler(SKILL_CREATOR_SESSION_CHANNELS.START_SESSION);
     ipcMain.removeHandler(SKILL_CREATOR_SESSION_CHANNELS.ANSWER);
-    ipcMain.removeHandler(SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API);
-    ipcMain.removeHandler(SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED);
     this.registered = false;
   }
 
@@ -244,94 +221,6 @@ export class SkillCreatorIpcBridge {
   }
 
   /**
-   * configure-api IPC を処理する。
-   */
-  private async onConfigureApi(
-    event: IpcMainInvokeEvent,
-    config: ExternalApiConnectionConfig,
-  ): Promise<ConfigureApiResult> {
-    this.assertSender(event);
-
-    if (!this.currentSession) {
-      return {
-        success: false,
-        error:
-          "[SkillCreatorIpcBridge] Received external API config but no active session",
-      };
-    }
-
-    if (!this.isValidExternalApiConfig(config)) {
-      const error = "外部API設定の形式が不正です";
-      this.emitApiConfigured({ success: false, error });
-      this.emitApiTestResult({ ok: false, error });
-      return {
-        success: false,
-        error: `[SkillCreatorIpcBridge] ${error}`,
-      };
-    }
-
-    try {
-      this.currentSession.sendExternalApiConfig(config);
-      this.emitApiConfigured({ success: true });
-      this.emitApiTestResult({ ok: true });
-      return {
-        success: true,
-      };
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      this.emitApiConfigured({ success: false, error: message });
-      this.emitApiTestResult({ ok: false, error: message });
-      return {
-        success: false,
-        error: message,
-      };
-    }
-  }
-
-  /**
-   * overwrite-approved IPC を処理する。
-   */
-  private async onOverwriteApproved(
-    event: IpcMainInvokeEvent,
-    payload: SkillOutputReadyPayload,
-  ): Promise<ConfigureApiResult> {
-    this.assertSender(event);
-
-    if (!this.outputHandler) {
-      return {
-        success: false,
-        error:
-          "[SkillCreatorIpcBridge] Received overwrite approval but output handler is not configured",
-      };
-    }
-
-    if (!this.isValidSkillOutputReadyPayload(payload)) {
-      return {
-        success: false,
-        error:
-          "[SkillCreatorIpcBridge] Received overwrite approval with invalid payload",
-      };
-    }
-
-    try {
-      await this.outputHandler.handleOverwriteApproved(payload);
-      return {
-        success: true,
-      };
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      console.error(
-        "[SkillCreatorIpcBridge] Failed to process overwrite approval:",
-        message,
-      );
-      return {
-        success: false,
-        error: message,
-      };
-    }
-  }
-
-  /**
    * Main → Renderer: question-received イベントを送出する。
    */
   private emitQuestionReceived(question: UserInputQuestion): void {
@@ -390,33 +279,6 @@ export class SkillCreatorIpcBridge {
     );
   }
 
-  private emitApiConfigured(payload: {
-    success: boolean;
-    error?: string;
-  }): void {
-    if (this.window.webContents.isDestroyed()) {
-      return;
-    }
-    this.window.webContents.send(
-      SKILL_CREATOR_EXTERNAL_API_CHANNELS.API_CONFIGURED,
-      payload,
-    );
-  }
-
-  private emitApiTestResult(payload: {
-    ok: boolean;
-    latencyMs?: number;
-    error?: string;
-  }): void {
-    if (this.window.webContents.isDestroyed()) {
-      return;
-    }
-    this.window.webContents.send(
-      SKILL_CREATOR_EXTERNAL_API_CHANNELS.API_TEST_RESULT,
-      payload,
-    );
-  }
-
   private hasActiveSession(): boolean {
     if (!this.currentSession) {
       return false;
@@ -433,69 +295,6 @@ export class SkillCreatorIpcBridge {
 
     this.currentSession.abort(message, { silent });
     this.currentSession = null;
-  }
-
-  private isValidExternalApiConfig(
-    config: ExternalApiConnectionConfig,
-  ): boolean {
-    if (!config || typeof config !== "object") {
-      return false;
-    }
-    if (typeof config.name !== "string" || config.name.trim() === "") {
-      return false;
-    }
-    if (typeof config.url !== "string" || config.url.trim() === "") {
-      return false;
-    }
-    if (config.method !== "GET" && config.method !== "POST") {
-      return false;
-    }
-    if (
-      config.authType !== "none" &&
-      config.authType !== "api-key" &&
-      config.authType !== "bearer" &&
-      config.authType !== "basic"
-    ) {
-      return false;
-    }
-    if (
-      config.authType !== "none" &&
-      (typeof config.credential !== "string" || config.credential.trim() === "")
-    ) {
-      return false;
-    }
-    if (
-      config.headers !== undefined &&
-      (typeof config.headers !== "object" || Array.isArray(config.headers))
-    ) {
-      return false;
-    }
-    if (config.headers) {
-      for (const [key, value] of Object.entries(config.headers)) {
-        if (typeof key !== "string" || key.trim() === "") {
-          return false;
-        }
-        if (typeof value !== "string") {
-          return false;
-        }
-      }
-    }
-    return true;
-  }
-
-  private isValidSkillOutputReadyPayload(
-    payload: SkillOutputReadyPayload,
-  ): boolean {
-    return (
-      !!payload &&
-      typeof payload === "object" &&
-      typeof payload.skillName === "string" &&
-      payload.skillName.trim() !== "" &&
-      typeof payload.savedPath === "string" &&
-      payload.savedPath.trim() !== "" &&
-      typeof payload.content === "string" &&
-      typeof payload.requiresOverwriteConfirm === "boolean"
-    );
   }
 
   private assertSender(event: IpcMainInvokeEvent): void {

@@ -30,8 +30,16 @@ beforeEach(() => {
   // P9: ストアリセット
   useAppStore.getState().resetStreamingProgress();
 
-  Object.defineProperty(window, "electronAPI", {
-    value: { skillCreator: mockSkillCreatorAPI },
+  Object.defineProperty(window, "skillCreatorAPI", {
+    value: mockSkillCreatorAPI,
+    writable: true,
+    configurable: true,
+  });
+});
+
+afterEach(() => {
+  Object.defineProperty(window, "skillCreatorAPI", {
+    value: undefined,
     writable: true,
     configurable: true,
   });

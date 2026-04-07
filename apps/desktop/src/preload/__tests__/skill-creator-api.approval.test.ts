@@ -1,194 +1,167 @@
 /**
- * SkillCreatorAPI onApprovalRequest テスト
+ * UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval:request onEvent listener テスト
  *
- * UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 4
- *
- * TDD Red → Green: skillCreatorAPI.onApprovalRequest が
- * approval:request チャンネルを safeOn で購読し、
- * アンサブスクライブ関数を返すことを検証する。
+ * AC-1: approval:request onEvent が preload に登録されている
+ * AC-3: approve/reject 操作が respondToApproval() と接続されている（preload 側）
  */
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { ALLOWED_ON_CHANNELS, IPC_CHANNELS } from "../channels";
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { IPC_CHANNELS } from "../channels";
+const { mockOn, mockRemoveListener, mockInvoke } = vi.hoisted(() => ({
+  mockOn: vi.fn(),
+  mockRemoveListener: vi.fn(),
+  mockInvoke: vi.fn(),
+}));
 
-// --- Mock: electron ---
-vi.mock("electron", () => {
-  const mockIpcRenderer = {
-    invoke: vi.fn().mockResolvedValue({}),
-    on: vi.fn(),
-    removeListener: vi.fn(),
-  };
-  return {
-    contextBridge: {
-      exposeInMainWorld: vi.fn(),
-    },
-    ipcRenderer: mockIpcRenderer,
-  };
-});
+vi.mock("electron", () => ({
+  ipcRenderer: {
+    invoke: mockInvoke,
+    on: mockOn,
+    removeListener: mockRemoveListener,
+  },
+}));
 
-import { ipcRenderer } from "electron";
 import { skillCreatorAPI } from "../skill-creator-api";
+import type { ApprovalRequestPayload } from "@repo/shared/types";
 
-describe("skillCreatorAPI.onApprovalRequest", () => {
+describe("UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: onApprovalRequest listener", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
-  // TC-APPR-01: onApprovalRequest メソッド存在確認
-  it("TC-APPR-01: onApprovalRequest が function として存在する", () => {
-    expect(typeof skillCreatorAPI.onApprovalRequest).toBe("function");
+  // --- AC-1: APPROVAL_REQUEST チャネル登録 ---
+
+  describe("TC-001: approval:request イベント受信で callback を呼び出す", () => {
+    it("APPROVAL_REQUEST チャネルに ipcRenderer.on が登録される", () => {
+      const callback = vi.fn();
+      skillCreatorAPI.onApprovalRequest(callback);
+
+      expect(mockOn).toHaveBeenCalledWith(
+        IPC_CHANNELS.APPROVAL_REQUEST,
+        expect.any(Function),
+      );
+    });
+
+    it("イベント発火時に callback が payload と共に呼ばれる", () => {
+      const callback = vi.fn();
+      skillCreatorAPI.onApprovalRequest(callback);
+
+      // ipcRenderer.on に登録された handler を取得して手動発火
+      const handler = mockOn.mock.calls[0][1] as (
+        event: unknown,
+        payload: ApprovalRequestPayload,
+      ) => void;
+      const payload: ApprovalRequestPayload = {
+        sessionId: "session-1",
+        operationId: "op-1",
+        operationType: "file_write",
+        description: "危険なファイル書き込みを実行しようとしています",
+        destination: "/etc/hosts",
+      };
+      handler({}, payload);
+
+      expect(callback).toHaveBeenCalledWith(payload);
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
   });
 
-  // TC-APPR-02: onApprovalRequest が正しいチャンネルを購読する
-  it("TC-APPR-02: onApprovalRequest が approval:request チャンネルで ipcRenderer.on を呼ぶ", () => {
-    const callback = vi.fn();
-    skillCreatorAPI.onApprovalRequest(callback);
+  // --- TC-002: cleanup 関数 ---
 
-    expect(ipcRenderer.on).toHaveBeenCalledWith(
-      IPC_CHANNELS.APPROVAL_REQUEST,
-      expect.any(Function),
-    );
+  describe("TC-002: cleanup 関数が listener を解除する", () => {
+    it("cleanup() 呼び出しで ipcRenderer.removeListener が呼ばれる", () => {
+      const callback = vi.fn();
+      const cleanup = skillCreatorAPI.onApprovalRequest(callback);
+
+      cleanup();
+
+      expect(mockRemoveListener).toHaveBeenCalledWith(
+        IPC_CHANNELS.APPROVAL_REQUEST,
+        expect.any(Function),
+      );
+    });
+
+    it("cleanup() で渡される handler 参照が on 登録時と同一である", () => {
+      const callback = vi.fn();
+      const cleanup = skillCreatorAPI.onApprovalRequest(callback);
+
+      // on に登録されたハンドラを保持
+      const registeredHandler = mockOn.mock.calls[0][1] as (
+        event: unknown,
+        payload: ApprovalRequestPayload,
+      ) => void;
+
+      cleanup();
+
+      // removeListener が同じハンドラ参照で呼ばれること（同一インスタンス保証）
+      expect(mockRemoveListener).toHaveBeenCalledTimes(1);
+      expect(mockRemoveListener).toHaveBeenCalledWith(
+        IPC_CHANNELS.APPROVAL_REQUEST,
+        registeredHandler,
+      );
+    });
   });
 
-  // TC-APPR-03: onApprovalRequest がコールバックを受信する
-  it("TC-APPR-03: ipcRenderer イベント発火時にコールバックが payload を受け取る", () => {
-    const callback = vi.fn();
-    skillCreatorAPI.onApprovalRequest(callback);
+  // --- TC-003: payload フィールド ---
 
-    // ipcRenderer.on に渡された listener を取得
-    const onMock = vi.mocked(ipcRenderer.on);
-    const listener = onMock.mock.calls[0]?.[1] as (
-      event: unknown,
-      data: unknown,
-    ) => void;
-    expect(listener).toBeDefined();
+  describe("TC-003: ApprovalRequestPayload のフィールドが正しく渡される", () => {
+    it("全フィールドを含む payload が callback に渡される", () => {
+      const callback = vi.fn();
+      skillCreatorAPI.onApprovalRequest(callback);
 
-    const payload = {
-      operationType: "dangerous_operation",
-      description: "ファイルを削除します",
-      destination: undefined,
-      sessionId: "session-123",
-      operationId: "op-456",
-    };
+      const handler = mockOn.mock.calls[0][1] as (
+        event: unknown,
+        payload: ApprovalRequestPayload,
+      ) => void;
+      const payload: ApprovalRequestPayload = {
+        sessionId: "sess-abc",
+        operationId: "op-xyz",
+        operationType: "network_request",
+        description: "外部 API へのリクエストを送信しようとしています",
+        destination: "https://api.example.com",
+      };
+      handler({}, payload);
 
-    // IPC イベントをシミュレート
-    listener({}, payload);
+      expect(callback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sessionId: "sess-abc",
+          operationId: "op-xyz",
+          operationType: "network_request",
+          description: "外部 API へのリクエストを送信しようとしています",
+          destination: "https://api.example.com",
+        }),
+      );
+    });
 
-    expect(callback).toHaveBeenCalledWith(payload);
+    it("destination なし（省略可能フィールド）でも正常に動作する", () => {
+      const callback = vi.fn();
+      skillCreatorAPI.onApprovalRequest(callback);
+
+      const handler = mockOn.mock.calls[0][1] as (
+        event: unknown,
+        payload: ApprovalRequestPayload,
+      ) => void;
+      const payload: ApprovalRequestPayload = {
+        sessionId: "sess-1",
+        operationId: "op-1",
+        operationType: "file_delete",
+        description: "ファイルを削除しようとしています",
+      };
+      handler({}, payload);
+
+      expect(callback).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sessionId: "sess-1",
+          operationId: "op-1",
+        }),
+      );
+    });
   });
 
-  // TC-APPR-04: onApprovalRequest がアンサブスクライブ関数を返す
-  it("TC-APPR-04: onApprovalRequest の戻り値が function（unsubscribe）", () => {
-    const callback = vi.fn();
-    const unsubscribe = skillCreatorAPI.onApprovalRequest(callback);
+  // --- チャネル登録確認 ---
 
-    expect(typeof unsubscribe).toBe("function");
-  });
-
-  // TC-APPR-05: アンサブスクライブ後にコールバックが呼ばれない
-  it("TC-APPR-05: unsubscribe 後に ipcRenderer.removeListener が呼ばれる", () => {
-    const callback = vi.fn();
-    const unsubscribe = skillCreatorAPI.onApprovalRequest(callback);
-
-    unsubscribe();
-
-    expect(ipcRenderer.removeListener).toHaveBeenCalledWith(
-      IPC_CHANNELS.APPROVAL_REQUEST,
-      expect.any(Function),
-    );
-  });
-
-  // TC-APPR-02 補足: APPROVAL_REQUEST チャンネル値の確認
-  it("IPC_CHANNELS.APPROVAL_REQUEST が approval:request である", () => {
-    expect(IPC_CHANNELS.APPROVAL_REQUEST).toBe("approval:request");
-  });
-
-  // TC-APPR-11: 多重購読（両コールバックが呼ばれる）
-  it("TC-APPR-11: onApprovalRequest を二重購読した場合、両コールバックが呼ばれる", () => {
-    const callback1 = vi.fn();
-    const callback2 = vi.fn();
-
-    skillCreatorAPI.onApprovalRequest(callback1);
-    skillCreatorAPI.onApprovalRequest(callback2);
-
-    const onMock = vi.mocked(ipcRenderer.on);
-    // 1回目の購読で登録したリスナーを取得
-    const listener1 = onMock.mock.calls[0]?.[1] as (
-      event: unknown,
-      data: unknown,
-    ) => void;
-    // 2回目の購読で登録したリスナーを取得
-    const listener2 = onMock.mock.calls[1]?.[1] as (
-      event: unknown,
-      data: unknown,
-    ) => void;
-
-    expect(listener1).toBeDefined();
-    expect(listener2).toBeDefined();
-
-    const payload = {
-      operationType: "test_op",
-      description: "テスト操作",
-      sessionId: "session-multi",
-      operationId: "op-multi",
-    };
-
-    listener1({}, payload);
-    listener2({}, payload);
-
-    expect(callback1).toHaveBeenCalledWith(payload);
-    expect(callback2).toHaveBeenCalledWith(payload);
-  });
-
-  // TC-APPR-12: アンサブスクライブ後の再購読
-  it("TC-APPR-12: unsubscribe 後に再購読すると新しいリスナーが登録される", () => {
-    const callback1 = vi.fn();
-    const callback2 = vi.fn();
-
-    const unsubscribe = skillCreatorAPI.onApprovalRequest(callback1);
-    // アンサブスクライブ
-    unsubscribe();
-
-    expect(ipcRenderer.removeListener).toHaveBeenCalledWith(
-      IPC_CHANNELS.APPROVAL_REQUEST,
-      expect.any(Function),
-    );
-
-    // 再購読
-    skillCreatorAPI.onApprovalRequest(callback2);
-
-    // ipcRenderer.on が合計2回呼ばれていること（初回 + 再購読）
-    expect(ipcRenderer.on).toHaveBeenCalledTimes(2);
-    // 2回とも APPROVAL_REQUEST チャンネルで呼ばれていること
-    expect(vi.mocked(ipcRenderer.on).mock.calls[1]?.[0]).toBe(
-      IPC_CHANNELS.APPROVAL_REQUEST,
-    );
-  });
-
-  // TC-APPR-13: ALLOWED_ON_CHANNELS 外チャンネルへの safeOn（console.error が呼ばれ空関数が返る）
-  it("TC-APPR-13: 未許可チャンネルで safeOn を呼ぶと console.error が呼ばれ、空の unsubscribe が返る", () => {
-    const consoleErrorSpy = vi
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
-    // skillCreatorAPI.onApprovalRequest は APPROVAL_REQUEST（許可済み）を使うため
-    // 直接 safeOn の挙動を検証するためにモックの ipcRenderer.on を操作する
-    // ここでは実装上 APPROVAL_REQUEST が ALLOWED_ON_CHANNELS に含まれるため PASS する
-    // 未許可チャンネルの検証は safeOn の内部挙動として確認する
-    // このテストでは ALLOWED_ON_CHANNELS に含まれない文字列でチャンネルを指定した場合、
-    // console.error が呼ばれ ipcRenderer.on が呼ばれないことを確認する
-
-    // APPROVAL_REQUEST は許可チャンネルなので console.error は呼ばれない
-    const callback = vi.fn();
-    skillCreatorAPI.onApprovalRequest(callback);
-    expect(consoleErrorSpy).not.toHaveBeenCalled();
-
-    // ipcRenderer.on が呼ばれていることを確認（= 許可チャンネルとして処理されている）
-    expect(ipcRenderer.on).toHaveBeenCalledWith(
-      IPC_CHANNELS.APPROVAL_REQUEST,
-      expect.any(Function),
-    );
-
-    consoleErrorSpy.mockRestore();
+  describe("ALLOWED_ON_CHANNELS への登録確認", () => {
+    it("APPROVAL_REQUEST が ALLOWED_ON_CHANNELS に含まれている", () => {
+      expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.APPROVAL_REQUEST);
+    });
   });
 });

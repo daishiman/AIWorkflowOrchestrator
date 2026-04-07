@@ -292,6 +292,7 @@ Electronデスクトップアプリでは、IPC通信でスキル作成・管理
 | `skill-creator:progress`        | Main → Renderer | 進捗通知           | -                                                          | `SkillCreatorProgress`        |
 | `skill-creator:get-adapter-status` | Renderer → Main | LLMAdapter 初期化状態取得 | なし | `IpcResult<LLMAdapterStatusPayload>` |
 | `skill-creator:adapter-status-changed` | Main → Renderer | LLMAdapter 状態変化通知 | - | `LLMAdapterStatusPayload` |
+| APPROVAL_REQUEST (onEvent) | approval:request | Main → Renderer | approval-request-surface | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 | onApprovalRequest() | ApprovalRequestPayload |
 
 ### 型定義
 

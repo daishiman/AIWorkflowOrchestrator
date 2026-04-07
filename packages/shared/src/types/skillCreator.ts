@@ -357,6 +357,11 @@ export type SkillCreatorErrorCode =
   | "LLM_ADAPTER_INITIALIZING";
 
 // ============================================
+// Runtime IPC 型（ワークフロー状態: plan / execute / verify / improve）
+// 使用場面: SkillCreatorWorkflowPanel, TASK-9B-H / TASK-P0-08 系
+// ============================================
+
+// ============================================
 // Runtime Skill Creator IPC contract
 // ============================================
 
@@ -1086,6 +1091,11 @@ export interface WorkflowSessionStorageSchema {
  */
 export const SKILL_CREATOR_ENGINE_VERSION = "task-sdk-08-v1" as const;
 
+// ============================================
+// Session Resume 型（セッション一覧・再開・削除）
+// 使用場面: SkillCreatorSessionList, TASK-SDK-SC-01 系
+// ============================================
+
 /**
  * セッション一覧に返すフラットな項目型 (TASK-P0-08)。
  * RendererがSessionResumePromptを描画するために使用。
@@ -1254,4 +1264,20 @@ export interface SkillCreatorGovernanceState {
   activePolicy: SkillCreatorSdkPolicy;
   recentAuditEvents: SkillCreatorGovernanceAuditEvent[];
   recentDenials: SkillCreatorSdkPermissionDenial[];
+}
+
+/**
+ * approval:request IPC push payload.
+ *
+ * Main が Renderer に対して承認 UI を表示させるために push するデータ。
+ * 正本は shared に置き、main/preload/renderer 間の drift を防ぐ。
+ *
+ * UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
+ */
+export interface ApprovalRequestPayload {
+  sessionId: string;
+  operationId: string;
+  operationType: string;
+  description: string;
+  destination?: string;
 }

@@ -9,6 +9,7 @@
 import { ipcMain, BrowserWindow, type IpcMainInvokeEvent } from "electron";
 import { IPC_CHANNELS } from "../../preload/channels";
 import type { IApprovalGate } from "../services/runtime/ApprovalGate";
+import type { ApprovalRequestPayload } from "@repo/shared/types";
 
 export interface ApprovalRespondRequest {
   sessionId: string;
@@ -22,13 +23,7 @@ export interface ApprovalRespondRequest {
  */
 export function pushApprovalRequest(
   mainWindow: BrowserWindow,
-  payload: {
-    sessionId: string;
-    operationId: string;
-    operationType: string;
-    description: string;
-    destination?: string;
-  },
+  payload: ApprovalRequestPayload,
 ): void {
   if (mainWindow.isDestroyed() || mainWindow.webContents.isDestroyed()) {
     return;

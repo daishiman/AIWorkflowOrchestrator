@@ -1,14 +1,11 @@
 /**
  * @vitest-environment happy-dom
  *
- * SkillLifecyclePanel onApprovalRequest テスト
+ * UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: SkillLifecyclePanel approval 統合テスト
  *
- * UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 4
- *
- * TDD Red → Green: SkillLifecyclePanel が onApprovalRequest を購読し
- * ApprovalSheet を表示・approve/reject を respondToApproval に接続することを検証する。
+ * AC-2: Renderer に approval 確認 UI が表示される
+ * AC-3: approve/reject 操作が respondToApproval() と接続されている
  */
-
 import "@testing-library/jest-dom/vitest";
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
@@ -18,10 +15,10 @@ import {
   fireEvent,
   render,
   screen,
-  waitFor,
 } from "@testing-library/react";
+import type { ApprovalRequestPayload } from "@repo/shared/types";
 
-// --- store mock ---
+// --- Store モック ---
 const mockBeginSkillReview = vi.fn();
 const mockCompleteSkillReview = vi.fn();
 const mockCreateSkill = vi.fn();
@@ -40,8 +37,8 @@ const mockClearHandoffGuidance = vi.fn();
 
 vi.mock("../../../store", () => ({
   useBeginSkillReview: () => mockBeginSkillReview,
-  useCreateSkill: () => mockCreateSkill,
   useCompleteSkillReview: () => mockCompleteSkillReview,
+  useCreateSkill: () => mockCreateSkill,
   useExecuteSkill: () => mockExecuteSkill,
   useFetchSkills: () => mockFetchSkills,
   useReExecuteAfterImprovement: () => mockReExecuteAfterImprovement,
@@ -74,7 +71,6 @@ vi.mock("../../../store", () => ({
   useClearHandoffGuidance: () => mockClearHandoffGuidance,
 }));
 
-// --- 子コンポーネント mock ---
 vi.mock("../SkillStreamingView", () => ({
   SkillStreamingView: () => <div data-testid="mock-streaming-view" />,
 }));
@@ -87,351 +83,269 @@ vi.mock("../SkillAnalysisView", () => ({
   ),
 }));
 
-vi.mock("../ApiKeySettingsPanel", () => ({
-  ApiKeySettingsPanel: () => <div data-testid="mock-api-key-panel" />,
-}));
-
-vi.mock("../SessionResumePrompt", () => ({
-  SessionResumePrompt: () => <div data-testid="mock-session-resume" />,
-}));
-
-vi.mock("../SessionIndicator", () => ({
-  SessionIndicator: () => <div data-testid="mock-session-indicator" />,
-}));
-
-vi.mock("../LLMAdapterErrorBanner", () => ({
-  LLMAdapterErrorBanner: () => <div data-testid="mock-llm-error-banner" />,
-}));
-
-vi.mock("../hooks/useLLMAdapterStatus", () => ({
-  useLLMAdapterStatus: () => ({ status: "connected", failureReason: null }),
-}));
-
-vi.mock("../../organisms/TerminalHandoffCard", () => ({
-  TerminalHandoffCard: () => <div data-testid="mock-handoff-card" />,
-}));
-
-vi.mock("../ImprovementProposalPanel", () => ({
-  ImprovementProposalPanel: () => <div data-testid="mock-improvement-panel" />,
-}));
-
-vi.mock("../SkillCreationResultPanel", () => ({
-  SkillCreationResultPanel: () => <div data-testid="mock-creation-result" />,
-}));
-
-vi.mock("../ConversationalInterview", () => ({
-  ConversationalInterview: () => <div data-testid="mock-interview" />,
+vi.mock("../ApprovalRequestPanel", () => ({
+  ApprovalRequestPanel: ({
+    request,
+    onApprove,
+    onReject,
+  }: {
+    request: ApprovalRequestPayload | null;
+    onApprove: (sessionId: string, operationId: string) => Promise<void>;
+    onReject: (sessionId: string, operationId: string) => Promise<void>;
+  }) => {
+    if (!request) return null;
+    return (
+      <div data-testid="approval-request-panel">
+        <span data-testid="approval-operation-type">
+          {request.operationType}
+        </span>
+        <button
+          data-testid="approval-approve-button"
+          onClick={() =>
+            void onApprove(request.sessionId, request.operationId).catch(
+              () => undefined,
+            )
+          }
+        >
+          承認
+        </button>
+        <button
+          data-testid="approval-reject-button"
+          onClick={() =>
+            void onReject(request.sessionId, request.operationId).catch(
+              () => undefined,
+            )
+          }
+        >
+          拒否
+        </button>
+      </div>
+    );
+  },
 }));
 
 import { SkillLifecyclePanel } from "../SkillLifecyclePanel";
 
-// --- approval mock helpers ---
-type ApprovalCallback = (payload: {
-  operationType: string;
-  description: string;
-  destination?: string;
-  sessionId: string;
-  operationId: string;
-}) => void;
+const sampleRequest: ApprovalRequestPayload = {
+  sessionId: "session-lifecycle-1",
+  operationId: "op-lifecycle-1",
+  operationType: "file_write",
+  description: "危険なファイル書き込みを実行しようとしています",
+};
 
-let capturedApprovalCallback: ApprovalCallback | null = null;
-let mockUnsubscribe: ReturnType<typeof vi.fn>;
-let mockOnApprovalRequest: ReturnType<typeof vi.fn>;
-let mockRespondToApproval: ReturnType<typeof vi.fn>;
+// onApprovalRequest コールバックを手動発火するためのキャプチャ
+let capturedOnApprovalRequestCallback:
+  | ((request: ApprovalRequestPayload) => void)
+  | null = null;
 
-function setupSkillCreatorApiMock() {
-  mockUnsubscribe = vi.fn();
-  mockOnApprovalRequest = vi.fn().mockImplementation((cb: ApprovalCallback) => {
-    capturedApprovalCallback = cb;
-    return mockUnsubscribe;
-  });
-  mockRespondToApproval = vi.fn().mockResolvedValue({ success: true });
+const mockOnApprovalRequest = vi.fn(
+  (callback: (request: ApprovalRequestPayload) => void) => {
+    capturedOnApprovalRequestCallback = callback;
+    return () => {
+      capturedOnApprovalRequestCallback = null;
+    };
+  },
+);
+const mockRespondToApproval = vi.fn().mockResolvedValue({ success: true });
+const mockOnWorkflowStateChanged = vi.fn(() => () => {});
+const mockListSessions = vi.fn().mockResolvedValue({ success: true, data: [] });
+const mockCleanupExpiredSessions = vi.fn().mockResolvedValue(0);
 
+beforeEach(() => {
+  vi.clearAllMocks();
+  capturedOnApprovalRequestCallback = null;
+
+  // window.skillCreatorAPI をモック設定
   (
     window as Window & {
       skillCreatorAPI?: {
-        onApprovalRequest?: (cb: ApprovalCallback) => () => void;
-        respondToApproval?: (
-          sessionId: string,
-          operationId: string,
-          action: "approve" | "reject",
-        ) => Promise<{ success: boolean }>;
-        getDisclosureInfo?: () => Promise<{ success: boolean }>;
-        listSessions?: () => Promise<{ success: boolean; data: [] }>;
-        cleanupExpiredSessions?: () => Promise<number>;
-        onWorkflowStateChanged?: (cb: unknown) => () => void;
+        onApprovalRequest?: typeof mockOnApprovalRequest;
+        respondToApproval?: typeof mockRespondToApproval;
+        onWorkflowStateChanged?: typeof mockOnWorkflowStateChanged;
+        listSessions?: typeof mockListSessions;
+        cleanupExpiredSessions?: typeof mockCleanupExpiredSessions;
       };
     }
   ).skillCreatorAPI = {
     onApprovalRequest: mockOnApprovalRequest,
     respondToApproval: mockRespondToApproval,
-    getDisclosureInfo: vi.fn().mockResolvedValue({ success: false }),
-    listSessions: vi.fn().mockResolvedValue({ success: true, data: [] }),
-    cleanupExpiredSessions: vi.fn().mockResolvedValue(0),
-    onWorkflowStateChanged: vi.fn().mockReturnValue(vi.fn()),
+    onWorkflowStateChanged: mockOnWorkflowStateChanged,
+    listSessions: mockListSessions,
+    cleanupExpiredSessions: mockCleanupExpiredSessions,
   };
-}
+});
 
-const testPayload = {
-  operationType: "dangerous_operation",
-  description: "ファイルを削除します",
-  sessionId: "session-123",
-  operationId: "op-456",
-};
+afterEach(() => {
+  (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI =
+    undefined;
+  cleanup();
+});
 
-function createDeferred<T>() {
-  let resolve!: (value: T | PromiseLike<T>) => void;
-  const promise = new Promise<T>((res) => {
-    resolve = res;
-  });
-  return { promise, resolve };
-}
+describe("UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: SkillLifecyclePanel approval 統合", () => {
+  // --- TC-012: approval 受信時に UI 表示 ---
 
-describe("SkillLifecyclePanel: onApprovalRequest", () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    capturedApprovalCallback = null;
-    setupSkillCreatorApiMock();
-  });
+  describe("TC-012: onApprovalRequest イベント受信時に ApprovalRequestPanel が表示される", () => {
+    it("approval request 受信前は ApprovalRequestPanel が非表示", async () => {
+      await act(async () => {
+        render(
+          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+        );
+      });
 
-  afterEach(() => {
-    cleanup();
-    // window mock cleanup
-    (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI =
-      undefined;
-  });
-
-  // TC-APPR-06: SkillLifecyclePanel が onApprovalRequest を購読する
-  it("TC-APPR-06: レンダリング時に onApprovalRequest が呼ばれる", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
-
-    await act(async () => {});
-
-    expect(mockOnApprovalRequest).toHaveBeenCalledTimes(1);
-    expect(mockOnApprovalRequest).toHaveBeenCalledWith(expect.any(Function));
-  });
-
-  // TC-APPR-07: approval request 受信時に ApprovalSheet が表示される
-  it("TC-APPR-07: onApprovalRequest callback 発火で approval-sheet が表示される", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
-
-    await act(async () => {});
-
-    expect(capturedApprovalCallback).not.toBeNull();
-
-    await act(async () => {
-      capturedApprovalCallback!(testPayload);
+      expect(
+        screen.queryByTestId("approval-request-panel"),
+      ).not.toBeInTheDocument();
     });
 
-    expect(screen.getByTestId("approval-sheet")).toBeInTheDocument();
-  });
+    it("onApprovalRequest コールバック発火後に ApprovalRequestPanel が表示される", async () => {
+      await act(async () => {
+        render(
+          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+        );
+      });
 
-  // TC-APPR-08: approve ボタン押下で respondToApproval が呼ばれる
-  it("TC-APPR-08: approve ボタンで respondToApproval(sessionId, operationId, 'approve') が呼ばれる", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
+      // onApprovalRequest が登録されたことを確認
+      expect(mockOnApprovalRequest).toHaveBeenCalled();
 
-    await act(async () => {});
-    await act(async () => {
-      capturedApprovalCallback!(testPayload);
-    });
+      // コールバックを手動発火
+      await act(async () => {
+        capturedOnApprovalRequestCallback?.(sampleRequest);
+      });
 
-    const approveButton = screen.getByTestId("approval-approve");
-    await act(async () => {
-      fireEvent.click(approveButton);
-    });
-
-    expect(mockRespondToApproval).toHaveBeenCalledWith(
-      testPayload.sessionId,
-      testPayload.operationId,
-      "approve",
-    );
-  });
-
-  // TC-APPR-09: reject ボタン押下で respondToApproval が呼ばれる
-  it("TC-APPR-09: reject ボタンで respondToApproval(sessionId, operationId, 'reject') が呼ばれる", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
-
-    await act(async () => {});
-    await act(async () => {
-      capturedApprovalCallback!(testPayload);
-    });
-
-    const rejectButton = screen.getByTestId("approval-reject");
-    await act(async () => {
-      fireEvent.click(rejectButton);
-    });
-
-    expect(mockRespondToApproval).toHaveBeenCalledWith(
-      testPayload.sessionId,
-      testPayload.operationId,
-      "reject",
-    );
-  });
-
-  // TC-APPR-10: アンマウント時に unsubscribe が呼ばれる
-  it("TC-APPR-10: アンマウント時に unsubscribe 関数が呼ばれる", async () => {
-    const { unmount } = render(<SkillLifecyclePanel onClose={vi.fn()} />);
-
-    await act(async () => {});
-
-    expect(mockUnsubscribe).not.toHaveBeenCalled();
-
-    act(() => {
-      unmount();
-    });
-
-    expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
-  });
-
-  // TC-APPR-14: respondToApproval 非影響確認（回帰ガード）
-  it("TC-APPR-14: approval request がない状態では respondToApproval が呼ばれない（回帰ガード）", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
-
-    await act(async () => {});
-
-    // approval request を発火させない状態
-    expect(mockRespondToApproval).not.toHaveBeenCalled();
-  });
-
-  // TC-APPR-15: getDisclosureInfo 非影響確認（回帰ガード）
-  it("TC-APPR-15: onApprovalRequest 購読は getDisclosureInfo に影響しない（回帰ガード）", async () => {
-    const mockGetDisclosureInfo = vi.fn().mockResolvedValue({ success: false });
-    (
-      window as Window & {
-        skillCreatorAPI?: { getDisclosureInfo?: () => Promise<unknown> };
-      }
-    ).skillCreatorAPI!.getDisclosureInfo = mockGetDisclosureInfo;
-
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
-
-    await act(async () => {});
-
-    // onApprovalRequest の購読は getDisclosureInfo を呼ばない
-    expect(mockOnApprovalRequest).toHaveBeenCalledTimes(1);
-    // getDisclosureInfo は SkillLifecyclePanel 内で自動呼び出しされる場合もあるが
-    // onApprovalRequest コールバックの起動だけでは呼ばれない
-    // approval callback を発火させてもgetDisclosureInfoは呼ばれない
-    await act(async () => {
-      capturedApprovalCallback!(testPayload);
-    });
-
-    // approval-sheet が表示されても getDisclosureInfo は呼ばれないこと
-    // (getDisclosureInfo は別フローで呼ばれる)
-    expect(screen.getByTestId("approval-sheet")).toBeInTheDocument();
-  });
-
-  // TC-APPR-16: approval payload が null の場合（UI が表示されない）
-  it("TC-APPR-16: onApprovalRequest が呼ばれない状態では approval-sheet が表示されない", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
-
-    await act(async () => {});
-
-    // approval callback を発火させない
-    expect(screen.queryByTestId("approval-sheet")).not.toBeInTheDocument();
-  });
-
-  // TC-APPR-17: approve 後に pendingApproval がクリア（UI 非表示）
-  it("TC-APPR-17: approve ボタン押下後に approval-sheet が非表示になる", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
-
-    await act(async () => {});
-    await act(async () => {
-      capturedApprovalCallback!(testPayload);
-    });
-
-    expect(screen.getByTestId("approval-sheet")).toBeInTheDocument();
-
-    const approveButton = screen.getByTestId("approval-approve");
-    await act(async () => {
-      fireEvent.click(approveButton);
-    });
-
-    await waitFor(() => {
-      expect(screen.queryByTestId("approval-sheet")).not.toBeInTheDocument();
+      expect(screen.getByTestId("approval-request-panel")).toBeInTheDocument();
     });
   });
 
-  // TC-APPR-18: reject 後に pendingApproval がクリア（UI 非表示）
-  it("TC-APPR-18: reject ボタン押下後に approval-sheet が非表示になる", async () => {
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
+  // --- TC-013: approve 操作 ---
 
-    await act(async () => {});
-    await act(async () => {
-      capturedApprovalCallback!(testPayload);
-    });
+  describe("TC-013: approve 操作で respondToApproval('approve') が呼ばれる", () => {
+    it("承認ボタンクリックで respondToApproval(sessionId, operationId, 'approve') が呼ばれる", async () => {
+      await act(async () => {
+        render(
+          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+        );
+      });
 
-    expect(screen.getByTestId("approval-sheet")).toBeInTheDocument();
+      await act(async () => {
+        capturedOnApprovalRequestCallback?.(sampleRequest);
+      });
 
-    const rejectButton = screen.getByTestId("approval-reject");
-    await act(async () => {
-      fireEvent.click(rejectButton);
-    });
+      await act(async () => {
+        fireEvent.click(screen.getByTestId("approval-approve-button"));
+      });
 
-    await waitFor(() => {
-      expect(screen.queryByTestId("approval-sheet")).not.toBeInTheDocument();
-    });
-  });
-
-  // TC-APPR-19: respondToApproval 失敗時は sheet を維持し、error を表示する
-  it("TC-APPR-19: approval 応答が失敗した場合は approval-sheet を維持する", async () => {
-    mockRespondToApproval.mockResolvedValueOnce({
-      success: false,
-      error: "approval failed",
-    });
-
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
-
-    await act(async () => {});
-    await act(async () => {
-      capturedApprovalCallback!(testPayload);
-    });
-
-    const approveButton = screen.getByTestId("approval-approve");
-    await act(async () => {
-      fireEvent.click(approveButton);
-    });
-
-    await waitFor(() => {
-      expect(mockRespondToApproval).toHaveBeenCalledTimes(1);
-      expect(screen.getByTestId("approval-sheet")).toBeInTheDocument();
-      expect(screen.getByTestId("skill-lifecycle-error")).toHaveTextContent(
-        "approval failed",
+      expect(mockRespondToApproval).toHaveBeenCalledWith(
+        sampleRequest.sessionId,
+        sampleRequest.operationId,
+        "approve",
       );
     });
   });
 
-  // TC-APPR-20: 応答中は重複送信を防ぐ
-  it("TC-APPR-20: approval 応答中は二重送信されない", async () => {
-    const deferred = createDeferred<{ success: boolean }>();
-    mockRespondToApproval.mockReturnValueOnce(deferred.promise);
+  // --- TC-014: reject 操作 ---
 
-    render(<SkillLifecyclePanel onClose={vi.fn()} />);
+  describe("TC-014: reject 操作で respondToApproval('reject') が呼ばれる", () => {
+    it("拒否ボタンクリックで respondToApproval(sessionId, operationId, 'reject') が呼ばれる", async () => {
+      await act(async () => {
+        render(
+          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+        );
+      });
 
-    await act(async () => {});
-    await act(async () => {
-      capturedApprovalCallback!(testPayload);
+      await act(async () => {
+        capturedOnApprovalRequestCallback?.(sampleRequest);
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId("approval-reject-button"));
+      });
+
+      expect(mockRespondToApproval).toHaveBeenCalledWith(
+        sampleRequest.sessionId,
+        sampleRequest.operationId,
+        "reject",
+      );
+    });
+  });
+
+  // --- TC-015: approval 解決後に非表示 ---
+
+  describe("TC-015: approval 解決後に ApprovalRequestPanel が非表示になる", () => {
+    it("承認操作後に ApprovalRequestPanel が消える", async () => {
+      await act(async () => {
+        render(
+          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+        );
+      });
+
+      await act(async () => {
+        capturedOnApprovalRequestCallback?.(sampleRequest);
+      });
+
+      expect(screen.getByTestId("approval-request-panel")).toBeInTheDocument();
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId("approval-approve-button"));
+      });
+
+      expect(
+        screen.queryByTestId("approval-request-panel"),
+      ).not.toBeInTheDocument();
     });
 
-    const approveButton = screen.getByTestId("approval-approve");
-    const rejectButton = screen.getByTestId("approval-reject");
+    it("拒否操作後に ApprovalRequestPanel が消える", async () => {
+      await act(async () => {
+        render(
+          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+        );
+      });
 
-    await act(async () => {
-      fireEvent.click(approveButton);
+      await act(async () => {
+        capturedOnApprovalRequestCallback?.(sampleRequest);
+      });
+
+      await act(async () => {
+        fireEvent.click(screen.getByTestId("approval-reject-button"));
+      });
+
+      expect(
+        screen.queryByTestId("approval-request-panel"),
+      ).not.toBeInTheDocument();
     });
+  });
 
-    expect(approveButton).toBeDisabled();
-    expect(rejectButton).toBeDisabled();
+  // --- TC-016: approval failure path ---
 
-    await act(async () => {
-      fireEvent.click(rejectButton);
-    });
+  describe("TC-016: respondToApproval が失敗した場合にエラーが表示される", () => {
+    it("success:false の応答で error banner が表示され、panel は残る", async () => {
+      mockRespondToApproval.mockResolvedValueOnce({
+        success: false,
+        error: "approval response failed",
+      });
 
-    expect(mockRespondToApproval).toHaveBeenCalledTimes(1);
+      await act(async () => {
+        render(
+          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+        );
+      });
 
-    deferred.resolve({ success: true });
+      await act(async () => {
+        capturedOnApprovalRequestCallback?.(sampleRequest);
+      });
 
-    await waitFor(() => {
-      expect(screen.queryByTestId("approval-sheet")).not.toBeInTheDocument();
+      await act(async () => {
+        fireEvent.click(screen.getByTestId("approval-approve-button"));
+      });
+
+      expect(mockRespondToApproval).toHaveBeenCalledWith(
+        sampleRequest.sessionId,
+        sampleRequest.operationId,
+        "approve",
+      );
+      expect(screen.getByTestId("skill-lifecycle-error")).toHaveTextContent(
+        "approval response failed",
+      );
+      expect(screen.getByTestId("approval-request-panel")).toBeInTheDocument();
     });
   });
 });

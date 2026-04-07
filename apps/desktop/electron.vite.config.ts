@@ -72,10 +72,6 @@ export default defineConfig(({ mode }) => {
         rollupOptions: {
           input: {
             index: resolve(__dirname, "src/renderer/index.html"),
-            "phase11-skill-creator-conversation-ui": resolve(
-              __dirname,
-              "src/renderer/phase11-skill-creator-conversation-ui.html",
-            ),
             "phase11-light-theme-contrast-guard": resolve(
               __dirname,
               "src/renderer/phase11-light-theme-contrast-guard.html",
@@ -83,6 +79,10 @@ export default defineConfig(({ mode }) => {
             "phase11-execution-status-type-spec-sync": resolve(
               __dirname,
               "src/renderer/phase11-execution-status-type-spec-sync.html",
+            ),
+            "phase11-approval-request-surface": resolve(
+              __dirname,
+              "src/renderer/phase11-approval-request-surface.html",
             ),
           },
         },
