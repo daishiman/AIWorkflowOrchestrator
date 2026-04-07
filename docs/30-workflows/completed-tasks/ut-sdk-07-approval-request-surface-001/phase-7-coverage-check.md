@@ -1,93 +1,96 @@
-# Phase 7: テストカバレッジ確認
+# Phase 7: カバレッジ確認
 
 ## メタ情報
 
-| 項目       | 内容                                        |
-| ---------- | ------------------------------------------- |
-| Phase      | 7                                           |
-| 機能名     | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001      |
-| タスク名   | Skill Creator approval request surface 接続 |
-| 前提Phase  | Phase 6                                     |
-| 後続Phase  | Phase 8                                     |
-| 作成日     | 2026-04-06                                  |
-| ステータス | pending                                     |
+| 項目       | 値                                     |
+| ---------- | -------------------------------------- |
+| Phase      | 7                                      |
+| 前提Phase  | Phase 6                                |
+| 後続Phase  | Phase 8                                |
+| ステータス | 未実施                                 |
+| 作成日     | 2026-04-06                             |
+| 機能名     | ut-sdk-07-approval-request-surface-001 |
 
 ## 目的
 
-変更したファイルのカバレッジを計測し、`onApprovalRequest` 実装と approval UI の関連コードが適切にテストされていることを確認する。
+テストカバレッジが目標値（Line 80%+ / Branch 60%+ / Function 80%+）を達成していることを確認する。未達の場合は Phase 6 に戻ってテストを追加する。
 
-## カバレッジ対象範囲（変更ブロック限定）
-
-| 対象ファイル                                                         | 対象関数/ブロック                             | 目標 line | 目標 branch |
-| -------------------------------------------------------------------- | --------------------------------------------- | --------- | ----------- |
-| `apps/desktop/src/preload/skill-creator-api.ts`                      | `onApprovalRequest` 実装                      | 100%      | 100%        |
-| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | approval request / ApprovalSheet 関連ブロック | 90%以上   | 80%以上     |
-
-**対象外（変更なし）:**
-
-- `apps/desktop/src/preload/channels.ts`
-- `packages/shared/src/ipc/channels.ts`
-- `apps/desktop/src/main/ipc/approvalHandlers.ts`
+---
 
 ## 実行タスク
 
-- カバレッジ計測: 対象ファイルの line / branch カバレッジを計測する
-- 未到達分析: カバレッジが目標未達のブロックを特定し、原因を分析する
-- トレーサビリティ確認: TC-APPR-01〜18 と実装ブロックの対応を確認する
+### タスク1: カバレッジ計測
 
-## コマンド
+**目的**: 追加したコードのカバレッジを計測する
+
+**実行手順**:
+
+1. カバレッジレポートを生成する
+2. 対象ファイルのカバレッジ値を確認する
+3. ゲート基準を満たすか判定する
+
+**実行コマンド**:
 
 ```bash
-# 対象ファイル限定でカバレッジを計測
-pnpm --filter @repo/desktop vitest run --coverage \
-  --coverage.include="apps/desktop/src/preload/skill-creator-api.ts" \
-  --coverage.include="apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx"
+# カバレッジ付きテスト実行
+pnpm --filter @repo/desktop test -- --coverage skill-creator-api.approval
+pnpm --filter @repo/desktop test -- --coverage SkillLifecyclePanel.approval
 ```
+
+---
+
+### タスク2: カバレッジゲート判定
+
+**カバレッジ目標**:
+
+| 対象ファイル                        | Line Coverage | Branch Coverage | Function Coverage |
+| ----------------------------------- | ------------- | --------------- | ----------------- |
+| `skill-creator-api.ts`（追加分）    | 80%+          | 60%+            | 80%+              |
+| `SkillLifecyclePanel.tsx`（追加分） | 80%+          | 60%+            | 80%+              |
+
+**ゲート判定**:
+
+| 判定 | 条件                     | 次のアクション                 |
+| ---- | ------------------------ | ------------------------------ |
+| PASS | 全指標が最低基準を満たす | Phase 8 へ進行                 |
+| FAIL | いずれかの指標が未達     | Phase 6 に戻りテストを追加する |
+
+**IPC 経路カバレッジ**:
+
+| 指標                                 | 目標 | 結果            |
+| ------------------------------------ | ---- | --------------- |
+| `onApprovalRequest` チャンネル登録   | 100% | 本 Phase で確認 |
+| ペイロード伝達                       | 100% | 本 Phase で確認 |
+| リスナー解除                         | 100% | 本 Phase で確認 |
+| UI 条件表示（destination あり/なし） | 100% | 本 Phase で確認 |
+
+---
 
 ## 参照資料
 
-| 参照資料         | パス                                        | 説明           |
-| ---------------- | ------------------------------------------- | -------------- |
-| 拡張テストケース | `outputs/phase-6/expanded-test-cases.md`    | Phase 6 成果物 |
-| 回帰テスト結果   | `outputs/phase-6/regression-test-result.md` | Phase 6 成果物 |
-| 異常系結果       | `outputs/phase-6/edge-case-result.md`       | Phase 6 成果物 |
+| 参照資料        | パス                                                                                         | 内容           |
+| --------------- | -------------------------------------------------------------------------------------------- | -------------- |
+| preload テスト  | `apps/desktop/src/preload/__tests__/skill-creator-api.approval.test.ts`                      | カバレッジ対象 |
+| renderer テスト | `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx` | カバレッジ対象 |
 
-## 実行手順
-
-1. Phase 6 成果物を確認する。
-2. カバレッジコマンドを実行する。
-3. `onApprovalRequest` 実装ブロックの line 100% / branch 100% を確認する。
-4. `SkillLifecyclePanel.tsx` の approval 関連ブロックのカバレッジ実測値を記録する。
-5. 未到達ブロックがある場合は原因を分析する。
-6. 成果物を記録する。
+---
 
 ## 成果物
 
-| 成果物                 | パス                                              | 説明                     |
-| ---------------------- | ------------------------------------------------- | ------------------------ |
-| カバレッジ計画         | `outputs/phase-7/coverage-plan.md`                | 目標・対象範囲・コマンド |
-| 未到達分析             | `outputs/phase-7/uncovered-analysis-plan.md`      | 未到達ブロック分析       |
-| トレーサビリティ網羅率 | `outputs/phase-7/traceability-coverage-report.md` | TC vs 実装対応表         |
+| 成果物             | パス                                 | 内容               |
+| ------------------ | ------------------------------------ | ------------------ |
+| カバレッジレポート | `outputs/phase-7/coverage-report.md` | カバレッジ計測結果 |
+
+---
 
 ## 完了条件
 
-- [ ] 実行タスクで定義した成果物を全件作成
-- [ ] `onApprovalRequest` 実装ブロックの line 100% / branch 100% を確認
-- [ ] `SkillLifecyclePanel.tsx` approval 関連ブロックの実測値を記録
-- [ ] カバレッジ目標未達の場合は原因と対策を記載
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] Line Coverage 80%+ 達成
+- [ ] Branch Coverage 60%+ 達成
+- [ ] Function Coverage 80%+ 達成
+- [ ] IPC 経路カバレッジ（正常系・解除）100% 達成
+- [ ] **本 Phase 内の全タスクを 100% 実行完了**
 
-## タスク100%実行確認【必須】
+## 次の Phase
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
-
-```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/ut-sdk-07-approval-request-surface-001
-```
-
-## 次のPhase
-
-Phase 8: リファクタリング
+Phase 8: リファクタリング → [phase-8-refactoring.md](phase-8-refactoring.md)

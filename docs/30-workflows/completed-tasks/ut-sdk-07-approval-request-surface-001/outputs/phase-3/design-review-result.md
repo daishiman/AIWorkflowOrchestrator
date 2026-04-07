@@ -1,49 +1,36 @@
-# 設計レビュー結果 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
+# Phase 3 成果物: 設計レビュー結果
 
-## 作成日: 2026-04-06
+## タスク識別子
 
-## Phase: 3
+UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
 
----
+## レビュー対象
 
-## 機能設計チェック
+- 要件定義: `phase-1-requirements.md`
+- 設計書: `phase-2-design.md`
 
-| チェック項目                                                     | 判定    | 根拠                                                                         |
-| ---------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------- |
-| `onApprovalRequest` の型シグネチャが `preload/index.ts` と対称か | ✅ PASS | `outputs/phase-2/ipc-contract-design.md` で対称性確認済み                    |
-| `safeOn` パターンが既存実装（`onProgress` 等）と一致するか       | ✅ PASS | `onWorkflowStateChanged` / `onAdapterStatusChanged` / `onOutputReady` と同形 |
-| `ALLOWED_ON_CHANNELS` に `APPROVAL_REQUEST` が含まれるか         | ✅ PASS | `channels.ts` line 777 で確認済み                                            |
-| `SkillLifecyclePanel.tsx` の `useEffect` cleanup が正しいか      | ✅ PASS | `return unsubscribe` パターンを設計に明記                                    |
-| `respondToApproval` との接続が切れていないか                     | ✅ PASS | `handleApprove`/`handleReject` → `respondToApproval` に接続設計              |
+## レビュー結果
 
----
+| 観点             | チェック項目                                                                 | 判定 | 根拠                                                                                                                                                  |
+| ---------------- | ---------------------------------------------------------------------------- | ---- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 責務境界         | `onApprovalRequest` は preload 層のみに閉じており、Main 層を変更しないか     | PASS | 実装は `skill-creator-api.ts`（preload 層）のみ。`approvalHandlers.ts`（Main 層）は変更対象外                                                         |
+| 対称性           | `respondToApproval`/`getDisclosureInfo` と同水準の実装パターンか             | PASS | `safeOn` ヘルパーを使用した購読パターンは既存の `respondToApproval`/`getDisclosureInfo` と同水準                                                      |
+| 型整合性         | `ExecutionAPI.onApprovalRequest` と互換性ある型か                            | PASS | `preload/types.ts` 行1038 の payload 型定義と同一のフィールド構成（`operationType`, `description`, `destination?`, `sessionId`, `operationId`）を使用 |
+| チャンネル安全性 | `safeOn` の `ALLOWED_ON_CHANNELS` チェックを通過するか                       | PASS | `APPROVAL_REQUEST` は `channels.ts` 行777 にて `ALLOWED_ON_CHANNELS` に登録済み                                                                       |
+| リスナー解除     | コンポーネントアンマウント時にリスナーが解除されるか                         | PASS | `useEffect` の return 値として `unsubscribe` 関数を返す設計により、アンマウント時に自動解除される                                                     |
+| テスト可能性     | 設計がユニットテスト・統合テストで検証可能な粒度か                           | PASS | `skill-creator-api.approval.test.ts` でユニットテスト、`SkillLifecyclePanel.approval.test.tsx` で統合テストが可能な粒度に設計されている               |
+| SRP 遵守         | `SkillCreatorAPI` / `SkillLifecyclePanel` の責務が単一責任原則に違反しないか | PASS | `SkillCreatorAPI` は IPC 購読 API の提供のみ担当。`SkillLifecyclePanel` は UI 表示と state 管理のみ担当。責務は単一に保たれている                     |
 
-## 責務境界チェック
+## 総合判定
 
-| チェック項目                            | 判定    | 根拠                                                     |
-| --------------------------------------- | ------- | -------------------------------------------------------- |
-| Main Process 変更が不要であることを確認 | ✅ PASS | `approvalHandlers.ts` は変更不要、設計に明記             |
-| 型定義変更が最小限か                    | ✅ PASS | payload shape は local alias で閉じる、shared 型変更なし |
-| channels.ts 変更が不要であることを確認  | ✅ PASS | `ALLOWED_ON_CHANNELS` 登録済み確認                       |
+**PASS → Phase 4 へ進行**
 
----
+全 7 つのレビュー観点で問題が検出されなかった。MAJOR 以上の指摘なし。Phase 4（テスト作成）への移行を承認する。
 
-## リスク評価
+## 指摘事項
 
-| リスク                                                    | 深刻度 | 対策状況                                          |
-| --------------------------------------------------------- | ------ | ------------------------------------------------- |
-| approval request payload shape の drift                   | HIGH   | local alias で実在形状に揃える設計確定 ✅         |
-| `SkillLifecyclePanel.tsx` の既存 approval UI との二重表示 | MEDIUM | `pendingApproval` state 新規追加で二重表示なし ✅ |
-| cleanup 漏れによるメモリリーク                            | LOW    | useEffect return で unsubscribe を強制 ✅         |
+なし（全観点 PASS）
 
----
+## 次のアクション
 
-## MAJOR / MINOR 判定
-
-### MAJOR 指摘: 0件
-
-### MINOR 指摘: 1件
-
-| ID       | 内容                                                               | 対応方針                                                                                                |
-| -------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| MINOR-01 | `normalizeApprovalOperationType` の変換ロジックが fallthrough のみ | Phase 5 実装時に明示的に `external_send` のみ個別判定、それ以外は `dangerous_operation` fallback とする |
+Phase 4: テスト作成 → `phase-4-test-creation.md` へ進行

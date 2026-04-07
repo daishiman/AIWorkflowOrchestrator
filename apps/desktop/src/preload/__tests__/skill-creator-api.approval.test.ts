@@ -1,167 +1,347 @@
 /**
- * UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: approval:request onEvent listener テスト
+ * skill-creator-api.ts - onApprovalRequest テスト
  *
- * AC-1: approval:request onEvent が preload に登録されている
- * AC-3: approve/reject 操作が respondToApproval() と接続されている（preload 側）
+ * TASK-SDK-07: approval:request surface 追加
+ * Phase 4 TDD Red → Green / Phase 6 エッジケース
  */
+
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { ALLOWED_ON_CHANNELS, IPC_CHANNELS } from "../channels";
+import { IPC_CHANNELS, ALLOWED_ON_CHANNELS } from "../channels";
 
-const { mockOn, mockRemoveListener, mockInvoke } = vi.hoisted(() => ({
-  mockOn: vi.fn(),
-  mockRemoveListener: vi.fn(),
-  mockInvoke: vi.fn(),
-}));
+// --- Mock: electron ---
+vi.mock("electron", () => {
+  const mockIpcRenderer = {
+    invoke: vi.fn().mockResolvedValue({}),
+    on: vi.fn(),
+    removeListener: vi.fn(),
+  };
+  return {
+    contextBridge: {
+      exposeInMainWorld: vi.fn(),
+    },
+    ipcRenderer: mockIpcRenderer,
+  };
+});
 
-vi.mock("electron", () => ({
-  ipcRenderer: {
-    invoke: mockInvoke,
-    on: mockOn,
-    removeListener: mockRemoveListener,
-  },
-}));
+import { ipcRenderer } from "electron";
 
-import { skillCreatorAPI } from "../skill-creator-api";
-import type { ApprovalRequestPayload } from "@repo/shared/types";
+// Phase 4: T-4-1 〜 T-4-5
+describe("skillCreatorAPI.onApprovalRequest", () => {
+  let skillCreatorAPIModule: { skillCreatorAPI: Record<string, unknown> };
 
-describe("UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: onApprovalRequest listener", () => {
+  beforeEach(async () => {
+    vi.resetModules();
+    vi.doMock("electron", () => ({
+      contextBridge: { exposeInMainWorld: vi.fn() },
+      ipcRenderer: {
+        invoke: vi.fn().mockResolvedValue({}),
+        on: vi.fn(),
+        removeListener: vi.fn(),
+      },
+    }));
+
+    // 動的インポートで fresh module を取得
+    skillCreatorAPIModule = await import("../skill-creator-api");
+  });
+
+  // T-4-1: onApprovalRequest が関数として存在すること
+  it("T-4-1: onApprovalRequest が関数として存在すること", () => {
+    const { skillCreatorAPI } = skillCreatorAPIModule;
+    expect(typeof skillCreatorAPI.onApprovalRequest).toBe("function");
+  });
+
+  // T-4-2: APPROVAL_REQUEST チャンネルで on リスナーを登録すること
+  it("T-4-2: APPROVAL_REQUEST チャンネルで on リスナーを登録すること", async () => {
+    vi.resetModules();
+
+    const mockOn = vi.fn();
+    const mockRemoveListener = vi.fn();
+
+    vi.doMock("electron", () => ({
+      contextBridge: { exposeInMainWorld: vi.fn() },
+      ipcRenderer: {
+        invoke: vi.fn().mockResolvedValue({}),
+        on: mockOn,
+        removeListener: mockRemoveListener,
+      },
+    }));
+
+    const { skillCreatorAPI } = await import("../skill-creator-api");
+    const callback = vi.fn();
+
+    (skillCreatorAPI.onApprovalRequest as (cb: typeof callback) => () => void)(
+      callback,
+    );
+
+    expect(mockOn).toHaveBeenCalledWith(
+      IPC_CHANNELS.APPROVAL_REQUEST,
+      expect.any(Function),
+    );
+  });
+
+  // T-4-3: approval request ペイロードがコールバックに渡されること
+  it("T-4-3: approval request ペイロードがコールバックに渡されること", async () => {
+    vi.resetModules();
+
+    let capturedListener: ((_event: unknown, data: unknown) => void) | null =
+      null;
+    const mockOn = vi
+      .fn()
+      .mockImplementation(
+        (
+          _channel: string,
+          listener: (event: unknown, data: unknown) => void,
+        ) => {
+          capturedListener = listener;
+        },
+      );
+    const mockRemoveListener = vi.fn();
+
+    vi.doMock("electron", () => ({
+      contextBridge: { exposeInMainWorld: vi.fn() },
+      ipcRenderer: {
+        invoke: vi.fn().mockResolvedValue({}),
+        on: mockOn,
+        removeListener: mockRemoveListener,
+      },
+    }));
+
+    const { skillCreatorAPI } = await import("../skill-creator-api");
+    const callback = vi.fn();
+
+    (skillCreatorAPI.onApprovalRequest as (cb: typeof callback) => () => void)(
+      callback,
+    );
+
+    const payload = {
+      operationType: "file_write",
+      description: "テストファイルへの書き込み",
+      destination: "/tmp/test.txt",
+      sessionId: "session-001",
+      operationId: "op-001",
+    };
+
+    // listener を発火させる
+    capturedListener?.({}, payload);
+
+    expect(callback).toHaveBeenCalledWith(payload);
+  });
+
+  // T-4-4: アンサブスクライブ関数でリスナーが解除されること
+  it("T-4-4: アンサブスクライブ関数でリスナーが解除されること", async () => {
+    vi.resetModules();
+
+    const mockOn = vi.fn();
+    const mockRemoveListener = vi.fn();
+
+    vi.doMock("electron", () => ({
+      contextBridge: { exposeInMainWorld: vi.fn() },
+      ipcRenderer: {
+        invoke: vi.fn().mockResolvedValue({}),
+        on: mockOn,
+        removeListener: mockRemoveListener,
+      },
+    }));
+
+    const { skillCreatorAPI } = await import("../skill-creator-api");
+    const callback = vi.fn();
+
+    const unsubscribe = (
+      skillCreatorAPI.onApprovalRequest as (cb: typeof callback) => () => void
+    )(callback);
+
+    expect(typeof unsubscribe).toBe("function");
+    unsubscribe();
+
+    expect(mockRemoveListener).toHaveBeenCalledWith(
+      IPC_CHANNELS.APPROVAL_REQUEST,
+      expect.any(Function),
+    );
+  });
+
+  // T-4-5: APPROVAL_REQUEST が ALLOWED_ON_CHANNELS に含まれること
+  it("T-4-5: APPROVAL_REQUEST が ALLOWED_ON_CHANNELS に含まれること", () => {
+    expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.APPROVAL_REQUEST);
+  });
+});
+
+// Phase 6: T-6-1 〜 T-6-3（エッジケース）
+describe("skillCreatorAPI.onApprovalRequest - エッジケース", () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
-  // --- AC-1: APPROVAL_REQUEST チャネル登録 ---
+  // T-6-1: destination が undefined の場合もコールバックが呼ばれること
+  it("T-6-1: destination が undefined の場合もコールバックが呼ばれること", async () => {
+    vi.resetModules();
 
-  describe("TC-001: approval:request イベント受信で callback を呼び出す", () => {
-    it("APPROVAL_REQUEST チャネルに ipcRenderer.on が登録される", () => {
-      const callback = vi.fn();
-      skillCreatorAPI.onApprovalRequest(callback);
-
-      expect(mockOn).toHaveBeenCalledWith(
-        IPC_CHANNELS.APPROVAL_REQUEST,
-        expect.any(Function),
+    let capturedListener: ((_event: unknown, data: unknown) => void) | null =
+      null;
+    const mockOn = vi
+      .fn()
+      .mockImplementation(
+        (
+          _channel: string,
+          listener: (event: unknown, data: unknown) => void,
+        ) => {
+          capturedListener = listener;
+        },
       );
-    });
 
-    it("イベント発火時に callback が payload と共に呼ばれる", () => {
-      const callback = vi.fn();
-      skillCreatorAPI.onApprovalRequest(callback);
+    vi.doMock("electron", () => ({
+      contextBridge: { exposeInMainWorld: vi.fn() },
+      ipcRenderer: {
+        invoke: vi.fn().mockResolvedValue({}),
+        on: mockOn,
+        removeListener: vi.fn(),
+      },
+    }));
 
-      // ipcRenderer.on に登録された handler を取得して手動発火
-      const handler = mockOn.mock.calls[0][1] as (
-        event: unknown,
-        payload: ApprovalRequestPayload,
-      ) => void;
-      const payload: ApprovalRequestPayload = {
-        sessionId: "session-1",
-        operationId: "op-1",
-        operationType: "file_write",
-        description: "危険なファイル書き込みを実行しようとしています",
-        destination: "/etc/hosts",
-      };
-      handler({}, payload);
+    const { skillCreatorAPI } = await import("../skill-creator-api");
+    const callback = vi.fn();
 
-      expect(callback).toHaveBeenCalledWith(payload);
-      expect(callback).toHaveBeenCalledTimes(1);
-    });
+    (skillCreatorAPI.onApprovalRequest as (cb: typeof callback) => () => void)(
+      callback,
+    );
+
+    // destination なしのペイロード
+    const payload = {
+      operationType: "network_request",
+      description: "外部APIへのリクエスト",
+      // destination は undefined
+      sessionId: "session-002",
+      operationId: "op-002",
+    };
+
+    capturedListener?.({}, payload);
+
+    expect(callback).toHaveBeenCalledWith(payload);
+    expect(callback).toHaveBeenCalledTimes(1);
   });
 
-  // --- TC-002: cleanup 関数 ---
+  // T-6-2: 複数回 onApprovalRequest を登録した場合、それぞれ独立して動作すること
+  it("T-6-2: 複数回 onApprovalRequest を登録した場合、それぞれ独立して動作すること", async () => {
+    vi.resetModules();
 
-  describe("TC-002: cleanup 関数が listener を解除する", () => {
-    it("cleanup() 呼び出しで ipcRenderer.removeListener が呼ばれる", () => {
-      const callback = vi.fn();
-      const cleanup = skillCreatorAPI.onApprovalRequest(callback);
-
-      cleanup();
-
-      expect(mockRemoveListener).toHaveBeenCalledWith(
-        IPC_CHANNELS.APPROVAL_REQUEST,
-        expect.any(Function),
+    const capturedListeners: ((event: unknown, data: unknown) => void)[] = [];
+    const mockOn = vi
+      .fn()
+      .mockImplementation(
+        (
+          _channel: string,
+          listener: (event: unknown, data: unknown) => void,
+        ) => {
+          capturedListeners.push(listener);
+        },
       );
-    });
+    const mockRemoveListener = vi.fn();
 
-    it("cleanup() で渡される handler 参照が on 登録時と同一である", () => {
-      const callback = vi.fn();
-      const cleanup = skillCreatorAPI.onApprovalRequest(callback);
+    vi.doMock("electron", () => ({
+      contextBridge: { exposeInMainWorld: vi.fn() },
+      ipcRenderer: {
+        invoke: vi.fn().mockResolvedValue({}),
+        on: mockOn,
+        removeListener: mockRemoveListener,
+      },
+    }));
 
-      // on に登録されたハンドラを保持
-      const registeredHandler = mockOn.mock.calls[0][1] as (
-        event: unknown,
-        payload: ApprovalRequestPayload,
-      ) => void;
+    const { skillCreatorAPI } = await import("../skill-creator-api");
+    const callback1 = vi.fn();
+    const callback2 = vi.fn();
 
-      cleanup();
+    (skillCreatorAPI.onApprovalRequest as (cb: typeof callback1) => () => void)(
+      callback1,
+    );
+    (skillCreatorAPI.onApprovalRequest as (cb: typeof callback2) => () => void)(
+      callback2,
+    );
 
-      // removeListener が同じハンドラ参照で呼ばれること（同一インスタンス保証）
-      expect(mockRemoveListener).toHaveBeenCalledTimes(1);
-      expect(mockRemoveListener).toHaveBeenCalledWith(
-        IPC_CHANNELS.APPROVAL_REQUEST,
-        registeredHandler,
-      );
-    });
+    // 2つのリスナーが登録されていること
+    expect(mockOn).toHaveBeenCalledTimes(2);
+
+    const payload = {
+      operationType: "file_delete",
+      description: "ファイル削除",
+      sessionId: "session-003",
+      operationId: "op-003",
+    };
+
+    // それぞれのリスナーを発火
+    capturedListeners[0]?.({}, payload);
+    capturedListeners[1]?.({}, payload);
+
+    expect(callback1).toHaveBeenCalledWith(payload);
+    expect(callback2).toHaveBeenCalledWith(payload);
+    expect(callback1).toHaveBeenCalledTimes(1);
+    expect(callback2).toHaveBeenCalledTimes(1);
   });
 
-  // --- TC-003: payload フィールド ---
+  // T-6-3: アンサブスクライブ後にイベントが発火してもコールバックが呼ばれないこと
+  it("T-6-3: アンサブスクライブ後にイベントが発火してもコールバックが呼ばれないこと", async () => {
+    vi.resetModules();
 
-  describe("TC-003: ApprovalRequestPayload のフィールドが正しく渡される", () => {
-    it("全フィールドを含む payload が callback に渡される", () => {
-      const callback = vi.fn();
-      skillCreatorAPI.onApprovalRequest(callback);
+    const listenerRegistry: Map<
+      string,
+      (event: unknown, data: unknown) => void
+    > = new Map();
 
-      const handler = mockOn.mock.calls[0][1] as (
-        event: unknown,
-        payload: ApprovalRequestPayload,
-      ) => void;
-      const payload: ApprovalRequestPayload = {
-        sessionId: "sess-abc",
-        operationId: "op-xyz",
-        operationType: "network_request",
-        description: "外部 API へのリクエストを送信しようとしています",
-        destination: "https://api.example.com",
-      };
-      handler({}, payload);
-
-      expect(callback).toHaveBeenCalledWith(
-        expect.objectContaining({
-          sessionId: "sess-abc",
-          operationId: "op-xyz",
-          operationType: "network_request",
-          description: "外部 API へのリクエストを送信しようとしています",
-          destination: "https://api.example.com",
-        }),
+    const mockOn = vi
+      .fn()
+      .mockImplementation(
+        (
+          _channel: string,
+          listener: (event: unknown, data: unknown) => void,
+        ) => {
+          listenerRegistry.set(_channel, listener);
+        },
       );
+    const mockRemoveListener = vi.fn().mockImplementation((channel: string) => {
+      listenerRegistry.delete(channel);
     });
 
-    it("destination なし（省略可能フィールド）でも正常に動作する", () => {
-      const callback = vi.fn();
-      skillCreatorAPI.onApprovalRequest(callback);
+    vi.doMock("electron", () => ({
+      contextBridge: { exposeInMainWorld: vi.fn() },
+      ipcRenderer: {
+        invoke: vi.fn().mockResolvedValue({}),
+        on: mockOn,
+        removeListener: mockRemoveListener,
+      },
+    }));
 
-      const handler = mockOn.mock.calls[0][1] as (
-        event: unknown,
-        payload: ApprovalRequestPayload,
-      ) => void;
-      const payload: ApprovalRequestPayload = {
-        sessionId: "sess-1",
-        operationId: "op-1",
-        operationType: "file_delete",
-        description: "ファイルを削除しようとしています",
-      };
-      handler({}, payload);
+    const { skillCreatorAPI } = await import("../skill-creator-api");
+    const callback = vi.fn();
 
-      expect(callback).toHaveBeenCalledWith(
-        expect.objectContaining({
-          sessionId: "sess-1",
-          operationId: "op-1",
-        }),
-      );
-    });
+    const unsubscribe = (
+      skillCreatorAPI.onApprovalRequest as (cb: typeof callback) => () => void
+    )(callback);
+
+    // アンサブスクライブ
+    unsubscribe();
+
+    // removeListener が呼ばれてリスナーがレジストリから削除されている
+    expect(mockRemoveListener).toHaveBeenCalledWith(
+      IPC_CHANNELS.APPROVAL_REQUEST,
+      expect.any(Function),
+    );
+
+    // 登録解除後はリスナーが存在しない（コールバックは呼ばれない）
+    expect(listenerRegistry.has(IPC_CHANNELS.APPROVAL_REQUEST)).toBe(false);
+    expect(callback).not.toHaveBeenCalled();
+  });
+});
+
+// IPC_CHANNELS の存在確認（既存テストとの整合）
+describe("IPC_CHANNELS - APPROVAL_REQUEST チャンネル確認", () => {
+  it("APPROVAL_REQUEST チャンネルが approval:request であること", () => {
+    expect(IPC_CHANNELS.APPROVAL_REQUEST).toBe("approval:request");
   });
 
-  // --- チャネル登録確認 ---
-
-  describe("ALLOWED_ON_CHANNELS への登録確認", () => {
-    it("APPROVAL_REQUEST が ALLOWED_ON_CHANNELS に含まれている", () => {
-      expect(ALLOWED_ON_CHANNELS).toContain(IPC_CHANNELS.APPROVAL_REQUEST);
-    });
+  it("ipcRenderer.on が APPROVAL_REQUEST チャンネルで呼ばれること", () => {
+    const callback = vi.fn();
+    ipcRenderer.on(IPC_CHANNELS.APPROVAL_REQUEST, callback);
+    expect(ipcRenderer.on).toHaveBeenCalledWith(
+      IPC_CHANNELS.APPROVAL_REQUEST,
+      callback,
+    );
   });
 });

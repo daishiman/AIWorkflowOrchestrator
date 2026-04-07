@@ -2,135 +2,93 @@
 
 ## メタ情報
 
-| 項目       | 内容                                        |
-| ---------- | ------------------------------------------- |
-| Phase      | 3                                           |
-| 機能名     | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001      |
-| タスク名   | Skill Creator approval request surface 接続 |
-| 前提Phase  | Phase 2                                     |
-| 後続Phase  | Phase 4                                     |
-| 作成日     | 2026-04-06                                  |
-| ステータス | pending                                     |
+| 項目       | 値                                     |
+| ---------- | -------------------------------------- |
+| Phase      | 3                                      |
+| 前提Phase  | Phase 2                                |
+| 後続Phase  | Phase 4                                |
+| ステータス | 未実施                                 |
+| 作成日     | 2026-04-06                             |
+| 機能名     | ut-sdk-07-approval-request-surface-001 |
 
 ## 目的
 
-Phase 2 設計書をレビューし、Phase 4（テスト作成）へ進めるかを判定するゲートを通過する。
+Phase 2 で作成した設計を多角的にレビューし、Phase 4（テスト作成）への移行可否を判定する。
 
-## 背景
+判定は 4 条件（矛盾なし・漏れなし・整合性あり・依存関係整合）を前提に行う。
 
-Phase 1-2 で確定した要件・設計に矛盾・漏れ・整合性問題がないかをレビューし、PASS/FAIL を記録する。
-
-## SubAgentチーム編成
-
-| SubAgent   | 関心ごと             | 主担当                           |
-| ---------- | -------------------- | -------------------------------- |
-| SubAgent-A | Preload設計レビュー  | interface 拡張設計の妥当性確認   |
-| SubAgent-B | Renderer設計レビュー | UI設計の妥当性確認               |
-| SubAgent-C | テスト設計レビュー   | テスト戦略の妥当性確認           |
-| SubAgent-D | 統合レビュー         | 矛盾・漏れ・整合・依存の最終判定 |
+---
 
 ## 実行タスク
 
-- 設計レビュー: Phase 2 全成果物を多角的観点でレビューする
-- 矛盾チェック: 要件 vs 設計の矛盾を検査する
-- ゲート判定: PASS/FAIL/CONDITIONAL_PASS を判定する
+### タスク1: 設計レビュー実施
 
-## レビューチェックリスト
+**目的**: Phase 2 の設計が要件を満たし、実装可能な品質であるかを検証する
 
-### 機能設計チェック
+**実行手順**:
 
-| チェック項目                                                     | 判定基準                               |
-| ---------------------------------------------------------------- | -------------------------------------- |
-| `onApprovalRequest` の型シグネチャが `preload/index.ts` と対称か | 型定義が一致している                   |
-| `safeOn` パターンが既存実装（`onProgress` 等）と一致するか       | 既存パターンを踏襲している             |
-| `ALLOWED_ON_CHANNELS` に `APPROVAL_REQUEST` が含まれるか         | channels.ts line 777 で確認済み        |
-| `SkillLifecyclePanel.tsx` の `useEffect` cleanup が正しいか      | unsubscribe 関数が return されている   |
-| `respondToApproval` との接続が切れていないか                     | approve/reject action が正しく渡される |
+1. Phase 2 設計書（`phase-2-design.md`）を通読する
+2. 以下のレビュー観点で評価する
+3. PASS / MINOR / MAJOR / CRITICAL を判定する
 
-### 責務境界チェック
+**レビュー観点**:
 
-| チェック項目                            | 判定基準                                                   |
-| --------------------------------------- | ---------------------------------------------------------- |
-| Main Process 変更が不要であることを確認 | approvalHandlers.ts は変更不要                             |
-| 型定義変更が最小限か                    | shared 新規型は不要、payload shape は local alias で閉じる |
-| channels.ts 変更が不要であることを確認  | ALLOWED_ON_CHANNELS は登録済み                             |
+| 観点             | チェック項目                                                                 | 判定   |
+| ---------------- | ---------------------------------------------------------------------------- | ------ |
+| 責務境界         | `onApprovalRequest` は preload 層のみに閉じており、Main 層を変更しないか     | 未評価 |
+| 対称性           | `respondToApproval`/`getDisclosureInfo` と同水準の実装パターンか             | 未評価 |
+| 型整合性         | `ExecutionAPI.onApprovalRequest` と互換性ある型か                            | 未評価 |
+| チャンネル安全性 | `safeOn` の `ALLOWED_ON_CHANNELS` チェックを通過するか                       | 未評価 |
+| リスナー解除     | コンポーネントアンマウント時にリスナーが解除されるか                         | 未評価 |
+| テスト可能性     | 設計がユニットテスト・統合テストで検証可能な粒度か                           | 未評価 |
+| SRP 遵守         | `SkillCreatorAPI` / `SkillLifecyclePanel` の責務が単一責任原則に違反しないか | 未評価 |
 
-### リスク評価
+---
 
-| リスク                                                    | 深刻度 | 対策                                         |
-| --------------------------------------------------------- | ------ | -------------------------------------------- |
-| approval request payload shape の drift が発生する        | HIGH   | shared 化せず local alias で実在形状に揃える |
-| `SkillLifecyclePanel.tsx` の既存 approval UI との二重表示 | MEDIUM | Phase 2 アーキテクチャ設計で確認する         |
-| cleanup 漏れによるメモリリーク                            | LOW    | useEffect return で unsubscribe を強制       |
+### タスク2: レビュー判定
+
+**レビュー結果判定**:
+
+| 判定     | 条件                     | 次のアクション             |
+| -------- | ------------------------ | -------------------------- |
+| PASS     | 全レビュー観点で問題なし | Phase 4 へ進行             |
+| MINOR    | 軽微な指摘あり           | 指摘対応後、Phase 4 へ     |
+| MAJOR    | 重大な問題あり           | 影響範囲に応じて戻る       |
+| CRITICAL | 致命的な問題あり         | Phase 1 へ戻りユーザー確認 |
+
+**戻り先決定基準**:
+
+| 問題の種類 | 戻り先              |
+| ---------- | ------------------- |
+| 要件の問題 | Phase 1（要件定義） |
+| 設計の問題 | Phase 2（設計）     |
+
+---
 
 ## 参照資料
 
-| 参照資料             | パス                                               | 説明           |
-| -------------------- | -------------------------------------------------- | -------------- |
-| アーキテクチャ設計   | `outputs/phase-2/architecture-design.md`           | Phase 2 成果物 |
-| IPC契約設計          | `outputs/phase-2/ipc-contract-design.md`           | Phase 2 成果物 |
-| テスト戦略           | `outputs/phase-2/test-strategy.md`                 | Phase 2 成果物 |
-| 依存整合マトリクス   | `outputs/phase-2/dependency-consistency-matrix.md` | Phase 2 成果物 |
-| 要件定義書           | `outputs/phase-1/requirements-definition.md`       | Phase 1 成果物 |
-| 受け入れ基準         | `outputs/phase-1/acceptance-criteria.md`           | Phase 1 成果物 |
-| トレーサビリティ行列 | `outputs/phase-1/traceability-matrix.md`           | Phase 1 成果物 |
+| 参照資料 | パス                      | 内容                   |
+| -------- | ------------------------- | ---------------------- |
+| 要件定義 | `phase-1-requirements.md` | AC-1〜AC-5 の確認      |
+| 設計書   | `phase-2-design.md`       | レビュー対象の設計内容 |
 
-## 実行手順
-
-1. Phase 2 全成果物を読み込む。
-2. レビューチェックリストを全項目実行する。
-3. MAJOR/MINOR/PASS を判定する。
-4. MAJOR が 1 件以上あれば Phase 2 へ差し戻す。
-5. MINOR は未タスク候補として記録し PASS とする。
-6. ゲート判定を `outputs/phase-3/gate-decision.md` に記録する。
-
-## ゲート判定基準
-
-| 判定             | 条件                     | アクション                 |
-| ---------------- | ------------------------ | -------------------------- |
-| PASS             | MAJOR 0件                | Phase 4 へ進む             |
-| CONDITIONAL_PASS | MAJOR 0件・MINOR 1件以上 | MINOR を未タスク化して進む |
-| FAIL             | MAJOR 1件以上            | Phase 2 へ差し戻す         |
+---
 
 ## 成果物
 
-| 成果物           | パス                                         | 説明               |
-| ---------------- | -------------------------------------------- | ------------------ |
-| 設計レビュー結果 | `outputs/phase-3/design-review-result.md`    | レビュー詳細結果   |
-| ゲート判定       | `outputs/phase-3/gate-decision.md`           | PASS/FAIL判定記録  |
-| 矛盾チェック表   | `outputs/phase-3/contradiction-checklist.md` | 矛盾・漏れ確認結果 |
+| 成果物           | パス                       | 内容                   |
+| ---------------- | -------------------------- | ---------------------- |
+| 設計レビュー結果 | `phase-3-design-review.md` | 本ファイル（判定記録） |
+
+---
 
 ## 完了条件
 
-- [ ] 実行タスクで定義した成果物を全件作成
-- [ ] ゲート判定が記録されている（PASS / CONDITIONAL_PASS / FAIL）
-- [ ] MAJOR 指摘が 0 件であることを確認（または差し戻し）
-- [ ] MINOR 指摘が未タスク候補として記録されている
-- [ ] 矛盾がないことを確認
-- [ ] 漏れがないことを確認
-- [ ] 整合性が取れていることを確認
-- [ ] 依存関係が取れていることを確認
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] 全レビュー観点の評価が完了している
+- [ ] PASS / MINOR / MAJOR / CRITICAL の判定が記録されている
+- [ ] MAJOR 以上の場合、戻り先が明記されている
+- [ ] **本 Phase 内の全タスクを 100% 実行完了**
 
-## サブタスク管理
+## 次の Phase
 
-1. 参照資料の確認
-2. SubAgent-A/B/C の並列レビュー
-3. SubAgent-D の統合判定
-4. 成果物出力
-5. ゲート判定記録
-
-## タスク100%実行確認【必須】
-
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
-
-```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/ut-sdk-07-approval-request-surface-001
-```
-
-## 次のPhase
-
-Phase 4: テスト作成
+Phase 4: テスト作成 → [phase-4-test-creation.md](phase-4-test-creation.md)

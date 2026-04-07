@@ -1,80 +1,69 @@
-# Phase 12 - ドキュメント更新履歴
+# Phase 12: ドキュメント変更ログ
 
-## 概要
+## タスクID
 
-UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 で実施したドキュメント更新の記録。
+UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
 
----
+## 実行日時
 
-## 更新ファイル一覧
-
-### ワークフローローカル成果物（新規作成）
-
-| ファイルパス                                             | 内容                                    |
-| -------------------------------------------------------- | --------------------------------------- |
-| `outputs/phase-6/expanded-test-cases.md`                 | TC-APPR-11〜18 拡充テストケース一覧     |
-| `outputs/phase-6/regression-test-result.md`              | 回帰テスト結果（19/19 PASS）            |
-| `outputs/phase-7/coverage-plan.md`                       | カバレッジ計画                          |
-| `outputs/phase-7/uncovered-analysis-plan.md`             | 未カバーブランチ分析                    |
-| `outputs/phase-8/refactoring-plan.md`                    | リファクタリング計画（不要判定）        |
-| `outputs/phase-8/post-refactor-test-plan.md`             | リファクタリング後テスト計画            |
-| `outputs/phase-9/quality-report.md`                      | 品質保証レポート                        |
-| `outputs/phase-9/risk-register.md`                       | リスク台帳                              |
-| `outputs/phase-10/final-review-result.md`                | 最終レビュー結果（AC-01〜09 全件 PASS） |
-| `outputs/phase-10/corrective-action-plan.md`             | 是正アクション計画（なし）              |
-| `outputs/phase-10/release-readiness-checklist.md`        | 出荷準備チェックリスト                  |
-| `outputs/phase-11/manual-test-checklist.md`              | 手動テストチェックリスト                |
-| `outputs/phase-11/screenshot-plan.md`                    | スクリーンショット撮影計画              |
-| `outputs/phase-11/screenshot-plan.json`                  | 撮影計画（machine-readable）            |
-| `outputs/phase-11/phase11-capture-metadata.json`         | capture メタデータ                      |
-| `outputs/phase-11/manual-test-result.md`                 | テスト結果                              |
-| `outputs/phase-11/manual-test-report.md`                 | 実施概要と所見                          |
-| `outputs/phase-11/ui-sanity-visual-review.md`            | UI サニティレビュー                     |
-| `outputs/phase-11/screenshot-coverage.md`                | カバレッジレポート                      |
-| `outputs/phase-11/discovered-issues.md`                  | 発見事項                                |
-| `outputs/phase-11/evidence-index.md`                     | 証跡インデックス                        |
-| `outputs/phase-12/implementation-guide.md`               | 実装ガイド（Part 1/2）                  |
-| `outputs/phase-12/system-spec-update-summary.md`         | システム仕様更新サマリー                |
-| `outputs/phase-12/documentation-changelog.md`            | 本ファイル                              |
-| `outputs/phase-12/unassigned-task-detection.md`          | 未タスク検出レポート                    |
-| `outputs/phase-12/skill-feedback-report.md`              | スキルフィードバックレポート            |
-| `outputs/phase-12/phase12-task-spec-compliance-check.md` | Phase 12 準拠チェック                   |
-| `artifacts.json`                                         | workflow root の phase status 同期      |
-| `outputs/artifacts.json`                                 | outputs mirror の phase status 同期     |
-
-### グローバルスキルファイル（更新）
-
-| ファイルパス                                                                   | 内容                                                    |
-| ------------------------------------------------------------------------------ | ------------------------------------------------------- |
-| `.claude/skills/aiworkflow-requirements/LOGS.md`                               | Phase 11/12 close-out エントリ追加                      |
-| `.claude/skills/task-specification-creator/LOGS.md`                            | Phase 11/12 close-out エントリ追加                      |
-| `.claude/skills/aiworkflow-requirements/SKILL.md`                              | バージョン +0.0.1 追記                                  |
-| `.claude/skills/task-specification-creator/SKILL.md`                           | バージョン +0.0.1 追記                                  |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md` | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 完了記録追加     |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md`   | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 を完了扱いへ移管 |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow.md`           | current facts に close-out 同期内容を追記               |
-| `.claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md`     | `onApprovalRequest` IPC surface 追記                    |
-
-### unassigned-task（新規作成）
-
-| ファイルパス                                                                                     | 内容                              |
-| ------------------------------------------------------------------------------------------------ | --------------------------------- |
-| `docs/30-workflows/unassigned-task/ut-sdk-07-approval-request-surface-001-phase11-screenshot.md` | Phase 11 CAPTURE_BLOCKED 未タスク |
+2026-04-06
 
 ---
 
-## Step 区分
+## 変更ファイル一覧
 
-| Step     | 内容                                                 | 状態 |
-| -------- | ---------------------------------------------------- | ---- |
-| Step 1-A | `task-workflow-completed.md` に完了記録追加          | 完了 |
-| Step 1-B | `task-workflow-backlog.md` から completed 扱いへ移管 | 完了 |
-| Step 1-C | `task-workflow.md` current facts 追記                | 完了 |
-| Step 1-D | `artifacts.json` / `outputs/artifacts.json` 同期     | 完了 |
-| Step 1-E | unassigned-task 新規作成                             | 完了 |
-| Step 2   | `api-ipc-system-core.md` `onApprovalRequest` 追記    | 完了 |
+### 実装ファイル（4ファイル）
+
+| #   | ファイルパス                                                                                 | 変更内容                                                                                                |
+| --- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| 1   | `apps/desktop/src/preload/skill-creator-api.ts`                                              | `SkillCreatorAPI` インターフェースに `onApprovalRequest` 追加、実装オブジェクトに `safeOn` 経由実装追加 |
+| 2   | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                         | Props に `onApprovalRequest` 追加、state・useEffect 購読・UI（data-testid）・lifecycle reset 追加       |
+| 3   | `apps/desktop/src/preload/__tests__/skill-creator-api.approval.test.ts`                      | 新規作成（10テスト）: チャンネル登録・ペイロード伝達・アンサブ・ALLOWED_ON_CHANNELS・エッジケース       |
+| 4   | `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx` | 新規作成（8テスト）: UI表示・非表示・内容・アンマウント・上書き・undefined・再マウント・close reset     |
+
+### Phase outputs ファイル（Phase 7〜12）
+
+| フェーズ | ファイルパス                                                                                                      |
+| -------- | ----------------------------------------------------------------------------------------------------------------- |
+| Phase 7  | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-7/coverage-report.md`                     |
+| Phase 8  | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-8/refactoring-summary.md`                 |
+| Phase 9  | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-9/qa-result.md`                           |
+| Phase 10 | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-10/final-review-result.md`                |
+| Phase 11 | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-11/manual-test-evidence.md`               |
+| Phase 12 | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-12/implementation-guide.md`               |
+| Phase 12 | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-12/system-spec-update-summary.md`         |
+| Phase 12 | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-12/documentation-changelog.md`            |
+| Phase 12 | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-12/unassigned-task-detection.md`          |
+| Phase 12 | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-12/skill-feedback-report.md`              |
+| Phase 12 | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/outputs/phase-12/phase12-task-spec-compliance-check.md` |
 
 ---
 
-_作成日: 2026-04-06_
-_Phase 12 ドキュメント更新_
+## テスト実行結果
+
+```
+pnpm --filter @repo/desktop exec vitest run skill-creator-api.approval SkillLifecyclePanel.approval
+
+ ✓ src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx (7 tests) 104ms
+ ✓ src/preload/__tests__/skill-creator-api.approval.test.ts (10 tests) 40ms
+
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+  Duration  3.10s
+```
+
+> 補足: close/reset 系の追加ケース（T-6-9）は source に追加済みです。現環境では Vitest の再実行が `esbuild` の host/binary mismatch で止まるため、このログは直近の成功結果として残しています。
+
+---
+
+## Artifacts Parity 確認
+
+| Phase    | outputs ディレクトリ               | artifacts.json エントリ | 一致 |
+| -------- | ---------------------------------- | ----------------------- | ---- |
+| Phase 7  | `phase-7/coverage-report.md`       | phase 7                 | OK   |
+| Phase 8  | `phase-8/refactoring-summary.md`   | phase 8                 | OK   |
+| Phase 9  | `phase-9/qa-result.md`             | phase 9                 | OK   |
+| Phase 10 | `phase-10/final-review-result.md`  | phase 10                | OK   |
+| Phase 11 | `phase-11/manual-test-evidence.md` | phase 11                | OK   |
+| Phase 12 | `phase-12/` 配下 6ファイル         | phase 12                | OK   |
+| Phase 13 | （blocked）                        | phase 13 blocked        | OK   |

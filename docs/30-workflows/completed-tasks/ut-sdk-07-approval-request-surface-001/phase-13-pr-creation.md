@@ -2,73 +2,82 @@
 
 ## メタ情報
 
-| 項目       | 内容                                        |
-| ---------- | ------------------------------------------- |
-| Phase      | 13                                          |
-| 機能名     | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001      |
-| タスク名   | Skill Creator approval request surface 接続 |
-| 前提Phase  | Phase 12                                    |
-| 後続Phase  | -                                           |
-| 作成日     | 2026-04-06                                  |
-| ステータス | blocked                                     |
+| 項目       | 値                                     |
+| ---------- | -------------------------------------- |
+| Phase      | 13                                     |
+| 前提Phase  | Phase 12                               |
+| 後続Phase  | -（最終フェーズ）                      |
+| ステータス | blocked                                |
+| 作成日     | 2026-04-06                             |
+| 機能名     | ut-sdk-07-approval-request-surface-001 |
 
 ## 目的
 
-ユーザーの明示的な承認が得られるまで blocked を維持し、commit / PR を自動実行せずに local check の結果と change summary を記録する。
+この Phase は標準フレームワーク上の最終工程として残すが、本タスクでは `commit` / `PR` 作成を実行しない。ユーザーの明示的な承認があるまで blocked のまま維持する。
 
-## 重要: blocked-only
+> **⚠️ BLOCKED**: このフェーズはユーザーの明示的な承認があるまで実行しない。
+> コミット・PR作成・ブランチのpushは禁止。
 
-**commit / PR / push はこの workflow のスコープ外。**
+---
 
-Phase 12 までの全成果物が揃った状態を確認し、Phase 13 は blocked のまま記録する。
+## 実行タスク（ユーザー承認後に参照するメモ）
 
-## 実行タスク
+### タスク1: ブランチ・コミット作成
 
-1. Phase 1〜12 の全成果物が揃っていることを最終確認する
-2. ユーザー approval の有無を確認する
-3. `outputs/phase-13/local-check-result.md` に blocked 理由と local check 結果を記録する
-4. `outputs/phase-13/change-summary.md` に差分要約と未実施範囲を記録する
-5. commit / PR / push を実行せず、blocked 状態を維持する
+**実行手順**（ユーザー指示後のみ実行）:
 
-## blocked 記録情報
+1. 作業ブランチが存在することを確認する
+2. 変更ファイルをステージングする
+3. コミットを作成する
 
-### 変更対象
+**変更ファイル一覧**:
 
-| ファイル                                 | 変更内容                        |
-| ---------------------------------------- | ------------------------------- |
-| `outputs/phase-13/local-check-result.md` | blocked 理由と local check 結果 |
-| `outputs/phase-13/change-summary.md`     | 差分要約と未実施範囲            |
+- `apps/desktop/src/preload/skill-creator-api.ts`
+- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
+- `apps/desktop/src/preload/__tests__/skill-creator-api.approval.test.ts`（新規）
+- `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx`（新規）
+- `docs/30-workflows/ut-sdk-07-approval-request-surface-001/` （タスク仕様書一式）
 
-## 参照資料
+**コミットメッセージ案**:
 
-| 参照資料                                                    | パス                                                                             | 説明             |
-| ----------------------------------------------------------- | -------------------------------------------------------------------------------- | ---------------- |
-| システム仕様更新サマリー                                    | `outputs/phase-12/system-spec-update-summary.md`                                 | Phase 12 成果物  |
-| Phase 12 準拠チェック                                       | `outputs/phase-12/phase12-task-spec-compliance-check.md`                         | Phase 12 成果物  |
-| ドキュメント更新履歴                                        | `outputs/phase-12/documentation-changelog.md`                                    | Phase 12 成果物  |
-| blocked ルール                                              | `.claude/skills/task-specification-creator/references/phase-template-phase13.md` | blocked 判定基準 |
-| 最終レビュー結果 outputs/phase-10/corrective-action-plan.md | `outputs/phase-10/final-review-result.md`                                        | Phase 10 成果物  |
-| 手動テストチェックリスト                                    | `outputs/phase-11/manual-test-checklist.md`                                      | Phase 11 成果物  |
-| 実装ガイド                                                  | `outputs/phase-12/implementation-guide.md`                                       | Phase 12 成果物  |
+```
+feat(skill-creator): add onApprovalRequest surface to SkillCreatorAPI (#1683)
 
-## 実行手順
+- Add onApprovalRequest method to SkillCreatorAPI interface and implementation
+- Subscribe to APPROVAL_REQUEST channel via safeOn in skill-creator-api.ts
+- Add pendingApprovalRequest state and UI to SkillLifecyclePanel.tsx
+- Add unit tests for preload and renderer approval request surface
 
-1. Phase 12 全成果物を確認する。
-2. ユーザー approval の有無を確認し、未取得なら blocked と明記する。
-3. blocked 理由、local check 結果、差分要約を `outputs/phase-13/` に記録する。
-4. commit / PR / push の実行手順は記録しない。
+Closes #1683
+```
 
-## 完了条件
+### タスク2: PR 作成
 
-- [ ] user approval の有無が記録されている
-- [ ] blocked 理由が記録されている
-- [ ] local check の結果が記録されている
-- [ ] change summary が記録されている
-- [ ] commit / PR / push を実行していない
-- [ ] Phase 12 までの完了根拠が参照できる
+**PR タイトル案**:
 
-## タスク100%実行確認【必須】
+```
+feat(skill-creator): add approval:request surface to SkillCreatorAPI (#1683)
+```
 
-- [ ] blocked 状態を明示している
-- [ ] commit / PR / push を誘導する記述を残していない
-- [ ] Phase 13 の記録が Phase 12 の成果物と整合している
+**PR 説明案**:
+
+- 変更の概要（onApprovalRequest の追加）
+- 受入基準 AC-1〜AC-5 の充足状況
+- テスト結果サマリー
+
+### タスク3: CI/CD 確認
+
+**確認事項**:
+
+- [ ] CI が PASS している
+- [ ] 全自動テストが PASS している
+- [ ] コードレビューが完了している
+
+---
+
+## 完了条件（ユーザー承認後）
+
+- [ ] PR が作成されている
+- [ ] CI が PASS している
+- [ ] レビュアーが承認している
+- [ ] **本 Phase 内の全タスクを 100% 実行完了**

@@ -11,7 +11,7 @@ RuntimeSkillCreatorFacade 及び関連ファイルにハードコードされた
 | タスクID   | TASK-P0-07                                             |
 | タスク種別 | リファクタリング / 機能追加                            |
 | 優先度     | P0 (High)                                              |
-| ステータス | spec_created（Phase 1-12 complete / Phase 13 blocked） |
+| ステータス | completed                                              |
 | 上流ゲート | なし                                                   |
 | 依存タスク | TASK-P0-03 (manifest 配置), TASK-P0-04 (loader 有効化) |
 | 後続タスク | なし                                                   |
