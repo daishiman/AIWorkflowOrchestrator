@@ -21,7 +21,7 @@ description: |
   SKILL_CREATOR_OUTPUT_READY, SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED, SKILL_CREATOR_OPEN_SKILL,
   SkillCreatorOutputHandler, SkillRegistry, SkillCreatorResultPanel, onOutputReady,
   UT-SDK-07, shared-ipc-channel, packages/shared/src/ipc/channels, APPROVAL_CHANNELS, EXECUTION_CHANNELS, SKILL_CREATOR_EXTERNAL_API_CHANNELS, shared channel migration,
-  approval:request surface, onApprovalRequest, pendingApprovalRequest, SkillLifecyclePanel approval request, UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
+  SKILL_CREATOR_RUNTIME_CHANNELS, UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001, cross-layer parity test, governance-bundle.test, shared-preload parity
 allowed-tools:
   - Read
   - Write
@@ -182,25 +182,11 @@ TASK-SDK-SC-04 で追加された Skill Output Integration のIPCチャネル。
 - `apps/desktop/src/main/services/runtime/SkillRegistry.ts`: スキル登録サービスが実装されているか（TASK-SDK-SC-04 新規）
 - `apps/desktop/src/renderer/components/skill-creator/SkillCreatorResultPanel.tsx`: 結果表示パネルが実装されているか（TASK-SDK-SC-04 新規）
 
-## 拡張スコープ: Approval Request Surface IPC
-
-UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 で追加された承認リクエスト UI 表示のチャネル。
-
-| チャネル | 方向 | 型定義 |
-| --- | --- | --- |
-| `approval:request` | Main → Renderer (event on) | `ApprovalRequestPayload` |
-
-整合確認先:
-- `packages/shared/src/ipc/channels.ts`: `APPROVAL_CHANNELS.APPROVAL_REQUEST = "approval:request"` 定義
-- `apps/desktop/src/preload/channels.ts`: `IPC_CHANNELS.APPROVAL_REQUEST` 定数と `ALLOWED_ON_CHANNELS` への追加
-- `apps/desktop/src/preload/skill-creator-api.ts`: `SkillCreatorAPI` インターフェースの `onApprovalRequest()` メソッド（L374-381）と実装（L693-697）
-- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`: `pendingApprovalRequest` state・`useEffect` 内購読・`data-testid="skill-lifecycle-approval-request"` UI（3箇所）・lifecycle reset（create/execute/improve/close 導線）
-
 ## 変更履歴
 
 | Version | Date | Changes |
 | --- | --- | --- |
-| 1.6.0 | 2026-04-06 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 対応: Approval Request Surface IPC チャネル（`approval:request`）を監査スコープへ追加。`onApprovalRequest()` Preload API・`SkillLifecyclePanel` UI 実装・lifecycle reset・テスト 17 件を整合確認先に追加。Trigger に `approval:request surface` / `onApprovalRequest` / `UT-SDK-07-APPROVAL-REQUEST-SURFACE-001` を登録 |
+| 1.6.0 | 2026-04-06 | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 対応: `SKILL_CREATOR_RUNTIME_CHANNELS` が `packages/shared/src/ipc/channels.ts` に正本化された。`apps/desktop/src/preload/channels.ts` は shared から import する構造に変更済み（直書き廃止）。Cross-layer parity テストを `governance-bundle.test.ts` に追加。Trigger に `SKILL_CREATOR_RUNTIME_CHANNELS` / `UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001` / `cross-layer parity test` / `governance-bundle.test` を追加 |
 | 1.5.0 | 2026-04-04 | TASK-SDK-SC-04 対応: Skill Output Integration IPC 3チャネル（output-ready / output-overwrite-approved / open-skill）を監査スコープへ追加。`SkillCreatorOutputHandler` / `SkillRegistry` / `SkillCreatorResultPanel` を整合確認先に追加。Trigger に Output Integration 関連キーワードを登録 |
 | 1.4.0 | 2026-04-03 | TASK-SDK-SC-03 対応: External API IPC 4チャネル（configure-api / api-configured / api-test-result / external-api-config-required）を監査スコープへ追加。`SKILL_CREATOR_EXTERNAL_API_CHANNELS` 定数グループと `packages/shared/src/types/skillCreatorExternalApi.ts` 型定義を整合確認先に追加。Trigger に External API 関連キーワードを登録 |
 | 1.3.0 | 2026-03-29 | UT-SDK-07 対応: `packages/shared/src/ipc/channels.ts` を監査スコープへ追加。APPROVAL/EXECUTION チャネルの正本が shared に移管された事実を description・Phase 3・Trigger に反映。Trigger に `UT-SDK-07 / shared-ipc-channel / APPROVAL_CHANNELS / EXECUTION_CHANNELS / shared channel migration` を追加 |
