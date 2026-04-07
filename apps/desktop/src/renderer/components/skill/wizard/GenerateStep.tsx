@@ -10,7 +10,8 @@
 
 import React from "react";
 import type { PlanResult } from "../../../store/slices/agentSlice";
-import type { GenerationMode } from "./index";
+/** LLM生成 or テンプレート生成のモード選択（TASK-SC-07） */
+export type GenerationMode = "llm" | "template";
 import { renderErrorCard } from "./generate-step/ErrorCards";
 
 // ---- 型定義 ----
