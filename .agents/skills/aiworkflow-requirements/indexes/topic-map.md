@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-06
+> 自動生成: 2026-04-07
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -417,7 +417,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L6 |
-| 関連ドキュメント | L224 |
+| 関連ドキュメント | L254 |
 
 ### references/interfaces-agent-sdk-skill-reference-share-debug-analytics.md
 
@@ -434,11 +434,11 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L398 |
-| スキルチェーン 型定義（TASK-9D） | L448 |
-| スキルスケジュール 型定義（TASK-9G） | L483 |
-| スキルフォーク 型定義（TASK-9E） | L508 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L556 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L420 |
+| スキルチェーン 型定義（TASK-9D） | L470 |
+| スキルスケジュール 型定義（TASK-9G） | L505 |
+| スキルフォーク 型定義（TASK-9E） | L530 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L578 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -854,12 +854,12 @@ node scripts/list-specs.js --topics
 |------------|----|\n| Agent Dashboard IPC チャネル | L6 |
 | Workspace Chat Edit IPC チャネル | L74 |
 | Skill Creator IPC チャネル | L256 |
-| SDK メッセージ出力型統合 | L343 |
-| SDK メッセージ出力型統合 | L357 |
-| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L401 |
-| スキルファイル操作 IPC チャネル | L435 |
-| スキル安全性評価・ファイルツリー IPC チャネル | L444 |
-| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L455 |
+| SDK メッセージ出力型統合 | L344 |
+| SDK メッセージ出力型統合 | L358 |
+| `skill:execute` IPC 契約（TASK-FIX-SKILL-AUTH-PREFLIGHT-GUARD-001） | L402 |
+| スキルファイル操作 IPC チャネル | L436 |
+| スキル安全性評価・ファイルツリー IPC チャネル | L445 |
+| スキル公開・配布 IPC 契約（TASK-SKILL-LIFECYCLE-08 / spec_created） | L456 |
 
 ### references/api-ipc-agent-details.md
 
@@ -1334,15 +1334,15 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
-| Global Navigation | L46 |
-| ChatViewナビゲーション | L348 |
-| ナビゲーションボタン仕様 | L378 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L394 |
-| テスト検証済み項目 | L408 |
-| アクセシビリティ対応事例 | L423 |
-| ナビゲーションパターンのベストプラクティス | L455 |
-| 関連ドキュメント | L467 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L476 |
+| Global Navigation | L47 |
+| ChatViewナビゲーション | L372 |
+| ナビゲーションボタン仕様 | L402 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L418 |
+| テスト検証済み項目 | L432 |
+| アクセシビリティ対応事例 | L447 |
+| ナビゲーションパターンのベストプラクティス | L479 |
+| 関連ドキュメント | L491 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L500 |
 
 ### references/ui-ux-panels.md
 
@@ -2561,12 +2561,13 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L9 |
 | 変更履歴 | L21 |
-| 背景 | L33 |
-| チェックリスト | L48 |
-| 契約ドリフト検出コマンド | L169 |
-| 関連ドキュメント | L199 |
-| 適用事例 | L213 |
-| 自動検出ツール（UT-TASK06-007） | L226 |
+| 背景 | L34 |
+| チェックリスト | L49 |
+| 契約ドリフト検出コマンド | L170 |
+| 関連ドキュメント | L200 |
+| 適用事例 | L214 |
+| Skill Creator IPC ハンドラー scope 分離マトリクス（TASK-UI-02） | L228 |
+| 自動検出ツール（UT-TASK06-007） | L254 |
 
 ### references/ipc-type-resolution-guide.md
 
@@ -2737,29 +2738,34 @@ node scripts/list-specs.js --topics
 | 8. worktree でのテスト実行と esbuild バージョン不一致 | L127 |
 | 関連ファイル | L139 |
 
+### references/lessons-learned-ipc-channel-whitelist-sync.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-UI-02 / UT-TASK06-007: IPC Channel whitelist 同期ガード | L6 |
+
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L44 |
-| 2026-03-27 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | L46 |
-| 2026-03-27 TASK-SDK-04 user interaction bridge / phase UI | L56 |
-| 2026-03-28 TASK-SDK-04-U1 submitUserInput phase transition semantics | L74 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L110 |
-| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L116 |
-| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L136 |
-| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L164 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L200 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L228 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L265 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L331 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L352 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L382 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L424 |
-| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L471 |
-| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L491 |
-| TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L507 |
+| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L46 |
+| 2026-03-27 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | L48 |
+| 2026-03-27 TASK-SDK-04 user interaction bridge / phase UI | L58 |
+| 2026-03-28 TASK-SDK-04-U1 submitUserInput phase transition semantics | L76 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L112 |
+| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L118 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L138 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L166 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L202 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L230 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L267 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L333 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L354 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L384 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L426 |
+| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L473 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L493 |
+| TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L509 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
@@ -2865,6 +2871,11 @@ node scripts/list-specs.js --topics
 | L-RT05-003: jest-dom matchers 使用前に setupFiles を確認する | L35 |
 | L-RT05-004: shared contract 変更は same-wave で canonical spec へ同期する | L48 |
 | L-RT05-005: worktree環境での esbuild platform mismatch 解消手順 | L61 |
+
+### references/lessons-learned-skill-creator-ipc-handler-scope.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-UI-02: Skill Creator IPC ハンドラー責務分離 | L6 |
 
 ### references/lessons-learned-skill-execute-hook-migration.md
 
@@ -4101,7 +4112,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L7 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L82 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L140 |
 
 ### references/task-workflow-history.md
 

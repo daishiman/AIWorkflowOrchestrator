@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-07T04:37:05.723Z",
-  "totalKeywords": 2790,
+  "generated": "2026-04-07T05:43:49.365Z",
+  "totalKeywords": 2792,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -3540,6 +3540,7 @@
     ],
     "renderer": [
       "arch-state-management-reference-permissions-import-lifecycle.md",
+      "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-rt02-stub-response-error-notification.md"
     ],
     "direct": [
@@ -7442,6 +7443,12 @@
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "エラー伝搬パス": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "REMAINING": [
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "移行完了": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
     "ライフサイクル": [
