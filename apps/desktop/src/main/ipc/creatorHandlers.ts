@@ -19,10 +19,17 @@ import type {
   SkillCreatorSdkEvent,
   SkillCreatorSessionResumeResult,
   SkillCreatorGovernanceState,
+  ExternalApiConnectionConfig,
+  SkillOutputReadyPayload,
 } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
+import {
+  SKILL_CREATOR_EXTERNAL_API_CHANNELS,
+  SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+} from "@repo/shared/ipc/channels";
 import { IPC_CHANNELS } from "../../preload/channels";
 import type { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
+import type { SkillCreatorOutputHandler } from "../services/runtime/SkillCreatorOutputHandler";
 import {
   validateIpcSender,
   toIPCValidationError,
@@ -145,9 +152,48 @@ function emitAdapterStatusChanged(
   );
 }
 
+function isValidExternalApiConfig(
+  config: ExternalApiConnectionConfig,
+): boolean {
+  if (!config || typeof config !== "object") return false;
+  if (typeof config.name !== "string" || config.name.trim() === "")
+    return false;
+  if (typeof config.url !== "string" || config.url.trim() === "") return false;
+  if (config.method !== "GET" && config.method !== "POST") return false;
+  if (
+    config.authType !== "none" &&
+    config.authType !== "api-key" &&
+    config.authType !== "bearer" &&
+    config.authType !== "basic"
+  )
+    return false;
+  if (
+    config.authType !== "none" &&
+    (typeof config.credential !== "string" || config.credential.trim() === "")
+  )
+    return false;
+  return true;
+}
+
+function isValidSkillOutputReadyPayload(
+  payload: SkillOutputReadyPayload,
+): boolean {
+  return (
+    !!payload &&
+    typeof payload === "object" &&
+    typeof payload.skillName === "string" &&
+    payload.skillName.trim() !== "" &&
+    typeof payload.savedPath === "string" &&
+    payload.savedPath.trim() !== "" &&
+    typeof payload.content === "string" &&
+    typeof payload.requiresOverwriteConfirm === "boolean"
+  );
+}
+
 export function registerRuntimeSkillCreatorHandlers(
   mainWindow: BrowserWindow,
   runtimeSkillCreatorService?: RuntimeSkillCreatorFacade,
+  outputHandler?: SkillCreatorOutputHandler,
 ): void {
   registeredRuntimeSkillCreatorService = runtimeSkillCreatorService;
 
@@ -643,20 +689,23 @@ export function registerRuntimeSkillCreatorHandlers(
 
   ipcMain.handle(
     IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION,
-    async (event: IpcMainInvokeEvent, args: { checkpointId: string }) => {
+    async (
+      event: IpcMainInvokeEvent,
+      args: { checkpointId: string },
+    ): Promise<IpcResult<void>> => {
       validateSender(
         event,
         IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION,
         mainWindow,
       );
       if (!args?.checkpointId?.trim()) {
-        throw new Error("checkpointId が指定されていません");
+        return validationError("checkpointId が指定されていません");
       }
       if (!runtimeSkillCreatorService) {
-        throw new Error(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
+        return validationError(RUNTIME_SKILL_CREATOR_UNAVAILABLE);
       }
       runtimeSkillCreatorService.deleteSession(args.checkpointId);
-      return;
+      return { success: true };
     },
   );
 
@@ -705,6 +754,69 @@ export function registerRuntimeSkillCreatorHandlers(
       }
     },
   );
+
+  // CONFIGURE_API ハンドラー移管 (TASK-UI-02 Phase 3 MINOR: SkillCreatorIpcBridge からの移管)
+  ipcMain.handle(
+    SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
+    async (
+      event: IpcMainInvokeEvent,
+      config: ExternalApiConnectionConfig,
+    ): Promise<{ success: boolean; error?: string }> => {
+      validateSender(
+        event,
+        SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API,
+        mainWindow,
+      );
+      if (!isValidExternalApiConfig(config)) {
+        return {
+          success: false,
+          error: "外部API設定の形式が不正です",
+        };
+      }
+      // Runtime IPC モードではセッションベースの外部API設定は非サポート
+      return {
+        success: false,
+        error:
+          "外部API設定はセッションモードでのみ利用可能です（Runtime IPC では非サポート）",
+      };
+    },
+  );
+
+  // SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED ハンドラー移管 (TASK-UI-02 Phase 3 MINOR)
+  ipcMain.handle(
+    SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+    async (
+      event: IpcMainInvokeEvent,
+      payload: SkillOutputReadyPayload,
+    ): Promise<{ success: boolean; error?: string }> => {
+      validateSender(
+        event,
+        SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
+        mainWindow,
+      );
+      if (!outputHandler) {
+        return {
+          success: false,
+          error:
+            "[creatorHandlers] Received overwrite approval but output handler is not configured",
+        };
+      }
+      if (!isValidSkillOutputReadyPayload(payload)) {
+        return {
+          success: false,
+          error:
+            "[creatorHandlers] Received overwrite approval with invalid payload",
+        };
+      }
+      try {
+        await outputHandler.handleOverwriteApproved(payload);
+        return { success: true };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return { success: false, error: message };
+      }
+    },
+  );
 }
 
 export function unregisterRuntimeSkillCreatorHandlers(): void {
@@ -730,4 +842,6 @@ export function unregisterRuntimeSkillCreatorHandlers(): void {
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_DELETE_SESSION);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS);
   ipcMain.removeHandler(IPC_CHANNELS.SKILL_CREATOR_GET_GOVERNANCE_STATE);
+  ipcMain.removeHandler(SKILL_CREATOR_EXTERNAL_API_CHANNELS.CONFIGURE_API);
+  ipcMain.removeHandler(SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED);
 }

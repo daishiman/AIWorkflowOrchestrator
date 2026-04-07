@@ -1,0 +1,214 @@
+{
+  "feature": "ut-sdk-07-approval-request-surface-001",
+  "created": "2026-04-06T00:00:00Z",
+  "lastUpdated": "2026-04-06T12:00:00Z",
+  "metadata": {
+    "taskId": "UT-SDK-07-APPROVAL-REQUEST-SURFACE-001",
+    "taskType": "feat",
+    "priority": "medium",
+    "scale": "medium",
+    "issueNumber": 1694,
+    "sourcePhase": "TASK-SDK-07 Phase 12",
+    "parentWorkflow": "skill-creator-agent-sdk-lane"
+  },
+  "phases": {
+    "1": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-1/requirements-definition.md",
+          "description": "要件定義書（P50チェック結果・AC確定・スコープ境界）"
+        }
+      ]
+    },
+    "2": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-2/architecture-design.md",
+          "description": "アーキテクチャ設計書（preload listener・UI コンポーネント・TTL 設計）"
+        }
+      ]
+    },
+    "3": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-3/design-review-result.md",
+          "description": "設計レビュー結果（PASS/MINOR/MAJOR/CRITICAL 判定）"
+        }
+      ]
+    },
+    "4": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-4/test-cases.md",
+          "description": "テストケース一覧"
+        }
+      ]
+    },
+    "5": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-5/implementation-summary.md",
+          "description": "実装サマリー（変更ファイル一覧・実装内容）"
+        }
+      ]
+    },
+    "6": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-6/coverage-report.md",
+          "description": "テスト拡充レポート（fail path・境界値・TTL expired）"
+        }
+      ]
+    },
+    "7": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-7/coverage-verification.md",
+          "description": "カバレッジ検証レポート"
+        }
+      ]
+    },
+    "8": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-8/refactoring-log.md",
+          "description": "リファクタリングログ"
+        }
+      ]
+    },
+    "9": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-9/quality-report.md",
+          "description": "品質保証レポート（IPC 契約ドリフト検証含む）"
+        }
+      ]
+    },
+    "10": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-10/final-review-result.md",
+          "description": "最終レビュー結果（AC-1〜AC-4 総合判定）"
+        }
+      ]
+    },
+    "11": {
+      "status": "completed",
+      "completedAt": "2026-04-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-11/manual-test-result.md",
+          "description": "手動テスト結果"
+        },
+        {
+          "type": "directory",
+          "path": "outputs/phase-11/screenshots/",
+          "description": "スクリーンショット（UI 変更あり→必須）"
+        }
+      ]
+    },
+    "12": {
+      "status": "completed",
+      "completedAt": "2026-04-06T12:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-12/implementation-guide.md",
+          "description": "実装ガイド（Part 1: 中学生向け概念説明 / Part 2: 技術者向け詳細）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/system-spec-update-summary.md",
+          "description": "システム仕様更新サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/documentation-changelog.md",
+          "description": "ドキュメント更新履歴"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/unassigned-task-detection.md",
+          "description": "未タスク検出結果（0件でも出力必須）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/skill-feedback-report.md",
+          "description": "スキルフィードバックレポート（改善点なしでも出力必須）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-12/phase12-task-spec-compliance-check.md",
+          "description": "Phase 12 準拠確認レポート（Task 1〜6 の全完了確認）"
+        }
+      ]
+    },
+    "13": {
+      "status": "completed",
+      "completedAt": "2026-04-06T12:00:00Z",
+      "artifacts": [
+        {
+          "type": "document",
+          "path": "outputs/phase-13/local-check-result.md",
+          "description": "ローカル確認結果（blocked 理由・実行可否・証跡要約）"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/change-summary.md",
+          "description": "PR 前の変更サマリー"
+        },
+        {
+          "type": "document",
+          "path": "outputs/phase-13/pr-info.md",
+          "description": "PR 情報（ユーザー承認後のみ実行）"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "1": [],
+    "2": ["1"],
+    "3": ["1", "2"],
+    "4": ["1", "2", "3"],
+    "5": ["4"],
+    "6": ["5"],
+    "7": ["6"],
+    "8": ["7"],
+    "9": ["8"],
+    "10": ["9"],
+    "11": ["10"],
+    "12": ["11"],
+    "13": ["12"]
+  }
+}

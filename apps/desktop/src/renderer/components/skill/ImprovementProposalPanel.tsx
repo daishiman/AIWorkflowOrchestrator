@@ -69,11 +69,10 @@ export const ImprovementProposalPanel = memo<ImprovementProposalPanelProps>(
           selectedIndices.has(index),
         );
 
-        const result =
-          await window.electronAPI.skillCreator.applyRuntimeImprovement(
-            skillName,
-            selectedSuggestions,
-          );
+        const result = await window.skillCreatorAPI.applyRuntimeImprovement(
+          skillName,
+          selectedSuggestions,
+        );
 
         if (result.success && result.data) {
           setApplyResult(result.data);

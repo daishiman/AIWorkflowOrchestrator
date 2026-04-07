@@ -70,7 +70,7 @@ export function useStreamingProgress(): UseStreamingProgressReturn {
   const resetProgress = useResetStreamingProgress();
 
   useEffect(() => {
-    const api = window.electronAPI?.skillCreator;
+    const api = window.skillCreatorAPI;
     if (!api?.onProgress) return;
 
     // P5 対策: safeOn が返すクリーンアップ関数を保持

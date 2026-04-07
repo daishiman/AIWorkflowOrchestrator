@@ -6,6 +6,64 @@
 
 ## 完了タスク
 
+### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Skill Creator preload / renderer に approval:request surface を追加（2026-04-06）
+
+| 項目       | 値                                                                                         |
+| ---------- | ------------------------------------------------------------------------------------------ |
+| タスクID   | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001                                                     |
+| ステータス | **完了**                                                                                   |
+| タイプ     | implementation / approval-request-surface / documentation                                  |
+| 優先度     | 中                                                                                         |
+| 完了日     | 2026-04-06                                                                                 |
+| 対象       | Skill Creator preload / renderer に `approval:request` surface を追加                      |
+| 成果物     | `docs/30-workflows/step-12-par-task-ut-sdk-07-approval-request-surface-001/`              |
+| 元未タスク | `docs/30-workflows/unassigned-task/task-ut-sdk-07-approval-request-surface-001.md`         |
+
+#### 実施内容
+
+- `ApprovalRequestPayload` を `packages/shared/src/types/skillCreator.ts` の canonical export にし、preload / renderer / main で再利用した
+- `SkillLifecyclePanel` に `onApprovalRequest` リスナーと approval response error handling を統合した
+- `ApprovalRequestPanel` の pending / expired / resolving / failure revert をテストし、approve/reject の接続を確認した
+- Phase 11 の visual evidence を Playwright ハーネスで 6 枚撮影し、`outputs/phase-11/screenshots/` に保存した
+- Phase 12 / 13 のドキュメント、台帳、実装ガイドを current facts に同期した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop typecheck`: PASS
+- `pnpm --filter @repo/desktop exec vitest run src/preload/__tests__/skill-creator-api.approval.test.ts src/renderer/components/skill/__tests__/ApprovalRequestPanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx`: PASS（25 tests）
+- `pnpm --filter @repo/desktop screenshot:ut-sdk-07-approval-request-surface`: PASS（6 screenshots captured）
+
+### タスク: TASK-SDK-04-U1-F1 verification_review request を single_select kind に変更（2026-04-06）
+
+| 項目 | 値 |
+|---|---|
+| タスクID | TASK-SDK-04-U1-F1 |
+| ステータス | **完了（Phase 12 close-out）** |
+| タイプ | テスト整合・kind変更 |
+| 優先度 | 中 |
+| 完了日 | 2026-04-06 |
+| 対象 | `SkillCreatorWorkflowEngine.createVerificationReviewRequest()` kind: free_text → single_select |
+| 成果物 | `docs/30-workflows/task-sdk-04-u1-f1-verification-review-single-select/` |
+
+#### 実施内容
+
+- 実装確認: `createVerificationReviewRequest()` の `kind: "single_select"` は TASK-SDK-04-U1 実装波で先行完了済み
+- テスト修正: verification_review 関連テスト 5 箇所から `textValue` フィールドを削除
+- 新規テスト追加: TC-NEW-1〜3（kind確認・options確認・不正ID拒否）
+- 拡張テスト追加: TC-ADD-1〜5（境界値・呼び出し元回帰）
+- 全 47 テスト PASS、typecheck PASS、lint PASS
+
+#### 検証証跡
+
+- Phase 4: テスト仕様書 + Red記録
+- Phase 5: 実装サマリー（47 tests PASS）
+- Phase 6: 拡張テスト（境界値 + 呼び出し元回帰）
+- Phase 7: カバレッジ（対象関数 100%）
+- Phase 9: 品質レポート（typecheck / lint / IPC drift なし）
+- Phase 11: NON_VISUAL 確認
+
+---
+
 ### タスク: UT-VERIFY-DOC-CONSOLIDATION-001 verify関連ドキュメント正本・履歴分離（2026-04-06）
 
 | 項目       | 値                                                                                 |
@@ -89,6 +147,68 @@
 ### タスク: UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 visible handoff / disclosure / execution host の Phase 11 screenshot 取得（2026-04-06）
 
 | UT-SDK-07-PHASE11-SCREENSHOT-EVIDENCE-001 | visible handoff / disclosure / execution host の Phase 11 screenshot 取得 | spec_created | 2026-04-06 |
+
+### タスク: TASK-P0-01 llm-adapter-status（2026-04-06）
+
+| 項目       | 値                                                                                                          |
+| ---------- | ----------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-P0-01                                                                                                  |
+| ステータス | **完了（Phase 13: worktree completed）**                                                                    |
+| タイプ     | implementation / IPC 4層統合                                                                                |
+| 優先度     | 高                                                                                                          |
+| 完了日     | 2026-04-06                                                                                                  |
+| 対象       | LLM Adapter Status IPC エンドポイント実装                                                                   |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/`   |
+
+#### 実施内容
+
+- `getAdapterStatus`: 現在の LLM Adapter の状態（providerName / modelName / isConnected / lastChecked）を取得する IPC エンドポイントを creatorHandlers → SkillCreatorFacade → Preload API → Renderer の4層で統合
+- `onAdapterStatusChanged`: Adapter の状態変化をイベント購読する IPC チャネルを実装（preload variadic パターン適用）
+- `useLLMAdapterStatus` Hook: Renderer 側で Adapter 状態を管理する専用 Hook（ポーリング不要のイベント駆動設計）
+- `GovernanceSummaryPanel.tsx` に Adapter Status 表示を統合
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| IPC 4層型同期漏れリスク | `AdapterStatus` 型を `packages/shared/src/types/` に SSoT として定義し全層から import |
+| preload variadic 化 | `safeOn` を `[AdapterStatus, string?]` として型付けし、Renderer 側 callback で optional 第2引数を受け取る |
+
+→ 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-IPC-4LAYER-001 / L-IPC-4LAYER-002
+
+---
+
+### タスク: TASK-UI-01 lifecycle-panel-primary-route-promotion（2026-04-06）
+
+| 項目       | 値                                                                                                        |
+| ---------- | --------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-01                                                                                                |
+| ステータス | **完了（Phase 13: worktree completed）**                                                                  |
+| タイプ     | implementation / UI routing                                                                               |
+| 優先度     | 高                                                                                                        |
+| 完了日     | 2026-04-06                                                                                                |
+| 対象       | SkillLifecyclePanel を一次導線（primary route）として昇格                                                 |
+| 成果物     | `docs/30-workflows/skill-creator-agent-sdk-lane/step-12-par-task-ui-03-ipc-session-runtime-unification/` |
+
+#### 実施内容
+
+- `navigateToSkillLifecycle()` shared action を実装し、SkillCenter → SkillLifecyclePanel への直結ルーティングを確立（最小変更 ~42行）
+- `skillLifecycle` ViewType を `apps/desktop/src/renderer/` に追加（`SKILL_LIFECYCLE_PRIMARY_VIEW` 定数）
+- `SkillLifecycleJourneyPanel` / `SkillLifecycleSurfaceOwnershipPanel` コンポーネントを Atomic Design 準拠で追加
+- `journeyActions` CTA 集約による一次導線の視認性向上
+- Phase 11 Playwright screenshot 4枚（`outputs/phase-11/screenshots/`）で visual evidence を取得
+
+#### 苦戦箇所
+
+| 苦戦箇所 | 解決策概要 |
+| --- | --- |
+| SessionResumePrompt / SessionIndicator との遷移ロジック複雑化 | `snapshot` を `null` に型統一し `hasSession = snapshot !== null` 単一判定ポイントに集約 |
+| snapshot nullability チェックの冗長化 | `snapshot ?? null` で undefined を早期正規化し optional chaining 乱用を回避 |
+
+→ 詳細: [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md) L-SESSION-RESUME-UI-001
+→ 仕様更新: [ui-ux-navigation.md](ui-ux-navigation.md) v1.9.2
+
+---
 
 ### タスク: TASK-P0-08 session-resume-renderer-integration（2026-04-06）
 ### タスク: TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 verifyAndImproveLoop adapter error notification（2026-04-06）
@@ -2322,3 +2442,34 @@
 - 合計 101 tests PASS（`path-scoped-enforcement.test.ts` 含む）
 - typecheck: EXIT:0 ✅
 - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
+
+---
+
+### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001（2026-04-06）
+
+| 項目       | 値                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001                                                                                                                  |
+| ステータス | **完了**                                                                                                                                                |
+| タイプ     | ui-task / IPC surface 追加                                                                                                                              |
+| 優先度     | 高                                                                                                                                                      |
+| 完了日     | 2026-04-06                                                                                                                                              |
+| 発生元     | TASK-SDK-07 Phase 12 再監査 / Issue #1683                                                                                                               |
+| 対象       | `apps/desktop/src/preload/skill-creator-api.ts`、`apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                                   |
+| 成果物     | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/`（Phase 1-12 仕様書・テスト）                                                               |
+
+#### 実施内容
+
+- `SkillCreatorAPI` interface に `onApprovalRequest(callback: (request: ApprovalRequest) => void): () => void` を追加
+- `safeOn(APPROVAL_CHANNELS.APPROVAL_REQUEST, callback)` パターンで実装（`onDisclosureInfo` と同パターン）
+- `SkillLifecyclePanel.tsx` に `pendingApproval` state・`ApprovalSheet` 条件レンダリング・`handleApprove`/`handleReject`・useEffect cleanup を追加
+- TC-APPR-01〜18 テスト 19 件追加、全件 PASS
+
+#### 検証証跡
+
+- vitest 19/19 PASS（TC-APPR-01〜18 + fixture setup）
+- `pnpm typecheck` EXIT:0 ✅
+- `pnpm lint` EXIT:0（errors 0）✅
+- IPC 契約対称性確認済み（APPROVAL_CHANNELS.APPROVAL_REQUEST）
+- Phase 11: Visual 4件 CAPTURE_BLOCKED（worktree 環境制約）、NonVisual 3件 PASS(unit)
+- CAPTURE_BLOCKED 未タスク: `docs/30-workflows/unassigned-task/ut-sdk-07-approval-request-surface-001-phase11-screenshot.md`

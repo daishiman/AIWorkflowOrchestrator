@@ -1,6 +1,10 @@
 {
-  "generated": "2026-04-06T12:11:35.495Z",
+  "generated": "2026-04-06T14:51:10.743Z",
   "totalKeywords": 2775,
+  "generated": "2026-04-06T14:03:00.898Z",
+  "totalKeywords": 2773,
+  "generated": "2026-04-06T23:05:28.149Z",
+  "totalKeywords": 2793,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -32,6 +36,7 @@
       "interfaces-rag-file-selection.md",
       "ipc-4-layer-pattern.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
       "security-api-electron.md",
       "security-api.md",
@@ -677,10 +682,12 @@
       "lessons-learned-auth-settings-degradation-guard.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-safety-gate-ipc-quality.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
       "llm-ipc-types.md",
       "llm-workspace-chat-edit.md",
       "logs-archive-2026-01-agent-sdk-deps-renderer-api.md",
@@ -1113,6 +1120,7 @@
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
       "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
@@ -1124,6 +1132,7 @@
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-lifecycle-test-hardening.md",
@@ -1263,9 +1272,11 @@
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "interfaces-agent-sdk-skill-reference.md",
       "interfaces-agent-sdk-skill.md",
+      "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
       "security-electron-ipc-core.md",
       "security-skill-execution.md",
       "security-skill-ipc-core.md",
@@ -1280,7 +1291,9 @@
     "Creator": [
       "api-ipc-agent-core.md",
       "api-ipc-system-core.md",
+      "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
       "security-electron-ipc-core.md",
       "task-workflow-completed-skill-create-ui-integration.md"
     ],
@@ -1472,6 +1485,7 @@
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-permission-fallback.md",
@@ -1857,6 +1871,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-conversation-db-robustness.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-safety-gate-ipc-quality.md",
@@ -1928,13 +1943,16 @@
       "interfaces-chat-history-core.md",
       "interfaces-chat-history-details.md",
       "interfaces-rag-file-selection.md",
+      "ipc-contract-checklist.md",
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md",
       "lessons-learned-current.md",
       "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-severity-filter-ui.md",
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
       "lessons-learned-ui-adapter-status-retry.md",
       "lessons-learned-ui-agent-view-nav-notification-history.md",
       "lessons-learned-ui-skill-center-editor-dashboard.md",
@@ -2134,6 +2152,7 @@
       "arch-electron-services-history.md",
       "arch-electron-services.md",
       "arch-ipc-persistence.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "llm-ipc-types.md",
       "technology-desktop.md",
       "testing-component-patterns-details.md"
@@ -2364,6 +2383,7 @@
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-rag-embedding-runtime.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
       "ui-ux-feature-components-core.md",
       "ui-ux-feature-components-details.md",
       "workflow-ai-runtime-authmode-unification.md",
@@ -2446,6 +2466,7 @@
     "CREATOR": [
       "api-ipc-system-core.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-skill-plan-exec-hardening.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md"
@@ -2927,6 +2948,7 @@
       "arch-execution-capability-contract.md",
       "directory-structure-core.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "lessons-learned-skill-create-multi-select-kind.md",
       "lessons-learned-test-typesafety.md",
@@ -5387,6 +5409,7 @@
     "Session": [
       "interfaces-agent-sdk-integration.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
       "ui-ux-agent-execution-core.md"
     ],
     "Persistence": [
@@ -6078,7 +6101,8 @@
       "ipc-contract-checklist.md"
     ],
     "CHANNELS": [
-      "ipc-contract-checklist.md"
+      "ipc-contract-checklist.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md"
     ],
     "定数を使用していない箇所を検出": [
       "ipc-contract-checklist.md"
@@ -6090,6 +6114,23 @@
       "ipc-contract-checklist.md"
     ],
     "適用事例": [
+      "ipc-contract-checklist.md"
+    ],
+    "ハンドラー": [
+      "ipc-contract-checklist.md"
+    ],
+    "scope": [
+      "ipc-contract-checklist.md",
+      "lessons-learned-auth-ipc-contract-bridge-audit-scope.md"
+    ],
+    "分離マトリクス": [
+      "ipc-contract-checklist.md"
+    ],
+    "whitelist": [
+      "ipc-contract-checklist.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md"
+    ],
+    "登録確認コマンド": [
       "ipc-contract-checklist.md"
     ],
     "自動検出ツール": [
@@ -6207,6 +6248,7 @@
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
@@ -6219,6 +6261,7 @@
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-lifecycle-test-hardening.md",
@@ -6256,6 +6299,7 @@
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "lessons-learned-current-safetygrate-ipc-gap.md",
       "lessons-learned-current.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
       "lessons-learned-rag-embedding-runtime.md",
@@ -6268,6 +6312,7 @@
       "lessons-learned-skill-contrast-guard-lifecycle-followup.md",
       "lessons-learned-skill-create-lifecycle-import-contract.md",
       "lessons-learned-skill-create-multi-select-kind.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
       "lessons-learned-skill-execute-hook-migration.md",
       "lessons-learned-skill-import-analysis-view.md",
       "lessons-learned-skill-lifecycle-test-hardening.md",
@@ -6353,6 +6398,7 @@
       "lessons-learned-auth-ipc-security-double-registration.md",
       "lessons-learned-auth-ipc-skill-creator-governance-hooks.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-ipc-channel-whitelist-sync.md",
       "ui-history-integration.md"
     ],
     "lessons": [
@@ -6418,9 +6464,6 @@
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md"
     ],
     "未タスク監査の": [
-      "lessons-learned-auth-ipc-contract-bridge-audit-scope.md"
-    ],
-    "scope": [
       "lessons-learned-auth-ipc-contract-bridge-audit-scope.md"
     ],
     "分離": [
@@ -7114,6 +7157,19 @@
     "の動的解決": [
       "lessons-learned-current.md"
     ],
+    "先行完了パターン教訓": [
+      "lessons-learned-current.md"
+    ],
+    "APPROVAL": [
+      "lessons-learned-current.md"
+    ],
+    "REQUEST": [
+      "lessons-learned-current.md"
+    ],
+    "SURFACE": [
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
     "Policy": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "security-electron-ipc-core.md"
@@ -7132,6 +7188,7 @@
     ],
     "vs": [
       "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-skill-creator-ipc-handler-scope.md",
       "testing-component-patterns-core.md"
     ],
     "Visual": [
@@ -7233,6 +7290,46 @@
     "関連ファイル": [
       "lessons-learned-governance-hooks-phase-policy.md"
     ],
+    "Channel": [
+      "lessons-learned-ipc-channel-whitelist-sync.md"
+    ],
+    "同期ガード": [
+      "lessons-learned-ipc-channel-whitelist-sync.md"
+    ],
+    "preload": [
+      "lessons-learned-ipc-channel-whitelist-sync.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
+      "ui-history-integration.md"
+    ],
+    "channels": [
+      "lessons-learned-ipc-channel-whitelist-sync.md"
+    ],
+    "ts": [
+      "lessons-learned-ipc-channel-whitelist-sync.md",
+      "lessons-learned-skill-remove-contract.md"
+    ],
+    "EXTERNAL": [
+      "lessons-learned-ipc-channel-whitelist-sync.md"
+    ],
+    "ALLOWED": [
+      "lessons-learned-ipc-channel-whitelist-sync.md",
+      "security-skill-execution.md"
+    ],
+    "INVOKE": [
+      "lessons-learned-ipc-channel-whitelist-sync.md"
+    ],
+    "を照合する": [
+      "lessons-learned-ipc-channel-whitelist-sync.md"
+    ],
+    "自動検出": [
+      "lessons-learned-ipc-channel-whitelist-sync.md"
+    ],
+    "定数定義済みだが": [
+      "lessons-learned-ipc-channel-whitelist-sync.md"
+    ],
+    "未登録": [
+      "lessons-learned-ipc-channel-whitelist-sync.md"
+    ],
     "TERMINAL": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -7298,9 +7395,6 @@
     "CODE": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "SURFACE": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
     "PANEL": [
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -7353,6 +7447,9 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "層型同期": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "executeAsync": [
       "lessons-learned-ipc-preload-runtime.md",
@@ -7901,6 +7998,9 @@
     "解消手順": [
       "lessons-learned-skill-create-multi-select-kind.md"
     ],
+    "ハンドラー責務分離": [
+      "lessons-learned-skill-creator-ipc-handler-scope.md"
+    ],
     "executeSkill": [
       "lessons-learned-skill-execute-hook-migration.md"
     ],
@@ -7982,9 +8082,6 @@
       "lessons-learned-skill-remove-contract.md",
       "lessons-learned-test-typesafety.md",
       "task-workflow-completed-ut-06-safety-gate.md"
-    ],
-    "ts": [
-      "lessons-learned-skill-remove-contract.md"
     ],
     "が解決されない": [
       "lessons-learned-skill-remove-contract.md"
@@ -10236,10 +10333,6 @@
     "契約ドリフト自動検出スクリプト完了": [
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
-    "preload": [
-      "logs-archive-2026-03-mid-lifecycle-governance-improve.md",
-      "ui-history-integration.md"
-    ],
     "型追従の": [
       "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
     ],
@@ -11107,9 +11200,6 @@
       "security-skill-execution.md"
     ],
     "PATTERNS": [
-      "security-skill-execution.md"
-    ],
-    "ALLOWED": [
       "security-skill-execution.md"
     ],
     "TOOLS": [
