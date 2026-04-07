@@ -8,7 +8,7 @@
  * P39 準拠: fireEvent のみ（hook テストのため不要）
  */
 
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 import { useStreamingProgress } from "../useStreamingProgress";
 import { useAppStore } from "../../store";
@@ -38,11 +38,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  Object.defineProperty(window, "skillCreatorAPI", {
-    value: undefined,
-    writable: true,
-    configurable: true,
-  });
+  Reflect.deleteProperty(window, "skillCreatorAPI");
 });
 
 describe("useStreamingProgress", () => {

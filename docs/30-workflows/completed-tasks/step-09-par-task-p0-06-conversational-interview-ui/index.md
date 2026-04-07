@@ -11,7 +11,7 @@
 | タスクID   | TASK-P0-06                                                   |
 | タスク種別 | 機能追加                                                     |
 | 優先度     | P0 (High)                                                    |
-| ステータス | spec_created                                                 |
+| ステータス | completed                                                    |
 | 上流ゲート | なし                                                         |
 | 依存タスク | TASK-RT-04 (API キー管理 UI), TASK-RT-05 (multi_select 対応) |
 | 後続タスク | なし                                                         |

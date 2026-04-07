@@ -1,0 +1,72 @@
+{
+  "taskId": "UT-SKILL-WIZARD-W0-seq-01",
+  "taskName": "w0-seq-01-types-skill-info-form",
+  "created": "2026-04-07T00:00:00.000Z",
+  "status": "phase13_blocked",
+  "dependencies": [],
+  "phases": {
+    "phase-1": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-1/requirements.md"]
+    },
+    "phase-2": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-2/design.md"]
+    },
+    "phase-3": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-3/design-review-result.md"]
+    },
+    "phase-4": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-4/test-specification.md"]
+    },
+    "phase-5": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-5/implementation-summary.md",
+        "packages/shared/src/types/skillCreator.ts",
+        "packages/shared/src/types/__tests__/skillCreator-wizard.test.ts"
+      ]
+    },
+    "phase-6": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-6/test-expansion-summary.md"]
+    },
+    "phase-7": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    "phase-8": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-8/refactoring-report.md"]
+    },
+    "phase-9": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-9/quality-report.md"]
+    },
+    "phase-10": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-10/final-review-result.md"]
+    },
+    "phase-11": {
+      "status": "completed",
+      "artifacts": ["outputs/phase-11/manual-test-result.md"]
+    },
+    "phase-12": {
+      "status": "completed",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    "phase-13": {
+      "status": "blocked",
+      "artifacts": ["phase-13-pr.md"]
+    }
+  }
+}

@@ -1,324 +1,312 @@
-# 機能別 UI コンポーネント / advanced specification
+# UIフィーチャーコンポーネント（高度な機能） / advanced specification
+> 親ファイル: [ui-ux-feature-components-core.md](ui-ux-feature-components-core.md)
 
-> 親仕様書: [ui-ux-feature-components.md](ui-ux-feature-components.md)
-> 役割: advanced specification
+## Custom Execution Environment UI コンポーネント（AGENT-006）
 
-## コピー履歴機能（TASK-3-2-D）
-
-SkillStreamDisplayコンポーネントにコピー履歴機能を追加。過去にコピーした内容を一覧表示し、再コピー・複数選択一括コピーを可能にする。
-
-### コンポーネント階層
-
-| コンポーネント      | 種類     | 親                 | 子要素                           |
-| ------------------- | -------- | ------------------ | -------------------------------- |
-| CopyHistoryProvider | context  | SkillStreamDisplay | history, selectedIds, methods    |
-| CopyHistoryPanel    | organism | SkillStreamDisplay | CopyHistoryItem[], ActionBar     |
-| CopyHistoryItem     | molecule | CopyHistoryPanel   | Checkbox, Preview, CopyButton    |
-| CopyHistoryToggle   | atom     | StreamHeader       | Icon, Badge                      |
-
-### コンポーネント仕様
-
-#### CopyHistoryContext
-
-| 項目     | 仕様                                                        |
-| -------- | ----------------------------------------------------------- |
-| ファイル | `apps/desktop/src/renderer/contexts/CopyHistoryContext.tsx` |
-| 責務     | コピー履歴の状態管理とContext提供                           |
-| 定数     | `MAX_HISTORY_SIZE = 50`                                     |
-
-**CopyHistoryEntry型**
-
-| フィールド | 型     | 説明                     |
-| ---------- | ------ | ------------------------ |
-| id         | string | 一意識別子（uuid）       |
-| content    | string | コピー内容               |
-| messageId  | string | 元メッセージID           |
-| timestamp  | number | コピー日時（UNIXミリ秒） |
-
-**CopyHistoryContextValue**
-
-| プロパティ        | 型                                         | 説明                 |
-| ----------------- | ------------------------------------------ | -------------------- |
-| history           | CopyHistoryEntry[]                         | 履歴配列             |
-| selectedIds       | Set<string>                                | 選択中のID           |
-| historyCount      | number                                     | 履歴件数             |
-| selectedCount     | number                                     | 選択件数             |
-| addToHistory      | (content, messageId) => void               | 履歴追加             |
-| copyFromHistory   | (id) => Promise<void>                      | 個別コピー           |
-| copySelectedItems | () => Promise<void>                        | 選択一括コピー       |
-| clearHistory      | () => void                                 | 履歴クリア           |
-| toggleSelection   | (id) => void                               | 選択トグル           |
-| clearSelection    | () => void                                 | 選択クリア           |
-
-#### CopyHistoryPanel
-
-| 項目     | 仕様                                                                  |
-| -------- | --------------------------------------------------------------------- |
-| ファイル | `apps/desktop/src/renderer/components/AgentView/CopyHistoryPanel.tsx` |
-| 責務     | 履歴パネルUI、ユーザー操作処理                                        |
-| Props    | `isOpen`, `onClose`, `className?`                                     |
-| 定数     | `PREVIEW_LENGTH = 100`, `COPY_FEEDBACK_MS = 2000`                     |
-
-**機能**
-
-| 機能               | 説明                               |
-| ------------------ | ---------------------------------- |
-| 履歴一覧表示       | 最大50件、新しい順に表示           |
-| プレビュー表示     | 100文字で省略、改行を空白に変換    |
-| 個別コピー         | 履歴項目からクリップボードにコピー |
-| 複数選択           | チェックボックスで選択             |
-| 一括コピー         | 選択項目を改行区切りで結合コピー   |
-| 履歴クリア         | 全履歴を削除                       |
-| パネル外クリック   | パネルを閉じる                     |
-
-#### useCopyHistory Hook
-
-| 項目     | 仕様                                                  |
-| -------- | ----------------------------------------------------- |
-| ファイル | `apps/desktop/src/renderer/hooks/useCopyHistory.ts`   |
-| 責務     | CopyHistoryContext へのアクセスを提供                 |
-| 使用条件 | CopyHistoryProvider 内で使用必須                      |
-| エラー   | Provider外で使用時に Error throw                      |
-
-### キーボード操作
-
-| キー   | 機能                   |
-| ------ | ---------------------- |
-| Tab    | フォーカス移動         |
-| Enter  | 項目コピー             |
-| Escape | パネル閉じる           |
-| Space  | チェックボックストグル |
-
-### ARIA属性
-
-| 要素   | 属性                 | 値                     |
-| ------ | -------------------- | ---------------------- |
-| パネル | role                 | dialog                 |
-| パネル | aria-label           | コピー履歴             |
-| パネル | aria-modal           | true                   |
-| リスト | role                 | listbox                |
-| リスト | aria-multiselectable | true                   |
-| 項目   | role                 | option                 |
-| 項目   | aria-selected        | 選択状態に応じて       |
-
-### テスト品質（TASK-3-2-D）
-
-| ファイル                    | テスト数 | 結果    |
-| --------------------------- | -------- | ------- |
-| CopyHistoryContext.test.tsx | 18       | 全PASS  |
-| useCopyHistory.test.tsx     | 8        | 全PASS  |
-| CopyHistoryPanel.test.tsx   | 20       | 全PASS  |
-| 合計                        | 46       | 全PASS  |
-
----
-
-## アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA）
-
-| 要件                     | 実装方法                                            |
-| ------------------------ | --------------------------------------------------- |
-| キーボードナビゲーション | Tab順序、Enter/Escapeでの操作、全要素にtabIndex設定 |
-| スクリーンリーダー       | aria-label、role属性の適切な設定、`aria-live`       |
-| フォーカス管理           | パネル/モーダル開閉時のフォーカス移動               |
-| 色コントラスト           | 4.5:1以上のコントラスト比確保（Tailwind CSS標準色） |
-
----
-
-## SkillStreamingView コンポーネント（TASK-7D）
-
-TASK-7D ChatPanel Agent統合で新規追加されたOrganism級コンポーネント。ChatPanel内で条件レンダーされ、Agent Executionのストリーミング表示を担当する。
-
-### コンポーネント概要
-
-| 項目 | 内容 |
-|------|------|
-| ファイル | `apps/desktop/src/renderer/components/skill/SkillStreamingView.tsx` |
-| レイヤー | Organism（ChatPanel子コンポーネント） |
-| テスト | 36テスト（`SkillStreamingView.test.tsx` 実測、2026-03-20） |
-| 表示条件 | `isExecuting && selectedSkillName` が真のとき |
-
-### 構成サブコンポーネント
-
-| コンポーネント | 役割 | Props |
-|---------------|------|-------|
-| StatusBadge | 実行ステータス表示（信号機パターン） | `status: DisplayableStatus` |
-| StreamMessageItem | ストリーミングメッセージ1件の表示 | `message: SkillStreamMessage` |
-| ToolExecutionHistory | ツール実行履歴の折りたたみ表示 | `messages: SkillStreamMessage[]` |
-
-### 型定義
-
-| 型名 | 定義 | 用途 |
-|------|------|------|
-| `DisplayableStatus` | `Exclude<SkillExecutionStatus, 'idle'>` | idle除外の厳密なステータス型 |
-| `SkillStreamMessage` | 判別共用体（assistant/tool_use/tool_result/error/status） | メッセージ種別の型安全な分岐 |
-
-### StatusBadge マッピング
-
-| status | 色クラス | ラベル |
-|--------|----------|--------|
-| `running` | `bg-blue-500` | 実行中... |
-| `permission_pending` | `bg-yellow-500` | 権限確認中 |
-| `completed` | `bg-green-500` | 完了 |
-| `cancelled` | `bg-gray-500` | キャンセル |
-| `error` | `bg-red-500` | エラー |
-| `review` | `bg-purple-500` | レビュー中 |
-| `improve_ready` | `bg-orange-500` | 改善準備完了 |
-| `reuse_ready` | `bg-teal-500` | 再利用準備完了 |
-
-補足:
-- `idle` は非表示状態のため `StatusBadge` の描画対象から除外する。
-- `DisplayableStatus` を `Exclude<SkillExecutionStatus, 'idle'>` として定義し、`Record<DisplayableStatus, ...>` で exhaustive check を維持する。
-
-### 適用パターン
-
-| パターン | 内容 |
-|----------|------|
-| forwardRef + useImperativeHandle | ChatPanel→SkillStreamingViewへの外部メソッド公開 |
-| React.memo + 個別セレクタ | Store変更時の不要再レンダー防止 |
-| aria-live="polite" | ストリーミングメッセージのスクリーンリーダー通知 |
-
-### 関連仕様
-
-- [SkillStreamDisplay詳細仕様](./ui-ux-feature-skill-stream.md) - TASK-3-2シリーズとの統合仕様
-- [ChatPanel統合UIフロー](./ui-ux-agent-execution.md) - Agent Execution UI全体フロー
-- [ChatPanel統合仕様](./interfaces-agent-sdk-ui.md) - TASK-7D完了タスクセクション
-
----
-
-<a id="skill-editor-ui-task-9a"></a>
-
-## SkillEditor UI（TASK-9A / 完了）
-
-TASK-9A-skill-editor で SkillEditor / SkillCodeEditor の実装と検証（Phase 1-12）が完了。
-旧 `TASK-9A-C-skill-editor-ui` は仕様書作成フェーズの履歴として保持し、実装の正本は `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` とする。
-
-### 実装済みコンポーネント
-
-| コンポーネント | 役割 | 想定配置 |
-| --- | --- | --- |
-| SkillEditor | ファイル選択・読込・保存制御 | `apps/desktop/src/renderer/components/skill/SkillEditor.tsx` |
-| SkillCodeEditor | テキスト編集UI | `apps/desktop/src/renderer/components/skill/SkillCodeEditor.tsx` |
-
-### 進捗ステータス
-
-| 項目 | 状態 | 参照 |
-| --- | --- | --- |
-| ワークフロー仕様（Phase 1-13） | ✅ 完了 | `docs/30-workflows/completed-tasks/TASK-9A-skill-editor/` |
-| 実装コード | ✅ 完了 | `apps/desktop/src/renderer/components/skill/SkillEditor.tsx`, `SkillCodeEditor.tsx` |
-| テスト | ✅ 完了 | `SkillEditor.test.tsx`, `SkillCodeEditor.test.tsx`, `buildFileTree.test.ts`, `getLanguage.test.ts` |
-
-### 下流導線追補（2026-03-19）
-
-| 観点 | 内容 |
-| --- | --- |
-| 入口 | imported `SkillDetailPanel` の `エディタで開く` から `skill-editor` へ到達する |
-| state payload | `currentSkillName` を先に設定してから `SkillEditorView` を描画する |
-| 証跡 | `docs/30-workflows/skill-lifecycle-routing/tasks/step-02-par-task-03-skilldetail-action-buttons/outputs/phase-11/screenshots/TC-11-03-desktop-edit-handoff.png` |
-
-### 関連ドキュメント
-
-- [TASK-9A ワークフロー](../../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/index.md)
-- [TASK-9A 実装ガイド](../../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/outputs/phase-12/implementation-guide.md)
-- [TASK-9A 仕様更新サマリー](../../../../docs/30-workflows/completed-tasks/TASK-9A-skill-editor/outputs/phase-12/spec-update-summary.md)
-- [旧 TASK-9A-C 仕様書（履歴）](../../../../docs/30-workflows/completed-tasks/TASK-9A-C-skill-editor-ui/index.md)
-
-### 関連未タスク
-
-| タスクID | 概要 | 仕様書 |
-| --- | --- | --- |
-| TASK-9A-C-001 | シンタックスハイライト機能 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-9a-c-syntax-highlighting.md` |
-| ~~TASK-9A-C-002~~ | ~~ファイル作成・削除機能~~ **完了: 2026-02-26（TASK-9Aへ統合）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-file-crud-operations.md` |
-| TASK-9A-C-003 | Monaco/CodeMirrorエディタ移行 | `docs/30-workflows/completed-tasks/step-04-par-task-09-slide-ai-runtime-alignment/unassigned-task/task-9a-c-code-editor-migration.md` |
-| ~~TASK-9A-C-004~~ | ~~Phase 12仕様同期ガード自動化~~ **完了: 2026-02-26（Phase 12完了に伴い移管）** | `docs/30-workflows/completed-tasks/unassigned-task/task-9a-c-phase12-spec-sync-guard.md` |
+エージェント実行結果をリアルタイムでプレビューするためのUIコンポーネント群。
+HTML、Markdownのプレビューに対応し、3層セキュリティ防御を実装。
 
 ### コンポーネント階層
 
-| コンポーネント  | 種類     | 親           | 子要素                                       |
-| --------------- | -------- | ------------ | -------------------------------------------- |
-| SkillEditor     | organism | AgentView    | FileTreeSidebar, EditorToolbar, SkillCodeEditor |
-| FileTreeSidebar | molecule | SkillEditor  | カテゴリ展開リスト、ファイルアイテム         |
-| EditorToolbar   | molecule | SkillEditor  | 保存ボタン、閉じるボタン、未保存インジケーター |
-| SkillCodeEditor | molecule | SkillEditor  | textarea（コード編集領域）                   |
+| コンポーネント       | 種類      | 親                       | 子要素                                                                     |
+| -------------------- | --------- | ------------------------ | -------------------------------------------------------------------------- |
+| AgentExecutionView   | views     | -                        | SplitLayout                                                                |
+| SplitLayout          | organisms | AgentExecutionView       | leftPanel (AgentChatInterface), Divider, rightPanel (ExecutionEnvironment) |
+| ExecutionEnvironment | organisms | SplitLayout (rightPanel) | EnvironmentSelector, HTMLPreviewEnvironment / MarkdownPreviewEnvironment   |
+| EnvironmentSelector  | molecules | ExecutionEnvironment     | 環境タイプ選択ドロップダウン                                               |
 
 ### コンポーネント仕様
 
-#### SkillEditor
+| コンポーネント             | 種類     | 責務                             |
+| -------------------------- | -------- | -------------------------------- |
+| SplitLayout                | organism | 左右分割レイアウト、ドラッグ調整 |
+| EnvironmentSelector        | molecule | 環境タイプ選択ドロップダウン     |
+| ExecutionEnvironment       | organism | 環境タイプに応じたプレビュー切替 |
+| HTMLPreviewEnvironment     | organism | sandbox iframe内でHTMLを安全表示 |
+| MarkdownPreviewEnvironment | organism | Markdownをレンダリング表示       |
 
-| 項目     | 仕様                                                               |
-| -------- | ------------------------------------------------------------------ |
-| ファイル | `apps/desktop/src/renderer/components/skill/SkillEditor.tsx`       |
-| 責務     | ファイル選択・読込・保存制御、全体レイアウト統括                   |
-| Props    | `skill: ImportedSkill`, `onClose: () => void`                      |
+### ファイル配置
 
-**レイアウト構造**
+| コンポーネント             | パス                                                                         |
+| -------------------------- | ---------------------------------------------------------------------------- |
+| SplitLayout                | `apps/desktop/src/renderer/components/organisms/SplitLayout/`                |
+| EnvironmentSelector        | `apps/desktop/src/renderer/components/molecules/EnvironmentSelector/`        |
+| ExecutionEnvironment       | `apps/desktop/src/renderer/components/organisms/ExecutionEnvironment/`       |
+| HTMLPreviewEnvironment     | `apps/desktop/src/renderer/components/organisms/HTMLPreviewEnvironment/`     |
+| MarkdownPreviewEnvironment | `apps/desktop/src/renderer/components/organisms/MarkdownPreviewEnvironment/` |
+| sanitize.ts                | `apps/desktop/src/renderer/utils/sanitize.ts`                                |
 
-| 領域               | 位置                | 内容                               |
-| ------------------ | ------------------- | ---------------------------------- |
-| FileTreeSidebar    | 左側（w-64, 256px） | カテゴリ別ファイルツリー           |
-| EditorToolbar      | 右上部              | 保存/閉じるボタン、未保存表示      |
-| SkillCodeEditor    | 右メイン（flex-1）  | テキスト編集エリア                 |
+### SplitLayout Props
 
-#### SkillCodeEditor
+| Prop           | 型                        | 必須 | デフォルト | 説明                 |
+| -------------- | ------------------------- | ---- | ---------- | -------------------- |
+| leftPanel      | `React.ReactNode`         | ✓    | -          | 左パネルコンテンツ   |
+| rightPanel     | `React.ReactNode`         | ✓    | -          | 右パネルコンテンツ   |
+| initialRatio   | `number`                  | -    | 50         | 初期分割比率 (%)     |
+| minRatio       | `number`                  | -    | 20         | 最小比率 (%)         |
+| maxRatio       | `number`                  | -    | 80         | 最大比率 (%)         |
+| onRatioChange  | `(ratio: number) => void` | -    | -          | 比率変更コールバック |
+| showRightPanel | `boolean`                 | -    | true       | 右パネル表示         |
+| className      | `string`                  | -    | -          | カスタムクラス       |
 
-| 項目     | 仕様                                                                    |
-| -------- | ----------------------------------------------------------------------- |
-| ファイル | `apps/desktop/src/renderer/components/skill/SkillCodeEditor.tsx`        |
-| 責務     | textareaベースのコード編集UI（外部ライブラリ不使用）                    |
-| Props    | `value: string`, `onChange: (value: string) => void`, `language: string`, `isReadOnly?: boolean` |
+### SplitLayout キーボード操作
+
+| キー       | 動作             |
+| ---------- | ---------------- |
+| ArrowLeft  | 左パネルを5%縮小 |
+| ArrowRight | 左パネルを5%拡大 |
+| Home       | 最小比率に設定   |
+| End        | 最大比率に設定   |
+
+### セキュリティ（3層防御）
+
+| レイヤー | 実装                     | 防御対象                         |
+| -------- | ------------------------ | -------------------------------- |
+| Layer 1  | DOMPurify HTMLサニタイズ | scriptタグ、イベントハンドラ除去 |
+| Layer 2  | CSP（script-src 'none'） | インラインスクリプト防止         |
+| Layer 3  | iframe sandbox           | スクリプト実行、ポップアップ禁止 |
+
+---
+
+## workspace-chat-edit-ui コンポーネント（Issue #468, #494）
+
+AIアシスタントとのチャット中にファイル編集を依頼し、差分プレビュー・適用を行うためのUIコンポーネント群。
+
+### コンポーネント階層
+
+| コンポーネント       | 種類      | 親                   | 子要素                                                                                    |
+| -------------------- | --------- | -------------------- | ----------------------------------------------------------------------------------------- |
+| ChatView             | views     | -                    | FileContextDropZone, FileContextList, FileAttachmentButton, EditCommandInput, DiffPreview |
+| FileAttachmentButton | molecules | ChatView             | なし                                                                                      |
+| FileContextList      | organisms | ChatView             | FileContextBadge（複数）                                                                  |
+| FileContextDropZone  | organisms | ChatView             | ChatContent                                                                               |
+| FileContextBadge     | molecules | FileContextList      | なし                                                                                      |
+| EditCommandInput     | molecules | ChatView             | CommandTypeSelector, TextInput + SendButton                                               |
+| DiffPreview          | organisms | ChatView（モーダル） | DiffEditor, ApplyControls                                                                 |
+| DiffEditor           | -         | DiffPreview          | Monaco DiffEditor                                                                         |
+
+### コンポーネント仕様
+
+#### FileAttachmentButton（Issue #494）
+
+| 項目     | 仕様                                                                                            |
+| -------- | ----------------------------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileAttachmentButton.tsx`    |
+| 責務     | ファイル選択ダイアログを開き、選択されたファイルをコンテキストに追加                            |
+| 依存     | useFileContext, electronAPI.fileSelection                                                       |
+| Props    | `onFilesSelected?`, `multiple?`, `accept?`, `maxFiles?`, `disabled?`, `className?`, `children?` |
+
+**Props詳細**
+
+| Prop            | 型                               | 必須 | デフォルト | 説明                       |
+| --------------- | -------------------------------- | ---- | ---------- | -------------------------- |
+| onFilesSelected | `(files: FileContext[]) => void` | No   | -          | ファイル選択時コールバック |
+| multiple        | `boolean`                        | No   | true       | 複数選択許可               |
+| accept          | `string[]`                       | No   | ["*"]      | 許可する拡張子             |
+| maxFiles        | `number`                         | No   | 10         | 最大ファイル数             |
+| disabled        | `boolean`                        | No   | false      | 無効状態                   |
 
 **機能**
 
-| 機能           | 説明                                      |
-| -------------- | ----------------------------------------- |
-| Tab→2スペース  | Tabキー押下時にスペース2個を挿入          |
-| spellCheck無効 | `spellCheck={false}` でスペルチェック抑制 |
-| 等幅フォント   | `font-family: monospace` 適用             |
-| 読み取り専用   | `isReadOnly` で編集不可モード切替         |
+| 機能             | 説明                                   |
+| ---------------- | -------------------------------------- |
+| ダイアログ表示   | クリックでファイル選択ダイアログを開く |
+| 最大数制限       | canAddContext: falseで自動無効化       |
+| キーボード操作   | Enter/Spaceでダイアログを開く          |
+| ローディング状態 | 処理中はボタン無効化                   |
+
+#### FileContextList（Issue #494）
+
+| 項目     | 仕様                                                                                              |
+| -------- | ------------------------------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextList.tsx`           |
+| 責務     | 添付ファイル一覧の表示、削除・選択操作のハンドリング                                              |
+| 依存     | useFileContext, FileContextBadge                                                                  |
+| Props    | `contexts?`, `onRemove?`, `onSelect?`, `selectedId?`, `emptyMessage?`, `maxHeight?`, `className?` |
+
+**Props詳細**
+
+| Prop         | 型                     | 必須 | デフォルト                     | 説明                 |
+| ------------ | ---------------------- | ---- | ------------------------------ | -------------------- |
+| contexts     | `FileContext[]`        | No   | (Zustandから取得)              | 表示するコンテキスト |
+| onRemove     | `(id: string) => void` | No   | -                              | 削除時コールバック   |
+| onSelect     | `(id: string) => void` | No   | -                              | 選択時コールバック   |
+| selectedId   | `string`               | No   | (Zustandから取得)              | 選択中のID           |
+| emptyMessage | `string`               | No   | "ファイルが添付されていません" | 空状態メッセージ     |
+
+**機能**
+
+| 機能                     | 説明                               |
+| ------------------------ | ---------------------------------- |
+| 一覧表示                 | FileContextBadgeで各ファイルを表示 |
+| 空状態表示               | ファイルなし時にメッセージ表示     |
+| スクロール               | 大量ファイル時にスクロール可能     |
+| キーボードナビゲーション | Tab/Enter/Deleteで操作             |
+
+#### FileContextBadge
+
+| 項目     | 仕様                                                                                             |
+| -------- | ------------------------------------------------------------------------------------------------ |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextBadge.tsx`         |
+| 責務     | 添付ファイルの表示と削除                                                                         |
+| Props    | `file: FileContext`, `isSelected?: boolean`, `onRemove?: (id) => void`, `onClick?: (id) => void` |
+
+#### ApplyControls
+
+| 項目     | 仕様                                                                                  |
+| -------- | ------------------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/ApplyControls.tsx` |
+| 責務     | 差分の適用または却下                                                                  |
+| Props    | `resultId: string`, `onApplied?: () => void`, `onRejected?: () => void`               |
+
+#### FileContextDropZone
+
+| 項目     | 仕様                                                                                        |
+| -------- | ------------------------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/FileContextDropZone.tsx` |
+| 責務     | ドラッグ&ドロップでのファイル添付                                                           |
+| Props    | `children: ReactNode`, `disabled?: boolean`, `onFilesDropped?: (files) => void`             |
+
+#### DiffPreview
+
+| 項目     | 仕様                                                                                                                                                 |
+| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/DiffPreview.tsx`                                                                  |
+| 責務     | 差分プレビューモーダルの表示                                                                                                                         |
+| Props    | `original: string`, `modified: string`, `fileName: string`, `language?: string`, `resultId: string`, `onClose: () => void`, `onApplied?: () => void` |
+
+#### DiffEditor
+
+| 項目     | 仕様                                                                               |
+| -------- | ---------------------------------------------------------------------------------- | ------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/DiffEditor.tsx` |
+| 責務     | Monaco Editorによる差分表示                                                        |
+| Props    | `original: string`, `modified: string`, `language?: string`, `height?: string      | number` |
+
+#### EditCommandInput
+
+| 項目     | 仕様                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------- |
+| ファイル | `apps/desktop/src/renderer/features/workspace-chat-edit/components/EditCommandInput.tsx` |
+| 責務     | 編集コマンドの入力と送信                                                                 |
+| Props    | `onSubmit: (command: EditCommand) => void`, `disabled?: boolean`, `placeholder?: string` |
 
 ### 状態管理
 
-| 状態の種類        | 管理方法                   | 判断基準                                    |
-| ----------------- | -------------------------- | ------------------------------------------- |
-| 選択ファイル      | `useState<string \| null>` | コンポーネント固有UI                        |
-| ファイル内容      | `useState<string>`         | エディター内ローカル状態                    |
-| カテゴリ展開状態  | `useState<Set<string>>`    | FileTreeSidebar固有UI                       |
-| 未保存フラグ      | `useState<boolean>`        | 保存アクション制御用                        |
+| Hook           | 責務                                           |
+| -------------- | ---------------------------------------------- |
+| useFileContext | ファイルコンテキストの管理（添付/削除/クリア） |
+| useDiffApply   | 差分適用状態の管理（適用/却下/リセット）       |
 
-> **設計判断**: Zustand Storeを使用せず、useState のみで管理する（P31: Zustand Store Hooks無限ループの事前対策）
+### バリデーション
 
-### IPC 依存
-
-| メソッド                         | 用途               | 前提タスク |
-| -------------------------------- | ------------------ | ---------- |
-| `window.electronAPI.skill.readFile`  | ファイル内容読み込み | TASK-9A-B  |
-| `window.electronAPI.skill.writeFile` | ファイル内容書き込み | TASK-9A-B  |
+| 項目               | 制限値     |
+| ------------------ | ---------- |
+| 最大ファイル数     | 10ファイル |
+| 最大ファイルサイズ | 10MB       |
 
 ### キーボード操作
 
-| キー       | コンポーネント  | 動作                 |
-| ---------- | --------------- | -------------------- |
-| Cmd+S      | SkillEditor     | ファイル保存         |
-| Escape     | SkillEditor     | エディターを閉じる   |
-| Tab        | SkillCodeEditor | 2スペース挿入        |
-
-### ARIA属性
-
-| 要素               | 属性           | 値                 |
-| ------------------ | -------------- | ------------------ |
-| FileTreeSidebar    | role           | tree               |
-| ファイルアイテム   | role           | treeitem           |
-| SkillCodeEditor    | role           | textbox            |
-| SkillCodeEditor    | aria-multiline | true               |
-| SkillCodeEditor    | aria-label     | コードエディター   |
-
-### 今回実装（監査反映）内容
-
-| 区分 | 反映内容 |
-| --- | --- |
-| 仕様整合 | `TASK-9A-C（spec_created）` 表記を `TASK-9A（完了）` に統合更新 |
-| 機能実装 | read/write/create/delete/listBackups/restoreBackup を UI から実行可能化 |
-| 成果物整合 | Phase 1-12 の outputs/artifacts と仕様書リンクを同期 |
-| 品質検証 | UIテスト15件 + 回帰テスト + `verify-all-specs` / `verify-unassigned-links` の最終PASSを確認 |
+| キー             | コンポーネント   | 動作                       |
+| ---------------- | ---------------- | -------------------------- |
+| Delete/Backspace | FileContextBadge | 選択中のバッジを削除       |
+| Ctrl+Enter       | EditCommandInput | コマンド送信               |
+| Escape           | DiffPreview      | プレビューを閉じる         |
+| Tab              | DiffPreview      | フォーカストラップ内を循環 |
 
 ---
 
-<a id="skill-center-view-task-ui-05"></a>
+## ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created）
+
+> 設計タスク。ChatPanel の placeholder を real AI chat 経路へ接続し、streaming/error/handoff 各状態の表示を設計する。
+
+### コンポーネント階層
+
+```
+ChatPanel (organism) - 全面書換（3 placeholder 置換 + 8 状態条件レンダリング）
+  +-- RuntimeBanner (atom)              # capability 表示バナー + terminal ボタン
+  +-- ChatMessageList (molecule)        # メッセージ一覧 (role="log", aria-live="polite")
+  |     +-- ChatMessage (atom)          # 個別メッセージ (user / assistant)
+  |     +-- StreamingMessage (atom)     # ストリーミング中メッセージ（既存接続）
+  +-- ErrorGuidance (molecule)          # エラー表示 (capability / network / API key)
+  +-- HandoffBlock (molecule)           # terminal handoff ブロック
+  |     +-- PersistentTerminalLauncher (atom) # terminal 常設起動ボタン
+  +-- ComposerArea (molecule)           # 入力エリア
+  |     +-- ComposerInput (atom)        # テキスト入力
+  |     +-- SendButton (atom)           # 送信ボタン
+  +-- LLMSelectorPanel (molecule)       # Provider/Model セレクタ（既存接続）
+  +-- SkillStreamingView (既存維持)     # スキル実行中表示
+  +-- SkillManagementPanel (既存維持)   # スキル管理パネル
+```
+
+### Atomic Design 分類
+
+| コンポーネント             | 分類     | 新規/既存 | ファイルパス                                                                   |
+| -------------------------- | -------- | --------- | ------------------------------------------------------------------------------ |
+| RuntimeBanner              | atom     | 新規      | `apps/desktop/src/renderer/components/chat/RuntimeBanner.tsx`              |
+| ChatMessage                | atom     | 新規      | `apps/desktop/src/renderer/components/chat/ChatMessage.tsx`                |
+| ComposerInput              | atom     | 新規      | `apps/desktop/src/renderer/components/chat/ComposerInput.tsx`              |
+| SendButton                 | atom     | 新規      | `apps/desktop/src/renderer/components/chat/SendButton.tsx`                 |
+| PersistentTerminalLauncher | atom     | 新規      | `apps/desktop/src/renderer/components/chat/PersistentTerminalLauncher.tsx` |
+| ChatMessageList            | molecule | 新規      | `apps/desktop/src/renderer/components/chat/ChatMessageList.tsx`            |
+| ErrorGuidance              | molecule | 新規      | `apps/desktop/src/renderer/components/chat/ErrorGuidance.tsx`              |
+| HandoffBlock               | molecule | 新規      | `apps/desktop/src/renderer/components/chat/HandoffBlock.tsx`               |
+| ComposerArea               | molecule | 新規      | `apps/desktop/src/renderer/components/chat/ComposerArea.tsx`               |
+| LLMSelectorPanel           | molecule | 新規      | `apps/desktop/src/renderer/components/chat/LLMSelectorPanel.tsx`           |
+| ChatPanel                  | organism | 変更      | `apps/desktop/src/renderer/components/chat/ChatPanel.tsx`                  |
+| StreamingMessage           | atom     | 既存      | `apps/desktop/src/renderer/components/chat/StreamingMessage.tsx`           |
+
+### 主要 Props 設計
+
+| コンポーネント             | 主要 Props                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| RuntimeBanner              | `capability: AccessCapability`, `onTerminalClick?: () => void`                  |
+| ChatMessageList            | `messages: ChatMessage[]`, `isStreaming: boolean`                               |
+| ChatMessage                | `message: ChatMessage`                                                          |
+| ErrorGuidance              | `error: LLMError`, `onRetry?: () => void`, `onSettings?: () => void`            |
+| HandoffBlock               | `guidance: HandoffGuidance`, `onLaunch: () => void`                             |
+| PersistentTerminalLauncher | `onLaunch: () => void`                                                          |
+| ComposerInput              | `value: string`, `onChange: (v: string) => void`, `onSubmit: () => void`, `disabled: boolean` |
+| SendButton                 | `onClick: () => void`, `disabled: boolean`, `isStreaming: boolean`              |
+| ComposerArea               | `children: ReactNode`                                                           |
+| LLMSelectorPanel           | `selectedProviderId: string \| null`, `selectedModelId: string \| null`, `providers: Provider[]`, `onSelect: (providerId, modelId) => void` |
+
+### 8 状態条件レンダリング
+
+| 状態        | RuntimeBanner | ChatMessageList | ComposerArea | ErrorGuidance | HandoffBlock |
+| ----------- | ------------- | --------------- | ------------ | ------------- | ------------ |
+| `idle`      | 表示          | empty state     | 無効         | -             | -            |
+| `ready`     | 表示          | 表示            | 有効         | -             | -            |
+| `streaming` | 表示          | 表示+streaming  | 無効         | -             | -            |
+| `cancelled` | 表示          | 表示            | 有効         | -             | -            |
+| `completed` | 表示          | 表示            | 有効         | -             | -            |
+| `error`     | 表示          | 表示            | 有効         | 表示          | -            |
+| `blocked`   | 表示(警告)    | -               | 無効         | -             | -            |
+| `handoff`   | 表示          | -               | 無効         | -             | 表示         |
+
+### アクセシビリティ
+
+| コンポーネント    | ARIA 属性                      |
+| ----------------- | ------------------------------ |
+| ChatMessageList   | `role="log"`, `aria-live="polite"` |
+| RuntimeBanner     | `role="status"`                |
+| ErrorGuidance     | `role="alert"`                 |
+| ComposerInput     | `aria-label="メッセージ入力"`  |
+| SendButton        | `aria-label="送信"`            |
+
+### キーボード操作
+
+| キー           | コンポーネント | 動作                  |
+| -------------- | -------------- | --------------------- |
+| Enter          | ComposerInput  | メッセージ送信        |
+| Shift+Enter    | ComposerInput  | 改行挿入              |
+| Escape         | ComposerInput  | ストリーミングキャンセル |
+
+### 関連タスク
+
+| タスクID | 内容 | ステータス |
+| --- | --- | --- |
+| TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 | ChatPanel の実 AI チャット配線（設計） | spec_created（2026-03-18） |
+| TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001 | Main Chat/Settings AI runtime 同期 | 完了（2026-03-17） |
+
+---

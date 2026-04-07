@@ -2,226 +2,193 @@
 
 ## メタ情報
 
-| 項目       | 内容                                        |
-| ---------- | ------------------------------------------- |
-| Phase      | 1                                           |
-| 機能名     | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001      |
-| タスク名   | Skill Creator approval request surface 接続 |
-| 前提Phase  | -                                           |
-| 後続Phase  | Phase 2                                     |
-| 作成日     | 2026-04-06                                  |
-| ステータス | pending                                     |
-| タスク分類 | UI task                                     |
+| 項目   | 値                                     |
+| ------ | -------------------------------------- |
+| Phase  | 1                                      |
+| 機能名 | ut-sdk-07-approval-request-surface-001 |
+| 作成日 | 2026-04-06                             |
 
 ## 目的
 
-`SkillCreatorAPI` インターフェースに `onApprovalRequest` 購読メソッドが欠落しており、Skill Creator フローで `approval:request` イベントを受信できない状態を解消する。既存の `ApprovalSheet` と disclosure の責務を重複させず、approval flow を public surface に対称接続する。
+`SkillCreatorAPI` に `onApprovalRequest` surface を追加し、disclosure と同水準で approval flow を Skill Creator の public surface に接続するための要件・受入基準を確定する。
 
-## 背景
-
-TASK-SDK-07 Phase 12 再監査により、`skill-creator-api.ts` の `SkillCreatorAPI` インターフェースに以下の非対称が発見された：
-
-| メソッド            | 存在 | 説明                     |
-| ------------------- | ---- | ------------------------ |
-| `respondToApproval` | ✅   | 承認応答送信（送信方向） |
-| `getDisclosureInfo` | ✅   | AI利用情報取得           |
-| `onApprovalRequest` | ❌   | 承認要求受信購読（欠落） |
-
-`APPROVAL_REQUEST` チャンネル（`approval:request`）は `ALLOWED_ON_CHANNELS` に登録済み（`channels.ts` line 777）のため、`safeOn` パターンで実装可能。実際の購読 surface は `getSkillCreatorApi()` 経由で取得する `window.skillCreatorAPI` / `window.electronAPI?.skillCreator` に寄せ、追加の別名 surface は使わない。
-
-## SubAgentチーム編成
-
-| SubAgent   | 関心ごと        | 主担当                            |
-| ---------- | --------------- | --------------------------------- |
-| SubAgent-A | Preload/API契約 | SkillCreatorAPI interface と実装  |
-| SubAgent-B | Renderer/UI責務 | SkillLifecyclePanel approval UI   |
-| SubAgent-C | テスト責務      | approval request テストケース設計 |
-| SubAgent-D | 統合監査        | IPC契約整合・型整合・責務境界     |
+---
 
 ## 実行タスク
 
-- 要件抽出: 欠落メソッドの機能要件・型契約・受け入れ基準を定義する
-- 命名規則分析: 既存コードの命名パターン（camelCase / kebab-case）を分析・記録する
-- aiworkflow仕様抽出: resource-map起点で必要仕様をカテゴリ単位で抽出する
-- 受け入れ基準化: 矛盾なし・漏れなし・整合あり・依存整合の判定基準を定義する
-- artifact 命名 canonical 一覧確定: task root 生成時に先に確定させる
+- P50 チェック: 対象ファイルの実装状態を確認し、既実装コードの重複作成を防止する
+- 受入基準作成: AC-1〜AC-5 を検証可能な形で定義する
+- 影響ファイル一覧: 変更・追加対象ファイルを確定する
+- Phase 4 開始条件: Phase 3 PASS 後のみ Phase 4 へ進む gate を明記する
 
-## 参照資料
+## タスク分類・canonical artifact
 
-### 実装・コード
+| 項目                       | 内容                                                                                                                                                                                                                                                                                                |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスク分類                 | 実装（preload / renderer / test / documentation sync を含む）                                                                                                                                                                                                                                       |
+| workflow root canonical    | `index.md`, `phase-1-requirements.md`〜`phase-13-pr-creation.md`, `artifacts.json`                                                                                                                                                                                                                  |
+| Phase 12 canonical outputs | `outputs/phase-12/implementation-guide.md`, `outputs/phase-12/system-spec-update-summary.md`, `outputs/phase-12/documentation-changelog.md`, `outputs/phase-12/unassigned-task-detection.md`, `outputs/phase-12/skill-feedback-report.md`, `outputs/phase-12/phase12-task-spec-compliance-check.md` |
+| 台帳 parity                | root `artifacts.json` と `outputs/artifacts.json` を同一 wave で同期する                                                                                                                                                                                                                            |
 
-| 資料名                    | パス                                                                 | 用途                                             |
-| ------------------------- | -------------------------------------------------------------------- | ------------------------------------------------ |
-| Skill Creator Preload API | `apps/desktop/src/preload/skill-creator-api.ts`                      | SkillCreatorAPI interface・onApprovalRequest欠落 |
-| 汎用 Preload API          | `apps/desktop/src/preload/index.ts`                                  | onApprovalRequest の参照実装（line 380付近）     |
-| IPC チャンネル定義        | `apps/desktop/src/preload/channels.ts`                               | APPROVAL_REQUEST チャンネル登録確認（line 777）  |
-| 共有 IPC チャンネル       | `packages/shared/src/ipc/channels.ts`                                | APPROVAL_CHANNELS 定義（line 139）               |
-| SkillLifecyclePanel       | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | approval request UI 接続先                       |
-| useApprovalFlow hook      | `apps/desktop/src/renderer/hooks/useApprovalFlow.ts`                 | approval flow state 管理パターン                 |
-| approvalHandlers          | `apps/desktop/src/main/ipc/approvalHandlers.ts`                      | Main Process 側 approval push 実装               |
+---
 
-### システム仕様（aiworkflow-requirements）
+## Step 0: P50 チェック（既実装状態の確認）
 
-| 資料名                 | パス                                                                                        | 用途                       |
-| ---------------------- | ------------------------------------------------------------------------------------------- | -------------------------- |
-| IPC契約チェックリスト  | `.claude/skills/aiworkflow-requirements/references/ipc-contract-checklist.md`               | IPC契約監査基準            |
-| システムIPC仕様        | `.claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md`                  | approval チャンネル仕様    |
-| Agent SDK参照          | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | Skill Creator surface 参照 |
-| アーキテクチャパターン | `.claude/skills/aiworkflow-requirements/references/architecture-implementation-patterns.md` | IPC ライフサイクルパターン |
-| エラーハンドリング     | `.claude/skills/aiworkflow-requirements/references/error-handling.md`                       | 失敗契約                   |
-| 品質要件               | `.claude/skills/aiworkflow-requirements/references/quality-requirements.md`                 | 品質ゲート                 |
-| タスク運用             | `.claude/skills/aiworkflow-requirements/references/task-workflow.md`                        | 台帳同期ルール             |
-| リソースマップ         | `.claude/skills/aiworkflow-requirements/indexes/resource-map.md`                            | 抽出漏れ防止               |
-| ApprovalSheet          | `apps/desktop/src/renderer/components/execution/ApprovalSheet.tsx`                          | 再利用する approval UI     |
-| SkillLifecyclePanel    | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                        | public surface の消費先    |
-| useApprovalFlow        | `apps/desktop/src/renderer/hooks/useApprovalFlow.ts`                                        | execution console 対照実装 |
+### 確認コマンド
 
-## 実行手順
+```bash
+# skill-creator-api.ts の現状確認
+grep -n "onApprovalRequest\|respondToApproval\|getDisclosureInfo\|safeOn" \
+  apps/desktop/src/preload/skill-creator-api.ts
 
-1. resource-map.md を起点に対象カテゴリ（IPC/Interface/Renderer/Preload）を確定する。
-2. `skill-creator-api.ts` の既存命名規則（camelCase メソッド名、`on` + PascalCase イベント名パターン）を分析・記録する。
-3. `preload/index.ts` の `skillCreatorAPI` / `window.skillCreatorAPI` 公開パターンを参照して型契約を定義する。
-4. `useApprovalFlow.ts` のコールバック型を確認しつつ、Skill Creator では同一の payload shape を local alias に留める。
-5. 要件と受け入れ基準を矛盾なし・漏れなしの状態で固定する。
-6. artifact 命名 canonical 一覧を確定する。
+# APPROVAL_REQUEST チャンネルの登録確認
+grep -n "APPROVAL_REQUEST" apps/desktop/src/preload/channels.ts
 
-## 命名規則分析（Phase 1 必須）
+# SkillCreatorAPI インターフェースの最後の部分を確認
+grep -n "getDisclosureInfo\|respondToApproval" apps/desktop/src/preload/skill-creator-api.ts
 
-| 対象               | 命名パターン                      | 例                                                                                                                                |
-| ------------------ | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Preload メソッド   | camelCase                         | `onApprovalRequest`, `safeOn`                                                                                                     |
-| IPC チャンネル定数 | UPPER_SNAKE_CASE                  | `APPROVAL_REQUEST`                                                                                                                |
-| IPC チャンネル値   | kebab-case                        | `approval:request`                                                                                                                |
-| コールバック型     | `(payload: T) => void` のパターン | `(payload: { operationType: string; description: string; destination?: string; sessionId: string; operationId: string }) => void` |
+# ExecutionAPI の onApprovalRequest パターン確認
+grep -n "onApprovalRequest" apps/desktop/src/preload/types.ts
+```
+
+### 確認結果
+
+| 確認項目                                    | 状態       | 詳細                                                                                        |
+| ------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------- |
+| `respondToApproval` 実装                    | 実装済み   | `skill-creator-api.ts` に `safeInvoke(IPC_CHANNELS.APPROVAL_RESPOND, ...)` 実装済み         |
+| `getDisclosureInfo` 実装                    | 実装済み   | `skill-creator-api.ts` に `safeInvoke(IPC_CHANNELS.EXECUTION_GET_DISCLOSURE_INFO)` 実装済み |
+| `onApprovalRequest` 実装                    | **未実装** | `SkillCreatorAPI` インターフェース・実装オブジェクトともに欠如                              |
+| `APPROVAL_REQUEST` チャンネル登録           | 登録済み   | `ALLOWED_ON_CHANNELS` に登録済み（`channels.ts` 行777）                                     |
+| `safeOn` ヘルパー                           | 実装済み   | `skill-creator-api.ts` 行405〜 に実装済み                                                   |
+| `ExecutionAPI.onApprovalRequest` 型パターン | 参照可能   | `preload/types.ts` 行1038 に payload 型定義あり                                             |
+| `SkillLifecyclePanel.tsx` disclosure UI     | 実装済み   | `data-testid="skill-lifecycle-disclosure-summary"` が存在                                   |
+| `SkillLifecyclePanel.tsx` approval UI       | **未実装** | approval request 購読・表示が欠如                                                           |
+
+**P50 チェック結論**: インターフェース・実装オブジェクトへの `onApprovalRequest` 追加と、`SkillLifecyclePanel.tsx` への購読 + UI 実装のみが未完成。既存のチャンネル・safeOn 基盤は利用可能。
+
+---
+
+## タスク分類と並列化方針
+
+- タスク分類: `preload` + `renderer` の実装タスク
+- canonical artifact: `index.md` / `phase-*.md` / `artifacts.json` の命名を固定する
+- 並列 lane: Phase 1〜3 は `skill準拠検証` と `多角的思考分析` を並列化し、Phase 4〜5 は `preload` / `renderer` を分割して進める
+
+---
 
 ## 機能要件
 
-| 要件ID | 要件                                                                                     |
-| ------ | ---------------------------------------------------------------------------------------- |
-| FR-01  | `SkillCreatorAPI` インターフェースに `onApprovalRequest` メソッドを追加する              |
-| FR-02  | `onApprovalRequest` は `APPROVAL_REQUEST` チャンネルを `safeOn` で購読する               |
-| FR-03  | `onApprovalRequest` はアンサブスクライブ関数 `() => void` を返す                         |
-| FR-04  | `SkillLifecyclePanel.tsx` で `onApprovalRequest` を消費し既存 `ApprovalSheet` を表示する |
-| FR-05  | `respondToApproval` との対称性（approve/reject action）を `ApprovalSheet` 経由で維持     |
-| FR-06  | `getSkillCreatorApi()` の fallback 経路と `preload/index.ts` の公開 surface を対称に保つ |
+| ID    | 要件                                                                                                           | 優先度 |
+| ----- | -------------------------------------------------------------------------------------------------------------- | ------ |
+| FR-01 | `SkillCreatorAPI` インターフェースに `onApprovalRequest` メソッドが追加されること                              | must   |
+| FR-02 | 実装オブジェクトで `safeOn(IPC_CHANNELS.APPROVAL_REQUEST, callback)` を使って購読すること                      | must   |
+| FR-03 | コールバックは `{ operationType, description, destination?, sessionId, operationId }` ペイロードを受け取ること | must   |
+| FR-04 | 戻り値はリスナー解除関数 `() => void` であること                                                               | must   |
+| FR-05 | `SkillLifecyclePanel.tsx` が `onApprovalRequest` を購読し、approval request 受信時に UI を表示すること         | must   |
+| FR-06 | approval UI と disclosure UI が対称な責務（同水準のサーフェス）で実装されること                                | must   |
 
 ## 非機能要件
 
-| 要件ID | 要件                                                                |
-| ------ | ------------------------------------------------------------------- |
-| NFR-01 | TypeScript strict mode で型エラーなし                               |
-| NFR-02 | 既存の `respondToApproval` / `getDisclosureInfo` の動作に影響しない |
-| NFR-03 | `ALLOWED_ON_CHANNELS` の既存リストを変更しない                      |
-| NFR-04 | Vitest 全テストが PASS する                                         |
+| ID     | 要件                                                                                                 | 優先度 |
+| ------ | ---------------------------------------------------------------------------------------------------- | ------ |
+| NFR-01 | `ExecutionAPI.onApprovalRequest` の型定義（`preload/types.ts` 行1038）と互換性のある型を使用すること | must   |
+| NFR-02 | 既存の `respondToApproval` / `getDisclosureInfo` テストが引き続き PASS すること                      | must   |
+| NFR-03 | `safeOn` 内の `ALLOWED_ON_CHANNELS` チェックを通過すること（既登録チャンネルを使用）                 | must   |
+| NFR-04 | コンポーネントのアンマウント時にリスナーが確実に解除されること                                       | must   |
 
-## artifact 命名 canonical 一覧
+---
 
-| Phase | artifact 名                        | パス                                                     |
-| ----- | ---------------------------------- | -------------------------------------------------------- |
-| 1     | requirements-definition            | `outputs/phase-1/requirements-definition.md`             |
-| 1     | acceptance-criteria                | `outputs/phase-1/acceptance-criteria.md`                 |
-| 1     | aiworkflow-requirements-extraction | `outputs/phase-1/aiworkflow-requirements-extraction.md`  |
-| 1     | branch-diff-coverage               | `outputs/phase-1/branch-diff-coverage.md`                |
-| 1     | traceability-matrix                | `outputs/phase-1/traceability-matrix.md`                 |
-| 2     | architecture-design                | `outputs/phase-2/architecture-design.md`                 |
-| 2     | ipc-contract-design                | `outputs/phase-2/ipc-contract-design.md`                 |
-| 2     | test-strategy                      | `outputs/phase-2/test-strategy.md`                       |
-| 2     | dependency-consistency-matrix      | `outputs/phase-2/dependency-consistency-matrix.md`       |
-| 3     | design-review-result               | `outputs/phase-3/design-review-result.md`                |
-| 3     | gate-decision                      | `outputs/phase-3/gate-decision.md`                       |
-| 3     | contradiction-checklist            | `outputs/phase-3/contradiction-checklist.md`             |
-| 4     | test-specification                 | `outputs/phase-4/test-specification.md`                  |
-| 4     | red-test-result                    | `outputs/phase-4/red-test-result.md`                     |
-| 4     | integration-test-plan              | `outputs/phase-4/integration-test-plan.md`               |
-| 5     | implementation-summary             | `outputs/phase-5/implementation-summary.md`              |
-| 5     | changed-files                      | `outputs/phase-5/changed-files.md`                       |
-| 5     | contract-diff                      | `outputs/phase-5/contract-diff.md`                       |
-| 6     | expanded-test-cases                | `outputs/phase-6/expanded-test-cases.md`                 |
-| 6     | regression-test-result             | `outputs/phase-6/regression-test-result.md`              |
-| 6     | edge-case-result                   | `outputs/phase-6/edge-case-result.md`                    |
-| 7     | coverage-plan                      | `outputs/phase-7/coverage-plan.md`                       |
-| 7     | uncovered-analysis-plan            | `outputs/phase-7/uncovered-analysis-plan.md`             |
-| 7     | traceability-coverage-report       | `outputs/phase-7/traceability-coverage-report.md`        |
-| 8     | refactoring-plan                   | `outputs/phase-8/refactoring-plan.md`                    |
-| 8     | post-refactor-test-plan            | `outputs/phase-8/post-refactor-test-plan.md`             |
-| 8     | responsibility-boundary-map        | `outputs/phase-8/responsibility-boundary-map.md`         |
-| 9     | quality-report                     | `outputs/phase-9/quality-report.md`                      |
-| 9     | risk-register                      | `outputs/phase-9/risk-register.md`                       |
-| 9     | causal-loop-check                  | `outputs/phase-9/causal-loop-check.md`                   |
-| 10    | final-review-result                | `outputs/phase-10/final-review-result.md`                |
-| 10    | corrective-action-plan             | `outputs/phase-10/corrective-action-plan.md`             |
-| 10    | release-readiness-checklist        | `outputs/phase-10/release-readiness-checklist.md`        |
-| 11    | manual-test-result                 | `outputs/phase-11/manual-test-result.md`                 |
-| 11    | evidence-index                     | `outputs/phase-11/evidence-index.md`                     |
-| 11    | screenshot-plan                    | `outputs/phase-11/screenshot-plan.md`                    |
-| 11    | discovered-issues                  | `outputs/phase-11/discovered-issues.md`                  |
-| 12    | implementation-guide               | `outputs/phase-12/implementation-guide.md`               |
-| 12    | system-spec-update-summary         | `outputs/phase-12/system-spec-update-summary.md`         |
-| 12    | documentation-changelog            | `outputs/phase-12/documentation-changelog.md`            |
-| 12    | unassigned-task-detection          | `outputs/phase-12/unassigned-task-detection.md`          |
-| 12    | skill-feedback-report              | `outputs/phase-12/skill-feedback-report.md`              |
-| 12    | phase12-task-spec-compliance-check | `outputs/phase-12/phase12-task-spec-compliance-check.md` |
+## 受入基準
 
-## 受け入れ基準
+| ID   | 基準                                                                                                       | 確認方法                                               |
+| ---- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| AC-1 | `SkillCreatorAPI` インターフェースに `onApprovalRequest` メソッドが型定義されていること                    | TypeScript コンパイル通過                              |
+| AC-2 | `skill-creator-api.ts` 実装オブジェクトで `safeOn(IPC_CHANNELS.APPROVAL_REQUEST, callback)` が呼ばれること | ユニットテスト `skill-creator-api.approval.test.ts`    |
+| AC-3 | `SkillLifecyclePanel.tsx` が `onApprovalRequest` を useEffect 内で購読し、受信時に state を更新すること    | ユニットテスト `SkillLifecyclePanel.approval.test.tsx` |
+| AC-4 | approval / disclosure の UI surface が対称な構造（同一水準のバナー/サマリー表示）で確認できること          | コードレビュー・手動テスト                             |
+| AC-5 | renderer テストで approval request の経路（受信 → state 更新 → UI 表示）が固定されること                   | `SkillLifecyclePanel.approval.test.tsx`                |
 
-| AC-ID | 基準                                                                                       |
-| ----- | ------------------------------------------------------------------------------------------ |
-| AC-01 | `SkillCreatorAPI` interface に `onApprovalRequest` メソッドが定義されている                |
-| AC-02 | `skillCreatorAPI` オブジェクトに `onApprovalRequest` 実装が追加されている                  |
-| AC-03 | `onApprovalRequest` が `APPROVAL_REQUEST` チャンネルを `safeOn` で正しく購読する           |
-| AC-04 | `SkillLifecyclePanel.tsx` が `onApprovalRequest` を消費して既存 `ApprovalSheet` を表示する |
-| AC-05 | approve / reject 操作が `respondToApproval` に接続されている                               |
-| AC-06 | `preload/index.ts` の同名メソッドと型シグネチャが対称である                                |
-| AC-07 | TypeScript コンパイルエラーなし（`pnpm typecheck` PASS）                                   |
-| AC-08 | ESLint エラーなし（`pnpm lint` PASS）                                                      |
-| AC-09 | Vitest テスト PASS（新規テストケースを含む）                                               |
+---
+
+## 影響ファイル一覧
+
+| ファイル                                                                                     | 変更種別     | 理由                                                                   |
+| -------------------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------- |
+| `apps/desktop/src/preload/skill-creator-api.ts`                                              | 修正（主要） | `SkillCreatorAPI` インターフェース + 実装への `onApprovalRequest` 追加 |
+| `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                         | 修正         | approval request 購読 + UI 表示の追加                                  |
+| `apps/desktop/src/preload/__tests__/skill-creator-api.approval.test.ts`                      | 新規         | `onApprovalRequest` のユニットテスト                                   |
+| `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx` | 新規         | `SkillLifecyclePanel` の approval 経路テスト                           |
+
+**変更しないファイル:**
+
+| ファイル                                        | 理由                                  |
+| ----------------------------------------------- | ------------------------------------- |
+| `apps/desktop/src/preload/channels.ts`          | `APPROVAL_REQUEST` は既登録・変更不要 |
+| `apps/desktop/src/preload/types.ts`             | `ExecutionAPI` の型は変更しない       |
+| `apps/desktop/src/main/ipc/approvalHandlers.ts` | Main 側の実装は変更不要               |
+
+---
+
+## 参照資料
+
+### システム仕様（aiworkflow-requirements）
+
+> 実装前に必ず以下のシステム仕様を確認し、既存設計との整合性を確保してください。
+
+| 参照資料                         | パス                                                                              | 内容                                     |
+| -------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------- |
+| ExecutionAPI 型定義              | `apps/desktop/src/preload/types.ts` 行1038                                        | `onApprovalRequest` ペイロード型の参照元 |
+| ALLOWED_ON_CHANNELS 登録         | `apps/desktop/src/preload/channels.ts` 行777                                      | `APPROVAL_REQUEST` の許可チャンネル登録  |
+| safeOn ヘルパー                  | `apps/desktop/src/preload/skill-creator-api.ts` 行405                             | 購読実装パターン                         |
+| onApprovalRequest テストパターン | `apps/desktop/src/preload/__tests__/index.execution.test.ts` 行169, 250, 498      | テスト記述の参照パターン                 |
+| disclosure UI 参照               | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` 行1803〜1848 | 対称実装のベースライン                   |
+
+---
+
+## 統合テスト連携【必須】
+
+IPC 接続要件（`APPROVAL_REQUEST` チャンネル・safeOn 経由）を要件として明記する:
+
+| 判定項目                     | 基準 | 結果           |
+| ---------------------------- | ---- | -------------- |
+| ユニットテスト Line          | 80%+ | Phase 7 で確認 |
+| ユニットテスト Branch        | 60%+ | Phase 7 で確認 |
+| ユニットテスト Function      | 80%+ | Phase 7 で確認 |
+| IPC 経路テスト（統合）       | 100% | Phase 7 で確認 |
+| 正常系シナリオ               | 100% | Phase 7 で確認 |
+| 異常系（コンポーネント破棄） | 80%+ | Phase 7 で確認 |
+
+---
 
 ## 成果物
 
-| 成果物               | パス                                                    | 説明                   |
-| -------------------- | ------------------------------------------------------- | ---------------------- |
-| 要件定義書           | `outputs/phase-1/requirements-definition.md`            | 機能要件と非機能要件   |
-| 受け入れ基準         | `outputs/phase-1/acceptance-criteria.md`                | 検証可能なAC一覧       |
-| 仕様抽出結果         | `outputs/phase-1/aiworkflow-requirements-extraction.md` | aiworkflow仕様抽出結果 |
-| 差分カバレッジ       | `outputs/phase-1/branch-diff-coverage.md`               | ブランチ差分反映確認   |
-| トレーサビリティ行列 | `outputs/phase-1/traceability-matrix.md`                | 要件と仕様の対応表     |
+| 成果物   | パス                      | 説明       |
+| -------- | ------------------------- | ---------- |
+| 要件定義 | `phase-1-requirements.md` | 本ファイル |
+
+---
 
 ## 完了条件
 
-- [ ] 実行タスクで定義した成果物を全件作成
-- [ ] 命名規則分析が記録されている
-- [ ] artifact 命名 canonical 一覧が確定している
-- [ ] 矛盾がないことを確認
-- [ ] 漏れがないことを確認
-- [ ] 整合性が取れていることを確認
-- [ ] 依存関係が取れていることを確認
-- [ ] 本Phase内の全タスクを100%実行完了
+- [ ] P50 チェックを実施し、既実装状態が確認されている
+- [ ] 機能要件（FR-01〜FR-06）が明記されている
+- [ ] 非機能要件（NFR-01〜NFR-04）が明記されている
+- [ ] 受入基準（AC-1〜AC-5）が検証可能な形で定義されている
+- [ ] 影響ファイル一覧が確定されている
+- [ ] Phase 4 は Phase 3 PASS 後のみ開始する gate が明記されている
+- [ ] **本 Phase 内の全タスクを 100% 実行完了**
 
-## サブタスク管理
+---
 
-1. 参照資料の確認
-2. 命名規則分析の実施
-3. SubAgent-A/B/C の並列作業
-4. SubAgent-D の統合判定
-5. artifact 命名 canonical 一覧確定
-6. 成果物出力
-7. 完了条件判定
+## Phase 4 開始条件
 
-## タスク100%実行確認【必須】
+**Phase 4 への進行は Phase 3（設計レビューゲート）が PASS 判定を得た後のみ許可される。**
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 成果物テーブル記載のファイルを全件生成
-- [ ] 矛盾なし・漏れなし・整合あり・依存整合を確認
-- [ ] 実行記録を残した
+Phase 3 で MAJOR 指摘が発生した場合:
 
-```bash
-node .claude/skills/task-specification-creator/scripts/validate-phase-output.js docs/30-workflows/ut-sdk-07-approval-request-surface-001
-```
+- MAJOR: 設計変更 → Phase 2 へ戻る
+- MAJOR: 要件変更 → 本 Phase 1 へ戻る
 
-## 統合テスト連携
+## 次の Phase
 
-本 Phase で定義した受け入れ基準（AC-01〜09）は Phase 4 テストケース（TC-APPR-01〜18）に対応づけられ、Phase 7 トレーサビリティ網羅率確認まで継続的に参照される。
-
-## 次のPhase
-
-Phase 2: 設計
+Phase 2: 設計 → [phase-2-design.md](phase-2-design.md)

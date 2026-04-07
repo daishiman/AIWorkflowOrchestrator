@@ -9,6 +9,7 @@
 
 | バージョン | 日付       | 変更内容                                           |
 | ---------- | ---------- | -------------------------------------------------- |
+| v1.2.0     | 2026-04-07 | Phase 12/13 close-out workflow・phase-12-completion-checklist.md 参照追加 |
 | 1.1.0      | 2026-01-26 | 仕様ガイドライン準拠: コード例を表形式・文章に変換 |
 | 1.0.0      | -          | 初版作成                                           |
 
@@ -211,3 +212,18 @@
 8. **リスクと対策** - リスク分析と対応方針
 9. **前提条件** - タスク実行の前提
 10. **備考** - 技術的制約、参考資料
+
+---
+
+## Phase 12/13 Close-out Workflow（2026-04-07追加）
+
+Phase 12 完了時は以下の parity チェックを必ず実施する：
+
+| チェック項目 | 確認コマンド |
+| --- | --- |
+| artifacts.json ↔ physical outputs parity | `node scripts/validate-phase-output.js --phase 12` |
+| LOGS.md 2ファイル同時更新 | aiworkflow-requirements / task-specification-creator 両方を更新 |
+| topic-map.md 再生成 | `node scripts/generate-index.js` |
+| mirror sync | `diff -qr .claude/skills/ .agents/skills/` |
+
+参照: `.claude/skills/task-specification-creator/references/phase-12-completion-checklist.md`

@@ -1,5 +1,6 @@
 // IPC Channel definitions
 // All channel names are centralized here for type safety
+// Skill Creator runtime 系チャンネルは shared 正本を参照（直書き禁止）
 import {
   APPROVAL_CHANNELS,
   EXECUTION_CHANNELS,
@@ -7,6 +8,8 @@ import {
   SKILL_CREATOR_OUTPUT_READY,
   SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
   SKILL_CREATOR_OPEN_SKILL,
+  SKILL_CREATOR_SESSION_CHANNELS,
+  SKILL_CREATOR_RUNTIME_CHANNELS,
 } from "@repo/shared/src/ipc/channels";
 
 export const IPC_CHANNELS = {
@@ -327,8 +330,9 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_EXECUTE_TASKS: "skill-creator:execute-tasks",
   SKILL_CREATOR_VALIDATE: "skill-creator:validate",
   SKILL_CREATOR_VALIDATE_SCHEMA: "skill-creator:validate-schema",
-  SKILL_CREATOR_PROGRESS: "skill-creator:progress",
+  ...SKILL_CREATOR_SESSION_CHANNELS,
   ...SKILL_CREATOR_EXTERNAL_API_CHANNELS,
+  ...SKILL_CREATOR_RUNTIME_CHANNELS,
   SKILL_CREATOR_OUTPUT_READY,
   SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
   SKILL_CREATOR_OPEN_SKILL,
@@ -337,10 +341,8 @@ export const IPC_CHANNELS = {
   SKILL_CREATOR_PLAN: "skill-creator:plan",
   SKILL_CREATOR_EXECUTE_PLAN: "skill-creator:execute-plan",
   SKILL_CREATOR_GET_ADAPTER_STATUS: "skill-creator:get-adapter-status",
-  SKILL_CREATOR_ADAPTER_STATUS_CHANGED: "skill-creator:adapter-status-changed",
   SKILL_CREATOR_GET_WORKFLOW_STATE: "skill-creator:get-workflow-state",
   SKILL_CREATOR_SUBMIT_USER_INPUT: "skill-creator:submit-user-input",
-  SKILL_CREATOR_WORKFLOW_STATE_CHANGED: "skill-creator:workflow-state-changed",
   SKILL_CREATOR_IMPROVE_SKILL: "skill-creator:improve-skill",
   SKILL_CREATOR_APPLY_IMPROVEMENT: "skill-creator:apply-improvement",
   SKILL_CREATOR_GET_VERIFY_DETAIL: "skill-creator:get-verify-detail",

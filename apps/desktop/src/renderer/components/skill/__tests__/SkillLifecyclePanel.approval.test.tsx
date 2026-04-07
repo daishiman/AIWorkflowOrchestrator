@@ -1,24 +1,18 @@
 /**
  * @vitest-environment happy-dom
  *
- * UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: SkillLifecyclePanel approval 統合テスト
+ * SkillLifecyclePanel - onApprovalRequest テスト
  *
- * AC-2: Renderer に approval 確認 UI が表示される
- * AC-3: approve/reject 操作が respondToApproval() と接続されている
+ * TASK-SDK-07: approval:request surface 追加
+ * Phase 4: T-4-6 〜 T-4-9 / Phase 6: T-6-5 〜 T-6-7
  */
+
 import "@testing-library/jest-dom/vitest";
 import React from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import {
-  act,
-  cleanup,
-  fireEvent,
-  render,
-  screen,
-} from "@testing-library/react";
-import type { ApprovalRequestPayload } from "@repo/shared/types";
+import { act, cleanup, render, screen } from "@testing-library/react";
 
-// --- Store モック ---
+// --- store モック ---
 const mockBeginSkillReview = vi.fn();
 const mockCompleteSkillReview = vi.fn();
 const mockCreateSkill = vi.fn();
@@ -34,11 +28,16 @@ const mockSetWorkflowSnapshot = vi.fn();
 const mockSetWorkflowError = vi.fn();
 const mockSetHandoffGuidance = vi.fn();
 const mockClearHandoffGuidance = vi.fn();
+let mockHandoffGuidance: {
+  terminalCommand: string;
+  contextSummary: string;
+  reason: string;
+} | null = null;
 
 vi.mock("../../../store", () => ({
   useBeginSkillReview: () => mockBeginSkillReview,
-  useCompleteSkillReview: () => mockCompleteSkillReview,
   useCreateSkill: () => mockCreateSkill,
+  useCompleteSkillReview: () => mockCompleteSkillReview,
   useExecuteSkill: () => mockExecuteSkill,
   useFetchSkills: () => mockFetchSkills,
   useReExecuteAfterImprovement: () => mockReExecuteAfterImprovement,
@@ -66,286 +65,466 @@ vi.mock("../../../store", () => ({
   useWorkflowError: () => null,
   useSetWorkflowSnapshot: () => mockSetWorkflowSnapshot,
   useSetWorkflowError: () => mockSetWorkflowError,
-  useHandoffGuidance: () => null,
+  useHandoffGuidance: () => mockHandoffGuidance,
   useSetHandoffGuidance: () => mockSetHandoffGuidance,
   useClearHandoffGuidance: () => mockClearHandoffGuidance,
 }));
 
 vi.mock("../SkillStreamingView", () => ({
-  SkillStreamingView: () => <div data-testid="mock-streaming-view" />,
+  SkillStreamingView: ({ skillName }: { skillName: string }) => (
+    <div data-testid="mock-streaming-view">{skillName}</div>
+  ),
 }));
 
 vi.mock("../SkillAnalysisView", () => ({
-  SkillAnalysisView: ({ onClose }: { onClose: () => void }) => (
+  SkillAnalysisView: ({
+    skillName,
+    onClose,
+  }: {
+    skillName: string;
+    onClose: () => void;
+  }) => (
     <div data-testid="mock-analysis-view">
+      <span>{skillName}</span>
       <button onClick={onClose}>閉じる</button>
     </div>
   ),
 }));
 
-vi.mock("../ApprovalRequestPanel", () => ({
-  ApprovalRequestPanel: ({
-    request,
-    onApprove,
-    onReject,
-  }: {
-    request: ApprovalRequestPayload | null;
-    onApprove: (sessionId: string, operationId: string) => Promise<void>;
-    onReject: (sessionId: string, operationId: string) => Promise<void>;
-  }) => {
-    if (!request) return null;
-    return (
-      <div data-testid="approval-request-panel">
-        <span data-testid="approval-operation-type">
-          {request.operationType}
-        </span>
-        <button
-          data-testid="approval-approve-button"
-          onClick={() =>
-            void onApprove(request.sessionId, request.operationId).catch(
-              () => undefined,
-            )
-          }
-        >
-          承認
-        </button>
-        <button
-          data-testid="approval-reject-button"
-          onClick={() =>
-            void onReject(request.sessionId, request.operationId).catch(
-              () => undefined,
-            )
-          }
-        >
-          拒否
-        </button>
-      </div>
-    );
-  },
-}));
-
 import { SkillLifecyclePanel } from "../SkillLifecyclePanel";
 
-const sampleRequest: ApprovalRequestPayload = {
-  sessionId: "session-lifecycle-1",
-  operationId: "op-lifecycle-1",
-  operationType: "file_write",
-  description: "危険なファイル書き込みを実行しようとしています",
+// window.electronAPI のセットアップユーティリティ
+type ApprovalPayload = {
+  operationType: string;
+  description: string;
+  destination?: string;
+  sessionId: string;
+  operationId: string;
 };
 
-// onApprovalRequest コールバックを手動発火するためのキャプチャ
-let capturedOnApprovalRequestCallback:
-  | ((request: ApprovalRequestPayload) => void)
-  | null = null;
+type MockElectronAPI = {
+  skillCreator: {
+    onApprovalRequest: (
+      callback: (payload: ApprovalPayload) => void,
+    ) => () => void;
+    detectMode?: () => Promise<unknown>;
+    planSkill?: () => Promise<unknown>;
+    executePlan?: () => Promise<unknown>;
+    getWorkflowState?: () => Promise<unknown>;
+    submitUserInput?: () => Promise<unknown>;
+    onWorkflowStateChanged?: () => () => void;
+    getVerifyDetail?: () => Promise<unknown>;
+    reverifyWorkflow?: () => Promise<unknown>;
+    improveSkill?: () => Promise<unknown>;
+    improveSkillWithFeedback?: () => Promise<unknown>;
+    applyRuntimeImprovement?: () => Promise<unknown>;
+    getDisclosureInfo?: () => Promise<unknown>;
+    listSessions?: () => Promise<unknown>;
+    resumeSession?: () => Promise<unknown>;
+    deleteSession?: () => Promise<void>;
+    cleanupExpiredSessions?: () => Promise<number>;
+  };
+};
 
-const mockOnApprovalRequest = vi.fn(
-  (callback: (request: ApprovalRequestPayload) => void) => {
-    capturedOnApprovalRequestCallback = callback;
-    return () => {
-      capturedOnApprovalRequestCallback = null;
-    };
-  },
-);
-const mockRespondToApproval = vi.fn().mockResolvedValue({ success: true });
-const mockOnWorkflowStateChanged = vi.fn(() => () => {});
-const mockListSessions = vi.fn().mockResolvedValue({ success: true, data: [] });
-const mockCleanupExpiredSessions = vi.fn().mockResolvedValue(0);
+function setupElectronAPI(api: MockElectronAPI) {
+  Object.defineProperty(window, "electronAPI", {
+    value: api,
+    writable: true,
+    configurable: true,
+  });
+}
+
+function cleanupElectronAPI() {
+  delete (window as Window & { electronAPI?: unknown }).electronAPI;
+}
 
 beforeEach(() => {
   vi.clearAllMocks();
-  capturedOnApprovalRequestCallback = null;
-
-  // window.skillCreatorAPI をモック設定
-  (
-    window as Window & {
-      skillCreatorAPI?: {
-        onApprovalRequest?: typeof mockOnApprovalRequest;
-        respondToApproval?: typeof mockRespondToApproval;
-        onWorkflowStateChanged?: typeof mockOnWorkflowStateChanged;
-        listSessions?: typeof mockListSessions;
-        cleanupExpiredSessions?: typeof mockCleanupExpiredSessions;
-      };
-    }
-  ).skillCreatorAPI = {
-    onApprovalRequest: mockOnApprovalRequest,
-    respondToApproval: mockRespondToApproval,
-    onWorkflowStateChanged: mockOnWorkflowStateChanged,
-    listSessions: mockListSessions,
-    cleanupExpiredSessions: mockCleanupExpiredSessions,
-  };
+  mockHandoffGuidance = null;
 });
 
 afterEach(() => {
-  (window as Window & { skillCreatorAPI?: unknown }).skillCreatorAPI =
-    undefined;
   cleanup();
+  cleanupElectronAPI();
 });
 
-describe("UT-SDK-07-APPROVAL-REQUEST-SURFACE-001: SkillLifecyclePanel approval 統合", () => {
-  // --- TC-012: approval 受信時に UI 表示 ---
+// --- Phase 4 テスト: T-4-6 〜 T-4-9 ---
 
-  describe("TC-012: onApprovalRequest イベント受信時に ApprovalRequestPanel が表示される", () => {
-    it("approval request 受信前は ApprovalRequestPanel が非表示", async () => {
-      await act(async () => {
-        render(
-          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-        );
-      });
+describe("SkillLifecyclePanel - approval request UI (Phase 4)", () => {
+  // T-4-6: approval request 受信前は approval UI が表示されないこと
+  it("T-4-6: approval request 受信前は approval UI が表示されないこと", () => {
+    const mockUnsubscribe = vi.fn();
+    const mockOnApprovalRequest = vi.fn().mockReturnValue(mockUnsubscribe);
 
-      expect(
-        screen.queryByTestId("approval-request-panel"),
-      ).not.toBeInTheDocument();
+    setupElectronAPI({
+      skillCreator: {
+        onApprovalRequest: mockOnApprovalRequest,
+      },
     });
 
-    it("onApprovalRequest コールバック発火後に ApprovalRequestPanel が表示される", async () => {
-      await act(async () => {
-        render(
-          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-        );
-      });
+    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
 
-      // onApprovalRequest が登録されたことを確認
-      expect(mockOnApprovalRequest).toHaveBeenCalled();
-
-      // コールバックを手動発火
-      await act(async () => {
-        capturedOnApprovalRequestCallback?.(sampleRequest);
-      });
-
-      expect(screen.getByTestId("approval-request-panel")).toBeInTheDocument();
-    });
+    expect(
+      screen.queryByTestId("skill-lifecycle-approval-request"),
+    ).not.toBeInTheDocument();
   });
 
-  // --- TC-013: approve 操作 ---
-
-  describe("TC-013: approve 操作で respondToApproval('approve') が呼ばれる", () => {
-    it("承認ボタンクリックで respondToApproval(sessionId, operationId, 'approve') が呼ばれる", async () => {
-      await act(async () => {
-        render(
-          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-        );
+  // T-4-7: approval request 受信時に data-testid="skill-lifecycle-approval-request" が表示されること
+  it("T-4-7: approval request 受信時に data-testid が表示されること", async () => {
+    let capturedCallback: ((payload: ApprovalPayload) => void) | null = null;
+    const mockUnsubscribe = vi.fn();
+    const mockOnApprovalRequest = vi
+      .fn()
+      .mockImplementation((cb: (payload: ApprovalPayload) => void) => {
+        capturedCallback = cb;
+        return mockUnsubscribe;
       });
 
-      await act(async () => {
-        capturedOnApprovalRequestCallback?.(sampleRequest);
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId("approval-approve-button"));
-      });
-
-      expect(mockRespondToApproval).toHaveBeenCalledWith(
-        sampleRequest.sessionId,
-        sampleRequest.operationId,
-        "approve",
-      );
+    setupElectronAPI({
+      skillCreator: {
+        onApprovalRequest: mockOnApprovalRequest,
+      },
     });
+
+    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+
+    // コールバックが登録されていること
+    expect(mockOnApprovalRequest).toHaveBeenCalled();
+    expect(capturedCallback).not.toBeNull();
+
+    const payload: ApprovalPayload = {
+      operationType: "file_write",
+      description: "設定ファイルへの書き込み",
+      destination: "/etc/config.json",
+      sessionId: "session-abc",
+      operationId: "op-xyz",
+    };
+
+    await act(async () => {
+      capturedCallback?.(payload);
+    });
+
+    expect(
+      screen.getByTestId("skill-lifecycle-approval-request"),
+    ).toBeInTheDocument();
   });
 
-  // --- TC-014: reject 操作 ---
-
-  describe("TC-014: reject 操作で respondToApproval('reject') が呼ばれる", () => {
-    it("拒否ボタンクリックで respondToApproval(sessionId, operationId, 'reject') が呼ばれる", async () => {
-      await act(async () => {
-        render(
-          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-        );
+  // T-4-8: 表示内容に operationType / description / sessionId が含まれること
+  it("T-4-8: 表示内容に operationType / description / sessionId が含まれること", async () => {
+    let capturedCallback: ((payload: ApprovalPayload) => void) | null = null;
+    const mockUnsubscribe = vi.fn();
+    const mockOnApprovalRequest = vi
+      .fn()
+      .mockImplementation((cb: (payload: ApprovalPayload) => void) => {
+        capturedCallback = cb;
+        return mockUnsubscribe;
       });
 
-      await act(async () => {
-        capturedOnApprovalRequestCallback?.(sampleRequest);
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId("approval-reject-button"));
-      });
-
-      expect(mockRespondToApproval).toHaveBeenCalledWith(
-        sampleRequest.sessionId,
-        sampleRequest.operationId,
-        "reject",
-      );
+    setupElectronAPI({
+      skillCreator: {
+        onApprovalRequest: mockOnApprovalRequest,
+      },
     });
+
+    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+
+    const payload: ApprovalPayload = {
+      operationType: "network_call",
+      description: "外部APIへの接続リクエスト",
+      destination: "https://api.example.com",
+      sessionId: "session-t48",
+      operationId: "op-t48",
+    };
+
+    await act(async () => {
+      capturedCallback?.(payload);
+    });
+
+    const approvalDiv = screen.getByTestId("skill-lifecycle-approval-request");
+
+    // operationType が表示されること
+    expect(approvalDiv).toHaveTextContent("network_call");
+    // description が表示されること
+    expect(approvalDiv).toHaveTextContent("外部APIへの接続リクエスト");
+    // sessionId が表示されること
+    expect(approvalDiv).toHaveTextContent("session-t48");
   });
 
-  // --- TC-015: approval 解決後に非表示 ---
+  // T-4-9: コンポーネントアンマウント時にリスナーが解除されること
+  it("T-4-9: コンポーネントアンマウント時にリスナーが解除されること", () => {
+    const mockUnsubscribe = vi.fn();
+    const mockOnApprovalRequest = vi.fn().mockReturnValue(mockUnsubscribe);
 
-  describe("TC-015: approval 解決後に ApprovalRequestPanel が非表示になる", () => {
-    it("承認操作後に ApprovalRequestPanel が消える", async () => {
-      await act(async () => {
-        render(
-          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-        );
-      });
-
-      await act(async () => {
-        capturedOnApprovalRequestCallback?.(sampleRequest);
-      });
-
-      expect(screen.getByTestId("approval-request-panel")).toBeInTheDocument();
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId("approval-approve-button"));
-      });
-
-      expect(
-        screen.queryByTestId("approval-request-panel"),
-      ).not.toBeInTheDocument();
+    setupElectronAPI({
+      skillCreator: {
+        onApprovalRequest: mockOnApprovalRequest,
+      },
     });
 
-    it("拒否操作後に ApprovalRequestPanel が消える", async () => {
-      await act(async () => {
-        render(
-          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-        );
+    const { unmount } = render(
+      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+    );
+
+    // マウント時にリスナーが登録されること
+    expect(mockOnApprovalRequest).toHaveBeenCalled();
+
+    // アンマウント時にアンサブスクライブ関数が呼ばれること
+    unmount();
+
+    expect(mockUnsubscribe).toHaveBeenCalled();
+  });
+});
+
+// --- Phase 6 テスト: T-6-5 〜 T-6-7 ---
+
+describe("SkillLifecyclePanel - approval request エッジケース (Phase 6)", () => {
+  // T-6-5: 新しい approval request が届いたとき、前の request が上書きされること
+  it("T-6-5: 新しい approval request で前の request が上書きされること", async () => {
+    let capturedCallback: ((payload: ApprovalPayload) => void) | null = null;
+    const mockUnsubscribe = vi.fn();
+    const mockOnApprovalRequest = vi
+      .fn()
+      .mockImplementation((cb: (payload: ApprovalPayload) => void) => {
+        capturedCallback = cb;
+        return mockUnsubscribe;
       });
 
-      await act(async () => {
-        capturedOnApprovalRequestCallback?.(sampleRequest);
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId("approval-reject-button"));
-      });
-
-      expect(
-        screen.queryByTestId("approval-request-panel"),
-      ).not.toBeInTheDocument();
+    setupElectronAPI({
+      skillCreator: {
+        onApprovalRequest: mockOnApprovalRequest,
+      },
     });
+
+    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+
+    const payload1: ApprovalPayload = {
+      operationType: "file_write",
+      description: "最初のリクエスト",
+      sessionId: "session-first",
+      operationId: "op-first",
+    };
+
+    await act(async () => {
+      capturedCallback?.(payload1);
+    });
+
+    // 最初のリクエストが表示されること
+    expect(
+      screen.getByTestId("skill-lifecycle-approval-request"),
+    ).toHaveTextContent("最初のリクエスト");
+
+    const payload2: ApprovalPayload = {
+      operationType: "network_call",
+      description: "上書きリクエスト",
+      sessionId: "session-second",
+      operationId: "op-second",
+    };
+
+    await act(async () => {
+      capturedCallback?.(payload2);
+    });
+
+    // 上書き後は新しいリクエストのみが表示されること
+    const approvalDiv = screen.getByTestId("skill-lifecycle-approval-request");
+    expect(approvalDiv).toHaveTextContent("上書きリクエスト");
+    expect(approvalDiv).not.toHaveTextContent("最初のリクエスト");
   });
 
-  // --- TC-016: approval failure path ---
-
-  describe("TC-016: respondToApproval が失敗した場合にエラーが表示される", () => {
-    it("success:false の応答で error banner が表示され、panel は残る", async () => {
-      mockRespondToApproval.mockResolvedValueOnce({
-        success: false,
-        error: "approval response failed",
+  // T-6-6: destination が undefined の場合、宛先表示がレンダリングされないこと
+  it("T-6-6: destination が undefined の場合、宛先表示がレンダリングされないこと", async () => {
+    let capturedCallback: ((payload: ApprovalPayload) => void) | null = null;
+    const mockUnsubscribe = vi.fn();
+    const mockOnApprovalRequest = vi
+      .fn()
+      .mockImplementation((cb: (payload: ApprovalPayload) => void) => {
+        capturedCallback = cb;
+        return mockUnsubscribe;
       });
 
-      await act(async () => {
-        render(
-          <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
-        );
-      });
-
-      await act(async () => {
-        capturedOnApprovalRequestCallback?.(sampleRequest);
-      });
-
-      await act(async () => {
-        fireEvent.click(screen.getByTestId("approval-approve-button"));
-      });
-
-      expect(mockRespondToApproval).toHaveBeenCalledWith(
-        sampleRequest.sessionId,
-        sampleRequest.operationId,
-        "approve",
-      );
-      expect(screen.getByTestId("skill-lifecycle-error")).toHaveTextContent(
-        "approval response failed",
-      );
-      expect(screen.getByTestId("approval-request-panel")).toBeInTheDocument();
+    setupElectronAPI({
+      skillCreator: {
+        onApprovalRequest: mockOnApprovalRequest,
+      },
     });
+
+    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+
+    const payloadWithoutDestination: ApprovalPayload = {
+      operationType: "internal_process",
+      description: "内部処理の承認リクエスト",
+      // destination は undefined（省略）
+      sessionId: "session-nodest",
+      operationId: "op-nodest",
+    };
+
+    await act(async () => {
+      capturedCallback?.(payloadWithoutDestination);
+    });
+
+    const approvalDiv = screen.getByTestId("skill-lifecycle-approval-request");
+
+    // approval UI は表示されること
+    expect(approvalDiv).toBeInTheDocument();
+    expect(approvalDiv).toHaveTextContent("内部処理の承認リクエスト");
+
+    // 宛先テキストは表示されないこと
+    expect(approvalDiv).not.toHaveTextContent("宛先:");
+  });
+
+  // T-6-7: コンポーネント再マウント時に前の request state がリセットされること
+  it("T-6-7: コンポーネント再マウント時に前の request state がリセットされること", async () => {
+    let capturedCallback: ((payload: ApprovalPayload) => void) | null = null;
+    const mockUnsubscribe = vi.fn();
+    const mockOnApprovalRequest = vi
+      .fn()
+      .mockImplementation((cb: (payload: ApprovalPayload) => void) => {
+        capturedCallback = cb;
+        return mockUnsubscribe;
+      });
+
+    setupElectronAPI({
+      skillCreator: {
+        onApprovalRequest: mockOnApprovalRequest,
+      },
+    });
+
+    const { unmount } = render(
+      <SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />,
+    );
+
+    const payload: ApprovalPayload = {
+      operationType: "file_write",
+      description: "マウント前のリクエスト",
+      sessionId: "session-remount",
+      operationId: "op-remount",
+    };
+
+    await act(async () => {
+      capturedCallback?.(payload);
+    });
+
+    // 最初のマウントでリクエストが表示されること
+    expect(
+      screen.getByTestId("skill-lifecycle-approval-request"),
+    ).toBeInTheDocument();
+
+    // アンマウント
+    unmount();
+    cleanup();
+
+    // 再マウント
+    vi.clearAllMocks();
+    capturedCallback = null;
+    const mockUnsubscribe2 = vi.fn();
+    const mockOnApprovalRequest2 = vi
+      .fn()
+      .mockImplementation((cb: (payload: ApprovalPayload) => void) => {
+        capturedCallback = cb;
+        return mockUnsubscribe2;
+      });
+
+    setupElectronAPI({
+      skillCreator: {
+        onApprovalRequest: mockOnApprovalRequest2,
+      },
+    });
+
+    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+
+    // 再マウント直後は approval UI が表示されないこと（state がリセットされていること）
+    expect(
+      screen.queryByTestId("skill-lifecycle-approval-request"),
+    ).not.toBeInTheDocument();
+  });
+
+  // T-6-8: handoff 表示中でも approval request が 1 回だけ表示されること
+  it("T-6-8: handoff 表示中でも approval request が 1 回だけ表示されること", async () => {
+    let capturedCallback: ((payload: ApprovalPayload) => void) | null = null;
+    const mockUnsubscribe = vi.fn();
+    const mockOnApprovalRequest = vi
+      .fn()
+      .mockImplementation((cb: (payload: ApprovalPayload) => void) => {
+        capturedCallback = cb;
+        return mockUnsubscribe;
+      });
+
+    mockHandoffGuidance = {
+      terminalCommand: "pnpm --filter @repo/desktop dev",
+      contextSummary: "launcher=cli cwd=/tmp/workspace",
+      reason: "手動実行が必要です",
+    };
+
+    setupElectronAPI({
+      skillCreator: {
+        onApprovalRequest: mockOnApprovalRequest,
+      },
+    });
+
+    render(<SkillLifecyclePanel onClose={vi.fn()} onOpenWizard={vi.fn()} />);
+
+    const payload: ApprovalPayload = {
+      operationType: "terminal_handoff",
+      description: "handoff 中の承認リクエスト",
+      sessionId: "session-handoff",
+      operationId: "op-handoff",
+    };
+
+    await act(async () => {
+      capturedCallback?.(payload);
+    });
+
+    expect(
+      screen.getAllByTestId("skill-lifecycle-approval-request"),
+    ).toHaveLength(1);
+    expect(
+      screen.getByTestId("skill-lifecycle-approval-request"),
+    ).toHaveTextContent("handoff 中の承認リクエスト");
+  });
+
+  // T-6-9: 一覧へ戻る操作で approval request state がクリアされること
+  it("T-6-9: 一覧へ戻る操作で approval request state がクリアされること", async () => {
+    let capturedCallback: ((payload: ApprovalPayload) => void) | null = null;
+    const mockUnsubscribe = vi.fn();
+    const mockOnApprovalRequest = vi
+      .fn()
+      .mockImplementation((cb: (payload: ApprovalPayload) => void) => {
+        capturedCallback = cb;
+        return mockUnsubscribe;
+      });
+    const mockOnClose = vi.fn();
+
+    setupElectronAPI({
+      skillCreator: {
+        onApprovalRequest: mockOnApprovalRequest,
+      },
+    });
+
+    render(
+      <SkillLifecyclePanel onClose={mockOnClose} onOpenWizard={vi.fn()} />,
+    );
+
+    const payload: ApprovalPayload = {
+      operationType: "file_write",
+      description: "戻る前のリクエスト",
+      sessionId: "session-close",
+      operationId: "op-close",
+    };
+
+    await act(async () => {
+      capturedCallback?.(payload);
+    });
+
+    expect(
+      screen.getByTestId("skill-lifecycle-approval-request"),
+    ).toHaveTextContent("戻る前のリクエスト");
+
+    await act(async () => {
+      screen.getByRole("button", { name: "一覧へ戻る" }).click();
+    });
+
+    expect(mockOnClose).toHaveBeenCalled();
+    expect(
+      screen.queryByTestId("skill-lifecycle-approval-request"),
+    ).not.toBeInTheDocument();
   });
 });
