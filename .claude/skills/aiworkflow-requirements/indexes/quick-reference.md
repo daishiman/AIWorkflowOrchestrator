@@ -683,3 +683,17 @@ packages/
 | spec-splitting-guidelines.md | ファイル分割ルール        |
 
 ---
+
+### Approval Request Surface (UT-SDK-07)
+| 観点 | 参照先 |
+| --- | --- |
+| IPC surface (onApprovalRequest) | `references/api-ipc-system-core.md` → `onApprovalRequest` セクション |
+| ApprovalRequestPayload shared type | `references/interfaces-agent-sdk-skill-reference.md` |
+| UI コンポーネント (ApprovalRequestPanel) | `references/arch-ui-components.md` |
+
+### Path-Scoped Governance Enforcement (TASK-P0-09-U1)
+| 観点 | 参照先 |
+| --- | --- |
+| canUseTool path-scoped 判定 | `references/arch-state-management-core.md` → governance セクション |
+| extractTargetPath / allowedSkillRoot | `references/api-ipc-system-core.md` |
+| SafetyGovernance Production Integration | `references/arch-state-management-core.md` |

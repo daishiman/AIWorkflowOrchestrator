@@ -19,8 +19,11 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-04-06 | 3.8.0 | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-SDK07-SC-001 shared パッケージ内テストでの @repo/shared エイリアス未解決 / L-SDK07-SC-002 命名規則事前分析による Phase 4 以降の手戻り防止 / L-SDK07-SC-003 TDD Red Phase 前の設計前提整合確認） |
+| 2026-04-07 | 3.9.0 | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓2件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-RT01-CALLBACK-GUARD-001 エラーコールバックを `if (!snapshot)` でガードすると snapshot ありケースでエラーが隠れる / → [lessons-learned-test-typesafety.md](lessons-learned-test-typesafety.md): L-RT01-TDD-002 TDD 2段階テスト設計） |
+| 2026-04-06 | 3.8.0 | TASK-SDK-04-U1-F1 先行完了パターン教訓1件を追加（L-PRE-001: 親タスク実装波での先行完了を Phase 1 P50チェックで検出し、テスト整合モードへ切り替える） |
 | 2026-04-06 | 3.7.0 | TASK-FIX-IPC-SKILL-NAME-001 教訓3件を追加（L-IPC-DUP-001: ipcMain.handle() 重複登録は後続ハンドラを全て未登録にする / L-IPC-DUP-002: toWizardSkillName() 正規化5ステップとフォールバック設計 / L-IPC-DUP-003: スキル名バリデーション定数の分散リスク） |
+| 2026-04-06 | 3.7.0      | Phase-12 IPC 4層型同期教訓3件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-IPC-4LAYER-001 4層型 shared 集約原則 / L-IPC-4LAYER-002 errorReason 3分岐 union 型全層同期 / L-SESSION-RESUME-UI-001 Session Resume UI snapshot nullability 設計パターン） |
+| 2026-04-06 | 3.6.1      | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓4件を追加（→ [lessons-learned-ipc-preload-runtime.md](lessons-learned-ipc-preload-runtime.md): L-IPC-VARIADIC-001 multi-arg IPC variadic化 / → [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-EXECUTE-ASYNC-001〜003 executeAsync テストパターン） |
 | 2026-04-06 | 3.6.0      | TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 教訓3件を追加（→ [lessons-learned-skill-plan-exec-hardening.md](lessons-learned-skill-plan-exec-hardening.md): phase遷移責務とartifact記録責務の分離 / ダックタイピングメソッドのテストモックパターン / 上位ループへの通知統一ルール）|
 | 2026-04-05 | 3.5.0      | TASK-P0-05 execute→SkillFileWriter persist統合: 教訓4件追加（L-P005-001 LLMAdapter Setter Injection / L-P005-002 二重パイプライン併存管理 / L-P005-003 verify→improve→re-verify再試行戦略 / L-P005-004 パストラバーサル多層防御）|
 | 2026-04-04 | 3.4.1      | TASK-P0-03 workflow-manifest-production-placement Phase 12 close-out sync（manifest 事前配置+テスト先行整備の有効性 / NON_VISUAL タスクの Phase 11 自動テスト代替パターン確立 / P50 チェックによる現状把握の効率化）|
@@ -1257,38 +1260,15 @@
 
 ---
 
-## TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06）
+## TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06）
 
----
+### L-PRE-001: 親タスク実装波での先行完了を Phase 1 P50チェックで検出する
 
-## TASK-UI-04 仕様書ステータス乖離修正 教訓（2026-04-07）
-
-### L-UI04-001: artifacts.json ステータス更新は Phase 完了時の必須アクション
-
-| 項目       | 内容                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 課題       | P0 タスク群（8件）がコード実装完了済みにもかかわらず、artifacts.json / index.md が `spec_created` / `in_progress` のまま放置され、乖離が蓄積した        |
-| 解決策     | Phase 完了スクリプト（`complete-phase.js`）の実行を任意から必須に昇格させ、Phase 完了チェックリストの最終項目として明記する                           |
-| 標準ルール | 実装完了と同一 wave で必ず artifacts.json status を `completed` に更新する。任意実行のスクリプトは「やり忘れ」が発生するため、Phase 完了の gate に組み込む |
-| 関連タスク | TASK-UI-04                                                                                                                                              |
-
-### L-UI04-002: 親 index.md のリンクは completed-tasks 移動後に即時更新する
-
-| 項目       | 内容                                                                                                                                                       |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 課題       | P0 タスクが `completed-tasks/` に移動された後、`skill-creator-agent-sdk-lane/index.md` の相対リンクが旧パスのまま残り、リンク切れが多数発生した            |
-| 解決策     | タスクを `completed-tasks/` に移動する際は、親 index.md のリンクを同一 wave で `../completed-tasks/` prefix に更新し、✅ 完了マークを追記する               |
-| 標準ルール | completed-tasks 移動は「移動 + 親 index リンク更新 + executor-guide 状態テーブル更新」の 3 点セットを同一ターンで実施する                                  |
-| 関連タスク | TASK-UI-04                                                                                                                                                  |
-
-### L-UI04-003: docs-only タスクでも Phase 12 成果物 6 件は省略しない
-
-| 項目       | 内容                                                                                                                                                       |
-| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 課題       | docs-only タスクは「コード変更なし」として Phase 12 成果物の作成を省略しがちだが、乖離修正の根拠記録が残らないため再発防止に使えない                       |
-| 解決策     | docs-only タスクでも `implementation-guide.md`（Part 1 概念説明 + Part 2 修正内容）/ `system-spec-update-summary.md` / `documentation-changelog.md` などの 6 件を必ず作成する |
-| 標準ルール | `taskType: "docs-only"` でも Phase 12 の 6 成果物は必須。Step 2（domain spec 更新）が不要な場合は `system-spec-update-summary.md` に no-op 理由を明記する |
-| 関連タスク | TASK-UI-04                                                                                                                                                  |
+- **状況**: TASK-SDK-04-U1-F1 は `createVerificationReviewRequest()` の `kind: "free_text"` → `"single_select"` 変更タスクだったが、Phase 1 調査時に TASK-SDK-04-U1 の実装波で既に `kind: "single_select"` に変更済みであることが判明した。
+- **影響**: Phase 4 の Red テストが no-op になり、「Red を作ってから Green にする」の TDD サイクルが成立しなかった。
+- **解決策**: 先行実装を検出したら「テスト整合モード」に切り替える。既存テストは TC-MOD で整合し、新規検証は TC-NEW / TC-ADD で追加する（赤→青を強要しない）。
+- **再発防止**: Phase 1 の P50チェックで `grep -rn "single_select\|kind:" <target-file>` を実行し、実装状況を先に確認する。コードと仕様書のステータスが乖離していることを前提に調査を始める。
+- **関連**: `task-specification-creator` SKILL.md の `[Feedback SDK-04-U1-F1]` ピットフォールも参照。
 
 ---
 
@@ -1312,3 +1292,9 @@
 - **状況**: `SkillService.ts` と `init_skill.js` が同型の正規表現 `/^[a-z0-9]+(-[a-z0-9]+)*$/` を個別に保持。
 - **判断**: 今回の Bug Fix はスコープ最小化のため定数一元化を行わなかった。
 - **follow-up**: `UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001` として未タスク登録済み。
+||||||| Stash base
+## UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06）
+### L-APPROVAL-SURFACE-001: onApprovalRequest cleanup の useEffect 登録パターン
+- **苦戦箇所**: cleanup 関数を返すリスナー登録は useEffect の return 値として必ず設定しないと、アンマウント後に approval event が届き続ける
+- **解決**: `useEffect(() => { const cleanup = api.onApprovalRequest(...); return cleanup; }, [api])` パターンで登録
+- **適用**: Renderer 側の onEvent listener を持つコンポーネント全般

@@ -19,7 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-04-07 | 1.20.0     | TASK-UI-03-REMAINING 教訓1件を追加（L-IPC-SKILLCREATOR-CANONICAL-001: canonical API と compat shim を分離して管理する）                       |
+| 2026-04-07 | 1.20.0     | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓1件を追加（L-RT01-CALLBACK-GUARD-001: エラーコールバックを `if (!snapshot)` 等の条件でガードすると snapshot ありケースでエラーが隠れる / `callback(snapshot ?? null, error)` パターンが正解） |
 | 2026-04-06 | 1.19.0     | Phase-12 IPC 4層型同期（Session Resume / Session Resume UI遷移）教訓3件を追加（L-IPC-4LAYER-001: 4層型定義 shared 集約原則 / L-IPC-4LAYER-002: errorReason 3分岐の全層同期パターン / L-SESSION-RESUME-UI-001: snapshot nullability 設計パターン） |
 | 2026-04-06 | 1.18.0     | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓1件を追加（L-IPC-VARIADIC-001: multi-arg IPC event は preload で variadic 化する） |
 | 2026-04-01 | 1.17.0     | TASK-FIX-AUTH-IPC-001 教訓2件を追加（L-AUTH-IPC-001: IPC channel timeout と fire-and-forget パターン / L-AUTH-IPC-002: AUTH_STATE_CHANGED 責務境界の分離）       |
@@ -730,16 +730,15 @@
 
 ---
 
-## TASK-UI-03-REMAINING IPC renderer 移行完了（2026-04-07）
+## TASK-UT-RT-01 executeAsync エラーコールバックガード（2026-04-07）
 
-### L-IPC-SKILLCREATOR-CANONICAL-001: canonical API と compat shim を分離して管理する
+### L-RT01-CALLBACK-GUARD-001: エラーコールバックを `if (!snapshot)` 等の条件でガードしない
 
-| 項目          | 内容                                                                                                                                                                                                                                          |
-| ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 課題          | renderer が `window.electronAPI.skillCreator` と `window.skillCreatorAPI` の 2 経路を混在利用していた。どちらが動作しているか不明で、バグ発生時の調査が困難になる                                                                             |
-| 解決策        | renderer は `window.skillCreatorAPI` のみ参照する。preload 側の `window.electronAPI.skillCreator` は後方互換シム（compat shim）として残し、将来の一括削除トリガーとして明示的に管理する                                                       |
-| 標準ルール    | 新しい IPC API は必ず専用の named API（例: `window.skillCreatorAPI`）として公開し、`contextBridge.exposeInMainWorld` で `electronAPI` に混在させない。旧 API への参照移行が完了したら、削除スケジュールを `unassigned-task-detection.md` に記録する |
-| 残存理由      | `window.electronAPI.skillCreator` 互換シムは既存コードとの後方互換性維持のため preload に残存。renderer から直接参照しない方針に固定されたため、破壊的変更は避けた。`repo-wide grep` で参照がゼロになったタイミングが削除トリガー              |
-| 5分解決カード | renderer から `window.electronAPI.skillCreator.X()` を使用しているコードを発見したら `window.skillCreatorAPI.X()` に書き換える。型は `apps/desktop/src/preload/skill-creator-api.ts` の interface を参照する                                   |
-| 関連タスク    | TASK-UI-03-REMAINING / `ImprovementProposalPanel.tsx:applyRuntimeImprovement` / `GovernanceSummaryPanel.tsx:getGovernanceState`                                                                                                               |
-| 発見日        | 2026-04-07                                                                                                                                                                                                                                    |
+| 項目       | 内容                                                                                                                                                                              |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | `executeAsync()` のエラーパスで `if (!snapshot)` 条件を使って `onWorkflowStateSnapshot` 呼び出しをガードしていた。snapshot が存在する場合はエラーメッセージがコールバックに届かなかった |
+| 解決策     | `onWorkflowStateSnapshot(snapshot ?? null, error)` パターンに統一。snapshot の有無に関わらずエラー情報を必ずコールバックに渡す                                                    |
+| 標準ルール | エラーコールバックは「状態が取得できた場合でも渡す、取得できない場合は null にする」という `callback(snapshot ?? null, error)` パターンが正しい。条件分岐でエラー通知をガードしない |
+| コード例   | `onWorkflowStateSnapshot(snapshot ?? null, error instanceof Error ? error.message : String(error))` |
+| 適用範囲   | fire-and-forget ラッパー内で structured error と catch パスの両方が存在する場合の標準パターン                                                                                    |
+| 発見日     | 2026-04-07（TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001）                                                                                                            |

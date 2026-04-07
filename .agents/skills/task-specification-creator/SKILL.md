@@ -105,8 +105,8 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 
 | Phase | 名称             | 目的                                                                                                                                         |
 | ----- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**                                 |
-| 2     | 設計             | topology、SubAgent lane、validation path を設計する                                                                                          |
+| 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**。**[FB-UI-02-2]** 全件 `pnpm test` が SIGKILL 終了するリスクがある場合は、targeted run ファイルリストを Phase 1 で事前列挙する（たとえば、メモリ制約が厳しい環境では vitest の対象ファイル指定が必須となる） |
+| 2     | 設計             | topology、SubAgent lane、validation path を設計する。**[FB-SDK-07-1]** 「既存コンポーネント再利用可否」を必ず確認する。新規 UI 実装ゼロで品質・アクセシビリティ・HIG準拠を既存レベルで担保できる場合は再利用を優先する |
 | 3     | 設計レビュー     | Phase 4 へ進めるかを判定する                                                                                                                 |
 | 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する**。**[Feedback P0-09-U1]** private method のテストは `(facade as unknown as FacadePrivate)` キャストまたは public callback 経由を使う方針を Phase 4 仕様書に明記する |
 | 5     | 実装             | `.claude` 正本を更新し、mirror を同期する。**[Feedback RT-03]** 実装計画に「新規作成」「修正」ファイルパス一覧を必須記載する（見落とし防止）。**[Feedback P0-09-U1]** `improve()` フローで SDK callback が不適用な場合（`llmAdapter.sendChat()` 経由など）は「canUseTool 適用可能範囲と制約」を仕様書に明記する |
@@ -247,6 +247,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 
 | Version     | Date           | Changes                                                                                                                                                                                                                                                                                                                                                                                               |
 | ----------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **6.18.27** | **2026-04-07** | **UT-SKILL-WIZARD-W0-seq-01 Phase 12 close-out sync**: `packages/shared/src/types/skillCreator.ts` に shared contracts 7 型を追加し、`SkillCategory` の root 衝突を避けて `@repo/shared/types/skillCreator` に閉じた。`skillCreator-wizard.test.ts` を新規作成し、`phase-12-docs.md` の出力先を current root に修正。`task-workflow-completed.md` / `interfaces-agent-sdk-skill-reference.md` / `LOGS.md` 2ファイル / `SKILL.md` 2ファイル / topic-map を同波更新。|
 | **6.18.19** | **2026-04-06** | **TASK-P0-09-U1 skill-feedback 反映**: Phase 4 仕様書への private method テスト方針明記ルール（キャストと public callback 経由の2択）、Phase 5 仕様書への `improve()` canUseTool 適用範囲・制約明記ルール、小規模タスク outputs tier 分け検討ガイドを追加。「よくある漏れ」テーブルに Feedback P0-09-U1-1/2 を追記。|
 | **6.18.18** | **2026-04-06** | **TASK-P0-09-U1 path-scoped-governance-runtime-enforcement Phase 12 close-out**: security fix で path-scoped deny を runtime 実効化。`extractTargetPath()` helper / `createExecuteGovernanceCanUseTool(skillRoot)` / `createImproveGovernanceCanUseTool(skillRoot)` 追加。TC-PATH-01〜06 TDD 完了（101件 PASS）。LOGS.md 2ファイル + SKILL.md 2ファイル同時更新。|
 | **6.18.17** | **2026-04-06** | **TASK-P0-08 Phase 12 close-out sync を記録**: `implementation-guide.md` の Part 2 を API/IPC シグネチャ・型定義・使用例まで補強し、Phase 11 screenshot evidence を current fact に固定。`verify-unassigned-links.js` PASS、session resume / cleanup surface の system spec 反映、`task-workflow-completed.md` / `api-ipc-system-core.md` / `interfaces-agent-sdk-skill-reference.md` の same-wave 更新を記録 |
@@ -304,6 +305,7 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | `task-workflow.md` の未タスクリンクが参照切れ                                                          | Step 1-E後に `verify-unassigned-links.js` を実行して `ALL_LINKS_EXIST` を確認する                                                                |
 | **[Feedback 2]** Phase 12 着手時に `outputs/artifacts.json` と phase spec の artifact 名が照合されない | Phase 12 の **最初の作業**として `outputs/artifacts.json` と各 `phase-*.md` に記載されたartifact名を1対1で突合し、不一致があれば着手前に修正する |
 | **[Feedback 3]** Phase 11 の UI task / docs-only task 判定がずれる                                     | Phase 1 で記録したタスク分類（UI task / docs-only task）を Phase 11 着手時に必ず参照する。分類が変わっていた場合は再判定を明示する               |
+| **[Feedback W0-01]** shared 型追加で root `@repo/shared` に再エクスポートすると `SkillCategory` が衝突する | 新しい共有型は subpath export（例: `@repo/shared/types/skillCreator`）に閉じ、既存 root barrel は触らない。`phase-12-docs.md` と system spec の両方で公開経路を明記する |
 | **[Feedback P0-09-U1-1]** Phase 4 仕様書に private method テスト方針が未記載                                                 | `(facade as unknown as FacadePrivate)` キャストと public callback 経由テストの2択を Phase 4 仕様書に必ず明記する                                  |
 | **[Feedback P0-09-U1-2]** `improve()` フローの canUseTool 配線先（SDK callback vs `applyImprovement()`）が仕様書から読み取れない | Phase 5 仕様書のタスク2に「canUseTool 適用可能範囲と制約」セクションを設け、`llmAdapter.sendChat()` 経由時は SDK callback 非適用と明記する        |
 | **[Feedback BEFORE-QUIT-001]** Phase 11 が非 visual task なのに実地操作を要求してしまう                      | Phase 11 では「実地操作不可」を明記し、自動テスト結果 + 既知制限リストを代替記録として残す |
@@ -314,6 +316,8 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **[Feedback 6]** ViewType を追加した際に navigation 契約・store 型・既存テストの3点更新が漏れる          | `store/types.ts`（ViewType union）/ `skillLifecycleJourney.ts`（正規化関数・定数）/ renderView テスト を same-wave で更新し、`ui-ux-navigation.md` の ViewType テーブルも同時同期する。Phase 1 設計メモに「追加 ViewType: XYZ」を明示しておくと漏れが防げる |
 | **[FB-UI-02-1]** Phase 9 QA で「ファイル削除」を PASS 基準にすると stub 化タスクが FAIL 扱いになる        | Phase 9 の削除確認は「git delete されている OR `export {}` stub 化かつ live import ゼロのいずれか」を PASS とする。たとえば、廃止ファイルを stub 化した場合は `grep -rn "import.*廃止ファイル名" src/` でゼロ件を証跡に残す |
 | **[Feedback TASK-UI-04]** 実装完了後に `artifacts.json` status が `spec_created` / `in_progress` のまま放置される | 実装 Phase（Phase 5 or 最終実装 Phase）完了時に `complete-phase.js` を必ず実行し、status を `completed` に更新する。実装完了と仕様書ステータス更新は同一 wave で行う（後回しは乖離蓄積の主因）。有効値: `spec_created` / `in_progress` / `completed` / `phase12_completed` |
+| **[FB-SDK-07-2]** Phase 1 で新規 IPC surface を定義する際に Preload API 経由が明記されない                  | Phase 1（要件定義）では新規 IPC surface を定義する場合、「Preload API 経由必須」を明記する。直接 `ipcRenderer.on` は禁止パターンとして記録する |
+| **[FB-SDK-07-4]** Phase 1 で既存 API の命名パターンを確認せずに新規 API を命名し、Phase 3 で MINOR 指摘を受ける | Phase 1（要件定義）では既存の `safeOn` / `safeInvoke` 等の命名パターンを確認し、新規 API の命名規則一貫性を担保する。命名ドリフトは Phase 3 レビューゲートの MINOR 指摘の主要因となる |
 
 ### Phase 12 苦戦防止Tips
 

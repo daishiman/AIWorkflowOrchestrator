@@ -922,6 +922,111 @@ export interface ScheduleConfig {
   timezone?: string;
 }
 
+// ============================================
+// Skill Wizard Shared Contracts (UT-SKILL-WIZARD-W0-seq-01)
+// ============================================
+
+/**
+ * スキルウィザード専用カテゴリ。
+ * 既存 `skill.ts` の `SkillCategory` とは別概念で、Step 0 の入力候補に対応する。
+ */
+export type SkillCategory =
+  | "automation"
+  | "external-integration"
+  | "data-analysis"
+  | "code-support"
+  | "other";
+
+/**
+ * Step 0 のフォームデータ。
+ * `skillName` は任意入力で、省略も空文字も許容する。
+ */
+export interface SkillInfoFormData {
+  /** スキル名（任意） */
+  skillName?: string;
+  /** スキルの目的・概要（必須） */
+  purpose: string;
+  /** スキルカテゴリ（未選択時は null） */
+  category: SkillCategory | null;
+}
+
+/**
+ * Step 1 の Q3 定期実行に使うスケジュール設定。
+ * 既存 `ScheduleConfig` とは別概念のため、名称を分ける。
+ */
+export interface SkillWizardScheduleConfig {
+  /** cron 文字列 */
+  cronExpression: string;
+  /** タイムゾーン */
+  timezone: string;
+}
+
+/**
+ * 1問分の回答データ。
+ * Q3 では scheduleConfig を追加で保持する。
+ */
+export interface QuestionAnswer {
+  /** 4択の選択値。未選択時は null。 */
+  selectedOption: string | null;
+  /** 自由入力テキスト。 */
+  freeText: string;
+  /** Q3 の定期実行設定。 */
+  scheduleConfig?: SkillWizardScheduleConfig;
+}
+
+/**
+ * 6問分の回答データ。
+ * Step 1 の状態保持と Step 2 以降の引き渡しに使用する。
+ */
+export interface ConversationAnswers {
+  /** Q1: 利用者 */
+  q1: QuestionAnswer;
+  /** Q2: 入力データ */
+  q2: QuestionAnswer;
+  /** Q3: 実行タイミング */
+  q3: QuestionAnswer;
+  /** Q4: 出力先 */
+  q4: QuestionAnswer;
+  /** Q5: 外部ツール連携 */
+  q5: QuestionAnswer;
+  /** Q6: 出力フォーマット */
+  q6: QuestionAnswer;
+}
+
+/**
+ * スマートデフォルト推論結果。
+ * 6問の初期値を意味ベースのキーで持つ。
+ */
+export interface SmartDefaultResult {
+  /** Q1 相当のデフォルト値。 */
+  who: string | null;
+  /** Q2 相当のデフォルト値。 */
+  input: string | null;
+  /** Q3 相当のデフォルト値。 */
+  timing: string | null;
+  /** Q4 相当のデフォルト値。 */
+  output: string | null;
+  /** Q5 相当のデフォルト値。 */
+  tool: string | null;
+  /** Q6 相当のデフォルト値。 */
+  format: string | null;
+  /** 推論理由の記録。診断用途のため optional。 */
+  inferenceLog?: string[];
+}
+
+/**
+ * 骨格品質フィードバック。
+ * 生成後の満足度と生成方法を記録する。
+ */
+export interface SkeletonQualityFeedback {
+  /** ユーザーが骨格に満足したか */
+  satisfied: boolean;
+  /** 骨格の生成方法。 */
+  generationMethod: "complete" | "skip";
+  /** フィードバック記録時刻（Unix ミリ秒） */
+  timestamp: number;
+}
+
 /** デバッグオプション */
 export interface DebugOptions {
   verbose?: boolean;

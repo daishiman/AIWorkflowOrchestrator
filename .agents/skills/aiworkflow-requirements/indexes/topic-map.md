@@ -182,8 +182,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 概要 | L6 |
 | フロントエンド実装パターン | L12 |
 | バックエンド実装パターン | L368 |
-| 共有パッケージ実装パターン | L453 |
-| ApprovalGate Enforcement パターン（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L534 |
+| 続き | L457 |
 
 ### references/architecture-implementation-patterns-details.md
 
@@ -205,12 +204,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| IPC データフロー型ギャップパターン（UT-IPC-DATA-FLOW-TYPE-GAPS-001 2026-02-24実装） | L6 |
-| IPCチャネル命名監査の運用パターン（UT-IPC-CHANNEL-NAMING-AUDIT-001 2026-02-25実施） | L257 |
-| 未タスク監査スコープ分離パターン（UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001） | L298 |
-| 共有型インポート標準パターン（TASK-10A-D） | L348 |
-| IPC レスポンス Wrapper パターン（UT-06-003 2026-03-17実装） | L389 |
-| Dynamic Import 型伝播パターン（UT-SC-05-APPLY-IMPROVEMENT-UI 2026-03-24実装） | L470 |
-| S-IPC-AUTO: IPC契約ドリフト自動検出パターン（UT-TASK06-007） | L514 |
+| 続き | L261 |
 
 ### references/architecture-implementation-patterns-reference-ipc-drift-detection.md
 
@@ -231,10 +225,26 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| AgentView Enhancement 実装パターン（TASK-UI-03 2026-03-07実装） | L6 |
 
+### references/architecture-implementation-patterns-reference-ipc-naming.md
+
+| セクション | 行 |
+|------------|----|\n| IPCチャネル命名監査の運用パターン（UT-IPC-CHANNEL-NAMING-AUDIT-001 2026-02-25実施） | L4 |
+| 未タスク監査スコープ分離パターン（UT-IMP-UNASSIGNED-AUDIT-SCOPE-CONTROL-001） | L45 |
+| 共有型インポート標準パターン（TASK-10A-D） | L95 |
+| IPC レスポンス Wrapper パターン（UT-06-003 2026-03-17実装） | L136 |
+| Dynamic Import 型伝播パターン（UT-SC-05-APPLY-IMPROVEMENT-UI 2026-03-24実装） | L217 |
+| S-IPC-AUTO: IPC契約ドリフト自動検出パターン（UT-TASK06-007） | L261 |
+
 ### references/architecture-implementation-patterns-reference.md
 
 | セクション | 行 |
 |------------|----|\n| テスト実装パターン | L6 |
+
+### references/architecture-implementation-patterns-shared.md
+
+| セクション | 行 |
+|------------|----|\n| 共有パッケージ実装パターン | L4 |
+| ApprovalGate Enforcement パターン（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L85 |
 
 ### references/architecture-implementation-patterns.md
 
@@ -407,6 +417,15 @@ node scripts/list-specs.js --topics
 |------------|----|\n| Skill Dashboard 型定義（AGENT-002） | L6 |
 | SkillImportStore（TASK-2B） | L413 |
 
+### references/interfaces-agent-sdk-skill-editor.md
+
+| セクション | 行 |
+|------------|----|\n| SkillEditor UI 型定義（TASK-9A / completed） | L4 |
+| スキルチェーン 型定義（TASK-9D） | L54 |
+| スキルスケジュール 型定義（TASK-9G） | L89 |
+| スキルフォーク 型定義（TASK-9E） | L114 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L162 |
+
 ### references/interfaces-agent-sdk-skill-history-contract-fix-changelog.md
 
 | セクション | 行 |
@@ -434,11 +453,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
-| SkillEditor UI 型定義（TASK-9A / completed） | L420 |
-| スキルチェーン 型定義（TASK-9D） | L470 |
-| スキルスケジュール 型定義（TASK-9G） | L505 |
-| スキルフォーク 型定義（TASK-9E） | L530 |
-| RuntimeSkillCreatorFacade（UT-SC-03-003） | L578 |
+| 続き | L439 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -931,13 +946,7 @@ node scripts/list-specs.js --topics
 | Workspace File Watch IPC API（TASK-UI-04A） | L201 |
 | Conversation IPC API（会話履歴永続化） | L245 |
 | Electron IPC API設計 | L281 |
-| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L423 |
-| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L708 |
-| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L739 |
-| AIプロバイダーAPI連携 | L777 |
-| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L810 |
-| Skill Creator External API Support（TASK-SDK-SC-03） | L857 |
-| IPC Handler Lifecycle Management（TASK-FIX-IPC-SKILL-NAME-001 追記: 2026-04-06） | L938 |
+| 分割ファイル一覧 | L426 |
 
 ### references/api-ipc-system-details.md
 
@@ -950,6 +959,21 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 関連ドキュメント | L6 |
 | 完了タスク | L15 |
 | 変更履歴 | L219 |
+
+### references/api-ipc-system-skill-creator-part2.md
+
+| セクション | 行 |
+|------------|----|\n| ChatPanel IPC チャネル契約（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L4 |
+| Advanced Console Safety Governance（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L35 |
+| AIプロバイダーAPI連携 | L73 |
+| Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L106 |
+| Skill Creator External API Support（TASK-SDK-SC-03） | L153 |
+| IPC Handler Lifecycle Management（TASK-FIX-IPC-SKILL-NAME-001 追記: 2026-04-06） | L234 |
+
+### references/api-ipc-system-skill-creator.md
+
+| セクション | 行 |
+|------------|----|\n| Skill Creator Runtime Public IPC（UT-IMP-RUNTIME-SKILL-CREATOR-IPC-WIRING-001） | L4 |
 
 ### references/api-ipc-system.md
 
@@ -1192,21 +1216,18 @@ node scripts/list-specs.js --topics
 ### references/ui-ux-feature-components-advanced.md
 
 | セクション | 行 |
-|------------|----|\n| コピー履歴機能（TASK-3-2-D） | L6 |
-| アクセシビリティ（全コンポーネント共通 WCAG 2.1 AA） | L115 |
-| SkillStreamingView コンポーネント（TASK-7D） | L126 |
-| SkillEditor UI（TASK-9A / 完了） | L189 |
+|------------|----|\n| Custom Execution Environment UI コンポーネント（AGENT-006） | L4 |
+| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L71 |
+| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L219 |
 
 ### references/ui-ux-feature-components-core.md
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
-| Skill Runtime API Key Panel（TASK-RT-04） | L64 |
-| LLM Adapter Error Banner（TASK-RT-01） | L120 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L159 |
-| Custom Execution Environment UI コンポーネント（AGENT-006） | L266 |
-| workspace-chat-edit-ui コンポーネント（Issue #468, #494） | L333 |
-| ChatPanel Real AI Chat Wiring（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L481 |
+| Skill Runtime API Key Panel（TASK-RT-04） | L65 |
+| LLM Adapter Error Banner（TASK-RT-01） | L121 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L160 |
+| 続き | L271 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1215,11 +1236,7 @@ node scripts/list-specs.js --topics
 | Workspace Chat Panel（TASK-UI-04B-WORKSPACE-CHAT） | L76 |
 | Slide Workspace Runtime Alignment（TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001） | L187 |
 | Workspace Preview / Quick Search（TASK-UI-04C-WORKSPACE-PREVIEW） | L258 |
-| Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001） | L328 |
-| ChatPanel 実チャット配線設計（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L378 |
-| SkillStreamDisplay コンポーネント（TASK-3-2） | L442 |
-| i18n対応（TASK-3-2-B） | L493 |
-| 完了タスク | L542 |
+| 続き | L332 |
 
 ### references/ui-ux-feature-components-history.md
 
@@ -1243,10 +1260,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| SkillCenterView UI（TASK-UI-05 / 完了） | L6 |
 | Skill Advanced Views UI（TASK-UI-05B / completed） | L223 |
-| SkillAnalysisView UI（TASK-10A-B / completed） | L298 |
-| SkillCreateWizard UI（TASK-10A-C / completed） | L399 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L461 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L490 |
+| 続き | L302 |
+
+### references/ui-ux-feature-components-skill-analysis.md
+
+| セクション | 行 |
+|------------|----|\n| SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
+| SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L167 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L196 |
+
+### references/ui-ux-feature-components-theme-chat.md
+
+| セクション | 行 |
+|------------|----|\n| Light Theme Contrast Regression Guard（TASK-IMP-LIGHT-THEME-CONTRAST-REGRESSION-GUARD-001） | L4 |
+| ChatPanel 実チャット配線設計（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001） | L54 |
+| SkillStreamDisplay コンポーネント（TASK-3-2） | L118 |
+| i18n対応（TASK-3-2-B） | L169 |
+| 完了タスク | L218 |
 
 ### references/ui-ux-feature-components.md
 
@@ -1329,20 +1360,25 @@ node scripts/list-specs.js --topics
 | 関連タスクドキュメント | L201 |
 | 関連ドキュメント | L216 |
 
+### references/ui-ux-navigation-chat-patterns.md
+
+| セクション | 行 |
+|------------|----|\n| ChatViewナビゲーション | L4 |
+| ナビゲーションボタン仕様 | L34 |
+| ボタンスタイルガイドライン（アイコンのみボタン） | L50 |
+| テスト検証済み項目 | L64 |
+| アクセシビリティ対応事例 | L79 |
+| ナビゲーションパターンのベストプラクティス | L111 |
+| 関連ドキュメント | L123 |
+| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L132 |
+
 ### references/ui-ux-navigation.md
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L8 |
 | 変更履歴 | L13 |
 | Global Navigation | L47 |
-| ChatViewナビゲーション | L372 |
-| ナビゲーションボタン仕様 | L402 |
-| ボタンスタイルガイドライン（アイコンのみボタン） | L418 |
-| テスト検証済み項目 | L432 |
-| アクセシビリティ対応事例 | L447 |
-| ナビゲーションパターンのベストプラクティス | L479 |
-| 関連ドキュメント | L491 |
-| Onboarding overlay / rerun 契約（TASK-UI-09-ONBOARDING-WIZARD） | L500 |
+| 続き | L376 |
 
 ### references/ui-ux-panels.md
 
@@ -1507,12 +1543,7 @@ node scripts/list-specs.js --topics
 |------------|----|\n| セキュリティ設定 | L6 |
 | Content Security Policy (CSP) | L20 |
 | IPC通信のセキュリティ | L37 |
-| 実装例: historyAPI | L342 |
-| 実装例: notificationAPI（TASK-UI-08） | L394 |
-| 実装例: slideSettingsAPI | L427 |
-| IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L476 |
-| ApprovalGate セキュリティ契約（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L491 |
-| Skill Creator External API Credential 秘匿化（TASK-SDK-SC-03） | L546 |
+| 続き | L346 |
 
 ### references/security-electron-ipc-details.md
 
@@ -1522,6 +1553,16 @@ node scripts/list-specs.js --topics
 | 実装例: skillShareAPI（TASK-9F） | L262 |
 | 実装例: skillChainAPI（TASK-9D） | L341 |
 | 実装例: skillScheduleAPI（TASK-9G） | L381 |
+
+### references/security-electron-ipc-examples.md
+
+| セクション | 行 |
+|------------|----|\n| 実装例: historyAPI | L4 |
+| 実装例: notificationAPI（TASK-UI-08） | L56 |
+| 実装例: slideSettingsAPI | L89 |
+| IPC Layer Integrity Fix（TASK-IMP-IPC-LAYER-INTEGRITY-FIX-001、2026-03-19完了） | L138 |
+| ApprovalGate セキュリティ契約（TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001） | L153 |
+| Skill Creator External API Credential 秘匿化（TASK-SDK-SC-03） | L208 |
 
 ### references/security-electron-ipc-history.md
 
@@ -1579,6 +1620,17 @@ node scripts/list-specs.js --topics
 | データ保護 | L227 |
 | 変更履歴 | L408 |
 
+### references/security-skill-execution-permission.md
+
+| セクション | 行 |
+|------------|----|\n| Permission Store（権限永続化） | L4 |
+| Permission Store V2（UT-06-002） | L88 |
+| Permission フォールバック セキュリティ（UT-06-005） | L161 |
+| 公開判定セキュリティ（TASK-SKILL-LIFECYCLE-08 / spec_created） | L196 |
+| 関連ドキュメント | L239 |
+| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L249 |
+| 変更履歴 | L262 |
+
 ### references/security-skill-execution.md
 
 | セクション | 行 |
@@ -1590,13 +1642,7 @@ node scripts/list-specs.js --topics
 | 使用例 | L214 |
 | Skill Lifecycle 実行境界（TASK-SKILL-LIFECYCLE-03） | L245 |
 | テストカバレッジ | L264 |
-| Permission Store（権限永続化） | L280 |
-| Permission Store V2（UT-06-002） | L364 |
-| Permission フォールバック セキュリティ（UT-06-005） | L437 |
-| 公開判定セキュリティ（TASK-SKILL-LIFECYCLE-08 / spec_created） | L472 |
-| 関連ドキュメント | L515 |
-| ToolRiskLevel 参照（TASK-SKILL-LIFECYCLE-06） | L525 |
-| 変更履歴 | L538 |
+| 続き | L284 |
 
 ### references/security-skill-ipc-core.md
 
@@ -2218,13 +2264,7 @@ node scripts/list-specs.js --topics
 | Notification/HistorySearch 実装同期（TASK-UI-01-C-NOTIFICATION-HISTORY-DOMAIN） | L195 |
 | HistorySearch timeline 再設計（TASK-UI-06-HISTORY-SEARCH-VIEW） | L240 |
 | ViewType/ナビ導線 実装同期（TASK-UI-01-D-VIEWTYPE-ROUTING-NAV） | L287 |
-| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L352 |
-| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L391 |
-| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L492 |
-| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L517 |
-| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L544 |
-| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION） | L619 |
-| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L725 |
+| 続き | L356 |
 
 ### references/arch-state-management-details.md
 
@@ -2270,6 +2310,17 @@ node scripts/list-specs.js --topics
 |------------|----|\n| P31対策: Store Hooks無限ループ防止パターン | L6 |
 | chatEditSlice（Workspace Chat Edit状態管理） | L94 |
 | skillSlice（統合済み - TASK-FIX-6-1-STATE-CENTRALIZATION） | L184 |
+
+### references/arch-state-management-skill-creator.md
+
+| セクション | 行 |
+|------------|----|\n| LLMConfigProvider 状態管理変更（TASK-IMP-MAIN-CHAT-SETTINGS-AI-RUNTIME-001） | L4 |
+| ChatPanel Real AI Chat 配線 状態管理拡張（TASK-IMP-CHATPANEL-REAL-AI-CHAT-001 / spec_created） | L43 |
+| 公開・配布状態管理設計（TASK-SKILL-LIFECYCLE-08 / spec_created） | L144 |
+| SkillExecutionStatus 拡張状態の配置ルール（UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001） | L169 |
+| Slide Modifier / Manual Fallback 状態管理設計（TASK-IMP-SLIDE-MODIFIER-MANUAL-FALLBACK-ALIGNMENT-001 / spec_created） | L196 |
+| LLM Generation State 配置ルール（TASK-SC-06-UI-RUNTIME-CONNECTION） | L271 |
+| Workflow Snapshot State 配置ルール（TASK-SDK-04） | L380 |
 
 ### references/arch-state-management.md
 
@@ -2693,6 +2744,42 @@ node scripts/list-specs.js --topics
 | 5分で確認する順序 | L62 |
 | 次回の判断ルール | L69 |
 
+### references/lessons-learned-current-2026-03-early.md
+
+| セクション | 行 |
+|------------|----|\n
+### references/lessons-learned-current-2026-03-late.md
+
+| セクション | 行 |
+|------------|----|\n| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L4 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L38 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L121 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L137 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L161 |
+
+### references/lessons-learned-current-2026-03-mid.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L4 |
+
+### references/lessons-learned-current-2026-04.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L4 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L29 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L60 |
+| TASK-RT-06 教訓（2026-03-29） | L91 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L113 |
+| TASK-P0-04 教訓（2026-03-30） | L144 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L180 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L275 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L329 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L369 |
+| TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L409 |
+| TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L440 |
+| TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L452 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L473 |
+
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
 | セクション | 行 |
@@ -2706,24 +2793,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L86 |
-| クイックリファレンス: カテゴリ別検索ガイド | L104 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L285 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L617 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L651 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L734 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L750 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L774 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L824 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L849 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L880 |
-| TASK-RT-06 教訓（2026-03-29） | L911 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L933 |
-| TASK-P0-04 教訓（2026-03-30） | L964 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L1000 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1095 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1149 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1189 |
+| 分割ファイル一覧 | L88 |
+| クイックリファレンス: カテゴリ別検索ガイド | L106 |
+| 分割ファイル一覧 | L110 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2743,53 +2815,107 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| TASK-UI-02 / UT-TASK06-007: IPC Channel whitelist 同期ガード | L6 |
 
+### references/lessons-learned-ipc-preload-runtime-2026-03-early.md
+
+| セクション | 行 |
+|------------|----|\n| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L4 |
+| 2026-03-27 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | L6 |
+| 2026-03-27 TASK-SDK-04 user interaction bridge / phase UI | L16 |
+| 2026-03-28 TASK-SDK-04-U1 submitUserInput phase transition semantics | L34 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L70 |
+| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L76 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L96 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L124 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L160 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L188 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L225 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L291 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L312 |
+
+### references/lessons-learned-ipc-preload-runtime-2026-03-late.md
+
+| セクション | 行 |
+|------------|----|\n| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L4 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L46 |
+| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L93 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L113 |
+| TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L129 |
+| TASK-IMP-HEALTH-POLICY-UNIFICATION-001（2026-03-25） | L160 |
+| TASK-SC-07-SKILL-CREATE-WIZARD-LLM-CONNECTION（2026-03-25） | L174 |
+| UT-SC-02-005（2026-03-25） | L211 |
+
+### references/lessons-learned-ipc-preload-runtime-2026-04.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-FIX-EXECUTE-PLAN-FF-001（2026-04-01） | L5 |
+| TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001（2026-03-31） | L25 |
+| TASK-FIX-PRELOAD-VITE-ALIAS-SHARED-IPC-001（2026-03-31） | L39 |
+| TASK-FIX-AUTH-IPC-001（2026-04-01） | L54 |
+| Phase-12 IPC 4層型同期（2026-04-06） | L78 |
+| TASK-UT-RT-01 executeAsync エラー伝搬パス（2026-04-06） | L112 |
+| UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001 IPC ハンドラ重複登録サイレントフェイル（2026-04-07） | L116 |
+
 ### references/lessons-learned-ipc-preload-runtime.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L46 |
-| 2026-03-27 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | L48 |
-| 2026-03-27 TASK-SDK-04 user interaction bridge / phase UI | L58 |
-| 2026-03-28 TASK-SDK-04-U1 submitUserInput phase transition semantics | L76 |
-| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L112 |
-| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L118 |
-| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L138 |
-| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L166 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L202 |
-| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L230 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L267 |
-| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L333 |
-| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L354 |
-| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L384 |
-| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L426 |
-| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L473 |
-| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L493 |
-| TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L509 |
+| 分割ファイル一覧 | L47 |
+
+### references/lessons-learned-phase12-lifecycle-early-b.md
+
+| セクション | 行 |
+|------------|----|\n| 2026-03-23 TASK-IMP-CHATPANEL-REVIEW-HARNESS-ALIGNMENT-001 教訓 | L4 |
+| TASK-RT-06 Phase 12 close-out 教訓（2026-03-29） | L37 |
+| UT-RT-06-ESBUILD-ARCH-MISMATCH-001 (2026-03-29) | L57 |
+| UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 教訓（2026-03-29） | L73 |
+| TASK-UIUX-FEEDBACK-001 Phase 12 review 教訓（2026-03-31） | L113 |
+| 2026-04-01 TASK-SC-DIALOG-MANDATORY-001 skill-creator 対話強制 | L141 |
+| 2026-04-03 TASK-FIX-LIFECYCLE-PANEL-ERROR-001 handoff エラー保持パターン | L172 |
+| 2026-04-03 task-ut-p0-02-001-repeat-feedback-memory | L203 |
+| TASK-UT-RT-01 executeAsync エラーテストパターン（2026-04-06） | L225 |
+
+### references/lessons-learned-phase12-lifecycle-early.md
+
+| セクション | 行 |
+|------------|----|\n| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L4 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-06 | L32 |
+| 2026-03-16 TASK-SKILL-LIFECYCLE-07 | L75 |
+| 2026-03-15 TASK-SKILL-LIFECYCLE-05 | L126 |
+| 2026-03-14 TASK-SKILL-LIFECYCLE-04 | L195 |
+| 2026-03-18 TASK-SKILL-LIFECYCLE-02 | L233 |
+
+### references/lessons-learned-phase12-lifecycle-mid.md
+
+| セクション | 行 |
+|------------|----|\n| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L4 |
+| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L44 |
+| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L88 |
+| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L128 |
+| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L168 |
+| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L217 |
+
+### references/lessons-learned-phase12-lifecycle-recent.md
+
+| セクション | 行 |
+|------------|----|\n| 2026-04-02 TASK-FIX-LIFECYCLE-PANEL-ERROR-001 | L4 |
+| 2026-04-04 TASK-SKILL-CENTER-LIFECYCLE-NAV-001 | L38 |
+| 2026-03-29 TASK-RT-04 skill-authkey-api-key-management-ui | L62 |
+| 2026-03-31 TASK-ELECTRON-BUILD-FIX | L86 |
+| 2026-03-28 TASK-SDK-07 execution-governance-and-handoff-alignment | L140 |
+| 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 | L180 |
+| 2026-03-27 TASK-SDK-04 | L220 |
+| 2026-03-27 UT-EXEC-01 | L222 |
+| 2026-03-27 TASK-SDK-05 | L244 |
+| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L274 |
+| 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L286 |
 
 ### references/lessons-learned-phase12-workflow-lifecycle.md
 
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-04-02 TASK-FIX-LIFECYCLE-PANEL-ERROR-001 | L53 |
-| 2026-04-04 TASK-SKILL-CENTER-LIFECYCLE-NAV-001 | L87 |
-| 2026-03-29 TASK-RT-04 skill-authkey-api-key-management-ui | L111 |
-| 2026-03-31 TASK-ELECTRON-BUILD-FIX | L135 |
-| 2026-03-28 TASK-SDK-07 execution-governance-and-handoff-alignment | L189 |
-| 2026-03-27 UT-IMP-TASK-SDK-06-LAYER34-VERIFY-EXPANSION-001 | L229 |
-| 2026-03-27 TASK-SDK-04 | L269 |
-| 2026-03-27 UT-EXEC-01 | L271 |
-| 2026-03-27 TASK-SDK-05 | L293 |
-| 2026-03-26 TASK-SDK-01 manifest-contract-foundation | L323 |
-| 2026-03-26 UT-IMP-RUNTIME-WORKFLOW-VERIFY-ARTIFACT-APPEND-001 | L335 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 | L437 |
-| 2026-03-22 TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001 | L477 |
-| 2026-03-21 TASK-FIX-LLM-CONFIG-PERSISTENCE | L521 |
-| 2026-03-20 TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 | L561 |
-| 2026-03-21 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 | L601 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 仕様書作成（設計タスク Phase 1-13） | L650 |
-| 2026-03-17 TASK-SKILL-LIFECYCLE-08 再監査（Phase 11/12 実績同期） | L703 |
+| 分割ファイル一覧 | L55 |
 
 ### references/lessons-learned-rag-embedding-runtime.md
 
@@ -3950,10 +4076,16 @@ node scripts/list-specs.js --topics
 | 実行時のコマンド・エージェント・スキル | L108 |
 | 昇格パターン集 | L132 |
 
+### references/task-workflow-backlog-part2.md
+
+| セクション | 行 |
+|------------|----|\n| 残課題（未タスク）続き | L4 |
+
 ### references/task-workflow-backlog.md
 
 | セクション | 行 |
 |------------|----|\n| 残課題（未タスク） | L6 |
+| 続き | L325 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -3975,10 +4107,14 @@ node scripts/list-specs.js --topics
 | TASK-FIX-SAFEINVOKE-TIMEOUT-001 再監査同期（2026-03-10） | L127 |
 | TASK-IMP-AIWORKFLOW-REQUIREMENTS-LINE-BUDGET-REFORM-001 | L164 |
 
+### references/task-workflow-completed-chat-lifecycle-tests-part2.md
+
+| セクション | 行 |
+|------------|----|\n
 ### references/task-workflow-completed-chat-lifecycle-tests.md
 
 | セクション | 行 |
-|------------|----|\n| 完了タスク | L8 |
+|------------|----|\n| 完了タスク | L9 |
 
 ### references/task-workflow-completed-debug-scheduler-doc-generation-theme.md
 
@@ -3988,7 +4124,7 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-completed-ipc-contract-preload-alignment.md
 
 | セクション | 行 |
-|------------|----|\n| 完了タスク | L6 |
+|------------|----|\n| 完了タスク | L7 |
 
 ### references/task-workflow-completed-ipc-graceful-degradation-lifecycle.md
 
@@ -3996,6 +4132,10 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 完了タスク | L6 |
 | TASK-FIX-CONVERSATION-DB-ROBUSTNESS-001 | L395 |
 
+### references/task-workflow-completed-ipc-preload-foundation.md
+
+| セクション | 行 |
+|------------|----|\n
 ### references/task-workflow-completed-notification-history-auth-key-state.md
 
 | セクション | 行 |
@@ -4006,6 +4146,46 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L6 |
 
+### references/task-workflow-completed-recent-2026-03a.md
+
+| セクション | 行 |
+|------------|----|\n| 完了タスク | L4 |
+
+### references/task-workflow-completed-recent-2026-03b.md
+
+| セクション | 行 |
+|------------|----|\n| 完了タスク | L4 |
+
+### references/task-workflow-completed-recent-2026-03c.md
+
+| セクション | 行 |
+|------------|----|\n| 完了タスク | L4 |
+
+### references/task-workflow-completed-recent-2026-03d.md
+
+| セクション | 行 |
+|------------|----|\n| 完了タスク | L4 |
+
+### references/task-workflow-completed-recent-2026-03e.md
+
+| セクション | 行 |
+|------------|----|\n| 完了タスク | L4 |
+
+### references/task-workflow-completed-recent-2026-04a.md
+
+| セクション | 行 |
+|------------|----|\n| 完了タスク | L4 |
+
+### references/task-workflow-completed-recent-2026-04b.md
+
+| セクション | 行 |
+|------------|----|\n| 完了タスク | L4 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L137 |
+
+### references/task-workflow-completed-recent-2026-04c.md
+
+| セクション | 行 |
+|------------|----|\n
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
 | セクション | 行 |
@@ -4062,6 +4242,18 @@ node scripts/list-specs.js --topics
 | TASK-SKILL-LIFECYCLE-06: 信頼・権限ガバナンス（設計タスク）完了記録（2026-03-16） | L82 |
 | UT-06-002: AllowedToolEntryV2 PermissionStore V2 拡張完了記録（2026-03-23） | L129 |
 
+### references/task-workflow-completed-skill-lifecycle-ui-verify.md
+
+| セクション | 行 |
+|------------|----|\n| TASK-RT-03-VERIFY-IMPROVE-PANEL-001: Verify / Improve 結果パネル実装 完了記録（2026-04-04） | L7 |
+| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L48 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L133 |
+| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L155 |
+| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L218 |
+| Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L255 |
+| TASK-RT-05: multi_select ユーザー入力種別追加 完了記録（2026-03-30） | L298 |
+| UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20） | L349 |
+
 ### references/task-workflow-completed-skill-lifecycle-ui.md
 
 | セクション | 行 |
@@ -4071,14 +4263,6 @@ node scripts/list-specs.js --topics
 | TASK-IMP-AGENTVIEW-IMPROVE-ROUTE-001: AgentView 改善導線 round-trip 完了記録（2026-03-20） | L137 |
 | TASK-10A-C: SkillCreateWizard 実装完了記録（2026-03-02） | L193 |
 | TASK-10A-D: スキルライフサイクルUI統合 実装完了記録（2026-03-03） | L260 |
-| TASK-RT-03-VERIFY-IMPROVE-PANEL-001: Verify / Improve 結果パネル実装 完了記録（2026-04-04） | L341 |
-| TASK-SKILL-LIFECYCLE-04: 採点・評価・受け入れゲート統合 再監査記録（2026-03-14） | L382 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキルを使う主導線（設計タスク）完了記録（2026-03-15） | L467 |
-| TASK-SKILL-LIFECYCLE-05: 作成済みスキル利用導線 再監査記録（2026-03-15） | L489 |
-| TASK-SKILL-LIFECYCLE-08: スキル共有・公開・互換性統合（設計タスク）仕様書作成完了記録（2026-03-16） | L552 |
-| Task09-12: スキルライフサイクル統合 UI GAP 解消 + 状態遷移完成 仕様書作成記録（2026-03-18） | L589 |
-| TASK-RT-05: multi_select ユーザー入力種別追加 完了記録（2026-03-30） | L632 |
-| UT-LIFECYCLE-EXECUTION-STATUS-TYPE-SPEC-SYNC-001: SkillExecutionStatus型3値追加の仕様書同期 完了記録（2026-03-20） | L683 |
 
 ### references/task-workflow-completed-skill-lifecycle.md
 
@@ -4111,8 +4295,10 @@ node scripts/list-specs.js --topics
 ### references/task-workflow-completed.md
 
 | セクション | 行 |
-|------------|----|\n| 完了タスク | L7 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L140 |
+|------------|----|\n| 最近の完了タスク（2026-04） | L7 |
+| 完了タスク（2026-03後半） | L42 |
+| 完了タスク（機能別アーカイブ） | L50 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L159 |
 
 ### references/task-workflow-history.md
 
@@ -4124,8 +4310,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| フェーズ構造 | L17 |
-| 出力テンプレート | L188 |
+| フェーズ構造 | L18 |
+| 出力テンプレート | L189 |
+| Phase 12/13 Close-out Workflow（2026-04-07追加） | L218 |
 
 ### references/task-workflow-rules.md
 

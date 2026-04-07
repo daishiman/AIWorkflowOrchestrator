@@ -19,6 +19,7 @@
 
 | 日付 | バージョン | 変更内容 |
 |------|-----------|----------|
+| 2026-04-07 | 1.4.0 | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓1件を追加（L-RT01-TDD-002: TDD 2段階テスト設計 / バグ直撃 Red テストと coverage 補完テストの分離） |
 | 2026-04-01 | 1.3.0 | TASK-TRACE-SKILL-AUTH-001 教訓3件を追加（L-AUTH-TRACE-001: never-resolving mock IPC副作用検出 / L-AUTH-TRACE-002: data-testid 安定クエリ / L-AUTH-TRACE-003: useEffect 再レンダリング連鎖検出） |
 | 2026-03-29 | 1.2.0 | UT-RT-06-CONS 教訓2件を追加（L-RT-06-CONS-001: グローバル閾値回避の個別カバレッジ計測 / L-RT-06-CONS-002: 最小共通helper抽出パターン） |
 | 2026-03-25 | 1.1.0 | UT-LLM-MOD-01-005 の教訓3件を追加（provider registry SSoT / optional `specialMatcher` narrowing / readonly bridge の follow-up 化） |
@@ -304,3 +305,18 @@ expect(mockSideEffect).toHaveBeenCalledTimes(1); // 増えていないこと
 3. `queryByRole` が複数マッチで失敗する場合は `data-testid` を要素に追加して切り替える（L-AUTH-TRACE-002）
 4. rerender テスト（TC-07 パターン）でコンポーネント再描画時の副作用二重起動を防ぐ（L-AUTH-TRACE-003）
 5. TC-04 のようなテストで `[TEMP DEBUG]` 痕跡がないことを確認してから Phase クローズする
+
+---
+
+## 2026-04-07 TASK-UT-RT-01（TDD 2段階テスト設計）
+
+### L-RT01-TDD-002: バグ直撃 Red テストと coverage 補完テストを分離する
+
+| 項目 | 内容 |
+| --- | --- |
+| 課題 | Phase 4 で全パターンをまとめて書くと、どのテストが「バグを直接証明する Red テスト」で、どれが「branch coverage のための補完テスト」かが不明瞭になる |
+| 解決策 | Phase 4 で「バグを直接捕捉する最小テスト（T-01/T-02）」を先に書き、Phase 6 で「branch coverage の穴を埋めるテスト（T-05/T-06）」を補完する 2 段階設計 |
+| 標準ルール | Red テストは「バグが修正されて初めて Green になる」設計を明確にすること。回帰テスト（T-03/T-04）と明確に分離することでテストの意図が読みやすくなる |
+| 適用範囲 | TDD で small bug fix（変更4行程度）を実装する場合の Phase 4/6 分業パターン |
+| 関連タスク | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 |
+| 発見日 | 2026-04-07 |
