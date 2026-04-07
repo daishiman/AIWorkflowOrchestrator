@@ -2,7 +2,22 @@
 
 ## 役割
 
+## v10.09.37 — 2026-04-07
+
+### 変更内容
+- Feedback 1: Phase 2 設計ゲートに「既存コンポーネント再利用可否チェック」追加
+- Feedback 2: Phase 1 要件定義に「IPC surface Preload API 必須」追加
+- Feedback 3: Phase 11 に CAPTURE_BLOCKED 対応プロトコル追加
+- Feedback 4: Phase 1 に「既存 API 命名規則確認」チェック追加
+
+### 反映元
+- UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 の skill-feedback-report.md（Feedback 1〜4）
+
+---
+
 ## 2026-04-07 - TASK-UI-04 仕様書ステータス乖離修正 Phase 12 close-out sync（skill-feedback 反映）
+
+## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync
 
 ### 変更内容
 - `aiworkflow-requirements/references/task-workflow-completed.md` に TASK-UI-04 完了記録を追加

@@ -10,8 +10,8 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | Phase 2: 設計                       |
 | 次Phase    | Phase 4: テスト作成                 |
-| ステータス | completed                           |
-| 作成日     | 2026-04-06                          |
+| ステータス | pending                             |
+| 作成日     | 2026-04-07                          |
 
 ## 目的
 
@@ -36,7 +36,7 @@
 ls -la docs/30-workflows/completed-tasks/ 2>/dev/null || echo "ディレクトリ未作成"
 
 # 移動対象タスクへの参照箇所の洗い出し
-grep -rn "step-10-seq-task-p0-" docs/30-workflows/completed-tasks/ --include="*.md" | grep -v "outputs/"
+grep -rn "step-10-seq-task-p0-" docs/30-workflows/skill-creator-agent-sdk-lane/ --include="*.md" | grep -v "outputs/"
 ```
 
 ### Task 3: executor-guide.md 更新の整合性確認
@@ -60,12 +60,6 @@ grep -rn "step-10-seq-task-p0-" docs/30-workflows/completed-tasks/ --include="*.
 | 修正計画             | `outputs/phase-2/correction-plan.md`        | レビュー対象 |
 | 乖離インベントリ     | `outputs/phase-1/status-drift-inventory.md` | 根拠データ   |
 | ステータス抽出マップ | `outputs/phase-1/spec-extraction-map.md`    | 根拠データ   |
-
-## 統合テスト連携
-
-- `artifacts.json` / `outputs/artifacts.json` / `index.md` の status 整合を維持する。
-- Phase 11 の `manual-test-result.md` へ確認結果を引き継ぐ。
-- Phase 12 の `implementation-guide.md` と `documentation-changelog.md` に更新理由と差分を反映する。
 
 ## 成果物
 

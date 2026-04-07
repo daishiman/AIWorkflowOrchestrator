@@ -10,8 +10,8 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | Phase 5: 実装                       |
 | 次Phase    | Phase 7: カバレッジ確認             |
-| ステータス | completed                           |
-| 作成日     | 2026-04-06                          |
+| ステータス | pending                             |
+| 作成日     | 2026-04-07                          |
 
 ## 目的
 
@@ -48,7 +48,7 @@ done
 
 ```bash
 # 旧パスへの参照が残っていないか確認（completed-tasks 移動後）
-grep -rn "step-10-seq-task-p0-" docs/30-workflows/completed-tasks/ --include="*.md" | grep -v "completed-tasks"
+grep -rn "step-10-seq-task-p0-" docs/30-workflows/skill-creator-agent-sdk-lane/ --include="*.md" | grep -v "completed-tasks"
 ```
 
 ### Task 3: artifacts.json 間の依存関係整合性
@@ -76,12 +76,6 @@ done
 | ---------------- | ------------------------------------------ | -------------- |
 | 実装記録         | `outputs/phase-5/implementation-record.md` | 変更内容の参照 |
 | テストマトリクス | `outputs/phase-4/test-matrix.md`           | 検証基準       |
-
-## 統合テスト連携
-
-- `artifacts.json` / `outputs/artifacts.json` / `index.md` の status 整合を維持する。
-- Phase 11 の `manual-test-result.md` へ確認結果を引き継ぐ。
-- Phase 12 の `implementation-guide.md` と `documentation-changelog.md` に更新理由と差分を反映する。
 
 ## 成果物
 

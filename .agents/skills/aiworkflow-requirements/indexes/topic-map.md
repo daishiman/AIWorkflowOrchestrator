@@ -2706,24 +2706,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L86 |
-| クイックリファレンス: カテゴリ別検索ガイド | L104 |
-| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L285 |
-| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L617 |
-| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L651 |
-| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L734 |
-| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L750 |
-| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L774 |
-| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L824 |
-| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L849 |
-| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L880 |
-| TASK-RT-06 教訓（2026-03-29） | L911 |
-| UT-IMP-SDK-06 教訓（2026-04-01） | L933 |
-| TASK-P0-04 教訓（2026-03-30） | L964 |
-| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L1000 |
-| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1095 |
-| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1149 |
-| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1189 |
+| 分割ファイル一覧 | L91 |
+| クイックリファレンス: カテゴリ別検索ガイド | L109 |
+| TASK-IMP-CHAT-WORKSPACE-GUIDANCE-ACTION-WIRING-001（2026-03-22） | L290 |
+| UT-TASK06-007 IPC契約ドリフト自動検出スクリプト（2026-03-18） | L622 |
+| TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001（2026-03-21） | L656 |
+| TASK-IMP-CANONICAL-BRIDGE-LEDGER-GOVERNANCE-001 契約テスト教訓（2026-03-24） | L739 |
+| UT-SC-05-APPLY-IMPROVEMENT-UI: 改善提案 承認/適用 UI | L755 |
+| TASK-IMP-ADVANCED-CONSOLE-SAFETY-GOVERNANCE-001 からの教訓（2026-03-24） | L779 |
+| TASK-SC-08-E2E-VALIDATION 教訓（2026-03-25） | L829 |
+| TASK-SDK-08 session-persistence-and-resume-contract (2026-03-28) | L854 |
+| UT-SDK-07 shared IPC channel 契約整合（2026-03-29） | L885 |
+| TASK-RT-06 教訓（2026-03-29） | L916 |
+| UT-IMP-SDK-06 教訓（2026-04-01） | L938 |
+| TASK-P0-04 教訓（2026-03-30） | L969 |
+| TASK-SDK-SC-03 External API Support 教訓（2026-04-03） | L1005 |
+| TASK-SDK-SC-04 Skill Output Integration 教訓（2026-04-04） | L1100 |
+| UT-RT-06-SKILL-STREAM-SKCE-TYPE-UNIFICATION 教訓（2026-04-04） | L1154 |
+| TASK-P0-05 execute→SkillFileWriter persist 統合 教訓（2026-04-05） | L1194 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -4124,8 +4124,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 変更履歴 | L8 |
-| フェーズ構造 | L17 |
-| 出力テンプレート | L188 |
+| フェーズ構造 | L18 |
+| 出力テンプレート | L189 |
+| Phase 12/13 Close-out Workflow（2026-04-07追加） | L218 |
 
 ### references/task-workflow-rules.md
 

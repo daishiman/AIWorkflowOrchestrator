@@ -19,6 +19,7 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                                                                                                                                                                                                            |
 | ---------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-04-07 | v3.8.0 | TASK-P0-09-U1 / TASK-UI-02 / UT-SDK-07 / TASK-UI-03 の教訓追加 |
 | 2026-04-06 | 3.8.0 | UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 教訓3件を追加（→ [lessons-learned-phase12-workflow-lifecycle.md](lessons-learned-phase12-workflow-lifecycle.md): L-SDK07-SC-001 shared パッケージ内テストでの @repo/shared エイリアス未解決 / L-SDK07-SC-002 命名規則事前分析による Phase 4 以降の手戻り防止 / L-SDK07-SC-003 TDD Red Phase 前の設計前提整合確認） |
 | 2026-04-06 | 3.7.0 | TASK-FIX-IPC-SKILL-NAME-001 教訓3件を追加（L-IPC-DUP-001: ipcMain.handle() 重複登録は後続ハンドラを全て未登録にする / L-IPC-DUP-002: toWizardSkillName() 正規化5ステップとフォールバック設計 / L-IPC-DUP-003: スキル名バリデーション定数の分散リスク） |
 | 2026-04-06 | 3.6.0      | TASK-UT-RT-01-VERIFY-AND-IMPROVE-LOOP-ADAPTER-NOTIFICATION-001 教訓3件を追加（→ [lessons-learned-skill-plan-exec-hardening.md](lessons-learned-skill-plan-exec-hardening.md): phase遷移責務とartifact記録責務の分離 / ダックタイピングメソッドのテストモックパターン / 上位ループへの通知統一ルール）|
@@ -1312,3 +1313,46 @@
 - **状況**: `SkillService.ts` と `init_skill.js` が同型の正規表現 `/^[a-z0-9]+(-[a-z0-9]+)*$/` を個別に保持。
 - **判断**: 今回の Bug Fix はスコープ最小化のため定数一元化を行わなかった。
 - **follow-up**: `UT-FIX-IPC-SKILL-NAME-PATTERN-CENTRALIZATION-001` として未タスク登録済み。
+
+---
+
+## UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06）
+
+### L-APPROVAL-SURFACE-001: onApprovalRequest cleanup の useEffect 登録パターン
+- **苦戦箇所**: cleanup 関数を返すリスナー登録は useEffect の return 値として必ず設定しないと、アンマウント後に approval event が届き続ける
+- **解決**: `useEffect(() => { const cleanup = api.onApprovalRequest(...); return cleanup; }, [api])` パターンで登録
+- **適用**: Renderer 側の onEvent listener を持つコンポーネント全般
+
+---
+
+## TASK-P0-09-U1: path-scoped governance enforcement
+
+### L-GOV-PATH-001: canUseTool の path-scoped 判定パターン
+- **問題**: `canUseTool` がグローバル許可リストのみで判定していたため、スキル配下外のファイル操作をブロックできなかった
+- **解決**: `extractTargetPath(input)` でツール引数からパスを抽出し `allowedSkillRoot` と突合する pattern を追加
+- **学び**: governance 判定は「ツール種別」だけでなく「操作対象パス」を考慮する必要がある
+- **予防策**: Phase 1 要件定義で「パス制約の有無」を checklist 項目に追加する
+
+## TASK-UI-02: Session IPC 廃止・Runtime IPC 正本化
+
+### L-IPC-SESSION-STUB-001: Session IPC stub化パターン
+- **問題**: `skillCreatorSessionAPI` が ConversationalInterview と CreatorHandlers 間で二重経路を持ち、状態同期が不確定だった
+- **解決**: Session IPC handlers を stub 化し、Runtime IPC（`creatorHandlers.ts`）を唯一の正本に統一
+- **学び**: IPC は「正本を1つに絞る」。複数経路が存在する場合は Phase 2 設計で早期に統合を決断する
+- **予防策**: Phase 2 設計で IPC 経路の正本を明示し「二重経路禁止」チェックを設ける
+
+## UT-SDK-07: Approval Request Surface
+
+### L-PRELOAD-APPROVAL-001: Preload API Surface 吸収パターン
+- **問題**: Renderer 側が IPC channel を直接呼び出すと、テストで IPC mock が必要になりテスト容易性が低下する
+- **解決**: `getSkillCreatorApi().onApprovalRequest()` 経由で Renderer が IPC 非依存になるよう Preload API に吸収
+- **学び**: 新規 IPC surface は必ず Preload API 経由に標準化する（直接 `ipcRenderer.on` 禁止）
+- **予防策**: Phase 1 要件定義で IPC surface の「Preload 経由必須」を明記する
+
+## TASK-UI-03: IPC 二重経路統合
+
+### L-IPC-DUAL-PATH-001: IPC 二重経路統合パターン
+- **問題**: Session Resume / Governance / LLM Adapter の各 IPC が独立したハンドラーに分散し、呼び出し順序と状態管理が複雑化
+- **解決**: 単一の統合ハンドラーに集約し、Phase 別の呼び出し順序を明示した
+- **学び**: IPC ハンドラーの分散は「管理可能な範囲（5個以下）」を超えたら統合を検討する
+- **予防策**: Phase 2 設計で IPC ハンドラーの個数上限（推奨 5個）を設計制約として明記する

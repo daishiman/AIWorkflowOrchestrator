@@ -10,12 +10,24 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | Phase 1: 要件定義                   |
 | 次Phase    | Phase 3: 設計レビュー               |
-| ステータス | completed                           |
-| 作成日     | 2026-04-06                          |
+| ステータス | pending                             |
+| 作成日     | 2026-04-07                          |
 
 ## 目的
 
 Phase 1 で確定した乖離インベントリに基づき、具体的な修正計画（どのファイルをどう更新するか）と completed-tasks 移動計画を策定する。
+
+## SubAgent 分担
+
+Phase 2 は、更新方針を責務ごとに分割して並列に固める。
+
+| SubAgent              | 役割                                                                          | 並列関係                                            | 成果物                               |
+| --------------------- | ----------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------------ |
+| `SubAgent-P2-STATUS`  | `artifacts.json` の status / phases 更新方針を決める                          | `SubAgent-P2-LINK` / `SubAgent-P2-PARTIAL` と並列   | `outputs/phase-2/correction-plan.md` |
+| `SubAgent-P2-LINK`    | `index.md` / `executor-guide.md` / 親 `index.md` のリンク・表更新方針を決める | `SubAgent-P2-STATUS` / `SubAgent-P2-PARTIAL` と並列 | `outputs/phase-2/correction-plan.md` |
+| `SubAgent-P2-PARTIAL` | 部分完了タスクの残作業記録と破棄判断条件を整理する                            | `SubAgent-P2-STATUS` / `SubAgent-P2-LINK` と並列    | `outputs/phase-2/correction-plan.md` |
+
+`SubAgent-P2-STATUS` / `SubAgent-P2-LINK` / `SubAgent-P2-PARTIAL` を統合してから Task 1〜5 の最終計画を確定する。
 
 ## 実行タスク
 
@@ -93,12 +105,6 @@ executor-guide.md のタスク一覧テーブルにステータス列を追加�
 | ------------------------------ | ------------------------------------------------------------------------------------------- | ----------------------------------------- |
 | Skill Creator Service仕様      | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService の公開 API と状態遷移 |
 | タスクワークフローフェーズ仕様 | `.claude/skills/aiworkflow-requirements/references/task-workflow-phases.md`                 | Phase 1-13 のフェーズ遷移テーブル         |
-
-## 統合テスト連携
-
-- `artifacts.json` / `outputs/artifacts.json` / `index.md` の status 整合を維持する。
-- Phase 11 の `manual-test-result.md` へ確認結果を引き継ぐ。
-- Phase 12 の `implementation-guide.md` と `documentation-changelog.md` に更新理由と差分を反映する。
 
 ## 成果物
 

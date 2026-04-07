@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-07T05:43:49.365Z",
-  "totalKeywords": 2792,
+  "generated": "2026-04-07T08:46:48.555Z",
+  "totalKeywords": 2803,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2322,7 +2322,8 @@
     "Workflow": [
       "api-ipc-system-core.md",
       "arch-state-management-core.md",
-      "master-design.md"
+      "master-design.md",
+      "task-workflow-phases.md"
     ],
     "Interaction": [
       "api-ipc-system-core.md"
@@ -2377,6 +2378,7 @@
       "interfaces-agent-sdk-skill-advanced.md",
       "interfaces-agent-sdk-skill-reference-share-debug-analytics.md",
       "lessons-learned-auth-ipc-skill-creator-sync-auth-timeout.md",
+      "lessons-learned-current.md",
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-rag-embedding-runtime.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
@@ -4457,6 +4459,7 @@
       "phase-12-documentation-retrospective.md",
       "task-workflow-completed-agent-view-line-budget.md",
       "task-workflow-completed.md",
+      "task-workflow-phases.md",
       "workflow-skill-identifier-branded-type-resolution.md",
       "workflow-skill-lifecycle-routing-render-view-foundation.md"
     ],
@@ -5313,13 +5316,15 @@
     ],
     "path": [
       "governance-hooks-factory-audit-sink.md",
+      "lessons-learned-current.md",
       "lessons-learned-governance-hooks-phase-policy.md",
       "lessons-learned-rt02-stub-response-error-notification.md",
       "logs-archive-2026-03-workflow02-screenshot-guard.md",
       "workflow-ai-chat-llm-integration-fix-artifact-inventory.md"
     ],
     "scoped": [
-      "governance-hooks-factory-audit-sink.md"
+      "governance-hooks-factory-audit-sink.md",
+      "lessons-learned-current.md"
     ],
     "canUseTool": [
       "governance-hooks-factory-audit-sink.md",
@@ -5405,6 +5410,7 @@
     ],
     "Session": [
       "interfaces-agent-sdk-integration.md",
+      "lessons-learned-current.md",
       "lessons-learned-sdk-session-bridge-vitest-worktree.md",
       "lessons-learned-skill-creator-ipc-handler-scope.md",
       "ui-ux-agent-execution-core.md"
@@ -7154,6 +7160,45 @@
     "の動的解決": [
       "lessons-learned-current.md"
     ],
+    "仕様書ステータス乖離修正": [
+      "lessons-learned-current.md"
+    ],
+    "APPROVAL": [
+      "lessons-learned-current.md"
+    ],
+    "REQUEST": [
+      "lessons-learned-current.md"
+    ],
+    "SURFACE": [
+      "lessons-learned-current.md",
+      "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "governance": [
+      "lessons-learned-current.md",
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
+    ],
+    "enforcement": [
+      "lessons-learned-current.md"
+    ],
+    "廃止・": [
+      "lessons-learned-current.md"
+    ],
+    "正本化": [
+      "lessons-learned-current.md"
+    ],
+    "Approval": [
+      "lessons-learned-current.md"
+    ],
+    "Request": [
+      "lessons-learned-current.md"
+    ],
+    "Surface": [
+      "lessons-learned-current.md"
+    ],
+    "二重経路統合": [
+      "lessons-learned-current.md"
+    ],
     "Policy": [
       "lessons-learned-governance-hooks-phase-policy.md",
       "security-electron-ipc-core.md"
@@ -7379,9 +7424,6 @@
     "CODE": [
       "lessons-learned-ipc-preload-runtime.md"
     ],
-    "SURFACE": [
-      "lessons-learned-ipc-preload-runtime.md"
-    ],
     "PANEL": [
       "lessons-learned-ipc-preload-runtime.md",
       "lessons-learned-phase12-workflow-lifecycle.md",
@@ -7490,10 +7532,6 @@
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-history-search-notification-center.md"
     ],
-    "governance": [
-      "lessons-learned-phase12-workflow-lifecycle.md",
-      "logs-archive-2026-03-mid-lifecycle-governance-improve.md"
-    ],
     "alignment": [
       "lessons-learned-phase12-workflow-lifecycle.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md"
@@ -7535,7 +7573,8 @@
       "lessons-learned-phase12-workflow-lifecycle.md"
     ],
     "out": [
-      "lessons-learned-phase12-workflow-lifecycle.md"
+      "lessons-learned-phase12-workflow-lifecycle.md",
+      "task-workflow-phases.md"
     ],
     "ESBUILD": [
       "lessons-learned-phase12-workflow-lifecycle.md"
@@ -7651,6 +7690,7 @@
       "lessons-learned-skill-create-multi-select-kind.md",
       "logs-archive-2026-03-auth-mode-migration-sync.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md",
+      "task-workflow-phases.md",
       "technology-devops-details.md",
       "testing-component-patterns-advanced.md",
       "ui-ux-settings-details.md"
@@ -11653,6 +11693,9 @@
       "task-workflow-rules.md"
     ],
     "フェーズ定義": [
+      "task-workflow-phases.md"
+    ],
+    "Close": [
       "task-workflow-phases.md"
     ],
     "ルール・選定基準": [
