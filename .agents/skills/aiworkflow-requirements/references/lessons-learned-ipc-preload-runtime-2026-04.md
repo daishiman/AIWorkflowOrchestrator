@@ -125,3 +125,24 @@
   ```
 - **適用範囲**: snapshot 以外のメタ情報（errorMessage など）を同一 IPC イベントで流したい場合の標準パターン
 - **発見日**: 2026-04-06
+
+### L-RT01-CALLBACK-GUARD-001: エラーコールバックを `if (!snapshot)` 等の条件でガードしない
+
+- **教訓**: `if (!snapshot) { onWorkflowStateSnapshot(null, error.message); }` のように snapshot 存在チェックでエラーコールバックをガードすると、snapshot が存在するパスでエラーメッセージが Renderer に届かず無音失敗する
+- **対策**: `callback(snapshot ?? null, error)` パターンで常にエラーを渡す
+- **コード例**:
+  ```typescript
+  // NG: if (!snapshot) でガードするとエラーが隠れる
+  // if (!snapshot) {
+  //   onWorkflowStateSnapshot(null, error.message);
+  // }
+
+  // OK: snapshot の有無にかかわらず常にエラーを渡す
+  onWorkflowStateSnapshot(
+    snapshot ?? null,
+    error instanceof Error ? error.message : String(error),
+  );
+  ```
+- **適用範囲**: fire-and-forget 型の executeAsync ラッパー全般。catch ブロックと structured error パスの両方に適用する
+- **発見元**: TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001
+- **発見日**: 2026-04-07

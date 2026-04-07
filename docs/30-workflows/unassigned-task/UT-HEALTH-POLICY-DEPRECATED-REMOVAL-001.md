@@ -8,6 +8,7 @@
 | 優先度         | MED                                     |
 | 親タスク       | TASK-IMP-HEALTH-POLICY-UNIFICATION-001  |
 | 対象バージョン | v0.8.0                                  |
+| issue番号      | #1607                                   |
 
 ## 概要
 
