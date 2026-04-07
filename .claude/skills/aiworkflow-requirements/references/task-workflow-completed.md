@@ -74,7 +74,7 @@
 | 優先度     | 中                                                                                 |
 | 完了日     | 2026-04-06                                                                         |
 | 対象       | verify 関連ドキュメント4ファイルの区分ラベル付与・責務分離明示                     |
-| 成果物     | `docs/30-workflows/unassigned-task/UT-VERIFY-DOC-CONSOLIDATION-001.md`             |
+| 成果物     | `docs/30-workflows/completed-tasks/UT-VERIFY-DOC-CONSOLIDATION-001.md`               |
 
 #### 実施内容
 
@@ -252,7 +252,7 @@
 | 対象             | `task-specification-creator` / Phase 仕様書テンプレート                                |
 | GitHub Issue     | #1919                                                                                  |
 | 成果物           | `docs/30-workflows/ut-phase-spec-format-improvement-001/`                              |
-| 元未タスク指示書 | `docs/30-workflows/unassigned-task/ut-phase-spec-format-improvement-001.md`           |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/ut-phase-spec-format-improvement-001.md`         |
 
 #### 実施内容
 
@@ -2503,6 +2503,75 @@
 - 合計 101 tests PASS（`path-scoped-enforcement.test.ts` 含む）
 - typecheck: EXIT:0 ✅
 - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
+
+---
+
+### タスク: TASK-UI-04 仕様書ステータス乖離修正（Spec Status Drift Correction）（2026-04-07）
+
+| 項目       | 値                                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-04                                                                                                                                      |
+| ステータス | **完了（Phase 12 close-out）**                                                                                                                  |
+| タイプ     | maintenance / docs-only / 品質管理                                                                                                              |
+| 優先度     | P0（最高）                                                                                                                                      |
+| 完了日     | 2026-04-07                                                                                                                                      |
+| 対象       | タスク仕様書群の artifacts.json / index.md ステータスフィールド（8件のタスク仕様書のステータス乖離修正）                                        |
+| 成果物     | `docs/30-workflows/completed-tasks/step-13-seq-task-ui-04-spec-status-drift-correction/`                                                        |
+| 関連Issue  | #1941                                                                                                                                           |
+| 依存タスク | TASK-UI-01, TASK-UI-02, TASK-UI-03                                                                                                              |
+
+#### 実施内容
+
+- TASK-P0-01 〜 TASK-P0-09 の 8 件タスク仕様書において、artifacts.json / index.md の status フィールドが実装完了状態と乖離していた問題を是正
+- 各タスクの artifacts.json の status を `spec_created` / `in_progress` → `phase12_completed` に更新
+- 各タスクの index.md のステータスフィールドを実装状態と一致するよう更新
+- completed-tasks/ ディレクトリへの未移動タスク仕様書の移動（TASK-UI-04 自身を含む）
+- skill-creator-agent-sdk-lane の executor-guide.md / index.md のステータス整合を確認・更新
+
+#### 検証証跡
+
+- Phase 1: ステータス抽出マップ・乖離インベントリ作成 PASS（`outputs/phase-1/`）
+- Phase 2: 修正計画作成 PASS（`outputs/phase-2/correction-plan.md`）
+- Phase 3: 設計レビューゲート PASS（`outputs/phase-3/design-review-gate.md`）
+- Phase 4-9: テストマトリクス・実装記録・QA レポート PASS（`outputs/phase-4/` 〜 `outputs/phase-9/`）
+- Phase 10: 最終レビュー PASS（`outputs/phase-10/final-review-result.md`）
+- Phase 11: 手動テスト PASS（`outputs/phase-11/manual-test-result.md`）、NON_VISUAL（docs-only タスク）
+- Phase 12: スキルフィードバック・未タスク検出・準拠チェック PASS（`outputs/phase-12/`）
+
+---
+
+### タスク: TASK-UI-04 仕様書ステータス乖離修正（2026-04-07）
+
+| 項目       | 値                                                                                                                        |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | TASK-UI-04                                                                                                                |
+| ステータス | **phase12_completed**（Phase 13 未実施）                                                                                  |
+| タイプ     | docs-only / メンテナンス / 品質管理                                                                                       |
+| 優先度     | P0                                                                                                                        |
+| 完了日     | 2026-04-07                                                                                                                |
+| 対象       | P0 是正タスク群（TASK-P0-01〜TASK-P0-09）の artifacts.json / index.md ステータスフィールド                               |
+| 成果物     | `docs/30-workflows/step-13-seq-task-ui-04-spec-status-drift-correction/`（Phase 1-12 仕様書 + 6 Phase 12 outputs）       |
+
+#### 実施内容
+
+- **乖離検出**: P0 タスク群 8 件でコード実装完了済みにもかかわらず仕様書ステータスが `spec_created` / `in_progress` のまま放置されていることを確認
+- **artifacts.json 正規化**: 8 タスク全ての `artifacts.json` status を標準値 `completed` に統一（非標準値 `phase_12_completed` も是正）
+- **index.md 更新**: 8 タスクの `index.md` ステータスフィールドを実装状態と一致させる
+- **skill-creator-agent-sdk-lane リンク修正**: `index.md` の P0 タスクリンク 5 件を旧相対パスから `../completed-tasks/` prefix に修正、✅ completed 追記
+- **executor-guide.md 更新**: P0 全 9 タスクの完了状態テーブルを新規追加（タスクID / ステータス / 実装内容 / 仕様書パス）
+- **Phase 12 成果物**: `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md` の 6 ファイルを作成
+
+#### skill-feedback-report 提案（2件）
+
+1. **task-specification-creator 向け**: `complete-phase.js` 実行を Phase 完了チェックリストの「必須項目」に昇格させる（現在は任意実行であり、今回の乖離の主因）
+2. **aiworkflow-requirements 向け**: executor-guide.md に「タスク完了時のアクション」セクションを追加（artifacts.json 更新 / executor-guide 状態テーブル更新 を必須記載）
+
+#### 検証証跡
+
+- 対象: 17 ファイル更新（docs-only / コード変更なし）
+- `verify-unassigned-links`: ALL_LINKS_EXIST 確認
+- `audit --diff-from HEAD`: current=0 確認
+- Phase 11: 手動テスト（docs-only タスクのため UI 確認なし）
 
 ---
 

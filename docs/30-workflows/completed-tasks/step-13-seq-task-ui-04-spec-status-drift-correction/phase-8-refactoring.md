@@ -10,7 +10,7 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | Phase 7: カバレッジ確認             |
 | 次Phase    | Phase 9: 品質保証                   |
-| ステータス | pending                             |
+| ステータス | completed                           |
 | 作成日     | 2026-04-06                          |
 
 ## 目的
@@ -35,7 +35,7 @@
 
 ```bash
 # 陳腐化した可能性のある記述を検索
-grep -rn "spec_created\|未着手\|未実装（想定）" docs/30-workflows/skill-creator-agent-sdk-lane/step-*/index.md
+grep -rn "spec_created\|未着手\|未実装（想定）" docs/30-workflows/completed-tasks/step-*/index.md
 grep -rn "spec_created\|未着手" docs/30-workflows/completed-tasks/*/index.md 2>/dev/null
 ```
 
@@ -43,7 +43,7 @@ grep -rn "spec_created\|未着手" docs/30-workflows/completed-tasks/*/index.md 
 
 completed-tasks に移動されたタスク仕様書について:
 
-- outputs/ 内の空ディレクトリを確認し、必要に応じて .gitkeep を追加
+- outputs/ 内の空ディレクトリを確認し、空ディレクトリがある場合は .gitkeep を追加
 - 不要な「次Phase」リンクが残っていないか確認
 
 ### Task 4: 命名規則の統一
@@ -54,8 +54,16 @@ artifacts.json の status 値や metadata フィールドの命名規則が統�
 
 | 資料名             | パス                                       | 説明                 |
 | ------------------ | ------------------------------------------ | -------------------- |
+| 修正計画           | `outputs/phase-2/correction-plan.md`       | リファクタリング前提 |
 | カバレッジレポート | `outputs/phase-7/coverage-report.md`       | リファクタリング入力 |
 | 実装記録           | `outputs/phase-5/implementation-record.md` | 変更内容の参照       |
+| テスト拡充記録     | `outputs/phase-6/test-expansion.md`        | テスト拡充の参照     |
+
+## 統合テスト連携
+
+- `artifacts.json` / `outputs/artifacts.json` / `index.md` の status 整合を維持する。
+- Phase 11 の `manual-test-result.md` へ確認結果を引き継ぐ。
+- Phase 12 の `implementation-guide.md` と `documentation-changelog.md` に更新理由と差分を反映する。
 
 ## 成果物
 

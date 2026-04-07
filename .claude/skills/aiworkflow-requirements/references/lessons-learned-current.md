@@ -1259,6 +1259,41 @@
 
 ## TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06）
 
+---
+
+## TASK-UI-04 仕様書ステータス乖離修正 教訓（2026-04-07）
+
+### L-UI04-001: artifacts.json ステータス更新は Phase 完了時の必須アクション
+
+| 項目       | 内容                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題       | P0 タスク群（8件）がコード実装完了済みにもかかわらず、artifacts.json / index.md が `spec_created` / `in_progress` のまま放置され、乖離が蓄積した        |
+| 解決策     | Phase 完了スクリプト（`complete-phase.js`）の実行を任意から必須に昇格させ、Phase 完了チェックリストの最終項目として明記する                           |
+| 標準ルール | 実装完了と同一 wave で必ず artifacts.json status を `completed` に更新する。任意実行のスクリプトは「やり忘れ」が発生するため、Phase 完了の gate に組み込む |
+| 関連タスク | TASK-UI-04                                                                                                                                              |
+
+### L-UI04-002: 親 index.md のリンクは completed-tasks 移動後に即時更新する
+
+| 項目       | 内容                                                                                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | P0 タスクが `completed-tasks/` に移動された後、`skill-creator-agent-sdk-lane/index.md` の相対リンクが旧パスのまま残り、リンク切れが多数発生した            |
+| 解決策     | タスクを `completed-tasks/` に移動する際は、親 index.md のリンクを同一 wave で `../completed-tasks/` prefix に更新し、✅ 完了マークを追記する               |
+| 標準ルール | completed-tasks 移動は「移動 + 親 index リンク更新 + executor-guide 状態テーブル更新」の 3 点セットを同一ターンで実施する                                  |
+| 関連タスク | TASK-UI-04                                                                                                                                                  |
+
+### L-UI04-003: docs-only タスクでも Phase 12 成果物 6 件は省略しない
+
+| 項目       | 内容                                                                                                                                                       |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題       | docs-only タスクは「コード変更なし」として Phase 12 成果物の作成を省略しがちだが、乖離修正の根拠記録が残らないため再発防止に使えない                       |
+| 解決策     | docs-only タスクでも `implementation-guide.md`（Part 1 概念説明 + Part 2 修正内容）/ `system-spec-update-summary.md` / `documentation-changelog.md` などの 6 件を必ず作成する |
+| 標準ルール | `taskType: "docs-only"` でも Phase 12 の 6 成果物は必須。Step 2（domain spec 更新）が不要な場合は `system-spec-update-summary.md` に no-op 理由を明記する |
+| 関連タスク | TASK-UI-04                                                                                                                                                  |
+
+---
+
+## TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06）
+
 ### L-IPC-DUP-001: `ipcMain.handle()` 重複登録による後続ハンドラ全停止
 
 - **状況**: `registerRuntimeSkillCreatorHandlers()` で同一チャネル `SKILL_CREATOR_GET_ADAPTER_STATUS` が 2 回 `ipcMain.handle()` 登録されていた。
