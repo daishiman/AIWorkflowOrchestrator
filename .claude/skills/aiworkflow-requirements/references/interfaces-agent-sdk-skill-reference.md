@@ -96,6 +96,21 @@ runtime lane の API キー設定補助導線で利用する UI 状態型。cano
 | `error` | 保存/削除時にエラーが発生 |
 | `check-failed` | 初期確認時に IPC エラーが発生（electronAPI 未利用環境を含む） |
 
+#### Skill Wizard Shared Contracts（UT-SKILL-WIZARD-W0-seq-01）
+
+W0 のスキルウィザード共有型。canonical source は `packages/shared/src/types/skillCreator.ts`。  
+`packages/shared/src/types/skill.ts` には別概念の `SkillCategory` が既に存在するため、公開経路は `@repo/shared/types/skillCreator` に閉じ、root `@repo/shared` へは拡張しない。
+
+| 型名 | 役割 |
+| --- | --- |
+| `SkillCategory` | Step 0 のカテゴリ選択 union |
+| `SkillInfoFormData` | Step 0 のフォーム契約 |
+| `SkillWizardScheduleConfig` | Q3 の定期実行契約 |
+| `QuestionAnswer` | 1 問分の回答契約 |
+| `ConversationAnswers` | 6 問分の回答集約契約 |
+| `SmartDefaultResult` | semantic key ベースの初期値契約 |
+| `SkeletonQualityFeedback` | 骨格品質のフィードバック契約 |
+
 #### useAuthKeyManagement（TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001）
 
 AuthKeySection / ApiKeySettingsPanel の共通 IPC ロジックを統合したカスタムフック。

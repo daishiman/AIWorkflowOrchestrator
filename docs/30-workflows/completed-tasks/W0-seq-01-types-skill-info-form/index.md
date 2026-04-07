@@ -2,19 +2,30 @@
 
 ## タスク概要
 
-| 項目         | 内容                                        |
-| ------------ | ------------------------------------------- |
-| タスクID     | UT-SKILL-WIZARD-W0-seq-01                   |
-| タスク名     | スキルウィザード共有型定義追加              |
-| 実行順       | Wave 0（先行必須・直列）                    |
-| 依存タスク   | なし                                        |
-| 優先度       | 高（W1/W2 のブロッカー）                    |
-| 対象ファイル | `packages/shared/src/types/skillCreator.ts` |
-| 作成日       | 2026-04-07                                  |
+| 項目         | 内容                                        | 状態          |
+| ------------ | ------------------------------------------- | ------------- |
+| タスクID     | UT-SKILL-WIZARD-W0-seq-01                   | -             |
+| タスク名     | スキルウィザード共有型定義追加              | -             |
+| 実行順       | Wave 0（先行必須・直列）                    | -             |
+| 依存タスク   | なし                                        | -             |
+| 優先度       | 高（W1/W2 のブロッカー）                    | -             |
+| 対象ファイル | `packages/shared/src/types/skillCreator.ts` | -             |
+| 作成日       | 2026-04-07                                  | -             |
+| 完了状態     | phase13_blocked（Phase 13 未実施）          | current facts |
+| 完了日       | 2026-04-07                                  | current facts |
 
 ## 目的
 
 スキルウィザード再設計（skill-wizard-redesign）において、Step 0 / Step 1 / Step 3 が共通利用する型契約を `skillCreator.ts` に一元定義する。入力フォーム、6問回答、スマートデフォルト、Q3 スケジュール、最終フィードバックを重複なしで扱えるようにし、後続 wave が迷わず参照できる状態を先に作る。
+
+## 完了記録
+
+- `packages/shared/src/types/skillCreator.ts` に shared contracts を追加した
+- `packages/shared/src/types/__tests__/skillCreator-wizard.test.ts` を新規作成した
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-1/` 〜 `phase-11/` に Phase 1-11 の出力を補完した
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-12/` に canonical 6 成果物を作成した
+- `docs/30-workflows/W0-seq-01-types-skill-info-form/artifacts.json` と `outputs/artifacts.json` を同期した
+- `Phase 13` はユーザー承認待ちのため `blocked` を維持する
 
 ## 追加する型一覧
 
@@ -41,20 +52,20 @@
 ## Phase 一覧
 
 | Phase    | ファイル                    | 概要                          |
-| -------- | --------------------------- | ----------------------------- |
-| Phase 1  | `phase-1-requirements.md`   | 要件定義                      |
-| Phase 2  | `phase-2-design.md`         | 設計                          |
-| Phase 3  | `phase-3-design-review.md`  | 設計レビュー                  |
-| Phase 4  | `phase-4-test-creation.md`  | テスト作成                    |
-| Phase 5  | `phase-5-implementation.md` | 実装                          |
-| Phase 6  | `phase-6-test-expansion.md` | テスト拡充                    |
-| Phase 7  | `phase-7-coverage.md`       | カバレッジ確認                |
-| Phase 8  | `phase-8-refactoring.md`    | リファクタリング              |
-| Phase 9  | `phase-9-qa.md`             | 品質保証                      |
-| Phase 10 | `phase-10-final-review.md`  | 最終レビュー                  |
-| Phase 11 | `phase-11-manual-test.md`   | 手動テスト                    |
-| Phase 12 | `phase-12-docs.md`          | ドキュメント更新              |
-| Phase 13 | `phase-13-pr.md`            | PR 作成（ユーザー承認後のみ） |
+| -------- | --------------------------- | ----------------------------- | --------- |
+| Phase 1  | `phase-1-requirements.md`   | 要件定義                      | completed |
+| Phase 2  | `phase-2-design.md`         | 設計                          | completed |
+| Phase 3  | `phase-3-design-review.md`  | 設計レビュー                  | completed |
+| Phase 4  | `phase-4-test-creation.md`  | テスト作成                    | completed |
+| Phase 5  | `phase-5-implementation.md` | 実装                          | completed |
+| Phase 6  | `phase-6-test-expansion.md` | テスト拡充                    | completed |
+| Phase 7  | `phase-7-coverage.md`       | カバレッジ確認                | completed |
+| Phase 8  | `phase-8-refactoring.md`    | リファクタリング              | completed |
+| Phase 9  | `phase-9-qa.md`             | 品質保証                      | completed |
+| Phase 10 | `phase-10-final-review.md`  | 最終レビュー                  | completed |
+| Phase 11 | `phase-11-manual-test.md`   | 手動テスト                    | completed |
+| Phase 12 | `phase-12-docs.md`          | ドキュメント更新              | completed |
+| Phase 13 | `phase-13-pr.md`            | PR 作成（ユーザー承認後のみ） | blocked   |
 
 ## 実行方法
 

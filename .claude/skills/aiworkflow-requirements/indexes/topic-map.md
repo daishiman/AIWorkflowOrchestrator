@@ -454,6 +454,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
 | 続き | L424 |
+| SkillEditor UI 型定義（TASK-9A / completed） | L435 |
+| スキルチェーン 型定義（TASK-9D） | L485 |
+| スキルスケジュール 型定義（TASK-9G） | L520 |
+| スキルフォーク 型定義（TASK-9E） | L545 |
+| RuntimeSkillCreatorFacade（UT-SC-03-003） | L593 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -4340,6 +4345,8 @@ node scripts/list-specs.js --topics
 |------------|----|\n| 最近の完了タスク（2026-04） | L7 |
 | 完了タスク（2026-03後半） | L13 |
 | 完了タスク（機能別アーカイブ） | L21 |
+|------------|----|\n| 完了タスク | L7 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L168 |
 
 ### references/task-workflow-history.md
 

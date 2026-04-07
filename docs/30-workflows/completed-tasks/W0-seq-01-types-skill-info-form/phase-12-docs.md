@@ -9,7 +9,7 @@
 
 ## 目的
 
-task-specification-creator / aiworkflow-requirements の正本に照らして、Phase 12 canonical 6成果物を揃え、共有型定義追加の current facts をドキュメントへ同期する。
+task-specification-creator / aiworkflow-requirements の正本に照らして、Phase 1-11 の出力欠落を補完した上で Phase 12 canonical 6成果物を揃え、共有型定義追加の current facts をドキュメントへ同期する。
 
 ## 実行オーケストレーション
 
@@ -25,27 +25,28 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
 
 ## 実行タスク（必須 6 タスク）
 
-- [ ] **タスク 1**: 実装ガイド作成（Part 1 / Part 2 の 2 パート構成）
-- [ ] **タスク 2**: システム仕様更新（2 ステップ + 条件付き Step 2）
-- [ ] **タスク 3**: ドキュメント更新履歴作成
-- [ ] **タスク 4**: 未タスク検出レポート作成
-- [ ] **タスク 5**: スキルフィードバックレポート作成
-- [ ] **タスク 6**: Phase 12 タスク仕様準拠チェック
+- [x] **タスク 1**: 実装ガイド作成（Part 1 / Part 2 の 2 パート構成）
+- [x] **タスク 2**: システム仕様更新（2 ステップ + 条件付き Step 2）
+- [x] **タスク 3**: ドキュメント更新履歴作成
+- [x] **タスク 4**: 未タスク検出レポート作成
+- [x] **タスク 5**: スキルフィードバックレポート作成
+- [x] **タスク 6**: Phase 12 タスク仕様準拠チェック
 
 ## 参照資料
 
-| 資料名                       | パス                                                 | 説明               |
-| ---------------------------- | ---------------------------------------------------- | ------------------ |
-| 追記済みファイル             | `packages/shared/src/types/skillCreator.ts`          | ドキュメント化対象 |
-| skill-wizard-redesign レーン | `docs/30-workflows/skill-wizard-redesign-lane/`      | 上位レーン仕様書   |
-| task-spec 正本               | `.claude/skills/task-specification-creator/SKILL.md` | Phase 12 判定基準  |
-| system spec 正本             | `.claude/skills/aiworkflow-requirements/SKILL.md`    | 更新対象基準       |
+| 資料名                       | パス                                                                                | 説明               |
+| ---------------------------- | ----------------------------------------------------------------------------------- | ------------------ |
+| 追記済みファイル             | `packages/shared/src/types/skillCreator.ts`                                         | ドキュメント化対象 |
+| Phase 1-11 outputs           | `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-1/` 〜 `phase-11/` | 台帳補完済み成果物 |
+| skill-wizard-redesign レーン | `docs/30-workflows/skill-wizard-redesign-lane/`                                     | 上位レーン仕様書   |
+| task-spec 正本               | `.claude/skills/task-specification-creator/SKILL.md`                                | Phase 12 判定基準  |
+| system spec 正本             | `.claude/skills/aiworkflow-requirements/SKILL.md`                                   | 更新対象基準       |
 
 ## 実行手順
 
 ### タスク 1: 実装ガイド Part 1 / Part 2
 
-**出力先**: `docs/30-workflows/skill-wizard-redesign-lane/W0-seq-01-types-skill-info-form/outputs/phase-12/implementation-guide.md`
+**出力先**: `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-12/implementation-guide.md`
 
 #### Part 1: 中学生向け説明
 
@@ -67,6 +68,8 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
 - `ConversationAnswers`
 - `SmartDefaultResult`
 - `SkeletonQualityFeedback`
+- `artifacts.json`
+- `outputs/artifacts.json`
 
 必須要素:
 
@@ -79,7 +82,7 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
 
 ### タスク 2: システム仕様更新
 
-**出力先**: `docs/30-workflows/skill-wizard-redesign-lane/W0-seq-01-types-skill-info-form/outputs/phase-12/system-spec-update-summary.md`
+**出力先**: `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-12/system-spec-update-summary.md`
 
 #### Step 1-A: 完了タスク記録・関連リンク・LOGS.md 更新
 
@@ -88,6 +91,7 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
 - 変更履歴を追加する
 - `LOGS.md` を 2 ファイル更新する
 - `topic-map.md` の関連項目を更新する
+- `artifacts.json` と `outputs/artifacts.json` を同期する
 
 #### Step 1-B: 実装状況テーブル更新
 
@@ -112,7 +116,7 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
 
 ### タスク 3: 更新履歴作成
 
-**出力先**: `docs/30-workflows/skill-wizard-redesign-lane/W0-seq-01-types-skill-info-form/outputs/phase-12/documentation-changelog.md`
+**出力先**: `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-12/documentation-changelog.md`
 
 追記内容の例:
 
@@ -127,7 +131,7 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
 
 ### タスク 4: 未タスク検出
 
-**出力先**: `docs/30-workflows/skill-wizard-redesign-lane/W0-seq-01-types-skill-info-form/outputs/phase-12/unassigned-task-detection.md`
+**出力先**: `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-12/unassigned-task-detection.md`
 
 本タスク実装中に発見した未解決事項・後続タスクの候補を記録する。
 
@@ -141,7 +145,7 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
 
 ### タスク 5: スキルフィードバック
 
-**出力先**: `docs/30-workflows/skill-wizard-redesign-lane/W0-seq-01-types-skill-info-form/outputs/phase-12/skill-feedback-report.md`
+**出力先**: `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-12/skill-feedback-report.md`
 
 フィードバック内容の例:
 
@@ -152,12 +156,13 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
 
 ### タスク 6: Phase 12 タスク仕様準拠チェック
 
-**出力先**: `docs/30-workflows/skill-wizard-redesign-lane/W0-seq-01-types-skill-info-form/outputs/phase-12/phase12-task-spec-compliance-check.md`
+**出力先**: `docs/30-workflows/W0-seq-01-types-skill-info-form/outputs/phase-12/phase12-task-spec-compliance-check.md`
 
 `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` が揃っていることを確認し、task-specification-creator と aiworkflow-requirements の両方に対する準拠を最終確認する。
 
 - canonical filename の不一致を確認する
 - planned wording が残っていないことを確認する
+- `artifacts.json` / `outputs/artifacts.json` の 2 ファイル同期を確認する
 - PASS / FAIL と不足点を記録する
 
 ## 成果物
@@ -171,9 +176,9 @@ task-specification-creator / aiworkflow-requirements の正本に照らして、
 
 ## 完了条件
 
-- [ ] タスク 1: 実装ガイドの 2 パートが作成されている
-- [ ] タスク 2: システム仕様更新が完了している
-- [ ] タスク 3: 更新履歴が記録されている
-- [ ] タスク 4: 未タスク検出レポートが 0 件でも作成されている
-- [ ] タスク 5: スキルフィードバックが 0 件でも作成されている
-- [ ] タスク 6: 仕様準拠チェックが PASS である
+- [x] タスク 1: 実装ガイドの 2 パートが作成されている
+- [x] タスク 2: システム仕様更新が完了している
+- [x] タスク 3: 更新履歴が記録されている
+- [x] タスク 4: 未タスク検出レポートが 0 件でも作成されている
+- [x] タスク 5: スキルフィードバックが 0 件でも作成されている
+- [x] タスク 6: 仕様準拠チェックが PASS である
