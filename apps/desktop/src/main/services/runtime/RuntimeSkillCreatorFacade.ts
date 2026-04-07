@@ -40,6 +40,7 @@ import type {
   SkillCreatorWorkflowUiSnapshot,
   RuntimeSkillCreatorVerifyDetailResponse,
   ApplyImprovementResult,
+  HealthPolicy,
   LoadedWorkflowManifest,
   SkillCreatorSdkEvent,
   SkillCreatorSdkPermissionDenial,
@@ -48,8 +49,8 @@ import type {
   RuntimeSkillCreatorVerifyCheck,
   SkillCreatorSessionListItem,
   SkillCreatorSessionResumeResult,
+  ImproveFeedbackHistory,
 } from "@repo/shared/types";
-import type { ImproveFeedbackHistory, HealthPolicy } from "@repo/shared/types";
 import {
   SKILL_CREATOR_ENGINE_VERSION,
   SESSION_TTL_MS,

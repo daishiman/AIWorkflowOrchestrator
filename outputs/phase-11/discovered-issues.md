@@ -1,4 +1,4 @@
-# Phase 11: discovered issues — TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+# Phase 11: discovered issues — UT-HEALTH-POLICY-RUNTIME-INJECTION-001
 
 ## サマリー
 
@@ -6,15 +6,15 @@
 | ------------------- | ---- |
 | current blocker     | 0    |
 | current minor       | 0    |
-| resolved carry-over | 1    |
+| resolved carry-over | 2    |
+
+## 詳細
+
+### resolved carry-over
+
+- vitest 実行の esbuild host/binary version mismatch（`0.21.5` vs `0.25.12`）を解消し、再実行で PASS
+- `pnpm --filter @repo/desktop dev` の起動失敗（`@repo/shared` dist 未生成）を `pnpm --filter @repo/shared build` 後の再実行で解消
 
 ## 判定
 
-Phase 11 の NON_VISUAL walkthrough では、新規の blocker / minor issue は検出されなかった。
-
-## 確認メモ
-
-- execute / improve の adapter guard は対称
-- typecheck / eslint / targeted vitest は PASS
-- `TASK-UT-RT-01-PHASE11-NONVISUAL-WALKTHROUGH-EVIDENCE-001` は current wave で回収済み
-- Phase 10 の MINOR follow-up 2件は Phase 12 で formalize
+新規未解決課題はなし。Phase 11 は完了。

@@ -2136,7 +2136,7 @@
 | 未タスクID                              | 概要                                                              | 優先度 | タスク仕様書                                                                   |
 | --------------------------------------- | ----------------------------------------------------------------- | ------ | ------------------------------------------------------------------------------ |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 | useMainlineExecutionAccess.ts を resolveHealthPolicy() 経由に移行 | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-MAINLINE-MIGRATION-001.md` |
-| UT-HEALTH-POLICY-RUNTIME-INJECTION-001  | RuntimePolicyResolver の HealthPolicy 注入元実装                  | 高     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-RUNTIME-INJECTION-001.md`  |
+| ~~UT-HEALTH-POLICY-RUNTIME-INJECTION-001~~ | ~~RuntimePolicyResolver の HealthPolicy 注入元実装~~ | ~~高~~ | **完了**: 2026-04-07 `docs/30-workflows/ut-health-policy-runtime-injection/` |
 | UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001 | @deprecated apiKeyDegraded の実際の除去（v0.8.0）                 | 中     | `docs/30-workflows/unassigned-task/UT-HEALTH-POLICY-DEPRECATED-REMOVAL-001.md` |
 
 ---
@@ -2524,7 +2524,7 @@
 
 ---
 
-### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-06）
+### タスク: TASK-P0-09-U1 path-scoped-governance-runtime-enforcement（2026-04-07）
 
 | 項目       | 値                                                                                                                                              |
 | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -2532,7 +2532,7 @@
 | ステータス | **完了**                                                                                                                                        |
 | タイプ     | implementation / TDD / security                                                                                                                 |
 | 優先度     | 最高                                                                                                                                            |
-| 完了日     | 2026-04-06                                                                                                                                      |
+| 完了日     | 2026-04-07                                                                                                                                      |
 | 対象       | `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`                                                                           |
 | 成果物     | `docs/30-workflows/task-p0-09-u1-path-scoped-governance-runtime-enforcement/`（Phase 1-12 仕様書・テスト）                                     |
 
@@ -2543,6 +2543,7 @@
 - `createImproveGovernanceCanUseTool(skillRoot)` を新規追加（improve phase 対応）
 - `_executeInternal()` 呼び出しで `this.getExplicitSkillCreatorRoot() ?? ""` を渡すよう修正
 - `SkillCreatorPermissionPolicy.ts` の `TODO(TASK-P0-09-U1)` コメントを解消
+- `RuntimeSkillCreatorExecuteErrorResponse` 型を shared に追加
 
 #### 検証証跡
 
@@ -2550,6 +2551,21 @@
 - 合計 101 tests PASS（`path-scoped-enforcement.test.ts` 含む）
 - typecheck: EXIT:0 ✅
 - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
+
+#### 苦戦箇所
+
+- **SDK callback input キー名の揺れ**: SDK が `file_path` と `path` の両方を使用するケースがあり、`extractTargetPath()` で `file_path ?? path` の fallback 順序で吸収
+- **判定ロジック層と配線層の責任分離**: `SkillCreatorPermissionPolicy` は変更禁止（判定ロジック层）、`RuntimeSkillCreatorFacade` のみ変更（配線層）という設計原則を維持
+- **improve() が SDK callback を経由しない設計**: `applyImprovement()` 内での明示的呼び出しが必要だが、未タスク TASK-P0-09-U1-A として carry-forward
+- **governance hooks と phase 追加時の統一性**: phase 追加時のチェックリスト明示化が未対応（TASK-P0-09-U1-B / C）
+
+#### 派生未タスク
+
+| 未タスクID         | 内容                                              | 優先度 |
+| ------------------ | ------------------------------------------------- | ------ |
+| TASK-P0-09-U1-A    | improve() canUseTool 配線（SDK callback 経由化）  | 中     |
+| TASK-P0-09-U1-B    | renderer UI への governance 結果表示              | 中     |
+| TASK-P0-09-U1-C    | audit 永続化（ring buffer → ストレージ）          | 低     |
 
 ---
 

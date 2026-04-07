@@ -39,6 +39,18 @@ Phase 12 close-out では、task-spec 観点でも `artifacts.json` / `outputs/a
 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 の skill-feedback-report.md（Feedback 1〜4）
 
 ---
+
+## 2026-04-07 - TASK-P0-09-U1 Phase 12 スキル更新確認・keywords.json キーワード同期
+
+### 変更内容
+- `aiworkflow-requirements/indexes/keywords.json` に TASK-P0-09-U1 実装由来の不足キーワード4件を追加（`extractTargetPath` / `path-scoped` / `governance-enforcement` / `RuntimeSkillCreatorExecuteErrorResponse`）
+- SKILL.md（task-specification-creator）の3フィードバック反映（Phase 4 private method テスト方針・Phase 5 canUseTool 制約・小規模タスク tier 分け）は 2026-04-06 済みにつき本日追加なし
+
+### 背景
+Phase-12 skill-feedback-report.md の3改善提案はすでに 2026-04-06 に SKILL.md v6.18.19 / v10.09.29 として反映済み。本エントリは keywords.json への未追加キーワードの同期記録。
+
+---
+
 ## 2026-04-07 - TASK-UI-04 仕様書ステータス乖離修正 Phase 12 close-out sync（skill-feedback 反映）
 
 ## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync

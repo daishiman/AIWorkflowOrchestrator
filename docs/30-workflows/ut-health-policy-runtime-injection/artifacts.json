@@ -3,7 +3,7 @@
   "taskName": "health-policy-runtime-injection",
   "featureName": "ut-health-policy-runtime-injection",
   "createdAt": "2026-04-07T00:00:00Z",
-  "status": "in_progress",
+  "status": "spec_created",
   "phases": [
     {
       "phase": 1,
@@ -122,7 +122,7 @@
     {
       "phase": 11,
       "name": "手動テスト",
-      "status": "completed",
+      "status": "not-started",
       "specFile": "phase-11-manual-test.md",
       "outputDir": "outputs/phase-11",
       "artifacts": [
@@ -136,7 +136,7 @@
     {
       "phase": 12,
       "name": "ドキュメント更新",
-      "status": "completed",
+      "status": "not-started",
       "specFile": "phase-12-documentation.md",
       "outputDir": "outputs/phase-12",
       "artifacts": [

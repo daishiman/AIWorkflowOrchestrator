@@ -10,8 +10,19 @@ import { RuntimeSkillCreatorFacade } from "../RuntimeSkillCreatorFacade";
 import { SkillCreatorWorkflowEngine } from "../SkillCreatorWorkflowEngine";
 import { RuntimePolicyResolver } from "../RuntimePolicyResolver";
 import { TerminalHandoffBuilder } from "../TerminalHandoffBuilder";
+import type { HealthPolicy } from "@repo/shared/types";
 import type { SkillExecutor } from "../../skill/SkillExecutor";
 import type { ILLMAdapter } from "../../../adapters/llm/types";
+
+function makeDegradedPolicy(): HealthPolicy {
+  return {
+    isConnectionAvailable: true,
+    isDegraded: true,
+    isRateLimited: false,
+    healthStatus: "degraded",
+    lastCheckedAt: new Date("2026-04-07T00:00:00Z"),
+  };
+}
 
 describe("RuntimeSkillCreatorFacade", () => {
   let executeMock: ReturnType<typeof vi.fn>;
@@ -142,6 +153,39 @@ describe("RuntimeSkillCreatorFacade", () => {
         streamChat: vi.fn(),
         checkHealth: vi.fn(),
       } as unknown as ILLMAdapter);
+    });
+
+    it("healthPolicy が degraded の場合、api-key が有効でも terminal_handoff を返す", async () => {
+      const degradedFacade = new RuntimeSkillCreatorFacade({
+        skillExecutor: {
+          execute: executeMock,
+        } as unknown as SkillExecutor,
+        llmAdapter: {
+          providerId: "anthropic",
+          sendChat: vi.fn(),
+          streamChat: vi.fn(),
+          checkHealth: vi.fn(),
+        } as unknown as ILLMAdapter,
+        healthPolicy: makeDegradedPolicy(),
+      });
+
+      executeMock.mockResolvedValue({
+        executionId: "exec-degraded",
+        success: true,
+      });
+
+      const result = await degradedFacade.execute(
+        {
+          planId: "plan-degraded",
+          skillSpec: "my-skill\nbody",
+          estimatedSteps: 3,
+        },
+        "api-key",
+        "sk-valid-key",
+      );
+
+      expect(result).toHaveProperty("type", "terminal_handoff");
+      expect(executeMock).not.toHaveBeenCalled();
     });
 
     it("SkillExecutor に request と metadata を委譲し、成功結果を返す", async () => {

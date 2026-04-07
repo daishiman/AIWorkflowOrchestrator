@@ -26,7 +26,7 @@
 
 import fs from "fs/promises";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { LoadedWorkflowManifest } from "@repo/shared/types";
+import type { HealthPolicy, LoadedWorkflowManifest } from "@repo/shared/types";
 import {
   RuntimeSkillCreatorFacade,
   buildImproveUserPrompt,
@@ -75,6 +75,16 @@ function createMockSkillFileManager(): SkillFileManager {
     listBackups: vi.fn(),
     restoreBackup: vi.fn(),
   } as unknown as SkillFileManager;
+}
+
+function makeDegradedPolicy(): HealthPolicy {
+  return {
+    isConnectionAvailable: true,
+    isDegraded: true,
+    isRateLimited: false,
+    healthStatus: "degraded",
+    lastCheckedAt: new Date("2026-04-07T00:00:00Z"),
+  };
 }
 
 /** 有効な LLM 改善提案レスポンス JSON を生成する */
@@ -985,6 +995,39 @@ describe("RuntimeSkillCreatorFacade.improve() LLM Integration", () => {
 
   // E-12: terminal_handoff 分岐
   describe("E-12: terminal_handoff 分岐", () => {
+    it("healthPolicy が degraded の場合、api-key が有効でも terminal_handoff になる", async () => {
+      // healthPolicy の実分岐を確認するため、beforeEach の default mock を外す
+      vi.restoreAllMocks();
+
+      const degradedFacade = new RuntimeSkillCreatorFacade({
+        skillExecutor: mockSkillExecutor,
+        llmAdapter: mockLLMAdapter,
+        resourceLoader: mockResourceLoader as never,
+        skillFileManager: mockSkillFileManager,
+        healthPolicy: makeDegradedPolicy(),
+      });
+
+      (
+        mockSkillFileManager.readFile as ReturnType<typeof vi.fn>
+      ).mockResolvedValue("# SKILL.md");
+      (mockLLMAdapter.sendChat as ReturnType<typeof vi.fn>).mockResolvedValue({
+        content: validImproveResponseJson(),
+        model: "claude-sonnet-4-20250514",
+        usage: { promptTokens: 100, completionTokens: 50, totalTokens: 150 },
+      });
+
+      const result = await degradedFacade.improve(
+        "test-skill",
+        "fb",
+        "api-key",
+        "sk-valid-key",
+      );
+
+      expect(result).toHaveProperty("type", "terminal_handoff");
+      expect(mockSkillFileManager.readFile).not.toHaveBeenCalled();
+      expect(mockLLMAdapter.sendChat).not.toHaveBeenCalled();
+    });
+
     it("terminal_handoff 判定時、LLM と SkillFileManager が呼ばれない", async () => {
       vi.spyOn(RuntimePolicyResolver.prototype, "resolve").mockResolvedValue({
         type: "terminal_handoff",
