@@ -124,6 +124,30 @@ git push
 ```
 ````
 
+## 変数一覧
+
+| 変数 | 意味 |
+| --- | --- |
+| `{{TASK_ID}}` | workflow 全体の task ID |
+| `{{FEATURE_NAME}}` | workflow ディレクトリ名 |
+| `{{PHASE_NAME}}` | phase 名称 |
+| `{{ARTIFACT_PATH}}` | `outputs/phase-N/...` の相対パス |
+| `{{SYSTEM_SPEC_PATH}}` | aiworkflow-requirements 側の更新対象 |
+
+## 関連テンプレート
+
+- [../assets/phase-spec-template.md](../assets/phase-spec-template.md)
+- [../assets/main-task-template.md](../assets/main-task-template.md)
+- [../assets/review-result-template.md](../assets/review-result-template.md)
+- [../assets/implementation-guide-template.md](../assets/implementation-guide-template.md)
+- [../assets/documentation-changelog-template.md](../assets/documentation-changelog-template.md)
+
+## 変更履歴
+
+| Date | Changes |
+| --- | --- |
+| 2026-03-12 | 1818行の monolith から family file 構成へ再編 |
+
 ## 関連ガイド
 
 - [phase-template-phase13.md](phase-template-phase13.md) — Phase 13 骨格・blocked ルール

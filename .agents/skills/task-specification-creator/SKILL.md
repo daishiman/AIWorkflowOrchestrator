@@ -105,8 +105,8 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 
 | Phase | 名称             | 目的                                                                                                                                         |
 | ----- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**                                 |
-| 2     | 設計             | topology、SubAgent lane、validation path を設計する                                                                                          |
+| 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**。**[FB-UI-02-2]** 全件 `pnpm test` が SIGKILL 終了するリスクがある場合は、targeted run ファイルリストを Phase 1 で事前列挙する（たとえば、メモリ制約が厳しい環境では vitest の対象ファイル指定が必須となる） |
+| 2     | 設計             | topology、SubAgent lane、validation path を設計する。**[FB-SDK-07-1]** 「既存コンポーネント再利用可否」を必ず確認する。新規 UI 実装ゼロで品質・アクセシビリティ・HIG準拠を既存レベルで担保できる場合は再利用を優先する |
 | 3     | 設計レビュー     | Phase 4 へ進めるかを判定する                                                                                                                 |
 | 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する**。**[Feedback P0-09-U1]** private method のテストは `(facade as unknown as FacadePrivate)` キャストまたは public callback 経由を使う方針を Phase 4 仕様書に明記する |
 | 5     | 実装             | `.claude` 正本を更新し、mirror を同期する。**[Feedback RT-03]** 実装計画に「新規作成」「修正」ファイルパス一覧を必須記載する（見落とし防止）。**[Feedback P0-09-U1]** `improve()` フローで SDK callback が不適用な場合（`llmAdapter.sendChat()` 経由など）は「canUseTool 適用可能範囲と制約」を仕様書に明記する |
@@ -314,6 +314,8 @@ node scripts/detect-unassigned-tasks.js --scan packages/shared/src --output .tmp
 | **[Feedback 6]** ViewType を追加した際に navigation 契約・store 型・既存テストの3点更新が漏れる          | `store/types.ts`（ViewType union）/ `skillLifecycleJourney.ts`（正規化関数・定数）/ renderView テスト を same-wave で更新し、`ui-ux-navigation.md` の ViewType テーブルも同時同期する。Phase 1 設計メモに「追加 ViewType: XYZ」を明示しておくと漏れが防げる |
 | **[FB-UI-02-1]** Phase 9 QA で「ファイル削除」を PASS 基準にすると stub 化タスクが FAIL 扱いになる        | Phase 9 の削除確認は「git delete されている OR `export {}` stub 化かつ live import ゼロのいずれか」を PASS とする。たとえば、廃止ファイルを stub 化した場合は `grep -rn "import.*廃止ファイル名" src/` でゼロ件を証跡に残す |
 | **[Feedback TASK-UI-04]** 実装完了後に `artifacts.json` status が `spec_created` / `in_progress` のまま放置される | 実装 Phase（Phase 5 or 最終実装 Phase）完了時に `complete-phase.js` を必ず実行し、status を `completed` に更新する。実装完了と仕様書ステータス更新は同一 wave で行う（後回しは乖離蓄積の主因）。有効値: `spec_created` / `in_progress` / `completed` / `phase12_completed` |
+| **[FB-SDK-07-2]** Phase 1 で新規 IPC surface を定義する際に Preload API 経由が明記されない                  | Phase 1（要件定義）では新規 IPC surface を定義する場合、「Preload API 経由必須」を明記する。直接 `ipcRenderer.on` は禁止パターンとして記録する |
+| **[FB-SDK-07-4]** Phase 1 で既存 API の命名パターンを確認せずに新規 API を命名し、Phase 3 で MINOR 指摘を受ける | Phase 1（要件定義）では既存の `safeOn` / `safeInvoke` 等の命名パターンを確認し、新規 API の命名規則一貫性を担保する。命名ドリフトは Phase 3 レビューゲートの MINOR 指摘の主要因となる |
 
 ### Phase 12 苦戦防止Tips
 

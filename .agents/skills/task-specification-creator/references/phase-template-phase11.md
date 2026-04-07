@@ -52,6 +52,17 @@ Phase 11 の manual test。
 | `ui-sanity-visual-review.md` | 視覚レビュー |
 | `phase11-capture-metadata.json` | capture 実行時の evidence inventory |
 
+### 環境チェック（Phase 11 着手前）
+
+Phase 11 の screenshot 撮影前に以下を確認する：
+
+1. Electron 起動確認: `pnpm --filter @repo/desktop preview` が正常起動するか
+2. 起動不可の場合（worktree 環境等） → **CAPTURE_BLOCKED** として記録する
+   - ダミー PNG 作成は禁止（false green 防止）
+   - ユニットテストの PASS を代替 evidence として記録する
+   - `docs/30-workflows/unassigned-task/` に未タスクとして formalize する
+3. 起動可能な場合 → 通常の screenshot 撮影フローへ進む
+
 ## 設計タスク専用セクション（SF-01対応）
 
 **判定基準**: タスク種別が「設計・仕様策定」であり、UI実装が存在しない場合に適用。

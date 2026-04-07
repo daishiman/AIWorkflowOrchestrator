@@ -1,70 +1,60 @@
-# タスク実行仕様書生成ガイド / completed records
+# タスク完了記録 — インデックス
 
 > 親仕様書: [task-workflow.md](task-workflow.md)
-> 役割: completed records
+> 役割: index — 詳細は各子ファイルを参照
 > 区分: 履歴記録（history record）
 
-## 完了タスク
+## 最近の完了タスク（2026-04）
 
-### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Skill Creator preload / renderer に approval:request surface を追加（2026-04-06）
+- [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
+- [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
+- [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
 
-| 項目       | 値                                                                                         |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| タスクID   | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001                                                     |
-| ステータス | **完了**                                                                                   |
-| タイプ     | implementation / approval-request-surface / documentation                                  |
-| 優先度     | 中                                                                                         |
-| 完了日     | 2026-04-06                                                                                 |
-| 対象       | Skill Creator preload / renderer に `approval:request` surface を追加                      |
-| 成果物     | `docs/30-workflows/step-12-par-task-ut-sdk-07-approval-request-surface-001/`              |
-| 元未タスク | `docs/30-workflows/unassigned-task/task-ut-sdk-07-approval-request-surface-001.md`         |
+## 完了タスク（2026-03後半）
 
-#### 実施内容
+- [2026-03-29～31: TASK-P0-02 / TASK-P0-05 / TASK-LLM-MOD-05 / TASK-RT-01 / TASK-RT-02 / TASK-RT-04 / UT-RT-06-* / TASK-UIUX-FEEDBACK-001 など](./task-workflow-completed-recent-2026-03d.md)
+- [2026-03-25～28: TASK-SDK-03 / TASK-SDK-04 / TASK-SDK-05 / TASK-SDK-06 / UT-IMP-RUNTIME-WORKFLOW-* / UT-LLM-MOD-01-005 / TASK-SDK-01 / TASK-SDK-02 など](./task-workflow-completed-recent-2026-03c.md)
+- [2026-03-22～26（後半）: TASK-SDK-08 / TASK-IMP-SESSION-DOCK-ARTIFACT-BRIDGE-001 / TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 / TASK-SC-04 / UT-SC-03-003 / TASK-IMP-SLIDE-MODIFIER / TASK-IMP-TERMINAL-HANDOFF / TASK-IMP-TRANSCRIPT / TASK-IMP-SETTINGS-SHELL / TASK-IMP-CANONICAL-BRIDGE / TASK-IMP-HEALTH-POLICY / TASK-IMP-ADVANCED-CONSOLE-SAFETY など](./task-workflow-completed-recent-2026-03e.md)
+- [2026-03-19～21: TASK-IMP-RUNTIME-POLICY-CAPABILITY-BRIDGE-001 / TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-001 / TASK-IMP-EXECUTION-RESPONSIBILITY-CONTRACT-FOUNDATION-001 / TASK-IMP-SLIDE-AI-RUNTIME-ALIGNMENT-001](./task-workflow-completed-recent-2026-03b.md)
+- [2026-03-10～18: TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 / TASK-IMP-TASK-SPECIFICATION-CREATOR-LINE-BUDGET-REFORM-001 / TASK-FIX-LIGHT-THEME-TOKEN-FOUNDATION-001 / TASK-FIX-LIGHT-THEME-SHARED-COLOR-MIGRATION-001 / TASK-SKILL-LIFECYCLE-01 / TASK-UI-06/07/08/04B](./task-workflow-completed-recent-2026-03a.md)
 
-- `ApprovalRequestPayload` を `packages/shared/src/types/skillCreator.ts` の canonical export にし、preload / renderer / main で再利用した
-- `SkillLifecyclePanel` に `onApprovalRequest` リスナーと approval response error handling を統合した
-- `ApprovalRequestPanel` の pending / expired / resolving / failure revert をテストし、approve/reject の接続を確認した
-- Phase 11 の visual evidence を Playwright ハーネスで 6 枚撮影し、`outputs/phase-11/screenshots/` に保存した
-- Phase 12 / 13 のドキュメント、台帳、実装ガイドを current facts に同期した
+## 完了タスク（機能別アーカイブ）
 
-#### 検証証跡
+### Skill Lifecycle
 
-- `pnpm --filter @repo/desktop typecheck`: PASS
-- `pnpm --filter @repo/desktop exec vitest run src/preload/__tests__/skill-creator-api.approval.test.ts src/renderer/components/skill/__tests__/ApprovalRequestPanel.test.tsx src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx`: PASS（25 tests）
-- `pnpm --filter @repo/desktop screenshot:ut-sdk-07-approval-request-surface`: PASS（6 screenshots captured）
+- [Skill Lifecycle UI 実装系（前半）](./task-workflow-completed-skill-lifecycle-ui.md)
+- [Skill Lifecycle UI 実装系（後半: Verify/Improve パネル）](./task-workflow-completed-skill-lifecycle-ui-verify.md)
+- [Skill Lifecycle メイン](./task-workflow-completed-skill-lifecycle.md)
+- [Skill Lifecycle 設計](./task-workflow-completed-skill-lifecycle-design.md)
+- [Skill Lifecycle セキュリティ](./task-workflow-completed-skill-lifecycle-security.md)
+- [Skill Lifecycle AuthFix](./task-workflow-completed-skill-lifecycle-authfix.md)
+- [Skill Lifecycle AgentView/LineBudget](./task-workflow-completed-skill-lifecycle-agent-view-line-budget.md)
+- [Skill Lifecycle アーカイブ 2026-03](./task-workflow-completed-skill-lifecycle-archive-2026-03.md)
 
-### タスク: TASK-SDK-04-U1-F1 verification_review request を single_select kind に変更（2026-04-06）
+### Chat / Lifecycle / Tests
 
-| 項目 | 値 |
-|---|---|
-| タスクID | TASK-SDK-04-U1-F1 |
-| ステータス | **完了（Phase 12 close-out）** |
-| タイプ | テスト整合・kind変更 |
-| 優先度 | 中 |
-| 完了日 | 2026-04-06 |
-| 対象 | `SkillCreatorWorkflowEngine.createVerificationReviewRequest()` kind: free_text → single_select |
-| 成果物 | `docs/30-workflows/task-sdk-04-u1-f1-verification-review-single-select/` |
+- [Chat Lifecycle Tests（前半）](./task-workflow-completed-chat-lifecycle-tests.md)
+- [Chat Lifecycle Tests（後半）](./task-workflow-completed-chat-lifecycle-tests-part2.md)
+- [Workspace Chat Lifecycle Tests](./task-workflow-completed-workspace-chat-lifecycle-tests.md)
 
-#### 実施内容
+### IPC / Preload / Contract
 
-- 実装確認: `createVerificationReviewRequest()` の `kind: "single_select"` は TASK-SDK-04-U1 実装波で先行完了済み
-- テスト修正: verification_review 関連テスト 5 箇所から `textValue` フィールドを削除
-- 新規テスト追加: TC-NEW-1〜3（kind確認・options確認・不正ID拒否）
-- 拡張テスト追加: TC-ADD-1〜5（境界値・呼び出し元回帰）
-- 全 47 テスト PASS、typecheck PASS、lint PASS
+- [IPC Contract Preload Alignment（前半）](./task-workflow-completed-ipc-contract-preload-alignment.md)
+- [IPC Preload Foundation（後半）](./task-workflow-completed-ipc-preload-foundation.md)
+- [IPC Graceful Degradation Lifecycle](./task-workflow-completed-ipc-graceful-degradation-lifecycle.md)
 
-#### 検証証跡
+### UI / View / Navigation
 
-- Phase 4: テスト仕様書 + Red記録
-- Phase 5: 実装サマリー（47 tests PASS）
-- Phase 6: 拡張テスト（境界値 + 呼び出し元回帰）
-- Phase 7: カバレッジ（対象関数 100%）
-- Phase 9: 品質レポート（typecheck / lint / IPC drift なし）
-- Phase 11: NON_VISUAL 確認
+- [Skill Import / Skill Center Nav](./task-workflow-completed-skill-import-skill-center-nav.md)
+- [Skill Create UI Integration](./task-workflow-completed-skill-create-ui-integration.md)
+- [Advanced Views / Analytics / Audit](./task-workflow-completed-advanced-views-analytics-audit.md)
+- [Agent View / Line Budget](./task-workflow-completed-agent-view-line-budget.md)
+- [UI/UX Visual Baseline Drift](./task-workflow-completed-ui-ux-visual-baseline-drift.md)
 
----
+### Auth / Notification / State
 
-### タスク: UT-VERIFY-DOC-CONSOLIDATION-001 verify関連ドキュメント正本・履歴分離（2026-04-06）
+- [Notification / History / Auth Key State](./task-workflow-completed-notification-history-auth-key-state.md)
+- [Abort / Contract / Auth / Session / Chat](./task-workflow-completed-abort-contract-auth-session-chat.md)
 
 | 項目       | 値                                                                                 |
 | ---------- | ---------------------------------------------------------------------------------- |
@@ -75,13 +65,13 @@
 | 完了日     | 2026-04-06                                                                         |
 | 対象       | verify 関連ドキュメント4ファイルの区分ラベル付与・責務分離明示                     |
 | 成果物     | `docs/30-workflows/completed-tasks/UT-VERIFY-DOC-CONSOLIDATION-001.md`               |
+### Quality / Infra
 
-#### 実施内容
+- [Quality Gates / Module Resolution / Logging](./task-workflow-completed-quality-gates-module-resolution-logging.md)
+- [Debug / Scheduler / Doc Generation / Theme](./task-workflow-completed-debug-scheduler-doc-generation-theme.md)
+- [UT-06 Safety Gate](./task-workflow-completed-ut-06-safety-gate.md)
 
-- `task-workflow.md` のインデックステーブルに「区分」列を追加（正本 / 履歴 / 契約仕様の判別を即座に可能に）
-- `task-workflow-completed.md` 冒頭に `> 区分: 履歴記録（history record）` を追記
-- `task-workflow-active.md` 冒頭に `> 区分: 正本（current contract）` を追記
-- `interfaces-skill-verify-contract.md` 冒頭に `> 区分: 契約仕様` を追記、verify エンジン責務分離セクションを追加
+### Workspace
 
 #### 検証証跡
 
@@ -2603,3 +2593,4 @@
 - IPC 契約対称性確認済み（APPROVAL_CHANNELS.APPROVAL_REQUEST）
 - Phase 11: Visual 4件 CAPTURE_BLOCKED（worktree 環境制約）、NonVisual 3件 PASS(unit)
 - CAPTURE_BLOCKED 未タスク: `docs/30-workflows/unassigned-task/ut-sdk-07-approval-request-surface-001-phase11-screenshot.md`
+- [Workspace](./task-workflow-completed-workspace.md)
