@@ -2442,3 +2442,34 @@
 - 合計 101 tests PASS（`path-scoped-enforcement.test.ts` 含む）
 - typecheck: EXIT:0 ✅
 - Phase 11: NON_VISUAL（Main プロセス非 UI コンポーネント、自動テスト代替 PASS）
+
+---
+
+### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001（2026-04-06）
+
+| 項目       | 値                                                                                                                                                      |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001                                                                                                                  |
+| ステータス | **完了**                                                                                                                                                |
+| タイプ     | ui-task / IPC surface 追加                                                                                                                              |
+| 優先度     | 高                                                                                                                                                      |
+| 完了日     | 2026-04-06                                                                                                                                              |
+| 発生元     | TASK-SDK-07 Phase 12 再監査 / Issue #1683                                                                                                               |
+| 対象       | `apps/desktop/src/preload/skill-creator-api.ts`、`apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`                                   |
+| 成果物     | `docs/30-workflows/ut-sdk-07-approval-request-surface-001/`（Phase 1-12 仕様書・テスト）                                                               |
+
+#### 実施内容
+
+- `SkillCreatorAPI` interface に `onApprovalRequest(callback: (request: ApprovalRequest) => void): () => void` を追加
+- `safeOn(APPROVAL_CHANNELS.APPROVAL_REQUEST, callback)` パターンで実装（`onDisclosureInfo` と同パターン）
+- `SkillLifecyclePanel.tsx` に `pendingApproval` state・`ApprovalSheet` 条件レンダリング・`handleApprove`/`handleReject`・useEffect cleanup を追加
+- TC-APPR-01〜18 テスト 19 件追加、全件 PASS
+
+#### 検証証跡
+
+- vitest 19/19 PASS（TC-APPR-01〜18 + fixture setup）
+- `pnpm typecheck` EXIT:0 ✅
+- `pnpm lint` EXIT:0（errors 0）✅
+- IPC 契約対称性確認済み（APPROVAL_CHANNELS.APPROVAL_REQUEST）
+- Phase 11: Visual 4件 CAPTURE_BLOCKED（worktree 環境制約）、NonVisual 3件 PASS(unit)
+- CAPTURE_BLOCKED 未タスク: `docs/30-workflows/unassigned-task/ut-sdk-07-approval-request-surface-001-phase11-screenshot.md`
