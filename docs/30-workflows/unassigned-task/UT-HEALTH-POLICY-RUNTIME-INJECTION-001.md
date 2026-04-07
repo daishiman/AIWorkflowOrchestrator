@@ -8,6 +8,7 @@
 | 優先度       | HIGH                                             |
 | 親タスク     | TASK-IMP-HEALTH-POLICY-UNIFICATION-001           |
 | 対象ファイル | RuntimePolicyResolver のファクトリー/DI コンテナ |
+| issue番号    | #2004                                            |
 
 ## 概要
 

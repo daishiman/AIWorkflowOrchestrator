@@ -374,6 +374,31 @@ describe("RuntimeSkillCreatorFacade.executeAsync", () => {
     );
   });
 
+  it("T-05b: success false の string error を返した場合も error.message を伝搬する", async () => {
+    const { facade, workflowEngine } = createFacade();
+    const snapshotSpy = vi.fn();
+    facade.onWorkflowStateSnapshot = snapshotSpy;
+
+    vi.spyOn(workflowEngine, "getWorkflowState").mockReturnValue(undefined);
+    vi.spyOn(facade, "execute").mockResolvedValue({
+      success: false,
+      error: "APIキーを設定してください",
+    } as any);
+
+    await facade.executeAsync("plan-T05b", {
+      planId: "plan-T05b",
+      skillSpec: "skill spec",
+      authMode: "api-key",
+      apiKey: "sk-test",
+    });
+
+    expect(snapshotSpy).toHaveBeenCalledWith(
+      "plan-T05b",
+      null,
+      "APIキーを設定してください",
+    );
+  });
+
   it("T-06: catch パス - Error 以外の値を throw した場合も String(error) が第3引数に渡る", async () => {
     const { facade, workflowEngine } = createFacade();
     const snapshotSpy = vi.fn();
@@ -396,6 +421,42 @@ describe("RuntimeSkillCreatorFacade.executeAsync", () => {
       "plan-T06",
       null,
       "execution failed unexpectedly",
+    );
+  });
+
+  // ── UT-RT-02-EXHAUSTIVE-CHECK-001: exhaustive switch 追加テスト ──
+
+  // TC-07: switch 網羅性テスト（型レベル・手動検証手順）
+  // 以下の手順でコンパイルエラーが assertNever 行で発生することを確認する:
+  // 1. RuntimeSkillCreatorExecuteResponse に仮バリアント (e.g. { type: 'pending' }) を追加
+  // 2. pnpm --filter @repo/desktop typecheck でエラー発生を確認
+  // 3. classifyExecuteResult() または outer switch に case を追加してエラー解消を確認
+  // 4. 仮バリアントを削除して元に戻す
+  it.todo("TC-09: union型に新バリアント追加時のエンドツーエンド検証"); // UT-RT-02-TYPE-EXPANSION-TEST-001
+
+  it("TC-08: 未知のバリアントが executeAsync の catch パスを経由してエラー処理される", async () => {
+    const { facade, workflowEngine } = createFacade();
+    const snapshotSpy = vi.fn();
+    facade.onWorkflowStateSnapshot = snapshotSpy;
+
+    vi.spyOn(workflowEngine, "getWorkflowState").mockReturnValue(undefined);
+    // 未知バリアントを返すモック（assertNever により throw される）
+    vi.spyOn(facade, "execute").mockResolvedValue({
+      type: "unknown_variant",
+    } as any);
+
+    await facade.executeAsync("plan-TC08", {
+      planId: "plan-TC08",
+      skillSpec: "skill spec",
+      authMode: "api-key",
+      apiKey: "sk-test",
+    });
+
+    // classifyExecuteResult() の assertNever が throw → catch パスへ
+    expect(snapshotSpy).toHaveBeenCalledWith(
+      "plan-TC08",
+      null,
+      expect.stringContaining("Unhandled case"),
     );
   });
 });

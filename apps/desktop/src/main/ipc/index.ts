@@ -105,6 +105,7 @@ import { registerChatEditHandlers } from "./chatEditHandlers";
 import { FileService, ContextBuilder } from "../services/chat-edit";
 import { RuntimeResolver as ChatEditRuntimeResolver } from "../services/chat-edit/RuntimeResolver";
 import { RuntimePolicyResolver } from "../services/runtime/RuntimePolicyResolver";
+import type { HealthPolicy } from "@repo/shared/types";
 import { RuntimeSkillCreatorFacade } from "../services/runtime/RuntimeSkillCreatorFacade";
 import { ElectronNotificationService } from "../services/notification/ElectronNotificationService";
 import { registerBeforeQuitGuard } from "./beforeQuitGuard";
@@ -585,10 +586,13 @@ function safeRegister(
  * @param conversationDb - Optional pre-initialized SQLite database for conversations.
  *   - If a Database instance is provided, it will be used directly (DI path).
  *   - If undefined or null, the internal initialization path is used (backward-compatible).
+ * @param options - Optional additional dependencies
+ *   - healthPolicy: Pre-built HealthPolicy to inject into RuntimePolicyResolver (UT-HEALTH-POLICY-RUNTIME-INJECTION-001)
  */
 export function registerAllIpcHandlers(
   mainWindow: BrowserWindow,
   conversationDb?: Database.Database | null,
+  options?: { healthPolicy?: HealthPolicy },
 ): IpcHandlerRegistrationResult {
   const failures: HandlerRegistrationFailure[] = [];
   let successCount = 0;
@@ -715,6 +719,7 @@ export function registerAllIpcHandlers(
   const runtimePolicyResolver = new RuntimePolicyResolver(
     authKeyService,
     subscriptionAuthProvider,
+    options?.healthPolicy,
   );
 
   // Safety Governance: ApprovalGate をここで生成し、Agent/Approval handlers で共有する
@@ -1035,6 +1040,7 @@ export function registerAllIpcHandlers(
           resolvedResourceReader,
           skillFileManager, // improve() / applyImprovement() で SKILL.md 読み書きに使用
           notificationService,
+          healthPolicy: options?.healthPolicy,
         })
       : undefined;
 

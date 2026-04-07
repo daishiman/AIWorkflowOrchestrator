@@ -11,12 +11,12 @@ issue_number: 1960
 | 項目         | 内容                                                                                |
 | ------------ | ----------------------------------------------------------------------------------- |
 | タスクID     | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001                              |
-| タスク名     | `executeAsync()` での error message 形式統一                                        |
+| タスク名     | `executeAsync()` での error message 伝搬パス統一                                    |
 | 分類         | 改善                                                                                |
 | 対象機能     | RuntimeSkillCreatorFacade — executeAsync / onWorkflowStateSnapshot                  |
 | 優先度       | 中                                                                                  |
 | 見積もり規模 | 小規模                                                                              |
-| ステータス   | 未実施                                                                              |
+| ステータス   | completed                                                                           |
 | 発見元       | Phase 10（TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 最終レビュー MINOR 指摘） |
 | 発見日       | 2026-04-04                                                                          |
 
@@ -47,8 +47,8 @@ Renderer 側は `onWorkflowStateSnapshot` が提供する snapshot または err
 
 ### 1.3 放置した場合の影響
 
-- adapter ステータスガードが `execute()` で発動した場合（API キー未設定など）、Renderer 側の UI にはエラー理由が表示されない
-- ユーザーは「スキル実行に失敗した」という事実は確認できるが、その原因（「API キーを設定してください」など）を UI から読み取れない
+- adapter ステータスガードが `execute()` で発動した場合（APIキー未設定など）、Renderer 側の UI にはエラー理由が表示されない
+- ユーザーは「スキル実行に失敗した」という事実は確認できるが、その原因（「APIキーを設定してください」など）を UI から読み取れない
 - adapter guard の投資効果（actionable message の提供）が `executeAsync()` 経由の呼び出しでは得られない
 
 ---

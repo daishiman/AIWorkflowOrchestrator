@@ -5,6 +5,8 @@
   "totalKeywords": 2818,
   "generated": "2026-04-07T11:52:04.117Z",
   "totalKeywords": 2793,
+  "generated": "2026-04-07T11:42:57.289Z",
+  "totalKeywords": 2795,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7497,6 +7499,12 @@
       "lessons-learned-current.md"
     ],
     "仕様書ステータス乖離修正": [
+      "lessons-learned-current.md"
+    ],
+    "EXHAUSTIVE": [
+      "lessons-learned-current.md"
+    ],
+    "CHECK": [
       "lessons-learned-current.md"
     ],
     "APPROVAL": [

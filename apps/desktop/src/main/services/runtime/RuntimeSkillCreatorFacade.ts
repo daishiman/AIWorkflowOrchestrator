@@ -48,9 +48,8 @@ import type {
   RuntimeSkillCreatorVerifyCheck,
   SkillCreatorSessionListItem,
   SkillCreatorSessionResumeResult,
-  RuntimeSkillCreatorExecuteErrorResponse,
 } from "@repo/shared/types";
-import type { ImproveFeedbackHistory } from "@repo/shared/types";
+import type { ImproveFeedbackHistory, HealthPolicy } from "@repo/shared/types";
 import {
   SKILL_CREATOR_ENGINE_VERSION,
   SESSION_TTL_MS,
@@ -126,6 +125,71 @@ export interface RuntimeSkillCreatorFacadeDeps {
   ownerInstanceId?: string;
   /** OS ネイティブ通知サービス（TASK-NOTIFICATION-SERVICE-001） */
   notificationService?: INotificationService;
+  /** 起動時に注入する HealthPolicy（UT-HEALTH-POLICY-RUNTIME-INJECTION-001） */
+  healthPolicy?: HealthPolicy;
+}
+
+// ── Module-local helpers for executeAsync() exhaustive switch (UT-RT-02) ──
+
+/** executeAsync() の結果分類型 */
+type ExecuteOutcome = "success" | "error" | "terminal_handoff";
+
+/**
+ * Mixed union を ExecuteOutcome に正規化する。
+ * 正規化 helper 終端と outer switch default の両方で assertNever を呼ぶことで
+ * 将来の union 拡張を型レベルで検出する。
+ */
+function classifyExecuteResult(result: SkillExecuteResponse): ExecuteOutcome {
+  if (typeof result === "object" && result !== null && "type" in result) {
+    switch (result.type) {
+      case "terminal_handoff":
+        return "terminal_handoff";
+      default:
+        return assertNever(result.type);
+    }
+  }
+  if ("success" in result) {
+    return result.success === false ? "error" : "success";
+  }
+  return assertNever(result);
+}
+
+/**
+ * execute() の失敗メッセージを string に正規化する。
+ * success:false の実行結果と structured error の両方を吸収する。
+ */
+function extractExecuteErrorMessage(result: SkillExecuteResponse): string {
+  if (typeof result === "object" && result !== null && "error" in result) {
+    const errorValue = (result as { error?: unknown }).error;
+
+    if (typeof errorValue === "string") {
+      return errorValue;
+    }
+
+    if (
+      errorValue &&
+      typeof errorValue === "object" &&
+      "message" in errorValue
+    ) {
+      const message = (errorValue as { message?: unknown }).message;
+      if (typeof message === "string") {
+        return message;
+      }
+      if (message != null) {
+        return String(message);
+      }
+    }
+  }
+
+  return "Unknown execute error";
+}
+
+/**
+ * TypeScript の exhaustive check ヘルパー関数。
+ * RuntimeSkillCreatorFacade モジュール内に閉じることで外部依存なし。
+ */
+function assertNever(x: never): never {
+  throw new Error(`Unhandled case: ${JSON.stringify(x)}`);
 }
 
 export class RuntimeSkillCreatorFacade {
@@ -188,6 +252,7 @@ export class RuntimeSkillCreatorFacade {
     this.resolver = new RuntimePolicyResolver(
       deps.authKeyService,
       deps.subscriptionAuthProvider,
+      deps.healthPolicy,
     );
     this.handoffBuilder = new TerminalHandoffBuilder();
   }
@@ -1167,26 +1232,24 @@ export class RuntimeSkillCreatorFacade {
         args.apiKey ?? null,
       );
 
-      const isStructuredError =
-        typeof executeResult === "object" &&
-        executeResult !== null &&
-        "success" in executeResult &&
-        executeResult.success === false;
-      const phase = isStructuredError ? "error" : "complete";
-      this.workflowEngine.triggerPhaseTransition(
-        planId,
-        phase,
-        phase === "complete" ? 100 : 0,
-      );
-      if (isStructuredError) {
-        const errorResponse =
-          executeResult as RuntimeSkillCreatorExecuteErrorResponse;
-        const snapshot = this.workflowEngine.getWorkflowState(planId);
-        this.onWorkflowStateSnapshot?.(
-          planId,
-          snapshot ?? null,
-          errorResponse.error.message,
-        );
+      const outcome = classifyExecuteResult(executeResult);
+      switch (outcome) {
+        case "terminal_handoff":
+        case "success":
+          this.workflowEngine.triggerPhaseTransition(planId, "complete", 100);
+          break;
+        case "error": {
+          this.workflowEngine.triggerPhaseTransition(planId, "error", 0);
+          const snapshot = this.workflowEngine.getWorkflowState(planId);
+          this.onWorkflowStateSnapshot?.(
+            planId,
+            snapshot ?? null,
+            extractExecuteErrorMessage(executeResult),
+          );
+          break;
+        }
+        default:
+          assertNever(outcome);
       }
     } catch (error) {
       this.workflowEngine.triggerPhaseTransition(planId, "error", 0);

@@ -4,7 +4,7 @@
 
 ```
 TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001
-`executeAsync()` での error message 形式統一
+`executeAsync()` の error message 伝搬パス統一
 発見元: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 Phase 10 MINOR 指摘
 ```
 
@@ -13,15 +13,15 @@ TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001
 | 項目         | 内容                                                                |
 | ------------ | ------------------------------------------------------------------- |
 | タスクID     | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001              |
-| タスク名     | `executeAsync()` での error message 形式統一                        |
+| タスク名     | `executeAsync()` の error message 伝搬パス統一                      |
 | 分類         | 改善（小規模）                                                      |
 | 対象機能     | RuntimeSkillCreatorFacade — executeAsync / onWorkflowStateSnapshot  |
 | 優先度       | 中                                                                  |
 | 見積もり規模 | 小規模                                                              |
-| ステータス   | in_progress                                                         |
+| ステータス   | completed                                                           |
 | 作成日       | 2026-04-06                                                          |
 | 発見元       | TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 Phase 10 MINOR 指摘 |
-| issue番号    | 1905                                                                |
+| issue番号    | 1960                                                                |
 
 ---
 
@@ -37,8 +37,8 @@ TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 にて `execute()` / `improve()`
 
 `executeAsync()` はその `execute()` を内部で呼び出す fire-and-forget 型ラッパーであるが、現状の実装では以下の問題がある：
 
-- structured error パス（行 1032-1043）: `if (!snapshot)` 条件で snapshot が存在する場合は `onWorkflowStateSnapshot` にエラーメッセージが渡されない
-- catch パス（行 1044-1057）: 同様に `if (!snapshot)` 条件で snapshot が存在する場合はエラーメッセージが渡されない
+- structured error パス: `if (!snapshot)` 条件で snapshot が存在する場合は `onWorkflowStateSnapshot` にエラーメッセージが渡されない
+- catch パス: 同様に `if (!snapshot)` 条件で snapshot が存在する場合はエラーメッセージが渡されない
 
 この結果、`onWorkflowStateSnapshot` へ渡る error message の形式が「例外ルート」と「structured error ルート」で不揃いになっており、Renderer 側で adapter guard のエラー理由が表示されない。
 
@@ -128,16 +128,16 @@ graph TD
 | 1     | 要件定義           | [phase-1-requirements.md](phase-1-requirements.md)           | 完了       |
 | 2     | 設計               | [phase-2-design.md](phase-2-design.md)                       | 完了       |
 | 3     | 設計レビューゲート | [phase-3-design-review.md](phase-3-design-review.md)         | 完了       |
-| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | 未実施     |
-| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | 未実施     |
-| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 未実施     |
-| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 未実施     |
-| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | 未実施     |
-| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 未実施     |
-| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | 未実施     |
-| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | 未実施     |
-| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | 未実施     |
-| 13    | PR 作成            | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 未実施     |
+| 4     | テスト作成         | [phase-4-test-creation.md](phase-4-test-creation.md)         | 完了       |
+| 5     | 実装               | [phase-5-implementation.md](phase-5-implementation.md)       | 完了       |
+| 6     | テスト拡充         | [phase-6-test-expansion.md](phase-6-test-expansion.md)       | 完了       |
+| 7     | カバレッジ確認     | [phase-7-coverage-check.md](phase-7-coverage-check.md)       | 完了       |
+| 8     | リファクタリング   | [phase-8-refactoring.md](phase-8-refactoring.md)             | 完了       |
+| 9     | 品質保証           | [phase-9-quality-assurance.md](phase-9-quality-assurance.md) | 完了       |
+| 10    | 最終レビューゲート | [phase-10-final-review.md](phase-10-final-review.md)         | 完了       |
+| 11    | 手動テスト         | [phase-11-manual-test.md](phase-11-manual-test.md)           | 完了       |
+| 12    | ドキュメント更新   | [phase-12-documentation.md](phase-12-documentation.md)       | 完了       |
+| 13    | PR 作成            | [phase-13-pr-creation.md](phase-13-pr-creation.md)           | 仕様作成済 |
 
 ---
 
