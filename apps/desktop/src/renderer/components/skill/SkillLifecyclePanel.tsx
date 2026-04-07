@@ -383,7 +383,7 @@ function getSkillCreatorApi(): SkillCreatorRuntimeApi | null {
 }
 
 function getSessionResumeApi(): SessionResumeApi | null {
-  const w = window as Window & {
+  const w = window as unknown as Window & {
     skillCreatorAPI?: SessionResumeApi;
     electronAPI?: { skillCreator?: SessionResumeApi };
   };

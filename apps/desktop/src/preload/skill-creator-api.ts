@@ -46,14 +46,6 @@ interface IpcResult<T> {
   error?: string;
 }
 
-type ApprovalRequestPayload = {
-  operationType: string;
-  description: string;
-  destination?: string;
-  sessionId: string;
-  operationId: string;
-};
-
 /**
  * approval:request push ペイロード型 (UT-SDK-07-APPROVAL-REQUEST-SURFACE-001)
  *
@@ -364,16 +356,6 @@ export interface SkillCreatorAPI {
   cleanupExpiredSessions: () => Promise<number>;
 
   // --- TASK-SDK-07: Governance bundle - shared contract 再利用 ---
-
-  /**
-   * approval:request イベントを受信するリスナーを登録する (UT-SDK-07-APPROVAL-REQUEST-SURFACE-001)
-   * Main が pushApprovalRequest で送信したペイロードを Renderer に届ける。
-   * @param callback - approval リクエスト受信時のコールバック
-   * @returns クリーンアップ関数（removeListener 用）
-   */
-  onApprovalRequest: (
-    callback: (request: ApprovalRequestPayload) => void,
-  ) => () => void;
 
   /**
    * Shared approval channel 経由で承認応答を送信する (AC-4: enforcement)
@@ -691,13 +673,6 @@ export const skillCreatorAPI: SkillCreatorAPI = {
 
   cleanupExpiredSessions: (): Promise<number> =>
     safeInvoke(IPC_CHANNELS.SKILL_CREATOR_CLEANUP_EXPIRED_SESSIONS),
-
-  // --- TASK-SDK-07 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 ---
-
-  onApprovalRequest: (
-    callback: (request: ApprovalRequestPayload) => void,
-  ): (() => void) =>
-    safeOn<ApprovalRequestPayload>(IPC_CHANNELS.APPROVAL_REQUEST, callback),
 
   respondToApproval: (
     sessionId: string,
