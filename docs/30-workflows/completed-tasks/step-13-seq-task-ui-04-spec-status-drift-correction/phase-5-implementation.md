@@ -10,7 +10,7 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | Phase 4: テスト作成                 |
 | 次Phase    | Phase 6: テスト拡充                 |
-| ステータス | pending                             |
+| ステータス | completed                           |
 | 作成日     | 2026-04-06                          |
 
 ## 目的
@@ -25,7 +25,7 @@ Phase 2 の修正計画に基づき、全タスク仕様書の artifacts.json / 
 
 ```bash
 # 修正前の全 status を記録
-for f in $(find docs/30-workflows/skill-creator-agent-sdk-lane/step-* -name "artifacts.json" -not -path "*/outputs/*"); do
+for f in $(find docs/30-workflows/completed-tasks -name "artifacts.json" -not -path "*/outputs/*"); do
   echo "$f: $(jq -r '.status' "$f")"
 done > outputs/phase-5/pre-correction-snapshot.txt
 ```
@@ -74,7 +74,7 @@ done > outputs/phase-5/pre-correction-snapshot.txt
 
 ```bash
 # status: Phase 1 調査結果に依存
-# 動的解決が確認できれば completed、未完了なら in_progress + 残作業記録
+# 動的解決が確認された場合は completed、未完了なら in_progress + 残作業記録
 ```
 
 **TASK-P0-08** (session resume renderer):
@@ -141,6 +141,8 @@ executor-guide.md のタスク一覧にステータス情報を反映する。
 
 ## 実行タスク
 
+- 詳細は以下の Task 1〜5 に従って実行する。
+
 ### Task 1: artifacts.json 一括更新
 
 Step 1 に従い、全対象タスクの artifacts.json を更新する。
@@ -175,7 +177,13 @@ Step 5, 6 に従い、ガイドドキュメントを更新する。
 
 | 参照資料                       | パス                                                                        | 内容                                  |
 | ------------------------------ | --------------------------------------------------------------------------- | ------------------------------------- |
-| タスクワークフローフェーズ仕様 | `.agents/skills/aiworkflow-requirements/references/task-workflow-phases.md` | Phase 遷移テーブル（status 値の定義） |
+| タスクワークフローフェーズ仕様 | `.claude/skills/aiworkflow-requirements/references/task-workflow-phases.md` | Phase 遷移テーブル（status 値の定義） |
+
+## 統合テスト連携
+
+- `artifacts.json` / `outputs/artifacts.json` / `index.md` の status 整合を維持する。
+- Phase 11 の `manual-test-result.md` へ確認結果を引き継ぐ。
+- Phase 12 の `implementation-guide.md` と `documentation-changelog.md` に更新理由と差分を反映する。
 
 ## 成果物
 

@@ -1,4 +1,6 @@
 {
+  "generated": "2026-04-07T03:46:39.938Z",
+  "totalKeywords": 2791,
   "generated": "2026-04-07T05:43:49.365Z",
   "totalKeywords": 2792,
   "keywords": {
@@ -7152,6 +7154,9 @@
       "lessons-learned-current.md"
     ],
     "の動的解決": [
+      "lessons-learned-current.md"
+    ],
+    "仕様書ステータス乖離修正": [
       "lessons-learned-current.md"
     ],
     "Policy": [

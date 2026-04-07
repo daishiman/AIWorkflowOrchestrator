@@ -10,7 +10,7 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | Phase 8: リファクタリング           |
 | 次Phase    | Phase 10: 最終レビュー              |
-| ステータス | pending                             |
+| ステータス | completed                           |
 | 作成日     | 2026-04-06                          |
 
 ## 目的
@@ -18,6 +18,8 @@
 全タスク横断の整合性最終確認を行い、品質保証レポートを作成して最終レビューへの入力とする。
 
 ## 実行タスク
+
+- 詳細は以下の Task 1〜5 に従って実行する。
 
 ### Task 1: 全タスク整合性最終確認
 
@@ -39,7 +41,7 @@ done | sort
 
 ```bash
 # artifacts.json の status と index.md のステータスを突合
-for dir in $(find docs/30-workflows/skill-creator-agent-sdk-lane/step-* docs/30-workflows/completed-tasks/step-* -maxdepth 0 -type d 2>/dev/null); do
+for dir in $(find docs/30-workflows/completed-tasks -maxdepth 1 -type d -name 'step-*' 2>/dev/null); do
   if [ -f "$dir/artifacts.json" ] && [ -f "$dir/index.md" ]; then
     json_status=$(jq -r '.status' "$dir/artifacts.json")
     md_status=$(grep "ステータス" "$dir/index.md" | head -1 | awk -F'|' '{print $3}' | xargs)
@@ -85,11 +87,18 @@ Phase 6 で実施したリンク切れチェックを再実行し、Phase 8 の�
 
 ## 参照資料
 
-| 資料名               | パス                                 | 説明           |
-| -------------------- | ------------------------------------ | -------------- |
-| カバレッジレポート   | `outputs/phase-7/coverage-report.md` | 品質確認の入力 |
-| リファクタリング記録 | `outputs/phase-8/refactoring-log.md` | 修正後の状態   |
-| テストマトリクス     | `outputs/phase-4/test-matrix.md`     | 検証基準       |
+| 資料名               | パス                                       | 説明           |
+| -------------------- | ------------------------------------------ | -------------- |
+| カバレッジレポート   | `outputs/phase-7/coverage-report.md`       | 品質確認の入力 |
+| リファクタリング記録 | `outputs/phase-8/refactoring-log.md`       | 修正後の状態   |
+| テストマトリクス     | `outputs/phase-4/test-matrix.md`           | 検証基準       |
+| 実装記録             | `outputs/phase-5/implementation-record.md` | Phase 5 成果物 |
+
+## 統合テスト連携
+
+- `artifacts.json` / `outputs/artifacts.json` / `index.md` の status 整合を維持する。
+- Phase 11 の `manual-test-result.md` へ確認結果を引き継ぐ。
+- Phase 12 の `implementation-guide.md` と `documentation-changelog.md` に更新理由と差分を反映する。
 
 ## 成果物
 

@@ -2,6 +2,17 @@
 
 ## 役割
 
+## 2026-04-07 - TASK-UI-04 仕様書ステータス乖離修正 Phase 12 close-out sync（skill-feedback 反映）
+
+### 変更内容
+- `aiworkflow-requirements/references/task-workflow-completed.md` に TASK-UI-04 完了記録を追加
+- `aiworkflow-requirements/references/lessons-learned-current.md` に L-UI04-001〜003 教訓3件を追加（artifacts.json status 更新必須 / completed-tasks 移動後即時 index.md 更新 / docs-only でも Phase 12 成果物 6 件省略禁止）
+- `aiworkflow-requirements/LOGS.md` に TASK-UI-04 エントリを追加
+- `task-specification-creator/SKILL.md` の「よくある漏れ」テーブルに `[Feedback TASK-UI-04]` 行を追加（`artifacts.json` status 放置ピットフォール・有効値明示）
+- `aiworkflow-requirements/SKILL.md` 変更履歴テーブルに v9.02.44 エントリを追加
+
+---
+
 ## 2026-04-07 - TASK-UI-03-REMAINING Phase 12 close-out / skill-feedback sync
 
 ### 変更内容

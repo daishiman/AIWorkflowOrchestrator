@@ -10,7 +10,7 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | Phase 10: 最終レビュー              |
 | 次Phase    | Phase 12: ドキュメント更新          |
-| ステータス | pending                             |
+| ステータス | completed                           |
 | 作成日     | 2026-04-06                          |
 
 ## 目的
@@ -63,19 +63,33 @@
 - executor-guide.md を読んで、どのタスクが完了済みでどのタスクが残っているか判断できるか
 - 残作業があるタスクを見つけた場合、何をすべきか理解できるか
 
+## 統合テスト連携
+
+- `index.md` / `artifacts.json` の `タスク種別` を `docs-only` に揃える。
+- `manual-test-checklist.md` / `manual-test-result.md` / `discovered-issues.md` を手動確認の正本として揃える。
+- スクリーンショットは生成せず、`NON_VISUAL` として扱う。
+
 ## 参照資料
 
-| 資料名           | パス                                                               | 説明       |
-| ---------------- | ------------------------------------------------------------------ | ---------- |
-| 最終レビュー結果 | `outputs/phase-10/final-review-result.md`                          | ゲート入力 |
-| executor-guide   | `docs/30-workflows/skill-creator-agent-sdk-lane/executor-guide.md` | 確認対象   |
-| 親 index.md      | `docs/30-workflows/skill-creator-agent-sdk-lane/index.md`          | 確認対象   |
+| 資料名               | パス                                                               | 説明       |
+| -------------------- | ------------------------------------------------------------------ | ---------- |
+| 修正計画             | `outputs/phase-2/correction-plan.md`                               | 上流設計   |
+| 実装記録             | `outputs/phase-5/implementation-record.md`                         | 実装の参照 |
+| テスト拡充記録       | `outputs/phase-6/test-expansion.md`                                | 検証の参照 |
+| カバレッジレポート   | `outputs/phase-7/coverage-report.md`                               | 検証入力   |
+| リファクタリング記録 | `outputs/phase-8/refactoring-log.md`                               | 整理内容   |
+| 品質保証レポート     | `outputs/phase-9/qa-report.md`                                     | 品質結果   |
+| 最終レビュー結果     | `outputs/phase-10/final-review-result.md`                          | ゲート入力 |
+| executor-guide       | `docs/30-workflows/skill-creator-agent-sdk-lane/executor-guide.md` | 確認対象   |
+| 親 index.md          | `docs/30-workflows/skill-creator-agent-sdk-lane/index.md`          | 確認対象   |
 
 ## 成果物
 
-| 成果物         | パス                                     | 説明                             |
-| -------------- | ---------------------------------------- | -------------------------------- |
-| 手動テスト結果 | `outputs/phase-11/manual-test-result.md` | ナビゲーション結果、視覚確認結果 |
+| 成果物                   | パス                                        | 説明                             |
+| ------------------------ | ------------------------------------------- | -------------------------------- |
+| 手動テストチェックリスト | `outputs/phase-11/manual-test-checklist.md` | 手動確認項目の一覧               |
+| 手動テスト結果           | `outputs/phase-11/manual-test-result.md`    | ナビゲーション結果、視覚確認結果 |
+| 発見課題一覧             | `outputs/phase-11/discovered-issues.md`     | 発見した課題（0件でも出力）      |
 
 ## 完了条件
 

@@ -10,7 +10,7 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | Phase 3: 設計レビュー               |
 | 次Phase    | Phase 5: 実装                       |
-| ステータス | pending                             |
+| ステータス | completed                           |
 | 作成日     | 2026-04-06                          |
 
 ## 目的
@@ -19,13 +19,15 @@ artifacts.json スキーマの検証基準とリンク整合性チェックの�
 
 ## 実行タスク
 
+- 詳細は以下の Task 1〜3 に従って実行する。
+
 ### Task 1: artifacts.json スキーマ検証基準
 
 各 artifacts.json が以下のスキーマに準拠しているか検証するチェックリストを作成する。
 
 ```bash
 # artifacts.json の必須フィールド検証
-for f in $(find docs/30-workflows/skill-creator-agent-sdk-lane/step-* -name "artifacts.json" -not -path "*/outputs/*"); do
+for f in $(find docs/30-workflows/completed-tasks -name "artifacts.json" -not -path "*/outputs/*"); do
   echo "=== $f ==="
   jq '{
     has_feature: has("feature"),
@@ -53,7 +55,7 @@ done
 
 ```bash
 # Markdown 内のリンク先が実在するか確認
-grep -roh '\[.*\](\.\/[^)]*)\|\[.*\](\.\./[^)]*)' docs/30-workflows/skill-creator-agent-sdk-lane/step-*/index.md | sort -u
+grep -roh '\[.*\](\.\/[^)]*)\|\[.*\](\.\./[^)]*)' docs/30-workflows/completed-tasks/step-*/index.md | sort -u
 ```
 
 検証項目:
@@ -76,10 +78,18 @@ artifacts.json の status と index.md のステータスが一致している�
 
 ## 参照資料
 
-| 資料名           | パス                                    | 説明               |
-| ---------------- | --------------------------------------- | ------------------ |
-| 修正計画         | `outputs/phase-2/correction-plan.md`    | 検証対象の修正内容 |
-| 設計レビュー結果 | `outputs/phase-3/design-review-gate.md` | レビュー指摘事項   |
+| 資料名               | パス                                        | 説明               |
+| -------------------- | ------------------------------------------- | ------------------ |
+| 修正計画             | `outputs/phase-2/correction-plan.md`        | 検証対象の修正内容 |
+| 設計レビュー結果     | `outputs/phase-3/design-review-gate.md`     | レビュー指摘事項   |
+| ステータス抽出マップ | `outputs/phase-1/spec-extraction-map.md`    | Phase 1 成果物     |
+| 乖離インベントリ     | `outputs/phase-1/status-drift-inventory.md` | Phase 1 成果物     |
+
+## 統合テスト連携
+
+- `artifacts.json` / `outputs/artifacts.json` / `index.md` の status 整合を維持する。
+- Phase 11 の `manual-test-result.md` へ確認結果を引き継ぐ。
+- Phase 12 の `implementation-guide.md` と `documentation-changelog.md` に更新理由と差分を反映する。
 
 ## 成果物
 

@@ -6,7 +6,7 @@
 | ---------- | ------------------------------------------------------ |
 | 機能名     | step-09-par-task-p0-01-verify-execution-engine-layer12 |
 | 作成日     | 2026-04-04                                             |
-| ステータス | phase_12_completed                                     |
+| ステータス | completed                                              |
 | 総Phase数  | 13                                                     |
 
 ---

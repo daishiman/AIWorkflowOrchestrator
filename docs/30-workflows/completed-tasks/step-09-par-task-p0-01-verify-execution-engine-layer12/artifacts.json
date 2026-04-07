@@ -3,8 +3,8 @@
   "taskId": "TASK-P0-01",
   "taskName": "verify 実行エンジン（Layer 1/2 コア + Layer 3/4 互換）の仕様整合",
   "created": "2026-04-04T00:00:00Z",
-  "lastUpdated": "2026-04-04T00:00:00Z",
-  "status": "phase_12_completed",
+  "lastUpdated": "2026-04-07T00:00:00.000Z",
+  "status": "completed",
   "phases": {
     "1": {
       "name": "要件定義",
@@ -190,7 +190,7 @@
     },
     "13": {
       "name": "PR作成",
-      "status": "pending",
+      "status": "completed",
       "artifacts": [
         {
           "name": "PR情報",

@@ -10,7 +10,7 @@
 | 対象機能   | TASK-UI-04 仕様書ステータス乖離修正 |
 | 前提Phase  | -                                   |
 | 次Phase    | Phase 2: 設計                       |
-| ステータス | pending                             |
+| ステータス | completed                           |
 | 作成日     | 2026-04-06                          |
 
 ## 目的
@@ -25,24 +25,24 @@
 
 ```bash
 # 全 artifacts.json の status を一括抽出
-find docs/30-workflows/skill-creator-agent-sdk-lane/ -name "artifacts.json" -exec echo "---" \; -exec echo {} \; -exec jq '.status, .metadata.taskId' {} \;
+find docs/30-workflows/{skill-creator-agent-sdk-lane,completed-tasks} -name "artifacts.json" -exec echo "---" \; -exec echo {} \; -exec jq '.status, .metadata.taskId' {} \;
 
 # 各 index.md のステータス行を抽出
-grep -rn "ステータス" docs/30-workflows/skill-creator-agent-sdk-lane/step-*/index.md
+grep -rn "ステータス" docs/30-workflows/{skill-creator-agent-sdk-lane,completed-tasks} --include="index.md"
 ```
 
 対象タスク仕様書:
 
-| タスクID   | ディレクトリ                                                    | artifacts.json の現行 status |
-| ---------- | --------------------------------------------------------------- | ---------------------------- |
-| TASK-P0-01 | （要確認: 別 lane に存在する可能性あり）                        | in_progress                  |
-| TASK-P0-02 | step-10-seq-task-p0-02-verify-improve-reverify-closed-loop      | spec_created                 |
-| TASK-P0-04 | step-10-seq-task-p0-04-manifest-loader-default-activation       | spec_created                 |
-| TASK-P0-05 | （要確認: 別 lane に存在する可能性あり）                        | spec_created                 |
-| TASK-P0-06 | （要確認: 別 lane に存在する可能性あり）                        | spec_created                 |
-| TASK-P0-07 | step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution | spec_created                 |
-| TASK-P0-08 | step-10-seq-task-p0-08-session-resume-renderer-integration      | spec_created                 |
-| TASK-P0-09 | step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance   | in_progress                  |
+| タスクID   | ディレクトリ                                                                                        | artifacts.json の現行 status |
+| ---------- | --------------------------------------------------------------------------------------------------- | ---------------------------- |
+| TASK-P0-01 | `docs/30-workflows/completed-tasks/step-09-par-task-p0-01-verify-execution-engine-layer12`          | in_progress                  |
+| TASK-P0-02 | `docs/30-workflows/completed-tasks/step-10-seq-task-p0-02-verify-improve-reverify-closed-loop`      | spec_created                 |
+| TASK-P0-04 | `docs/30-workflows/completed-tasks/step-10-seq-task-p0-04-manifest-loader-default-activation`       | spec_created                 |
+| TASK-P0-05 | `docs/30-workflows/completed-tasks/step-09-par-task-p0-05-execute-skill-file-writer-integration`    | spec_created                 |
+| TASK-P0-06 | `docs/30-workflows/completed-tasks/step-09-par-task-p0-06-conversational-interview-ui`              | spec_created                 |
+| TASK-P0-07 | `docs/30-workflows/completed-tasks/step-10-seq-task-p0-07-hardcoded-agent-names-dynamic-resolution` | spec_created                 |
+| TASK-P0-08 | `docs/30-workflows/completed-tasks/step-10-seq-task-p0-08-session-resume-renderer-integration`      | spec_created                 |
+| TASK-P0-09 | `docs/30-workflows/completed-tasks/step-10-seq-task-p0-09-claude-sdk-permission-hooks-governance`   | in_progress                  |
 
 ### Task 2: 実装状態の確認
 
@@ -109,8 +109,14 @@ ls -la apps/desktop/src/main/services/runtime/governance/
 
 | 参照資料                       | パス                                                                                        | 内容                                      |
 | ------------------------------ | ------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| Skill Creator Service仕様      | `.agents/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService の公開 API と状態遷移 |
-| タスクワークフローフェーズ仕様 | `.agents/skills/aiworkflow-requirements/references/task-workflow-phases.md`                 | Phase 1-13 のフェーズ遷移テーブル         |
+| Skill Creator Service仕様      | `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` | SkillCreatorService の公開 API と状態遷移 |
+| タスクワークフローフェーズ仕様 | `.claude/skills/aiworkflow-requirements/references/task-workflow-phases.md`                 | Phase 1-13 のフェーズ遷移テーブル         |
+
+## 統合テスト連携
+
+- `artifacts.json` / `outputs/artifacts.json` / `index.md` の status 整合を維持する。
+- Phase 11 の `manual-test-result.md` へ確認結果を引き継ぐ。
+- Phase 12 の `implementation-guide.md` と `documentation-changelog.md` に更新理由と差分を反映する。
 
 ## 成果物
 
