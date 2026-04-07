@@ -23,6 +23,11 @@ export type SessionStatus =
   | "error";
 
 // ============================================
+// Session IPC 型（会話フロー: startSession / ANSWER / QUESTION_RECEIVED）
+// 使用場面: SkillCreatorConversationPanel, TASK-SDK-SC-01 系
+// ============================================
+
+// ============================================
 // UserInput 型
 // ============================================
 

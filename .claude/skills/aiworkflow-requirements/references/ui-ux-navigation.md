@@ -14,6 +14,7 @@ Global Navigation（`GlobalNavStrip` / `MobileNavBar` / `AppLayout`）と、各V
 
 | バージョン | 日付 | 変更内容 |
 | --- | --- | --- |
+| v1.9.3 | 2026-04-06 | TASK-UI-02 ConversationPanel孤立解消を反映: `SkillCreatorConversationPanel` を stub 化（`export {}`）し `ConversationalInterview` へ一本化。Session IPC（skillCreatorSessionAPI）を廃止し Runtime IPC を正本採用。`CONFIGURE_API` / `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` チャンネルを `SkillCreatorIpcBridge` から `creatorHandlers.ts` へ移管。`QuestionCard` / `ChoiceButton` / `ConversationProgress` / `FreeTextInput`（skill-creator 版）を stub 化。`SkillCreatorResultPanel` を `skill/` ディレクトリへ移動。IPC Phase 3 MINOR 完了 |
 | v1.9.2 | 2026-04-06 | TASK-UI-01 を反映: `skillLifecycle` ViewType 追加（`SKILL_LIFECYCLE_PRIMARY_VIEW`）、`SkillLifecycleJourneyPanel` / `SkillLifecycleSurfaceOwnershipPanel` コンポーネント追加、`navigateToSkillLifecycle()` shared action 追加、`journeyActions` CTA 集約、35 tests PASS |
 | v1.9.1 | 2026-04-04 | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 を反映: `SkillCenterView` に `header-management-cta` secondary CTA を追加し、`skillManagement` ViewType / dock 正規化 / 戻り導線を同期 |
 | v1.9.0 | 2026-03-24 | TASK-IMP-GUIDED-EXECUTION-SHELL-FOUNDATION-001 を反映: `executionConsole` ViewType 追加、`openExecutionConsole()` shared action 定義、CTA 7箇所統一設計。`ExecutionConsoleView` stub 配置。agent 代替除去方針確定 |
@@ -315,6 +316,29 @@ Global navigation とは別に、app header 右端には view 横断の utility 
 | --- | --- | --- |
 | UT-IMP-PHASE12-UI-DOMAIN-SPEC-SYNC-GUARD-001 | navigation 正本を含む domain UI spec の同期漏れを防ぐ | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-ui-domain-spec-sync-guard-001.md` |
 | UT-IMP-PHASE12-WORKFLOW-BODY-STALE-GUARD-001 | navigation 変更後の workflow 本文 stale を Phase 12 で検出する | `docs/30-workflows/completed-tasks/task-057-ui-02-global-nav-core/unassigned-task/task-imp-phase12-workflow-body-stale-guard-001.md` |
+
+### TASK-UI-02 ConversationPanel 孤立解消 実装内容（IPC Phase 3 MINOR）
+
+#### 実装内容（要点）
+
+| 観点 | 内容 | 反映先 |
+| --- | --- | --- |
+| ConversationPanel 一本化 | `SkillCreatorConversationPanel` を `export {}` stub 化し、`ConversationalInterview` を正式な対話 UI として一本化 | `apps/desktop/src/renderer/components/skill-creator/SkillCreatorConversationPanel.tsx` |
+| Session IPC 廃止 | `skillCreatorSessionAPI` を廃止し Runtime IPC を正本採用 | `apps/desktop/src/preload/skill-creator-session-api.ts` |
+| IPC チャンネル移管 | `CONFIGURE_API` / `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` チャンネルを `SkillCreatorIpcBridge` から `creatorHandlers.ts` へ一元移管 | `apps/desktop/src/main/ipc/creatorHandlers.ts`, `apps/desktop/src/main/services/runtime/SkillCreatorIpcBridge.ts` |
+| Skill Creator stub 化 | `QuestionCard` / `ChoiceButton` / `ConversationProgress` / `FreeTextInput`（skill-creator 版）を stub 化 | `apps/desktop/src/renderer/components/skill-creator/` 各ファイル |
+| SkillCreatorResultPanel 移動 | `SkillCreatorResultPanel` を `skill/` ディレクトリへ移動 | `apps/desktop/src/renderer/components/skill/` |
+| Interview widgets テスト追加 | `SingleSelectChips` / `MultiSelectCheckbox` / `FreeTextInput` / `SecretInput` / `ConfirmButtons` に新規テスト追加 | `apps/desktop/src/renderer/components/skill/__tests__/interview-widgets/` |
+| IPC edge case テスト | `ConversationalInterview.ipc-edge.test.tsx` を新規作成（IPC edge case 6件） | `apps/desktop/src/renderer/components/skill/__tests__/ConversationalInterview.ipc-edge.test.tsx` |
+
+#### IPC ハンドラー責務分離（Session vs Runtime）
+
+| ハンドラー | 移管前 | 移管後 | 備考 |
+| --- | --- | --- | --- |
+| `CONFIGURE_API` | `SkillCreatorIpcBridge` | `creatorHandlers.ts` | Runtime IPC に統合 |
+| `SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED` | `SkillCreatorIpcBridge` | `creatorHandlers.ts` | Runtime IPC に統合 |
+| `SKILL_CREATOR_SESSION_START` | `SkillCreatorIpcBridge` | `SkillCreatorIpcBridge`（変更なし） | Session ライフサイクル専任 |
+| `SKILL_CREATOR_SESSION_ANSWER` | `SkillCreatorIpcBridge` | `SkillCreatorIpcBridge`（変更なし） | Session ライフサイクル専任 |
 
 ### TASK-UI-01-D 実装内容と苦戦箇所（履歴）
 

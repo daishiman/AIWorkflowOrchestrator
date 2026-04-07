@@ -98,6 +98,35 @@ describe("MultiSelectCheckbox", () => {
     expect(onToggle).not.toHaveBeenCalled();
   });
 
+  // W-MC-02: チェック済みの選択肢を再クリックするとonToggleが呼ばれる
+  it("W-MC-02: calls onToggle when clicking an already-checked option", () => {
+    const onToggle = vi.fn();
+    render(
+      <MultiSelectCheckbox
+        options={threeOptions}
+        selectedIds={["a"]}
+        onToggle={onToggle}
+      />,
+    );
+
+    // option "a" is already checked — clicking it should call onToggle to uncheck
+    fireEvent.click(screen.getAllByRole("checkbox")[0]);
+    expect(onToggle).toHaveBeenCalledWith("a");
+  });
+
+  // W-MC-04: options が空配列のとき、エラーにならない
+  it("W-MC-04: renders empty container without error when options is empty", () => {
+    render(
+      <MultiSelectCheckbox options={[]} selectedIds={[]} onToggle={vi.fn()} />,
+    );
+
+    expect(screen.getByTestId("multi-select-checkbox")).toBeInTheDocument();
+    expect(screen.queryAllByRole("checkbox")).toHaveLength(0);
+  });
+
+  // W-MC-06: maxSelect 制限 (TODO: maxSelect prop 未実装)
+  it.todo("W-MC-06: cannot select more than maxSelect when limit is reached");
+
   // TC-B05: 選択肢が10個以上の場合
   it("renders 12 options correctly (TC-B05)", () => {
     const manyOptions: SkillCreatorUserInputOption[] = Array.from(

@@ -20,6 +20,22 @@ describe("FreeTextInput", () => {
     expect(textarea.placeholder).toBe("テスト入力");
   });
 
+  // W-FT-01: value プロパティの値がテキストフィールドに表示される
+  it("W-FT-01: reflects value prop in textarea", () => {
+    render(
+      <FreeTextInput
+        value="初期値テスト"
+        onChange={vi.fn()}
+        onSubmit={vi.fn()}
+      />,
+    );
+
+    const textarea = screen.getByTestId(
+      "free-text-textarea",
+    ) as HTMLTextAreaElement;
+    expect(textarea.value).toBe("初期値テスト");
+  });
+
   it("uses default placeholder when none provided", () => {
     render(<FreeTextInput value="" onChange={vi.fn()} onSubmit={vi.fn()} />);
 

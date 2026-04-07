@@ -33,6 +33,8 @@ export interface ApprovalSheetProps {
   onReject: () => void;
   /** 詳細表示コールバック */
   onShowDetails?: () => void;
+  /** 応答処理中フラグ */
+  isResponding?: boolean;
 }
 
 export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
@@ -45,6 +47,7 @@ export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
   onApprove,
   onReject,
   onShowDetails,
+  isResponding = false,
 }) => {
   const rejectRef = useRef<HTMLButtonElement>(null);
 
@@ -56,12 +59,16 @@ export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
   // NFR-5: Escape キーで拒否
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
+      if (isResponding) {
+        return;
+      }
+
       if (e.key === "Escape") {
         e.preventDefault();
         onReject();
       }
     },
-    [onReject],
+    [isResponding, onReject],
   );
 
   const title =
@@ -74,6 +81,7 @@ export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
       role="dialog"
       aria-label={title}
       aria-modal="true"
+      aria-busy={isResponding}
       onKeyDown={handleKeyDown}
     >
       {/* タイトル */}
@@ -124,13 +132,21 @@ export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
         実行中でも「中止」ボタンで停止できます。
       </p>
 
+      {/* 応答中インジケーター */}
+      {isResponding ? (
+        <p className="mt-2 text-xs text-[var(--text-tertiary)]">
+          応答を送信中...
+        </p>
+      ) : null}
+
       {/* アクションボタン */}
       <div className="mt-4 flex items-center justify-end gap-2">
         {onShowDetails && (
           <button
             type="button"
             onClick={onShowDetails}
-            className="rounded px-3 py-1.5 text-sm text-[var(--accent-primary)] hover:bg-[var(--bg-hover)]"
+            disabled={isResponding}
+            className="rounded px-3 py-1.5 text-sm text-[var(--accent-primary)] hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-40"
             data-testid="approval-details"
           >
             詳細を見る
@@ -140,7 +156,8 @@ export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
           ref={rejectRef}
           type="button"
           onClick={onReject}
-          className="rounded border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-1.5 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-hover)]"
+          disabled={isResponding}
+          className="rounded border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-1.5 text-sm font-medium text-[var(--text-primary)] hover:bg-[var(--bg-hover)] disabled:cursor-not-allowed disabled:opacity-40"
           data-testid="approval-reject"
         >
           拒否
@@ -148,7 +165,8 @@ export const ApprovalSheet: React.FC<ApprovalSheetProps> = ({
         <button
           type="button"
           onClick={onApprove}
-          className="rounded bg-[var(--accent-primary)] px-4 py-1.5 text-sm font-medium text-white hover:opacity-90"
+          disabled={isResponding}
+          className="rounded bg-[var(--accent-primary)] px-4 py-1.5 text-sm font-medium text-white hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
           data-testid="approval-approve"
         >
           承認

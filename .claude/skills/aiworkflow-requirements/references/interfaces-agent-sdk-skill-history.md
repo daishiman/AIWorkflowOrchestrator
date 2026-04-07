@@ -5,6 +5,36 @@
 
 ## 完了タスク
 
+### TASK-SDK-04-U1-F1: verification_review request を single_select kind に変更（2026-04-06完了）
+
+| 項目 | 内容 |
+|---|---|
+| タスクID | TASK-SDK-04-U1-F1 |
+| 完了日 | 2026-04-06 |
+| ステータス | **完了** |
+| テスト数 | 47（自動テスト） |
+| 発見課題 | 0件 |
+| 変更ファイル | `SkillCreatorWorkflowEngine.test.ts`（textValue削除 + TC-NEW-1〜3 + TC-ADD-1〜5） |
+
+#### 変更内容
+
+`createVerificationReviewRequest()` の `kind: "free_text"` → `kind: "single_select"` 変更が
+TASK-SDK-04-U1 実装波で先行完了済みであることを確認し、テスト整合を実施。
+
+既存の `single_select` / `selectedOptionId` 契約を再利用するため、
+`interfaces-agent-sdk-skill.md` の更新は不要（no-op）。
+
+#### テスト結果
+
+| カテゴリ | テスト数 | PASS | FAIL |
+|---|---|---|---|
+| 既存テスト（TC-MOD含む） | 39 | 39 | 0 |
+| TC-NEW-1〜3（新規） | 3 | 3 | 0 |
+| TC-ADD-1〜5（拡張） | 5 | 5 | 0 |
+| **合計** | **47** | **47** | **0** |
+
+---
+
 ### TASK-FIX-1-1-TYPE-ALIGNMENT: スキル型定義の統一（2026-02-04完了）
 
 | 項目         | 内容                                             |
