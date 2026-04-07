@@ -262,7 +262,9 @@ describe("creatorHandlers - Session Resume (TASK-P0-08)", () => {
       const result = await handler?.(createMockEvent(), {
         checkpointId: "cp-001",
       });
-      expect(result).toBeUndefined();
+      expect(result).toEqual({
+        success: true,
+      });
       expect(mockRuntimeSkillCreatorService.deleteSession).toHaveBeenCalledWith(
         "cp-001",
       );
@@ -274,7 +276,10 @@ describe("creatorHandlers - Session Resume (TASK-P0-08)", () => {
         handler?.(createMockEvent(), {
           checkpointId: "",
         }),
-      ).rejects.toThrow("checkpointId が指定されていません");
+      ).resolves.toEqual({
+        success: false,
+        error: "checkpointId が指定されていません",
+      });
     });
   });
 

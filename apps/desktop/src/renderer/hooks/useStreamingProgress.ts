@@ -69,15 +69,9 @@ type StreamingProgressApi = {
 };
 
 function getSkillCreatorApi(): StreamingProgressApi | null {
-  const runtimeWindow = window as Window & {
-    skillCreatorAPI?: StreamingProgressApi;
-    electronAPI?: { skillCreator?: StreamingProgressApi };
-  };
-
   return (
-    runtimeWindow.skillCreatorAPI ??
-    runtimeWindow.electronAPI?.skillCreator ??
-    null
+    (window as Window & { skillCreatorAPI?: StreamingProgressApi })
+      .skillCreatorAPI ?? null
   );
 }
 

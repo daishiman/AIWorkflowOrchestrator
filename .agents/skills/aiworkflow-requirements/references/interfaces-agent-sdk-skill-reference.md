@@ -194,6 +194,28 @@ SkillCreatorService は公開APIとして 12 メソッドを提供する。
 | `SkillCreatorSessionListItem` / `SkillCreatorSessionSummary` / `SkillCreatorSessionResumeResult` / `SkillCreatorSessionResumeErrorReason` | `packages/shared/src/types/skillCreator.ts` |
 | `SkillCreatorSessionApi` | `apps/desktop/src/preload/skill-creator-api.ts` |
 
+#### onApprovalRequest（追加 2026-04-06 / UT-SDK-07-APPROVAL-REQUEST-SURFACE-001）
+
+Main → Renderer の承認リクエスト受信リスナー。
+
+```typescript
+onApprovalRequest(callback: (request: ApprovalRequestPayload) => void): () => void
+```
+
+- 戻り値はクリーンアップ関数（`useEffect` で呼び出す）
+- `ApprovalRequestPayload` は `packages/shared/src/types/skillCreator.ts` で定義（canonical）
+- `IPC_CHANNELS.APPROVAL_REQUEST` channel を使用
+
+**ApprovalRequestPayload フィールド:**
+
+| フィールド    | 型       | 必須 | 説明                           |
+| ------------- | -------- | ---- | ------------------------------ |
+| sessionId     | string   | ✓    | セッション識別子               |
+| operationId   | string   | ✓    | 操作識別子（単一利用トークン） |
+| operationType | string   | ✓    | 操作種別（例: file_write）     |
+| description   | string   | ✓    | 操作の説明文                   |
+| destination   | string   | -    | 操作対象先（省略可）           |
+
 #### runtime bridge 型アンカー
 
 | surface | request | response | canonical source |

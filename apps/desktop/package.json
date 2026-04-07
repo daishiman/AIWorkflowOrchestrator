@@ -34,6 +34,7 @@
     "screenshot:skilldetail-action-buttons": "node scripts/capture-task-skilldetail-action-buttons-phase11.mjs",
     "screenshot:skill-lifecycle-routing-step03": "node scripts/capture-task-skill-lifecycle-routing-step03-phase11.mjs",
     "screenshot:execution-status-type-spec-sync": "node scripts/capture-execution-status-type-spec-sync-phase11.mjs",
+    "screenshot:ut-sdk-07-approval-request-surface": "node scripts/capture-ut-sdk-07-approval-request-surface-phase11.mjs",
     "screenshot:llm-selector-inline-guidance": "node scripts/capture-llm-selector-inline-guidance-phase11.mjs",
     "screenshot:llm-config-persistence": "node scripts/capture-llm-config-persistence-phase11.mjs",
     "screenshot:task-fix-llm-config-persistence": "node scripts/capture-task-fix-llm-config-persistence-phase11.mjs",
@@ -117,7 +118,7 @@
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2",
-    "vite": "^6.4.1",
+    "vite": "^6.4.2",
     "vite-tsconfig-paths": "^6.1.1",
     "vitest": "^2.1.9"
   },

@@ -12,10 +12,23 @@
   - `outputs/artifacts.json` parity 初手確認導線追加
   - IPC canonical / compat shim の分離記録パターン明記
   - Phase 11 evidence mode の Phase 12 への引き継ぎ書き方を確立
-- マージコンフリクト（`<<<<<<< Updated upstream` / `>>>>>>> Stashed changes`）を解消
 
 ---
 
+## 2026-04-06 - UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 スキル更新 sync
+
+### 変更内容
+- `aiworkflow-requirements/SKILL.md` の description（2行目）末尾に `SKILL_CREATOR_RUNTIME_CHANNELS` / `shared-ipc-channel SSoT` / `packages/shared/src/ipc/channels` / `cross-layer parity` / `governance-bundle.test` を追加
+- `ipc-preload-spec-sync-guardian/SKILL.md` の Trigger と変更履歴（v1.6.0）を更新
+- `aiworkflow-requirements/LOGS.md` と本ファイルに変更記録を追加
+
+### 背景
+UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継ぎ事項を反映：
+- `SKILL_CREATOR_RUNTIME_CHANNELS` を `packages/shared/src/ipc/channels.ts` に SSoT 正本化
+- `apps/desktop/src/preload/channels.ts` が shared からimportするよう変更（直書き廃止）
+- Cross-layer parity テストを `governance-bundle.test.ts` に追加
+
+---
 ## 2026-04-06 - TASK-P0-09-U1 Phase 12 完了反映（skill-feedback 反映）
 
 ### 変更内容
@@ -28,7 +41,6 @@
 
 ---
 
-## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
@@ -59,8 +71,6 @@
 
 ---
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
-
-## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
 
 ### 変更内容
 - `apps/desktop/scripts/capture-task-ui-01-phase11.mjs` を追加し、Playwright 4 枚の visual evidence を `docs/30-workflows/step-11-seq-task-ui-01-lifecycle-panel-primary-route-promotion/outputs/phase-11/screenshots/` に保存

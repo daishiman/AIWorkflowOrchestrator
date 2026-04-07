@@ -5,11 +5,9 @@ export interface LLMAdapterStatusState extends LLMAdapterStatusPayload {}
 
 function getSkillCreatorApi() {
   const runtimeWindow = window as Window & {
-    electronAPI?: { skillCreator?: unknown };
     skillCreatorAPI?: unknown;
   };
-  const bridge =
-    runtimeWindow.skillCreatorAPI ?? runtimeWindow.electronAPI?.skillCreator;
+  const bridge = runtimeWindow.skillCreatorAPI;
 
   return bridge as
     | {

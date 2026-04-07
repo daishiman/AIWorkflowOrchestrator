@@ -37,6 +37,7 @@ import type {
   HealthCheckResult,
   LLMError,
 } from "@repo/shared/types/llm/schemas";
+import type { ApprovalRequestPayload } from "@repo/shared/types";
 import type {
   AuthModeChangedEvent,
   AuthModeGetResponse,
@@ -1036,13 +1037,7 @@ export interface ExecutionAPI {
     action: "approve" | "reject";
   }) => Promise<{ success: boolean; error?: unknown }>;
   onApprovalRequest: (
-    callback: (payload: {
-      operationType: string;
-      description: string;
-      destination?: string;
-      sessionId: string;
-      operationId: string;
-    }) => void,
+    callback: (payload: ApprovalRequestPayload) => void,
   ) => () => void;
 }
 
@@ -1253,6 +1248,8 @@ export interface ElectronAPI {
 
   // Skill Creator API (TASK-9B-H)
   skillCreator: import("./skill-creator-api").SkillCreatorAPI;
+
+  // Skill Creator Session API (TASK-UI-02: Session IPC廃止済みno-opスタブ、型互換維持)
   skillCreatorSession: import("./skill-creator-session-api").SkillCreatorSessionAPI;
 
   // Execution / Approval API (UT-IMP-SAFETY-GOV-PRODUCTION-INTEGRATION-001)

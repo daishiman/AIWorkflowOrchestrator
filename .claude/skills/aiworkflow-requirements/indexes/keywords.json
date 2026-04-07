@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-07T01:26:05.518Z",
-  "totalKeywords": 2791,
+  "generated": "2026-04-07T05:43:49.365Z",
+  "totalKeywords": 2792,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7434,6 +7434,9 @@
       "lessons-learned-workflow-quality-phase12-audit-validator.md",
       "logs-archive-2026-02-unassigned-placement-import-interface.md",
       "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "層型同期": [
+      "lessons-learned-ipc-preload-runtime.md"
     ],
     "executeAsync": [
       "lessons-learned-ipc-preload-runtime.md",

@@ -16,11 +16,8 @@ type SkillCreatorGovernanceApi = {
 type GovernanceStatus = "loading" | "ready" | "error";
 
 function getGovernanceApi(): SkillCreatorGovernanceApi | undefined {
-  return (
-    window as Window & {
-      skillCreatorAPI?: SkillCreatorGovernanceApi;
-    }
-  ).skillCreatorAPI;
+  return (window as Window & { skillCreatorAPI?: SkillCreatorGovernanceApi })
+    .skillCreatorAPI;
 }
 
 function toErrorMessage(error: unknown): string {

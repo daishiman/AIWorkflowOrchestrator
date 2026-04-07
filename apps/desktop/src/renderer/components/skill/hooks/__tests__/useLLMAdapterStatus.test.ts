@@ -1,5 +1,5 @@
 import { renderHook, act, waitFor } from "@testing-library/react";
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { useLLMAdapterStatus } from "../useLLMAdapterStatus";
 
 function createMockApi(
@@ -42,9 +42,21 @@ function createMockApi(
   };
 }
 
+function setSkillCreatorApi(api: unknown): void {
+  Object.defineProperty(window, "skillCreatorAPI", {
+    value: api,
+    writable: true,
+    configurable: true,
+  });
+}
+
 describe("useLLMAdapterStatus", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    Reflect.deleteProperty(window, "skillCreatorAPI");
   });
 
   // T-HK-01
@@ -58,9 +70,7 @@ describe("useLLMAdapterStatus", () => {
       ),
       onAdapterStatusChanged: vi.fn(() => () => {}),
     };
-    vi.spyOn(window, "electronAPI", "get").mockReturnValue({
-      skillCreator: api,
-    } as unknown as typeof window.electronAPI);
+    setSkillCreatorApi(api);
 
     const { result } = renderHook(() => useLLMAdapterStatus());
     expect(result.current).toEqual({
@@ -75,9 +85,7 @@ describe("useLLMAdapterStatus", () => {
       success: true,
       data: { status: "ready", failureReason: null },
     });
-    vi.spyOn(window, "electronAPI", "get").mockReturnValue({
-      skillCreator: api,
-    } as unknown as typeof window.electronAPI);
+    setSkillCreatorApi(api);
 
     const { result } = renderHook(() => useLLMAdapterStatus());
 
@@ -90,9 +98,7 @@ describe("useLLMAdapterStatus", () => {
   // T-HK-03
   it("push 受信後に状態が更新される", async () => {
     const { api, triggerPush } = createMockApi();
-    vi.spyOn(window, "electronAPI", "get").mockReturnValue({
-      skillCreator: api,
-    } as unknown as typeof window.electronAPI);
+    setSkillCreatorApi(api);
 
     const { result } = renderHook(() => useLLMAdapterStatus());
 
@@ -113,9 +119,7 @@ describe("useLLMAdapterStatus", () => {
     const { api } = createMockApi();
     const unsubscribe = vi.fn();
     api.onAdapterStatusChanged.mockReturnValue(unsubscribe);
-    vi.spyOn(window, "electronAPI", "get").mockReturnValue({
-      skillCreator: api,
-    } as unknown as typeof window.electronAPI);
+    setSkillCreatorApi(api);
 
     const { unmount } = renderHook(() => useLLMAdapterStatus());
 
@@ -137,9 +141,7 @@ describe("useLLMAdapterStatus", () => {
       ),
       onAdapterStatusChanged: vi.fn(() => () => {}),
     };
-    vi.spyOn(window, "electronAPI", "get").mockReturnValue({
-      skillCreator: api,
-    } as unknown as typeof window.electronAPI);
+    setSkillCreatorApi(api);
 
     const { result, unmount } = renderHook(() => useLLMAdapterStatus());
 
@@ -157,10 +159,8 @@ describe("useLLMAdapterStatus", () => {
   });
 
   // T-HK-06
-  it("window.electronAPI が undefined でもクラッシュしない", () => {
-    vi.spyOn(window, "electronAPI", "get").mockReturnValue(
-      undefined as unknown as typeof window.electronAPI,
-    );
+  it("window.skillCreatorAPI が undefined でもクラッシュしない", () => {
+    setSkillCreatorApi(undefined);
 
     expect(() => {
       renderHook(() => useLLMAdapterStatus());
@@ -170,9 +170,7 @@ describe("useLLMAdapterStatus", () => {
   // T-HK-07
   it("pull が success: false を返したとき状態は initializing のまま", async () => {
     const { api } = createMockApi({ success: false });
-    vi.spyOn(window, "electronAPI", "get").mockReturnValue({
-      skillCreator: api,
-    } as unknown as typeof window.electronAPI);
+    setSkillCreatorApi(api);
 
     const { result } = renderHook(() => useLLMAdapterStatus());
     await waitFor(() => expect(api.getAdapterStatus).toHaveBeenCalled());
@@ -183,9 +181,7 @@ describe("useLLMAdapterStatus", () => {
   // T-HK-08
   it("連続して push が届いたとき最後の状態が保持される", async () => {
     const { api, triggerPush } = createMockApi();
-    vi.spyOn(window, "electronAPI", "get").mockReturnValue({
-      skillCreator: api,
-    } as unknown as typeof window.electronAPI);
+    setSkillCreatorApi(api);
 
     const { result } = renderHook(() => useLLMAdapterStatus());
     await waitFor(() => expect(result.current.status).toBe("ready"));
@@ -202,9 +198,7 @@ describe("useLLMAdapterStatus", () => {
   // T-HK-09
   it("push payload の failureReason が null でも状態が更新される", async () => {
     const { api, triggerPush } = createMockApi();
-    vi.spyOn(window, "electronAPI", "get").mockReturnValue({
-      skillCreator: api,
-    } as unknown as typeof window.electronAPI);
+    setSkillCreatorApi(api);
 
     const { result } = renderHook(() => useLLMAdapterStatus());
     await waitFor(() => expect(result.current.status).toBe("ready"));

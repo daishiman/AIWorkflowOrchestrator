@@ -188,6 +188,17 @@ export const SKILL_CREATOR_EXTERNAL_API_CHANNELS = {
 } as const;
 
 /**
+ * スキルクリエイター runtime 系のIPCチャネル
+ * preload の直書きを廃止し、shared を正本とする。
+ * @see apps/desktop/src/preload/channels.ts
+ */
+export const SKILL_CREATOR_RUNTIME_CHANNELS = {
+  SKILL_CREATOR_PROGRESS: "skill-creator:progress",
+  SKILL_CREATOR_WORKFLOW_STATE_CHANGED: "skill-creator:workflow-state-changed",
+  SKILL_CREATOR_ADAPTER_STATUS_CHANGED: "skill-creator:adapter-status-changed",
+} as const;
+
+/**
  * スキルクリエイター 出力統合のIPCチャネル
  * TASK-SDK-SC-04: Skill Output Integration
  */
@@ -205,6 +216,7 @@ export const IPC_CHANNELS = {
   ...SKILL_CHANNELS,
   ...SKILL_CREATOR_SESSION_CHANNELS,
   ...SKILL_CREATOR_EXTERNAL_API_CHANNELS,
+  ...SKILL_CREATOR_RUNTIME_CHANNELS,
   SKILL_CREATOR_OUTPUT_READY,
   SKILL_CREATOR_OUTPUT_OVERWRITE_APPROVED,
   SKILL_CREATOR_OPEN_SKILL,

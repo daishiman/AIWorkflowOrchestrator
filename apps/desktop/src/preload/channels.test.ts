@@ -146,6 +146,20 @@ describe("IPC Channels", () => {
     });
   });
 
+  describe("Skill Creator runtime チャネルの allowlist 分類", () => {
+    it("3 チャンネルが ALLOWED_ON_CHANNELS に含まれる", () => {
+      expect(ALLOWED_ON_CHANNELS).toContain(
+        IPC_CHANNELS.SKILL_CREATOR_PROGRESS,
+      );
+      expect(ALLOWED_ON_CHANNELS).toContain(
+        IPC_CHANNELS.SKILL_CREATOR_WORKFLOW_STATE_CHANGED,
+      );
+      expect(ALLOWED_ON_CHANNELS).toContain(
+        IPC_CHANNELS.SKILL_CREATOR_ADAPTER_STATUS_CHANGED,
+      );
+    });
+  });
+
   describe("セキュリティ", () => {
     it("全てのinvokeチャネルが明示的に許可されている", () => {
       const invokeChannels = [

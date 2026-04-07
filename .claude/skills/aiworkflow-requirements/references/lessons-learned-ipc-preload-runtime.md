@@ -19,7 +19,8 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-04-07 | 1.19.0     | TASK-UI-03-REMAINING 教訓1件を追加（L-IPC-SKILLCREATOR-CANONICAL-001: canonical API と compat shim を分離して管理する）                       |
+| 2026-04-07 | 1.20.0     | TASK-UI-03-REMAINING 教訓1件を追加（L-IPC-SKILLCREATOR-CANONICAL-001: canonical API と compat shim を分離して管理する）                       |
+| 2026-04-06 | 1.19.0     | Phase-12 IPC 4層型同期（Session Resume / Session Resume UI遷移）教訓3件を追加（L-IPC-4LAYER-001: 4層型定義 shared 集約原則 / L-IPC-4LAYER-002: errorReason 3分岐の全層同期パターン / L-SESSION-RESUME-UI-001: snapshot nullability 設計パターン） |
 | 2026-04-06 | 1.18.0     | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓1件を追加（L-IPC-VARIADIC-001: multi-arg IPC event は preload で variadic 化する） |
 | 2026-04-01 | 1.17.0     | TASK-FIX-AUTH-IPC-001 教訓2件を追加（L-AUTH-IPC-001: IPC channel timeout と fire-and-forget パターン / L-AUTH-IPC-002: AUTH_STATE_CHANGED 責務境界の分離）       |
 | 2026-03-31 | 1.16.0     | TASK-FIX-BETTER-SQLITE3-ELECTRON-ABI-001 教訓1件を追加（L-BETTER-SQLITE3-ABI-001: native addon ABI 不一致 / postinstall rebuild / best-effort esbuild パターン） |
@@ -672,6 +673,40 @@
 | 解決策     | `authHandlers.ts` 側では `AUTH_STATE_CHANGED` を一切送信しない。成功・失敗の通知責務は `AuthFlowOrchestrator` に固定する。handler は「起動確認（success: true）」と「起動拒否（invalid provider）」のみを担う |
 | 標準ルール | IPC handler と event emitter の責務を明確に分離する。handler は「受付」、orchestrator は「完了通知」。両方が同じイベントを送信すると Renderer 側で状態遷移の二重処理が発生する                                |
 | 関連タスク | TASK-FIX-AUTH-IPC-001 / `authHandlers.ts:auth:login` / `authFlowOrchestrator.ts:startOAuthFlow`                                                                                                               |
+
+---
+
+## Phase-12 IPC 4層型同期（2026-04-06）
+
+### L-IPC-4LAYER-001: IPC 4層型定義は shared 層に集約する
+
+| 項目          | 内容                                                                                                                                                                                                                                 |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 課題          | creatorHandlers（Main）→ SkillCreatorFacade（Service）→ Preload API → Renderer の4層で型定義が個別管理されており、Session Resume の `errorReason` フィールド（`expired` / `incompatible` / `not_found` の3分岐）が全層で同期されているか確認が困難だった |
+| 症状          | Preload 層の型に `errorReason` を追加しても Renderer 側の型推論が古いまま残存。TypeScript は個別ファイルの型を参照するため、cross-layer の型同期漏れを静的に検出できない                                                            |
+| 解決策        | Session Resume 関連の型（`SessionSummary` / `SessionDetail` / `SessionResumeResult` / `errorReason`）を `packages/shared/src/types/` に SSoT として定義し、4層すべてから import する。型変更は shared の1ファイルを修正すれば全層に波及する |
+| 標準ルール    | 複数層にまたがる IPC 型は `packages/shared/src/types/` に集約し、各層では再定義せず import のみとする。Preload 側でもローカル型定義は避け、shared 型をそのまま export する                                                          |
+| 関連タスク    | TASK-P0-08 session-resume-renderer-integration                                                                                                                                                                                       |
+
+### L-IPC-4LAYER-002: errorReason 3分岐は型 union で全層同期する
+
+| 項目          | 内容                                                                                                                                                                                     |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題          | `errorReason: 'expired' \| 'incompatible' \| 'not_found'` が Main 側と Renderer 側で別々の string literal union として定義されていると、1分岐の追加が片側だけの修正で終わるリスクがある |
+| 解決策        | shared の型定義で `SessionResumeErrorReason = 'expired' \| 'incompatible' \| 'not_found'` として export し、Main/Preload/Renderer の全3箇所でこの型を参照する                          |
+| 検証方法      | `packages/shared` の型変更後に `pnpm typecheck --filter @repo/desktop` を実行し、全層のコンパイルエラーで同期漏れを検出する                                                              |
+| 標準ルール    | 分岐数が3以上の status/reason 型は必ず shared に抽出し、type alias として管理する。inline string literal は2値（boolean的）の場合のみ許容する                                           |
+| 関連タスク    | TASK-P0-08 session-resume-renderer-integration                                                                                                                                           |
+
+### L-SESSION-RESUME-UI-001: SessionResumePrompt の snapshot nullability 設計パターン
+
+| 項目          | 内容                                                                                                                                                                                                                      |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 課題          | `SkillLifecyclePanel` が一次導線に昇格（TASK-UI-01）した後、`SessionResumePrompt` / `SessionIndicator` との画面遷移ロジックが複雑化した。`snapshot` が `null` の場合と `undefined` の場合で挙動を分けていたため、条件分岐が冗長化した |
+| 解決策        | `snapshot` は `SkillCreatorWorkflowUiSnapshot \| null` に型を統一し、`undefined` は許容しない。`null` は「セッションなし」、非 null は「セッションあり（resume 可否判定が必要）」として意味を明確化する                  |
+| パターン      | `const hasSession = snapshot !== null;` を単一の判定ポイントとし、resume プロンプト表示条件は `hasSession && !isSessionActive` の形で表現する。`snapshot?.sessionId` のような optional chaining の乱用を避ける           |
+| 標準ルール    | 遷移条件が3分岐以上になる場合は nullability の型統一（`null` vs `undefined` の使い分け廃止）を最初に行う。`snapshot ?? null` パターンで undefined を早期に null へ正規化する                                           |
+| 関連タスク    | TASK-P0-08 session-resume-renderer-integration / TASK-UI-01 lifecycle-panel-primary-route-promotion                                                                                                                       |
 
 ---
 
