@@ -502,6 +502,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
 | 続き | L439 |
+|------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
+| 続き | L455 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -1353,6 +1355,11 @@ node scripts/list-specs.js --topics
 | LLM Adapter Error Banner（TASK-RT-01） | L122 |
 | Community Visualization UI コンポーネント（CONV-08-05） | L161 |
 | 続き | L270 |
+|------------|----|\n| 概要 | L6 |
+| Skill Runtime API Key Panel（TASK-RT-04） | L66 |
+| LLM Adapter Error Banner（TASK-RT-01） | L122 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L161 |
+| 続き | L270 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -1399,6 +1406,8 @@ node scripts/list-specs.js --topics
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
 | Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L209 |
 | Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L238 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L207 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L236 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -3054,6 +3063,9 @@ node scripts/list-specs.js --topics
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L519 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L519 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3074,6 +3086,9 @@ node scripts/list-specs.js --topics
 | 分割ファイル一覧 | L141 |
 | クイックリファレンス: カテゴリ別検索ガイド | L159 |
 | 分割ファイル一覧 | L163 |
+| 分割ファイル一覧 | L95 |
+| クイックリファレンス: カテゴリ別検索ガイド | L113 |
+| 分割ファイル一覧 | L117 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -4735,6 +4750,10 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L100 |
 | 完了タスク（機能別アーカイブ） | L108 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
+|------------|----|\n| 最近の完了タスク（2026-04） | L7 |
+| 完了タスク（2026-03後半） | L125 |
+| 完了タスク（機能別アーカイブ） | L133 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L242 |
 
 ### references/task-workflow-history.md
 

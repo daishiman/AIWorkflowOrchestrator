@@ -309,3 +309,17 @@ export type {
   HealthPolicyInput,
 } from "./health-policy";
 export { resolveHealthPolicy } from "./health-policy";
+
+// SkillInfoFormData ランタイムバリデーション (UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001)
+export type {
+  SkillInfoFieldValidationResult,
+  SkillInfoValidationInput,
+  SkillInfoFormValidationResult,
+} from "./skillInfoFormValidation";
+export {
+  SKILL_INFO_VALIDATION_LIMITS,
+  SKILL_INFO_VALIDATION_MESSAGES,
+  validateSkillName,
+  validatePurpose,
+  validateSkillInfoForm,
+} from "./skillInfoFormValidation";
