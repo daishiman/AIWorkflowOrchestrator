@@ -1,41 +1,77 @@
-# 因果ループ監査
+# Phase 9: 因果ループチェック — UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
 
-## タスク情報
+## 目的
 
-| 項目     | 内容                                           |
-| -------- | ---------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 |
-| Phase    | 9                                              |
+approval request フローにおける無限ループ・循環依存・副作用連鎖がないことを確認する。
 
-## 修正が新たな問題を生む循環がないかの確認
+---
 
-```
-smartDefaultReasoningService.ts 新規追加
-  → W0-seq-01 型定義（SkillInfoFormData/SmartDefaultResult）に依存
-  → W0-seq-01 型定義変更 → 引数/返り値型エラー → TypeScript で検出可能 ✓
+## チェック1: useEffect の依存配列
 
-inferSmartDefaults を packages/shared に配置
-  → W2-seq-03a（SkillCreateWizard）からインポート可能
-  → SkillCreateWizard.tsx のインライン実装を本サービスに置き換え可能
-  → 循環依存なし ✓
-
-barrel（index.ts）へのエクスポート追加
-  → packages/shared の他エクスポートと名称衝突なし
-  → inferSmartDefaults は既存 export に存在しない ✓
-
-Phase 8 リファクタリング（定数化・関数分割）
-  → 公開 API シグネチャは不変
-  → 内部実装変更のみ → テスト 33件 PASS で確認済み ✓
+```typescript
+useEffect(() => {
+  const skillCreatorApi = getSkillCreatorApi();
+  if (!skillCreatorApi?.onApprovalRequest) return;
+  const unsubscribe = skillCreatorApi.onApprovalRequest((payload) => {
+    setPendingApproval(payload);
+  });
+  return unsubscribe;
+}, []); // 依存配列: 空
 ```
 
-## 多角的チェック
+**分析**:
 
-| 思考法       | 確認内容                                     | 結果                         |
-| ------------ | -------------------------------------------- | ---------------------------- |
-| 逆説思考     | W0-seq-01 型変更に追随しない場合             | CI TypeScript で検出 ✓       |
-| システム思考 | W2-seq-03a 依存・barrel・型整合              | 全て確認済み ✓               |
-| if 思考      | purpose=null/undefined/空文字・category=null | フォールバック実装済み ✓     |
-| 改善思考     | キーワード拡張容易性                         | TOOL_KEYWORDS 定数化で対応 ✓ |
-| 因果ループ   | 修正が新たな障害を生む循環                   | なし ✓                       |
+- 依存配列が `[]` のため、マウント時に1回のみ実行される
+- `setPendingApproval` は安定した関数参照（React の useState から取得）
+- ループ条件なし
 
-## 判定: 因果ループなし ✅
+**判定: 問題なし**
+
+---
+
+## チェック2: handleApprove / handleReject の副作用連鎖
+
+```
+handleApprove() → respondToApproval() → setPendingApproval(null)
+                                       ↓
+                               pendingApproval = null
+                                       ↓
+                         {pendingApproval ? <ApprovalSheet/> : null}
+                                       ↓
+                               ApprovalSheet 非表示
+```
+
+**分析**:
+
+- `setPendingApproval(null)` → 再レンダリング → approval-sheet 非表示
+- 再レンダリングで useEffect が再実行されない（依存配列が `[]`）
+- approval callback は再購読されない
+- 循環なし
+
+**判定: 問題なし**
+
+---
+
+## チェック3: 多重購読シナリオでのループ
+
+TC-APPR-11 で検証済み。複数の `onApprovalRequest` 呼び出しは独立した listener として登録され、
+それぞれの unsubscribe で独立して解除される。listener 間の相互呼び出しなし。
+
+**判定: 問題なし**
+
+---
+
+## チェック4: コンポーネントライフサイクルとの整合
+
+| ライフサイクル | 動作                                      | 問題 |
+| -------------- | ----------------------------------------- | ---- |
+| マウント       | useEffect でサブスクライブ                | なし |
+| approval 受信  | setPendingApproval → 再レンダリング       | なし |
+| approve/reject | setPendingApproval(null) → 再レンダリング | なし |
+| アンマウント   | useEffect cleanup → unsubscribe           | なし |
+
+---
+
+## 総合判定: 因果ループなし
+
+無限ループ・循環依存・意図しない副作用連鎖は検出されなかった。

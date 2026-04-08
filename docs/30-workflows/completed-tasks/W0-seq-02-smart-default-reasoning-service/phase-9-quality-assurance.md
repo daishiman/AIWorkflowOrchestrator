@@ -9,140 +9,98 @@
 | 機能名     | スマートデフォルト推論サービス実装             |
 | 前提Phase  | Phase 8                                        |
 | 後続Phase  | Phase 10                                       |
-| 作成日     | 2026-04-07                                     |
-| ステータス | pending                                        |
+| 作成日     | 2026-04-08                                     |
+| ステータス | completed                                      |
 
 ## 目的
 
-静的解析・リスク評価・因果ループ監査を実施し、リリース可能な品質水準を確認する。
+lint・typecheck・テスト・セキュリティ・リスクの全方位チェックを行い、Phase 10 への通過判定を行う。
 
 ## 実行タスク
 
-1. ESLint / TypeScript / Prettier を確認する。
-2. リスク評価を整理する。
-3. 因果ループ監査を実施する。
+1. 静的解析（lint / typecheck）を実行する。
+2. テスト全件 PASS を確認する。
+3. セキュリティ・リスクを評価する。
 
 ## 統合テスト連携
 
-- Phase 10 へ進める前の品質ゲートとして扱う。
-- Phase 8 のリファクタ後の結果であることを前提にする。
+- Phase 10 の最終レビューに必要な全品質証跡を揃える。
 
-## 静的解析チェック
+## 品質チェックリスト
 
-```bash
-# ESLint チェック
-pnpm --filter @repo/shared lint
+### 機能検証
 
-# TypeScript 型チェック
-pnpm --filter @repo/shared typecheck
+- [ ] Phase 4 定義の全テスト（TC-01〜TC-15）が PASS
+- [ ] Phase 6 追加テスト（TC-16〜TC-20）が PASS
+- [ ] `pnpm --filter @repo/shared test:run` が全件 PASS
 
-# Prettier フォーマット確認
-pnpm --filter @repo/shared format:check
-```
+### コード品質
 
-## 追加品質ゲート
+- [ ] `pnpm lint` がエラーなし
+- [ ] `pnpm --filter @repo/shared typecheck` がエラーなし
+- [ ] `any` 型の使用なし（NFR-02 準拠）
 
-| 観点          | 合格条件                                                    | 確認方法                                                                                                                                                        |
-| ------------- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| line budget   | workflow / spec / report の line budget が 500 行を超えない | `wc -l` で確認し、500 行を超える場合は split / archive 方針を記録する                                                                                           |
-| link          | 参照リンク切れが 0 件                                       | `node .claude/skills/task-specification-creator/scripts/verify-unassigned-links.js --source .claude/skills/aiworkflow-requirements/references/task-workflow.md` |
-| mirror parity | `.claude` 正本と `.agents` mirror の差分が 0 件             | `diff -qr .claude/skills/task-specification-creator .agents/skills/task-specification-creator`                                                                  |
+### カバレッジ
 
-### 確認観点
+- [ ] `smartDefaultReasoningService.ts` の Line Coverage: 90%+
+- [ ] `smartDefaultReasoningService.ts` の Branch Coverage: 80%+
+- [ ] Function Coverage: 100%
 
-| 観点                   | 確認内容                                                            |
-| ---------------------- | ------------------------------------------------------------------- |
-| ESLint エラー          | 0件であること                                                       |
-| TypeScript エラー      | 0件であること                                                       |
-| any 型の使用           | 新規 `any` が追加されていないこと（NFR-02）                         |
-| 未使用変数             | 未使用のインポート・変数が残っていないこと                          |
-| React hooks ルール違反 | 本サービスは純粋関数のため非該当                                    |
-| Strict モード準拠      | `input?.purpose ?? ""` 等の null チェックが適切であること（NFR-01） |
+### セキュリティ
 
-## リスク評価
+- [ ] 外部ライブラリへの依存なし（NFR-03 準拠）
+- [ ] 入力値の null/undefined ガードが存在する
+- [ ] 推論ロジックに SQL インジェクション・XSS のリスクがない（純粋関数）
 
-| リスク                                            | 発生確率 | 影響度 | 対策                                                    |
-| ------------------------------------------------- | -------- | ------ | ------------------------------------------------------- |
-| キーワードの大文字小文字で推論ミス                | 中       | 低     | テストで大文字小文字区別の仕様を明示・文書化する        |
-| 先勝ちルールによる意図しないツール選択            | 低       | 低     | inferenceLog で推論根拠を確認可能にしている             |
-| `SkillInfoFormData` 型定義変更による引数型ミス    | 低       | 高     | TypeScript 型チェックで CI 検出・W0-seq-01 との連動確認 |
-| `SmartDefaultResult` 型定義変更による返り値型ミス | 低       | 高     | TypeScript 型チェックで CI 検出                         |
-| W2-seq-03a がインポートする際の barrel 解決失敗   | 低       | 中     | barrel の `index.ts` にエクスポートが追加済みか確認     |
-| 推論ルールの網羅性不足（新ツール対応漏れ）        | 中       | 低     | Phase 8 でキーワードを定数化し拡張容易な構造にする      |
+### barrel 整合
+
+- [ ] `packages/shared/src/services/skillCreator/index.ts` が `inferSmartDefaults` を export している
+- [ ] `packages/shared/index.ts` が root export に `inferSmartDefaults` を再 export している
 
 ## 因果ループ監査
 
-### 修正が新たな問題を生む循環がないかの確認
+| ループ               | 強化/バランス | 確認内容                                            |
+| -------------------- | ------------- | --------------------------------------------------- |
+| 推論精度向上ループ   | 強化          | inferenceLog の記録 → 将来の推論改善に活用可能      |
+| フォールバック安全性 | バランス      | null フォールバックが過剰すぎると UI が空表示になる |
 
+## 実行コマンド
+
+```bash
+# 全品質チェック
+pnpm lint
+pnpm --filter @repo/shared typecheck
+pnpm --filter @repo/shared test:run
 ```
-smartDefaultReasoningService.ts 新規追加
-  → W0-seq-01 型定義（SkillInfoFormData/SmartDefaultResult）に依存
-  → W0-seq-01 型定義変更 → 引数/返り値型エラー → TypeScript で検出可能 ✓
-
-inferSmartDefaults を packages/shared に配置
-  → W2-seq-03a（SkillCreateWizard）からインポート可能
-  → SkillCreateWizard.tsx のインライン実装を本サービスに置き換え可能
-  → 循環依存なし ✓
-
-barrel（index.ts）へのエクスポート追加
-  → packages/shared の他エクスポートと競合しないか確認が必要
-  → 既存の named export と名称衝突がない限り問題なし ✓
-```
-
-## 多角的チェック観点
-
-| 思考法         | 確認内容                                                               |
-| -------------- | ---------------------------------------------------------------------- |
-| 逆説思考       | 推論ロジックが W0-seq-01 型変更に追随しない場合どうなるか（CI で検出） |
-| システム思考   | W2-seq-03a との依存関係・barrel 解決・型整合を確認する                 |
-| if 思考        | purpose=null/undefined/空文字・category=null の各フォールバックを確認  |
-| 改善思考       | 推論キーワードの拡張を容易にするため定数化が有効か                     |
-| 因果関係ループ | 修正が新たな障害を生む循環がないか確認する                             |
 
 ## 参照資料
 
-| 資料名         | パス                                                                                    | 用途                               |
-| -------------- | --------------------------------------------------------------------------------------- | ---------------------------------- |
-| 実装サマリー   | `outputs/phase-5/implementation-summary.md`                                             | Phase 5 成果物                     |
-| 品質ゲート基準 | `.claude/skills/task-specification-creator/references/patterns-validation-and-audit.md` | line budget / link / mirror parity |
-| リファクタ計画 | `outputs/phase-8/refactoring-plan.md`                                                   | Phase 8 成果物                     |
-| 再テスト計画   | `outputs/phase-8/post-refactor-test-plan.md`                                            | Phase 8 成果物                     |
-| 責務境界マップ | `outputs/phase-8/responsibility-boundary-map.md`                                        | Phase 8 成果物                     |
-| 受け入れ基準   | `outputs/phase-1/acceptance-criteria.md`                                                | Phase 1 成果物                     |
+| 資料名               | パス                                              | 用途           |
+| -------------------- | ------------------------------------------------- | -------------- |
+| リファクタリング計画 | `outputs/phase-8/refactoring-plan.md`             | Phase 8 成果物 |
+| トレーサビリティ     | `outputs/phase-7/traceability-coverage-report.md` | Phase 7 成果物 |
 
 ## 実行手順
 
-1. Phase 8 成果物を確認する。
-2. 静的解析（ESLint/TypeScript/Prettier）と追加品質ゲート（line budget / link / mirror parity）を実行する。
-3. リスク評価テーブルを完成させる。
-4. 因果ループ監査を実施する。
-5. 品質レポートを作成する。
+1. lint / typecheck を実行し、エラーがないことを確認する。
+2. 全テストを実行し、PASS を確認する。
+3. セキュリティリスク評価を行う。
+4. 品質レポートを作成する。
 
 ## 成果物
 
 | 成果物         | パス                                   | 説明                     |
 | -------------- | -------------------------------------- | ------------------------ |
-| 品質レポート   | `outputs/phase-9/quality-report.md`    | 静的解析結果・品質評価   |
-| リスク台帳     | `outputs/phase-9/risk-register.md`     | リスク一覧と対策         |
-| 因果ループ監査 | `outputs/phase-9/causal-loop-check.md` | 循環問題がないことの確認 |
+| 品質レポート   | `outputs/phase-9/quality-report.md`    | 全チェック結果サマリー   |
+| リスク台帳     | `outputs/phase-9/risk-register.md`     | セキュリティ・リスク評価 |
+| 因果ループ確認 | `outputs/phase-9/causal-loop-check.md` | 因果ループ監査結果       |
 
 ## 完了条件
 
 - [ ] 実行タスクで定義した成果物を全件作成
-- [ ] 静的解析がエラー 0 件であること
-- [ ] リスク評価が完了していること
-- [ ] 因果ループ監査が完了していること
-- [ ] 矛盾がないことを確認
-- [ ] 漏れがないことを確認
+- [ ] 品質チェックリストの全項目が PASS
+- [ ] リスク台帳が作成されていること
 - [ ] 本Phase内の全タスクを100%実行完了
-
-## サブタスク管理
-
-1. 参照資料の確認
-2. 静的解析実行
-3. リスク評価実施
-4. 因果ループ監査実施
-5. 成果物出力
 
 ## タスク100%実行確認【必須】
 

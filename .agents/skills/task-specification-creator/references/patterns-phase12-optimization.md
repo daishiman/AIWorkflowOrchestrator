@@ -117,3 +117,43 @@
 - **発見日**: 2026-04-06
 - **関連タスク**: TASK-P0-08（`creatorHandlers.sessionResume.test.ts` での適用実績）
 - **関連Pitfall**: P42（3段バリデーション）、P43（rate limit）
+
+#### vitest monorepo alias 設定標準化パターン（W0-seq-02 2026-04-08）
+
+- **状況**: `@repo/shared`等のmonorepo aliasをimportするテストが`vitest.config.ts`のalias未設定でモジュール解決不可になる
+- **解決策**:
+  1. `vitest.config.ts`の`test:`ブロック内に以下を追加する:
+     ```ts
+     resolve: {
+       alias: {
+         '@repo/shared': path.resolve(__dirname, '../shared/src'),
+       },
+     },
+     ```
+  2. `import path from 'path'` をvitest.config.tsの先頭に追加する
+  3. 追加後に`pnpm --filter <package> exec vitest run`で動作確認する
+- **効果**: monorepo alias使用テストのモジュール解決エラーをゼロにする
+- **発見日**: 2026-04-08
+- **関連タスク**: UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 (FB-01)
+
+#### post-tool-useフック自動改変後の人間差分レビューパターン（W0-seq-02 2026-04-08）
+
+- **状況**: ESLint等のpost-tool-useフックがimportパスを自動書き換えすることで、テスト期待値が追随せずテスト件数0件扱いになる
+- **解決策**:
+  1. ファイル編集後にフックが実行された場合は `git diff <file>` で自動変更内容を確認する
+  2. importパス変更が起きた場合、対応する`expect()`の値も変更されていることを確認する
+  3. Phase 11の検証ステップに「フック実行後の人間レビュー」を組み込む
+- **効果**: フーク起因のサイレント仕様破壊を防止できる
+- **発見日**: 2026-04-08
+- **関連タスク**: UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 (FB-02)
+
+#### edge case一次定義集約パターン（W0-seq-02 2026-04-08）
+
+- **状況**: edge caseの定義が`implementation-guide.md` / `manual-test-result.md` / `unassigned-task-detection.md`に分散し、定義の食い違いによるfalse greenが発生する
+- **解決策**:
+  1. edge caseの一次定義は`outputs/phase-12/implementation-guide.md`に集約する
+  2. 他のファイル（manual-test-result.md等）では一次定義を参照するのみとし、定義の再記述を避ける
+  3. Phase 12着手前にedge case定義の責務ファイルを宣言する
+- **効果**: 定義の一元管理により、edge case解釈の矛盾を防止できる
+- **発見日**: 2026-04-08
+- **関連タスク**: UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 (FB-05)
