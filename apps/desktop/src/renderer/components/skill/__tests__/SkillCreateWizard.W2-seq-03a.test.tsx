@@ -7,7 +7,7 @@
  * - inferSmartDefaults: 推論ルールのユニットテスト
  * - STEPS: ステップ名称の正確性
  * - legacy state 削除: テンプレートUI非表示 / SkillInfoStep 表示
- * - handleRetry: Step 0 復帰と formData 保持
+ * - handleRetry: Step 0 復帰と formData 保持、生成結果 state 初期化
  * - CompleteStep action cards: 今すぐ実行/エディタ/別作成
  */
 
@@ -172,13 +172,13 @@ describe("inferSmartDefaults", () => {
     expect(result.format).toBe("structured");
   });
 
-  it("大文字小文字を区別する（小文字'slack'は一致しない）こと", () => {
+  it("小文字'slack'でも tool='slack' を推論すること（大小文字不問）", () => {
     const result = inferSmartDefaults({
       skillName: "",
       purpose: "slackで通知する",
       category: null,
     });
-    expect(result.tool).toBeNull();
+    expect(result.tool).toBe("slack");
   });
 
   it("複数のツール名が含まれる場合、最初に一致したツールが採用される（Slack > GitHub）", () => {
@@ -286,6 +286,35 @@ describe("SkillCreateWizard（legacy state削除後）", () => {
       resolvePromise!("/path/to/skill");
     });
   });
+
+  it("生成ボタンを連打しても createSkill は1回だけ呼ばれること", async () => {
+    let resolvePromise: (value: string) => void;
+    mockCreateSkill.mockReturnValue(
+      new Promise<string>((resolve) => {
+        resolvePromise = resolve;
+      }),
+    );
+
+    render(<SkillCreateWizard onClose={mockOnClose} />);
+    fireEvent.change(screen.getByRole("textbox", { name: /目的/ }), {
+      target: { value: "テストスキルの説明文" },
+    });
+    fireEvent.click(screen.getByRole("button", { name: "自動化" }));
+    fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+    fireEvent.click(screen.getByRole("button", { name: "今すぐ生成する" }));
+
+    await act(async () => {
+      const generateButton = screen.getByRole("button", { name: "生成する" });
+      fireEvent.click(generateButton);
+      fireEvent.click(generateButton);
+    });
+
+    expect(mockCreateSkill).toHaveBeenCalledTimes(1);
+
+    await act(async () => {
+      resolvePromise!("/path/to/skill");
+    });
+  });
 });
 
 // ── handleRetry ───────────────────────────────────────────────────────────────
@@ -330,6 +359,14 @@ describe("handleRetry", () => {
 
     expect(screen.queryByTestId("complete-step-header")).toBeNull();
     expect(screen.getByTestId("wizard-step-info")).toBeInTheDocument();
+  });
+
+  it("CompleteStep に生成先パスが表示されること", async () => {
+    await navigateToComplete(mockOnClose);
+
+    expect(screen.getByTestId("complete-step-skill-path")).toHaveTextContent(
+      "/path/to/new-skill",
+    );
   });
 });
 
@@ -386,6 +423,17 @@ describe("CompleteStep action cards", () => {
   it("hasExternalIntegration=false の場合、外部連携チェックリストが表示されないこと", async () => {
     await navigateToComplete(mockOnClose);
     expect(screen.queryByTestId("complete-step-external-checklist")).toBeNull();
+  });
+
+  it("purpose に slack を含む場合、完了画面に外部連携チェックリストが表示されること", async () => {
+    await navigateToComplete(
+      mockOnClose,
+      "slackで毎日通知を送るスキルを作成する",
+    );
+    expect(
+      screen.getByTestId("complete-step-external-checklist"),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Slack Webhook URL/)).toBeInTheDocument();
   });
 
   it("👍 ボタンが存在すること", async () => {

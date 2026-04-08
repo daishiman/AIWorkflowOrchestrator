@@ -10,11 +10,11 @@
 
 import React from "react";
 import type { PlanResult } from "../../../store/slices/agentSlice";
-/** LLM生成 or テンプレート生成のモード選択（TASK-SC-07） */
-export type GenerationMode = "llm" | "template";
 import { renderErrorCard } from "./generate-step/ErrorCards";
 
 // ---- 型定義 ----
+
+export type GenerationMode = "llm" | "template";
 
 export type GenerationStage =
   | "idle"
@@ -62,7 +62,6 @@ export interface GenerateStepProps {
   onRetry?: () => void;
   onOpenSettings?: () => void;
   isGenerating?: boolean;
-  generationMode?: GenerationMode;
   generationProgress?: string | null;
   planResult?: PlanResult | null;
   onExecutePlan?: () => void;
@@ -97,7 +96,6 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
       onRetry,
       onOpenSettings,
       isGenerating = false,
-      generationMode,
       generationProgress,
       planResult,
       onExecutePlan,
@@ -107,10 +105,9 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
   ) => {
     const isActive = GENERATION_STAGES.includes(stage);
     const currentMessage = message || generationProgress || "";
-    const showTemplateCancel = generationMode !== "llm" && isActive;
-    const showLlmControls =
-      generationMode === "llm" &&
-      (Boolean(planResult) || isGenerating || Boolean(error));
+    const showCancelButton = isActive;
+    const showPlanControls =
+      Boolean(planResult) || (Boolean(error) && Boolean(onCancelPlan));
 
     return (
       <div
@@ -218,8 +215,8 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
         {error &&
           renderErrorCard(error.code, error.message, onRetry, onOpenSettings)}
 
-        {/* Legacy LLM Controls */}
-        {showLlmControls && (
+        {/* Legacy plan/execute controls */}
+        {showPlanControls && (
           <div className="flex gap-3">
             {planResult && onExecutePlan && (
               <button
@@ -258,7 +255,7 @@ export const GenerateStep = React.forwardRef<HTMLDivElement, GenerateStepProps>(
         )}
 
         {/* Cancel Button */}
-        {showTemplateCancel && onCancel && (
+        {showCancelButton && onCancel && (
           <button
             type="button"
             onClick={onCancel}

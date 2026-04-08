@@ -27,6 +27,7 @@ const mockExecuteSkill = vi.fn();
 const mockSelectSkillByName = vi.fn();
 const mockSetCurrentView = vi.fn();
 const mockSetCurrentSkillName = vi.fn();
+const mockClearGenerationState = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
@@ -44,7 +45,7 @@ vi.mock("../../../store", () => ({
   useSetGenerationError: () => vi.fn(),
   useSetCurrentPlanResult: () => vi.fn(),
   useSetCurrentPlanId: () => vi.fn(),
-  useClearGenerationState: () => vi.fn(),
+  useClearGenerationState: () => mockClearGenerationState,
   useWorkflowSnapshot: () => null,
 }));
 
@@ -142,6 +143,9 @@ describe("SkillCreateWizard Store統合", () => {
       });
       expect(screen.getByTestId("wizard-step-complete")).toBeInTheDocument();
       expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+      expect(screen.getByTestId("complete-step-skill-path")).toHaveTextContent(
+        "/mock/skills/new-skill",
+      );
       expect(
         screen.getByTestId("complete-step-action-execute"),
       ).toBeInTheDocument();
@@ -172,6 +176,7 @@ describe("SkillCreateWizard Store統合", () => {
         (screen.getByRole("textbox", { name: /目的/ }) as HTMLTextAreaElement)
           .value,
       ).toBe(purpose);
+      expect(mockClearGenerationState).toHaveBeenCalledTimes(2);
     });
 
     it("store.createSkill 失敗時にエラーメッセージが表示される", async () => {
