@@ -3376,6 +3376,17 @@ node scripts/list-specs.js --topics
 | TASK-FIX-14-1: console → electron-log 移行 | L126 |
 | TASK-FIX-13-1: deprecatedプロパティ正式移行 | L230 |
 
+### references/lessons-learned-skill-wizard-redesign.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| 実装パターン（将来参照用） | L21 |
+| 苦戦箇所 | L108 |
+| 非ブロッカー改善候補（skill-feedback-report.md より） | L119 |
+| 依存関係 | L159 |
+| 関連ファイル | L171 |
+
 ### references/lessons-learned-templates.md
 
 | セクション | 行 |
@@ -4610,6 +4621,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 
+### references/task-workflow-completed-recent-2026-04d.md
+
+| セクション | 行 |
+|------------|----|
+
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
 | セクション | 行 |
@@ -4737,6 +4753,12 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L100 |
 | 完了タスク（機能別アーカイブ） | L108 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
+| 完了タスク（2026-03後半） | L158 |
+| 完了タスク（機能別アーカイブ） | L166 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L275 |
+| 完了タスク（2026-03後半） | L101 |
+| 完了タスク（機能別アーカイブ） | L109 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L218 |
 
 ### references/task-workflow-history.md
 

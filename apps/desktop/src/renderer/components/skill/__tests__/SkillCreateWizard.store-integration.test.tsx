@@ -22,6 +22,7 @@ const mockExecuteSkill = vi.fn();
 const mockSelectSkillByName = vi.fn();
 const mockSetCurrentView = vi.fn();
 const mockSetCurrentSkillName = vi.fn();
+const mockClearGenerationState = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
@@ -40,7 +41,7 @@ vi.mock("../../../store", () => ({
   useSetGenerationError: () => vi.fn(),
   useSetCurrentPlanResult: () => vi.fn(),
   useSetCurrentPlanId: () => vi.fn(),
-  useClearGenerationState: () => vi.fn(),
+  useClearGenerationState: () => mockClearGenerationState,
   useWorkflowSnapshot: () => null,
 }));
 
@@ -125,6 +126,9 @@ describe("SkillCreateWizard Store統合", () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
       });
       expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+      expect(screen.getByTestId("complete-step-skill-path")).toHaveTextContent(
+        "/mock/skills/new-skill",
+      );
       expect(
         screen.getByText("スキルの骨格を生成しました"),
       ).toBeInTheDocument();
@@ -156,9 +160,12 @@ describe("SkillCreateWizard Store統合", () => {
 
       fireEvent.click(screen.getByTestId("complete-step-feedback-unsatisfied"));
 
-      expect(screen.getByTestId("wizard-step-describe")).toBeInTheDocument();
-      expect(screen.getByRole("textbox")).toHaveValue("テスト");
-      expect(screen.getByRole("button", { name: "次へ" })).toBeEnabled();
+      expect(screen.getByTestId("wizard-step-info")).toBeInTheDocument();
+      expect(
+        (screen.getByRole("textbox", { name: /目的/ }) as HTMLTextAreaElement)
+          .value,
+      ).toBe(purpose);
+      expect(mockClearGenerationState).toHaveBeenCalledTimes(2);
     });
 
     it("store.createSkill 失敗時にエラーメッセージが表示される", async () => {
@@ -221,7 +228,7 @@ describe("SkillCreateWizard Store統合", () => {
   describe("状態遷移", () => {
     it("初期状態は Step 0（説明入力）", () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      expect(screen.getByTestId("wizard-step-describe")).toBeInTheDocument();
+      expect(screen.getByTestId("wizard-step-info")).toBeInTheDocument();
     });
 
     it("生成成功で Step 3（完了）に遷移する", async () => {

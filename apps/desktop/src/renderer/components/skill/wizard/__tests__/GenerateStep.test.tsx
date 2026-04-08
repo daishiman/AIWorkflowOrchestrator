@@ -288,7 +288,6 @@ describe("GenerateStep", () => {
       const onExecutePlan = vi.fn();
       const onCancelPlan = vi.fn();
       renderStep({
-        generationMode: "llm",
         planResult,
         onExecutePlan,
         onCancelPlan,
@@ -305,7 +304,6 @@ describe("GenerateStep", () => {
     it("LLM エラー時は「最初からやり直す」ボタンが表示される", () => {
       const onCancelPlan = vi.fn();
       renderStep({
-        generationMode: "llm",
         stage: "error",
         percent: 0,
         error: {
