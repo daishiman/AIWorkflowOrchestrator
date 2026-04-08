@@ -3051,6 +3051,8 @@ node scripts/list-specs.js --topics
 | TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L409 |
 | TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L440 |
 | TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L452 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L473 |
+| W0-seq-02 SmartDefault推論サービス (2026-04-08) | L481 |
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L519 |

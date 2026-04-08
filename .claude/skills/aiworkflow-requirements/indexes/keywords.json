@@ -1,4 +1,6 @@
 {
+  "generated": "2026-04-08T04:39:37.401Z",
+  "totalKeywords": 2826,
   "totalKeywords": 2827,
   "keywords": {
     "チャット履歴": [
@@ -7417,6 +7419,15 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "seq": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "SmartDefault": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "推論サービス": [
+      "lessons-learned-current-2026-04.md"
     ],
     "MAINLINE": [
       "lessons-learned-current-2026-04.md",

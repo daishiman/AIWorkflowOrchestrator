@@ -9,8 +9,8 @@
 | 機能名     | スマートデフォルト推論サービス実装             |
 | 前提Phase  | Phase 1                                        |
 | 後続Phase  | Phase 3                                        |
-| 作成日     | 2026-04-07                                     |
-| ステータス | pending                                        |
+| 作成日     | 2026-04-08                                     |
+| ステータス | completed                                      |
 
 ## 目的
 
@@ -87,7 +87,7 @@ inferSmartDefaults(input: SkillInfoFormData): SmartDefaultResult
 │
 └─ 返却: { ...result, inferenceLog }
          ※ inferenceLog が空配列 [] でもエラーにしない（フォールバック動作）
-         ※ format 推論は purpose と独立して評価する。purpose が空でも category が有効なら継続する
+         ※ format 推論は purpose と独立して評価する
 ```
 
 ## フォールバック設計
@@ -107,62 +107,6 @@ inferSmartDefaults(input: SkillInfoFormData): SmartDefaultResult
 | `SkillInfoFormData`  | `packages/shared/src/types/skillCreator.ts` | 関数引数               |
 | `SmartDefaultResult` | `packages/shared/src/types/skillCreator.ts` | 関数返り値             |
 
-## 実装コードスケッチ
-
-```typescript
-import type {
-  SkillInfoFormData,
-  SmartDefaultResult,
-} from "../../types/skillCreator";
-
-export function inferSmartDefaults(
-  input: SkillInfoFormData,
-): SmartDefaultResult {
-  const result: Omit<SmartDefaultResult, "inferenceLog"> = {
-    who: null,
-    input: null,
-    timing: null,
-    output: null,
-    tool: null,
-    format: null,
-  };
-  const inferenceLog: string[] = [];
-  const purpose = input.purpose ?? "";
-
-  // ツール推論
-  if (purpose.includes("Slack")) {
-    result.tool = "slack";
-    inferenceLog.push("purpose に 'Slack' を検出 → tool = 'slack'");
-  } else if (purpose.includes("GitHub")) {
-    result.tool = "github";
-    inferenceLog.push("purpose に 'GitHub' を検出 → tool = 'github'");
-  } else if (purpose.includes("Notion")) {
-    result.tool = "notion";
-    inferenceLog.push("purpose に 'Notion' を検出 → tool = 'notion'");
-  }
-
-  // タイミング推論
-  if (/毎日|毎週|定期|スケジュール/.test(purpose)) {
-    result.timing = "scheduled";
-    inferenceLog.push("定期実行キーワードを検出 → timing = 'scheduled'");
-  } else if (/リアルタイム|即座|すぐに/.test(purpose)) {
-    result.timing = "realtime";
-    inferenceLog.push("リアルタイムキーワードを検出 → timing = 'realtime'");
-  }
-
-  // フォーマット推論
-  if (input.category === "code-support") {
-    result.format = "code";
-    inferenceLog.push("category = 'code-support' → format = 'code'");
-  } else if (input.category === "data-analysis") {
-    result.format = "structured";
-    inferenceLog.push("category = 'data-analysis' → format = 'structured'");
-  }
-
-  return { ...result, inferenceLog };
-}
-```
-
 ## 参照資料
 
 | 資料名              | パス                                         | 用途           |
@@ -179,7 +123,6 @@ export function inferSmartDefaults(
 3. API シグネチャを確定する。
 4. 推論フローチャートを詳細化する。
 5. フォールバック設計テーブルを完成させる。
-6. 実装コードスケッチを記述する。
 
 ## 成果物
 
@@ -195,19 +138,9 @@ export function inferSmartDefaults(
 - [ ] API シグネチャが確定していること
 - [ ] 推論フローチャートが全ルール（ツール/タイミング/フォーマット）を網羅していること
 - [ ] フォールバック挙動が全パターン定義されていること
-- [ ] 実装コードスケッチが記述されていること
 - [ ] 矛盾がないことを確認
 - [ ] 漏れがないことを確認
 - [ ] 本Phase内の全タスクを100%実行完了
-
-## サブタスク管理
-
-1. 参照資料の確認
-2. 型定義の再確認
-3. API シグネチャ確定
-4. 推論フローチャートの詳細化
-5. フォールバック設計の完成
-6. 成果物出力
 
 ## タスク100%実行確認【必須】
 

@@ -1,49 +1,60 @@
-# 実装サマリー
+# Phase 5: 実装概要 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
 
-## タスク情報
+## 実装の概要
 
-| 項目     | 内容                                           |
-| -------- | ---------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 |
-| Phase    | 5                                              |
+`inferSmartDefaults` 関数を含むスマートデフォルト推論サービスを新規実装した。
+ユーザーが入力した `purpose`（目的）と `category`（カテゴリ）から、
+スキルウィザード Step 1 の 6 問分の初期値を自動推論する純粋関数。
 
-## 実装内容
+## 実装ファイル
 
-### 実装済み関数
+| ファイル                                                                    | 変更種別 | 内容                                         |
+| --------------------------------------------------------------------------- | -------- | -------------------------------------------- |
+| `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` | 新規作成 | 推論サービス本体（142行）                    |
+| `packages/shared/src/services/skillCreator/index.ts`                        | 更新     | `inferSmartDefaults` を barrel export に追加 |
+
+## 推論ロジック
+
+### 定数定義
 
 ```typescript
-export function inferSmartDefaults(
-  input: SkillInfoFormData,
-): SmartDefaultResult;
+const TOOL_KEYWORDS = [
+  { keyword: "Slack", tool: "slack" },
+  { keyword: "GitHub", tool: "github" },
+  { keyword: "Notion", tool: "notion" },
+];
+const SCHEDULED_PATTERN = /毎日|毎週|定期|スケジュール/;
+const REALTIME_PATTERN = /リアルタイム|即座|すぐに/;
 ```
 
-### 推論ロジック
+キーワードの追加・変更は `TOOL_KEYWORDS` 定数のみを修正すれば済む設計。
 
-1. **ツール推論**（if-else if、先勝ちルール）
-   - purpose に "Slack" → tool = "slack"
-   - purpose に "GitHub" → tool = "github"
-   - purpose に "Notion" → tool = "notion"
+### 3ヘルパー関数
 
-2. **タイミング推論**（正規表現、先勝ちルール）
-   - `/毎日|毎週|定期|スケジュール/` にマッチ → timing = "scheduled"
-   - `/リアルタイム|即座|すぐに/` にマッチ → timing = "realtime"
+| 関数名                  | 役割                                                                             | 推論対象            |
+| ----------------------- | -------------------------------------------------------------------------------- | ------------------- |
+| `inferTool(purpose)`    | TOOL_KEYWORDS を先頭から順に評価し、最初に一致したツール名を返す（先勝ちルール） | `tool` フィールド   |
+| `inferTiming(purpose)`  | SCHEDULED_PATTERN → REALTIME_PATTERN の順に正規表現マッチ                        | `timing` フィールド |
+| `inferFormat(category)` | category の値で条件分岐                                                          | `format` フィールド |
 
-3. **フォーマット推論**（厳密一致）
-   - category === "code-support" → format = "code"
-   - category === "data-analysis" → format = "structured"
+補助関数:
 
-4. **フォールバック**
-   - `input?.purpose ?? ""` で null/undefined を空文字に変換し、tool/timing 推論を安全化
-   - category は purpose と独立して評価するため、purpose が空でも format 推論は継続する
-   - 推論未ヒット → 該当フィールドは null のまま返す
-   - inferenceLog は推論ヒット分のみ記録し、0件なら空配列
+- `normalizePurpose(value)`: null/undefined/空白のみの文字列を空文字に正規化
+- `createEmptyResult()`: 全フィールド null の初期値オブジェクトを生成
 
-## テスト結果
+### 推論フロー
 
-| 項目       | 結果                 |
-| ---------- | -------------------- |
-| Test Files | 1 passed             |
-| Tests      | 32 passed / 0 failed |
-| 実行時間   | 2.24s                |
+1. `normalizePurpose` で purpose を正規化
+2. purpose が非空なら `inferTool` → `inferTiming` を実行
+3. purpose に関わらず `inferFormat` を実行（category は独立推論）
+4. 推論できたフィールドのログを `inferenceLog` に記録
+5. 全フィールドと `inferenceLog` をまとめて返却
 
-**Green 状態を確認済み。**
+## barrel export 追加
+
+```typescript
+// packages/shared/src/services/skillCreator/index.ts
+export { inferSmartDefaults } from "./smartDefaultReasoningService";
+```
+
+テストは `@repo/shared` 経由でインポートすることで barrel の整合性も検証。
