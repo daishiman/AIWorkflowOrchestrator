@@ -1,74 +1,93 @@
-# Phase 9: 因果ループチェック — UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
+# Phase 9: 因果ループチェック — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
 
 ## 目的
 
-approval request フローにおける無限ループ・循環依存・副作用連鎖がないことを確認する。
+`executionPrompt` state 削除後のコンポーネントで無限ループ・循環依存・副作用連鎖がないことを確認する。
 
 ---
 
-## チェック1: useEffect の依存配列
+## チェック1: `useState` の削除による他 state への波及
+
+削除した state:
 
 ```typescript
-useEffect(() => {
-  const skillCreatorApi = getSkillCreatorApi();
-  if (!skillCreatorApi?.onApprovalRequest) return;
-  const unsubscribe = skillCreatorApi.onApprovalRequest((payload) => {
-    setPendingApproval(payload);
-  });
-  return unsubscribe;
-}, []); // 依存配列: 空
+// 削除前
+const [executionPrompt, setExecutionPrompt] = useState(defaultExecutionPrompt);
+```
+
+残存する state への影響確認:
+
+- `createdSkillName`: `executionPrompt` に依存していない → 影響なし
+- `isExecuting`: `executionPrompt` に依存していない → 影響なし
+- `sessionEntries`: `handleExecute` 内の `appendSessionEntry` は `defaultExecutionPrompt` を直接参照 → 安全
+
+**判定: 問題なし**
+
+---
+
+## チェック2: `canExecuteSkill` 変更による再レンダリングループ
+
+```typescript
+const canExecuteSkill =
+  Boolean(createdSkillName) &&
+  !isExecuting &&
+  skillExecutionStatus !== "review" &&
+  skillExecutionStatus !== "reuse_ready";
 ```
 
 **分析**:
 
-- 依存配列が `[]` のため、マウント時に1回のみ実行される
-- `setPendingApproval` は安定した関数参照（React の useState から取得）
+- `canExecuteSkill` は計算プロパティ（state ではない）
+- `executionPrompt` state が削除されたことで、textarea の `onChange` による不要な再レンダリングが解消
+- `canExecuteSkill` が変わっても他の state を変更しない
 - ループ条件なし
 
 **判定: 問題なし**
 
 ---
 
-## チェック2: handleApprove / handleReject の副作用連鎖
+## チェック3: `handlePlanImprovement` の副作用連鎖
 
+変更前:
+
+```typescript
+const runtimeFeedback = executionPrompt.trim() || defaultExecutionPrompt;
 ```
-handleApprove() → respondToApproval() → setPendingApproval(null)
-                                       ↓
-                               pendingApproval = null
-                                       ↓
-                         {pendingApproval ? <ApprovalSheet/> : null}
-                                       ↓
-                               ApprovalSheet 非表示
+
+変更後:
+
+```typescript
+const runtimeFeedback = defaultExecutionPrompt;
 ```
 
 **分析**:
 
-- `setPendingApproval(null)` → 再レンダリング → approval-sheet 非表示
-- 再レンダリングで useEffect が再実行されない（依存配列が `[]`）
-- approval callback は再購読されない
+- 定数参照に変更されたため、state 変化による副作用なし
+- `runtimeFeedback` はローカル変数であり、外部に露出しない
 - 循環なし
 
 **判定: 問題なし**
 
 ---
 
-## チェック3: 多重購読シナリオでのループ
+## チェック4: textarea 削除による DOM 更新ループ
 
-TC-APPR-11 で検証済み。複数の `onApprovalRequest` 呼び出しは独立した listener として登録され、
-それぞれの unsubscribe で独立して解除される。listener 間の相互呼び出しなし。
+textarea の `onChange` → `setExecutionPrompt` → 再レンダリング → textarea 再描画
 
-**判定: 問題なし**
+このサイクルが削除された。再レンダリングの不要なトリガーが1つ減少。
+
+**判定: 問題なし（むしろ改善）**
 
 ---
 
-## チェック4: コンポーネントライフサイクルとの整合
+## チェック5: コンポーネントライフサイクルとの整合
 
-| ライフサイクル | 動作                                      | 問題 |
-| -------------- | ----------------------------------------- | ---- |
-| マウント       | useEffect でサブスクライブ                | なし |
-| approval 受信  | setPendingApproval → 再レンダリング       | なし |
-| approve/reject | setPendingApproval(null) → 再レンダリング | なし |
-| アンマウント   | useEffect cleanup → unsubscribe           | なし |
+| ライフサイクル | 変更前の動作                    | 変更後の動作                            | 問題 |
+| -------------- | ------------------------------- | --------------------------------------- | ---- |
+| マウント       | `executionPrompt` state 初期化  | 初期化不要                              | なし |
+| ユーザー入力   | textarea → `setExecutionPrompt` | 入力なし（定数使用）                    | なし |
+| 実行           | `trimmedPrompt` を各関数に渡す  | `defaultExecutionPrompt` を各関数に渡す | なし |
+| アンマウント   | state クリーンアップ（自動）    | 同左（state 1つ減少）                   | なし |
 
 ---
 

@@ -105,7 +105,7 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 
 | Phase | 名称             | 目的                                                                                                                                         |
 | ----- | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**。**[FB-UI-02-2]** 全件 `pnpm test` が SIGKILL 終了するリスクがある場合は、targeted run ファイルリストを Phase 1 で事前列挙する（たとえば、メモリ制約が厳しい環境では vitest の対象ファイル指定が必須となる） |
+| 1     | 要件定義         | scope、受入条件、inventory を固定する。**既存コードの命名規則（camelCase / kebab-case 等）を分析し記録する**。**[FB-UI-02-2]** 全件 `pnpm test` が SIGKILL 終了するリスクがある場合は、targeted run ファイルリストを Phase 1 で事前列挙する（たとえば、メモリ制約が厳しい環境では vitest の対象ファイル指定が必須となる）。**[carry-over確認]** 前タスクの成果物（`git log --oneline -5` で確認）を棚卸しし、今タスクの新規作業との差異を明確化すること |
 | 2     | 設計             | topology、SubAgent lane、validation path を設計する。**[FB-SDK-07-1]** 「既存コンポーネント再利用可否」を必ず確認する。新規 UI 実装ゼロで品質・アクセシビリティ・HIG準拠を既存レベルで担保できる場合は再利用を優先する |
 | 3     | 設計レビュー     | Phase 4 へ進めるかを判定する                                                                                                                 |
 | 4     | テスト作成       | command suite と expected result を作る。**TDD Red 前に、テストパターンが Phase 1-3 で確認した命名規則と整合しているかを検証する**。**[Feedback P0-09-U1]** private method のテストは `(facade as unknown as FacadePrivate)` キャストまたは public callback 経由を使う方針を Phase 4 仕様書に明記する |
@@ -233,6 +233,7 @@ node scripts/detect-mode.js --request "{{USER_REQUEST}}"
 | Phase 3/10レビュー結果 | MINOR判定の指摘事項                |
 | Phase 11手動テスト     | スコープ外の発見事項・改善提案     |
 | コードコメント         | TODO/FIXME/HACK/XXX                |
+| `describe.skip` ブロック | 削除したtestid/要素名が旧参照として残存していないか（残存時はcleanupタスクをbacklogに登録） |
 
 ```bash
 # 未タスク検出スクリプト

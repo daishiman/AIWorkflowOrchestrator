@@ -1,0 +1,28 @@
+{
+  "taskId": "UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001",
+  "taskName": "SkillLifecyclePanel.tsx 遷移ボタン化（テキストエリア削除）",
+  "capturedAt": "2026-04-08T10:02:41.177Z",
+  "mode": "VISUAL",
+  "captureMethod": "playwright-vite-harness",
+  "screenshotDir": "outputs/phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots",
+  "screenshots": [
+    {
+      "id": "TC-11-01",
+      "file": "skill-lifecycle-panel-light.png",
+      "path": "outputs/phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-light.png",
+      "state": "SkillLifecyclePanel / light",
+      "note": "ウィザード遷移ボタンと textarea 非存在を確認"
+    },
+    {
+      "id": "TC-11-02",
+      "file": "skill-lifecycle-panel-dark.png",
+      "path": "outputs/phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-dark.png",
+      "state": "SkillLifecyclePanel / dark",
+      "note": "ダークテーマでも同様に button 表示と textarea 非存在を確認"
+    }
+  ],
+  "evidence": [
+    "outputs/phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-light.png",
+    "outputs/phase-11/UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001/screenshots/skill-lifecycle-panel-dark.png"
+  ]
+}

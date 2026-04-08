@@ -1,45 +1,42 @@
-# Phase 10: リリース準備チェックリスト — UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
+# Phase 10: リリース準備チェックリスト — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
 
 ## 実装完了チェック
 
-- [x] `SkillCreatorAPI` interface に `onApprovalRequest` を定義（AC-01）
-- [x] `skillCreatorAPI` オブジェクトに `onApprovalRequest` を実装（AC-02）
-- [x] `APPROVAL_REQUEST` チャンネルを `safeOn` で購読（AC-03）
-- [x] `SkillLifecyclePanel.tsx` に `ApprovalSheet` を表示（AC-04）
-- [x] approve/reject ボタンを `respondToApproval` に接続（AC-05）
-- [x] `preload/index.ts` との型シグネチャが対称（AC-06）
+- [x] `skill-lifecycle-execution-input` textarea を JSX から削除（AC-1）
+- [x] `executionPrompt` state（useState）を削除（AC-2）
+- [x] `canExecuteSkill` からプロンプト長チェックを削除（AC-3）
+- [x] `handleExecute` を `defaultExecutionPrompt` 使用に変更（AC-4）
+- [x] `handlePlanImprovement` を `defaultExecutionPrompt` 使用に変更（AC-5）
 
 ## 品質チェック
 
-- [x] `pnpm typecheck` PASS（エラー 0件）（AC-07）
-- [x] `pnpm eslint` PASS（警告・エラー 0件）（AC-08）
-- [x] Vitest 19/19件 PASS（AC-09）
+- [x] `pnpm typecheck` PASS（エラー 0件）（AC-6）
+- [x] `pnpm lint` PASS（変更ファイルにエラーなし）
+- [x] Vitest 85/85件 PASS、18件 skip（AC-7）
 
-## テストカバレッジ
+## テストカバレッジ（変更ブロック限定）
 
-- [x] `onApprovalRequest` ブロック: line 100% / branch 100%（目標達成）
-- [x] SkillLifecyclePanel approval ブロック: line ~92% / branch ~83%（目標達成）
+- [x] textarea 削除: TC-04, TC-05 で非存在確認済み
+- [x] `canExecuteSkill` 変更ブロック: TC-EX-01〜07 で全分岐カバー
+- [x] `handleExecute` 変更部分: 既存テスト + TC-EX-03 でカバー
+- [x] `handlePlanImprovement` 変更部分: TC-EX-04 でカバー
 
-## テストケース（TC-APPR-01〜18）
+## テストケース（TC-01〜TC-05 + TC-EX-01〜07）
 
-- [x] TC-APPR-01〜10: Phase 4 で作成・PASS
-- [x] TC-APPR-11〜13: Phase 6 で追加・PASS（safeOn パターン・多重購読・再購読）
-- [x] TC-APPR-14〜18: Phase 6 で追加・PASS（回帰ガード・UI 状態管理）
-
-## リファクタリング
-
-- [x] 変更なし（既存パターンと一致、責務境界適切）
+- [x] TC-01〜03: 既存 PASS（ウィザードボタン・callback 確認）
+- [x] TC-04, TC-05: 本タスクで Red→Green（`skill-lifecycle-execution-input` 非存在）
+- [x] TC-EX-01〜07: Phase 6 で拡張確認
 
 ## ドキュメント
 
-- [ ] Phase 11: 手動テスト検証（未実施）
+- [x] Phase 11: 手動テスト検証（NON_VISUAL のため自動テストで代替）
 - [ ] Phase 12: ドキュメント更新（未実施）
 
 ---
 
 ## リリース判定
 
-**PASS — Phase 10 完了。Phase 11〜12 は別セッションで実施可能。**
+**PASS — Phase 10 完了。Phase 12 は本セッションで実施。**
 
 実装・テスト・品質チェックの全工程が完了。
-approval:request push 購読機能は本番投入可能な状態。
+`skill-lifecycle-execution-input` テキストエリア削除タスクは本番投入可能な状態。

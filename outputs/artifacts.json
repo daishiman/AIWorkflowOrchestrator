@@ -1,5 +1,5 @@
 {
-  "feature": "w0-seq-02-smart-default-reasoning-service",
+  "feature": "wt-skill-lifecycle-panel-wizard-transition",
   "created": "2026-04-08T00:00:00.000Z",
   "lastUpdated": "2026-04-08T00:00:00.000Z",
   "status": "phase13_blocked",
@@ -7,70 +7,51 @@
     "1": {
       "status": "completed",
       "artifacts": [
-        "phase-1-requirements.md",
         "outputs/phase-1/requirements-definition.md",
-        "outputs/phase-1/acceptance-criteria.md",
-        "outputs/phase-1/impact-scope-map.md"
+        "outputs/phase-1/acceptance-criteria.md"
       ]
     },
     "2": {
       "status": "completed",
-      "artifacts": [
-        "phase-2-design.md",
-        "outputs/phase-2/api-design.md",
-        "outputs/phase-2/inference-flowchart.md",
-        "outputs/phase-2/test-strategy.md"
-      ]
+      "artifacts": ["outputs/phase-2/design-document.md"]
     },
     "3": {
       "status": "completed",
-      "artifacts": [
-        "phase-3-design-review.md",
-        "outputs/phase-3/design-review-result.md",
-        "outputs/phase-3/contradiction-checklist.md",
-        "outputs/phase-3/gate-decision.md"
-      ]
+      "artifacts": ["outputs/phase-3/gate-decision.md"]
     },
     "4": {
       "status": "completed",
       "artifacts": [
-        "phase-4-test-creation.md",
         "outputs/phase-4/test-specification.md",
-        "outputs/phase-4/red-test-result.md",
-        "outputs/phase-4/integration-test-plan.md"
+        "outputs/phase-4/red-test-result.md"
       ]
     },
     "5": {
       "status": "completed",
       "artifacts": [
-        "phase-5-implementation.md",
         "outputs/phase-5/implementation-summary.md",
         "outputs/phase-5/changed-files.md",
-        "outputs/phase-5/contract-diff.md"
+        "outputs/phase-5/green-test-result.md"
       ]
     },
     "6": {
       "status": "completed",
       "artifacts": [
-        "phase-6-test-expansion.md",
-        "outputs/phase-6/expanded-test-cases.md",
         "outputs/phase-6/regression-test-result.md",
+        "outputs/phase-6/expanded-test-cases.md",
         "outputs/phase-6/edge-case-result.md"
       ]
     },
     "7": {
       "status": "completed",
       "artifacts": [
-        "phase-7-coverage-check.md",
         "outputs/phase-7/coverage-plan.md",
-        "outputs/phase-7/uncovered-analysis-plan.md",
         "outputs/phase-7/traceability-coverage-report.md"
       ]
     },
     "8": {
       "status": "completed",
       "artifacts": [
-        "phase-8-refactoring.md",
         "outputs/phase-8/refactoring-plan.md",
         "outputs/phase-8/post-refactor-test-plan.md",
         "outputs/phase-8/responsibility-boundary-map.md"
@@ -79,7 +60,6 @@
     "9": {
       "status": "completed",
       "artifacts": [
-        "phase-9-quality-assurance.md",
         "outputs/phase-9/quality-report.md",
         "outputs/phase-9/risk-register.md",
         "outputs/phase-9/causal-loop-check.md"
@@ -88,7 +68,6 @@
     "10": {
       "status": "completed",
       "artifacts": [
-        "phase-10-final-review.md",
         "outputs/phase-10/final-review-result.md",
         "outputs/phase-10/corrective-action-plan.md",
         "outputs/phase-10/release-readiness-checklist.md"
@@ -97,7 +76,6 @@
     "11": {
       "status": "completed",
       "artifacts": [
-        "phase-11-manual-test.md",
         "outputs/phase-11/manual-test-checklist.md",
         "outputs/phase-11/manual-test-result.md",
         "outputs/phase-11/discovered-issues.md"
@@ -106,7 +84,6 @@
     "12": {
       "status": "completed",
       "artifacts": [
-        "phase-12-documentation.md",
         "outputs/phase-12/implementation-guide.md",
         "outputs/phase-12/system-spec-update-summary.md",
         "outputs/phase-12/documentation-changelog.md",
@@ -117,12 +94,7 @@
     },
     "13": {
       "status": "blocked",
-      "artifacts": [
-        "phase-13-pr-creation.md",
-        "outputs/phase-13/pr-preparation.md",
-        "outputs/phase-13/handoff-summary.md",
-        "outputs/phase-13/approval-checklist.md"
-      ]
+      "artifacts": []
     }
   },
   "dependencies": {

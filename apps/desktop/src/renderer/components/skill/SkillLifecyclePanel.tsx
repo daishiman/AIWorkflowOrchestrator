@@ -382,6 +382,7 @@ export interface SkillLifecyclePanelProps {
   onClose: () => void;
   onOpenWizard?: () => void;
   onOpenSkillWizard?: () => void;
+  onOpenSettings?: () => void;
   skillName?: string;
 }
 
@@ -389,6 +390,7 @@ export function SkillLifecyclePanel({
   onClose,
   onOpenWizard,
   onOpenSkillWizard,
+  onOpenSettings,
   skillName: _skillName,
 }: SkillLifecyclePanelProps) {
   const beginSkillReview = useBeginSkillReview();
@@ -435,9 +437,6 @@ export function SkillLifecyclePanel({
     null,
   );
   const [createdSkillName, setCreatedSkillName] = useState<string | null>(null);
-  const [executionPrompt, setExecutionPrompt] = useState(
-    defaultExecutionPrompt,
-  );
   const [creatorImproveResult, setCreatorImproveResult] =
     useState<ImproveResult | null>(null);
   const [runtimeImproveResult, setRuntimeImproveResult] =
@@ -912,7 +911,6 @@ export function SkillLifecyclePanel({
   const canExecuteSkill =
     Boolean(createdSkillName) &&
     !isExecuting &&
-    executionPrompt.trim().length > 0 &&
     skillExecutionStatus !== "review" &&
     skillExecutionStatus !== "reuse_ready";
   const executeButtonLabel =
@@ -1131,13 +1129,8 @@ export function SkillLifecyclePanel({
   };
 
   const handleExecute = async () => {
-    const trimmedPrompt = executionPrompt.trim();
     if (!createdSkillName) {
       setLocalError("先にスキルを生成してください。");
-      return;
-    }
-    if (!trimmedPrompt) {
-      setLocalError("実行内容を入力してください。");
       return;
     }
 
@@ -1154,14 +1147,14 @@ export function SkillLifecyclePanel({
     appendSessionEntry(setSessionEntries, {
       role: "user",
       title: "実行依頼",
-      detail: trimmedPrompt,
+      detail: defaultExecutionPrompt,
     });
 
     try {
       if (skillExecutionStatus === "improve_ready") {
-        await reExecuteAfterImprovement(trimmedPrompt);
+        await reExecuteAfterImprovement(defaultExecutionPrompt);
       } else {
-        await executeSkill(trimmedPrompt);
+        await executeSkill(defaultExecutionPrompt);
       }
     } catch (error) {
       setLocalError(
@@ -1189,7 +1182,7 @@ export function SkillLifecyclePanel({
 
     try {
       const skillCreatorApi = getSkillCreatorApi();
-      const runtimeFeedback = executionPrompt.trim() || defaultExecutionPrompt;
+      const runtimeFeedback = defaultExecutionPrompt;
       if (skillCreatorApi?.improveSkillWithFeedback) {
         const runtimeResult = await skillCreatorApi.improveSkillWithFeedback(
           createdSkillName,
@@ -1416,7 +1409,7 @@ export function SkillLifecyclePanel({
           <LLMAdapterErrorBanner
             status={llmAdapterStatus.status}
             failureReason={llmAdapterStatus.failureReason}
-            onOpenSettings={onOpenWizard}
+            onOpenSettings={onOpenSettings}
           />
         </div>
 
@@ -1784,14 +1777,6 @@ export function SkillLifecyclePanel({
                 {executeButtonLabel}
               </button>
             </div>
-            <textarea
-              value={executionPrompt}
-              onChange={(event) => setExecutionPrompt(event.target.value)}
-              rows={3}
-              placeholder="このスキルに何をさせるかを書いてください"
-              className="mt-4 w-full rounded-xl border border-[var(--border-primary)] bg-[var(--bg-primary)] px-4 py-3 text-sm leading-6 text-[var(--text-primary)]"
-              data-testid="skill-lifecycle-execution-input"
-            />
             {shouldShowStreaming && createdSkillName ? (
               <div className="mt-4 overflow-hidden rounded-xl border border-[var(--border-primary)]">
                 <SkillStreamingView
