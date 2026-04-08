@@ -6,7 +6,7 @@
 issue_number: 1973
 task_id: UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001
 task_name: IPC ハンドラ登録完全性スナップショットテストの CI 追加
-status: open
+status: 完了（2026-04-07, Phase 12 同期済み）
 priority: high
 scale: small
 classification: バグ修正・CI 強化
@@ -14,17 +14,17 @@ discovered_by: TASK-FIX-IPC-SKILL-NAME-001 Phase 12 close-out (2026-04-06)
 created_at: "2026-04-06"
 ```
 
-| 項目         | 内容                                                                   |
-| ------------ | ---------------------------------------------------------------------- |
-| タスクID     | UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001                            |
-| タスク名     | IPC ハンドラ登録完全性スナップショットテストの CI 追加                 |
-| 分類         | バグ修正・CI 強化                                                      |
-| 対象機能     | IPC ハンドラ登録（`registerRuntimeSkillCreatorHandlers` 等）           |
-| 優先度       | 高                                                                     |
-| 見積もり規模 | 小規模                                                                 |
-| ステータス   | open                                                                   |
-| 発見元       | TASK-FIX-IPC-SKILL-NAME-001 Phase 12 / task-4-untasked-report.md UT-02 |
-| 発見日       | 2026-04-06                                                             |
+| 項目         | 内容                                                                                                   |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| タスクID     | UT-FIX-IPC-REGISTRATION-COMPLETENESS-CI-001                                                            |
+| タスク名     | IPC ハンドラ登録完全性スナップショットテストの CI 追加                                                 |
+| 分類         | バグ修正・CI 強化                                                                                      |
+| 対象機能     | IPC ハンドラ登録（`registerRuntimeSkillCreatorHandlers` 18 チャネル: 16 public runtime + 2 auxiliary） |
+| 優先度       | 高                                                                                                     |
+| 見積もり規模 | 小規模                                                                                                 |
+| ステータス   | 完了（2026-04-07, Phase 12 同期済み）                                                                  |
+| 発見元       | TASK-FIX-IPC-SKILL-NAME-001 Phase 12 / task-4-untasked-report.md UT-02                                 |
+| 発見日       | 2026-04-06                                                                                             |
 
 ---
 
@@ -41,7 +41,7 @@ TASK-FIX-IPC-SKILL-NAME-001（2026-04-06）の修正作業中に、`registerRunt
 - `ipcMain.handle()` は同一チャネルに 2 回目の登録をしても例外を投げず、後続ハンドラが静かに無視される（サイレントフェイル）
 - 重複ブロック（約 35 行）がコードレビューでもテストでも完全にカバーされていなかった
 - 登録チャネル数・チャネル名を検証するスナップショットテストが存在せず、欠損を自動検出できない
-- `registerAiHandlers` 等の他の登録関数も同様のリスクを抱えている可能性がある
+  （スコープ外）他の登録関数のリスクは別タスクで扱う
 
 ### 1.3 放置した場合の影響
 
@@ -68,7 +68,7 @@ TASK-FIX-IPC-SKILL-NAME-001（2026-04-06）の修正作業中に、`registerRunt
 #### 含むもの
 
 - `registerRuntimeSkillCreatorHandlers()` のスナップショットテスト作成
-- `registerAiHandlers()` 等の主要な IPC ハンドラ登録関数のスナップショットテスト
+- `registerRuntimeSkillCreatorHandlers()` のスナップショットテスト
 - チャネル名一覧・登録数の検証ロジック
 - 重複登録検出ロジックの追加
 - `pnpm vitest run` による CI 統合確認
@@ -93,7 +93,7 @@ TASK-FIX-IPC-SKILL-NAME-001（2026-04-06）の修正作業中に、`registerRunt
 
 ### 3.1 前提条件
 
-- TASK-FIX-IPC-SKILL-NAME-001 が完了していること（重複ブロック削除済み・16 チャネル正常登録済み）
+- TASK-FIX-IPC-SKILL-NAME-001 が完了していること（重複ブロック削除済み・18 チャネル登録：16 public runtime + 2 auxiliary）
 - `apps/desktop` の `vitest` 環境が動作していること
 - `ipcMain` のモック方法を把握していること（`vi.mock("electron")` または `vi.spyOn`）
 
@@ -124,7 +124,7 @@ TASK-FIX-IPC-SKILL-NAME-001（2026-04-06）の修正作業中に、`registerRunt
 | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 症状     | `registerRuntimeSkillCreatorHandlers()` 内で `ipcMain.handle()` が 2 回実行され、後続 14 チャネルが未登録になっていた（重複ブロック約 35 行が静かに無視されていた） |
 | 原因     | 重複ブロックが完全性テストでカバーされておらず、コードレビューのみに依存していたため長期間検出されなかった                                                          |
-| 対応     | 重複ブロックを削除して全 16 チャネルを正常登録、CI スナップショットテストを追加して再発防止を図る                                                                   |
+| 対応     | 重複ブロックを削除して全 18 チャネル（16 public runtime + 2 auxiliary）を正常登録し、CI スナップショットテストを追加して再発防止を図る                              |
 | 再発防止 | IPC ハンドラは `handle()` 単一登録を enforce する CI チェックを必須とする。スナップショットによるチャネル数・名称の固定が最も低コストかつ効果的                     |
 
 ---
@@ -135,19 +135,19 @@ TASK-FIX-IPC-SKILL-NAME-001（2026-04-06）の修正作業中に、`registerRunt
 
 | Phase | 名称             | 目的                                               | ステータス |
 | ----- | ---------------- | -------------------------------------------------- | ---------- |
-| 1     | 要件定義         | 調査対象の確定・機能要件定義・エッジケース洗い出し | open       |
-| 2     | 設計             | テスト設計・変更ファイル一覧                       | open       |
-| 3     | 設計レビュー     | Phase 4 進行可否判定                               | open       |
-| 4     | テスト作成       | テストマトリクス・実行コマンド策定                 | open       |
-| 5     | 実装             | テストコード・スナップショット実装                 | open       |
-| 6     | テスト拡充       | fail path・回帰 guard 追加                         | open       |
-| 7     | カバレッジ確認   | 登録関数のカバレッジ可視化                         | open       |
-| 8     | リファクタリング | 重複・ドリフト除去                                 | open       |
-| 9     | 品質検証         | lint / typecheck / テスト通過確認                  | open       |
-| 10    | 最終レビュー     | 受入基準チェック・BLOCKER 判定                     | open       |
-| 11    | 手動テスト       | テスト分類・自動テスト代替記録                     | open       |
-| 12    | ドキュメント     | 実装ガイド・未タスク検出・仕様同期                 | open       |
-| 13    | PR 作成          | ユーザー承認後のみ実施                             | open       |
+| 1     | 要件定義         | 調査対象の確定・機能要件定義・エッジケース洗い出し | completed  |
+| 2     | 設計             | テスト設計・変更ファイル一覧                       | completed  |
+| 3     | 設計レビュー     | Phase 4 進行可否判定                               | completed  |
+| 4     | テスト作成       | テストマトリクス・実行コマンド策定                 | completed  |
+| 5     | 実装             | テストコード・スナップショット実装                 | completed  |
+| 6     | テスト拡充       | fail path・回帰 guard 追加                         | completed  |
+| 7     | カバレッジ確認   | 登録関数のカバレッジ可視化                         | completed  |
+| 8     | リファクタリング | 重複・ドリフト除去                                 | completed  |
+| 9     | 品質検証         | lint / typecheck / テスト通過確認                  | completed  |
+| 10    | 最終レビュー     | 受入基準チェック・BLOCKER 判定                     | completed  |
+| 11    | 手動テスト       | テスト分類・自動テスト代替記録                     | completed  |
+| 12    | ドキュメント     | 実装ガイド・未タスク検出・仕様同期                 | completed  |
+| 13    | PR 作成          | ユーザー承認後のみ実施                             | blocked    |
 
 ---
 
@@ -159,12 +159,10 @@ TASK-FIX-IPC-SKILL-NAME-001（2026-04-06）の修正作業中に、`registerRunt
 
 #### 手順
 
-1. `apps/desktop/src/main/ipc/` 配下の全ハンドラ登録関数を一覧化する
+1. `apps/desktop/src/main/ipc/` 配下のハンドラ登録関数を一覧化する
    - `registerRuntimeSkillCreatorHandlers()`
-   - `registerAiHandlers()`
-   - その他 `register*Handlers` 関数
-2. 各関数が登録するチャネル名と期待登録数を記録する
-3. 現在の `creatorHandlers.ts` で修正後の正常登録チャネル数（16 チャネル）を確認する
+2. 登録するチャネル名と期待登録数を記録する
+3. 現在の `creatorHandlers.ts` で修正後の正常登録チャネル数（18 チャネル：16 public runtime + 2 auxiliary）を確認する
 4. エッジケースを洗い出す
    - 同一チャネルの重複登録
    - チャネル名のリネーム
@@ -252,13 +250,11 @@ Phase 2 の設計を評価し、Phase 4 に進める品質かを判定する。
 
 #### テストマトリクス
 
-| テストID | 対象関数                              | 検証内容                                 | 種別             |
-| -------- | ------------------------------------- | ---------------------------------------- | ---------------- |
-| TC-01    | `registerRuntimeSkillCreatorHandlers` | 登録チャネル名がスナップショットと一致   | スナップショット |
-| TC-02    | `registerRuntimeSkillCreatorHandlers` | 重複チャネルが存在しない                 | アサーション     |
-| TC-03    | `registerAiHandlers`                  | 登録チャネル名がスナップショットと一致   | スナップショット |
-| TC-04    | `registerAiHandlers`                  | 重複チャネルが存在しない                 | アサーション     |
-| TC-05    | 全登録関数合算                        | 登録チャネル総数がスナップショットと一致 | スナップショット |
+| テストID | 対象関数                              | 検証内容                                                 | 種別             |
+| -------- | ------------------------------------- | -------------------------------------------------------- | ---------------- |
+| TC-01    | `registerRuntimeSkillCreatorHandlers` | 登録チャネル名がスナップショットと一致                   | スナップショット |
+| TC-02    | `registerRuntimeSkillCreatorHandlers` | 重複チャネルが存在しない                                 | アサーション     |
+| TC-03    | `registerRuntimeSkillCreatorHandlers` | 登録チャネル総数が 18（16 public runtime + 2 auxiliary） | アサーション     |
 
 #### 実行コマンド
 
@@ -407,14 +403,14 @@ pnpm --filter @repo/desktop vitest run
 
 #### 受入基準チェックリスト
 
-| 項目                                                                  | 判定 |
-| --------------------------------------------------------------------- | ---- |
-| スナップショットテストが CI で実行される                              | open |
-| 重複登録・欠損が発生した場合に CI が FAIL する                        | open |
-| 全テスト PASS                                                         | open |
-| `pnpm typecheck` / `pnpm lint` PASS                                   | open |
-| スナップショットファイルがリポジトリにコミットされている              | open |
-| 他の主要ハンドラ登録関数（`registerAiHandlers` 等）もカバーされている | open |
+| 項目                                                                                                      | 判定 |
+| --------------------------------------------------------------------------------------------------------- | ---- |
+| スナップショットテストが CI で実行される                                                                  | PASS |
+| 重複登録・欠損が発生した場合に CI が FAIL する                                                            | PASS |
+| 全テスト PASS                                                                                             | PASS |
+| `pnpm typecheck` / `pnpm lint` PASS                                                                       | PASS |
+| スナップショットファイルがリポジトリにコミットされている                                                  | PASS |
+| `registerRuntimeSkillCreatorHandlers` の 18 チャネル（16 public runtime + 2 auxiliary）がカバーされている | PASS |
 
 #### 完了条件
 
@@ -570,20 +566,21 @@ describe("IPC ハンドラ登録完全性", () => {
 
 ---
 
-### Phase 13: PR 作成
+### Phase 13: PR 準備（blocked）
 
-**ユーザーの明示的な承認後のみ実施する。**
+**ユーザーの明示的な承認があるまで blocked を維持する。**
 
 #### 実施内容
 
-1. ブランチ作成・コミット
-2. `gh pr create` で PR 作成
-3. CI 通過確認
+1. blocked 理由と approval 状態を記録する
+2. ローカル確認結果と変更サマリーを記録する
+3. 承認後にのみ PR 情報を作成できる状態かを記録する
 
 #### 完了条件
 
-- ユーザーの承認を得てから PR を作成する
-- CI（GitHub Actions）が全テスト PASS を確認する
+- ユーザーの承認がない限り blocked を維持する
+- commit / PR を自動作成しない
+- `outputs/phase-13/local-check-result.md` と `outputs/phase-13/change-summary.md` を記録する
 
 ---
 
@@ -593,7 +590,7 @@ describe("IPC ハンドラ登録完全性", () => {
 
 - [ ] `ipcMain.handle()` 登録チャネルのスナップショットテストが CI で実行される
 - [ ] 重複登録・欠損が発生した場合に CI が FAIL する
-- [ ] `registerRuntimeSkillCreatorHandlers` と `registerAiHandlers` が両方カバーされている
+- [ ] `registerRuntimeSkillCreatorHandlers` の 18 チャネル（16 public runtime + 2 auxiliary）がカバーされている
 
 ### 品質要件
 
@@ -618,9 +615,7 @@ describe("IPC ハンドラ登録完全性", () => {
 | ----- | -------------------------------------------------------------- | ------------------------------------------------ |
 | TC-01 | `registerRuntimeSkillCreatorHandlers` チャネルスナップショット | `pnpm vitest run ipcHandlerRegistrationSnapshot` |
 | TC-02 | 重複チャネルなし                                               | 同上                                             |
-| TC-03 | `registerAiHandlers` チャネルスナップショット                  | 同上                                             |
-| TC-04 | `registerAiHandlers` 重複チャネルなし                          | 同上                                             |
-| TC-05 | 全関数合算チャネル総数スナップショット                         | 同上                                             |
+| TC-03 | 登録チャネル総数が 18（16 public runtime + 2 auxiliary）       | 同上                                             |
 
 ### 検証手順
 
@@ -637,7 +632,6 @@ describe("IPC ハンドラ登録完全性", () => {
 | `vi.mock("electron")` の reset が不完全でテスト間干渉 | 高     | 中       | `beforeEach` で `vi.clearAllMocks()` + モジュールリセットを実施 |
 | スナップショットが非決定論的（登録順に依存）          | 高     | 中       | チャネル名配列を `.sort()` してからスナップショット保存する     |
 | 他のテストとの `ipcMain` モック競合                   | 中     | 低       | 独立したテストファイルに分離し `vi.mock` スコープを閉じる       |
-| `registerAiHandlers` が別モジュールに依存             | 低     | 中       | 依存モジュールも適切にモックする（DI パターンを確認する）       |
 
 ---
 
@@ -645,11 +639,11 @@ describe("IPC ハンドラ登録完全性", () => {
 
 ### 関連タスク
 
-| タスクID                             | 関係   | 備考                                        |
-| ------------------------------------ | ------ | ------------------------------------------- |
-| TASK-FIX-IPC-SKILL-NAME-001          | 発見元 | 重複ブロック削除・16 チャネル正常登録の修正 |
-| TASK-CREATOR-HANDLERS-AUDIT-001      | 関連   | 全ハンドラ処理時間特性調査（別タスク）      |
-| UT-IPC-EXECUTION-CHANNELS-PARITY-001 | 関連   | Renderer 側チャネル突合（別タスク）         |
+| タスクID                             | 関係   | 備考                                                                     |
+| ------------------------------------ | ------ | ------------------------------------------------------------------------ |
+| TASK-FIX-IPC-SKILL-NAME-001          | 発見元 | 重複ブロック削除・18 チャネル正常登録（16 public runtime + 2 auxiliary） |
+| TASK-CREATOR-HANDLERS-AUDIT-001      | 関連   | 全ハンドラ処理時間特性調査（別タスク）                                   |
+| UT-IPC-EXECUTION-CHANNELS-PARITY-001 | 関連   | Renderer 側チャネル突合（別タスク）                                      |
 
 ### 関連ファイル
 
@@ -676,7 +670,7 @@ describe("IPC ハンドラ登録完全性", () => {
 | -------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 症状     | `registerRuntimeSkillCreatorHandlers()` で `ipcMain.handle()` が 2 回実行され後続 14 ハンドラが未登録になっていた。重複ブロック（約 35 行）が完全性テストでも未カバーだった                                     |
 | 原因     | 同一チャネルの重複 `handle()` 登録が ElectronJS 内部でサイレント無視されるため、ランタイムエラーが発生せず、コードレビューのみに依存していた結果として長期間未検出になった                                      |
-| 対応     | 重複ブロック削除で全 16 チャネルを正常登録し、CI スナップショットテストを追加することで再発防止を図る（本タスク）                                                                                               |
+| 対応     | 重複ブロック削除で全 18 チャネル（16 public runtime + 2 auxiliary）を正常登録し、CI スナップショットテストを追加することで再発防止を図る（本タスク）                                                            |
 | 再発防止 | IPC ハンドラは `handle()` 単一登録を enforce する CI チェックが必須。スナップショットによるチャネル数・名称の固定が最も低コストかつ効果的な防止策。登録関数変更時は必ず `--update-snapshots` を明示的に実行する |
 
 ### 補足事項
