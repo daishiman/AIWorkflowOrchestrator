@@ -1,36 +1,51 @@
-# Phase 12: 未タスク検出レポート（unassigned-task-detection.md）— UT-SKILL-WIZARD-W1-par-02b
+# W2-seq-03a 未タスク検出
 
-## メタ情報
+## タスクID: W2-seq-03a
 
-- タスクID: UT-SKILL-WIZARD-W1-par-02b
-- 作成日: 2026-04-08
+## 作成日: 2026-04-08
 
-## 判定（要点）
+---
+
+## 判定
 
 - **未タスク（大きな課題）: 0件**
-- Phase 11 のスクリーンショット証跡整備と `outputs/phase-11/*` の stale 解消は **本タスクのスコープ内**（未タスクではなく、同一タスクの未完了作業として扱う）
+
+W2-seq-03a のスコープ内の全実装項目が完了している。
+
+---
 
 ## 検出観点と根拠
 
 ### 1. 仕様の欠落（ドキュメント/コード/成果物）
 
-- Step 0 のカテゴリ選択は Step 1 の Q5 必須表示に直接影響するため、Phase 11 証跡と Phase 12 実装ガイドの両方に記録必須
-- 本タスクでは `outputs/phase-12/*` を current task 用に再生成し、旧 task id の混入を排除する（stale の再発防止）
+- AC-01〜AC-10 の全件が実装済みであることを Phase 10 の最終レビューで確認済み
+- Phase 12 の canonical 6成果物が全て整備されている
+- 未完了の AC は存在しない
 
 ### 2. 依存関係の欠落（apps/backend, packages/shared など）
 
-- 変更は renderer UI に閉じており、`apps/backend/` の更新要否はない
-- shared contract は `packages/shared/src/types/skillCreator.ts` の既存定義を consumer として利用している
+- 変更は renderer UI のウィザードオーケストレーションに閉じており、`apps/backend/` の更新要否はない
+- `packages/shared` の型定義（`SmartDefaultResult` 等）は既存定義を consumer として利用しており、新規追加は不要
+- IPC チャンネルの変更なし
 
-### 3. 追加するとリスクが高い変更（スコープ外）
+### 3. Future work として記録した項目（未タスクではない）
 
-- cron の厳密仕様（秒フィールド対応、実行基盤との完全整合）は、現時点では UI の入力妥当性チェックに限定されている
-- もし「実行スケジューラの受理形式」との厳密な整合を保証したい場合は、別タスクで仕様を固定して統一するべき
+以下は W2-seq-03a のスコープ外として明示的に future work に分類した項目であり、未タスクではない。
 
-## 参考（同一タスク内で回収すべき証跡）
+| 項目                                                                  | 記録場所                   | 対応方針               |
+| --------------------------------------------------------------------- | -------------------------- | ---------------------- |
+| `hasExternalIntegration: true` ケースの完全自動テストカバレッジ       | `uncovered-paths.md`       | 別タスクで対応         |
+| `rating: 'bad'` フィードバック詳細処理                                | `uncovered-paths.md`       | 別タスクで対応         |
+| `inferSmartDefaults` のツール値大文字小文字統一（"slack"→"Slack" 等） | `skill-feedback-report.md` | 改善候補として記録済み |
 
-- `outputs/phase-11/screenshots/*.png`
-- `outputs/phase-11/screenshot-plan.json`
-- `outputs/phase-11/phase11-capture-metadata.json`
+### 4. スコープ外の確認（追加実装が必要ないことの確認）
 
-上記は **未タスクではなく** Phase 11 の必須成果物。
+- `ConversationRoundStep.tsx` の内部実装: 変更不要（既存互換）
+- `SkillInfoStep.tsx` の内部実装: 変更不要（既存コンポーネントを利用）
+- `GenerateStep.tsx` の内部実装: `generationMode` prop の受け口削除のみ（Phase 5 で対応済み）
+
+---
+
+## 結論
+
+未タスク 0件。W2-seq-03a の全スコープが実装完了している。

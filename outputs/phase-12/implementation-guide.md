@@ -1,98 +1,123 @@
-# Phase 12: 実装ガイド（implementation-guide.md）— UT-SKILL-WIZARD-W1-par-02b
+# W2-seq-03a 実装ガイド
 
-## メタ情報
+## タスクID: W2-seq-03a
 
-- タスクID: UT-SKILL-WIZARD-W1-par-02b
-- 対象: Skill Create Wizard（Step 0: DescribeStep / Step 1: ConversationRoundStep）
-- 作成日: 2026-04-08
+## 作成日: 2026-04-08
 
-## Part 1: 中学生レベルの概念説明
+---
+
+## Part 1: 中学生向けの概念説明
 
 ### 何が変わったの？
 
-「スキルを作るウィザード」を、アンケートみたいに 6つの質問で順番に答える形にしました。
+「スキルを作るウィザード」を、テンプレートから選ぶ方式をやめて、AIが全部考えてくれる方式（LLM専用）に変えました。
 
-- まず Step 0 で「このスキルは何をする？」を文章で書きます
-- さらに「カテゴリ（自動化、外部連携など）」も選べます
-- 次に Step 1 で 6問に答えると、スキルの設定が決まっていきます
+- まず Step 0 で「このスキルは何をする？」という説明文を書きます
+- コンピューターが説明文を読んで「SlackとかGitHubとか使いそうだな」と自動で判断します（スマートデフォルト）
+- 次に Step 1 で会話しながら詳細を決めます
+- Step 2 でAIがスキルを作ります
+- Step 3 で完成！「今すぐ実行」「エディタで開く」などのボタンが出ます
 
-### どうしてカテゴリが必要？
+### テンプレートモードをやめた理由は？
 
-カテゴリは「この質問（Q5: 外部ツール連携）が重要かどうか」を判断する材料です。
+前は「テンプレートを選ぶ」か「AIに作ってもらう」かを選べました。でも、テンプレートを選ぶ機能はほとんど使われていなかったので、AIに作ってもらう方法だけに絞りました。シンプルにすることで、使いやすくなります。
 
-- 外部連携カテゴリなら「Q5 は必須」だと分かる
-- それ以外なら「Q5 は任意」でもよい
+### スマートデフォルト（inferSmartDefaults）って何？
 
-### smartDefaults（スマートデフォルト）って何？
-
-最初に書いた説明文やカテゴリから、よくある答えを先に「予測して入れておく」仕組みです。
+説明文（purpose）やカテゴリから、よくある設定を「先読み」して入れておく仕組みです。
 
 例:
 
-- 説明文に「毎日」「定期」などが入っていれば、Q3 は「定期実行」になりやすい
-- 「Slack」「GitHub」などが入っていれば、Q5 の候補が絞りやすい
+- 説明文に「Slack」が入っていれば「外部ツール連携あり」「ツール名: Slack」と自動判断
+- カテゴリが「スケジュール」なら「詳細生成モード」を推奨
+- カテゴリが「コードサポート」なら「スキップして生成モード」を推奨
 
-ただし、予測はあくまで「助け」なので、あとでユーザーが自由に上書きできます。
+ただし、これはあくまで「助け」なので、Step 1 でユーザーが自由に変えられます。
 
-### 「今すぐ生成する」って何？
+### 「やり直す」ボタンって何をするの？
 
-質問に全部答えなくても、途中で「今すぐ生成する」を押せます。
+Step 3（完成画面）で「やり直す」を押すと、Step 0 に戻ります。このとき、前に入力したスキル名や説明文はそのまま残っています。最初から全部入力し直さなくていいので、少しだけ変えて再生成したいときに便利です。
 
-- まだ答えていない質問があると、smartDefaults を「こう入れますよ」という確認カードが出ます
-- 外部連携カテゴリなのに Q5 を空にしている場合だけ、警告が出ます（生成をブロックはしない）
+---
 
-## Part 2: 技術者向け説明
+## Part 2: 技術者向けの説明
 
 ### 目的と変更点（要約）
 
-- Step 0（DescribeStep）に `SkillCategory` 選択を追加し、Step 1（ConversationRoundStep）へカテゴリを引き渡す
-- template モードでは Step 0 の入力（description + category）から `SmartDefaultResult` を推論して Step 1 に渡す
-- Step 1（ConversationRoundStep）は 6問・2ページのインタビュー UI として実装し、Q3 で cron 入力、Q5 でカテゴリ依存の必須表示、サマリーカード表示を行う
+- `SkillCreateWizard.tsx` からテンプレート生成モード（`generationMode` state）を完全削除し、LLM生成専用のオーケストレーションに更新する
+- `formData` / `answers` / `smartDefaults` / `generationMethod` / `skillPath` / `hasExternalIntegration` / `externalToolName` の7つの state を追加する
+- `inferSmartDefaults` 純粋関数を実装し、purpose テキストとカテゴリからスマートデフォルトを推論する
+- `handleStep0Next` / `handleGenerate(method)` / `handleQualityFeedback` / `handleRetry` の4つのハンドラを追加する
+- STEPS配列を `["スキル情報入力", "詳細設定", "生成", "完了"]` に更新する
 
-### 主な実装ファイル（current facts）
+### 主な実装ファイル
 
-- `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`
-  - `category?: SkillCategory | null` と `onCategoryChange?: (value: SkillCategory | null) => void` を追加
-  - `select#skill-category` でカテゴリ選択（未選択/自動化/外部連携/データ分析/コード支援/その他）
 - `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
-  - `category` state を追加し、DescribeStep に接続
-  - `smartDefaults` state を追加し、template モードで `inferSmartDefaults({ purpose, category })` を実行して Step 1 に渡す
-  - `ConversationRoundStep` へ `formData={{ purpose: description, category } as SkillInfoFormData}` を渡す
-- `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`
-  - 6問・2ページ、`InterviewProgressBar` 常時表示（Page1: 1/6, Page2: 4/6）
-  - smartDefaults は初回描画時に answers へ反映（以降はユーザー入力を優先）
-  - cron 検証は renderer で動く browser-safe な 5-field validator を使用
-  - `onAnswersChange` は `useEffect` で `internalAnswers` の変更に追従
-  - Q3 を「定期実行」以外へ切替時、`scheduleConfig` を `undefined` にクリア
-  - 「今すぐ生成する」で `ApplySummaryCard` を表示し、確認後 `onGenerate("skip")`
-- `apps/desktop/src/renderer/components/skill/wizard/InterviewProgressBar.tsx`
-  - `質問 N/6` + `role="progressbar"` のバー表示
-- `apps/desktop/src/renderer/components/skill/wizard/ApplySummaryCard.tsx`
-  - 未回答問の smartDefaults を key-based マッピング（`q1..q6` -> `who..format`）で一覧表示
-  - `category === "external-integration"` かつ Q5 未回答の場合に警告（ブロックしない）
+  - 主要な変更対象。State・ハンドラ・レンダリングを全面更新
+- `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx`
+  - `skillPath` / `hasExternalIntegration` / `externalToolName` / action cards / `onRetry` props を追加
+  - `onClose` を optional に変更
+- `apps/desktop/src/renderer/components/skill/wizard/index.ts`
+  - `SkillInfoStep` の export を追加
+
+### inferSmartDefaults の実装方針
+
+```typescript
+const EXTERNAL_TOOL_KEYWORDS = [
+  { keyword: "slack", toolName: "Slack" },
+  { keyword: "github", toolName: "GitHub" },
+  { keyword: "notion", toolName: "Notion" },
+];
+
+const SKIP_CATEGORIES: SkillCategory[] = ["code-support", "data-analysis"];
+
+function inferSmartDefaults(formData: SkillFormData): SmartDefaultResult {
+  const purposeLower = formData.purpose.toLowerCase();
+  // ツール名はループで後勝ち（複数一致時は最後のものが有効）
+  // カテゴリは SKIP_CATEGORIES に含まれれば 'skip'、それ以外は 'complete'
+}
+```
+
+- 純粋関数として実装し、副作用を持たない
+- `inferenceLog` に推論過程を記録し、テスト・デバッグに活用する
+
+### handleRetry の重要な挙動
+
+```typescript
+function handleRetry() {
+  setCurrentStep(0);
+  // formData は保持（setFormData を呼ばない）
+  setAnswers([]);
+  setSmartDefaults(null);
+  setSkillPath(null);
+  setHasExternalIntegration(false);
+  setExternalToolName(null);
+}
+```
+
+`formData` を保持することで、Step 0 の `SkillInfoStep` に `initialData={formData}` を渡し、前回入力を復元する。
 
 ### 型（shared contracts）
 
 以下は `packages/shared/src/types/skillCreator.ts` の「Skill Wizard Shared Contracts」セクションを参照する。
 
 - `SkillCategory`
-- `SkillInfoFormData`
-- `ConversationAnswers` / `QuestionAnswer`
-- `SkillWizardScheduleConfig`
+- `SkillFormData`（または `SkillInfoFormData`）
 - `SmartDefaultResult`（`inferenceLog?: string[]` を含む）
+- `QualityFeedback`
 
 ### 仕様上の重要な挙動
 
-- smartDefaults の反映タイミングは「初回描画時のみ」。Step 0 に戻って description を変えても、Step 1 で既に回答している場合は自動上書きしない（ユーザー回答優先）。
-- Q5 の「必須」は表示と警告に限定する（生成のブロックはしない）。
-- cron のバリデーションは UI 上でのフィードバック用途。renderer で動く browser-safe な 5-field validator を使い、実行スケジューラの厳密性とは別（必要なら後続タスクで統一）。
+- `inferSmartDefaults` は Step 0 完了時（`handleStep0Next`）に1回だけ実行される
+- Step 1 で回答を変えても `inferSmartDefaults` は再実行しない（ユーザー入力優先）
+- `handleGenerate(method)` の `method` は `'complete'`（詳細生成）または `'skip'`（スキップ生成）のいずれか
+- `generationMode` prop は `GenerateStep` から完全削除し、後方互換性を持たせない
 
-### Phase 11 スクリーンショット（証跡）
+### Phase 11 証跡
 
 Phase 11 の視覚証跡は `outputs/phase-11/` 配下に保存する。
 
-- `outputs/phase-11/screenshot-plan.json`
-- `outputs/phase-11/phase11-capture-metadata.json`
-- `outputs/phase-11/screenshots/`（本タスクの UI 状態を示す PNG 群）
-
-本ファイルは、上記の証跡が current task（`UT-SKILL-WIZARD-W1-par-02b`）として更新されている前提で記述している。
+- `outputs/phase-11/screenshot-plan.md`
+- `outputs/phase-11/manual-test-result.md`
+- `outputs/phase-11/evidence-index.md`
+- `outputs/phase-11/screenshots/`（Step 0〜3 の UI 状態を示す PNG 群）
