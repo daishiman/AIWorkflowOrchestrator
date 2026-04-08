@@ -15,10 +15,18 @@ import { SkillCreateWizard } from "../SkillCreateWizard";
 
 // Store セレクタモック（TASK-10A-F: Store action経由に統一）
 const mockCreateSkill = vi.fn();
+const mockExecuteSkill = vi.fn();
+const mockSelectSkillByName = vi.fn();
+const mockSetCurrentView = vi.fn();
+const mockSetCurrentSkillName = vi.fn();
 const mockUseWorkflowSnapshot = vi.fn(() => null);
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
+  useExecuteSkill: () => mockExecuteSkill,
+  useSelectSkillByName: () => mockSelectSkillByName,
+  useSetCurrentView: () => mockSetCurrentView,
+  useSetCurrentSkillName: () => mockSetCurrentSkillName,
   // TASK-SC-07: LLM generation hooks (テンプレートフロー非破壊テスト用)
   useIsSkillGenerating: () => false,
   useGenerationProgress: () => null,
@@ -58,7 +66,7 @@ describe("SkillCreateWizard", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockOnClose = vi.fn();
-    mockCreateSkill.mockResolvedValue("/path/to/new-skill");
+    mockCreateSkill.mockResolvedValue("/mock/skills/new-skill");
     mockUseWorkflowSnapshot.mockReturnValue(null);
   });
 
@@ -198,10 +206,25 @@ describe("SkillCreateWizard", () => {
         await mockCreateSkill.mock.results[0]?.value;
       });
 
-      expect(screen.getByText("スキルが作成されました")).toBeInTheDocument();
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+      expect(
+        screen.getByText("スキルの骨格を生成しました"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-action-execute"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-action-open-editor"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-feedback-satisfied"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("/mock/skills/new-skill"),
+      ).not.toBeInTheDocument();
     });
 
-    it("CompleteStep に生成されたパスが表示される", async () => {
+    it("CompleteStep の「別のスキルを作る」で Step 0 にリセットされる", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
       // Step 1 -> Step 2
@@ -219,7 +242,13 @@ describe("SkillCreateWizard", () => {
         await mockCreateSkill.mock.results[0]?.value;
       });
 
-      expect(screen.getByText("/path/to/new-skill")).toBeInTheDocument();
+      fireEvent.click(
+        screen.getByTestId("complete-step-action-create-another"),
+      );
+      expect(screen.getByTestId("wizard-step-describe")).toBeInTheDocument();
+      expect(screen.getByRole("textbox")).toHaveValue("");
+      expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
+      expect(mockOnClose).not.toHaveBeenCalled();
     });
   });
 
@@ -310,7 +339,7 @@ describe("SkillCreateWizard", () => {
   // モーダル制御
   // ============================================================
   describe("モーダル制御", () => {
-    it("Step 4 で「閉じる」クリックで onClose が呼ばれる", async () => {
+    it("Step 4 で CompleteStep が表示される（新設計: 閉じるボタンなし）", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
       // Step 1 -> Step 2
@@ -328,9 +357,9 @@ describe("SkillCreateWizard", () => {
         await mockCreateSkill.mock.results[0]?.value;
       });
 
-      // Step 4: 閉じる
-      fireEvent.click(screen.getByRole("button", { name: "閉じる" }));
-      expect(mockOnClose).toHaveBeenCalledTimes(1);
+      // Step 4: CompleteStep が表示される（新設計では閉じるボタンなし）
+      expect(screen.getByTestId("wizard-step-complete")).toBeInTheDocument();
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
     });
   });
 
@@ -493,7 +522,7 @@ describe("SkillCreateWizard", () => {
       expect(mockCreateSkill).toHaveBeenCalledTimes(1);
     });
 
-    it("IPC 完了後に生成されたカスタムパスが CompleteStep に渡される", async () => {
+    it("IPC 完了後に CompleteStep へ遷移する（新設計: パスは UI 非表示）", async () => {
       mockCreateSkill.mockResolvedValue("/custom/generated/path");
 
       render(<SkillCreateWizard onClose={mockOnClose} />);
@@ -512,7 +541,11 @@ describe("SkillCreateWizard", () => {
         await mockCreateSkill.mock.results[0]?.value;
       });
 
-      expect(screen.getByText("/custom/generated/path")).toBeInTheDocument();
+      // 新設計: generatedSkill は親コンテキスト用のため UI には表示しない
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+      expect(
+        screen.queryByText("/custom/generated/path"),
+      ).not.toBeInTheDocument();
     });
   });
 });

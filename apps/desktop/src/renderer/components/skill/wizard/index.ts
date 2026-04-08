@@ -16,7 +16,7 @@ export type {
   GenerationErrorCode,
 } from "./GenerateStep";
 export { CompleteStep } from "./CompleteStep";
-export type { CompleteStepProps } from "./CompleteStep";
+export type { CompleteStepProps, GeneratedSkill } from "./CompleteStep";
 
 /** LLM生成 or テンプレート生成のモード選択（TASK-SC-07） */
 export type GenerationMode = "llm" | "template";

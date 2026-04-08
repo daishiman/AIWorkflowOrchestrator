@@ -1258,17 +1258,17 @@ node scripts/list-specs.js --topics
 ### references/ui-ux-feature-components-reference.md
 
 | セクション | 行 |
-|------------|----|\n| SkillCenterView UI（TASK-UI-05 / 完了） | L6 |
-| Skill Advanced Views UI（TASK-UI-05B / completed） | L223 |
-| 続き | L302 |
+|------------|----|\n| SkillCenterView UI（TASK-UI-05 / 完了） | L8 |
+| Skill Advanced Views UI（TASK-UI-05B / completed） | L225 |
+| 続き | L304 |
 
 ### references/ui-ux-feature-components-skill-analysis.md
 
 | セクション | 行 |
 |------------|----|\n| SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L167 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L196 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L209 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L238 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -2794,9 +2794,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L90 |
-| クイックリファレンス: カテゴリ別検索ガイド | L108 |
-| 分割ファイル一覧 | L112 |
+| 分割ファイル一覧 | L94 |
+| クイックリファレンス: カテゴリ別検索ガイド | L112 |
+| 分割ファイル一覧 | L116 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -4199,7 +4199,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L4 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L137 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L184 |
 
 ### references/task-workflow-completed-recent-2026-04c.md
 

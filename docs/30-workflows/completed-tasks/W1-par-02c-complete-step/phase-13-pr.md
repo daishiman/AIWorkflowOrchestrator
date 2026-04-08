@@ -24,6 +24,7 @@
 PR 作成前に変更点を整理する:
 
 - 改修対象ファイル: `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx`
+- 統合ファイル: `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
 - 追加テストファイル: `apps/desktop/src/renderer/components/skill/wizard/__tests__/CompleteStep.test.tsx`
 - Phase 12 成果物: `implementation-guide.md` / `system-spec-update-summary.md` / `documentation-changelog.md` / `unassigned-task-detection.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md`
 - 削除内容: 旧UIコンポーネント（テキスト・スキルパス表示・`generationMethod` 依存分岐・「閉じる」ボタン単体構成）
@@ -66,6 +67,7 @@ PR 本文のテンプレート:
 
 ## Changed files
 - apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx（全面改修）
+- apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx（CompleteStep 接続）
 - apps/desktop/src/renderer/components/skill/wizard/__tests__/CompleteStep.test.tsx（新規）
 
 ## Test plan
@@ -77,6 +79,7 @@ PR 本文のテンプレート:
 - [ ] オプショナルPropsが未指定でもクラッシュしない
 - [ ] Phase 12 の `phase12-task-spec-compliance-check.md` が PASS である
 - [ ] `ui-ux-feature-components-reference.md` の CompleteStep 行が更新されている
+- [ ] `ui-ux-feature-components-skill-analysis.md` の CompleteStep 行も current contract に同期されている
 - [ ] 全自動テストがpass
 - [ ] カバレッジ目標値達成（Statements 90%以上）
 ```
@@ -85,7 +88,7 @@ PR 本文のテンプレート:
 
 PR マージ後、本タスク自体のディレクトリを以下に移動する:
 
-- 移動元: `docs/30-workflows/skill-wizard-redesign-lane/W1-par-02c-complete-step/`
+- 移動元: `docs/30-workflows/W1-par-02c-complete-step/`
 - 移動先: `docs/30-workflows/completed-tasks/`
 
 ## 参照資料

@@ -33,6 +33,10 @@ const mockSetCurrentPlanId = vi.fn();
 const mockSetCurrentPlanResult = vi.fn();
 const mockClearGenerationState = vi.fn();
 const mockGetWorkflowState = vi.fn();
+const mockExecuteSkill = vi.fn();
+const mockSelectSkillByName = vi.fn();
+const mockSetCurrentView = vi.fn();
+const mockSetCurrentSkillName = vi.fn();
 
 function createWorkflowSnapshot(
   overrides: Partial<SkillCreatorWorkflowUiSnapshot> = {},
@@ -80,6 +84,10 @@ let mockStoreState: MockStoreState = {
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
+  useExecuteSkill: () => mockExecuteSkill,
+  useSelectSkillByName: () => mockSelectSkillByName,
+  useSetCurrentView: () => mockSetCurrentView,
+  useSetCurrentSkillName: () => mockSetCurrentSkillName,
   useIsSkillGenerating: () => mockStoreState.isGenerating,
   useGenerationProgress: () => mockStoreState.generationProgress,
   useGenerationError: () => mockStoreState.generationError,
@@ -310,7 +318,10 @@ describe("SkillCreateWizard LLM生成フロー", () => {
         await Promise.resolve();
       });
 
-      expect(screen.getByText("スキルが作成されました")).toBeInTheDocument();
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+      expect(
+        screen.getByText("スキルの骨格を生成しました"),
+      ).toBeInTheDocument();
     });
 
     it("W-6: executePlan ack の後に failure snapshot が返ると生成エラーを表示する", async () => {
@@ -361,7 +372,7 @@ describe("SkillCreateWizard LLM生成フロー", () => {
         );
       });
       expect(
-        screen.queryByText("スキルが作成されました"),
+        screen.queryByTestId("complete-step-header"),
       ).not.toBeInTheDocument();
     });
   });

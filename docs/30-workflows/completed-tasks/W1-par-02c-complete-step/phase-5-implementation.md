@@ -108,12 +108,16 @@ const [testRunChecked, setTestRunChecked] = useState(false);
 ### Step 6: NextActionCards の実装
 
 ```tsx
-<div className="grid grid-cols-3 gap-4">
+<section
+  aria-label="次のアクション"
+  className="grid grid-cols-1 gap-4 md:grid-cols-3"
+>
   <button
     type="button"
     data-testid="complete-step-action-execute"
     aria-label="今すぐ実行する"
     disabled={!onExecuteNow}
+    aria-disabled={!onExecuteNow ? "true" : undefined}
     onClick={() => onExecuteNow?.()}
   >
     <span aria-hidden="true">▶</span>
@@ -125,6 +129,7 @@ const [testRunChecked, setTestRunChecked] = useState(false);
     data-testid="complete-step-action-open-editor"
     aria-label="エディタで開く"
     disabled={!onOpenInEditor}
+    aria-disabled={!onOpenInEditor ? "true" : undefined}
     onClick={() => onOpenInEditor?.()}
   >
     <span aria-hidden="true">✏</span>
@@ -136,12 +141,13 @@ const [testRunChecked, setTestRunChecked] = useState(false);
     data-testid="complete-step-action-create-another"
     aria-label="別のスキルを作る"
     disabled={!onCreateAnother}
+    aria-disabled={!onCreateAnother ? "true" : undefined}
     onClick={() => onCreateAnother?.()}
   >
     <span aria-hidden="true">＋</span>
     <span>別のスキルを作る</span>
   </button>
-</div>
+</section>
 ```
 
 ### Step 7: ExternalIntegrationChecklist の実装（条件付き）
@@ -159,7 +165,7 @@ const [testRunChecked, setTestRunChecked] = useState(false);
           onChange={(e) => setWebhookChecked(e.target.checked)}
           aria-checked={webhookChecked}
         />
-        {externalToolName ?? "外部ツール"} Webhook URLを設定する
+        {externalToolName ?? "外部ツール"} Webhook URL を設定する
       </label>
       <label>
         <input

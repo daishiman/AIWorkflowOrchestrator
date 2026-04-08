@@ -10,7 +10,7 @@
 | 機能名     | CompleteStep 完了画面再設計（起点画面化） |
 | 前提Phase  | Phase 11: 手動テスト                      |
 | 次Phase    | Phase 13: PRレビュー・マージ              |
-| ステータス | pending                                   |
+| ステータス | completed                                 |
 | 作成日     | 2026-04-07                                |
 
 ## 目的
@@ -50,7 +50,7 @@ CompleteStep の再設計について、日常的な比喩を使って説明す�
 - 専門用語は使う場合でも、その場で言い換えること
 - 「なぜ必要か」→「何をするか」の順で説明すること
 - `references/phase12-checklist-definition.md` の20項目を満たすかを確認する
-- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/skill-wizard-redesign-lane/W1-par-02c-complete-step --json` を実行し PASS を記録する
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/W1-par-02c-complete-step --json` を実行し PASS を記録する
 
 #### Part 2: 技術詳細
 
@@ -80,6 +80,7 @@ CompleteStep の再設計について、日常的な比喩を使って説明す�
 #### 更新対象
 
 - `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-reference.md`
+- `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-skill-analysis.md`
 
 #### 記録必須項目
 
@@ -96,7 +97,7 @@ CompleteStep の再設計について、日常的な比喩を使って説明す�
 #### Step 2 の判断基準
 
 - `CompleteStepProps` で UI 契約が変わるため、Step 2 は原則 `実施` 扱いにする
-- 変更対象は `ui-ux-feature-components-reference.md` の CompleteStep 行とする
+- bundle index の `ui-ux-feature-components-reference.md` には current contract 注記を追記し、詳細の CompleteStep 行は `ui-ux-feature-components-skill-analysis.md` に反映する
 - もし追加の仕様更新が不要なら、その理由を `system-spec-update-summary.md` に明記する
 
 ### Task 12-3: ドキュメント更新履歴の作成
@@ -152,16 +153,16 @@ CompleteStep の再設計について、日常的な比喩を使って説明す�
 
 ## 参照資料
 
-| 資料名             | パス                                                                                      | 説明             |
-| ------------------ | ----------------------------------------------------------------------------------------- | ---------------- |
-| 手動テスト結果     | `outputs/phase-11/manual-test-result.md`                                                  | 直前成果物       |
-| 実装記録           | `outputs/phase-5/implementation-record.md`                                                | 変更内容の参照   |
-| 設計書             | `outputs/phase-2/design.md`                                                               | 設計の参照       |
-| 最終レビュー       | `outputs/phase-10/final-review-result.md`                                                 | 品質確認結果     |
-| task-spec 正本     | `.claude/skills/task-specification-creator/SKILL.md`                                      | Phase 12 の基準  |
-| system spec 正本   | `.claude/skills/aiworkflow-requirements/SKILL.md`                                         | 更新対象の基準   |
-| Phase 12 checklist | `.claude/skills/task-specification-creator/references/phase12-checklist-definition.md`    | 実体確認チェック |
-| CompleteStep 参照  | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-reference.md` | 更新対象ファイル |
+| 資料名             | パス                                                                                                                                     | 説明             |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| 手動テスト結果     | `outputs/phase-11/manual-test-result.md`                                                                                                 | 直前成果物       |
+| 実装記録           | `outputs/phase-5/implementation-record.md`                                                                                               | 変更内容の参照   |
+| 設計書             | `outputs/phase-2/design.md`                                                                                                              | 設計の参照       |
+| 最終レビュー       | `outputs/phase-10/final-review-result.md`                                                                                                | 品質確認結果     |
+| task-spec 正本     | `.claude/skills/task-specification-creator/SKILL.md`                                                                                     | Phase 12 の基準  |
+| system spec 正本   | `.claude/skills/aiworkflow-requirements/SKILL.md`                                                                                        | 更新対象の基準   |
+| Phase 12 checklist | `.claude/skills/task-specification-creator/references/phase12-checklist-definition.md`                                                   | 実体確認チェック |
+| CompleteStep 参照  | `.claude/skills/aiworkflow-requirements/references/ui-ux-feature-components-reference.md` / `ui-ux-feature-components-skill-analysis.md` | 更新対象ファイル |
 
 ## 成果物
 
@@ -176,25 +177,25 @@ CompleteStep の再設計について、日常的な比喩を使って説明す�
 
 ## 完了条件
 
-- [ ] implementation-guide.md が Part 1（概念説明）と Part 2（技術詳細）の 2 部構成で作成されている
-- [ ] Part 1 に `たとえば` が最低 1 回含まれている
-- [ ] Part 2 に `型定義` / `APIシグネチャ` / `使用例` / `エラーハンドリング` / `エッジケース` / `設定項目と定数一覧` / `テスト構成` が含まれている
-- [ ] `validate-phase12-implementation-guide.js` が PASS である
-- [ ] system-spec-update-summary.md で `ui-ux-feature-components-reference.md` の CompleteStep 行更新が記録されている
-- [ ] documentation-changelog.md に更新ファイル・validator 結果・current/baseline が記録されている
-- [ ] unassigned-task-detection.md が 0件でも出力されている
-- [ ] skill-feedback-report.md が 0件でも出力されている
-- [ ] phase12-task-spec-compliance-check.md が PASS である
-- [ ] `artifacts.json` / `outputs/artifacts.json` が同期されている
-- [ ] `index.md` / `indexes/topic-map.md` の再生成結果が記録されている
-- [ ] 本Phase内の全タスクを100%実行完了
+- [x] implementation-guide.md が Part 1（概念説明）と Part 2（技術詳細）の 2 部構成で作成されている
+- [x] Part 1 に `たとえば` が最低 1 回含まれている
+- [x] Part 2 に `型定義` / `APIシグネチャ` / `使用例` / `エラーハンドリング` / `エッジケース` / `設定項目と定数一覧` / `テスト構成` が含まれている
+- [x] `validate-phase12-implementation-guide.js` が PASS である
+- [x] system-spec-update-summary.md で `ui-ux-feature-components-reference.md` の CompleteStep 行更新が記録されている
+- [x] documentation-changelog.md に更新ファイル・validator 結果・current/baseline が記録されている
+- [x] unassigned-task-detection.md が 0件でも出力されている
+- [x] skill-feedback-report.md が 0件でも出力されている
+- [x] phase12-task-spec-compliance-check.md が PASS である
+- [x] `artifacts.json` / `outputs/artifacts.json` が同期されている
+- [x] `index.md` / `indexes/topic-map.md` の再生成結果が記録されている
+- [x] 本Phase内の全タスクを100%実行完了
 
 ## タスク100%実行確認【必須】
 
-- [ ] 本Phase内の全タスクを100%実行完了
-- [ ] 各タスクの成果物が生成されている
-- [ ] artifacts.jsonが更新されている
-- [ ] Phase末端で各タスクを100%完了し、完了を明記している
+- [x] 本Phase内の全タスクを100%実行完了
+- [x] 各タスクの成果物が生成されている
+- [x] artifacts.jsonが更新されている
+- [x] Phase末端で各タスクを100%完了し、完了を明記している
 
 ## 次Phase
 

@@ -4,7 +4,7 @@
  * @task TASK-10A-C, TASK-SC-07
  */
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   StepIndicator,
   DescribeStep,
@@ -47,6 +47,10 @@ import {
   useSetCurrentPlanId,
   useClearGenerationState,
   useWorkflowSnapshot,
+  useExecuteSkill,
+  useSelectSkillByName,
+  useSetCurrentView,
+  useSetCurrentSkillName,
 } from "../../store";
 import { ProvenanceWarningSummary } from "./ProvenanceWarningSummary";
 import { useStreamingProgress } from "../../hooks/useStreamingProgress";
@@ -87,6 +91,9 @@ const TEMPLATE_OPTIONS = {
   addAgents: false,
   addReferences: false,
 } as const;
+
+/** CompleteStep ハンドラ等で使う生成オプションのデフォルト値 */
+const DEFAULT_OPTIONS = TEMPLATE_OPTIONS;
 
 const DEFAULT_ANSWERS: ConversationAnswers = {
   q1: { selectedOption: null, freeText: "" },
@@ -315,7 +322,7 @@ export interface SkillCreateWizardProps {
 export const SkillCreateWizard = React.forwardRef<
   HTMLDivElement,
   SkillCreateWizardProps
->(({ onClose }, ref) => {
+>(({ onClose: _onClose }, ref) => {
   const { currentStep, goNext, goBack, goToStep } = useWizardStep(STEPS.length);
   const createSkill = useCreateSkill();
   const streaming = useStreamingProgress();
@@ -331,6 +338,19 @@ export const SkillCreateWizard = React.forwardRef<
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [skillPath, setSkillPath] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [options, setOptions] = useState(DEFAULT_OPTIONS);
+
+  // CompleteStep ハンドラ用に SkillInfoFormData 形式で統合したビュー
+  const formData: SkillInfoFormData = {
+    skillName: "",
+    purpose: description,
+    category,
+  };
+  const setFormData = (data: SkillInfoFormData) => {
+    setDescription(data.purpose);
+    setCategory(data.category);
+  };
 
   // TASK-SC-07: LLM generation state
   const [generationMode, setGenerationMode] =
@@ -352,6 +372,10 @@ export const SkillCreateWizard = React.forwardRef<
   const setCurrentPlanId = useSetCurrentPlanId();
   const clearGenerationState = useClearGenerationState();
   const workflowSnapshot = useWorkflowSnapshot();
+  const executeSkill = useExecuteSkill();
+  const selectSkillByName = useSelectSkillByName();
+  const setCurrentView = useSetCurrentView();
+  const setCurrentSkillName = useSetCurrentSkillName();
 
   // TASK-SC-07: Cleanup store on unmount (P3)
   useEffect(() => {
@@ -365,6 +389,77 @@ export const SkillCreateWizard = React.forwardRef<
     setCurrentPlanResult(null);
     setCurrentPlanId(null);
   };
+
+  const normalizedSkillName = (formData.skillName ?? "").trim();
+  const resolvedSkillName =
+    normalizedSkillName ||
+    (() => {
+      if (!skillPath) return "";
+      const segments = skillPath.split(/[\\/]/).filter(Boolean);
+      return segments[segments.length - 1] ?? "";
+    })();
+  const hasExternalIntegration = formData.category === "external-integration";
+  const generatedSkill = skillPath
+    ? {
+        path: skillPath,
+        name: resolvedSkillName || undefined,
+      }
+    : null;
+
+  const handleOpenInEditor = useCallback(() => {
+    if (!resolvedSkillName) return;
+    selectSkillByName(resolvedSkillName);
+    setCurrentSkillName(resolvedSkillName);
+    setCurrentView("skill-editor");
+  }, [
+    resolvedSkillName,
+    selectSkillByName,
+    setCurrentSkillName,
+    setCurrentView,
+  ]);
+
+  const handleExecuteNow = useCallback(() => {
+    if (!resolvedSkillName) return;
+    const prompt = formData.purpose.trim() || resolvedSkillName;
+    selectSkillByName(resolvedSkillName);
+    setCurrentSkillName(resolvedSkillName);
+    setCurrentView("agent");
+    void executeSkill(prompt);
+  }, [
+    executeSkill,
+    formData.purpose,
+    resolvedSkillName,
+    selectSkillByName,
+    setCurrentSkillName,
+    setCurrentView,
+  ]);
+
+  const handleCreateAnother = useCallback(() => {
+    setFormData({
+      skillName: "",
+      purpose: "",
+      category: null,
+    });
+    setOptions(DEFAULT_OPTIONS);
+    setIsGenerating(false);
+    setError(null);
+    setSkillPath(null);
+    clearPlanExecutionState();
+    setStoreIsGenerating(false);
+    setStoreGenerationProgress(null);
+    setStoreGenerationError(null);
+    setCurrentSkillName(null);
+    selectSkillByName(null);
+    goToStep(0);
+  }, [
+    clearPlanExecutionState,
+    goToStep,
+    selectSkillByName,
+    setCurrentSkillName,
+    setStoreGenerationError,
+    setStoreGenerationProgress,
+    setStoreIsGenerating,
+  ]);
 
   // Existing template generation handler
   const handleGenerate = async () => {
@@ -612,7 +707,16 @@ export const SkillCreateWizard = React.forwardRef<
       )}
       {currentStep === 3 && (
         <div data-testid="wizard-step-complete">
-          <CompleteStep skillPath={skillPath} onClose={onClose} />
+          <CompleteStep
+            generatedSkill={generatedSkill}
+            hasExternalIntegration={hasExternalIntegration}
+            externalToolName={hasExternalIntegration ? "外部ツール" : undefined}
+            onExecuteNow={generatedSkill ? handleExecuteNow : undefined}
+            onOpenInEditor={generatedSkill ? handleOpenInEditor : undefined}
+            onCreateAnother={handleCreateAnother}
+            onQualityFeedback={() => {}}
+            onRetry={() => goToStep(0)}
+          />
         </div>
       )}
     </div>

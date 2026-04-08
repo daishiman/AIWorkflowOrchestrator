@@ -10,12 +10,40 @@
 | 機能名     | CompleteStep 完了画面再設計（起点画面化） |
 | 前提Phase  | Phase 10: 最終レビュー                    |
 | 次Phase    | Phase 12: ドキュメント整備                |
-| ステータス | pending                                   |
+| ステータス | completed                                 |
 | 作成日     | 2026-04-07                                |
 
 ## 目的
 
 実際にアプリを起動してスキル作成ウィザードを操作し、CompleteStep の UI 動作・視覚的品質・UX を人間の目で検証する。
+
+## テストケース
+
+| TC-ID | 対象                             | 観点         | 期待結果                                        |
+| ----- | -------------------------------- | ------------ | ----------------------------------------------- |
+| TC-01 | Step 0 初期表示                  | 初期状態     | ウィザードが初期状態で表示される                |
+| TC-02 | Step 0 入力済み表示              | 入力反映     | 目的・カテゴリ入力後の状態が保たれる            |
+| TC-03 | Step 1 Configure 表示            | 設定画面遷移 | ConfigureStep が表示される                      |
+| TC-04 | Step 2 生成中表示                | ローディング | 生成中 UI が表示される                          |
+| TC-05 | Step 3 CompleteStep 表示         | 標準完了     | 完了ヘッダー/フィードバック/3カードが表示される |
+| TC-06 | Step 2 エラー表示                | 異常系       | エラーメッセージが表示される                    |
+| TC-07 | CompleteStep 表示（Light）       | テーマ差分   | ライトテーマでも視認性が保たれる                |
+| TC-08 | CompleteStep 表示（Mobile Dark） | レスポンシブ | モバイル幅でもレイアウトが崩れない              |
+| TC-09 | 外部連携チェックリスト           | 条件付き表示 | 外部連携あり時のみチェックリストが表示される    |
+
+## 画面カバレッジマトリクス
+
+| TC-ID | 画面 / 状態                                         | 証跡ファイル                                                                     |
+| ----- | --------------------------------------------------- | -------------------------------------------------------------------------------- |
+| TC-01 | Step 0 初期表示（Dark）                             | `outputs/phase-11/screenshots/TC-01-step0-initial-dark.png`                      |
+| TC-02 | Step 0 入力済み表示（Dark）                         | `outputs/phase-11/screenshots/TC-02-step0-filled-dark.png`                       |
+| TC-03 | Step 1 Configure（Dark）                            | `outputs/phase-11/screenshots/TC-03-step1-configure-dark.png`                    |
+| TC-04 | Step 2 生成中（Dark）                               | `outputs/phase-11/screenshots/TC-04-step2-generating-dark.png`                   |
+| TC-05 | Step 3 CompleteStep（Dark）                         | `outputs/phase-11/screenshots/TC-05-step3-complete-dark.png`                     |
+| TC-06 | Step 2 エラー（Dark）                               | `outputs/phase-11/screenshots/TC-06-step2-error-dark.png`                        |
+| TC-07 | Step 3 CompleteStep（Light）                        | `outputs/phase-11/screenshots/TC-07-step3-complete-light.png`                    |
+| TC-08 | Step 3 CompleteStep（Mobile Dark）                  | `outputs/phase-11/screenshots/TC-08-step3-complete-mobile-dark.png`              |
+| TC-09 | Step 3 CompleteStep 外部連携チェックリスト（Light） | `outputs/phase-11/screenshots/TC-09-step3-complete-external-checklist-light.png` |
 
 ## 実行タスク
 
