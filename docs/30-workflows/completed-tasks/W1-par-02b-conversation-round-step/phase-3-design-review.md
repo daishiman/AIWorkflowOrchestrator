@@ -118,20 +118,20 @@ node .claude/skills/aiworkflow-requirements/scripts/search-spec.js "SmartDefault
 
 ## 参照資料
 
-| 資料名                     | パス                                                     | 説明                       |
-| -------------------------- | -------------------------------------------------------- | -------------------------- |
-| Phase 2 設計書             | `phase-2-design.md`                                      | レビュー対象の設計         |
-| W1-par-02a Phase 3         | `../W1-par-02a-skill-info-step/phase-3-design-review.md` | 連携先レビュー             |
-| 既存ウィザード実装         | `apps/desktop/src/renderer/components/skill/wizard/`     | 整合性確認                 |
-| task-specification-creator | `.claude/skills/task-specification-creator/`             | Phase 構造・blocked ルール |
-| aiworkflow-requirements    | `.claude/skills/aiworkflow-requirements/`                | system spec 参照           |
+| 資料名                     | パス                                                                                | 説明                       |
+| -------------------------- | ----------------------------------------------------------------------------------- | -------------------------- |
+| Phase 2 設計書             | `phase-2-design.md`                                                                 | レビュー対象の設計         |
+| W1-par-02a Phase 3         | `../skill-wizard-redesign-lane/W1-par-02a-skill-info-step/phase-3-design-review.md` | 連携先レビュー             |
+| 既存ウィザード実装         | `apps/desktop/src/renderer/components/skill/wizard/`                                | 整合性確認                 |
+| task-specification-creator | `.claude/skills/task-specification-creator/`                                        | Phase 構造・blocked ルール |
+| aiworkflow-requirements    | `.claude/skills/aiworkflow-requirements/`                                           | system spec 参照           |
 
 ## 実行手順
 
-### Step 0: 並列レーンの実行（Lane A/B/C）
+### Step 0: 並列レーンの実行（Lane A/B/C/D）
 
-- Lane A/B/C の表を埋め、判定（PASS/MINOR/FAIL）と必要アクションを確定する。
-- どれかが FAIL の場合は Phase 1/2 を修正してから再レビューする（Phase 4 へ進まない）。
+- Lane A/B/C/D の表を埋め、判定（PASS/MINOR/FAIL）と必要アクションを確定する。
+- どれかが MINOR/FAIL の場合は、必要箇所を Phase 1/2/3 に戻して修正し、解消できない論点は未タスク化して再レビューする（Phase 4 へ進まない）。
 
 ### Step 1: コンポーネント分割レビュー
 
@@ -233,9 +233,15 @@ rg -n "ConfigureStep|WizardOptions" apps packages -g '*.ts' -g '*.tsx'
 - コンポーネント分割方針の決定
 - Q3スケジュールUI・Q5バリデーション・適用サマリーカードの修正仕様
 
+## 統合テスト連携
+
+- Phase 3 ゲート判定（4条件 PASS）を経由して Phase 4 に進む。
+- Phase 3 で固定した「解釈ドリフト防止結論」は Phase 4 以降で再発散しない。
+- 30思考法マトリクスの MINOR 判定のうち、Phase 4 へ進める前に解消できないものは Phase 12 の unassigned-task-detection に記録する。
+
 ## 完了条件
 
-- [ ] Lane A/B/C の結果がこのファイルに記録され、進行条件が満たされている
+- [ ] Lane A/B/C/D の結果がこのファイルに記録され、進行条件が満たされている
 - [ ] コンポーネント分割方針が確定している
 - [ ] ページング状態管理の妥当性が確認されている
 - [ ] Q3スケジュールUI展開の UX 懸念点が解決されている

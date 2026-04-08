@@ -28,13 +28,13 @@ Step 0 / Step 1 / Step 3 で共有する型契約を確定し、後続 wave が�
 
 ## 参照資料
 
-| 資料名         | パス                                                                               | 説明                              |
-| -------------- | ---------------------------------------------------------------------------------- | --------------------------------- |
-| 既存 shared 型 | `packages/shared/src/types/skillCreator.ts`                                        | 追記対象ファイル                  |
-| 既存 skill 型  | `packages/shared/src/types/skill.ts`                                               | 既存 `SkillCategory` との違い確認 |
-| Step 0 実装    | `docs/30-workflows/skill-wizard-redesign-lane/W1-par-02a-skill-info-step/`         | 後続利用の確認                    |
-| Step 1 実装    | `docs/30-workflows/skill-wizard-redesign-lane/W1-par-02b-conversation-round-step/` | 後続利用の確認                    |
-| Step 2 実装    | `docs/30-workflows/skill-wizard-redesign-lane/W2-seq-03a-skill-create-wizard/`     | 推論利用の確認                    |
+| 資料名         | パス                                                                           | 説明                              |
+| -------------- | ------------------------------------------------------------------------------ | --------------------------------- |
+| 既存 shared 型 | `packages/shared/src/types/skillCreator.ts`                                    | 追記対象ファイル                  |
+| 既存 skill 型  | `packages/shared/src/types/skill.ts`                                           | 既存 `SkillCategory` との違い確認 |
+| Step 0 実装    | `docs/30-workflows/skill-wizard-redesign-lane/W1-par-02a-skill-info-step/`     | 後続利用の確認                    |
+| Step 1 実装    | `docs/30-workflows/W1-par-02b-conversation-round-step/`                        | 後続利用の確認                    |
+| Step 2 実装    | `docs/30-workflows/skill-wizard-redesign-lane/W2-seq-03a-skill-create-wizard/` | 推論利用の確認                    |
 
 ## 実行手順
 

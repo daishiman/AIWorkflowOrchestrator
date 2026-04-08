@@ -7,18 +7,22 @@
 import React, { useEffect, useState } from "react";
 import {
   StepIndicator,
-  SkillInfoStep,
-  ConfigureStep,
+  DescribeStep,
+  ConversationRoundStep,
   GenerateStep,
   CompleteStep,
 } from "./wizard";
 import type {
-  WizardOptions,
   GenerationMode,
   GenerationError,
   GenerationStage,
 } from "./wizard";
-import type { SkillInfoFormData } from "@repo/shared/types/skillCreator";
+import type {
+  ConversationAnswers,
+  SkillInfoFormData,
+  SkillCategory,
+  SmartDefaultResult,
+} from "@repo/shared/types/skillCreator";
 import type {
   SkillCreatorExecutePlanAck,
   RuntimeSkillCreatorExecuteErrorResponse,
@@ -48,7 +52,7 @@ import { ProvenanceWarningSummary } from "./ProvenanceWarningSummary";
 import { useStreamingProgress } from "../../hooks/useStreamingProgress";
 import { useCancelGeneration } from "../../hooks/useCancelGeneration";
 
-const STEPS = ["スキル情報", "設定", "生成", "完了"];
+const STEPS = ["説明入力", "設定", "生成", "完了"];
 
 function resolveStage(
   streamingStage: GenerationStage,
@@ -77,11 +81,113 @@ function bridgeGenerationError(error: string | null): GenerationError | null {
   };
 }
 
-const DEFAULT_OPTIONS: WizardOptions = {
+// テンプレート生成で使うオプション（ConversationRoundStep 追加後も固定）
+const TEMPLATE_OPTIONS = {
   generateTasks: true,
   addAgents: false,
   addReferences: false,
+} as const;
+
+const DEFAULT_ANSWERS: ConversationAnswers = {
+  q1: { selectedOption: null, freeText: "" },
+  q2: { selectedOption: null, freeText: "" },
+  q3: { selectedOption: null, freeText: "" },
+  q4: { selectedOption: null, freeText: "" },
+  q5: { selectedOption: null, freeText: "" },
+  q6: { selectedOption: null, freeText: "" },
 };
+
+const DEFAULT_SMART_DEFAULTS: SmartDefaultResult = {
+  who: null,
+  input: null,
+  timing: null,
+  output: null,
+  tool: null,
+  format: null,
+};
+
+function inferSmartDefaults(data: {
+  purpose: string;
+  category: SkillCategory | null;
+}): SmartDefaultResult {
+  const text = data.purpose.toLowerCase();
+  const defaults: SmartDefaultResult = {
+    who: null,
+    input: null,
+    timing: null,
+    output: null,
+    tool: null,
+    format: null,
+  };
+
+  if (text.includes("自分")) {
+    defaults.who = "自分のみ";
+  } else if (
+    text.includes("チーム") ||
+    data.category === "external-integration"
+  ) {
+    defaults.who = "チームメンバー";
+  } else if (text.includes("社内")) {
+    defaults.who = "社内全体";
+  } else if (text.includes("外部")) {
+    defaults.who = "外部ユーザー";
+  }
+
+  if (text.includes("ファイル")) {
+    defaults.input = "ファイル";
+  } else if (text.includes("url") || text.includes("リンク")) {
+    defaults.input = "URLリンク";
+  } else if (text.includes("json") || text.includes("構造化")) {
+    defaults.input = "構造化データ";
+  } else if (text.includes("テキスト")) {
+    defaults.input = "テキスト";
+  }
+
+  if (
+    text.includes("毎日") ||
+    text.includes("毎週") ||
+    text.includes("定期") ||
+    text.includes("スケジュール")
+  ) {
+    defaults.timing = "定期実行";
+  } else if (text.includes("イベント")) {
+    defaults.timing = "イベント駆動";
+  } else if (text.includes("手動")) {
+    defaults.timing = "手動実行";
+  }
+
+  if (text.includes("通知") || text.includes("アラート")) {
+    defaults.output = "通知";
+  } else if (text.includes("返信") || text.includes("チャット")) {
+    defaults.output = "チャット返信";
+  } else if (text.includes("保存")) {
+    defaults.output = "ファイル保存";
+  } else if (text.includes("ツール")) {
+    defaults.output = "外部ツール";
+  }
+
+  if (text.includes("slack")) {
+    defaults.tool = "Slack";
+  } else if (text.includes("github")) {
+    defaults.tool = "GitHub";
+  } else if (text.includes("その他")) {
+    defaults.tool = "その他";
+  }
+
+  if (text.includes("json")) {
+    defaults.format = "JSON";
+  } else if (text.includes("箇条書き") || text.includes("リスト")) {
+    defaults.format = "箇条書き";
+  } else if (
+    text.includes("表") ||
+    text.includes("markdown") ||
+    text.includes("レポート")
+  ) {
+    defaults.format = "Markdown";
+  }
+
+  return defaults;
+}
 
 type SkillCreatorRuntimeApi = {
   planSkill?: (
@@ -216,18 +322,18 @@ export const SkillCreateWizard = React.forwardRef<
   const { cancelGeneration } = useCancelGeneration();
 
   // Existing local state
-  const [formData, setFormData] = useState<SkillInfoFormData>({
-    skillName: "",
-    purpose: "",
-    category: null,
-  });
-  const [options, setOptions] = useState<WizardOptions>(DEFAULT_OPTIONS);
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState<SkillCategory | null>(null);
+  const [answers, setAnswers] = useState<ConversationAnswers>(DEFAULT_ANSWERS);
+  const [smartDefaults, setSmartDefaults] = useState<SmartDefaultResult>(
+    DEFAULT_SMART_DEFAULTS,
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [skillPath, setSkillPath] = useState<string | null>(null);
 
   // TASK-SC-07: LLM generation state
-  const [generationMode, _setGenerationMode] =
+  const [generationMode, setGenerationMode] =
     useState<GenerationMode>("template");
   const [localPlanResult, setLocalPlanResult] = useState<PlanResult | null>(
     null,
@@ -266,7 +372,7 @@ export const SkillCreateWizard = React.forwardRef<
     setIsGenerating(true);
     setError(null);
     try {
-      const path = await createSkill(formData.purpose, options);
+      const path = await createSkill(description, TEMPLATE_OPTIONS);
       if (path) {
         setSkillPath(path);
         goToStep(3);
@@ -284,7 +390,7 @@ export const SkillCreateWizard = React.forwardRef<
 
   // TASK-SC-07: LLM plan generation (AC-2)
   const handleLlmGenerate = async () => {
-    if (!formData.purpose.trim()) return;
+    if (!description.trim()) return;
     if (isSkillGenerating) return;
     goToStep(2);
     setStoreIsGenerating(true);
@@ -295,7 +401,7 @@ export const SkillCreateWizard = React.forwardRef<
       if (!api.planSkill) {
         throw new Error("planSkill API が利用できません");
       }
-      const result = await api.planSkill(formData.purpose);
+      const result = await api.planSkill(description);
       if (result.success && result.data) {
         // TASK-RT-02: plan logical error の検出（UT-RT-02-M03: SkillLifecyclePanel とパリティ統一）
         const data = result.data;
@@ -340,7 +446,7 @@ export const SkillCreateWizard = React.forwardRef<
       if (!api.executePlan) {
         throw new Error("executePlan API が利用できません");
       }
-      const result = await api.executePlan(storePlanId, formData.purpose);
+      const result = await api.executePlan(storePlanId, description);
       if (result.success && result.data) {
         if (isExecutePlanAck(result.data)) {
           if (api.getWorkflowState) {
@@ -411,11 +517,12 @@ export const SkillCreateWizard = React.forwardRef<
     goToStep(0);
   };
 
-  // TASK-SC-07: Route SkillInfoStep onNext based on mode (AC-2, AC-8)
-  const handleSkillInfoNext = () => {
+  // TASK-SC-07: Route DescribeStep onNext based on mode (AC-2, AC-8)
+  const handleDescribeNext = () => {
     if (generationMode === "llm") {
       void handleLlmGenerate();
     } else {
+      setSmartDefaults(inferSmartDefaults({ purpose: description, category }));
       goNext();
     }
   };
@@ -448,21 +555,27 @@ export const SkillCreateWizard = React.forwardRef<
       />
       <StepIndicator steps={STEPS} currentStep={currentStep} />
       {currentStep === 0 && (
-        <div data-testid="wizard-step-skill-info">
-          <SkillInfoStep
-            formData={formData}
-            onFormDataChange={setFormData}
-            onNext={handleSkillInfoNext}
+        <div data-testid="wizard-step-describe">
+          <DescribeStep
+            description={description}
+            onDescriptionChange={setDescription}
+            category={category}
+            onCategoryChange={setCategory}
+            generationMode={generationMode}
+            onGenerationModeChange={setGenerationMode}
+            onNext={handleDescribeNext}
           />
         </div>
       )}
       {currentStep === 1 && (
-        <div data-testid="wizard-step-configure">
-          <ConfigureStep
-            options={options}
-            onOptionsChange={setOptions}
+        <div data-testid="wizard-step-conversation-round">
+          <ConversationRoundStep
+            formData={{ purpose: description, category } as SkillInfoFormData}
+            smartDefaults={smartDefaults}
+            answers={answers}
+            onAnswersChange={setAnswers}
             onBack={goBack}
-            onGenerate={handleGenerate}
+            onGenerate={() => void handleGenerate()}
           />
         </div>
       )}

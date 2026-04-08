@@ -120,6 +120,11 @@ pnpm --filter @repo/desktop typecheck
 pnpm --filter @repo/desktop lint
 ```
 
+## 統合テスト連携
+
+- Phase 1 の AC-01〜AC-08 に対して、実装（Phase 5）・自動テスト（Phase 4/6/7）・QA（Phase 9）のいずれかで検証されていることをトレースする。
+- 4条件ゲート（矛盾なし / 漏れなし / 整合性あり / 依存関係整合）が PASS の場合のみ Phase 11 へ進む。
+
 ## 判定（ゲート結論）
 
 | 条件         | 判定 | 根拠メモ |

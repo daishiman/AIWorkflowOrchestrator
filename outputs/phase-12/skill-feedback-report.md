@@ -1,27 +1,56 @@
-# スキルフィードバックレポート
+# Phase 12: スキルフィードバック（skill-feedback-report.md）— UT-SKILL-WIZARD-W1-par-02b
 
-## タスクID: UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
+## メタ情報
 
-## 良かった点
+- タスクID: UT-SKILL-WIZARD-W1-par-02b
+- 作成日: 2026-04-08
 
-- `resolveHealthPolicy()` を shared 側の正本に寄せたことで、hook 側の責務がかなり薄くなった
-- `useMainlineExecutionAccess` のテストが `buildMainlineExecutionAccessState()` への引数確認に集中でき、実装意図が読みやすかった
-- Phase 11 の NON_VISUAL 証跡を先に固めたことで、Phase 12 の文章化が迷いなく進められた
+## 対象
 
-## 改善点・気づき
+- `task-specification-creator`（Phase/成果物の規約とテンプレート）
+- `aiworkflow-requirements`（システム仕様の正本）
 
-- `outputs/phase-12/` に旧タスクの成果物と current task の草稿が混在しており、canonical ファイルの選定に一度迷った
-- `docs/30-workflows/ut-health-policy-mainline-migration/index.md` と `artifacts.json` の status が古いままだと、実装済みでも workflow 上は未完了に見えてしまう
-- async hook のテストは、`renderHook` 後に 1 ティック待たないと `act(...)` 警告が出ることがあった
+## フィードバック（改善提案）
 
-## 今後のタスクへの推奨事項
+### 1. UI タスクの Phase 11 証跡テンプレートを強制的に「VISUAL」に寄せる
 
-- Phase 12 の成果物は、最初から task-specific の canonical 名で揃える
-- workflow の進捗更新は、出力ファイルだけでなく `index.md` と `artifacts.json` まで同じ wave で同期する
-- async な hook テストは、`renderAccessHook` のような flush helper を共通化する
+今回のように UI 変更が明確なタスクでは、`outputs/phase-11/screenshot-plan.json` と `phase11-capture-metadata.json` が旧タスクの `NON_VISUAL` のまま残りやすい。
 
-## task-specification-creator スキルへのフィードバック
+改善案:
 
-- Phase 12 の checklist に `index.md` と `artifacts.json` の status 同期を明示してほしい
-- Phase 12 の出力テンプレートで、legacy draft ファイルが残る場合の扱いを先に書いてほしい
-- Step 2 の条件付き更新では、正本コメントに追記すべき consumer のファイルパスを明示すると迷いが減る
+- UI task の場合、Phase 11 成果物のテンプレート生成時に `mode: "VISUAL"` をデフォルトにする
+- `taskId` を自動埋めし、旧 taskId の混入を検出して fail-fast する（例: preflight スクリプト）
+
+### 2. 「Step 0 -> Step 1 引き渡し項目」を設計テンプレートに明記する
+
+本タスクでは `category` と `smartDefaults` を Step 0 から Step 1 へ渡す仕様が核心だった。
+
+改善案:
+
+- Phase 2（設計）のテンプレートに「ステップ間の state ownership と引き渡し項目」の表を必須化する
+- `smartDefaults` の反映タイミング（初回のみ/都度更新/ユーザー入力優先）を decision として固定する欄を用意する
+
+### 3. 用語の一貫性（onConfirmGenerate などの名前ずれ）を抑える仕組み
+
+ドキュメント中のコールバック名が、実装の `onConfirm` / `onGenerate("skip")` などとズレると stale が発生する。
+
+改善案:
+
+- Phase 12 のチェック項目に「ドキュメント内の識別子（関数/prop 名）が現行コードのものか」を追加する
+- 代表コードスニペットは「型/props 定義」から引用する方針に寄せる（手書きで drift しやすい）
+
+### 4. Renderer での node-only import を早期に検出する
+
+本タスクでは `node-cron` を renderer で直接 import したことで、Vite ブラウザバンドルの初期化時に runtime error が出た。
+
+改善案:
+
+- renderer 側の UI コンポーネントでは node-only パッケージを直接 import しないチェックを入れる
+- cron / date / filesystem などは browser-safe な薄いユーティリティに寄せる
+- Phase 11 の capture 前に「ブラウザで実際に route を開く smoke test」を必須にする
+
+## 良かった点（維持したい点）
+
+- `ConversationRoundStep` の `onAnswersChange` を `useEffect` に寄せ、setState updater 内の副作用を避けた点（テスト容易性と予測可能性が上がる）
+- `ApplySummaryCard` の key-based マッピングにより、`Object.keys()` 依存の順序バグを避けた点
+- Q3 の scheduleConfig を「定期実行から外れたら `undefined` にクリア」する挙動が仕様と一致している点

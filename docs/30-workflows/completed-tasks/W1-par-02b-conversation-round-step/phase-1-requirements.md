@@ -116,6 +116,19 @@ W0-seq-01 で定義された `SmartDefaultResult` の型を確認し、各問へ
 - 適用サマリーカードの仕様
 - 削除対象ファイル・型の影響範囲リスト
 
+## 統合テスト連携
+
+| AC-ID | 受入条件                                                                | 連携先フェーズ   |
+| ----- | ----------------------------------------------------------------------- | ---------------- |
+| AC-01 | 6問・2ページ（Q1-Q3 / Q4-Q6）構成が実現されていること                   | Phase 4 / 6 / 11 |
+| AC-02 | 進捗バー「質問 N/6」が常時表示されること                                | Phase 4 / 6 / 11 |
+| AC-03 | SmartDefaultResult による各問の事前入力が動作すること                   | Phase 4 / 6 / 11 |
+| AC-04 | Q3「定期実行」選択時に SkillWizardScheduleConfig 入力UIが展開されること | Phase 4 / 6 / 11 |
+| AC-05 | Q5 は category=external-integration のとき必須★になること               | Phase 4 / 6 / 11 |
+| AC-06 | 「今すぐ生成する」でサマリーカードが表示されること                      | Phase 4 / 6 / 11 |
+| AC-07 | サマリーカードが dismissible であること                                 | Phase 4 / 6 / 11 |
+| AC-08 | ConfigureStep.tsx と WizardOptions 型の参照が全て解消されること         | Phase 5 / 9      |
+
 ## 完了条件
 
 - [ ] 既存 `ConfigureStep.tsx` の実装内容が把握されている

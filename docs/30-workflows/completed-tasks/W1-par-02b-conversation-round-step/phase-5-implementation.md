@@ -82,6 +82,13 @@ import type {
 
 ```typescript
 type QuestionKey = keyof ConversationAnswers;
+type SmartDefaultKey =
+  | "who"
+  | "input"
+  | "timing"
+  | "output"
+  | "tool"
+  | "format";
 
 const QUESTION_KEYS: readonly QuestionKey[] = [
   "q1",
@@ -92,7 +99,9 @@ const QUESTION_KEYS: readonly QuestionKey[] = [
   "q6",
 ];
 
-const DEFAULT_KEY_BY_QUESTION: Record<QuestionKey, keyof SmartDefaultResult> = {
+// SmartDefaultResult は optional の補助キー（例: inferenceLog）を追加しうるため、
+// `keyof SmartDefaultResult` ではなく value-key を固定した union を使う。
+const DEFAULT_KEY_BY_QUESTION: Record<QuestionKey, SmartDefaultKey> = {
   q1: "who",
   q2: "input",
   q3: "timing",
@@ -169,6 +178,12 @@ rg -n "ConfigureStep|WizardOptions" apps packages
 ```bash
 pnpm --filter @repo/desktop vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx
 ```
+
+## 統合テスト連携
+
+- Phase 4 の TC-01〜TC-12 が GREEN になることを Phase 5 完了条件として包含する。
+- `DEFAULT_KEY_BY_QUESTION` の key-based マッピングは Phase 6 の ApplySummaryCard 回帰テストで検証する。
+- ConfigureStep / WizardOptions の参照ゼロは Phase 9 の `rg` コマンドで確認する（AC-08）。
 
 ## 成果物
 

@@ -2,39 +2,18 @@
 
 ## 役割
 
-## 2026-04-08 - UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 Phase 12 close-out sync（skill-feedback 反映）
+## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 
 ### 変更内容
-- `task-specification-creator/SKILL.md` の「よくある漏れ」テーブルに FB-UT-HP-001〜003 を追加
-  - FB-UT-HP-001: Phase 12 checklist への `index.md` + `artifacts.json` status 同期明示ルール
-  - FB-UT-HP-002: `outputs/phase-12/` legacy draft ファイル識別ルール
-  - FB-UT-HP-003: Step 2 条件付き更新の consumer ファイルパス明示ルール
-- 「Phase 12 苦戦防止Tips」に async hook flush helper 共通化推奨を追加
-- `SKILL.md` 変更履歴テーブルに v6.18.29 エントリを追加
-- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-HP-001〜003 追加
-- `aiworkflow-requirements/references/lessons-learned-current.md` に v3.10.0 エントリ追加
-- `aiworkflow-requirements/LOGS.md` に Phase 12 close-out ヘッドライン追加
-- stash conflict marker (`||||||| Stash base`) を修正し、UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 セクションを正規化
+- `references/patterns-lessons-and-pitfalls.md` に「Renderer での node-only import（browser bundle 破壊）」Pitfall を追加（Feedback 4）
+- `references/phase-template-phase11.md` の UI task 追加要件に `[W1-02b-1] screenshot-plan mode: VISUAL デフォルト` ガイドを追加（Feedback 1）
+- `references/phase-12-documentation-guide.md` の Task 12-6 に `[W1-02b-3] identifier consistency check` を追加（Feedback 3）
+- `SKILL.md` の「よくある漏れ」テーブルに Feedback W1-02b-1〜4（VISUAL default / multi-step state ownership / identifier drift / node-only import）を追記（Feedback 1〜4）
 
 ### 背景
-UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 の skill-feedback-report 推奨事項を SKILL.md に反映した。
-`resolveHealthPolicy()` を shared に集約するパターン（L-HP-002）は、hook 側の責務薄化のモデルケースとして記録する。
+UT-SKILL-WIZARD-W1-par-02b の `skill-feedback-report.md` に記録された改善提案4件を same-wave で skill に反映した。
+node-only import による browser bundle 破壊は Phase 11 の screenshot 全件ブロックにつながる高影響度 pitfall のため、patterns-lessons-and-pitfalls に優先追加した。
 
----
-
-## 2026-04-07 - W0-seq-02 smart-default-reasoning-service Phase 12 close-out sync
-
-### 変更内容
-- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/implementation-guide.md` の Part 2 / test command / type export 表記を current facts へ同期
-- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/system-spec-update-summary.md` に `SkillInfoFormData` / `SmartDefaultResult` root export を追加
-- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-11/manual-test-result.md` を 33 tests PASS へ更新
-- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を current facts へ同期
-- `packages/shared/src/types/index.ts` / `packages/shared/index.ts` / `packages/shared/vitest.config.ts` を同期
-- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/artifacts.json` と `outputs/artifacts.json` を `phase13_blocked` で同期
-- `aiworkflow-requirements` の LOGS.md / SKILL.md と lane index、`task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed.md` を同波更新
-
-### 背景
-Phase 12 のドキュメントは実装証跡と同じ wave で揃える必要があり、特に public type export parity と Phase 11 manual-test の件数ズレを残さないことを優先した。
 ## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（impl-spec-to-skill-sync）
 
 ### 変更内容
@@ -72,18 +51,6 @@ Phase 12 close-out では、task-spec 観点でも `artifacts.json` / `outputs/a
 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 の skill-feedback-report.md（Feedback 1〜4）
 
 ---
-
-## 2026-04-07 - TASK-P0-09-U1 Phase 12 スキル更新確認・keywords.json キーワード同期
-
-### 変更内容
-- `aiworkflow-requirements/indexes/keywords.json` に TASK-P0-09-U1 実装由来の不足キーワード4件を追加（`extractTargetPath` / `path-scoped` / `governance-enforcement` / `RuntimeSkillCreatorExecuteErrorResponse`）
-- SKILL.md（task-specification-creator）の3フィードバック反映（Phase 4 private method テスト方針・Phase 5 canUseTool 制約・小規模タスク tier 分け）は 2026-04-06 済みにつき本日追加なし
-
-### 背景
-Phase-12 skill-feedback-report.md の3改善提案はすでに 2026-04-06 に SKILL.md v6.18.19 / v10.09.29 として反映済み。本エントリは keywords.json への未追加キーワードの同期記録。
-
----
-
 ## 2026-04-07 - TASK-UI-04 仕様書ステータス乖離修正 Phase 12 close-out sync（skill-feedback 反映）
 
 ## 2026-04-06 - UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 12 close-out sync
@@ -136,16 +103,6 @@ UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継�
 
 ---
 
-## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
-
-### 変更内容
-- `ui-result-panel-pattern.md` に state owner 分離判断基準テーブルを追加
-- `task-specification-creator/SKILL.md` Trigger に `result-panel` / `SkillLifecyclePanel` / `SkillCreationResultPanel` / `orchestration wrapper` 等を追加
-- `v10.09.28` で記録済みだった skill-feedback の current facts ずれを是正
-- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新
-
----
-
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
@@ -175,9 +132,6 @@ UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継�
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
 
 ---
-## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
----
-
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
 
 ### 変更内容

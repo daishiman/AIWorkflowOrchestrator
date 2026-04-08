@@ -1224,10 +1224,10 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 概要 | L6 |
-| Skill Runtime API Key Panel（TASK-RT-04） | L65 |
-| LLM Adapter Error Banner（TASK-RT-01） | L121 |
-| Community Visualization UI コンポーネント（CONV-08-05） | L160 |
-| 続き | L271 |
+| Skill Runtime API Key Panel（TASK-RT-04） | L66 |
+| LLM Adapter Error Banner（TASK-RT-01） | L122 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L161 |
+| 続き | L270 |
 
 ### references/ui-ux-feature-components-details.md
 

@@ -81,6 +81,11 @@ pnpm --filter @repo/desktop vitest run \
 
 カバレッジ結果を記録する。
 
+## 統合テスト連携
+
+- Phase 4/6 の TC スイート全体に対する line/branch カバレッジを計測し、変更ブロック（ConversationRoundStep / InterviewProgressBar / ApplySummaryCard）の 80%以上を目標とする。
+- カバレッジ不足の Gap List は Phase 6 テストファイルへ追記し、Phase 8 以降に持ち越さない。
+
 ## 成果物
 
 - カバレッジレポート（コンソール出力）

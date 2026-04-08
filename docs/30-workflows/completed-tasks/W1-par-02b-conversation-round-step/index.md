@@ -79,7 +79,7 @@ interface ConversationRoundStepProps {
   answers: ConversationAnswers;
   onAnswersChange: (answers: ConversationAnswers) => void;
   onBack: () => void;
-  onGenerate: (method: "complete" | "skip") => void;
+  onGenerate: (method: "skip" | "complete") => void;
 }
 ```
 

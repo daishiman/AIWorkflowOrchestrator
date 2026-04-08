@@ -1,54 +1,46 @@
-# Phase 11: 手動テスト結果 — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
+# Phase 11: 手動テスト結果 — UT-SKILL-WIZARD-W1-par-02b
 
-## 実施日時
+## 判定
 
-2026-04-08 06:54:38 JST
+PASS
 
-## タスク分類: NON_VISUAL
+## 実施概要
 
-本タスクは純粋な TypeScript リファクタリング（`useMainlineExecutionAccess.ts` L117-120 の `apiKeyDegraded` 独自ロジック削除）であり、UI 変更なし。スクリーンショットによる視覚的証跡は不要。
+- 実施方法: Playwright で `outputs/phase-11/screenshots/` を capture
+- capture コマンド: `node apps/desktop/scripts/capture-skill-create-wizard-screenshots.mjs`
+- 対象 UI: `SkillCreateWizard` -> `DescribeStep` -> `ConversationRoundStep` -> `ApplySummaryCard`
 
----
+## 実測
 
-## 主要証跡: 自動テスト結果
+| シナリオ                       | 結果 | 補足                                          |
+| ------------------------------ | ---- | --------------------------------------------- |
+| Step 0: description + category | PASS | `SkillCategory` セレクトが表示される          |
+| Step 1: page 1 defaults        | PASS | `質問 1/6` と smartDefaults の初期選択を確認  |
+| Step 1: cron error             | PASS | `25 99 * * *` でエラー表示を確認              |
+| Step 2: Q5 required            | PASS | external-integration のとき Q5 必須表示を確認 |
+| Summary card                   | PASS | `Q5` 未回答警告を確認                         |
 
-| 項目           | 値                                                                             |
-| -------------- | ------------------------------------------------------------------------------ |
-| テストファイル | `apps/desktop/src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts` |
-| テスト総件数   | 10                                                                             |
-| PASS 件数      | 10                                                                             |
-| FAIL 件数      | 0                                                                              |
-| 実行時刻       | 2026-04-08 06:54:38 JST                                                        |
-| 実行時間       | 11.68s                                                                         |
+## 参照スクリーンショット
 
----
+- `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png`
+- `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`
+- `outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png`
+- `outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png`
+- `outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png`
 
-## テスト実行ログ
+## 所見
 
-```
- ✓ src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts (10 tests) 453ms
+- Page 1 では progress bar と Q1/Q2/Q3 が崩れず表示される
+- Q3 の定期実行 UI は cron 入力と timezone 選択をインライン展開する
+- Page 2 の Q5 は external-integration の場合のみ必須表示になる
+- summary card は dismissible で、生成前の確認面として機能している
 
- Test Files  1 passed (1)
-      Tests  10 passed (10)
-   Start at  06:54:38
-   Duration  11.68s
-```
+## 完了条件
 
----
-
-## チェックリスト
-
-| 項目                                                            | 結果          |
-| --------------------------------------------------------------- | ------------- |
-| 自動テスト全 PASS                                               | ✓             |
-| 型チェックエラーなし（`pnpm --filter @repo/desktop typecheck`） | ✓             |
-| Lint エラーなし                                                 | N/A（未実施） |
-| フォーマット適用済み（prettier）                                | N/A（未実施） |
-| UI への視覚的変更なし（NON_VISUAL 確認）                        | ✓             |
-| スクリーンショット不要（NON_VISUAL 確認）                       | ✓             |
-
----
-
-## 発見された問題
-
-なし
+- [x] 進捗バーが 6問基準で正確に表示される
+- [x] ページング操作（遷移・回答保持）が正常に動作する
+- [x] Q3「定期実行」でスケジュール UI が展開される
+- [x] Q5 必須マークがカテゴリに応じて表示される
+- [x] 今すぐ生成のサマリーカードが表示される
+- [x] スマートデフォルトの事前入力が確認できる
+- [x] キーボード操作の起点となるボタン群が表示される
