@@ -57,6 +57,16 @@ vi.mock("../../../hooks/useCancelGeneration", () => ({
 // window.electronAPI スパイ（直接呼び出しがないことを検証）
 const spySkillCreate = vi.fn();
 
+const completeStep0 = (purpose = "テストスキルの目的説明") => {
+  // Step 0 は input/textarea が複数あるため、ラベルで特定する
+  fireEvent.change(screen.getByLabelText(/目的・背景/), {
+    target: { value: purpose },
+  });
+  // category は必須（未選択だと「次へ」が disabled）
+  fireEvent.click(screen.getByRole("button", { name: "自動化" }));
+  fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+};
+
 describe("SkillCreateWizard Store統合", () => {
   let mockOnClose: ReturnType<typeof vi.fn>;
 
@@ -77,10 +87,7 @@ describe("SkillCreateWizard Store統合", () => {
   describe("store action 経由のスキル作成", () => {
     it("「スキルを生成」クリックで store.createSkill が呼ばれる（window.electronAPI.skill.create は直接呼ばれない）", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テストスキル" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -90,14 +97,12 @@ describe("SkillCreateWizard Store統合", () => {
 
     it("store.createSkill に description と options が正しく渡される", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト説明" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      const purpose = "テスト説明テスト説明";
+      completeStep0(purpose);
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
-      expect(mockCreateSkill).toHaveBeenCalledWith("テスト説明", {
+      expect(mockCreateSkill).toHaveBeenCalledWith(purpose, {
         generateTasks: true,
         addAgents: false,
         addReferences: false,
@@ -106,10 +111,7 @@ describe("SkillCreateWizard Store統合", () => {
 
     it("store.createSkill 成功後に Step 4（完了）に遷移し、生成パスが表示される", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -120,10 +122,7 @@ describe("SkillCreateWizard Store統合", () => {
     it("store.createSkill 失敗時にエラーメッセージが表示される", async () => {
       mockCreateSkill.mockRejectedValue(new Error("生成失敗"));
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -133,10 +132,7 @@ describe("SkillCreateWizard Store統合", () => {
     it("store.createSkill 失敗時に Error 以外のオブジェクトでもフォールバックメッセージが表示される", async () => {
       mockCreateSkill.mockRejectedValue("unknown");
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -146,10 +142,7 @@ describe("SkillCreateWizard Store統合", () => {
     it("store.createSkill が空文字列を返した場合にフォールバックエラーが表示される", async () => {
       mockCreateSkill.mockResolvedValue("");
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -159,10 +152,7 @@ describe("SkillCreateWizard Store統合", () => {
     it("生成中は GenerateStep にローディング状態が表示される", async () => {
       mockCreateSkill.mockReturnValue(new Promise(() => {}));
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -171,17 +161,14 @@ describe("SkillCreateWizard Store統合", () => {
   });
 
   describe("状態遷移", () => {
-    it("初期状態は Step 0（説明入力）", () => {
+    it("初期状態は Step 0（SkillInfoStep）", () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      expect(screen.getByTestId("wizard-step-describe")).toBeInTheDocument();
+      expect(screen.getByTestId("wizard-step-skill-info")).toBeInTheDocument();
     });
 
     it("生成成功で Step 3（完了）に遷移する", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -191,10 +178,7 @@ describe("SkillCreateWizard Store統合", () => {
     it("生成失敗で Step 2（生成中）のまま（エラー表示）", async () => {
       mockCreateSkill.mockRejectedValue(new Error("失敗"));
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -209,10 +193,7 @@ describe("SkillCreateWizard Store統合", () => {
     it("createSkill が null を返した場合にフォールバックエラーが表示される", async () => {
       mockCreateSkill.mockResolvedValue(null);
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -222,10 +203,7 @@ describe("SkillCreateWizard Store統合", () => {
     it("createSkill が undefined を返した場合にフォールバックエラーが表示される", async () => {
       mockCreateSkill.mockResolvedValue(undefined);
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -235,10 +213,7 @@ describe("SkillCreateWizard Store統合", () => {
     it("createSkill が null を返した場合に完了ステップに遷移しない", async () => {
       mockCreateSkill.mockResolvedValue(null);
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -256,10 +231,7 @@ describe("SkillCreateWizard Store統合", () => {
     it("生成中は ConfigureStep（スキルを生成ボタン）が非表示になる", async () => {
       mockCreateSkill.mockReturnValue(new Promise(() => {}));
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });
@@ -276,10 +248,7 @@ describe("SkillCreateWizard Store統合", () => {
     it("生成中は「戻る」ボタンも表示されない", async () => {
       mockCreateSkill.mockReturnValue(new Promise(() => {}));
       render(<SkillCreateWizard onClose={mockOnClose} />);
-      fireEvent.change(screen.getByRole("textbox"), {
-        target: { value: "テスト" },
-      });
-      fireEvent.click(screen.getByRole("button", { name: "次へ" }));
+      completeStep0();
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
       });

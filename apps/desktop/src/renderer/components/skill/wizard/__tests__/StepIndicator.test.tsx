@@ -13,7 +13,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { StepIndicator, stepStateStyles } from "../StepIndicator";
 
-const STEPS = ["説明入力", "設定", "生成", "完了"];
+const STEPS = ["スキル情報", "設定", "生成", "完了"];
 
 describe("StepIndicator", () => {
   beforeEach(() => {

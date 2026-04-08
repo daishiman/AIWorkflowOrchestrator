@@ -19,7 +19,6 @@
 
 | 日付       | バージョン | 変更内容                                                                                                                                                                                                         |
 | ---------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 2026-04-07 | 1.9.5      | Phase-12 close-out 教訓2件を追加（L-SUBAGENT-LOG-001: SubAgent 実行ログ記録の必須化パターン—仕様書反映漏れ防止のため Phase 12 に実装内容/苦戦箇所/検証証跡の3項目セットを同 wave で記録する / L-SCREENSHOT-PURPOSE-001: Screenshot 証跡の「状態名＋検証目的」分離記載—状態名だけでは TC 意図が混同するため目的注記を必須とする） |
 | 2026-04-06 | 1.9.4      | TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 教訓3件を追加（L-EXECUTE-ASYNC-001: vi.spyOn vs executeMock / L-EXECUTE-ASYNC-002: onWorkflowStateSnapshot 複数呼び出しテスト / L-EXECUTE-ASYNC-003: snapshot ?? null パターン） |
 | 2026-04-04 | 1.9.3      | TASK-SKILL-CENTER-LIFECYCLE-NAV-001 教訓2件を追加（secondary surface の戻り導線は同一 surface の実画像と action trace を分けて扱う / `skillManagement` は `skillCenter` に正規化して dock を維持する） |
 | 2026-04-03 | 1.9.3      | task-ut-p0-02-001-repeat-feedback-memory 教訓2件追加（L-FEEDBACK-MEM-001: feedback memory 構造化 / L-FEEDBACK-MEM-002: module-level 非 export 関数テスト戦略）                                                                                                                             |

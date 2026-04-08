@@ -1,49 +1,9 @@
-# Phase 11 TC-006〜TC-008 確認レポート - UT-VERIFY-DOC-CONSOLIDATION-001
+# Phase 11: 手動テスト詳細（TC06-08） — UT-HEALTH-POLICY-RUNTIME-INJECTION-001
 
-## TC-006: リンク有効性確認
+本タスクは NON_VISUAL であり、TC-06〜08 の個別実施は行わない。起動確認と static verification の結果を別ファイルに記録する。
 
-```bash
-ls .claude/skills/aiworkflow-requirements/references/task-workflow-active.md
-# → PASS
-
-ls .claude/skills/aiworkflow-requirements/references/task-workflow-completed.md
-# → PASS
-
-ls .claude/skills/aiworkflow-requirements/references/interfaces-skill-verify-contract.md
-# → PASS
-```
-
-**判定: PASS**
-
----
-
-## TC-007: Prettier フォーマット確認
-
-```bash
-pnpm prettier --check \
-  ".claude/skills/aiworkflow-requirements/references/task-workflow.md" \
-  ".claude/skills/aiworkflow-requirements/references/task-workflow-completed.md" \
-  ".claude/skills/aiworkflow-requirements/references/task-workflow-active.md" \
-  ".claude/skills/aiworkflow-requirements/references/interfaces-skill-verify-contract.md"
-
-# 結果:
-# Checking formatting...
-# All matched files use Prettier code style!
-# EXIT:0
-```
-
-**判定: PASS**
-
----
-
-## TC-008: Check ID 数確認
-
-```bash
-grep -c "^| L[1-4]-[0-9]" \
-  ".claude/skills/aiworkflow-requirements/references/interfaces-skill-verify-contract.md"
-# 結果: 19
-```
-
-期待値（19）と一致 ✓
-
-**判定: PASS**
+| ケース | 状態 | 備考                            |
+| ------ | ---- | ------------------------------- |
+| TC-06  | N/A  | NON_VISUAL のため個別検証対象外 |
+| TC-07  | N/A  | NON_VISUAL のため個別検証対象外 |
+| TC-08  | N/A  | NON_VISUAL のため個別検証対象外 |

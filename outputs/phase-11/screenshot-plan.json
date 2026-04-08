@@ -1,7 +1,7 @@
 {
-  "taskId": "TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001",
-  "featureName": "ut-rt-01-execute-improve-adapter-guard-001",
+  "taskId": "UT-HEALTH-POLICY-RUNTIME-INJECTION-001",
+  "featureName": "ut-health-policy-runtime-injection",
   "mode": "NON_VISUAL",
   "screenshots": [],
-  "note": "Main process / shared type / renderer type-guard 更新のみのため撮影なし"
+  "note": "UI 変更なし。static verification と dev startup を確認済みのため撮影なし"
 }

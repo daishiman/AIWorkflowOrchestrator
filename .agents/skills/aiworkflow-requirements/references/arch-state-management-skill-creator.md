@@ -357,8 +357,9 @@ const activePlanResult = localPlanResult ?? storePlanResult;
 
 | コンポーネント | Prop | 型 | 必須 |
 |---------------|------|-----|------|
-| DescribeStep | generationMode | GenerationMode | optional |
-| DescribeStep | onGenerationModeChange | (mode: GenerationMode) => void | optional |
+| SkillInfoStep | formData | SkillInfoFormData | required |
+| SkillInfoStep | onFormDataChange | (data: SkillInfoFormData) => void | required |
+| SkillInfoStep | onNext | () => void | required |
 | GenerateStep | generationMode | GenerationMode | optional |
 | GenerateStep | generationProgress | string \| null | optional |
 | GenerateStep | planResult | PlanResult \| null | optional |
@@ -369,7 +370,9 @@ const activePlanResult = localPlanResult ?? storePlanResult;
 
 **追加 Store Hooks（11個）:** useIsSkillGenerating, useGenerationProgress, useGenerationError, useCurrentPlanResult, useCurrentPlanId + 各 setter + useClearGenerationState
 
-**ハンドラ:** handleLlmGenerate (planSkill 呼び出し), handleExecutePlan (executePlan + 対称クリア), handleCancelPlan (DescribeStep 戻り + 対称クリア), handleDescribeNext (generationMode 分岐)
+**ハンドラ:** handleLlmGenerate (planSkill 呼び出し), handleExecutePlan (executePlan + 対称クリア), handleCancelPlan (Step 0 戻り + 対称クリア), handleDescribeNext (generationMode 分岐)
+
+**備考（current facts）:** 旧 Step 0 コンポーネントは deprecation コメントのみで、Step 0 の実体は `SkillInfoStep`。`generationMode` は `SkillCreateWizard` のローカル state として保持されるが、現行 UI では切替 UI を持たず default は `"template"`。
 
 **型定義:** `GenerationMode` = wizard/index.ts（SSoT）, `SkillCreatorRuntimeApi` = SkillCreateWizard.tsx ローカル型
 | TASK-SC-12 | Hybrid State Pattern ガイドドキュメント化 | 未着手（LOW） |

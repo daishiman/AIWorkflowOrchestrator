@@ -1,35 +1,32 @@
-# Phase 11: 手動テスト結果 — TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+# Phase 11: 手動テスト結果 — UT-HEALTH-POLICY-RUNTIME-INJECTION-001
 
 ## 判定
 
-NON_VISUAL walkthrough PASS
+NON_VISUAL / static verification PASS / manual app smoke PASS / vitest PASS
 
 ## 実測
 
-| コマンド                                                                                                                                                                                                                                                                                                                                                                                                                                                 | 結果 | 補足                                    |
-| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | --------------------------------------- |
-| `pnpm --filter @repo/shared typecheck`                                                                                                                                                                                                                                                                                                                                                                                                                   | PASS | shared 型定義の整合を確認               |
-| `pnpm --filter @repo/desktop typecheck`                                                                                                                                                                                                                                                                                                                                                                                                                  | PASS | main / renderer consumer の型整合を確認 |
-| `pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/SkillCreateWizard.tsx src/renderer/components/skill/SkillLifecyclePanel.tsx` | PASS | 変更ファイルの lint 0 error             |
-| `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.notification.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx`                                                                              | PASS | 4 files / 69 tests PASS                 |
+| コマンド                                                                                                                                                                                                                                                                                                                                              | 結果 | 補足                                        |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | ------------------------------------------- |
+| `pnpm --filter @repo/shared build`                                                                                                                                                                                                                                                                                                                    | PASS | `@repo/shared` の dist を生成               |
+| `pnpm --filter @repo/desktop build`                                                                                                                                                                                                                                                                                                                   | PASS | Desktop bundle の生成を確認                 |
+| `timeout 25s pnpm --filter @repo/desktop dev`                                                                                                                                                                                                                                                                                                         | PASS | Electron 起動まで到達し、runtime error なし |
+| `pnpm --filter @repo/desktop typecheck`                                                                                                                                                                                                                                                                                                               | PASS | 変更範囲の型整合を確認                      |
+| `pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/ipc/index.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts` | PASS | 対象ファイル lint 0 error                   |
+| `pnpm --filter @repo/desktop exec vitest run ...`                                                                                                                                                                                                                                                                                                     | PASS | 3 files / 100 tests PASS                    |
 
-## fallback reason
+## NON_VISUAL 判定理由
 
-- renderer surface の追加・変更がないため screenshot capture は不要
-- 代わりに preload bundle 出力とテスト実行結果を canonical evidence として採用した
+- UI 変更なし（Main Process の DI 配線変更のみ）
+- 手動アプリ起動による smoke を実施し、runtime error なしで起動確認済み
 
 ## source evidence
 
 - `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts`
+- `apps/desktop/src/main/ipc/index.ts`
+- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts`
 - `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.notification.test.ts`
-- `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`
-- `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx`
-- `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
-- `apps/desktop/src/main/services/runtime/SkillCreatorWorkflowEngine.ts`
-- `packages/shared/src/types/skillCreator.ts`
+- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts`
 
 ## スクリーンショット
 

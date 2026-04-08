@@ -195,6 +195,8 @@ export type {
   DebugStep as SkillCreatorDebugStep,
   DebugResult,
   UsageStats,
+  SkillInfoFormData,
+  SmartDefaultResult,
 } from "./skillCreator";
 export {
   WORKFLOW_MANIFEST_SCHEMA_VERSION,
