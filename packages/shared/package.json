@@ -135,6 +135,11 @@
       "import": "./dist/src/services/logging/conversion-logger.js",
       "require": "./dist/src/services/logging/conversion-logger.cjs"
     },
+    "./services/skillCreator": {
+      "types": "./dist/src/services/skillCreator/index.d.ts",
+      "import": "./dist/src/services/skillCreator/index.js",
+      "require": "./dist/src/services/skillCreator/index.cjs"
+    },
     "./types/agent": {
       "types": "./dist/src/types/agent.d.ts",
       "import": "./dist/src/types/agent.js",
@@ -268,6 +273,9 @@
       ],
       "services/logging/conversion-logger": [
         "./src/services/logging/conversion-logger.ts"
+      ],
+      "services/skillCreator": [
+        "./src/services/skillCreator/index.ts"
       ],
       "repositories": [
         "./src/repositories/index.ts"

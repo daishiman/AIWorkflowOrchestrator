@@ -203,7 +203,7 @@ Wave 1 の全 Step コンポーネントを統合した新設計の `SkillCreate
 
 #### 成果物
 
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-1-requirements.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-1-requirements.md`
 
 ### Phase 2: 設計
 
@@ -221,7 +221,7 @@ Wave 1 の全 Step コンポーネントを統合した新設計の `SkillCreate
 
 #### 成果物
 
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-2-design.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-2-design.md`
 
 ### Phase 3: 設計レビュー
 
@@ -238,7 +238,7 @@ Wave 1 の全 Step コンポーネントを統合した新設計の `SkillCreate
 
 #### 成果物
 
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-3-design-review.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-3-design-review.md`
 
 ### Phase 4: テスト作成（TDD Red フェーズ）
 
@@ -277,7 +277,7 @@ Wave 1 の全 Step コンポーネントを統合した新設計の `SkillCreate
 #### 成果物
 
 `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`（Red 状態）
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-4-test-creation.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-4-test-creation.md`
 
 ### Phase 5: 実装（TDD Green フェーズ）
 
@@ -321,7 +321,7 @@ const handleSkillInfoNext = async (formData: SkillInfoFormData) => {
 #### 成果物
 
 `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`（Green 状態）
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-5-implementation.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-5-implementation.md`
 
 ### Phase 6: テスト拡充
 
@@ -338,7 +338,7 @@ const handleSkillInfoNext = async (formData: SkillInfoFormData) => {
 
 #### 成果物
 
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-6-test-expansion.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-6-test-expansion.md`
 
 ### Phase 7: カバレッジ確認
 
@@ -355,7 +355,7 @@ const handleSkillInfoNext = async (formData: SkillInfoFormData) => {
 
 #### 成果物
 
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-7-coverage.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-7-coverage.md`
 
 ### Phase 8: リファクタリング
 
@@ -372,7 +372,7 @@ const handleSkillInfoNext = async (formData: SkillInfoFormData) => {
 
 #### 成果物
 
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-8-refactoring.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-8-refactoring.md`
 
 ### Phase 9: 品質保証
 
@@ -389,7 +389,7 @@ const handleSkillInfoNext = async (formData: SkillInfoFormData) => {
 
 #### 成果物
 
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-9-qa.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-9-qa.md`
 
 ### Phase 10: 最終レビュー
 
@@ -406,7 +406,7 @@ Phase 1-9 の成果物を統合レビューし、Phase 12 の準備をする。
 
 #### 成果物
 
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-10-final-review.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-10-final-review.md`
 
 ### Phase 11: 手動テスト（NON_VISUAL）
 
@@ -426,7 +426,7 @@ NON_VISUAL タスクの手動検証を実施し、証跡を記録する。
 
 #### 成果物
 
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/phase-11-manual-test.md`
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/phase-11-manual-test.md`
 
 ### Phase 12: ドキュメント更新（canonical 6 成果物）
 
@@ -445,7 +445,7 @@ NON_VISUAL タスクの手動検証を実施し、証跡を記録する。
 
 #### 成果物
 
-`docs/30-workflows/W2-seq-03a-skill-create-wizard/outputs/phase-12/`（6 ファイル）
+`docs/30-workflows/W2-seq-03a-skill-create-wizard-2/outputs/phase-12/`（6 ファイル）
 
 ### Phase 13: PR 作成（ユーザー承認待ち）
 
