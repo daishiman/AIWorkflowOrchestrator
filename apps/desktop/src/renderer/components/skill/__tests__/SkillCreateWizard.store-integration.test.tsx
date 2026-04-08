@@ -18,9 +18,17 @@ import { useCreateSkill } from "../../../store";
 
 // Store セレクタモック
 const mockCreateSkill = vi.fn();
+const mockExecuteSkill = vi.fn();
+const mockSelectSkillByName = vi.fn();
+const mockSetCurrentView = vi.fn();
+const mockSetCurrentSkillName = vi.fn();
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
+  useExecuteSkill: () => mockExecuteSkill,
+  useSelectSkillByName: () => mockSelectSkillByName,
+  useSetCurrentView: () => mockSetCurrentView,
+  useSetCurrentSkillName: () => mockSetCurrentSkillName,
   // TASK-SC-07: LLM generation hooks (Store統合テスト非破壊用)
   useIsSkillGenerating: () => false,
   useGenerationProgress: () => null,
@@ -63,7 +71,7 @@ describe("SkillCreateWizard Store統合", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockOnClose = vi.fn();
-    mockCreateSkill.mockResolvedValue("/path/to/new-skill");
+    mockCreateSkill.mockResolvedValue("/mock/skills/new-skill");
 
     (window as Record<string, unknown>).electronAPI = {
       skill: { create: spySkillCreate },
@@ -106,7 +114,7 @@ describe("SkillCreateWizard Store統合", () => {
       });
     });
 
-    it("store.createSkill 成功後に Step 4（完了）に遷移し、生成パスが表示される", async () => {
+    it("store.createSkill 成功後に Step 4（完了）に遷移し、新しい CompleteStep が表示される", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
       fireEvent.change(screen.getByRole("textbox"), {
         target: { value: "テスト" },
@@ -116,8 +124,38 @@ describe("SkillCreateWizard Store統合", () => {
       await act(async () => {
         fireEvent.click(screen.getByRole("button", { name: "生成する" }));
       });
-      expect(screen.getByText("スキルが作成されました")).toBeInTheDocument();
-      expect(screen.getByText("/path/to/new-skill")).toBeInTheDocument();
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+      expect(
+        screen.getByText("スキルの骨格を生成しました"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-action-execute"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-action-open-editor"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-action-create-another"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("/mock/skills/new-skill"),
+      ).not.toBeInTheDocument();
+    });
+
+    it("CompleteStep の「イメージと違う → やり直す」で Step 0 に戻る", async () => {
+      render(<SkillCreateWizard onClose={mockOnClose} />);
+      completeStep0();
+      await act(async () => {
+        fireEvent.click(screen.getByRole("button", { name: "スキルを生成" }));
+      });
+
+      fireEvent.click(screen.getByTestId("complete-step-feedback-unsatisfied"));
+
+      expect(screen.getByTestId("wizard-step-skill-info")).toBeInTheDocument();
+      expect(screen.getByLabelText(/目的・背景/)).toHaveValue(
+        "テストスキルの目的説明",
+      );
+      expect(screen.getByRole("button", { name: "次へ" })).toBeEnabled();
     });
 
     it("store.createSkill 失敗時にエラーメッセージが表示される", async () => {

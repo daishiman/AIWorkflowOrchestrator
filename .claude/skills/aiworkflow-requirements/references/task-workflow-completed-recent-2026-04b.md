@@ -3,6 +3,53 @@
 
 ## 完了タスク
 
+### タスク: UT-SKILL-WIZARD-W1-par-02c CompleteStep 完了画面再設計（起点画面化）（2026-04-08）
+
+| 項目       | 値                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W1-par-02c                                                                                    |
+| ステータス | **完了**                                                                                                      |
+| タイプ     | implementation / ui-redesign / wizard                                                                         |
+| 優先度     | 高                                                                                                            |
+| 完了日     | 2026-04-08                                                                                                    |
+| 対象       | `CompleteStep.tsx` の旧「作成パス表示 + close」から起点画面（QualityFeedback + NextActionCards）へ全面再設計  |
+| 成果物     | `docs/30-workflows/completed-tasks/W1-par-02c-complete-step/`                                                 |
+| 元仕様     | `docs/30-workflows/skill-wizard-redesign-lane/W1-par-02c-complete-step/`（削除済み・completed-tasks へ移動）   |
+
+#### 実施内容
+
+- `CompleteStep` の Props を `skillPath / onClose` から 7 Props（`generatedSkill`, `hasExternalIntegration`, `externalToolName`, `onExecuteNow`, `onOpenInEditor`, `onCreateAnother`, `onQualityFeedback`, `onRetry`）へ全面刷新
+- `CompleteHeader`（`role="status"` / `data-testid="complete-step-header"`）を追加し、固定文言「スキルの骨格を生成しました」を表示
+- `QualityFeedback`（👍/👎）を追加し、`feedbackSubmitted` state で二重送信を防止
+- `NextActionCards`（今すぐ試す / エディタで開く / もう1つ作る の 3 カード）を追加
+- `ExternalIntegrationChecklist`（`hasExternalIntegration=true` 時のみ表示）を追加
+- `React.forwardRef` を廃止し `React.FC` に変更（wizard 内での ref 使用箇所なし）
+- `GeneratedSkill` interface と `CompleteStepProps` を `wizard/index.ts` 経由でエクスポート
+- Phase 11 のスクリーンショット証跡（9 枚）を Playwright ハーネスで撮影し `outputs/phase-11/screenshots/` に保存
+- `SkillCreateWizard.tsx` の `CompleteStep` 呼び出しを新 Props に対応させ、既存テストを修正
+- Phase 12 全 6 成果物（`implementation-guide.md`, `system-spec-update-summary.md`, `documentation-changelog.md`, `unassigned-task-detection.md`, `skill-feedback-report.md`, `phase12-task-spec-compliance-check.md`）を作成 → PASS
+- `ui-ux-feature-components-reference.md` / `ui-ux-feature-components-skill-analysis.md` を current contract に同期
+- `task-workflow-backlog.md` / `task-workflow-completed-recent-2026-04b.md` の broken link（`task-ut-sdk-07-approval-request-surface-001` / `UT-VERIFY-DOC-CONSOLIDATION-001`）を completed path に修正
+- ワークフローディレクトリを `skill-wizard-redesign-lane/W1-par-02c-complete-step/` → `completed-tasks/W1-par-02c-complete-step/` に移動
+
+#### 苦戦箇所
+
+| 苦戦箇所                                        | 再発条件                                           | 解決策                                                            |
+| ----------------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------- |
+| `generatedSkill` を Props に持つが表示しない設計 | 将来拡張用コンテキストを props に含める場合        | Props コメントに「親コンテキスト用」「表示に使わない」と明記する   |
+| `onQualityFeedback` と `onRetry` の責務境界     | 「通知」と「副作用（ナビゲーション等）」が混在する | `onAction(result)` + `onSideEffect?.()` の分離パターンを使う      |
+| 旧パス参照の broken link 修正                   | ワークフローディレクトリを移動した場合             | `verify-unassigned-links.js` を実行し参照元を completed 正本に寄せる |
+
+#### 検証証跡
+
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/CompleteStep.test.tsx`: **36 tests PASS**
+- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`: PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/completed-tasks/W1-par-02c-complete-step`: PASS
+- `verify-unassigned-links.js`: missing 0 PASS
+- `audit --diff-from HEAD`: current 0 PASS
+
+---
+
 ### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Skill Creator preload / renderer に approval:request surface を追加（2026-04-06）
 
 | 項目       | 値                                                                                         |
@@ -14,7 +61,7 @@
 | 完了日     | 2026-04-06                                                                                 |
 | 対象       | Skill Creator preload / renderer に `approval:request` surface を追加                      |
 | 成果物     | `docs/30-workflows/step-12-par-task-ut-sdk-07-approval-request-surface-001/`              |
-| 元未タスク | `docs/30-workflows/unassigned-task/task-ut-sdk-07-approval-request-surface-001.md`         |
+| 元未タスク | `docs/30-workflows/completed-tasks/task-ut-sdk-07-approval-request-surface-001.md`         |
 
 #### 実施内容
 
@@ -71,7 +118,7 @@
 | 優先度     | 中                                                                                 |
 | 完了日     | 2026-04-06                                                                         |
 | 対象       | verify 関連ドキュメント4ファイルの区分ラベル付与・責務分離明示                     |
-| 成果物     | `docs/30-workflows/unassigned-task/UT-VERIFY-DOC-CONSOLIDATION-001.md`             |
+| 成果物     | `docs/30-workflows/completed-tasks/UT-VERIFY-DOC-CONSOLIDATION-001.md`             |
 
 #### 実施内容
 
@@ -219,8 +266,8 @@
 | 完了日           | 2026-04-06                                                                             |
 | 対象             | `task-specification-creator` / Phase 仕様書テンプレート                                |
 | GitHub Issue     | #1919                                                                                  |
-| 成果物           | `docs/30-workflows/ut-phase-spec-format-improvement-001/`                              |
-| 元未タスク指示書 | `docs/30-workflows/unassigned-task/ut-phase-spec-format-improvement-001.md`           |
+| 成果物           | `docs/30-workflows/completed-tasks/ut-phase-spec-format-improvement-001/`             |
+| 元未タスク指示書 | `docs/30-workflows/completed-tasks/ut-phase-spec-format-improvement-001/`             |
 
 #### 実施内容
 
@@ -426,4 +473,3 @@
 - `outputs/phase-11/screenshots/TC-11-01.png` 〜 `TC-11-06.png`: current build で再取得済み
 
 ---
-

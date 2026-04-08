@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-07
+> 自動生成: 2026-04-08
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -1258,17 +1258,17 @@ node scripts/list-specs.js --topics
 ### references/ui-ux-feature-components-reference.md
 
 | セクション | 行 |
-|------------|----|\n| SkillCenterView UI（TASK-UI-05 / 完了） | L6 |
-| Skill Advanced Views UI（TASK-UI-05B / completed） | L223 |
-| 続き | L302 |
+|------------|----|\n| SkillCenterView UI（TASK-UI-05 / 完了） | L8 |
+| Skill Advanced Views UI（TASK-UI-05B / completed） | L225 |
+| 続き | L304 |
 
 ### references/ui-ux-feature-components-skill-analysis.md
 
 | セクション | 行 |
 |------------|----|\n| SkillAnalysisView UI（TASK-10A-B / completed） | L4 |
 | SkillCreateWizard UI（TASK-10A-C / completed） | L105 |
-| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L167 |
-| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L196 |
+| Store駆動ライフサイクルUI統合（TASK-10A-F / completed） | L169 |
+| Verify / Improve Result Panel UI（TASK-RT-03 / phase-11） | L198 |
 
 ### references/ui-ux-feature-components-theme-chat.md
 
@@ -4198,7 +4198,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 完了タスク | L4 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L137 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L184 |
 
 ### references/task-workflow-completed-recent-2026-04c.md
 

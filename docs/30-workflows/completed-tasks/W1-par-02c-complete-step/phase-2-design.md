@@ -112,11 +112,11 @@ onRetry() 呼び出し（SkillCreateWizard側でStep 0に戻る）
 
 ## 参照資料
 
-| 資料名          | パス                                                    | 説明       |
-| --------------- | ------------------------------------------------------- | ---------- |
-| 要件定義書      | `outputs/phase-1/requirements.md`                       | 直前成果物 |
-| W0-seq-01型定義 | `docs/30-workflows/W0-seq-01-types-skill-info-form/`    | 依存型定義 |
-| レーンindex     | `docs/30-workflows/skill-wizard-redesign-lane/index.md` | 設計根拠   |
+| 資料名          | パス                                                  | 説明       |
+| --------------- | ----------------------------------------------------- | ---------- |
+| 要件定義書      | `outputs/phase-1/requirements.md`                     | 直前成果物 |
+| W0-seq-01型定義 | `docs/30-workflows/W0-seq-01-types-skill-info-form/`  | 依存型定義 |
+| レーンindex     | `docs/30-workflows/W1-par-02c-complete-step/index.md` | 設計根拠   |
 
 ## 成果物
 

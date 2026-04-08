@@ -15,10 +15,18 @@ import { SkillCreateWizard } from "../SkillCreateWizard";
 
 // Store セレクタモック（TASK-10A-F: Store action経由に統一）
 const mockCreateSkill = vi.fn();
+const mockExecuteSkill = vi.fn();
+const mockSelectSkillByName = vi.fn();
+const mockSetCurrentView = vi.fn();
+const mockSetCurrentSkillName = vi.fn();
 const mockUseWorkflowSnapshot = vi.fn(() => null);
 
 vi.mock("../../../store", () => ({
   useCreateSkill: () => mockCreateSkill,
+  useExecuteSkill: () => mockExecuteSkill,
+  useSelectSkillByName: () => mockSelectSkillByName,
+  useSetCurrentView: () => mockSetCurrentView,
+  useSetCurrentSkillName: () => mockSetCurrentSkillName,
   // TASK-SC-07: LLM generation hooks (テンプレートフロー非破壊テスト用)
   useIsSkillGenerating: () => false,
   useGenerationProgress: () => null,
@@ -58,7 +66,7 @@ describe("SkillCreateWizard", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockOnClose = vi.fn();
-    mockCreateSkill.mockResolvedValue("/path/to/new-skill");
+    mockCreateSkill.mockResolvedValue("/mock/skills/new-skill");
     mockUseWorkflowSnapshot.mockReturnValue(null);
   });
 
@@ -198,10 +206,25 @@ describe("SkillCreateWizard", () => {
         await mockCreateSkill.mock.results[0]?.value;
       });
 
-      expect(screen.getByText("スキルが作成されました")).toBeInTheDocument();
+      expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
+      expect(
+        screen.getByText("スキルの骨格を生成しました"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-action-execute"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-action-open-editor"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId("complete-step-feedback-satisfied"),
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText("/mock/skills/new-skill"),
+      ).not.toBeInTheDocument();
     });
 
-    it("CompleteStep に生成されたパスが表示される", async () => {
+    it("CompleteStep の「別のスキルを作る」で Step 0 にリセットされる", async () => {
       render(<SkillCreateWizard onClose={mockOnClose} />);
 
       // Step 1 -> Step 2
@@ -219,7 +242,13 @@ describe("SkillCreateWizard", () => {
         await mockCreateSkill.mock.results[0]?.value;
       });
 
-      expect(screen.getByText("/path/to/new-skill")).toBeInTheDocument();
+      fireEvent.click(
+        screen.getByTestId("complete-step-action-create-another"),
+      );
+      expect(screen.getByTestId("wizard-step-skill-info")).toBeInTheDocument();
+      expect(screen.getByLabelText(/目的・背景/)).toHaveValue("");
+      expect(screen.getByRole("button", { name: "次へ" })).toBeDisabled();
+      expect(mockOnClose).not.toHaveBeenCalled();
     });
   });
 
