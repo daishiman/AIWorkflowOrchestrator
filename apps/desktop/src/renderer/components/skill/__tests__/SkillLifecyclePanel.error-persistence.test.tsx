@@ -279,9 +279,10 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
 
     render(
       <SkillLifecyclePanel
-        isOpen={true}
         onClose={vi.fn()}
-        defaultTab="create"
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
       />,
     );
 
@@ -303,9 +304,10 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
 
     render(
       <SkillLifecyclePanel
-        isOpen={true}
         onClose={vi.fn()}
-        defaultTab="create"
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
       />,
     );
 
@@ -325,9 +327,10 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
 
     render(
       <SkillLifecyclePanel
-        isOpen={true}
         onClose={vi.fn()}
-        defaultTab="create"
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
       />,
     );
 
@@ -346,9 +349,10 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
 
     render(
       <SkillLifecyclePanel
-        isOpen={true}
         onClose={vi.fn()}
-        defaultTab="create"
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
       />,
     );
 
@@ -366,9 +370,10 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
 
     render(
       <SkillLifecyclePanel
-        isOpen={true}
         onClose={vi.fn()}
-        defaultTab="create"
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
       />,
     );
 
@@ -395,9 +400,10 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
 
     render(
       <SkillLifecyclePanel
-        isOpen={true}
         onClose={vi.fn()}
-        defaultTab="create"
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
       />,
     );
 
@@ -457,9 +463,10 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
 
     const { getByTestId } = render(
       <SkillLifecyclePanel
-        isOpen={true}
         onClose={vi.fn()}
-        defaultTab="create"
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
       />,
     );
 
@@ -519,9 +526,10 @@ describe("SkillLifecyclePanel - onWorkflowStateChanged エラー永続化", () =
 
     const { getByText } = render(
       <SkillLifecyclePanel
-        isOpen={true}
         onClose={vi.fn()}
-        defaultTab="create"
+        onOpenWizard={vi.fn()}
+        onOpenSkillWizard={vi.fn()}
+        skillName="test-skill"
       />,
     );
 

@@ -306,6 +306,7 @@ function toPlanResult(
     type: "integrated_api",
     planId: response.planId,
     estimatedSteps: response.estimatedSteps,
+    skillSpec: response.skillSpec,
   };
 }
 
@@ -541,7 +542,11 @@ export const SkillCreateWizard = React.forwardRef<
       if (!api.executePlan) {
         throw new Error("executePlan API が利用できません");
       }
-      const result = await api.executePlan(storePlanId, description);
+      const canonicalSkillSpec =
+        storePlanResult?.type === "integrated_api"
+          ? (storePlanResult.skillSpec ?? description)
+          : description;
+      const result = await api.executePlan(storePlanId, canonicalSkillSpec);
       if (result.success && result.data) {
         if (isExecutePlanAck(result.data)) {
           if (api.getWorkflowState) {

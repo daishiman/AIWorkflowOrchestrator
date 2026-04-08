@@ -472,6 +472,7 @@ export function SkillManagementPanel({
         <SkillLifecyclePanel
           onClose={handleBackToList}
           onOpenWizard={() => setCurrentView("create")}
+          onOpenSkillWizard={() => setCurrentView("create")}
         />
       </div>
     );

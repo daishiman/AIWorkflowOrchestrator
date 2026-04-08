@@ -15,6 +15,84 @@ declare global {
 }
 
 const harnessState = window.__PHASE11_TASK_RT_04_SKILL_AUTHKEY__;
+
+const runtimeWindow = window as unknown as Window & {
+  electronAPI?: {
+    authKey?: {
+      exists?: (...args: unknown[]) => Promise<{
+        exists: boolean;
+        source: string;
+      }>;
+      set?: (...args: unknown[]) => Promise<{ success: boolean }>;
+      delete?: (...args: unknown[]) => Promise<{ success: boolean }>;
+    };
+    skillCreator?: {
+      getAdapterStatus?: (...args: unknown[]) => Promise<{
+        success: boolean;
+        data?: {
+          status: "initializing" | "ready" | "failed";
+          failureReason: string | null;
+        };
+      }>;
+      onAdapterStatusChanged?: (
+        ...args: [
+          cb: (payload: {
+            status: "initializing" | "ready" | "failed";
+            failureReason: string | null;
+          }) => void,
+        ]
+      ) => () => void;
+    };
+  };
+  skillCreatorAPI?: {
+    getAdapterStatus?: (...args: unknown[]) => Promise<{
+      success: boolean;
+      data?: {
+        status: "initializing" | "ready" | "failed";
+        failureReason: string | null;
+      };
+    }>;
+    onAdapterStatusChanged?: (
+      ...args: [
+        cb: (payload: {
+          status: "initializing" | "ready" | "failed";
+          failureReason: string | null;
+        }) => void,
+      ]
+    ) => () => void;
+  };
+};
+
+const defaultAuthKeyApi = {
+  exists: async () => ({ exists: false, source: "not-set" }),
+  set: async () => ({ success: true }),
+  delete: async () => ({ success: true }),
+};
+
+const defaultSkillCreatorApi = {
+  getAdapterStatus: async () => ({
+    success: true,
+    data: { status: "ready" as const, failureReason: null },
+  }),
+  onAdapterStatusChanged: () => () => undefined,
+};
+
+runtimeWindow.electronAPI = {
+  ...runtimeWindow.electronAPI,
+  authKey: {
+    ...defaultAuthKeyApi,
+    ...runtimeWindow.electronAPI?.authKey,
+  },
+  skillCreator: {
+    ...defaultSkillCreatorApi,
+    ...runtimeWindow.electronAPI?.skillCreator,
+  },
+};
+
+runtimeWindow.skillCreatorAPI = {
+  ...defaultSkillCreatorApi,
+  ...runtimeWindow.skillCreatorAPI,
+};
 const HarnessApp = () => {
   const [settingsOpen, setSettingsOpen] = React.useState(false);
 
@@ -23,6 +101,7 @@ const HarnessApp = () => {
       <SkillLifecyclePanel
         onClose={() => undefined}
         onOpenWizard={() => setSettingsOpen(true)}
+        onOpenSkillWizard={() => setSettingsOpen(true)}
         skillName="task-rt-04-phase11"
       />
 

@@ -1,0 +1,54 @@
+{
+  "taskId": "UT-SKILL-WIZARD-W1-par-02d",
+  "phase": 11,
+  "capturedAt": "2026-04-08T00:56:19.361Z",
+  "route": "http://127.0.0.1:5201/phase11-task-rt-04-skill-authkey.html",
+  "command": "pnpm exec vite --config vite.e2e.config.ts --host 127.0.0.1 --port 5201 --strictPort",
+  "inventory": [
+    {
+      "file": "TC-11-01-skill-lifecycle-hidden-controls.png",
+      "label": "hidden-controls baseline",
+      "theme": "light",
+      "hover": false,
+      "click": false,
+      "fullPage": true,
+      "capturedAt": "2026-04-08T00:55:52.440Z"
+    },
+    {
+      "file": "TC-11-02-skill-lifecycle-open-wizard.png",
+      "label": "open-wizard baseline",
+      "theme": "light",
+      "hover": false,
+      "click": false,
+      "fullPage": false,
+      "capturedAt": "2026-04-08T00:55:53.624Z"
+    },
+    {
+      "file": "TC-11-03-skill-lifecycle-open-wizard-click.png",
+      "label": "open-wizard click overlay",
+      "theme": "light",
+      "hover": false,
+      "click": true,
+      "fullPage": true,
+      "capturedAt": "2026-04-08T00:55:54.712Z"
+    },
+    {
+      "file": "TC-11-04-skill-lifecycle-legacy-preserved.png",
+      "label": "legacy preserved full page",
+      "theme": "light",
+      "hover": false,
+      "click": false,
+      "fullPage": true,
+      "capturedAt": "2026-04-08T00:55:55.476Z"
+    },
+    {
+      "file": "TC-11-05-skill-lifecycle-visual-review.png",
+      "label": "dark hover review",
+      "theme": "dark",
+      "hover": true,
+      "click": false,
+      "fullPage": true,
+      "capturedAt": "2026-04-08T00:55:56.573Z"
+    }
+  ]
+}

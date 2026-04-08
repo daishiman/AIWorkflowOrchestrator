@@ -346,6 +346,7 @@ function App(): JSX.Element {
           <SkillLifecyclePanel
             onClose={() => handleViewChange("skillCenter")}
             onOpenWizard={() => handleViewChange("skillCreate")}
+            onOpenSkillWizard={() => handleViewChange("skillCreate")}
           />
         );
       case "skillCreate":
@@ -389,6 +390,7 @@ function App(): JSX.Element {
           <SkillLifecyclePanel
             onClose={() => handleViewChange("skillCenter")}
             onOpenWizard={() => handleViewChange("skillCreate")}
+            onOpenSkillWizard={() => handleViewChange("skillCreate")}
           />
         );
       case "skillManagement":

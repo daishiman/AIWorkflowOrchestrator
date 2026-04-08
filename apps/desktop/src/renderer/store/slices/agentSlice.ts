@@ -36,6 +36,7 @@ export interface PlanResult {
   type: "integrated_api" | "terminal_handoff";
   planId?: string;
   estimatedSteps?: number;
+  skillSpec?: string;
   guidance?: HandoffGuidance;
 }
 

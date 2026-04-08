@@ -103,19 +103,19 @@ rg -n "SkillLifecyclePanel" apps/desktop/src/ --glob "*.tsx" --glob "*.ts"
 
 ## カノニカル成果物
 
-| 種別                     | パス                                                                               | 用途                                    |
-| ------------------------ | ---------------------------------------------------------------------------------- | --------------------------------------- |
-| workflow registry        | `artifacts.json`                                                                   | Phase 状態・成果物一覧の正本            |
-| workflow registry mirror | `outputs/artifacts.json`                                                           | root 台帳の mirror                      |
-| 要件定義                 | `outputs/phase-1/requirements.md`                                                  | 機能要件・非機能要件の確定一覧          |
-| 変更根拠                 | `docs/30-workflows/skill-wizard-redesign-lane/W1-par-02d-lifecycle-panel/index.md` | task classification / canonical outputs |
+| 種別                     | パス                                                    | 用途                                    |
+| ------------------------ | ------------------------------------------------------- | --------------------------------------- |
+| workflow registry        | `artifacts.json`                                        | Phase 状態・成果物一覧の正本            |
+| workflow registry mirror | `outputs/artifacts.json`                                | root 台帳の mirror                      |
+| 要件定義                 | `outputs/phase-1/requirements.md`                       | 機能要件・非機能要件の確定一覧          |
+| 変更根拠                 | `docs/30-workflows/W1-par-02d-lifecycle-panel/index.md` | task classification / canonical outputs |
 
 ## 参照資料
 
 | 資料名                  | パス                                                                 | 説明             |
 | ----------------------- | -------------------------------------------------------------------- | ---------------- |
 | 現行SkillLifecyclePanel | `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx` | 改修対象ファイル |
-| レーンindex             | `docs/30-workflows/skill-wizard-redesign-lane/index.md`              | 設計根拠         |
+| レーンindex             | `docs/30-workflows/W1-par-02d-lifecycle-panel/index.md`              | 設計根拠         |
 
 ## 成果物
 
