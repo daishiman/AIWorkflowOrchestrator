@@ -502,6 +502,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | SkillCreatorService（TASK-9B-G） | L6 |
 | 続き | L439 |
+|------------|----|\n| SkillCreatorService（TASK-9B-G） | L6 |
+| 続き | L452 |
 
 ### references/interfaces-agent-sdk-skill.md
 
@@ -1353,6 +1355,11 @@ node scripts/list-specs.js --topics
 | LLM Adapter Error Banner（TASK-RT-01） | L122 |
 | Community Visualization UI コンポーネント（CONV-08-05） | L161 |
 | 続き | L270 |
+|------------|----|\n| 概要 | L6 |
+| Skill Runtime API Key Panel（TASK-RT-04） | L66 |
+| LLM Adapter Error Banner（TASK-RT-01） | L122 |
+| Community Visualization UI コンポーネント（CONV-08-05） | L161 |
+| 続き | L272 |
 
 ### references/ui-ux-feature-components-details.md
 
@@ -3054,6 +3061,7 @@ node scripts/list-specs.js --topics
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L519 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L519 |
 | W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L553 |
 | UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L570 |
 | W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L586 |
@@ -4505,6 +4513,8 @@ node scripts/list-specs.js --topics
 |------------|----|
 | 残課題（未タスク） | L6 |
 | 続き | L327 |
+|------------|----|\n| 残課題（未タスク） | L6 |
+| 続き | L328 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4751,6 +4761,10 @@ node scripts/list-specs.js --topics
 | 完了タスク（2026-03後半） | L100 |
 | 完了タスク（機能別アーカイブ） | L108 |
 | UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
+|------------|----|\n| 最近の完了タスク（2026-04） | L7 |
+| 完了タスク（2026-03後半） | L128 |
+| 完了タスク（機能別アーカイブ） | L136 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L245 |
 
 ### references/task-workflow-history.md
 

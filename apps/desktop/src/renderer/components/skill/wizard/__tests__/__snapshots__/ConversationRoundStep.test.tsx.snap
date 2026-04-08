@@ -1,0 +1,272 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`ConversationRoundStep — エッジケース（Phase 6） > TC-19: ページ1 のレンダリング結果がスナップショットと一致する 1`] = `
+<div>
+  <div
+    class="flex flex-col gap-6"
+  >
+    <div
+      class="flex items-center gap-3"
+      data-testid="interview-progress-bar"
+    >
+      <div
+        class="h-2 flex-1 overflow-hidden rounded-full bg-[var(--bg-tertiary)]"
+      >
+        <div
+          aria-valuemax="6"
+          aria-valuemin="0"
+          aria-valuenow="3"
+          class="h-full rounded-full bg-[var(--status-primary)] transition-all duration-300"
+          data-testid="progress-fill"
+          role="progressbar"
+          style="width: 50%;"
+        />
+      </div>
+      <span
+        class="min-w-[4rem] text-right text-xs tabular-nums text-[var(--text-secondary)]"
+        data-testid="progress-text"
+      >
+        3
+        /
+        6
+      </span>
+    </div>
+    <div
+      class="flex flex-col gap-6"
+    >
+      <div
+        class="flex flex-col gap-2"
+      >
+        <span
+          class="text-xs text-[var(--text-secondary)]"
+        >
+          質問
+          1
+          /6
+        </span>
+        <p
+          class="text-sm font-medium text-[var(--text-primary)]"
+        >
+          このスキルは誰が使いますか？
+        </p>
+        <div
+          class="mt-3 flex flex-wrap gap-2"
+          data-testid="single-select-chips"
+          role="radiogroup"
+        >
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-自分のみ"
+            role="radio"
+            type="button"
+          >
+            自分のみ
+          </button>
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-チームメンバー"
+            role="radio"
+            type="button"
+          >
+            チームメンバー
+          </button>
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-社内全体"
+            role="radio"
+            type="button"
+          >
+            社内全体
+          </button>
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-外部ユーザー"
+            role="radio"
+            type="button"
+          >
+            外部ユーザー
+          </button>
+        </div>
+        <div
+          class="mt-3"
+          data-testid="free-text-input"
+        >
+          <textarea
+            class="w-full resize-none rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/50 focus:border-[var(--status-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--status-primary)] disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="free-text-textarea"
+            placeholder="補足情報があれば入力してください"
+            rows="3"
+          />
+          <p
+            class="mt-1 text-xs text-[var(--text-secondary)]"
+          >
+            Enter で送信 / Shift+Enter で改行
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-col gap-2"
+      >
+        <span
+          class="text-xs text-[var(--text-secondary)]"
+        >
+          質問
+          2
+          /6
+        </span>
+        <p
+          class="text-sm font-medium text-[var(--text-primary)]"
+        >
+          どのようなデータを入力しますか？
+        </p>
+        <div
+          class="mt-3 flex flex-wrap gap-2"
+          data-testid="single-select-chips"
+          role="radiogroup"
+        >
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-テキスト"
+            role="radio"
+            type="button"
+          >
+            テキスト
+          </button>
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-ファイル"
+            role="radio"
+            type="button"
+          >
+            ファイル
+          </button>
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-URLリンク"
+            role="radio"
+            type="button"
+          >
+            URLリンク
+          </button>
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-構造化データ"
+            role="radio"
+            type="button"
+          >
+            構造化データ
+          </button>
+        </div>
+        <div
+          class="mt-3"
+          data-testid="free-text-input"
+        >
+          <textarea
+            class="w-full resize-none rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/50 focus:border-[var(--status-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--status-primary)] disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="free-text-textarea"
+            placeholder="補足情報があれば入力してください"
+            rows="3"
+          />
+          <p
+            class="mt-1 text-xs text-[var(--text-secondary)]"
+          >
+            Enter で送信 / Shift+Enter で改行
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-col gap-2"
+      >
+        <span
+          class="text-xs text-[var(--text-secondary)]"
+        >
+          質問
+          3
+          /6
+        </span>
+        <p
+          class="text-sm font-medium text-[var(--text-primary)]"
+        >
+          いつ実行しますか？
+        </p>
+        <div
+          class="mt-3 flex flex-wrap gap-2"
+          data-testid="single-select-chips"
+          role="radiogroup"
+        >
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-手動実行"
+            role="radio"
+            type="button"
+          >
+            手動実行
+          </button>
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-定期実行"
+            role="radio"
+            type="button"
+          >
+            定期実行
+          </button>
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-イベント駆動"
+            role="radio"
+            type="button"
+          >
+            イベント駆動
+          </button>
+          <button
+            aria-checked="false"
+            class="rounded-full border px-4 py-2 text-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--status-primary)] focus-visible:ring-offset-2 border-[var(--border-primary)] bg-[var(--bg-secondary)] text-[var(--text-primary)] hover:border-[var(--status-primary)]/50 disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="chip-都度判断"
+            role="radio"
+            type="button"
+          >
+            都度判断
+          </button>
+        </div>
+        <div
+          class="mt-3"
+          data-testid="free-text-input"
+        >
+          <textarea
+            class="w-full resize-none rounded-xl border border-[var(--border-primary)] bg-[var(--bg-secondary)] px-4 py-3 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/50 focus:border-[var(--status-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--status-primary)] disabled:cursor-not-allowed disabled:opacity-50"
+            data-testid="free-text-textarea"
+            placeholder="補足情報があれば入力してください"
+            rows="3"
+          />
+          <p
+            class="mt-1 text-xs text-[var(--text-secondary)]"
+          >
+            Enter で送信 / Shift+Enter で改行
+          </p>
+        </div>
+      </div>
+    </div>
+    <div
+      class="flex justify-between"
+    >
+      <div />
+      <button
+        class="px-4 py-2 rounded-lg bg-[var(--status-primary)] text-[var(--text-inverse)]"
+      >
+        次へ
+      </button>
+    </div>
+  </div>
+</div>
+`;
