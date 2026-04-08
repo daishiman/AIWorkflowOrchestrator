@@ -1,33 +1,39 @@
-# Phase 11: 手動テスト結果 — UT-HEALTH-POLICY-RUNTIME-INJECTION-001
+# Phase 11: 手動テスト結果 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+
+## NON_VISUAL 方針
+
+本タスク（W0-seq-02）の実装対象 `inferSmartDefaults` は純粋関数であり、
+GUI を持たない。そのため Phase 11 の手動テストは REPL/CLI 確認で代替する。
+スクリーンショットは不要。
 
 ## 判定
 
-NON_VISUAL / static verification PASS / manual app smoke PASS / vitest PASS
+NON_VISUAL / REPL 確認 PASS / vitest 33件 PASS
 
-## 実測
+## REPL/CLI 手動確認
 
-| コマンド                                                                                                                                                                                                                                                                                                                                              | 結果 | 補足                                        |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---- | ------------------------------------------- |
-| `pnpm --filter @repo/shared build`                                                                                                                                                                                                                                                                                                                    | PASS | `@repo/shared` の dist を生成               |
-| `pnpm --filter @repo/desktop build`                                                                                                                                                                                                                                                                                                                   | PASS | Desktop bundle の生成を確認                 |
-| `timeout 25s pnpm --filter @repo/desktop dev`                                                                                                                                                                                                                                                                                                         | PASS | Electron 起動まで到達し、runtime error なし |
-| `pnpm --filter @repo/desktop typecheck`                                                                                                                                                                                                                                                                                                               | PASS | 変更範囲の型整合を確認                      |
-| `pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/ipc/index.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts` | PASS | 対象ファイル lint 0 error                   |
-| `pnpm --filter @repo/desktop exec vitest run ...`                                                                                                                                                                                                                                                                                                     | PASS | 3 files / 100 tests PASS                    |
+| 確認内容           | コマンド / 操作                                                                                                    | 結果 | 備考              |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------ | ---- | ----------------- |
+| typecheck          | `pnpm --filter @repo/shared typecheck`                                                                             | PASS | エラー 0件        |
+| ESLint             | `pnpm --filter @repo/shared eslint src/services/skillCreator/smartDefaultReasoningService.ts`                      | PASS | 警告・エラー 0件  |
+| Vitest 全件        | `pnpm vitest run packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`         | PASS | 33/33件 PASS      |
+| barrel import 確認 | テストファイルが `@repo/shared` 経由で `inferSmartDefaults` をインポートし PASS                                    | PASS | named export 正常 |
+| REPL 動作確認      | `inferSmartDefaults({ skillName: "test", purpose: "Slack通知を送る", category: null })` → `{ tool: "slack", ... }` | PASS | 期待値と一致      |
+| REPL null 入力確認 | `inferSmartDefaults({ skillName: "test", purpose: null, category: null })` → エラーなし、全 null                   | PASS | 例外なし          |
 
 ## NON_VISUAL 判定理由
 
-- UI 変更なし（Main Process の DI 配線変更のみ）
-- 手動アプリ起動による smoke を実施し、runtime error なしで起動確認済み
+- GUI 変更なし（純粋関数の新規実装のみ）
+- スクリーンショット不要
+- REPL/CLI 確認と自動テスト 33件で動作を十分に検証済み
 
 ## source evidence
 
-- `apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts`
-- `apps/desktop/src/main/ipc/index.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.plan.test.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts`
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.improve.test.ts`
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/implementation-guide.md`
+- `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts`
+- `packages/shared/src/services/skillCreator/index.ts`
+- `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`
 
 ## スクリーンショット
 
-N/A
+N/A（NON_VISUAL タスクのため不要）

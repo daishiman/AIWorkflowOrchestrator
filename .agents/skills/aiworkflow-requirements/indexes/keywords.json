@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-07T23:05:46.876Z",
-  "totalKeywords": 2823,
+  "generated": "2026-04-08T04:39:37.401Z",
+  "totalKeywords": 2826,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7415,6 +7415,15 @@
       "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md"
+    ],
+    "seq": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "SmartDefault": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "推論サービス": [
+      "lessons-learned-current-2026-04.md"
     ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",

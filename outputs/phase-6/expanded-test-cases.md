@@ -1,8 +1,60 @@
-# Phase 6: 拡充テストケース一覧
+# Phase 6: 拡充テストケース一覧 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
 
-## UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 6
+## TC-16〜TC-20：エッジケース追加テストケース
 
-### 追加対象ファイル
+Phase 4 の TC-01〜TC-15 に加え、Phase 6 でエッジケースを追加した。
+
+### TC-16：先勝ちルール（ツール）
+
+| 項目   | 内容                                                                           |
+| ------ | ------------------------------------------------------------------------------ |
+| TC ID  | TC-16                                                                          |
+| 説明   | purpose に 'Slack' と 'GitHub' 両方含む場合、先に一致した 'slack' が採用される |
+| 入力   | purpose: "Slack と GitHub を使う", category: null                              |
+| 期待値 | tool = "slack"                                                                 |
+| 根拠   | TOOL_KEYWORDS は先頭から順に評価する先勝ちルール                               |
+
+### TC-17：大文字小文字区別
+
+| 項目   | 内容                                                           |
+| ------ | -------------------------------------------------------------- |
+| TC ID  | TC-17                                                          |
+| 説明   | purpose に 'slack'（小文字）が含まれる場合、tool = null を返す |
+| 入力   | purpose: "slack通知を送る", category: null                     |
+| 期待値 | tool = null                                                    |
+| 根拠   | `String.includes()` は大文字小文字を区別する                   |
+
+### TC-18：部分一致
+
+| 項目   | 内容                                                        |
+| ------ | ----------------------------------------------------------- |
+| TC ID  | TC-18                                                       |
+| 説明   | purpose に 'SlackBot' が含まれる場合、tool = 'slack' を返す |
+| 入力   | purpose: "SlackBotを作成する", category: null               |
+| 期待値 | tool = "slack"                                              |
+| 根拠   | `String.includes()` は部分一致で判定する                    |
+
+### TC-19：purpose が null（エラーなし確認）
+
+| 項目   | 内容                                                           |
+| ------ | -------------------------------------------------------------- |
+| TC ID  | TC-19                                                          |
+| 説明   | purpose が null の場合、tool = null を返す（エラーにならない） |
+| 入力   | purpose: null as unknown as string, category: null             |
+| 期待値 | tool = null（例外なし）                                        |
+| 根拠   | `normalizePurpose` が null を空文字に変換する                  |
+
+### TC-20：先勝ちルール（タイミング）
+
+| 項目   | 内容                                                                       |
+| ------ | -------------------------------------------------------------------------- |
+| TC ID  | TC-20                                                                      |
+| 説明   | purpose に '毎日' と 'リアルタイム' 両方含む場合、'scheduled' が採用される |
+| 入力   | purpose: "毎日リアルタイムで処理する", category: null                      |
+| 期待値 | timing = "scheduled"                                                       |
+| 根拠   | SCHEDULED_PATTERN を先に評価するため scheduled が先勝ち                    |
+
+## 追加対象ファイル
 
 - `apps/desktop/src/preload/__tests__/skill-creator-api.approval.test.ts`
 - `apps/desktop/src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx`

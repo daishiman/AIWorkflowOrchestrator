@@ -475,3 +475,47 @@
 - **苦戦箇所**: cleanup 関数を返すリスナー登録は useEffect の return 値として必ず設定しないと、アンマウント後に approval event が届き続ける
 - **解決**: `useEffect(() => { const cleanup = api.onApprovalRequest(...); return cleanup; }, [api])` パターンで登録
 - **適用**: Renderer 側の onEvent listener を持つコンポーネント全般
+
+---
+
+## W0-seq-02 SmartDefault推論サービス (2026-04-08)
+
+### L-W0-001: vitest @repo/shared alias テンプレート未整備
+| 項目 | 内容 |
+|---|---|
+| 症状 | `@repo/shared`をimportするテストが`vitest.config.ts`のalias未設定で解決不可になった |
+| 原因 | スキルテンプレートに`resolve.alias`が含まれていなかった |
+| 解決 | `vitest.config.ts`の`test:`ブロックにalias設定を手動追加 |
+| 再発防止 | monorepo alias (`@repo/*`) を使うパッケージのvitest設定テンプレートに`resolve.alias`を標準化 |
+
+### L-W0-002: post-tool-useフックによるテストファイル自動改変
+| 項目 | 内容 |
+|---|---|
+| 症状 | ESLintフックがimportパスを自動書き換えし、期待値が追随せずテスト件数0件扱いになった |
+| 原因 | フック実行後のdiff確認手順が欠如していた |
+| 解決 | フック実行後に`git diff`でファイル内容を確認してから次ステップに進む |
+| 再発防止 | Phase 11 or フック運用手順に「自動改変後の人間レビューステップ」を追加 |
+
+### L-W0-003: フォールバック仕様の独立推論性未明示
+| 項目 | 内容 |
+|---|---|
+| 症状 | `purpose`が空の場合の`format`推論可否が一時的に矛盾した |
+| 原因 | 「各フィールドは独立して推論する」という制約が仕様書に書かれていなかった |
+| 解決 | ACに「フォールバック値は各フィールド独立に適用する」を追記 |
+| 再発防止 | 推論サービス系ACテンプレートに独立推論性の明示箇所を追加 |
+
+### L-W0-004: Phase 12 ledger 4点同期の明文化不足
+| 項目 | 内容 |
+|---|---|
+| 症状 | `task-workflow-backlog.md` / `completed.md` / lane index / `artifacts.json`の4点更新が一部漏れた |
+| 原因 | Phase 12完了条件にsame-wave syncが明文化されていなかった |
+| 解決 | 4点をsame-waveで更新することを宣言し、チェックリストに追記 |
+| 再発防止 | Phase 12チェックリストitem#20以降に「ledger 4点parity確認」を追加 |
+
+### L-W0-005: edge case定義の分散によるfalse green
+| 項目 | 内容 |
+|---|---|
+| 症状 | 「空白のみpurposeを空文字扱い」が複数ファイルに分散し、一部ファイルで定義が食い違った |
+| 原因 | edge caseの一次定義場所が決まっていなかった |
+| 解決 | `implementation-guide.md`をedge case一次定義場所とし、他ファイルはそこを参照 |
+| 再発防止 | Phase 12ガイドに「edge caseの一次定義は`implementation-guide.md`」を原則追加 |

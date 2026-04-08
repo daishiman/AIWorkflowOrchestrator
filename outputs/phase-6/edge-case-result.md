@@ -1,66 +1,93 @@
-# Phase 6: エッジケーステスト結果
-
-## UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Phase 6
+# Phase 6: エッジケーステスト結果 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
 
 ## 対象エッジケース
 
-### TC-APPR-11: 多重購読シナリオ
+### TC-16: 先勝ちルール（ツール複数一致）
 
-**シナリオ**: onApprovalRequest を2回呼び出して複数のコールバックを登録した場合
-
-**検証内容**:
-
-- 各登録ごとに独立した listener が生成される
-- 各 listener を発火すると対応するコールバックが呼ばれる
-- 一方の listener 発火が他方のコールバックに影響しない
-
-**結果**: PASS
-
-### TC-APPR-12: アンサブスクライブ後の再購読シナリオ
-
-**シナリオ**: unsubscribe 後に再度 onApprovalRequest を呼び出す
+**シナリオ**: purpose に 'Slack' と 'GitHub' 両方が含まれる
 
 **検証内容**:
 
-- unsubscribe が removeListener を呼ぶ
-- 再購読で新しい listener が ipcRenderer.on に登録される
-- ipcRenderer.on の呼び出し回数が2回になる
+- `TOOL_KEYWORDS` は先頭から順に評価される
+- 最初に一致した 'Slack' が採用される
+- 後続の 'GitHub' は評価されない
 
-**結果**: PASS
+**入力**: `{ purpose: "Slack と GitHub を使う", category: null }`
 
-### TC-APPR-13: チャンネルホワイトリスト検証
+**結果**: PASS（tool = "slack"）
 
-**シナリオ**: APPROVAL_REQUEST チャンネルが ALLOWED_ON_CHANNELS に含まれている場合の safeOn 動作
+---
 
-**検証内容**:
+### TC-17: 大文字小文字区別
 
-- APPROVAL_REQUEST は許可チャンネルのため console.error が発生しない
-- ipcRenderer.on が正常に呼ばれる
-
-**結果**: PASS
-
-### TC-APPR-16: 初期状態（approval 未発火）
-
-**シナリオ**: コンポーネントレンダリング直後、approval callback を発火させない
+**シナリオ**: purpose に小文字の 'slack' が含まれる
 
 **検証内容**:
 
-- approval-sheet が DOM に存在しない
-- pendingApproval state が null の状態を反映している
+- `String.includes()` は大文字小文字を区別する
+- 'slack'（小文字）は 'Slack'（大文字始まり）にマッチしない
 
-**結果**: PASS
+**入力**: `{ purpose: "slack通知を送る", category: null }`
 
-### TC-APPR-17/18: approve/reject 後のクリア
+**結果**: PASS（tool = null）
 
-**シナリオ**: approval-sheet 表示後にボタンを押下
+---
+
+### TC-18: 部分一致（'SlackBot'）
+
+**シナリオ**: purpose に 'SlackBot' が含まれる
 
 **検証内容**:
 
-- approve/reject 後に approval-sheet が DOM から消える
-- pendingApproval state がクリアされる
+- `String.includes("Slack")` は 'SlackBot' の中の 'Slack' に一致する
+- 部分一致でツール推論が正しく動作する
 
-**結果**: PASS（両方）
+**入力**: `{ purpose: "SlackBotを作成する", category: null }`
+
+**結果**: PASS（tool = "slack"）
+
+---
+
+### TC-19: purpose が null（エラーなし）
+
+**シナリオ**: purpose に null が渡される（型違反の実ユーザー操作を想定）
+
+**検証内容**:
+
+- `normalizePurpose(null)` が空文字を返す
+- エラー（TypeError 等）を throw しない
+- 全フィールドが null で返る
+
+**入力**: `{ purpose: null as unknown as string, category: null }`
+
+**結果**: PASS（tool = null、エラーなし）
+
+---
+
+### TC-20: 先勝ちルール（タイミング複数一致）
+
+**シナリオ**: purpose に '毎日' と 'リアルタイム' 両方が含まれる
+
+**検証内容**:
+
+- `SCHEDULED_PATTERN` が先に評価される
+- '毎日' が一致した時点で 'scheduled' が採用される
+- 後続の `REALTIME_PATTERN` は評価されない
+
+**入力**: `{ purpose: "毎日リアルタイムで処理する", category: null }`
+
+**結果**: PASS（timing = "scheduled"）
+
+---
 
 ## エッジケーステスト総合評価
 
-全エッジケース PASS。実装は多重購読・再購読・未発火・アクション後クリアの各シナリオで正しく動作する。
+全エッジケース PASS。
+
+| 観点                       | 確認内容                           | 結果 |
+| -------------------------- | ---------------------------------- | ---- |
+| 先勝ちルール（ツール）     | 複数キーワード時は先頭優先         | PASS |
+| 大文字小文字区別           | 大文字始まりのみ一致               | PASS |
+| 部分一致                   | キーワードが語の一部であっても一致 | PASS |
+| null 入力耐性              | エラーを throw せず null を返す    | PASS |
+| 先勝ちルール（タイミング） | scheduled が realtime より優先     | PASS |

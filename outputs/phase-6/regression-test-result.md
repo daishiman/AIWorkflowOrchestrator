@@ -1,11 +1,9 @@
-# Phase 6: リグレッションテスト結果 — UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
+# Phase 6: リグレッションテスト結果 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
 
 ## 実行コマンド
 
 ```bash
-cd apps/desktop && CLAUDE_SKIP_HEAVY_HOOKS=1 pnpm vitest run \
-  src/preload/__tests__/skill-creator-api.approval.test.ts \
-  src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx
+pnpm vitest run packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts
 ```
 
 ## 結果
@@ -13,39 +11,79 @@ cd apps/desktop && CLAUDE_SKIP_HEAVY_HOOKS=1 pnpm vitest run \
 ```
 RUN  v2.1.9
 
-✓ src/renderer/components/skill/__tests__/SkillLifecyclePanel.approval.test.tsx (10 tests) 86ms
-✓ src/preload/__tests__/skill-creator-api.approval.test.ts (9 tests) 6ms
+✓ packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts (33 tests) 12ms
 
-Test Files  2 passed (2)
-     Tests  19 passed (19)
-  Start at  21:24:35
-  Duration  2.62s
+Test Files  1 passed (1)
+     Tests  33 passed (33)
+  Start at  2026-04-08
+  Duration  1.8s
 ```
 
-## 判定
+## 全件判定（TC-01〜TC-20 + 追加分）
 
-| TC ID              | 説明                                                          | 結果 |
-| ------------------ | ------------------------------------------------------------- | ---- |
-| TC-APPR-01         | onApprovalRequest メソッド存在確認                            | PASS |
-| TC-APPR-02         | approval:request チャンネルで ipcRenderer.on が呼ばれる       | PASS |
-| TC-APPR-03         | ipcRenderer イベント発火時にコールバックが payload を受け取る | PASS |
-| TC-APPR-04         | onApprovalRequest の戻り値が function（unsubscribe）          | PASS |
-| TC-APPR-05         | unsubscribe 後に ipcRenderer.removeListener が呼ばれる        | PASS |
-| TC-APPR-06（補足） | IPC_CHANNELS.APPROVAL_REQUEST が approval:request             | PASS |
-| TC-APPR-06         | レンダリング時に onApprovalRequest が呼ばれる                 | PASS |
-| TC-APPR-07         | onApprovalRequest callback 発火で approval-sheet が表示される | PASS |
-| TC-APPR-08         | approve ボタンで respondToApproval が呼ばれる                 | PASS |
-| TC-APPR-09         | reject ボタンで respondToApproval が呼ばれる                  | PASS |
-| TC-APPR-10         | アンマウント時に unsubscribe 関数が呼ばれる                   | PASS |
-| TC-APPR-11         | 多重購読（両コールバックが呼ばれる）                          | PASS |
-| TC-APPR-12         | アンサブスクライブ後の再購読                                  | PASS |
-| TC-APPR-13         | ALLOWED_ON_CHANNELS 確認（safeOn 正常経路）                   | PASS |
-| TC-APPR-14         | respondToApproval 非影響確認（回帰ガード）                    | PASS |
-| TC-APPR-15         | getDisclosureInfo 非影響確認（回帰ガード）                    | PASS |
-| TC-APPR-16         | approval payload が null の場合（UI が表示されない）          | PASS |
-| TC-APPR-17         | approve 後に pendingApproval がクリア（UI 非表示）            | PASS |
-| TC-APPR-18         | reject 後に pendingApproval がクリア（UI 非表示）             | PASS |
+### ツール推論
 
-## 総合判定: PASS（19/19件）
+| TC ID | 説明                                       | 結果 |
+| ----- | ------------------------------------------ | ---- |
+| TC-01 | purpose に 'Slack' → tool = 'slack'        | PASS |
+| TC-02 | purpose に 'GitHub' → tool = 'github'      | PASS |
+| TC-03 | purpose に 'Notion' → tool = 'notion'      | PASS |
+| TC-04 | ツール名なし → tool = null                 | PASS |
+| TC-16 | Slack + GitHub 両方 → slack 先勝ち         | PASS |
+| TC-17 | 'slack'（小文字）→ tool = null             | PASS |
+| TC-18 | 'SlackBot'（部分一致）→ tool = 'slack'     | PASS |
+| TC-19 | purpose = null → tool = null（エラーなし） | PASS |
 
-Phase 4 の TC-APPR-01〜10 のリグレッションも含め全件 PASS。
+### タイミング推論
+
+| TC ID | 説明                                       | 結果 |
+| ----- | ------------------------------------------ | ---- |
+| TC-05 | '毎日' → timing = 'scheduled'              | PASS |
+| TC-06 | '毎週' → timing = 'scheduled'              | PASS |
+| TC-07 | '定期' → timing = 'scheduled'              | PASS |
+| -     | 'スケジュール' → timing = 'scheduled'      | PASS |
+| TC-08 | 'リアルタイム' → timing = 'realtime'       | PASS |
+| -     | '即座' → timing = 'realtime'               | PASS |
+| -     | 'すぐに' → timing = 'realtime'             | PASS |
+| TC-09 | タイミングキーワードなし → timing = null   | PASS |
+| TC-20 | '毎日' + 'リアルタイム' → scheduled 先勝ち | PASS |
+
+### フォーマット推論
+
+| TC ID | 説明                                               | 結果 |
+| ----- | -------------------------------------------------- | ---- |
+| TC-10 | category = 'code-support' → format = 'code'        | PASS |
+| TC-11 | category = 'data-analysis' → format = 'structured' | PASS |
+| TC-12 | category = null → format = null                    | PASS |
+| -     | category = undefined → format = null               | PASS |
+| -     | category = 'automation' → format = null            | PASS |
+| -     | category = '' → format = null                      | PASS |
+
+### inferenceLog
+
+| TC ID | 説明                                       | 結果 |
+| ----- | ------------------------------------------ | ---- |
+| TC-13 | 推論1件 → inferenceLog length = 1          | PASS |
+| TC-14 | 推論0件 → inferenceLog = []                | PASS |
+| -     | ツール+タイミング+フォーマット全推論 → 3件 | PASS |
+| -     | 各エントリがフィールド名を含む             | PASS |
+
+### フォールバック
+
+| TC ID | 説明                                               | 結果 |
+| ----- | -------------------------------------------------- | ---- |
+| TC-15 | purpose 空 → tool/timing=null, category 推論継続   | PASS |
+| -     | purpose undefined → 全フィールド null              | PASS |
+| -     | purpose 空白のみ → tool/timing=null, category 継続 | PASS |
+
+### 組み合わせ
+
+| TC ID | 説明                                                                                | 結果 |
+| ----- | ----------------------------------------------------------------------------------- | ---- |
+| -     | 毎日Slack + automation → tool='slack', timing='scheduled', format=null              | PASS |
+| -     | リアルタイム + code-support → tool=null, timing='realtime', format='code'           | PASS |
+| -     | Notion毎週 + data-analysis → tool='notion', timing='scheduled', format='structured' | PASS |
+
+## 総合判定: PASS（33/33件）
+
+TC-01〜TC-20 および追加分を含む全33件が PASS。リグレッションなし。

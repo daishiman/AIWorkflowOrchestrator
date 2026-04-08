@@ -1,0 +1,30 @@
+# Phase 5: テスト実行結果（GREEN 確認）
+
+## 実行日時
+2026-04-02
+
+## 実施内容
+- apps/desktop/src/main/ipc/index.ts の L907-918 placeholder（TODO(DI)）を削除
+- buildDisclosureInfo() 純粋関数を追加（authModeServiceForRuntime を DI）
+- IAuthModeService / DisclosureInfo の import を追加
+
+## テスト結果
+RUN  v2.1.9
+ ✓ src/main/ipc/__tests__/disclosureHandlers.test.ts (6 tests) 31ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+
+## 型チェック
+tsc --noEmit → エラーなし（PASS）
+
+## 変更ファイル
+1. apps/desktop/src/main/ipc/index.ts
+   - import type { IAuthModeService } from "../services/auth/types" 追加
+   - import type { DisclosureInfo } from "./disclosureHandlers" 追加
+   - TODO(DI) placeholder 削除
+   - buildDisclosureInfo() 関数追加（subscription/api-key/unknown の3値マッピング）
+   - authModeServiceForRuntime を buildDisclosureInfo() に DI
+
+2. apps/desktop/src/main/ipc/__tests__/disclosureHandlers.test.ts
+   - 新規作成（Phase 4 成果物）

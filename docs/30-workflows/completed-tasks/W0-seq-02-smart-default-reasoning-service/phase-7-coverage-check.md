@@ -9,122 +9,84 @@
 | 機能名     | スマートデフォルト推論サービス実装             |
 | 前提Phase  | Phase 6                                        |
 | 後続Phase  | Phase 8                                        |
-| 作成日     | 2026-04-07                                     |
-| ステータス | pending                                        |
+| 作成日     | 2026-04-08                                     |
+| ステータス | completed                                      |
 
 ## 目的
 
-テストカバレッジを計測し、未到達コードを分析して追加テストの要否を判断する。
+`smartDefaultReasoningService.ts` の推論分岐・フォールバック分岐の coverage を可視化し、
+未到達パスを特定する。
 
 ## 実行タスク
 
-1. 変更対象の coverage を計測する。
-2. 未到達分岐を列挙する。
-3. 追加テストの要否を判断する。
+1. coverage を計測し、目標値を確認する。
+2. 未カバー分岐を分析する。
+3. トレーサビリティマトリクスで AC とテストの対応を確認する。
 
 ## 統合テスト連携
 
-- Phase 6 のテスト追加が coverage へ反映されることを確認する。
-- Phase 8 のリファクタ後に再計測する前提を明記する。
+- Phase 6 の拡充テスト結果を入力にして、coverage 計測の対象分岐が AC-1〜AC-4 に対応していることを確認する。
+- Phase 10 の最終レビューでは、本 Phase の coverage / traceability 記録を根拠として PASS 判定を行う。
 
-## カバレッジ目標
+## カバレッジ目標（対象スコープ）
 
-| 対象ファイル                      | 目標カバレッジ | 計測対象                     |
-| --------------------------------- | -------------- | ---------------------------- |
-| `smartDefaultReasoningService.ts` | 90% 以上       | 行カバレッジ・分岐カバレッジ |
+| 指標              | 目標値 | 対象スコープ                           |
+| ----------------- | ------ | -------------------------------------- |
+| Line Coverage     | 90%+   | `smartDefaultReasoningService.ts` のみ |
+| Branch Coverage   | 80%+   | 推論分岐・フォールバック分岐           |
+| Function Coverage | 100%   | `inferSmartDefaults` 関数              |
 
-## カバレッジ計測コマンド
+> **注意**: カバレッジ目標は `smartDefaultReasoningService.ts` ファイルに限定する。
+> 広域指定は避け、変更したファイルの実測値を証跡に残す。
+
+## coverage 計測コマンド
 
 ```bash
-pnpm --filter @repo/shared test --coverage \
-  --coverage.include="**/services/skillCreator/smartDefaultReasoningService.ts"
+# ファイル指定で coverage 計測
+pnpm --filter @repo/shared test:coverage -- \
+  src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts
 ```
-
-## 未到達分析の観点
-
-### 推論ルール分岐の未到達チェック
-
-| 分岐                                   | カバー状況 | 未到達理由（予想）         |
-| -------------------------------------- | ---------- | -------------------------- |
-| purpose に "Slack" を含む              | [ ]        |                            |
-| purpose に "GitHub" を含む             | [ ]        | テストケース未追加の可能性 |
-| purpose に "Notion" を含む             | [ ]        | テストケース未追加の可能性 |
-| purpose に定期実行キーワードを含む     | [ ]        |                            |
-| purpose に "毎週" を含む               | [ ]        | Phase 6 で追加済みか確認   |
-| purpose に "スケジュール" を含む       | [ ]        | Phase 6 で追加済みか確認   |
-| purpose にリアルタイムキーワードを含む | [ ]        |                            |
-| purpose に "即座" を含む               | [ ]        | Phase 6 で追加済みか確認   |
-| purpose に "すぐに" を含む             | [ ]        | Phase 6 で追加済みか確認   |
-| category === "code-support"            | [ ]        |                            |
-| category === "data-analysis"           | [ ]        |                            |
-| 全キーワード非該当（フォールバック）   | [ ]        |                            |
-
-### フォールバックパスの未到達チェック
-
-| 分岐                                | カバー状況 | 未到達理由（予想）         |
-| ----------------------------------- | ---------- | -------------------------- |
-| `input?.purpose ?? ""` の null 処理 | [ ]        | purpose=null テストが必要  |
-| `input?.category` の null 処理      | [ ]        | category=null テストが必要 |
 
 ## トレーサビリティ確認
 
-| 要件 ID | テストケース                                                | カバー状況 |
-| ------- | ----------------------------------------------------------- | ---------- |
-| AC-1    | inferSmartDefaults 関数の存在・シグネチャ確認               | [ ]        |
-| AC-2    | slack/github/notion/scheduled/realtime/code/structured 推論 | [ ]        |
-| AC-3    | 全テスト PASS                                               | [ ]        |
-| AC-4    | フォールバック（null フィールド・空 inferenceLog）          | [ ]        |
-| FR-02   | ツール推論 3パターン                                        | [ ]        |
-| FR-03   | タイミング推論 2パターン                                    | [ ]        |
-| FR-04   | フォーマット推論 2パターン                                  | [ ]        |
-| FR-05   | inferenceLog への記録                                       | [ ]        |
-| FR-06   | 非該当フィールドが null                                     | [ ]        |
-| FR-07   | 推論0件時の inferenceLog = []                               | [ ]        |
+| AC番号 | 対応テストケース           | カバー状況 |
+| ------ | -------------------------- | ---------- |
+| AC-1   | TC-01〜TC-04               | [ ]        |
+| AC-2   | TC-05〜TC-10               | [ ]        |
+| AC-3   | 全TC                       | [ ]        |
+| AC-4   | TC-11, TC-12, TC-15, TC-19 | [ ]        |
 
 ## 参照資料
 
-| 資料名           | パス                                        | 用途           |
-| ---------------- | ------------------------------------------- | -------------- |
-| 実装サマリー     | `outputs/phase-5/implementation-summary.md` | Phase 5 成果物 |
-| 拡張テストケース | `outputs/phase-6/expanded-test-cases.md`    | Phase 6 成果物 |
-| 回帰テスト結果   | `outputs/phase-6/regression-test-result.md` | Phase 6 成果物 |
-| テスト仕様書     | `outputs/phase-4/test-specification.md`     | Phase 4 成果物 |
-| 受け入れ基準     | `outputs/phase-1/acceptance-criteria.md`    | Phase 1 成果物 |
+| 資料名           | パス                                     | 用途           |
+| ---------------- | ---------------------------------------- | -------------- |
+| 拡充テストケース | `outputs/phase-6/expanded-test-cases.md` | Phase 6 成果物 |
+| エッジケース結果 | `outputs/phase-6/edge-case-result.md`    | Phase 6 成果物 |
 
 ## 実行手順
 
-1. Phase 6 成果物を確認する。
-2. カバレッジ計測コマンドを実行する。
-3. 未到達コードを分析し、一覧化する。
-4. 追加テストが必要な箇所を特定する。
-5. トレーサビリティ確認テーブルを埋める。
+1. coverage 計測コマンドを実行する。
+2. `smartDefaultReasoningService.ts` の line/branch/function カバレッジ実測値を記録する。
+3. 未カバーパスを特定し、Phase 6 で追加するか判断する。
+4. トレーサビリティマトリクスを完成させる。
 
 ## 成果物
 
-| 成果物                 | パス                                              | 説明                   |
-| ---------------------- | ------------------------------------------------- | ---------------------- |
-| カバレッジ計画         | `outputs/phase-7/coverage-plan.md`                | 目標・計測方法         |
-| 未到達分析             | `outputs/phase-7/uncovered-analysis-plan.md`      | 未到達箇所の一覧と対策 |
-| トレーサビリティ網羅率 | `outputs/phase-7/traceability-coverage-report.md` | 要件とテストの対応確認 |
+| 成果物                   | パス                                              | 説明               |
+| ------------------------ | ------------------------------------------------- | ------------------ |
+| カバレッジ計画           | `outputs/phase-7/coverage-plan.md`                | 計測方針・目標値   |
+| 未到達分析               | `outputs/phase-7/uncovered-analysis-plan.md`      | 未カバーパスの分析 |
+| トレーサビリティレポート | `outputs/phase-7/traceability-coverage-report.md` | AC↔テスト対応表    |
 
 ## 完了条件
 
 - [ ] 実行タスクで定義した成果物を全件作成
-- [ ] カバレッジ目標（90% 以上）を達成していること
-- [ ] 全推論ルール分岐がカバーされていること
-- [ ] フォールバックパスがカバーされていること
-- [ ] トレーサビリティ確認が完了していること
-- [ ] 矛盾がないことを確認
-- [ ] 漏れがないことを確認
+- [ ] `smartDefaultReasoningService.ts` の Line Coverage が 90%+ であること
+- [ ] `smartDefaultReasoningService.ts` の Branch Coverage が 80%+ であること
+- [ ] Function Coverage が 100% であること
+- [ ] トレーサビリティマトリクスが完成していること
+- [ ] 未到達パスが特定または「なし」と確認されていること
 - [ ] 本Phase内の全タスクを100%実行完了
-
-## サブタスク管理
-
-1. 参照資料の確認
-2. カバレッジ計測実行
-3. 未到達分析
-4. トレーサビリティ確認
-5. 成果物出力
 
 ## タスク100%実行確認【必須】
 

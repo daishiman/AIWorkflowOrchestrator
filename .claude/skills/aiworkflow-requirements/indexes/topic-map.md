@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-07
+> 自動生成: 2026-04-08
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -2779,6 +2779,7 @@ node scripts/list-specs.js --topics
 | TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L440 |
 | TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L452 |
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L473 |
+| W0-seq-02 SmartDefault推論サービス (2026-04-08) | L481 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 

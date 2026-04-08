@@ -2,6 +2,13 @@
 
 ## 役割
 
+## 2026-04-08 W0-seq-02 SmartDefault推論サービス 実装知見反映
+
+- **追加**: `patterns-phase12-optimization.md`にFB-01/02/05パターン3件を追記
+- **更新**: `phase12-checklist-definition.md`にledger 4点parity確認(#21)を追加
+- **対象タスク**: UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+- **変更の根拠**: FB-01〜FB-05フィードバックの再発防止措置
+
 ## 2026-04-07 - W0-seq-02 smart-default-reasoning-service Phase 12 close-out sync
 
 ### 変更内容
