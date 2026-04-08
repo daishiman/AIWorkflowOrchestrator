@@ -111,9 +111,10 @@ export function resolveHealthPolicy(input: HealthPolicyInput): HealthPolicy {
   // ルール 2/3: レート制限 または API key 劣化 → degraded
   // 接続エラー（ルール4）より先に評価: valid API key + connection error の場合も
   // subscription fallback を有効化するため isDegraded = true を返す。
+  // isConnectionAvailable は実際の接続状態（connected か否か）に依存する。
   if (isRateLimited || apiKeyDegraded) {
     return {
-      isConnectionAvailable: false,
+      isConnectionAvailable: connectionStatus === "connected",
       isDegraded: true,
       isRateLimited,
       healthStatus: "degraded",
