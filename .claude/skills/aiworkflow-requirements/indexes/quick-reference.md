@@ -39,6 +39,19 @@
 
 ---
 
+### Skill Wizard Redesign (W2-seq-03a) 参照導線 [2026-04-08完了]
+
+| 目的 | 参照先 |
+| --- | --- |
+| 全体像 | `docs/30-workflows/skill-wizard-redesign-lane/index.md` |
+| タスク仕様書 | `docs/30-workflows/W2-seq-03a-skill-create-wizard/` |
+| canonical 6成果物 | `outputs/phase-12/*.md` |
+| lessons-learned | `references/lessons-learned-skill-wizard-redesign.md` |
+| 完了記録 | `references/task-workflow-completed-recent-2026-04d.md` |
+| 後続タスク | W3-seq-04（Skill生成実行処理） |
+
+---
+
 ### UI Visual Baseline Drift / dark-mode screenshot stability（2026-04-03）
 
 | 目的                 | 最初に開くファイル                                                                                                                                           |

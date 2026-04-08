@@ -451,7 +451,7 @@ describe("SkillCreateWizard", () => {
       expect(mockCreateSkill).toHaveBeenCalledTimes(1);
     });
 
-    it("IPC 完了後に CompleteStep へ遷移する（新設計: パスは UI 非表示）", async () => {
+    it("IPC 完了後に CompleteStep へ遷移し skillPath が表示される", async () => {
       mockCreateSkill.mockResolvedValue("/custom/generated/path");
 
       render(<SkillCreateWizard onClose={mockOnClose} />);
@@ -466,11 +466,10 @@ describe("SkillCreateWizard", () => {
         await mockCreateSkill.mock.results[0]?.value;
       });
 
-      // 新設計: generatedSkill は親コンテキスト用のため UI には表示しない
       expect(screen.getByTestId("complete-step-header")).toBeInTheDocument();
-      expect(
-        screen.queryByText("/custom/generated/path"),
-      ).not.toBeInTheDocument();
+      expect(screen.getByTestId("complete-step-skill-path")).toHaveTextContent(
+        "/custom/generated/path",
+      );
     });
   });
 });
