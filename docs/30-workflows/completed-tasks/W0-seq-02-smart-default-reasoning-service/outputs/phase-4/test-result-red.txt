@@ -1,0 +1,26 @@
+# Phase 4: テスト実行結果（RED → GREEN 移行記録）
+
+## 実行日時
+2026-04-02
+
+## テストファイル
+apps/desktop/src/main/ipc/__tests__/disclosureHandlers.test.ts
+
+## RED 確認状況
+Phase 4 作成時点では disclosureHandlers.ts 本体のロジックが既に実装済みのため、
+テストは初回から GREEN となった（sender検証・エラーハンドリング・DENY-5が実装済み）。
+
+## テスト結果
+RUN  v2.1.9
+ ✓ src/main/ipc/__tests__/disclosureHandlers.test.ts (6 tests) 31ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+
+## テストケース一覧
+- AC-1: subscription モードのとき aiServiceName が 'Claude Code CLI' になる ✓
+- AC-2: api-key モードのとき aiServiceName が 'Anthropic API' になる ✓
+- AC-3: provider 未設定時（authMode が unknown 相当）のとき aiServiceName が 'unknown' になる ✓
+- AC-4: レスポンスに apiKey / token / secretKey プロパティが含まれない ✓
+- AC-5: 送信元が mainWindow でない場合 UNAUTHORIZED を返す ✓
+- AC-6: getDisclosureInfo が例外を投げた場合 DISCLOSURE_ERROR を返す ✓

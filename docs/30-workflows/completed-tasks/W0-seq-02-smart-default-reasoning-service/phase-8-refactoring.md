@@ -9,113 +9,85 @@
 | 機能名     | スマートデフォルト推論サービス実装             |
 | 前提Phase  | Phase 7                                        |
 | 後続Phase  | Phase 9                                        |
-| 作成日     | 2026-04-07                                     |
-| ステータス | pending                                        |
+| 作成日     | 2026-04-08                                     |
+| ステータス | completed                                      |
 
 ## 目的
 
-Phase 5 の実装を品質・可読性・保守性の観点でリファクタリングし、全テストが Green のまま維持されることを確認する。
+重複コードの除去・責務分離の確認・コード品質の改善を行い、テストが引き続き Green であることを確認する。
 
 ## 実行タスク
 
-1. 推論ルールを定数へ抽出する。
-2. ロジックを小さく分割する。
-3. inferenceLog の型安全性を確認する。
+1. `inferSmartDefaults` 内の重複パターンを確認する。
+2. 推論ルール定義の定数化を検討する。
+3. リファクタリング後に全テストが Green であることを確認する。
 
 ## 統合テスト連携
 
-- Phase 9 での静的解析と因果ループ監査に支障がない形に整える。
-- Phase 7 の coverage を落とさないようにする。
+- Phase 9 の lint / typecheck がクリーンな状態を保つ。
+- テスト件数・結果に変化がないことを確認する。
 
 ## リファクタリング観点
 
-### 1. 推論ルールの定数化
+| 観点             | 確認内容                                                            |
+| ---------------- | ------------------------------------------------------------------- |
+| 重複コードの除去 | 推論ルールのパターンが重複していないか確認                          |
+| 定数化           | キーワードリスト・ツール名・タイミング名を定数に抽出すべきか判断    |
+| 責務分離         | `inferSmartDefaults` が単一責務原則（SRP）に準拠しているか確認      |
+| 命名の一貫性     | 変数名・関数名がプロジェクトの命名規則（camelCase）に準拠しているか |
 
-推論キーワードを定数として分離し、追加・変更が容易な構造にする。
+## 変更記録フォーマット（Before/After/理由）
 
-```typescript
-// Before: 推論ルールがロジックに埋め込まれている
-if (purpose.includes("Slack")) { ... }
+リファクタリング実施時は以下のテーブル形式で記録する：
 
-// After: 定数として分離
-const TOOL_KEYWORDS: Record<NonNullable<SmartDefaultResult["tool"]>, string> = {
-  slack: "Slack",
-  github: "GitHub",
-  notion: "Notion",
-};
+| 対象                     | Before           | After            | 理由           |
+| ------------------------ | ---------------- | ---------------- | -------------- |
+| （変更があれば記録する） | （変更前の実装） | （変更後の実装） | （変更の理由） |
+
+## 検証コマンド
+
+```bash
+# リファクタリング後テスト確認
+pnpm --filter @repo/shared test:run -- src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts
+
+# lint確認
+pnpm lint
+
+# 型チェック
+pnpm --filter @repo/shared typecheck
 ```
-
-### 2. 推論ロジックの分割（オプション）
-
-ツール推論・タイミング推論・フォーマット推論を個別のプライベート関数に分割し、
-各関数が単一責務を持つよう改善する（テスト可能性向上）。
-
-```typescript
-function inferTool(purpose: string): SmartDefaultResult["tool"] { ... }
-function inferTiming(purpose: string): SmartDefaultResult["timing"] { ... }
-function inferFormat(category: SkillInfoFormData["category"]): SmartDefaultResult["format"] { ... }
-```
-
-### 3. inferenceLog の型安全化
-
-`inferenceLog` エントリの文字列フォーマットを統一し、コメントで契約を明示する。
-
-### 4. 不要なコメントの整理
-
-インラインコメントを最小化し、JSDoc 形式の説明に統一する。
-
-## 責務境界マップ
-
-| ファイル                                         | 責務                                                     |
-| ------------------------------------------------ | -------------------------------------------------------- |
-| `smartDefaultReasoningService.ts`                | `inferSmartDefaults` 関数・推論ルール定数・内部補助関数  |
-| `__tests__/smartDefaultReasoningService.test.ts` | 全推論ルール・フォールバック・組み合わせのユニットテスト |
-| `services/skillCreator/index.ts`                 | `inferSmartDefaults` のエクスポート（barrel）            |
 
 ## 参照資料
 
-| 資料名                 | パス                                              | 用途           |
-| ---------------------- | ------------------------------------------------- | -------------- |
-| 受け入れ基準           | `outputs/phase-1/acceptance-criteria.md`          | Phase 1 成果物 |
-| API 設計               | `outputs/phase-2/api-design.md`                   | Phase 2 成果物 |
-| 回帰テスト結果         | `outputs/phase-6/regression-test-result.md`       | Phase 6 成果物 |
-| カバレッジ計画         | `outputs/phase-7/coverage-plan.md`                | Phase 7 成果物 |
-| 未到達分析             | `outputs/phase-7/uncovered-analysis-plan.md`      | Phase 7 成果物 |
-| トレーサビリティ網羅率 | `outputs/phase-7/traceability-coverage-report.md` | Phase 7 成果物 |
+| 資料名                   | パス                                              | 用途           |
+| ------------------------ | ------------------------------------------------- | -------------- |
+| トレーサビリティレポート | `outputs/phase-7/traceability-coverage-report.md` | Phase 7 成果物 |
+| カバレッジ計画           | `outputs/phase-7/coverage-plan.md`                | Phase 7 成果物 |
 
 ## 実行手順
 
-1. Phase 7 成果物を確認する。
-2. 推論キーワードの定数化を検討・実施する（カバレッジ不足時は優先）。
-3. 推論ロジックの分割が可読性向上に有効かを判断する。
-4. 不要なコメントを整理する。
-5. リファクタリング後に全テストが Green であることを確認する。
+1. Phase 7 のカバレッジレポートを確認する。
+2. リファクタリング観点を評価する。
+3. 変更が必要な場合は Before/After テーブルに記録しつつ実施する。
+4. 全テストを実行し、Green であることを確認する。
+5. lint / typecheck をクリアしていることを確認する。
 
 ## 成果物
 
-| 成果物         | パス                                             | 説明                         |
-| -------------- | ------------------------------------------------ | ---------------------------- |
-| リファクタ計画 | `outputs/phase-8/refactoring-plan.md`            | リファクタリング内容と方針   |
-| 再テスト計画   | `outputs/phase-8/post-refactor-test-plan.md`     | リファクタ後のテスト確認計画 |
-| 責務境界マップ | `outputs/phase-8/responsibility-boundary-map.md` | ファイル責務の整理           |
+| 成果物                 | パス                                             | 説明                            |
+| ---------------------- | ------------------------------------------------ | ------------------------------- |
+| リファクタリング計画   | `outputs/phase-8/refactoring-plan.md`            | 変更内容・Before/After テーブル |
+| リファクタ後テスト計画 | `outputs/phase-8/post-refactor-test-plan.md`     | リファクタ後のテスト確認結果    |
+| 責務境界マップ         | `outputs/phase-8/responsibility-boundary-map.md` | SRP 準拠確認結果                |
 
 ## 完了条件
 
 - [ ] 実行タスクで定義した成果物を全件作成
-- [ ] リファクタリング後に全テストが Green であること
-- [ ] 責務境界マップが完成していること
-- [ ] 矛盾がないことを確認
-- [ ] 漏れがないことを確認
+- [ ] リファクタリング後も全テスト（TC-01〜TC-20）が Green であること
+- [ ] `pnpm lint` がエラーなし
+- [ ] `pnpm --filter @repo/shared typecheck` がエラーなし
+- [ ] 変更がある場合は Before/After テーブルが記録されていること
 - [ ] 本Phase内の全タスクを100%実行完了
-
-## サブタスク管理
-
-1. 参照資料の確認
-2. 推論キーワードの定数化検討・実施
-3. 推論ロジック分割の検討
-4. コメント整理
-5. リファクタ後テスト確認
-6. 成果物出力
 
 ## タスク100%実行確認【必須】
 

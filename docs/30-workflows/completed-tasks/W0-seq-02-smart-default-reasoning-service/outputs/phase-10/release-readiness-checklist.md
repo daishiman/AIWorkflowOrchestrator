@@ -1,28 +1,45 @@
-# 出荷準備チェックリスト
+# Phase 10: リリース準備チェックリスト — UT-SDK-07-APPROVAL-REQUEST-SURFACE-001
 
-## タスク情報
+## 実装完了チェック
 
-| 項目     | 内容                                           |
-| -------- | ---------------------------------------------- |
-| タスクID | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 |
-| Phase    | 10                                             |
+- [x] `SkillCreatorAPI` interface に `onApprovalRequest` を定義（AC-01）
+- [x] `skillCreatorAPI` オブジェクトに `onApprovalRequest` を実装（AC-02）
+- [x] `APPROVAL_REQUEST` チャンネルを `safeOn` で購読（AC-03）
+- [x] `SkillLifecyclePanel.tsx` に `ApprovalSheet` を表示（AC-04）
+- [x] approve/reject ボタンを `respondToApproval` に接続（AC-05）
+- [x] `preload/index.ts` との型シグネチャが対称（AC-06）
 
-## チェックリスト
+## 品質チェック
 
-| #   | 確認項目                                     | 状態 |
-| --- | -------------------------------------------- | ---- |
-| 1   | `smartDefaultReasoningService.ts` 実装完了   | ✅   |
-| 2   | `services/skillCreator/index.ts` barrel 作成 | ✅   |
-| 3   | `packages/shared/index.ts` root barrel 追加  | ✅   |
-| 4   | ユニットテスト 33件 全件 PASS                | ✅   |
-| 5   | カバレッジ 100%（目標 90% 以上）             | ✅   |
-| 6   | TypeScript 型エラー 0件                      | ✅   |
-| 7   | ESLint エラー 0件                            | ✅   |
-| 8   | any 型未使用（NFR-02）                       | ✅   |
-| 9   | 外部ライブラリ依存なし（NFR-03）             | ✅   |
-| 10  | AC-1〜AC-4 全達成                            | ✅   |
-| 11  | Phase 1〜10 成果物全件出力                   | ✅   |
+- [x] `pnpm typecheck` PASS（エラー 0件）（AC-07）
+- [x] `pnpm eslint` PASS（警告・エラー 0件）（AC-08）
+- [x] Vitest 19/19件 PASS（AC-09）
 
-## 判定
+## テストカバレッジ
 
-**出荷準備完了** ✅
+- [x] `onApprovalRequest` ブロック: line 100% / branch 100%（目標達成）
+- [x] SkillLifecyclePanel approval ブロック: line ~92% / branch ~83%（目標達成）
+
+## テストケース（TC-APPR-01〜18）
+
+- [x] TC-APPR-01〜10: Phase 4 で作成・PASS
+- [x] TC-APPR-11〜13: Phase 6 で追加・PASS（safeOn パターン・多重購読・再購読）
+- [x] TC-APPR-14〜18: Phase 6 で追加・PASS（回帰ガード・UI 状態管理）
+
+## リファクタリング
+
+- [x] 変更なし（既存パターンと一致、責務境界適切）
+
+## ドキュメント
+
+- [ ] Phase 11: 手動テスト検証（未実施）
+- [ ] Phase 12: ドキュメント更新（未実施）
+
+---
+
+## リリース判定
+
+**PASS — Phase 10 完了。Phase 11〜12 は別セッションで実施可能。**
+
+実装・テスト・品質チェックの全工程が完了。
+approval:request push 購読機能は本番投入可能な状態。
