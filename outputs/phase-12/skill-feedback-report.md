@@ -1,38 +1,56 @@
-# skill-feedback-report.md — TASK-P0-09-U1
+# Phase 12: スキルフィードバック（skill-feedback-report.md）— UT-SKILL-WIZARD-W1-par-02b
 
-## テンプレート改善観点
+## メタ情報
 
-### 1. TDD サイクルの明確化
+- タスクID: UT-SKILL-WIZARD-W1-par-02b
+- 作成日: 2026-04-08
 
-**観点**: Phase 4（Red）でテストを書く際に「プライベートメソッドのテスト方法」が仕様書に記載されていなかった。
+## 対象
 
-# Phase 12: スキルフィードバック — TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+- `task-specification-creator`（Phase/成果物の規約とテンプレート）
+- `aiworkflow-requirements`（システム仕様の正本）
 
-**改善案**: Phase 4 仕様書テンプレートに「private method テストは `(facade as unknown as FacadePrivate)` キャストを使う」等の補足を追加するか、「public callback 経由でテスト」を推奨するガイドを記載する。
+## フィードバック（改善提案）
 
-### 2. improve phase の canUseTool 配線の明確化
+### 1. UI タスクの Phase 11 証跡テンプレートを強制的に「VISUAL」に寄せる
 
-**観点**: `improve()` フローが `llmAdapter.sendChat()` を使用するため SDK callback が適用されないことが仕様書から読み取れなかった。Phase 5 のタスク2で「`createImproveGovernanceCanUseTool()` を接続」と書かれているが、接続先（`applyImprovement()` vs SDK callback）が曖昧だった。
+今回のように UI 変更が明確なタスクでは、`outputs/phase-11/screenshot-plan.json` と `phase11-capture-metadata.json` が旧タスクの `NON_VISUAL` のまま残りやすい。
 
-1. runtime guard は入口で統一すると UI/IPC/テストの一貫性が保たれる
-2. structured error を shared type で定義し、renderer は message 正規化に専念させると責務が分離できる
-3. execute ack 後の snapshot 再読込で failure path の取りこぼしを防げる
-4. improve failure の snapshot は `recordImproveFailure()` に寄せると phase 遷移の整合が保てる
-5. Phase 11 NON_VISUAL は証跡ファイルの current facts 化まで含めないと drift が残る
+改善案:
 
-**改善案**: 仕様書に「improve フローでの canUseTool 適用可能範囲と制約」を明記する。
+- UI task の場合、Phase 11 成果物のテンプレート生成時に `mode: "VISUAL"` をデフォルトにする
+- `taskId` を自動埋めし、旧 taskId の混入を検出して fail-fast する（例: preflight スクリプト）
 
-## ワークフロー改善観点
+### 2. 「Step 0 -> Step 1 引き渡し項目」を設計テンプレートに明記する
 
-### 小規模タスクの outputs 省略許可
+本タスクでは `category` と `smartDefaults` を Step 0 から Step 1 へ渡す仕様が核心だった。
 
-**観点**: 小規模タスク（phase-1〜3 で既に設計が自明な場合）でも全 Phase outputs が必須となっており、ドキュメント作成コストが実装コストを上回るケースがある。
+改善案:
 
-**改善案**: 規模（小/中/大）に応じて必須 outputs を tier 分けする仕組みを検討する。
+- Phase 2（設計）のテンプレートに「ステップ間の state ownership と引き渡し項目」の表を必須化する
+- `smartDefaults` の反映タイミング（初回のみ/都度更新/ユーザー入力優先）を decision として固定する欄を用意する
 
-## 改善点なしの判断
+### 3. 用語の一貫性（onConfirmGenerate などの名前ずれ）を抑える仕組み
 
-- Phase 仕様書の構造（目的・実行タスク・成果物・完了条件）は明確で実用的
-- TDD フローの Phase 4（Red）→ Phase 5（Green）→ Phase 6（拡充）は正しい順序
-- 知見セクション（苦戦箇所）が実装の助けになった
-  特になし（follow-up は未タスク検出レポートに記録済み）。
+ドキュメント中のコールバック名が、実装の `onConfirm` / `onGenerate("skip")` などとズレると stale が発生する。
+
+改善案:
+
+- Phase 12 のチェック項目に「ドキュメント内の識別子（関数/prop 名）が現行コードのものか」を追加する
+- 代表コードスニペットは「型/props 定義」から引用する方針に寄せる（手書きで drift しやすい）
+
+### 4. Renderer での node-only import を早期に検出する
+
+本タスクでは `node-cron` を renderer で直接 import したことで、Vite ブラウザバンドルの初期化時に runtime error が出た。
+
+改善案:
+
+- renderer 側の UI コンポーネントでは node-only パッケージを直接 import しないチェックを入れる
+- cron / date / filesystem などは browser-safe な薄いユーティリティに寄せる
+- Phase 11 の capture 前に「ブラウザで実際に route を開く smoke test」を必須にする
+
+## 良かった点（維持したい点）
+
+- `ConversationRoundStep` の `onAnswersChange` を `useEffect` に寄せ、setState updater 内の副作用を避けた点（テスト容易性と予測可能性が上がる）
+- `ApplySummaryCard` の key-based マッピングにより、`Object.keys()` 依存の順序バグを避けた点
+- Q3 の scheduleConfig を「定期実行から外れたら `undefined` にクリア」する挙動が仕様と一致している点

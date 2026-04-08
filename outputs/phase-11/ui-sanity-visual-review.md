@@ -1,18 +1,30 @@
-# Phase 11: Semantic Review — TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+# Phase 11: UI/UX Visual Review — UT-SKILL-WIZARD-W1-par-02b
 
 ## 対象
 
-`RuntimeSkillCreatorFacade.execute()` / `RuntimeSkillCreatorFacade.improve()` / renderer consumer error normalization
+- `DescribeStep`
+- `ConversationRoundStep`
+- `ApplySummaryCard`
+- `InterviewProgressBar`
 
-## 所見
+## 観点別レビュー
 
-| 観点   | 判定 | 所見                                                           |
-| ------ | ---- | -------------------------------------------------------------- |
-| 一貫性 | PASS | plan / execute / improve の adapter guard パターンが揃っている |
-| 可読性 | PASS | early return と structured error union で意図が明確            |
-| 整合性 | PASS | execute ack 後に workflow snapshot を再読込し failure を拾える |
-| 冗長性 | PASS | 追加分岐は最小限で既存 flow を壊していない                     |
+| 観点   | 判定 | 所見                                                    |
+| ------ | ---- | ------------------------------------------------------- |
+| 一貫性 | PASS | Step 0 -> Step 1 -> summary card の流れが自然           |
+| 可読性 | PASS | Q1-Q6 の見出しと progress bar で現在位置が明確          |
+| 整合性 | PASS | Q5 必須表示は external-integration のみに限定されている |
+| 冗長性 | PASS | 余分な UI はなく、2ページ構成で情報がまとまっている     |
+| 視認性 | PASS | dark theme 上でも選択状態と警告が判別しやすい           |
+
+## 参照スクリーンショット
+
+- `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png`
+- `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`
+- `outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png`
+- `outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png`
+- `outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png`
 
 ## 結論
 
-視覚変更はないため screenshot audit は不要。semantic review で重大な差異は検出されなかった。
+UI は current task の要件に沿っており、視覚的な破綻や設計上の不整合は見つからなかった。

@@ -118,6 +118,7 @@ import { SkillFileWriter } from "../services/skill/SkillFileWriter";
 import { ResourceLoader } from "../services/skill/ResourceLoader";
 import { DEFAULT_SKILL_CREATOR_PATH } from "../services/skill/constants";
 import { LLMAdapterFactory } from "../adapters/llm/LLMAdapterFactory";
+import { resolveHealthPolicy } from "@repo/shared/types";
 import Database from "better-sqlite3";
 import {
   registerSlideIpcHandlers,
@@ -716,6 +717,13 @@ export function registerAllIpcHandlers(
     authKeyService,
     subscriptionAuthProvider,
   );
+  const runtimeHealthPolicy = resolveHealthPolicy({
+    connectionStatus: "connected",
+    isApiKeyValid: true,
+    apiKeyDegraded: false,
+    isRateLimited: false,
+    lastHealthCheck: null,
+  });
   const runtimePolicyResolver = new RuntimePolicyResolver(
     authKeyService,
     subscriptionAuthProvider,
@@ -1040,7 +1048,7 @@ export function registerAllIpcHandlers(
           resolvedResourceReader,
           skillFileManager, // improve() / applyImprovement() で SKILL.md 読み書きに使用
           notificationService,
-          healthPolicy: options?.healthPolicy,
+          healthPolicy: options?.healthPolicy ?? runtimeHealthPolicy,
         })
       : undefined;
 

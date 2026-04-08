@@ -1,4 +1,4 @@
-# Phase 11: discovered issues — TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+# Phase 11: 発見した問題 — UT-SKILL-WIZARD-W1-par-02b
 
 ## サマリー
 
@@ -10,11 +10,15 @@
 
 ## 判定
 
-Phase 11 の NON_VISUAL walkthrough では、新規の blocker / minor issue は検出されなかった。
+新規の blocker / minor はなし。
+
+## resolved carry-over
+
+- `ConversationRoundStep.tsx` が `node-cron` を renderer で直 import していたため、browser bundle の初期化時に `Class extends value [object Object] is not a constructor or null` が発生していた
+- browser-safe な cron validator に置き換えたことで解消した
 
 ## 確認メモ
 
-- execute / improve の adapter guard は対称
-- typecheck / eslint / targeted vitest は PASS
-- `TASK-UT-RT-01-PHASE11-NONVISUAL-WALKTHROUGH-EVIDENCE-001` は current wave で回収済み
-- Phase 10 の MINOR follow-up 2件は Phase 12 で formalize
+- Page 1 / Page 2 / summary card の capture は成功
+- `Q5` 必須表示は external-integration のときのみ出る
+- summary card は Q5 未回答警告を表示し、生成前確認として機能する

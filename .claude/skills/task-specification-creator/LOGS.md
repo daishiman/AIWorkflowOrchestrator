@@ -2,6 +2,18 @@
 
 ## 役割
 
+## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
+
+### 変更内容
+- `references/patterns-lessons-and-pitfalls.md` に「Renderer での node-only import（browser bundle 破壊）」Pitfall を追加（Feedback 4）
+- `references/phase-template-phase11.md` の UI task 追加要件に `[W1-02b-1] screenshot-plan mode: VISUAL デフォルト` ガイドを追加（Feedback 1）
+- `references/phase-12-documentation-guide.md` の Task 12-6 に `[W1-02b-3] identifier consistency check` を追加（Feedback 3）
+- `SKILL.md` の「よくある漏れ」テーブルに Feedback W1-02b-1〜4（VISUAL default / multi-step state ownership / identifier drift / node-only import）を追記（Feedback 1〜4）
+
+### 背景
+UT-SKILL-WIZARD-W1-par-02b の `skill-feedback-report.md` に記録された改善提案4件を same-wave で skill に反映した。
+node-only import による browser bundle 破壊は Phase 11 の screenshot 全件ブロックにつながる高影響度 pitfall のため、patterns-lessons-and-pitfalls に優先追加した。
+
 ## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（impl-spec-to-skill-sync）
 
 ### 変更内容
@@ -91,16 +103,6 @@ UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継�
 
 ---
 
-## 2026-04-06 - TASK-RT-03 skill-feedback-report 改善反映
-
-### 変更内容
-- `ui-result-panel-pattern.md` に state owner 分離判断基準テーブルを追加
-- `task-specification-creator/SKILL.md` Trigger に `result-panel` / `SkillLifecyclePanel` / `SkillCreationResultPanel` / `orchestration wrapper` 等を追加
-- `v10.09.28` で記録済みだった skill-feedback の current facts ずれを是正
-- LOGS.md 2ファイル + SKILL.md 2ファイル同時更新
-
----
-
 ## 2026-04-06 - TASK-UT-RT-01-EXECUTE-ASYNC-SNAPSHOT-ERROR-MESSAGE-001 完了
 
 ### 変更内容
@@ -130,9 +132,6 @@ UT-SDK-07-SHARED-IPC-CHANNEL-CONTRACT-001 Phase 12 close-out による引き継�
 - `validate-phase-output.js` の Phase 11 docs-only 判定を canonical metadata / index 優先へ硬化し、false green の余地を縮小
 
 ---
-## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
----
-
 ## 2026-04-06 - TASK-UI-01 lifecycle-panel-primary-route-promotion close-out sync
 
 ### 変更内容

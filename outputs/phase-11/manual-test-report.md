@@ -1,37 +1,43 @@
-# Phase 11: 手動テストレポート — TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+# Phase 11: 手動テストレポート — UT-SKILL-WIZARD-W1-par-02b
 
 ## テスト方式
 
-NON_VISUAL。Main process / shared type / renderer consumer の変更のみで、新規画面追加やレイアウト変更はないため、スクリーンショットは採取しない。
+VISUAL。`SkillCreateWizard` の current task UI を Playwright で capture し、画面上の状態を目視確認した。
 
 ## 実施内容
 
-- `pnpm --filter @repo/shared typecheck`
-- `pnpm --filter @repo/desktop typecheck`
-- `pnpm --filter @repo/desktop exec eslint src/main/services/runtime/RuntimeSkillCreatorFacade.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.adapter-status.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/SkillCreateWizard.tsx src/renderer/components/skill/SkillLifecyclePanel.tsx`
-- `pnpm --filter @repo/desktop exec vitest run src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.notification.test.ts src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.test.ts src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx`
+- Step 0 で description と category を入力
+- Step 1 Page 1 で smartDefaults と progress bar を確認
+- Q3 の cron 入力に無効値を入れてエラー表示を確認
+- Step 1 Page 2 で Q5 の必須表示を確認
+- summary card を開いて Q5 未回答警告を確認
 
 ## 実施サマリー
 
-| 項目            | 結果                      |
-| --------------- | ------------------------- |
-| `typecheck`     | PASS                      |
-| `eslint`        | PASS                      |
-| targeted vitest | PASS (4 files / 69 tests) |
+| 項目               | 結果 |
+| ------------------ | ---- |
+| screenshot capture | PASS |
+| Page 1 UI          | PASS |
+| Page 2 UI          | PASS |
+| summary card       | PASS |
+| cron validation    | PASS |
 
 ## 所見
 
-- `execute()` と `improve()` が同一の adapter guard パターンで早期 return する
-- execute ack 後の snapshot 再読込で failure を拾える
-- `RuntimeSkillCreatorExecuteErrorResponse` が shared type として追跡可能
-- renderer consumer は type guard で message 正規化できる
+- `node-cron` の renderer 直 import は browser bundle で落ちるため、browser-safe validator に置き換えた
+- 置換後、capture は正常終了し、画面上の主要状態を確認できた
+- レイアウトの破綻、progress bar の不整合、Q5 必須表示の欠落は見られなかった
 
 ## 視覚証跡
 
-N/A
+- `outputs/phase-11/screenshot-plan.json`
+- `outputs/phase-11/phase11-capture-metadata.json`
+- `outputs/phase-11/screenshots/TC-11-01-step0-description-category.png`
+- `outputs/phase-11/screenshots/TC-11-02-step1-page1-defaults.png`
+- `outputs/phase-11/screenshots/TC-11-03-step1-cron-error.png`
+- `outputs/phase-11/screenshots/TC-11-04-step2-required-q5.png`
+- `outputs/phase-11/screenshots/TC-11-05-summary-card-warning.png`
 
-## 完了条件
+## 結論
 
-- [x] NON_VISUAL であることを記録
-- [x] 自動テストを主証跡として記録
-- [x] Semantic review の代替として所見を記録
+UI は current task の意図どおりに表示され、Phase 11 は PASS とする。

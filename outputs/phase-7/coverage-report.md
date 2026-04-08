@@ -1,46 +1,73 @@
-# Phase 7: カバレッジ確認 — UT-SDK-L34-UI-DISPLAY-SEVERITY-FILTER-001
+# Phase 7: カバレッジ確認レポート — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-## 計測対象
+## 実施日時
 
-- ファイル: `apps/desktop/src/renderer/components/skill/SkillLifecyclePanel.tsx`
-- テスト: `src/renderer/components/skill/__tests__/SkillLifecyclePanel.test.tsx`
+2026-04-07
 
-## カバレッジ結果
+---
 
-| 指標     | 計測値 | 目標 | 判定  |
-| -------- | ------ | ---- | ----- |
-| Lines    | 65.2%  | 80%+ | BELOW |
-| Branch   | 69.6%  | 60%+ | PASS  |
-| Function | 47.9%  | 80%+ | BELOW |
+## カバレッジ実測結果
 
-## 新規追加コード（severity フィルタ）のカバレッジ
+| カバレッジ種別 | Phase 7 目標値 | 実測値 | 判定 |
+| -------------- | -------------- | ------ | ---- |
+| line           | 80% 以上       | 83.15% | PASS |
+| branch         | 60% 以上       | 80%    | PASS |
+| statements     | （参考）       | 83.15% | -    |
+| functions      | （参考）       | 66.66% | -    |
 
-| 要素                         | カバレッジ状況             |
-| ---------------------------- | -------------------------- |
-| `filterChecksBySeverity`     | ✅ 212 呼び出し            |
-| `filteredChecksByLayer` memo | ✅ SF-01〜SF-09 で検証済み |
-| `severityTotalCounts` memo   | ✅ SF-06 で検証済み        |
-| フィルタバー UI              | ✅ SF-01〜SF-08 で検証済み |
-| `activeWorkflowId` useEffect | ✅ リセット動作確認済み    |
+**総合判定: PASS → Phase 8 へ進む**
 
-## 未達原因
+---
 
-SkillLifecyclePanel.tsx は 2,000 行超の大規模コンポーネント。今回のタスクスコープ外の既存コードが未カバー:
+## 実行コマンド
 
-- plan 実行フロー: `isExecuteTerminalHandoff`, `isExecutePlanAck`, `handleExecutePlan`
-- ワークフロー制御: `processWorkflowOutcome`, `handleCancelPlan`
-- handoff 操作: `handleCopyHandoffCommand`, `dismissHandoffGuidance`
+```bash
+node_modules/.bin/vitest run \
+  src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts \
+  --coverage \
+  --coverage.include="src/renderer/hooks/useMainlineExecutionAccess.ts" \
+  --coverage.reporter=text
+```
 
-これらは本タスク（severity フィルタ追加）のスコープ外の既存コード。
+---
 
-## 判断
-
-新規実装の severity フィルタ関連コードは全件カバー済み。Branch 目標 (60%+) は達成。Lines・Functions の未達は既存コードに起因するため、別タスクで対応する。
-
-## テスト実行結果
+## Vitest カバレッジ出力（抜粋）
 
 ```
-✓ SkillLifecyclePanel.test.tsx (27 tests) PASS
-  - 既存テスト: 18 件 PASS
-  - severity フィルタ: 9 件 PASS
+ % Coverage report from v8
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   83.15 |       80 |   66.66 |   83.15 |
+ ...utionAccess.ts |   83.15 |       80 |   66.66 |   83.15 | ...,76-85,108-113
+-------------------|---------|----------|---------|---------|-------------------
 ```
+
+---
+
+## 未カバー行の分析
+
+| 行範囲    | 内容                                                                                 | 未カバーの理由                                 | 対応方針                                                                   |
+| --------- | ------------------------------------------------------------------------------------ | ---------------------------------------------- | -------------------------------------------------------------------------- |
+| L76-L85   | `validateAllModes` 関数本体（useEffect 内の非同期処理・catch ブランチ）              | catch ブランチ（エラー時の状態更新）が未テスト | 対応不要（エラーパスは既存テストの対象外。将来タスクで追加可能）           |
+| L108-L113 | `refreshHealth` 関数本体（selectedProviderId が存在する場合の checkHealth 呼び出し） | refreshHealth の直接呼び出しテストが未実施     | 対応不要（本タスクのスコープ外。refreshHealth の動作確認は別タスクで対応） |
+
+---
+
+## function カバレッジについて
+
+function カバレッジ 66.66% はプロジェクトのグローバル閾値（80%）を下回るが、Phase 7 の判定基準は「line ≥ 80% かつ branch ≥ 60%」であるため PASS とする。
+
+未カバーの関数:
+
+1. `validateAllModes` — 非同期関数、エラーパスのみ未カバー
+2. `refreshHealth` — 返り値として公開されるが直接呼び出しテストなし
+
+これらは本タスクのスコープ（`resolveHealthPolicy` 統合）とは独立した関心事であるため、本タスクでの追加テストは行わない。
+
+---
+
+## 次フェーズへの引き継ぎ事項
+
+- Phase 7 目標値（line ≥ 80%, branch ≥ 60%）を達成
+- Phase 8（リファクタリング確認）へ進む

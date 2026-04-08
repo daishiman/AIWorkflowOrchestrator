@@ -1,82 +1,50 @@
-# system-spec-update-summary.md — TASK-P0-09-U1
+# Phase 12: システム仕様更新サマリー（system-spec-update-summary.md）— UT-SKILL-WIZARD-W1-par-02b
 
-# Phase 12: 仕様更新サマリー — TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001
+## メタ情報
 
-## Step 1-A: タスク完了記録
+- タスクID: UT-SKILL-WIZARD-W1-par-02b
+- 対象: Skill Create Wizard（renderer UI）
+- 作成日: 2026-04-08
 
-### 更新対象ファイル
+## Step 1: タスクの current facts（変更点の整理）
 
-| ファイル                                                                                        | 更新内容                       |
-| ----------------------------------------------------------------------------------------------- | ------------------------------ |
-| `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md`                  | TASK-P0-09-U1 完了エントリ追加 |
-| `docs/30-workflows/unassigned-task/TASK-P0-09-U1-path-scoped-governance-runtime-enforcement.md` | status: 未実施 → 完了          |
-| `.claude/skills/aiworkflow-requirements/LOGS.md`                                                | 完了エントリ追加               |
-| `.claude/skills/task-specification-creator/LOGS.md`                                             | 完了エントリ追加               |
-| `.claude/skills/aiworkflow-requirements/SKILL.md`                                               | history 追記                   |
-| `.claude/skills/task-specification-creator/SKILL.md`                                            | history 追記                   |
-| `.claude/skills/aiworkflow-requirements/indexes/topic-map.md`                                   | 再生成                         |
+### 変更の核
 
-- `task-workflow-completed.md` に本タスクの完了記録を追加
-- `task-workflow.md` / `task-workflow-backlog.md` を current facts に合わせて更新
-- `.claude/skills/aiworkflow-requirements/LOGS.md` と `.claude/skills/task-specification-creator/LOGS.md` を更新
+- Step 0（DescribeStep）で `SkillCategory` を選択できるようにし、Step 1 の必須表示（Q5）判定へ使う
+- template 生成モードでは Step 0 の入力から `SmartDefaultResult` を推論し、Step 1 へ渡す
+- Step 1（ConversationRoundStep）を 6問・2ページのインタビュー UI として実装し、Q3 の定期実行 UI（cron + timezone）と、サマリーカード（ApplySummaryCard）を追加
+- Q3 の cron 検証は renderer で動く browser-safe な 5-field validator を使い、Vite ブラウザバンドルでも起動できるようにした
 
-### 実施結果
+### 公開面（モジュール export）に関する current facts
 
-- [x] task-workflow-completed.md に TASK-P0-09-U1 完了エントリを追加
-- [x] unassigned-task 仕様書のステータスを「完了」に更新
-- [x] LOGS.md (aiworkflow-requirements) に完了エントリを追加
-- [x] LOGS.md (task-specification-creator) に完了エントリを追加
-- [x] 両 SKILL.md の history を追記
-- [x] topic-map.md を再生成
+- `apps/desktop/src/renderer/components/skill/wizard/index.ts` は `ConversationRoundStep` / `InterviewProgressBar` / `ApplySummaryCard` を export している
+- `ConfigureStep` は削除され、export も存在しない
 
----
+### shared contracts（型）について
 
-## Step 1-B: 実装状況テーブル更新
+このタスク自体で shared 型を新規追加するのではなく、既存の「Skill Wizard Shared Contracts」を consumer として利用する。
 
-**更新対象**: `docs/30-workflows/unassigned-task/TASK-P0-09-U1-path-scoped-governance-runtime-enforcement.md`
+- `packages/shared/src/types/skillCreator.ts`
+  - `SkillCategory`
+  - `SkillInfoFormData`
+  - `ConversationAnswers` / `QuestionAnswer`
+  - `SkillWizardScheduleConfig`
+  - `SmartDefaultResult`
 
-- status: `未実施` → `完了`
+## Step 2: システム仕様書（aiworkflow-requirements）への反映要否
 
----
+### 判定
 
-## Step 1-C: 関連タスクテーブル更新
+- IPC / backend API / データ永続化などの「システム外部契約」は変更していない
+- 変更は renderer UI 内のウィザード挙動（画面と state の配線）が中心
 
-**更新対象**: 親タスク TASK-P0-09 の関連記録
+よって、**システム中核仕様（IPC contract 等）の更新は不要**。
 
-- 実装完了として記録
-- 変更ファイル群を implementation-guide に反映
+### 更新が必要になり得るドキュメント（条件付き）
 
-- TASK-P0-09-U1 の carry-forward コメント `TODO(TASK-P0-09-U1)` は本タスク完了により解消
-- `SkillCreatorPermissionPolicy.ts:187` の TODO コメントを削除
+以下のような「UI/UX の画面仕様書」が aiworkflow-requirements に存在する場合のみ、`Q5 必須表示の条件（category）` と `smartDefaults の推論タイミング` を current facts として追記する価値がある。
 
----
+- Skill wizard の画面要件を記述する references
+- ウィザード Step の遷移図/画面設計の説明
 
-- Phase 11 の evidence task を resolved carry-over として吸収
-- Phase 10 の MINOR follow-up 2 件を backlog row として formalize
-
-## Step 2: システム仕様更新（条件付き）
-
-## Step 2: システム仕様更新（必要）
-
-### 判定: 限定的に必要
-
-新規の error response 追加により、以下を更新。
-
-- `extractTargetPath()`: 新規 private helper として追加（internal API）→ 公開 spec への反映は不要
-- `createImproveGovernanceCanUseTool()`: 新規 private method → 公開 spec への反映は不要
-- `CanUseToolContext` インターフェース: 既存のまま変更なし → N/A
-- `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md`
-- `.claude/skills/aiworkflow-requirements/references/api-ipc-system-core.md`
-- `.claude/skills/aiworkflow-requirements/references/arch-electron-services-details-part2.md`
-
-**結論**: 公開インターフェース変更なし。システム仕様書への新規反映は不要。
-
-## 反映あり
-
-- `RuntimeSkillCreatorExecuteErrorResponse` の current fact を system spec に追加
-- execute ack 後 snapshot 再読込と improve failure snapshot を current facts 化
-
-## 反映なし
-
-- public IPC channel の新規追加なし
-- execute/improve の正常系レスポンス形は変更なし
+本タスクの Phase 12 では、まず `outputs/phase-12/implementation-guide.md` に current facts を固定し、Phase 11 のスクリーンショット証跡と合わせて「仕様として確定」させる。

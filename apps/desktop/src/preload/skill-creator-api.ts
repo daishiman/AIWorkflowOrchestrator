@@ -427,8 +427,9 @@ function safeOn<T, R extends unknown[] = []>(
     return () => {};
   }
 
-  const listener = (_event: IpcRendererEvent, data: T, ...rest: R) => {
-    callback(data, ...rest);
+  const listener = (_event: IpcRendererEvent, ...args: any[]) => {
+    const [data, ...rest] = args as [T, ...R];
+    callback(data as T, ...(rest as R));
   };
 
   ipcRenderer.on(channel, listener);

@@ -2,6 +2,18 @@
 
 ## 役割
 
+## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
+
+### 変更内容
+- `references/patterns-lessons-and-pitfalls.md` に「Renderer での node-only import（browser bundle 破壊）」Pitfall を追加（Feedback 4）
+- `references/phase-template-phase11.md` の UI task 追加要件に `[W1-02b-1] screenshot-plan mode: VISUAL デフォルト` ガイドを追加（Feedback 1）
+- `references/phase-12-documentation-guide.md` の Task 12-6 に `[W1-02b-3] identifier consistency check` を追加（Feedback 3）
+- `SKILL.md` の「よくある漏れ」テーブルに Feedback W1-02b-1〜4（VISUAL default / multi-step state ownership / identifier drift / node-only import）を追記（Feedback 1〜4）
+
+### 背景
+UT-SKILL-WIZARD-W1-par-02b の `skill-feedback-report.md` に記録された改善提案4件を same-wave で skill に反映した。
+node-only import による browser bundle 破壊は Phase 11 の screenshot 全件ブロックにつながる高影響度 pitfall のため、patterns-lessons-and-pitfalls に優先追加した。
+
 ## 2026-04-07 - UT-SKILL-WIZARD-W0-seq-01 Trigger 補完（impl-spec-to-skill-sync）
 
 ### 変更内容

@@ -1,7 +1,43 @@
 {
-  "taskId": "TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001",
-  "featureName": "ut-rt-01-execute-improve-adapter-guard-001",
-  "mode": "NON_VISUAL",
-  "screenshots": [],
-  "note": "Main process / shared type / renderer type-guard 更新のみのため撮影なし"
+  "taskId": "UT-SKILL-WIZARD-W1-par-02b",
+  "taskName": "ConversationRoundStep コンポーネント実装（Step 1）",
+  "mode": "VISUAL",
+  "captureMethod": "playwright-vite-harness",
+  "screenshots": [
+    {
+      "id": "TC-11-01",
+      "file": "TC-11-01-step0-description-category.png",
+      "description": "Step 0 で説明文とカテゴリ選択を表示する",
+      "expectedState": "DescribeStep"
+    },
+    {
+      "id": "TC-11-02",
+      "file": "TC-11-02-step1-page1-defaults.png",
+      "description": "Page 1 で progress bar と smartDefaults の初期選択を表示する",
+      "expectedState": "ConversationRoundStep / Page 1"
+    },
+    {
+      "id": "TC-11-03",
+      "file": "TC-11-03-step1-cron-error.png",
+      "description": "Q3 の cron 入力に対するバリデーションエラーを表示する",
+      "expectedState": "ConversationRoundStep / Page 1 / cron error"
+    },
+    {
+      "id": "TC-11-04",
+      "file": "TC-11-04-step2-required-q5.png",
+      "description": "Page 2 で Q5 の必須表示を見せる",
+      "expectedState": "ConversationRoundStep / Page 2"
+    },
+    {
+      "id": "TC-11-05",
+      "file": "TC-11-05-summary-card-warning.png",
+      "description": "ApplySummaryCard で Q5 未回答警告を見せる",
+      "expectedState": "ApplySummaryCard / open"
+    }
+  ],
+  "notes": [
+    "Step 0 -> Step 1 の引き渡しは category と smartDefaults で行う",
+    "Q5 必須は external-integration のときだけ表示する",
+    "summary card は dismissible で、生成前の確認用"
+  ]
 }
