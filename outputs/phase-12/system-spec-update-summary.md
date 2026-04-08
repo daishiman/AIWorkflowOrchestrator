@@ -1,50 +1,71 @@
-# Phase 12: システム仕様更新サマリー（system-spec-update-summary.md）— UT-SKILL-WIZARD-W1-par-02b
+# W2-seq-03a システム仕様更新サマリー
 
-## メタ情報
+## タスクID: W2-seq-03a
 
-- タスクID: UT-SKILL-WIZARD-W1-par-02b
-- 対象: Skill Create Wizard（renderer UI）
-- 作成日: 2026-04-08
+## 作成日: 2026-04-08
 
-## Step 1: タスクの current facts（変更点の整理）
+---
 
-### 変更の核
+## Step 1-A: W2-seq-03a ステータス更新
 
-- Step 0（DescribeStep）で `SkillCategory` を選択できるようにし、Step 1 の必須表示（Q5）判定へ使う
-- template 生成モードでは Step 0 の入力から `SmartDefaultResult` を推論し、Step 1 へ渡す
-- Step 1（ConversationRoundStep）を 6問・2ページのインタビュー UI として実装し、Q3 の定期実行 UI（cron + timezone）と、サマリーカード（ApplySummaryCard）を追加
-- Q3 の cron 検証は renderer で動く browser-safe な 5-field validator を使い、Vite ブラウザバンドルでも起動できるようにした
+| 項目         | 内容                                  |
+| ------------ | ------------------------------------- |
+| タスクID     | W2-seq-03a                            |
+| ステータス   | **completed**                         |
+| 完了日       | 2026-04-08                            |
+| LOGS.md 更新 | 完了（W2-seq-03a 実装完了として記録） |
 
-### 公開面（モジュール export）に関する current facts
+---
 
-- `apps/desktop/src/renderer/components/skill/wizard/index.ts` は `ConversationRoundStep` / `InterviewProgressBar` / `ApplySummaryCard` を export している
-- `ConfigureStep` は削除され、export も存在しない
+## Step 1-B: 実装状況
 
-### shared contracts（型）について
+| 実装項目                                                                                                                               | 状態      |
+| -------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `generationMode` state 削除                                                                                                            | completed |
+| `description` / `options` state 削除                                                                                                   | completed |
+| `formData` / `answers` / `smartDefaults` / `generationMethod` / `skillPath` / `hasExternalIntegration` / `externalToolName` state 追加 | completed |
+| `inferSmartDefaults` 純粋関数実装                                                                                                      | completed |
+| `handleStep0Next` / `handleGenerate(method)` / `handleQualityFeedback` / `handleRetry` ハンドラ実装                                    | completed |
+| STEPS配列更新（`["スキル情報入力", "詳細設定", "生成", "完了"]`）                                                                      | completed |
+| Step 0 レンダリング（`DescribeStep` → `SkillInfoStep`）                                                                                | completed |
+| `GenerateStep` の `generationMode` prop 削除                                                                                           | completed |
+| `CompleteStep` の action cards / `onRetry` / `skillPath` / `hasExternalIntegration` / `externalToolName` 接続                          | completed |
 
-このタスク自体で shared 型を新規追加するのではなく、既存の「Skill Wizard Shared Contracts」を consumer として利用する。
+---
 
-- `packages/shared/src/types/skillCreator.ts`
-  - `SkillCategory`
-  - `SkillInfoFormData`
-  - `ConversationAnswers` / `QuestionAnswer`
-  - `SkillWizardScheduleConfig`
-  - `SmartDefaultResult`
+## Step 1-C: 後続タスクのステータス更新
 
-## Step 2: システム仕様書（aiworkflow-requirements）への反映要否
+| タスクID  | 変更前ステータス | 変更後ステータス | 理由                                                 |
+| --------- | ---------------- | ---------------- | ---------------------------------------------------- |
+| W3-seq-04 | pending          | **ready**        | W2-seq-03a が completed になったことで依存関係が解消 |
 
-### 判定
+---
 
-- IPC / backend API / データ永続化などの「システム外部契約」は変更していない
-- 変更は renderer UI 内のウィザード挙動（画面と state の配線）が中心
+## Step 2: システム仕様への反映要否
 
-よって、**システム中核仕様（IPC contract 等）の更新は不要**。
+### GenerateStep の仕様変更
 
-### 更新が必要になり得るドキュメント（条件付き）
+| 変更内容                    | 反映要否                                     |
+| --------------------------- | -------------------------------------------- |
+| `generationMode?` prop 削除 | 要反映（GenerateStep の props 定義から除去） |
 
-以下のような「UI/UX の画面仕様書」が aiworkflow-requirements に存在する場合のみ、`Q5 必須表示の条件（category）` と `smartDefaults の推論タイミング` を current facts として追記する価値がある。
+### CompleteStep の仕様変更
 
-- Skill wizard の画面要件を記述する references
-- ウィザード Step の遷移図/画面設計の説明
+| 変更内容                                                                  | 反映要否 |
+| ------------------------------------------------------------------------- | -------- |
+| `skillPath` prop 追加                                                     | 要反映   |
+| `hasExternalIntegration` prop 追加                                        | 要反映   |
+| `externalToolName` prop 追加                                              | 要反映   |
+| action cards（onExecuteNow / onOpenInEditor / onCreateAnother） prop 追加 | 要反映   |
+| `onRetry` prop 追加                                                       | 要反映   |
+| `onClose` を optional 化                                                  | 要反映   |
 
-本タスクの Phase 12 では、まず `outputs/phase-12/implementation-guide.md` に current facts を固定し、Phase 11 のスクリーンショット証跡と合わせて「仕様として確定」させる。
+### システム外部契約への影響
+
+IPC チャンネル定義・バックエンド API・データ永続化などのシステム外部契約は変更していない。変更は renderer UI 内のウィザードオーケストレーション（state 配線・ハンドラ・レンダリング）に限定される。
+
+---
+
+## 補足
+
+W2-seq-03a の実装により、`SkillCreateWizard` はテンプレート生成モードを完全廃止し、LLM専用の4ステップウィザード（スキル情報入力 → 詳細設定 → 生成 → 完了）として再構成された。`inferSmartDefaults` によるスマートデフォルト推論が Step 0→1 の遷移時に自動実行されることで、ユーザーの入力負担を軽減する。

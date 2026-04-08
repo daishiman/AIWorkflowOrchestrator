@@ -2,6 +2,7 @@ export { StepIndicator, stepStateStyles } from "./StepIndicator";
 export type { StepState, StepIndicatorProps } from "./StepIndicator";
 export { DescribeStep } from "./DescribeStep";
 export type { DescribeStepProps } from "./DescribeStep";
+export { SkillInfoStep } from "./SkillInfoStep";
 export { ConversationRoundStep } from "./ConversationRoundStep";
 export type { ConversationRoundStepProps } from "./ConversationRoundStep";
 export { InterviewProgressBar } from "./InterviewProgressBar";
