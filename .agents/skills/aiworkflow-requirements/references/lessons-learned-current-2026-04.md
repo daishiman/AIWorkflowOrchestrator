@@ -513,3 +513,37 @@
 | 解決策     | Phase 12 着手時に `outputs/phase-12/` の既存ファイルを棚卸しし、今回出力する canonical 名（`implementation-guide.md` / `system-spec-update.md` / `documentation-changelog.md` / `untasked-detection-report.md` / `skill-feedback-report.md` / `phase12-task-spec-compliance-check.md`）を先に決める |
 | 再発防止   | Phase 12 着手時の初手チェックとして「`outputs/phase-12/` の canonical ファイル名の確定」を明示する。`index.md` と `artifacts.json` の status 同期も同一 wave で行う           |
 | 関連タスク | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001                                                                                                                                       |
+
+---
+
+## TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消
+
+### L-WC-001: merge 戦略はファイルの「情報の性質」で決める
+
+| 項目 | 内容 |
+|------|------|
+| 症状 | 50〜60本の並列 worktree ブランチが `.claude/skills/` 配下を更新するとマージコンフリクトが頻発 |
+| 原因 | 追記型テキスト（LOGS.md）・JSON 構造体（EVALS.json）・自動生成ファイル（indexes/*.json）・静的仕様（SKILL.md）が同じ merge 戦略で扱われていた |
+| 解決策 | 追記型 → `merge=union`、JSON 構造・自動生成 → `merge=ours` + post-merge 再生成、静的仕様 → 変更履歴を別ファイルに分離して `merge=union` |
+| 再発防止 | 新しいファイルを `.gitattributes` に追加する際は「追記型か・構造化データか・自動生成か・静的仕様か」を最初に判断する |
+| 関連タスク | TASK-FIX-WORKTREE-CONFLICT-001 |
+
+### L-WC-002: シェルスクリプトの外部コマンドは `command -v` で存在確認する
+
+| 項目 | 内容 |
+|------|------|
+| 症状 | `set -euo pipefail` 環境で `node: command not found` → 終了コード 127 でフックが失敗 |
+| 原因 | `[ -f "$SCRIPT" ]` でスクリプト存在確認はしていたが、`node` コマンド自体の存在確認がなかった |
+| 解決策 | `command -v node > /dev/null 2>&1 &&` を条件に追加し、node 不在時は正常終了 |
+| 再発防止 | `set -euo pipefail` 環境では外部コマンドの呼び出し前に必ず `command -v <cmd>` で存在確認する |
+| 関連タスク | TASK-FIX-WORKTREE-CONFLICT-001 |
+
+### L-WC-003: husky を使うプロジェクトでは git フックパスが `.husky/_/` になる
+
+| 項目 | 内容 |
+|------|------|
+| 症状 | `git rev-parse --git-path hooks/post-merge` が `.git/hooks/post-merge` ではなく `.husky/_/post-merge` を返す |
+| 原因 | プロジェクトが husky を使用しており、`core.hooksPath=.husky/_` が設定されている |
+| 解決策 | `git rev-parse --git-path hooks/post-merge` の返り値をそのままインストール先として使う（パスを決め打ちしない） |
+| 再発防止 | フックのインストール先は常に `git rev-parse --git-path hooks/<hook-name>` で動的に解決する |
+| 関連タスク | TASK-FIX-WORKTREE-CONFLICT-001 |

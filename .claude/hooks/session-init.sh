@@ -47,4 +47,13 @@ if [[ -d "$PROJECT_DIR/.git" ]]; then
   echo "🌿 Git: ブランチ=${BRANCH}, 未コミット変更=${CHANGES}件"
 fi
 
+# post-merge フックの自動インストールチェック
+HOOK_PATH="$(git -C "$PROJECT_DIR" rev-parse --git-path hooks/post-merge 2>/dev/null || true)"
+INSTALL_SCRIPT="$(git -C "$PROJECT_DIR" rev-parse --show-toplevel 2>/dev/null || true)/.claude/scripts/install-git-hooks.sh"
+
+if [ -n "$HOOK_PATH" ] && [ ! -f "$HOOK_PATH" ] && [ -f "$INSTALL_SCRIPT" ]; then
+  echo "[session-init] post-merge フックを自動インストールします..."
+  bash "$INSTALL_SCRIPT"
+fi
+
 exit 0

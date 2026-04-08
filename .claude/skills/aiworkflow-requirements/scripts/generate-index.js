@@ -21,6 +21,7 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const REFS_DIR = join(__dirname, "..", "references");
 const INDEXES_DIR = join(__dirname, "..", "indexes");
+const QUIET = process.argv.includes("--quiet");
 
 // prefix → トピック名のマッピング
 const PREFIX_TO_TOPIC = {
@@ -239,7 +240,7 @@ node scripts/list-specs.js --topics
 
       if (headings.length > 0) {
         md += "| セクション | 行 |\n";
-        md += "|------------|----|\\n";
+        md += "|------------|----|\n";
         // 最大20セクションまで表示（大規模ファイル対応）
         for (const h of headings.filter((h) => h.level === 2).slice(0, 20)) {
           md += `| ${h.text} | L${h.line} |\n`;
@@ -297,44 +298,49 @@ async function generateKeywordIndex() {
   }
 
   return {
-    generated: new Date().toISOString(),
     totalKeywords: Object.keys(keywords).length,
     keywords,
   };
 }
 
 async function main() {
-  console.log("📚 インデックス生成中...\n");
+  const log = (...args) => {
+    if (!QUIET) {
+      console.log(...args);
+    }
+  };
+
+  log("📚 インデックス生成中...\n");
 
   // ファイル分類を表示
   const categorized = await categorizeFiles();
   const totalFiles = Object.values(categorized).flat().length;
-  console.log(`📂 ${totalFiles}ファイルを分類:`);
+  log(`📂 ${totalFiles}ファイルを分類:`);
   for (const [topic, files] of Object.entries(categorized)) {
     if (files.length > 0) {
-      console.log(`   ${topic}: ${files.length}ファイル`);
+      log(`   ${topic}: ${files.length}ファイル`);
     }
   }
-  console.log("");
+  log("");
 
   // トピックマップ生成
-  console.log("1. トピックマップ生成...");
+  log("1. トピックマップ生成...");
   const topicMap = await generateTopicMap();
   await writeFile(join(INDEXES_DIR, "topic-map.md"), topicMap);
-  console.log("   ✅ indexes/topic-map.md");
+  log("   ✅ indexes/topic-map.md");
 
   // キーワード索引生成
-  console.log("2. キーワード索引生成...");
+  log("2. キーワード索引生成...");
   const keywordIndex = await generateKeywordIndex();
   await writeFile(
     join(INDEXES_DIR, "keywords.json"),
     JSON.stringify(keywordIndex, null, 2),
   );
-  console.log(
+  log(
     `   ✅ indexes/keywords.json (${keywordIndex.totalKeywords}キーワード)`,
   );
 
-  console.log("\n✅ インデックス生成完了");
+  log("\n✅ インデックス生成完了");
 }
 
 main().catch((err) => {
