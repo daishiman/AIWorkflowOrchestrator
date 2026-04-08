@@ -3,50 +3,6 @@
 ## 役割
 
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
-## 2026-04-08 - TASK-UT-RT-01-EXHAUSTIVE-CHECK-EXECUTE-RESPONSE-001 impl-spec-to-skill-sync
-
-### 変更内容
-- `references/phase-template-phase11.md` に NON_VISUAL 判定時の `artifacts.json` 必須フィールド（`metadata.taskType = "NON_VISUAL"`）セクションを追加した
-- `references/phase-template-execution.md` に follow-up タスクの Phase 4 Green 開始パターンを追加した（TDD Red/Green 開始条件分岐を明示）
-- `SKILL.md` を v6.18.29 へバージョンアップした（Feedback UT-RT-01-EXHAUSTIVE-001 反映）
-- `aiworkflow-requirements/SKILL.md` を v9.02.49 へバージョンアップした
-
-### 反映元
-- TASK-UT-RT-01-EXHAUSTIVE-CHECK-EXECUTE-RESPONSE-001 の `skill-feedback-report.md`（テンプレート改善2件）
-
----
-
-## 2026-04-08 - TASK-UT-RT-01-EXHAUSTIVE-CHECK-EXECUTE-RESPONSE-001 Phase 12 close-out sync
-
-### 変更内容
-- `apps/desktop/src/main/services/runtime/__tests__/RuntimeSkillCreatorFacade.executeAsync.exhaustive.test.ts` を新規作成し、TC-01〜TC-09（+TC-05b）9件のテストを実装した
-- `docs/30-workflows/task-ut-rt-01-exhaustive-check-execute-response-001/artifacts.json` を phase 1-12 completed で同期した
-- `.claude/skills/aiworkflow-requirements/references/task-workflow.md` の current fact へ本タスク完了記録を追記した
-- `.claude/skills/aiworkflow-requirements/references/task-workflow-backlog.md` の本タスクエントリを completed（取り消し線）に更新した
-- `.claude/skills/aiworkflow-requirements/references/task-workflow-completed.md` に完了記録を追加した
-- `aiworkflow-requirements/LOGS.md` / `task-specification-creator/LOGS.md` を same-wave で更新した
-
-### 背景
-本タスクは follow-up 型（実装済み機能へのテスト追加）のため Phase 1-3 はレビュー形式で短縮した。
-Phase 4 は Red にならず Green 開始となる特性があり、skill-feedback-report.md に改善提案として記録した。
-
-## 2026-04-07 - W0-seq-02 smart-default-reasoning-service Phase 12 close-out sync
-## 2026-04-08 - UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 Phase 12 close-out sync
-
-### 変更内容
-- `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx` を新規追加し、6問固定・2ページ構成の会話ラリー UI を実装した
-- `apps/desktop/src/renderer/components/skill/wizard/index.ts` に `ConversationRoundStep` / `buildInitialAnswers` / `QUESTIONS` / `ConversationRoundStepProps` の export を追加した
-- `buildInitialAnswers()` で semantic default を canonical label に正規化し、`自分だけ` → `自分のみ` などの alias を吸収した
-- `ConversationRoundStep.test.tsx` を 19 tests PASS まで拡張し、canonical / alias の両経路を固定した
-- `docs/30-workflows/ut-skill-wizard-w1-conversation-round-step-001/` の `index.md` / `artifacts.json` / phase spec / phase outputs / lane index / task-workflow 台帳を同波同期した
-- `outputs/phase-13/` の PR 準備ファイルを current facts に合わせて整備した
-
-### 検証
-- `pnpm --filter @repo/desktop typecheck`: PASS
-- `pnpm --filter @repo/desktop exec vitest run src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --reporter=dot`: PASS
-- `pnpm --filter @repo/desktop exec vitest run --coverage src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx --coverage.include="**/wizard/ConversationRoundStep.tsx"`: PASS
-
-## 2026-04-08 - UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 Phase 12 close-out sync（skill-feedback 反映）
 
 ### 変更内容
 - `references/patterns-lessons-and-pitfalls.md` に「Renderer での node-only import（browser bundle 破壊）」Pitfall を追加（Feedback 4）

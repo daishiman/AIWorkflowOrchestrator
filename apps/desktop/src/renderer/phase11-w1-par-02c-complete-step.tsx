@@ -59,7 +59,10 @@ function Phase11CompleteStepHarness(): JSX.Element {
           title="TC-09 CompleteStep 外部連携チェックリスト"
         >
           <CompleteStep
-            skillPath="/mock/skills/slack-notifier"
+            generatedSkill={{
+              path: "/mock/skills/slack-notifier",
+              name: "slack-notifier",
+            }}
             hasExternalIntegration
             externalToolName="Slack"
             onQualityFeedback={() => undefined}

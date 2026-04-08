@@ -1,95 +1,81 @@
-# W2-seq-03a 要件定義
+# Phase 1: 要件定義 — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-## タスク概要
+## 実施日時
 
-`SkillCreateWizard.tsx` のオーケストレーション更新。テンプレート生成モードを廃止してLLM専用化し、スマートデフォルト推論・会話ラリーStep・品質フィードバックハンドラを追加する。
+2026-04-08
 
----
+## 目的
 
-## 機能要件
+`useMainlineExecutionAccess` フック内の独自 `apiKeyDegraded` 算出ロジックを削除し、`resolveHealthPolicy()` / `buildMainlineExecutionAccessState()` を経由する形へ統一するための要件を定義する。
 
-### 1. 削除対象
+## 対象
 
-| 項目                         | 種別         | 理由                                  |
-| ---------------------------- | ------------ | ------------------------------------- |
-| `generationMode` state       | State削除    | LLM専用化に伴いテンプレートモード廃止 |
-| `description` state          | State削除    | `formData` に統合                     |
-| `options` state              | State削除    | `formData` に統合                     |
-| `GenerationMode` import      | Import削除   | 型不要                                |
-| `DescribeStep` import        | Import削除   | `SkillInfoStep` に置換                |
-| `handleLlmGenerate()`        | ハンドラ削除 | `handleGenerate(method)` に統合       |
-| `handleExecutePlan()`        | ハンドラ削除 | plan実行フロー廃止                    |
-| `handleCancelPlan()`         | ハンドラ削除 | plan実行フロー廃止                    |
-| `handleDescribeNext()`       | ハンドラ削除 | `handleStep0Next()` に置換            |
-| `clearPlanExecutionState()`  | 関数削除     | plan実行フロー廃止                    |
-| 各種plan/execute store hooks | Hook削除     | plan実行フロー廃止                    |
+- `apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.ts`
+- `apps/desktop/src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts`
 
-### 2. 追加対象
+## 要件サマリー
 
-#### 2-1. State追加
+| 項目           | 内容                                                                                                         |
+| -------------- | ------------------------------------------------------------------------------------------------------------ |
+| タスク分類     | NON_VISUAL / refactor                                                                                        |
+| 変更対象       | 1 hook + 1 test file                                                                                         |
+| 期待結果       | `healthPolicy` を生成して `buildMainlineExecutionAccessState()` に渡し、独自 `apiKeyDegraded` 算出を削除する |
+| インポート規則 | `resolveHealthPolicy` は `@repo/shared/types` から import する                                               |
 
-| State名                  | 型                           | 初期値       | 説明                                             |
-| ------------------------ | ---------------------------- | ------------ | ------------------------------------------------ |
-| `formData`               | `SkillFormData \| null`      | `null`       | Step 0 の入力データ（name, purpose, category等） |
-| `answers`                | `string[]`                   | `[]`         | ConversationRoundStep の会話回答リスト           |
-| `smartDefaults`          | `SmartDefaultResult \| null` | `null`       | inferSmartDefaults の推論結果                    |
-| `generationMethod`       | `'complete' \| 'skip'`       | `'complete'` | LLM生成方式（詳細生成/スキップ）                 |
-| `skillPath`              | `string \| null`             | `null`       | 生成済みスキルのファイルパス                     |
-| `hasExternalIntegration` | `boolean`                    | `false`      | 外部ツール連携の有無                             |
-| `externalToolName`       | `string \| null`             | `null`       | 外部連携ツール名                                 |
+## 調査結果
 
-#### 2-2. 関数追加
+| 観点                                           | 結果                                                            |
+| ---------------------------------------------- | --------------------------------------------------------------- |
+| `selectedHealthStatus` の導出                  | `selectedProviderId` と `llmHealthStatus` から導出              |
+| `buildMainlineExecutionAccessState()` の受け口 | `healthPolicy?: HealthPolicy` を受け取れる                      |
+| `resolveHealthPolicy` の export                | `packages/shared/src/types/index.ts` から barrel export 済み    |
+| `apiKeyDegraded` の扱い                        | hook 内の独自算出は削除対象、shared 側の型/関数では継続利用あり |
 
-##### `inferSmartDefaults(formData: SkillFormData): SmartDefaultResult`
+## HealthPolicyInput へのマッピング
 
-推論ルール:
+| HealthPolicyInput フィールド | マッピング元                   | 変換方法                   |
+| ---------------------------- | ------------------------------ | -------------------------- |
+| `connectionStatus`           | `selectedHealthStatus?.status` | `?? "disconnected"` で補完 |
+| `isApiKeyValid`              | `credentials.apiKeyValid`      | そのまま渡す               |
+| `apiKeyDegraded`             | 独自算出ロジックの代替         | `false` を渡す             |
+| `isRateLimited`              | hook 内に該当変数なし          | `false` を渡す             |
+| `lastHealthCheck`            | `selectedHealthStatus`         | `?? null` で補完           |
 
-| 条件                                                  | 推論結果                                                        |
-| ----------------------------------------------------- | --------------------------------------------------------------- |
-| `formData.purpose` に "slack" を含む（大小文字不問）  | `hasExternalIntegration = true`, `externalToolName = "Slack"`   |
-| `formData.purpose` に "github" を含む（大小文字不問） | `hasExternalIntegration = true`, `externalToolName = "GitHub"`  |
-| `formData.purpose` に "notion" を含む（大小文字不問） | `hasExternalIntegration = true`, `externalToolName = "Notion"`  |
-| `formData.category === 'schedule'`                    | `generationMethod = 'complete'`（スケジュール系は詳細生成推奨） |
-| `formData.category === 'realtime'`                    | `generationMethod = 'complete'`（リアルタイム系は詳細生成推奨） |
-| `formData.category === 'code-support'`                | `generationMethod = 'skip'`（コードサポート系はスキップ可）     |
-| `formData.category === 'data-analysis'`               | `generationMethod = 'skip'`（データ分析系はスキップ可）         |
+## 受入基準
 
-#### 2-3. ハンドラ追加
+| AC   | 内容                                                                         | 確認方法                                                                                                      |
+| ---- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| AC-1 | `resolveHealthPolicy()` が `useMainlineExecutionAccess` 内で呼び出されている | hook で `resolveHealthPolicy` の import と呼び出しを確認                                                      |
+| AC-2 | `buildMainlineExecutionAccessState()` に `healthPolicy` が渡されている       | hook の呼び出し引数を確認                                                                                     |
+| AC-3 | `apiKeyDegraded` 独自算出ロジックが削除されている                            | hook 内の `const apiKeyDegraded = ...` が存在しないことを確認                                                 |
+| AC-4 | `@repo/shared/types` 経由でインポートしている                                | import 文を確認                                                                                               |
+| AC-5 | 既存ユニットテストが PASS する                                               | `pnpm --filter @repo/desktop exec vitest run src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts` |
+| AC-6 | TypeScript 型チェックが PASS する                                            | `pnpm --filter @repo/shared typecheck` / `pnpm --filter @repo/desktop typecheck`                              |
 
-| ハンドラ名               | シグネチャ                                        | 説明                                                                             |
-| ------------------------ | ------------------------------------------------- | -------------------------------------------------------------------------------- |
-| `handleStep0Next`        | `(data: SkillFormData) => void`                   | Step 0 完了時に `formData` を保存し、`inferSmartDefaults` を実行してStep 1へ進む |
-| `handleGenerate(method)` | `(method: 'complete' \| 'skip') => Promise<void>` | LLMによるスキル生成を実行。`generationMethod` を更新し生成APIを呼び出す          |
-| `handleQualityFeedback`  | `(feedback: QualityFeedback) => void`             | 生成結果へのフィードバックを受け取り記録する                                     |
-| `handleRetry`            | `() => void`                                      | Step 0 に戻り、前回の `formData` を保持したまま再入力を可能にする                |
+## スコープ
 
-### 3. STEPS配列更新
+### 含む
 
-```typescript
-const STEPS = ["スキル情報入力", "詳細設定", "生成", "完了"];
-```
+- `resolveHealthPolicy` の import 追加
+- `resolveHealthPolicy()` の呼び出し追加
+- `buildMainlineExecutionAccessState()` への `healthPolicy` 引き渡し
+- `apiKeyDegraded` の独自算出削除
+- フック用ユニットテストの更新
 
-### 4. ステップレンダリング更新
+### 含まない
 
-| Step番号 | コンポーネント          | 主な変更点                                                                                    |
-| -------- | ----------------------- | --------------------------------------------------------------------------------------------- |
-| Step 0   | `SkillInfoStep`         | `DescribeStep` から置換。`onNext={handleStep0Next}` を接続                                    |
-| Step 1   | `ConversationRoundStep` | `onGenerate={handleGenerate}` を接続                                                          |
-| Step 2   | `GenerateStep`          | `generationMode` prop を削除                                                                  |
-| Step 3   | `CompleteStep`          | `skillPath` / `hasExternalIntegration` / `externalToolName` / action cards / `onRetry` を接続 |
+- `resolveHealthPolicy()` の実装変更
+- `buildMainlineExecutionAccessState()` の実装変更
+- UI 変更
+- スクリーンショット取得
 
----
+## 成果物
 
-## 非機能要件
+| 成果物             | パス                                         | 説明                               |
+| ------------------ | -------------------------------------------- | ---------------------------------- |
+| 要件定義書         | `outputs/phase-1/requirements-definition.md` | 調査結果・要件定義                 |
+| 状態変数マッピング | `outputs/phase-1/state-mapping.md`           | HealthPolicyInput の詳細マッピング |
 
-### 型安全性
+## 結論
 
-- `any` 型の使用を禁止する
-- 新規追加するすべての State・ハンドラ・Props は TypeScript の厳密な型定義を持つこと
-- `SmartDefaultResult` 型を `packages/shared` に定義し、フロントエンド・バックエンド間で共有すること
-
-### テストカバレッジ
-
-- `inferSmartDefaults` 関数のユニットテストカバレッジ 100% を維持すること
-- `handleStep0Next` / `handleGenerate` / `handleRetry` の統合テストを追加すること
-- 削除したハンドラ・state に依存する既存テストを更新すること
+Phase 2 へ進行可能。`outputs/phase-1/state-mapping.md` のマッピングを設計インプットとして使用する。

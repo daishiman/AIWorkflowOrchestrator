@@ -124,8 +124,7 @@ vi.mock("../../../hooks/useCancelGeneration", () => ({
 const mockPlanSkill = vi.fn();
 const mockExecutePlan = vi.fn();
 
-// W2-seq-03a: generationMode / DescribeStep / planSkill / executePlan は削除済みのためスキップ
-describe.skip("SkillCreateWizard LLM生成フロー", () => {
+describe("SkillCreateWizard LLM生成フロー", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockStoreState = {

@@ -87,18 +87,6 @@ grep -n "^[^/]*\(app\.\|server\.\|connect\|initialize\|ipcMain\.\|BrowserWindow\
 
 Phase 4 仕様書のタスク説明に「本タスクでは public callback 経由を採用する」等を1行添えること。
 
-### Phase 4: follow-up タスクの開始条件（実装済み機能へのテスト追加）【Feedback UT-RT-01-EXHAUSTIVE-001】
-
-> 親タスクで実装が完了済みの follow-up タスクでは、Phase 4 は TDD Red にならないケースが存在する。
-
-| タスク種別 | Phase 4 開始状態 | 仕様書への明記 |
-| ---------- | ---------------- | ------------- |
-| 新機能実装 | Red から開始（TDD 標準） | 「新規実装のため TDD Red から開始する」 |
-| follow-up（実装済み機能へのテスト追加） | **Green から開始** | 「既存実装が存在するため Green 開始。テストを後付けで網羅する」 |
-| exhaustive check 追加 | **Green から開始** | 「exhaustive check 追加のため Green 開始。union 分岐をすべて網羅する」 |
-
-Phase 4 仕様書の冒頭に「TDD Red/Green 開始のどちらか」と「その理由」を1行で明記すること。
-
 ### Phase 5: canUseTool 適用範囲と制約の明記【SDK Hook 系タスク】
 
 > [Feedback P0-09-U1-2] SDK callback（`canUseTool`）を接続するタスクでは、`improve()` フローへの適用可否を Phase 5 仕様書に明記する。

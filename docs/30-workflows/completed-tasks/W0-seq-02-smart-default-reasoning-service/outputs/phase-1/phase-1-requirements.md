@@ -13,8 +13,8 @@
 
 ## 目的
 
-Electron Renderer 側に「質問受信・回答送信」UIコンポーネント群を実装するための要件を定義する。
-`skill-creator:question-received` IPCイベントで `SkillCreatorUserInputRequest` を受信し、`kind` に応じた入力UIを提供し、
+Electron Renderer 側に「質問受信・回答送信」UIコンポーネント群を実装するための要件を定義する。  
+`skill-creator:question-received` IPCイベントで `SkillCreatorUserInputRequest` を受信し、`kind` に応じた入力UIを提供し、  
 ユーザーの回答を `SkillCreatorUserInputSubmission` に正規化して `skill-creator:answer` IPC で送信するインタフェースを構築する。
 
 ## 前提確認

@@ -1,54 +1,43 @@
-# W2-seq-03a ドキュメント更新履歴
+# Phase 12: ドキュメント更新履歴（documentation-changelog.md）— UT-SKILL-WIZARD-W1-par-02b
 
-## タスクID: W2-seq-03a
+## メタ情報
 
-## 作成日: 2026-04-08
+- タスクID: UT-SKILL-WIZARD-W1-par-02b
+- 作成日: 2026-04-08
 
----
+## 変更対象（コード: current facts）
 
-## 更新履歴: W2-seq-03a 実装完了記録
+| 区分 | ファイル                                                                                     | 要約                                                                                                                                                  |
+| ---- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ui   | `apps/desktop/src/renderer/components/skill/wizard/DescribeStep.tsx`                         | Step 0 に `SkillCategory` セレクトを追加                                                                                                              |
+| ui   | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                           | `category` state 追加、template モードで `smartDefaults` 推論を導入し Step 1 に引き渡し                                                               |
+| ui   | `apps/desktop/src/renderer/components/skill/wizard/ConversationRoundStep.tsx`                | 6問・2ページ、Q3 定期実行 UI（cron+timezone）、browser-safe 5-field cron validator、`onAnswersChange` の副作用整理、Q3 切替時の scheduleConfig クリア |
+| ui   | `apps/desktop/src/renderer/components/skill/wizard/ApplySummaryCard.tsx`                     | key-based マッピングで未回答 defaults を表示、Q5 必須は警告のみ                                                                                       |
+| ui   | `apps/desktop/src/renderer/components/skill/wizard/InterviewProgressBar.tsx`                 | `質問 N/6` と進捗バー表示                                                                                                                             |
+| ui   | `apps/desktop/src/renderer/components/skill/wizard/index.ts`                                 | 新コンポーネントを export（`ConfigureStep` は削除済み）                                                                                               |
+| test | `apps/desktop/src/renderer/components/skill/wizard/__tests__/DescribeStep.test.tsx`          | カテゴリセレクトの表示/変更テスト                                                                                                                     |
+| test | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`            | external-integration で Q5 必須表示が出る統合テスト更新                                                                                               |
+| test | `apps/desktop/src/renderer/components/skill/wizard/__tests__/ConversationRoundStep.test.tsx` | cron 検証と scheduleConfig クリアのテスト追加                                                                                                         |
+| test | `apps/desktop/src/renderer/components/skill/wizard/__tests__/ApplySummaryCard.test.tsx`      | 表示と警告のテスト                                                                                                                                    |
+| test | `apps/desktop/src/renderer/components/skill/wizard/__tests__/InterviewProgressBar.test.tsx`  | 進捗表示のテスト                                                                                                                                      |
 
-### 実装変更（コード）
+## 変更対象（成果物: Phase 12 canonical 6成果物）
 
-| 区分 | ファイル                                                                                         | 変更概要                                                                                                       |
-| ---- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| ui   | `apps/desktop/src/renderer/components/skill/SkillCreateWizard.tsx`                               | テンプレートモード廃止・LLM専用化。State7個追加・ハンドラ5個追加・legacy削除                                   |
-| ui   | `apps/desktop/src/renderer/components/skill/wizard/CompleteStep.tsx`                             | skillPath / hasExternalIntegration / externalToolName / action cards / onRetry props 追加、onClose optional 化 |
-| ui   | `apps/desktop/src/renderer/components/skill/wizard/index.ts`                                     | SkillInfoStep export 追加                                                                                      |
-| test | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.test.tsx`                | 削除 State・ハンドラへの参照を修正、STEPS配列期待値更新                                                        |
-| test | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.W2-seq-03a.test.tsx`     | 新規追加（W2-seq-03a 専用テスト 22件）                                                                         |
-| test | `apps/desktop/src/renderer/components/skill/__tests__/SkillCreateWizard.llm-generation.test.tsx` | 削除 API 依存テストに .skip 追加                                                                               |
-| test | `apps/desktop/src/renderer/components/skill/wizard/__tests__/CompleteStep.test.tsx`              | action cards テスト追加                                                                                        |
+本タスクの Phase 12 では、以下 6 ファイルを canonical 成果物として整備する。
 
----
+- `outputs/phase-12/implementation-guide.md`
+- `outputs/phase-12/system-spec-update-summary.md`
+- `outputs/phase-12/documentation-changelog.md`（本ファイル）
+- `outputs/phase-12/unassigned-task-detection.md`
+- `outputs/phase-12/skill-feedback-report.md`
+- `outputs/phase-12/phase12-task-spec-compliance-check.md`
 
-### 成果物（Phase 12 canonical 6成果物）
+## 変更対象（成果物: Phase 11 証跡）
 
-本タスクの Phase 12 では、以下 6 ファイルを canonical 成果物として整備した。
+本タスクは UI 変更を含むため、Phase 11 の視覚証跡が必須。
 
-| 成果物                   | パス                                                        |
-| ------------------------ | ----------------------------------------------------------- |
-| 実装ガイド               | `outputs/phase-12/implementation-guide.md`                  |
-| システム仕様更新サマリー | `outputs/phase-12/system-spec-update-summary.md`            |
-| 更新履歴                 | `outputs/phase-12/documentation-changelog.md`（本ファイル） |
-| 未タスク検出             | `outputs/phase-12/unassigned-task-detection.md`             |
-| スキルフィードバック     | `outputs/phase-12/skill-feedback-report.md`                 |
-| 準拠チェック             | `outputs/phase-12/phase12-task-spec-compliance-check.md`    |
+- `outputs/phase-11/screenshot-plan.json`
+- `outputs/phase-11/phase11-capture-metadata.json`
+- `outputs/phase-11/screenshots/*.png`
 
----
-
-### 成果物（Phase 1〜11）
-
-| Phase    | 成果物ファイル                                                                  |
-| -------- | ------------------------------------------------------------------------------- |
-| Phase 1  | `requirements-definition.md` / `acceptance-criteria.md` / `impact-scope-map.md` |
-| Phase 2  | `architecture-design.md` / `inference-flowchart.md` / `test-strategy.md`        |
-| Phase 3  | `design-review-result.md` / `contradiction-checklist.md` / `gate-decision.md`   |
-| Phase 4  | `test-specification.md` / `red-test-result.md` / `integration-test-plan.md`     |
-| Phase 5  | `implementation-summary.md` / `changed-files.md` / `contract-diff.md`           |
-| Phase 6  | `expanded-test-cases.md` / `regression-test-result.md` / `edge-case-result.md`  |
-| Phase 7  | `coverage-report.md` / `uncovered-paths.md`                                     |
-| Phase 8  | `refactoring-summary.md` / `code-quality-review.md`                             |
-| Phase 9  | `static-analysis-result.md` / `risk-assessment.md`                              |
-| Phase 10 | `final-review-result.md`                                                        |
-| Phase 11 | `manual-test-result.md` / `screenshot-plan.md` / `evidence-index.md`            |
+Phase 12 は上記が current task（`UT-SKILL-WIZARD-W1-par-02b`）として更新されている前提で整備する。
