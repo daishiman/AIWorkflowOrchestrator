@@ -1,0 +1,218 @@
+{
+  "taskId": "TASK-SC-13",
+  "taskName": "skill-creator-verify-channel-implementation",
+  "featureName": "task-sc-13-verify-channel-implementation",
+  "createdAt": "2026-04-08T00:00:00Z",
+  "status": "spec_created",
+  "githubIssue": 1635,
+  "category": "改善",
+  "priority": "高",
+  "scale": "中規模",
+  "metadata": {
+    "taskType": "NON_VISUAL"
+  },
+  "phases": [
+    {
+      "phase": 1,
+      "name": "要件定義",
+      "status": "completed",
+      "specFile": "phase-1-requirements.md",
+      "outputDir": "outputs/phase-1",
+      "artifacts": [
+        "outputs/phase-1/acceptance-criteria.md",
+        "outputs/phase-1/p50-check-result.md",
+        "outputs/phase-1/scope-definition.md"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "設計",
+      "status": "completed",
+      "specFile": "phase-2-design.md",
+      "outputDir": "outputs/phase-2",
+      "artifacts": [
+        "outputs/phase-2/design-decisions.md",
+        "outputs/phase-2/type-interface-design.md",
+        "outputs/phase-2/ipc-flow-diagram.md"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "設計レビューゲート",
+      "status": "not-started",
+      "specFile": "phase-3-design-review.md",
+      "outputDir": "outputs/phase-3",
+      "artifacts": [
+        "outputs/phase-3/design-review-result.md",
+        "outputs/phase-3/minor-tracking.md"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "テスト作成",
+      "status": "not-started",
+      "specFile": "phase-4-test-creation.md",
+      "outputDir": "outputs/phase-4",
+      "codeArtifacts": [
+        "apps/desktop/src/main/ipc/__tests__/creatorHandlers.verify.test.ts"
+      ],
+      "artifacts": [
+        "outputs/phase-4/test-matrix.md",
+        "outputs/phase-4/red-confirmation.md"
+      ]
+    },
+    {
+      "phase": 5,
+      "name": "実装",
+      "status": "not-started",
+      "specFile": "phase-5-implementation.md",
+      "outputDir": "outputs/phase-5",
+      "codeArtifacts": [
+        "packages/shared/src/types/skillCreator.ts",
+        "packages/shared/src/ipc/channels.ts",
+        "apps/desktop/src/main/services/runtime/RuntimeSkillCreatorFacade.ts",
+        "apps/desktop/src/main/ipc/creatorHandlers.ts",
+        "apps/desktop/src/preload/skill-creator-api.ts"
+      ],
+      "artifacts": [
+        "outputs/phase-5/implementation-result.md",
+        "outputs/phase-5/green-confirmation.md"
+      ]
+    },
+    {
+      "phase": 6,
+      "name": "テスト拡充",
+      "status": "not-started",
+      "specFile": "phase-6-test-expansion.md",
+      "outputDir": "outputs/phase-6",
+      "codeArtifacts": [
+        "apps/desktop/src/main/ipc/__tests__/creatorHandlers.verify.test.ts",
+        "apps/desktop/src/test/skill-creator-integration.test.ts"
+      ],
+      "artifacts": ["outputs/phase-6/test-expansion-result.md"]
+    },
+    {
+      "phase": 7,
+      "name": "カバレッジ確認",
+      "status": "not-started",
+      "specFile": "phase-7-coverage-check.md",
+      "outputDir": "outputs/phase-7",
+      "artifacts": ["outputs/phase-7/coverage-report.md"]
+    },
+    {
+      "phase": 8,
+      "name": "リファクタリング",
+      "status": "not-started",
+      "specFile": "phase-8-refactoring.md",
+      "outputDir": "outputs/phase-8",
+      "artifacts": ["outputs/phase-8/refactoring-result.md"]
+    },
+    {
+      "phase": 9,
+      "name": "品質保証",
+      "status": "not-started",
+      "specFile": "phase-9-quality-assurance.md",
+      "outputDir": "outputs/phase-9",
+      "artifacts": ["outputs/phase-9/quality-check-result.md"]
+    },
+    {
+      "phase": 10,
+      "name": "最終レビューゲート",
+      "status": "not-started",
+      "specFile": "phase-10-final-review.md",
+      "outputDir": "outputs/phase-10",
+      "artifacts": [
+        "outputs/phase-10/final-review-result.md",
+        "outputs/phase-10/ac-verification.md"
+      ]
+    },
+    {
+      "phase": 11,
+      "name": "手動テスト",
+      "status": "not-started",
+      "specFile": "phase-11-manual-test.md",
+      "outputDir": "outputs/phase-11",
+      "visualType": "NON_VISUAL",
+      "artifacts": [
+        "outputs/phase-11/manual-test-result.md",
+        "outputs/phase-11/manual-test-checklist.md",
+        "outputs/phase-11/discovered-issues.md"
+      ]
+    },
+    {
+      "phase": 12,
+      "name": "ドキュメント更新",
+      "status": "completed",
+      "specFile": "phase-12-documentation.md",
+      "outputDir": "outputs/phase-12",
+      "artifacts": [
+        "outputs/phase-12/implementation-guide.md",
+        "outputs/phase-12/system-spec-update-summary.md",
+        "outputs/phase-12/documentation-changelog.md",
+        "outputs/phase-12/unassigned-task-detection.md",
+        "outputs/phase-12/skill-feedback-report.md",
+        "outputs/phase-12/phase12-task-spec-compliance-check.md"
+      ]
+    },
+    {
+      "phase": 13,
+      "name": "PR作成",
+      "status": "blocked",
+      "specFile": "phase-13-pr-creation.md",
+      "outputDir": "outputs/phase-13",
+      "artifacts": [
+        "outputs/phase-13/local-check-result.md",
+        "outputs/phase-13/change-summary.md",
+        "outputs/phase-13/pr-info.md",
+        "outputs/phase-13/pr-ready-report.md"
+      ]
+    }
+  ],
+  "acceptanceCriteria": [
+    "AC-1: channels.ts に SKILL_CREATOR_VERIFY 定数が追加されている",
+    "AC-2: RuntimeSkillCreatorFacade に verify(skillName, authMode, apiKey) メソッドが実装されている",
+    "AC-3: creatorHandlers.ts に verify ハンドラが登録されている（validateSender + isBlank + sanitizeErrorMessage パターン）",
+    "AC-4: skill-creator-api.ts に verifySkill メソッドが公開されている",
+    "AC-5: verify レスポンスが IpcResult<VerifyResult> 形式である",
+    "AC-6: エラー時にサニタイズされたエラーメッセージが返る",
+    "AC-7: unregisterRuntimeSkillCreatorHandlers に verify チャネルの removeHandler が追加されている",
+    "AC-8: 既存の plan/execute/improve テストが全件 PASS のまま維持されている",
+    "AC-9: TypeScript 型チェック（pnpm --filter @repo/desktop typecheck）PASS",
+    "AC-10: 関連テスト全件 PASS"
+  ],
+  "ipcChannels": {
+    "new": ["skill-creator:verify"],
+    "existing": [
+      "skill-creator:plan",
+      "skill-creator:execute",
+      "skill-creator:improve",
+      "skill-creator:apply-improvement"
+    ]
+  },
+  "dependencies": [
+    {
+      "type": "prerequisite",
+      "taskId": "TASK-SC-08-E2E-VALIDATION",
+      "status": "completed",
+      "description": "E2E テスト実装時に verify チャネル未実装を発見。verify テストケースは本タスクに委譲"
+    },
+    {
+      "type": "related",
+      "taskId": "TASK-P0-01",
+      "status": "completed",
+      "description": "SkillCreatorVerificationEngine 実装（verify ロジック本体）"
+    }
+  ],
+  "knownPitfalls": [
+    {
+      "id": "P60",
+      "description": "IPC 応答形式: error は { code, message } ではなく string",
+      "solution": "sanitizeErrorMessage() パターンに統一。テストは assertIpcError(result, 'expected string') を使用"
+    },
+    {
+      "id": "WORKTREE",
+      "description": "worktree 環境で esbuild バージョン不一致",
+      "solution": "worktree 作成直後に pnpm install を実行"
+    }
+  ]
+}

@@ -27,7 +27,7 @@ describe("SkillCreator runtime preload API", () => {
     vi.clearAllMocks();
   });
 
-  it("runtime 用 3 チャンネルが定義され invoke whitelist に含まれる", () => {
+  it("runtime 用チャンネルが定義され invoke whitelist に含まれる", () => {
     expect(IPC_CHANNELS.SKILL_CREATOR_PLAN).toBe("skill-creator:plan");
     expect(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN).toBe(
       "skill-creator:execute-plan",
@@ -47,6 +47,7 @@ describe("SkillCreator runtime preload API", () => {
     expect(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL).toBe(
       "skill-creator:improve-skill",
     );
+    expect(IPC_CHANNELS.SKILL_CREATOR_VERIFY).toBe("skill-creator:verify");
     expect(IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL).toBe(
       "skill-creator:get-verify-detail",
     );
@@ -71,6 +72,9 @@ describe("SkillCreator runtime preload API", () => {
       IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL,
     );
     expect(ALLOWED_INVOKE_CHANNELS).toContain(
+      IPC_CHANNELS.SKILL_CREATOR_VERIFY,
+    );
+    expect(ALLOWED_INVOKE_CHANNELS).toContain(
       IPC_CHANNELS.SKILL_CREATOR_GET_VERIFY_DETAIL,
     );
     expect(ALLOWED_INVOKE_CHANNELS).toContain(
@@ -93,6 +97,7 @@ describe("SkillCreator runtime preload API", () => {
     expect(typeof api.onAdapterStatusChanged).toBe("function");
     expect(typeof api.onOutputReady).toBe("function");
     expect(typeof api.improveSkillWithFeedback).toBe("function");
+    expect(typeof api.verifySkill).toBe("function");
     expect(typeof api.getVerifyDetail).toBe("function");
     expect(typeof api.reverifyWorkflow).toBe("function");
   });
@@ -175,6 +180,32 @@ describe("SkillCreator runtime preload API", () => {
         apiKey: undefined,
       },
     );
+    expect(result).toEqual(expected);
+  });
+
+  it("verifySkill が skillName と auth 情報を送る", async () => {
+    const expected = {
+      success: true,
+      data: {
+        skillName: "skill-a",
+        passed: true,
+        checkResults: [],
+        summary: "all checks passed",
+      },
+    };
+    mockInvoke.mockResolvedValue(expected);
+
+    const result = await skillCreatorAPI.verifySkill(
+      "skill-a",
+      "subscription",
+      null,
+    );
+
+    expect(mockInvoke).toHaveBeenCalledWith(IPC_CHANNELS.SKILL_CREATOR_VERIFY, {
+      skillName: "skill-a",
+      authMode: "subscription",
+      apiKey: null,
+    });
     expect(result).toEqual(expected);
   });
 
