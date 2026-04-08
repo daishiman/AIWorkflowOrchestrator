@@ -115,10 +115,15 @@ export function useMainlineExecutionAccess(): UseMainlineExecutionAccessResult {
   const selectedHealthStatus = selectedProviderId
     ? llmHealthStatus[selectedProviderId]
     : undefined;
+  // API key が有効だが接続が断絶/エラー状態 → subscription fallback を有効化するため degraded 判定
+  const apiKeyDegraded =
+    credentials.apiKeyValid &&
+    (selectedHealthStatus?.status === "disconnected" ||
+      selectedHealthStatus?.status === "error");
   const healthPolicy = resolveHealthPolicy({
     connectionStatus: selectedHealthStatus?.status ?? "disconnected",
     isApiKeyValid: credentials.apiKeyValid,
-    apiKeyDegraded: false,
+    apiKeyDegraded,
     isRateLimited: false,
     lastHealthCheck: selectedHealthStatus ?? null,
   });

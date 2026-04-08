@@ -84,9 +84,11 @@ export interface HealthPolicyInput {
  *
  * 導出ルール（優先度順）:
  * 1. lastHealthCheck === null → unknown（isConnectionAvailable=false, isDegraded=false）
- * 2. connectionStatus === "disconnected" || "error" → unhealthy（isConnectionAvailable=false）
- * 3. isRateLimited → degraded（isConnectionAvailable=true, isDegraded=true）
- * 4. apiKeyDegraded → degraded（isConnectionAvailable=true, isDegraded=true）
+ * 2. isRateLimited → degraded（isDegraded=true）
+ * 3. apiKeyDegraded → degraded（isDegraded=true）
+ *    ※ 接続エラー時でも API key が valid なら subscription fallback を優先するため
+ *    ※ connectionStatus チェック（ルール4）より先に評価する
+ * 4. connectionStatus === "disconnected" || "error" → unhealthy（isConnectionAvailable=false）
  * 5. それ以外 → healthy（isConnectionAvailable=true, isDegraded=false）
  */
 export function resolveHealthPolicy(input: HealthPolicyInput): HealthPolicy {
@@ -106,7 +108,20 @@ export function resolveHealthPolicy(input: HealthPolicyInput): HealthPolicy {
 
   const lastCheckedAt = lastHealthCheck.checkedAt;
 
-  // ルール 2: 接続断 → unhealthy
+  // ルール 2/3: レート制限 または API key 劣化 → degraded
+  // 接続エラー（ルール4）より先に評価: valid API key + connection error の場合も
+  // subscription fallback を有効化するため isDegraded = true を返す。
+  if (isRateLimited || apiKeyDegraded) {
+    return {
+      isConnectionAvailable: false,
+      isDegraded: true,
+      isRateLimited,
+      healthStatus: "degraded",
+      lastCheckedAt,
+    };
+  }
+
+  // ルール 4: 接続断 → unhealthy
   if (connectionStatus === "disconnected" || connectionStatus === "error") {
     return {
       isConnectionAvailable: false,
@@ -116,17 +131,6 @@ export function resolveHealthPolicy(input: HealthPolicyInput): HealthPolicy {
       lastCheckedAt,
       errorDetail:
         lastHealthCheck.errorMessage ?? `Connection ${connectionStatus}`,
-    };
-  }
-
-  // ルール 3/4: レート制限 または API key 劣化 → degraded
-  if (isRateLimited || apiKeyDegraded) {
-    return {
-      isConnectionAvailable: true,
-      isDegraded: true,
-      isRateLimited,
-      healthStatus: "degraded",
-      lastCheckedAt,
     };
   }
 
