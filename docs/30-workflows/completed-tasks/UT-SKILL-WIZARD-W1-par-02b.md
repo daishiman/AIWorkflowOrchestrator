@@ -28,21 +28,21 @@ dependencies: [UT-SKILL-WIZARD-W0-seq-01]
 
 ## 目的
 
-スキル作成ウィザードの Step 1 として `ConversationRoundStep.tsx` を新規実装する。  
+スキル作成ウィザードの Step 1 として `ConversationRoundStep.tsx` を新規実装する。
 6問インタビュー形式（Q1〜Q6）でスキル設定を収集し、`SkillInfoStep`（Step 0）から引き継いだ `formData.category` を使って Q5「外部ツール連携」の必須/任意を制御する。
 
 ## 背景
 
-W1-par-02a（SkillInfoStep）の実装で `formData.category` の型契約と伝達インターフェースが確立された。  
-Step 1 への `formData` 引き継ぎおよび `external-integration` カテゴリ時の Q5 必須ロジック表示は、  
+W1-par-02a（SkillInfoStep）の実装で `formData.category` の型契約と伝達インターフェースが確立された。
+Step 1 への `formData` 引き継ぎおよび `external-integration` カテゴリ時の Q5 必須ロジック表示は、
 W1-par-02a のスコープ外として明示的に本タスク（W1-par-02b）へ委譲されている。
 
 ### 苦戦箇所（W1-par-02a より引き継ぎ）
 
-- **Q5 必須化制御**: `formData.category` が `external-integration` のとき UI 上で Q5 を必須★表示する必要がある。  
-  `SkillInfoStep` 側でカテゴリが確定するまで Q5 の必須フラグは不定のため、  
+- **Q5 必須化制御**: `formData.category` が `external-integration` のとき UI 上で Q5 を必須★表示する必要がある。
+  `SkillInfoStep` 側でカテゴリが確定するまで Q5 の必須フラグは不定のため、
   `ConversationRoundStepProps` で `formData` をそのまま受け取り、レンダリング時に動的判定することが推奨。
-- **Page 分割とバリデーション**: Q1〜Q3（Page 1）と Q4〜Q6（Page 2）に分割しつつ、  
+- **Page 分割とバリデーション**: Q1〜Q3（Page 1）と Q4〜Q6（Page 2）に分割しつつ、
   必須 Q5 が Page 2 に存在するため、Page 遷移ゲートと最終 Submit ゲートの2段階バリデーションが必要。
 
 ## 実行タスク

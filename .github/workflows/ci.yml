@@ -10,6 +10,8 @@ on:
       - ".github/PULL_REQUEST_TEMPLATE/**"
       - "LICENSE"
       - ".gitignore"
+      - ".claude/**"
+      - ".agents/**"
   pull_request:
     branches: [main]
     paths-ignore:
@@ -19,6 +21,9 @@ on:
       - ".github/PULL_REQUEST_TEMPLATE/**"
       - "LICENSE"
       - ".gitignore"
+      - ".claude/**"
+      - ".agents/**"
+  merge_group:
   workflow_dispatch:
     inputs:
       reason:

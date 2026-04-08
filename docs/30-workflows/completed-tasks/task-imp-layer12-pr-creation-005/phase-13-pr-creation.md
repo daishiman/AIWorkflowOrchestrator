@@ -54,7 +54,7 @@ PR 作成前に以下を必ず確認すること（苦戦箇所の再発防止�
 | 元タスク Phase 12 未タスク       | `docs/30-workflows/imp-layer12-spec-definition-004/outputs/phase-12/unassigned-task-detection.md`          | Phase 12成果物 |
 | 元タスク Phase 12 フィードバック | `docs/30-workflows/imp-layer12-spec-definition-004/outputs/phase-12/skill-feedback-report.md`              | Phase 12成果物 |
 | 元タスク Phase 12 準拠確認       | `docs/30-workflows/imp-layer12-spec-definition-004/outputs/phase-12/phase12-task-spec-compliance-check.md` | Phase 12成果物 |
-| 苦戦箇所詳細                     | `docs/30-workflows/unassigned-task/task-imp-layer12-pr-creation-005/lessons-learned.md`                    | 本タスクの教訓 |
+| 苦戦箇所詳細                     | `docs/30-workflows/completed-tasks/task-imp-layer12-pr-creation-005/lessons-learned.md`                    | 本タスクの教訓 |
 | review-gate-criteria.md          | `.claude/skills/task-specification-creator/references/review-gate-criteria.md`                             | PR前提条件     |
 
 ---
@@ -117,7 +117,7 @@ git diff --stat
 
 # ステージング（docs/ と .claude/ のみ。コード変更がないことを確認）
 git add docs/30-workflows/imp-layer12-spec-definition-004/
-git add docs/30-workflows/unassigned-task/task-imp-layer12-pr-creation-005/
+git add docs/30-workflows/completed-tasks/task-imp-layer12-pr-creation-005/
 git add .claude/skills/aiworkflow-requirements/
 git add .claude/skills/task-specification-creator/
 

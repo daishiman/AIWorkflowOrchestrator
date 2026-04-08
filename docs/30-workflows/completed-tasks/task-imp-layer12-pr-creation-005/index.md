@@ -2,6 +2,20 @@
 
 ## メタ情報
 
+```yaml
+issue_number: 2037
+task_id: task-imp-layer12-pr-creation-005
+task_name: Phase 13 PR作成 for imp-layer12-spec-definition-004
+category: docs（ドキュメント改善）
+target_feature: aiworkflow-requirements / FR-04 verify 契約
+priority: 高
+scale: 小
+status: 未実施
+source_phase: Phase 12完了後のPhase 13未着手状態
+created_date: 2026-04-04
+dependencies: []
+```
+
 | 項目         | 内容                                                |
 | ------------ | --------------------------------------------------- |
 | タスクID     | task-imp-layer12-pr-creation-005                    |
@@ -93,7 +107,7 @@ Phase 12（PASS 確認済み）→ 未コミット変更のコミット → Phas
 | Phase 13 仕様書（元タスク） | `docs/30-workflows/imp-layer12-spec-definition-004/phase-13-pr-creation.md`             |
 | artifacts.json（root）      | `docs/30-workflows/imp-layer12-spec-definition-004/artifacts.json`                      |
 | artifacts.json（outputs）   | `docs/30-workflows/imp-layer12-spec-definition-004/outputs/artifacts.json`              |
-| 苦戦箇所詳細                | `docs/30-workflows/unassigned-task/task-imp-layer12-pr-creation-005/lessons-learned.md` |
+| 苦戦箇所詳細                | `docs/30-workflows/completed-tasks/task-imp-layer12-pr-creation-005/lessons-learned.md` |
 | ai:diff-to-pr スキル        | `.claude/skills/` 配下の `ai:diff-to-pr`                                                |
 
 ## Phase 仕様書リンク
