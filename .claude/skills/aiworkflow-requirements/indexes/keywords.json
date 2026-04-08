@@ -1,8 +1,5 @@
 {
-  "generated": "2026-04-08T02:17:33.410Z",
-  "totalKeywords": 2824,
-  "generated": "2026-04-08T01:22:28.895Z",
-  "totalKeywords": 2823,
+  "totalKeywords": 2827,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -7110,6 +7107,7 @@
     ],
     "CONFLICT": [
       "lessons-learned-auth-ipc-security-double-registration.md",
+      "lessons-learned-current-2026-04.md",
       "logs-archive-2026-02-skill-validation-atoms-audit.md"
     ],
     "import": [
@@ -7441,6 +7439,21 @@
       "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md"
     ],
+    "WORKTREE": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "並列": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "worktree": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-governance-hooks-phase-policy.md",
+      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
+      "lessons-learned-skill-create-multi-select-kind.md"
+    ],
+    "コンフリクト解消": [
+      "lessons-learned-current-2026-04.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -7568,11 +7581,6 @@
     ],
     "型が同一な引数の逆転バグ": [
       "lessons-learned-governance-hooks-phase-policy.md"
-    ],
-    "worktree": [
-      "lessons-learned-governance-hooks-phase-policy.md",
-      "lessons-learned-sdk-session-bridge-vitest-worktree.md",
-      "lessons-learned-skill-create-multi-select-kind.md"
     ],
     "でのテスト実行と": [
       "lessons-learned-governance-hooks-phase-policy.md"

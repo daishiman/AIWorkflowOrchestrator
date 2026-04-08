@@ -1,0 +1,85 @@
+{
+  "generatedAt": "2026-04-07T22:53:14.838Z",
+  "captureMethod": "current_build_vite_playwright",
+  "baseUrl": "http://127.0.0.1:5183",
+  "harnessPath": "/phase11-w1-par-02c-complete-step.html",
+  "viewportSet": [
+    {
+      "width": 1440,
+      "height": 900
+    },
+    {
+      "width": 390,
+      "height": 844
+    },
+    {
+      "width": 1440,
+      "height": 1200
+    }
+  ],
+  "screenshots": [
+    {
+      "tcId": "TC-01",
+      "file": "TC-01-step0-initial-dark.png",
+      "output": "outputs/phase-11/screenshots/TC-01-step0-initial-dark.png",
+      "capturedAt": "2026-04-07T22:53:00.931Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-02",
+      "file": "TC-02-step0-filled-dark.png",
+      "output": "outputs/phase-11/screenshots/TC-02-step0-filled-dark.png",
+      "capturedAt": "2026-04-07T22:53:02.385Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-03",
+      "file": "TC-03-step1-configure-dark.png",
+      "output": "outputs/phase-11/screenshots/TC-03-step1-configure-dark.png",
+      "capturedAt": "2026-04-07T22:53:04.108Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-04",
+      "file": "TC-04-step2-generating-dark.png",
+      "output": "outputs/phase-11/screenshots/TC-04-step2-generating-dark.png",
+      "capturedAt": "2026-04-07T22:53:05.792Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-05",
+      "file": "TC-05-step3-complete-dark.png",
+      "output": "outputs/phase-11/screenshots/TC-05-step3-complete-dark.png",
+      "capturedAt": "2026-04-07T22:53:08.092Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-06",
+      "file": "TC-06-step2-error-dark.png",
+      "output": "outputs/phase-11/screenshots/TC-06-step2-error-dark.png",
+      "capturedAt": "2026-04-07T22:53:10.201Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-07",
+      "file": "TC-07-step3-complete-light.png",
+      "output": "outputs/phase-11/screenshots/TC-07-step3-complete-light.png",
+      "capturedAt": "2026-04-07T22:53:13.195Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-08",
+      "file": "TC-08-step3-complete-mobile-dark.png",
+      "output": "outputs/phase-11/screenshots/TC-08-step3-complete-mobile-dark.png",
+      "capturedAt": "2026-04-07T22:53:14.419Z",
+      "captureMethod": "current_build_vite_playwright"
+    },
+    {
+      "tcId": "TC-09",
+      "file": "TC-09-step3-complete-external-checklist-light.png",
+      "output": "outputs/phase-11/screenshots/TC-09-step3-complete-external-checklist-light.png",
+      "capturedAt": "2026-04-07T22:53:14.834Z",
+      "captureMethod": "current_build_vite_playwright"
+    }
+  ]
+}

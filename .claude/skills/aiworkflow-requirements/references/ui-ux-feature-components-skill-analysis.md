@@ -116,7 +116,7 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 | molecule | DescribeStep | 説明入力 + 次へ遷移 | `.../components/skill/wizard/DescribeStep.tsx` |
 | molecule | ConfigureStep | 生成オプション設定（generateTasks/addAgents/addReferences） | `.../components/skill/wizard/ConfigureStep.tsx` |
 | molecule | GenerateStep | 生成中ローディング / エラー表示 | `.../components/skill/wizard/GenerateStep.tsx` |
-| molecule | CompleteStep | 生成完了表示（作成パス表示 + close） | `.../components/skill/wizard/CompleteStep.tsx` |
+| molecule | CompleteStep | 完了画面再設計（起点画面化。骨格生成ヘッダー / 品質フィードバック / 3つの次アクション / 条件付き外部連携チェック） | `.../components/skill/wizard/CompleteStep.tsx` |
 | hook | useWizardStep | ステップ遷移ロジック（goNext/goBack/goToStep） | `.../components/skill/hooks/useWizardStep.ts` |
 
 ### ウィザード再設計（UT-SKILL-WIZARD-W1-par-02b / completed）
@@ -158,6 +158,8 @@ TASK-10A-C で `SkillCreateWizard`（説明入力→設定→生成→完了の4
 - cron 検証は browser-safe な 5-field validator（実行スケジューラとの厳密整合は別タスク）
 
 **Phase 11 証跡**: `docs/30-workflows/skill-wizard-redesign-lane/W1-par-02b-conversation-round-step/outputs/phase-11/screenshots/`
+
+> W1-par-02c で `CompleteStep` は旧来の「作成パス表示 + close」から、次の行動を促す起点画面へ更新された。`generatedSkill` は親コンテキストとして保持し、表示責務からは切り離している。
 
 ### 進捗ステータス
 
