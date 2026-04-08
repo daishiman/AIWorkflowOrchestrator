@@ -80,8 +80,12 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
   const handleUnsatisfied = useCallback(() => {
     if (feedbackSubmitted) return;
     setFeedbackSubmitted(true);
-    onQualityFeedback?.(false);
-    onRetry?.();
+    try {
+      onQualityFeedback?.(false);
+    } finally {
+      // フィードバック処理が失敗しても、回復導線は止めない
+      onRetry?.();
+    }
   }, [feedbackSubmitted, onQualityFeedback, onRetry]);
 
   const nextActions = [

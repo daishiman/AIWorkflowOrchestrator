@@ -55,7 +55,7 @@ Wave 0（直列・先行必須）
 Wave 1（並列・W0完了後 ※02dはW0と同時可）
   W1-par-02a-skill-info-step             # SkillInfoStep.tsx（Step 0）
   W1-par-02b-conversation-round-step     # ConversationRoundStep.tsx（Step 1）
-  W1-par-02c-complete-step               # CompleteStep.tsx（完了画面）
+  W1-par-02c-complete-step-2             # CompleteStep.tsx（完了画面）
   W1-par-02d-lifecycle-panel             # SkillLifecyclePanel.tsx（遷移ボタン化）
 
 Wave 2（並列・W1完了後）
@@ -119,7 +119,7 @@ Wave 3（直列・W2完了後）
 W0-seq-01
  ├─→ W1-par-02a ─┐
  ├─→ W1-par-02b ─┼─→ W2-seq-03a ─→ W3-seq-04
- ├─→ W1-par-02c ─┤
+ ├─→ W1-par-02c-complete-step-2 ─┤
  └─→ W1-par-02d  └─→ W2-seq-03b
                     (W1-par-02a+02b+02c完了後)
 ```
