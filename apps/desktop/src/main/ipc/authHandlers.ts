@@ -186,9 +186,9 @@ export function registerAuthHandlers(
   supabase: SupabaseClient,
   secureStorage: SecureStorage,
 ): void {
-  const registerValidatedAuthHandler = <TArgs extends unknown[]>(
+  const registerValidatedAuthHandler = (
     channel: AuthInvokeChannel,
-    handler: (event: IpcMainInvokeEvent, ...args: TArgs) => Promise<unknown>,
+    handler: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<unknown>,
   ): void => {
     ipcMain.handle(
       channel,

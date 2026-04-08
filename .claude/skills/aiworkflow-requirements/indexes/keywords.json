@@ -1,6 +1,6 @@
 {
-  "generated": "2026-04-07T23:05:46.876Z",
-  "totalKeywords": 2823,
+  "generated": "2026-04-08T02:17:33.410Z",
+  "totalKeywords": 2824,
   "keywords": {
     "チャット履歴": [
       "api-chat-history.md"
@@ -2945,6 +2945,7 @@
       "arch-execution-capability-contract.md",
       "interfaces-auth-core.md",
       "lessons-learned-current-2026-03-late.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md",
@@ -3169,6 +3170,7 @@
     "HEALTH": [
       "arch-execution-capability-contract.md",
       "interfaces-auth-core.md",
+      "lessons-learned-current-2026-04.md",
       "lessons-learned-ipc-preload-runtime-2026-03-late.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
@@ -7416,6 +7418,27 @@
       "lessons-learned-ipc-preload-runtime-2026-03-early.md",
       "lessons-learned-ipc-preload-runtime.md"
     ],
+    "MAINLINE": [
+      "lessons-learned-current-2026-04.md",
+      "ui-ux-settings-core.md"
+    ],
+    "MIGRATION": [
+      "lessons-learned-current-2026-04.md",
+      "lessons-learned-skill-execute-hook-migration.md",
+      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
+      "logs-archive-2026-03-line-budget-reform-formalize.md"
+    ],
+    "policy": [
+      "lessons-learned-current-2026-04.md"
+    ],
+    "移管": [
+      "lessons-learned-current-2026-04.md",
+      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
+      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
+      "logs-archive-2026-03-auth-mode-migration-sync.md",
+      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
+      "logs-archive-2026-03-skill-views-completed-move.md"
+    ],
     "Menu": [
       "lessons-learned-current-electron-menu-docs-task0912.md",
       "ui-ux-portal-patterns.md"
@@ -8340,11 +8363,6 @@
       "lessons-learned-workflow-quality-sdk-tests-loop-guard.md",
       "logs-archive-2026-02-abort-security-loop-guard.md",
       "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md"
-    ],
-    "MIGRATION": [
-      "lessons-learned-skill-execute-hook-migration.md",
-      "logs-archive-2026-02-skill-creator-ipc-sdk-integration.md",
-      "logs-archive-2026-03-line-budget-reform-formalize.md"
     ],
     "個別セレクタ": [
       "lessons-learned-skill-execute-hook-migration.md"
@@ -9768,13 +9786,6 @@
     ],
     "最終同期": [
       "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
-      "logs-archive-2026-03-skill-views-completed-move.md"
-    ],
-    "移管": [
-      "logs-archive-2026-02-auth-callback-lifecycle-guard.md",
-      "logs-archive-2026-02-skill-import-interface-atoms-rerun.md",
-      "logs-archive-2026-03-auth-mode-migration-sync.md",
-      "logs-archive-2026-03-ipc-fallback-phase12-sync.md",
       "logs-archive-2026-03-skill-views-completed-move.md"
     ],
     "完了条件充足": [
@@ -12940,9 +12951,6 @@
       "ui-ux-settings-core.md"
     ],
     "MATRIX": [
-      "ui-ux-settings-core.md"
-    ],
-    "MAINLINE": [
       "ui-ux-settings-core.md"
     ],
     "AuthKeySection": [

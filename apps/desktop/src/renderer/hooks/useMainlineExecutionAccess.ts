@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { resolveHealthPolicy } from "@repo/shared/types";
 import type { AuthMode } from "@repo/shared/types/auth-mode";
 import {
   useCheckLLMHealth,
@@ -114,21 +115,24 @@ export function useMainlineExecutionAccess(): UseMainlineExecutionAccessResult {
   const selectedHealthStatus = selectedProviderId
     ? llmHealthStatus[selectedProviderId]
     : undefined;
-  const apiKeyDegraded =
-    credentials.apiKeyValid &&
-    (selectedHealthStatus?.status === "disconnected" ||
-      selectedHealthStatus?.status === "error");
+  const healthPolicy = resolveHealthPolicy({
+    connectionStatus: selectedHealthStatus?.status ?? "disconnected",
+    isApiKeyValid: credentials.apiKeyValid,
+    apiKeyDegraded: false,
+    isRateLimited: false,
+    lastHealthCheck: selectedHealthStatus ?? null,
+  });
 
   return {
     access: buildMainlineExecutionAccessState({
       apiKeyValid: credentials.apiKeyValid,
       subscriptionValid: credentials.subscriptionValid,
-      apiKeyDegraded,
       isAuthenticated,
       selectedProviderName: selectedProvider?.name,
       selectedModelName: selectedModel?.name,
       healthStatus: selectedHealthStatus,
       isLoading: credentials.isLoading,
+      healthPolicy,
     }),
     refreshHealth,
   };

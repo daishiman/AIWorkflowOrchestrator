@@ -1,110 +1,132 @@
-# Phase 12: 実装ガイド — UT-HEALTH-POLICY-RUNTIME-INJECTION-001
+# 実装ガイド — UT-HEALTH-POLICY-MAINLINE-MIGRATION-001
 
-## Part 1: 中学生レベルの説明
+## Part 1: 中学生レベルの概念説明
 
-### なぜ必要か
+### healthPolicy とは何か
 
-体調が悪いときに無理をすると事故につながります。システムでも同じで、接続の調子が悪いときは「自動のやり方」ではなく「手動のやり方」へ切り替えるのが安全です。
+`healthPolicy` は、AI につなぐ前に見る「健康診断メモ」です。
+接続できるか、API キーは有効か、途中で制限されていないかを 1 枚にまとめます。
 
-今回の問題は、体調メモ（`healthPolicy`）が担当者に届いていなかったことです。メモが届かなければ、調子が悪いことに気づけません。
+たとえば学校の保健室で、先生が
 
-### 何をしたか
+- いま教室に入れるか
+- 体調が悪くないか
+- 忘れ物で止まっていないか
 
-- 体調メモ（`healthPolicy`）を作って、判断係（`RuntimePolicyResolver`）へ渡すようにした
-- 調子が悪いときは自動実行ではなく手動の案内（`terminal_handoff`）に切り替える
+を見てから判断するのと同じです。
+情報が 1 か所にまとまっていると、毎回ちがう先生がバラバラに判断しなくて済みます。
 
-### たとえ
+### リファクタリングとは何か
 
-先生に「今日は体調が悪いです」と書いた連絡帳を、先生にちゃんと渡すようにした。すると先生が「今日は無理せず保健室で休もう」と判断できる。
+リファクタリングは、動きは変えずに、書き方だけをきれいにすることです。
 
----
+たとえば、同じ計算を 2 つのノートに書いていたら、片方だけ直してしまうことがあります。
+1 つにまとめれば、直し忘れが起きにくくなります。
 
-## Part 2: 技術者向け説明
+### なぜ独自ロジックをなくすのか
 
-### 変更内容（実装済み）
+`useMainlineExecutionAccess` の中で `apiKeyDegraded` を自分で計算すると、同じ判断が別の場所にもある状態になります。
+すると、片方だけ修正されて、もう片方が古いまま残る危険があります。
 
-#### 1) `RuntimeSkillCreatorFacadeDeps` に `healthPolicy?: HealthPolicy` を追加
+今回の修正では、その判断を `resolveHealthPolicy()` に寄せました。
+これで「健康状態の判断」は共有の 1 か所に集まり、フック側は結果を受け取るだけになります。
+
+### resolveHealthPolicy() の役割
+
+`resolveHealthPolicy()` は、接続状態と最終ヘルスチェックの情報を受け取って、統一された `HealthPolicy` を返す関数です。
+
+`useMainlineExecutionAccess` はこの関数を呼び、返ってきた `HealthPolicy` を `buildMainlineExecutionAccessState()` に渡します。
+つまり、フックは「どう判断するか」を持たず、「共有ルールに聞いて、その結果を使う」役に変わりました。
+
+## Part 2: 技術的詳細
+
+### 変更の概要
+
+変更対象は `apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.ts` です。
+
+削除したのは次の独自計算です。
 
 ```typescript
-import type { HealthPolicy } from "@repo/shared/types";
-
-export interface RuntimeSkillCreatorFacadeDeps {
-  skillExecutor: SkillExecutor;
-  authKeyService?: IAuthKeyService;
-  subscriptionAuthProvider?: ISubscriptionAuthProvider;
-  llmAdapter?: ILLMAdapter;
-  resourceLoader?: ResourceLoader;
-  skillFileManager?: SkillFileManager;
-  skillFileWriter?: SkillFileWriter;
-  healthPolicy?: HealthPolicy;
-}
+const apiKeyDegraded =
+  credentials.apiKeyValid &&
+  (selectedHealthStatus?.status === "disconnected" ||
+    selectedHealthStatus?.status === "error");
 ```
 
-#### 2) `RuntimePolicyResolver` 呼び出しに第3引数を追加
+変更後は、`resolveHealthPolicy()` の返り値を `healthPolicy` として渡します。
 
 ```typescript
-this.resolver = new RuntimePolicyResolver(
-  deps.authKeyService,
-  deps.subscriptionAuthProvider,
-  deps.healthPolicy,
-);
+const healthPolicy = resolveHealthPolicy({
+  connectionStatus: selectedHealthStatus?.status ?? "disconnected",
+  isApiKeyValid: credentials.apiKeyValid,
+  apiKeyDegraded: false,
+  isRateLimited: false,
+  lastHealthCheck: selectedHealthStatus ?? null,
+});
+
+return {
+  access: buildMainlineExecutionAccessState({
+    apiKeyValid: credentials.apiKeyValid,
+    subscriptionValid: credentials.subscriptionValid,
+    isAuthenticated,
+    selectedProviderName: selectedProvider?.name,
+    selectedModelName: selectedModel?.name,
+    healthStatus: selectedHealthStatus,
+    isLoading: credentials.isLoading,
+    healthPolicy,
+  }),
+  refreshHealth,
+};
 ```
 
-#### 3) `apps/desktop/src/main/ipc/index.ts` で `healthPolicy` を生成して注入
+### resolveHealthPolicy() の入出力仕様
+
+#### 入力
+
+| フィールド         | 型                                         | このフックでの値                                 | 補足                                       |
+| ------------------ | ------------------------------------------ | ------------------------------------------------ | ------------------------------------------ |
+| `connectionStatus` | `"connected" \| "disconnected" \| "error"` | `selectedHealthStatus?.status ?? "disconnected"` | プロバイダー未選択時は `disconnected` 扱い |
+| `isApiKeyValid`    | `boolean`                                  | `credentials.apiKeyValid`                        | 将来の拡張に備えた入力                     |
+| `apiKeyDegraded`   | `boolean`                                  | `false`                                          | フック内で独自再計算しないため             |
+| `isRateLimited`    | `boolean`                                  | `false`                                          | このフックでは未取得                       |
+| `lastHealthCheck`  | `HealthCheckResult \| null`                | `selectedHealthStatus ?? null`                   | 未取得時は `null`                          |
+
+#### 出力
+
+| フィールド              | 型                                                    | 意味                 |
+| ----------------------- | ----------------------------------------------------- | -------------------- |
+| `isConnectionAvailable` | `boolean`                                             | 接続可否             |
+| `isDegraded`            | `boolean`                                             | 品質低下の有無       |
+| `isRateLimited`         | `boolean`                                             | レート制限の有無     |
+| `healthStatus`          | `"healthy" \| "degraded" \| "unhealthy" \| "unknown"` | 総合状態             |
+| `lastCheckedAt`         | `Date \| null`                                        | 最終チェック時刻     |
+| `errorDetail?`          | `string`                                              | `unhealthy` 時の補足 |
+
+### buildMainlineExecutionAccessState() との連携
+
+`buildMainlineExecutionAccessState()` は `healthPolicy?: HealthPolicy` を受け取り、渡された場合はそれを優先して状態を導出します。
+
+このタスクでは、フック側で `apiKeyDegraded` を組み立てず、`healthPolicy` を 1 つ渡すだけにしました。
+これにより、共有ロジックとレンダリング層の責務が分離されます。
+
+### インポート方針
+
+`resolveHealthPolicy` は `@repo/shared/types` からインポートします。
+`AuthMode` は barrel export されていないため、既存どおり `@repo/shared/types/auth-mode` を使います。
 
 ```typescript
 import { resolveHealthPolicy } from "@repo/shared/types";
-
-const runtimeHealthPolicy = resolveHealthPolicy({
-  connectionStatus: "connected",
-  isApiKeyValid: true,
-  apiKeyDegraded: false,
-  isRateLimited: false,
-  lastHealthCheck: null,
-});
-
-const runtimePolicyResolver = new RuntimePolicyResolver(
-  authKeyService,
-  subscriptionAuthProvider,
-  runtimeHealthPolicy,
-);
-
-const runtimeSkillCreatorService = skillExecutor
-  ? new RuntimeSkillCreatorFacade({
-      skillExecutor,
-      authKeyService,
-      skillFileWriter,
-      resourceLoader,
-      sourceResolver,
-      resourcePlanner,
-      resolvedResourceReader,
-      skillFileManager,
-      notificationService,
-      healthPolicy: runtimeHealthPolicy,
-    })
-  : undefined;
+import type { AuthMode } from "@repo/shared/types/auth-mode";
 ```
 
-### テスト追加（実装済み）
+### 検証メモ
 
-- `RuntimeSkillCreatorFacade.plan.test.ts`: degraded policy + api-key 有効でも `terminal_handoff`
-- `RuntimeSkillCreatorFacade.test.ts`: execute 側の degraded policy
-- `RuntimeSkillCreatorFacade.improve.test.ts`: improve 側の degraded policy
+このタスクは NON_VISUAL で、スクリーンショット証跡は不要です。
+検証は次の 2 つで行いました。
 
-### エラーハンドリング / 後方互換性
+```bash
+pnpm --filter @repo/desktop exec vitest run src/renderer/hooks/__tests__/useMainlineExecutionAccess.test.ts
+pnpm --filter @repo/desktop typecheck
+```
 
-| ケース                             | 動作                                           |
-| ---------------------------------- | ---------------------------------------------- |
-| `healthPolicy` 未指定              | 既存ロジック維持（後方互換）                   |
-| `healthPolicy.isDegraded === true` | `terminal_handoff` を優先                      |
-| `lastHealthCheck: null`            | `healthStatus: "unknown"`, `isDegraded: false` |
-
-### 設定値・引数一覧
-
-| 項目               | 種別    | 説明                              |
-| ------------------ | ------- | --------------------------------- |
-| `healthPolicy`     | DI 引数 | `RuntimePolicyResolver` の第3引数 |
-| `connectionStatus` | 入力    | `resolveHealthPolicy()` の入力    |
-| `apiKeyDegraded`   | 入力    | `resolveHealthPolicy()` の入力    |
-| `isRateLimited`    | 入力    | `resolveHealthPolicy()` の入力    |
-| `lastHealthCheck`  | 入力    | `resolveHealthPolicy()` の入力    |
+`resolveHealthPolicy` は Vitest のモック都合で直接 spy せず、`buildMainlineExecutionAccessState()` への `healthPolicy` 引き渡しで間接確認しています。

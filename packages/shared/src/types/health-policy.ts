@@ -2,7 +2,9 @@
  * HealthPolicy 統一インターフェース
  *
  * 接続状態・API key 有効性・レート制限状態を一元管理する。
- * RuntimePolicyResolver（Main Process）と mainlineAccess（Renderer）が共通消費する。
+ * RuntimePolicyResolver（Main Process）、mainlineAccess（Renderer）、
+ * useMainlineExecutionAccess（Renderer Hook）が共通消費する。
+ * @see apps/desktop/src/renderer/hooks/useMainlineExecutionAccess.ts
  *
  * @module health-policy
  * @see TASK-IMP-HEALTH-POLICY-UNIFICATION-001

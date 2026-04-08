@@ -1,6 +1,6 @@
 # トピックマップ
 
-> 自動生成: 2026-04-07
+> 自動生成: 2026-04-08
 > 生成コマンド: node scripts/generate-index.js
 
 このファイルはreferences/配下の仕様をトピック別に整理したインデックスです。
@@ -2778,7 +2778,8 @@ node scripts/list-specs.js --topics
 | TASK-P0-07 ハードコード AGENT_NAMES の動的解決 教訓（2026-04-06） | L409 |
 | TASK-SDK-04-U1-F1 先行完了パターン教訓（2026-04-06） | L440 |
 | TASK-FIX-IPC-SKILL-NAME-001 教訓（2026-04-06） | L452 |
-| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L473 |
+| UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
+| UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -2793,9 +2794,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L89 |
-| クイックリファレンス: カテゴリ別検索ガイド | L107 |
-| 分割ファイル一覧 | L111 |
+| 分割ファイル一覧 | L90 |
+| クイックリファレンス: カテゴリ別検索ガイド | L108 |
+| 分割ファイル一覧 | L112 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
