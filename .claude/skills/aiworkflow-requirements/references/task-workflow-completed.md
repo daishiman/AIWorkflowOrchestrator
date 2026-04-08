@@ -6,9 +6,35 @@
 
 ## 最近の完了タスク（2026-04）
 
+- [2026-04-08: UT-SKILL-WIZARD-W2-seq-03a SkillCreateWizard オーケストレーション更新（LLM専用化・SmartDefault・GenerateStep再入防止・CompleteStep skillPath表示）](./task-workflow-completed-recent-2026-04d.md)
 - [2026-04-05～04-06（前半）: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 / TASK-SDK-04-U1-F1 / TASK-P0-01 / TASK-UI-01 など](./task-workflow-completed-recent-2026-04b.md)
 - [2026-04-04～04-06（後半）: TASK-UT-RT-01-EXECUTE-IMPROVE-ADAPTER-GUARD-001 / TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001 / TASK-P0-07 / TASK-P0-09 など](./task-workflow-completed-recent-2026-04c.md)
 - [2026-04-01～04-03: TASK-SDK-SC-02 Conversation UI コンポーネント](./task-workflow-completed-recent-2026-04a.md)
+### タスク: UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 SkillInfoFormData ランタイムバリデーション実装（2026-04-08）
+
+| 項目       | 値                                                                                             |
+| ---------- | ---------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001                                                      |
+| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                              |
+| タイプ     | docs / shared-types / workflow-sync                                                            |
+| 優先度     | 中                                                                                              |
+| 完了日     | 2026-04-08                                                                                     |
+| 対象       | `packages/shared/src/types/skillInfoFormValidation.ts` のランタイムバリデーション追加と Phase 12 同期 |
+| 成果物     | `docs/30-workflows/skill-wizard-runtime-validation/`                                            |
+| 元未タスク | なし（lane spec 先行タスク）                                                                    |
+
+#### 実施内容
+
+- `packages/shared/src/types/skillInfoFormValidation.ts` を新規作成し、`validateSkillName` / `validatePurpose` / `validateSkillInfoForm` を実装した
+- `packages/shared/src/types/index.ts` に runtime validation API を公開エクスポートした
+- `packages/shared/src/types/__tests__/skillInfoFormValidation.test.ts` を 23 tests 相当の回帰テストとして整備した
+- `docs/30-workflows/skill-wizard-runtime-validation/outputs/phase-12/*` を current facts へ同期し、`interfaces-agent-sdk-skill-reference.md` / `task-workflow.md` / `task-workflow-completed.md` / LOGS / `SKILL.md` を same-wave 更新した
+
+#### 検証証跡
+
+- `pnpm --filter @repo/shared typecheck`: PASS
+- `pnpm --filter @repo/shared test -- --run skillInfoFormValidation`: 現行 node_modules の esbuild バイナリ不整合で起動失敗（0.21.5 / 0.25.12 mismatch）
+
 ### タスク: UT-SKILL-WIZARD-W0-seq-01 スキルウィザード共有型定義追加（2026-04-07）
 
 | 項目       | 値                                                                                                  |
@@ -2697,3 +2723,34 @@
 - Phase 11: Visual 4件 CAPTURE_BLOCKED（worktree 環境制約）、NonVisual 3件 PASS(unit)
 - CAPTURE_BLOCKED 未タスク: `docs/30-workflows/unassigned-task/ut-sdk-07-approval-request-surface-001-phase11-screenshot.md`
 - [Workspace](./task-workflow-completed-workspace.md)
+
+---
+
+### タスク: UT-SKILL-WIZARD-W2-seq-03b（2026-04-08）
+
+| 項目       | 値                                                                 |
+| ---------- | ------------------------------------------------------------------ |
+| タスクID   | UT-SKILL-WIZARD-W2-seq-03b                                         |
+| ステータス | **完了**                                                           |
+| タイプ     | NON_VISUAL / barrel export 整理                                    |
+| 優先度     | 低                                                                 |
+| 完了日     | 2026-04-08                                                         |
+| 発生元     | UT-SKILL-WIZARD-W1-par-02a Phase 12 未タスク検出 / Issue #2011     |
+| 対象       | `apps/desktop/src/renderer/components/skill/wizard/index.ts`       |
+| 成果物     | `docs/30-workflows/W2-seq-03b-wizard-exports/`（Phase 1-12 完了）  |
+
+#### 実施内容
+
+- `DescribeStep` / `DescribeStepProps` エクスポートを削除（`DescribeStep.tsx` に `@deprecated W2-seq-03b: SkillInfoStep に置き換えられました` JSDoc 付与）
+- `SkillInfoStep` / `SkillInfoStepProps` エクスポートを追加（Wave 1 新規コンポーネント公開）
+- `ConversationRoundStep` / `ConversationRoundStepProps` エクスポートを追加（Wave 1 新規コンポーネント公開）
+- `wizard-exports.test.ts` 新規作成（13件テスト: 削除確認3件・追加確認2件・維持確認6件・型確認2件）
+- タスク仕様書を `skill-wizard-redesign-lane/W2-seq-03b-wizard-exports/` から `docs/30-workflows/W2-seq-03b-wizard-exports/` へ移動
+- 重複未タスク `UT-SKILL-WIZARD-W2-WIZARD-EXPORTS-001` を superseded として整理
+
+#### 検証証跡
+
+- vitest 13/13 PASS（wizard-exports.test.ts）
+- `pnpm --filter @repo/desktop typecheck` EXIT:0 ✅
+- Phase 12 準拠チェック 5/5 PASS（phase12-task-spec-compliance-check.md）
+- Phase 11: NON_VISUAL（unit test 13件・@deprecated 確認で代替）

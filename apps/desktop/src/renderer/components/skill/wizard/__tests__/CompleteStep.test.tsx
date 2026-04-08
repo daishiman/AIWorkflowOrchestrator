@@ -17,7 +17,6 @@ import type { CompleteStepProps } from "../CompleteStep";
 // テスト用デフォルト Props
 // ------------------------------------------
 const defaultProps: CompleteStepProps = {
-  generatedSkill: null,
   hasExternalIntegration: false,
   onQualityFeedback: vi.fn(),
 };
@@ -76,14 +75,31 @@ describe("CompleteStep", () => {
       ).toBeInTheDocument();
     });
 
-    it("generatedSkill が null でもレンダリングできる", () => {
-      expect(() => renderCompleteStep({ generatedSkill: null })).not.toThrow();
+    it("skillPath が null でもレンダリングできる", () => {
+      expect(() => renderCompleteStep({ skillPath: null })).not.toThrow();
     });
 
     it("ルートコンテナにdata-testidが付与されている", () => {
       renderCompleteStep();
 
       expect(screen.getByTestId("complete-step")).toBeInTheDocument();
+    });
+
+    it("skillPath が指定された場合に表示される", () => {
+      renderCompleteStep({ skillPath: "/mock/skills/slack-notifier" });
+
+      expect(
+        screen.getByTestId("complete-step-skill-path"),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText("/mock/skills/slack-notifier"),
+      ).toBeInTheDocument();
+    });
+
+    it("skillPath が未指定の場合は表示されない", () => {
+      renderCompleteStep();
+
+      expect(screen.queryByTestId("complete-step-skill-path")).toBeNull();
     });
   });
 
@@ -117,6 +133,25 @@ describe("CompleteStep", () => {
 
       fireEvent.click(screen.getByTestId("complete-step-feedback-unsatisfied"));
 
+      expect(onRetry).toHaveBeenCalledTimes(1);
+    });
+
+    it("onQualityFeedback(false)が例外でもonRetryが呼ばれる", () => {
+      const onRetry = vi.fn();
+      const onQualityFeedback = vi.fn(() => {
+        throw new Error("feedback failed");
+      });
+      renderCompleteStep({ onQualityFeedback, onRetry });
+
+      try {
+        fireEvent.click(
+          screen.getByTestId("complete-step-feedback-unsatisfied"),
+        );
+      } catch {
+        // 例外は握りつぶして、回復導線の継続可否だけを検証する
+      }
+
+      expect(onQualityFeedback).toHaveBeenCalledWith(false);
       expect(onRetry).toHaveBeenCalledTimes(1);
     });
 
@@ -261,8 +296,8 @@ describe("CompleteStep", () => {
   // Phase 6: エッジケース
   // ==========================================================
   describe("エッジケース", () => {
-    it("generatedSkill=nullでも正常にレンダリングされる", () => {
-      expect(() => renderCompleteStep({ generatedSkill: null })).not.toThrow();
+    it("skillPath=nullでも正常にレンダリングされる", () => {
+      expect(() => renderCompleteStep({ skillPath: null })).not.toThrow();
       expect(screen.getByTestId("complete-step")).toBeInTheDocument();
     });
 

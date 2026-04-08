@@ -1,33 +1,37 @@
 /**
  * @file CompleteStep.tsx
- * @description スキル作成ウィザード完了ステップ（起点画面）
- * @task UT-SKILL-WIZARD-W1-par-02c
+ * @description スキル作成ウィザードの完了ステップ
+ * @task TASK-10A-C, UT-SKILL-WIZARD-W1-par-02c, UT-SKILL-WIZARD-W2-seq-03a
+ *
+ * W1-par-02c: action cards / quality feedback / external integration / onRetry 追加
+ * W2-seq-03a: skillPath prop 追加・onClose 後方互換維持
  */
 
 import React, { useState, useCallback } from "react";
 
-/**
- * 生成結果コンテキスト。
- * CompleteStep は表示文言を変えず、親オーケストレーションのコンテキストとして保持するのみ。
- * 生成結果の詳細表示は W2-seq-03a が担当する。
- */
 export interface GeneratedSkill {
   path?: string;
   name?: string;
 }
 
 export interface CompleteStepProps {
-  /** 親から受け取る生成結果コンテキスト。表示文言には使用しない */
-  generatedSkill: GeneratedSkill | null;
-  hasExternalIntegration: boolean;
-  externalToolName?: string;
+  skillPath?: string | null;
+  /** 外部ツール連携が必要かどうか（W2-seq-03a） */
+  hasExternalIntegration?: boolean;
+  /** 外部ツール名（W2-seq-03a） */
+  externalToolName?: string | null;
+  /** 今すぐ実行するアクションカード（W2-seq-03a） */
   onExecuteNow?: () => void;
+  /** エディタで開くアクションカード（W2-seq-03a） */
   onOpenInEditor?: () => void;
+  /** 別のスキルを作るアクションカード（W2-seq-03a） */
   onCreateAnother?: () => void;
-  /** フィードバック受信（必須）。satisfied=true:👍, false:👎 */
-  onQualityFeedback: (satisfied: boolean) => void;
-  /** リカバリーフロー用: Step 0 への復帰トリガー。Step 0 のプリフィルは W2-seq-03a が担当 */
+  /** 品質フィードバックハンドラ（W2-seq-03a） */
+  onQualityFeedback?: (satisfied: boolean) => void;
+  /** 👎 → Step 0 復帰（W2-seq-03a） */
   onRetry?: () => void;
+  /** 後方互換: 閉じるボタン */
+  onClose?: () => void;
 }
 
 const HEADER_MESSAGE = "スキルの骨格を生成しました" as const;
@@ -53,13 +57,15 @@ const styles = {
 } as const;
 
 export const CompleteStep: React.FC<CompleteStepProps> = ({
-  hasExternalIntegration,
+  skillPath,
+  hasExternalIntegration = false,
   externalToolName,
   onExecuteNow,
   onOpenInEditor,
   onCreateAnother,
   onQualityFeedback,
   onRetry,
+  onClose,
 }) => {
   const [feedbackSubmitted, setFeedbackSubmitted] = useState(false);
   const [webhookChecked, setWebhookChecked] = useState(false);
@@ -68,14 +74,18 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
   const handleSatisfied = useCallback(() => {
     if (feedbackSubmitted) return;
     setFeedbackSubmitted(true);
-    onQualityFeedback(true);
+    onQualityFeedback?.(true);
   }, [feedbackSubmitted, onQualityFeedback]);
 
   const handleUnsatisfied = useCallback(() => {
     if (feedbackSubmitted) return;
     setFeedbackSubmitted(true);
-    onQualityFeedback(false);
-    onRetry?.();
+    try {
+      onQualityFeedback?.(false);
+    } finally {
+      // フィードバック処理が失敗しても、回復導線は止めない
+      onRetry?.();
+    }
   }, [feedbackSubmitted, onQualityFeedback, onRetry]);
 
   const nextActions = [
@@ -116,6 +126,19 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
         <h2 className={styles.header}>{HEADER_MESSAGE}</h2>
         <p className={styles.subText}>{HEADER_SUB_MESSAGE}</p>
       </div>
+
+      {/* SkillPath */}
+      {skillPath && (
+        <section
+          data-testid="complete-step-skill-path"
+          className="flex flex-col gap-1 rounded-lg border border-[var(--border-primary)] bg-[var(--bg-secondary)] p-3"
+        >
+          <p className="text-xs text-[var(--text-tertiary)]">生成先パス</p>
+          <code className="text-xs break-all text-[var(--text-primary)]">
+            {skillPath}
+          </code>
+        </section>
+      )}
 
       {/* QualityFeedback */}
       <section className="flex flex-col items-center gap-3">
@@ -202,6 +225,18 @@ export const CompleteStep: React.FC<CompleteStepProps> = ({
             テスト実行で動作確認する
           </label>
         </section>
+      )}
+
+      {/* 後方互換: 閉じるボタン */}
+      {onClose && (
+        <div className="flex justify-center">
+          <button
+            onClick={onClose}
+            className="px-6 py-2 rounded-lg bg-[var(--status-primary)] text-[var(--text-inverse)]"
+          >
+            閉じる
+          </button>
+        </div>
       )}
     </div>
   );

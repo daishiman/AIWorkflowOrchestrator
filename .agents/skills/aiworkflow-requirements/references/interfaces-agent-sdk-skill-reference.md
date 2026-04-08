@@ -111,6 +111,22 @@ W0 のスキルウィザード共有型。canonical source は `packages/shared/
 | `SmartDefaultResult` | semantic key ベースの初期値契約 |
 | `SkeletonQualityFeedback` | 骨格品質のフィードバック契約 |
 
+#### Skill Wizard Runtime Validation（UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001）
+
+SkillInfoFormData に対するランタイム入力検証。canonical source は `packages/shared/src/types/skillInfoFormValidation.ts`。
+`packages/shared/src/types/index.ts` から公開され、shared types の public export 経路で利用できる。
+
+| 型名 | 役割 |
+| --- | --- |
+| `SkillInfoFieldValidationResult` | 単一フィールドの検証結果 |
+| `SkillInfoValidationInput` | `skillName` / `purpose` の入力境界 |
+| `SkillInfoFormValidationResult` | フォーム全体の検証結果 |
+| `SKILL_INFO_VALIDATION_LIMITS` | 文字数制限の正本 |
+| `SKILL_INFO_VALIDATION_MESSAGES` | 日本語メッセージの正本 |
+| `validateSkillName` | `skillName` の runtime validation |
+| `validatePurpose` | `purpose` の runtime validation |
+| `validateSkillInfoForm` | フォーム全体の runtime validation |
+
 #### useAuthKeyManagement（TASK-RT-04-AUTHKEY-COMPONENT-DEDUP-001）
 
 AuthKeySection / ApiKeySettingsPanel の共通 IPC ロジックを統合したカスタムフック。

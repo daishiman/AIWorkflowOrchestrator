@@ -7,6 +7,10 @@ LOGS は archive index 方式へ再編した。最新更新は本ファイル、
 ## 最新更新ヘッドライン
 | 見出し |
 | --- |
+| 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 impl-spec-to-skill-sync（`lessons-learned-current-2026-04.md` に L-RV-001・L-RV-002 追加 / `lessons-learned-current.md` v3.12.0 エントリ追加 / `task-specification-creator/SKILL.md` に Feedback W0-RV-001 + v10.09.39 追記 / `task-specification-creator/LOGS.md` 同波更新） |
+| 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 Phase 12 close-out sync（`interfaces-agent-sdk-skill-reference.md` に Skill Wizard Runtime Validation セクション追加 / `task-workflow-completed.md` と `task-workflow.md` に completed ledger 同期 / `task-specification-creator/LOGS.md` 同波更新 / topic-map 再生成対象） |
+| 2026-04-08 - UT-SKILL-WIZARD-W2-seq-03b Phase 12 close-out sync（`wizard/index.ts` の export contract 整理 / `DescribeStep.tsx` の `GenerationMode` import を barrel 依存から直接実装元へ切替 / Phase 11 manual evidence を NON_VISUAL no-op に再記述 / `lessons-learned-current-2026-04.md`・`lessons-learned-current.md` に barrel export 教訓追加 / `indexes/topic-map.md` に W2-seq-03b 索引追加 / `LOGS.md` 2ファイル同波更新） |
+| 2026-04-08 - UT-SKILL-WIZARD-W1-par-02c-complete-step-2 impl-spec-to-skill-sync（`ui-ux-feature-components-skill-analysis.md` に CompleteStep 起点画面化記述を反映 / `skill-wizard-redesign-lane/index.md` の slug を `W1-par-02c-complete-step-2` へ追従 / `lessons-learned-phase12-lifecycle-recent.md` に L-W1-02c2-001〜003 教訓3件追加 / `lessons-learned-current.md` v3.12.0 追加 / `task-workflow-completed-recent-2026-04d.md` 新規作成（2026-04c 538行超過のため分割）/ generate-index.js 実行 / LOGS.md 2ファイル・lessons-learned 2ファイル同波更新） |
 | 2026-04-08 - UT-SKILL-WIZARD-W1-par-02d impl-spec-to-skill-sync（`ui-ux-feature-components-core.md` に W1-par-02d 完了行追加 / `task-workflow-completed-recent-2026-04c.md` に完了記録追加 / `lessons-learned-current.md` v3.10.0 教訓3件追加（L-W1-02d-001〜003）/ generate-index.js 実行 / mirror sync）                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
 | 2026-04-08 - UT-SKILL-WIZARD-W1-par-02c CompleteStep 再設計 Phase 12 close-out sync（`CompleteStep.tsx` を旧 `skillPath/onClose` から 7 Props 構成（`generatedSkill`, `hasExternalIntegration`, `externalToolName`, `onExecuteNow`, `onOpenInEditor`, `onCreateAnother`, `onQualityFeedback`, `onRetry`）へ全面刷新 / QualityFeedback（👍/👎）・NextActionCards（3 カード）・ExternalIntegrationChecklist（条件付き）追加 / `feedbackSubmitted` state で二重送信防止 / `React.forwardRef` → `React.FC` 変更 / `GeneratedSkill` interface 追加 / 36 tests PASS / Phase 11 スクリーンショット 9 枚 / Phase 12 全 6 成果物 PASS / `ui-ux-feature-components-reference.md` / `ui-ux-feature-components-skill-analysis.md` を current contract に同期 / ワークフローを `completed-tasks/W1-par-02c-complete-step/` へ移動 / `task-workflow-completed-recent-2026-04b.md` に完了記録追加 / LOGS.md 2 ファイル + SKILL.md 2 ファイル同波更新） |
 | 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 close-out sync（`ui-ux-feature-components-skill-analysis.md` に ConversationRoundStep / DescribeStep（category追加） / InterviewProgressBar / ApplySummaryCard の current facts と wizard/index.ts export 状態を反映 / ConfigureStep 削除を記録 / LOGS.md・SKILL.md 2ファイル同波更新） |
@@ -685,3 +689,24 @@ AC-1〜AC-6 全達成。Phase 10 判定: PASS（MINOR 0件）
 | 変更対象 | `docs/30-workflows/step-05-seq-task-07-execution-governance-and-handoff-alignment/outputs/phase-11/`（evidence bundle 11ファイル新規作成）、`docs/30-workflows/ut-sdk-07-phase11-screenshot-evidence-001/outputs/`（Phase 1-3 / 9-12 成果物作成）、`docs/30-workflows/unassigned-task/task-ut-sdk-07-phase11-screenshot-evidence-001.md`（status: spec_created）、`task-workflow-completed.md`（spec_created 追記） |
 | 結果     | TASK-SDK-07 Phase 11 の未取得 screenshot evidence（HandoffGuidance / disclosure summary / integrated_api 対照）を補完。Phase 11 evidence chain が完成した                                                                                                                                                                                                                                                           |
 | 検証     | Phase 11: 3件 screenshot（TC-11-01〜TC-11-03 PASS）、カバレッジ 100%、発見事項 0件                                                                                                                                                                                                                                                                                                                                  |
+| 結果 | TASK-SDK-07 Phase 11 の未取得 screenshot evidence（HandoffGuidance / disclosure summary / integrated_api 対照）を補完。Phase 11 evidence chain が完成した |
+| 検証 | Phase 11: 3件 screenshot（TC-11-01〜TC-11-03 PASS）、カバレッジ 100%、発見事項 0件 |
+
+### 2026-04-08 - Phase-12 impl-spec-to-skill-sync（W0-seq-02 / UT-HEALTH-POLICY / W1-par-02a / google スキル）
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only / lessons-learned 更新 / コンフリクトマーカー修正 / 新規参照ファイル |
+| 変更対象 | `references/lessons-learned-current-2026-04.md`（`\|\|\|\|\|\|\|` Stash base マーカー除去・教訓 10 件追加）、`references/skill-google-calendar-integration.md`（新規）、`LOGS.md`（本エントリ追加） |
+| 教訓追加 | W0-seq-02 SmartDefault 三軸推論設計・root export 管理（L-SMART-DEFAULT-001/002）、healthPolicy DI 末尾 optional 追加パターン（L-HEALTH-DI-001/002）、DescribeStep→SkillInfoStep 破壊的改名理由・arch docs 是正（L-SKILL-INFO-STEP-001/002）、Google Calendar 複合認証設計・pnpm workspace 配置（L-GOOGLE-CAL-001/002） |
+| 結果 | lessons-learned の孤立コンフリクトマーカーを解消。今回実装 4 件の教訓が検索可能な状態に到達 |
+
+### 2026-04-08 - UT-SKILL-WIZARD-W2-seq-03b 完了同期（wizard/index.ts エクスポート整理）
+
+| 項目 | 内容 |
+| --- | --- |
+| 種別 | docs-only / task complete sync / unassigned-task 整理 |
+| 変更対象 | `references/task-workflow-completed.md`（W2-seq-03b 完了記録追加）、`docs/30-workflows/unassigned-task/UT-SKILL-WIZARD-W2-seq-03b.md`（status: completed 更新）、`docs/30-workflows/unassigned-task/UT-SKILL-WIZARD-W2-WIZARD-EXPORTS-001.md`（重複タスク → superseded 記録）、`LOGS.md`（本エントリ追加） |
+| 実装内容 | `wizard/index.ts` barrel export 整理: `DescribeStep`/`DescribeStepProps` 削除（`DescribeStep.tsx` に `@deprecated` JSDoc 付与）、`SkillInfoStep`/`SkillInfoStepProps`・`ConversationRoundStep`/`ConversationRoundStepProps` 追加。`wizard-exports.test.ts` 新規作成（13件テスト）。タスク仕様書は `docs/30-workflows/skill-wizard-redesign-lane/W2-seq-03b-wizard-exports/` → `docs/30-workflows/W2-seq-03b-wizard-exports/` へ移動 |
+| 検証 | vitest 13/13 PASS・typecheck EXIT:0・Phase 12 準拠チェック 5/5 PASS |
+| 結果 | W2-seq-03b 実装完了を task-workflow-completed.md に記録。wizard パブリック API が Wave 2 設計に整合。重複未タスク（UT-SKILL-WIZARD-W2-WIZARD-EXPORTS-001）を superseded として整理 |

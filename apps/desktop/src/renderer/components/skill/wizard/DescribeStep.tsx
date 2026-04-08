@@ -2,11 +2,12 @@
  * @file DescribeStep.tsx
  * @description スキル作成ウィザードの説明入力ステップ
  * @task TASK-10A-C
+ * @deprecated W2-seq-03b: SkillInfoStep に置き換えられました。このファイルは将来削除される予定です。
  */
 
 import React from "react";
 import type { SkillCategory } from "@repo/shared/types/skillCreator";
-import type { GenerationMode } from "./index";
+import type { GenerationMode } from "./GenerateStep";
 
 const CATEGORY_OPTIONS: Array<{
   value: SkillCategory;
