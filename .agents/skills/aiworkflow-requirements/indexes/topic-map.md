@@ -3054,6 +3054,10 @@ node scripts/list-specs.js --topics
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L519 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L553 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L579 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L596 |
+| W1-par-02a SkillInfoStep実装（DescribeStep再設計）教訓（2026-04-08） | L612 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
@@ -3071,9 +3075,9 @@ node scripts/list-specs.js --topics
 |------------|----|
 | メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L141 |
-| クイックリファレンス: カテゴリ別検索ガイド | L159 |
-| 分割ファイル一覧 | L163 |
+| 分割ファイル一覧 | L142 |
+| クイックリファレンス: カテゴリ別検索ガイド | L160 |
+| 分割ファイル一覧 | L164 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -3373,6 +3377,17 @@ node scripts/list-specs.js --topics
 | UT-FIX-SKILL-VALIDATION-CONSISTENCY-001: skill:ハンドラP42準拠バリデーション形式統一 | L6 |
 | TASK-FIX-14-1: console → electron-log 移行 | L126 |
 | TASK-FIX-13-1: deprecatedプロパティ正式移行 | L230 |
+
+### references/lessons-learned-skill-wizard-redesign.md
+
+| セクション | 行 |
+|------------|----|
+| タスク概要 | L9 |
+| 実装パターン（将来参照用） | L21 |
+| 苦戦箇所 | L108 |
+| 非ブロッカー改善候補（skill-feedback-report.md より） | L119 |
+| 依存関係 | L159 |
+| 関連ファイル | L171 |
 
 ### references/lessons-learned-templates.md
 
@@ -4608,6 +4623,11 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 
+### references/task-workflow-completed-recent-2026-04d.md
+
+| セクション | 行 |
+|------------|----|
+
 ### references/task-workflow-completed-skill-create-ui-integration.md
 
 | セクション | 行 |
@@ -4732,9 +4752,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|
 | 最近の完了タスク（2026-04） | L7 |
-| 完了タスク（2026-03後半） | L100 |
-| 完了タスク（機能別アーカイブ） | L108 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
+| 完了タスク（2026-03後半） | L101 |
+| 完了タスク（機能別アーカイブ） | L109 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L218 |
 
 ### references/task-workflow-history.md
 

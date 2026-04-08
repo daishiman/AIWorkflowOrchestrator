@@ -2,6 +2,18 @@
 
 ## 役割
 
+## 2026-04-08 - UT-SKILL-WIZARD-W2-seq-03b Phase 12 close-out sync
+
+### 変更内容
+- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-11-manual-test.md` を NON_VISUAL no-op 前提で再記述した
+- `docs/30-workflows/W2-seq-03b-wizard-exports/outputs/phase-11/manual-test-result.md` / `evidence-index.md` を実際の 13 tests PASS と一致させた
+- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md` / `index.md` を current export surface に整合させた
+- `lessons-learned-current-2026-04.md` / `lessons-learned-current.md` / `indexes/topic-map.md` に W2-seq-03b の知見を反映した
+
+### 背景
+W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
+manual evidence と current facts を同じ語彙で揃えることが、以後の close-out の再現性に直結する。
+
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 
 ### 変更内容
