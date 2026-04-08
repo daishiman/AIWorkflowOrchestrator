@@ -2793,9 +2793,9 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L88 |
-| クイックリファレンス: カテゴリ別検索ガイド | L106 |
-| 分割ファイル一覧 | L110 |
+| 分割ファイル一覧 | L89 |
+| クイックリファレンス: カテゴリ別検索ガイド | L107 |
+| 分割ファイル一覧 | L111 |
 
 ### references/lessons-learned-governance-hooks-phase-policy.md
 
@@ -2860,7 +2860,24 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 分割ファイル一覧 | L47 |
+| 2026-03-23 UT-TERMINAL-HANDOFF-ADAPTER-PLACEMENT-001 | L46 |
+| 2026-03-27 TASK-IMP-RUNTIME-POLICY-CENTRALIZATION-IMPLEMENTATION-CLOSURE-001 | L48 |
+| 2026-03-27 TASK-SDK-04 user interaction bridge / phase UI | L58 |
+| 2026-03-28 TASK-SDK-04-U1 submitUserInput phase transition semantics | L76 |
+| 2026-03-16 TASK-FIX-CONVERSATION-IPC-HANDLER-REGISTRATION | L112 |
+| 2026-03-22 TASK-FIX-WORKSPACE-CHAT-STREAM-ERROR | L118 |
+| 2026-03-20 TASK-FIX-CHATVIEW-ERROR-SILENT-FAILURE 再監査 | L138 |
+| 2026-03-21 UT-TASK06-007-EXT-006 テスト拡充 Phase 12 再監査 | L166 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 再監査 | L202 |
+| 2026-03-16 TASK-IMP-SKILL-DOCS-AI-RUNTIME-001 | L230 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001（P57-P61） | L267 |
+| 2026-03-14 TASK-IMP-AI-RUNTIME-AUTHMODE-UNIFICATION-001（Phase 12 再確認追補） | L333 |
+| 2026-03-14 TASK-IMP-WORKSPACE-CHAT-EDIT-AI-RUNTIME-001 / TASK-IMP-CLAUDE-CODE-TERMINAL-SURFACE-001 | L354 |
+| 2026-03-18 TASK-IMP-WORKSPACE-CHAT-PANEL-AI-RUNTIME-001 | L384 |
+| 2026-03-19 UT-TASK06-007 IPC契約ドリフト自動検出 実装セッション | L426 |
+| TASK-SC-02-RUNTIME-POLICY-CLOSURE（2026-03-22） | L473 |
+| TASK-SC-05-IMPROVE-LLM（2026-03-23） | L493 |
+| TASK-SC-06-UI-RUNTIME-CONNECTION（2026-03-24） | L509 |
 
 ### references/lessons-learned-phase12-lifecycle-early-b.md
 
@@ -3061,11 +3078,12 @@ node scripts/list-specs.js --topics
 | セクション | 行 |
 |------------|----|\n| メタ情報 | L7 |
 | 変更履歴 | L18 |
-| 2026-03-29 UT-RT-06-CONS（sdkMessageUtils shared helper 抽出 / Phase 7 個別カバレッジ計測） | L29 |
-| 2026-03-25 UT-LLM-MOD-01-005（provider registry SSoT） | L65 |
-| 2026-03-16 UT-06-001 (tool-risk-config-implementation) | L108 |
-| 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout） | L197 |
-| 2026-04-01 TASK-TRACE-SKILL-AUTH-001（スキル生成 auth:login リグレッション調査） | L237 |
+| 2026-03-29 UT-RT-06-CONS（sdkMessageUtils shared helper 抽出 / Phase 7 個別カバレッジ計測） | L30 |
+| 2026-03-25 UT-LLM-MOD-01-005（provider registry SSoT） | L66 |
+| 2026-03-16 UT-06-001 (tool-risk-config-implementation) | L109 |
+| 2026-03-16 UT-06-005 Permission Fallback（abort/skip/retry/timeout） | L198 |
+| 2026-04-01 TASK-TRACE-SKILL-AUTH-001（スキル生成 auth:login リグレッション調査） | L238 |
+| 2026-04-07 TASK-UT-RT-01（TDD 2段階テスト設計） | L311 |
 
 ### references/lessons-learned-ui-adapter-status-retry.md
 
@@ -4085,7 +4103,7 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 残課題（未タスク） | L6 |
-| 続き | L325 |
+| 続き | L327 |
 
 ### references/task-workflow-completed-abort-contract-auth-session-chat.md
 
@@ -4296,9 +4314,9 @@ node scripts/list-specs.js --topics
 
 | セクション | 行 |
 |------------|----|\n| 最近の完了タスク（2026-04） | L7 |
-| 完了タスク（2026-03後半） | L42 |
-| 完了タスク（機能別アーカイブ） | L50 |
-| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L159 |
+| 完了タスク（2026-03後半） | L100 |
+| 完了タスク（機能別アーカイブ） | L108 |
+| UT-TASK-SPEC-TEMPLATE-IMPROVEMENT-001: task-specification-creator Phase-12 テンプレート改善 | L217 |
 
 ### references/task-workflow-history.md
 

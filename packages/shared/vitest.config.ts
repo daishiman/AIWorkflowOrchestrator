@@ -1,5 +1,6 @@
 import { defineConfig } from "vitest/config";
 import { cpus } from "os";
+import path from "path";
 
 // 並列化設定（desktop と同じパターン）
 // CI環境: GitHub Actionsランナー（2コア、8GB RAM）でのI/O待ち時間活用
@@ -13,6 +14,11 @@ const LOCAL_MAX_FORKS = process.env.VITEST_MAX_FORKS
 const enableFileParallelism = process.env.VITEST_FILE_PARALLELISM !== "false";
 
 export default defineConfig({
+  resolve: {
+    alias: {
+      "@repo/shared": path.resolve(__dirname, "./index.ts"),
+    },
+  },
   test: {
     globals: true,
     environment: "node",

@@ -65,6 +65,36 @@
 
 ---
 
+### タスク: UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001 スマートデフォルト推論サービス実装（2026-04-07）
+
+| 項目       | 値                                                                                                  |
+| ---------- | --------------------------------------------------------------------------------------------------- |
+| タスクID   | UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001                                                     |
+| ステータス | **完了（Phase 12 close-out / Phase 13 blocked）**                                                   |
+| タイプ     | docs / shared-services / workflow-sync                                                              |
+| 優先度     | 高                                                                                                  |
+| 完了日     | 2026-04-07                                                                                          |
+| 対象       | `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` の推論実装と Phase 12 同期 |
+| 成果物     | `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/`                                      |
+| 元未タスク | なし（lane spec 先行タスク）                                                                        |
+
+#### 実施内容
+
+- `packages/shared/src/services/skillCreator/smartDefaultReasoningService.ts` に `inferSmartDefaults` を実装し、Slack / GitHub / Notion / scheduled / realtime / code / structured の規則ベース推論を追加した
+- `packages/shared/src/services/skillCreator/index.ts` と `packages/shared/index.ts` を更新し、`@repo/shared` から `inferSmartDefaults` を import できるようにした
+- `packages/shared/src/types/index.ts` と `packages/shared/index.ts` を更新し、`SkillInfoFormData` / `SmartDefaultResult` を root export で利用できるようにした
+- `packages/shared/vitest.config.ts` に `@repo/shared` alias を追加し、shared 内テストの解決性を固定した
+- `packages/shared/src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts` を 33 tests PASS に拡張し、空白のみ purpose の edge case を固定した
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/artifacts.json` / `outputs/artifacts.json` を `phase13_blocked` へ同期した
+- `docs/30-workflows/skill-wizard-redesign-lane/index.md` に W0-seq-02 の完了記録を追加した
+- `.claude/skills/aiworkflow-requirements/references/task-workflow.md` / `task-workflow-backlog.md` / `task-workflow-completed.md` / `LOGS.md` / `SKILL.md` / `.claude/skills/task-specification-creator/LOGS.md` を same-wave で更新した
+- `docs/30-workflows/W0-seq-02-smart-default-reasoning-service/outputs/phase-12/implementation-guide.md` と `system-spec-update-summary.md` を current facts に同期した
+
+#### 検証証跡
+
+- `pnpm exec vitest run src/services/skillCreator/__tests__/smartDefaultReasoningService.test.ts`（`packages/shared` 直下）: 33 tests PASS
+- `node .claude/skills/task-specification-creator/scripts/validate-phase12-implementation-guide.js --workflow docs/30-workflows/W0-seq-02-smart-default-reasoning-service`: PASS
+
 ### タスク: UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 Skill Creator preload / renderer に approval:request surface を追加（2026-04-06）
 
 ## 完了タスク（2026-03後半）
