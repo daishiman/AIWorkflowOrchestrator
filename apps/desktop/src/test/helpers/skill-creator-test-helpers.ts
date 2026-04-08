@@ -15,6 +15,7 @@ import type {
   RuntimeSkillCreatorImproveSuggestion,
   ApplyImprovementResult,
   HandoffGuidance,
+  VerifyResult,
   SkillCreatorUserInputSubmission,
   SkillCreatorWorkflowUiSnapshot,
 } from "@repo/shared/types";
@@ -51,6 +52,7 @@ export interface MockRuntimeFacade {
   plan: ReturnType<typeof vi.fn>;
   execute: ReturnType<typeof vi.fn>;
   executeAsync: ReturnType<typeof vi.fn>;
+  verify: ReturnType<typeof vi.fn>;
   improve: ReturnType<typeof vi.fn>;
   applyImprovement: ReturnType<typeof vi.fn>;
   setLLMAdapter: ReturnType<typeof vi.fn>;
@@ -114,6 +116,7 @@ export function createMockRuntimeFacade(): MockRuntimeFacade {
     plan: vi.fn(),
     execute: vi.fn(),
     executeAsync: vi.fn().mockResolvedValue(undefined),
+    verify: vi.fn(),
     improve: vi.fn(),
     applyImprovement: vi.fn(),
     setLLMAdapter: vi.fn(),
@@ -224,6 +227,31 @@ export function createApplyImprovementResult(
   };
 }
 
+export function createVerifyResult(
+  overrides?: Partial<VerifyResult>,
+): VerifyResult {
+  return {
+    skillName: "test-skill",
+    passed: false,
+    checkResults: [
+      {
+        checkId: "L1-001",
+        label: "SKILL.md exists",
+        passed: true,
+        message: "path: /tmp/test-skill/SKILL.md",
+      },
+      {
+        checkId: "L1-002",
+        label: "agents/ directory is missing",
+        passed: false,
+        message: "path: /tmp/test-skill/agents",
+      },
+    ],
+    summary: "1件の検証チェックで警告またはエラーが見つかりました",
+    ...overrides,
+  };
+}
+
 export function createSampleSuggestions(): RuntimeSkillCreatorImproveSuggestion[] {
   return [
     {
@@ -288,6 +316,20 @@ export async function invokeSkillCreatorImprove(
   return handler(createMockEvent(), {
     skillName,
     feedback,
+    authMode,
+    apiKey,
+  }) as Promise<IpcResult<unknown>>;
+}
+
+export async function invokeSkillCreatorVerify(
+  skillName: string,
+  authMode = "api-key",
+  apiKey: string | null = "test-key",
+): Promise<IpcResult<unknown>> {
+  const handler = getHandler("skill-creator:verify");
+  if (!handler) throw new Error("skill-creator:verify handler not registered");
+  return handler(createMockEvent(), {
+    skillName,
     authMode,
     apiKey,
   }) as Promise<IpcResult<unknown>>;

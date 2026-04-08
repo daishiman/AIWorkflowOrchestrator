@@ -1065,6 +1065,7 @@ node scripts/list-specs.js --topics
 | Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L106 |
 | Skill Creator External API Support（TASK-SDK-SC-03） | L153 |
 | IPC Handler Lifecycle Management（TASK-FIX-IPC-SKILL-NAME-001 追記: 2026-04-06） | L234 |
+| TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION（2026-04-08） | L270 |
 
 ### references/api-ipc-system-skill-creator.md
 

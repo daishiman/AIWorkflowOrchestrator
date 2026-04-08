@@ -1065,6 +1065,7 @@ node scripts/list-specs.js --topics
 | Skill Creator - execute() ファイル永続化統合（TASK-P0-05） | L106 |
 | Skill Creator External API Support（TASK-SDK-SC-03） | L153 |
 | IPC Handler Lifecycle Management（TASK-FIX-IPC-SKILL-NAME-001 追記: 2026-04-06） | L234 |
+| TASK-SC-13-VERIFY-CHANNEL-IMPLEMENTATION（2026-04-08） | L270 |
 
 ### references/api-ipc-system-skill-creator.md
 
@@ -3054,6 +3055,10 @@ node scripts/list-specs.js --topics
 | UT-SDK-07-APPROVAL-REQUEST-SURFACE-001 教訓（2026-04-06） | L475 |
 | UT-HEALTH-POLICY-MAINLINE-MIGRATION-001 shared policy 移管 教訓（2026-04-08） | L485 |
 | TASK-FIX-WORKTREE-CONFLICT-001: 並列 worktree コンフリクト解消 | L519 |
+| UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 教訓（2026-04-08） | L553 |
+| UT-SKILL-WIZARD-W1-CONVERSATION-ROUND-STEP-001 教訓（2026-04-08） | L576 |
+| W0-seq-02 SmartDefault推論サービス実装 教訓（2026-04-08） | L602 |
+| UT-HEALTH-POLICY-RUNTIME-INJECTION-001 healthPolicy DI注入 教訓（2026-04-08） | L619 |
 
 ### references/lessons-learned-current-electron-menu-docs-task0912.md
 
