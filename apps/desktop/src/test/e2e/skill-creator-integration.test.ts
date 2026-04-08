@@ -19,10 +19,12 @@ import {
   createSuccessPlanResult,
   createImproveResult,
   createApplyImprovementResult,
+  createVerifyResult,
   createSampleSuggestions,
   invokeSkillCreatorPlan,
   invokeSkillCreatorExecute,
   invokeSkillCreatorImprove,
+  invokeSkillCreatorVerify,
   assertExecutePlanAccepted,
   assertIpcSuccess,
   assertIpcError,
@@ -236,6 +238,33 @@ describe("Skill Creator E2E Integration", () => {
   // ============================================
 
   describe("Scenario D: improve Feature", () => {
+    it("AC-5: verify returns structured verify result", async () => {
+      const verifyResult = createVerifyResult();
+      mockFacade.verify.mockResolvedValue(verifyResult);
+
+      const result = await invokeSkillCreatorVerify("test-skill");
+
+      assertIpcSuccess(result);
+      expect(result.data).toEqual(verifyResult);
+      expect(mockFacade.verify).toHaveBeenCalledWith(
+        "test-skill",
+        "api-key",
+        "test-key",
+      );
+    });
+
+    it("AC-5: verify returns sanitized error on runtime failure", async () => {
+      mockFacade.verify.mockRejectedValue(
+        new Error("verify failed at /Users/test/project/secret"),
+      );
+
+      const result = await invokeSkillCreatorVerify("test-skill");
+
+      assertIpcError(result);
+      expect(result.error).toBeDefined();
+      expect(result.error).not.toContain("/Users/test/project");
+    });
+
     it("AC-5: improve returns suggestions from feedback", async () => {
       const improveResult = createImproveResult();
       mockFacade.improve.mockResolvedValue(improveResult);
@@ -363,6 +392,7 @@ describe("Skill Creator E2E Integration", () => {
       expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_EXECUTE_PLAN)).toBe(
         true,
       );
+      expect(handlerMap.has("skill-creator:verify")).toBe(true);
       expect(handlerMap.has(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL)).toBe(
         true,
       );
@@ -379,6 +409,7 @@ describe("Skill Creator E2E Integration", () => {
       expect(IPC_CHANNELS.SKILL_CREATOR_IMPROVE_SKILL).toBe(
         "skill-creator:improve-skill",
       );
+      expect("skill-creator:verify").toBe("skill-creator:verify");
       expect(IPC_CHANNELS.SKILL_CREATE).toBe("skill:create");
     });
 

@@ -1,47 +1,42 @@
-# Phase 3: 設計レビューゲート判定 — UT-SKILL-WIZARD-W0-SMART-DEFAULT-REASONING-001
+# Phase 3: 設計レビューゲート判定 — UT-SKILL-WIZARD-W1-LIFECYCLE-PANEL-TRANSITION-001
 
 ## ゲート判定結果
 
 | 項目       | 結果                            |
 | ---------- | ------------------------------- |
-| 判定       | **PASS**                        |
+| 判定       | **PASS (MINOR)**                |
 | 判定日     | 2026-04-08                      |
 | レビュアー | 自己レビュー（担当: daishiman） |
 
 ## チェックリスト
 
-### API 設計
+### UI 削除設計
 
-- [x] 公開関数 `inferSmartDefaults` のシグネチャが要件と一致している
-- [x] 引数型 `SkillInfoFormData` が `packages/shared/src/types/skillCreator.ts` に定義済み
-- [x] 返り値型 `SmartDefaultResult` が同ファイルに定義済み
-- [x] barrel export（`index.ts` 経由）が設計に含まれている
+- [x] `skill-lifecycle-execution-input` textarea の削除対象を確認
+- [x] `skill-lifecycle-request-input` は既に削除済みであることを確認（PR #2036）
+- [x] `skill-lifecycle-open-wizard-button` は既に追加済みであることを確認（PR #2036）
 
-### 推論フローチャート
+### state 整理設計
 
-- [x] `purpose` → ツール推論 → タイミング推論 の順序が明確
-- [x] `category` → フォーマット推論 が `purpose` と独立して実行される設計
-- [x] 推論不能時のフォールバック（null 返却）が明示されている
-- [x] 先勝ちルール（TOOL_KEYWORDS の先頭から順に評価）が設計に含まれている
+- [x] `executionPrompt` の依存先（3箇所）をすべて確認
+- [x] `defaultExecutionPrompt` 定数による代替方針が整合している
+- [x] `canExecuteSkill` から `executionPrompt.trim().length > 0` 削除後も条件が正当
 
-### 矛盾チェック
+### テスト設計
 
-- [x] AC-1〜AC-4 の受け入れ条件と設計内容に矛盾なし
-- [x] `inferenceLog` の仕様（推論0件時は `[]`）が設計に明示されている
-- [x] エラー throw なし・常に値返却のフォールバック設計が一貫している
+- [x] 6本のテストファイルへの影響確認（5本は変更不要）
+- [x] `SkillLifecyclePanel.test.tsx` への追加テストケースが設計に明示されている
+- [x] data-testid の変更影響を全量確認（`skill-lifecycle-execution-input` はテストで参照されていない）
 
-### 漏れチェック
+### スコープ境界
 
-- [x] `normalizePurpose` による null/undefined/空白の正規化が設計に含まれている
-- [x] 推論ヘルパー3関数（`inferTool`, `inferTiming`, `inferFormat`）の責務分離が設計に記載されている
-- [x] `TOOL_KEYWORDS` 定数化による拡張性確保が設計に含まれている
+- [x] `SkillCreateWizard` 本体実装がスコープ外であることを確認
+- [x] IPCチャンネル変更がスコープ外であることを確認
 
-## 判定根拠
+## 矛盾チェック結果
 
-Phase 2 の API設計・推論フローチャートを照合した結果、要件定義（Phase 1）との整合性が確認され、
-テスト戦略（Phase 2）も推論分岐網羅の方針が明確である。
-設計上の矛盾・漏れは検出されなかった。
+矛盾なし。
 
 ## 次フェーズへの条件
 
-Phase 4（テスト仕様書・Red テスト実行）へ進むことを承認する。
+Phase 4（テスト作成）へ進むことを承認する。
