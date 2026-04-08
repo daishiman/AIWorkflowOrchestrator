@@ -12,7 +12,7 @@ const CATEGORY_OPTIONS: { value: SkillCategory; label: string }[] = [
   { value: "other", label: "その他" },
 ];
 
-export interface SkillInfoStepProps {
+interface SkillInfoStepProps {
   /** スキル名・目的・カテゴリをまとめたフォーム全体の入力値。 */
   formData: SkillInfoFormData;
   /** フォーム変更時に親へ全体値を通知する。 */

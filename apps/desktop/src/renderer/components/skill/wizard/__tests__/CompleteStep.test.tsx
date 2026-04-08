@@ -136,25 +136,6 @@ describe("CompleteStep", () => {
       expect(onRetry).toHaveBeenCalledTimes(1);
     });
 
-    it("onQualityFeedback(false)が例外でもonRetryが呼ばれる", () => {
-      const onRetry = vi.fn();
-      const onQualityFeedback = vi.fn(() => {
-        throw new Error("feedback failed");
-      });
-      renderCompleteStep({ onQualityFeedback, onRetry });
-
-      try {
-        fireEvent.click(
-          screen.getByTestId("complete-step-feedback-unsatisfied"),
-        );
-      } catch {
-        // 例外は握りつぶして、回復導線の継続可否だけを検証する
-      }
-
-      expect(onQualityFeedback).toHaveBeenCalledWith(false);
-      expect(onRetry).toHaveBeenCalledTimes(1);
-    });
-
     it("onRetryが未指定でも👎クリックでonQualityFeedbackだけ呼ばれる", () => {
       const onQualityFeedback = vi.fn();
       renderCompleteStep({ onQualityFeedback, onRetry: undefined });

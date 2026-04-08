@@ -2,42 +2,6 @@
 
 ## 役割
 
-## 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 Phase 12 close-out sync
-
-### 変更内容
-- `docs/30-workflows/skill-wizard-runtime-validation/outputs/phase-12/implementation-guide.md` に Part 1 / Part 2 の runtime validation 説明を記録
-- `docs/30-workflows/skill-wizard-runtime-validation/outputs/phase-12/system-spec-update-summary.md` / `documentation-changelog.md` / `phase12-task-spec-compliance-check.md` を current facts に合わせて更新
-- `.claude/skills/aiworkflow-requirements/references/interfaces-agent-sdk-skill-reference.md` に Skill Wizard Runtime Validation セクションを追加
-- `task-workflow-completed.md` / `task-workflow.md` / `aiworkflow-requirements/LOGS.md` を同波で同期
-
-### 背景
-Runtime validation は shared types の新しい public surface であり、task spec だけでなく system spec 側にも契約節が必要だった。
-Phase 12 の成果物から漏れやすい topic-map / completed ledger / log を同 wave で閉じる。
-
-## 2026-04-08 - UT-SKILL-WIZARD-W0-RUNTIME-VALIDATION-001 skill-feedback 反映（impl-spec-to-skill-sync）
-
-### 変更内容
-- `SKILL.md` の「よくある漏れ」テーブルに Feedback W0-RV-001（minLength/maxLength 境界値テスト文字列の実文字数確認）を追記
-- `SKILL.md` の変更履歴に v10.09.39 エントリを追加
-- `aiworkflow-requirements/references/lessons-learned-current-2026-04.md` に L-RV-001（文字数確認）/ L-RV-002（pure function バリデーション設計）を追加
-- `aiworkflow-requirements/references/lessons-learned-current.md` に v3.12.0 インデックスエントリを追加
-
-### 背景
-`skill-feedback-report.md` の EC-09 文字数ミス教訓（`"十文字以上の目的"` は7文字）を「よくある漏れ」として体系化した。
-テスト境界値に日本語漢数字が含まれる場合の実文字数確認を Phase 4 のガードとして定着させる。
-
-## 2026-04-08 - UT-SKILL-WIZARD-W2-seq-03b Phase 12 close-out sync
-
-### 変更内容
-- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-11-manual-test.md` を NON_VISUAL no-op 前提で再記述した
-- `docs/30-workflows/W2-seq-03b-wizard-exports/outputs/phase-11/manual-test-result.md` / `evidence-index.md` を実際の 13 tests PASS と一致させた
-- `docs/30-workflows/W2-seq-03b-wizard-exports/phase-12-documentation.md` / `index.md` を current export surface に整合させた
-- `lessons-learned-current-2026-04.md` / `lessons-learned-current.md` / `indexes/topic-map.md` に W2-seq-03b の知見を反映した
-
-### 背景
-W2-seq-03b は code surface の変更が小さい一方で、証跡・仕様書・教訓の伝播漏れが起きやすい。  
-manual evidence と current facts を同じ語彙で揃えることが、以後の close-out の再現性に直結する。
-
 ## 2026-04-08 - UT-SKILL-WIZARD-W1-par-02b Phase 12 skill-feedback 反映（impl-spec-to-skill-sync）
 
 ### 変更内容
