@@ -22,7 +22,7 @@ import { InterviewProgressBar } from "./InterviewProgressBar";
 
 // ─── 問定義 ──────────────────────────────────────────────────────────────────
 
-export const QUESTIONS = [
+const QUESTIONS = [
   {
     key: "q1",
     label: "Q1: 利用者（誰が使うか）",
@@ -205,13 +205,6 @@ function applySmartDefaults(
   return { q1, q2, q3, q4, q5, q6 };
 }
 
-export function buildInitialAnswers(
-  smartDefaults: SmartDefaultResult,
-  answers?: ConversationAnswers | null,
-): ConversationAnswers {
-  return applySmartDefaults(answers ?? createEmptyAnswers(), smartDefaults);
-}
-
 function validateCronExpression(value: string): string | null {
   const trimmed = value.trim();
   if (!trimmed) {
@@ -256,7 +249,7 @@ export const ConversationRoundStep = ({
   const [currentPage, setCurrentPage] = useState<1 | 2>(1);
   // smartDefaults は初回描画時に親 state とローカル state の両方へ同期する。
   const [internalAnswers, setInternalAnswers] = useState<ConversationAnswers>(
-    () => buildInitialAnswers(smartDefaults, answers),
+    () => applySmartDefaults(answers ?? createEmptyAnswers(), smartDefaults),
   );
   const [showSummaryCard, setShowSummaryCard] = useState(false);
   const [scheduleTouched, setScheduleTouched] = useState(false);
